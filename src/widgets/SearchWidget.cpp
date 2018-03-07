@@ -18,19 +18,19 @@
 #include "SearchWidget.h"
 #include "core/support/Debug.h"
 #include "dialogs/EditFilterDialog.h"
-
-#include <KLocale>
+#include "widgets/BoxWidget.h"
 
 #include <QAction>
+#include <QIcon>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QStandardPaths>
 #include <QToolBar>
 #include <QVBoxLayout>
 
-#include <KIcon>
-#include <KLineEdit>
-#include <KHBox>
-#include <KPushButton>
+#include <KLocalizedString>
+#include <KStandardGuiItem>
 
-#include <kstandarddirs.h>
 
 SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     : QWidget( parent )
@@ -40,21 +40,24 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     , m_runningSearches( 0 )
 {
     setContentsMargins( 0, 0, 0, 0 );
-    KHBox *searchBox = new KHBox( this );
+    BoxWidget *searchBox = new BoxWidget( false );
     searchBox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
     m_sw = new Amarok::ComboBox( searchBox );
     m_sw->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_sw->setFrame( true );
-    m_sw->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_sw->setCompletionMode( KCompletion::CompletionPopup );
     m_sw->completionObject()->setIgnoreCase( true );
     m_sw->setToolTip( i18n( "Enter space-separated terms to search." ) );
     m_sw->addItem( KStandardGuiItem::find().icon(), QString() );
-    connect( m_sw, SIGNAL(activated(int)), SLOT(onComboItemActivated(int)) );
-    connect( m_sw, SIGNAL(editTextChanged(QString)), SLOT(resetFilterTimeout()) );
-    connect( m_sw, SIGNAL(returnPressed()), SLOT(filterNow()) ); // filterNow() calls addCompletion()
-    connect( m_sw, SIGNAL(returnPressed()), SIGNAL(returnPressed()) );
-    connect( m_sw, SIGNAL(downPressed()), SLOT(advanceFocus()) );
+    connect( m_sw, QOverload<int>::of(&QComboBox::activated),
+             this, &SearchWidget::onComboItemActivated );
+    connect( m_sw, &Amarok::ComboBox::editTextChanged, this, &SearchWidget::resetFilterTimeout );
+    connect( m_sw, QOverload<>::of(&KComboBox::returnPressed),
+             this, &SearchWidget::filterNow ); // filterNow() calls addCompletion()
+             connect( m_sw, QOverload<>::of(&KComboBox::returnPressed),
+            this, &SearchWidget::returnPressed );
+    connect( m_sw, &Amarok::ComboBox::downPressed, this, &SearchWidget::advanceFocus );
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( searchBox );
@@ -67,18 +70,18 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
 
     if( advanced )
     {
-        m_filterAction = new QAction( KIcon( "document-properties" ), i18n( "Edit filter" ), this );
+        m_filterAction = new QAction( QIcon::fromTheme( "document-properties" ), i18n( "Edit filter" ), this );
         m_filterAction->setObjectName( "filter" );
         m_toolBar->addAction( m_filterAction );
 
-        connect( m_filterAction, SIGNAL(triggered()), this, SLOT(slotShowFilterEditor()) );
+        connect( m_filterAction, &QAction::triggered, this, &SearchWidget::slotShowFilterEditor );
     }
 
     m_filterTimer.setSingleShot( true );
-    connect( &m_filterTimer, SIGNAL(timeout()), SLOT(filterNow()) );
+    connect( &m_filterTimer, &QTimer::timeout, this, &SearchWidget::filterNow );
 
     m_animationTimer.setInterval( 500 );
-    connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(nextAnimationTick()) );
+    connect( &m_animationTimer, &QTimer::timeout, this, &SearchWidget::nextAnimationTick );
 }
 
 void
@@ -133,8 +136,8 @@ SearchWidget::slotShowFilterEditor()
     fd->setAttribute( Qt::WA_DeleteOnClose );
     m_filterAction->setEnabled( false );
 
-    connect( fd, SIGNAL(filterChanged(QString)), m_sw, SLOT(setEditText(QString)) );
-    connect( fd, SIGNAL(finished(int)), this, SLOT(slotFilterEditorFinished(int)) );
+    connect( fd, &EditFilterDialog::filterChanged, m_sw, &Amarok::ComboBox::setEditText );
+    connect( fd, &QDialog::finished, this, &SearchWidget::slotFilterEditorFinished );
 
     fd->show();
 }
@@ -161,10 +164,10 @@ SearchWidget::showAdvancedButton( bool show )
     {
         if( m_filterAction != 0 )
         {
-            m_filterAction = new QAction( KIcon( "document-properties" ), i18n( "Edit filter" ), this );
+            m_filterAction = new QAction( QIcon::fromTheme( "document-properties" ), i18n( "Edit filter" ), this );
             m_filterAction->setObjectName( "filter" );
             m_toolBar->addAction( m_filterAction );
-            connect( m_filterAction, SIGNAL(triggered()), this, SLOT(slotShowFilterEditor()) );
+            connect( m_filterAction, &QAction::triggered, this, &SearchWidget::slotShowFilterEditor );
         }
     }
     else
@@ -177,8 +180,8 @@ SearchWidget::showAdvancedButton( bool show )
 void
 SearchWidget::setClickMessage( const QString &message )
 {
-    KLineEdit *edit = qobject_cast<KLineEdit*>( m_sw->lineEdit() );
-    edit->setClickMessage( message );
+    QLineEdit *edit = qobject_cast<QLineEdit*>( m_sw->lineEdit() );
+    edit->setPlaceholderText( message );
 }
 
 void
@@ -206,7 +209,7 @@ SearchWidget::searchStarted()
     // start the animation
     if( !m_animationTimer.isActive() )
     {
-        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( KStandardDirs::locate( "data", "amarok/images/loading1.png" ) ) );
+        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading1.png" ) ) );
         m_currentFrame = 0;
         m_animationTimer.start();
     }
@@ -249,9 +252,9 @@ SearchWidget::nextAnimationTick()
 
     // switch frames
     if( m_currentFrame == 0 )
-        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( KStandardDirs::locate( "data", "amarok/images/loading2.png" ) ) );
+        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading2.png" ) ) );
     else
-        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( KStandardDirs::locate( "data", "amarok/images/loading1.png" ) ) );
+        m_sw->setItemIcon( m_sw->currentIndex(), QIcon( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading1.png" ) ) );
 
     restoreLineEditStatus();
     m_currentFrame = !m_currentFrame;
@@ -283,4 +286,3 @@ SearchWidget::saveLineEditStatus()
     m_selectionLength = m_sw->lineEdit()->selectedText().length();
 }
 
-#include "SearchWidget.moc"

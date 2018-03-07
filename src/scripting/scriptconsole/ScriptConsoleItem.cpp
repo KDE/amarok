@@ -30,7 +30,7 @@
 #include <QScriptEngine>
 #include <QTextStream>
 #include <QDir>
-#include <QScriptEngineDebugger>
+#include <QtScriptTools/QScriptEngineDebugger>
 #include <QMainWindow>
 
 using namespace ScriptConsoleNS;
@@ -42,7 +42,7 @@ ScriptConsoleItem::ScriptConsoleItem( QObject *parent, const QString &name, cons
 , m_viewFactory( document )
 {
     document->setParent( this );
-    document->save( url().path() );
+    document->save( url() );
     initializeScriptEngine();
 }
 
@@ -62,7 +62,7 @@ ScriptConsoleItem::~ScriptConsoleItem()
             debug() << "Directory %1 not removed, contains other files";
     }
     if( m_view )
-        m_view.data()->deleteLater();
+        m_view->deleteLater();
 }
 
 KPluginInfo
@@ -88,6 +88,7 @@ ScriptConsoleItem::createSpecFile( const QString &name, const QString &category,
     }
     QTextStream stream( &file );
     stream << specs;
+    file.close();
     return KPluginInfo( specPath );
 }
 
@@ -113,7 +114,7 @@ ScriptConsoleItem::createEditorView( QWidget *parent )
     if( !m_view )
         m_view = m_viewFactory->createView( parent );
     else
-        m_view.data()->setParent( parent );
+        m_view->setParent( parent );
     return m_view.data();
 }
 

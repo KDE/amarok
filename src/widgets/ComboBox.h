@@ -26,7 +26,7 @@ namespace Amarok
 {
 
 /**
- * The Amarok::ComboBox class implements a few enhancements to an editable KComboBox.
+ * The Amarok::ComboBox class implements a few enhancements to an editable QComboBox.
  * Namely:
  *   1. Pressing the escape key clears the edit text
  *   2. Pressing down emits the downPressed signal
@@ -43,7 +43,7 @@ class ComboBox : public KComboBox
     protected:
         virtual void keyPressEvent( QKeyEvent *event );
 
-    signals:
+    Q_SIGNALS:
         void downPressed();
 };
 

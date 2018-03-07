@@ -61,8 +61,8 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         virtual ~IpodCollection();
 
         // TrackProvider methods:
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         // CollectionBase methods:
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
@@ -74,7 +74,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         virtual QString uidUrlProtocol() const;
         virtual QString collectionId() const;
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
         virtual bool hasCapacity() const;
         virtual float usedCapacity() const;
@@ -124,7 +124,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
 
         Meta::TrackPtr trackForUidUrl( const QString &uidUrl );
 
-    signals:
+    Q_SIGNALS:
         /**
          * Start a count-down that emits updated() signal after it expires.
          * Resets the timer to original timeout if already running. This is to ensure
@@ -143,7 +143,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          */
         void startWriteDatabaseTimer();
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Destroy the collection, try to write back iTunes database (if dirty)
          */
@@ -159,9 +159,15 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          * Shows the configuration dialog in a non-modal window. If m_itdb is null, shows
          * some info and a button to try to initialize iPod.
          */
-        void slotShowConfigureDialog( const QString &errorMessage = QString() );
+        void slotShowConfigureDialog();
 
-    private slots:
+        /**
+         * Shows the configuration dialog in a non-modal window. If m_itdb is null, shows
+         * some info and a button to try to initialize iPod.
+         */
+        void slotShowConfigureDialogWithError( const QString &errorMessage );
+
+    private Q_SLOTS:
         /**
          * Update m_lastUpdated timestamp and emit updated()
          */
@@ -226,7 +232,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          * This method adds it to the collection, master playlist (if not already there)
          * etc. The file must be already physically copied to iPod. (Re)Sets track's
          * collection to this collection. Takes ownership of the track (passes it to
-         * KSharedPtr)
+         * AmarokSharedPointer)
          *
          * This method is thread-safe.
          *
@@ -254,7 +260,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          */
         bool writeDatabase();
 
-        KDialog *m_configureDialog;
+        QDialog *m_configureDialog;
         Ui::IpodConfiguration m_configureDialogUi;
         QSharedPointer<Collections::MemoryCollection> m_mc;
         /**
@@ -275,8 +281,8 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         QAction *m_configureAction;
         QAction *m_ejectAction;
         QAction *m_consolidateAction;
-        QWeakPointer<IpodParseTracksJob> m_parseTracksJob;
-        QWeakPointer<IpodWriteDatabaseJob> m_writeDatabaseJob;
+        QPointer<IpodParseTracksJob> m_parseTracksJob;
+        QPointer<IpodWriteDatabaseJob> m_writeDatabaseJob;
 };
 
 #endif // IPODCOLLECTION_H

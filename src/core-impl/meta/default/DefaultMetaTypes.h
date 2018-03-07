@@ -23,7 +23,7 @@
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 
 namespace Meta

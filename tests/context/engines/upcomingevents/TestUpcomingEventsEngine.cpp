@@ -22,10 +22,9 @@
 #include "EngineController.h"
 #include "UpcomingEventsEngine.h"
 
-#include <QtTest/QTest>
-#include <qtest_kde.h>
+#include <QTest>
 
-QTEST_KDEMAIN_CORE( TestUpcomingEventsEngine )
+QTEST_MAIN( TestUpcomingEventsEngine )
 
 
 TestUpcomingEventsEngine::TestUpcomingEventsEngine(QObject* parent)
@@ -63,4 +62,3 @@ TestUpcomingEventsEngine::cleanupTestCase()
     m_engine = 0;
 }
 
-#include "TestUpcomingEventsEngine.moc"

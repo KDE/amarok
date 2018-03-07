@@ -21,9 +21,10 @@
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 #include <QNetworkAccessManager>
+#include <QUrlQuery>
 
 MusicDNSFinder::MusicDNSFinder( QObject *parent,
                                 const QString &host, const int port, const QString &pathPrefix,
@@ -49,20 +50,20 @@ MusicDNSFinder::MusicDNSFinder( QObject *parent,
 
     decodingComplete = false;
 
-    connect( net, SIGNAL(finished(QNetworkReply*)), SLOT(gotReply(QNetworkReply*)) );
-    connect( _timer, SIGNAL(timeout()), SLOT(sendNewRequest()) );
+    connect( net, &NetworkAccessManagerProxy::finished, this, &MusicDNSFinder::gotReply );
+    connect( _timer, &QTimer::timeout, this, &MusicDNSFinder::sendNewRequest );
 }
 
 void
 MusicDNSFinder::run( const Meta::TrackList &tracks )
 {
     MusicDNSAudioDecoder *decoder = new MusicDNSAudioDecoder( tracks );
-    connect( decoder, SIGNAL(trackDecoded(Meta::TrackPtr,QString)),
-                      SLOT(trackDecoded(Meta::TrackPtr,QString)) );
-    connect( decoder, SIGNAL(done(ThreadWeaver::Job*)),
-                      SLOT(decodingDone(ThreadWeaver::Job*)) );
+    connect( decoder, &MusicDNSAudioDecoder::trackDecoded,
+             this, &MusicDNSFinder::trackDecoded );
+    connect( decoder, &MusicDNSAudioDecoder::done,
+             this, &MusicDNSFinder::decodingDone );
 
-    ThreadWeaver::Weaver::instance()->enqueue( decoder );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(decoder) );
 
     _timer->start();
 }
@@ -78,8 +79,8 @@ void MusicDNSFinder::sendNewRequest()
     QPair < Meta::TrackPtr, QNetworkRequest > req = m_requests.takeFirst();
     QNetworkReply *reply = net->get( req.second );
     m_replyes.insert( reply, req.first );
-    connect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
-             this, SLOT(replyError(QNetworkReply::NetworkError)) );
+    connect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+             this, &MusicDNSFinder::replyError );
     debug() << "Request sent: " << req.second.url().toString();
 }
 
@@ -94,8 +95,8 @@ MusicDNSFinder::gotReply( QNetworkReply *reply )
         if( !m_replyes.value( reply ).isNull() )
             m_parsers.insert( parser, m_replyes.value( reply ) );
 
-        connect( parser, SIGNAL(done(ThreadWeaver::Job*)), SLOT(parsingDone(ThreadWeaver::Job*)) );
-        ThreadWeaver::Weaver::instance()->enqueue( parser );
+        connect( parser, &MusicDNSXmlParser::done, this, &MusicDNSFinder::parsingDone );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(parser) );
     }
 
     m_replyes.remove( reply );
@@ -114,8 +115,8 @@ MusicDNSFinder::replyError( QNetworkReply::NetworkError code )
     if( !m_replyes.contains( reply ) || code == QNetworkReply::NoError )
         return;
 
-    disconnect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
-                this, SLOT(replyError(QNetworkReply::NetworkError)) );
+    disconnect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+                this, &MusicDNSFinder::replyError );
 
     debug() << "Error occurred during network request: " << reply->errorString();
     m_replyes.remove( reply );
@@ -124,12 +125,12 @@ MusicDNSFinder::replyError( QNetworkReply::NetworkError code )
 }
 
 void
-MusicDNSFinder::parsingDone( ThreadWeaver::Job *_parser )
+MusicDNSFinder::parsingDone( ThreadWeaver::JobPointer _parser )
 {
     DEBUG_BLOCK
 
-    MusicDNSXmlParser *parser = qobject_cast< MusicDNSXmlParser * >( _parser );
-    disconnect( parser, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(parsingDone(ThreadWeaver::Job*)) );
+    MusicDNSXmlParser *parser = dynamic_cast< MusicDNSXmlParser * >( _parser.data() );
+    disconnect( parser, &MusicDNSXmlParser::done, this, &MusicDNSFinder::parsingDone );
     if( m_parsers.contains( parser ) )
     {
         bool found = false;
@@ -161,14 +162,14 @@ MusicDNSFinder::trackDecoded( const Meta::TrackPtr track, const QString fingerpr
 }
 
 void
-MusicDNSFinder::decodingDone( ThreadWeaver::Job *_decoder )
+MusicDNSFinder::decodingDone( ThreadWeaver::JobPointer _decoder )
 {
     DEBUG_BLOCK
-    MusicDNSAudioDecoder *decoder = ( MusicDNSAudioDecoder * )_decoder;
-    disconnect( decoder, SIGNAL(trackDecoded(Meta::TrackPtr,QString)),
-                this, SLOT(trackDecoded(Meta::TrackPtr,QString)) );
-    disconnect( decoder, SIGNAL(done(ThreadWeaver::Job*)),
-                this, SLOT(decodingDone(ThreadWeaver::Job*)) );
+    MusicDNSAudioDecoder *decoder = dynamic_cast<MusicDNSAudioDecoder*>(_decoder.data());
+    disconnect( decoder, &MusicDNSAudioDecoder::trackDecoded,
+                this, &MusicDNSFinder::trackDecoded );
+    disconnect( decoder, &MusicDNSAudioDecoder::done,
+                this, &MusicDNSFinder::decodingDone );
     decoder->deleteLater();
     decodingComplete = true;
     checkDone();
@@ -189,25 +190,27 @@ QNetworkRequest
 MusicDNSFinder::compileRequest( const QString &fingerprint, const Meta::TrackPtr track )
 {
     QUrl url;
+    QUrlQuery query;
     url.setScheme( "http" );
     url.setHost( mdns_host );
     url.setPort( mdns_port );
     url.setPath( mdns_pathPrefix+"/track/" );
-    url.addQueryItem( "gnr", "" );
-    url.addQueryItem( "art", track->artist().isNull()?"":track->artist()->name() );
-    url.addQueryItem( "rmd", "0" );
-    url.addQueryItem( "cid", mdns_clientId );
-    url.addQueryItem( "alb", track->album().isNull()?"":track->album()->name() );
-    url.addQueryItem( "fmt", "" );
-    url.addQueryItem( "brt", QString::number( track->bitrate() ) );
-    url.addQueryItem( "cvr", mdns_clientVersion );
-    url.addQueryItem( "fpt", fingerprint );
-    url.addQueryItem( "ttl", track->name().isNull()?track->playableUrl().fileName().remove(
+    query.addQueryItem( "gnr", "" );
+    query.addQueryItem( "art", track->artist().isNull()?"":track->artist()->name() );
+    query.addQueryItem( "rmd", "0" );
+    query.addQueryItem( "cid", mdns_clientId );
+    query.addQueryItem( "alb", track->album().isNull()?"":track->album()->name() );
+    query.addQueryItem( "fmt", "" );
+    query.addQueryItem( "brt", QString::number( track->bitrate() ) );
+    query.addQueryItem( "cvr", mdns_clientVersion );
+    query.addQueryItem( "fpt", fingerprint );
+    query.addQueryItem( "ttl", track->name().isNull()?track->playableUrl().fileName().remove(
                              QRegExp( "^.*(\\.+(?:\\w{2,5}))$" ) ):track->name() );
-    url.addQueryItem( "tnm", "" );
-    url.addQueryItem( "lkt", "" );
-    url.addQueryItem( "dur", QString::number( track->length() ) );
-    url.addQueryItem( "yrr", "" );
+    query.addQueryItem( "tnm", "" );
+    query.addQueryItem( "lkt", "" );
+    query.addQueryItem( "dur", QString::number( track->length() ) );
+    query.addQueryItem( "yrr", "" );
+    url.setQuery( query );
 
     QNetworkRequest req( url );
     req.setRawHeader( "User-Agent" , "Amarok" );
@@ -219,4 +222,3 @@ MusicDNSFinder::compileRequest( const QString &fingerprint, const Meta::TrackPtr
     return req;
 }
 
-#include "MusicDNSFinder.moc"

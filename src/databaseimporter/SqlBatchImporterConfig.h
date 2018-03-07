@@ -17,14 +17,15 @@
 #ifndef AMAROK_SQLBATCH_IMPORTER_CONFIG_H
 #define AMAROK_SQLBATCH_IMPORTER_CONFIG_H
 
-#include <KVBox>
+#include "widgets/BoxWidget.h"
 
+#include <QFrame>
 #include <QString>
 
 class QLabel;
 class QLineEdit;
 
-class SqlBatchImporterConfig : public KVBox
+class SqlBatchImporterConfig : public BoxWidget
 {
     Q_OBJECT
 

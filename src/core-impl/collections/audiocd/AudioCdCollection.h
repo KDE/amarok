@@ -22,10 +22,11 @@
 #include "MemoryCollection.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 
-#include <KUrl>
-
 #include <QAction>
 #include <QObject>
+#include <QUrl>
+
+#include <KIO/UDSEntry>
 
 class MediaDeviceInfo;
 
@@ -35,14 +36,17 @@ class AudioCdCollection;
 
 class AudioCdCollectionFactory : public MediaDeviceCollectionFactory<AudioCdCollection>
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-audiocdcollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
+
 public:
-    AudioCdCollectionFactory( QObject *parent, const QVariantList &args );
+    AudioCdCollectionFactory();
     virtual ~AudioCdCollectionFactory() {};
 
 /*    virtual void init();
 
-private slots:
+private Q_SLOTS:
     void audioCdAdded( const QString &uid );
     void deviceRemoved( const QString &uid );
 
@@ -77,22 +81,22 @@ public:
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
-    virtual KIcon icon() const;
+    virtual QIcon icon() const;
 
     virtual CollectionLocation* location();
 
-    virtual bool possiblyContainsTrack( const KUrl &url ) const;
-    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+    virtual bool possiblyContainsTrack( const QUrl &url ) const;
+    virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
     void cdRemoved();
 
     virtual void startFullScan(); //Override this one as I really don't want to move parsing to the handler atm.
     virtual void startFullScanDevice() { startFullScan(); }
 
-public slots:
+public Q_SLOTS:
     virtual void eject();
 
-private slots:
+private Q_SLOTS:
     void audioCdEntries( KIO::Job *job, const KIO::UDSEntryList &list );
     void slotEntriesJobDone( KJob *job );
     void infoFetchComplete( KJob *job );
@@ -102,7 +106,7 @@ private:
     void readAudioCdSettings();
 
     // Helper function to build the audiocd url.
-    KUrl audiocdUrl( const QString &path = "" ) const;
+    QUrl audiocdUrl( const QString &path = "" ) const;
     // The file name of the track without extension
     QString trackBaseFileName( int i ) const;
     // The file name of the track in .wav format
@@ -122,7 +126,7 @@ private:
 
     void updateProxyTracks();
 
-    QMap<int, KUrl> m_cddbTextFiles;
+    QMap<int, QUrl> m_cddbTextFiles;
 
     QString m_cdName;
     QString m_discCddbId;
@@ -133,7 +137,7 @@ private:
     QString m_fileNamePattern;
     QString m_albumNamePattern;
 
-    QMap<KUrl, MetaProxy::Track*> m_proxyMap;
+    QMap<QUrl, MetaProxy::Track*> m_proxyMap;
 };
 
 } //namespace Collections

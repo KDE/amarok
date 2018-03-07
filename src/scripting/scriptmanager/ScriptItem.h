@@ -25,7 +25,7 @@
 #include "statusbar/PopupWidget.h"
 
 #include <KPluginInfo>
-#include <KUrl>
+#include <QUrl>
 
 #include <QScriptValue>
 
@@ -43,7 +43,7 @@ class ScriptTerminatorWidget : public PopupWidget
 public:
     ScriptTerminatorWidget( const QString &message );
 
-signals:
+Q_SIGNALS:
     void terminate();
 };
 
@@ -57,7 +57,7 @@ public:
     QString name() const { return m_name; }
     AmarokScript::AmarokScriptEngine* engine() { return m_engine.data(); }
     AmarokScript::ScriptableServiceScript* service() { return m_service.data(); }
-    KUrl url() const { return m_url; }
+    QUrl url() const { return m_url; }
     KPluginInfo info() const { return m_info; }
     bool running() const { return m_running; }
     QString specPath() const;
@@ -67,7 +67,7 @@ public:
     virtual void pause();
     void uninstall();
 
-public slots:
+public Q_SLOTS:
     void stop();
 
     /**
@@ -75,10 +75,10 @@ public slots:
      */
     virtual void slotDeprecatedCall( const QString &call );
 
-private slots:
+private Q_SLOTS:
     virtual void timerEvent( QTimerEvent *event );
 
-signals:
+Q_SIGNALS:
     void signalHandlerException(QScriptValue);
     void evaluated( QString output );
     void uninstalled();
@@ -92,18 +92,18 @@ protected:
 
 private:
     QString                                             m_name;
-    KUrl                                                m_url;
+    QUrl                                                m_url;
     KPluginInfo                                         m_info;
-    QWeakPointer<AmarokScript::AmarokScriptEngine>      m_engine;
+    QPointer<AmarokScript::AmarokScriptEngine>      m_engine;
     /** Currently activated in the Script Manager */
     bool                                                m_running;
     bool                                                m_evaluating;
     QStringList                                         m_log;
-    QWeakPointer<AmarokScript::ScriptableServiceScript> m_service;
+    QPointer<AmarokScript::ScriptableServiceScript> m_service;
     QStringList                                         m_output;
     int                                                 m_runningTime;
     int                                                 m_timerId;
-    QWeakPointer<ScriptTerminatorWidget>                m_popupWidget;
+    QPointer<ScriptTerminatorWidget>                m_popupWidget;
 };
 
 #endif /* AMAROK_SCRIPTITEM_H */

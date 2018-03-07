@@ -24,18 +24,19 @@
 #include "ServiceSqlCollection.h"
 
 #include "core/support/Amarok.h"
-#include <kio/job.h>
-#include <kio/jobclasses.h>
+#include <KIO/Job>
 
 class OpmlOutline;
 
 class OpmlDirectoryServiceFactory: public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_opmldirectory.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        OpmlDirectoryServiceFactory( QObject *parent, const QVariantList &args );
-        virtual ~OpmlDirectoryServiceFactory() {}
+        OpmlDirectoryServiceFactory();
+        virtual ~OpmlDirectoryServiceFactory();
 
         virtual void init();
         virtual QString name();
@@ -64,9 +65,9 @@ class OpmlDirectoryService : public ServiceBase, public AmarokUrlRunnerBase
         virtual QString command() const;
         virtual QString prettyCommand() const;
         virtual bool run( AmarokUrl url );
-        virtual KIcon icon() const { return KIcon( "view-services-opml-amarok" ); }
+        virtual QIcon icon() const { return QIcon::fromTheme( "view-services-opml-amarok" ); }
 
-    private slots:
+    private Q_SLOTS:
         void subscribe();
         void slotSelectionChanged( const QItemSelection &, const QItemSelection & );
 

@@ -22,9 +22,9 @@
 
 #include "core/meta/forward_declarations.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
-#include <KTempDir>
+#include <QObject>
+#include <QString>
+#include <QTemporaryDir>
 
 class TestMetaTrack : public QObject
 {
@@ -34,7 +34,7 @@ public:
     TestMetaTrack();
     ~TestMetaTrack();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
 
     void testPrettyName();
@@ -74,7 +74,7 @@ private:
     Meta::TrackPtr m_testTrack1;
     Meta::TrackPtr m_testTrack2;
     QString  m_trackPath;
-    KTempDir m_tempDir;
+    QTemporaryDir m_tempDir;
 
     QString dataPath( const QString &relPath );
 };

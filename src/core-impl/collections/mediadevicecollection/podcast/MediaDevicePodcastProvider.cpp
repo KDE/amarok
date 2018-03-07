@@ -25,7 +25,7 @@ MediaDevicePodcastProvider::MediaDevicePodcastProvider( Meta::MediaDeviceHandler
 }
 
 void
-MediaDevicePodcastProvider::addPodcast( const KUrl &url )
+MediaDevicePodcastProvider::addPodcast( const QUrl &url )
 {
     Q_UNUSED( url )
     //can this handler even fetch feeds itself?

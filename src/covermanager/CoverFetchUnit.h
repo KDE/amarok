@@ -19,10 +19,10 @@
 
 #include "core/meta/Meta.h" // for AlbumPtr default argument
 
-#include <KSharedPtr>
-#include <KUrl>
+#include "AmarokSharedPointer.h"
 
 #include <QStringList>
+#include <QUrl>
 #include <QXmlStreamReader>
 
 class CoverFetchPayload;
@@ -51,7 +51,7 @@ namespace CoverFetch
     };
 
     typedef QHash<QString, QString> Metadata;
-    typedef QHash<KUrl, Metadata> Urls;
+    typedef QHash<QUrl, Metadata> Urls;
 }
 
 /**
@@ -60,7 +60,7 @@ namespace CoverFetch
 class CoverFetchUnit : public QSharedData
 {
 public:
-    typedef KSharedPtr< CoverFetchUnit > Ptr;
+    typedef AmarokSharedPointer< CoverFetchUnit > Ptr;
 
     CoverFetchUnit( Meta::AlbumPtr album,
                     const CoverFetchPayload *payload,

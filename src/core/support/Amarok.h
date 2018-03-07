@@ -23,11 +23,10 @@
 #include "core/meta/forward_declarations.h"
 
 #include <KActionCollection>
-#include <KConfig>
-#include <KIO/NetAccess>
+#include <KConfigGroup>
 
 #include <QDir>
-#include <QWeakPointer>
+#include <QPointer>
 
 class QColor;
 class QDateTime;
@@ -47,7 +46,7 @@ namespace Amarok
     const int GUI_THREAD_ID = 0;
 
     extern QMutex globalDirsMutex;
-    extern QWeakPointer<KActionCollection> actionCollectionObject;
+    extern QPointer<KActionCollection> actionCollectionObject;
 
     namespace ColorScheme
     {
@@ -67,7 +66,7 @@ namespace Amarok
     inline QString xmlVersion() { return "2.4"; }
 
     /**
-     * Convenience function to return the KApplication instance KConfig object
+     * Convenience function to return the QApplication instance KConfig object
      * pre-set to a specific group.
      * @param group Will pre-set the KConfig object to this group.
      */
@@ -108,9 +107,8 @@ namespace Amarok
     };
 
     /**
-     * For saving files to ~/.kde/share/apps/amarok/directory
-     * @param directory will be created if not existing, you MUST end the string
-     *                  with '/'
+     * For saving files to ~/.local/share/amarok/
+     * @param directory: Subdirectory of ~/.local/share/amarok/ to save files to.
      */
     AMAROK_CORE_EXPORT QString saveLocation( const QString &directory = QString() );
 

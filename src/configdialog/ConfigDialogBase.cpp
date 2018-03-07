@@ -15,5 +15,8 @@
  ****************************************************************************************/
 
 #include "ConfigDialogBase.h"
-#include "ConfigDialogBase.moc"
+#include "ConfigDialog.h"
 
+ConfigDialogBase::ConfigDialogBase(Amarok2ConfigDialog* parent) : QWidget(parent)
+{
+}

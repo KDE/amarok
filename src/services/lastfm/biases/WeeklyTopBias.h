@@ -63,7 +63,7 @@ namespace Dynamic
             DateRange range() const;
             void setRange( const DateRange &range );
 
-        private slots:
+        private Q_SLOTS:
             virtual void newQuery();
             void newWeeklyTimesQuery();
             void newWeeklyArtistQuery();

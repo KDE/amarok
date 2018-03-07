@@ -31,9 +31,9 @@
 
 #include <QAbstractListModel>
 #include <QHash>
+#include <QTimer>
 
-#include <KLocale>
-#include <kdemacros.h>
+#include <QtCore/QtGlobal>
 
 class AmarokMimeData;
 class QMimeData;
@@ -112,14 +112,14 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
         static void enableToolTip( bool enable );
 
-    signals:
+    Q_SIGNALS:
         void activeTrackChanged( quint64 );
         void queueChanged();
 
     protected:
         int rowForItem( Item *item ) const { return m_items.indexOf( item ); }
 
-    private slots:
+    private Q_SLOTS:
         void saveState();
         void queueSaveState();
         void insertTracksFromTrackLoader( const Meta::TrackList &tracks );

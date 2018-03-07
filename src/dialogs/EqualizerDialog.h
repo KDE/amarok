@@ -23,9 +23,9 @@
 
 #include <equalizer/EqualizerPresets.h>
 
-#include <KDialog>
+#include <QDialog>
 
-class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
+class EqualizerDialog : public QDialog, public Ui_EqualizerDialog
 {
     Q_OBJECT
 

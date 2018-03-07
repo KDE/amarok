@@ -20,18 +20,18 @@
 #include "MagnatuneDownloadInfo.h"
 #include "MagnatuneMeta.h"
 
-#include <kio/job.h>
-#include <kio/jobclasses.h>
+#include <KIO/Job>
+#include <KIO/FileCopyJob>
 
 #include <QObject>
+#include <QTemporaryDir>
 
-#include <ktempdir.h>
 /**
 This class encapsulates the downloading of an album once all required information has been retrieved
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class MagnatuneAlbumDownloader: public QObject
+class MagnatuneAlbumDownloader : public QObject
 {
 Q_OBJECT
 public:
@@ -39,7 +39,7 @@ public:
 
     ~MagnatuneAlbumDownloader();
 
-signals:
+Q_SIGNALS:
 
     /**
      * This signal is emitted when a download is finished or cancelled
@@ -47,29 +47,31 @@ signals:
      */
     void downloadComplete( bool success );
 
-public slots:
+public Q_SLOTS:
     /**
      * Initiates the download of an album
-     * @param url A MagnatuneDownloadInfo object containing all needed information
+     * @param info A MagnatuneDownloadInfo object containing all needed information
      */
     void downloadAlbum( MagnatuneDownloadInfo info );
 
 protected:
 
-    KIO::FileCopyJob * m_albumDownloadJob;
+    KIO::FileCopyJob *m_albumDownloadJob;
+    KIO::FileCopyJob *m_coverDownloadJob;
     QString m_currentAlbumUnpackLocation;
     QString m_currentAlbumFileName;
     MagnatuneDownloadInfo m_currentAlbumInfo;
-    KTempDir * m_tempDir;
+    QTemporaryDir * m_tempDir;
 
-protected slots:
+protected Q_SLOTS:
     /**
      * Unzip the downloaded album
-     * @param downLoadJob
+     * @param downloadJob
      */
     void albumDownloadComplete( KJob* downloadJob );
     void albumDownloadAborted();
-
+    void coverDownloadComplete( KJob* downloadJob );
+    void coverAddAborted();
 
 };
 

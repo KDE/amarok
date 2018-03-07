@@ -19,20 +19,21 @@
 NetworkProgressBar::NetworkProgressBar( QWidget *parent, QNetworkReply *reply )
     : ProgressBar( parent )
 {
-    connect( reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(infoMessage(QNetworkReply::NetworkError)) );
-    connect( reply, SIGNAL(finished()), SLOT(delayedDone()) );
-    connect( reply, SIGNAL(destroyed()), SLOT(delayedDone()) );
+    connect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+             this, &NetworkProgressBar::infoMessage );
+    connect( reply, &QNetworkReply::finished, this, &NetworkProgressBar::delayedDone );
+    connect( reply, &QNetworkReply::destroyed, this, &NetworkProgressBar::delayedDone );
 
     switch( reply->operation() )
     {
     case QNetworkAccessManager::HeadOperation:
     case QNetworkAccessManager::GetOperation:
-        connect( reply, SIGNAL(downloadProgress(qint64,qint64)), SLOT(progressChanged(qint64,qint64)) );
+        connect( reply, &QNetworkReply::downloadProgress, this, &NetworkProgressBar::progressChanged );
         break;
 
     case QNetworkAccessManager::PutOperation:
     case QNetworkAccessManager::PostOperation:
-        connect( reply, SIGNAL(uploadProgress(qint64,qint64)), SLOT(progressChanged(qint64,qint64)) );
+        connect( reply, &QNetworkReply::uploadProgress, this, &NetworkProgressBar::progressChanged );
         break;
 
     default:
@@ -59,4 +60,3 @@ void NetworkProgressBar::infoMessage( QNetworkReply::NetworkError code )
     }
 }
 
-#include "NetworkProgressBar.moc"

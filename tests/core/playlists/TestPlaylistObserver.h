@@ -45,7 +45,7 @@ class Observer : public QObject, public Playlists::PlaylistObserver
             emit trackRemovedSignal();
         }
 
-    signals:
+    Q_SIGNALS:
         void metadataChangedSignal();
         void tracksLoadedSignal();
         void trackAddedSignal();
@@ -59,7 +59,7 @@ class TestPlaylistObserver : public QObject
     public:
         TestPlaylistObserver();
 
-    private slots:
+    private Q_SLOTS:
         void initTestCase();
         void cleanupTestCase();
 

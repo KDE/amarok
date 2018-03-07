@@ -19,15 +19,17 @@
 #include "core/meta/Meta.h"
 #include "widgets/BreadcrumbItemButton.h"
 
-#include <KIcon>
-#include <KLocale>
+#include <QBoxLayout>
+#include <QIcon>
+
+#include <KLocalizedString>
 
 AlbumBreadcrumbWidget::AlbumBreadcrumbWidget( const Meta::AlbumPtr album, QWidget *parent )
-    : KHBox( parent )
+    : BoxWidget( false, parent )
     , m_album( album )
 {
-    const KIcon artistIcon = KIcon( "filename-artist-amarok" );
-    const KIcon albumIcon = KIcon( "filename-album-amarok" );
+    const QIcon artistIcon = QIcon::fromTheme( "filename-artist-amarok" );
+    const QIcon albumIcon = QIcon::fromTheme( "filename-album-amarok" );
     new BreadcrumbItemMenuButton( this );
     m_artistButton = new BreadcrumbItemButton( artistIcon, QString(), this );
     new BreadcrumbItemMenuButton( this );
@@ -35,12 +37,13 @@ AlbumBreadcrumbWidget::AlbumBreadcrumbWidget( const Meta::AlbumPtr album, QWidge
 
     QWidget *spacer = new QWidget( this );
 
-    setStretchFactor( m_artistButton, 1 );
-    setStretchFactor( m_albumButton, 1 );
-    setStretchFactor( spacer, 1 );
+    auto l = static_cast<QBoxLayout*>( layout() );
+    l->setStretchFactor( m_artistButton, 1 );
+    l->setStretchFactor( m_albumButton, 1 );
+    l->setStretchFactor( spacer, 1 );
 
-    connect( m_artistButton, SIGNAL(clicked()), SLOT(artistClicked()) );
-    connect( m_albumButton, SIGNAL(clicked()), SLOT(albumClicked()) );
+    connect( m_artistButton, &BreadcrumbItemButton::clicked, this, &AlbumBreadcrumbWidget::slotArtistClicked );
+    connect( m_albumButton, &BreadcrumbItemButton::clicked, this, &AlbumBreadcrumbWidget::slotAlbumClicked );
 
     updateBreadcrumbs();
 }
@@ -64,15 +67,14 @@ void AlbumBreadcrumbWidget::updateBreadcrumbs()
     m_albumButton->setText( album );
 }
 
-void AlbumBreadcrumbWidget::artistClicked()
+void AlbumBreadcrumbWidget::slotArtistClicked()
 {
     if( m_album->hasAlbumArtist() )
         emit artistClicked( m_album->albumArtist()->name() );
 }
 
-void AlbumBreadcrumbWidget::albumClicked()
+void AlbumBreadcrumbWidget::slotAlbumClicked()
 {
     emit albumClicked( m_album->name() );
 }
 
-#include "AlbumBreadcrumbWidget.moc"

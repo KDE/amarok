@@ -21,7 +21,7 @@
 #include "core/support/Debug.h"
 #include "statsyncing/Options.h"
 
-#include <KIcon>
+#include <QIcon>
 #include <KLocalizedString>
 
 #include <QApplication>
@@ -79,10 +79,10 @@ CommonModel::sizeHintData( qint64 field ) const
             static QSize size;
             if( size.isValid() ) // optimization
                 return size;
-            QStyleOptionViewItemV4 opt;
-            opt.features = QStyleOptionViewItemV2::HasDisplay
-                         | QStyleOptionViewItemV2::HasCheckIndicator
-                         | QStyleOptionViewItemV2::HasDecoration;
+            QStyleOptionViewItem opt;
+            opt.features = QStyleOptionViewItem::HasDisplay
+                         | QStyleOptionViewItem::HasCheckIndicator
+                         | QStyleOptionViewItem::HasDecoration;
             opt.state = QStyle::State_Enabled;
             opt.decorationSize = s_ratingSize;
 
@@ -97,8 +97,8 @@ CommonModel::sizeHintData( qint64 field ) const
             static QSize size;
             if( size.isValid() ) // optimization
                 return size;
-            QStyleOptionViewItemV4 opt;
-            opt.features = QStyleOptionViewItemV2::HasDisplay;
+            QStyleOptionViewItem opt;
+            opt.features = QStyleOptionViewItem::HasDisplay;
             opt.state = QStyle::State_Enabled;
             opt.text = "88.88.8888 88:88";
 
@@ -111,8 +111,8 @@ CommonModel::sizeHintData( qint64 field ) const
             static QSize size;
             if( size.isValid() ) // optimization
                 return size;
-            QStyleOptionViewItemV4 opt;
-            opt.features = QStyleOptionViewItemV2::HasDisplay;
+            QStyleOptionViewItem opt;
+            opt.features = QStyleOptionViewItem::HasDisplay;
             opt.state = QStyle::State_Enabled;
             opt.text = "888 (88)";
             opt.font.setBold( true );

@@ -65,7 +65,7 @@ public:
      */
     QString prettySortPath() const;
 
-public slots:
+public Q_SLOTS:
     /**
      * Generates a new sort scheme and forwards it to Playlist::SortProxy to apply it to
      * the playlist.
@@ -85,13 +85,20 @@ private:
     QHBoxLayout * m_layout;
     BreadcrumbUrlMenuButton *m_urlButton;
 
-private slots:
+private Q_SLOTS:
     /**
      * Adds a level to the breadcrumb path.
      * @param internalColumnName the name of the level.
      * @param sortOrder the Qt::SortOrder of the level.
      */
     void addLevel( QString internalColumnName, Qt::SortOrder sortOrder = Qt::AscendingOrder );
+
+    /**
+     * Adds a level to the breadcrumb path.
+     * Orders the level in ascending order.
+     * @param internalColumnName the name of the level.
+     */
+    void addLevelAscending( QString internalColumnName );
 
     /**
      * Handles the (possible) deletion of further levels when an item is clicked.

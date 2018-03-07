@@ -20,11 +20,13 @@
 #include "statsyncing/Provider.h"
 #include "core/support/Components.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QRadioButton>
+#include <KConfigGroup>
+#include <QPushButton>
 
 namespace StatSyncing
 {
@@ -35,7 +37,7 @@ CreateProviderDialog::CreateProviderDialog( QWidget *parent, Qt::WindowFlags f )
     setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
     setWindowTitle( i18n( "Add Synchronization Target" ) );
     setModal( true );
-    showButton( KDialog::Help, false );
+    buttonBox()->button(QDialogButtonBox::Help)->setVisible(false);
 
     m_providerButtons.setExclusive( true );
     m_layout = new QVBoxLayout;
@@ -60,7 +62,7 @@ CreateProviderDialog::CreateProviderDialog( QWidget *parent, Qt::WindowFlags f )
     providerTypeWidget->hide();
     addPage( m_providerTypePage );
 
-    connect( this, SIGNAL(accepted()), SLOT(slotAccepted()) );
+    connect( this, &CreateProviderDialog::accepted, this, &CreateProviderDialog::slotAccepted );
 }
 
 CreateProviderDialog::~CreateProviderDialog()
@@ -69,7 +71,7 @@ CreateProviderDialog::~CreateProviderDialog()
 
 void
 CreateProviderDialog::addProviderType( const QString &id, const QString &prettyName,
-                                       const KIcon &icon,
+                                       const QIcon &icon,
                                        ProviderConfigWidget *configWidget )
 {
     QRadioButton *providerTypeButton = new QRadioButton;
@@ -87,8 +89,8 @@ CreateProviderDialog::addProviderType( const QString &id, const QString &prettyN
     addPage( configPage );
     setAppropriate( configPage, false );
 
-    connect( providerTypeButton, SIGNAL(toggled(bool)),
-             SLOT(providerButtonToggled(bool)) );
+    connect( providerTypeButton, &QAbstractButton::toggled,
+             this, &CreateProviderDialog::providerButtonToggled );
 
     if( !m_providerButtons.checkedButton() )
         providerTypeButton->setChecked( true );

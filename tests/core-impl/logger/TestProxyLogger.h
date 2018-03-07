@@ -17,7 +17,7 @@
 #ifndef TEST_PROXY_LOGGER_H
 #define TEST_PROXY_LOGGER_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestProxyLogger : public QObject
 {
@@ -25,7 +25,7 @@ class TestProxyLogger : public QObject
 public:
     TestProxyLogger();
 
-private slots:
+private Q_SLOTS:
     void init();
     void cleanup();
 

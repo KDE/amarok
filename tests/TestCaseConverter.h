@@ -20,7 +20,7 @@
 #ifndef TESTCASECONVERTER_H
 #define TESTCASECONVERTER_H
 
-#include <QtCore/QObject>
+#include <QObject>
 
 class TestCaseConverter : public QObject
 {
@@ -29,7 +29,7 @@ Q_OBJECT
 public:
     TestCaseConverter();
 
-private slots:
+private Q_SLOTS:
     void testToCapitalizedCase();
     void testToTitleCase();
 };

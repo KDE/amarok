@@ -23,16 +23,14 @@
 #include "UpnpQueryMaker.h"
 #include "UpnpMeta.h"
 #include "UpnpCache.h"
+#include "upnptypes.h"
 
 #include <QStringList>
 #include <QTimer>
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KMessageBox>
-#include <kdatetime.h>
-#include "upnptypes.h"
-#include <kio/scheduler.h>
-#include <kio/jobclasses.h>
+#include <KIO/Scheduler>
 
 using namespace Meta;
 
@@ -49,7 +47,7 @@ UpnpSearchCollection::UpnpSearchCollection( const DeviceInfo& dev, QStringList s
     DEBUG_BLOCK
 
     OrgKdeKDirNotifyInterface *notify = new OrgKdeKDirNotifyInterface("", "", QDBusConnection::sessionBus(), this );
-    connect( notify, SIGNAL(FilesChanged(QStringList)), SLOT(slotFilesChanged(QStringList)) );
+    connect( notify, &OrgKdeKDirNotifyInterface::FilesChanged, this, &UpnpSearchCollection::slotFilesChanged );
 }
 
 UpnpSearchCollection::~UpnpSearchCollection()
@@ -69,7 +67,7 @@ UpnpSearchCollection::queryMaker()
 }
 
 Meta::TrackPtr
-UpnpSearchCollection::trackForUrl( const KUrl &url )
+UpnpSearchCollection::trackForUrl( const QUrl &url )
 {
 #ifdef __GNUC__
     #warning Implement track for url
@@ -80,5 +78,4 @@ UpnpSearchCollection::trackForUrl( const KUrl &url )
 }
 
 } //~ namespace
-#include "UpnpSearchCollection.moc"
 

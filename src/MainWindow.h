@@ -22,13 +22,13 @@
 
 #include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
-#include "browsers/BrowserDock.h"
+
+#include <QPointer>
 
 #include <KMainWindow>
-#include <KVBox>
-#include <Phonon/Global>
+#include <KToggleAction>
 
-#include <QWeakPointer>
+#include <Phonon/Global>
 
 class CollectionWidget;
 class SlimToolbar;
@@ -41,11 +41,12 @@ class PlaylistFileProvider;
 
 namespace PlaylistBrowserNS { class PlaylistBrowser; }
 namespace Playlist { class Dock; }
+class BrowserDock;
 class ContextDock;
 
 
-class KMenu;
-class KAction;
+class QMenu;
+class QAction;
 class QMenuBar;
 class QSplitter;
 class QTimer;
@@ -87,10 +88,10 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         //ensures the dock widget is visible in case it is tabbed
         void showDock( AmarokDockId dockId );
 
-        BrowserDock *browserDock() const { return m_browserDock.data(); }
-        KMenu *ToolsMenu() const { return m_toolsMenu.data(); }
-        KMenu *SettingsMenu() const { return m_settingsMenu.data(); }
-        Playlist::Dock *playlistDock() const { return m_playlistDock.data(); }
+        QPointer<BrowserDock> browserDock() const { return m_browserDock; }
+        QPointer<QMenu> ToolsMenu() const { return m_toolsMenu; }
+        QPointer<QMenu> SettingsMenu() const { return m_settingsMenu; }
+        QPointer<Playlist::Dock> playlistDock() const { return m_playlistDock; }
         void deleteBrowsers();
 
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
@@ -118,13 +119,13 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
          */
         bool isOnCurrentDesktop() const;
 
-    signals:
+    Q_SIGNALS:
         void loveTrack( Meta::TrackPtr track );
         void banTrack( Meta::TrackPtr track );
         void skipTrack();
         void switchQueueStateShortcut();
 
-    public slots:
+    public Q_SLOTS:
         void showHide();
         void slotFullScreen();
         void showNotificationPopup();
@@ -133,7 +134,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void showAbout();
         void showReportBug();
 
-    private slots:
+    private Q_SLOTS:
         void setDefaultDockSizes();
 
         void slotLoveTrack();
@@ -174,7 +175,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         virtual void closeEvent( QCloseEvent* );
         virtual void changeEvent( QEvent *event );
 
-    private slots:
+    private Q_SLOTS:
         void setRating1() { setRating( 1 ); }
         void setRating2() { setRating( 2 ); }
         void setRating3() { setRating( 3 ); }
@@ -188,29 +189,29 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         CollectionWidget * m_collectionBrowser;
         PlaylistBrowserNS::PlaylistBrowser * m_playlistBrowser;
 
-        QWeakPointer<QMenuBar>  m_menubar;
-        QWeakPointer<KMenu>     m_toolsMenu;
-        QWeakPointer<KMenu>     m_settingsMenu;
+        QPointer<QMenuBar>  m_menubar;
+        QPointer<QMenu>     m_toolsMenu;
+        QPointer<QMenu>     m_settingsMenu;
 #ifdef DEBUG_BUILD_TYPE
-        QWeakPointer<NetworkAccessViewer> m_networkViewer;
+        QPointer<NetworkAccessViewer> m_networkViewer;
 #endif // DEBUG_BUILD_TYPE
 
-        QWeakPointer<BrowserDock> m_browserDock;
-        QWeakPointer<ContextDock> m_contextDock;
-        QWeakPointer<Playlist::Dock> m_playlistDock;
+        QPointer<BrowserDock> m_browserDock;
+        QPointer<ContextDock> m_contextDock;
+        QPointer<Playlist::Dock> m_playlistDock;
 
-        QWeakPointer<SlimToolbar> m_slimToolbar;
-        QWeakPointer<MainToolbar> m_mainToolbar;
+        QPointer<SlimToolbar> m_slimToolbar;
+        QPointer<MainToolbar> m_mainToolbar;
 
         void createActions();
         void createMenus();
 
-        KAction* m_showMenuBar;
+        KToggleAction* m_showMenuBar;
 
         int m_lastBrowser;
         int m_searchField;
 
-        static QWeakPointer<MainWindow> s_instance;
+        static QPointer<MainWindow> s_instance;
 
         bool m_waitingForCd;
 };

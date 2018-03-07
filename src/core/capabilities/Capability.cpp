@@ -21,4 +21,3 @@ Capabilities::Capability::~Capability()
     //nothing to do
 }
 
-#include "Capability.moc"

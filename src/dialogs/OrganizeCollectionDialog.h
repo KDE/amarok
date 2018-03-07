@@ -24,18 +24,16 @@
 #include "widgets/FilenameLayoutWidget.h"
 #include "ui_OrganizeCollectionOptions.h"
 
-#include <KDialog>
-#include <KVBox>
-
-#include <QtGui/QWidget>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QWidget>
 
 namespace Ui
 {
     class OrganizeCollectionDialogBase;
 }
 
-class QFrame;
-class KLineEdit;
+class QLineEdit;
 class TrackOrganizer;
 
 
@@ -60,7 +58,7 @@ class AMAROK_EXPORT OrganizeCollectionOptionWidget : public QGroupBox, public Ui
         QString replaceText() const { return replaceEdit->text(); }
         void setReplaceText( const QString &text ) { replaceEdit->setText( text ); }
 
-    signals:
+    Q_SIGNALS:
         void optionsChanged();
 };
 
@@ -81,7 +79,7 @@ class AMAROK_EXPORT OrganizeCollectionWidget : public FilenameLayoutWidget
 };
 
 
-class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
+class AMAROK_EXPORT OrganizeCollectionDialog : public QDialog
 {
     Q_OBJECT
 
@@ -94,18 +92,18 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
                                            const char *name = 0,
                                            bool modal = true,
                                            const QString &caption = QString(),
-                                           QFlags<KDialog::ButtonCode> buttonMask = Ok|Cancel );
+                                           QFlags<QDialogButtonBox::StandardButton> buttonMask = QDialogButtonBox::Ok|QDialogButtonBox::Cancel );
 
         ~OrganizeCollectionDialog();
 
         QMap<Meta::TrackPtr, QString> getDestinations();
         bool overwriteDestinations() const;
 
-    public slots:
+    public Q_SLOTS:
         void slotUpdatePreview();
         void slotDialogAccepted();
 
-    private slots:
+    private Q_SLOTS:
         void processPreviewPaths();
         void previewNextBatch();
         void slotOverwriteModeChanged();
@@ -124,7 +122,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         QString m_previewPrefix;
         bool m_conflict;
 
-    private slots:
+    private Q_SLOTS:
         void slotEnableOk( const QString & currentCollectionRoot );
 };
 

@@ -23,13 +23,13 @@
 #include "core-impl/meta/file/File.h"
 #include "transcoding/TranscodingJob.h"
 
+#include <QDir>
+#include <QUrl>
+
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
-#include <kio/job.h>
-#include <KUrl>
-#include <kio/jobclasses.h>
-
-#include <QDir>
+#include <KIO/Job>
+#include <KLocalizedString>
 
 UmsCollectionLocation::UmsCollectionLocation( UmsCollection *umsCollection )
     : CollectionLocation( umsCollection )
@@ -44,7 +44,7 @@ UmsCollectionLocation::~UmsCollectionLocation()
 QString
 UmsCollectionLocation::prettyLocation() const
 {
-    return m_umsCollection->musicPath().toLocalFile( KUrl::RemoveTrailingSlash );
+    return m_umsCollection->musicUrl().adjusted(QUrl::StripTrailingSlash).toLocalFile();
 }
 
 QStringList
@@ -56,7 +56,7 @@ UmsCollectionLocation::actualLocation() const
 bool
 UmsCollectionLocation::isWritable() const
 {
-    const QFileInfo info( m_umsCollection->musicPath().toLocalFile() );
+    const QFileInfo info( m_umsCollection->musicUrl().toLocalFile() );
     return info.isWritable();
 }
 
@@ -67,18 +67,18 @@ UmsCollectionLocation::isOrganizable() const
 }
 
 void
-UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                              const Transcoding::Configuration &configuration )
 {
     //TODO: disable scanning until we are done with copying
 
     UmsTransferJob *transferJob = new UmsTransferJob( this, configuration );
-    QMapIterator<Meta::TrackPtr, KUrl> i( sources );
+    QMapIterator<Meta::TrackPtr, QUrl> i( sources );
     while( i.hasNext() )
     {
         i.next();
         Meta::TrackPtr track = i.key();
-        KUrl destination;
+        QUrl destination;
         bool isJustCopy = configuration.isJustCopy( track );
         if( isJustCopy )
             destination = m_umsCollection->organizedUrl( track );
@@ -86,7 +86,7 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
             destination = m_umsCollection->organizedUrl( track, Amarok::Components::
                 transcodingController()->format( configuration.encoder() )->fileExtension() );
         debug() << "destination is " << destination.toLocalFile();
-        QDir dir( destination.directory() );
+        QDir dir( destination.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash).path() );
         if( !dir.exists() && !dir.mkpath( "." ) )
         {
             error() << "could not create directory to copy into.";
@@ -99,12 +99,12 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
             transferJob->addTranscode( i.value(), destination );
     }
 
-    connect( transferJob, SIGNAL(sourceFileTransferDone(KUrl)),
-             this, SLOT(slotTrackTransferred(KUrl)) );
-    connect( transferJob, SIGNAL(fileTransferDone(KUrl)),
-             m_umsCollection, SLOT(slotTrackAdded(KUrl)) );
-    connect( transferJob, SIGNAL(finished(KJob*)),
-             this, SLOT(slotCopyOperationFinished()) );
+    connect( transferJob, &UmsTransferJob::sourceFileTransferDone,
+             this, &UmsCollectionLocation::slotTrackTransferred );
+    connect( transferJob, &UmsTransferJob::fileTransferDone,
+             m_umsCollection, &UmsCollection::slotTrackAdded );
+    connect( transferJob, &UmsTransferJob::finished,
+             this, &UmsCollectionLocation::slotCopyOperationFinished );
 
     QString loggerText = operationInProgressText( configuration, sources.count(), m_umsCollection->prettyName() );
     Amarok::Components::logger()->newProgressOperation( transferJob, loggerText, transferJob,
@@ -115,10 +115,10 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 void
 UmsCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources )
 {
-    KUrl::List sourceUrls;
+    QList<QUrl> sourceUrls;
     foreach( const Meta::TrackPtr track, sources )
     {
-        KUrl trackUrl = track->playableUrl();
+        QUrl trackUrl = track->playableUrl();
         m_sourceUrlToTrackMap.insert( trackUrl, track );
         sourceUrls.append( trackUrl );
     }
@@ -129,11 +129,11 @@ UmsCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources 
     KIO::DeleteJob *delJob = KIO::del( sourceUrls, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( delJob, loggerText, delJob, SLOT(kill()) );
 
-    connect( delJob, SIGNAL(finished(KJob*)), SLOT(slotRemoveOperationFinished()) );
+    connect( delJob, &KIO::DeleteJob::finished, this, &UmsCollectionLocation::slotRemoveOperationFinished );
 }
 
 void
-UmsCollectionLocation::slotTrackTransferred( const KUrl &sourceTrackUrl )
+UmsCollectionLocation::slotTrackTransferred( const QUrl &sourceTrackUrl )
 {
     Meta::TrackPtr sourceTrack = m_sourceUrlToTrackMap.value( sourceTrackUrl );
     if( !sourceTrack )
@@ -147,7 +147,7 @@ void UmsCollectionLocation::slotRemoveOperationFinished()
 {
     foreach( Meta::TrackPtr track, m_sourceUrlToTrackMap )
     {
-        KUrl trackUrl = track->playableUrl();
+        QUrl trackUrl = track->playableUrl();
         if( !trackUrl.isLocalFile() // just pretend it was deleted
             || !QFileInfo( trackUrl.toLocalFile() ).exists() )
         {
@@ -171,13 +171,13 @@ UmsTransferJob::UmsTransferJob( UmsCollectionLocation* location,
 }
 
 void
-UmsTransferJob::addCopy( const KUrl &from, const KUrl &to )
+UmsTransferJob::addCopy( const QUrl &from, const QUrl &to )
 {
     m_copyList << KUrlPair( from, to );
 }
 
 void
-UmsTransferJob::addTranscode( const KUrl &from, const KUrl &to )
+UmsTransferJob::addTranscode( const QUrl &from, const QUrl &to )
 {
     m_transcodeList << KUrlPair( from, to );
 }

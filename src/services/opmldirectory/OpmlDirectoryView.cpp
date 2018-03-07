@@ -20,7 +20,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KMenu>
+#include <QMenu>
 
 #include <QContextMenuEvent>
 
@@ -32,6 +32,8 @@ OpmlDirectoryView::OpmlDirectoryView( QWidget *parent ) :
 void
 OpmlDirectoryView::contextMenuEvent( QContextMenuEvent *event )
 {
+    DEBUG_BLOCK
+
     QModelIndex idx = indexAt( event->pos() );
 
     debug() << idx;
@@ -43,10 +45,11 @@ OpmlDirectoryView::contextMenuEvent( QContextMenuEvent *event )
 
     if( actions.isEmpty() )
     {
+        warning() << "no actions for index:" << idx;
         return;
     }
 
-    KMenu menu;
+    QMenu menu;
     foreach( QAction *action, actions )
     {
         if( action )

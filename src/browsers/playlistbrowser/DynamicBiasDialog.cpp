@@ -24,8 +24,8 @@
 #include "dynamic/Bias.h"
 #include "dynamic/BiasFactory.h"
 
-#include <KComboBox>
-#include <KLocale>
+#include <QComboBox>
+#include <KLocalizedString>
 
 #include <QDialogButtonBox>
 #include <QGridLayout>
@@ -47,7 +47,7 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
 
     // -- the bias selection combo
     QLabel* selectionLabel = new QLabel( i18nc("Bias selection label in bias view.", "Match Type:" ) );
-    m_biasSelection = new KComboBox();
+    m_biasSelection = new QComboBox();
     QHBoxLayout *selectionLayout = new QHBoxLayout();
     selectionLabel->setBuddy( m_biasSelection );
     selectionLayout->addWidget( selectionLabel );
@@ -70,14 +70,14 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
     factoriesChanged();
     biasReplaced( Dynamic::BiasPtr(), m_bias );
 
-    connect( Dynamic::BiasFactory::instance(), SIGNAL(changed()),
-             this, SLOT(factoriesChanged()) );
-    connect( m_biasSelection, SIGNAL(activated(int)),
-             this, SLOT(selectionChanged(int)) );
-    connect(buttonBox, SIGNAL(accepted()),
-            this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()),
-            this, SLOT(reject()));
+    connect( Dynamic::BiasFactory::instance(), &Dynamic::BiasFactory::changed,
+             this, &PlaylistBrowserNS::BiasDialog::factoriesChanged );
+    connect( m_biasSelection, QOverload<int>::of(&QComboBox::activated),
+             this, &PlaylistBrowserNS::BiasDialog::selectionChanged );
+    connect(buttonBox, &QDialogButtonBox::accepted,
+            this, &PlaylistBrowserNS::BiasDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected,
+            this, &PlaylistBrowserNS::BiasDialog::reject);
 }
 
 void PlaylistBrowserNS::BiasDialog::accept()
@@ -101,8 +101,8 @@ PlaylistBrowserNS::BiasDialog::factoriesChanged()
 {
     m_biasSelection->clear();
 
-    disconnect( Dynamic::BiasFactory::instance(), SIGNAL(changed()),
-                this, SLOT(factoriesChanged()) );
+    disconnect( Dynamic::BiasFactory::instance(), &Dynamic::BiasFactory::changed,
+                this, &PlaylistBrowserNS::BiasDialog::factoriesChanged );
 
     // -- add all the bias types to the list
     bool factoryFound = false;
@@ -131,8 +131,8 @@ PlaylistBrowserNS::BiasDialog::factoriesChanged()
                                          "The original bias name was %1.", m_bias->name() ) );
     }
 
-    connect( Dynamic::BiasFactory::instance(), SIGNAL(changed()),
-             this, SLOT(factoriesChanged()) );
+    connect( Dynamic::BiasFactory::instance(), &Dynamic::BiasFactory::changed,
+             this, &PlaylistBrowserNS::BiasDialog::factoriesChanged );
 }
 
 void
@@ -188,8 +188,8 @@ PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::
     if( !newBias )
         return;
 
-    connect( newBias.data(), SIGNAL(replaced(Dynamic::BiasPtr,Dynamic::BiasPtr)),
-             this, SLOT(biasReplaced(Dynamic::BiasPtr,Dynamic::BiasPtr)) );
+    connect( newBias.data(), &Dynamic::AbstractBias::replaced,
+             this, &PlaylistBrowserNS::BiasDialog::biasReplaced );
 
     m_biasWidget = newBias->widget( 0 );
     if( !m_biasWidget )
@@ -201,4 +201,3 @@ PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::
 
 
 
-#include "DynamicBiasDialog.moc"

@@ -1,38 +1,55 @@
-include( KDELibsDependencies ) # for KDE version
-
 add_subdirectory( applets )
-add_subdirectory( engines )
-add_subdirectory( containments )
 add_subdirectory( tools )
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
-                    ..
-                    ${CMAKE_CURRENT_BINARY_DIR}/..)
 
 ########### next target ###############
 
-set(amarokpud_LIB_SRCS
+set( amarokpud_LIB_SRCS
     popupdropper/libpud/PopupDropper.cpp
     popupdropper/libpud/PopupDropperItem.cpp
     popupdropper/libpud/PopupDropperView.cpp
 )
 
-QT4_AUTOMOC(
-    popupdropper/libpud/PopupDropper.cpp
-    popupdropper/libpud/PopupDropperItem.cpp
-    popupdropper/libpud/PopupDropperView.cpp
+add_library( amarokpud SHARED ${amarokpud_LIB_SRCS} )
+
+target_include_directories( amarokpud PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}/popupdropper/libpud
+    ${CMAKE_CURRENT_SOURCE_DIR}/popupdropper/libpud
 )
 
-ADD_LIBRARY(amarokpud SHARED ${amarokpud_LIB_SRCS})
-
-SET_TARGET_PROPERTIES( amarokpud PROPERTIES DEFINE_SYMBOL MAKE_POPUPDROPPER_LIB )
-
-target_link_libraries(amarokpud
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTGUI_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
+target_link_libraries( amarokpud
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::Svg
 )
 
-set_target_properties(amarokpud PROPERTIES VERSION 1.0.0 SOVERSION 1)
-install(TARGETS amarokpud ${INSTALL_TARGETS_DEFAULT_ARGS} )
+install( TARGETS amarokpud ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
+
+set(qml_plugin_qml_files
+    qml_plugin/qmldir
+    qml_plugin/Applet.qml
+    qml_plugin/AppletHeader.qml
+)
+
+set(qml_plugin_SRCS
+    qml_plugin/src/RatingItem.cpp
+    qml_plugin/src/Plugin.cpp
+    qml_plugin/src/PixmapItem.cpp
+)
+
+add_library(qml_plugin SHARED ${qml_plugin_SRCS})
+
+target_link_libraries(qml_plugin
+    amarokcore
+    Qt5::Quick
+    KF5::QuickAddons
+    KF5::WidgetsAddons
+)
+
+install( TARGETS qml_plugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/qml )
+
+install( FILES ${qml_plugin_qml_files} DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/qml )
+
+kpackage_install_package( context_qml_package org.kde.amarok.context genericqml )

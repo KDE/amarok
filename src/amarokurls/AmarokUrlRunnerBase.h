@@ -19,7 +19,7 @@
 
 #include "AmarokUrl.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QString>
 
@@ -34,7 +34,7 @@ public:
     virtual QString command() const = 0;
     virtual QString prettyCommand() const = 0;
     virtual bool run( AmarokUrl url ) = 0;
-    virtual KIcon icon() const = 0;
+    virtual QIcon icon() const = 0;
 
 protected:
     virtual ~AmarokUrlRunnerBase() {};

@@ -26,7 +26,7 @@ namespace Playlists
 
     class MediaDevicePlaylist;
 
-    typedef KSharedPtr<MediaDevicePlaylist> MediaDevicePlaylistPtr;
+    typedef AmarokSharedPointer<MediaDevicePlaylist> MediaDevicePlaylistPtr;
     typedef QList<MediaDevicePlaylistPtr> MediaDevicePlaylistList;
 
     class MediaDevicePlaylist : public Playlist
@@ -37,7 +37,7 @@ namespace Playlists
 
             // Playlist Functions
             virtual QString name() const { return m_name; }
-            virtual KUrl uidUrl() const { return KUrl(); }
+            virtual QUrl uidUrl() const { return QUrl(); }
 
             /**override showing just the filename */
             virtual void setName( const QString &name );

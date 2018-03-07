@@ -23,7 +23,6 @@
 #include "core/collections/MetaQueryMaker.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core/support/SmartPointerList.h"
 #include "core-impl/meta/file/FileTrackProvider.h"
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
@@ -36,6 +35,7 @@
 #include <QPair>
 #include <QTimer>
 #include <QReadWriteLock>
+
 
 typedef QPair<Collections::Collection*, CollectionManager::CollectionStatus> CollectionPair;
 
@@ -98,7 +98,9 @@ CollectionManager::~CollectionManager()
     {
         QWriteLocker locker( &d->lock );
 
-        d->collections.clear();
+        while (!d->collections.isEmpty() )
+            delete d->collections.takeFirst().first;
+
         d->trackProviders.clear();
         delete d->timecodeTrackProvider;
         delete d->fileTrackProvider;
@@ -146,8 +148,8 @@ CollectionManager::setFactories( const QList<Plugins::PluginFactory*> &factories
         if( !factory )
             continue;
 
-        disconnect( factory, SIGNAL(newCollection(Collections::Collection*)),
-                    this, SLOT(slotNewCollection(Collections::Collection*)) );
+        disconnect( factory, &CollectionFactory::newCollection,
+                    this, &CollectionManager::slotNewCollection );
         {
             QWriteLocker locker( &d->lock );
             d->factories.removeAll( factory );
@@ -161,15 +163,13 @@ CollectionManager::setFactories( const QList<Plugins::PluginFactory*> &factories
         if( !factory )
             continue;
 
-        connect( factory, SIGNAL(newCollection(Collections::Collection*)),
-                 this, SLOT(slotNewCollection(Collections::Collection*)) );
+        connect( factory, &CollectionFactory::newCollection,
+                 this, &CollectionManager::slotNewCollection );
         {
             QWriteLocker locker( &d->lock );
             d->factories.append( factory );
         }
     }
-
-    d->factories = factories;
 }
 
 
@@ -180,7 +180,7 @@ CollectionManager::startFullScan()
 
     foreach( const CollectionPair &pair, d->collections )
     {
-        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>() );
         if( csc )
             csc->startFullScan();
     }
@@ -193,7 +193,7 @@ CollectionManager::startIncrementalScan( const QString &directory )
 
     foreach( const CollectionPair &pair, d->collections )
     {
-        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>() );
         if( csc )
             csc->startIncrementalScan( directory );
     }
@@ -206,7 +206,7 @@ CollectionManager::stopScan()
 
     foreach( const CollectionPair &pair, d->collections )
     {
-        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>() );
         if( csc )
             csc->stopScan();
     }
@@ -258,7 +258,7 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
 
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "CollectionStatus" ) );
-    const QString &value = KGlobal::config()->group( "CollectionManager" ).readEntry( newCollection->collectionId() );
+    const QString &value = Amarok::config( "CollectionManager" ).readEntry( newCollection->collectionId() );
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
     CollectionStatus status;
     enumValue == -1 ? status = CollectionEnabled : status = (CollectionStatus) enumValue;
@@ -277,15 +277,15 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
             d->collections.append( pair );
             d->trackProviders.append( newCollection );
         }
-        connect( newCollection, SIGNAL(remove()), SLOT(slotRemoveCollection()), Qt::QueuedConnection );
-        connect( newCollection, SIGNAL(updated()), SLOT(slotCollectionChanged()), Qt::QueuedConnection );
+        connect( newCollection, &Collections::Collection::remove, this, &CollectionManager::slotRemoveCollection, Qt::QueuedConnection );
+        connect( newCollection, &Collections::Collection::updated, this, &CollectionManager::slotCollectionChanged, Qt::QueuedConnection );
 
         debug() << "new Collection " << newCollection->collectionId();
     }
 
     if( status & CollectionViewable )
     {
-        emit collectionAdded( newCollection );
+//         emit collectionAdded( newCollection );
         emit collectionAdded( newCollection, status );
     }
 }
@@ -306,7 +306,7 @@ CollectionManager::slotRemoveCollection()
         }
 
         emit collectionRemoved( collection->collectionId() );
-        QTimer::singleShot( 500, collection, SLOT(deleteLater()) ); // give the tree some time to update itself until we really delete the collection pointers.
+        QTimer::singleShot( 500, collection, &QObject::deleteLater ); // give the tree some time to update itself until we really delete the collection pointers.
     }
 }
 
@@ -349,7 +349,7 @@ CollectionManager::primaryCollection() const
 }
 
 Meta::TrackPtr
-CollectionManager::trackForUrl( const KUrl &url )
+CollectionManager::trackForUrl( const QUrl &url )
 {
     QReadLocker locker( &d->lock );
 
@@ -372,7 +372,7 @@ CollectionManager::trackForUrl( const KUrl &url )
     // TODO: create specific TrackProviders for these:
     static const QSet<QString> remoteProtocols = QSet<QString>()
             << "http" << "https" << "mms" << "smb"; // consider unifying with TrackLoader::tracksLoaded()
-    if( remoteProtocols.contains( url.protocol() ) )
+    if( remoteProtocols.contains( url.scheme() ) )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
     return Meta::TrackPtr( 0 );

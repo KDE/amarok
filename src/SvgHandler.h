@@ -22,16 +22,16 @@
 #include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
 
-#include <QReadWriteLock>
-#include <QSvgRenderer>
-#include <KImageCache>
-
 #include <QHash>
 #include <QPixmap>
+#include <QReadWriteLock>
 #include <QString>
 
-class SvgHandler;
+#include <KImageCache>
+
 class QStyleOptionSlider;
+class QSvgRenderer;
+class SvgHandler;
 
 namespace The {
     AMAROK_EXPORT SvgHandler* svgHandler();
@@ -64,6 +64,18 @@ class AMAROK_EXPORT SvgHandler : public QObject
         * @return The svg element/file rendered into a pixmap
         */
         QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false, const qreal opacity = 1.0 );
+
+        /**
+         * Another overloaded function that loads a svg file from an url. This function is usable from QML.
+         * @param keyname the name of the key to save in the cache
+         * @param width Width of the resulting pixmap
+         * @param height Height of the resulting pixmap
+         * @param element The theme element to render ( if none the entire svg is rendered )
+         * @param skipCache If true, the pixmap will always get rendered and never fetched from the cache.
+         * @param opacity The opacity used for rendering. Range 0.0 to 1.0.
+         * @return The svg element/file rendered into a pixmap
+         */
+        Q_INVOKABLE QPixmap renderSvg( const QUrl& url, const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false, const qreal opacity = 1.0 );
         
         /**
          * Yet another overloaded function. This one renders the svg element and adds half a divider element to the top and the bottom
@@ -105,12 +117,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
          * The background part before the knob, is painted in a different color than the
          * part after (and under) the knob.
          * @param p The painter to use.
-         * @param x The x position to begin painting at.
-         * @param y The y position to begin painting at.
-         * @param width The width of the slider to paint.
-         * @param height The height of the slider. The background part does not scale in height, it will always be a relatively thin line, but the knob and end markers do.
          * @param percentage The percentange of the slider that the knob is positioned at.
-         * @param active Specifies whether the slider should be painted "active" using the current palettes active colors, to specify that it currently has mouse focus or hover.
          */
         void paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qreal percentage, bool paintMoodbar  = false );
 
@@ -136,19 +143,19 @@ class AMAROK_EXPORT SvgHandler : public QObject
          */
         void setThemeFile( const QString  & themeFile );
 
-    public slots:
+    public Q_SLOTS:
         void reTint();
 
-    signals:
+    Q_SIGNALS:
         void retinted();
 
-    private slots:
+    private Q_SLOTS:
         void discardCache();
 
     private:
         SvgHandler( QObject* parent = 0 );
 
-        bool loadSvg( const QString& name );
+        bool loadSvg( const QString& name, bool forceCustomTheme = false );
 
         QPixmap sliderHandle( const QColor &color, bool pressed, int size );
         QColor calcLightColor(const QColor &color) const;

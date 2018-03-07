@@ -22,7 +22,7 @@
 #include "network/NetworkAccessManagerProxy.h"
 #include "SimilarArtist.h"
 
-#include <KUrl>
+#include <QUrl>
 #include <KDateTime>
 #include <Plasma/ScrollWidget>
 
@@ -93,7 +93,7 @@ public:
 
     bool eventFilter( QObject *obj, QEvent *event );
 
-signals:
+Q_SIGNALS:
     /**
      * Show similar artists to the artist associated with this widget
      */
@@ -220,23 +220,23 @@ private:
 
     const SimilarArtistPtr m_artist;
 
-private slots:
+private Q_SLOTS:
     /**
      * Handle artist photo retrieved from Last.fm
      */
-    void photoFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void photoFetched( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
      * Parse the xml fetched on the lastFM API for the artist info.
      * Launched when the download of the data are finished and for each similarArtists.
      */
-    void parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void parseInfo( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
      * Parse the xml fetched on the lastFM API for the similarArtist most known track.
      * Launched when the download of the data are finished and for each similarArtists.
      */
-    void parseTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void parseTopTrack( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /**
      * Open an URL
@@ -290,7 +290,7 @@ public:
 
     QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
 
-signals:
+Q_SIGNALS:
     void showSimilarArtists( const QString &artist );
     void showBio( const QString &artist );
 

@@ -21,14 +21,9 @@
 
 using namespace StatSyncing;
 
-AMAROK_EXPORT_IMPORTER_PLUGIN( amarok, AmarokManager )
 
-AmarokManager::AmarokManager( QObject *parent, const QVariantList &args )
-    : ImporterManager( parent, args )
-{
-}
-
-AmarokManager::~AmarokManager()
+AmarokManager::AmarokManager()
+    : ImporterManager()
 {
 }
 
@@ -36,12 +31,6 @@ QString
 AmarokManager::type() const
 {
     return "AmarokImporter";
-}
-
-KPluginInfo
-AmarokManager::pluginInfo() const
-{
-    return KPluginInfo( "amarok_importer-amarok.desktop", "services" );
 }
 
 QString
@@ -56,10 +45,10 @@ AmarokManager::description() const
     return i18n( "Amarok 2.x Statistics Importer" );
 }
 
-KIcon
+QIcon
 AmarokManager::icon() const
 {
-    return KIcon( "amarok" );
+    return QIcon::fromTheme( "amarok" );
 }
 
 ProviderConfigWidget*
@@ -71,5 +60,5 @@ AmarokManager::configWidget( const QVariantMap &config )
 ImporterProviderPtr
 AmarokManager::newInstance( const QVariantMap &config )
 {
-    return ProviderPtr( new AmarokProvider( config, this ) );
+    return ImporterProviderPtr( new AmarokProvider( config, this ) );
 }

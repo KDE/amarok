@@ -21,6 +21,7 @@
 
 #include <QStringList>
 
+
 class KArchiveDirectory;
 class KArchiveFile;
 class ScriptSelector;
@@ -35,17 +36,17 @@ class ScriptsConfig : public ConfigDialogBase
     Q_OBJECT
 
 public:
-    ScriptsConfig( QWidget *parent );
+    ScriptsConfig( Amarok2ConfigDialog *parent );
     virtual ~ScriptsConfig();
 
-    virtual void updateSettings();
-    virtual bool hasChanged();
-    virtual bool isDefault();
+    void updateSettings() Q_DECL_OVERRIDE;
+    bool hasChanged() Q_DECL_OVERRIDE;
+    bool isDefault() Q_DECL_OVERRIDE;
 
-public slots:
+public Q_SLOTS:
     void slotConfigChanged( bool changed );
 
-private slots:
+private Q_SLOTS:
     void slotManageScripts();
     void installLocalScript();
     void slotReloadScriptSelector();

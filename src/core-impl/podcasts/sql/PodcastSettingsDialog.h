@@ -19,13 +19,13 @@
 
 #include "SqlPodcastMeta.h"
 
-#include <KDialog>
+#include <KPageDialog>
 
 namespace Ui {
     class PodcastSettingsBase;
 }
 
-class PodcastSettingsDialog : public KDialog
+class PodcastSettingsDialog : public KPageDialog
 {
     Q_OBJECT
 
@@ -37,7 +37,7 @@ class PodcastSettingsDialog : public KDialog
     protected:
         bool hasChanged();
 
-    protected slots:
+    protected Q_SLOTS:
         void checkModified();
         void slotApply();
         void slotFeedUrlClicked( const QString &url );

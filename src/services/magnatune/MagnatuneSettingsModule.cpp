@@ -17,35 +17,30 @@
  ****************************************************************************************/
 
 #include "MagnatuneSettingsModule.h"
-
 #include "MagnatuneMeta.h"
-
 #include "ui_MagnatuneConfigWidget.h"
 
-#include <kgenericfactory.h>
+#include <KPluginFactory>
 
 
-
-K_PLUGIN_FACTORY( MagnatuneSettingsFactory, registerPlugin<MagnatuneSettingsModule>(); )
-K_EXPORT_PLUGIN( MagnatuneSettingsFactory( "kcm_amarok_magnatunestore" ) )
+K_PLUGIN_FACTORY_WITH_JSON( MagnatuneSettingsModuleFactory, "amarok_service_magnatunestore_config.json", registerPlugin<MagnatuneSettingsModule>(); )
 
 MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVariantList &args )
-    : KCModule( MagnatuneSettingsFactory::componentData(), parent, args )
+    : KCModule( parent, args )
 {
     m_configDialog = new Ui::MagnatuneConfigWidget;
     m_configDialog->setupUi( this );
 
     m_configDialog->passwordEdit->setEchoMode( QLineEdit::Password );
-    connect ( m_configDialog->usernameEdit, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
-    connect ( m_configDialog->passwordEdit, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
-    connect ( m_configDialog->emailEdit, SIGNAL(textChanged(QString)), this, SLOT(settingsChanged()) );
-    connect ( m_configDialog->typeComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(settingsChanged()) );
-    connect ( m_configDialog->isMemberCheckbox, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
-    connect ( m_configDialog->streamTypeComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(settingsChanged()) );
-    connect ( m_configDialog->autoUpdateDatabase, SIGNAL(stateChanged(int)), this, SLOT(settingsChanged()) );
+    connect ( m_configDialog->usernameEdit, &QLineEdit::textChanged, this, &MagnatuneSettingsModule::settingsChanged );
+    connect ( m_configDialog->passwordEdit, &QLineEdit::textChanged, this, &MagnatuneSettingsModule::settingsChanged );
+    connect ( m_configDialog->emailEdit, &QLineEdit::textChanged, this, &MagnatuneSettingsModule::settingsChanged );
+    connect ( m_configDialog->typeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MagnatuneSettingsModule::settingsChanged );
+    connect ( m_configDialog->isMemberCheckbox, &QCheckBox::stateChanged, this, &MagnatuneSettingsModule::settingsChanged );
+    connect ( m_configDialog->streamTypeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MagnatuneSettingsModule::settingsChanged );
+    connect ( m_configDialog->autoUpdateDatabase, &QCheckBox::stateChanged, this, &MagnatuneSettingsModule::settingsChanged );
 
     load();
-
 }
 
 
@@ -76,7 +71,6 @@ void MagnatuneSettingsModule::save()
 
     m_config.save();
     KCModule::save();
-
 }
 
 void MagnatuneSettingsModule::load()
@@ -112,4 +106,4 @@ void MagnatuneSettingsModule::settingsChanged()
     emit changed( true );
 }
 
-
+#include <MagnatuneSettingsModule.moc>

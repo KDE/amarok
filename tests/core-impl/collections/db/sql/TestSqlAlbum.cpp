@@ -17,6 +17,7 @@
 
 #include "TestSqlAlbum.h"
 
+#include "amarokconfig.h"
 #include "core/meta/Meta.h"
 #include "core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.h"
 #include "SqlCollection.h"
@@ -24,13 +25,12 @@
 
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
+#include "covermanager/CoverFetcher.h"
 
 #include <QFile>
 #include <QImage>
 
-#include <qtest_kde.h>
-
-QTEST_KDEMAIN_CORE( TestSqlAlbum )
+QTEST_MAIN( TestSqlAlbum )
 
 TestSqlAlbum::TestSqlAlbum()
     : QObject()
@@ -46,9 +46,12 @@ TestSqlAlbum::~TestSqlAlbum()
 void
 TestSqlAlbum::initTestCase()
 {
-    m_tmpDir = new KTempDir();
-    m_storage = new MySqlEmbeddedStorage();
-    QVERIFY( m_storage->init( m_tmpDir->name() ) );
+    AmarokConfig::instance("amarokrc");
+
+    m_tmpDir = new QTemporaryDir();
+    QVERIFY( m_tmpDir->isValid() );
+    m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
+    QVERIFY( m_storage->init( m_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
 }
@@ -57,7 +60,6 @@ void
 TestSqlAlbum::cleanupTestCase()
 {
     delete m_collection;
-    //m_storage is deleted by SqlCollection
     delete m_tmpDir;
 }
 
@@ -79,6 +81,8 @@ TestSqlAlbum::init()
     m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (2, -1, './IDoNotExistAsWell.mp3', 1, 'uid://2');" );
     m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (3, -1, './MeNeither.mp3', 1, 'uid:/3');" );
     m_storage->query( "INSERT INTO urls(id, deviceid, rpath, directory, uniqueid) VALUES (4, -1, './MeNeitherToo.mp3', 1, 'uid:/4');" );
+
+    CoverFetcher::destroy();
 
     m_collection->registry()->emptyCache();
 }
@@ -215,13 +219,16 @@ TestSqlAlbum::testCapabilities()
 void
 TestSqlAlbum::testSetCompilationWithoutExistingCompilation()
 {
+    m_collection->registry()->emptyCache();
+
     m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'album1',1);" );
     m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
                       "VALUES (1,1,'track1',1,1,1,1,1 );" );
 
     Meta::TrackPtr track = m_collection->registry()->getTrack( 1 );
+//     auto newAlbum = m_collection->registry()->getAlbum(1);
     Meta::AlbumPtr album = track->album();
-    Meta::SqlAlbum *sqlAlbum = static_cast<Meta::SqlAlbum*>( album.data() );
+    auto sqlAlbum = AmarokSharedPointer<Meta::SqlAlbum>::staticCast( album );
     QVERIFY( album->hasAlbumArtist() );
     QVERIFY( !album->isCompilation() );
     QCOMPARE( sqlAlbum->id(), 1 );
@@ -418,4 +425,3 @@ TestSqlAlbum::testUnsetCompilationWithMultipleArtists()
     QVERIFY( sqlAlbum->id() != 1 ); // the albums should be a new one
 }
 
-#include "TestSqlAlbum.moc"

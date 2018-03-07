@@ -21,8 +21,6 @@
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/interfaces/MetaCapability.h"
 
-#include <qtest_kde.h>
-
 #include <QString>
 
 /**
@@ -73,7 +71,7 @@ QList<QAction*> MetaCapabilityMock::actionsList;
 Capabilities::ActionsCapability *MetaCapabilityMock::actionsCapability = new Capabilities::ActionsCapability( actionsList );
 Capabilities::BookmarkThisCapability *MetaCapabilityMock::bookmarkThisCapability= new Capabilities::BookmarkThisCapability( action );
 
-QTEST_KDEMAIN_CORE( TestMetaCapability )
+QTEST_MAIN( TestMetaCapability )
 
 TestMetaCapability::TestMetaCapability()
 {

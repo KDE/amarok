@@ -25,25 +25,26 @@
 #include "MainWindow.h"
 #include "widgets/BreadcrumbItemButton.h"
 
-#include <KLocale>
-
+#include <QBoxLayout>
 #include <QDir>
 #include <QMenu>
 #include <QResizeEvent>
+#include <QTimer>
+
+#include <KLocalizedString>
+
 
 BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
-    : KHBox( parent)
+    : BoxWidget( false, parent)
     , m_rootList( 0 )
     , m_childMenuButton( 0 )
 {
     setFixedHeight( 28 );
     setContentsMargins( 3, 0, 3, 0 );
-    setSpacing( 0 );
 
-    m_breadcrumbArea = new KHBox( this );
+    m_breadcrumbArea = new BoxWidget( false, this );
     m_breadcrumbArea->setContentsMargins( 0, 0, 0, 0 );
-    m_breadcrumbArea->setSpacing( 0 );
-    setStretchFactor( m_breadcrumbArea, 10 );
+    static_cast<QBoxLayout*>( layout() )->setStretchFactor( m_breadcrumbArea, 10 );
 
     new BreadcrumbUrlMenuButton( "navigate", this );
 
@@ -76,7 +77,7 @@ BrowserBreadcrumbWidget::setRootList( BrowserCategoryList * rootList )
     m_rootList = rootList;
 
     //update the breadcrumbs every time the view changes.
-    connect( m_rootList, SIGNAL(viewChanged()), this, SLOT(updateBreadcrumbs()) );
+    connect( m_rootList, &BrowserCategoryList::viewChanged, this, &BrowserBreadcrumbWidget::updateBreadcrumbs );
 
     updateBreadcrumbs();
 }
@@ -88,10 +89,10 @@ BrowserBreadcrumbWidget::updateBreadcrumbs()
         return;
 
     clearCrumbs();
-    m_spacer->setParent( 0 );
+    m_spacer->setParent( this );
 
     addLevel( m_rootList );
-    m_spacer->setParent( m_breadcrumbArea );
+    m_breadcrumbArea->layout()->addWidget( m_spacer );
 
     showAsNeeded();
 }
@@ -159,7 +160,7 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList *list )
                 BrowserCategory * siblingCategory = childMap.value( siblingName );
 
                 QAction * action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
-                connect( action, SIGNAL(triggered()), childMap.value( siblingName ), SLOT(activate()) );
+                connect( action, &QAction::triggered, childMap.value( siblingName ), &BrowserCategory::activate );
 
             }
 
@@ -178,15 +179,15 @@ void
 BrowserBreadcrumbWidget::addBreadCrumbItem( BrowserBreadcrumbItem *item )
 {
     item->hide();
-    item->setParent( 0 ); // may be already shown, we want it to be last, so reparent
-    item->setParent( m_breadcrumbArea );
+    item->setParent( this ); // may be already shown, we want it to be last, so reparent
+    m_breadcrumbArea->layout()->addWidget( item );
 }
 
 void BrowserBreadcrumbWidget::resizeEvent( QResizeEvent *event )
 {
     Q_UNUSED( event )
     // we need to postpone the call, because hideAsNeeded() itself may trigger resizeEvent
-    QTimer::singleShot( 0 , this, SLOT(showAsNeeded()) );
+    QTimer::singleShot( 0 , this, &BrowserBreadcrumbWidget::showAsNeeded );
 }
 
 void BrowserBreadcrumbWidget::showAsNeeded()
@@ -211,6 +212,9 @@ void BrowserBreadcrumbWidget::showAsNeeded()
         if( it.next()->parent() != m_breadcrumbArea )
             it.remove();
     }
+
+    if( allItems.isEmpty() )
+        return;
 
     int sizeOfFirst = allItems.first()->nominalWidth();
     int sizeOfLast = allItems.last()->nominalWidth();
@@ -237,4 +241,3 @@ void BrowserBreadcrumbWidget::showAsNeeded()
     }
 }
 
-#include "BrowserBreadcrumbWidget.moc"

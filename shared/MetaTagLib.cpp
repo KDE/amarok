@@ -39,8 +39,8 @@
 #include <QCryptographicHash>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QString>
 #include <QTime>
-#include <QDebug>
 
 #include "FileTypeResolver.h"
 #include "MetaReplayGain.h"
@@ -113,13 +113,13 @@ Meta::Tag::addRandomness( QCryptographicHash *md5 )
 {
     //md5 has size of file already added for some little extra randomness for the hash
     qsrand( QTime::currentTime().msec() );
-    md5->addData( QString::number( qrand() ).toAscii() );
-    md5->addData( QString::number( qrand() ).toAscii() );
-    md5->addData( QString::number( qrand() ).toAscii() );
-    md5->addData( QString::number( qrand() ).toAscii() );
-    md5->addData( QString::number( qrand() ).toAscii() );
-    md5->addData( QString::number( qrand() ).toAscii() );
-    md5->addData( QString::number( qrand() ).toAscii() );
+    md5->addData( QString::number( qrand() ).toLatin1() );
+    md5->addData( QString::number( qrand() ).toLatin1() );
+    md5->addData( QString::number( qrand() ).toLatin1() );
+    md5->addData( QString::number( qrand() ).toLatin1() );
+    md5->addData( QString::number( qrand() ).toLatin1() );
+    md5->addData( QString::number( qrand() ).toLatin1() );
+    md5->addData( QString::number( qrand() ).toLatin1() );
 }
 
 TagLib::ByteVector

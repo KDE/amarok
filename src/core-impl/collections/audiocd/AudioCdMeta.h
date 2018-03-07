@@ -34,22 +34,22 @@ class AudioCdGenre;
 class AudioCdComposer;
 class AudioCdYear;
 
-typedef KSharedPtr<AudioCdTrack> AudioCdTrackPtr;
-typedef KSharedPtr<AudioCdArtist> AudioCdArtistPtr;
-typedef KSharedPtr<AudioCdAlbum> AudioCdAlbumPtr;
-typedef KSharedPtr<AudioCdGenre> AudioCdGenrePtr;
-typedef KSharedPtr<AudioCdComposer> AudioCdComposerPtr;
-typedef KSharedPtr<AudioCdYear> AudioCdYearPtr;
+typedef AmarokSharedPointer<AudioCdTrack> AudioCdTrackPtr;
+typedef AmarokSharedPointer<AudioCdArtist> AudioCdArtistPtr;
+typedef AmarokSharedPointer<AudioCdAlbum> AudioCdAlbumPtr;
+typedef AmarokSharedPointer<AudioCdGenre> AudioCdGenrePtr;
+typedef AmarokSharedPointer<AudioCdComposer> AudioCdComposerPtr;
+typedef AmarokSharedPointer<AudioCdYear> AudioCdYearPtr;
 
 class AudioCdTrack : public Meta::Track
 {
     public:
-        AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const KUrl &url );
+        AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const QUrl &url );
         virtual ~AudioCdTrack();
 
         virtual QString name() const;
 
-        virtual KUrl playableUrl() const;
+        virtual QUrl playableUrl() const;
         virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
         virtual QString notPlayableReason() const;
@@ -108,7 +108,7 @@ class AudioCdTrack : public Meta::Track
         QString m_name;
         qint64 m_length;
         int m_trackNumber;
-        KUrl m_playableUrl;
+        QUrl m_playableUrl;
         QString m_fileNameBase;
 };
 

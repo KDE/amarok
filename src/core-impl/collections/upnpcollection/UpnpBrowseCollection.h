@@ -25,10 +25,11 @@
 #include <QHash>
 #include <QHostInfo>
 #include <QPointer>
+#include <QQueue>
 #include <QtGlobal>
 #include <QSharedPointer>
 
-#include <KIcon>
+#include <QIcon>
 #include <KDirNotify>
 #include <kio/udsentry.h>
 
@@ -57,21 +58,21 @@ class UpnpBrowseCollection : public UpnpCollectionBase
     virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
     virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-    Meta::TrackPtr trackForUrl( const KUrl &url );
-    virtual KIcon icon() const { return KIcon("network-server"); }
+    Meta::TrackPtr trackForUrl( const QUrl &url );
+    virtual QIcon icon() const { return QIcon::fromTheme("network-server"); }
 
     QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
-  signals:
+  Q_SIGNALS:
     void incrementProgress();
     void totalSteps( int );
     void endProgressOperation( QObject * );
 
-  public slots:
+  public Q_SLOTS:
     virtual void startFullScan();
     virtual void startIncrementalScan( const QString &directory = QString() );
 
-  private slots:
+  private Q_SLOTS:
     void entries( KIO::Job *, const KIO::UDSEntryList& );
     void done( KJob * );
     void createTrack( const KIO::UDSEntry &, const QString &baseUrl );

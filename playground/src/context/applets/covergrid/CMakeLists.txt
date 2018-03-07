@@ -5,20 +5,20 @@ set(covergrid_SRCS
     AlbumItem.cpp
 )
 
-include_directories( ../../..
-                    ../..
-                    ${KDE4_INCLUDE_DIR}/amarok # this way we don't need to prefix it with amarok/ (and it compiles this way too :)
-)
+#include_directories( ../../..
+#                    ../..
+#                    ${KDE4_INCLUDE_DIR}/amarok # this way we don't need to prefix it with amarok/ (and it compiles this way too :)
+#)
 
-kde4_add_ui_files( covergrid_SRCS CoverGridSettings.ui )
-kde4_add_plugin(amarok_context_applet_covergrid ${covergrid_SRCS})
+ki18n_wrap_ui( covergrid_SRCS CoverGridSettings.ui )
+add_library(amarok_context_applet_covergrid MODULE ${covergrid_SRCS})
 
 
 target_link_libraries(amarok_context_applet_covergrid
     amarokcore
     amaroklib
-    ${KDE4_PLASMA_LIBS} 
-    ${KDE4_KIO_LIBS}
+    KF5::Plasma 
+    KF5::KIOCore
 )
 
 install(TARGETS amarok_context_applet_covergrid DESTINATION ${PLUGIN_INSTALL_DIR})

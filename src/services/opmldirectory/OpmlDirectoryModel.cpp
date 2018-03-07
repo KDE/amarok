@@ -27,22 +27,20 @@
 
 #include "ui_AddOpmlWidget.h"
 
-#include <ThreadWeaver/Weaver>
-
-#include <KDialog>
-
 #include <QAction>
+#include <QDialog>
+#include <QDialogButtonBox>
 
-OpmlDirectoryModel::OpmlDirectoryModel( KUrl outlineUrl, QObject *parent )
+OpmlDirectoryModel::OpmlDirectoryModel( QUrl outlineUrl, QObject *parent )
     : QAbstractItemModel( parent )
     , m_rootOpmlUrl( outlineUrl )
 {
     //fetchMore will be called by the view
-    m_addOpmlAction = new QAction( KIcon( "list-add" ), i18n( "Add OPML" ), this );
-    connect( m_addOpmlAction, SIGNAL(triggered()), SLOT(slotAddOpmlAction()) );
+    m_addOpmlAction = new QAction( QIcon::fromTheme( "list-add" ), i18n( "Add OPML" ), this );
+    connect( m_addOpmlAction, &QAction::triggered, this, &OpmlDirectoryModel::slotAddOpmlAction );
 
-    m_addFolderAction = new QAction( KIcon( "folder-add" ), i18n( "Add Folder"), this );
-    connect( m_addFolderAction, SIGNAL(triggered()), SLOT(slotAddFolderAction()) );
+    m_addFolderAction = new QAction( QIcon::fromTheme( "folder-add" ), i18n( "Add Folder"), this );
+    connect( m_addFolderAction, &QAction::triggered, this, &OpmlDirectoryModel::slotAddFolderAction );
 }
 
 OpmlDirectoryModel::~OpmlDirectoryModel()
@@ -89,7 +87,7 @@ OpmlDirectoryModel::parent( const QModelIndex &idx ) const
 {
     if( !idx.isValid() )
         return QModelIndex();
-    debug() << idx;
+//     debug() << idx;
     OpmlOutline *outline = static_cast<OpmlOutline *>( idx.internalPointer() );
     if( outline->isRootItem() )
         return QModelIndex();
@@ -174,6 +172,7 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
                 m_addFolderAction->setData( QVariant::fromValue( idx ) );
                 return QVariant::fromValue( QActionList() << m_addOpmlAction << m_addFolderAction );
             }
+            debug() << outline->opmlNodeType();
             return QVariant();
         default:
             return QVariant();
@@ -237,7 +236,7 @@ OpmlDirectoryModel::removeRows( int row, int count, const QModelIndex &parent )
 }
 
 void
-OpmlDirectoryModel::saveOpml( const KUrl &saveLocation )
+OpmlDirectoryModel::saveOpml( const QUrl &saveLocation )
 {
     if( !saveLocation.isLocalFile() )
     {
@@ -257,7 +256,7 @@ OpmlDirectoryModel::saveOpml( const KUrl &saveLocation )
     //TODO: set header data such as date
 
     OpmlWriter *opmlWriter = new OpmlWriter( m_rootOutlines, headerData, opmlFile );
-    connect( opmlWriter, SIGNAL(result(int)), SLOT(slotOpmlWriterDone(int)) );
+    connect( opmlWriter, &OpmlWriter::result, this, &OpmlDirectoryModel::slotOpmlWriterDone );
     opmlWriter->run();
 }
 
@@ -289,14 +288,18 @@ OpmlDirectoryModel::slotAddOpmlAction()
         parentIdx = action->data().value<QModelIndex>();
     }
 
-    KDialog *dialog = new KDialog( The::mainWindow() );
-    dialog->setCaption( i18nc( "Heading of Add OPML dialog", "Add OPML" ) );
-    dialog->setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialog *dialog = new QDialog( The::mainWindow() );
+    dialog->setLayout( new QVBoxLayout );
+    dialog->setWindowTitle( i18nc( "Heading of Add OPML dialog", "Add OPML" ) );
     QWidget *opmlAddWidget = new QWidget( dialog );
+    dialog->layout()->addWidget( opmlAddWidget );
     Ui::AddOpmlWidget widget;
     widget.setupUi( opmlAddWidget );
     widget.urlEdit->setMode( KFile::File );
-    dialog->setMainWidget( opmlAddWidget );
+    auto buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dialog );
+    dialog->layout()->addWidget( buttonBox );
+    connect( buttonBox, &QDialogButtonBox::accepted, dialog, &QDialog::accept );
+    connect( buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject );
 
     if( dialog->exec() != QDialog::Accepted )
         return;
@@ -311,7 +314,7 @@ OpmlDirectoryModel::slotAddOpmlAction()
         outline->addAttribute( "text", title );
 
     //Folder icon with down-arrow emblem
-    m_imageMap.insert( outline, KIcon( "folder", 0, QStringList( "go-down" ) ).pixmap( 24, 24 ) );
+    m_imageMap.insert( outline, QIcon::fromTheme( "folder-download", QIcon::fromTheme( "go-down" ) ).pixmap( 24, 24 ) );
 
     QModelIndex newIdx = addOutlineToModel( parentIdx, outline );
     //TODO: force the view to expand the folder (parentIdx) so the new node is shown
@@ -337,7 +340,7 @@ OpmlDirectoryModel::slotAddFolderAction()
 
     OpmlOutline *outline = new OpmlOutline();
     outline->addAttribute( "text", i18n( "New Folder" ) );
-    m_imageMap.insert( outline, KIcon( "folder" ).pixmap( 24, 24 ) );
+    m_imageMap.insert( outline, QIcon::fromTheme( "folder" ).pixmap( 24, 24 ) );
 
     addOutlineToModel( parentIdx, outline );
     //TODO: trigger edit of the new folder
@@ -369,7 +372,7 @@ OpmlDirectoryModel::fetchMore( const QModelIndex &parent )
         error() << "trying to start second fetch job for same item";
         return;
     }
-    KUrl urlToFetch;
+    QUrl urlToFetch;
     if( !parent.isValid() )
     {
         urlToFetch = m_rootOpmlUrl;
@@ -381,17 +384,16 @@ OpmlDirectoryModel::fetchMore( const QModelIndex &parent )
             return;
         if( outline->attributes().value( "type" ) != "include" )
             return;
-        urlToFetch = KUrl( outline->attributes()["url"] );
+        urlToFetch = QUrl( outline->attributes()["url"] );
     }
 
     if( !urlToFetch.isValid() )
         return;
 
     OpmlParser *parser = new OpmlParser( urlToFetch );
-    connect( parser, SIGNAL(headerDone()), SLOT(slotOpmlHeaderDone()) );
-    connect( parser, SIGNAL(outlineParsed(OpmlOutline*)),
-             SLOT(slotOpmlOutlineParsed(OpmlOutline*)) );
-    connect( parser, SIGNAL(doneParsing()), SLOT(slotOpmlParsingDone()) );
+    connect( parser, &OpmlParser::headerDone, this, &OpmlDirectoryModel::slotOpmlHeaderDone );
+    connect( parser, &OpmlParser::outlineParsed, this, &OpmlDirectoryModel::slotOpmlOutlineParsed );
+    connect( parser, &OpmlParser::doneParsing, this, &OpmlDirectoryModel::slotOpmlParsingDone );
 
     m_currentFetchingMap.insert( parser, parent );
 
@@ -437,11 +439,11 @@ OpmlDirectoryModel::slotOpmlOutlineParsed( OpmlOutline *outline )
     switch( outline->opmlNodeType() )
     {
         case RegularNode:
-            m_imageMap.insert( outline, KIcon( "folder" ).pixmap( 24, 24 ) ); break;
+            m_imageMap.insert( outline, QIcon::fromTheme( "folder" ).pixmap( 24, 24 ) ); break;
         case IncludeNode:
         {
             m_imageMap.insert( outline,
-                               KIcon( "folder", 0, QStringList( "go-down" ) ).pixmap( 24, 24 )
+                               QIcon::fromTheme( "folder-download", QIcon::fromTheme( "go-down" ) ).pixmap( 24, 24 )
                              );
             break;
         }
@@ -471,11 +473,11 @@ OpmlDirectoryModel::subscribe( const QModelIndexList &indexes ) const
         if( !outline )
             continue;
 
-        KUrl url;
+        QUrl url;
         if( outline->attributes().contains( "xmlUrl" ) )
-            url = KUrl( outline->attributes()["xmlUrl"] );
+            url = QUrl( outline->attributes()["xmlUrl"] );
         else if( outline->attributes().contains( "url" ) )
-            url = KUrl( outline->attributes()["url"] );
+            url = QUrl( outline->attributes()["url"] );
 
         if( url.isEmpty() )
             continue;

@@ -78,14 +78,15 @@ public:
         If row == -1 returns all tokens. */
     QList< Token *> tokensAtRow( int row = -1 );
 
-public slots:
+public Q_SLOTS:
     /** Insert the token at the given row and col position.
         The token will be reparented for the TokenDropTarget.
     */
-    void insertToken( Token*, int row = -1, int col = -1 ); // -1 -> append to last row
+    void insertToken( Token*, int row, int col );
+    void appendToken( Token *token ) { insertToken( token, -1, -1 ); } // -1 -> append to last row
 
     void deleteEmptyRows();
-signals:
+Q_SIGNALS:
     void changed();
 
     /** Emitted if a new token got the focus. */

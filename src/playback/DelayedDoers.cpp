@@ -27,9 +27,10 @@ DelayedDoer::DelayedDoer( Phonon::MediaObject *mediaObject,
     , m_applicableStates( applicableStates )
 {
     Q_ASSERT( mediaObject );
-    connect( mediaObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),
-                          SLOT(slotStateChanged(Phonon::State)) );
-    connect( mediaObject, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
+    connect( mediaObject, &Phonon::MediaObject::stateChanged,
+             this, &DelayedDoer::slotStateChanged );
+    connect( mediaObject, &Phonon::MediaObject::destroyed,
+             this, &DelayedDoer::deleteLater );
 }
 
 void
@@ -73,7 +74,7 @@ DelayedTrackChanger::DelayedTrackChanger( Phonon::MediaObject *mediaObject,
     , m_trackNumber( trackNumber )
 {
     Q_ASSERT( mediaController );
-    connect( mediaController, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
+    connect( mediaController, &QObject::destroyed, this, &QObject::deleteLater );
     Q_ASSERT( trackNumber > 0 );
 }
 

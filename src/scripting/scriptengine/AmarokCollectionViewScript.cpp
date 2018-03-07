@@ -30,10 +30,10 @@
 #include "ScriptingDefines.h"
 #include "widgets/SearchWidget.h"
 
-#include <KMenu>
-
+#include <QMenu>
 #include <QMetaEnum>
 #include <QScriptEngine>
+#include <QSortFilterProxyModel>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
@@ -41,7 +41,7 @@ Q_DECLARE_METATYPE( QList<QAction*> )
 using namespace AmarokScript;
 
 QMap<QString, AmarokCollectionViewScript*> AmarokCollectionViewScript::s_instances;
-QWeakPointer<Selection> AmarokCollectionViewScript::s_selection;
+QPointer<Selection> AmarokCollectionViewScript::s_selection;
 
 AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engine, const QString &scriptName )
     : QObject( engine )
@@ -64,7 +64,7 @@ AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engi
     engine->registerArrayType< QList<CollectionTreeItem*> >();
     engine->registerArrayType<QActionList>();
     s_instances[m_scriptName] = this;
-    connect( The::mainWindow()->collectionBrowser()->searchWidget(), SIGNAL(filterChanged(QString)), SIGNAL(filterChanged(QString)) );
+    connect( The::mainWindow()->collectionBrowser()->searchWidget(), &SearchWidget::filterChanged, this, &AmarokCollectionViewScript::filterChanged );
 }
 
 AmarokCollectionViewScript::~AmarokCollectionViewScript()
@@ -102,7 +102,7 @@ AmarokCollectionViewScript::setAction( const QScriptValue &value )
 }
 
 void
-AmarokCollectionViewScript::createScriptedActions( KMenu &menu, const QModelIndexList &indices )
+AmarokCollectionViewScript::createScriptedActions( QMenu &menu, const QModelIndexList &indices )
 {
     debug() << "Checking for scripted actions";
     if( s_selection )
@@ -345,7 +345,8 @@ CollectionViewItem::loadChildren()
     if( !m_item->requiresUpdate() )
         return;
     CollectionTreeItemModelBase *model = getModel();
-    connect( model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(slotDataChanged(QModelIndex,QModelIndex)) );
+    connect( model, &CollectionTreeItemModelBase::dataChanged,
+             this, &CollectionViewItem::slotDataChanged );
     model->ensureChildrenLoaded( m_item );
 }
 
@@ -356,7 +357,7 @@ CollectionViewItem::slotDataChanged( const QModelIndex &topLeft, const QModelInd
     if( static_cast<CollectionTreeItem*>( topLeft.internalPointer() ) != m_item )
         return;
     emit loaded( m_item );
-    Q_ASSERT( disconnect( sender(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, 0 ) );
+    Q_ASSERT( disconnect( qobject_cast<QAbstractItemModel*>(sender()), &QAbstractItemModel::dataChanged, this, 0 ) );
 }
 
 Collections::QueryMaker*

@@ -21,18 +21,19 @@
 #include "core/amarokcore_export.h"
 #include "core/interfaces/MetaCapability.h"
 #include "core/support/PluginFactory.h"
+#include "AmarokSharedPointer.h"
 
 #include <QObject>
 
 namespace Meta {
     class Track;
-    typedef KSharedPtr<Track> TrackPtr;
+    typedef AmarokSharedPointer<Track> TrackPtr;
 }
 namespace Playlists {
     class UserPlaylistProvider;
 }
 
-class KIcon;
+class QIcon;
 
 namespace Collections
 {
@@ -48,10 +49,10 @@ namespace Collections
         Q_OBJECT
 
         public:
-            CollectionFactory( QObject *parent, const QVariantList &args );
+            CollectionFactory();
             virtual ~CollectionFactory();
 
-        signals:
+        Q_SIGNALS:
             void newCollection( Collections::Collection *newCollection );
     };
 
@@ -72,7 +73,7 @@ namespace Collections
              * track specified by @p url.
              * This should do a minimal amount of checking, and return quickly.
              */
-            virtual bool possiblyContainsTrack( const KUrl &url ) const;
+            virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
             /**
              * Creates a TrackPtr object for url @p url.  Returns a null track Ptr if
@@ -80,7 +81,7 @@ namespace Collections
              * If asynchronysity is desired it is suggested to return a MetaProxy track here
              * and have the proxy watch for the real track.
              */
-            virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+            virtual Meta::TrackPtr trackForUrl( const QUrl &url );
     };
 
     class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, public MetaCapability
@@ -115,7 +116,7 @@ namespace Collections
             /**
              * @return an icon representing this collection
              */
-            virtual KIcon icon() const = 0;
+            virtual QIcon icon() const = 0;
 
             virtual bool hasCapacity() const { return false; }
             virtual float usedCapacity() const { return 0.0; }
@@ -140,7 +141,7 @@ namespace Collections
              */
             virtual bool isOrganizable() const;
 
-        signals:
+        Q_SIGNALS:
             /**
              * Once you register a collection with CollectionManager, this signal is the
              * only way to safely destroy it. CollectionManger will remove this collection
@@ -177,9 +178,5 @@ namespace Collections
 
 Q_DECLARE_METATYPE( Collections::Collection* )
 Q_DECLARE_METATYPE( Collections::CollectionList )
-
-#define AMAROK_EXPORT_COLLECTION( classname, libname ) \
-    K_PLUGIN_FACTORY( factory, registerPlugin<classname>(); ) \
-            K_EXPORT_PLUGIN( factory( "amarok_collection-" #libname ) )
 
 #endif /* AMAROK_COLLECTION_H */

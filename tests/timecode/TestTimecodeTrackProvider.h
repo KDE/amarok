@@ -20,8 +20,8 @@
 #ifndef TESTTIMECODETRACKPROVIDER_H
 #define TESTTIMECODETRACKPROVIDER_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 class TimecodeTrackProvider;
 
@@ -32,7 +32,7 @@ Q_OBJECT
 public:
     TestTimecodeTrackProvider();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
     void testPossiblyContainsTrack();

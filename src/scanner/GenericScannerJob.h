@@ -26,15 +26,15 @@
 #include "GenericScanManager.h"
 #include "collectionscanner/Directory.h"
 
-#include <threadweaver/Job.h>
-#include <KUrl>
+#include <ThreadWeaver/Job>
+#include <QUrl>
 
 #include <QObject>
 #include <QString>
 #include <QMutex>
 #include <QWaitCondition>
 #include <QXmlStreamReader>
-
+#include <KLocalizedString>
 namespace CollectionScanner {
     class Directory;
 }
@@ -55,7 +55,7 @@ class QSharedPointer;
       the scanner process will be restarted and the xml output from the scanner
       seamlessly appended.
 */
-class GenericScannerJob : public ThreadWeaver::Job
+class GenericScannerJob : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 
@@ -77,10 +77,12 @@ class GenericScannerJob : public ThreadWeaver::Job
         ~GenericScannerJob();
 
         /* ThreadWeaver::Job virtual methods */
-        virtual void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
         virtual void abort();
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 
-    signals:
+    Q_SIGNALS:
         void started( GenericScanManager::ScanType type );
 
         /** Gives the estimated count of directories that this scan will have.
@@ -102,6 +104,14 @@ class GenericScannerJob : public ThreadWeaver::Job
         void succeeded();
         void failed( QString message );
         // and the ThreadWeaver::Job also emits done
+
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
 
     private:
         /** Returns the path to the collection scanner */

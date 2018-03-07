@@ -145,7 +145,7 @@
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
          <item row="0" column="1">
-          <widget class="KPushButton" name="newLayoutButton">
+          <widget class="QPushButton" name="newLayoutButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -155,7 +155,7 @@
           </widget>
          </item>
          <item row="0" column="3">
-          <widget class="KPushButton" name="deleteLayoutButton">
+          <widget class="QPushButton" name="deleteLayoutButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -165,7 +165,7 @@
           </widget>
          </item>
          <item row="1" column="3">
-          <widget class="KPushButton" name="renameLayoutButton">
+          <widget class="QPushButton" name="renameLayoutButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -175,7 +175,7 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="KPushButton" name="copyLayoutButton">
+          <widget class="QPushButton" name="copyLayoutButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -325,9 +325,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KPushButton</class>
+   <class>QPushButton</class>
    <extends>QPushButton</extends>
-   <header>kpushbutton.h</header>
+   <header>qpushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>TokenPool</class>

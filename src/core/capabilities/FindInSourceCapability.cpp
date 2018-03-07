@@ -22,4 +22,3 @@ FindInSourceCapability::~FindInSourceCapability()
 {
 }
 
-#include "FindInSourceCapability.moc"

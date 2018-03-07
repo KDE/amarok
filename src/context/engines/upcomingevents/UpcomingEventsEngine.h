@@ -85,14 +85,14 @@ private:
     /**
      * Current URLs of events being fetched
      */
-    QSet<KUrl> m_urls;
+    QSet<QUrl> m_urls;
 
     /**
      * @param ids LastFm's venue ids
      */
     QList<int> m_venueIds;
 
-private slots:
+private Q_SLOTS:
     /**
      * Get events for specific artist
      */
@@ -103,8 +103,8 @@ private slots:
      */
     void updateDataForVenues();
 
-    void artistEventsFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void venueEventsFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void artistEventsFetched( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void venueEventsFetched( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 };
 
 #endif

@@ -21,14 +21,14 @@
 #include "core/meta/PlaylistGroup.h"
 
 #include <QSharedData>
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 
 /**
 	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 
 class PlaylistViewItem;
-typedef KSharedPtr<PlaylistViewItem> PlaylistViewItemPtr;
+typedef AmarokSharedPointer<PlaylistViewItem> PlaylistViewItemPtr;
 
 class PlaylistViewItem : public virtual QSharedData
 {

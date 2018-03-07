@@ -24,7 +24,7 @@
 #include "core/support/Debug.h"
 #include "widgets/SliderWidget.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KRandom>
 
 #include <QtGlobal> // for qRound
@@ -224,17 +224,17 @@ Dynamic::PartBiasWidget::PartBiasWidget( Dynamic::PartBias* bias, QWidget* paren
     , m_inSignal( false )
     , m_bias( bias )
 {
-    connect( bias, SIGNAL(biasAppended(Dynamic::BiasPtr)),
-             this, SLOT(biasAppended(Dynamic::BiasPtr)) );
+    connect( bias, &PartBias::biasAppended,
+             this, &PartBiasWidget::biasAppended );
 
-    connect( bias, SIGNAL(biasRemoved(int)),
-             this, SLOT(biasRemoved(int)) );
+    connect( bias, &PartBias::biasRemoved,
+             this, &PartBiasWidget::biasRemoved );
 
-    connect( bias, SIGNAL(biasMoved(int,int)),
-             this, SLOT(biasMoved(int,int)) );
+    connect( bias, &PartBias::biasMoved,
+             this, &PartBiasWidget::biasMoved );
 
-    connect( bias, SIGNAL(weightsChanged()),
-             this, SLOT(biasWeightsChanged()) );
+    connect( bias, &PartBias::weightsChanged,
+             this, &PartBiasWidget::biasWeightsChanged );
 
     m_layout = new QGridLayout( this );
 
@@ -254,7 +254,7 @@ Dynamic::PartBiasWidget::biasAppended( Dynamic::BiasPtr bias )
     slider = new Amarok::Slider( Qt::Horizontal, 100 );
     slider->setValue( m_bias->weights()[ m_bias->biases().indexOf( bias ) ] * 100.0 );
     slider->setToolTip( i18n( "This controls what portion of the playlist should match the criteria" ) );
-    connect( slider, SIGNAL(valueChanged(int)), SLOT(sliderValueChanged(int)) );
+    connect( slider, &Amarok::Slider::valueChanged, this, &PartBiasWidget::sliderValueChanged );
 
     QLabel* label = new QLabel( bias->toString() );
 
@@ -629,5 +629,4 @@ Dynamic::PartBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newB
     AndBias::biasReplaced( oldBias, newBias );
 }
 
-#include "PartBias.moc"
 

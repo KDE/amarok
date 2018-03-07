@@ -20,10 +20,11 @@
 
 #include <KDateTime>
 #include <KSharedPtr>
-#include <KUrl>
+#include <QUrl>
 
 #include <QSharedData>
 #include <QStringList>
+#include <QHash>
 
 class LastFmEvent;
 class LastFmLocation;
@@ -50,7 +51,7 @@ public:
     };
 
     typedef QList< LastFmEventPtr > List;
-    typedef QHash<ImageSize, KUrl> ImageUrls;
+    typedef QHash<ImageSize, QUrl> ImageUrls;
 
     /**
      * Creates an empty LastFmEvent
@@ -107,7 +108,7 @@ public:
      * @param size size of the image
      * @return image URL
      */
-    KUrl imageUrl( ImageSize size ) const
+    QUrl imageUrl( ImageSize size ) const
     { return m_imageUrls.value(size); }
 
     /**
@@ -141,7 +142,7 @@ public:
      * A getter for the event's page
      * @return the URL to the event's page
      */
-    KUrl url() const;
+    QUrl url() const;
 
     /**
      * Get the venue associated with this event
@@ -189,7 +190,7 @@ public:
      * @param size size of the image
      * @param url url of the image
      */
-    void setImageUrl( ImageSize size, const KUrl &url )
+    void setImageUrl( ImageSize size, const QUrl &url )
     { m_imageUrls[size] = url; }
 
     /**
@@ -216,7 +217,7 @@ public:
      * Sets the event's page
      * @param url the URL to the event's page
      */
-    void setUrl( const KUrl &url );
+    void setUrl( const QUrl &url );
 
     /**
      * Sets the venue of this event
@@ -238,7 +239,7 @@ private:
     int m_attendance;            //!< Number of the event's attendance
     bool m_cancelled;            //!< Whether the event has been cancelled
     KDateTime m_date;            //!< The event's start date
-    KUrl m_url;                  //!< The URL to the event's page
+    QUrl m_url;                  //!< The URL to the event's page
     ImageUrls m_imageUrls;       //!< URLs to the event's image
     QString m_description;       //!< Description of the event
     QString m_name;              //!< The event's name
@@ -272,10 +273,10 @@ public:
 
     int id;
     QString name;
-    KUrl url;
-    KUrl website;
+    QUrl url;
+    QUrl website;
     QString phoneNumber;
-    QHash<LastFmEvent::ImageSize, KUrl> imageUrls;
+    QHash<LastFmEvent::ImageSize, QUrl> imageUrls;
     LastFmLocationPtr location;
 };
 

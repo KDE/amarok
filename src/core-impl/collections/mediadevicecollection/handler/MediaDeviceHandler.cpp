@@ -25,9 +25,10 @@
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "playlistmanager/PlaylistManager.h"
 
+#include <QSharedPointer>
 #include <KMessageBox>
-#include <threadweaver/ThreadWeaver.h>
-#include <threadweaver/JobCollection.h>
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/ThreadWeaver>
 
 using namespace Meta;
 
@@ -57,11 +58,11 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 {
     DEBUG_BLOCK
 
-    connect( m_memColl, SIGNAL(deletingCollection()),
-             this, SLOT(slotDeletingHandler()), Qt::QueuedConnection );
+    connect( m_memColl, &Collections::MediaDeviceCollection::deletingCollection,
+             this, &MediaDeviceHandler::slotDeletingHandler, Qt::QueuedConnection );
 
-    connect( this, SIGNAL(databaseWritten(bool)),
-             this, SLOT(slotDatabaseWritten(bool)), Qt::QueuedConnection );
+    connect( this, &MediaDeviceHandler::databaseWritten,
+             this, &MediaDeviceHandler::slotDatabaseWritten, Qt::QueuedConnection );
 }
 
 MediaDeviceHandler::~MediaDeviceHandler()
@@ -296,7 +297,7 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
 void
 MediaDeviceHandler::getCopyableUrls(const Meta::TrackList &tracks)
 {
-    QMap<Meta::TrackPtr, KUrl> urls;
+    QMap<Meta::TrackPtr, QUrl> urls;
     foreach( Meta::TrackPtr track, tracks )
     {
         if( track->isPlayable() )
@@ -893,12 +894,12 @@ MediaDeviceHandler::privateParseTracks()
         }
 
         // When the provider saves a playlist, the handler should save it internally
-        connect( m_provider, SIGNAL(playlistSaved(Playlists::MediaDevicePlaylistPtr,QString)),
-                 SLOT(savePlaylist(Playlists::MediaDevicePlaylistPtr,QString)) );
-        connect( m_provider, SIGNAL(playlistRenamed(Playlists::MediaDevicePlaylistPtr)),
-                 SLOT(renamePlaylist(Playlists::MediaDevicePlaylistPtr)) );
-        connect( m_provider, SIGNAL(playlistsDeleted(Playlists::MediaDevicePlaylistList)),
-                 SLOT(deletePlaylists(Playlists::MediaDevicePlaylistList)) );
+        connect( m_provider, &Playlists::MediaDeviceUserPlaylistProvider::playlistSaved,
+                 this, &MediaDeviceHandler::savePlaylist );
+        connect( m_provider, &Playlists::MediaDeviceUserPlaylistProvider::playlistRenamed,
+                 this, &MediaDeviceHandler::renamePlaylist );
+        connect( m_provider, &Playlists::MediaDeviceUserPlaylistProvider::playlistsDeleted,
+                 this, &MediaDeviceHandler::deletePlaylists );
 
         The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
         m_provider->sendUpdated();
@@ -926,7 +927,7 @@ MediaDeviceHandler::privateParseTracks()
 }
 
 void
-MediaDeviceHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job, const Meta::TrackPtr& track )
+MediaDeviceHandler::slotCopyNextTrackFailed( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track )
 {
     Q_UNUSED( job );
     enqueueNextCopyThread();
@@ -935,7 +936,7 @@ MediaDeviceHandler::slotCopyNextTrackFailed( ThreadWeaver::Job* job, const Meta:
 }
 
 void
-MediaDeviceHandler::slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track )
+MediaDeviceHandler::slotCopyNextTrackDone( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track )
 {
     Q_UNUSED( track )
     enqueueNextCopyThread();
@@ -962,7 +963,7 @@ MediaDeviceHandler::enqueueNextCopyThread()
         m_tracksToCopy.removeFirst();
 
         // Copy the track
-        ThreadWeaver::Weaver::instance()->enqueue(  new CopyWorkerThread( track,  this ) );
+        ThreadWeaver::Queue::instance()->enqueue( (QSharedPointer<ThreadWeaver::Job>(new CopyWorkerThread( track,  this )) ) );
     }
     else
     {
@@ -1159,17 +1160,18 @@ MediaDeviceHandler::metadataChanged( YearPtr year )
 void
 MediaDeviceHandler::parseTracks()
 {
-    ThreadWeaver::Weaver::instance()->enqueue( new ParseWorkerThread( this ) );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(new ParseWorkerThread( this )) );
 }
 
 // ParseWorkerThread
 
 ParseWorkerThread::ParseWorkerThread( MediaDeviceHandler* handler )
-        : ThreadWeaver::Job()
+        : QObject()
+        , ThreadWeaver::Job()
         , m_success( false )
         , m_handler( handler )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotDoneSuccess(ThreadWeaver::Job*)) );
+    connect( this, &ParseWorkerThread::done, this, &ParseWorkerThread::slotDoneSuccess );
 }
 
 ParseWorkerThread::~ParseWorkerThread()
@@ -1184,13 +1186,32 @@ ParseWorkerThread::success() const
 }
 
 void
-ParseWorkerThread::run()
+ParseWorkerThread::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     m_success = m_handler->privateParseTracks();
 }
 
 void
-ParseWorkerThread::slotDoneSuccess( ThreadWeaver::Job* )
+ParseWorkerThread::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+ParseWorkerThread::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
+void
+ParseWorkerThread::slotDoneSuccess( ThreadWeaver::JobPointer )
 {
     if (m_handler->m_memColl)
         m_handler->m_memColl->emitCollectionReady();
@@ -1199,18 +1220,19 @@ ParseWorkerThread::slotDoneSuccess( ThreadWeaver::Job* )
 // CopyWorkerThread
 
 CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MediaDeviceHandler* handler )
-        : ThreadWeaver::Job()
+        : QObject()
+        , ThreadWeaver::Job()
         , m_success( false )
         , m_track( track )
         , m_handler( handler )
 {
-    //connect( this, SIGNAL(done(ThreadWeaver::Job*)), m_handler, SLOT(slotCopyNextTrackToDevice(ThreadWeaver::Job*)), Qt::QueuedConnection );
-    connect( this, SIGNAL(failed(ThreadWeaver::Job*)), this, SLOT(slotDoneFailed(ThreadWeaver::Job*)), Qt::QueuedConnection );
-    connect( this, SIGNAL(copyTrackFailed(ThreadWeaver::Job*,Meta::TrackPtr)), m_handler, SLOT(slotCopyNextTrackFailed(ThreadWeaver::Job*,Meta::TrackPtr)) );
-    connect( this, SIGNAL(copyTrackDone(ThreadWeaver::Job*,Meta::TrackPtr)), m_handler, SLOT(slotCopyNextTrackDone(ThreadWeaver::Job*,Meta::TrackPtr)) );
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotDoneSuccess(ThreadWeaver::Job*)) );
+    //connect( this, &CopyWorkerThread::done, m_handler, &Meta::MediaDeviceHandler::slotCopyNextTrackToDevice, Qt::QueuedConnection );
+    connect( this, &CopyWorkerThread::failed, this, &CopyWorkerThread::slotDoneFailed, Qt::QueuedConnection );
+    connect( this, &CopyWorkerThread::copyTrackFailed, m_handler, &Meta::MediaDeviceHandler::slotCopyNextTrackFailed );
+    connect( this, &CopyWorkerThread::copyTrackDone, m_handler, &Meta::MediaDeviceHandler::slotCopyNextTrackDone );
+    connect( this, &CopyWorkerThread::done, this, &CopyWorkerThread::slotDoneSuccess );
 
-    //connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
+    //connect( this, &CopyWorkerThread::done, this, &CopyWorkerThread::deleteLater );
 }
 
 CopyWorkerThread::~CopyWorkerThread()
@@ -1225,22 +1247,38 @@ CopyWorkerThread::success() const
 }
 
 void
-CopyWorkerThread::run()
+CopyWorkerThread::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     m_success = m_handler->privateCopyTrackToDevice( m_track );
 }
 
 void
-CopyWorkerThread::slotDoneSuccess( ThreadWeaver::Job* )
+CopyWorkerThread::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
 {
-    emit copyTrackDone( this, m_track );
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
 }
 
 void
-CopyWorkerThread::slotDoneFailed( ThreadWeaver::Job* )
+CopyWorkerThread::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
 {
-    emit copyTrackFailed( this, m_track );
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
+void
+CopyWorkerThread::slotDoneSuccess( ThreadWeaver::JobPointer )
+{
+    emit copyTrackDone( QSharedPointer<ThreadWeaver::Job>(this), m_track );
+}
 
-#include "MediaDeviceHandler.moc"
+void
+CopyWorkerThread::slotDoneFailed( ThreadWeaver::JobPointer )
+{
+    emit copyTrackFailed( QSharedPointer<ThreadWeaver::Job>(this), m_track );
+}

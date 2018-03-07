@@ -21,25 +21,22 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <KConfigGroup>
-#include <solid/device.h>
-#include <solid/deviceinterface.h>
-#include <solid/devicenotifier.h>
-#include <solid/genericinterface.h>
-#include <solid/opticaldisc.h>
-#include <solid/portablemediaplayer.h>
-#include <solid/storageaccess.h>
-#include <solid/storagedrive.h>
-#include <solid/block.h>
-#include <solid/storagevolume.h>
-
-#include <kdeversion.h>
-
-#include <kmountpoint.h>
+#include <Solid/Block>
+#include <Solid/Device>
+#include <Solid/DeviceInterface>
+#include <Solid/DeviceNotifier>
+#include <Solid/GenericInterface>
+#include <Solid/OpticalDisc>
+#include <Solid/PortableMediaPlayer>
+#include <Solid/StorageAccess>
+#include <Solid/StorageDrive>
+#include <Solid/StorageVolume>
 
 #include <QDir>
 #include <QFile>
 #include <QList>
+
+#include <KConfigGroup>
 
 MediaDeviceCache* MediaDeviceCache::s_instance = 0;
 
@@ -50,10 +47,10 @@ MediaDeviceCache::MediaDeviceCache() : QObject()
 {
     DEBUG_BLOCK
     s_instance = this;
-    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(QString)),
-             this, SLOT(slotAddSolidDevice(QString)) );
-    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(QString)),
-             this, SLOT(slotRemoveSolidDevice(QString)) );
+    connect( Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded,
+             this, &MediaDeviceCache::slotAddSolidDevice );
+    connect( Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved,
+             this, &MediaDeviceCache::slotRemoveSolidDevice );
 }
 
 MediaDeviceCache::~MediaDeviceCache()
@@ -92,8 +89,8 @@ MediaDeviceCache::refreshCache()
         {
             if( !m_volumes.contains( device.udi() ) )
             {
-                connect( ssa, SIGNAL(accessibilityChanged(bool,QString)),
-                    this, SLOT(slotAccessibilityChanged(bool,QString)) );
+                connect( ssa, &Solid::StorageAccess::accessibilityChanged,
+                    this, &MediaDeviceCache::slotAccessibilityChanged );
                 m_volumes.append( device.udi() );
             }
             if( ssa->isAccessible() )
@@ -171,8 +168,8 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
         debug() << "volume is generic storage";
         if( !m_volumes.contains( device.udi() ) )
         {
-            connect( ssa, SIGNAL(accessibilityChanged(bool,QString)),
-                this, SLOT(slotAccessibilityChanged(bool,QString)) );
+            connect( ssa, &Solid::StorageAccess::accessibilityChanged,
+                this, &MediaDeviceCache::slotAccessibilityChanged );
             m_volumes.append( device.udi() );
         }
         if( ssa->isAccessible() )
@@ -244,8 +241,8 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
     Solid::Device device( udi );
     if( m_volumes.contains( udi ) )
     {
-        disconnect( device.as<Solid::StorageAccess>(), SIGNAL(accessibilityChanged(bool,QString)),
-                    this, SLOT(slotAccessibilityChanged(bool,QString)) );
+        disconnect( device.as<Solid::StorageAccess>(), &Solid::StorageAccess::accessibilityChanged,
+                    this, &MediaDeviceCache::slotAccessibilityChanged );
         m_volumes.removeAll( udi );
         emit deviceRemoved( udi );
     }
@@ -352,7 +349,7 @@ MediaDeviceCache::isGenericEnabled( const QString &udi ) const
         debug() << "Could convert parent to PortableMediaPlayer, returning true";
         return true;
     }
-    if( QFile::exists( ssa->filePath() + QDir::separator() + ".is_audio_player" ) )
+    if( QFile::exists( ssa->filePath() + '/' + ".is_audio_player" ) )
     {
         return true;
     }
@@ -373,5 +370,4 @@ MediaDeviceCache::volumeMountPoint( const QString &udi ) const
     return ssa->filePath();
 }
 
-#include "MediaDeviceCache.moc"
 

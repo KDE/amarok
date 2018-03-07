@@ -19,12 +19,11 @@
 #ifndef AMAROK_ACTIONCLASSES_H
 #define AMAROK_ACTIONCLASSES_H
 
-#include <KAction>
-#include <KMenu>
-#include <KToggleAction>
-#include <KSelectAction>
+#include <QAction>
+#include <QMenu>
 
-#include <QWeakPointer>
+#include <KSelectAction>
+#include <KToggleAction>
 
 #include <Phonon/Global>
 
@@ -34,23 +33,28 @@ class KHelpMenu;
 
 namespace Amarok
 {
-    class Menu : public KMenu
+    class Menu : public QMenu
     {
         Q_OBJECT
         public:
             Menu( QWidget* parent );
             static Menu *instance();
-            static KMenu *helpMenu( QWidget *parent = 0 );
+            static QMenu *helpMenu( QWidget *parent = 0 );
 
         private:
             static Menu       *s_instance;
             static KHelpMenu  *s_helpMenu;
     };
 
-    class MenuAction : public KAction
+    class MenuAction : public QAction
     {
         public:
             MenuAction( KActionCollection*, QObject* );
+
+            /**
+             * Indicate whether the user may configure the action's shortcut.
+             */
+            void setShortcutConfigurable(bool configurable);
     };
 
     class PlayPauseAction : public KToggleAction
@@ -60,7 +64,7 @@ namespace Amarok
         public:
             PlayPauseAction( KActionCollection*, QObject* );
 
-        private slots:
+        private Q_SLOTS:
             void stopped();
             void paused();
             void playing();
@@ -91,7 +95,7 @@ namespace Amarok
             QStringList icons() const;
             QString currentIcon() const;
 
-        protected slots:
+        protected Q_SLOTS:
             virtual void actionTriggered( QAction *a );
 
         private:
@@ -124,15 +128,15 @@ namespace Amarok
             ReplayGainModeAction( KActionCollection *ac, QObject* );
     };
 
-    class BurnMenu : public KMenu
+    class BurnMenu : public QMenu
     {
         Q_OBJECT
 
         public:
             BurnMenu( QWidget* parent );
-            static KMenu *instance();
+            static QMenu *instance();
 
-        private slots:
+        private Q_SLOTS:
             void slotBurnCurrentPlaylist();
             void slotBurnSelectedTracks();
 
@@ -141,32 +145,32 @@ namespace Amarok
     };
 
 
-    class BurnMenuAction : public KAction
+    class BurnMenuAction : public QAction
     {
         public:
             BurnMenuAction( KActionCollection*, QObject* );
             virtual QWidget* createWidget( QWidget* );
     };
 
-    class StopAction : public KAction
+    class StopAction : public QAction
     {
         Q_OBJECT
         public:
             StopAction( KActionCollection*, QObject* );
 
-        private slots:
+        private Q_SLOTS:
             void stopped();
             void playing();
             void stop();
     };
 
-    class StopPlayingAfterCurrentTrackAction : public KAction
+    class StopPlayingAfterCurrentTrackAction : public QAction
     {
         Q_OBJECT
         public:
             StopPlayingAfterCurrentTrackAction( KActionCollection*, QObject* );
 
-        private slots:
+        private Q_SLOTS:
             void stopPlayingAfterCurrentTrack();
     };
 } /* namespace Amarok */

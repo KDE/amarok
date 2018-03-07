@@ -20,6 +20,7 @@
 #include "core/podcasts/PodcastMeta.h"
 #include "core-impl/meta/file/File.h"
 #include "core/playlists/PlaylistProvider.h"
+#include <QDir>
 
 namespace Podcasts
 {
@@ -28,8 +29,8 @@ class SqlPodcastEpisode;
 class SqlPodcastChannel;
 class SqlPodcastProvider;
 
-typedef KSharedPtr<SqlPodcastEpisode> SqlPodcastEpisodePtr;
-typedef KSharedPtr<SqlPodcastChannel> SqlPodcastChannelPtr;
+typedef AmarokSharedPointer<SqlPodcastEpisode> SqlPodcastEpisodePtr;
+typedef AmarokSharedPointer<SqlPodcastChannel> SqlPodcastChannelPtr;
 
 typedef QList<SqlPodcastEpisodePtr> SqlPodcastEpisodeList;
 typedef QList<SqlPodcastChannelPtr> SqlPodcastChannelList;
@@ -55,7 +56,7 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
 
         virtual void setNew( bool isNew );
         virtual void setKeep( bool isKeep );
-        virtual void setLocalUrl( const KUrl &url );
+        virtual void setLocalUrl( const QUrl &url );
 
         //Track Methods
         virtual QString name() const;
@@ -122,14 +123,14 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         virtual void setGroups( const QStringList &groups );
 
         //Podcasts::PodcastChannel methods
-        virtual KUrl uidUrl() const;
+        virtual QUrl uidUrl() const;
         virtual void setTitle( const QString &title );
         virtual Podcasts::PodcastEpisodeList episodes() const;
         virtual bool hasImage() const { return !m_image.isNull(); }
         virtual void setImage( const QImage &image );
         virtual QImage image() const { return m_image; }
-        virtual KUrl imageUrl() const { return m_imageUrl; }
-        virtual void setImageUrl( const KUrl &imageUrl );
+        virtual QUrl imageUrl() const { return m_imageUrl; }
+        virtual void setImageUrl( const QUrl &imageUrl );
         virtual void setFilenameLayout( const QString &filenameLayout ) { m_filenameLayout = filenameLayout; }
 
 

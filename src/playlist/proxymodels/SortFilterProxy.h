@@ -85,7 +85,7 @@ class SortFilterProxy : public ProxyBase, public SortProxy
         int find( const QString & searchTerm, int searchFields = MatchTrack );
         void showOnlyMatches( bool onlyMatches );
 
-    //!signals:
+    //!Q_SIGNALS:
         //! Emits signals inherited from QSortFilterProxy
         //! Emits signals inherited from Playlist::AbstractModel / ProxyBase
 

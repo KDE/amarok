@@ -20,8 +20,9 @@
 #include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
 
-#include <threadweaver/Job.h>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
 #include "core/support/Debug.h"
 
@@ -49,7 +50,7 @@ bool Mp3tunesServiceCollectionLocation::isWritable() const
 }
 
 void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
-        const QMap<Meta::TrackPtr, KUrl> &sources,
+        const QMap<Meta::TrackPtr, QUrl> &sources,
         const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
@@ -61,15 +62,15 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
     foreach( const Meta::TrackPtr &track, sources.keys() )
     {
         debug() << "copying " << sources[ track ] << " to mp3tunes locker";
-        debug() << "file is at " << sources[ track ].pathOrUrl();
+        debug() << "file is at " << sources[ track ].toDisplayString();
 
         QString supported_types = "mp3 mp4 m4a m4b m4p aac wma ogg";
         
         if( supported_types.contains( track->type() ) )
         {   
 
-            debug() << "Added " << sources[ track ].pathOrUrl() << " to queue.";
-            urls.push_back( sources[ track ].pathOrUrl() );
+            debug() << "Added " << sources[ track ].toDisplayString() << " to queue.";
+            urls.push_back( sources[ track ].toDisplayString() );
 
         } 
         else 
@@ -81,6 +82,6 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
     if( !error.isEmpty() )
         Amarok::Components::logger()->longMessage( error );
     Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader( m_collection->locker(), urls );
-    connect( uploadWorker, SIGNAL(uploadComplete()), this, SLOT(slotCopyOperationFinished()) );
-    ThreadWeaver::Weaver::instance()->enqueue( uploadWorker );
+    connect( uploadWorker, &Mp3tunesSimpleUploader::uploadComplete, this, &Mp3tunesServiceCollectionLocation::slotCopyOperationFinished );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(uploadWorker) );
 }

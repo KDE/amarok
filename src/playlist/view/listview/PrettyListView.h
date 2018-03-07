@@ -57,12 +57,12 @@ public:
 protected:
     int verticalOffset() const;
 
-signals:
+Q_SIGNALS:
     void found();
     void notFound();
 
     // these slots are used by the ContextMenu
-public slots:
+public Q_SLOTS:
     void editTrackInformation();
     void playFirstSelected();
     void dequeueSelection();
@@ -88,6 +88,7 @@ public slots:
     void findPrevious( const QString & searchTerm, int fields  );
     void clearSearchTerm();
     void showOnlyMatches( bool onlyMatches );
+    void findInSource();
 
 protected:
     void showEvent( QShowEvent* );
@@ -106,10 +107,10 @@ protected:
     void startDrag( Qt::DropActions supportedActions );
     bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event );
 
-protected slots:
+protected Q_SLOTS:
     void newPalette( const QPalette & palette );
 
-private slots:
+private Q_SLOTS:
     void slotPlaylistActiveTrackChanged();
     void bottomModelRowsInserted( const QModelIndex& parent, int start, int end );
     void bottomModelRowsInsertedScroll();
@@ -121,7 +122,6 @@ private slots:
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
     void redrawActive();
     void playlistLayoutChanged();
-    void findInSource();
 
 private:
     bool mouseEventInHeader( const QMouseEvent* ) const;

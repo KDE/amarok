@@ -60,7 +60,7 @@ namespace Amarok {
             QStringList SupportedUriSchemes() const;
             QStringList SupportedMimeTypes() const;
 
-        public slots:
+        public Q_SLOTS:
             void Raise() const;
             void Quit() const;
     };

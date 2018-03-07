@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QFile>
 #include <QTextStream>
@@ -249,13 +249,13 @@ MagnatuneDownloadInfo::isReadyForDownload( )
     return !m_selectedDownloadFormat.isEmpty();
 }
 
-KUrl
+QUrl
 MagnatuneDownloadInfo::completeDownloadUrl( )
 {
    QString url =  m_downloadFormats[ m_selectedDownloadFormat ];
-   KUrl downloadUrl(url);
-   downloadUrl.setUser(m_userName);
-   downloadUrl.setPass(m_password);
+   QUrl downloadUrl(url);
+   downloadUrl.setUserName(m_userName);
+   downloadUrl.setPassword(m_password);
 
    return downloadUrl;
 }

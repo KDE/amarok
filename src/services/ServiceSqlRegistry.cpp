@@ -35,7 +35,7 @@ ServiceSqlRegistry::ServiceSqlRegistry( ServiceMetaFactory * metaFactory )
    /* m_timer = new QTimer( this );
     m_timer->setInterval( 60000 );  //try to clean up every 60 seconds, change if necessary
     m_timer->setSingleShot( false );
-    connect( m_timer, SIGNAL(timeout()), this, SLOT(emptyCache()) );
+    connect( m_timer, &QTimer::timeout, this, SLOT(emptyCache()) );
     m_timer->start();*/
 }
 
@@ -252,11 +252,11 @@ ServiceSqlRegistry::emptyCache()
         for( QMutableHashIterator<QString,Type > iter(x); iter.hasNext(); ) \
             RealType::staticCast( iter.next().value() )->invalidateCache()
 
-        foreachInvalidateCache( AlbumPtr, KSharedPtr<SqlAlbum>, m_albumMap );
-        foreachInvalidateCache( ArtistPtr, KSharedPtr<SqlArtist>, m_artistMap );
-        foreachInvalidateCache( GenrePtr, KSharedPtr<SqlGenre>, m_genreMap );
-        foreachInvalidateCache( ComposerPtr, KSharedPtr<SqlComposer>, m_composerMap );
-        foreachInvalidateCache( YearPtr, KSharedPtr<SqlYear>, m_yearMap );
+        foreachInvalidateCache( AlbumPtr, AmarokSharedPointer<SqlAlbum>, m_albumMap );
+        foreachInvalidateCache( ArtistPtr, AmarokSharedPointer<SqlArtist>, m_artistMap );
+        foreachInvalidateCache( GenrePtr, AmarokSharedPointer<SqlGenre>, m_genreMap );
+        foreachInvalidateCache( ComposerPtr, AmarokSharedPointer<SqlComposer>, m_composerMap );
+        foreachInvalidateCache( YearPtr, AmarokSharedPointer<SqlYear>, m_yearMap );
 
         //elem.count() == 2 is correct because elem is one pointer to the object
         //and the other is stored in the hash map
@@ -294,5 +294,4 @@ ServiceMetaFactory * ServiceSqlRegistry::factory()
 }
 
 
-#include "ServiceSqlRegistry.moc"
 

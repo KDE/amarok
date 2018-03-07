@@ -27,13 +27,11 @@
 
 #include <QDir>
 
-AMAROK_EXPORT_COLLECTION( IpodCollectionFactory, ipodcollection )
-
-IpodCollectionFactory::IpodCollectionFactory( QObject *parent, const QVariantList &args )
-    : CollectionFactory( parent, args )
+IpodCollectionFactory::IpodCollectionFactory()
+    : CollectionFactory()
 {
-    m_info = KPluginInfo( "amarok_collection-ipodcollection.desktop", "services" );
 }
+
 
 IpodCollectionFactory::~IpodCollectionFactory()
 {
@@ -42,10 +40,10 @@ IpodCollectionFactory::~IpodCollectionFactory()
 void
 IpodCollectionFactory::init()
 {
-    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(QString)),
-             SLOT(slotAddSolidDevice(QString)) );
-    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(QString)),
-             SLOT(slotRemoveSolidDevice(QString)) );
+    connect( Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded,
+             this, &IpodCollectionFactory::slotAddSolidDevice );
+    connect( Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved,
+             this, &IpodCollectionFactory::slotRemoveSolidDevice );
 
     // detect iPods that were already connected on startup
     QString query( "[IS StorageAccess OR IS PortableMediaPlayer]" );
@@ -201,9 +199,9 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
         }
 
         // we are definitely interested in this device, listen for accessibility changes
-        disconnect( ssa, SIGNAL(accessibilityChanged(bool,QString)), this, 0 );
-        connect( ssa, SIGNAL(accessibilityChanged(bool,QString)),
-                SLOT(slotAccessibilityChanged(bool,QString)) );
+        disconnect( ssa, &Solid::StorageAccess::accessibilityChanged, this, 0 );
+        connect( ssa, &Solid::StorageAccess::accessibilityChanged,
+                 this, &IpodCollectionFactory::slotAccessibilityChanged );
 
         if( !ssa->isAccessible() )
         {
@@ -256,19 +254,17 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
     m_collectionMap.insert( udi, collection );
 
     // when the collection is destroyed by someone else, remove it from m_collectionMap:
-    connect( collection, SIGNAL(destroyed(QObject*)), SLOT(slotCollectionDestroyed(QObject*)) );
+    connect( collection, &QObject::destroyed, this, &IpodCollectionFactory::slotCollectionDestroyed );
 
     if( ssa )
         // try to gracefully destroy collection when unmounting is requested using
         // external means: Device notifier plasmoid etc.. Because the original action
         // could fail if we hold some files on the device open, we eject the collection,
         // not just destroy it.
-        connect( ssa, SIGNAL(teardownRequested(QString)), collection, SLOT(slotEject()) );
+        connect( ssa, &Solid::StorageAccess::teardownRequested, collection, &IpodCollection::slotEject );
 
     if( collection->init() )
         emit newCollection( collection );
     else
         collection->deleteLater();
 }
-
-#include "IpodCollectionFactory.moc"

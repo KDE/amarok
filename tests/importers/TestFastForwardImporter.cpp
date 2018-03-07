@@ -20,9 +20,10 @@
 #include "importers/fastforward/FastForwardConfigWidget.h"
 #include "importers/fastforward/FastForwardProvider.h"
 
-#include <qtest_kde.h>
+#include <QTest>
 
-QTEST_KDEMAIN( TestFastForwardImporter, GUI )
+
+QTEST_MAIN( TestFastForwardImporter )
 
 using namespace StatSyncing;
 
@@ -191,4 +192,3 @@ TestFastForwardImporter::providerShouldHandleErroneousConfigValues()
     QVERIFY( provider.artists().isEmpty() );
 }
 
-#include "TestFastForwardImporter.moc"

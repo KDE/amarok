@@ -21,25 +21,25 @@
 #include "amarokconfig.h"
 #include "EngineController.h"
 
-#include <KGlobal>
-#include <KGlobalSettings>
-#include <KLocale>
+#include <KLocalizedString>
 
-#include <QLabel>
+#include <QFontDatabase>
 #include <QFontMetrics>
+#include <QLabel>
+#include <QLocale>
 #include <QMouseEvent>
 
 TimeLabel::TimeLabel(QWidget* parent)
     : QLabel( " 0:00:00 ", parent )
 {
-    setFont( KGlobalSettings::fixedFont() );
+    setFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
     setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
 }
 
 QSize
 TimeLabel::sizeHint() const
 {
-    return fontMetrics().boundingRect( KGlobal::locale()->negativeSign() + KGlobal::locale()->formatTime( QTime( 0, 0, 0 ), true, true ) ).size();
+    return fontMetrics().boundingRect( QLocale().negativeSign() + QLocale().toString( QTime( 0, 0, 0 ) ) ).size();
 }
 
 void
@@ -63,4 +63,3 @@ TimeLabel::setText(const QString& text)
         QLabel::setText( text );
 }
 
-#include "TimeLabel.moc"

@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QPixmap>
+#include <QPointer>
 
 class KNotification;
 
@@ -45,7 +46,7 @@ public:
      */
     bool isFullscreenWindowActive() const;
 
-public slots:
+public Q_SLOTS:
 
     /**
      * Shows a message. Warning, this method doesn't check isEnabled(), you
@@ -65,7 +66,7 @@ private:
     static KNotificationBackend *s_instance;
 
     bool m_enabled;
-    QWeakPointer<KNotification> m_notify;
+    QPointer<KNotification> m_notify;
 };
 
 }

@@ -21,4 +21,3 @@ Handler::PlaylistCapability::~PlaylistCapability()
     // nothing to do here
 }
 
-#include "PlaylistCapability.moc"

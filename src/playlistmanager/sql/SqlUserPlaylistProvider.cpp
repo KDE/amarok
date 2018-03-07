@@ -29,17 +29,16 @@
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
-#include <KDialog>
-#include <KGlobal>
-#include <KIcon>
-#include <KInputDialog>
-#include <KLocale>
-#include <KMessageBox>
-#include <KUrl>
-
 #include <QAction>
+#include <QIcon>
+#include <QInputDialog>
 #include <QLabel>
 #include <QMap>
+#include <QUrl>
+
+#include <KLocalizedString>
+#include <KMessageBox>
+#include <KConfigGroup>
 
 static const int USERPLAYLIST_DB_VERSION = 3;
 // a database updater has been added in checkTables(). Use that when updating db version
@@ -125,7 +124,7 @@ Playlists::PlaylistPtr
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    QString name = KGlobal::locale()->formatDateTime( QDateTime::currentDateTime(), KLocale::LongDate, true );
+    QString name = QLocale().toString( QDateTime::currentDateTime(), QLocale::LongFormat );
     return save( tracks, name );
 }
 
@@ -188,7 +187,7 @@ SqlUserPlaylistProvider::createTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
     {
         debug() << "No SQL Storage available!";
@@ -229,7 +228,7 @@ SqlUserPlaylistProvider::deleteTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
 
     if( !sqlStorage )
     {
@@ -253,7 +252,7 @@ SqlUserPlaylistProvider::checkTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     QStringList values;
 
     //Prevents amarok from crashing on bad DB
@@ -299,7 +298,7 @@ void
 SqlUserPlaylistProvider::upgradeVersion2to3()
 {
     DEBUG_BLOCK
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     sqlStorage->query( "ALTER TABLE playlists DROP COLUMN description" );
 }
 
@@ -319,4 +318,3 @@ SqlUserPlaylistProvider::toSqlPlaylists( Playlists::PlaylistList playlists )
 
 } //namespace Playlists
 
-#include "SqlUserPlaylistProvider.moc"

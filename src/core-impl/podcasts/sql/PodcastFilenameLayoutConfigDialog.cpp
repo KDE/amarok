@@ -18,21 +18,36 @@
 #include "ui_PodcastFilenameLayoutConfigWidget.h"
 
 #include <QApplication>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 PodcastFilenameLayoutConfigDialog::PodcastFilenameLayoutConfigDialog( Podcasts::SqlPodcastChannelPtr channel, QWidget *parent )
-    : KDialog( parent )
+    : KPageDialog( parent )
     , m_channel( channel )
     , m_pflc( new Ui::PodcastFilenameLayoutConfigWidget )
 {
     QWidget* main = new QWidget( this );
     m_pflc->setupUi( main );
-    setMainWidget( main );
 
-    setCaption( i18nc( "Change filename layout", "Podcast Episode Filename Configuration" ) );
+    setWindowTitle( i18nc( "Change filename layout", "Podcast Episode Filename Configuration" ) );
     setModal( true );
-    setButtons( Cancel | Ok );
-    setDefaultButton( Ok );
-    showButtonSeparator( true );
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+//    showButtonSeparator( true ); TODO KF5: Replace with a Qt5 equivalent (if any equivalent exists)
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &PodcastFilenameLayoutConfigDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &PodcastFilenameLayoutConfigDialog::reject);
+
+    mainLayout->addWidget(main);
+    mainLayout->addWidget(buttonBox);
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
     init();
@@ -59,7 +74,7 @@ PodcastFilenameLayoutConfigDialog::init()
         m_choice = 1;
     }
 
-    connect( this, SIGNAL(okClicked()), this, SLOT(slotApply()) );
+    connect( buttonBox()->button(QDialogButtonBox::Ok) , &QAbstractButton::clicked, this, &PodcastFilenameLayoutConfigDialog::slotApply );
 }
 
 
@@ -79,4 +94,3 @@ PodcastFilenameLayoutConfigDialog::configure()
 }
 
 
-#include "PodcastFilenameLayoutConfigDialog.moc"

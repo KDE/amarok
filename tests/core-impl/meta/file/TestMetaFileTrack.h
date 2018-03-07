@@ -22,10 +22,10 @@
 
 #include "core-impl/meta/file/File.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
-class KTempDir;
+class QTemporaryDir;
 
 class TestMetaFileTrack : public QObject
 {
@@ -34,7 +34,7 @@ Q_OBJECT
 public:
     TestMetaFileTrack();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -76,7 +76,7 @@ private slots:
 
 private:
     MetaFile::TrackPtr m_track;
-    KTempDir *m_tmpDir;
+    QTemporaryDir *m_tmpDir;
     QString m_tmpFileName;
     QString m_origTrackPath;
 };

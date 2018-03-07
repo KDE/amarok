@@ -36,19 +36,19 @@ AmarokEngineScript::AmarokEngineScript( QScriptEngine* scriptEngine )
     scriptEngine->globalObject().property( "Amarok" ).setProperty( "Engine", scriptObject );
 
     EngineController *engine = The::engineController();
-    connect( engine, SIGNAL(trackPositionChanged(qint64,bool)),
-             this, SLOT(trackPositionChanged(qint64)) );
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)), this, SIGNAL(trackChanged()) );
-    connect( engine, SIGNAL(paused()), this, SLOT(slotPaused()) );
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)), this, SLOT(slotPlaying()) );
-    connect( engine, SIGNAL(stopped(qint64,qint64)), this, SIGNAL(trackFinished()) );
-    connect( engine, SIGNAL(currentMetadataChanged(QVariantMap)),
-             this, SLOT(slotNewMetaData()) );
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
-             this, SLOT(slotNewMetaData()) );
-    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
-             this, SLOT(slotNewMetaData()) );
-    connect( engine, SIGNAL(volumeChanged(int)), this, SIGNAL(volumeChanged(int)) );
+    connect( engine, &EngineController::trackPositionChanged,
+             this, &AmarokEngineScript::trackPositionChanged );
+    connect( engine, &EngineController::trackChanged, this, &AmarokEngineScript::trackChanged );
+    connect( engine, &EngineController::paused, this, &AmarokEngineScript::slotPaused );
+    connect( engine, &EngineController::trackPlaying, this, &AmarokEngineScript::slotPlaying );
+    connect( engine, &EngineController::stopped, this, &AmarokEngineScript::trackFinished );
+    connect( engine, &EngineController::currentMetadataChanged,
+             this, &AmarokEngineScript::slotNewMetaData );
+    connect( engine, &EngineController::trackMetadataChanged,
+             this, &AmarokEngineScript::slotNewMetaData );
+    connect( engine, &EngineController::albumMetadataChanged,
+             this, &AmarokEngineScript::slotNewMetaData );
+    connect( engine, &EngineController::volumeChanged, this, &AmarokEngineScript::volumeChanged );
 
     new AmarokEqualizerScript( scriptEngine );
 }

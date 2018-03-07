@@ -11,14 +11,14 @@ if (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
   # Already in cache
   set (QJSON_FOUND TRUE)
 
-else (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+else ()
 
   if (NOT WIN32)
     # use pkg-config to get the values of QJSON_INCLUDE_DIRS
     # and QJSON_LIBRARY_DIRS to add as hints to the find commands.
     include (FindPkgConfig)
     pkg_check_modules (PC_QJSON QJson>=0.5)
-  endif (NOT WIN32)
+  endif ()
 
   find_library (QJSON_LIBRARIES
     NAMES
@@ -41,4 +41,4 @@ else (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(QJSON DEFAULT_MSG QJSON_LIBRARIES QJSON_INCLUDE_DIR)
 
-endif (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+endif ()

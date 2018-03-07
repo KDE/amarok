@@ -24,7 +24,7 @@
 #include <QStringList>
 #include <QVariantMap>
 
-class MusicBrainzXmlParser : public ThreadWeaver::Job
+class MusicBrainzXmlParser : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 
@@ -36,7 +36,7 @@ class MusicBrainzXmlParser : public ThreadWeaver::Job
 
         explicit MusicBrainzXmlParser( const QString &doc );
 
-        void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
         int type();
 
@@ -44,6 +44,15 @@ class MusicBrainzXmlParser : public ThreadWeaver::Job
         QMap<QString, QString> artists;
         QMap<QString, QVariantMap> releases;
         QMap<QString, QVariantMap> releaseGroups;
+
+    Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
 
     private:
         void parseElement( const QDomElement &e );
@@ -69,6 +78,11 @@ class MusicBrainzXmlParser : public ThreadWeaver::Job
         int m_type;
 
         QVariantMap m_currentTrackInfo;
+
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+
 };
 
 #endif // MUSICBRAINZXMLPARSER_H

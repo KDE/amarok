@@ -56,7 +56,7 @@ namespace Meta
 
     /** Returns the name of the icon representing the field.
         May return an empty string if no such icon exists.
-        Create the icon with KIcon(iconForField(field))
+        Create the icon with QIcon::fromTheme(iconForField(field))
      */
     AMAROK_CORE_EXPORT QString iconForField( qint64 field );
 

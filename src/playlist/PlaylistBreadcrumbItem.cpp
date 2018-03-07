@@ -19,8 +19,8 @@
 
 #include "PlaylistSortWidget.h"
 
-#include <KIcon>
-#include <KLocale>
+#include <QIcon>
+#include <KLocalizedString>
 
 namespace Playlist
 {
@@ -33,17 +33,17 @@ BreadcrumbItemMenu::BreadcrumbItemMenu( Column currentColumn, QWidget *parent )
         if( !isSortableColumn( col ) || currentColumn == col )
             continue;
 
-        QAction *action = addAction( KIcon( iconName( col ) ),
+        QAction *action = addAction( QIcon::fromTheme( iconName( col ) ),
                                      QString( columnName( col ) ) );
         action->setData( internalColumnName( col ) );
     }
 
     addSeparator();
-    QAction *shuffleAction = addAction( KIcon( "media-playlist-shuffle" ),
+    QAction *shuffleAction = addAction( QIcon::fromTheme( "media-playlist-shuffle" ),
                                         QString( i18n( "Shuffle" ) ) );
     shuffleAction->setData( QString( "Shuffle" ) );
 
-    connect( this, SIGNAL(triggered(QAction*)), this, SLOT(actionTriggered(QAction*)) );
+    connect( this, &BreadcrumbItemMenu::triggered, this, &BreadcrumbItemMenu::actionTriggered );
 }
 
 BreadcrumbItemMenu::~BreadcrumbItemMenu()
@@ -62,7 +62,7 @@ BreadcrumbItemMenu::actionTriggered( QAction *action )
 /////// BreadcrumbItem methods begin here
 
 BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
-    : KHBox( parent )
+    : BoxWidget( false, parent )
     , m_name( level->name() )
     , m_prettyName( level->prettyName() )
 {
@@ -81,9 +81,9 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
 
     // And then the main breadcrumb button...
     m_mainButton = new BreadcrumbItemSortButton( level->icon(), level->prettyName(), this );
-    connect( m_mainButton, SIGNAL(clicked()), this, SIGNAL(clicked()) );
-    connect( m_mainButton, SIGNAL(arrowToggled(Qt::SortOrder)), this, SIGNAL(orderInverted()) );
-    connect( m_mainButton, SIGNAL(sizePolicyChanged()), this, SLOT(updateSizePolicy()) );
+    connect( m_mainButton, &BreadcrumbItemSortButton::clicked, this, &BreadcrumbItem::clicked );
+    connect( m_mainButton, &BreadcrumbItemSortButton::arrowToggled, this, &BreadcrumbItem::orderInverted );
+    connect( m_mainButton, &BreadcrumbItemSortButton::sizePolicyChanged, this, &BreadcrumbItem::updateSizePolicy );
     m_menu->hide();
 
     updateSizePolicy();

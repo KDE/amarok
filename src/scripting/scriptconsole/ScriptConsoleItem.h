@@ -22,7 +22,7 @@
 namespace KTextEditor{
     class View;
 }
-class KUrl;
+class QUrl;
 class QIcon;
 class QScriptContext;
 class QScriptEngine;
@@ -54,7 +54,7 @@ namespace ScriptConsoleNS
         private:
             bool m_clearOnDelete;
             ScriptEditorDocument *m_viewFactory;
-            QWeakPointer<KTextEditor::View> m_view;
+            QPointer<KTextEditor::View> m_view;
 
             void timerEvent(QTimerEvent* event);
             void initializeScriptEngine();

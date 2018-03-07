@@ -18,9 +18,8 @@
 
 #include <core-impl/collections/support/ArtistHelper.h>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestArtistHelper )
+QTEST_GUILESS_MAIN( TestArtistHelper )
 
 TestArtistHelper::TestArtistHelper() : QObject()
 {
@@ -53,4 +52,3 @@ TestArtistHelper::testRealTrackArtist()
     QCOMPARE( ArtistHelper::realTrackArtist( artistTag ), realArtist );
 }
 
-#include "TestArtistHelper.moc"

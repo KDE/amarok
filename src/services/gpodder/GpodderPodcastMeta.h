@@ -22,14 +22,14 @@
 
 #include "core/playlists/PlaylistProvider.h"
 #include "core/podcasts/PodcastMeta.h"
-#include <mygpo-qt/ApiRequest.h>
+#include <mygpo-qt5/ApiRequest.h>
 
 namespace Podcasts {
 
 class GpodderPodcastChannel;
 class GpodderProvider;
 
-typedef KSharedPtr<GpodderPodcastChannel> GpodderPodcastChannelPtr;
+typedef AmarokSharedPointer<GpodderPodcastChannel> GpodderPodcastChannelPtr;
 typedef QList<GpodderPodcastChannelPtr> GpodderPodcastChannelList;
 
 class GpodderPodcastChannel : public PodcastChannel
@@ -47,7 +47,7 @@ class GpodderPodcastChannel : public PodcastChannel
         virtual Playlists::PlaylistProvider *provider() const;
 
         //Playlist virtual methods
-        virtual KUrl uidUrl() const;
+        virtual QUrl uidUrl() const;
 
     private:
         GpodderProvider *m_provider;

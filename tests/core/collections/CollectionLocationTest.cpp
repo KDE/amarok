@@ -24,16 +24,12 @@
 #include "MockCollectionLocationDelegate.h"
 
 #include <QMutex>
+#include <QSignalSpy>
 #include <QVariantMap>
-
-#include <KCmdLineArgs>
-#include <KGlobal>
-
-#include <qtest_kde.h>
 
 #include <gmock/gmock.h>
 
-QTEST_KDEMAIN_CORE( CollectionLocationTest )
+QTEST_GUILESS_MAIN( CollectionLocationTest )
 
 using ::testing::Return;
 using ::testing::AnyNumber;
@@ -41,8 +37,6 @@ using ::testing::_;
 
 CollectionLocationTest::CollectionLocationTest()
 {
-    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
-    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
     qRegisterMetaType<Meta::TrackList>();
     qRegisterMetaType<Meta::AlbumList>();
     qRegisterMetaType<Meta::ArtistList>();
@@ -75,17 +69,18 @@ void CollectionLocationTest::testSuccessfulCopy()
     Amarok::Components::setCollectionLocationDelegate( cld );
 
     Collections::TestRemoveCL *cl = new Collections::TestRemoveCL();
+    QSignalSpy spy( cl, &Collections::TestRemoveCL::destroyed );
     EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  KUrl( "file:///IDoNotExist.mp3" ) );
+    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
     Meta::TrackPtr file1( new MetaMock( map ) );
     cl->transferSuccessful( file1 );
 
     QVERIFY2( cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection ), "Calling slot failed" );
     QCOMPARE( cl->count, 1 );
-    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL(destroyed()), 500 ) );
+    QVERIFY( spy.wait( 5000 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
@@ -98,16 +93,17 @@ void CollectionLocationTest::testFailedCopy()
 
     Collections::TestRemoveCL *cl = new Collections::TestRemoveCL();
     EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    QSignalSpy spy( cl, &Collections::TestRemoveCL::destroyed );
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  KUrl( "file:///IDoNotExist.mp3" ) );
+    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
     Meta::TrackPtr file1( new MetaMock( map ) );
     cl->transferError( file1, "Test of CollectionLocation" );
 
     QVERIFY2( cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection ), "Calling slot failed"  );
     QCOMPARE( cl->count, 0 );
-    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL(destroyed()), 500 ) );
+    QVERIFY( spy.wait( 5000 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
@@ -119,16 +115,17 @@ void CollectionLocationTest::testCopyMultipleTracks()
     Amarok::Components::setCollectionLocationDelegate( cld );
 
     Collections::TestRemoveCL *cl = new Collections::TestRemoveCL();
+    QSignalSpy spy( cl, &Collections::TestRemoveCL::destroyed );
     EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
 
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  KUrl( "file:///IDoNotExist.mp3" ) );
+    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
     Meta::TrackPtr file1( new MetaMock( map ) );
-    map.insert( Meta::Field::URL, KUrl( "file:///IDoNotExistAsWell.mp3" ) );
+    map.insert( Meta::Field::URL, QUrl("file:///IDoNotExistAsWell.mp3") );
     Meta::TrackPtr file2( new MetaMock( map )  );
-    map.insert( Meta::Field::URL, KUrl( "file:///IDoNotExistAsWell.mp3" ) );
+    map.insert( Meta::Field::URL, QUrl("file:///IDoNotExistAsWell.mp3") );
     Meta::TrackPtr file3( new MetaMock( map ) );
     cl->transferError( file1, "Test of CollectionLocation" );
     cl->transferSuccessful( file2 );
@@ -136,7 +133,7 @@ void CollectionLocationTest::testCopyMultipleTracks()
 
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QCOMPARE( cl->count, 2 );
-    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL(destroyed()), 500 ) );
+    QVERIFY( spy.wait( 5000 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
@@ -149,10 +146,11 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
 
     Collections::TestRemoveCL *cl = new Collections::TestRemoveCL();
     EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    QSignalSpy spy1( cl, &Collections::TestRemoveCL::destroyed );
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
-    map.insert( Meta::Field::URL,  KUrl( "file:///IDoNotExist.mp3" ) );
+    map.insert( Meta::Field::URL,  QUrl("file:///IDoNotExist.mp3") );
     Meta::TrackPtr file1( new MetaMock( map ) );
     cl->transferError( file1, "Test of CollectionLocation" );
     cl->transferSuccessful( file1 );
@@ -160,7 +158,7 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QVERIFY2( cl->count == 0, "Expected no call to remove");
 
-    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL(destroyed()), 500 ) );
+    QVERIFY( spy1.wait( 5000 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
 
     cld = new Collections::MockCollectionLocationDelegate();
@@ -170,6 +168,7 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
 
     cl = new Collections::TestRemoveCL();
     EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    QSignalSpy spy2( cl, &Collections::TestRemoveCL::destroyed );
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     file1 = Meta::TrackPtr( new MetaMock( map ) );
@@ -178,9 +177,8 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
 
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QVERIFY2( cl->count == 0, "Expected no call to remove after reversed method call");
-    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL(destroyed()), 500 ) );
+    QVERIFY( spy2.wait( 5000 ) );
     delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
-#include "CollectionLocationTest.moc"
 

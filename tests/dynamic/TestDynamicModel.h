@@ -18,7 +18,7 @@
 #define TESTDYNAMICMODEL_H
 
 #include <QModelIndex>
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestDynamicModel : public QObject
 {
@@ -26,7 +26,7 @@ class TestDynamicModel : public QObject
 public:
     TestDynamicModel();
 
-private slots:
+private Q_SLOTS:
     void init();
     void cleanup();
 

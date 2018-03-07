@@ -24,7 +24,7 @@
 
 #include "knowledgebase.h"
 
-#include <QtXml/QXmlStreamReader>
+#include <QXmlStreamReader>
 
 namespace AmarokAttica {
 

@@ -22,7 +22,7 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -58,7 +58,7 @@ Dynamic::WeeklyTopBiasFactory::createBias()
 
 Dynamic::WeeklyTopBias::WeeklyTopBias()
     : SimpleMatchBias()
-    , m_weeklyTimesJob( 0 )
+    , m_weeklyTimesJob( )
 {
     m_range.from = QDateTime::currentDateTime();
     m_range.to = QDateTime::currentDateTime();
@@ -137,8 +137,7 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
     if( m_range.from.isValid() )
         fromEdit->setDateTime( m_range.from );
 
-    connect( fromEdit, SIGNAL(dateTimeChanged(QDateTime)),
-             this, SLOT(fromDateChanged(QDateTime)) );
+    connect( fromEdit, &QDateTimeEdit::dateTimeChanged, this, &WeeklyTopBias::fromDateChanged );
     label->setBuddy( fromEdit );
     layout->addWidget( label );
     layout->addWidget( fromEdit );
@@ -151,8 +150,7 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
     if( m_range.to.isValid() )
         toEdit->setDateTime( m_range.to );
 
-    connect( toEdit, SIGNAL(dateTimeChanged(QDateTime)),
-             this, SLOT(toDateChanged(QDateTime)) );
+    connect( toEdit, &QDateTimeEdit::dateTimeChanged, this, &WeeklyTopBias::toDateChanged );
     label->setBuddy( toEdit );
     layout->addWidget( label );
     layout->addWidget( toEdit );
@@ -265,13 +263,13 @@ Dynamic::WeeklyTopBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
-             this, SLOT(updateReady(QStringList)) );
-    connect( m_qm.data(), SIGNAL(queryDone()),
-             this, SLOT(updateFinished()) );
+    connect( m_qm.data(), &Collections::QueryMaker::newResultReady,
+             this, &WeeklyTopBias::updateReady );
+    connect( m_qm.data(), &Collections::QueryMaker::queryDone,
+             this, &WeeklyTopBias::updateFinished );
 
     // - run the query
-    m_qm.data()->run();
+    m_qm->run();
 }
 
 void
@@ -285,8 +283,8 @@ Dynamic::WeeklyTopBias::newWeeklyTimesQuery()
 
     m_weeklyTimesJob = lastfm::ws::get( params );
 
-    connect( m_weeklyTimesJob, SIGNAL(finished()),
-             this, SLOT(weeklyTimesQueryFinished()) );
+    connect( m_weeklyTimesJob, &QNetworkReply::finished,
+             this, &WeeklyTopBias::weeklyTimesQueryFinished );
 }
 
 
@@ -331,8 +329,8 @@ void Dynamic::WeeklyTopBias::newWeeklyArtistQuery()
                 params[ "to" ] = QString::number( m_weeklyToTimes[m_weeklyFromTimes.indexOf(lastWeekTime)] );
 
                 QNetworkReply* reply = lastfm::ws::get( params );
-                connect( reply, SIGNAL(finished()),
-                         this, SLOT(weeklyArtistQueryFinished()) );
+                connect( reply, &QNetworkReply::finished,
+                         this, &WeeklyTopBias::weeklyArtistQueryFinished );
 
                 m_weeklyArtistJobs.insert( lastWeekTime, reply );
 
@@ -489,4 +487,3 @@ Dynamic::WeeklyTopBias::saveDataToFile() const
 }
 
 
-#include "WeeklyTopBias.moc"

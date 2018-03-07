@@ -18,8 +18,7 @@
 #define AMAROK_TRACK_SELECT_WIDGET_H
 
 #include "core/meta/forward_declarations.h"
-
-#include <KVBox>
+#include "widgets/BoxWidget.h"
 
 #include <QString>
 
@@ -29,7 +28,7 @@ class CollectionTreeView;
 
 class KSqueezedTextLabel;
 
-class TrackSelectWidget: public KVBox
+class TrackSelectWidget: public BoxWidget
 {
     Q_OBJECT
 
@@ -39,10 +38,10 @@ class TrackSelectWidget: public KVBox
 
         void setData( const Meta::DataPtr& );
 
-    signals:
+    Q_SIGNALS:
         void selectionChanged( const Meta::DataPtr& );
 
-    private slots:
+    private Q_SLOTS:
         void recvNewSelection( CollectionTreeItem* );
 
     private:

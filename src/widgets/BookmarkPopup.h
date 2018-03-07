@@ -22,7 +22,7 @@
 #include <QTimer>
 #include <QWidget>
 
-#include <KIcon>
+#include <QIcon>
 
 class BookmarkTriangle;
 
@@ -48,7 +48,7 @@ protected:
 
     virtual void paintEvent ( QPaintEvent* event );
 
-protected slots:
+protected Q_SLOTS:
     virtual void editValueChanged();
     virtual void hideTimerAction();
 
@@ -62,7 +62,7 @@ private:
 
     QTimer *m_timer;
     QString m_label;
-    KIcon m_deleteIcon;
+    QIcon m_deleteIcon;
     QRect m_deleteIconRect;
     QLineEdit *m_edit;
     int m_width;

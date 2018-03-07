@@ -26,7 +26,7 @@
 
 using namespace StatSyncing;
 
-static const int tupleIndexIndernalId = -1;
+static const quintptr tupleIndexIndernalId = 0;
 
 MatchedTracksModel::MatchedTracksModel( const QList<TrackTuple> &matchedTuples,
     const QList<qint64> &columns, const Options &options, QObject *parent )
@@ -117,7 +117,7 @@ MatchedTracksModel::data( const QModelIndex &index, int role ) const
             return QVariant();
         return tupleData( tuple, field, role );
     }
-    else if( index.internalId() >= 0 && index.internalId() < m_matchedTuples.count() )
+    else if( index.internalId() < (quintptr)m_matchedTuples.count() )
     {
         TrackTuple tuple = m_matchedTuples.value( index.internalId() );
         ProviderPtr provider = tuple.provider( index.row() );
@@ -131,8 +131,8 @@ MatchedTracksModel::data( const QModelIndex &index, int role ) const
 bool
 MatchedTracksModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
-    if( !idx.isValid() || idx.internalId() < 0 ||
-        idx.internalId() >= m_matchedTuples.count() ||
+    if( !idx.isValid() ||
+        idx.internalId() >= (quintptr)m_matchedTuples.count() ||
         role != Qt::CheckStateRole )
     {
         return false;

@@ -20,18 +20,18 @@
 #include "Reader.h"
 
 #include "authentication/contentfetcher.h"
-#include "DaapCollection.h"
-#include "DaapMeta.h"
+#include "../DaapCollection.h"
+#include "../DaapMeta.h"
 #include "core/support/Debug.h"
 
 
 #include <QByteArray>
 #include <QDateTime>
 #include <QDataStream>
-#include <QHttpResponseHeader>
 #include <QVariant>
 
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
 using namespace Daap;
 using namespace Meta;
@@ -75,16 +75,16 @@ Reader::logoutRequest()
 {
     DEBUG_BLOCK
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerLogoutHttp" );
-    connect( http, SIGNAL(httpError(QString)), this, SLOT(fetchingError(QString)) );
-    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(logoutRequest(int,bool)) );
+    connect( http, &ContentFetcher::httpError, this, &Reader::fetchingError );
+    connect( http, &ContentFetcher::finished, this, &Reader::logoutRequestFinished );
     http->getDaap( "/logout?" + m_loginString );
 }
 
 void
-Reader::logoutRequest( int, bool )
+Reader::logoutRequestFinished()
 {
     DEBUG_BLOCK
-    const_cast<QObject*>(sender())->deleteLater();
+    sender()->deleteLater();
     deleteLater();
 }
 
@@ -93,22 +93,17 @@ Reader::loginRequest()
 {
     DEBUG_BLOCK
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerHttp");
-    connect( http, SIGNAL(httpError(QString)), this, SLOT(fetchingError(QString)) );
-    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(contentCodesReceived(int,bool)) );
+    connect( http, &ContentFetcher::httpError, this, &Reader::fetchingError );
+    connect( http, &ContentFetcher::finished, this, &Reader::contentCodesReceived );
     http->getDaap( "/content-codes" );
 }
 
 void
-Reader::contentCodesReceived( int /* id */, bool error )
+Reader::contentCodesReceived()
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(contentCodesReceived(int,bool)) );
-    if( error )
-    {
-        http->deleteLater();
-        return;
-    }
+    disconnect( http, &ContentFetcher::finished, this, &Reader::contentCodesReceived );
 
     QDataStream raw( http->results() );
     Map contentCodes = parse( raw );
@@ -129,39 +124,33 @@ Reader::contentCodesReceived( int /* id */, bool error )
         }
     }
 
-    connect( http, SIGNAL(responseHeaderReceived(QHttpResponseHeader))
-            , this, SLOT(loginHeaderReceived(QHttpResponseHeader)) );
+    connect( http, &ContentFetcher::loginRequired,
+             this, &Reader::loginHeaderReceived );
     http->getDaap( "/login" );
 }
 
 void
-Reader::loginHeaderReceived( const QHttpResponseHeader & resp )
+Reader::loginHeaderReceived()
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL(responseHeaderReceived(QHttpResponseHeader))
-            , this, SLOT(loginHeaderReceived(QHttpResponseHeader)) );
-    if( resp.statusCode() == 401 /*authorization required*/)
-    {
-        emit passwordRequired();
-        http->deleteLater();
-        return;
-    }
-    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(loginFinished(int,bool)) );
+    disconnect( http, &ContentFetcher::loginRequired,
+                this, &Reader::loginHeaderReceived );
+
+    emit passwordRequired();
+    http->deleteLater();
+
+//     connect( http, &ContentFetcher::finished, this, &Reader::loginFinished );
 }
 
 
 void
-Reader::loginFinished( int /* id */, bool error )
+Reader::loginFinished()
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(loginFinished(int,bool)) );
-    if( error )
-    {
-        http->deleteLater();
-        return;
-    }
+    disconnect( http, &ContentFetcher::finished, this, &Reader::loginFinished );
+
     QDataStream raw( http->results() );
     Map loginResults = parse( raw );
     QVariantList list = loginResults.value( "mlog" ).toList();
@@ -175,22 +164,16 @@ Reader::loginFinished( int /* id */, bool error )
     }
     m_sessionId = innerList.value( 0 ).toInt();
     m_loginString = "session-id=" + QString::number( m_sessionId );
-    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(updateFinished(int,bool)) );
+    connect( http, &ContentFetcher::finished, this, &Reader::updateFinished );
     http->getDaap( "/update?" + m_loginString );
 }
 
 void
-Reader::updateFinished( int /*id*/, bool error )
+Reader::updateFinished()
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(updateFinished(int,bool)) );
-    if( error )
-    {
-        http->deleteLater();
-        warning() << "what is going on here? " << http->error();
-        return;
-    }
+    disconnect( http, &ContentFetcher::finished, this, &Reader::updateFinished );
 
     QDataStream raw( http->results() );
     Map updateResults = parse( raw );
@@ -201,45 +184,36 @@ Reader::updateFinished( int /*id*/, bool error )
     m_loginString = m_loginString + "&revision-number="  +
             QString::number( updateResults["mupd"].toList()[0].toMap()["musr"].toList()[0].toInt() );
 
-    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(databaseIdFinished(int,bool)) );
+    connect( http, &ContentFetcher::finished, this, &Reader::databaseIdFinished );
     http->getDaap( "/databases?" + m_loginString );
 }
 
 void
-Reader::databaseIdFinished( int /*id*/, bool error )
+Reader::databaseIdFinished()
 {
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(databaseIdFinished(int,bool)) );
-    if( error )
-    {
-        http->deleteLater();
-        return;
-    }
+    disconnect( http, &ContentFetcher::finished, this, &Reader::databaseIdFinished );
 
     QDataStream raw( http->results() );
     Map dbIdResults = parse( raw );
     m_databaseId = QString::number( dbIdResults["avdb"].toList()[0].toMap()["mlcl"].toList()[0].toMap()["mlit"].toList()[0].toMap()["miid"].toList()[0].toInt() );
-    connect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(songListFinished(int,bool)) );
+    connect( http, &ContentFetcher::finished, this, &Reader::songListFinished );
     http->getDaap( QString("/databases/%1/items?type=music&meta=dmap.itemid,dmap.itemname,daap.songformat,daap.songartist,daap.songalbum,daap.songtime,daap.songtracknumber,daap.songcomment,daap.songyear,daap.songgenre&%2")
                 .arg( m_databaseId, m_loginString ) );
 
 }
 
 void
-Reader::songListFinished( int /*id*/, bool error )
+Reader::songListFinished()
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL(requestFinished(int,bool)), this, SLOT(songListFinished(int,bool)) );
-    if( error )
-    {
-        http->deleteLater();
-        return;
-    }
+    disconnect( http, &ContentFetcher::finished, this, &Reader::songListFinished );
+
     QByteArray result = http->results();
     http->deleteLater();
 
-    ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( result, this, m_memColl ) );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(new WorkerThread( result, this, m_memColl )) );
 }
 
 bool
@@ -561,19 +535,20 @@ void
 Reader::fetchingError( const QString& error )
 {
     DEBUG_BLOCK
-    const_cast< QObject* >( sender() )->deleteLater();
+    sender()->deleteLater();
     emit httpError( error );
 }
 
 WorkerThread::WorkerThread( const QByteArray &data, Reader *reader, Collections::DaapCollection *coll )
-    : ThreadWeaver::Job()
+    : QObject()
+    , ThreadWeaver::Job()
     , m_success( false )
     , m_data( data )
     , m_reader( reader )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), coll, SLOT(loadedDataFromServer()) );
-    connect( this, SIGNAL(failed(ThreadWeaver::Job*)), coll, SLOT(parsingFailed()) );
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
+    connect( this, &WorkerThread::done, coll, &Collections::DaapCollection::loadedDataFromServer );
+    connect( this, &WorkerThread::failed, coll, &Collections::DaapCollection::parsingFailed );
+    connect( this, &WorkerThread::done, this, &Reader::deleteLater );
 }
 
 WorkerThread::~WorkerThread()
@@ -588,10 +563,26 @@ WorkerThread::success() const
 }
 
 void
-WorkerThread::run()
+WorkerThread::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     m_success = m_reader->parseSongList( m_data, true );
 }
 
-#include "Reader.moc"
+void
+WorkerThread::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
 
+void
+WorkerThread::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}

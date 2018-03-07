@@ -18,7 +18,7 @@
 #ifndef MUSICBRAINZTAGSVIEW_H
 #define MUSICBRAINZTAGSVIEW_H
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QTreeView>
 
@@ -33,23 +33,23 @@ class MusicBrainzTagsView : public QTreeView
 
         MusicBrainzTagsModel *sourceModel() const;
 
-    public slots:
+    public Q_SLOTS:
         void collapseChosen();
         void expandUnchosen();
 
     protected:
         virtual void contextMenuEvent( QContextMenuEvent *event );
 
-    private slots:
+    private Q_SLOTS:
         void chooseBestMatchesFromRelease() const;
         void openArtistPage() const;
         void openReleasePage() const;
         void openTrackPage() const;
 
     private:
-        KIcon m_artistIcon;
-        KIcon m_releaseIcon;
-        KIcon m_trackIcon;
+        QIcon m_artistIcon;
+        QIcon m_releaseIcon;
+        QIcon m_trackIcon;
 };
 
 #endif // MUSICBRAINZTAGSVIEW_H

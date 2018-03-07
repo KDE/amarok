@@ -32,18 +32,19 @@ namespace The { GpodderService *gpodderService(); }
 
 class GpodderServiceFactory : public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_gpodder.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
 public:
-    GpodderServiceFactory( QObject *parent, const QVariantList &args );
-    virtual ~GpodderServiceFactory() {}
+    GpodderServiceFactory();
+    virtual ~GpodderServiceFactory();
 
     virtual void init();
     virtual QString name();
-    virtual KPluginInfo info();
     virtual KConfigGroup config();
 
-private slots:
+private Q_SLOTS:
     void slotCreateGpodderService();
     void slotRemoveGpodderService();
 
@@ -59,7 +60,7 @@ public:
     GpodderService( GpodderServiceFactory *parent, const QString &name );
     virtual ~GpodderService();
 
-private slots:
+private Q_SLOTS:
     void subscribe();
     void itemSelected( CollectionTreeItem *selectedItem );
 

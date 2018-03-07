@@ -30,23 +30,20 @@
 #include "ServiceSqlRegistry.h"
 #include "widgets/SearchWidget.h"
 
-#include <KStandardDirs>
-#include <KTemporaryFile>
-#include <threadweaver/ThreadWeaver.h>
+#include <QStandardPaths>
 
-#include <typeinfo>
+#include <KIconThemes/KIconLoader>
+
 
 using namespace Meta;
 
-AMAROK_EXPORT_SERVICE_PLUGIN( opmldirectory, OpmlDirectoryServiceFactory )
 
-OpmlDirectoryServiceFactory::OpmlDirectoryServiceFactory( QObject *parent, const QVariantList &args )
-    : ServiceFactory( parent, args )
-{
-    KPluginInfo pluginInfo( "amarok_service_opmldirectory.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    m_info = pluginInfo;
-}
+OpmlDirectoryServiceFactory::OpmlDirectoryServiceFactory()
+    : ServiceFactory()
+{}
+
+OpmlDirectoryServiceFactory::~OpmlDirectoryServiceFactory()
+{}
 
 void OpmlDirectoryServiceFactory::init()
 {
@@ -71,7 +68,7 @@ OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent,
  : ServiceBase( name, parent, false, prettyName )
 {
     setShortDescription( i18n( "A large listing of podcasts" ) );
-    setIcon( KIcon( "view-services-opml-amarok" ) );
+    setIcon( QIcon::fromTheme( "view-services-opml-amarok" ) );
 
     setLongDescription( i18n( "A comprehensive list of searchable podcasts that you can subscribe to directly from within Amarok." ) );
 
@@ -109,45 +106,42 @@ void OpmlDirectoryService::polish()
     opmlView->setDragDropMode ( QAbstractItemView::DragOnly );
     opmlView->setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
     setView( opmlView );
-    KUrl opmlLocation( Amarok::saveLocation() );
-    opmlLocation.addPath( "podcast_directory.opml" );
+    QString opmlLocation = Amarok::saveLocation() + "podcast_directory.opml";
 
-    if( !QFile::exists( opmlLocation.toLocalFile() ) )
+    if( !QFile::exists( opmlLocation ) )
     {
         //copy from the standard data dir
-        KUrl schippedOpmlLocation( KStandardDirs::locate( "data", "amarok/data/" ) );
-        schippedOpmlLocation.addPath( "podcast_directory.opml" );
-        if( !QFile::copy( schippedOpmlLocation.toLocalFile(), opmlLocation.toLocalFile() ) )
+        QString schippedOpmlLocation = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/podcast_directory.opml" );
+        if( !QFile::copy( schippedOpmlLocation, opmlLocation ) )
         {
             debug() << QString( "Failed to copy from %1 to %2" )
-            .arg( schippedOpmlLocation.toLocalFile(), opmlLocation.toLocalFile() );
+            .arg( schippedOpmlLocation, opmlLocation );
             //TODO: error box drawn in the view's area.
             return;
         }
     }
 
-    setModel( new OpmlDirectoryModel( opmlLocation, this ) );
+    setModel( new OpmlDirectoryModel( QUrl::fromLocalFile( opmlLocation ), this ) );
 
     m_subscribeButton = new QPushButton( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
     m_subscribeButton->setObjectName( "subscribeButton" );
-    m_subscribeButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    m_subscribeButton->setIcon( QIcon::fromTheme( "get-hot-new-stuff-amarok" ) );
 
     m_subscribeButton->setEnabled( false );
 
-    connect( m_subscribeButton, SIGNAL(clicked()), this, SLOT(subscribe()) );
+    connect( m_subscribeButton, &QPushButton::clicked, this, &OpmlDirectoryService::subscribe );
 
     m_addOpmlButton = new QPushButton( m_bottomPanel );
     m_addOpmlButton->setText( i18n( "Add OPML" ) );
     m_addOpmlButton->setObjectName( "addOpmlButton" );
-    m_addOpmlButton->setIcon( KIcon( "list-add-amarok" ) );
+    m_addOpmlButton->setIcon( QIcon::fromTheme( "list-add-amarok" ) );
 
-    connect( m_addOpmlButton, SIGNAL(clicked()), model(), SLOT(slotAddOpmlAction()) );
+    connect( m_addOpmlButton, &QPushButton::clicked,
+             dynamic_cast<OpmlDirectoryModel*>( model() ), &OpmlDirectoryModel::slotAddOpmlAction );
 
-    connect( view()->selectionModel(),
-             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-             SLOT(slotSelectionChanged(QItemSelection,QItemSelection))
-           );
+    connect( view()->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &OpmlDirectoryService::slotSelectionChanged );
 
     setInfoParser( new OpmlDirectoryInfoParser() );
 

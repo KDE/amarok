@@ -23,18 +23,17 @@
 #include "MemoryCollection.h"
 #include "Reader.h"
 
+#include <QIcon>
 #include <QMap>
 #include <QHash>
 #include <QHostInfo>
-#include <QWeakPointer>
+#include <QPointer>
 #include <QtGlobal>
 #include <QSharedPointer>
 
-#include <KIcon>
+#include <DNSSD/RemoteService>
 
-#include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
-
-namespace DNSSD {
+namespace KDNSSD {
     class ServiceBrowser;
 }
 
@@ -44,9 +43,12 @@ class DaapCollection;
 
 class DaapCollectionFactory : public Collections::CollectionFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-daapcollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
+
     public:
-        DaapCollectionFactory( QObject *parent, const QVariantList &args );
+        DaapCollectionFactory();
         virtual ~DaapCollectionFactory();
 
         virtual void init();
@@ -54,10 +56,10 @@ class DaapCollectionFactory : public Collections::CollectionFactory
     private:
         QString serverKey( const QString& host, quint16 port ) const;
 
-    private slots:
+    private Q_SLOTS:
         void connectToManualServers();
-        void serverOffline( DNSSD::RemoteService::Ptr );
-        void foundDaap( DNSSD::RemoteService::Ptr );
+        void serverOffline( KDNSSD::RemoteService::Ptr );
+        void foundDaap( KDNSSD::RemoteService::Ptr );
         void resolvedDaap( bool );
         void slotCollectionReady();
         void slotCollectionDownloadFailed();
@@ -66,9 +68,9 @@ class DaapCollectionFactory : public Collections::CollectionFactory
         void resolvedManualServerIp(QHostInfo);
 
     private:
-        DNSSD::ServiceBrowser* m_browser;
+        KDNSSD::ServiceBrowser* m_browser;
 
-        QMap<QString, QWeakPointer<DaapCollection> > m_collectionMap;
+        QMap<QString, QPointer<DaapCollection> > m_collectionMap;
 
         QHash<int, quint16> m_lookupHash;
 };
@@ -84,20 +86,20 @@ class DaapCollection : public Collections::Collection
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
-        virtual KIcon icon() const { return KIcon("network-server"); }
+        virtual QIcon icon() const { return QIcon::fromTheme("network-server"); }
 
         void serverOffline();
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
-    signals:
+    Q_SIGNALS:
         void collectionReady();
 
-    public slots:
+    public Q_SLOTS:
         void loadedDataFromServer();
         void parsingFailed();
 
-    private slots:
+    private Q_SLOTS:
         void passwordRequired();
         void httpError( const QString &error );
 

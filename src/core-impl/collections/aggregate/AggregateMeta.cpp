@@ -32,7 +32,7 @@ namespace Meta
 {
 
 #define FORWARD( call ) { foreach( TrackEditorPtr e, m_editors ) { e->call; } \
-                            if( !m_batchMode ) QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) ); }
+                            if( !m_batchMode ) QTimer::singleShot( 0, m_collection, &Collections::AggregateCollection::slotUpdated ); }
 
 class AggregateTrackEditor : public TrackEditor
 {
@@ -53,7 +53,7 @@ public:
     {
         foreach( TrackEditorPtr ec, m_editors ) ec->endUpdate();
         m_batchMode = false;
-        QTimer::singleShot( 0, m_collection, SLOT(slotUpdated()) );
+        QTimer::singleShot( 0, m_collection, &Collections::AggregateCollection::slotUpdated );
     }
     void setComment( const QString &newComment ) { FORWARD( setComment( newComment ) ) }
     void setTrackNumber( int newTrackNumber ) { FORWARD( setTrackNumber( newTrackNumber ) ) }
@@ -125,7 +125,7 @@ AggregateTrack::sortableName() const
     return m_name;
 }
 
-KUrl
+QUrl
 AggregateTrack::playableUrl() const
 {
     Meta::TrackPtr bestPlayableTrack;
@@ -150,7 +150,7 @@ AggregateTrack::playableUrl() const
     if( bestPlayableTrack )
         return bestPlayableTrack->playableUrl();
 
-    return KUrl();
+    return QUrl();
 }
 
 QString
@@ -837,21 +837,21 @@ AggregateAlbum::image( int size ) const
     return Meta::Album::image( size );
 }
 
-KUrl
+QUrl
 AggregateAlbum::imageLocation( int size )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
         if( album->hasImage( size ) )
         {
-            KUrl url = album->imageLocation( size );
+            QUrl url = album->imageLocation( size );
             if( url.isValid() )
             {
                 return url;
             }
         }
     }
-    return KUrl();
+    return QUrl();
 }
 
 QPixmap
@@ -1442,7 +1442,7 @@ AggreagateYear::metadataChanged( Meta::YearPtr year )
             else
             {
                 // be careful with the ordering of instructions here
-                // AggregateCollection uses KSharedPtr internally
+                // AggregateCollection uses AmarokSharedPointer internally
                 // so we have to make sure that there is more than one pointer
                 // to this instance by registering this instance under the new name
                 // before removing the old one. Otherwise kSharedPtr might delete this

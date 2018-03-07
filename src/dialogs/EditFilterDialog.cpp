@@ -25,11 +25,11 @@
 #include "dialogs/EditFilterDialog.h"
 #include "widgets/TokenDropTarget.h"
 
-#include <KGlobal>
-#include <KLocale>
-#include <klocalizeddate.h>
-#include <KMessageBox>
 #include <QPushButton>
+#include <QDialogButtonBox>
+
+#include <KLocalizedString>
+#include <KMessageBox>
 
 #define OR_TOKEN Meta::valCustom  + 1
 #define AND_TOKEN Meta::valCustom + 2
@@ -39,16 +39,25 @@
 #define SIMPLE_TEXT_CONSTRUCT new Token( i18n( "Simple text" ), "media-track-edit-amarok", 0 )
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
-    : KDialog( parent )
+    : QDialog( parent )
     , m_ui( new Ui::EditFilterDialog )
     , m_curToken( 0 )
     , m_separator( " AND " )
     , m_isUpdating()
 {
-    setCaption( i18n( "Edit Filter" ) );
-    setButtons( KDialog::Reset | KDialog::Ok | KDialog::Cancel );
+    setWindowTitle( i18n( "Edit Filter" ) );
+    setLayout( new QVBoxLayout );
 
-    m_ui->setupUi( mainWidget() );
+    auto mainWidget = new QWidget( this );
+    m_ui->setupUi( mainWidget );
+    layout()->addWidget( mainWidget );
+
+    auto buttonBox = new QDialogButtonBox( QDialogButtonBox::Reset | QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this );
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    auto resetButton = buttonBox->button( QDialogButtonBox::Reset );
+    connect( resetButton, &QPushButton::clicked, this, &EditFilterDialog::slotReset );
+    layout()->addWidget( buttonBox );
 
     m_ui->dropTarget->setRowLimit( 1 );
 
@@ -58,24 +67,23 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     updateDropTarget( text );
     updateAttributeEditor();
 
-    connect( m_ui->mqwAttributeEditor, SIGNAL(changed(MetaQueryWidget::Filter)),
-             SLOT(slotAttributeChanged(MetaQueryWidget::Filter)) );
-    connect( this, SIGNAL(resetClicked()), SLOT(slotReset()) );
-    connect( m_ui->cbInvert, SIGNAL(toggled(bool)),
-             SLOT(slotInvert(bool)) );
-    connect( m_ui->rbAnd, SIGNAL(toggled(bool)),
-             SLOT(slotSeparatorChange()) );
-    connect( m_ui->rbOr, SIGNAL(toggled(bool)),
-             SLOT(slotSeparatorChange()) );
-    connect( m_ui->tpTokenPool, SIGNAL(onDoubleClick(Token*)),
-             m_ui->dropTarget, SLOT(insertToken(Token*)) );
-    connect( m_ui->dropTarget, SIGNAL(tokenSelected(Token*)),
-             SLOT(slotTokenSelected(Token*)) );
-    connect( m_ui->dropTarget, SIGNAL(changed()),
-             SLOT(updateSearchEdit()) ); // in case someone dragged a token around.
+    connect( m_ui->mqwAttributeEditor, &MetaQueryWidget::changed,
+             this, &EditFilterDialog::slotAttributeChanged );
+    connect( m_ui->cbInvert, &QCheckBox::toggled,
+             this, &EditFilterDialog::slotInvert );
+    connect( m_ui->rbAnd, &QCheckBox::toggled,
+             this, &EditFilterDialog::slotSeparatorChange );
+    connect( m_ui->rbOr, &QCheckBox::toggled,
+             this, &EditFilterDialog::slotSeparatorChange );
+    connect( m_ui->tpTokenPool, &TokenPool::onDoubleClick,
+             m_ui->dropTarget, &TokenDropTarget::appendToken );
+    connect( m_ui->dropTarget, &TokenDropTarget::tokenSelected,
+             this, &EditFilterDialog::slotTokenSelected );
+    connect( m_ui->dropTarget, &TokenDropTarget::changed,
+             this, &EditFilterDialog::updateSearchEdit ); // in case someone dragged a token around.
 
-    connect( m_ui->searchEdit, SIGNAL(textEdited(QString)),
-             SLOT(slotSearchEditChanged(QString)) );
+    connect( m_ui->searchEdit, &QLineEdit::textEdited,
+             this, &EditFilterDialog::slotSearchEditChanged );
 }
 
 EditFilterDialog::~EditFilterDialog()
@@ -136,8 +144,8 @@ EditFilterDialog::filterForToken( Token *token )
         newFilter.inverted = false;
 
         m_filters.insert( token, newFilter );
-        connect( token, SIGNAL(destroyed(QObject*)),
-                 this, SLOT(slotTokenDestroyed(QObject*)) );
+        connect( token, &Token::destroyed,
+                 this, &EditFilterDialog::slotTokenDestroyed );
     }
 
     return m_filters[token];
@@ -227,7 +235,7 @@ void
 EditFilterDialog::accept()
 {
     emit filterChanged( filter() );
-    KDialog::accept();
+    QDialog::accept();
 }
 
 void
@@ -289,9 +297,9 @@ EditFilterDialog::updateDropTarget( const QString &text )
         foreach( const expression_element &elem, orList )
         {
             if( AND )
-                m_ui->dropTarget->insertToken( AND_TOKEN_CONSTRUCT );
+                m_ui->dropTarget->appendToken( AND_TOKEN_CONSTRUCT );
             else if( OR )
-                m_ui->dropTarget->insertToken( OR_TOKEN_CONSTRUCT );
+                m_ui->dropTarget->appendToken( OR_TOKEN_CONSTRUCT );
 
             Filter filter;
             filter.filter.setField( !elem.field.isEmpty() ? Meta::fieldForName( elem.field ) : 0 );
@@ -304,16 +312,16 @@ EditFilterDialog::updateDropTarget( const QString &text )
                 QString strTime = elem.text;
 
                 // parse date using local settings
-                KLocalizedDate localizedDate = KLocalizedDate::readDate( strTime, KLocale::ShortFormat );
+                auto date = QLocale().toDate( strTime, QLocale::ShortFormat );
 
                 // parse date using a backup standard independent from local settings
                 QRegExp shortDateReg("(\\d{1,2})[-.](\\d{1,2})");
                 QRegExp longDateReg("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})");
                 // NOTE for absolute time specifications numValue is a unix timestamp,
                 // for relative time specifications numValue is a time difference in seconds 'pointing to the past'
-                if( localizedDate.isValid() )
+                if( date.isValid() )
                 {
-                    filter.filter.numValue = QDateTime( localizedDate.date() ).toTime_t();
+                    filter.filter.numValue = QDateTime( date ).toTime_t();
                     isDateAbsolute = true;
                 }
                 else if( strTime.contains(shortDateReg) )
@@ -443,10 +451,10 @@ EditFilterDialog::updateDropTarget( const QString &text )
                             ? tokenForField( filter.filter.field() )
                             : SIMPLE_TEXT_CONSTRUCT;
             m_filters.insert( nToken, filter );
-            connect( nToken, SIGNAL(destroyed(QObject*)),
-                     this, SLOT(slotTokenDestroyed(QObject*)) );
+            connect( nToken, &Token::destroyed,
+                     this, &EditFilterDialog::slotTokenDestroyed );
 
-            m_ui->dropTarget->insertToken( nToken );
+            m_ui->dropTarget->appendToken( nToken );
 
             OR = true;
         }
@@ -490,5 +498,4 @@ EditFilterDialog::filter()
     return filterString;
 }
 
-#include "EditFilterDialog.moc"
 

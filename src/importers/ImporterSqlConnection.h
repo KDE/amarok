@@ -25,7 +25,7 @@
 #include <QMutex>
 #include <QPointer>
 #include <QSharedPointer>
-#include <QSqlDatabase>
+#include <QtSql/QSqlDatabase>
 #include <QString>
 #include <QVariant>
 #include <QVariantList>
@@ -131,7 +131,7 @@ private:
     bool m_openTransaction;
     QList<QVariantList> m_result;
 
-private slots:
+private Q_SLOTS:
     void slotQuery( const QString &query, const QVariantMap &bindValues, bool* const ok );
     void slotTransaction();
     void slotRollback();

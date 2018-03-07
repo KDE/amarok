@@ -47,7 +47,7 @@
 #include "playlist/PlaylistRestorer.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <typeinfo>
 
 Playlist::Actions* Playlist::Actions::s_instance = 0;
@@ -80,10 +80,10 @@ Playlist::Actions::Actions()
 
     if( engine ) // test cases might create a playlist without having an EngineController
     {
-        connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-                 this, SLOT(slotTrackPlaying(Meta::TrackPtr)) );
-        connect( engine, SIGNAL(stopped(qint64,qint64)),
-                 this, SLOT(slotPlayingStopped(qint64,qint64)) );
+        connect( engine, &EngineController::trackPlaying,
+                 this, &Playlist::Actions::slotTrackPlaying );
+        connect( engine, &EngineController::stopped,
+                 this, &Playlist::Actions::slotPlayingStopped );
     }
 }
 
@@ -248,7 +248,7 @@ Playlist::Actions::enableDynamicMode( bool enable )
     AmarokConfig::setDynamicMode( enable );
     // TODO: turn off other incompatible modes
     // TODO: should we restore the state of other modes?
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
 
     Playlist::Dock *dock = The::mainWindow()->playlistDock();
     Playlist::SortWidget *sorting = dock ? dock->sortWidget() : 0;
@@ -521,8 +521,8 @@ Playlist::Actions::restoreDefaultPlaylist()
     // non-collection Tracks will not be loaded correctly.
     The::playlistManager();
     Playlist::Restorer *restorer = new Playlist::Restorer();
-    restorer->restore( Amarok::defaultPlaylistPath() );
-    connect( restorer, SIGNAL(restoreFinished()), restorer, SLOT(deleteLater()) );
+    restorer->restore( QUrl::fromLocalFile(Amarok::defaultPlaylistPath()) );
+    connect( restorer, &Playlist::Restorer::restoreFinished, restorer, &QObject::deleteLater );
 }
 
 namespace The

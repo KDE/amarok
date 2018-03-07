@@ -20,8 +20,8 @@
 
 #include <QHeaderView>
 
-MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-: QDialog(parent, fl)
+MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl)
+    : QDialog(parent, fl)
 {
     setObjectName( name );
     setModal( modal );
@@ -30,7 +30,7 @@ MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char
 
     redownloadListView->header()->setStretchLastSection( true );
     redownloadListView->setRootIsDecorated( false );
-    connect( redownloadListView, SIGNAL(itemSelectionChanged()), SLOT(selectionChanged()) );
+    connect( redownloadListView, &QTreeWidget::itemSelectionChanged, this, &MagnatuneRedownloadDialog::selectionChanged );
 }
 
 MagnatuneRedownloadDialog::~MagnatuneRedownloadDialog()
@@ -67,9 +67,8 @@ void MagnatuneRedownloadDialog::setRedownloadItems( QList<MagnatuneDownloadInfo>
     
 }
 
-void MagnatuneRedownloadDialog::redownload( )
+void MagnatuneRedownloadDialog::slotRedownload( )
 {
-
     QTreeWidgetItem * current = redownloadListView->currentItem();
     if ( m_infoMap.keys().contains( current ) )
     {
@@ -99,5 +98,4 @@ void MagnatuneRedownloadDialog::selectionChanged( )
 /*$SPECIALIZATION$*/
 
 
-#include "MagnatuneRedownloadDialog.moc"
 

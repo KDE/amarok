@@ -19,6 +19,7 @@
 
 #include "PlaylistBrowserView.h"
 
+#include "MainWindow.h"
 #include "PaletteHandler.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
@@ -27,24 +28,21 @@
 #include "browsers/playlistbrowser/PlaylistsByProviderProxy.h"
 #include "browsers/playlistbrowser/PlaylistsInFoldersProxy.h"
 #include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
 #include "core/support/Debug.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistModel.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KFileDialog>
-#include <KGlobalSettings>
-#include <KMenu>
-
-#include <QKeyEvent>
-#include <QMouseEvent>
 #include <QCheckBox>
+#include <QFileDialog>
+#include <QKeyEvent>
 #include <QLabel>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMouseEvent>
 
-Q_DECLARE_METATYPE( QModelIndexList )
+#include <KConfigGroup>
 
 using namespace PlaylistBrowserNS;
 
@@ -63,50 +61,50 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
     setEditTriggers( QAbstractItemView::EditKeyPressed );
     setMouseTracking( true ); // needed for highlighting provider action icons
 
-    m_createEmptyPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ),
+    m_createEmptyPlaylistAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ),
                                                i18n( "Create an Empty Playlist" ), this );
-    connect( m_createEmptyPlaylistAction, SIGNAL(triggered()), SLOT(slotCreateEmptyPlaylist()) );
+    connect( m_createEmptyPlaylistAction, &QAction::triggered, this, &PlaylistBrowserView::slotCreateEmptyPlaylist );
 
-    m_appendAction = new QAction( KIcon( "media-track-add-amarok" ),
+    m_appendAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ),
             i18n( "&Add to Playlist" ), this );
     m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-    connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppend()) );
+    connect( m_appendAction, &QAction::triggered, this, &PlaylistBrowserView::slotAppend );
 
-    m_loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently "
+    m_loadAction = new QAction( QIcon::fromTheme( "folder-open" ), i18nc( "Replace the currently "
             "loaded tracks with these", "&Replace Playlist" ), this );
     m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-    connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotLoad()) );
+    connect( m_loadAction, &QAction::triggered, this, &PlaylistBrowserView::slotLoad );
 
-    m_setNewAction = new QAction( KIcon( "rating" ), i18nc( "toggle the \"new\" status "
+    m_setNewAction = new QAction( QIcon::fromTheme( "rating" ), i18nc( "toggle the \"new\" status "
             " of this podcast episode", "&New" ), this );
     m_setNewAction->setProperty( "popupdropper_svg_id", "new" );
     m_setNewAction->setCheckable( true );
-    connect( m_setNewAction, SIGNAL(triggered(bool)), SLOT(slotSetNew(bool)) );
+    connect( m_setNewAction, &QAction::triggered, this, &PlaylistBrowserView::slotSetNew );
 
-    m_renamePlaylistAction = new QAction( KIcon( "media-track-edit-amarok" ),
+    m_renamePlaylistAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
             i18n( "&Rename..." ), this );
     m_renamePlaylistAction->setProperty( "popupdropper_svg_id", "edit" );
     // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
     m_renamePlaylistAction->setShortcut( Qt::Key_F2 );
-    connect( m_renamePlaylistAction, SIGNAL(triggered()), this, SLOT(slotRename()) );
+    connect( m_renamePlaylistAction, &QAction::triggered, this, &PlaylistBrowserView::slotRename );
 
-    m_deletePlaylistAction = new QAction( KIcon( "media-track-remove-amarok" ),
+    m_deletePlaylistAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
             i18n( "&Delete..." ), this );
     m_deletePlaylistAction->setProperty( "popupdropper_svg_id", "delete" );
     // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
     m_deletePlaylistAction->setShortcut( Qt::Key_Delete );
-    connect( m_deletePlaylistAction, SIGNAL(triggered()), SLOT(slotDelete()) );
+    connect( m_deletePlaylistAction, &QAction::triggered, this, &PlaylistBrowserView::slotDelete );
 
-    m_removeTracksAction = new QAction( KIcon( "media-track-remove-amarok" ),
+    m_removeTracksAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
             QString( "<placeholder>" ), this );
     m_removeTracksAction->setProperty( "popupdropper_svg_id", "delete" );
     // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
     m_removeTracksAction->setShortcut( Qt::Key_Delete );
-    connect( m_removeTracksAction, SIGNAL(triggered()), SLOT(slotRemoveTracks()) );
+    connect( m_removeTracksAction, &QAction::triggered, this, &PlaylistBrowserView::slotRemoveTracks );
 
-    m_exportAction = new QAction( KIcon( "document-export-amarok" ),
+    m_exportAction = new QAction( QIcon::fromTheme( "document-export-amarok" ),
             i18n( "&Export As..." ), this );
-    connect( m_exportAction, SIGNAL(triggered()), this, SLOT(slotExport()) );
+    connect( m_exportAction, &QAction::triggered, this, &PlaylistBrowserView::slotExport );
 
     m_separatorAction = new QAction( this );
     m_separatorAction->setSeparator( true );
@@ -127,7 +125,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
 {
     if( m_pd )
     {
-        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(deleteLater()) );
+        connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &QObject::deleteLater );
         m_pd->hide();
         m_pd = 0;
     }
@@ -176,7 +174,7 @@ void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supporte
 
     if( m_pd )
     {
-        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
+        connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &PopupDropper::clear );
         m_pd->hide();
     }
     m_ongoingDrag = false;
@@ -236,7 +234,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent *even
     // mind bug 279513
     bool isExpandable = model()->hasChildren( index );
     bool wouldExpand = !visualRect( index ).contains( event->pos() ) || // clicked outside item, perhaps on expander icon
-                       ( isExpandable && !KGlobalSettings::singleClick() ); // we're in doubleClick
+                       ( isExpandable && !style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) ); // we're in doubleClick
     if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         !wouldExpand )
@@ -266,7 +264,7 @@ void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent
         return;
     }
 
-    KMenu menu;
+    QMenu menu;
     foreach( QAction *action, actions )
         menu.addAction( action );
     menu.exec( mapToGlobal( event->pos() ) );
@@ -466,17 +464,14 @@ PlaylistBrowserView::slotDelete()
     foreach( const PlaylistProvider *provider, providerPlaylists.keys() )
         providerNames << provider->prettyName();
 
-    KDialog dialog;
-    dialog.setCaption( i18n( "Confirm Playlist Deletion" ) );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-    QLabel *label = new QLabel( i18np( "Are you sure you want to delete this playlist?",
-            "Are you sure you want to delete these %1 playlists?",
-            m_writableActionPlaylists.count() ), &dialog );
-    // TODO: include a text area with all the names of the playlists
-    dialog.setButtonText( KDialog::Ok, i18nc( "%1 is playlist provider pretty name",
-            "Yes, delete from %1.", providerNames.join( ", " ) ) );
-    dialog.setMainWidget( label );
-    if( dialog.exec() == QDialog::Accepted )
+    auto button = QMessageBox::question( The::mainWindow(),
+                                         i18n( "Confirm Playlist Deletion" ),
+                                         i18nc( "%1 is playlist provider pretty name",
+                                                "Delete playlist from %1.", providerNames.join( ", " ) ),
+                                         QMessageBox::Yes | QMessageBox::No,
+                                         QMessageBox::Yes );
+
+    if( button == QMessageBox::Yes )
     {
         foreach( PlaylistProvider *provider, providerPlaylists.keys() )
             provider->deletePlaylists( providerPlaylists.value( provider ) );
@@ -512,29 +507,32 @@ PlaylistBrowserView::slotExport()
     // --- display save location dialog
     // compare with MainWindow::exportPlaylist
     // TODO: have this code only once
-    QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving") );
+    QFileDialog fileDialog;
+    fileDialog.restoreState( Amarok::config( "playlist-export-dialog" ).readEntry( "state", QByteArray() ) );
+
+    // FIXME: Make checkbox visible in dialog
+    QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving"), &fileDialog );
     saveRelativeCheck->setChecked( AmarokConfig::relativePlaylist() );
-    KFileDialog fileDialog( KUrl( "kfiledialog:///amarok-playlist-export" ), QString(), 0, saveRelativeCheck );
 
     QStringList supportedMimeTypes;
-    supportedMimeTypes << "video/x-ms-asf"; // ASX
-    supportedMimeTypes << "audio/x-mpegurl"; // M3U
-    supportedMimeTypes << "audio/x-scpls"; // PLS
-    supportedMimeTypes << "application/xspf+xml"; // XSPF
 
-    fileDialog.setSelection( playlist->name() );
-    fileDialog.setMimeFilter( supportedMimeTypes, supportedMimeTypes.value( 1 ) );
-    fileDialog.setOperationMode( KFileDialog::Saving );
-    fileDialog.setMode( KFile::File );
-    fileDialog.setCaption( i18n("Save As") );
+    supportedMimeTypes << "video/x-ms-asf"; //ASX
+    supportedMimeTypes << "audio/x-mpegurl"; //M3U
+    supportedMimeTypes << "audio/x-scpls"; //PLS
+    supportedMimeTypes << "application/xspf+xml"; //XSPF
+
+    fileDialog.setMimeTypeFilters( supportedMimeTypes );
+    fileDialog.setAcceptMode( QFileDialog::AcceptSave );
+    fileDialog.setFileMode( QFileDialog::AnyFile );
+    fileDialog.setWindowTitle( i18n("Save As") );
     fileDialog.setObjectName( "PlaylistExport" );
 
-    fileDialog.exec();
-    QString playlistPath = fileDialog.selectedFile();
+    int result = fileDialog.exec();
+    QString playlistPath = fileDialog.selectedFiles().value( 0 );
+    if( result == QDialog::Accepted && !playlistPath.isEmpty() )
+        Playlists::exportPlaylistFile( playlist->tracks(), QUrl::fromLocalFile( playlistPath ) );
 
-    // --- actually save the playlist
-    if( !playlistPath.isEmpty() )
-        Playlists::exportPlaylistFile( playlist->tracks(), playlistPath, saveRelativeCheck->isChecked() );
+    Amarok::config( "playlist-export-dialog" ).writeEntry( "state", fileDialog.saveState() );
 }
 
 void

@@ -30,7 +30,7 @@
 
 #include <QMetaMethod>
 #include <QNetworkReply>
-#include <QWeakPointer>
+#include <QPointer>
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;
 
@@ -68,7 +68,7 @@ public:
         Q_Q( NetworkAccessManagerProxy );
         QNetworkReply *reply = static_cast<QNetworkReply*>( q->sender() );
 
-        KUrl url = reply->request().url();
+        QUrl url = reply->request().url();
         QList<CallBackData*> callbacks = urlMap.values( url );
         urlMap.remove( url );
         QByteArray data = reply->readAll();
@@ -76,7 +76,7 @@ public:
         foreach( const CallBackData *cb, callbacks )
         {
             // There may have been a redirect.
-            KUrl redirectUrl = q->getRedirectUrl( reply );
+            QUrl redirectUrl = q->getRedirectUrl( reply );
 
             // Check if there's no redirect.
             if( redirectUrl.isEmpty() )
@@ -87,7 +87,7 @@ public:
                 if( cb->receiver )
                 {
                     bool success( false );
-                    const QMetaObject *mo = cb->receiver.data()->metaObject();
+                    const QMetaObject *mo = cb->receiver->metaObject();
                     int methodIndex = mo->indexOfSlot( sig );
                     if( methodIndex != -1 )
                     {
@@ -95,7 +95,7 @@ public:
                         QMetaMethod method = mo->method( methodIndex );
                         success = method.invoke( cb->receiver.data(),
                                                 cb->type,
-                                                Q_ARG( KUrl, reply->request().url() ),
+                                                Q_ARG( QUrl, reply->request().url() ),
                                                 Q_ARG( QByteArray, data ),
                                                 Q_ARG( NetworkAccessManagerProxy::Error, err ) );
                     }
@@ -114,8 +114,8 @@ public:
                 // Let's try to fetch the data again, but this time from the new url.
                 QNetworkReply *newReply = q->getData( redirectUrl, cb->receiver.data(), cb->method, cb->type );
 
-                emit q->requestRedirected( url, redirectUrl );
-                emit q->requestRedirected( reply, newReply );
+                emit q->requestRedirectedUrl( url, redirectUrl );
+                emit q->requestRedirectedReply( reply, newReply );
             }
         }
 
@@ -136,16 +136,16 @@ public:
         ~CallBackData()
         {
             if( reply )
-                reply.data()->deleteLater();
+                reply->deleteLater();
         }
 
-        QWeakPointer<QObject> receiver;
-        QWeakPointer<QNetworkReply> reply;
+        QPointer<QObject> receiver;
+        QPointer<QNetworkReply> reply;
         const char *method;
         Qt::ConnectionType type;
     };
 
-    QMultiHash<KUrl, CallBackData*> urlMap;
+    QMultiHash<QUrl, CallBackData*> urlMap;
     QString userAgent;
 #ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *viewer;
@@ -190,7 +190,7 @@ NetworkAccessManagerProxy::setNetworkAccessViewer( NetworkAccessViewer *viewer )
 #endif // DEBUG_BUILD_TYPE
 
 QNetworkReply *
-NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const char *method,
+NetworkAccessManagerProxy::getData( const QUrl &url, QObject *receiver, const char *method,
                                     Qt::ConnectionType type )
 {
     if( !url.isValid() )
@@ -204,22 +204,22 @@ NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const ch
     typedef NetworkAccessManagerProxyPrivate::CallBackData PrivateCallBackData;
     PrivateCallBackData *cbm = new PrivateCallBackData( receiver, r, method, type );
     d->urlMap.insert( url, cbm );
-    connect( r, SIGNAL(finished()), this, SLOT(_replyFinished()), type );
+    connect( r, &QNetworkReply::finished, this, &NetworkAccessManagerProxy::replyFinished, type );
     return r;
 }
 
 int
-NetworkAccessManagerProxy::abortGet( const KUrl::List &urls )
+NetworkAccessManagerProxy::abortGet( const QList<QUrl> &urls )
 {
     int removed = 0;
-    const QSet<KUrl> &urlSet = urls.toSet();
-    foreach( const KUrl &url, urlSet )
+    const QSet<QUrl> &urlSet = urls.toSet();
+    foreach( const QUrl &url, urlSet )
         removed += abortGet( url );
     return removed;
 }
 
 int
-NetworkAccessManagerProxy::abortGet( const KUrl &url )
+NetworkAccessManagerProxy::abortGet( const QUrl &url )
 {
     if( !d->urlMap.contains(url) )
         return 0;
@@ -229,19 +229,19 @@ NetworkAccessManagerProxy::abortGet( const KUrl &url )
     return removed;
 }
 
-KUrl
+QUrl
 NetworkAccessManagerProxy::getRedirectUrl( QNetworkReply *reply )
 {
-    KUrl targetUrl;
+    QUrl targetUrl;
 
     // Get the original URL.
-    KUrl originalUrl = reply->request().url();
+    QUrl originalUrl = reply->request().url();
 
     // Get the redirect attribute.
     QVariant redirectAttribute = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
 
     // Get the redirect URL from the attribute.
-    KUrl redirectUrl = KUrl( redirectAttribute.toUrl() );
+    QUrl redirectUrl = QUrl( redirectAttribute.toUrl() );
 
     // If the redirect URL is valid and if it differs from the original
     // URL then we return the redirect URL. Otherwise an empty URL will
@@ -260,7 +260,7 @@ NetworkAccessManagerProxy::slotError( QObject *obj )
     QNetworkReply *reply = qobject_cast<QNetworkReply*>( obj );
     if( !reply )
         return;
-    KUrl url = reply->request().url();
+    QUrl url = reply->request().url();
     d->urlMap.remove( url );
     reply->deleteLater();
 }
@@ -306,6 +306,12 @@ NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &r
     return reply;
 }
 
+void
+NetworkAccessManagerProxy::replyFinished()
+{
+    d->_replyFinished();
+}
+
 namespace The
 {
     NetworkAccessManagerProxy *networkAccessManager()
@@ -314,4 +320,4 @@ namespace The
     }
 }
 
-#include "NetworkAccessManagerProxy.moc"
+#include "moc_NetworkAccessManagerProxy.cpp"

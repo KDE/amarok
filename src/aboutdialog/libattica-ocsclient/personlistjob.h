@@ -37,13 +37,13 @@ class ATTICA_EXPORT PersonListJob : public KJob
   public:
     PersonListJob();
 
-    void setUrl( const KUrl & );
+    void setUrl( const QUrl & );
 
     void start();
 
     Person::List personList() const;
     
-  protected slots:
+  protected Q_SLOTS:
     void doWork();
 
     void slotUserJobResult( KJob *job );
@@ -53,7 +53,7 @@ class ATTICA_EXPORT PersonListJob : public KJob
     void slotAvatarJobData( KIO::Job *job, const QByteArray &data );
     
   private:
-    KUrl m_url;
+    QUrl m_url;
     KIO::Job *m_job;
     QString m_userData;
     QByteArray m_avatarData;

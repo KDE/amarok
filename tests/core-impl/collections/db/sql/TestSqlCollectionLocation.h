@@ -17,9 +17,9 @@
 #ifndef TESTSQLCOLLECTIONLOCATION_H
 #define TESTSQLCOLLECTIONLOCATION_H
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
-#include <KTempDir>
+#include <QTemporaryDir>
 
 class MySqlEmbeddedStorage;
 namespace Collections
@@ -34,7 +34,7 @@ class TestSqlCollectionLocation : public QObject
 public:
     TestSqlCollectionLocation();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -50,8 +50,8 @@ private:
 
 private:
     Collections::SqlCollection *m_collection;
-    MySqlEmbeddedStorage *m_storage;
-    KTempDir *m_tmpDir;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
+    QTemporaryDir *m_tmpDir;
 };
 
 #endif // TESTSQLCOLLECTIONLOCATION_H

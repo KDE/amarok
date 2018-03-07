@@ -25,6 +25,9 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <KFormat>
+
+
 Constraint*
 ConstraintTypes::PlaylistFileSize::createFromXml( QDomElement& xmlelem, ConstraintNode* p )
 {
@@ -93,10 +96,10 @@ QWidget*
 ConstraintTypes::PlaylistFileSize::editWidget() const
 {
     PlaylistFileSizeEditWidget* e = new PlaylistFileSizeEditWidget( m_size, m_unit, m_comparison, static_cast<int>( 10*m_strictness ) );
-    connect( e, SIGNAL(comparisonChanged(int)), this, SLOT(setComparison(int)) );
-    connect( e, SIGNAL(sizeChanged(int)), this, SLOT(setSize(int)) );
-    connect( e, SIGNAL(unitChanged(int)), this, SLOT(setUnit(int)) );
-    connect( e, SIGNAL(strictnessChanged(int)), this, SLOT(setStrictness(int)) );
+    connect( e, &PlaylistFileSizeEditWidget::comparisonChanged, this, &PlaylistFileSize::setComparison );
+    connect( e, &PlaylistFileSizeEditWidget::sizeChanged, this, &PlaylistFileSize::setSize );
+    connect( e, &PlaylistFileSizeEditWidget::unitChanged, this, &PlaylistFileSize::setUnit );
+    connect( e, &PlaylistFileSizeEditWidget::strictnessChanged, this, &PlaylistFileSize::setStrictness );
     return e;
 }
 
@@ -125,7 +128,7 @@ ConstraintTypes::PlaylistFileSize::getName() const
     } else {
         v = ki18n( "Total file size of playlist: unknown");
     }
-    v = v.subs( KGlobal::locale()->formatByteSize( (double)getWantedSize(), 1, KLocale::MetricBinaryDialect ) );
+    v = v.subs( KFormat().formatByteSize( getWantedSize(), 1, KFormat::MetricBinaryDialect ) );
     return v.toString();
 }
 

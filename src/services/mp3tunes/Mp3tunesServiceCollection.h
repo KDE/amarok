@@ -44,10 +44,10 @@ public:
     virtual CollectionLocation* location();
     Mp3tunesLocker* locker() const;
 
-    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
-    virtual bool possiblyContainsTrack( const KUrl &url ) const;
+    virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+    virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
-private slots:
+private Q_SLOTS:
     /**
      * Handles trackForUrl complete.
      */

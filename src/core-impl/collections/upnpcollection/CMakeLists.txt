@@ -1,8 +1,8 @@
 include_directories( ../..
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
-   ${KDE4_INCLUDE_DIR}
-   ${QT_INCLUDES}
+   
+   
 )
 
 
@@ -23,25 +23,20 @@ set(amarok_collection-upnpcollection_PART_SRCS
 )
 
 
-kde4_add_plugin(amarok_collection-upnpcollection ${amarok_collection-upnpcollection_PART_SRCS})
+add_library(amarok_collection-upnpcollection MODULE ${amarok_collection-upnpcollection_PART_SRCS})
 
 target_link_libraries(
     amarok_collection-upnpcollection
     amarokcore
     amaroklib
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
-    ${KDE4_SOLID_LIBS}
+    KF5::ThreadWeaver
+    KF5::KIOCore
 )
 
 if(APPLE)
-    SET_TARGET_PROPERTIES(amarok_collection-upnpcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    set_target_properties(amarok_collection-upnpcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 
 install(TARGETS amarok_collection-upnpcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-
-########### install files ###############
-
-install( FILES amarok_collection-upnpcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+kcoreaddons_desktop_to_json(amarok_collection-upnpcollection amarok_collection-upnpcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

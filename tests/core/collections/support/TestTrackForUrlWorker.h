@@ -17,6 +17,7 @@
 #define TESTTRACKFORURLWORKER_H
 
 #include "core/meta/forward_declarations.h"
+#include "core/meta/Meta.h"
 
 #include <QtTest>
 
@@ -26,25 +27,25 @@ class TestTrackForUrlWorker : public QObject
 {
     Q_OBJECT
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Stores the track emitted with finishedLookup
          */
         void setEmittedTrack( Meta::TrackPtr track );
 
-    private slots:
+    private Q_SLOTS:
         void initTestCase();
 
         /**
-         * Test slot completeJob() for both KUrl and QString types of urls
+         * Test slot completeJob() for both QUrl and QString types of urls
          */
-        void testCompleteJobKUrl();
+        void testCompleteJobQUrl();
         void testCompleteJobQString();
 
         /**
          * Both use testCompleteJobInternal_data() to add test data to avoid redundancy
          */
-        void testCompleteJobKUrl_data();
+        void testCompleteJobQUrl_data();
         void testCompleteJobQString_data();
 
     private:

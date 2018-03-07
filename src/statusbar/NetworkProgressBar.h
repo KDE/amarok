@@ -32,7 +32,7 @@ class NetworkProgressBar : public ProgressBar
         NetworkProgressBar( QWidget *parent, QNetworkReply *reply );
         ~NetworkProgressBar();
 
-    private slots:
+    private Q_SLOTS:
         void progressChanged( qint64 bytesChanged, qint64 bytesTotal );
         void infoMessage( QNetworkReply::NetworkError code );
 };

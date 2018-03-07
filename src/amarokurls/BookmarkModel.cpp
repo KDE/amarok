@@ -25,7 +25,7 @@
 #include <core-impl/storage/StorageManager.h>
 #include <core/storage/SqlStorage.h>
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QAbstractListModel>
 #include <QListIterator>
@@ -109,7 +109,7 @@ BookmarkModel::data( const QModelIndex & index, int role ) const
         if( index.column() == Name )
         {
             if ( typeid( * item ) == typeid( BookmarkGroup ) )
-                return QVariant( KIcon( "folder-bookmark" ) );
+                return QVariant( QIcon::fromTheme( "folder-bookmark" ) );
             else if ( typeid( * item ) == typeid( AmarokUrl ) )
             {
                 AmarokUrl * url = static_cast<AmarokUrl *>( item.data() );
@@ -424,7 +424,7 @@ void BookmarkModel::createTables()
 {
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -450,7 +450,7 @@ void BookmarkModel::deleteTables()
 
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -464,7 +464,7 @@ void BookmarkModel::checkTables()
 
     DEBUG_BLOCK
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -491,8 +491,10 @@ void
 BookmarkModel::reloadFromDb()
 {
     DEBUG_BLOCK;
+
+    beginResetModel();
     m_root->clear();
-    reset();
+    endResetModel();
 
 }
 
@@ -687,7 +689,7 @@ BookmarkModel::renameBookmarkRecursively( BookmarkGroupPtr group, const QString&
 
 void BookmarkModel::upgradeTables( int from )
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
     
@@ -702,4 +704,3 @@ void BookmarkModel::upgradeTables( int from )
 
 
 
-#include "BookmarkModel.moc"

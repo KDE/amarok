@@ -16,6 +16,7 @@
 
 #include "TestDynamicModel.h"
 
+#include "amarokconfig.h"
 #include "dynamic/Bias.h"
 #include "dynamic/BiasedPlaylist.h"
 #include "dynamic/DynamicModel.h"
@@ -25,23 +26,22 @@
 
 #include <QByteArray>
 #include <QDataStream>
-
+#include <QMimeData>
 #include <QSignalSpy>
-#include <KTempDir>
+#include <QTemporaryDir>
 
-#include <qtest_kde.h>
 
 Q_DECLARE_METATYPE(QModelIndex);
 
-KTempDir *s_tmpDir = 0;
+QTemporaryDir *s_tmpDir = 0;   // Memory leak here now, but if it's deleted, we have a segfault
 
 // We return a special saveLocation.
 QString Amarok::saveLocation( const QString &directory )
 {
-    return s_tmpDir->name() + directory;
+    return s_tmpDir->path() + directory;
 }
 
-QTEST_KDEMAIN( TestDynamicModel, GUI )
+QTEST_GUILESS_MAIN( TestDynamicModel )
 
 TestDynamicModel::TestDynamicModel()
 {
@@ -51,13 +51,15 @@ TestDynamicModel::TestDynamicModel()
 void
 TestDynamicModel::init()
 {
-    s_tmpDir = new KTempDir();
+    AmarokConfig::instance("amarokrc");
+
+    s_tmpDir = new QTemporaryDir();
+    QVERIFY( s_tmpDir->isValid() );
 }
 
 void
 TestDynamicModel::cleanup()
 {
-    delete s_tmpDir;
 }
 
 void
@@ -138,10 +140,10 @@ TestDynamicModel::testSlots()
     // load from the empty directory
     model->loadPlaylists();
 
-    QSignalSpy spy1( model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)) );
-    QSignalSpy spy2( model, SIGNAL(rowsRemoved(QModelIndex,int,int)) );
-    QSignalSpy spy3( model, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)) );
-    QSignalSpy spy4( model, SIGNAL(rowsInserted(QModelIndex,int,int)) );
+    QSignalSpy spy1( model, &Dynamic::DynamicModel::rowsAboutToBeRemoved );
+    QSignalSpy spy2( model, &Dynamic::DynamicModel::rowsRemoved );
+    QSignalSpy spy3( model, &Dynamic::DynamicModel::rowsAboutToBeInserted );
+    QSignalSpy spy4( model, &Dynamic::DynamicModel::rowsInserted );
 
     // -- removeAt with playlist
     QModelIndex playlistIndex = model->index( 1, 0 );
@@ -322,9 +324,8 @@ TestDynamicModel::testDnD()
 
     // -- copy a bias
     // TODO
-    QModelIndex biasIndex = model->index( 0, 0, playlistIndex );
-    QModelIndex subBiasIndex = model->index( 0, 0, biasIndex );
-
+//     QModelIndex biasIndex = model->index( 0, 0, playlistIndex );
+//     QModelIndex subBiasIndex = model->index( 0, 0, biasIndex );
 }
 
 void
@@ -354,4 +355,3 @@ TestDynamicModel::testRemoveActive()
     QCOMPARE( model->activePlaylist(), static_cast<Dynamic::DynamicPlaylist*>(0) );
 }
 
-#include "TestDynamicModel.moc"

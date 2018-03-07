@@ -171,7 +171,7 @@ class MockQueryMaker : public QueryMaker
              emit queryDone();
         }
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Overrides the default deleteLater() slot provided by QObject since the default
          * slot implements a deferred delete of the object and is not easily testable

@@ -53,9 +53,9 @@ QueryMaker*
 QueryMaker::setAutoDelete( bool autoDelete )
 {
     if( autoDelete )
-        connect( this, SIGNAL(queryDone()), this, SLOT(deleteLater()) );
+        connect( this, &QueryMaker::queryDone, this, &QueryMaker::deleteLater );
     else
-        disconnect( this, SIGNAL(queryDone()), this, SLOT(deleteLater()) );
+        disconnect( this, &QueryMaker::queryDone, this, &QueryMaker::deleteLater );
     return this;
 }
 
@@ -66,5 +66,4 @@ QueryMaker::addMatch( const Meta::LabelPtr &label )
     return this;
 }
 
-#include "QueryMaker.moc"
 

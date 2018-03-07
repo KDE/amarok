@@ -16,18 +16,19 @@
 
 #include "kdatecombo.h"
 
-#include "kdatecombo.moc"
 
-#include <QtCore/QTimer>
+#include <QTimer>
 //Added by qt3to4:
-#include <QtGui/QKeyEvent>
-#include <QtCore/QEvent>
+#include <QKeyEvent>
+#include <QEvent>
+#include <QVBoxLayout>
 
-#include <kglobal.h>
-#include <klocale.h>
-#include <kdatepicker.h>
-#include <kdatetable.h>
-#include <kdebug.h>
+
+#include <KLocalizedString>
+#include <KDatePicker>
+#include <KPopupFrame>
+#include <QDebug>
+#include <KConfigGroup>
 
 KDateCombo::KDateCombo(QWidget *parent) : QComboBox(parent)
 {
@@ -52,11 +53,13 @@ void KDateCombo::initObject(const QDate & date)
   datePicker = new KDatePicker(date, popupFrame);
   datePicker->setMinimumSize(datePicker->sizeHint());
   datePicker->installEventFilter(this);
-  popupFrame->setMainWidget(datePicker);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  popupFrame->setLayout(mainLayout);
+  mainLayout->addWidget(datePicker);
   setDate(date);
 
-  connect(datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(dateEnteredEvent(QDate)));
-  connect(datePicker, SIGNAL(dateEntered(QDate)), this, SLOT(dateEnteredEvent(QDate)));
+  connect(datePicker, &KDatePicker::dateSelected, this, &KDateCombo::dateEnteredEvent);
+  connect(datePicker, &KDatePicker::dateEntered, this, &KDateCombo::dateEnteredEvent);
 }
 
 KDateCombo::~KDateCombo()
@@ -67,12 +70,12 @@ KDateCombo::~KDateCombo()
 
 QString KDateCombo::date2String(const QDate & date)
 {
-  return(KGlobal::locale()->formatDate(date, KLocale::ShortDate));
+  return(QLocale().toString(date, QLocale::ShortFormat));
 }
 
 QDate & KDateCombo::string2Date(const QString & str, QDate *qd)
 {
-  return *qd = KGlobal::locale()->readDate(str);
+  return *qd = QLocale().toDate(str, QLocale::ShortFormat);
 }
 
 QDate & KDateCombo::getDate(QDate *currentDate)
@@ -101,6 +104,11 @@ void KDateCombo::dateEnteredEvent(const QDate &newDate)
   setDate(tempDate);
 }
 
+void KDateCombo::nullDateEnteredEvent()
+{
+    dateEnteredEvent(QDate());
+}
+
 void KDateCombo::mousePressEvent (QMouseEvent * e)
 {
   if (e->button() & Qt::LeftButton)
@@ -123,7 +131,7 @@ bool KDateCombo::eventFilter (QObject*, QEvent* e)
       QPoint p = mapFromGlobal( me->globalPos() );
       if (rect().contains( p ) )
       {
-        QTimer::singleShot(10, this, SLOT(dateEnteredEvent()));
+          QTimer::singleShot(10, this, &KDateCombo::nullDateEnteredEvent);
         return true;
       }
   }

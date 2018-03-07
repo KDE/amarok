@@ -18,6 +18,7 @@
 #define STATSYNCING_OPTIONS_H
 
 #include <QtGlobal>
+#include <QString>
 #include <QSet>
 
 namespace StatSyncing

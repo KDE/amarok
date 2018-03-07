@@ -25,7 +25,7 @@
 
 
 #include <KIO/CopyJob>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QFile>
 
@@ -54,7 +54,7 @@ TrashCollectionLocation::isWritable() const
 }
 
 void
-TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                                const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
@@ -69,8 +69,8 @@ TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> 
 
     if( m_trashConfirmed )
     {
-        KUrl::List files = sources.values();
-        foreach( const KUrl &file, files )
+        QList<QUrl> files = sources.values();
+        foreach( const QUrl &file, files )
         {
             if( !QFile::exists( file.toLocalFile() ) )
             {
@@ -81,7 +81,7 @@ TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> 
         }
 
         KIO::CopyJob *job = KIO::trash( files, KIO::HideProgressInfo );
-        connect( job, SIGNAL(result(KJob*)), SLOT(slotTrashJobFinished(KJob*)) );
+        connect( job, &KJob::result, this, &TrashCollectionLocation::slotTrashJobFinished );
 
         Meta::TrackList tracks = sources.keys();
         m_trashJobs.insert( job, tracks );
@@ -135,6 +135,5 @@ TrashCollectionLocation::slotTrashJobFinished( KJob *job )
         slotCopyOperationFinished();
 }
 
-#include "TrashCollectionLocation.moc"
 
 } //namespace Collections

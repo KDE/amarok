@@ -17,7 +17,6 @@
 #include "QueryMakerExporter.h"
 
 #include "core-impl/collections/support/TextualQueryFilter.h"
-#include "core/collections/QueryMaker.h"
 #include "scripting/scriptengine/ScriptingDefines.h"
 
 #include <QScriptEngine>
@@ -50,8 +49,8 @@ QueryMakerPrototype::run()
 {
     if( !m_querymaker )
         return;
-    m_querymaker.data()->setQueryType( Collections::QueryMaker::Track );
-    m_querymaker.data()->run();
+    m_querymaker->setQueryType( Collections::QueryMaker::Track );
+    m_querymaker->run();
 }
 
 Meta::TrackList
@@ -60,8 +59,8 @@ QueryMakerPrototype::blockingRun()
     if( !m_querymaker )
         return Meta::TrackList();
     QEventLoop loop;
-    connect( m_querymaker.data(), SIGNAL(newResultReady(Meta::TrackList)), SLOT(slotResult(Meta::TrackList)) );
-    connect( m_querymaker.data(), SIGNAL(queryDone()), &loop, SLOT(quit()) );
+    connect( m_querymaker.data(), &Collections::QueryMaker::newTracksReady, this, &QueryMakerPrototype::slotResult );
+    connect( m_querymaker.data(), &Collections::QueryMaker::queryDone, &loop, &QEventLoop::quit );
     run();
     loop.exec();
     return m_result;
@@ -71,7 +70,7 @@ void
 QueryMakerPrototype::abort()
 {
     if( m_querymaker )
-        m_querymaker.data()->abortQuery();
+        m_querymaker->abortQuery();
 }
 
 //private
@@ -82,8 +81,8 @@ QueryMakerPrototype::QueryMakerPrototype( QueryMaker *queryMaker )
 {
     if( !queryMaker )
         return;
-    connect( queryMaker, SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)) );
-    connect( queryMaker, SIGNAL(queryDone()), SIGNAL(queryDone()) );
+    connect( queryMaker, &Collections::QueryMaker::newTracksReady, this, &QueryMakerPrototype::newResultReady );
+    connect( queryMaker, &Collections::QueryMaker::queryDone, this, &QueryMakerPrototype::queryDone );
     queryMaker->setAutoDelete( true );
 }
 
@@ -108,5 +107,5 @@ QueryMakerPrototype::slotResult( const Meta::TrackList &tracks )
 QueryMakerPrototype::~QueryMakerPrototype()
 {
     if( m_querymaker )
-        m_querymaker.data()->deleteLater();
+        m_querymaker->deleteLater();
 }

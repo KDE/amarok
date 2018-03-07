@@ -1170,4 +1170,3 @@ void PictureFlow::updateAnimation()
         emit centerIndexChanged( d->state->centerIndex );
 }
 
-#include "pictureflow.moc" // to have actual (non-forward) declaration of Meta::*

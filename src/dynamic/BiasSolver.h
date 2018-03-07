@@ -66,7 +66,7 @@ namespace Dynamic
      * enqueue the job. When the job is finished, call solution to get the
      * playlist produced.
      */
-    class BiasSolver : public ThreadWeaver::Job
+    class BiasSolver : public QObject, public ThreadWeaver::Job
     {
         Q_OBJECT
 
@@ -119,9 +119,11 @@ namespace Dynamic
             static void outdateUniverse();
 
         protected:
-            void run();
+            void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+            void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+            void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 
-        signals:
+        Q_SIGNALS:
             /** a job must implement the following signals for the progress bar
                 BiasedPlaylist set's us as progress sender in startSolver.
             */
@@ -133,7 +135,15 @@ namespace Dynamic
             void incrementProgress();
             void endProgressOperation( QObject * );
 
-        private slots:
+            /** This signal is emitted when this job is being processed by a thread. */
+            void started(ThreadWeaver::JobPointer);
+            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+            void done(ThreadWeaver::JobPointer);
+            /** This job has failed.
+             * This signal is emitted when success() returns false after the job is executed. */
+            void failed(ThreadWeaver::JobPointer);
+
+        private Q_SLOTS:
             void biasResultReady( const Dynamic::TrackSet &set );
 
             void trackCollectionResultsReady( QStringList );

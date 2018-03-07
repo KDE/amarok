@@ -25,7 +25,7 @@
 
 #include <QMap>
 #include <QTimer>
-#include <QWeakPointer>
+#include <QPointer>
 
 using namespace Context;
 
@@ -46,7 +46,7 @@ protected:
     // reimplemented from Plasma::DataEngine
     bool sourceRequestEvent( const QString &name );
 
-private slots:
+private Q_SLOTS:
 
     void update( bool reload = false );
 
@@ -56,7 +56,7 @@ private slots:
      *   http://ws.audioscrobbler.com/2.0/?method=track.gettoptags&artist=radiohead&track=paranoid+android&api_key=b25b959554ed76058ac220b7b2e0a026
      *   see here for details: http://www.lastfm.com/api/
      */
-    void resultLastFm( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void resultLastFm( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     void resultReady( const Meta::LabelList &labels );
     void dataQueryDone();
@@ -74,7 +74,7 @@ private:
     QTimer m_timeoutTimer;
 
     /// The URL for the network request
-    KUrl m_lastFmUrl;
+    QUrl m_lastFmUrl;
 
     QStringList                 m_sources;
 

@@ -68,10 +68,10 @@ TimecodeLoadCapabilityImpl::hasTimecodes()
     return ( loadTimecodes().size() > 0 );
 }
 
-QList<KSharedPtr<AmarokUrl> >
+QList<AmarokSharedPointer<AmarokUrl> >
 TimecodeLoadCapabilityImpl::loadTimecodes()
 {
-    QList<KSharedPtr<AmarokUrl> > list = PlayUrlRunner::bookmarksFromUrl( m_track->playableUrl() );
+    QList<AmarokSharedPointer<AmarokUrl> > list = PlayUrlRunner::bookmarksFromUrl( m_track->playableUrl() );
     return list;
 }
 
@@ -124,5 +124,4 @@ FindInSourceCapabilityImpl::findInSource( QFlags<TargetTag> tag )
 
 } //namespace Capabilities
 
-#include "SqlCapabilities.moc"
 

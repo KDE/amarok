@@ -20,7 +20,7 @@
 
 #include "core/collections/Collection.h"
 
-#include <KIcon>
+#include <QIcon>
 
 namespace Collections
 {
@@ -46,12 +46,12 @@ public:
     virtual QString uidUrlProtocol() const;
     virtual QString collectionId() const;
     virtual QString prettyName() const;
-    virtual KIcon icon() const;
+    virtual QIcon icon() const;
     virtual bool isWritable() const;
 
     // TrackProvider methods
-    virtual bool possiblyContainsTrack( const KUrl &url ) const;
-    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+    virtual bool possiblyContainsTrack( const QUrl &url ) const;
+    virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
     NepomukCache *cache() const { return m_cache; }
 

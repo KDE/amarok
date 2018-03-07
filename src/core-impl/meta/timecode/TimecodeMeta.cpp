@@ -26,12 +26,14 @@
 #include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.h"
 
+#include <KLocalizedString>
+
 using namespace Meta;
 using namespace Capabilities;
 
 ////////////////// TRACK //////////////////
 
-TimecodeTrack::TimecodeTrack( const QString &name, const QString &url, qint64 start, qint64 end )
+TimecodeTrack::TimecodeTrack( const QString &name, const QUrl &url, qint64 start, qint64 end )
     : m_name( name )
     , m_start( start )
     , m_end( end )
@@ -43,7 +45,7 @@ TimecodeTrack::TimecodeTrack( const QString &name, const QString &url, qint64 st
     , m_playableUrl( url )
     , m_updatedFields( 0 )
 {
-    m_displayUrl = url + ':' + QString::number( start ) + '-' + QString::number( end );
+    m_displayUrl = url.toDisplayString() + ':' + QString::number( start ) + '-' + QString::number( end );
 }
 
 TimecodeTrack::~ TimecodeTrack()
@@ -56,7 +58,7 @@ TimecodeTrack::name() const
     return m_name;
 }
 
-KUrl
+QUrl
 TimecodeTrack::playableUrl() const
 {
     return m_playableUrl;
@@ -77,7 +79,10 @@ TimecodeTrack::prettyUrl() const
 QString
 TimecodeTrack::notPlayableReason() const
 {
-    return localFileNotPlayableReason( m_playableUrl );
+    if( !m_playableUrl.isLocalFile() )
+        return i18n( "Url is not a local file" );
+
+    return localFileNotPlayableReason( m_playableUrl.toLocalFile() );
 }
 
 AlbumPtr
@@ -618,4 +623,3 @@ TimecodeYear::addTrack( TimecodeTrackPtr track )
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
-#include "TimecodeMeta.moc"

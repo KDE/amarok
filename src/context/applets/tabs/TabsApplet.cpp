@@ -28,8 +28,12 @@
 #include <KConfigDialog>
 #include <KConfigGroup>
 #include <KDialog>
+#include <QDialog>
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 /**
  * \brief Constructor
@@ -89,7 +93,7 @@ TabsApplet::init()
 
     // create the reload icon
     QAction* reloadAction = new QAction( this );
-    reloadAction->setIcon( KIcon( "view-refresh" ) );
+    reloadAction->setIcon( QIcon::fromTheme( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );
     reloadAction->setText( i18nc( "Guitar tablature", "Reload tabs" ) );
@@ -99,7 +103,7 @@ TabsApplet::init()
 
     // create the settings icon
     QAction* settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setIcon( QIcon::fromTheme( "preferences-system" ) );
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
     QWeakPointer<Plasma::IconWidget> settingsIcon = addRightHeaderAction( settingsAction );
@@ -255,7 +259,15 @@ TabsApplet::updateInterface( const AppletState appletState )
 void
 TabsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
-    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    parent->setLayout(mainLayout);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    parent->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    parent->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
@@ -335,4 +347,3 @@ TabsApplet::reloadTabs()
     }
 }
 
-#include "TabsApplet.moc"

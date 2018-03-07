@@ -25,16 +25,19 @@
 #include "core/support/Debug.h"
 #include "dynamic/DynamicPlaylist.h"
 #include "dynamic/DynamicModel.h"
+#include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistController.h"
 
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator()
     : m_playlist( 0 )
 {
-    connect( m_model->qaim(), SIGNAL(activeTrackChanged(quint64)), SLOT(trackChanged()) );
-    connect( m_model->qaim(), SIGNAL(modelReset()), SLOT(repopulate()) );
+    connect( qobject_cast<Playlist::Model*>(m_model->qaim()), &Playlist::Model::activeTrackChanged,
+             this, &DynamicTrackNavigator::trackChanged );
+    connect( m_model->qaim(), &QAbstractItemModel::modelReset,
+             this, &DynamicTrackNavigator::repopulate );
 
-    connect( Dynamic::DynamicModel::instance(), SIGNAL(activeChanged(int)),
-             SLOT(activePlaylistChanged()) );
+    connect( Dynamic::DynamicModel::instance(), &Dynamic::DynamicModel::activeChanged,
+             this, &DynamicTrackNavigator::activePlaylistChanged );
     activePlaylistChanged();
 }
 
@@ -84,8 +87,8 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
 
     if( m_playlist )
     {
-        disconnect( m_playlist, SIGNAL(tracksReady(Meta::TrackList)),
-                    this, SLOT(receiveTracks(Meta::TrackList)) );
+        disconnect( m_playlist, &Dynamic::DynamicPlaylist::tracksReady,
+                    this, &DynamicTrackNavigator::receiveTracks );
         m_playlist->requestAbort();
     }
 
@@ -96,8 +99,8 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
     }
     else
     {
-        connect( m_playlist, SIGNAL(tracksReady(Meta::TrackList)),
-                 this, SLOT(receiveTracks(Meta::TrackList)) );
+        connect( m_playlist, &Dynamic::DynamicPlaylist::tracksReady,
+                 this, &DynamicTrackNavigator::receiveTracks );
     }
 }
 

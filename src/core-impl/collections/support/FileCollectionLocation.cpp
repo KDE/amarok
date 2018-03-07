@@ -27,7 +27,7 @@
 #include <kio/jobclasses.h>
 #include <kio/deletejob.h>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QDir>
 #include <QFile>
@@ -71,15 +71,15 @@ void FileCollectionLocation::startRemoveJobs()
     while ( !m_removetracks.isEmpty() )
     {
         Meta::TrackPtr track = m_removetracks.takeFirst();
-        KUrl src = track->playableUrl();
+        QUrl src = track->playableUrl();
 
         KIO::DeleteJob *job = 0;
 
-        src.cleanPath();
+        src.setPath( QDir::cleanPath(src.path()) );
         debug() << "deleting  " << src;
         KIO::JobFlags flags = KIO::HideProgressInfo;
         job = KIO::del( src, flags );
-        connect( job, SIGNAL(result(KJob*)), SLOT(slotRemoveJobFinished(KJob*)) );
+        connect( job, &KIO::Job::result, this, &FileCollectionLocation::slotRemoveJobFinished );
         QString name = track->prettyName();
         if( track->artist() )
             name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
@@ -132,4 +132,3 @@ void FileCollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
         slotShowRemoveDialogDone();
 }
 
-#include "FileCollectionLocation.moc"

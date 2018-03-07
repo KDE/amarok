@@ -23,7 +23,7 @@
 #include "core-impl/collections/mediadevicecollection/support/mediadevicecollection_export.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QtGlobal>
 #include <QSharedPointer>
@@ -45,13 +45,12 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Col
         virtual void init();
 
     protected:
-        MediaDeviceCollectionFactoryBase( QObject *parent, const QVariantList &args,
-                                          ConnectionAssistant* assistant );
+        MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant );
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void slotDeviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
 
-    private slots:
+    private Q_SLOTS:
         void slotDeviceDisconnected( const QString &udi );
 
     private:
@@ -65,9 +64,8 @@ template <class CollType>
 class MediaDeviceCollectionFactory : public MediaDeviceCollectionFactoryBase
 {
     protected:
-        MediaDeviceCollectionFactory( QObject *parent, const QVariantList &args,
-                                      ConnectionAssistant *assistant )
-            : MediaDeviceCollectionFactoryBase( parent, args, assistant )
+        MediaDeviceCollectionFactory( ConnectionAssistant *assistant )
+            : MediaDeviceCollectionFactoryBase( assistant )
         {}
 
         virtual ~MediaDeviceCollectionFactory() {}
@@ -93,8 +91,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
          * url-based methods can be abstracted via use of Amarok URLs
          * subclasses simply define a protocol prefix, e.g. ipod
          */
-        virtual bool possiblyContainsTrack( const KUrl &url ) const { Q_UNUSED(url); return false;} // TODO: NYI
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
+        virtual bool possiblyContainsTrack( const QUrl &url ) const { Q_UNUSED(url); return false;} // TODO: NYI
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
 
         virtual QueryMaker* queryMaker();
         virtual void startFullScanDevice();
@@ -111,7 +109,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
         virtual QString collectionId() const; // uses udi
 
         virtual QString prettyName() const = 0; // NOTE: must be overridden based on device type
-        virtual KIcon icon() const = 0; // NOTE: must be overridden based on device type
+        virtual QIcon icon() const = 0; // NOTE: must be overridden based on device type
 
         virtual bool hasCapacity() const;
         virtual float usedCapacity() const;
@@ -137,7 +135,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
         void collectionUpdated() { emit updated(); }
 
-    signals:
+    Q_SIGNALS:
         void collectionReady( Collections::Collection* );
         /** collectionDisconnected is called when ConnectionAssistant
           is told it is to be disconnected.  This could be
@@ -151,7 +149,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
 
         void copyTracksCompleted( bool success );
 
-    public slots:
+    public Q_SLOTS:
         void slotAttemptConnectionDone( bool success );
 
         virtual void eject();

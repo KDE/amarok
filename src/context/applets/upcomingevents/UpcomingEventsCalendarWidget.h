@@ -37,7 +37,7 @@ public:
     LastFmEvent::List events() const;
     QAction *todayAction();
 
-public slots:
+public Q_SLOTS:
     void addEvent( const LastFmEventPtr &event );
     void addEvents( const LastFmEvent::List &events );
 

@@ -26,7 +26,7 @@
 #include "amarok_export.h"
 #include "collectionscanner/Directory.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QObject>
 #include <QSharedPointer>
@@ -101,9 +101,9 @@ class AMAROK_EXPORT GenericScanManager : public QObject
         virtual QString getBatchFile( const QStringList& scanDirsRequested );
 
 
-    public slots:
+    public Q_SLOTS:
         /** Requests the scanner to do a full scan at the next possibility. */
-        virtual void requestScan( QList<KUrl> directories, GenericScanManager::ScanType type = UpdateScan );
+        virtual void requestScan( QList<QUrl> directories, GenericScanManager::ScanType type = UpdateScan );
 
         /** Requests the scanner to do a full scan using the given import file.
          */
@@ -115,7 +115,7 @@ class AMAROK_EXPORT GenericScanManager : public QObject
          */
         virtual void abort();
 
-    signals:
+    Q_SIGNALS:
         // the following signals are created by the scanner job and just
         // routed through
         // They are directly connected to the GenericScannerJob, so
@@ -142,15 +142,11 @@ class AMAROK_EXPORT GenericScanManager : public QObject
         void succeeded();
         void failed( const QString& message );
 
-    protected slots:
-        void slotSucceeded();
-        void slotFailed( const QString& message );
-
     protected:
         /** Connects all the signals to m_scannerJob */
         void connectSignalsToJob();
 
-        GenericScannerJob* m_scannerJob;
+        QWeakPointer<GenericScannerJob> m_scannerJob;
 
         /**
          * This mutex is protecting the variables:

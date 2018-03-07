@@ -44,25 +44,16 @@ TrackLoader::~TrackLoader()
 }
 
 void
-TrackLoader::init( const KUrl &url )
+TrackLoader::init( const QUrl &url )
 {
-    init( QList<KUrl>() << url );
+    init( QList<QUrl>() << url );
 }
 
 void
 TrackLoader::init( const QList<QUrl> &qurls )
 {
-    QList<KUrl> kurls;
-    foreach( const QUrl &qurl, qurls )
-        kurls << KUrl( qurl );
-    init( kurls );
-}
-
-void
-TrackLoader::init( const QList<KUrl> &urls )
-{
-    m_sourceUrls = urls;
-    QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
+    m_sourceUrls = qurls;
+    QTimer::singleShot( 0, this, &TrackLoader::processNextSourceUrl );
 }
 
 void
@@ -70,7 +61,7 @@ TrackLoader::init( const Playlists::PlaylistList &playlists )
 {
     m_resultPlaylists = playlists;
     // no need to process source urls here, short-cut to result urls (just playlists)
-    QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
+    QTimer::singleShot( 0, this, &TrackLoader::processNextResultUrl );
 }
 
 void
@@ -78,25 +69,29 @@ TrackLoader::processNextSourceUrl()
 {
     if( m_sourceUrls.isEmpty() )
     {
-        QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
+        QTimer::singleShot( 0, this, &TrackLoader::processNextResultUrl );
         return;
     }
 
-    KUrl sourceUrl = m_sourceUrls.takeFirst();
+    QUrl sourceUrl = m_sourceUrls.takeFirst();
+    if( !sourceUrl.isValid() )
+    {
+        error() << "Url is invalid:" << sourceUrl;
+        QTimer::singleShot( 0, this, &TrackLoader::processNextSourceUrl );
+        return;
+    }
     if( sourceUrl.isLocalFile() && QFileInfo( sourceUrl.toLocalFile() ).isDir() )
     {
         // KJobs delete themselves
-        KIO::ListJob *lister = KIO::listRecursive( sourceUrl, KIO::HideProgressInfo );
-        connect( lister, SIGNAL(finished(KJob*)), SLOT(listJobFinished()) );
-        connect( lister, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
-                 SLOT(directoryListResults(KIO::Job*,KIO::UDSEntryList)) );
-        // listJobFinished() calls processNextSourceUrl() in the end, don't do it here:
+        KIO::ListJob *lister = KIO::listRecursive( sourceUrl );
+        connect( lister, &KIO::ListJob::result, this, &TrackLoader::processNextSourceUrl );
+        connect( lister, &KIO::ListJob::entries, this, &TrackLoader::directoryListResults );
         return;
     }
     else
         m_resultUrls.append( sourceUrl );
 
-    QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
+    QTimer::singleShot( 0, this, &TrackLoader::processNextSourceUrl );
 }
 
 void
@@ -104,25 +99,17 @@ TrackLoader::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list 
 {
     //dfaure says that job->redirectionUrl().isValid() ? job->redirectionUrl() : job->url(); might be needed
     //but to wait until an issue is actually found, since it might take more work
-    const KUrl dir = static_cast<KIO::SimpleJob *>( job )->url();
+    const QUrl dir = static_cast<KIO::SimpleJob *>( job )->url();
     foreach( const KIO::UDSEntry &entry, list )
     {
         KFileItem item( entry, dir, true, true );
-        KUrl url = item.url();
+        QUrl url = item.url();
         if( MetaFile::Track::isTrack( url ) )
-            m_listJobResults << url;
+        {
+            auto insertIter = std::upper_bound( m_resultUrls.begin(), m_resultUrls.end(), url, directorySensitiveLessThan );
+            m_resultUrls.insert( insertIter, url );
+        }
     }
-}
-
-void
-TrackLoader::listJobFinished()
-{
-    qSort( m_listJobResults.begin(), m_listJobResults.end(), directorySensitiveLessThan );
-
-    m_resultUrls << m_listJobResults;
-    m_listJobResults.clear();
-
-    QTimer::singleShot( 0, this, SLOT(processNextSourceUrl()) );
 }
 
 void
@@ -145,7 +132,7 @@ TrackLoader::processNextResultUrl()
         return;
     }
 
-    KUrl resultUrl = m_resultUrls.takeFirst();
+    QUrl resultUrl = m_resultUrls.takeFirst();
     if( isPlaylist( resultUrl ) )
     {
         PlaylistFilePtr playlist = loadPlaylistFile( resultUrl );
@@ -177,7 +164,7 @@ TrackLoader::processNextResultUrl()
         warning() << __PRETTY_FUNCTION__ << resultUrl
                   << "is neither a playlist or a track, skipping";
 
-    QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
+                  QTimer::singleShot( 0, this, &TrackLoader::processNextResultUrl );
 }
 
 void
@@ -214,7 +201,7 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
     static const QSet<QString> remoteProtocols = QSet<QString>()
             << "http" << "https" << "mms" << "smb"; // consider unifying with CollectionManager::trackForUrl()
     if( m_flags.testFlag( RemotePlaylistsAreStreams ) && tracks.count() > 1
-        && remoteProtocols.contains( playlist->uidUrl().protocol() ) )
+        && remoteProtocols.contains( playlist->uidUrl().scheme() ) )
     {
         m_tracks << Meta::TrackPtr( new Meta::MultiTrack( playlist ) );
     }
@@ -222,7 +209,7 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
         m_tracks << tracks;
 
     // this also ensures that processNextResultUrl() will resume in the main thread
-    QTimer::singleShot( 0, this, SLOT(processNextResultUrl()) );
+    QTimer::singleShot( 0, this, &TrackLoader::processNextResultUrl );
 }
 
 void
@@ -238,7 +225,7 @@ TrackLoader::metadataChanged( Meta::TrackPtr track )
 
     Observer::unsubscribeFrom( track );
     if( m_status == MayFinish && isEmpty )
-        QTimer::singleShot( 0, this, SLOT(finish()) );
+        QTimer::singleShot( 0, this, &TrackLoader::finish );
 }
 
 void
@@ -257,7 +244,7 @@ TrackLoader::mayFinish()
     }
 
     // we must wait for tracks to resolve, but with a timeout
-    QTimer::singleShot( m_timeout, this, SLOT(finish()) );
+    QTimer::singleShot( m_timeout, this, &TrackLoader::finish );
 }
 
 void
@@ -274,10 +261,10 @@ TrackLoader::finish()
 }
 
 bool
-TrackLoader::directorySensitiveLessThan( const KUrl &left, const KUrl &right )
+TrackLoader::directorySensitiveLessThan( const QUrl &left, const QUrl &right )
 {
-    QString leftDir = left.directory( KUrl::AppendTrailingSlash );
-    QString rightDir = right.directory( KUrl::AppendTrailingSlash );
+    QString leftDir = left.adjusted(QUrl::RemoveFilename).path();
+    QString rightDir = right.adjusted(QUrl::RemoveFilename).path();
 
     // filter out tracks from same directories:
     if( leftDir == rightDir )

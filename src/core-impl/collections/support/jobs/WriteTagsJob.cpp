@@ -22,15 +22,18 @@
 #include <QImage>
 
 WriteTagsJob::WriteTagsJob( const QString &path, const Meta::FieldHash &changes, bool respectConfig )
-    : Job()
+    : QObject()
+    , ThreadWeaver::Job()
     , m_path( path )
     , m_changes( changes )
     , m_respectConfig( respectConfig )
 {
 }
 
-void WriteTagsJob::run()
+void WriteTagsJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     if( !AmarokConfig::writeBack() && m_respectConfig )
         return;
 
@@ -40,4 +43,17 @@ void WriteTagsJob::run()
         Meta::Tag::setEmbeddedCover( m_path, m_changes.value( Meta::valImage ).value<QImage>() );
 }
 
-#include "WriteTagsJob.moc"
+void WriteTagsJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void WriteTagsJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}

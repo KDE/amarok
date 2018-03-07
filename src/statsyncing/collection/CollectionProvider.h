@@ -20,6 +20,7 @@
 #include "core/meta/forward_declarations.h"
 #include "statsyncing/Provider.h"
 
+#include <QPointer>
 #include <QSemaphore>
 
 namespace Collections {
@@ -44,32 +45,32 @@ namespace StatSyncing
 
             virtual QString id() const;
             virtual QString prettyName() const;
-            virtual KIcon icon() const;
+            virtual QIcon icon() const;
             virtual qint64 reliableTrackMetaData() const;
             virtual qint64 writableTrackStatsData() const;
             virtual Preference defaultPreference();
             virtual QSet<QString> artists();
             virtual TrackList artistTracks( const QString &artistName );
 
-        signals:
+        Q_SIGNALS:
             /// hacks to create and start QueryMaker in main eventloop
             void startArtistSearch();
             void startTrackSearch( QString artistName );
 
-        private slots:
+        private Q_SLOTS:
             /// @see startArtistSearch
             void slotStartArtistSearch();
             void slotStartTrackSearch( QString artistName );
 
-            void slotNewResultReady( Meta::ArtistList list );
-            void slotNewResultReady( Meta::TrackList list );
+            void slotNewArtistsReady( Meta::ArtistList list );
+            void slotNewTracksReady( Meta::TrackList list );
             void slotQueryDone();
 
         private:
             Q_DISABLE_COPY(CollectionProvider)
 
             /// collection can disappear at any time, use weak pointer to notice it
-            QWeakPointer<Collections::Collection> m_coll;
+            QPointer<Collections::Collection> m_coll;
             QSet<QString> m_foundArtists;
             QString m_currentArtistName;
             TrackList m_foundTracks;

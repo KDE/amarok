@@ -17,9 +17,9 @@
 #ifndef KDATECOMBO_H
 #define KDATECOMBO_H
 
-#include <QtGui/QWidget>
-#include <QtGui/QComboBox>
-#include <QtCore/QDate>
+#include <QWidget>
+#include <QComboBox>
+#include <QDate>
 
 /**
   *@author Beppe Grimaldi
@@ -53,7 +53,8 @@ protected:
   virtual void mousePressEvent (QMouseEvent * e);
 
 protected Q_SLOTS:
-   void dateEnteredEvent(const QDate &d=QDate());
+   void dateEnteredEvent(const QDate &d);
+   void nullDateEnteredEvent();
 };
 
 #endif

@@ -24,7 +24,7 @@
 #include "core/support/Debug.h"
 #include "dynamic/TrackSet.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QComboBox>
 #include <QFormLayout>
@@ -132,8 +132,8 @@ Dynamic::AlbumPlayBias::widget( QWidget* parent )
     case Follow:         combo->setCurrentIndex(1); break;
     case DontCare:       combo->setCurrentIndex(2); break;
     }
-    connect( combo, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(selectionChanged(int)) );
+    connect( combo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+             this, &AlbumPlayBias::selectionChanged );
 
     return combo;
 }
@@ -297,5 +297,4 @@ Dynamic::AlbumPlayBias::sameTrack( Meta::TrackPtr track1, Meta::TrackPtr track2 
 }
 
 
-#include "AlbumPlayBias.moc"
 

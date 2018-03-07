@@ -34,7 +34,7 @@ namespace Capabilities
             virtual QStringList sources() const;
             virtual void setSource( int source );
             virtual int current() const;
-            virtual KUrl nextUrl() const;
+            virtual QUrl nextUrl() const;
 
         private:
             Meta::MultiTrack *m_track;

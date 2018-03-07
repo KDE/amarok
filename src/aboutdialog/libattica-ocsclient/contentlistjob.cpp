@@ -23,28 +23,27 @@
 
 #include "contentparser.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QTimer>
+#include <QDebug>
+#include <QTimer>
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
 
 
 using namespace AmarokAttica;
 
 ContentListJob::ContentListJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 
-void ContentListJob::setUrl( const KUrl &url )
+void ContentListJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }
 
 void ContentListJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &ContentListJob::doWork );
 }
 
 Content::List ContentListJob::contentList() const
@@ -56,11 +55,13 @@ void ContentListJob::doWork()
 {
   qDebug() << m_url;
 
-  m_job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
-  connect( m_job, SIGNAL(result(KJob*)),
-    SLOT(slotJobResult(KJob*)) );
-  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-    SLOT(slotJobData(KIO::Job*,QByteArray)) );
+  auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+  connect( job, &KIO::TransferJob::result,
+           this, &ContentListJob::slotJobResult );
+  connect( job, &KIO::TransferJob::data,
+           this, &ContentListJob::slotJobData );
+
+  m_job = job;
 }
 
 void ContentListJob::slotJobResult( KJob *job )

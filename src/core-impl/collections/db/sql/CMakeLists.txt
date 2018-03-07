@@ -19,16 +19,14 @@ set( amarok_collection-sqlcollection_SRCS
     device/smb/SmbDeviceHandler.cpp
 )
 
-kde4_add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
+add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
 
 target_link_libraries(amarok-sqlcollection
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
+    KF5::KIOCore
     ${KDE4_SOLID_LIBRARY}
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTGUI_LIBRARY}
+    KF5::ThreadWeaver
+    Qt5::Core
+    Qt5::Gui
     ${CMAKE_THREAD_LIBS_INIT}
     amarokcore
     amaroklib
@@ -37,8 +35,8 @@ target_link_libraries(amarok-sqlcollection
 )
 
 if(APPLE)
-    SET_TARGET_PROPERTIES(amarok-sqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    set_target_properties(amarok-sqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 
 set_target_properties(amarok-sqlcollection PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amarok-sqlcollection ${INSTALL_TARGETS_DEFAULT_ARGS} )

@@ -19,9 +19,8 @@
 
 #include "Preset.h"
 
-#include <KFileDialog>
-
 #include <QAbstractItemModel>
+#include <QFileDialog>
 #include <QList>
 #include <QString>
 
@@ -48,10 +47,10 @@ namespace APG {
 
             APG::PresetPtr activePreset() const;
 
-        signals:
+        Q_SIGNALS:
             void lock( bool ); // disable the edit widgets if the solver is running
 
-        public slots:
+        public Q_SLOTS:
             void addNew();
             void edit();
             void editPreset( const QModelIndex& );
@@ -60,9 +59,9 @@ namespace APG {
             void removeActive();
             void runGenerator( int );
             void setActivePreset( const QModelIndex& );
-            void savePresetsToXml() const; // force saving to default location
+            void savePresetsToXmlDefault() const; // force saving to default location
 
-        private slots:
+        private Q_SLOTS:
             void savePresetsToXml( const QString&, const QList<APG::PresetPtr> & ) const;
             void loadPresetsFromXml( const QString&, bool createDefaults = false );
 
@@ -80,17 +79,17 @@ namespace APG {
             QList<APG::PresetPtr> m_presetList;
     }; // class PresetModel
 
-    class PresetModel::ExportDialog : public KFileDialog {
+    class PresetModel::ExportDialog : public QFileDialog {
         Q_OBJECT
 
         public:
             ExportDialog( APG::PresetPtr );
             ~ExportDialog();
 
-        signals:
+        Q_SIGNALS:
             void pleaseExport( const QString&, const QList<APG::PresetPtr> ) const;
 
-        private slots:
+        private Q_SLOTS:
             void recvAccept() const;
 
         private:

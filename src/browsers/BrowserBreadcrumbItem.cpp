@@ -21,21 +21,22 @@
 #include "core/support/Debug.h"
 #include "widgets/BreadcrumbItemButton.h"
 
-#include <KIcon>
-#include <KLocale>
-
 #include <QDir>
+#include <QHBoxLayout>
+#include <QIcon>
 #include <QMenu>
 
+#include <KLocalizedString>
+
+
 BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget *parent )
-    : KHBox( parent )
+    : BoxWidget( false, parent )
     , m_menuButton( 0 )
 {
     //figure out if we want to add a menu to this item. A menu allows you to select
     //any of the _sibling_ items. (yes, I know, this is different from how Dolphin
     //does it, but I find the Dolphin way amazingly unintuitive and I always get it
     //wrong when using it...)
-
     BrowserCategoryList * parentList = category->parentList();
     if( parentList )
     {
@@ -55,7 +56,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
             BrowserCategory *siblingCategory = siblingMap.value( siblingName );
 
             QAction *action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
-            connect( action, SIGNAL(triggered()), siblingMap.value( siblingName ), SLOT(activate()) );
+            connect( action, &QAction::triggered, siblingMap.value( siblingName ), &BrowserCategory::activate );
         }
 
         m_menuButton->setMenu( menu );
@@ -67,21 +68,21 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
     {
         // root item
         m_mainButton->setToolTip( i18n( "Media Sources Home" ) );
-        m_mainButton->setIcon( KIcon( "user-home" ) );
+        m_mainButton->setIcon( QIcon::fromTheme( "user-home" ) );
     }
 
-    connect( m_mainButton, SIGNAL(sizePolicyChanged()), this, SLOT(updateSizePolicy()) );
+    connect( m_mainButton, &BreadcrumbItemButton::sizePolicyChanged, this, &BrowserBreadcrumbItem::updateSizePolicy );
 
     //if this is a list, make cliking on this item cause us
     //to navigate to its home.
     BrowserCategoryList *list = qobject_cast<BrowserCategoryList*>( category );
     if ( list )
     {
-        connect( m_mainButton, SIGNAL(clicked(bool)), list, SLOT(home()) );
+        connect( m_mainButton, &QAbstractButton::clicked, list, &BrowserCategoryList::home );
     }
     else  
     {
-        connect( m_mainButton, SIGNAL(clicked(bool)), category, SLOT(reActivate()) );
+        connect( m_mainButton, &QAbstractButton::clicked, category, &BrowserCategory::reActivate );
     }
 
     adjustSize();
@@ -94,7 +95,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
 
 BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString &callback,
         const BreadcrumbSiblingList &childItems, FileBrowser *handler, QWidget *parent )
-    : KHBox( parent )
+    : BoxWidget( false, parent )
     , m_menuButton( 0 )
     , m_callback( callback )
 {
@@ -118,16 +119,16 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
                 font.setBold( true );
                 action->setFont( font );
             }
-            connect( action, SIGNAL(triggered()), this, SLOT(activateSibling()) );
+            connect( action, &QAction::triggered, this, &BrowserBreadcrumbItem::activateSibling );
             i++;
         }
         m_menuButton->setMenu( menu );
     }
 
     m_mainButton = new BreadcrumbItemButton( name, this );
-    connect( m_mainButton, SIGNAL(sizePolicyChanged()), this, SLOT(updateSizePolicy()) );
-    connect( m_mainButton, SIGNAL(clicked(bool)), this, SLOT(activate()) );
-    connect( this, SIGNAL(activated(QString)), handler, SLOT(addItemActivated(QString)) );
+    connect( m_mainButton, &BreadcrumbItemButton::sizePolicyChanged, this, &BrowserBreadcrumbItem::updateSizePolicy );
+    connect( m_mainButton, &QAbstractButton::clicked, this, &BrowserBreadcrumbItem::activate );
+    connect( this, &BrowserBreadcrumbItem::activated, handler, &FileBrowser::addItemActivated );
 
     adjustSize();
     m_nominalWidth = width();

@@ -20,6 +20,7 @@
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "playlist/PlaylistModel.h"
 
 namespace Playlist
 {
@@ -33,8 +34,10 @@ ProxyBase::ProxyBase( AbstractModel *belowModel, QObject *parent )
     // Proxy the Playlist::AbstractModel signals.
     //   If you need to do something special in a subclass, disconnect() this signal and
     //   do your own connect() call.
-    connect( sourceModel(), SIGNAL(activeTrackChanged(quint64)), this, SIGNAL(activeTrackChanged(quint64)) );
-    connect( sourceModel(), SIGNAL(queueChanged()), this, SIGNAL(queueChanged()) );
+    connect( qobject_cast<Playlist::Model*>( sourceModel() ), &Playlist::Model::activeTrackChanged,
+             this, &ProxyBase::activeTrackChanged );
+    connect( qobject_cast<Playlist::Model*>( sourceModel() ), &Playlist::Model::queueChanged,
+             this, &ProxyBase::queueChanged );
 }
 
 ProxyBase::~ProxyBase()
@@ -105,7 +108,7 @@ ProxyBase::currentSearchTerm()
 bool
 ProxyBase::exportPlaylist( const QString &path, bool relative ) const
 {
-    return Playlists::exportPlaylistFile( tracks(), path, relative );
+    return Playlists::exportPlaylistFile( tracks(), QUrl::fromLocalFile(path), relative );
 }
 
 void
@@ -381,4 +384,3 @@ ProxyBase::rowToSource( int proxyModelRow ) const
 
 }   //namespace Playlist
 
-#include "ProxyBase.moc"

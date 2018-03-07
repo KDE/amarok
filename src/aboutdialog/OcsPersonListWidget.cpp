@@ -52,8 +52,8 @@ OcsPersonListWidget::OcsPersonListWidget( const QList< KAboutPerson > &persons,
     {
         OcsPersonItem *item = new OcsPersonItem( persons.at( i ), ocsPersons->at( i ).first, status, m_personsArea );
         m_areaLayout->addWidget( item );
-        connect( item, SIGNAL(ocsFetchStarted()), this, SLOT(onOcsFetchStarted()) );
-        connect( item, SIGNAL(ocsFetchResult(int)), this, SLOT(onOcsDataFetched(int)) );
+        connect( item, &OcsPersonItem::ocsFetchStarted, this, &OcsPersonListWidget::onOcsFetchStarted );
+        connect( item, &OcsPersonItem::ocsFetchResult, this, &OcsPersonListWidget::onOcsDataFetched );
     }
 }
 

@@ -25,6 +25,7 @@
 #include <core/support/Debug.h>
 
 #include <KConfigGroup>
+#include <KLocalizedString>
 
 /** A SqlStorage that doesn't do anything.
  *
@@ -65,15 +66,12 @@ public:
 
     /** Clears the list of the last errors. */
     virtual void clearLastErrors() { }
-
 };
-
-static EmptySqlStorage emptyStorage;
 
 
 struct StorageManager::Private
 {
-    SqlStorage* sqlDatabase;
+    QSharedPointer<SqlStorage> sqlDatabase;
 
     /** A list that collects errors from database plugins
      *
@@ -85,7 +83,7 @@ struct StorageManager::Private
     QStringList errorList;
 };
 
-StorageManager *StorageManager::s_instance = 0;
+StorageManager *StorageManager::s_instance = Q_NULLPTR;
 
 
 StorageManager *
@@ -116,19 +114,17 @@ StorageManager::StorageManager()
 
     setObjectName( "StorageManager" );
     qRegisterMetaType<SqlStorage *>( "SqlStorage*" );
-    d->sqlDatabase = &emptyStorage;
+    d->sqlDatabase = QSharedPointer<SqlStorage>( new EmptySqlStorage );
 }
 
 StorageManager::~StorageManager()
 {
     DEBUG_BLOCK
 
-    if( d->sqlDatabase != &emptyStorage )
-        delete d->sqlDatabase;
     delete d;
 }
 
-SqlStorage*
+QSharedPointer<SqlStorage>
 StorageManager::sqlStorage() const
 {
     return d->sqlDatabase;
@@ -139,7 +135,6 @@ StorageManager::init()
 {
 }
 
-
 void
 StorageManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
 {
@@ -149,10 +144,10 @@ StorageManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
         if( !factory )
             continue;
 
-        connect( factory, SIGNAL(newStorage(SqlStorage*)),
-                 this, SLOT(slotNewStorage(SqlStorage*)) );
-        connect( factory, SIGNAL(newError(QStringList)),
-                 this, SLOT(slotNewError(QStringList)) );
+        connect( factory, &StorageFactory::newStorage,
+                 this, &StorageManager::slotNewStorage );
+        connect( factory, &StorageFactory::newError,
+                 this, &StorageManager::slotNewError );
     }
 }
 
@@ -161,7 +156,7 @@ StorageManager::getLastErrors() const
 {
     if( !d->errorList.isEmpty() )
         return d->errorList;
-    if( d->sqlDatabase == &emptyStorage )
+    if( d->sqlDatabase.dynamicCast<EmptySqlStorage>() )
     {
         QStringList list;
         list << i18n( "The configured database plugin could not be loaded." );
@@ -177,7 +172,7 @@ StorageManager::clearLastErrors()
 }
 
 void
-StorageManager::slotNewStorage( SqlStorage* newStorage )
+StorageManager::slotNewStorage( QSharedPointer<SqlStorage> newStorage )
 {
     DEBUG_BLOCK
 
@@ -187,10 +182,9 @@ StorageManager::slotNewStorage( SqlStorage* newStorage )
         return;
     }
 
-    if( d->sqlDatabase && d->sqlDatabase != &emptyStorage )
+    if( d->sqlDatabase && !d->sqlDatabase.dynamicCast<EmptySqlStorage>() )
     {
         warning() << "Warning, newStorage when we already have a storage";
-        delete newStorage;
         return; // once we have the database set we can't change it since
         // plugins might have already created their tables in the old database
         // or caching data from it.

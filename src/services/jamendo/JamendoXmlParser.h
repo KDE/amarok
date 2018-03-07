@@ -19,7 +19,7 @@
 
 #include "JamendoDatabaseHandler.h"
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 
 #include <QDomElement>
 #include <QMap>
@@ -32,7 +32,7 @@
 *
 * @author Nikolaj Hald Nielsen
 */
-class JamendoXmlParser : public ThreadWeaver::Job
+class JamendoXmlParser : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 
@@ -41,20 +41,17 @@ public:
     /**
      * Constructor
      * @param fileName The file to parse 
-     * @return Pointer to new object
      */
     JamendoXmlParser( const QString &fileName );
 
     /**
      * The function that starts the actual work. Inherited from ThreadWeaver::Job 
      * Note the work is performed in a separate thread
-     * @return Returns true on success and false on failure
      */
-    void run();
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
     /**
      * Destructor
-     * @return none
      */
     ~JamendoXmlParser();
 
@@ -66,15 +63,22 @@ public:
 
     virtual void requestAbort ();
 
+Q_SIGNALS:
 
-signals:
+    /** This signal is emitted when this job is being processed by a thread. */
+    void started(ThreadWeaver::JobPointer);
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed.
+     * This signal is emitted when success() returns false after the job is executed. */
+    void failed(ThreadWeaver::JobPointer);
 
     /**
      * Signal emitted when parsing is complete.
      */
     void doneParsing();
 
-private slots:
+private Q_SLOTS:
     /**
      * Called when the job has completed. Is executed in the GUI thread
      */
@@ -115,6 +119,10 @@ private:
     QMap<int, int> m_albumArtistMap;
 
     bool m_aborted;
+
+protected:
+    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 };
 
 #endif

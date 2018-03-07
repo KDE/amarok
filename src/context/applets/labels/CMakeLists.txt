@@ -5,15 +5,15 @@ set(labels_SRCS LabelsApplet.cpp LabelGraphicsItem.cpp LabelOverlayButton.cpp)
 include_directories( ../..
                      ../../.. )
 
-kde4_add_ui_files( labels_SRCS labelsGeneralSettings.ui labelsBlacklistSettings.ui labelsReplacementSettings.ui )
-kde4_add_plugin(amarok_context_applet_labels ${labels_SRCS})
+ki18n_wrap_ui( labels_SRCS labelsGeneralSettings.ui labelsBlacklistSettings.ui labelsReplacementSettings.ui )
+add_library(amarok_context_applet_labels MODULE ${labels_SRCS})
 if(APPLE)
-   SET_TARGET_PROPERTIES(amarok_context_applet_labels PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+   set_target_properties(amarok_context_applet_labels PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 target_link_libraries(amarok_context_applet_labels
     amarokcore
     amaroklib
-    ${KDE4_PLASMA_LIBS}
+    KF5::Plasma
 )
 
 install(TARGETS amarok_context_applet_labels DESTINATION ${PLUGIN_INSTALL_DIR})

@@ -19,11 +19,12 @@
 #include "core/meta/Statistics.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/proxy/MetaProxy_p.h"
-#include "core-impl/meta/proxy/MetaProxy_p.moc"
 #include "core-impl/meta/proxy/MetaProxyWorker.h"
 
-#include <KSharedPtr>
-#include <ThreadWeaver/Weaver>
+#include "AmarokSharedPointer.h"
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
+#include <KLocalizedString>
 
 #include <QCoreApplication>
 #include <QThread>
@@ -38,7 +39,7 @@ class ProxyGenre;
 class ProxyComposer;
 class ProxyYear;
 
-MetaProxy::Track::Track( const KUrl &url, LookupType lookupType )
+MetaProxy::Track::Track( const QUrl &url, LookupType lookupType )
     : Meta::Track()
     , d( new Private() )
 {
@@ -62,9 +63,9 @@ MetaProxy::Track::Track( const KUrl &url, LookupType lookupType )
         if( foreignThread )
             worker->moveToThread( mainThread );
 
-        QObject::connect( worker, SIGNAL(finishedLookup(Meta::TrackPtr)),
-                          d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
-        ThreadWeaver::Weaver::instance()->enqueue( worker );
+        QObject::connect( worker, &Worker::finishedLookup,
+                          d, &Track::Private::slotUpdateTrack );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(worker) );
     }
 }
 
@@ -81,9 +82,9 @@ MetaProxy::Track::lookupTrack( Collections::TrackProvider *provider )
     if( QThread::currentThread() != mainThread )
         worker->moveToThread( mainThread );
 
-    QObject::connect( worker, SIGNAL(finishedLookup(Meta::TrackPtr)),
-                      d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
-    ThreadWeaver::Weaver::instance()->enqueue( worker );
+    QObject::connect( worker, &MetaProxy::Worker::finishedLookup,
+                      d, &Private::slotUpdateTrack );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(worker) );
 }
 
 QString
@@ -119,7 +120,7 @@ MetaProxy::Track::sortableName() const
         return Meta::Track::sortableName();
 }
 
-KUrl
+QUrl
 MetaProxy::Track::playableUrl() const
 {
     if( d->realTrack )
@@ -128,7 +129,7 @@ MetaProxy::Track::playableUrl() const
         /* don't return d->url here, it may be something like
          * amarok-sqltrackuid://2f9277bb7e49962c1c4c5612811807a1 and Phonon may choke
          * on such urls trying to find a codec and causing hang (bug 308371) */
-        return KUrl();
+        return QUrl();
 }
 
 QString
@@ -137,7 +138,7 @@ MetaProxy::Track::prettyUrl() const
     if( d->realTrack )
         return d->realTrack->prettyUrl();
     else
-        return d->url.prettyUrl();
+        return d->url.toDisplayString();
 }
 
 QString

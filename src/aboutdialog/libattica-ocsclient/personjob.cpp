@@ -23,28 +23,27 @@
 
 #include "personparser.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QTimer>
+#include <QDebug>
+#include <QTimer>
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
 
 
 using namespace AmarokAttica;
 
 PersonJob::PersonJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 
-void PersonJob::setUrl( const KUrl &url )
+void PersonJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }
 
 void PersonJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &PersonJob::doWork );
 }
 
 Person PersonJob::person() const
@@ -56,11 +55,13 @@ void PersonJob::doWork()
 {
   qDebug() << m_url;
 
-  m_job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
-  connect( m_job, SIGNAL(result(KJob*)),
-    SLOT(slotUserJobResult(KJob*)) );
-  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-    SLOT(slotUserJobData(KIO::Job*,QByteArray)) );
+  auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+  connect( job, &KIO::TransferJob::result,
+           this, &PersonJob::slotUserJobResult );
+  connect( job, &KIO::TransferJob::data,
+           this, &PersonJob::slotUserJobData );
+
+  m_job = job;
 }
 
 void PersonJob::slotUserJobResult( KJob *job )
@@ -79,12 +80,13 @@ void PersonJob::slotUserJobResult( KJob *job )
     if (!m_person.avatarUrl().isEmpty()) {
       qDebug() << "Getting avatar from" << m_person.avatarUrl();
 
-      m_job = KIO::get( m_person.avatarUrl(), KIO::NoReload,
-        KIO::HideProgressInfo );
-      connect( m_job, SIGNAL(result(KJob*)),
-        SLOT(slotAvatarJobResult(KJob*)) );
-      connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-        SLOT(slotAvatarJobData(KIO::Job*,QByteArray)) );
+      auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+      connect( job, &KIO::TransferJob::result,
+               this, &PersonJob::slotAvatarJobResult );
+      connect( job, &KIO::TransferJob::data,
+               this, &PersonJob::slotAvatarJobData );
+
+      m_job = job;
     } else {
       emitResult();
     }

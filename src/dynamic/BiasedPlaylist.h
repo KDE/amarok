@@ -25,6 +25,9 @@
 
 #include "amarok_export.h" // we are exporting it for the tests
 
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
+
 #include <QObject>
 #include <QPointer>
 
@@ -56,10 +59,10 @@ namespace Dynamic
 
             BiasPtr bias() const;
 
-        public slots:
+        public Q_SLOTS:
             virtual void requestAbort();
 
-        private slots:
+        private Q_SLOTS:
             void solverFinished();
             void biasChanged();
             void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
@@ -84,4 +87,3 @@ namespace Dynamic
 // Q_DECLARE_METATYPE( Dynamic::BiasedPlaylistPtr )
 
 #endif
-

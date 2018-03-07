@@ -26,6 +26,7 @@ A central place for creating a Pud that matches system colors
 	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class PopupDropperFactory;
+class PopupDropperItem;
 
 namespace The {
     AMAROK_EXPORT PopupDropperFactory* popupDropperFactory();
@@ -39,13 +40,8 @@ class AMAROK_EXPORT PopupDropperFactory : public QObject
 
     public:
         /**
-         * Create a new PopupDropper with correct system colors. This function creates it on top of the context viev
-         * @return The newly created PopupDropper
-         */
-        PopupDropper * createPopupDropper();
-        
-        /**
-         * Overloaded function for creating a new PopupDropper with a custom parent
+         * Creates a new PopupDropper with correct system colors. This function creates it on top of the context view
+         * Function for creating a new PopupDropper with a custom parent
          * @param parent The widget to act as the parent
          * @param ignoreEmptyParent Whether to ignore if the parent is null - use this when creating submenus where the parent is 0
          * @return The newly created PopupDropper

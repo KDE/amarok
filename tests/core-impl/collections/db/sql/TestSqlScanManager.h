@@ -18,11 +18,12 @@
 #ifndef TESTSQLSCANMANAGER_H
 #define TESTSQLSCANMANAGER_H
 
-#include <QtTest/QTest>
+#include <QSharedPointer>
+#include <QTest>
 
 #include "core/meta/support/MetaConstants.h"
 
-#include <KTempDir>
+#include <QTemporaryDir>
 
 class MySqlEmbeddedStorage;
 class GenericScanManager;
@@ -43,10 +44,10 @@ class TestSqlScanManager : public QObject
 public:
     TestSqlScanManager();
 
-signals:
+Q_SIGNALS:
     void scanManagerResult();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -169,10 +170,11 @@ private:
 
     int m_collectionUpdatedCount;
 
-    MySqlEmbeddedStorage *m_storage;
-    KTempDir *m_tmpDatabaseDir;
-    KTempDir *m_tmpCollectionDir;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
+    QTemporaryDir *m_tmpDatabaseDir;
+    QTemporaryDir *m_tmpCollectionDir;
     QString m_sourcePath; // the path to the template .mp3 file
+    bool m_autoGetCoverArt;
 
     Collections::SqlCollection *m_collection;
     GenericScanManager *m_scanManager;

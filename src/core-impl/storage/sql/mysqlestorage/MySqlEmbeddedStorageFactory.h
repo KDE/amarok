@@ -21,10 +21,12 @@
 
 class MySqleStorageFactory : public StorageFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_storage-mysqlestorage.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        MySqleStorageFactory( QObject *parent, const QVariantList &args );
+        MySqleStorageFactory();
         virtual ~MySqleStorageFactory();
 
         virtual void init();

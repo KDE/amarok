@@ -22,8 +22,8 @@
 #include "SvgHandler.h"
 #include "QStringx.h"
 #include "browsers/playlistbrowser/PodcastModel.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
+// #include "context/popupdropper/libpud/PopupDropper.h"
+// #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include <core/storage/SqlStorage.h>
 #include "core/interfaces/Logger.h"
 #include "core/podcasts/PodcastImageFetcher.h"
@@ -38,23 +38,25 @@
 #include "ui_SqlPodcastProviderSettingsWidget.h"
 
 #include <KCodecs>
-#include <KFileDialog>
+#include <KFileWidget>
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KIO/Job>
-#include <KIO/NetAccess>
-#include <KLocale>
-#include <KProgressDialog>
-#include <KStandardDirs>
-#include <KUrl>
-#include <Solid/Networking>
+#include <KLocalizedString>
 
 #include <QAction>
 #include <QCheckBox>
+#include <QCryptographicHash>
+#include <QDialog>
 #include <QDir>
 #include <QFile>
 #include <QMap>
+#include <QMessageBox>
+#include <QNetworkConfigurationManager>
+#include <QProgressDialog>
+#include <QStandardPaths>
 #include <QTimer>
+#include <QUrl>
 
 using namespace Podcasts;
 
@@ -77,9 +79,9 @@ SqlPodcastProvider::SqlPodcastProvider()
         , m_writeTagsAction( 0 )
         , m_podcastImageFetcher( 0 )
 {
-    connect( m_updateTimer, SIGNAL(timeout()), SLOT(autoUpdate()) );
+    connect( m_updateTimer, &QTimer::timeout, this, &SqlPodcastProvider::autoUpdate );
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
 
     if( !sqlStorage )
     {
@@ -93,8 +95,8 @@ SqlPodcastProvider::SqlPodcastProvider()
                                .readEntry( "Maximum Simultaneous Downloads", 4 );
     m_maxConcurrentUpdates = Amarok::config( "Podcasts" )
                              .readEntry( "Maximum Simultaneous Updates", 4 );
-    m_baseDownloadDir = Amarok::config( "Podcasts" ).readEntry( "Base Download Directory",
-                                                           Amarok::saveLocation( "podcasts" ) );
+    m_baseDownloadDir = QUrl::fromUserInput( Amarok::config( "Podcasts" ).readEntry( "Base Download Directory",
+                                                           Amarok::saveLocation( "podcasts" ) ) );
 
     QStringList values;
 
@@ -165,7 +167,7 @@ void
 SqlPodcastProvider::loadPodcasts()
 {
     m_channels.clear();
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -195,7 +197,7 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
     if( string.isEmpty() )
         return SqlPodcastEpisodePtr();
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return SqlPodcastEpisodePtr();
 
@@ -241,9 +243,9 @@ SqlPodcastProvider::sqlEpisodeForString( const QString &string )
 }
 
 bool
-SqlPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
+SqlPodcastProvider::possiblyContainsTrack( const QUrl &url ) const
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return false;
 
@@ -256,7 +258,7 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
 }
 
 Meta::TrackPtr
-SqlPodcastProvider::trackForUrl( const KUrl &url )
+SqlPodcastProvider::trackForUrl( const QUrl &url )
 {
     if( url.isEmpty() )
         return Meta::TrackPtr();
@@ -284,21 +286,21 @@ SqlPodcastProvider::providerActions()
 {
     if( m_providerActions.isEmpty() )
     {
-        QAction *updateAllAction = new QAction( KIcon( "view-refresh-amarok" ),
+        QAction *updateAllAction = new QAction( QIcon::fromTheme( "view-refresh-amarok" ),
                 i18n( "&Update All Channels" ), this );
         updateAllAction->setProperty( "popupdropper_svg_id", "update" );
-        connect( updateAllAction, SIGNAL(triggered()), this, SLOT(updateAll()) );
+        connect( updateAllAction, &QAction::triggered, this, &SqlPodcastProvider::updateAll );
         m_providerActions << updateAllAction;
 
-        QAction *configureAction = new QAction( KIcon( "configure" ),
+        QAction *configureAction = new QAction( QIcon::fromTheme( "configure" ),
                 i18n( "&Configure General Settings" ), this );
         configureAction->setProperty( "popupdropper_svg_id", "configure" );
-        connect( configureAction, SIGNAL(triggered()), this, SLOT(slotConfigureProvider()) );
+        connect( configureAction, &QAction::triggered, this, &SqlPodcastProvider::slotConfigureProvider );
         m_providerActions << configureAction;
 
-        QAction *exportOpmlAction = new QAction( KIcon( "document-export" ),
+        QAction *exportOpmlAction = new QAction( QIcon::fromTheme( "document-export" ),
                 i18n( "&Export subscriptions to OPML file" ), this );
-        connect( exportOpmlAction, SIGNAL(triggered()), SLOT(slotExportOpml()) );
+        connect( exportOpmlAction, &QAction::triggered, this, &SqlPodcastProvider::slotExportOpml );
         m_providerActions << exportOpmlAction;
     }
 
@@ -323,9 +325,9 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
     //TODO: add export OPML action for selected playlists only. Use the QAction::data() trick.
     if( m_configureChannelAction == 0 )
     {
-        m_configureChannelAction = new QAction( KIcon( "configure" ), i18n( "&Configure" ), this );
+        m_configureChannelAction = new QAction( QIcon::fromTheme( "configure" ), i18n( "&Configure" ), this );
         m_configureChannelAction->setProperty( "popupdropper_svg_id", "configure" );
-        connect( m_configureChannelAction, SIGNAL(triggered()), SLOT(slotConfigureChannel()) );
+        connect( m_configureChannelAction, &QAction::triggered, this, &SqlPodcastProvider::slotConfigureChannel );
     }
     //only one channel can be configured at a time.
     if( sqlChannels.count() == 1 )
@@ -336,18 +338,18 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
 
     if( m_removeAction == 0 )
     {
-        m_removeAction = new QAction( KIcon( "news-unsubscribe" ), i18n( "&Remove Subscription" ), this );
+        m_removeAction = new QAction( QIcon::fromTheme( "news-unsubscribe" ), i18n( "&Remove Subscription" ), this );
         m_removeAction->setProperty( "popupdropper_svg_id", "remove" );
-        connect( m_removeAction, SIGNAL(triggered()), SLOT(slotRemoveChannels()) );
+        connect( m_removeAction, &QAction::triggered, this, &SqlPodcastProvider::slotRemoveChannels );
     }
     m_removeAction->setData( QVariant::fromValue( sqlChannels ) );
     actions << m_removeAction;
 
     if( m_updateAction == 0 )
     {
-        m_updateAction = new QAction( KIcon( "view-refresh-amarok" ), i18n( "&Update Channel" ), this );
+        m_updateAction = new QAction( QIcon::fromTheme( "view-refresh-amarok" ), i18n( "&Update Channel" ), this );
         m_updateAction->setProperty( "popupdropper_svg_id", "update" );
-        connect( m_updateAction, SIGNAL(triggered()), SLOT(slotUpdateChannels()) );
+        connect( m_updateAction, &QAction::triggered, this, &SqlPodcastProvider::slotUpdateChannels );
     }
     m_updateAction->setData( QVariant::fromValue( sqlChannels ) );
     actions << m_updateAction;
@@ -381,38 +383,38 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
 
     if( m_downloadAction == 0 )
     {
-        m_downloadAction = new QAction( KIcon( "go-down" ), i18n( "&Download Episode" ), this );
+        m_downloadAction = new QAction( QIcon::fromTheme( "go-down" ), i18n( "&Download Episode" ), this );
         m_downloadAction->setProperty( "popupdropper_svg_id", "download" );
-        connect( m_downloadAction, SIGNAL(triggered()), SLOT(slotDownloadEpisodes()) );
+        connect( m_downloadAction, &QAction::triggered, this, &SqlPodcastProvider::slotDownloadEpisodes );
     }
 
     if( m_deleteAction == 0 )
     {
-        m_deleteAction = new QAction( KIcon( "edit-delete" ),
+        m_deleteAction = new QAction( QIcon::fromTheme( "edit-delete" ),
             i18n( "&Delete Downloaded Episode" ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         m_deleteAction->setObjectName( "deleteAction" );
-        connect( m_deleteAction, SIGNAL(triggered()), SLOT(slotDeleteDownloadedEpisodes()) );
+        connect( m_deleteAction, &QAction::triggered, this, &SqlPodcastProvider::slotDeleteDownloadedEpisodes );
     }
 
     if( m_writeTagsAction == 0 )
     {
-        m_writeTagsAction = new QAction( KIcon( "media-track-edit-amarok" ),
+        m_writeTagsAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
             i18n( "&Write Feed Information to File" ), this );
         m_writeTagsAction->setProperty( "popupdropper_svg_id", "edit" );
-        connect( m_writeTagsAction, SIGNAL(triggered()), SLOT(slotWriteTagsToFiles()) );
+        connect( m_writeTagsAction, &QAction::triggered, this, &SqlPodcastProvider::slotWriteTagsToFiles );
     }
 
     if( m_keepAction == 0 )
     {
-        m_keepAction = new QAction( KIcon( "podcast-amarok" ),
+        m_keepAction = new QAction( QIcon::fromTheme( "podcast-amarok" ),
                 i18n( "&Keep downloaded file" ), this );
         m_keepAction->setToolTip( i18n( "Toggle the \"keep\" downloaded file status of "
                 "this podcast episode. Downloaded files with this status wouldn't be "
                 "deleted even if we apply a purge." ) );
         m_keepAction->setProperty( "popupdropper_svg_id", "keep" );
         m_keepAction->setCheckable( true );
-        connect( m_keepAction, SIGNAL(triggered(bool)), SLOT(slotSetKeep()) );
+        connect( m_keepAction, &QAction::triggered, this, &SqlPodcastProvider::slotSetKeep );
     }
 
     SqlPodcastEpisodeList remoteEpisodes;
@@ -455,12 +457,12 @@ SqlPodcastProvider::episodeForGuid( const QString &guid )
 }
 
 void
-SqlPodcastProvider::addPodcast( const KUrl &url )
+SqlPodcastProvider::addPodcast( const QUrl &url )
 {
-    KUrl kurl = KUrl( url );
+    QUrl kurl = QUrl( url );
     debug() << "importing " << kurl.url();
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -489,7 +491,7 @@ SqlPodcastProvider::updateAll()
 }
 
 void
-SqlPodcastProvider::subscribe( const KUrl &url )
+SqlPodcastProvider::subscribe( const QUrl &url )
 {
     if( !url.isValid() )
         return;
@@ -505,16 +507,12 @@ SqlPodcastProvider::subscribe( const KUrl &url )
     }
 
     PodcastReader *podcastReader = new PodcastReader( this );
-    connect( podcastReader, SIGNAL(finished(PodcastReader*)),
-             SLOT(slotReadResult(PodcastReader*)) );
-    connect( podcastReader, SIGNAL(statusBarSorryMessage(QString)),
-            this, SLOT(slotStatusBarSorryMessage(QString)) );
-    connect( podcastReader,
-        SIGNAL(statusBarNewProgressOperation( KIO::TransferJob *, const QString &,
-                                              Podcasts::PodcastReader* )),
-            SLOT(slotStatusBarNewProgressOperation( KIO::TransferJob *, const QString &,
-                                                    Podcasts::PodcastReader* ))
-           );
+    connect( podcastReader, &PodcastReader::finished,
+             this, &SqlPodcastProvider::slotReadResult );
+    connect( podcastReader, &PodcastReader::statusBarSorryMessage,
+             this, &SqlPodcastProvider::slotStatusBarSorryMessage );
+    connect( podcastReader, &PodcastReader::statusBarNewProgressOperation,
+             this, &SqlPodcastProvider::slotStatusBarNewProgressOperation );
 
     m_updatingChannels++;
     podcastReader->read( url );
@@ -577,7 +575,7 @@ SqlPodcastProvider::removeSubscription( Podcasts::SqlPodcastChannelPtr sqlChanne
     //Remove it when we know it's supposed to be empty.
     if( m_channels.isEmpty() )
     {
-        SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+        auto sqlStorage = StorageManager::instance()->sqlStorage();
         if( !sqlStorage )
             return;
         debug() << "Unsubscribed from last channel, cleaning out the podcastepisodes table.";
@@ -590,7 +588,7 @@ SqlPodcastProvider::removeSubscription( Podcasts::SqlPodcastChannelPtr sqlChanne
 void
 SqlPodcastProvider::configureProvider()
 {
-    m_providerSettingsDialog = new KDialog( The::mainWindow() );
+    m_providerSettingsDialog = new QDialog( The::mainWindow() );
     QWidget *settingsWidget = new QWidget( m_providerSettingsDialog );
     m_providerSettingsDialog->setObjectName( "SqlPodcastProviderSettings" );
     Ui::SqlPodcastProviderSettingsWidget settings;
@@ -603,17 +601,16 @@ SqlPodcastProvider::configureProvider()
     settings.m_autoUpdateInterval->setValue( m_autoUpdateInterval );
     settings.m_autoUpdateInterval->setPrefix(
             i18nc( "prefix to 'x minutes'", "every " ) );
-    settings.m_autoUpdateInterval->setSuffix( ki18np( " minute", " minutes" ) );
+    settings.m_autoUpdateInterval->setSuffix( i18np( " minute", " minutes", settings.m_autoUpdateInterval->value() ) );
 
-    m_providerSettingsDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
-    m_providerSettingsDialog->setMainWidget( settingsWidget );
+    auto buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply, m_providerSettingsDialog );
 
-    connect( settings.m_baseDirUrl, SIGNAL(textChanged(QString)), SLOT(slotConfigChanged()) );
-    connect( settings.m_autoUpdateInterval, SIGNAL(valueChanged(int)),
-             SLOT(slotConfigChanged()) );
+    connect( settings.m_baseDirUrl, &KUrlRequester::textChanged, this, &SqlPodcastProvider::slotConfigChanged );
+    connect( settings.m_autoUpdateInterval, QOverload<int>::of(&QSpinBox::valueChanged),
+             this, &SqlPodcastProvider::slotConfigChanged );
 
     m_providerSettingsDialog->setWindowTitle( i18n( "Configure Local Podcasts" ) );
-    m_providerSettingsDialog->enableButtonApply( false );
+    buttonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
 
     if( m_providerSettingsDialog->exec() == QDialog::Accepted )
     {
@@ -622,8 +619,9 @@ SqlPodcastProvider::configureProvider()
             startTimer();
         else
             m_updateTimer->stop();
-        KUrl adjustedNewPath = settings.m_baseDirUrl->url();
-        adjustedNewPath.adjustPath( KUrl::RemoveTrailingSlash );
+        QUrl adjustedNewPath = settings.m_baseDirUrl->url();
+        adjustedNewPath = adjustedNewPath.adjusted(QUrl::StripTrailingSlash);
+
         if( adjustedNewPath != m_baseDownloadDir )
         {
             m_baseDownloadDir = adjustedNewPath;
@@ -631,27 +629,18 @@ SqlPodcastProvider::configureProvider()
             if( !m_channels.isEmpty() )
             {
                 //TODO: check if there actually are downloaded episodes
-                KDialog moveAllDialog;
-                moveAllDialog.setCaption( i18n( "Move Podcasts" ) );
+                auto button = QMessageBox::question( The::mainWindow(),
+                                                     i18n( "Move Podcasts" ),
+                                                     i18n( "Do you want to move all downloaded episodes to the new location?") );
 
-                KVBox *vbox = new KVBox( &moveAllDialog );
-
-                QString question( i18n( "Do you want to move all downloaded episodes to the "
-                                       "new location?") );
-                QLabel *label = new QLabel( question, vbox );
-                label->setWordWrap( true );
-                label->setMaximumWidth( 400 );
-
-                moveAllDialog.setMainWidget( vbox );
-                moveAllDialog.setButtons( KDialog::Yes | KDialog::No );
-
-                if( moveAllDialog.exec() == KDialog::Yes )
+                if( button == QMessageBox::Yes )
                 {
                     foreach( SqlPodcastChannelPtr sqlChannel, m_channels )
                     {
-                        KUrl oldSaveLocation = sqlChannel->saveLocation();
-                        KUrl newSaveLocation = m_baseDownloadDir;
-                        newSaveLocation.addPath( oldSaveLocation.fileName() );
+                        QUrl oldSaveLocation = sqlChannel->saveLocation();
+                        QUrl newSaveLocation = m_baseDownloadDir;
+                        newSaveLocation = newSaveLocation.adjusted(QUrl::StripTrailingSlash);
+                        newSaveLocation.setPath(newSaveLocation.path() + '/' + ( oldSaveLocation.fileName() ));
                         sqlChannel->setSaveLocation( newSaveLocation );
                         debug() << newSaveLocation.path();
                         moveDownloadedEpisodes( sqlChannel );
@@ -679,7 +668,8 @@ SqlPodcastProvider::slotConfigChanged()
     if( m_providerSettingsWidget->m_autoUpdateInterval->value() != m_autoUpdateInterval
         || m_providerSettingsWidget->m_baseDirUrl->url() != m_baseDownloadDir )
     {
-        m_providerSettingsDialog->enableButtonApply( true );
+        auto buttonBox = m_providerSettingsDialog->findChild<QDialogButtonBox*>();
+        buttonBox->button( QDialogButtonBox::Apply )->setEnabled( true );
     }
 }
 
@@ -702,23 +692,27 @@ SqlPodcastProvider::slotExportOpml()
     }
 
     //TODO: add checkbox as widget to filedialog to include podcast settings.
-    KFileDialog fileDialog( KUrl( "kfiledialog:///podcast/amarok_podcasts.opml"), "*.opml",
-                            The::mainWindow() );
-    fileDialog.setMode( KFile::File );
-    fileDialog.setCaption( i18n( "Select file for OPML export") );
-    if( fileDialog.exec() != KDialog::Accepted )
+    QFileDialog fileDialog;
+    fileDialog.restoreState( Amarok::config( "amarok-podcast-export-dialog" ).readEntry( "state", QByteArray() ) );
+
+    fileDialog.setMimeTypeFilters( QStringList( QStringLiteral( "*.opml" ) ) );
+    fileDialog.setAcceptMode( QFileDialog::AcceptSave );
+    fileDialog.setFileMode( QFileDialog::AnyFile );
+    fileDialog.setWindowTitle( i18n( "Select file for OPML export") );
+
+    if( fileDialog.exec() != QDialog::Accepted )
         return;
 
-    KUrl filePath = fileDialog.selectedUrl();
+    QString filePath = fileDialog.selectedFiles().value( 0 );
 
-    QFile *opmlFile = new QFile( filePath.toLocalFile(), this );
+    QFile *opmlFile = new QFile( filePath, this );
     if( !opmlFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
-        error() << "could not open OPML file " << filePath.url();
+        error() << "could not open OPML file " << filePath;
         return;
     }
     OpmlWriter *opmlWriter = new OpmlWriter( rootOutlines, headerData, opmlFile );
-    connect( opmlWriter, SIGNAL(result(int)), SLOT(slotOpmlWriterDone(int)) );
+    connect( opmlWriter, &OpmlWriter::result, this, &SqlPodcastProvider::slotOpmlWriterDone );
     opmlWriter->run();
 }
 
@@ -739,8 +733,8 @@ SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel 
     if( !sqlChannel )
         return;
 
-    KUrl oldUrl = sqlChannel->url();
-    KUrl oldSaveLocation = sqlChannel->saveLocation();
+    QUrl oldUrl = sqlChannel->url();
+    QUrl oldSaveLocation = sqlChannel->saveLocation();
     bool oldHasPurge = sqlChannel->hasPurge();
     int oldPurgeCount = sqlChannel->purgeCount();
     bool oldAutoScan = sqlChannel->autoScan();
@@ -790,23 +784,24 @@ SqlPodcastProvider::moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr sqlCh
 {
     debug() << QString( "We need to move downloaded episodes of \"%1\" to %2" )
             .arg( sqlChannel->title() )
-            .arg( sqlChannel->saveLocation().prettyUrl() );
+            .arg( sqlChannel->saveLocation().toDisplayString() );
 
-    KUrl::List filesToMove;
+    QList<QUrl> filesToMove;
     foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
     {
         if( !episode->localUrl().isEmpty() )
         {
-            KUrl newLocation = sqlChannel->saveLocation();
+            QUrl newLocation = sqlChannel->saveLocation();
             QDir dir( newLocation.toLocalFile() );
             dir.mkpath( "." );
 
-            newLocation.addPath( episode->localUrl().fileName() );
+            newLocation = newLocation.adjusted(QUrl::StripTrailingSlash);
+            newLocation.setPath(newLocation.path() + '/' + ( episode->localUrl().fileName() ));
             debug() << "Moving from " << episode->localUrl() << " to " << newLocation;
             KIO::Job *moveJob = KIO::move( episode->localUrl(), newLocation,
                                            KIO::HideProgressInfo );
             //wait until job is finished.
-            if( KIO::NetAccess::synchronousRun( moveJob, The::mainWindow() ) )
+            if( moveJob->exec() )
                 episode->setLocalUrl( newLocation );
         }
     }
@@ -850,22 +845,15 @@ SqlPodcastProvider::slotSetKeep()
 QPair<bool, bool>
 SqlPodcastProvider::confirmUnsubscribe( Podcasts::SqlPodcastChannelPtr channel )
 {
-    KDialog unsubscribeDialog;
-    unsubscribeDialog.setCaption( i18n( "Unsubscribe" ) );
+    QMessageBox unsubscribeDialog;
+    unsubscribeDialog.setText( i18n( "Do you really want to unsubscribe from \"%1\"?", channel->title() ) );
+    unsubscribeDialog.setStandardButtons( QMessageBox::Ok | QMessageBox::Cancel );
 
-    KVBox *vbox = new KVBox( &unsubscribeDialog );
-
-    QString question( i18n( "Do you really want to unsubscribe from \"%1\"?", channel->title() ) );
-    QLabel *label = new QLabel( question, vbox );
-    label->setWordWrap( true );
-    label->setMaximumWidth( 400 );
-
-    QCheckBox *deleteMediaCheckBox = new QCheckBox( i18n( "Delete downloaded episodes" ), vbox );
-    unsubscribeDialog.setMainWidget( vbox );
-    unsubscribeDialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QCheckBox *deleteMediaCheckBox = new QCheckBox( i18n( "Delete downloaded episodes" ), Q_NULLPTR );
+    unsubscribeDialog.setCheckBox( deleteMediaCheckBox );
     
     QPair<bool, bool> result;
-    result.first = unsubscribeDialog.exec() == QDialog::Accepted;
+    result.first = unsubscribeDialog.exec() == QMessageBox::Ok;
     result.second = deleteMediaCheckBox->isChecked();
     return result;
 }
@@ -958,7 +946,7 @@ SqlPodcastProvider::deleteDownloadedEpisode( Podcasts::SqlPodcastEpisodePtr epis
     debug() << "deleting " << episode->title();
     KIO::del( episode->localUrl(), KIO::HideProgressInfo );
 
-    episode->setLocalUrl( KUrl() );
+    episode->setLocalUrl( QUrl() );
 
     emit episodeDeleted( Podcasts::PodcastEpisodePtr::dynamicCast( episode ) );
 }
@@ -984,23 +972,22 @@ SqlPodcastProvider::completePodcastDownloads()
     {
         debug() << QString( "There are still %1 podcast download jobs running!" )
                 .arg( m_downloadJobMap.count() );
-        KProgressDialog progressDialog( The::mainWindow(),
-                                i18n( "Waiting for Podcast Downloads to Finish" ),
-                                i18np( "There is still a podcast download in progress",
-                                       "There are still %1 podcast downloads in progress",
-                                       m_downloadJobMap.count() )
+        QProgressDialog progressDialog( i18np( "There is still a podcast download in progress",
+                                        "There are still %1 podcast downloads in progress",
+                                        m_downloadJobMap.count() ),
+                                        i18n("Cancel Download and Quit."),
+                                        0, m_downloadJobMap.size(), The::mainWindow()
                                       );
-        progressDialog.setButtonText( i18n("Cancel Download and Quit.") );
-
+        progressDialog.setValue( 0 );
         m_completedDownloads = 0;
         foreach( KJob *job, m_downloadJobMap.keys() )
         {
             connect( job, SIGNAL(percent(KJob*,ulong)),
-                    SLOT(slotDownloadProgress(KJob*,ulong))
+                     this, SLOT(slotDownloadProgress(KJob*,ulong))
                    );
         }
-        connect( this, SIGNAL(totalPodcastDownloadProgress(int)),
-                 progressDialog.progressBar(), SLOT(setValue(int)) );
+        connect( this, &SqlPodcastProvider::totalPodcastDownloadProgress,
+                 &progressDialog, &QProgressDialog::setValue );
         int result = progressDialog.exec();
         if( result == QDialog::Rejected )
         {
@@ -1015,8 +1002,8 @@ SqlPodcastProvider::completePodcastDownloads()
 void
 SqlPodcastProvider::autoUpdate()
 {
-    if( Solid::Networking::status() != Solid::Networking::Connected
-            && Solid::Networking::status() != Solid::Networking::Unknown )
+    QNetworkConfigurationManager mgr;
+    if( !mgr.isOnline() )
     {
         debug() << "Solid reports we are not online, canceling podcast auto-update";
         return;
@@ -1046,12 +1033,12 @@ SqlPodcastProvider::updateSqlChannel( Podcasts::SqlPodcastChannelPtr channel )
 
     PodcastReader *podcastReader = new PodcastReader( this );
 
-    connect( podcastReader, SIGNAL(finished(PodcastReader*)),
-             SLOT(slotReadResult(PodcastReader*)) );
-    connect( podcastReader, SIGNAL(statusBarSorryMessage(QString)),
-            this, SLOT(slotStatusBarSorryMessage(QString)) );
-    connect( podcastReader, SIGNAL(statusBarNewProgressOperation(KIO::TransferJob*,QString,Podcasts::PodcastReader*)),
-                this, SLOT(slotStatusBarNewProgressOperation(KIO::TransferJob*,QString,Podcasts::PodcastReader*)) );
+    connect( podcastReader, &PodcastReader::finished,
+             this, &SqlPodcastProvider::slotReadResult );
+    connect( podcastReader, &PodcastReader::statusBarSorryMessage,
+             this, &SqlPodcastProvider::slotStatusBarSorryMessage );
+    connect( podcastReader, &PodcastReader::statusBarNewProgressOperation,
+             this, &SqlPodcastProvider::slotStatusBarNewProgressOperation );
     
     m_updatingChannels++;
     podcastReader->update( Podcasts::PodcastChannelPtr::dynamicCast( channel ) );
@@ -1143,7 +1130,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     }
 
     KIO::TransferJob *transferJob =
-            KIO::get( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
+            KIO::get( QUrl::fromUserInput(sqlEpisode->uidUrl()), KIO::Reload, KIO::HideProgressInfo );
 
 
     QFile *tmpFile = createTmpFile( sqlEpisode );
@@ -1151,7 +1138,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
                                                tmpFile,
     /* Unless a redirect happens the filename from the enclosure is used. This is a potential source
        of filename conflicts in downloadResult() */
-                                               KUrl( sqlEpisode->uidUrl() ).fileName(),
+                                               QUrl( sqlEpisode->uidUrl() ).fileName(),
                                                false
                                              };
     m_downloadJobMap.insert( transferJob, download );
@@ -1184,15 +1171,15 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
                                                         SLOT(kill())
                                                       );
 
-    connect( transferJob, SIGNAL(data(KIO::Job*,QByteArray)),
-             SLOT(addData(KIO::Job*,QByteArray)) );
+    connect( transferJob, &KIO::TransferJob::data,
+             this, &SqlPodcastProvider::addData );
     //need to connect to finished instead of result because it's always emitted.
     //We need to cleanup after a download is cancled regardless of the argument in
     //KJob::kill()
-    connect( transferJob, SIGNAL(finished(KJob*)),
-             SLOT(downloadResult(KJob*)) );
-    connect( transferJob, SIGNAL(redirection(KIO::Job*,KUrl)),
-             SLOT(redirected(KIO::Job*,KUrl)) );
+    connect( transferJob, &KIO::TransferJob::finished,
+             this, &SqlPodcastProvider::downloadResult );
+    connect( transferJob, &KIO::TransferJob::redirection,
+             this, &SqlPodcastProvider::redirected );
 }
 
 void
@@ -1237,16 +1224,17 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     dir.mkpath( "." );  // ensure that the path is there
     //TODO: what if result is false?
 
-    KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
+    QUrl localUrl = QUrl::fromLocalFile( dir.absolutePath() );
     QString tempName;
     if( !sqlEpisode->guid().isEmpty() )
         tempName = QUrl::toPercentEncoding( sqlEpisode->guid() );
     else
         tempName = QUrl::toPercentEncoding( sqlEpisode->uidUrl() );
 
-    QString tempNameMd5( KMD5( tempName.toUtf8() ).hexDigest() );
+    QString tempNameMd5( QCryptographicHash::hash( tempName.toUtf8(), QCryptographicHash::Md5 ).toHex() );
 
-    localUrl.addPath( tempNameMd5 + PODCAST_TMP_POSTFIX );
+    localUrl = localUrl.adjusted(QUrl::StripTrailingSlash);
+    localUrl.setPath(localUrl.path() + '/' + ( tempNameMd5 + PODCAST_TMP_POSTFIX ));
 
     return new QFile( localUrl.toLocalFile() );
 }
@@ -1269,7 +1257,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
         return false;
     }
 
-    QString fileName = sqlChannel->saveLocation().toLocalFile( KUrl::AddTrailingSlash );
+    QString fileName = sqlChannel->saveLocation().adjusted(QUrl::StripTrailingSlash).toLocalFile();
     fileName += download.fileName;
     debug() << "checking " << fileName;
     QFileInfo fileInfo( fileName );
@@ -1279,7 +1267,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
     debug() << fileName << " already exists, no need to redownload";
     // NOTE: we need to emit because the KJobProgressBar relies on it to clean up
     job->kill( KJob::EmitResult );
-    sqlEpisode->setLocalUrl( fileName );
+    sqlEpisode->setLocalUrl( QUrl::fromLocalFile(fileName) );
     //TODO: repaint icons, probably with signal metadataUpdate()
     return true;
 }
@@ -1396,13 +1384,13 @@ SqlPodcastProvider::downloadResult( KJob *job )
             download.fileName = QString( filenameLayout );
         }
 
-        QString finalName = sqlChannel->saveLocation().toLocalFile( KUrl::AddTrailingSlash )
+        QString finalName = sqlChannel->saveLocation().adjusted(QUrl::StripTrailingSlash).toLocalFile()
                             + download.fileName;
         if( tmpFile->rename( finalName ) )
         {
             debug() << "successfully written Podcast Episode " << sqlEpisode->title()
                     << " to " << finalName;
-            sqlEpisode->setLocalUrl( finalName );
+            sqlEpisode->setLocalUrl( QUrl::fromLocalFile(finalName) );
 
             if( sqlChannel->writeTags() )
                 sqlEpisode->writeTagsToFile();
@@ -1428,7 +1416,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
 }
 
 void
-SqlPodcastProvider::redirected( KIO::Job *job, const KUrl &redirectedUrl )
+SqlPodcastProvider::redirected( KIO::Job *job, const QUrl &redirectedUrl )
 {
     debug() << "redirecting to " << redirectedUrl << ". filename: "
             << redirectedUrl.fileName();
@@ -1438,7 +1426,7 @@ SqlPodcastProvider::redirected( KIO::Job *job, const KUrl &redirectedUrl )
 void
 SqlPodcastProvider::createTables() const
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -1486,7 +1474,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
     debug() << QString( "Updating Podcast tables from version %1 to version %2" )
             .arg( fromVersion ).arg( toVersion );
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 #define escape(x) sqlStorage->escape(x)
@@ -1592,14 +1580,10 @@ SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
     if( m_podcastImageFetcher == 0 )
     {
         m_podcastImageFetcher = new PodcastImageFetcher();
-        connect( m_podcastImageFetcher,
-                 SIGNAL(imageReady(Podcasts::PodcastChannelPtr,QImage)),
-                 SLOT(channelImageReady(Podcasts::PodcastChannelPtr,QImage))
-               );
-        connect( m_podcastImageFetcher,
-                 SIGNAL(done(PodcastImageFetcher*)),
-                 SLOT(podcastImageFetcherDone(PodcastImageFetcher*))
-               );
+        connect( m_podcastImageFetcher, &PodcastImageFetcher::channelImageReady,
+                 this, &SqlPodcastProvider::channelImageReady );
+                 connect( m_podcastImageFetcher,&PodcastImageFetcher::done,
+                 this, &SqlPodcastProvider::podcastImageFetcherDone );
     }
 
     m_podcastImageFetcher->addChannel( PodcastChannelPtr::dynamicCast( channel ) );
@@ -1627,4 +1611,3 @@ SqlPodcastProvider::slotConfigureProvider()
     configureProvider();
 }
 
-#include "SqlPodcastProvider.moc"

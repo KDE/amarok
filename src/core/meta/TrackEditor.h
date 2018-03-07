@@ -20,7 +20,7 @@
 
 #include "core/amarokcore_export.h"
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 
 namespace Meta
 {
@@ -30,7 +30,7 @@ namespace Meta
      * If you are calling more than one setter method, you should call beginUpdate()
      * before calling any setter methods and endUpdate() when you're done.
      *
-     * This class is memory-managed exclusively using KSharedPtrs: always use
+     * This class is memory-managed exclusively using AmarokSharedPointers: always use
      * TrackEditorPtr to store or pass pointer to this class. This class must be
      * implemented in a reentrant manner. Additionally, underlying Meta::Track must
      * be thread-safe -- if you return same instance of TrackEditor every time then it
@@ -66,7 +66,7 @@ namespace Meta
             virtual void endUpdate() = 0;
     };
 
-    typedef KSharedPtr<TrackEditor> TrackEditorPtr;
+    typedef AmarokSharedPointer<TrackEditor> TrackEditorPtr;
 }
 
 #endif // META_TRACKEDITOR_H

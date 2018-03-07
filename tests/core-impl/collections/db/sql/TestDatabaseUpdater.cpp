@@ -20,14 +20,12 @@
 #include "DatabaseUpdater.h"
 #include "core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.h"
 
-#include <KTempDir>
-
 #include <QString>
 #include <QStringList>
+#include <QTemporaryDir>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( DatabaseUpdaterTest )
+QTEST_MAIN( DatabaseUpdaterTest )
 
 
 DatabaseUpdaterTest::DatabaseUpdaterTest()
@@ -38,9 +36,10 @@ DatabaseUpdaterTest::DatabaseUpdaterTest()
 void
 DatabaseUpdaterTest::initTestCase()
 {
-    m_tmpDir = new KTempDir();
-    m_storage = new MySqlEmbeddedStorage();
-    QVERIFY( m_storage->init( m_tmpDir->name() ) );
+    m_tmpDir = new QTemporaryDir();
+    QVERIFY( m_tmpDir->isValid() );
+    m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
+    QVERIFY( m_storage->init( m_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
 }
 
@@ -48,7 +47,6 @@ void
 DatabaseUpdaterTest::cleanupTestCase()
 {
     delete m_collection;
-    //m_storage is deleted by SqlCollection
     delete m_tmpDir;
 }
 
@@ -154,4 +152,3 @@ DatabaseUpdaterTest::testCreatePermanentTables()
     QCOMPARE( tables.count(), 18 );
 }
 
-#include "TestDatabaseUpdater.moc"

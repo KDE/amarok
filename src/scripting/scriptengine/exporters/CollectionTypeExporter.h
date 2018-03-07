@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QWeakPointer>
+#include <QPointer>
 
 namespace Collections
 {
@@ -185,7 +185,7 @@ namespace AmarokScript
             Q_INVOKABLE Collections::QueryMaker *queryMaker();
 
         private:
-            QWeakPointer<Collections::Collection> m_collection;
+            QPointer<Collections::Collection> m_collection;
 
             bool isOrganizable() const;
             bool isWritable() const;
@@ -203,7 +203,7 @@ namespace AmarokScript
 
             Meta::TrackList removeInvalidTracks( const Meta::TrackList &tracks );
 
-       signals:
+       Q_SIGNALS:
            /**
             * This signal will be emitted after major changes to the collection
             * e.g. new songs where added, or an album changed

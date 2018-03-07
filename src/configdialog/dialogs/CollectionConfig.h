@@ -27,12 +27,12 @@ class CollectionConfig : public ConfigDialogBase
     Q_OBJECT
 
     public:
-        CollectionConfig( QWidget* parent );
+        CollectionConfig( Amarok2ConfigDialog* parent );
         virtual ~CollectionConfig();
 
-        virtual bool hasChanged();
-        virtual bool isDefault();
-        virtual void updateSettings();
+        bool hasChanged() Q_DECL_OVERRIDE;
+        bool isDefault() Q_DECL_OVERRIDE;
+        void updateSettings() Q_DECL_OVERRIDE;
 
     private:
         CollectionSetup* m_collectionSetup;

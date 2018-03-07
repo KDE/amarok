@@ -40,10 +40,10 @@ class ProgressWidget : public QWidget
         void addBookmark( const QString &name, int milliSeconds , bool instantDisplayPopUp );
         Amarok::TimeSlider* slider() const { return m_slider; }
 
-    public slots:
+    public Q_SLOTS:
         void drawTimeDisplay( int position );
 
-    protected slots:
+    protected Q_SLOTS:
         void stopped();
         void paused();
         void trackPlaying();
@@ -53,8 +53,8 @@ class ProgressWidget : public QWidget
     protected:
         virtual void mousePressEvent( QMouseEvent * );
 
-    private slots:
-        void addBookmark( const QString &name, int milliSeconds );
+    private Q_SLOTS:
+        void addBookmarkNoPopup( const QString &name, int milliSeconds );
         void redrawBookmarks(const QString *BookmarkName = 0);
 
     private:

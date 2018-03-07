@@ -20,7 +20,7 @@
 #ifndef TESTTAGGUESSER_H
 #define TESTTAGGUESSER_H
 
-#include <QtCore/QObject>
+#include <QObject>
 
 class TagGuesser;
 
@@ -30,7 +30,7 @@ Q_OBJECT
 public:
     TestTagGuesser();
     
-private slots:
+private Q_SLOTS:
   void init();
   void cleanup();
   void testStandard();

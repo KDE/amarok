@@ -16,10 +16,13 @@
  
 #include "MagnatuneCollectionLocation.h"
 
-#include <KDialog>
-#include <KLocale>
-
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QLabel>
+#include <QVBoxLayout>
+
+#include <KLocalizedString>
+#include <KConfigGroup>
 
 using namespace Collections;
 
@@ -35,17 +38,26 @@ MagnatuneCollectionLocation::~MagnatuneCollectionLocation()
 
 void MagnatuneCollectionLocation::showSourceDialog( const Meta::TrackList &tracks, bool removeSources )
 {
-    KDialog dialog;
-    dialog.setCaption( i18n( "Preview Tracks" ) );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialog dialog;
+    dialog.setWindowTitle( i18n( "Preview Tracks" ) );
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    dialog.setLayout(mainLayout);
+
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
 
     QLabel *label = new QLabel( i18n( "The tracks you are about to copy are Magnatune.com preview streams. For better quality and advert free streams, consider buying an album download. Remember that when buying from Magnatune the artist gets 50%. Also if you buy using Amarok, you support the Amarok project with 10%." ) );
 
     label->setWordWrap ( true );
     label->setMaximumWidth( 400 );
     
-    dialog.setMainWidget( label );
-
+    mainLayout->addWidget(label);
+    mainLayout->addWidget(buttonBox);
     dialog.exec();
 
     if ( dialog.result() == QDialog::Rejected )

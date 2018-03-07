@@ -23,7 +23,7 @@
 #include <QIcon>
 #include <QObject>
 #include <QString>
-#include <QWeakPointer>
+#include <QPointer>
 
 class QScriptEngine;
 class QScriptValue;
@@ -33,7 +33,7 @@ namespace Playlists
 {
     class Playlist;
 
-    typedef KSharedPtr<Playlist> PlaylistPtr;
+    typedef AmarokSharedPointer<Playlist> PlaylistPtr;
     typedef QList<PlaylistPtr> PlaylistList;
 }
 
@@ -116,7 +116,7 @@ namespace AmarokScript
 
 
         private:
-            QWeakPointer<Playlists::PlaylistProvider> m_provider;
+            QPointer<Playlists::PlaylistProvider> m_provider;
 
             bool isValid() const;
             virtual bool isWritable() const;
@@ -124,7 +124,7 @@ namespace AmarokScript
             int category() const;
             int playlistCount() const;
 
-        signals:
+        Q_SIGNALS:
             void updated();
             void playlistAdded( Playlists::PlaylistPtr playlist );
             void playlistRemoved( Playlists::PlaylistPtr playlist );

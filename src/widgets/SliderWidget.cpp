@@ -31,10 +31,9 @@
 #include "SvgHandler.h"
 #include "ProgressWidget.h"
 
-#include <KIcon>
-#include <KLocale>
-#include <KStandardDirs>
-#include <KGlobalSettings>
+#include <QIcon>
+#include <KLocalizedString>
+#include <QStandardPaths>
 
 #include <QAction>
 #include <QContextMenuEvent>
@@ -252,7 +251,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
     /*
     // TODO: Phonon
     menu.addSeparator();
-    menu.addAction( KIcon( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), kapp, SLOT(slotConfigEqualizer()) )->setData( -1 );
+    menu.addAction( QIcon::fromTheme( "view-media-equalizer-amarok" ), i18n( "&Equalizer" ), qApp, &QCoreApplication::slotConfigEqualizer()) )->setData( -1 );
     */
 
     QAction* a = menu.exec( mapToGlobal( e->pos() ) );
@@ -356,8 +355,8 @@ void Amarok::TimeSlider::drawTriangle( const QString& name, int milliSeconds, bo
     int x_pos = ( ( ( double ) milliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + s_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
     BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name, width(), showPopup );
-    connect( tri, SIGNAL(clicked(int)), SLOT(slotTriangleClicked(int)) );
-    connect( tri, SIGNAL(focused(int)), SLOT(slotTriangleFocused(int)) );
+    connect( tri, &BookmarkTriangle::clicked, this, &TimeSlider::slotTriangleClicked );
+    connect( tri, &BookmarkTriangle::focused, this, &TimeSlider::slotTriangleFocused );
     m_triangles << tri;
     tri->setGeometry( x_pos + 6 /* to center the point */, 1 /*y*/, 11, 11 ); // 6 = hard coded border width
     tri->show();
@@ -416,4 +415,3 @@ bool Amarok::TimeSlider::event( QEvent * event )
 }
 
 
-#include "SliderWidget.moc"

@@ -22,11 +22,9 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/Expression.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
-#include <qtest_kde.h>
-
-QTEST_KDEMAIN_CORE( TestExpression )
+QTEST_GUILESS_MAIN( TestExpression )
 
 //required for Debug.h
 QMutex Debug::mutex;

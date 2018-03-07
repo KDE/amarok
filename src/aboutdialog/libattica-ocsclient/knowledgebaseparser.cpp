@@ -22,8 +22,6 @@
 
 #include "knowledgebaseparser.h"
 
-#include <QXmlStreamReader>
-
 using namespace AmarokAttica;
 
 KnowledgeBaseParser::KnowledgeBaseParser()
@@ -134,7 +132,7 @@ KnowledgeBase KnowledgeBaseParser::parseKnowledgeBase( QXmlStreamReader &xml )
       } else if ( xml.name() == "comments" ) {
         knowledgeBase.setComments( xml.readElementText().toInt() );
       } else if ( xml.name() == "detailpage" ) {
-        knowledgeBase.setDetailPage( KUrl(xml.readElementText()) );
+        knowledgeBase.setDetailPage( QUrl(xml.readElementText()) );
       } else if ( xml.name() == "contentid" ) {
         knowledgeBase.setContentId( xml.readElementText().toInt() );
       } else if ( xml.name() == "name" ) {

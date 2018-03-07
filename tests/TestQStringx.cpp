@@ -21,13 +21,11 @@
 
 #include "core/support/Debug.h"
 
-#include <QtTest/QTest>
-#include <QtCore/QString>
-#include <QtCore/QMap>
+#include <QTest>
+#include <QString>
+#include <QMap>
 
-#include <qtest_kde.h>
-
-QTEST_KDEMAIN_CORE( TestQStringx )
+QTEST_GUILESS_MAIN( TestQStringx )
 
 //required for Debug.h
 QMutex Debug::mutex;
@@ -168,7 +166,7 @@ void TestQStringx::testNamedOptArgs()
 
     m_testString = "{%artist% {%test%}}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults " ) );
-    
+
     m_testString = "[%test2%:test {%artist%}%test%{ [%test%]}]";
     QCOMPARE( m_testString.namedOptArgs( testArgs ), QString( "test All:My:Faults Unknown test" ) );
 }

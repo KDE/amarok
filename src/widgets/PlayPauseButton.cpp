@@ -18,7 +18,7 @@
 
 #include "SvgHandler.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QMouseEvent>
 #include <QPainter>
@@ -27,7 +27,7 @@
 PlayPauseButton::PlayPauseButton( QWidget *parent ) : IconButton( parent )
     , m_isPlaying( false )
 {
-    connect (this, SIGNAL(clicked()), this, SLOT(toggle()) );
+    connect (this, &PlayPauseButton::clicked, this, &PlayPauseButton::toggle );
     setToolTip( i18n( "Play" ) );
 }
 
@@ -84,4 +84,3 @@ void PlayPauseButton::setPlaying( bool playing )
     setIcon( m_isPlaying ? m_icon.pause[underMouse()] : m_icon.play[underMouse()], 4 );
 }
 
-#include "PlayPauseButton.moc"

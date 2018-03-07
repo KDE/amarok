@@ -66,7 +66,7 @@ namespace Mpris1
                  CAN_HAS_TRACKLIST     = 1 << 6
              };
 
-        public slots:
+        public Q_SLOTS:
             Status GetStatus();
 
             void Pause();
@@ -100,7 +100,7 @@ namespace Mpris1
 
             void updateStatus();
 
-        signals:
+        Q_SIGNALS:
             void CapsChange( int );
             void TrackChange( QVariantMap );
             void StatusChange( Mpris1::Status );
@@ -108,7 +108,7 @@ namespace Mpris1
         public:
             QVariantMap GetTrackMetadata( Meta::TrackPtr track );
 
-        private slots:
+        private Q_SLOTS:
             void slotTrackChanged( Meta::TrackPtr track );
             void slotStateChanged();
     };

@@ -21,7 +21,6 @@
 #include "amarok_export.h"
 
 #include <QColor>
-#include <QFile>
 #include <QHash>
 #include <QString>
 #include <QPalette>

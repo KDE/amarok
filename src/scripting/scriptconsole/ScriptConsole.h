@@ -21,7 +21,7 @@
 #include <QDockWidget>
 #include <QScriptEngineAgent>
 #include <QtScriptTools/QScriptEngineDebugger>
-#include <QWeakPointer>
+#include <QPointer>
 
 namespace KTextEditor{
     class Editor;
@@ -46,7 +46,7 @@ class ScriptListDockWidget;
         public:
             static ScriptConsole *instance();
 
-        private slots:
+        private Q_SLOTS:
             void slotAbortEvaluation();
             void slotExecuteNewScript();
             void slotNewScript();
@@ -65,12 +65,12 @@ class ScriptListDockWidget;
             ScriptConsoleItem* createScriptItem( const QString &script );
 
             QScriptEngineDebugger *m_debugger;
-            QWeakPointer<ScriptConsoleItem> m_scriptItem;
+            QPointer<ScriptConsoleItem> m_scriptItem;
             QDockWidget *m_codeWidget;
             QString m_savePath;
             KTextEditor::Editor *m_editor;
             ScriptListDockWidget *m_scriptListDock;
-            static QWeakPointer<ScriptConsole> s_instance;
+            static QPointer<ScriptConsole> s_instance;
     };
 
     class ScriptListDockWidget : public QDockWidget
@@ -83,19 +83,19 @@ class ScriptListDockWidget;
             void addScript( ScriptConsoleItem *script );
             void addItem( QListWidgetItem *item );
 
-        public slots:
+        public Q_SLOTS:
             void clear();
             void removeCurrentScript();
             void prev();
             void next();
 
-        signals:
+        Q_SIGNALS:
             void edit( ScriptConsoleItem *item );
             void executeScript( ScriptConsoleItem *item );
             void currentItemChanged( ScriptConsoleItem *newItem );
             void newScript();
 
-        private slots:
+        private Q_SLOTS:
             void slotDoubleClicked( const QModelIndex &index );
             void slotCurrentItemChanged( QListWidgetItem *newItem, QListWidgetItem *oldItem );
 

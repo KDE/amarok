@@ -20,11 +20,11 @@
 
 #include "Token.h"
 
-#include <KListWidget>
+#include <QListWidget>
 #include <QMap>
 
 //Holds a number of icons representing parts of the filename that will become tokens when dropped on the TokenLayoutWidget.
-class TokenPool : public KListWidget
+class TokenPool : public QListWidget
 {
     Q_OBJECT
 
@@ -51,7 +51,7 @@ class TokenPool : public KListWidget
         // void dragMoveEvent( QDragMoveEvent *event );
         void dropEvent( QDropEvent *event );
 
-    signals:
+    Q_SIGNALS:
         /** Emitted if somebody double clicks a token.
             The token parameter belongs to the token pool. Don't reparent it.
         */

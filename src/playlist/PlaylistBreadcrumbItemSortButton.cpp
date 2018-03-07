@@ -16,7 +16,7 @@
 
 #include "PlaylistBreadcrumbItemSortButton.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QPainter>
 #include <QStyle>
@@ -103,10 +103,10 @@ BreadcrumbItemSortButton::drawHoverBackground( QPainter *painter )
     const bool isHovered = isDisplayHintEnabled( HoverHint );
     if( isHovered )
     {
-        QStyleOptionViewItemV4 option;
+        QStyleOptionViewItem option;
         option.initFrom(this);
         option.state = QStyle::State_Enabled | QStyle::State_MouseOver;
-        option.viewItemPosition = QStyleOptionViewItemV4::OnlyOne;
+        option.viewItemPosition = QStyleOptionViewItem::OnlyOne;
 
         if( m_arrowHovered )
         {

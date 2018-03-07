@@ -22,12 +22,13 @@
 #include "PlaylistSortWidget.h"
 #include "view/listview/PrettyListView.h"
 #include "widgets/AmarokDockWidget.h"
+#include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 
-#include <QWeakPointer>
+#include <QPointer>
 
 class KActionCollection;
 class KActionMenu;
-class KVBox;
+class BoxWidget;
 class QLabel;
 class QWidget;
 class PlaylistQueueEditor;
@@ -56,13 +57,14 @@ public:
 
     void polish();
 
-public slots:
+public Q_SLOTS:
     void clearFilterIfActive();
+    void slotEditQueue();
 
 protected:
     QSize sizeHint() const;
 
-private slots:
+private Q_SLOTS:
     /** show or hide the dynamic playlist mode indicator */
     void showDynamicHint();
 
@@ -70,24 +72,23 @@ private slots:
     void playlistProviderAdded( Playlists::PlaylistProvider *provider, int category );
     void playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category );
     void slotSaveCurrentPlaylist();
-    void slotEditQueue();
     void slotDynamicHintLinkActivated( const QString &href );
 
 private:
     KActionMenu *m_savePlaylistMenu;
     KActionCollection *m_saveActions;
 
-    QWeakPointer<PlaylistQueueEditor> m_playlistQueueEditor;
+    QPointer<PlaylistQueueEditor> m_playlistQueueEditor;
 
     PrettyListView *m_playlistView;
     ProgressiveSearchWidget *m_searchWidget;
     SortWidget *m_sortWidget;
     QLabel *m_dynamicHintWidget;
 
-    KVBox *m_mainWidget;
-    QFrame *m_barBox;
+    BoxWidget *m_mainWidget;
+    BoxWidget *m_barBox;
 };
 }
 
-Q_DECLARE_METATYPE( QWeakPointer<Playlists::UserPlaylistProvider> )
+Q_DECLARE_METATYPE( QPointer<Playlists::UserPlaylistProvider> )
 #endif

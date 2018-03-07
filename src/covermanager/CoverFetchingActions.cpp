@@ -24,19 +24,19 @@
 #include "CoverManager.h"
 #include "CoverViewDialog.h"
 
-#include <KApplication>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QFileDialog>
+#include <QIcon>
+#include <QImageReader>
+#include <QTemporaryDir>
+
+#include <KConfigGroup>
 #include <KDirOperator>
 #include <KFile>
-#include <KFileDialog>
-#include <KFileWidget>
-#include <KIcon>
-#include <KImageIO>
+#include <KIO/CopyJob>
 #include <KLocalizedString>
 #include <KMessageBox>
-#include <KTempDir>
-#include <KIO/NetAccess>
-
-#include <QDesktopWidget>
 
 /////////////////////////////////////
 //  FetchCoverAction
@@ -45,7 +45,7 @@
 void FetchCoverAction::init()
 {
     setText( i18np("Fetch Cover", "Fetch Covers", m_albums.count()) );
-    setIcon( KIcon("insert-image") );
+    setIcon( QIcon::fromTheme("insert-image") );
     setToolTip( i18np("Fetch the artwork for this album", "Fetch artwork for %1 albums", m_albums.count()) );
 
     bool enabled = !m_albums.isEmpty();
@@ -74,7 +74,7 @@ void FetchCoverAction::slotTriggered()
 void DisplayCoverAction::init()
 {
     setText( i18n("Display Cover") );
-    setIcon( KIcon("zoom-original") );
+    setIcon( QIcon::fromTheme("zoom-original") );
     setToolTip( i18n("Display artwork for this album") );
     Meta::AlbumPtr album = m_albums.first();
     if( album )
@@ -94,7 +94,7 @@ void DisplayCoverAction::slotTriggered()
 void UnsetCoverAction::init()
 {
     setText( i18np("Unset Cover", "Unset Covers", m_albums.count()) );
-    setIcon( KIcon("list-remove") );
+    setIcon( QIcon::fromTheme("list-remove") );
     setToolTip( i18np("Remove artwork for this album", "Remove artwork for %1 albums", m_albums.count()) );
 
     // this action is enabled if any one of the albums has an image and can be updated
@@ -121,7 +121,7 @@ UnsetCoverAction::slotTriggered()
             if( album && album->canUpdateImage() )
                 album->removeImage();
         }
-        kapp->processEvents();
+        qApp->processEvents();
     }
 }
 
@@ -132,7 +132,7 @@ UnsetCoverAction::slotTriggered()
 void SetCustomCoverAction::init()
 {
     setText( i18n("Set Custom Cover") );
-    setIcon( KIcon("document-open") );
+    setIcon( QIcon::fromTheme("document-open") );
     setToolTip( i18np("Set custom artwork for this album", "Set custom artwork for these %1 albums", m_albums.count()) );
 
     // this action is enabled if any one of the albums can be updated
@@ -151,19 +151,23 @@ SetCustomCoverAction::slotTriggered()
     if( m_albums.isEmpty() || m_albums.first()->tracks().isEmpty() )
         return;
 
-    const QString& startPath = m_albums.first()->tracks().first()->playableUrl().directory();
-    const QStringList mimetypes( KImageIO::mimeTypes( KImageIO::Reading ) );
-    KFileDialog dlg( startPath,
-                     mimetypes.join(" "),
-                     qobject_cast<QWidget*>( parent() ) );
+    const QString& startPath = m_albums.first()->tracks().first()->playableUrl().adjusted(QUrl::RemoveFilename).path();
 
-    dlg.setOperationMode( KFileDialog::Opening );
-    dlg.setMode( KFile::File );
-    dlg.setCaption( i18n("Select Cover Image File") );
-    dlg.setInlinePreviewShown( true );
+    const auto mt( QImageReader::supportedMimeTypes() );
+    QStringList mimetypes;
+    for( const auto &mimetype : mt )
+        mimetypes << QString( mimetype );
+
+    QFileDialog dlg;
+
+    dlg.setDirectory( startPath );
+    dlg.setAcceptMode( QFileDialog::AcceptOpen );
+    dlg.setFileMode( QFileDialog::ExistingFile );
+    dlg.setMimeTypeFilters( mimetypes );
+    dlg.setWindowTitle( i18n("Select Cover Image File") );
 
     dlg.exec();
-    KUrl file = dlg.selectedUrl();
+    QUrl file = dlg.selectedUrls().value( 0 );
 
     if( !file.isEmpty() )
     {
@@ -175,16 +179,15 @@ SetCustomCoverAction::slotTriggered()
         }
         else
         {
-            debug() << "Custom Cover Fetch: " << file.prettyUrl() << endl;
+            debug() << "Custom Cover Fetch: " << file.toDisplayString();
 
-            KTempDir tempDir;
+            QTemporaryDir tempDir;
             tempDir.setAutoRemove( true );
 
-            const QString coverDownloadPath = tempDir.name() + file.fileName();
+            const QString coverDownloadPath = tempDir.path() + '/' + file.fileName();
 
-            bool ret = KIO::NetAccess::file_copy( file,
-                                                  KUrl( coverDownloadPath ),
-                                                  qobject_cast<QWidget*>( parent() ) );
+            auto copyJob = KIO::copy( file, QUrl::fromLocalFile( coverDownloadPath ) );
+            bool ret = copyJob->exec();
 
             if( ret )
                 image.load( coverDownloadPath );
@@ -201,5 +204,4 @@ SetCustomCoverAction::slotTriggered()
     }
 }
 
-#include "CoverFetchingActions.moc"
 

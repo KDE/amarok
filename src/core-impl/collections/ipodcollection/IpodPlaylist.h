@@ -19,6 +19,7 @@
 
 #include "core/playlists/Playlist.h"
 
+#include <QPointer>
 #include <QReadWriteLock>
 
 
@@ -58,7 +59,7 @@ class IpodPlaylist : public Playlists::Playlist
 
         virtual ~IpodPlaylist();
 
-        virtual KUrl uidUrl() const;
+        virtual QUrl uidUrl() const;
         virtual QString name() const;
         virtual void setName( const QString &name );
 
@@ -103,7 +104,7 @@ class IpodPlaylist : public Playlists::Playlist
 
         Itdb_Playlist *m_playlist;
         mutable QReadWriteLock m_playlistLock;
-        QWeakPointer<IpodCollection> m_coll;
+        QPointer<IpodCollection> m_coll;
         Type m_type;
         Meta::TrackList m_tracks; // playlists tracks, in fact MemoryMeta::Track objects
         TrackPositionList m_tracksToCopy;

@@ -34,6 +34,7 @@
 #include "aboutdialog/OcsData.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/BookmarkManager.h"
+#include "browsers/BrowserDock.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
@@ -55,8 +56,8 @@
 #endif // DEBUG_BUILD_TYPE
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
-#include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistDock.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlist/ProgressiveSearchWidget.h"
 #include "playlist/layouts/LayoutConfigAction.h"
 #include "playlistmanager/PlaylistManager.h"
@@ -67,36 +68,37 @@
 #include "toolbar/SlimToolbar.h"
 #include "widgets/Osd.h"
 
-#include <KAction>          //m_actionCollection
-#include <KActionCollection>
-#include <KApplication>     //kapp
-#include <KFileDialog>      //openPlaylist()
-#include <KInputDialog>     //slotAddStream()
-#include <KMessageBox>
-#include <KLocale>
-#include <KMenu>
-#include <KMenuBar>
-#include <KBugReport>
-#include <KStandardAction>
-#include <KStandardDirs>
-#include <KWindowSystem>
-#include <kabstractfilewidget.h>
-
-#include <plasma/plasma.h>
-
+#include <QAction>          //m_actionCollection
+#include <QApplication>     //qApp
 #include <QCheckBox>
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDockWidget>
+#include <QFileDialog>      //openPlaylist()
+#include <QInputDialog>     //slotAddStream()
 #include <QList>
+#include <QMenu>
+#include <QMenuBar>
+#include <QStandardPaths>
 #include <QStyle>
 #include <QVBoxLayout>
+
+#include <KActionCollection>
+#include <KBugReport>
+#include <KFileWidget>
+#include <KFormat>
+#include <KGlobalAccel>
+#include <KLocalizedString>
+#include <KMessageBox>
+#include <KStandardAction>
+#include <KWindowSystem>
 
 #include <iostream>
 
 #ifdef Q_WS_X11
 #include <fixx11h.h>
+#include <KConfigGroup>
 #endif
 
 #ifdef Q_WS_MAC
@@ -110,7 +112,7 @@
 
 extern OcsData ocsData;
 
-QWeakPointer<MainWindow> MainWindow::s_instance;
+QPointer<MainWindow> MainWindow::s_instance;
 
 namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance.data(); }
@@ -159,23 +161,17 @@ MainWindow::MainWindow()
     //restore active category ( as well as filters and levels and whatnot.. )
     const QString path = Amarok::config().readEntry( "Browser Path", QString() );
     if( !path.isEmpty() )
-        m_browserDock.data()->list()->navigate( path );
+        m_browserDock->list()->navigate( path );
 
     setAutoSaveSettings();
 
     m_showMenuBar->setChecked(!menuBar()->isHidden());  // workaround for bug #171080
 
     EngineController *engine = The::engineController();
-    connect( engine, SIGNAL(stopped(qint64,qint64)),
-             this, SLOT(slotStopped()) );
-    connect( engine, SIGNAL(paused()),
-             this, SLOT(slotPaused()) );
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-             this, SLOT(slotNewTrackPlaying()) );
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
-             this, SLOT(slotMetadataChanged(Meta::TrackPtr)) );
-
-    KGlobal::locale()->insertCatalog( "libplasma" );
+    connect( engine, &EngineController::stopped, this, &MainWindow::slotStopped );
+    connect( engine, &EngineController::paused, this, &MainWindow::slotPaused );
+    connect( engine, &EngineController::trackPlaying, this, &MainWindow::slotNewTrackPlaying );
+    connect( engine, &EngineController::trackMetadataChanged, this, &MainWindow::slotMetadataChanged );
 }
 
 MainWindow::~MainWindow()
@@ -183,7 +179,7 @@ MainWindow::~MainWindow()
     DEBUG_BLOCK
 
     //save currently active category
-    Amarok::config().writeEntry( "Browser Path", m_browserDock.data()->list()->path() );
+    Amarok::config().writeEntry( "Browser Path", m_browserDock->list()->path() );
 
 #ifdef DEBUG_BUILD_TYPE
     delete m_networkViewer.data();
@@ -205,46 +201,41 @@ MainWindow::init()
     layout()->setSpacing( 0 );
 
     //create main toolbar
-    m_mainToolbar = new MainToolbar( 0 );
+    m_mainToolbar = new MainToolbar( this );
     m_mainToolbar.data()->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_mainToolbar.data()->setMovable ( true );
     addToolBar( Qt::TopToolBarArea, m_mainToolbar.data() );
 
     //create slim toolbar
-    m_slimToolbar = new SlimToolbar( 0 );
+    m_slimToolbar = new SlimToolbar( this );
     m_slimToolbar.data()->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_slimToolbar.data()->setMovable ( true );
     addToolBar( Qt::TopToolBarArea, m_slimToolbar.data() );
-    m_slimToolbar.data()->hide();
+    m_slimToolbar->hide();
 
     //BEGIN Creating Widgets
     PERF_LOG( "Create sidebar" )
     m_browserDock = new BrowserDock( this );
-    m_browserDock.data()->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
+    m_browserDock->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 
-    m_browserDock.data()->installEventFilter( this );
+    m_browserDock->installEventFilter( this );
     PERF_LOG( "Sidebar created" )
 
     PERF_LOG( "Create Playlist" )
     m_playlistDock = new Playlist::Dock( this );
-    m_playlistDock.data()->installEventFilter( this );
+    m_playlistDock->installEventFilter( this );
     //HACK, need to connect after because of order in MainWindow()
     connect( Amarok::actionCollection()->action( "playlist_edit_queue" ),
-             SIGNAL(triggered(bool)), m_playlistDock.data(), SLOT(slotEditQueue()) );
+             &QAction::triggered, m_playlistDock.data(), &Playlist::Dock::slotEditQueue );
     PERF_LOG( "Playlist created" )
 
     PERF_LOG( "Creating ContextWidget" )
     m_contextDock = new ContextDock( this );
-    m_contextDock.data()->installEventFilter( this );
-
+    m_contextDock->installEventFilter( this );
     PERF_LOG( "ContextScene created" )
     //END Creating Widgets
 
     createMenus();
-
-    PERF_LOG( "Loading default contextScene" )
-
-    PERF_LOG( "Loaded default contextScene" )
 
     setDockOptions( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks
                     | QMainWindow::AnimatedDocks | QMainWindow::VerticalTabs );
@@ -264,51 +255,50 @@ MainWindow::init()
         m_collectionBrowser = new CollectionWidget( "collections", 0 );
         //TODO: rename "Music Collections
         m_collectionBrowser->setPrettyName( i18n( "Local Music" ) );
-        m_collectionBrowser->setIcon( KIcon( "drive-harddisk" ) );
+        m_collectionBrowser->setIcon( QIcon::fromTheme( "drive-harddisk" ) );
         m_collectionBrowser->setShortDescription( i18n( "Local sources of content" ) );
-        m_browserDock.data()->list()->addCategory( m_collectionBrowser );
+        m_browserDock->list()->addCategory( m_collectionBrowser );
         PERF_LOG( "Created CollectionWidget" )
-
 
         PERF_LOG( "Creating ServiceBrowser" )
         ServiceBrowser *serviceBrowser = ServiceBrowser::instance();
         serviceBrowser->setParent( 0 );
         serviceBrowser->setPrettyName( i18n( "Internet" ) );
-        serviceBrowser->setIcon( KIcon( "applications-internet" ) );
+        serviceBrowser->setIcon( QIcon::fromTheme( "applications-internet" ) );
         serviceBrowser->setShortDescription( i18n( "Online sources of content" ) );
-        m_browserDock.data()->list()->addCategory( serviceBrowser );
+        m_browserDock->list()->addCategory( serviceBrowser );
         PERF_LOG( "Created ServiceBrowser" )
 
         PERF_LOG( "Creating PlaylistBrowser" )
         m_playlistBrowser = new PlaylistBrowserNS::PlaylistBrowser( "playlists", 0 );
         m_playlistBrowser->setPrettyName( i18n("Playlists") );
-        m_playlistBrowser->setIcon( KIcon( "view-media-playlist-amarok" ) );
+        m_playlistBrowser->setIcon( QIcon::fromTheme( "view-media-playlist-amarok" ) );
         m_playlistBrowser->setShortDescription( i18n( "Various types of playlists" ) );
-        m_browserDock.data()->list()->addCategory( m_playlistBrowser );
+        m_browserDock->list()->addCategory( m_playlistBrowser );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
         PERF_LOG( "Creating FileBrowser" )
         FileBrowser *fileBrowser = new FileBrowser( "files", 0 );
         fileBrowser->setPrettyName( i18n("Files") );
-        fileBrowser->setIcon( KIcon( "folder-amarok" ) );
+        fileBrowser->setIcon( QIcon::fromTheme( "folder-amarok" ) );
+
         fileBrowser->setShortDescription( i18n( "Browse local hard drive for content" ) );
-        m_browserDock.data()->list()->addCategory( fileBrowser );
+        m_browserDock->list()->addCategory( fileBrowser );
         PERF_LOG( "Created FileBrowser" )
 
         serviceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )
 
         PERF_LOG( "Creating Podcast Category" )
-        m_browserDock.data()->list()->addCategory( The::podcastCategory() );
+        m_browserDock->list()->addCategory( The::podcastCategory() );
         PERF_LOG( "Created Podcast Category" )
 
-        // If Amarok is started for the first time, set initial dock widget sizes
+    // If Amarok is started for the first time, set initial dock widget sizes
         if( !Amarok::config( "MainWindow" ).hasKey( "State" ) )
-            QTimer::singleShot( 0, this, SLOT(setDefaultDockSizes()) );
+            QTimer::singleShot( 0, this, &MainWindow::setDefaultDockSizes );
 
         PERF_LOG( "finished MainWindow::init" )
     }
-
     The::amarokUrlHandler(); //Instantiate
     The::coverFetcher(); //Instantiate
 
@@ -341,13 +331,13 @@ MainWindow::addViewMenuItems(QMenu* menu)
     QAction* lockAction = new QAction( i18n( "Lock Layout" ), this );
     lockAction->setCheckable( true );
     lockAction->setChecked( AmarokConfig::lockLayout() );
-    connect( lockAction, SIGNAL(toggled(bool)), SLOT(setLayoutLocked(bool)) );
+    connect( lockAction, &QAction::toggled, this, &MainWindow::setLayoutLocked );
     menu->addAction( lockAction );
 
     menu->addSeparator();
 
     // Dock widgets:
-    QList<QDockWidget *> dockwidgets = qFindChildren<QDockWidget *>( this );
+    QList<QDockWidget *> dockwidgets = findChildren<QDockWidget *>();
 
     foreach( QDockWidget* dockWidget, dockwidgets )
     {
@@ -358,7 +348,7 @@ MainWindow::addViewMenuItems(QMenu* menu)
     menu->addSeparator();
 
     // Toolbars:
-    QList<QToolBar *> toolbars = qFindChildren<QToolBar *>( this );
+    QList<QToolBar *> toolbars = findChildren<QToolBar *>();
     QActionGroup* toolBarGroup = new QActionGroup( this );
     toolBarGroup->setExclusive( true );
 
@@ -367,7 +357,7 @@ MainWindow::addViewMenuItems(QMenu* menu)
         if( toolBar->parentWidget() == this )
         {
             QAction* action = toolBar->toggleViewAction();
-            connect( action, SIGNAL(toggled(bool)), toolBar, SLOT(setVisible(bool)) );
+            connect( action, &QAction::toggled, toolBar, &QToolBar::setVisible );
             toolBarGroup->addAction( action );
             menu->addAction( action );
         }
@@ -376,7 +366,7 @@ MainWindow::addViewMenuItems(QMenu* menu)
     menu->addSeparator();
 
     QAction *resetAction = new QAction( i18n( "Reset Layout" ), this );
-    connect( resetAction, SIGNAL( triggered() ), this, SLOT( resetLayout() ) );
+    connect( resetAction, &QAction::triggered, this, &MainWindow::resetLayout );
     menu->addAction( resetAction );
 }
 
@@ -394,13 +384,13 @@ MainWindow::showDock( AmarokDockId dockId )
     switch( dockId )
     {
         case AmarokDockNavigation:
-            name = m_browserDock.data()->windowTitle();
+            name = m_browserDock->windowTitle();
             break;
         case AmarokDockContext:
-            name = m_contextDock.data()->windowTitle();
+            name = m_contextDock->windowTitle();
             break;
         case AmarokDockPlaylist:
-            name = m_playlistDock.data()->windowTitle();
+            name = m_playlistDock->windowTitle();
             break;
     }
 
@@ -429,7 +419,7 @@ MainWindow::closeEvent( QCloseEvent *e )
 
     //KDE policy states we should hide to tray and not quit() when the
     //close window button is pushed for the main widget
-    if( AmarokConfig::showTrayIcon() && e->spontaneous() && !kapp->sessionSaving() )
+    if( AmarokConfig::showTrayIcon() && e->spontaneous() && !qApp->isSavingSession() )
     {
         KMessageBox::information( this,
                 i18n( "<qt>Closing the main window will keep Amarok running in the System Tray. "
@@ -442,7 +432,7 @@ MainWindow::closeEvent( QCloseEvent *e )
     }
 
     e->accept();
-    App::instance()->quit();
+    pApp->quit();
 #endif
 }
 
@@ -451,8 +441,11 @@ MainWindow::exportPlaylist() //SLOT
 {
     DEBUG_BLOCK
 
-    QScopedPointer<KFileDialog> fileDialog( new KFileDialog( KUrl("kfiledialog:///amarok-playlist-export"), QString(), this ) );
-    QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving") );
+    QFileDialog fileDialog;
+    fileDialog.restoreState( Amarok::config( "playlist-export-dialog" ).readEntry( "state", QByteArray() ) );
+
+    // FIXME: Make checkbox visible in dialog
+    QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving"), &fileDialog );
     saveRelativeCheck->setChecked( AmarokConfig::relativePlaylist() );
 
     QStringList supportedMimeTypes;
@@ -462,31 +455,30 @@ MainWindow::exportPlaylist() //SLOT
     supportedMimeTypes << "audio/x-scpls"; //PLS
     supportedMimeTypes << "application/xspf+xml"; //XSPF
 
-    fileDialog->setMimeFilter( supportedMimeTypes, supportedMimeTypes.first() );
-    fileDialog->fileWidget()->setCustomWidget( saveRelativeCheck );
-    fileDialog->setOperationMode( KFileDialog::Saving );
-    fileDialog->setMode( KFile::File );
-    fileDialog->setCaption( i18n("Save As") );
-    fileDialog->setObjectName( "PlaylistExport" );
+    fileDialog.setMimeTypeFilters( supportedMimeTypes );
+    fileDialog.setAcceptMode( QFileDialog::AcceptSave );
+    fileDialog.setFileMode( QFileDialog::AnyFile );
+    fileDialog.setWindowTitle( i18n("Save As") );
+    fileDialog.setObjectName( "PlaylistExport" );
 
-    fileDialog->exec();
-
-    QString playlistPath = fileDialog->selectedFile();
-
-    if( !playlistPath.isEmpty() )
+    int result = fileDialog.exec();
+    QString playlistPath = fileDialog.selectedFiles().value( 0 );
+    if( result == QDialog::Accepted && !playlistPath.isEmpty() )
         The::playlist()->exportPlaylist( playlistPath, saveRelativeCheck->isChecked() );
+
+    Amarok::config( "playlist-export-dialog" ).writeEntry( "state", fileDialog.saveState() );
 }
 
 void
 MainWindow::slotShowActiveTrack() const
 {
-    m_playlistDock.data()->showActiveTrack();
+    m_playlistDock->showActiveTrack();
 }
 
 void
 MainWindow::slotEditTrackInfo() const
 {
-    m_playlistDock.data()->editTrackInfo();
+    m_playlistDock->editTrackInfo();
 }
 
 void
@@ -498,7 +490,7 @@ MainWindow::slotShowCoverManager() //SLOT
 void
 MainWindow::slotShowDiagnosticsDialog()
 {
-    DiagnosticDialog *dialog = new DiagnosticDialog( KGlobal::mainComponent().aboutData(), this );
+    DiagnosticDialog *dialog = new DiagnosticDialog( KAboutData::applicationData(), this );
     dialog->show();
 }
 
@@ -522,24 +514,25 @@ MainWindow::slotPlayMedia() //SLOT
 void
 MainWindow::slotAddLocation( bool directPlay ) //SLOT
 {
-    static KUrl lastDirectory;
+    static QUrl lastDirectory;
 
     // open a file selector to add media to the playlist
-    KUrl::List files;
-    KFileDialog dlg( KUrl(QDesktopServices::storageLocation(QDesktopServices::MusicLocation) ), QString("*.*|"), this );
+    QList<QUrl> files;
+    QFileDialog dlg;
+    dlg.setDirectory( QStandardPaths::writableLocation(QStandardPaths::MusicLocation) );
 
     if( !lastDirectory.isEmpty() )
-        dlg.setUrl( lastDirectory );
+        dlg.setDirectoryUrl( lastDirectory );
 
-    dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
-    dlg.setMode( KFile::Files | KFile::Directory );
+    dlg.setWindowTitle( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
+    dlg.setFileMode( QFileDialog::ExistingFiles );
     dlg.setObjectName( "PlayMedia" );
-    dlg.exec();
+    int accepted = dlg.exec();
     files = dlg.selectedUrls();
 
-    lastDirectory = dlg.baseUrl();
+    lastDirectory = dlg.directoryUrl();
 
-    if( files.isEmpty() )
+    if( accepted != QDialog::Accepted || files.isEmpty() )
         return;
 
     Playlist::AddOptions options = directPlay ? Playlist::OnPlayMediaAction
@@ -551,12 +544,12 @@ void
 MainWindow::slotAddStream() //SLOT
 {
     bool ok;
-    QString url = KInputDialog::getText( i18n( "Add Stream" ), i18n( "Enter Stream URL:" ),
-                                         QString(), &ok, this );
+    QString url = QInputDialog::getText( this, i18n( "Add Stream" ), i18n( "Enter Stream URL:" ),
+                                         QLineEdit::Normal, QString(), &ok );
     if( !ok )
         return;
 
-    The::playlistController()->insertOptioned( KUrl( url ),
+    The::playlistController()->insertOptioned( QUrl( url ),
             Playlist::OnAppendToPlaylistAction | Playlist::RemotePlaylistsAreStreams );
 }
 
@@ -564,7 +557,7 @@ void
 MainWindow::slotFocusPlaylistSearch()
 {
     showDock( AmarokDockPlaylist );  // ensure that the dock is visible if tabbed
-    m_playlistDock.data()->searchWidget()->focusInputLine();
+    m_playlistDock->searchWidget()->focusInputLine();
 }
 
 void
@@ -596,7 +589,7 @@ MainWindow::showNetworkRequestViewer() //SLOT
 void
 MainWindow::showHide() //SLOT
 {
-    const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
+    const KWindowInfo info( winId(), 0, 0 );
     const int currentDesktop = KWindowSystem::currentDesktop();
 
     if( !isVisible() )
@@ -657,7 +650,7 @@ MainWindow::slotBanTrack()
 void
 MainWindow::slotShufflePlaylist()
 {
-    m_playlistDock.data()->sortWidget()->trimToLevel();
+    m_playlistDock->sortWidget()->trimToLevel();
     The::playlistActions()->shuffle();
 }
 
@@ -744,291 +737,293 @@ MainWindow::createActions()
     const Playlist::Actions* const pa = The::playlistActions();
     const Playlist::Controller* const pc = The::playlistController();
 
-    KStandardAction::keyBindings( kapp, SLOT(slotConfigShortcuts()), ac );
-    m_showMenuBar = KStandardAction::showMenubar(this, SLOT(slotShowMenuBar()), ac);
-    KStandardAction::preferences( kapp, SLOT(slotConfigAmarok()), ac );
-    ac->action( KStandardAction::name( KStandardAction::KeyBindings ) )->setIcon( KIcon( "configure-shortcuts-amarok" ) );
-    ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setIcon( KIcon( "configure-amarok" ) );
+    KStandardAction::keyBindings( pApp, &App::slotConfigShortcuts, ac );
+    KStandardAction::preferences( pApp, &App::slotConfigAmarokWithEmptyPage, ac );
+
+    m_showMenuBar = KStandardAction::showMenubar(this, &MainWindow::slotShowMenuBar, ac);
+    ac->action( KStandardAction::name( KStandardAction::KeyBindings ) )->setIcon( QIcon::fromTheme( "configure-shortcuts-amarok" ) );
+    ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setIcon( QIcon::fromTheme( "configure-amarok" ) );
     ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setMenuRole(QAction::PreferencesRole); // Define OS X Prefs menu here, removes need for ifdef later
 
-    KStandardAction::quit( App::instance(), SLOT(quit()), ac );
+    KStandardAction::quit( pApp, &App::quit, ac );
 
-    KAction *action = new KAction( KIcon( "document-open" ), i18n("&Add Media..."), this );
+    QAction *action = new QAction( QIcon::fromTheme( "document-open" ), i18n("&Add Media..."), this );
     ac->addAction( "playlist_add", action );
-    connect( action, SIGNAL(triggered(bool)), this, SLOT(slotAddLocation()) );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotAddLocation );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_A ) );
 
-    action = new KAction( KIcon( "edit-clear-list" ), i18nc( "clear playlist", "&Clear Playlist" ), this );
-    connect( action, SIGNAL(triggered(bool)), pc, SLOT(clear()) );
+    action = new QAction( QIcon::fromTheme( "edit-clear-list" ), i18nc( "clear playlist", "&Clear Playlist" ), this );
+    connect( action, &QAction::triggered, pc, &Playlist::Controller::clear );
     ac->addAction( "playlist_clear", action );
 
-    action = new KAction( KIcon( "format-list-ordered" ),
+    action = new QAction( QIcon::fromTheme( "format-list-ordered" ),
                           i18nc( "edit play queue of playlist", "Edit &Queue" ), this );
     //Qt::META+Qt::Key_Q is taken by Plasma as a global
-    action->setShortcut( KShortcut( Qt::META + Qt::Key_U ) );
+    action->setShortcut( QKeySequence( Qt::META + Qt::Key_U ) );
     ac->addAction( "playlist_edit_queue", action );;
 
-    action = new KAction( i18nc( "Remove duplicate and dead (unplayable) tracks from the playlist", "Re&move Duplicates" ), this );
-    connect( action, SIGNAL(triggered(bool)), pc, SLOT(removeDeadAndDuplicates()) );
+    action = new QAction( i18nc( "Remove duplicate and dead (unplayable) tracks from the playlist", "Re&move Duplicates" ), this );
+    connect( action, &QAction::triggered, pc, &Playlist::Controller::removeDeadAndDuplicates );
     ac->addAction( "playlist_remove_dead_and_duplicates", action );
 
     action = new Playlist::LayoutConfigAction( this );
     ac->addAction( "playlist_layout", action );
 
-    action = new KAction( KIcon( "document-open-remote" ), i18n("&Add Stream..."), this );
-    connect( action, SIGNAL(triggered(bool)), this, SLOT(slotAddStream()) );
+    action = new QAction( QIcon::fromTheme( "document-open-remote" ), i18n("&Add Stream..."), this );
+    connect( action, &QAction::triggered, this, &MainWindow::slotAddStream );
     ac->addAction( "stream_add", action );
 
-    action = new KAction( KIcon( "document-export-amarok" ), i18n("&Export Playlist As..."), this );
-    connect( action, SIGNAL(triggered(bool)), this, SLOT(exportPlaylist()) );
+    action = new QAction( QIcon::fromTheme( "document-export-amarok" ), i18n("&Export Playlist As..."), this );
+    connect( action, &QAction::triggered, this, &MainWindow::exportPlaylist );
     ac->addAction( "playlist_export", action );
 
-    action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Media Sources View" ), this );
+    action = new QAction( QIcon::fromTheme( "bookmark-new" ), i18n( "Bookmark Media Sources View" ), this );
     ac->addAction( "bookmark_browser", action );
-    connect( action, SIGNAL(triggered()), The::amarokUrlHandler(), SLOT(bookmarkCurrentBrowserView()) );
+    connect( action, &QAction::triggered, The::amarokUrlHandler(), &AmarokUrlHandler::bookmarkCurrentBrowserView );
 
-    action = new KAction( KIcon( "bookmarks-organize" ), i18n( "Bookmark Manager" ), this );
+    action = new QAction( QIcon::fromTheme( "bookmarks-organize" ), i18n( "Bookmark Manager" ), this );
     ac->addAction( "bookmark_manager", action );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotShowBookmarkManager()) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotShowBookmarkManager );
 
-    action = new KAction( KIcon( "view-media-equalizer" ), i18n( "Equalizer" ), this );
+    action = new QAction( QIcon::fromTheme( "view-media-equalizer" ), i18n( "Equalizer" ), this );
     ac->addAction( "equalizer_dialog", action );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotShowEqualizer()) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotShowEqualizer );
 
-    action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Playlist Setup" ), this );
+    action = new QAction( QIcon::fromTheme( "bookmark-new" ), i18n( "Bookmark Playlist Setup" ), this );
     ac->addAction( "bookmark_playlistview", action );
-    connect( action, SIGNAL(triggered()), The::amarokUrlHandler(), SLOT(bookmarkCurrentPlaylistView()) );
+    connect( action, &QAction::triggered, The::amarokUrlHandler(), &AmarokUrlHandler::bookmarkCurrentPlaylistView );
 
-    action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Context Applets" ), this );
+    action = new QAction( QIcon::fromTheme( "bookmark-new" ), i18n( "Bookmark Context Applets" ), this );
     ac->addAction( "bookmark_contextview", action );
-    connect( action, SIGNAL(triggered()), The::amarokUrlHandler(), SLOT(bookmarkCurrentContextView()) );
+    connect( action, &QAction::triggered, The::amarokUrlHandler(), &AmarokUrlHandler::bookmarkCurrentContextView );
 
-    action = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotShowCoverManager()) );
+    action = new QAction( QIcon::fromTheme( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
+    connect( action, &QAction::triggered, this, &MainWindow::slotShowCoverManager );
     ac->addAction( "cover_manager", action );
 
-    action = new KAction( KIcon("document-open"), i18n("Play Media..."), this );
+    action = new QAction( QIcon::fromTheme("document-open"), i18n("Play Media..."), this );
     ac->addAction( "playlist_playmedia", action );
     action->setShortcut( Qt::CTRL + Qt::Key_O );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotPlayMedia );
 
-    action = new KAction( KIcon("media-track-edit-amarok"), i18n("Edit Details of Currently Selected Track"), this );
+    action = new QAction( QIcon::fromTheme("media-track-edit-amarok"), i18n("Edit Details of Currently Selected Track"), this );
     ac->addAction( "trackdetails_edit", action );
     action->setShortcut( Qt::CTRL + Qt::Key_E );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotEditTrackInfo()) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotEditTrackInfo );
 
-    action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n( "Seek Forward by %1",
-            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekShort() * 1000 ) ), this );
+    action = new QAction( QIcon::fromTheme( "media-seek-forward-amarok" ),
+                          i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekShort() * 1000 ) ), this );
     ac->addAction( "seek_forward_short", action );
     action->setShortcut( Qt::CTRL + Qt::Key_Right );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekForwardShort()) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardShort );
 
-    action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n( "Seek Forward by %1",
-            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
+    action = new QAction( QIcon::fromTheme( "media-seek-forward-amarok" ),
+                          i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
     ac->addAction( "seek_forward_medium", action );
     action->setShortcut( Qt::Key_Right );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekForwardMedium()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardMedium );
 
-    action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n( "Seek Forward by %1",
-            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekLong() * 1000 ) ), this );
+    action = new QAction( QIcon::fromTheme( "media-seek-forward-amarok" ),
+                          i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekLong() * 1000 ) ), this );
     ac->addAction( "seek_forward_long", action );
     action->setShortcut( Qt::SHIFT + Qt::Key_Right );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekForwardLong()) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardLong );
 
 
-    action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n( "Seek Backward by %1",
-            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekShort() * 1000 ) ), this );
+    action = new QAction( QIcon::fromTheme( "media-seek-backward-amarok" ),
+                          i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekShort() * 1000 ) ), this );
     ac->addAction( "seek_backward_short", action );
     action->setShortcut( Qt::CTRL + Qt::Key_Left );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekBackwardShort()) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardShort );
 
-    action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n( "Seek Backward by %1",
-            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
+    action = new QAction( QIcon::fromTheme( "media-seek-backward-amarok" ),
+                          i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
     ac->addAction( "seek_backward_medium", action );
     action->setShortcut( Qt::Key_Left );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekBackwardMedium()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardMedium );
 
-    action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n( "Seek Backward by %1",
-            KGlobal::locale()->prettyFormatDuration( AmarokConfig::seekLong() * 1000 ) ), this );
+    action = new QAction( QIcon::fromTheme( "media-seek-backward-amarok" ),
+                          i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekLong() * 1000 ) ), this );
     ac->addAction( "seek_backward_long", action );
     action->setShortcut( Qt::SHIFT + Qt::Key_Left );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotSeekBackwardLong()) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardLong );
 
     PERF_LOG( "MainWindow::createActions 6" )
-    action = new KAction( KIcon("view-refresh"), i18n( "Update Collection" ), this );
-    connect ( action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()) );
+    action = new QAction( QIcon::fromTheme("view-refresh"), i18n( "Update Collection" ), this );
+    connect ( action, &QAction::triggered, CollectionManager::instance(), &CollectionManager::checkCollectionChanges );
     ac->addAction( "update_collection", action );
 
-    action =  new KAction( KIcon( "amarok_playcount" ), i18n( "Synchronize Statistics..." ), this );
+    action =  new QAction( QIcon::fromTheme( "amarok_playcount" ), i18n( "Synchronize Statistics..." ), this );
     ac->addAction( "synchronize_statistics", action );
-    connect( action, SIGNAL(triggered(bool)), Amarok::Components::statSyncingController(), SLOT(synchronize()) );
-
-    action = new KAction( this );
+    connect( action, &QAction::triggered, Amarok::Components::statSyncingController(),
+             &StatSyncing::Controller::synchronize );
+    Amarok::Components::statSyncingController();
+    action = new QAction( this );
     ac->addAction( "prev", action );
-    action->setIcon( KIcon("media-skip-backward-amarok") );
+    action->setIcon( QIcon::fromTheme("media-skip-backward-amarok") );
     action->setText( i18n( "Previous Track" ) );
-    action->setGlobalShortcut( KShortcut() );
-    connect( action, SIGNAL(triggered(bool)), pa, SLOT(back()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence() );
+    connect( action, &QAction::triggered, pa, &Playlist::Actions::back );
 
-    action = new KAction( this );
+    action = new QAction( this );
     ac->addAction( "replay", action );
-    action->setIcon( KIcon("media-playback-start") );
+    action->setIcon( QIcon::fromTheme("media-playback-start") );
     action->setText( i18n( "Restart current track" ) );
-    action->setGlobalShortcut( KShortcut() );
-    connect( action, SIGNAL(triggered(bool)), ec, SLOT(replay()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence() );
+    connect( action, &QAction::triggered, ec, &EngineController::replay );
 
-    action = new KAction( this );
+    action = new QAction( this );
     ac->addAction( "shuffle_playlist", action );
-    action->setIcon( KIcon("media-playlist-shuffle") );
+    action->setIcon( QIcon::fromTheme("media-playlist-shuffle") );
     action->setText( i18n( "Shuffle Playlist" ) );
     action->setShortcut( Qt::CTRL + Qt::Key_H );
-    connect( action, SIGNAL(triggered(bool)), this, SLOT(slotShufflePlaylist()) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotShufflePlaylist );
 
-    action = new KAction( this );
+    action = new QAction( this );
     ac->addAction( "repopulate", action );
     action->setText( i18n( "Repopulate Playlist" ) );
-    action->setIcon( KIcon("view-refresh-amarok") );
-    connect( action, SIGNAL(triggered(bool)), pa, SLOT(repopulateDynamicPlaylist()) );
+    action->setIcon( QIcon::fromTheme("view-refresh-amarok") );
+    connect( action, &QAction::triggered, pa, &Playlist::Actions::repopulateDynamicPlaylist );
 
-    action = new KAction( this );
+    action = new QAction( this );
     ac->addAction( "disable_dynamic", action );
     action->setText( i18n( "Disable Dynamic Playlist" ) );
-    action->setIcon( KIcon("edit-delete-amarok") );
+    action->setIcon( QIcon::fromTheme("edit-delete-amarok") );
     //this is connected inside the dynamic playlist category
 
-    action = new KAction( KIcon("media-skip-forward-amarok"), i18n( "Next Track" ), this );
+    action = new QAction( QIcon::fromTheme("media-skip-forward-amarok"), i18n( "Next Track" ), this );
     ac->addAction( "next", action );
-    action->setGlobalShortcut( KShortcut() );
-    connect( action, SIGNAL(triggered(bool)), pa, SLOT(next()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence() );
+    connect( action, &QAction::triggered, pa, &Playlist::Actions::next );
 
-    action = new KAction( i18n( "Increase Volume" ), this );
+    action = new QAction( i18n( "Increase Volume" ), this );
     ac->addAction( "increaseVolume", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Plus ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_Plus ) );
     action->setShortcut( Qt::Key_Plus );
-    connect( action, SIGNAL(triggered()), ec, SLOT(increaseVolume()) );
+    connect( action, &QAction::triggered, ec, &EngineController::increaseVolume );
 
-    action = new KAction( i18n( "Decrease Volume" ), this );
+    action = new QAction( i18n( "Decrease Volume" ), this );
     ac->addAction( "decreaseVolume", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Minus ) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_Minus ) );
     action->setShortcut( Qt::Key_Minus );
-    connect( action, SIGNAL(triggered()), ec, SLOT(decreaseVolume()) );
+    connect( action, &QAction::triggered, ec, &EngineController::decreaseVolume );
 
-    action = new KAction( i18n( "Toggle Main Window" ), this );
+    action = new QAction( i18n( "Toggle Main Window" ), this );
     ac->addAction( "toggleMainWindow", action );
-    action->setGlobalShortcut( KShortcut() );
-    connect( action, SIGNAL(triggered()), SLOT(showHide()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence() );
+    connect( action, &QAction::triggered, this, &MainWindow::showHide );
 
-    action = new KAction( i18n( "Toggle Full Screen" ), this );
+    action = new QAction( i18n( "Toggle Full Screen" ), this );
     ac->addAction( "toggleFullScreen", action );
-    action->setShortcut( KShortcut( Qt::CTRL + Qt::SHIFT + Qt::Key_F ) );
-    connect( action, SIGNAL(triggered()), SLOT(slotFullScreen()) );
+    action->setShortcut( QKeySequence( Qt::CTRL + Qt::SHIFT + Qt::Key_F ) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotFullScreen );
 
-    action = new KAction( i18n( "Search playlist" ), this );
+    action = new QAction( i18n( "Search playlist" ), this );
     ac->addAction( "searchPlaylist", action );
-    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_J ) );
-    connect( action, SIGNAL(triggered()), SLOT(slotFocusPlaylistSearch()) );
+    action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_J ) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotFocusPlaylistSearch );
 
-    action = new KAction( i18n( "Search collection" ), this );
+    action = new QAction( i18n( "Search collection" ), this );
     ac->addAction( "searchCollection", action );
-    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_F ) );
-    connect( action, SIGNAL(triggered()), SLOT(slotFocusCollectionSearch()) );
+    action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotFocusCollectionSearch );
 
-    action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
+    action = new QAction( QIcon::fromTheme( "music-amarok" ), i18n("Show active track"), this );
     ac->addAction( "show_active_track", action );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotShowActiveTrack()) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotShowActiveTrack );
 
-    action = new KAction( i18n( "Show Notification Popup" ), this );
+    action = new QAction( i18n( "Show Notification Popup" ), this );
     ac->addAction( "showNotificationPopup", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
-    connect( action, SIGNAL(triggered()), SLOT(showNotificationPopup()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_O ) );
+    connect( action, &QAction::triggered, this, &MainWindow::showNotificationPopup );
 
-    action = new KAction( i18n( "Mute Volume" ), this );
+    action = new QAction( i18n( "Mute Volume" ), this );
     ac->addAction( "mute", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_M ) );
-    connect( action, SIGNAL(triggered()), ec, SLOT(toggleMute()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_M ) );
+    connect( action, &QAction::triggered, ec, &EngineController::toggleMute );
 
-    action = new KAction( i18n( "Last.fm: Love Current Track" ), this );
+    action = new QAction( i18n( "Last.fm: Love Current Track" ), this );
     ac->addAction( "loveTrack", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_L ) );
-    connect( action, SIGNAL(triggered()), SLOT(slotLoveTrack()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_L ) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotLoveTrack );
 
-    action = new KAction( i18n( "Last.fm: Ban Current Track" ), this );
+    action = new QAction( i18n( "Last.fm: Ban Current Track" ), this );
     ac->addAction( "banTrack", action );
-    //action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
-    connect( action, SIGNAL(triggered()), SLOT(slotBanTrack()) );
+    //KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_B ) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotBanTrack );
 
-    action = new KAction( i18n( "Last.fm: Skip Current Track" ), this );
+    action = new QAction( i18n( "Last.fm: Skip Current Track" ), this );
     ac->addAction( "skipTrack", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_S ) );
-    connect( action, SIGNAL(triggered()), SIGNAL(skipTrack()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_S ) );
+    connect( action, &QAction::triggered, this, &MainWindow::skipTrack );
 
-    action = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
+    action = new QAction( QIcon::fromTheme( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
     ac->addAction( "queueTrack", action );
-    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_D ) );
-    connect( action, SIGNAL(triggered()), SIGNAL(switchQueueStateShortcut()) );
+    action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_D ) );
+    connect( action, &QAction::triggered, this, &MainWindow::switchQueueStateShortcut );
 
-    action = new KAction( i18n( "Put Artist - Title of the current track to the clipboard" ), this  );
+    action = new QAction( i18n( "Put Artist - Title of the current track to the clipboard" ), this  );
     ac->addAction("artistTitleClipboard", action);
-    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_C ) );
-    connect( action, SIGNAL(triggered()), SLOT(slotPutCurrentTrackToClipboard()) );
+    action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_C ) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotPutCurrentTrackToClipboard );
 
-    action = new KAction( i18n( "Rate Current Track: 1" ), this );
+    action = new QAction( i18n( "Rate Current Track: 1" ), this );
     ac->addAction( "rate1", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_1 ) );
-    connect( action, SIGNAL(triggered()), SLOT(setRating1()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_1 ) );
+    connect( action, &QAction::triggered, this, &MainWindow::setRating1 );
 
-    action = new KAction( i18n( "Rate Current Track: 2" ), this );
+    action = new QAction( i18n( "Rate Current Track: 2" ), this );
     ac->addAction( "rate2", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_2 ) );
-    connect( action, SIGNAL(triggered()), SLOT(setRating2()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_2 ) );
+    connect( action, &QAction::triggered, this, &MainWindow::setRating2 );
 
-    action = new KAction( i18n( "Rate Current Track: 3" ), this );
+    action = new QAction( i18n( "Rate Current Track: 3" ), this );
     ac->addAction( "rate3", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_3 ) );
-    connect( action, SIGNAL(triggered()), SLOT(setRating3()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_3 ) );
+    connect( action, &QAction::triggered, this, &MainWindow::setRating3 );
 
-    action = new KAction( i18n( "Rate Current Track: 4" ), this );
+    action = new QAction( i18n( "Rate Current Track: 4" ), this );
     ac->addAction( "rate4", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_4 ) );
-    connect( action, SIGNAL(triggered()), SLOT(setRating4()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_4 ) );
+    connect( action, &QAction::triggered, this, &MainWindow::setRating4 );
 
-    action = new KAction( i18n( "Rate Current Track: 5" ), this );
+    action = new QAction( i18n( "Rate Current Track: 5" ), this );
     ac->addAction( "rate5", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
-    connect( action, SIGNAL(triggered()), SLOT(setRating5()) );
+    KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_5 ) );
+    connect( action, &QAction::triggered, this, &MainWindow::setRating5 );
 
 #ifdef DEBUG_BUILD_TYPE
-    action = new KAction( i18n( "Network Request Viewer" ), this );
+    action = new QAction( i18n( "Network Request Viewer" ), this );
     ac->addAction( "network_request_viewer", action );
-    action->setIcon( KIcon( "utilities-system-monitor" ) );
-    connect( action, SIGNAL(triggered()), SLOT(showNetworkRequestViewer()) );
+    action->setIcon( QIcon::fromTheme( "utilities-system-monitor" ) );
+    connect( action, &QAction::triggered, this, &MainWindow::showNetworkRequestViewer );
 #endif // DEBUG_BUILD_TYPE
 
-    action = KStandardAction::redo( pc, SLOT(redo()), this);
+    action = KStandardAction::redo( pc, &Playlist::Controller::redo, this);
     ac->addAction( "playlist_redo", action );
     action->setEnabled( false );
-    action->setIcon( KIcon( "edit-redo" ) );
-    connect( pc, SIGNAL(canRedoChanged(bool)), action, SLOT(setEnabled(bool)) );
+    action->setIcon( QIcon::fromTheme( "edit-redo" ) );
+    connect( pc, &Playlist::Controller::canRedoChanged, action, &QAction::setEnabled );
 
-    action = KStandardAction::undo( pc, SLOT(undo()), this);
+    action = KStandardAction::undo( pc, &Playlist::Controller::undo, this);
     ac->addAction( "playlist_undo", action );
     action->setEnabled( false );
-    action->setIcon( KIcon( "edit-undo" ) );
-    connect( pc, SIGNAL(canUndoChanged(bool)), action, SLOT(setEnabled(bool)) );
+    action->setIcon( QIcon::fromTheme( "edit-undo" ) );
+    connect( pc, &Playlist::Controller::canUndoChanged, action, &QAction::setEnabled );
 
-    action = new KAction( KIcon( "amarok" ), i18n( "&About Amarok" ), this );
+    action = new QAction( QIcon::fromTheme( "amarok" ), i18n( "&About Amarok" ), this );
     ac->addAction( "extendedAbout", action );
-    connect( action, SIGNAL(triggered()), SLOT(showAbout()) );
+    connect( action, &QAction::triggered, this, &MainWindow::showAbout );
 
-    action = new KAction ( KIcon( "info-amarok" ), i18n( "&Diagnostics" ), this );
+    action = new QAction ( QIcon::fromTheme( "info-amarok" ), i18n( "&Diagnostics" ), this );
     ac->addAction( "diagnosticDialog", action );
-    connect( action, SIGNAL(triggered()), SLOT(slotShowDiagnosticsDialog()) );
+    connect( action, &QAction::triggered, this, &MainWindow::slotShowDiagnosticsDialog );
 
-    action = new KAction( KIcon( "tools-report-bug" ), i18n("&Report Bug..."), this );
+    action = new QAction( QIcon::fromTheme( "tools-report-bug" ), i18n("&Report Bug..."), this );
     ac->addAction( "reportBug", action );
-    connect( action, SIGNAL(triggered()), SLOT(showReportBug()) );
+    connect( action, &QAction::triggered, this, &MainWindow::showReportBug );
 
     PERF_LOG( "MainWindow::createActions 8" )
     new Amarok::MenuAction( ac, this );
@@ -1067,7 +1062,7 @@ MainWindow::createMenus()
     m_menubar = menuBar();
 
     //BEGIN Actions menu
-    KMenu *actionsMenu = new KMenu( m_menubar.data() );
+    QMenu *actionsMenu = new QMenu( m_menubar );
 #ifdef Q_WS_MAC
     // Add these functions to the dock icon menu in OS X
     //extern void qt_mac_set_dock_menu(QMenu *);
@@ -1098,7 +1093,7 @@ MainWindow::createMenus()
     //END View menu
 
     //BEGIN Playlist menu
-    KMenu *playlistMenu = new KMenu( m_menubar.data() );
+    QMenu *playlistMenu = new QMenu( m_menubar.data() );
     playlistMenu->setTitle( i18n("&Playlist") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_add") );
     playlistMenu->addAction( Amarok::actionCollection()->action("stream_add") );
@@ -1115,25 +1110,25 @@ MainWindow::createMenus()
     //END Playlist menu
 
     //BEGIN Tools menu
-    m_toolsMenu = new KMenu( m_menubar.data() );
-    m_toolsMenu.data()->setTitle( i18n("&Tools") );
+    m_toolsMenu = new QMenu( m_menubar.data() );
+    m_toolsMenu->setTitle( i18n("&Tools") );
 
-    m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("bookmark_manager") );
-    m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("cover_manager") );
-    m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("equalizer_dialog") );
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("cover_manager") );
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("equalizer_dialog") );
 #ifdef DEBUG_BUILD_TYPE
-    m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("network_request_viewer") );
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("network_request_viewer") );
 #endif // DEBUG_BUILD_TYPE
-    m_toolsMenu.data()->addSeparator();
-    m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("update_collection") );
-    m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("synchronize_statistics") );
+    m_toolsMenu->addSeparator();
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("update_collection") );
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("synchronize_statistics") );
     //END Tools menu
 
     //BEGIN Settings menu
-    m_settingsMenu = new KMenu( m_menubar.data() );
-    m_settingsMenu.data()->setTitle( i18n("&Settings") );
+    m_settingsMenu = new QMenu( m_menubar.data() );
+    m_settingsMenu->setTitle( i18n("&Settings") );
 
-    m_settingsMenu.data()->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::ShowMenubar ) ) );
+    m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::ShowMenubar ) ) );
 
     //TODO use KStandardAction or KXmlGuiWindow
 
@@ -1143,28 +1138,28 @@ MainWindow::createMenus()
     // so we disable replaygain on osx
 
 #ifndef Q_WS_MAC
-    m_settingsMenu.data()->addAction( Amarok::actionCollection()->action("replay_gain_mode") );
-    m_settingsMenu.data()->addSeparator();
+    m_settingsMenu->addAction( Amarok::actionCollection()->action("replay_gain_mode") );
+    m_settingsMenu->addSeparator();
 #endif
 
-    m_settingsMenu.data()->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::KeyBindings ) ) );
-    m_settingsMenu.data()->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::Preferences ) ) );
+    m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::KeyBindings ) ) );
+    m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::Preferences ) ) );
     //END Settings menu
 
-    m_menubar.data()->addMenu( actionsMenu );
-    m_menubar.data()->addMenu( viewMenu );
-    m_menubar.data()->addMenu( playlistMenu );
-    m_menubar.data()->addMenu( m_toolsMenu.data() );
-    m_menubar.data()->addMenu( m_settingsMenu.data() );
+    m_menubar->addMenu( actionsMenu );
+    m_menubar->addMenu( viewMenu );
+    m_menubar->addMenu( playlistMenu );
+    m_menubar->addMenu( m_toolsMenu.data() );
+    m_menubar->addMenu( m_settingsMenu.data() );
 
-    KMenu *helpMenu = Amarok::Menu::helpMenu();
+    QMenu *helpMenu = Amarok::Menu::helpMenu();
     helpMenu->insertAction( helpMenu->actions().last(),
                             Amarok::actionCollection()->action( "extendedAbout" ) );
     helpMenu->insertAction( helpMenu->actions().last(),
                             Amarok::actionCollection()->action( "diagnosticDialog" ) );
 
-    m_menubar.data()->addSeparator();
-    m_menubar.data()->addMenu( helpMenu );
+    m_menubar->addSeparator();
+    m_menubar->addMenu( helpMenu );
 }
 
 void
@@ -1188,14 +1183,14 @@ MainWindow::slotShowMenuBar()
 void
 MainWindow::showAbout()
 {
-    ExtendedAboutDialog dialog( KGlobal::mainComponent().aboutData(), &ocsData );
+    ExtendedAboutDialog dialog( KAboutData::applicationData(), &ocsData );
     dialog.exec();
 }
 
 void
 MainWindow::showReportBug()
 {
-    KBugReport * rbDialog = new KBugReport( this, true, KGlobal::mainComponent().aboutData() );
+    KBugReport * rbDialog = new KBugReport( KAboutData::applicationData() ,this  );
     rbDialog->setObjectName( "KBugReport" );
     rbDialog->exec();
 }
@@ -1241,8 +1236,8 @@ MainWindow::collectionBrowser()
 QString
 MainWindow::activeBrowserName()
 {
-    if( m_browserDock.data()->list()->activeCategory() )
-        return m_browserDock.data()->list()->activeCategory()->name();
+    if(m_browserDock->list()->activeCategory() )
+        return m_browserDock->list()->activeCategory()->name();
     else
         return QString();
 }
@@ -1252,33 +1247,29 @@ MainWindow::setLayoutLocked( bool locked )
 {
     DEBUG_BLOCK
 
-    if( locked )
+    if( m_browserDock )
+        m_browserDock.data()->setMovable( !locked );
+
+    if( m_contextDock )
+        m_contextDock.data()->setMovable( !locked );
+
+    if( m_playlistDock )
+        m_playlistDock.data()->setMovable( !locked );
+
+    if( m_slimToolbar )
     {
-        m_browserDock.data()->setMovable( false );
-        m_contextDock.data()->setMovable( false );
-        m_playlistDock.data()->setMovable( false );
-
-        m_slimToolbar.data()->setFloatable( false );
-        m_slimToolbar.data()->setMovable( false );
-
-        m_mainToolbar.data()->setFloatable( false );
-        m_mainToolbar.data()->setMovable( false );
+        m_slimToolbar.data()->setFloatable( !locked );
+        m_slimToolbar.data()->setMovable( !locked );
     }
-    else
+
+    if( m_mainToolbar )
     {
-        m_browserDock.data()->setMovable( true );
-        m_contextDock.data()->setMovable( true );
-        m_playlistDock.data()->setMovable( true );
-
-        m_slimToolbar.data()->setFloatable( true );
-        m_slimToolbar.data()->setMovable( true );
-
-        m_mainToolbar.data()->setFloatable( true );
-        m_mainToolbar.data()->setMovable( true );
+        m_mainToolbar.data()->setFloatable( !locked );
+        m_mainToolbar.data()->setMovable( !locked );
     }
 
     AmarokConfig::setLockLayout( locked );
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
 }
 
 void
@@ -1296,13 +1287,13 @@ MainWindow::resetLayout()
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
     addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock.data(), Qt::Horizontal );
 
-    m_browserDock.data()->setFloating( false );
-    m_contextDock.data()->setFloating( false );
-    m_playlistDock.data()->setFloating( false );
+    m_browserDock->setFloating( false );
+    m_contextDock->setFloating( false );
+    m_playlistDock->setFloating( false );
 
-    m_browserDock.data()->show();
-    m_contextDock.data()->show();
-    m_playlistDock.data()->show();
+    m_browserDock->show();
+    m_contextDock->show();
+    m_playlistDock->show();
 
     // Now set Amarok's default dockwidget sizes
     setDefaultDockSizes();
@@ -1326,19 +1317,19 @@ MainWindow::setDefaultDockSizes() // SLOT
 
     //We need to set fixed widths initially, just until the main window has been properly laid out. As soon as this has
     //happened, we will unlock these sizes again so that the elements can be resized by the user.
-    const int mins[3] = { m_browserDock.data()->minimumWidth(), m_contextDock.data()->minimumWidth(), m_playlistDock.data()->minimumWidth() };
-    const int maxs[3] = { m_browserDock.data()->maximumWidth(), m_contextDock.data()->maximumWidth(), m_playlistDock.data()->maximumWidth() };
+    const int mins[3] = { m_browserDock->minimumWidth(), m_contextDock->minimumWidth(), m_playlistDock->minimumWidth() };
+    const int maxs[3] = { m_browserDock->maximumWidth(), m_contextDock->maximumWidth(), m_playlistDock->maximumWidth() };
 
-    m_browserDock.data()->setFixedWidth( widgetWidth * 0.65 );
-    m_contextDock.data()->setFixedWidth( widgetWidth * 1.7 + leftover );
-    m_playlistDock.data()->setFixedWidth( widgetWidth * 0.65 );
+    m_browserDock->setFixedWidth( widgetWidth * 0.65 );
+    m_contextDock->setFixedWidth( widgetWidth * 1.7 + leftover );
+    m_playlistDock->setFixedWidth( widgetWidth * 0.65 );
 
     // Important: We need to activate the layout we have just set
     layout()->activate();
 
-    m_browserDock.data()->setMinimumWidth( mins[0] ); m_browserDock.data()->setMaximumWidth( maxs[0] );
-    m_contextDock.data()->setMinimumWidth( mins[1] ); m_contextDock.data()->setMaximumWidth( maxs[1] );
-    m_playlistDock.data()->setMinimumWidth( mins[2] ); m_playlistDock.data()->setMaximumWidth( maxs[2] );
+    m_browserDock->setMinimumWidth( mins[0] ); m_browserDock->setMaximumWidth( maxs[0] );
+    m_contextDock->setMinimumWidth( mins[1] ); m_contextDock->setMaximumWidth( maxs[1] );
+    m_playlistDock->setMinimumWidth( mins[2] ); m_playlistDock->setMaximumWidth( maxs[2] );
 }
 
 bool
@@ -1396,4 +1387,3 @@ MainWindow::isOnCurrentDesktop() const
 }
 
 
-#include "MainWindow.moc"

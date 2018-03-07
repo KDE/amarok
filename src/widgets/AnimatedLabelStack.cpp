@@ -91,7 +91,7 @@ AnimatedLabelStack::enterEvent( QEvent * )
 {
     // wait a short time, then pulse through entries
     m_explicit = false;
-    QTimer::singleShot(300, this, SLOT(activateOnEnter()) );
+    QTimer::singleShot(300, this, &AnimatedLabelStack::activateOnEnter );
 }
 
 void
@@ -400,4 +400,3 @@ AnimatedLabelStack::wheelEvent( QWheelEvent * we )
         we->ignore();
 }
 
-#include "AnimatedLabelStack.moc"

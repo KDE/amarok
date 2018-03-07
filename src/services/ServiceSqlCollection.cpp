@@ -21,8 +21,6 @@
 #include <core/storage/SqlStorage.h>
 #include <core-impl/storage/StorageManager.h>
 
-#include <klocale.h>
-
 using namespace Collections;
 
 ServiceSqlCollection::ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry )
@@ -76,7 +74,7 @@ ServiceSqlCollection::escape( QString text ) const
 }
 
 Meta::TrackPtr
-ServiceSqlCollection::trackForUrl(const KUrl & url)
+ServiceSqlCollection::trackForUrl(const QUrl &url)
 {
     if ( !possiblyContainsTrack( url ) ) //do we even bother trying?
         return Meta::TrackPtr();
@@ -88,7 +86,7 @@ ServiceSqlCollection::trackForUrl(const KUrl & url)
 
     QString pristineUrl = url.url();
 
-    SqlStorage *sqlDb = StorageManager::instance()->sqlStorage();
+    auto sqlDb = StorageManager::instance()->sqlStorage();
 
     QString from =  prefix + "_tracks";
     from += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
@@ -110,10 +108,9 @@ ServiceSqlCollection::trackForUrl(const KUrl & url)
 }
 
 bool
-ServiceSqlCollection::possiblyContainsTrack(const KUrl & url) const
+ServiceSqlCollection::possiblyContainsTrack(const QUrl &url) const
 {
     return url.url().contains( m_metaFactory->tablePrefix(), Qt::CaseInsensitive );
 }
 
-#include "ServiceSqlCollection.moc"
 

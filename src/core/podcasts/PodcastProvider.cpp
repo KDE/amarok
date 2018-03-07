@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KUrl>
+#include <QUrl>
 
 using namespace Podcasts;
 
@@ -39,29 +39,29 @@ PodcastProvider::couldBeFeed( const QString &urlString )
     return pos != -1;
 }
 
-KUrl
+QUrl
 PodcastProvider::toFeedUrl( const QString &urlString )
 {
     DEBUG_BLOCK
     debug() << urlString;
 
-    KUrl kurl( urlString.trimmed() );
+    QUrl kurl( urlString.trimmed() );
 
-    if( kurl.protocol() == "itpc" )
+    if( kurl.scheme() == "itpc" )
     {
         debug() << "itpc:// url.";
-        kurl.setProtocol( "http" );
+        kurl.setScheme( "http" );
     }
-    else if( kurl.protocol() == "pcast" )
+    else if( kurl.scheme() == "pcast" )
     {
         debug() << "pcast:// url.";
-        kurl.setProtocol( "http" );
+        kurl.setScheme( "http" );
     }
-    else if( kurl.protocol() == "feed" )
+    else if( kurl.scheme() == "feed" )
     {
         //TODO: also handle the case feed:https://example.com/entries.atom
         debug() << "feed:// url.";
-        kurl.setProtocol( "http" );
+        kurl.setScheme( "http" );
     }
 
     return kurl;

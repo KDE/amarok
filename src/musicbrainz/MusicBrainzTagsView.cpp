@@ -24,7 +24,7 @@
 
 #include <KActionMenu>
 #include <KLocalizedString>
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 #include <QContextMenuEvent>
 #include <QDesktopServices>
@@ -35,9 +35,9 @@
 MusicBrainzTagsView::MusicBrainzTagsView( QWidget *parent )
     : QTreeView( parent )
 {
-    m_artistIcon = KIcon( KStandardDirs::locate( "data", "amarok/images/mb_aicon.png" ) );
-    m_releaseIcon = KIcon( KStandardDirs::locate( "data", "amarok/images/mb_licon.png" ) );
-    m_trackIcon = KIcon( KStandardDirs::locate( "data", "amarok/images/mb_ticon.png" ) );
+    m_artistIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/mb_aicon.png" ) );
+    m_releaseIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/mb_licon.png" ) );
+    m_trackIcon = QIcon::fromTheme( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/mb_ticon.png" ) );
 }
 
 MusicBrainzTagsModel *
@@ -76,9 +76,9 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
 
     if( model->rowCount() > 1 && !index.data( MusicBrainzTagsModel::ReleasesRole ).isNull() )
     {
-        QAction *action = new QAction( KIcon( "filename-album-amarok" ),
+        QAction *action = new QAction( QIcon::fromTheme( "filename-album-amarok" ),
                                        i18n( "Choose Best Matches from This Album" ), menu );
-        connect( action, SIGNAL(triggered()), SLOT(chooseBestMatchesFromRelease()) );
+        connect( action, &QAction::triggered, this, &MusicBrainzTagsView::chooseBestMatchesFromRelease );
         menu->addAction( action );
         menu->addSeparator();
     }
@@ -95,14 +95,14 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
             {
                 QAction *subAction = new QAction( artists.value( id.toString() ).toString(), action );
                 subAction->setData( id );
-                connect( subAction, SIGNAL(triggered()), SLOT(openArtistPage()) );
+                connect( subAction, &QAction::triggered, this, &MusicBrainzTagsView::openArtistPage );
                 action->addAction( subAction );
             }
         }
         else
         {
             action->setData( artists.keys().first() );
-            connect( action, SIGNAL(triggered()), SLOT(openArtistPage()) );
+            connect( action, &QAction::triggered, this, &MusicBrainzTagsView::openArtistPage );
         }
         actions << action;
     }
@@ -110,14 +110,14 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
     if( !index.data( MusicBrainzTagsModel::ReleasesRole ).toList().isEmpty() )
     {
         QAction *action = new QAction( m_releaseIcon, i18n( "Go to Album Page" ), menu );
-        connect( action, SIGNAL(triggered()), SLOT(openReleasePage()) );
+        connect( action, &QAction::triggered, this, &MusicBrainzTagsView::openReleasePage );
         actions << action;
     }
 
     if( !index.data( MusicBrainzTagsModel::TracksRole ).toList().isEmpty() )
     {
         QAction *action = new QAction( m_trackIcon, i18n( "Go to Track Page" ), menu );
-        connect( action, SIGNAL(triggered()), SLOT(openTrackPage()) );
+        connect( action, &QAction::triggered, this, &MusicBrainzTagsView::openTrackPage );
         actions << action;
     }
 
@@ -200,7 +200,7 @@ MusicBrainzTagsView::openArtistPage() const
 
     QString url = QString( "http://musicbrainz.org/artist/%1.html" ).arg( artistID );
 
-    QDesktopServices::openUrl( url );
+    QDesktopServices::openUrl( QUrl::fromUserInput(url) );
 }
 
 void
@@ -216,7 +216,7 @@ MusicBrainzTagsView::openReleasePage() const
 
     QString url = QString( "http://musicbrainz.org/release/%1.html" ).arg( releaseID );
 
-    QDesktopServices::openUrl( url );
+    QDesktopServices::openUrl( QUrl::fromUserInput(url) );
 }
 
 void
@@ -232,7 +232,6 @@ MusicBrainzTagsView::openTrackPage() const
 
     QString url = QString( "http://musicbrainz.org/recording/%1.html" ).arg( trackID );
 
-    QDesktopServices::openUrl( url );
+    QDesktopServices::openUrl( QUrl::fromUserInput(url) );
 }
 
-#include "MusicBrainzTagsView.moc"

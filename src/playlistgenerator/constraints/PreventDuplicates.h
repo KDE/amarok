@@ -47,7 +47,7 @@ namespace ConstraintTypes {
             
             virtual double satisfaction( const Meta::TrackList& ) const;
 
-        private slots:
+        private Q_SLOTS:
             void setField( const int );
 
         private:
@@ -66,11 +66,11 @@ namespace ConstraintTypes {
         public:
             PreventDuplicatesEditWidget( const int );
 
-        signals:
+        Q_SIGNALS:
             void updated();
             void fieldChanged( const int );
 
-        private slots:
+        private Q_SLOTS:
             void on_comboBox_Field_currentIndexChanged( const int );
 
         private:

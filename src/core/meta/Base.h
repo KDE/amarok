@@ -108,7 +108,7 @@ namespace Meta {
             // thread-safe,  because we already hold m_observersLock (which is recursive),
             // so other threads wait on potential unsubscribe().
             if( m_observers.contains( observer ) )
-                observer->metadataChanged( KSharedPtr<T>( const_cast<T *>( self ) ) );
+                observer->metadataChanged( AmarokSharedPointer<T>( const_cast<T *>( self ) ) );
         }
     }
 }
@@ -116,6 +116,6 @@ namespace Meta {
 Q_DECLARE_METATYPE( Meta::DataPtr )
 Q_DECLARE_METATYPE( Meta::DataList )
 
-AMAROK_CORE_EXPORT QDebug &operator<<( QDebug dbg, const Meta::Base &base );
+AMAROK_CORE_EXPORT QDebug operator<<( QDebug dbg, const Meta::Base &base );
 
 #endif // META_BASE_H

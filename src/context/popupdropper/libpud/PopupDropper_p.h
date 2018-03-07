@@ -85,7 +85,7 @@ public:
     void reposItems();
     bool amIOnTop( PopupDropperView* pdv );
  
-private slots:
+public Q_SLOTS:
     void fadeHideTimerFrameChanged( int frame );
     void fadeShowTimerFrameChanged( int frame );
     void fadeShowTimerFinished();

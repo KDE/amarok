@@ -19,8 +19,8 @@
 #ifndef GPODDERTREEITEM_H_
 #define GPODDERTREEITEM_H_
 
-#include <mygpo-qt/ApiRequest.h>
-#include <mygpo-qt/TagList.h>
+#include <mygpo-qt5/ApiRequest.h>
+#include <mygpo-qt5/TagList.h>
 
 #include <QList>
 #include <QModelIndex>

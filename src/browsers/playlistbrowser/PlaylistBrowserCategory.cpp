@@ -33,8 +33,8 @@
 
 #include <KActionMenu>
 #include <KConfigGroup>
-#include <KIcon>
-#include <KStandardDirs>
+#include <QIcon>
+#include <QStandardPaths>
 #include <KToolBar>
 
 #include <QHeaderView>
@@ -56,7 +56,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_playlistCategory( playlistCategory )
 {
     setContentsMargins( 0, 0, 0, 0 );
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_podcasts.png" ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )
@@ -74,23 +74,23 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
 
     m_toolBar->addSeparator();
 
-    m_addFolderAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
+    m_addFolderAction = new QAction( QIcon::fromTheme( "folder-new" ), i18n( "Add Folder" ), this  );
     m_addFolderAction->setPriority( QAction::LowPriority );
     m_toolBar->addAction( m_addFolderAction );
-    connect( m_addFolderAction, SIGNAL(triggered(bool)), SLOT(createNewFolder()) );
+    connect( m_addFolderAction, &QAction::triggered, this, &PlaylistBrowserCategory::createNewFolder );
 
-    m_providerMenu = new KActionMenu( KIcon( "checkbox" ), i18n( "Visible Sources"), this );
+    m_providerMenu = new KActionMenu( QIcon::fromTheme( "checkbox" ), i18n( "Visible Sources"), this );
     m_providerMenu->setDelayed( false );
     m_providerMenu->setPriority( QAction::HighPriority );
     m_toolBar->addAction( m_providerMenu );
 
-    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Merged View" ),
+    QAction *toggleAction = new QAction( QIcon::fromTheme( "view-list-tree" ), i18n( "Merged View" ),
                                          m_toolBar );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( Amarok::config( m_configGroup ).readEntry( s_mergeViewKey, false ) );
     toggleAction->setPriority( QAction::LowPriority );
     m_toolBar->addAction( toggleAction );
-    connect( toggleAction, SIGNAL(triggered(bool)), SLOT(toggleView(bool)) );
+    connect( toggleAction, &QAction::triggered, this, &PlaylistBrowserCategory::toggleView );
 
     m_toolBar->addSeparator();
 
@@ -128,13 +128,13 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
         createProviderButton( provider );
     }
 
-    connect( The::playlistManager(), SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)),
-             SLOT(slotProviderAdded(Playlists::PlaylistProvider*,int)) );
-    connect( The::playlistManager(), SIGNAL(providerRemoved(Playlists::PlaylistProvider*,int)),
-             SLOT(slotProviderRemoved(Playlists::PlaylistProvider*,int)) );
+    connect( The::playlistManager(), &PlaylistManager::providerAdded,
+             this, &PlaylistBrowserCategory::slotProviderAdded );
+    connect( The::playlistManager(), &PlaylistManager::providerRemoved,
+             this, &PlaylistBrowserCategory::slotProviderRemoved );
 
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)),
-             SLOT(newPalette(QPalette)) );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette,
+             this, &PlaylistBrowserCategory::newPalette );
 }
 
 PlaylistBrowserCategory::~PlaylistBrowserCategory()
@@ -177,20 +177,30 @@ PlaylistBrowserCategory::toggleView( bool merged )
         m_filterProxy->setSourceModel( m_byFolderProxy );
         m_playlistView->setItemDelegate( m_defaultItemDelegate );
         m_playlistView->setRootIsDecorated( true );
-        m_addFolderAction->setHelpText( m_addFolderAction->text() );
+        setHelpText( m_addFolderAction->text(), m_addFolderAction );
     }
     else
     {
         m_filterProxy->setSourceModel( m_byProviderProxy );
         m_playlistView->setItemDelegate( m_byProviderDelegate );
         m_playlistView->setRootIsDecorated( false );
-        m_addFolderAction->setHelpText( i18n( "Folders are only shown in <b>merged view</b>." ) );
+        setHelpText( i18n( "Folders are only shown in <b>merged view</b>." ), m_addFolderAction );
     }
 
     //folders don't make sense in per-provider view
     m_addFolderAction->setEnabled( merged );
 
     Amarok::config( m_configGroup ).writeEntry( s_mergeViewKey, merged );
+}
+
+void
+PlaylistBrowserCategory::setHelpText(const QString &text, QAction *qa)
+{
+    qa->setStatusTip(text);
+    qa->setToolTip(text);
+    if ((qa->whatsThis()).isEmpty()) {
+        qa->setWhatsThis(text);
+    }
 }
 
 void
@@ -227,7 +237,7 @@ PlaylistBrowserCategory::createProviderButton( const Playlists::PlaylistProvider
     providerToggle->setCheckable( true );
     providerToggle->setChecked( true );
     providerToggle->setData( QVariant::fromValue( provider ) );
-    connect( providerToggle, SIGNAL(toggled(bool)), SLOT(slotToggleProviderButton()) );
+    connect( providerToggle, &QAction::toggled, this, &PlaylistBrowserCategory::slotToggleProviderButton );
     m_providerMenu->addAction( providerToggle );
 
     //if there is only one provider the button needs to be disabled.
@@ -303,4 +313,3 @@ PlaylistBrowserCategory::newPalette( const QPalette &palette )
     The::paletteHandler()->updateItemView( m_playlistView );
 }
 
-#include "PlaylistBrowserCategory.moc"

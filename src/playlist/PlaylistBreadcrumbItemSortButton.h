@@ -71,7 +71,7 @@ public:
      */
     void invertOrder();
 
-signals:
+Q_SIGNALS:
     /**
      * Emitted when the order inversion arrow has been toggled.
      * @sortOrder the new sort order based on the position of the arrow.

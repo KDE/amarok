@@ -18,9 +18,9 @@
 #define PLAYDAR_CONTROLLER_H
 
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 
-class KUrl;
+class QUrl;
 class KJob;
 
 class QString;
@@ -99,7 +99,7 @@ namespace Playdar
                 MissingResults
             };
 
-        signals:
+        Q_SIGNALS:
             /**
             * Emitted once after construction, as long as some service responds
             * from where we think Playdar is, and identifies itself as "playdar".
@@ -139,11 +139,11 @@ namespace Playdar
             void getResultsLongPoll( Playdar::Query* query );
 
             /**
-             * Makes a naive attempt to produce a KUrl that points to
+             * Makes a naive attempt to produce a QUrl that points to
              * a playable location of a query result.
              * @param sid The sid of the result desired.
              */
-            KUrl urlForSid( const QString &sid ) const;
+            QUrl urlForSid( const QString &sid ) const;
             
         private Q_SLOTS:
             void processStatus( KJob* statusJob );

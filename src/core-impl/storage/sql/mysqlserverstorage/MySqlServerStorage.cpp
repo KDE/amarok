@@ -117,10 +117,7 @@ MySqlServerStorage::~MySqlServerStorage()
     if( m_db )
     {
         mysql_close( m_db );
-        if( !libraryInitRef.deref() )
-        {
-            mysql_library_end();
-        }
+        libraryInitRef.deref();
     }
 }
 

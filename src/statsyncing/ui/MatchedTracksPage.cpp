@@ -23,11 +23,9 @@
 #include "statsyncing/models/MatchedTracksModel.h"
 #include "statsyncing/ui/TrackDelegate.h"
 
-#include <KStandardGuiItem>
-#include <KPushButton>
-
 #include <QEvent>
 #include <QMenu>
+#include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 
@@ -115,12 +113,12 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     proxyModel->setSortLocaleAware( true ); \
     proxyModel->setSortCaseSensitivity( Qt::CaseInsensitive ); \
     proxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive ); \
-    connect( proxyModel, SIGNAL(modelReset()), SLOT(refresh##Name##StatusText()) ); \
-    connect( proxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(refresh##Name##StatusText()) ); \
-    connect( proxyModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(refresh##Name##StatusText()) ); \
+    connect( proxyModel, &QSortFilterProxyModel::modelReset, this, &MatchedTracksPage::refresh##Name##StatusText ); \
+    connect( proxyModel, &QSortFilterProxyModel::rowsInserted, this, &MatchedTracksPage::refresh##Name##StatusText ); \
+    connect( proxyModel, &QSortFilterProxyModel::rowsRemoved, this, &MatchedTracksPage::refresh##Name##StatusText ); \
     name##TreeView->setModel( m_##name##ProxyModel ); \
     name##TreeView->setItemDelegate( new TrackDelegate( name##TreeView ) ); \
-    connect( name##FilterLine, SIGNAL(textChanged(QString)), proxyModel, SLOT(setFilterFixedString(QString)) ); \
+    connect( name##FilterLine, &QLineEdit::textChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString ); \
     name##TreeView->header()->setStretchLastSection( false ); \
     name##TreeView->header()->setDefaultSectionSize( 80 );
 
@@ -129,21 +127,22 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     SETUP_MODEL( m_excludedProxyModel, excluded, Excluded )
 #undef SETUP_MODEL
 
-    connect( uniqueFilterCombo, SIGNAL(currentIndexChanged(int)),
-             SLOT(changeUniqueTracksProvider(int)) );
-    connect( excludedFilterCombo, SIGNAL(currentIndexChanged(int)),
-             SLOT(changeExcludedTracksProvider(int)) );
+    connect( uniqueFilterCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+             this, &MatchedTracksPage::changeUniqueTracksProvider );
+    connect( excludedFilterCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+             this, &MatchedTracksPage::changeExcludedTracksProvider );
 
-    KGuiItem configure = KStandardGuiItem::configure();
-    configure.setText( i18n( "Configure Synchronization..." ) );
-    buttonBox->addButton( configure, QDialogButtonBox::ActionRole, this, SLOT(openConfiguration()) );
-    KPushButton *back = buttonBox->addButton( KStandardGuiItem::back(),
-                                              QDialogButtonBox::ActionRole );
-    buttonBox->addButton( KGuiItem( i18n( "Synchronize" ), "document-save" ),
-                          QDialogButtonBox::AcceptRole );
-    connect( back, SIGNAL(clicked(bool)), SIGNAL(back()) );
-    connect( buttonBox, SIGNAL(accepted()), SIGNAL(accepted()) );
-    connect( buttonBox, SIGNAL(rejected()), SIGNAL(rejected()) );
+    QPushButton *configure = buttonBox->addButton( i18n( "Configure Synchronization..." ), QDialogButtonBox::ActionRole );
+    connect( configure, &QPushButton::clicked, this, &MatchedTracksPage::openConfiguration );
+
+    QPushButton *back = buttonBox->addButton( i18n( "Back" ), QDialogButtonBox::ActionRole );
+
+    QPushButton *synchronize = buttonBox->addButton( i18n( "Synchronize" ), QDialogButtonBox::AcceptRole );
+    synchronize->setIcon( QIcon( "document-save" ) );
+
+    connect( back, &QAbstractButton::clicked, this, &MatchedTracksPage::back );
+    connect( buttonBox, &QDialogButtonBox::accepted, this, &MatchedTracksPage::accepted );
+    connect( buttonBox, &QDialogButtonBox::rejected, this, &MatchedTracksPage::rejected );
 
     tabWidget->setTabEnabled( 1, false );;
     tabWidget->setTabToolTip( 1, i18n( "There are no tracks unique to one of the sources "
@@ -153,19 +152,19 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
                                        "synchronization" ) );
 
     QMenu *menu = new QMenu( matchedExpandButton );
-    menu->addAction( i18n( "Expand Tracks With Conflicts" ), this, SLOT(expand()) )->setData(
+    menu->addAction( i18n( "Expand Tracks With Conflicts" ), this, &MatchedTracksPage::expand )->setData(
         MatchedTracksModel::HasConflict );
-    menu->addAction( i18n( "Expand Updated" ), this, SLOT(expand()) )->setData(
+    menu->addAction( i18n( "Expand Updated" ), this, &MatchedTracksPage::expand )->setData(
         MatchedTracksModel::HasUpdate );
-    menu->addAction( i18n( "Expand All" ), this, SLOT(expand()) )->setData( 0 );
+    menu->addAction( i18n( "Expand All" ), this, &MatchedTracksPage::expand )->setData( 0 );
     matchedExpandButton->setMenu( menu );
 
     menu = new QMenu( matchedCollapseButton );
-    menu->addAction( i18n( "Collapse Tracks Without Conflicts" ), this, SLOT(collapse()) )->setData(
+    menu->addAction( i18n( "Collapse Tracks Without Conflicts" ), this, &MatchedTracksPage::collapse )->setData(
         MatchedTracksModel::HasConflict );
-    menu->addAction( i18n( "Collapse Not Updated" ), this, SLOT(collapse()) )->setData(
+    menu->addAction( i18n( "Collapse Not Updated" ), this, &MatchedTracksPage::collapse )->setData(
         MatchedTracksModel::HasUpdate );
-    menu->addAction( i18n( "Collapse All" ), this, SLOT(collapse()) )->setData( 0 );
+    menu->addAction( i18n( "Collapse All" ), this, &MatchedTracksPage::collapse )->setData( 0 );
     matchedCollapseButton->setMenu( menu );
 }
 
@@ -181,29 +180,29 @@ MatchedTracksPage::setProviders( const ProviderPtrList &providers )
     foreach( const ProviderPtr &provider, providers )
     {
         QAction *action = takeRatingsMenu->addAction( provider->icon(), provider->prettyName(),
-                                                      this, SLOT(takeRatingsFrom()) );
+                                                      this, &MatchedTracksPage::takeRatingsFrom );
         action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
     }
-    takeRatingsMenu->addAction( i18n( "Reset All Ratings to Undecided" ), this, SLOT(takeRatingsFrom()) );
+    takeRatingsMenu->addAction( i18n( "Reset All Ratings to Undecided" ), this, &MatchedTracksPage::takeRatingsFrom );
     matchedRatingsButton->setMenu( takeRatingsMenu );
-    matchedRatingsButton->setIcon( KIcon( Meta::iconForField( Meta::valRating ) ) );
+    matchedRatingsButton->setIcon( QIcon::fromTheme( Meta::iconForField( Meta::valRating ) ) );
 
     // populate menu of the "Labels" button
     QMenu *labelsMenu = new QMenu( matchedLabelsButton );
     foreach( const ProviderPtr &provider, providers )
     {
         QString text = i18nc( "%1 is collection name", "Include Labels from %1", provider->prettyName() );
-        QAction *action = labelsMenu->addAction( provider->icon(), text, this, SLOT(includeLabelsFrom()) );
+        QAction *action = labelsMenu->addAction( provider->icon(), text, this, &MatchedTracksPage::includeLabelsFrom );
         action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
 
         text = i18nc( "%1 is collection name", "Exclude Labels from %1", provider->prettyName() );
-        action = labelsMenu->addAction( provider->icon(), text, this, SLOT(excludeLabelsFrom()) );
+        action = labelsMenu->addAction( provider->icon(), text, this, &MatchedTracksPage::excludeLabelsFrom );
         action->setData( QVariant::fromValue<ProviderPtr>( provider ) );
     }
     labelsMenu->addAction( i18n( "Reset All Labels to Undecided (Don't Synchronize Them)" ),
-                           this, SLOT(excludeLabelsFrom()) );
+                           this, &MatchedTracksPage::excludeLabelsFrom );
     matchedLabelsButton->setMenu( labelsMenu );
-    matchedLabelsButton->setIcon( KIcon( Meta::iconForField( Meta::valLabel ) ) );
+    matchedLabelsButton->setIcon( QIcon::fromTheme( Meta::iconForField( Meta::valLabel ) ) );
 }
 
 void
@@ -218,10 +217,10 @@ MatchedTracksPage::setMatchedTracksModel( MatchedTracksModel *model )
     // initially, expand tuples with conflicts:
     expand( MatchedTracksModel::HasConflict );
 
-    connect( m_matchedProxyModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
-                SLOT(rememberExpandedState(QModelIndex,int,int)) );
-    connect( m_matchedProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                SLOT(restoreExpandedState(QModelIndex,int,int)) );
+    connect( m_matchedProxyModel, &StatSyncing::SortFilterProxyModel::rowsAboutToBeRemoved,
+             this, &MatchedTracksPage::rememberExpandedState );
+    connect( m_matchedProxyModel, &StatSyncing::SortFilterProxyModel::rowsInserted,
+             this, &MatchedTracksPage::restoreExpandedState );
 
     // re-fill combo box and disable choices without tracks
     bool hasConflict = m_matchedTracksModel->hasConflict();
@@ -252,7 +251,8 @@ MatchedTracksPage::setMatchedTracksModel( MatchedTracksModel *model )
 
     matchedFilterCombo->setCurrentIndex( bestIndex );
     changeMatchedTracksFilter( bestIndex );
-    connect( matchedFilterCombo, SIGNAL(currentIndexChanged(int)), SLOT(changeMatchedTracksFilter(int)) );
+    connect( matchedFilterCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+             this, &MatchedTracksPage::changeMatchedTracksFilter );
 
     matchedRatingsButton->setEnabled( hasConflict );
     matchedLabelsButton->setEnabled( hasConflict );
@@ -510,7 +510,7 @@ MatchedTracksPage::collapse()
 void
 MatchedTracksPage::openConfiguration()
 {
-    App *app = App::instance();
+    App *app = pApp;
     if( app )
         app->slotConfigAmarok( "MetadataConfig" );
 }
@@ -523,6 +523,6 @@ MatchedTracksPage::setHeaderSizePoliciesFromModel( QHeaderView *header, QAbstrac
         QVariant headerData = model->headerData( column, Qt::Horizontal,
                                                  CommonModel::ResizeModeRole );
         QHeaderView::ResizeMode mode = QHeaderView::ResizeMode( headerData.toInt() );
-        header->setResizeMode( column, mode );
+        header->setSectionResizeMode( column, mode );
     }
 }

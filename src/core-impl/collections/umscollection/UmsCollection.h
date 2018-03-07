@@ -23,8 +23,8 @@
 #include "core-impl/collections/support/MemoryCollection.h"
 
 #include <KDirWatch>
-#include <KIcon>
-
+#include <QIcon>
+#include <QDir>
 #include <solid/device.h>
 
 #include <QtGlobal>
@@ -40,15 +40,17 @@ using namespace Collections;
 
 class UmsCollectionFactory : public CollectionFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-umscollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        UmsCollectionFactory( QObject *parent, const QVariantList &args );
+        UmsCollectionFactory();
         virtual ~UmsCollectionFactory();
 
         virtual void init();
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Called when solid notifier detects a new device has been added
          */
@@ -106,8 +108,8 @@ class UmsCollection : public Collection, public Meta::Observer
         virtual ~UmsCollection();
 
         /* TrackProvider methods */
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         /* Collection methods */
         virtual QueryMaker *queryMaker();
@@ -115,7 +117,7 @@ class UmsCollection : public Collection, public Meta::Observer
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
         virtual bool hasCapacity() const;
         virtual float usedCapacity() const;
@@ -135,8 +137,8 @@ class UmsCollection : public Collection, public Meta::Observer
         using Meta::Observer::metadataChanged; // silence compiler warning about hidder overloads
 
         /* own methods */
-        const KUrl &musicPath() const { return m_musicPath; }
-        const KUrl &podcastPath() const { return m_podcastPath; }
+        const QUrl &musicUrl() const { return m_musicUrl; }
+        const QUrl &podcastUrl() const { return m_podcastUrl; }
 
         /**
          * Get location where track @param track should be transferred to.
@@ -144,11 +146,11 @@ class UmsCollection : public Collection, public Meta::Observer
          * @param fileExtension new extension to use. Leave empty if you don't wish to
          * change file extension
          */
-        KUrl organizedUrl( Meta::TrackPtr track, const QString &fileExtension = QString() ) const;
+        QUrl organizedUrl( Meta::TrackPtr track, const QString &fileExtension = QString() ) const;
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
-    signals:
+    Q_SIGNALS:
         /**
          * Start a count-down that emits updated() signal after it expires.
          * Resets the timer to original timeout if already running. This is to ensure
@@ -158,7 +160,7 @@ class UmsCollection : public Collection, public Meta::Observer
          */
         void startUpdateTimer();
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Destroy the collection (by emitting remove)
          */
@@ -169,10 +171,10 @@ class UmsCollection : public Collection, public Meta::Observer
          */
         void slotEject();
 
-        void slotTrackAdded( KUrl trackLocation );
+        void slotTrackAdded( QUrl trackLocation );
         void slotTrackRemoved( const Meta::TrackPtr &track );
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Update m_lastUpdated timestamp and emit updated()
          */
@@ -214,8 +216,8 @@ class UmsCollection : public Collection, public Meta::Observer
 
         bool m_autoConnect;
         QString m_mountPoint;
-        KUrl m_musicPath;
-        KUrl m_podcastPath;
+        QUrl m_musicUrl;
+        QUrl m_podcastUrl;
         QString m_musicFilenameScheme;
         bool m_vfatSafe;
         bool m_asciiOnly;

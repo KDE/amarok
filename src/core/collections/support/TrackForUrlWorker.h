@@ -21,9 +21,9 @@
 #include "core/support/Amarok.h"
 #include "core/meta/forward_declarations.h"
 
-#include <KUrl>
+#include <QUrl>
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 
 namespace Amarok
 {
@@ -31,26 +31,32 @@ namespace Amarok
  * Derive from this class and implement the run() method to set mTrack.
  * @author Casey Link
  */
-class AMAROK_CORE_EXPORT TrackForUrlWorker : public ThreadWeaver::Job
+class AMAROK_CORE_EXPORT TrackForUrlWorker : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 public:
-    TrackForUrlWorker( const KUrl &url );
+    TrackForUrlWorker( const QUrl &url );
     TrackForUrlWorker( const QString &url );
     ~TrackForUrlWorker();
 
-    virtual void run() = 0;
-signals:
+    virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) = 0 ;
+
+Q_SIGNALS:
     void finishedLookup( const Meta::TrackPtr &track );
 
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed. */
+    void failed(ThreadWeaver::JobPointer);
+    /** This signal is emitted when this job is being processed by a thread. */
+    void started(ThreadWeaver::JobPointer);
+
 protected:
-    KUrl m_url;
+    QUrl m_url;
     Meta::TrackPtr m_track;
 
-private slots:
+private Q_SLOTS:
     void completeJob();
-
-
 };
 
 }

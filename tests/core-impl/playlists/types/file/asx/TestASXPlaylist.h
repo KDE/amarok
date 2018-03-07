@@ -20,8 +20,10 @@
 #ifndef TESTASXPLAYLIST_H
 #define TESTASXPLAYLIST_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
+
+class QTemporaryDir;
 
 namespace Playlists { class ASXPlaylist; }
 
@@ -32,7 +34,7 @@ Q_OBJECT
 public:
     TestASXPlaylist();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -46,6 +48,7 @@ private slots:
 private:
     Playlists::ASXPlaylist *m_testPlaylist;
     QString dataPath( const QString &relPath = QString() );
+    QTemporaryDir *m_tempDir;
 };
 
 #endif // TESTASXPLAYLIST_H

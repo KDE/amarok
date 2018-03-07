@@ -86,7 +86,7 @@ GpodderTreeItem::isRoot() const
 void
 GpodderTreeItem::appendTags( mygpo::TagListPtr tags )
 {
-    foreach( mygpo::TagPtr tag, tags->list() )
+    for( const auto &tag : tags->list() )
     {
         GpodderTagTreeItem *treeItem = new GpodderTagTreeItem( tag, this );
         appendChild( treeItem );
@@ -96,7 +96,7 @@ GpodderTreeItem::appendTags( mygpo::TagListPtr tags )
 void
 GpodderTreeItem::appendPodcasts( mygpo::PodcastListPtr podcasts )
 {
-    foreach( mygpo::PodcastPtr podcast, podcasts->list() )
+    for( const auto &podcast : podcasts->list() )
     {
         appendChild( new GpodderPodcastTreeItem( podcast, this ) );
     }

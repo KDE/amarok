@@ -1,8 +1,3 @@
-include_directories(
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES}
-)
-
 set( amarok_importer-fastforward_PART_SRCS
     FastForwardConfigWidget.cpp
     FastForwardManager.cpp
@@ -10,17 +5,17 @@ set( amarok_importer-fastforward_PART_SRCS
     FastForwardTrack.cpp
 )
 
-kde4_add_ui_files( amarok_importer-fastforward_PART_SRCS FastForwardConfigWidget.ui )
+ki18n_wrap_ui( amarok_importer-fastforward_PART_SRCS FastForwardConfigWidget.ui )
 
-kde4_add_plugin( amarok_importer-fastforward ${amarok_importer-fastforward_PART_SRCS} )
+add_library(amarok_importer-fastforward MODULE ${amarok_importer-fastforward_PART_SRCS} )
 
 target_link_libraries( amarok_importer-fastforward
     amarokcore
     amaroklib
-    ${KDE4_KIO_LIBS}
-    ${QT_QTSQL_LIBRARY}
+    KF5::KIOCore
+    Qt5::Sql
 )
 
 install( TARGETS amarok_importer-fastforward DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-install( FILES amarok_importer-fastforward.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+kcoreaddons_desktop_to_json(amarok_importer-fastforward amarok_importer-fastforward.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

@@ -25,7 +25,7 @@
 #include <QTimer>
 
 class QToolBar;
-class KPushButton;
+class QPushButton;
 // A Custom Widget that can be used globally to implement
 // searching a treeview.
 
@@ -36,7 +36,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
         /** Creates a search widget.
             @param advanced If true generates a button that opens a edit filter dialog.
         */
-        explicit SearchWidget( QWidget *parent, bool advanced = true );
+        explicit SearchWidget( QWidget *parent = Q_NULLPTR, bool advanced = true );
 
         QString currentText() const { return m_sw->currentText(); }
         Amarok::ComboBox *comboBox() { return m_sw; }
@@ -57,8 +57,9 @@ class AMAROK_EXPORT SearchWidget : public QWidget
          */
         void setClickMessage( const QString &message );
 
-    public slots:
+    public Q_SLOTS:
         void setSearchString( const QString &searchString = QString() );
+        void emptySearchString() { setSearchString( QString() ); }
 
         /**
          * Tells the widget that a search operation has started. As a consequence the
@@ -76,7 +77,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
          */
         void searchEnded();
 
-    signals:
+    Q_SIGNALS:
         /**
          * Emitted when the filter value was changed.
          * Note: This signal might be delayed while the user is typing
@@ -89,7 +90,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
          */
         void returnPressed();
 
-    private slots:
+    private Q_SLOTS:
         void resetFilterTimeout();
         void filterNow();
         void advanceFocus();

@@ -11,15 +11,15 @@
 if (IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
 
   # in cache already
-  SET(IPOD_FOUND TRUE)
+  set(IPOD_FOUND TRUE)
 
-else (IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
+else ()
   if(NOT WIN32)
     # use pkg-config to get the directories and then use these values
     # in the FIND_PATH() and FIND_LIBRARY() calls
     find_package(PkgConfig)
-    PKG_SEARCH_MODULE(IPOD libgpod-1.0)
-  else(NOT WIN32)
+    pkg_search_module(IPOD libgpod-1.0)
+  else()
     find_path(IPOD_INCLUDE_DIRS
     NAMES
     gpod/itdb.h
@@ -31,18 +31,18 @@ else (IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
     )
     if(IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
        set(IPOD_FOUND ON)
-    endif(IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
-  endif(NOT WIN32)
-  IF (IPOD_FOUND)
-     IF (NOT IPOD_FIND_QUIETLY)
-        MESSAGE(STATUS "Found libgpod-1 ${IPOD_VERSION}")
-     ENDIF (NOT IPOD_FIND_QUIETLY)
-  ELSE (IPOD_FOUND)
-     IF (IPOD_FIND_REQUIRED)
-        MESSAGE(FATAL_ERROR "Could NOT find libgpod-1, check FindPkgConfig output above!")
-     ENDIF (IPOD_FIND_REQUIRED)
-  ENDIF (IPOD_FOUND)
+    endif()
+  endif()
+  if (IPOD_FOUND)
+     if (NOT IPOD_FIND_QUIETLY)
+        message(STATUS "Found libgpod-1 ${IPOD_VERSION}")
+     endif ()
+  else ()
+     if (IPOD_FIND_REQUIRED)
+        message(FATAL_ERROR "Could NOT find libgpod-1, check FindPkgConfig output above!")
+     endif ()
+  endif ()
 
-  MARK_AS_ADVANCED(IPOD_INCLUDE_DIRS)
+  mark_as_advanced(IPOD_INCLUDE_DIRS)
 
-endif (IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
+endif ()

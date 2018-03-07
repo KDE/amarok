@@ -26,13 +26,15 @@ class AmpacheAccountLogin;
 
 class AmpacheServiceFactory: public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_ampache.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        AmpacheServiceFactory( QObject *parent, const QVariantList &args );
+        AmpacheServiceFactory();
         virtual ~AmpacheServiceFactory() {}
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
         virtual void init();
         virtual QString name();
@@ -52,7 +54,7 @@ Q_OBJECT
     
 public:
     explicit AmpacheService( AmpacheServiceFactory* parent, const QString &name,
-                             const QString &url = QString(), const QString &username = QString(),
+                             const QUrl &url = QUrl(), const QString &username = QString(),
                              const QString &password = QString() );
 
     ~AmpacheService();
@@ -62,7 +64,7 @@ public:
 
     virtual Collections::Collection * collection() { return m_collection; }
 
-private slots:
+private Q_SLOTS:
     void onLoginSuccessful();
 
 private:

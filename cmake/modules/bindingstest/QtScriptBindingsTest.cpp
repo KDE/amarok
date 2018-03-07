@@ -16,10 +16,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <QtGui/QApplication>
-#include <QtScript/QScriptEngine>
-#include <QtCore/QStringList>
-#include <QtCore/QDebug>
+#include <QApplication>
+#include <QScriptEngine>
+#include <QStringList>
+#include <QDebug>
 
 #define FAIL 0xA
 

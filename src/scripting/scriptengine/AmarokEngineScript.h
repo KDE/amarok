@@ -74,7 +74,7 @@ namespace AmarokScript
             */
             Q_INVOKABLE Meta::TrackPtr currentTrack() const;
 
-        signals:
+        Q_SIGNALS:
             void trackFinished(); // when playback stops altogether
 
             /** This signal will be emitted every time the current track changes.
@@ -107,7 +107,7 @@ namespace AmarokScript
             */
             void trackPlayPause( int state );
 
-        private slots:
+        private Q_SLOTS:
             void trackPositionChanged( qint64 );
             void slotNewMetaData();
             void slotPaused();

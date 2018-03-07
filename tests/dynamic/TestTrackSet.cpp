@@ -21,9 +21,8 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestTrackSet )
+QTEST_GUILESS_MAIN( TestTrackSet )
 
 TestTrackSet::TestTrackSet()
 {
@@ -194,4 +193,3 @@ TestTrackSet::testEqual()
 
 }
 
-#include "TestTrackSet.moc"

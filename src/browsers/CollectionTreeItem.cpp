@@ -25,8 +25,8 @@
 #include "core/support/Debug.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KIcon>
-#include <KLocale>
+#include <QIcon>
+#include <KLocalizedString>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
@@ -73,7 +73,7 @@ CollectionTreeItem::CollectionTreeItem( Collections::Collection *parentCollectio
     if ( m_parent )
         m_parent->appendChild( this );
 
-    connect( parentCollection, SIGNAL(updated()), SLOT(collectionUpdated()) );
+    connect( parentCollection, &Collections::Collection::updated, this, &CollectionTreeItem::collectionUpdated );
 }
 
 CollectionTreeItem::CollectionTreeItem( Type type, const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
@@ -140,7 +140,7 @@ CollectionTreeItem::data( int role ) const
         case Qt::DisplayRole:
             return i18nc( "No labels are assigned to the given item are any of its subitems", "No Labels" );
         case Qt::DecorationRole:
-            return KIcon( "label-amarok" );
+            return QIcon::fromTheme( "label-amarok" );
         }
         return QVariant();
     }
@@ -163,8 +163,8 @@ CollectionTreeItem::data( int role ) const
                 m_isCounting = true;
 
                 Collections::QueryMaker *qm = m_parentCollection->queryMaker();
-                connect( qm, SIGNAL(newResultReady(QStringList)),
-                         SLOT(tracksCounted(QStringList)) );
+                connect( qm, &Collections::QueryMaker::newResultReady,
+                         this, &CollectionTreeItem::tracksCounted );
 
                 qm->setAutoDelete( true )
                   ->setQueryType( Collections::QueryMaker::Custom )
@@ -311,18 +311,18 @@ CollectionTreeItem::addMatch( Collections::QueryMaker *qm, CategoryId::CatMenuId
 }
 
 
-KUrl::List
+QList<QUrl>
 CollectionTreeItem::urls() const
 {
     /*QueryBuilder qb = queryBuilder();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     QStringList values = qb.run();
-    KUrl::List list;
+    QList<QUrl> list;
     foreach( QString s, values ) {
-        list += KUrl( s );
+        list += QUrl( s );
     }
     return list;*/
-    KUrl::List list;
+    QList<QUrl> list;
     return list;
 }
 
@@ -399,5 +399,4 @@ CollectionTreeItem::children() const
     return m_childItems;
 }
 
-#include "CollectionTreeItem.moc"
 

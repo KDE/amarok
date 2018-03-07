@@ -20,7 +20,7 @@
 #include <amarok_export.h>
 
 #include <QObject>
-#include <QSharedPointer>
+#include <QPointer>
 
 namespace Phonon {
     class MediaObject;
@@ -40,8 +40,8 @@ class AMAROK_EXPORT Fadeouter : public QObject
     Q_OBJECT
 
     public:
-        Fadeouter( const QWeakPointer<Phonon::MediaObject> &media,
-                   const QWeakPointer<Phonon::VolumeFaderEffect> &fader,
+        Fadeouter( const QPointer<Phonon::MediaObject> &media,
+                   const QPointer<Phonon::VolumeFaderEffect> &fader,
                    int fadeOutLength );
 
         /**
@@ -49,7 +49,7 @@ class AMAROK_EXPORT Fadeouter : public QObject
          */
         virtual ~Fadeouter();
 
-    signals:
+    Q_SIGNALS:
         /**
          * This signal is emitted when the fade-out is done. This signal may not
          * be emitted at all when Fadeouter is interrupted by new track playing.
@@ -57,14 +57,14 @@ class AMAROK_EXPORT Fadeouter : public QObject
          */
         void fadeoutFinished();
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Emits fadeoutFinished() and commits Fadeouter suicide.
          */
         void slotFinalizeFadeout();
 
     private:
-        QWeakPointer<Phonon::VolumeFaderEffect> m_fader;
+        QPointer<Phonon::VolumeFaderEffect> m_fader;
 };
 
 #endif // FADEOUTER_H

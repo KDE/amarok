@@ -24,7 +24,7 @@
 
 #include "amarok_export.h"
 
-#include <QWeakPointer>
+#include <QPointer>
 
 #include <Phonon/Path>
 #include <Phonon/Effect>
@@ -75,7 +75,7 @@ public:
     /**
      * Changes equaliser preset to preset @param name if it exists.
      */
-    void applyEqualizerPreset( const QString &name );
+    void applyEqualizerPresetByName( const QString &name );
 
     QList<int> gains() const;
     void setGains( const QList<int> &gains );
@@ -83,7 +83,7 @@ public:
     bool deletePreset( const QString &name );
     bool enabled();
 
-public slots:
+public Q_SLOTS:
 
     /**
      * Update equalizer status - enabled,disabled,set values
@@ -94,9 +94,9 @@ public slots:
      * Change equalizer to preset with index @param index in the global equalizer list.
      * Pass -1 to disable.
      */
-    void applyEqualizerPreset( int index );
+    void applyEqualizerPresetByIndex( int index );
 
-signals:
+Q_SIGNALS:
 
     /**
      * Emitted when preset with index @param idnex is applied or the equalizer is disabled.
@@ -115,7 +115,7 @@ signals:
     void presetsChanged( QString name );
 
 private:
-    QWeakPointer<Phonon::Effect>            m_equalizer;
+    QPointer<Phonon::Effect>            m_equalizer;
     Phonon::Path                            m_path;
 };
 

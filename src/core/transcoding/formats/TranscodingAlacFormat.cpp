@@ -16,7 +16,7 @@
 
 #include "TranscodingAlacFormat.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 using namespace Transcoding;
 
@@ -44,10 +44,10 @@ AlacFormat::description() const
                   "FLAC." );
 }
 
-KIcon
+QIcon
 AlacFormat::icon() const
 {
-    return KIcon( "audio-x-flac" ); //TODO: get a *real* icon!
+    return QIcon::fromTheme( "audio-x-flac" ); //TODO: get a *real* icon!
 }
 
 QStringList

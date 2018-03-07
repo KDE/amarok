@@ -24,11 +24,13 @@
 #include <QMap>
 #include <QMutex>
 #include <QObject>
+#include <QSharedPointer>
+#include <QUrl>
 
 class DeviceHandler;
 class DeviceHandlerFactory;
 class SqlStorage;
-class KUrl;
+class QUrl;
 namespace Solid {
     class Device;
 }
@@ -65,11 +67,11 @@ public:
      * @param volume the Volume for which a DeviceHandler is required
      * @return a DeviceHandler or 0 if the factory cannot handle the Medium
      */
-    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &udi, SqlStorage *s ) const = 0;
+    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &udi, QSharedPointer<SqlStorage> s ) const = 0;
 
     virtual bool canCreateFromConfig() const = 0;
 
-    virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const = 0;
+    virtual DeviceHandler* createHandler( KSharedConfigPtr c, QSharedPointer<SqlStorage> s ) const = 0;
 
     /**
      * returns the type of the DeviceHandler. Should be the same as the value used in
@@ -100,18 +102,18 @@ public:
      * idea by andrewt512: this method would only be called when we actually want to play the file, not when we
      * simply want to show it to the user. It could for example download a file using KIO and return a path to a
      * temporary file. Needs some more thought and is not actually used at the moment.
-     * @param absolutePath
-     * @param relativePath
+     * @param absoluteUrl
+     * @param relativeUrl
      */
-    virtual void getPlayableURL( KUrl &absolutePath, const KUrl &relativePath ) = 0;
+    virtual void getPlayableURL( QUrl &absoluteUrl, const QUrl &relativeUrl ) = 0;
 
     /**
      * builds an absolute path from a relative path and DeviceHandler specific information. The absolute path
      * is not necessarily playable! (based on an idea by andrewt512: allows better handling of files stored in remote  * collections. this method would return a "pretty" URL which might not be playable by amarok's engines.
-     * @param absolutePath the not necessarily playbale absolute path
-     * @param relativePath the device specific relative path
+     * @param absoluteUrl the not necessarily playbale absolute path
+     * @param relativeUrl the device specific relative path
      */
-    virtual void getURL( KUrl &absolutePath, const KUrl &relativePath ) = 0;
+    virtual void getURL( QUrl &absoluteUrl, const QUrl &relativeUrl ) = 0;
 
     /**
      * retrieves the unique database id of a given Medium. Implementations are responsible
@@ -140,7 +142,7 @@ class AMAROK_SQLCOLLECTION_EXPORT MountPointManager : public QObject
     Q_OBJECT
 
 public:
-    MountPointManager( QObject *parent, SqlStorage *storage );
+    MountPointManager( QObject *parent, QSharedPointer<SqlStorage> storage );
     ~MountPointManager();
 
     /**
@@ -148,7 +150,7 @@ public:
      * @param url
      * @return
      */
-    virtual int getIdForUrl( const KUrl &url );
+    virtual int getIdForUrl( const QUrl &url );
 
     /**
      *
@@ -183,7 +185,7 @@ public:
     virtual QStringList collectionFolders() const;
     virtual void setCollectionFolders( const QStringList &folders );
 
-signals:
+Q_SIGNALS:
     void deviceAdded( int id );
     void deviceRemoved( int id );
 
@@ -205,7 +207,7 @@ private:
      */
     bool isMounted ( const int deviceId ) const;
 
-    SqlStorage *m_storage;
+    QSharedPointer<SqlStorage> m_storage;
     /**
      * maps a device id to a mount point. does only work for mountable filesystems and needs to be
      * changed for the real Dynamic Collection implementation.
@@ -218,14 +220,10 @@ private:
 
 //Solid specific
     void createHandlerFromDevice( const Solid::Device &device, const QString &udi );
-private slots:
-    void deviceAdded( const QString &udi );
-    void deviceRemoved( const QString &udi );
+private Q_SLOTS:
+    void slotDeviceAdded( const QString &udi );
+    void slotDeviceRemoved( const QString &udi );
 
 };
-
-#define AMAROK_EXPORT_DEVICE_PLUGIN(libname, classname) \
-K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
-K_EXPORT_PLUGIN(factory("amarok_device_" #libname))\
 
 #endif

@@ -17,10 +17,10 @@
 #ifndef NAVIGATORCONFIGACTION_H
 #define NAVIGATORCONFIGACTION_H
 
-#include <KAction>
+#include <QAction>
 
 
-class NavigatorConfigAction : public KAction
+class NavigatorConfigAction : public QAction
 {
     Q_OBJECT
 public:
@@ -36,7 +36,7 @@ public:
     */
     ~NavigatorConfigAction();
 
-protected slots:
+protected Q_SLOTS:
 
     /**
     * Set the currently active navigator based on the selected action.

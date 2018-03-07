@@ -17,96 +17,112 @@
 
 #define DEBUG_PREFIX "ContextView"
 
-/*
-  Significant parts of this code is inspired and/or copied from KDE plasma sources,
-  available at kdebase/workspace/plasma
-*/
-
 #include "ContextView.h"
 
-#include <config.h>
-
-#include "Context.h"
-#include "ContextScene.h"
-#include "Svg.h"
-#include "Theme.h"
-#include "amarokconfig.h"
+#include "AppletLoader.h"
+#include "AppletModel.h"
+#include "PaletteHandler.h"
+#include "SvgHandler.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/ContextUrlRunner.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
-#include "EngineController.h"
 
-#include <plasma/dataenginemanager.h>
+#include <QDesktopServices>
+#include <QFile>
+#include <QGuiApplication>
+#include <QQmlContext>
+#include <QQmlError>
+#include <QQmlPropertyMap>
+#include <QQuickWindow>
+#include <QScreen>
 
-#include <Phonon/AudioOutput>
-#include <QParallelAnimationGroup>
-#include <QSequentialAnimationGroup>
-#include <QWheelEvent>
+#include <KDeclarative/KDeclarative>
+#include <KI18n/KLocalizedContext>
+#include <KIconThemes/KIconLoader>
+#include <KPackage/PackageLoader>
+
+
+class FontFilter : public QObject
+{
+    Q_OBJECT
+
+public:
+    FontFilter( QObject *parent )
+        : QObject( parent )
+    {
+        qApp->installEventFilter( this );
+    }
+
+    bool eventFilter( QObject *watched, QEvent *event )
+    {
+        if( watched == qApp )
+        {
+            if( event->type() == QEvent::ApplicationFontChange )
+                emit fontChanged();
+        }
+        return QObject::eventFilter( watched, event );
+    }
+
+signals:
+    void fontChanged();
+};
+
 
 namespace Context
 {
 
-ContextView* ContextView::s_self = 0;
+ContextView* ContextView::s_self = Q_NULLPTR;
 
 
-ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWidget* parent )
-    : Plasma::View( cont, parent )
-    , m_curState( Home )
-    , m_urlRunner(0)
-    , m_appletExplorer(0)
-    , m_collapseAnimations(0)
-    , m_queuedAnimations(0)
-    , m_collapseGroupTimer(0)
+ContextView::ContextView( QWidget *parent )
+    : QQuickWidget( parent )
+    , m_urlRunner( Q_NULLPTR )
+    , m_loader( new AppletLoader( this ) )
+    , m_appletModel( new AppletModel( m_loader, this ) )
+    , m_proxyModel( new AppletProxyModel( m_appletModel, this ) )
+    , m_fontFilter( new FontFilter( this ) )
+    , m_smallSpacing( 2 )
+    , m_largeSpacing( 8 )
+    , m_iconSizes( new QQmlPropertyMap( this ) )
 {
-    Q_UNUSED( corona )
     DEBUG_BLOCK
 
-    // using QGraphicsScene::BspTreeIndex leads to crashes in some Qt versions
-    scene()->setItemIndexMethod( QGraphicsScene::NoIndex );
-    //TODO: Figure out a way to use rubberband and ScrollHandDrag
-    //setDragMode( QGraphicsView::RubberBandDrag );
-    setTransformationAnchor( QGraphicsView::NoAnchor );
-    setCacheMode( QGraphicsView::CacheBackground );
-    setInteractive( true );
-    setAcceptDrops( true );
-    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    // setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    KDeclarative::KDeclarative decl;
+    decl.setDeclarativeEngine( engine() );
+    decl.setupBindings();
 
-    //make background transparent
-    QPalette p = palette();
-    QColor c = p.color( QPalette::Base );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-    setPalette( p );
+    connect( this, &QQuickWidget::statusChanged, this, &ContextView::slotStatusChanged );
+    connect( qApp, &QGuiApplication::primaryScreenChanged, this, &ContextView::updateDevicePixelRatio );
+    connect( m_fontFilter, &FontFilter::fontChanged, this, &ContextView::updateSpacing );
+    connect( KIconLoader::global(), &KIconLoader::iconLoaderSettingsChanged, this, &ContextView::iconLoaderSettingsChanged );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &ContextView::updatePalette );
 
-    contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
-
-    cont->setPos( 0, 0 );
-    cont->updateConstraints();
-    Containment* amarokContainment = qobject_cast<Containment* >( cont );
-    if( amarokContainment )
-        amarokContainment->setView( this );
+    updateSpacing();
+    updateDevicePixelRatio( qApp->primaryScreen() );
 
     m_urlRunner = new ContextUrlRunner();
     The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
 
-    m_queuedAnimations = new QSequentialAnimationGroup( this );
-    m_collapseAnimations = new QParallelAnimationGroup( this );
-    connect( m_collapseAnimations, SIGNAL(finished()),
-             this, SLOT(slotCollapseAnimationsFinished()) );
+    rootContext()->setContextProperty( QStringLiteral( "AppletModel" ), m_appletModel );
+    rootContext()->setContextProperty( QStringLiteral( "AppletProxyModel" ), m_proxyModel );
+    rootContext()->setContextProperty( QStringLiteral( "Context" ), this );
+    rootContext()->setContextProperty( QStringLiteral( "Svg" ), The::svgHandler() );
 
-    m_collapseGroupTimer = new QTimer( this );
-    m_collapseGroupTimer->setSingleShot( true );
-    connect( m_collapseGroupTimer, SIGNAL(timeout()), SLOT(slotStartCollapseAnimations()) );
+    quickWindow()->setColor( The::paletteHandler()->palette().color( QPalette::Window ) );
 
-    EngineController* const engine = The::engineController();
+    auto qmlPackage = KPackage::PackageLoader::self()->loadPackage( QStringLiteral( "KPackage/GenericQML" ),
+                                                                    QStringLiteral( "org.kde.amarok.context" ) );
+    Q_ASSERT( qmlPackage.isValid() );
 
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
-             this, SLOT(slotTrackChanged(Meta::TrackPtr)) );
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
-             this, SLOT(slotMetadataChanged(Meta::TrackPtr)) );
+    const QString sourcePath = qmlPackage.filePath( "mainscript" );
+    Q_ASSERT( QFile::exists( sourcePath ) );
+
+    ::debug() << "Loading context qml mainscript:" << sourcePath;
+
+    setSource( QUrl::fromLocalFile( sourcePath ) );
+    setResizeMode( SizeRootObjectToView );
 
     // keep this assignment at bottom so that premature usage of ::self() asserts out
     s_self = this;
@@ -116,281 +132,147 @@ ContextView::~ContextView()
 {
     DEBUG_BLOCK
 
-    // Unload and destroy all Amarok plasma-engines
-    const QStringList engines = Plasma::DataEngineManager::self()->listAllEngines( "Amarok" );
-
-    // Assert added for tracing crash on exit, see BUG 187384
-    Q_ASSERT_X( !engines.isEmpty(), "Listing loaded Plasma engines", "List is empty (no engines loaded!?)" );
-
-    foreach( const QString &engine, engines )
-    {
-        debug() << "Unloading plasma engine: " << engine;
-
-        // PlasmaDataEngineManager uses refcounting for the engines, so we need to unload until the refcount reaches 0
-        while( Plasma::DataEngineManager::self()->engine( engine )->isValid() )
-            Plasma::DataEngineManager::self()->unloadEngine( engine );
-    }
-
-    clear( m_curState );
-    //this should be done to prevent a crash on exit
-    clearFocus();
-
     delete m_urlRunner;
-}
-
-
-void
-ContextView::clear( const ContextState& state )
-{
-    Q_UNUSED( state )
-    DEBUG_BLOCK
-
-    const QString name = "amarok_homerc";
-    // now we save the state, remembering the column info etc
-    KConfig appletConfig( name );
-    // erase previous config
-    foreach( const QString& group, appletConfig.groupList() )
-        appletConfig.deleteGroup( group );
-
-    const int numContainments = contextScene()->containments().size();
-    for( int i = 0; i < numContainments; i++ )
-    {
-        DEBUG_LINE_INFO
-        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
-        KConfigGroup cg( &appletConfig, QString( "Containment %1" ).arg( i ) );
-        if( containment )
-            containment->saveToConfig( cg );
-    }
-    contextScene()->clearContainments();
-}
-
-void ContextView::clearNoSave()
-{
-    contextScene()->clearContainments();
-}
-
-
-void ContextView::slotTrackChanged( Meta::TrackPtr track )
-{
-    if( track )
-        messageNotify( Current );
-    else
-        messageNotify( Home );
-}
-
-
-void
-ContextView::slotMetadataChanged( Meta::TrackPtr track )
-{
-    DEBUG_BLOCK
-
-    // if we are listening to a stream, take the new metadata as a "new track"
-    if( track && The::engineController()->isStream() )
-        messageNotify( Current );
-}
-
-void ContextView::showHome()
-{
-    DEBUG_BLOCK
-
-    m_curState = Home;
-    loadConfig();
-    messageNotify( m_curState );
-}
-
-
-// loads applets onto the ContextScene from saved data, using m_curState
-void
-ContextView::loadConfig()
-{
-    contextScene()->clearContainments();
-
-    PERF_LOG( "Start to load config" );
-    int numContainments = contextScene()->containments().size();
-    KConfig conf( "amarok_homerc", KConfig::FullConfig );
-    for( int i = 0; i < numContainments; i++ )
-    {
-        Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
-        if( containment )
-        {
-            KConfigGroup cg( &conf, QString( "Containment %1" ).arg( i ) );
-#ifdef QT_QTOPENGL_FOUND
-            // Special case: If this is the first time that the user runs an Amarok version
-            // containing the Analyzer applet, modify the user's config so that the applet
-            // will become active. We do this for discoverability and prettiness.
-            // Remove this code in a future Amarok release (possibly 3.0)
-            const bool firstTimeWithAnalyzer = Amarok::config( "Context View" ).readEntry( "firstTimeWithAnalyzer", true );
-            if( firstTimeWithAnalyzer )
-            {
-                QStringList plugins = cg.readEntry( "plugins", QStringList() );
-                if( EngineController::instance()->supportsAudioDataOutput() && !plugins.contains( "analyzer" ) )
-                {
-                    Amarok::config( "Context View" ).writeEntry( "firstTimeWithAnalyzer", false );
-
-                    // Put the Analyzer applet at position #2, which is most likely below the Currenttrack applet.
-                    if( !plugins.empty() )
-                        plugins.insert( 1, "analyzer" );
-
-                    cg.writeEntry( "plugins", plugins );
-                }
-            }
-#endif
-            containment->loadConfig( cg );
-        }
-    }
-    PERF_LOG( "Done loading config" );
-}
-
-void
-ContextView::addCollapseAnimation( QAbstractAnimation *anim )
-{
-    if( !anim )
-    {
-        debug() << "failed to add collapsing animation";
-        return;
-    }
-
-    if( m_collapseAnimations->state() == QAbstractAnimation::Running ||
-        m_collapseGroupTimer->isActive() )
-    {
-        m_queuedAnimations->addAnimation( anim );
-    }
-    else
-    {
-        m_collapseAnimations->addAnimation( anim );
-        m_collapseGroupTimer->start( 0 );
-    }
-}
-
-void
-ContextView::slotCollapseAnimationsFinished()
-{
-    m_collapseGroupTimer->stop();
-    m_collapseAnimations->clear();
-
-    while( m_queuedAnimations->animationCount() > 0 )
-    {
-        if( QAbstractAnimation *anim = m_queuedAnimations->takeAnimation(0) )
-            m_collapseAnimations->addAnimation( anim );
-    }
-
-    if( m_collapseAnimations->animationCount() > 0 )
-        m_collapseGroupTimer->start( 0 );
-}
-
-void
-ContextView::slotStartCollapseAnimations()
-{
-    if( m_collapseAnimations->animationCount() > 0 )
-        m_collapseAnimations->start( QAbstractAnimation::KeepWhenStopped );
-}
-
-void
-ContextView::hideAppletExplorer()
-{
-    if( m_appletExplorer )
-        m_appletExplorer->hide();
-}
-
-void
-ContextView::showAppletExplorer()
-{
-    if( !m_appletExplorer )
-    {
-        Context::Containment *cont = qobject_cast<Context::Containment*>( containment() );
-        m_appletExplorer = new AppletExplorer( cont );
-        m_appletExplorer->setContainment( cont );
-        m_appletExplorer->setZValue( m_appletExplorer->zValue() + 1000 );
-        m_appletExplorer->setFlag( QGraphicsItem::ItemIsSelectable );
-
-        connect( m_appletExplorer, SIGNAL(addAppletToContainment(QString,int)),
-                 cont, SLOT(addApplet(QString,int)) );
-        connect( m_appletExplorer, SIGNAL(appletExplorerHid()), SIGNAL(appletExplorerHid()) );
-        connect( m_appletExplorer, SIGNAL(geometryChanged()), SLOT(slotPositionAppletExplorer()) );
-
-        qreal height = m_appletExplorer->effectiveSizeHint( Qt::PreferredSize ).height();
-        m_appletExplorer->resize( rect().width() - 2, height );
-        m_appletExplorer->setPos( 0, rect().height() - height - 2 );
-    }
-    m_appletExplorer->show();
-}
-
-void
-ContextView::slotPositionAppletExplorer()
-{
-    if( !m_appletExplorer )
-        return;
-    qreal height = m_appletExplorer->effectiveSizeHint( Qt::PreferredSize ).height();
-    m_appletExplorer->setPos( 0, rect().height() - height - 2 );
-}
-
-
-ContextScene*
-ContextView::contextScene()
-{
-    return static_cast<ContextScene*>( scene() );
-}
-
-void
-ContextView::resizeEvent( QResizeEvent* event )
-{
-    Plasma::View::resizeEvent( event );
-    if( testAttribute( Qt::WA_PendingResizeEvent ) )
-        return; // lets not do this more than necessary, shall we?
-
-    QRectF rect( pos(), maximumViewportSize() );
-    containment()->setGeometry( rect );
-    scene()->setSceneRect( rect );
-    scene()->update( rect );
-
-    if( m_appletExplorer )
-    {
-        qreal height = m_appletExplorer->effectiveSizeHint( Qt::PreferredSize ).height();
-        m_appletExplorer->resize( rect.width() - 2, height );
-        m_appletExplorer->setPos( 0, rect.height() - height - 2 );
-    }
-}
-
-void
-ContextView::wheelEvent( QWheelEvent* event )
-{
-    if( event->orientation() != Qt::Horizontal )
-        Plasma::View::wheelEvent( event );
+    s_self = Q_NULLPTR;
 }
 
 QStringList
-ContextView::currentApplets()
+ContextView::currentApplets() const
 {
-    DEBUG_BLOCK
     QStringList appletNames;
     
-    Applet::List applets = containment()->applets();
-    foreach( Plasma::Applet * applet, applets )
+    auto applets = m_loader->enabledApplets();
+    for( const auto &applet : applets )
     {
-        appletNames << applet->pluginName();
+        appletNames << applet.pluginId();
     }
 
-    debug() << "current applets: " << appletNames;
+    ::debug() << "Current applets: " << appletNames;
 
     return appletNames;
 }
 
-QStringList ContextView::currentAppletNames()
+QStringList
+ContextView::currentAppletNames() const
 {
-    DEBUG_BLOCK
     QStringList appletNames;
 
-    Applet::List applets = containment()->applets();
-    foreach( Plasma::Applet * applet, applets )
+    auto applets = m_loader->enabledApplets();
+    for( const auto &applet : applets )
     {
-        appletNames << applet->name();
+        appletNames << applet.name();
     }
 
-    debug() << "current applets: " << appletNames;
+    ::debug() << "Current applet names: " << appletNames;
 
-    return appletNames; 
+    return appletNames;
+}
+
+void
+ContextView::runLink( const QUrl& link ) const
+{
+    if( link.scheme() == QStringLiteral( "amarok" ) )
+    {
+        AmarokUrl aUrl( link.toString() );
+        aUrl.run();
+    }
+    else
+        QDesktopServices::openUrl( link );
+}
+
+void
+ContextView::slotStatusChanged( Status status )
+{
+    if( status == Error )
+        for( const auto &e : errors() )
+            error( e.description() );
+}
+
+void
+ContextView::updateSpacing()
+{
+    int gridUnit = QFontMetrics( QGuiApplication::font() ).boundingRect( QStringLiteral("M") ).height();
+    if (gridUnit % 2 != 0)
+        gridUnit++;
+
+    if (gridUnit != m_largeSpacing)
+    {
+        m_smallSpacing = qMax( 2, (int)( gridUnit / 4 ) ); // 1/4 of gridUnit, at least 2
+        m_largeSpacing = gridUnit; // msize.height
+        emit spacingChanged();
+    }
+}
+
+void
+ContextView::updateDevicePixelRatio( QScreen *screen )
+{
+    if (!screen)
+        return;
+
+    const qreal dpi = screen->logicalDotsPerInchX();
+    // Usual "default" is 96 dpi
+    m_devicePixelRatio = (qreal)dpi / (qreal)96;
+    iconLoaderSettingsChanged();
+    emit devicePixelRatioChanged();
+}
+
+void
+ContextView::iconLoaderSettingsChanged()
+{
+    m_iconSizes->insert( QStringLiteral( "tiny" ), devicePixelIconSize( KIconLoader::SizeSmall ) / 2 );
+    m_iconSizes->insert( QStringLiteral( "small" ), devicePixelIconSize( KIconLoader::SizeSmall ) );
+    m_iconSizes->insert( QStringLiteral( "smallMedium" ), devicePixelIconSize( KIconLoader::SizeSmallMedium ) );
+    m_iconSizes->insert( QStringLiteral( "medium" ), devicePixelIconSize( KIconLoader::SizeMedium ) );
+    m_iconSizes->insert( QStringLiteral( "large" ), devicePixelIconSize( KIconLoader::SizeLarge ) );
+    m_iconSizes->insert( QStringLiteral( "huge" ), devicePixelIconSize( KIconLoader::SizeHuge ) );
+    m_iconSizes->insert( QStringLiteral( "enormous" ), devicePixelIconSize( KIconLoader::SizeEnormous ) );
+
+    emit iconSizesChanged();
+}
+
+int
+ContextView::devicePixelIconSize( int size ) const
+{
+    const qreal ratio = devicePixelRatio();
+
+    if ( ratio < 1.5 )
+        return size;
+    else if ( ratio < 2.0 )
+        return size * 1.5;
+    else if ( ratio < 2.5 )
+        return size * 2.0;
+    else if ( ratio < 3.0 )
+         return size * 2.5;
+    else if ( ratio < 3.5 )
+         return size * 3.0;
+    else
+        return size * ratio;
+}
+
+void
+ContextView::updatePalette( const QPalette &palette )
+{
+    quickWindow()->setColor( palette.color( QPalette::Window ) );
+}
+
+void
+ContextView::debug( const QString &error ) const
+{
+    ::debug() << error;
+}
+
+void
+ContextView::warning( const QString &error ) const
+{
+    ::warning() << error;
+}
+
+void
+ContextView::error( const QString &error ) const
+{
+    ::error() << error;
 }
 
 } // Context namespace
 
-#include "ContextView.moc"
+#include <ContextView.moc>

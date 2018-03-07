@@ -19,10 +19,8 @@
 
 #include "amarok_export.h"
 #include "statsyncing/Track.h"
-#include "support/QSharedDataPointerMisc.h" // operator<() for ProviderPtr
 
-#include <KIcon>
-
+#include <QIcon>
 #include <QMap>
 #include <QSet>
 #include <QString>
@@ -57,7 +55,7 @@ namespace StatSyncing
      * Providers are memory-managed as explicitly shared data, always use ProviderPtr
      * to stora a reference to Provider.
      */
-    class AMAROK_EXPORT Provider : public QObject, public QSharedData
+    class AMAROK_EXPORT Provider : public QObject
     {
         Q_OBJECT
 
@@ -85,7 +83,7 @@ namespace StatSyncing
             /**
              * Icon of this provider; must be thread-safe
              */
-            virtual KIcon icon() const = 0;
+            virtual QIcon icon() const = 0;
 
             /**
              * Return true if this provider can be reconfigured after creation. Returns
@@ -169,14 +167,14 @@ namespace StatSyncing
              */
             virtual void commitTracks();
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when some data such as prettyName() were updated.
              */
             void updated();
     };
 
-    typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
+    typedef QSharedPointer<Provider> ProviderPtr;
     typedef QList<ProviderPtr> ProviderPtrList;
     typedef QSet<ProviderPtr> ProviderPtrSet;
 

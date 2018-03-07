@@ -17,7 +17,7 @@
 #ifndef PLAYLISTBREADCRUMBLEVEL_H
 #define PLAYLISTBREADCRUMBLEVEL_H
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QMap>
 #include <QPair>
@@ -47,14 +47,14 @@ public:
 
     const QString & prettyName();
 
-    const KIcon& icon();
+    const QIcon& icon();
 
-    const QMap< QString, QPair< KIcon, QString > > siblings();
+    const QMap< QString, QPair< QIcon, QString > > siblings();
 
 protected:
     QString m_name;         //!< the name of this item.
     QString m_prettyName;
-    KIcon m_icon;
+    QIcon m_icon;
 };
 
 }   //namespace Playlist

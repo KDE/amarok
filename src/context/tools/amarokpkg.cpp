@@ -15,30 +15,30 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "../AmarokContextPackageStructure.h"
+
 #include <iostream>
 
-#include <QDir>
+#include <QApplication>
+#include <QAction>
+#include <QCommandLineParser>
 #include <QDBusInterface>
+#include <QDir>
+#include <QLocale>
+#include <QStandardPaths>
+#include <QTextStream>
 
-#include <KApplication>
 #include <KAboutData>
-#include <KAction>
-#include <KCmdLineArgs>
-#include <KLocale>
-#include <KService>
-#include <KServiceTypeTrader>
+#include <KLocalizedString>
 #include <KShell>
-#include <KStandardDirs>
 #include <KProcess>
-#include <KSycoca>
 #include <KConfigGroup>
+#include <KPackage/PackageLoader>
+#include <KPackage/Package>
 
-#include <Plasma/PackageStructure>
-#include <Plasma/Package>
-#include <Plasma/PackageMetadata>
 
-static const char description[] = I18N_NOOP("Install, list, remove Amarok applets");
-static const char version[] = "0.1";
+static const char description[] = "Install, list, remove Amarok applets";
+static const char version[] = "0.2";
 
 
 void output(const QString &msg)
@@ -52,19 +52,27 @@ void runKbuildsycoca()
     dbus.call(QDBus::NoBlock, "recreate");
 }
 
-QStringList packages(const QString& type)
+QStringList packages()
 {
+    auto loader = KPackage::PackageLoader::self();
+    auto structure = new AmarokContextPackageStructure;
+    loader->addKnownPackageStructure(QStringLiteral("Amarok/ContextApplet"), structure);
+    auto applets = loader->findPackages(QStringLiteral("Amarok/ContextApplet"),
+                                        QString(),
+                                        [] (const KPluginMetaData &data)
+                                        { return data.serviceTypes().contains(QStringLiteral("Amarok/ContextApplet")); });
+
     QStringList result;
-    KService::List services = KServiceTypeTrader::self()->query("Plasma/" + type, "'amarok' ~ [X-KDE-ParentApp]");
-    foreach(const KService::Ptr &service, services) {
-        result << service->property("X-KDE-PluginInfo-Name", QVariant::String).toString();
-    }
+
+    for (const auto &applet : applets)
+        result << applet.pluginId();
+
     return result;
 }
 
-void listPackages(const QString& type)
+void listPackages()
 {
-    QStringList list = packages(type);
+    QStringList list = packages();
     list.sort();
     foreach(const QString& package, list) {
         output(package);
@@ -73,69 +81,75 @@ void listPackages(const QString& type)
 
 int main(int argc, char **argv)
 {
-    KAboutData aboutData("amarokpkg", 0, ki18n("Amarok Applet Manager"),
-                         version, ki18n(description), KAboutData::License_GPL,
-                         ki18n("(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"));
-    aboutData.addAuthor( ki18n("Aaron Seigo"),
-                         ki18n("Original author"),
+    KAboutData aboutData("amarokpkg", i18n("Amarok Applet Manager"),
+                         version, i18n(description), KAboutLicense::GPL,
+                         i18n("(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"));
+    aboutData.addAuthor( i18n("Aaron Seigo"),
+                         i18n("Original author"),
                         "aseigo@kde.org" );
-    aboutData.addAuthor( ki18n( "Leo Franchi" ),
-                         ki18n( "Developer" ) ,
+    aboutData.addAuthor( i18n( "Leo Franchi" ),
+                         i18n( "Developer" ) ,
                          "lfranchi@kde.org"  );
 
-    KComponentData componentData(aboutData);
+    QApplication app(argc, argv);
+    app.setApplicationName("amarokpkg");
+    app.setOrganizationDomain("kde.org");
+    app.setApplicationDisplayName(i18n("Amarok Applet Manager"));
+    app.setApplicationVersion(version);
 
-    KCmdLineArgs::init( argc, argv, &aboutData );
+    /**
+     * @TODO: DO WE NEED THIS ?
+     */
+    KAboutData::setApplicationData(aboutData);
 
-    KCmdLineOptions options;
-    options.add("g");
-    options.add("global", ki18n("For install or remove, operates on applets installed for all users."));
-    options.add("s");
-    options.add("i");
-    options.add("install <path>", ki18nc("Do not translate <path>", "Install the applet at <path>"));
-    options.add("u");
-    options.add("upgrade <path>", ki18nc("Do not translate <path>", "Upgrade the applet at <path>"));
-    options.add("l");
-    options.add("list", ki18n("List installed applets"));
-    options.add("r");
-    options.add("remove <name>", ki18nc("Do not translate <name>", "Remove the applet named <name>"));
-    options.add("p");
-    options.add("packageroot <path>", ki18n("Absolute path to the package root. If not supplied, then the standard data directories for this KDE session will be searched instead."));
-    KCmdLineArgs::addCmdLineOptions( options );
+    QCommandLineParser parser;
 
-    KApplication app;
+    parser.addOption(QCommandLineOption(QStringList() << "g" << "global",
+                                        i18n("For install or remove, operates on applets installed for all users.")));
+    parser.addOption(QCommandLineOption(QStringList() << "s" << "i" << "install <path>",
+                                        i18nc("Do not translate <path>", "Install the applet at <path>")));
+    parser.addOption(QCommandLineOption(QStringList() << "u" << "upgrade <path>",
+                                        i18nc("Do not translate <path>", "Upgrade the applet at <path>")));
+    parser.addOption(QCommandLineOption(QStringList() << "l" << "list",
+                                        i18n("Most installed applets")));
+    parser.addOption(QCommandLineOption(QStringList() << "r" << "remove <name>",
+                                        i18nc("Do not translate <name>", "Remove the applet named <name>")));
+    parser.addOption(QCommandLineOption(QStringList() << "p" << "packageroot <path>",
+                                        i18n("Absolute path to the package root. If not supplied, then the standard data directories for this KDE session will be searched instead.")));
 
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-    QString packageRoot = "plasma/plasmoids/";
-    QString servicePrefix = "amarok-applet-";
-    QString pluginType = "Applet";
-    Plasma::PackageStructure *installer = 0;
+    parser.addVersionOption();
+    parser.addHelpOption();
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
 
-    if (args->isSet("list")) {
-        listPackages(pluginType);
+    QString packageRoot = "kpackage/amarok";
+    KPackage::Package *installer = 0;
+
+    if (parser.isSet("list")) {
+        listPackages();
     } else {
         // install, remove or upgrade
-        if (!installer) {
-            installer = new Plasma::PackageStructure();
-            installer->setServicePrefix(servicePrefix);
-        }
+        if (!installer)
+            installer = new KPackage::Package(new AmarokContextPackageStructure);
 
-        if (args->isSet("packageroot")) {
-            packageRoot = args->getOption("packageroot");
-        } else if (args->isSet("global")) {
-            packageRoot = KStandardDirs::locate("data", packageRoot);
+        if (parser.isSet("packageroot")) {
+            packageRoot = parser.value("packageroot");
+        } else if (parser.isSet("global")) {
+            packageRoot = QStandardPaths::locate(QStandardPaths::GenericDataLocation, packageRoot);
         } else {
-            packageRoot = KStandardDirs::locateLocal("data", packageRoot);
+            //@FIXME Maybe we need to check whether the folders exist or not.
+            packageRoot = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + packageRoot;
         }
 
         QString package;
         QString packageFile;
-        if (args->isSet("remove")) {
-            package = args->getOption("remove");
-        } else if (args->isSet("upgrade")) {
-            package = args->getOption("upgrade");
-        } else if (args->isSet("install")) {
-            package = args->getOption("install");
+        if (parser.isSet("remove")) {
+            package = parser.value("remove");
+        } else if (parser.isSet("upgrade")) {
+            package = parser.value("upgrade");
+        } else if (parser.isSet("install")) {
+            package = parser.value("install");
         }
         if (!QDir::isAbsolutePath(package)) {
             packageFile = QDir(QDir::currentPath() + '/' + package).absolutePath();
@@ -143,34 +157,34 @@ int main(int argc, char **argv)
             packageFile = package;
         }
 
-        if (args->isSet("remove") || args->isSet("upgrade")) {
+        if (parser.isSet("remove") || parser.isSet("upgrade")) {
             installer->setPath(packageFile);
-            Plasma::PackageMetadata metadata = installer->metadata();
+            KPluginMetaData metadata = installer->metadata();
 
-            QString pluginName;
-            if (metadata.pluginName().isEmpty()) {
+            QString pluginId;
+            if (metadata.name().isEmpty()) {
                 // plugin name given in command line
-                pluginName = package;
+                pluginId = package;
             } else {
                 // Parameter was a plasma package, get plugin name from the package
-                pluginName = metadata.pluginName();
+                pluginId = metadata.pluginId();
             }
 
-            QStringList installed = packages(pluginType);
-            if (installed.contains(pluginName)) {
-                if (installer->uninstallPackage(pluginName, packageRoot)) {
-                    output(i18n("Successfully removed %1", pluginName));
-                } else if (!args->isSet("upgrade")) {
-                    output(i18n("Removal of %1 failed.", pluginName));
+            QStringList installed = packages();
+            if (installed.contains(pluginId)) {
+                if (installer->uninstall(pluginId, packageRoot)) {
+                    output(i18n("Successfully removed %1", pluginId));
+                } else if (!parser.isSet("upgrade")) {
+                    output(i18n("Removal of %1 failed.", pluginId));
                     delete installer;
                     return 1;
                 }
             } else {
-                output(i18n("Plugin %1 is not installed.", pluginName));
+                output(i18n("Plugin %1 is not installed.", pluginId));
             }
         }
-        if (args->isSet("install") || args->isSet("upgrade")) {
-            if (installer->installPackage(packageFile, packageRoot)) {
+        if (parser.isSet("install") || parser.isSet("upgrade")) {
+            if (installer->install(packageFile, packageRoot)) {
                 output(i18n("Successfully installed %1", packageFile));
                 runKbuildsycoca();
             } else {
@@ -179,8 +193,10 @@ int main(int argc, char **argv)
                 return 1;
             }
         }
+
         if (package.isEmpty()) {
-            KCmdLineArgs::usageError(i18nc("No option was given, this is the error message telling the user he needs at least one, do not translate install, remove, upgrade nor list", "One of install, remove, upgrade or list is required."));
+            QTextStream out(stdout);
+            out << i18nc("No option was given, this is the error message telling the user he needs at least one, do not translate install, remove, upgrade nor list", "One of install, remove, upgrade or list is required.");
         } else {
             runKbuildsycoca();
         }

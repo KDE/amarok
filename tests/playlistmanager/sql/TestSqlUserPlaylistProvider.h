@@ -20,8 +20,8 @@
 #ifndef TESTSQLUSERPLAYLISTPROVIDER_H
 #define TESTSQLUSERPLAYLISTPROVIDER_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 namespace Playlists {
     class SqlUserPlaylistProvider;
@@ -34,7 +34,7 @@ Q_OBJECT
 public:
     TestSqlUserPlaylistProvider();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
     void testPlaylists();

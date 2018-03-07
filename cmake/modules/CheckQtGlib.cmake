@@ -1,14 +1,12 @@
-set(CMAKE_REQUIRED_INCLUDES ${QT_INCLUDES})
-set(CMAKE_REQUIRED_DEFINITIONS "")
-set(CMAKE_REQUIRED_FLAGS "")
-CHECK_CXX_SOURCE_COMPILES("
+set(CMAKE_REQUIRED_LIBRARIES Qt5::Core)
+check_cxx_source_compiles("
 #include <QtCore/QtGlobal>
 int main()
 {
-#if defined(QT_NO_GLIBASDF)
+#if defined(QT_NO_GLIB)
 #error \"Qt was compiled with Glib disabled\"
 #endif
 return 0;
 }" 
-QT4_GLIB_SUPPORT)
+QT5_GLIB_SUPPORT)
 

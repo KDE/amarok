@@ -35,7 +35,7 @@
 
 #include "playlist/PlaylistActions.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QFile>
 #include <QBuffer>
@@ -44,8 +44,6 @@
 #include <QMimeData>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#include <klocale.h>
 
 /* general note:
    For the sake of this file we are handling a modified active playlist as
@@ -59,7 +57,7 @@ Dynamic::DynamicModel::instance()
 {
     if( !s_instance )
     {
-        s_instance = new DynamicModel( App::instance() );
+        s_instance = new DynamicModel( pApp );
         s_instance->loadPlaylists();
     }
     return s_instance;
@@ -259,9 +257,9 @@ Dynamic::DynamicModel::data( const QModelIndex& i, int role ) const
 
         case Qt::DecorationRole:
             if( activePlaylist() == indexPlaylist )
-                return KIcon( "amarok_playlist" );
+                return QIcon::fromTheme( "amarok_playlist" );
             else
-                return KIcon( "amarok_playlist_clear" );
+                return QIcon::fromTheme( "amarok_playlist_clear" );
 
         case Qt::FontRole:
             {

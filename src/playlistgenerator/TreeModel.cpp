@@ -19,7 +19,7 @@
 #include "Constraint.h"
 #include "ConstraintFactory.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 APG::TreeModel::TreeModel( ConstraintNode* r, QObject* p ) : QAbstractItemModel( p ), m_rootNode( r )
 {
@@ -220,7 +220,7 @@ void
 APG::TreeModel::connectDCSlotToNode( ConstraintNode* n )
 {
     if ( n ) {
-        connect( n, SIGNAL(dataChanged()), this, SLOT (slotConstraintDataChanged()) );
+        connect( n, &ConstraintNode::dataChanged, this, &TreeModel::slotConstraintDataChanged );
         int rc = n->getRowCount();
         for ( int i = 0; i < rc; i++ ) {
             connectDCSlotToNode( n->getChild( i ) );

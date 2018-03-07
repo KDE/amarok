@@ -22,11 +22,13 @@
 #include "core/meta/forward_declarations.h"
 #include "core/playlists/Playlist.h"
 #include "core/podcasts/PodcastMeta.h"
-#include "core/collections/QueryMaker.h"
 
 #include <QList>
-#include <QMap>
 #include <QMimeData>
+
+namespace Collections {
+    class QueryMaker;
+}
 
 class AMAROK_EXPORT AmarokMimeData : public QMimeData
 {
@@ -88,16 +90,16 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
          */
         void startQueries();
 
-    signals:
+    Q_SIGNALS:
         void trackListSignal( Meta::TrackList ) const;
 
-    public slots:
+    public Q_SLOTS:
         void getTrackListSignal() const;
 
     protected:
         virtual QVariant retrieveData( const QString &mimeType, QVariant::Type type ) const;
 
-    private slots:
+    private Q_SLOTS:
         void newResultReady( const Meta::TrackList &tracks );
         void queryDone();
 

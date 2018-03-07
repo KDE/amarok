@@ -32,9 +32,9 @@ AmarokEqualizerScript::AmarokEqualizerScript( QScriptEngine *scriptEngine )
     scriptEngine->globalObject().property( "Amarok" ).property( "Engine" ).setProperty( "Equalizer", scriptObject );
 
     EqualizerController *equalizer  = The::engineController()->equalizerController();
-    connect( equalizer, SIGNAL(gainsChanged(QList<int>)), SIGNAL(gainsChanged(QList<int>)) );
-    connect( equalizer, SIGNAL(presetsChanged(QString)), SIGNAL(presetsChanged(QString)) );
-    connect( equalizer, SIGNAL(presetApplied(int)), SLOT(equalizerPresetApplied(int)) );
+    connect( equalizer, &EqualizerController::gainsChanged, this, &AmarokEqualizerScript::gainsChanged );
+    connect( equalizer, &EqualizerController::presetsChanged, this, &AmarokEqualizerScript::presetsChanged );
+    connect( equalizer, &EqualizerController::presetApplied, this, &AmarokEqualizerScript::equalizerPresetApplied );
 }
 
 // script invokable
@@ -116,7 +116,7 @@ AmarokEqualizerScript::selectedPreset() const
 void
 AmarokEqualizerScript::setEqualizerPreset( const QString &name ) const
 {
-    The::engineController()->equalizerController()->applyEqualizerPreset( name );
+    The::engineController()->equalizerController()->applyEqualizerPresetByName( name );
 }
 
 QStringList

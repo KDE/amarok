@@ -85,19 +85,19 @@ class UpnpQueryMaker : public QueryMaker
 
         int validFilterMask();
 
-    signals:
-        void newResultReady( Meta::TrackList );
-        void newResultReady( Meta::ArtistList );
-        void newResultReady( Meta::AlbumList );
-        void newResultReady( Meta::GenreList );
-        void newResultReady( Meta::ComposerList );
-        void newResultReady( Meta::YearList );
+    Q_SIGNALS:
+        void newTracksReady( Meta::TrackList );
+        void newArtistsReady( Meta::ArtistList );
+        void newAlbumsReady( Meta::AlbumList );
+        void newGenresReady( Meta::GenreList );
+        void newComposersReady( Meta::ComposerList );
+        void newYearsReady( Meta::YearList );
         void newResultReady( QStringList );
-        void newResultReady( Meta::LabelList );
+        void newLabelsReady( Meta::LabelList );
 
         void queryDone();
 
-    private slots:
+    private Q_SLOTS:
         void slotDone();
         void handleArtists( Meta::ArtistList );
         void handleAlbums( Meta::AlbumList );

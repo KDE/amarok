@@ -3,17 +3,19 @@ macro(add_database_test test_target test_sources)
     #one cannot link to plugins on OS X. As a workaround, add anything relevant that goes into the mysqle plugin to each test
         set( test_sources_internal
                 ${test_sources} )
-    endif(APPLE)
+    endif()
 
-    kde4_add_unit_test( ${test_target} TESTNAME ${test_target}
+    add_executable( ${test_target}
         ${test_sources}
         ${test_sources_internal}
         ${GOOGLEMOCK_SRCS}
         )
+    add_test(NAME ${test_target} COMMAND $<TARGET_FILE:${test_target}>)
+    ecm_mark_as_test(${test_target})
 
     if(APPLE)
-        SET_TARGET_PROPERTIES(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-    endif(APPLE)
+        set_target_properties(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    endif()
 
     add_dependencies( ${test_target} amarokconfig_h )
     add_dependencies( ${test_target} amarokcore )
@@ -24,12 +26,10 @@ macro(add_database_test test_target test_sources)
         amarokcore
         amaroklib
         amarokshared
-        ${KDE4_KDECORE_LIBS}
-        ${KDE4_KIO_LIBS}
-        ${KDE4_THREADWEAVER_LIBRARIES}
-        ${KDE4_KDEUI_LIBS}
-        ${QT_QTTEST_LIBRARY}
-        ${QT_QTCORE_LIBRARY}
+        KF5::KIOCore
+        KF5::ThreadWeaver
+        Qt5::Test
+        Qt5::Core
         ${CMAKE_DL_LIBS}
         ${ZLIB_LIBRARIES}
         ${GOOGLEMOCK_LIBRARIES})
@@ -45,8 +45,6 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
   )
 
 #-------------------------------- Test SqlScanManager -----------------------

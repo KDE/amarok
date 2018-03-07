@@ -98,7 +98,7 @@ AmarokTrack::doCommit( const qint64 fields )
         {
             QVariantMap bindValues;
             bindValues.insert( ":url", m_urlId );
-            m_connection->query( "DELETE QUICK FROM urls_labels WHERE url = ?", bindValues,
+            m_connection->query( "DELETE QUICK FROM urls_labels WHERE url = :url", bindValues,
                                  &ok );
             if( !ok )
             {

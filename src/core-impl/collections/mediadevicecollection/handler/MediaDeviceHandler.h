@@ -31,7 +31,7 @@
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 
 #include <QAction>
 #include <QObject>
@@ -175,8 +175,8 @@ public:
     // HACK: Used for device-specific actions, such as initialize for iPod
     virtual QList<QAction *> collectionActions() { return QList<QAction*> (); }
 
-signals:
-    void gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> &urls );
+Q_SIGNALS:
+    void gotCopyableUrls( const QMap<Meta::TrackPtr, QUrl> &urls );
     void databaseWritten( bool succeeded );
 
     void deleteTracksDone();
@@ -188,7 +188,7 @@ signals:
 
     /* File I/O Methods */
 
-public slots:
+public Q_SLOTS:
 
    /**
     * Parses the media device's database and creates a Meta::MediaDeviceTrack
@@ -215,6 +215,8 @@ public slots:
     void removeNextTrackFromDevice();
     void privateRemoveTrackFromDevice( const Meta::TrackPtr &track );
 
+    void slotCopyNextTrackFailed( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track );
+    void slotCopyNextTrackDone( ThreadWeaver::JobPointer job, const Meta::TrackPtr& track );
 
 protected:
 
@@ -260,10 +262,7 @@ protected:
     bool m_copyingthreadsafe; ///< whether or not the handler's method of copying is threadsafe
     TitleMap          m_titlemap; ///< Map of track titles to tracks, used to detect duplicates
 
-protected slots:
-
-    void slotCopyNextTrackFailed( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
-    void slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
+protected Q_SLOTS:
 
     void slotFinalizeTrackCopy( const Meta::TrackPtr & track );
     void slotCopyTrackFailed( const Meta::TrackPtr & track );
@@ -352,7 +351,6 @@ private:
     Handler::PodcastCapability *m_podcastCapability;
     Handler::ReadCapability *m_rc;
     Handler::WriteCapability *m_wc;
-
 };
 
 /**
@@ -360,7 +358,7 @@ private:
 * a separate thread. Once done, it informs the Collection it is done
 */
 
-class ParseWorkerThread : public ThreadWeaver::Job
+class ParseWorkerThread : public QObject , public ThreadWeaver::Job
 {
     Q_OBJECT
 public:
@@ -385,22 +383,31 @@ successfully.
 
     virtual bool success() const;
 
-signals:
+Q_SIGNALS:
+    /** This signal is emitted when this job is being processed by a thread. */
+    void started(ThreadWeaver::JobPointer);
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed.
+     * This signal is emitted when success() returns false after the job is executed. */
+    void failed(ThreadWeaver::JobPointer);
 
-private slots:
+private Q_SLOTS:
     /**
     * Is called when the job is done successfully, and simply
     * calls Collection's emitCollectionReady()
     * @param job The job that was done
     */
 
-    void slotDoneSuccess( ThreadWeaver::Job* );
+    void slotDoneSuccess( ThreadWeaver::JobPointer );
 
 protected:
     /**
     * Reimplemented, simply runs the parse method.
     */
-    virtual void run();
+    virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 
 private:
     bool m_success; ///< Whether or not the parse was successful
@@ -415,7 +422,7 @@ private:
 * Handler's m_copyingthreadsafe variable to false in the Handler's constructor.
 */
 
-class CopyWorkerThread : public ThreadWeaver::Job
+class CopyWorkerThread : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 public:
@@ -440,7 +447,7 @@ public:
 
     virtual bool success() const;
 
-signals:
+Q_SIGNALS:
 
     /**
     * Is emitted when the job is done successfully
@@ -448,23 +455,31 @@ signals:
     * @param track The source track used for the copy
     */
 
-    void copyTrackDone( ThreadWeaver::Job*, const Meta::TrackPtr& track );
+    void copyTrackDone( ThreadWeaver::JobPointer, const Meta::TrackPtr& track );
 
     /**
     * Is emitted when the job is done and has failed
     * @param job The job that was done
     * @param track The source track used for the copy
     */
-    void copyTrackFailed( ThreadWeaver::Job*, const Meta::TrackPtr& track );
+    void copyTrackFailed( ThreadWeaver::JobPointer, const Meta::TrackPtr& track );
 
-private slots:
+    /** This signal is emitted when this job is being processed by a thread. */
+    void started(ThreadWeaver::JobPointer);
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed.
+     * This signal is emitted when success() returns false after the job is executed. */
+    void failed(ThreadWeaver::JobPointer);
+
+private Q_SLOTS:
     /**
     * Is called when the job is done successfully, and simply
     * emits copyTrackDone
     * @param job The job that was done
     */
 
-    void slotDoneSuccess( ThreadWeaver::Job* );
+    void slotDoneSuccess( ThreadWeaver::JobPointer );
 
     /**
     * Is called when the job is done and failed, and simply
@@ -472,13 +487,15 @@ private slots:
     * @param job The job that was done
     */
 
-    void slotDoneFailed( ThreadWeaver::Job* );
+    void slotDoneFailed( ThreadWeaver::JobPointer );
 
 protected:
     /**
     * Reimplemented, simply runs the copy track method.
     */
-    virtual void run();
+    virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 
 private:
     bool m_success; ///< Whether or not the copy was successful

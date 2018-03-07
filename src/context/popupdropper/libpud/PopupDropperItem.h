@@ -20,9 +20,9 @@
 #ifndef POPUPDROPPERITEM_H
 #define POPUPDROPPERITEM_H
 
-#include <QtSvg/QGraphicsSvgItem>
-#include <QtCore/QString>
-#include <QtGui/QFont>
+#include <QGraphicsSvgItem>
+#include <QString>
+#include <QFont>
 
 #include "PopupDropper_Export.h"
 

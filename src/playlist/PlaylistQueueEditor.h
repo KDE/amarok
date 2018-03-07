@@ -26,7 +26,7 @@ class PlaylistQueueEditor : public QDialog
 public:
     PlaylistQueueEditor();
 
-private slots:
+private Q_SLOTS:
     void queueChanged();
     void moveUp();
     void moveDown();

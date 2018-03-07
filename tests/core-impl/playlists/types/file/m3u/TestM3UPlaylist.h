@@ -20,8 +20,10 @@
 #ifndef TESTM3UPLAYLIST_H
 #define TESTM3UPLAYLIST_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
+
+class QTemporaryDir;
 
 namespace Playlists { class M3UPlaylist; }
 
@@ -32,7 +34,7 @@ Q_OBJECT
 public:
     TestM3UPlaylist();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -46,6 +48,7 @@ private slots:
 private:
     Playlists::M3UPlaylist *m_testPlaylist;
     QString dataPath( const QString &relPath = QString() );
+    QTemporaryDir *m_tempDir;
 };
 
 #endif // TESTM3UPLAYLIST_H

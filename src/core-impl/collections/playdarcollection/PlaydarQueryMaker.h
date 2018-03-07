@@ -79,15 +79,15 @@ namespace Collections
             
             int validFilterMask();
 
-        signals:
-            void newResultReady( Meta::TrackList );
-            void newResultReady( Meta::ArtistList );
-            void newResultReady( Meta::AlbumList );
-            void newResultReady( Meta::GenreList );
-            void newResultReady( Meta::ComposerList );
-            void newResultReady( Meta::YearList );
+        Q_SIGNALS:
+            void newTracksReady( Meta::TrackList );
+            void newArtistsReady( Meta::ArtistList );
+            void newAlbumsReady( Meta::AlbumList );
+            void newGenresReady( Meta::GenreList );
+            void newComposersReady( Meta::ComposerList );
+            void newYearsReady( Meta::YearList );
             void newResultReady( QStringList );
-            void newResultReady( Meta::LabelList );
+            void newLabelsReady( Meta::LabelList );
 
             void queryDone();
 
@@ -111,10 +111,10 @@ namespace Collections
             typedef QMap< qint64, QString > FilterMap;
             FilterMap m_filterMap;
             
-            QWeakPointer< PlaydarCollection > m_collection;
-            QWeakPointer< QueryMaker > m_memoryQueryMaker;
+            QPointer< PlaydarCollection > m_collection;
+            QPointer< QueryMaker > m_memoryQueryMaker;
             
-            QWeakPointer< Playdar::Controller > m_controller;
+            QPointer< Playdar::Controller > m_controller;
             
             void runMemoryQueryAgain();
     };

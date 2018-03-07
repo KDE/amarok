@@ -57,7 +57,7 @@ public:
 
     void showLoading( const QString &message );
 
-signals:
+Q_SIGNALS:
     /**
      * Signal emmited when new html info is ready to be shown
      * @param info The string containing the html formatted information

@@ -26,10 +26,10 @@
 #include "SvgHandler.h"
 #include "core-impl/meta/timecode/TimecodeMeta.h"
 
-#include <KAction>
-#include <KMenu>
+#include <QAction>
+#include <QMenu>
+#include <KLocalizedString>
 
-#include <QFrame>
 #include <QHeaderView>
 #include <QHelpEvent>
 #include <QKeyEvent>
@@ -56,8 +56,8 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     setAlternatingRowColors( true );
     setDropIndicatorShown( true );
 
-    connect( header(), SIGNAL(sectionCountChanged(int,int)),
-             this, SLOT(slotSectionCountChanged(int,int)) );
+    connect( header(), &QHeaderView::sectionCountChanged,
+             this, &BookmarkTreeView::slotSectionCountChanged );
 }
 
 
@@ -97,7 +97,7 @@ BookmarkTreeView::keyPressEvent( QKeyEvent *event )
     QTreeView::keyPressEvent( event );
 }
 
-QList<KAction *>
+QList<QAction *>
 BookmarkTreeView::createCommonActions( QModelIndexList indices )
 {
     DEBUG_BLOCK
@@ -105,24 +105,24 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
     //there are 4 columns, so for each selected row we get 4 indices...
     int selectedRowCount = indices.count() / 4;
 
-    QList< KAction * > actions;
+    QList< QAction * > actions;
     if ( m_loadAction == 0 )
     {
-        m_loadAction = new KAction( KIcon( "folder-open" ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
-        connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotLoad()) );
+        m_loadAction = new QAction( QIcon::fromTheme( "folder-open" ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
+        connect( m_loadAction, &QAction::triggered, this, &BookmarkTreeView::slotLoad );
     }
 
     if ( m_deleteAction == 0 )
     {
-        m_deleteAction = new KAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
-        connect( m_deleteAction, SIGNAL(triggered()), this, SLOT(slotDelete()) );
+        m_deleteAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        connect( m_deleteAction, &QAction::triggered, this, &BookmarkTreeView::slotDelete );
     }
 
     if ( m_createTimecodeTrackAction == 0 )
     {
         debug() << "creating m_createTimecodeTrackAction";
-        m_createTimecodeTrackAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
-        connect( m_createTimecodeTrackAction, SIGNAL(triggered()), this, SLOT(slotCreateTimecodeTrack()) );
+        m_createTimecodeTrackAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
+        connect( m_createTimecodeTrackAction, &QAction::triggered, this, &BookmarkTreeView::slotCreateTimecodeTrack );
     }
 
     if ( selectedRowCount == 1 )
@@ -181,11 +181,11 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
 
     QModelIndexList indices = selectionModel()->selectedIndexes();
 
-    KMenu* menu = new KMenu( this );
+    QMenu* menu = new QMenu( this );
 
-    QList<KAction *> actions = createCommonActions( indices );
+    QList<QAction *> actions = createCommonActions( indices );
 
-    foreach( KAction * action, actions )
+    foreach( QAction * action, actions )
         menu->addAction( action );
 
     if( indices.count() == 0 )
@@ -204,8 +204,8 @@ void BookmarkTreeView::resizeEvent( QResizeEvent *event )
     if( oldWidth == newWidth || oldWidth < 0 || newWidth < 0 )
         return;
 
-    disconnect( headerView, SIGNAL(sectionResized(int,int,int)),
-                this, SLOT(slotSectionResized(int,int,int)) );
+    disconnect( headerView, &QHeaderView::sectionResized,
+                this, &BookmarkTreeView::slotSectionResized );
 
     QMap<BookmarkModel::Column, qreal>::const_iterator i = m_columnsSize.constBegin();
     while( i != m_columnsSize.constEnd() )
@@ -216,8 +216,8 @@ void BookmarkTreeView::resizeEvent( QResizeEvent *event )
         ++i;
     }
 
-    connect( headerView, SIGNAL(sectionResized(int,int,int)),
-             this, SLOT(slotSectionResized(int,int,int)) );
+    connect( headerView, &QHeaderView::sectionResized,
+             this, &BookmarkTreeView::slotSectionResized );
 
     QWidget::resizeEvent( event );
 }
@@ -264,7 +264,7 @@ BookmarkTreeView::selectedItems() const
     return selected;
 }
 
-void BookmarkTreeView::setNewGroupAction( KAction * action )
+void BookmarkTreeView::setNewGroupAction( QAction * action )
 {
     m_addGroupAction = action;
 }
@@ -292,10 +292,10 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
     
 }
 
-KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
+QMenu* BookmarkTreeView::contextMenu( const QPoint& point )
 {
     DEBUG_BLOCK
-    KMenu* menu = new KMenu( 0 );
+    QMenu* menu = new QMenu( 0 );
 
     debug() << "getting menu for point:" << point;
     QModelIndex index = m_proxyModel->mapToSource( indexAt( point ) );
@@ -306,9 +306,9 @@ KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
         
         QModelIndexList indices = selectionModel()->selectedIndexes();
 
-        QList<KAction *> actions = createCommonActions( indices );
+        QList<QAction *> actions = createCommonActions( indices );
 
-        foreach( KAction * action, actions )
+        foreach( QAction * action, actions )
             menu->addAction( action );
 
         if( indices.count() == 0 )
@@ -368,7 +368,7 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
     //Now we really should pop up a menu to get the user to enter some info about this
     //new track, but for now, just fake it as this is just for testing anyway
 
-    QString url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url1->path().toUtf8() ) ).toString();
+    QUrl url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url1->path().toUtf8() ) );
     Meta::TimecodeTrackPtr track = Meta::TimecodeTrackPtr( new Meta::TimecodeTrack( i18n( "New Timecode Track" ), url, start, end ) );
     Meta::TimecodeAlbumPtr album = Meta::TimecodeAlbumPtr( new Meta::TimecodeAlbum( i18n( "Unknown" ) ) );
     Meta::TimecodeArtistPtr artist = Meta::TimecodeArtistPtr( new Meta::TimecodeArtist( i18n(  "Unknown" ) ) );
@@ -428,14 +428,13 @@ void BookmarkTreeView::slotSectionCountChanged( int oldCount, int newCount )
         const BookmarkModel::Column col = BookmarkModel::Column( index );
 
         if( col == BookmarkModel::Command )
-            header()->setResizeMode( index, QHeaderView::ResizeToContents );
+            header()->setSectionResizeMode( index, QHeaderView::ResizeToContents );
 
         m_columnsSize[ col ] = ratio;
     }
 }
 
 
-#include "BookmarkTreeView.moc"
 
 
 

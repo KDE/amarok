@@ -16,7 +16,7 @@
 #ifndef TESTPLAYLISTFORMAT_H
 #define TESTPLAYLISTFORMAT_H
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 class TestPlaylistFormat : public QObject
 {
@@ -25,7 +25,7 @@ class TestPlaylistFormat : public QObject
     public:
         TestPlaylistFormat();
 
-    private slots:
+    private Q_SLOTS:
         void testGetFormat_data();
         /**
          * Check if the correct extension format for the playlist file is returned

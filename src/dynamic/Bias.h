@@ -126,7 +126,7 @@ namespace Dynamic
             virtual bool trackMatches( int position,
                                        const Meta::TrackList& playlist, int contextCount ) const = 0;
 
-        signals:
+        Q_SIGNALS:
             /** This signal is emitted when the bias is changed.
                 e.g. an internal variable is set so that the bias will return different tracks.
                 this can also happen if the bias depends on the current track and this
@@ -140,7 +140,7 @@ namespace Dynamic
             /** Emitted when the result to a previously called matchingTracks is ready */
             void resultReady( const Dynamic::TrackSet &set );
 
-        public slots:
+        public Q_SLOTS:
             /** This slot is called when the bias should discard cached results.
                 This will be done in case a new playlist is requested for an updated
                 collection.
@@ -224,15 +224,15 @@ namespace Dynamic
             BiasList biases() const
             { return m_biases; }
 
-        signals:
+        Q_SIGNALS:
             void biasAppended( Dynamic::BiasPtr bias );
             void biasRemoved( int pos );
             void biasMoved( int from, int to );
 
-        public slots:
+        public Q_SLOTS:
             virtual void invalidate();
 
-        protected slots:
+        protected Q_SLOTS:
             virtual void resultReceived( const Dynamic::TrackSet &tracks );
             virtual void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
             virtual void biasChanged( Dynamic::BiasPtr bias );
@@ -268,7 +268,7 @@ namespace Dynamic
                                        const Meta::TrackList& playlist,
                                        int contextCount ) const;
 
-        protected slots:
+        protected Q_SLOTS:
             virtual void resultReceived( const Dynamic::TrackSet &tracks );
 
         private:

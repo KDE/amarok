@@ -21,16 +21,14 @@
 #include "amarok_export.h"
 #include "OpmlOutline.h"
 
-#include <QDomElement>
 #include <QMap>
 #include <QStack>
-#include <QString>
 #include <QStringList>
+#include <QUrl>
 #include <QXmlStreamReader>
 
-#include <kjob.h>
-#include <KUrl>
-#include <threadweaver/Job.h>
+#include <KJob>
+#include <ThreadWeaver/Job>
 
 namespace KIO
 {
@@ -41,7 +39,7 @@ namespace KIO
 /**
 * Parser for OPML files.
 */
-class AMAROK_EXPORT OpmlParser : public ThreadWeaver::Job, public QXmlStreamReader
+class AMAROK_EXPORT OpmlParser : public QObject, public ThreadWeaver::Job, public QXmlStreamReader
 {
     Q_OBJECT
 
@@ -52,7 +50,7 @@ public:
      * @param fileName The file to parse 
      * @return Pointer to new object
      */
-    OpmlParser( const KUrl &url );
+    OpmlParser( const QUrl &url );
 
     /**
      * Destructor
@@ -65,14 +63,14 @@ public:
     * Note the work is performed in a separate thread
     * @return Returns true on success and false on failure
     */
-    void run();
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
-    bool read( const KUrl &url );
+    bool read( const QUrl &url );
     bool read( QIODevice *device );
 
     /** @return the URL of the OPML being parsed.
     */
-    KUrl url() const { return m_url; }
+    QUrl url() const { return m_url; }
 
     QMap<QString,QString> headerData() { return m_headerData; }
 
@@ -85,7 +83,11 @@ public:
      */
     QList<OpmlOutline *> results() const { return m_outlines; }
 
-signals:
+protected:
+    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
 
     /**
      * Emitted when <head> has been completely parsed.
@@ -106,10 +108,18 @@ signals:
      */
     void outlineParsed( OpmlOutline *outline );
 
-public slots:
+    /** This signal is emitted when this job is being processed by a thread. */
+    void started(ThreadWeaver::JobPointer);
+    /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+    void done(ThreadWeaver::JobPointer);
+    /** This job has failed.
+     * This signal is emitted when success() returns false after the job is executed. */
+    void failed(ThreadWeaver::JobPointer);
+
+public Q_SLOTS:
     virtual void slotAbort();
 
-private slots:
+private Q_SLOTS:
     void slotAddData( KIO::Job *, const QByteArray &data );
 
     void downloadResult( KJob * );
@@ -264,7 +274,7 @@ private:
     // currently processing outlines so we can do nested outlines.
     QStack<OpmlOutline *> m_outlineStack;
 
-    KUrl m_url;
+    QUrl m_url;
     KIO::TransferJob *m_transferJob;
 };
 

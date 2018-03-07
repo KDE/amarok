@@ -48,7 +48,7 @@ namespace Mpris1
 {
 
     RootHandler::RootHandler()
-        : QObject( kapp )
+        : QObject( qApp )
     {
         qDBusRegisterMetaType<Version>();
 
@@ -66,7 +66,7 @@ namespace Mpris1
     void RootHandler::Quit()
     {
         // Same as KStandardAction::Quit
-        App::instance()->quit();
+        pApp->quit();
     }
 
     Version RootHandler::MprisVersion()
@@ -88,5 +88,3 @@ namespace Mpris1
     }
 
 }
-
-#include "mprisv1/RootHandler.moc"

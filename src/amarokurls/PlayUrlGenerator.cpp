@@ -24,7 +24,7 @@
 #include "EngineController.h"
 #include "BookmarkModel.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 PlayUrlGenerator * PlayUrlGenerator::s_instance = 0;
 
@@ -103,9 +103,9 @@ PlayUrlGenerator::description()
     return i18n( "Bookmark Track Position" );
 }
 
-KIcon PlayUrlGenerator::icon()
+QIcon PlayUrlGenerator::icon()
 {
-    return KIcon( "x-media-podcast-amarok" );
+    return QIcon::fromTheme( "x-media-podcast-amarok" );
 }
 
 AmarokUrl

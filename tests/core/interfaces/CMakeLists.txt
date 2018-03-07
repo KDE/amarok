@@ -6,5 +6,7 @@ include_directories( .
 #------------------------ Test MetaCapability -----------------------------
 
 set( testmetacapability_SRCS TestMetaCapability.cpp )
-kde4_add_unit_test( testmetacapability ${testmetacapability_SRCS} )
-target_link_libraries( testmetacapability ${KDE4_KDECORE_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} amarokcore )
+add_executable( testmetacapability ${testmetacapability_SRCS} )
+add_test(NAME testmetacapability COMMAND $<TARGET_FILE:testmetacapability>)
+ecm_mark_as_test(testmetacapability)
+target_link_libraries( testmetacapability Qt5::Gui Qt5::Test amarokcore )

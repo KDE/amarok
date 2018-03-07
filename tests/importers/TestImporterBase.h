@@ -24,7 +24,7 @@
 namespace StatSyncing
 {
     class Provider;
-    typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
+    typedef QSharedPointer<Provider> ProviderPtr;
 }
 
 /**
@@ -102,7 +102,7 @@ private:
 
     QSet<QString> m_lbl;
 
-private slots:
+private Q_SLOTS:
     void titleShouldBeCaseSensitive();
     void artistShouldBeCaseSensitive();
     void albumShouldBeCaseSensitive();

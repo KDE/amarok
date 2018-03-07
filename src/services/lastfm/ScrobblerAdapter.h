@@ -45,12 +45,12 @@ class ScrobblerAdapter : public QObject, public StatSyncing::ScrobblingService
                                 const QDateTime &time = QDateTime() );
         void updateNowPlaying( const Meta::TrackPtr &track );
 
-    public slots:
+    public Q_SLOTS:
         // own methods
         void loveTrack( const Meta::TrackPtr &track );
         void banTrack( const Meta::TrackPtr &track );
 
-    private slots:
+    private Q_SLOTS:
         void slotScrobblesSubmitted( const QList<lastfm::Track> &tracks );
         void slotNowPlayingError( int code, const QString &message );
 

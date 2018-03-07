@@ -16,8 +16,8 @@
  
 #include "SourceSelectionPopup.h"
 
-#include <KIcon>
-#include <KLocale>
+#include <QIcon>
+#include <KLocalizedString>
 
 #include <QPushButton>
 #include <QLabel>
@@ -31,16 +31,15 @@ namespace Playlist {
     : QDialog( parent )
     , m_msc( msc )
 {
-
     QLabel * label = new QLabel( i18n( "The following sources are available for this track:" ) );
     label->setWordWrap( true );
     
     m_listWidget = new QListWidget();
 
     QPushButton * okButton = new QPushButton( i18n( "OK" ) );
-    connect( okButton, SIGNAL(clicked()), SLOT(accept()) );
+    connect( okButton, &QPushButton::clicked, this, &SourceSelectionPopup::accept );
 
-    connect( m_listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(sourceSelected(QListWidgetItem*)) );
+    connect( m_listWidget, &QListWidget::itemDoubleClicked, this, &SourceSelectionPopup::sourceSelected );
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget( label );
@@ -52,7 +51,7 @@ namespace Playlist {
     foreach( const QString &source, m_msc->sources() )
     {
         if ( i == m_msc->current() )
-            new QListWidgetItem( KIcon( "arrow-right" ), source, m_listWidget ) ;
+            new QListWidgetItem( QIcon::fromTheme( "arrow-right" ), source, m_listWidget ) ;
         else
             new QListWidgetItem( source, m_listWidget );
 
@@ -80,7 +79,7 @@ void SourceSelectionPopup::sourceSelected( QListWidgetItem * item )
     foreach( const QString &source, m_msc->sources() )
     {
         if ( i == m_msc->current() )
-            new QListWidgetItem( KIcon( "arrow-right" ), source, m_listWidget ) ;
+            new QListWidgetItem( QIcon::fromTheme( "arrow-right" ), source, m_listWidget ) ;
         else
             new QListWidgetItem( source, m_listWidget );
 
@@ -92,6 +91,5 @@ void SourceSelectionPopup::sourceSelected( QListWidgetItem * item )
 
 }
 
-#include "SourceSelectionPopup.moc"
 
 

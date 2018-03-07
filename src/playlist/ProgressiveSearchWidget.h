@@ -18,10 +18,9 @@
 #define PROGRESSIVESEARCHWIDGET_H
 
 #include "widgets/LineEdit.h"
+#include "widgets/BoxWidget.h"
 
-#include <KVBox>
-
-class KAction;
+class QAction;
 class QKeyEvent;
 class QLabel;
 class QMenu;
@@ -41,7 +40,7 @@ namespace Playlist
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class ProgressiveSearchWidget : public KVBox
+class ProgressiveSearchWidget : public BoxWidget
 {
     Q_OBJECT
 
@@ -59,11 +58,11 @@ public:
 
     bool onlyMatches() const { return m_showOnlyMatches; }
 
-signals:
+Q_SIGNALS:
     /**
      * Signal emitted when the search term has changed.
      * @param filter The new search term.
-     * @param filelds The mask containing the fields to match against.
+     * @param fiellds The mask containing the fields to match against.
      */
     void filterChanged( const QString &filter, int fields, bool showOnlyMatches );
 
@@ -75,21 +74,21 @@ signals:
     /**
      * Signal emitted when the "next" button is pressed.
      * @param filter The current search term.
-     * @param filelds The mask containing the fields to match against.
+     * @param fiellds The mask containing the fields to match against.
      */
     void next( const QString &filter, int fields  );
 
     /**
      * Signal emitted when the "previous" button is pressed.
      * @param filter The current search term.
-     * @param filelds The mask containing the fields to match against.
+     * @param fiellds The mask containing the fields to match against.
      */
     void previous( const QString &filter, int fields  );
 
     /**
      * Signal emitted when the user changes the value of the "Play only
      * matches" option.
-     * @param showOnlyMatches The value selected by the user.
+     * @param onlyMatches The value selected by the user.
      */
     void showOnlyMatches( bool onlyMatches );
 
@@ -109,7 +108,7 @@ signals:
      */
     void upPressed();
 
-public slots:
+public Q_SLOTS:
     /**
      * Notify the widget that there are matches (at least one), so the next and previous actions
      * should be enabled and the text color set to normal.
@@ -131,11 +130,11 @@ public slots:
      * Toggle navigate only tracks that match the current search term and
      * search fields. (The user can always manually select a track that
      * is not a part of the search results.
-     * @param showOnlyMatches On/off.
+     * @param onlyMatches On/off.
      */
     void slotShowOnlyMatches( bool onlyMatches );
 
-protected slots:
+protected Q_SLOTS:
     /**
      * Notify widget that the text in the search edit has changed.
      * @param filter The new text in the search widget.
@@ -197,7 +196,7 @@ protected slots:
 protected:
     void keyPressEvent( QKeyEvent *event );
 
-private slots:
+private Q_SLOTS:
     void defocus() { m_searchEdit->clearFocus(); }
 
 private:
@@ -207,8 +206,8 @@ private:
     void readConfig();
 
     Amarok::LineEdit *m_searchEdit;
-    KAction   *m_nextAction;
-    KAction   *m_previousAction;
+    QAction *m_nextAction;
+    QAction *m_previousAction;
     QMenu     *m_menu;
     QToolBar  *m_toolBar;
 

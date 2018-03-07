@@ -24,7 +24,7 @@
 
 #include <QAction>
 
-#include <kio/netaccess.h>
+#include <KIO/CopyJob>
 
 using namespace Meta;
 
@@ -49,11 +49,11 @@ UpnpTrack::name() const
     return m_name;
 }
 
-KUrl
+QUrl
 UpnpTrack::playableUrl() const
 {
 
-    KUrl url( m_playableUrl );
+    QUrl url( m_playableUrl );
     return url;
 }
 
@@ -387,7 +387,7 @@ UpnpAlbum::image( int size ) const
     {
         QString path;
         if( m_albumArtUrl.isValid()
-            && KIO::NetAccess::download( m_albumArtUrl, path, NULL ) )
+            && KIO::copy( m_albumArtUrl, QUrl::fromLocalFile( path ) )->exec() )
         {
             m_image = QImage( path );
             CoverCache::invalidateAlbum( this );
@@ -400,7 +400,7 @@ UpnpAlbum::image( int size ) const
     return size <= 1 ? m_image : m_image.scaled( size, size );
 }
 
-KUrl
+QUrl
 UpnpAlbum::imageLocation( int size )
 {
     Q_UNUSED( size );
@@ -426,7 +426,7 @@ UpnpAlbum::setAlbumArtist( UpnpArtistPtr artist )
 }
 
 void
-UpnpAlbum::setAlbumArtUrl( const KUrl &url )
+UpnpAlbum::setAlbumArtUrl( const QUrl &url )
 {
     m_albumArtUrl = url;
 }

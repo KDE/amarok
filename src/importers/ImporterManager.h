@@ -21,20 +21,15 @@
 
 #include "amarok_export.h"
 
-/**
-  * This macro needs to be expanded exactly once for a single importer. The best practice
-  * is to put it at the beginning of the .cpp file of concrete ImporterManager
-  * implementation.
-  */
-#define AMAROK_EXPORT_IMPORTER_PLUGIN( libname, FactoryClass ) \
-    K_PLUGIN_FACTORY( factory, registerPlugin<FactoryClass>(); ) \
-    K_EXPORT_PLUGIN( factory( "amarok_importer-" #libname ) )
+#include <KConfigGroup>
+#include <KPluginInfo>
+
 
 namespace StatSyncing
 {
 
 class ImporterProvider;
-typedef QExplicitlySharedDataPointer<ImporterProvider> ImporterProviderPtr;
+typedef QSharedPointer<ImporterProvider> ImporterProviderPtr;
 typedef QMap<QString, ProviderPtr> ProviderPtrMap;
 
 /**
@@ -53,7 +48,7 @@ public:
     /**
      * Constructor. Sets the Plugins::PluginFactory m_type variable to type Importer
      */
-    ImporterManager( QObject *parent, const QVariantList &args );
+    ImporterManager();
 
     /**
      * Destructor.
@@ -79,7 +74,7 @@ public:
      */
     virtual ProviderConfigWidget *configWidget( const QVariantMap &config
                                                                     = QVariantMap() ) = 0;
-public slots:
+public Q_SLOTS:
     /**
      * Creates a new provider by calling newInstance and saves the config to the disk.
      * The created provider is registered with the StatSyncing::Controller
@@ -105,13 +100,6 @@ protected:
     KConfigGroup providerConfig( const ProviderPtr &provider ) const;
 
     /**
-     * Return the KPluginInfo for this importer. The KPluginInfo should contain the
-     * name of this importer's .desktop file and plugin's type (typically "services").
-     * This function's return value will initialize m_info variable of PluginFactory.
-     */
-    virtual KPluginInfo pluginInfo() const = 0;
-
-    /**
      * Return a new provider instance.
      */
     virtual ImporterProviderPtr newInstance( const QVariantMap &config ) = 0;
@@ -122,7 +110,7 @@ protected:
      */
     ProviderPtrMap m_providers;
 
-protected slots:
+protected Q_SLOTS:
     /**
      * ProviderImporter listens to StatSyncing::Config's providerForgotten signal, and
      * unregisters and removes managed providers if they're forgotten.

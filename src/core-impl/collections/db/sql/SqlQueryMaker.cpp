@@ -28,16 +28,19 @@
 #include <QWeakPointer>
 #include <QStack>
 
-#include <threadweaver/Job.h>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
 using namespace Collections;
 
-class SqlWorkerThread : public ThreadWeaver::Job
+class SqlWorkerThread : public QObject, public ThreadWeaver::Job
 {
+    Q_OBJECT
     public:
         SqlWorkerThread( SqlQueryMakerInternal *queryMakerInternal )
-            : ThreadWeaver::Job()
+            : QObject()
+            , ThreadWeaver::Job()
             , m_queryMakerInternal( queryMakerInternal )
             , m_aborted( false )
         {
@@ -60,15 +63,43 @@ class SqlWorkerThread : public ThreadWeaver::Job
         }
 
     protected:
-        virtual void run()
+        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0)
         {
+            Q_UNUSED(self);
+            Q_UNUSED(thread);
             m_queryMakerInternal->run();
-            setFinished( !m_aborted );
+            if( m_aborted )
+                setStatus(Status_Aborted);
+            else
+                setStatus(Status_Running);
         }
+        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        {
+            Q_EMIT started(self);
+            ThreadWeaver::Job::defaultBegin(self, thread);
+        }
+
+        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        {
+            ThreadWeaver::Job::defaultEnd(self, thread);
+            if (!self->success()) {
+                Q_EMIT failed(self);
+            }
+            Q_EMIT done(self);
+        }
+
     private:
         SqlQueryMakerInternal *m_queryMakerInternal;
 
         bool m_aborted;
+    Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
 };
 
 struct SqlQueryMaker::Private
@@ -127,7 +158,9 @@ SqlQueryMaker::~SqlQueryMaker()
     disconnect();
     abortQuery();
     if( d->worker )
+    {
         d->worker->deleteLater();
+    }
     delete d;
 }
 
@@ -165,28 +198,28 @@ SqlQueryMaker::run()
 
         if ( !d->blocking )
         {
-            connect( qmi, SIGNAL(newResultReady(Meta::AlbumList)),    SIGNAL(newResultReady(Meta::AlbumList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::ArtistList)),   SIGNAL(newResultReady(Meta::ArtistList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::GenreList)),    SIGNAL(newResultReady(Meta::GenreList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SIGNAL(newResultReady(Meta::ComposerList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::YearList)),     SIGNAL(newResultReady(Meta::YearList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::TrackList)),    SIGNAL(newResultReady(Meta::TrackList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QStringList)),        SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::LabelList)),    SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newAlbumsReady, this, &SqlQueryMaker::newAlbumsReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newArtistsReady, this, &SqlQueryMaker::newArtistsReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newGenresReady, this, &SqlQueryMaker::newGenresReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newComposersReady, this, &SqlQueryMaker::newComposersReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newYearsReady, this, &SqlQueryMaker::newYearsReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newTracksReady, this, &SqlQueryMaker::newTracksReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newResultReady, this, &SqlQueryMaker::newResultReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newLabelsReady, this, &SqlQueryMaker::newLabelsReady, Qt::DirectConnection );
             d->worker = new SqlWorkerThread( qmi );
-            connect( d->worker, SIGNAL(done(ThreadWeaver::Job*)), SLOT(done(ThreadWeaver::Job*)) );
-            ThreadWeaver::Weaver::instance()->enqueue( d->worker );
+            connect( d->worker, &SqlWorkerThread::done, this, &SqlQueryMaker::done );
+            ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(d->worker) );
         }
         else //use it blocking
         {
-            connect( qmi, SIGNAL(newResultReady(Meta::AlbumList)),    SLOT(blockingNewResultReady(Meta::AlbumList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::ArtistList)),   SLOT(blockingNewResultReady(Meta::ArtistList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::GenreList)),    SLOT(blockingNewResultReady(Meta::GenreList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SLOT(blockingNewResultReady(Meta::ComposerList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::YearList)),     SLOT(blockingNewResultReady(Meta::YearList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::TrackList)),    SLOT(blockingNewResultReady(Meta::TrackList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(QStringList)),        SLOT(blockingNewResultReady(QStringList)), Qt::DirectConnection );
-            connect( qmi, SIGNAL(newResultReady(Meta::LabelList)),    SLOT(blockingNewResultReady(Meta::LabelList)), Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newAlbumsReady, this, &SqlQueryMaker::blockingNewAlbumsReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newArtistsReady, this, &SqlQueryMaker::blockingNewArtistsReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newGenresReady, this, &SqlQueryMaker::blockingNewGenresReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newComposersReady, this, &SqlQueryMaker::blockingNewComposersReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newYearsReady, this, &SqlQueryMaker::blockingNewYearsReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newTracksReady, this, &SqlQueryMaker::blockingNewTracksReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newResultReady, this, &SqlQueryMaker::blockingNewResultReady, Qt::DirectConnection );
+            connect( qmi, &Collections::SqlQueryMakerInternal::newLabelsReady, this, &SqlQueryMaker::blockingNewLabelsReady, Qt::DirectConnection );
             qmi->run();
             delete qmi;
         }
@@ -195,9 +228,10 @@ SqlQueryMaker::run()
 }
 
 void
-SqlQueryMaker::done( ThreadWeaver::Job *job )
+SqlQueryMaker::done( ThreadWeaver::JobPointer job )
 {
-    job->deleteLater();
+    Q_UNUSED( job )
+
     d->worker = 0; // d->worker *is* the job, prevent stale pointer
     emit queryDone();
 }
@@ -318,8 +352,8 @@ SqlQueryMaker::addMatch( const Meta::TrackPtr &track )
     QString url = track->uidUrl();
     if( !url.isEmpty() )
     /*
-    KUrl kurl( url );
-    if( kurl.protocol() == "amarok-sqltrackuid" )
+    QUrl kurl( url );
+    if( kurl.scheme() == "amarok-sqltrackuid" )
     */
     {
         d->queryMatch += QString( " AND urls.uniqueid = '%1' " ).arg( url /*kurl.url()*/ );
@@ -337,7 +371,7 @@ SqlQueryMaker::addMatch( const Meta::TrackPtr &track )
         {
             path = track->playableUrl().path();
         }
-        int deviceid = m_collection->mountPointManager()->getIdForUrl( path );
+        int deviceid = m_collection->mountPointManager()->getIdForUrl( QUrl::fromUserInput(path) );
         QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, path );
         d->queryMatch += QString( " AND urls.deviceid = %1 AND urls.rpath = '%2'" )
                         .arg( QString::number( deviceid ), escape( rpath ) );
@@ -445,7 +479,7 @@ SqlQueryMaker::addMatch( const Meta::YearPtr &year )
 QueryMaker*
 SqlQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
-    KSharedPtr<Meta::SqlLabel> sqlLabel = KSharedPtr<Meta::SqlLabel>::dynamicCast( label );
+    AmarokSharedPointer<Meta::SqlLabel> sqlLabel = AmarokSharedPointer<Meta::SqlLabel>::dynamicCast( label );
     QString labelSubQuery;
     if( sqlLabel )
     {
@@ -1107,37 +1141,37 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const Meta::AlbumList &albums)
+SqlQueryMaker::blockingNewAlbumsReady(const Meta::AlbumList &albums)
 {
     d->blockingAlbums = albums;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const Meta::ArtistList &artists)
+SqlQueryMaker::blockingNewArtistsReady(const Meta::ArtistList &artists)
 {
     d->blockingArtists = artists;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const Meta::GenreList &genres)
+SqlQueryMaker::blockingNewGenresReady(const Meta::GenreList &genres)
 {
     d->blockingGenres = genres;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const Meta::ComposerList &composers)
+SqlQueryMaker::blockingNewComposersReady(const Meta::ComposerList &composers)
 {
     d->blockingComposers = composers;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const Meta::YearList &years)
+SqlQueryMaker::blockingNewYearsReady(const Meta::YearList &years)
 {
     d->blockingYears = years;
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const Meta::TrackList &tracks)
+SqlQueryMaker::blockingNewTracksReady(const Meta::TrackList &tracks)
 {
     d->blockingTracks = tracks;
 }
@@ -1149,10 +1183,9 @@ SqlQueryMaker::blockingNewResultReady(const QStringList &customData)
 }
 
 void
-SqlQueryMaker::blockingNewResultReady(const Meta::LabelList &labels )
+SqlQueryMaker::blockingNewLabelsReady(const Meta::LabelList &labels )
 {
     d->blockingLabels = labels;
 }
 
 #include "SqlQueryMaker.moc"
-

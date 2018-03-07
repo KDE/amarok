@@ -62,7 +62,7 @@ SqlPlaylistGroup::save()
     if ( m_parent )
         parentId = m_parent->id();
 
-    SqlStorage* sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -102,7 +102,7 @@ SqlPlaylistGroup::setDescription( const QString &description )
 void
 SqlPlaylistGroup::removeFromDb()
 {
-    SqlStorage* sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return;
 
@@ -115,7 +115,7 @@ SqlPlaylistGroup::removeFromDb()
 void
 SqlPlaylistGroup::clear()
 {
-    /* m_childPlaylists, m_childGroups are KSharedPtrs, so we should be able to
+    /* m_childPlaylists, m_childGroups are AmarokSharedPointers, so we should be able to
        just clear the list and the playlistptrs will delete themselves
     */
     m_childGroups.clear();
@@ -139,7 +139,7 @@ SqlPlaylistGroup::setParent( SqlPlaylistGroupPtr parent )
 SqlPlaylistGroupList
 SqlPlaylistGroup::childSqlGroups() const
 {
-    SqlStorage* sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return SqlPlaylistGroupList();
 
@@ -171,7 +171,7 @@ SqlPlaylistGroup::childSqlGroups() const
 SqlPlaylistList
 SqlPlaylistGroup::childSqlPlaylists() const
 {
-    SqlStorage* sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     if( !sqlStorage )
         return SqlPlaylistList();
 

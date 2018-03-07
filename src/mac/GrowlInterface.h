@@ -35,7 +35,7 @@ class GrowlInterface : QObject
     public:
         GrowlInterface( QString appName );
 
-    protected slots:
+    protected Q_SLOTS:
         void show( Meta::TrackPtr );
 
     private:

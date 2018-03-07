@@ -25,22 +25,19 @@
 #include "core-impl/playlists/types/file/asx/ASXPlaylist.h"
 #include "EngineController.h"
 
-#include <KGlobal>
-
 #include <QDir>
 #include <QFile>
+#include <QStandardPaths>
 #include <QTemporaryFile>
 #include <QTest>
 
-#include <KStandardDirs>
-#include <threadweaver/ThreadWeaver.h>
-#include <qtest_kde.h>
+#include <ThreadWeaver/Queue>
 
-QTEST_KDEMAIN_CORE( TestASXPlaylist )
+
+QTEST_GUILESS_MAIN( TestASXPlaylist )
 
 TestASXPlaylist::TestASXPlaylist()
 {
-    KGlobal::locale();
 }
 
 QString
@@ -52,6 +49,9 @@ TestASXPlaylist::dataPath( const QString &relPath )
 void
 TestASXPlaylist::initTestCase()
 {
+    m_tempDir = new QTemporaryDir;
+    QVERIFY( m_tempDir->isValid() );
+
     // EngineController is used in a connection in MetaProxy::Track; avoid null sender
     // warning
     EngineController *controller = new EngineController();
@@ -64,11 +64,11 @@ TestASXPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const KUrl url = dataPath( "data/playlists/test.asx" );
+    const QUrl url = QUrl::fromLocalFile(dataPath( "data/playlists/test.asx" ));
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
-    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.asx" );
+    QString tempPath = m_tempDir->path() + "/test.asx";
     QFile::remove( tempPath );
     QVERIFY( QFile::copy( url.toLocalFile(), tempPath ) );
     QVERIFY( QFile::exists( tempPath ) );
@@ -77,7 +77,7 @@ TestASXPlaylist::initTestCase()
     playlistStream.setDevice( &playlistFile1 );
     QVERIFY( playlistStream.device() );
 
-    m_testPlaylist = new Playlists::ASXPlaylist( tempPath );
+    m_testPlaylist = new Playlists::ASXPlaylist( QUrl::fromLocalFile(tempPath) );
     QVERIFY( m_testPlaylist );
     QVERIFY( m_testPlaylist->load( playlistStream ) );
     QCOMPARE( m_testPlaylist->tracks().size(), 1 );
@@ -88,8 +88,9 @@ void
 TestASXPlaylist::cleanupTestCase()
 {
     // Wait for other jobs, like MetaProxys fetching meta data, to finish
-    ThreadWeaver::Weaver::instance()->finish();
+    ThreadWeaver::Queue::instance()->finish();
 
+    delete m_tempDir;
     delete m_testPlaylist;
     delete Amarok::Components::setEngineController( 0 );
 }
@@ -118,16 +119,16 @@ TestASXPlaylist::testTracks()
     Meta::TrackList tracklist = m_testPlaylist->tracks();
 
     QCOMPARE( tracklist.size(), 1 );
-    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( ":: Willkommen bei darkerradio - Tune in, turn on, burn out" ) );
+    QCOMPARE( tracklist.at( 0 )->name(), QString( ":: Willkommen bei darkerradio - Tune in, turn on, burn out" ) );
 }
 
 void
 TestASXPlaylist::testUidUrl()
 {
-    QString tempPath = KStandardDirs::locateLocal( "tmp", "test.asx" );
+    QString tempPath = m_tempDir->path() + "/test.asx";
     //we have chaged the name around so much, better reset it
     m_testPlaylist->setName( "test" );
-    QCOMPARE( m_testPlaylist->uidUrl().pathOrUrl(), tempPath );
+    QCOMPARE( m_testPlaylist->uidUrl().toLocalFile(), tempPath );
 }
 
 void

@@ -52,7 +52,7 @@ public:
 
     void clear();
 
-    signals:
+    Q_SIGNALS:
         void updateComplete();
 
 private:

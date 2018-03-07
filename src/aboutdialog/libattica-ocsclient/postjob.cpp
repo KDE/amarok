@@ -21,20 +21,21 @@
 
 #include "postjob.h"
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
 
 #include <QXmlStreamReader>
 #include <QDebug>
 #include <QTimer>
+#include <QUrlQuery>
+
 using namespace AmarokAttica;
 
 PostJob::PostJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 
-void PostJob::setUrl( const KUrl &url )
+void PostJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }
@@ -46,7 +47,7 @@ void PostJob::setData( const QString &name, const QString &value )
 
 void PostJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &PostJob::doWork );
 }
 
 QString PostJob::status() const
@@ -64,17 +65,21 @@ void PostJob::doWork()
   QString postData;
 
   const QStringList dataKeys = m_data.keys();
+  QUrlQuery query;
   foreach( const QString &name, dataKeys ) {
-    m_url.addQueryItem( name, m_data.value( name ) );
+    query.addQueryItem( name, m_data.value( name ) );
   }
+  m_url.setQuery( query );
 
   qDebug() << m_url;
 
-  m_job = KIO::http_post( m_url, postData.toUtf8(), KIO::HideProgressInfo );
-  connect( m_job, SIGNAL(result(KJob*)),
-    SLOT(slotJobResult(KJob*)) );
-  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-    SLOT(slotJobData(KIO::Job*,QByteArray)) );
+  auto job = KIO::http_post( m_url, postData.toUtf8(), KIO::HideProgressInfo );
+  connect( job, &KIO::TransferJob::result,
+           this, &PostJob::slotJobResult );
+  connect( job, &KIO::TransferJob::data,
+           this, &PostJob::slotJobData );
+
+  m_job = job;
 }
 
 void PostJob::slotJobResult( KJob *job )

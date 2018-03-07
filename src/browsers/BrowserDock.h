@@ -23,9 +23,9 @@
 #include "BrowserMessageArea.h"
 #include "widgets/AmarokDockWidget.h"
 
-#include <KVBox>
+#include <QPointer>
 
-#include <QWeakPointer>
+class BoxWidget;
 
 /**
 The base widget that contains all other browsers, organized in a dig down interface
@@ -43,14 +43,14 @@ public:
     void navigate( const QString &target );
     void polish();
 
-private slots:
+private Q_SLOTS:
     void home();
     void paletteChanged( const QPalette &palette );
 
 private:
     BrowserBreadcrumbWidget *m_breadcrumbWidget;
-    QWeakPointer<BrowserCategoryList> m_categoryList;
-    KVBox *m_mainWidget;
+    QPointer<BrowserCategoryList> m_categoryList;
+    BoxWidget *m_mainWidget;
     BrowserMessageArea *m_messageArea;
 };
 

@@ -21,14 +21,14 @@
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 #include <QDir>
 #include <QFile>
 
 #include <gpod/itdb.h>
 
-IpodCollectionLocation::IpodCollectionLocation( QWeakPointer<IpodCollection> parentCollection )
+IpodCollectionLocation::IpodCollectionLocation( QPointer<IpodCollection> parentCollection )
     : CollectionLocation()  // we implement collection(), we need not pass parentCollection
     , m_coll( parentCollection )
 {
@@ -49,7 +49,7 @@ QString
 IpodCollectionLocation::prettyLocation() const
 {
     if( m_coll )
-        return m_coll.data()->prettyName();
+        return m_coll->prettyName();
     // match string with IpodCopyTracksJob::slotDisplaySorryDialog()
     return i18n( "Disconnected iPod/iPad/iPhone" );
 }
@@ -59,11 +59,11 @@ IpodCollectionLocation::isWritable() const
 {
     if( !m_coll )
         return false;
-    return m_coll.data()->isWritable(); // no infinite loop, IpodCollection iplements this
+    return m_coll->isWritable(); // no infinite loop, IpodCollection iplements this
 }
 
 void
-IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr,KUrl> &sources,
+IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr,QUrl> &sources,
                                               const Transcoding::Configuration &configuration )
 {
     if( !isWritable() )
@@ -76,11 +76,11 @@ IpodCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr,KUrl> &s
         operationInProgressText( configuration, trackCount ), trackCount, job, SLOT(abort()) );
 
     qRegisterMetaType<IpodCopyTracksJob::CopiedStatus>( "IpodCopyTracksJob::CopiedStatus" );
-    connect( job, SIGNAL(signalTrackProcessed(Meta::TrackPtr,Meta::TrackPtr,IpodCopyTracksJob::CopiedStatus)),
-             this, SLOT(slotCopyTrackProcessed(Meta::TrackPtr,Meta::TrackPtr,IpodCopyTracksJob::CopiedStatus)) );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotCopyOperationFinished()) );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    connect( job, &IpodCopyTracksJob::signalTrackProcessed,
+             this, &IpodCollectionLocation::slotCopyTrackProcessed );
+    connect( job, &IpodCopyTracksJob::done, this, &IpodCollectionLocation::slotCopyOperationFinished );
+    connect( job, &IpodCopyTracksJob::done, job, &QObject::deleteLater );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 
 void
@@ -90,9 +90,9 @@ IpodCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources
         return;
 
     IpodDeleteTracksJob *job = new IpodDeleteTracksJob( sources, m_coll );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(slotRemoveOperationFinished()) );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    connect( job, &IpodDeleteTracksJob::done, this, &IpodCollectionLocation::slotRemoveOperationFinished );
+    connect( job, &IpodDeleteTracksJob::done, job, &QObject::deleteLater );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 
 void
@@ -120,7 +120,7 @@ IpodCollectionLocation::slotCopyTrackProcessed( Meta::TrackPtr srcTrack, Meta::T
 
 void IpodCollectionLocation::ensureDirectoriesExist()
 {
-    QByteArray mountPoint = m_coll ? QFile::encodeName( m_coll.data()->mountPoint() ) : QByteArray();
+    QByteArray mountPoint = m_coll ? QFile::encodeName( m_coll->mountPoint() ) : QByteArray();
     if( mountPoint.isEmpty() )
         return;
 
@@ -151,4 +151,3 @@ void IpodCollectionLocation::ensureDirectoriesExist()
     }
 }
 
-#include "IpodCollectionLocation.moc"

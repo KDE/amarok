@@ -62,11 +62,11 @@ class FileView : public Amarok::PrettyTreeView
 public:
     FileView( QWidget *parent );
 
-signals:
+Q_SIGNALS:
     void navigateToDirectory( const QModelIndex &index );
     void refreshBrowser();
 
-protected slots:
+protected Q_SLOTS:
     void slotAppendToPlaylist();
     void slotReplacePlaylist();
     void slotEditTracks();
@@ -75,6 +75,7 @@ protected slots:
     void slotMoveTracks( const Meta::TrackList &tracks );
     void slotCopyTracks( const Meta::TrackList &tracks );
     void slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+    void slotMoveToTrashWithoutModifiers() { slotMoveToTrash( Qt::NoButton, Qt::NoModifier ); }
     void slotDelete();
 
 protected:
@@ -114,8 +115,8 @@ private:
     PopupDropper *m_pd;
     QMutex m_dragMutex;
     bool m_ongoingDrag;
-    QWeakPointer<Collections::Collection> m_moveDestinationCollection;
-    QWeakPointer<Collections::Collection> m_copyDestinationCollection;
+    QPointer<Collections::Collection> m_moveDestinationCollection;
+    QPointer<Collections::Collection> m_copyDestinationCollection;
 };
 
 #endif // end include guard

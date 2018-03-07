@@ -50,9 +50,9 @@ KNotificationBackend::KNotificationBackend()
     : m_enabled( false )
 {
     EngineController *engine = The::engineController();
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)), SLOT(showCurrentTrack()) );
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), SLOT(showCurrentTrack()) );
-    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)), SLOT(showCurrentTrack()) );
+    connect( engine, &EngineController::trackPlaying, this, &KNotificationBackend::showCurrentTrack );
+    connect( engine, &EngineController::trackMetadataChanged, this, &KNotificationBackend::showCurrentTrack );
+    connect( engine, &EngineController::albumMetadataChanged, this, &KNotificationBackend::showCurrentTrack );
 
     if( engine->isPlaying() )
         showCurrentTrack();
@@ -61,7 +61,7 @@ KNotificationBackend::KNotificationBackend()
 KNotificationBackend::~KNotificationBackend()
 {
     if( m_notify )
-        m_notify.data()->close();
+        m_notify->close();
 }
 
 void
@@ -80,7 +80,7 @@ bool
 KNotificationBackend::isFullscreenWindowActive() const
 {
     // Get information of the active window.
-    KWindowInfo activeWindowInfo = KWindowSystem::windowInfo( KWindowSystem::activeWindow(), NET::WMState );
+    KWindowInfo activeWindowInfo( KWindowSystem::activeWindow(), NET::WMState );
 
     // Check if it is running in fullscreen mode.
     return activeWindowInfo.hasState( NET::FullScreen );

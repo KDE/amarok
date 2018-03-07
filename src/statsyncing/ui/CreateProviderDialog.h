@@ -24,7 +24,7 @@
 #include <QSharedPointer>
 #include <QString>
 
-#include <KIcon>
+#include <QIcon>
 
 class QVBoxLayout;
 
@@ -41,11 +41,11 @@ namespace StatSyncing
         explicit CreateProviderDialog( QWidget *parent = 0, Qt::WindowFlags f = 0 );
         virtual ~CreateProviderDialog();
 
-    public slots:
-        void addProviderType( const QString &id, const QString &prettyName, const KIcon &icon,
+    public Q_SLOTS:
+        void addProviderType( const QString &id, const QString &prettyName, const QIcon &icon,
                               ProviderConfigWidget *configWidget );
 
-    signals:
+    Q_SIGNALS:
         void providerConfigured( const QString &id, const QVariantMap &config );
 
     private:
@@ -57,7 +57,7 @@ namespace StatSyncing
         KPageWidgetItem *m_providerTypePage;
         QVBoxLayout *m_layout;
 
-    private slots:
+    private Q_SLOTS:
         void providerButtonToggled( bool checked );
         void slotAccepted();
     };

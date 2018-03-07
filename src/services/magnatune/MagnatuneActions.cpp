@@ -17,14 +17,14 @@
 #include "MagnatuneActions.h"
 #include "SvgHandler.h"
 
-#include <KIcon>
+#include <QIcon>
 
 MagnatuneDownloadAction::MagnatuneDownloadAction( const QString &text, Meta::MagnatuneAlbum * album )
-    : QAction( KIcon("download-amarok" ), text, album )
+    : QAction( QIcon::fromTheme("download-amarok" ), text, album )
     , m_album( album )
 {
     setProperty( "popupdropper_svg_id", "append" );
-    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
+    connect( this, &QAction::triggered, this, &MagnatuneDownloadAction::slotTriggered );
 }
 
 
@@ -40,11 +40,11 @@ void MagnatuneDownloadAction::slotTriggered()
 
 
 MagnatuneAddToFavoritesAction::MagnatuneAddToFavoritesAction( const QString &text, Meta::MagnatuneAlbum * album )
-    : QAction( KIcon("favorites" ), text, album )
+    : QAction( QIcon::fromTheme("favorites" ), text, album )
     , m_album( album )
 {
     setProperty( "popupdropper_svg_id", "append" );
-    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
+    connect( this, &QAction::triggered, this, &MagnatuneAddToFavoritesAction::slotTriggered );
 }
 
 
@@ -58,4 +58,3 @@ void MagnatuneAddToFavoritesAction::slotTriggered()
     m_album->addToFavorites();
 }
 
-#include "MagnatuneActions.moc"

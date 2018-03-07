@@ -29,12 +29,12 @@ class SqlMountPointManagerMock : public MountPointManager
 {
 public:
 
-    SqlMountPointManagerMock( QObject *parent, SqlStorage *storage )
+    SqlMountPointManagerMock( QObject *parent, QSharedPointer<SqlStorage> storage )
         : MountPointManager( parent, storage )
     {
     }
 
-    int getIdForUrl( const KUrl &url )
+    int getIdForUrl( const QUrl &url )
     {
         QString path = url.path();
         foreach( int id, m_mountPoints.keys() )

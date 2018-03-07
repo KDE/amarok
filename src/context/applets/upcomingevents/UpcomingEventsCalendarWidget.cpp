@@ -20,7 +20,7 @@
 #include <KColorUtils>
 #include <KDateTime>
 #include <KGlobal>
-#include <KIcon>
+#include <QIcon>
 #include <KLocale>
 #include <KSystemTimeZones>
 
@@ -156,7 +156,7 @@ UpcomingEventsCalendarWidget::todayAction()
     Q_D( UpcomingEventsCalendarWidget );
     if( !d->todayAction )
     {
-        d->todayAction = new QAction( KIcon("go-jump-today"), QString(), this );
+        d->todayAction = new QAction( QIcon::fromTheme("go-jump-today"), QString(), this );
         d->todayAction->setToolTip( i18nc( "@info:tooltip Calendar action", "Jump to Today" ) );
         connect( d->todayAction, SIGNAL(triggered()), SLOT(_jumpToToday()) );
     }
@@ -177,4 +177,3 @@ UpcomingEventsCalendarWidget::addEvents( const LastFmEvent::List &events )
     d->addEvents( events );
 }
 
-#include "UpcomingEventsCalendarWidget.moc"

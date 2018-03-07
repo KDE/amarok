@@ -40,6 +40,10 @@
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
 #include <QPropertyAnimation>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #define LabelsAppletMaxLabelLength 40 // if a downloaded label is longer than this, don't show it
 
@@ -94,7 +98,7 @@ LabelsApplet::init()
 
     // reload icon
     QAction *reloadAction = new QAction( this );
-    reloadAction->setIcon( KIcon( "view-refresh" ) );
+    reloadAction->setIcon( QIcon::fromTheme( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );
     reloadAction->setText( i18n( "Reload" ) );
@@ -104,7 +108,7 @@ LabelsApplet::init()
 
     // settings icon
     QAction *settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setIcon( QIcon::fromTheme( "preferences-system" ) );
     settingsAction->setVisible( true );
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
@@ -125,7 +129,7 @@ LabelsApplet::init()
     p.setColor( QPalette::Base, c );
     m_addLabel.data()->setPalette( p );
     m_addLabel.data()->completionObject()->setIgnoreCase( true );
-    m_addLabel.data()->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_addLabel.data()->setCompletionMode( KCompletion::CompletionPopup );
     connect( m_addLabel.data(), SIGNAL(returnPressed()), this, SLOT(addLabelPressed()) );
     m_addLabelProxy.data()->setWidget( m_addLabel.data() );
 
@@ -729,18 +733,26 @@ LabelsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     DEBUG_BLOCK
 
-    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    parent->setLayout(mainLayout);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    parent->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    parent->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 
     KConfigGroup configuration = config();
     QWidget *generalSettings = new QWidget;
     ui_GeneralSettings.setupUi( generalSettings );
-    ui_GeneralSettings.resetColorsPushButton->setIcon( KIcon("fill-color") );
+    ui_GeneralSettings.resetColorsPushButton->setIcon( QIcon::fromTheme("fill-color") );
     QWidget *blacklistSettings = new QWidget;
     ui_BlacklistSettings.setupUi( blacklistSettings );
     QWidget *replacementSettings = new QWidget;
     ui_ReplacementSettings.setupUi( replacementSettings );
-    ui_ReplacementSettings.addPushButton->setIcon( KIcon("list-add") );
-    ui_ReplacementSettings.removePushButton->setIcon( KIcon("list-remove") );
+    ui_ReplacementSettings.addPushButton->setIcon( QIcon::fromTheme("list-add") );
+    ui_ReplacementSettings.removePushButton->setIcon( QIcon::fromTheme("list-remove") );
 
     parent->addPage( generalSettings, i18n( "General Settings" ), "preferences-system" );
     parent->addPage( blacklistSettings, i18n( "Blacklist Settings" ), "flag-black" );
@@ -872,4 +884,3 @@ LabelsApplet::settingsRemoveReplacement()
 }
 
 
-#include "LabelsApplet.moc"

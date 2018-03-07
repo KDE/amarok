@@ -19,27 +19,30 @@
 #include "ScriptsConfig.h"
 
 #include "amarokconfig.h"
+#include "configdialog/ConfigDialog.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 #include "ScriptSelector.h"
 #include "ui_ScriptsConfig.h"
 
-#include <KFileDialog>
 #include <KMessageBox>
 #include <KNS3/DownloadDialog>
 #include <KPluginInfo>
 #include <KPluginSelector>
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <KTar>
 #include <KZip>
 
+#include <QFileDialog>
 #include <QTemporaryFile>
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QScrollBar>
+#include <QMimeDatabase>
+#include <QMimeType>
 
-ScriptsConfig::ScriptsConfig( QWidget *parent )
+ScriptsConfig::ScriptsConfig( Amarok2ConfigDialog *parent )
     : ConfigDialogBase( parent )
     , m_configChanged( false )
     , m_parent( parent )
@@ -51,23 +54,26 @@ ScriptsConfig::ScriptsConfig( QWidget *parent )
 
     m_uninstallButton = gui.uninstallButton;
     m_timer = new QTimer(this);
-    connect( m_timer, SIGNAL(timeout()), this, SLOT(slotUpdateScripts()) );
+    connect( m_timer, &QTimer::timeout, this, &ScriptsConfig::slotUpdateScripts );
     m_timer->setInterval( 200 );
 
     // Load config
     gui.kcfg_AutoUpdateScripts->setChecked( AmarokConfig::autoUpdateScripts() );
-    gui.manageButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
-    connect( gui.manageButton, SIGNAL(clicked()), SLOT(slotManageScripts()) );
-    connect( gui.installButton, SIGNAL(clicked(bool)), SLOT(installLocalScript()) );
+    gui.manageButton->setIcon( QIcon::fromTheme( "get-hot-new-stuff-amarok" ) );
+    connect( gui.manageButton, &QAbstractButton::clicked,
+             this, &ScriptsConfig::slotManageScripts );
+    connect( gui.installButton, &QAbstractButton::clicked,
+             this, &ScriptsConfig::installLocalScript );
 
     m_selector = gui.scriptSelector;
     m_verticalLayout = gui.verticalLayout;
     slotReloadScriptSelector();
 
-    connect( gui.reloadButton, SIGNAL(clicked(bool)), m_timer, SLOT(start()) );
-    connect( gui.uninstallButton, SIGNAL(clicked(bool)), this, SLOT(slotUninstallScript()) );
+    connect( gui.reloadButton, &QAbstractButton::clicked, m_timer, QOverload<>::of(&QTimer::start) );
+    connect( gui.uninstallButton, &QAbstractButton::clicked, this, &ScriptsConfig::slotUninstallScript );
 
-    connect( ScriptManager::instance(), SIGNAL(scriptsChanged()), SLOT(slotReloadScriptSelector()) );
+    connect( ScriptManager::instance(), &ScriptManager::scriptsChanged,
+             this, &ScriptsConfig::slotReloadScriptSelector );
 
     this->setEnabled( AmarokConfig::enableScripts() );
 }
@@ -129,14 +135,15 @@ ScriptsConfig::installLocalScript()
     if( response == KMessageBox::Cancel )
         return;
 
-    QString filePath = KFileDialog::getOpenFileName( KUrl(), QString(), this, i18n( "Select Archived Script" ) );
+    QString filePath = QFileDialog::getOpenFileName( this, i18n( "Select Archived Script" ) );
     if( filePath.isEmpty() )
         return;
 
     QString fileName = QFileInfo( filePath ).fileName();
-    KMimeType::Ptr mimeType = KMimeType::findByPath( filePath );
+    QMimeDatabase db;
+    QMimeType mimeType = db.mimeTypeForFile( filePath );
     QScopedPointer<KArchive> archive;
-    if( mimeType->is( "application/zip" ) )
+    if( mimeType.inherits( "application/zip" ) )
         archive.reset( new KZip( filePath ) );
     else
         archive.reset( new KTar( filePath ) );
@@ -147,7 +154,7 @@ ScriptsConfig::installLocalScript()
         return;
     }
 
-    QString destination = KGlobal::dirs()->saveLocation( "data", QString("amarok/scripts/") + fileName + "/"  , false );
+    QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + QString("amarok/scripts/") + fileName + "/";
     const KArchiveDirectory* const archiveDir = archive->directory();
     const QDir dir( destination );
     const KArchiveFile *specFile = findSpecFile( archiveDir );
@@ -206,13 +213,16 @@ ScriptsConfig::slotReloadScriptSelector()
     key = QLatin1String( "Scriptable Service" );
     m_selector->addScripts( ScriptManager::instance()->scripts( key ),
                             KPluginSelector::ReadConfigFile, i18n("Scriptable Service"), key );
-    connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
-    connect( m_selector, SIGNAL(changed(bool)), m_parent, SLOT(updateButtons()) );
-    connect( m_selector, SIGNAL(filtered(bool)), m_uninstallButton, SLOT(setDisabled(bool)) );
+    connect( m_selector, &ScriptSelector::changed, this, &ScriptsConfig::slotConfigChanged );
+    connect( m_selector, &ScriptSelector::filtered, m_uninstallButton, &QPushButton::setDisabled );
+    connect( m_selector, &ScriptSelector::changed,
+             qobject_cast<Amarok2ConfigDialog*>(m_parent), &Amarok2ConfigDialog::updateButtons );
+
     m_verticalLayout->insertWidget( 0, m_selector );
     m_verticalLayout->removeWidget( m_oldSelector );
+
     m_selector->setFilter( m_oldSelector->filter() );
-    QTimer::singleShot( 0, this, SLOT(restoreScrollBar()) );
+    QTimer::singleShot( 0, this, &ScriptsConfig::restoreScrollBar );
 }
 
 void
@@ -296,4 +306,3 @@ ScriptsConfig::removeDir( const QString &dirPath ) const
     }
 }
 
-#include "ScriptsConfig.moc"

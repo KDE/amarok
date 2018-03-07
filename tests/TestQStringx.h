@@ -22,7 +22,8 @@
 
 #include "QStringx.h"
 
-#include <QtCore/QStringList>
+#include <QStringList>
+#include <QObject>
 
 class TestQStringx : public QObject
 {
@@ -31,7 +32,7 @@ Q_OBJECT
 public:
     TestQStringx();
 
-private slots:
+private Q_SLOTS:
     void testArgs();
     void testNamedArgs();
     void testNamedOptArgs();

@@ -60,7 +60,7 @@ MoodbarManager::MoodbarManager()
     : m_cache( new KImageCache( "Amarok-moodbars", 10 * 1024 ) )
     , m_lastPaintMode( 0 )
 {
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &MoodbarManager::paletteChanged );
 }
 
 MoodbarManager::~MoodbarManager()
@@ -77,7 +77,7 @@ bool MoodbarManager::hasMoodbar( Meta::TrackPtr track )
     }
         
  
-    KUrl trackUrl = track->playableUrl();
+    QUrl trackUrl = track->playableUrl();
     //only supports local files for now.
     if ( !trackUrl.isLocalFile() )
     {
@@ -174,7 +174,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
         else
             moodFilePath = moodPath( track->playableUrl().path() );
 
-        data = readMoodFile( moodFilePath );
+        data = readMoodFile( QUrl::fromUserInput(moodFilePath) );
 
         if ( data.size() > 10 )
             m_moodDataMap.insert( track, data );
@@ -195,7 +195,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
     return moodbar;
 }
 
-MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
+MoodbarColorList MoodbarManager::readMoodFile( const QUrl &moodFileUrl )
 {
     DEBUG_BLOCK
 

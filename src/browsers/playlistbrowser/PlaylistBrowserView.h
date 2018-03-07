@@ -23,6 +23,9 @@
 #include "widgets/PrettyTreeView.h"
 
 #include <QMutex>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
+#include <QPushButton>
 
 class PopupDropper;
 class QKeyEvent;
@@ -39,7 +42,7 @@ public:
 
     virtual void setModel( QAbstractItemModel *model );
 
-signals:
+Q_SIGNALS:
     void currentItemChanged( const QModelIndex &current );
 
 protected:
@@ -52,11 +55,11 @@ protected:
 
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
-protected slots:
+protected Q_SLOTS:
     /** reimplemented to emit a signal */
     void currentChanged( const QModelIndex &current, const QModelIndex &previous );
 
-private slots:
+private Q_SLOTS:
     // these are connected to m_*Actions:
     void slotCreateEmptyPlaylist();
     void slotAppend();

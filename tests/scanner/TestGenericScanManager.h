@@ -21,9 +21,10 @@
 #include "scanner/GenericScanManager.h"
 #include "core/meta/support/MetaConstants.h"
 
-#include <KTempDir>
+#include <QSignalSpy>
+#include <QTemporaryDir>
 
-#include <QtTest/QTest>
+#include <QTest>
 
 /** Test the GenericScanManager and the scanner job
  */
@@ -34,7 +35,7 @@ class TestGenericScanManager : public QObject
 public:
     TestGenericScanManager();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -62,7 +63,7 @@ private slots:
     void testAlbumImage();;
 
 
-public slots:
+public Q_SLOTS:
     void slotStarted( GenericScanManager::ScanType type );
     void slotDirectoryCount( int count );
     void slotDirectoryScanned( QSharedPointer<CollectionScanner::Directory> dir );
@@ -71,7 +72,7 @@ public slots:
 
 private:
     void fullScanAndWait();
-    void waitScannerFinished();
+    void waitScannerFinished( QSignalSpy &spy );
 
     /**
        Creates a track in the m_tmpCollectionDir with the given values.
@@ -88,7 +89,7 @@ private:
     int m_scannedTracksCount;
     int m_scannedCoversCount;
 
-    KTempDir *m_tmpCollectionDir;
+    QTemporaryDir *m_tmpCollectionDir;
     QString m_sourcePath; // the path to the template .mp3 file
 
     GenericScanManager *m_scanManager;

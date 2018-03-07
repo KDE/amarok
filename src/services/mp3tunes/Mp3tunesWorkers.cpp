@@ -21,27 +21,30 @@
 #include "core/support/Debug.h"
 #include "Mp3tunesMeta.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <QStringList>
 
 Mp3tunesLoginWorker::Mp3tunesLoginWorker( Mp3tunesLocker* locker,
                                           const QString & username,
                                           const QString & password )
-    : ThreadWeaver::Job()
+    : QObject()
+    , ThreadWeaver::Job()
     , m_locker( locker )
     , m_sessionId()
     , m_username( username )
     , m_password( password )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesLoginWorker::done, this, &Mp3tunesLoginWorker::completeJob );
 }
 
 Mp3tunesLoginWorker::~Mp3tunesLoginWorker()
 {
 }
 
-void Mp3tunesLoginWorker::run()
+void Mp3tunesLoginWorker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
     if(m_locker != 0) {
         debug() << "Calling Locker login..";
@@ -50,6 +53,20 @@ void Mp3tunesLoginWorker::run()
     } else {
         debug() << "Locker is NULL";
     }
+}
+void Mp3tunesLoginWorker::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void Mp3tunesLoginWorker::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void Mp3tunesLoginWorker::completeJob()
@@ -62,7 +79,7 @@ void Mp3tunesLoginWorker::completeJob()
 /* ARTIST FETCHER */
 Mp3tunesArtistFetcher::Mp3tunesArtistFetcher( Mp3tunesLocker * locker )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesArtistFetcher::done, this, &Mp3tunesArtistFetcher::completeJob );
     m_locker = locker;
 }
 
@@ -70,8 +87,10 @@ Mp3tunesArtistFetcher::~Mp3tunesArtistFetcher()
 {
 }
 
-void Mp3tunesArtistFetcher::run()
+void Mp3tunesArtistFetcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
     if(m_locker != 0) {
         debug() << "Artist Fetch Start";
@@ -89,10 +108,25 @@ void Mp3tunesArtistFetcher::completeJob()
     deleteLater();
 }
 
+void Mp3tunesArtistFetcher::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void Mp3tunesArtistFetcher::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
 /*  ALBUM w/ Artist Id FETCHER */
 Mp3tunesAlbumWithArtistIdFetcher::Mp3tunesAlbumWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesAlbumWithArtistIdFetcher::done, this, &Mp3tunesAlbumWithArtistIdFetcher::completeJob );
     m_locker = locker;
     m_artistId = artistId;
 }
@@ -101,8 +135,11 @@ Mp3tunesAlbumWithArtistIdFetcher::~Mp3tunesAlbumWithArtistIdFetcher()
 {
 }
 
-void Mp3tunesAlbumWithArtistIdFetcher::run()
+void Mp3tunesAlbumWithArtistIdFetcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
+
     DEBUG_BLOCK
     if(m_locker != 0) {
         debug() << "Album Fetch Start";
@@ -120,11 +157,26 @@ void Mp3tunesAlbumWithArtistIdFetcher::completeJob()
     deleteLater();
 }
 
+void Mp3tunesAlbumWithArtistIdFetcher::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void Mp3tunesAlbumWithArtistIdFetcher::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
 /*  TRACK w/ albumId FETCHER */
 Mp3tunesTrackWithAlbumIdFetcher::Mp3tunesTrackWithAlbumIdFetcher( Mp3tunesLocker * locker, int albumId )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesTrackWithAlbumIdFetcher::done, this, &Mp3tunesTrackWithAlbumIdFetcher::completeJob );
     m_locker = locker;
     debug() << "Constructor albumId: " << albumId;
     m_albumId = albumId;
@@ -134,8 +186,11 @@ Mp3tunesTrackWithAlbumIdFetcher::~Mp3tunesTrackWithAlbumIdFetcher()
 {
 }
 
-void Mp3tunesTrackWithAlbumIdFetcher::run()
+void Mp3tunesTrackWithAlbumIdFetcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
+
     DEBUG_BLOCK
     if(m_locker != 0) {
         debug() << "Track Fetch Start for album " << m_albumId;
@@ -154,11 +209,26 @@ void Mp3tunesTrackWithAlbumIdFetcher::completeJob()
     deleteLater();
 }
 
+void Mp3tunesTrackWithAlbumIdFetcher::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void Mp3tunesTrackWithAlbumIdFetcher::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
 /*  TRACK w/ artistId FETCHER */
 Mp3tunesTrackWithArtistIdFetcher::Mp3tunesTrackWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesTrackWithArtistIdFetcher::done, this, &Mp3tunesTrackWithArtistIdFetcher::completeJob );
     m_locker = locker;
     debug() << "Constructor artistId: " << artistId;
     m_artistId = artistId;
@@ -168,8 +238,10 @@ Mp3tunesTrackWithArtistIdFetcher::~Mp3tunesTrackWithArtistIdFetcher()
 {
 }
 
-void Mp3tunesTrackWithArtistIdFetcher::run()
+void Mp3tunesTrackWithArtistIdFetcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
     if(m_locker != 0) {
         debug() << "Track Fetch Start for artist " << m_artistId;
@@ -188,11 +260,26 @@ void Mp3tunesTrackWithArtistIdFetcher::completeJob()
     deleteLater();
 }
 
+void Mp3tunesTrackWithArtistIdFetcher::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void Mp3tunesTrackWithArtistIdFetcher::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
 /*  SEARCH MONKEY */
 Mp3tunesSearchMonkey::Mp3tunesSearchMonkey( Mp3tunesLocker * locker, QString query, int searchFor )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesSearchMonkey::done, this, &Mp3tunesSearchMonkey::completeJob );
     m_locker = locker;
     m_searchFor = searchFor;
     m_query = query;
@@ -201,8 +288,10 @@ Mp3tunesSearchMonkey::Mp3tunesSearchMonkey( Mp3tunesLocker * locker, QString que
 Mp3tunesSearchMonkey::~Mp3tunesSearchMonkey()
 {}
 
-void Mp3tunesSearchMonkey::run()
+void Mp3tunesSearchMonkey::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
     if(m_locker != 0) {
         Mp3tunesSearchResult container;
@@ -222,17 +311,32 @@ void Mp3tunesSearchMonkey::run()
 void Mp3tunesSearchMonkey::completeJob()
 {
     DEBUG_BLOCK
-    emit( searchComplete( m_result.artistList ) );
-    emit( searchComplete( m_result.albumList ) );
-    emit( searchComplete( m_result.trackList ) );
+    emit( searchArtistComplete( m_result.artistList ) );
+    emit( searchAlbumComplete( m_result.albumList ) );
+    emit( searchTrackComplete( m_result.trackList ) );
     deleteLater();
+}
+void Mp3tunesSearchMonkey::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void Mp3tunesSearchMonkey::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 /*  SIMPLE UPLOADER */
 Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStringList tracklist )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesSimpleUploader::done, this, &Mp3tunesSimpleUploader::completeJob );
 
     m_locker = locker;
     m_tracklist = tracklist;
@@ -244,11 +348,13 @@ Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStrin
 
 Mp3tunesSimpleUploader::~Mp3tunesSimpleUploader()
 {
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
 }
 
-void Mp3tunesSimpleUploader::run()
+void Mp3tunesSimpleUploader::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
     if(m_locker == 0)
         return;
@@ -296,11 +402,26 @@ void Mp3tunesSimpleUploader::completeJob()
     deleteLater();
 }
 
+void Mp3tunesSimpleUploader::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void Mp3tunesSimpleUploader::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
 /*  TRACK from filekey FETCHER */
 Mp3tunesTrackFromFileKeyFetcher::Mp3tunesTrackFromFileKeyFetcher( Mp3tunesLocker * locker, QString filekey )
 {
     DEBUG_BLOCK
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &Mp3tunesTrackFromFileKeyFetcher::done, this, &Mp3tunesTrackFromFileKeyFetcher::completeJob );
     m_locker = locker;
     debug() << "Constructor filekey: " << filekey;
     m_filekey = filekey;
@@ -310,8 +431,10 @@ Mp3tunesTrackFromFileKeyFetcher::~Mp3tunesTrackFromFileKeyFetcher()
 {
 }
 
-void Mp3tunesTrackFromFileKeyFetcher::run()
+void Mp3tunesTrackFromFileKeyFetcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
     if(m_locker != 0) {
         debug() << "Track Fetch from filekey " << m_filekey;
@@ -328,4 +451,19 @@ void Mp3tunesTrackFromFileKeyFetcher::completeJob()
     DEBUG_BLOCK
     emit( trackFetched( m_track ) );
     deleteLater();
+}
+
+void Mp3tunesTrackFromFileKeyFetcher::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void Mp3tunesTrackFromFileKeyFetcher::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }

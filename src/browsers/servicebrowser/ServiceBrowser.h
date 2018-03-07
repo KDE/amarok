@@ -23,7 +23,7 @@
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "services/ServiceBase.h"
 
-#include <KVBox>
+#include <QVBoxLayout>
 
 #include <QTimer>
 #include <QTreeView>
@@ -60,7 +60,7 @@ class ServiceBrowser : public BrowserCategoryList
          */
         void resetService( const QString &name );
 
-    public slots:
+    public Q_SLOTS:
 
         /**
          * Set a scriptable service manager to handle scripted services.

@@ -19,8 +19,12 @@
 #include "TranscodingJob.h"
 #include "core/transcoding/TranscodingController.h"
 
-#include <KIcon>
-#include <KPushButton>
+#include <QIcon>
+#include <QPushButton>
+
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 using namespace Transcoding;
 
@@ -29,7 +33,7 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
                                   const QString &destCollectionName,
                                   const Configuration &prevConfiguration,
                                   QWidget *parent )
-    : KDialog( parent, Qt::Dialog )
+    : KPageDialog( parent, Qt::Dialog )
     , m_configuration( JUST_COPY )
     , m_save( false )
     , m_playableFileTypes( playableFileTypes )
@@ -38,19 +42,29 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     Q_UNUSED( destCollectionName )  // keep it in signature, may be useful in future
 
     QWidget *uiBase = new QWidget( this );
-    setMainWidget( uiBase);
     ui.setupUi( uiBase );
     setModal( true );
     setWindowTitle( i18n( "Transcode Tracks" ) );
     setMinimumSize( 620, 480 );
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-    setButtons( Ok|Cancel );
-    button( Ok )->setText( i18n( "Transc&ode" ) );
-    button( Ok )->setEnabled( false );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &AssistantDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &AssistantDialog::reject);
+    mainLayout->addWidget(uiBase);
+    okButton->setText( i18n( "Transc&ode" ) );
+    okButton->setEnabled( false );
+    mainLayout->addWidget(buttonBox);
 
     QString explanatoryText;
-    KIcon justCopyIcon;
+    QIcon justCopyIcon;
     QString justCopyText;
     QString justCopyDescription;
     switch( operation )
@@ -61,7 +75,7 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
                 "format with an encoder (codec). This can be done to save space or to "
                 "make your files readable by a portable music player or a particular "
                 "software program." );
-            justCopyIcon = KIcon( "edit-copy" );
+            justCopyIcon = QIcon::fromTheme( "edit-copy" );
             justCopyText = i18n( "&Copy" );
             justCopyDescription = i18n( "Just copy the tracks without transcoding them." );
             break;
@@ -72,7 +86,7 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
                 "make your files readable by a portable music player or a particular "
                 "software program. Only successfully transcoded files will be removed "
                 "from their original location." );
-            justCopyIcon = KIcon( "go-jump" ); // Dolphin uses this icon for "move"
+            justCopyIcon = QIcon::fromTheme( "go-jump" ); // Dolphin uses this icon for "move"
             justCopyText = i18n( "&Move" );
             justCopyDescription = i18n( "Just move the tracks without transcoding them." );
             break;
@@ -83,23 +97,23 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     ui.justCopyButton->setText( justCopyText );
     ui.justCopyButton->setDescription( justCopyDescription );
     ui.justCopyButton->setMinimumHeight( ui.justCopyButton->iconSize().height() + 2*10 ); //we make room for the pretty icon
-    connect( ui.justCopyButton, SIGNAL(clicked()),
-             this, SLOT(onJustCopyClicked()) );
+    connect( ui.justCopyButton, &QAbstractButton::clicked,
+             this, &AssistantDialog::onJustCopyClicked );
 
     //Let's set up the codecs page...
     populateFormatList();
-    connect( ui.formatListWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-             this, SLOT(onFormatSelect(QListWidgetItem*)) );
+    connect( ui.formatListWidget, &QListWidget::currentItemChanged,
+             this, &AssistantDialog::onFormatSelect );
 
     ui.formatIconLabel->hide();
     ui.formatNameLabel->hide();
-    connect( button( Ok ), SIGNAL(clicked()),
-             this, SLOT(onTranscodeClicked()) );
+    connect( buttonBox->button(QDialogButtonBox::Ok), &QAbstractButton::clicked,
+             this, &AssistantDialog::onTranscodeClicked );
 
     ui.rememberCheckBox->setChecked( m_save );
     ui.rememberCheckBox->setEnabled( saveSupported );
-    connect( ui.rememberCheckBox, SIGNAL(toggled(bool)),
-             this, SLOT(onRememberToggled(bool)) );
+    connect( ui.rememberCheckBox, &QCheckBox::toggled,
+             this, &AssistantDialog::onRememberToggled );
 
     switch( prevConfiguration.trackSelection() ) //restore the previously selected TrackSelection radio button
     {
@@ -161,14 +175,14 @@ AssistantDialog::populateFormatList()
 void
 AssistantDialog::onJustCopyClicked() //SLOT
 {
-    KDialog::done( KDialog::Accepted );
+    QDialog::done( QDialog::Accepted );
 }
 
 void
 AssistantDialog::onTranscodeClicked() //SLOT
 {
     m_configuration = ui.transcodingOptionsStackedWidget->configuration( trackSelection() );
-    KDialog::done( KDialog::Accepted );
+    QDialog::done( QDialog::Accepted );
 }
 
 void
@@ -192,7 +206,7 @@ AssistantDialog::onFormatSelect( QListWidgetItem *item ) //SLOT
         ui.transcodeUnlessSameTypeRadioButton->setEnabled( true );
         ui.transcodeOnlyIfNeededRadioButton->setEnabled( true );
 
-        button( Ok )->setEnabled( true );
+        buttonBox()->button(QDialogButtonBox::Ok)->setEnabled(true);
     }
 }
 
@@ -213,4 +227,3 @@ AssistantDialog::trackSelection() const
         return Configuration::TranscodeAll;
 }
 
-#include "TranscodingAssistantDialog.moc"

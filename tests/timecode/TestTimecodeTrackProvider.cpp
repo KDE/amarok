@@ -23,11 +23,9 @@
 #include "core/meta/Meta.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
 
-#include <qtest_kde.h>
+#include <QTest>
 
-#include <QtTest/QTest>
-
-QTEST_KDEMAIN_CORE( TestTimecodeTrackProvider )
+QTEST_GUILESS_MAIN( TestTimecodeTrackProvider )
 
 TestTimecodeTrackProvider::TestTimecodeTrackProvider()
 {}
@@ -50,22 +48,23 @@ TestTimecodeTrackProvider::dataPath( const QString &relPath )
 
 void TestTimecodeTrackProvider::testPossiblyContainsTrack()
 {
-    QVERIFY( !m_testProvider->possiblyContainsTrack( KUrl( "file:///home/test/test.mp3" ) ) );
-    QVERIFY( m_testProvider->possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:0-23" ) ) );
-    QVERIFY( m_testProvider->possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:23-42" ) ) );
-    QVERIFY( m_testProvider->possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:42-23" ) ) );
-    QVERIFY( !m_testProvider->possiblyContainsTrack( KUrl( "file:///home/test/test.mp3:-12-42" ) ) );
+    QVERIFY( !m_testProvider->possiblyContainsTrack( QUrl("file:///home/test/test.mp3") ) );
+    QVERIFY( m_testProvider->possiblyContainsTrack( QUrl("file:///home/test/test.mp3:0-23") ) );
+    QVERIFY( m_testProvider->possiblyContainsTrack( QUrl("file:///home/test/test.mp3:23-42") ) );
+    QVERIFY( m_testProvider->possiblyContainsTrack( QUrl("file:///home/test/test.mp3:42-23") ) );
+    QVERIFY( !m_testProvider->possiblyContainsTrack( QUrl("file:///home/test/test.mp3:-12-42") ) );
 }
 
 void TestTimecodeTrackProvider::testTrackForUrl()
 {
-    KUrl testUrl;
-    testUrl = dataPath( "data/audio/album/" );
-    testUrl.addPath( "Track01.ogg:23-42" );
+    QUrl testUrl;
+    testUrl = QUrl::fromLocalFile(dataPath( "data/audio/album/" ));
+    testUrl = testUrl.adjusted(QUrl::StripTrailingSlash);
+    testUrl.setPath(testUrl.path() + '/' + ( "Track01.ogg:23-42" ));
 
     Meta::TrackPtr resultTrack = m_testProvider->trackForUrl( testUrl );
 
     QVERIFY( resultTrack );
 
-    QCOMPARE( resultTrack->playableUrl().pathOrUrl(), dataPath( "data/audio/album/Track01.ogg" ) );
+    QCOMPARE( resultTrack->playableUrl().path(), dataPath( "data/audio/album/Track01.ogg" ) );
 }

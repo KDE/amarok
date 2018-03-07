@@ -19,18 +19,17 @@
 #include "core/support/Debug.h"
 
 #include <QFile>
+#include <QStandardPaths>
 
-#include <KStandardDirs>
 #include <KTextEditor/View>
 #include <KTextEditor/Document>
-#include <KTextEditor/TemplateInterface2>
 
 using namespace ScriptConsoleNS;
 
 AmarokScriptCodeCompletionModel::AmarokScriptCodeCompletionModel( QObject *parent )
-: CodeCompletionModel( parent )
+    : CodeCompletionModel( parent )
 {
-    const KUrl url( KStandardDirs::locate( "data", "amarok/scriptconsole/" ) );
+    const QUrl url( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/scriptconsole/" ) );
     QFile file( url.path() + "AutoComplete.txt" );
     if( file.open( QFile::ReadOnly ) )
     {
@@ -46,6 +45,8 @@ void
 AmarokScriptCodeCompletionModel::completionInvoked( KTextEditor::View *view, const KTextEditor::Range &range, KTextEditor::CodeCompletionModel::InvocationType invocationType )
 {
     Q_UNUSED( invocationType )
+
+    beginResetModel();
     m_completionList.clear();
     const QString &currentText = view->document()->text( range );
     foreach( const QString &completionItem, m_autoCompleteStrings )
@@ -54,8 +55,8 @@ AmarokScriptCodeCompletionModel::completionInvoked( KTextEditor::View *view, con
         if( index != -1 && !QStringRef( &completionItem, index, completionItem.size()-index ).contains( '.' ) && completionItem != currentText )
             m_completionList << completionItem;
     }
-    reset();
     setRowCount( m_completionList.count() );
+    endResetModel();
 }
 
 QVariant
@@ -107,9 +108,9 @@ AmarokScriptCodeCompletionModel::shouldAbortCompletion( KTextEditor::View *view,
 }
 
 void
-AmarokScriptCodeCompletionModel::executeCompletionItem( KTextEditor::Document *document, const KTextEditor::Range &range, int row ) const
+AmarokScriptCodeCompletionModel::executeCompletionItem( KTextEditor::View *view, const KTextEditor::Range &range, const QModelIndex &index ) const
 {
-    document->replaceText( range, m_completionList.at( row ) );
+    view->document()->replaceText( range, m_completionList.at( index.row() ) );
 }
 
 AmarokScriptCodeCompletionModel::~AmarokScriptCodeCompletionModel()

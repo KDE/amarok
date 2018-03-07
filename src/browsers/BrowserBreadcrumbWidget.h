@@ -17,11 +17,10 @@
 #ifndef BROWSERBREADCRUMBWIDGET_H
 #define BROWSERBREADCRUMBWIDGET_H
 
-#include <KHBox>
-#include <KLineEdit>
+#include "widgets/BoxWidget.h"
 
-#include <KPushButton>
 #include <QList>
+#include <QPushButton>
 #include <QStackedWidget>
 #include <QStringList>
 
@@ -34,7 +33,7 @@ class BrowserCategoryList;
  *
  *	@author Nikolaj Hald Nielsen <nhn@kde.org>
  */
-class BrowserBreadcrumbWidget : public KHBox
+class BrowserBreadcrumbWidget : public BoxWidget
 {
     Q_OBJECT
 public:
@@ -47,7 +46,6 @@ public:
 
     /**
      * Destructor
-     * @param parent the parent widget
      */
     ~BrowserBreadcrumbWidget();
 
@@ -59,13 +57,13 @@ public:
      */
     void setRootList( BrowserCategoryList *rootList );
 
-signals:
+Q_SIGNALS:
     /**
      * Signal emitted when the root breadcrumb item is clicked.
      */
     void toHome();
 
-public slots:
+public Q_SLOTS:
     /**
      * Rebuild the list of breadcrumb items corrosponding to the current location in the hirachy.
      * This also allows for categories that add additional breadcrumb items (such as the file browser) to update the
@@ -76,7 +74,7 @@ public slots:
 protected:
     virtual void resizeEvent( QResizeEvent * event );
 
-private slots:
+private Q_SLOTS:
     /**
      * Goes through all breadcrumb items and shows the most relevant ones based on
      * available size. (always shows home icon and the last item)
@@ -92,7 +90,7 @@ private:
     /**
      * Recursive function that traverses the tree of BrowserCategoryList's
      * and adds each one as a level in the breadcrumb.
-     * @param level the root level BrowserCategoryList.
+     * @param list the root level BrowserCategoryList.
      */
     void addLevel( BrowserCategoryList *list );
 
@@ -107,7 +105,7 @@ private:
 
     QList<BrowserBreadcrumbItem *> m_items;
     QWidget *m_spacer;
-    KHBox *m_breadcrumbArea;
+    BoxWidget *m_breadcrumbArea;
 
     BreadcrumbItemMenuButton *m_childMenuButton;
 

@@ -19,15 +19,33 @@
 #include "IpodCollection.h"
 
 IpodWriteDatabaseJob::IpodWriteDatabaseJob( IpodCollection *collection )
-    : Job()
+    : QObject()
+    , ThreadWeaver::Job()
     , m_coll( collection )
 {
 }
 
 void
-IpodWriteDatabaseJob::run()
+IpodWriteDatabaseJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     m_coll->writeDatabase();
 }
 
-#include "IpodWriteDatabaseJob.moc"
+void
+IpodWriteDatabaseJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+IpodWriteDatabaseJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}

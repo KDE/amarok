@@ -86,7 +86,7 @@ private:
     QWeakPointer<QPropertyAnimation> m_listLabelAnimation;
     QWeakPointer<QPropertyAnimation> m_blacklistLabelAnimation;
     
-signals:
+Q_SIGNALS:
     void toggled( const QString &label );
     void blacklisted( const QString &label );
     void list( const QString &label );

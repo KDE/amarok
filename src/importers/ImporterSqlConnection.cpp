@@ -21,11 +21,10 @@
 #include <ThreadWeaver/Thread>
 
 #include <QMutexLocker>
-#include <QSqlDatabase>
-#include <QSqlDriver>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlRecord>
+#include <QtSql/QSqlDriver>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlRecord>
 #include <QUuid>
 
 using namespace StatSyncing;
@@ -35,7 +34,7 @@ ImporterSqlConnection::ImporterSqlConnection( const QString &driver,
                                               const quint16 port, const QString &dbName,
                                               const QString &user,
                                               const QString &password )
-    : m_connectionName( QUuid::createUuid() )
+    : m_connectionName( QUuid::createUuid().toString() )
     , m_apiMutex( QMutex::Recursive )
     , m_openTransaction( false )
 {
@@ -48,7 +47,7 @@ ImporterSqlConnection::ImporterSqlConnection( const QString &driver,
 }
 
 ImporterSqlConnection::ImporterSqlConnection( const QString &dbPath )
-    : m_connectionName( QUuid::createUuid() )
+    : m_connectionName( QUuid::createUuid().toString() )
     , m_apiMutex( QMutex::Recursive )
     , m_openTransaction( false )
 {
@@ -57,7 +56,7 @@ ImporterSqlConnection::ImporterSqlConnection( const QString &dbPath )
 }
 
 ImporterSqlConnection::ImporterSqlConnection()
-    : m_connectionName( QUuid::createUuid() )
+    : m_connectionName( QUuid::createUuid().toString() )
     , m_apiMutex( QMutex::Recursive )
     , m_openTransaction( false )
 {

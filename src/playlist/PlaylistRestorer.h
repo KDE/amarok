@@ -38,12 +38,12 @@ class Restorer: public QObject, public Playlists::PlaylistObserver
          * Initiate restoring procedure.
          * @param path path to the playlist to restore
          */
-        void restore( const KUrl &path );
+        void restore( const QUrl &path );
 
         // PlaylistObserver methods:
         virtual void tracksLoaded( Playlists::PlaylistPtr );
 
-    signals:
+    Q_SIGNALS:
         void restoreFinished();
 
     private:

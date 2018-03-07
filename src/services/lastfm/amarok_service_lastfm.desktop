@@ -1,6 +1,5 @@
 [Desktop Entry]
 Type=Service
-ServiceTypes=KPluginInfo
 Icon=view-services-lastfm-amarok
 Name=Last.fm
 Name[bg]=Last.fm
@@ -112,7 +111,6 @@ X-KDE-Amarok-authors=Shane King
 X-KDE-Amarok-email=kde@dontletsstart.com
 X-KDE-Amarok-framework-version=73
 X-KDE-Amarok-name=LastFmService
-X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
 

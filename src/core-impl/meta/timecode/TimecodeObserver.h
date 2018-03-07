@@ -34,7 +34,7 @@ public:
     TimecodeObserver( QObject *parent = 0 );
     virtual ~TimecodeObserver();
 
-protected slots:
+protected Q_SLOTS:
     void stopped( qint64 finalPosition, qint64 trackLength );
     void trackPlaying( Meta::TrackPtr track );
     void trackPositionChanged( qint64 position, bool userSeek );

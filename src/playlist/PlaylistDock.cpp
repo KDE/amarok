@@ -41,15 +41,14 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "widgets/HorizontalDivider.h"
-
-#include <KActionMenu>
-#include <KStandardDirs>
-#include <KToolBarSpacerAction>
-#include <KVBox>
+#include "widgets/BoxWidget.h"
 
 #include <QLabel>
+#include <QStandardPaths>
 #include <QToolBar>
-#include <QHBoxLayout>
+
+#include <KActionMenu>
+#include <KToolBarSpacerAction>
 
 static const QString s_dynMode( "dynamic_mode" );
 static const QString s_repopulate( "repopulate" );
@@ -87,7 +86,7 @@ Playlist::Dock::searchWidget()
 void
 Playlist::Dock::polish()
 {
-    m_mainWidget = new KVBox( this );
+    m_mainWidget = new BoxWidget( true, this );
     setWidget( m_mainWidget );
     m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
     m_mainWidget->setFrameShape( QFrame::NoFrame );
@@ -101,15 +100,15 @@ Playlist::Dock::polish()
     m_searchWidget = new Playlist::ProgressiveSearchWidget( m_mainWidget );
 
     // show visual indication of dynamic playlists  being enabled
-    connect( The::playlistActions(), SIGNAL(navigatorChanged()),
-             SLOT(showDynamicHint()) );
+    connect( The::playlistActions(), &Playlist::Actions::navigatorChanged,
+             this, &Playlist::Dock::showDynamicHint );
     m_dynamicHintWidget = new QLabel( i18n( "<a href='%1'>Dynamic Mode</a> Enabled. "
         "<a href='%2'>Repopulate</a> | <a href='%3'>Turn off</a>", s_dynMode,
         s_repopulate, s_turnOff ), m_mainWidget );
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
     m_dynamicHintWidget->setTextInteractionFlags( Qt::LinksAccessibleByKeyboard | Qt::LinksAccessibleByMouse );
     m_dynamicHintWidget->setMinimumSize( 1, 1 ); // so that it doesn't prevent playlist from shrinking
-    connect( m_dynamicHintWidget, SIGNAL(linkActivated(QString)), SLOT(slotDynamicHintLinkActivated(QString)) );
+    connect( m_dynamicHintWidget, &QLabel::linkActivated, this, &Dock::slotDynamicHintLinkActivated );
 
     QFont dynamicHintWidgetFont = m_dynamicHintWidget->font();
     dynamicHintWidgetFont.setPointSize( dynamicHintWidgetFont.pointSize() + 1 );
@@ -117,9 +116,9 @@ Playlist::Dock::polish()
 
     showDynamicHint();
 
-    paletteChanged( App::instance()->palette() );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)),
-             SLOT(paletteChanged(QPalette)) );
+    paletteChanged( pApp->palette() );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette,
+             this, &Playlist::Dock::paletteChanged );
 
     QWidget * layoutHolder = new QWidget( m_mainWidget );
 
@@ -129,32 +128,32 @@ Playlist::Dock::polish()
     m_playlistView = new PrettyListView();
     m_playlistView->show();
 
-    connect( m_searchWidget, SIGNAL(filterChanged(QString,int,bool)),
-             m_playlistView, SLOT(find(QString,int,bool)) );
-    connect( m_searchWidget, SIGNAL(next(QString,int)),
-             m_playlistView, SLOT(findNext(QString,int)) );
-    connect( m_searchWidget, SIGNAL(previous(QString,int)),
-             m_playlistView, SLOT(findPrevious(QString,int)) );
-    connect( m_searchWidget, SIGNAL(filterCleared()),
-             m_playlistView, SLOT(clearSearchTerm()) );
-    connect( m_searchWidget, SIGNAL(showOnlyMatches(bool)),
-             m_playlistView, SLOT(showOnlyMatches(bool)) );
-    connect( m_searchWidget, SIGNAL(activateFilterResult()),
-             m_playlistView, SLOT(playFirstSelected()) );
-    connect( m_searchWidget, SIGNAL(downPressed()), m_playlistView, SLOT(downOneTrack()) );
-    connect( m_searchWidget, SIGNAL(upPressed()), m_playlistView, SLOT(upOneTrack()) );
+    connect( m_searchWidget, &Playlist::ProgressiveSearchWidget::filterChanged,
+             m_playlistView, &Playlist::PrettyListView::find );
+    connect( m_searchWidget, &Playlist::ProgressiveSearchWidget::next,
+             m_playlistView, &Playlist::PrettyListView::findNext );
+    connect( m_searchWidget, &Playlist::ProgressiveSearchWidget::previous,
+             m_playlistView, &Playlist::PrettyListView::findPrevious );
+    connect( m_searchWidget, &Playlist::ProgressiveSearchWidget::filterCleared,
+             m_playlistView, &Playlist::PrettyListView::clearSearchTerm );
+    connect( m_searchWidget, &Playlist::ProgressiveSearchWidget::showOnlyMatches,
+             m_playlistView, &Playlist::PrettyListView::showOnlyMatches );
+    connect( m_searchWidget, &Playlist::ProgressiveSearchWidget::activateFilterResult,
+             m_playlistView, &Playlist::PrettyListView::playFirstSelected );
+    connect( m_searchWidget, &Playlist::ProgressiveSearchWidget::downPressed, m_playlistView, &Playlist::PrettyListView::downOneTrack );
+    connect( m_searchWidget, &Playlist::ProgressiveSearchWidget::upPressed, m_playlistView, &Playlist::PrettyListView::upOneTrack );
 
-    connect( The::mainWindow(), SIGNAL(switchQueueStateShortcut()),
-             m_playlistView, SLOT(switchQueueState()) );
+    connect( The::mainWindow(), &MainWindow::switchQueueStateShortcut,
+             m_playlistView, &Playlist::PrettyListView::switchQueueState );
 
     KConfigGroup searchConfig = Amarok::config("Playlist Search");
     m_playlistView->showOnlyMatches( searchConfig.readEntry( "ShowOnlyMatches", false ) );
 
-    connect( m_playlistView, SIGNAL(found()), m_searchWidget, SLOT(match()) );
-    connect( m_playlistView, SIGNAL(notFound()), m_searchWidget, SLOT(noMatch()) );
+    connect( m_playlistView, &Playlist::PrettyListView::found, m_searchWidget, &Playlist::ProgressiveSearchWidget::match );
+    connect( m_playlistView, &Playlist::PrettyListView::notFound, m_searchWidget, &Playlist::ProgressiveSearchWidget::noMatch );
 
-    connect( LayoutManager::instance(), SIGNAL(activeLayoutChanged()),
-             m_playlistView, SLOT(reset()) );
+    connect( LayoutManager::instance(), &LayoutManager::activeLayoutChanged,
+             m_playlistView, &Playlist::PrettyListView::reset );
 
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( m_playlistView );
@@ -163,7 +162,7 @@ Playlist::Dock::polish()
 
     { // START: Playlist toolbar
         // action toolbar
-        m_barBox = new KHBox( m_mainWidget );
+        m_barBox = new BoxWidget( false, m_mainWidget );
         m_barBox->setObjectName( "PlaylistBarBox" );
         m_barBox->setContentsMargins( 0, 0, 4, 0 );
         m_barBox->setFixedHeight( 36 );
@@ -173,32 +172,27 @@ Playlist::Dock::polish()
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setMovable( false );
 
-
         QActionGroup *playlistActions = new QActionGroup( m_mainWidget );
         playlistActions->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
 
-        m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ),
+        m_savePlaylistMenu = new KActionMenu( QIcon::fromTheme( "document-save-amarok" ),
                                               i18n("&Save Current Playlist"), m_mainWidget );
         m_savePlaylistMenu->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
 
         m_saveActions = new KActionCollection( m_mainWidget );
 
-        connect( m_savePlaylistMenu, SIGNAL(triggered(bool)),
-                 SLOT(slotSaveCurrentPlaylist()) );
+        connect( m_savePlaylistMenu, &KActionMenu::triggered,
+                 this, &Dock::slotSaveCurrentPlaylist );
         foreach( Playlists::PlaylistProvider *provider, The::playlistManager()->providersForCategory(
                             PlaylistManager::UserPlaylist ) )
         {
             playlistProviderAdded( provider, PlaylistManager::UserPlaylist );
         }
 
-        connect( The::playlistManager(),
-                 SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)),
-                 SLOT(playlistProviderAdded(Playlists::PlaylistProvider*,int))
-                 );
-        connect( The::playlistManager(),
-                 SIGNAL(providerRemoved(Playlists::PlaylistProvider*,int)),
-                 SLOT(playlistProviderRemoved(Playlists::PlaylistProvider*,int))
-                 );
+        connect( The::playlistManager(), &PlaylistManager::providerAdded,
+                 this, &Dock::playlistProviderAdded );
+        connect( The::playlistManager(), &PlaylistManager::providerRemoved,
+                 this, &Dock::playlistProviderRemoved );
 
         playlistActions->addAction( m_savePlaylistMenu );
 
@@ -227,8 +221,8 @@ Playlist::Dock::polish()
     paletteChanged( QApplication::palette() );
 
     // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.
-    connect( The::playlistController(), SIGNAL(replacingPlaylist()),
-             SLOT(clearFilterIfActive()) );
+    connect( The::playlistController(), &Playlist::Controller::replacingPlaylist,
+             this, &Playlist::Dock::clearFilterIfActive );
 
 }
 
@@ -238,11 +232,10 @@ Playlist::Dock::sizeHint() const
     return QSize( static_cast<QWidget*>( parent() )->size().width() / 4 , 300 );
 }
 
-
 void
 Playlist::Dock::paletteChanged( const QPalette &palette )
 {
-    const QString backgroundColor = PaletteHandler::highlightColor().name();
+    const QString backgroundColor = palette.color( QPalette::Active, QPalette::Mid ).name();
     const QString textColor = palette.color( QPalette::Active, QPalette::HighlightedText ).name();
     const QString linkColor = palette.color( QPalette::Active, QPalette::Link ).name();
     const QString ridgeColor = palette.color( QPalette::Active, QPalette::Window ).name();
@@ -273,17 +266,16 @@ Playlist::Dock::playlistProviderAdded( Playlists::PlaylistProvider *provider, in
             dynamic_cast<Playlists::UserPlaylistProvider *>(provider);
     if( userProvider == 0 )
         return;
-    QAction *action = new KAction( userProvider->icon(),
+    QAction *action = new QAction( userProvider->icon(),
                                    i18n("&Save playlist to \"%1\"", provider->prettyName() ),
                                    this );
-    action->setData( QVariant::fromValue(
-            QWeakPointer<Playlists::UserPlaylistProvider>( userProvider ) ) );
+    action->setData( QVariant::fromValue( QPointer<Playlists::UserPlaylistProvider>( userProvider ) ) );
     m_saveActions->addAction( QString::number( (qlonglong) userProvider ), action );
 
     // insert the playlist provider actions before "export"
     QAction* exportAction = Amarok::actionCollection()->action( "playlist_export" );
     m_savePlaylistMenu->insertAction( exportAction, action );
-    connect( action, SIGNAL(triggered(bool)), SLOT(slotSaveCurrentPlaylist()) );
+    connect( action, &QAction::triggered, this, &Playlist::Dock::slotSaveCurrentPlaylist );
 }
 
 void
@@ -320,12 +312,12 @@ void
 Playlist::Dock::slotEditQueue()
 {
     if( m_playlistQueueEditor ) {
-        m_playlistQueueEditor.data()->raise();
+        m_playlistQueueEditor->raise();
         return;
     }
     m_playlistQueueEditor = new PlaylistQueueEditor;
-    m_playlistQueueEditor.data()->setAttribute( Qt::WA_DeleteOnClose );
-    m_playlistQueueEditor.data()->show();
+    m_playlistQueueEditor->setAttribute( Qt::WA_DeleteOnClose );
+    m_playlistQueueEditor->show();
 }
 
 void

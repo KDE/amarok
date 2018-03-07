@@ -20,6 +20,9 @@
 #include "core/collections/Collection.h"
 
 #include <ThreadWeaver/Job>
+#include <ThreadWeaver/Thread>
+
+#include <QUrl>
 
 namespace MetaProxy
 {
@@ -27,7 +30,7 @@ namespace MetaProxy
      * Worker to get real track for MetaProxy::Track. Worker deletes itself somewhere
      * after emitting finishedLookup().
      */
-    class Worker : public ThreadWeaver::Job
+    class Worker : public QObject, public ThreadWeaver::Job
     {
         Q_OBJECT
 
@@ -37,21 +40,31 @@ namespace MetaProxy
              * CollectionManager are used and a watch for new providers is used.
              * Otherwise the lookup happes just in @param provider and is one-shot.
              */
-            explicit Worker( const KUrl &url, Collections::TrackProvider *provider = 0 );
+            explicit Worker( const QUrl &url, Collections::TrackProvider *provider = 0 );
 
             //TrackForUrlWorker virtual methods
-            virtual void run();
+            virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
-        signals:
+        protected:
+            void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+            void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+
+        Q_SIGNALS:
             void finishedLookup( Meta::TrackPtr track );
+            /** This signal is emitted when this job is being processed by a thread. */
+            void started(ThreadWeaver::JobPointer);
+            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+            void done(ThreadWeaver::JobPointer);
+            /** This job has failed.
+             * This signal is emitted when success() returns false after the job is executed. */
+            void failed(ThreadWeaver::JobPointer);
 
-        private slots:
+        private Q_SLOTS:
             void slotNewTrackProvider( Collections::TrackProvider *newTrackProvider );
             void slotNewCollection( Collections::Collection *newCollection );
-            void slotStepDone();
 
         private:
-            KUrl m_url;
+            QUrl m_url;
             Collections::TrackProvider *m_provider;
             int m_stepsDoneReceived;
     };

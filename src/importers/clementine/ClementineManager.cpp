@@ -19,10 +19,15 @@
 #include "ClementineConfigWidget.h"
 #include "ClementineProvider.h"
 
-AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( clementine,
+#include <KLocalizedString>
+
+AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( ClementineImporterFactory,
+                                      "amarok_importer-clementine.json",
                                       "ClementineImporter",
                                       i18n( "Clementine" ),
                                       i18n( "Clementine Statistics Importer" ),
-                                      KIcon( "view-importers-clementine-amarok" ),
+                                      QIcon::fromTheme( "view-importers-clementine-amarok" ),
                                       StatSyncing::ClementineConfigWidget,
                                       StatSyncing::ClementineProvider )
+
+#include <ClementineManager.moc>

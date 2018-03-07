@@ -16,6 +16,7 @@
 
 #include "TestSqlTrack.h"
 
+#include "amarokconfig.h"
 #include "DefaultSqlQueryMakerFactory.h"
 #include "core/meta/Meta.h"
 #include "core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.h"
@@ -30,9 +31,8 @@
 #include <QDateTime>
 #include <QSignalSpy>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestSqlTrack )
+QTEST_GUILESS_MAIN( TestSqlTrack )
 
 TestSqlTrack::TestSqlTrack()
     : QObject()
@@ -45,9 +45,11 @@ TestSqlTrack::TestSqlTrack()
 void
 TestSqlTrack::initTestCase()
 {
-    m_tmpDir = new KTempDir();
-    m_storage = new MySqlEmbeddedStorage();
-    QVERIFY( m_storage->init( m_tmpDir->name() ) );
+    AmarokConfig::instance("amarokrc");
+
+    m_tmpDir = new QTemporaryDir();
+    m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
+    QVERIFY( m_storage->init( m_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
 
@@ -273,7 +275,7 @@ TestSqlTrack::testSetAllValuesSingleNotExisting()
         // get a new track
         Meta::TrackPtr track1 = m_collection->registry()->getTrack( -1, "./IamANewTrack.mp3", 1, "1e34fb213489" );
 
-        QSignalSpy spy( m_collection, SIGNAL(updated()));
+        QSignalSpy spy( m_collection, &Collections::SqlCollection::updated);
         MetaNotificationSpy metaSpy;
         metaSpy.subscribeTo( track1 );
 
@@ -373,7 +375,7 @@ TestSqlTrack::testSetAllValuesBatch()
         Meta::TrackPtr track1 = m_collection->registry()->getTrack( "/IDoNotExist.mp3" );
         Meta::SqlTrack *sqlTrack1 = static_cast<Meta::SqlTrack*>( track1.data() );
 
-        QSignalSpy spy( m_collection, SIGNAL(updated()));
+        QSignalSpy spy( m_collection, &Collections::SqlCollection::updated);
         MetaNotificationSpy metaSpy;
         metaSpy.subscribeTo( track1 );
 
@@ -557,4 +559,3 @@ TestSqlTrack::testRemoveLabelFromTrackWhenNotInCache()
     QCOMPARE( urlsLabelsCount.first().toInt(), 0 );
 }
 
-#include "TestSqlTrack.moc"

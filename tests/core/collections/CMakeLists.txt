@@ -7,8 +7,6 @@ include_directories(
   ${AMAROK_SOURCE_TREE}/meta
   ${CMAKE_BINARY_DIR}/src
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
@@ -19,33 +17,37 @@ set( testcollectionlocation_SRCS
         ${GOOGLEMOCK_SRCS}
     )
 
-kde4_add_unit_test( testcollectionlocation TESTNAME amarok-testcollectionlocation ${testcollectionlocation_SRCS} )
+add_executable( testcollectionlocation ${testcollectionlocation_SRCS} )
+add_test(NAME testcollectionlocation COMMAND $<TARGET_FILE:testcollectionlocation>)
+ecm_mark_as_test(testcollectionlocation)
 
 add_dependencies( testcollectionlocation amarokconfig_h )
 add_dependencies( testcollectionlocation amarokcore)
 add_dependencies( testcollectionlocation amaroklib)
 
 if(APPLE)
-    SET_TARGET_PROPERTIES(testcollectionlocation PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    set_target_properties(testcollectionlocation PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 
 target_link_libraries(testcollectionlocation
                         amarokcore
                         amaroklib
-                        ${KDE4_KDECORE_LIBS}
-                        ${KDE4_KDEUI_LIBS}
-                        ${KDE4_KIO_LIBS}
-                        ${QT_QTTEST_LIBRARY}
+                        KF5::KIOCore
+                        Qt5::Test
                         ${GOOGLEMOCK_LIBRARIES})
 
 #------------------------ Test Collection -----------------------------
 
 set( testcollection_SRCS TestCollection.cpp )
-kde4_add_unit_test( testcollection ${testcollection_SRCS} )
-target_link_libraries( testcollection ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY} amarokcore )
+add_executable( testcollection ${testcollection_SRCS} )
+add_test(NAME testcollection COMMAND $<TARGET_FILE:testcollection>)
+ecm_mark_as_test(testcollection)
+target_link_libraries( testcollection  Qt5::Test amarokcore )
 
 #------------------------ Test QueryMaker -----------------------------
 
 set( testquerymaker_SRCS TestQueryMaker.cpp ../../mocks/MockQueryMaker.cpp )
-kde4_add_unit_test( testquerymaker ${testquerymaker_SRCS} )
-target_link_libraries( testquerymaker ${KDE4_KDECORE_LIBS} ${QT_QTGUI_LIBRARY} ${QT_QTTEST_LIBRARY} amarokcore )
+add_executable( testquerymaker ${testquerymaker_SRCS} )
+add_test(NAME testquerymaker COMMAND $<TARGET_FILE:testquerymaker>)
+ecm_mark_as_test(testquerymaker)
+target_link_libraries( testquerymaker Qt5::Gui Qt5::Test amarokcore )

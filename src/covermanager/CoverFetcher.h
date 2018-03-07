@@ -26,7 +26,7 @@
 
 #include <QHash>
 #include <QObject>      //baseclass
-#include <QWeakPointer>
+#include <QPointer>
 #include <QStringList>  //stack allocated
 
 class CoverFetchQueue;
@@ -50,19 +50,19 @@ public:
 
     enum FinishState { Success, Error, NotFound, Cancelled };
 
-public slots:
+public Q_SLOTS:
     AMAROK_EXPORT void queueQuery( Meta::AlbumPtr album, const QString &query, int page = 0 );
 
-signals:
+Q_SIGNALS:
     void finishedSingle( int state );
 
-private slots:
+private Q_SLOTS:
 
     /// Fetch a cover
     void slotFetch( CoverFetchUnit::Ptr unit );
 
     /// Handle result of a fetch job
-    void slotResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void slotResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /// Cover found dialog is closed by the user
     void slotDialogFinished();
@@ -84,12 +84,12 @@ private:
     CoverFetchQueue *m_queue;     //!< current fetch queue
     Meta::AlbumList m_queueLater; //!< put here if m_queue exceeds m_limit
 
-    QHash< KUrl, CoverFetchUnit::Ptr > m_urls;
+    QHash< QUrl, CoverFetchUnit::Ptr > m_urls;
     QHash< const CoverFetchUnit::Ptr, QImage > m_selectedImages;
 
     QStringList m_errors;
 
-    QWeakPointer<CoverFoundDialog> m_dialog;
+    QPointer<CoverFoundDialog> m_dialog;
 
     /// cleanup depending on the fetch result
     void finish( const CoverFetchUnit::Ptr unit,
@@ -103,7 +103,7 @@ private:
 
     void handleCoverPayload( const CoverFetchUnit::Ptr &unit,
                              const QByteArray &data,
-                             const KUrl &url );
+                             const QUrl &url );
 
     CoverFetch::Source fetchSource() const;
 };

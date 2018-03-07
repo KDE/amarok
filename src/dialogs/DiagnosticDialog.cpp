@@ -21,39 +21,46 @@
 #include "PluginManager.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
+#include <QApplication>
+#include <QClipboard>
+#include <QDialogButtonBox>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
+
 #include <KAboutData>
-#include <KApplication>
-#include <KGlobal>
+#include <KCoreAddons>
+#include <KLocalizedString>
 #include <KPluginInfo>
 #include <KService>
 #include <KServiceTypeTrader>
-#include <Plasma/Applet>
+
 #include <phonon/pulsesupport.h>
 
-#include <QClipboard>
-#include <QPlainTextEdit>
 
 
-DiagnosticDialog::DiagnosticDialog( const KAboutData *aboutData, QWidget *parent )
-        : KDialog( parent )
+DiagnosticDialog::DiagnosticDialog( const KAboutData about, QWidget *parent )
+    : QDialog( parent )
 {
-    if( aboutData == 0 )
-        aboutData = KGlobal::mainComponent().aboutData();
-
-    m_textBox = new QPlainTextEdit( generateReport( aboutData ), this );
-
-    setPlainCaption( i18nc( "%1 is the program name", "%1 Diagnostics", aboutData->programName() ) );
-
-    setButtons( Close | User1 );
-    setButtonText( User1, i18n( "Copy to Clipboard" ) );
-
+    setLayout( new QVBoxLayout );
+    m_textBox = new QPlainTextEdit( generateReport( &about ), this );
     m_textBox->setReadOnly( true );
+    layout()->addWidget( m_textBox );
 
-    setMainWidget( m_textBox );
-    setInitialSize( QSize( 480, 460 ) );
+    auto buttonBox = new QDialogButtonBox( this );
+    auto closeButton = buttonBox->addButton( QDialogButtonBox::Close );
+    auto copyButton = new QPushButton( i18n( "Copy to Clipboard" ) );
+    buttonBox->addButton( copyButton, QDialogButtonBox::ActionRole );
+    layout()->addWidget( buttonBox );
 
-    connect( this, SIGNAL(user1Clicked()), SLOT(slotCopyToClipboard()) );
-    connect( this, SIGNAL(finished()), SLOT(deleteLater()) );
+    setWindowTitle( i18nc( "%1 is the program name", "%1 Diagnostics", KAboutData::applicationData().displayName() ) );
+
+    resize( QSize( 480, 460 ) );
+
+    connect( closeButton, &QPushButton::clicked, this, &DiagnosticDialog::close );
+    connect( copyButton, &QPushButton::clicked, this, &DiagnosticDialog::slotCopyToClipboard );
+
+    setAttribute( Qt::WA_DeleteOnClose );
 }
 
 const QString
@@ -61,7 +68,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
 {
     // Get scripts -- we have to assemble 3 lists into one
     KPluginInfo::List aScripts;
-    const ScriptManager *aScriptManager = ScriptManager::instance();
+    const auto aScriptManager = ScriptManager::instance();
     aScripts.append( aScriptManager->scripts( QLatin1String( "Generic" ) ) );
     aScripts.append( aScriptManager->scripts( QLatin1String( "Lyrics" ) ) );
     aScripts.append( aScriptManager->scripts( QLatin1String( "Scriptable Service" ) ) );
@@ -76,31 +83,27 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
 
 
     // Get plugins -- we have to assemble a list again.
-    KPluginInfo::List aPlugins;
-    const Plugins::PluginManager *aPluginManager = Plugins::PluginManager::instance();
-    aPlugins.append( aPluginManager->plugins( Plugins::PluginManager::Collection ) );
-    aPlugins.append( aPluginManager->plugins( Plugins::PluginManager::Service ) );
-    aPlugins.append( aPluginManager->plugins( Plugins::PluginManager::Importer ) );
+    QList<KPluginMetaData> aPlugins;
+    const auto aPluginManager = Plugins::PluginManager::instance();
+    aPlugins.append( aPluginManager->enabledPlugins( Plugins::PluginManager::Collection ) );
+    aPlugins.append( aPluginManager->enabledPlugins( Plugins::PluginManager::Service ) );
+    aPlugins.append( aPluginManager->enabledPlugins( Plugins::PluginManager::Importer ) );
 
     QString aPluginString;
-    foreach( KPluginInfo aInfo, aPlugins )
+    for( const auto &aInfo : aPlugins )
     {
-        if( aInfo.isPluginEnabled() )
-            aPluginString += "   " + aInfo.name() + " (" + aInfo.version() + ")\n";
+        aPluginString += "   " + aInfo.name() + " (" + aInfo.version() + ")\n";
     }
 
-
     // Get applets
-    const QStringList appletList = Context::ContextView::self()->currentAppletNames();
     QString appletString;
+    const QStringList appletList = Context::ContextView::self()->currentAppletNames();
 
     foreach( const QString &applet, appletList )
     {
         // Currently we cannot extract the applet version number this way
         appletString += "   " + applet + '\n';
     }
-
-
     const KService::Ptr aPhononBackend =
         KServiceTypeTrader::self()->preferredService( "PhononBackend" );
 
@@ -110,18 +113,18 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     return i18n(
                "%1 Diagnostics\n\nGeneral Information:\n"
                "   %1 Version: %2\n"
-               "   KDE Version: %3\n"
+               "   KDE Frameworks Version: %3\n"
                "   Qt Version: %4\n"
                "   Phonon Version: %5\n"
                "   Phonon Backend: %6 (%7)\n"
                "   PulseAudio: %8\n\n",
 
-               aboutData->programName(), aboutData->version(),      // Amarok
-               KDE::versionString(),                                // KDE
-               qVersion(),                                          // QT
+               KAboutData::applicationData().displayName(), aboutData->version(),      // Amarok
+               KCoreAddons::versionString(),                        // KDE Frameworks
+               qVersion(),                                          // Qt
                Phonon::phononVersion(),                             // Phonon
-               aPhononBackend.data()->name(),
-               aPhononBackend.data()->property( "X-KDE-PhononBackendInfo-Version", QVariant::String ).toString(), // & Backend
+               aPhononBackend->name(),
+               aPhononBackend->property( "X-KDE-PhononBackendInfo-Version", QVariant::String ).toString(), // & Backend
                pulse                                                // PulseAudio
            ) + i18n(
                "Enabled Scripts:\n%1\n"

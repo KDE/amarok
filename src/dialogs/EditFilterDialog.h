@@ -23,7 +23,7 @@
 #include "widgets/MetaQueryWidget.h"
 #include "widgets/TokenPool.h"
 
-#include <KDialog>
+#include <QDialog>
 #include <QList>
 
 namespace Ui
@@ -31,7 +31,7 @@ namespace Ui
     class EditFilterDialog;
 }
 
-class EditFilterDialog : public KDialog
+class EditFilterDialog : public QDialog
 {
     Q_OBJECT
 
@@ -41,10 +41,10 @@ class EditFilterDialog : public KDialog
 
         QString filter();
 
-    signals:
+    Q_SIGNALS:
         void filterChanged( const QString &filter );
 
-    private slots:
+    private Q_SLOTS:
         void slotTokenSelected( Token *token );
         void slotTokenDestroyed( QObject *token );
         void slotAttributeChanged( const MetaQueryWidget::Filter &filter );

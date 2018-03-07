@@ -26,16 +26,18 @@
 #include "core/support/Debug.h"
 #include "core-impl/meta/file/File.h"
 #include "dialogs/TrackOrganizer.h"
+#include "widgets/BoxWidget.h"
 #include "widgets/TokenPool.h"
 #include "ui_OrganizeCollectionDialogBase.h"
-
-#include <KColorScheme>
-#include <KInputDialog>
 
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDir>
+#include <QPushButton>
 #include <QTimer>
+
+#include <KColorScheme>
+#include <KWindowConfig>
 
 // -------------- OrganizeCollectionOptionWidget ------------
 OrganizeCollectionOptionWidget::OrganizeCollectionOptionWidget( QWidget *parent )
@@ -43,12 +45,12 @@ OrganizeCollectionOptionWidget::OrganizeCollectionOptionWidget( QWidget *parent 
 {
     setupUi( this );
 
-    connect( spaceCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( ignoreTheCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( vfatCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( asciiCheck, SIGNAL(toggled(bool)), SIGNAL(optionsChanged()) );
-    connect( regexpEdit, SIGNAL(editingFinished()), SIGNAL(optionsChanged()) );
-    connect( replaceEdit, SIGNAL(editingFinished()), SIGNAL(optionsChanged()) );
+    connect( spaceCheck, &QCheckBox::toggled, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( ignoreTheCheck, &QCheckBox::toggled, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( vfatCheck, &QCheckBox::toggled, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( asciiCheck, &QCheckBox::toggled, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( regexpEdit, &QLineEdit::editingFinished, this, &OrganizeCollectionOptionWidget::optionsChanged );
+    connect( replaceEdit, &QLineEdit::editingFinished, this, &OrganizeCollectionOptionWidget::optionsChanged );
 }
 
 // ------------------------- OrganizeCollectionWidget -------------------
@@ -136,25 +138,23 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
                                                     const char *name,
                                                     bool modal,
                                                     const QString &caption,
-                                                    QFlags<KDialog::ButtonCode> buttonMask )
-    : KDialog( parent )
+                                                    QFlags<QDialogButtonBox::StandardButton> buttonMask )
+    : QDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
     , m_conflict( false )
 {
     Q_UNUSED( name )
 
-    setCaption( caption );
+    setWindowTitle( caption );
     setModal( modal );
-    setButtons( buttonMask );
-    showButtonSeparator( true );
     m_targetFileExtension = targetExtension;
 
     if( tracks.size() > 0 )
         m_allTracks = tracks;
 
-    KVBox *mainVBox = new KVBox( this );
-    setMainWidget( mainVBox );
+    BoxWidget *mainVBox = new BoxWidget( true, this );
     QWidget *mainContainer = new QWidget( mainVBox );
+    new QDialogButtonBox( buttonMask, mainVBox );
 
     ui->setupUi( mainContainer );
 
@@ -175,7 +175,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->optionsWidget->setRegexpText( AmarokConfig::replacementRegexp() );
     ui->optionsWidget->setReplaceText( AmarokConfig::replacementString() );
 
-    ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
+    ui->previewTableWidget->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
     ui->conflictLabel->setText("");
     QPalette p = ui->conflictLabel->palette();
     KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
@@ -183,32 +183,33 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->previewTableWidget->sortItems( 0, Qt::AscendingOrder );
 
     // only show the options when the Options button is checked
-    connect( ui->optionsButton, SIGNAL(toggled(bool)), ui->organizeCollectionWidget, SLOT(setVisible(bool)) );
-    connect( ui->optionsButton, SIGNAL(toggled(bool)), ui->optionsWidget, SLOT(setVisible(bool)) );
+    connect( ui->optionsButton, &QAbstractButton::toggled, ui->organizeCollectionWidget, &OrganizeCollectionWidget::setVisible );
+    connect( ui->optionsButton, &QAbstractButton::toggled, ui->optionsWidget, &OrganizeCollectionOptionWidget::setVisible );
     ui->organizeCollectionWidget->hide();
     ui->optionsWidget->hide();
 
-    connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)), SLOT(slotUpdatePreview()) );
-    connect( ui->organizeCollectionWidget, SIGNAL(schemeChanged()), SLOT(slotUpdatePreview()) );
-    connect( ui->optionsWidget, SIGNAL(optionsChanged()), SLOT(slotUpdatePreview()));
+    connect( ui->folderCombo, QOverload<const QString&>::of(&QComboBox::currentIndexChanged),
+             this, &OrganizeCollectionDialog::slotUpdatePreview );
+    connect( ui->organizeCollectionWidget, &OrganizeCollectionWidget::schemeChanged, this, &OrganizeCollectionDialog::slotUpdatePreview );
+    connect( ui->optionsWidget, &OrganizeCollectionOptionWidget::optionsChanged, this, &OrganizeCollectionDialog::slotUpdatePreview);
     // to show the conflict error
-    connect( ui->overwriteCheck, SIGNAL(stateChanged(int)), SLOT(slotOverwriteModeChanged()) );
+    connect( ui->overwriteCheck, &QCheckBox::stateChanged, this, &OrganizeCollectionDialog::slotOverwriteModeChanged );
 
-    connect( this, SIGNAL(accepted()), ui->organizeCollectionWidget, SLOT(onAccept()) );
-    connect( this, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
-    connect( ui->folderCombo, SIGNAL(currentIndexChanged(QString)),
-             SLOT(slotEnableOk(QString)) );
+    connect( this, &OrganizeCollectionDialog::accepted, ui->organizeCollectionWidget, &OrganizeCollectionWidget::onAccept );
+    connect( this, &OrganizeCollectionDialog::accepted, this, &OrganizeCollectionDialog::slotDialogAccepted );
+    connect( ui->folderCombo, QOverload<const QString&>::of(&QComboBox::currentIndexChanged),
+             this, &OrganizeCollectionDialog::slotEnableOk );
 
     slotEnableOk( ui->folderCombo->currentText() );
-    restoreDialogSize( Amarok::config( "OrganizeCollectionDialog" ) );
+    KWindowConfig::restoreWindowSize( windowHandle(), Amarok::config( "OrganizeCollectionDialog" ) );
 
-    QTimer::singleShot( 0, this, SLOT(slotUpdatePreview()) );
+    QTimer::singleShot( 0, this, &OrganizeCollectionDialog::slotUpdatePreview );
 }
 
 OrganizeCollectionDialog::~OrganizeCollectionDialog()
 {
     KConfigGroup group = Amarok::config( "OrganizeCollectionDialog" );
-    saveDialogSize( group );
+    group.writeEntry( "geometry", saveGeometry() );
 
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     delete ui;
@@ -259,7 +260,7 @@ OrganizeCollectionDialog::slotUpdatePreview()
     setCursor( Qt::BusyCursor );
 
     // be nice do the UI, try not to block for too long
-    QTimer::singleShot( 0, this, SLOT(processPreviewPaths()) );
+    QTimer::singleShot( 0, this, &OrganizeCollectionDialog::processPreviewPaths );
 }
 
 void
@@ -321,7 +322,7 @@ OrganizeCollectionDialog::processPreviewPaths()
         m_previews << previews.at( i ).mid( m_previewPrefix.length() );
     }
 
-    QTimer::singleShot( 0, this, SLOT(previewNextBatch()) );
+    QTimer::singleShot( 0, this, &OrganizeCollectionDialog::previewNextBatch );
 }
 
 void
@@ -358,7 +359,7 @@ OrganizeCollectionDialog::previewNextBatch()
         if( processed >= batchSize )
         {
             // yield some room to the other events in the main loop
-            QTimer::singleShot( 0, this, SLOT(previewNextBatch()) );
+            QTimer::singleShot( 0, this, &OrganizeCollectionDialog::previewNextBatch );
             return;
         }
     }
@@ -400,8 +401,7 @@ OrganizeCollectionDialog::slotDialogAccepted()
 void
 OrganizeCollectionDialog::slotEnableOk( const QString & currentCollectionRoot )
 {
-    if( currentCollectionRoot == 0 )
-        enableButtonOk( false );
-    else
-        enableButtonOk( true );
+    auto okButton = findChild<QDialogButtonBox*>()->button( QDialogButtonBox::Ok );
+    if( okButton )
+        okButton->setEnabled( !currentCollectionRoot.isEmpty() );
 }

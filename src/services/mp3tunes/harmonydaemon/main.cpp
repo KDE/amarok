@@ -19,54 +19,53 @@
 #endif
 #include "Mp3tunesHarmonyDaemon.h"
 #include "AmarokClient.h"
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
-#include <klocale.h>
+
 #include <QApplication>
-#include <QtDebug>
+#include <QCommandLineParser>
+#include <QDebug>
+
+#include <KAboutData>
+#include <KLocalizedString>
 
 int main( int argc, char *argv[] )
 {
-    const KAboutData about( "amarokmp3tunesharmonydaemon", "amarok",
-    ki18n( "Amarok's MP3tunes Harmony Daemon" ), "0.1",
-    ki18n( "Handles AutoSync for the MP3tunes service in Amarok." ), KAboutData::License_GPL,
-    ki18n( "(C) 2008, Casey Link" ),
-    ki18n( "IRC:\nserver: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org" ),
-    I18N_NOOP( "http://amarok.kde.org" ) );
+    QCoreApplication app( argc, argv );
+    const KAboutData about( "amarokmp3tunesharmonydaemon",
+                            "amarok",
+                            "0.1",
+                            i18n( "Amarok's MP3tunes Harmony Daemon" ),
+                            KAboutLicense::GPL,
+                            i18n( "(C) 2008, Casey Link" ),
+                            i18n( "Handles AutoSync for the MP3tunes service in Amarok." ),
+                            i18n( "IRC:\nserver: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org" ),
+                            I18N_NOOP( "http://amarok.kde.org" ) );
+    KAboutData::setApplicationData( about );
 
-    KCmdLineArgs::reset();
-    KCmdLineArgs::init( argc, argv, &about ); //calls KCmdLineArgs::addStdCmdLineOptions()
+    QCommandLineParser parser;
+    parser.setApplicationDescription( about.shortDescription() );
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addOption( { "identifier", i18n( "The identifier the daemon should use." ) } );
+    parser.addOption( { "email", i18n( "The email to be used for authentication." ) } );
+    parser.addOption( { "pin", i18n( "The pin to be used for authentication." ) } );
+    parser.process( app );
 
-    KCmdLineOptions options;
-    options.add("+identifier", ki18n( "The identifier the daemon should use." ));
-    options.add("+[email]", ki18n( "The email to be used for authentication." ));
-    options.add("+[pin]", ki18n( "The pin to be used for authentication." ));
-    KCmdLineArgs::addCmdLineOptions( options );  //add our own options
+    QString ident = parser.value( "identifier" );
+    QString email = parser.value( "email" );
+    QString pin = parser.value( "pin" );
 
-    const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-
-    QString ident;
-    QString email;
-    QString pin;
-    if ( args->count() < 1 || args->count() > 3 )
+    if( ident.isEmpty() )
         return -1;
-    if( args->count() > 0 )
-        ident = args->arg( 0 );
-    if( args->count() == 3 )
-    {
-        email = args->arg( 1 );
-        pin = args->arg( 2 );
-    }
 
     if( email.isEmpty() && pin.isEmpty() )
-        theDaemon = new Mp3tunesHarmonyDaemon( ident );
+        theDaemon = new Mp3tunesHarmonyDaemon( ident, argc, argv );
     else
-        theDaemon = new Mp3tunesHarmonyDaemon( ident, email, pin );
+        theDaemon = new Mp3tunesHarmonyDaemon( ident, email, pin, argc, argv );
 
     Mp3tunesAmarokClient *client = new Mp3tunesAmarokClient();
     theDaemon->setClient( client );
     qDebug()  << "Starting main event loop";
-    QCoreApplication::exec();
+    return QCoreApplication::exec();
 }
 
 

@@ -19,8 +19,8 @@
 #include "widgets/TokenWithLayout.h"
 #include "widgets/TokenDropTarget.h"
 
-#include <KIcon>
-#include <KLocale>
+#include <QIcon>
+#include <KLocalizedString>
 
 #include <QButtonGroup>
 #include <QComboBox>
@@ -108,8 +108,8 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     l4->addWidget( m_automaticWidth = new QRadioButton( i18nc( "automatic width", "Automatic" ), this ) );
     m_automaticWidth->setToolTip( i18n( "Take homogeneous part of the space available to all elements with automatic width" ) );
     l4->addStretch();
-    boxWidget->connect( m_fixedWidth, SIGNAL(toggled(bool)), SLOT(setEnabled(bool)) );
-    connect( m_automaticWidth, SIGNAL(toggled(bool)), SLOT(setAutomaticWidth(bool)) );
+    boxWidget->connect( m_fixedWidth, &QRadioButton::toggled, this, &LayoutEditDialog::setEnabled );
+    connect( m_automaticWidth, &QRadioButton::toggled, this, &LayoutEditDialog::setAutomaticWidth );
     l1->addLayout( l4 );
 
     QHBoxLayout *l5 = new QHBoxLayout( boxWidget );
@@ -119,7 +119,7 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     l5->addWidget( l );
 //         width->connect( sizeMode, SIGNAL(currentIndexChanged(int)), SLOT(setDisabled()) )
     l->setNum( 0 );
-    l->connect( m_width, SIGNAL(valueChanged(int)), SLOT(setNum(int)) );
+    connect( m_width, &QSlider::valueChanged, l, QOverload<int>::of(&QLabel::setNum) );
 
 #define HAVE_METRICS 0
 #if HAVE_METRICS
@@ -162,17 +162,17 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     QDialogButtonBox *box = new QDialogButtonBox(this);
     box->addButton( QDialogButtonBox::Cancel );
     box->addButton( QDialogButtonBox::Ok );
-    connect( box, SIGNAL(rejected()), SLOT(close()) );
-    connect( box, SIGNAL(accepted()), SLOT(apply()) );
+    connect( box, &QDialogButtonBox::rejected, this, &LayoutEditDialog::close );
+    connect( box, &QDialogButtonBox::accepted, this, &LayoutEditDialog::apply );
     l1->addWidget( box );
 
     l1->addStretch();
 
-    m_alignLeft->setIcon( KIcon( "format-justify-left" ) );
+    m_alignLeft->setIcon( QIcon::fromTheme( "format-justify-left" ) );
     m_alignLeft->setCheckable( true );
-    m_alignCenter->setIcon( KIcon( "format-justify-center" ) );
+    m_alignCenter->setIcon( QIcon::fromTheme( "format-justify-center" ) );
     m_alignCenter->setCheckable( true );
-    m_alignRight->setIcon( KIcon( "format-justify-right" ) );
+    m_alignRight->setIcon( QIcon::fromTheme( "format-justify-right" ) );
     m_alignRight->setCheckable( true );
     QButtonGroup *align = new QButtonGroup( this );
     align->setExclusive( true );
@@ -180,11 +180,11 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     align->addButton( m_alignCenter );
     align->addButton( m_alignRight );
 
-    m_bold->setIcon( KIcon( "format-text-bold" ) );
+    m_bold->setIcon( QIcon::fromTheme( "format-text-bold" ) );
     m_bold->setCheckable( true );
-    m_italic->setIcon( KIcon( "format-text-italic" ) );
+    m_italic->setIcon( QIcon::fromTheme( "format-text-italic" ) );
     m_italic->setCheckable( true );
-    m_underline->setIcon( KIcon( "format-text-underline" ) );
+    m_underline->setIcon( QIcon::fromTheme( "format-text-underline" ) );
     m_underline->setCheckable( true );
 
 }
@@ -194,18 +194,18 @@ void LayoutEditDialog::apply()
     if( !m_token )
         return;
 
-    m_token.data()->setPrefix( m_prefix->text() );
-    m_token.data()->setSuffix( m_suffix->text() );
-    m_token.data()->setWidth( m_width->value() );
+    m_token->setPrefix( m_prefix->text() );
+    m_token->setSuffix( m_suffix->text() );
+    m_token->setWidth( m_width->value() );
     if ( m_alignLeft->isChecked() )
-        m_token.data()->setAlignment( Qt::AlignLeft );
+        m_token->setAlignment( Qt::AlignLeft );
     else if ( m_alignCenter->isChecked() )
-        m_token.data()->setAlignment( Qt::AlignHCenter );
+        m_token->setAlignment( Qt::AlignHCenter );
     else if ( m_alignRight->isChecked() )
-        m_token.data()->setAlignment( Qt::AlignRight );
-    m_token.data()->setBold( m_bold->isChecked() );
-    m_token.data()->setItalic( m_italic->isChecked() );
-    m_token.data()->setUnderline( m_underline->isChecked() );
+        m_token->setAlignment( Qt::AlignRight );
+    m_token->setBold( m_bold->isChecked() );
+    m_token->setItalic( m_italic->isChecked() );
+    m_token->setUnderline( m_underline->isChecked() );
 
     // we do this here to avoid reliance on the connection order (i.e. prevent close before apply)
     if( sender() )
@@ -242,15 +242,15 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
     m_token = t;
     if ( m_token )
     {
-        m_element->setText( m_token.data()->name() );
-        m_prefix->setText( m_token.data()->prefix() );
-        m_suffix->setText( m_token.data()->suffix() );
+        m_element->setText( m_token->name() );
+        m_prefix->setText( m_token->prefix() );
+        m_suffix->setText( m_token->suffix() );
 
 
         // Compute the remaining space from the tokens on the same line.
         // this should still not be done here as it makes upward assumptions
         // solution(?) token->element->row->elements
-        TokenDropTarget *editWidget = qobject_cast<TokenDropTarget*>( m_token.data()->parentWidget() );
+        TokenDropTarget *editWidget = qobject_cast<TokenDropTarget*>( m_token->parentWidget() );
         if( editWidget )
         {
             qreal spareWidth = 100.0;
@@ -270,30 +270,29 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
 
             int max = qMax( spareWidth, qreal( 0.0 ) );
 
-            if( max >= m_token.data()->width() * 100.0 )
+            if( max >= m_token->width() * 100.0 )
                 m_width->setMaximum( qMax( spareWidth, qreal( 0.0 ) ) );
             else
-                m_width->setMaximum( m_token.data()->width() * 100.0 );
+                m_width->setMaximum( m_token->width() * 100.0 );
         }
-        m_width->setValue( m_token.data()->width() * 100.0 );
+        m_width->setValue( m_token->width() * 100.0 );
         m_previousWidth = m_width->value();
         
-        if ( m_token.data()->width() > 0.0 )
+        if ( m_token->width() > 0.0 )
             m_fixedWidth->setChecked( true );
         else
             m_automaticWidth->setChecked( true );
 
-        if ( m_token.data()->alignment() & Qt::AlignLeft )
+        if ( m_token->alignment() & Qt::AlignLeft )
             m_alignLeft->setChecked(true);
-        else if ( m_token.data()->alignment() & Qt::AlignHCenter )
+        else if ( m_token->alignment() & Qt::AlignHCenter )
             m_alignCenter->setChecked(true);
-        else if ( m_token.data()->alignment() & Qt::AlignRight )
+        else if ( m_token->alignment() & Qt::AlignRight )
             m_alignRight->setChecked(true);
 
-        m_bold->setChecked( m_token.data()->bold() );
-        m_italic->setChecked( m_token.data()->italic() );
-        m_underline->setChecked( m_token.data()->underline() );
+        m_bold->setChecked( m_token->bold() );
+        m_italic->setChecked( m_token->italic() );
+        m_underline->setChecked( m_token->underline() );
     }
 }
 
-#include "LayoutEditDialog.moc"

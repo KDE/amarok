@@ -23,13 +23,13 @@
 
 #include "config-amarok-test.h"
 
-#include <qtest_kde.h>
-
 #include <QImage>
 #include <QScopedPointer>
 #include <QTest>
 
-QTEST_KDEMAIN_CORE( TestGenericScanManager )
+#include <unistd.h>
+
+QTEST_MAIN( TestGenericScanManager )
 
 TestGenericScanManager::TestGenericScanManager()
     : QObject()
@@ -40,6 +40,8 @@ TestGenericScanManager::TestGenericScanManager()
 void
 TestGenericScanManager::initTestCase()
 {
+    AmarokConfig::instance("amarokrc");
+
     // setenv( "LC_ALL", "", 1 ); // this breakes the test
     // Amarok does not force LC_ALL=C but obviously the test does it which
     // will prevent scanning of files with umlauts.
@@ -50,13 +52,13 @@ TestGenericScanManager::initTestCase()
 
     m_scanManager = new GenericScanManager( this );
 
-    connect( m_scanManager, SIGNAL(started(GenericScanManager::ScanType)),
-             SLOT(slotStarted(GenericScanManager::ScanType)) );
-    connect( m_scanManager, SIGNAL(directoryCount(int)), SLOT(slotDirectoryCount(int)) );
-    connect( m_scanManager, SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)),
-             SLOT(slotDirectoryScanned(QSharedPointer<CollectionScanner::Directory>)) );
-    connect( m_scanManager, SIGNAL(succeeded()), SLOT(slotSucceeded()) );
-    connect( m_scanManager, SIGNAL(failed(QString)), SLOT(slotFailed(QString)) );
+    connect( m_scanManager, &GenericScanManager::started,
+             this, &TestGenericScanManager::slotStarted );
+    connect( m_scanManager, &GenericScanManager::directoryCount, this, &TestGenericScanManager::slotDirectoryCount );
+    connect( m_scanManager, &GenericScanManager::directoryScanned,
+             this, &TestGenericScanManager::slotDirectoryScanned );
+    connect( m_scanManager, &GenericScanManager::succeeded, this, &TestGenericScanManager::slotSucceeded );
+    connect( m_scanManager, &GenericScanManager::failed, this, &TestGenericScanManager::slotFailed );
 
     AmarokConfig::setScanRecursively( true );
     AmarokConfig::setMonitorChanges( false );
@@ -74,11 +76,10 @@ TestGenericScanManager::cleanupTestCase()
 void
 TestGenericScanManager::init()
 {
-    m_tmpCollectionDir = new KTempDir();
-    QVERIFY( m_tmpCollectionDir->exists() );
+    m_tmpCollectionDir = new QTemporaryDir;
 
     QStringList collectionFolders;
-    collectionFolders << m_tmpCollectionDir->name();
+    collectionFolders << m_tmpCollectionDir->path();
 
     m_started = false;
     m_finished = false;
@@ -153,11 +154,11 @@ TestGenericScanManager::testAlbumImage()
     QString imageSourcePath = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/playlists/no-playlist.png" );
     QVERIFY( QFile::exists( imageSourcePath ) );
     QString targetPath;
-    targetPath = m_tmpCollectionDir->name() + "Pop/Thriller/cover.png";
+    targetPath = m_tmpCollectionDir->path() + '/' + "Pop/Thriller/cover.png";
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 
     // set an embedded image
-    targetPath = m_tmpCollectionDir->name() + "Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3";
+    targetPath = m_tmpCollectionDir->path() + '/' + "Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3";
     Meta::Tag::setEmbeddedCover( targetPath, QImage( 200, 200, QImage::Format_RGB32 ) );
 
     fullScanAndWait();
@@ -222,22 +223,29 @@ TestGenericScanManager::slotFailed( const QString& message )
 void
 TestGenericScanManager::fullScanAndWait()
 {
-    QList<KUrl> urls;
-    urls << KUrl::fromPath( m_tmpCollectionDir->name() );
+    QList<QUrl> urls;
+    urls << QUrl::fromLocalFile( m_tmpCollectionDir->path() );
 
+    QSignalSpy spy( m_scanManager, &GenericScanManager::succeeded );
     m_scanManager->requestScan( urls );
-    waitScannerFinished();
+    waitScannerFinished( spy );
 
     QVERIFY( m_started );
     QVERIFY( m_finished );
 }
 
 void
-TestGenericScanManager::waitScannerFinished()
+TestGenericScanManager::waitScannerFinished( QSignalSpy &spy )
 {
     QVERIFY( m_scanManager->isRunning() );
-    QVERIFY2( QTest::kWaitForSignal( m_scanManager, SIGNAL(succeeded()), 60*1000 ),
-              "ScanManager didn't finish scan within timeout" );
+    QVERIFY2( spy.wait( 5000 ), "ScanManager didn't finish scan within timeout" );
+    // m_scanManager needs a little time to delete its worker job after it emits succeeded.
+    int wait = 0;
+    while( wait < 50 && m_scanManager->isRunning() )
+    {
+        wait++;
+        usleep( 100 );
+    }
     QVERIFY( !m_scanManager->isRunning() );
 }
 
@@ -246,8 +254,8 @@ TestGenericScanManager::createTrack( const Meta::FieldHash &values )
 {
     // -- copy the file from our original
     QVERIFY( values.contains( Meta::valUrl ) );
-    const QString targetPath = m_tmpCollectionDir->name() + values.value( Meta::valUrl ).toString();
-    QVERIFY( QDir( m_tmpCollectionDir->name() ).mkpath( QFileInfo( values.value( Meta::valUrl ).toString() ).path() ) );
+    const QString targetPath = m_tmpCollectionDir->path() + '/' + values.value( Meta::valUrl ).toString();
+    QVERIFY( QDir( m_tmpCollectionDir->path() ).mkpath( QFileInfo( values.value( Meta::valUrl ).toString() ).path() ) );
 
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 

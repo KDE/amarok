@@ -19,14 +19,14 @@
 
 #include "SqlPodcastMeta.h"
 
-#include <KDialog>
+#include <KPageDialog>
 
 namespace Ui
 {
 class PodcastFilenameLayoutConfigWidget;
 }
 
-class PodcastFilenameLayoutConfigDialog : public KDialog
+class PodcastFilenameLayoutConfigDialog : public KPageDialog
 {
 
     Q_OBJECT
@@ -35,7 +35,7 @@ public:
     //shows the filename configuration dialog
     bool configure();
 
-protected slots:
+protected Q_SLOTS:
     void slotApply();
 
 private:

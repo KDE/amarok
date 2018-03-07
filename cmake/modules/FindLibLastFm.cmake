@@ -15,16 +15,17 @@ find_path(LIBLASTFM_INCLUDE_DIR NAMES global.h
    /usr/local/include
    /opt/kde4/include
    ${KDE4_INCLUDE_DIR}
-   PATH_SUFFIXES lastfm
+   PATH_SUFFIXES lastfm5
 )
 
-find_library( LIBLASTFM_LIBRARY NAMES lastfm
+find_library( LIBLASTFM_LIBRARY NAMES lastfm5
     PATHS
     ~/usr/lib
    /opt/local/lib
    /usr/lib
    /usr/lib64
    /usr/local/lib
+   /usr/local/lib64
    /opt/kde4/lib
    ${KDE4_LIB_DIR}
 )
@@ -32,9 +33,9 @@ find_library( LIBLASTFM_LIBRARY NAMES lastfm
 
 if(LIBLASTFM_INCLUDE_DIR AND LIBLASTFM_LIBRARY)
    set(LIBLASTFM_FOUND TRUE)
-else(LIBLASTFM_INCLUDE_DIR AND LIBLASTFM_LIBRARY)
+else()
    set(LIBLASTFM_FOUND FALSE)
-endif(LIBLASTFM_INCLUDE_DIR AND LIBLASTFM_LIBRARY)
+endif()
 
 if(LIBLASTFM_FOUND)
    set(regex "#define LASTFM_VERSION_STRING \"(.*)\"")
@@ -42,13 +43,13 @@ if(LIBLASTFM_FOUND)
    if(${LIBLASTFM_VERSION} MATCHES ${regex})
       set(LIBLASTFM_VERSION ${CMAKE_MATCH_1})
       message(STATUS "Found liblastfm: ${LIBLASTFM_INCLUDE_DIR}, ${LIBLASTFM_LIBRARY}, version ${LIBLASTFM_VERSION}")
-   else(${LIBLASTFM_VERSION} MATCHES ${regex})
+   else()
       message(WARNING "Found liblastfm: ${LIBLASTFM_INCLUDE_DIR} - but failed to parse version")
       set(LIBLASTFM_FOUND FALSE)
       unset(LIBLASTFM_INCLUDE_DIR)
       unset(LIBLASTFM_LIBRARY)
-   endif(${LIBLASTFM_VERSION} MATCHES ${regex})
+   endif()
    unset(regex)
-endif(LIBLASTFM_FOUND)
+endif()
 
 mark_as_advanced(LIBLASTFM_INCLUDE_DIR LIBLASTFM_LIBRARY)

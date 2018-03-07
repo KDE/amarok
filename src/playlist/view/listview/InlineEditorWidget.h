@@ -18,8 +18,7 @@
 #define INLINEEDITORWIDGET_H
 
 #include "playlist/layouts/LayoutItemConfig.h"
-
-#include <KHBox>
+#include "widgets/BoxWidget.h"
 
 #include <QModelIndex>
 #include <QSplitter>
@@ -27,7 +26,7 @@
 /**
     An inline editor for a playlist item. Relies on the same item layout configuration as is used by the delegate, and strives to have a simmilar look.
 */
-class InlineEditorWidget : public KHBox
+class InlineEditorWidget : public BoxWidget
 {
     Q_OBJECT
 
@@ -37,10 +36,10 @@ public:
 
     QMap<int, QString> changedValues();
 
-signals:
+Q_SIGNALS:
     void editingDone( InlineEditorWidget * editor );
 
-protected slots:
+protected Q_SLOTS:
     void editValueChanged();
     void ratingValueChanged();
     void splitterMoved( int pos, int index );

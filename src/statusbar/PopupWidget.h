@@ -17,9 +17,9 @@
 #ifndef POPUPWIDGET_H
 #define POPUPWIDGET_H
 
-#include <KVBox>
+#include "widgets/BoxWidget.h"
 
-class PopupWidget : public KVBox
+class PopupWidget : public BoxWidget
 {
 public:
     explicit PopupWidget( QWidget *anchor, const QString &name = QString() );

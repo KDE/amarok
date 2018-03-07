@@ -44,6 +44,9 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include <QScrollBar>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
@@ -69,28 +72,28 @@ SimilarArtistsApplet::init()
     setHeaderText( i18n( "Similar Artists" ) );
 
     QAction* backwardAction = new QAction( this );
-    backwardAction->setIcon( KIcon( "go-previous" ) );
+    backwardAction->setIcon( QIcon::fromTheme( "go-previous" ) );
     backwardAction->setEnabled( false );
     backwardAction->setText( i18n( "Back" ) );
     m_backwardIcon = addLeftHeaderAction( backwardAction );
     connect( m_backwardIcon, SIGNAL(clicked()), this, SLOT(goBackward()) );
 
     QAction* forwardAction = new QAction( this );
-    forwardAction->setIcon( KIcon( "go-next" ) );
+    forwardAction->setIcon( QIcon::fromTheme( "go-next" ) );
     forwardAction->setEnabled( false );
     forwardAction->setText( i18n( "Forward" ) );
     m_forwardIcon = addLeftHeaderAction( forwardAction );
     connect( m_forwardIcon, SIGNAL(clicked()), this, SLOT(goForward()) );
 
     QAction *currentAction = new QAction( this );
-    currentAction->setIcon( KIcon( "filename-artist-amarok" ) );
+    currentAction->setIcon( QIcon::fromTheme( "filename-artist-amarok" ) );
     currentAction->setEnabled( true );
     currentAction->setText( i18n( "Show Similar Artists for Currently Playing Track" ) );
     m_currentArtistIcon = addRightHeaderAction( currentAction );
     connect( m_currentArtistIcon, SIGNAL(clicked()), this, SLOT(queryForCurrentTrack()) );
 
     QAction* settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setIcon( QIcon::fromTheme( "preferences-system" ) );
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addRightHeaderAction( settingsAction );
@@ -167,7 +170,17 @@ SimilarArtistsApplet::configure()
 void
 SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
-    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    parent->setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    parent->connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    parent->connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     QWidget *settings = new QWidget();
@@ -177,7 +190,7 @@ SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 
     parent->addPage( settings, i18n( "Similar Artists Settings" ), "preferences-system" );
 
-    connect( parent, SIGNAL(okClicked()), SLOT(saveSettings()) );
+    connect( parent, SIGNAL(clicked()), SLOT(saveSettings()) );
 }
 
 void
@@ -312,4 +325,3 @@ SimilarArtistsApplet::updateNavigationIcons()
     m_backwardIcon->action()->setEnabled( !m_historyBack.isEmpty() );
 }
 
-#include "SimilarArtistsApplet.moc"

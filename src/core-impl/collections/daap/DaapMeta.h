@@ -33,12 +33,12 @@ class DaapGenre;
 class DaapComposer;
 class DaapYear;
 
-typedef KSharedPtr<DaapTrack> DaapTrackPtr;
-typedef KSharedPtr<DaapArtist> DaapArtistPtr;
-typedef KSharedPtr<DaapAlbum> DaapAlbumPtr;
-typedef KSharedPtr<DaapGenre> DaapGenrePtr;
-typedef KSharedPtr<DaapComposer> DaapComposerPtr;
-typedef KSharedPtr<DaapYear> DaapYearPtr;
+typedef AmarokSharedPointer<DaapTrack> DaapTrackPtr;
+typedef AmarokSharedPointer<DaapArtist> DaapArtistPtr;
+typedef AmarokSharedPointer<DaapAlbum> DaapAlbumPtr;
+typedef AmarokSharedPointer<DaapGenre> DaapGenrePtr;
+typedef AmarokSharedPointer<DaapComposer> DaapComposerPtr;
+typedef AmarokSharedPointer<DaapYear> DaapYearPtr;
 
 class DaapTrack : public Meta::Track
 {
@@ -48,7 +48,7 @@ class DaapTrack : public Meta::Track
 
         virtual QString name() const;
 
-        virtual KUrl playableUrl() const;
+        virtual QUrl playableUrl() const;
         virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
         virtual QString notPlayableReason() const;

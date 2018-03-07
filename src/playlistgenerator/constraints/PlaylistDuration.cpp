@@ -94,9 +94,9 @@ QWidget*
 ConstraintTypes::PlaylistDuration::editWidget() const
 {
     PlaylistDurationEditWidget* e = new PlaylistDurationEditWidget( m_duration, m_comparison, static_cast<int>( 10*m_strictness ) );
-    connect( e, SIGNAL(comparisonChanged(int)), this, SLOT(setComparison(int)) );
-    connect( e, SIGNAL(durationChanged(int)), this, SLOT(setDuration(int)) );
-    connect( e, SIGNAL(strictnessChanged(int)), this, SLOT(setStrictness(int)) );
+    connect( e, &PlaylistDurationEditWidget::comparisonChanged, this, &PlaylistDuration::setComparison );
+    connect( e, &PlaylistDurationEditWidget::durationChanged, this, &PlaylistDuration::setDuration );
+    connect( e, &PlaylistDurationEditWidget::strictnessChanged, this, &PlaylistDuration::setStrictness );
     return e;
 }
 
@@ -124,7 +124,7 @@ ConstraintTypes::PlaylistDuration::getName() const
     } else {
         v = ki18n( "Playlist duration: unknown");
     }
-    v = v.subs( QTime().addMSecs( m_duration ).toString( "H:mm:ss" ) );
+    v = v.subs( QTime(0, 0, 0).addMSecs( m_duration ).toString( "H:mm:ss" ) );
     return v.toString();
 }
 
@@ -189,7 +189,7 @@ ConstraintTypes::PlaylistDurationEditWidget::PlaylistDurationEditWidget( const i
 {
     ui.setupUi( this );
 
-    ui.timeEdit_Duration->setTime( QTime().addMSecs( duration ) );
+    ui.timeEdit_Duration->setTime( QTime(0, 0, 0).addMSecs( duration ) );
     ui.comboBox_Comparison->setCurrentIndex( comparison );
     ui.slider_Strictness->setValue( strictness );
 }
@@ -197,7 +197,7 @@ ConstraintTypes::PlaylistDurationEditWidget::PlaylistDurationEditWidget( const i
 void
 ConstraintTypes::PlaylistDurationEditWidget::on_timeEdit_Duration_timeChanged( const QTime& t )
 {
-    emit durationChanged( QTime().msecsTo( t ) );
+    emit durationChanged( QTime(0, 0, 0).msecsTo( t ) );
     emit updated();
 }
 

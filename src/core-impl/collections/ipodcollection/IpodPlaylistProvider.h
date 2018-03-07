@@ -36,7 +36,7 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
 
         // PlaylistProvider methods:
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
         virtual int playlistCount() const;
         virtual Playlists::PlaylistList playlists();
@@ -67,7 +67,7 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
          * playlist. The actual call to start copying tracks is deferred to next eventloop
          * iteration to pickup multiple successive addTrack() calls.
          */
-        void scheduleCopyAndInsertToPlaylist( KSharedPtr<IpodPlaylist> playlist );
+        void scheduleCopyAndInsertToPlaylist( AmarokSharedPointer<IpodPlaylist> playlist );
 
         /**
          * Remove this track from all playlists it belongs to, it was removed from the
@@ -80,21 +80,21 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
          */
         bool hasStaleOrOrphaned() const;
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Re-add orphaned files to db and remove stale iTunes database entries. Meant to
          * be connected to the respective QAction.
          */
         void slotConsolidateStaleOrphaned();
 
-    signals:
+    Q_SIGNALS:
         /**
          * Signals to IpodCollection that the database has been dirtied and it has to
          * write the database in some point in time.
          */
         void startWriteDatabaseTimer();
 
-    private slots:
+    private Q_SLOTS:
         void slotCopyAndInsertToPlaylists();
 
     private:
@@ -106,7 +106,7 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
 
         IpodCollection *m_coll;
         Playlists::PlaylistList m_playlists;
-        QSet< KSharedPtr<IpodPlaylist> > m_copyTracksTo;
+        QSet< AmarokSharedPointer<IpodPlaylist> > m_copyTracksTo;
         Playlists::PlaylistPtr m_stalePlaylist;
         Playlists::PlaylistPtr m_orphanedPlaylist;
 };

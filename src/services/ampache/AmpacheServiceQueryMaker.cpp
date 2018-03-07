@@ -28,9 +28,10 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core-impl/collections/support/MemoryMatcher.h"
 
-#include <QSet>
 #include <QAtomicInt>
 #include <QDomDocument>
+#include <QSet>
+#include <QUrlQuery>
 
 using namespace Collections;
 
@@ -43,7 +44,7 @@ struct AmpacheServiceQueryMaker::Private
 
     QAtomicInt expectedReplies;
 
-    QString server;
+    QUrl server;
     QString sessionId;
     QList<int> parentTrackIds;
     QList<int> parentAlbumIds;
@@ -62,7 +63,7 @@ struct AmpacheServiceQueryMaker::Private
     Meta::TrackList trackResults;
 };
 
-AmpacheServiceQueryMaker::AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QString &server, const QString &sessionId  )
+AmpacheServiceQueryMaker::AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QUrl &server, const QString &sessionId  )
     : DynamicServiceQueryMaker()
     , d( new Private )
 {
@@ -213,19 +214,23 @@ AmpacheServiceQueryMaker::fetchArtists()
     if( !artists.isEmpty() )
     {
         debug() << "got" << artists.count() << "artists from the memory collection";
-        emit newResultReady( artists );
+        emit newArtistsReady( artists );
         emit queryDone();
         return;
     }
 
-    KUrl request = getRequestUrl( "artists" );
+    QUrl request = getRequestUrl( "artists" );
+    QUrlQuery query( request );
 
     if ( !d->artistFilter.isEmpty() )
-        request.addQueryItem( "filter", d->artistFilter );
+    {
+        query.addQueryItem( "filter", d->artistFilter );
+        request.setQuery( query );
+    }
 
     d->expectedReplies.ref();
     The::networkAccessManager()->getData( request, this,
-                                          SLOT(artistDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                                          SLOT(artistDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
@@ -244,7 +249,7 @@ AmpacheServiceQueryMaker::fetchAlbums()
     if( !albums.isEmpty() )
     {
         debug() << "got" << albums.count() << "albums from the memory collection";
-        emit newResultReady( albums );
+        emit newAlbumsReady( albums );
         emit queryDone();
         return;
     }
@@ -253,24 +258,30 @@ AmpacheServiceQueryMaker::fetchAlbums()
     {
         foreach( int id, d->parentArtistIds )
         {
-            KUrl request = getRequestUrl( "artist_albums" );
-            request.addQueryItem( "filter", QString::number( id ) );
+            QUrl request = getRequestUrl( "artist_albums" );
+            QUrlQuery query( request );
+            query.addQueryItem( "filter", QString::number( id ) );
+            request.setQuery( query );
 
             d->expectedReplies.ref();
             The::networkAccessManager()->getData( request, this,
-                                                  SLOT(albumDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                                                  SLOT(albumDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
     }
     else
     {
-        KUrl request = getRequestUrl( "albums" );
+        QUrl request = getRequestUrl( "albums" );
+        QUrlQuery query( request );
 
         if ( !d->albumFilter.isEmpty() )
-            request.addQueryItem( "filter", d->albumFilter );
+        {
+            query.addQueryItem( "filter", d->albumFilter );
+            request.setQuery( query );
+        }
 
         d->expectedReplies.ref();
         The::networkAccessManager()->getData( request, this,
-                                              SLOT(albumDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                                              SLOT(albumDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
 }
 
@@ -314,50 +325,54 @@ AmpacheServiceQueryMaker::fetchTracks()
     if( !tracks.isEmpty() )
     {
         debug() << "got" << tracks.count() << "tracks from the memory collection";
-        emit newResultReady( tracks );
+        emit newTracksReady( tracks );
         emit queryDone();
         return;
     }
 
-    KUrl request = getRequestUrl();
+    QUrl request = getRequestUrl();
 
 
     if( !d->parentAlbumIds.isEmpty() )
     {
         foreach( int id, d->parentAlbumIds )
         {
-            KUrl request = getRequestUrl( "album_songs" );
-            request.addQueryItem( "filter", QString::number( id ) );
+            QUrl request = getRequestUrl( "album_songs" );
+            QUrlQuery query( request );
+            query.addQueryItem( "filter", QString::number( id ) );
+            request.setQuery( query );
 
             d->expectedReplies.ref();
             The::networkAccessManager()->getData( request, this,
-                                                  SLOT(trackDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                                                  SLOT(trackDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
     }
     else if( !d->parentArtistIds.isEmpty() )
     {
         foreach( int id, d->parentArtistIds )
         {
-            KUrl request = getRequestUrl( "artist_songs" );
-            request.addQueryItem( "filter", QString::number( id ) );
+            QUrl request = getRequestUrl( "artist_songs" );
+            QUrlQuery query( request );
+            query.addQueryItem( "filter", QString::number( id ) );
+            request.setQuery( query );
 
             d->expectedReplies.ref();
             The::networkAccessManager()->getData( request, this,
-                                                  SLOT(trackDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                                                  SLOT(trackDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
     }
     else
     {
-        KUrl request = getRequestUrl( "songs" );
+        QUrl request = getRequestUrl( "songs" );
 
         d->expectedReplies.ref();
         The::networkAccessManager()->getData( request, this,
-                                              SLOT(trackDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                                              SLOT(trackDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
 }
 
 void
-AmpacheServiceQueryMaker::artistDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmpacheServiceQueryMaker::artistDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url );
 
@@ -381,9 +396,9 @@ AmpacheServiceQueryMaker::artistDownloadComplete( const KUrl &url, QByteArray da
 
     if ( !domError.isNull() )
     {
-        warning() << "Error getting Artist List" << domError.text();
+        warning() << "Error getting Artist List" << domError.text() << "Code:" << domError.attribute("code");
         AmpacheService *parentService = dynamic_cast< AmpacheService * >( d->collection->service() );
-        if( parentService == 0 )
+        if( !parentService )
             return;
         else
             parentService->reauthenticate();
@@ -420,14 +435,14 @@ AmpacheServiceQueryMaker::artistDownloadComplete( const KUrl &url, QByteArray da
 
     if( !d->expectedReplies.deref() )
     {
-        emit newResultReady( d->artistResults );
+        emit newArtistsReady( d->artistResults );
         emit queryDone();
         d->artistResults.clear();
     }
 }
 
 void
-AmpacheServiceQueryMaker::albumDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url );
 
@@ -451,7 +466,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const KUrl &url, QByteArray dat
 
     if( !domError.isNull() )
     {
-        warning() << "Error getting Album List" << domError.text();
+        warning() << "Error getting Album List" << domError.text() << "Code:" << domError.attribute("code");
         AmpacheService *parentService = dynamic_cast< AmpacheService * >(d->collection->service());
         if( parentService == 0 )
             return;
@@ -538,14 +553,14 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const KUrl &url, QByteArray dat
 
     if( !d->expectedReplies.deref() )
     {
-        emit newResultReady( d->albumResults );
+        emit newAlbumsReady( d->albumResults );
         emit queryDone();
         d->albumResults.clear();
     }
 }
 
 void
-AmpacheServiceQueryMaker::trackDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmpacheServiceQueryMaker::trackDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url );
 
@@ -569,7 +584,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete( const KUrl &url, QByteArray dat
 
     if( !domError.isNull() )
     {
-        warning() << "Error getting Track Download " << domError.text();
+        warning() << "Error getting Track Download " << domError.text() << "Code:" << domError.attribute("code");
         AmpacheService *parentService = dynamic_cast< AmpacheService * >( d->collection->service() );
         if( parentService == 0 )
             return;
@@ -649,7 +664,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete( const KUrl &url, QByteArray dat
 
     if( !d->expectedReplies.deref() )
     {
-        emit newResultReady( d->trackResults );
+        emit newTracksReady( d->trackResults );
         emit queryDone();
         d->trackResults.clear();
     }
@@ -708,32 +723,35 @@ AmpacheServiceQueryMaker::limitMaxResultSize( int size )
     return this;
 }
 
-KUrl
+QUrl
 AmpacheServiceQueryMaker::getRequestUrl( const QString &action ) const
 {
-    QString path = d->server;
+    QUrl url = d->server;
+    QString scheme = url.scheme();
 
-    if( !path.startsWith("http://") && !path.startsWith("https://") )
-        path = "http://" + path;
+    if( scheme != "http" && scheme != "https" )
+        url.setScheme( "http" );
 
-    KUrl url( path );
+    QUrlQuery query( url );
 
-    url.addPath( "/server/xml.server.php" );
-    url.addQueryItem( "auth", d->sessionId );
+    url = url.adjusted( QUrl::StripTrailingSlash );
+    url.setPath( url.path() + "/server/xml.server.php" );
+
+    query.addQueryItem( "auth", d->sessionId );
 
     if( !action.isEmpty() )
-        url.addQueryItem( "action", action );
+        query.addQueryItem( "action", action );
 
     if( d->dateFilter > 0 )
     {
         QDateTime from;
         from.setTime_t( d->dateFilter );
-        url.addQueryItem( "add", from.toString( Qt::ISODate ) );
+        query.addQueryItem( "add", from.toString( Qt::ISODate ) );
     }
-    url.addQueryItem( "limit", QString::number( d->maxsize ) );
+    query.addQueryItem( "limit", QString::number( d->maxsize ) );
+    url.setQuery( query );
 
     return url;
 }
 
-#include "AmpacheServiceQueryMaker.moc"
 

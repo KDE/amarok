@@ -33,7 +33,7 @@ namespace APG {
             TreeController( TreeModel*, QTreeView*, QWidget* parent = 0);
             ~TreeController();
 
-        public slots:
+        public Q_SLOTS:
             void addGroup() const;
             void addConstraint( const QString& ) const;
             void removeNode() const;

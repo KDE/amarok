@@ -114,7 +114,8 @@ void DecodedAudioData::flush()
 }
 
 MusicDNSAudioDecoder::MusicDNSAudioDecoder( const Meta::TrackList &tracks, const int sampleLength )
-                    : Job()
+                    : QObject()
+                    , ThreadWeaver::Job()
                     , m_tracks( tracks )
                     , m_sampleLength( sampleLength )
 {
@@ -126,8 +127,10 @@ MusicDNSAudioDecoder::~MusicDNSAudioDecoder()
 }
 
 void
-MusicDNSAudioDecoder::run()
+MusicDNSAudioDecoder::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DecodedAudioData data;
 
     avcodec_register_all();
@@ -148,6 +151,23 @@ MusicDNSAudioDecoder::run()
                          track->playableUrl().toLocalFile();
         data.flush();
     }
+}
+
+void
+MusicDNSAudioDecoder::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+MusicDNSAudioDecoder::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 // Function below has separate implementation for each ffmpeg API version
@@ -745,4 +765,3 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
 #endif
 
 
-#include "MusicDNSAudioDecoder.moc"

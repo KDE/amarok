@@ -21,7 +21,7 @@
 #include "core/meta/forward_declarations.h"
 
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 #include <QString>
 
 namespace Collections {
@@ -40,15 +40,15 @@ public:
     void setQueryType( QueryMaker::QueryType type );
     void setResultAsDataPtrs( bool value );
 
-signals:
-    void newResultReady( Meta::TrackList );
-    void newResultReady( Meta::ArtistList );
-    void newResultReady( Meta::AlbumList );
-    void newResultReady( Meta::GenreList );
-    void newResultReady( Meta::ComposerList );
-    void newResultReady( Meta::YearList );
+Q_SIGNALS:
+    void newTracksReady( Meta::TrackList );
+    void newArtistsReady( Meta::ArtistList );
+    void newAlbumsReady( Meta::AlbumList );
+    void newGenresReady( Meta::GenreList );
+    void newComposersReady( Meta::ComposerList );
+    void newYearsReady( Meta::YearList );
     void newResultReady( QStringList );
-    void newResultReady( Meta::LabelList );
+    void newLabelsReady( Meta::LabelList );
 
 private:
     void handleResult( const QStringList &result );
@@ -61,7 +61,7 @@ private:
     void handleLabels( const QStringList &result );
 
 private:
-    QWeakPointer<SqlCollection> m_collection;
+    QPointer<SqlCollection> m_collection;
     QueryMaker::QueryType m_queryType;
     QString m_query;
 

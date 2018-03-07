@@ -28,7 +28,8 @@
 #include "MetaTagLib.h"
 #include "scripting/scriptengine/ScriptingDefines.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
 
 #include <QScriptContext>
 #include <QScriptEngine>
@@ -61,7 +62,7 @@ MetaTrackPrototype::trackCtor( QScriptContext *context, QScriptEngine *engine )
     if( context->argumentCount() < 1 )
         return context->throwError( QScriptContext::SyntaxError, "Not enough arguments! Pass the track url." );
 
-    KUrl url( qscriptvalue_cast<QUrl>( context->argument( 0 ) ) );
+    QUrl url( qscriptvalue_cast<QUrl>( context->argument( 0 ) ) );
     if( !url.isValid() )
         return context->throwError( QScriptContext::TypeError, "Invalid QUrl" );
 
@@ -231,7 +232,7 @@ QString
 MetaTrackPrototype::imageUrl() const
 {
     CHECK_TRACK( QString() )
-    return m_track->album() ? m_track->album()->imageLocation().prettyUrl() : QString();
+    return m_track->album() ? m_track->album()->imageLocation().toDisplayString() : QString();
 }
 
 QString
@@ -407,8 +408,8 @@ MetaTrackPrototype::changeTags( const Meta::FieldHash &changes, bool respectConf
     if( changes.isEmpty() )
         return;
     WriteTagsJob *job = new WriteTagsJob( m_track->playableUrl().path(), changes, respectConfig );
-    connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    connect( job, &WriteTagsJob::done, job, &QObject::deleteLater );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 }
 
 QImage
@@ -449,4 +450,3 @@ MetaTrackPrototype::isLoadedAndLocal() const
 #undef CHECK_TRACK
 #undef GET_TRACK_EC
 
-#include "MetaTypeExporter.moc"

@@ -24,7 +24,9 @@
 #include "Mp3tunesWorkers.h"
 #include "core/support/Debug.h"
 
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
 
 #include <QRegExp>
 
@@ -59,7 +61,7 @@ QString Mp3tunesServiceCollection::prettyName() const
 }
 
 bool
-Mp3tunesServiceCollection::possiblyContainsTrack(const KUrl & url) const
+Mp3tunesServiceCollection::possiblyContainsTrack(const QUrl &url) const
 {
     QRegExp rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
     int matches = rx.indexIn( url.url() );
@@ -70,7 +72,7 @@ Mp3tunesServiceCollection::possiblyContainsTrack(const KUrl & url) const
 }
 
 Meta::TrackPtr
-Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
+Mp3tunesServiceCollection::trackForUrl( const QUrl &url )
 {
     DEBUG_BLOCK
     if( !m_locker->authenticated() )
@@ -90,9 +92,9 @@ Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
 
     Mp3tunesTrackFromFileKeyFetcher* trackFetcher = new Mp3tunesTrackFromFileKeyFetcher( m_locker, filekey );
     m_tracksFetching[filekey] = serviceTrack;
-    connect( trackFetcher, SIGNAL(trackFetched(Mp3tunesLockerTrack&)), this, SLOT(trackForUrlComplete(Mp3tunesLockerTrack&)) );
+    connect( trackFetcher, &Mp3tunesTrackFromFileKeyFetcher::trackFetched, this, &Mp3tunesServiceCollection::trackForUrlComplete );
     //debug() << "Connection complete. Enqueueing..";
-    ThreadWeaver::Weaver::instance()->enqueue( trackFetcher );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(trackFetcher) );
     //debug() << "m_trackFetcher queue";
 
     return Meta::TrackPtr( serviceTrack );
@@ -159,6 +161,5 @@ Mp3tunesServiceCollection::location()
     return new Mp3tunesServiceCollectionLocation( this );
 }
 
-#include "Mp3tunesServiceCollection.moc"
 
 

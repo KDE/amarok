@@ -60,11 +60,11 @@ namespace Dynamic
             FollowType follow() const;
             void setFollow( FollowType value );
 
-        public slots:
+        public Q_SLOTS:
             virtual void updateFinished();
             virtual void invalidate();
 
-        protected slots:
+        protected Q_SLOTS:
             void selectionChanged( int );
             virtual void newQuery();
 

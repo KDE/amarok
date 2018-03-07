@@ -17,14 +17,12 @@
 
 #include "mocks/MockQueryMaker.h"
 
-#include <qtest_kde.h>
-
 #include <QSignalSpy>
 
 using namespace Collections;
 
 
-QTEST_KDEMAIN_CORE( TestQueryMaker )
+QTEST_GUILESS_MAIN( TestQueryMaker )
 
 void
 TestQueryMaker::initTestCase()
@@ -36,7 +34,8 @@ TestQueryMaker::initTestCase()
 void
 TestQueryMaker::cleanupTestCase()
 {
-    delete m_mockQueryMaker;
+    if( !m_mockQueryMaker.isNull() )
+        delete m_mockQueryMaker;
 }
 
 void
@@ -44,8 +43,8 @@ TestQueryMaker::testSetAutoDelete_data()
 {
     QTest::addColumn<bool>( "autoDelete" );
 
-    QTest::newRow( "true value" ) << true;
     QTest::newRow( "false value" ) << false;
+    QTest::newRow( "true value" ) << true;
 }
 
 void
@@ -53,8 +52,8 @@ TestQueryMaker::testSetAutoDelete()
 {
     QFETCH( bool, autoDelete );
 
-    QSignalSpy spyQueryDone( m_mockQueryMaker, SIGNAL(queryDone()) );
-    QSignalSpy spyDestroyed( m_mockQueryMaker, SIGNAL(destroyed()) );
+    QSignalSpy spyQueryDone( m_mockQueryMaker, &MockQueryMaker::queryDone );
+    QSignalSpy spyDestroyed( m_mockQueryMaker, &MockQueryMaker::destroyed );
 
     m_mockQueryMaker->setAutoDelete( autoDelete );
     QVERIFY( m_mockQueryMaker );
@@ -63,6 +62,8 @@ TestQueryMaker::testSetAutoDelete()
 
     // Ensure that queryDone() was indeed emitted
     QCOMPARE( spyQueryDone.count(), 1 );
+
+    spyDestroyed.wait( 5000 );
 
     if( autoDelete )
     {

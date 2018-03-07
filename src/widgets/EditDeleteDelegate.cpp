@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QPainter>
 #include <QPixmap>
@@ -46,8 +46,8 @@ void EditDeleteDelegate::paint( QPainter * painter, const QStyleOptionViewItem &
         //paint our custom stuff in the leftover space
         //but only if this is the item that the mouse is over...
 
-        const KIcon editIcon( "configure" );
-        const KIcon deleteIcon( "edit-delete" );
+        const QIcon editIcon( "configure" );
+        const QIcon deleteIcon( "edit-delete" );
 
         QPixmap editPixmap = editIcon.pixmap( ICON_WIDTH, ICON_WIDTH );
         QPixmap deletePixmap = deleteIcon.pixmap( ICON_WIDTH, ICON_WIDTH );

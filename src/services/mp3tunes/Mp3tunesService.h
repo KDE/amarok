@@ -28,13 +28,15 @@
 
 class Mp3tunesServiceFactory: public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_mp3tunes.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        Mp3tunesServiceFactory( QObject *parent, const QVariantList &args );
+        Mp3tunesServiceFactory();
         virtual ~Mp3tunesServiceFactory() {}
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
         virtual void init();
         virtual QString name();
@@ -71,7 +73,7 @@ public:
 
     virtual Collections::Collection * collection() { return m_collection; }
 
-private slots:
+private Q_SLOTS:
     /**
      * Enables harmony
      */

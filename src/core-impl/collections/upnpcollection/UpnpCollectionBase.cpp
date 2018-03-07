@@ -19,9 +19,8 @@
 #include "UpnpCollectionBase.h"
 
 #include "upnptypes.h"
-#include <kio/scheduler.h>
-#include <kio/jobclasses.h>
-#include <kio/slave.h>
+#include <KIO/Scheduler>
+#include <KIO/Slave>
 
 #include "core/support/Debug.h"
 
@@ -40,7 +39,7 @@ UpnpCollectionBase::UpnpCollectionBase( const DeviceInfo& dev )
                              this, SLOT(slotSlaveError(KIO::Slave*,int,QString)) );
     KIO::Scheduler::connect( SIGNAL(slaveConnected(KIO::Slave*)),
                              this, SLOT(slotSlaveConnected(KIO::Slave*)) );
-    m_slave = KIO::Scheduler::getConnectedSlave( collectionId() );
+    m_slave = KIO::Scheduler::getConnectedSlave( QUrl(collectionId()) );
 }
 
 UpnpCollectionBase::~UpnpCollectionBase()
@@ -65,7 +64,7 @@ QString UpnpCollectionBase::prettyName() const
     return m_device.friendlyName();
 }
 
-bool UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const
+bool UpnpCollectionBase::possiblyContainsTrack( const QUrl &url ) const
 {
     if( url.scheme() == "upnp-ms" )
 //         && url.host() == m_device.host()
@@ -76,7 +75,7 @@ bool UpnpCollectionBase::possiblyContainsTrack( const KUrl &url ) const
 
 void UpnpCollectionBase::addJob( KIO::SimpleJob *job )
 {
-    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotRemoveJob(KJob*)) );
+    connect( job, &KJob::result, this, &UpnpCollectionBase::slotRemoveJob );
     m_jobSet.insert( job );
     KIO::Scheduler::assignJobToSlave( m_slave, job );
 }

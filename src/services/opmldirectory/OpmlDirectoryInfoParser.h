@@ -20,7 +20,6 @@
 #include <InfoParserBase.h>
 
 #include <kio/job.h>
-#include <kio/jobclasses.h>
 
 
 /**
@@ -41,7 +40,7 @@ public:
 private:
     KJob * m_rssDownloadJob;
     
-private slots:
+private Q_SLOTS:
     void rssDownloadComplete( KJob *downLoadJob );
     
 };

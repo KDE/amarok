@@ -19,7 +19,7 @@
 
 #include "PixmapViewer.h"
 
-#include <KApplication>
+#include <QApplication>
 
 #include <QDesktopWidget>
 #include <QMouseEvent>
@@ -35,8 +35,8 @@ PixmapViewer::PixmapViewer( QWidget *parent, const QPixmap &pix, int screenNumbe
 {
     m_zoomFactor = 1.0; // initial zoom
 
-    int screenWidth = KApplication::desktop()->availableGeometry( screenNumber ).width();
-    int screenHeight = KApplication::desktop()->availableGeometry( screenNumber ).height();
+    int screenWidth = QApplication::desktop()->availableGeometry( screenNumber ).width();
+    int screenHeight = QApplication::desktop()->availableGeometry( screenNumber ).height();
     if( screenWidth < m_pixmap.width() || screenHeight < m_pixmap.height() )
     {
         qreal zoomFactorX = qreal(screenWidth) / m_pixmap.width();
@@ -120,4 +120,3 @@ PixmapViewer::wheelEvent( QWheelEvent *event )
     event->accept();
 }
 
-#include "PixmapViewer.moc"

@@ -30,7 +30,7 @@ BansheeConfigWidget::BansheeConfigWidget( const QVariantMap &config, QWidget *pa
     const QString defaultPath = QDir::toNativeSeparators(
                 QDir::homePath() + "/.config/banshee-1/banshee.db" );
 
-    KUrlRequester *dbField = new KUrlRequester( defaultPath );
+    KUrlRequester *dbField = new KUrlRequester( QUrl::fromLocalFile(defaultPath) );
     dbField->setFilter( "banshee.db" );
     addField( "dbPath", i18n( "Database location" ), dbField, "text" );
 }

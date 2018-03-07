@@ -18,17 +18,17 @@
 #ifndef AMAROK_LASTFM_SHARED_EXPORT_H
 #define AMAROK_LASTFM_SHARED_EXPORT_H
 
-/* needed for KDE_EXPORT and KDE_IMPORT macros */
-#include <kdemacros.h>
+/* needed for Q_DECL_EXPORT and Q_DECL_IMPORT macros */
+#include <QtCore/QtGlobal>
 
 #ifndef AMAROK_LASTFM_SHARED_EXPORT
 # ifdef MAKE_AMAROK_SERVICE_LASTFM_SHARED_LIB
    /* We are building this library */
-#  define AMAROK_LASTFM_SHARED_EXPORT KDE_EXPORT
+#  define AMAROK_LASTFM_SHARED_EXPORT Q_DECL_EXPORT
 
 # else
    /* We are using this library */
-#  define AMAROK_LASTFM_SHARED_EXPORT KDE_IMPORT
+#  define AMAROK_LASTFM_SHARED_EXPORT Q_DECL_IMPORT
 
 # endif // MAKE_AMAROK_SERVICE_LASTFM_SHARED_LIB
 #endif // AMAROK_LASTFM_SHARED_EXPORT

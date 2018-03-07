@@ -17,7 +17,7 @@
 #ifndef TESTAGGREGATEMETA_H
 #define TESTAGGREGATEMETA_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestAggregateMeta : public QObject
 {
@@ -25,7 +25,7 @@ class TestAggregateMeta : public QObject
 public:
     TestAggregateMeta();
 
-private slots:
+private Q_SLOTS:
     void testHasCapabilityOnSingleTrack();
     void testCreateCapabilityOnSingleTrack();
 

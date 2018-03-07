@@ -33,13 +33,13 @@ class ScriptUpdater : public QObject
         virtual ~ScriptUpdater();
         void setScriptPath( const QString& scriptPath );
 
-    public slots:
+    public Q_SLOTS:
         void updateScript();
 
-    signals:
+    Q_SIGNALS:
         void finished( const QString &scriptPath );
 
-    private slots:
+    private Q_SLOTS:
         void phase2( KJob * job );
         void phase3( KJob * job );
         void phase4( KJob * job );

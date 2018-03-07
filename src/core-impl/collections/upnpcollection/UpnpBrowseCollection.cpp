@@ -27,15 +27,16 @@
 #include "UpnpQueryMaker.h"
 #include "UpnpMeta.h"
 #include "UpnpCache.h"
+#include "upnptypes.h"
 
+#include <QDir>
+#include <QFileInfo>
 #include <QStringList>
 #include <QTimer>
 
-#include <KLocale>
-#include <kdatetime.h>
-#include "upnptypes.h"
-#include <kio/scheduler.h>
-#include <kio/jobclasses.h>
+#include <KLocalizedString>
+#include <KIO/Scheduler>
+#include <KIO/ListJob>
 
 using namespace Meta;
 
@@ -54,7 +55,7 @@ UpnpBrowseCollection::UpnpBrowseCollection( const DeviceInfo& dev )
 
     // experimental code, will probably be moved to a better place
     OrgKdeKDirNotifyInterface *notify = new OrgKdeKDirNotifyInterface("", "", QDBusConnection::sessionBus(), this );
-    connect( notify, SIGNAL(FilesChanged(QStringList)), SLOT(slotFilesChanged(QStringList)) );
+    connect( notify, &OrgKdeKDirNotifyInterface::FilesChanged, this, &UpnpBrowseCollection::slotFilesChanged );
 }
 
 UpnpBrowseCollection::~UpnpBrowseCollection()
@@ -79,7 +80,7 @@ void UpnpBrowseCollection::processUpdates()
     QString urlString = m_updateQueue.dequeue();
     debug() << "Update URL is" << urlString;
     invalidateTracksIn( urlString );
-    KUrl url( urlString );
+    QUrl url( urlString );
     if( url.scheme() != "upnp-ms" || m_device.uuid() != url.host() )
         return;
     debug() << "Now incremental scanning" << url;
@@ -120,12 +121,8 @@ UpnpBrowseCollection::startFullScan()
 
     m_fullScanInProgress = true;
     m_fullScanTimer = new QTimer( this );
-    Q_ASSERT(
-        connect( m_fullScanTimer,
-                 SIGNAL(timeout()),
-                 this,
-                 SLOT(updateMemoryCollection()) )
-        );
+    connect( m_fullScanTimer, &QTimer::timeout,
+             this, &UpnpBrowseCollection::updateMemoryCollection );
     m_fullScanTimer->start(5000);
 }
 
@@ -137,16 +134,14 @@ UpnpBrowseCollection::startIncrementalScan( const QString &directory )
         return;
     }
     debug() << "Scanning directory" << directory;
-    KUrl url;
+    QUrl url;
     url.setScheme( "upnp-ms" );
     url.setHost( m_device.uuid() );
     url.setPath( directory );
     KIO::ListJob *listJob = KIO::listRecursive( url, KIO::HideProgressInfo );
     addJob( listJob );
-    Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
-                       this, SLOT(entries(KIO::Job*,KIO::UDSEntryList)), Qt::UniqueConnection ) );
-    Q_ASSERT( connect( listJob, SIGNAL(result(KJob*)),
-                       this, SLOT(done(KJob*)), Qt::UniqueConnection ) );
+    Q_ASSERT( connect( listJob, &KIO::ListJob::entries, this, &UpnpBrowseCollection::entries, Qt::UniqueConnection ) );
+    Q_ASSERT( connect( listJob, &KJob::result, this, &UpnpBrowseCollection::done, Qt::UniqueConnection ) );
     listJob->start();
 
 }
@@ -160,7 +155,7 @@ UpnpBrowseCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
     foreach( const KIO::UDSEntry &entry, list ) {
         if( entry.contains( KIO::UPNP_CLASS )
             && entry.stringValue( KIO::UPNP_CLASS ).startsWith( "object.item.audioItem" ) ) {
-            createTrack( entry, sj->url().prettyUrl() );
+            createTrack( entry, sj->url().toDisplayString() );
         }
         count++;
         emit totalSteps( count );
@@ -244,12 +239,12 @@ UpnpBrowseCollection::queryMaker()
 {
     DEBUG_BLOCK;
     UpnpMemoryQueryMaker *umqm = new UpnpMemoryQueryMaker(m_mc.toWeakRef(), collectionId() );
-    Q_ASSERT( connect( umqm, SIGNAL(startFullScan()), this, SLOT(startFullScan()) ) );
+    connect( umqm, &UpnpMemoryQueryMaker::startFullScan, this, &UpnpBrowseCollection::startFullScan );
     return umqm;
 }
 
 Meta::TrackPtr
-UpnpBrowseCollection::trackForUrl( const KUrl &url )
+UpnpBrowseCollection::trackForUrl( const QUrl &url )
 {
     debug() << "TRACK FOR URL " << url;
     if( url.scheme() == "upnptrack" && url.host() == collectionId() )
@@ -286,5 +281,4 @@ UpnpBrowseCollectionScanCapability::stopScan()
 }
 
 } //~ namespace
-#include "UpnpBrowseCollection.moc"
 

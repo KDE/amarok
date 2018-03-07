@@ -25,18 +25,18 @@
 #include "core-impl/storage/StorageManager.h"
 #include "ServiceSqlCollection.h"
 
-#include <threadweaver/Job.h>
-#include <threadweaver/ThreadWeaver.h>
-
 #include <QStack>
+#include <QSharedPointer>
 
 using namespace Collections;
 
-class ServiceSqlWorkerThread : public ThreadWeaver::Job
+class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
 {
+    Q_OBJECT
     public:
         ServiceSqlWorkerThread( ServiceSqlQueryMaker *queryMaker )
-            : ThreadWeaver::Job()
+            : QObject()
+            , ThreadWeaver::Job()
             , m_queryMaker( queryMaker )
             , m_aborted( false )
         {
@@ -48,18 +48,49 @@ class ServiceSqlWorkerThread : public ThreadWeaver::Job
             m_aborted = true;
         }
 
+    Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
     protected:
-        virtual void run()
+
+        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0)
         {
+            Q_UNUSED(self);
+            Q_UNUSED(thread);
             QString query = m_queryMaker->query();
             QStringList result = m_queryMaker->runQuery( query );
             if( !m_aborted )
                 m_queryMaker->handleResult( result );
-            setFinished( !m_aborted );
+
+            if( m_aborted )
+                setStatus(Status_Aborted);
+            else
+                setStatus(Status_Running);
         }
+
+        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        {
+            Q_EMIT started(self);
+            ThreadWeaver::Job::defaultBegin(self, thread);
+        }
+
+        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        {
+            ThreadWeaver::Job::defaultEnd(self, thread);
+            if (!self->success()) {
+                Q_EMIT failed(self);
+            }
+            Q_EMIT done(self);
+        }
+
     private:
         ServiceSqlQueryMaker *m_queryMaker;
-
         bool m_aborted;
 };
 
@@ -80,7 +111,7 @@ struct ServiceSqlQueryMaker::Private
     AlbumQueryMode albumMode;
     bool withoutDuplicates;
     int maxResultSize;
-    ServiceSqlWorkerThread *worker;
+    QSharedPointer<ServiceSqlWorkerThread> worker;
     QStack<bool> andStack;
 };
 
@@ -93,7 +124,6 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
 {
     //d->includedBuilder = true;
     //d->collectionRestriction = false;
-    d->worker = 0;
 
     d->queryType = Private::NONE;
     d->linkedTables = 0;
@@ -103,10 +133,7 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
 }
 
 ServiceSqlQueryMaker::~ServiceSqlQueryMaker()
-{
-    // what about d->worker?
-    delete d;
-}
+{}
 
 void
 ServiceSqlQueryMaker::abortQuery()
@@ -123,23 +150,24 @@ ServiceSqlQueryMaker::run()
     if( d->worker && !d->worker->isFinished() )
     {
         //the worker thread seems to be running
-        //TODO: wait or job to complete
+        //TODO: wait for job to complete
 
     }
     else
     {
-        d->worker = new ServiceSqlWorkerThread( this );
-        connect( d->worker, SIGNAL(done(ThreadWeaver::Job*)), SLOT(done(ThreadWeaver::Job*)) );
-        ThreadWeaver::Weaver::instance()->enqueue( d->worker );
+        d->worker.reset( new ServiceSqlWorkerThread( this ) );
+        connect( d->worker.data(), &ServiceSqlWorkerThread::done, this, &ServiceSqlQueryMaker::done );
+
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(d->worker) );
     }
 }
 
 void
-ServiceSqlQueryMaker::done( ThreadWeaver::Job *job )
+ServiceSqlQueryMaker::done( ThreadWeaver::JobPointer job )
 {
-    ThreadWeaver::Weaver::instance()->dequeue( job );
-    job->deleteLater();
-    d->worker = 0;
+    Q_UNUSED( job )
+
+    d->worker.clear();
     emit queryDone();
 }
 
@@ -600,25 +628,25 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
                 emit newResultReady( QStringList() );
                 break;
             case QueryMaker::Track:
-                emit newResultReady( Meta::TrackList() );
+                emit newTracksReady( Meta::TrackList() );
                 break;
             case QueryMaker::Artist:
-                emit newResultReady( Meta::ArtistList() );
+                emit newArtistsReady( Meta::ArtistList() );
                 break;
             case QueryMaker::Album:
-                emit newResultReady( Meta::AlbumList() );
+                emit newAlbumsReady( Meta::AlbumList() );
                 break;
             case QueryMaker::AlbumArtist:
-                emit newResultReady( Meta::ArtistList() );
+                emit newArtistsReady( Meta::ArtistList() );
                 break;
             case QueryMaker::Genre:
-                emit newResultReady( Meta::GenreList() );
+                emit newGenresReady( Meta::GenreList() );
                 break;
             case QueryMaker::Composer:
-                emit newResultReady( Meta::ComposerList() );
+                emit newComposersReady( Meta::ComposerList() );
                 break;
             case QueryMaker::Year:
-                emit newResultReady( Meta::YearList() );
+                emit newYearsReady( Meta::YearList() );
                 break;
 
         case QueryMaker::None:
@@ -685,7 +713,7 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
         tracks.append( trackptr );
     }
 
-    emit newResultReady( tracks );
+    emit newTracksReady( tracks );
 }
 
 void
@@ -700,7 +728,7 @@ ServiceSqlQueryMaker::handleArtists( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         artists.append( m_registry->getArtist( row ) );
     }
-    emit newResultReady( artists );
+    emit newArtistsReady( artists );
 }
 
 void
@@ -715,7 +743,7 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         albums.append( m_registry->getAlbum( row ) );
     }
-    emit newResultReady( albums );
+    emit newAlbumsReady( albums );
 }
 
 void
@@ -730,7 +758,7 @@ ServiceSqlQueryMaker::handleGenres( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         genres.append( m_registry->getGenre( row ) );
     }
-    emit newResultReady( genres );
+    emit newGenresReady( genres );
 }
 
 /*void
@@ -764,7 +792,7 @@ ServiceSqlQueryMaker::handleYears( const QStringList &result )
 QString
 ServiceSqlQueryMaker::escape( QString text ) const //krazy2:exclude=constref
 {
-    SqlStorage *storage = StorageManager::instance()->sqlStorage();
+    auto storage = StorageManager::instance()->sqlStorage();
     if( storage )
         return storage->escape( text );
     else

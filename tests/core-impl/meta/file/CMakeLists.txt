@@ -1,5 +1,7 @@
 #------------------------ Test MetaFileTrack -----------------------------
 
 set( testmetafiletrack_SRCS TestMetaFileTrack.cpp )
-kde4_add_unit_test( testmetafiletrack ${testmetafiletrack_SRCS} )
-target_link_libraries( testmetafiletrack ${QT_QTTEST_LIBRARY} ${KDE4_KDECORE_LIBS} ${QT_QTCORE_LIBRARY} amarokcore amaroklib )
+add_executable( testmetafiletrack ${testmetafiletrack_SRCS} )
+add_test(NAME testmetafiletrack COMMAND $<TARGET_FILE:testmetafiletrack>)
+ecm_mark_as_test(testmetafiletrack)
+target_link_libraries( testmetafiletrack Qt5::Test Qt5::Core amarokcore amaroklib )

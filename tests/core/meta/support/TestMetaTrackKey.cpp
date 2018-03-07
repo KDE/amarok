@@ -15,14 +15,14 @@
 
 #include "TestMetaTrackKey.h"
 
+#include "amarokconfig.h"
 #include "config-amarok-test.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestMetaTrackKey )
+QTEST_MAIN( TestMetaTrackKey )
 
 QString
 TestMetaTrackKey::dataPath( const QString &relPath )
@@ -33,8 +33,10 @@ TestMetaTrackKey::dataPath( const QString &relPath )
 void
 TestMetaTrackKey::testTrackKey()
 {
+    AmarokConfig::instance("amarokrc");
+
     Meta::TrackPtr track;
-    track = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track01.ogg" ) );
+    track = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
 
     Meta::TrackKey trackKey1( track );
 
@@ -48,8 +50,10 @@ TestMetaTrackKey::testTrackKey()
 void
 TestMetaTrackKey::testOperatorAssignment()
 {
+    AmarokConfig::instance("amarokrc");
+
     Meta::TrackPtr track;
-    track = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track01.ogg" ) );
+    track = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
 
     Meta::TrackKey trackKey1( track ), trackKey2;
 

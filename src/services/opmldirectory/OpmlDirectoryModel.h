@@ -19,7 +19,7 @@
 
 #include "OpmlOutline.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QAbstractItemModel>
 
@@ -40,7 +40,7 @@ public:
         CustomRoleOffset //first role that can be used by sublasses for their own data
     };
 
-    explicit OpmlDirectoryModel( KUrl outlineUrl, QObject *parent = 0 );
+    explicit OpmlDirectoryModel( QUrl outlineUrl, QObject *parent = 0 );
     ~OpmlDirectoryModel();
 
     // QAbstractItemModel methods
@@ -55,15 +55,15 @@ public:
     virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
     // OpmlDirectoryModel methods
-    virtual void saveOpml( const KUrl &saveLocation );
+    virtual void saveOpml( const QUrl &saveLocation );
     virtual OpmlNodeType opmlNodeType( const QModelIndex &idx ) const;
 
     //TODO: extract these into OpmlPodcastDirectoryModel subclass
     void subscribe( const QModelIndexList &indexes ) const;
 
-signals:
+Q_SIGNALS:
 
-public slots:
+public Q_SLOTS:
     void slotAddOpmlAction();
     void slotAddFolderAction();
 
@@ -71,7 +71,7 @@ protected:
     virtual bool canFetchMore( const QModelIndex &parent ) const;
     virtual void fetchMore( const QModelIndex &parent );
 
-private slots:
+private Q_SLOTS:
     void slotOpmlHeaderDone();
     void slotOpmlOutlineParsed( OpmlOutline * );
     void slotOpmlParsingDone();
@@ -80,7 +80,7 @@ private slots:
 private:
     QModelIndex addOutlineToModel( QModelIndex parentIdx, OpmlOutline *oultine );
 
-    KUrl m_rootOpmlUrl;
+    QUrl m_rootOpmlUrl;
     QList<OpmlOutline *> m_rootOutlines;
 
     QMap<OpmlParser *,QModelIndex> m_currentFetchingMap;
@@ -90,8 +90,5 @@ private:
     QAction *m_addFolderAction;
 };
 
-Q_DECLARE_METATYPE(QActionList)
-//we store these in a QVariant for the addFolder and addOpml actions
-Q_DECLARE_METATYPE( QModelIndex )
 
 #endif // OPMLDIRECTORYMODEL_H

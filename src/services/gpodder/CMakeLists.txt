@@ -1,72 +1,88 @@
 include_directories(
-        ../
-        ../../
-        ../../core-impl/collections
-        ../../statusbar
-        ../../widgets
-        ../../context
-        ../../network
-        ../../dynamic # for CustomBias.h
-        ../../browsers/playlistbrowser
-        ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
-        ${KDE4_INCLUDE_DIR}
-        ${QT_INCLUDES}
-        ${LIBMYGPO_QT_INCLUDE_DIRS}
-        ${LIBMYGPO_QT_INCLUDE_DIRS}/../
-        )
+    ../
+    ../../
+    ../../core-impl/collections
+    ../../statusbar
+    ../../widgets
+    ../../context
+    ../../network
+    ../../dynamic # for CustomBias.h
+    ../../browsers/playlistbrowser
+    ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
 
-        add_subdirectory( images )
 
-        set(amarok_service_gpodder_PART_SRCS
-            GpodderService.cpp
-            GpodderServiceConfig.cpp
-            GpodderServiceModel.cpp
-            GpodderServiceView.cpp
-            GpodderProvider.cpp
-            GpodderPodcastMeta.cpp
-            GpodderTreeItem.cpp
-            GpodderPodcastTreeItem.cpp
-            GpodderTagTreeItem.cpp
-            GpodderPodcastRequestHandler.cpp
-            GpodderSortFilterProxyModel.cpp
-        )
+    ${LIBMYGPO_QT5_INCLUDE_DIRS}
+    ${LIBMYGPO_QT5_INCLUDE_DIRS}/../
+)
 
-        kde4_add_plugin(amarok_service_gpodder ${amarok_service_gpodder_PART_SRCS})
+add_subdirectory( images )
 
-        target_link_libraries(amarok_service_gpodder
-            amarokcore
-            amaroklib
-            amarokpud
-            ${LIBMYGPO_QT_LIBRARIES}
-            ${KDE4_KDECORE_LIBS}
-            ${KDE4_KDEUI_LIBS}
-            ${KDE4_KIO_LIBS}
-            ${KDE4_SOLID_LIBRARY}
-            ${KDE4_THREADWEAVER_LIBRARIES}
-            ${QT_QTNETWORK_LIBRARY}
-        )
+find_package( KF5 COMPONENTS Wallet REQUIRED )
 
-         install( TARGETS amarok_service_gpodder DESTINATION ${PLUGIN_INSTALL_DIR} )
+set(libgpodder_service_config_SRCS
+    GpodderServiceConfig.cpp
+)
 
-         set(kcm_amarok_service_gpodder_PART_SRCS
-            GpodderServiceSettings.cpp
-            GpodderServiceConfig.cpp
-         )
+add_library(gpodder_service_config SHARED ${libgpodder_service_config_SRCS})
 
-         kde4_add_ui_files( kcm_amarok_service_gpodder_PART_SRCS GpodderConfigWidget.ui )
+target_link_libraries(gpodder_service_config
+    amaroklib
+    amarokcore
+    KF5::Wallet
+)
 
-         kde4_add_plugin( kcm_amarok_service_gpodder ${kcm_amarok_service_gpodder_PART_SRCS} )
+install(TARGETS gpodder_service_config DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-         target_link_libraries( kcm_amarok_service_gpodder
-            amarokcore
-            amaroklib
-            ${LIBMYGPO_QT_LIBRARIES}
-            ${KDE4_KDEUI_LIBS}
-            ${KDE4_KUTILS_LIBS}
-            ${KDE4_KIO_LIBS}
-            ${QT_QTNETWORK_LIBRARY} )
+set(amarok_service_gpodder_PART_SRCS
+    GpodderService.cpp
+    GpodderServiceModel.cpp
+    GpodderServiceView.cpp
+    GpodderProvider.cpp
+    GpodderPodcastMeta.cpp
+    GpodderTreeItem.cpp
+    GpodderPodcastTreeItem.cpp
+    GpodderTagTreeItem.cpp
+    GpodderPodcastRequestHandler.cpp
+    GpodderSortFilterProxyModel.cpp
+)
 
-         install(TARGETS kcm_amarok_service_gpodder  DESTINATION ${PLUGIN_INSTALL_DIR})
+add_library(amarok_service_gpodder MODULE ${amarok_service_gpodder_PART_SRCS})
 
-         install( FILES amarok_service_gpodder.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
-         install( FILES amarok_service_gpodder_config.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+target_link_libraries(amarok_service_gpodder
+    amarokcore
+    amaroklib
+    amarokpud
+    gpodder_service_config
+    ${LIBMYGPO_QT_LIBRARIES}
+    KF5::KIOCore
+    KF5::ThreadWeaver
+    Qt5::Network
+)
+
+install( TARGETS amarok_service_gpodder DESTINATION ${PLUGIN_INSTALL_DIR} )
+
+kcoreaddons_desktop_to_json(amarok_service_gpodder amarok_service_gpodder.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
+
+
+set(kcm_amarok_service_gpodder_PART_SRCS
+    GpodderServiceSettings.cpp
+)
+
+ki18n_wrap_ui( kcm_amarok_service_gpodder_PART_SRCS GpodderConfigWidget.ui )
+
+add_library(kcm_amarok_service_gpodder MODULE ${kcm_amarok_service_gpodder_PART_SRCS} )
+
+target_link_libraries( kcm_amarok_service_gpodder
+    amarokcore
+    amaroklib
+    gpodder_service_config
+    ${LIBMYGPO_QT_LIBRARIES}
+    KF5::ConfigWidgets
+    KF5::KIOCore
+    Qt5::Network
+)
+
+install(TARGETS kcm_amarok_service_gpodder DESTINATION ${PLUGIN_INSTALL_DIR})
+install(FILES amarok_service_gpodder_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )
+
+kcoreaddons_desktop_to_json(kcm_amarok_service_gpodder amarok_service_gpodder_config.desktop SERVICE_TYPES kcmodule.desktop)

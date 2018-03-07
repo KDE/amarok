@@ -22,8 +22,8 @@
 #include "playlist/layouts/LayoutEditDialog.h"
 
 #include <KColorScheme>
-#include <KIcon>
-#include <KLocale>
+#include <QIcon>
+#include <KLocalizedString>
 
 #include <QContextMenuEvent>
 #include <QLayout>
@@ -34,7 +34,7 @@
 Wrench::Wrench( QWidget *parent ) : QLabel( parent )
 {
     setCursor( Qt::ArrowCursor );
-    setPixmap( KIcon( "configure" ).pixmap( 64 ) );
+    setPixmap( QIcon::fromTheme( "configure" ).pixmap( 64 ) );
     setScaledContents( true );
     setMargin( 4 );
 }
@@ -91,7 +91,7 @@ Token * TokenWithLayoutFactory::createToken( const QString &text, const QString 
     return new TokenWithLayout( text, iconName, value, parent );
 }
 
-QWeakPointer<LayoutEditDialog> TokenWithLayout::m_dialog;
+QPointer<LayoutEditDialog> TokenWithLayout::m_dialog;
 
 TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, qint64 value, QWidget *parent )
     : Token( text, iconName, value, parent  )
@@ -104,7 +104,7 @@ TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, 
     m_wrench = new Wrench( this );
     m_wrench->installEventFilter( this );
     m_wrench->hide();
-    connect ( m_wrench, SIGNAL(clicked()), this, SLOT(showConfig()) );
+    connect ( m_wrench, &Wrench::clicked, this, &TokenWithLayout::showConfig );
     setFocusPolicy( Qt::ClickFocus );
 }
 
@@ -153,17 +153,17 @@ void TokenWithLayout::showConfig()
 {
     if( !m_dialog )
         m_dialog = new LayoutEditDialog( window() );
-    m_dialog.data()->setToken( this );
-    if( !m_dialog.data()->isVisible() )
+    m_dialog->setToken( this );
+    if( !m_dialog->isVisible() )
     {
-        m_dialog.data()->adjustSize();
+        m_dialog->adjustSize();
         QPoint pt = mapToGlobal( rect().bottomLeft() );
         pt.setY( pt.y() + 9 );
         if ( parentWidget() )
-            pt.setX( parentWidget()->mapToGlobal( QPoint( 0, 0 ) ).x() + ( parentWidget()->width() - m_dialog.data()->QDialog::width() ) / 2 );
-        m_dialog.data()->move( pt );
+            pt.setX( parentWidget()->mapToGlobal( QPoint( 0, 0 ) ).x() + ( parentWidget()->width() - m_dialog->QDialog::width() ) / 2 );
+        m_dialog->move( pt );
     }
-    m_dialog.data()->show(); // ensures raise in doubt
+    m_dialog->show(); // ensures raise in doubt
     QTimerEvent te( m_wrenchTimer );
     timerEvent( &te ); // it's not like we'd get a leave event when the child dialog pops in between...
 }
@@ -287,7 +287,6 @@ void TokenWithLayout::setUnderline( bool underline )
 }
 
 
-#include "TokenWithLayout.moc"
 
 
 

@@ -27,10 +27,9 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "dialogs/DatabaseImporterDialog.h"
 
-#include <KLocale>
-#include <KGlobalSettings>
-#include <KPushButton>
-#include <KVBox>
+#include <KLocalizedString>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include <QAction>
 #include <QApplication>
@@ -54,23 +53,22 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     setObjectName( "CollectionSetup" );
     s_instance = this;
 
-    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
-        m_ui.view->setAnimated( true );
-    connect( m_ui.view, SIGNAL(clicked(QModelIndex)),
-             this, SIGNAL(changed()) );
+    m_ui.view->setAnimated( true );
+    connect( m_ui.view, &QTreeView::clicked,
+             this, &CollectionSetup::changed );
 
-    connect( m_ui.view, SIGNAL(pressed(QModelIndex)),
-             this, SLOT(slotPressed(QModelIndex)) );
-    connect( m_rescanDirAction, SIGNAL(triggered()),
-             this, SLOT(slotRescanDirTriggered()) );
+    connect( m_ui.view, &QTreeView::pressed,
+             this, &CollectionSetup::slotPressed );
+    connect( m_rescanDirAction, &QAction::triggered,
+             this, &CollectionSetup::slotRescanDirTriggered );
 
-    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui.buttonContainer );
+    QPushButton *rescan = new QPushButton( QIcon::fromTheme( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui.buttonContainer );
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
-    connect( rescan, SIGNAL(clicked()), CollectionManager::instance(), SLOT(startFullScan()) );
+    connect( rescan, &QAbstractButton::clicked, CollectionManager::instance(), &CollectionManager::startFullScan );
 
-    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import batch file..." ), m_ui.buttonContainer );
+    QPushButton *import = new QPushButton( QIcon::fromTheme( "tools-wizard" ), i18n( "Import batch file..." ), m_ui.buttonContainer );
     import->setToolTip( i18n( "Import collection from file produced by amarokcollectionscanner." ) );
-    connect( import, SIGNAL(clicked()), this, SLOT(importCollection()) );
+    connect( import, &QAbstractButton::clicked, this, &CollectionSetup::importCollection );
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget( rescan );
@@ -79,8 +77,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), m_ui.checkboxContainer );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), m_ui.checkboxContainer );
-    connect( m_recursive, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
-    connect( m_monitor  , SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
+    connect( m_recursive, &QCheckBox::toggled, this, &CollectionSetup::changed );
+    connect( m_monitor  , &QCheckBox::toggled, this, &CollectionSetup::changed );
 
     QVBoxLayout *checkboxLayout = new QVBoxLayout();
     checkboxLayout->addWidget( m_recursive );
@@ -210,14 +208,12 @@ CollectionSetup::isDirInCollection( const QString& path ) const
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
 
-    KUrl url = KUrl( path );
-    KUrl parentUrl;
     foreach( const QString &dir, collectionFolders )
     {
         debug() << "Collection Location: " << dir;
         debug() << "path: " << path;
         debug() << "scan Recursively: " << AmarokConfig::scanRecursively();
-        parentUrl.setPath( dir );
+        QUrl parentUrl = QUrl::fromLocalFile( dir );
         if ( !AmarokConfig::scanRecursively() )
         {
             if ( ( dir == path ) || ( QString( dir + '/' ) == path ) )
@@ -225,7 +221,7 @@ CollectionSetup::isDirInCollection( const QString& path ) const
         }
         else //scan recursively
         {
-            if ( parentUrl.isParentOf( path ) )
+            if (parentUrl.isParentOf( QUrl::fromLocalFile(path) ) || parentUrl.matches(QUrl::fromLocalFile(path), QUrl::StripTrailingSlash))
                 return true;
         }
     }

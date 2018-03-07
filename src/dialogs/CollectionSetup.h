@@ -54,10 +54,10 @@ class CollectionSetup : public QWidget
         const QString modelFilePath( const QModelIndex &index ) const;
         Transcoding::SelectConfigWidget *transcodingConfig() const { return m_ui.transcodingConfig; }
 
-    signals:
+    Q_SIGNALS:
         void changed();
 
-    private slots:
+    private Q_SLOTS:
         void importCollection();
 
         /** Shows a context menu if the right mouse button is pressed over a directory. */

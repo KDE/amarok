@@ -52,12 +52,12 @@ class TransferJob : public KCompositeJob
         virtual bool addSubjob( KJob* job );
 
         void emitInfo( const QString &message );
-    public slots:
+    public Q_SLOTS:
         /**
          * A move or copy job finished
          */
         void slotJobFinished( KJob *job );
-    protected slots:
+    protected Q_SLOTS:
         void slotResult( KJob *job );
         void doWork();
         void propagateProcessedAmount( KJob *job, KJob::Unit unit, qulonglong amount);
@@ -83,7 +83,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionLocation : public CollectionLocat
         virtual bool isOrganizable() const;
 
         bool remove( const Meta::TrackPtr &track );
-        virtual bool insert( const Meta::TrackPtr &track, const QString &url );
+        virtual bool insert( const Meta::TrackPtr &track, const QString &path );
 
         //dependency injectors
         void setOrganizeCollectionDelegateFactory( OrganizeCollectionDelegateFactory *fac );
@@ -92,11 +92,11 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionLocation : public CollectionLocat
         virtual void showDestinationDialog( const Meta::TrackList &tracks,
                                             bool removeSources,
                                             const Transcoding::Configuration &configuration );
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                            const Transcoding::Configuration & configuration );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
-    private slots:
+    private Q_SLOTS:
         void slotDialogAccepted();
         void slotDialogRejected();
         void slotJobFinished( KJob *job );
@@ -105,7 +105,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionLocation : public CollectionLocat
         void slotTransferJobAborted();
 
     private:
-        KUrl moodFile( const KUrl &track ) const;
+        QUrl moodFile( const QUrl &track ) const;
         void migrateLabels( const QMap<Meta::TrackPtr, QString> &trackMap );
         bool startNextJob( const Transcoding::Configuration configuration );
         bool startNextRemoveJob();
@@ -113,9 +113,9 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionLocation : public CollectionLocat
         Collections::SqlCollection *m_collection;
         OrganizeCollectionDelegateFactory *m_delegateFactory;
         QMap<Meta::TrackPtr, QString> m_destinations;
-        QMap<Meta::TrackPtr, KUrl> m_sources;
+        QMap<Meta::TrackPtr, QUrl> m_sources;
         Meta::TrackList m_removetracks;
-        QHash<Meta::TrackPtr, KUrl> m_originalUrls;
+        QHash<Meta::TrackPtr, QUrl> m_originalUrls;
         bool m_overwriteFiles;
         QMap<KJob*, Meta::TrackPtr> m_jobs;
         QMap<KJob*, Meta::TrackPtr> m_removejobs;
@@ -144,13 +144,13 @@ public:
     virtual void setIsOrganizing( bool organizing ) = 0;
     virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration ) = 0;
     virtual void setCaption( const QString &caption ) = 0;
-
+ 
     virtual void show() = 0;
 
     virtual bool overwriteDestinations() const = 0;
     virtual QMap<Meta::TrackPtr, QString> destinations() const = 0;
 
-signals:
+Q_SIGNALS:
     void accepted();
     void rejected();
 };

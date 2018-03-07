@@ -32,11 +32,15 @@
 #include "CoverFoundDialog.h"
 #include "CoverFetchUnit.h"
 
-#include <KLocale>
-#include <KUrl>
+#include <KLocalizedString>
+#include <QUrl>
 
 #include <QBuffer>
 #include <QImageReader>
+#include <QUrl>
+
+#include <KConfigGroup>
+#include <KLocalizedString>
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 
@@ -64,12 +68,12 @@ CoverFetcher::CoverFetcher()
     qRegisterMetaType<CoverFetchUnit::Ptr>("CoverFetchUnit::Ptr");
 
     m_queue = new CoverFetchQueue( this );
-    connect( m_queue, SIGNAL(fetchUnitAdded(CoverFetchUnit::Ptr)),
-                      SLOT(slotFetch(CoverFetchUnit::Ptr)) );
+    connect( m_queue, &CoverFetchQueue::fetchUnitAdded,
+             this, &CoverFetcher::slotFetch );
     s_instance = this;
 
-    connect( The::networkAccessManager(), SIGNAL(requestRedirected(QNetworkReply*,QNetworkReply*)),
-             this, SLOT(fetchRequestRedirected(QNetworkReply*,QNetworkReply*)) );
+    connect( The::networkAccessManager(), &NetworkAccessManagerProxy::requestRedirectedReply,
+             this, &CoverFetcher::fetchRequestRedirected );
 }
 
 CoverFetcher::~CoverFetcher()
@@ -133,7 +137,7 @@ CoverFetcher::queueQueryForAlbum( Meta::AlbumPtr album )
     QString query( album->name() );
     if( album->hasAlbumArtist() )
         query += ' ' + album->albumArtist()->name();
-    queueQuery( album, query, 0 );
+    queueQuery( album, query, 1 );
 }
 
 void
@@ -156,14 +160,14 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
         return;
     }
 
-    const KUrl::List uniqueUrls = urls.uniqueKeys();
-    foreach( const KUrl &url, uniqueUrls )
+    const QList<QUrl> uniqueUrls = urls.uniqueKeys();
+    foreach( const QUrl &url, uniqueUrls )
     {
         if( !url.isValid() )
             continue;
 
         QNetworkReply *reply = The::networkAccessManager()->getData( url, this,
-                               SLOT(slotResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                               SLOT(slotResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         m_urls.insert( url, unit );
 
         if( payload->type() == CoverFetchPayload::Art )
@@ -177,7 +181,7 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
 }
 
 void
-CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+CoverFetcher::slotResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     DEBUG_BLOCK
     if( !m_urls.contains( url ) )
@@ -217,7 +221,7 @@ CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManager
 }
 
 void
-CoverFetcher::handleCoverPayload( const CoverFetchUnit::Ptr &unit, const QByteArray &data, const KUrl &url )
+CoverFetcher::handleCoverPayload( const CoverFetchUnit::Ptr &unit, const QByteArray &data, const QUrl &url )
 {
     if( data.isEmpty() )
     {
@@ -278,15 +282,15 @@ CoverFetcher::handleCoverPayload( const CoverFetchUnit::Ptr &unit, const QByteAr
 void
 CoverFetcher::slotDialogFinished()
 {
-    const CoverFetchUnit::Ptr unit = m_dialog.data()->unit();
-    switch( m_dialog.data()->result() )
+    const CoverFetchUnit::Ptr unit = m_dialog->unit();
+    switch( m_dialog->result() )
     {
-    case KDialog::Accepted:
-        m_selectedImages.insert( unit, m_dialog.data()->image() );
+    case QDialog::Accepted:
+        m_selectedImages.insert( unit, m_dialog->image() );
         finish( unit );
         break;
 
-    case KDialog::Rejected:
+    case QDialog::Rejected:
         finish( unit, Cancelled );
         break;
 
@@ -306,15 +310,16 @@ CoverFetcher::slotDialogFinished()
             abortFetch( unit );
     }
 
-    m_dialog.data()->delayedDestruct();
+    m_dialog->hide();
+    m_dialog->deleteLater();
 }
 
 void
 CoverFetcher::fetchRequestRedirected( QNetworkReply *oldReply,
                                       QNetworkReply *newReply )
 {
-    KUrl oldUrl = oldReply->request().url();
-    KUrl newUrl = newReply->request().url();
+    QUrl oldUrl = oldReply->request().url();
+    QUrl newUrl = newReply->request().url();
 
     // Since we were redirected we have to check if the redirect
     // was for one of our URLs and if the new URL is not handled
@@ -350,18 +355,20 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
         }
 
         m_dialog = new CoverFoundDialog( unit, data, static_cast<QWidget*>( parent() ) );
-        connect( m_dialog.data(), SIGNAL(newCustomQuery(Meta::AlbumPtr,QString,int)),
-                           SLOT(queueQuery(Meta::AlbumPtr,QString,int)) );
-        connect( m_dialog.data(), SIGNAL(accepted()), SLOT(slotDialogFinished()) );
-        connect( m_dialog.data(), SIGNAL(rejected()), SLOT(slotDialogFinished()) );
+        connect( m_dialog.data(), &CoverFoundDialog::newCustomQuery,
+                 this, &CoverFetcher::queueQuery );
+        connect( m_dialog.data(), &CoverFoundDialog::accepted,
+                 this, &CoverFetcher::slotDialogFinished );
+        connect( m_dialog.data(),&CoverFoundDialog::rejected,
+                 this, &CoverFetcher::slotDialogFinished );
 
         if( fetchSource() == CoverFetch::LastFm )
             queueQueryForAlbum( album );
-        m_dialog.data()->setQueryPage( 1 );
+        m_dialog->setQueryPage( 1 );
 
-        m_dialog.data()->show();
-        m_dialog.data()->raise();
-        m_dialog.data()->activateWindow();
+        m_dialog->show();
+        m_dialog->raise();
+        m_dialog->activateWindow();
     }
     else
     {
@@ -370,7 +377,7 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
             if( payload )
-                m_dialog.data()->add( cover, data, payload->imageSize() );
+                m_dialog->add( cover, data, payload->imageSize() );
         }
     }
 }
@@ -381,8 +388,8 @@ CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
     m_queue->remove( unit );
     m_queueLater.removeAll( unit->album() );
     m_selectedImages.remove( unit );
-    KUrl::List urls = m_urls.keys( unit );
-    foreach( const KUrl &url, urls )
+    QList<QUrl> urls = m_urls.keys( unit );
+    foreach( const QUrl &url, urls )
         m_urls.remove( url );
     The::networkAccessManager()->abortGet( urls );
 }
@@ -401,7 +408,8 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
-            Amarok::Components::logger()->shortMessage( text );
+            if( Amarok::Components::logger() )
+                Amarok::Components::logger()->shortMessage( text );
             debug() << "Finished successfully for album" << albumName;
         }
         album->setImage( m_selectedImages.take( unit ) );
@@ -476,5 +484,4 @@ CoverFetcher::fetchSource() const
     return source;
 }
 
-#include "CoverFetcher.moc"
 

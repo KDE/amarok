@@ -20,7 +20,7 @@
 #include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QList>
 #include <QObject>
@@ -96,7 +96,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
             This method will try to get a Track object for the given url. This method will return 0 if no Track object
             could be created for the url.
         */
-        Meta::TrackPtr trackForUrl( const KUrl &url );
+        Meta::TrackPtr trackForUrl( const QUrl &url );
 
         CollectionStatus collectionStatus( const QString &collectionId ) const;
 
@@ -133,7 +133,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
          */
         void setFactories( const QList<Plugins::PluginFactory*> &factories );
 
-    public slots:
+    public Q_SLOTS:
         /** Starts the full scan for each collection with CollectionScanCapability */
         void startFullScan();
         /** Starts the incremetal scan for each collection with CollectionScanCapability */
@@ -141,9 +141,9 @@ class AMAROK_EXPORT CollectionManager : public QObject
         void stopScan();
         void checkCollectionChanges();
 
-    signals:
+    Q_SIGNALS:
         //deprecated, use collectionAdded( Collections::Collection*, CollectionStatus ) instead
-        void collectionAdded( Collections::Collection *newCollection );
+//         void collectionAdded( Collections::Collection *newCollection );
 
         void collectionAdded( Collections::Collection *newCollection, CollectionManager::CollectionStatus status );
         void collectionRemoved( QString collectionId );
@@ -154,7 +154,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
         //it will not be emitted on minor changes (e.g. the tags of a song were changed)
         void collectionDataChanged( Collections::Collection *changedCollection );
 
-    private slots:
+    private Q_SLOTS:
         /** Will be called whenever a registered collection factory creates a new collection */
         void slotNewCollection( Collections::Collection *newCollection );
         /** Will remove the collection that emitted the signal */

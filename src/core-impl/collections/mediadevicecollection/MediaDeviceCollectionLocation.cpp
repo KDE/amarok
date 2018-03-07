@@ -22,7 +22,7 @@
 #include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
 
 #include <KJob>
-#include <KLocale>
+#include <KLocalizedString>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
@@ -56,20 +56,20 @@ MediaDeviceCollectionLocation::isWritable() const
 void
 MediaDeviceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
-    connect( m_handler, SIGNAL(gotCopyableUrls(QMap<Meta::TrackPtr,KUrl>)),SLOT(slotGetKIOCopyableUrlsDone(QMap<Meta::TrackPtr,KUrl>)) );
+    connect( m_handler, &Meta::MediaDeviceHandler::gotCopyableUrls, this, &MediaDeviceCollectionLocation::slotGetKIOCopyableUrlsDone );
     m_handler->getCopyableUrls( tracks );
 }
 
 
 void
-MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                                      const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
     Q_UNUSED( configuration )
 
-    connect( m_handler, SIGNAL(copyTracksDone(bool)),
-             this,      SLOT(copyOperationFinished(bool)),
+    connect( m_handler, &Meta::MediaDeviceHandler::copyTracksDone,
+             this, &MediaDeviceCollectionLocation::copyOperationFinished,
              Qt::QueuedConnection );
     m_handler->copyTrackListToDevice( sources.keys() );
 
@@ -120,8 +120,8 @@ void
 MediaDeviceCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources )
 {
     DEBUG_BLOCK
-    connect( m_handler, SIGNAL(removeTracksDone()),
-             this, SLOT(removeOperationFinished()) );
+    connect( m_handler, &Meta::MediaDeviceHandler::removeTracksDone,
+             this, &MediaDeviceCollectionLocation::removeOperationFinished );
 
     m_handler->removeTrackListFromDevice( sources );
 }
@@ -136,5 +136,4 @@ MediaDeviceCollectionLocation::removeOperationFinished()
     slotRemoveOperationFinished();
 }
 
-#include "MediaDeviceCollectionLocation.moc"
 

@@ -1,20 +1,17 @@
-        include_directories(
-            ../
-            ${Amarok_SOURCE_DIR}/src/
-            ${Amarok_SOURCE_DIR}/src/core-impl/collections
-            ${Amarok_SOURCE_DIR}/src/network
-            ${Amarok_SOURCE_DIR}/src/statusbar
-            ${CMAKE_CURRENT_BINARY_DIR}/../../..
-            ${KDE4_INCLUDE_DIR}
-            ${QCA2_INCLUDE_DIR}
-            ${QT_INCLUDES}
-            )
+include_directories(
+    ../
+    ${Amarok_SOURCE_DIR}/src/
+    ${Amarok_SOURCE_DIR}/src/core-impl/collections
+    ${Amarok_SOURCE_DIR}/src/network
+    ${Amarok_SOURCE_DIR}/src/statusbar
+    ${CMAKE_CURRENT_BINARY_DIR}/../../..
+)
 
 if( LIBLASTFM_FOUND )
     include_directories(
         ${LIBLASTFM_INCLUDE_DIR}
     )
-endif( LIBLASTFM_FOUND )
+endif()
 
 add_subdirectory( images )
 
@@ -22,73 +19,71 @@ add_subdirectory( images )
 
 set(libampache_account_login_SRCS
     AmpacheAccountLogin.cpp)
-kde4_add_library(ampache_account_login SHARED ${libampache_account_login_SRCS})
+
+add_library(ampache_account_login SHARED ${libampache_account_login_SRCS})
+
 target_link_libraries(ampache_account_login
     amaroklib
     amarokcore
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
-    ${QCA2_LIBRARIES}
+    
+    KF5::KIOCore
 )
 install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### next target ###############
-        set(amarok_service_ampache_PART_SRCS 
-            AmpacheService.cpp
-            AmpacheServiceCollection.cpp
-            AmpacheServiceQueryMaker.cpp
-            AmpacheMeta.cpp
-            AmpacheConfig.cpp
-        )
-        if( LIBLASTFM_FOUND )
-            set(amarok_service_ampache_PART_SRCS
-                ${amarok_service_ampache_PART_SRCS}
-                LastfmInfoParser.cpp )
-        endif( LIBLASTFM_FOUND )
+
+set(amarok_service_ampache_PART_SRCS
+    AmpacheService.cpp
+    AmpacheServiceCollection.cpp
+    AmpacheServiceQueryMaker.cpp
+    AmpacheMeta.cpp
+    AmpacheConfig.cpp
+)
+if( LIBLASTFM_FOUND )
+    set(amarok_service_ampache_PART_SRCS
+        ${amarok_service_ampache_PART_SRCS}
+        LastfmInfoParser.cpp )
+endif()
 
 
+add_library(amarok_service_ampache MODULE ${amarok_service_ampache_PART_SRCS})
+target_link_libraries(amarok_service_ampache
+    ampache_account_login
+    amarokcore
+    amaroklib
 
-        kde4_add_plugin(amarok_service_ampache ${amarok_service_ampache_PART_SRCS})
-        target_link_libraries(amarok_service_ampache
-            ampache_account_login
-            amarokcore
-            amaroklib
-            ${KDE4_KDECORE_LIBS}
-            ${KDE4_KDEUI_LIBS}
-            ${KDE4_KIO_LIBS}
-            ${KDE4_THREADWEAVER_LIBRARIES}
-            ${QT_QTXML_LIBRARY}
-            ${KDE4_SOLID_LIBS}
-        )
-        if( LIBLASTFM_FOUND )
-            target_link_libraries(amarok_service_ampache
-                ${LIBLASTFM_LIBRARY}
-            )
-        endif( LIBLASTFM_FOUND )
+    KF5::KIOCore
+    KF5::ThreadWeaver
+    Qt5::Xml
+)
+if( LIBLASTFM_FOUND )
+    target_link_libraries(amarok_service_ampache
+        ${LIBLASTFM_LIBRARY}
+    )
+endif()
 
 
-        install(TARGETS amarok_service_ampache DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(TARGETS amarok_service_ampache DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(FILES amarok_service_ampache.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+
+kcoreaddons_desktop_to_json(amarok_service_ampache amarok_service_ampache.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
 
 
 ########### next target ###############
 
-        set(kcm_amarok_service_ampache_PART_SRCSS AddServerDialog.cpp AmpacheSettings.cpp AmpacheConfig.cpp )
+set(kcm_amarok_service_ampache_PART_SRCSS AddServerDialog.cpp AmpacheSettings.cpp AmpacheConfig.cpp )
 
-        kde4_add_ui_files( kcm_amarok_service_ampache_PART_SRCSS AmpacheConfigWidget.ui NewServerWidget.ui )
-
-
-        kde4_add_plugin( kcm_amarok_service_ampache ${kcm_amarok_service_ampache_PART_SRCSS} )
+ki18n_wrap_ui( kcm_amarok_service_ampache_PART_SRCSS AmpacheConfigWidget.ui NewServerWidget.ui )
 
 
-        target_link_libraries( kcm_amarok_service_ampache
-            ampache_account_login ${KDE4_KUTILS_LIBS} ${QT_QTCORE_LIBRARY}
-            ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBRARY} ${KDE4_KDEUI_LIBS} )
+add_library(kcm_amarok_service_ampache MODULE ${kcm_amarok_service_ampache_PART_SRCSS} )
 
-        install(TARGETS kcm_amarok_service_ampache  DESTINATION ${PLUGIN_INSTALL_DIR})
+target_link_libraries( kcm_amarok_service_ampache
+    ampache_account_login
+    KF5::ConfigWidgets
+)
 
+install(TARGETS kcm_amarok_service_ampache DESTINATION ${PLUGIN_INSTALL_DIR})
+install(FILES amarok_service_ampache_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
-########### install files ###############
-
-        install( FILES amarok_service_ampache.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-        install( FILES amarok_service_ampache_config.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+kcoreaddons_desktop_to_json(kcm_amarok_service_ampache amarok_service_ampache_config.desktop SERVICE_TYPES kcmodule.desktop)

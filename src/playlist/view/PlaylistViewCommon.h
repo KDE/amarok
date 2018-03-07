@@ -25,6 +25,7 @@
 #include <QAction>
 #include <QModelIndex>
 #include <QPoint>
+#include <KLocalizedString>
 
 namespace Playlist
 {

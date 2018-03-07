@@ -23,28 +23,28 @@
 
 #include "personparser.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QTimer>
+#include <QDebug>
+#include <QTimer>
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
+#include <KLocalizedString>
 
 
 using namespace AmarokAttica;
 
 PersonListJob::PersonListJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 
-void PersonListJob::setUrl( const KUrl &url )
+void PersonListJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }
 
 void PersonListJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &PersonListJob::doWork );
 }
 
 Person::List PersonListJob::personList() const
@@ -56,11 +56,13 @@ void PersonListJob::doWork()
 {
   qDebug() << m_url;
 
-  m_job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
-  connect( m_job, SIGNAL(result(KJob*)),
-    SLOT(slotUserJobResult(KJob*)) );
-  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-    SLOT(slotUserJobData(KIO::Job*,QByteArray)) );
+  auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+  connect( job, &KIO::TransferJob::result,
+           this, &PersonListJob::slotUserJobResult );
+  connect( job, &KIO::TransferJob::data,
+           this, &PersonListJob::slotUserJobData );
+
+  m_job = job;
 }
 
 void PersonListJob::slotUserJobResult( KJob *job )
@@ -79,10 +81,10 @@ void PersonListJob::slotUserJobResult( KJob *job )
 #if 0
     m_job = KIO::get( m_person.avatarUrl(), KIO::NoReload,
       KIO::HideProgressInfo );
-    connect( m_job, SIGNAL(result(KJob*)),
-      SLOT(slotAvatarJobResult(KJob*)) );
-    connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-      SLOT(slotAvatarJobData(KIO::Job*,QByteArray)) );
+    connect( m_job, &KIO::Job::result,
+        this, &PersonListJob::slotAvatarJobResult );
+    connect( m_job, &KIO::Job::data,
+        this, &PersonListJob::slotAvatarJobData );
 #else
     emitResult();
 #endif

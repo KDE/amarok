@@ -20,8 +20,8 @@
 
 SimilarArtist::SimilarArtist() {}
 
-SimilarArtist::SimilarArtist( const QString &name, const int match, const KUrl &url,
-                              const KUrl &urlImage, const QString &similarTo )
+SimilarArtist::SimilarArtist( const QString &name, const int match, const QUrl &url,
+                              const QUrl &urlImage, const QString &similarTo )
     : m_name( name )
     , m_match( match )
     , m_url( url )
@@ -59,13 +59,13 @@ SimilarArtist::match() const
     return m_match;
 }
 
-KUrl
+QUrl
 SimilarArtist::url() const
 {
     return m_url;
 }
 
-KUrl
+QUrl
 SimilarArtist::urlImage() const
 {
     return m_urlImage;
@@ -101,8 +101,8 @@ SimilarArtist::listFromXml( QXmlStreamReader &xml )
         if( xml.name() == QLatin1String("artist") )
         {
             QString name;
-            KUrl artistUrl;
-            KUrl imageUrl;
+            QUrl artistUrl;
+            QUrl imageUrl;
             float match( 0.0 );
             while( xml.readNextStartElement() )
             {
@@ -113,11 +113,11 @@ SimilarArtist::listFromXml( QXmlStreamReader &xml )
                 else if( n == QLatin1String("match") )
                     match = xml.readElementText().toFloat() * 100.0;
                 else if( n == QLatin1String("url") )
-                    artistUrl = KUrl( xml.readElementText() );
+                    artistUrl = QUrl( xml.readElementText() );
                 else if( n == QLatin1String("image")
                          && a.hasAttribute(QLatin1String("size"))
                          && a.value(QLatin1String("size")) == QLatin1String("large") )
-                    imageUrl = KUrl( xml.readElementText() );
+                    imageUrl = QUrl( xml.readElementText() );
                 else
                     xml.skipCurrentElement();
             }

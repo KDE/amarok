@@ -95,8 +95,8 @@ Controller::Controller()
     m_topModel = The::playlist();
 
     m_undoStack->setUndoLimit( 20 );
-    connect( m_undoStack, SIGNAL(canRedoChanged(bool)), this, SIGNAL(canRedoChanged(bool)) );
-    connect( m_undoStack, SIGNAL(canUndoChanged(bool)), this, SIGNAL(canUndoChanged(bool)) );
+    connect( m_undoStack, &QUndoStack::canRedoChanged, this, &Controller::canRedoChanged );
+    connect( m_undoStack, &QUndoStack::canUndoChanged, this, &Controller::canUndoChanged );
 }
 
 Controller::~Controller() {}
@@ -242,19 +242,19 @@ Controller::insertOptioned( Playlists::PlaylistList list, AddOptions options )
         flags |= TrackLoader::RemotePlaylistsAreStreams;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
     loader->setProperty( "options", QVariant::fromValue<AddOptions>( options ) );
-    connect( loader, SIGNAL(finished(Meta::TrackList)),
-                 SLOT(slotLoaderWithOptionsFinished(Meta::TrackList)) );
+    connect( loader, &TrackLoader::finished,
+             this, &Controller::slotLoaderWithOptionsFinished );
     loader->init( list );
 }
 
 void
-Controller::insertOptioned( const KUrl &url, AddOptions options )
+Controller::insertOptioned( const QUrl &url, AddOptions options )
 {
-    insertOptioned( QList<KUrl>() << url, options );
+    insertOptioned( QList<QUrl>() << url, options );
 }
 
 void
-Controller::insertOptioned( QList<KUrl> &urls, AddOptions options )
+Controller::insertOptioned( QList<QUrl> &urls, AddOptions options )
 {
     TrackLoader::Flags flags;
     // if we are going to play, we need full metadata (playable tracks)
@@ -267,8 +267,8 @@ Controller::insertOptioned( QList<KUrl> &urls, AddOptions options )
         flags |= TrackLoader::RemotePlaylistsAreStreams;
     TrackLoader *loader = new TrackLoader( flags ); // auto-deletes itself
     loader->setProperty( "options", QVariant::fromValue<AddOptions>( options ) );
-    connect( loader, SIGNAL(finished(Meta::TrackList)),
-                 SLOT(slotLoaderWithOptionsFinished(Meta::TrackList)) );
+    connect( loader, &TrackLoader::finished,
+             this, &Controller::slotLoaderWithOptionsFinished );
     loader->init( urls );
 }
 
@@ -297,18 +297,18 @@ Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList playlists 
 {
     TrackLoader *loader = new TrackLoader(); // auto-deletes itself
     loader->setProperty( "topModelRow", QVariant( topModelRow ) );
-    connect( loader, SIGNAL(finished(Meta::TrackList)),
-             SLOT(slotLoaderWithRowFinished(Meta::TrackList)) );
+    connect( loader, &TrackLoader::finished,
+             this, &Controller::slotLoaderWithRowFinished );
     loader->init( playlists );
 }
 
 void
-Controller::insertUrls( int topModelRow, QList<KUrl> &urls )
+Controller::insertUrls( int topModelRow, QList<QUrl> &urls )
 {
     TrackLoader *loader = new TrackLoader(); // auto-deletes itself
     loader->setProperty( "topModelRow", QVariant( topModelRow ) );
-    connect( loader, SIGNAL(finished(Meta::TrackList)),
-             SLOT(slotLoaderWithRowFinished(Meta::TrackList)) );
+    connect( loader, &TrackLoader::finished,
+             this, &Controller::slotLoaderWithRowFinished );
     loader->init( urls );
 }
 
@@ -614,7 +614,7 @@ Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
         }
         else if( typeid( *track.data() ) == typeid( MetaFile::Track  ) )
         {
-            KUrl cuesheet = MetaCue::CueFileSupport::locateCueSheet( track->playableUrl() );
+            QUrl cuesheet = MetaCue::CueFileSupport::locateCueSheet( track->playableUrl() );
             if( !cuesheet.isEmpty() )
             {
                 MetaCue::CueFileItemMap cueMap = MetaCue::CueFileSupport::loadCueFile( cuesheet, track );

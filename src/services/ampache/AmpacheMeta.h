@@ -23,11 +23,10 @@
 #include "ServiceMetaBase.h"
 #include "ServiceAlbumCoverDownloader.h"
 
-#include <KStandardDirs>
-
 #include <QDateTime>
 #include <QList>
 #include <QSet>
+#include <QStandardPaths>
 #include <QString>
 #include <QStringList>
 
@@ -49,8 +48,8 @@ public:
 
     virtual QString sourceName() { return "Ampache"; }
     virtual QString sourceDescription() { return "The Ampache music server project: http://Ampache.org"; }
-    virtual QPixmap emblem()  { return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-ampache.png" ) );  }
-    virtual QString scalableEmblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-ampache-scalable.svgz" );  }
+    virtual QPixmap emblem()  { return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-ampache.png" ) );  }
+    virtual QString scalableEmblem()  { return  QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-ampache-scalable.svgz" );  }
     virtual QString notPlayableReason() const;
 
     virtual int discNumber() const { return m_discNumber; }

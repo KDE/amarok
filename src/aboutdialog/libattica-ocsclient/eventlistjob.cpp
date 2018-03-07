@@ -21,7 +21,7 @@
 
 #include "eventlistjob.h"
 
-#include <QtCore/QTimer>
+#include <QTimer>
 
 #include <KIO/Job>
 
@@ -37,7 +37,7 @@ EventListJob::EventListJob()
 }
 
 
-void EventListJob::setUrl(const KUrl& url)
+void EventListJob::setUrl(const QUrl &url)
 {
     m_url = url;
 }
@@ -45,7 +45,7 @@ void EventListJob::setUrl(const KUrl& url)
 
 void EventListJob::start()
 {
-    QTimer::singleShot(0, this, SLOT(doWork()));
+    QTimer::singleShot(0, this, &EventListJob::doWork);
 }
 
 
@@ -57,10 +57,13 @@ Event::List EventListJob::eventList() const
 
 void EventListJob::doWork()
 {
-    m_job = KIO::get(m_url, KIO::NoReload, KIO::HideProgressInfo);
-    connect(m_job, SIGNAL(result(KJob*)), SLOT(slotJobResult(KJob*)));
-    connect(m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-        SLOT(slotJobData(KIO::Job*,QByteArray)));
+    auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+    connect( job, &KIO::TransferJob::result,
+             this, &EventListJob::slotJobResult );
+    connect( job, &KIO::TransferJob::data,
+             this, &EventListJob::slotJobData );
+
+    m_job = job;
 }
 
 
@@ -89,4 +92,3 @@ void EventListJob::slotJobData(KIO::Job* job, const QByteArray& data)
 }
 
 
-#include "eventlistjob.moc"

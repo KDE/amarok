@@ -24,7 +24,7 @@ AmarokUrlAction::AmarokUrlAction( const QIcon & icon, AmarokUrlPtr url, QObject 
     if ( !url->description().isEmpty() )
         setToolTip( url->description() );
 
-    connect( this, SIGNAL(triggered(bool)), this, SLOT(run()) );
+    connect( this, &AmarokUrlAction::triggered, this, &AmarokUrlAction::run );
 }
 
 AmarokUrlAction::AmarokUrlAction( AmarokUrlPtr url, QObject * parent )
@@ -35,7 +35,7 @@ AmarokUrlAction::AmarokUrlAction( AmarokUrlPtr url, QObject * parent )
         setToolTip( url->description() );
 
     setIcon( The::amarokUrlHandler()->iconForCommand( url->command() ) );
-    connect( this, SIGNAL(triggered(bool)), this, SLOT(run()) );
+    connect( this, &AmarokUrlAction::triggered, this, &AmarokUrlAction::run );
 }
 
 

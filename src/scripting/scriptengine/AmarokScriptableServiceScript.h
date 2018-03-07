@@ -63,7 +63,7 @@ namespace AmarokScript
             static QScriptValue ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine );
             static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
 
-        signals:
+        Q_SIGNALS:
             void populate( int, QString, QString );
             void fetchInfo( int, QString );
             void customize();

@@ -17,8 +17,8 @@
 #ifndef TESTAMAROKURLS_H
 #define TESTAMAROKURLS_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 class TestAmarokUrls : public QObject
 {
@@ -26,7 +26,7 @@ class TestAmarokUrls : public QObject
 public:
     TestAmarokUrls();
 
-private slots:
+private Q_SLOTS:
     void testConstructUrl();
     void testUrlFromString();
     void testEncoding();

@@ -50,7 +50,7 @@ class TabsApplet : public Context::Applet
         TabsApplet( QObject* parent, const QVariantList& args );
         ~TabsApplet();
 
-    public slots:
+    public Q_SLOTS:
 
         virtual void init();
         void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
@@ -63,7 +63,7 @@ class TabsApplet : public Context::Applet
     protected:
         void createConfigurationInterface( KConfigDialog *parent );
 
-    private slots:
+    private Q_SLOTS:
         void reloadTabs();
         void stopped();
 

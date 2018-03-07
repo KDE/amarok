@@ -20,7 +20,7 @@
 
 #include "core/amarokcore_export.h"
 
-#include <KUrl>
+#include <QUrl>
 
 class QFile;
 
@@ -39,8 +39,8 @@ namespace Playlists
         NotPlaylist = Unknown
     };
 
-    AMAROK_CORE_EXPORT PlaylistFormat getFormat( const KUrl &path );
-    AMAROK_CORE_EXPORT bool isPlaylist( const KUrl &path );
+    AMAROK_CORE_EXPORT PlaylistFormat getFormat( const QUrl &path );
+    AMAROK_CORE_EXPORT bool isPlaylist( const QUrl &path );
 }
 
 #endif

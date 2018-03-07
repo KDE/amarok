@@ -20,8 +20,8 @@
 
 #include "ui_deletedialogbase.h"
 
-#include <KDialog>
-#include <KUrl>
+#include <QDialog>
+#include <QUrl>
 
 #include <QCheckBox>
 #include <QLabel>
@@ -45,25 +45,25 @@ class DeleteWidget : public DeleteDialogBase
 public:
     DeleteWidget(QWidget *parent = 0);
 
-    void setFiles(const KUrl::List &files);
+    void setFiles(const QList<QUrl> &files);
 
-protected slots:
+protected Q_SLOTS:
     virtual void slotShouldDelete(bool shouldDelete);
 };
 
-class DeleteDialog : public KDialog
+class DeleteDialog : public QDialog
 {
     Q_OBJECT
 
 public:
     explicit DeleteDialog(QWidget *parent, const char *name = "delete_dialog");
-    static bool showTrashDialog(QWidget* parent, const KUrl::List &files);
+    static bool showTrashDialog(QWidget* parent, const QList<QUrl> &files);
 
-    bool confirmDeleteList(const KUrl::List &condemnedFiles);
-    void setFiles(const KUrl::List &files);
+    bool confirmDeleteList(const QList<QUrl> &condemnedFiles);
+    void setFiles(const QList<QUrl> &files);
     bool shouldDelete() const { return m_widget->ddShouldDelete->isChecked(); }
 
-protected slots:
+protected Q_SLOTS:
     virtual void accept();
     void slotShouldDelete(bool shouldDelete);
 

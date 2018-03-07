@@ -27,7 +27,7 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QHBoxLayout>
 #include <QMouseEvent>
@@ -72,33 +72,33 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     else
         stopped();
 
-    connect( engine, SIGNAL(stopped(qint64,qint64)),
-             this, SLOT(stopped()) );
-    connect( engine, SIGNAL(paused()),
-             this, SLOT(paused()) );
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-             this, SLOT(trackPlaying()) );
-    connect( engine, SIGNAL(trackLengthChanged(qint64)),
-             this, SLOT(trackLengthChanged(qint64)) );
-    connect( engine, SIGNAL(trackPositionChanged(qint64,bool)),
-             this, SLOT(trackPositionChanged(qint64)) );
+    connect( engine, &EngineController::stopped,
+             this, &ProgressWidget::stopped );
+    connect( engine, &EngineController::paused,
+             this, &ProgressWidget::paused );
+    connect( engine, &EngineController::trackPlaying,
+             this, &ProgressWidget::trackPlaying );
+    connect( engine, &EngineController::trackLengthChanged,
+             this, &ProgressWidget::trackLengthChanged );
+    connect( engine, &EngineController::trackPositionChanged,
+             this, &ProgressWidget::trackPositionChanged );
 
-    connect( m_slider, SIGNAL(sliderReleased(int)),
-             engine, SLOT(seekTo(int)) );
+    connect( m_slider, &Amarok::TimeSlider::sliderReleased,
+             engine, &EngineController::seekTo );
 
-    connect( m_slider, SIGNAL(valueChanged(int)),
-             SLOT(drawTimeDisplay(int)) );
+    connect( m_slider, &Amarok::TimeSlider::valueChanged,
+             this, &ProgressWidget::drawTimeDisplay );
 
     setBackgroundRole( QPalette::BrightText );
 
-    connect ( The::amarokUrlHandler(), SIGNAL(timecodesUpdated(const QString*)),
-              this, SLOT(redrawBookmarks(const QString*)) );
-    connect ( The::amarokUrlHandler(), SIGNAL(timecodeAdded(QString,int)),
-              this, SLOT(addBookmark(QString,int)) );
+    connect ( The::amarokUrlHandler(), &AmarokUrlHandler::timecodesUpdated,
+              this, &ProgressWidget::redrawBookmarks );
+    connect ( The::amarokUrlHandler(), &AmarokUrlHandler::timecodeAdded,
+              this, &ProgressWidget::addBookmarkNoPopup );
 }
 
 void
-ProgressWidget::addBookmark( const QString &name, int milliSeconds )
+ProgressWidget::addBookmarkNoPopup( const QString &name, int milliSeconds )
 {
     addBookmark( name, milliSeconds, false );
 }
@@ -280,4 +280,3 @@ QSize ProgressWidget::sizeHint() const
     return QSize( width(), 12 );
 }
 
-#include "ProgressWidget.moc"

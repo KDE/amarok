@@ -17,7 +17,7 @@
 #ifndef COLLECTIONLOCATIONTEST_H
 #define COLLECTIONLOCATIONTEST_H
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 class CollectionLocationTest : public QObject
 {
@@ -25,7 +25,7 @@ class CollectionLocationTest : public QObject
 public:
     CollectionLocationTest();
 
-private slots:
+private Q_SLOTS:
 
     void testSuccessfulCopy();
     void testFailedCopy();

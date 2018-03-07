@@ -61,7 +61,7 @@ private:
     QMap<int, Meta::FieldHash> m_dirtyData;
     QMutex m_dirtyMutex;
 
-private slots:
+private Q_SLOTS:
     void trackUpdated( const int trackId, const Meta::FieldHash &statistics );
 };
 

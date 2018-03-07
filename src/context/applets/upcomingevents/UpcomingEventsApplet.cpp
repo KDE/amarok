@@ -42,6 +42,7 @@
 #include <QDesktopServices>
 #include <QGraphicsLinearLayout>
 #include <QXmlStreamReader>
+#include <KConfigGroup>
 
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -74,13 +75,13 @@ UpcomingEventsApplet::init()
              m_stack, SLOT(cleanupListWidgets()) );
 
     QAction *calendarAction = new QAction( this );
-    calendarAction->setIcon( KIcon( "view-calendar" ) );
+    calendarAction->setIcon( QIcon::fromTheme( "view-calendar" ) );
     calendarAction->setToolTip( i18n( "View Events Calendar" ) );
     Plasma::IconWidget *calendarIcon = addLeftHeaderAction( calendarAction );
     connect( calendarIcon, SIGNAL(clicked()), this, SLOT(viewCalendar()) );
 
     QAction* settingsAction = new QAction( this );
-    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setIcon( QIcon::fromTheme( "preferences-system" ) );
     settingsAction->setToolTip( i18n( "Settings" ) );
     settingsAction->setEnabled( true );
     Plasma::IconWidget *settingsIcon = addRightHeaderAction( settingsAction );
@@ -91,7 +92,7 @@ UpcomingEventsApplet::init()
     m_artistStackItem->setTitle( i18nc( "@title:group", "No track is currently playing" ) );
     m_artistStackItem->setWidget( m_artistEventsList );
     m_artistStackItem->setCollapsed( true );
-    m_artistStackItem->setIcon( KIcon("filename-artist-amarok") );
+    m_artistStackItem->setIcon( QIcon::fromTheme("filename-artist-amarok") );
     connect( m_artistEventsList, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical );
@@ -141,7 +142,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
         addToStackItem( m_artistStackItem, events, artistName );
         if( !m_artistStackItem->action( "showinmediasources" ) )
         {
-            QAction *act = new QAction( KIcon("edit-find"), QString(), m_artistStackItem );
+            QAction *act = new QAction( QIcon::fromTheme("edit-find"), QString(), m_artistStackItem );
             act->setToolTip( i18n( "Show in Media Sources" ) );
             connect( act, SIGNAL(triggered()), this, SLOT(navigateToArtist()) );
             m_artistStackItem->addAction( "showinmediasources", act );
@@ -170,7 +171,7 @@ UpcomingEventsApplet::dataUpdated( const QString &source, const Plasma::DataEngi
                     listWidget->setName( venue->name );
                     stackItem->setWidget( listWidget );
                     stackItem->setCollapsed( true );
-                    stackItem->setIcon( KIcon("favorites") );
+                    stackItem->setIcon( QIcon::fromTheme("favorites") );
                     stackItem->showCloseButton();
                     connect( listWidget, SIGNAL(mapRequested(QObject*)), SLOT(handleMapRequest(QObject*)) );
                     connect( listWidget, SIGNAL(destroyed(QObject*)), SLOT(listWidgetDestroyed(QObject*)) );
@@ -276,7 +277,7 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
     connect( ui_VenueSettings.urlValue, SIGNAL(rightClickedUrl(QString)), SLOT(openUrl(QString)) );
     connect( ui_VenueSettings.websiteValue, SIGNAL(leftClickedUrl(QString)), SLOT(openUrl(QString)) );
     connect( ui_VenueSettings.websiteValue, SIGNAL(rightClickedUrl(QString)), SLOT(openUrl(QString)) );
-    connect( parent, SIGNAL(okClicked()), SLOT(saveSettings()) );
+    connect( parent, SIGNAL(clicked()), SLOT(saveSettings()) );
 
     ui_VenueSettings.photoLabel->hide();
     ui_VenueSettings.infoGroupBox->setFont( KGlobalSettings::smallestReadableFont() );
@@ -339,9 +340,9 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
     const QString &city    = item->data( VenueCityRole ).toString();
     const QString &country = item->data( VenueCountryRole ).toString();
     const QString &street  = item->data( VenueStreetRole ).toString();
-    const KUrl &url        = item->data( VenueUrlRole ).value<KUrl>();
-    const KUrl &website    = item->data( VenueWebsiteRole ).value<KUrl>();
-    const KUrl &photoUrl   = item->data( VenuePhotoUrlRole ).value<KUrl>();
+    const QUrl &url        = item->data( VenueUrlRole ).value<QUrl>();
+    const QUrl &website    = item->data( VenueWebsiteRole ).value<QUrl>();
+    const QUrl &photoUrl   = item->data( VenuePhotoUrlRole ).value<QUrl>();
 
     ui_VenueSettings.nameValue->setText( name );
     ui_VenueSettings.cityValue->setText( city );
@@ -369,7 +370,7 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
     if( photoUrl.isValid() )
     {
         The::networkAccessManager()->getData( photoUrl, this,
-             SLOT(venuePhotoResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+             SLOT(venuePhotoResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
     else
     {
@@ -381,7 +382,7 @@ UpcomingEventsApplet::showVenueInfo( QListWidgetItem *item )
 void
 UpcomingEventsApplet::searchVenue( const QString &text )
 {
-    KUrl url;
+    QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
@@ -393,11 +394,11 @@ UpcomingEventsApplet::searchVenue( const QString &text )
     if( !countryCode.isEmpty() )
         url.addQueryItem( "country", countryCode );
     The::networkAccessManager()->getData( url, this,
-         SLOT(venueResults(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(venueResults(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-UpcomingEventsApplet::venueResults( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+UpcomingEventsApplet::venueResults( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
@@ -440,7 +441,7 @@ UpcomingEventsApplet::venueResults( const KUrl &url, QByteArray data, NetworkAcc
 }
 
 void
-UpcomingEventsApplet::venuePhotoResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+UpcomingEventsApplet::venuePhotoResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
@@ -490,7 +491,7 @@ UpcomingEventsApplet::mapView()
 
     UpcomingEventsStackItem *stackItem = m_stack->create( QLatin1String("venuemapview") );
     UpcomingEventsMapWidget *view = new UpcomingEventsMapWidget( stackItem );
-    stackItem->setIcon( KIcon( "edit-find" ) );
+    stackItem->setIcon( QIcon::fromTheme( "edit-find" ) );
     stackItem->setTitle( i18n( "Map View" ) );
     stackItem->setWidget( view );
     stackItem->setMinimumWidth( 50 );
@@ -528,7 +529,7 @@ UpcomingEventsApplet::viewCalendar()
 
     UpcomingEventsStackItem *stackItem = m_stack->create( QLatin1String("calendar") );
     UpcomingEventsCalendarWidget *calendar = new UpcomingEventsCalendarWidget( stackItem );
-    stackItem->setIcon( KIcon( "view-calendar" ) );
+    stackItem->setIcon( QIcon::fromTheme( "view-calendar" ) );
     stackItem->setTitle( i18n( "Events Calendar" ) );
     stackItem->setWidget( calendar );
     stackItem->setMinimumWidth( 50 );
@@ -654,4 +655,3 @@ UpcomingEventsApplet::enableVenueGrouping( bool enable )
     updateConstraints();
 }
 
-#include "UpcomingEventsApplet.moc"

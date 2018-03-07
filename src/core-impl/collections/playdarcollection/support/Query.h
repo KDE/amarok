@@ -21,7 +21,7 @@
 #include "core/meta/forward_declarations.h"
 #include "../PlaydarMeta.h"
 
-#include <QWeakPointer>
+#include <QPointer>
 
 class KJob;
 
@@ -78,7 +78,7 @@ namespace Playdar
         public Q_SLOTS:
             void receiveResults( KJob* );
             
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted each time a new track is added to the list of results,
              * returning the latest result as a Meta::PlaydarTrack.
@@ -103,7 +103,7 @@ namespace Playdar
             void playdarError( Playdar::Controller::ErrorState );
             
         private:
-            QWeakPointer< Playdar::Controller > m_controller;
+            QPointer< Playdar::Controller > m_controller;
             bool m_waitForSolution;
             
             QString m_qid;

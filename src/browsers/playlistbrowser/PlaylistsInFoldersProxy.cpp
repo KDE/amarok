@@ -17,6 +17,7 @@
 #include "PlaylistsInFoldersProxy.h"
 
 #include "AmarokMimeData.h"
+#include "MainWindow.h"
 #include "core/support/Debug.h"
 #include "core/playlists/Playlist.h"
 #include "SvgHandler.h"
@@ -24,30 +25,28 @@
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KDialog>
-#include <KIcon>
-#include <KInputDialog>
-
+#include <QIcon>
+#include <QInputDialog>
 #include <QLabel>
+#include <QMessageBox>
 
 PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::LabelColumn )
 {
-    m_renameFolderAction =  new QAction( KIcon( "media-track-edit-amarok" ),
+    m_renameFolderAction =  new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
                                          i18n( "&Rename Folder..." ), this );
     m_renameFolderAction->setProperty( "popupdropper_svg_id", "edit_group" );
-    connect( m_renameFolderAction, SIGNAL(triggered()), this,
-             SLOT(slotRenameFolder()) );
+    connect( m_renameFolderAction, &QAction::triggered, this, &PlaylistsInFoldersProxy::slotRenameFolder );
 
-    m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ),
+    m_deleteFolderAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
                                         i18n( "&Delete Folder" ), this );
     m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
     m_deleteFolderAction->setObjectName( "deleteAction" );
-    connect( m_deleteFolderAction, SIGNAL(triggered()), this,
-             SLOT(slotDeleteFolder()) );
+    connect( m_deleteFolderAction, &QAction::triggered, this, &PlaylistsInFoldersProxy::slotDeleteFolder );
 
-    connect( sourceModel(), SIGNAL(renameIndex(QModelIndex)),
-             SLOT(slotRenameIndex(QModelIndex)) );
+    if( auto m = static_cast<PlaylistBrowserNS::PlaylistBrowserModel*>(sourceModel()) )
+        connect( m, &PlaylistBrowserNS::PlaylistBrowserModel::renameIndex,
+                 this, &PlaylistsInFoldersProxy::slotRenameIndex );
 }
 
 PlaylistsInFoldersProxy::~PlaylistsInFoldersProxy()
@@ -317,11 +316,13 @@ PlaylistsInFoldersProxy::slotRenameFolder()
     QModelIndex folder = indexes.first();
     QString folderName = folder.data( Qt::DisplayRole ).toString();
     bool ok;
-    const QString newName = KInputDialog::getText( i18n("New name"),
-                i18nc("Enter a new name for a folder that already exists",
-                      "Enter new folder name:"),
-                folderName,
-                &ok );
+    const QString newName = QInputDialog::getText( Q_NULLPTR,
+                                                   i18n("New name"),
+                                                   i18nc("Enter a new name for a folder that already exists",
+                                                         "Enter new folder name:"),
+                                                   QLineEdit::Normal,
+                                                   folderName,
+                                                   &ok );
     if( !ok || newName == folderName )
         return;
 
@@ -334,16 +335,12 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
     int childCount = rowCount( groupIdx );
     if( childCount > 0 )
     {
-        KDialog dialog;
-        dialog.setCaption( i18n( "Confirm Delete" ) );
-        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-        QLabel label( i18n( "Are you sure you want to delete this folder and its contents?" )
-                      , &dialog
-                    );
+        auto button = QMessageBox::question( The::mainWindow(),
+                                             i18n( "Confirm Delete" ),
+                                             i18n( "Are you sure you want to delete this folder and its contents?" ) );
         //TODO:include a text area with all the names of the playlists
-        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete folder." ) );
-        dialog.setMainWidget( &label );
-        if( dialog.exec() != QDialog::Accepted )
+
+        if( button != QMessageBox::Yes )
             return;
 
         removeRows( 0, childCount, groupIdx );
@@ -360,7 +357,7 @@ PlaylistsInFoldersProxy::createNewFolder( const QString &groupName )
     RowData data;
     ItemData roleData;
     roleData.insert( Qt::DisplayRole, groupName );
-    roleData.insert( Qt::DecorationRole, QVariant( KIcon( "folder" ) ) );
+    roleData.insert( Qt::DecorationRole, QVariant( QIcon::fromTheme( "folder" ) ) );
     roleData.insert( Qt::EditRole, groupName );
     data.insert( 0, roleData );
     return addEmptyGroup( data );
@@ -375,4 +372,3 @@ Qt::ItemFlags PlaylistsInFoldersProxy::flags(const QModelIndex &idx) const
     return QtGroupingProxy::flags(idx);
 }
 
-#include "PlaylistsInFoldersProxy.moc"

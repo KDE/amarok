@@ -18,9 +18,10 @@
 
 #include "core/support/Debug.h"
 
+#include <QCryptographicHash>
+#include <QtNetwork/QNetworkConfigurationManager>
+
 #include <KIO/Job>
-#include <KMD5>
-#include <Solid/Networking>
 
 PodcastImageFetcher::PodcastImageFetcher()
 {
@@ -48,6 +49,18 @@ PodcastImageFetcher::addChannel( Podcasts::PodcastChannelPtr channel )
         return;
     }
 
+    if( m_channels.contains( channel ) )
+    {
+        debug() << "Channel already queued:" << channel->title();
+        return;
+    }
+
+    if( m_jobChannelMap.values().contains( channel ) )
+    {
+        debug() << "Copy job already running for channel:" << channel->title();
+        return;
+    }
+
     debug() << "Adding " << channel->title() << " to fetch queue";
     m_channels.append( channel );
 }
@@ -58,22 +71,24 @@ PodcastImageFetcher::addEpisode( Podcasts::PodcastEpisodePtr episode )
     Q_UNUSED( episode );
 }
 
-KUrl
+QUrl
 PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannelPtr channel )
 {
     return cachedImagePath( channel.data() );
 }
 
-KUrl
+QUrl
 PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannel *channel )
 {
-    KUrl imagePath = channel->saveLocation();
-    if( imagePath.isEmpty() )
-        imagePath = Amarok::saveLocation( "podcasts" );
-    KMD5 md5( channel->url().url().toLocal8Bit() );
+    QUrl imagePath = channel->saveLocation();
+    if( imagePath.isEmpty() || !imagePath.isLocalFile() )
+        imagePath = QUrl::fromLocalFile( Amarok::saveLocation( "podcasts" ) );
+    QCryptographicHash md5( QCryptographicHash::Md5 );
+    md5.addData( channel->url().url().toLocal8Bit() );
     QString extension = Amarok::extension( channel->imageUrl().fileName() );
-    imagePath.addPath( md5.hexDigest() + '.' + extension );
-    return imagePath.toLocalFile();
+    imagePath = imagePath.adjusted( QUrl::StripTrailingSlash );
+    imagePath.setPath( imagePath.path() + '/' + ( md5.result().toHex() + '.' + extension ) );
+    return imagePath;
 }
 
 bool
@@ -95,10 +110,10 @@ PodcastImageFetcher::run()
         return;
     }
 
-    if( Solid::Networking::status() != Solid::Networking::Connected
-        && Solid::Networking::status() != Solid::Networking::Unknown )
+    QNetworkConfigurationManager mgr;
+    if( !mgr.isOnline() )
     {
-        debug() << "Solid reports we are not online, canceling podcast image download";
+        debug() << "QNetworkConfigurationManager reports we are not online, canceling podcast image download";
         emit( done( this ) );
         //TODO: schedule another run after Solid reports we are online again
         return;
@@ -106,14 +121,14 @@ PodcastImageFetcher::run()
 
     foreach( Podcasts::PodcastChannelPtr channel, m_channels )
     {
-        KUrl cachedPath = cachedImagePath( channel );
-        KIO::mkdir( cachedPath.directory() );
+        QUrl cachedPath = cachedImagePath( channel );
+        KIO::mkdir( cachedPath.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash) );
         KIO::FileCopyJob *job = KIO::file_copy( channel->imageUrl(), cachedPath,
                                 -1, KIO::HideProgressInfo | KIO::Overwrite );
         //remove channel from the todo list
         m_channels.removeAll( channel );
         m_jobChannelMap.insert( job, channel );
-        connect( job, SIGNAL(finished(KJob*)), SLOT(slotDownloadFinished(KJob*)) );
+        connect( job, &KIO::FileCopyJob::finished, this, &PodcastImageFetcher::slotDownloadFinished );
     }
 
     //TODO: episodes

@@ -18,6 +18,7 @@
 
 #include "PluginsConfig.h"
 
+#include "configdialog/ConfigDialog.h"
 #include "core/support/Debug.h"
 #include "services/ServiceBase.h"
 #include "PluginManager.h"
@@ -27,7 +28,7 @@
 
 #include <QVBoxLayout>
 
-PluginsConfig::PluginsConfig( QWidget *parent )
+PluginsConfig::PluginsConfig( Amarok2ConfigDialog *parent )
     : ConfigDialogBase( parent )
     , m_configChanged( false )
 {
@@ -48,8 +49,8 @@ PluginsConfig::PluginsConfig( QWidget *parent )
     m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Importer ),
                             KPluginSelector::ReadConfigFile, i18n("Statistics importers"), "Importer" );
 
-    connect( m_selector, SIGNAL(changed(bool)), SLOT(slotConfigChanged(bool)) );
-    connect( m_selector, SIGNAL(changed(bool)), parent, SLOT(updateButtons()) );
+    connect( m_selector, &KPluginSelector::changed, this, &PluginsConfig::slotConfigChanged );
+    connect( m_selector, &KPluginSelector::changed, parent, &Amarok2ConfigDialog::updateButtons );
 }
 
 PluginsConfig::~PluginsConfig()
@@ -86,4 +87,3 @@ void PluginsConfig::slotConfigChanged( bool changed )
         debug() << "config changed";
 }
 
-#include "PluginsConfig.moc"

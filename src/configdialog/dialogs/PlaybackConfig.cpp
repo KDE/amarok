@@ -24,10 +24,9 @@
 #include "core/support/Debug.h"
 
 #include <KCMultiDialog>
-#include <kmessagebox.h>
 
 
-PlaybackConfig::PlaybackConfig( QWidget* parent )
+PlaybackConfig::PlaybackConfig( Amarok2ConfigDialog* parent )
     : ConfigDialogBase( parent )
 {
     setupUi( this );
@@ -47,9 +46,9 @@ PlaybackConfig::PlaybackConfig( QWidget* parent )
         kcfg_FadeoutLength->setToolTip( toolTip );
     }
 
-    connect( findChild<QPushButton*>( "pushButtonPhonon" ), SIGNAL(clicked()), SLOT(configurePhonon()) );
-    connect( kcfg_FadeoutOnStop, SIGNAL(toggled(bool)), SLOT(setFadeoutState()) );
-    connect( kcfg_FadeoutOnPause, SIGNAL(toggled(bool)), SLOT(setFadeoutState()) );
+    connect( findChild<QPushButton*>( "pushButtonPhonon" ), &QAbstractButton::clicked, this, &PlaybackConfig::configurePhonon );
+    connect( kcfg_FadeoutOnStop, &QCheckBox::toggled, this, &PlaybackConfig::setFadeoutState );
+    connect( kcfg_FadeoutOnPause, &QCheckBox::toggled, this, &PlaybackConfig::setFadeoutState );
 }
 
 PlaybackConfig::~PlaybackConfig()
@@ -106,4 +105,3 @@ PlaybackConfig::setFadeoutState() //SLOT
 }
 
 
-#include "PlaybackConfig.moc"

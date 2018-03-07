@@ -4,8 +4,8 @@ include_directories(
   ${AMAROK_SOURCE_TREE}
   ${CMAKE_BINARY_DIR}/src
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
+
+
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
@@ -18,7 +18,9 @@ set( testmasterslave_SRCS
         ${GOOGLEMOCK_SRCS}
 )
 
-kde4_add_unit_test( testmasterslavesynchronizationjob  ${testmasterslave_SRCS} )
+add_executable( testmasterslavesynchronizationjob  ${testmasterslave_SRCS} )
+add_test(NAME testmasterslavesynchronizationjob COMMAND $<TARGET_FILE:testmasterslavesynchronizationjob>)
+ecm_mark_as_test(testmasterslavesynchronizationjob)
 
 add_dependencies( testmasterslavesynchronizationjob amarokcore )
 add_dependencies( testmasterslavesynchronizationjob amaroklib )
@@ -26,13 +28,12 @@ add_dependencies( testmasterslavesynchronizationjob amaroklib )
 target_link_libraries(testmasterslavesynchronizationjob
                         amarokcore
                         amaroklib
-                        ${KDE4_KDECORE_LIBS}
-                        ${KDE4_KIO_LIBS}
+                        KF5::KIOCore
                         ${KDE4_SOLID_LIBRARY}
-                        ${QT_QTGUI_LIBRARY}
-                        ${KDE4_THREADWEAVER_LIBRARIES}
-                        ${QT_QTTEST_LIBRARY}
-                        ${QT_QTCORE_LIBRARY}
+                        Qt5::Gui
+                        KF5::ThreadWeaver
+                        Qt5::Test
+                        Qt5::Core
                         ${GOOGLEMOCK_LIBRARIES})
 
 #------------------------ TestUnionJob -----------------------------
@@ -44,21 +45,22 @@ set( testunion_SRCS
         ${GOOGLEMOCK_SRCS}
 )
 
-kde4_add_unit_test( testunionjob  ${testunion_SRCS} )
+add_executable( testunionjob  ${testunion_SRCS} )
+add_test(NAME testunionjob COMMAND $<TARGET_FILE:testunionjob>)
+ecm_mark_as_test(testunionjob)
 add_dependencies( testunionjob amarokcore )
 add_dependencies( testunionjob amaroklib )
 
 target_link_libraries(testunionjob
                         amarokcore
                         amaroklib
-                        ${KDE4_KDECORE_LIBS}
-                        ${KDE4_KIO_LIBS}
-                        ${KDE4_KDEUI_LIBS}
+                        KF5::KIOCore
+
                         ${KDE4_SOLID_LIBRARY}
-                        ${QT_QTGUI_LIBRARY}
-                        ${KDE4_THREADWEAVER_LIBRARIES}
-                        ${QT_QTTEST_LIBRARY}
-                        ${QT_QTCORE_LIBRARY}
+                        Qt5::Gui
+                        KF5::ThreadWeaver
+                        Qt5::Test
+                        Qt5::Core
                         ${GOOGLEMOCK_LIBRARIES})
 
 #------------------------ TestOneWaySynchronizationJob -----------------------------
@@ -70,19 +72,20 @@ set( testonewaysynchronization_SRCS
         ${GOOGLEMOCK_SRCS}
 )
 
-kde4_add_unit_test( testonewaysynchronizationjob  ${testonewaysynchronization_SRCS} )
+add_executable( testonewaysynchronizationjob  ${testonewaysynchronization_SRCS} )
+add_test(NAME testonewaysynchronizationjob COMMAND $<TARGET_FILE:testonewaysynchronizationjob>)
+ecm_mark_as_test(testonewaysynchronizationjob)
 add_dependencies( testonewaysynchronizationjob amarokcore )
 add_dependencies( testonewaysynchronizationjob amaroklib )
 
 target_link_libraries(testonewaysynchronizationjob
                         amarokcore
                         amaroklib
-                        ${KDE4_KDECORE_LIBS}
-                        ${KDE4_KIO_LIBS}
-                        ${KDE4_KDEUI_LIBS}
+                        KF5::KIOCore
+
                         ${KDE4_SOLID_LIBRARY}
-                        ${QT_QTGUI_LIBRARY}
-                        ${KDE4_THREADWEAVER_LIBRARIES}
-                        ${QT_QTTEST_LIBRARY}
-                        ${QT_QTCORE_LIBRARY}
+                        Qt5::Gui
+                        KF5::ThreadWeaver
+                        Qt5::Test
+                        Qt5::Core
                         ${GOOGLEMOCK_LIBRARIES})

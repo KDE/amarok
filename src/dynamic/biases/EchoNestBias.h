@@ -26,7 +26,7 @@ namespace KIO {
     class StoredTransferJob;
 }
 class KJob;
-class KUrl;
+class QUrl;
 
 namespace Dynamic
 {
@@ -70,10 +70,10 @@ namespace Dynamic
             MatchType match() const;
             void setMatch( MatchType value );
 
-        public slots:
+        public Q_SLOTS:
             virtual void invalidate();
 
-        private slots:
+        private Q_SLOTS:
             virtual void newQuery();
             virtual void newSimilarArtistQuery();
 
@@ -85,7 +85,7 @@ namespace Dynamic
         private:
             /** Returns the artists we should lookup */
             QStringList currentArtists( int position, const Meta::TrackList& playlist ) const;
-            static KUrl createUrl( QString method, QMultiMap< QString, QString > params );
+            static QUrl createUrl( QString method, QMultiMap< QString, QString > params );
             static QString nameForMatch( MatchType match );
             static MatchType matchForName( const QString &name );
 

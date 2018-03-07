@@ -20,9 +20,8 @@
 #include "core/meta/support/MetaConstants.h"
 #include "statsyncing/models/ProvidersModel.h"
 
-#include <KPushButton>
-
 #include <QCheckBox>
+#include <QPushButton>
 
 using namespace StatSyncing;
 
@@ -31,12 +30,13 @@ ChooseProvidersPage::ChooseProvidersPage( QWidget *parent, Qt::WindowFlags f )
     , m_providersModel( 0 )
 {
     setupUi( this );
-    KGuiItem configure = KStandardGuiItem::configure();
-    configure.setText( i18n( "Configure Synchronization..." ) );
-    buttonBox->addButton( configure, QDialogButtonBox::ActionRole, this, SLOT(openConfiguration()) );
-    buttonBox->addButton( KGuiItem( i18n( "Next" ), "go-next" ), QDialogButtonBox::AcceptRole );
-    connect( buttonBox, SIGNAL(accepted()), SIGNAL(accepted()) );
-    connect( buttonBox, SIGNAL(rejected()), SIGNAL(rejected()) );
+    QPushButton *configure = buttonBox->addButton( i18n( "Configure Synchronization..." ), QDialogButtonBox::ActionRole );
+    connect( configure, &QPushButton::clicked, this, &ChooseProvidersPage::openConfiguration );
+    QPushButton *next = buttonBox->addButton( i18n( "Next" ), QDialogButtonBox::ActionRole );
+    next->setIcon( QIcon( "go-next" ) );
+    connect( next, &QPushButton::clicked, buttonBox, &QDialogButtonBox::accepted );
+    connect( buttonBox, &QDialogButtonBox::accepted, this, &ChooseProvidersPage::accepted );
+    connect( buttonBox, &QDialogButtonBox::rejected, this, &ChooseProvidersPage::rejected );
     progressBar->hide();
 }
 
@@ -55,11 +55,11 @@ ChooseProvidersPage::setFields( const QList<qint64> &fields, qint64 checkedField
         fieldsLayout->addWidget( checkBox );
         checkBox->setCheckState( ( field & checkedFields ) ? Qt::Checked : Qt::Unchecked );
         checkBox->setProperty( "field", field );
-        connect( checkBox, SIGNAL(stateChanged(int)), SIGNAL(checkedFieldsChanged()) );
+        connect( checkBox, &QCheckBox::stateChanged, this, &ChooseProvidersPage::checkedFieldsChanged );
     }
     fieldsLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
 
-    connect( this, SIGNAL(checkedFieldsChanged()), SLOT(updateEnabledFields()) );
+    connect( this, &ChooseProvidersPage::checkedFieldsChanged, this, &ChooseProvidersPage::updateEnabledFields );
     updateEnabledFields();
 }
 
@@ -86,8 +86,10 @@ ChooseProvidersPage::setProvidersModel( ProvidersModel *model, QItemSelectionMod
     providersView->setModel( model );
     providersView->setSelectionModel( selectionModel );
 
-    connect( model, SIGNAL(selectedProvidersChanged()), SLOT(updateMatchedLabel()) );
-    connect( model, SIGNAL(selectedProvidersChanged()), SLOT(updateEnabledFields()) );
+    connect( model, &StatSyncing::ProvidersModel::selectedProvidersChanged,
+             this, &ChooseProvidersPage::updateMatchedLabel );
+    connect( model, &StatSyncing::ProvidersModel::selectedProvidersChanged,
+             this, &ChooseProvidersPage::updateEnabledFields );
     updateMatchedLabel();
     updateEnabledFields();
 }
@@ -178,7 +180,7 @@ ChooseProvidersPage::updateEnabledFields()
 
 void ChooseProvidersPage::openConfiguration()
 {
-    App *app = App::instance();
+    App *app = pApp;
     if( app )
         app->slotConfigAmarok( "MetadataConfig" );
 }

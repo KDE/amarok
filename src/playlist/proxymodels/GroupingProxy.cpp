@@ -61,11 +61,11 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
     //       'this' QSFPM signal) would get called earlier, would call our 'data()'
     //       function, and we would return wrong answers from our stale internal state.
     //
-    connect( this, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(proxyDataChanged(QModelIndex,QModelIndex)) );
-    connect( this, SIGNAL(layoutChanged()), this, SLOT(proxyLayoutChanged()) );
-    connect( this, SIGNAL(modelReset()), this, SLOT(proxyModelReset()) );
-    connect( this, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(proxyRowsInserted(QModelIndex,int,int)) );
-    connect( this, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(proxyRowsRemoved(QModelIndex,int,int)) );
+    connect( this, &GroupingProxy::dataChanged, this, &GroupingProxy::proxyDataChanged );
+    connect( this, &GroupingProxy::layoutChanged, this, &GroupingProxy::proxyLayoutChanged );
+    connect( this, &GroupingProxy::modelReset, this, &GroupingProxy::proxyModelReset );
+    connect( this, &GroupingProxy::rowsInserted, this, &GroupingProxy::proxyRowsInserted );
+    connect( this, &GroupingProxy::rowsRemoved, this, &GroupingProxy::proxyRowsRemoved );
 
 
     // No need to scan the pre-existing entries in sourceModel(), because we build our
@@ -188,7 +188,7 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
                     return i18np ( "1 track", "%1 tracks", nonconst_this->groupRowCount( index ) );
             }
 
-            // Fall-through!!
+            Q_FALLTHROUGH();
 
         default:
             // Nothing to do with us: let our QSortFilterProxyModel parent class handle it.

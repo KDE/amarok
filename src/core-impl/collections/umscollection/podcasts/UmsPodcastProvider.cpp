@@ -16,22 +16,26 @@
 #include "UmsPodcastProvider.h"
 #include "core/support/Debug.h"
 
-#include <KDialog>
+#include <KConfigGroup>
 #include <KIO/DeleteJob>
 #include <KIO/FileCopyJob>
 #include <KIO/Job>
-#include <KMimeType>
 
 #include <QAction>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QDirIterator>
 #include <QLabel>
 #include <QListWidget>
 #include <QObject>
+#include <QPushButton>
 #include <QVBoxLayout>
+#include <QMimeDatabase>
+#include <QMimeType>
 
 using namespace Podcasts;
 
-UmsPodcastProvider::UmsPodcastProvider( KUrl scanDirectory )
+UmsPodcastProvider::UmsPodcastProvider( QUrl scanDirectory )
         : m_scanDirectory( scanDirectory )
         , m_deleteEpisodeAction( 0 )
         , m_deleteChannelAction( 0 )
@@ -45,14 +49,14 @@ UmsPodcastProvider::~UmsPodcastProvider()
 }
 
 bool
-UmsPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
+UmsPodcastProvider::possiblyContainsTrack( const QUrl &url ) const
 {
     Q_UNUSED( url )
     return false;
 }
 
 Meta::TrackPtr
-UmsPodcastProvider::trackForUrl( const KUrl &url )
+UmsPodcastProvider::trackForUrl( const QUrl &url )
 {
     Q_UNUSED( url )
     return Meta::TrackPtr();
@@ -66,7 +70,7 @@ UmsPodcastProvider::episodeForGuid( const QString &guid )
 }
 
 void
-UmsPodcastProvider::addPodcast( const KUrl &url )
+UmsPodcastProvider::addPodcast( const QUrl &url )
 {
     Q_UNUSED( url );
 }
@@ -85,19 +89,21 @@ UmsPodcastProvider::addChannel( PodcastChannelPtr channel )
 PodcastEpisodePtr
 UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
 {
-    KUrl localFilePath = episode->playableUrl();
+    QUrl localFilePath = episode->playableUrl();
     if( !localFilePath.isLocalFile() )
         return PodcastEpisodePtr();
 
-    KUrl destination = KUrl( m_scanDirectory );
-    destination.addPath( Amarok::vfatPath( episode->channel()->prettyName() ) );
+    QUrl destination = m_scanDirectory;
+    destination = destination.adjusted(QUrl::StripTrailingSlash);
+    destination.setPath(destination.path() + '/' + ( Amarok::vfatPath( episode->channel()->prettyName() ) ));
     KIO::mkdir( destination );
-    destination.addPath( Amarok::vfatPath( localFilePath.fileName() ) );
+    destination = destination.adjusted(QUrl::StripTrailingSlash);
+    destination.setPath(destination.path() + '/' + ( Amarok::vfatPath( localFilePath.fileName() ) ));
 
     debug() << QString( "Copy episode \"%1\" to %2" ).arg( localFilePath.path())
             .arg( destination.path() );
     KIO::FileCopyJob *copyJob = KIO::file_copy( localFilePath, destination );
-    connect( copyJob, SIGNAL(result(KJob*)), SLOT(slotCopyComplete(KJob*)) );
+    connect( copyJob, &KJob::result, this, &UmsPodcastProvider::slotCopyComplete );
     copyJob->start();
     //we have not copied the data over yet so we can't return an episode yet
     //TODO: return a proxy for the episode we are still copying.
@@ -111,7 +117,7 @@ UmsPodcastProvider::slotCopyComplete( KJob *job )
     if( !copyJob )
         return;
 
-    KUrl localFilePath = copyJob->destUrl();
+    QUrl localFilePath = copyJob->destUrl();
     MetaFile::Track *fileTrack = new MetaFile::Track( localFilePath );
 
     UmsPodcastEpisodePtr umsEpisode = addFile( MetaFile::TrackPtr( fileTrack ) );
@@ -159,10 +165,10 @@ UmsPodcastProvider::prettyName() const
     return i18nc( "Podcasts on a media device", "Podcasts on %1", QString("TODO: replace me") );
 }
 
-KIcon
+QIcon
 UmsPodcastProvider::icon() const
 {
-    return KIcon("drive-removable-media-usb-pendrive");
+    return QIcon::fromTheme("drive-removable-media-usb-pendrive");
 }
 
 Playlists::PlaylistList
@@ -183,9 +189,9 @@ UmsPodcastProvider::episodeActions( PodcastEpisodeList episodes )
 
     if( m_deleteEpisodeAction == 0 )
     {
-        m_deleteEpisodeAction = new QAction( KIcon( "edit-delete" ), i18n( "&Delete Episode" ), this );
+        m_deleteEpisodeAction = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete Episode" ), this );
         m_deleteEpisodeAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_deleteEpisodeAction, SIGNAL(triggered()), SLOT(slotDeleteEpisodes()) );
+        connect( m_deleteEpisodeAction, &QAction::triggered, this, &UmsPodcastProvider::slotDeleteEpisodes );
     }
     // set the episode list as data that we'll retrieve in the slot
     m_deleteEpisodeAction->setData( QVariant::fromValue( episodes ) );
@@ -242,33 +248,34 @@ UmsPodcastProvider::slotDeleteEpisodes()
 void
 UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
 {
-    KUrl::List urlsToDelete;
+    QList<QUrl> urlsToDelete;
     foreach( UmsPodcastEpisodePtr umsEpisode, umsEpisodes )
         urlsToDelete << umsEpisode->playableUrl();
 
-    KDialog dialog;
-    dialog.setCaption( i18n( "Confirm Delete" ) );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-    QLabel label( i18np( "Are you sure you want to delete this episode?",
-                         "Are you sure you want to delete these %1 episodes?",
-                         urlsToDelete.count() )
-                    , &dialog
-                  );
-    QListWidget listWidget( &dialog );
-    listWidget.setSelectionMode( QAbstractItemView::NoSelection );
-    foreach( const KUrl &url, urlsToDelete )
+    QDialog dialog;
+    dialog.setWindowTitle( i18n( "Confirm Delete" ) );
+
+    QLabel *label = new QLabel( i18np( "Are you sure you want to delete this episode?",
+                                       "Are you sure you want to delete these %1 episodes?",
+                                       urlsToDelete.count() ),
+                                &dialog );
+    QListWidget *listWidget = new QListWidget( &dialog );
+    listWidget->setSelectionMode( QAbstractItemView::NoSelection );
+    foreach( const QUrl &url, urlsToDelete )
     {
-        new QListWidgetItem( url.toLocalFile(), &listWidget );
+        new QListWidgetItem( url.toLocalFile(), listWidget );
     }
 
     QWidget *widget = new QWidget( &dialog );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
     QVBoxLayout *layout = new QVBoxLayout( widget );
-    layout->addWidget( &label );
-    layout->addWidget( &listWidget );
-    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from %1.",
-                                             QString("TODO: replace me") ) );
+    layout->addWidget( label );
+    layout->addWidget( listWidget );
+    layout->addWidget( buttonBox );
 
-    dialog.setMainWidget( widget );
+    buttonBox->button( QDialogButtonBox::Ok )->setText( i18n( "Yes, delete from %1.",
+                                                        QString("TODO: replace me") ) );
+
     if( dialog.exec() != QDialog::Accepted )
         return;
 
@@ -277,8 +284,7 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
     //keep track of these episodes until the job is done
     m_deleteJobMap.insert( deleteJob, umsEpisodes );
 
-    connect( deleteJob, SIGNAL(result(KJob*)),
-             SLOT(deleteJobComplete(KJob*)) );
+    connect( deleteJob, &KJob::result, this, &UmsPodcastProvider::deleteJobComplete );
 }
 
 void
@@ -322,10 +328,10 @@ UmsPodcastProvider::channelActions( PodcastChannelList channels )
 
     if( m_deleteChannelAction == 0 )
     {
-        m_deleteChannelAction = new QAction( KIcon( "edit-delete" ), i18n( "&Delete "
+        m_deleteChannelAction = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete "
                 "Channel and Episodes" ), this );
         m_deleteChannelAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_deleteChannelAction, SIGNAL(triggered()), SLOT(slotDeleteChannels()) );
+        connect( m_deleteChannelAction, &QAction::triggered, this, &UmsPodcastProvider::slotDeleteChannels );
     }
     // set the episode list as data that we'll retrieve in the slot
     m_deleteChannelAction->setData( QVariant::fromValue( channels ) );
@@ -441,7 +447,7 @@ UmsPodcastProvider::scan()
         return;
     m_dirList.clear();
     debug() << "scan directory for podcasts: " <<
-            m_scanDirectory.toLocalFile( KUrl::AddTrailingSlash );
+            m_scanDirectory.toLocalFile();
     QDirIterator it( m_scanDirectory.toLocalFile(), QDirIterator::Subdirectories );
     while( it.hasNext() )
         addPath( it.next() );
@@ -452,16 +458,17 @@ UmsPodcastProvider::addPath( const QString &path )
 {
     DEBUG_BLOCK
     int acc = 0;
+    QMimeDatabase db;
     debug() << path;
-    KMimeType::Ptr mime = KMimeType::findByFileContent( path, &acc );
-    if( !mime || mime->name() == KMimeType::defaultMimeType() )
+    QMimeType mime = db.mimeTypeForFile( path, QMimeDatabase::MatchContent );
+    if( !mime.isValid() || mime.isDefault() )
     {
         debug() << "Trying again with findByPath:" ;
-        mime = KMimeType::findByPath( path, 0, true, &acc );
-        if( mime->name() == KMimeType::defaultMimeType() )
+        mime = db.mimeTypeForFile( path, QMimeDatabase::MatchExtension);
+        if( mime.isDefault() )
             return 0;
     }
-    debug() << "Got type: " << mime->name() << ", with accuracy: " << acc;
+    debug() << "Got type: " << mime.name() << ", with accuracy: " << acc;
 
     QFileInfo info( path );
     if( info.isDir() )
@@ -475,10 +482,10 @@ UmsPodcastProvider::addPath( const QString &path )
     {
 //        foreach( const QString &mimetype, m_handler->mimetypes() )
 //        {
-//            if( mime->is( mimetype ) )
+//            if( mime.inherits( mimetype ) )
 //            {
                 addFile( MetaFile::TrackPtr( new MetaFile::Track(
-                        KUrl( info.canonicalFilePath() ) ) ) );
+                    QUrl::fromLocalFile( info.canonicalFilePath() ) ) ) );
                 return 2;
 //            }
 //        }

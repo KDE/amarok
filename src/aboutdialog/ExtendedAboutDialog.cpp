@@ -26,46 +26,71 @@
 #include "OcsPersonItem.h"
 #include "libattica-ocsclient/providerinitjob.h"
 
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QFontDatabase>
 #include <QLabel>
 #include <QLayout>
+#include <QNetworkConfigurationManager>
 #include <QPushButton>
 #include <QScrollBar>
+#include <QStandardPaths>
 #include <QTabWidget>
+#include <QTextBrowser>
+#include <QVBoxLayout>
 
-#include <kapplication.h>
-#include <kglobal.h>
-#include <kglobalsettings.h>
-#include <kiconloader.h>
-#include <klocale.h>
-#include <kmessagebox.h>
-#include <kstandarddirs.h>
-#include <ktextbrowser.h>
-#include <ktitlewidget.h>
-#include <solid/networking.h>
+#include <KConfigGroup>
+#include <KCoreAddons>
+#include <KIconLoader>
+#include <KMessageBox>
+#include <KTitleWidget>
 
-
-class ExtendedAboutDialog::Private
+void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 {
-public:
-    Private(ExtendedAboutDialog *parent)
-        : q(parent),
-          aboutData(0)
-    {}
+    QDialog *dialog = new QDialog(q);
+    QWidget *mainWidget = new QWidget;
 
-    void _k_showLicense( const QString &number );
+    dialog->setWindowTitle(i18n("License Agreement"));
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+    dialog->connect(buttonBox, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
+    dialog->connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
+    buttonBox->button(QDialogButtonBox::Close)->setDefault(true);
 
-    ExtendedAboutDialog *q;
+    const QFont font = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    QFontMetrics metrics(font);
 
-    const KAboutData *aboutData;
-};
+    const QString licenseText = aboutData->licenses().at(number.toInt()).text();
+    QTextBrowser *licenseBrowser = new QTextBrowser;
+    licenseBrowser->setFont(font);
+    licenseBrowser->setLineWrapMode(QTextEdit::NoWrap);
+    licenseBrowser->setText(licenseText);
 
-ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsData *ocsData, QWidget *parent)
-  : KDialog(parent)
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    dialog->setLayout(mainLayout);
+    mainLayout->addWidget(licenseBrowser);
+    mainLayout->addWidget(mainWidget);
+    mainLayout->addWidget(buttonBox);
+
+    // try to set up the dialog such that the full width of the
+    // document is visible without horizontal scroll-bars being required
+    const qreal idealWidth = licenseBrowser->document()->idealWidth()
+        + (2 * QApplication::style()->pixelMetric(QStyle::PM_DefaultChildMargin))
+        + licenseBrowser->verticalScrollBar()->width() * 2;
+//TODO KF5:PM_DefaultChildMargin is obsolete. Look in QStyle docs for correctly replacing it.
+
+    // try to allow enough height for a reasonable number of lines to be shown
+    const int idealHeight = metrics.height() * 30;
+
+    dialog->resize(dialog->sizeHint().expandedTo(QSize((int)idealWidth,idealHeight)));
+    dialog->show();
+}
+
+ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *ocsData, QWidget *parent)
+  : QDialog(parent)
   , d(new Private(this))
 {
     DEBUG_BLOCK
-    if (aboutData == 0)
-        aboutData = KGlobal::mainComponent().aboutData();
+    const KAboutData *aboutData = &about;
 
     d->aboutData = aboutData;
 
@@ -74,7 +99,9 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
                                              "The supplied KAboutData object does not exist.</qt>"), this);
 
         errorLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        setMainWidget(errorLabel);
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        setLayout(mainLayout);
+        mainLayout->addWidget(errorLabel);
         return;
     }
     if( !ocsData )
@@ -83,14 +110,24 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
                                              "The supplied OcsData object does not exist.</qt>"), this);
 
         errorLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        setMainWidget(errorLabel);
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        setLayout(mainLayout);
+        mainLayout->addWidget(errorLabel);
         return;
     }
     m_ocsData = *ocsData;
 
-    setPlainCaption(i18n("About %1", aboutData->programName()));
-    setButtons(KDialog::Close);
-    setDefaultButton(KDialog::Close);
+    setWindowTitle(i18n("About %1", aboutData->displayName()));
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &ExtendedAboutDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &ExtendedAboutDialog::reject);
+    buttonBox->button(QDialogButtonBox::Close)->setDefault(true);
+
     setModal(false);
 
 
@@ -99,7 +136,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
 
     QIcon windowIcon;
     if (!aboutData->programIconName().isEmpty()) {
-        windowIcon = KIcon(aboutData->programIconName());
+        windowIcon = QIcon::fromTheme(aboutData->programIconName());
     } else {
         windowIcon = qApp->windowIcon();
     }
@@ -109,9 +146,8 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
     else if (aboutData->programLogo().canConvert<QImage>())
         titleWidget->setPixmap(QPixmap::fromImage(aboutData->programLogo().value<QImage>()), KTitleWidget::ImageLeft);
 
-    titleWidget->setText(i18n("<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</html>",
-                         aboutData->programName(), aboutData->version(), KDE::versionString()));
-
+    titleWidget->setText(i18n("<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE Frameworks %3</html>",
+                         aboutData->displayName(), aboutData->version(), KCoreAddons::versionString()));
 
     //Now let's add the tab bar...
     QTabWidget *tabWidget = new QTabWidget;
@@ -150,9 +186,9 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         QLabel *showLicenseLabel = new QLabel;
         showLicenseLabel->setText(QString("<a href=\"%1\">%2</a>").arg(QString::number(i),
                                                                        i18n("License: %1",
-                                                                            license.name(KAboutData::FullName))));
+                                                                            license.name(KAboutLicense::FullName))));
         showLicenseLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        connect(showLicenseLabel, SIGNAL(linkActivated(QString)), this, SLOT(_k_showLicense(QString)));
+        connect(showLicenseLabel, &QLabel::linkActivated, this, &ExtendedAboutDialog::showLicense);
 
         aboutLayout->addWidget(showLicenseLabel);
     }
@@ -167,7 +203,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
 
 
     //Stuff needed by both Authors and Credits pages:
-    QPixmap openDesktopPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/opendesktop-22.png" ) );
+    QPixmap openDesktopPixmap = QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/opendesktop-22.png" ) );
     QIcon openDesktopIcon = QIcon( openDesktopPixmap );
 
 
@@ -182,7 +218,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         m_showOcsAuthorButton = new AnimatedBarWidget( openDesktopIcon,
                                      i18n( "Get data from openDesktop.org to learn more about the team" ),
                                      "process-working", m_authorWidget.data() );
-        connect( m_showOcsAuthorButton.data(), SIGNAL(clicked()), this, SLOT(switchToOcsWidgets()) );
+        connect( m_showOcsAuthorButton.data(), &AnimatedBarWidget::clicked, this, &ExtendedAboutDialog::switchToOcsWidgets );
         authorLayout->addWidget( m_showOcsAuthorButton.data() );
 
         if (!aboutData->customAuthorTextEnabled() || !aboutData->customAuthorRichText().isEmpty())
@@ -214,13 +250,15 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         }
 
         m_authorListWidget = new OcsPersonListWidget( d->aboutData->authors(), m_ocsData.authors(), OcsPersonItem::Author, m_authorWidget.data() );
-        connect( m_authorListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsAuthorButton.data(), SLOT(stop()) );
-        connect( m_authorListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsAuthorButton.data(), SLOT(fold()) );
+        connect( m_authorListWidget.data(), &OcsPersonListWidget::switchedToOcs,
+                 m_showOcsAuthorButton.data(), &AnimatedBarWidget::stop );
+        connect( m_authorListWidget.data(), &OcsPersonListWidget::switchedToOcs,
+                 m_showOcsAuthorButton.data(), &AnimatedBarWidget::fold );
 
         authorLayout->addWidget( m_authorListWidget.data() );
         authorLayout->setMargin( 0 );
         authorLayout->setSpacing( 2 );
-        m_authorWidget.data()->setLayout( authorLayout );
+        m_authorWidget->setLayout( authorLayout );
 
         m_authorPageTitle = ( authorCount == 1 ) ? i18n("A&uthor") : i18n("A&uthors");
         tabWidget->addTab(m_authorWidget.data(), m_authorPageTitle);
@@ -238,17 +276,19 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         m_showOcsCreditButton = new AnimatedBarWidget( openDesktopIcon,
                                      i18n( "Get data from openDesktop.org to learn more about contributors" ),
                                      "process-working", m_creditWidget.data() );
-        connect( m_showOcsCreditButton.data(), SIGNAL(clicked()), this, SLOT(switchToOcsWidgets()) );
+        connect( m_showOcsCreditButton.data(), &AnimatedBarWidget::clicked, this, &ExtendedAboutDialog::switchToOcsWidgets );
         creditLayout->addWidget( m_showOcsCreditButton.data() );
 
         m_creditListWidget = new OcsPersonListWidget( d->aboutData->credits(), m_ocsData.credits(), OcsPersonItem::Contributor, m_creditWidget.data() );
-        connect( m_creditListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsCreditButton.data(), SLOT(stop()) );
-        connect( m_creditListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsCreditButton.data(), SLOT(fold()) );
+        connect( m_creditListWidget.data(), &OcsPersonListWidget::switchedToOcs,
+                 m_showOcsCreditButton.data(), &AnimatedBarWidget::stop );
+        connect( m_creditListWidget.data(), &OcsPersonListWidget::switchedToOcs,
+                 m_showOcsCreditButton.data(), &AnimatedBarWidget::fold );
 
         creditLayout->addWidget( m_creditListWidget.data() );
         creditLayout->setMargin( 0 );
         creditLayout->setSpacing( 2 );
-        m_creditWidget.data()->setLayout( creditLayout );
+        m_creditWidget->setLayout( creditLayout );
 
         tabWidget->addTab( m_creditWidget.data(), i18n("&Contributors"));
         m_isOfflineCreditWidget = true; //is this still used?
@@ -265,7 +305,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         m_showOcsDonorButton = new AnimatedBarWidget( openDesktopIcon,
                                      i18n( "Get data from openDesktop.org to learn more about our generous donors" ),
                                      "process-working", m_donorWidget.data() );
-        connect( m_showOcsDonorButton.data(), SIGNAL(clicked()), this, SLOT(switchToOcsWidgets()) );
+        connect( m_showOcsDonorButton.data(), &AnimatedBarWidget::clicked, this, &ExtendedAboutDialog::switchToOcsWidgets );
         donorLayout->addWidget( m_showOcsDonorButton.data() );
 
         QList< KAboutPerson > donors;
@@ -275,8 +315,8 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
             donors << ( *it ).second;
         }
         m_donorListWidget = new OcsPersonListWidget( donors , m_ocsData.donors(), OcsPersonItem::Contributor, m_donorWidget.data() );
-        connect( m_donorListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsDonorButton.data(), SLOT(stop()) );
-        connect( m_donorListWidget.data(), SIGNAL(switchedToOcs()), m_showOcsDonorButton.data(), SLOT(fold()) );
+        connect( m_donorListWidget.data(), &OcsPersonListWidget::switchedToOcs, m_showOcsDonorButton.data(), &AnimatedBarWidget::stop );
+        connect( m_donorListWidget.data(), &OcsPersonListWidget::switchedToOcs, m_showOcsDonorButton.data(), &AnimatedBarWidget::fold );
 
         donorLayout->addWidget( m_donorListWidget.data() );
         donorLayout->setMargin( 0 );
@@ -289,7 +329,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
                             "during Roktober</a> and opt-in.</p>"));
         roktoberLabel->setOpenExternalLinks(true);
         donorLayout->addWidget(roktoberLabel);
-        m_donorWidget.data()->setLayout( donorLayout );
+        m_donorWidget->setLayout( donorLayout );
 
         tabWidget->addTab( m_donorWidget.data(), i18n("&Donors"));
         m_isOfflineDonorWidget = true;
@@ -317,7 +357,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
 
         translatorPageText += KAboutData::aboutTranslationTeam();
 
-        KTextBrowser *translatorTextBrowser = new KTextBrowser;
+        QTextBrowser *translatorTextBrowser = new QTextBrowser;
         translatorTextBrowser->setFrameStyle(QFrame::NoFrame);
         translatorTextBrowser->setPalette(transparentBackgroundPalette);
         translatorTextBrowser->setHtml(translatorPageText);
@@ -325,15 +365,13 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
     }
 
     //Jam everything together in a layout:
-    QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(titleWidget);
     mainLayout->addWidget(tabWidget);
     mainLayout->setMargin(0);
 
-    QWidget *mainWidget = new QWidget;
-    mainWidget->setLayout(mainLayout);
-    setMainWidget(mainWidget);
-    setInitialSize( QSize( 480, 460 ) );
+    mainLayout->addWidget(buttonBox);
+
+    resize( QSize( 480, 460 ) );
 }
 
 ExtendedAboutDialog::~ExtendedAboutDialog()
@@ -341,55 +379,23 @@ ExtendedAboutDialog::~ExtendedAboutDialog()
     delete d;
 }
 
-void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
-{
-    KDialog *dialog = new KDialog(q);
-
-    dialog->setCaption(i18n("License Agreement"));
-    dialog->setButtons(KDialog::Close);
-    dialog->setDefaultButton(KDialog::Close);
-
-    const QFont font = KGlobalSettings::fixedFont();
-    QFontMetrics metrics(font);
-
-    const QString licenseText = aboutData->licenses().at(number.toInt()).text();
-    KTextBrowser *licenseBrowser = new KTextBrowser;
-    licenseBrowser->setFont(font);
-    licenseBrowser->setLineWrapMode(QTextEdit::NoWrap);
-    licenseBrowser->setText(licenseText);
-
-    dialog->setMainWidget(licenseBrowser);
-
-    // try to set up the dialog such that the full width of the
-    // document is visible without horizontal scroll-bars being required
-    const qreal idealWidth = licenseBrowser->document()->idealWidth() + (2 * dialog->marginHint())
-        + licenseBrowser->verticalScrollBar()->width() * 2;
-
-    // try to allow enough height for a reasonable number of lines to be shown
-    const int idealHeight = metrics.height() * 30;
-
-    dialog->setInitialSize(dialog->sizeHint().expandedTo(QSize((int)idealWidth,idealHeight)));
-    dialog->show();
-}
-
 void
 ExtendedAboutDialog::switchToOcsWidgets()
 {    
-    if( !( Solid::Networking::status() == Solid::Networking::Connected ||
-           Solid::Networking::status() == Solid::Networking::Unknown ) )
+    if( !QNetworkConfigurationManager().isOnline() )
     {
         KMessageBox::error( this, i18n( "Internet connection not available" ), i18n( "Network error" ) );
         return;
     }
 
     if( m_showOcsAuthorButton )
-        m_showOcsAuthorButton.data()->animate();
+        m_showOcsAuthorButton->animate();
     if( m_showOcsCreditButton )
-        m_showOcsCreditButton.data()->animate();
+        m_showOcsCreditButton->animate();
     if( m_showOcsDonorButton )
-        m_showOcsDonorButton.data()->animate();
+        m_showOcsDonorButton->animate();
     AmarokAttica::ProviderInitJob *providerJob = AmarokAttica::Provider::byId( m_ocsData.providerId() );
-    connect( providerJob, SIGNAL(result(KJob*)), this, SLOT(onProviderFetched(KJob*)) );
+    connect( providerJob, &AmarokAttica::ProviderInitJob::result, this, &ExtendedAboutDialog::onProviderFetched );
 }
 
 void
@@ -401,14 +407,19 @@ ExtendedAboutDialog::onProviderFetched( KJob *job )
         debug()<<"Successfully fetched OCS provider"<< providerJob->provider().name();
         debug()<<"About to request OCS data";
         if( m_authorListWidget )
-            m_authorListWidget.data()->switchToOcs( providerJob->provider() );
+            m_authorListWidget->switchToOcs( providerJob->provider() );
         if( m_creditListWidget )
-            m_creditListWidget.data()->switchToOcs( providerJob->provider() );
+            m_creditListWidget->switchToOcs( providerJob->provider() );
         if( m_donorListWidget )
-            m_donorListWidget.data()->switchToOcs( providerJob->provider() );
+            m_donorListWidget->switchToOcs( providerJob->provider() );
     }
     else
         warning() << "OCS provider fetch failed";
 }
 
-#include "ExtendedAboutDialog.moc"
+void
+ExtendedAboutDialog::showLicense(const QString& number)
+{
+    d->_k_showLicense(number);
+}
+

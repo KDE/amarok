@@ -17,14 +17,18 @@
 #define DEBUG_PREFIX "UpnpCollectionFactory"
 #include "UpnpCollectionFactory.h"
 
-#include <kio/jobclasses.h>
-#include <kio/scheduler.h>
-#include <kio/netaccess.h>
-#include <kdirlister.h>
-#include <kurl.h>
-#include <solid/device.h>
-#include <solid/devicenotifier.h>
-#include <solid/storageaccess.h>
+#include <QUrl>
+#include <QDBusMetaType>
+#include <QDBusInterface>
+#include <QDBusReply>
+
+#include <KDirLister>
+#include <KIO/ListJob>
+#include <KIO/Scheduler>
+
+#include <Solid/Device>
+#include <Solid/DeviceNotifier>
+#include <Solid/StorageAccess>
 
 #include "core/support/Debug.h"
 #include "UpnpBrowseCollection.h"
@@ -34,12 +38,10 @@
 
 namespace Collections {
 
-AMAROK_EXPORT_COLLECTION( UpnpCollectionFactory, upnpcollection )
 
-UpnpCollectionFactory::UpnpCollectionFactory( QObject *parent, const QVariantList &args )
-    : Collections::CollectionFactory( parent, args )
+UpnpCollectionFactory::UpnpCollectionFactory()
+    : Collections::CollectionFactory()
 {
-    m_info = KPluginInfo( "amarok_collection-upnpcollection.desktop", "services" );
     qRegisterMetaType<DeviceInfo>();
     qDBusRegisterMetaType< QHash<QString, QString> >();
     qDBusRegisterMetaType<DeviceInfo0_1_0>();
@@ -186,11 +188,10 @@ void UpnpCollectionFactory::createCollection( const QString &udn )
         return;
     }
     debug() << "|||| Creating collection " << info.uuid();
-    KIO::ListJob *job = KIO::listDir( QString( "upnp-ms://" + info.uuid() + "/?searchcapabilities=1" ) );
+    KIO::ListJob *job = KIO::listDir( QUrl( "upnp-ms://" + info.uuid() + "/?searchcapabilities=1" ) );
     job->setProperty( "deviceInfo", QVariant::fromValue( info ) );
-    connect( job, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
-            this, SLOT(slotSearchEntries(KIO::Job*,KIO::UDSEntryList)) );
-    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotSearchCapabilitiesDone(KJob*)) );
+    connect( job, &KIO::ListJob::entries, this, &UpnpCollectionFactory::slotSearchEntries );
+    connect( job, &KJob::result, this, &UpnpCollectionFactory::slotSearchCapabilitiesDone );
 }
 
 bool UpnpCollectionFactory::cagibi0_1_0DeviceDetails( const QString &udn, DeviceInfo *info )
@@ -241,11 +242,11 @@ void UpnpCollectionFactory::slotSearchCapabilitiesDone( KJob *job )
             && searchCaps.contains( "dc:title" )
             && searchCaps.contains( "upnp:artist" )
             && searchCaps.contains( "upnp:album" ) ) {
-            kDebug() << "Supports all search meta-data required, using UpnpSearchCollection";
+            qDebug() << "Supports all search meta-data required, using UpnpSearchCollection";
             m_devices[dev.uuid()] = new UpnpSearchCollection( dev, searchCaps );
         }
         else {
-            kDebug() << "Supported Search() meta-data" << searchCaps << "not enough. Using UpnpBrowseCollection";
+            qDebug() << "Supported Search() meta-data" << searchCaps << "not enough. Using UpnpBrowseCollection";
             m_devices[dev.uuid()] = new UpnpBrowseCollection( dev );
         }
         emit newCollection( m_devices[dev.uuid()] );

@@ -134,7 +134,7 @@ namespace AmarokScript
              */
             Q_INVOKABLE void changeTags( const Meta::FieldHash &changes, bool respectConfig = true );
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when a track has finished loading.
              */

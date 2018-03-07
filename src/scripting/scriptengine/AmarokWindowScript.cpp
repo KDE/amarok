@@ -26,7 +26,7 @@
 #include "PaletteHandler.h"
 #include "ScriptingDefines.h"
 
-#include <KAction>
+#include <QAction>
 #include <KActionCollection>
 
 #include <QClipboard>
@@ -43,10 +43,10 @@ class ToolTipEventFilter : public QObject
         ToolTipEventFilter();
         bool eventFilter( QObject *object, QEvent *event );
 
-        static QWeakPointer<ToolTipEventFilter> s_instance;
+        static QPointer<ToolTipEventFilter> s_instance;
 };
 
-QWeakPointer<ToolTipEventFilter> ToolTipEventFilter::s_instance;
+QPointer<ToolTipEventFilter> ToolTipEventFilter::s_instance;
 
 ToolTipEventFilter*
 ToolTipEventFilter::instance()
@@ -83,54 +83,76 @@ AmarokWindowScript::AmarokWindowScript( AmarokScriptEngine* scriptEngine )
     windowObject.setProperty( "ToolsMenu", scriptEngine->newObject() );
     windowObject.setProperty( "SettingsMenu", scriptEngine->newObject() );
 
-    connect( App::instance(), SIGNAL(prepareToQuit()),
-                this, SIGNAL(prepareToQuit()) );
+    connect( pApp, &App::prepareToQuit, this, &AmarokWindowScript::prepareToQuit );
 }
 
 void
-AmarokWindowScript::addToolsMenu( QMenu *menu )
+AmarokWindowScript::addToolsMenu( const QString &name )
 {
-    m_toolsMenu.data()->addMenu( menu );
+    if( m_customMenus.contains( name ) )
+        return;
+
+    QMenu *menu = new QMenu( name );
+    m_customMenus.insert( name, menu );
+    m_toolsMenu->addMenu( menu );
+    QScriptValue scriptMenu = m_scriptEngine->newQObject( menu );
+    m_scriptEngine->globalObject().property( "Amarok" ).property( "Window" ).setProperty( name, scriptMenu );
 }
 
 void
-AmarokWindowScript::addSettingsMenu( QMenu *menu )
+AmarokWindowScript::addSettingsMenu( const QString &name )
 {
-    m_settingsMenu.data()->addMenu( menu );
+    if( m_customMenus.contains( name ) )
+        return;
+
+    QMenu *menu = new QMenu( name );
+    m_customMenus.insert( name, menu );
+    m_settingsMenu->addMenu( menu );
+    QScriptValue scriptMenu = m_scriptEngine->newQObject( menu );
+    m_scriptEngine->globalObject().property( "Amarok" ).property( "Window" ).setProperty( name, scriptMenu );
 }
 
 bool
-AmarokWindowScript::addToolsMenu( QString id, QString menuTitle, QString icon )
+AmarokWindowScript::addToolsAction( QString id, QString actionName, QString icon )
 {
-    return addMenuAction( m_toolsMenu, id, menuTitle, "ToolsMenu", icon );
+    return addMenuAction( m_toolsMenu, id, actionName, "ToolsMenu", icon );
 }
 
 void
 AmarokWindowScript::addToolsSeparator()
 {
-    m_toolsMenu.data()->addSeparator();
+    m_toolsMenu->addSeparator();
 }
 
 bool
-AmarokWindowScript::addSettingsMenu( QString id, QString menuTitle, QString icon )
+AmarokWindowScript::addSettingsAction( QString id, QString actionName, QString icon )
 {
-    return addMenuAction( m_settingsMenu, id, menuTitle, "SettingsMenu", icon );
+    return addMenuAction( m_settingsMenu, id, actionName, "SettingsMenu", icon );
+}
+
+bool
+AmarokScript::AmarokWindowScript::addCustomAction(QString menuName, QString id, QString actionName, QString icon)
+{
+    if( !m_customMenus.contains( menuName ) )
+        return false;
+
+    return addMenuAction( m_customMenus.value( menuName ), id, actionName, menuName, icon );
 }
 
 void
 AmarokWindowScript::addSettingsSeparator()
 {
-    m_settingsMenu.data()->addSeparator();
+    m_settingsMenu->addSeparator();
 }
 
 bool
-AmarokWindowScript::addMenuAction( QWeakPointer<KMenu> menu, QString id, QString menuTitle, QString menuProperty, QString icon )
+AmarokWindowScript::addMenuAction( QMenu *menu, QString id, QString actionName, QString menuProperty, QString icon )
 {
     KActionCollection* const ac = Amarok::actionCollection();
     if( ac->action( id ) )
         return false;
 
-    KAction *action = new KAction( KIcon( icon ), menuTitle, this );
+    QAction *action = new QAction( QIcon::fromTheme( icon ), actionName, this );
     ac->addAction( id, action );
 
     // don't forget to read the shortcut settings from the config file so
@@ -138,7 +160,7 @@ AmarokWindowScript::addMenuAction( QWeakPointer<KMenu> menu, QString id, QString
     ac->readSettings();
 
     // add the action to the given menu
-    menu.data()->addAction( ac->action( id ) );
+    menu->addAction( ac->action( id ) );
 
     QScriptValue newMenu = m_scriptEngine->newQObject( action );
     m_scriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( menuProperty ).setProperty( id, newMenu );
@@ -149,7 +171,7 @@ void
 AmarokWindowScript::showTrayIcon( bool show )
 {
     AmarokConfig::setShowTrayIcon( show );
-    App::instance()->applySettings();
+    pApp->applySettings();
 }
 
 QString

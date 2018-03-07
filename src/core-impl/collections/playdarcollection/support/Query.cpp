@@ -22,7 +22,7 @@
 
 #include <qjson/parser.h>
 
-#include <KUrl>
+#include <QUrl>
 #include <KIO/Job>
 
 #include <QString>
@@ -50,10 +50,10 @@ namespace Playdar
         if( m_waitForSolution )
         {
             m_receivedFirstResults = true;
-            m_controller.data()->getResultsLongPoll( this );
+            m_controller->getResultsLongPoll( this );
         }
         else
-            m_controller.data()->getResults( this );
+            m_controller->getResults( this );
     }
     
     Query::~Query()
@@ -161,7 +161,7 @@ namespace Playdar
         {
             QVariantMap result = resultVariant.toMap();
             Meta::PlaydarTrackPtr aTrack;
-            KUrl resultUrl( m_controller.data()->urlForSid( result.value( "sid" ).toString() ) );
+            QUrl resultUrl( m_controller->urlForSid( result.value( "sid" ).toString() ) );
             
             QString trackSid = result.value( "sid" ).toString();
             QString trackUrl = resultUrl.url();
@@ -213,7 +213,7 @@ namespace Playdar
         else
         {
             m_receivedFirstResults = true;
-            m_controller.data()->getResultsLongPoll( this );
+            m_controller->getResultsLongPoll( this );
         }
     }
 }

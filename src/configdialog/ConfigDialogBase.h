@@ -19,12 +19,13 @@
 
 #include <QWidget>
 
+class Amarok2ConfigDialog;
 
 class ConfigDialogBase : public QWidget
 {
     Q_OBJECT
 
-    signals:
+    Q_SIGNALS:
         void settingsChanged( const QString& );
 
     public:
@@ -36,7 +37,7 @@ class ConfigDialogBase : public QWidget
         virtual bool isDefault() = 0;
 
     protected:
-        ConfigDialogBase( QWidget* parent ) : QWidget( parent ) {}
+        ConfigDialogBase( Amarok2ConfigDialog* parent );
 };
 
 

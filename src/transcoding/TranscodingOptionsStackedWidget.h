@@ -35,10 +35,10 @@ public:
 
     const Configuration configuration( const Configuration::TrackSelection trackSelection ) const;
 
-signals:
+Q_SIGNALS:
     void formatChanged( Encoder encoder );
 
-public slots:
+public Q_SLOTS:
     void switchPage( Encoder encoder );
 
 private:

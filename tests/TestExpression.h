@@ -20,7 +20,8 @@
 #ifndef TESTEXPRESSION_H
 #define TESTEXPRESSION_H
 
-#include <QtCore/QStringList>
+#include <QStringList>
+#include <QObject>
 
 class TestExpression : public QObject
 {
@@ -29,7 +30,7 @@ Q_OBJECT
 public:
     TestExpression();
 
-private slots:
+private Q_SLOTS:
     void testParse();
     void testIsAdvancedExpression();
 };

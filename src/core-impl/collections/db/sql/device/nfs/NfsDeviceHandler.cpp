@@ -22,7 +22,8 @@
 #include "core/support/Debug.h"
 #include <core/storage/SqlStorage.h>
 
-#include <KUrl>
+#include <QUrl>
+#include <QDir>
 #include <Solid/Device>
 #include <Solid/StorageAccess>
 #include <Solid/NetworkShare>
@@ -75,14 +76,15 @@ const QString &NfsDeviceHandler::getDevicePath() const
     return m_mountPoint;
 }
 
-void NfsDeviceHandler::getURL( KUrl &absolutePath, const KUrl &relativePath )
+void NfsDeviceHandler::getURL( QUrl &absolutePath, const QUrl &relativePath )
 {
     absolutePath.setPath( m_mountPoint );
-    absolutePath.addPath( relativePath.path() );
-    absolutePath.cleanPath();
+    absolutePath = absolutePath.adjusted(QUrl::StripTrailingSlash);
+    absolutePath.setPath(absolutePath.path() + '/' + ( relativePath.path() ));
+    absolutePath.setPath( QDir::cleanPath(absolutePath.path()) );
 }
 
-void NfsDeviceHandler::getPlayableURL( KUrl &absolutePath, const KUrl &relativePath )
+void NfsDeviceHandler::getPlayableURL( QUrl &absolutePath, const QUrl &relativePath )
 {
     getURL( absolutePath, relativePath );
 }
@@ -145,13 +147,13 @@ NfsDeviceHandlerFactory::~NfsDeviceHandlerFactory( )
 }
 
 DeviceHandler *
-NfsDeviceHandlerFactory::createHandler( KSharedConfigPtr, SqlStorage* ) const
+NfsDeviceHandlerFactory::createHandler( KSharedConfigPtr, QSharedPointer<SqlStorage> ) const
 {
     return 0;
 }
 
 DeviceHandler *
-NfsDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, SqlStorage *s ) const
+NfsDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, QSharedPointer<SqlStorage> s ) const
 {
     DEBUG_BLOCK
     if( !s )

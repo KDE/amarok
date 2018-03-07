@@ -31,7 +31,7 @@ public:
     static ViewUrlGenerator * instance();
 
     QString description();
-    KIcon icon();
+    QIcon icon();
     AmarokUrl createUrl();
 
 private:

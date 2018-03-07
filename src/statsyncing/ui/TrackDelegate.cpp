@@ -20,9 +20,9 @@
 #include "core/support/Debug.h"
 #include "statsyncing/models/CommonModel.h"
 
-#include <KGlobal>
-#include <KIcon>
-#include <KLocale>
+
+#include <QIcon>
+#include <KLocalizedString>
 #include <kratingpainter.h>
 
 #include <QApplication>
@@ -47,7 +47,7 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
         data.type() == QVariant::Int )
     {
         // following is largely inspired by QStyledItemDelegate::paint()
-        QStyleOptionViewItemV4 opt = option;
+        QStyleOptionViewItem opt = option;
         initStyleOption( &opt, index );
 
         QPixmap starsPixmap( CommonModel::s_ratingSize );
@@ -59,7 +59,7 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
             if( rating < 0 ) // unresolved conflict
             {
                 rating = 0;
-                ratingPainter.setIcon( KIcon( "status_unknown" ) );
+                ratingPainter.setIcon( QIcon::fromTheme( "status_unknown" ) );
                 ratingPainter.setEnabled( false );
                 ratingPainter.setMaxRating( 2 );
             }
@@ -69,7 +69,7 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
         }
 
         opt.text.clear();
-        opt.features |= QStyleOptionViewItemV2::HasDecoration;
+        opt.features |= QStyleOptionViewItem::HasDecoration;
         opt.decorationSize = CommonModel::s_ratingSize;
         opt.decorationAlignment = Qt::AlignRight | Qt::AlignVCenter;
         opt.decorationPosition = QStyleOptionViewItem::Right;
@@ -88,10 +88,8 @@ TrackDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {
     if( value.type() == QVariant::DateTime )
     {
-        KLocale *klocale = KGlobal::locale();
         QDateTime date = value.toDateTime();
-        return date.isValid() ? klocale->formatDateTime( date, KLocale::FancyShortDate )
-               : QString();
+        return date.isValid() ? QLocale().toString( date, QLocale::ShortFormat ) : QString();
     }
     return QStyledItemDelegate::displayText( value, locale );
 }

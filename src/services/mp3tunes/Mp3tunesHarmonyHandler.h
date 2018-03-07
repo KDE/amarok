@@ -43,7 +43,7 @@ class Mp3tunesHarmonyHandler : public QObject {
         QString pin();
         QString email();
 
-    signals:
+    Q_SIGNALS:
       void waitingForEmail( const QString &pin );
       void waitingForPin();
       void connected();
@@ -52,7 +52,7 @@ class Mp3tunesHarmonyHandler : public QObject {
       void downloadReady( const QVariantMap &download );
       void downloadPending( const QVariantMap &download );
 
-    public slots:
+    public Q_SLOTS:
         virtual void emitError( const QString &error );
         virtual void emitWaitingForEmail( const QString &pin );
         virtual void emitWaitingForPin();
@@ -61,7 +61,7 @@ class Mp3tunesHarmonyHandler : public QObject {
         virtual void emitDownloadReady( const QVariantMap &download  );
         virtual void emitDownloadPending( const QVariantMap &download  );
 
-    private slots:
+    private Q_SLOTS:
         void slotFinished();
         void slotError( QProcess::ProcessError error );
 

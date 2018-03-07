@@ -22,7 +22,7 @@
 #include "proxymodels/SortScheme.h"
 
 #include <KConfigGroup>
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 namespace Playlist
 {
@@ -39,11 +39,11 @@ SortWidget::SortWidget( QWidget *parent )
     m_layout->setContentsMargins( 0, 0, 0, 0 );
 
     BreadcrumbItemButton *rootItem = new BreadcrumbItemButton(
-            KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-sorting-16.png" ) ) ),
+            QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/playlist-sorting-16.png" ) ) ),
             QString(), this );
     rootItem->setToolTip( i18n( "Clear the playlist sorting configuration." ) );
     m_layout->addWidget( rootItem );
-    connect( rootItem, SIGNAL(clicked()), this, SLOT(trimToLevel()) );
+    connect( rootItem, &BreadcrumbItemButton::clicked, this, &SortWidget::trimToLevel );
 
     m_ribbon = new QHBoxLayout();
     m_layout->addLayout( m_ribbon );
@@ -58,8 +58,10 @@ SortWidget::SortWidget( QWidget *parent )
     m_urlButton = new BreadcrumbUrlMenuButton( "playlist", this );
     m_layout->addWidget( m_urlButton );
 
-    connect( m_addButton->menu(), SIGNAL(actionClicked(QString)), this, SLOT(addLevel(QString)) );
-    connect( m_addButton->menu(), SIGNAL(shuffleActionClicked()), The::playlistActions(), SLOT(shuffle()) );
+    connect( m_addButton->menu(), &BreadcrumbItemMenu::actionClicked,
+             this, &SortWidget::addLevelAscending );
+    connect( m_addButton->menu(), &BreadcrumbItemMenu::shuffleActionClicked,
+             The::playlistActions(), &Actions::shuffle );
 
     QString sortPath = Amarok::config( "Playlist Sorting" ).readEntry( "SortPath", QString() );
     readSortPath( sortPath );
@@ -74,14 +76,20 @@ SortWidget::addLevel( QString internalColumnName, Qt::SortOrder sortOrder )  //p
     BreadcrumbLevel *bLevel = new BreadcrumbLevel( internalColumnName );
     BreadcrumbItem *item = new BreadcrumbItem( bLevel, this );
     m_ribbon->addWidget( item );
-    connect( item, SIGNAL(clicked()), this, SLOT(onItemClicked()) );
-    connect( item->menu(), SIGNAL(actionClicked(QString)), this, SLOT(onItemSiblingClicked(QString)) );
-    connect( item->menu(), SIGNAL(shuffleActionClicked()), this, SLOT(onShuffleSiblingClicked()) );
-    connect( item, SIGNAL(orderInverted()), this, SLOT(updateSortScheme()) );
+    connect( item, &BreadcrumbItem::clicked, this, &SortWidget::onItemClicked );
+    connect( item->menu(), &BreadcrumbItemMenu::actionClicked, this, &SortWidget::onItemSiblingClicked );
+    connect( item->menu(), &BreadcrumbItemMenu::shuffleActionClicked, this, &SortWidget::onShuffleSiblingClicked );
+    connect( item, &BreadcrumbItem::orderInverted, this, &SortWidget::updateSortScheme );
     if( sortOrder != item->sortOrder() )
         item->invertOrder();
     m_addButton->updateMenu( levels() );
     updateSortScheme();
+}
+
+void
+SortWidget::addLevelAscending ( QString internalColumnName )
+{
+    addLevel(internalColumnName, Qt::AscendingOrder);
 }
 
 void

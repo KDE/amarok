@@ -47,11 +47,11 @@ public:
     UpcomingEventsStackItem *create( const QString &name ); ///< creates a new stack item
     void remove( const QString &name ); ///< remove stack item with name
 
-public slots:
+public Q_SLOTS:
     void maximizeItem( const QString &name ); ///< expand item with name and collapse all else
     void cleanupListWidgets();
 
-signals:
+Q_SIGNALS:
     void collapseStateChanged();
 
 private:

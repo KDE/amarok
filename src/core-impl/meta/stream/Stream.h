@@ -27,14 +27,14 @@ namespace MetaStream
         public:
             class Private;
 
-            Track( const KUrl &url );
+            Track( const QUrl &url );
             virtual ~Track();
 
         // methods inherited from Meta::Base
             virtual QString name() const;
 
         // methods inherited from Meta::Track
-            virtual KUrl playableUrl() const;
+            virtual QUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
             virtual QString notPlayableReason() const;

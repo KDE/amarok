@@ -35,24 +35,23 @@ using namespace MetaCue;
 * @author (C) 2005 by Martin Ehmke <ehmke@gmx.de>
 */
 
-CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, const Meta::TrackPtr track )
+CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const Meta::TrackPtr track )
 {
     return loadCueFile( cuefile, track->playableUrl(), track->length() );
 }
 
 
-CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, const KUrl &trackUrl, qint64 trackLen )
+CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &trackUrl, qint64 trackLen )
 {
-
     DEBUG_BLOCK
 
     CueFileItemMap cueItems;
 
-    debug() << "CUEFILE: " << cuefile.pathOrUrl();
-    if ( QFile::exists ( cuefile.pathOrUrl() ) )
+    debug() << "CUEFILE: " << cuefile.toDisplayString();
+    if ( QFile::exists ( cuefile.toLocalFile() ) )
     {
         debug() << "  EXISTS!";
-        QFile file ( cuefile.pathOrUrl() );
+        QFile file ( cuefile.toLocalFile() );
         int trackNr = 0;
         QString defaultArtist;
         QString defaultAlbum;
@@ -234,10 +233,10 @@ CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, const KUrl &tra
     return CueFileItemMap();
 }
 
-KUrl CueFileSupport::locateCueSheet ( const KUrl &trackurl )
+QUrl CueFileSupport::locateCueSheet ( const QUrl &trackurl )
 {
     if ( !trackurl.isValid() || !trackurl.isLocalFile() )
-        return KUrl();
+        return QUrl();
     // look for the cue file that matches the media file
     QString path    = trackurl.path();
     QString cueFile = path.left ( path.lastIndexOf ( '.' ) ) + ".cue";
@@ -245,12 +244,12 @@ KUrl CueFileSupport::locateCueSheet ( const KUrl &trackurl )
     if ( validateCueSheet ( cueFile ) )
     {
         debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly, found and loaded. ";
-        return KUrl ( cueFile );
+        return QUrl::fromLocalFile( cueFile );
     }
     debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly and missed, searching for other cue files.";
 
     bool foundCueFile = false;
-    QDir dir ( trackurl.directory() );
+    QDir dir ( trackurl.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash).path() );
     QStringList filters;
     filters << "*.cue" << "*.CUE";
     dir.setNameFilters ( filters );
@@ -293,9 +292,9 @@ KUrl CueFileSupport::locateCueSheet ( const KUrl &trackurl )
         }
 
     if ( foundCueFile )
-        return KUrl ( cueFile );
+        return QUrl::fromLocalFile( cueFile );
     debug() << "[CUEFILE]: - Didn't find any matching cue file." << endl;
-    return KUrl();
+    return QUrl();
 }
 
 bool CueFileSupport::validateCueSheet ( const QString& cuefile )
@@ -449,7 +448,7 @@ CueFileSupport::generateTimeCodeTracks( Meta::TrackPtr baseTrack, CueFileItemMap
     foreach( const CueFileItem &item, itemMap )
     {
         Meta::TimecodeTrack *track = new Meta::TimecodeTrack( item.title(),
-                baseTrack->playableUrl().url(), item.index(), item.index() + item.length() );
+                baseTrack->playableUrl(), item.index(), item.index() + item.length() );
         track->beginUpdate();
         track->setArtist( item.artist() );
         track->setAlbum( item.album() );

@@ -21,8 +21,6 @@
 #include "widgets/PrettyTreeRoles.h"
 #include "widgets/PrettyTreeDelegate.h"
 
-#include <KGlobalSettings>
-
 #include <QAction>
 #include <QMouseEvent>
 #include <QPainter>
@@ -42,7 +40,7 @@ PrettyTreeView::PrettyTreeView( QWidget *parent )
     setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
 
     The::paletteHandler()->updateItemView( this );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(newPalette(QPalette)) );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &PrettyTreeView::newPalette );
 
 #ifdef Q_WS_MAC
     // for some bizarre reason w/ some styles on mac per-pixel scrolling is slower than
@@ -55,7 +53,7 @@ PrettyTreeView::PrettyTreeView( QWidget *parent )
     setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 #endif
 
-    setAnimated( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects );
+    setAnimated( true );
 }
 
 PrettyTreeView::~PrettyTreeView()
@@ -186,7 +184,7 @@ PrettyTreeView::mouseReleaseEvent( QMouseEvent *event )
         state() == QTreeView::NoState &&
         expandCollapsePressedAt &&
         ( *expandCollapsePressedAt - event->pos() ).manhattanLength() < QApplication::startDragDistance() &&
-        KGlobalSettings::singleClick() &&
+        style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) &&
         model()->hasChildren( index ) )
     {
         setExpanded( index, !isExpanded( index ) );

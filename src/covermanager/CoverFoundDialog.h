@@ -23,29 +23,29 @@
 #include "core/meta/forward_declarations.h"
 #include "covermanager/CoverFetchUnit.h"
 #include "network/NetworkAccessManagerProxy.h"
+#include "widgets/BoxWidget.h"
 
-#include <KProgressDialog>
-#include <KVBox>
+#include <QProgressDialog>
 
 #include <QLabel>
 #include <QList>
 #include <QListWidgetItem>
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 
 class CoverFoundItem;
 class CoverFoundSideBar;
-class KDialog;
+class QDialog;
 class KJob;
 class KJobProgressBar;
 class KComboBox;
-class KListWidget;
-class KPushButton;
-class QFrame;
+class QListWidget;
+class QPushButton;
+class BoxWidget;
 class QGridLayout;
 class QTabWidget;
 
-class CoverFoundDialog : public KDialog
+class CoverFoundDialog : public QDialog
 {
     Q_OBJECT
 
@@ -64,10 +64,10 @@ public:
 
     const CoverFetchUnit::Ptr unit() const { return m_unit; }
 
-signals:
+Q_SIGNALS:
     void newCustomQuery( Meta::AlbumPtr album, const QString &query, int page );
 
-public slots:
+public Q_SLOTS:
     void add( const QImage &cover,
               const CoverFetch::Metadata &metadata,
               const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
@@ -75,23 +75,23 @@ public slots:
 protected:
     void hideEvent( QHideEvent *event );
 
-protected slots:
+protected Q_SLOTS:
     void slotButtonClicked( int button );
 
-private slots:
+private Q_SLOTS:
     void addToCustomSearch( const QString &text );
     void clearQueryButtonClicked();
     void clearView();
     void downloadProgressed( qint64 bytesReceived, qint64 bytesTotal );
     void fetchRequestRedirected( QNetworkReply *oldReply, QNetworkReply *newReply );
-    void handleFetchResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void handleFetchResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void insertComboText( const QString &text );
     void currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
-    void processQuery();
+    void processCurrentQuery(); // Same as processQuery( QString() )
     void display(); ///< Opens a pixmap viewer
-    void processQuery( const QString &query );
+    void processQuery( const QString &input = QString() );
     void saveAs();
     void selectDiscogs();
     void selectLastFm();
@@ -109,9 +109,9 @@ private:
 
     CoverFoundSideBar *m_sideBar;     //!< View of selected cover and its metadata
     KComboBox *m_search;              //!< Custom search input
-    KListWidget *m_view;              //!< View of retrieved covers
-    KPushButton *m_save;              //!< Save Button
-    KPushButton *m_searchButton;      //!< Button to start search or get more results for last query
+    QListWidget *m_view;              //!< View of retrieved covers
+    QPushButton *m_save;              //!< Save Button
+    QPushButton *m_searchButton;      //!< Button to start search or get more results for last query
     Meta::AlbumPtr m_album;           //!< Album associated with @ref m_unit;
     QAction *m_sortAction;            //!< Action to sort covers by size
     QList< int > m_sortSizes;         //!< List of sorted cover sizes used for indexing
@@ -121,13 +121,13 @@ private:
     bool m_sortEnabled;               //!< Sort covers by size
     const CoverFetchUnit::Ptr m_unit; //!< Cover fetch unit that initiated this dialog
     int m_queryPage;                  //!< Cache for the page number associated with @ref m_query
-    QHash<KUrl, CoverFoundItem*> m_urls; //!< Urls hash for network access manager proxy
-    QWeakPointer<KProgressDialog> m_dialog;  //!< Progress dialog for fetching big pix
+    QHash<QUrl, CoverFoundItem*> m_urls; //!< Urls hash for network access manager proxy
+    QPointer<QProgressDialog> m_dialog;  //!< Progress dialog for fetching big pix
 
     Q_DISABLE_COPY( CoverFoundDialog )
 };
 
-class CoverFoundSideBar : public KVBox
+class CoverFoundSideBar : public BoxWidget
 {
     Q_OBJECT
 
@@ -135,7 +135,7 @@ public:
     explicit CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent = 0 );
     ~CoverFoundSideBar();
 
-public slots:
+public Q_SLOTS:
     void clear();
     void setPixmap( const QPixmap &pixmap, CoverFetch::Metadata metadata );
     void setPixmap( const QPixmap &pixmap );

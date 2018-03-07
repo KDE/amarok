@@ -24,14 +24,14 @@ namespace Collections {
 
 class MySqlCollectionFactory : public Collections::CollectionFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-mysqlcollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        MySqlCollectionFactory( QObject *parent, const QVariantList &args )
-            : Collections::CollectionFactory( parent, args )
-        {
-            m_info = KPluginInfo( "amarok_collection-mysqlcollection.desktop", "services" );
-        }
+        MySqlCollectionFactory()
+            : Collections::CollectionFactory() {}
+
         virtual ~MySqlCollectionFactory() {}
 
         virtual void init();

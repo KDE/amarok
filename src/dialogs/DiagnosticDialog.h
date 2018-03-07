@@ -19,25 +19,25 @@
 
 #include "amarok_export.h"
 
-#include <KDialog>
+#include <QDialog>
 
 class KAboutData;
 class QPlainTextEdit;
 
 
-class AMAROK_EXPORT DiagnosticDialog : public KDialog
+class AMAROK_EXPORT DiagnosticDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit DiagnosticDialog( const KAboutData *aboutData, QWidget *parent = 0 );
+    explicit DiagnosticDialog( const KAboutData about, QWidget *parent = 0 );
 
 private:
     QPlainTextEdit *m_textBox;
 
     const QString generateReport( const KAboutData *aboutData );
 
-private slots:
+private Q_SLOTS:
     void slotCopyToClipboard() const;
 };
 

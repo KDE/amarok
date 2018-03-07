@@ -24,14 +24,16 @@
 #include <QFile>
 
 #include <KFilterDev>
-#include <KLocale>
+#include <KLocalizedString>
 
 using namespace Meta;
 
 static const QString COVERURL_BASE = "http://api.jamendo.com/get2/image/album/redirect/?id=%1&imagesize=100";
 
 JamendoXmlParser::JamendoXmlParser( const QString &filename )
-    : ThreadWeaver::Job()
+    : QObject()
+    , ThreadWeaver::Job()
+    , m_sFileName( filename )
     , n_numberOfTransactions ( 0 )
     , n_maxNumberOfTransactions ( 5000 )
     , m_aborted( false )
@@ -120,10 +122,9 @@ JamendoXmlParser::JamendoXmlParser( const QString &filename )
     m_id3GenreHash.insert( 78, "Rock & Roll"       );
     m_id3GenreHash.insert( 79, "Hard Rock"         );
 
-    m_sFileName = filename;
     albumTags.clear();
     m_dbHandler = new JamendoDatabaseHandler();
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &JamendoXmlParser::done, this, &JamendoXmlParser::completeJob );
 }
 
 JamendoXmlParser::~JamendoXmlParser()
@@ -134,12 +135,30 @@ JamendoXmlParser::~JamendoXmlParser()
 }
 
 void
-JamendoXmlParser::run( )
+JamendoXmlParser::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     if( m_aborted )
         return;
     
     readConfigFile( m_sFileName );
+}
+void
+JamendoXmlParser::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+JamendoXmlParser::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void
@@ -177,9 +196,9 @@ JamendoXmlParser::readConfigFile( const QString &filename )
         return;
     }
 
-    QIODevice *file = KFilterDev::deviceForFile( filename, "application/x-gzip", true );
+    KFilterDev *file = new KFilterDev( filename );
 
-    if( !file || !file->open( QIODevice::ReadOnly ) )
+    if( !file->open( QIODevice::ReadOnly ) )
     {
         debug() << "JamendoXmlParser::readConfigFile error reading file";
         return;
@@ -421,5 +440,4 @@ JamendoXmlParser::requestAbort()
     m_aborted = true;
 }
 
-#include "JamendoXmlParser.moc"
 

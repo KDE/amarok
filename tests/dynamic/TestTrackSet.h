@@ -19,7 +19,7 @@
 
 #include "dynamic/TrackSet.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestTrackSet : public QObject
 {
@@ -27,7 +27,7 @@ class TestTrackSet : public QObject
 public:
     TestTrackSet();
 
-private slots:
+private Q_SLOTS:
     void init();
     void cleanup();
 

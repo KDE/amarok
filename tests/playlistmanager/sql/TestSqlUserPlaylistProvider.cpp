@@ -26,10 +26,9 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 
-#include <QtTest/QTest>
-#include <QtCore/QDir>
+#include <QTest>
+#include <QDir>
 
-#include <qtest_kde.h>
 
 QTEST_KDEMAIN( TestSqlUserPlaylistProvider, GUI )
 
@@ -62,8 +61,8 @@ void TestSqlUserPlaylistProvider::testPlaylists()
 void TestSqlUserPlaylistProvider::testSave()
 {
     Meta::TrackList tempTrackList;
-    KUrl trackUrl;
-    trackUrl = dataPath( "data/audio/Platz 01.mp3" );
+    QUrl trackUrl;
+    trackUrl = QUrl::fromLocalFile(dataPath( "data/audio/Platz 01.mp3" ));
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
 
     Playlists::PlaylistPtr testPlaylist =

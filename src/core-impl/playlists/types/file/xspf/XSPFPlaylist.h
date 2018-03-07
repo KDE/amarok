@@ -30,17 +30,17 @@ struct XSPFTrack {
     // initialize primitive types, don't give stochasticity a chance!
     XSPFTrack() : trackNum( 0 ), duration( 0 ) {}
 
-    KUrl location;
+    QUrl location;
     QString identifier;
     QString title;
     QString creator;
     QString annotation;
-    KUrl info;
-    KUrl image;
+    QUrl info;
+    QUrl image;
     QString album;
     uint trackNum;
     uint duration;
-    KUrl link;
+    QUrl link;
 };
 
 typedef QList<XSPFTrack> XSPFTrackList;
@@ -63,7 +63,7 @@ public:
      * @param onLoad Should this playlist automatically append itself to the playlist when loaded (useful when loading a remote url as it
      * allows the caller to do it in a "one shot" way and not have to worry about waiting untill download and parsing is completed.
      */
-    explicit XSPFPlaylist( const KUrl &url, PlaylistProvider *provider = 0, OnLoadAction onLoad = NoAction );
+    explicit XSPFPlaylist( const QUrl &url, PlaylistProvider *provider = 0, OnLoadAction onLoad = NoAction );
 
     ~XSPFPlaylist();
 
@@ -73,27 +73,27 @@ public:
     QString title() const;
     QString creator() const;
     QString annotation() const;
-    KUrl info() const;
-    KUrl location() const;
+    QUrl info() const;
+    QUrl location() const;
     QString identifier() const;
-    KUrl image() const;
+    QUrl image() const;
     QDateTime date() const;
-    KUrl license() const;
-    KUrl::List attribution() const;
-    KUrl link() const;
+    QUrl license() const;
+    QList<QUrl> attribution() const;
+    QUrl link() const;
 
     /* Extra XSPF setter methods: */
     void setTitle( const QString &title );
     void setCreator( const QString &creator );
     void setAnnotation( const QString &annotation );
-    void setInfo( const KUrl &info );
-    void setLocation( const KUrl &location );
+    void setInfo( const QUrl &info );
+    void setLocation( const QUrl &location );
     void setIdentifier( const QString &identifier );
-    void setImage( const KUrl &image );
+    void setImage( const QUrl &image );
     void setDate( const QDateTime &date );
-    void setLicense( const KUrl &license );
-    void setAttribution( const KUrl &attribution, bool append = true );
-    void setLink( const KUrl &link );
+    void setLicense( const QUrl &license );
+    void setAttribution( const QUrl &attribution, bool append = true );
+    void setLink( const QUrl &link );
     void setTrackList( Meta::TrackList trackList, bool append = false );
 
     /* PlaylistFile methods */

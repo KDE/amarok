@@ -41,7 +41,7 @@ class CoverGridApplet : public Context::Applet
         void init();
         bool hasHeightForWidth() const;
 
-    public slots:
+    public Q_SLOTS:
         void slotAlbumQueryResult( Meta::AlbumList albums);
         void saveSettings();
 

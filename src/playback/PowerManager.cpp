@@ -20,22 +20,30 @@
 
 #include "amarokconfig.h"
 #include "App.h"
+#include "Debug.h"
 #include "EngineController.h"
 
-#include <Solid/PowerManagement>
-
 #include <QAction>
+#include <QDBusConnection>
+#include <QDBusInterface>
+
+#include <KLocalizedString>
 
 PowerManager::PowerManager( EngineController *engine )
     : QObject( engine )
     , m_inhibitionCookie( -1 )
 {
-    connect( engine, SIGNAL(stopped(qint64,qint64)), this, SLOT(slotNotPlaying()) );
-    connect( engine, SIGNAL(paused()), this, SLOT(slotNotPlaying()) );
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)), this, SLOT(slotPlaying()) );
-    connect( App::instance(), SIGNAL(settingsChanged()), SLOT(slotSettingsChanged()) );
-    connect( Solid::PowerManagement::notifier(), SIGNAL(resumingFromSuspend()),
-            this, SLOT(slotResumingFromSuspend()) );
+    connect( engine, &EngineController::stopped, this, &PowerManager::slotNotPlaying );
+    connect( engine, &EngineController::paused, this, &PowerManager::slotNotPlaying );
+    connect( engine, &EngineController::trackPlaying, this, &PowerManager::slotPlaying );
+    connect( pApp, &App::settingsChanged, this, &PowerManager::slotSettingsChanged );
+
+    // TODO: Port this to the new Solid API when that is ready
+    QDBusConnection::systemBus().connect( QStringLiteral("org.freedesktop.login1"),
+                                          QStringLiteral("/org/freedesktop/login1"),
+                                          QStringLiteral("org.freedesktop.login1.Manager"),
+                                          QStringLiteral("PrepareForSleep"),
+                                          this, SLOT( slotHandleSuspend() ) );
 }
 
 PowerManager::~PowerManager()
@@ -57,8 +65,10 @@ PowerManager::slotPlaying()
 }
 
 void
-PowerManager::slotResumingFromSuspend()
+PowerManager::slotHandleSuspend()
 {
+    DEBUG_BLOCK
+
     if( AmarokConfig::pauseOnSuspend() && The::engineController()->isPlaying() )
         The::engineController()->playPause();
 }
@@ -75,8 +85,9 @@ PowerManager::slotSettingsChanged()
 void
 PowerManager::startInhibitingSuspend()
 {
-    if( m_inhibitionCookie == -1 )
-        m_inhibitionCookie = Solid::PowerManagement::beginSuppressingSleep( i18n( "Amarok is currently playing a track" ) );
+    // TODO: Port this to the new Solid API when that is ready
+//     if( m_inhibitionCookie == -1 )
+//         m_inhibitionCookie = Solid::PowerManagement::beginSuppressingSleep( i18n( "Amarok is currently playing a track" ) );
 }
 
 void
@@ -84,7 +95,8 @@ PowerManager::stopInhibitingSuspend()
 {
     if( m_inhibitionCookie != -1 )
     {
-        Solid::PowerManagement::stopSuppressingSleep( m_inhibitionCookie );
-        m_inhibitionCookie = -1;
+        // TODO: Port this to the new Solid API when that is ready
+//         Solid::PowerManagement::stopSuppressingSleep( m_inhibitionCookie );
+//         m_inhibitionCookie = -1;
     }
 }

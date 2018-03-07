@@ -26,6 +26,7 @@
 #include "MainWindow.h"
 #include "amarokurls/BookmarkMetaActions.h"
 #include "amarokurls/PlayUrlRunner.h"
+#include "browsers/BrowserDock.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
@@ -37,13 +38,13 @@
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/support/UrlStatisticsStore.h"
 
-#include <KMimeType>
-
 #include <QAction>
 #include <QFileInfo>
 #include <QList>
 #include <QWeakPointer>
 #include <QString>
+#include <QMimeDatabase>
+#include <QMimeType>
 
 using namespace MetaFile;
 
@@ -68,7 +69,7 @@ class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
     }
 
     private:
-        KSharedPtr<MetaFile::Track> m_track;
+        AmarokSharedPointer<MetaFile::Track> m_track;
 };
 
 class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
@@ -93,7 +94,7 @@ class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
         }
 
     private:
-        KSharedPtr<MetaFile::Track> m_track;
+        AmarokSharedPointer<MetaFile::Track> m_track;
 };
 
 
@@ -122,18 +123,18 @@ public:
             if( fileBrowser )
             {
                 //get the path of the parent directory of the file
-                KUrl playableUrl = m_track->playableUrl();
-                fileBrowser->setDir( playableUrl.directory() );       
+                QUrl playableUrl = m_track->playableUrl();
+                fileBrowser->setDir( playableUrl.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash) );       
             }
         }
     }
 
 private:
-    KSharedPtr<MetaFile::Track> m_track;
+    AmarokSharedPointer<MetaFile::Track> m_track;
 };
 
 
-Track::Track( const KUrl &url )
+Track::Track( const QUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
@@ -163,7 +164,7 @@ Track::name() const
     return "This is a bug!";
 }
 
-KUrl
+QUrl
 Track::playableUrl() const
 {
     return d->url;
@@ -197,7 +198,7 @@ Track::notPlayableReason() const
 bool
 Track::isEditable() const
 {
-    QFileInfo info = QFileInfo( playableUrl().pathOrUrl() );
+    QFileInfo info = QFileInfo( playableUrl().toLocalFile() );
     return info.isFile() && info.isWritable();
 }
 
@@ -402,7 +403,7 @@ Track::type() const
 }
 
 bool
-Track::isTrack( const KUrl &url )
+Track::isTrack( const QUrl &url )
 {
     // some playlists lay under audio/ mime category, filter them
     if( Playlists::isPlaylist( url ) )
@@ -419,9 +420,9 @@ Track::isTrack( const KUrl &url )
     // We can't play directories
     if( fileInfo.isDir() )
         return false;
-
-    const KMimeType::Ptr mimeType = KMimeType::findByPath( url.toLocalFile() );
-    const QString name = mimeType->name();
+    QMimeDatabase db;
+    const QMimeType mimeType = db.mimeTypeForFile( url.toLocalFile() );
+    const QString name = mimeType.name();
     return name.startsWith( "audio/" ) || name.startsWith( "video/" );
 }
 
@@ -591,5 +592,3 @@ Track::commitIfInNonBatchUpdate()
     notifyObservers();
     d->lock.lockForWrite(); // return to original state
 }
-
-#include "File_p.moc"

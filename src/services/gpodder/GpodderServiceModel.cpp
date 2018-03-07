@@ -24,10 +24,9 @@
 #include "GpodderServiceSettings.h"
 #include "GpodderTagTreeItem.h"
 
-#include <Solid/Networking>
-
 #include <QEventLoop>
 #include <QList>
+#include <QNetworkConfigurationManager>
 #include <QTimer>
 
 static const int s_numberItemsToLoad = 100;
@@ -175,7 +174,7 @@ GpodderServiceModel::topTagsRequestError( QNetworkReply::NetworkError error )
 
     debug() << "Error in TopTags request: " << error;
 
-    QTimer::singleShot( 20000, this, SLOT(requestTopTags()) );
+    QTimer::singleShot( 20000, this, &GpodderServiceModel::requestTopTags );
 }
 
 void
@@ -185,7 +184,7 @@ GpodderServiceModel::topTagsParseError()
 
     debug() << "Error while parsing TopTags";
 
-    QTimer::singleShot( 20000, this, SLOT(requestTopTags()) );
+    QTimer::singleShot( 20000, this, &GpodderServiceModel::requestTopTags );
 }
 
 void
@@ -195,7 +194,7 @@ GpodderServiceModel::topPodcastsRequestError( QNetworkReply::NetworkError error 
 
     debug() << "Error in TopPodcasts request: " << error;
 
-    QTimer::singleShot( 20000, this, SLOT(requestTopPodcasts()) );
+    QTimer::singleShot( 20000, this, &GpodderServiceModel::requestTopPodcasts );
 }
 
 void
@@ -205,7 +204,7 @@ GpodderServiceModel::topPodcastsParseError()
 
     debug() << "Error while parsing TopPodcasts";
 
-    QTimer::singleShot( 20000, this, SLOT(requestTopPodcasts()) );
+    QTimer::singleShot( 20000, this, &GpodderServiceModel::requestTopPodcasts );
 }
 
 void
@@ -215,7 +214,7 @@ GpodderServiceModel::suggestedPodcastsRequestError( QNetworkReply::NetworkError 
 
     debug() << "Error in suggestedPodcasts request: " << error;
 
-    QTimer::singleShot( 20000, this, SLOT(requestSuggestedPodcasts()) );
+    QTimer::singleShot( 20000, this, &GpodderServiceModel::requestSuggestedPodcasts );
 }
 
 void
@@ -225,7 +224,7 @@ GpodderServiceModel::suggestedPodcastsParseError()
 
     debug() << "Error while parsing suggestedPodcasts";
 
-    QTimer::singleShot( 20000, this, SLOT(requestSuggestedPodcasts()) );
+    QTimer::singleShot( 20000, this, &GpodderServiceModel::requestSuggestedPodcasts );
 }
 
 void
@@ -291,7 +290,7 @@ GpodderServiceModel::canFetchMore( const QModelIndex &parent ) const
 
     if( qobject_cast<GpodderTagTreeItem*>( treeItem ) )
     {
-        if( Solid::Networking::status() == Solid::Networking::Unconnected )
+        if( !QNetworkConfigurationManager().isOnline() )
             return false;
 
         return true;
@@ -334,7 +333,7 @@ GpodderServiceModel::fetchMore( const QModelIndex &parent )
 void
 GpodderServiceModel::requestTopTags()
 {
-    if( Solid::Networking::status() == Solid::Networking::Unconnected )
+    if( !QNetworkConfigurationManager().isOnline() )
     {
         QTimer::singleShot( 10000, this, SLOT(requestTopTags()) );
         return;
@@ -352,7 +351,7 @@ GpodderServiceModel::requestTopTags()
 void
 GpodderServiceModel::requestTopPodcasts()
 {
-    if( Solid::Networking::status() == Solid::Networking::Unconnected )
+    if( !QNetworkConfigurationManager().isOnline() )
     {
         QTimer::singleShot( 10000, this, SLOT(requestTopPodcasts()) );
         return;
@@ -374,7 +373,7 @@ GpodderServiceModel::requestTopPodcasts()
 void
 GpodderServiceModel::requestSuggestedPodcasts()
 {
-    if( Solid::Networking::status() == Solid::Networking::Unconnected )
+    if( !QNetworkConfigurationManager().isOnline() )
     {
         QTimer::singleShot( 10000, this, SLOT(requestSuggestedPodcasts()) );
         return;

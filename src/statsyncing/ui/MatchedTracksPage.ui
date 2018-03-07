@@ -24,8 +24,8 @@
        <item>
         <layout class="QHBoxLayout" name="matchedFilterLayout">
          <item>
-          <widget class="KLineEdit" name="matchedFilterLine">
-           <property name="clickMessage">
+          <widget class="QLineEdit" name="matchedFilterLine">
+           <property name="placeholderText">
             <string>Filter Tracks...</string>
            </property>
            <property name="showClearButton" stdset="0">
@@ -155,8 +155,8 @@
        <item>
         <layout class="QHBoxLayout" name="uniqueFilterLayout">
          <item>
-          <widget class="KLineEdit" name="uniqueFilterLine">
-           <property name="clickMessage">
+          <widget class="QLineEdit" name="uniqueFilterLine">
+           <property name="placeholderText">
             <string>Filter Tracks...</string>
            </property>
            <property name="showClearButton" stdset="0">
@@ -211,8 +211,8 @@
        <item>
         <layout class="QHBoxLayout" name="excludedFilterLayout">
          <item>
-          <widget class="KLineEdit" name="excludedFilterLine">
-           <property name="clickMessage">
+          <widget class="QLineEdit" name="excludedFilterLine">
+           <property name="placeholderText">
             <string>Filter Tracks...</string>
            </property>
            <property name="showClearButton" stdset="0">
@@ -278,7 +278,7 @@
     </widget>
    </item>
    <item>
-    <widget class="KDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel</set>
      </property>
@@ -288,14 +288,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KDialogButtonBox</class>
+   <class>QDialogButtonBox</class>
    <extends>QDialogButtonBox</extends>
-   <header>kdialogbuttonbox.h</header>
+   <header>qdialogbuttonbox.h</header>
   </customwidget>
   <customwidget>
-   <class>KLineEdit</class>
+   <class>QLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
+   <header>qlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>KSeparator</class>

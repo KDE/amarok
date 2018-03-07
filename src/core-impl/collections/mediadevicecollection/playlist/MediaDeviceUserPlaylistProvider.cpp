@@ -29,9 +29,9 @@
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KIcon>
-#include <KInputDialog>
-#include <KUrl>
+#include <QIcon>
+#include <QInputDialog>
+#include <QUrl>
 
 #include <QMap>
 
@@ -160,4 +160,3 @@ MediaDeviceUserPlaylistProvider::removePlaylist( Playlists::MediaDevicePlaylistP
 
 } //namespace Playlists
 
-#include "MediaDeviceUserPlaylistProvider.moc"

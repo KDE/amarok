@@ -1,8 +1,3 @@
-include_directories(
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES}
-)
-
 set( amarok_importer-amarok_PART_SRCS
     AmarokConfigWidget.cpp
     AmarokManager.cpp
@@ -11,17 +6,17 @@ set( amarok_importer-amarok_PART_SRCS
     AmarokTrack.cpp
 )
 
-kde4_add_ui_files( amarok_importer-amarok_PART_SRCS AmarokConfigWidget.ui )
+ki18n_wrap_ui( amarok_importer-amarok_PART_SRCS AmarokConfigWidget.ui )
 
-kde4_add_plugin( amarok_importer-amarok ${amarok_importer-amarok_PART_SRCS} )
+add_library(amarok_importer-amarok MODULE ${amarok_importer-amarok_PART_SRCS} )
 
 target_link_libraries( amarok_importer-amarok
     amarokcore
     amaroklib
-    ${KDE4_KIO_LIBS}
-    ${QT_QTSQL_LIBRARY}
+    KF5::KIOCore
+    Qt5::Sql
 )
 
 install( TARGETS amarok_importer-amarok DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-install( FILES amarok_importer-amarok.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+kcoreaddons_desktop_to_json(amarok_importer-amarok amarok_importer-amarok.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

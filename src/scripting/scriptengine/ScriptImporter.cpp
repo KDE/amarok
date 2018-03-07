@@ -25,13 +25,14 @@
 #include "AmarokPlaylistManagerScript.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
-#include <KUrl>
+#include <KIO/Global>
 
 #include <QSet>
+#include <QUrl>
 
 using namespace AmarokScript;
 
-ScriptImporter::ScriptImporter( AmarokScriptEngine *scriptEngine, const KUrl &url )
+ScriptImporter::ScriptImporter( AmarokScriptEngine *scriptEngine, const QUrl &url )
     : QObject( scriptEngine )
     , m_scriptUrl( url )
     , m_scriptEngine( scriptEngine )
@@ -51,31 +52,18 @@ ScriptImporter::loadExtension( const QString& src )
 bool
 ScriptImporter::loadQtBinding( const QString& binding )
 {
-    QStringList availableBindings = m_scriptEngine->availableExtensions();
-    if( availableBindings.contains( binding ) )
-    {
-        if( !m_importedBindings.contains( binding ) )
-        {
-            if( m_scriptEngine->importExtension( binding ).isUndefined() )
-            { // undefined indicates success
-                m_importedBindings << binding;
-                return true;
-            }
-            //else fall through and return false
-        }
-        else
-            return true;
-    }
-    else
-        warning() << __PRETTY_FUNCTION__ << "Binding \"" << binding << "\" could not be found!";
+    Q_UNUSED( binding )
+
+    error() << __PRETTY_FUNCTION__ << "Loading Qt bindings in scripts not available in Qt5!";
     return false;
 }
 
 bool
 ScriptImporter::include( const QString& relativeFilename )
 {
-    KUrl includeUrl = m_scriptUrl.upUrl();
-    includeUrl.addPath( relativeFilename );
+    QUrl includeUrl = KIO::upUrl(m_scriptUrl);
+    includeUrl = includeUrl.adjusted(QUrl::StripTrailingSlash);
+    includeUrl.setPath(includeUrl.path() + '/' + ( relativeFilename ));
     QFile file( includeUrl.toLocalFile() );
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {

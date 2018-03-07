@@ -17,6 +17,7 @@
 #include "MetadataConfig.h"
 
 #include "amarokconfig.h"
+#include "configdialog/ConfigDialog.h"
 #include "configdialog/dialogs/ExcludedLabelsDialog.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Components.h"
@@ -26,10 +27,11 @@
 
 #include "MetaValues.h"
 
-MetadataConfig::MetadataConfig( QWidget *parent )
+MetadataConfig::MetadataConfig( Amarok2ConfigDialog *parent )
     : ConfigDialogBase( parent )
 {
-    connect( this, SIGNAL(changed()), parent, SLOT(updateButtons()) );
+    connect( this, &MetadataConfig::changed,
+             parent, &Amarok2ConfigDialog::updateButtons );
 
     setupUi( this );
 
@@ -54,41 +56,43 @@ MetadataConfig::MetadataConfig( QWidget *parent )
         m_writeBackCoverDimensions->setCurrentIndex( 1 ); // medium
     m_writeBackCoverDimensions->setEnabled( m_writeBackCover->isEnabled() && m_writeBackCover->isChecked() );
     m_useCharsetDetector->setChecked( AmarokConfig::useCharsetDetector() );
-    connect( m_writeBack, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
-    connect( m_writeBackStatistics, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
-    connect( m_writeBackCover, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
-    connect( m_writeBackCoverDimensions, SIGNAL(currentIndexChanged(int)), this, SIGNAL(changed()) );
-    connect( m_useCharsetDetector, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
+    connect( m_writeBack, &QCheckBox::toggled, this, &MetadataConfig::changed );
+    connect( m_writeBackStatistics, &QCheckBox::toggled, this, &MetadataConfig::changed );
+    connect( m_writeBackCover, &QCheckBox::toggled, this, &MetadataConfig::changed );
+    connect( m_writeBackCoverDimensions, QOverload<int>::of(&KComboBox::currentIndexChanged),
+             this, &MetadataConfig::changed );
+    connect( m_useCharsetDetector, &QCheckBox::toggled, this, &MetadataConfig::changed );
 
     StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
     StatSyncing::Config *config = controller ? controller->config() : 0;
     m_statSyncingConfig = config;
     m_statSyncingProvidersView->setModel( config );
-    m_synchronizeButton->setIcon( KIcon( "amarok_playcount" ) );
-    m_configureTargetButton->setIcon( KIcon( "configure" ) );
-    connect( config, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SIGNAL(changed()) );
-    connect( config, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(changed()) );
-    connect( config, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(changed()) );
-    connect( config, SIGNAL(modelReset()), SIGNAL(changed()) );
+    m_synchronizeButton->setIcon( QIcon::fromTheme( "amarok_playcount" ) );
+    m_configureTargetButton->setIcon( QIcon::fromTheme( "configure" ) );
+    connect( config, &StatSyncing::Config::dataChanged, this, &MetadataConfig::changed );
+    connect( config, &StatSyncing::Config::rowsInserted, this, &MetadataConfig::changed );
+    connect( config, &StatSyncing::Config::rowsRemoved, this, &MetadataConfig::changed );
+    connect( config, &StatSyncing::Config::modelReset, this, &MetadataConfig::changed );
 
     // Add target button
     m_addTargetButton->setEnabled( controller && controller->hasProviderFactories() );
-    connect( m_addTargetButton, SIGNAL(clicked(bool)), SLOT(slotCreateProviderDialog()) );
+    connect( m_addTargetButton, &QAbstractButton::clicked, this, &MetadataConfig::slotCreateProviderDialog );
 
     // Configure target button
     m_configureTargetButton->setEnabled( false );
-    connect( m_statSyncingProvidersView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-             SLOT(slotUpdateProviderConfigureButton()) );
-    connect( m_configureTargetButton, SIGNAL(clicked(bool)), SLOT(slotConfigureProvider()) );
+    connect( m_statSyncingProvidersView->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &MetadataConfig::slotUpdateProviderConfigureButton );
+    connect( m_configureTargetButton, &QAbstractButton::clicked, this, &MetadataConfig::slotConfigureProvider );
 
     // Forget target button
-    connect( m_statSyncingProvidersView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-             SLOT(slotUpdateForgetButton()) );
-    connect( m_forgetTargetsButton, SIGNAL(clicked(bool)), SLOT(slotForgetCollections()) );
+    connect( m_statSyncingProvidersView->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &MetadataConfig::slotUpdateForgetButton );
+    connect( m_forgetTargetsButton, &QAbstractButton::clicked, this, &MetadataConfig::slotForgetCollections );
 
     // Synchronize button
     if( controller )
-        connect( m_synchronizeButton, SIGNAL(clicked(bool)), controller, SLOT(synchronize()) );
+        connect( m_synchronizeButton, &QAbstractButton::clicked,
+                 controller, &StatSyncing::Controller::synchronize );
     else
         m_synchronizeButton->setEnabled( false );
 
@@ -123,8 +127,8 @@ MetadataConfig::MetadataConfig( QWidget *parent )
             QHBoxLayout *lineLayout = new QHBoxLayout();
             QLabel *button = new QLabel();
             button->setObjectName( "configureLabelExceptions" );
-            connect( button, SIGNAL(linkActivated(QString)),
-                     SLOT(slotConfigureExcludedLabels()) );
+            connect( button, &QLabel::linkActivated,
+                     this, &MetadataConfig::slotConfigureExcludedLabels );
 
             lineLayout->addWidget( checkBox );
             lineLayout->addWidget( button );
@@ -139,14 +143,17 @@ MetadataConfig::MetadataConfig( QWidget *parent )
         }
         checkBox->setCheckState( ( field & checkedFields ) ? Qt::Checked : Qt::Unchecked );
         checkBox->setProperty( "field", field );
-        connect( checkBox, SIGNAL(stateChanged(int)), SIGNAL(changed()) );
+        connect( checkBox, &QCheckBox::stateChanged, this, &MetadataConfig::changed );
     }
 }
 
 MetadataConfig::~MetadataConfig()
 {
     if( m_statSyncingConfig )
+    {
+        disconnect( this, &MetadataConfig::changed, 0, 0 );
         m_statSyncingConfig.data()->read(); // reset unsaved changes
+    }
 }
 
 bool
@@ -169,8 +176,8 @@ MetadataConfig::hasChanged()
         m_writeBackCover->isChecked() != AmarokConfig::writeBackCover() ||
         writeBackCoverDimensions() != AmarokConfig::writeBackCoverDimensions() ||
         m_useCharsetDetector->isChecked() != AmarokConfig::useCharsetDetector() ||
-        ( m_statSyncingConfig.data() ? ( checkedFields() != m_statSyncingConfig.data()->checkedFields() ) : false ) ||
-        ( m_statSyncingConfig.data() ? m_statSyncingConfig.data()->hasChanged() : false );
+        ( m_statSyncingConfig.data() ? ( checkedFields() != m_statSyncingConfig->checkedFields() ) : false ) ||
+        ( m_statSyncingConfig.data() ? m_statSyncingConfig->hasChanged() : false );
 }
 
 void
@@ -184,8 +191,8 @@ MetadataConfig::updateSettings()
     AmarokConfig::setUseCharsetDetector( m_useCharsetDetector->isChecked() );
     if( m_statSyncingConfig )
     {
-        m_statSyncingConfig.data()->setCheckedFields( checkedFields() );
-        m_statSyncingConfig.data()->save();
+        m_statSyncingConfig->setCheckedFields( checkedFields() );
+        m_statSyncingConfig->save();
     }
 }
 
@@ -197,7 +204,7 @@ MetadataConfig::slotForgetCollections()
     foreach( const QModelIndex &idx, m_statSyncingProvidersView->selectionModel()->selectedIndexes() )
     {
         QString id = idx.data( StatSyncing::Config::ProviderIdRole ).toString();
-        m_statSyncingConfig.data()->forgetProvider( id );
+        m_statSyncingConfig->forgetProvider( id );
     }
 }
 
@@ -218,7 +225,7 @@ MetadataConfig::slotUpdateConfigureExcludedLabelsLabel()
         warning() << __PRETTY_FUNCTION__ << "label or m_statSyncingConfig is null!";
         return;
     }
-    int exceptions = m_statSyncingConfig.data()->excludedLabels().count();
+    int exceptions = m_statSyncingConfig->excludedLabels().count();
     QString begin = "<a href='dummy'>";
     QString end = "</a>";
     label->setText( i18np( "(%2one exception%3)", "(%2%1 exceptions%3)", exceptions,

@@ -32,7 +32,7 @@ class TransferDialog;
 /**
 	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
 */
-class AMAROK_EXPORT TransferDialog : public KDialog
+class AMAROK_EXPORT TransferDialog : public QDialog
 {
     Q_OBJECT
 
@@ -42,13 +42,13 @@ class AMAROK_EXPORT TransferDialog : public KDialog
 
         bool isAccepted() { return m_accepted; }
 
-    private slots:
+    private Q_SLOTS:
         void slotOk();
         void slotCancel();
         void sort1_activated( int index );
         void sort2_activated( int index );
         void convertSpaces_toggled( bool on );
-
+    
     private:
         MediaDevice                     *m_dev;
         bool                             m_accepted;

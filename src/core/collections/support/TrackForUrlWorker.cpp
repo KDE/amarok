@@ -18,18 +18,20 @@
 
 #include "core/meta/Meta.h"
 
-Amarok::TrackForUrlWorker::TrackForUrlWorker( const KUrl &url )
-    : ThreadWeaver::Job()
+Amarok::TrackForUrlWorker::TrackForUrlWorker( const QUrl &url )
+    : QObject()
+    , ThreadWeaver::Job()
     , m_url( url )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &TrackForUrlWorker::done, &TrackForUrlWorker::completeJob );
 }
 
 Amarok::TrackForUrlWorker::TrackForUrlWorker( const QString &url )
-    : ThreadWeaver::Job()
-    , m_url( KUrl( url ) )
+    : QObject()
+    , ThreadWeaver::Job()
+    , m_url( QUrl( url ) )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &TrackForUrlWorker::done, &TrackForUrlWorker::completeJob );
 }
 
 Amarok::TrackForUrlWorker::~TrackForUrlWorker()
@@ -39,5 +41,5 @@ void
 Amarok::TrackForUrlWorker::completeJob()
 {
     emit finishedLookup( m_track );
-    deleteLater();
+//     deleteLater();
 }

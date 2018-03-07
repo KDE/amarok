@@ -19,6 +19,7 @@
 #include "MainWindow.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrlHandler.h"
+#include "browsers/BrowserDock.h"
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
@@ -107,7 +108,7 @@ NavigationUrlRunner::run( AmarokUrl url )
         {
             if( args.keys().contains( "path" ) )
             {
-                fileBrowser->setDir( args.value( "path" ) );
+                fileBrowser->setDir( QUrl::fromUserInput(args.value( "path" )) );
             }
         }
     }
@@ -130,9 +131,9 @@ QString NavigationUrlRunner::prettyCommand() const
     return i18nc( "A type of command that affects the view in the browser category", "Navigate" );
 }
 
-KIcon NavigationUrlRunner::icon() const
+QIcon NavigationUrlRunner::icon() const
 {
-    return KIcon( "flag-amarok" );
+    return QIcon::fromTheme( "flag-amarok" );
 }
 
 

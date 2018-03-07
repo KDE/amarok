@@ -93,8 +93,8 @@ BiasSolver::BiasSolver( int n, BiasPtr bias, Meta::TrackList context )
 
     getTrackCollection();
 
-    connect( m_bias.data(), SIGNAL(resultReady(Dynamic::TrackSet)),
-             this,  SLOT(biasResultReady(Dynamic::TrackSet)) );
+    connect( m_bias.data(), &Dynamic::AbstractBias::resultReady,
+             this, &BiasSolver::biasResultReady );
 }
 
 
@@ -125,18 +125,20 @@ BiasSolver::setAutoDelete( bool autoDelete )
     {
         if( isFinished() )
             deleteLater();
-        connect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
+        connect( this, &BiasSolver::done, this, &BiasSolver::deleteLater );
     }
     else
     {
-        disconnect( this, SIGNAL(done(ThreadWeaver::Job*)), this, SLOT(deleteLater()) );
+        disconnect( this, &BiasSolver::done, this, &BiasSolver::deleteLater );
     }
 }
 
 
 void
-BiasSolver::run()
+BiasSolver::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread )
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
 
     debug() << "BiasSolver::run in thread:" << QThread::currentThreadId();
@@ -159,7 +161,25 @@ BiasSolver::run()
     debug() << "found solution"<<list.m_trackList.count()<<"time"<< m_startTime.msecsTo( QDateTime::currentDateTime() );
 
     m_solution = list.m_trackList.mid( m_context.count() );
-    setFinished( true );
+//    setFinished( true );
+    setStatus(Status_Success);
+}
+
+void
+BiasSolver::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+BiasSolver::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void
@@ -232,7 +252,7 @@ BiasSolver::getRandomTrack( const TrackSet& subset ) const
 Meta::TrackPtr
 BiasSolver::trackForUid( const QString& uid ) const
 {
-    const KUrl url( uid );
+    const QUrl url( uid );
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
     if( !track )
@@ -307,10 +327,10 @@ BiasSolver::getTrackCollection()
     qm->addReturnValue( Meta::valUniqueId );
     qm->setAutoDelete( true );
 
-    connect( qm, SIGNAL(newResultReady(QStringList)),
-             this, SLOT(trackCollectionResultsReady(QStringList)) );
-    connect( qm, SIGNAL(queryDone()),
-             this, SLOT(trackCollectionDone()) );
+    connect( qm, &Collections::QueryMaker::newResultReady,
+             this, &BiasSolver::trackCollectionResultsReady );
+    connect( qm, &Collections::QueryMaker::queryDone,
+             this, &BiasSolver::trackCollectionDone );
 
     qm->run();
 }

@@ -30,7 +30,7 @@ class AMAROK_EXPORT BookmarkAlbumAction : public QAction
 public:
     BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album );
 
-    private slots:
+    private Q_SLOTS:
         void slotTriggered();
 
     private:
@@ -45,7 +45,7 @@ class AMAROK_EXPORT BookmarkArtistAction : public QAction
     public:
         BookmarkArtistAction( QObject *parent, Meta::ArtistPtr artist );
 
-    private slots:
+    private Q_SLOTS:
         void slotTriggered();
 
     private:
@@ -60,7 +60,7 @@ class AMAROK_EXPORT BookmarkCurrentTrackPositionAction : public QAction
     public:
         explicit BookmarkCurrentTrackPositionAction( QObject *parent );
 
-    private slots:
+    private Q_SLOTS:
         void slotTriggered();
 };
 

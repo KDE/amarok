@@ -23,8 +23,8 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <KLocale>
-#include <KStandardDirs>
+#include <KLocalizedString>
+#include <QStandardPaths>
 
 #include <QDomDocument>
 #include <QDomNode>
@@ -139,7 +139,7 @@ Dynamic::LastFmBias::widget( QWidget* parent )
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
     QLabel *imageLabel = new QLabel();
-    imageLabel->setPixmap( QPixmap( KStandardDirs::locate( "data", "amarok/images/lastfm.png" ) ) );
+    imageLabel->setPixmap( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/lastfm.png" ) ) );
     QLabel *label = new QLabel( i18n( "<a href=\"http://www.last.fm/\">Last.fm</a> thinks the track is similar to" ) );
 
     QRadioButton *rb1 = new QRadioButton( i18n( "the previous track's artist" ) );
@@ -148,8 +148,8 @@ Dynamic::LastFmBias::widget( QWidget* parent )
     rb1->setChecked( m_match == SimilarArtist );
     rb2->setChecked( m_match == SimilarTrack );
 
-    connect( rb1, SIGNAL(toggled(bool)),
-             this, SLOT(setMatchTypeArtist(bool)) );
+    connect( rb1, &QRadioButton::toggled,
+             this, &LastFmBias::setMatchTypeArtist );
 
     layout->addWidget( imageLabel );
     layout->addWidget( label );
@@ -200,7 +200,7 @@ Dynamic::LastFmBias::matchingTracks( const Meta::TrackList& playlist,
     m_tracks = Dynamic::TrackSet( universe, false );
     QTimer::singleShot(0,
                        const_cast<LastFmBias*>(this),
-                       SLOT(newQuery())); // create the new query from my parent thread
+                       &LastFmBias::newQuery); // create the new query from my parent thread
 
     return Dynamic::TrackSet();
 }
@@ -337,13 +337,13 @@ Dynamic::LastFmBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
-             this, SLOT(updateReady(QStringList)) );
-    connect( m_qm.data(), SIGNAL(queryDone()),
-             this, SLOT(updateFinished()) );
+    connect( m_qm.data(), &Collections::QueryMaker::newResultReady,
+             this, &LastFmBias::updateReady );
+    connect( m_qm.data(), &Collections::QueryMaker::queryDone,
+             this, &LastFmBias::updateFinished );
 
     // - run the query
-    m_qm.data()->run();
+    m_qm->run();
 }
 
 
@@ -358,8 +358,8 @@ void Dynamic::LastFmBias::newSimilarQuery()
         params[ "method" ] = "artist.getSimilar";
         params[ "artist" ] = m_currentArtist;
         QNetworkReply* request = lastfm::ws::get( params );
-        connect( request, SIGNAL(finished()),
-                 this, SLOT(similarArtistQueryDone()) );
+        connect( request, &QNetworkReply::finished,
+                 this, &LastFmBias::similarArtistQueryDone );
     }
     else if( m_match == SimilarTrack )
     {
@@ -369,8 +369,8 @@ void Dynamic::LastFmBias::newSimilarQuery()
         params[ "artist" ] = m_currentArtist;
         params[ "track" ] = m_currentTrack;
         QNetworkReply* request = lastfm::ws::get( params );
-        connect( request, SIGNAL(finished()),
-                 this, SLOT(similarTrackQueryDone()) );
+        connect( request, &QNetworkReply::finished,
+                 this, &LastFmBias::similarTrackQueryDone );
     }
 }
 
@@ -690,4 +690,3 @@ Dynamic::LastFmBias::matchForName( const QString &name )
 
 
 
-#include "LastFmBias.moc"

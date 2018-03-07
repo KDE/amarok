@@ -27,7 +27,7 @@
 namespace KWallet {
     class Wallet;
 }
-class KDialog;
+class QMessageBox;
 class LastFmServiceConfig;
 typedef QSharedPointer<LastFmServiceConfig> LastFmServiceConfigPtr;
 
@@ -93,13 +93,13 @@ public:
     static QString defaultFilteredLabel() { return QString(); }
     void setFilteredLabel( const QString &filteredLabel ) { m_filteredLabel = filteredLabel; }
 
-signals:
+Q_SIGNALS:
     /**
      * Emitted when settings are changed. (after save() is called)
      */
     void updated();
 
-private slots:
+private Q_SLOTS:
     void slotWalletOpenedToRead( bool success );
     void slotWalletOpenedToWrite( bool success );
 
@@ -134,7 +134,7 @@ private:
     QString m_filteredLabel;
     KWalletUsage m_kWalletUsage;
 
-    KDialog* m_askDiag;
+    QMessageBox* m_askDiag;
     KWallet::Wallet* m_wallet;
 
     static QWeakPointer<LastFmServiceConfig> s_instance;

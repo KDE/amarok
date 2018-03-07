@@ -23,11 +23,11 @@
 #include <QString>
 #include <QStringList>
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 namespace Playlists
 {
     class SqlPlaylistGroup;
-    typedef KSharedPtr<SqlPlaylistGroup> SqlPlaylistGroupPtr;
+    typedef AmarokSharedPointer<SqlPlaylistGroup> SqlPlaylistGroupPtr;
     typedef QList<SqlPlaylistGroupPtr> SqlPlaylistGroupList;
 
     /**

@@ -25,7 +25,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "AmarokMimeData.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QPainter>
 
@@ -42,16 +42,16 @@ LastFmTreeModel::LastFmTreeModel( QObject *parent )
 
     QNetworkReply *reply;
     reply = m_user.getNeighbours();
-    connect(reply, SIGNAL(finished()), this, SLOT(slotAddNeighbors()) );
+    connect(reply, &QNetworkReply::finished, this, &LastFmTreeModel::slotAddNeighbors );
 
     reply = m_user.getFriends();
-    connect( reply, SIGNAL(finished()), this, SLOT(slotAddFriends()) );
+    connect( reply, &QNetworkReply::finished, this, &LastFmTreeModel::slotAddFriends );
 
     reply = m_user.getTopTags();
-    connect( reply, SIGNAL(finished()), this, SLOT(slotAddTags()) );
+    connect( reply, &QNetworkReply::finished, this, &LastFmTreeModel::slotAddTags );
 
     reply = m_user.getTopArtists();
-    connect( reply, SIGNAL(finished()), this, SLOT(slotAddTopArtists()) );
+    connect( reply, &QNetworkReply::finished, this, &LastFmTreeModel::slotAddTopArtists );
 }
 
 LastFmTreeModel::~LastFmTreeModel()
@@ -84,7 +84,7 @@ LastFmTreeModel::slotAddNeighbors()
 
             LastFmTreeItem* neighbor = new LastFmTreeItem( mapTypeToUrl(LastFm::NeighborsChild, name),
                                                            LastFm::NeighborsChild, name, m_myNeighbors );
-            KUrl avatarUrl( e[ QLatin1String("image size=small") ].text() );
+            QUrl avatarUrl( e[ QLatin1String("image size=small") ].text() );
             if( !avatarUrl.isEmpty() )
                 neighbor->setAvatarUrl( avatarUrl );
 
@@ -128,7 +128,7 @@ LastFmTreeModel::slotAddFriends()
             LastFmTreeItem* afriend = new LastFmTreeItem( mapTypeToUrl(LastFm::FriendsChild, name),
                                                           LastFm::FriendsChild, name, m_myFriends );
 
-            KUrl avatarUrl( e[ QLatin1String("image size=small") ].text() );
+            QUrl avatarUrl( e[ QLatin1String("image size=small") ].text() );
             if( !avatarUrl.isEmpty() )
                 afriend->setAvatarUrl( avatarUrl );
 
@@ -311,9 +311,9 @@ LastFmTreeModel::onAvatarDownloaded( const QString &username, QPixmap avatar )
 }
 
 QIcon
-LastFmTreeModel::avatar( const QString &username, const KUrl &avatarUrl ) const
+LastFmTreeModel::avatar( const QString &username, const QUrl &avatarUrl ) const
 {
-    KIcon defaultIcon( "filename-artist-amarok" );
+    QIcon defaultIcon( "filename-artist-amarok" );
     if( username.isEmpty() )
         return defaultIcon;
     if( m_avatars.contains(username) )
@@ -325,8 +325,8 @@ LastFmTreeModel::avatar( const QString &username, const KUrl &avatarUrl ) const
     const_cast<LastFmTreeModel *>( this )->m_avatars.insert( username, defaultIcon );
     AvatarDownloader* downloader = new AvatarDownloader();
     downloader->downloadAvatar( username, avatarUrl );
-    connect( downloader, SIGNAL(avatarDownloaded(QString,QPixmap)),
-                         SLOT(onAvatarDownloaded(QString,QPixmap)) );
+    connect( downloader, &AvatarDownloader::avatarDownloaded,
+             this, &LastFmTreeModel::onAvatarDownloaded );
     return defaultIcon;
 }
 
@@ -390,69 +390,74 @@ LastFmTreeModel::data( const QModelIndex &index, int role ) const
         }
 
     if( role == Qt::DecorationRole )
+    {
         switch( i->type() )
         {
         case MyRecommendations:
-            return KIcon( "lastfm-recommended-radio-amarok" );
+            return QIcon::fromTheme( "lastfm-recommended-radio-amarok" );
         case TopArtists:
         case PersonalRadio:
-            return KIcon( "lastfm-personal-radio-amarok" );
+            return QIcon::fromTheme( "lastfm-personal-radio-amarok" );
         case MixRadio:
-            return KIcon( "lastfm-mix-radio-amarok" );
+            return QIcon::fromTheme( "lastfm-mix-radio-amarok" );
         case NeighborhoodRadio:
-            return KIcon( "lastfm-neighbour-radio-amarok" );
-            //             case RecentlyPlayed:      return KIcon( "lastfm-recent-tracks-amarok" );
-            //             case RecentlyLoved:       return KIcon( "lastfm-recently-loved-amarok" );
-            //             case RecentlyBanned:      return KIcon( "lastfm-recently-banned-amarok" );
+            return QIcon::fromTheme( "lastfm-neighbour-radio-amarok" );
+            //             case RecentlyPlayed:      return QIcon::fromTheme( "lastfm-recent-tracks-amarok" );
+            //             case RecentlyLoved:       return QIcon::fromTheme( "lastfm-recently-loved-amarok" );
+            //             case RecentlyBanned:      return QIcon::fromTheme( "lastfm-recently-banned-amarok" );
         case MyTags:
-            return KIcon( "lastfm-my-tags-amarok" );
+            return QIcon::fromTheme( "lastfm-my-tags-amarok" );
         case Friends:
-            return KIcon( "lastfm-my-friends-amarok" );
+            return QIcon::fromTheme( "lastfm-my-friends-amarok" );
         case Neighbors:
-            return KIcon( "lastfm-my-neighbours-amarok" );
+            return QIcon::fromTheme( "lastfm-my-neighbours-amarok" );
 
-        case RecentlyPlayedTrack: //FALL THROUGH
-        case RecentlyLovedTrack:  //FALL THROUGH
+        case RecentlyPlayedTrack:
+            Q_FALLTHROUGH();
+        case RecentlyLovedTrack:
+            Q_FALLTHROUGH();
         case RecentlyBannedTrack:
-            return KIcon( "icon_track" );
+            return QIcon::fromTheme( "icon_track" );
         case MyTagsChild:
-            return KIcon( "lastfm-tag-amarok" );
+            return QIcon::fromTheme( "lastfm-tag-amarok" );
 
         case FriendsChild:
             return avatar( i->data().toString(), i->avatarUrl() );
         case UserChildPersonal:
-            return KIcon( "lastfm-personal-radio-amarok" );
+            return QIcon::fromTheme( "lastfm-personal-radio-amarok" );
         case UserChildNeighborhood:
-            return KIcon( "lastfm-neighbour-radio-amarok" );
+            return QIcon::fromTheme( "lastfm-neighbour-radio-amarok" );
 
         case NeighborsChild:
             return avatar( i->data().toString(), i->avatarUrl() );
 
         case HistoryStation:
-            return KIcon( "icon_radio" );
+            return QIcon::fromTheme( "icon_radio" );
 
         default:
             break;
         }
+    }
 
     if( role == LastFm::TrackRole )
+    {
         switch( i->type() )
         {
-        case LastFm::MyRecommendations:
-        case LastFm::PersonalRadio:
-        case LastFm::MixRadio:
-        case LastFm::NeighborhoodRadio:
-        case LastFm::FriendsChild:
-        case LastFm::NeighborsChild:
-        case LastFm::MyTagsChild:
-        case LastFm::ArtistsChild:
-        case LastFm::UserChildPersonal:
-        case LastFm::UserChildNeighborhood:
-            return QVariant::fromValue( i->track() );
-        default:
-            break;
+            case LastFm::MyRecommendations:
+            case LastFm::PersonalRadio:
+            case LastFm::MixRadio:
+            case LastFm::NeighborhoodRadio:
+            case LastFm::FriendsChild:
+            case LastFm::NeighborsChild:
+            case LastFm::MyTagsChild:
+            case LastFm::ArtistsChild:
+            case LastFm::UserChildPersonal:
+            case LastFm::UserChildNeighborhood:
+                return QVariant::fromValue( i->track() );
+            default:
+                break;
         }
-
+    }
     if( role == LastFm::TypeRole )
         return i->type();
 
@@ -585,7 +590,7 @@ LastFmTreeModel::setupModelData( LastFmTreeItem *parent )
 QString
 LastFmTreeModel::mapTypeToUrl( LastFm::Type type, const QString &key )
 {
-    QString const encoded_username = KUrl::toPercentEncoding( m_user.name() );
+    QString const encoded_username = QUrl::toPercentEncoding( m_user.name() );
     switch( type )
     {
     case MyRecommendations:
@@ -597,17 +602,17 @@ LastFmTreeModel::mapTypeToUrl( LastFm::Type type, const QString &key )
     case NeighborhoodRadio:
         return "lastfm://user/" + encoded_username + "/neighbours";
     case MyTagsChild:
-        return "lastfm://usertags/" + encoded_username + "/" + KUrl::toPercentEncoding( key );
+        return "lastfm://usertags/" + encoded_username + "/" + QUrl::toPercentEncoding( key );
     case FriendsChild:
-        return "lastfm://user/" + KUrl::toPercentEncoding( key ) + "/personal";
+        return "lastfm://user/" + QUrl::toPercentEncoding( key ) + "/personal";
     case ArtistsChild:
-        return "lastfm://artist/" + KUrl::toPercentEncoding( key ) + "/similarartists";
+        return "lastfm://artist/" + QUrl::toPercentEncoding( key ) + "/similarartists";
     case NeighborsChild:
-        return "lastfm://user/" + KUrl::toPercentEncoding( key ) + "/personal";
+        return "lastfm://user/" + QUrl::toPercentEncoding( key ) + "/personal";
     case UserChildPersonal:
-        return "lastfm://user/" + KUrl::toPercentEncoding( key ) + "/personal";
+        return "lastfm://user/" + QUrl::toPercentEncoding( key ) + "/personal";
     case UserChildNeighborhood:
-        return "lastfm://user/" + KUrl::toPercentEncoding( key ) + "/neighbours";
+        return "lastfm://user/" + QUrl::toPercentEncoding( key ) + "/neighbours";
     default:
         return "";
     }
@@ -671,7 +676,7 @@ LastFmTreeItem::track() const
     if( mUrl.isEmpty() )
         return track;
 
-    KUrl url( mUrl );
+    QUrl url( mUrl );
     track = CollectionManager::instance()->trackForUrl( url );
 
     return track;

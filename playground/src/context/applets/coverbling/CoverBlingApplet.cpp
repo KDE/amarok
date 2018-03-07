@@ -33,7 +33,7 @@
 #include "SearchBarTextItem.h"
 #include "playlist/PlaylistController.h"
 
-#include <KAction>
+#include <QAction>
 #include <KColorScheme>
 #include <KConfigDialog>
 #include <KGlobalSettings>
@@ -482,5 +482,4 @@ void CoverBlingApplet::displaySearchName()
 	else
 		m_editsearch->setPlainText( artist_search_str );
 }
-#include "CoverBlingApplet.moc"
 

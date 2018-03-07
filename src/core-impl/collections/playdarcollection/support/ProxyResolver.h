@@ -24,7 +24,7 @@
 
 #include <QObject>
 
-class KUrl;
+class QUrl;
 
 namespace Playdar
 {
@@ -38,10 +38,10 @@ namespace Playdar
         
         public:
             ProxyResolver( Collections::PlaydarCollection *collection,
-                           const KUrl &url, MetaProxy::TrackPtr track );
+                           const QUrl &url, MetaProxy::TrackPtr track );
             ~ProxyResolver();
         
-        signals:
+        Q_SIGNALS:
             void playdarError( Playdar::Controller::ErrorState );
         
         private Q_SLOTS:

@@ -62,7 +62,7 @@ public:
      */
     Format *format( Encoder encoder ) const;
 
-private slots:
+private Q_SLOTS:
     void onAvailabilityVerified( int exitCode, QProcess::ExitStatus exitStatus );
 
 private:

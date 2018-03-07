@@ -51,7 +51,7 @@ public:
     /** Get's the modified time from the given file and set's m_newerTime according */
     void readNewerTime( const QString &path );
 
-private slots:
+private Q_SLOTS:
     void doJob();
 
 private:

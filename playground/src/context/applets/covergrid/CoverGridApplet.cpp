@@ -29,7 +29,7 @@
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistController.h"
 
-#include <KAction>
+#include <QAction>
 #include <KColorScheme>
 #include <KConfigDialog>
 #include <KGlobalSettings>
@@ -168,4 +168,3 @@ void CoverGridApplet::prepareLayout()
     m_layout->activate();
 }
 
-#include "CoverGridApplet.moc"

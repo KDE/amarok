@@ -1,8 +1,3 @@
-include_directories(
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES}
-)
-
 set( amarok_importer-banshee_PART_SRCS
     BansheeConfigWidget.cpp
     BansheeManager.cpp
@@ -10,15 +5,15 @@ set( amarok_importer-banshee_PART_SRCS
     BansheeTrack.cpp
 )
 
-kde4_add_plugin( amarok_importer-banshee ${amarok_importer-banshee_PART_SRCS} )
+add_library(amarok_importer-banshee MODULE ${amarok_importer-banshee_PART_SRCS} )
 
 target_link_libraries( amarok_importer-banshee
     amarokcore
     amaroklib
-    ${KDE4_KIO_LIBS}
-    ${QT_QTSQL_LIBRARY}
+    KF5::KIOCore
+    Qt5::Sql
 )
 
 install( TARGETS amarok_importer-banshee DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-install( FILES amarok_importer-banshee.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+kcoreaddons_desktop_to_json(amarok_importer-banshee amarok_importer-banshee.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

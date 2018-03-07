@@ -28,7 +28,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 QString
 Dynamic::IfElseBiasFactory::i18nName() const
@@ -175,5 +175,4 @@ Dynamic::IfElseBias::removeDuplicate() const
             m_tracks.subtract( m_playlist[i] );
 }
 
-#include "IfElseBias.moc"
 

@@ -21,7 +21,7 @@
 #include "core/playlists/PlaylistProvider.h"
 
 #include <QAbstractItemModel>
-
+#include <QAction>
 //Playlist & Track index differentiator macros
 //QModelIndex::intenalId() is a qint64 to support 64-bit pointers in a union with the ID
 #define TRACK_MASK (0x1<<31)
@@ -31,7 +31,6 @@
 
 class QAction;
 
-Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QActionList )
 
 namespace PlaylistBrowserNS {
@@ -89,11 +88,11 @@ class PlaylistBrowserModel : public QAbstractItemModel, public Playlists::Playli
         virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position );
         virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
 
-    public slots:
+    public Q_SLOTS:
         void slotRenamePlaylist( Playlists::PlaylistPtr playlist );
         void slotUpdate( int category );
 
-    signals:
+    Q_SIGNALS:
         void renameIndex( const QModelIndex &index );
 
     protected:
@@ -109,7 +108,7 @@ class PlaylistBrowserModel : public QAbstractItemModel, public Playlists::Playli
 
         Playlists::PlaylistProvider *getProviderByName( const QString &name );
 
-    private slots:
+    private Q_SLOTS:
         void slotPlaylistAdded( Playlists::PlaylistPtr playlist, int category );
         void slotPlaylistRemoved( Playlists::PlaylistPtr playlist, int category );
         void slotPlaylistUpdated( Playlists::PlaylistPtr playlist, int category );

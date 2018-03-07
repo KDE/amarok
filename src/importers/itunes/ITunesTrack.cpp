@@ -54,8 +54,9 @@ ITunesTrack::lastPlayed() const
     QDateTime date = QDateTime::fromString(
                                 m_statistics.value( Meta::valLastPlayed ).toString(),
                                 "yyyy'-'MM'-'dd'T'hh':'mm':'ss'Z'" );
+    if( date.isValid() )
+        date.setTimeSpec( Qt::UTC );
 
-    date.setTimeSpec( Qt::UTC );
     return date;
 }
 

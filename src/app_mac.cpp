@@ -29,7 +29,7 @@
 
 #include <QByteArray>
 
-#include <KUrl>
+#include <QUrl>
 
 static AEEventHandlerUPP appleEventProcessorUPP = 0;
 static AEEventHandlerUPP macCallbackUrlHandlerUPP = 0;
@@ -70,8 +70,8 @@ macCallbackUrlHandler( const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*
         error = AEGetParamPtr( ae, keyDirectObject, typeUTF8Text, 0, ba.data(), actualSize, &actualSize );
         if( error == noErr )
         {
-            KUrl url( QString::fromUtf8( ba.data() ) );
-            if( url.protocol() == "amarok" )
+            QUrl url( QString::fromUtf8( ba.data() ) );
+            if( url.scheme() == "amarok" )
             {
                 AmarokUrl aUrl( url.url() );
                 aUrl.run();

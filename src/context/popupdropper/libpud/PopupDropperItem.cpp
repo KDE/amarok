@@ -21,11 +21,10 @@
 #include "PopupDropperItem_p.h"
 #include "PopupDropper.h"
 
-#include <QtCore/QtDebug>
-#include <QtSvg/QSvgRenderer>
-#include <QtSvg/QGraphicsSvgItem>
-#include <QtGui/QAction>
-#include <QtGui/QFont>
+#include <QtDebug>
+#include <QSvgRenderer>
+#include <QAction>
+#include <QFont>
 
 ///////////////////////////////////////////////////////////
 
@@ -91,8 +90,8 @@ PopupDropperItem::PopupDropperItem( QGraphicsItem *parent )
     , QAbstractGraphicsShapeItem( parent )
     , d( new PopupDropperItemPrivate( this ) )
 {
-    connect( &d->hoverTimer, SIGNAL(finished()), this, SLOT(hoverFinished()) );
-    connect( &d->hoverTimer, SIGNAL(frameChanged(int)), this, SLOT(hoverFrameChanged(int)) );
+    connect( &d->hoverTimer, &QTimeLine::finished, this, &PopupDropperItem::hoverFinished );
+    connect( &d->hoverTimer, &QTimeLine::frameChanged, this, &PopupDropperItem::hoverFrameChanged );
 }
 
 PopupDropperItem::PopupDropperItem( const QString &file, QGraphicsItem *parent )
@@ -101,8 +100,8 @@ PopupDropperItem::PopupDropperItem( const QString &file, QGraphicsItem *parent )
     , d( new PopupDropperItemPrivate( this ) )
 {
     d->file = file;
-    connect( &d->hoverTimer, SIGNAL(finished()), this, SLOT(hoverFinished()) );
-    connect( &d->hoverTimer, SIGNAL(frameChanged(int)), this, SLOT(hoverFrameChanged(int)) );
+    connect( &d->hoverTimer, &QTimeLine::finished, this, &PopupDropperItem::hoverFinished );
+    connect( &d->hoverTimer, &QTimeLine::frameChanged, this, &PopupDropperItem::hoverFrameChanged );
 }
 
 PopupDropperItem::~PopupDropperItem()
@@ -432,7 +431,7 @@ void PopupDropperItem::scaleAndReposSvgItem()
 
     if( d->separator )
     {
-        d->svgItem->scale( 0, 0 );
+        d->svgItem->setScale( 1.0 );
         d->svgItem->setPos( 0, 0 );
         return;
     }
@@ -444,7 +443,7 @@ void PopupDropperItem::scaleAndReposSvgItem()
     qreal horizScaleValue = maxwidth / d->svgItem->sceneBoundingRect().width();
     qreal scaleValue = vertScaleValue < horizScaleValue ? vertScaleValue : horizScaleValue;
     
-    d->svgItem->scale( scaleValue, scaleValue );
+    d->svgItem->setScale( scaleValue );
 
     qreal item_center = ( d->borderRectItem->sceneBoundingRect().height() / 2 ) + d->borderRectItem->pos().y();
 
@@ -459,6 +458,7 @@ void PopupDropperItem::scaleAndReposSvgItem()
             rightside = sceneBoundingRect().width();
         else
             rightside = d->pd->viewSize().width();
+
         d->svgItem->setPos(
             rightside
             - d->svgItem->sceneBoundingRect().width()
@@ -881,5 +881,4 @@ void PopupDropperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     return;
 }
 
-#include "PopupDropperItem.moc"
 

@@ -1,0 +1,2 @@
+module org.kde.amarok.wikipedia
+plugin amarok_context_applet_wikipedia

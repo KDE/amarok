@@ -13,6 +13,8 @@ set( testtimecodetrackprovider_SRCS
      ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
     )
 
-kde4_add_unit_test( testtimecodetrackprovider ${testtimecodetrackprovider_SRCS} )
+add_executable( testtimecodetrackprovider ${testtimecodetrackprovider_SRCS} )
+add_test(NAME testtimecodetrackprovider COMMAND $<TARGET_FILE:testtimecodetrackprovider>)
+ecm_mark_as_test(testtimecodetrackprovider)
 
-target_link_libraries(testtimecodetrackprovider ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} amarokcore amaroklib )
+target_link_libraries(testtimecodetrackprovider Qt5::Test Qt5::Core Qt5::Gui amarokcore amaroklib )

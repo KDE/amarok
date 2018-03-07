@@ -19,6 +19,7 @@
 #include "ConfigDialog.h"
 
 #include "amarokconfig.h"
+#include "ConfigDialogBase.h"
 #include "configdialog/dialogs/CollectionConfig.h"
 #include "configdialog/dialogs/DatabaseConfig.h"
 #include "configdialog/dialogs/GeneralConfig.h"
@@ -31,6 +32,7 @@
 #include "core/support/Debug.h"
 
 #include <KLocalizedString>
+
 
 QString Amarok2ConfigDialog::s_currentPage = "GeneralConfig";
 
@@ -52,7 +54,6 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase *database = new DatabaseConfig( this, config );
     ConfigDialogBase *plugins = new PluginsConfig( this );
     ConfigDialogBase *scripts = new ScriptsConfig( this );
-
     //ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
     addPage( general, i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
@@ -65,8 +66,11 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( scripts, i18n( "Scripts" ), "preferences-plugin-script", i18n( "Configure Scripts" ) );
     //addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
-    setButtons( Help | Ok | Apply | Cancel );
-    restoreDialogSize( Amarok::config( "ConfigDialog" ) );
+    QPushButton *okButton = buttonBox()->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+
+    KWindowConfig::restoreWindowSize(windowHandle(), Amarok::config( "ConfigDialog" ));
 }
 
 Amarok2ConfigDialog::~Amarok2ConfigDialog()
@@ -85,21 +89,21 @@ Amarok2ConfigDialog::~Amarok2ConfigDialog()
     }
 
     KConfigGroup config = Amarok::config( "ConfigDialog" );
-    saveDialogSize( config );
-    AmarokConfig::self()->writeConfig();
+    KWindowConfig::saveWindowSize(windowHandle(), config);
+    AmarokConfig::self()->save();
 }
 
 void Amarok2ConfigDialog::updateButtons() //SLOT
 {
     DEBUG_BLOCK
 
-    enableButtonApply( hasChanged() );
+    buttonBox()->button(QDialogButtonBox::Apply)->setEnabled( hasChanged() );
 }
 
 /** Reimplemented from KConfigDialog */
 void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName, const QString &header, bool manage )
 {
-    connect( page, SIGNAL(settingsChanged(QString)), this, SIGNAL(settingsChanged(QString)) );
+    connect( page, &ConfigDialogBase::settingsChanged, this, &Amarok2ConfigDialog::settingsChanged );
 
     // Add the widget pointer to our list, for later reference
     m_pageList << page;
@@ -215,4 +219,3 @@ bool Amarok2ConfigDialog::isDefault()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "ConfigDialog.moc"

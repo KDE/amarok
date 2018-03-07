@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
+#include "browsers/BrowserDock.h"
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
@@ -251,9 +252,9 @@ NavigationUrlGenerator::description()
     return i18n( "Bookmark Media Sources View" );
 }
 
-KIcon NavigationUrlGenerator::icon()
+QIcon NavigationUrlGenerator::icon()
 {
-    return KIcon( "flag-amarok" );
+    return QIcon::fromTheme( "flag-amarok" );
 }
 
 AmarokUrl

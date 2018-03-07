@@ -21,11 +21,11 @@
 #include "CoverFetchUnit.h"
 
 #include <KIO/Job>
-#include <KUrl>
 
 #include <QByteArray>
 #include <QList>
 #include <QObject>
+#include <QUrl>
 
 class CoverFetchPayload;
 
@@ -91,11 +91,11 @@ public:
     void clear();
     const CoverFetchUnit::Ptr take( const Meta::AlbumPtr album );
 
-public slots:
+public Q_SLOTS:
     void remove( const CoverFetchUnit::Ptr unit );
     void remove( const Meta::AlbumPtr album );
 
-signals:
+Q_SIGNALS:
     void fetchUnitAdded( CoverFetchUnit::Ptr );
 
 private:

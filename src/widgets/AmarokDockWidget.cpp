@@ -21,7 +21,7 @@ AmarokDockWidget::AmarokDockWidget( const QString & title, QWidget * parent, Qt:
     , m_polished( false )
 {
     m_dummyTitleBarWidget = new QWidget( this );
-    connect( this, SIGNAL(visibilityChanged(bool)), SLOT(slotVisibilityChanged(bool)) );
+    connect( this, &AmarokDockWidget::visibilityChanged, this, &AmarokDockWidget::slotVisibilityChanged );
 }
 
 void AmarokDockWidget::slotVisibilityChanged( bool visible )
@@ -55,4 +55,3 @@ void AmarokDockWidget::setMovable( bool movable )
     }
 }
 
-#include "AmarokDockWidget.moc"

@@ -21,8 +21,8 @@
 
 #include <QTimer>
 
-#include <KIcon>
-#include <KLocale>
+#include <QIcon>
+#include <KLocalizedString>
 
 ProgressBar::ProgressBar( QWidget *parent )
         : QFrame( parent )
@@ -44,7 +44,7 @@ ProgressBar::ProgressBar( QWidget *parent )
     descriptionLayout->addWidget( m_descriptionLabel, 1 );
 
     m_cancelButton = new QToolButton;
-    m_cancelButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
+    m_cancelButton->setIcon( QIcon::fromTheme( "dialog-cancel-amarok" ) );
     m_cancelButton->setToolTip( i18n( "Abort" ) );
     m_cancelButton->setHidden( true );
     m_cancelButton->setFixedWidth( 16 );
@@ -77,7 +77,6 @@ void
 ProgressBar::setDescription( const QString &description )
 {
     m_descriptionLabel->setText( description );
-
 }
 
 ProgressBar *
@@ -85,8 +84,8 @@ ProgressBar::setAbortSlot( QObject *receiver, const char *slot, Qt::ConnectionTy
 {
     cancelButton()->setHidden( false );
     if( receiver )
-        connect( this, SIGNAL(cancelled()), receiver, slot, type );
-    connect( cancelButton(), SIGNAL(clicked()), this, SLOT(cancel()) );
+        connect( this, SIGNAL(cancelled(ProgressBar*)), receiver, slot, type );
+    connect( cancelButton(), &QAbstractButton::clicked, this, &ProgressBar::cancel );
 
     return this;
 }
@@ -95,7 +94,6 @@ void ProgressBar::cancel()
 {
     DEBUG_BLOCK
     debug() << "cancelling operation: " << m_descriptionLabel->text();
-    emit( cancelled() );
     emit( cancelled( this ) );
 }
 
@@ -123,4 +121,3 @@ int ProgressBar::percentage()
 }
 
 
-#include "ProgressBar.moc"

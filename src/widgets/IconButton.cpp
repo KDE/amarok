@@ -33,7 +33,7 @@ IconButton::IconButton( QWidget *parent ) : QWidget( parent )
     // cannot use paletteChanged() from the palette handler directly since the
     // svg handler also watches it for retinting. So upon palette change, we are
     // called first and the old svg icons will be used.
-    connect( The::svgHandler(), SIGNAL(retinted()), SLOT(svgRetinted()) );
+    connect( The::svgHandler(), &SvgHandler::retinted, this, &IconButton::svgRetinted );
 }
 
 void IconButton::setIcon( const QImage &img, int steps )
@@ -160,4 +160,3 @@ void IconButton::updateIconBuffer()
 }
 
 
-#include "IconButton.moc"

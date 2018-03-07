@@ -19,16 +19,16 @@
 #ifndef ATTICA_EXPORT_H
 #define ATTICA_EXPORT_H
 
-/* needed for KDE_EXPORT and KDE_IMPORT macros */
-#include <kdemacros.h>
+/* needed for Q_DECL_EXPORT and Q_DECL_IMPORT macros */
+#include <QtCore/QtGlobal>
 
 #ifndef ATTICA_EXPORT
 # if defined(MAKE_AMAROKOCSCLIENT_LIB)
    /* We are building this library */
-#  define ATTICA_EXPORT KDE_EXPORT
+#  define ATTICA_EXPORT Q_DECL_EXPORT
 # else
    /* We are using this library */
-#  define ATTICA_EXPORT KDE_IMPORT
+#  define ATTICA_EXPORT Q_DECL_IMPORT
 # endif
 #endif
 

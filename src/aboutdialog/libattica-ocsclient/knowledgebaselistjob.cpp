@@ -24,26 +24,26 @@
 
 #include "knowledgebaseparser.h"
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
+
 #include <QDebug>
 #include <QTimer>
 
 using namespace AmarokAttica;
 
 KnowledgeBaseListJob::KnowledgeBaseListJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 
-void KnowledgeBaseListJob::setUrl( const KUrl &url )
+void KnowledgeBaseListJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }
 
 void KnowledgeBaseListJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &KnowledgeBaseListJob::doWork );
 }
 
 KnowledgeBase::List KnowledgeBaseListJob::knowledgeBaseList() const
@@ -60,11 +60,13 @@ void KnowledgeBaseListJob::doWork()
 {
   qDebug() << m_url;
 
-  m_job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
-  connect( m_job, SIGNAL(result(KJob*)),
-    SLOT(slotJobResult(KJob*)) );
-  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-    SLOT(slotJobData(KIO::Job*,QByteArray)) );
+  auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+  connect( job, &KIO::TransferJob::result,
+           this, &KnowledgeBaseListJob::slotJobResult );
+  connect( job, &KIO::TransferJob::data,
+           this, &KnowledgeBaseListJob::slotJobData );
+
+  m_job = job;
 }
 
 void KnowledgeBaseListJob::slotJobResult( KJob *job )

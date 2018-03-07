@@ -17,7 +17,7 @@
 #ifndef TESTARTISTHELPER_H
 #define TESTARTISTHELPER_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestArtistHelper : public QObject
 {
@@ -25,7 +25,7 @@ class TestArtistHelper : public QObject
 public:
     TestArtistHelper();
 
-private slots:
+private Q_SLOTS:
     void testRealTrackArtist_data();
     void testRealTrackArtist();
 };

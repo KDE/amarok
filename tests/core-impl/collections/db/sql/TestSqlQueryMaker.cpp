@@ -28,11 +28,10 @@
 
 #include <QSignalSpy>
 
-#include <qtest_kde.h>
 
 using namespace Collections;
 
-QTEST_KDEMAIN_CORE( TestSqlQueryMaker )
+QTEST_GUILESS_MAIN( TestSqlQueryMaker )
 
 //required for QTest, this is not done in Querymaker.h
 Q_DECLARE_METATYPE( Collections::QueryMaker::QueryType )
@@ -67,9 +66,9 @@ TestSqlQueryMaker::TestSqlQueryMaker()
 void
 TestSqlQueryMaker::initTestCase()
 {
-    m_tmpDir = new KTempDir();
-    m_storage = new MySqlEmbeddedStorage();
-    QVERIFY( m_storage->init( m_tmpDir->name() ) );
+    m_tmpDir = new QTemporaryDir();
+    m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
+    QVERIFY( m_storage->init( m_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
 
     QMap<int,QString> mountPoints;
@@ -301,7 +300,7 @@ TestSqlQueryMaker::testDeleteQueryMakerWithRunningQuery()
     do
     {
         Collections::SqlQueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
-        QSignalSpy spy( qm, SIGNAL(queryDone()) );
+        QSignalSpy spy( qm, &Collections::QueryMaker::queryDone );
         qm->setQueryType( Collections::QueryMaker::Track );
         qm->addFilter( Meta::valTitle, QString::number( iteration), false, false );
         qm->run();
@@ -326,12 +325,12 @@ TestSqlQueryMaker::testAsyncAlbumQuery()
 {
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Album );
-    QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(Meta::AlbumList)));
+    QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newAlbumsReady );
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy1.wait( 1000 );
 
     QCOMPARE( resultSpy1.count(), 1 );
     QList<QVariant> args1 = resultSpy1.takeFirst();
@@ -342,13 +341,13 @@ TestSqlQueryMaker::testAsyncAlbumQuery()
 
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Album );
-    QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(Meta::AlbumList)));
+    QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newAlbumsReady );
     qm->addFilter( Meta::valAlbum, "foo" ); //should result in no match
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy2.wait( 1000 );
 
     QCOMPARE( resultSpy2.count(), 1 );
     QList<QVariant> args2 = resultSpy2.takeFirst();
@@ -362,12 +361,12 @@ TestSqlQueryMaker::testAsyncArtistQuery()
 {
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Artist );
-    QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(Meta::ArtistList)));
+    QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newArtistsReady );
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy1.wait( 1000 );
 
     QCOMPARE( resultSpy1.count(), 1 );
     QList<QVariant> args1 = resultSpy1.takeFirst();
@@ -378,13 +377,13 @@ TestSqlQueryMaker::testAsyncArtistQuery()
 
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Artist );
-    QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(Meta::ArtistList)));
+    QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newArtistsReady );
     qm->addFilter( Meta::valArtist, "foo" ); //should result in no match
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy2.wait( 1000 );
 
     QCOMPARE( resultSpy2.count(), 1 );
     QList<QVariant> args2 = resultSpy2.takeFirst();
@@ -398,12 +397,12 @@ TestSqlQueryMaker::testAsyncComposerQuery()
 {
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Composer );
-    QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(Meta::ComposerList)));
+    QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newComposersReady );
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy1.wait( 1000 );
 
     QCOMPARE( resultSpy1.count(), 1 );
     QList<QVariant> args1 = resultSpy1.takeFirst();
@@ -415,13 +414,13 @@ TestSqlQueryMaker::testAsyncComposerQuery()
 
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Composer );
-    QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(Meta::ComposerList)));
+    QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newComposersReady );
     qm->addFilter( Meta::valComposer, "foo" ); //should result in no match
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy2.wait( 1000 );
 
     QCOMPARE( resultSpy2.count(), 1 );
     QList<QVariant> args2 = resultSpy2.takeFirst();
@@ -435,12 +434,12 @@ TestSqlQueryMaker::testAsyncTrackQuery()
 {
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Track );
-    QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(Meta::TrackList)));
+    QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newTracksReady );
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy1.wait( 1000 );
 
     QCOMPARE( resultSpy1.count(), 1 );
     QList<QVariant> args1 = resultSpy1.takeFirst();
@@ -452,13 +451,13 @@ TestSqlQueryMaker::testAsyncTrackQuery()
 
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Track );
-    QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(Meta::TrackList)));
+    QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newTracksReady );
     qm->addFilter( Meta::valTitle, "foo" ); //should result in no match
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy2.wait( 1000 );
 
     QCOMPARE( resultSpy2.count(), 1 );
     QList<QVariant> args2 = resultSpy2.takeFirst();
@@ -472,12 +471,12 @@ TestSqlQueryMaker::testAsyncGenreQuery()
 {
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Genre );
-    QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(Meta::GenreList)));
+    QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newGenresReady );
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy1.wait( 1000 );
 
     QCOMPARE( resultSpy1.count(), 1 );
     QList<QVariant> args1 = resultSpy1.takeFirst();
@@ -489,13 +488,13 @@ TestSqlQueryMaker::testAsyncGenreQuery()
 
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Genre );
-    QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(Meta::GenreList)));
+    QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newGenresReady );
     qm->addFilter( Meta::valGenre, "foo" ); //should result in no match
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy2.wait( 1000 );
 
     QCOMPARE( resultSpy2.count(), 1 );
     QList<QVariant> args2 = resultSpy2.takeFirst();
@@ -509,12 +508,12 @@ TestSqlQueryMaker::testAsyncYearQuery()
 {
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Year );
-    QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(Meta::YearList)));
+    QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newYearsReady );
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy1.wait( 1000 );
 
     QCOMPARE( resultSpy1.count(), 1 );
     QList<QVariant> args1 = resultSpy1.takeFirst();
@@ -526,13 +525,13 @@ TestSqlQueryMaker::testAsyncYearQuery()
 
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Year );
-    QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(Meta::YearList)));
+    QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newYearsReady );
     qm->addFilter( Meta::valYear, "foo" ); //should result in no match
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy2.wait( 1000 );
 
     QCOMPARE( resultSpy2.count(), 1 );
     QList<QVariant> args2 = resultSpy2.takeFirst();
@@ -547,12 +546,12 @@ TestSqlQueryMaker::testAsyncCustomQuery()
     Collections::QueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Custom );
     qm->addReturnFunction( Collections::QueryMaker::Count, Meta::valTitle );
-    QSignalSpy doneSpy1( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy1( qm, SIGNAL(newResultReady(QStringList)));
+    QSignalSpy doneSpy1( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy1( qm, &Collections::QueryMaker::newResultReady );
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy1.wait( 1000 );
 
     QCOMPARE( resultSpy1.count(), 1 );
     QList<QVariant> args1 = resultSpy1.takeFirst();
@@ -566,13 +565,13 @@ TestSqlQueryMaker::testAsyncCustomQuery()
     qm = new Collections::SqlQueryMaker( m_collection );
     qm->setQueryType( Collections::QueryMaker::Custom );
     qm->addReturnFunction( Collections::QueryMaker::Count, Meta::valTitle );
-    QSignalSpy doneSpy2( qm, SIGNAL(queryDone()));
-    QSignalSpy resultSpy2( qm, SIGNAL(newResultReady(QStringList)));
+    QSignalSpy doneSpy2( qm, &Collections::QueryMaker::queryDone );
+    QSignalSpy resultSpy2( qm, &Collections::QueryMaker::newResultReady );
     qm->addFilter( Meta::valTitle, "foo" ); //should result in no match
 
     qm->run();
 
-    QTest::kWaitForSignal( qm, SIGNAL(queryDone()), 1000 );
+    doneSpy2.wait( 1000 );
 
     QCOMPARE( resultSpy2.count(), 1 );
     QList<QVariant> args2 = resultSpy2.takeFirst();
@@ -1024,4 +1023,3 @@ TestSqlQueryMaker::testLabelQueryMode()
     checkResultCount( &qm, type, result );
 }
 
-#include "TestSqlQueryMaker.moc"

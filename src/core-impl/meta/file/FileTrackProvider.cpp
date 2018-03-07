@@ -27,7 +27,7 @@ FileTrackProvider::~FileTrackProvider()
 }
 
 bool
-FileTrackProvider::possiblyContainsTrack( const KUrl &url ) const
+FileTrackProvider::possiblyContainsTrack( const QUrl &url ) const
 {
     if( !url.isLocalFile() )
         return false;
@@ -36,7 +36,7 @@ FileTrackProvider::possiblyContainsTrack( const KUrl &url ) const
 }
 
 Meta::TrackPtr
-FileTrackProvider::trackForUrl( const KUrl &url )
+FileTrackProvider::trackForUrl( const QUrl &url )
 {
     if( !possiblyContainsTrack( url ) )
         return Meta::TrackPtr();

@@ -43,6 +43,7 @@ void GpodderPodcastRequestHandler::requestError( QNetworkReply::NetworkError err
 {
     debug() << "Error in Podcast request: " << error;
 }
+
 void GpodderPodcastRequestHandler::parseError()
 {
     debug() << "Error while parsing gpodder.net Podcasts";

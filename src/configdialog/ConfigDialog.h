@@ -17,10 +17,15 @@
 #ifndef AMAROK2CONFIGDIALOG_H
 #define AMAROK2CONFIGDIALOG_H
 
-#include "ConfigDialogBase.h"
+#include <KConfigDialog>
+#include <KConfigSkeleton>
+#include <KWindowConfig>
 
-#include <kconfigdialog.h>
 
+class ConfigDialogBase;
+
+
+class ConfigDialogBase;
 
 class Amarok2ConfigDialog : public KConfigDialog
 {
@@ -33,7 +38,7 @@ class Amarok2ConfigDialog : public KConfigDialog
         void addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName,
                       const QString &header = QString(), bool manage = true );
 
-    public slots:
+    public Q_SLOTS:
         /**
          * Shows the config dialog and sets the current page to "page"
          *
@@ -46,16 +51,14 @@ class Amarok2ConfigDialog : public KConfigDialog
          */
         void updateButtons();
 
-    protected slots:
-        void updateSettings();
-        void updateWidgets();
-        void updateWidgetsDefault();
-
-    private slots:
+    protected Q_SLOTS:
+        void updateSettings() Q_DECL_OVERRIDE;
+        void updateWidgets() Q_DECL_OVERRIDE;
+        void updateWidgetsDefault() Q_DECL_OVERRIDE;
 
     protected:
-        bool hasChanged();
-        bool isDefault();
+        bool hasChanged() Q_DECL_OVERRIDE;
+        bool isDefault() Q_DECL_OVERRIDE;
 
     private:
         QList<ConfigDialogBase*> m_pageList;

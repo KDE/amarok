@@ -10,15 +10,15 @@
 if (IFP_INCLUDE_DIR)
   # Already in cache, be silent
   set(Ifp_FIND_QUIETLY TRUE)
-endif (IFP_INCLUDE_DIR)
+endif ()
 
-FIND_PATH(IFP_INCLUDE_DIR ifp.h
+find_path(IFP_INCLUDE_DIR ifp.h
 )
 
-FIND_LIBRARY(IFP_LIBRARY ifp
+find_library(IFP_LIBRARY ifp
 )
 
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(IFP DEFAULT_MSG IFP_LIBRARY IFP_INCLUDE_DIR)
+find_package_handle_standard_args(IFP DEFAULT_MSG IFP_LIBRARY IFP_INCLUDE_DIR)
 
-MARK_AS_ADVANCED(IFP_INCLUDE_DIR IFP_LIBRARY)
+mark_as_advanced(IFP_INCLUDE_DIR IFP_LIBRARY)

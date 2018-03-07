@@ -24,10 +24,10 @@
 #include "MagnatuneConfig.h"
 
 #include <KMessageBox>
-#include <ktempdir.h>
 
 #include <QDir>
 #include <QFile>
+#include <QTemporaryDir>
 #include <QTextStream>
 
 using namespace Meta;
@@ -74,14 +74,14 @@ void MagnatuneDownloadHandler::membershipDownload( int membershipType, const QSt
     else
          type = "download";
     
-    QString purchaseURL = "http://" + username + ":" + password + "@" + type + ".magnatune.com/buy/membership_free_dl_xml?sku=" + m_currentAlbum->albumCode() + "&id=amarok";
+    QUrl purchaseURL = QUrl::fromUserInput( "http://" + username + ":" + password + "@" + type + ".magnatune.com/buy/membership_free_dl_xml?sku=" + m_currentAlbum->albumCode() + "&id=amarok" );
 
     m_membershipDownload = true;
 
-    m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), KIO::NoReload, KIO::HideProgressInfo );
+    m_resultDownloadJob = KIO::storedGet( purchaseURL, KIO::NoReload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_resultDownloadJob,
                                                         i18n( "Processing download" ) );
-    connect( m_resultDownloadJob, SIGNAL(result(KJob*)), SLOT(xmlDownloadComplete(KJob*)) );
+    connect( m_resultDownloadJob, &KJob::result, this, &MagnatuneDownloadHandler::xmlDownloadComplete );
 }
 
 void MagnatuneDownloadHandler::xmlDownloadComplete( KJob * downloadJob )
@@ -89,7 +89,7 @@ void MagnatuneDownloadHandler::xmlDownloadComplete( KJob * downloadJob )
 
     debug() << "xml download complete";
 
-    if ( !downloadJob->error() == 0 )
+    if ( downloadJob->error() )
     {
         //TODO: error handling here
         debug() << "Job error... " << downloadJob->error();
@@ -109,14 +109,14 @@ void MagnatuneDownloadHandler::xmlDownloadComplete( KJob * downloadJob )
     if ( m_albumDownloader == 0 )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
-        connect( m_albumDownloader, SIGNAL(downloadComplete(bool)), this, SLOT(albumDownloadComplete(bool)) );
+        connect( m_albumDownloader, &MagnatuneAlbumDownloader::downloadComplete, this, &MagnatuneDownloadHandler::albumDownloadComplete );
     }
 
     if ( m_downloadDialog == 0 )
     {
         m_downloadDialog = new MagnatuneDownloadDialog( m_parent );
         m_downloadDialog->setModal( true );
-        connect( m_downloadDialog, SIGNAL(downloadAlbum(MagnatuneDownloadInfo)), m_albumDownloader, SLOT(downloadAlbum(MagnatuneDownloadInfo)) );
+        connect( m_downloadDialog, &MagnatuneDownloadDialog::downloadAlbum, m_albumDownloader, &MagnatuneAlbumDownloader::downloadAlbum );
         //connect( m_downloadDialog, SIGNAL(rejected()), this, SLOT(albumPurchaseCancelled()) );
 
     }
@@ -202,7 +202,6 @@ void MagnatuneDownloadHandler::albumDownloadComplete( bool success )
 }
 
 
-#include "MagnatuneDownloadHandler.moc"
 
 
 

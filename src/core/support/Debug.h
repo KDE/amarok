@@ -25,10 +25,9 @@
 #undef KDE_NO_DEBUG_OUTPUT
 
 #include "core/amarokcore_export.h"
-
-#include <kdebug.h>
-
+#include <QDebug>
 #include <QMutex>
+#include <QVariant>
 
 // BEGIN: DEBUG_ASSERT
 /**
@@ -160,10 +159,10 @@ using Debug::error;
 using Debug::fatal;
 
 /// Standard function announcer
-#define DEBUG_FUNC_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() ; Debug::mutex.unlock(); }
+#define DEBUG_FUNC_INFO { Debug::mutex.lock(); qDebug() << Debug::indent() ; Debug::mutex.unlock(); }
 
 /// Announce a line
-#define DEBUG_LINE_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() << "Line: " << __LINE__; Debug::mutex.unlock(); }
+#define DEBUG_LINE_INFO { Debug::mutex.lock(); qDebug() << Debug::indent() << "Line: " << __LINE__; Debug::mutex.unlock(); }
 
 /// Convenience macro for making a standard Debug::Block
 #define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __PRETTY_FUNCTION__ );
@@ -210,11 +209,8 @@ namespace Debug
         AMAROK_CORE_EXPORT ~Block();
 
     private:
-#if QT_VERSION >= 0x040700
         QElapsedTimer m_startTime;
-#else
-        QTime m_startTime;
-#endif
+
         const char *m_label;
         int m_color;
     };
@@ -240,12 +236,7 @@ namespace Debug
      *
      */
     AMAROK_CORE_EXPORT void stamp();
-}
 
-#include <QVariant>
-
-namespace Debug
-{
     /**
      * @class Debug::List
      * @short You can pass anything to this and it will output it as a list
@@ -256,12 +247,12 @@ namespace Debug
     typedef QList<QVariant> List;
 }
 
-template<class T> class KSharedPtr;
+template<class T> class AmarokSharedPointer;
 
 template<class T> QDebug &
-operator<<( QDebug dbg, const KSharedPtr<T> &ptr )
+operator<<( QDebug dbg, const AmarokSharedPointer<T> &ptr )
 {
-    dbg.nospace() << "KSharedPtr(" << *ptr.data() << ")";
+    dbg.nospace() << "AmarokSharedPointer(" << *ptr.data() << ")";
     return dbg.space();
 }
 

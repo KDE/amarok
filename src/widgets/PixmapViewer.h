@@ -38,10 +38,10 @@ public:
 
     qreal zoomFactor() const;
 
-public slots:
+public Q_SLOTS:
     void setZoomFactor( qreal f );
 
-signals:
+Q_SIGNALS:
     void zoomFactorChanged( qreal );
 
 protected:

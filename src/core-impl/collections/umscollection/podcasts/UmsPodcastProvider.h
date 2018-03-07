@@ -28,18 +28,18 @@ class UmsPodcastProvider : public PodcastProvider
 {
     Q_OBJECT
     public:
-        UmsPodcastProvider( KUrl scanDirectory );
+        UmsPodcastProvider( QUrl scanDirectory );
         ~UmsPodcastProvider();
 
         UmsPodcastEpisodePtr addFile( MetaFile::TrackPtr metafileTrack );
         int addPath( const QString &path );
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid );
 
-        virtual void addPodcast( const KUrl &url );
+        virtual void addPodcast( const QUrl &url );
 
         virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
         virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
@@ -53,7 +53,7 @@ class UmsPodcastProvider : public PodcastProvider
 
         // PlaylistProvider methods
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
         virtual Playlists::PlaylistList playlists();
 
@@ -62,7 +62,7 @@ class UmsPodcastProvider : public PodcastProvider
 
         virtual void completePodcastDownloads();
 
-    public slots:
+    public Q_SLOTS:
         virtual void updateAll();
         virtual void update( Podcasts::PodcastChannelPtr channel );
         virtual void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
@@ -70,10 +70,10 @@ class UmsPodcastProvider : public PodcastProvider
         virtual void slotUpdated();
         virtual void scan();
 
-    signals:
+    Q_SIGNALS:
         void updated();
 
-    private slots:
+    private Q_SLOTS:
         void slotDeleteEpisodes();
         void slotDeleteChannels();
         void deleteJobComplete( KJob *job );
@@ -84,7 +84,7 @@ class UmsPodcastProvider : public PodcastProvider
         QList<QAction *> channelActions( Podcasts::PodcastChannelList );
         void deleteEpisodes( UmsPodcastEpisodeList umsEpisodes );
 
-        KUrl m_scanDirectory;
+        QUrl m_scanDirectory;
         QStringList m_dirList;
 
         UmsPodcastChannelList m_umsChannels;

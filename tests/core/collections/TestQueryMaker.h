@@ -16,6 +16,7 @@
 #ifndef TESTQUERYMAKER_H
 #define TESTQUERYMAKER_H
 
+#include <QPointer>
 #include <QtTest>
 
 class MockQueryMaker;
@@ -24,7 +25,7 @@ class TestQueryMaker : public QObject
 {
     Q_OBJECT
 
-    private slots:
+    private Q_SLOTS:
         void initTestCase();
         void cleanupTestCase();
 
@@ -33,7 +34,7 @@ class TestQueryMaker : public QObject
         void testSetAutoDelete();
 
     private:
-        MockQueryMaker *m_mockQueryMaker;
+        QPointer<MockQueryMaker> m_mockQueryMaker;
 };
 
 #endif // TESTQUERYMAKER_H

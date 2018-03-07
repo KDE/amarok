@@ -18,13 +18,10 @@
 
 #include "ContextDock.h"
 
-#include "amarokconfig.h"
-#include "context/ContextScene.h"
 #include "context/ContextView.h"
-#include "context/ToolbarView.h"
 #include "core/support/Debug.h"
 
-#include <KVBox>
+#include <KLocalizedString>
 
 ContextDock::ContextDock( QWidget *parent )
     : AmarokDockWidget( i18n( "&Context" ), parent )
@@ -34,19 +31,7 @@ ContextDock::ContextDock( QWidget *parent )
     setMinimumWidth( 50 );
     setContentsMargins( 0, 0, 0, 0 );
 
-    m_mainWidget = new KVBox( this );
-    m_mainWidget->setMinimumWidth( 400 );
-    m_mainWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    m_mainWidget->setSpacing( 0 );
-    m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
-    m_mainWidget->setFrameShape( QFrame::NoFrame );
-    setWidget( m_mainWidget );
-
-    m_corona = new Context::ContextScene( this );
-    connect( m_corona.data(), SIGNAL(containmentAdded(Plasma::Containment*)),
-            this, SLOT(createContextView(Plasma::Containment*)) );
-
-    m_corona.data()->loadDefaultSetup(); // this method adds our containment to the scene
+    createContextView();
 }
 
 void ContextDock::polish()
@@ -54,24 +39,15 @@ void ContextDock::polish()
 }
 
 void
-ContextDock::createContextView( Plasma::Containment *containment )
+ContextDock::createContextView()
 {
-    disconnect( m_corona.data(), SIGNAL(containmentAdded(Plasma::Containment*)),
-            this, SLOT(createContextView(Plasma::Containment*)) );
+    auto mainWidget = new Context::ContextView();
+    mainWidget->setMinimumWidth( 400 );
+    mainWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    mainWidget->setContentsMargins( 0, 0, 0, 0 );
+    setWidget( mainWidget );
 
-    debug() << "Creating context view on containmend" << containment->name();
-    PERF_LOG( "Creating ContexView" )
-    m_contextView = new Context::ContextView( containment, m_corona.data(), m_mainWidget );
-    m_contextView.data()->setFrameShape( QFrame::NoFrame );
-    m_contextToolbarView = new Context::ToolbarView( containment, m_corona.data(), m_mainWidget );
-    PERF_LOG( "Created ContexToolbarView" )
-
-    connect( m_corona.data(), SIGNAL(sceneRectChanged(QRectF)), m_contextView.data(), SLOT(updateSceneRect(QRectF)) );
-    connect( m_contextToolbarView.data(), SIGNAL(hideAppletExplorer()), m_contextView.data(), SLOT(hideAppletExplorer()) );
-    connect( m_contextToolbarView.data(), SIGNAL(showAppletExplorer()), m_contextView.data(), SLOT(showAppletExplorer()) );
-    m_contextView.data()->showHome();
     PERF_LOG( "ContexView created" )
 }
 
 
-#include "ContextDock.moc"

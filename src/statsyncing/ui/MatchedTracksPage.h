@@ -64,7 +64,7 @@ namespace StatSyncing
              */
             void setTracksToScrobble( const TrackList &tracksToScrobble, const QList<ScrobblingServicePtr> &services );
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when user pushes the Back button.
              */
@@ -80,7 +80,7 @@ namespace StatSyncing
              */
             void rejected();
 
-        private slots:
+        private Q_SLOTS:
             void changeMatchedTracksFilter( int index );
 
             void changeUniqueTracksProvider( int index );

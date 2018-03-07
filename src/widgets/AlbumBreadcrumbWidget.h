@@ -18,8 +18,7 @@
 #define AMAROK_ALBUMBREADCRUMBWIDGET_H
 
 #include "core/meta/forward_declarations.h"
-
-#include <KHBox>
+#include "widgets/BoxWidget.h"
 
 class BreadcrumbItemButton;
 
@@ -38,7 +37,7 @@ class BreadcrumbItemButton;
  *
  * TODO: list artists/albums when clicking on the '>' to be more useful
  */
-class AlbumBreadcrumbWidget : public KHBox
+class AlbumBreadcrumbWidget : public BoxWidget
 {
     Q_OBJECT
 
@@ -48,13 +47,13 @@ public:
 
     void setAlbum( const Meta::AlbumPtr album );
 
-signals:
+Q_SIGNALS:
     void artistClicked( const QString& );
     void albumClicked( const QString& );
 
-private slots:
-    void artistClicked();
-    void albumClicked();
+private Q_SLOTS:
+    void slotArtistClicked();
+    void slotAlbumClicked();
 
 private:
     Meta::AlbumPtr m_album;

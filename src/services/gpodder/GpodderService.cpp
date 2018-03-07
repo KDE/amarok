@@ -27,27 +27,22 @@
 #include "GpodderServiceModel.h"
 #include "GpodderServiceView.h"
 #include "GpodderSortFilterProxyModel.h"
-#include <mygpo-qt/ApiRequest.h>
-#include <mygpo-qt/Podcast.h>
+#include <mygpo-qt5/ApiRequest.h>
+#include <mygpo-qt5/Podcast.h>
 #include "playlistmanager/PlaylistManager.h"
 #include "widgets/SearchWidget.h"
 
-#include <KLocale>
-#include <KPasswordDialog>
-#include <KStandardDirs>
-#include <KUrl>
-
 #include <QHostInfo>
+#include <QStandardPaths>
+#include <QUrl>
 
-AMAROK_EXPORT_SERVICE_PLUGIN( gpodder, GpodderServiceFactory )
 
-GpodderServiceFactory::GpodderServiceFactory( QObject *parent, const QVariantList &args )
-    : ServiceFactory( parent, args )
-{
-    KPluginInfo pluginInfo( "amarok_service_gpodder.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    m_info = pluginInfo;
-}
+GpodderServiceFactory::GpodderServiceFactory()
+    : ServiceFactory()
+{}
+
+GpodderServiceFactory::~GpodderServiceFactory()
+{}
 
 void
 GpodderServiceFactory::init()
@@ -64,14 +59,6 @@ QString
 GpodderServiceFactory::name()
 {
     return "gpodder.net";
-}
-
-KPluginInfo
-GpodderServiceFactory::info()
-{
-    KPluginInfo pluginInfo( "amarok_service_gpodder.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    return pluginInfo;
 }
 
 KConfigGroup
@@ -124,10 +111,10 @@ GpodderService::GpodderService( GpodderServiceFactory *parent, const QString &na
     DEBUG_BLOCK
 
     setShortDescription( i18n( "gpodder.net: Podcast Directory Service" ) );
-    setIcon( KIcon( "view-services-gpodder-amarok" ) );
+    setIcon( QIcon::fromTheme( "view-services-gpodder-amarok" ) );
     setLongDescription(
                 i18n( "gpodder.net is an online Podcast Directory & Synchonisation Service." ) );
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/mygpo.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/mygpo.png" ) );
 
     init();
 }
@@ -234,14 +221,14 @@ GpodderService::polish()
     m_subscribeButton->setParent( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
     m_subscribeButton->setObjectName( "subscribeButton" );
-    m_subscribeButton->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
+    m_subscribeButton->setIcon( QIcon::fromTheme( "get-hot-new-stuff-amarok" ) );
 
     m_subscribeButton->setEnabled( true );
 
-    connect( m_subscribeButton, SIGNAL(clicked()), this, SLOT(subscribe()) );
+    connect( m_subscribeButton, &QPushButton::clicked, this, &GpodderService::subscribe );
 
-    connect( m_searchWidget, SIGNAL(filterChanged(QString)),
-             m_proxyModel, SLOT(setFilterWildcard(QString)) );
+    connect( m_searchWidget, &SearchWidget::filterChanged,
+             m_proxyModel, &QSortFilterProxyModel::setFilterWildcard );
 
     m_polished = true;
 }
@@ -263,7 +250,7 @@ GpodderService::subscribe()
     if( GpodderPodcastTreeItem *podcastTreeItem = qobject_cast<GpodderPodcastTreeItem*>( treeItem ) )
     {
         Podcasts::PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
-        KUrl kUrl( podcastTreeItem->podcast()->url() );
+        QUrl kUrl( podcastTreeItem->podcast()->url() );
         podcastProvider->addPodcast( kUrl );
     }
 }

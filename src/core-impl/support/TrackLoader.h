@@ -73,14 +73,9 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
         ~TrackLoader();
 
         /**
-         * Convenience overload for init( const QList<KUrl> &urls )
+         * Convenience overload for init( const QList<QUrl> &urls )
          */
-        void init( const KUrl &url );
-
-        /**
-         * Convenience overload for init( const QList<KUrl> &urls )
-         */
-        void init( const QList<QUrl> &urls );
+        void init( const QUrl &url );
 
         /**
          * Starts TrackLoader's job, you'll get finished() signal in the end and
@@ -89,11 +84,11 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
          * @urls list of urls to load tracks from, you can pass local and remote urls
          * pointing to directories, tracks and playlists.
          */
-        void init( const QList<KUrl> &urls );
+        void init( const QList<QUrl> &urls );
 
         /**
          * Short-hand if you already have a list of playlists and want a convenient way
-         * to get notified of their loaded tracks. See init( const QList<KUrl> ) and
+         * to get notified of their loaded tracks. See init( const QList<QUrl> ) and
          * class description.
          */
         void init( const Playlists::PlaylistList &playlists );
@@ -106,13 +101,12 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::TrackPtr track );
 
-    signals:
+    Q_SIGNALS:
         void finished( const Meta::TrackList &tracks );
 
-    private slots:
+    private Q_SLOTS:
         void processNextSourceUrl();
         void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list );
-        void listJobFinished();
         void processNextResultUrl();
         /**
          * Emits the result and auto-destroys the TrackLoader
@@ -127,21 +121,19 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
         };
         void mayFinish();
 
-        static bool directorySensitiveLessThan( const KUrl &left, const KUrl &right );
+        static bool directorySensitiveLessThan( const QUrl &left, const QUrl &right );
 
         Status m_status;
         const Flags m_flags;
         int m_timeout;
         /// passed urls, may contain urls of directories
-        QList<KUrl> m_sourceUrls;
+        QList<QUrl> m_sourceUrls;
         /// contains just urls of tracks and playlists
-        QList<KUrl> m_resultUrls;
+        QList<QUrl> m_resultUrls;
         /// a list of playlists directly passed, same semantics as m_resultUrls
         Playlists::PlaylistList m_resultPlaylists;
         /// the tracks found
         Meta::TrackList m_tracks;
-        /// temporary list of results of the list job, to keep right sorting
-        QList<KUrl> m_listJobResults;
         /// set of unresolved MetaProxy::Tracks that we wait for
         QSet<Meta::TrackPtr> m_unresolvedTracks;
         QMutex m_unresolvedTracksMutex;

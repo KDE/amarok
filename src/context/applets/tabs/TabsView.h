@@ -42,13 +42,13 @@ public:
     void clear();
     void clearTabBrowser();
 
-public slots:
+public Q_SLOTS:
     void showTab( TabsItem *tab );
 
 protected:
     void resizeEvent( QGraphicsSceneResizeEvent *event );
 
-private slots:
+private Q_SLOTS:
     void itemClicked( const QModelIndex &index );
     void slotScrollBarRangeChanged( int min, int max );
 

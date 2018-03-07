@@ -19,11 +19,12 @@
 
 #include "core/meta/forward_declarations.h"
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 
 #include <QDomElement>
 #include <QObject>
 #include <QSharedData>
+#include <ThreadWeaver/Job>
 
 namespace ThreadWeaver {
     class Job;
@@ -36,8 +37,8 @@ namespace APG {
         Q_OBJECT
 
         public:
-            static KSharedPtr<Preset> createFromXml( QDomElement& );
-            static KSharedPtr<Preset> createNew();
+            static AmarokSharedPointer<Preset> createFromXml( QDomElement& );
+            static AmarokSharedPointer<Preset> createNew();
             ~Preset();
 
             QString title() const { return m_title; }
@@ -48,15 +49,15 @@ namespace APG {
 
             QDomElement* toXml( QDomDocument& ) const;
 
-        public slots:
+        public Q_SLOTS:
             void generate( int );
 
-        signals:
+        Q_SIGNALS:
             void lock( bool );
 
-        private slots:
+        private Q_SLOTS:
             void queueSolver();
-            void solverFinished( ThreadWeaver::Job* );
+            void solverFinished( ThreadWeaver::JobPointer );
 
         private:
             Preset( const QString&, QDomElement& );
@@ -66,6 +67,6 @@ namespace APG {
 
             ConstraintNode* m_constraintTreeRoot;
     };
-    typedef KSharedPtr<Preset> PresetPtr;
+    typedef AmarokSharedPointer<Preset> PresetPtr;
 }
 #endif

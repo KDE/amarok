@@ -26,8 +26,9 @@
 #include "covermanager/CoverCache.h"
 #include "FileType.h"
 
-#include <KTemporaryFile>
-#include <ThreadWeaver/Weaver>
+#include <QTemporaryFile>
+
+#include <ThreadWeaver/Queue>
 
 #include <cmath>
 #include <gpod/itdb.h>
@@ -156,11 +157,11 @@ Track::setTitle( const QString &newTitle )
     commitIfInNonBatchUpdate( Meta::valTitle, newTitle );
 }
 
-KUrl
+QUrl
 Track::playableUrl() const
 {
     if( m_mountPoint.isEmpty() || !m_track->ipod_path || m_track->ipod_path[0] == '\0' )
-        return KUrl();
+        return QUrl();
     QReadLocker locker( &m_trackLock );
     gchar *relPathChar = g_strdup( m_track->ipod_path );
     locker.unlock();
@@ -168,17 +169,17 @@ Track::playableUrl() const
     // relPath begins with a slash
     QString relPath = QFile::decodeName( relPathChar );
     g_free( relPathChar );
-    return KUrl( m_mountPoint + relPath );
+    return QUrl::fromLocalFile( m_mountPoint + relPath );
 }
 
 QString
 Track::prettyUrl() const
 {
-    const KUrl &url = playableUrl();
+    const QUrl &url = playableUrl();
     if( url.isLocalFile() )
         return url.toLocalFile();
 
-    QString collName = m_coll ? m_coll.data()->prettyName() : i18n( "Unknown Collection" );
+    QString collName = m_coll ? m_coll->prettyName() : i18n( "Unknown Collection" );
     QString artistName = artist() ? artist()->prettyName() : i18n( "Unknown Artist" );
     QString trackName = !name().isEmpty() ? name() : i18n( "Unknown track" );
 
@@ -197,7 +198,7 @@ Track::uidUrl() const
     g_free( relPathChar );
 
     if( m_coll )
-        return m_coll.data()->collectionId() + relPath;
+        return m_coll->collectionId() + relPath;
     else
         return m_mountPoint + relPath;
 }
@@ -211,7 +212,7 @@ Track::notPlayableReason() const
 Meta::AlbumPtr
 Track::album() const
 {
-    // we may not store KSharedPtr to Album because it would create circular reference
+    // we may not store AmarokSharedPointer to Album because it would create circular reference
     return Meta::AlbumPtr( new Album( const_cast<Track*>( this ) ) );
 }
 
@@ -264,9 +265,9 @@ Track::setImage( const QImage &newImage )
         else
             image = newImage;
 
-        KTemporaryFile tempImageFile;
+        QTemporaryFile tempImageFile;
         tempImageFile.setAutoRemove( false ); // file will be removed in ~Track()
-        tempImageFile.setSuffix( QString( ".png" ) );
+        tempImageFile.setFileTemplate( QDir::tempPath() + "/XXXXXX.png" );
         // we save the file to disk rather than pass image data to save several megabytes of RAM
         if( tempImageFile.open() )
             m_tempImageFilePath = tempImageFile.fileName();
@@ -539,7 +540,7 @@ Track::playCount() const
 int
 Track::recentPlayCount() const
 {
-    if( !m_coll || !m_coll.data()->isWritable() )
+    if( !m_coll || !m_coll->isWritable() )
         return 0; // we must be able to reset recent playcount if we return nonzero
     return m_track->recent_playcount;
 }
@@ -672,7 +673,7 @@ Track::finalizeCopying( const gchar *mountPoint, const gchar *filePath )
 }
 
 void
-Track::setCollection( QWeakPointer<IpodCollection> collection )
+Track::setCollection( QPointer<IpodCollection> collection )
 {
     m_coll = collection;
     if( !collection )
@@ -680,7 +681,7 @@ Track::setCollection( QWeakPointer<IpodCollection> collection )
     { // scope for locker
         QWriteLocker locker( &m_trackLock );
         // paranoia: collection may become null while we were waiting for lock...
-        m_mountPoint = collection ? collection.data()->mountPoint() : QString();
+        m_mountPoint = collection ? collection->mountPoint() : QString();
     }
 
     // m_track->filetype field may have been set by someone else, rather check it (if set
@@ -730,7 +731,7 @@ Track::commitIfInNonBatchUpdate()
 
     // we block changing the track meta-data of read-only iPod Collections;
     // it would only be cofusing to the user as the changes would get discarded.
-    if( !m_coll || !m_coll.data()->isWritable() )
+    if( !m_coll || !m_coll->isWritable() )
         return;
 
     if( AmarokConfig::writeBackStatistics() ||
@@ -744,8 +745,8 @@ Track::commitIfInNonBatchUpdate()
 
     // write tags to file in a thread in order not to block
     WriteTagsJob *job = new WriteTagsJob( path, m_changedFields );
-    job->connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-    ThreadWeaver::Weaver::instance()->enqueue( job );
+    job->connect( job, &WriteTagsJob::done, job, &QObject::deleteLater );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 
     notifyObservers();
     m_trackLock.lockForWrite(); // reset to original state when this was called

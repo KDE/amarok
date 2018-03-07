@@ -16,7 +16,6 @@
 
 #include "TranscodingNullFormat.h"
 
-#include <KLocale>
 
 using namespace Transcoding;
 
@@ -38,10 +37,10 @@ NullFormat::description() const
     return QString();
 }
 
-KIcon
+QIcon
 NullFormat::icon() const
 {
-    return KIcon();
+    return QIcon();
 }
 
 QStringList

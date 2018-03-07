@@ -25,11 +25,10 @@
 #include "core/meta/Statistics.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN( TestMetaTrack, GUI )
+QTEST_GUILESS_MAIN( TestMetaTrack )
 
 TestMetaTrack::TestMetaTrack()
     : m_trackPath( dataPath( "/data/audio/Platz 01.mp3" ) )
@@ -47,11 +46,13 @@ TestMetaTrack::dataPath( const QString &relPath )
 
 void TestMetaTrack::initTestCase()
 {
+    AmarokConfig::instance("amarokrc");
+
     QString oldPath = m_trackPath;
-    m_trackPath = m_tempDir.name() + "TestMetaTrack-testTrack.mp3";
+    m_trackPath = m_tempDir.path() + "TestMetaTrack-testTrack.mp3";
     QVERIFY( QFile::copy( oldPath, m_trackPath ) );
 
-    m_testTrack1 = CollectionManager::instance()->trackForUrl( m_trackPath );
+    m_testTrack1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(m_trackPath) );
 
     // If the pointer is 0, it makes no sense to continue. We would crash with a qFatal().
     QVERIFY2( m_testTrack1, "The pointer to the test track is 0." );
@@ -67,7 +68,7 @@ void TestMetaTrack::testPrettyName()
 
 void TestMetaTrack::testPlayableUrl()
 {
-    QCOMPARE( m_testTrack1->playableUrl().pathOrUrl(), m_trackPath );
+    QCOMPARE( m_testTrack1->playableUrl().path(), m_trackPath );
 }
 
 void TestMetaTrack::testPrettyUrl()
@@ -77,7 +78,7 @@ void TestMetaTrack::testPrettyUrl()
 
 void TestMetaTrack::testUidUrl()
 {
-    QCOMPARE( m_testTrack1->uidUrl(), KUrl( m_trackPath ).url() );
+    QCOMPARE( m_testTrack1->uidUrl(), QUrl::fromLocalFile(m_trackPath ).url() );
 }
 
 void TestMetaTrack::testIsPlayable()
@@ -87,27 +88,27 @@ void TestMetaTrack::testIsPlayable()
 
 void TestMetaTrack::testAlbum()
 {
-    QCOMPARE( m_testTrack1->album().data()->name() , QString( "" ) );
+    QCOMPARE( m_testTrack1->album()->name() , QString( "" ) );
 }
 
 void TestMetaTrack::testArtist()
 {
-    QCOMPARE( m_testTrack1->artist().data()->name(), QString( "Free Music Charts" ) );
+    QCOMPARE( m_testTrack1->artist()->name(), QString( "Free Music Charts" ) );
 }
 
 void TestMetaTrack::testComposer()
 {
-    QCOMPARE( m_testTrack1->composer().data()->name(), QString( "" ) );
+    QCOMPARE( m_testTrack1->composer()->name(), QString( "" ) );
 }
 
 void TestMetaTrack::testGenre()
 {
-    QCOMPARE( m_testTrack1->genre().data()->name(), QString( "Vocal" ) );
+    QCOMPARE( m_testTrack1->genre()->name(), QString( "Vocal" ) );
 }
 
 void TestMetaTrack::testYear()
 {
-    QCOMPARE( m_testTrack1->year().data()->name(), QString( "2010" ) );
+    QCOMPARE( m_testTrack1->year()->name(), QString( "2010" ) );
 }
 
 void TestMetaTrack::testComment()
@@ -169,7 +170,7 @@ void TestMetaTrack::testSampleRate()
 
 void TestMetaTrack::testBitrate()
 {
-    QCOMPARE( m_testTrack1->bitrate(), 256 );
+    QCOMPARE( m_testTrack1->bitrate(), 257 );
 }
 
 void TestMetaTrack::testTrackNumber()
@@ -246,9 +247,9 @@ void TestMetaTrack::testLessThan()
 {
     Meta::TrackPtr albumTrack1, albumTrack2, albumTrack3;
 
-    albumTrack1 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track01.ogg" ) );
-    albumTrack2 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track02.ogg" ) );
-    albumTrack3 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track03.ogg" ) );
+    albumTrack1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
+    albumTrack2 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track02.ogg" )) );
+    albumTrack3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track03.ogg" )) );
 
     QVERIFY( albumTrack1 );
     QVERIFY( albumTrack2 );

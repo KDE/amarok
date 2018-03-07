@@ -31,14 +31,14 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="KPushButton" name="uninstallButton">
+      <widget class="QPushButton" name="uninstallButton">
        <property name="text">
         <string>Uninstall Script</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="KPushButton" name="installButton">
+      <widget class="QPushButton" name="installButton">
        <property name="text">
         <string>Install Local Script</string>
        </property>
@@ -85,7 +85,7 @@
       </widget>
      </item>
      <item>
-      <widget class="KPushButton" name="reloadButton">
+      <widget class="QPushButton" name="reloadButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -129,12 +129,11 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="0"/>
- <layoutfunction spacing="KDialog::spacingHint"/>
  <customwidgets>
   <customwidget>
-   <class>KPushButton</class>
+   <class>QPushButton</class>
    <extends>QPushButton</extends>
-   <header>kpushbutton.h</header>
+   <header>qpushbutton.h</header>
   </customwidget>
   <customwidget>
    <class>ScriptSelector</class>

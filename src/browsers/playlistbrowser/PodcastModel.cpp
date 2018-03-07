@@ -17,8 +17,8 @@
 #include "PodcastModel.h"
 
 #include "AmarokMimeData.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
+// #include "context/popupdropper/libpud/PopupDropper.h"
+// #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "core/podcasts/PodcastImageFetcher.h"
 #include "core/podcasts/PodcastMeta.h"
 #include "core/support/Debug.h"
@@ -26,15 +26,15 @@
 #include "playlistmanager/SyncedPodcast.h"
 #include "PodcastCategory.h"
 #include "SvgHandler.h"
-#include <ThreadWeaver/Weaver>
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KIcon>
-
 #include <QAction>
+#include <QIcon>
 #include <QInputDialog>
 #include <QListIterator>
-#include <typeinfo>
+#include <QPainter>
+
+#include <KIconEngine>
 
 using namespace Podcasts;
 
@@ -74,7 +74,7 @@ bool
 PlaylistBrowserNS::PodcastModel::isOnDisk( PodcastEpisodePtr episode ) const
 {
     bool isOnDisk = false;
-    KUrl episodeFile( episode->localUrl() );
+    QUrl episodeFile( episode->localUrl() );
 
     if( !episodeFile.isEmpty() )
     {
@@ -82,7 +82,7 @@ PlaylistBrowserNS::PodcastModel::isOnDisk( PodcastEpisodePtr episode ) const
         // reset localUrl because the file is not there.
         // FIXME: changing a podcast in innoncent-looking getter method is convoluted
         if( !isOnDisk )
-            episode->setLocalUrl( KUrl() );
+            episode->setLocalUrl( QUrl() );
     }
 
     return isOnDisk;
@@ -120,13 +120,13 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastChannelPtr &channel ) const
         // if it's a new episode draw the overlay:
         if( !emblems.isEmpty() )
             // draw the overlay the same way KIconLoader does:
-            p.drawPixmap( 2, 32 - 16 - 2, KIcon( "rating" ).pixmap( 16, 16 ) );
+            p.drawPixmap( 2, 32 - 16 - 2, QIcon::fromTheme( "rating" ).pixmap( 16, 16 ) );
         p.end();
 
         return pixmap;
     }
     else
-        return KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
+        return ( QIcon(new KIconEngine( "podcast-amarok", 0, emblems )).pixmap( 32, 32 ) );
 }
 
 QVariant
@@ -137,9 +137,9 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastEpisodePtr &episode ) const
         emblems << "go-down";
 
     if( episode->isNew() )
-        return KIcon( "rating", 0, emblems ).pixmap( 24, 24 );
+        return ( QIcon( new KIconEngine( "rating", 0, emblems )).pixmap( 24, 24 ) );
     else
-        return KIcon( "podcast-amarok", 0, emblems ).pixmap( 24, 24 );
+        return ( QIcon( new KIconEngine( "podcast-amarok", 0, emblems )).pixmap( 24, 24 ));
 }
 
 QVariant
@@ -177,7 +177,7 @@ PlaylistBrowserNS::PodcastModel::channelData( const PodcastChannelPtr &channel,
                     return channel->keywords();
                 case ImageColumn:
                 {
-                    KUrl imageUrl( PodcastImageFetcher::cachedImagePath( channel ) );
+                    QUrl imageUrl( PodcastImageFetcher::cachedImagePath( channel ) );
                     if( !QFile( imageUrl.toLocalFile() ).exists() )
                         imageUrl = channel->imageUrl();
                     return imageUrl;

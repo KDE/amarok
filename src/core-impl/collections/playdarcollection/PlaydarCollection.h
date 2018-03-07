@@ -24,7 +24,7 @@
 #include "support/Controller.h"
 #include "support/ProxyResolver.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QObject>
 #include <QString>
@@ -37,9 +37,12 @@ namespace Collections
 
     class PlaydarCollectionFactory : public CollectionFactory
     {
+        Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-playdarcollection.json")
+        Q_INTERFACES(Plugins::PluginFactory)
         Q_OBJECT
+
         public:
-            PlaydarCollectionFactory( QObject* parent, const QVariantList &args );
+            PlaydarCollectionFactory();
             virtual ~PlaydarCollectionFactory();
             
             virtual void init();
@@ -52,7 +55,7 @@ namespace Collections
 
         private:
             Playdar::Controller* m_controller;
-            QWeakPointer< PlaydarCollection > m_collection;
+            QPointer< PlaydarCollection > m_collection;
             bool m_collectionIsManaged;
     };
     
@@ -70,14 +73,14 @@ namespace Collections
             QString uidUrlProtocol() const;
             QString collectionId() const;
             QString prettyName() const;
-            KIcon icon() const;
+            QIcon icon() const;
             
             bool isWritable() const;
             bool isOrganizable() const;
             
             //Methods from Collections::TrackProvider
-            bool possiblyContainsTrack( const KUrl &url ) const;
-            Meta::TrackPtr trackForUrl( const KUrl &url );
+            bool possiblyContainsTrack( const QUrl &url ) const;
+            Meta::TrackPtr trackForUrl( const QUrl &url );
             
             //Methods from Collections::CollectionBase
             bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
@@ -94,7 +97,7 @@ namespace Collections
             QString m_collectionId;
             
             QSharedPointer< MemoryCollection > m_memoryCollection;
-            QList< QWeakPointer< Playdar::ProxyResolver > > m_proxyResolverList;
+            QList< QPointer< Playdar::ProxyResolver > > m_proxyResolverList;
     };
 }
 

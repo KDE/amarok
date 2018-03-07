@@ -25,14 +25,13 @@
 #include "core/support/Amarok.h"
 #include "core-impl/support/TagStatisticsStore.h"
 
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <KStandardDirs>
+#include <KIO/Job>
 
 #include <QDir>
 #include <QImage>
 #include <QList>
 #include <QPixmap>
+#include <QStandardPaths>
 #include <QStringList>
 
 #include <Track.h>
@@ -132,7 +131,7 @@ class Track::Private : public QObject
             }
         }
 
-    public slots:
+    public Q_SLOTS:
         void requestResult( )
         {
             if( !m_userFetch )
@@ -152,7 +151,7 @@ class Track::Private : public QObject
 
                     if( !imageUrl.isEmpty() )
                     {
-                        KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
+                        KIO::Job* job = KIO::storedGet( QUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
                         connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
                     }
                 }
@@ -263,7 +262,7 @@ public:
                 image = QImage( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ) );
             else
             {
-                QImage orgImage = QImage( KStandardDirs::locate( "data", "amarok/images/lastfm-default-cover.png" ) ); //optimize this!
+                QImage orgImage = QImage( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/lastfm-default-cover.png" ) ); //optimize this!
                 //scaled() does not change the original image but returns a scaled copy
                 image = orgImage.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
                 image.save( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ), "PNG" );
@@ -278,12 +277,12 @@ public:
         return d->albumArt;
     }
 
-    KUrl imageLocation( int size )
+    QUrl imageLocation( int size )
     {
         Q_UNUSED( size );
         if( d && !d->imageUrl.isEmpty() )
-            return KUrl( d->imageUrl );
-        return KUrl();
+            return QUrl( d->imageUrl );
+        return QUrl();
     }
 
     // return true since we handle our own fetching

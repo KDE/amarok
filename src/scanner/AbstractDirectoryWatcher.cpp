@@ -31,7 +31,8 @@ static const int WATCH_INTERVAL = 60 * 1000; // = 60 seconds
 static const int DELAYED_SCAN_INTERVAL = 2 * 1000; // = 2 seconds
 
 AbstractDirectoryWatcher::AbstractDirectoryWatcher()
-    : ThreadWeaver::Job( 0 )
+    : QObject()
+    , ThreadWeaver::Job()
     , m_delayedScanTimer( 0 )
     , m_watcher( 0 )
     , m_aborted( false )
@@ -39,24 +40,27 @@ AbstractDirectoryWatcher::AbstractDirectoryWatcher()
 {
     m_delayedScanTimer = new QTimer( this );
     m_delayedScanTimer->setSingleShot( true );
-    connect( m_delayedScanTimer, SIGNAL(timeout()), this, SLOT(delayTimeout()) );
+    connect( m_delayedScanTimer, &QTimer::timeout, this, &AbstractDirectoryWatcher::delayTimeout );
 
     // -- create a new watcher
     m_watcher = new KDirWatch( this );
 
-    connect( m_watcher, SIGNAL(dirty(QString)),
-             this, SLOT(delayedScan(QString)) );
-    connect( m_watcher, SIGNAL(created(QString)),
-             this, SLOT(delayedScan(QString)) );
-    connect( m_watcher, SIGNAL(deleted(QString)),
-             this, SLOT(delayedScan(QString)) );
+    connect( m_watcher, &KDirWatch::dirty,
+             this, &AbstractDirectoryWatcher::delayedScan );
+    connect( m_watcher, &KDirWatch::created,
+             this, &AbstractDirectoryWatcher::delayedScan );
+    connect( m_watcher, &KDirWatch::deleted,
+             this, &AbstractDirectoryWatcher::delayedScan );
 
     m_watcher->startScan( false );
 }
 
 void
-AbstractDirectoryWatcher::run()
+AbstractDirectoryWatcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
+
     // TODO: re-create the watcher if scanRecursively has changed
     QSet<QString> oldWatchDirs;
 
@@ -73,10 +77,10 @@ AbstractDirectoryWatcher::run()
             if( m_watcher->isStopped() )
             {
                 // Check if directories changed while we didn't have a watcher
-                QList<KUrl> urls;
+                QList<QUrl> urls;
                 foreach( const QString &path, collectionFolders() )
                 {
-                    urls.append( KUrl::fromPath( path ) );
+                    urls.append( QUrl::fromLocalFile( path ) );
                 }
                 emit requestScan( urls, GenericScanManager::PartialUpdateScan );
                 m_watcher->startScan( true );
@@ -117,8 +121,27 @@ AbstractDirectoryWatcher::run()
 }
 
 void
+AbstractDirectoryWatcher::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+AbstractDirectoryWatcher::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
+void
 AbstractDirectoryWatcher::abort()
 {
+    DEBUG_BLOCK
+
     m_aborted = true;
     m_waitCondition.wakeAll();
 }
@@ -167,9 +190,8 @@ AbstractDirectoryWatcher::addDirToList( const QString &directory )
 
     debug() << "addDirToList for"<<directory;
 
-    m_scanDirsRequested.insert( directory );
+    m_scanDirsRequested.insert( QUrl::fromUserInput(directory) );
 }
 
 
-#include "AbstractDirectoryWatcher.moc"
 

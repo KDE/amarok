@@ -70,13 +70,13 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics, pu
          *  It is advisable to set at least the path.
          */
         SqlTrack( Collections::SqlCollection *collection, int deviceId,
-                  const QString &rpath, int directoryId, const QString uidUrl );
+                  const QString &rpath, int directoryId, const QString &uidUrl );
         SqlTrack( Collections::SqlCollection *collection, const QStringList &queryResult );
         ~ SqlTrack();
 
         virtual QString name() const;
         virtual QString prettyName() const;
-        virtual KUrl playableUrl() const;
+        virtual QUrl playableUrl() const;
         virtual QString prettyUrl() const;
         virtual QString uidUrl() const;
         virtual QString notPlayableReason() const;
@@ -236,7 +236,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics, pu
         int m_deviceId;
         QString m_rpath;
         int m_directoryId; // only set when the urls table needs to be written
-        KUrl m_url;
+        QUrl m_url;
         QString m_uid;
 
         // the rest
@@ -375,7 +375,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
          */
         virtual QImage image( int size = 0 ) const;
 
-        virtual KUrl imageLocation( int size = 0 );
+        virtual QUrl imageLocation( int size = 0 );
         virtual void setImage( const QImage &image );
         virtual void removeImage();
         virtual void setSuppressImageAutoFetch( const bool suppress ) { m_suppressAutoFetch = suppress; }
@@ -574,12 +574,12 @@ private:
     friend class Meta::SqlTrack; // needs to call notifyObservers
 };
 
-typedef KSharedPtr<SqlTrack> SqlTrackPtr;
-typedef KSharedPtr<SqlArtist> SqlArtistPtr;
-typedef KSharedPtr<SqlAlbum> SqlAlbumPtr;
-typedef KSharedPtr<SqlComposer> SqlComposerPtr;
-typedef KSharedPtr<SqlGenre> SqlGenrePtr;
-typedef KSharedPtr<SqlYear> SqlYearPtr;
+typedef AmarokSharedPointer<SqlTrack> SqlTrackPtr;
+typedef AmarokSharedPointer<SqlArtist> SqlArtistPtr;
+typedef AmarokSharedPointer<SqlAlbum> SqlAlbumPtr;
+typedef AmarokSharedPointer<SqlComposer> SqlComposerPtr;
+typedef AmarokSharedPointer<SqlGenre> SqlGenrePtr;
+typedef AmarokSharedPointer<SqlYear> SqlYearPtr;
 
 }
 

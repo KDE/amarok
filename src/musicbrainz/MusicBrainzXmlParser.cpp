@@ -27,7 +27,8 @@
 #include <QVariantList>
 
 MusicBrainzXmlParser::MusicBrainzXmlParser( const QString &doc )
-    : ThreadWeaver::Job()
+    : QObject()
+    , ThreadWeaver::Job()
     , m_doc( "musicbrainz" )
     , m_type( 0 )
 {
@@ -35,12 +36,31 @@ MusicBrainzXmlParser::MusicBrainzXmlParser( const QString &doc )
 }
 
 void
-MusicBrainzXmlParser::run()
+MusicBrainzXmlParser::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
 
     QDomElement docElem = m_doc.documentElement();
     parseElement( docElem );
+}
+
+void
+MusicBrainzXmlParser::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+MusicBrainzXmlParser::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 int

@@ -18,11 +18,11 @@
 
 #include "core/support/Debug.h"
 
-#include <KIcon>
-#include <KLocale>
-
-#include <QLayout>
+#include <QIcon>
 #include <QMutexLocker>
+
+#include <KLocalizedString>
+
 
 CompoundProgressBar::CompoundProgressBar( QWidget *parent )
         : ProgressBar( parent )
@@ -31,7 +31,7 @@ CompoundProgressBar::CompoundProgressBar( QWidget *parent )
     m_progressDetailsWidget = new PopupWidget( parent );
     m_progressDetailsWidget->hide();
 
-    connect( cancelButton(), SIGNAL(clicked()), this, SLOT(cancelAll()) );
+    connect( cancelButton(), &QAbstractButton::clicked, this, &CompoundProgressBar::cancelAll );
 }
 
 CompoundProgressBar::~CompoundProgressBar()
@@ -53,13 +53,13 @@ void CompoundProgressBar::addProgressBar( ProgressBar *childBar, QObject *owner 
 
     m_progressDetailsWidget->reposition();
 
-    connect( childBar, SIGNAL(percentageChanged(int)),
-            SLOT(childPercentageChanged()) );
-    connect( childBar, SIGNAL(cancelled(ProgressBar*)),
-            SLOT(childBarCancelled(ProgressBar*)) );
-    connect( childBar, SIGNAL(complete(ProgressBar*)),
-            SLOT(childBarComplete(ProgressBar*)) );
-    connect( owner, SIGNAL(destroyed(QObject*)), SLOT(slotObjectDestroyed(QObject*)) );
+    connect( childBar, &ProgressBar::percentageChanged,
+             this, &CompoundProgressBar::childPercentageChanged );
+    connect( childBar, &ProgressBar::cancelled,
+             this, &CompoundProgressBar::childBarCancelled );
+    connect( childBar, &ProgressBar::complete,
+             this, &CompoundProgressBar::childBarComplete );
+    connect( owner, &QObject::destroyed, this, &CompoundProgressBar::slotObjectDestroyed );
 
     if( m_progressMap.count() == 1 )
     {

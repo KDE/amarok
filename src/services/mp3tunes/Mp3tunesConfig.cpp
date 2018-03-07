@@ -17,10 +17,9 @@
 
 #include "Mp3tunesConfig.h"
 
-#include <kdebug.h>
-#include <KConfig>
+#include "core/support/Amarok.h"
+
 #include <KConfigGroup>
-#include <KGlobal>
 
 #include <QNetworkInterface>
 
@@ -37,8 +36,8 @@ Mp3tunesConfig::~Mp3tunesConfig()
 
 void Mp3tunesConfig::load()
 {
-    kDebug( 14310 ) << "load";
-    KConfigGroup config = KGlobal::config()->group( "Service_Mp3tunes" );
+//     kDebug( 14310 ) << "load";
+    KConfigGroup config = Amarok::config( "Service_Mp3tunes" );
     m_email = config.readEntry( "email", QString() );
     m_password = config.readEntry( "password", QString() );
     m_identifier = config.readEntry( "identifier", QString() );
@@ -54,7 +53,7 @@ void Mp3tunesConfig::load()
             QString addr = iface.hardwareAddress();
             if( addr != "00:00:00:00:00:00" ) {
                 addr.remove( ':' );
-                kDebug( 14310 ) << "Using iface \"" << iface.name() << " addr: " << addr;
+//                 kDebug( 14310 ) << "Using iface \"" << iface.name() << " addr: " << addr;
                 setIdentifier( addr + m_partnerToken );
                 save();
                 break;
@@ -65,9 +64,9 @@ void Mp3tunesConfig::load()
 
 void Mp3tunesConfig::save()
 {
-    kDebug( 14310 ) << "save";
+//     kDebug( 14310 ) << "save";
     if ( m_hasChanged ) {
-        KConfigGroup config = KGlobal::config()->group( "Service_Mp3tunes" );
+        KConfigGroup config = Amarok::config( "Service_Mp3tunes" );
         config.writeEntry( "email", m_email );
         config.writeEntry( "password", m_password );
         config.writeEntry( "identifier", m_identifier );
@@ -115,7 +114,7 @@ bool Mp3tunesConfig::harmonyEnabled()
 
 void Mp3tunesConfig::setHarmonyEnabled( bool enabled )
 {
-    kDebug( 14310 ) << "set harmony";
+//     kDebug( 14310 ) << "set harmony";
     if ( enabled != m_harmonyEnabled ) {
         m_harmonyEnabled = enabled;
         m_hasChanged = true;
@@ -124,7 +123,7 @@ void Mp3tunesConfig::setHarmonyEnabled( bool enabled )
 
 void Mp3tunesConfig::setIdentifier( const QString &ident )
 {
-    kDebug( 14310 ) << "set hwaddress";
+//     kDebug( 14310 ) << "set hwaddress";
     if ( ident != m_identifier ) {
         m_identifier = ident;
         m_hasChanged = true;
@@ -133,7 +132,7 @@ void Mp3tunesConfig::setIdentifier( const QString &ident )
 
 void Mp3tunesConfig::setEmail( const QString &email )
 {
-    kDebug( 14310 ) << "set email";
+//     kDebug( 14310 ) << "set email";
     if ( email != m_email ) {
         m_email = email;
         m_hasChanged = true;
@@ -142,7 +141,7 @@ void Mp3tunesConfig::setEmail( const QString &email )
 
 void Mp3tunesConfig::setPassword( const QString &password )
 {
-    kDebug( 14310 ) << "set Password";
+//     kDebug( 14310 ) << "set Password";
     if( password != m_password ) {
         m_password = password;
         m_hasChanged = true;
@@ -151,7 +150,7 @@ void Mp3tunesConfig::setPassword( const QString &password )
 
 void Mp3tunesConfig::setPartnerToken( const QString &token )
 {
-    kDebug( 14310 ) << "set token";
+//     kDebug( 14310 ) << "set token";
     if( token != m_partnerToken ) {
         m_partnerToken = token;
         m_hasChanged = true;
@@ -160,7 +159,7 @@ void Mp3tunesConfig::setPartnerToken( const QString &token )
 
 void Mp3tunesConfig::setPin( const QString &pin )
 {
-    kDebug( 14310 ) << "set pin";
+//     kDebug( 14310 ) << "set pin";
     if( pin != m_pin ) {
         m_pin = pin;
         m_hasChanged = true;
@@ -169,7 +168,7 @@ void Mp3tunesConfig::setPin( const QString &pin )
 
 void Mp3tunesConfig::setHarmonyEmail( const QString &harmonyEmail )
 {
-    kDebug( 14310 ) << "set harmonyEmail";
+//     kDebug( 14310 ) << "set harmonyEmail";
     if( harmonyEmail != m_harmonyEmail ) {
         m_harmonyEmail = harmonyEmail;
         m_hasChanged = true;

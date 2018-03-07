@@ -33,11 +33,9 @@ const int SynchronizationAdapter::s_entriesPerQuery( 200 );
 SynchronizationAdapter::SynchronizationAdapter( const LastFmServiceConfigPtr &config )
     : m_config( config )
 {
-    connect( this, SIGNAL(startArtistSearch(int)), SLOT(slotStartArtistSearch(int)) );
-    connect( this, SIGNAL(startTrackSearch(QString,int)),
-             SLOT(slotStartTrackSearch(QString,int)) );
-    connect( this, SIGNAL(startTagSearch(QString,QString)),
-             SLOT(slotStartTagSearch(QString,QString)) );
+    connect( this, &SynchronizationAdapter::startArtistSearch, this, &SynchronizationAdapter::slotStartArtistSearch );
+    connect( this, &SynchronizationAdapter::startTrackSearch, this, &SynchronizationAdapter::slotStartTrackSearch );
+    connect( this, &SynchronizationAdapter::startTagSearch, this, &SynchronizationAdapter::slotStartTagSearch );
 }
 
 SynchronizationAdapter::~SynchronizationAdapter()
@@ -63,10 +61,10 @@ SynchronizationAdapter::description() const
                   "slows down track matching" );
 }
 
-KIcon
+QIcon
 SynchronizationAdapter::icon() const
 {
-    return KIcon( "view-services-lastfm-amarok" );
+    return QIcon::fromTheme( "view-services-lastfm-amarok" );
 }
 
 qint64
@@ -136,7 +134,7 @@ SynchronizationAdapter::slotStartArtistSearch( int page )
 {
     QString user = m_config->username();
     QNetworkReply *reply = lastfm::Library::getArtists( user, s_entriesPerQuery, page );
-    connect( reply, SIGNAL(finished()), SLOT(slotArtistsReceived()) );
+    connect( reply, &QNetworkReply::finished, this, &SynchronizationAdapter::slotArtistsReceived );
 }
 
 void
@@ -145,7 +143,7 @@ SynchronizationAdapter::slotStartTrackSearch( QString artistName, int page )
     lastfm::Artist artist( artistName );
     QString user = m_config->username();
     QNetworkReply *reply = lastfm::Library::getTracks( user, artist, s_entriesPerQuery, page );
-    connect( reply, SIGNAL(finished()), SLOT(slotTracksReceived()) );
+    connect( reply, &QNetworkReply::finished, this, &SynchronizationAdapter::slotTracksReceived );
 }
 
 void
@@ -155,7 +153,7 @@ SynchronizationAdapter::slotStartTagSearch( QString artistName, QString trackNam
     track.setArtist( artistName );
     track.setTitle( trackName );
     QNetworkReply *reply = track.getTags();
-    connect( reply, SIGNAL(finished()), SLOT(slotTagsReceived()) );
+    connect( reply, &QNetworkReply::finished, this, &SynchronizationAdapter::slotTagsReceived );
 }
 
 void

@@ -23,7 +23,7 @@
 #include "statsyncing/Controller.h"
 #include "statsyncing/TrackTuple.h"
 
-#include <threadweaver/Thread.h>
+#include <ThreadWeaver/Thread>
 
 using namespace StatSyncing;
 
@@ -33,7 +33,8 @@ static const int fuzz = denom / 2;
 SynchronizeTracksJob::SynchronizeTracksJob( const QList<TrackTuple> &tuples,
                                             const TrackList &tracksToScrobble,
                                             const Options &options, QObject *parent )
-    : Job( parent )
+    : QObject( parent )
+    , ThreadWeaver::Job()
     , m_abort( false )
     , m_tuples( tuples )
     , m_tracksToScrobble( tracksToScrobble )
@@ -49,22 +50,22 @@ SynchronizeTracksJob::abort()
 }
 
 void
-SynchronizeTracksJob::run()
+SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     emit totalSteps( ( m_tuples.size() + fuzz ) / denom );
 
     Controller *controller = Amarok::Components::statSyncingController();
     if( controller )
     {
-        connect( this, SIGNAL(scrobble(Meta::TrackPtr,double,QDateTime)),
-                 controller, SLOT(scrobble(Meta::TrackPtr,double,QDateTime)) );
+        connect( this, &SynchronizeTracksJob::scrobble,
+                 controller, &StatSyncing::Controller::scrobble );
         // we don't run an event loop, we must use direct connection for controller to talk to us
-        connect( controller, SIGNAL(trackScrobbled(ScrobblingServicePtr,Meta::TrackPtr)),
-                 SLOT(slotTrackScrobbled(ScrobblingServicePtr,Meta::TrackPtr)),
-                 Qt::DirectConnection );
-        connect( controller, SIGNAL(scrobbleFailed(ScrobblingServicePtr,Meta::TrackPtr,int)),
-                 SLOT(slotScrobbleFailed(ScrobblingServicePtr,Meta::TrackPtr,int)),
-                 Qt::DirectConnection );
+        connect( controller, &StatSyncing::Controller::trackScrobbled,
+                 this, &SynchronizeTracksJob::slotTrackScrobbled, Qt::DirectConnection );
+        connect( controller, &StatSyncing::Controller::scrobbleFailed,
+                 this, &SynchronizeTracksJob::slotScrobbleFailed, Qt::DirectConnection );
     }
     else
         warning() << __PRETTY_FUNCTION__ << "StatSyncing::Controller not available!";
@@ -111,14 +112,27 @@ SynchronizeTracksJob::run()
 
     if( !m_tracksToScrobble.isEmpty() )
         // wait 3 seconds so that we have chance to catch slotTrackScrobbled()..
-        thread()->msleep( 3000 );
+        QObject::thread()->msleep( 3000 );
     if( controller )
-    {
-        disconnect( controller, SIGNAL(trackScrobbled(ScrobblingServicePtr,Meta::TrackPtr)), this, 0 );
-        disconnect( controller, SIGNAL(scrobbleFailed(ScrobblingServicePtr,Meta::TrackPtr,int)), this, 0 );
-    }
+        disconnect( controller, &StatSyncing::Controller::trackScrobbled, this, 0 );
+    disconnect( controller, &StatSyncing::Controller::scrobbleFailed, this, 0 );
 
     emit endProgressOperation( this );
+}
+
+void SynchronizeTracksJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void SynchronizeTracksJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void

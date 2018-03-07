@@ -20,23 +20,22 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistController.h"
 
-#include <KLocale>
-#include <KIcon>
+#include <KLocalizedString>
+#include <QIcon>
 
 SimilarArtistsAction::SimilarArtistsAction( QObject *parent )
     : GlobalCollectionArtistAction( i18n( "Play Similar Artists from Last.fm" ), parent )
 {
-    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
+    connect( this, &SimilarArtistsAction::triggered, this, &SimilarArtistsAction::slotTriggered );
 
-    setIcon( KIcon("view-services-lastfm-amarok") );
+    setIcon( QIcon::fromTheme("view-services-lastfm-amarok") );
     setProperty( "popupdropper_svg_id", "lastfm" );
 }
 
 void SimilarArtistsAction::slotTriggered()
 {
     const QString url = "lastfm://artist/" + artist()->prettyName() + "/similarartists";
-    Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+    Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( QUrl( url ) );
     The::playlistController()->insertOptioned( lastfmtrack, Playlist::OnPlayMediaAction );
 }
 
-#include "SimilarArtistsAction.moc"

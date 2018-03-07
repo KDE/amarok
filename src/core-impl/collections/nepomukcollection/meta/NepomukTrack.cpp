@@ -61,7 +61,7 @@ NepomukTrack::name() const
     return m_name;
 }
 
-KUrl
+QUrl
 NepomukTrack::playableUrl() const
 {
     return m_playableUrl;

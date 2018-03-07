@@ -23,8 +23,7 @@ class TestImporterManager : public ImporterMocks
 {
     Q_OBJECT
 
-private slots:
-    void initShouldSetInfo();
+private Q_SLOTS:
     void initShouldLoadSettings();
     void creatingProviderShouldSetConfigAndParent();
     void creatingProviderShouldSaveSettings();

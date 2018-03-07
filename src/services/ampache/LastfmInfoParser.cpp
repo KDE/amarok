@@ -21,7 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QNetworkReply>
 
@@ -39,7 +39,7 @@ void LastfmInfoParser::getInfo(Meta::TrackPtr track)
 
     m_jobs[ "getTrackInfo" ] = lastfm::ws::post( query );
 
-    connect( m_jobs[ "getTrackInfo" ], SIGNAL(finished()), SLOT(onGetTrackInfo()) );
+    connect( m_jobs[ "getTrackInfo" ], &QNetworkReply::finished, this, &LastfmInfoParser::onGetTrackInfo );
 }
 
 void LastfmInfoParser::onGetTrackInfo()
@@ -87,7 +87,7 @@ void LastfmInfoParser::getInfo(Meta::AlbumPtr album)
 
     m_jobs[ "getAlbumInfo" ] = lastfm::ws::post( query );
 
-    connect( m_jobs[ "getAlbumInfo" ], SIGNAL(finished()), SLOT(onGetAlbumInfo()) );
+    connect( m_jobs[ "getAlbumInfo" ], &QNetworkReply::finished, this, &LastfmInfoParser::onGetAlbumInfo );
 }
 
 
@@ -139,7 +139,7 @@ void LastfmInfoParser::getInfo(Meta::ArtistPtr artist)
 
     m_jobs[ "getArtistInfo" ] = lastfm::ws::post( query );
 
-    connect( m_jobs[ "getArtistInfo" ], SIGNAL(finished()), SLOT(onGetArtistInfo()) );
+    connect( m_jobs[ "getArtistInfo" ], &QNetworkReply::finished, this, &LastfmInfoParser::onGetArtistInfo );
 
 }
 
@@ -183,4 +183,3 @@ void LastfmInfoParser::onGetArtistInfo()
     m_jobs["getArtistInfo"] = 0;
 }
 
-#include "LastfmInfoParser.moc"

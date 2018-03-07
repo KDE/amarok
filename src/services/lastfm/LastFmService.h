@@ -22,6 +22,7 @@
 #include "services/lastfm/LastFmServiceConfig.h"
 #include "statsyncing/Provider.h"
 
+#include <QSharedPointer>
 
 namespace Collections {
     class LastFmServiceCollection;
@@ -30,23 +31,26 @@ namespace Dynamic {
     class AbstractBiasFactory;
 }
 class ScrobblerAdapter;
-class KLineEdit;
+class QLineEdit;
 class QComboBox;
 class QLabel;
 class QNetworkReply;
+class QPixmap;
 
 class LastFmServiceFactory : public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_lastfm.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
 public:
-    LastFmServiceFactory( QObject *parent, const QVariantList &args );
+    LastFmServiceFactory();
 
     virtual void init();
     virtual QString name();
     virtual KConfigGroup config();
 
-    virtual bool possiblyContainsTrack( const KUrl &url ) const;
+    virtual bool possiblyContainsTrack( const QUrl &url ) const;
 };
 
 class LastFmService : public ServiceBase
@@ -63,8 +67,8 @@ public:
 
     void love( Meta::TrackPtr track );
 
-private slots:
-    void love();
+private Q_SLOTS:
+    void loveCurrentTrack();
 
     void playCustomStation();
     void updateEditHint( int index );
@@ -76,10 +80,10 @@ private slots:
 
 private:
     void continueReconfiguring();
-    void playLastFmStation( const KUrl &url );
+    void playLastFmStation( const QUrl &url );
     void updateProfileInfo();
 
-    QExplicitlySharedDataPointer<ScrobblerAdapter> m_scrobbler;
+    QSharedPointer<ScrobblerAdapter> m_scrobbler;
     StatSyncing::ProviderPtr m_synchronizationAdapter;
     Collections::LastFmServiceCollection *m_collection;
     QList<Dynamic::AbstractBiasFactory *> m_biasFactories;
@@ -90,7 +94,7 @@ private:
     QLabel *m_profile;
     QLabel *m_userinfo;
     QComboBox *m_globalComboBox;
-    KLineEdit *m_customStationEdit;
+    QLineEdit *m_customStationEdit;
     QPushButton *m_customStationButton;
     QComboBox *m_customStationCombo;
 

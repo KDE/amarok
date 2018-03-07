@@ -16,20 +16,9 @@
 
 #include "core/support/PluginFactory.h"
 
-Plugins::PluginFactory::PluginFactory( QObject *parent, const QVariantList &args )
-    : QObject( parent )
-    , m_initialized( false )
-{
-    Q_UNUSED( args )
-}
+Plugins::PluginFactory::PluginFactory()
+    : m_initialized( false )
+{}
 
 Plugins::PluginFactory::~PluginFactory()
 {}
-
-KPluginInfo
-Plugins::PluginFactory::info() const
-{
-    return m_info;
-}
-
-#include "PluginFactory.moc"

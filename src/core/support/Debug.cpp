@@ -21,9 +21,7 @@
 #include "core/support/Debug.h"
 #include "core/support/Debug_p.h"
 
-#include <KConfigGroup>
-#include <KCmdLineArgs>
-#include <KGlobal>
+#include <KConfigCore/KConfigGroup>
 
 #include <QApplication>
 #include <QMutex>
@@ -46,6 +44,8 @@ using namespace Debug;
 static bool s_debugEnabled = false;
 static bool s_debugColorsEnabled = false;
 
+Q_GLOBAL_STATIC( NoDebugStream, s_noDebugStream )
+
 IndentPrivate::IndentPrivate(QObject* parent)
     : QObject(parent)
 {
@@ -55,7 +55,7 @@ IndentPrivate::IndentPrivate(QObject* parent)
 /**
  * We can't use a statically instantiated QString for the indent, because
  * static namespaces are unique to each dlopened library. So we piggy back
- * the QString on the KApplication instance
+ * the QString on the QApplication instance
  */
 IndentPrivate* IndentPrivate::instance()
 {
@@ -143,7 +143,7 @@ void Debug::setColoredDebug( bool enable )
 QDebug Debug::dbgstream( DebugLevel level )
 {
     if( !debugEnabled() )
-        return kDebugDevNull();
+        return QDebug( s_noDebugStream );
 
     mutex.lock();
     const QString currentIndent = indent();
@@ -162,7 +162,7 @@ void Debug::perfLog( const QString &message, const QString &func )
     if( !debugEnabled() )
         return;
 
-    QString str = QString( "MARK: %1: %2 %3" ).arg( KCmdLineArgs::appName(), func, message );
+    QString str = QString( "MARK: %1: %2 %3" ).arg( qApp->applicationName(), func, message );
     access( str.toLocal8Bit().data(), F_OK );
 #endif
 }

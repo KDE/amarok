@@ -19,10 +19,13 @@
 
 #include "core/support/Amarok.h"
 
-#include <KIcon>
-#include <KLocale>
-
 #include <QAction>
+#include <QIcon>
+#include <QStandardPaths>
+
+#include <KLocalizedString>
+
+
 using namespace Meta;
 
 Mp3TunesTrack::Mp3TunesTrack( const QString& title )
@@ -43,7 +46,7 @@ void  Mp3TunesTrack::setType( const QString &type )
 
 QString Mp3TunesTrack::sourceName() { return "MP3tunes.com"; }
 QString Mp3TunesTrack::sourceDescription() { return i18n( "Online music locker where you can safely store and access your music: http://mp3tunes.com" ); }
-QPixmap Mp3TunesTrack::emblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-mp3tunes.png" );  }
+QPixmap Mp3TunesTrack::emblem()  { return  QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-mp3tunes.png" );  }
 
 //// Mp3TunesAlbum ////
 

@@ -38,21 +38,21 @@ class SynchronizationAdapter : public StatSyncing::Provider
         virtual QString id() const;
         virtual QString prettyName() const;
         virtual QString description() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
         virtual qint64 reliableTrackMetaData() const;
         virtual qint64 writableTrackStatsData() const;
         virtual Preference defaultPreference();
         virtual QSet<QString> artists();
         virtual StatSyncing::TrackList artistTracks( const QString &artistName );
 
-    signals:
+    Q_SIGNALS:
         /// hacks to create and start Last.fm queries in main eventloop
         // Last.fm indexes from 1!
         void startArtistSearch( int page );
         void startTrackSearch( QString artistName, int page );
         void startTagSearch( QString artistName, QString trackName );
 
-    private slots:
+    private Q_SLOTS:
         /// @see startArtistSearch
         void slotStartArtistSearch( int page );
         void slotStartTrackSearch( QString artistName, int page );

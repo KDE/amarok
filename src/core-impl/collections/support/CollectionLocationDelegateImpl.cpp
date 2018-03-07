@@ -23,7 +23,7 @@
 #include "core/support/Components.h"
 #include "transcoding/TranscodingAssistantDialog.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KMessageBox>
 
 using namespace Collections;

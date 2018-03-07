@@ -21,9 +21,9 @@
 #include "libattica-ocsclient/providerinitjob.h"
 #include "libattica-ocsclient/personjob.h"
 
-#include <KAction>
+#include <QAction>
 #include <KRun>
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -92,7 +92,7 @@ OcsPersonItem::init()
 
     if( !m_person->emailAddress().isEmpty() )
     {
-        KAction *email = new KAction( KIcon( "internet-mail" ), i18n("Email contributor"), this );
+        QAction *email = new QAction( QIcon::fromTheme( "internet-mail" ), i18n("Email contributor"), this );
         email->setToolTip( m_person->emailAddress() );
         email->setData( QString( "mailto:" + m_person->emailAddress() ) );
         m_iconsBar->addAction( email );
@@ -100,14 +100,14 @@ OcsPersonItem::init()
 
     if( !m_person->webAddress().isEmpty() )
     {
-        KAction *homepage = new KAction( KIcon( "applications-internet" ), i18n("Visit contributor's homepage"), this );
+        QAction *homepage = new QAction( QIcon::fromTheme( "applications-internet" ), i18n("Visit contributor's homepage"), this );
         homepage->setToolTip( m_person->webAddress() );
         homepage->setData( m_person->webAddress() );
         m_iconsBar->addAction( homepage );
     }
 
-    connect( m_iconsBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(launchUrl(QAction*)) );
-    connect( m_snBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(launchUrl(QAction*)) );
+    connect( m_iconsBar, &KToolBar::actionTriggered, this, &OcsPersonItem::launchUrl );
+    connect( m_snBar, &KToolBar::actionTriggered, this, &OcsPersonItem::launchUrl );
     m_textLabel->setText( m_aboutText );
 }
 
@@ -123,8 +123,8 @@ OcsPersonItem::name()
 void
 OcsPersonItem::launchUrl( QAction *action ) //SLOT
 {
-    KUrl url = KUrl( action->data().toString() );
-    KRun::runUrl( url, "text/html", 0, false );
+    QUrl url = QUrl( action->data().toString() );
+    KRun::runUrl( url, "text/html", nullptr, KRun::RunExecutables, QString() );
 }
 
 void
@@ -144,7 +144,7 @@ OcsPersonItem::switchToOcs( const AmarokAttica::Provider &provider )
             return;
 
         personJob = provider.requestPerson( m_ocsUsername );
-        connect( personJob, SIGNAL(result(KJob*)), this, SLOT(onJobFinished(KJob*)) );
+        connect( personJob, &AmarokAttica::PersonJob::result, this, &OcsPersonItem::onJobFinished );
         emit ocsFetchStarted();
         m_state = Online;
     }
@@ -213,7 +213,7 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
         }
     }
 
-    KAction *visitProfile = new KAction( KIcon( QPixmap( KStandardDirs::locate( "data",
+    QAction *visitProfile = new QAction( QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, 
             "amarok/images/opendesktop-22.png" ) ) ), i18n( "Visit %1's openDesktop.org profile", ocsPerson.firstName() ), this );
 
     visitProfile->setToolTip( i18n( "Visit %1's profile on openDesktop.org", ocsPerson.firstName() ) );
@@ -244,34 +244,34 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
         {
             QString type = (*entry).first;
             QString url = (*entry).second;
-            KIcon icon;
+            QIcon icon;
             QString text;
 
             if( type == "Blog" )
             {
-                icon = KIcon( "kblogger" );
+                icon = QIcon::fromTheme( "kblogger" );
                 text = i18n( "Visit contributor's blog" );
             }
             else if( type == "delicious" )
             {
-                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-delicious.png" ) ) );
+                icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-delicious.png" ) ) );
                 text = i18n( "Visit contributor's del.icio.us profile" );
             }
             else if( type == "Digg" )
             {
-                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-digg.png" ) ) );
+                icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-digg.png" ) ) );
                 text = i18n( "Visit contributor's Digg profile" );
             }
             else if( type == "Facebook" )
             {
-                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-facebook.png" ) ) );
+                icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-facebook.png" ) ) );
                 text = i18n( "Visit contributor's Facebook profile" );
             }
             else if( type == "Homepage" || type == "other" || ( type.isEmpty() && !url.isEmpty() ) )
             {
                 if( fillHomepageFromOcs )
                 {
-                    KAction *homepage = new KAction( KIcon( "applications-internet" ), i18n("Visit contributor's homepage"), this );
+                    QAction *homepage = new QAction( QIcon::fromTheme( "applications-internet" ), i18n("Visit contributor's homepage"), this );
                     homepage->setToolTip( url );
                     homepage->setData( url );
                     m_iconsBar->addAction( homepage );
@@ -280,7 +280,7 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
                 }
                 if( type == "other" && url.contains( "last.fm/" ) )     //HACK: assign a last.fm icon if the URL contains last.fm
                 {
-                    icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-lastfm.png" ) ) );
+                    icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-lastfm.png" ) ) );
                     text = i18n( "Visit contributor's Last.fm profile" );
                 }
                 else
@@ -288,57 +288,57 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
             }
             else if( type == "LinkedIn" )
             {
-                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-linkedin.png" ) ) );
+                icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-linkedin.png" ) ) );
                 text = i18n( "Visit contributor's LinkedIn profile" );
             }
             else if( type == "MySpace" )
             {
-                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-myspace.png" ) ) );
+                icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-myspace.png" ) ) );
                 text = i18n( "Visit contributor's MySpace homepage" );
             }
             else if( type == "Reddit" )
             {
-                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-reddit.png" ) ) );
+                icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-reddit.png" ) ) );
                 text = i18n( "Visit contributor's Reddit profile" );
             }
             else if( type == "YouTube" )
             {
-                icon = KIcon( "dragonplayer" ); //FIXME: icon
+                icon = QIcon( "dragonplayer" ); //FIXME: icon
                 text = i18n( "Visit contributor's YouTube profile" );
             }
             else if( type == "Twitter" )
             {
-                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-twitter.png" ) ) );
+                icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-twitter.png" ) ) );
                 text = i18n( "Visit contributor's Twitter feed" );
             }
             else if( type == "Wikipedia" )
             {
-                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-wikipedia.png" ) ) );
+                icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-wikipedia.png" ) ) );
                 text = i18n( "Visit contributor's Wikipedia profile" );
             }
             else if( type == "Xing" )
             {
-                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-xing.png" ) ) );
+                icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-xing.png" ) ) );
                 text = i18n( "Visit contributor's Xing profile" );
             }
             else if( type == "identi.ca" )
             {
-                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-identica.png" ) ) );
+                icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-identica.png" ) ) );
                 text = i18n( "Visit contributor's identi.ca feed" );
             }
             else if( type == "libre.fm" )
             {
-                icon = KIcon( "juk" );  //FIXME: icon
+                icon = QIcon( "juk" );  //FIXME: icon
                 text = i18n( "Visit contributor's libre.fm profile" );
             }
             else if( type == "StackOverflow" )
             {
-                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-stackoverflow.png" ) ) );
+                icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-stackoverflow.png" ) ) );
                 text = i18n( "Visit contributor's StackOverflow profile" );
             }
             else
                 break;
-            KAction *action = new KAction( icon, text, this );
+            QAction *action = new QAction( icon, text, this );
             action->setToolTip( url );
             action->setData( url );
             m_snBar->addAction( action );

@@ -16,6 +16,8 @@
  
 #include "GlobalCurrentTrackActions.h"
 
+#include <QAction>
+
 
 namespace The
 {

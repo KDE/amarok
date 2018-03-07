@@ -17,9 +17,10 @@
 #ifndef TESTSQLTRACK_H
 #define TESTSQLTRACK_H
 
-#include <QtTest/QtTest>
+#include <QSharedPointer>
+#include <QtTest>
 
-#include <KTempDir>
+#include <QTemporaryDir>
 
 class MySqlEmbeddedStorage;
 class SqlRegistry;
@@ -38,7 +39,7 @@ class TestSqlTrack : public QObject
 public:
     TestSqlTrack();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -65,8 +66,8 @@ private:
     void getAllValues( Meta::SqlTrack *track );
 
     Collections::SqlCollection *m_collection;
-    MySqlEmbeddedStorage *m_storage;
-    KTempDir *m_tmpDir;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
+    QTemporaryDir *m_tmpDir;
 };
 
 #endif // TESTSQLTRACK_H

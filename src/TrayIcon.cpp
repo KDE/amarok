@@ -21,6 +21,7 @@
 
 #include "TrayIcon.h"
 
+#include "App.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "SvgHandler.h"
@@ -32,16 +33,14 @@
 #include "core/support/Amarok.h"
 #include "playlist/PlaylistActions.h"
 
-#include <KAboutData>
-#include <KAction>
-#include <KCmdLineArgs>
-#include <KLocale>
-#include <KMenu>
-#include <KStandardDirs>
+#include <KLocalizedString>
+#include <KIconLoader>
 
 #include <QAction>
 #include <QFontMetrics>
+#include <QMenu>
 #include <QPixmap>
+#include <QStandardPaths>
 #include <QToolTip>
 
 #ifdef Q_WS_MAC
@@ -49,8 +48,8 @@
 #endif
 
 Amarok::TrayIcon::TrayIcon( QObject *parent )
-        : KStatusNotifierItem( parent )
-        , m_track( The::engineController()->currentTrack() )
+    : KStatusNotifierItem( parent )
+    , m_track( The::engineController()->currentTrack() )
 {
     PERF_LOG( "Beginning TrayIcon Constructor" );
     KActionCollection* const ac = Amarok::actionCollection();
@@ -87,32 +86,31 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     updateMenu();
 
     const EngineController* engine = The::engineController();
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-             this, SLOT(trackPlaying(Meta::TrackPtr)) );
-    connect( engine, SIGNAL(stopped(qint64,qint64)),
-             this, SLOT(stopped()) );
-    connect( engine, SIGNAL(paused()),
-             this, SLOT(paused()) );
+    connect( engine, &EngineController::trackPlaying,
+             this, &TrayIcon::trackPlaying );
+    connect( engine, &EngineController::stopped,
+             this, &TrayIcon::stopped );
+    connect( engine, &EngineController::paused,
+             this, &TrayIcon::paused );
 
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
-             this, SLOT(metadataChanged(Meta::TrackPtr)) );
+    connect( engine, &EngineController::trackMetadataChanged,
+             this, &TrayIcon::trackMetadataChanged );
 
-    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
-             this, SLOT(metadataChanged(Meta::AlbumPtr)) );
+    connect( engine, &EngineController::albumMetadataChanged,
+             this, &TrayIcon::albumMetadataChanged );
 
-    connect( engine, SIGNAL(volumeChanged(int)),
-             this, SLOT(updateToolTip()) );
+    connect( engine, &EngineController::volumeChanged,
+             this, &TrayIcon::updateToolTip );
 
-    connect( engine, SIGNAL(muteStateChanged(bool)),
-             this, SLOT(updateToolTip()) );
+    connect( engine, &EngineController::muteStateChanged,
+             this, &TrayIcon::updateToolTip );
 
-    connect( engine, SIGNAL(playbackStateChanged()),
-             this, SLOT(updateOverlayIcon()) );
+    connect( engine, &EngineController::playbackStateChanged,
+             this, &TrayIcon::updateOverlayIcon );
 
-    connect( this, SIGNAL(scrollRequested(int,Qt::Orientation)),
-             SLOT(slotScrollRequested(int,Qt::Orientation)) );
-    connect( this, SIGNAL(secondaryActivateRequested(QPoint)),
-             The::engineController(), SLOT(playPause()) );
+    connect( this, &TrayIcon::scrollRequested, this, &TrayIcon::slotScrollRequested );
+    connect( this, &TrayIcon::secondaryActivateRequested,
+             The::engineController(), &EngineController::playPause );
 }
 
 void
@@ -172,12 +170,12 @@ Amarok::TrayIcon::updateToolTip()
             QString stars;
             for( int i = 0; i < rating / 2; ++i )
                 stars += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                        .arg( KStandardDirs::locate( "data", "amarok/images/star.png" ) )
+                        .arg( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/star.png" ) )
                         .arg( QFontMetrics( QToolTip::font() ).height() )
                         .arg( QFontMetrics( QToolTip::font() ).height() );
             if( rating % 2 )
                 stars += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                        .arg( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) )
+                        .arg( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/smallstar.png" ) )
                         .arg( QFontMetrics( QToolTip::font() ).height() )
                         .arg( QFontMetrics( QToolTip::font() ).height() );
 
@@ -197,7 +195,7 @@ Amarok::TrayIcon::updateToolTip()
     }
     else
     {
-        setToolTipTitle( KCmdLineArgs::aboutData()->programName() );
+        setToolTipTitle( pApp->applicationDisplayName() );
         setToolTipSubTitle( The::engineController()->prettyNowPlaying( false ) );
     }
 }
@@ -227,7 +225,7 @@ Amarok::TrayIcon::stopped()
 }
 
 void
-Amarok::TrayIcon::metadataChanged( Meta::TrackPtr track )
+Amarok::TrayIcon::trackMetadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
 
@@ -236,7 +234,7 @@ Amarok::TrayIcon::metadataChanged( Meta::TrackPtr track )
 }
 
 void
-Amarok::TrayIcon::metadataChanged( Meta::AlbumPtr album )
+Amarok::TrayIcon::albumMetadataChanged( Meta::AlbumPtr album )
 {
     Q_UNUSED( album )
 
@@ -252,6 +250,17 @@ Amarok::TrayIcon::slotScrollRequested( int delta, Qt::Orientation orientation )
     The::engineController()->increaseVolume( delta / Amarok::VOLUME_SENSITIVITY );
 }
 
+QAction*
+Amarok::TrayIcon::action( const QString& name, QMap<QString, QAction*> actionByName )
+{
+  QAction* action = 0L;
+
+  if ( !name.isEmpty() )
+    action = actionByName.value(name);
+
+  return action;
+}
+
 void
 Amarok::TrayIcon::updateMenu()
 {
@@ -264,6 +273,13 @@ Amarok::TrayIcon::updateMenu()
             delete action;
         }
     }
+
+    QMap<QString, QAction*> actionByName;
+    foreach (QAction* action, actionCollection())
+    {
+        actionByName.insert(action->text(), action);
+    }
+
     m_extraActions.clear();
 
     contextMenu()->removeAction( m_separator.data() );
@@ -292,19 +308,19 @@ Amarok::TrayIcon::updateMenu()
 
     // second statement checks if the menu has already been populated (first startup), if not: do it
     if( m_extraActions.count() > 0 ||
-        contextMenu()->actions().last() != actionCollection()->action( "file_quit" ) )
+        contextMenu()->actions().last() != actionByName.value( "file_quit" ) )
     {
         // remove the 2 bottom items, so we can push them to the bottom again
-        contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
-        contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
+        contextMenu()->removeAction( action( "file_quit", actionByName ) );
+        contextMenu()->removeAction( action( "minimizeRestore", actionByName ) );
 
         foreach( QAction* action, m_extraActions )
             contextMenu()->addAction( action );
 
         m_separator = contextMenu()->addSeparator();
         // readd
-        contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
-        contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
+        contextMenu()->addAction( action( "minimizeRestore", actionByName  ) );
+        contextMenu()->addAction( action( "file_quit", actionByName  ) );
     }
 }
 
@@ -319,4 +335,3 @@ Amarok::TrayIcon::updateOverlayIcon()
         setOverlayIconByName( QString() );
 }
 
-#include "TrayIcon.moc"

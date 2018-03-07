@@ -27,9 +27,9 @@
 #include "core/support/Debug.h"
 
 #include <QImage>
+#include <QNetworkConfigurationManager>
 
-#include <KLocale>
-#include <Solid/Networking>
+#include <KLocalizedString>
 
 using namespace Meta;
 
@@ -202,16 +202,10 @@ Track::isPlayable() const
 QString
 Track::networkNotPlayableReason() const
 {
-    switch( Solid::Networking::status() )
-    {
-        case Solid::Networking::Unconnected:
-        case Solid::Networking::Disconnecting:
-        case Solid::Networking::Connecting:
-            return i18n( "No network connection" );
-        case Solid::Networking::Unknown:
-        case Solid::Networking::Connected:
-            return QString();
-    }
+    QNetworkConfigurationManager mgr;
+    if( !mgr.isOnline() )
+        return i18n( "No network connection" );
+
     return QString();
 }
 

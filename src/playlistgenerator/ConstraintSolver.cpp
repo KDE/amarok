@@ -16,10 +16,6 @@
 
 #define DEBUG_PREFIX "APG::ConstraintSolver"
 
-// WORKAROUND for QTBUG-25960. Required for Qt versions < 4.8.5 in combination with libc++.
-#define QT_NO_STL 1
-    #include <qiterator.h>
-#undef QT_NO_STL
 
 #include "ConstraintSolver.h"
 
@@ -33,12 +29,14 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistModel.h"
 
+#include <KLocalizedString>
 #include <KRandom>
+
 #include <QHash>
 #include <QMutexLocker>
 #include <QStringList>
 #include <QTimer>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/ThreadWeaver>
 
 #include <algorithm> // STL algorithms
 #include <cmath>
@@ -47,7 +45,9 @@
 const int APG::ConstraintSolver::QUALITY_RANGE = 10;
 
 APG::ConstraintSolver::ConstraintSolver( ConstraintNode* r, int qualityFactor )
-        : m_satisfactionThreshold( 0.95 )
+        : QObject()
+        , ThreadWeaver::Job()
+        , m_satisfactionThreshold( 0.95 )
         , m_finalSatisfaction( 0.0 )
         , m_constraintTreeRoot( r )
         , m_domainReductionFailed( false )
@@ -72,8 +72,10 @@ APG::ConstraintSolver::ConstraintSolver( ConstraintNode* r, int qualityFactor )
     if ( m_qm ) {
         debug() << "New ConstraintSolver with serial number" << m_serialNumber;
         m_qm->setQueryType( Collections::QueryMaker::Track );
-        connect( m_qm, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(receiveQueryMakerData(Meta::TrackList)), Qt::QueuedConnection );
-        connect( m_qm, SIGNAL(queryDone()), this, SLOT(receiveQueryMakerDone()), Qt::QueuedConnection );
+        connect( m_qm, &Collections::QueryMaker::newTracksReady,
+                 this, &APG::ConstraintSolver::receiveQueryMakerData, Qt::QueuedConnection );
+        connect( m_qm, &Collections::QueryMaker::queryDone,
+                 this, &APG::ConstraintSolver::receiveQueryMakerDone, Qt::QueuedConnection );
         m_constraintTreeRoot->initQueryMaker( m_qm );
         m_qm->run();
     } else {
@@ -135,8 +137,11 @@ APG::ConstraintSolver::success() const
 }
 
 void
-APG::ConstraintSolver::run()
+APG::ConstraintSolver::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
+
     if ( !m_readyToRun ) {
         error() << "DANGER WILL ROBINSON!  A ConstraintSolver (serial no:" << m_serialNumber << ") tried to run before its QueryMaker finished!";
         m_abortRequested = true;
@@ -172,10 +177,14 @@ APG::ConstraintSolver::run()
             break;
         }
     }
-    debug() << "solution at" << (void*)(best);
-    
-    m_solvedPlaylist = best->mid( 0 );
-    m_finalSatisfaction = m_constraintTreeRoot->satisfaction( m_solvedPlaylist );
+
+    if( best )
+    {
+        debug() << "solution at" << (void*)(best);
+
+        m_solvedPlaylist = best->mid( 0 );
+        m_finalSatisfaction = m_constraintTreeRoot->satisfaction( m_solvedPlaylist );
+    }
 
     /* clean up */
     Population::iterator it = population.begin();
@@ -185,6 +194,21 @@ APG::ConstraintSolver::run()
     }
 
     emit endProgressOperation( this );
+}
+
+void APG::ConstraintSolver::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void APG::ConstraintSolver::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void
@@ -217,8 +241,10 @@ APG::ConstraintSolver::receiveQueryMakerDone()
         // need a new query maker without constraints
         m_qm = CollectionManager::instance()->queryMaker();
         if ( m_qm ) {
-            connect( m_qm, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(receiveQueryMakerData(Meta::TrackList)), Qt::QueuedConnection );
-            connect( m_qm, SIGNAL(queryDone()), this, SLOT(receiveQueryMakerDone()), Qt::QueuedConnection );
+            connect( m_qm, &Collections::QueryMaker::newTracksReady,
+                     this, &APG::ConstraintSolver::receiveQueryMakerData, Qt::QueuedConnection );
+            connect( m_qm, &Collections::QueryMaker::queryDone,
+                     this, &APG::ConstraintSolver::receiveQueryMakerDone, Qt::QueuedConnection );
 
             m_qm->setQueryType( Collections::QueryMaker::Track );
             m_qm->run();

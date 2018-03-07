@@ -16,15 +16,15 @@ check_include_files(gcrypt.h HAVE_GCRYPT_H)
 
 if (HAVE_GCRYPT_H)
    set(LIBGCRYPT_HEADERS_FOUND TRUE)
-endif (HAVE_GCRYPT_H)
+endif ()
 
 if (LIBGCRYPT_HEADERS_FOUND)
    find_library(LIBGCRYPT_LIBS NAMES gcrypt )
-endif (LIBGCRYPT_HEADERS_FOUND)
+endif ()
 
 if (LIBGCRYPT_LIBS)
    set(LIBGCRYPT_FOUND TRUE)
    message(STATUS "Libgcrypt found: ${LIBGCRYPT_LIBS}")
 elseif (Libgcrypt_FIND_REQUIRED)
    message(FATAL_ERROR "Could not find Libgcrypt")
-endif (LIBGCRYPT_LIBS)
+endif ()

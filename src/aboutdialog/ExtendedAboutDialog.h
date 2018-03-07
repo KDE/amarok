@@ -28,26 +28,24 @@
 #include "OcsPersonListWidget.h"
 #include "AnimatedBarWidget.h"
 
-#include <KAboutData>
-#include <kdialog.h>
-#include <QWeakPointer>
+#include <QDialog>
+#include <QPointer>
 
-class AMAROK_EXPORT ExtendedAboutDialog : public KDialog
+class AMAROK_EXPORT ExtendedAboutDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ExtendedAboutDialog( const KAboutData *aboutData, const OcsData *ocsData, QWidget *parent = 0 );
+    explicit ExtendedAboutDialog( const KAboutData aboutData, const OcsData *ocsData, QWidget *parent = 0 );
     virtual ~ExtendedAboutDialog();
 
-private slots:
+private Q_SLOTS:
     void switchToOcsWidgets();
     void onProviderFetched( KJob *job );
+    void showLicense( const QString &number );
 
 private:
     class Private;
     Private* const d;
-
-    Q_PRIVATE_SLOT( d, void _k_showLicense(const QString&) )
 
     Q_DISABLE_COPY( ExtendedAboutDialog )
 
@@ -55,23 +53,38 @@ private:
 
 //Authors:
     QString m_authorPageTitle;
-    QWeakPointer<AnimatedBarWidget> m_showOcsAuthorButton;
-    QWeakPointer<QWidget> m_authorWidget;
-    QWeakPointer<OcsPersonListWidget> m_authorListWidget;
+    QPointer<AnimatedBarWidget> m_showOcsAuthorButton;
+    QPointer<QWidget> m_authorWidget;
+    QPointer<OcsPersonListWidget> m_authorListWidget;
     bool m_isOfflineAuthorWidget;
 
 //Contributors:
-    QWeakPointer<AnimatedBarWidget> m_showOcsCreditButton;
-    QWeakPointer<QWidget> m_creditWidget;
-    QWeakPointer<OcsPersonListWidget> m_creditListWidget;
+    QPointer<AnimatedBarWidget> m_showOcsCreditButton;
+    QPointer<QWidget> m_creditWidget;
+    QPointer<OcsPersonListWidget> m_creditListWidget;
     bool m_isOfflineCreditWidget;
 
 //Donors:
-    QWeakPointer<AnimatedBarWidget> m_showOcsDonorButton;
-    QWeakPointer<QWidget> m_donorWidget;
-    QWeakPointer<OcsPersonListWidget> m_donorListWidget;
+    QPointer<AnimatedBarWidget> m_showOcsDonorButton;
+    QPointer<QWidget> m_donorWidget;
+    QPointer<OcsPersonListWidget> m_donorListWidget;
     bool m_isOfflineDonorWidget;
 
+};
+
+class ExtendedAboutDialog::Private
+{
+public:
+    Private(ExtendedAboutDialog *parent)
+        : q(parent),
+          aboutData(0)
+    {}
+
+    void _k_showLicense( const QString &number );
+
+    ExtendedAboutDialog *q;
+
+    const KAboutData *aboutData;
 };
 
 #endif  //AMAROK_EXTENDEDABOUTDIALOG_H

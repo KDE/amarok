@@ -97,7 +97,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_playPause->setPlaying( engine->isPlaying() );
     m_playPause->setFixedSize( icnSize, icnSize );
     addWidget( m_playPause );
-    connect( m_playPause, SIGNAL(toggled(bool)), engine, SLOT(playPause()) );
+    connect( m_playPause, &PlayPauseButton::toggled, engine, &EngineController::playPause );
 
     QWidget *info = new QWidget(this);
     QVBoxLayout *vl = new QVBoxLayout( info );
@@ -122,7 +122,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_prev.label->setOpacity( prevOpacity );
     m_prev.label->installEventFilter( this );
     m_prev.label->setForegroundRole( prev_next_role );
-    connect( m_prev.label, SIGNAL(clicked(QString)), The::playlistActions(), SLOT(back()) );
+    connect( m_prev.label, &AnimatedLabelStack::clicked, The::playlistActions(), &Playlist::Actions::back );
 
     m_current.label = new AnimatedLabelStack( QStringList( m_promoString ), info );
     m_current.label->setFont( fnt );
@@ -130,8 +130,8 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_current.label->setBold( true );
     m_current.label->setLayout( new QHBoxLayout );
     m_current.label->installEventFilter( this );
-    connect( m_current.label, SIGNAL(clicked(QString)),
-             Amarok::actionCollection()->action("show_active_track"), SLOT(trigger()) );
+    connect( m_current.label, &AnimatedLabelStack::clicked,
+             Amarok::actionCollection()->action("show_active_track"), &QAction::trigger );
 
     m_next.key = 0;
     m_next.label = new AnimatedLabelStack(QStringList(), info);
@@ -145,7 +145,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_next.label->setOpacity( nextOpacity );
     m_next.label->installEventFilter( this );
     m_next.label->setForegroundRole( prev_next_role );
-    connect( m_next.label, SIGNAL(clicked(QString)), The::playlistActions(), SLOT(next()) );
+    connect( m_next.label, &AnimatedLabelStack::clicked, The::playlistActions(), &Playlist::Actions::next );
 
     m_dummy.label = new AnimatedLabelStack(QStringList(), info);
     m_next.label->setFont( fnt );
@@ -155,16 +155,16 @@ MainToolbar::MainToolbar( QWidget *parent )
 
     vl->addSpacing( space_between_tracks_and_slider );
 
-    connect( m_prev.label, SIGNAL(pulsing(bool)), m_current.label, SLOT(setStill(bool)) );
-    connect( m_next.label, SIGNAL(pulsing(bool)), m_current.label, SLOT(setStill(bool)) );
+    connect( m_prev.label, &AnimatedLabelStack::pulsing, m_current.label, &AnimatedLabelStack::setStill );
+    connect( m_next.label, &AnimatedLabelStack::pulsing, m_current.label, &AnimatedLabelStack::setStill );
 
     m_timeLabel = new QLabel( info );
     m_timeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
     m_slider = new Amarok::TimeSlider( info );
-    connect( m_slider, SIGNAL(sliderReleased(int)), The::engineController(), SLOT(seekTo(int)) );
-    connect( m_slider, SIGNAL(valueChanged(int)), SLOT(setLabelTime(int)) );
-    connect( App::instance(), SIGNAL(settingsChanged()), SLOT(layoutProgressBar()) );
+    connect( m_slider, &Amarok::TimeSlider::sliderReleased, The::engineController(), &EngineController::seekTo );
+    connect( m_slider, &Amarok::TimeSlider::valueChanged, this, &MainToolbar::setLabelTime );
+    connect( pApp, &App::settingsChanged, this, &MainToolbar::layoutProgressBar );
 
     m_remainingTimeLabel = new QLabel( info );
     m_remainingTimeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignLeft );
@@ -184,9 +184,9 @@ MainToolbar::MainToolbar( QWidget *parent )
                                                  << m_timeLabel << m_remainingTimeLabel );
 
     addWidget( m_volume );
-    connect( engine, SIGNAL(volumeChanged(int)), m_volume, SLOT(setValue(int)) );
-    connect( m_volume, SIGNAL(valueChanged(int)), engine, SLOT(setVolume(int)) );
-    connect( m_volume, SIGNAL(muteToggled(bool)), engine, SLOT(setMuted(bool)) );
+    connect( engine, &EngineController::volumeChanged, m_volume, &VolumeDial::setValue );
+    connect( m_volume, &VolumeDial::valueChanged, engine, &EngineController::setVolume );
+    connect( m_volume, &VolumeDial::muteToggled, engine, &EngineController::setMuted );
 
     spacerWidget = new QWidget(this);
     spacerWidget->setFixedWidth( leftRightSpacer );
@@ -674,7 +674,7 @@ MainToolbar::trackChanged( Meta::TrackPtr track )
     const int pbsH = qMax( m_timeLabel->sizeHint().height(), m_slider->sizeHint().height() );
     m_progressBarSpacer->changeSize(0, pbsH, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
-    QTimer::singleShot( 0, this, SLOT(updatePrevAndNext()) );
+    QTimer::singleShot( 0, this, &MainToolbar::updatePrevAndNext );
 }
 
 void
@@ -705,44 +705,44 @@ MainToolbar::showEvent( QShowEvent *ev )
 {
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL(stopped(qint64,qint64)),
-             this, SLOT(stopped()) );
-    connect( engine, SIGNAL(paused()),
-             this, SLOT(paused()) );
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-             this, SLOT(playing()) );
+    connect( engine, &EngineController::stopped,
+             this, &MainToolbar::stopped );
+    connect( engine, &EngineController::paused,
+             this, &MainToolbar::paused );
+    connect( engine, &EngineController::trackPlaying,
+             this, &MainToolbar::playing );
 
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
-             this, SLOT(trackChanged(Meta::TrackPtr)) );
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
-             this, SLOT(trackChanged(Meta::TrackPtr)) );
-    connect( engine, SIGNAL(trackLengthChanged(qint64)),
-             this, SLOT(trackLengthChanged(qint64)) );
-    connect( engine, SIGNAL(trackPositionChanged(qint64,bool)),
-             this, SLOT(trackPositionChanged(qint64,bool)) );
-    connect( engine, SIGNAL(volumeChanged(int)),
-             this, SLOT(volumeChanged(int)) );
-    connect( engine, SIGNAL(muteStateChanged(bool)),
-             this, SLOT(muteStateChanged(bool)) );
+    connect( engine, &EngineController::trackChanged,
+             this, &MainToolbar::trackChanged );
+    connect( engine, &EngineController::trackMetadataChanged,
+             this, &MainToolbar::trackChanged );
+    connect( engine, &EngineController::trackLengthChanged,
+             this, &MainToolbar::trackLengthChanged );
+    connect( engine, &EngineController::trackPositionChanged,
+             this, &MainToolbar::trackPositionChanged );
+    connect( engine, &EngineController::volumeChanged,
+             this, &MainToolbar::volumeChanged );
+    connect( engine, &EngineController::muteStateChanged,
+             this, &MainToolbar::muteStateChanged );
 
     // We need the three changed signals:
     // 1. the playlist changes (PlaylistController)
     // 2. the sorting of the playlist changed (Playlist)
     // 3. The navigator changed to e.g. dynamic mode (PlaylistActions)
 
-    connect( The::playlistController(), SIGNAL(changed()),
-              this, SLOT(updatePrevAndNext()) );
+    connect( The::playlistController(), &Playlist::Controller::changed,
+             this, &MainToolbar::updatePrevAndNext );
 
-    connect( The::playlist()->qaim(), SIGNAL(queueChanged()),
-              this, SLOT(updatePrevAndNext()) );
+    connect( The::playlist()->qaim(), &QAbstractItemModel::dataChanged, //FIXME: dataChanged used to be queueChanged
+             this, &MainToolbar::updatePrevAndNext );
 
-    connect( The::playlistActions(), SIGNAL(navigatorChanged()),
-                 this, SLOT(updatePrevAndNext()) );
+    connect( The::playlistActions(), &Playlist::Actions::navigatorChanged,
+             this, &MainToolbar::updatePrevAndNext );
 
-    connect( The::amarokUrlHandler(), SIGNAL(timecodesUpdated(const QString*)),
-              this, SLOT(updateBookmarks(const QString*)) );
-    connect( The::amarokUrlHandler(), SIGNAL(timecodeAdded(QString,int)),
-              this, SLOT(addBookmark(QString,int)) );
+    connect( The::amarokUrlHandler(), &AmarokUrlHandler::timecodesUpdated,
+             this, &MainToolbar::updateBookmarks );
+    connect( The::amarokUrlHandler(), &AmarokUrlHandler::timecodeAdded,
+             this, &MainToolbar::addBookmark );
 
     QToolBar::showEvent( ev );
     trackChanged( The::engineController()->currentTrack() );
@@ -760,19 +760,19 @@ MainToolbar::hideEvent( QHideEvent *ev )
 
     disconnect( The::engineController(), 0, this, 0 );
 
-    disconnect( The::playlistController(), SIGNAL(changed()),
-                 this, SLOT(updatePrevAndNext()) );
+    disconnect( The::playlistController(), &Playlist::Controller::changed,
+                this, &MainToolbar::updatePrevAndNext );
 
-    disconnect( The::playlist()->qaim(), SIGNAL(queueChanged()),
-                 this, SLOT(updatePrevAndNext()) );
+    disconnect( The::playlist()->qaim(), &QAbstractItemModel::dataChanged, //FIXME: dataChanged used to be queueChanged
+                this, &MainToolbar::updatePrevAndNext );
 
-    disconnect( The::playlistActions(), SIGNAL(navigatorChanged()),
-                 this, SLOT(updatePrevAndNext()) );
+    disconnect( The::playlistActions(), &Playlist::Actions::navigatorChanged,
+                this, &MainToolbar::updatePrevAndNext );
 
-    disconnect( The::amarokUrlHandler(), SIGNAL(timecodesUpdated(const QString*)),
-                 this, SLOT(updateBookmarks(const QString*)) );
-    disconnect( The::amarokUrlHandler(), SIGNAL(timecodeAdded(QString,int)),
-                 this, SLOT(addBookmark(QString,int)) );
+    disconnect( The::amarokUrlHandler(), &AmarokUrlHandler::timecodesUpdated,
+                this, &MainToolbar::updateBookmarks );
+    disconnect( The::amarokUrlHandler(), &AmarokUrlHandler::timecodeAdded,
+                this, &MainToolbar::addBookmark );
 }
 
 void
@@ -893,7 +893,6 @@ MainToolbar::setLabelTime( int ms )
 
         m_lastTime = secs;
         m_lastRemainingTime = remainingSecs;
-
     }
 
     if(relayout)
@@ -980,12 +979,12 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
             if( d > limit )
             {
                 The::playlistActions()->next();
-                QTimer::singleShot(500, this, SLOT(layoutTrackBar()) );
+                QTimer::singleShot(500, this, &MainToolbar::layoutTrackBar );
             }
             else if( d < -limit )
             {
                 The::playlistActions()->back();
-                QTimer::singleShot(500, this, SLOT(layoutTrackBar()) );
+                QTimer::singleShot(500, this, &MainToolbar::layoutTrackBar );
             }
             else
                 layoutTrackBar();
@@ -1026,4 +1025,3 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
 }
 
 
-#include "MainToolbar.moc"

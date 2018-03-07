@@ -17,7 +17,7 @@
 #ifndef TESTONEWAYSYNCHRONIZATIONJOB_H
 #define TESTONEWAYSYNCHRONIZATIONJOB_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestOneWaySynchronizationJob : public QObject
 {
@@ -25,7 +25,7 @@ class TestOneWaySynchronizationJob : public QObject
 public:
     TestOneWaySynchronizationJob();
 
-private slots:
+private Q_SLOTS:
     void init();
 
     void testEmptyTarget();

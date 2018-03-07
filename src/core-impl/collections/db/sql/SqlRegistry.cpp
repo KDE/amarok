@@ -65,7 +65,7 @@ SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
     m_timer = new QTimer( this );
     m_timer->setInterval( 30 * 1000 );  //try to clean up every 30 seconds, change if necessary
     m_timer->setSingleShot( false );
-    connect( m_timer, SIGNAL(timeout()), this, SLOT(emptyCache()) );
+    connect( m_timer, &QTimer::timeout, this, &SqlRegistry::emptyCache );
     m_timer->start();
 }
 
@@ -79,10 +79,10 @@ int
 SqlRegistry::getDirectory( const QString &path, uint mtime )
 {
     int dirId;
-    int deviceId = m_collection->mountPointManager()->getIdForUrl( path );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(path) );
     QString rdir = m_collection->mountPointManager()->getRelativePath( deviceId, path );
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     // - find existing entry
     QString query = QString( "SELECT id, changedate FROM directories "
@@ -124,8 +124,7 @@ SqlRegistry::getDirectory( const QString &path, uint mtime )
 Meta::TrackPtr
 SqlRegistry::getTrack( int urlId )
 {
-    QString query = "SELECT %1 FROM urls %2 "
-        "WHERE urls.id = %3";
+    QString query = "SELECT %1 FROM urls %2 WHERE urls.id = %3";
     query = query.arg( Meta::SqlTrack::getTrackReturnValues(),
                        Meta::SqlTrack::getTrackJoinConditions(),
                        QString::number( urlId ) );
@@ -170,7 +169,7 @@ SqlRegistry::getTrack( int urlId )
 Meta::TrackPtr
 SqlRegistry::getTrack( const QString &path )
 {
-    int deviceId = m_collection->mountPointManager()->getIdForUrl( path );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(path) );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, path );
     TrackPath id( deviceId, rpath );
 
@@ -260,20 +259,20 @@ SqlRegistry::getTrack( int trackId, const QStringList &rowData )
         Meta::TrackPtr track( sqlTrack );
 
         m_trackMap.insert( path, track );
-        m_uidMap.insert( KSharedPtr<Meta::SqlTrack>::staticCast( track )->uidUrl(), track );
+        m_uidMap.insert( AmarokSharedPointer<Meta::SqlTrack>::staticCast( track )->uidUrl(), track );
         return track;
     }
 }
 
 bool
-SqlRegistry::updateCachedUrl( const QString &oldUrl, const QString &newUrl )
+SqlRegistry::updateCachedUrl( const QString &oldPath, const QString &newPath )
 {
-    int deviceId = m_collection->mountPointManager()->getIdForUrl( oldUrl );
-    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, oldUrl );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(oldPath) );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, oldPath );
     TrackPath oldId( deviceId, rpath );
 
-    int newdeviceId = m_collection->mountPointManager()->getIdForUrl( newUrl );
-    QString newRpath = m_collection->mountPointManager()->getRelativePath( newdeviceId, newUrl );
+    int newdeviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromLocalFile(newPath) );
+    QString newRpath = m_collection->mountPointManager()->getRelativePath( newdeviceId, newPath );
     TrackPath newId( newdeviceId, newRpath );
 
     QMutexLocker locker( &m_trackMutex );
@@ -331,7 +330,7 @@ SqlRegistry::getTrackFromUid( const QString &uid )
         Meta::SqlTrack *sqlTrack = new Meta::SqlTrack( m_collection, result );
         Meta::TrackPtr trackPtr( sqlTrack );
 
-        int deviceid = m_collection->mountPointManager()->getIdForUrl( trackPtr->playableUrl().path() );
+        int deviceid = m_collection->mountPointManager()->getIdForUrl( trackPtr->playableUrl() );
         QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, trackPtr->playableUrl().path() );
         TrackPath id(deviceid, rpath);
         m_trackMap.insert( id, trackPtr );
@@ -368,7 +367,7 @@ SqlRegistry::removeTrack( int urlId, const QString uid )
         Meta::TrackPtr track = m_uidMap.take( uid );
         Meta::SqlTrack *sqlTrack = static_cast<Meta::SqlTrack*>( track.data() );
 
-        int deviceId = m_collection->mountPointManager()->getIdForUrl( sqlTrack->playableUrl().path() );
+        int deviceId = m_collection->mountPointManager()->getIdForUrl( sqlTrack->playableUrl() );
         QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, sqlTrack->playableUrl().path() );
         TrackPath id(deviceId, rpath);
         m_trackMap.remove( id );
@@ -920,12 +919,12 @@ SqlRegistry::emptyCache()
         for( QMutableHashIterator<Key,Type > iter(x); iter.hasNext(); ) \
             RealType::staticCast( iter.next().value() )->invalidateCache()
 
-        foreachInvalidateCache( AlbumKey, Meta::AlbumPtr, KSharedPtr<Meta::SqlAlbum>, m_albumMap );
-        foreachInvalidateCache( QString, Meta::ArtistPtr, KSharedPtr<Meta::SqlArtist>, m_artistMap );
-        foreachInvalidateCache( QString, Meta::GenrePtr, KSharedPtr<Meta::SqlGenre>, m_genreMap );
-        foreachInvalidateCache( QString, Meta::ComposerPtr, KSharedPtr<Meta::SqlComposer>, m_composerMap );
-        foreachInvalidateCache( int, Meta::YearPtr, KSharedPtr<Meta::SqlYear>, m_yearMap );
-        foreachInvalidateCache( QString, Meta::LabelPtr, KSharedPtr<Meta::SqlLabel>, m_labelMap );
+        foreachInvalidateCache( AlbumKey, Meta::AlbumPtr, AmarokSharedPointer<Meta::SqlAlbum>, m_albumMap );
+        foreachInvalidateCache( QString, Meta::ArtistPtr, AmarokSharedPointer<Meta::SqlArtist>, m_artistMap );
+        foreachInvalidateCache( QString, Meta::GenrePtr, AmarokSharedPointer<Meta::SqlGenre>, m_genreMap );
+        foreachInvalidateCache( QString, Meta::ComposerPtr, AmarokSharedPointer<Meta::SqlComposer>, m_composerMap );
+        foreachInvalidateCache( int, Meta::YearPtr, AmarokSharedPointer<Meta::SqlYear>, m_yearMap );
+        foreachInvalidateCache( QString, Meta::LabelPtr, AmarokSharedPointer<Meta::SqlLabel>, m_labelMap );
         #undef foreachInvalidateCache
 
         // elem.count() == 2 is correct because elem is one pointer to the object
@@ -1000,5 +999,4 @@ SqlRegistry::emptyCache()
     if( hasLabel ) m_labelMutex.unlock();
 }
 
-#include "SqlRegistry.moc"
 

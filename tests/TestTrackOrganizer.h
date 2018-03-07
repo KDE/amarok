@@ -32,7 +32,7 @@ Q_OBJECT
 public:
     TestTrackOrganizer();
     
-private slots:
+private Q_SLOTS:
   void init();
   void cleanup();
   void testBasic();

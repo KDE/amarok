@@ -39,7 +39,7 @@ public:
 
     virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
 
-private slots:
+private Q_SLOTS:
     void formatSelected( int format );
     void formatSelectionCancelled();
 

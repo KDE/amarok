@@ -504,4 +504,3 @@ UpcomingEventsStackItem::boundingRect() const
     return d->toolbox->boundingRect();
 }
 
-#include "UpcomingEventsStackItem.moc"

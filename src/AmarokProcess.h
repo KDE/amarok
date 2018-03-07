@@ -50,8 +50,8 @@ class AMAROK_EXPORT AmarokProcess : public KProcess
     protected:
         virtual void setupChildProcess();
 
-    private slots:
-        void finished();
+    private Q_SLOTS:
+        void finished();  // TODO: This has the same name as a signal in QProcess. Rename it.
         void readyReadStandardOutput();
         void readyReadStandardError();
 
@@ -78,7 +78,7 @@ class AMAROK_EXPORT AmarokProcIO : public AmarokProcess
     Q_SIGNALS:
         void readReady(AmarokProcIO *pio);
         
-    private slots:
+    private Q_SLOTS:
         void readyReadStandardOutput();
     
     private:

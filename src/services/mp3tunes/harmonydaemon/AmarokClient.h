@@ -23,7 +23,7 @@ class Mp3tunesAmarokClient : public Mp3tunesHarmonyClient {
     public:
         Mp3tunesAmarokClient();
 
-    public slots:
+    public Q_SLOTS:
         virtual void harmonyError( const QString &error );
         virtual void harmonyWaitingForEmail( const QString &pin );
         virtual void harmonyWaitingForPin();

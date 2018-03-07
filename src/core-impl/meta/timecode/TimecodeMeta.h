@@ -31,23 +31,23 @@ namespace Meta {
     class TimecodeComposer;
     class TimecodeYear;
 
-    typedef KSharedPtr<TimecodeTrack> TimecodeTrackPtr;
-    typedef KSharedPtr<TimecodeArtist> TimecodeArtistPtr;
-    typedef KSharedPtr<TimecodeAlbum> TimecodeAlbumPtr;
-    typedef KSharedPtr<TimecodeGenre> TimecodeGenrePtr;
-    typedef KSharedPtr<TimecodeComposer> TimecodeComposerPtr;
-    typedef KSharedPtr<TimecodeYear> TimecodeYearPtr;
+    typedef AmarokSharedPointer<TimecodeTrack> TimecodeTrackPtr;
+    typedef AmarokSharedPointer<TimecodeArtist> TimecodeArtistPtr;
+    typedef AmarokSharedPointer<TimecodeAlbum> TimecodeAlbumPtr;
+    typedef AmarokSharedPointer<TimecodeGenre> TimecodeGenrePtr;
+    typedef AmarokSharedPointer<TimecodeComposer> TimecodeComposerPtr;
+    typedef AmarokSharedPointer<TimecodeYear> TimecodeYearPtr;
 
 
 class TimecodeTrack : public Track, public TrackEditor
 {
 public:
-    TimecodeTrack( const QString &name, const QString &url, qint64 start, qint64 end );
+    TimecodeTrack( const QString &name, const QUrl &url, qint64 start, qint64 end );
     virtual ~TimecodeTrack();
 
     virtual QString name() const;
 
-    virtual KUrl playableUrl() const;
+    virtual QUrl playableUrl() const;
     virtual QString uidUrl() const;
     virtual QString prettyUrl() const;
     virtual QString notPlayableReason() const;
@@ -119,7 +119,7 @@ private:
     int m_discNumber;
     QString m_comment;
     QString m_displayUrl;
-    QString m_playableUrl;
+    QUrl m_playableUrl;
 
     int m_updatedFields;
     QMap<int, QString> m_fields;

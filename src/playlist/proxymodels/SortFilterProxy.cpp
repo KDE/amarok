@@ -146,4 +146,3 @@ SortFilterProxy::filterAcceptsRow( int sourceModelRow, const QModelIndex &source
 
 }    //namespace Playlist
 
-#include "SortFilterProxy.moc"

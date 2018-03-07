@@ -20,8 +20,9 @@
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "MediaDevicePlaylist.h"
 
-#include <klocale.h>
-#include <kicon.h>
+#include <QIcon>
+
+#include <KLocalizedString>
 
 namespace Collections {
     class MediaDeviceCollection;
@@ -38,7 +39,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
 
         /* PlaylistProvider functions */
         virtual QString prettyName() const { return i18n( "Media Device playlists" ); };
-        virtual KIcon icon() const { return KIcon( "multimedia-player" ); }
+        virtual QIcon icon() const { return QIcon::fromTheme( "multimedia-player" ); }
 
         /* Playlists::UserPlaylistProvider functions */
         virtual Playlists::PlaylistList playlists();
@@ -55,10 +56,10 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
         void addMediaDevicePlaylist( Playlists::MediaDevicePlaylistPtr &playlist );
         void removePlaylist( Playlists::MediaDevicePlaylistPtr &playlist );
 
-        public slots:
+        public Q_SLOTS:
             void sendUpdated() { emit updated(); }
 
-        signals:
+        Q_SIGNALS:
             void playlistSaved( const Playlists::MediaDevicePlaylistPtr &playlist, const QString &name );
             void playlistRenamed( const Playlists::MediaDevicePlaylistPtr &playlist );
             void playlistsDeleted( const Playlists::MediaDevicePlaylistList &playlistlist );

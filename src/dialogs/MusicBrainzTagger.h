@@ -21,7 +21,7 @@
 #include <config.h>
 #include "core/meta/forward_declarations.h"
 
-#include <KDialog>
+#include <QDialog>
 
 namespace Ui
 {
@@ -37,7 +37,7 @@ class MusicDNSFinder;
 
 class QSortFilterProxyModel;
 
-class MusicBrainzTagger : public KDialog
+class MusicBrainzTagger : public QDialog
 {
     Q_OBJECT
 
@@ -49,10 +49,10 @@ class MusicBrainzTagger : public KDialog
                                     QWidget *parent = 0 );
         virtual ~MusicBrainzTagger();
 
-    signals:
+    Q_SIGNALS:
         void sendResult( const QMap<Meta::TrackPtr, QVariantMap> result );
 
-    private slots:
+    private Q_SLOTS:
         void search();
         void progressStep();
         void searchDone();

@@ -19,8 +19,6 @@
 
 #include "amarok_export.h"
 
-#include <KHBox>
-
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -41,8 +39,20 @@ class AMAROK_EXPORT ProgressBar : public QFrame
         ~ProgressBar();
 
         void setDescription( const QString &description );
+
         ProgressBar *setAbortSlot( QObject *receiver, const char *slot,
-                                  Qt::ConnectionType type = Qt::AutoConnection );
+                                   Qt::ConnectionType type = Qt::AutoConnection );
+        template<typename Func>
+        ProgressBar *setAbortSlot( const typename QtPrivate::FunctionPointer<Func>::Object *receiver, Func slot,
+                                   Qt::ConnectionType type = Qt::AutoConnection )
+        {
+            cancelButton()->setHidden( false );
+            if( receiver )
+                connect( this, &ProgressBar::cancelled, receiver, slot, type );
+            connect( cancelButton(), &QAbstractButton::clicked, this, &ProgressBar::cancel );
+
+            return this;
+        }
 
         QToolButton *cancelButton() { return m_cancelButton; }
         QProgressBar *progressBar() { return m_progressBar;  }
@@ -54,14 +64,13 @@ class AMAROK_EXPORT ProgressBar : public QFrame
         void setValue( int value );
         int percentage();
 
-    public slots:
+    public Q_SLOTS:
         void cancel();
         void delayedDone();
         void slotTotalSteps( int steps ) { m_progressBar->setMaximum( steps ); }
 
-    signals:
+    Q_SIGNALS:
         void cancelled( ProgressBar * );
-        void cancelled();
         void complete( ProgressBar * );
         void percentageChanged( int );
 

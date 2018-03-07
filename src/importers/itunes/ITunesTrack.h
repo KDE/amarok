@@ -36,7 +36,7 @@ public:
     void setRating( int rating );
     QDateTime lastPlayed() const;
 
-signals:
+Q_SIGNALS:
     void commitCalled( const int trackId, const Meta::FieldHash &statistics );
 
 protected:

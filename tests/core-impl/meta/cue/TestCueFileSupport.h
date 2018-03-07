@@ -17,8 +17,8 @@
 #ifndef TESTCUEFILESUPPORT_H
 #define TESTCUEFILESUPPORT_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 class TestCueFileSupport : public QObject
 {
@@ -27,7 +27,7 @@ Q_OBJECT
 public:
     TestCueFileSupport();
   
-private slots:
+private Q_SLOTS:
     void testLocateCueFile();
     void testIso88591Cue();
     void testUtf8Cue();

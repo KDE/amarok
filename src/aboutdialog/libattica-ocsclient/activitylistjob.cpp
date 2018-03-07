@@ -23,28 +23,27 @@
 
 #include "activityparser.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QTimer>
+#include <QDebug>
+#include <QTimer>
 
-#include <kio/job.h>
-#include <klocale.h>
+#include <KIO/Job>
 
 
 using namespace AmarokAttica;
 
 ActivityListJob::ActivityListJob()
-  : m_job( 0 )
+  : m_job( )
 {
 }
 
-void ActivityListJob::setUrl( const KUrl &url )
+void ActivityListJob::setUrl( const QUrl &url )
 {
   m_url = url;
 }
 
 void ActivityListJob::start()
 {
-  QTimer::singleShot( 0, this, SLOT(doWork()) );
+    QTimer::singleShot( 0, this, &ActivityListJob::doWork );
 }
 
 Activity::List ActivityListJob::ActivityList() const
@@ -54,13 +53,13 @@ Activity::List ActivityListJob::ActivityList() const
 
 void ActivityListJob::doWork()
 {
-  qDebug() << m_url;
+  auto job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
+  connect( job, &KIO::TransferJob::result,
+           this, &ActivityListJob::slotJobResult );
+  connect( job, &KIO::TransferJob::data,
+           this, &ActivityListJob::slotJobData );
 
-  m_job = KIO::get( m_url, KIO::NoReload, KIO::HideProgressInfo );
-  connect( m_job, SIGNAL(result(KJob*)),
-    SLOT(slotJobResult(KJob*)) );
-  connect( m_job, SIGNAL(data(KIO::Job*,QByteArray)),
-    SLOT(slotJobData(KIO::Job*,QByteArray)) );
+  m_job = job;
 }
 
 void ActivityListJob::slotJobResult( KJob *job )

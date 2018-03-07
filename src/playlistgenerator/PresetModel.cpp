@@ -28,9 +28,6 @@
 #include "playlistgenerator/Preset.h"
 #include "playlistgenerator/PresetEditDialog.h"
 
-#include <KFileDialog>
-#include <KUrl>
-
 #include <QAbstractItemModel>
 #include <QDesktopServices>
 #include <QDialog>
@@ -38,6 +35,7 @@
 #include <QDomElement>
 #include <QFile>
 #include <QList>
+#include <QUrl>
 #include <QVariant>
 
 APG::PresetModel* APG::PresetModel::s_instance = 0;
@@ -102,7 +100,7 @@ APG::PresetModel::index( int row, int column, const QModelIndex& ) const
     if ( rowCount() <= row )
         return QModelIndex();
 
-    return createIndex( row, column, 0 );
+    return createIndex( row, column);
 }
 
 int
@@ -145,19 +143,17 @@ APG::PresetModel::editPreset( const QModelIndex& index )
 void
 APG::PresetModel::exportActive()
 {
-    KFileDialog* d = new ExportDialog( activePreset() );
-    connect( d, SIGNAL(pleaseExport(QString,QList<APG::PresetPtr>)),
-          this, SLOT(savePresetsToXml(QString,QList<APG::PresetPtr>)) );
+    auto d = new ExportDialog( activePreset() );
+    connect( d, &ExportDialog::pleaseExport, this, &PresetModel::savePresetsToXml );
     d->exec();
 }
 
 void
 APG::PresetModel::import()
 {
-    QString filename = KFileDialog::getOpenFileName( KUrl( QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) ),
-                                                     QString("*.xml|" + i18n("Preset files (*.xml)") ),
-                                                     0,
-                                                     i18n("Import preset") );
+    QString filename = QFileDialog::getOpenFileName( Q_NULLPTR, i18n("Import preset"),
+                                                     QStandardPaths::writableLocation( QStandardPaths::MusicLocation ),
+                                                     QString("*.xml|" + i18n("Preset files (*.xml)") ) );
     if( !filename.isEmpty() )
         loadPresetsFromXml( filename );
 }
@@ -192,7 +188,7 @@ APG::PresetModel::setActivePreset( const QModelIndex& index )
 }
 
 void
-APG::PresetModel::savePresetsToXml() const
+APG::PresetModel::savePresetsToXmlDefault() const
 {
     savePresetsToXml( Amarok::saveLocation() + "playlistgenerator.xml", m_presetList );
 }
@@ -275,7 +271,7 @@ APG::PresetModel::insertPreset( APG::PresetPtr ps )
         beginInsertRows( QModelIndex(), row, row );
         m_presetList.append( ps );
         endInsertRows();
-        connect( ps.data(), SIGNAL(lock(bool)), this, SIGNAL(lock(bool)) );
+        connect( ps.data(), &APG::Preset::lock, this, &PresetModel::lock );
     }
 }
 
@@ -298,18 +294,15 @@ APG::PresetModel::parseXmlToPresets( QDomDocument& document )
  * ExportDialog nested class
  */
 APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
-    : KFileDialog( KUrl( QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) ),
-                   QString("*.xml|" + i18n("Preset files (*.xml)") ),
-                   0 )
-
+    : QFileDialog( Q_NULLPTR, i18n( "Export \"%1\" preset", ps->title() ),
+                   QStandardPaths::writableLocation( QStandardPaths::MusicLocation ),
+                   QString("*.xml|" + i18n("Preset files (*.xml)") ) )
 {
     m_presetsToExportList.append( ps );
-    setMode( KFile::File );
-    setSelection( ps->title() + ".xml" );
-    setOperationMode( KFileDialog::Saving );
-    setKeepLocation( true );
-    setCaption( i18n( "Export \"%1\" preset", ps->title() ) );
-    connect( this, SIGNAL(okClicked()), this, SLOT(recvAccept()) );
+    setFileMode( QFileDialog::AnyFile );
+    selectFile( ps->title() + ".xml" );
+    setAcceptMode( QFileDialog::AcceptSave );
+    connect( this, &ExportDialog::accept, this, &ExportDialog::recvAccept );
 }
 
 APG::PresetModel::ExportDialog::~ExportDialog() {}
@@ -317,7 +310,7 @@ APG::PresetModel::ExportDialog::~ExportDialog() {}
 void
 APG::PresetModel::ExportDialog::recvAccept() const
 {
-    emit pleaseExport( selectedFile(), m_presetsToExportList );
+    emit pleaseExport( selectedFiles().first(), m_presetsToExportList );
 }
 
 const QString APG::PresetModel::presetExamples =

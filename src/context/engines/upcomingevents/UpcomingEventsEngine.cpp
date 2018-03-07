@@ -95,7 +95,7 @@ UpcomingEventsEngine::updateDataForVenues()
     if( !m_venueIds.isEmpty() )
     {
         int id = m_venueIds.takeFirst();
-        KUrl url;
+        QUrl url;
         url.setScheme( "http" );
         url.setHost( "ws.audioscrobbler.com" );
         url.setPath( "/2.0/" );
@@ -103,7 +103,7 @@ UpcomingEventsEngine::updateDataForVenues()
         url.addQueryItem( "api_key", Amarok::lastfmApiKey() );
         url.addQueryItem( "venue", QString::number( id ) );
         The::networkAccessManager()->getData( url, this,
-             SLOT(venueEventsFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+             SLOT(venueEventsFetched(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         QTimer::singleShot( 50, this, SLOT(updateDataForVenues()) );
     }
 }
@@ -123,7 +123,7 @@ UpcomingEventsEngine::updateDataForArtist()
 
     // Prepares the url for LastFm request
     m_urls.clear();
-    KUrl url;
+    QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
@@ -132,11 +132,11 @@ UpcomingEventsEngine::updateDataForArtist()
     url.addQueryItem( "artist", m_currentArtist->name() );
     m_urls << url;
     The::networkAccessManager()->getData( url, this,
-         SLOT(artistEventsFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(artistEventsFetched(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-UpcomingEventsEngine::artistEventsFetched( const KUrl &url, QByteArray data,
+UpcomingEventsEngine::artistEventsFetched( const QUrl &url, QByteArray data,
                                            NetworkAccessManagerProxy::Error e )
 {
     if( !m_urls.contains( url ) )
@@ -163,7 +163,7 @@ UpcomingEventsEngine::artistEventsFetched( const KUrl &url, QByteArray data,
 }
 
 void
-UpcomingEventsEngine::venueEventsFetched( const KUrl &url, QByteArray data,
+UpcomingEventsEngine::venueEventsFetched( const QUrl &url, QByteArray data,
                                           NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )

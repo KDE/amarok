@@ -19,6 +19,8 @@
 
 #include "statsyncing/SimpleWritableTrack.h"
 
+#include <QSharedPointer>
+
 namespace StatSyncing
 {
 

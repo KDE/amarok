@@ -37,7 +37,7 @@ namespace Playlists {
     class PlaylistFile;
     class PlaylistFileProvider;
     class UserPlaylistProvider;
-    typedef KSharedPtr<PlaylistFile> PlaylistFilePtr;
+    typedef AmarokSharedPointer<PlaylistFile> PlaylistFilePtr;
 }
 
 namespace Podcasts {
@@ -162,7 +162,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
 
         void completePodcastDownloads();
 
-    signals:
+    Q_SIGNALS:
         void updated( int category );
         void categoryAdded( int category );
         void providerAdded( Playlists::PlaylistProvider *provider, int category );
@@ -173,7 +173,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
 
         void renamePlaylist( Playlists::PlaylistPtr playlist );
 
-    private slots:
+    private Q_SLOTS:
         void slotUpdated();
         void slotPlaylistAdded( Playlists::PlaylistPtr playlist );
         void slotPlaylistRemoved( Playlists::PlaylistPtr playlist );

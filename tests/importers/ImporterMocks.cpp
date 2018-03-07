@@ -40,7 +40,6 @@ MockProvider::manager() const
 }
 
 MockManager::MockManager()
-    : StatSyncing::ImporterManager( 0, QVariantList() )
 {
 }
 
@@ -71,7 +70,7 @@ void
 ImporterMocks::initTestCase()
 {
     DefaultValue<QString>::Set( QString() );
-    DefaultValue<KIcon>::Set( KIcon() );
+    DefaultValue<QIcon>::Set( QIcon() );
     DefaultValue<KPluginInfo>::Set( KPluginInfo() );
 
     m_engineController = new EngineController;
@@ -118,4 +117,3 @@ ImporterMocks::cleanupTestCase()
     delete m_engineController;
 }
 
-#include "ImporterMocks.moc"

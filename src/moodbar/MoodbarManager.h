@@ -27,7 +27,7 @@
 #include <QMap>
 #include <QObject>
 
-class KUrl;
+class QUrl;
 class QPalette;
 class MoodbarManager;
 
@@ -58,18 +58,18 @@ public:
     bool hasMoodbar( Meta::TrackPtr track );
     QPixmap getMoodbar( Meta::TrackPtr track, int width, int height, bool rtl = false );
 
-signals:
+Q_SIGNALS:
     void moodbarReady( const QPixmap &pixmap );
     void moodbarCreationFailed( const QString &error );
     void moodbarStyleChanged();
 
-private slots:
+private Q_SLOTS:
     void paletteChanged( const QPalette &palette );
 
 private:
     MoodbarManager();
 
-    MoodbarColorList readMoodFile( const KUrl &moodFileUrl );
+    MoodbarColorList readMoodFile( const QUrl &moodFileUrl );
     QPixmap drawMoodbar( const MoodbarColorList &data, int width, int height, bool rtl );
     QString moodPath( const QString &trackPath ) const;
 

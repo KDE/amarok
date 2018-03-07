@@ -65,8 +65,8 @@ PropertySliderWidget::PropertySliderWidget( Property property, QWidget * parent 
         font.setBold( true );
         m_midLabel->setFont( font );
     }
-    connect( m_mainEdit, SIGNAL(valueChanged(int)),
-             this, SLOT(onSliderChanged(int)) );
+    connect( m_mainEdit, &QSlider::valueChanged,
+             this, &PropertySliderWidget::onSliderChanged );
 
     QLabel *rightLabel = new QLabel( m_property.endLabels().at( 1 ), this );
     rightLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );

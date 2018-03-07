@@ -20,7 +20,7 @@
 #include "SvgHandler.h"
 
 #include "core/support/Debug.h"
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 #include <QAction>
 
@@ -135,13 +135,13 @@ Meta::JamendoTrack::sourceDescription()
 QPixmap
 Meta::JamendoTrack::emblem()
 {
-    return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-jamendo.png" ) );
+    return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-jamendo.png" ) );
 }
 
 
 QString JamendoTrack::scalableEmblem()
 {
-    return KStandardDirs::locate( "data", "amarok/images/emblem-jamendo-scalable.svgz" );
+    return QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-jamendo-scalable.svgz" );
 }
 
 void

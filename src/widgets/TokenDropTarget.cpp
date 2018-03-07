@@ -21,12 +21,12 @@
 #include "TokenPool.h"
 #include "core/support/Debug.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QDropEvent>
 #include <QPainter>
 #include <QVBoxLayout>
-
+#include <QMimeData>
 
 TokenDropTarget::TokenDropTarget( QWidget *parent )
     : QWidget( parent )
@@ -202,10 +202,10 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
     box->insertWidget( col, token );
     token->show();
 
-    connect( token, SIGNAL(changed()), this, SIGNAL(changed()) );
-    connect( token, SIGNAL(gotFocus(Token*)), this, SIGNAL(tokenSelected(Token*)) );
-    connect( token, SIGNAL(destroyed(QObject*)), this, SIGNAL(changed()) );
-    connect( token, SIGNAL(destroyed(QObject*)), this, SLOT(deleteEmptyRows()) );
+    connect( token, &Token::changed, this, &TokenDropTarget::changed );
+    connect( token, &Token::gotFocus, this, &TokenDropTarget::tokenSelected );
+    connect( token, &Token::destroyed, this, &TokenDropTarget::changed );
+    connect( token, &Token::destroyed, this, &TokenDropTarget::deleteEmptyRows );
 
     emit changed();
 }
@@ -261,7 +261,7 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
     }
     else
     {
-        insertToken( token );
+        appendToken( token );
     }
 
     token->setFocus( Qt::OtherFocusReason ); // select the new token right away

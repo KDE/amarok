@@ -46,10 +46,10 @@ namespace Playlist
 
             void appendUpcoming();
 
-        public slots:
+        public Q_SLOTS:
             void repopulate();
 
-        private slots:
+        private Q_SLOTS:
             void activePlaylistChanged();
             void receiveTracks( Meta::TrackList );
             void trackChanged();

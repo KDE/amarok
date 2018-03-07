@@ -78,4 +78,13 @@ install(FILES
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )
 
-kde4_install_icons( ${ICON_INSTALL_DIR} )
+ecm_install_icons(ICONS
+    128-apps-amarok.png
+    16-apps-amarok.png
+    22-apps-amarok.png
+    32-apps-amarok.png
+    48-apps-amarok.png
+    64-apps-amarok.png
+    DESTINATION ${ICON_INSTALL_DIR}
+    THEME hicolor
+)

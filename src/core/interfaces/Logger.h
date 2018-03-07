@@ -43,7 +43,7 @@ namespace Amarok
         Logger() {}
         virtual ~Logger() {}
 
-    public slots:
+    public Q_SLOTS:
 
         /**
           * Informs the user about the progress of a job, i.e. a download job.

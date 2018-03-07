@@ -24,7 +24,7 @@
 #include "folder.h"
 
 #include <kjob.h>
-#include <kurl.h>
+#include <QUrl>
 
 namespace KIO {
 class Job;
@@ -38,20 +38,20 @@ class ATTICA_EXPORT FolderListJob : public KJob
   public:
     FolderListJob();
 
-    void setUrl( const KUrl & );
+    void setUrl( const QUrl & );
 
     void start();
 
     Folder::List folderList() const;
     
-  protected slots:
+  protected Q_SLOTS:
     void doWork();
 
     void slotJobResult( KJob *job );
     void slotJobData( KIO::Job *job, const QByteArray &data );
     
   private:
-    KUrl m_url;
+    QUrl m_url;
     KIO::Job *m_job;
     QByteArray m_data;
   

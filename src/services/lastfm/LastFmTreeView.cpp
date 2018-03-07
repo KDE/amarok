@@ -20,15 +20,16 @@
 
 #include "PopupDropperFactory.h"
 #include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "services/lastfm/LastFmTreeModel.h" // FIXME just for enums
 
-#include <KMenu>
-
+#include <QContextMenuEvent>
 #include <QHeaderView>
+#include <QMenu>
+
+#include <KLocalizedString>
+
 
 LastFmTreeView::LastFmTreeView ( QWidget* parent )
         : Amarok::PrettyTreeView ( parent )
@@ -66,7 +67,7 @@ LastFmTreeView::contextMenuEvent ( QContextMenuEvent* event )
     QActionList actions = createBasicActions( m_currentItems );
 
     actions += &separator;
-    KMenu menu;
+    QMenu menu;
     foreach ( QAction * action, actions )
         menu.addAction ( action );
 
@@ -94,18 +95,18 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
         {
             if ( m_appendAction == 0 )
             {
-                m_appendAction = new QAction ( KIcon ( "media-track-add-amarok" ), i18n ( "&Add to Playlist" ), this );
+                m_appendAction = new QAction ( QIcon::fromTheme( "media-track-add-amarok" ), i18n ( "&Add to Playlist" ), this );
                 m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-                connect ( m_appendAction, SIGNAL (triggered()), this, SLOT (slotAppendChildTracks()) );
+                connect ( m_appendAction, &QAction::triggered, this, &LastFmTreeView::slotAppendChildTracks );
             }
 
             actions.append ( m_appendAction );
 
             if ( m_loadAction == 0 )
             {
-                m_loadAction = new QAction ( KIcon ( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
+                m_loadAction = new QAction ( QIcon::fromTheme( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
                 m_appendAction->setProperty( "popupdropper_svg_id", "load" );
-                connect ( m_loadAction, SIGNAL (triggered()), this, SLOT (slotReplacePlaylistByChildTracks()) );
+                connect ( m_loadAction, &QAction::triggered, this, &LastFmTreeView::slotReplacePlaylistByChildTracks );
             }
             actions.append ( m_loadAction );
         }
@@ -197,7 +198,7 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
     if( m_pd )
     {
         debug() << "clearing PUD";
-        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
+        connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &PopupDropper::clear );
         m_pd->hide();
     }
 

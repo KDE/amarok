@@ -18,9 +18,8 @@
 
 #define DEBUG_PREFIX "FileBrowser"
 
-#include "FileBrowser.h"
 #include "FileBrowser_p.h"
-#include "FileBrowser_p.moc"
+#include "FileBrowser.h"
 
 #include "amarokconfig.h"
 #include "EngineController.h"
@@ -35,40 +34,41 @@
 #include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
 
-#include <KAction>
-#include <KComboBox>
+#include <QAction>
+#include <QComboBox>
+#include <QHeaderView>
+#include <QHBoxLayout>
+#include <QStandardPaths>
+
 #include <KConfigGroup>
 #include <KDirLister>
-#include <KIO/NetAccess>
-#include <KSaveFile>
+#include <KLocalizedString>
+#include <KIO/StatJob>
 #include <KStandardAction>
-#include <KStandardDirs>
 #include <KToolBar>
 
-#include <QHeaderView>
-
 static const QString placesString( "places://" );
-static const KUrl placesUrl( placesString );
+static const QUrl placesUrl( placesString );
 
 FileBrowser::Private::Private( FileBrowser *parent )
     : placesModel( 0 )
     , q( parent )
 {
-    KHBox *topHBox = new KHBox( q );
+    BoxWidget *topHBox = new BoxWidget( q );
 
     KToolBar *navigationToolbar = new KToolBar( topHBox );
     navigationToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     navigationToolbar->setIconDimensions( 16 );
 
-    backAction = KStandardAction::back( q, SLOT(back()), topHBox );
-    forwardAction = KStandardAction::forward( q, SLOT(forward()), topHBox );
+    backAction = KStandardAction::back( q, &FileBrowser::back, topHBox );
+    forwardAction = KStandardAction::forward( q, &FileBrowser::forward, topHBox );
     backAction->setEnabled( false );
     forwardAction->setEnabled( false );
 
-    upAction = KStandardAction::up( q, SLOT(up()), topHBox );
-    homeAction = KStandardAction::home( q, SLOT(home()), topHBox );
-    refreshAction = new KAction( KIcon("view-refresh"), i18n( "Refresh" ), topHBox );
-    QObject::connect( refreshAction, SIGNAL(triggered(bool)), q, SLOT(refresh()) );
+    upAction = KStandardAction::up( q, &FileBrowser::up, topHBox );
+    homeAction = KStandardAction::home( q, &FileBrowser::home, topHBox );
+    refreshAction = new QAction( QIcon::fromTheme("view-refresh"), i18n( "Refresh" ), topHBox );
+    QObject::connect( refreshAction, &QAction::triggered, q, &FileBrowser::refresh );
 
     navigationToolbar->addAction( backAction );
     navigationToolbar->addAction( forwardAction );
@@ -90,8 +90,8 @@ FileBrowser::Private::~Private()
 void
 FileBrowser::Private::readConfig()
 {
-    const KUrl homeUrl( QDir::homePath() );
-    const KUrl savedUrl = Amarok::config( "File Browser" ).readEntry( "Current Directory", homeUrl );
+    const QUrl homeUrl = QUrl::fromLocalFile( QDir::homePath() );
+    const QUrl savedUrl = Amarok::config( "File Browser" ).readEntry( "Current Directory", homeUrl );
     bool useHome( true );
     // fall back to $HOME if the saved dir has since disappeared or is a remote one
     if( savedUrl.isLocalFile() )
@@ -100,9 +100,14 @@ FileBrowser::Private::readConfig()
         if( dir.exists() )
             useHome = false;
     }
-    else if( KIO::NetAccess::exists( savedUrl, KIO::NetAccess::DestinationSide, 0 ) )
+    else
     {
-        useHome = false;
+        KIO::StatJob *statJob = KIO::stat( savedUrl, KIO::StatJob::DestinationSide, 0 );
+        statJob->exec();
+        if( statJob->statResult().isDir() )
+        {
+            useHome = false;
+        }
     }
     currentPath = useHome ? homeUrl : savedUrl;
 }
@@ -114,10 +119,10 @@ FileBrowser::Private::writeConfig()
 }
 
 BreadcrumbSiblingList
-FileBrowser::Private::siblingsForDir( const KUrl &path )
+FileBrowser::Private::siblingsForDir( const QUrl &path )
 {
     BreadcrumbSiblingList siblings;
-    if( path.protocol() == "places" )
+    if( path.scheme() == "places" )
     {
         for( int i = 0; i < placesModel->rowCount(); i++ )
         {
@@ -138,7 +143,7 @@ FileBrowser::Private::siblingsForDir( const KUrl &path )
         dir.cdUp();
         foreach( const QString &item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
         {
-            siblings << BreadcrumbSibling( KIcon( "folder-amarok" ), item,
+            siblings << BreadcrumbSibling( QIcon::fromTheme( "folder-amarok" ), item,
                                            dir.absoluteFilePath( item ) );
         }
     }
@@ -185,7 +190,7 @@ void
 FileBrowser::Private::saveHeaderState()
 {
     //save the state of the header (column size and order). Yay, another QByteArray thingie...
-    KSaveFile file( Amarok::saveLocation() + "file_browser_layout" );
+    QFile file( Amarok::saveLocation() + "file_browser_layout" );
     if( !file.open( QIODevice::WriteOnly ) )
     {
         warning() << "unable to save header state";
@@ -194,11 +199,6 @@ FileBrowser::Private::saveHeaderState()
     if( file.write( fileView->header()->saveState() ) < 0 )
     {
         warning() << "unable to save header state, writing failed";
-        return;
-    }
-    if( !file.finalize() )
-    {
-        warning() << "failed to write header state";
         return;
     }
 }
@@ -221,7 +221,8 @@ FileBrowser::FileBrowser( const char *name, QWidget *parent )
                         "You can then add these files to the playlist as well as perform basic "
                         "file operations." )
                        );
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
+
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_files.png" ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )
@@ -234,8 +235,8 @@ void
 FileBrowser::initView()
 {
     d->bottomPlacesModel = new FilePlacesModel( this );
-    connect( d->bottomPlacesModel, SIGNAL(setupDone(QModelIndex,bool)),
-                                   SLOT(setupDone(QModelIndex,bool)) );
+    connect( d->bottomPlacesModel, &KFilePlacesModel::setupDone,
+             this, &FileBrowser::setupDone );
     d->placesModel = new QSortFilterProxyModel( this );
     d->placesModel->setSourceModel( d->bottomPlacesModel );
     d->placesModel->setSortRole( -1 );
@@ -251,8 +252,8 @@ FileBrowser::initView()
     d->mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setDynamicSortFilter( true );
-    connect( d->searchWidget, SIGNAL(filterChanged(QString)),
-             d->mimeFilterProxyModel, SLOT(setFilterFixedString(QString)) );
+    connect( d->searchWidget, &SearchWidget::filterChanged,
+             d->mimeFilterProxyModel, &DirPlaylistTrackFilterProxyModel::setFilterFixedString );
 
     d->fileView->setModel( d->mimeFilterProxyModel );
     d->fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -276,16 +277,23 @@ FileBrowser::initView()
         action->setCheckable( true );
         if( !d->fileView->isColumnHidden( i ) )
             action->setChecked( true );
-        connect( action, SIGNAL(toggled(bool)), this, SLOT(toggleColumn(bool)) );
+        connect( action, &QAction::toggled, this, &FileBrowser::toggleColumn );
     }
 
-    connect( d->fileView->header(), SIGNAL(geometriesChanged()),
-                                    SLOT(updateHeaderState()) );
-    connect( d->fileView, SIGNAL(navigateToDirectory(QModelIndex)),
-                          SLOT(slotNavigateToDirectory(QModelIndex)) );
-    connect( d->fileView, SIGNAL(refreshBrowser()),
-                          SLOT(refresh()) );
+    connect( d->fileView->header(), &QHeaderView::geometriesChanged,
+             this, &FileBrowser::updateHeaderState );
+    connect( d->fileView, &FileView::navigateToDirectory,
+             this, &FileBrowser::slotNavigateToDirectory );
+    connect( d->fileView, &FileView::refreshBrowser,
+             this, &FileBrowser::refresh );
 }
+
+void
+FileBrowser::updateHeaderState()
+{
+    d->updateHeaderState();
+}
+
 
 FileBrowser::~FileBrowser()
 {
@@ -327,7 +335,7 @@ FileBrowser::slotNavigateToDirectory( const QModelIndex &index )
         {
             d->backStack.push( d->currentPath );
             d->forwardStack.clear(); // navigating resets forward stack
-            setDir( KUrl( url ) );
+            setDir( QUrl( url ) );
         }
         else
         {
@@ -362,7 +370,7 @@ FileBrowser::addItemActivated( const QString &callbackString )
     if( callbackString.isEmpty() )
         return;
 
-    KUrl newPath;
+    QUrl newPath;
     // we have been called with a places name, it means that we'll probably have to mount
     // the place
     if( callbackString.startsWith( placesString ) )
@@ -378,7 +386,7 @@ FileBrowser::addItemActivated( const QString &callbackString )
                     d->bottomPlacesModel->requestSetup( d->placesModel->mapToSource( idx ) );
                     return;
                 }
-                newPath = idx.data( KFilePlacesModel::UrlRole ).toString();
+                newPath = QUrl::fromUserInput(idx.data( KFilePlacesModel::UrlRole ).toString());
                 break;
             }
         }
@@ -389,11 +397,11 @@ FileBrowser::addItemActivated( const QString &callbackString )
         }
     }
     else
-        newPath = callbackString;
+        newPath = QUrl::fromUserInput(callbackString);
 
     d->backStack.push( d->currentPath );
     d->forwardStack.clear(); // navigating resets forward stack
-    setDir( KUrl( newPath ) );
+    setDir( QUrl( newPath ) );
 }
 
 void
@@ -404,7 +412,7 @@ FileBrowser::setupAddItems()
     if( d->currentPath == placesUrl )
         return; // no more items to add
 
-    QString workingUrl = d->currentPath.prettyUrl( KUrl::RemoveTrailingSlash );
+    QString workingUrl = d->currentPath.toDisplayString( QUrl::StripTrailingSlash );
     int currentPosition = 0;
 
     QString name;
@@ -413,7 +421,7 @@ FileBrowser::setupAddItems()
 
     // find QModelIndex of the NON-HIDDEN closestItem
     QModelIndex placesIndex;
-    KUrl tempUrl = d->currentPath;
+    QUrl tempUrl = d->currentPath;
     do
     {
         placesIndex = d->bottomPlacesModel->closestItem( tempUrl );
@@ -423,9 +431,9 @@ FileBrowser::setupAddItems()
         if( placesIndex.isValid() )
             break; // found shown placesindex, good!
 
-        if( tempUrl.upUrl() == tempUrl )
+        if( KIO::upUrl(tempUrl) == tempUrl )
             break; // prevent infinite loop
-        tempUrl = tempUrl.upUrl();
+        tempUrl = KIO::upUrl(tempUrl);
     } while( true );
 
     // special handling for the first additional item
@@ -434,8 +442,9 @@ FileBrowser::setupAddItems()
         name = placesIndex.data( Qt::DisplayRole ).toString();
         callback = placesIndex.data( KFilePlacesModel::UrlRole ).toString();
 
-        KUrl currPlaceUrl = d->placesModel->data( placesIndex, KFilePlacesModel::UrlRole ).toUrl();
-        currentPosition = currPlaceUrl.url( KUrl::AddTrailingSlash ).length();
+        QUrl currPlaceUrl = d->placesModel->data( placesIndex, KFilePlacesModel::UrlRole ).toUrl();
+        currPlaceUrl.setPath( QDir::toNativeSeparators(currPlaceUrl.path() + '/') );
+        currentPosition = currPlaceUrl.toString().length();
     }
     else
     {
@@ -453,7 +462,7 @@ FileBrowser::setupAddItems()
             name.remove( QRegExp( "/$" ) );
     }
     /* always provide siblings for places, regardless of what first item is; this also
-     * work-arounds bug 312639, where creating KUrl with accented chars crashes */
+     * work-arounds bug 312639, where creating QUrl with accented chars crashes */
     siblings = d->siblingsForDir( placesUrl );
     addAdditionalItem( new BrowserBreadcrumbItem( name, callback, siblings, this ) );
 
@@ -468,7 +477,7 @@ FileBrowser::setupAddItems()
         name.remove( QRegExp( "/$" ) );
         callback = workingUrl.left( nextPosition );
 
-        siblings = d->siblingsForDir( callback );
+        siblings = d->siblingsForDir( QUrl::fromLocalFile( callback ) );
         addAdditionalItem( new BrowserBreadcrumbItem( name, callback, siblings, this ) );
 
         currentPosition = nextPosition;
@@ -487,7 +496,7 @@ FileBrowser::reActivate()
 }
 
 void
-FileBrowser::setDir( const KUrl &dir )
+FileBrowser::setDir( const QUrl &dir )
 {
     if( dir == placesUrl )
     {
@@ -511,7 +520,6 @@ FileBrowser::setDir( const KUrl &dir )
             d->fileView->setDragEnabled( true );
             d->fileView->header()->setVisible( true );
         }
-
         d->kdirModel->dirLister()->openUrl( dir );
     }
 
@@ -549,7 +557,7 @@ FileBrowser::up()
     if( d->currentPath == placesUrl )
         return; // nothing to do, we consider places as the root view
 
-    KUrl upUrl = d->currentPath.upUrl();
+    QUrl upUrl = KIO::upUrl(d->currentPath);
     if( upUrl == d->currentPath ) // apparently, we cannot go up withn url
         upUrl = placesUrl;
 
@@ -563,7 +571,7 @@ FileBrowser::home()
 {
     d->backStack.push( d->currentPath );
     d->forwardStack.clear(); // navigating resets forward stack
-    setDir( KUrl( QDir::homePath() ) );
+    setDir( QUrl::fromLocalFile( QDir::homePath() ) );
 }
 
 void
@@ -582,7 +590,7 @@ FileBrowser::setupDone( const QModelIndex &index, bool success )
         {
             d->backStack.push( d->currentPath );
             d->forwardStack.clear(); // navigating resets forward stack
-            setDir( url );
+            setDir( QUrl::fromLocalFile(url) );
         }
     }
 }
@@ -605,12 +613,11 @@ DelayedActivator::DelayedActivator( QAbstractItemView *view )
         return;
     }
 
-    connect( model, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                    SLOT(slotRowsInserted(QModelIndex,int)) );
+    connect( model, &QAbstractItemModel::rowsInserted, this, &DelayedActivator::slotRowsInserted );
 
-    connect( model, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
-    connect( model, SIGNAL(layoutChanged()), SLOT(deleteLater()) );
-    connect( model, SIGNAL(modelReset()), SLOT(deleteLater()) );
+    connect( model, &QAbstractItemModel::destroyed, this, &DelayedActivator::deleteLater );
+    connect( model, &QAbstractItemModel::layoutChanged, this, &DelayedActivator::deleteLater );
+    connect( model, &QAbstractItemModel::modelReset, this, &DelayedActivator::deleteLater );
 }
 
 void
@@ -627,4 +634,4 @@ DelayedActivator::slotRowsInserted( const QModelIndex &parent, int start )
     deleteLater();
 }
 
-#include "FileBrowser.moc"
+#include "moc_FileBrowser.cpp"

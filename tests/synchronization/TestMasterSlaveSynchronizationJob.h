@@ -17,7 +17,7 @@
 #ifndef TESTMASTERSLAVESYNCHRONIZATIONJOB_H
 #define TESTMASTERSLAVESYNCHRONIZATIONJOB_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestMasterSlaveSynchronizationJob : public QObject
 {
@@ -25,7 +25,7 @@ class TestMasterSlaveSynchronizationJob : public QObject
 public:
     TestMasterSlaveSynchronizationJob();
 
-private slots:
+private Q_SLOTS:
     void init();
 
     void testAddTracksToEmptySlave();

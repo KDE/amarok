@@ -21,7 +21,7 @@
 
 #include "amarok_sqlcollection_export.h"
 
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
 
 namespace Collections {
 
@@ -97,16 +97,16 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlQueryMaker : public QueryMaker
          */
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
 
-    public slots:
-        void done( ThreadWeaver::Job * job );
-        void blockingNewResultReady( const QStringList &customData );
-        void blockingNewResultReady( const Meta::AlbumList &albums );
-        void blockingNewResultReady( const Meta::ArtistList &artists );
-        void blockingNewResultReady( const Meta::GenreList &genres );
-        void blockingNewResultReady( const Meta::ComposerList &composers );
-        void blockingNewResultReady( const Meta::YearList &years );
-        void blockingNewResultReady( const Meta::TrackList &tracks );
-        void blockingNewResultReady( const Meta::LabelList &labels );
+    public Q_SLOTS:
+        void done( ThreadWeaver::JobPointer job );
+        void blockingNewTracksReady( const Meta::TrackList& );
+        void blockingNewArtistsReady( const Meta::ArtistList& );
+        void blockingNewAlbumsReady( const Meta::AlbumList& );
+        void blockingNewGenresReady( const Meta::GenreList& );
+        void blockingNewComposersReady( const Meta::ComposerList& );
+        void blockingNewYearsReady( const Meta::YearList& );
+        void blockingNewResultReady( const QStringList& );
+        void blockingNewLabelsReady( const Meta::LabelList& );
 
     private:
 

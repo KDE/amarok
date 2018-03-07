@@ -21,15 +21,15 @@
 #include "core/interfaces/Logger.h"
 #include "OpmlDirectoryMeta.h"
 
-#include <KLocale>
-
 #include <QDomDocument>
+
+#include <KLocalizedString>
 
 using namespace Meta;
 
 OpmlDirectoryInfoParser::OpmlDirectoryInfoParser()
  : InfoParserBase()
- , m_rssDownloadJob( 0 )
+ , m_rssDownloadJob( Q_NULLPTR )
 {
 }
 
@@ -61,10 +61,10 @@ void OpmlDirectoryInfoParser::getInfo( TrackPtr track )
 
     debug() << "OpmlDirectoryInfoParser: getInfo about feed: " << feed->uidUrl();
 
-    m_rssDownloadJob = KIO::storedGet( feed->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
+    m_rssDownloadJob = KIO::storedGet( QUrl( feed->uidUrl() ), KIO::Reload, KIO::HideProgressInfo );
     Amarok::Components::logger()->newProgressOperation( m_rssDownloadJob,
                                                         i18n( "Fetching Podcast Info" ) );
-    connect( m_rssDownloadJob, SIGNAL(result(KJob*)), SLOT(rssDownloadComplete(KJob*)) );
+    connect( m_rssDownloadJob, &KJob::result, this, &OpmlDirectoryInfoParser::rssDownloadComplete );
 }
 
 void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
@@ -126,4 +126,3 @@ void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
     downLoadJob->deleteLater();
 }
 
-#include "OpmlDirectoryInfoParser.moc"

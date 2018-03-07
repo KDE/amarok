@@ -26,8 +26,8 @@ MagnatuneNeedUpdateWidget::MagnatuneNeedUpdateWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->update, SIGNAL(clicked()), SLOT(startUpdate()));
-    connect(ui->autoUpdate, SIGNAL(stateChanged(int)), SLOT(saveSettings()));
+    connect(ui->update, &QPushButton::clicked, this, &MagnatuneNeedUpdateWidget::startUpdate );
+    connect(ui->autoUpdate, &QCheckBox::stateChanged, this, &MagnatuneNeedUpdateWidget::saveSettings );
 
     ui->autoUpdate->setCheckState( MagnatuneConfig().autoUpdateDatabase()?
                                    Qt::Checked : Qt::Unchecked );

@@ -20,7 +20,7 @@
 #include "AvatarDownloader.h"
 #include "core/support/Debug.h"
 
-#include <KUrl>
+#include <QUrl>
 
 AvatarDownloader::AvatarDownloader()
 {
@@ -31,18 +31,18 @@ AvatarDownloader::~AvatarDownloader()
 }
 
 void
-AvatarDownloader::downloadAvatar( const QString& username, const KUrl& url )
+AvatarDownloader::downloadAvatar( const QString& username, const QUrl &url )
 {
     if( !url.isValid() )
         return;
 
     m_userAvatarUrls.insert( url, username );
     The::networkAccessManager()->getData( url, this,
-         SLOT(downloaded(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(downloaded(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-AvatarDownloader::downloaded( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+AvatarDownloader::downloaded( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( !m_userAvatarUrls.contains( url ) )
         return;
@@ -58,4 +58,3 @@ AvatarDownloader::downloaded( const KUrl &url, QByteArray data, NetworkAccessMan
         debug() << QString( "Error: failed to download %1'savatar: %2" ).arg( username, e.description );
 }
 
-#include "AvatarDownloader.moc"

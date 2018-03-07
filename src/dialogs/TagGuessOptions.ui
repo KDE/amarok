@@ -12,7 +12,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
    <item>
-    <widget class="KButtonGroup" name="optionsFrame">
+    <widget class="QGroupBox" name="optionsFrame">
      <property name="title">
       <string>Options</string>
      </property>
@@ -342,9 +342,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KButtonGroup</class>
+   <class>QGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>kbuttongroup.h</header>
+   <header>qgroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

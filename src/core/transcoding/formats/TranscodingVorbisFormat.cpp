@@ -16,7 +16,7 @@
 
 #include "TranscodingVorbisFormat.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 using namespace Transcoding;
 
@@ -79,10 +79,10 @@ VorbisFormat::description() const
                   "support it." );
 }
 
-KIcon
+QIcon
 VorbisFormat::icon() const
 {
-    return KIcon( "audio-x-generic" );  //TODO: get a *real* icon!
+    return QIcon::fromTheme( "audio-x-wav" );  //TODO: get a *real* icon!
 }
 
 QStringList

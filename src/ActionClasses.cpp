@@ -20,10 +20,11 @@
 
 #include "ActionClasses.h"
 
-
 #include "App.h"
 #include "EngineController.h"
+#include "KNotificationBackend.h"
 #include "MainWindow.h"
+#include "aboutdialog/OcsData.h"
 #include "amarokconfig.h"
 #include <config.h>
 #include "core/support/Amarok.h"
@@ -31,12 +32,14 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/Osd.h"
-#include "KNotificationBackend.h"
+
+#include <QKeySequence>
 
 #include <KAuthorized>
 #include <KHelpMenu>
-#include <KLocale>
+#include <KLocalizedString>
 #include <KToolBar>
+#include <KGlobalAccel>
 
 extern OcsData ocsData;
 
@@ -68,7 +71,7 @@ safePlug( KActionCollection *ac, const char *name, QWidget *w )
 {
     if( ac )
     {
-        KAction *a = (KAction*) ac->action( name );
+        QAction *a = (QAction*) ac->action( name );
         if( a && w ) w->addAction( a );
     }
 }
@@ -80,18 +83,22 @@ safePlug( KActionCollection *ac, const char *name, QWidget *w )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 MenuAction::MenuAction( KActionCollection *ac, QObject *parent )
-  : KAction( parent )
+  : QAction( parent )
 {
     setText(i18n( "Amarok Menu" ));
     ac->addAction("amarok_menu", this);
     setShortcutConfigurable ( false ); //FIXME disabled as it doesn't work, should use QCursor::pos()
 }
 
+void MenuAction::setShortcutConfigurable(bool b)
+{
+    setProperty("isShortcutConfigurable", b);
+}
 
 Menu* Menu::s_instance = 0;
 
 Menu::Menu( QWidget* parent )
-    : KMenu( parent )
+    : QMenu( parent )
 {
     s_instance = this;
 
@@ -143,13 +150,13 @@ Menu::instance()
     return s_instance ? s_instance : new Menu( The::mainWindow() );
 }
 
-KMenu*
+QMenu*
 Menu::helpMenu( QWidget *parent ) //STATIC
 {
     if ( s_helpMenu == 0 )
-        s_helpMenu = new KHelpMenu( parent, KGlobal::mainComponent().aboutData(), Amarok::actionCollection() );
+        s_helpMenu = new KHelpMenu( parent, KAboutData::applicationData(), Amarok::actionCollection() );
 
-    KMenu* menu = s_helpMenu->menu();
+    QMenu* menu = s_helpMenu->menu();
 
     // "What's This" isn't currently defined for anything in Amarok, so let's remove it
     s_helpMenu->action( KHelpMenu::menuWhatsThis )->setVisible( false );
@@ -171,7 +178,6 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
     ac->addAction( "play_pause", this );
     setText( i18n( "Play/Pause" ) );
     setShortcut( Qt::Key_Space );
-    setGlobalShortcut( KShortcut() );
 
     EngineController *engine = The::engineController();
 
@@ -182,36 +188,36 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
     else
         stopped();
 
-    connect( this, SIGNAL(triggered()),
-             engine, SLOT(playPause()) );
+    connect( this, &PlayPauseAction::triggered,
+             engine, &EngineController::playPause );
 
-    connect( engine, SIGNAL(stopped(qint64,qint64)),
-             this, SLOT(stopped()) );
-    connect( engine, SIGNAL(paused()),
-             this, SLOT(paused()) );
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-             this, SLOT(playing()) );
+    connect( engine, &EngineController::stopped,
+             this, &PlayPauseAction::stopped );
+    connect( engine, &EngineController::paused,
+             this, &PlayPauseAction::paused );
+    connect( engine, &EngineController::trackPlaying,
+             this, &PlayPauseAction::playing );
 }
 
 void
 PlayPauseAction::stopped()
 {
     setChecked( false );
-    setIcon( KIcon("media-playback-start-amarok") );
+    setIcon( QIcon::fromTheme("media-playback-start-amarok") );
 }
 
 void
 PlayPauseAction::paused()
 {
     setChecked( true );
-    setIcon( KIcon("media-playback-start-amarok") );
+    setIcon( QIcon::fromTheme("media-playback-start-amarok") );
 }
 
 void
 PlayPauseAction::playing()
 {
     setChecked( false );
-    setIcon( KIcon("media-playback-pause-amarok") );
+    setIcon( QIcon::fromTheme("media-playback-pause-amarok") );
 }
 
 
@@ -233,7 +239,7 @@ void ToggleAction::setChecked( bool b )
 
     m_function( b );
     KToggleAction::setChecked( b );
-    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->save(); //So we don't lose the setting when crashing
     if( announce ) emit toggled( b ); //KToggleAction doesn't do this for us. How gay!
 }
 
@@ -242,7 +248,7 @@ void ToggleAction::setEnabled( bool b )
     const bool announce = b != isEnabled();
 
     KToggleAction::setEnabled( b );
-    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->save(); //So we don't lose the setting when crashing
     if( announce ) emit QAction::triggered( b );
 }
 
@@ -267,14 +273,14 @@ void SelectAction::setCurrentItem( int n )
 
     m_function( n );
     KSelectAction::setCurrentItem( n );
-    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->save(); //So we don't lose the setting when crashing
     if( announce ) emit triggered( n );
 }
 
 void SelectAction::actionTriggered( QAction *a )
 {
     m_function( currentItem() );
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
     KSelectAction::actionTriggered( a );
 }
 
@@ -283,7 +289,7 @@ void SelectAction::setEnabled( bool b )
     const bool announce = b != isEnabled();
 
     KSelectAction::setEnabled( b );
-    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->save(); //So we don't lose the setting when crashing
     if( announce ) emit QAction::triggered( b );
 }
 
@@ -292,7 +298,7 @@ void SelectAction::setIcons( QStringList icons )
     m_icons = icons;
     foreach( QAction *a, selectableActionGroup()->actions() )
     {
-        a->setIcon( KIcon(icons.takeFirst()) );
+        a->setIcon( QIcon::fromTheme(icons.takeFirst()) );
     }
 }
 
@@ -314,7 +320,7 @@ void
 RandomAction::setCurrentItem( int n )
 {
     // Porting
-    //if( KAction *a = parentCollection()->action( "favor_tracks" ) )
+    //if( QAction *a = parentCollection()->action( "favor_tracks" ) )
     //    a->setEnabled( n );
     SelectAction::setCurrentItem( n );
 }
@@ -345,7 +351,7 @@ ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *pare
 // BurnMenuAction
 //////////////////////////////////////////////////////////////////////////////////////////
 BurnMenuAction::BurnMenuAction( KActionCollection *ac, QObject *parent )
-  : KAction( parent )
+  : QAction( parent )
 {
     setText(i18n( "Burn" ));
     ac->addAction("burn_menu", this);
@@ -356,13 +362,13 @@ BurnMenuAction::createWidget( QWidget *w )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
-    if( bar && KAuthorized::authorizeKAction( objectName() ) )
+    if( bar && KAuthorized::authorizeAction( objectName() ) )
     {
-        //const int id = KAction::getToolButtonID();
+        //const int id = QAction::getToolButtonID();
 
         //addContainer( bar, id );
         w->addAction( this );
-        connect( bar, SIGNAL(destroyed()), SLOT(slotDestroyed()) );
+        //connect( bar, &KToolBar::destroyed, this, &BurnMenuAction::slotDestroyed );
 
         //bar->insertButton( QString::null, id, true, i18n( "Burn" ), index );
 
@@ -382,16 +388,16 @@ BurnMenuAction::createWidget( QWidget *w )
 BurnMenu* BurnMenu::s_instance = 0;
 
 BurnMenu::BurnMenu( QWidget* parent )
-    : KMenu( parent )
+    : QMenu( parent )
 {
     s_instance = this;
 
-    addAction( i18n("Current Playlist"), this, SLOT(slotBurnCurrentPlaylist()) );
-    addAction( i18n("Selected Tracks"), this, SLOT(slotBurnSelectedTracks()) );
+    addAction( i18n("Current Playlist"), this, &BurnMenu::slotBurnCurrentPlaylist );
+    addAction( i18n("Selected Tracks"), this, &BurnMenu::slotBurnSelectedTracks );
     //TODO add "album" and "all tracks by artist"
 }
 
-KMenu*
+QMenu*
 BurnMenu::instance()
 {
     return s_instance ? s_instance : new BurnMenu( The::mainWindow() );
@@ -415,13 +421,13 @@ BurnMenu::slotBurnSelectedTracks() //SLOT
 //////////////////////////////////////////////////////////////////////////////////////////
 
 StopAction::StopAction( KActionCollection *ac, QObject *parent )
-  : KAction( parent )
+  : QAction( parent )
 {
     ac->addAction( "stop", this );
     setText( i18n( "Stop" ) );
-    setIcon( KIcon("media-playback-stop-amarok") );
-    setGlobalShortcut( KShortcut() );
-    connect( this, SIGNAL(triggered()), this, SLOT(stop()) );
+    setIcon( QIcon::fromTheme("media-playback-stop-amarok") );
+    KGlobalAccel::setGlobalShortcut(this, QKeySequence() );
+    connect( this, &StopAction::triggered, this, &StopAction::stop );
 
     EngineController *engine = The::engineController();
 
@@ -430,11 +436,10 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
     else
         playing();
 
-    connect( engine, SIGNAL(stopped(qint64,qint64)),
-             this, SLOT(stopped()) );
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-             this, SLOT(playing()) );
-
+    connect( engine, &EngineController::stopped,
+             this, &StopAction::stopped );
+    connect( engine, &EngineController::trackPlaying,
+             this, &StopAction::playing );
 }
 
 void
@@ -455,19 +460,18 @@ StopAction::stop()
     The::engineController()->stop();
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // StopPlayingAfterCurrentTrackAction
 //////////////////////////////////////////////////////////////////////////////////////////
 
 StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionCollection *ac, QObject *parent )
-: KAction( parent )
+: QAction( parent )
 {
     ac->addAction( "stop_after_current", this );
     setText( i18n( "Stop after current Track" ) );
-    setIcon( KIcon("media-playback-stop-amarok") );
-    setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_V ) );
-    connect( this, SIGNAL(triggered()), SLOT(stopPlayingAfterCurrentTrack()) );
+    setIcon( QIcon::fromTheme("media-playback-stop-amarok") );
+    KGlobalAccel::setGlobalShortcut(this, QKeySequence( Qt::META + Qt::SHIFT + Qt::Key_V ) );
+    connect( this, &StopPlayingAfterCurrentTrackAction::triggered, this, &StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack );
 }
 
 void

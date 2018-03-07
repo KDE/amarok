@@ -188,7 +188,7 @@ int BookmarkGroup::childCount() const
 void BookmarkGroup::clear()
 {
     //DEBUG_BLOCK
-//m_childBookmarks, m_childGroups are KSharedPtrs, so we should be able to just clear the list
+//m_childBookmarks, m_childGroups are AmarokSharedPointers, so we should be able to just clear the list
 //and the playlistptrs will delete themselves
     m_childGroups.clear();
     m_childBookmarks.clear();

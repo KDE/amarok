@@ -22,7 +22,7 @@
 #include "core/support/Debug.h"
 #include "widgets/BookmarkTriangle.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QPainter>
 #include <QHBoxLayout>
@@ -34,20 +34,20 @@ BookmarkPopup::BookmarkPopup ( QWidget* parent, QString label, BookmarkTriangle*
 
 {
     m_timer = new QTimer ( this );
-    connect ( m_timer, SIGNAL (timeout()), this, SLOT (hideTimerAction()) );
+    connect ( m_timer, &QTimer::timeout, this, &BookmarkPopup::hideTimerAction );
 
     m_displayNeeded = true;
     m_hasMouseOver = false;
     m_overDelete = false;
     m_isEditMode = false;
 
-    m_deleteIcon = KIcon ( "edit-delete" );
+    m_deleteIcon = QIcon::fromTheme( "edit-delete" );
     adjustWidth();
 
     m_edit = new QLineEdit ( m_label, 0 );
     m_edit->setVisible ( false );
     m_edit->setAlignment ( Qt::AlignHCenter );
-    connect ( m_edit, SIGNAL (returnPressed()), this, SLOT (editValueChanged()) );
+    connect ( m_edit, &QLineEdit::returnPressed, this, &BookmarkPopup::editValueChanged );
     
     QVBoxLayout * layout = new QVBoxLayout;
     layout->setContentsMargins ( 1, 0, 0, 0 );

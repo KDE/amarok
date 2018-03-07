@@ -19,8 +19,8 @@
 #include "AmarokUrlHandler.h"
 #include "BookmarkModel.h"
 
-#include <KIcon>
-#include <KLocale>
+#include <QIcon>
+#include <KLocalizedString>
 
 #include <QMenu>
 #include <QString>
@@ -28,10 +28,10 @@
 BookmarkCurrentButton::BookmarkCurrentButton( QWidget *parent )
     : QToolButton( parent )
 {
-    setIcon( KIcon( "bookmark-new" ) );
+    setIcon( QIcon::fromTheme( "bookmark-new" ) );
     setText( i18n( "New Bookmark" ) );
     setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-    connect( this, SIGNAL(clicked(bool)), this, SLOT(showMenu()) );
+    connect( this, &BookmarkCurrentButton::clicked, this, &BookmarkCurrentButton::showMenu );
 }
 
 BookmarkCurrentButton::~BookmarkCurrentButton()
@@ -68,4 +68,3 @@ void BookmarkCurrentButton::generateMenu( const QPoint &pos )
     }
 }
 
-#include "BookmarkCurrentButton.moc"

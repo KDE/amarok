@@ -27,7 +27,7 @@ MagnatuneSqlCollection::MagnatuneSqlCollection(const QString & id, const QString
 {
 }
 
-Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const KUrl & url)
+Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const QUrl &url)
 {
     //DEBUG_BLOCK
 
@@ -54,7 +54,7 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const KUrl & url)
 
         //debug() << "after a quick makeover: " << pristineUrl;
 
-        Meta::TrackPtr trackPtr = ServiceSqlCollection::trackForUrl( KUrl( pristineUrl ) );
+        Meta::TrackPtr trackPtr = ServiceSqlCollection::trackForUrl( QUrl( pristineUrl ) );
 
         if ( trackPtr ) {
             Meta::ServiceTrack * mTrack = dynamic_cast< Meta::ServiceTrack * >( trackPtr.data() );
@@ -75,7 +75,7 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const KUrl & url)
         pristineUrl.replace( QRegExp( ".*:.*@download" ), "http://he3" );
         pristineUrl.replace( QRegExp( ".*:.*@stream" ), "http://he3" );
 
-        return ServiceSqlCollection::trackForUrl( KUrl( pristineUrl ) );
+        return ServiceSqlCollection::trackForUrl( QUrl( pristineUrl ) );
 
     }
     

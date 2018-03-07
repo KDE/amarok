@@ -17,9 +17,10 @@
 #ifndef TESTSQLALBUM_H
 #define TESTSQLALBUM_H
 
-#include <QtTest/QtTest>
+#include <QSharedPointer>
+#include <QTemporaryDir>
+#include <QTest>
 
-#include <KTempDir>
 
 class MySqlEmbeddedStorage;
 class SqlRegistry;
@@ -35,7 +36,7 @@ public:
     TestSqlAlbum();
     ~TestSqlAlbum();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -60,8 +61,8 @@ private slots:
 
 private:
     Collections::SqlCollection *m_collection;
-    MySqlEmbeddedStorage *m_storage;
-    KTempDir *m_tmpDir;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
+    QTemporaryDir *m_tmpDir;
 };
 
 #endif // TESTSQLALBUM_H

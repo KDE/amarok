@@ -4,8 +4,8 @@ include_directories(
   ${AMAROK_SOURCE_TREE}/network
   ${AMAROK_TEST_TREE}/context/engines
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
+
+
 )
 
 
@@ -18,8 +18,10 @@ set( testsimilarartistsengine_SRCS
     ${AMAROK_SOURCE_TREE}/context/applets/similarartists/SimilarArtist.cpp
 )
 
-kde4_add_unit_test( testsimilarartistsengine ${testsimilarartistsengine_SRCS} )
+add_executable( testsimilarartistsengine ${testsimilarartistsengine_SRCS} )
+add_test(NAME testsimilarartistsengine COMMAND $<TARGET_FILE:testsimilarartistsengine>)
+ecm_mark_as_test(testsimilarartistsengine)
 
 add_dependencies( testsimilarartistsengine amaroklib)
 
-target_link_libraries( testsimilarartistsengine amarokcore amaroklib ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PLASMA_LIBS} ${LIBLASTFM_LIBRARY} ${QT_QTTEST_LIBRARY})
+target_link_libraries( testsimilarartistsengine amarokcore amaroklib KF5::KIOCore KF5::Plasma ${LIBLASTFM_LIBRARY} Qt5::Test)

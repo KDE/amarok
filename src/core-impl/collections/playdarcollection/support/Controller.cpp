@@ -23,12 +23,13 @@
 
 #include <qjson/parser.h>
 
-#include <KUrl>
 #include <KIO/Job>
 
-#include <QString>
-#include <QVariant>
 #include <QMap>
+#include <QString>
+#include <QUrl>
+#include <QUrlQuery>
+#include <QVariant>
 #include <QVariantMap>
 
 namespace Playdar {
@@ -55,16 +56,17 @@ namespace Playdar {
                 << ", album name = " << album << ", and track title = " << title;
         
         const QString baseUrl( "http://localhost:60210/api/?method=resolve" );
-        KUrl resolveUrl( baseUrl );
-        
-        resolveUrl.addQueryItem( QString( "artist" ), artist );
-        resolveUrl.addQueryItem( QString( "album" ), album );
-        resolveUrl.addQueryItem( QString( "track" ), title );
+        QUrl resolveUrl( baseUrl );
+        QUrlQuery query( resolveUrl );
+        query.addQueryItem( QString( "artist" ), artist );
+        query.addQueryItem( QString( "album" ), album );
+        query.addQueryItem( QString( "track" ), title );
+        resolveUrl.setQuery( query );
         
         debug() << "Starting storedGetJob for " << resolveUrl.url();
         
         KJob* resolveJob = KIO::storedGet( resolveUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( resolveJob, SIGNAL(result(KJob*)), this, SLOT(processQuery(KJob*)) );
+        connect( resolveJob, &KJob::result, this, &Controller::processQuery );
     }
     
     void
@@ -73,12 +75,14 @@ namespace Playdar {
         DEBUG_BLOCK
         
         const QString baseUrl( "http://localhost:60210/api/?method=get_results" );
-        KUrl getResultsUrl( baseUrl );
-        
-        getResultsUrl.addQueryItem( QString( "qid" ), query->qid() );
-        
+        QUrl getResultsUrl( baseUrl );
+        QUrlQuery q( getResultsUrl );
+
+        q.addQueryItem( QString( "qid" ), query->qid() );
+        getResultsUrl.setQuery( q );
+
         KJob* getResultsJob = KIO::storedGet( getResultsUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( getResultsJob, SIGNAL(result(KJob*)), query, SLOT(receiveResults(KJob*)) );
+        connect( getResultsJob, &KJob::result, query, &Query::receiveResults );
     }
     
     void
@@ -87,23 +91,26 @@ namespace Playdar {
         DEBUG_BLOCK
         
         const QString baseUrl( "http://localhost:60210/api/?method=get_results_long" );
-        KUrl getResultsUrl( baseUrl );
-        
-        getResultsUrl.addQueryItem( QString( "qid" ), query->qid() );
-        
+        QUrl getResultsUrl( baseUrl );
+        QUrlQuery q( getResultsUrl );
+
+        q.addQueryItem( QString( "qid" ), query->qid() );
+        getResultsUrl.setQuery( q );
+
         KJob* getResultsJob = KIO::storedGet( getResultsUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( getResultsJob, SIGNAL(result(KJob*)), query, SLOT(receiveResults(KJob*)) );
+        connect( getResultsJob, &KJob::result, query, &Query::receiveResults );
     }
     
-    KUrl
+    QUrl
     Controller::urlForSid( const QString &sid ) const
     {
         DEBUG_BLOCK
         
         const QString baseUrl( "http://localhost:60210/sid/" );
-        KUrl playableUrl( baseUrl );
+        QUrl playableUrl( baseUrl );
         
-        playableUrl.addPath( sid );
+        playableUrl = playableUrl.adjusted(QUrl::StripTrailingSlash);
+        playableUrl.setPath(playableUrl.path() + '/' + ( sid ));
         
         return playableUrl;
     }
@@ -114,10 +121,10 @@ namespace Playdar {
         // DEBUG_BLOCK
         
         const QString baseUrl( "http://localhost:60210/api/?method=stat" );
-        KUrl statusUrl( baseUrl );
+        QUrl statusUrl( baseUrl );
         
         KJob* statusJob = KIO::storedGet( statusUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( statusJob, SIGNAL(result(KJob*)), this, SLOT(processStatus(KJob*)) );
+        connect( statusJob, &KJob::result, this, &Controller::processStatus );
     }
     
     void
@@ -198,7 +205,6 @@ namespace Playdar {
         debug() << "All good! Emitting queryReady( Playdar::Query* )...";
         emit queryReady( query );
         
-        connect( query, SIGNAL(playdarError(Playdar::Controller::ErrorState)),
-                 this, SIGNAL(playdarError(Playdar::Controller::ErrorState)) );
+        connect( query, &Query::playdarError, this, &Controller::playdarError );
     }
 }

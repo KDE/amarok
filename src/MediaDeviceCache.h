@@ -21,13 +21,8 @@
 
 #include <QObject>
 #include <QMap>
-#include <QString>
 #include <QStringList>
-#include <QtCore/QTimer>
 
-namespace Solid {
-    class Device;
-}
 
 class AMAROK_EXPORT MediaDeviceCache : public QObject
 {
@@ -54,12 +49,12 @@ class AMAROK_EXPORT MediaDeviceCache : public QObject
         bool isGenericEnabled( const QString &udi ) const;
         const QString volumeMountPoint( const QString &udi ) const;
 
-    signals:
+    Q_SIGNALS:
         void deviceAdded( const QString &udi );
         void deviceRemoved( const QString &udi );
         void accessibilityChanged( bool accessible, const QString &udi );
 
-    public slots:
+    public Q_SLOTS:
         void slotAddSolidDevice( const QString &udi );
         void slotRemoveSolidDevice( const QString &udi );
         void slotAccessibilityChanged( bool accessible, const QString &udi );

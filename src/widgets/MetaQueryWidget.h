@@ -22,20 +22,20 @@
 #define AMAROK_METAQUERY_H
 
 #include <QWidget>
-#include <QWeakPointer>
+#include <QPointer>
 #include "core/meta/forward_declarations.h"
 #include "core/meta/support/MetaConstants.h"
+
+#include <KComboBox>
+#include <QSpinBox>
 
 class QFrame;
 class QGridLayout;
 class QHBoxLayout;
-class QVBoxLayout;
 class QLabel;
 class QToolButton;
-class KComboBox;
-class KIntSpinBox;
+class QVBoxLayout;
 class KToolBar;
-class KVBox;
 
 namespace Collections
 {
@@ -53,13 +53,21 @@ public:
     TimeDistanceWidget( QWidget *parent = 0 );
     qint64 timeDistance() const;
     void setTimeDistance( qint64 value );
-    void connectChanged( QObject *receiver, const char *slot );
+
+    template<typename Func>
+    void connectChanged( typename QtPrivate::FunctionPointer<Func>::Object *receiver, Func slot )
+    {
+        connect( m_timeEdit, QOverload<int>::of(&QSpinBox::valueChanged),
+                 receiver, slot );
+        connect( m_unitSelection, QOverload<int>::of(&QComboBox::currentIndexChanged),
+                 receiver, slot );
+    }
 
 protected:
-    KIntSpinBox *m_timeEdit;
-    KComboBox *m_unitSelection;
+    QSpinBox *m_timeEdit;
+    QComboBox *m_unitSelection;
 
-private slots:
+private Q_SLOTS:
     void slotUpdateComboBoxLabels( int value );
 };
 
@@ -146,7 +154,7 @@ class MetaQueryWidget : public QWidget
         static QString conditionToString( FilterCondition condition, qint64 field );
 
 
-    public slots:
+    public Q_SLOTS:
         void setFilter(const MetaQueryWidget::Filter &value);
 
         void setField( const qint64 field );
@@ -155,10 +163,10 @@ class MetaQueryWidget : public QWidget
         bool isFieldSelectorHidden() const;
         void setFieldSelectorHidden( const bool hidden );
 
-    signals:
+    Q_SIGNALS:
         void changed(const MetaQueryWidget::Filter &value);
 
-    private slots:
+    private Q_SLOTS:
         void fieldChanged( int );
         void compareChanged( int );
         void valueChanged( const QString& );
@@ -208,15 +216,15 @@ class MetaQueryWidget : public QWidget
         QVBoxLayout* m_layoutValueLabels;
         QVBoxLayout* m_layoutValueValues;
 
-        KComboBox*   m_fieldSelection;
+        QComboBox*   m_fieldSelection;
         QLabel*      m_andLabel;
-        KComboBox*   m_compareSelection;
+        QComboBox*   m_compareSelection;
         QWidget*     m_valueSelection1;
         QWidget*     m_valueSelection2;
 
         Filter m_filter;
 
-        QMap< QObject*, QWeakPointer<KComboBox> > m_runningQueries;
+        QMap< QObject*, QPointer<KComboBox> > m_runningQueries;
 };
 
 #endif

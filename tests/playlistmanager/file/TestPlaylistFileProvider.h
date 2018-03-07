@@ -20,8 +20,8 @@
 #ifndef TESTPLAYLISTFILEPROVIDER_H
 #define TESTPLAYLISTFILEPROVIDER_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 namespace Playlists {
     class PlaylistFileProvider;
@@ -34,7 +34,7 @@ Q_OBJECT
 public:
     TestPlaylistFileProvider();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
     void testPlaylists();

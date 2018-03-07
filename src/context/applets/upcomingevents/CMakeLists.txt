@@ -17,23 +17,23 @@ set( upcomingEvents_SRCS
      UpcomingEventsCalendarWidget.cpp
      )
 
-kde4_add_ui_files( upcomingEvents_SRCS
+ki18n_wrap_ui( upcomingEvents_SRCS
                    upcomingEventsGeneralSettings.ui
                    upcomingEventsVenueSettings.ui
                    )
-kde4_add_plugin(amarok_context_applet_upcomingEvents ${upcomingEvents_SRCS})
+add_library(amarok_context_applet_upcomingEvents MODULE ${upcomingEvents_SRCS})
 
 if(APPLE)
-   SET_TARGET_PROPERTIES(amarok_context_applet_upcomingEvents PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+   set_target_properties(amarok_context_applet_upcomingEvents PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 target_link_libraries(amarok_context_applet_upcomingEvents
     amarokcore
     amaroklib
-    ${KDE4_PLASMA_LIBS}
-    ${KDE4_KDEUI_LIBS}
+    KF5::Plasma
+    
     ${KDE4_KDEWEBKIT_LIBS}
-    ${QT_QTNETWORK_LIBRARY}
-    ${QT_QTWEBKIT_LIBRARY}
+    Qt5::Network
+    Qt5::WebKitWidgets
 )
 
 install(TARGETS amarok_context_applet_upcomingEvents DESTINATION ${PLUGIN_INSTALL_DIR})

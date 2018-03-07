@@ -28,7 +28,7 @@
 
 class KJob;
 
-class IpodCopyTracksJob : public ThreadWeaver::Job
+class IpodCopyTracksJob : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 
@@ -45,21 +45,21 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         /**
          * @param goingToRemoveSources whether this is in fact a move operation
          */
-        IpodCopyTracksJob( const QMap<Meta::TrackPtr,KUrl> &sources,
-                           const QWeakPointer<IpodCollection> &collection,
+        IpodCopyTracksJob( const QMap<Meta::TrackPtr,QUrl> &sources,
+                           const QPointer<IpodCollection> &collection,
                            const Transcoding::Configuration &configuration,
                            bool goingToRemoveSources );
-        virtual void run();
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
-    public slots:
+    public Q_SLOTS:
         void abort();
 
-    signals:
+    Q_SIGNALS:
         // a hack to create QueryMaken in a thread with event loop:
         void startDuplicateTrackSearch( const Meta::TrackPtr &track );
 
         // a hack to create copyjob in a thread with event loop:
-        void startCopyOrTranscodeJob( const KUrl &src, const KUrl &dest, bool isJustCopy );
+        void startCopyOrTranscodeJob( const QUrl &src, const QUrl &dest, bool isJustCopy );
 
         // a hack to display KMessageBox in a gui thread:
         void displaySorryDialog();
@@ -78,14 +78,22 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
          */
         void signalTrackProcessed( Meta::TrackPtr srcTrack, Meta::TrackPtr destTrack, IpodCopyTracksJob::CopiedStatus status );
 
-    private slots:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
+    private Q_SLOTS:
         /// @see startDuplicateTrackSearch()
         void slotStartDuplicateTrackSearch( const Meta::TrackPtr &track );
         void slotDuplicateTrackSearchNewResult( const Meta::TrackList &tracks );
         void slotDuplicateTrackSearchQueryDone();
 
         /// @see startCopyJob()
-        void slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl,
+        void slotStartCopyOrTranscodeJob( const QUrl &sourceUrl, const QUrl &destUrl,
                                           bool isJustCopy );
         void slotCopyOrTranscodeJobFinished( KJob *job );
 
@@ -95,9 +103,9 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
     private:
         void trackProcessed( CopiedStatus status, Meta::TrackPtr srcTrack, Meta::TrackPtr destTrack = Meta::TrackPtr() );
 
-        QWeakPointer<IpodCollection> m_coll;
+        QPointer<IpodCollection> m_coll;
         Transcoding::Configuration m_transcodingConfig;
-        QMap<Meta::TrackPtr,KUrl> m_sources;
+        QMap<Meta::TrackPtr,QUrl> m_sources;
         QMultiHash<CopiedStatus, Meta::TrackPtr> m_sourceTrackStatus;
         QSemaphore m_copying;
         QSemaphore m_searchingForDuplicates;
@@ -106,6 +114,11 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         bool m_goingToRemoveSources;
         QSet<QString> m_notPlayableFormats;
         QSet<QString> m_copyErrors;
+
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+
 };
 
 #endif // COPYTRACKSJOB_H

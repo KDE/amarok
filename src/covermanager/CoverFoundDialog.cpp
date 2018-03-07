@@ -30,32 +30,35 @@
 #include "widgets/AlbumBreadcrumbWidget.h"
 #include "widgets/PixmapViewer.h"
 
-#include <KComboBox>
-#include <KConfigGroup>
-#include <KFileDialog>
-#include <KLineEdit>
-#include <KListWidget>
-#include <KLocalizedString>
-#include <KMessageBox>
-#include <KPushButton>
-#include <KSaveFile>
-#include <KStandardDirs>
-
 #include <QCloseEvent>
 #include <QDir>
+#include <QFileDialog>
+#include <QFontDatabase>
 #include <QFormLayout>
-#include <QFrame>
 #include <QGridLayout>
 #include <QHeaderView>
+#include <QLineEdit>
+#include <QListWidget>
 #include <QMenu>
+#include <QMimeDatabase>
+#include <QMimeType>
+#include <QPushButton>
 #include <QScrollArea>
 #include <QSplitter>
+#include <QStandardPaths>
 #include <QTabWidget>
+
+#include <KComboBox>
+#include <KConfigGroup>
+#include <KLineEdit>
+#include <KLocalizedString>
+#include <KMessageBox>
+#include <KWindowConfig>
 
 CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                                     const CoverFetch::Metadata &data,
                                     QWidget *parent )
-    : KDialog( parent )
+    : QDialog( parent )
     , m_album( unit->album() )
     , m_isSorted( false )
     , m_sortEnabled( false )
@@ -63,21 +66,26 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     , m_queryPage( 0 )
 {
     DEBUG_BLOCK
-    setButtons( KDialog::Ok | KDialog::Cancel |
-                KDialog::User1 ); // User1: clear icon view
 
-    setButtonGuiItem( KDialog::User1, KStandardGuiItem::clear() );
-    connect( button( KDialog::User1 ), SIGNAL(clicked()), SLOT(clearView()) );
-
-    m_save = button( KDialog::Ok );
+    setLayout( new QVBoxLayout );
 
     QSplitter *splitter = new QSplitter( this );
+    layout()->addWidget( splitter );
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this );
+    QPushButton *clearButton = buttonBox->addButton( QStringLiteral( "clear" ), QDialogButtonBox::ActionRole ); // clear icon view
+    layout()->addWidget( buttonBox );
+
+    connect( clearButton, &QAbstractButton::clicked, this, &CoverFoundDialog::clearView );
+    connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+    connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+
     m_sideBar = new CoverFoundSideBar( m_album, splitter );
 
-    KVBox *vbox = new KVBox( splitter );
-    vbox->setSpacing( 4 );
+    BoxWidget *vbox = new BoxWidget( true, splitter );
+    vbox->layout()->setSpacing( 4 );
 
-    KHBox *breadcrumbBox = new KHBox( vbox );
+    BoxWidget *breadcrumbBox = new BoxWidget( false, vbox );
     QLabel *breadcrumbLabel = new QLabel( i18n( "Finding cover for" ), breadcrumbBox );
     AlbumBreadcrumbWidget *breadcrumb = new AlbumBreadcrumbWidget( m_album, breadcrumbBox );
 
@@ -86,11 +94,10 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     breadcrumbLabel->setFont( breadcrumbLabelFont );
     breadcrumbLabel->setIndent( 4 );
 
-    connect( breadcrumb, SIGNAL(artistClicked(QString)), SLOT(addToCustomSearch(QString)) );
-    connect( breadcrumb, SIGNAL(albumClicked(QString)), SLOT(addToCustomSearch(QString)) );
+    connect( breadcrumb, &AlbumBreadcrumbWidget::artistClicked, this, &CoverFoundDialog::addToCustomSearch );
+    connect( breadcrumb, &AlbumBreadcrumbWidget::albumClicked, this, &CoverFoundDialog::addToCustomSearch );
 
-    KHBox *searchBox = new KHBox( vbox );
-    vbox->setSpacing( 4 );
+    BoxWidget *searchBox = new BoxWidget( false, vbox );
 
     QStringList completionNames;
     QString firstRunQuery( m_album->name() );
@@ -105,23 +112,25 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_album->setSuppressImageAutoFetch( true );
 
     m_search = new KComboBox( searchBox );
-    m_search->setEditable( true ); // creates a KLineEdit for the combobox
+    m_search->setEditable( true ); // creates a QLineEdit for the combobox
     m_search->setTrapReturnKey( true );
-    m_search->setInsertPolicy( QComboBox::NoInsert ); // insertion is handled by us
-    m_search->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_search->setInsertPolicy( KComboBox::NoInsert ); // insertion is handled by us
+    m_search->setCompletionMode( KCompletion::CompletionPopup );
     m_search->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
-    qobject_cast<KLineEdit*>( m_search->lineEdit() )->setClickMessage( i18n( "Enter Custom Search" ) );
+    m_search->lineEdit()->setPlaceholderText( i18n( "Enter Custom Search" ) );
     m_search->completionObject()->setOrder( KCompletion::Insertion );
     m_search->completionObject()->setIgnoreCase( true );
     m_search->completionObject()->setItems( completionNames );
     m_search->insertItem( 0, KStandardGuiItem::find().icon(), QString() );
     m_search->insertSeparator( 1 );
-    m_search->insertItem( 2, KIcon("filename-album-amarok"), m_album->name() );
+    m_search->insertItem( 2, QIcon::fromTheme("filename-album-amarok"), m_album->name() );
     if( m_album->hasAlbumArtist() )
-        m_search->insertItem( 3, KIcon("filename-artist-amarok"), m_album->albumArtist()->name() );
+        m_search->insertItem( 3, QIcon::fromTheme("filename-artist-amarok"), m_album->albumArtist()->name() );
 
-    m_searchButton = new KPushButton( KStandardGuiItem::find(), searchBox );
-    KPushButton *sourceButton = new KPushButton( KStandardGuiItem::configure(), searchBox );
+    auto findItem = KStandardGuiItem::find();
+    m_searchButton = new QPushButton( findItem.icon(), findItem.text(), searchBox );
+    auto configureItem = KStandardGuiItem::configure();
+    QPushButton *sourceButton = new QPushButton( configureItem.icon(), configureItem.text(), searchBox );
     updateSearchButton( firstRunQuery );
 
     QMenu *sourceMenu = new QMenu( sourceButton );
@@ -135,13 +144,13 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     lastFmAct->setCheckable( true );
     googleAct->setCheckable( true );
     discogsAct->setCheckable( true );
-    connect( lastFmAct, SIGNAL(triggered()), this, SLOT(selectLastFm()) );
-    connect( googleAct, SIGNAL(triggered()), this, SLOT(selectGoogle()) );
-    connect( discogsAct, SIGNAL(triggered()), this, SLOT(selectDiscogs()) );
+    connect( lastFmAct, &QAction::triggered, this, &CoverFoundDialog::selectLastFm );
+    connect( googleAct, &QAction::triggered, this, &CoverFoundDialog::selectGoogle );
+    connect( discogsAct, &QAction::triggered, this, &CoverFoundDialog::selectDiscogs );
 
     m_sortAction = new QAction( i18n( "Sort by size" ), sourceMenu );
     m_sortAction->setCheckable( true );
-    connect( m_sortAction, SIGNAL(triggered(bool)), this, SLOT(sortingTriggered(bool)) );
+    connect( m_sortAction, &QAction::triggered, this, &CoverFoundDialog::sortingTriggered );
 
     QActionGroup *ag = new QActionGroup( sourceButton );
     ag->addAction( lastFmAct );
@@ -152,14 +161,29 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     sourceMenu->addAction( m_sortAction );
     sourceButton->setMenu( sourceMenu );
 
-    connect( m_search, SIGNAL(returnPressed(QString)), SLOT(insertComboText(QString)) );
-    connect( m_search, SIGNAL(returnPressed(QString)), SLOT(processQuery(QString)) );
-    connect( m_search, SIGNAL(returnPressed(QString)), SLOT(updateSearchButton(QString)) );
-    connect( m_search, SIGNAL(editTextChanged(QString)), SLOT(updateSearchButton(QString)) );
-    connect( m_search->lineEdit(), SIGNAL(clearButtonClicked()), SLOT(clearQueryButtonClicked()));
-    connect( m_searchButton, SIGNAL(clicked()), SLOT(processQuery()) );
+    connect( m_search, QOverload<const QString&>::of(&KComboBox::returnPressed),
+             this, &CoverFoundDialog::insertComboText );
+    connect( m_search, QOverload<const QString&>::of(&KComboBox::returnPressed),
+             this, &CoverFoundDialog::processQuery );
+    connect( m_search, QOverload<const QString&>::of(&KComboBox::returnPressed),
+             this, &CoverFoundDialog::updateSearchButton );
+    connect( m_search, &KComboBox::editTextChanged, this, &CoverFoundDialog::updateSearchButton );
 
-    m_view = new KListWidget( vbox );
+    sourceMenu->addAction( m_sortAction );
+    sourceButton->setMenu( sourceMenu );
+
+    connect( m_search, QOverload<const QString&>::of(&KComboBox::returnPressed),
+             this, &CoverFoundDialog::insertComboText );
+    connect( m_search, QOverload<const QString&>::of(&KComboBox::returnPressed),
+             this, &CoverFoundDialog::processQuery );
+    connect( m_search, QOverload<const QString&>::of(&KComboBox::returnPressed),
+             this, &CoverFoundDialog::updateSearchButton );
+    connect( m_search, &KComboBox::editTextChanged, this, &CoverFoundDialog::updateSearchButton );
+    connect( dynamic_cast<KLineEdit*>(m_search->lineEdit()), &KLineEdit::clearButtonClicked,
+             this, &CoverFoundDialog::clearQueryButtonClicked);
+    connect( m_searchButton, &QPushButton::clicked, this, &CoverFoundDialog::processCurrentQuery );
+
+    m_view = new QListWidget( vbox );
     m_view->setAcceptDrops( false );
     m_view->setContextMenuPolicy( Qt::CustomContextMenu );
     m_view->setDragDropMode( QAbstractItemView::NoDragDrop );
@@ -172,23 +196,23 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_view->setViewMode( QListView::IconMode );
     m_view->setResizeMode( QListView::Adjust );
 
-    connect( m_view, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-             this,   SLOT(currentItemChanged(QListWidgetItem*,QListWidgetItem*)) );
-    connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-             this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
-    connect( m_view, SIGNAL(customContextMenuRequested(QPoint)),
-             this,   SLOT(itemMenuRequested(QPoint)) );
+    connect( m_view, &QListWidget::currentItemChanged,
+             this, &CoverFoundDialog::currentItemChanged );
+    connect( m_view, &QListWidget::itemDoubleClicked,
+             this, &CoverFoundDialog::itemDoubleClicked );
+    connect( m_view, &QListWidget::customContextMenuRequested,
+             this, &CoverFoundDialog::itemMenuRequested );
 
     splitter->addWidget( m_sideBar );
     splitter->addWidget( vbox );
-    setMainWidget( splitter );
+//     setMainWidget( splitter );
 
     const KConfigGroup config = Amarok::config( "Cover Fetcher" );
     const QString source = config.readEntry( "Interactive Image Source", "LastFm" );
     m_sortEnabled = config.readEntry( "Sort by Size", false );
     m_sortAction->setChecked( m_sortEnabled );
     m_isSorted = m_sortEnabled;
-    restoreDialogSize( config ); // call this after setMainWidget()
+    KWindowConfig::restoreWindowSize( windowHandle(), config ); // call this after setMainWidget()
 
     if( source == "LastFm" )
         lastFmAct->setChecked( true );
@@ -208,8 +232,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_view->setCurrentItem( m_view->item( 0 ) );
     updateGui();
     
-    connect( The::networkAccessManager(), SIGNAL(requestRedirected(QNetworkReply*,QNetworkReply*)),
-             this, SLOT(fetchRequestRedirected(QNetworkReply*,QNetworkReply*)) );
+    connect( The::networkAccessManager(), &NetworkAccessManagerProxy::requestRedirectedReply,
+             this, &CoverFoundDialog::fetchRequestRedirected );
 }
 
 CoverFoundDialog::~CoverFoundDialog()
@@ -224,7 +248,7 @@ CoverFoundDialog::~CoverFoundDialog()
 void CoverFoundDialog::hideEvent( QHideEvent *event )
 {
     KConfigGroup config = Amarok::config( "Cover Fetcher" );
-    saveDialogSize( config );
+    config.writeEntry( "geometry", saveGeometry() );
     event->accept();
 }
 
@@ -290,7 +314,7 @@ void CoverFoundDialog::addToCustomSearch( const QString &text )
             q << query;
         q << text;
         const QString result = q.join( QChar( ' ' ) );
-        qobject_cast<KLineEdit*>( m_search->lineEdit() )->setText( result );
+        qobject_cast<QLineEdit*>( m_search->lineEdit() )->setText( result );
     }
 }
 
@@ -338,7 +362,7 @@ void CoverFoundDialog::currentItemChanged( QListWidgetItem *current, QListWidget
 void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
 {
     Q_UNUSED( item )
-    slotButtonClicked( KDialog::Ok );
+    slotButtonClicked( QDialog::Accepted );
 }
 
 void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
@@ -353,11 +377,11 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
     item->setSelected( true );
 
     QMenu menu( this );
-    QAction *display = new QAction( KIcon("zoom-original"), i18n("Display Cover"), &menu );
-    connect( display, SIGNAL(triggered()), this, SLOT(display()) );
+    QAction *display = new QAction( QIcon::fromTheme("zoom-original"), i18n("Display Cover"), &menu );
+    connect( display, &QAction::triggered, this, &CoverFoundDialog::display );
 
-    QAction *save = new QAction( KIcon("document-save"), i18n("Save As"), &menu );
-    connect( save, SIGNAL(triggered()), this, SLOT(saveAs()) );
+    QAction *save = new QAction( QIcon::fromTheme("document-save"), i18n("Save As"), &menu );
+    connect( save, &QAction::triggered, this, &CoverFoundDialog::saveAs );
 
     menu.addAction( display );
     menu.addAction( save );
@@ -377,31 +401,34 @@ void CoverFoundDialog::saveAs()
         return;
     }
 
-    KFileDialog dlg( tracks.first()->playableUrl().directory(), QString(), this );
-    dlg.setCaption( i18n("Cover Image Save Location") );
-    dlg.setMode( KFile::File | KFile::LocalOnly );
-    dlg.setOperationMode( KFileDialog::Saving );
-    dlg.setConfirmOverwrite( true );
-    dlg.setSelection( "cover.jpg" );
+    QFileDialog dlg;
+    QWidget::setWindowTitle( i18n("Cover Image Save Location") );
+    dlg.setFileMode( QFileDialog::AnyFile );
+    dlg.setSupportedSchemes( QStringList( QStringLiteral( "file" ) ) );
+    dlg.setAcceptMode( QFileDialog::AcceptSave );
+
+    QUrl selectedUrl;
+    selectedUrl.setPath( "cover.jpg" );
+    dlg.selectUrl( selectedUrl );
 
     QStringList supportedMimeTypes;
     supportedMimeTypes << "image/jpeg";
     supportedMimeTypes << "image/png";
-    dlg.setMimeFilter( supportedMimeTypes );
+    dlg.setMimeTypeFilters( supportedMimeTypes );
 
-    KUrl saveUrl;
+    QUrl saveUrl;
     int res = dlg.exec();
     switch( res )
     {
     case QDialog::Accepted:
-        saveUrl = dlg.selectedUrl();
+        saveUrl = dlg.selectedUrls().value( 0 );
         break;
     case QDialog::Rejected:
         return;
     }
 
-    KSaveFile saveFile( saveUrl.path() );
-    if( !saveFile.open() )
+    QFile saveFile( saveUrl.path() );
+    if( !saveFile.open( QFile::WriteOnly ) )
     {
         KMessageBox::detailedError( this,
                                     i18n("Sorry, the cover could not be saved."),
@@ -410,15 +437,17 @@ void CoverFoundDialog::saveAs()
     }
 
     const QImage &image = item->bigPix();
-    const QString &ext = KMimeType::extractKnownExtension( saveUrl.path() ).toLower();
+    QMimeDatabase db;
+    const QString &ext = db.suffixForFileName( saveUrl.path() ).toLower();
+    bool ok;
     if( ext == "jpg" || ext == "jpeg" )
-        image.save( &saveFile, "JPG" );
+        ok = image.save( &saveFile, "JPG" );
     else if( ext == "png" )
-        image.save( &saveFile, "PNG" );
+        ok = image.save( &saveFile, "PNG" );
     else
-        image.save( &saveFile );
+        ok = image.save( &saveFile );
 
-    if( (saveFile.size() == 0) || !saveFile.finalize() )
+    if( !ok )
     {
         KMessageBox::detailedError( this,
                                     i18n("Sorry, the cover could not be saved."),
@@ -429,7 +458,7 @@ void CoverFoundDialog::saveAs()
 
 void CoverFoundDialog::slotButtonClicked( int button )
 {
-    if( button == KDialog::Ok )
+    if( button == QDialog::Accepted )
     {
         CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
         if( !item )
@@ -448,17 +477,13 @@ void CoverFoundDialog::slotButtonClicked( int button )
             accept();
         }
     }
-    else
-    {
-        KDialog::slotButtonClicked( button );
-    }
 }
 
 void CoverFoundDialog::fetchRequestRedirected( QNetworkReply *oldReply,
                                                QNetworkReply *newReply )
 {
-    KUrl oldUrl = oldReply->request().url();
-    KUrl newUrl = newReply->request().url();
+    QUrl oldUrl = oldReply->request().url();
+    QUrl newUrl = newReply->request().url();
 
     // Since we were redirected we have to check if the redirect
     // was for one of our URLs and if the new URL is not handled
@@ -474,7 +499,7 @@ void CoverFoundDialog::fetchRequestRedirected( QNetworkReply *oldReply,
     }
 }
 
-void CoverFoundDialog::handleFetchResult( const KUrl &url, QByteArray data,
+void CoverFoundDialog::handleFetchResult( const QUrl &url, QByteArray data,
                                           NetworkAccessManagerProxy::Error e )
 {
     CoverFoundItem *item = m_urls.take( url );
@@ -484,7 +509,7 @@ void CoverFoundDialog::handleFetchResult( const KUrl &url, QByteArray data,
         item->setBigPix( image );
         m_sideBar->setPixmap( QPixmap::fromImage( image ) );
         if( m_dialog )
-            m_dialog.data()->accept();
+            m_dialog->accept();
     }
     else
     {
@@ -492,7 +517,7 @@ void CoverFoundDialog::handleFetchResult( const KUrl &url, QByteArray data,
         errors << e.description;
         KMessageBox::errorList( this, i18n("Sorry, the cover image could not be retrieved."), errors );
         if( m_dialog )
-            m_dialog.data()->reject();
+            m_dialog->reject();
     }
 }
 
@@ -500,34 +525,33 @@ bool CoverFoundDialog::fetchBigPix()
 {
     DEBUG_BLOCK
     CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->currentItem() );
-    const KUrl url( item->metadata().value( "normalarturl" ) );
+    const QUrl url( item->metadata().value( "normalarturl" ) );
     if( !url.isValid() )
         return false;
 
     QNetworkReply *reply = The::networkAccessManager()->getData( url, this,
-                           SLOT(handleFetchResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+                           SLOT(handleFetchResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     m_urls.insert( url, item );
 
     if( !m_dialog )
     {
-        m_dialog = new KProgressDialog( this );
-        m_dialog.data()->setCaption( i18n( "Fetching Large Cover" ) );
-        m_dialog.data()->setLabelText( i18n( "Download Progress" ) );
-        m_dialog.data()->setModal( true );
-        m_dialog.data()->setAllowCancel( true );
-        m_dialog.data()->setAutoClose( false );
-        m_dialog.data()->setAutoReset( true );
-        m_dialog.data()->progressBar()->setMinimum( 0 );
-        m_dialog.data()->setMinimumWidth( 300 );
-        connect( reply, SIGNAL(downloadProgress(qint64,qint64)),
-                        SLOT(downloadProgressed(qint64,qint64)) );
+        m_dialog = new QProgressDialog( this );
+        m_dialog->setWindowTitle( i18n( "Fetching Large Cover" ) );
+        m_dialog->setLabelText( i18n( "Download Progress" ) );
+        m_dialog->setModal( true );
+        m_dialog->setCancelButton( new QPushButton( i18n( "Cancel" ) ) );
+        m_dialog->setAutoClose( false );
+        m_dialog->setAutoReset( true );
+        m_dialog->setMinimumWidth( 300 );
+        connect( reply, &QNetworkReply::downloadProgress,
+                 this, &CoverFoundDialog::downloadProgressed );
     }
-    int result = m_dialog.data()->exec();
-    bool success = (result == QDialog::Accepted) && !m_dialog.data()->wasCancelled();
+    int result = m_dialog->exec();
+    bool success = (result == QDialog::Accepted) && !m_dialog->wasCanceled();
     The::networkAccessManager()->abortGet( url );
     if( !success )
         m_urls.remove( url );
-    m_dialog.data()->deleteLater();
+    m_dialog->deleteLater();
     return success;
 }
 
@@ -535,8 +559,8 @@ void CoverFoundDialog::downloadProgressed( qint64 bytesReceived, qint64 bytesTot
 {
     if( m_dialog )
     {
-        m_dialog.data()->progressBar()->setMaximum( bytesTotal );
-        m_dialog.data()->progressBar()->setValue( bytesReceived );
+        m_dialog->setRange( 0, bytesTotal );
+        m_dialog->setValue( bytesReceived );
     }
 }
 
@@ -548,13 +572,13 @@ void CoverFoundDialog::display()
         return;
 
     const QImage &image = item->hasBigPix() ? item->bigPix() : item->thumb();
-    QWeakPointer<CoverViewDialog> dlg = new CoverViewDialog( image, this );
-    dlg.data()->show();
-    dlg.data()->raise();
-    dlg.data()->activateWindow();
+    CoverViewDialog *dlg = new CoverViewDialog( image, this );
+    dlg->show();
+    dlg->raise();
+    dlg->activateWindow();
 }
 
-void CoverFoundDialog::processQuery()
+void CoverFoundDialog::processCurrentQuery()
 {
     const QString text = m_search->currentText();
     processQuery( text );
@@ -576,7 +600,7 @@ void CoverFoundDialog::processQuery( const QString &input )
         if( m_query != input )
         {
             m_query = input;
-            m_queryPage = 0;
+            m_queryPage = 1;
         }
     }
 
@@ -594,7 +618,7 @@ void CoverFoundDialog::selectDiscogs()
     config.writeEntry( "Interactive Image Source", "Discogs" );
     m_sortAction->setEnabled( true );
     m_queryPage = 0;
-    processQuery();
+    processCurrentQuery();
     debug() << "Select Discogs as source";
 }
 
@@ -604,7 +628,7 @@ void CoverFoundDialog::selectLastFm()
     config.writeEntry( "Interactive Image Source", "LastFm" );
     m_sortAction->setEnabled( false );
     m_queryPage = 0;
-    processQuery();
+    processCurrentQuery();
     debug() << "Select Last.fm as source";
 }
 
@@ -614,7 +638,7 @@ void CoverFoundDialog::selectGoogle()
     config.writeEntry( "Interactive Image Source", "Google" );
     m_sortAction->setEnabled( true );
     m_queryPage = 0;
-    processQuery();
+    processCurrentQuery();
     debug() << "Select Google as source";
 }
 
@@ -674,7 +698,8 @@ void CoverFoundDialog::sortCoversBySize()
 void CoverFoundDialog::updateSearchButton( const QString &text )
 {
     const bool isNewSearch = ( text != m_query ) ? true : false;
-    m_searchButton->setGuiItem( isNewSearch ? KStandardGuiItem::find() : KStandardGuiItem::cont() );
+    m_searchButton->setText( isNewSearch ? KStandardGuiItem::find().text() : KStandardGuiItem::cont().text() );
+    m_searchButton->setIcon( isNewSearch ? KStandardGuiItem::find().icon() : KStandardGuiItem::cont().icon() );
     m_searchButton->setToolTip( isNewSearch ? i18n( "Search" ) : i18n( "Search For More Results" ) );
 }
 
@@ -683,7 +708,7 @@ void CoverFoundDialog::updateGui()
     updateTitle();
 
     if( !m_search->hasFocus() )
-        setButtonFocus( KDialog::Ok );
+        findChild<QDialogButtonBox*>()->button( QDialogButtonBox::Ok )->setFocus();
     update();
 }
 
@@ -693,11 +718,11 @@ void CoverFoundDialog::updateTitle()
     const QString caption = ( itemCount == 0 )
                           ? i18n( "No Images Found" )
                           : i18np( "1 Image Found", "%1 Images Found", itemCount );
-    setCaption( caption );
+    setWindowTitle( caption );
 }
 
 CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent )
-    : KVBox( parent )
+    : BoxWidget( true, parent )
     , m_album( album )
 {
     m_cover = new QLabel( this );
@@ -880,7 +905,7 @@ CoverFoundItem::CoverFoundItem( const QImage &cover,
     setSizeHint( QSize( 140, 150 ) );
     setIcon( prettyPix );
     setCaption();
-    setFont( KGlobalSettings::smallestReadableFont() );
+    setFont( QFontDatabase::systemFont( QFontDatabase::SmallestReadableFont ) );
     setTextAlignment( Qt::AlignHCenter | Qt::AlignTop );
 }
 
@@ -918,4 +943,3 @@ void CoverFoundItem::setCaption()
         setText( captions.join( QLatin1String( " - " ) ) );
 }
 
-#include "CoverFoundDialog.moc"

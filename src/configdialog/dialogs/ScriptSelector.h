@@ -21,7 +21,7 @@
 #include <KSharedConfig>
 
 class KCategorizedView;
-class KLineEdit;
+class QLineEdit;
 class KPluginInfo;
 class QScrollBar;
 
@@ -48,12 +48,12 @@ class ScriptSelector : public KPluginSelector
         KCategorizedView          *m_listView;
         QMap<int, QString>         m_scripts;
         int                        m_scriptCount;
-        KLineEdit                 *m_lineEdit;
+        QLineEdit                 *m_lineEdit;
 
-    private slots:
+    private Q_SLOTS:
         void slotFiltered( const QString &filter );
 
-    signals:
+    Q_SIGNALS:
         void filtered(bool);
 };
 

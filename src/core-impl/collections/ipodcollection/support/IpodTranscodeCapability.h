@@ -40,7 +40,7 @@ namespace Capabilities
             virtual void setSavedConfiguration( const Transcoding::Configuration &configuration );
 
         private:
-            QWeakPointer<IpodCollection> m_coll;
+            QPointer<IpodCollection> m_coll;
             QString m_configFilePath; // must be absolute
     };
 

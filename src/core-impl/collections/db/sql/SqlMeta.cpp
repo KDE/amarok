@@ -56,9 +56,8 @@
 #include <QCryptographicHash>
 
 #include <KCodecs>
-#include <KLocale>
-#include <KSharedPtr>
-#include <ThreadWeaver/Weaver>
+#include <KLocalizedString>
+#include <ThreadWeaver/Queue>
 
 // additional constants
 namespace Meta
@@ -111,7 +110,7 @@ SqlTrack::getTrackReturnValueCount()
 }
 
 SqlTrack::SqlTrack( Collections::SqlCollection *collection, int deviceId,
-                    const QString &rpath, int directoryId, const QString uidUrl )
+                    const QString &rpath, int directoryId, const QString &uidUrl )
     : Track()
     , m_collection( collection )
     , m_batchUpdate( 0 )
@@ -125,7 +124,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection *collection, int deviceId,
     m_statisticsId = -1;
 
     setUrl( deviceId, rpath, directoryId );
-    m_url = m_cache.value( Meta::valUrl ).toString(); // SqlRegistry already has this url
+    m_url = QUrl::fromUserInput(m_cache.value( Meta::valUrl ).toString()); // SqlRegistry already has this url
     setUidUrl( uidUrl );
     m_uid = m_cache.value( Meta::valUniqueId ).toString(); // SqlRegistry already has this uid
 
@@ -175,7 +174,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection *collection, const QStringList &r
     m_rpath = *(iter++);
     m_directoryId = (*(iter++)).toInt();
     Q_ASSERT( m_directoryId > 0 && "refusing to create SqlTrack with non-positive directoryId, please file a bug" );
-    m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
+    m_url = QUrl::fromLocalFile( m_collection->mountPointManager()->getAbsolutePath( m_deviceId, m_rpath ) );
     m_uid = *(iter++);
     m_trackId = (*(iter++)).toInt();
     m_title = *(iter++);
@@ -282,7 +281,7 @@ SqlTrack::setTitle( const QString &newTitle )
 }
 
 
-KUrl
+QUrl
 SqlTrack::playableUrl() const
 {
     QReadLocker locker( &m_lock );
@@ -794,16 +793,16 @@ SqlTrack::commitIfInNonBatchUpdate()
 
     // for all the following objects we need to invalidate the cache and
     // notify the observers after the update
-    KSharedPtr<SqlArtist>   oldArtist;
-    KSharedPtr<SqlArtist>   newArtist;
-    KSharedPtr<SqlAlbum>    oldAlbum;
-    KSharedPtr<SqlAlbum>    newAlbum;
-    KSharedPtr<SqlComposer> oldComposer;
-    KSharedPtr<SqlComposer> newComposer;
-    KSharedPtr<SqlGenre>    oldGenre;
-    KSharedPtr<SqlGenre>    newGenre;
-    KSharedPtr<SqlYear>     oldYear;
-    KSharedPtr<SqlYear>     newYear;
+    AmarokSharedPointer<SqlArtist>   oldArtist;
+    AmarokSharedPointer<SqlArtist>   newArtist;
+    AmarokSharedPointer<SqlAlbum>    oldAlbum;
+    AmarokSharedPointer<SqlAlbum>    newAlbum;
+    AmarokSharedPointer<SqlComposer> oldComposer;
+    AmarokSharedPointer<SqlComposer> newComposer;
+    AmarokSharedPointer<SqlGenre>    oldGenre;
+    AmarokSharedPointer<SqlGenre>    newGenre;
+    AmarokSharedPointer<SqlYear>     oldYear;
+    AmarokSharedPointer<SqlYear>     newYear;
 
     if( m_cache.contains( Meta::valFormat ) )
         m_filetype = Amarok::FileType(m_cache.value( Meta::valFormat ).toInt());
@@ -850,8 +849,8 @@ SqlTrack::commitIfInNonBatchUpdate()
         // existing track, which is forbidden by the database
         // At least the ScanResultProcessor handles this problem
 
-        KUrl oldUrl = m_url;
-        KUrl newUrl = m_cache.value( Meta::valUrl ).toString();
+        QUrl oldUrl = m_url;
+        QUrl newUrl = QUrl::fromUserInput(m_cache.value( Meta::valUrl ).toString());
         if( oldUrl != newUrl )
             m_collection->registry()->updateCachedUrl( oldUrl.path(), newUrl.path() );
         m_url = newUrl;
@@ -1056,7 +1055,7 @@ SqlTrack::updatePlaylistsToDb( const FieldHash &fields, const QString &oldUid )
     if( fields.isEmpty() )
         return; // nothing to do
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
     QStringList tags;
 
     // keep this in sync with SqlPlaylist::saveTracks()!
@@ -1091,7 +1090,7 @@ SqlTrack::updateEmbeddedCoversToDb( const FieldHash &fields, const QString &oldU
     if( fields.isEmpty() )
         return; // nothing to do
 
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
     QString tags;
 
     if( fields.contains( Meta::valUniqueId ) )
@@ -1117,7 +1116,7 @@ SqlTrack::prettyTitle( const QString &filename ) //static
 
     //remove file extension, s/_/ /g and decode %2f-like sequences
     s = s.left( s.lastIndexOf( '.' ) ).replace( '_', ' ' );
-    s = KUrl::fromPercentEncoding( s.toAscii() );
+    s = QUrl::fromPercentEncoding( s.toLatin1() );
 
     return s;
 }
@@ -1236,11 +1235,11 @@ SqlTrack::addLabel( const QString &label )
 void
 SqlTrack::addLabel( const Meta::LabelPtr &label )
 {
-    KSharedPtr<SqlLabel> sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( label );
+    AmarokSharedPointer<SqlLabel> sqlLabel = AmarokSharedPointer<SqlLabel>::dynamicCast( label );
     if( !sqlLabel )
     {
         Meta::LabelPtr tmp = m_collection->registry()->getLabel( label->name() );
-        sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( tmp );
+        sqlLabel = AmarokSharedPointer<SqlLabel>::dynamicCast( tmp );
     }
     if( sqlLabel )
     {
@@ -1287,11 +1286,11 @@ SqlTrack::urlId() const
 void
 SqlTrack::removeLabel( const Meta::LabelPtr &label )
 {
-    KSharedPtr<SqlLabel> sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( label );
+    AmarokSharedPointer<SqlLabel> sqlLabel = AmarokSharedPointer<SqlLabel>::dynamicCast( label );
     if( !sqlLabel )
     {
         Meta::LabelPtr tmp = m_collection->registry()->getLabel( label->name() );
-        sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( tmp );
+        sqlLabel = AmarokSharedPointer<SqlLabel>::dynamicCast( tmp );
     }
     if( sqlLabel )
     {
@@ -1614,21 +1613,21 @@ SqlAlbum::image( int size ) const
     return image;
 }
 
-KUrl
+QUrl
 SqlAlbum::imageLocation( int size )
 {
     if( !hasImage() )
-        return KUrl();
+        return QUrl();
 
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
     if( size <= 1 )
-        return m_imagePath;
+        return QUrl::fromLocalFile( m_imagePath );
 
     QString cachedImagePath = scaledDiskCachePath( size );
 
     if( cachedImagePath.isEmpty() )
-        return KUrl();
+        return QUrl();
 
     if( !QFile( cachedImagePath ).exists() )
     {
@@ -1639,9 +1638,9 @@ SqlAlbum::imageLocation( int size )
     }
 
     if( !QFile( cachedImagePath ).exists() )
-        return KUrl();
+        return QUrl();
 
-    return cachedImagePath;
+    return QUrl::fromLocalFile(cachedImagePath);
 }
 
 void
@@ -1689,8 +1688,8 @@ SqlAlbum::setImage( const QImage &image )
                 Meta::FieldHash fields;
                 fields.insert( Meta::valImage, scaledImage );
                 WriteTagsJob *job = new WriteTagsJob( metaTrack->playableUrl().path(), fields );
-                QObject::connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
-                ThreadWeaver::Weaver::instance()->enqueue( job );
+                QObject::connect( job, &WriteTagsJob::done, job, &WriteTagsJob::deleteLater );
+                ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
             }
             // note: we might want to update the track file size after writing the image
         }
@@ -1810,11 +1809,12 @@ SqlAlbum::albumArtist() const
 QByteArray
 SqlAlbum::md5sum( const QString& artist, const QString& album, const QString& file ) const
 {
-    // FIXME: names with unicode characters are not supported.
-    // FIXME: "The Beatles"."Collection" and "The"."Beatles Collection" will produce the same hash.
-    // FIXME: Correcting this now would invalidate all existing image stores.
-    KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() + file.toLocal8Bit() );
-    return context.hexDigest();
+    // FIXME: All existing image stores have been invalidated.
+    return QCryptographicHash::hash( artist.toLower().toUtf8() + QByteArray( "#" ) +
+                                     album.toLower().toUtf8() + QByteArray( "?" ) +
+                                     file.toUtf8(),
+                                     QCryptographicHash::Md5
+    ).toHex();
 }
 
 QString
@@ -1827,7 +1827,11 @@ SqlAlbum::largeDiskCachePath() const
 
     QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
     const QString key = md5sum( artist, m_name, QString() );
+
+    if( !key.isEmpty() )
         return largeCoverDir.filePath( key );
+
+    return QString();
 }
 
 QString
@@ -1969,7 +1973,7 @@ SqlAlbum::setCompilation( bool compilation )
         {
             // get the new compilation album
             Meta::AlbumPtr metaAlbum = m_collection->registry()->getAlbum( name(), QString() );
-            KSharedPtr<SqlAlbum> sqlAlbum = KSharedPtr<SqlAlbum>::dynamicCast( metaAlbum );
+            AmarokSharedPointer<SqlAlbum> sqlAlbum = AmarokSharedPointer<SqlAlbum>::dynamicCast( metaAlbum );
 
             Meta::FieldHash changes;
             changes.insert( Meta::valCompilation, 1);
@@ -2006,7 +2010,7 @@ SqlAlbum::setCompilation( bool compilation )
                 Meta::AlbumPtr metaAlbum = m_collection->registry()->getAlbum(
                     sqlTrack->album()->name(),
                     trackArtist ? ArtistHelper::realTrackArtist( trackArtist->name() ) : QString() );
-                KSharedPtr<SqlAlbum> sqlAlbum = KSharedPtr<SqlAlbum>::dynamicCast( metaAlbum );
+                AmarokSharedPointer<SqlAlbum> sqlAlbum = AmarokSharedPointer<SqlAlbum>::dynamicCast( metaAlbum );
 
                 // copy over the cover image
                 if( sqlTrack->album()->hasImage() && !sqlAlbum->hasImage() )

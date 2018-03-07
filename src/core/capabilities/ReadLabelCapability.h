@@ -37,7 +37,7 @@ class AMAROK_CORE_EXPORT ReadLabelCapability : public Capabilities::Capability
         virtual void fetchGlobalLabels() = 0;
         virtual QStringList labels() = 0;
 
-    signals:
+    Q_SIGNALS:
         void labelsFetched( QStringList );
 
 };

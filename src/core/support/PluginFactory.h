@@ -1,3 +1,4 @@
+
 /****************************************************************************************
  * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
  *                                                                                      *
@@ -19,50 +20,46 @@
 
 #include "core/amarokcore_export.h"
 
-#include <KPluginInfo>
-
 #include <QObject>
+#include <QtPlugin>
 
 namespace Plugins {
 
 /** Baseclass for Amarok plugins.
  *
  *  This class is subclassed for the different type of Amarok plugins.
- *  - CollectionFactory
- *  - ServiceFactory
- *  - ImportFactory
- *  - StorageFactory
+ *  - CollectionPlugin
+ *  - ServicePlugin
+ *  - ImportPlugin
+ *  - StoragePlugin
  *
- *  Plugins need to set the m_info variables.
- *  Plugins also need to set a valid category in their Desktop file.
  */
 class AMAROK_CORE_EXPORT PluginFactory : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY( KPluginInfo info READ info )
 
 public:
-    PluginFactory( QObject *parent, const QVariantList &args );
+    PluginFactory();
     virtual ~PluginFactory() = 0;
 
     /** Initialize the service plugin of this type.
-     *
-     * Reimplemented by subclasses, which must set
-     * m_initialized = true when the function has finished.
-     *
-     * This function is called by the PluginManager after
-     * setting the plugin in the different sub-plugin managers
-     * */
+    *
+    * Reimplemented by subclasses, which must set
+    * m_initialized = true when the function has finished.
+    *
+    * This function is called by the PluginManager after
+    * setting the plugin in the different sub-plugin managers
+    * */
     virtual void init() = 0;
 
-    KPluginInfo info() const;
-
 protected:
-    bool m_initialized; ///< set after init was called
-    KPluginInfo m_info; ///< contains the KPluginInfo returned by info(). Should be set in the constructor
+    bool m_initialized;
 };
 
 } // namespace Plugins
 
+#define AmarokPluginFactory_iid "org.kde.amarok.plugin_factory"
+
+Q_DECLARE_INTERFACE( Plugins::PluginFactory, AmarokPluginFactory_iid )
 
 #endif /* AMAROK_PLUGINFACTORY_H */

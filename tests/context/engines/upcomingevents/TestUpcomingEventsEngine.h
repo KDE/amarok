@@ -29,7 +29,7 @@ class TestUpcomingEventsEngine : public TestDataEngine
     public:    
         TestUpcomingEventsEngine(QObject* parent = 0);
     
-    private slots:
+    private Q_SLOTS:
         void initTestCase();
         void testDataEngineMethod();
         void cleanupTestCase();

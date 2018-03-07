@@ -34,12 +34,12 @@
 #include <QModelIndexList>
 #include <QTextBrowser>
 
-#include <KAction>
-#include <KIcon>
-#include <KStandardDirs>
+#include <QAction>
+#include <QIcon>
+#include <QStandardPaths>
 #include <KUrlRequesterDialog>
-#include <KGlobal>
-#include <KLocale>
+
+#include <KLocalizedString>
 #include <KToolBar>
 
 namespace The
@@ -81,43 +81,43 @@ PodcastCategory::PodcastCategory( QWidget *parent )
 {
     setPrettyName( i18n( "Podcasts" ) );
     setShortDescription( i18n( "List of podcast subscriptions and episodes" ) );
-    setIcon( KIcon( "podcast-amarok" ) );
+    setIcon( QIcon::fromTheme( "podcast-amarok" ) );
 
     setLongDescription( i18n( "Manage your podcast subscriptions and browse individual episodes. "
                               "Downloading episodes to the disk is also done here, or you can tell "
                               "Amarok to do this automatically." ) );
 
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_podcasts.png" ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )
         setBackgroundImage( imagePath() );
 
-    QAction *addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"),
+    QAction *addPodcastAction = new QAction( QIcon::fromTheme( "list-add-amarok" ), i18n("&Add Podcast"),
                                              m_toolBar );
     addPodcastAction->setPriority( QAction::NormalPriority );
     m_toolBar->insertAction( m_separator, addPodcastAction );
-    connect( addPodcastAction, SIGNAL(triggered(bool)), The::podcastModel(), SLOT(addPodcast()) );
+    connect( addPodcastAction, &QAction::triggered, The::podcastModel(), &PodcastModel::addPodcast );
 
-    QAction *updateAllAction = new QAction( KIcon("view-refresh-amarok"), QString(), m_toolBar );
+    QAction *updateAllAction = new QAction( QIcon::fromTheme("view-refresh-amarok"), QString(), m_toolBar );
     updateAllAction->setToolTip( i18n("&Update All") );
     updateAllAction->setPriority( QAction::LowPriority );
     m_toolBar->insertAction( m_separator, updateAllAction );
-    connect( updateAllAction, SIGNAL(triggered(bool)),
-             The::podcastModel(), SLOT(refreshPodcasts()) );
+    connect( updateAllAction, &QAction::triggered,
+             The::podcastModel(), &PodcastModel::refreshPodcasts );
 
 
-    QAction *importOpmlAction = new QAction( KIcon("document-import")
+    QAction *importOpmlAction = new QAction( QIcon::fromTheme("document-import")
                                              , i18n( "Import OPML File" )
                                              , m_toolBar
                                          );
     importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
     importOpmlAction->setPriority( QAction::LowPriority );
     m_toolBar->addAction( importOpmlAction );
-    connect( importOpmlAction, SIGNAL(triggered()), SLOT(slotImportOpml()) );
+    connect( importOpmlAction, &QAction::triggered, this, &PodcastCategory::slotImportOpml );
 
     PlaylistBrowserView *view = static_cast<PlaylistBrowserView*>( playlistView() );
-    connect( view, SIGNAL(currentItemChanged(QModelIndex)), SLOT(showInfo(QModelIndex)) );
+    connect( view, &PlaylistBrowserView::currentItemChanged, this, &PodcastCategory::showInfo );
 
     //transparency
 //    QPalette p = m_podcastTreeView->palette();
@@ -152,7 +152,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
     QString description;
     QString title( index.data( Qt::DisplayRole ).toString() );
     QString subtitle( index.sibling( row, SubtitleColumn ).data( Qt::DisplayRole ).toString() );
-    KUrl imageUrl( qvariant_cast<KUrl>(
+    QUrl imageUrl( qvariant_cast<QUrl>(
         index.sibling( row, ImageColumn ).data( Qt::DisplayRole )
     ) );
     QString author( index.sibling( row, AuthorColumn ).data( Qt::DisplayRole ).toString() );
@@ -166,13 +166,13 @@ PodcastCategory::showInfo( const QModelIndex &index )
     {
         authorAndPubDate = QString( "<b>%1</b> %2 " )
             .arg( i18n( "By" ) )
-            .arg( Qt::escape( author ) );
+            .arg( author.toHtmlEscaped() );
     }
 
     if( !subtitle.isEmpty() )
     {
         description += QString( "<h1 class=\"subtitle\">%1</h1>" )
-            .arg( Qt::escape( subtitle ) );
+            .arg( subtitle.toHtmlEscaped() );
     }
 
     if( !imageUrl.isEmpty() )
@@ -194,7 +194,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
             " style=\"width: 150px; margin-left: 1em;"
             " margin-right: 0em; cursor: -webkit-zoom-in;\""
             "/></p>" )
-            .arg( Qt::escape( imageUrl.url() ) );
+            .arg( imageUrl.url().toHtmlEscaped() );
     }
 
     if( isEpisode )
@@ -205,7 +205,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
         {
             authorAndPubDate += QString( "<b>%1</b> %2" )
                 .arg( i18nc( "Podcast published on date", "On" ) )
-                .arg( KGlobal::locale()->formatDateTime( pubDate, KLocale::FancyShortDate ) );
+                .arg( QLocale().toString( pubDate, QLocale::ShortFormat ) );
         }
     }
 
@@ -235,7 +235,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
         {
             description += QString( "<p><b>%1</b> %2</p>" )
                 .arg( i18n( "Subscription Date:" ) )
-                .arg( KGlobal::locale()->formatDate( subsDate, KLocale::FancyShortDate ) );
+                .arg( QLocale().toString( subsDate, QLocale::ShortFormat ) );
         }
     }
 
@@ -243,7 +243,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
     {
         description += QString( "<p><b>%1</b> %2</p>" )
             .arg( i18n( "Keywords:" ) )
-            .arg( Qt::escape( keywords.join( ", " ) ) );
+            .arg( keywords.join( ", " ).toHtmlEscaped() );
     }
 
     description += index.data( PrettyTreeRoles::ByLineRole ).toString();
@@ -264,10 +264,10 @@ PodcastCategory::showInfo( const QModelIndex &index )
         "        %2"
         "    </body>"
         "</html>")
-        .arg( Qt::escape( title ) )
+        .arg( title.toHtmlEscaped() )
         .arg( description )
-        .arg( App::instance()->palette().brush( QPalette::Text ).color().name() )
-        .arg( PaletteHandler::highlightColor().name() );
+        .arg( pApp->palette().brush( QPalette::Text ).color().name() )
+        .arg( The::paletteHandler()->highlightColor().name() );
     
     QVariantMap map;
     map["service_name"] = title;
@@ -281,4 +281,3 @@ PodcastCategory::slotImportOpml()
     AmarokUrl( "amarok://service-podcastdirectory/addOpml" ).run();
 }
 
-#include "PodcastCategory.moc"

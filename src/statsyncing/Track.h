@@ -18,8 +18,9 @@
 #define STATSYNCING_TRACK_H
 
 #include "amarok_export.h"
+#include "core/meta/Meta.h"
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 
 #include <QDateTime>
 #include <QSet>
@@ -27,8 +28,7 @@
 #include <QStringList>
 
 namespace Meta {
-    class Track;
-    typedef KSharedPtr<Track> TrackPtr;
+    typedef AmarokSharedPointer<Track> TrackPtr;
 }
 
 namespace StatSyncing
@@ -188,7 +188,7 @@ namespace StatSyncing
             Q_DISABLE_COPY(Track)
     };
 
-    typedef KSharedPtr<Track> TrackPtr;
+    typedef AmarokSharedPointer<Track> TrackPtr;
     typedef QList<TrackPtr> TrackList;
 
     /**

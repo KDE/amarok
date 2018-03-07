@@ -22,13 +22,13 @@
 #ifndef ATTICA_PROVIDER_H
 #define ATTICA_PROVIDER_H
 
-#include <QtCore/QExplicitlySharedDataPointer>
-#include <QtCore/QString>
+#include <QExplicitlySharedDataPointer>
+#include <QString>
 
 #include "atticaclient_export.h"
 #include "category.h"
 
-class KUrl;
+class QUrl;
 class QDate;
 
 namespace AmarokAttica {
@@ -57,7 +57,7 @@ class ATTICA_EXPORT Provider
   public:
     Provider();
     Provider(const Provider& other);
-    Provider(const QString& id, const KUrl& baseUrl, const QString& name);
+    Provider(const QString& id, const QUrl &baseUrl, const QString& name);
     Provider& operator=(const Provider& other);
     ~Provider();
     
@@ -114,13 +114,13 @@ class ATTICA_EXPORT Provider
     EventListJob* requestEvent(const QString& country, const QString& search, const QDate& startAt, SortMode mode, int page, int pageSize);
 
   protected:
-    KUrl createUrl(const QString& path) const;
+    QUrl createUrl(const QString& path) const;
   
-    PersonJob* doRequestPerson(const KUrl& url) const;
-    PersonListJob* doRequestPersonList(const KUrl& url);
-    ActivityListJob* doRequestActivityList(const KUrl& url);
-    FolderListJob* doRequestFolderList(const KUrl& url);
-    MessageListJob* doRequestMessageList(const KUrl& url);
+    PersonJob* doRequestPerson(const QUrl &url) const;
+    PersonListJob* doRequestPersonList(const QUrl &url);
+    ActivityListJob* doRequestActivityList(const QUrl &url);
+    FolderListJob* doRequestFolderList(const QUrl &url);
+    MessageListJob* doRequestMessageList(const QUrl &url);
 
   private:
     class Private;

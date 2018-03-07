@@ -23,24 +23,36 @@
 #include <ThreadWeaver/Job>
 
 
-class IpodDeleteTracksJob : public ThreadWeaver::Job
+class IpodDeleteTracksJob : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
 
     public:
         explicit IpodDeleteTracksJob( const Meta::TrackList &sources,
-                                      const QWeakPointer<IpodCollection> &collection );
-        virtual void run();
+                                      const QPointer<IpodCollection> &collection );
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
 
-    signals:
+    Q_SIGNALS:
         // signals for progress operation:
         void incrementProgress();
         void endProgressOperation( QObject *obj );
         void totalSteps( int steps ); // not used, defined to keep QObject::conect warning quiet
 
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
+    protected:
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+
     private:
         Meta::TrackList m_sources;
-        QWeakPointer<IpodCollection> m_coll;
+        QPointer<IpodCollection> m_coll;
 };
 
 #endif // IPODDELETETRACKSJOB_H

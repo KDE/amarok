@@ -20,12 +20,15 @@
 #include "LastFmServiceConfig.h"
 
 #include "App.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 
-#include <KDialog>
-#include <KWallet/Wallet>
+#include <KLocalizedString>
+#include <KWallet>
 
+#include <QMessageBox>
 #include <QLabel>
 #include <QThread>
 
@@ -51,7 +54,7 @@ LastFmServiceConfig::LastFmServiceConfig()
 {
     DEBUG_BLOCK
 
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
+    KConfigGroup config = Amarok::config( configSectionName() );
     m_sessionKey = config.readEntry( "sessionKey", QString() );
     m_scrobble = config.readEntry( "scrobble", defaultScrobble() );
     m_fetchSimilar = config.readEntry( "fetchSimilar", defaultFetchSimilar() );
@@ -101,7 +104,7 @@ LastFmServiceConfig::~LastFmServiceConfig()
 
 void LastFmServiceConfig::save()
 {
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
+    KConfigGroup config = Amarok::config( configSectionName() );
 
     // if username and password is empty, reset to NoPasswordEnteredYet; this enables
     // going from PasswordInAscii to PasswodInKWallet
@@ -128,7 +131,7 @@ void LastFmServiceConfig::save()
         case NoPasswordEnteredYet:
             if( m_username.isEmpty() && m_password.isEmpty() )
                 break; // stay in this state
-            /* Falls through. */
+            Q_FALLTHROUGH();
         case PasswodInKWallet:
             openWalletToWrite();
             config.deleteEntry( "username" ); // prevent possible stray credentials
@@ -164,7 +167,7 @@ LastFmServiceConfig::openWalletToRead()
             return;
         }
     }
-    connect( m_wallet, SIGNAL(walletOpened(bool)), SLOT(slotWalletOpenedToRead(bool)) );
+    connect( m_wallet, &KWallet::Wallet::walletOpened, this, &LastFmServiceConfig::slotWalletOpenedToRead );
 }
 
 void
@@ -187,7 +190,7 @@ LastFmServiceConfig::openWalletToWrite()
             return;
         }
     }
-    connect( m_wallet, SIGNAL(walletOpened(bool)), SLOT(slotWalletOpenedToWrite(bool)) );
+    connect( m_wallet, &KWallet::Wallet::walletOpened, this, &LastFmServiceConfig::slotWalletOpenedToWrite );
 }
 
 void
@@ -254,7 +257,7 @@ LastFmServiceConfig::slotWalletOpenedToWrite( bool success )
         warning() << "Failed to save last.fm username to kwallet";
 
     m_kWalletUsage = PasswodInKWallet;
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
+    KConfigGroup config = Amarok::config( configSectionName() );
     config.writeEntry( "kWalletUsage", int( m_kWalletUsage ) );
     config.sync();
 }
@@ -264,12 +267,12 @@ LastFmServiceConfig::askAboutMissingKWallet()
 {
     if ( !m_askDiag )
     {
-        m_askDiag = new KDialog( 0 );
-        m_askDiag->setCaption( i18n( "Last.fm credentials" ) );
-        m_askDiag->setMainWidget( new QLabel( i18n( "No running KWallet found. Would you like Amarok to save your Last.fm credentials in plaintext?" ) ) );
-        m_askDiag->setButtons( KDialog::Yes | KDialog::No );
+        m_askDiag = new QMessageBox;
+        m_askDiag->setText( i18n( "No running KWallet found." ) );
+        m_askDiag->setInformativeText( i18n( "Would you like Amarok to save your Last.fm credentials in plaintext?" ) );
+        m_askDiag->setStandardButtons( QMessageBox::Yes | QMessageBox::No );
 
-        connect( m_askDiag, SIGNAL(yesClicked()), this, SLOT(slotStoreCredentialsInAscii()) );
+        connect( m_askDiag, &QDialog::accepted, this, &LastFmServiceConfig::slotStoreCredentialsInAscii );
         // maybe connect SIGNAL(noClicked()) to a message informing the user the password will
         // be forgotten on Amarok restart
     }

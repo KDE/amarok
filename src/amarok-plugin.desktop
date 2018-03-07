@@ -1,0 +1,96 @@
+[Desktop Entry]
+Type=ServiceType
+X-KDE-ServiceType=Amarok/Plugin
+Comment=Plugin for Amarok
+Comment[be]=Утулка для Amarok
+Comment[bg]=Приставка за Amarok
+Comment[bs]=Priključak za Amarok
+Comment[ca]=Connector per l'Amarok
+Comment[ca@valencia]=Connector per l'Amarok
+Comment[cs]=Modul pro AmaroK
+Comment[csb]=Wtëkôcz dlô Amaroka
+Comment[da]=Plugin til Amarok
+Comment[de]=Erweiterungsmodul für Amarok
+Comment[el]=Πρόσθετο για το AmaroK
+Comment[en_GB]=Plugin for Amarok
+Comment[eo]=Kromaĵo por Amarok
+Comment[es]=Complemento para Amarok
+Comment[et]=Amaroki plugin
+Comment[eu]=Amarok-en plugina
+Comment[fa]=وصله برای آماروک
+Comment[fi]=Amarok-liitännäinen
+Comment[fr]=Module externe pour Amarok
+Comment[ga]=Breiseán Amarok
+Comment[gl]=Complemento de Amarok
+Comment[he]=תוסף ל־Amarok
+Comment[hne]=अमाराक बर प्लगइन
+Comment[hu]=Bővítőmodul az Amarokhoz
+Comment[id]=Plugin untuk Amarok
+Comment[is]=Íforrit fyrir Amarok
+Comment[it]=Estensione per Amarok
+Comment[ja]=Amarok のためのプラグイン
+Comment[km]=កម្មវិធី​ជំនួយ​សម្រាប់ Amarok
+Comment[ko]=Amarok 플러그인
+Comment[ku]=Pêvek ji bo Amarok
+Comment[lt]=Amarok papildinys
+Comment[lv]=Amarok spraudnis
+Comment[nb]=Programtillegg for Amarok
+Comment[nds]=Moduul för Amarok
+Comment[ne]=अमारोकका लागि प्लगइन
+Comment[nl]=Plugin voor Amarok
+Comment[nn]=Programtillegg til Amarok
+Comment[pa]=ਅਮਰੋਕ ਲਈ ਪਲੱਗਿਨ
+Comment[pl]=Wtyczka dla Amaroka
+Comment[pt]='Plugin' para o Amarok
+Comment[pt_BR]=Plugin para o Amarok
+Comment[ro]=Modul pentru Amarok
+Comment[ru]=Модуль для Amarok
+Comment[sk]=Modul pre Amarok
+Comment[sl]=Vstavek za Amarok
+Comment[sr]=Прикључак за Амарок
+Comment[sr@ijekavian]=Прикључак за Амарок
+Comment[sr@ijekavianlatin]=Priključak za Amarok
+Comment[sr@latin]=Priključak za Amarok
+Comment[sv]=Insticksprogram för Amarok
+Comment[th]=ส่วนเสริมของแอมอะร็อก
+Comment[tr]=Amarok için eklenti
+Comment[uk]=Додаток для Amarok
+Comment[wa]=Tchôke-divins pos Amarok
+Comment[x-test]=xxPlugin for Amarokxx
+Comment[zh_CN]=Amarok 插件
+Comment[zh_TW]=Amarok 的外掛程式
+
+
+# Internal name for identification, not translated.
+[PropertyDef::X-KDE-Amarok-name]
+Type=QString
+
+# List of authors.
+[PropertyDef::X-KDE-Amarok-authors]
+Type=QStringList
+
+# List of author's email addresses.
+[PropertyDef::X-KDE-Amarok-email]
+Type=QStringList
+
+# Priority of the plugin. When KPluginLoader returns multiple offers, the one with the highest rank is chosen.
+# Range: 0 (disabled) - 255 (highest)
+[PropertyDef::X-KDE-Amarok-rank]
+Type=int
+
+# Version of the plugin.
+[PropertyDef::X-KDE-Amarok-version]
+Type=int
+
+# Version of the framework this plugin is compatible with.
+# Must be bumped after making binary incompatible changes.
+[PropertyDef::X-KDE-Amarok-framework-version]
+Type=int
+
+# If true, Amarok will show a warning dialog about the experimental nature of this plugin.
+[PropertyDef::X-KDE-Amarok-experimental]
+Type=bool
+
+# If true, Amarok will always initialize this plugin indepenent of the configuration
+[PropertyDef::X-KDE-Amarok-vital]
+Type=bool

@@ -39,7 +39,7 @@ public:
 
     QWidget *widget() { return qobject_cast< QWidget *>( this ); }
 
-private slots:
+private Q_SLOTS:
     void onSliderChanged( int value );
 
 private:

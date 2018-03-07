@@ -183,7 +183,7 @@ Please note that this feature requires the external &quot;Moodbar Generator&quot
  </widget>
  <includes>
   <include location="local">kcombobox.h</include>
-  <include location="local">klineedit.h</include>
+  <include location="local">qlineedit.h</include>
  </includes>
  <resources/>
  <connections/>

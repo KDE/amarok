@@ -27,7 +27,7 @@ namespace Playlists
     class Playlist;
     class PlaylistProvider;
 
-    typedef KSharedPtr<Playlist> PlaylistPtr;
+    typedef AmarokSharedPointer<Playlist> PlaylistPtr;
     typedef QList<PlaylistPtr> PlaylistList;
     typedef QList<Playlists::PlaylistProvider *> PlaylistProviderList;
 }
@@ -118,7 +118,7 @@ namespace AmarokScript
         private:
             QList<int> availableCategories();
 
-        signals:
+        Q_SIGNALS:
             void updated( int category );
             void categoryAdded( int category );
             void providerAdded( Playlists::PlaylistProvider *provider, int category );

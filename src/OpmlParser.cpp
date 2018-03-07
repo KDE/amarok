@@ -23,15 +23,16 @@
 #include <QFile>
 #include <QXmlStreamReader>
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <kio/job.h>
 
 const QString OpmlParser::OPML_MIME = "text/x-opml+xml";
 
 const OpmlParser::StaticData OpmlParser::sd;
 
-OpmlParser::OpmlParser( const KUrl &url )
-        : ThreadWeaver::Job()
+OpmlParser::OpmlParser( const QUrl &url )
+        : QObject()
+        , ThreadWeaver::Job()
         , QXmlStreamReader()
         , m_url( url )
 {
@@ -42,13 +43,32 @@ OpmlParser::~OpmlParser()
 }
 
 void
-OpmlParser::run()
+OpmlParser::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     read( m_url );
 }
 
+void
+OpmlParser::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+OpmlParser::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
 bool
-OpmlParser::read( const KUrl &url )
+OpmlParser::read( const QUrl &url )
 {
     m_url = url;
     if( m_url.isLocalFile() )
@@ -66,11 +86,11 @@ OpmlParser::read( const KUrl &url )
 
     m_transferJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
 
-    connect( m_transferJob, SIGNAL(data(KIO::Job*,QByteArray)),
-             SLOT(slotAddData(KIO::Job*,QByteArray)) );
+    connect( m_transferJob, &KIO::TransferJob::data,
+             this, &OpmlParser::slotAddData );
 
-    connect( m_transferJob, SIGNAL(result(KJob*)),
-             SLOT(downloadResult(KJob*)) );
+    connect( m_transferJob, &KIO::TransferJob::result,
+             this, &OpmlParser::downloadResult );
 
     // parse data
     return read();

@@ -184,8 +184,8 @@ ITunesProvider::readTrack( QXmlStreamReader &xml, const QString &byArtist )
     if( !byArtist.isEmpty() && currentArtist == byArtist && trackId != -1 )
     {
         ITunesTrack *track = new ITunesTrack( trackId, metadata );
-        connect( track, SIGNAL(commitCalled(int,Meta::FieldHash)),
-                 SLOT(trackUpdated(int,Meta::FieldHash)), Qt::DirectConnection );
+        connect( track, &ITunesTrack::commitCalled,
+                 this, &ITunesProvider::trackUpdated, Qt::DirectConnection );
         m_artistTracks << TrackPtr( track );
     }
     else if( byArtist.isEmpty() )

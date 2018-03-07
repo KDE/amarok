@@ -17,17 +17,17 @@
 #ifndef AMAROK_TRANSCODING_EXPORT_H
 #define AMAROK_TRANSCODING_EXPORT_H
 
-/* needed for KDE_EXPORT and KDE_IMPORT macros */
-#include <kdemacros.h>
+/* needed for Q_DECL_EXPORT and Q_DECL_IMPORT macros */
+#include <QtCore/QtGlobal>
 
 #ifndef AMAROK_TRANSCODING_EXPORT
 # ifdef MAKE_AMAROK_TRANSCODING_LIB
    /* We are building this library */
-#  define AMAROK_TRANSCODING_EXPORT KDE_EXPORT
+#  define AMAROK_TRANSCODING_EXPORT Q_DECL_EXPORT
 
 # else
    /* We are using this library */
-#  define AMAROK_TRANSCODING_EXPORT KDE_IMPORT
+#  define AMAROK_TRANSCODING_EXPORT Q_DECL_IMPORT
 
 # endif//MAKE_TRANSCODING_LIB
 #endif// AMAROK_EXPORT

@@ -22,7 +22,7 @@
 
 #include "core-impl/meta/file/File.h"
 
-class KUrl;
+class QUrl;
 
 namespace Podcasts {
 
@@ -31,8 +31,8 @@ class UmsPodcastChannel;
 class UmsPodcastProvider;
 
 
-typedef KSharedPtr<UmsPodcastEpisode> UmsPodcastEpisodePtr;
-typedef KSharedPtr<UmsPodcastChannel> UmsPodcastChannelPtr;
+typedef AmarokSharedPointer<UmsPodcastEpisode> UmsPodcastEpisodePtr;
+typedef AmarokSharedPointer<UmsPodcastChannel> UmsPodcastChannelPtr;
 
 typedef QList<UmsPodcastEpisodePtr> UmsPodcastEpisodeList;
 typedef QList<UmsPodcastChannelPtr> UmsPodcastChannelList;
@@ -54,11 +54,11 @@ class UmsPodcastEpisode : public Podcasts::PodcastEpisode
 
         //PodcastEpisode methods
         virtual QString title() const;
-        virtual void setLocalUrl( const KUrl &localUrl );
+        virtual void setLocalUrl( const QUrl &localUrl );
 
         //Track Methods
         virtual QString name() const { return title(); }
-        virtual KUrl playableUrl() const;
+        virtual QUrl playableUrl() const;
         virtual QString notPlayableReason() const;
         virtual QString prettyName() const { return name(); }
         virtual void setTitle( const QString &title );
@@ -94,8 +94,8 @@ class UmsPodcastChannel : public Podcasts::PodcastChannel
         UmsPodcastEpisodeList umsEpisodes() { return m_umsEpisodes; }
         void addUmsEpisode( UmsPodcastEpisodePtr episode );
 
-        void setPlaylistFileSource( const KUrl &playlistFilePath );
-        KUrl playlistFilePath() const { return m_playlistFilePath; }
+        void setPlaylistFileSource( const QUrl &playlistFilePath );
+        QUrl playlistFilePath() const { return m_playlistFilePath; }
 
         virtual Podcasts::PodcastEpisodeList episodes() const
                 { return UmsPodcastEpisode::toPodcastEpisodeList( m_umsEpisodes ); }
@@ -106,7 +106,7 @@ class UmsPodcastChannel : public Podcasts::PodcastChannel
 
     private:
         UmsPodcastProvider *m_provider;
-        KUrl m_playlistFilePath;
+        QUrl m_playlistFilePath;
         Playlists::PlaylistFilePtr m_playlistFile; //used to keep track of episodes.
 
         UmsPodcastEpisodeList m_umsEpisodes;

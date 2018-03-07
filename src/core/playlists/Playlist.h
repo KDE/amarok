@@ -29,8 +29,8 @@
 #include <QString>
 #include <QTextStream>
 
-#include <KSharedPtr>
-#include <KUrl>
+#include "AmarokSharedPointer.h"
+#include <QUrl>
 
 class QTextStream;
 
@@ -42,7 +42,7 @@ namespace Playlists
     class Playlist;
     class PlaylistProvider;
 
-    typedef KSharedPtr<Playlist> PlaylistPtr;
+    typedef AmarokSharedPointer<Playlist> PlaylistPtr;
     typedef QList<PlaylistPtr> PlaylistList;
 
     enum PlaylistCategory
@@ -137,7 +137,7 @@ namespace Playlists
              * @returns a unique identifier for a playlist. Should be similar to
              * Meta::Track::uidUrl
              */
-            virtual KUrl uidUrl() const = 0;
+            virtual QUrl uidUrl() const = 0;
 
             virtual QString name() const = 0;
             virtual QString prettyName() const { return name(); }
@@ -232,7 +232,7 @@ namespace Playlists
              * Call this method to assure synchronously loading.
              * @note not all playlist implemetations support asynchronous loading
              */
-            KDE_DEPRECATED void makeLoadingSync() { m_async = false; }
+            QT_DEPRECATED void makeLoadingSync() { m_async = false; }
             /**
              * Allows to check if asynchronously loading is deactivated
              */

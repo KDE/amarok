@@ -21,10 +21,12 @@
 #include "importers/amarok/AmarokManager.h"
 #include "importers/amarok/AmarokProvider.h"
 
-#include <qtest_kde.h>
+#include <QProcess>
+#include <QTest>
+
 
 Q_DECLARE_METATYPE( QProcess::ProcessError )
-QTEST_KDEMAIN( TestAmarokImporter, GUI )
+QTEST_MAIN( TestAmarokImporter )
 
 using namespace StatSyncing;
 
@@ -221,4 +223,3 @@ TestAmarokImporter::providerShouldHandleErroneousConfigValues()
     QVERIFY( provider.artists().isEmpty() );
 }
 
-#include "TestAmarokImporter.moc"

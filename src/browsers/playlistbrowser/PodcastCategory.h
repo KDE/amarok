@@ -41,7 +41,7 @@ class PodcastCategory : public PlaylistBrowserCategory
         PodcastCategory( QWidget *parent );
         ~PodcastCategory();
 
-    private slots:
+    private Q_SLOTS:
         void showInfo( const QModelIndex &index );
         void slotImportOpml();
 };

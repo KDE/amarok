@@ -23,7 +23,7 @@
 
 #include "widgets/ElidingButton.h"
 
-class KUrl;
+class QUrl;
 class QEvent;
 class KUrlNavigator;
 
@@ -90,10 +90,10 @@ class BreadcrumbUrlMenuButton : public BreadcrumbItemButton
         BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent );
         virtual ~BreadcrumbUrlMenuButton();
 
-    public slots:
+    public Q_SLOTS:
         void generateMenu(  const QPoint &pos  );
 
-    protected slots:
+    protected Q_SLOTS:
         void showMenu();
         void copyCurrentToClipboard();
 

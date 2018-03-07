@@ -5,15 +5,15 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
-  ${KDE4_INCLUDE_DIR}
-  ${QT_INCLUDES}
+
+
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
 #------------------------ Test MetaMultiTrack -----------------------------
 
-set( testmetamultitrack_SRCS 
-    TestMetaMultiTrack.cpp 
+set( testmetamultitrack_SRCS
+    TestMetaMultiTrack.cpp
     ${AMAROK_SOURCE_TREE}/EngineController.cpp
     ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
     ${AMAROK_SOURCE_TREE}/core/capabilities/MultiSourceCapability.cpp
@@ -24,9 +24,11 @@ set( testmetamultitrack_SRCS
     )
 
 
-kde4_add_unit_test( testmetamultitrack
+add_executable( testmetamultitrack
     ${testmetamultitrack_SRCS}
     )
+add_test(NAME testmetamultitrack COMMAND $<TARGET_FILE:testmetamultitrack>)
+ecm_mark_as_test(testmetamultitrack)
 
 add_dependencies( testmetamultitrack amarokcore )
 add_dependencies( testmetamultitrack amaroklib )
@@ -34,13 +36,11 @@ add_dependencies( testmetamultitrack amaroklib )
 target_link_libraries( testmetamultitrack
     amarokcore
     amaroklib
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIO_LIBS}
-    ${KDE4_PHONON_LIBRARY}
-    ${KDE4_SOLID_LIBS}
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${QT_QTTEST_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
+    KF5::KIOCore
+    Phonon::phonon4qt5
+
+    KF5::ThreadWeaver
+    Qt5::Test
+    Qt5::Core
     ${GOOGLEMOCK_LIBRARIES}
     ${CMAKE_DL_LIBS})

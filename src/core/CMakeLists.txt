@@ -1,10 +1,3 @@
-include_directories(
-    ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/shared
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES}
-)
-
 set(libcore_interfaces_SRCS
     interfaces/Logger.cpp
     interfaces/MetaCapability.cpp
@@ -103,21 +96,31 @@ set(libcore_LIB_SRCS
     ${libcore_transcoding_SRCS}
 )
 
-kde4_add_library(amarokcore SHARED ${libcore_LIB_SRCS})
+add_library(amarokcore SHARED ${libcore_LIB_SRCS})
+
+target_include_directories( amarokcore PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/support
+    ${CMAKE_CURRENT_SOURCE_DIR}/meta
+)
 
 target_link_libraries(amarokcore
     amarokshared
     ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
-    ${KDE4_KIO_LIBS}
-    ${KDE4_SOLID_LIBRARY}
-    ${KDE4_THREADWEAVER_LIBRARIES}
-    ${QT_CORE_LIBRARY}
+    Qt5::Core
+    Qt5::Network
+    KF5::KIOCore
+    KF5::ConfigCore
+    KF5::ThreadWeaver
+    KF5::I18n
+    KF5::XmlGui
 )
 
 if(APPLE)
-    SET_TARGET_PROPERTIES(amarokcore PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+    set_target_properties(amarokcore PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 
 set_target_properties(amarokcore PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amarokcore ${INSTALL_TARGETS_DEFAULT_ARGS} )

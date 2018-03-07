@@ -17,11 +17,12 @@
 #ifndef DATABASEUPDATERTEST_H
 #define DATABASEUPDATERTEST_H
 
-#include <QtTest/QtTest>
+#include <QSharedPointer>
+#include <QTest>
 
-#include <KTempDir>
 
 class MySqlEmbeddedStorage;
+class QTemporaryDir;
 
 namespace Collections {
     class SqlCollection;
@@ -33,7 +34,7 @@ class DatabaseUpdaterTest : public QObject
 public:
     DatabaseUpdaterTest();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -47,8 +48,8 @@ private slots:
 
 private:
     Collections::SqlCollection *m_collection;
-    MySqlEmbeddedStorage *m_storage;
-    KTempDir *m_tmpDir;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
+    QTemporaryDir *m_tmpDir;
 };
 
 #endif // DATABASEUPDATERTEST_H

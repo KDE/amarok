@@ -17,7 +17,7 @@
 
 #include "core/meta/Meta.h"
 
-MockTrackForUrlWorker::MockTrackForUrlWorker( const KUrl &url )
+MockTrackForUrlWorker::MockTrackForUrlWorker( const QUrl &url )
     : TrackForUrlWorker( url )
 {
 }
@@ -28,8 +28,14 @@ MockTrackForUrlWorker::MockTrackForUrlWorker( const QString &url )
 }
 
 void
-MockTrackForUrlWorker::run()
+MockTrackForUrlWorker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(thread);
+    
+    emit started(self);
+    
     QFETCH( Meta::TrackPtr, track );
     m_track = track;
+    
+    emit done(self);
 }

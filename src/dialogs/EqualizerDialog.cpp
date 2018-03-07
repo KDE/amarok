@@ -27,20 +27,13 @@
 EqualizerDialog * EqualizerDialog::s_instance = 0;
 
 EqualizerDialog::EqualizerDialog( QWidget* parent )
-    : KDialog( parent )
+    : QDialog( parent )
 {
     DEBUG_BLOCK
 
-    setCaption( i18n( "Configure Equalizer" ) );
+    setWindowTitle( i18n( "Configure Equalizer" ) );
 
     setupUi( this );
-
-    // again the ui file does not define the dialog but a widget.
-    // Since we inherit from KDialog we have to do the following three
-    // lines.
-    QGridLayout* layout = new QGridLayout( this );
-    layout->addWidget( EqualizerWidget );
-    setMainWidget( EqualizerWidget );
 
     EqualizerController *equalizer = The::engineController()->equalizerController();
     // Check if equalizer is supported - disable controls if not
@@ -51,7 +44,8 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
         activeCheckBox->setChecked( false );
     }
 
-    connect(this, SIGNAL(cancelClicked()), this, SLOT(restoreOriginalSettings()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &EqualizerDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &EqualizerDialog::restoreOriginalSettings);
 
     // Assign slider items to vectors
     m_bands.append( eqPreampSlider );
@@ -114,29 +108,30 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     updatePresets();
     activeCheckBox->setChecked( equalizer->enabled() );
 
-    equalizer->applyEqualizerPreset( AmarokConfig::equalizerMode() - 1 );
+    equalizer->applyEqualizerPresetByIndex( AmarokConfig::equalizerMode() - 1 );
     equalizer->setGains( equalizer->gains() );
     updateUi();
 
-    connect( equalizer, SIGNAL(presetsChanged(QString)), SLOT(presetsChanged(QString)) );
-    connect( equalizer, SIGNAL(gainsChanged(QList<int>)), SLOT(gainsChanged(QList<int>)) );
-    connect( equalizer, SIGNAL(presetApplied(int)), SLOT(presetApplied(int)) );
+    connect( equalizer, &EqualizerController::presetsChanged, this, &EqualizerDialog::presetsChanged );
+    connect( equalizer, &EqualizerController::gainsChanged, this, &EqualizerDialog::gainsChanged );
+    connect( equalizer, &EqualizerController::presetApplied, this, &EqualizerDialog::presetApplied );
 
     // Configure signal and slots to handle presets
-    connect( activeCheckBox, SIGNAL(toggled(bool)), SLOT(toggleEqualizer(bool)) );
-    connect( eqPresets, SIGNAL(currentIndexChanged(int)), equalizer, SLOT(applyEqualizerPreset(int)) );
-    connect( eqPresets, SIGNAL(editTextChanged(QString)), SLOT(updateUi()) );
+    connect( activeCheckBox, &QCheckBox::toggled, this, &EqualizerDialog::toggleEqualizer );
+    connect( eqPresets, QOverload<int>::of(&QComboBox::currentIndexChanged),
+             equalizer, &EqualizerController::applyEqualizerPresetByIndex );
+    connect( eqPresets, &QComboBox::editTextChanged, this, &EqualizerDialog::updateUi );
     foreach( QSlider* mSlider, m_bands )
-        connect( mSlider, SIGNAL(valueChanged(int)), SLOT(bandsChanged()) );
+        connect( mSlider, &QSlider::valueChanged, this, &EqualizerDialog::bandsChanged );
 
-    eqPresetSaveBtn->setIcon( KIcon( "document-save" ) );
-    connect( eqPresetSaveBtn, SIGNAL(clicked()), SLOT(savePreset()) );
+    eqPresetSaveBtn->setIcon( QIcon::fromTheme( "document-save" ) );
+    connect( eqPresetSaveBtn, &QAbstractButton::clicked, this, &EqualizerDialog::savePreset );
 
-    eqPresetDeleteBtn->setIcon( KIcon( "edit-delete" ) );
-    connect( eqPresetDeleteBtn, SIGNAL(clicked()), SLOT(deletePreset()) );
+    eqPresetDeleteBtn->setIcon( QIcon::fromTheme( "edit-delete" ) );
+    connect( eqPresetDeleteBtn, &QAbstractButton::clicked, this, &EqualizerDialog::deletePreset );
 
-    eqPresetResetBtn->setIcon( KIcon( "edit-undo" ) );
-    connect( eqPresetResetBtn, SIGNAL(clicked()), SLOT(restorePreset()) );
+    eqPresetResetBtn->setIcon( QIcon::fromTheme( "edit-undo" ) );
+    connect( eqPresetResetBtn, &QAbstractButton::clicked, this, &EqualizerDialog::restorePreset );
 }
 
 EqualizerDialog::~EqualizerDialog()
@@ -192,9 +187,10 @@ EqualizerDialog::restoreOriginalSettings()
 {
     activeCheckBox->setChecked( m_originalActivated );
     int originalPresetIndex = EqualizerPresets::eqGlobalList().indexOf( m_originalPreset );
-    The::engineController()->equalizerController()->applyEqualizerPreset( originalPresetIndex );
+    The::engineController()->equalizerController()->applyEqualizerPresetByIndex( originalPresetIndex );
     eqPresets->setEditText( m_originalPreset );
     The::engineController()->equalizerController()->setGains( m_originalGains );
+    this->reject();
 }
 
 void
@@ -319,9 +315,8 @@ EqualizerDialog::toggleEqualizer( bool enabled )
 
     EqualizerController *eq = The::engineController()->equalizerController();
     if( !enabled )
-        eq->applyEqualizerPreset( -1 );
+        eq->applyEqualizerPresetByIndex( -1 );
     else
-        eq->applyEqualizerPreset( eqPresets->currentIndex() );
+        eq->applyEqualizerPresetByIndex( eqPresets->currentIndex() );
 }
 
-#include "EqualizerDialog.moc"

@@ -17,18 +17,12 @@
 #ifndef AMAROK_APP_H
 #define AMAROK_APP_H
 
-#include "MainWindow.h"
 #include "amarok_export.h"
-#include <config.h>
-#include "aboutdialog/OcsData.h"
 
-#include <KAboutData>
-#include <KUniqueApplication>   //baseclass
-#include <KUrl>
+#include <KJob>
 
-#include <QHash>
-#include <QWeakPointer>
-#include <QString>
+#include <QApplication>
+#include <QPointer>
 
 namespace Amarok {
     class TrayIcon;
@@ -38,71 +32,68 @@ namespace ScriptConsoleNS{
     class ScriptConsole;
 }
 
-class OcsData;
+namespace KIO {
+    class Job;
+}
 
-namespace KIO { class Job; }
-
-class KJob;
 class MediaDeviceManager;
+class MainWindow;
+class QCommandLineParser;
+class QUrl;
 
-class AMAROK_EXPORT App : public KUniqueApplication
+class AMAROK_EXPORT App : public QApplication
 {
     Q_OBJECT
 
     public:
-        App();
-       ~App();
+        App(int &argc, char **argv);
+        ~App();
 
-        static App *instance() { return static_cast<App*>( kapp ); }
+        static App *instance() { return static_cast<App*>( qApp ); }
 
-        void setUniqueInstance( bool isUnique ) { m_isUniqueInstance = isUnique; }
-        bool isNonUniqueInstance() const { return m_isUniqueInstance; }
-
+        void continueInit();
         Amarok::TrayIcon* trayIcon() const { return m_tray; }
-        static void handleCliArgs();
-        static void initCliArgs();
+        void handleCliArgs(const QString &cwd);
+        void initCliArgs(QCommandLineParser *parsers);
 
         virtual int newInstance();
 
-        inline MainWindow *mainWindow() const { return m_mainWindow.data(); }
+        inline QPointer<MainWindow> mainWindow() const { return m_mainWindow; }
 
-        // FRIENDS
-        friend class MainWindow; //requires access to applySettings()
-
-    signals:
+    Q_SIGNALS:
         void prepareToQuit();
         void settingsChanged();
 
-    private slots:
-        void continueInit();
-
-    public slots:
-        void applySettings( bool firstTime = false );
+    public Q_SLOTS:
+        void activateRequested(const QStringList &  arguments, const QString & cwd);
+        void applySettings();
+        void applySettingsFirstTime();
         void slotConfigAmarok( const QString& page = QString() );
+        void slotConfigAmarokWithEmptyPage();
         void slotConfigShortcuts();
-        KIO::Job *trashFiles( const KUrl::List &files );
+        KIO::Job *trashFiles( const QList<QUrl> &files );
         void quit();
 
     protected:
         virtual bool event( QEvent *event );
 
-    private slots:
+    private Q_SLOTS:
         void slotTrashResult( KJob *job );
 
     private:
         void handleFirstRun();
 
         // ATTRIBUTES
-        bool                        m_isUniqueInstance;
-        QWeakPointer<MainWindow>    m_mainWindow;
+        QPointer<MainWindow>        m_mainWindow;
         Amarok::TrayIcon            *m_tray;
         MediaDeviceManager          *m_mediaDeviceManager;
-        QWeakPointer<ScriptConsoleNS::ScriptConsole> m_scriptConsole;
-
-        static QStringList       s_delayedAmarokUrls;
+        QPointer<ScriptConsoleNS::ScriptConsole> m_scriptConsole;
+        QCommandLineParser          *m_args;
+        QString                     m_cwd;
+        QStringList                 s_delayedAmarokUrls;
 };
 
-#define pApp static_cast<App*>(kapp)
+#define pApp static_cast<App*>(QCoreApplication::instance())
 
 
 #endif  // AMAROK_APP_H

@@ -64,10 +64,10 @@ namespace Dynamic
             bool isInvert() const;
             void setInvert( bool value );
 
-        public slots:
+        public Q_SLOTS:
             virtual void invalidate();
 
-        protected slots:
+        protected Q_SLOTS:
             /** Called when we get new uids from the query maker */
             virtual void updateReady( QStringList uids );
 
@@ -110,7 +110,7 @@ namespace Dynamic
         public:
             TagMatchBiasWidget( Dynamic::TagMatchBias* bias, QWidget* parent = 0 );
 
-        private slots:
+        private Q_SLOTS:
             void syncControlsToBias();
             void syncBiasToControls();
 
@@ -147,7 +147,7 @@ namespace Dynamic
             MetaQueryWidget::Filter filter() const;
             void setFilter( const MetaQueryWidget::Filter &filter );
 
-        protected slots:
+        protected Q_SLOTS:
             virtual void newQuery();
 
         protected:

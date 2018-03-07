@@ -23,7 +23,7 @@
 
 #include <QTimer>
 
-#include <KUrl>
+#include <QUrl>
 
 
 using namespace AmarokAttica;
@@ -37,14 +37,14 @@ ProviderInitJob::ProviderInitJob(const QString& id, QObject* parent)
 
 void ProviderInitJob::start()
 {
-    QTimer::singleShot(0, this, SLOT(doWork()));
+    QTimer::singleShot(0, this, &ProviderInitJob::doWork);
 }
 
 
 void ProviderInitJob::doWork()
 {
     if (m_id == "opendesktop") {
-        m_provider = Provider(m_id, KUrl("https://api.opendesktop.org/v1/"), "OpenDesktop.org");
+        m_provider = Provider(m_id, QUrl("https://api.opendesktop.org/v1/"), "OpenDesktop.org");
     }
     emitResult();
 }
@@ -56,4 +56,3 @@ Provider ProviderInitJob::provider() const
 }
 
 
-#include "providerinitjob.moc"

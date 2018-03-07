@@ -27,8 +27,7 @@
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "widgets/PrettyTreeView.h"
 
-#include <KPluginInfo>
-#include <KVBox>
+#include <KLocalizedString>
 
 #include <QAbstractItemModel>
 #include <QPushButton>
@@ -36,9 +35,10 @@
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 
+class BoxWidget;
 class ServiceBase;
 class SearchWidget;
-class KMenuBar;
+class QMenuBar;
 /**
 A virtual base class for factories for creating and handling the different types of service plugins
 
@@ -51,7 +51,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
         /**
          * Constructor.
          */
-        ServiceFactory( QObject *parent, const QVariantList &args );
+        ServiceFactory();
 
         /**
          * Destructor.
@@ -76,7 +76,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          * @param url The url to test.
          * @return A bool representing whether the ServiceFactory believes that a service of this kind can process the given url.
          */
-        virtual bool possiblyContainsTrack( const KUrl &url ) const { Q_UNUSED( url ); return false; }
+        virtual bool possiblyContainsTrack( const QUrl &url ) const { Q_UNUSED( url ); return false; }
 
         /**
          * Attempt to create a Meta::Track object from a given url. This method is meant as a proxy that will forward this call to one or more
@@ -85,7 +85,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          * @param url The url to test.
          * @return A Meta::TrackPtr based one the url, or empty if nothing was known about the url.
          */
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         /**
          * Clear the list of active services created by this factory. Used when unloading services.
@@ -94,13 +94,13 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
 
         QList<ServiceBase *> activeServices() { return m_activeServices.toList(); }
 
-    public slots:
+    public Q_SLOTS:
         /**
          * The service is ready!
          */
         void slotServiceReady();
 
-    signals:
+    Q_SIGNALS:
         /**
          * This signal is emitted whenever a new service has been loaded.
          * @param newService The service that has been loaded.
@@ -113,9 +113,9 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          *
          * @param removedService The service that has been removed
          */
-        void removeService( ServiceBase *newService );
+        void removeService( ServiceBase *removedService );
 
-    private slots:
+    private Q_SLOTS:
         void slotNewService( ServiceBase *newService );
         void slotRemoveService( ServiceBase *service );
 
@@ -139,7 +139,7 @@ public:
      /**
       * Constructor.
       */
-    ServiceBase( const QString &name, ServiceFactory* parent, bool useCollectionTreeView = true, const QString &m_prettyName = QString() );
+     ServiceBase( const QString &name, ServiceFactory* parent, bool useCollectionTreeView = true, const QString &m_prettyName = QString() );
 
     /**
      * Destructor.
@@ -237,12 +237,12 @@ public:
      * Returns the service's parent factory.
      * @return the service's Factory
      */
-     ServiceFactory* parent() const;
+    ServiceFactory* parent() const;
 
-     virtual QString filter() const;
-     virtual QList<CategoryId::CatMenuId> levels() const;
+    virtual QString filter() const;
+    virtual QList<CategoryId::CatMenuId> levels() const;
 
-public slots:
+public Q_SLOTS:
     //void treeViewSelectionChanged( const QItemSelection & selected );
     /**
      * New info should be shown in the service info applet ( if present ).
@@ -277,7 +277,7 @@ public slots:
 
     void setLevels( const QList<CategoryId::CatMenuId> &levels );
 
-signals:
+Q_SIGNALS:
     /**
      * Signal emitted when the service wants to be hidden and the service browser list shown instead, for instance when the "Home" button is clicked.
      */
@@ -287,7 +287,7 @@ signals:
      * Signal emitted when the selection in the tree view has changed ( and is only a single item ).
      * @param item The selected item
      */
-    void selectionChanged( CollectionTreeItem * );
+    void selectionChanged( CollectionTreeItem *item );
 
     /**
      * Signal emitted when the service is ready to be used. You don't need to emit this
@@ -295,7 +295,7 @@ signals:
      */
     void ready();
 
-protected slots:
+protected Q_SLOTS:
     /**
      * Slot called when an item in the tree view has been activated
      * @param index The index of the activated item
@@ -325,17 +325,17 @@ protected:
     QTreeView *m_contentView;
     ServiceFactory *m_parentFactory;
 
-    KVBox       *m_topPanel;
-    KVBox       *m_bottomPanel;
+    BoxWidget    *m_topPanel;
+    BoxWidget    *m_bottomPanel;
     bool         m_polished;
 
     bool m_useCollectionTreeView;
 
-    KUrl::List   m_urlsToInsert;
+    QList<QUrl>   m_urlsToInsert;
 
     InfoParserBase * m_infoParser;
 
-    KMenuBar *m_menubar;
+    QMenuBar *m_menubar;
     QMenu *m_filterMenu;
     SearchWidget * m_searchWidget;
 
@@ -348,8 +348,5 @@ private: // need to move stuff here
     QSortFilterProxyModel *m_filterModel;
 };
 
-#define AMAROK_EXPORT_SERVICE_PLUGIN(libname, classname) \
-K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
-K_EXPORT_PLUGIN(factory("amarok_service_" #libname))\
 
 #endif

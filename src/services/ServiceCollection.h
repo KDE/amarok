@@ -24,7 +24,7 @@
 #include "core-impl/collections/support/MemoryCollection.h"
 #include "ServiceBase.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QtGlobal>
 #include <QSharedPointer>
@@ -53,7 +53,7 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
-        virtual KIcon icon() const { return KIcon("action-view-services-scripted-amarok"); }
+        virtual QIcon icon() const { return QIcon::fromTheme("action-view-services-scripted-amarok"); }
 
         virtual CollectionLocation* location();
 

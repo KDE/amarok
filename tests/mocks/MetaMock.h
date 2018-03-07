@@ -43,7 +43,7 @@ public:
 
     QString name() const { return m_data.value( Meta::Field::TITLE ).toString(); }
     QString prettyName() const { return name(); }
-    KUrl playableUrl() const { return m_data.value( Meta::Field::URL ).value<KUrl>(); }
+    QUrl playableUrl() const { return m_data.value( Meta::Field::URL ).value<QUrl>(); }
     QString prettyUrl() const { return playableUrl().url(); }
     QString uidUrl() const { return m_data.value( Meta::Field::UNIQUEID ).toString(); }
     QString notPlayableReason() const { return QString( "dummy reason" ); }

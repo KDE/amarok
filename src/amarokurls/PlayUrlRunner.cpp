@@ -86,7 +86,7 @@ QString PlayUrlRunner::prettyCommand() const
     return i18nc( "A type of command that starts playing at a specific position in a track", "Play" );
 }
 
-BookmarkList PlayUrlRunner::bookmarksFromUrl( KUrl url )
+BookmarkList PlayUrlRunner::bookmarksFromUrl( QUrl url )
 {
     BookmarkList list;
 
@@ -117,8 +117,8 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl( KUrl url )
     return list;
 }
 
-KIcon PlayUrlRunner::icon() const
+QIcon PlayUrlRunner::icon() const
 {
-    return KIcon( "x-media-podcast-amarok" );
+    return QIcon::fromTheme( "x-media-podcast-amarok" );
 }
 

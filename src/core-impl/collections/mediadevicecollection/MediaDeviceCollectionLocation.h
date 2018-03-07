@@ -45,13 +45,13 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public Collec
         virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
 
         /// Copies these tracks to the Collection using the Handler
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
                                            const Transcoding::Configuration &configuration );
 
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
 
-    private slots:
+    private Q_SLOTS:
         void copyOperationFinished( bool success );
         void removeOperationFinished();
 

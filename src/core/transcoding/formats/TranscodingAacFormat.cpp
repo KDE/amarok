@@ -16,7 +16,7 @@
 
 #include "TranscodingAacFormat.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QVariant>
 
@@ -67,10 +67,10 @@ AacFormat::description() const
                   "It is a reasonable choice for the iPod and some other portable music players." );
 }
 
-KIcon
+QIcon
 AacFormat::icon() const
 {
-    return KIcon( "audio-x-mpeg" ); //TODO: get a *real* icon!
+    return QIcon::fromTheme( "audio-ac3" ); //TODO: get a *real* icon!
 }
 
 QStringList

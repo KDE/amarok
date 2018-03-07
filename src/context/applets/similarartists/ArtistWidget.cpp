@@ -34,7 +34,7 @@
 //KDE
 #include <KColorUtils>
 #include <KGlobalSettings>
-#include <KIcon>
+#include <QIcon>
 #include <Plasma/PushButton>
 #include <Plasma/Separator>
 
@@ -127,26 +127,26 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
 
     m_navigateButton = new Plasma::PushButton( this );
     m_navigateButton->setMaximumSize( QSizeF( 22, 22 ) );
-    m_navigateButton->setIcon( KIcon( "edit-find" ) );
+    m_navigateButton->setIcon( QIcon::fromTheme( "edit-find" ) );
     m_navigateButton->setToolTip( i18n( "Show in Media Sources" ) );
     connect( m_navigateButton, SIGNAL(clicked()), this, SLOT(navigateToArtist()) );
     
     m_lastfmStationButton = new Plasma::PushButton( this );
     m_lastfmStationButton->setMaximumSize( QSizeF( 22, 22 ) );
-    m_lastfmStationButton->setIcon( KIcon("view-services-lastfm-amarok") );
+    m_lastfmStationButton->setIcon( QIcon::fromTheme("view-services-lastfm-amarok") );
     m_lastfmStationButton->setToolTip( i18n( "Add Last.fm artist station to the Playlist" ) );
     connect( m_lastfmStationButton, SIGNAL(clicked()), this, SLOT(addLastfmArtistStation()) );
 
     m_topTrackButton = new Plasma::PushButton( this );
     m_topTrackButton->setMaximumSize( QSizeF( 22, 22 ) );
-    m_topTrackButton->setIcon( KIcon( "media-track-add-amarok" ) );
+    m_topTrackButton->setIcon( QIcon::fromTheme( "media-track-add-amarok" ) );
     m_topTrackButton->setToolTip( i18n( "Add top track to the Playlist" ) );
     m_topTrackButton->hide();
     connect( m_topTrackButton, SIGNAL(clicked()), this, SLOT(addTopTrackToPlaylist()) );
 
     m_similarArtistButton = new Plasma::PushButton( this );
     m_similarArtistButton->setMaximumSize( QSizeF( 22, 22 ) );
-    m_similarArtistButton->setIcon( KIcon( "similarartists-amarok" ) );
+    m_similarArtistButton->setIcon( QIcon::fromTheme( "similarartists-amarok" ) );
     m_similarArtistButton->setToolTip( i18n( "Show Similar Artists to %1", m_artist->name() ) );
     connect( m_similarArtistButton, SIGNAL(clicked()), this, SIGNAL(showSimilarArtists()) );
 
@@ -161,7 +161,7 @@ ArtistWidget::ArtistWidget( const SimilarArtistPtr &artist,
     {
         m_urlButton = new Plasma::PushButton( this );
         m_urlButton->setMaximumSize( QSizeF( 22, 22 ) );
-        m_urlButton->setIcon( KIcon("applications-internet") );
+        m_urlButton->setIcon( QIcon::fromTheme("applications-internet") );
         m_urlButton->setToolTip( i18n( "Open Last.fm webpage for this artist" ) );
         connect( m_urlButton, SIGNAL(clicked()), this, SLOT(openArtistUrl()) );
         buttonsLayout->addItem( m_urlButton );
@@ -231,14 +231,14 @@ ArtistWidget::fetchPhoto()
         return;
 
     The::networkAccessManager()->getData( m_artist->urlImage(), this,
-         SLOT(photoFetched(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(photoFetched(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
 ArtistWidget::fetchInfo()
 {
     // we genere the url for the demand on the lastFM Api
-    KUrl url;
+    QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
@@ -247,14 +247,14 @@ ArtistWidget::fetchInfo()
     url.addQueryItem( "artist", m_artist->name() );
 
     The::networkAccessManager()->getData( url, this,
-         SLOT(parseInfo(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(parseInfo(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
 ArtistWidget::fetchTopTrack()
 {
     // we genere the url for the demand on the lastFM Api
-    KUrl url;
+    QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
@@ -263,11 +263,11 @@ ArtistWidget::fetchTopTrack()
     url.addQueryItem( "artist",  m_artist->name() );
 
     The::networkAccessManager()->getData( url, this,
-         SLOT(parseTopTrack(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         SLOT(parseTopTrack(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-ArtistWidget::photoFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+ArtistWidget::photoFetched( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     if( url != m_artist->urlImage() )
         return;
@@ -291,7 +291,7 @@ ArtistWidget::photoFetched( const KUrl &url, QByteArray data, NetworkAccessManag
 }
 
 void
-ArtistWidget::parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+ArtistWidget::parseInfo( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
@@ -351,7 +351,7 @@ ArtistWidget::parseInfo( const KUrl &url, QByteArray data, NetworkAccessManagerP
 }
 
 void
-ArtistWidget::parseTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+ArtistWidget::parseTopTrack( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )
     if( e.code != QNetworkReply::NoError )
@@ -413,8 +413,10 @@ ArtistWidget::clear()
 void
 ArtistWidget::openArtistUrl()
 {
-    if( m_artist->url().isValid() )
-        QDesktopServices::openUrl( m_artist->url() );
+    // somehow Last.fm decides to supply this url without the scheme
+    QUrl artistUrl = QString( "http://%1" ).arg( m_artist->url().url() );
+    if( artistUrl.isValid() )
+        QDesktopServices::openUrl( artistUrl );
 }
 
 void
@@ -574,7 +576,7 @@ void
 ArtistWidget::addLastfmArtistStation()
 {
     const QString url = "lastfm://artist/" + m_artist->name() + "/similarartists";
-    Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
+    Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( QUrl( url ) );
     The::playlistController()->insertOptioned( lastfmtrack, Playlist::OnAppendToPlaylistAction );
 }
 
@@ -702,4 +704,3 @@ ArtistWidget::resultReady( const Meta::TrackList &tracks )
     }
 }
 
-#include "ArtistWidget.moc"

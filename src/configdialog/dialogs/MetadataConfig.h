@@ -29,17 +29,17 @@ class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
     Q_OBJECT
 
     public:
-        MetadataConfig( QWidget *parent );
+        MetadataConfig( Amarok2ConfigDialog *parent );
         virtual ~MetadataConfig();
 
-        virtual bool isDefault();
-        virtual bool hasChanged();
-        virtual void updateSettings();
+        bool isDefault() Q_DECL_OVERRIDE;
+        bool hasChanged() Q_DECL_OVERRIDE;
+        void updateSettings() Q_DECL_OVERRIDE;
 
-    signals:
+    Q_SIGNALS:
         void changed();
 
-    private slots:
+    private Q_SLOTS:
         void slotForgetCollections();
         void slotUpdateForgetButton();
         void slotUpdateConfigureExcludedLabelsLabel();
@@ -52,7 +52,7 @@ class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
         int writeBackCoverDimensions() const;
         qint64 checkedFields() const;
 
-        QWeakPointer<StatSyncing::Config> m_statSyncingConfig;
+        QPointer<StatSyncing::Config> m_statSyncingConfig;
 
 };
 

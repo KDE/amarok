@@ -21,7 +21,7 @@
 #include "core/meta/Observer.h"
 #include "covermanager/CoverFetcher.h"
 
-#include <KDialog>
+#include <QDialog>
 
 #include <QDropEvent>
 #include <QLabel>
@@ -36,17 +36,17 @@ class CoverViewItem;
 class QTreeWidget;
 class QTreeWidgetItem;
 class KSqueezedTextLabel;
-class KPushButton;
-class KMenu;
+class QPushButton;
+class QMenu;
 class QLabel;
 class CoverView;
-class KHBox;
+class QHBoxLayout;
 class QProgressBar;
 class QHBoxLayout;
 class QColorGroup;
 class QSplitter;
 
-class CoverManager : public KDialog, public Meta::Observer
+class CoverManager : public QDialog, public Meta::Observer
 {
         Q_OBJECT
 
@@ -69,13 +69,14 @@ class CoverManager : public KDialog, public Meta::Observer
         using Observer::metadataChanged;
         void metadataChanged( Meta::AlbumPtr album );
 
-    public slots:
+    public Q_SLOTS:
         void updateStatusBar();
+        void delayedDestruct();
 
     private:
         enum View { AllAlbums = 0, AlbumsWithCover, AlbumsWithoutCover };
 
-    private slots:
+    private Q_SLOTS:
         void slotArtistQueryResult( Meta::ArtistList artists );
         void slotContinueConstruction();
 
@@ -109,9 +110,9 @@ class CoverManager : public KDialog, public Meta::Observer
         //hack to have something to show while the real list is hidden when loading thumbnails
         CoverView        *m_coverViewSpacer;
         Amarok::LineEdit *m_searchEdit;
-        KPushButton      *m_fetchButton;
-        KPushButton      *m_viewButton;
-        KMenu            *m_viewMenu;
+        QPushButton      *m_fetchButton;
+        QPushButton      *m_viewButton;
+        QMenu            *m_viewMenu;
         View              m_currentView;
 
         Meta::ArtistList m_artistList;
@@ -150,12 +151,12 @@ class CoverView : public QListWidget
     Q_OBJECT
 
     public:
-        explicit CoverView( QWidget *parent = 0, const char *name = 0, Qt::WFlags f = 0 );
+        explicit CoverView( QWidget *parent = 0, const char *name = 0, Qt::WindowFlags f = 0 );
 
     protected:
         void contextMenuEvent( QContextMenuEvent *event );
 
-    private slots:
+    private Q_SLOTS:
         void setStatusText( QListWidgetItem *item );
 };
 

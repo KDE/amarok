@@ -18,10 +18,12 @@
 
 #include "UpnpQueryMaker.h"
 
-#include <kdatetime.h>
 #include "upnptypes.h"
-#include <kio/scheduler.h>
-#include <kio/jobclasses.h>
+
+#include <QUrlQuery>
+
+#include <KIO/Scheduler>
+#include <KIO/UDSEntry>
 
 #include "core/support/Debug.h"
 #include "UpnpSearchCollection.h"
@@ -37,16 +39,16 @@ UpnpQueryMaker::UpnpQueryMaker( UpnpSearchCollection *collection )
     , m_internalQM( new UpnpQueryMakerInternal( collection ) )
 {
     reset();
-    connect( m_internalQM, SIGNAL(done()), this, SLOT(slotDone()) );
+    connect( m_internalQM, &UpnpQueryMakerInternal::done, this, &UpnpQueryMaker::slotDone );
 
-    connect( m_internalQM, SIGNAL(newResultReady(Meta::TrackList)),
-             this, SLOT(handleTracks(Meta::TrackList)) );
-    connect( m_internalQM, SIGNAL(newResultReady(Meta::ArtistList)),
-             this, SLOT(handleArtists(Meta::ArtistList)) );
-    connect( m_internalQM, SIGNAL(newResultReady(Meta::AlbumList)),
-             this, SLOT(handleAlbums(Meta::AlbumList)) );
-    connect( m_internalQM, SIGNAL(newResultReady(KIO::UDSEntryList)),
-             this, SLOT(handleCustom(KIO::UDSEntryList)) );
+    connect( m_internalQM, &UpnpQueryMakerInternal::newTracksReady,
+             this, &UpnpQueryMaker::handleTracks );
+    connect( m_internalQM, &UpnpQueryMakerInternal::newArtistsReady,
+             this, &UpnpQueryMaker::handleArtists );
+    connect( m_internalQM, &UpnpQueryMakerInternal::newAlbumsReady,
+             this, &UpnpQueryMaker::handleAlbums );
+//     connect( m_internalQM, &UpnpQueryMakerInternal::newResultReady,
+//              this, &UpnpQueryMaker::handleCustom );
 }
 
 UpnpQueryMaker::~UpnpQueryMaker()
@@ -80,16 +82,22 @@ void UpnpQueryMaker::run()
 {
 DEBUG_BLOCK
 
-    KUrl baseUrl( m_collection->collectionId() );
-    baseUrl.addQueryItem( "search", "1" );
+    QUrl baseUrl( m_collection->collectionId() );
+    QUrlQuery query( baseUrl );
+    query.addQueryItem( "search", "1" );
+    baseUrl.setQuery( query );
 
     if( m_queryType == Custom ) {
         switch( m_returnFunction ) {
             case Count:
+            {
                 m_query.reset();
                 m_query.setType( "( upnp:class derivedfrom \"object.item.audioItem\" )" );
-                baseUrl.addQueryItem( "getCount", "1" );
+                QUrlQuery query( baseUrl );
+                query.addQueryItem( "getCount", "1" );
+                baseUrl.setQuery( query );
                 break;
+            }
             case Sum:
             case Max:
             case Min:
@@ -99,14 +107,14 @@ DEBUG_BLOCK
     // we don't deal with compilations
     else if( m_queryType == Album && m_albumMode == OnlyCompilations ) {
         // we don't support any other attribute
-        emit newResultReady( Meta::TrackList() );
-        emit newResultReady( Meta::ArtistList() );
-        emit newResultReady( Meta::AlbumList() );
-        emit newResultReady( Meta::GenreList() );
-        emit newResultReady( Meta::ComposerList() );
-        emit newResultReady( Meta::YearList() );
+        emit newTracksReady( Meta::TrackList() );
+        emit newArtistsReady( Meta::ArtistList() );
+        emit newAlbumsReady( Meta::AlbumList() );
+        emit newGenresReady( Meta::GenreList() );
+        emit newComposersReady( Meta::ComposerList() );
+        emit newYearsReady( Meta::YearList() );
         emit newResultReady( QStringList() );
-        emit newResultReady( Meta::LabelList() );
+        emit newLabelsReady( Meta::LabelList() );
         emit queryDone();
         return;
     }
@@ -140,14 +148,14 @@ DEBUG_BLOCK
              default:
                  debug() << this << "Default case: Query type";
                  // we don't support any other attribute
-                 emit newResultReady( Meta::TrackList() );
-                 emit newResultReady( Meta::ArtistList() );
-                 emit newResultReady( Meta::AlbumList() );
-                 emit newResultReady( Meta::GenreList() );
-                 emit newResultReady( Meta::ComposerList() );
-                 emit newResultReady( Meta::YearList() );
+                 emit newTracksReady( Meta::TrackList() );
+                 emit newArtistsReady( Meta::ArtistList() );
+                 emit newAlbumsReady( Meta::AlbumList() );
+                 emit newGenresReady( Meta::GenreList() );
+                 emit newComposersReady( Meta::ComposerList() );
+                 emit newYearsReady( Meta::YearList() );
                  emit newResultReady( QStringList() );
-                 emit newResultReady( Meta::LabelList() );
+                 emit newLabelsReady( Meta::LabelList() );
                  emit queryDone();
                  return;
         }
@@ -160,8 +168,10 @@ DEBUG_BLOCK
         if( queryList[i].isEmpty() )
             continue;
 
-        KUrl url( baseUrl );
-        url.addQueryItem( "query", queryList[i] );
+        QUrl url( baseUrl );
+        QUrlQuery query( url );
+        query.addQueryItem( "query", queryList[i] );
+        url.setQuery( query );
 
         debug() << this << "Running query" << url;
         m_internalQM->runQuery( url );
@@ -401,19 +411,19 @@ int UpnpQueryMaker::validFilterMask()
 void UpnpQueryMaker::handleArtists( Meta::ArtistList list )
 {
     // TODO Post filtering
-    emit newResultReady( list );
+    emit newArtistsReady( list );
 }
 
 void UpnpQueryMaker::handleAlbums( Meta::AlbumList list )
 {
     // TODO Post filtering
-    emit newResultReady( list );
+    emit newAlbumsReady( list );
 }
 
 void UpnpQueryMaker::handleTracks( Meta::TrackList list )
 {
     // TODO Post filtering
-    emit newResultReady( list );
+    emit newTracksReady( list );
 }
 
 /*
@@ -454,7 +464,7 @@ DEBUG_BLOCK
             Meta::ArtistList list;
             foreach( Meta::DataPtr ptr, m_cacheEntries )
                 list << Meta::ArtistPtr::staticCast( ptr );
-            emit newResultReady( list );
+            emit newArtistsReady( list );
             break;
         }
 
@@ -463,7 +473,7 @@ DEBUG_BLOCK
             Meta::AlbumList list;
             foreach( Meta::DataPtr ptr, m_cacheEntries )
                 list << Meta::AlbumPtr::staticCast( ptr );
-            emit newResultReady( list );
+            emit newAlbumsReady( list );
             break;
         }
 
@@ -472,7 +482,7 @@ DEBUG_BLOCK
             Meta::TrackList list;
             foreach( Meta::DataPtr ptr, m_cacheEntries )
                 list << Meta::TrackPtr::staticCast( ptr );
-            emit newResultReady( list );
+            emit newTracksReady( list );
             break;
         }
         default:

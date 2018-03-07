@@ -24,17 +24,13 @@
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
 
-#include <KUrl>
+#include <QUrl>
 
 using namespace Collections;
 
-AMAROK_EXPORT_COLLECTION( MtpCollectionFactory, mtpcollection )
-
-MtpCollectionFactory::MtpCollectionFactory( QObject *parent, const QVariantList &args )
-    : MediaDeviceCollectionFactory<MtpCollection>( parent, args, new MtpConnectionAssistant() )
-{
-    m_info = KPluginInfo( "amarok_collection-mtpcollection.desktop", "services" );
-}
+MtpCollectionFactory::MtpCollectionFactory()
+    : MediaDeviceCollectionFactory<MtpCollection>( new MtpConnectionAssistant() )
+{}
 
 MtpCollectionFactory::~MtpCollectionFactory()
 {
@@ -80,8 +76,3 @@ MtpCollection::prettyName() const
 {
     return m_handler->prettyName();
 }
-
-
-
-#include "MtpCollection.moc"
-

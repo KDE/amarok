@@ -17,11 +17,11 @@
 #ifndef SCRIPT_IMPORTER_H
 #define SCRIPT_IMPORTER_H
 
-#include <KUrl>
 
 #include <QObject>
 #include <QSet>
 #include <QStringList>
+#include <QUrl>
 
 class QScriptEngine;
 class QStringList;
@@ -36,7 +36,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            ScriptImporter( AmarokScriptEngine *scriptEngine, const KUrl &url );
+            ScriptImporter( AmarokScriptEngine *scriptEngine, const QUrl &url );
 
             Q_INVOKABLE QStringList availableBindings() const;
             Q_INVOKABLE bool loadAmarokBinding( const QString &name );
@@ -45,7 +45,7 @@ namespace AmarokScript
             Q_INVOKABLE bool include( const QString &relativeFile );
 
         private:
-            const KUrl m_scriptUrl;
+            const QUrl m_scriptUrl;
             AmarokScriptEngine *m_scriptEngine;
             QSet<QString> m_importedBindings;
     };

@@ -26,19 +26,19 @@ namespace MetaFile
 {
     class Track;
 
-    typedef KSharedPtr<Track> TrackPtr;
+    typedef AmarokSharedPointer<Track> TrackPtr;
 
     class AMAROK_EXPORT Track : public Meta::Track, public Meta::Statistics, Meta::TrackEditor
     {
         public:
-            Track( const KUrl &url );
+            Track( const QUrl &url );
             virtual ~Track();
 
         //methods inherited from Meta::Base
             virtual QString name() const;
 
         //methods inherited from Meta::Track
-            virtual KUrl playableUrl() const;
+            virtual QUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
             virtual QString notPlayableReason() const;
@@ -111,7 +111,7 @@ namespace MetaFile
              * optimistic, so it may be possible that is the song is not playable with
              * current backend even if isTrack() returns true.
              */
-            static bool isTrack( const KUrl &url );
+            static bool isTrack( const QUrl &url );
 
             virtual QImage getEmbeddedCover() const;
             virtual void setCollection( Collections::Collection *newCollection );

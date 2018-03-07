@@ -30,8 +30,7 @@
 #include <Nepomuk2/ResourceManager>
 #include <Nepomuk2/Vocabulary/NFO>
 
-#include <KIcon>
-#include <ThreadWeaver/Weaver>
+#include <QIcon>
 
 namespace Collections
 {
@@ -69,10 +68,10 @@ NepomukCollection::prettyName() const
     return i18n( "Nepomuk Collection" );
 }
 
-KIcon
+QIcon
 NepomukCollection::icon() const
 {
-    return KIcon( "nepomuk" );
+    return QIcon::fromTheme( "nepomuk" );
 }
 
 bool
@@ -85,13 +84,13 @@ NepomukCollection::isWritable() const
 }
 
 bool
-NepomukCollection::possiblyContainsTrack( const KUrl & ) const
+NepomukCollection::possiblyContainsTrack( const QUrl & ) const
 {
     return true;
 }
 
 Meta::TrackPtr
-NepomukCollection::trackForUrl( const KUrl &url )
+NepomukCollection::trackForUrl( const QUrl &url )
 {
     DEBUG_BLOCK
     debug() << url;

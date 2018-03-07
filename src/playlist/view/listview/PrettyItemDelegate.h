@@ -85,13 +85,13 @@ public:
                     bool headerRow = false ) const;
 
 
-protected slots:
+protected Q_SLOTS:
     void editorDone( InlineEditorWidget * editor );
 
-signals:
+Q_SIGNALS:
     void redrawRequested();
 
-private slots:
+private Q_SLOTS:
     void currentDesktopChanged();
 
 private:

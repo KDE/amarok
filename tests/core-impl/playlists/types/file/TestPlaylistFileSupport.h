@@ -20,8 +20,8 @@
 #ifndef TESTPLAYLISTFILESUPPORT_H
 #define TESTPLAYLISTFILESUPPORT_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
 
 class TestPlaylistFileSupport : public QObject
 {
@@ -30,7 +30,7 @@ Q_OBJECT
 public:
     TestPlaylistFileSupport();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void testGetFormat();
     void testIsPlaylist();

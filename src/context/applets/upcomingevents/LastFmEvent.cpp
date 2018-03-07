@@ -60,7 +60,7 @@ QString LastFmEvent::name() const
     return m_name;
 }
 
-KUrl LastFmEvent::url() const
+QUrl LastFmEvent::url() const
 {
     return m_url;
 }
@@ -75,7 +75,7 @@ void LastFmEvent::setName( const QString &name )
     m_name = name;
 }
 
-void LastFmEvent::setUrl( const KUrl &url )
+void LastFmEvent::setUrl( const QUrl &url )
 {
     m_url = url;
 }

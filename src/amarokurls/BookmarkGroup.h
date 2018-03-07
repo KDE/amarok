@@ -24,13 +24,13 @@
 #include <QString>
 #include <QStringList>
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 
 class BookmarkGroup;
 class AmarokUrl;
 
-typedef KSharedPtr<AmarokUrl> AmarokUrlPtr;
-typedef KSharedPtr<BookmarkGroup> BookmarkGroupPtr;
+typedef AmarokSharedPointer<AmarokUrl> AmarokUrlPtr;
+typedef AmarokSharedPointer<BookmarkGroup> BookmarkGroupPtr;
 typedef QList<AmarokUrlPtr> BookmarkList;
 typedef QList<BookmarkGroupPtr> BookmarkGroupList;
 

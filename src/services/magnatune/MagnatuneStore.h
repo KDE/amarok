@@ -27,14 +27,11 @@
 
 #include "../ServiceBase.h"
 
-#include <kio/job.h>
-#include <kio/jobclasses.h>
+#include <KJob>
 
 #include <QCheckBox>
 #include <QComboBox>
-#include <khbox.h>
 #include <QPushButton>
-#include <kvbox.h>
 
 
 class MagnatuneInfoParser;
@@ -42,17 +39,19 @@ class MagnatuneNeedUpdateWidget;
 
 class MagnatuneServiceFactory : public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_magnatunestore.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        MagnatuneServiceFactory( QObject *parent, const QVariantList &args );
+        MagnatuneServiceFactory();
         virtual ~MagnatuneServiceFactory() {}
 
         virtual void init();
         virtual QString name();
         virtual KConfigGroup config();
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.url().contains( "magnatune.com", Qt::CaseInsensitive ); }
+        virtual bool possiblyContainsTrack( const QUrl &url ) const { return url.url().contains( "magnatune.com", Qt::CaseInsensitive ); }
 };
 
 
@@ -94,15 +93,15 @@ public:
     virtual QString messages();
     virtual QString sendMessage( const QString &message );
 
-public slots:
+public Q_SLOTS:
     /**
     * Slot for catching cancelled list downloads
     */
     void listDownloadCancelled();
 
-    void download( Meta::MagnatuneTrack * track );
+    void downloadTrack( Meta::MagnatuneTrack * track );
 
-    void download( Meta::MagnatuneAlbum * album );
+    void downloadAlbum( Meta::MagnatuneAlbum * album );
 
     void showFavoritesPage();
     void showHomePage();
@@ -111,13 +110,13 @@ public slots:
     void addToFavorites( const QString &sku );
     void removeFromFavorites( const QString &sku );
     
-private slots:
+private Q_SLOTS:
     /**
      * Slot called when the download album button is clicked. Starts a download
      */
     void download();
 
-    void download( const QString &sku );
+    void downloadSku( const QString &sku );
 
     /**
      * Slot for recieving notification that the update button has been clicked.
@@ -160,8 +159,7 @@ private slots:
 
      /**
      * Checks if download button should be enabled
-     * @param selection the new selection
-     * @param deseleted items that were previously selected but have been deselected
+     * @param selectedItem the new selected item
      */
     void itemSelected( CollectionTreeItem * selectedItem );
 
@@ -211,7 +209,7 @@ private:
 
     QAction * m_updateAction;
 
-    bool         m_downloadInProgress;
+    bool m_downloadInProgress;
 
     Meta::MagnatuneAlbum * m_currentAlbum;
 

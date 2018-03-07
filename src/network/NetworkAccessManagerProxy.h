@@ -21,7 +21,7 @@
 #include <config.h>
 
 #include <KIO/AccessManager>
-#include <KUrl>
+#include <QUrl>
 
 #include <QNetworkReply>
 
@@ -62,15 +62,15 @@ public:
      * @param type the #Qt::ConnectionType used for calling the @p method.
      * @return a QNetworkReply object for custom monitoring.
      */
-    QNetworkReply *getData( const KUrl &url, QObject *receiver, const char *method,
+    QNetworkReply *getData( const QUrl &url, QObject *receiver, const char *method,
                             Qt::ConnectionType type = Qt::AutoConnection );
 
-    int abortGet( const KUrl &url );
-    int abortGet( const KUrl::List &urls );
+    int abortGet( const QUrl &url );
+    int abortGet( const QList<QUrl> &urls );
 
     /**
      * Gets the URL to which a server redirects the request.
-     * An empty KUrl will be returned if the request was not redirected.
+     * An empty QUrl will be returned if the request was not redirected.
      *
      * @param reply The QNetworkReply which contains all information about
      *              the reply from the server.
@@ -78,7 +78,7 @@ public:
      * @return The URL to which the server redirected the request or an empty
      *         URL if there was no redirect.
      */
-    KUrl getRedirectUrl( QNetworkReply *reply );
+    QUrl getRedirectUrl( QNetworkReply *reply );
 
 #ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *networkAccessViewer();
@@ -86,10 +86,10 @@ public:
 #endif // DEBUG_BUILD_TYPE
 
 Q_SIGNALS:
-    void requestRedirected( const KUrl &sourceUrl, const KUrl &targetUrl );
-    void requestRedirected( QNetworkReply* oldReply, QNetworkReply *newReply );
+    void requestRedirectedUrl( const QUrl &sourceUrl, const QUrl &targetUrl );
+    void requestRedirectedReply( QNetworkReply* oldReply, QNetworkReply *newReply );
 
-public slots:
+public Q_SLOTS:
     void slotError( QObject *reply );
 
 protected:
@@ -98,6 +98,7 @@ protected:
 
 private:
     NetworkAccessManagerProxy( QObject *parent = 0 );
+    void replyFinished();
     static NetworkAccessManagerProxy *s_instance;
 
     class NetworkAccessManagerProxyPrivate;
@@ -105,7 +106,6 @@ private:
     friend class NetworkAccessManagerProxyPrivate;
 
     Q_DISABLE_COPY( NetworkAccessManagerProxy )
-    Q_PRIVATE_SLOT( d, void _replyFinished() )
 };
 
 Q_DECLARE_METATYPE( NetworkAccessManagerProxy::Error )

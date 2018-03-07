@@ -19,10 +19,15 @@
 #include "ITunesConfigWidget.h"
 #include "ITunesProvider.h"
 
-AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( itunes,
+#include <KLocalizedString>
+
+AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( ITunesImporterFactory,
+                                      "amarok_importer-itunes.json",
                                       "ITunesImporter",
                                       i18n( "Apple iTunes" ),
                                       i18n( "iTunes Statistics Importer" ),
-                                      KIcon( "media-album-track" ),
+                                      QIcon::fromTheme( "media-album-track" ),
                                       StatSyncing::ITunesConfigWidget,
                                       StatSyncing::ITunesProvider )
+
+#include <ITunesManager.moc>

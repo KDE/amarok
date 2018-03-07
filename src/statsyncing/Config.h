@@ -120,7 +120,7 @@ namespace StatSyncing
              */
             void save();
 
-        signals:
+        Q_SIGNALS:
             void providerForgotten( const QString &id );
 
         private:

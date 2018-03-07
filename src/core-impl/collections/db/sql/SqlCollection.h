@@ -25,6 +25,8 @@
 #include <core-impl/collections/db/DatabaseCollection.h>
 #include "SqlRegistry.h"
 
+#include <QSharedPointer>
+
 class SqlScanResultProcessor;
 class AbstractDirectoryWatcher;
 
@@ -45,7 +47,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         /** Creates a new SqlCollection.
          *  @param storage The storage this collection should work on. It will be freed by the collection.
          */
-        SqlCollection( SqlStorage *storage );
+        SqlCollection( QSharedPointer<SqlStorage> storage );
         virtual ~SqlCollection();
 
         virtual QueryMaker *queryMaker();
@@ -64,12 +66,12 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         // physical locations (even network components)
 
         SqlRegistry* registry() const;
-        SqlStorage* sqlStorage() const;
+        QSharedPointer<SqlStorage> sqlStorage() const;
 
         /** Every collection has this function. */
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         /** Gets an existing track (or a new one) at the given position.
             This function should only be used by the SqlScanResultProcessor. */
@@ -82,20 +84,20 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-    public slots:
+    public Q_SLOTS:
         /** Dumps the complete database content.
          *  The content of all Amarok tables is dumped in a couple of files
          *  in the users homedirectory.
          */
         void dumpDatabaseContent();
 
-    private slots:
+    private Q_SLOTS:
         void slotDeviceAdded( int id );
         void slotDeviceRemoved( int id );
 
     private:
         SqlRegistry* m_registry;
-        SqlStorage* m_sqlStorage;
+        QSharedPointer<SqlStorage> m_sqlStorage;
 
         SqlScanResultProcessor* m_scanProcessor;
         AbstractDirectoryWatcher* m_directoryWatcher;

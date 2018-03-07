@@ -92,7 +92,7 @@ protected:
     QString m_trackFilter;
     int m_filterType;
 
-public slots:
+public Q_SLOTS:
 
     void artistDownloadComplete( QList<Mp3tunesLockerArtist> artists );
     void albumDownloadComplete( QList<Mp3tunesLockerAlbum> albums );

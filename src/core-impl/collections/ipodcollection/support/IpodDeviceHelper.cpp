@@ -18,10 +18,13 @@
 
 #include "core/support/Debug.h"
 
-#include <KLocalizedString>
-
+#include <QDialogButtonBox>
 #include <QFile>
 #include <QFileInfo>
+
+#include <KConfigGroup>
+#include <KFormat>
+#include <KLocalizedString>
 
 
 Itdb_iTunesDB*
@@ -272,7 +275,7 @@ fillInModelComboBox( QComboBox *comboBox, bool someSysInfoFound )
     while( info->model_number )
     {
         QString generation = QString::fromUtf8( itdb_info_get_ipod_generation_string( info->ipod_generation) );
-        QString capacity = KGlobal::locale()->formatByteSize( info->capacity * 1073741824.0, 0 );
+        QString capacity = KFormat().formatByteSize( info->capacity * 1073741824.0, 0 );
         QString modelName = QString::fromUtf8( itdb_info_get_ipod_model_name_string( info->ipod_model ) );
         QString modelNumber = QString::fromUtf8( info->model_number );
         QString label = i18nc( "Examples: "
@@ -289,7 +292,7 @@ fillInModelComboBox( QComboBox *comboBox, bool someSysInfoFound )
 }
 
 void
-IpodDeviceHelper::fillInConfigureDialog( KDialog *configureDialog,
+IpodDeviceHelper::fillInConfigureDialog( QDialog *configureDialog,
                                          Ui::IpodConfiguration *configureDialogUi,
                                          const QString &mountPoint,
                                          Itdb_iTunesDB *itdb,
@@ -363,7 +366,7 @@ IpodDeviceHelper::fillInConfigureDialog( KDialog *configureDialog,
             fillInModelComboBox( configureDialogUi->modelComboBox, sysInfoExists || sysInfoExtendedExists );
         configureDialogUi->initializeLabel->setEnabled( true );
         configureDialogUi->initializeButton->setEnabled( true );
-        configureDialogUi->initializeButton->setIcon( KIcon( "task-attention" ) );
+        configureDialogUi->initializeButton->setIcon( QIcon::fromTheme( "task-attention" ) );
         if( !errorMessage.isEmpty() )
             warningText = i18n(
                 "<b>%1</b><br><br>"
@@ -398,7 +401,7 @@ IpodDeviceHelper::fillInConfigureDialog( KDialog *configureDialog,
     configureDialogUi->notesPlaceholder->setText( notes );
     configureDialogUi->notesPlaceholder->adjustSize();
 
-    configureDialog->enableButtonOk( isSafeToWrite );
+    configureDialog->findChild<QDialogButtonBox*>()->button( QDialogButtonBox::Ok )->setEnabled( isSafeToWrite );
 }
 
 bool

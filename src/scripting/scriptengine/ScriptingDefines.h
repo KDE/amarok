@@ -127,10 +127,10 @@ namespace AmarokScript
                              const QScriptValue &thisObject = QScriptValue(),
                              const QScriptValue &args = QScriptValue() );
 
-        private slots:
+        private Q_SLOTS:
             void slotTimeout();
 
-        signals:
+        Q_SIGNALS:
             void deprecatedCall(QString);
 
         private:

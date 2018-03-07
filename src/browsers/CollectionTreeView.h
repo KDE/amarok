@@ -20,17 +20,18 @@
 #include "amarok_export.h"
 #include "BrowserDefines.h"
 #include "widgets/PrettyTreeView.h"
+#include "browsers/CollectionTreeItem.h"
 #include "core/meta/forward_declarations.h"
 #include "playlist/PlaylistController.h"
 
 #include <QModelIndex>
 #include <QMutex>
 #include <QSet>
+#include <QApplication>
 
 class AmarokMimeData;
 class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
-class CollectionTreeItem;
 class PopupDropper;
 namespace Collections {
     class Collection;
@@ -41,7 +42,7 @@ class QSortFilterProxyModel;
 
 typedef QList<QAction *> QActionList;
 
-class CollectionTreeView: public Amarok::PrettyTreeView
+class AMAROK_EXPORT CollectionTreeView : public Amarok::PrettyTreeView
 {
         Q_OBJECT
 
@@ -51,7 +52,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         QSortFilterProxyModel* filterModel() const;
 
-        AMAROK_EXPORT void setLevels( const QList<CategoryId::CatMenuId> &levels );
+        void setLevels( const QList<CategoryId::CatMenuId> &levels );
         QList<CategoryId::CatMenuId> levels() const;
 
         void setLevel( int level, CategoryId::CatMenuId type );
@@ -68,9 +69,9 @@ class CollectionTreeView: public Amarok::PrettyTreeView
          * Copies all selected tracks to the local collection. The user can also
          * choose to do on-the-fly transcoding.
          */
-        AMAROK_EXPORT void copySelectedToLocalCollection();
+        void copySelectedToLocalCollection();
 
-    public slots:
+    public Q_SLOTS:
         void slotSetFilter( const QString &filter );
 
         /**
@@ -82,7 +83,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         void playChildTracksSlot( Meta::TrackList list );
 
-    signals:
+    Q_SIGNALS:
         /**
          * This signal is emitted when slotAddFilteredTracksToPlaylist() has done its
          * work.
@@ -98,13 +99,14 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void dragMoveEvent( QDragMoveEvent *event );
         void startDrag( Qt::DropActions supportedActions );
 
-    protected slots:
+    protected Q_SLOTS:
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotCollapsed( const QModelIndex &index );
         void slotExpanded( const QModelIndex &index );
         void slotExpandIndex( const QModelIndex &index );
 
         void slotCheckAutoExpand( bool reallyExpand = true );
+        void slotCheckAutoExpandReally() { slotCheckAutoExpand( true ); }
 
         void slotReplacePlaylistWithChildTracks();
         void slotAppendChildTracks();
@@ -112,7 +114,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotEditTracks();
         void slotCopyTracks();
         void slotMoveTracks();
-        void slotTrashTracks( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+        void slotTrashTracks();
         void slotDeleteTracks();
         void slotOrganize();
 
@@ -156,7 +158,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         bool m_ongoingDrag;
 
-    signals:
+    Q_SIGNALS:
         void itemSelected( CollectionTreeItem * item );
         void leavingTree();
 };

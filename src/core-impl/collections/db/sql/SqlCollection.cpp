@@ -39,12 +39,15 @@
 
 #include "collectionscanner/BatchFile.h"
 
-#include <KStandardDirs>
-#include <KApplication>
-#include <threadweaver/ThreadWeaver.h>
-
 #include <QApplication>
 #include <QDir>
+#include <QMessageBox>
+#include <QStandardPaths>
+
+#include <KConfigGroup>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
 
 
 /** Concrete implementation of the directory watcher */
@@ -117,7 +120,7 @@ protected:
         QList<QPair<QString, uint> > knownDirs = getKnownDirs();
         if( !knownDirs.isEmpty() )
         {
-            QString path = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchscan.xml";
+            QString path = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + "/amarok/amarokcollectionscanner_batchscan.xml";
             while( QFile::exists( path ) )
                 path += '_';
 
@@ -167,8 +170,10 @@ public:
                     m_caption //caption
                 );
 
-        connect( m_dialog, SIGNAL(accepted()), SIGNAL(accepted()) );
-        connect( m_dialog, SIGNAL(rejected()), SIGNAL(rejected()) );
+        connect( m_dialog, &OrganizeCollectionDialog::accepted,
+                 this, &OrganizeCollectionDelegateImpl::accepted );
+        connect( m_dialog, &OrganizeCollectionDialog::rejected,
+                 this, &OrganizeCollectionDelegateImpl::rejected );
         m_dialog->show();
     }
 
@@ -214,7 +219,7 @@ public:
 
 using namespace Collections;
 
-SqlCollection::SqlCollection( SqlStorage* storage )
+SqlCollection::SqlCollection( QSharedPointer<SqlStorage> storage )
     : DatabaseCollection()
     , m_registry( 0 )
     , m_sqlStorage( storage )
@@ -234,23 +239,21 @@ SqlCollection::SqlCollection( SqlStorage* storage )
     {
         if( updater.schemaExists() ) // this is an update
         {
-            KDialog dialog( 0, Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint );
-            QLabel label( i18n( "Updating Amarok database schema. Please don't terminate "
-                "Amarok now as it may result in database corruption." ) );
-            label.setWordWrap( true );
-            dialog.setMainWidget( &label );
-            dialog.setCaption( i18n( "Updating Amarok database schema" ) );
-            dialog.setButtons( KDialog::None );
+            QMessageBox dialog;
+            dialog.setText( i18n( "Updating Amarok database schema. Please don't terminate "
+                                              "Amarok now as it may result in database corruption." ) );
+            dialog.setWindowTitle( i18n( "Updating Amarok database schema" ) );
+
             dialog.setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
             dialog.show();
             dialog.raise();
             // otherwise the splash screen doesn't load image and this dialog is not shown:
-            kapp->processEvents();
+            qApp->processEvents();
 
             updater.update();
 
             dialog.hide();
-            kapp->processEvents();
+            qApp->processEvents();
         }
         else // this is new schema creation
             updater.update();
@@ -268,21 +271,21 @@ SqlCollection::SqlCollection( SqlStorage* storage )
     m_scanManager = new SqlScanManager( this, this );
     m_scanProcessor = new SqlScanResultProcessor( m_scanManager, this, this );
     m_directoryWatcher = new SqlDirectoryWatcher( this );
-    connect( m_directoryWatcher, SIGNAL(done(ThreadWeaver::Job*)),
-             m_directoryWatcher, SLOT(deleteLater()) ); // auto delete
-    connect( m_directoryWatcher, SIGNAL(requestScan(QList<KUrl>,GenericScanManager::ScanType)),
-             m_scanManager,      SLOT(requestScan(QList<KUrl>,GenericScanManager::ScanType)) );
-    ThreadWeaver::Weaver::instance()->enqueue( m_directoryWatcher );
-
+    connect( m_directoryWatcher, &AbstractDirectoryWatcher::done,
+             m_directoryWatcher, &AbstractDirectoryWatcher::deleteLater ); // auto delete
+    connect( m_directoryWatcher, &AbstractDirectoryWatcher::requestScan,
+             m_scanManager, &GenericScanManager::requestScan );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_directoryWatcher) );
 }
 
 SqlCollection::~SqlCollection()
 {
+    DEBUG_BLOCK
+
     m_directoryWatcher->abort();
     delete m_scanProcessor; // this prevents any further commits from the scanner
     delete m_collectionLocationFactory;
     delete m_queryMakerFactory;
-    delete m_sqlStorage;
     delete m_registry;
 }
 
@@ -312,7 +315,7 @@ SqlCollection::registry() const
     return m_registry;
 }
 
-SqlStorage*
+QSharedPointer<SqlStorage>
 SqlCollection::sqlStorage() const
 {
     Q_ASSERT( m_sqlStorage );
@@ -320,27 +323,28 @@ SqlCollection::sqlStorage() const
 }
 
 bool
-SqlCollection::possiblyContainsTrack( const KUrl &url ) const
+SqlCollection::possiblyContainsTrack( const QUrl &url ) const
 {
     if( url.isLocalFile() )
     {
         foreach( const QString &folder, collectionFolders() )
         {
-            if( KUrl( folder ).isParentOf( url ) )
+            QUrl q = QUrl::fromLocalFile( folder );
+            if( q.isParentOf( url ) || q.matches( url , QUrl::StripTrailingSlash) )
                 return true;
         }
         return false;
     }
     else
-        return url.protocol() == uidUrlProtocol();
+        return url.scheme() == uidUrlProtocol();
 }
 
 Meta::TrackPtr
-SqlCollection::trackForUrl( const KUrl &url )
+SqlCollection::trackForUrl( const QUrl &url )
 {
-    if( url.protocol() == uidUrlProtocol() )
+    if( url.scheme() == uidUrlProtocol() )
         return m_registry->getTrackFromUid( url.url() );
-    else if( url.protocol() == "file" )
+    else if( url.scheme() == "file" )
         return m_registry->getTrack( url.path() );
     else
         return Meta::TrackPtr();
@@ -469,4 +473,3 @@ SqlCollectionTranscodeCapability::setSavedConfiguration( const Transcoding::Conf
     transcodeGroup.sync();
 }
 
-#include "SqlCollection.moc"

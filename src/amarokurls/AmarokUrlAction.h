@@ -31,7 +31,7 @@ public:
     AmarokUrlAction( const QIcon & icon, AmarokUrlPtr url, QObject * parent );
     AmarokUrlAction( AmarokUrlPtr url, QObject * parent );
 
-private slots:
+private Q_SLOTS:
     void run();
     
 private:

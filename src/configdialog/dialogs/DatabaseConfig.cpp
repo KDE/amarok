@@ -19,13 +19,14 @@
 #include <PluginManager.h>
 #include <core/support/Amarok.h>
 #include <core/support/Debug.h>
+#include "core/support/PluginFactory.h"
 
 #include <KConfigDialogManager>
 #include <KMessageBox>
 #include <KCMultiDialog>
 
 
-DatabaseConfig::DatabaseConfig( QWidget* parent, KConfigSkeleton *config )
+DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KConfigSkeleton *config )
     : ConfigDialogBase( parent )
     , m_configManager( new KConfigDialogManager( this, config ) )
 {
@@ -52,11 +53,11 @@ DatabaseConfig::DatabaseConfig( QWidget* parent, KConfigSkeleton *config )
     button_Test->setEnabled( testFunctionAvailable );
 
     // connect slots
-    connect( kcfg_UseServer, SIGNAL(stateChanged(int)), SLOT(toggleExternalConfigAvailable(int)) );
+    connect( kcfg_UseServer, &QCheckBox::stateChanged, this, &DatabaseConfig::toggleExternalConfigAvailable );
 
-    connect( kcfg_Database, SIGNAL(textChanged(QString)), SLOT(updateSQLQuery()) );
-    connect( kcfg_User,     SIGNAL(textChanged(QString)), SLOT(updateSQLQuery()) );
-    connect( button_Test,   SIGNAL(clicked(bool)),  SLOT(testDatabaseConnection()));
+    connect( kcfg_Database, &QLineEdit::textChanged, this, &DatabaseConfig::updateSQLQuery );
+    connect( kcfg_User,     &QLineEdit::textChanged, this, &DatabaseConfig::updateSQLQuery );
+    connect( button_Test,   &QAbstractButton::clicked,  this, &DatabaseConfig::testDatabaseConnection );
 
     toggleExternalConfigAvailable( kcfg_UseServer->checkState() );
 
@@ -171,6 +172,5 @@ DatabaseConfig::isSQLInfoPresent() const
 }
 
 
-#include "DatabaseConfig.moc"
 
 

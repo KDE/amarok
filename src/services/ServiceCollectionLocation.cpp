@@ -54,7 +54,7 @@ bool ServiceCollectionLocation::isOrganizable() const
 void
 ServiceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
-    QMap<Meta::TrackPtr, KUrl> urls;
+    QMap<Meta::TrackPtr, QUrl> urls;
     foreach( Meta::TrackPtr track, tracks )
     {
         Meta::ServiceTrack *servtrack = static_cast<Meta::ServiceTrack *>( track.data() );

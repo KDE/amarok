@@ -27,14 +27,13 @@
 #include "core/support/Debug.h"
 #include "scanner/GenericScannerJob.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
 
 #include <QFileInfo>
 #include <QSharedPointer>
 
 GenericScanManager::GenericScanManager( QObject *parent )
     : QObject( parent )
-    , m_scannerJob( 0 )
 {
     qRegisterMetaType<GenericScanManager::ScanType>( "GenericScanManager::ScanType" );
     qRegisterMetaType<QSharedPointer<CollectionScanner::Directory> >( "QSharedPointer<CollectionScanner::Directory>" );
@@ -60,7 +59,7 @@ GenericScanManager::getBatchFile( const QStringList& scanDirsRequested )
 }
 
 void
-GenericScanManager::requestScan( QList<KUrl> directories, ScanType type )
+GenericScanManager::requestScan( QList<QUrl> directories, ScanType type )
 {
     DEBUG_BLOCK;
 
@@ -73,7 +72,7 @@ GenericScanManager::requestScan( QList<KUrl> directories, ScanType type )
     }
 
     QSet<QString> scanDirsSet;
-    foreach( const KUrl &url, directories )
+    foreach( const QUrl &url, directories )
     {
         if( !url.isLocalFile() )
         {
@@ -81,7 +80,7 @@ GenericScanManager::requestScan( QList<KUrl> directories, ScanType type )
             continue;
         }
 
-        QString path = url.path( KUrl::RemoveTrailingSlash );
+        QString path = url.adjusted(QUrl::StripTrailingSlash).path();
         if( !QFileInfo( path ).isDir() )
         {
             warning() << "scan of a non-directory" << path << "requested, skipping it.";
@@ -96,9 +95,10 @@ GenericScanManager::requestScan( QList<KUrl> directories, ScanType type )
     if( scanDirsSet.isEmpty() && type == PartialUpdateScan )
         return; // nothing to do
 
-    m_scannerJob = new GenericScannerJob( this, scanDirsSet.toList(), type );
+    auto scannerJob = QSharedPointer<GenericScannerJob>( new GenericScannerJob( this, scanDirsSet.toList(), type ) );
+    m_scannerJob = scannerJob.toWeakRef();
     connectSignalsToJob();
-    ThreadWeaver::Weaver::instance()->enqueue( m_scannerJob );
+    ThreadWeaver::Queue::instance()->enqueue( scannerJob );
 }
 
 void
@@ -112,9 +112,10 @@ GenericScanManager::requestImport( QIODevice *input, ScanType type )
         return;
     }
 
-    m_scannerJob = new GenericScannerJob( this, input, type );
+    auto scannerJob = QSharedPointer<GenericScannerJob>( new GenericScannerJob( this, input, type ) );
+    m_scannerJob = scannerJob.toWeakRef();
     connectSignalsToJob();
-    ThreadWeaver::Weaver::instance()->enqueue( m_scannerJob );
+    ThreadWeaver::Queue::instance()->enqueue( scannerJob );
 }
 
 void
@@ -122,42 +123,26 @@ GenericScanManager::abort()
 {
     QMutexLocker locker( &m_mutex );
 
-    if( m_scannerJob )
-        m_scannerJob->abort();
-}
-
-void
-GenericScanManager::slotSucceeded()
-{
-    {
-        QMutexLocker locker( &m_mutex );
-        m_scannerJob = 0;
-    }
-    emit succeeded();
-}
-
-void
-GenericScanManager::slotFailed( const QString& message )
-{
-    {
-        QMutexLocker locker( &m_mutex );
-        m_scannerJob = 0;
-    }
-    emit failed( message );
+    auto scannerJob = m_scannerJob.toStrongRef();
+    if( scannerJob )
+        scannerJob->abort();
 }
 
 void
 GenericScanManager::connectSignalsToJob()
 {
+    auto scannerJob = m_scannerJob.data();
     // we used to have direct connections here, but that caused too much work being done
-    // int the non-main thread, even in code that wasn't thread-safe, which lead to
+    // in the non-main thread, even in code that wasn't thread-safe, which lead to
     // crashes (bug 319835) and other potential data races
-    connect( m_scannerJob, SIGNAL(started(GenericScanManager::ScanType)),
-             SIGNAL(started(GenericScanManager::ScanType)) );
-    connect( m_scannerJob, SIGNAL(directoryCount(int)), SIGNAL(directoryCount(int)) );
-    connect( m_scannerJob, SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)),
-             SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)) );
-
-    connect( m_scannerJob, SIGNAL(succeeded()), SLOT(slotSucceeded()) );
-    connect( m_scannerJob, SIGNAL(failed(QString)), SLOT(slotFailed(QString)) );
+    connect( scannerJob, QOverload<ScanType>::of(&GenericScannerJob::started),
+             this, &GenericScanManager::started );
+    connect( scannerJob, &GenericScannerJob::directoryCount,
+             this, &GenericScanManager::directoryCount);
+    connect( scannerJob, &GenericScannerJob::directoryScanned,
+             this, &GenericScanManager::directoryScanned );
+    connect( scannerJob, &GenericScannerJob::succeeded,
+             this, &GenericScanManager::succeeded );
+    connect( scannerJob, QOverload<QString>::of(&GenericScannerJob::failed),
+             this, &GenericScanManager::failed );
 }

@@ -19,16 +19,16 @@
 #ifndef AMAROK_EXPORT_H
 #define AMAROK_EXPORT_H
 
-/* needed for KDE_EXPORT and KDE_IMPORT macros */
-#include <kdemacros.h>
+/* needed for Q_DECL_EXPORT and Q_DECL_IMPORT macros */
+#include <QtCore/QtGlobal>
 
 #ifndef AMAROK_EXPORT
 # ifdef MAKE_AMAROKLIB_LIB
    /* We are building this library */
-#  define AMAROK_EXPORT KDE_EXPORT
+#  define AMAROK_EXPORT Q_DECL_EXPORT
 # else
    /* We are using this library */
-#  define AMAROK_EXPORT KDE_IMPORT
+#  define AMAROK_EXPORT Q_DECL_IMPORT
 # endif // MAKE_AMAROKLIB_LIB
 #endif // AMAROK_EXPORT
 

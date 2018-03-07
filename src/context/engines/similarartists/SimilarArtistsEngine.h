@@ -87,7 +87,7 @@ private:
      */
     QString m_artist;
 
-private slots:
+private Q_SLOTS:
     /**
      * Update similar artists for the current playing track.
      * Launch when the track played on amarok has changed.
@@ -101,7 +101,7 @@ private slots:
      * Parse the xml fetched on the lastFM API.
      * Launched when the download of the data are finished.
      */
-    void parseSimilarArtists( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void parseSimilarArtists( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 };
 
 #endif // SIMILARARTISTSENGINE_H

@@ -130,12 +130,12 @@ int KnowledgeBase::comments() const
 }
 
 
-void KnowledgeBase::setDetailPage(const KUrl &detailPage)
+void KnowledgeBase::setDetailPage(const QUrl &detailPage)
 {
     m_detailPage = detailPage;
 }
 
-KUrl KnowledgeBase::detailPage() const
+QUrl KnowledgeBase::detailPage() const
 {
     return m_detailPage;
 }

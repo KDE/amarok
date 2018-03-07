@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QIcon>
 
 class ScriptableServiceManager;
 
@@ -39,9 +40,9 @@ class ScriptableServiceManager : public QObject
     public:
         void removeRunningScript( const QString &name );
         ScriptableService * service( const QString &name );
-        
 
-    signals:
+
+    Q_SIGNALS:
         /**
          * Signal emitted whenever a new service is ready to be added
          * @param service The service to add
@@ -50,7 +51,7 @@ class ScriptableServiceManager : public QObject
 
         void serviceUpdated( ServiceBase * service );
 
-    public slots:
+    public Q_SLOTS:
 
         /**
          * Initialzises a new service. This method is exported to DBUS

@@ -24,7 +24,7 @@
 #include "core/support/Debug.h"
 #include "SvgHandler.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QAbstractListModel>
 
@@ -182,4 +182,3 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
     return false;
 }
 
-#include "UserPlaylistModel.moc"

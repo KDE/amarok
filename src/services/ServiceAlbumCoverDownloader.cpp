@@ -119,9 +119,9 @@ ServiceAlbumWithCover::imageDownloadCanceled() const
 ///////////////////////////////////////////////////////////////////////////////
 
 ServiceAlbumCoverDownloader::ServiceAlbumCoverDownloader()
-    : m_albumDownloadJob( 0 )
+    : m_albumDownloadJob( )
 {
-    m_tempDir = new KTempDir();
+    m_tempDir = new QTemporaryDir();
     m_tempDir->setAutoRemove( true );
 }
 
@@ -135,16 +135,15 @@ ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCoverPtr album )
 {
     m_album = album;
 
-    KUrl downloadUrl( album->coverUrl() );
+    QUrl downloadUrl( album->coverUrl() );
 
-    m_coverDownloadPath = m_tempDir->name() + downloadUrl.fileName();
+    m_coverDownloadPath = m_tempDir->path() + '/' + downloadUrl.fileName();
 
     debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_coverDownloadPath;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_coverDownloadPath ), -1, KIO::Overwrite | KIO::HideProgressInfo );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, QUrl::fromLocalFile( m_coverDownloadPath ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
-    connect( m_albumDownloadJob, SIGNAL(result(KJob*)), SLOT(coverDownloadComplete(KJob*)) );
-    connect( m_albumDownloadJob, SIGNAL(canceled(KJob*)), SLOT(coverDownloadCanceled(KJob*)) );
+    connect( m_albumDownloadJob, &KJob::result, this, &ServiceAlbumCoverDownloader::coverDownloadComplete );
 }
 
 void
@@ -156,17 +155,17 @@ ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
         return;
     }
 
-    if( !downloadJob || downloadJob->error() != 0 )
+    if ( downloadJob != m_albumDownloadJob )
+        return; //not the right job, so let's ignore it
+
+    if( !downloadJob || downloadJob->error() )
     {
         debug() << "Download Job failed!";
 
         //we could not download, so inform album
-        m_album->imageDownloadCanceled();
+        coverDownloadCanceled( downloadJob );
         return;
     }
-
-    if ( downloadJob != m_albumDownloadJob )
-        return; //not the right job, so let's ignore it
 
     const QImage cover = QImage( m_coverDownloadPath );
     if ( cover.isNull() )
@@ -198,5 +197,4 @@ ServiceAlbumCoverDownloader::coverDownloadCanceled( KJob *downloadJob )
     deleteLater();
 }
 
-#include "ServiceAlbumCoverDownloader.moc"
 

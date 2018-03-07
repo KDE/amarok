@@ -20,6 +20,7 @@
 #include "MainWindow.h"
 #include "ProviderFactory.h"
 #include "amarokconfig.h"
+#include "core/collections/Collection.h"
 #include "core/interfaces/Logger.h"
 #include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
@@ -51,33 +52,32 @@ Controller::Controller( QObject* parent )
     qRegisterMetaType<ScrobblingServicePtr>();
 
     m_startSyncingTimer->setSingleShot( true );
-    connect( m_startSyncingTimer, SIGNAL(timeout()), SLOT(startNonInteractiveSynchronization()) );
+    connect( m_startSyncingTimer, &QTimer::timeout, this, &Controller::startNonInteractiveSynchronization );
     CollectionManager *manager = CollectionManager::instance();
     Q_ASSERT( manager );
-    connect( manager, SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)),
-             SLOT(slotCollectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)) );
-    connect( manager, SIGNAL(collectionRemoved(QString)), SLOT(slotCollectionRemoved(QString)) );
+    connect( manager, &CollectionManager::collectionAdded, this, &Controller::slotCollectionAdded );
+    connect( manager, &CollectionManager::collectionRemoved, this, &Controller::slotCollectionRemoved );
     delayedStartSynchronization();
 
     EngineController *engine = Amarok::Components::engineController();
     Q_ASSERT( engine );
-    connect( engine, SIGNAL(trackFinishedPlaying(Meta::TrackPtr,double)),
-             SLOT(slotTrackFinishedPlaying(Meta::TrackPtr,double)) );
+    connect( engine, &EngineController::trackFinishedPlaying,
+             this, &Controller::slotTrackFinishedPlaying );
 
     m_updateNowPlayingTimer->setSingleShot( true );
     m_updateNowPlayingTimer->setInterval( 10000 ); // wait 10s before updating
     // We connect the signals to (re)starting the timer to postpone the submission a
     // little to prevent frequent updates of rapidly - changing metadata
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
-             m_updateNowPlayingTimer, SLOT(start()) );
+    connect( engine, &EngineController::trackChanged,
+             m_updateNowPlayingTimer, QOverload<>::of(&QTimer::start) );
     // following is needed for streams that don't emit newTrackPlaying on song change
-    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
-             m_updateNowPlayingTimer, SLOT(start()) );
-    connect( m_updateNowPlayingTimer, SIGNAL(timeout()),
-             SLOT(slotUpdateNowPlayingWithCurrentTrack()) );
+    connect( engine, &EngineController::trackMetadataChanged,
+             m_updateNowPlayingTimer, QOverload<>::of(&QTimer::start) );
+    connect( m_updateNowPlayingTimer, &QTimer::timeout,
+             this, &Controller::slotUpdateNowPlayingWithCurrentTrack );
     // we need to reset m_lastSubmittedNowPlayingTrack when a track is played twice
-    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
-             SLOT(slotResetLastSubmittedNowPlayingTrack()) );
+    connect( engine, &EngineController::trackPlaying,
+             this, &Controller::slotResetLastSubmittedNowPlayingTrack );
 }
 
 Controller::~Controller()
@@ -130,7 +130,7 @@ Controller::registerProvider( const ProviderPtr &provider )
         m_config->save();
     }
     m_providers.append( provider );
-    connect( provider.data(), SIGNAL(updated()), SLOT(slotProviderUpdated()) );
+    connect( provider.data(), &StatSyncing::Provider::updated, this, &Controller::slotProviderUpdated );
     if( enabled )
         delayedStartSynchronization();
 }
@@ -188,9 +188,10 @@ Controller::providerConfigDialog( const QString &id ) const
             = new ConfigureProviderDialog( id, provider->configWidget(),
                                            The::mainWindow() );
 
-    connect( dialog, SIGNAL(providerConfigured(QString,QVariantMap)),
-             SLOT(reconfigureProvider(QString,QVariantMap)) );
-    connect( dialog, SIGNAL(finished()), dialog, SLOT(deleteLater()) );
+    connect( dialog, &StatSyncing::ConfigureProviderDialog::providerConfigured,
+             this, &Controller::reconfigureProvider );
+    connect( dialog, &StatSyncing::ConfigureProviderDialog::finished,
+             dialog, &StatSyncing::ConfigureProviderDialog::deleteLater );
 
     return dialog;
 }
@@ -203,9 +204,10 @@ Controller::providerCreationDialog() const
         dialog->addProviderType( factory->type(), factory->prettyName(),
                                  factory->icon(), factory->createConfigWidget() );
 
-    connect( dialog, SIGNAL(providerConfigured(QString,QVariantMap)),
-             SLOT(createProvider(QString,QVariantMap)) );
-    connect( dialog, SIGNAL(finished()), dialog, SLOT(deleteLater()) );
+    connect( dialog, &StatSyncing::CreateProviderDialog::providerConfigured,
+             this, &Controller::createProvider );
+    connect( dialog, &StatSyncing::CreateProviderDialog::finished,
+             dialog, &StatSyncing::CreateProviderDialog::deleteLater );
 
     return dialog;
 }
@@ -257,7 +259,7 @@ Controller::config()
 void
 Controller::synchronize()
 {
-    synchronize( Process::Interactive );
+    synchronizeWithMode( Process::Interactive );
 }
 
 void
@@ -301,8 +303,8 @@ Controller::delayedStartSynchronization()
         // for now
         CollectionManager *manager = CollectionManager::instance();
         Q_ASSERT( manager );
-        connect( manager, SIGNAL(collectionDataChanged(Collections::Collection*)),
-                 SLOT(delayedStartSynchronization()) );
+        connect( manager, &CollectionManager::collectionDataChanged,
+                 this, &Controller::delayedStartSynchronization );
     }
 }
 
@@ -331,18 +333,18 @@ Controller::startNonInteractiveSynchronization()
 {
     CollectionManager *manager = CollectionManager::instance();
     Q_ASSERT( manager );
-    disconnect( manager, SIGNAL(collectionDataChanged(Collections::Collection*)),
-                this, SLOT(delayedStartSynchronization()) );
-    synchronize( Process::NonInteractive );
+    disconnect( manager, &CollectionManager::collectionDataChanged,
+                this, &Controller::delayedStartSynchronization );
+    synchronizeWithMode( Process::NonInteractive );
 }
 
-void Controller::synchronize( int intMode )
+void Controller::synchronizeWithMode( int intMode )
 {
     Process::Mode mode = Process::Mode( intMode );
     if( m_currentProcess )
     {
         if( mode == StatSyncing::Process::Interactive )
-            m_currentProcess.data()->raise();
+            m_currentProcess->raise();
         return;
     }
 
@@ -381,7 +383,7 @@ void Controller::synchronize( int intMode )
     }
 
     m_currentProcess = new Process( m_providers, checkedProviders, fields, mode, this );
-    m_currentProcess.data()->start();
+    m_currentProcess->start();
 }
 
 void
@@ -427,7 +429,7 @@ Controller::findRegisteredProvider( const QString &id ) const
         if( provider->id() == id )
             return provider;
 
-    return ProviderPtr( 0 );
+    return ProviderPtr();
 }
 
 bool

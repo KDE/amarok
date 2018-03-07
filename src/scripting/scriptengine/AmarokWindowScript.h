@@ -19,14 +19,15 @@
 #define AMAROK_WINDOW_SCRIPT_H
 
 #include <QFont>
+#include <QMap>
 #include <QMetaType>
 #include <QObject>
 #include <QPalette>
 #include <QString>
-#include <QWeakPointer>
+#include <QPointer>
 
 class EventFilter;
-class KMenu;
+class QMenu;
 class QMainWindow;
 class QMenu;
 class QScriptEngine;
@@ -52,11 +53,12 @@ namespace AmarokScript
         public:
             AmarokWindowScript( AmarokScriptEngine* scriptEngine );
 
-            Q_INVOKABLE void addToolsMenu( QMenu *menu );
-            Q_INVOKABLE void addSettingsMenu( QMenu *menu );
-            Q_INVOKABLE bool addToolsMenu( QString id, QString menuTitle, QString icon = "amarok" );
+            Q_INVOKABLE void addToolsMenu( const QString &name );
+            Q_INVOKABLE void addSettingsMenu( const QString &name );
+            Q_INVOKABLE bool addToolsAction( QString id, QString actionName, QString icon = "amarok" );
             Q_INVOKABLE void addToolsSeparator();
-            Q_INVOKABLE bool addSettingsMenu( QString id, QString menuTitle, QString icon = "amarok" );
+            Q_INVOKABLE bool addSettingsAction( QString id, QString actionName, QString icon = "amarok" );
+            Q_INVOKABLE bool addCustomAction( QString menuName, QString id, QString actionName, QString icon = "amarok" );
             Q_INVOKABLE void addSettingsSeparator();
             Q_INVOKABLE void showTrayIcon( bool show );
 
@@ -70,7 +72,7 @@ namespace AmarokScript
              */
             Q_INVOKABLE void showToolTip();
 
-        signals:
+        Q_SIGNALS:
             void prepareToQuit();
             void newPalette( QPalette );
 
@@ -80,13 +82,13 @@ namespace AmarokScript
               *
               * @param menu the menu to which the action will be added
               * @param id the ID of the action
-              * @param menuTitle the title of the action
+              * @param actionName the title of the action
               * @param menuProperty the name of the menu property for the script engine
               * @param icon the icon for the action
               *
               * @return true if adding the action was successful, false otherwise
               */
-            bool addMenuAction( QWeakPointer<KMenu> menu, QString id, QString menuTitle, QString menuProperty, QString icon );
+            bool addMenuAction( QMenu *menu, QString id, QString actionName, QString menuProperty, QString icon );
 
             QString activeBrowserName();
             bool isTrayIconShown();
@@ -98,8 +100,9 @@ namespace AmarokScript
             QPalette palette() const;
             void setPalette( const QPalette & palette );
 
-            QWeakPointer<KMenu> m_toolsMenu;
-            QWeakPointer<KMenu> m_settingsMenu;
+            QMap<QString, QMenu*> m_customMenus;
+            QPointer<QMenu> m_toolsMenu;
+            QPointer<QMenu> m_settingsMenu;
             AmarokScriptEngine*   m_scriptEngine;
     };
 }

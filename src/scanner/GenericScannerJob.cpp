@@ -29,11 +29,11 @@
 #include "core/support/Debug.h"
 #include "collectionscanner/ScanningState.h"
 
-#include <KStandardDirs>
 #include <KProcess>
 
 #include <QFile>
 #include <QSharedMemory>
+#include <QStandardPaths>
 #include <QUuid>
 
 static const int MAX_RESTARTS = 40;
@@ -43,7 +43,8 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
                                       QStringList scanDirsRequested,
                                       GenericScanManager::ScanType type,
                                       bool recursive, bool detectCharset )
-    : ThreadWeaver::Job( 0 )
+    : QObject()
+    , ThreadWeaver::Job( )
     , m_manager( manager )
     , m_type( type )
     , m_scanDirsRequested( scanDirsRequested )
@@ -55,14 +56,13 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_recursive( recursive )
     , m_charsetDetect( detectCharset )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)),
-             this, SLOT(deleteLater()) ); // auto delete
 }
 
 GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
                                       QIODevice *input,
                                       GenericScanManager::ScanType type )
-    : ThreadWeaver::Job( 0 )
+    : QObject()
+    , ThreadWeaver::Job( )
     , m_manager( manager )
     , m_type( type )
     , m_input( input )
@@ -73,8 +73,6 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_recursive( true )
     , m_charsetDetect( false )
 {
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)),
-             this, SLOT(deleteLater()) ); // auto delete
 }
 
 
@@ -88,8 +86,10 @@ GenericScannerJob::~GenericScannerJob()
 }
 
 void
-GenericScannerJob::run()
+GenericScannerJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     // -- initialize the input
     // - from io device
     if( m_input )
@@ -158,6 +158,23 @@ GenericScannerJob::run()
 }
 
 void
+GenericScannerJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+GenericScannerJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
+void
 GenericScannerJob::abort()
 {
     QMutexLocker locker( &m_mutex );
@@ -172,16 +189,17 @@ GenericScannerJob::scannerPath()
     QString path;
     if( overridePath.isEmpty() ) // Not running a test
     {
-        path = KStandardDirs::locate( "exe", "amarokcollectionscanner" );
+        path = QStandardPaths::findExecutable( "amarokcollectionscanner" );
 
+        // TODO: Not sure this is still useful...
         // If the binary is not in $PATH, then search in the application folder too
         if( path.isEmpty() )
-            path = App::applicationDirPath() + QDir::separator() + "amarokcollectionscanner";
+            path = App::applicationDirPath() + "/amarokcollectionscanner";
     }
     else
     {
         // Running a test, use the path + append collectionscanner
-        path = overridePath + QDir::separator() + "collectionscanner" + QDir::separator() + "amarokcollectionscanner";
+        path = overridePath + "/collectionscanner/amarokcollectionscanner";
     }
 
     if( !QFile::exists( path ) )
@@ -352,6 +370,7 @@ GenericScannerJob::parseScannerOutput()
             else if( name == "directory" )
             {
                 QSharedPointer<CollectionScanner::Directory> dir( new CollectionScanner::Directory( &m_reader ) );
+
                 emit directoryScanned( dir );
             }
             else
@@ -403,4 +422,3 @@ GenericScannerJob::getScannerOutput()
 
 }
 
-#include "GenericScannerJob.moc"

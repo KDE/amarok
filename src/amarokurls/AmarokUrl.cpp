@@ -23,6 +23,7 @@
 #include <core/storage/SqlStorage.h>
 
 #include <QUrl>
+#include <QUrlQuery>
 
 AmarokUrl::AmarokUrl()
     : m_id( -1 )
@@ -87,7 +88,6 @@ void AmarokUrl::initFromString( const QString & urlString )
     m_path = parts.join( "/" );
 
     m_path = unescape( m_path );
-
 }
 
 void AmarokUrl::setCommand( const QString & command )
@@ -127,11 +127,13 @@ QString AmarokUrl::url() const
     QUrl url;
     url.setScheme( "amarok" );
     url.setHost( m_command );
-    url.setPath( m_path );
+    url.setPath( '/' + m_path ); // the path must begin by /
+    QUrlQuery query;
 
     foreach( const QString &argName, m_arguments.keys() )
-        url.addQueryItem( argName, m_arguments[argName] );
+        query.addQueryItem( argName, m_arguments[argName] );
 
+    url.setQuery( query );
     return url.toEncoded();
 }
 
@@ -144,7 +146,7 @@ bool AmarokUrl::saveToDb()
 
     const int parentId = m_parent ? m_parent->id() : -1;
 
-    SqlStorage * sql =  StorageManager::instance()->sqlStorage();
+    auto sql =  StorageManager::instance()->sqlStorage();
 
     if( m_id != -1 )
     {

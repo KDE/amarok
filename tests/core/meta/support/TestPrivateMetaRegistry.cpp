@@ -15,16 +15,16 @@
 
 #include "TestPrivateMetaRegistry.h"
 
+#include "amarokconfig.h"
 #include "config-amarok-test.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/PrivateMetaRegistry.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <qtest_kde.h>
 
 using namespace Meta;
 
-QTEST_KDEMAIN_CORE( TestPrivateMetaRegistry )
+QTEST_MAIN( TestPrivateMetaRegistry )
 
 TestPrivateMetaRegistry::~TestPrivateMetaRegistry()
 {
@@ -33,11 +33,13 @@ TestPrivateMetaRegistry::~TestPrivateMetaRegistry()
 void
 TestPrivateMetaRegistry::initTestCase()
 {
-    m_track1 = CollectionManager::instance()->trackForUrl( datapath( "data/audio/album/Track01.ogg" ) );
-    m_track2 = CollectionManager::instance()->trackForUrl( datapath( "data/audio/album/Track02.ogg" ) );
-    m_track3 = CollectionManager::instance()->trackForUrl( datapath( "data/audio/Platz 01.mp3" ) );
-    m_track4 = CollectionManager::instance()->trackForUrl( datapath( "data/audio/Platz 02.mp3" ) );
-    m_track5 = CollectionManager::instance()->trackForUrl( datapath( "data/audio/Platz 03.mp3" ) );
+    AmarokConfig::instance("amarokrc");
+
+    m_track1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/album/Track01.ogg" )) );
+    m_track2 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/album/Track02.ogg" )) );
+    m_track3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/Platz 01.mp3" )) );
+    m_track4 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/Platz 02.mp3" )) );
+    m_track5 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(datapath( "data/audio/Platz 03.mp3" )) );
 }
 
 QString

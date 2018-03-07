@@ -42,7 +42,7 @@ namespace Meta
             QStringList sources() const;
             void setSource( int source );
             int current() const;
-            KUrl nextUrl() const;
+            QUrl nextUrl() const;
 
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type );
@@ -51,8 +51,8 @@ namespace Meta
 #define FORWARD( Type, method, default ) Type method() const { return m_currentTrack ? m_currentTrack->method() : default; }
             FORWARD( QString, name, QString() )
             FORWARD( QString, prettyName, QString() )
-            FORWARD( KUrl, playableUrl, KUrl() )
-            FORWARD( QString, prettyUrl, m_playlist->uidUrl().prettyUrl() )
+            FORWARD( QUrl, playableUrl, QUrl() )
+            FORWARD( QString, prettyUrl, m_playlist->uidUrl().toDisplayString() )
             // TODO: change to m_playlist->uidUrl() unconditionally once playlist restorer can cope with it:
             FORWARD( QString, uidUrl, m_playlist->uidUrl().url() )
             FORWARD( QString, notPlayableReason, i18nc( "Reason why a track is not playable",
@@ -78,8 +78,8 @@ namespace Meta
             void prepareToPlay();
             virtual StatisticsPtr statistics();
 
-        signals:
-            void urlChanged( const KUrl &url );
+        Q_SIGNALS:
+            void urlChanged( const QUrl &url );
 
         private:
             using Observer::metadataChanged;

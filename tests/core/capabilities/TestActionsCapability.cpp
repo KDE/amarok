@@ -17,9 +17,8 @@
 
 #include <core/capabilities/ActionsCapability.h>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestActionsCapability )
+QTEST_MAIN( TestActionsCapability )
 
 TestActionsCapability::TestActionsCapability()
 {
@@ -54,4 +53,3 @@ TestActionsCapability::testCapabilityInterfaceType()
     QVERIFY( actions_capability->capabilityInterfaceType() == Capabilities::Capability::Actions );
 }
 
-#include "TestActionsCapability.moc"

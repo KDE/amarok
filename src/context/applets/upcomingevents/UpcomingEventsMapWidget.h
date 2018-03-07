@@ -44,7 +44,7 @@ public:
 
     void clear();
 
-public slots:
+public Q_SLOTS:
     void addEvent( const LastFmEventPtr &event );
     void removeEvent( const LastFmEventPtr &event );
     void addEventsListWidget( UpcomingEventsListWidget *widget );

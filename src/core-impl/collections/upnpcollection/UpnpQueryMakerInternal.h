@@ -22,7 +22,7 @@
 
 #include <QObject>
 
-#include <KUrl>
+#include <QUrl>
 #include <kio/udsentry.h>
 
 #include "core/collections/QueryMaker.h"
@@ -45,18 +45,18 @@ class UpnpQueryMakerInternal : public QObject
         ~UpnpQueryMakerInternal();
         void setQueryType( Collections::QueryMaker::QueryType type ) { m_queryType = type; }
         void reset();
-        void runQuery( KUrl query, bool filter=true );
+        void runQuery( QUrl query, bool filter=true );
 
-    signals:
+    Q_SIGNALS:
         void results( bool error, const KIO::UDSEntryList list );
         void done();
 
-        void newResultReady( Meta::TrackList );
-        void newResultReady( Meta::ArtistList );
-        void newResultReady( Meta::AlbumList );
-        void newResultReady( Meta::GenreList );
+        void newTracksReady( Meta::TrackList );
+        void newArtistsReady( Meta::ArtistList );
+        void newAlbumsReady( Meta::AlbumList );
+        void newGenresReady( Meta::GenreList );
         void newResultReady( const KIO::UDSEntryList & );
-    private slots:
+    private Q_SLOTS:
         void slotEntries( KIO::Job *, const KIO::UDSEntryList & );
         void slotDone( KJob * );
         void slotStatDone( KJob * );

@@ -20,7 +20,7 @@
 #include "amarok_export.h"
 #include "core/support/PluginFactory.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QString>
 #include <QVariantMap>
@@ -28,7 +28,7 @@
 namespace StatSyncing
 {
     class Provider;
-    typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
+    typedef QSharedPointer<Provider> ProviderPtr;
     class ProviderConfigWidget;
 
     /**
@@ -39,7 +39,7 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
-            ProviderFactory( QObject *parent, const QVariantList &args );
+            ProviderFactory();
             virtual ~ProviderFactory();
 
             /**
@@ -65,7 +65,7 @@ namespace StatSyncing
              * displayed in the provider creation dialog, and is the default icon
              * of created providers.
              */
-            virtual KIcon icon() const = 0;
+            virtual QIcon icon() const = 0;
 
             /**
              * New instance of configuration widget for the provider. Please note that

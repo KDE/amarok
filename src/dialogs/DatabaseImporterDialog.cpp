@@ -21,14 +21,16 @@
 #include "databaseimporter/SqlBatchImporter.h"
 #include "databaseimporter/SqlBatchImporterConfig.h"
 
-#include <KLocale>
 #include <KPageWidgetItem>
-#include <KVBox>
+#include <KLocalizedString>
 
+#include <QBoxLayout>
 #include <QButtonGroup>
+#include <QDialog>
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QRadioButton>
+#include <QStyle>
 
 DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     : KAssistantDialog( parent )
@@ -36,31 +38,29 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     , m_importerConfig( 0 )
 {
     setAttribute( Qt::WA_DeleteOnClose );
-    setCaption( i18n( "Import Collection" ) );
+    QWidget::setWindowTitle( i18n( "Import Collection" ) );
 
-    KVBox *importerBox = new KVBox( this );
-    importerBox->setSpacing( KDialog::spacingHint() );
+    BoxWidget *importerBox = new BoxWidget( true, this );
+    importerBox->layout()->setSpacing( style()->layoutSpacing( QSizePolicy::DefaultType, QSizePolicy::DefaultType, Qt::Vertical ) );
 
-    m_configBox = new KVBox( this );
-    m_configBox->setSpacing( KDialog::spacingHint() );
+    m_configBox = new BoxWidget( true, this );
+    m_configBox->layout()->setSpacing( style()->layoutSpacing( QSizePolicy::DefaultType, QSizePolicy::DefaultType, Qt::Vertical ) );
 
     m_configPage = addPage( m_configBox, i18n("Import configuration") );
 
     m_importer = new SqlBatchImporter( this );
-    connect( m_importer, SIGNAL(importSucceeded()), this, SLOT(importSucceeded()) );
-    connect( m_importer, SIGNAL(importFailed()), this, SLOT(importFailed()) );
-    connect( m_importer, SIGNAL(trackAdded(Meta::TrackPtr)), this, SLOT(importedTrack(Meta::TrackPtr)) );
-    connect( m_importer, SIGNAL(trackDiscarded(QString)), this, SLOT(discardedTrack(QString)) );
-    connect( m_importer, SIGNAL(trackMatchFound(Meta::TrackPtr,QString)),
-             this, SLOT(matchedTrack(Meta::TrackPtr,QString)) );
-    connect( m_importer, SIGNAL(trackMatchMultiple(Meta::TrackList,QString)),
-             this, SLOT(ambigousTrack(Meta::TrackList,QString)) );
-    connect( m_importer, SIGNAL(importError(QString)), this, SLOT(importError(QString)) );
-    connect( m_importer, SIGNAL(showMessage(QString)), this, SLOT(showMessage(QString)) );
+    connect( m_importer, &SqlBatchImporter::importSucceeded, this, &DatabaseImporterDialog::importSucceeded );
+    connect( m_importer, &SqlBatchImporter::importFailed, this, &DatabaseImporterDialog::importFailed );
+    connect( m_importer, &SqlBatchImporter::trackAdded, this, &DatabaseImporterDialog::importedTrack );
+    connect( m_importer, &SqlBatchImporter::trackDiscarded, this, &DatabaseImporterDialog::discardedTrack );
+    connect( m_importer, &SqlBatchImporter::trackMatchFound, this, &DatabaseImporterDialog::matchedTrack );
+    connect( m_importer, &SqlBatchImporter::trackMatchMultiple, this, &DatabaseImporterDialog::ambigousTrack );
+    connect( m_importer, &SqlBatchImporter::importError, this, &DatabaseImporterDialog::importError );
+    connect( m_importer, &SqlBatchImporter::showMessage, this, &DatabaseImporterDialog::showMessage );
     m_importerConfig = m_importer->configWidget( m_configBox );
 
-    KVBox *resultBox = new KVBox( this );
-    resultBox->setSpacing( KDialog::spacingHint() );
+    BoxWidget *resultBox = new BoxWidget( true, this );
+    resultBox->layout()->setSpacing( style()->layoutSpacing( QSizePolicy::DefaultType, QSizePolicy::DefaultType, Qt::Vertical ) );
 
     m_results = new QPlainTextEdit( resultBox );
     m_results->setReadOnly( true );
@@ -68,7 +68,7 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
 
     m_resultsPage = addPage( resultBox, i18n("Migrating") );
 
-    connect( this, SIGNAL(currentPageChanged(KPageWidgetItem*,KPageWidgetItem*)), SLOT(pageChanged(KPageWidgetItem*,KPageWidgetItem*)) );
+    connect( this, &DatabaseImporterDialog::currentPageChanged, this, &DatabaseImporterDialog::pageChanged );
 }
 
 DatabaseImporterDialog::~DatabaseImporterDialog()
@@ -86,7 +86,8 @@ DatabaseImporterDialog::pageChanged( KPageWidgetItem *current, KPageWidgetItem *
         if( m_importer && !m_importer->importing() )
             m_importer->startImporting();
 
-        enableButton( KDialog::User1, false );
+        QPushButton* user1Button = new QPushButton();
+        user1Button->setEnabled( false );
         return;
     }
 }
@@ -104,7 +105,8 @@ DatabaseImporterDialog::importSucceeded()
 
     m_results->appendHtml( text );
 
-    enableButton( KDialog::User1, true );
+    QPushButton* user1Button = new QPushButton();
+    user1Button->setEnabled( true );
 }
 
 void
@@ -113,7 +115,9 @@ DatabaseImporterDialog::importFailed()
     QString text = i18n( "<b><font color='red'>Failed:</font></b> Unable to import statistics" );
     m_results->appendHtml( text );
 
-    enableButton( KDialog::User1, true );
+    QPushButton* user1Button = new QPushButton();
+    user1Button->setEnabled( true );
+
 }
 
 void
@@ -192,5 +196,4 @@ void DatabaseImporterDialog::ambigousTrack( Meta::TrackList tracks, QString oldU
     m_results->appendHtml( text );
 }
 
-#include "DatabaseImporterDialog.moc"
 

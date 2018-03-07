@@ -17,10 +17,11 @@
 #ifndef TESTSQLQUERYMAKER_H
 #define TESTSQLQUERYMAKER_H
 
-#include <QtTest/QTest>
+#include <QSharedPointer>
+#include <QTest>
 #include <core/collections/QueryMaker.h>
 
-#include <KTempDir>
+#include <QTemporaryDir>
 
 class MySqlEmbeddedStorage;
 class SqlMountPointManagerMock;
@@ -36,7 +37,7 @@ class TestSqlQueryMaker : public QObject
 public:
     TestSqlQueryMaker();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -95,8 +96,8 @@ private:
 
     Collections::SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpm;
-    MySqlEmbeddedStorage *m_storage;
-    KTempDir *m_tmpDir;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
+    QTemporaryDir *m_tmpDir;
 };
 
 #endif // TESTSQLQUERYMAKER_H

@@ -17,12 +17,13 @@
 #include "OpmlWriter.h"
 #include "core/support/Debug.h"
 
-#include <KUrl>
+#include <QUrl>
 
 OpmlWriter::OpmlWriter( const QList<OpmlOutline *> rootOutlines,
                         const QMap<QString,QString> headerData,
                         QIODevice *device )
-    : ThreadWeaver::Job()
+    : QObject()
+    , ThreadWeaver::Job()
     , m_rootOutlines( rootOutlines )
     , m_headerData( headerData )
 {
@@ -30,8 +31,10 @@ OpmlWriter::OpmlWriter( const QList<OpmlOutline *> rootOutlines,
 }
 
 void
-OpmlWriter::run()
+OpmlWriter::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
 #define _x m_xmlWriter
     _x->setAutoFormatting( true );
     _x->writeStartDocument();
@@ -50,6 +53,23 @@ OpmlWriter::run()
         writeOutline( childOutline );
     _x->writeEndDocument(); //implicitly closes all open tags (opml & body)
     emit result( 0 );
+}
+
+void
+OpmlWriter::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+OpmlWriter::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void

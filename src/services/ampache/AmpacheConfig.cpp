@@ -16,10 +16,8 @@
  
 #include "AmpacheConfig.h"
 
-#include <KConfig>
-#include <KConfigGroup>
-#include <kdebug.h>
-#include <KGlobal>
+#include "core/support/Amarok.h"
+
 
 AmpacheConfig::AmpacheConfig()
 {
@@ -29,7 +27,7 @@ AmpacheConfig::AmpacheConfig()
 void
 AmpacheConfig::load()
 {
-    KConfigGroup config = KGlobal::config()->group( "Service_Ampache" );
+    KConfigGroup config = Amarok::config( "Service_Ampache" );
 
     int serverIndex = 0;
     QString serverEntry = "server" + QString::number( serverIndex );
@@ -42,7 +40,7 @@ AmpacheConfig::load()
 
         AmpacheServerEntry entry;
         entry.name = list.takeFirst();
-        entry.url = list.takeFirst();
+        entry.url = QUrl( list.takeFirst() );
         entry.username = list.takeFirst();
         entry.password = list.takeFirst();
         entry.addToCollection = false; //FIXME
@@ -58,16 +56,14 @@ void
 AmpacheConfig::save()
 {
     //delete all entries to make sure the indexes are correct
-    KConfigGroup config = KGlobal::config()->group( "Service_Ampache" );
-
-    kDebug( 14310 ) << "saving to config file " << KGlobal::config()->name() ;
+    KConfigGroup config = Amarok::config( "Service_Ampache" );
 
     int serverIndex = 0;
     QString serverEntry = "server" + QString::number( serverIndex );
 
     while ( config.hasKey ( serverEntry ) )
     {
-        kDebug( 14310 ) << "deleting " << serverEntry;
+//         kDebug( 14310 ) << "deleting " << serverEntry;
         config.deleteEntry( serverEntry );
         serverIndex++;
         serverEntry = "server" + QString::number( serverIndex );
@@ -79,12 +75,12 @@ AmpacheConfig::save()
         QStringList list;
 
         list << entry.name;
-        list << entry.url;
+        list << entry.url.url();
         list << entry.username;
         list << entry.password;
 
         serverEntry = "server" + QString::number( i );
-        kDebug( 14310 ) << "adding " << serverEntry;
+//         kDebug( 14310 ) << "adding " << serverEntry;
         config.writeEntry( serverEntry, list );
     }
 }

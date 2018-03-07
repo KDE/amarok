@@ -50,9 +50,10 @@ class ThreadInitializer
 
         countMutex.lock();
         threadsCount++;
-        countMutex.unlock();
 
-        debug() << "Initialized thread, count==" << threadsCount;
+        debug() << "Initialized thread, count ==" << threadsCount;
+
+        countMutex.unlock();
     }
 
 public:
@@ -65,12 +66,13 @@ public:
 
         countMutex.lock();
         threadsCount--;
-        countMutex.unlock();
 
-        debug() << "Deinitialized thread, count==" << threadsCount;
+        debug() << "Deinitialized thread, count ==" << threadsCount;
 
         if( threadsCount == 0 )
             mysql_library_end();
+
+        countMutex.unlock();
     }
 
     static void init()

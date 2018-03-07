@@ -30,14 +30,14 @@
 #include "mocks/MockArtist.h"
 
 #include <QMap>
+#include <QTest>
 
-#include <qtest_kde.h>
 #include <gmock/gmock.h>
 
 using ::testing::Return;
 using ::testing::AnyNumber;
 
-QTEST_KDEMAIN_CORE( TestTrackOrganizer )
+QTEST_GUILESS_MAIN( TestTrackOrganizer )
 
 namespace Collections {
 
@@ -68,7 +68,7 @@ void TestTrackOrganizer::cleanup()
 
 void TestTrackOrganizer::testBasic()
 {
-  
+
   mTracks = makeTracks( 10 );
   mTrackOrganizer = new TrackOrganizer( mTracks, this );
   QString folder = "/home/user/Music" ;
@@ -76,7 +76,7 @@ void TestTrackOrganizer::testBasic()
   mTrackOrganizer->setFolderPrefix( folder );
   QMap <Meta::TrackPtr, QString > dests = mTrackOrganizer->getDestinations();
   QVERIFY( dests.size() == 10 );
-  
+
   foreach( Meta::TrackPtr track, mTracks )
   {
     QVERIFY( dests.contains( track ) );
@@ -95,7 +95,7 @@ Meta::TrackPtr TestTrackOrganizer::makeMockTrack( const QString &trackName, cons
     EXPECT_CALL( *track, name() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
     EXPECT_CALL( *track, prettyName() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
     EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + '_' + artistName + '_' + albumName ) );
-    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( KUrl( '/' + track->uidUrl() ) ) );
+    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QUrl( '/' + track->uidUrl() ) ) );
     EXPECT_CALL( *track, trackNumber() ).Times( AnyNumber() ).WillRepeatedly( Return( trackNumber ) );
     EXPECT_CALL( *track, type() ).Times( AnyNumber() ).WillRepeatedly( Return( "mp3" ) );
     EXPECT_CALL( *track, composer() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ComposerPtr() ) );
@@ -106,7 +106,7 @@ Meta::TrackPtr TestTrackOrganizer::makeMockTrack( const QString &trackName, cons
     EXPECT_CALL( *track, filesize() ).Times( AnyNumber() ).WillRepeatedly( Return( 0 ) );
     EXPECT_CALL( *track, length() ).Times( AnyNumber() ).WillRepeatedly( Return( 0 ) );
     EXPECT_CALL( *track, comment() ).Times( AnyNumber() ).WillRepeatedly( Return( "" ) );
-    
+
     mColl->mc->addTrack( trackPtr );
 
     Meta::AlbumPtr albumPtr = mColl->mc->albumMap().value( albumName, QString() /* no album artist */ );

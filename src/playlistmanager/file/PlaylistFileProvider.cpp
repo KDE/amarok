@@ -28,16 +28,16 @@
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KDialog>
-#include <KInputDialog>
-#include <KLocale>
-#include <KUrl>
-
 #include <QAction>
 #include <QDir>
+#include <QInputDialog>
 #include <QLabel>
 #include <QString>
 #include <QTimer>
+#include <QUrl>
+
+#include <KIO/Global>
+#include <KLocalizedString>
 
 using Playlist::ModelStack;
 
@@ -52,9 +52,9 @@ PlaylistFileProvider::PlaylistFileProvider()
     QStringList keys = loadedPlaylistsConfig().keyList();
     foreach( const QString &key, keys )
     {
-        KUrl url( key );
+        QUrl url( key );
         //Don't load these from the config file, they are read from the directory anyway
-        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
+        if( KIO::upUrl(url).matches( QUrl::fromUserInput(Amarok::saveLocation("playlists")), QUrl::StripTrailingSlash ) )
             continue;
         m_urlsToLoad << url;
     }
@@ -64,8 +64,9 @@ PlaylistFileProvider::PlaylistFileProvider()
                              QDir::Files | QDir::Readable );
     foreach( const QString &file, playlistDir.entryList() )
     {
-        KUrl url( playlistDir.path() );
-        url.addPath( file );
+        QUrl url( playlistDir.path() );
+        url = url.adjusted(QUrl::StripTrailingSlash);
+        url.setPath(url.path() + '/' + ( file ));
         if( Playlists::isPlaylist( url ) )
             m_urlsToLoad << url;
     }
@@ -79,9 +80,9 @@ PlaylistFileProvider::~PlaylistFileProvider()
     //Write loaded playlists to config file
     foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
     {
-        KUrl url = playlistFile->uidUrl();
+        QUrl url = playlistFile->uidUrl();
         //only save files NOT in "playlists", those are automatically loaded.
-        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
+        if( KIO::upUrl(url).matches( QUrl::fromUserInput(Amarok::saveLocation( "playlists" )), QUrl::StripTrailingSlash ) )
             continue;
 
         //debug() << "storing to rc-file: " << url.url();
@@ -97,9 +98,9 @@ PlaylistFileProvider::prettyName() const
     return i18n( "Playlist Files on Disk" );
 }
 
-KIcon PlaylistFileProvider::icon() const
+QIcon PlaylistFileProvider::icon() const
 {
-    return KIcon( "folder-documents" );
+    return QIcon::fromTheme( "folder-documents" );
 }
 
 int
@@ -116,7 +117,7 @@ PlaylistFileProvider::playlists()
     if( !m_playlistsLoaded )
     {
         //trigger a lazy load the playlists
-        QTimer::singleShot(0, this, SLOT(loadPlaylists()) );
+        QTimer::singleShot(0, this, &PlaylistFileProvider::loadPlaylists );
         return playlists;
     }
 
@@ -135,18 +136,19 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     DEBUG_BLOCK
 
     QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") : name;
-    filename.replace( QLatin1Char('/'), QLatin1Char('-') );
+    filename.replace( '/', QLatin1Char('-') );
     filename.replace( QLatin1Char('\\'), QLatin1Char('-') );
 
-    Playlists::PlaylistFormat format = Playlists::getFormat( filename );
+    Playlists::PlaylistFormat format = Playlists::getFormat( QUrl::fromUserInput(filename) );
     if( format == Playlists::Unknown ) // maybe the name just had a dot in it. We just add .xspf
     {
         format = Playlists::XSPF;
         filename.append( QLatin1String( ".xspf" ) );
     }
 
-    KUrl path( Amarok::saveLocation( "playlists" ) );
-    path.addPath( Amarok::vfatPath( filename ) );
+    QUrl path( Amarok::saveLocation( "playlists" ) );
+    path = path.adjusted(QUrl::StripTrailingSlash);
+    path.setPath(path.path() + '/' + ( Amarok::vfatPath( filename ) ));
     if( QFileInfo( path.toLocalFile() ).exists() )
     {
         //TODO:request overwrite
@@ -190,7 +192,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 }
 
 bool
-PlaylistFileProvider::import( const KUrl &path )
+PlaylistFileProvider::import( const QUrl &path )
 {
     DEBUG_BLOCK
     if( !path.isValid() )
@@ -215,7 +217,7 @@ PlaylistFileProvider::import( const KUrl &path )
     }
 
     debug() << "Importing playlist file " << path;
-    if( path == Amarok::defaultPlaylistPath() )
+    if( path == QUrl::fromLocalFile(Amarok::defaultPlaylistPath()) )
     {
         error() << "trying to load saved session playlist at %s" << path.path();
         return false;
@@ -278,7 +280,7 @@ PlaylistFileProvider::loadPlaylists()
     //arbitrary number of playlists to load during one mainloop run: 5
     for( int i = 0; i < qMin( m_urlsToLoad.count(), 5 ); i++ )
     {
-        KUrl url = m_urlsToLoad.takeFirst();
+        QUrl url = m_urlsToLoad.takeFirst();
         QString groups = loadedPlaylistsConfig().readEntry( url.url() );
         Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url, this );
         if( !playlist )
@@ -299,7 +301,7 @@ PlaylistFileProvider::loadPlaylists()
 
     //give the mainloop time to run
     if( !m_urlsToLoad.isEmpty() )
-        QTimer::singleShot( 0, this, SLOT(loadPlaylists()) );
+        QTimer::singleShot( 0, this, &PlaylistFileProvider::loadPlaylists );
 }
 
 void
@@ -317,7 +319,7 @@ PlaylistFileProvider::saveLater( Playlists::PlaylistFilePtr playlist )
         m_saveLaterTimer = new QTimer( this );
         m_saveLaterTimer->setSingleShot( true );
         m_saveLaterTimer->setInterval( 0 );
-        connect( m_saveLaterTimer, SIGNAL(timeout()), SLOT(slotSaveLater()) );
+        connect( m_saveLaterTimer, &QTimer::timeout, this, &PlaylistFileProvider::slotSaveLater );
     }
 
     m_saveLaterTimer->start();

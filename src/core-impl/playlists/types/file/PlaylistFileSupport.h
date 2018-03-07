@@ -25,9 +25,9 @@ namespace Playlists
 {
     class PlaylistFileProvider;
 
-    AMAROK_EXPORT PlaylistFilePtr loadPlaylistFile( const KUrl &url, PlaylistFileProvider *provider = 0 );
+    AMAROK_EXPORT PlaylistFilePtr loadPlaylistFile( const QUrl &url, PlaylistFileProvider *provider = 0 );
 
-    bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bool relative = false,
+    bool exportPlaylistFile( const Meta::TrackList &list, const QUrl &url, bool relative = false,
                              const QList<int> &queued = QList<int>() );
 
     /* HACK:
@@ -37,7 +37,7 @@ namespace Playlists
     bool canExpand( Meta::TrackPtr track );
     PlaylistPtr expand( Meta::TrackPtr track );
 
-    AMAROK_EXPORT KUrl newPlaylistFilePath( const QString &fileExtension );
+    AMAROK_EXPORT QUrl newPlaylistFilePath( const QString &fileExtension );
 
 }
 

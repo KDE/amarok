@@ -29,7 +29,6 @@ BoundedPlaybackCapability::~BoundedPlaybackCapability()
 
 }
 
-#include "BoundedPlaybackCapability.moc"
 
 
 

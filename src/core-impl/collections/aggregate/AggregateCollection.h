@@ -27,6 +27,7 @@
 #include <QString>
 #include <QHash>
 #include <QReadWriteLock>
+#include <KLocalizedString>
 
 namespace Meta {
     class AggreagateYear;
@@ -50,10 +51,10 @@ namespace Collections {
         // Collections::Collection methods
 
         virtual QString prettyName() const;
-        virtual KIcon icon() const;
+        virtual QIcon icon() const;
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
+        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
 
         virtual QueryMaker* queryMaker();
 
@@ -96,25 +97,25 @@ namespace Collections {
         Meta::AggregateLabel* getLabel( Meta::LabelPtr label );
         void setLabel( Meta::AggregateLabel *label );
 
-        public slots:
-        void removeCollection( const QString &collectionId );
+        public Q_SLOTS:
+        void removeCollectionById( const QString &collectionId );
         void removeCollection( Collections::Collection *collection );
         void addCollection( Collections::Collection *collection, CollectionManager::CollectionStatus status );
         void slotUpdated();
 
-        private slots:
+        private Q_SLOTS:
         void emptyCache();
 
         private:
         QHash<QString, Collections::Collection*> m_idCollectionMap;
 
-        QHash<QString, KSharedPtr<Meta::AggreagateYear> > m_yearMap;
-        QHash<QString, KSharedPtr<Meta::AggregateGenre> > m_genreMap;
-        QHash<QString, KSharedPtr<Meta::AggregateComposer> > m_composerMap;
-        QHash<QString, KSharedPtr<Meta::AggregateArtist> > m_artistMap;
-        QHash<Meta::AlbumKey, KSharedPtr<Meta::AggregateAlbum> > m_albumMap;
-        QHash<Meta::TrackKey, KSharedPtr<Meta::AggregateTrack> > m_trackMap;
-        QHash<QString, KSharedPtr<Meta::AggregateLabel> > m_labelMap;
+        QHash<QString, AmarokSharedPointer<Meta::AggreagateYear> > m_yearMap;
+        QHash<QString, AmarokSharedPointer<Meta::AggregateGenre> > m_genreMap;
+        QHash<QString, AmarokSharedPointer<Meta::AggregateComposer> > m_composerMap;
+        QHash<QString, AmarokSharedPointer<Meta::AggregateArtist> > m_artistMap;
+        QHash<Meta::AlbumKey, AmarokSharedPointer<Meta::AggregateAlbum> > m_albumMap;
+        QHash<Meta::TrackKey, AmarokSharedPointer<Meta::AggregateTrack> > m_trackMap;
+        QHash<QString, AmarokSharedPointer<Meta::AggregateLabel> > m_labelMap;
 
         QReadWriteLock m_yearLock;
         QReadWriteLock m_genreLock;

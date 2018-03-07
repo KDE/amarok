@@ -22,10 +22,10 @@
 #include <QDateTime>
 #include <QList>
 #include <QString>
-#include <QWeakPointer>
+#include <QPointer>
 
-#include <KSharedPtr>
-#include <KUrl>
+#include "AmarokSharedPointer.h"
+#include <QUrl>
 
 namespace Collections
 {
@@ -43,19 +43,19 @@ namespace Meta
     class PlaydarYear;
     class PlaydarLabel;
 
-    typedef KSharedPtr< PlaydarTrack > PlaydarTrackPtr;
+    typedef AmarokSharedPointer< PlaydarTrack > PlaydarTrackPtr;
     typedef QList< PlaydarTrackPtr > PlaydarTrackList;
-    typedef KSharedPtr< PlaydarArtist > PlaydarArtistPtr;
+    typedef AmarokSharedPointer< PlaydarArtist > PlaydarArtistPtr;
     typedef QList< PlaydarArtistPtr > PlaydarArtistList;
-    typedef KSharedPtr< PlaydarAlbum > PlaydarAlbumPtr;
+    typedef AmarokSharedPointer< PlaydarAlbum > PlaydarAlbumPtr;
     typedef QList< PlaydarAlbumPtr > PlaydarAlbumList;
-    typedef KSharedPtr< PlaydarComposer > PlaydarComposerPtr;
+    typedef AmarokSharedPointer< PlaydarComposer > PlaydarComposerPtr;
     typedef QList< PlaydarComposerPtr > PlaydarComposerList;
-    typedef KSharedPtr< PlaydarGenre > PlaydarGenrePtr;
+    typedef AmarokSharedPointer< PlaydarGenre > PlaydarGenrePtr;
     typedef QList< PlaydarGenrePtr > PlaydarGenreList;
-    typedef KSharedPtr< PlaydarYear > PlaydarYearPtr;
+    typedef AmarokSharedPointer< PlaydarYear > PlaydarYearPtr;
     typedef QList< PlaydarYearPtr > PlaydarYearList;
-    typedef KSharedPtr< PlaydarLabel > PlaydarLabelPtr;
+    typedef AmarokSharedPointer< PlaydarLabel > PlaydarLabelPtr;
     typedef QList< PlaydarLabelPtr > PlaydarLabelList;
     
     class PlaydarTrack : public Track
@@ -75,7 +75,7 @@ namespace Meta
             ~PlaydarTrack();
             
             QString name() const;
-            KUrl playableUrl() const;
+            QUrl playableUrl() const;
             QString prettyUrl() const;
             QString uidUrl() const;
             QString sid() const;
@@ -131,7 +131,7 @@ namespace Meta
             PlaydarLabelList playdarLabels();
 
         private:
-            QWeakPointer< Collections::PlaydarCollection > m_collection;
+            QPointer< Collections::PlaydarCollection > m_collection;
             
             PlaydarAlbumPtr m_album;
             PlaydarArtistPtr m_artist;
@@ -142,7 +142,7 @@ namespace Meta
             Meta::StatisticsPtr m_statsStore;
 
             QString m_sid;
-            KUrl m_uidUrl;
+            QUrl m_uidUrl;
             QString m_playableUrl;
             QString m_name;
             QString m_mimetype;
@@ -192,7 +192,7 @@ namespace Meta
             TrackList tracks();
             bool hasImage( int size = 0 ) const;
             QImage image( int size = 0 ) const;
-            KUrl imageLocation( int size = 0 );
+            QUrl imageLocation( int size = 0 );
             bool canUpdateImage() const;
             void setImage( const QImage &image );
             void removeImage();

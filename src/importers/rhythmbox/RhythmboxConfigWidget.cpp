@@ -30,7 +30,7 @@ RhythmboxConfigWidget::RhythmboxConfigWidget( const QVariantMap &config, QWidget
     const QString defaultPath = QDir::toNativeSeparators(
                 QDir::homePath() + "/.local/share/rhythmbox/rhythmdb.xml" );
 
-    KUrlRequester *dbField = new KUrlRequester( defaultPath );
+    KUrlRequester *dbField = new KUrlRequester( QUrl::fromLocalFile(defaultPath) );
     dbField->setFilter( "rhythmdb.xml" );
     addField( "dbPath", i18n( "Database location" ), dbField, "text" );
 }

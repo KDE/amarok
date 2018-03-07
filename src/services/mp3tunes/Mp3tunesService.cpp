@@ -26,21 +26,17 @@
 #include "core/support/Debug.h"
 #include "Mp3tunesConfig.h"
 
-#include <KMenuBar>
-#include <KMessageBox>
-#include <threadweaver/ThreadWeaver.h>
-
+#include <QMenuBar>
 #include <QRegExp>
 
-AMAROK_EXPORT_SERVICE_PLUGIN( mp3tunes, Mp3tunesServiceFactory )
+#include <KMessageBox>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
-Mp3tunesServiceFactory::Mp3tunesServiceFactory( QObject *parent, const QVariantList &args )
-    : ServiceFactory( parent, args )
-{
-    KPluginInfo pluginInfo(  "amarok_service_mp3tunes.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    m_info = pluginInfo;
-}
+
+Mp3tunesServiceFactory::Mp3tunesServiceFactory()
+    : ServiceFactory()
+{}
 
 void Mp3tunesServiceFactory::init()
 {
@@ -75,7 +71,7 @@ KConfigGroup Mp3tunesServiceFactory::config()
 
 
 bool
-Mp3tunesServiceFactory::possiblyContainsTrack(const KUrl & url) const
+Mp3tunesServiceFactory::possiblyContainsTrack(const QUrl &url) const
 {
     QRegExp rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
     int matches = rx.indexIn( url.url() );
@@ -106,7 +102,7 @@ Mp3tunesService::Mp3tunesService( Mp3tunesServiceFactory* parent, const QString 
 {
     DEBUG_BLOCK
     setShortDescription( i18n( "The MP3tunes Locker: Your Music Everywhere!" ) );
-    setIcon( KIcon( "view-services-mp3tunes-amarok" ) );
+    setIcon( QIcon::fromTheme( "view-services-mp3tunes-amarok" ) );
     debug() << "Making new Locker Object";
     m_locker = new Mp3tunesLocker( "4895500420" );
 
@@ -185,20 +181,20 @@ void Mp3tunesService::enableHarmony()
                                                 config.pin() );
 //        qRegisterMetaType<Mp3tunesHarmonyDownload>("Mp3tunesHarmonyDownload");
 
-        connect( m_harmony, SIGNAL(disconnected()),
-                this, SLOT(harmonyDisconnected()));
-        connect( m_harmony, SIGNAL(waitingForEmail(QString)),
-                this, SLOT(harmonyWaitingForEmail(QString)) );
-        connect( m_harmony, SIGNAL(waitingForPin()),
-                 this, SLOT(harmonyWaitingForPin()) );
-        connect( m_harmony, SIGNAL(connected()),
-                this, SLOT(harmonyConnected()) );
-        connect( m_harmony, SIGNAL(signalError(QString)),
-                this, SLOT(harmonyError(QString)) );
-        connect( m_harmony, SIGNAL(downloadReady(QVariantMap)),
-                this, SLOT(harmonyDownloadReady(QVariantMap)) );
-        connect( m_harmony, SIGNAL(downloadPending(QVariantMap)),
-                this, SLOT(harmonyDownloadPending(QVariantMap)) );
+        connect( m_harmony, &Mp3tunesHarmonyHandler::disconnected,
+                 this, &Mp3tunesService::harmonyDisconnected );
+        connect( m_harmony, &Mp3tunesHarmonyHandler::waitingForEmail,
+                 this, &Mp3tunesService::harmonyWaitingForEmail );
+        connect( m_harmony, &Mp3tunesHarmonyHandler::waitingForPin,
+                 this, &Mp3tunesService::harmonyWaitingForPin );
+        connect( m_harmony, &Mp3tunesHarmonyHandler::connected,
+                 this, &Mp3tunesService::harmonyConnected );
+        connect( m_harmony, &Mp3tunesHarmonyHandler::signalError,
+                 this, &Mp3tunesService::harmonyError );
+        connect( m_harmony, &Mp3tunesHarmonyHandler::downloadReady,
+                 this, &Mp3tunesService::harmonyDownloadReady );
+        connect( m_harmony, &Mp3tunesHarmonyHandler::downloadPending,
+                 this, &Mp3tunesService::harmonyDownloadPending );
 
         debug() << "starting harmony";
         m_harmony->startDaemon();
@@ -249,10 +245,10 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
     m_loginWorker = new Mp3tunesLoginWorker( m_locker, uname, passwd);
     //debug() << "Connecting finishedLogin -> authentication complete.";
 
-    connect( m_loginWorker, SIGNAL(finishedLogin(QString)), this,
-             SLOT(authenticationComplete(QString)) );
+    connect( m_loginWorker, &Mp3tunesLoginWorker::finishedLogin,
+             this, &Mp3tunesService::authenticationComplete );
     //debug() << "Connection complete. Enqueueing..";
-    ThreadWeaver::Weaver::instance()->enqueue( m_loginWorker );
+    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_loginWorker) );
     //debug() << "LoginWorker queue";
     Amarok::Components::logger()->shortMessage( i18n( "Authenticating"  ) );
 
@@ -349,8 +345,9 @@ void Mp3tunesService::harmonyError( const QString &error )
 void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )
 {
     DEBUG_BLOCK
-    debug() << "Got message about ready: " << download["trackTitle"].toString() << " by " << download["artistName"].toString() << " on " << download["albumTitle"].toString();
-    foreach( Collections::Collection *coll, CollectionManager::instance()->collections().keys() ) {
+    debug() << "Got message about ready: " << download["trackTitle"] << " by " << download["artistName"] << " on " << download["albumTitle"];
+    foreach( Collections::Collection *coll, CollectionManager::instance()->collections().keys() )
+    {
         if( coll && coll->isWritable() && m_collection )
         {
             debug() << "got collection" << coll->prettyName();
@@ -359,9 +356,9 @@ void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )
                 debug() << "got local collection";
                 Collections::CollectionLocation *dest = coll->location();
                 Collections::CollectionLocation *source = m_collection->location();
-                if( !m_collection->possiblyContainsTrack( download["url"].toString() ) )
+                if( !m_collection->possiblyContainsTrack( download["url"].toUrl() ) )
                     return; //TODO some sort of error handling
-                Meta::TrackPtr track( m_collection->trackForUrl( download["url"].toString() ) );
+                Meta::TrackPtr track( m_collection->trackForUrl( download["url"].toUrl() ) );
                 source->prepareCopy( track, dest );
                 break;
             }
@@ -374,8 +371,5 @@ void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )
 void Mp3tunesService::harmonyDownloadPending( const QVariantMap &download )
 {
     DEBUG_BLOCK
-    debug() << "Got message about ready: " << download["trackTitle"].toString() << " by " << download["artistName"].toString() << " on " << download["albumTitle"].toString();
+    debug() << "Got message about ready: " << download["trackTitle"] << " by " << download["artistName"] << " on " << download["albumTitle"];
 }
-
-#include "Mp3tunesService.moc"
-

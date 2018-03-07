@@ -25,7 +25,7 @@
 
 #include <KMessageBox>
 
-#include <KInputDialog>
+#include <QInputDialog>
 #include <QLineEdit>
 
 Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
@@ -100,47 +100,49 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     if ( layoutListWidget->currentItem() )
         setLayout( layoutListWidget->currentItem()->text() );
 
-    connect( previewButton, SIGNAL(clicked()), this, SLOT(preview()) );
-    connect( layoutListWidget, SIGNAL(currentTextChanged(QString)), this, SLOT(setLayout(QString)) );
-    connect( layoutListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(toggleEditButtons()) );
-    connect( layoutListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(toggleUpDownButtons()) );
+    connect( previewButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::preview );
+    connect( layoutListWidget, &QListWidget::currentTextChanged, this, &PlaylistLayoutEditDialog::setLayout );
+    connect( layoutListWidget, &QListWidget::currentRowChanged, this, &PlaylistLayoutEditDialog::toggleEditButtons );
+    connect( layoutListWidget, &QListWidget::currentRowChanged, this, &PlaylistLayoutEditDialog::toggleUpDownButtons );
 
-    connect( moveUpButton, SIGNAL(clicked()), this, SLOT(moveUp()) );
-    connect( moveDownButton, SIGNAL(clicked()), this, SLOT(moveDown()) );
+    connect( moveUpButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::moveUp );
+    connect( moveDownButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::moveDown );
 
-    buttonBox->button(QDialogButtonBox::Apply)->setIcon( KIcon( "dialog-ok-apply" ) );
-    buttonBox->button(QDialogButtonBox::Ok)->setIcon( KIcon( "dialog-ok" ) );
-    buttonBox->button(QDialogButtonBox::Cancel)->setIcon( KIcon( "dialog-cancel" ) );
-    connect( buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()) );
+    buttonBox->button(QDialogButtonBox::Apply)->setIcon( QIcon::fromTheme( "dialog-ok-apply" ) );
+    buttonBox->button(QDialogButtonBox::Ok)->setIcon( QIcon::fromTheme( "dialog-ok" ) );
+    buttonBox->button(QDialogButtonBox::Cancel)->setIcon( QIcon::fromTheme( "dialog-cancel" ) );
+    connect( buttonBox->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::apply );
 
-    const KIcon newIcon( "document-new" );
+    const QIcon newIcon( "document-new" );
     newLayoutButton->setIcon( newIcon );
     newLayoutButton->setToolTip( i18n( "New playlist layout" ) );
-    connect( newLayoutButton, SIGNAL(clicked()), this, SLOT(newLayout()) );
+    connect( newLayoutButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::newLayout );
 
-    const KIcon copyIcon( "edit-copy" );
+    const QIcon copyIcon( "edit-copy" );
     copyLayoutButton->setIcon( copyIcon );
     copyLayoutButton->setToolTip( i18n( "Copy playlist layout" ) );
-    connect( copyLayoutButton, SIGNAL(clicked()), this, SLOT(copyLayout()) );
+    connect( copyLayoutButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::copyLayout );
 
-    const KIcon deleteIcon( "edit-delete" );
+    const QIcon deleteIcon( "edit-delete" );
     deleteLayoutButton->setIcon( deleteIcon );
     deleteLayoutButton->setToolTip( i18n( "Delete playlist layout" ) );
-    connect( deleteLayoutButton, SIGNAL(clicked()), this, SLOT(deleteLayout()) );
+    connect( deleteLayoutButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::deleteLayout );
 
-    const KIcon renameIcon( "edit-rename" );
+    const QIcon renameIcon( "edit-rename" );
     renameLayoutButton->setIcon( renameIcon );
     renameLayoutButton->setToolTip( i18n( "Rename playlist layout" ) );
-    connect( renameLayoutButton, SIGNAL(clicked()), this, SLOT(renameLayout()) );
+    connect( renameLayoutButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::renameLayout );
 
     toggleEditButtons();
     toggleUpDownButtons();
 
     for( int part = 0; part < PlaylistLayout::NumParts; part++ )
-        connect( m_partsEdit[part], SIGNAL(changed()), this, SLOT(setLayoutChanged()) );
-    connect( inlineControlsChekbox, SIGNAL(stateChanged(int)), this, SLOT(setLayoutChanged()) );
-    connect( tooltipsCheckbox, SIGNAL(stateChanged(int)), this, SLOT(setLayoutChanged()) );
-    connect( groupByComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setLayoutChanged()) );
+        connect( m_partsEdit[part], &Playlist::LayoutEditWidget::changed, this, &PlaylistLayoutEditDialog::setLayoutChanged );
+
+    connect( inlineControlsChekbox, &QCheckBox::stateChanged, this, &PlaylistLayoutEditDialog::setLayoutChanged );
+    connect( tooltipsCheckbox, &QCheckBox::stateChanged, this, &PlaylistLayoutEditDialog::setLayoutChanged );
+    connect( groupByComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+             this, &PlaylistLayoutEditDialog::setLayoutChanged );
 }
 
 
@@ -152,8 +154,9 @@ void
 Playlist::PlaylistLayoutEditDialog::newLayout()      //SLOT
 {
     bool ok;
-    QString layoutName = KInputDialog::getText( i18n( "Choose a name for the new playlist layout" ),
-                    i18n( "Please enter a name for the playlist layout you are about to define:" ),QString(), &ok, this );
+    QString layoutName = QInputDialog::getText( this, i18n( "Choose a name for the new playlist layout" ),
+                                                i18n( "Please enter a name for the playlist layout you are about to define:" ),
+                                                QLineEdit::Normal, QString(), &ok );
     if( !ok )
 	return;
     if( layoutName.isEmpty() )
@@ -200,9 +203,10 @@ Playlist::PlaylistLayoutEditDialog::copyLayout()
     QString layoutName = layoutListWidget->currentItem()->text();
 
     bool ok;
-    layoutName = KInputDialog::getText( i18n( "Choose a name for the new playlist layout" ),
-            i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':", layoutName ),
-            layoutName, &ok, this );
+    layoutName = QInputDialog::getText( this,
+                                        i18n( "Choose a name for the new playlist layout" ),
+                                        i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':", layoutName ),
+                                        QLineEdit::Normal, layoutName, &ok );
 
     if( !ok)
         return;
@@ -258,9 +262,10 @@ Playlist::PlaylistLayoutEditDialog::renameLayout()
     while( layoutName.isEmpty() || m_layoutsMap->keys().contains( layoutName ) )
     {
         bool ok;
-        layoutName = KInputDialog::getText( i18n( "Choose a new name for the playlist layout" ),
-                    i18n( "Please enter a new name for the playlist layout you are about to rename:" ),
-                    layoutListWidget->currentItem()->text(), &ok, this);
+        layoutName = QInputDialog::getText( this,
+                                            i18n( "Choose a new name for the playlist layout" ),
+                                            i18n( "Please enter a new name for the playlist layout you are about to rename:" ),
+                                            QLineEdit::Normal, layoutListWidget->currentItem()->text(), &ok );
         if ( !ok )
         {
             //Cancelled so just return
@@ -497,7 +502,7 @@ Playlist::PlaylistLayoutEditDialog::setupGroupByCombo()
 {
     foreach( const Playlist::Column &col, Playlist::groupableCategories() )
     {
-        groupByComboBox->addItem( KIcon( iconName( col ) ),
+        groupByComboBox->addItem( QIcon::fromTheme( iconName( col ) ),
                                   columnName( col ),
                                   QVariant( internalColumnName( col ) ) );
     }
@@ -523,5 +528,4 @@ Playlist::PlaylistLayoutEditDialog::setLayoutChanged()
     (*m_layoutsMap)[m_layoutName].setDirty( true );
 }
 
-#include "PlaylistLayoutEditDialog.moc"
 

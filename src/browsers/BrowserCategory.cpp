@@ -21,22 +21,19 @@
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
 #include "PaletteHandler.h"
-
 #include "core/support/Debug.h"
 
-#include <QWidget>
 
 BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
-    : KVBox( parent )
+    : BoxWidget( true, parent )
     , m_name( name )
     , m_parentList( 0 )
 {
     setObjectName( name );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    setFrameShape( QFrame::NoFrame );
 
-    connect( App::instance(), SIGNAL(settingsChanged()), SLOT(slotSettingsChanged()) );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(slotSettingsChanged()) );
+    connect( pApp, &App::settingsChanged, this, &BrowserCategory::slotSettingsChanged );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &BrowserCategory::slotSettingsChanged );
 }
 
 BrowserCategory::~BrowserCategory()
@@ -100,7 +97,7 @@ BrowserCategory::icon() const
 void
 BrowserCategory::setBackgroundImage(const QString& path)
 {
-    if ( path.isEmpty() || !KUrl(path).isLocalFile() ) {
+    if ( path.isEmpty() || !QUrl(path).isLocalFile() ) {
         setStyleSheet( QString() );
         return;
     }
@@ -178,4 +175,3 @@ BrowserCategory::additionalItems()
     return m_additionalItems;
 }
 
-#include "BrowserCategory.moc"

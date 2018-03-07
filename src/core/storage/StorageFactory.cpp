@@ -1,3 +1,4 @@
+
 /****************************************************************************************
  * Copyright (c) 2014 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
@@ -16,14 +17,11 @@
 
 #include "StorageFactory.h"
 
-StorageFactory::StorageFactory( QObject *parent, const QVariantList &args )
-    : Plugins::PluginFactory( parent, args )
+StorageFactory::StorageFactory()
+    : Plugins::PluginFactory()
 {
 }
 
 StorageFactory::~StorageFactory()
 {
 }
-
-
-#include "StorageFactory.moc"

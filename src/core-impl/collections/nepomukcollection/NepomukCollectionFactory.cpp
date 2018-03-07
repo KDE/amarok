@@ -56,7 +56,7 @@ NepomukCollectionFactory::NepomukCollectionFactory( QObject *parent,
         const QVariantList &args )
     : CollectionFactory( parent, args )
 {
-    m_info = KPluginInfo( "amarok_collection-nepomukcollection.desktop", "services" );
+    m_info = KPluginInfo( "amarok_collection-nepomukcollection.desktop" );
 }
 
 NepomukCollectionFactory::~NepomukCollectionFactory()

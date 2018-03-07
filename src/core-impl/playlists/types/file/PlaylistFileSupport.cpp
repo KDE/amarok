@@ -30,19 +30,17 @@
 
 #include "amarokconfig.h"
 
-
-#include <KLocale>
-#include <KTemporaryFile>
-#include <KUrl>
+#include <KLocalizedString>
 #include <KMessageBox>
 
 #include <QFile>
 #include <QFileInfo>
+#include <QUrl>
 
 using namespace Playlists;
 
 PlaylistFilePtr
-Playlists::loadPlaylistFile( const KUrl &url, PlaylistFileProvider *provider )
+Playlists::loadPlaylistFile( const QUrl &url, PlaylistFileProvider *provider )
 {
     // note: this function can be called from out of process, so don't do any
     // UI stuff from this thread.
@@ -86,29 +84,29 @@ Playlists::loadPlaylistFile( const KUrl &url, PlaylistFileProvider *provider )
 }
 
 bool
-Playlists::exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bool relative,
+Playlists::exportPlaylistFile( const Meta::TrackList &list, const QUrl &url, bool relative,
                     const QList<int> &queued )
 {
-    PlaylistFormat format = Playlists::getFormat( path );
+    PlaylistFormat format = Playlists::getFormat( url );
     bool result = false;
     PlaylistFilePtr playlist;
 
     switch( format )
     {
         case ASX:
-            playlist = new ASXPlaylist( path.toLocalFile() );
+            playlist = new ASXPlaylist( url );
             break;
         case PLS:
-            playlist = new PLSPlaylist( path.toLocalFile() );
+            playlist = new PLSPlaylist( url );
             break;
         case M3U:
-            playlist = new M3UPlaylist( path.toLocalFile() );
+            playlist = new M3UPlaylist( url );
             break;
         case XSPF:
-            playlist = new XSPFPlaylist( path.toLocalFile() );
+            playlist = new XSPFPlaylist( url );
             break;
         default:
-            debug() << "Could not export playlist file " << path;
+            debug() << "Could not export playlist file " << url;
             break;
     }
 
@@ -134,25 +132,29 @@ Playlists::canExpand( Meta::TrackPtr track )
     if( !track )
         return false;
 
-    return Playlists::getFormat( track->uidUrl() ) != Playlists::NotPlaylist;
+    return Playlists::getFormat( QUrl::fromUserInput(track->uidUrl()) ) != Playlists::NotPlaylist;
 }
 
 PlaylistPtr
 Playlists::expand( Meta::TrackPtr track )
 {
-   return Playlists::PlaylistPtr::dynamicCast( loadPlaylistFile( track->uidUrl() ) );
+   return Playlists::PlaylistPtr::dynamicCast( loadPlaylistFile( QUrl::fromUserInput(track->uidUrl()) ) );
 }
 
-KUrl
+QUrl
 Playlists::newPlaylistFilePath( const QString &fileExtension )
 {
     int trailingNumber = 1;
     KLocalizedString fileName = ki18n("Playlist_%1");
-    KUrl url( Amarok::saveLocation( "playlists" ) );
-    url.addPath( fileName.subs( trailingNumber ).toString() );
+    QUrl url = QUrl::fromLocalFile( Amarok::saveLocation( "playlists" ) );
+    url = url.adjusted(QUrl::StripTrailingSlash);
+    url.setPath(url.path() + '/' + ( fileName.subs( trailingNumber ).toString() ));
 
     while( QFileInfo( url.path() ).exists() )
-        url.setFileName( fileName.subs( ++trailingNumber ).toString() );
+    {
+        url = url.adjusted(QUrl::RemoveFilename);
+        url.setPath(url.path() +  fileName.subs( ++trailingNumber ).toString() );
+    }
 
-    return KUrl( QString( "%1.%2" ).arg( url.path(), fileExtension ) );
+    return QUrl::fromLocalFile( QString( "%1.%2" ).arg( url.path(), fileExtension ) );
 }

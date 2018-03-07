@@ -48,7 +48,7 @@ namespace AmarokScript
             Q_INVOKABLE QString QStringtoUtf8( const QString& lyrics, const QString& encoding = "UTF-8" );
             Q_INVOKABLE QByteArray fromUtf8( const QString& str, const QString& encoding );
 
-        signals:
+        Q_SIGNALS:
             void fetchLyrics( const QString& artist, const QString& title, const QString&, Meta::TrackPtr );
     };
 }

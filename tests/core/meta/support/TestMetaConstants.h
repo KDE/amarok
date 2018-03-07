@@ -22,7 +22,7 @@ class TestMetaConstants : public QObject
 {
     Q_OBJECT
 
-    private slots:
+    private Q_SLOTS:
         // Data driven tests
         void testNameForField_data();
         void testNameForField();

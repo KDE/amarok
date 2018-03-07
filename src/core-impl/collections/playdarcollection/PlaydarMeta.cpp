@@ -17,6 +17,7 @@
 #include "PlaydarMeta.h"
 
 #include "amarokconfig.h"
+#include "AmarokSharedPointer.h"
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
 #include "core-impl/support/UrlStatisticsStore.h"
@@ -28,9 +29,8 @@
 #include <QList>
 #include <QPixmap>
 #include <QString>
-
-#include <KSharedPtr>
-#include <KUrl>
+#include <QUrl>
+#include <QUrlQuery>
 
 namespace Collections
 {
@@ -70,11 +70,13 @@ Meta::PlaydarTrack::PlaydarTrack( QString &sid,
     , m_comment( QString( "" ) )
     , m_source( source )
 {
-    m_uidUrl.setProtocol( QString( "playdar" ) );
-    m_uidUrl.addPath( source );
-    m_uidUrl.addQueryItem( QString( "artist" ), artist );
-    m_uidUrl.addQueryItem( QString( "album" ), album );
-    m_uidUrl.addQueryItem( QString( "title" ), name );
+    QUrlQuery query;
+    m_uidUrl.setScheme( QString( "playdar" ) );
+    m_uidUrl.setPath(m_uidUrl.path() + '/' + source );
+    query.addQueryItem( QString( "artist" ), artist );
+    query.addQueryItem( QString( "album" ), album );
+    query.addQueryItem( QString( "title" ), name );
+    m_uidUrl.setQuery( query );
     m_statsStore = new UrlStatisticsStore( this );
 }
 
@@ -89,10 +91,10 @@ Meta::PlaydarTrack::name() const
     return m_name;
 }
 
-KUrl
+QUrl
 Meta::PlaydarTrack::playableUrl() const
 {
-    return KUrl( m_playableUrl );
+    return QUrl( m_playableUrl );
 }
 
 QString
@@ -308,7 +310,7 @@ Meta::PlaydarTrack::addToCollection( Collections::PlaydarCollection *collection 
     if( m_collection.data() )
     {
         PlaydarTrackPtr sharedThis( this );
-        m_collection.data()->addNewTrack( sharedThis );
+        m_collection->addNewTrack( sharedThis );
     }
 }
 
@@ -499,11 +501,11 @@ Meta::PlaydarAlbum::image( int size ) const
     return size <= 1 ? m_cover : m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 }
 
-KUrl
+QUrl
 Meta::PlaydarAlbum::imageLocation( int size )
 {
     if( !m_cover.isNull() )
-        return KUrl();
+        return QUrl();
 
     return Meta::Album::imageLocation( size );
 }

@@ -24,6 +24,7 @@
 #include "network/NetworkAccessManagerProxy.h"
 
 #include <QTimer>
+#include <ThreadWeaver/Job>
 
 #define AMAROK_MUSICDNS_CLIENT_ID "0c6019606b1d8a54d0985e448f3603ca"
 
@@ -37,24 +38,24 @@ class MusicDNSFinder: public QObject
                         const QString &pathPrefix = "/ofa/1",
                         const QString &clietnId = AMAROK_MUSICDNS_CLIENT_ID,
                         const QString &clientVersion = AMAROK_VERSION  );
-    public slots:
+    public Q_SLOTS:
         void run( const Meta::TrackList &tracks );
 
-    signals:
+    Q_SIGNALS:
         void trackFound( const Meta::TrackPtr &track, const QString &puid );
         void progressStep();
         void done();
 
-    private slots:
+    private Q_SLOTS:
 
         void sendNewRequest();
         void gotReply( QNetworkReply *reply );
         void replyError( QNetworkReply::NetworkError code );
 
         void trackDecoded( const Meta::TrackPtr track, const QString fingerprint );
-        void decodingDone( ThreadWeaver::Job *_decoder );
+        void decodingDone( ThreadWeaver::JobPointer _decoder );
 
-        void parsingDone( ThreadWeaver::Job *_parser );
+        void parsingDone( ThreadWeaver::JobPointer _parser );
 
     private:
         QNetworkRequest compileRequest( const QString &fingerprint, const Meta::TrackPtr track );

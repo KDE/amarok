@@ -24,9 +24,8 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <KStandardDirs>
 #include <KIO/Job>
-#include <klocalizedstring.h>
+#include <KLocalizedString>
 
 #include <QDomDocument>
 #include <QDomNode>
@@ -34,7 +33,9 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QRadioButton>
+#include <QStandardPaths>
 #include <QTimer>
+#include <QUrlQuery>
 #include <QVBoxLayout>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -137,7 +138,7 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
     QLabel *imageLabel = new QLabel();
-    imageLabel->setPixmap( QPixmap( KStandardDirs::locate( "data", "amarok/images/echonest.png" ) ) );
+    imageLabel->setPixmap( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/echonest.png" ) ) );
     QLabel *label = new QLabel( i18n( "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is similar to" ) );
 
     QRadioButton *rb1 = new QRadioButton( i18n( "the previous track's artist" ) );
@@ -146,8 +147,8 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
     rb1->setChecked( m_match == PreviousTrack );
     rb2->setChecked( m_match == Playlist );
 
-    connect( rb2, SIGNAL(toggled(bool)),
-             this, SLOT(setMatchTypePlaylist(bool)) );
+    connect( rb2, &QRadioButton::toggled,
+             this, &Dynamic::EchoNestBias::setMatchTypePlaylist );
 
     layout->addWidget( imageLabel );
     layout->addWidget( label );
@@ -184,7 +185,7 @@ Dynamic::EchoNestBias::matchingTracks( const Meta::TrackList& playlist,
     m_currentArtists = artists;
     QTimer::singleShot(0,
                        const_cast<EchoNestBias*>(this),
-                       SLOT(newQuery())); // create the new query from my parent thread
+                       &EchoNestBias::newQuery); // create the new query from my parent thread
 
     return Dynamic::TrackSet();
 }
@@ -264,13 +265,13 @@ Dynamic::EchoNestBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
-             this, SLOT(updateReady(QStringList)) );
-    connect( m_qm.data(), SIGNAL(queryDone()),
-             this, SLOT(updateFinished()) );
+    connect( m_qm.data(), &Collections::QueryMaker::newResultReady,
+             this, &EchoNestBias::updateReady );
+    connect( m_qm.data(), &Collections::QueryMaker::queryDone,
+             this, &EchoNestBias::updateFinished );
 
     // - run the query
-    m_qm.data()->run();
+    m_qm->run();
 }
 
 void
@@ -282,8 +283,8 @@ Dynamic::EchoNestBias::newSimilarArtistQuery()
     params.insert( "results", "30" );
     params.insert( "name", m_currentArtists.join(", ") );
     m_artistSuggestedQuery = KIO::storedGet( createUrl( "artist/similar", params ), KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_artistSuggestedQuery, SIGNAL(result(KJob*)),
-             this, SLOT(similarArtistQueryDone(KJob*)) );
+    connect( m_artistSuggestedQuery, &KJob::result,
+             this, &EchoNestBias::similarArtistQueryDone );
 }
 
 void
@@ -374,12 +375,13 @@ Dynamic::EchoNestBias::currentArtists( int position, const Meta::TrackList& play
 
 
 // this method shamelessly inspired by liblastfm/src/ws/ws.cpp
-KUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QString > params )
+QUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QString > params )
 {
     params.insert( "api_key", "DD9P0OV9OYFH1LCAE" );
     params.insert( "format", "xml" );
 
-    KUrl url;
+    QUrl url;
+    QUrlQuery query;
     url.setScheme( "http" );
     url.setHost( "developer.echonest.com" );
     url.setPath( "/api/v4/" + method );
@@ -391,8 +393,9 @@ KUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QStri
         i.next();
         QByteArray const key = QUrl::toPercentEncoding( i.key() );
         QByteArray const value = QUrl::toPercentEncoding( i.value() );
-        url.addEncodedQueryItem( key, value );
+        query.addQueryItem( key, value );
     }
+    url.setQuery( query );
 
     return url;
 }
@@ -538,4 +541,3 @@ Dynamic::EchoNestBias::tracksMapKey( QStringList artists )
     return artists.join("|");
 }
 
-#include "EchoNestBias.moc"

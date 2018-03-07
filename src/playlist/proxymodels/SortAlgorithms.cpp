@@ -95,7 +95,7 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel,
                         return ( compareResult < 0 ) != inverted;
 
                     // Fall through to sorting by album artist if albums have same name
-                    __attribute__ ((fallthrough));
+                    Q_FALLTHROUGH();
                 }
                 case Playlist::AlbumArtist:
                 {
@@ -159,8 +159,8 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel,
 
 template<typename T>
 int
-multilevelLessThan::compareBySortableName( const KSharedPtr<T> &left,
-                                           const KSharedPtr<T> &right ) const
+multilevelLessThan::compareBySortableName( const AmarokSharedPointer<T> &left,
+                                           const AmarokSharedPointer<T> &right ) const
 {
     if( !left && right )
         return -1;

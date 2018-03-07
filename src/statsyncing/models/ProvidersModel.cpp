@@ -42,8 +42,8 @@ ProvidersModel::ProvidersModel( const ProviderPtrList &providers,
             m_selectionModel->select( idx, QItemSelectionModel::Select );
         }
     }
-    connect( m_selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-             SIGNAL(selectedProvidersChanged()) );
+    connect( m_selectionModel, &QItemSelectionModel::selectionChanged,
+             this, &ProvidersModel::selectedProvidersChanged );
 }
 
 ProvidersModel::~ProvidersModel()

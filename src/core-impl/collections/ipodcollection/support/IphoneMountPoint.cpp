@@ -19,7 +19,7 @@
 
 #include "core/support/Debug.h"
 
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <KLocalizedString>
 #include <KMessageBox>
 
@@ -96,7 +96,7 @@ QString IphoneMountPoint::failureDetails() const
 QString
 IphoneMountPoint::constructMountpoint( const QString &uuid )
 {
-    QString mountPointCandidate = KStandardDirs::locateLocal( "tmp", "amarok/" );
+    QString mountPointCandidate = QStandardPaths::locate( QStandardPaths::TempLocation, "amarok/" );
     mountPointCandidate += "imobiledevice";
     if( !uuid.isEmpty() )
         mountPointCandidate += "_uuid_" + uuid;

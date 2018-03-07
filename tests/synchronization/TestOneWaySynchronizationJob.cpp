@@ -25,14 +25,11 @@
 #include "mocks/MockAlbum.h"
 #include "mocks/MockArtist.h"
 
-#include <KCmdLineArgs>
-#include <KGlobal>
-
-#include <qtest_kde.h>
-
 #include <gmock/gmock.h>
 
-QTEST_KDEMAIN_CORE( TestOneWaySynchronizationJob )
+#include <QSignalSpy>
+
+QTEST_GUILESS_MAIN( TestOneWaySynchronizationJob )
 
 using ::testing::Return;
 using ::testing::AnyNumber;
@@ -49,7 +46,7 @@ public:
 
     QString prettyLocation() const { return "foo"; }
     bool isWritable() const { return true; }
-    void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources, const Transcoding::Configuration& conf)
+    void copyUrlsToCollection(const QMap<Meta::TrackPtr, QUrl> &sources, const Transcoding::Configuration& conf)
     {
         Q_UNUSED( conf )
         // qDebug() << "adding " << sources.count() << " tracks to " << coll->collectionId();
@@ -83,7 +80,7 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     Meta::TrackPtr trackPtr( track );
     EXPECT_CALL( *track, name() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
     EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + '_' + artistName + '_' + albumName ) );
-    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( KUrl( '/' + track->uidUrl() ) ) );
+    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QUrl( '/' + track->uidUrl() ) ) );
     EXPECT_CALL( *track, composer() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ComposerPtr() ) );
     EXPECT_CALL( *track, genre() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::GenrePtr() ) );
     EXPECT_CALL( *track, year() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::YearPtr() ) );
@@ -146,8 +143,10 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
 
 TestOneWaySynchronizationJob::TestOneWaySynchronizationJob() : QObject()
 {
-    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
-    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
+    int argc = 1;
+    char **argv = (char **) malloc(sizeof(char *));
+    argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
+    ::testing::InitGoogleMock( &argc, argv );
     qRegisterMetaType<Meta::TrackList>();
     qRegisterMetaType<Meta::AlbumList>();
     qRegisterMetaType<Meta::ArtistList>();
@@ -174,10 +173,11 @@ TestOneWaySynchronizationJob::testAddTrackToTarget()
     QCOMPARE( target->mc->trackMap().count(), 1 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
+    QSignalSpy spy( job, &OneWaySynchronizationJob::destroyed );
     job->setSource( source );
     job->setTarget( target );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount, 1 );
     QCOMPARE( source->mc->trackMap().count(), 2 );
@@ -202,10 +202,11 @@ TestOneWaySynchronizationJob::testAddAlbumToTarget()
     QCOMPARE( target->mc->trackMap().count(), 1 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
+    QSignalSpy spy( job, &OneWaySynchronizationJob::destroyed );
     job->setSource( source );
     job->setTarget( target );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount, 1 );
     QCOMPARE( source->mc->trackMap().count(), 2 );
@@ -230,10 +231,11 @@ TestOneWaySynchronizationJob::testAddArtistToTarget()
     QCOMPARE( target->mc->trackMap().count(), 1 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
+    QSignalSpy spy( job, &OneWaySynchronizationJob::destroyed );
     job->setSource( source );
     job->setTarget( target );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount, 1 );
     QCOMPARE( source->mc->trackMap().count(), 2 );
@@ -257,10 +259,11 @@ TestOneWaySynchronizationJob::testEmptyTarget()
     QCOMPARE( target->mc->trackMap().count(), 0 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
+    QSignalSpy spy( job, &OneWaySynchronizationJob::destroyed );
     job->setSource( source );
     job->setTarget( target );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount, 2 );
     QCOMPARE( source->mc->trackMap().count(), 2 );
@@ -283,10 +286,11 @@ TestOneWaySynchronizationJob::testEmptySourceWithNonEmptyTarget()
     QCOMPARE( target->mc->trackMap().count(), 1 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
+    QSignalSpy spy( job, &OneWaySynchronizationJob::destroyed );
     job->setSource( source );
     job->setTarget( target );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( source->mc->trackMap().count(), 0 );
@@ -312,10 +316,11 @@ TestOneWaySynchronizationJob::testNoActionNecessary()
     QCOMPARE( target->mc->trackMap().count(), 2 );
 
     OneWaySynchronizationJob *job = new OneWaySynchronizationJob();
+    QSignalSpy spy( job, &OneWaySynchronizationJob::destroyed );
     job->setSource( source );
     job->setTarget( target );
     job->synchronize();
-    QTest::kWaitForSignal( job, SIGNAL(destroyed()), 1000 );
+    spy.wait( 1000 );
 
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( source->mc->trackMap().count(), 2 );

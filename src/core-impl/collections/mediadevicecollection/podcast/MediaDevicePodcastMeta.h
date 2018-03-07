@@ -25,11 +25,11 @@
 namespace Handler
 {
     class MediaDevicePodcastChannel;
-    typedef KSharedPtr<MediaDevicePodcastChannel> MediaDevicePodcastChannelPtr;
+    typedef AmarokSharedPointer<MediaDevicePodcastChannel> MediaDevicePodcastChannelPtr;
     typedef QList<MediaDevicePodcastChannelPtr> MediaDevicePodcastChannelList;
 
     class MediaDevicePodcastEpisode;
-    typedef KSharedPtr<MediaDevicePodcastEpisode> MediaDevicePodcastEpisodePtr;
+    typedef AmarokSharedPointer<MediaDevicePodcastEpisode> MediaDevicePodcastEpisodePtr;
     typedef QList<MediaDevicePodcastEpisodePtr> MediaDevicePodcastEpisodeList;
 
     class MediaDevicePodcastChannel : public Podcasts::PodcastChannel

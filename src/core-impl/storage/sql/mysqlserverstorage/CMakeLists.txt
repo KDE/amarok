@@ -8,21 +8,20 @@ set( amarok_storage-mysqlserverstorage_PART_SRCS
      MySqlServerStorageFactory.cpp
 )
 
-kde4_add_plugin(amarok_storage-mysqlserverstorage ${amarok_storage-mysqlserverstorage_PART_SRCS})
+add_library(amarok_storage-mysqlserverstorage MODULE ${amarok_storage-mysqlserverstorage_PART_SRCS})
 
-STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN "${CMAKE_SHARED_LINKER_FLAGS}")
-SET(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
+string(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN "${CMAKE_SHARED_LINKER_FLAGS}")
+set(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
 
-STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN "${CMAKE_MODULE_LINKER_FLAGS}")
-SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
+string(REPLACE "-Wl,--fatal-warnings" "" CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN "${CMAKE_MODULE_LINKER_FLAGS}")
+set(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
 
 target_link_libraries(amarok_storage-mysqlserverstorage
     # amarok-sqlstorage
     amarokcore
     amaroklib
-    ${KDE4_KDECORE_LIBS}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTGUI_LIBRARY}
+    Qt5::Core
+    Qt5::Gui
     ${MYSQL_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES}
@@ -30,12 +29,14 @@ target_link_libraries(amarok_storage-mysqlserverstorage
 
 if(NOT WIN32 AND NOT APPLE)
     target_link_libraries( amarok_storage-mysqlserverstorage crypt pthread )
-endif(NOT WIN32 AND NOT APPLE)
+endif()
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_storage-mysqlserverstorage PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
+endif()
 
 install(TARGETS amarok_storage-mysqlserverstorage DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 install(FILES amarok_storage-mysqlserverstorage.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+
+kcoreaddons_desktop_to_json(amarok_storage-mysqlserverstorage amarok_storage-mysqlserverstorage.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

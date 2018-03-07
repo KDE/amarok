@@ -23,38 +23,36 @@
 #ifndef AMAROK_CONTEXT_VIEW_H
 #define AMAROK_CONTEXT_VIEW_H
 
-#include "Context.h"
-#include "ContextObserver.h"
-#include "ContextScene.h"
-#include "EngineController.h"
-#include "Svg.h"
+
 #include "amarok_export.h"
-#include "widgets/ContainmentArrow.h"
-#include "widgets/appletexplorer/AppletExplorer.h"
 
-#include <Plasma/Containment>
-#include <Plasma/View>
+#include <QQuickWidget>
 
-#include <QMouseEvent>
-#include <QGraphicsView>
-#include <QQueue>
-
-class QPixmap;
 class ContextUrlRunner;
-class QParallelAnimationGroup;
+class FontFilter;
+class QPalette;
+class QQmlPropertyMap;
+class QScreen;
 
 namespace Context
 {
 
-class ContextScene;
-class ControlBox;
+class AppletLoader;
+class AppletModel;
+class AppletProxyModel;
 
-class AMAROK_EXPORT ContextView : public Plasma::View, public ContextSubject
+class AMAROK_EXPORT ContextView : public QQuickWidget
 {
     Q_OBJECT
 
+    // Properties copied from KF5::Plasma::Units
+    Q_PROPERTY( int smallSpacing READ smallSpacing NOTIFY spacingChanged )
+    Q_PROPERTY( int largeSpacing READ largeSpacing NOTIFY spacingChanged )
+    Q_PROPERTY( QQmlPropertyMap *iconSizes READ iconSizes CONSTANT )
+    Q_PROPERTY( qreal devicePixelRatio READ devicePixelRatio NOTIFY devicePixelRatioChanged )
+
 public:
-     ContextView( Plasma::Containment *containment, Plasma::Corona *corona, QWidget* parent = 0 );
+     ContextView( QWidget *parent = Q_NULLPTR );
     ~ContextView();
 
     /**
@@ -63,74 +61,59 @@ public:
     static ContextView *self() { return s_self; }
 
     /**
-        Returns the context scene that this view is attached to.
+     * Get the plugin names, in order, of the applets currently in the contextView.
     */
-    ContextScene* contextScene();
+    QStringList currentApplets() const;
 
     /**
-        Clears the context scene of all items, but first saves the current state of the scene into the
-        config file using as a key the string parameter.
+     * Get the user visible applet names, in order, of the applets currently in the contextView.
     */
-    void clear( const ContextState& name );
-
-    void clearNoSave();
+    QStringList currentAppletNames() const;
 
     /**
-        Shows the home state. Loads applets from config file.
-    */
-    void showHome();
-
-    /**
-        Get the plugin names, in order, of the applets currently in the contextView.
-    */
-    QStringList currentApplets();
-
-    /**
-        Get the user visible applet names, in order, of the applets currently in the contextView.
-    */
-    QStringList currentAppletNames();
-
-    /**
-        Adds a collapse animation
-        This object will take ownership of the animation.
-    */
-    void addCollapseAnimation( QAbstractAnimation *anim );
-
-public slots:
-    /**
-     * Convenience methods to show and hide the applet explorer.
+     * Get the Context::AppletModel instance in use.
+     * It can be used to show, hide enable or disable applets among other things.
      */
-    void hideAppletExplorer();
-    void showAppletExplorer();
+    AppletProxyModel *appletModel() const { return m_proxyModel; }
 
-signals:
-    void appletExplorerHid();
+    Q_INVOKABLE void runLink( const QUrl &link ) const;
+    Q_INVOKABLE void debug( const QString &error ) const;
+    Q_INVOKABLE void warning( const QString &error ) const;
+    Q_INVOKABLE void error( const QString &error ) const;
 
-protected:
-    void resizeEvent(QResizeEvent *event);
-    void wheelEvent(QWheelEvent *event);
+    int smallSpacing() const { return m_smallSpacing; }
+    int largeSpacing() const { return m_largeSpacing; }
+    QQmlPropertyMap* iconSizes() const { return m_iconSizes; }
+    qreal devicePixelRatio() const { return m_devicePixelRatio; }
 
 private slots:
-    void slotTrackChanged( Meta::TrackPtr track );
-    void slotMetadataChanged( Meta::TrackPtr track );
-    void slotPositionAppletExplorer();
-    void slotStartCollapseAnimations();
-    void slotCollapseAnimationsFinished();
+    void slotStatusChanged( QQuickWidget::Status status );
+    void updateSpacing();
+    void updateDevicePixelRatio( QScreen *screen );
+    void iconLoaderSettingsChanged();
+    void updatePalette( const QPalette &palette );
+
+signals:
+    void spacingChanged();
+    void iconSizesChanged();
+    void devicePixelRatioChanged();
 
 private:
-    static ContextView* s_self;
+    // copied from KF5::Plasma::Units
+    int devicePixelIconSize( int size ) const;
 
-    void loadConfig();
+    static ContextView *s_self;
 
-    // holds what is currently being shown
-    ContextState m_curState;
+    ContextUrlRunner *m_urlRunner;
+    AppletLoader *m_loader;
+    AppletModel *m_appletModel;
+    AppletProxyModel *m_proxyModel;
+    FontFilter *m_fontFilter;
 
-    ContextUrlRunner * m_urlRunner;
-
-    AppletExplorer *m_appletExplorer;
-    QParallelAnimationGroup *m_collapseAnimations;
-    QAnimationGroup *m_queuedAnimations;
-    QTimer *m_collapseGroupTimer;
+    int m_smallSpacing;
+    int m_largeSpacing;
+    QQmlPropertyMap *m_iconSizes;
+    qreal m_devicePixelRatio;
 };
 
 } // Context namespace

@@ -20,24 +20,24 @@
 #include "ui_ExcludedLabelsDialog.h"
 #include "core/meta/forward_declarations.h"
 
-#include <KDialog>
+#include <QDialog>
 
 namespace StatSyncing {
     class Config;
 }
-class KLineEdit;
+class QLineEdit;
 class QGridLayout;
 class QListWidget;
 
-class ExcludedLabelsDialog : public KDialog, private Ui_ExcludedLabelsDialog
+class ExcludedLabelsDialog : public QDialog, private Ui_ExcludedLabelsDialog
 {
     Q_OBJECT
 
     public:
-        explicit ExcludedLabelsDialog( StatSyncing::Config *config, QWidget *parent = 0,
-                                       Qt::WFlags flags = 0 );
+        explicit ExcludedLabelsDialog( StatSyncing::Config *config, QWidget *parent = Q_NULLPTR,
+                                       Qt::WindowFlags flags = Qt::WindowFlags() );
 
-    private slots:
+    private Q_SLOTS:
         void slowNewResultReady( const Meta::LabelList &labels );
         void slotAddExcludedLabel();
         void slotSaveToConfig();

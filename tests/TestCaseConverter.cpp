@@ -21,11 +21,10 @@
 
 #include "CaseConverter.h"
 
-#include <QtTest/QTest>
+#include <QTest>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestCaseConverter )
+QTEST_GUILESS_MAIN( TestCaseConverter )
 
 TestCaseConverter::TestCaseConverter()
 {

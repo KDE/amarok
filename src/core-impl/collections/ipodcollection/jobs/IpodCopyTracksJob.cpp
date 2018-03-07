@@ -35,8 +35,8 @@
 #include <gpod/itdb.h>
 #include <unistd.h>  // fsync()
 
-IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,KUrl> &sources,
-                                      const QWeakPointer<IpodCollection> &collection,
+IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,QUrl> &sources,
+                                      const QPointer<IpodCollection> &collection,
                                       const Transcoding::Configuration &configuration,
                                       bool goingToRemoveSources )
     : Job()
@@ -46,24 +46,26 @@ IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,KUrl> &sources,
     , m_aborted( false )
     , m_goingToRemoveSources( goingToRemoveSources )
 {
-    connect( this, SIGNAL(startDuplicateTrackSearch(Meta::TrackPtr)),
-                   SLOT(slotStartDuplicateTrackSearch(Meta::TrackPtr)) );
-    connect( this, SIGNAL(startCopyOrTranscodeJob(KUrl,KUrl,bool)),
-                   SLOT(slotStartCopyOrTranscodeJob(KUrl,KUrl,bool)) );
-    connect( this, SIGNAL(displaySorryDialog()), SLOT(slotDisplaySorryDialog()) );
+    connect( this, &IpodCopyTracksJob::startDuplicateTrackSearch,
+             this, &IpodCopyTracksJob::slotStartDuplicateTrackSearch );
+    connect( this, &IpodCopyTracksJob::startCopyOrTranscodeJob,
+             this, &IpodCopyTracksJob::slotStartCopyOrTranscodeJob );
+    connect( this, &IpodCopyTracksJob::displaySorryDialog, this, &IpodCopyTracksJob::slotDisplaySorryDialog );
 }
 
 void
-IpodCopyTracksJob::run()
+IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     if( !m_coll )
         return;  // destructed behind our back
-    float totalSafeCapacity = m_coll.data()->totalCapacity() - m_coll.data()->capacityMargin();
-    QByteArray mountPoint = QFile::encodeName( m_coll.data()->mountPoint() );
-    QString collectionPrettyName = m_coll.data()->prettyName();
+    float totalSafeCapacity = m_coll->totalCapacity() - m_coll->capacityMargin();
+    QByteArray mountPoint = QFile::encodeName( m_coll->mountPoint() );
+    QString collectionPrettyName = m_coll->prettyName();
 
-    itdb_start_sync( m_coll.data()->m_itdb );
-    QMapIterator<Meta::TrackPtr, KUrl> it( m_sources );
+    itdb_start_sync( m_coll->m_itdb );
+    QMapIterator<Meta::TrackPtr, QUrl> it( m_sources );
     while( it.hasNext() )
     {
         if( m_aborted || !m_coll )
@@ -71,7 +73,7 @@ IpodCopyTracksJob::run()
 
         it.next();
         Meta::TrackPtr track = it.key();
-        KUrl sourceUrl = it.value();
+        QUrl sourceUrl = it.value();
         emit startDuplicateTrackSearch( track );
 
         // wait for searching to finish:
@@ -85,14 +87,14 @@ IpodCopyTracksJob::run()
         if( !m_coll )
             break;  // destructed behind our back
 
-        bool isJustCopy = m_transcodingConfig.isJustCopy( track, m_coll.data()->supportedFormats() );
+        bool isJustCopy = m_transcodingConfig.isJustCopy( track, m_coll->supportedFormats() );
 
         if( isJustCopy  // if not copying, we catch big files later
-            && track->filesize() > totalSafeCapacity - m_coll.data()->usedCapacity() )
+            && track->filesize() > totalSafeCapacity - m_coll->usedCapacity() )
         {
             // this is a best effort check, we do one definite one after the file is copied
             debug() << "Refusing to copy" << track->prettyUrl() << "to iPod: there are only"
-                    << totalSafeCapacity - m_coll.data()->usedCapacity() << "free bytes (not"
+                    << totalSafeCapacity - m_coll->usedCapacity() << "free bytes (not"
                     << "counting a safety margin) on iPod and track has" << track->filesize()
                     << "bytes.";
             trackProcessed( ExceededingSafeCapacity, track );
@@ -104,7 +106,7 @@ IpodCopyTracksJob::run()
         else
             fileExtension = Amarok::Components::transcodingController()->format(
                             m_transcodingConfig.encoder() )->fileExtension();
-        if( !m_coll.data()->supportedFormats().contains( fileExtension ) )
+        if( !m_coll->supportedFormats().contains( fileExtension ) )
         {
             m_notPlayableFormats.insert( fileExtension );
             trackProcessed( NotPlayable, track );
@@ -130,7 +132,7 @@ IpodCopyTracksJob::run()
         }
 
         // start the physical copying
-        KUrl destUrl = KUrl( QFile::decodeName( destFilename ) );
+        QUrl destUrl = QUrl::fromLocalFile( QFile::decodeName( destFilename ) );
         emit startCopyOrTranscodeJob( sourceUrl, destUrl, isJustCopy );
 
         // wait for copying to finish:
@@ -146,10 +148,10 @@ IpodCopyTracksJob::run()
         }
         if( !m_coll )
             break;  // destructed behind our back
-        if( m_coll.data()->usedCapacity() > totalSafeCapacity )
+        if( m_coll->usedCapacity() > totalSafeCapacity )
         {
             debug() << "We exceeded total safe-to-use capacity on iPod (safe-to-use:"
-                    << totalSafeCapacity << "B, used:" << m_coll.data()->usedCapacity()
+                    << totalSafeCapacity << "B, used:" << m_coll->usedCapacity()
                     << "): removing copied track from iPod";
             destFile.remove();
             trackProcessed( ExceededingSafeCapacity, track );
@@ -200,7 +202,7 @@ IpodCopyTracksJob::run()
             delete ipodTrack;
             break;  // we were waiting for copying, m_coll may got destoryed
         }
-        Meta::TrackPtr newTrack = m_coll.data()->addTrack( ipodTrack );
+        Meta::TrackPtr newTrack = m_coll->addTrack( ipodTrack );
         if( !newTrack )
         {
             destFile.remove();
@@ -211,7 +213,7 @@ IpodCopyTracksJob::run()
     }
 
     if( m_coll )
-        itdb_stop_sync( m_coll.data()->m_itdb );
+        itdb_stop_sync( m_coll->m_itdb );
     emit endProgressOperation( this );
 
     int sourceSize = m_sources.size();
@@ -251,6 +253,23 @@ IpodCopyTracksJob::run()
 }
 
 void
+IpodCopyTracksJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+IpodCopyTracksJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
+
+void
 IpodCopyTracksJob::abort()
 {
     m_aborted = true;
@@ -259,7 +278,7 @@ IpodCopyTracksJob::abort()
 void
 IpodCopyTracksJob::slotStartDuplicateTrackSearch( const Meta::TrackPtr &track )
 {
-    Collections::QueryMaker *qm = m_coll.data()->queryMaker();
+    Collections::QueryMaker *qm = m_coll->queryMaker();
     qm->setQueryType( Collections::QueryMaker::Track );
 
     // we cannot qm->addMatch( track ) - it matches by uidUrl()
@@ -273,9 +292,9 @@ IpodCopyTracksJob::slotStartDuplicateTrackSearch( const Meta::TrackPtr &track )
     // we don't want to match by filesize, track length, filetype etc - these change during
     // transcoding. We don't match album artist because handling of it is inconsistent
 
-    connect( qm, SIGNAL(newResultReady(Meta::TrackList)),
-             SLOT(slotDuplicateTrackSearchNewResult(Meta::TrackList)) );
-    connect( qm, SIGNAL(queryDone()), SLOT(slotDuplicateTrackSearchQueryDone()) );
+    connect( qm, &Collections::QueryMaker::newTracksReady,
+             this, &IpodCopyTracksJob::slotDuplicateTrackSearchNewResult );
+    connect( qm, &Collections::QueryMaker::queryDone, this, &IpodCopyTracksJob::slotDuplicateTrackSearchQueryDone );
     qm->setAutoDelete( true );
     m_duplicateTrack = Meta::TrackPtr(); // reset duplicate track from previous query
     qm->run();
@@ -296,14 +315,14 @@ IpodCopyTracksJob::slotDuplicateTrackSearchQueryDone()
 }
 
 void
-IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl,
+IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const QUrl &sourceUrl, const QUrl &destUrl,
                                                 bool isJustCopy )
 {
     KJob *job = 0;
     if( isJustCopy )
     {
         if( m_goingToRemoveSources && m_coll &&
-            sourceUrl.toLocalFile().startsWith( m_coll.data()->mountPoint() ) )
+            sourceUrl.toLocalFile().startsWith( m_coll->mountPoint() ) )
         {
             // special case for "add orphaned tracks" to either save space and significantly
             // speed-up the process:
@@ -322,8 +341,8 @@ IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUr
         job = new Transcoding::Job( sourceUrl, destUrl, m_transcodingConfig );
     }
     job->setUiDelegate( 0 ); // be non-interactive
-    connect( job, SIGNAL(finished(KJob*)), // we must use this instead of result() to prevent deadlock
-             SLOT(slotCopyOrTranscodeJobFinished(KJob*)) );
+    connect( job, &Transcoding::Job::finished, // we must use this instead of result() to prevent deadlock
+             this, &IpodCopyTracksJob::slotCopyOrTranscodeJobFinished );
     job->start();  // no-op for KIO job, but matters for transcoding job
 }
 
@@ -342,7 +361,7 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
     int successCount = m_sourceTrackStatus.count( Success );
 
     // match string with IpodCollectionLocation::prettyLocation()
-    QString collName = m_coll ? m_coll.data()->prettyName() : i18n( "Disconnected iPod/iPad/iPhone" );
+    QString collName = m_coll ? m_coll->prettyName() : i18n( "Disconnected iPod/iPad/iPhone" );
     QString caption = i18nc( "%1 is collection pretty name, e.g. My Little iPod",
                              "Transferred Tracks to %1", collName );
     QString text;
@@ -359,8 +378,10 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
         details += i18np( "One track was not transferred because it would exceed iPod capacity.<br>",
                           "%1 tracks were not transferred because it would exceed iPod capacity.<br>",
                           exceededingSafeCapacityCount );
-        QString reservedSpace = m_coll ? KGlobal::locale()->formatByteSize(
-            m_coll.data()->capacityMargin(), 1 ) : QString( "???" ); // improbable, don't bother translators
+
+        QString reservedSpace = m_coll ? QLocale().toString(
+            m_coll->capacityMargin(), 1 ) : QString( "???" ); // improbable, don't bother translators
+
         details += i18nc( "Example of %1 would be: 20.0 MiB",
                           "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>",
                           reservedSpace );
@@ -410,4 +431,3 @@ IpodCopyTracksJob::trackProcessed( CopiedStatus status, Meta::TrackPtr srcTrack,
     emit signalTrackProcessed( srcTrack, destTrack, status );
 }
 
-#include "IpodCopyTracksJob.moc"

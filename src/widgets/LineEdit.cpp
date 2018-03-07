@@ -22,7 +22,7 @@ namespace Amarok
 {
 
 LineEdit::LineEdit( QWidget *parent )
-   : KLineEdit( parent )
+   : QLineEdit( parent )
 {
 }
 
@@ -46,9 +46,8 @@ void LineEdit::keyPressEvent( QKeyEvent *event )
         emit upPressed();
         return;
     }
-    KLineEdit::keyPressEvent( event );
+    QLineEdit::keyPressEvent( event );
 }
 
 }
 
-#include "LineEdit.moc"

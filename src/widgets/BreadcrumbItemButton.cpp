@@ -23,9 +23,9 @@
 #include "core/support/Amarok.h"
 
 #include <KColorScheme>
-#include <KIcon>
-#include <KLocale>
-#include <KMenu>
+#include <QIcon>
+#include <KLocalizedString>
+#include <QMenu>
 
 #include <QApplication>
 #include <QClipboard>
@@ -158,10 +158,10 @@ BreadcrumbItemButton::drawHoverBackground(QPainter* painter)
     {
         // QColor backgroundColor = palette().color(QPalette::Highlight);
         // TODO: the backgroundColor should be applied to the style
-        QStyleOptionViewItemV4 option;
+        QStyleOptionViewItem option;
         option.initFrom(this);
         option.state = QStyle::State_Enabled | QStyle::State_MouseOver;
-        option.viewItemPosition = QStyleOptionViewItemV4::OnlyOne;
+        option.viewItemPosition = QStyleOptionViewItem::OnlyOne;
         style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, this );
     }
 }
@@ -232,13 +232,13 @@ BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
 
 
 BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent )
-    : BreadcrumbItemButton( KIcon( "bookmark-new-list" ), QString(), parent )
+    : BreadcrumbItemButton( QIcon::fromTheme( "bookmark-new-list" ), QString(), parent )
     , m_urlsCommand( urlsCommand )
     , m_copyToClipboardAction( 0 )
 {
     setToolTip( i18n( "List and run bookmarks, or create new ones" ) );
 
-    connect( this, SIGNAL(clicked(bool)), this, SLOT(showMenu()) );
+    connect( this, &QAbstractButton::clicked, this, &BreadcrumbUrlMenuButton::showMenu );
 }
 
 BreadcrumbUrlMenuButton::~BreadcrumbUrlMenuButton()
@@ -273,8 +273,8 @@ BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
 
     if( !m_copyToClipboardAction )
     {
-        m_copyToClipboardAction = new QAction( KIcon( "klipper" ), i18n( "Copy Current View Bookmark to Clipboard" ), this );
-        connect( m_copyToClipboardAction, SIGNAL(triggered(bool)), this, SLOT(copyCurrentToClipboard()) );
+        m_copyToClipboardAction = new QAction( QIcon::fromTheme( "klipper" ), i18n( "Copy Current View Bookmark to Clipboard" ), this );
+        connect( m_copyToClipboardAction, &QAction::triggered, this, &BreadcrumbUrlMenuButton::copyCurrentToClipboard );
     }
 
     menu->addAction( m_copyToClipboardAction );
@@ -327,4 +327,3 @@ BreadcrumbUrlMenuButton::copyCurrentToClipboard()
 
 }
 
-#include "BreadcrumbItemButton.moc"

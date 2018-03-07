@@ -28,7 +28,7 @@
 
 class QVBoxLayout;
 class QLabel;
-class KComboBox;
+class QComboBox;
 
 namespace PlaylistBrowserNS
 {
@@ -44,11 +44,11 @@ namespace PlaylistBrowserNS
             BiasDialog( Dynamic::BiasPtr bias, QWidget* parent = 0 );
             virtual ~BiasDialog();
 
-        public slots:
+        public Q_SLOTS:
             void accept();
             void reject();
 
-        protected slots:
+        protected Q_SLOTS:
             /** Updates the list of biases in the bias type selection list */
             void factoriesChanged();
             /** Called when a new bias type has been selected */
@@ -60,7 +60,7 @@ namespace PlaylistBrowserNS
             QVBoxLayout* m_mainLayout;
             QVBoxLayout* m_biasLayout;
 
-            KComboBox* m_biasSelection;
+            QComboBox* m_biasSelection;
             QLabel *m_descriptionLabel;
             QWidget *m_biasWidget;
 

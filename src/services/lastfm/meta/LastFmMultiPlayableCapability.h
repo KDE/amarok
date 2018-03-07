@@ -25,7 +25,7 @@
 #include "core/meta/forward_declarations.h"
 #include "core/capabilities/MultiPlayableCapability.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <Track.h>
 #include <RadioStation.h>
@@ -44,14 +44,14 @@ class LastFmMultiPlayableCapability : public Capabilities::MultiPlayableCapabili
         virtual void fetchFirst();
         virtual void fetchNext();
 
-    private slots:
+    private Q_SLOTS:
         void slotTrackPlaying( const Meta::TrackPtr &track );
         void slotNewTrackAvailable();
         void skip();
         void error( lastfm::ws::Error e );
 
     private:
-        KUrl m_url;
+        QUrl m_url;
         LastFm::TrackPtr m_track;
 
         lastfm::Track m_currentTrack;

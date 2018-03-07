@@ -17,21 +17,21 @@
 #ifndef STATSYNCING_CONFIGURE_PROVIDER_DIALOG_H
 #define STATSYNCING_CONFIGURE_PROVIDER_DIALOG_H
 
-#include <KDialog>
+#include <KPageDialog>
 
 #include <QButtonGroup>
 #include <QMap>
 #include <QSharedPointer>
 #include <QString>
 
-#include <KIcon>
+#include <QIcon>
 
 namespace StatSyncing
 {
 
     class ProviderConfigWidget;
 
-    class ConfigureProviderDialog : public KDialog
+    class ConfigureProviderDialog : public KPageDialog
     {
         Q_OBJECT
 
@@ -40,13 +40,14 @@ namespace StatSyncing
                                           QWidget *parent = 0, Qt::WindowFlags f = 0 );
         virtual ~ConfigureProviderDialog();
 
-    signals:
+    Q_SIGNALS:
         void providerConfigured( QString id, QVariantMap config );
 
     private:
         QString m_providerId;
+        QWidget *mainWidget;
 
-    private slots:
+    private Q_SLOTS:
         void slotAccepted();
     };
 

@@ -17,6 +17,7 @@
 #include "ConnectionAssistant.h"
 
 #include "MediaDeviceMonitor.h"
+#include "core/support/Debug.h"
 
 ConnectionAssistant::ConnectionAssistant( bool wait )
     : QObject()
@@ -64,4 +65,3 @@ ConnectionAssistant::wait()
 }
 
 
-#include "ConnectionAssistant.moc"

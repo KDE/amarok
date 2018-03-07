@@ -71,8 +71,8 @@ SqlScanResultProcessor::scanSucceeded()
     // -- error reporting
     m_messages.append( m_collection->sqlStorage()->getLastErrors() );
 
-    if( !m_messages.isEmpty() && QApplication::type() != QApplication::Tty )
-        QTimer::singleShot(0, this, SLOT(displayMessages())); // do in the UI thread
+    if( !m_messages.isEmpty() && qobject_cast<QGuiApplication*>(qApp) )
+        QTimer::singleShot(0, this, &SqlScanResultProcessor::displayMessages); // do in the UI thread
 
     unblockUpdates();
 }
@@ -198,7 +198,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     }
     uid = m_collection->generateUidUrl( uid );
 
-    int deviceId = m_collection->mountPointManager()->getIdForUrl( track->path() );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( QUrl::fromUserInput(track->path()) );
     QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, track->path() );
 
     if( m_foundTracks.contains( uid ) )
@@ -365,7 +365,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
 void
 SqlScanResultProcessor::deleteDeletedDirectories()
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     QList<DirectoryEntry> toCheck;
     switch( m_type )
@@ -479,7 +479,7 @@ SqlScanResultProcessor::relocateTracksToNewDirectory( int oldDirId, int newDirId
 
     MountPointManager *manager = m_collection->mountPointManager();
     SqlRegistry *reg = m_collection->registry();
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     // sanity checking, not strictly needed, but imagine new device appearing in the
     // middle of the scan, so rather prevent db corruption:
@@ -501,7 +501,7 @@ SqlScanResultProcessor::relocateTracksToNewDirectory( int oldDirId, int newDirId
         Q_ASSERT( track );
 
         // not strictly needed, but we want to sanity check it to prevent corrupt db
-        int deviceId = manager->getIdForUrl( entry.path );
+        int deviceId = manager->getIdForUrl( QUrl::fromUserInput(entry.path) );
         if( newDirDeviceId != deviceId )
         {
             warning() << "relocateTracksToNewDirectory(): device id from newDirId ("
@@ -536,7 +536,7 @@ SqlScanResultProcessor::removeTrack( const UrlEntry &entry )
 QList<SqlScanResultProcessor::DirectoryEntry>
 SqlScanResultProcessor::mountedDirectories() const
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     // -- get a list of all mounted device ids
     QList<int> idList = m_collection->mountPointManager()->getMountedDeviceIds();
@@ -569,7 +569,7 @@ SqlScanResultProcessor::mountedDirectories() const
 QList<SqlScanResultProcessor::DirectoryEntry>
 SqlScanResultProcessor::deletedDirectories() const
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     QHash<int, DirectoryEntry> idToDirEntryMap; // for faster processing during filtering
     foreach( int directoryId, m_scannedDirectoryIds )
@@ -627,7 +627,7 @@ SqlScanResultProcessor::deletedDirectories() const
 void
 SqlScanResultProcessor::urlsCacheInit()
 {
-    SqlStorage *storage = m_collection->sqlStorage();
+    auto storage = m_collection->sqlStorage();
 
     QString query = QString( "SELECT id, deviceid, rpath, directory, uniqueid FROM urls;");
     QStringList res = storage->query( query );

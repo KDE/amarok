@@ -21,18 +21,38 @@
 #include "core/support/Debug.h"
 
 MusicDNSXmlParser::MusicDNSXmlParser( QString &doc )
-                    : ThreadWeaver::Job()
+                    : QObject()
+                    , ThreadWeaver::Job()
                     , m_doc( "musicdns" )
 {
     m_doc.setContent( doc );
 }
 
 void
-MusicDNSXmlParser::run()
+MusicDNSXmlParser::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
     QDomElement docElem = m_doc.documentElement();
     parseElement( docElem );
+}
+
+void
+MusicDNSXmlParser::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+MusicDNSXmlParser::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 QStringList

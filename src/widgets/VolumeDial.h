@@ -34,7 +34,7 @@ public:
     void addWheelProxies( QList<QWidget*> proxies );
     QSize sizeHint() const;
 
-public slots:
+public Q_SLOTS:
     /**
        Remove an added wheelproxy. The slot is automatically bound to the widgets deconstruction
        signal when added. You don't have to do that.
@@ -42,7 +42,7 @@ public slots:
     void removeWheelProxy( QObject * );
     void setMuted( bool mute );
 
-signals:
+Q_SIGNALS:
     void muteToggled( bool mute );
 
 protected:
@@ -65,7 +65,7 @@ private:
     void renderIcons();
     void updateSliderGradient();
 
-private slots:
+private Q_SLOTS:
     void paletteChanged( const QPalette &palette );
     void valueChangedSlot( int );
 

@@ -35,12 +35,12 @@ public:
     virtual ~PhotoBrowser();
 
     void fillAlbums(Meta::AlbumList albums);
-public slots:
+public Q_SLOTS:
     void fastForward();
     void fastBackward();
     void skipToSlide(int iSlide);
 
-private slots:
+private Q_SLOTS:
     void preload();
     void updateImageData();
 

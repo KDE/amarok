@@ -30,15 +30,17 @@ class IpodCollection;
 
 class IpodCollectionFactory : public Collections::CollectionFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-ipodcollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        IpodCollectionFactory( QObject *parent, const QVariantList &args );
+        IpodCollectionFactory();
         virtual ~IpodCollectionFactory();
 
         virtual void init();
 
-    private slots:
+    private Q_SLOTS:
         /**
          * Called when solid notifier detects a new device has been added
          */

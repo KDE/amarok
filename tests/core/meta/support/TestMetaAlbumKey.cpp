@@ -15,14 +15,14 @@
 
 #include "TestMetaAlbumKey.h"
 
+#include "amarokconfig.h"
 #include "config-amarok-test.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaKeys.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestMetaAlbumKey )
+QTEST_MAIN( TestMetaAlbumKey )
 
 TestMetaAlbumKey::~TestMetaAlbumKey()
 {
@@ -31,14 +31,16 @@ TestMetaAlbumKey::~TestMetaAlbumKey()
 void
 TestMetaAlbumKey::initTestCase()
 {
+    AmarokConfig::instance("amarokrc");
+
     // Artist Name - Amarok    Album Name - Amarok Test Album
-    m_track1 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album/Track01.ogg" ) );
+    m_track1 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track01.ogg" )) );
 
     // Artist Name - Amarok    Album Name - Amarok Test Album 2
-    m_track2 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album2/Track01.ogg" ) );
+    m_track2 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album2/Track01.ogg" )) );
 
     // Artist Name - Amarok 2   Album Name - Amarok Test Album 2
-    m_track3 = CollectionManager::instance()->trackForUrl( dataPath( "data/audio/album2/Track02.ogg" ) );
+    m_track3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album2/Track02.ogg" )) );
 
     m_album1 = m_track1->album();
     m_album2 = m_track2->album();

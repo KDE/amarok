@@ -20,8 +20,10 @@
 #ifndef TESTXSPFPLAYLIST_H
 #define TESTXSPFPLAYLIST_H
 
-#include <QtCore/QObject>
-#include <QtCore/QString>
+#include <QObject>
+#include <QString>
+
+class QTemporaryDir;
 
 namespace Playlists {
     class XSPFPlaylist;
@@ -34,7 +36,7 @@ Q_OBJECT
 public:
     TestXSPFPlaylist();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -58,6 +60,7 @@ private slots:
 
 private:
     Playlists::XSPFPlaylist *m_testPlaylist1;
+    QTemporaryDir *m_tempDir;
     QString dataPath( const QString &relPath );
 };
 

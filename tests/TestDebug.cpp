@@ -22,8 +22,8 @@
 #include "core/support/Debug.h"
 #include "config-amarok-test.h"
 
-#include <QtCore/QStack>
-#include <QtTest/QTest>
+#include <QStack>
+#include <QTest>
 
 class TestDebug : public QObject
 {
@@ -165,6 +165,6 @@ TestDebug::colorize( const QString &string, int colorIndex, bool colorEnabled )
 }
 
 
-QTEST_MAIN( TestDebug )
+QTEST_GUILESS_MAIN( TestDebug )
 
 #include "TestDebug.moc"

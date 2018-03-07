@@ -214,22 +214,22 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
 
         virtual int validFilterMask();
 
-    signals:
+    Q_SIGNALS:
         /**
          * newResultReady will be emitted every time new results from the query maker are received.
          * This signal can be emitted zero times (in case of no results) one (the usual case) or multiple times
          * (e.g. in case when the result is received in several batches).
          * The results will be terminated by a queryDone signal.
          */
-        void newResultReady( Meta::TrackList );
-        void newResultReady( Meta::ArtistList );
-        void newResultReady( Meta::AlbumList );
-        void newResultReady( Meta::GenreList );
-        void newResultReady( Meta::ComposerList );
-        void newResultReady( Meta::YearList );
         void newResultReady( QStringList );
-        void newResultReady( Meta::LabelList );
-        void newResultReady( Meta::DataList );
+        void newTracksReady( Meta::TrackList );
+        void newArtistsReady( Meta::ArtistList );
+        void newAlbumsReady( Meta::AlbumList );
+        void newGenresReady( Meta::GenreList );
+        void newComposersReady( Meta::ComposerList );
+        void newYearsReady( Meta::YearList );
+        void newLabelsReady( Meta::LabelList );
+        void newDataReady( Meta::DataList );
 
         /**
          * This signal is emitted after all the results have been submitted via zero or more newResultReady signals.

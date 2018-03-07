@@ -19,11 +19,12 @@
 #ifndef DAAPREADER_H
 #define DAAPREADER_H
 
+#include <core-impl/collections/support/MemoryCollection.h>
+
 #include <QObject>
 
-#include <kurl.h>
-#include <threadweaver/Job.h>
-#include "MemoryCollection.h"
+#include <QUrl>
+#include <ThreadWeaver/Job>
 
 class QString;
 
@@ -73,17 +74,17 @@ namespace Daap
             quint16 port() const { return m_port; }
 
             bool parseSongList( const QByteArray &data, bool set_collection = false);
-        public slots:
-            void logoutRequest(int, bool );
-            void contentCodesReceived( int id , bool error );
-            void loginHeaderReceived( const QHttpResponseHeader& resp );
-            void loginFinished( int id , bool error );
-            void updateFinished( int id , bool error );
-            void databaseIdFinished( int id , bool error );
-            void songListFinished( int id, bool error );
+        public Q_SLOTS:
+            void logoutRequestFinished();
+            void contentCodesReceived();
+            void loginHeaderReceived();
+            void loginFinished();
+            void updateFinished();
+            void databaseIdFinished();
+            void songListFinished();
             void fetchingError( const QString& error );
 
-        signals:
+        Q_SIGNALS:
             //void daapBundles( const QString& host, Daap::SongList bundles );
             void httpError( const QString& );
             void passwordRequired();
@@ -92,7 +93,6 @@ namespace Daap
             /**
             * Make a map-vector tree out of the DAAP binary result
             * @param raw stream of DAAP reply
-            * @param containerLength length of the container (or entire result) being analyzed
             */
             Map parse( QDataStream &raw);
             static void addElement( Map &parentMap, char* tag, QVariant element ); //!< supporter function for parse
@@ -119,17 +119,28 @@ namespace Daap
             YearMap m_yearMap;
     };
 
-    class WorkerThread : public ThreadWeaver::Job
+    class WorkerThread : public QObject, public ThreadWeaver::Job
     {
         Q_OBJECT
         public:
             WorkerThread( const QByteArray &data, Reader* reader, Collections::DaapCollection *coll );
             virtual ~WorkerThread();
 
-            virtual bool success() const;
+            virtual bool success() const Q_DECL_OVERRIDE;
 
         protected:
-            virtual void run();
+            void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+            void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+            void run(ThreadWeaver::JobPointer self=QSharedPointer<WorkerThread>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+
+        Q_SIGNALS:
+            /** This signal is emitted when this job is being processed by a thread. */
+            void started(ThreadWeaver::JobPointer);
+            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+            void done(ThreadWeaver::JobPointer);
+            /** This job has failed.
+             * This signal is emitted when success() returns false after the job is executed. */
+            void failed(ThreadWeaver::JobPointer);
 
         private:
             bool m_success;

@@ -31,11 +31,7 @@ IpodCollectionFactory.
 #ifndef AMAROK_MEDIADEVICEMONITOR_H
 #define AMAROK_MEDIADEVICEMONITOR_H
 
-//#include "MediaDeviceInfo.h"
-
 #include "amarok_export.h"
-#include "core-impl/collections/mediadevicecollection/support/ConnectionAssistant.h"
-#include "core/support/Debug.h"
 
 #include <QHash>
 #include <QList>
@@ -76,7 +72,7 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     */
     void registerDeviceType( ConnectionAssistant *assistant );
 
-    public slots:
+    public Q_SLOTS:
 
     /**
 
@@ -98,12 +94,12 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     void checkDevicesFor( ConnectionAssistant* assistant );
 
 
-    signals:
+    Q_SIGNALS:
         void deviceDetected( const MediaDeviceInfo &deviceinfo );
         void deviceRemoved( const QString &udi );
 
 
-    private slots:
+    private Q_SLOTS:
 
         void deviceAdded( const QString &udi );
         void slotDeviceRemoved( const QString &udi );

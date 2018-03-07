@@ -21,8 +21,11 @@
 // for CollectionManager::CollectionStatus that cannont be fwd-declared
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <QWeakPointer>
+#include <QPointer>
 #include <QDateTime>
+#include <QMap>
+
+#include <KLocalizedString>
 
 class QTimer;
 
@@ -32,11 +35,11 @@ namespace StatSyncing
     class CreateProviderDialog;
     class Process;
     class Provider;
-    typedef QExplicitlySharedDataPointer<Provider> ProviderPtr;
+    typedef QSharedPointer<Provider> ProviderPtr;
     typedef QList<ProviderPtr> ProviderPtrList;
     class ProviderFactory;
     class ScrobblingService;
-    typedef QExplicitlySharedDataPointer<ScrobblingService> ScrobblingServicePtr;
+    typedef QSharedPointer<ScrobblingService> ScrobblingServicePtr;
 
     /**
      * A singleton class that controls statistics synchronization and related tasks.
@@ -130,7 +133,7 @@ namespace StatSyncing
              */
             Config *config();
 
-        public slots:
+        public Q_SLOTS:
             /**
              * Start the whole synchronization machinery. This call returns quickly,
              * way before the synchronization is finished.
@@ -152,7 +155,7 @@ namespace StatSyncing
             void scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
                            const QDateTime &time = QDateTime() );
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when a track passed to scrobble() is successfully queued for
              * scrobbling submission. This signal is emitted for every scrobbling service.
@@ -167,7 +170,7 @@ namespace StatSyncing
              */
             void scrobbleFailed( const ScrobblingServicePtr &service, const Meta::TrackPtr &track, int error );
 
-        private slots:
+        private Q_SLOTS:
             /**
              * Creates new instance of provider type identified by @param type
              * with configuration stored in @param config.
@@ -194,7 +197,7 @@ namespace StatSyncing
                                       CollectionManager::CollectionStatus status );
             void slotCollectionRemoved( const QString &id );
             void startNonInteractiveSynchronization();
-            void synchronize( int mode );
+            void synchronizeWithMode( int mode );
 
             void slotTrackFinishedPlaying( const Meta::TrackPtr &track, double playedFraction );
             void slotResetLastSubmittedNowPlayingTrack();
@@ -213,7 +216,7 @@ namespace StatSyncing
 
             // synchronization-related
             ProviderPtrList m_providers;
-            QWeakPointer<Process> m_currentProcess;
+            QPointer<Process> m_currentProcess;
             QTimer *m_startSyncingTimer;
             Config *m_config;
 

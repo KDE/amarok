@@ -20,7 +20,7 @@
 #include "AmarokUrlHandler.h"
 #include "context/ContextView.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 
 ContextUrlGenerator * ContextUrlGenerator::s_instance = 0;
@@ -47,27 +47,25 @@ ContextUrlGenerator::createContextBookmark()
 {
     QStringList pluginNames = Context::ContextView::self()->currentApplets();
     QStringList appletNames = Context::ContextView::self()->currentAppletNames();
-
     AmarokUrl url;
 
     url.setCommand( "context" );
     url.setArg( "applets", pluginNames.join( "," ) );
 
     url.setName( i18n( "Context: %1", appletNames.join( "," ) ) );
-
     return url;
 }
 
-    
+
 QString
 ContextUrlGenerator::description()
 {
     return i18n( "Bookmark Context View Applets" );
 }
 
-KIcon ContextUrlGenerator::icon()
+QIcon ContextUrlGenerator::icon()
 {
-    return KIcon( "x-media-podcast-amarok" );
+    return QIcon::fromTheme( "x-media-podcast-amarok" );
 }
 
 AmarokUrl

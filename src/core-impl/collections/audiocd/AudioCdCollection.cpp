@@ -35,32 +35,27 @@
 #include "support/AudioCdConnectionAssistant.h"
 #include "support/AudioCdDeviceInfo.h"
 
-#include <kio/job.h>
-#include <kio/netaccess.h>
-#include <kio/udsentry.h>
+#include <KIO/Job>
+#include <KIO/UDSEntry>
 
 #include <solid/device.h>
 #include <solid/opticaldrive.h>
 
 #include <KConfigGroup>
 #include <KEncodingProber>
-
 #include <KSharedConfig>
 
 #include <QDir>
 #include <QTextCodec>
+#include <QUrlQuery>
 
 using namespace Collections;
 
-AMAROK_EXPORT_COLLECTION( AudioCdCollectionFactory, audiocdcollection )
-
 static const QString unknownCddbId( "unknown" );
 
-AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVariantList &args )
-    : MediaDeviceCollectionFactory<AudioCdCollection>( parent, args, new AudioCdConnectionAssistant() )
-{
-    m_info = KPluginInfo( "amarok_collection-audiocdcollection.desktop", "services" );
-}
+AudioCdCollectionFactory::AudioCdCollectionFactory()
+    : MediaDeviceCollectionFactory<AudioCdCollection>( new AudioCdConnectionAssistant() )
+{}
 
 AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
    : MediaDeviceCollection()
@@ -68,8 +63,8 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
 {
     DEBUG_BLOCK
     // so that `amarok --cdplay` works:
-    connect( this, SIGNAL(collectionReady(Collections::Collection*)),
-                   SLOT(checkForStartPlayRequest()) );
+    connect( this, &AudioCdCollection::collectionReady,
+             this, &AudioCdCollection::checkForStartPlayRequest );
 
     debug() << "Getting Audio CD info";
     AudioCdDeviceInfo *cdInfo = qobject_cast<AudioCdDeviceInfo *>( info );
@@ -87,16 +82,19 @@ AudioCdCollection::~AudioCdCollection()
 }
 
 
-KUrl
+QUrl
 AudioCdCollection::audiocdUrl( const QString &path ) const
 {
-    KUrl url("audiocd:/");
-
-    if( !path.isEmpty() )
-        url.addPath( path );
+    QUrl url("audiocd:/");
+    url = url.adjusted(QUrl::StripTrailingSlash);
+    url.setPath(url.path() + '/' + ( path ));
 
     if( !m_device.isEmpty() )
-        url.addQueryItem( "device", m_device );
+    {
+        QUrlQuery query;
+        query.addQueryItem( "device", m_device );
+        url.setQuery( query );
+    }
 
     return url;
 }
@@ -108,9 +106,8 @@ AudioCdCollection::readCd()
     DEBUG_BLOCK
     //get the CDDB info file if possible.
     KIO::ListJob *listJob = KIO::listRecursive( audiocdUrl(), KIO::HideProgressInfo, false );
-    connect( listJob, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
-             this, SLOT(audioCdEntries(KIO::Job*,KIO::UDSEntryList)) );
-    connect( listJob, SIGNAL(result(KJob*)), SLOT(slotEntriesJobDone(KJob*)) );
+    connect( listJob, &KIO::ListJob::entries, this, &AudioCdCollection::audioCdEntries );
+    connect( listJob, &KIO::ListJob::result, this, &AudioCdCollection::slotEntriesJobDone );
 }
 
 void
@@ -142,10 +139,10 @@ AudioCdCollection::slotEntriesJobDone( KJob *job )
     }
 
     int biggestTextFile = m_cddbTextFiles.keys().last();
-    KUrl url = m_cddbTextFiles.value( biggestTextFile );
+    QUrl url = m_cddbTextFiles.value( biggestTextFile );
     m_cddbTextFiles.clear(); // save memory
     KIO::StoredTransferJob *tjob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( tjob, SIGNAL(result(KJob*)), SLOT(infoFetchComplete(KJob*)) );
+    connect( tjob, &KIO::StoredTransferJob::result, this, &AudioCdCollection::infoFetchComplete );
 }
 
 void
@@ -288,7 +285,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
             baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
 
             //we hack the url so the engine controller knows what track on the CD to play..
-            KUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i + 1 ) );
+            QUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i + 1 ) );
 
             debug() << "Track Base File Name (after): " << baseFileName;
             debug() << "Track url: " << baseUrl;
@@ -373,10 +370,11 @@ AudioCdCollection::trackDisplayName( int i ) const
 qint64
 AudioCdCollection::trackLength( int i ) const
 {
-    KUrl kioUrl = audiocdUrl( trackWavFileName( i ) );
-    KIO::UDSEntry uds;
-    if ( KIO::NetAccess::stat(kioUrl, uds, NULL) )
+    QUrl kioUrl = audiocdUrl( trackWavFileName( i ) );
+    KIO::StatJob *statJob = KIO::stat( kioUrl );
+    if ( statJob->exec() )
     {
+        KIO::UDSEntry uds = statJob->statResult();
         qint64 samples = (uds.numberValue(KIO::UDSEntry::UDS_SIZE, 44) - 44) / 4;
         return (samples - 44) * 10 / 441;
     }
@@ -395,10 +393,10 @@ AudioCdCollection::prettyName() const
     return i18n( "Audio CD" );
 }
 
-KIcon
+QIcon
 AudioCdCollection::icon() const
 {
-    return KIcon( "media-optical-audio" );
+    return QIcon::fromTheme( "media-optical-audio" );
 }
 
 void
@@ -508,12 +506,12 @@ AudioCdCollection::noInfoAvailable()
 
     // This will find also data tracks on mixed CDs:
     // a better way to discover the available audio tracks should be found
-    while( KIO::NetAccess::exists( audiocdUrl( trackWav ), KIO::NetAccess::SourceSide, 0 ) )
+    while( KIO::stat( audiocdUrl( trackWav ), KIO::StatJob::SourceSide, 0 )->exec() )
     {
         debug() << "got track url: " << audiocdUrl( trackWav );
 
         //we hack the url so the engine controller knows what track on the CD to play..
-        KUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i ) );
+        QUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i ) );
 
         Meta::AudioCdTrackPtr trackPtr = Meta::AudioCdTrackPtr( new Meta::AudioCdTrack( this, trackDisplayName( i ), baseUrl ) );
 
@@ -557,13 +555,13 @@ AudioCdCollection::readAudioCdSettings()
 }
 
 bool
-AudioCdCollection::possiblyContainsTrack( const KUrl &url ) const
+AudioCdCollection::possiblyContainsTrack( const QUrl &url ) const
 {
-    return url.protocol() == "audiocd";
+    return url.scheme() == "audiocd";
 }
 
 Meta::TrackPtr
-AudioCdCollection::trackForUrl( const KUrl &url )
+AudioCdCollection::trackForUrl( const QUrl &url )
 {
     QReadLocker locker( memoryCollection()->mapLock() );
     if( memoryCollection()->trackMap().contains( url.url() ) )
@@ -600,7 +598,7 @@ AudioCdCollection::trackForUrl( const KUrl &url )
 void
 AudioCdCollection::updateProxyTracks()
 {
-    foreach( const KUrl &url, m_proxyMap.keys() )
+    foreach( const QUrl &url, m_proxyMap.keys() )
     {
 
         QString urlString = url.url().remove( "audiocd:/" );

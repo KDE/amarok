@@ -17,8 +17,9 @@
 #ifndef TESTSQLARTIST_H
 #define TESTSQLARTIST_H
 
-#include <QtTest/QtTest>
-#include <KTempDir>
+#include <QSharedPointer>
+#include <QtTest>
+#include <QTemporaryDir>
 
 class MySqlEmbeddedStorage;
 
@@ -32,7 +33,7 @@ class TestSqlArtist : public QObject
 public:
     TestSqlArtist();
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 
@@ -43,8 +44,8 @@ private slots:
 
 private:
     Collections::SqlCollection *m_collection;
-    MySqlEmbeddedStorage *m_storage;
-    KTempDir *m_tmpDir;
+    QSharedPointer<MySqlEmbeddedStorage> m_storage;
+    QTemporaryDir *m_tmpDir;
 
     public:
 };

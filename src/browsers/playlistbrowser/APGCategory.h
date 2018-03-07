@@ -32,10 +32,10 @@ namespace PlaylistBrowserNS {
             APGCategory( QWidget* parent );
             ~APGCategory();
 
-        signals:
+        Q_SIGNALS:
             void validIndexSelected( bool );
 
-        private slots:
+        private Q_SLOTS:
             void activeChanged( const QModelIndex& );
             void setQualityFactor( int );
             void runGenerator();

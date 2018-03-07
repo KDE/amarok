@@ -27,7 +27,7 @@ Handler::Capability::Capability( QObject *handler )
     /* moveToThread( hander->thread() ); setParent( handler ); fails on assert in debug
      * Qt builds. This is a workaround that is safe as long as this object is only deleted
      * using deleteLater() or form the handler's thread */
-    connect( this, SIGNAL(signalSetParent(QObject*)), this, SLOT(slotSetParent(QObject*)) );
+    connect( this, &Handler::Capability::signalSetParent, this, &Handler::Capability::slotSetParent );
     emit signalSetParent( handler );
 }
 
@@ -41,4 +41,3 @@ void Handler::Capability::slotSetParent( QObject *parent )
     setParent( parent );
 }
 
-#include "MediaDeviceHandlerCapability.moc"

@@ -23,10 +23,12 @@
 #include "libattica-ocsclient/provider.h"
 #include "OcsData.h"
 
-#include <KAboutPerson>
+#include <kaboutdata.h>
 #include <KToolBar>
 
 #include <QLabel>
+
+class KJob;
 
 class OcsPersonItem : public QWidget, private Ui::OcsPersonItem
 {
@@ -52,11 +54,11 @@ public:
 
     void switchToOcs( const AmarokAttica::Provider &provider );
 
-signals:
+Q_SIGNALS:
     void ocsFetchStarted();
     void ocsFetchResult( int err );
 
-private slots:
+private Q_SLOTS:
     void launchUrl( QAction *action );
     void onJobFinished( KJob *job );
 

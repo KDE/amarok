@@ -65,7 +65,7 @@ class LayoutEditWidget : public QWidget
          */
         void clear();
 
-    signals:
+    Q_SIGNALS:
 
         /**
          * Signal emitted when the token drop target receives input focus.

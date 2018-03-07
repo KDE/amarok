@@ -27,6 +27,7 @@
 
 #include "App.h"
 #include "EngineController.h"
+#include "MainWindow.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
 #include "QStringx.h"
@@ -42,7 +43,7 @@
 #include "playlist/view/listview/InlineEditorWidget.h"
 
 #include <KColorScheme>
-#include <kratingpainter.h>  // #include <KratingPainter> does not work on some distros
+#include <KRatingPainter>  // #include <KratingPainter> does not work on some distros
 #include <KWindowSystem>
 
 #include <QAction>
@@ -63,12 +64,12 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
 
     m_animationTimeLine = new QTimeLine( 900, this );
     m_animationTimeLine->setFrameRange( 1000, 600 );
-    connect( m_animationTimeLine, SIGNAL( frameChanged( int ) ), this, SIGNAL( redrawRequested() ) );
+    connect( m_animationTimeLine, &QTimeLine::frameChanged, this, &PrettyItemDelegate::redrawRequested );
 
 #ifdef Q_WS_X11
-    connect( KWindowSystem::self(), SIGNAL( currentDesktopChanged( int ) ), this, SLOT( currentDesktopChanged() ) );
+    connect( KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, &PrettyItemDelegate::currentDesktopChanged );
 #endif
-    connect( EngineController::instance(), SIGNAL( playbackStateChanged() ), this, SIGNAL( redrawRequested() ) );
+    connect( EngineController::instance(), &EngineController::playbackStateChanged, this, &PrettyItemDelegate::redrawRequested );
 }
 
 PrettyItemDelegate::~PrettyItemDelegate() { }
@@ -764,8 +765,8 @@ QWidget* Playlist::PrettyItemDelegate::createEditor( QWidget * parent, const QSt
     InlineEditorWidget *editor = new InlineEditorWidget( parent, index,
                      LayoutManager::instance()->activeLayout(), editorHeight, editorWidth );
 
-    connect( editor, SIGNAL(editingDone(InlineEditorWidget*)),
-             this, SLOT(editorDone(InlineEditorWidget*)) );
+    connect( editor, &InlineEditorWidget::editingDone,
+             this, &PrettyItemDelegate::editorDone );
     return editor;
 }
 
@@ -938,4 +939,3 @@ Playlist::PrettyItemDelegate::buildTrackArgsMap( const Meta::TrackPtr track ) co
     return args;
 }
 
-#include "PrettyItemDelegate.moc"

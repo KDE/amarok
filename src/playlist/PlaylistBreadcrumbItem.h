@@ -21,8 +21,7 @@
 #include "PlaylistBreadcrumbItemSortButton.h"
 #include "PlaylistBreadcrumbLevel.h"
 #include "PlaylistDefines.h"
-
-#include <KHBox>
+#include "widgets/BoxWidget.h"
 
 #include <QMenu>
 #include <QStringList>
@@ -51,7 +50,7 @@ public:
      */
     virtual ~BreadcrumbItemMenu();
 
-signals:
+Q_SIGNALS:
     /**
      * Emitted when a non-Shuffle item is triggered from the menu.
      * @param action the action in the menu that has been triggered.
@@ -63,7 +62,7 @@ signals:
      */
     void shuffleActionClicked();
 
-private slots:
+private Q_SLOTS:
     /**
      * Handles the selection of an item from the menu.
      * @param action the action in the menu that has been triggered.
@@ -75,7 +74,7 @@ private slots:
  *  A single item that represents a level of a general-purpose breadcrumb ribbon.
  *  @author Téo Mrnjavac <teo@kde.org>
  */
-class BreadcrumbItem : public KHBox
+class BreadcrumbItem : public BoxWidget
 {
     Q_OBJECT
 
@@ -121,7 +120,7 @@ public:
      */
     const BreadcrumbItemMenu *menu();
 
-signals:
+Q_SIGNALS:
     /**
      * Emitted when the item has been clicked.
      */
@@ -132,7 +131,7 @@ signals:
      */
     void orderInverted();
 
-protected slots:
+protected Q_SLOTS:
     void updateSizePolicy();
 
 private:

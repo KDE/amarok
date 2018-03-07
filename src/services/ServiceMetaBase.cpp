@@ -211,17 +211,17 @@ ServiceTrack::name() const
     return m_name;
 }
 
-KUrl
+QUrl
 ServiceTrack::playableUrl() const
 {
-    KUrl url( m_playableUrl );
+    QUrl url( m_playableUrl );
     return url;
 }
 
-KUrl
+QUrl
 ServiceTrack::downloadableUrl() const
 {
-    KUrl url( m_downloadableUrl );
+    QUrl url( m_downloadableUrl );
     return url;
 }
 

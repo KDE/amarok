@@ -24,12 +24,12 @@
 #include "playlist/PlaylistDock.h"
 #include "playlist/ProgressiveSearchWidget.h"
 
-#include <KStandardDirs>
-#include <KLocale>
+#include <KLocalizedString>
 
-#include <QList>
-#include <QStringList>
 #include <QActionGroup>
+#include <QList>
+#include <QStandardPaths>
+#include <QStringList>
 
 namespace Playlist
 {
@@ -49,22 +49,22 @@ ViewUrlRunner::run( AmarokUrl url )
     DEBUG_BLOCK
 
     const QMap< QString, QString > args = url.args();
-    QWeakPointer<Dock> playlistDock = The::mainWindow()->playlistDock();
+    auto playlistDock = The::mainWindow()->playlistDock();
 
     if( args.keys().contains( "filter" ) )
     {
         const QString filterExpr = args.value( "filter" );
-        playlistDock.data()->searchWidget()->setCurrentFilter( filterExpr );
+        playlistDock->searchWidget()->setCurrentFilter( filterExpr );
         if( args.keys().contains( "matches" ) )
         {
             const QString onlyMatches = args.value( "matches" );
-            playlistDock.data()->searchWidget()->slotShowOnlyMatches( ( onlyMatches == QString( "true" ) ) );
+            playlistDock->searchWidget()->slotShowOnlyMatches( ( onlyMatches == QString( "true" ) ) );
         }
     }
     if( args.keys().contains( "sort" ) )
     {
         const QString sortPath = args.value( "sort" );
-        playlistDock.data()->sortWidget()->readSortPath( sortPath );
+        playlistDock->sortWidget()->readSortPath( sortPath );
     }
 
     if( args.keys().contains( "layout" ) )
@@ -90,10 +90,10 @@ ViewUrlRunner::prettyCommand() const
     return i18nc( "A type of command that affects the sorting, layout and filtering int he Playlist", "Playlist" );
 }
 
-KIcon
+QIcon
 ViewUrlRunner::icon() const
 {
-    return KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-bookmark-16.png" ) ) );
+    return QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/playlist-bookmark-16.png" ) ) );
 }
 
 } //namespace Playlist

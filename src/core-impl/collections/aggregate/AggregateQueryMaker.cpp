@@ -27,6 +27,8 @@
 #include <QMetaEnum>
 #include <QMetaObject>
 
+#include <typeinfo>
+
 using namespace Collections;
 
 AggregateQueryMaker::AggregateQueryMaker( AggregateCollection *collection, const QList<QueryMaker*> &queryMakers )
@@ -43,14 +45,14 @@ AggregateQueryMaker::AggregateQueryMaker( AggregateCollection *collection, const
 {
     foreach( QueryMaker *b, m_builders )
     {
-        connect( b, SIGNAL(queryDone()), this, SLOT(slotQueryDone()) );
-        connect( b, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(slotNewResultReady(Meta::TrackList)), Qt::QueuedConnection );
-        connect( b, SIGNAL(newResultReady(Meta::ArtistList)), this, SLOT(slotNewResultReady(Meta::ArtistList)), Qt::QueuedConnection );
-        connect( b, SIGNAL(newResultReady(Meta::AlbumList)), this, SLOT(slotNewResultReady(Meta::AlbumList)), Qt::QueuedConnection );
-        connect( b, SIGNAL(newResultReady(Meta::GenreList)), this, SLOT(slotNewResultReady(Meta::GenreList)), Qt::QueuedConnection );
-        connect( b, SIGNAL(newResultReady(Meta::ComposerList)), this, SLOT(slotNewResultReady(Meta::ComposerList)), Qt::QueuedConnection );
-        connect( b, SIGNAL(newResultReady(Meta::YearList)), this, SLOT(slotNewResultReady(Meta::YearList)), Qt::QueuedConnection );
-        connect( b, SIGNAL(newResultReady(Meta::LabelList)), this, SLOT(slotNewResultReady(Meta::LabelList)), Qt::QueuedConnection );
+        connect( b, &Collections::QueryMaker::queryDone, this, &AggregateQueryMaker::slotQueryDone );
+        connect( b, &Collections::QueryMaker::newTracksReady, this, &AggregateQueryMaker::slotNewTracksReady, Qt::QueuedConnection );
+        connect( b, &Collections::QueryMaker::newArtistsReady, this, &AggregateQueryMaker::slotNewArtistsReady, Qt::QueuedConnection );
+        connect( b, &Collections::QueryMaker::newAlbumsReady, this, &AggregateQueryMaker::slotNewAlbumsReady, Qt::QueuedConnection );
+        connect( b, &Collections::QueryMaker::newGenresReady, this, &AggregateQueryMaker::slotNewGenresReady, Qt::QueuedConnection );
+        connect( b, &Collections::QueryMaker::newComposersReady, this, &AggregateQueryMaker::slotNewComposersReady, Qt::QueuedConnection );
+        connect( b, &Collections::QueryMaker::newYearsReady, this, &AggregateQueryMaker::slotNewYearsReady, Qt::QueuedConnection );
+        connect( b, &Collections::QueryMaker::newLabelsReady, this, &AggregateQueryMaker::slotNewLabelsReady, Qt::QueuedConnection );
     }
 }
 
@@ -311,17 +313,6 @@ AggregateQueryMaker::slotQueryDone()
     }
 }
 
-template <class PointerType>
-void AggregateQueryMaker::emitProperResult( const QList<PointerType>& list )
-{
-   QList<PointerType> resultList = list;
-
-    if ( m_maxResultSize >= 0 && resultList.count() > m_maxResultSize )
-        resultList = resultList.mid( 0, m_maxResultSize );
-
-    emit newResultReady( list );
-}
-
 void
 AggregateQueryMaker::handleResult()
 {
@@ -332,7 +323,7 @@ AggregateQueryMaker::handleResult()
         {
             QStringList result;
             Meta::TrackList tracks;
-            foreach( KSharedPtr<Meta::AggregateTrack> track, m_tracks )
+            foreach( AmarokSharedPointer<Meta::AggregateTrack> track, m_tracks )
             {
                 tracks.append( Meta::TrackPtr::staticCast( track ) );
             }
@@ -373,7 +364,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Track :
         {
             Meta::TrackList tracks;
-            foreach( KSharedPtr<Meta::AggregateTrack> track, m_tracks )
+            foreach( AmarokSharedPointer<Meta::AggregateTrack> track, m_tracks )
             {
                 tracks.append( Meta::TrackPtr::staticCast( track ) );
             }
@@ -386,65 +377,81 @@ AggregateQueryMaker::handleResult()
                     tracks = MemoryQueryMakerHelper::orderListByString( tracks, m_orderField, m_orderDescending );
             }
 
-            emitProperResult<Meta::TrackPtr>( tracks );
+            if ( m_maxResultSize >= 0 && tracks.count() > m_maxResultSize )
+                tracks = tracks.mid( 0, m_maxResultSize );
+
+            emit newTracksReady(tracks);
             break;
         }
         case QueryMaker::Album :
         {
             Meta::AlbumList albums;
-            foreach( KSharedPtr<Meta::AggregateAlbum> album, m_albums )
+            foreach( AmarokSharedPointer<Meta::AggregateAlbum> album, m_albums )
             {
                 albums.append( Meta::AlbumPtr::staticCast( album ) );
             }
 
             albums = MemoryQueryMakerHelper::orderListByName<Meta::AlbumPtr>( albums, m_orderDescending );
 
-            emitProperResult<Meta::AlbumPtr>( albums );
+            if ( m_maxResultSize >= 0 && albums.count() > m_maxResultSize )
+                albums = albums.mid( 0, m_maxResultSize );
+
+            emit newAlbumsReady(albums);
             break;
         }
         case QueryMaker::Artist :
         case QueryMaker::AlbumArtist :
         {
             Meta::ArtistList artists;
-            foreach( KSharedPtr<Meta::AggregateArtist> artist, m_artists )
+            foreach( AmarokSharedPointer<Meta::AggregateArtist> artist, m_artists )
             {
                 artists.append( Meta::ArtistPtr::staticCast( artist ) );
             }
 
             artists = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( artists, m_orderDescending );
-            emitProperResult<Meta::ArtistPtr>( artists );
+
+            if ( m_maxResultSize >= 0 && artists.count() > m_maxResultSize )
+                artists = artists.mid( 0, m_maxResultSize );
+
+            emit newArtistsReady(artists);
             break;
         }
         case QueryMaker::Composer :
         {
             Meta::ComposerList composers;
-            foreach( KSharedPtr<Meta::AggregateComposer> composer, m_composers )
+            foreach( AmarokSharedPointer<Meta::AggregateComposer> composer, m_composers )
             {
                 composers.append( Meta::ComposerPtr::staticCast( composer ) );
             }
 
             composers = MemoryQueryMakerHelper::orderListByName<Meta::ComposerPtr>( composers, m_orderDescending );
 
-            emitProperResult<Meta::ComposerPtr>( composers );
+            if ( m_maxResultSize >= 0 && composers.count() > m_maxResultSize )
+                composers = composers.mid( 0, m_maxResultSize );
+
+            emit newComposersReady(composers);
             break;
         }
         case QueryMaker::Genre :
         {
             Meta::GenreList genres;
-            foreach( KSharedPtr<Meta::AggregateGenre> genre, m_genres )
+            foreach( AmarokSharedPointer<Meta::AggregateGenre> genre, m_genres )
             {
                 genres.append( Meta::GenrePtr::staticCast( genre ) );
             }
 
             genres = MemoryQueryMakerHelper::orderListByName<Meta::GenrePtr>( genres, m_orderDescending );
 
-            emitProperResult<Meta::GenrePtr>( genres );
+            if ( m_maxResultSize >= 0 && genres.count() > m_maxResultSize )
+                genres = genres.mid( 0, m_maxResultSize );
+
+            emit newGenresReady(genres);
             break;
         }
         case QueryMaker::Year :
         {
             Meta::YearList years;
-            foreach( KSharedPtr<Meta::AggreagateYear> year, m_years )
+            foreach( AmarokSharedPointer<Meta::AggreagateYear> year, m_years )
             {
                 years.append( Meta::YearPtr::staticCast( year ) );
             }
@@ -455,19 +462,26 @@ AggregateQueryMaker::handleResult()
                 years = MemoryQueryMakerHelper::orderListByYear( years, m_orderDescending );
             }
 
-            emitProperResult<Meta::YearPtr>( years );
+            if ( m_maxResultSize >= 0 && years.count() > m_maxResultSize )
+                years = years.mid( 0, m_maxResultSize );
+
+            emit newYearsReady(years);
             break;
         }
         case QueryMaker::Label :
         {
             Meta::LabelList labels;
-            foreach( KSharedPtr<Meta::AggregateLabel> label, m_labels )
+            foreach( AmarokSharedPointer<Meta::AggregateLabel> label, m_labels )
             {
                 labels.append( Meta::LabelPtr::staticCast( label ) );
             }
 
             labels = MemoryQueryMakerHelper::orderListByName<Meta::LabelPtr>( labels, m_orderDescending );
-            emitProperResult<Meta::LabelPtr>( labels );
+
+            if ( m_maxResultSize >= 0 && labels.count() > m_maxResultSize )
+                labels = labels.mid( 0, m_maxResultSize );
+
+            emit newLabelsReady(labels);
             break;
         }
         case QueryMaker::None :
@@ -483,64 +497,64 @@ AggregateQueryMaker::handleResult()
 }
 
 void
-AggregateQueryMaker::slotNewResultReady( const Meta::TrackList &tracks )
+AggregateQueryMaker::slotNewTracksReady( const Meta::TrackList &tracks )
 {
     foreach( const Meta::TrackPtr &track, tracks )
     {
-        m_tracks.insert( KSharedPtr<Meta::AggregateTrack>( m_collection->getTrack( track ) ) );
+        m_tracks.insert( AmarokSharedPointer<Meta::AggregateTrack>( m_collection->getTrack( track ) ) );
     }
 }
 
 void
-AggregateQueryMaker::slotNewResultReady( const Meta::ArtistList &artists )
+AggregateQueryMaker::slotNewArtistsReady( const Meta::ArtistList &artists )
 {
     foreach( const Meta::ArtistPtr &artist, artists )
     {
-        m_artists.insert( KSharedPtr<Meta::AggregateArtist>( m_collection->getArtist( artist ) ) );
+        m_artists.insert( AmarokSharedPointer<Meta::AggregateArtist>( m_collection->getArtist( artist ) ) );
     }
 }
 
 void
-AggregateQueryMaker::slotNewResultReady( const Meta::AlbumList &albums )
+AggregateQueryMaker::slotNewAlbumsReady( const Meta::AlbumList &albums )
 {
     foreach( const Meta::AlbumPtr &album, albums )
     {
-        m_albums.insert( KSharedPtr<Meta::AggregateAlbum>( m_collection->getAlbum( album ) ) );
+        m_albums.insert( AmarokSharedPointer<Meta::AggregateAlbum>( m_collection->getAlbum( album ) ) );
     }
 }
 
 void
-AggregateQueryMaker::slotNewResultReady( const Meta::GenreList &genres )
+AggregateQueryMaker::slotNewGenresReady( const Meta::GenreList &genres )
 {
     foreach( const Meta::GenrePtr &genre, genres )
     {
-        m_genres.insert( KSharedPtr<Meta::AggregateGenre>( m_collection->getGenre( genre ) ) );
+        m_genres.insert( AmarokSharedPointer<Meta::AggregateGenre>( m_collection->getGenre( genre ) ) );
     }
 }
 
 void
-AggregateQueryMaker::slotNewResultReady( const Meta::ComposerList &composers )
+AggregateQueryMaker::slotNewComposersReady( const Meta::ComposerList &composers )
 {
     foreach( const Meta::ComposerPtr &composer, composers )
     {
-        m_composers.insert( KSharedPtr<Meta::AggregateComposer>( m_collection->getComposer( composer ) ) );
+        m_composers.insert( AmarokSharedPointer<Meta::AggregateComposer>( m_collection->getComposer( composer ) ) );
     }
 }
 
 void
-AggregateQueryMaker::slotNewResultReady( const Meta::YearList &years )
+AggregateQueryMaker::slotNewYearsReady( const Meta::YearList &years )
 {
     foreach( const Meta::YearPtr &year, years )
     {
-        m_years.insert( KSharedPtr<Meta::AggreagateYear>( m_collection->getYear( year ) ) );
+        m_years.insert( AmarokSharedPointer<Meta::AggreagateYear>( m_collection->getYear( year ) ) );
     }
 }
 
 void
-AggregateQueryMaker::slotNewResultReady( const Meta::LabelList &labels )
+AggregateQueryMaker::slotNewLabelsReady( const Meta::LabelList &labels )
 {
     foreach( const Meta::LabelPtr &label, labels )
     {
-        m_labels.insert( KSharedPtr<Meta::AggregateLabel>( m_collection->getLabel( label ) ) );
+        m_labels.insert( AmarokSharedPointer<Meta::AggregateLabel>( m_collection->getLabel( label ) ) );
     }
 }

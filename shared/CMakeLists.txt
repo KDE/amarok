@@ -1,7 +1,3 @@
-include_directories(
-    ${KDE4_INCLUDES}
-)
-
 set( amarokshared_SRCS
     FileType.cpp
     FileTypeResolver.cpp
@@ -30,24 +26,25 @@ set( amarokshared_tag_helpers_SRCS
     tag_helpers/VorbisCommentTagHelper.cpp
 )
 
-kde4_add_library( amarokshared SHARED
+add_library( amarokshared SHARED
     ${amarokshared_SRCS}
     ${amarokshared_collectionscanner_SRCS}
     ${amarokshared_tag_helpers_SRCS} )
 
+target_include_directories( amarokshared PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
+
 include_directories( ${TAGLIB_INCLUDES} )
 add_definitions( ${TAGLIB_CFLAGS} )
-target_link_libraries( amarokshared ${TAGLIB_LIBRARIES} )
+target_link_libraries( amarokshared ${TAGLIB_LIBRARIES} KF5::Codecs)
 if( TAGLIB-EXTRAS_FOUND )
     include_directories( ${TAGLIB-EXTRAS_INCLUDES} )
     add_definitions( ${TAGLIB-EXTRAS_CFLAGS} )
     target_link_libraries( amarokshared ${TAGLIB-EXTRAS_LIBRARIES} )
-endif( TAGLIB-EXTRAS_FOUND )
+endif()
 
 target_link_libraries( amarokshared
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTGUI_LIBRARY} # for QImage, ...
-    ${KDE4_KDECORE_LIBRARY} # for KMimeType, ...
+    Qt5::Core
+    Qt5::Gui # for QImage, ...
 )
 
 set_target_properties( amarokshared PROPERTIES VERSION 1.0.0 SOVERSION 1 )

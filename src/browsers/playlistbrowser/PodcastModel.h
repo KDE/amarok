@@ -17,6 +17,8 @@
 #ifndef PLAYLISTBROWSERNSPODCASTMODEL_H
 #define PLAYLISTBROWSERNSPODCASTMODEL_H
 
+#include "amarok_export.h"
+
 #include "core/podcasts/PodcastMeta.h"
 #include "core/podcasts/PodcastProvider.h"
 
@@ -47,7 +49,7 @@ enum
 /**
  * @author Bart Cerneels
  */
-class PodcastModel : public PlaylistBrowserModel
+class AMAROK_EXPORT PodcastModel : public PlaylistBrowserModel
 {
     Q_OBJECT
 
@@ -71,10 +73,10 @@ class PodcastModel : public PlaylistBrowserModel
             return Qt::MoveAction | Qt::CopyAction;
         }
 
-    signals:
+    Q_SIGNALS:
         void episodeMarkedAsNew( Podcasts::PodcastEpisodePtr );
 
-    public slots:
+    public Q_SLOTS:
         void addPodcast();
         void refreshPodcasts();
 

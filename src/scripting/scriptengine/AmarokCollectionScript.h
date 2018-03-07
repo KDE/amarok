@@ -90,7 +90,7 @@ namespace AmarokScript
              */
             Q_INVOKABLE Collections::CollectionList viewableCollections() const;
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when a new collection is added.
              */

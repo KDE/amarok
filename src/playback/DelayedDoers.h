@@ -47,7 +47,7 @@ class AMAROK_EXPORT DelayedDoer : public QObject
          */
         virtual void performAction() = 0;
 
-    private slots:
+    private Q_SLOTS:
         void slotStateChanged( Phonon::State newState );
 
     protected:
@@ -68,7 +68,7 @@ class AMAROK_EXPORT DelayedSeeker : public DelayedDoer
     public:
         DelayedSeeker( Phonon::MediaObject *mediaObject, qint64 seekTo, bool startPaused );
 
-    signals:
+    Q_SIGNALS:
         void trackPositionChanged( qint64 position, bool userSeek );
 
     protected:

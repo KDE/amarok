@@ -21,8 +21,10 @@
 
 #include "provider.h"
 
-#include <KDebug>
-#include <KUrl>
+#include <QDebug>
+#include <QDir>
+#include <QUrl>
+#include <QUrlQuery>
 
 #include "activitylistjob.h"
 #include "categorylistjob.h"
@@ -45,14 +47,14 @@ using namespace AmarokAttica;
 
 class Provider::Private : public QSharedData {
   public:
-    KUrl m_baseUrl;
+    QUrl m_baseUrl;
     QString m_id;
     QString m_name;
     Private(const Private& other)
       : QSharedData(other), m_baseUrl(other.m_baseUrl), m_id(other.m_id), m_name(other.m_name)
     {
     }
-    Private(const QString& id, const KUrl& baseUrl, const QString name)
+    Private(const QString& id, const QUrl &baseUrl, const QString name)
       : m_baseUrl(baseUrl), m_id(id), m_name(name)
     {
     }
@@ -68,7 +70,7 @@ ProviderInitJob* Provider::byId(const QString& id)
 
 
 Provider::Provider()
-  : d(new Private(QString(), KUrl(), QString()))
+  : d(new Private(QString(), QUrl(), QString()))
 {
 }
 
@@ -77,7 +79,7 @@ Provider::Provider(const Provider& other)
 {
 }
 
-Provider::Provider(const QString& id, const KUrl& baseUrl, const QString& name)
+Provider::Provider(const QString& id, const QUrl &baseUrl, const QString& name)
   : d(new Private(id, baseUrl, name))
 {
 }
@@ -107,31 +109,35 @@ QString Provider::name() const
 
 PersonJob* Provider::requestPerson(const QString& id) const
 {
-  KUrl url = createUrl( "person/data/" + id );
+  QUrl url = createUrl( "person/data/" + id );
   return doRequestPerson( url );
 }
 
 PersonJob* Provider::requestPersonSelf()
 {
-  KUrl url = createUrl( "person/self" );
+  QUrl url = createUrl( "person/self" );
   return doRequestPerson( url );
 }
 
 PersonListJob* Provider::requestPersonSearchByName(const QString& name)
 {
-  KUrl url = createUrl( "person/data");
-  url.addQueryItem("name", name);
+  QUrl url = createUrl( "person/data");
+  QUrlQuery query;
+  query.addQueryItem("name", name);
+  url.setQuery(query);
   return doRequestPersonList( url );
 }
 
 PersonListJob* Provider::requestPersonSearchByLocation(qreal latitude, qreal longitude, qreal distance, int page, int pageSize)
 {
-  KUrl url = createUrl( "person/data" );
-  url.addQueryItem("latitude", QString::number(latitude));
-  url.addQueryItem("longitude", QString::number(longitude));
-  url.addQueryItem("distance", QString::number(distance));
-  url.addQueryItem("page", QString::number(page));
-  url.addQueryItem("pagesize", QString::number(pageSize));
+  QUrl url = createUrl( "person/data" );
+  QUrlQuery query;
+  query.addQueryItem("latitude", QString::number(latitude));
+  query.addQueryItem("longitude", QString::number(longitude));
+  query.addQueryItem("distance", QString::number(distance));
+  query.addQueryItem("page", QString::number(page));
+  query.addQueryItem("pagesize", QString::number(pageSize));
+  url.setQuery(query);
   
   qDebug() << "Location-based search:" << latitude << longitude << distance;
   qDebug() << "URL:" << url;
@@ -140,16 +146,19 @@ PersonListJob* Provider::requestPersonSearchByLocation(qreal latitude, qreal lon
 
 PersonListJob* Provider::requestFriend(const QString& id, int page, int pageSize)
 {
-  KUrl url = createUrl( "friend/data/" + id );
-  url.addQueryItem("page", QString::number(page));
-  url.addQueryItem("pagesize", QString::number(pageSize));
-  kDebug() << "URL:" << url;
+  QUrl url = createUrl( "friend/data/" + id );
+  QUrlQuery query;
+  query.addQueryItem("page", QString::number(page));
+  query.addQueryItem("pagesize", QString::number(pageSize));
+  url.setQuery(query);
+
+  qDebug() << "URL:" << url;
   return doRequestPersonList( url );
 }
 
 ActivityListJob* Provider::requestActivity()
 {
-  KUrl url = createUrl( "activity" );
+  QUrl url = createUrl( "activity" );
   return doRequestActivityList( url );
 }
 
@@ -157,7 +166,7 @@ PostJob* Provider::postActivity(const QString& message)
 {
   PostJob *job = new PostJob();
 
-  KUrl url = createUrl( "activity" );
+  QUrl url = createUrl( "activity" );
   job->setUrl( url );
   job->setData( "message", message );
   
@@ -169,7 +178,7 @@ PostJob* Provider::postInvitation(const QString& to, const QString& message)
 {
   PostJob *job = new PostJob();
 
-  KUrl url = createUrl( "friend/outbox/" + to );
+  QUrl url = createUrl( "friend/outbox/" + to );
   job->setUrl( url );
   job->setData( "message", message );
 
@@ -181,7 +190,7 @@ PostJob* Provider::postLocation(qreal latitude, qreal longitude, const QString& 
 {
   PostJob *job = new PostJob();
   
-  KUrl url = createUrl( "person/self" );
+  QUrl url = createUrl( "person/self" );
   
   job->setUrl( url ); 
 
@@ -209,7 +218,7 @@ PostJob* Provider::postMessage( const Message &message )
 {
   PostJob *job = new PostJob();
   
-  KUrl url = createUrl( "message/2" );
+  QUrl url = createUrl( "message/2" );
   job->setUrl( url );
   job->setData( "message", message.body() );
   job->setData( "subject", message.subject() );
@@ -223,7 +232,7 @@ CategoryListJob* Provider::requestCategories()
 {
   CategoryListJob *job = new CategoryListJob();
   
-  KUrl url = createUrl( "content/categories" );
+  QUrl url = createUrl( "content/categories" );
   job->setUrl( url );
   
   job->start();
@@ -234,15 +243,16 @@ ContentListJob* Provider::requestContent(const Category::List& categories, const
 {
   ContentListJob *job = new ContentListJob();
   
-  KUrl url = createUrl( "content/data" );
+  QUrl url = createUrl( "content/data" );
+  QUrlQuery query;
 
   QStringList categoryIds;
   foreach( const Category &category, categories ) {
     categoryIds.append( category.id() );
   }
-  url.addQueryItem( "categories", categoryIds.join( "x" ) );
+  query.addQueryItem( "categories", categoryIds.join( "x" ) );
   
-  url.addQueryItem( "search", search );
+  query.addQueryItem( "search", search );
   QString sortModeString;
   switch ( sortMode ) {
     case Newest:
@@ -259,8 +269,10 @@ ContentListJob* Provider::requestContent(const Category::List& categories, const
       break;
   }
   if ( !sortModeString.isEmpty() ) {
-    url.addQueryItem( "sortmode", sortModeString );
+      query.addQueryItem( "sortmode", sortModeString );
   }
+
+  url.setQuery(query);
 
   job->setUrl( url );
   
@@ -272,7 +284,7 @@ ContentJob* Provider::requestContent(const QString& id)
 {
   ContentJob *job = new ContentJob();
   
-  KUrl url = createUrl( "content/data/" + id );
+  QUrl url = createUrl( "content/data/" + id );
   job->setUrl( url );
   
   job->start();
@@ -283,7 +295,7 @@ KnowledgeBaseJob* Provider::requestKnowledgeBase(const QString& id)
 {
   KnowledgeBaseJob *job = new KnowledgeBaseJob();
 
-  KUrl url = createUrl( "knowledgebase/data/" + id );
+  QUrl url = createUrl( "knowledgebase/data/" + id );
   job->setUrl( url );
 
   job->start();
@@ -294,13 +306,14 @@ KnowledgeBaseListJob* Provider::requestKnowledgeBase(int content, const QString&
 {
   KnowledgeBaseListJob *job = new KnowledgeBaseListJob();
 
-  KUrl url = createUrl( "knowledgebase/data" );
+  QUrl url = createUrl( "knowledgebase/data" );
+  QUrlQuery query;
 
   if (content) {
-      url.addQueryItem("content", QString::number(content));
+      query.addQueryItem("content", QString::number(content));
   }
 
-  url.addQueryItem( "search", search );
+  query.addQueryItem( "search", search );
   QString sortModeString;
   switch ( sortMode ) {
     case Newest:
@@ -318,11 +331,13 @@ KnowledgeBaseListJob* Provider::requestKnowledgeBase(int content, const QString&
       break;
   }
   if ( !sortModeString.isEmpty() ) {
-    url.addQueryItem( "sortmode", sortModeString );
+      query.addQueryItem( "sortmode", sortModeString );
   }
 
-  url.addQueryItem( "page", QString::number(page) );
-  url.addQueryItem( "pagesize", QString::number(pageSize) );
+  query.addQueryItem( "page", QString::number(page) );
+  query.addQueryItem( "pagesize", QString::number(pageSize) );
+
+  url.setQuery(query);
 
   job->setUrl( url );
 
@@ -344,10 +359,11 @@ EventListJob* Provider::requestEvent(const QString& country, const QString& sear
 {
   EventListJob* job = new EventListJob();
 
-  KUrl url = createUrl("event/data");
+  QUrl url = createUrl("event/data");
+  QUrlQuery query;
 
   if (!search.isEmpty()) {
-      url.addQueryItem("search", search);
+      query.addQueryItem("search", search);
   }
 
   QString sortModeString;
@@ -362,17 +378,19 @@ EventListJob* Provider::requestEvent(const QString& country, const QString& sear
         break;
   }
   if (!sortModeString.isEmpty()) {
-    url.addQueryItem("sortmode", sortModeString);
+      query.addQueryItem("sortmode", sortModeString);
   }
   
   if (!country.isEmpty()) {
-    url.addQueryItem("country", country);
+      query.addQueryItem("country", country);
   }
   
-  url.addQueryItem("startat", startAt.toString(Qt::ISODate));
+  query.addQueryItem("startat", startAt.toString(Qt::ISODate));
 
-  url.addQueryItem("page", QString::number(page));
-  url.addQueryItem("pagesize", QString::number(pageSize));
+  query.addQueryItem("page", QString::number(page));
+  query.addQueryItem("pagesize", QString::number(pageSize));
+
+  url.setQuery(query);
 
   job->setUrl(url);
 
@@ -381,14 +399,15 @@ EventListJob* Provider::requestEvent(const QString& country, const QString& sear
 
 }
 
-KUrl Provider::createUrl(const QString& path) const
+QUrl Provider::createUrl(const QString& path) const
 {
-  KUrl url(d->m_baseUrl);
-  url.addPath( path );
+  QUrl url(d->m_baseUrl);
+  url = url.adjusted(QUrl::StripTrailingSlash);
+  url.setPath(url.path() + '/' + ( path ));
   return url;
 }
 
-PersonJob* Provider::doRequestPerson(const KUrl& url) const
+PersonJob* Provider::doRequestPerson(const QUrl &url) const
 {
   PersonJob *job = new PersonJob();
 
@@ -398,7 +417,7 @@ PersonJob* Provider::doRequestPerson(const KUrl& url) const
   return job;
 }
 
-PersonListJob* Provider::doRequestPersonList(const KUrl& url)
+PersonListJob* Provider::doRequestPersonList(const QUrl &url)
 {
   PersonListJob *job = new PersonListJob();
 
@@ -408,7 +427,7 @@ PersonListJob* Provider::doRequestPersonList(const KUrl& url)
   return job;
 }
 
-ActivityListJob* Provider::doRequestActivityList(const KUrl& url)
+ActivityListJob* Provider::doRequestActivityList(const QUrl &url)
 {
   ActivityListJob *job = new ActivityListJob();
 
@@ -418,7 +437,7 @@ ActivityListJob* Provider::doRequestActivityList(const KUrl& url)
   return job;
 }
 
-FolderListJob* Provider::doRequestFolderList(const KUrl& url)
+FolderListJob* Provider::doRequestFolderList(const QUrl &url)
 {
   FolderListJob *job = new FolderListJob();
   
@@ -427,7 +446,7 @@ FolderListJob* Provider::doRequestFolderList(const KUrl& url)
   return job;
 }
 
-MessageListJob* Provider::doRequestMessageList(const KUrl& url)
+MessageListJob* Provider::doRequestMessageList(const QUrl &url)
 {
   MessageListJob *job = new MessageListJob();
   

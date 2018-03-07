@@ -37,13 +37,13 @@ void AudioCdCollectionLocation::getKIOCopyableUrls( const Meta::TrackList & trac
 {
     DEBUG_BLOCK
 
-    QMap<Meta::TrackPtr, KUrl> resultMap;
+    QMap<Meta::TrackPtr, QUrl> resultMap;
     foreach( Meta::TrackPtr trackPtr, tracks )
     {
         Meta::AudioCdTrackPtr cdTrack = Meta::AudioCdTrackPtr::staticCast( trackPtr );
 
         const QString path = m_collection->copyableFilePath( cdTrack->fileNameBase() + '.' + m_collection->encodingFormat() );
-        resultMap.insert( trackPtr, KUrl( path ) );
+        resultMap.insert( trackPtr, QUrl::fromLocalFile( path ) );
     }
 
     slotGetKIOCopyableUrlsDone( resultMap );
@@ -56,8 +56,8 @@ void AudioCdCollectionLocation::showSourceDialog( const Meta::TrackList &tracks,
     Q_UNUSED( removeSources )
     FormatSelectionDialog * dlg = new FormatSelectionDialog();
 
-    connect( dlg, SIGNAL(formatSelected(int)), this, SLOT(onFormatSelected(int)) );
-    connect( dlg, SIGNAL(rejected()), this, SLOT(onCancel()) );
+    connect( dlg, &FormatSelectionDialog::formatSelected, this, &AudioCdCollectionLocation::onFormatSelected );
+    connect( dlg, &FormatSelectionDialog::rejected, this, &AudioCdCollectionLocation::onCancel );
 
     dlg->show();
 }
@@ -85,6 +85,5 @@ void AudioCdCollectionLocation::onCancel()
 }
 
 
-#include "AudioCdCollectionLocation.moc"
 
 

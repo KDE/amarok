@@ -17,7 +17,6 @@
 
 #include <QMutexLocker>
 
-#include <KDateTime>
 #include "upnptypes.h"
 
 #include "UpnpMeta.h"
@@ -103,7 +102,7 @@ Meta::TrackPtr UpnpCache::getTrack( const KIO::UDSEntry &entry, bool refresh )
     track->setAlbum( album );
     // album art
     if( ! album->imageLocation().isValid() )
-        album->setAlbumArtUrl( entry.stringValue( KIO::UPNP_ALBUMART_URI ) );
+        album->setAlbumArtUrl( QUrl(entry.stringValue( KIO::UPNP_ALBUMART_URI )) );
 
     Meta::UpnpGenrePtr genre = Meta::UpnpGenrePtr::staticCast( getGenre( entry.stringValue( KIO::UPNP_GENRE ) ) );
     genre->addTrack( track );

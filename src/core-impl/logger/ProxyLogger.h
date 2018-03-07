@@ -22,7 +22,7 @@
 #include <QMetaType>
 #include <QMutex>
 #include <QPair>
-#include <QWeakPointer>
+#include <QPointer>
 #include <QQueue>
 #include <QTimer>
 
@@ -34,12 +34,12 @@ typedef QPair<QString, Amarok::Logger::MessageType> LongMessage;
 
 struct ProgressData
 {
-    QWeakPointer<QObject> sender;
-    QWeakPointer<KJob> job;
-    QWeakPointer<QNetworkReply> reply;
+    QPointer<QObject> sender;
+    QPointer<KJob> job;
+    QPointer<QNetworkReply> reply;
     QString text;
     int maximum;
-    QWeakPointer<QObject> cancelObject;
+    QPointer<QObject> cancelObject;
     const char *slot;
     Qt::ConnectionType type;
 };
@@ -65,7 +65,7 @@ public:
     ProxyLogger();
     virtual ~ProxyLogger();
 
-public slots:
+public Q_SLOTS:
     virtual void shortMessage( const QString &text );
     virtual void longMessage( const QString &text, MessageType type );
     virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj = 0,
@@ -86,12 +86,12 @@ public slots:
     void setLogger( Logger *logger );
     Logger* logger() const;
 
-private slots:
+private Q_SLOTS:
     void forwardNotifications();
     void slotStartTimer();
     void slotTotalSteps( int totalSteps );
 
-signals:
+Q_SIGNALS:
     // timer can only be started from its thread, use signals & slots to pass thread barrier
     void startTimer();
 

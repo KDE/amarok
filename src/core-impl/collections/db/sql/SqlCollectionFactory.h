@@ -20,6 +20,7 @@
 #include "amarok_sqlcollection_export.h"
 
 #include <QString>
+#include <QSharedPointer>
 
 class SqlStorage;
 
@@ -32,7 +33,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionFactory
 public:
     SqlCollectionFactory();
 
-    SqlCollection* createSqlCollection( SqlStorage *storage ) const;
+    SqlCollection* createSqlCollection( QSharedPointer<SqlStorage> storage ) const;
 };
 
 } //namespace Collections

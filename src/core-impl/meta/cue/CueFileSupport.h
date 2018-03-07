@@ -20,7 +20,7 @@
 
 #include "core/meta/forward_declarations.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <QFile>
 #include <QSet>
@@ -87,7 +87,7 @@ private:
     long    m_length;
 
     //QSet<Meta::Observer*> observers;
-    KUrl m_url;
+    QUrl m_url;
 };
 
 typedef QMap<long, CueFileItem> CueFileItemMap;
@@ -105,15 +105,15 @@ class CueFileSupport
         INDEX_FOUND
     };
 
-     static CueFileItemMap loadCueFile( const KUrl &cuefile, const Meta::TrackPtr track );
-     static CueFileItemMap loadCueFile( const KUrl &cuefile, const KUrl &trackUrl, qint64 trackLen );
+     static CueFileItemMap loadCueFile( const QUrl &cuefile, const Meta::TrackPtr track );
+     static CueFileItemMap loadCueFile( const QUrl &cuefile, const QUrl &trackUrl, qint64 trackLen );
 
      /**
      * Used to locate a cue sheet for a local track.
-     * @return A KUrl containing the url for the cue sheet
+     * @return A QUrl containing the url for the cue sheet
      *         if a valid one was located
      */
-    static KUrl locateCueSheet ( const KUrl &trackurl );
+    static QUrl locateCueSheet ( const QUrl &trackurl );
 
     /**
      * Attempts to load and parse a cue sheet.

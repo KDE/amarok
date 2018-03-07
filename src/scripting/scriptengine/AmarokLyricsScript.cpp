@@ -26,14 +26,13 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <KApplication>
-
+#include <QApplication>
 #include <QByteArray>
 #include <QScriptEngine>
 #include <QTextCodec>
-#include <QTextDocument>
 
 using namespace AmarokScript;
+
 
 AmarokLyricsScript::AmarokLyricsScript( QScriptEngine *engine )
     : QObject( engine )
@@ -41,8 +40,8 @@ AmarokLyricsScript::AmarokLyricsScript( QScriptEngine *engine )
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
     engine->globalObject().property( "Amarok" ).setProperty( "Lyrics", scriptObject );
-    connect( ScriptManager::instance(), SIGNAL(fetchLyrics(QString,QString,QString,Meta::TrackPtr)),
-             SIGNAL(fetchLyrics(QString,QString,QString,Meta::TrackPtr)) );
+    connect( ScriptManager::instance(), &ScriptManager::fetchLyrics,
+             this, &AmarokLyricsScript::fetchLyrics );
 }
 
 void
@@ -84,7 +83,7 @@ AmarokLyricsScript::showLyricsNotFound( const QString &msg ) const
 QString
 AmarokLyricsScript::escape( const QString &str )
 {
-    return Qt::escape( str );
+    return str.toHtmlEscaped();
 }
 
 void
@@ -99,9 +98,6 @@ AmarokLyricsScript::toUtf8( const QByteArray &lyrics, const QString &encoding )
     QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
     if( !codec )
         return QString();
-
-    QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
-    QTextCodec::setCodecForCStrings( utf8codec );
     return codec->toUnicode( lyrics );
 }
 
@@ -111,9 +107,6 @@ AmarokLyricsScript::QStringtoUtf8( const QString &lyrics, const QString &encodin
     QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
     if( !codec )
         return QString();
-
-    QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
-    QTextCodec::setCodecForCStrings( utf8codec );
     return codec->toUnicode( lyrics.toLatin1() );
 }
 

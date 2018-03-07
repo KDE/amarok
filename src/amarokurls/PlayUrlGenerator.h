@@ -50,7 +50,7 @@ public:
     void moveTrackBookmark( Meta::TrackPtr track, qint64 newMiliseconds, QString name );
 
     QString description();
-    KIcon icon();
+    QIcon icon();
     AmarokUrl createUrl();
 
 private:

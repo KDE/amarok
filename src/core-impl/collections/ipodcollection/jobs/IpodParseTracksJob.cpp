@@ -30,7 +30,8 @@
 #include <gpod/itdb.h>
 
 IpodParseTracksJob::IpodParseTracksJob( IpodCollection *collection )
-    : Job()
+    : QObject()
+    , ThreadWeaver::Job()
     , m_coll( collection )
     , m_aborted( false )
 {
@@ -42,8 +43,10 @@ void IpodParseTracksJob::abort()
 }
 
 void
-IpodParseTracksJob::run()
+IpodParseTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     DEBUG_BLOCK
     Itdb_iTunesDB *itdb = m_coll->m_itdb;
     if( !itdb )
@@ -81,6 +84,23 @@ IpodParseTracksJob::run()
 
     parsePlaylists( staleTracks, knownPaths );
     emit endProgressOperation( this );
+}
+
+void 
+IpodParseTracksJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+IpodParseTracksJob::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
 }
 
 void
@@ -156,7 +176,7 @@ Meta::TrackList IpodParseTracksJob::findOrphanedTracks(const QSet< QString >& kn
             QString canonPath = info.canonicalFilePath();
             if( knownPaths.contains( canonPath ) )
                 continue;  // already in iTunes database
-            Meta::TrackPtr track( new MetaFile::Track( KUrl( canonPath ) ) );
+            Meta::TrackPtr track( new MetaFile::Track( QUrl::fromLocalFile( canonPath ) ) );
             orphanedTracks << track;
         }
     }

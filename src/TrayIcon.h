@@ -24,8 +24,9 @@
 #include "core/meta/forward_declarations.h"
 #include "core/support/SmartPointerList.h"
 
-#include <QAction>
-#include <QWeakPointer>
+#include <QPointer>
+
+class QAction;
 
 namespace Amarok {
 
@@ -36,7 +37,7 @@ class TrayIcon : public KStatusNotifierItem
 public:
     TrayIcon( QObject *parent );
 
-private slots:
+private Q_SLOTS:
     void updateOverlayIcon();
     void updateToolTipIcon();
     void updateToolTip();
@@ -45,16 +46,16 @@ private slots:
     void trackPlaying( Meta::TrackPtr track );
     void stopped();
     void paused();
-    void metadataChanged( Meta::TrackPtr track );
-    void metadataChanged( Meta::AlbumPtr album );
+    void trackMetadataChanged( Meta::TrackPtr track );
+    void albumMetadataChanged( Meta::AlbumPtr album );
 
     void slotScrollRequested( int delta, Qt::Orientation orientation );
-
+    QAction* action( const QString& name, QMap<QString, QAction*> actionByName );
 private:
     Meta::TrackPtr m_track;
 
     SmartPointerList<QAction> m_extraActions;
-    QWeakPointer<QAction> m_separator;
+    QPointer<QAction> m_separator;
 };
 
 }

@@ -17,8 +17,6 @@
 #ifndef MTPCOLLECTION_H
 #define MTPCOLLECTION_H
 
-#include <libmtp.h>
-
 #include "MtpHandler.h"
 
 #include "MediaDeviceCollection.h"
@@ -26,7 +24,7 @@
 
 #include <QtGlobal>
 
-#include <KIcon>
+#include <QIcon>
 
 class MediaDeviceInfo;
 
@@ -36,9 +34,12 @@ class MtpCollection;
 
 class MtpCollectionFactory : public MediaDeviceCollectionFactory<MtpCollection>
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_collection-mtpcollection.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
+
     public:
-        MtpCollectionFactory( QObject *parent, const QVariantList &args );
+        MtpCollectionFactory();
         virtual ~MtpCollectionFactory();
 
 };
@@ -46,6 +47,7 @@ class MtpCollectionFactory : public MediaDeviceCollectionFactory<MtpCollection>
 class MtpCollection : public MediaDeviceCollection
 {
     Q_OBJECT
+
 	public:
 
     MtpCollection( MediaDeviceInfo* );
@@ -53,7 +55,7 @@ class MtpCollection : public MediaDeviceCollection
 
     virtual QString collectionId() const;
     virtual QString prettyName() const;
-    virtual KIcon icon() const { return KIcon("multimedia-player"); }
+    virtual QIcon icon() const { return QIcon::fromTheme("multimedia-player"); }
 
     //void writeDatabase();
 };

@@ -9,16 +9,16 @@ set( amarok_collection-playdarcollection_PART_SRCS
      support/ProxyResolver.cpp
      support/QMFunctionTypes.h )
 
-kde4_add_plugin(amarok_collection-playdarcollection ${amarok_collection-playdarcollection_PART_SRCS})
+add_library(amarok_collection-playdarcollection MODULE ${amarok_collection-playdarcollection_PART_SRCS})
 
 target_link_libraries( amarok_collection-playdarcollection
                        amarokcore
                        amaroklib
                        ${QJSON_LIBRARIES}
-                       ${KDE4_KDECORE_LIBS}
-                       ${KDE4_THREADWEAVER_LIBRARIES}
-                       ${KDE4_KIO_LIBS} )
+                       KF5::ThreadWeaver
+                       KF5::KIOCore )
 
 install(TARGETS amarok_collection-playdarcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
-install(FILES amarok_collection-playdarcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+kcoreaddons_desktop_to_json(amarok_collection-playdarcollection amarok_collection-playdarcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
+

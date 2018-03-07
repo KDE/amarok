@@ -46,7 +46,7 @@ IpodPlaylistProvider::prettyName() const
     return m_coll->prettyName();
 }
 
-KIcon
+QIcon
 IpodPlaylistProvider::icon() const
 {
     return m_coll->icon();
@@ -73,7 +73,7 @@ IpodPlaylistProvider::addPlaylist( Playlists::PlaylistPtr playlist )
 Meta::TrackPtr
 IpodPlaylistProvider::addTrack( Meta::TrackPtr track )
 {
-    QString name = KGlobal::locale()->formatDateTime( QDateTime::currentDateTime() );
+    QString name = QLocale().toString( QDateTime::currentDateTime() );
     return save( Meta::TrackList() << track , name )->tracks().last();
 }
 
@@ -108,7 +108,7 @@ IpodPlaylistProvider::playlistActions( const Playlists::PlaylistList &playlists 
     {
         if( !m_playlists.contains( playlist ) )  // make following static cast safe
             continue;
-        IpodPlaylist::Type type = KSharedPtr<IpodPlaylist>::staticCast( playlist )->type();
+        IpodPlaylist::Type type = AmarokSharedPointer<IpodPlaylist>::staticCast( playlist )->type();
         if( type == IpodPlaylist::Stale || type == IpodPlaylist::Orphaned )
         {
             actions << m_coll->m_consolidateAction;
@@ -136,7 +136,7 @@ IpodPlaylistProvider::renamePlaylist( Playlists::PlaylistPtr playlist, const QSt
 {
     if( !m_playlists.contains( playlist ) )  // make following static cast safe
         return;
-    KSharedPtr<IpodPlaylist> ipodPlaylist = KSharedPtr<IpodPlaylist>::staticCast( playlist );
+    AmarokSharedPointer<IpodPlaylist> ipodPlaylist = AmarokSharedPointer<IpodPlaylist>::staticCast( playlist );
     if( ipodPlaylist->type() != IpodPlaylist::Normal )
         return;  // special playlists cannot be renamed
 
@@ -155,7 +155,7 @@ IpodPlaylistProvider::deletePlaylists( const Playlists::PlaylistList &playlistli
     {
         if( !m_playlists.contains( playlist ) )
             continue;
-        if( KSharedPtr<IpodPlaylist>::staticCast( playlist )->type() != IpodPlaylist::Normal )
+        if( AmarokSharedPointer<IpodPlaylist>::staticCast( playlist )->type() != IpodPlaylist::Normal )
             continue;  // special playlists cannot be removed using this method
         m_playlists.removeOne( playlist );
 
@@ -188,7 +188,7 @@ IpodPlaylistProvider::trackRemoved( Playlists::PlaylistPtr, int )
 }
 
 void
-IpodPlaylistProvider::scheduleCopyAndInsertToPlaylist( KSharedPtr<IpodPlaylist> playlist )
+IpodPlaylistProvider::scheduleCopyAndInsertToPlaylist( AmarokSharedPointer<IpodPlaylist> playlist )
 {
     m_copyTracksTo.insert( playlist );
     QTimer::singleShot( 0, this, SLOT(slotCopyAndInsertToPlaylists()) );
@@ -325,10 +325,10 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
 void
 IpodPlaylistProvider::slotCopyAndInsertToPlaylists()
 {
-    QMutableSetIterator< KSharedPtr<IpodPlaylist> > it( m_copyTracksTo );
+    QMutableSetIterator< AmarokSharedPointer<IpodPlaylist> > it( m_copyTracksTo );
     while( it.hasNext() )
     {
-        KSharedPtr<IpodPlaylist> ipodPlaylist = it.next();
+        AmarokSharedPointer<IpodPlaylist> ipodPlaylist = it.next();
         TrackPositionList tracks = ipodPlaylist->takeTracksToCopy();
         copyAndInsertToPlaylist( tracks, Playlists::PlaylistPtr::staticCast( ipodPlaylist ) );
         it.remove();
@@ -407,4 +407,3 @@ IpodPlaylistProvider::entitiesDiffer( T first, T second )
     return ( first ? first->name() : QString() ) != ( second ? second->name() : QString() );
 }
 
-#include "IpodPlaylistProvider.moc"

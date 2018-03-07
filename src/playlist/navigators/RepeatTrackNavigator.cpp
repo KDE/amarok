@@ -24,6 +24,6 @@ Playlist::RepeatTrackNavigator::RepeatTrackNavigator()
 {
     m_trackid = m_model->activeId();
 
-    connect( m_model->qaim(), SIGNAL(activeTrackChanged(quint64)),
-             this, SLOT(recvActiveTrackChanged(quint64)) );
+    connect( qobject_cast<Playlist::Model*>(m_model->qaim()), &Playlist::Model::activeTrackChanged,
+             this, &RepeatTrackNavigator::recvActiveTrackChanged );
 }

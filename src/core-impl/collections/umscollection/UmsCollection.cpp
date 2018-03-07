@@ -35,29 +35,26 @@
 #include "dialogs/TrackOrganizer.h" //TODO: move to core/utils
 #include "scanner/GenericScanManager.h"
 
-#include <solid/deviceinterface.h>
-#include <solid/devicenotifier.h>
-#include <solid/genericinterface.h>
-#include <solid/opticaldisc.h>
-#include <solid/portablemediaplayer.h>
-#include <solid/storageaccess.h>
-#include <solid/storagedrive.h>
-#include <solid/storagevolume.h>
-
-#include <KDiskFreeSpaceInfo>
-#include <kmimetype.h>
-#include <KUrl>
+#include <Solid/DeviceInterface>
+#include <Solid/DeviceNotifier>
+#include <Solid/GenericInterface>
+#include <Solid/OpticalDisc>
+#include <Solid/PortableMediaPlayer>
+#include <Solid/StorageAccess>
+#include <Solid/StorageDrive>
+#include <Solid/StorageVolume>
 
 #include <QThread>
 #include <QTimer>
+#include <QUrl>
 
-AMAROK_EXPORT_COLLECTION( UmsCollectionFactory, umscollection )
+#include <KConfigGroup>
+#include <KDiskFreeSpaceInfo>
 
-UmsCollectionFactory::UmsCollectionFactory( QObject *parent, const QVariantList &args )
-    : CollectionFactory( parent, args )
-{
-    m_info = KPluginInfo( "amarok_collection-umscollection.desktop", "services" );
-}
+
+UmsCollectionFactory::UmsCollectionFactory()
+    : CollectionFactory()
+{}
 
 UmsCollectionFactory::~UmsCollectionFactory()
 {
@@ -66,10 +63,10 @@ UmsCollectionFactory::~UmsCollectionFactory()
 void
 UmsCollectionFactory::init()
 {
-    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(QString)),
-             SLOT(slotAddSolidDevice(QString)) );
-    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(QString)),
-             SLOT(slotRemoveSolidDevice(QString)) );
+    connect( Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded,
+             this, &UmsCollectionFactory::slotAddSolidDevice );
+    connect( Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved,
+             this, &UmsCollectionFactory::slotRemoveSolidDevice );
 
     // detect UMS devices that were already connected on startup
     QString query( "IS StorageAccess" );
@@ -183,9 +180,9 @@ UmsCollectionFactory::createCollectionForSolidDevice( const QString &udi )
     }
 
     // we are definitely interested in this device, listen for accessibility changes
-    disconnect( ssa, SIGNAL(accessibilityChanged(bool,QString)), this, 0 );
-    connect( ssa, SIGNAL(accessibilityChanged(bool,QString)),
-             SLOT(slotAccessibilityChanged(bool,QString)) );
+    disconnect( ssa, &Solid::StorageAccess::accessibilityChanged, this, 0 );
+    connect( ssa, &Solid::StorageAccess::accessibilityChanged,
+             this, &UmsCollectionFactory::slotAccessibilityChanged );
 
     if( !ssa->isAccessible() )
     {
@@ -197,12 +194,12 @@ UmsCollectionFactory::createCollectionForSolidDevice( const QString &udi )
     m_collectionMap.insert( udi, collection );
 
     // when the collection is destroyed by someone else, remove it from m_collectionMap:
-    connect( collection, SIGNAL(destroyed(QObject*)), SLOT(slotCollectionDestroyed(QObject*)) );
+    connect( collection, &QObject::destroyed, this, &UmsCollectionFactory::slotCollectionDestroyed );
 
     // try to gracefully destroy collection when unmounting is requested using
     // external means: (Device notifier plasmoid etc.). Because the original action could
     // fail if we hold some files on the device open, we try to tearDown the device too.
-    connect( ssa, SIGNAL(teardownRequested(QString)), SLOT(slotRemoveAndTeardownSolidDevice(QString)) );
+    connect( ssa, &Solid::StorageAccess::teardownRequested, this, &UmsCollectionFactory::slotRemoveAndTeardownSolidDevice );
 
     emit newCollection( collection );
 }
@@ -243,21 +240,21 @@ UmsCollection::UmsCollection( Solid::Device device )
     debug() << "Creating UmsCollection for device with udi: " << m_device.udi();
 
     m_updateTimer.setSingleShot( true );
-    connect( this, SIGNAL(startUpdateTimer()), SLOT(slotStartUpdateTimer()) );
-    connect( &m_updateTimer, SIGNAL(timeout()), SLOT(collectionUpdated()) );
+    connect( this, &UmsCollection::startUpdateTimer, this, &UmsCollection::slotStartUpdateTimer );
+    connect( &m_updateTimer, &QTimer::timeout, this, &UmsCollection::collectionUpdated );
 
-    m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure Device" ), this );
+    m_configureAction = new QAction( QIcon::fromTheme( "configure" ), i18n( "&Configure Device" ), this );
     m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
-    connect( m_configureAction, SIGNAL(triggered()), SLOT(slotConfigure()) );
+    connect( m_configureAction, &QAction::triggered, this, &UmsCollection::slotConfigure );
 
-    m_parseAction = new QAction( KIcon( "checkbox" ), i18n(  "&Activate This Collection" ), this );
+    m_parseAction = new QAction( QIcon::fromTheme( "checkbox" ), i18n(  "&Activate This Collection" ), this );
     m_parseAction->setProperty( "popupdropper_svg_id", "edit" );
-    connect( m_parseAction, SIGNAL(triggered()), this, SLOT(slotParseActionTriggered()) );
+    connect( m_parseAction, &QAction::triggered, this, &UmsCollection::slotParseActionTriggered );
 
-    m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Eject Device" ),
+    m_ejectAction = new QAction( QIcon::fromTheme( "media-eject" ), i18n( "&Eject Device" ),
                                  const_cast<UmsCollection*>( this ) );
     m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
-    connect( m_ejectAction, SIGNAL(triggered()), SLOT(slotEject()) );
+    connect( m_ejectAction, &QAction::triggered, this, &UmsCollection::slotEject );
 
     init();
 }
@@ -281,24 +278,25 @@ UmsCollection::init()
     KConfigGroup entries = config.group( QString() ); // default group
     if( entries.hasKey( s_musicFolderKey ) )
     {
-        m_musicPath = KUrl( m_mountPoint );
-        m_musicPath.addPath( entries.readPathEntry( s_musicFolderKey, QString() ) );
-        m_musicPath.cleanPath();
-        if( !QDir( m_musicPath.toLocalFile() ).exists() )
+        m_musicUrl = QUrl::fromLocalFile( m_mountPoint );
+        m_musicUrl = m_musicUrl.adjusted(QUrl::StripTrailingSlash);
+        m_musicUrl.setPath(m_musicUrl.path() + '/' + ( entries.readPathEntry( s_musicFolderKey, QString() ) ));
+        m_musicUrl.setPath( QDir::cleanPath(m_musicUrl.path()) );
+        if( !QDir( m_musicUrl.toLocalFile() ).exists() )
         {
             QString message = i18n( "File <i>%1</i> suggests that we should use <i>%2</i> "
                     "as music folder on the device, but it doesn't exist. Falling back to "
                     "<i>%3</i> instead", m_mountPoint + '/' + s_settingsFileName,
-                    m_musicPath.toLocalFile(), m_mountPoint );
+                    m_musicUrl.toLocalFile(), m_mountPoint );
             Amarok::Components::logger()->longMessage( message, Amarok::Logger::Warning );
-            m_musicPath = m_mountPoint;
+            m_musicUrl = QUrl::fromLocalFile(m_mountPoint);
         }
     }
     else if( !entries.keyList().isEmpty() )
         // config file exists, but has no s_musicFolderKey -> music should be disabled
-        m_musicPath = KUrl();
+        m_musicUrl = QUrl();
     else
-        m_musicPath = m_mountPoint; // related BR 259849
+        m_musicUrl = QUrl::fromLocalFile(m_mountPoint); // related BR 259849
     QString scheme = entries.readEntry( s_musicFilenameSchemeKey );
     m_musicFilenameScheme = !scheme.isEmpty() ? scheme : m_musicFilenameScheme;
     m_vfatSafe = entries.readEntry( s_vfatSafeKey, m_vfatSafe );
@@ -309,9 +307,10 @@ UmsCollection::init()
     m_replaceText = entries.readEntry( s_replaceTextKey, m_replaceText );
     if( entries.hasKey( s_podcastFolderKey ) )
     {
-        m_podcastPath = KUrl( m_mountPoint );
-        m_podcastPath.addPath( entries.readPathEntry( s_podcastFolderKey, QString() ) );
-        m_podcastPath.cleanPath();
+        m_podcastUrl = QUrl::fromLocalFile( m_mountPoint );
+        m_podcastUrl = m_podcastUrl.adjusted(QUrl::StripTrailingSlash);
+        m_podcastUrl.setPath(m_podcastUrl.path() + '/' + ( entries.readPathEntry( s_podcastFolderKey, QString() ) ));
+        m_podcastUrl.setPath( QDir::cleanPath(m_podcastUrl.path()) );
     }
     m_autoConnect = entries.readEntry( s_autoConnectKey, m_autoConnect );
     m_collectionName = entries.readEntry( s_collectionName, m_collectionName );
@@ -323,7 +322,7 @@ UmsCollection::init()
 }
 
 bool
-UmsCollection::possiblyContainsTrack( const KUrl &url ) const
+UmsCollection::possiblyContainsTrack( const QUrl &url ) const
 {
     //not initialized yet.
     if( m_mc.isNull() )
@@ -334,7 +333,7 @@ UmsCollection::possiblyContainsTrack( const KUrl &url ) const
 }
 
 Meta::TrackPtr
-UmsCollection::trackForUrl( const KUrl &url )
+UmsCollection::trackForUrl( const QUrl &url )
 {
     //not initialized yet.
     if( m_mc.isNull() )
@@ -388,13 +387,13 @@ UmsCollection::prettyName() const
                       "actual collection name", "%1 (not activated)", actualName );
 }
 
-KIcon
+QIcon
 UmsCollection::icon() const
 {
     if( m_device.icon().isEmpty() )
-        return KIcon( "drive-removable-media-usb-pendrive" );
+        return QIcon::fromTheme( "drive-removable-media-usb-pendrive" );
     else
-        return KIcon( m_device.icon() );
+        return QIcon::fromTheme( m_device.icon() );
 }
 
 bool
@@ -477,7 +476,7 @@ UmsCollection::metadataChanged( Meta::TrackPtr track )
         emit startUpdateTimer();
 }
 
-KUrl
+QUrl
 UmsCollection::organizedUrl( Meta::TrackPtr track, const QString &fileExtension ) const
 {
     TrackOrganizer trackOrganizer( Meta::TrackList() << track );
@@ -485,14 +484,14 @@ UmsCollection::organizedUrl( Meta::TrackPtr track, const QString &fileExtension 
     trackOrganizer.setFormatString( "%collectionroot%/" + m_musicFilenameScheme + ".%filetype%" );
     trackOrganizer.setVfatSafe( m_vfatSafe );
     trackOrganizer.setAsciiOnly( m_asciiOnly );
-    trackOrganizer.setFolderPrefix( m_musicPath.path() );
+    trackOrganizer.setFolderPrefix( m_musicUrl.path() );
     trackOrganizer.setPostfixThe( m_postfixThe );
     trackOrganizer.setReplaceSpaces( m_replaceSpaces );
     trackOrganizer.setReplace( m_regexText, m_replaceText );
     if( !fileExtension.isEmpty() )
         trackOrganizer.setTargetFileExtension( fileExtension );
 
-    return KUrl( trackOrganizer.getDestinations().value( track ) );
+    return QUrl::fromLocalFile( trackOrganizer.getDestinations().value( track ) );
 }
 
 void
@@ -513,9 +512,9 @@ UmsCollection::slotEject()
 }
 
 void
-UmsCollection::slotTrackAdded( KUrl location )
+UmsCollection::slotTrackAdded( QUrl location )
 {
-    Q_ASSERT( m_musicPath.isParentOf( location ) );
+    Q_ASSERT( m_musicUrl.isParentOf( location ) || m_musicUrl.matches( location , QUrl::StripTrailingSlash) );
     MetaFile::Track *fileTrack = new MetaFile::Track( location );
     fileTrack->setCollection( this );
     Meta::TrackPtr fileTrackPtr = Meta::TrackPtr( fileTrack );
@@ -559,12 +558,12 @@ UmsCollection::slotParseTracks()
     if( !m_scanManager )
     {
         m_scanManager = new GenericScanManager( this );
-        connect( m_scanManager, SIGNAL(directoryScanned(QSharedPointer<CollectionScanner::Directory>)),
-                 SLOT(slotDirectoryScanned(QSharedPointer<CollectionScanner::Directory>)) );
+        connect( m_scanManager, &GenericScanManager::directoryScanned,
+                 this, &UmsCollection::slotDirectoryScanned );
     }
 
     m_tracksParsed = true;
-    m_scanManager->requestScan( QList<KUrl>() << m_musicPath, GenericScanManager::FullScan );
+    m_scanManager->requestScan( QList<QUrl>() << m_musicUrl, GenericScanManager::FullScan );
 }
 
 void
@@ -577,7 +576,7 @@ UmsCollection::slotParseActionTriggered()
 void
 UmsCollection::slotConfigure()
 {
-    KDialog umsSettingsDialog;
+    QDialog umsSettingsDialog;
     QWidget *settingsWidget = new QWidget( &umsSettingsDialog );
     QScopedPointer<Capabilities::TranscodeCapability> tc( create<Capabilities::TranscodeCapability>() );
 
@@ -587,43 +586,46 @@ UmsCollection::slotConfigure()
     settings->m_autoConnect->setChecked( m_autoConnect );
 
     settings->m_musicFolder->setMode( KFile::Directory );
-    settings->m_musicCheckBox->setChecked( !m_musicPath.isEmpty() );
+    settings->m_musicCheckBox->setChecked( !m_musicUrl.isEmpty() );
     settings->m_musicWidget->setEnabled( settings->m_musicCheckBox->isChecked() );
-    settings->m_musicFolder->setUrl( m_musicPath.isEmpty() ? KUrl( m_mountPoint ) : m_musicPath );
+    settings->m_musicFolder->setUrl( m_musicUrl.isEmpty() ? QUrl::fromLocalFile( m_mountPoint ) : m_musicUrl );
     settings->m_transcodeConfig->fillInChoices( tc->savedConfiguration() );
 
     settings->m_podcastFolder->setMode( KFile::Directory );
-    settings->m_podcastCheckBox->setChecked( !m_podcastPath.isEmpty() );
+    settings->m_podcastCheckBox->setChecked( !m_podcastUrl.isEmpty() );
     settings->m_podcastWidget->setEnabled( settings->m_podcastCheckBox->isChecked() );
-    settings->m_podcastFolder->setUrl( m_podcastPath.isEmpty() ? KUrl( m_mountPoint )
-                                         : m_podcastPath );
+    settings->m_podcastFolder->setUrl( m_podcastUrl.isEmpty() ? QUrl::fromLocalFile( m_mountPoint )
+                                         : m_podcastUrl );
 
     settings->m_collectionName->setText( prettyName() );
 
-    OrganizeCollectionWidget layoutWidget( &umsSettingsDialog );
+    OrganizeCollectionWidget *layoutWidget = new OrganizeCollectionWidget;
     //TODO: save the setting that are normally written in onAccept()
 //    connect( this, SIGNAL(accepted()), &layoutWidget, SLOT(onAccept()) );
-    QVBoxLayout layout( &umsSettingsDialog );
-    layout.addWidget( &layoutWidget );
-    settings->m_filenameSchemeBox->setLayout( &layout );
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget( layoutWidget );
+    settings->m_filenameSchemeBox->setLayout( layout );
     //hide the unuse preset selector.
     //TODO: change the presets to concurrent presets for regular albums v.s. compilations
     // layoutWidget.setformatPresetVisible( false );
-    layoutWidget.setScheme( m_musicFilenameScheme );
+    layoutWidget->setScheme( m_musicFilenameScheme );
 
-    OrganizeCollectionOptionWidget optionsWidget;
-    optionsWidget.setVfatCompatible( m_vfatSafe );
-    optionsWidget.setAsciiOnly( m_asciiOnly );
-    optionsWidget.setPostfixThe( m_postfixThe );
-    optionsWidget.setReplaceSpaces( m_replaceSpaces );
-    optionsWidget.setRegexpText( m_regexText );
-    optionsWidget.setReplaceText( m_replaceText );
+    OrganizeCollectionOptionWidget *optionsWidget = new OrganizeCollectionOptionWidget;
+    optionsWidget->setVfatCompatible( m_vfatSafe );
+    optionsWidget->setAsciiOnly( m_asciiOnly );
+    optionsWidget->setPostfixThe( m_postfixThe );
+    optionsWidget->setReplaceSpaces( m_replaceSpaces );
+    optionsWidget->setRegexpText( m_regexText );
+    optionsWidget->setReplaceText( m_replaceText );
 
-    layout.addWidget( &optionsWidget );
+    layout->addWidget( optionsWidget );
 
-    umsSettingsDialog.setButtons( KDialog::Ok | KDialog::Cancel );
-    umsSettingsDialog.setMainWidget( settingsWidget );
-
+    umsSettingsDialog.setLayout( new QVBoxLayout );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+    connect( buttonBox, &QDialogButtonBox::accepted, &umsSettingsDialog, &QDialog::accept );
+    connect( buttonBox, &QDialogButtonBox::rejected, &umsSettingsDialog, &QDialog::reject );
+    umsSettingsDialog.layout()->addWidget( settingsWidget );
+    umsSettingsDialog.layout()->addWidget( buttonBox );
     umsSettingsDialog.setWindowTitle( i18n( "Configure USB Mass Storage Device" ) );
 
     if( umsSettingsDialog.exec() == QDialog::Accepted )
@@ -632,14 +634,14 @@ UmsCollection::slotConfigure()
 
         if( settings->m_musicCheckBox->isChecked() )
         {
-            if( settings->m_musicFolder->url() != m_musicPath )
+            if( settings->m_musicFolder->url() != m_musicUrl )
             {
-                debug() << "music location changed from " << m_musicPath.toLocalFile() << " to ";
+                debug() << "music location changed from " << m_musicUrl.toLocalFile() << " to ";
                 debug() << settings->m_musicFolder->url().toLocalFile();
-                m_musicPath = settings->m_musicFolder->url();
+                m_musicUrl = settings->m_musicFolder->url();
                 //TODO: reparse music
             }
-            QString scheme = layoutWidget.getParsableScheme().simplified();
+            QString scheme = layoutWidget->getParsableScheme().simplified();
             //protect against empty string.
             if( !scheme.isEmpty() )
                 m_musicFilenameScheme = scheme;
@@ -647,44 +649,43 @@ UmsCollection::slotConfigure()
         else
         {
             debug() << "music support is disabled";
-            m_musicPath = KUrl();
+            m_musicUrl = QUrl();
             //TODO: remove all tracks from the MemoryCollection.
         }
 
-        m_asciiOnly = optionsWidget.asciiOnly();
-        m_postfixThe = optionsWidget.postfixThe();
-        m_replaceSpaces = optionsWidget.replaceSpaces();
-        m_regexText = optionsWidget.regexpText();
-        m_replaceText = optionsWidget.replaceText();
+        m_asciiOnly = optionsWidget->asciiOnly();
+        m_postfixThe = optionsWidget->postfixThe();
+        m_replaceSpaces = optionsWidget->replaceSpaces();
+        m_regexText = optionsWidget->regexpText();
+        m_replaceText = optionsWidget->replaceText();
         m_collectionName = settings->m_collectionName->text();
 
         if( settings->m_podcastCheckBox->isChecked() )
         {
-            if( settings->m_podcastFolder->url() != m_podcastPath )
+            if( settings->m_podcastFolder->url() != m_podcastUrl )
             {
-                debug() << "podcast location changed from " << m_podcastPath << " to ";
+                debug() << "podcast location changed from " << m_podcastUrl << " to ";
                 debug() << settings->m_podcastFolder->url().url();
-                m_podcastPath = settings->m_podcastFolder->url().toLocalFile();
+                m_podcastUrl = QUrl(settings->m_podcastFolder->url());
                 //TODO: reparse podcasts
             }
         }
         else
         {
             debug() << "podcast support is disabled";
-            m_podcastPath = KUrl();
+            m_podcastUrl = QUrl();
             //TODO: remove the PodcastProvider
         }
 
         m_autoConnect = settings->m_autoConnect->isChecked();
-        if( !m_musicPath.isEmpty() && m_autoConnect )
+        if( !m_musicUrl.isEmpty() && m_autoConnect )
             QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
 
         // write the data to the on-disk file
         KConfig config( m_mountPoint + '/' + s_settingsFileName, KConfig::SimpleConfig );
         KConfigGroup entries = config.group( QString() ); // default group
-        if( !m_musicPath.isEmpty() )
-            entries.writePathEntry( s_musicFolderKey, KUrl::relativePath( m_mountPoint,
-                m_musicPath.toLocalFile() ) );
+        if( !m_musicUrl.isEmpty() )
+            entries.writePathEntry( s_musicFolderKey, QDir( m_mountPoint ).relativeFilePath( m_musicUrl.toLocalFile() ));
         else
             entries.deleteEntry( s_musicFolderKey );
         entries.writeEntry( s_musicFilenameSchemeKey, m_musicFilenameScheme );
@@ -694,9 +695,8 @@ UmsCollection::slotConfigure()
         entries.writeEntry( s_replaceSpacesKey, m_replaceSpaces );
         entries.writeEntry( s_regexTextKey, m_regexText );
         entries.writeEntry( s_replaceTextKey, m_replaceText );
-        if( !m_podcastPath.isEmpty() )
-            entries.writePathEntry( s_podcastFolderKey, KUrl::relativePath( m_mountPoint,
-                m_podcastPath.toLocalFile() ) );
+        if( !m_podcastUrl.isEmpty() )
+            entries.writePathEntry( s_podcastFolderKey, QDir( m_mountPoint ).relativeFilePath( m_podcastUrl.toLocalFile() ));
         else
             entries.deleteEntry( s_podcastFolderKey );
         entries.writeEntry( s_autoConnectKey, m_autoConnect );
@@ -723,7 +723,7 @@ UmsCollection::slotDirectoryScanned( QSharedPointer<CollectionScanner::Directory
     {
         //TODO: use proxy tracks so no real file read is required
         // following method calls startUpdateTimer(), no need to emit updated()
-        slotTrackAdded( scannerTrack->path() );
+        slotTrackAdded( QUrl::fromLocalFile(scannerTrack->path()) );
     }
 
     //TODO: read playlists

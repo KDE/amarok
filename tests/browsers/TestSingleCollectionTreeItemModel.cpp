@@ -16,6 +16,7 @@
 
 #include "TestSingleCollectionTreeItemModel.h"
 
+#include "amarokconfig.h"
 #include "core/meta/Meta.h"
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
@@ -28,12 +29,8 @@
 #include <QApplication>
 #include <QModelIndex>
 #include <QSet>
+#include <QSignalSpy>
 #include <QStringList>
-
-#include <KCmdLineArgs>
-#include <KGlobal>
-
-#include <qtest_kde.h>
 
 #include <gmock/gmock.h>
 
@@ -41,7 +38,7 @@ using ::testing::Return;
 using ::testing::AnyNumber;
 using ::testing::_;
 
-QTEST_KDEMAIN( TestSingleCollectionTreeItemModel, GUI )
+QTEST_MAIN( TestSingleCollectionTreeItemModel )
 
 void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackName, const QString &artistName, const QString &albumName )
 {
@@ -51,7 +48,7 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     EXPECT_CALL( *track, name() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
     EXPECT_CALL( *track, prettyName() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName ) );
     EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + '_' + artistName + '_' + albumName ) );
-    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( KUrl( '/' + track->uidUrl() ) ) );
+    EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( QUrl( '/' + track->uidUrl() ) ) );
     EXPECT_CALL( *track, composer() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ComposerPtr() ) );
     EXPECT_CALL( *track, genre() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::GenrePtr() ) );
     EXPECT_CALL( *track, year() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::YearPtr() ) );
@@ -114,34 +111,27 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     EXPECT_CALL( *album, albumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( artistPtr ) );
 }
 
-TestSingleCollectionTreeItemModel::TestSingleCollectionTreeItemModel() : QObject()
+void
+TestSingleCollectionTreeItemModel::initTestCase()
 {
-    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
-    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
     qRegisterMetaType<Meta::TrackList>();
     qRegisterMetaType<Meta::AlbumList>();
     qRegisterMetaType<Meta::ArtistList>();
     qRegisterMetaType<Meta::DataList>();
-}
-
-TestSingleCollectionTreeItemModel::~TestSingleCollectionTreeItemModel()
-{
-}
-
-void
-TestSingleCollectionTreeItemModel::initTestCase()
-{
     qRegisterMetaType<Meta::GenreList>();
     qRegisterMetaType<Meta::ComposerList>();
     qRegisterMetaType<Meta::YearList>();
     qRegisterMetaType<Meta::LabelList>();
+
+    AmarokConfig::instance("amarokrc");
 }
 
 #define loadChildren( itemModel, idx ) \
 { \
     if( itemModel->canFetchMore( idx ) ) { \
+        QSignalSpy spy( itemModel, &SingleCollectionTreeItemModel::allQueriesFinished ); \
         itemModel->fetchMore( idx ); \
-        QVERIFY( QTest::kWaitForSignal( itemModel, SIGNAL(allQueriesFinished(bool)), 5000 ) ); \
+        QVERIFY( spy.wait( 5000 ) ); \
     } \
 }
 

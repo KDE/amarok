@@ -42,7 +42,7 @@ class StarManager : public QObject
 
         void reinitStars( int height = -1, int margin = -1 );
 
-    signals:
+    Q_SIGNALS:
         void ratingsColorsChanged();
 
     private:

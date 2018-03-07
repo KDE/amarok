@@ -30,16 +30,13 @@
 #include "playlist/PlaylistActions.h"
 
 #include "PopupDropperFactory.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
+// #include "context/popupdropper/libpud/PopupDropperItem.h"
+// #include "context/popupdropper/libpud/PopupDropper.h"
 
 #include "PaletteHandler.h"
 
-#include <klocale.h>
-
-#include <KAction>
-#include <KGlobalSettings>
-#include <KMenu>
+#include <QAction>
+#include <QMenu>
 
 #include <QAction>
 #include <QKeyEvent>
@@ -65,10 +62,10 @@ PlaylistBrowserNS::DynamicView::DynamicView( QWidget *parent )
     setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
 
     // -- expanding the playlist should expand the whole tree
-    connect( this, SIGNAL(expanded(QModelIndex)),
-             this, SLOT(expandRecursive(QModelIndex)) );
-    connect( this, SIGNAL(collapsed(QModelIndex)),
-             this, SLOT(collapseRecursive(QModelIndex)) );
+    connect( this, &DynamicView::expanded,
+             this, &DynamicView::expandRecursive );
+    connect( this, &DynamicView::collapsed,
+             this, &DynamicView::collapseRecursive );
 }
 
 PlaylistBrowserNS::DynamicView::~DynamicView()
@@ -224,20 +221,20 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         Q_UNUSED( playlist );
         QAction* action;
 
-        action = new KAction( KIcon( "document-properties-amarok" ), i18n( "&Rename playlist" ), this );
-        connect( action, SIGNAL(triggered(bool)), this, SLOT(editSelected()) );
+        action = new QAction( QIcon::fromTheme( "document-properties-amarok" ), i18n( "&Rename playlist" ), this );
+        connect( action, &QAction::triggered, this, &DynamicView::editSelected );
         actions.append( action );
 
-        action = new KAction( KIcon( "document-new" ), i18n( "&Add new Bias" ), this );
-        connect( action, SIGNAL(triggered(bool)), this, SLOT(addToSelected()) );
+        action = new QAction( QIcon::fromTheme( "document-new" ), i18n( "&Add new Bias" ), this );
+        connect( action, &QAction::triggered, this, &DynamicView::addToSelected );
         actions.append( action );
 
-        action = new KAction( KIcon( "edit-copy" ), i18n( "&Clone Playlist" ), this );
-        connect( action, SIGNAL(triggered(bool)), this, SLOT(cloneSelected()) );
+        action = new QAction( QIcon::fromTheme( "edit-copy" ), i18n( "&Clone Playlist" ), this );
+        connect( action, &QAction::triggered, this, &DynamicView::cloneSelected );
         actions.append( action );
 
-        action = new KAction( KIcon( "edit-delete" ), i18n( "&Delete playlist" ), this );
-        connect( action, SIGNAL(triggered(bool)), this, SLOT(removeSelected()) );
+        action = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete playlist" ), this );
+        connect( action, &QAction::triggered, this, &DynamicView::removeSelected );
         actions.append( action );
     }
 
@@ -250,12 +247,12 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         Dynamic::AndBias* aBias = qobject_cast<Dynamic::AndBias*>(v.value<QObject*>() );
         QAction* action;
 
-        action = new KAction( KIcon( "document-properties-amarok" ), i18n( "&Edit bias..." ), this );
-        connect( action, SIGNAL(triggered(bool)), this, SLOT(editSelected()) );
+        action = new QAction( QIcon::fromTheme( "document-properties-amarok" ), i18n( "&Edit bias..." ), this );
+        connect( action, &QAction::triggered, this, &DynamicView::editSelected );
         actions.append( action );
 
-        action = new KAction( KIcon( "edit-copy" ), i18n( "&Clone bias" ), this );
-        connect( action, SIGNAL(triggered(bool)), this, SLOT(cloneSelected()) );
+        action = new QAction( QIcon::fromTheme( "edit-copy" ), i18n( "&Clone bias" ), this );
+        connect( action, &QAction::triggered, this, &DynamicView::cloneSelected );
         actions.append( action );
 
         // don't allow deleting a top bias unless it'a an and-bias containing at least one
@@ -264,15 +261,15 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         QVariant parentV = model()->data( parentIndex, Dynamic::DynamicModel::PlaylistRole );
         if( !parentV.isValid() || (aBias && aBias->biases().count() > 0) )
         {
-            action = new KAction( KIcon( "edit-delete" ), i18n( "&Delete bias" ), this );
-            connect( action, SIGNAL(triggered(bool)), this, SLOT(removeSelected()) );
+            action = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete bias" ), this );
+            connect( action, &QAction::triggered, this, &DynamicView::removeSelected );
             actions.append( action );
         }
 
         if( aBias )
         {
-            action = new KAction( KIcon( "document-new" ), i18n( "&Add new bias" ), this );
-            connect( action, SIGNAL(triggered(bool)), this, SLOT(addToSelected()) );
+            action = new QAction( QIcon::fromTheme( "document-new" ), i18n( "&Add new bias" ), this );
+            connect( action, &QAction::triggered, this, &DynamicView::addToSelected );
             actions.append( action );
         }
     }
@@ -280,7 +277,7 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
     if( actions.isEmpty() )
         return;
 
-    KMenu menu;
+    QMenu menu;
     foreach( QAction *action, actions )
     {
         if( action )
@@ -290,4 +287,3 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
     menu.exec( mapToGlobal( event->pos() ) );
 }
 
-#include "DynamicView.moc"

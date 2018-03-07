@@ -1,7 +1,7 @@
-macro_optional_find_package(NepomukCore QUIET)
-macro_log_feature(NepomukCore_FOUND "nepomuk-core" "NepomukCore Libraries required by Nepomuk Collection" "http://kde.org/download/#v4.9" FALSE "4.9.0")
-macro_optional_find_package(Soprano QUIET)
-macro_log_feature(Soprano_FOUND "Soprano" "Soprano libraries required by Nepomuk Collection" "http://soprano.sourceforge.net/" FALSE)
+find_package(NepomukCore QUIET)
+set_package_properties(NEPOMUK-CORE PROPERTIES DESCRIPTION "NepomukCore Libraries required by Nepomuk Collection" URL "http://kde.org/download/#v4.9"  TYPE OPTIONAL)
+find_package(Soprano QUIET)
+set_package_properties(SOPRANO PROPERTIES DESCRIPTION "Soprano libraries required by Nepomuk Collection" URL "http://soprano.sourceforge.net/" TYPE OPTIONAL)
 
 if(NepomukCore_FOUND AND Soprano_FOUND)
     include(NepomukAddOntologyClasses)
@@ -31,15 +31,13 @@ if(NepomukCore_FOUND AND Soprano_FOUND)
         meta/NepomukYear.cpp
     )
 
-    kde4_add_plugin(amarok_collection-nepomukcollection ${amarok_collection-nepomukcollection_PART_SRCS})
+    add_library(amarok_collection-nepomukcollection MODULE ${amarok_collection-nepomukcollection_PART_SRCS})
 
     target_link_libraries(amarok_collection-nepomukcollection
         amarokcore
         amaroklib
-        ${KDE4_THREADWEAVER_LIBRARIES}
+        KF5::ThreadWeaver
         ${NEPOMUK_CORE_LIBRARY}
-        ${KDE4_KDEUI_LIBS}
-        ${KDE4_KDECORE_LIBS}
         ${SOPRANO_LIBRARIES}
     )
 

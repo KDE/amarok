@@ -21,11 +21,9 @@
 #include "core/support/Components.h"
 #include "EngineController.h"
 
-#include <qtest_kde.h>
+#include <QTest>
 
-#include <QtTest/QTest>
-
-QTEST_KDEMAIN_CORE( TestSimilarArtistsEngine )
+QTEST_MAIN( TestSimilarArtistsEngine )
 
 TestSimilarArtistsEngine::TestSimilarArtistsEngine(QObject* parent)
     : QObject(parent)
@@ -62,4 +60,3 @@ TestSimilarArtistsEngine::cleanupTestCase()
     delete m_engine;
 }
 
-#include "TestSimilarArtistsEngine.moc"

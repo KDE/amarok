@@ -28,7 +28,7 @@
 
 using namespace AmarokScript;
 
-InfoScript::InfoScript( const KUrl& scriptUrl, AmarokScriptEngine *engine )
+InfoScript::InfoScript( const QUrl &scriptUrl, AmarokScriptEngine *engine )
     : QObject( engine )
     , m_scriptUrl( scriptUrl )
 {
@@ -50,7 +50,7 @@ InfoScript::version() const
 QString
 InfoScript::scriptPath() const
 {
-    return m_scriptUrl.directory();
+    return m_scriptUrl.adjusted(QUrl::RemoveFilename).path();
 }
 
 QString

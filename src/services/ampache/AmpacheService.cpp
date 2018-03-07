@@ -33,17 +33,12 @@
   #include "LastfmInfoParser.h"
 #endif
 
-#include <KLocale>
+#include <QStandardPaths>
 
-AMAROK_EXPORT_SERVICE_PLUGIN( ampache, AmpacheServiceFactory )
 
-AmpacheServiceFactory::AmpacheServiceFactory( QObject *parent, const QVariantList &args )
-    : ServiceFactory( parent, args )
-{
-    KPluginInfo pluginInfo( "amarok_service_ampache.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    m_info = pluginInfo;
-}
+AmpacheServiceFactory::AmpacheServiceFactory()
+    : ServiceFactory()
+{}
 
 void AmpacheServiceFactory::init()
 {
@@ -73,31 +68,30 @@ AmpacheServiceFactory::config()
 }
 
 bool
-AmpacheServiceFactory::possiblyContainsTrack(const KUrl & url) const
+AmpacheServiceFactory::possiblyContainsTrack(const QUrl &url) const
 {
     AmpacheConfig config;
     foreach( const AmpacheServerEntry &server, config.servers() )
     {
-        if ( url.url().contains( server.url, Qt::CaseInsensitive ) )
+        if ( server.url.isParentOf( url ) )
             return true;
     }
 
     return false;
 }
 
-
-AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & name, const QString &url, const QString &username, const QString &password )
+AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & name, const QUrl &url, const QString &username, const QString &password )
     : ServiceBase( name,  parent )
     , m_infoParser( 0 )
     , m_collection( 0 )
-    , m_ampacheLogin(new AmpacheAccountLogin(url, username, password, this))
+    , m_ampacheLogin( new AmpacheAccountLogin( url, username, password, this ) )
 {
     DEBUG_BLOCK
-    connect(m_ampacheLogin, SIGNAL(loginSuccessful()), this, SLOT(onLoginSuccessful()));
+    connect( m_ampacheLogin, &AmpacheAccountLogin::loginSuccessful, this, &AmpacheService::onLoginSuccessful );
     setShortDescription( i18n( "Amarok frontend for your Ampache server" ) );
-    setIcon( KIcon( "view-services-ampache-amarok" ) );
+    setIcon( QIcon::fromTheme( "view-services-ampache-amarok" ) );
     setLongDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server. This lets you browse and play all the Ampache contents from within Amarok." ) );
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_ampache.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_ampache.png" ) );
 #ifdef HAVE_LIBLASTFM
     m_infoParser = new LastfmInfoParser();
 #endif
@@ -128,7 +122,6 @@ AmpacheService::reauthenticate()
     // information from a server might get outdated.
 }
 
-
 void
 AmpacheService::onLoginSuccessful()
 {
@@ -141,5 +134,3 @@ AmpacheService::onLoginSuccessful()
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
     setServiceReady( true );
 }
-
-#include "AmpacheService.moc"

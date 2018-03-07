@@ -19,23 +19,25 @@
 
 #include "ImporterManager.h"
 
+using namespace StatSyncing;
+
 /**
   * This macro can be used to reduce the amount of code needed in order to implement
   * ImporterManager subclass and export it as a plugin. If your manager doesn't do
   * anything other than give static info, you can replace the whole class with this macro.
+  * You need to include the .moc file after this macro (#include <YourFile.moc>).
   * See iTunes importer for usage example (ITunesManager.cpp file).
   */
-#define AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( libname, TYPE, PRETTY_NAME, DESCRIPTION, \
+#define AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( libname, JSON, TYPE, PRETTY_NAME, DESCRIPTION, \
                                               ICON, ConfigWidget_T, ImporterProvider_T ) \
-    class libname ## ImporterManager : public StatSyncing::ImporterManager \
+    class libname : public ImporterManager \
     { \
-    public: \
-        libname ## ImporterManager( QObject *parent, const QVariantList &args ) \
-            : StatSyncing::ImporterManager( parent, args ) \
-        { \
-        } \
+        Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE JSON) \
+        Q_INTERFACES(Plugins::PluginFactory) \
+        Q_OBJECT \
     \
-        ~ libname ## ImporterManager() \
+    public: \
+        libname() \
         { \
         } \
     \
@@ -54,29 +56,21 @@
             return DESCRIPTION; \
         } \
     \
-        KIcon icon() const \
+        QIcon icon() const \
         { \
             return ICON; \
         } \
     \
-        StatSyncing::ProviderConfigWidget *configWidget( const QVariantMap &config ) \
+        ProviderConfigWidget *configWidget( const QVariantMap &config ) \
         { \
             return new ConfigWidget_T( config ); \
         } \
     \
     protected: \
-        KPluginInfo pluginInfo() const \
+        ImporterProviderPtr newInstance( const QVariantMap &config ) \
         { \
-            return KPluginInfo( "amarok_importer-" #libname ".desktop", "services" ); \
-        } \
-    \
-        StatSyncing::ImporterProviderPtr newInstance( const QVariantMap &config ) \
-        { \
-            return StatSyncing::ImporterProviderPtr( \
-                                               new ImporterProvider_T( config, this ) ); \
+            return ImporterProviderPtr( new ImporterProvider_T( config, this ) ); \
         } \
     }; \
-    \
-    AMAROK_EXPORT_IMPORTER_PLUGIN( libname, libname ## ImporterManager )
 
 #endif // STATSYNCING_SIMPLE_IMPORTER_MANAGER_H

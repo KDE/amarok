@@ -17,16 +17,16 @@
 #ifndef MEDIADEVICECOLLECTION_EXPORT_H
 #define MEDIADEVICECOLLECTION_EXPORT_H
 
-/* needed for KDE_EXPORT and KDE_IMPORT macros */
-#include <kdemacros.h>
+/* needed for Q_DECL_EXPORT and Q_DECL_IMPORT macros */
+#include <QtCore/QtGlobal>
 
 #ifndef MEDIADEVICECOLLECTION_EXPORT
 # if defined(MAKE_MEDIADEVICELIB_LIB) || defined(MAKE_AMAROKLIB_LIB)
    /* We are building this library */ 
-#  define MEDIADEVICECOLLECTION_EXPORT KDE_EXPORT
+#  define MEDIADEVICECOLLECTION_EXPORT Q_DECL_EXPORT
 # else
    /* We are using this library */ 
-#  define MEDIADEVICECOLLECTION_EXPORT KDE_IMPORT
+#  define MEDIADEVICECOLLECTION_EXPORT Q_DECL_IMPORT
 # endif
 #endif
 

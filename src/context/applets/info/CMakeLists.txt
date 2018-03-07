@@ -1,26 +1,17 @@
-project(context-info)
-
 set(info_SRCS
-InfoApplet.cpp )
+    plugin/InfoPlugin.cpp
+    plugin/InfoEngine.cpp
+)
 
-include_directories(
-                    ../..
-                    ../../..
-                    )
+add_library(amarok_context_applet_info SHARED ${info_SRCS})
 
-kde4_add_plugin(amarok_context_applet_info ${info_SRCS})
-if(APPLE)
-   SET_TARGET_PROPERTIES(amarok_context_applet_info PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-endif(APPLE)
 target_link_libraries(amarok_context_applet_info
     amarokcore
     amaroklib
-    ${KDE4_PLASMA_LIBS}
-    ${KDE4_KDEWEBKIT_LIBS}
-    ${QT_QTWEBKIT_LIBRARY}
-    )
+    Qt5::Qml
+)
 
-install(TARGETS amarok_context_applet_info DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES amarok-context-applet-info.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(FILES amarok-info-applet.svg DESTINATION ${DATA_INSTALL_DIR}/desktoptheme/default/widgets/ )
-install(FILES InfoAppletCustomStyle.css DESTINATION ${DATA_INSTALL_DIR}/amarok/data )
+install(TARGETS amarok_context_applet_info DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/info)
+install(FILES plugin/qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/info)
+
+kpackage_install_package(package org.kde.amarok.info amarok)

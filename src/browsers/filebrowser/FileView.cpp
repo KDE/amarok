@@ -24,8 +24,6 @@
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -35,23 +33,22 @@
 #include "core-impl/support/TrackLoader.h"
 #include "dialogs/TagDialog.h"
 
-#include <KAction>
-#include <KIO/CopyJob>
-#include <KIO/DeleteJob>
-#include <KDialog>
-#include <KDirModel>
-#include <KFileItem>
-#include <KGlobalSettings>
-#include <KMessageBox>
-#include <KIcon>
-#include <KLocale>
-#include <KMenu>
-#include <KUrl>
-
+#include <QAction>
 #include <QContextMenuEvent>
 #include <QFileSystemModel>
+#include <QIcon>
 #include <QItemDelegate>
+#include <QMenu>
 #include <QPainter>
+#include <QUrl>
+
+#include <KConfigGroup>
+#include <KDirModel>
+#include <KFileItem>
+#include <KIO/CopyJob>
+#include <KIO/DeleteJob>
+#include <KLocalizedString>
+#include <KMessageBox>
 
 FileView::FileView( QWidget *parent )
     : Amarok::PrettyTreeView( parent )
@@ -71,8 +68,8 @@ FileView::FileView( QWidget *parent )
     setEditTriggers( EditKeyPressed );
 
     The::paletteHandler()->updateItemView( this );
-    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)),
-                                    SLOT(newPalette(QPalette)) );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette,
+             this, &FileView::newPalette );
 }
 
 void
@@ -93,7 +90,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     if( indices.isEmpty() )
         return;
 
-    KMenu menu;
+    QMenu menu;
     foreach( QAction *action, actionsForIndices( indices, PlaylistAction ) )
         menu.addAction( action );
     menu.addSeparator();
@@ -115,21 +112,21 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     if( !writableCollections.isEmpty() )
     {
         QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), &menu );
-        copyMenu->setIcon( KIcon( "edit-copy" ) );
+        copyMenu->setIcon( QIcon::fromTheme( "edit-copy" ) );
         foreach( Collections::Collection *coll, writableCollections )
         {
             CollectionAction *copyAction = new CollectionAction( coll, &menu );
-            connect( copyAction, SIGNAL(triggered()), this, SLOT(slotPrepareCopyTracks()) );
+            connect( copyAction, &QAction::triggered, this, &FileView::slotPrepareCopyTracks );
             copyMenu->addAction( copyAction );
         }
         menu.addMenu( copyMenu );
 
         QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), &menu );
-        moveMenu->setIcon( KIcon( "go-jump" ) );
+        moveMenu->setIcon( QIcon::fromTheme( "go-jump" ) );
         foreach( Collections::Collection *coll, writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, &menu );
-            connect( moveAction, SIGNAL(triggered()), this, SLOT(slotPrepareMoveTracks()) );
+            connect( moveAction, &QAction::triggered, this, &FileView::slotPrepareMoveTracks );
             moveMenu->addAction( moveAction );
         }
         menu.addMenu( moveMenu );
@@ -165,7 +162,7 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
     if( state() == QAbstractItemView::NoState &&
         event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
-        KGlobalSettings::singleClick() &&
+        style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) &&
         ( file.isDir() || file.isNull() ) )
     {
         emit navigateToDirectory( index );
@@ -196,7 +193,7 @@ FileView::mouseDoubleClickEvent( QMouseEvent *event )
     if( event->button() == Qt::LeftButton )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-        KUrl url = file.url();
+        QUrl url = file.url();
         if( !file.isNull() && ( Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) ) )
             addIndexToPlaylist( index, Playlist::OnDoubleClickOnSelectedItems );
         else
@@ -222,7 +219,7 @@ FileView::keyPressEvent( QKeyEvent *event )
         case Qt::Key_Return:
         {
             KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-            KUrl url = file.url();
+            QUrl url = file.url();
             if( !file.isNull() && ( Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) ) )
                 // right, we test the current item, but then add the selection to playlist
                 addSelectionToPlaylist( Playlist::OnReturnPressedOnSelectedItems );
@@ -285,7 +282,7 @@ FileView::slotPrepareMoveTracks()
 
     // prevent bug 313003, require full metadata
     TrackLoader* dl = new TrackLoader( TrackLoader::FullMetadataRequired ); // auto-deletes itself
-    connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotMoveTracks(Meta::TrackList)) );
+    connect( dl, &TrackLoader::finished, this, &FileView::slotMoveTracks );
     dl->init( list.urlList() );
 }
 
@@ -307,7 +304,7 @@ FileView::slotPrepareCopyTracks()
 
     // prevent bug 313003, require full metadata
     TrackLoader* dl = new TrackLoader( TrackLoader::FullMetadataRequired ); // auto-deletes itself
-    connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(slotCopyTracks(Meta::TrackList)) );
+    connect( dl, &TrackLoader::finished, this, &FileView::slotMoveTracks );
     dl->init( list.urlList() );
 }
 
@@ -332,7 +329,7 @@ FileView::slotCopyTracks( const Meta::TrackList& tracks )
         else
             source = new Collections::FileCollectionLocation();
 
-        Collections::CollectionLocation *destination = m_copyDestinationCollection.data()->location();
+        Collections::CollectionLocation *destination = m_copyDestinationCollection->location();
         source->prepareCopy( tracks, destination );
     }
     else
@@ -362,7 +359,7 @@ FileView::slotMoveTracks( const Meta::TrackList& tracks )
         else
             source = new Collections::FileCollectionLocation();
 
-        Collections::CollectionLocation *destination = m_moveDestinationCollection.data()->location();
+        Collections::CollectionLocation *destination = m_moveDestinationCollection->location();
         source->prepareMove( tracks, destination );
     }
     else
@@ -381,10 +378,10 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 
     if( !m_appendAction )
     {
-        m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
+        m_appendAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
                                       this );
         m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-        connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppendToPlaylist()) );
+        connect( m_appendAction, &QAction::triggered, this, &FileView::slotAppendToPlaylist );
     }
     if( type & PlaylistAction )
         actions.append( m_appendAction );
@@ -394,40 +391,39 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
         m_loadAction = new QAction( i18nc( "Replace the currently loaded tracks with these",
                                            "&Replace Playlist" ), this );
         m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-        connect( m_loadAction, SIGNAL(triggered()), this, SLOT(slotReplacePlaylist()) );
+        connect( m_loadAction, &QAction::triggered, this, &FileView::slotReplacePlaylist );
     }
     if( type & PlaylistAction )
         actions.append( m_loadAction );
 
     if( !m_moveToTrashAction )
     {
-        m_moveToTrashAction = new KAction( KIcon( "user-trash" ), i18n( "&Move to Trash" ), this );
+        m_moveToTrashAction = new QAction( QIcon::fromTheme( "user-trash" ), i18n( "&Move to Trash" ), this );
         m_moveToTrashAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_moveToTrashAction->setShortcut( Qt::Key_Delete );
-        connect( m_moveToTrashAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                 this, SLOT(slotMoveToTrash(Qt::MouseButtons,Qt::KeyboardModifiers)) );
+        connect( m_moveToTrashAction, &QAction::triggered, this, &FileView::slotMoveToTrashWithoutModifiers );
     }
     if( type & OrganizeAction )
         actions.append( m_moveToTrashAction );
 
     if( !m_deleteAction )
     {
-        m_deleteAction = new KAction( KIcon( "remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new QAction( QIcon::fromTheme( "remove-amarok" ), i18n( "&Delete" ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
-        connect( m_deleteAction, SIGNAL(triggered(bool)), SLOT(slotDelete()) );
+        connect( m_deleteAction, &QAction::triggered, this, &FileView::slotDelete );
     }
     if( type & OrganizeAction )
         actions.append( m_deleteAction );
 
     if( !m_editAction )
     {
-        m_editAction = new QAction( KIcon( "media-track-edit-amarok" ),
+        m_editAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
                                     i18n( "&Edit Track Details" ), this );
         m_editAction->setProperty( "popupdropper_svg_id", "edit" );
-        connect( m_editAction, SIGNAL(triggered()), this, SLOT(slotEditTracks()) );
+        connect( m_editAction, &QAction::triggered, this, &FileView::slotEditTracks );
     }
     if( type & EditAction )
     {
@@ -460,11 +456,11 @@ FileView::addIndicesToPlaylist( QModelIndexList indices, Playlist::AddOptions op
     // let tracks & playlists appear in playlist as they are shown in the view:
     qSort( indices );
 
-    QList<KUrl> urls;
+    QList<QUrl> urls;
     foreach( const QModelIndex &index, indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-        KUrl url = file.url();
+        QUrl url = file.url();
         if( file.isDir() || Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) )
         {
             urls << file.url();
@@ -511,7 +507,7 @@ FileView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd )
     {
-        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
+        connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &PopupDropper::clear );
         m_pd->hide();
     }
 
@@ -583,7 +579,7 @@ FileView::slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modif
                            indices.count() );
     }
 
-    KUrl::List urls;
+    QList<QUrl> urls;
     QStringList filepaths;
     foreach( const QModelIndex& index, indices )
     {

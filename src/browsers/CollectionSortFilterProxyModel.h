@@ -24,6 +24,7 @@
 #include <QSortFilterProxyModel>
 
 class CollectionTreeItem;
+class QCollator;
 
 /**
     This is a custom QSortFilterProxyModel that gives special sort orders for
@@ -45,6 +46,7 @@ class CollectionSortFilterProxyModel : public QSortFilterProxyModel
         virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
     private:
+        QCollator *m_col;
         /** Tries to compute a year for the album using the track years. */
         int albumYear( Meta::AlbumPtr album ) const;
 

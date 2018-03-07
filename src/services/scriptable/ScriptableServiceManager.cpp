@@ -25,7 +25,6 @@
 #include "../ServiceMetaBase.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 
-#include <kiconloader.h>
 
 using namespace Meta;
 
@@ -51,7 +50,7 @@ bool ScriptableServiceManager::initService( const QString &name, int levels, con
     ScriptableService * service = new ScriptableService ( name );
     m_serviceMap[name] = service;
 
-    service->setIcon( KIcon( "view-services-scripted-amarok" ) );
+    service->setIcon( QIcon::fromTheme( "view-services-scripted-amarok" ) );
     service->setShortDescription( shortDescription );
     service->init( levels, rootHtml, showSearchBar );
     m_rootHtml = rootHtml;
@@ -122,8 +121,8 @@ void ScriptableServiceManager::setIcon( const QString & serviceName, const QPixm
         return;
     }
 
-  
-    m_serviceMap[serviceName]->setIcon( KIcon( QIcon( icon ) ) );
+
+    m_serviceMap[serviceName]->setIcon( QIcon( icon ) );
     emit( serviceUpdated( m_serviceMap[serviceName] ) );
 }
 
@@ -178,7 +177,6 @@ namespace The {
 
 
 
-#include "ScriptableServiceManager.moc"
 
 
 

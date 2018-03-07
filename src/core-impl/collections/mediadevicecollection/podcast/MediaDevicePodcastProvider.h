@@ -28,10 +28,10 @@ class MediaDevicePodcastProvider : public Podcasts::PodcastProvider
         MediaDevicePodcastProvider( Meta::MediaDeviceHandler *handler );
 
         //TODO:implement these
-        virtual bool possiblyContainsTrack( const KUrl &url ) const { Q_UNUSED(url); return false;}
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  }
+        virtual bool possiblyContainsTrack( const QUrl &url ) const { Q_UNUSED(url); return false;}
+        virtual Meta::TrackPtr trackForUrl( const QUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  }
 
-        virtual void addPodcast( const KUrl &url );
+        virtual void addPodcast( const QUrl &url );
 
         virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
         virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );

@@ -19,8 +19,7 @@
 
 #include "amarok_export.h"
 #include "BrowserDefines.h"
-
-#include <KVBox>
+#include "widgets/BoxWidget.h"
 
 #include <QIcon>
 
@@ -32,7 +31,7 @@ class BrowserCategoryList;
  *
  * @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class AMAROK_EXPORT BrowserCategory : public KVBox
+class AMAROK_EXPORT BrowserCategory : public BoxWidget
 {
     Q_OBJECT
 
@@ -156,13 +155,13 @@ public:
 
     QList<BrowserBreadcrumbItem *> additionalItems();
 
-public slots:
+public Q_SLOTS:
     void activate();
 
     //Called if this category itself is re-clicked in the breadcrumb
     virtual void reActivate() {}
 
-private slots:
+private Q_SLOTS:
     void slotSettingsChanged();
 
 private:

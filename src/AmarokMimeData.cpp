@@ -16,6 +16,7 @@
 
 #include "AmarokMimeData.h"
 
+#include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
 
 #include <QCoreApplication>
@@ -153,7 +154,7 @@ AmarokMimeData::getTrackListSignal() const
 {
     if( d->completedQueries < d->queryMakers.count() )
     {
-        QTimer::singleShot( 0, const_cast<AmarokMimeData*>( this ), SLOT(getTrackListSignal()) );
+        QTimer::singleShot( 0, this, &AmarokMimeData::getTrackListSignal );
         return;
     }
     else
@@ -367,8 +368,9 @@ AmarokMimeData::startQueries()
     foreach( Collections::QueryMaker *qm, d->queryMakers )
     {
         qm->setQueryType( Collections::QueryMaker::Track );
-        connect( qm, SIGNAL(newResultReady(Meta::TrackList)), this, SLOT(newResultReady(Meta::TrackList)), Qt::QueuedConnection );
-        connect( qm, SIGNAL(queryDone()), this, SLOT(queryDone()), Qt::QueuedConnection );
+        connect( qm, &Collections::QueryMaker::newTracksReady,
+                 this, &AmarokMimeData::newResultReady, Qt::QueuedConnection );
+        connect( qm, &Collections::QueryMaker::queryDone, this, &AmarokMimeData::queryDone, Qt::QueuedConnection );
         qm->run();
     }
 }
@@ -392,4 +394,3 @@ AmarokMimeData::queryDone()
 }
 
 
-#include "AmarokMimeData.moc"

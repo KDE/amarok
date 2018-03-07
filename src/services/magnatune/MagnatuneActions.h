@@ -34,7 +34,7 @@ public:
 
     ~MagnatuneDownloadAction();
 
-private slots:
+private Q_SLOTS:
     void slotTriggered();
 
 private:
@@ -55,7 +55,7 @@ public:
 
     ~MagnatuneAddToFavoritesAction();
 
-private slots:
+private Q_SLOTS:
     void slotTriggered();
 
 private:

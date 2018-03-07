@@ -52,7 +52,7 @@ class ConstraintGroup : public ConstraintNode {
         virtual double satisfaction( const Meta::TrackList& ) const;
         virtual quint32 suggestPlaylistSize() const;
 
-    private slots:
+    private Q_SLOTS:
         void setMatchAny();
         void setMatchAll();
 
@@ -73,12 +73,12 @@ class ConstraintGroupEditWidget : public QWidget {
     public:
         ConstraintGroupEditWidget( const ConstraintGroup::MatchType );
 
-    signals:
+    Q_SIGNALS:
         void updated();
         void clickedMatchAll();
         void clickedMatchAny();
 
-    private slots:
+    private Q_SLOTS:
         void on_radioButton_MatchAll_clicked( bool );
         void on_radioButton_MatchAny_clicked( bool );
 

@@ -18,7 +18,7 @@
 #define LAYOUTEDITDIALOG_H
 
 #include <QDialog>
-#include <QWeakPointer>
+#include <QPointer>
 
 class HintingLineEdit;
 class QLineEdit;
@@ -34,13 +34,13 @@ class LayoutEditDialog : public QDialog
 public:
     LayoutEditDialog( QWidget *parent = 0 );
     void setToken( TokenWithLayout *t );
-public slots:
+public Q_SLOTS:
     void close();
-private slots:
+private Q_SLOTS:
     void apply();
     void setAutomaticWidth( bool peer );
 private:
-    QWeakPointer<TokenWithLayout> m_token;
+    QPointer<TokenWithLayout> m_token;
     HintingLineEdit *m_prefix;
     HintingLineEdit *m_suffix;
     QLabel *m_element;

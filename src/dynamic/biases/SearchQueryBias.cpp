@@ -27,7 +27,7 @@
 #include "core-impl/collections/support/TextualQueryFilter.h"
 #include "dynamic/TrackSet.h"
 
-#include <KLineEdit>
+#include <QLineEdit>
 
 #include <QLabel>
 #include <QCheckBox>
@@ -124,11 +124,11 @@ Dynamic::SearchQueryBias::widget( QWidget* parent )
     QWidget *widget = new QWidget( parent );
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
-    KLineEdit *edit = new KLineEdit( m_filter );
+    QLineEdit *edit = new QLineEdit( m_filter );
     layout->addWidget( edit );
 
-    connect( edit, SIGNAL(textChanged(QString)),
-             this, SLOT(setFilter(QString)) );
+    connect( edit, &QLineEdit::textChanged,
+             this, &SearchQueryBias::setFilter );
 
     return widget;
 }
@@ -162,12 +162,11 @@ Dynamic::SearchQueryBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
-             this, SLOT(updateReady(QStringList)), Qt::QueuedConnection );
-    connect( m_qm.data(), SIGNAL(queryDone()),
-             this, SLOT(updateFinished()), Qt::QueuedConnection );
+    connect( m_qm.data(), &Collections::QueryMaker::newResultReady,
+             this, &SearchQueryBias::updateReady, Qt::QueuedConnection );
+    connect( m_qm.data(), &Collections::QueryMaker::queryDone,
+             this, &SearchQueryBias::updateFinished, Qt::QueuedConnection );
     m_qm.data()->run();
 }
 
-#include "SearchQueryBias.moc"
 

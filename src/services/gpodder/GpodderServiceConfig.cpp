@@ -23,12 +23,16 @@
 #include "GpodderServiceConfig.h"
 
 #include "App.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <KDialog>
-#include <KWallet/Wallet>
-
 #include <QLabel>
+#include <QMessageBox>
+
+#include <KConfigGroup>
+#include <KLocalizedString>
+#include <KWallet>
+
 
 GpodderServiceConfig::GpodderServiceConfig()
     : m_username( "" )
@@ -61,7 +65,7 @@ GpodderServiceConfig::load()
     DEBUG_BLOCK
     debug() << "Load config";
 
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
+    KConfigGroup config = Amarok::config( configSectionName() );
 
     m_enableProvider = config.readEntry( "enableProvider", false );
     m_ignoreWallet = config.readEntry( "ignoreWallet", false );
@@ -108,7 +112,7 @@ GpodderServiceConfig::save()
 
     debug() << "Save config";
 
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
+    KConfigGroup config = Amarok::config( configSectionName() );
 
     config.writeEntry( "enableProvider", m_enableProvider );
     config.writeEntry( "ignoreWallet", m_ignoreWallet );
@@ -150,15 +154,15 @@ GpodderServiceConfig::askAboutMissingKWallet()
 {
     if ( !m_askDiag )
     {
-        m_askDiag = new KDialog( 0 );
+        m_askDiag = new QMessageBox( Q_NULLPTR );
 
-        m_askDiag->setCaption( i18n( "gpodder.net credentials" ) );
-        m_askDiag->setMainWidget( new QLabel( i18n( "No running KWallet found. Would you like Amarok to save your gpodder.net credentials in plaintext?" ), m_askDiag ) );
-        m_askDiag->setButtons( KDialog::Yes | KDialog::No );
+        m_askDiag->setWindowTitle( i18n( "gpodder.net credentials" ) );
+        m_askDiag->setText( i18n( "No running KWallet found. Would you like Amarok to save your gpodder.net credentials in plaintext?" ) );
+        m_askDiag->setStandardButtons( QMessageBox::Yes | QMessageBox::No );
         m_askDiag->setModal( true );
 
-        connect( m_askDiag, SIGNAL(yesClicked()), this, SLOT(textDialogYes()) );
-        connect( m_askDiag, SIGNAL(noClicked()), this, SLOT(textDialogNo()) );
+        connect( m_askDiag, &QMessageBox::accepted, this, &GpodderServiceConfig::textDialogYes );
+        connect( m_askDiag, &QMessageBox::rejected, this, &GpodderServiceConfig::textDialogNo );
     }
 
     m_askDiag->exec();
@@ -177,7 +181,7 @@ void GpodderServiceConfig::tryToOpenWallet()
         //Open wallet unless explicitly told not to
         m_wallet = KWallet::Wallet::openWallet(
                        KWallet::Wallet::NetworkWallet(),
-                       0, KWallet::Wallet::Synchronous );
+                       0 );
     }
     else
     {
@@ -204,7 +208,7 @@ GpodderServiceConfig::textDialogYes() //SLOT
 
     if ( !m_ignoreWallet )
     {
-        KConfigGroup config = KGlobal::config()->group( configSectionName() );
+        KConfigGroup config = Amarok::config( configSectionName() );
 
         m_ignoreWallet = true;
         config.writeEntry( "ignoreWallet", m_ignoreWallet );
@@ -222,7 +226,7 @@ GpodderServiceConfig::textDialogNo() //SLOT
 
     if ( m_ignoreWallet )
     {
-        KConfigGroup config = KGlobal::config()->group( configSectionName() );
+        KConfigGroup config = Amarok::config( configSectionName() );
 
         m_ignoreWallet = false;
         config.writeEntry( "ignoreWallet", m_ignoreWallet );
@@ -233,4 +237,3 @@ GpodderServiceConfig::textDialogNo() //SLOT
     }
 }
 
-#include "GpodderServiceConfig.moc"

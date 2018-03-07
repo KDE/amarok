@@ -30,7 +30,7 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual ~SyncedPlaylist() {}
 
         //Playlists::Playlist methods
-        virtual KUrl uidUrl() const;
+        virtual QUrl uidUrl() const;
         virtual QString name() const;
         virtual QString prettyName() const;
         virtual Playlists::PlaylistProvider *provider() const;
@@ -71,7 +71,7 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         Playlists::PlaylistList m_playlists;
 };
 
-typedef KSharedPtr<SyncedPlaylist> SyncedPlaylistPtr;
+typedef AmarokSharedPointer<SyncedPlaylist> SyncedPlaylistPtr;
 typedef QList<SyncedPlaylistPtr> SyncedPlaylistList;
 
 Q_DECLARE_METATYPE( SyncedPlaylistPtr )

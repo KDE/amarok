@@ -21,20 +21,18 @@
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/playlists/PlaylistFormat.h"
 
-#include <KCalendarSystem>
 #include <KConfigGroup>
-#include <KDirLister>
-#include <KGlobalSettings>
-#include <KIcon>
-#include <KIconEffect>
-#include <KStandardDirs>
-#include <KUniqueApplication>
+#include <KLocalizedString>
+#include <KSharedConfig>
 
+#include <QApplication>
 #include <QDateTime>
+#include <QIcon>
+#include <QLocale>
 #include <QPixmapCache>
-#include <QTextDocument>
+#include <QStandardPaths>
 
-QWeakPointer<KActionCollection> Amarok::actionCollectionObject;
+QPointer<KActionCollection> Amarok::actionCollectionObject;
 QMutex Amarok::globalDirsMutex;
 
 namespace Amarok
@@ -56,10 +54,8 @@ namespace Amarok
             return i18nc( "When this track was last played", "Unknown" );
 
         if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
-            const KCalendarSystem *cal = KGlobal::locale()->calendar();
-            const QDate date = datetime.date();
-            return i18nc( "monthname year", "%1 %2", cal->monthName(date),
-                          cal->formatDate( date, KLocale::Year, KLocale::LongNumber ) );
+            QString month_year = datetime.date().toString("MM yyyy");
+            return i18nc( "monthname year", "%1", month_year );
         }
 
         //TODO "last week" = maybe within 7 days, but prolly before last Sunday
@@ -163,11 +159,11 @@ namespace Amarok
 
     QString generatePlaylistName( const Meta::TrackList tracks )
     {
-        QString datePart = KGlobal::locale()->formatDateTime( QDateTime::currentDateTime(),
-                                                              KLocale::ShortDate, true );
+        QString datePart = QLocale::system().toString( QDateTime::currentDateTime(),
+                                                       QLocale::ShortFormat );
         if( tracks.count() == 0 )
         {
-            return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
+            return i18nc( "A saved playlist with the current time (KLocalizedString::Shortdate) added between \
                           the parentheses",
                           "Empty Playlist (%1)", datePart );
         }
@@ -195,7 +191,7 @@ namespace Amarok
 
         if( ( !singleArtist && !singleAlbum ) ||
             ( !artist && !album ) )
-            return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
+            return i18nc( "A saved playlist with the current time (KLocalizedString::Shortdate) added between \
                           the parentheses",
                           "Various Tracks (%1)", datePart );
 
@@ -231,12 +227,12 @@ namespace Amarok
                       artistPart, albumPart );
     }
 
-   KActionCollection* actionCollection()  // TODO: constify?
+    KActionCollection* actionCollection()  // TODO: constify?
     {
         if( !actionCollectionObject )
         {
-            actionCollectionObject = new KActionCollection( kapp );
-            actionCollectionObject.data()->setObjectName( "Amarok-KActionCollection" );
+            actionCollectionObject = new KActionCollection( qApp );
+            actionCollectionObject->setObjectName( "Amarok-KActionCollection" );
         }
 
         return actionCollectionObject.data();
@@ -245,7 +241,7 @@ namespace Amarok
     KConfigGroup config( const QString &group )
     {
         //Slightly more useful config() that allows setting the group simultaneously
-        return KGlobal::config()->group( group );
+        return KSharedConfig::openConfig()->group( group );
     }
 
     namespace ColorScheme
@@ -272,7 +268,15 @@ namespace Amarok
     QString saveLocation( const QString &directory )
     {
         globalDirsMutex.lock();
-        QString result = KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
+        QString result = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation ) + QDir::separator() + directory;
+
+        if( !result.endsWith( QDir::separator() ) )
+            result.append( QDir::separator() );
+
+        QDir dir( result );
+        if( !dir.exists() )
+            dir.mkpath( QStringLiteral( "." ) );
+
         globalDirsMutex.unlock();
         return result;
     }
@@ -427,9 +431,16 @@ namespace Amarok
         #define AMAROK_LOGO_CACHE_KEY QLatin1String("AmarokSemiTransparentLogo")+QString::number(dim)
         if( !QPixmapCache::find( AMAROK_LOGO_CACHE_KEY, &logo ) )
         {
-            QImage amarokIcon = KIcon( QLatin1String("amarok") ).pixmap( dim, dim ).toImage();
-            KIconEffect::toGray( amarokIcon, 1 );
-            KIconEffect::semiTransparent( amarokIcon );
+            QImage amarokIcon = QIcon::fromTheme( QLatin1String("amarok") ).pixmap( dim, dim ).toImage();
+            amarokIcon = amarokIcon.convertToFormat( QImage::Format_ARGB32 );
+            QRgb *data = reinterpret_cast<QRgb*>( amarokIcon.bits() );
+            QRgb *end = data + amarokIcon.byteCount() / 4;
+            while(data != end)
+            {
+                unsigned char gray = qGray(*data);
+                *data = qRgba(gray, gray, gray, 127);
+                ++data;
+            }
             logo = QPixmap::fromImage( amarokIcon );
             QPixmapCache::insert( AMAROK_LOGO_CACHE_KEY, logo );
         }

@@ -21,9 +21,9 @@
 
 #include <QAction>
 #include <QList>
-#include <QtTest/QtTest>
+#include <QTemporaryDir>
+#include <QTest>
 
-#include <KTempDir>
 
 class TestActionsCapability : public QObject
 {
@@ -32,7 +32,7 @@ class TestActionsCapability : public QObject
 public:
     TestActionsCapability();
 
-private slots:
+private Q_SLOTS:
     void testActions();
     void testCapabilityInterfaceType();
 

@@ -98,7 +98,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         /**
          * Get a pointer to colleciton tree item given its index. It is not safe to
-         * cache this pointer unless QWeakPointer is used.
+         * cache this pointer unless QPointer is used.
          */
         CollectionTreeItem *treeItem( const QModelIndex &index ) const;
 
@@ -108,20 +108,20 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
          */
         QModelIndex itemIndex( CollectionTreeItem *item ) const;
 
-    signals:
+    Q_SIGNALS:
         void expandIndex( const QModelIndex &index );
         void allQueriesFinished( bool autoExpand );
 
-    public slots:
+    public Q_SLOTS:
         virtual void queryDone();
-        void newResultReady( Meta::TrackList );
-        void newResultReady( Meta::ArtistList );
-        void newResultReady( Meta::AlbumList );
-        void newResultReady( Meta::GenreList );
-        void newResultReady( Meta::ComposerList );
-        void newResultReady( Meta::YearList );
-        void newResultReady( Meta::LabelList );
-        virtual void newResultReady( Meta::DataList data );
+        void newTracksReady( Meta::TrackList );
+        void newArtistsReady( Meta::ArtistList );
+        void newAlbumsReady( Meta::AlbumList );
+        void newGenresReady( Meta::GenreList );
+        void newComposersReady( Meta::ComposerList );
+        void newYearsReady( Meta::YearList );
+        void newLabelsReady( Meta::LabelList );
+        virtual void newDataReady( Meta::DataList data );
 
         /**
          * Apply the current filter.
@@ -131,6 +131,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
          * user has actually just typed something and defaults to false.
          */
         void slotFilter( bool autoExpand = false );
+        void slotFilterWithoutAutoExpand() { slotFilter( false ); }
 
         void slotCollapsed( const QModelIndex &index );
         void slotExpanded( const QModelIndex &index );
@@ -192,7 +193,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         mutable QMultiHash<CollectionTreeItem*, Collections::QueryMaker*> m_runningQueries;
         bool m_autoExpand; // whether to expand tree after queries are done
 
-    protected slots:
+    protected Q_SLOTS:
         void startAnimationTick();
         void loadingAnimationTick();
 };

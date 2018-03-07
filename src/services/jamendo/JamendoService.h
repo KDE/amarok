@@ -28,17 +28,19 @@
 
 class JamendoServiceFactory : public ServiceFactory
 {
+    Q_PLUGIN_METADATA(IID AmarokPluginFactory_iid FILE "amarok_service_jamendo.json")
+    Q_INTERFACES(Plugins::PluginFactory)
     Q_OBJECT
 
     public:
-        JamendoServiceFactory( QObject *parent, const QVariantList &args );
+        JamendoServiceFactory();
         virtual ~JamendoServiceFactory() {}
 
         virtual void init();
         virtual QString name();
         virtual KConfigGroup config();
 
-        virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.url().contains( "jamendo.com", Qt::CaseInsensitive ); }
+        virtual bool possiblyContainsTrack( const QUrl &url ) const { return url.url().contains( "jamendo.com", Qt::CaseInsensitive ); }
 };
 
 class JamendoService : public ServiceBase
@@ -52,7 +54,7 @@ public:
     void polish();
     virtual Collections::Collection * collection() { return m_collection; }
 
-private slots:
+private Q_SLOTS:
     void updateButtonClicked();
     void download();
     void listDownloadComplete( KJob* downloadJob);

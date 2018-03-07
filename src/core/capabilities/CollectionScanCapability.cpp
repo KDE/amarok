@@ -23,4 +23,3 @@ Capabilities::CollectionScanCapability::CollectionScanCapability()
 Capabilities::CollectionScanCapability::~CollectionScanCapability()
 { }
 
-#include "CollectionScanCapability.moc"

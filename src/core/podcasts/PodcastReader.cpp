@@ -23,11 +23,8 @@
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
 
-#include <kio/job.h>
-#include <kurl.h>
-#include <KDateTime>
+#include <QUrl>
 
-#include <QTextDocument>
 #include <QDate>
 #include <QSet>
 
@@ -57,7 +54,7 @@ PodcastReader::PodcastReader( PodcastProvider *podcastProvider, QObject *parent 
         : QObject( parent )
         , m_xmlReader()
         , m_podcastProvider( podcastProvider )
-        , m_transferJob( 0 )
+        , m_transferJob( )
         , m_current( 0 )
         , m_actionStack()
         , m_contentType( TextContent )
@@ -431,7 +428,7 @@ bool PodcastReader::read( QIODevice *device )
 }
 
 bool
-PodcastReader::read( const KUrl &url )
+PodcastReader::read( const QUrl &url )
 {
     DEBUG_BLOCK
 
@@ -439,19 +436,17 @@ PodcastReader::read( const KUrl &url )
 
     m_transferJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
 
-    connect( m_transferJob, SIGNAL(data(KIO::Job*,QByteArray)),
-             SLOT(slotAddData(KIO::Job*,QByteArray)) );
+    connect( m_transferJob, &KIO::TransferJob::data,
+             this, &PodcastReader::slotAddData );
 
-    connect( m_transferJob, SIGNAL(result(KJob*)),
-             SLOT(downloadResult(KJob*)) );
+    connect( m_transferJob, &KIO::TransferJob::result,
+             this, &PodcastReader::downloadResult );
 
-    connect( m_transferJob, SIGNAL(redirection(KIO::Job*,KUrl)),
-             SLOT(slotRedirection(KIO::Job*,KUrl)) );
+    connect( m_transferJob, &KIO::TransferJob::redirection,
+             this, &PodcastReader::slotRedirection );
 
-    connect( m_transferJob, SIGNAL( permanentRedirection( KIO::Job *,
-                                    const KUrl &, const KUrl & ) ),
-             SLOT( slotPermanentRedirection( KIO::Job *, const KUrl &,
-                                             const KUrl & ) ) );
+    connect( m_transferJob, &KIO::TransferJob::permanentRedirection,
+             this, &PodcastReader::slotPermanentRedirection );
 
     QString description = i18n( "Importing podcast channel from %1", url.url() );
     if( m_channel )
@@ -931,7 +926,7 @@ PodcastReader::textToHtml( const QString &text )
 
         if( next != index )
         {
-            buf += Qt::escape( text.mid( index, next - index ) );
+            buf += text.mid( index, next - index ).toHtmlEscaped();
         }
 
         QString s;
@@ -941,18 +936,18 @@ PodcastReader::textToHtml( const QString &text )
             if( s.startsWith( QLatin1String( "javascript:" ), Qt::CaseInsensitive ) ||
                 s.startsWith( QLatin1String( "exec:" ), Qt::CaseInsensitive ) )
             {
-                buf += Qt::escape( s );
+                buf += s.toHtmlEscaped();
             }
             else
             {
                 buf += QString( "<a href=\"%1\">%1</a>" )
-                    .arg( Qt::escape( s ) );
+                    .arg( s.toHtmlEscaped() );
             }
         }
         else if( !(s = re.cap( 2 )).isEmpty() )
         {
             buf += QString( "<a href=\"mailto:%1\">%1</a>" )
-                .arg( Qt::escape( s ) );
+                .arg( s.toHtmlEscaped() );
         }
         else if( !re.cap( 3 ).isEmpty() )
         {
@@ -962,7 +957,7 @@ PodcastReader::textToHtml( const QString &text )
         index = re.pos() + re.matchedLength();
     }
 
-    buf += Qt::escape( text.mid( index ) );
+    buf += text.mid( index ).toHtmlEscaped();
 
     return buf;
 }
@@ -989,7 +984,7 @@ PodcastReader::endLink()
 {
     // TODO: change to m_current->... when the field
     //       is moved to the PodcastMetaCommon class.
-    m_channel->setWebLink( KUrl( m_buffer ) );
+    m_channel->setWebLink( QUrl( m_buffer ) );
 }
 
 void
@@ -1138,12 +1133,12 @@ PodcastReader::endItem()
             foreach( const Enclosure& enclosure, m_enclosures )
             {
                 description += QString( "<li><a href=\"%1\">%2</a> (%3, %4)</li>" )
-                               .arg( Qt::escape( enclosure.url().url() ) )
-                               .arg( Qt::escape( enclosure.url().fileName() ) )
+                               .arg( enclosure.url().url().toHtmlEscaped() )
+                               .arg( enclosure.url().fileName().toHtmlEscaped() )
                                .arg( Meta::prettyFilesize( enclosure.fileSize() ) )
                                .arg( enclosure.mimeType().isEmpty() ?
                                      i18n( "unknown type" ) :
-                                     Qt::escape( enclosure.mimeType() ) );
+                                     enclosure.mimeType().toHtmlEscaped() );
             }
 
             description += "</ul></p>";
@@ -1155,7 +1150,7 @@ PodcastReader::endItem()
         if( guid.isEmpty() )
         {
              episode = Podcasts::PodcastEpisodePtr::dynamicCast(
-                                              m_podcastProvider->trackForUrl( m_item->uidUrl() )
+                                              m_podcastProvider->trackForUrl( QUrl::fromUserInput(m_item->uidUrl()) )
                                           );
         }
         else
@@ -1174,7 +1169,7 @@ PodcastReader::endItem()
             episode->setSummary( m_item->summary() );
             episode->setDescription( m_item->description() );
             episode->setAuthor( m_item->author() );
-            episode->setUidUrl( m_item->uidUrl() );
+            episode->setUidUrl( QUrl::fromUserInput(m_item->uidUrl()) );
             episode->setFilesize( m_item->filesize() );
             episode->setMimeType( m_item->mimeType() );
             episode->setPubDate( m_item->pubDate() );
@@ -1219,7 +1214,7 @@ PodcastReader::beginEnclosure()
         return;
     }
 
-    KUrl url( str.toString() );
+    QUrl url( str.toString() );
 
     str = m_xmlReader.attributes().value( "length" );
 
@@ -1263,7 +1258,7 @@ PodcastReader::beginImage()
 {
     if( m_xmlReader.namespaceUri() == ITUNES_NS )
     {
-        m_channel->setImageUrl( KUrl( m_xmlReader.attributes().value( "href" ).toString() ) );
+        m_channel->setImageUrl( QUrl( m_xmlReader.attributes().value( "href" ).toString() ) );
     }
 }
 
@@ -1271,7 +1266,7 @@ void
 PodcastReader::endImageUrl()
 {
     // TODO save image data
-    m_channel->setImageUrl( KUrl( m_buffer ) );
+    m_channel->setImageUrl( QUrl( m_buffer ) );
 }
 
 void
@@ -1296,7 +1291,7 @@ PodcastReader::endNewFeedUrl()
 {
     if( m_xmlReader.namespaceUri() == ITUNES_NS )
     {
-        m_url = KUrl( m_buffer.trimmed() );
+        m_url = QUrl( m_buffer.trimmed() );
 
         if( m_channel && m_channel->url() != m_url )
         {
@@ -1332,7 +1327,7 @@ PodcastReader::beginXml()
     {
         m_buffer += QString( " %1=\"%2\"" )
                     .arg( attr.name().toString() )
-                    .arg( Qt::escape( attr.value().toString() ) );
+                    .arg( attr.value().toString().toHtmlEscaped() );
     }
 
     m_buffer += '>';
@@ -1424,7 +1419,7 @@ PodcastReader::readAtomTextCharacters()
     switch( m_contentType )
     {
     case XHtmlContent:
-        m_buffer += Qt::escape( m_xmlReader.text().toString() );
+        m_buffer += m_xmlReader.text().toString().toHtmlEscaped();
         break;
 
     case HtmlContent:
@@ -1445,11 +1440,11 @@ PodcastReader::beginAtomFeedLink()
     if( !hasAttribute( ATOM_NS, "rel" ) ||
             attribute( ATOM_NS, "rel" ) == "alternate" )
     {
-        m_channel->setWebLink( KUrl( attribute( ATOM_NS, "href" ).toString() ) );
+        m_channel->setWebLink( QUrl( attribute( ATOM_NS, "href" ).toString() ) );
     }
     else if( attribute( ATOM_NS, "rel" ) == "self" )
     {
-        m_url = KUrl( attribute( ATOM_NS, "href" ).toString() );
+        m_url = QUrl( attribute( ATOM_NS, "href" ).toString() );
 
         if( m_channel && m_channel->url() != m_url )
         {
@@ -1464,7 +1459,7 @@ PodcastReader::beginAtomEntryLink()
 {
     if( attribute( ATOM_NS, "rel" ) == "enclosure" )
     {
-        KUrl url( attribute( ATOM_NS, "href" ).toString() );
+        QUrl url( attribute( ATOM_NS, "href" ).toString() );
         int filesize = 0;
         QString mimeType;
 
@@ -1522,7 +1517,7 @@ PodcastReader::endAtomContent()
 void
 PodcastReader::endAtomPublished()
 {
-    QDateTime date( KDateTime::fromString( m_buffer, KDateTime::ISODate ).dateTime() );
+    QDateTime date = QDateTime::fromString( m_buffer, Qt::ISODate );
 
     if( !date.isValid() )
     {
@@ -1539,7 +1534,7 @@ PodcastReader::endAtomPublished()
 void
 PodcastReader::endAtomUpdated()
 {
-    QDateTime date( KDateTime::fromString( m_buffer, KDateTime::ISODate ).dateTime() );
+    QDateTime date = QDateTime::fromString( m_buffer, Qt::ISODate );
 
     if( !date.isValid() )
     {
@@ -1578,7 +1573,7 @@ PodcastReader::readCharacters()
 void
 PodcastReader::readEscapedCharacters()
 {
-    m_buffer += Qt::escape( m_xmlReader.text().toString() );
+    m_buffer += m_xmlReader.text().toString().toHtmlEscaped() ;
 }
 
 QStringRef
@@ -1626,14 +1621,14 @@ PodcastReader::parsePubDate( const QString &dateString )
         parseInput.replace( lowerMonth, upperMonth );
     }
 
-    QDateTime pubDate = KDateTime::fromString( parseInput, KDateTime::RFCDate ).dateTime();
+    QDateTime pubDate = QDateTime::fromString( parseInput, Qt::RFC2822Date );
 
     debug() << "result: " << pubDate.toString();
     return pubDate;
 }
 
 void
-PodcastReader::slotRedirection( KIO::Job * job, const KUrl & url )
+PodcastReader::slotRedirection( KIO::Job * job, const QUrl &url )
 {
     DEBUG_BLOCK
     Q_UNUSED( job );
@@ -1641,8 +1636,8 @@ PodcastReader::slotRedirection( KIO::Job * job, const KUrl & url )
 }
 
 void
-PodcastReader::slotPermanentRedirection( KIO::Job * job, const KUrl & fromUrl,
-        const KUrl & toUrl )
+PodcastReader::slotPermanentRedirection( KIO::Job * job, const QUrl &fromUrl,
+        const QUrl &toUrl )
 {
     DEBUG_BLOCK
     Q_UNUSED( job );
@@ -1691,4 +1686,3 @@ PodcastReader::podcastEpisodeCheck( Podcasts::PodcastEpisodePtr episode )
     return episodeMatch;
 }
 
-#include "PodcastReader.moc"

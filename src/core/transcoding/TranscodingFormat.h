@@ -22,7 +22,7 @@
 #include "core/transcoding/TranscodingProperty.h"
 #include "core/transcoding/TranscodingConfiguration.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QStringList>
 
@@ -75,9 +75,9 @@ public:
 
     /**
      * Returns an icon that represents this format.
-     * @return a KIcon with the icon
+     * @return a QIcon with the icon
      */
-    virtual KIcon icon() const = 0;
+    virtual QIcon icon() const = 0;
 
     /**
      * Returns a list of parameters to be passed to the FFmpeg binary to perform the

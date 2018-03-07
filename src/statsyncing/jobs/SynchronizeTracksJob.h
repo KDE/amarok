@@ -34,7 +34,7 @@ namespace StatSyncing
      * A job to call TrackTuple::synchronize() in order not to make delays in the main
      * loop.
      */
-    class SynchronizeTracksJob : public ThreadWeaver::Job
+    class SynchronizeTracksJob : public QObject, public ThreadWeaver::Job
     {
         Q_OBJECT
 
@@ -53,13 +53,13 @@ namespace StatSyncing
              */
             QMap<ScrobblingServicePtr, QMap<ScrobblingService::ScrobbleError, int> > scrobbles();
 
-        public slots:
+        public Q_SLOTS:
             /**
              * Abort the job as soon as possible.
              */
             void abort();
 
-        signals:
+        Q_SIGNALS:
             /**
              * Emitted when matcher gets to know total number of steps it will take to
              * match all tracks.
@@ -83,10 +83,20 @@ namespace StatSyncing
             void scrobble( const Meta::TrackPtr &track, double playedFraction,
                            const QDateTime &time );
 
-        protected:
-            virtual void run();
+            /** This signal is emitted when this job is being processed by a thread. */
+            void started(ThreadWeaver::JobPointer);
+            /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+            void done(ThreadWeaver::JobPointer);
+            /** This job has failed.
+             * This signal is emitted when success() returns false after the job is executed. */
+            void failed(ThreadWeaver::JobPointer);
 
-        private slots:
+        protected:
+            void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+            void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+            void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+
+        private Q_SLOTS:
             void slotTrackScrobbled( const ScrobblingServicePtr &service, const Meta::TrackPtr &track );
             void slotScrobbleFailed( const ScrobblingServicePtr &service, const Meta::TrackPtr &track, int error );
 

@@ -22,11 +22,11 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="KLineEdit" name="addLabelLine">
+    <widget class="QLineEdit" name="addLabelLine">
      <property name="trapEnterKeyEvent" stdset="0">
       <bool>true</bool>
      </property>
-     <property name="clickMessage">
+     <property name="placeholderText">
       <string>Add Label to Exclude</string>
      </property>
     </widget>
@@ -55,9 +55,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KLineEdit</class>
+   <class>QLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
+   <header>qlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

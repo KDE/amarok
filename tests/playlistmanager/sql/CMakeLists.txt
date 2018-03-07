@@ -17,5 +17,7 @@ set( testsqluserplaylistprovider_SRCS
      ${AMAROK_SOURCE_TREE}/core/capabilities/BoundedPlaybackCapability.cpp
      ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
     )
-kde4_add_unit_test( testsqluserplaylistprovider ${testsqluserplaylistprovider_SRCS} )
-target_link_libraries( testsqluserplaylistprovider ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} ${QT_QTTEST_LIBRARY} ${QT_QTCORE_LIBRARY} amarokcore amaroklib )
+add_executable( testsqluserplaylistprovider ${testsqluserplaylistprovider_SRCS} )
+add_test(NAME testsqluserplaylistprovider COMMAND $<TARGET_FILE:testsqluserplaylistprovider>)
+ecm_mark_as_test(testsqluserplaylistprovider)
+target_link_libraries( testsqluserplaylistprovider  KF5::KIOCore Qt5::Test Qt5::Core amarokcore amaroklib )

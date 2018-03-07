@@ -94,9 +94,9 @@
   </customwidget>
  </customwidgets>
  <includes>
-  <include location="local">klineedit.h</include>
-  <include location="local">kpushbutton.h</include>
-  <include location="local">knuminput.h</include>
+  <include location="local">qlineedit.h</include>
+  <include location="local">qpushbutton.h</include>
+  <include location="local">qspinbox.h</include>
  </includes>
  <resources/>
  <connections/>

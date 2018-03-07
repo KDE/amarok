@@ -124,7 +124,7 @@ namespace Playlist
              */
             QList<quint64> m_plannedItems;
 
-        private slots:
+        private Q_SLOTS:
             void slotModelReset();
             void slotRowsInserted( const QModelIndex& parent, int start, int end );
             void slotRowsAboutToBeRemoved( const QModelIndex& parent, int start, int end );

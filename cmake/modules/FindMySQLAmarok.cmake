@@ -6,15 +6,18 @@
 #  MYSQL_EMBEDDED_LIBRARIES, the libraries needed to use MySQL Embedded.
 #  MYSQL_FOUND, If false, do not try to use MySQL.
 #  MYSQL_EMBEDDED_FOUND, If false, do not try to use MySQL Embedded.
+#  MYSQLAMAROK_FOUND, TRUE if both MYSQL and MYSQL_EMBEDDED have been found, FALSE otherwise.
 
 # Copyright (c) 2006, Jaroslaw Staniek, <js@iidea.pl>
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
+include(CMakePushCheckState)
+
 if(NOT WIN32)
     find_program(MYSQLCONFIG_EXECUTABLE NAMES mysql_config mysql_config5 HINTS ${BIN_INSTALL_DIR})
-endif(NOT WIN32)
+endif()
 
 find_path(MYSQL_INCLUDE_DIR mysql.h PATH_SUFFIXES mysql mysql5/mysql)
 
@@ -27,7 +30,7 @@ if(MYSQLCONFIG_EXECUTABLE)
 
     if(MYSQL_EMBEDDED_LIBSTEMP)
         set( HAVE_MYSQL_EMBEDDED true )
-    endif(MYSQL_EMBEDDED_LIBSTEMP)
+    endif()
 
     find_library(MYSQLD_PIC_SEPARATE
         mysqld_pic
@@ -40,24 +43,24 @@ if(MYSQLCONFIG_EXECUTABLE)
         # reporting this directory with when being called with --libs
         get_filename_component(MYSQL_EMBEDDED_LIB_DIR_TMP "${MYSQLD_PIC_SEPARATE}" PATH)
         set(MYSQL_EMBEDDED_LIBRARIES "${MYSQL_EMBEDDED_LIBRARIES} -L${MYSQL_EMBEDDED_LIB_DIR_TMP}")
-    else(MYSQLD_PIC_SEPARATE)
+    else()
         set(MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
-    endif(MYSQLD_PIC_SEPARATE)
+    endif()
 
     if (UNIX)
         # libmysqld wants -lpthread, but it is very likely it does not say that
         # explicitly in --libmysqld-libs
         find_package(Threads)
         set(MYSQL_EMBEDDED_LIBRARIES "${MYSQL_EMBEDDED_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT}")
-    endif(UNIX)
+    endif()
 
-else(MYSQLCONFIG_EXECUTABLE)
+else()
 
     if(WIN32)
         set(MYSQL_CLIENT_LIBRARY_NAME libmysql)
-    else(WIN32)
+    else()
         set(MYSQL_CLIENT_LIBRARY_NAME mysqlclient)
-    endif(WIN32)
+    endif()
 
     find_library(MYSQL_LIBRARIES NAMES ${MYSQL_CLIENT_LIBRARY_NAME}
       PATHS
@@ -87,29 +90,34 @@ else(MYSQLCONFIG_EXECUTABLE)
         /opt/ports/lib/mysql5/mysql
     )
 
-    macro_push_required_vars()
+    cmake_push_check_state()
     set( CMAKE_REQUIRED_INCLUDES ${MYSQL_INCLUDE_DIR} )
     set( CMAKE_REQUIRED_LIBRARIES ${MYSQL_EMBEDDED_LIBRARIES} )
     include_directories( ${MYSQL_INCLUDE_DIR} )
     check_cxx_source_compiles( "#if (defined(_WIN32) || defined(_WIN64))\n#define __LCC__\n#endif\n#include <mysql.h>\nint main() { int i = MYSQL_OPT_USE_EMBEDDED_CONNECTION; }" HAVE_MYSQL_EMBEDDED )
-    macro_pop_required_vars()
+    cmake_pop_check_state()
 
-endif(MYSQLCONFIG_EXECUTABLE)
+endif()
 
 if(MYSQL_INCLUDE_DIR AND MYSQL_LIBRARIES)
    set(MYSQL_FOUND TRUE)
    message(STATUS "Found MySQL: ${MYSQL_INCLUDE_DIR}, ${MYSQL_LIBRARIES}")
-else(MYSQL_INCLUDE_DIR AND MYSQL_LIBRARIES)
+else()
    set(MYSQL_FOUND FALSE)
    message(STATUS "MySQL not found.")
-endif(MYSQL_INCLUDE_DIR AND MYSQL_LIBRARIES)
+endif()
 
 if(MYSQL_INCLUDE_DIR AND MYSQL_EMBEDDED_LIBRARIES AND HAVE_MYSQL_EMBEDDED)
    set(MYSQL_EMBEDDED_FOUND TRUE)
    message(STATUS "Found MySQL Embedded: ${MYSQL_INCLUDE_DIR}, ${MYSQL_EMBEDDED_LIBRARIES}")
-else(MYSQL_INCLUDE_DIR AND MYSQL_EMBEDDED_LIBRARIES AND HAVE_MYSQL_EMBEDDED)
+else()
    set(MYSQL_EMBEDDED_FOUND FALSE)
    message(STATUS "MySQL Embedded not found.")
-endif(MYSQL_INCLUDE_DIR AND MYSQL_EMBEDDED_LIBRARIES AND HAVE_MYSQL_EMBEDDED)
+endif()
+
+#MYSQLAMAROK_FOUND has to be defined so that MYSQLAMAROK gets into the PACKAGES_FOUND property and the other properties that depend on <NAME>_FOUND variables. If this is not set to TRUE (when both MYSQL and MYSQLD are available) then on the subsequent call to feature_summary, MySQLAmarok will be missing from the PACKAGES_FOUND property and hence it will be marked as a missing required feature thus breaking the build when feature_summary has been used with FATAL_ON_MISSING_REQUIRED_PACKAGES.
+if(MYSQL_EMBEDDED_FOUND AND MYSQL_FOUND)
+   set(MYSQLAMAROK_FOUND TRUE)
+endif()
 
 mark_as_advanced(MYSQL_INCLUDE_DIR MYSQL_LIBRARIES MYSQL_EMBEDDED_LIBRARIES)

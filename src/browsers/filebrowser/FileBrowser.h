@@ -19,7 +19,7 @@
 
 #include "browsers/BrowserCategory.h"
 
-#include <KUrl>
+#include <QUrl>
 
 class QAbstractItemView;
 class QModelIndex;
@@ -37,17 +37,18 @@ public:
     /**
     * Navigate to a specific directory
     */
-    void setDir( const KUrl &dir );
+    void setDir( const QUrl &dir );
 
     /**
      * Return the path of the currently shown dir.
      */
     QString currentDir() const;
 
-protected slots:
-    void slotNavigateToDirectory( const QModelIndex &index );
-
+public Q_SLOTS:
     void addItemActivated( const QString &callback );
+
+protected Q_SLOTS:
+    void slotNavigateToDirectory( const QModelIndex &index );
 
     virtual void reActivate();
 
@@ -91,14 +92,13 @@ protected slots:
      */
     void setupDone( const QModelIndex &index, bool success );
 
-private slots:
+private Q_SLOTS:
     void initView();
+    void updateHeaderState();
 
 private:
     class Private;
     Private *const d;
-
-    Q_PRIVATE_SLOT( d, void updateHeaderState() )
 };
 
 /**
@@ -112,7 +112,7 @@ class DelayedActivator : public QObject
     public:
         explicit DelayedActivator( QAbstractItemView *view );
 
-    private slots:
+    private Q_SLOTS:
         void slotRowsInserted( const QModelIndex &parent, int start );
 
     private:

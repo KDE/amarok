@@ -43,7 +43,7 @@ class LastfmReadLabelCapability : public Capabilities::ReadLabelCapability
         Meta::TrackPtr m_track;
         QNetworkReply *m_job;
 
-    private slots:
+    private Q_SLOTS:
         void onTagsFetched();
 };
 }

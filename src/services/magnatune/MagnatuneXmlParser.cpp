@@ -21,9 +21,8 @@
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
 
-#include <KFilterDev>
-#include <KLocale>
-#include <threadweaver/Job.h>
+#include <KCompressionDevice>
+#include <KLocalizedString>
 
 #include <QDomDocument>
 #include <QFile>
@@ -31,10 +30,11 @@
 using namespace Meta;
 
 MagnatuneXmlParser::MagnatuneXmlParser( const QString &filename )
-        : ThreadWeaver::Job()
+        : QObject()
+        , ThreadWeaver::Job()
 {
     m_sFileName = filename;
-    connect( this, SIGNAL(done(ThreadWeaver::Job*)), SLOT(completeJob()) );
+    connect( this, &MagnatuneXmlParser::done, this, &MagnatuneXmlParser::completeJob );
 }
 
 
@@ -45,11 +45,29 @@ MagnatuneXmlParser::~MagnatuneXmlParser()
 }
 
 void
-MagnatuneXmlParser::run()
+MagnatuneXmlParser::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     readConfigFile( m_sFileName );
 }
 
+void
+MagnatuneXmlParser::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    Q_EMIT started(self);
+    ThreadWeaver::Job::defaultBegin(self, thread);
+}
+
+void
+MagnatuneXmlParser::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+{
+    ThreadWeaver::Job::defaultEnd(self, thread);
+    if (!self->success()) {
+        Q_EMIT failed(self);
+    }
+    Q_EMIT done(self);
+}
 
 void
 MagnatuneXmlParser::completeJob( )
@@ -85,27 +103,26 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
         return;
     }
 
-    QIODevice *file = KFilterDev::deviceForFile( filename, "application/x-bzip2", true );
-    if ( !file || !file->open( QIODevice::ReadOnly ) ) {
+    QFile file( filename );
+    auto device = new KCompressionDevice( &file, true, KCompressionDevice::BZip2 );
+    if ( !device || !device->open( QIODevice::ReadOnly ) ) {
         debug() << "MagnatuneXmlParser::readConfigFile error reading file";
         return ;
     }
-    if ( !doc.setContent( file ) )
+    if ( !doc.setContent( device ) )
     {
         debug() << "MagnatuneXmlParser::readConfigFile error parsing file";
-        file->close();
+        device->close();
         return ;
     }
-    file->close();
-    delete file;
-
+    device->close();
+    delete device;
 
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
 
     //run through all the elements
     QDomElement docElem = doc.documentElement();
-
 
     m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
     parseElement( docElem );
@@ -155,9 +172,9 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
     QString description;
     QString artistName;
     QString artistDescription;
-    QString artistPhotoUrl;
+    QUrl artistPhotoUrl;
     QString mp3Genre;
-    QString artistPageUrl;
+    QUrl artistPageUrl;
 
 
     QDomNode n = e.firstChild();
@@ -173,7 +190,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
 
             if ( sElementName == "albumname" )
-                //printf(("|--+" + childElement.text() + "\n").toAscii());
+                //printf(("|--+" + childElement.text() + "\n").toLatin1());
                 //m_currentAlbumItem = new MagnatuneListViewAlbumItem( m_currentArtistItem);
                 name = childElement.text();
 
@@ -201,13 +218,13 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
                 artistDescription =  childElement.text();
 
             else if ( sElementName == "artistphoto" )
-                artistPhotoUrl =  childElement.text() ;
+                artistPhotoUrl =  QUrl( childElement.text() );
 
             else if ( sElementName == "mp3genre" )
                 mp3Genre = childElement.text();
 
             else if ( sElementName == "home" )
-                artistPageUrl =  childElement.text();
+                artistPageUrl = QUrl( childElement.text() );
 
             else if ( sElementName == "Track" )
                 parseTrack( childElement );
@@ -412,5 +429,4 @@ void MagnatuneXmlParser::setDbHandler(MagnatuneDatabaseHandler * dbHandler)
     m_dbHandler = dbHandler;
 }
 
-#include "MagnatuneXmlParser.moc"
 

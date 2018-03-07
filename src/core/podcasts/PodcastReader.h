@@ -28,13 +28,10 @@
 #include <QStack>
 #include <QRegExp>
 
-namespace KIO
-{
-    class Job;
-    class TransferJob;
-}
+#include <KIO/TransferJob>
 
-class KUrl;
+class QUrl;
+class KJob;
 
 namespace Podcasts {
 
@@ -55,27 +52,27 @@ class AMAROK_CORE_EXPORT PodcastReader : public QObject
         ~PodcastReader();
 
         bool read( QIODevice *device );
-        bool read( const KUrl &url );
+        bool read( const QUrl &url );
         bool update( Podcasts::PodcastChannelPtr channel );
-        KUrl & url() { return m_url; }
+        QUrl & url() { return m_url; }
 
         Podcasts::PodcastChannelPtr channel() { return m_channel; }
 
         QXmlStreamReader::Error error () const { return m_xmlReader.error(); }
         QString errorString () const { return m_xmlReader.errorString(); }
 
-    signals:
+    Q_SIGNALS:
         void finished( PodcastReader *podcastReader );
         void statusBarSorryMessage( const QString &message );
         void statusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* );
 
-    public slots:
+    public Q_SLOTS:
         virtual void slotAbort();
 
-    private slots:
-        void slotRedirection( KIO::Job *job, const KUrl & url );
-        void slotPermanentRedirection ( KIO::Job * job, const KUrl & fromUrl,
-                const KUrl & toUrl );
+    private Q_SLOTS:
+        void slotRedirection( KIO::Job *job, const QUrl &url );
+        void slotPermanentRedirection ( KIO::Job * job, const QUrl &fromUrl,
+                const QUrl &toUrl );
         void slotAddData( KIO::Job *, const QByteArray & data );
 
         void downloadResult( KJob * );
@@ -264,15 +261,15 @@ class AMAROK_CORE_EXPORT PodcastReader : public QObject
         class Enclosure
         {
             public:
-                Enclosure(const KUrl& url, int filesize, const QString& mimeType)
+                Enclosure(const QUrl &url, int filesize, const QString& mimeType)
                     : m_url( url ), m_filesize( filesize ), m_mimeType( mimeType ) {}
 
-                const KUrl &url() const { return m_url; }
+                const QUrl &url() const { return m_url; }
                 int fileSize() const { return m_filesize; }
                 const QString &mimeType() const { return m_mimeType; }
 
             private:
-                KUrl    m_url;
+                QUrl    m_url;
                 int     m_filesize;
                 QString m_mimeType;
         };
@@ -368,7 +365,7 @@ class AMAROK_CORE_EXPORT PodcastReader : public QObject
 
         QXmlStreamReader m_xmlReader;
 
-        KUrl m_url;
+        QUrl m_url;
         PodcastProvider *m_podcastProvider;
         KIO::TransferJob *m_transferJob;
         Podcasts::PodcastChannelPtr m_channel;

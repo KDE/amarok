@@ -20,7 +20,7 @@
 #define GPODDERPODCASTREQUESTHANDLER_H_
 
 #include "GpodderServiceModel.h"
-#include <mygpo-qt/PodcastList.h>
+#include <mygpo-qt5/PodcastList.h>
 
 #include <QModelIndex>
 
@@ -31,7 +31,7 @@ public:
     GpodderPodcastRequestHandler( mygpo::PodcastListPtr podcasts, QModelIndex parentItem, GpodderServiceModel *model );
     virtual ~GpodderPodcastRequestHandler();
 
-public slots:
+public Q_SLOTS:
     void finished();
     void requestError( QNetworkReply::NetworkError );
     void parseError();

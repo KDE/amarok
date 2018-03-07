@@ -45,18 +45,15 @@
 #include "core-impl/support/TrackLoader.h"
 #include "playlist/UndoCommands.h"
 
-#include <KGlobal>
+#include <KLocalizedString>
 #include <KIconLoader>
-#include <KLocale>
-#include <KUrl>
 
 #include <QAction>
 #include <QTimer>
 #include <QDate>
 #include <QStringList>
-#include <QTextDocument>
+#include <QUrl>
 
-#include <typeinfo>
 
 #define TOOLTIP_STATIC_LINEBREAK 50
 
@@ -179,18 +176,18 @@ Playlist::Model::Model( QObject *parent )
 
     m_saveStateTimer->setInterval( 5000 );
     m_saveStateTimer->setSingleShot( true );
-    connect( m_saveStateTimer, SIGNAL(timeout()),
-             this, SLOT(saveState()) );
-    connect( this, SIGNAL(modelReset()),
-             this, SLOT(queueSaveState()) );
-    connect( this, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-             this, SLOT(queueSaveState()) );
-    connect( this, SIGNAL(rowsInserted(QModelIndex,int,int)),
-             this, SLOT(queueSaveState()) );
-    connect( this, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
-             this, SLOT(queueSaveState()) );
-    connect( this, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-             this, SLOT(queueSaveState()) );
+    connect( m_saveStateTimer, &QTimer::timeout,
+             this, &Playlist::Model::saveState );
+    connect( this, &Playlist::Model::modelReset,
+             this, &Playlist::Model::queueSaveState );
+    connect( this, &Playlist::Model::dataChanged,
+             this, &Playlist::Model::queueSaveState );
+    connect( this, &Playlist::Model::rowsInserted,
+             this, &Playlist::Model::queueSaveState );
+    connect( this, &Playlist::Model::rowsMoved,
+             this, &Playlist::Model::queueSaveState );
+    connect( this, &Playlist::Model::rowsRemoved,
+             this, &Playlist::Model::queueSaveState );
 }
 
 Playlist::Model::~Model()
@@ -257,7 +254,6 @@ QString
 Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
 {
     QString text;
-    KLocale *locale = KGlobal::locale();
     // get the shared pointers now to be thread safe
     Meta::ArtistPtr artist = track->artist();
     Meta::AlbumPtr album = track->album();
@@ -329,7 +325,7 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
         text += HTMLLine( Playlist::PlayCount, statistics->playCount(), true );
 
     if( s_tooltipColumns[Playlist::LastPlayed] && statistics->lastPlayed().isValid() )
-        text += HTMLLine( Playlist::LastPlayed, locale->formatDateTime( statistics->lastPlayed() ) );
+        text += HTMLLine( Playlist::LastPlayed, QLocale().toString( statistics->lastPlayed() ) );
 
     if( s_tooltipColumns[Playlist::Bitrate] && track->bitrate() )
         text += HTMLLine( Playlist::Bitrate, i18nc( "%1: bitrate", "%1 kbps", track->bitrate() ) );
@@ -445,7 +441,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case Directory:
             {
                 if( track->playableUrl().isLocalFile() )
-                    return track->playableUrl().directory();
+                    return track->playableUrl().adjusted(QUrl::RemoveFilename).path();
                 break;
             }
             case DiscNumber:
@@ -707,7 +703,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         debug() << "this is _something_ with a url....";
         TrackLoader *dl = new TrackLoader(); // auto-deletes itself
         dl->setProperty( "beginRow", beginRow );
-        connect( dl, SIGNAL(finished(Meta::TrackList)), SLOT(insertTracksFromTrackLoader(Meta::TrackList)) );
+        connect( dl, &TrackLoader::finished, this, &Model::insertTracksFromTrackLoader );
         dl->init( data->urls() );
         return true;
     }
@@ -906,7 +902,7 @@ Playlist::Model::exportPlaylist( const QString &path, bool relative ) const
     foreach( quint64 id, queueIds ) {
       queued << rowForId( id );
     }
-    return Playlists::exportPlaylistFile( tracks(), path, relative, queued );
+    return Playlists::exportPlaylistFile( tracks(), QUrl::fromLocalFile(path), relative, queued);
 }
 
 Meta::TrackList
@@ -1117,7 +1113,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList &passedCmds )
     // BUG: 259675
     // FIXME: removing the track and normalizing the playlist should be grouped together
     //        so that an undo operation undos both.
-    QTimer::singleShot(0, Playlist::Actions::instance(), SLOT(normalizeDynamicPlaylist()));
+    QTimer::singleShot(0, Playlist::Actions::instance(), &Playlist::Actions::normalizeDynamicPlaylist);
 }
 
 

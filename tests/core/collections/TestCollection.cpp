@@ -20,8 +20,8 @@
 #include "core/collections/Collection.h"
 #include "core/collections/CollectionLocation.h"
 
-#include <KIcon>
-#include <qtest_kde.h>
+#include <QIcon>
+
 
 using namespace Collections;
 
@@ -55,10 +55,10 @@ class CollectionMock : public Collection
             return QString();
         }
 
-        virtual KIcon icon() const
+        virtual QIcon icon() const
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return KIcon();
+            return QIcon();
         }
 };
 
@@ -96,7 +96,7 @@ class TestingCollectionMock : public CollectionMock
 };
 
 
-QTEST_KDEMAIN_CORE( TestCollection )
+QTEST_MAIN( TestCollection )
 
 void
 TestCollection::initTestCase()
@@ -119,7 +119,7 @@ void
 TestCollection::testTrackForUrl()
 {
     // Always returns a shared pointer pointing to null by default
-    KUrl url;
+    QUrl url;
     QVERIFY( m_trackProvider->trackForUrl( url ).isNull() );
 }
 

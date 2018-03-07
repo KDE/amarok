@@ -19,9 +19,11 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 
-#include <qtest_kde.h>
+#include <QSignalSpy>
+#include <QTest>
 
-QTEST_KDEMAIN_CORE( TestImporterProvider )
+
+QTEST_GUILESS_MAIN( TestImporterProvider )
 
 using namespace ::testing;
 
@@ -61,8 +63,8 @@ TestImporterProvider::descriptionShouldDelegateToManager()
 void
 TestImporterProvider::iconShouldDelegateToManager()
 {
-    EXPECT_CALL( *m_mockManager, icon() ).WillOnce( Return( KIcon( "amarok" ) ) );
-    QCOMPARE( m_mockProvider->icon().name(), KIcon( "amarok" ).name() );
+    EXPECT_CALL( *m_mockManager, icon() ).WillOnce( Return( QIcon::fromTheme( "amarok" ) ) );
+    QCOMPARE( m_mockProvider->icon().name(), QIcon::fromTheme( "amarok" ).name() );
 }
 
 void
@@ -107,7 +109,7 @@ TestImporterProvider::reconfigureShouldEmitSignal()
     QVariantMap cfg = m_mockProvider->config();
     cfg["customField"] = QString( "Selena" );
 
-    QSignalSpy spy( m_mockProvider, SIGNAL(reconfigurationRequested(QVariantMap)) );
+    QSignalSpy spy( m_mockProvider, &MockProvider::reconfigurationRequested );
     m_mockProvider->reconfigure( cfg );
 
     QCOMPARE( spy.count(), 1 );
@@ -120,7 +122,7 @@ TestImporterProvider::reconfigureShouldNotEmitSignalOnDifferentUid()
     QVariantMap cfg;
     cfg["uid"] = "Different";
 
-    QSignalSpy spy( m_mockProvider, SIGNAL(reconfigurationRequested(QVariantMap)) );
+    QSignalSpy spy( m_mockProvider, &MockProvider::reconfigurationRequested );
     m_mockProvider->reconfigure( cfg );
 
     QCOMPARE( spy.count(), 0 );
@@ -132,4 +134,3 @@ TestImporterProvider::defaultPreferenceShouldReturnNoByDefault()
     QCOMPARE( m_mockProvider->defaultPreference(), StatSyncing::Provider::NoByDefault );
 }
 
-#include "TestImporterProvider.moc"

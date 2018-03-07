@@ -130,8 +130,10 @@ namespace The {
 /**
   This class keeps track of global context actions that should be added to all genre, artists or another meta type in all collections.
 */
-class AMAROK_EXPORT GlobalCollectionActions
+class AMAROK_EXPORT GlobalCollectionActions : public QObject
 {
+    Q_OBJECT
+
     friend GlobalCollectionActions* The::globalCollectionActions();
 
 public:

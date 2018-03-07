@@ -19,6 +19,7 @@
 
 #define DEBUG_PREFIX "DatabaseCollection"
 
+#include <KLocalizedString>
 #include "DatabaseCollection.h"
 
 #include "core/support/Debug.h"
@@ -53,10 +54,10 @@ DatabaseCollection::prettyName() const
     return i18n( "Local Collection" );
 }
 
-KIcon
+QIcon
 DatabaseCollection::icon() const
 {
-    return KIcon("drive-harddisk");
+    return QIcon::fromTheme("drive-harddisk");
 }
 
 GenericScanManager*
@@ -79,13 +80,13 @@ DatabaseCollection::setMountPointManager( MountPointManager *mpm )
 
     if( m_mpm )
     {
-        disconnect( mpm, SIGNAL(deviceAdded(int)), this, SLOT(slotDeviceAdded(int)) );
-        disconnect( mpm, SIGNAL(deviceRemoved(int)), this, SLOT(slotDeviceRemoved(int)) );
+        disconnect( mpm, &MountPointManager::deviceAdded, this, &DatabaseCollection::slotDeviceAdded );
+        disconnect( mpm, &MountPointManager::deviceRemoved, this, &DatabaseCollection::slotDeviceRemoved );
     }
 
     m_mpm = mpm;
-    connect( mpm, SIGNAL(deviceAdded(int)), this, SLOT(slotDeviceAdded(int)) );
-    connect( mpm, SIGNAL(deviceRemoved(int)), this, SLOT(slotDeviceRemoved(int)) );
+    connect( mpm, &MountPointManager::deviceAdded, this, &DatabaseCollection::slotDeviceAdded );
+    connect( mpm, &MountPointManager::deviceRemoved, this, &DatabaseCollection::slotDeviceRemoved );
 }
 
 
@@ -183,9 +184,9 @@ DatabaseCollectionScanCapability::~DatabaseCollectionScanCapability()
 void
 DatabaseCollectionScanCapability::startFullScan()
 {
-    QList<KUrl> urls;
+    QList<QUrl> urls;
     foreach( const QString& path, m_collection->mountPointManager()->collectionFolders() )
-        urls.append( KUrl::fromPath( path ) );
+        urls.append( QUrl::fromLocalFile( path ) );
 
     m_collection->scanManager()->requestScan( urls, GenericScanManager::FullScan );
 }
@@ -195,16 +196,16 @@ DatabaseCollectionScanCapability::startIncrementalScan( const QString &directory
 {
     if( directory.isEmpty() )
     {
-        QList<KUrl> urls;
+        QList<QUrl> urls;
         foreach( const QString& path, m_collection->mountPointManager()->collectionFolders() )
-            urls.append( KUrl::fromPath( path ) );
+            urls.append( QUrl::fromLocalFile( path ) );
 
         m_collection->scanManager()->requestScan( urls, GenericScanManager::UpdateScan );
     }
     else
     {
-        QList<KUrl> urls;
-        urls.append( KUrl::fromPath( directory ) );
+        QList<QUrl> urls;
+        urls.append( QUrl::fromLocalFile( directory ) );
 
         m_collection->scanManager()->requestScan( urls,
                                                   GenericScanManager::PartialUpdateScan );

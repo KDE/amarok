@@ -18,8 +18,7 @@
  
 #include "PaletteHandler.h"
 
-#include <kglobal.h>
-
+#include <QAbstractItemView>
 #include <QPainter>
 
 
@@ -151,4 +150,3 @@ PaletteHandler::alternateBackgroundColor()
     return result;
 }
 
-#include "PaletteHandler.moc"

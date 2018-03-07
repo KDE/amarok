@@ -16,40 +16,36 @@
 
 #include "BrowserMessageArea.h"
 
-#include "statusbar/KJobProgressBar.h"
 #include "statusbar/LongMessageWidget.h"
-#include "statusbar/NetworkProgressBar.h"
 
 #define SHORT_MESSAGE_DURATION 5000
 #define POPUP_MESSAGE_DURATION 5000
 
 BrowserMessageArea::BrowserMessageArea( QWidget *parent )
-    : QFrame( parent )
+    : BoxWidget( true, parent )
     , m_busy( false )
 {
     setObjectName( "BrowserMessageArea" );
 
-    setLayout( new QVBoxLayout( this ) );
-
     m_progressBar = new CompoundProgressBar( this );
-    connect( m_progressBar, SIGNAL(allDone()), this, SLOT(hideProgress()) );
+    connect( m_progressBar, &CompoundProgressBar::allDone, this, &BrowserMessageArea::hideProgress );
     layout()->addWidget( m_progressBar );
+
     m_progressBar->hide();
 
     m_messageLabel = new QLabel( this );
     m_messageLabel->setAlignment( Qt::AlignCenter );
     m_messageLabel->setWordWrap( true );
-    layout()->addWidget( m_messageLabel );
     m_messageLabel->hide();
 
     m_shortMessageTimer = new QTimer( this );
     m_shortMessageTimer->setSingleShot( true );
-    connect( m_shortMessageTimer, SIGNAL(timeout()), SLOT(nextShortMessage()) );
+    connect( m_shortMessageTimer, &QTimer::timeout, this, &BrowserMessageArea::nextShortMessage );
 
     //register to carry MessageType across threads
     qRegisterMetaType<Amarok::Logger::MessageType>( "MessageType" );
-    connect( this, SIGNAL(signalLongMessage(QString,MessageType)),
-             this, SLOT(slotLongMessage(QString,MessageType)),
+    connect( this, &BrowserMessageArea::signalLongMessage,
+             this, &BrowserMessageArea::slotLongMessage,
              Qt::QueuedConnection );
 }
 
@@ -80,12 +76,12 @@ BrowserMessageArea::longMessage( const QString &text, MessageType type )
 
 void
 BrowserMessageArea::newProgressOperation( KJob *job, const QString &text, QObject *obj,
-                                      const char *slot, Qt::ConnectionType type )
+                                          const char *slot, Qt::ConnectionType type )
 {
     KJobProgressBar *newBar = new KJobProgressBar( 0, job );
     newBar->setDescription( text );
-    connect( job, SIGNAL(destroyed(QObject*)), m_progressBar,
-             SLOT(endProgressOperation(QObject*)) );
+    connect( job, &KJob::destroyed, m_progressBar,
+             &CompoundProgressBar::endProgressOperation );
     newBar->setAbortSlot( obj, slot, type );
     m_progressBar->addProgressBar( newBar, job );
     m_progressBar->show();
@@ -99,9 +95,9 @@ BrowserMessageArea::newProgressOperation( QNetworkReply *reply, const QString &t
 {
     NetworkProgressBar *newBar = new NetworkProgressBar( 0, reply );
     newBar->setDescription( text );
-    newBar->setAbortSlot( reply, SLOT(deleteLater()) );
-    connect( reply, SIGNAL(destroyed(QObject*)), m_progressBar,
-             SLOT(endProgressOperation(QObject*)) );
+    newBar->setAbortSlot( reply, &QNetworkReply::deleteLater );
+    connect( reply, &QNetworkReply::destroyed, m_progressBar,
+             &CompoundProgressBar::endProgressOperation );
     newBar->setAbortSlot( obj, slot, type );
     m_progressBar->addProgressBar( newBar, reply );
     m_progressBar->show();
@@ -116,8 +112,8 @@ BrowserMessageArea::newProgressOperation( QObject *sender, const QString &text, 
     ProgressBar *newBar = new ProgressBar( 0 );
     newBar->setDescription( text );
     newBar->setMaximum( maximum );
-    connect( sender, SIGNAL(destroyed(QObject*)), m_progressBar,
-             SLOT(endProgressOperation(QObject*)), Qt::QueuedConnection );
+    connect( sender, &QObject::destroyed, m_progressBar,
+             &CompoundProgressBar::endProgressOperation, Qt::QueuedConnection );
     connect( sender, SIGNAL(endProgressOperation(QObject*)), m_progressBar,
              SLOT(endProgressOperation(QObject*)), Qt::QueuedConnection );
     connect( sender, SIGNAL(incrementProgress()), m_progressBar,
@@ -166,5 +162,5 @@ void
 BrowserMessageArea::slotLongMessage( const QString &text, MessageType type )
 {
     LongMessageWidget *message = new LongMessageWidget( this, text, type );
-    connect( message, SIGNAL(closed()), this, SLOT(hideLongMessage()) );
+    connect( message, &LongMessageWidget::closed, this, &BrowserMessageArea::hideLongMessage );
 }

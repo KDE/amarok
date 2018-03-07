@@ -19,25 +19,26 @@
 #include "contentfetcher.h"
 #include "core/support/Debug.h"
 #include "hasher.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 #include <QBuffer>
-#include <QHttp>
 #include <QByteArray>
+#include <QNetworkReply>
 
-#include <kfilterdev.h>
-#include <kcodecs.h>
+#include <KCodecs>
+#include <KCompressionDevice>
 
 using namespace Daap;
 int ContentFetcher::s_requestId = 10;
 
 ContentFetcher::ContentFetcher( const QString & hostname, quint16 port, const QString& password, QObject * parent, const char * name )
- : QHttp(hostname, port, parent)
+ : QObject(parent)
+ , m_reply( Q_NULLPTR )
  , m_hostname( hostname )
  , m_port( port )
  , m_selfDestruct( false )
 {
     setObjectName( name );
-    connect( this, SIGNAL(stateChanged(int)), this , SLOT(checkForErrors(int)) );
     QByteArray pass = password.toUtf8();
     if( !password.isNull() )
     {
@@ -51,64 +52,79 @@ ContentFetcher::~ContentFetcher()
 QByteArray
 ContentFetcher::results()
 {
-    QByteArray read = readAll();
-    QHttpResponseHeader header = lastResponse();
-    if( header.value( "Content-Encoding" ) == "gzip" )
-    {
-        QBuffer* bytes = new QBuffer( &read );
-        QIODevice* stream = KFilterDev::device( bytes, "application/x-gzip", false );
-        if ( !stream->open( QIODevice::ReadOnly ) )
-            return read;
-
-        //do not assign directly to read, see the documentation of the QBuffer ctor
-        QByteArray filteredRead = stream->readAll();
-        delete stream;
-        delete bytes;
-        read = filteredRead;
-    }
-    return read;
+    return m_lastResult;
 }
 
 void
-ContentFetcher::getDaap( const QString & command, QIODevice* musicFile /*= 0*/ )
+ContentFetcher::getDaap( const QString &command, QIODevice* musicFile /*= 0*/ )
 {
-    QHttpRequestHeader header( "GET", command );
+    QUrl url( command );
+    url.setHost( m_hostname );
+    url.setPort( m_port );
+    QNetworkRequest request( url );
     char hash[33] = {0};
-    const char *cmd = command.toAscii();
+    const char *cmd = command.toLatin1();
     GenerateHash(3, reinterpret_cast<const unsigned char*>( cmd ), 2, reinterpret_cast<unsigned char*>(hash), 0 /*s_requestId*/);
 
     if( !m_authorize.isEmpty() )
     {
-        header.setValue( "Authorization", m_authorize );
+        request.setRawHeader( "Authorization", m_authorize );
     }
 
-    header.setValue( "Host", m_hostname + QString::number( m_port ) );
-    header.setValue( "Client-DAAP-Request-ID", "0"/*QString::number( s_requestId )*/ );
-    header.setValue( "Client-DAAP-Access-Index", "2" );
-    header.setValue( "Client-DAAP-Validation", hash );
-    header.setValue( "Client-DAAP-Version", "3.0" );
-    header.setValue( "User-Agent", "iTunes/4.6 (Windows; N)" );
-    header.setValue( "Accept", "*/*" );
-    header.setValue( "Accept-Encoding", "gzip" );
+    request.setRawHeader( "Client-DAAP-Request-ID", "0"/*QString::number( s_requestId )*/ );
+    request.setRawHeader( "Client-DAAP-Access-Index", "2" );
+    request.setRawHeader( "Client-DAAP-Validation", hash );
+    request.setRawHeader( "Client-DAAP-Version", "3.0" );
+    request.setRawHeader( "User-Agent", "iTunes/4.6 (Windows; N)" );
+    request.setRawHeader( "Accept", "*/*" );
+    request.setRawHeader( "Accept-Encoding", "gzip" );
 
-    request( header, 0, musicFile );
+    m_reply = The::networkAccessManager()->sendCustomRequest( request, "GET", musicFile );
+
+    if( m_reply->isFinished() )
+        onFinished();
+    else
+        connect( m_reply, &QNetworkReply::finished, this, &ContentFetcher::onFinished );
 }
 
-/**
- *  QHttp enjoys forgetting to emit a requestFinished when there's an error
- *  This gets around that.
- */
 void
-ContentFetcher::checkForErrors( int /*state*/ )
+ContentFetcher::onFinished()
 {
-    if( !m_selfDestruct && error() != 0 )
+    if( !m_reply )
+        return;
+
+    if( !m_selfDestruct && m_reply->error() )
     {
-        debug() << "there is an error? " << error() << " " << errorString();
+        if( m_reply->error() == QNetworkReply::AuthenticationRequiredError )
+        {
+            emit loginRequired();
+            return;
+        }
+
+        debug() << "there is an error? " << m_reply->error() << " " << m_reply->errorString();
         m_selfDestruct = true;
-        emit httpError( errorString() );
+        emit httpError( m_reply->errorString() );
     }
+
+    QByteArray read = m_reply->readAll();
+    if( m_reply->rawHeader( "Content-Encoding" ) == "gzip" )
+    {
+        QBuffer* bytes = new QBuffer( &read );
+        KCompressionDevice *stream = new KCompressionDevice( bytes, true, KCompressionDevice::GZip );
+        if ( stream->open( QIODevice::ReadOnly ) )
+            m_lastResult = stream->readAll();
+        else
+            m_lastResult = read;
+
+        delete stream;
+    }
+    else
+        m_lastResult = read;
+
+    emit finished();
+    m_reply->deleteLater();
+    m_reply = Q_NULLPTR;
 }
 
 
-#include "contentfetcher.moc"
 

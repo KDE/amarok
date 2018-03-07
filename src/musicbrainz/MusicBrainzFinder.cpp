@@ -26,11 +26,13 @@
 #include "MusicBrainzMeta.h"
 #include "TagsFromFileNameGuesser.h"
 
-#include <ThreadWeaver/Weaver>
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
 
 #include <QAuthenticator>
 #include <QNetworkAccessManager>
 #include <QTimer>
+#include <QUrlQuery>
 
 /*
  * Levenshtein distance algorithm implementation carefully pirated from Wikibooks
@@ -81,11 +83,11 @@ MusicBrainzFinder::MusicBrainzFinder( QObject *parent, const QString &host,
     m_timer = new QTimer( this );
     m_timer->setInterval( 1000 );
 
-    connect( net, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
-             SLOT(gotAuthenticationRequest(QNetworkReply*,QAuthenticator*)) );
-    connect( net, SIGNAL(finished(QNetworkReply*)),
-             SLOT(gotReply(QNetworkReply*)) );
-    connect( m_timer, SIGNAL(timeout()), SLOT(sendNewRequest()) );
+    connect( net, &QNetworkAccessManager::authenticationRequired,
+             this, &MusicBrainzFinder::gotAuthenticationRequest );
+    connect( net, &QNetworkAccessManager::finished,
+             this, &MusicBrainzFinder::gotReply );
+    connect( m_timer, &QTimer::timeout, this, &MusicBrainzFinder::sendNewRequest );
 }
 
 bool
@@ -125,8 +127,8 @@ MusicBrainzFinder::sendNewRequest()
     QPair<Meta::TrackPtr, QNetworkRequest> req = m_requests.takeFirst();
     QNetworkReply *reply = net->get( req.second );
     m_replies.insert( reply, req.first );
-    connect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
-             this, SLOT(gotReplyError(QNetworkReply::NetworkError)) );
+    connect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+             this, &MusicBrainzFinder::gotReplyError );
 
     debug() << "Request sent:" << req.second.url().toString();
 }
@@ -153,8 +155,8 @@ MusicBrainzFinder::gotReplyError( QNetworkReply::NetworkError code )
         return;
 
     debug() << "Error occurred during network request:" << reply->errorString();
-    disconnect( reply, SIGNAL(error(QNetworkReply::NetworkError)),
-                this, SLOT(gotReplyError(QNetworkReply::NetworkError)) );
+    disconnect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+                this, &MusicBrainzFinder::gotReplyError );
 
     // Send an empty result to populate the tagger.
     sendTrack( m_replies.value( reply ), QVariantMap() );
@@ -176,9 +178,9 @@ MusicBrainzFinder::gotReply( QNetworkReply *reply )
             MusicBrainzXmlParser *parser = new MusicBrainzXmlParser( document );
             m_parsers.insert( parser, m_replies.value( reply ) );
 
-            connect( parser, SIGNAL(done(ThreadWeaver::Job*)),
-                     SLOT(parsingDone(ThreadWeaver::Job*)) );
-            ThreadWeaver::Weaver::instance()->enqueue( parser );
+            connect( parser, &MusicBrainzXmlParser::done,
+                     this, &MusicBrainzFinder::parsingDone );
+            ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(parser) );
         }
         else
             /*
@@ -194,12 +196,12 @@ MusicBrainzFinder::gotReply( QNetworkReply *reply )
 }
 
 void
-MusicBrainzFinder::parsingDone( ThreadWeaver::Job *_parser )
+MusicBrainzFinder::parsingDone( ThreadWeaver::JobPointer _parser )
 {
     DEBUG_BLOCK
-    MusicBrainzXmlParser *parser = qobject_cast<MusicBrainzXmlParser *>( _parser );
-    disconnect( parser, SIGNAL(done(ThreadWeaver::Job*)),
-                this, SLOT(parsingDone(ThreadWeaver::Job*)) );
+    MusicBrainzXmlParser *parser = dynamic_cast<MusicBrainzXmlParser*>( _parser.data() );
+    disconnect( parser, &MusicBrainzXmlParser::done,
+                this, &MusicBrainzFinder::parsingDone );
 
     if( m_parsers.contains( parser ) && !m_parsers.value( parser ).isNull() )
     {
@@ -575,7 +577,7 @@ MusicBrainzFinder::guessMetadata( const Meta::TrackPtr &track ) const
 QNetworkRequest
 MusicBrainzFinder::compileTrackRequest( const Meta::TrackPtr &track )
 {
-    QString query;
+    QString queryString;
     QVariantMap metadata = guessMetadata( track );
 
     // These characters are not considered in the query, and some of them can break it.
@@ -598,19 +600,21 @@ MusicBrainzFinder::compileTrackRequest( const Meta::TrackPtr &track )
      */
 #define VALUE( k ) metadata.value( k ).toString().remove( unsafe ).replace( special, escape ).replace( endOfWord, fuzzy )
     if( metadata.contains( Meta::Field::TITLE ) )
-        query += QString( "(\"%1\"^20 %1)" ).arg( VALUE( Meta::Field::TITLE ) );
+        queryString += QString( "(\"%1\"^20 %1)" ).arg( VALUE( Meta::Field::TITLE ) );
     if( metadata.contains( Meta::Field::ARTIST ) )
-        query += QString( " AND artist:(\"%1\"^2 %1)" ).arg( VALUE( Meta::Field::ARTIST ) );
+        queryString += QString( " AND artist:(\"%1\"^2 %1)" ).arg( VALUE( Meta::Field::ARTIST ) );
     if( metadata.contains( Meta::Field::ALBUM ) )
-        query += QString( " AND release:(\"%1\"^7 %1)" ).arg( VALUE( Meta::Field::ALBUM ) );
+        queryString += QString( " AND release:(\"%1\"^7 %1)" ).arg( VALUE( Meta::Field::ALBUM ) );
 #undef VALUE
 
     m_parsedMetadata.insert( track, metadata );
 
     QUrl url;
+    QUrlQuery query;
     url.setPath( mb_pathPrefix + "/recording" );
-    url.addQueryItem( "limit", "10" );
-    url.addQueryItem( "query", query );
+    query.addQueryItem( "limit", "10" );
+    query.addQueryItem( "query", queryString );
+    url.setQuery( query );
 
     return compileRequest( url );
 }
@@ -619,8 +623,10 @@ QNetworkRequest
 MusicBrainzFinder::compilePUIDRequest( const QString &puid )
 {
     QUrl url;
+    QUrlQuery query;
     url.setPath( mb_pathPrefix + "/recording" );
-    url.addQueryItem( "query", "puid:" + puid );
+    query.addQueryItem( "query", "puid:" + puid );
+    url.setQuery( query );
 
     return compileRequest( url );
 }
@@ -629,8 +635,10 @@ QNetworkRequest
 MusicBrainzFinder::compileReleaseGroupRequest( const QString &releaseGroupID )
 {
     QUrl url;
+    QUrlQuery query;
     url.setPath( mb_pathPrefix + "/release-group/" + releaseGroupID );
-    url.addQueryItem( "inc", "artists" );
+    query.addQueryItem( "inc", "artists" );
+    url.setQuery( query );
 
     return compileRequest( url );
 }
@@ -653,4 +661,3 @@ MusicBrainzFinder::compileRequest( QUrl &url )
     return req;
 }
 
-#include "MusicBrainzFinder.moc"

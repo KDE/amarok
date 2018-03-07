@@ -121,13 +121,13 @@ SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChann
     : Podcasts::PodcastEpisode( Podcasts::PodcastChannelPtr::staticCast( sqlChannel ) )
     , m_channel( sqlChannel )
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
     m_dbId = (*(iter++)).toInt();
-    m_url = KUrl( *(iter++) );
+    m_url = QUrl( *(iter++) );
     int channelId = (*(iter++)).toInt();
     Q_UNUSED( channelId );
-    m_localUrl = KUrl( *(iter++) );
+    m_localUrl = QUrl( *(iter++) );
     m_guid = *(iter++);
     m_title = *(iter++);
     m_subtitle = *(iter++);
@@ -170,7 +170,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( Podcasts::PodcastEpisodePtr episode )
 
     // PodcastEpisode
     m_guid = episode->guid();
-    m_url = KUrl( episode->uidUrl() );
+    m_url = QUrl( episode->uidUrl() );
     m_localUrl = episode->localUrl();
     m_mimeType = episode->mimeType();
     m_pubDate = episode->pubDate();
@@ -213,7 +213,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( PodcastChannelPtr channel, Podcasts::Podca
 
     // PodcastEpisode
     m_guid = episode->guid();
-    m_url = KUrl( episode->uidUrl() );
+    m_url = QUrl( episode->uidUrl() );
     m_localUrl = episode->localUrl();
     m_mimeType = episode->mimeType();
     m_pubDate = episode->pubDate();
@@ -264,7 +264,7 @@ void SqlPodcastEpisode::setKeep( bool isKeep )
 }
 
 void
-SqlPodcastEpisode::setLocalUrl( const KUrl &url )
+SqlPodcastEpisode::setLocalUrl( const QUrl &url )
 {
     m_localUrl = url;
     updateInDb();
@@ -276,7 +276,7 @@ SqlPodcastEpisode::setLocalUrl( const KUrl &url )
     }
     else
     {
-        //if we had a local file previously it should get deleted by the KSharedPtr.
+        //if we had a local file previously it should get deleted by the AmarokSharedPointer.
         m_localFile = new MetaFile::Track( m_localUrl );
         if( m_channel->writeTags() )
             writeTagsToFile();
@@ -437,7 +437,7 @@ SqlPodcastEpisode::writeTagsToFile()
 void
 SqlPodcastEpisode::updateInDb()
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
 
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
@@ -508,7 +508,7 @@ SqlPodcastEpisode::updateInDb()
 void
 SqlPodcastEpisode::deleteFromDb()
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     sqlStorage->query(
         QString( "DELETE FROM podcastepisodes WHERE id = %1;" ).arg( dbId() ) );
 }
@@ -534,16 +534,16 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     , m_trackCacheIsValid( false )
     , m_provider( provider )
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
     m_dbId = (*(iter++)).toInt();
-    m_url = KUrl( *(iter++) );
+    m_url = QUrl( *(iter++) );
     m_title = *(iter++);
-    m_webLink = *(iter++);
-    m_imageUrl = *(iter++);
+    m_webLink = QUrl::fromUserInput(*(iter++));
+    m_imageUrl = QUrl::fromUserInput(*(iter++));
     m_description = *(iter++);
     m_copyright = *(iter++);
-    m_directory = KUrl( *(iter++) );
+    m_directory = QUrl( *(iter++) );
     m_labels = QStringList( QString( *(iter++) ).split( ',', QString::SkipEmptyParts ) );
     m_subscribeDate = QDate::fromString( *(iter++) );
     m_autoScan = sqlStorage->boolTrue() == *(iter++);
@@ -583,8 +583,10 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
 
     //Default Settings
 
-    m_directory = KUrl( m_provider->baseDownloadDir() );
-    m_directory.addPath( Amarok::vfatPath( m_title ) );
+    m_directory = QUrl( m_provider->baseDownloadDir() );
+    m_directory = m_directory.adjusted(QUrl::StripTrailingSlash);
+    m_directory.setPath( QDir::toNativeSeparators(m_directory.path() + '/' + Amarok::vfatPath( m_title )) );
+
     m_autoScan = true;
     m_fetchType = StreamOrDownloadOnDemand;
     m_purge = false;
@@ -638,10 +640,10 @@ SqlPodcastChannel::setGroups( const QStringList &groups )
     m_labels = groups;
 }
 
-KUrl
+QUrl
 SqlPodcastChannel::uidUrl() const
 {
-    return KUrl( QString( "amarok-sqlpodcastuid://%1").arg( m_dbId ) );
+    return QUrl( QString( "amarok-sqlpodcastuid://%1").arg( m_dbId ) );
 }
 
 SqlPodcastChannel::~SqlPodcastChannel()
@@ -655,7 +657,10 @@ SqlPodcastChannel::setTitle( const QString &title )
     /* also change the savelocation if a title is not set yet.
        This is a special condition that can happen when first fetching a podcast feed */
     if( m_title.isEmpty() )
-        m_directory.addPath( Amarok::vfatPath( title ) );
+    {
+        m_directory = m_directory.adjusted(QUrl::StripTrailingSlash);
+        m_directory.setPath( QDir::toNativeSeparators(m_directory.path() + '/' + Amarok::vfatPath( title )) );
+    }
     m_title = title;
 }
 
@@ -674,7 +679,7 @@ SqlPodcastChannel::setImage( const QImage &image )
 }
 
 void
-SqlPodcastChannel::setImageUrl( const KUrl &imageUrl )
+SqlPodcastChannel::setImageUrl( const QUrl &imageUrl )
 {
     DEBUG_BLOCK
     debug() << imageUrl;
@@ -695,17 +700,17 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     if( !m_provider )
         return PodcastEpisodePtr();
 
-    KUrl checkUrl;
+    QUrl checkUrl;
     //searched in the database for guid or enclosure url
     if( !episode->guid().isEmpty() )
-        checkUrl = episode->guid();
+        checkUrl = QUrl::fromUserInput(episode->guid());
     else if( !episode->uidUrl().isEmpty() )
-        checkUrl = episode->uidUrl();
+        checkUrl = QUrl::fromUserInput(episode->uidUrl());
     else
         return PodcastEpisodePtr(); //noting to check for
 
     if( m_provider->possiblyContainsTrack( checkUrl ) )
-        return PodcastEpisodePtr::dynamicCast( m_provider->trackForUrl( episode->guid() ) );
+        return PodcastEpisodePtr::dynamicCast( m_provider->trackForUrl( QUrl::fromUserInput(episode->guid()) ) );
 
     //force episodes load.
     if( !m_episodesLoaded )
@@ -772,7 +777,7 @@ SqlPodcastChannel::applyPurge()
 void
 SqlPodcastChannel::updateInDb()
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
 
     QString boolTrue = sqlStorage->boolTrue();
     QString boolFalse = sqlStorage->boolFalse();
@@ -815,7 +820,7 @@ SqlPodcastChannel::updateInDb()
         stream << "' WHERE id=";
         stream << m_dbId;
         stream << ";";
-        kDebug() << command;
+        debug() << command;
         sqlStorage->query( command );
     }
     else
@@ -840,7 +845,7 @@ SqlPodcastChannel::updateInDb()
         stream << (m_writeTags ? boolTrue : boolFalse) << ", '";
         stream << escape(m_filenameLayout);
         stream << "');";
-        kDebug() << command;
+        debug() << command;
         m_dbId = sqlStorage->insert( command, "podcastchannels" );
     }
 }
@@ -848,7 +853,7 @@ SqlPodcastChannel::updateInDb()
 void
 SqlPodcastChannel::deleteFromDb()
 {
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
     foreach( SqlPodcastEpisodePtr sqlEpisode, m_episodes )
     {
        sqlEpisode->deleteFromDb();
@@ -865,7 +870,7 @@ SqlPodcastChannel::loadEpisodes()
 {
     m_episodes.clear();
 
-    SqlStorage *sqlStorage = StorageManager::instance()->sqlStorage();
+    auto sqlStorage = StorageManager::instance()->sqlStorage();
 
     //If purge is enabled we must limit the number of results
     QString command;

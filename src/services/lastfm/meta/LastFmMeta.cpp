@@ -23,7 +23,7 @@
 #include "services/lastfm/meta/LastFmMultiPlayableCapability.h"
 #include "services/lastfm/meta/LastFmStreamInfoCapability.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QCoreApplication>
 #include <QThread>
@@ -56,7 +56,7 @@ Track::Track( lastfm::Track track )
 
     d->trackFetch = lastfm::ws::post( params );
 
-    connect( d->trackFetch, SIGNAL(finished()), SLOT(slotResultReady()) );
+    connect( d->trackFetch, &QNetworkReply::finished, this, &Track::slotResultReady );
 }
 
 
@@ -77,16 +77,16 @@ void Track::init( int id /* = -1*/ )
     d->composerPtr = Meta::ComposerPtr( new LastFmComposer( d ) );
     d->yearPtr = Meta::YearPtr( new LastFmYear( d ) );
 
-    QAction *banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
+    QAction *banAction = new QAction( QIcon::fromTheme( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
-    connect( banAction, SIGNAL(triggered()), this, SLOT(ban()) );
+    connect( banAction, &QAction::triggered, this, &Track::ban );
     m_trackActions.append( banAction );
 
-    QAction *skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
+    QAction *skipAction = new QAction( QIcon::fromTheme( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
     skipAction->setShortcut( i18n( "Ctrl+S" ) );
     skipAction->setStatusTip( i18n( "Skip this track" ) );
-    connect( skipAction, SIGNAL(triggered()), this, SIGNAL(skipTrack()) );
+    connect( skipAction, &QAction::triggered, this, &Track::skipTrack );
     m_trackActions.append( skipAction );
 
     QThread *mainThread = QCoreApplication::instance()->thread();
@@ -118,16 +118,16 @@ Track::sortableName() const
     return name();
 }
 
-KUrl
+QUrl
 Track::playableUrl() const
 {
-    return d->lastFmUri.toString();
+    return d->lastFmUri;
 }
 
-KUrl
+QUrl
 Track::internalUrl() const
 {
-    return KUrl( d->trackPath );
+    return QUrl( d->trackPath );
 }
 
 QString
@@ -339,9 +339,10 @@ void
 Track::ban()
 {
     DEBUG_BLOCK
+
     d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).ban();
-    connect( d->wsReply, SIGNAL(finished()), this, SLOT(slotWsReply()) );
-    if( The::engineController()->currentTrack() == this )
+    connect( d->wsReply, &QNetworkReply::finished, this, &Track::slotWsReply );
+    if( The::engineController()->currentTrack().data() == this )
         emit skipTrack();
 }
 
@@ -432,7 +433,7 @@ QString LastFm::Track::sourceDescription()
 QPixmap LastFm::Track::emblem()
 {
     if (  !d->track.isEmpty() )
-        return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-lastfm.png" ) );
+        return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-lastfm.png" ) );
     else
         return QPixmap();
 }
@@ -440,10 +441,9 @@ QPixmap LastFm::Track::emblem()
 QString LastFm::Track::scalableEmblem()
 {
     if ( !d->track.isEmpty() )
-        return KStandardDirs::locate( "data", "amarok/images/emblem-lastfm-scalable.svg" );
+        return QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-lastfm-scalable.svg" );
     else
         return QString();
 }
 
-#include "LastFmMeta.moc"
-#include "LastFmMeta_p.moc"
+#include "moc_LastFmMeta_p.cpp"

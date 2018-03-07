@@ -22,7 +22,10 @@
 #include "ServiceSqlRegistry.h"
 #include "core/collections/QueryMaker.h"
 
-#include <threadweaver/Job.h>
+#include <QObject>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/ThreadWeaver>
+#include <ThreadWeaver/Queue>
 
 namespace Collections {
 
@@ -75,8 +78,8 @@ class ServiceSqlQueryMaker : public QueryMaker
         virtual QString escape( QString text ) const;
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
 
-    public slots:
-        void done( ThreadWeaver::Job * job );
+    public Q_SLOTS:
+        void done( ThreadWeaver::JobPointer job );
 
     private:
         template<class PointerType, class ListType>
@@ -102,7 +105,6 @@ class ServiceSqlQueryMaker : public QueryMaker
 
         struct Private;
         Private * const d;
-
 };
 
 } //namespace Collections

@@ -20,10 +20,15 @@
 #include "statsyncing/Options.h"
 #include "statsyncing/Provider.h"
 
-#include <QSharedPointer>
+#include <QDialog>
 #include <QMap>
+#include <QPointer>
 
-class KDialog;
+#include <ThreadWeaver/Queue>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/ThreadWeaver>
+
+class QDialog;
 namespace ThreadWeaver {
     class Job;
 }
@@ -63,7 +68,7 @@ namespace StatSyncing
                      qint64 checkedFields, Mode mode, QObject *parent = 0 );
             virtual ~Process();
 
-        public slots:
+        public Q_SLOTS:
             /**
              * Starts the process.
              */
@@ -75,12 +80,12 @@ namespace StatSyncing
              */
             void raise();
 
-        private slots:
+        private Q_SLOTS:
             void slotMatchTracks();
-            void slotTracksMatched( ThreadWeaver::Job *job );
+            void slotTracksMatched( ThreadWeaver::JobPointer job );
             void slotBack();
             void slotSynchronize();
-            void slotLogSynchronization( ThreadWeaver::Job *job );
+            void slotLogSynchronization( ThreadWeaver::JobPointer job );
             void slotSaveSizeAndDelete();
             void slotDeleteDialog();
 
@@ -95,9 +100,9 @@ namespace StatSyncing
             TrackList m_tracksToScrobble;
 
             // gets deleted when MainWindow is deleted
-            QWeakPointer<KDialog> m_dialog;
-            QWeakPointer<ChooseProvidersPage> m_providersPage;
-            QWeakPointer<MatchedTracksPage> m_tracksPage;
+            QPointer<QDialog> m_dialog;
+            QPointer<ChooseProvidersPage> m_providersPage;
+            QPointer<MatchedTracksPage> m_tracksPage;
     };
 
 } // namespace StatSyncing

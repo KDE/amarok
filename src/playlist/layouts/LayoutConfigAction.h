@@ -18,9 +18,9 @@
 #ifndef LAYOUTCONFIGACTION_H
 #define LAYOUTCONFIGACTION_H
 
-#include <KAction>
-#include <KPushButton>
-#include <KMenu>
+#include <QAction>
+#include <QPushButton>
+#include <QMenu>
 
 class QComboBox;
 
@@ -33,7 +33,7 @@ class PlaylistLayoutEditDialog;
  * playlist layout editor.
  * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
-class LayoutConfigAction : public KAction
+class LayoutConfigAction : public QAction
 {
     Q_OBJECT
 
@@ -49,7 +49,7 @@ class LayoutConfigAction : public KAction
          */
         ~LayoutConfigAction();
 
-    protected slots:
+    protected Q_SLOTS:
 
         /**
          * Set the currently active layout based on the selected action.
@@ -74,9 +74,9 @@ class LayoutConfigAction : public KAction
         void onActiveLayoutChanged();
 
     private:
-        KAction *m_configAction;
+        QAction *m_configAction;
         QActionGroup *m_layoutActions;
-        KMenu *m_layoutMenu;
+        QMenu *m_layoutMenu;
         PlaylistLayoutEditDialog * m_layoutDialog;
 };
 

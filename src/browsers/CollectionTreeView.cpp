@@ -28,8 +28,6 @@
 #include "browsers/CollectionSortFilterProxyModel.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/collections/CollectionLocation.h"
@@ -45,16 +43,15 @@
 #include "playlist/PlaylistModelStack.h"
 #include "scripting/scriptengine/AmarokCollectionViewScript.h"
 
-#include <KAction>
-#include <KGlobalSettings>
-#include <KIcon>
-#include <KComboBox>
-#include <KMenu>
-#include <KMessageBox> // NOTE: for delete dialog, will move to CollectionCapability later
+#include <QAction>
+#include <QIcon>
+#include <QComboBox>
+#include <QMenu>
 
 #include <QContextMenuEvent>
 #include <QHash>
 #include <QMouseEvent>
+#include <QQueue>
 #include <QSortFilterProxyModel>
 #include <QScrollBar>
 
@@ -78,12 +75,14 @@ class DelayedScroller : public QObject
             , m_treeModel( treeModel )
             , m_topOffset( topOffset )
         {
-            connect( treeModel, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
-            connect( treeModel, SIGNAL(allQueriesFinished(bool)), SLOT(slotScroll()) );
+            connect( treeModel, &CollectionTreeItemModelBase::destroyed,
+                     this, &DelayedScroller::deleteLater );
+            connect( treeModel, &CollectionTreeItemModelBase::allQueriesFinished,
+                     this, &DelayedScroller::slotScroll );
 
             m_scrollToItem = m_treeModel->treeItem( treeModelScrollToIndex );
             if( m_scrollToItem )
-                connect( m_scrollToItem, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
+                connect( m_scrollToItem, &CollectionTreeItem::destroyed, this, &DelayedScroller::deleteLater );
             else
                 deleteLater(); // nothing to do
         }
@@ -127,8 +126,8 @@ class AutoExpander : public QObject
             , m_treeView( treeView )
             , m_filterModel( filterModel )
         {
-            connect( filterModel, SIGNAL(destroyed(QObject*)), SLOT(deleteLater()) );
-            connect( treeModel, SIGNAL(allQueriesFinished(bool)), SLOT(slotExpandMore()) );
+            connect( filterModel, &QObject::destroyed, this, &QObject::deleteLater );
+            connect( treeModel, &CollectionTreeItemModelBase::allQueriesFinished, this, &AutoExpander::slotExpandMore );
 
             // start with the root index
             m_indicesToCheck.enqueue( QModelIndex() );
@@ -143,6 +142,9 @@ class AutoExpander : public QObject
             QQueue<QModelIndex> pendingIndices;
             while( !m_indicesToCheck.isEmpty() )
             {
+                if( !m_filterModel )
+                    return;
+
                 QModelIndex current = m_indicesToCheck.dequeue();
 
                 if( m_filterModel->canFetchMore( current ) )
@@ -172,7 +174,7 @@ class AutoExpander : public QObject
         Q_DISABLE_COPY(AutoExpander)
 
         CollectionTreeView *m_treeView;
-        QAbstractItemModel *m_filterModel;
+        QPointer<QAbstractItemModel> m_filterModel;
         QQueue<QModelIndex> m_indicesToCheck;
 };
 
@@ -196,10 +198,10 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 
     setDragDropMode( QAbstractItemView::DragDrop );
 
-    connect( this, SIGNAL(collapsed(QModelIndex)),
-             SLOT(slotCollapsed(QModelIndex)) );
-    connect( this, SIGNAL(expanded(QModelIndex)),
-             SLOT(slotExpanded(QModelIndex)) );
+    connect( this, &CollectionTreeView::collapsed,
+             this, &CollectionTreeView::slotCollapsed );
+    connect( this, &CollectionTreeView::expanded,
+             this, &CollectionTreeView::slotExpanded );
 }
 
 void
@@ -212,9 +214,10 @@ CollectionTreeView::setModel( QAbstractItemModel *model )
     if( !m_treeModel )
         return;
 
-    connect( m_treeModel, SIGNAL(allQueriesFinished(bool)), SLOT(slotCheckAutoExpand(bool)) );
-    connect( m_treeModel, SIGNAL(expandIndex(QModelIndex)),
-             SLOT(slotExpandIndex(QModelIndex)) );
+    connect( m_treeModel, &CollectionTreeItemModelBase::allQueriesFinished,
+             this, &CollectionTreeView::slotCheckAutoExpand );
+    connect( m_treeModel, &CollectionTreeItemModelBase::expandIndex,
+             this, &CollectionTreeView::slotExpandIndex );
 
     if( m_filterModel )
         m_filterModel->deleteLater();
@@ -223,7 +226,7 @@ CollectionTreeView::setModel( QAbstractItemModel *model )
 
     QTreeView::setModel( m_filterModel );
 
-    QTimer::singleShot( 0, this, SLOT(slotCheckAutoExpand()) );
+    QTimer::singleShot( 0, this, &CollectionTreeView::slotCheckAutoExpandReally );
 }
 
 CollectionTreeView::~CollectionTreeView()
@@ -321,11 +324,11 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
                         );
     }
 
-    KMenu menu( this );
+    QMenu menu( this );
 
     // Destroy the menu when the model is reset (collection update), so that we don't
     // operate on invalid data. see BUG 190056
-    connect( m_treeModel, SIGNAL(modelReset()), &menu, SLOT(deleteLater()) );
+    connect( m_treeModel, &CollectionTreeItemModelBase::modelReset, &menu, &QMenu::deleteLater );
 
     // create basic actions
     QActionList actions = createBasicActions( indices );
@@ -336,7 +339,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     actions.clear();
 
     QActionList albumActions = createCustomActions( indices );
-    KMenu menuAlbum( i18n( "Album" )  );
+    QMenu menuAlbum( i18n( "Album" )  );
     foreach( QAction *action, albumActions )
     {
         if( !action->parent() )
@@ -346,7 +349,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     if( albumActions.count() > 1 )
     {
         menuAlbum.addActions( albumActions );
-        menuAlbum.setIcon( KIcon( "filename-album-amarok" ) );
+        menuAlbum.setIcon( QIcon::fromTheme( "filename-album-amarok" ) );
         menu.addMenu( &menuAlbum );
         menu.addSeparator();
     }
@@ -356,7 +359,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     }
 
     QActionList collectionActions = createCollectionActions( indices );
-    KMenu menuCollection( i18n( "Collection" ) );
+    QMenu menuCollection( i18n( "Collection" ) );
     foreach( QAction *action, collectionActions )
     {
         if( !action->parent() )
@@ -365,7 +368,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     if( collectionActions.count() > 1 )
     {
-        menuCollection.setIcon( KIcon( "drive-harddisk" ) );
+        menuCollection.setIcon( QIcon::fromTheme( "drive-harddisk" ) );
         menuCollection.addActions( collectionActions );
         menu.addMenu( &menuCollection );
         menu.addSeparator();
@@ -380,8 +383,8 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     if( !m_currentCopyDestination.empty() )
     {
-        KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), &menu );
-        copyMenu->setIcon( KIcon( "edit-copy" ) );
+        QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), &menu );
+        copyMenu->setIcon( QIcon::fromTheme( "edit-copy" ) );
         copyMenu->addActions( m_currentCopyDestination.keys() );
         menu.addMenu( copyMenu );
     }
@@ -389,8 +392,8 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     //Move = copy + delete from source
     if( !m_currentMoveDestination.empty() )
     {
-        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), &menu );
-        moveMenu->setIcon( KIcon( "go-jump" ) );
+        QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), &menu );
+        moveMenu->setIcon( QIcon::fromTheme( "go-jump" ) );
         moveMenu->addActions( m_currentMoveDestination.keys() );
         menu.addMenu( moveMenu );
     }
@@ -402,25 +405,25 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
         if( collection && collection->isWritable() )
         {
             //TODO: don't recreate action
-            KAction *trashAction = new KAction( KIcon( "user-trash" ),
+            QAction *trashAction = new QAction( QIcon::fromTheme( "user-trash" ),
                                                 i18n( "Move Tracks to Trash" ),
                                                 &menu );
             trashAction->setProperty( "popupdropper_svg_id", "delete" );
             // key shortcut is only for display purposes here, actual one is
             // determined by View in Model/View classes
             trashAction->setShortcut( Qt::Key_Delete );
-            connect( trashAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                     SLOT(slotTrashTracks(Qt::MouseButtons,Qt::KeyboardModifiers)) );
+            connect( trashAction, &QAction::triggered,
+                     this, &CollectionTreeView::slotTrashTracks );
             menu.addAction( trashAction );
 
-            KAction *deleteAction = new KAction( KIcon( "remove-amarok" ),
+            QAction *deleteAction = new QAction( QIcon::fromTheme( "remove-amarok" ),
                                                  i18n( "Delete Tracks" ),
                                                  &menu );
             deleteAction->setProperty( "popupdropper_svg_id", "delete" );
             // key shortcut is only for display purposes here, actual one is
             // determined by View in Model/View classes
             deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
-            connect( deleteAction, SIGNAL(triggered(bool)), SLOT(slotDeleteTracks()) );
+            connect( deleteAction, &QAction::triggered, this, &CollectionTreeView::slotDeleteTracks );
             menu.addAction( deleteAction );
         }
     }
@@ -456,7 +459,7 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
     // mind bug 279513
     bool isExpandable = model()->hasChildren( index );
     bool wouldExpand = !visualRect( index ).contains( event->pos() ) || // clicked outside item, perhaps on expander icon
-                       ( isExpandable && !KGlobalSettings::singleClick() ); // we're in doubleClick
+                       ( isExpandable && !style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) ); // we're in doubleClick
     if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         !wouldExpand )
@@ -475,7 +478,7 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
     if( m_pd )
     {
-        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(deleteLater()) );
+        connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &PopupDropper::deleteLater );
         m_pd->hide();
         m_pd = 0;
     }
@@ -705,7 +708,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
     if( m_pd )
     {
         debug() << "clearing PUD";
-        connect( m_pd, SIGNAL(fadeHideFinished()), m_pd, SLOT(clear()) );
+        connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &PopupDropper::clear );
         m_pd->hide();
     }
 
@@ -800,8 +803,8 @@ CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem *> &items,
     AmarokMimeData *mime = dynamic_cast<AmarokMimeData*>(
                 m_treeModel->mimeData( QList<CollectionTreeItem *>::fromSet( parents ) ) );
     m_playChildTracksMode.insert( mime, insertMode );
-    connect( mime, SIGNAL(trackListSignal(Meta::TrackList)), this,
-             SLOT(playChildTracksSlot(Meta::TrackList)) );
+    connect( mime, &AmarokMimeData::trackListSignal,
+             this, &CollectionTreeView::playChildTracksSlot );
     mime->getTrackListSignal();
 }
 
@@ -1030,13 +1033,13 @@ CollectionTreeView::slotAddFilteredTracksToPlaylist()
         return;
 
     // disconnect any possible earlier connection we've done
-    disconnect( m_treeModel, SIGNAL(allQueriesFinished(bool)),
-                this, SLOT(slotAddFilteredTracksToPlaylist()) );
+    disconnect( m_treeModel, &CollectionTreeItemModelBase::allQueriesFinished,
+                this, &CollectionTreeView::slotAddFilteredTracksToPlaylist );
 
     if( m_treeModel->hasRunningQueries() )
         // wait for the queries to finish
-        connect( m_treeModel, SIGNAL(allQueriesFinished(bool)),
-                 this, SLOT(slotAddFilteredTracksToPlaylist()) );
+        connect( m_treeModel, &CollectionTreeItemModelBase::allQueriesFinished,
+                 this, &CollectionTreeView::slotAddFilteredTracksToPlaylist );
     else
     {
         // yay, we can add the tracks now
@@ -1064,10 +1067,10 @@ CollectionTreeView::createBasicActions( const QModelIndexList &indices )
     {
         if( m_appendAction == 0 )
         {
-            m_appendAction = new QAction( KIcon( "media-track-add-amarok" ),
+            m_appendAction = new QAction( QIcon::fromTheme( "media-track-add-amarok" ),
                                           i18n( "&Add to Playlist" ), this );
             m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-            connect( m_appendAction, SIGNAL(triggered()), this, SLOT(slotAppendChildTracks()) );
+            connect( m_appendAction, &QAction::triggered, this, &CollectionTreeView::slotAppendChildTracks );
         }
 
         actions.append( m_appendAction );
@@ -1078,8 +1081,8 @@ CollectionTreeView::createBasicActions( const QModelIndexList &indices )
                         i18nc( "Replace the currently loaded tracks with these",
                                "&Replace Playlist" ), this );
             m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-            connect( m_loadAction, SIGNAL(triggered()),
-                     this, SLOT(slotReplacePlaylistWithChildTracks()) );
+            connect( m_loadAction, &QAction::triggered,
+                     this, &CollectionTreeView::slotReplacePlaylistWithChildTracks );
         }
 
         actions.append( m_loadAction );
@@ -1124,11 +1127,11 @@ CollectionTreeView::createExtendedActions( const QModelIndexList &indices )
                 {
                     if( m_organizeAction == 0 )
                     {
-                        m_organizeAction = new QAction( KIcon("folder-open" ),
+                        m_organizeAction = new QAction( QIcon::fromTheme("folder-open" ),
                                     i18nc( "Organize Files", "Organize Files" ), this );
                         m_organizeAction->setProperty( "popupdropper_svg_id", "organize" );
-                        connect( m_organizeAction, SIGNAL(triggered()),
-                                 this, SLOT(slotOrganize()) );
+                        connect( m_organizeAction, &QAction::triggered,
+                                 this, &CollectionTreeView::slotOrganize );
                     }
                     actions.append( m_organizeAction );
                 }
@@ -1157,10 +1160,10 @@ CollectionTreeView::createExtendedActions( const QModelIndexList &indices )
 
         if( m_editAction == 0 )
         {
-            m_editAction = new QAction( KIcon( "media-track-edit-amarok" ),
+            m_editAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
                                         i18n( "&Edit Track Details" ), this );
             setProperty( "popupdropper_svg_id", "edit" );
-            connect( m_editAction, SIGNAL(triggered()), this, SLOT(slotEditTracks()) );
+            connect( m_editAction, &QAction::triggered, this, &CollectionTreeView::slotEditTracks );
         }
         actions.append( m_editAction );
     }
@@ -1260,7 +1263,7 @@ CollectionTreeView::getCopyActions( const QModelIndexList &indices )
             {
                 QAction *action = new QAction( coll->icon(), coll->prettyName(), 0 );
                 action->setProperty( "popupdropper_svg_id", "collection" );
-                connect( action, SIGNAL(triggered()), this, SLOT(slotCopyTracks()) );
+                connect( action, &QAction::triggered, this, &CollectionTreeView::slotCopyTracks );
 
                 currentCopyDestination.insert( action, coll );
             }
@@ -1297,7 +1300,7 @@ CollectionTreeView::getMoveActions( const QModelIndexList &indices )
                 {
                     QAction *action = new QAction( coll->icon(), coll->prettyName(), 0 );
                     action->setProperty( "popupdropper_svg_id", "collection" );
-                    connect( action, SIGNAL(triggered()), this, SLOT(slotMoveTracks()) );
+                    connect( action, &QAction::triggered, this, &CollectionTreeView::slotMoveTracks );
                     currentMoveDestination.insert( action, coll );
                 }
             }
@@ -1381,10 +1384,9 @@ CollectionTreeView::slotMoveTracks()
 }
 
 void
-CollectionTreeView::slotTrashTracks( Qt::MouseButtons, Qt::KeyboardModifiers modifiers )
+CollectionTreeView::slotTrashTracks()
 {
-    bool useTrash = !modifiers.testFlag( Qt::ShiftModifier );
-    removeTracks( m_currentItems, useTrash );
+    removeTracks( m_currentItems, true );
 }
 
 void

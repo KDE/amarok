@@ -118,7 +118,7 @@ namespace AmarokScript
         QScriptEngine *m_engine;
         Playlists::PlaylistPtr m_playlist;
 
-    signals:
+    Q_SIGNALS:
         void loaded( Meta::TrackList tracks );
         void addedTrack( Meta::TrackPtr track, int position );
         void removedTrack( int position );

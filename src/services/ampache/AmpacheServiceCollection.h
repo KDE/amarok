@@ -25,13 +25,13 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
 {
     Q_OBJECT
     public:
-        AmpacheTrackForUrlWorker( const KUrl &url, MetaProxy::TrackPtr track,
-                                  const QString &server, const QString &sessionId,
+        AmpacheTrackForUrlWorker( const QUrl &url, MetaProxy::TrackPtr track,
+                                  const QUrl &server, const QString &sessionId,
                                   ServiceBase *service);
         ~AmpacheTrackForUrlWorker();
-        virtual void run();
+        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0);
         void parseTrack( const QString &xml );
-    signals:
+    Q_SIGNALS:
         void authenticationNeeded();
     private:
         MetaProxy::TrackPtr m_proxy;
@@ -43,7 +43,7 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
         Meta::AmpacheAlbum *m_urlAlbum;
         Meta::ServiceArtist *m_urlArtist;
 
-        QString m_server;
+        QUrl m_server;
         QString m_sessionId;
 
         ServiceBase *m_service;
@@ -61,7 +61,7 @@ class AmpacheServiceCollection : public ServiceCollection
     Q_OBJECT
 
 public:
-    AmpacheServiceCollection( ServiceBase *service, const QString &server,
+    AmpacheServiceCollection( ServiceBase *service, const QUrl &server,
                               const QString &sessionId );
 
     virtual ~AmpacheServiceCollection();
@@ -71,18 +71,18 @@ public:
     virtual QString collectionId() const;
     virtual QString prettyName() const;
 
-    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
-    virtual bool possiblyContainsTrack( const KUrl &url ) const;
+    virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+    virtual bool possiblyContainsTrack( const QUrl &url ) const;
 
-signals:
+Q_SIGNALS:
     void authenticationNeeded();
 
-public slots:
+public Q_SLOTS:
     void slotAuthenticationNeeded();
     void slotLookupComplete( const Meta::TrackPtr & );
 
 private:
-    QString m_server;
+    QUrl m_server;
     QString m_sessionId;
 
     AmpacheTrackForUrlWorker *m_trackForUrlWorker;

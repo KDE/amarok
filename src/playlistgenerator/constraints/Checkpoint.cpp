@@ -25,7 +25,7 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <KUrl>
+#include <QUrl>
 
 #include <algorithm>
 #include <climits>
@@ -80,7 +80,7 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
 
     a = xmlelem.attributeNode( "trackurl" );
     if ( !a.isNull() ) {
-        Meta::TrackPtr trk = CollectionManager::instance()->trackForUrl( KUrl( a.value() ) );
+        Meta::TrackPtr trk = CollectionManager::instance()->trackForUrl( QUrl( a.value() ) );
         if ( trk ) {
             if ( m_checkpointType == CheckpointAlbum ) {
                 m_checkpointObject = Meta::DataPtr::dynamicCast( trk->album() );
@@ -119,9 +119,9 @@ QWidget*
 ConstraintTypes::Checkpoint::editWidget() const
 {
     CheckpointEditWidget* e = new CheckpointEditWidget( m_position, static_cast<int>( 10*m_strictness ), m_checkpointObject );
-    connect( e, SIGNAL(positionChanged(int)), this, SLOT(setPosition(int)) );
-    connect( e, SIGNAL(strictnessChanged(int)), this, SLOT(setStrictness(int)) );
-    connect( e, SIGNAL(checkpointChanged(Meta::DataPtr)), this, SLOT(setCheckpoint(Meta::DataPtr)) );
+    connect( e, &CheckpointEditWidget::positionChanged, this, &Checkpoint::setPosition );
+    connect( e, &CheckpointEditWidget::strictnessChanged, this, &Checkpoint::setStrictness );
+    connect( e, &CheckpointEditWidget::checkpointChanged, this, &Checkpoint::setCheckpoint );
     return e;
 }
 
@@ -401,7 +401,7 @@ ConstraintTypes::CheckpointEditWidget::CheckpointEditWidget( const qint64 length
 {
     ui.setupUi( this );
 
-    ui.timeEdit_Position->setTime( QTime().addMSecs( length ) );
+    ui.timeEdit_Position->setTime( QTime(0, 0, 0).addMSecs( length ) );
     ui.slider_Strictness->setValue( strictness );
     ui.trackSelector->setData( data );
 }
@@ -409,7 +409,7 @@ ConstraintTypes::CheckpointEditWidget::CheckpointEditWidget( const qint64 length
 void
 ConstraintTypes::CheckpointEditWidget::on_timeEdit_Position_timeChanged( const QTime& t )
 {
-    emit positionChanged( QTime().msecsTo( t ) );
+    emit positionChanged( QTime(0, 0, 0).msecsTo( t ) );
     emit updated();
 }
 

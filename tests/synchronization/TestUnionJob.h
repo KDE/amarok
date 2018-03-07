@@ -17,7 +17,7 @@
 #ifndef TESTUNIONJOB_H
 #define TESTUNIONJOB_H
 
-#include <QtTest/QTest>
+#include <QTest>
 
 class TestUnionJob : public QObject
 {
@@ -25,7 +25,7 @@ class TestUnionJob : public QObject
 public:
     TestUnionJob();
 
-private slots:
+private Q_SLOTS:
     void init();
 
     void testEmptyA();

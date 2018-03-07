@@ -61,10 +61,10 @@ SqlPlaylist::~SqlPlaylist()
 {
 }
 
-KUrl
+QUrl
 SqlPlaylist::uidUrl() const
 {
-    return KUrl( QString( "amarok-sqlplaylistuid://%1").arg( m_dbId ) );
+    return QUrl( QString( "amarok-sqlplaylistuid://%1").arg( m_dbId ) );
 }
 
 QStringList
@@ -102,7 +102,7 @@ SqlPlaylist::saveToDb( bool tracks )
     if( m_parent )
         parentId = m_parent->id();
 
-    SqlStorage *sql = StorageManager::instance()->sqlStorage();
+    auto sql = StorageManager::instance()->sqlStorage();
 
     //figure out if we have a urlId and if this id is already in the db, if so, update it instead of creating a new one.
     if( !m_urlId.isEmpty() )
@@ -173,7 +173,7 @@ void
 SqlPlaylist::saveTracks()
 {
     int trackNum = 1;
-    SqlStorage *sql = StorageManager::instance()->sqlStorage();
+    auto sql = StorageManager::instance()->sqlStorage();
 
     foreach( Meta::TrackPtr trackPtr, m_tracks )
     {
@@ -263,7 +263,7 @@ SqlPlaylist::loadTracks()
     for( int i = 0; i < resultRows; i++ )
     {
         QStringList row = result.mid( i*7, 7 );
-        KUrl url = KUrl( row[2] );
+        QUrl url = QUrl( row[2] );
 
         MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
 

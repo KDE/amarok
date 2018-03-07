@@ -25,7 +25,7 @@ class SimilarArtistsAction : public GlobalCollectionArtistAction
 public:
     SimilarArtistsAction( QObject *parent );
 
-    private slots:
+    private Q_SLOTS:
         void slotTriggered();
 
 };

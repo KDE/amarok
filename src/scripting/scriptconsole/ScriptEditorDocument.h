@@ -17,10 +17,10 @@
 #ifndef SCRIPT_EDITOR_DOCUMENT_H
 #define SCRIPT_EDITOR_DOCUMENT_H
 
-#include <KSharedPtr>
+#include "AmarokSharedPointer.h"
 
 #include <QObject>
-#include <QWeakPointer>
+#include <QPointer>
 
 namespace KTextEditor
 {
@@ -28,7 +28,7 @@ namespace KTextEditor
     class Document;
     class View;
 }
-class KUrl;
+class QUrl;
 class QColor;
 class QIcon;
 class QWidget;
@@ -45,15 +45,14 @@ namespace ScriptConsoleNS
             QString text() const;
             KTextEditor::View *createView( QWidget *editor = 0 );
             void setText( const QString &text );
-            void save( const KUrl &url );
+            void save( const QUrl &url );
             void save();
             void setReadWrite( bool readWrite );
             static void highlight( KTextEditor::View *view, int line, const QColor &color );
-            static void clearHighlights( KTextEditor::View *view );
 
         private:
             KTextEditor::Document *m_document;
-            static QWeakPointer<AmarokScriptCodeCompletionModel> s_completionModel;
+            static QPointer<AmarokScriptCodeCompletionModel> s_completionModel;
     };
 }
 

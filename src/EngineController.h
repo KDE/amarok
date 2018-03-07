@@ -25,14 +25,14 @@
 #include "core/capabilities/BoundedPlaybackCapability.h"
 #include "core/meta/Observer.h"
 #include "playback/EqualizerController.h"
-
-#include <KUrl>
+#include "core/meta/Meta.h"
 
 #include <QMutex>
 #include <QObject>
+#include <QPointer>
 #include <QSemaphore>
 #include <QStringList>
-#include <QWeakPointer>
+#include <QUrl>
 
 #include <Phonon/Path>
 #include <Phonon/MediaController>
@@ -167,7 +167,7 @@ public:
      */
     QString prettyNowPlaying( bool progress = false ) const;
 
-public slots:
+public Q_SLOTS:
     /**
      * Plays the current track, if there is one
      * This happens asynchronously.
@@ -201,6 +201,14 @@ public slots:
      * @param playingWillContinue don't emit stopped() or trackChanged( 0 ) signals
      */
     void stop( bool forceInstant = false, bool playingWillContinue = false );
+
+    /**
+     * Stops playing
+     * This happens asynchronously.
+     * Doesn't skip any fade-out effects
+     * Emits stopped() and trackChanged( 0 ) signals
+     */
+    void regularStop();
 
     /**
      * Pauses if Amarok is currently playing, plays if Amarok is stopped or paused
@@ -435,7 +443,7 @@ Q_SIGNALS:
      */
     void fillInSupportedMimeTypes();
 
-private slots:
+private Q_SLOTS:
     /**
      * Sets up the Phonon system
      */
@@ -447,7 +455,7 @@ private slots:
     void slotAboutToFinish();
     void slotNewTrackPlaying( const Phonon::MediaSource &source);
     void slotStateChanged( Phonon::State newState, Phonon::State oldState);
-    void slotPlayableUrlFetched( const KUrl &url );
+    void slotPlayableUrlFetched( const QUrl &url );
     void slotTick( qint64 );
     void slotTrackLengthChanged( qint64 );
     void slotMetaDataChanged();
@@ -495,7 +503,7 @@ private:
      * @param offset the position in the media to start at in milliseconds
      * @param startPaused if true, go to paused state. if false, go to playing state (default)
      */
-    void playUrl( const KUrl &url, uint offset, bool startPaused = false );
+    void playUrl( const QUrl &url, uint offset, bool startPaused = false );
 
     /**
      * Try to detect MetaData spam in Streams etc.
@@ -523,21 +531,21 @@ private:
     Q_DISABLE_COPY( EngineController )
 
     EqualizerController                     *m_equalizerController;
-    QWeakPointer<Phonon::MediaObject>       m_media;
-    QWeakPointer<Phonon::VolumeFaderEffect> m_preamp;
-    QWeakPointer<Phonon::AudioOutput>       m_audio;
-    QWeakPointer<Phonon::AudioDataOutput>   m_audioDataOutput;
-    QWeakPointer<Phonon::MediaController>   m_controller;
+    QPointer<Phonon::MediaObject>       m_media;
+    QPointer<Phonon::VolumeFaderEffect> m_preamp;
+    QPointer<Phonon::AudioOutput>       m_audio;
+    QPointer<Phonon::AudioDataOutput>   m_audioDataOutput;
+    QPointer<Phonon::MediaController>   m_controller;
     Phonon::Path                            m_path;
     Phonon::Path                            m_dataPath;
 
-    QWeakPointer<Fadeouter> m_fadeouter;
-    QWeakPointer<Phonon::VolumeFaderEffect> m_fader;
+    QPointer<Fadeouter> m_fadeouter;
+    QPointer<Phonon::VolumeFaderEffect> m_fader;
 
     Meta::TrackPtr  m_currentTrack;
     Meta::AlbumPtr  m_currentAlbum;
     Meta::TrackPtr  m_nextTrack;
-    KUrl            m_nextUrl;
+    QUrl            m_nextUrl;
     Capabilities::BoundedPlaybackCapability* m_boundedPlayback;
     Capabilities::MultiPlayableCapability* m_multiPlayback;
     QScopedPointer<Capabilities::MultiSourceCapability> m_multiSource;

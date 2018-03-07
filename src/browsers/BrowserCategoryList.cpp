@@ -19,7 +19,6 @@
 #include "BrowserCategoryList.h"
 
 #include "App.h"
-#include "context/ContextView.h"
 #include "core/support/Debug.h"
 #include "InfoProxy.h"
 #include "PaletteHandler.h"
@@ -27,13 +26,15 @@
 #include "widgets/PrettyTreeDelegate.h"
 #include "widgets/SearchWidget.h"
 
-#include <QStackedWidget>
-#include <QTreeView>
-
-#include <KComboBox>
-#include <KStandardDirs>
-
+#include <QComboBox>
 #include <QFile>
+#include <QStackedWidget>
+#include <QStandardPaths>
+#include <QTreeView>
+#include <QVBoxLayout>
+
+#include <KLocalizedString>
+
 
 BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, bool sort )
     : BrowserCategory( name, parent )
@@ -52,7 +53,7 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
     m_searchWidget->setClickMessage( i18n( "Filter Music Sources" ) );
     vLayout->addWidget( m_searchWidget );
 
-    connect( m_searchWidget, SIGNAL(filterChanged(QString)), SLOT(setFilter(QString)) );
+    connect( m_searchWidget, &SearchWidget::filterChanged, this, &BrowserCategoryList::setFilter );
 
     // -- the main list view
     m_categoryListView = new Amarok::PrettyTreeView();
@@ -74,11 +75,11 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
         m_categoryListView->sortByColumn( 0 );
     }
 
-    connect( m_categoryListView, SIGNAL(activated(QModelIndex)),
-            SLOT(categoryActivated(QModelIndex)) );
+    connect( m_categoryListView, &Amarok::PrettyTreeView::activated,
+             this, &BrowserCategoryList::categoryActivated );
 
-    connect( m_categoryListView, SIGNAL(entered(QModelIndex)),
-            SLOT(categoryEntered(QModelIndex)) );
+    connect( m_categoryListView, &Amarok::PrettyTreeView::entered,
+             this, &BrowserCategoryList::categoryEntered );
 
     vLayout->addWidget( m_categoryListView );
     m_widgetStack->addWidget( mainWidget );
@@ -148,7 +149,7 @@ BrowserCategoryList::addCategory( BrowserCategory *category )
 
     BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( category );
     if ( childList )
-        connect( childList, SIGNAL(viewChanged()), this, SLOT(childViewChanged()) );
+        connect( childList, &BrowserCategoryList::viewChanged, this, &BrowserCategoryList::childViewChanged );
 
     category->polish(); // service categories do an additional construction in polish
 
@@ -328,24 +329,23 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
         if ( m_infoHtmlTemplate.isEmpty() )
         {
 
-            KUrl dataUrl( KStandardDirs::locate( "data", "amarok/data/" ) );
-            QString dataPath = dataUrl.path();
+            QString dataPath = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/", QStandardPaths::LocateDirectory );
 
             //load html
-            QString htmlPath = dataPath + "hover_info_template.html";
+            QString htmlPath = dataPath + "/hover_info_template.html";
             QFile file( htmlPath );
             if ( !file.open( QIODevice::ReadOnly | QIODevice::Text) )
             {
-                debug() << "error opening file. Error: " << file.error();
+                debug() << "error opening file:" << file.fileName() << "Error: " << file.error();
                 return;
             }
             m_infoHtmlTemplate = file.readAll();
             file.close();
 
-            m_infoHtmlTemplate.replace( "{background_color}",PaletteHandler::highlightColor().lighter( 150 ).name() );
-            m_infoHtmlTemplate.replace( "{border_color}", PaletteHandler::highlightColor().lighter( 150 ).name() );
-            m_infoHtmlTemplate.replace( "{text_color}", App::instance()->palette().brush( QPalette::Text ).color().name() );
-            QColor highlight( App::instance()->palette().highlight().color() );
+            m_infoHtmlTemplate.replace( "{background_color}", The::paletteHandler()->highlightColor().lighter( 150 ).name() );
+            m_infoHtmlTemplate.replace( "{border_color}", The::paletteHandler()->highlightColor().lighter( 150 ).name() );
+            m_infoHtmlTemplate.replace( "{text_color}", pApp->palette().brush( QPalette::Text ).color().name() );
+            QColor highlight( pApp->palette().highlight().color() );
             highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
             m_infoHtmlTemplate.replace( "{header_background_color}", highlight.name() );
 
@@ -418,4 +418,3 @@ void BrowserCategoryList::setFilter( const QString &filter )
     m_proxyModel->setFilterFixedString( filter );
 }
 
-#include "BrowserCategoryList.moc"

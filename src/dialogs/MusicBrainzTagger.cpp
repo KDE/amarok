@@ -32,15 +32,16 @@
 #endif
 #include "ui_MusicBrainzTagger.h"
 
-#include <KIcon>
-
+#include <QIcon>
 #include <QSortFilterProxyModel>
 #include <QToolBar>
 #include <QToolButton>
 
+#include <KWindowConfig>
+
 MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
                                       QWidget *parent )
-    : KDialog( parent )
+    : QDialog( parent )
     , ui( new Ui::MusicBrainzTagger() )
 {
     DEBUG_BLOCK
@@ -49,8 +50,9 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
         if( !track->playableUrl().toLocalFile().isEmpty() )
             m_tracks << track;
     }
-    ui->setupUi( mainWidget() );
-    restoreDialogSize( Amarok::config( "MusicBrainzTagDialog" ) );
+    ui->setupUi( this );
+    KConfigGroup group = Amarok::config( "MusicBrainzTagDialog" );
+    KWindowConfig::restoreWindowSize( windowHandle(), group );
 
     init();
     search();
@@ -59,7 +61,7 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
 MusicBrainzTagger::~MusicBrainzTagger()
 {
     KConfigGroup group = Amarok::config( "MusicBrainzTagDialog" );
-    saveDialogSize( group );
+    group.writeEntry( "geometry", saveGeometry() );
     delete ui;
 }
 
@@ -67,7 +69,6 @@ void
 MusicBrainzTagger::init()
 {
     DEBUG_BLOCK
-    setButtons( KDialog::None );
     setAttribute( Qt::WA_DeleteOnClose );
     setMinimumSize( 550, 300 );
 
@@ -89,32 +90,32 @@ MusicBrainzTagger::init()
         QToolBar *toolBar = new QToolBar( this );
         toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-        QAction *lastAction = toolBar->addAction( KIcon( "tools-wizard" ), i18n( "Choose Best Matches" ), m_resultsModel, SLOT(chooseBestMatches()) );
+        QAction *lastAction = toolBar->addAction( QIcon::fromTheme( "tools-wizard" ), i18n( "Choose Best Matches" ), m_resultsModel, &MusicBrainzTagsModel::chooseBestMatches );
         lastAction->setToolTip( i18n( "Use the top result for each undecided track. Alternatively, you can click on <b>Choose Best Matches from This Album</b> in the context menu of a good suggestion; it may give even better results because it prevents mixing different album releases together." ) );
-        lastAction = toolBar->addAction( KIcon( "edit-clear" ), i18n( "Clear Choices" ), m_resultsModel, SLOT(clearChoices()) );
+        lastAction = toolBar->addAction( QIcon::fromTheme( "edit-clear" ), i18n( "Clear Choices" ), m_resultsModel, &MusicBrainzTagsModel::clearChoices );
         lastAction->setToolTip( i18n( "Clear all choices, even manually made ones." ) );
 
         toolBar->addSeparator();
 
         QToolButton *lastButton = new QToolButton( toolBar );
         lastAction = new QAction( i18n( "Collapse Chosen" ), lastButton );
-        connect( lastAction, SIGNAL(triggered()),
-                 ui->resultsView, SLOT(collapseChosen()) );
+        connect( lastAction, &QAction::triggered,
+                 ui->resultsView, &MusicBrainzTagsView::collapseChosen );
         lastButton->setDefaultAction( lastAction );
         lastAction = new QAction( i18n( "Collapse All" ), lastButton );
-        connect( lastAction, SIGNAL(triggered()),
-                 ui->resultsView, SLOT(collapseAll()) );
+        connect( lastAction, &QAction::triggered,
+                 ui->resultsView, &MusicBrainzTagsView::collapseAll );
         lastButton->addAction( lastAction );
         toolBar->addWidget( lastButton );
 
         lastButton = new QToolButton( toolBar );
         lastAction = new QAction( i18n( "Expand Unchosen" ), lastButton );
-        connect( lastAction, SIGNAL(triggered()),
-                 ui->resultsView, SLOT(expandUnchosen()) );
+        connect( lastAction, &QAction::triggered,
+                 ui->resultsView, &MusicBrainzTagsView::expandUnchosen );
         lastButton->setDefaultAction( lastAction );
         lastAction = new QAction( i18n( "Expand All" ), lastButton );
-        connect( lastAction, SIGNAL(triggered()),
-                 ui->resultsView, SLOT(expandAll()) );
+        connect( lastAction, &QAction::triggered,
+                 ui->resultsView, &MusicBrainzTagsView::expandAll );
         lastButton->addAction( lastAction );
         toolBar->addWidget( lastButton );
 
@@ -126,17 +127,17 @@ MusicBrainzTagger::init()
     mb_finder = new MusicBrainzFinder( this );
 #ifdef HAVE_LIBOFA
     mdns_finder = new MusicDNSFinder( this );
-    connect( mdns_finder, SIGNAL(trackFound(Meta::TrackPtr,QString)),
-             mb_finder, SLOT(lookUpByPUID(Meta::TrackPtr,QString)) );
-    connect( mdns_finder, SIGNAL(progressStep()), SLOT(progressStep()) );
-    connect( mdns_finder, SIGNAL(done()), this, SLOT(mdnsSearchDone()) );
+    connect( mdns_finder, &MusicDNSFinder::trackFound,
+             mb_finder, &MusicBrainzFinder::lookUpByPUID );
+    connect( mdns_finder, &MusicDNSFinder::progressStep, this, &MusicBrainzTagger::progressStep );
+    connect( mdns_finder, &MusicDNSFinder::done, this, &MusicBrainzTagger::mdnsSearchDone );
 #endif
-    connect( mb_finder, SIGNAL(done()), SLOT(searchDone()) );
-    connect( mb_finder, SIGNAL(trackFound(Meta::TrackPtr,QVariantMap)),
-             m_resultsModel, SLOT(addTrack(Meta::TrackPtr,QVariantMap)) );
-    connect( mb_finder, SIGNAL(progressStep()), SLOT(progressStep()) );
-    connect( ui->pushButton_saveAndClose, SIGNAL(clicked(bool)), SLOT(saveAndExit()) );
-    connect( ui->pushButton_cancel, SIGNAL(clicked(bool)), SLOT(reject()) );
+    connect( mb_finder, &MusicBrainzFinder::done, this, &MusicBrainzTagger::searchDone );
+    connect( mb_finder, &MusicBrainzFinder::trackFound,
+             m_resultsModel, &MusicBrainzTagsModel::addTrack );
+    connect( mb_finder, &MusicBrainzFinder::progressStep, this, &MusicBrainzTagger::progressStep );
+    connect( ui->pushButton_saveAndClose, &QAbstractButton::clicked, this, &MusicBrainzTagger::saveAndExit );
+    connect( ui->pushButton_cancel, &QAbstractButton::clicked, this, &MusicBrainzTagger::reject );
 }
 
 void
@@ -197,4 +198,3 @@ MusicBrainzTagger::progressStep()
     ui->progressBar->setValue( ui->progressBar->value() + 1 );
 }
 
-#include "MusicBrainzTagger.moc"

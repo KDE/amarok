@@ -20,10 +20,11 @@
 #include "ActionClasses.h"
 #include "EngineController.h"
 #include "core/support/Amarok.h"
+#include "widgets/BoxWidget.h"
 #include "widgets/SliderWidget.h"
 
-#include <KLocale>
-#include <KVBox>
+#include <KLocalizedString>
+#include <QVBoxLayout>
 
 #include <QAction>
 #include <QLabel>
@@ -39,18 +40,14 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     //create the volume popup
     m_volumeMenu = new QMenu( this );
 
-    KVBox * mainBox = new KVBox( this );
+    BoxWidget * mainBox = new BoxWidget( true, this );
 
     m_volumeLabel= new QLabel( mainBox );
     m_volumeLabel->setAlignment( Qt::AlignHCenter );
 
-    KHBox * sliderBox = new KHBox( mainBox );
+    BoxWidget *sliderBox = new BoxWidget( false, mainBox );
     m_volumeSlider = new Amarok::VolumeSlider( Amarok::VOLUME_MAX, sliderBox, false );
     m_volumeSlider->setFixedHeight( 170 );
-    mainBox->setMargin( 0 );
-    mainBox->setSpacing( 0 );
-    sliderBox->setSpacing( 0 );
-    sliderBox->setMargin( 0 );
     mainBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     sliderBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
@@ -59,17 +56,17 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     QWidgetAction * sliderActionWidget = new QWidgetAction( this );
     sliderActionWidget->setDefaultWidget( mainBox );
 
-    connect( m_volumeSlider, SIGNAL(sliderMoved(int)), ec, SLOT(setVolume(int)) );
-    connect( m_volumeSlider, SIGNAL(sliderReleased(int)), ec, SLOT(setVolume(int)) );
+    connect( m_volumeSlider, &Amarok::VolumeSlider::sliderMoved, ec, &EngineController::setVolume );
+    connect( m_volumeSlider, &Amarok::VolumeSlider::sliderReleased, ec, &EngineController::setVolume );
 
     QToolBar *muteBar = new QToolBar( QString(), mainBox );
     muteBar->setContentsMargins( 0, 0, 0, 0 );
     muteBar->setIconSize( QSize( 16, 16 ) );
-    m_muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), muteBar );
+    m_muteAction = new QAction( QIcon::fromTheme( "audio-volume-muted" ), QString(), muteBar );
     m_muteAction->setCheckable ( true );
     m_muteAction->setChecked( ec->isMuted() );
 
-    connect( m_muteAction, SIGNAL(toggled(bool)), ec, SLOT(setMuted(bool)) );
+    connect( m_muteAction, &QAction::toggled, ec, &EngineController::setMuted );
 
     m_volumeMenu->addAction( sliderActionWidget );
     muteBar->addAction( m_muteAction );
@@ -77,11 +74,11 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     //set correct icon and label initially
     volumeChanged( ec->volume() );
 
-    connect( ec, SIGNAL(volumeChanged(int)),
-             this, SLOT(volumeChanged(int)) );
+    connect( ec, &EngineController::volumeChanged,
+             this, &VolumePopupButton::volumeChanged );
 
-    connect( ec, SIGNAL(muteStateChanged(bool)),
-             this, SLOT(muteStateChanged(bool)) );
+             connect( ec, &EngineController::muteStateChanged,
+             this, &VolumePopupButton::muteStateChanged );
 
 }
 
@@ -89,11 +86,11 @@ void
 VolumePopupButton::volumeChanged( int newVolume )
 {
     if ( newVolume < 34 )
-        setIcon( KIcon( "audio-volume-low" ) );
+        setIcon( QIcon::fromTheme( "audio-volume-low" ) );
     else if ( newVolume < 67 )
-        setIcon( KIcon( "audio-volume-medium" ) );
+        setIcon( QIcon::fromTheme( "audio-volume-medium" ) );
     else
-        setIcon( KIcon( "audio-volume-high" ) );
+        setIcon( QIcon::fromTheme( "audio-volume-high" ) );
 
     m_volumeLabel->setText( QString::number( newVolume ) + '%' );
 
@@ -115,7 +112,7 @@ VolumePopupButton::muteStateChanged( bool muted )
 
     if ( muted )
     {
-        setIcon( KIcon( "audio-volume-muted" ) );
+        setIcon( QIcon::fromTheme( "audio-volume-muted" ) );
         setToolTip( i18n( "Volume: %1% (muted)", volume ) );
     }
     else
@@ -160,4 +157,3 @@ VolumePopupButton::wheelEvent( QWheelEvent * event )
 }
 
 
-#include "VolumePopupButton.moc"

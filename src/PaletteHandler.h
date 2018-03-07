@@ -20,8 +20,9 @@
 #include "amarok_export.h"
 
 #include <QObject>
-#include <QTreeView>
+#include <QPalette>
 
+class QAbstractItemView;
 class PaletteHandler;
 
 namespace The {
@@ -81,7 +82,7 @@ public:
      */
     static QColor alternateBackgroundColor();
 
-signals:
+Q_SIGNALS:
     void newPalette( const QPalette & palette );
 
 private:

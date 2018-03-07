@@ -22,6 +22,8 @@
 #include "MemoryCollection.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
 
+#include <QWeakPointer>
+
 namespace Collections {
 
 class UpnpMemoryQueryMaker : public MemoryQueryMaker
@@ -33,7 +35,7 @@ class UpnpMemoryQueryMaker : public MemoryQueryMaker
 
         virtual void run();
 
-    signals:
+    Q_SIGNALS:
         void startFullScan();
 
     private:

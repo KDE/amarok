@@ -23,8 +23,7 @@
 #include "MemoryQueryMakerInternal.h"
 #include "core/support/Debug.h"
 
-#include <threadweaver/Job.h>
-#include <threadweaver/ThreadWeaver.h>
+#include <ThreadWeaver/Queue>
 
 #include <QList>
 #include <QSet>
@@ -38,11 +37,13 @@ using namespace Collections;
 
 //QueryJob
 
-class QueryJob : public ThreadWeaver::Job
+class QueryJob : public QObject, public ThreadWeaver::Job
 {
+    Q_OBJECT
     public:
         QueryJob( MemoryQueryMakerInternal *qmInternal )
-            : ThreadWeaver::Job()
+            : QObject()
+            , ThreadWeaver::Job()
             , queryMakerInternal( qmInternal )
         {
             //nothing to do
@@ -54,14 +55,41 @@ class QueryJob : public ThreadWeaver::Job
         }
 
     protected:
-        void run()
+        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
         {
+            Q_EMIT started(self);
+            ThreadWeaver::Job::defaultBegin(self, thread);
+        }
+
+        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        {
+            ThreadWeaver::Job::defaultEnd(self, thread);
+            if (!self->success()) {
+                Q_EMIT failed(self);
+            }
+            Q_EMIT done(self);
+        }
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread=0)
+        {
+            Q_UNUSED(self);
+            Q_UNUSED(thread);
             queryMakerInternal->runQuery();
-            setFinished( true );
+//            setFinished( true );
+            setStatus(Status_Success);
         }
 
     public:
         MemoryQueryMakerInternal *queryMakerInternal;
+
+    Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
+
 };
 
 struct MemoryQueryMaker::Private {
@@ -148,18 +176,18 @@ MemoryQueryMaker::run()
         qmi->setOrderByField( d->orderByField );
         qmi->setCollectionId( d->collectionId );
 
-        connect( qmi, SIGNAL(newResultReady(Meta::AlbumList)), SIGNAL(newResultReady(Meta::AlbumList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::ArtistList)), SIGNAL(newResultReady(Meta::ArtistList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::GenreList)), SIGNAL(newResultReady(Meta::GenreList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SIGNAL(newResultReady(Meta::ComposerList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::YearList)), SIGNAL(newResultReady(Meta::YearList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QStringList)), SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(Meta::LabelList)), SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newAlbumsReady, this, &MemoryQueryMaker::newAlbumsReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newArtistsReady, this, &MemoryQueryMaker::newArtistsReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newGenresReady, this, &MemoryQueryMaker::newGenresReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newComposersReady, this, &MemoryQueryMaker::newComposersReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newYearsReady, this, &MemoryQueryMaker::newYearsReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newTracksReady, this, &MemoryQueryMaker::newTracksReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newResultReady, this, &MemoryQueryMaker::newResultReady, Qt::DirectConnection );
+        connect( qmi, &Collections::MemoryQueryMakerInternal::newLabelsReady, this, &MemoryQueryMaker::newLabelsReady, Qt::DirectConnection );
 
         d->job = new QueryJob( qmi );
-        connect( d->job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(done(ThreadWeaver::Job*)) );
-        ThreadWeaver::Weaver::instance()->enqueue( d->job );
+        connect( d->job, &QueryJob::done, this, &MemoryQueryMaker::done );
+        ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(d->job) );
     }
 }
 
@@ -468,10 +496,9 @@ MemoryQueryMaker::endAndOr()
 }
 
 void
-MemoryQueryMaker::done( ThreadWeaver::Job *job )
+MemoryQueryMaker::done( ThreadWeaver::JobPointer job )
 {
-    ThreadWeaver::Weaver::instance()->dequeue( job );
-    job->deleteLater();
+    ThreadWeaver::Queue::instance()->dequeue( job );
     d->job = 0;
     emit queryDone();
 }

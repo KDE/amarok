@@ -27,14 +27,14 @@ class MockTrackForUrlWorker : public TrackForUrlWorker
     Q_OBJECT
 
     public:
-        MockTrackForUrlWorker(const KUrl &url);
+        MockTrackForUrlWorker(const QUrl &url);
         MockTrackForUrlWorker(const QString &url);
 
         /**
          * Mock implementation that fetches the track from QTest data-driven testing
          * variable named track and assigns it to m_track
          */
-        virtual void run();
+        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0);
 };
 
 #endif // MOCKTRACKFORURLWORKER_H

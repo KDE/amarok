@@ -25,7 +25,7 @@
 #include "core/support/Debug.h"
 #include "widgets/PrettyTreeRoles.h"
 
-#include <KIcon>
+#include <QIcon>
 
 #include <QAction>
 
@@ -41,17 +41,17 @@ lessThanPlaylistTitles( const Playlists::PlaylistPtr &lhs, const Playlists::Play
 PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     : m_playlistCategory( playlistCategory )
 {
-    connect( The::playlistManager(), SIGNAL(updated(int)), SLOT(slotUpdate(int)) );
+    connect( The::playlistManager(), &PlaylistManager::updated, this, &PlaylistBrowserModel::slotUpdate );
 
-    connect( The::playlistManager(), SIGNAL(playlistAdded(Playlists::PlaylistPtr,int)),
-             SLOT(slotPlaylistAdded(Playlists::PlaylistPtr,int)) );
-    connect( The::playlistManager(), SIGNAL(playlistRemoved(Playlists::PlaylistPtr,int)),
-             SLOT(slotPlaylistRemoved(Playlists::PlaylistPtr,int)) );
-    connect( The::playlistManager(), SIGNAL(playlistUpdated(Playlists::PlaylistPtr,int)),
-             SLOT(slotPlaylistUpdated(Playlists::PlaylistPtr,int)) );
+    connect( The::playlistManager(), &PlaylistManager::playlistAdded,
+             this, &PlaylistBrowserModel::slotPlaylistAdded );
+    connect( The::playlistManager(), &PlaylistManager::playlistRemoved,
+             this, &PlaylistBrowserModel::slotPlaylistRemoved );
+    connect( The::playlistManager(), &PlaylistManager::playlistUpdated,
+             this, &PlaylistBrowserModel::slotPlaylistUpdated );
 
-    connect( The::playlistManager(), SIGNAL(renamePlaylist(Playlists::PlaylistPtr)),
-             SLOT(slotRenamePlaylist(Playlists::PlaylistPtr)) );
+    connect( The::playlistManager(), &PlaylistManager::renamePlaylist,
+             this, &PlaylistBrowserModel::slotRenamePlaylist );
 
     m_playlists = loadPlaylists();
 }
@@ -63,7 +63,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
     Playlists::PlaylistPtr playlist = m_playlists.value( row );
 
     QString name;
-    KIcon icon;
+    QIcon icon;
     int playlistCount = 0;
     QList<QAction *> providerActions;
     QList<Playlists::PlaylistProvider *> providers =
@@ -79,12 +79,12 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             {
                 track = playlist->tracks()[index.row()];
                 name = track->prettyName();
-                icon = KIcon( "amarok_track" );
+                icon = QIcon::fromTheme( "amarok_track" );
             }
             else
             {
                 name = playlist->prettyName();
-                icon = KIcon( "amarok_playlist" );
+                icon = QIcon::fromTheme( "amarok_playlist" );
             }
             break;
         }
@@ -93,7 +93,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             if( !playlist->groups().isEmpty() )
             {
                 name = playlist->groups().first();
-                icon = KIcon( "folder" );
+                icon = QIcon::fromTheme( "folder" );
             }
             break;
         }

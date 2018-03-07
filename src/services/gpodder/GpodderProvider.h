@@ -23,13 +23,13 @@
 #include "core/podcasts/PodcastProvider.h"
 #include "core/podcasts/PodcastReader.h"
 #include "GpodderPodcastMeta.h"
-#include <mygpo-qt/ApiRequest.h>
-#include <mygpo-qt/EpisodeActionList.h>
+#include <mygpo-qt5/ApiRequest.h>
+#include <mygpo-qt5/EpisodeActionList.h>
 #include "playlistmanager/file/KConfigSyncRelStore.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KDialog>
-#include <KLocale>
+#include <QDialog>
+#include <KIO/Job>
 
 #include <QCheckBox>
 #include <QPair>
@@ -49,19 +49,19 @@ public:
     ~GpodderProvider();
 
     //TrackProvider methods
-    bool possiblyContainsTrack( const KUrl &url ) const;
-    Meta::TrackPtr trackForUrl( const KUrl &url );
+    bool possiblyContainsTrack( const QUrl &url ) const;
+    Meta::TrackPtr trackForUrl( const QUrl &url );
 
     //PodcastProvider methods
     /** Special function to get an episode for a given guid.
      *
-     * note: this functions is required because KUrl does not preserve every possible guids.
+     * note: this functions is required because QUrl does not preserve every possible guids.
      * This means we can not use trackForUrl().
      * Problematic guids contain non-latin characters, percent encoded parts, capitals, etc.
      */
     virtual PodcastEpisodePtr episodeForGuid( const QString &guid );
 
-    virtual void addPodcast( const KUrl &url );
+    virtual void addPodcast( const QUrl &url );
 
     virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
     virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
@@ -70,7 +70,7 @@ public:
 
     // PlaylistProvider methods
     virtual QString prettyName() const;
-    virtual KIcon icon() const;
+    virtual QIcon icon() const;
     virtual Playlists::PlaylistList playlists();
     virtual void completePodcastDownloads();
 
@@ -79,7 +79,7 @@ public:
     virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
     virtual QActionList playlistActions( const Playlists::PlaylistList &playlists );
 
-private slots:
+private Q_SLOTS:
     void requestDeviceUpdates();
     void deviceUpdatesFinished();
     void continueDeviceUpdatesFinished();
@@ -110,8 +110,8 @@ private slots:
     void slotTrackPositionChanged( qint64 position, bool userSeek );
 
     void requestUrlResolve( GpodderPodcastChannelPtr channel );
-    void urlResolvePermanentRedirection ( KIO::Job *job, const KUrl &fromUrl,
-            const KUrl &toUrl );
+    void urlResolvePermanentRedirection ( KIO::Job *job, const QUrl &fromUrl,
+            const QUrl &toUrl );
     void urlResolveFinished( KJob * );
 
     void slotEpisodeDownloaded( Podcasts::PodcastEpisodePtr episode );
@@ -159,9 +159,9 @@ private:
     QList<QUrl> m_addList;
     QList<QUrl> m_removeList;
 
-    KUrl resolvedPodcastUrl( const PodcastEpisodePtr episode );
+    QUrl resolvedPodcastUrl( const PodcastEpisodePtr episode );
 
-    QMap<KUrl,KUrl> m_redirectionUrlMap;
+    QMap<QUrl,QUrl> m_redirectionUrlMap;
     QQueue<QUrl> m_channelsToRequestActions;
     QMap<KIO::TransferJob *,GpodderPodcastChannelPtr> m_resolvedPodcasts;
     //Used as a temporary container for podcasts with already urls resolved

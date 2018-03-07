@@ -21,7 +21,7 @@
 
 #include "content.h"
 
-#include <QtCore/QDateTime>
+#include <QDateTime>
 
 
 using namespace AmarokAttica;

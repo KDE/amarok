@@ -20,13 +20,14 @@
 #include "core/meta/Meta.h"
 #include "widgets/PixmapViewer.h"
 
-#include <KApplication>
-#include <KDialog>
+#include <QApplication>
+#include <QDialog>
 #include <KLocalizedString>
 #include <KWindowSystem>
 
 #include <QDesktopWidget>
 #include <QHBoxLayout>
+#include <KConfigGroup>
 
 CoverViewDialog::CoverViewDialog( Meta::AlbumPtr album, QWidget *parent )
     : QDialog( parent )
@@ -58,7 +59,7 @@ CoverViewDialog::updateCaption()
     QString zoom    = QString::number( m_zoom );
     QString size    = QString( "%1x%2" ).arg( width, height );
     QString caption = QString( "%1 - %2 - %3\%" ).arg( m_title, size, zoom );
-    setWindowTitle( KDialog::makeStandardCaption( caption ) );
+    setWindowTitle( caption );
 }
 
 void
@@ -71,13 +72,13 @@ CoverViewDialog::zoomFactorChanged( qreal value )
 void
 CoverViewDialog::createViewer( const QImage &image, const QWidget *widget )
 {
-    int screenNumber = KApplication::desktop()->screenNumber( widget );
+    int screenNumber = QApplication::desktop()->screenNumber( widget );
     PixmapViewer *pixmapViewer = new PixmapViewer( this, QPixmap::fromImage(image), screenNumber );
     QHBoxLayout *layout = new QHBoxLayout( this );
     layout->addWidget( pixmapViewer );
     layout->setSizeConstraint( QLayout::SetFixedSize );
     layout->setContentsMargins( 0, 0, 0, 0 );
-    connect( pixmapViewer, SIGNAL(zoomFactorChanged(qreal)), SLOT(zoomFactorChanged(qreal)) );
+    connect( pixmapViewer, &PixmapViewer::zoomFactorChanged, this, &CoverViewDialog::zoomFactorChanged );
 
     qreal zoom = pixmapViewer->zoomFactor();
     zoomFactorChanged( zoom );
@@ -88,4 +89,3 @@ CoverViewDialog::createViewer( const QImage &image, const QWidget *widget )
     raise();
 }
 
-#include "CoverViewDialog.moc"

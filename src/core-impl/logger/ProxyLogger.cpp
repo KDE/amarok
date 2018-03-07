@@ -29,11 +29,11 @@ ProxyLogger::ProxyLogger()
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
 
     m_timer = new QTimer( this );
-    connect( m_timer, SIGNAL(timeout()), this, SLOT(forwardNotifications()) );
+    connect( m_timer, &QTimer::timeout, this, &ProxyLogger::forwardNotifications );
     m_timer->setSingleShot( true );
     m_timer->setInterval( 0 );
 
-    connect( this, SIGNAL(startTimer()), SLOT(slotStartTimer()) );
+    connect( this, &ProxyLogger::startTimer, this, &ProxyLogger::slotStartTimer );
 }
 
 ProxyLogger::~ProxyLogger()
@@ -184,4 +184,3 @@ ProxyLogger::slotTotalSteps( int totalSteps )
     // warning, operation not found in m_progressQueue
 }
 
-#include "ProxyLogger.moc"

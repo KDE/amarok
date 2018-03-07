@@ -23,10 +23,10 @@
 #include "MetaValues.h"
 
 #include <QMap>
+#include <QTest>
 
-#include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestTagGuesser )
+QTEST_GUILESS_MAIN( TestTagGuesser )
 
 TestTagGuesser::TestTagGuesser()
 {
@@ -48,7 +48,7 @@ void TestTagGuesser::testStandard()
   mTagGuesser->setFilename( "01 - Artist - Title.mp3" );
   mTagGuesser->setSchema( "%track% - %artist% - %title%.%ignore%" );
   QVERIFY( mTagGuesser->guess() );
-  
+
   QMap<qint64,QString> tags = mTagGuesser->tags();
   QCOMPARE( tags[Meta::valArtist], QString( "Artist" ) );
   QCOMPARE( tags[Meta::valTitle], QString( "Title" ) );
@@ -62,7 +62,7 @@ void TestTagGuesser::testDotInFilename()
   mTagGuesser->setFilename( "03.Moloko - Sing It back.mp3" );
   mTagGuesser->setSchema( "%track%.%artist% - %title%.%ignore%" );
   QVERIFY( mTagGuesser->guess() );
-  
+
   QMap<qint64,QString> tags = mTagGuesser->tags();
   QCOMPARE( tags[Meta::valArtist], QString( "Moloko" ) );
   QCOMPARE( tags[Meta::valTitle], QString( "Sing It back" ) );

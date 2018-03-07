@@ -26,7 +26,7 @@
 #include <QtGlobal>
 #include <QSharedPointer>
 
-#include <KIcon>
+#include <QIcon>
 #include <KDirNotify>
 
 namespace KIO {
@@ -51,13 +51,13 @@ class UpnpSearchCollection : public UpnpCollectionBase
     virtual ~UpnpSearchCollection();
     virtual QueryMaker* queryMaker();
 
-    virtual KIcon icon() const { return KIcon("network-server"); }
+    virtual QIcon icon() const { return QIcon::fromTheme("network-server"); }
 
-    Meta::TrackPtr trackForUrl( const KUrl &url );
+    Meta::TrackPtr trackForUrl( const QUrl &url );
 
     UpnpCache* cache() { return m_cache; }
     QStringList searchCapabilities() { return m_searchCapabilities; }
-  private slots:
+  private Q_SLOTS:
     void slotFilesChanged(const QStringList &);
 
   private:

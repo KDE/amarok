@@ -31,15 +31,16 @@
 #include "MediaDeviceHandler.h"
 
 #include <KIO/Job>
-#include <KTempDir>
-#include <KTemporaryFile>
-#include <threadweaver/Job.h>
+#include <ThreadWeaver/Job>
+#include <ThreadWeaver/Queue>
 
 #include <QObject>
 #include <QMap>
 #include <QMultiMap>
 #include <QMutex>
 #include <QSet>
+#include <QTemporaryDir>
+#include <QTemporaryFile>
 
 
 class QString;
@@ -144,7 +145,7 @@ class MtpHandler : public MediaDeviceHandler
         virtual QDateTime libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
-        virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
+        virtual QUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
 
         virtual float usedCapacity() const;
         virtual float totalCapacity() const;
@@ -174,9 +175,9 @@ class MtpHandler : public MediaDeviceHandler
         virtual void prepareToDelete() {}
 
         /// libmtp-specific
-    private slots:
-        void slotDeviceMatchSucceeded( ThreadWeaver::Job* job );
-        void slotDeviceMatchFailed( ThreadWeaver::Job* job );
+    private Q_SLOTS:
+        void slotDeviceMatchSucceeded( ThreadWeaver::JobPointer job );
+        void slotDeviceMatchFailed( ThreadWeaver::JobPointer job );
 
     private:
         bool iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices );
@@ -237,7 +238,7 @@ class MtpHandler : public MediaDeviceHandler
 
         // Keeps track of which tracks have been copied/cached for playing
 
-        QHash<Meta::MediaDeviceTrackPtr, KTemporaryFile*> m_cachedTracks;
+        QHash<Meta::MediaDeviceTrackPtr, QTemporaryFile*> m_cachedTracks;
 
         // Maps id's to tracks
 
@@ -249,10 +250,10 @@ class MtpHandler : public MediaDeviceHandler
 
         // Used as temporary location for copying files from mtp
 
-        KTempDir *m_tempDir;
+        QTemporaryDir *m_tempDir;
 };
 
-class WorkerThread : public ThreadWeaver::Job
+class WorkerThread : public QObject, public ThreadWeaver::Job
 {
         Q_OBJECT
 
@@ -260,10 +261,21 @@ class WorkerThread : public ThreadWeaver::Job
         WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, MtpHandler* handler );
         virtual ~WorkerThread();
 
-        virtual bool success() const;
+        virtual bool success() const Q_DECL_OVERRIDE;
 
     protected:
-        virtual void run();
+        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+
+    Q_SIGNALS:
+        /** This signal is emitted when this job is being processed by a thread. */
+        void started(ThreadWeaver::JobPointer);
+        /** This signal is emitted when the job has been finished (no matter if it succeeded or not). */
+        void done(ThreadWeaver::JobPointer);
+        /** This job has failed.
+         * This signal is emitted when success() returns false after the job is executed. */
+        void failed(ThreadWeaver::JobPointer);
 
     private:
         bool m_success;

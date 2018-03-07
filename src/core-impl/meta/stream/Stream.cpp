@@ -28,7 +28,7 @@
 
 using namespace MetaStream;
 
-Track::Track( const KUrl &url )
+Track::Track( const QUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
@@ -53,7 +53,7 @@ Track::name() const
     return d->title;
 }
 
-KUrl
+QUrl
 Track::playableUrl() const
 {
     return d->url;
@@ -62,7 +62,7 @@ Track::playableUrl() const
 QString
 Track::prettyUrl() const
 {
-    return playableUrl().prettyUrl();
+    return playableUrl().toDisplayString();
 }
 
 QString
@@ -189,5 +189,3 @@ Track::setInitialInfo( const QString &artist, const QString &album, const QStrin
     if( d->trackNumber == 0 )
         d->trackNumber = trackNumber;
 }
-
-#include "Stream_p.moc"

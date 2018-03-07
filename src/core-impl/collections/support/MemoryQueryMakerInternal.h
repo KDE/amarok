@@ -47,9 +47,6 @@ public:
       * Creates a new MemoryQueryMakerInternal that will query collection.
       * This class will run in a dedicated thread. It exists so the actual MemoryQueryMaker
       * can be safely deleted in the original thread while the query is still running.
-      * @param guard a class that will be deleted before collection. It is used to
-      * ensure that MemoryQueryMakerInternal does not access a dangling MemoryCollection
-      * pointer.
       * @param collection the MemoryCollection instance that the query should be run on.
       */
     MemoryQueryMakerInternal( const QWeakPointer<Collections::MemoryCollection> &collection );
@@ -74,24 +71,19 @@ public:
     void setCollectionId( const QString &collectionId ) { m_collectionId = collectionId; }
     void setLabelQueryMode( Collections::QueryMaker::LabelQueryMode mode ) { m_labelQueryMode = mode; }
 
-signals:
-    void newResultReady( Meta::TrackList );
-    void newResultReady( Meta::ArtistList );
-    void newResultReady( Meta::AlbumList );
-    void newResultReady( Meta::GenreList );
-    void newResultReady( Meta::ComposerList );
-    void newResultReady( Meta::YearList );
+Q_SIGNALS:
+    void newTracksReady( Meta::TrackList );
+    void newArtistsReady( Meta::ArtistList );
+    void newAlbumsReady( Meta::AlbumList );
+    void newGenresReady( Meta::GenreList );
+    void newComposersReady( Meta::ComposerList );
+    void newYearsReady( Meta::YearList );
     void newResultReady( QStringList );
-    void newResultReady( Meta::LabelList );
-    void newResultReady( Meta::DataList );
-
-private:
-    template <class PointerType>
-    void emitProperResult( const QList<PointerType > &list );
+    void newLabelsReady( Meta::LabelList );
+    void newDataReady( Meta::DataList );
 
 private:
     QWeakPointer<Collections::MemoryCollection> m_collection;
-    QWeakPointer<QObject> m_guard;
     MemoryMatcher *m_matchers;
     MemoryFilter *m_filters;
     int m_maxSize;

@@ -40,7 +40,7 @@ class ATTICA_EXPORT ProviderInitJob : public KJob
 
         Provider provider() const;
 
-    private slots:
+    private Q_SLOTS:
         void doWork();
 
     private:

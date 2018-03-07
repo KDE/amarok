@@ -50,7 +50,7 @@ public:
 protected:
     bool sourceRequestEvent( const QString& name );
     
-private slots:
+private Q_SLOTS:
     void datesResult( KJob* );
     void ontourResult( KJob* );
 

@@ -24,7 +24,7 @@
 #include "widgets/EditDeleteComboBoxView.h"
 #include "MainWindow.h"
 
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 #include <QLabel>
 #include <QComboBox>
@@ -34,15 +34,15 @@ namespace Playlist
 {
 
 LayoutConfigAction::LayoutConfigAction( QWidget * parent )
-    : KAction( parent )
+    : QAction( parent )
     , m_layoutDialog( 0 )
 {
-    KIcon actionIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-layouts-22.png") ) );    //TEMPORARY ICON
+    QIcon actionIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/playlist-layouts-22.png") ) );    //TEMPORARY ICON
     setIcon( actionIcon );
-    m_layoutMenu = new KMenu( parent );
+    m_layoutMenu = new QMenu( parent );
     setMenu( m_layoutMenu );
     setText( i18n( "Playlist Layouts" ) );
-    m_configAction = new KAction( m_layoutMenu );
+    m_configAction = new QAction( m_layoutMenu );
     
     m_layoutMenu->addAction( m_configAction );
     m_layoutMenu->addSeparator();
@@ -60,16 +60,16 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
                         //this should be fixed by itself when layouts ordering will be supported in the LayoutManager
     m_layoutActions->actions()[ index ]->setChecked( true );
 
-    connect( m_layoutActions, SIGNAL(triggered(QAction*)), this, SLOT(setActiveLayout(QAction*)) );
+    connect( m_layoutActions,&QActionGroup::triggered, this, &LayoutConfigAction::setActiveLayout );
 
-    connect( LayoutManager::instance(), SIGNAL(layoutListChanged()), this, SLOT(layoutListChanged()) );
-    connect( LayoutManager::instance(), SIGNAL(activeLayoutChanged()), this, SLOT(onActiveLayoutChanged()) );
+    connect( LayoutManager::instance(), &LayoutManager::layoutListChanged, this, &LayoutConfigAction::layoutListChanged );
+    connect( LayoutManager::instance(), &LayoutManager::activeLayoutChanged, this, &LayoutConfigAction::onActiveLayoutChanged );
 
-    const KIcon configIcon( "configure" );
+    const QIcon configIcon( "configure" );
     m_configAction->setIcon( configIcon );
     m_configAction->setText( i18n( "Configure Playlist Layouts..." ) );
 
-    connect( m_configAction, SIGNAL(triggered()), this, SLOT(configureLayouts()) );
+    connect( m_configAction, &QAction::triggered, this, &LayoutConfigAction::configureLayouts );
 }
 
 
@@ -89,7 +89,7 @@ void LayoutConfigAction::configureLayouts()
         m_layoutDialog = new PlaylistLayoutEditDialog( The::mainWindow() );
 
     m_layoutDialog->setModal( false );
-    connect( m_layoutDialog, SIGNAL(accepted()), this, SLOT(layoutListChanged()) );
+    connect( m_layoutDialog, &Playlist::PlaylistLayoutEditDialog::accepted, this, &LayoutConfigAction::layoutListChanged );
 
     m_layoutDialog->show();
 }
@@ -130,4 +130,3 @@ void LayoutConfigAction::onActiveLayoutChanged()
 
 }
 
-#include "LayoutConfigAction.moc"
