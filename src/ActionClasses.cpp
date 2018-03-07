@@ -239,7 +239,7 @@ void ToggleAction::setChecked( bool b )
 
     m_function( b );
     KToggleAction::setChecked( b );
-    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->save(); //So we don't lose the setting when crashing
     if( announce ) emit toggled( b ); //KToggleAction doesn't do this for us. How gay!
 }
 
@@ -248,7 +248,7 @@ void ToggleAction::setEnabled( bool b )
     const bool announce = b != isEnabled();
 
     KToggleAction::setEnabled( b );
-    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->save(); //So we don't lose the setting when crashing
     if( announce ) emit QAction::triggered( b );
 }
 
@@ -273,14 +273,14 @@ void SelectAction::setCurrentItem( int n )
 
     m_function( n );
     KSelectAction::setCurrentItem( n );
-    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->save(); //So we don't lose the setting when crashing
     if( announce ) emit triggered( n );
 }
 
 void SelectAction::actionTriggered( QAction *a )
 {
     m_function( currentItem() );
-    AmarokConfig::self()->writeConfig();
+    AmarokConfig::self()->save();
     KSelectAction::actionTriggered( a );
 }
 
@@ -289,7 +289,7 @@ void SelectAction::setEnabled( bool b )
     const bool announce = b != isEnabled();
 
     KSelectAction::setEnabled( b );
-    AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
+    AmarokConfig::self()->save(); //So we don't lose the setting when crashing
     if( announce ) emit QAction::triggered( b );
 }
 
@@ -362,7 +362,7 @@ BurnMenuAction::createWidget( QWidget *w )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
-    if( bar && KAuthorized::authorizeKAction( objectName() ) )
+    if( bar && KAuthorized::authorizeAction( objectName() ) )
     {
         //const int id = QAction::getToolButtonID();
 

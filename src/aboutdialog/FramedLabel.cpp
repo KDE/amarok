@@ -38,10 +38,10 @@ FramedLabel::paintEvent( QPaintEvent *event )
     if( frameShape() == QFrame::StyledPanel )
     {
         QPainter painter( this );
-        QStyleOptionViewItemV4 option;
+        QStyleOptionViewItem option;
         option.initFrom( this );
         option.state = QStyle::State_Enabled | QStyle::State_MouseOver;
-        option.viewItemPosition = QStyleOptionViewItemV4::OnlyOne;
+        option.viewItemPosition = QStyleOptionViewItem::OnlyOne;
         style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, &painter, this );
     }
     QRect cr = contentsRect();

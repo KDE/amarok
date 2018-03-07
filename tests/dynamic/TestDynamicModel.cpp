@@ -324,9 +324,8 @@ TestDynamicModel::testDnD()
 
     // -- copy a bias
     // TODO
-    QModelIndex biasIndex = model->index( 0, 0, playlistIndex );
-    QModelIndex subBiasIndex = model->index( 0, 0, biasIndex );
-
+//     QModelIndex biasIndex = model->index( 0, 0, playlistIndex );
+//     QModelIndex subBiasIndex = model->index( 0, 0, biasIndex );
 }
 
 void

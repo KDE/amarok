@@ -108,9 +108,9 @@ AmarokScriptCodeCompletionModel::shouldAbortCompletion( KTextEditor::View *view,
 }
 
 void
-AmarokScriptCodeCompletionModel::executeCompletionItem( KTextEditor::Document *document, const KTextEditor::Range &range, int row ) const
+AmarokScriptCodeCompletionModel::executeCompletionItem( KTextEditor::View *view, const KTextEditor::Range &range, const QModelIndex &index ) const
 {
-    document->replaceText( range, m_completionList.at( row ) );
+    view->document()->replaceText( range, m_completionList.at( index.row() ) );
 }
 
 AmarokScriptCodeCompletionModel::~AmarokScriptCodeCompletionModel()

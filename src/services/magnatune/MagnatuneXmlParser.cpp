@@ -21,7 +21,7 @@
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
 
-#include <KFilterDev>
+#include <KCompressionDevice>
 #include <KLocalizedString>
 
 #include <QDomDocument>
@@ -103,27 +103,26 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
         return;
     }
 
-    QIODevice *file = KFilterDev::deviceForFile( filename, "application/x-bzip2", true );
-    if ( !file || !file->open( QIODevice::ReadOnly ) ) {
+    QFile file( filename );
+    auto device = new KCompressionDevice( &file, true, KCompressionDevice::BZip2 );
+    if ( !device || !device->open( QIODevice::ReadOnly ) ) {
         debug() << "MagnatuneXmlParser::readConfigFile error reading file";
         return ;
     }
-    if ( !doc.setContent( file ) )
+    if ( !doc.setContent( device ) )
     {
         debug() << "MagnatuneXmlParser::readConfigFile error parsing file";
-        file->close();
+        device->close();
         return ;
     }
-    file->close();
-    delete file;
-
+    device->close();
+    delete device;
 
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
 
     //run through all the elements
     QDomElement docElem = doc.documentElement();
-
 
     m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
     parseElement( docElem );

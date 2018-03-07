@@ -23,7 +23,7 @@
 #include <QBuffer>
 #include <QFile>
 
-#include <KFilterDev>
+#include <KCompressionDevice>
 
 SvgTinter * SvgTinter::s_instance = 0;
 
@@ -54,7 +54,7 @@ SvgTinter::tint( const QString &filename)
     if (!svg_source.startsWith("<?xml"))
     {
         QBuffer buf( &svg_source );
-        QIODevice *flt = KFilterDev::device( &buf, QString::fromLatin1("application/x-gzip"), false );
+        QIODevice *flt = new KCompressionDevice( &buf, false, KCompressionDevice::GZip );
         if (!flt)
             return QByteArray();
         if (!flt->open(QIODevice::ReadOnly))

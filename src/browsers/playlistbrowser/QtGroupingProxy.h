@@ -112,7 +112,7 @@ class QtGroupingProxy : public QAbstractProxyModel
         */
         struct ParentCreate
         {
-            int parentCreateIndex;
+            quintptr parentCreateIndex;
             int row;
         };
         mutable QList<struct ParentCreate> m_parentCreateList;

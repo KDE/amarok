@@ -80,7 +80,7 @@ bool
 KNotificationBackend::isFullscreenWindowActive() const
 {
     // Get information of the active window.
-    KWindowInfo activeWindowInfo = KWindowSystem::windowInfo( KWindowSystem::activeWindow(), NET::WMState );
+    KWindowInfo activeWindowInfo( KWindowSystem::activeWindow(), NET::WMState );
 
     // Check if it is running in fullscreen mode.
     return activeWindowInfo.hasState( NET::FullScreen );

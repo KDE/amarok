@@ -37,7 +37,7 @@ namespace ScriptConsoleNS
         private:
             QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
             void completionInvoked( KTextEditor::View *view, const KTextEditor::Range &range, InvocationType invocationType );
-            void executeCompletionItem( KTextEditor::Document *document, const KTextEditor::Range &range, int row ) const;
+            void executeCompletionItem( KTextEditor::View *view, const KTextEditor::Range &range, const QModelIndex &index ) const;
             KTextEditor::Range completionRange( KTextEditor::View *view, const KTextEditor::Cursor &position );
             bool shouldAbortCompletion( KTextEditor::View *view, const KTextEditor::Range &range, const QString &currentCompletion );
 

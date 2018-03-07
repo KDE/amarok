@@ -124,7 +124,7 @@ void
 OcsPersonItem::launchUrl( QAction *action ) //SLOT
 {
     QUrl url = QUrl( action->data().toString() );
-    KRun::runUrl( url, "text/html", 0, false );
+    KRun::runUrl( url, "text/html", nullptr, KRun::RunExecutables, QString() );
 }
 
 void

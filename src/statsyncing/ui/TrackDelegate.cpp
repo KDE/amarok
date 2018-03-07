@@ -47,7 +47,7 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
         data.type() == QVariant::Int )
     {
         // following is largely inspired by QStyledItemDelegate::paint()
-        QStyleOptionViewItemV4 opt = option;
+        QStyleOptionViewItem opt = option;
         initStyleOption( &opt, index );
 
         QPixmap starsPixmap( CommonModel::s_ratingSize );
@@ -69,7 +69,7 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
         }
 
         opt.text.clear();
-        opt.features |= QStyleOptionViewItemV2::HasDecoration;
+        opt.features |= QStyleOptionViewItem::HasDecoration;
         opt.decorationSize = CommonModel::s_ratingSize;
         opt.decorationAlignment = Qt::AlignRight | Qt::AlignVCenter;
         opt.decorationPosition = QStyleOptionViewItem::Right;
