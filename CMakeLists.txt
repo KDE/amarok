@@ -235,6 +235,8 @@ if( WITH_PLAYER )
     find_package(PythonInterp)
     set_package_properties( PYTHON PROPERTIES DESCRIPTION "Required for generating the autocompletion file for the script console" URL "https://www.python.org" TYPE OPTIONAL )
 
+    find_package(FFTW3 REQUIRED)
+
     if( BUILD_TESTING AND NOT WIN32 )
         enable_testing()
         add_subdirectory( tests )

@@ -9,11 +9,6 @@ set(analyzer_SRCS
     #plugin/ASCIIAnalyzer.cpp
 )
 
-find_library(FFTW_LIBRARIES NAMES fftw3)
-if(NOT FFTW_LIBRARIES)
-    message(FATAL_ERROR "fftw not found")
-endif(NOT FFTW_LIBRARIES)
-
 add_library(amarok_context_applet_analyzer SHARED ${analyzer_SRCS})
 
 if(APPLE)
@@ -25,7 +20,7 @@ target_link_libraries(amarok_context_applet_analyzer
     amaroklib
     Qt5::Qml
     Qt5::Quick
-    fftw3
+    ${FFTW3_LIBRARIES}
 )
 
 install(TARGETS amarok_context_applet_analyzer DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/analyzer)
