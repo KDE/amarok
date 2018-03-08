@@ -33,40 +33,6 @@ option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recommended" ON)
 option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
 
-############### Taglib
-set(TAGLIB_MIN_VERSION "1.7")
-find_package(Taglib REQUIRED)
-set_package_properties( Taglib PROPERTIES DESCRIPTION "Support for Audio metadata." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE REQUIRED PURPOSE "Required for tag reading" )
-
-# Check if TagLib is built with ASF and MP4 support
-include(CheckCXXSourceCompiles)
-set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
-set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
-
-check_cxx_source_compiles("#include <asftag.h>
-int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
-if( NOT TAGLIB_ASF_FOUND )
-    message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
-endif()
-
-check_cxx_source_compiles("#include <mp4tag.h>
-int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
-if( NOT TAGLIB_MP4_FOUND )
-    message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
-endif()
-
-check_cxx_source_compiles("#include <modtag.h>
-#include <modfile.h>
-#include <s3mfile.h>
-#include <itfile.h>
-#include <xmfile.h>
-using namespace TagLib;
-int main() { char *s; Mod::Tag tag; Mod::File modfile(s); S3M::File s3mfile(s);
-IT::File itfile(s); XM::File xmfile(s); return 0; }" TAGLIB_MOD_FOUND)
-
-check_cxx_source_compiles("#include <opusfile.h>
-int main() { char *s; TagLib::Ogg::Opus::File opusfile(s); return 0;}" TAGLIB_OPUS_FOUND)
-
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 
@@ -250,6 +216,40 @@ if( WITH_PLAYER )
     #DOC_SUBDIR
 
 endif()
+
+############### Taglib
+set(TAGLIB_MIN_VERSION "1.7")
+find_package(Taglib REQUIRED)
+set_package_properties( Taglib PROPERTIES DESCRIPTION "Support for Audio metadata." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE REQUIRED PURPOSE "Required for tag reading" )
+
+# Check if TagLib is built with ASF and MP4 support
+include(CheckCXXSourceCompiles)
+set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
+set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
+
+check_cxx_source_compiles("#include <asftag.h>
+int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
+if( NOT TAGLIB_ASF_FOUND )
+    message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
+endif()
+
+check_cxx_source_compiles("#include <mp4tag.h>
+int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
+if( NOT TAGLIB_MP4_FOUND )
+    message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
+endif()
+
+check_cxx_source_compiles("#include <modtag.h>
+#include <modfile.h>
+#include <s3mfile.h>
+#include <itfile.h>
+#include <xmfile.h>
+using namespace TagLib;
+int main() { char *s; Mod::Tag tag; Mod::File modfile(s); S3M::File s3mfile(s);
+IT::File itfile(s); XM::File xmfile(s); return 0; }" TAGLIB_MOD_FOUND)
+
+check_cxx_source_compiles("#include <opusfile.h>
+int main() { char *s; TagLib::Ogg::Opus::File opusfile(s); return 0;}" TAGLIB_OPUS_FOUND)
 
 if( WITH_UTILITIES )
     set(EXEC_INSTALL_PREFIX  ${CMAKE_INSTALL_PREFIX}       CACHE PATH  "Base directory for executables and libraries" FORCE)
