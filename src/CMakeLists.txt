@@ -878,7 +878,7 @@ target_link_libraries(amaroklib
     Qt5::Sql
     Qt5::Svg
     ${CMAKE_DL_LIBS}
-    ${CMAKE_THREAD_LIBS_INIT}
+    Threads::Threads
     ${EXTRA_LIBS}
     amarokpud
     amarokcore

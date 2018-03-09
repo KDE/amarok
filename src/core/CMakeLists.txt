@@ -108,7 +108,7 @@ target_include_directories( amarokcore PUBLIC
 target_link_libraries(amarokcore
     amarokshared
     ${CMAKE_DL_LIBS}
-    ${CMAKE_THREAD_LIBS_INIT}
+    Threads::Threads
     Qt5::Core
     Qt5::Network
     KF5::KIOCore

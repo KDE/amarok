@@ -27,7 +27,7 @@ target_link_libraries(amarok-sqlcollection
     KF5::ThreadWeaver
     Qt5::Core
     Qt5::Gui
-    ${CMAKE_THREAD_LIBS_INIT}
+    Threads::Threads
     amarokcore
     amaroklib
     amarok-transcoding
