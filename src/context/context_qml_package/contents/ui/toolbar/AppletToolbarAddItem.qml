@@ -17,6 +17,7 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
+import org.kde.kirigami 2.0 as Kirigami
 
 
 ScrollView {
@@ -28,18 +29,18 @@ ScrollView {
     ListView {
         id: listView
 
-        anchors.margins: Context.smallSpacing
+        anchors.margins: Kirigami.Units.smallSpacing
         orientation: ListView.Horizontal
-        spacing: Context.smallSpacing
+        spacing: Kirigami.Units.smallSpacing
 
         model: AppletModel
 
         delegate: Rectangle {
             readonly property bool appletEnabled: AppletProxyModel.enabledApplets.indexOf(appletId) != -1
 
-            height: root.height - 3 * Context.smallSpacing
+            height: root.height - 3 * Kirigami.Units.smallSpacing
             width: height
-            radius: Context.smallSpacing
+            radius: Kirigami.Units.smallSpacing
             color: delegateMouseArea.pressed ? palette.highlight : appletEnabled ? palette.highlight : "transparent"
             border.color: delegateMouseArea.containsMouse ? palette.highlight : "transparent"
             border.width: 2
@@ -52,13 +53,13 @@ ScrollView {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignTop
-                    Layout.margins: Context.smallSpacing
+                    Layout.margins: Kirigami.Units.smallSpacing
                     sourceSize.width: width
                     sourceSize.height: height
                 }
                 Label {
                     Layout.alignment: Qt.AlignBottom
-                    Layout.margins: Context.smallSpacing
+                    Layout.margins: Kirigami.Units.smallSpacing
                     Layout.fillWidth: true
                     text: name
                     wrapMode: Text.Wrap

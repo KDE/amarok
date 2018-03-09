@@ -18,6 +18,7 @@ import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.2
 import QtQml.Models 2.2
+import org.kde.kirigami 2.0 as Kirigami
 import "toolbar"
 
 Item {
@@ -36,7 +37,7 @@ Item {
             Layout.alignment: Qt.AlignTop
             Layout.fillHeight: true
             Layout.fillWidth: true
-            spacing: Context.smallSpacing
+            spacing: Kirigami.Units.smallSpacing
             displayMarginEnd: 100000
             displayMarginBeginning: 100000
             clip: true
@@ -100,7 +101,7 @@ Item {
             id: appletToolbarAddItem
 
             Layout.fillWidth: true
-            height: Context.iconSizes.enormous
+            height: Kirigami.Units.iconSizes.enormous
             visible: appletToolbar.configEnabled
         }
         AppletToolbar {

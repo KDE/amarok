@@ -17,6 +17,7 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import org.kde.kirigami 2.0 as Kirigami
 import org.kde.amarok.currenttrack 1.0
 
 ColumnLayout {
@@ -26,7 +27,7 @@ ColumnLayout {
     property alias album: albumLabel.text
     property alias artist: artistLabel.text
 
-    spacing: Context.smallSpacing
+    spacing: Kirigami.Units.smallSpacing
 
     Label {
         id: titleLabel

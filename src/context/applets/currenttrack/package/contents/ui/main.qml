@@ -17,6 +17,7 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import org.kde.kirigami 2.0 as Kirigami
 import org.kde.amarok.qml 1.0 as AmarokQml
 import org.kde.amarok.currenttrack 1.0
 
@@ -28,7 +29,7 @@ AmarokQml.Applet {
         id: cover
 
         color: "white"
-        radius: Context.smallSpacing / 2
+        radius: Kirigami.Units.smallSpacing / 2
         border.width: 1
         border.color: applet.palette.light
         height: parent.height
@@ -79,7 +80,7 @@ AmarokQml.Applet {
             AmarokQml.RatingItem {
                 id: ratingItem
 
-                height: Context.largeSpacing * 2
+                height: Kirigami.Units.largeSpacing * 2
                 width: height * 6
                 Layout.alignment: Qt.AlignTop | Qt.AlignRight
                 rating: CurrentTrackEngine.rating
@@ -91,7 +92,7 @@ AmarokQml.Applet {
 
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignBottom
-            height: Context.largeSpacing * 3
+            height: Kirigami.Units.largeSpacing * 3
         }
     }
 }

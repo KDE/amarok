@@ -16,6 +16,8 @@
 
 import QtQuick 2.4
 import QtQuick.Dialogs 1.2
+import org.kde.kirigami 2.0 as Kirigami
+import org.kde.kirigami 2.0 as Kirigami
 
 
 Rectangle {
@@ -29,13 +31,13 @@ Rectangle {
     property url iconSource
     property bool collapsed: false
     property bool configEnabled: false
-    property real spacing: Context.smallSpacing
+    property real spacing: Kirigami.Units.smallSpacing
     property real padding: spacing
     property real contentHeight: content.childrenRect.height
     property Dialog configDialog: null
     readonly property SystemPalette palette: palette
 
-    radius: Context.smallSpacing
+    radius: Kirigami.Units.smallSpacing
     border.width: 2
     border.color: palette.mid
     color: "transparent"
@@ -88,7 +90,7 @@ Rectangle {
         preventStealing: true
         onMouseYChanged: {
             if(pressed) {
-                root.contentHeight = Math.max(Context.largeSpacing, root.contentHeight + mouseY);
+                root.contentHeight = Math.max(Kirigami.Units.largeSpacing, root.contentHeight + mouseY);
             }
         }
     }

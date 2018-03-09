@@ -36,38 +36,11 @@
 #include <QQmlError>
 #include <QQmlPropertyMap>
 #include <QQuickWindow>
-#include <QScreen>
 
 #include <KDeclarative/KDeclarative>
 #include <KI18n/KLocalizedContext>
 #include <KIconThemes/KIconLoader>
 #include <KPackage/PackageLoader>
-
-
-class FontFilter : public QObject
-{
-    Q_OBJECT
-
-public:
-    FontFilter( QObject *parent )
-        : QObject( parent )
-    {
-        qApp->installEventFilter( this );
-    }
-
-    bool eventFilter( QObject *watched, QEvent *event )
-    {
-        if( watched == qApp )
-        {
-            if( event->type() == QEvent::ApplicationFontChange )
-                emit fontChanged();
-        }
-        return QObject::eventFilter( watched, event );
-    }
-
-signals:
-    void fontChanged();
-};
 
 
 namespace Context
@@ -82,10 +55,6 @@ ContextView::ContextView( QWidget *parent )
     , m_loader( new AppletLoader( this ) )
     , m_appletModel( new AppletModel( m_loader, this ) )
     , m_proxyModel( new AppletProxyModel( m_appletModel, this ) )
-    , m_fontFilter( new FontFilter( this ) )
-    , m_smallSpacing( 2 )
-    , m_largeSpacing( 8 )
-    , m_iconSizes( new QQmlPropertyMap( this ) )
 {
     DEBUG_BLOCK
 
@@ -94,13 +63,7 @@ ContextView::ContextView( QWidget *parent )
     decl.setupBindings();
 
     connect( this, &QQuickWidget::statusChanged, this, &ContextView::slotStatusChanged );
-    connect( qApp, &QGuiApplication::primaryScreenChanged, this, &ContextView::updateDevicePixelRatio );
-    connect( m_fontFilter, &FontFilter::fontChanged, this, &ContextView::updateSpacing );
-    connect( KIconLoader::global(), &KIconLoader::iconLoaderSettingsChanged, this, &ContextView::iconLoaderSettingsChanged );
     connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &ContextView::updatePalette );
-
-    updateSpacing();
-    updateDevicePixelRatio( qApp->primaryScreen() );
 
     m_urlRunner = new ContextUrlRunner();
     The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
@@ -186,67 +149,6 @@ ContextView::slotStatusChanged( Status status )
     if( status == Error )
         for( const auto &e : errors() )
             error( e.description() );
-}
-
-void
-ContextView::updateSpacing()
-{
-    int gridUnit = QFontMetrics( QGuiApplication::font() ).boundingRect( QStringLiteral("M") ).height();
-    if (gridUnit % 2 != 0)
-        gridUnit++;
-
-    if (gridUnit != m_largeSpacing)
-    {
-        m_smallSpacing = qMax( 2, (int)( gridUnit / 4 ) ); // 1/4 of gridUnit, at least 2
-        m_largeSpacing = gridUnit; // msize.height
-        emit spacingChanged();
-    }
-}
-
-void
-ContextView::updateDevicePixelRatio( QScreen *screen )
-{
-    if (!screen)
-        return;
-
-    const qreal dpi = screen->logicalDotsPerInchX();
-    // Usual "default" is 96 dpi
-    m_devicePixelRatio = (qreal)dpi / (qreal)96;
-    iconLoaderSettingsChanged();
-    emit devicePixelRatioChanged();
-}
-
-void
-ContextView::iconLoaderSettingsChanged()
-{
-    m_iconSizes->insert( QStringLiteral( "tiny" ), devicePixelIconSize( KIconLoader::SizeSmall ) / 2 );
-    m_iconSizes->insert( QStringLiteral( "small" ), devicePixelIconSize( KIconLoader::SizeSmall ) );
-    m_iconSizes->insert( QStringLiteral( "smallMedium" ), devicePixelIconSize( KIconLoader::SizeSmallMedium ) );
-    m_iconSizes->insert( QStringLiteral( "medium" ), devicePixelIconSize( KIconLoader::SizeMedium ) );
-    m_iconSizes->insert( QStringLiteral( "large" ), devicePixelIconSize( KIconLoader::SizeLarge ) );
-    m_iconSizes->insert( QStringLiteral( "huge" ), devicePixelIconSize( KIconLoader::SizeHuge ) );
-    m_iconSizes->insert( QStringLiteral( "enormous" ), devicePixelIconSize( KIconLoader::SizeEnormous ) );
-
-    emit iconSizesChanged();
-}
-
-int
-ContextView::devicePixelIconSize( int size ) const
-{
-    const qreal ratio = devicePixelRatio();
-
-    if ( ratio < 1.5 )
-        return size;
-    else if ( ratio < 2.0 )
-        return size * 1.5;
-    else if ( ratio < 2.5 )
-        return size * 2.0;
-    else if ( ratio < 3.0 )
-         return size * 2.5;
-    else if ( ratio < 3.5 )
-         return size * 3.0;
-    else
-        return size * ratio;
 }
 
 void

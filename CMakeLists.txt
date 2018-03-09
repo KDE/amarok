@@ -22,8 +22,12 @@ include(ECMAddTests)
 include(ECMAddAppIcon)
 include(FindPkgConfig)
 
-find_package( Qt5 5.8.0 REQUIRED COMPONENTS Core DBus Gui Quick QuickWidgets Qml Script ScriptTools Sql Svg Test Widgets Xml )
+find_package( Qt5 5.8.0 REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Script ScriptTools Sql Svg Test Widgets Xml )
+find_package( Qt5 5.8.0 COMPONENTS QuickControls2 )
+set_package_properties( Qt5QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area" )
 find_package( KF5 REQUIRED COMPONENTS Archive Codecs CoreAddons DBusAddons Declarative DNSSD GlobalAccel GuiAddons I18n IconThemes KCMUtils KIO NewStuff Notifications NotifyConfig Package Solid TextEditor ThreadWeaver WindowSystem )
+find_package( KF5 COMPONENTS Kirigami2 )
+set_package_properties( KF5Kirigami2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area" )
 
 ###############
 option(WITH_UTILITIES "Enable building of utilities" ON)

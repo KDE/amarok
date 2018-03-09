@@ -28,10 +28,9 @@
 
 #include <QQuickWidget>
 
+
 class ContextUrlRunner;
-class FontFilter;
 class QPalette;
-class QQmlPropertyMap;
 class QScreen;
 
 namespace Context
@@ -44,12 +43,6 @@ class AppletProxyModel;
 class AMAROK_EXPORT ContextView : public QQuickWidget
 {
     Q_OBJECT
-
-    // Properties copied from KF5::Plasma::Units
-    Q_PROPERTY( int smallSpacing READ smallSpacing NOTIFY spacingChanged )
-    Q_PROPERTY( int largeSpacing READ largeSpacing NOTIFY spacingChanged )
-    Q_PROPERTY( QQmlPropertyMap *iconSizes READ iconSizes CONSTANT )
-    Q_PROPERTY( qreal devicePixelRatio READ devicePixelRatio NOTIFY devicePixelRatioChanged )
 
 public:
      ContextView( QWidget *parent = Q_NULLPTR );
@@ -81,39 +74,17 @@ public:
     Q_INVOKABLE void warning( const QString &error ) const;
     Q_INVOKABLE void error( const QString &error ) const;
 
-    int smallSpacing() const { return m_smallSpacing; }
-    int largeSpacing() const { return m_largeSpacing; }
-    QQmlPropertyMap* iconSizes() const { return m_iconSizes; }
-    qreal devicePixelRatio() const { return m_devicePixelRatio; }
-
 private slots:
     void slotStatusChanged( QQuickWidget::Status status );
-    void updateSpacing();
-    void updateDevicePixelRatio( QScreen *screen );
-    void iconLoaderSettingsChanged();
     void updatePalette( const QPalette &palette );
 
-signals:
-    void spacingChanged();
-    void iconSizesChanged();
-    void devicePixelRatioChanged();
-
 private:
-    // copied from KF5::Plasma::Units
-    int devicePixelIconSize( int size ) const;
-
     static ContextView *s_self;
 
     ContextUrlRunner *m_urlRunner;
     AppletLoader *m_loader;
     AppletModel *m_appletModel;
     AppletProxyModel *m_proxyModel;
-    FontFilter *m_fontFilter;
-
-    int m_smallSpacing;
-    int m_largeSpacing;
-    QQmlPropertyMap *m_iconSizes;
-    qreal m_devicePixelRatio;
 };
 
 } // Context namespace

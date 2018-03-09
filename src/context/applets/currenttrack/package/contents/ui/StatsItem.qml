@@ -17,12 +17,13 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import org.kde.kirigami 2.0 as Kirigami
 import org.kde.amarok.currenttrack 1.0
 
 Column {
     id: root
 
-    property real textSize: Context.largeSpacing
+    property real textSize: Kirigami.Units.largeSpacing
     property alias playCount: playCountLabel.text
     property alias score: scoreLabel.text
     property alias lastPlayed: lastPlayedLabel.text

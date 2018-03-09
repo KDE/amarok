@@ -17,6 +17,7 @@
 import QtQuick 2.6
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import org.kde.kirigami 2.0 as Kirigami
 
 
 MouseArea {
@@ -29,9 +30,9 @@ MouseArea {
     property bool configEnabled: !!toolbar ? toolbar.configEnabled : false
     property bool held: false
 
-    height: held ? toolbar.height : toolbar.height - Context.smallSpacing
+    height: held ? toolbar.height : toolbar.height - Kirigami.Units.smallSpacing
     anchors.verticalCenter: parent.verticalCenter
-    implicitWidth: label.implicitWidth + Context.smallSpacing * 2
+    implicitWidth: label.implicitWidth + Kirigami.Units.smallSpacing * 2
 
     acceptedButtons: Qt.LeftButton
     hoverEnabled: true
@@ -47,8 +48,8 @@ MouseArea {
     DropArea {
         anchors {
             fill: parent
-            leftMargin: Context.smallSpacing
-            rightMargin: Context.smallSpacing
+            leftMargin: Kirigami.Units.smallSpacing
+            rightMargin: Kirigami.Units.smallSpacing
         }
 
         onEntered: {
@@ -64,7 +65,7 @@ MouseArea {
         border.width: 1
         color: root.pressed ? palette.highlight : palette.button
         border.color: root.containsMouse ? palette.highlight : palette.buttonText
-        radius: Context.smallSpacing / 2
+        radius: Kirigami.Units.smallSpacing / 2
         anchors {
             horizontalCenter: root.horizontalCenter
             verticalCenter: root.verticalCenter
@@ -98,8 +99,8 @@ MouseArea {
 
             anchors {
                 fill: parent
-                leftMargin: Context.smallSpacing
-                rightMargin: Context.smallSpacing
+                leftMargin: Kirigami.Units.smallSpacing
+                rightMargin: Kirigami.Units.smallSpacing
             }
 
             horizontalAlignment: Text.AlignHCenter

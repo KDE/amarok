@@ -18,6 +18,8 @@ import QtQuick 2.4
 import QtQuick.Controls 1.4
 import QtQml.Models 2.1
 import QtQuick.Layouts 1.3
+import org.kde.kirigami 2.0 as Kirigami
+
 
 Rectangle {
     id: root
@@ -69,7 +71,7 @@ Rectangle {
         }
     }
 
-    height: configureButton.height + Context.smallSpacing
+    height: configureButton.height + Kirigami.Units.smallSpacing
     radius: 4
     color: palette.mid
 
@@ -85,7 +87,7 @@ Rectangle {
             rightMargin: spacing
         }
         orientation: ListView.Horizontal
-        spacing: Context.smallSpacing
+        spacing: Kirigami.Units.smallSpacing
         interactive: false
         clip: true
 

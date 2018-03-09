@@ -16,6 +16,7 @@
 
 import QtQuick 2.4
 // import QtWebView 1.1
+import org.kde.kirigami 2.0 as Kirigami
 import org.kde.amarok.qml 1.0 as AmarokQml
 import org.kde.amarok.info 1.0
 
@@ -25,9 +26,7 @@ AmarokQml.Applet {
 //     WebView {
 //         id: content
 //
-//         anchors.top: parent.top
-//         width: parent.width
-//         height: Context.largeSpacing * 20 //TODO: Find a more elegant solution to set the height
+//         anchors.fill: parent
 //
 //         Connections {
 //             target: InfoEngine

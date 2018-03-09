@@ -18,103 +18,102 @@ import QtQuick 2.4
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
 import QtWebEngine 1.1
+import org.kde.kirigami 2.0 as Kirigami
 import org.kde.amarok.qml 1.0 as AmarokQml
 import org.kde.amarok.wikipedia 1.0
 
 AmarokQml.Applet {
     id: applet
 
-    RowLayout {
-        id: buttonRow
+    ColumnLayout {
+        anchors.fill: parent
 
-        anchors.top: parent.top
-        width: parent.width
+        RowLayout {
+            Layout:fillWidth: true
+            Layout.alignment: Qt.AlignTop
 
-        Button {
-            iconName: "go-previous"
-            enabled: content.canGoBack
-            Layout.alignment: Qt.AlignLeft
-            ToolTip.text: i18n("Previous")
+            Button {
+                iconName: "go-previous"
+                enabled: content.canGoBack
+                Layout.alignment: Qt.AlignLeft
+                ToolTip.text: i18n("Previous")
 
-            onClicked: content.goBack()
-        }
-        Button {
-            iconName: "go-next"
-            enabled: content.canGoForward
-            Layout.alignment: Qt.AlignLeft
-            ToolTip.text: i18n("Next")
+                onClicked: content.goBack()
+            }
+            Button {
+                iconName: "go-next"
+                enabled: content.canGoForward
+                Layout.alignment: Qt.AlignLeft
+                ToolTip.text: i18n("Next")
 
-            onClicked: content.goForward()
-        }
-        Button {
-            iconName: "view-refresh"
-            enabled: !content.loading
-            Layout.alignment: Qt.AlignLeft
-            ToolTip.text: i18n("Refresh")
+                onClicked: content.goForward()
+            }
+            Button {
+                iconName: "view-refresh"
+                enabled: !content.loading
+                Layout.alignment: Qt.AlignLeft
+                ToolTip.text: i18n("Refresh")
 
-            onClicked: content.reload()
-        }
-        Item {
-            Layout.fillWidth: true
-        }
-        Button {
-            iconName: "filename-artist-amarok"
-            Layout.alignment: Qt.AlignRight
-            ToolTip.text: i18n("Artist")
+                onClicked: content.reload()
+            }
+            Item {
+                Layout.fillWidth: true
+            }
+            Button {
+                iconName: "filename-artist-amarok"
+                Layout.alignment: Qt.AlignRight
+                ToolTip.text: i18n("Artist")
 
-            onClicked: WikipediaEngine.selection = WikipediaEngine.Artist
-        }
-        Button {
-            iconName: "filename-composer-amarok"
-            Layout.alignment: Qt.AlignRight
-            ToolTip.text: i18n("Composer")
+                onClicked: WikipediaEngine.selection = WikipediaEngine.Artist
+            }
+            Button {
+                iconName: "filename-composer-amarok"
+                Layout.alignment: Qt.AlignRight
+                ToolTip.text: i18n("Composer")
 
-            onClicked: WikipediaEngine.selection = WikipediaEngine.Composer
-        }
-        Button {
-            iconName: "filename-album-amarok"
-            Layout.alignment: Qt.AlignRight
-            ToolTip.text: i18n("Album")
+                onClicked: WikipediaEngine.selection = WikipediaEngine.Composer
+            }
+            Button {
+                iconName: "filename-album-amarok"
+                Layout.alignment: Qt.AlignRight
+                ToolTip.text: i18n("Album")
 
-            onClicked: WikipediaEngine.selection = WikipediaEngine.Album
-        }
-        Button {
-            iconName: "filename-title-amarok"
-            Layout.alignment: Qt.AlignRight
-            ToolTip.text: i18n("Track")
+                onClicked: WikipediaEngine.selection = WikipediaEngine.Album
+            }
+            Button {
+                iconName: "filename-title-amarok"
+                Layout.alignment: Qt.AlignRight
+                ToolTip.text: i18n("Track")
 
-            onClicked: WikipediaEngine.selection = WikipediaEngine.Track
-        }
-    }
-
-    WebEngineView {
-        id: content
-
-        anchors.top: buttonRow.bottom
-        anchors.topMargin: applet.spacing
-        width: parent.width
-        height: Context.largeSpacing * 25 //TODO: Find a more elegant solution to set the height
-
-        onNavigationRequested: {
-            if (request.navigationType == WebEngineNavigationRequest.LinkClickedNavigation) {
-                request.action = WebEngineNavigationRequest.IgnoreRequest;
-                WikipediaEngine.url = request.url;
+                onClicked: WikipediaEngine.selection = WikipediaEngine.Track
             }
         }
 
-        Connections {
-            target: WikipediaEngine
+        WebEngineView {
+            id: content
 
-            onPageChanged: content.loadHtml(WikipediaEngine.page, WikipediaEngine.url)
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignBottom
+            height: Kirigami.Units.largeSpacing * 25 //TODO: Find a more elegant solution to set the height
+
+            onNavigationRequested: {
+                if (request.navigationType == WebEngineNavigationRequest.LinkClickedNavigation) {
+                    request.action = WebEngineNavigationRequest.IgnoreRequest;
+                    WikipediaEngine.url = request.url;
+                }
+            }
+
+            Connections {
+                target: WikipediaEngine
+
+                onPageChanged: content.loadHtml(WikipediaEngine.page, WikipediaEngine.url)
+            }
+
+            BusyIndicator {
+                anchors.centerIn: parent
+                running: WikipediaEngine.busy
+            }
         }
-
-        BusyIndicator {
-            anchors.centerIn: parent
-            running: WikipediaEngine.busy
-        }
-    }
-
-    SystemPalette {
-        id: palette
     }
 }
