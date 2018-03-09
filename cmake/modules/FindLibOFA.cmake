@@ -4,8 +4,6 @@ find_path(LIBOFA_INCLUDE_DIR NAMES ofa.h
    /opt/local/include
    /usr/include
    /usr/local/include
-   /opt/kde4/include
-   ${KDE4_INCLUDE_DIR}
    PATH_SUFFIXES ofa1
 )
 
@@ -16,8 +14,6 @@ find_library(LIBOFA_LIBRARY NAMES ofa
    /usr/lib
    /usr/lib64
    /usr/local/lib
-   /opt/kde4/lib
-   ${KDE4_LIB_DIR}
 )
 
 

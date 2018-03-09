@@ -39,8 +39,6 @@ find_path(GOOGLEMOCK_INCLUDE_DIR NAMES gmock.h
    /opt/local/include
    /usr/include
    /usr/local/include
-   /opt/kde4/include
-   ${KDE4_INCLUDE_DIR}
    PATH_SUFFIXES gmock
 )
 
@@ -51,8 +49,6 @@ find_library( GOOGLEMOCK_LIBRARY NAMES gmock
    /usr/lib
    /usr/lib64
    /usr/local/lib
-   /opt/kde4/lib
-   ${KDE4_LIB_DIR}
 )
 
 find_library( GOOGLEMOCK_DEP_GTEST_LIBRARY NAMES gtest
@@ -62,8 +58,6 @@ find_library( GOOGLEMOCK_DEP_GTEST_LIBRARY NAMES gtest
    /usr/lib
    /usr/lib64
    /usr/local/lib
-   /opt/kde4/lib
-   ${KDE4_LIB_DIR}
 )
 
 # google-mock >= 1.5 requires pthread
@@ -76,8 +70,6 @@ if( NOT WIN32 AND GOOGLEMOCK_LIBRARY )
        /usr/lib
        /usr/lib64
        /usr/local/lib
-       /opt/kde4/lib
-       ${KDE4_LIB_DIR}
     )
 
 endif()
@@ -126,8 +118,6 @@ if( NOT GOOGLEMOCK_DEP_GTEST_LIBRARY )
            /usr/lib
            /usr/lib64
            /usr/local/lib
-           /opt/kde4/lib
-           ${KDE4_LIB_DIR}
         )
         set( CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_CMAKE_FIND_LIBRARY_SUFFIXES})
     endif()

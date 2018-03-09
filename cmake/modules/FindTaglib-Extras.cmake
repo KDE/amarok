@@ -52,19 +52,18 @@ else()
     tfile_helper.h
     PATH_SUFFIXES taglib-extras
     PATHS
-    ${KDE4_INCLUDE_DIR}
     ${INCLUDE_INSTALL_DIR}
   )
 
     if(NOT WIN32)
       # on non-win32 we don't need to take care about WIN32_DEBUG_POSTFIX
 
-      find_library(TAGLIB-EXTRAS_LIBRARIES tag-extras PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})
+      find_library(TAGLIB-EXTRAS_LIBRARIES tag-extras PATHS ${LIB_INSTALL_DIR})
 
     else()
 
       # 1. get all possible libnames
-      set(args PATHS ${KDE4_LIB_DIR} ${LIB_INSTALL_DIR})             
+      set(args PATHS ${LIB_INSTALL_DIR})
       set(newargs "")               
       set(libnames_release "")      
       set(libnames_debug "")        

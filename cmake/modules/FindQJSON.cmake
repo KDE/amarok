@@ -26,7 +26,6 @@ else ()
     PATHS
     ${PC_QJSON_LIBRARY_DIRS}
     ${LIB_INSTALL_DIR}
-    ${KDE4_LIB_DIR}
   )
 
   find_path (QJSON_INCLUDE_DIR
@@ -35,7 +34,6 @@ else ()
     PATHS
     ${PC_QJSON_INCLUDE_DIRS}
     ${INCLUDE_INSTALL_DIR}
-    ${KDE4_INCLUDE_DIR}
   )
 
   include(FindPackageHandleStandardArgs)

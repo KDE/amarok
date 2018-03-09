@@ -30,12 +30,10 @@ find_path( GDKPIXBUF_INCLUDE_DIR gdk-pixbuf/gdk-pixbuf.h
         /usr/include/
         /sw/include/
         /usr/local/include/
-        ${KDE4_INCLUDE_DIR}
         # Search all subdirs of the above
         /usr/include/*
         /sw/include/*
         /usr/local/include/*
-        ${KDE4_INCLUDE_DIR}/*
     PATH_SUFFIXES
         # Subdirectory hints
         gdk-pixbuf-2.0

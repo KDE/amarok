@@ -13,8 +13,6 @@ find_path(LIBLASTFM_INCLUDE_DIR NAMES global.h
    /opt/local/include
    /usr/include
    /usr/local/include
-   /opt/kde4/include
-   ${KDE4_INCLUDE_DIR}
    PATH_SUFFIXES lastfm5
 )
 
@@ -26,8 +24,6 @@ find_library( LIBLASTFM_LIBRARY NAMES lastfm5
    /usr/lib64
    /usr/local/lib
    /usr/local/lib64
-   /opt/kde4/lib
-   ${KDE4_LIB_DIR}
 )
 
 
