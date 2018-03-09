@@ -22,7 +22,7 @@ if( QCA2_FOUND )
     if(APPLE)
         set_target_properties(amarok-update-signer PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
         # install to app bundle on os x, otherwise amarok fails to load it
-        install(TARGETS amarok-update-signer DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/MacOS )
+        install(TARGETS amarok-update-signer DESTINATION ${KDE_INSTALL_BUNDLEDIR}/Amarok.app/Contents/MacOS )
     else()
         install(TARGETS amarok-update-signer RUNTIME DESTINATION ${KDE_INSTALL_BINDIR} )
     endif()

@@ -51,7 +51,7 @@ target_link_libraries(amarok_service_magnatunestore
     Qt5::Widgets
 )
 
-install(TARGETS amarok_service_magnatunestore DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(TARGETS amarok_service_magnatunestore DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
 kcoreaddons_desktop_to_json(amarok_service_magnatunestore amarok_service_magnatunestore.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
 
@@ -76,7 +76,7 @@ target_link_libraries( kcm_amarok_service_magnatunestore
     Qt5::Gui
 )
 
-install(TARGETS kcm_amarok_service_magnatunestore DESTINATION ${PLUGIN_INSTALL_DIR})
+install(TARGETS kcm_amarok_service_magnatunestore DESTINATION ${KDE_INSTALL_PLUGINDIR})
 
 kcoreaddons_desktop_to_json(kcm_amarok_service_magnatunestore amarok_service_magnatunestore_config.desktop SERVICE_TYPES kcmodule.desktop)
 

@@ -2,6 +2,6 @@
 install( FILES
         script.spec
         main.js
-        DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/danish_streams_service
+        DESTINATION ${KDE_INSTALL_DATADIR}/amarok/scripts/danish_streams_service
 )
 

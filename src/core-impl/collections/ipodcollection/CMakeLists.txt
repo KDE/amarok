@@ -65,7 +65,7 @@ if(IPOD_FOUND AND WITH_IPOD)
   install(TARGETS
     amarok_collection-ipodcollection
     DESTINATION
-    ${PLUGIN_INSTALL_DIR}
+    ${KDE_INSTALL_PLUGINDIR}
   )
 
   kcoreaddons_desktop_to_json(amarok_collection-ipodcollection amarok_collection-ipodcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

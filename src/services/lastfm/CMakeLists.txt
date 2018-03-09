@@ -58,7 +58,7 @@ target_link_libraries( amarok_service_lastfm
     Qt5::Network
 )
 
-install( TARGETS amarok_service_lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
+install( TARGETS amarok_service_lastfm DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
 kcoreaddons_desktop_to_json( amarok_service_lastfm amarok_service_lastfm.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop )
 
@@ -82,7 +82,7 @@ target_link_libraries( kcm_amarok_service_lastfm
     Qt5::Network
 )
 
-install( TARGETS kcm_amarok_service_lastfm DESTINATION ${PLUGIN_INSTALL_DIR} )
+install( TARGETS kcm_amarok_service_lastfm DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
 kcoreaddons_desktop_to_json( kcm_amarok_service_lastfm amarok_service_lastfm_config.desktop SERVICE_TYPES kcmodule.desktop )
 

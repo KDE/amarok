@@ -43,7 +43,7 @@ target_link_libraries(amarok_collection-mtpcollection
     ${MTP_LIBRARIES}
 )
 
-install(TARGETS amarok_collection-mtpcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(TARGETS amarok_collection-mtpcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
 kcoreaddons_desktop_to_json(amarok_collection-mtpcollection amarok_collection-mtpcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
 

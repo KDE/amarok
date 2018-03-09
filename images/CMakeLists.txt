@@ -75,7 +75,7 @@ install(FILES
         emblem-wikipedia.png
         emblem-xing.png
 
-        DESTINATION ${DATA_INSTALL_DIR}/amarok/images
+        DESTINATION ${KDE_INSTALL_DATADIR}/amarok/images
 )
 
 ecm_install_icons(ICONS
@@ -85,6 +85,6 @@ ecm_install_icons(ICONS
     32-apps-amarok.png
     48-apps-amarok.png
     64-apps-amarok.png
-    DESTINATION ${ICON_INSTALL_DIR}
+    DESTINATION ${KDE_INSTALL_ICONDIR}
     THEME hicolor
 )

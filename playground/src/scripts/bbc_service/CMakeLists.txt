@@ -3,6 +3,6 @@ install( FILES
     README
     main.js
     script.spec
-    DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/bbc_service
+    DESTINATION ${KDE_INSTALL_DATADIR}/amarok/scripts/bbc_service
 )
 

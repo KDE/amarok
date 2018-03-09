@@ -28,10 +28,10 @@
             KF5::ThreadWeaver
         )
 
-        install(TARGETS amarok_service_opmldirectory DESTINATION ${PLUGIN_INSTALL_DIR} )
+        install(TARGETS amarok_service_opmldirectory DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
         kcoreaddons_desktop_to_json(amarok_service_opmldirectory amarok_service_opmldirectory.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
 
 ########### install files ###############
 
-        install( FILES podcast_directory.opml DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
+        install( FILES podcast_directory.opml DESTINATION ${KDE_INSTALL_DATADIR}/amarok/data)

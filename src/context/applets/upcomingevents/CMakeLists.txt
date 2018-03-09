@@ -36,6 +36,6 @@ target_link_libraries(amarok_context_applet_upcomingEvents
     Qt5::WebKitWidgets
 )
 
-install(TARGETS amarok_context_applet_upcomingEvents DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES amarok-context-applet-upcomingEvents.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(FILES upcoming-events-map.html DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
+install(TARGETS amarok_context_applet_upcomingEvents DESTINATION ${KDE_INSTALL_PLUGINDIR})
+install(FILES amarok-context-applet-upcomingEvents.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+install(FILES upcoming-events-map.html DESTINATION ${KDE_INSTALL_DATADIR}/amarok/data)

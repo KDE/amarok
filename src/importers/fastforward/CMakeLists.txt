@@ -16,6 +16,6 @@ target_link_libraries( amarok_importer-fastforward
     Qt5::Sql
 )
 
-install( TARGETS amarok_importer-fastforward DESTINATION ${PLUGIN_INSTALL_DIR} )
+install( TARGETS amarok_importer-fastforward DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
 kcoreaddons_desktop_to_json(amarok_importer-fastforward amarok_importer-fastforward.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

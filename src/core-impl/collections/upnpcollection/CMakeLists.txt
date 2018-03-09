@@ -37,6 +37,6 @@ if(APPLE)
     set_target_properties(amarok_collection-upnpcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif()
 
-install(TARGETS amarok_collection-upnpcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(TARGETS amarok_collection-upnpcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
 kcoreaddons_desktop_to_json(amarok_collection-upnpcollection amarok_collection-upnpcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

@@ -36,8 +36,8 @@ if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_collection-mysqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif()
 
-install(TARGETS amarok_collection-mysqlcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(TARGETS amarok_collection-mysqlcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
-install(FILES amarok_collection-mysqlcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES amarok_collection-mysqlcollection.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
 kcoreaddons_desktop_to_json(amarok_collection-mysqlcollection amarok_collection-mysqlcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

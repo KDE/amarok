@@ -16,5 +16,5 @@ target_link_libraries(amarok_context_applet_labels
     KF5::Plasma
 )
 
-install(TARGETS amarok_context_applet_labels DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES amarok-context-applet-labels.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install(TARGETS amarok_context_applet_labels DESTINATION ${KDE_INSTALL_PLUGINDIR})
+install(FILES amarok-context-applet-labels.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})

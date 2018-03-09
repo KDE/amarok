@@ -272,7 +272,7 @@ ecm_install_icons(ICONS
     48-actions-view-services-lastfm-amarok.png
     48-actions-view-services-magnatune-amarok.png
     48-actions-view-services-mp3tunes-amarok.png
-    DESTINATION ${DATA_INSTALL_DIR}/amarok/icons
+    DESTINATION ${KDE_INSTALL_DATADIR}/amarok/icons
     THEME hicolor
 )
 

@@ -27,7 +27,7 @@ target_link_libraries(amarok_afttagger
 if(APPLE)
     set_target_properties(amarok_afttagger PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     # install to app bundle on os x, otherwise amarok fails to load it
-    install(TARGETS amarok_afttagger DESTINATION ${BUNDLE_INSTALL_DIR}/Amarok.app/Contents/MacOS )
+    install(TARGETS amarok_afttagger DESTINATION ${KDE_INSTALL_BUNDLEDIR}/Amarok.app/Contents/MacOS )
 else()
     install(TARGETS amarok_afttagger RUNTIME DESTINATION ${KDE_INSTALL_BINDIR} )
 endif()

@@ -20,5 +20,5 @@ target_link_libraries(amarok_context_applet_similarArtists
     
 )
 
-install(TARGETS amarok_context_applet_similarArtists DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES amarok-context-applet-similarArtists.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install(TARGETS amarok_context_applet_similarArtists DESTINATION ${KDE_INSTALL_PLUGINDIR})
+install(FILES amarok-context-applet-similarArtists.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})

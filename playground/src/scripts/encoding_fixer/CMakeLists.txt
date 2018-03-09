@@ -2,6 +2,6 @@ install( FILES
         script.spec
         main.js
         main.ui
-        DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/encoding_fixer
+        DESTINATION ${KDE_INSTALL_DATADIR}/amarok/scripts/encoding_fixer
 )
 

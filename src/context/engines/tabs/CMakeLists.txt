@@ -9,5 +9,5 @@ set( tabs_engine_SRCS TabsEngine.cpp TabsInfo.h )
 add_library(amarok_data_engine_tabs MODULE ${tabs_engine_SRCS})
 target_link_libraries( amarok_data_engine_tabs amarokcore amaroklib KF5::Plasma KF5::KIOCore)
 
-install( TARGETS amarok_data_engine_tabs DESTINATION ${PLUGIN_INSTALL_DIR} )
-install( FILES amarok-data-engine-tabs.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+install( TARGETS amarok_data_engine_tabs DESTINATION ${KDE_INSTALL_PLUGINDIR} )
+install( FILES amarok-data-engine-tabs.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )

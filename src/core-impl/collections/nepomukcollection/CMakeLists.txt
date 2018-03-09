@@ -41,10 +41,10 @@ if(NepomukCore_FOUND AND Soprano_FOUND)
         ${SOPRANO_LIBRARIES}
     )
 
-    install(TARGETS amarok_collection-nepomukcollection DESTINATION ${PLUGIN_INSTALL_DIR})
+    install(TARGETS amarok_collection-nepomukcollection DESTINATION ${KDE_INSTALL_PLUGINDIR})
 
     ########### install files ###############
 
-    install(FILES amarok_collection-nepomukcollection.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+    install(FILES amarok_collection-nepomukcollection.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
 endif()

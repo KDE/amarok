@@ -14,6 +14,6 @@ target_link_libraries(amarok_context_applet_wikipedia
 install(TARGETS amarok_context_applet_wikipedia DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/wikipedia)
 install(FILES plugin/qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/wikipedia)
 
-install(FILES WikipediaCustomStyle.css bullet.gif DESTINATION ${DATA_INSTALL_DIR}/amarok/data )
+install(FILES WikipediaCustomStyle.css bullet.gif DESTINATION ${KDE_INSTALL_DATADIR}/amarok/data )
 
 kpackage_install_package(package org.kde.amarok.wikipedia amarok)

@@ -59,7 +59,7 @@ target_link_libraries(amarok_service_gpodder
     Qt5::Network
 )
 
-install( TARGETS amarok_service_gpodder DESTINATION ${PLUGIN_INSTALL_DIR} )
+install( TARGETS amarok_service_gpodder DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
 kcoreaddons_desktop_to_json(amarok_service_gpodder amarok_service_gpodder.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
 
@@ -82,7 +82,7 @@ target_link_libraries( kcm_amarok_service_gpodder
     Qt5::Network
 )
 
-install(TARGETS kcm_amarok_service_gpodder DESTINATION ${PLUGIN_INSTALL_DIR})
+install(TARGETS kcm_amarok_service_gpodder DESTINATION ${KDE_INSTALL_PLUGINDIR})
 install(FILES amarok_service_gpodder_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )
 
 kcoreaddons_desktop_to_json(kcm_amarok_service_gpodder amarok_service_gpodder_config.desktop SERVICE_TYPES kcmodule.desktop)

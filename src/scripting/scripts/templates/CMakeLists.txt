@@ -1,5 +1,5 @@
 install( FILES
         script.spec
         template.js
-        DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/templates
+        DESTINATION ${KDE_INSTALL_DATADIR}/amarok/scripts/templates
 )

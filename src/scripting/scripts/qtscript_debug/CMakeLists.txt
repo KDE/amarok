@@ -1,14 +1,14 @@
 install( FILES
         script.spec
-        DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/qtscript_debug
+        DESTINATION ${KDE_INSTALL_DATADIR}/amarok/scripts/qtscript_debug
 )
 
 install( PROGRAMS
         main.js
-        DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/qtscript_debug
+        DESTINATION ${KDE_INSTALL_DATADIR}/amarok/scripts/qtscript_debug
 )
 
 install( PROGRAMS
         debug/debug.js
-        DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/qtscript_debug/debug
+        DESTINATION ${KDE_INSTALL_DATADIR}/amarok/scripts/qtscript_debug/debug
 )

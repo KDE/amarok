@@ -13,6 +13,6 @@ target_link_libraries( amarok_importer-itunes
     KF5::KIOCore
 )
 
-install( TARGETS amarok_importer-itunes DESTINATION ${PLUGIN_INSTALL_DIR} )
+install( TARGETS amarok_importer-itunes DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
 kcoreaddons_desktop_to_json(amarok_importer-itunes amarok_importer-itunes.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

@@ -11,5 +11,5 @@ if(APPLE)
 endif()
 target_link_libraries(amarok_context_applet_songkick amarokcore amaroklib KF5::Plasma KF5::KIOCore)
 
-install(TARGETS amarok_context_applet_songkick DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES amarok-context-applet-songkick.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install(TARGETS amarok_context_applet_songkick DESTINATION ${KDE_INSTALL_PLUGINDIR})
+install(FILES amarok-context-applet-songkick.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})

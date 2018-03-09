@@ -4,6 +4,6 @@ install( FILES
         COPYING
         README
         SeeqpodService.html
-        DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/seeqpod_service
+        DESTINATION ${KDE_INSTALL_DATADIR}/amarok/scripts/seeqpod_service
        )
 

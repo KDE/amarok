@@ -39,6 +39,6 @@ if(APPLE)
     set_target_properties(amarok_collection-audiocdcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif()
 
-install(TARGETS amarok_collection-audiocdcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(TARGETS amarok_collection-audiocdcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
 kcoreaddons_desktop_to_json(amarok_collection-audiocdcollection amarok_collection-audiocdcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

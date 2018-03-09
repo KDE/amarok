@@ -477,7 +477,7 @@ if (PYTHONINTERP_FOUND)
                                                    ${CMAKE_SOURCE_DIR}/src/scripting/scriptengine
                                                    ${CMAKE_BINARY_DIR}/scriptconsole)
     install(FILES ${CMAKE_BINARY_DIR}/scriptconsole/AutoComplete.txt
-            DESTINATION ${DATA_INSTALL_DIR}/amarok/scriptconsole)
+            DESTINATION ${KDE_INSTALL_DATADIR}/amarok/scriptconsole)
 endif()
 
 #####################################################################
@@ -941,24 +941,24 @@ install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(PROGRAMS org.kde.amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
-install(PROGRAMS org.kde.amarok_containers.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+install(PROGRAMS org.kde.amarok.desktop DESTINATION ${KDE_INSTALL_APPDIR} )
+install(PROGRAMS org.kde.amarok_containers.desktop DESTINATION ${KDE_INSTALL_APPDIR} )
 install(FILES org.kde.amarok.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
-install(FILES amarok-plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
-install(FILES amarok-contextapplet.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
-install(FILES amarok_codecinstall.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
-install(FILES amarok_append.desktop DESTINATION ${SERVICES_INSTALL_DIR}/ServiceMenus)
-install(FILES amarok-play-audiocd.desktop DESTINATION ${DATA_INSTALL_DIR}/solid/actions)
+install(FILES amarok-plugin.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
+install(FILES amarok-contextapplet.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
+install(FILES amarok_codecinstall.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
+install(FILES amarok_append.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR}/ServiceMenus)
+install(FILES amarok-play-audiocd.desktop DESTINATION ${KDE_INSTALL_DATADIR}/solid/actions)
 
-install(FILES amarok.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
+install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_CONFDIR})
 
 # protocol handlers
-install(FILES amarokurls/amarok.protocol  DESTINATION  ${SERVICES_INSTALL_DIR})
-install(FILES amarokitpc.protocol DESTINATION ${SERVICES_INSTALL_DIR})
-#install(FILES amarokpcast.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES amarokurls/amarok.protocol  DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
+install(FILES amarokitpc.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+#install(FILES amarokpcast.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
-install(FILES amarokconfig.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
+install(FILES amarokconfig.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR} )
 install(FILES dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
               dbus/mpris1/org.freedesktop.MediaPlayer.player.xml
               dbus/mpris1/org.freedesktop.MediaPlayer.tracklist.xml
@@ -966,13 +966,13 @@ install(FILES dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
               dbus/org.kde.amarok.Collection.xml
               dbus/mpris1/org.kde.amarok.Mpris1Extensions.Player.xml
               dbus/mpris2/org.kde.amarok.Mpris2Extensions.Player.xml
-              DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+              DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR})
 
 install(FILES services/InfoParserLoading.html
               browsers/hover_info_template.html
-              DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
+              DESTINATION ${KDE_INSTALL_DATADIR}/amarok/data)
 
 ecm_install_icons(ICONS
-    DESTINATION ${ICON_INSTALL_DIR} 
+    DESTINATION ${KDE_INSTALL_ICONDIR}
     THEME hicolor
 )

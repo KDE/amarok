@@ -1,5 +1,5 @@
-install( FILES amarok.upd DESTINATION ${KCONF_UPDATE_INSTALL_DIR} )
+install( FILES amarok.upd DESTINATION ${KDE_INSTALL_KCONFUPDATEDIR} )
 install( PROGRAMS
          amarok-2.4.1-tokens_syntax_update.pl
-         DESTINATION ${KCONF_UPDATE_INSTALL_DIR}
+         DESTINATION ${KDE_INSTALL_KCONFUPDATEDIR}
        )
