@@ -15,9 +15,6 @@
 /* have QtCrypto the Qt crypto architecture */
 #cmakedefine QCA2_FOUND 1
 
-/* have Qt bindings */
-#cmakedefine QTSCRIPTQTBINDINGS_FOUND 1
-
 /* have QtOpenGL */
 #cmakedefine QT_QTOPENGL_FOUND 1
 
