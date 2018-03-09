@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 
-#include <Phonon/Global>
+#include <phonon/Global>
 
 #include <QObject>
 #include <QSet>

@@ -19,7 +19,7 @@
 
 #include "core/meta/forward_declarations.h"
 
-#include <Phonon/Global>
+#include <phonon/Global>
 
 #include <QHash>
 #include <QPainter>

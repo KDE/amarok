@@ -42,10 +42,10 @@
 #include "playback/PowerManager.h"
 #include "playlist/PlaylistActions.h"
 
-#include <Phonon/AudioOutput>
-#include <Phonon/BackendCapabilities>
-#include <Phonon/MediaObject>
-#include <Phonon/VolumeFaderEffect>
+#include <phonon/AudioOutput>
+#include <phonon/BackendCapabilities>
+#include <phonon/MediaObject>
+#include <phonon/VolumeFaderEffect>
 
 #include <QCoreApplication>
 #include <QUrlQuery>

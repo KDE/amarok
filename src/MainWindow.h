@@ -28,7 +28,7 @@
 #include <KMainWindow>
 #include <KToggleAction>
 
-#include <Phonon/Global>
+#include <phonon/Global>
 
 class CollectionWidget;
 class SlimToolbar;

@@ -29,7 +29,7 @@
 #include <QModelIndex>
 #include <QUrl>
 
-#include <Phonon/Global>
+#include <phonon/Global>
 
 namespace Playlist
 {

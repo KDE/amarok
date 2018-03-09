@@ -31,8 +31,8 @@
 
 #include <KLocalizedString>
 
-#include <Phonon/BackendCapabilities>
-#include <Phonon/EffectParameter>
+#include <phonon/BackendCapabilities>
+#include <phonon/EffectParameter>
 
 EqualizerController::EqualizerController( QObject *object )
 : QObject( object )

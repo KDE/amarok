@@ -31,7 +31,7 @@
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/Osd.h"
 
-#include <Phonon/Global>
+#include <phonon/Global>
 
 // Marshall the Status data into a D-BUS argument
 QDBusArgument &operator<<(QDBusArgument &argument, const Mpris1::Status &status)

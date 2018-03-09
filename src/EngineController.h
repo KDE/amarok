@@ -34,11 +34,11 @@
 #include <QStringList>
 #include <QUrl>
 
-#include <Phonon/Path>
-#include <Phonon/MediaController>
-#include <Phonon/MediaObject>
-#include <Phonon/Effect>
-#include <Phonon/EffectParameter>
+#include <phonon/Path>
+#include <phonon/MediaController>
+#include <phonon/MediaObject>
+#include <phonon/Effect>
+#include <phonon/EffectParameter>
 #include <phonon/audiodataoutput.h>
 
 class Fadeouter;

@@ -26,8 +26,8 @@
 
 #include <QPointer>
 
-#include <Phonon/Path>
-#include <Phonon/Effect>
+#include <phonon/Path>
+#include <phonon/Effect>
 
 static const int s_equalizerBandsNum = 10; // Number of equalizer parameters excluding Preamp
 

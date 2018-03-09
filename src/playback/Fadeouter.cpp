@@ -16,8 +16,8 @@
 
 #include "Fadeouter.h"
 
-#include <Phonon/MediaObject>
-#include <Phonon/VolumeFaderEffect>
+#include <phonon/MediaObject>
+#include <phonon/VolumeFaderEffect>
 
 #include <QTimer>
 

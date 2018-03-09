@@ -18,8 +18,8 @@
 
 #include "core/support/Debug.h"
 
-#include <Phonon/MediaController>
-#include <Phonon/MediaObject>
+#include <phonon/MediaController>
+#include <phonon/MediaObject>
 
 DelayedDoer::DelayedDoer( Phonon::MediaObject *mediaObject,
                           const QSet<Phonon::State> &applicableStates )
