@@ -39,7 +39,7 @@ find_path(GOOGLEMOCK_INCLUDE_DIR NAMES gmock.h
    /opt/local/include
    /usr/include
    /usr/local/include
-   PATH_SUFFIXES gmock
+   PATH_SUFFIXES gmock gmock/src
 )
 
 find_library( GOOGLEMOCK_LIBRARY NAMES gmock
