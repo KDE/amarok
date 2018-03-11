@@ -17,7 +17,6 @@ Comment[pt]=Pacote de base do QML para a área de contexto do Amarok
 Comment[sv]=QML-baspaket för Amaroks sammanhangsområde
 Comment[uk]=Базовий пакунок QML для області контексту Amarok
 Comment[x-test]=xxQML base package for amarok context areaxx
-Encoding=UTF-8
 Type=Service
 Icon=amarok
 X-KDE-PluginInfo-Author=Malte Veerman
