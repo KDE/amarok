@@ -18,7 +18,7 @@
 #define AMAROK_TRANSCODING_EXPORT_H
 
 /* needed for Q_DECL_EXPORT and Q_DECL_IMPORT macros */
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 
 #ifndef AMAROK_TRANSCODING_EXPORT
 # ifdef MAKE_AMAROK_TRANSCODING_LIB

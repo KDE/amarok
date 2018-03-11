@@ -18,7 +18,7 @@
 #define MEDIADEVICECOLLECTION_EXPORT_H
 
 /* needed for Q_DECL_EXPORT and Q_DECL_IMPORT macros */
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 
 #ifndef MEDIADEVICECOLLECTION_EXPORT
 # if defined(MAKE_MEDIADEVICELIB_LIB) || defined(MAKE_AMAROKLIB_LIB)

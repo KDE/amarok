@@ -1,6 +1,6 @@
 set(CMAKE_REQUIRED_LIBRARIES Qt5::Core)
 check_cxx_source_compiles("
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 int main()
 {
 #if defined(QT_NO_GLIB)

@@ -19,7 +19,7 @@
 #define AMAROK_LASTFM_SHARED_EXPORT_H
 
 /* needed for Q_DECL_EXPORT and Q_DECL_IMPORT macros */
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 
 #ifndef AMAROK_LASTFM_SHARED_EXPORT
 # ifdef MAKE_AMAROK_SERVICE_LASTFM_SHARED_LIB

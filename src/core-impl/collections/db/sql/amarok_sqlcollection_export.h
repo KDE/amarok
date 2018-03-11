@@ -18,7 +18,7 @@
 #define AMAROK_SQLCOLLECTION_EXPORT_H
 
 /* needed for Q_DECL_EXPORT and Q_DECL_IMPORT macros */
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 
 #ifndef AMAROK_SQLCOLLECTION_EXPORT
 # if defined(MAKE_AMAROK_SQLCOLLECTION_LIB)

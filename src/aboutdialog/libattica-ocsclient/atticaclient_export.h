@@ -20,7 +20,7 @@
 #define ATTICA_EXPORT_H
 
 /* needed for Q_DECL_EXPORT and Q_DECL_IMPORT macros */
-#include <QtCore/QtGlobal>
+#include <QtGlobal>
 
 #ifndef ATTICA_EXPORT
 # if defined(MAKE_AMAROKOCSCLIENT_LIB)
