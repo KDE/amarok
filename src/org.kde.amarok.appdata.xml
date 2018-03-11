@@ -47,6 +47,7 @@
   <summary xml:lang="id">Pemain Audio</summary>
   <summary xml:lang="it">Lettore audio</summary>
   <summary xml:lang="nl">Audiospeler</summary>
+  <summary xml:lang="pl">Odtwarzacz muzyki</summary>
   <summary xml:lang="pt">Leitor de Áudio</summary>
   <summary xml:lang="pt-BR">Reprodutor de áudio</summary>
   <summary xml:lang="sk">Audio prehrávač</summary>
@@ -139,7 +140,7 @@
       <li xml:lang="fi">Eri ehtoja vastaavat dynaamiset soittolistat</li>
       <li xml:lang="fr">Listes de lectures dynamiques selon différents critères</li>
       <li xml:lang="gl">Listas de reprodución dinámicas que se axeitan a distintos criterios.</li>
-      <li xml:lang="id">Playlist dinamis menyesuaikan kriteria yang berbeda</li>
+      <li xml:lang="id">Daftarmain dinamis menyesuaikan kriteria yang berbeda</li>
       <li xml:lang="it">Scalette dinamiche che verificano diversi criteri</li>
       <li xml:lang="ko">조건에 따른 동적 재생 목록</li>
       <li xml:lang="nl">Dynamische afspeellijsten die voldoen aan verschillende criteria</li>
