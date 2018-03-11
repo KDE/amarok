@@ -136,10 +136,8 @@ QStringList MySqlStorage::query( const QString& statement )
         warning() << "Errr... query returned but with no fields";
     }
 
-#if QT_VERSION >= 0x040700
     int rows = mysql_num_rows( pres );
     values.reserve( rows );
-#endif
     MYSQL_ROW row = mysql_fetch_row( pres );
     while( row )
     {

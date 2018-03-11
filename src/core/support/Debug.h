@@ -68,11 +68,7 @@
 #define DEBUG_ASSERT_STRINGIFY(x) DEBUG_ASSERT_STRINGIFY_INTERNAL(x)
 // END__: DEBUG_ASSERT
 
-#if QT_VERSION >= 0x040700
 # include <QElapsedTimer>
-#else
-# include <QTime>
-#endif
 
 // Platform specific macros
 #ifdef _WIN32

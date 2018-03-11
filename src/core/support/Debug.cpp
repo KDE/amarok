@@ -174,11 +174,7 @@ Block::Block( const char *label )
     if( !debugEnabled() )
         return;
 
-#if QT_VERSION >= 0x040700
     m_startTime.start();
-#else
-    m_startTime = QTime::currentTime();
-#endif
 
     mutex.lock();
     s_colorIndex = (s_colorIndex + 1) % 5;
@@ -194,11 +190,7 @@ Block::~Block()
     if( !debugEnabled() )
         return;
 
-#if QT_VERSION >= 0x040700
     double duration = m_startTime.elapsed() / 1000.0;
-#else
-    double duration = (double)m_startTime.msecsTo( QTime::currentTime() ) / 1000.0;
-#endif
 
     mutex.lock();
     IndentPrivate::instance()->m_string.truncate( Debug::indent().length() - 2 );
