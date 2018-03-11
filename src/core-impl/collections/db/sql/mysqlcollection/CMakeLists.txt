@@ -30,7 +30,7 @@ endif(WITH_MYSQL_EMBEDDED)
 
 if(${CMAKE_HOST_SYSTEM_NAME} MATCHES "FreeBSD")
     find_package(OpenSSL REQUIRED)
-    target_link_libraries(amarok_collection-mysqlecollection crypt pthread OpenSSL::SSL)
+    target_link_libraries(amarok_collection-mysqlcollection crypt pthread OpenSSL::SSL)
 else()
     if(NOT WIN32 AND NOT APPLE)
         target_link_libraries( amarok_collection-mysqlcollection crypt pthread )
