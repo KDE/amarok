@@ -35,6 +35,7 @@
 #include <QPushButton>
 #include <QScrollBar>
 #include <QStandardPaths>
+#include <QStyle>
 #include <QTabWidget>
 #include <QTextBrowser>
 #include <QVBoxLayout>
