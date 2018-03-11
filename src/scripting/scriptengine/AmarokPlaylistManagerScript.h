@@ -90,7 +90,7 @@ namespace AmarokScript
              *  Saves a playlist from a file to the database.
              *  @arg fromLocation Saved playlist file to load
              */
-            Q_INVOKABLE bool import( const QString &fromLocation );
+            Q_INVOKABLE bool import( const QUrl &fromLocation );
 
             /**
              * Rename @param playlist to @param newName, return true if renaming was successful,

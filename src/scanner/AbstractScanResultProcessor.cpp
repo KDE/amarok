@@ -252,7 +252,7 @@ AbstractScanResultProcessor::commitPlaylist( const CollectionScanner::Playlist &
     // debug() << "commitPlaylist on " << playlist->path();
 
     if( The::playlistManager() )
-        The::playlistManager()->import( "file:"+playlist.path() );
+        The::playlistManager()->import( QUrl::fromLocalFile( playlist.path() ) );
 }
 
 /** This will just put the tracks into an album.

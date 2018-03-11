@@ -124,7 +124,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          *  Saves a playlist from a file to the database.
          *  @arg fromLocation Saved playlist file to load
          */
-         bool import( const QString &fromLocation );
+         bool import( const QUrl &fromLocation );
 
         /**
          * Initiates renaming of playlists @param playlist. Can Focus Saved Playlists and

@@ -329,7 +329,7 @@ PlaylistManager::save( Meta::TrackList tracks, const QString &name,
 }
 
 bool
-PlaylistManager::import( const QString& fromLocation )
+PlaylistManager::import( const QUrl& fromLocation )
 {
     // used by: PlaylistBrowserNS::UserModel::dropMimeData()
     AMAROK_DEPRECATED
@@ -339,7 +339,7 @@ PlaylistManager::import( const QString& fromLocation )
         debug() << "ERROR: m_playlistFileProvider was null";
         return false;
     }
-    return m_playlistFileProvider->import( QUrl(fromLocation) );
+    return m_playlistFileProvider->import( fromLocation );
 }
 
 void

@@ -67,7 +67,7 @@ AmarokPlaylistManagerScript::getProvidersForPlaylist( const Playlists::PlaylistP
 }
 
 bool
-AmarokPlaylistManagerScript::import( const QString &fromLocation )
+AmarokPlaylistManagerScript::import( const QUrl &fromLocation )
 {
     return PlaylistManager::instance()->import( fromLocation );
 }
