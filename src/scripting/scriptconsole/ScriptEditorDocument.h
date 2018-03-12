@@ -39,6 +39,8 @@ namespace ScriptConsoleNS
 
     class ScriptEditorDocument : public QObject
     {
+        Q_OBJECT
+
         public:
             ScriptEditorDocument( QObject *parent, KTextEditor::Document* document );
             virtual ~ScriptEditorDocument();

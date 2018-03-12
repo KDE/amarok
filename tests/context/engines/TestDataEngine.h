@@ -23,6 +23,8 @@
 
 class TestDataEngine : public QObject 
 {
+    Q_OBJECT
+
     public:
         TestDataEngine(QObject* parent = 0);
         
