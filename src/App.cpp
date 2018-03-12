@@ -74,12 +74,12 @@
 
 #include <QAction>
 #include <QByteArray>
+#include <QCommandLineParser>
 #include <QDesktopServices>
 #include <QFile>
 #include <QFileOpenEvent>
 #include <QStringList>
 #include <QTimer>                       //showHyperThreadingWarning()
-#include <QtDBus>
 
 #ifdef Q_WS_MAC
 #include <CoreFoundation/CoreFoundation.h>

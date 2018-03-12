@@ -30,7 +30,7 @@
 #include <QScriptEngine>
 #include <QTextStream>
 #include <QDir>
-#include <QtScriptTools/QScriptEngineDebugger>
+#include <QScriptEngineDebugger>
 #include <QMainWindow>
 
 using namespace ScriptConsoleNS;

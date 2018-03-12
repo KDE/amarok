@@ -25,7 +25,7 @@
 #include <QMutex>
 #include <QPointer>
 #include <QSharedPointer>
-#include <QtSql/QSqlDatabase>
+#include <QSqlDatabase>
 #include <QString>
 #include <QVariant>
 #include <QVariantList>

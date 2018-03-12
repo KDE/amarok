@@ -21,10 +21,10 @@
 #include <ThreadWeaver/Thread>
 
 #include <QMutexLocker>
-#include <QtSql/QSqlDriver>
-#include <QtSql/QSqlError>
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlRecord>
+#include <QSqlDriver>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
 #include <QUuid>
 
 using namespace StatSyncing;

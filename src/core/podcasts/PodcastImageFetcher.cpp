@@ -19,7 +19,7 @@
 #include "core/support/Debug.h"
 
 #include <QCryptographicHash>
-#include <QtNetwork/QNetworkConfigurationManager>
+#include <QNetworkConfigurationManager>
 
 #include <KIO/Job>
 
