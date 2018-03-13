@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Amarok-Context-QML-Package
 Name[ca]=Amarok-Context-QML-Package
+Name[ca@valencia]=Amarok-Context-QML-Package
 Name[en_GB]=Amarok-Context-QML-Package
 Name[nl]=Amarok-context-QML-pakket
 Name[pl]=Pakiet Kontekstu QML Amaroka
@@ -10,6 +11,7 @@ Name[uk]=Пакунок QML контексту для Amarok
 Name[x-test]=xxAmarok-Context-QML-Packagexx
 Comment=QML base package for amarok context area
 Comment[ca]=Paquet QML base per a l'àrea de context de l'Amarok
+Comment[ca@valencia]=Paquet QML base per a l'àrea de context de l'Amarok
 Comment[en_GB]=QML base package for amarok context area
 Comment[nl]=Op QML gebaseerd pakket voor amarok-contextgebied
 Comment[pl]=Pakiet podstawowy QML dla obszaru kontekstowego Amaroka
