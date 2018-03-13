@@ -155,10 +155,6 @@ if( WITH_PLAYER )
     find_package(ZLIB REQUIRED)
     set_package_properties( ZLIB PROPERTIES DESCRIPTION "zlib" TYPE REQUIRED )
 
-    # QJson is required for the PlaydarCollection
-    find_package(QJSON)
-    set_package_properties( QJSON PROPERTIES DESCRIPTION "Qt JSON Parser used for the Playdar Collection" URL "http://qjson.sourceforge.net/" TYPE OPTIONAL )
-
     # We tell users that we need 1.0.3, but we really check just >= 1.0.0. This is because
     # upstream forgot to update version in lastfm/global.h, so it looks like 1.0.2. :-(
     # will be fixed in liblastfm-1.0.4

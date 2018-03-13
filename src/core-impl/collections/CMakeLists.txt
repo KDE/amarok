@@ -14,10 +14,6 @@ add_subdirectory( ipodcollection )
 add_subdirectory( mtpcollection )
 add_subdirectory( umscollection )
 add_subdirectory( db )
-
-# only build playdarcollection if QJson was found
-if( QJSON_FOUND )
-    add_subdirectory( playdarcollection )
-endif()
+add_subdirectory( playdarcollection )
 add_subdirectory( upnpcollection )
 #add_subdirectory( nepomukcollection )

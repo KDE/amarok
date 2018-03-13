@@ -1,5 +1,3 @@
-include_directories( ${QJSON_INCLUDE_DIR} )
-
 set( amarok_collection-playdarcollection_PART_SRCS
      PlaydarMeta.cpp
      PlaydarCollection.cpp
@@ -14,7 +12,6 @@ add_library(amarok_collection-playdarcollection MODULE ${amarok_collection-playd
 target_link_libraries( amarok_collection-playdarcollection
                        amarokcore
                        amaroklib
-                       ${QJSON_LIBRARIES}
                        KF5::ThreadWeaver
                        KF5::KIOCore )
 

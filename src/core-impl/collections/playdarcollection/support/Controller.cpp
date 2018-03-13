@@ -21,16 +21,18 @@
 #include "Query.h"
 #include "core/support/Debug.h"
 
-#include <qjson/parser.h>
-
-#include <KIO/Job>
-
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
 #include <QMap>
 #include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 #include <QVariant>
 #include <QVariantMap>
+
+#include <KIO/Job>
+
 
 namespace Playdar {
     
@@ -139,24 +141,27 @@ namespace Playdar {
         debug() << "Processing received JSON data...";
         KIO::StoredTransferJob* storedStatusJob = static_cast<KIO::StoredTransferJob*>( statusJob );
         
-        QVariant parsedStatusVariant;
-        
-        QJson::Parser parser;
-        bool ok;
-        parsedStatusVariant = parser.parse( storedStatusJob->data(),&ok );
-        if ( !ok )
+        QJsonParseError err;
+        auto doc = QJsonDocument::fromJson( storedStatusJob->data(), &err );
+
+        if ( err.error != QJsonParseError::NoError )
+            debug() << "Error parsing JSON Data:" << err.errorString();
+
+        if( !doc.isObject() )
         {
-            debug() << "Error parsing JSON Data";
+            debug() << "Parsed Json data is not an object";
+            return;
         }
-        QVariantMap parsedStatus = parsedStatusVariant.toMap();
+
+        auto object = doc.object();
         
-        if( !parsedStatus.contains("name") )
+        if( !object.contains("name") )
         {
             debug() << "Expected a service name from Playdar, received none";
             emit playdarError( Playdar::Controller::ErrorState( MissingServiceName ) );
             return;
         }
-        if( parsedStatus.value("name") != QString( "playdar" ) )
+        if( object.value("name").toString() != QStringLiteral( "playdar" ) )
         {
             debug() << "Expected Playdar, got response from some other service";
             emit playdarError( Playdar::Controller::ErrorState( WrongServiceName ) );
@@ -183,24 +188,28 @@ namespace Playdar {
         KIO::StoredTransferJob* storedQueryJob =
             static_cast<KIO::StoredTransferJob*>( queryJob );
         
-        QVariant parsedQueryVariant;
-        QJson::Parser parser;
-        bool ok;
-        parsedQueryVariant = parser.parse( storedQueryJob->data(),&ok );
-        if ( !ok )
+        QJsonParseError err;
+        auto doc = QJsonDocument::fromJson( storedQueryJob->data(), &err );
+
+        if ( err.error != QJsonParseError::NoError )
+            debug() << "Error parsing JSON Data:" << err.errorString();
+
+        if( !doc.isObject() )
         {
-            debug() << "Error parsing JSON Data";
+            debug() << "Parsed Json data is not an object";
+            return;
         }
-        
-        QVariantMap parsedQuery = parsedQueryVariant.toMap();
-        if( !parsedQuery.contains( "qid" ) )
+
+        auto object = doc.object();
+
+        if( !object.contains( "qid" ) )
         {
             debug() << "Expected qid in Playdar's response, but didn't get it";
             emit playdarError( Playdar::Controller::ErrorState( MissingQid ) );
             return;
         }
         
-        Query* query = new Query( parsedQuery.value( "qid" ).toString(), this, m_queriesShouldWaitForSolutions );
+        Query* query = new Query( object.value( "qid" ).toString(), this, m_queriesShouldWaitForSolutions );
         
         debug() << "All good! Emitting queryReady( Playdar::Query* )...";
         emit queryReady( query );

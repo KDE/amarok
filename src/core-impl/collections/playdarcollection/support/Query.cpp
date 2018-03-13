@@ -20,15 +20,18 @@
 #include "../PlaydarMeta.h"
 #include "core/support/Debug.h"
 
-#include <qjson/parser.h>
-
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
+#include <QMap>
+#include <QString>
 #include <QUrl>
+#include <QVariant>
+#include <QVariantMap>
+
 #include <KIO/Job>
 
-#include <QString>
-#include <QVariant>
-#include <QMap>
-#include <QVariantMap>
 
 namespace Playdar
 {
@@ -124,42 +127,46 @@ namespace Playdar
         debug() << "Processing received JSON data...";
         KIO::StoredTransferJob* storedResultsJob = static_cast<KIO::StoredTransferJob*>( resultsJob );
                 
-        QJson::Parser parser;
-        bool ok;
-        QVariant parsedResultsVariant;
-        parsedResultsVariant = parser.parse( storedResultsJob->data(),&ok );
-        if ( !ok )
+        QJsonParseError err;
+        auto doc = QJsonDocument::fromJson( storedResultsJob->data(), &err );
+
+        if ( err.error != QJsonParseError::NoError )
+            debug() << "Error parsing JSON Data:" << err.errorString();
+
+        if( !doc.isObject() )
         {
-            debug() << "Error parsing JSON Data";
+            debug() << "Parsed Json data is not an object";
+            return;
         }
-        
-        QVariantMap parsedResults = parsedResultsVariant.toMap();
-        if( !parsedResults.contains( "results" ) )
+
+        auto object = doc.object();
+
+        if( !object.contains( "results" ) )
         {
             debug() << "Expecting results in Playdar's response, received none";
             emit playdarError( Playdar::Controller::ErrorState( 6 ) );
             return;
         }
-        if( !parsedResults.contains( "qid" ) )
+        if( !object.contains( "qid" ) )
         {
             debug() << "Expected qid in Playdar's response, received none";
             emit playdarError( Playdar::Controller::ErrorState( 4 ) );
             return;
         }
-        if( parsedResults.value( "qid" ) != m_qid )
+        if( object.value( "qid" ) != m_qid )
         {
             debug() << "A query received the wrong results from Playdar...";
             emit playdarError( Playdar::Controller::ErrorState( 5 ) );
             return;
         }
         
-        m_artist = parsedResults.value( "artist" ).toString();
-        m_album = parsedResults.value( "album" ).toString();
-        m_title = parsedResults.value( "track" ).toString();
+        m_artist = object.value( "artist" ).toString();
+        m_album = object.value( "album" ).toString();
+        m_title = object.value( "track" ).toString();
         
-        foreach( const QVariant &resultVariant, parsedResults.value( "results" ).toList() )
+        for( const auto &resultVariant : object.value( "results" ).toArray() )
         {
-            QVariantMap result = resultVariant.toMap();
+            auto result = resultVariant.toObject();
             Meta::PlaydarTrackPtr aTrack;
             QUrl resultUrl( m_controller->urlForSid( result.value( "sid" ).toString() ) );
             
