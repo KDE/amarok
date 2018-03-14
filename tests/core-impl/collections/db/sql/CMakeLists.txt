@@ -1,8 +1,6 @@
 
 # macro function to build a test target.
 macro(add_database_test test_target test_sources)
-    add_definitions(${MYSQL_CFLAGS})
-
     set( test_sources_internal
         ${test_sources}
         ${AMAROK_SOURCE_TREE}/core-impl/storage/sql/mysql-shared/MySqlStorage.cpp

@@ -141,8 +141,9 @@ add_subdirectory( shared )
 
 if( WITH_PLAYER )
     find_package(X11)
+    find_package(Threads REQUIRED)
 
-    find_package(MySQLAmarok REQUIRED)
+    find_package(MySQL REQUIRED)
     if( WITH_MYSQL_EMBEDDED )
         set( BUILD_MYSQLE_COLLECTION TRUE )
         set_package_properties( MYSQLD PROPERTIES DESCRIPTION "Embedded MySQL Libraries" URL "http://www.mysql.com" TYPE REQUIRED )

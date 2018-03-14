@@ -1,6 +1,6 @@
-add_definitions(${MYSQL_EMBEDDED_CFLAGS})
-
 ########### mysqle ###############
+
+include_directories(${MYSQL_INCLUDE_DIR})
 
 set( amarok_storage-mysqlestorage_PART_SRCS
      ../mysql-shared/MySqlStorage.cpp

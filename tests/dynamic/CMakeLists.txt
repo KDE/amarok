@@ -1,7 +1,4 @@
 macro(link_database_test test_target)
-
-    add_definitions(${MYSQL_CFLAGS})
-
     if(APPLE)
         set_target_properties(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif()
