@@ -72,7 +72,15 @@ namespace AmarokScript
 
         private:
             void cleanUp( const QUrl &url );
-            void newDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot );
+
+            template<typename Function>
+            void newDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, Function slot )
+            {
+                m_values[ url ] = obj;
+                m_engines[ url ] = engine;
+
+                The::networkAccessManager()->getData( url, this, slot );
+            }
 
             /**
             * Template function which updates the given @p sourceUrl to the given

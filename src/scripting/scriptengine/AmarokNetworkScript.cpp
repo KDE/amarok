@@ -126,22 +126,13 @@ void
 AmarokDownloadHelper::newStringDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding )
 {
     m_encodings[ url ] = encoding;
-    newDownload( url, engine, obj, SLOT(resultString(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    newDownload( url, engine, obj, &AmarokDownloadHelper::resultString );
 }
 
 void
 AmarokDownloadHelper::newDataDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj )
 {
-    newDownload( url, engine, obj, SLOT(resultData(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
-}
-
-void
-AmarokDownloadHelper::newDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, const char *slot )
-{
-    m_values[ url ] = obj;
-    m_engines[ url ] = engine;
-
-    The::networkAccessManager()->getData( url, this, slot );
+    newDownload( url, engine, obj, &AmarokDownloadHelper::resultData );
 }
 
 void

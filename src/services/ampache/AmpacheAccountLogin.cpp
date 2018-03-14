@@ -62,8 +62,7 @@ AmpacheAccountLogin::reauthenticate()
 
     debug() << "Verifying Ampache Version Using: " << url.url();
 
-    m_pingRequest = The::networkAccessManager()->getData( url, this,
-                                                          SLOT(authenticate(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    m_pingRequest = The::networkAccessManager()->getData( url, this, &AmpacheAccountLogin::authenticate );
 
     if( !m_pingRequest )
         emit finished();
@@ -128,8 +127,7 @@ AmpacheAccountLogin::authenticate( const QUrl &requestUrl, QByteArray data, Netw
     debug() << "Authenticating with string: " << url.url() << passPhrase;
 
     // TODO: Amarok::Components::logger()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
-    m_authRequest = The::networkAccessManager()->getData( url, this,
-                                                          SLOT(authenticationComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    m_authRequest = The::networkAccessManager()->getData( url, this, &AmpacheAccountLogin::authenticationComplete );
 
     if( !m_authRequest )
         emit finished();

@@ -229,8 +229,7 @@ AmpacheServiceQueryMaker::fetchArtists()
     }
 
     d->expectedReplies.ref();
-    The::networkAccessManager()->getData( request, this,
-                                          SLOT(artistDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    The::networkAccessManager()->getData( request, this, &AmpacheServiceQueryMaker::artistDownloadComplete );
 }
 
 void
@@ -264,8 +263,7 @@ AmpacheServiceQueryMaker::fetchAlbums()
             request.setQuery( query );
 
             d->expectedReplies.ref();
-            The::networkAccessManager()->getData( request, this,
-                                                  SLOT(albumDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+            The::networkAccessManager()->getData( request, this, &AmpacheServiceQueryMaker::albumDownloadComplete );
         }
     }
     else
@@ -280,8 +278,7 @@ AmpacheServiceQueryMaker::fetchAlbums()
         }
 
         d->expectedReplies.ref();
-        The::networkAccessManager()->getData( request, this,
-                                              SLOT(albumDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        The::networkAccessManager()->getData( request, this, &AmpacheServiceQueryMaker::albumDownloadComplete );
     }
 }
 
@@ -343,8 +340,7 @@ AmpacheServiceQueryMaker::fetchTracks()
             request.setQuery( query );
 
             d->expectedReplies.ref();
-            The::networkAccessManager()->getData( request, this,
-                                                  SLOT(trackDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+            The::networkAccessManager()->getData( request, this, &AmpacheServiceQueryMaker::trackDownloadComplete );
         }
     }
     else if( !d->parentArtistIds.isEmpty() )
@@ -357,8 +353,7 @@ AmpacheServiceQueryMaker::fetchTracks()
             request.setQuery( query );
 
             d->expectedReplies.ref();
-            The::networkAccessManager()->getData( request, this,
-                                                  SLOT(trackDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+            The::networkAccessManager()->getData( request, this, &AmpacheServiceQueryMaker::trackDownloadComplete );
         }
     }
     else
@@ -366,8 +361,7 @@ AmpacheServiceQueryMaker::fetchTracks()
         QUrl request = getRequestUrl( "songs" );
 
         d->expectedReplies.ref();
-        The::networkAccessManager()->getData( request, this,
-                                              SLOT(trackDownloadComplete(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        The::networkAccessManager()->getData( request, this, &AmpacheServiceQueryMaker::trackDownloadComplete );
     }
 }
 

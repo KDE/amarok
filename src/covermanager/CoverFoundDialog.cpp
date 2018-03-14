@@ -529,8 +529,7 @@ bool CoverFoundDialog::fetchBigPix()
     if( !url.isValid() )
         return false;
 
-    QNetworkReply *reply = The::networkAccessManager()->getData( url, this,
-                           SLOT(handleFetchResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    QNetworkReply *reply = The::networkAccessManager()->getData( url, this, &CoverFoundDialog::handleFetchResult );
     m_urls.insert( url, item );
 
     if( !m_dialog )

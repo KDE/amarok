@@ -19,11 +19,16 @@
 
 #include "amarok_export.h"
 #include <config.h>
+#include "core/support/Debug.h"
 
 #include <KIO/AccessManager>
-#include <QUrl>
 
 #include <QNetworkReply>
+#include <QPointer>
+#include <QUrl>
+#include <QThread>
+#include <QTimer>
+
 
 class NetworkAccessManagerProxy;
 #ifdef DEBUG_BUILD_TYPE
@@ -62,8 +67,26 @@ public:
      * @param type the #Qt::ConnectionType used for calling the @p method.
      * @return a QNetworkReply object for custom monitoring.
      */
-    QNetworkReply *getData( const QUrl &url, QObject *receiver, const char *method,
-                            Qt::ConnectionType type = Qt::AutoConnection );
+    template<typename Return, typename Object, typename... Args>
+    QNetworkReply *getData( const QUrl &url, Object *receiver, Return ( Object::*method )( Args... ),
+                            Qt::ConnectionType type = Qt::AutoConnection )
+    {
+        if( !url.isValid() )
+        {
+            const QMetaObject *mo = receiver->metaObject();
+            debug() << QString( "Error: URL '%1' is invalid (from %2)" ).arg( url.url() ).arg( mo->className() );
+            return 0;
+        }
+
+        QNetworkReply *r = get( QNetworkRequest(url) );
+        m_urlMap.insert( url, r );
+        auto lambda = [this, r, receiver, method, type] ()
+        {
+            replyFinished( r, QPointer<Object>( receiver ), method, type );
+        };
+        connect( r, &QNetworkReply::finished, this, lambda );
+        return r;
+    }
 
     int abortGet( const QUrl &url );
     int abortGet( const QList<QUrl> &urls );
@@ -98,12 +121,66 @@ protected:
 
 private:
     NetworkAccessManagerProxy( QObject *parent = 0 );
-    void replyFinished();
+
+    template <typename Return, typename Object, typename... Args>
+    void replyFinished( QNetworkReply *reply, QPointer<Object> receiver, Return ( Object::*method )( Args... ), Qt::ConnectionType type )
+    {
+        if( !reply || !receiver )
+            return;
+
+        QUrl url = reply->request().url();
+        QByteArray data = reply->readAll();
+        data.detach(); // detach so the bytes are not deleted before methods are invoked
+
+        // There may have been a redirect.
+        QUrl redirectUrl = getRedirectUrl( reply );
+
+        // Check if there's no redirect.
+        if( redirectUrl.isEmpty() )
+        {
+            Error err = { reply->error(), reply->errorString() };
+
+            if( type == Qt::AutoConnection )
+            {
+                if( QThread::currentThread() == receiver->thread() )
+                    type = Qt::DirectConnection;
+                else
+                    type = Qt::QueuedConnection;
+            }
+
+            if( type == Qt::DirectConnection )
+                ( receiver->*method )( url, data, err );
+            else
+            {
+                auto lambda = [receiver, method, url, data, err] ()
+                {
+                    ( receiver->*method )( url, data, err );
+                };
+                QTimer::singleShot( 0, receiver, lambda );
+            }
+        }
+        else
+        {
+            debug() << "the server is redirecting the request to: " << redirectUrl;
+
+            // Let's try to fetch the data again, but this time from the new url.
+            QNetworkReply *newReply = getData( redirectUrl, receiver.data(), method, type );
+
+            emit requestRedirectedUrl( url, redirectUrl );
+            emit requestRedirectedReply( reply, newReply );
+        }
+
+        reply->deleteLater();
+    }
+
     static NetworkAccessManagerProxy *s_instance;
 
-    class NetworkAccessManagerProxyPrivate;
-    NetworkAccessManagerProxyPrivate* const d;
-    friend class NetworkAccessManagerProxyPrivate;
+    QMultiHash<QUrl, QNetworkReply*> m_urlMap;
+    QString m_userAgent;
+
+#ifdef DEBUG_BUILD_TYPE
+    NetworkAccessViewer *m_viewer;
+#endif // DEBUG_BUILD_TYPE
 
     Q_DISABLE_COPY( NetworkAccessManagerProxy )
 };

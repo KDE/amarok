@@ -166,8 +166,7 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
         if( !url.isValid() )
             continue;
 
-        QNetworkReply *reply = The::networkAccessManager()->getData( url, this,
-                               SLOT(slotResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        QNetworkReply *reply = The::networkAccessManager()->getData( url, this, &CoverFetcher::slotResult );
         m_urls.insert( url, unit );
 
         if( payload->type() == CoverFetchPayload::Art )

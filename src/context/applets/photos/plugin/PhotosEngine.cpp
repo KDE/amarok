@@ -162,8 +162,7 @@ PhotosEngine::update( bool force )
         debug() << "Flickr url:" << flickrUrl;
 
         m_flickrUrls << flickrUrl;
-        The::networkAccessManager()->getData( flickrUrl, this,
-             SLOT(resultFlickr(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        The::networkAccessManager()->getData( flickrUrl, this, &PhotosEngine::resultFlickr );
 
     }
 }
