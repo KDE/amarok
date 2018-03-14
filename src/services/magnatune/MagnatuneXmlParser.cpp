@@ -103,20 +103,18 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
         return;
     }
 
-    QFile file( filename );
-    auto device = new KCompressionDevice( &file, true, KCompressionDevice::BZip2 );
-    if ( !device || !device->open( QIODevice::ReadOnly ) ) {
+    KCompressionDevice device( filename, KCompressionDevice::BZip2 );
+    if ( !device.open( QIODevice::ReadOnly ) ) {
         debug() << "MagnatuneXmlParser::readConfigFile error reading file";
         return ;
     }
-    if ( !doc.setContent( device ) )
+    if ( !doc.setContent( &device ) )
     {
         debug() << "MagnatuneXmlParser::readConfigFile error parsing file";
-        device->close();
+        device.close();
         return ;
     }
-    device->close();
-    delete device;
+    device.close();
 
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
@@ -128,7 +126,7 @@ MagnatuneXmlParser::readConfigFile( const QString &filename )
     parseElement( docElem );
     m_dbHandler->commit(); //complete transaction
 
-    return ;
+    return;
 }
 
 
