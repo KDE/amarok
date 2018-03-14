@@ -732,11 +732,6 @@ set(amaroklib_LIB_SRCS
     moodbar/MoodbarManager.cpp
 )
 
-if( LIBMYGPO_QT_FOUND )
-    set( EXTRA_LIBS ${LIBMYGPO_QT_LIBRARIES} )
-    include_directories(     ${LIBMYGPO_QT_INCLUDE_DIRS} ${LIBMYGPO_QT_INCLUDE_DIRS}/../ )
-endif()
-
 if( LIBLASTFM_FOUND )
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}

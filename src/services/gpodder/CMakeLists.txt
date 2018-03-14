@@ -9,10 +9,6 @@ include_directories(
     ../../dynamic # for CustomBias.h
     ../../browsers/playlistbrowser
     ${CMAKE_CURRENT_BINARY_DIR}/../.. #for amarokconfig.h
-
-
-    ${LIBMYGPO_QT5_INCLUDE_DIRS}
-    ${LIBMYGPO_QT5_INCLUDE_DIRS}/../
 )
 
 add_subdirectory( images )
@@ -53,7 +49,7 @@ target_link_libraries(amarok_service_gpodder
     amaroklib
     amarokpud
     gpodder_service_config
-    ${LIBMYGPO_QT_LIBRARIES}
+    mygpo-qt5
     KF5::KIOCore
     KF5::ThreadWeaver
     Qt5::Network
@@ -76,7 +72,7 @@ target_link_libraries( kcm_amarok_service_gpodder
     amarokcore
     amaroklib
     gpodder_service_config
-    ${LIBMYGPO_QT_LIBRARIES}
+    mygpo-qt5
     KF5::ConfigWidgets
     KF5::KIOCore
     Qt5::Network
