@@ -285,8 +285,6 @@ int main( int argc, char *argv[] )
 
     // Command line parser
     QCommandLineParser parser;
-    parser.addVersionOption();
-    parser.addHelpOption();
 
     aboutData.setupCommandLine(&parser);
     app.initCliArgs(&parser);
