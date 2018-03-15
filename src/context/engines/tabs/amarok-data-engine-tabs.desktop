@@ -41,7 +41,6 @@ Name[sv]=Datagränssnitt för flikar
 Name[tr]=Akor Veri Motoru
 Name[uk]=Рушій даних акордів
 Name[x-test]=xxTabs Data Enginexx
-Name[zh_CN]=吉他谱数据引擎
 Name[zh_TW]=Tabs 資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
