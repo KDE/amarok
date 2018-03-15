@@ -1,6 +1,3 @@
-find_package(Mtp)
-
-
 if (MTP_FOUND)
    include_directories(
        ${Amarok_SOURCE_DIR}/src
@@ -13,11 +10,8 @@ if (MTP_FOUND)
        ${Amarok_SOURCE_DIR}/src/core-impl/collections/mtpcollection/handler/capabilities
        ${Amarok_SOURCE_DIR}/src/core-impl/collections/mtpcollection/support
        ${GLIB2_INCLUDE_DIR}
-       ${MTP_INCLUDE_DIR}
        ${CMAKE_BINARY_DIR}/src
        ${AMAROK_COLLECTION_SUPPORT_DIR}
-       
-       
 )
 
 
@@ -40,7 +34,7 @@ target_link_libraries(amarok_collection-mtpcollection
     KF5::KIOCore
     KF5::ThreadWeaver
     Qt5::Gui
-    ${MTP_LIBRARIES}
+    Mtp::Mtp
 )
 
 install(TARGETS amarok_collection-mtpcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )

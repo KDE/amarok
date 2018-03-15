@@ -7,49 +7,47 @@
 #  MTP_DEFINITIONS - Compiler switches required for using libmtp
 #
 
-if (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY)
+find_package(PkgConfig QUIET)
+pkg_check_modules(PC_MTP QUIET libmtp>=${Mtp_FIND_VERSION})
 
-  # in cache already
-  set(MTP_FOUND TRUE)
+set(MTP_DEFINITIONS ${PC_MTP_CFLAGS})
 
-else ()
-  if(NOT WIN32)
-    # use pkg-config to get the directories and then use these values
-    # in the FIND_PATH() and FIND_LIBRARY() calls
-    include(FindPkgConfig)
-  
-    pkg_check_modules(_MTP libmtp)
-  
-    set(MTP_DEFINITIONS ${_MTP_CFLAGS})
-  endif()
-  find_path(MTP_INCLUDE_DIR libmtp.h
-    ${_MTP_INCLUDE_DIRS}
-  )
-  
-  find_library(MTP_LIBRARIES NAMES mtp
-    PATHS
-    ${_MTP_LIBRARY_DIRS}
-  )
+find_path(MTP_INCLUDE_DIR
+    NAMES libmtp.h
+    HINTS ${PC_MTP__INCLUDEDIR} ${PC_MTP_INCLUDE_DIRS}
+)
 
-  exec_program(${PKG_CONFIG_EXECUTABLE} ARGS --atleast-version=1.0.0 libmtp OUTPUT_VARIABLE _pkgconfigDevNull RETURN_VALUE MTP_VERSION_OKAY)
-  
-  if (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY STREQUAL "0")
-     set(MTP_FOUND TRUE)
-  endif ()
-  
-  if (MTP_FOUND)
-    if (NOT Mtp_FIND_QUIETLY)
-      message(STATUS "Found MTP: ${MTP_LIBRARIES}")
-    endif ()
-  else ()
-    if (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND NOT MTP_VERSION_OKAY STREQUAL "0")
-      message(STATUS "Found MTP but version requirements not met")
-    endif ()
-    if (Mtp_FIND_REQUIRED)
-      message(FATAL_ERROR "Could NOT find MTP")
-    endif ()
-  endif ()
-  
-  mark_as_advanced(MTP_INCLUDE_DIR MTP_LIBRARIES MTP_VERSION_OKAY)
-  
-endif ()
+find_library(MTP_LIBRARIES
+    NAMES mtp
+    HINTS ${PC_MTP_LIBDIR} ${PC_MTP_LIBRARY_DIRS}
+)
+
+if(PC_MTP_VERSION)
+    set(MTP_VERSION_STRING ${PC_MTP_VERSION})
+elseif(MTP_INCLUDE_DIR AND EXISTS "${MTP_INCLUDE_DIR}/libmtp.h")
+    file(STRINGS "${MTP_INCLUDE_DIR}/libmtp.h" mtp_version_str
+         REGEX "^#define[\t ]+LIBMTP_VERSION_STRING[\t ]+\".*\"")
+
+    string(REGEX REPLACE "^#define[\t ]+LIBMTP_VERSION_STRING[\t ]+\"([^\"]*)\".*" "\\1"
+           MTP_VERSION_STRING "${mtp_version_str}")
+    unset(mtp_version_str)
+endif()
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Mtp
+    REQUIRED_VARS MTP_LIBRARIES MTP_INCLUDE_DIR
+    VERSION_VAR MTP_VERSION_STRING
+)
+
+if(MTP_FOUND AND NOT TARGET Mtp::Mtp)
+  add_library(Mtp::Mtp UNKNOWN IMPORTED)
+  set_target_properties(Mtp::Mtp PROPERTIES
+                        IMPORTED_LOCATION "${MTP_LIBRARIES}"
+            INTERFACE_INCLUDE_DIRECTORIES "${MTP_INCLUDE_DIR}")
+endif()
+
+mark_as_advanced(MTP_INCLUDE_DIR MTP_LIBRARIES)
+set_package_properties(Mtp PROPERTIES
+    URL "http://libmtp.sourceforge.net/"
+    DESCRIPTION "An implementation of Microsoft's Media Transfer Protocol (MTP)"
+)

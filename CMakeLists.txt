@@ -204,8 +204,11 @@ if( WITH_PLAYER )
         set_package_properties( GDKPixBuf PROPERTIES DESCRIPTION "Support for artwork on iPod audio devices via GDK-PixBuf" URL "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" TYPE OPTIONAL )
     endif()
 
-    find_package(Mtp)
-    set_package_properties( Mtp PROPERTIES DESCRIPTION "Enable Support for portable media devices that use the media transfer protocol" URL "http://libmtp.sourceforge.net/" TYPE OPTIONAL )
+    find_package(Mtp 1.0.0)
+    set_package_properties(Mtp PROPERTIES
+        TYPE OPTIONAL
+        PURPOSE "Enable Support for portable media devices that use the media transfer protocol"
+    )
 
     if( WITH_MP3Tunes )
         find_package(CURL)
