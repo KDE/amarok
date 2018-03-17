@@ -34,16 +34,20 @@ that really makes playlist handling easy.
  DEPENDENCIES
 ==============
 
-Required
-    * KDE-Libs 4.8.4 (or newer) + KDE-Base-runtime 4.8 (oxygen-icons) (or newer)
-      http://www.kde.org
+The following list should give you an impression what's required but it might
+not be entirely up to date. You can always look at CMakeLists.txt to discover
+the most recent dependencies.
 
-    * Phonon backend, one of the following is strongly recommended
+Required
+    * KDE Frameworks 5 (for an exact list look at CMakeLists.txt)
+      https://www.kde.org
+
+    * Phonon 4.6.60 (with support for Qt5) and one of the following backends:
       * phonon-gstreamer 4.6.3 (or newer)
       * phonon-vlc 0.6.1 (or newer; as of 0.6.1 doesn't yet play Audio CDs, bug 313046)
 
-    * Qt 4.8.3 (or newer)
-      http://qt-project.org
+    * Qt 5.8 (or newer)
+      https://qt.io/
 
     * TagLib 1.7 (or newer)
       (Metadata tagging library)
@@ -55,19 +59,10 @@ Required
     * MySQL 5.0 (or newer) Embedded: libmysqld compiled with fPIC
       (In-process database support)
 
-    * QtScript Generator, Qt Bindings 0.1.0
-      (Qt Bindings for QtScript for Amarok's scripting system)
-      http://code.google.com/p/qtscriptgenerator/
-      http://qt.gitorious.org/qt-labs/qtscriptgenerator
-
-    * LibQCA 2.0.2 (or newer)
-      (Qt Cryptographic Architecture)
-      http://delta.affinix.com/qca/
-
 Optional
     * Taglib 1.8 for support of MOD, IT, S3M and XM files
     * Taglib 1.9 for support of Opus files
-      http://developer.kde.org/~wheeler/taglib.html
+      http://taglib.org/
       https://github.com/taglib/taglib
 
     * iPod support requires:
@@ -85,10 +80,10 @@ Optional
       * QtOpenGL
 
     * Mp3tunes.com integration (including syncronization) requires:
-      * OpenSSL http://www.openssl.org
+      * OpenSSL https://www.openssl.org
       * libxml2 http://xmlsoft.org
-      * libcurl http://curl.haxx.se
-      * Glib2 http://www.gtk.org
+      * libcurl https://curl.haxx.se
+      * Glib2 https://www.gtk.org
       * Loudmouth, the Jabber library, http://www.loudmouth-project.org/
       * Qt must be compiled with Glib enabled
 
@@ -97,22 +92,22 @@ Optional
       http://cdn.last.fm/client/liblastfm-1.0.3.tar.gz
       https://github.com/eartle/liblastfm
 
-    * QJson 0.7 (or newer)
-      (Qt JSON Parser for the Playdar Collection)
-      http://qjson.sourceforge.net/
-
     * MySQL 5.0 (or newer) Server (external database support)
 
     * MusicBrainz-based audio fingerprint tag lookup requires:
-      * FFmpeg 0.7.0 (or newer) - http://ffmpeg.org/
+      * FFmpeg 0.7.0 (or newer) - https://ffmpeg.org/
         * libavcodec & libavformat specifically
       * LibOFA - http://code.google.com/p/musicip-libofa/
 
     * gpodder.net Podcast Provider & Service
-      * libmygpo-qt 1.0.7 (or newer)
+      * libmygpo-qt 1.0.9 (or newer)
+         Actually it needs the to-be-released 1.10. Or you use 1.0.9 and add the
+         patches from the following pull requests:
+         - https://github.com/gpodder/libmygpo-qt/pull/12
+         - https://github.com/gpodder/libmygpo-qt/pull/13
 
     * Transcoding requires (at runtime):
-      * FFmpeg 0.7.0 (or newer) - http://ffmpeg.org/
+      * FFmpeg 0.7.0 (or newer) - https://ffmpeg.org/
       * For all supported encoders to be available in Amarok, FFmpeg needs to
         support the following codecs:
         * aac (introduced in 3.0, https://www.ffmpeg.org/index.html#aac_encoder_stable)
@@ -124,14 +119,14 @@ Optional
         * wmav2
 
     * CD support requires:
-      * audiocd-kio - http://www.kde.org/ (part of KDE multimedia)
+      * audiocd-kio - https://www.kde.org/ (part of KDE multimedia)
 
     * Downloading songs from Amazon works best on non Windows systems using
       * clamz - https://code.google.com/p/clamz/
       * The official downloader should work fine on Windows, too. But it's broken on many Linux systems.
 
     * Building tests require:
-      * gmock 1.4 (or newer) - http://code.google.com/p/googlemock/
+      * gmock 1.4 (or newer) - https://github.com/google/googletest
 
 Please note that if compiling from source you also need to install -dev/-devel
 versions of these packages, depending on your distribution.
@@ -143,7 +138,7 @@ versions of these packages, depending on your distribution.
 
 To compile from source, please refer to the INSTALL file.
 
-Packages for popular distributions are available at http://amarok.kde.org
+Packages for popular distributions are available at https://amarok.kde.org
 --------------------------------------------------------------------------------
 
 
@@ -153,7 +148,7 @@ Packages for popular distributions are available at http://amarok.kde.org
 For answers to problems like "Amarok won't play any MP3s!" and "My MP3s skip
 and stutter!" please visit:
 
-   http://amarok.kde.org/
+   https://amarok.kde.org/
 --------------------------------------------------------------------------------
 
 
@@ -168,12 +163,12 @@ notification of commits, visit http://commitfilter.kde.org/ , and http://amarok.
 provides a slightly-less-instant overview.
 
 More information at:
-http://community.kde.org/Amarok/Development/Join
+https://community.kde.org/Amarok/Development/Join
 
 See you on IRC!
 
 --------------------------------------------------------------------------------
 
-WWW:  http://amarok.kde.org
+WWW:  https://amarok.kde.org
 MAIL: amarok@kde.org
 IRC:  irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr
