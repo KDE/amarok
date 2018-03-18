@@ -35,8 +35,8 @@ class Mp3tunesHarmonyDownload {
          * Default constructor does nothing.
          */
         Mp3tunesHarmonyDownload();
-	Mp3tunesHarmonyDownload( const QVariantMap &map );
-        Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download );
+        explicit Mp3tunesHarmonyDownload( const QVariantMap &map );
+        explicit Mp3tunesHarmonyDownload( mp3tunes_harmony_download_t *download );
         ~Mp3tunesHarmonyDownload();
 
         QString fileKey() const;

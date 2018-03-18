@@ -33,7 +33,7 @@ namespace AmarokScript
         Q_PROPERTY ( bool osdEnabled READ osdEnabled WRITE setOsdEnabled )
 
         public:
-            AmarokOSDScript( QScriptEngine* scriptEngine );
+            explicit AmarokOSDScript( QScriptEngine* scriptEngine );
 
             /**
              * Show an OSD for the currently playing track, even if the OSD

@@ -33,7 +33,7 @@ class SlimToolbar : public QToolBar
     Q_OBJECT
 
 public:
-    SlimToolbar( QWidget * parent );
+    explicit SlimToolbar( QWidget * parent );
     ~SlimToolbar();
 
     virtual bool eventFilter( QObject* object, QEvent* event );

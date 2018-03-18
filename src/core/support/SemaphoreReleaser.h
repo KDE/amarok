@@ -28,7 +28,7 @@ class QSemaphore;
 class AMAROK_CORE_EXPORT SemaphoreReleaser
 {
     public:
-        SemaphoreReleaser( QSemaphore *semaphore );
+        explicit SemaphoreReleaser( QSemaphore *semaphore );
         ~SemaphoreReleaser();
 
         /**

@@ -34,7 +34,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
 {
     Q_OBJECT
     public:
-        MediaDeviceUserPlaylistProvider( Collections::MediaDeviceCollection *collection );
+        explicit MediaDeviceUserPlaylistProvider( Collections::MediaDeviceCollection *collection );
         ~MediaDeviceUserPlaylistProvider();
 
         /* PlaylistProvider functions */

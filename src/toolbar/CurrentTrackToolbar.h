@@ -26,7 +26,7 @@ class CurrentTrackToolbar : public QToolBar
     Q_OBJECT
 
 public:
-    CurrentTrackToolbar( QWidget * parent );
+    explicit CurrentTrackToolbar( QWidget * parent );
 
     ~CurrentTrackToolbar();
 

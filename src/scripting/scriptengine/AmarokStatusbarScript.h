@@ -29,7 +29,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokStatusbarScript( QScriptEngine* scriptEngine );
+            explicit AmarokStatusbarScript( QScriptEngine* scriptEngine );
 
             Q_INVOKABLE void longMessage( const QString &text );
             Q_INVOKABLE void shortMessage( const QString &text );

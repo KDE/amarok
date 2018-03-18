@@ -50,15 +50,15 @@ class OpmlDirectoryFeed  : public ServiceTrack
 
 
 public:
-    OpmlDirectoryFeed( const QString &name );
-    OpmlDirectoryFeed( const QStringList &resultRow );
+    explicit OpmlDirectoryFeed( const QString &name );
+    explicit OpmlDirectoryFeed( const QStringList &resultRow );
 };
 
 class OpmlDirectoryCategory : public ServiceAlbum
 {
     public:
-        OpmlDirectoryCategory( const QString &name );
-        OpmlDirectoryCategory( const QStringList &resultRow );
+        explicit OpmlDirectoryCategory( const QString &name );
+        explicit OpmlDirectoryCategory( const QStringList &resultRow );
 };
 
 }

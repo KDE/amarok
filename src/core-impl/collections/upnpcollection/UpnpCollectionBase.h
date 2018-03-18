@@ -58,7 +58,7 @@ class UpnpCollectionBase : public Collections::Collection
 {
   Q_OBJECT
   public:
-    UpnpCollectionBase( const DeviceInfo& dev );
+    explicit UpnpCollectionBase( const DeviceInfo& dev );
     virtual ~UpnpCollectionBase();
     void removeCollection() { emit remove(); }
 

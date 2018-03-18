@@ -29,7 +29,7 @@ public:
     * Constructor.
     * @param parent Parent widget.
     */
-    NavigatorConfigAction( QWidget * parent );
+    explicit NavigatorConfigAction( QWidget * parent );
 
     /**
     * Destructor.

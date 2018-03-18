@@ -43,7 +43,7 @@ class AMAROK_EXPORT OrganizeCollectionOptionWidget : public QGroupBox, public Ui
     Q_OBJECT
 
     public:
-        OrganizeCollectionOptionWidget( QWidget *parent = 0 );
+        explicit OrganizeCollectionOptionWidget( QWidget *parent = 0 );
 
         bool asciiOnly() const { return asciiCheck->isChecked(); }
         void setAsciiOnly( bool enable ) { asciiCheck->setChecked( enable ); }

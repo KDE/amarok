@@ -31,7 +31,7 @@ class ScriptableServiceCollection : public ServiceCollection
 {
     Q_OBJECT
 public:
-    ScriptableServiceCollection( const QString &name );
+    explicit ScriptableServiceCollection( const QString &name );
 
     ~ScriptableServiceCollection();
 

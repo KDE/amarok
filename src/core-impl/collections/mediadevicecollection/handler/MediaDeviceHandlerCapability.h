@@ -53,7 +53,7 @@ namespace Handler
              * The capability sets its parent to handler, so that it can be guaranteed that
              * the handler is valid for Capability's lifetime.
              */
-            Capability( QObject *handler );
+            explicit Capability( QObject *handler );
             virtual ~Capability();
 
         Q_SIGNALS:

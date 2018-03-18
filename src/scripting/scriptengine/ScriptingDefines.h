@@ -97,7 +97,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokScriptEngine( QObject *parent );
+            explicit AmarokScriptEngine( QObject *parent );
             virtual ~AmarokScriptEngine();
 
             void setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property );

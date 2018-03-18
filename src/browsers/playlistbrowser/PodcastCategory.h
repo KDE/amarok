@@ -38,7 +38,7 @@ class PodcastCategory : public PlaylistBrowserCategory
         static QString s_configGroup;
         static QString s_mergedViewKey;
 
-        PodcastCategory( QWidget *parent );
+        explicit PodcastCategory( QWidget *parent );
         ~PodcastCategory();
 
     private Q_SLOTS:

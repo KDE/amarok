@@ -32,7 +32,7 @@ public:
 
 private:
 
-    BookmarkManager( QWidget* parent = 0 );
+    explicit BookmarkManager( QWidget* parent = 0 );
 
     static BookmarkManager *s_instance;
     BookmarkManagerWidget * m_widget;

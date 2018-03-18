@@ -30,7 +30,7 @@ class ScriptSelector : public KPluginSelector
     Q_OBJECT
 
     public:
-        ScriptSelector( QWidget * parent );
+        explicit ScriptSelector( QWidget * parent );
         ~ScriptSelector();
 
         QString currentItem() const;

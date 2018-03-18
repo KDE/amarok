@@ -43,7 +43,7 @@ typedef AmarokSharedPointer<UpnpYear> UpnpYearPtr;
 class UpnpTrack : public Meta::Track
 {
     public:
-        UpnpTrack( Collections::UpnpCollectionBase *collection );
+        explicit UpnpTrack( Collections::UpnpCollectionBase *collection );
         virtual ~UpnpTrack();
 
         virtual QString name() const;
@@ -124,7 +124,7 @@ class UpnpTrack : public Meta::Track
 class UpnpArtist : public Meta::Artist
 {
     public:
-        UpnpArtist( const QString &name );
+        explicit UpnpArtist( const QString &name );
         virtual ~UpnpArtist();
 
         virtual QString name() const;
@@ -144,7 +144,7 @@ class UpnpAlbum : public QObject, public Meta::Album
 {
   Q_OBJECT
     public:
-        UpnpAlbum( const QString &name );
+        explicit UpnpAlbum( const QString &name );
         virtual ~UpnpAlbum();
 
         virtual QString name() const;
@@ -178,7 +178,7 @@ class UpnpAlbum : public QObject, public Meta::Album
 class UpnpGenre : public Meta::Genre
 {
     public:
-        UpnpGenre( const QString &name );
+        explicit UpnpGenre( const QString &name );
         virtual ~UpnpGenre();
 
         virtual QString name() const;
@@ -197,7 +197,7 @@ class UpnpGenre : public Meta::Genre
 class UpnpComposer : public Meta::Composer
 {
     public:
-        UpnpComposer( const QString &name );
+        explicit UpnpComposer( const QString &name );
         virtual ~UpnpComposer();
 
         virtual QString name() const;
@@ -216,7 +216,7 @@ class UpnpComposer : public Meta::Composer
 class UpnpYear : public Meta::Year
 {
     public:
-        UpnpYear( int year );
+        explicit UpnpYear( int year );
         virtual ~UpnpYear();
 
         virtual QString name() const;

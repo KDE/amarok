@@ -50,7 +50,7 @@ public:
      * @param fileName The file to parse 
      * @return Pointer to new object
      */
-    OpmlParser( const QUrl &url );
+    explicit OpmlParser( const QUrl &url );
 
     /**
      * Destructor
@@ -158,7 +158,7 @@ private:
     class Action
     {
         public:
-            Action( ActionMap &actionMap )
+            explicit Action( ActionMap &actionMap )
                 : m_actionMap( actionMap )
                 , m_begin( 0 )
                 , m_end( 0 )

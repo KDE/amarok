@@ -74,7 +74,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionLocation : public CollectionLocat
     Q_OBJECT
 
     public:
-        SqlCollectionLocation( SqlCollection *collection );
+        explicit SqlCollectionLocation( SqlCollection *collection );
         virtual ~SqlCollectionLocation();
 
         virtual QString prettyLocation() const;

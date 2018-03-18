@@ -40,7 +40,7 @@ namespace StatSyncing
             /**
              * Construct provider that has @param collection as a back-end.
              */
-            CollectionProvider( Collections::Collection *collection );
+            explicit CollectionProvider( Collections::Collection *collection );
             virtual ~CollectionProvider();
 
             virtual QString id() const;

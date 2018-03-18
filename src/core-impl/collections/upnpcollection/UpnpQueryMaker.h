@@ -45,7 +45,7 @@ class UpnpQueryMaker : public QueryMaker
     Q_OBJECT
 
     public:
-        UpnpQueryMaker( UpnpSearchCollection * );
+        explicit UpnpQueryMaker( UpnpSearchCollection * );
         ~UpnpQueryMaker();
 
         QueryMaker* reset();

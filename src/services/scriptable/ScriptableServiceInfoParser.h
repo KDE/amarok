@@ -30,7 +30,7 @@ class ScriptableServiceInfoParser : public InfoParserBase
 {
 Q_OBJECT
 public:
-    ScriptableServiceInfoParser( const QString &serviceName );
+    explicit ScriptableServiceInfoParser( const QString &serviceName );
 
     ~ScriptableServiceInfoParser();
 

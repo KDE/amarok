@@ -27,7 +27,7 @@ class LastFmStreamInfoCapability : public Capabilities::StreamInfoCapability
 {
     Q_OBJECT
     public:
-        LastFmStreamInfoCapability( LastFm::Track *track );
+        explicit LastFmStreamInfoCapability( LastFm::Track *track );
         ~LastFmStreamInfoCapability();
 
         virtual QString streamName() const;

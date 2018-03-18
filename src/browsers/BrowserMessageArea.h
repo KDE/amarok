@@ -30,7 +30,7 @@ class BrowserMessageArea : public BoxWidget, public Amarok::Logger
     Q_OBJECT
 
 public:
-    BrowserMessageArea( QWidget *parent );
+    explicit BrowserMessageArea( QWidget *parent );
 
     ~BrowserMessageArea()
     {

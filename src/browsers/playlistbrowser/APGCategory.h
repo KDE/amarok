@@ -29,7 +29,7 @@ namespace PlaylistBrowserNS {
         Q_OBJECT
 
         public:
-            APGCategory( QWidget* parent );
+            explicit APGCategory( QWidget* parent );
             ~APGCategory();
 
         Q_SIGNALS:

@@ -39,7 +39,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            ScriptableServiceScript( QScriptEngine* engine );
+            explicit ScriptableServiceScript( QScriptEngine* engine );
 
             void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
             void slotRequestInfo( QString name, int level, QString callbackData );

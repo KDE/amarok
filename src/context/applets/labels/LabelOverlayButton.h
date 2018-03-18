@@ -34,7 +34,7 @@ class LabelOverlayButton : public QObject, public QGraphicsItem
     Q_PROPERTY( qreal opacity READ opacity WRITE setOpacity )
 
 public:
-    LabelOverlayButton( QGraphicsItem *parent );
+    explicit LabelOverlayButton( QGraphicsItem *parent );
     ~LabelOverlayButton();
 
     void setPixmap( const QPixmap& pixmap );

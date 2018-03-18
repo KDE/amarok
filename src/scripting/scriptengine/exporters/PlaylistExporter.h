@@ -62,7 +62,7 @@ namespace AmarokScript
 
     public:
         static void init( QScriptEngine *engine );
-        PlaylistPrototype( Playlists::PlaylistPtr playlist );
+        explicit PlaylistPrototype( Playlists::PlaylistPtr playlist );
         Playlists::PlaylistPtr data() const { return m_playlist; }
 
         /**

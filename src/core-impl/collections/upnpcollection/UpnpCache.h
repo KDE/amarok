@@ -31,7 +31,7 @@ class UpnpCollectionBase;
 class UpnpCache
 {
 public:
-    UpnpCache( UpnpCollectionBase *collection );
+    explicit UpnpCache( UpnpCollectionBase *collection );
 
     Meta::TrackPtr getTrack( const KIO::UDSEntry &entry, bool refresh = false );
     Meta::ArtistPtr getArtist( const QString &name );

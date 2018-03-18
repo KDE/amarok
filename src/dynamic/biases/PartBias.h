@@ -40,7 +40,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent = 0 );
+            explicit PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent = 0 );
 
         protected Q_SLOTS:
             void biasAppended( Dynamic::BiasPtr bias );

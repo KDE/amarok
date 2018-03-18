@@ -201,7 +201,7 @@ namespace Debug
     class Block
     {
     public:
-        AMAROK_CORE_EXPORT Block( const char *name );
+        AMAROK_CORE_EXPORT explicit Block( const char *name );
         AMAROK_CORE_EXPORT ~Block();
 
     private:

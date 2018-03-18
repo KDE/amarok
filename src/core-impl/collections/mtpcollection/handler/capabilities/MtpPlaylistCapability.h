@@ -32,7 +32,7 @@ class MtpPlaylistCapability : public PlaylistCapability
     Q_OBJECT
 
     public:
-        MtpPlaylistCapability( Meta::MtpHandler *handler );
+        explicit MtpPlaylistCapability( Meta::MtpHandler *handler );
 
         virtual void prepareToParsePlaylists();
         virtual bool isEndOfParsePlaylistsList();

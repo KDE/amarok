@@ -47,7 +47,7 @@ public:
     };
     Q_ENUM(SelectionType)
 
-    WikipediaEngine( QObject* parent = Q_NULLPTR );
+    explicit WikipediaEngine( QObject* parent = Q_NULLPTR );
     virtual ~WikipediaEngine();
 
     QString page() const { return m_page; }

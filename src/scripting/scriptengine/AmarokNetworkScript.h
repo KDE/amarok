@@ -37,7 +37,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            Downloader( QScriptEngine* scriptEngine );
+            explicit Downloader( QScriptEngine* scriptEngine );
 
         private:
             static QScriptValue dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );

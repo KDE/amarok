@@ -42,7 +42,7 @@ class PrettyTreeDelegate : public QStyledItemDelegate
     Q_OBJECT
 
     public:
-        PrettyTreeDelegate( Amarok::PrettyTreeView *view );
+        explicit PrettyTreeDelegate( Amarok::PrettyTreeView *view );
         ~PrettyTreeDelegate();
 
         void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;

@@ -26,7 +26,7 @@ class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
     Q_OBJECT
 
     public:
-        PlaybackConfig( Amarok2ConfigDialog* parent );
+        explicit PlaybackConfig( Amarok2ConfigDialog* parent );
         virtual ~PlaybackConfig();
 
         bool hasChanged() Q_DECL_OVERRIDE;

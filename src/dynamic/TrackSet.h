@@ -56,7 +56,7 @@ namespace Dynamic
     class AMAROK_EXPORT TrackCollection : public QSharedData
     {
         public:
-            TrackCollection( const QStringList& uids );
+            explicit TrackCollection( const QStringList& uids );
 
             int count() const;
             QStringList uids() const;

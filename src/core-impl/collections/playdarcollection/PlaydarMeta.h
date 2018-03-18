@@ -161,7 +161,7 @@ namespace Meta
     class PlaydarArtist : public Artist
     {
         public:
-            PlaydarArtist( const QString &name );
+            explicit PlaydarArtist( const QString &name );
             ~PlaydarArtist();
 
             QString name() const;
@@ -181,7 +181,7 @@ namespace Meta
     class PlaydarAlbum : public Album
     {
         public:
-            PlaydarAlbum( const QString &name );
+            explicit PlaydarAlbum( const QString &name );
             ~PlaydarAlbum();
             bool isCompilation() const;
             
@@ -215,7 +215,7 @@ namespace Meta
     class PlaydarComposer : public Composer
     {
         public:
-            PlaydarComposer( const QString &name );
+            explicit PlaydarComposer( const QString &name );
             ~PlaydarComposer();
 
             QString name() const;
@@ -232,7 +232,7 @@ namespace Meta
     class PlaydarGenre : public Genre
     {
         public:
-            PlaydarGenre( const QString &name );
+            explicit PlaydarGenre( const QString &name );
             ~PlaydarGenre();
 
             QString name() const;
@@ -249,7 +249,7 @@ namespace Meta
     class PlaydarYear : public Year
     {
         public:
-            PlaydarYear( const QString &name );
+            explicit PlaydarYear( const QString &name );
             ~PlaydarYear();
 
             QString name() const;
@@ -266,7 +266,7 @@ namespace Meta
     class PlaydarLabel : public Label
     {
         public:
-            PlaydarLabel( const QString &name );
+            explicit PlaydarLabel( const QString &name );
             ~PlaydarLabel();
 
             QString name() const;

@@ -31,7 +31,7 @@ namespace MetaFile
     class AMAROK_EXPORT Track : public Meta::Track, public Meta::Statistics, Meta::TrackEditor
     {
         public:
-            Track( const QUrl &url );
+            explicit Track( const QUrl &url );
             virtual ~Track();
 
         //methods inherited from Meta::Base

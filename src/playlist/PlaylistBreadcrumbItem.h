@@ -154,7 +154,7 @@ public:
     /**
      * Constructor.
      */
-    BreadcrumbAddMenuButton( QWidget *parent );
+    explicit BreadcrumbAddMenuButton( QWidget *parent );
 
     /**
      * Destructor.

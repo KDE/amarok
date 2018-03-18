@@ -32,7 +32,7 @@ namespace Capabilities {
 class AMAROK_CORE_EXPORT BookmarkThisCapability : public Capability {
     Q_OBJECT
 public:
-    BookmarkThisCapability( QAction* action );
+    explicit BookmarkThisCapability( QAction* action );
     virtual ~BookmarkThisCapability();
 
     virtual bool isBookmarkable() { return true; }

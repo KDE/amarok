@@ -32,7 +32,7 @@ class MusicDNSFinder: public QObject
 {
     Q_OBJECT
     public:
-        MusicDNSFinder( QObject *parent = 0,
+        explicit MusicDNSFinder( QObject *parent = 0,
                         const QString &host = "ofa.musicdns.org",
                         const int port = 80,
                         const QString &pathPrefix = "/ofa/1",

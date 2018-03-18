@@ -35,7 +35,7 @@ enum OpmlNodeType
 class AMAROK_EXPORT OpmlOutline
 {
     public:
-        OpmlOutline( OpmlOutline *parent = 0 );
+        explicit OpmlOutline( OpmlOutline *parent = 0 );
         ~OpmlOutline() {}
 
         OpmlOutline *parent() const { return m_parent; }

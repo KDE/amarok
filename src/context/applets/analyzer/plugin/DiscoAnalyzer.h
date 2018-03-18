@@ -26,7 +26,7 @@ class QPaintEvent;
 class DiscoAnalyzer : public Analyzer::Base
 {
 public:
-    DiscoAnalyzer( QWidget * );
+    explicit DiscoAnalyzer( QWidget * );
     ~DiscoAnalyzer();
     void analyze( const QVector<float>& );
 

@@ -26,7 +26,7 @@ class IconButton : public QWidget
     Q_OBJECT
 
 public:
-    IconButton( QWidget *parent = 0 );
+    explicit IconButton( QWidget *parent = 0 );
     virtual QSize sizeHint() const;
     void setIcon( const QImage &img, int steps = 0 );
 

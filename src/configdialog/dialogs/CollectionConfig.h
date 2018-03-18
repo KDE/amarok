@@ -27,7 +27,7 @@ class CollectionConfig : public ConfigDialogBase
     Q_OBJECT
 
     public:
-        CollectionConfig( Amarok2ConfigDialog* parent );
+        explicit CollectionConfig( Amarok2ConfigDialog* parent );
         virtual ~CollectionConfig();
 
         bool hasChanged() Q_DECL_OVERRIDE;

@@ -53,7 +53,7 @@ public:
      * ArtistWidget constructor
      * @param parent The widget parent
      */
-    ArtistWidget( const SimilarArtistPtr &artist,
+    explicit ArtistWidget( const SimilarArtistPtr &artist,
                   QGraphicsWidget *parent = 0, Qt::WindowFlags wFlags = 0 );
 
     /**

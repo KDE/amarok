@@ -41,7 +41,7 @@ class ScriptTerminatorWidget : public PopupWidget
 {
     Q_OBJECT
 public:
-    ScriptTerminatorWidget( const QString &message );
+    explicit ScriptTerminatorWidget( const QString &message );
 
 Q_SIGNALS:
     void terminate();

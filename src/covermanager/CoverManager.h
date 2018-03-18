@@ -54,7 +54,7 @@ class CoverManager : public QDialog, public Meta::Observer
         static bool s_constructed;
 
     public:
-        CoverManager( QWidget *parent = 0 );
+        explicit CoverManager( QWidget *parent = 0 );
        ~CoverManager();
 
         static bool isConstructed() { return s_constructed; }

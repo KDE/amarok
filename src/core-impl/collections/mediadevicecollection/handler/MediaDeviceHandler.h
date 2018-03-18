@@ -367,7 +367,7 @@ public:
     * @param handler The handler
     */
 
-    ParseWorkerThread( MediaDeviceHandler* handler);
+    explicit ParseWorkerThread( MediaDeviceHandler* handler);
 
     /**
     * The destructor.

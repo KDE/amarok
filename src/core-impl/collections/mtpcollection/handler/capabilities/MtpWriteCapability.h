@@ -31,7 +31,7 @@ class MtpWriteCapability : public WriteCapability
 {
     Q_OBJECT
     public:
-    MtpWriteCapability( Meta::MtpHandler *handler );
+    explicit MtpWriteCapability( Meta::MtpHandler *handler );
 
     virtual QStringList supportedFormats();
 

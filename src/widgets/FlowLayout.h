@@ -35,7 +35,7 @@
 {
     public:
         explicit FlowLayout(QWidget *parent, int margin = 0, int spacing = -1);
-        FlowLayout(int spacing = -1);
+        explicit FlowLayout(int spacing = -1);
         ~FlowLayout();
 
         void addItem(QLayoutItem *item);

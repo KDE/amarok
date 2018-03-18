@@ -28,7 +28,7 @@ class UmsPodcastProvider : public PodcastProvider
 {
     Q_OBJECT
     public:
-        UmsPodcastProvider( QUrl scanDirectory );
+        explicit UmsPodcastProvider( QUrl scanDirectory );
         ~UmsPodcastProvider();
 
         UmsPodcastEpisodePtr addFile( MetaFile::TrackPtr metafileTrack );

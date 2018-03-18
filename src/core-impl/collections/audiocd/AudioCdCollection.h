@@ -71,7 +71,7 @@ public:
 
     enum { WAV, FLAC, OGG, MP3 } EncodingFormat;
 
-    AudioCdCollection( MediaDeviceInfo* info );
+    explicit AudioCdCollection( MediaDeviceInfo* info );
     ~AudioCdCollection();
 
     QString encodingFormat() const;

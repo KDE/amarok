@@ -30,7 +30,7 @@ class PlaylistsInFoldersProxy : public QtGroupingProxy
 {
     Q_OBJECT
     public:
-        PlaylistsInFoldersProxy( QAbstractItemModel *model );
+        explicit PlaylistsInFoldersProxy( QAbstractItemModel *model );
         ~PlaylistsInFoldersProxy();
 
         /* PlaylistInGroupsProxy methods */

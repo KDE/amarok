@@ -41,7 +41,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            ReplacementBias( const QString &n );
+            explicit ReplacementBias( const QString &n );
             ReplacementBias( const QString &n, QXmlStreamReader *reader );
 
             void toXml( QXmlStreamWriter *writer ) const;

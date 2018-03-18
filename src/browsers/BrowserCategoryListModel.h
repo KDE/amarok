@@ -39,7 +39,7 @@ A very simple model to hold the available categories
 class BrowserCategoryListModel : public QAbstractListModel
 {
 public:
-    BrowserCategoryListModel( QObject *parent = 0 );
+    explicit BrowserCategoryListModel( QObject *parent = 0 );
     ~BrowserCategoryListModel();
 
     int rowCount( const QModelIndex & parent = QModelIndex() ) const;

@@ -29,7 +29,7 @@ class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
     Q_OBJECT
 
     public:
-        MetadataConfig( Amarok2ConfigDialog *parent );
+        explicit MetadataConfig( Amarok2ConfigDialog *parent );
         virtual ~MetadataConfig();
 
         bool isDefault() Q_DECL_OVERRIDE;

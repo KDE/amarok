@@ -36,7 +36,7 @@ class QCollator;
 class CollectionSortFilterProxyModel : public QSortFilterProxyModel
 {
     public:
-        CollectionSortFilterProxyModel( QObject * parent = 0 );
+        explicit CollectionSortFilterProxyModel( QObject * parent = 0 );
 
         virtual ~CollectionSortFilterProxyModel();
 

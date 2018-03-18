@@ -25,7 +25,7 @@ namespace Meta
 class MediaDeviceTrackEditor : public Meta::TrackEditor
 {
     public:
-        MediaDeviceTrackEditor( MediaDeviceTrack *track );
+        explicit MediaDeviceTrackEditor( MediaDeviceTrack *track );
 
         virtual void setAlbum( const QString &newAlbum );
         virtual void setAlbumArtist( const QString &newAlbumArtist );

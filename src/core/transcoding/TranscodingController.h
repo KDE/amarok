@@ -41,7 +41,7 @@ class AMAROK_CORE_EXPORT Controller : public QObject
 {
     Q_OBJECT
 public:
-    Controller( QObject *parent = 0 );
+    explicit Controller( QObject *parent = 0 );
     ~Controller();
 
     /**

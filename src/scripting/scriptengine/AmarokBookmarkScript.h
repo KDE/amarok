@@ -38,7 +38,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokBookmarkScript( QScriptEngine* scriptEngine );
+            explicit AmarokBookmarkScript( QScriptEngine* scriptEngine );
 
             /**
              * @return bookmark for the current context view.
@@ -77,7 +77,7 @@ namespace AmarokScript
 
         public:
             static QScriptValue bookmarkCtor( QScriptContext *context, QScriptEngine *engine );
-            BookmarkPrototype( AmarokUrlPtr bookmark );
+            explicit BookmarkPrototype( AmarokUrlPtr bookmark );
             AmarokUrlPtr data() const { return m_url; }
 
             /**
@@ -128,7 +128,7 @@ namespace AmarokScript
         Q_PROPERTY( int childCount READ childCount )
 
         public:
-            BookmarkGroupPrototype( BookmarkGroupPtr group );
+            explicit BookmarkGroupPrototype( BookmarkGroupPtr group );
             static QScriptValue bookmarkGroupCtor( QScriptContext *context, QScriptEngine *engine );
             BookmarkGroupPtr data() const { return m_group; }
 

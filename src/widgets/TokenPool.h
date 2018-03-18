@@ -29,7 +29,7 @@ class TokenPool : public QListWidget
     Q_OBJECT
 
     public:
-        TokenPool( QWidget *parent = 0 );
+        explicit TokenPool( QWidget *parent = 0 );
 
         /** Adds the \p token into the token pool.
             The TokenPool takes ownership of the token.

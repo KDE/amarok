@@ -37,7 +37,7 @@ class AMAROK_EXPORT EqualizerController : public QObject
 
 public:
 
-    EqualizerController( QObject *object );
+    explicit EqualizerController( QObject *object );
     ~EqualizerController();
 
     void initialize( const Phonon::Path &path );

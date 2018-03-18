@@ -23,7 +23,7 @@
 class NfsDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
-    NfsDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
+    explicit NfsDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
     virtual ~NfsDeviceHandlerFactory();
 
     virtual bool canHandle( const Solid::Device &device ) const;

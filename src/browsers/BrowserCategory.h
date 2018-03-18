@@ -43,7 +43,7 @@ public:
      * @param name The internal name of the category, used for generating Amarok urls. This should never be translated.
      * @param parent The parent widget.
      */
-    BrowserCategory( const QString &name, QWidget *parent = 0 );
+    explicit BrowserCategory( const QString &name, QWidget *parent = 0 );
 
     /**
      * Destructor.

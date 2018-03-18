@@ -32,7 +32,7 @@ class AMAROK_EXPORT ServiceCollectionLocation : public CollectionLocation
     Q_OBJECT
     public:
         ServiceCollectionLocation();
-        ServiceCollectionLocation( ServiceCollection *parentCollection );
+        explicit ServiceCollectionLocation( ServiceCollection *parentCollection );
         virtual ~ServiceCollectionLocation();
 
         virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );

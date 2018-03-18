@@ -42,7 +42,7 @@ class CollectionSetup : public QWidget
     public:
         static CollectionSetup* instance() { return s_instance; }
 
-        CollectionSetup( QWidget* );
+        explicit CollectionSetup( QWidget* );
         virtual ~CollectionSetup() {}
 
         void writeConfig();
@@ -89,7 +89,7 @@ namespace CollectionFolder //just to keep it out of the global namespace
     class Model : public QFileSystemModel
     {
         public:
-            Model( QObject *parent );
+            explicit Model( QObject *parent );
 
             virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
             QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;

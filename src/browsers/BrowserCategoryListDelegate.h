@@ -30,7 +30,7 @@
 class BrowserCategoryListDelegate : public QStyledItemDelegate
 {
 public:
-    BrowserCategoryListDelegate( QTreeView *view );
+    explicit BrowserCategoryListDelegate( QTreeView *view );
     ~BrowserCategoryListDelegate();
 
     void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;

@@ -45,7 +45,7 @@ namespace Capabilities
              * Note: The actions are not freed after usage
              * @param actions A list of actions to use.
              */
-            ActionsCapability( const QList< QAction* > &actions );
+            explicit ActionsCapability( const QList< QAction* > &actions );
 
             /**
              * Destructor

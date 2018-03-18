@@ -64,7 +64,7 @@ class ScriptableServiceInternalMetaItem
 class AMAROK_EXPORT ScriptableServiceInternalSourceInfoCapability : public Capabilities::SourceInfoCapability
 {
     public:
-        ScriptableServiceInternalSourceInfoCapability( ScriptableServiceInternalMetaItem * sourceInfoProvider )
+        explicit ScriptableServiceInternalSourceInfoCapability( ScriptableServiceInternalMetaItem * sourceInfoProvider )
         {
             m_sourceInfoProvider = sourceInfoProvider;
         }
@@ -85,7 +85,7 @@ class AMAROK_EXPORT ScriptableServiceInternalSourceInfoCapability : public Capab
 class ScriptableServiceInternalArtist : public Meta::Artist, public ScriptableServiceInternalMetaItem
 {
     public:
-        ScriptableServiceInternalArtist( const QString &name = QString() )
+        explicit ScriptableServiceInternalArtist( const QString &name = QString() )
         : Meta::Artist()
         , m_name( name )
         {}
@@ -128,7 +128,7 @@ private:
 class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover, public ScriptableServiceInternalMetaItem
 {
     public:
-        ScriptableServiceInternalAlbum( const QString &name = QString() )
+        explicit ScriptableServiceInternalAlbum( const QString &name = QString() )
         : Meta::ServiceAlbumWithCover( QString() )
         , m_name( name )
         {}
@@ -192,7 +192,7 @@ class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover, publi
 class ScriptableServiceInternalGenre : public Meta::Genre, public ScriptableServiceInternalMetaItem
 {
     public:
-        ScriptableServiceInternalGenre( const QString &name = QString() )
+        explicit ScriptableServiceInternalGenre( const QString &name = QString() )
         : Meta::Genre()
         , m_name( name )
         {}
@@ -234,7 +234,7 @@ class ScriptableServiceInternalGenre : public Meta::Genre, public ScriptableServ
 class ScriptableServiceInternalComposer : public Meta::Composer, public ScriptableServiceInternalMetaItem
 {
     public:
-        ScriptableServiceInternalComposer( const QString &name = QString() )
+        explicit ScriptableServiceInternalComposer( const QString &name = QString() )
         : Meta::Composer()
         , m_name( name )
         {}
@@ -277,7 +277,7 @@ class ScriptableServiceInternalComposer : public Meta::Composer, public Scriptab
 class ScriptableServiceInternalYear : public Meta::Year, public ScriptableServiceInternalMetaItem
 {
     public:
-        ScriptableServiceInternalYear( const QString &name = QString() )
+        explicit ScriptableServiceInternalYear( const QString &name = QString() )
         : Meta::Year()
         , m_name( name )
         {}

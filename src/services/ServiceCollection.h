@@ -45,7 +45,7 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
 {
     Q_OBJECT
     public:
-        ServiceCollection( ServiceBase * service = 0 );
+        explicit ServiceCollection( ServiceBase * service = 0 );
         ServiceCollection( ServiceBase * service, const QString &id, const QString &prettyName );
         virtual ~ServiceCollection();
 

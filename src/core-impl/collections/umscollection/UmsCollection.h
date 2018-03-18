@@ -104,7 +104,7 @@ class UmsCollection : public Collection, public Meta::Observer
     public:
         // inherited methods
 
-        UmsCollection( Solid::Device device );
+        explicit UmsCollection( Solid::Device device );
         virtual ~UmsCollection();
 
         /* TrackProvider methods */

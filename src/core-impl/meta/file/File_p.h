@@ -223,7 +223,7 @@ namespace MetaFile
     class FileArtist : public Meta::Artist
     {
     public:
-        FileArtist( MetaFile::Track::Private *dptr, bool isAlbumArtist = false )
+        explicit FileArtist( MetaFile::Track::Private *dptr, bool isAlbumArtist = false )
             : Meta::Artist()
             , d( dptr )
             , m_isAlbumArtist( isAlbumArtist )
@@ -252,7 +252,7 @@ namespace MetaFile
     class FileAlbum : public Meta::Album
     {
     public:
-        FileAlbum( MetaFile::Track::Private *dptr )
+        explicit FileAlbum( MetaFile::Track::Private *dptr )
             : Meta::Album()
             , d( dptr )
         {}
@@ -381,7 +381,7 @@ namespace MetaFile
     class FileGenre : public Meta::Genre
     {
     public:
-        FileGenre( MetaFile::Track::Private *dptr )
+        explicit FileGenre( MetaFile::Track::Private *dptr )
             : Meta::Genre()
             , d( dptr )
         {}
@@ -407,7 +407,7 @@ namespace MetaFile
     class FileComposer : public Meta::Composer
     {
     public:
-        FileComposer( MetaFile::Track::Private *dptr )
+        explicit FileComposer( MetaFile::Track::Private *dptr )
             : Meta::Composer()
             , d( dptr )
         {}
@@ -433,7 +433,7 @@ namespace MetaFile
     class FileYear : public Meta::Year
     {
     public:
-        FileYear( MetaFile::Track::Private *dptr )
+        explicit FileYear( MetaFile::Track::Private *dptr )
             : Meta::Year()
             , d( dptr )
         {}

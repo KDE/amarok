@@ -115,7 +115,7 @@ class AudioCdTrack : public Meta::Track
 class AudioCdArtist : public Meta::Artist
 {
     public:
-        AudioCdArtist( const QString &name );
+        explicit AudioCdArtist( const QString &name );
         virtual ~AudioCdArtist();
 
         virtual QString name() const;
@@ -135,7 +135,7 @@ class AudioCdArtist : public Meta::Artist
 class AudioCdAlbum : public Meta::Album
 {
     public:
-        AudioCdAlbum( const QString &name );
+        explicit AudioCdAlbum( const QString &name );
         virtual ~AudioCdAlbum();
 
         virtual QString name() const;
@@ -168,7 +168,7 @@ class AudioCdAlbum : public Meta::Album
 class AudioCdGenre : public Meta::Genre
 {
     public:
-        AudioCdGenre( const QString &name );
+        explicit AudioCdGenre( const QString &name );
         virtual ~AudioCdGenre();
 
         virtual QString name() const;
@@ -186,7 +186,7 @@ class AudioCdGenre : public Meta::Genre
 class AudioCdComposer : public Meta::Composer
 {
     public:
-        AudioCdComposer( const QString &name );
+        explicit AudioCdComposer( const QString &name );
         virtual ~AudioCdComposer();
 
         virtual QString name() const;
@@ -204,7 +204,7 @@ class AudioCdComposer : public Meta::Composer
 class AudioCdYear : public Meta::Year
 {
     public:
-        AudioCdYear( const QString &name );
+        explicit AudioCdYear( const QString &name );
         virtual ~AudioCdYear();
 
         virtual QString name() const;

@@ -34,7 +34,7 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         Q_OBJECT
 
     public:
-        CollectionTreeItemModel( const QList<CategoryId::CatMenuId> &levelType );
+        explicit CollectionTreeItemModel( const QList<CategoryId::CatMenuId> &levelType );
 
         /* QAbstractItemModel methods */
         virtual Qt::ItemFlags flags( const QModelIndex &index ) const;

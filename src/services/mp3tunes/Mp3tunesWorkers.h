@@ -67,7 +67,7 @@ class Mp3tunesArtistFetcher : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
-        Mp3tunesArtistFetcher( Mp3tunesLocker * locker );
+        explicit Mp3tunesArtistFetcher( Mp3tunesLocker * locker );
         ~Mp3tunesArtistFetcher();
 
         void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;

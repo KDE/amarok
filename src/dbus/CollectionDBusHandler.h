@@ -34,7 +34,7 @@ class CollectionDBusHandler : public QObject, protected QDBusContext
     Q_CLASSINFO( "Collection D-Bus Interface", "org.kde.amarok.Collection" )
     
     public:
-        CollectionDBusHandler( QObject *parent );
+        explicit CollectionDBusHandler( QObject *parent );
         
     public Q_SLOTS:
         /*

@@ -27,7 +27,7 @@ class AnalyzerWidget : public QWidget
 {
     Q_OBJECT
     public:
-        AnalyzerWidget( QWidget *parent );
+        explicit AnalyzerWidget( QWidget *parent );
     protected:
         virtual void resizeEvent( QResizeEvent* );
         virtual void mousePressEvent( QMouseEvent* );

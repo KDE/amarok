@@ -31,7 +31,7 @@ class IpodCollectionLocation : public Collections::CollectionLocation
     Q_OBJECT
 
     public:
-        IpodCollectionLocation( QPointer<IpodCollection> parentCollection );
+        explicit IpodCollectionLocation( QPointer<IpodCollection> parentCollection );
         virtual ~IpodCollectionLocation();
 
         // CollectionLocation methods:

@@ -34,7 +34,7 @@ namespace Capabilities
              * @param album album to create common actions for
              * @param actions custom actions to append after common actions
              */
-            AlbumActionsCapability( Meta::AlbumPtr album, QList<QAction *> actions = QList<QAction *>() );
+            explicit AlbumActionsCapability( Meta::AlbumPtr album, QList<QAction *> actions = QList<QAction *>() );
             virtual ~AlbumActionsCapability();
 
         protected:

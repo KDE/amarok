@@ -32,7 +32,7 @@ class IphoneMountPoint
          * Mount iPhone/iPad device by its 40-digit device UUID or mount any connected
          * iPhone/iPad if @param uuid is empty.
          */
-        IphoneMountPoint( const QString &uuid );
+        explicit IphoneMountPoint( const QString &uuid );
         ~IphoneMountPoint();
 
         /**

@@ -48,7 +48,7 @@ public:
      /**
      * Constructor
      */
-    ScriptableService( const QString &name );
+    explicit ScriptableService( const QString &name );
     
     /**
      * Destructor

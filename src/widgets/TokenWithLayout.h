@@ -27,7 +27,7 @@ class Wrench : public QLabel
 {
     Q_OBJECT
 public:
-    Wrench( QWidget *parent );
+    explicit Wrench( QWidget *parent );
 protected:
     void enterEvent(QEvent *);
     void leaveEvent(QEvent *);

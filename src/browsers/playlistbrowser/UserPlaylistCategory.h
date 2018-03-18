@@ -38,7 +38,7 @@ Q_OBJECT
 public:
     static QString s_configGroup;
 
-    UserPlaylistCategory( QWidget *parent );
+    explicit UserPlaylistCategory( QWidget *parent );
 
     ~UserPlaylistCategory();
 };

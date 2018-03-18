@@ -32,7 +32,7 @@ class QtGroupingProxy : public QAbstractProxyModel
     Q_OBJECT
     public:
         explicit QtGroupingProxy( QObject *parent = 0 );
-        QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootIndex = QModelIndex(),
+        explicit QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootIndex = QModelIndex(),
                                   int groupedColumn = -1, QObject *parent = 0 );
         ~QtGroupingProxy();
 

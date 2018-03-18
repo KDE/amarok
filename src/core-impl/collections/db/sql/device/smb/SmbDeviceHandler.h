@@ -23,7 +23,7 @@
 class SmbDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
-    SmbDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
+    explicit SmbDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
     virtual ~SmbDeviceHandlerFactory();
 
     virtual bool canHandle( const Solid::Device &device ) const;

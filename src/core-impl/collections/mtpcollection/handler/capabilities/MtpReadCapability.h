@@ -36,7 +36,7 @@ class MtpReadCapability : public ReadCapability
     Q_OBJECT
 
     public:
-        MtpReadCapability( Meta::MtpHandler *handler );
+        explicit MtpReadCapability( Meta::MtpHandler *handler );
 
         virtual void prepareToParseTracks();
 

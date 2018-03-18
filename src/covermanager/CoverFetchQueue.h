@@ -44,7 +44,7 @@ class CoverFetchQueue : public QObject
     Q_OBJECT
 
 public:
-    CoverFetchQueue( QObject *parent = 0 );
+    explicit CoverFetchQueue( QObject *parent = 0 );
     ~CoverFetchQueue();
 
     /**

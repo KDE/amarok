@@ -47,7 +47,7 @@ class OrganiseCapabilityImpl : public Capabilities::OrganiseCapability
 
     public:
 
-    OrganiseCapabilityImpl( Meta::SqlTrack *track );
+    explicit OrganiseCapabilityImpl( Meta::SqlTrack *track );
     virtual ~OrganiseCapabilityImpl();
 
     virtual void deleteTrack();
@@ -62,7 +62,7 @@ class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
 
     public:
 
-    TimecodeWriteCapabilityImpl( Meta::SqlTrack *track );
+    explicit TimecodeWriteCapabilityImpl( Meta::SqlTrack *track );
     virtual ~TimecodeWriteCapabilityImpl();
 
     virtual bool writeTimecode( qint64 miliseconds )
@@ -85,7 +85,7 @@ class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
 
     public:
 
-    TimecodeLoadCapabilityImpl( Meta::SqlTrack *track );
+    explicit TimecodeLoadCapabilityImpl( Meta::SqlTrack *track );
     virtual ~TimecodeLoadCapabilityImpl();
 
     virtual bool hasTimecodes();
@@ -101,7 +101,7 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
     Q_OBJECT
 
     public:
-    FindInSourceCapabilityImpl( Meta::SqlTrack *track );
+    explicit FindInSourceCapabilityImpl( Meta::SqlTrack *track );
     virtual ~FindInSourceCapabilityImpl();
 
     virtual void findInSource( QFlags<TargetTag> tag );

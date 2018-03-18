@@ -38,7 +38,7 @@ namespace AmarokScript
         Q_PROPERTY( bool kNotifyEnabled READ kNotifyEnabled WRITE setKNotifyEnabled )
 
         public:
-            AmarokKNotifyScript( QScriptEngine* scriptEngine );
+            explicit AmarokKNotifyScript( QScriptEngine* scriptEngine );
 
             /**
              * Show notifications for the currently playing track.

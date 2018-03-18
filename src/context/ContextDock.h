@@ -27,7 +27,7 @@ class ContextDock : public AmarokDockWidget
     Q_OBJECT
 
 public:
-    ContextDock( QWidget *parent );
+    explicit ContextDock( QWidget *parent );
 
     void polish();
 

@@ -142,7 +142,7 @@ private:
 class TimecodeArtist : public Meta::Artist
 {
 public:
-    TimecodeArtist( const QString &name );
+    explicit TimecodeArtist( const QString &name );
     virtual ~TimecodeArtist();
 
     virtual QString name() const;
@@ -168,7 +168,7 @@ class TimecodeAlbum : public QObject, public Meta::Album
 {
 Q_OBJECT
 public:
-    TimecodeAlbum( const QString &name );
+    explicit TimecodeAlbum( const QString &name );
     virtual ~TimecodeAlbum();
 
     virtual QString name() const;
@@ -206,7 +206,7 @@ private:
 class TimecodeGenre : public Meta::Genre
 {
 public:
-    TimecodeGenre( const QString &name );
+    explicit TimecodeGenre( const QString &name );
     virtual ~TimecodeGenre();
 
     virtual QString name() const;
@@ -229,7 +229,7 @@ private:
 class TimecodeComposer : public Meta::Composer
 {
 public:
-    TimecodeComposer( const QString &name );
+    explicit TimecodeComposer( const QString &name );
     virtual ~TimecodeComposer();
 
     virtual QString name() const;
@@ -252,7 +252,7 @@ private:
 class TimecodeYear : public Meta::Year
 {
 public:
-    TimecodeYear( const QString &name );
+    explicit TimecodeYear( const QString &name );
     virtual ~TimecodeYear();
 
     virtual QString name() const;

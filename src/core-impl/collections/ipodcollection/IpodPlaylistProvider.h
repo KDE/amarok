@@ -31,7 +31,7 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
     Q_OBJECT
 
     public:
-        IpodPlaylistProvider( IpodCollection *collection );
+        explicit IpodPlaylistProvider( IpodCollection *collection );
         virtual ~IpodPlaylistProvider();
 
         // PlaylistProvider methods:

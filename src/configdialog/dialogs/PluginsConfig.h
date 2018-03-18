@@ -29,7 +29,7 @@ class PluginsConfig : public ConfigDialogBase
     Q_OBJECT
 
 public:
-    PluginsConfig( Amarok2ConfigDialog *parent );
+    explicit PluginsConfig( Amarok2ConfigDialog *parent );
     virtual ~PluginsConfig();
 
     void updateSettings() Q_DECL_OVERRIDE;

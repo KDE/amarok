@@ -37,7 +37,7 @@ class LastFmMultiPlayableCapability : public Capabilities::MultiPlayableCapabili
     Q_OBJECT
 
     public:
-        LastFmMultiPlayableCapability( LastFm::Track *track );
+        explicit LastFmMultiPlayableCapability( LastFm::Track *track );
         virtual ~LastFmMultiPlayableCapability();
 
         // Capabilities::MultiPlayableCapability methods

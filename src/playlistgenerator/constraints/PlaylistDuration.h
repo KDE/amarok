@@ -56,7 +56,7 @@ namespace ConstraintTypes {
 
         private:
             PlaylistDuration(QDomElement&, ConstraintNode*);
-            PlaylistDuration(ConstraintNode*);
+            explicit PlaylistDuration(ConstraintNode*);
 
             // constraint parameters
             qint64 m_duration; // time in msec

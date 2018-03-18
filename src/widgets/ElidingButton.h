@@ -34,7 +34,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            ElidingButton( QWidget *parent );
+            explicit ElidingButton( QWidget *parent );
             ElidingButton( const QString & text, QWidget *parent );
             ElidingButton( const QIcon & icon, const QString & text, QWidget *parent );
             ~ElidingButton();

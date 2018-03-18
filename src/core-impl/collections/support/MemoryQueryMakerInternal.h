@@ -49,7 +49,7 @@ public:
       * can be safely deleted in the original thread while the query is still running.
       * @param collection the MemoryCollection instance that the query should be run on.
       */
-    MemoryQueryMakerInternal( const QWeakPointer<Collections::MemoryCollection> &collection );
+    explicit MemoryQueryMakerInternal( const QWeakPointer<Collections::MemoryCollection> &collection );
     ~MemoryQueryMakerInternal();
 
 

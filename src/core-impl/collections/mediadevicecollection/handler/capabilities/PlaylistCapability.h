@@ -29,7 +29,7 @@ namespace Handler
         Q_OBJECT
 
         public:
-            PlaylistCapability( QObject *parent ) : Capability( parent ) {}
+            explicit PlaylistCapability( QObject *parent ) : Capability( parent ) {}
             virtual ~PlaylistCapability();
 
             /// Parsing of Tracks in Playlists on Device

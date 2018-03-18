@@ -26,7 +26,7 @@ class ApplicationController : public QObject
 {
     Q_OBJECT
 public:
-    ApplicationController( QObject *parent ) : QObject( parent ) {}
+    explicit ApplicationController( QObject *parent ) : QObject( parent ) {}
     virtual ~ ApplicationController() {}
 
 public Q_SLOTS:

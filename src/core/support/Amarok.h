@@ -102,7 +102,7 @@ namespace Amarok
      */
     class OverrideCursor {
     public:
-        OverrideCursor( Qt::CursorShape cursor = Qt::WaitCursor );
+        explicit OverrideCursor( Qt::CursorShape cursor = Qt::WaitCursor );
        ~OverrideCursor();
     };
 

@@ -34,7 +34,7 @@ class ProgressWidget : public QWidget
     Q_OBJECT
 
     public:
-        ProgressWidget( QWidget* );
+        explicit ProgressWidget( QWidget* );
 
         virtual QSize sizeHint() const;
         void addBookmark( const QString &name, int milliSeconds , bool instantDisplayPopUp );

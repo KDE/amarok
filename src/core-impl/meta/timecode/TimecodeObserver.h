@@ -31,7 +31,7 @@ class TimecodeObserver : public QObject
     Q_OBJECT
 
 public:
-    TimecodeObserver( QObject *parent = 0 );
+    explicit TimecodeObserver( QObject *parent = 0 );
     virtual ~TimecodeObserver();
 
 protected Q_SLOTS:

@@ -62,7 +62,7 @@ class MtpHandler : public MediaDeviceHandler
         Q_OBJECT
 
     public:
-        MtpHandler( Collections::MtpCollection *mc );
+        explicit MtpHandler( Collections::MtpCollection *mc );
         virtual ~MtpHandler();
 
         friend class WorkerThread;

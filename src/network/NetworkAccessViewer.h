@@ -38,7 +38,7 @@ class NetworkAccessViewer : public QObject
     Q_OBJECT
 
 public:
-    NetworkAccessViewer( QWidget *parent = 0 );
+    explicit NetworkAccessViewer( QWidget *parent = 0 );
     ~NetworkAccessViewer();
 
     void addRequest( QNetworkAccessManager::Operation op, const QNetworkRequest&req, QIODevice *outgoingData, QNetworkReply *reply );

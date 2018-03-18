@@ -33,7 +33,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokLyricsScript( QScriptEngine* scriptEngine );
+            explicit AmarokLyricsScript( QScriptEngine* scriptEngine );
 
             Q_INVOKABLE void showLyrics( const QString& lyrics ) const;
 

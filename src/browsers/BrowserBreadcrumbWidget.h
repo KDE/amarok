@@ -42,7 +42,7 @@ public:
      * Constructor
      * @param parent the parent widget
      */
-    BrowserBreadcrumbWidget( QWidget * parent );
+    explicit BrowserBreadcrumbWidget( QWidget * parent );
 
     /**
      * Destructor

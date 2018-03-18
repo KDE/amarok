@@ -37,7 +37,7 @@ class AMAROK_EXPORT TransferDialog : public QDialog
     Q_OBJECT
 
     public:
-        TransferDialog( MediaDevice* mdev );
+        explicit TransferDialog( MediaDevice* mdev );
         ~TransferDialog() {}
 
         bool isAccepted() { return m_accepted; }

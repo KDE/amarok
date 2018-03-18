@@ -115,7 +115,7 @@ class MetaStream::Track::Private : public QObject
 class StreamArtist : public Meta::DefaultArtist
 {
     public:
-        StreamArtist( MetaStream::Track::Private *dptr )
+        explicit StreamArtist( MetaStream::Track::Private *dptr )
             : DefaultArtist()
             , d( dptr )
             {}
@@ -133,7 +133,7 @@ class StreamArtist : public Meta::DefaultArtist
 class StreamAlbum : public Meta::DefaultAlbum
 {
 public:
-    StreamAlbum( MetaStream::Track::Private *dptr )
+    explicit StreamAlbum( MetaStream::Track::Private *dptr )
         : DefaultAlbum()
         , d( dptr )
     {}
@@ -184,7 +184,7 @@ public:
 class StreamGenre : public Meta::DefaultGenre
 {
 public:
-    StreamGenre( MetaStream::Track::Private *dptr )
+    explicit StreamGenre( MetaStream::Track::Private *dptr )
         : DefaultGenre()
         , d( dptr )
     {}

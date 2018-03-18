@@ -34,7 +34,7 @@ class MagnatuneRedownloadHandler : public QObject
 {
 Q_OBJECT
 public:
-    MagnatuneRedownloadHandler(QWidget * parent);
+    explicit MagnatuneRedownloadHandler(QWidget * parent);
 
     ~MagnatuneRedownloadHandler();
 

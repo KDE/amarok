@@ -100,7 +100,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
 class ProxyArtist : public Meta::Artist
 {
 public:
-    ProxyArtist( MetaProxy::Track::Private *dptr )
+    explicit ProxyArtist( MetaProxy::Track::Private *dptr )
         : Meta::Artist()
         , d( dptr )
     {}
@@ -154,7 +154,7 @@ public:
 class ProxyAlbum : public Meta::Album
 {
 public:
-    ProxyAlbum( MetaProxy::Track::Private *dptr )
+    explicit ProxyAlbum( MetaProxy::Track::Private *dptr )
         : Meta::Album()
         , d( dptr )
     {}
@@ -306,7 +306,7 @@ public:
 class ProxyGenre : public Meta::Genre
 {
 public:
-    ProxyGenre( MetaProxy::Track::Private *dptr )
+    explicit ProxyGenre( MetaProxy::Track::Private *dptr )
         : Meta::Genre()
         , d( dptr )
     {}
@@ -356,7 +356,7 @@ public:
 class ProxyComposer : public Meta::Composer
 {
 public:
-    ProxyComposer( MetaProxy::Track::Private *dptr )
+    explicit ProxyComposer( MetaProxy::Track::Private *dptr )
         : Meta::Composer()
         , d( dptr )
     {}
@@ -406,7 +406,7 @@ public:
 class ProxyYear : public Meta::Year
 {
 public:
-    ProxyYear( MetaProxy::Track::Private *dptr )
+    explicit ProxyYear( MetaProxy::Track::Private *dptr )
         : Meta::Year()
         , d( dptr )
     {}

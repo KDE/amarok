@@ -23,7 +23,7 @@ class BookmarkCurrentButton : public QToolButton
 {
     Q_OBJECT
 public:
-    BookmarkCurrentButton( QWidget *parent );
+    explicit BookmarkCurrentButton( QWidget *parent );
     virtual ~BookmarkCurrentButton();
 
     protected Q_SLOTS:

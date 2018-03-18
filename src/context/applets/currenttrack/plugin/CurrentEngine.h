@@ -43,7 +43,7 @@ class CurrentEngine : public QObject
     Q_PROPERTY(int coverWidth READ coverWidth WRITE setCoverWidth NOTIFY coverWidthChanged)
 
 public:
-    CurrentEngine( QObject* parent = Q_NULLPTR );
+    explicit CurrentEngine( QObject* parent = Q_NULLPTR );
     virtual ~CurrentEngine();
 
     QString artist() const;

@@ -34,7 +34,7 @@ class AMAROK_EXPORT CompoundProgressBar : public ProgressBar
 {
     Q_OBJECT
 public:
-    CompoundProgressBar( QWidget *parent );
+    explicit CompoundProgressBar( QWidget *parent );
 
     ~CompoundProgressBar();
 

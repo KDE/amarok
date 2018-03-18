@@ -36,7 +36,7 @@ public:
     /**
      * Constructor.
      */
-    BreadcrumbLevel( QString internalColumnName );
+    explicit BreadcrumbLevel( QString internalColumnName );
 
     /**
      * Destructor.

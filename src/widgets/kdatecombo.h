@@ -32,7 +32,7 @@ class KDateCombo : public QComboBox  {
    Q_OBJECT
 
 public:
-	KDateCombo(QWidget *parent=0);
+	explicit KDateCombo(QWidget *parent=0);
 	explicit KDateCombo(const QDate & date, QWidget *parent=0);
 	~KDateCombo();
 

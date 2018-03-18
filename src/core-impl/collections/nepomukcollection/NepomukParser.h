@@ -53,7 +53,7 @@ public:
      *
      * @param coll must be a valid NepomukCollection
      */
-    NepomukParser( NepomukCollection *coll );
+    explicit NepomukParser( NepomukCollection *coll );
 
     /**
      * Parse all the query results in the given QueryResultIterator and emit

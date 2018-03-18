@@ -27,7 +27,7 @@ namespace Meta
 class NepomukGenre : public Genre
 {
 public:
-    NepomukGenre( const QString &name );
+    explicit NepomukGenre( const QString &name );
     virtual TrackList tracks();
     virtual QString name() const;
 

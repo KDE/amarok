@@ -100,7 +100,7 @@ class DirBrowserModel : public KDirModel
     Q_OBJECT
 
 public:
-    DirBrowserModel( QObject *parent = 0 ) : KDirModel( parent )
+    explicit DirBrowserModel( QObject *parent = 0 ) : KDirModel( parent )
     {
     }
 
@@ -120,7 +120,7 @@ class FilePlacesModel : public KFilePlacesModel
     Q_OBJECT
 
 public:
-    FilePlacesModel( QObject *parent = 0 ) : KFilePlacesModel( parent )
+    explicit FilePlacesModel( QObject *parent = 0 ) : KFilePlacesModel( parent )
     {
     }
 

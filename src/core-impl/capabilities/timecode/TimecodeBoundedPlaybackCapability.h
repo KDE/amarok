@@ -27,7 +27,7 @@ class AMAROK_EXPORT TimecodeBoundedPlaybackCapability : public BoundedPlaybackCa
 {
 Q_OBJECT
 public:
-    TimecodeBoundedPlaybackCapability( Meta::TimecodeTrack * track )
+    explicit TimecodeBoundedPlaybackCapability( Meta::TimecodeTrack * track )
         : m_track( track )
     {}
 

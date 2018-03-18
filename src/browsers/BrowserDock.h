@@ -35,7 +35,7 @@ class BrowserDock : public AmarokDockWidget
     Q_OBJECT
 
 public:
-    BrowserDock( QWidget *parent );
+    explicit BrowserDock( QWidget *parent );
 
     ~BrowserDock();
 

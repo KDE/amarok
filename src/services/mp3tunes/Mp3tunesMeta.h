@@ -35,7 +35,7 @@ class Mp3TunesTrack  : public ServiceTrack
 
     public:
 
-        Mp3TunesTrack( const QString& title );
+        explicit Mp3TunesTrack( const QString& title );
 
         virtual QString sourceName();
         virtual QString sourceDescription();
@@ -53,8 +53,8 @@ private:
     QString m_coverURL;
 
 public:
-    Mp3TunesAlbum( const QString &name );
-    Mp3TunesAlbum( const QStringList &resultRow );
+    explicit Mp3TunesAlbum( const QString &name );
+    explicit Mp3TunesAlbum( const QStringList &resultRow );
 
     ~Mp3TunesAlbum();
 

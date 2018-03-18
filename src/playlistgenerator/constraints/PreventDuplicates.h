@@ -52,7 +52,7 @@ namespace ConstraintTypes {
 
         private:
             PreventDuplicates( QDomElement&, ConstraintNode* );
-            PreventDuplicates( ConstraintNode* );
+            explicit PreventDuplicates( ConstraintNode* );
 
             double penalty( const int ) const;
 
@@ -64,7 +64,7 @@ namespace ConstraintTypes {
         Q_OBJECT
 
         public:
-            PreventDuplicatesEditWidget( const int );
+            explicit PreventDuplicatesEditWidget( const int );
 
         Q_SIGNALS:
             void updated();

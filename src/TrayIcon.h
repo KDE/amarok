@@ -35,7 +35,7 @@ class TrayIcon : public KStatusNotifierItem
     Q_OBJECT
 
 public:
-    TrayIcon( QObject *parent );
+    explicit TrayIcon( QObject *parent );
 
 private Q_SLOTS:
     void updateOverlayIcon();

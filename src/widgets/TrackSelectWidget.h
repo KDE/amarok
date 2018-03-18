@@ -33,7 +33,7 @@ class TrackSelectWidget: public BoxWidget
     Q_OBJECT
 
     public:
-        TrackSelectWidget( QWidget* parent );
+        explicit TrackSelectWidget( QWidget* parent );
         ~TrackSelectWidget();
 
         void setData( const Meta::DataPtr& );

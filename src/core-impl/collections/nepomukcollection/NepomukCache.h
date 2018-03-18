@@ -59,7 +59,7 @@ class NepomukCache: public QObject
 
     NepomukCachePrivate *d;
 
-    NepomukCache( NepomukCollection *parent );
+    explicit NepomukCache( NepomukCollection *parent );
     ~NepomukCache();
 
     friend class NepomukCollection;

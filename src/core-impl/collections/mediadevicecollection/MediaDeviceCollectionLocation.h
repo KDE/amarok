@@ -35,7 +35,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public Collec
 {
     Q_OBJECT
     public:
-        MediaDeviceCollectionLocation( MediaDeviceCollection *collection );
+        explicit MediaDeviceCollectionLocation( MediaDeviceCollection *collection );
         virtual ~MediaDeviceCollectionLocation();
 
         virtual QString prettyLocation() const;

@@ -26,7 +26,7 @@ namespace Collections
 class MySqlQueryMaker : public SqlQueryMaker
 {
     public:
-        MySqlQueryMaker( SqlCollection* collection );
+        explicit MySqlQueryMaker( SqlCollection* collection );
         virtual ~MySqlQueryMaker();
 
     protected:

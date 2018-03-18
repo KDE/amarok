@@ -51,7 +51,7 @@ namespace AmarokScript
         Q_PROPERTY( QPalette palette READ palette WRITE setPalette )
 
         public:
-            AmarokWindowScript( AmarokScriptEngine* scriptEngine );
+            explicit AmarokWindowScript( AmarokScriptEngine* scriptEngine );
 
             Q_INVOKABLE void addToolsMenu( const QString &name );
             Q_INVOKABLE void addSettingsMenu( const QString &name );

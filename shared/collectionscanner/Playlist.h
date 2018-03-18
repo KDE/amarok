@@ -37,8 +37,8 @@ namespace CollectionScanner
 class AMAROKSHARED_EXPORT Playlist
 {
 public:
-    Playlist( const QString &path );
-    Playlist( QXmlStreamReader *reader );
+    explicit Playlist( const QString &path );
+    explicit Playlist( QXmlStreamReader *reader );
 
     /** The absolute path to the file.
      *  Because of symbolic links the path could be outside the original scanning directories.

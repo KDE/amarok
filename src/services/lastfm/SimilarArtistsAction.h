@@ -23,7 +23,7 @@ class SimilarArtistsAction : public GlobalCollectionArtistAction
 {
     Q_OBJECT
 public:
-    SimilarArtistsAction( QObject *parent );
+    explicit SimilarArtistsAction( QObject *parent );
 
     private Q_SLOTS:
         void slotTriggered();

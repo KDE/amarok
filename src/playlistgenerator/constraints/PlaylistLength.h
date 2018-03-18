@@ -56,7 +56,7 @@ namespace ConstraintTypes {
 
         private:
             PlaylistLength( QDomElement&, ConstraintNode* );
-            PlaylistLength( ConstraintNode* );
+            explicit PlaylistLength( ConstraintNode* );
 
             // constraint parameters
             quint32 m_length;

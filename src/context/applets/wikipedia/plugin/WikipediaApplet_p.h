@@ -53,7 +53,7 @@ private:
     Q_DECLARE_PUBLIC( WikipediaApplet )
 
 public:
-    WikipediaAppletPrivate( WikipediaApplet *parent )
+    explicit WikipediaAppletPrivate( WikipediaApplet *parent )
         : q_ptr( parent )
         , css( 0 )
         , dataContainer( 0 )
@@ -150,7 +150,7 @@ class WikipediaSearchLineEdit : public Plasma::LineEdit
     Q_OBJECT
 
 public:
-    WikipediaSearchLineEdit( QGraphicsWidget *parent = 0 )
+    explicit WikipediaSearchLineEdit( QGraphicsWidget *parent = 0 )
         : Plasma::LineEdit( parent ) {}
     ~WikipediaSearchLineEdit() {}
 
@@ -185,7 +185,7 @@ class WikipediaWebView : public KGraphicsWebView
     Q_OBJECT
 
 public:
-    WikipediaWebView( QGraphicsItem *parent = 0 )
+    explicit WikipediaWebView( QGraphicsItem *parent = 0 )
         : KGraphicsWebView( parent )
     {
         m_lineEdit = new WikipediaSearchLineEdit( this );

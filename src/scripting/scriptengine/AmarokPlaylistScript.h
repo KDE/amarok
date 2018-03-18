@@ -36,7 +36,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokPlaylistScript( AmarokScriptEngine *engine );
+            explicit AmarokPlaylistScript( AmarokScriptEngine *engine );
 
             /**
              * Return the index of the currently playing track in the playlist.

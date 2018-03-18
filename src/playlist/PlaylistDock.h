@@ -48,7 +48,7 @@ class Dock : public AmarokDockWidget
     Q_OBJECT
 
 public:
-    Dock( QWidget* parent );
+    explicit Dock( QWidget* parent );
     PrettyListView *currentView();
     SortWidget *sortWidget();
     ProgressiveSearchWidget *searchWidget();

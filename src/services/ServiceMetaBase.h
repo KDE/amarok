@@ -37,7 +37,7 @@ namespace Amarok
 class AMAROK_EXPORT ServiceMetaFactory
 {
     public:
-        ServiceMetaFactory( const QString &dbPrefix );
+        explicit ServiceMetaFactory( const QString &dbPrefix );
         virtual ~ServiceMetaFactory() {}
 
         QString tablePrefix();
@@ -144,10 +144,10 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
     public:
         //Give this a displayable name as some services has terrible names for their streams
         //ServiceTrack( const QString & name );
-        ServiceTrack( const QString & name );
+        explicit ServiceTrack( const QString & name );
 
         //create track based on an sql query result
-        ServiceTrack( const QStringList & resultRow );
+        explicit ServiceTrack( const QStringList & resultRow );
         virtual ~ServiceTrack();
 
         virtual QString name() const;
@@ -271,8 +271,8 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
                                     public BookmarkThisProvider
 {
     public:
-        ServiceArtist( const QStringList & resultRow );
-        ServiceArtist( const QString & name );
+        explicit ServiceArtist( const QStringList & resultRow );
+        explicit ServiceArtist( const QString & name );
         virtual ~ServiceArtist();
 
         virtual QString name() const;
@@ -339,8 +339,8 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
                                    public BookmarkThisProvider
 {
     public:
-        ServiceAlbum( const QStringList & resultRow );
-        ServiceAlbum( const QString & name  );
+        explicit ServiceAlbum( const QStringList & resultRow );
+        explicit ServiceAlbum( const QString & name  );
         virtual ~ServiceAlbum();
 
         virtual QString name() const;
@@ -424,8 +424,8 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
                                    public BookmarkThisProvider
 {
     public:
-        ServiceGenre( const QString &name );
-        ServiceGenre( const QStringList &row );
+        explicit ServiceGenre( const QString &name );
+        explicit ServiceGenre( const QStringList &row );
         virtual ~ServiceGenre();
 
         virtual QString name() const;
@@ -480,7 +480,7 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
                                       public BookmarkThisProvider
 {
     public:
-        ServiceComposer( const QString &name );
+        explicit ServiceComposer( const QString &name );
         virtual ~ServiceComposer();
 
         virtual QString name() const;
@@ -522,7 +522,7 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
                                   public BookmarkThisProvider
 {
     public:
-        ServiceYear( const QString &name );
+        explicit ServiceYear( const QString &name );
         virtual ~ServiceYear();
 
         virtual QString name() const;

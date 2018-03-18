@@ -37,7 +37,7 @@ public:
      * Constructor.
      * @param parent the parent QWidget.
      */
-    BreadcrumbItemSortButton( QWidget *parent );
+    explicit BreadcrumbItemSortButton( QWidget *parent );
 
     /**
      * Constructor, nontrivial.

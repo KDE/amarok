@@ -49,7 +49,7 @@ public:
      * Constructor.
      * @param parent The parent widget this is added to.
      */
-    ProgressiveSearchWidget( QWidget * parent );
+    explicit ProgressiveSearchWidget( QWidget * parent );
 
     QString currentFilter() const { return m_searchEdit->text(); }
 

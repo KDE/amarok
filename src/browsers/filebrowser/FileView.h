@@ -60,7 +60,7 @@ class FileView : public Amarok::PrettyTreeView
     Q_OBJECT
 
 public:
-    FileView( QWidget *parent );
+    explicit FileView( QWidget *parent );
 
 Q_SIGNALS:
     void navigateToDirectory( const QModelIndex &index );

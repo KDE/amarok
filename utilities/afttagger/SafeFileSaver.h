@@ -30,7 +30,7 @@
 class SafeFileSaver
 {
 public:
-     SafeFileSaver( const QString &origPath );
+     explicit SafeFileSaver( const QString &origPath );
     ~SafeFileSaver();
 
     QString prepareToSave();

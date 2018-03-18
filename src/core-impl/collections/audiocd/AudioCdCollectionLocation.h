@@ -32,7 +32,7 @@ class AudioCdCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
 public:
-    AudioCdCollectionLocation( AudioCdCollection *parentCollection );
+    explicit AudioCdCollectionLocation( AudioCdCollection *parentCollection );
     ~AudioCdCollectionLocation();
 
     virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );

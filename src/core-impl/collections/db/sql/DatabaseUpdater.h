@@ -32,7 +32,7 @@ namespace Collections {
  */
 class AMAROK_SQLCOLLECTION_EXPORT DatabaseUpdater {
 public:
-    DatabaseUpdater( Collections::SqlCollection *collection );
+    explicit DatabaseUpdater( Collections::SqlCollection *collection );
     ~DatabaseUpdater();
 
     static int expectedDatabaseVersion();

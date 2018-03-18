@@ -25,7 +25,7 @@ namespace Amarok
     {
         Q_OBJECT
     public:
-        DefaultApplicationController( QObject *parent );
+        explicit DefaultApplicationController( QObject *parent );
         virtual ~ DefaultApplicationController();
 
     public Q_SLOTS:

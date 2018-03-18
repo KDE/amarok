@@ -45,7 +45,7 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
 
         /** Copy from another PodcastEpisode
         */
-        SqlPodcastEpisode( PodcastEpisodePtr episode );
+        explicit SqlPodcastEpisode( PodcastEpisodePtr episode );
         SqlPodcastEpisode( PodcastChannelPtr channel, PodcastEpisodePtr episode );
 
         ~SqlPodcastEpisode();

@@ -29,7 +29,7 @@ A hander class for the AudioCd collection
 class AudioCdHandler : public MediaDeviceHandler
 {
 public:
-    AudioCdHandler( QObject *parent );
+    explicit AudioCdHandler( QObject *parent );
 
     ~AudioCdHandler();
 

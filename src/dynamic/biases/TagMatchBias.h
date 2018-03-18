@@ -108,7 +108,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            TagMatchBiasWidget( Dynamic::TagMatchBias* bias, QWidget* parent = 0 );
+            explicit TagMatchBiasWidget( Dynamic::TagMatchBias* bias, QWidget* parent = 0 );
 
         private Q_SLOTS:
             void syncControlsToBias();

@@ -70,7 +70,7 @@ class AMAROK_EXPORT OrContainerMemoryFilter : public ContainerMemoryFilter
 class AMAROK_EXPORT NegateMemoryFilter : public MemoryFilter
 {
     public:
-        NegateMemoryFilter( MemoryFilter *filter );
+        explicit NegateMemoryFilter( MemoryFilter *filter );
         virtual ~NegateMemoryFilter();
         virtual bool filterMatches( Meta::TrackPtr track ) const;
     private:

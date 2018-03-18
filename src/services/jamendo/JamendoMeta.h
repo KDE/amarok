@@ -64,8 +64,8 @@ namespace Meta
 class JamendoTrack  : public ServiceTrack
 {
 public:
-    JamendoTrack( const QString &name );
-    JamendoTrack( const QStringList &resultRow );
+    explicit JamendoTrack( const QString &name );
+    explicit JamendoTrack( const QStringList &resultRow );
 
     void setService( JamendoService * service );
 
@@ -100,8 +100,8 @@ private:
     QString m_homeURL;
 
 public:
-    JamendoArtist( const QString &name );
-    JamendoArtist( const QStringList &resultRow );
+    explicit JamendoArtist( const QString &name );
+    explicit JamendoArtist( const QStringList &resultRow );
 
     void setPhotoURL( const QString &photoURL );
     QString photoURL() const;
@@ -131,8 +131,8 @@ private:
 
 
 public:
-    JamendoAlbum( const QString &name );
-    JamendoAlbum( const QStringList &resultRow );
+    explicit JamendoAlbum( const QString &name );
+    explicit JamendoAlbum( const QStringList &resultRow );
 
         
     virtual QString downloadPrefix() const { return "jamendo"; }
@@ -168,8 +168,8 @@ class JamendoGenre  : public ServiceGenre
 {
 
 public:
-    JamendoGenre( const QString &name );
-    JamendoGenre( const QStringList &resultRow );
+    explicit JamendoGenre( const QString &name );
+    explicit JamendoGenre( const QStringList &resultRow );
 
     virtual bool isBookmarkable() const { return true; }
     virtual QString collectionName() const { return "Jamendo.com"; }

@@ -59,7 +59,7 @@ class MusicDNSAudioDecoder : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
-        MusicDNSAudioDecoder( const Meta::TrackList &tracks, const int sampleLength = DEFAULT_SAMPLE_LENGTH );
+        explicit MusicDNSAudioDecoder( const Meta::TrackList &tracks, const int sampleLength = DEFAULT_SAMPLE_LENGTH );
         virtual ~MusicDNSAudioDecoder();
 
         void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;

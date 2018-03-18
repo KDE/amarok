@@ -25,7 +25,7 @@
 class LastFmEventXmlParser
 {
 public:
-    LastFmEventXmlParser( QXmlStreamReader &reader );
+    explicit LastFmEventXmlParser( QXmlStreamReader &reader );
     ~LastFmEventXmlParser();
 
     bool read();
@@ -44,7 +44,7 @@ private:
 class LastFmVenueXmlParser
 {
 public:
-    LastFmVenueXmlParser( QXmlStreamReader &reader );
+    explicit LastFmVenueXmlParser( QXmlStreamReader &reader );
     ~LastFmVenueXmlParser();
 
     bool read();
@@ -60,7 +60,7 @@ private:
 class LastFmLocationXmlParser
 {
 public:
-    LastFmLocationXmlParser( QXmlStreamReader &reader );
+    explicit LastFmLocationXmlParser( QXmlStreamReader &reader );
     ~LastFmLocationXmlParser();
 
     bool read();

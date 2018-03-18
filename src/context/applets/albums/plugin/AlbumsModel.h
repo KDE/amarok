@@ -30,7 +30,7 @@ class AlbumsModel : public QStandardItemModel
     Q_OBJECT
 
 public:
-    AlbumsModel( QObject *parent = 0 );
+    explicit AlbumsModel( QObject *parent = 0 );
     virtual ~AlbumsModel() {}
     virtual QVariant data( const QModelIndex &index, int role ) const;
     virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
@@ -53,7 +53,7 @@ class AlbumsProxyModel : public QSortFilterProxyModel
     Q_PROPERTY( Mode mode READ mode WRITE setMode NOTIFY modeChanged )
 
 public:
-    AlbumsProxyModel( QObject *parent );
+    explicit AlbumsProxyModel( QObject *parent );
     ~AlbumsProxyModel();
 
     enum Mode { SortByCreateDate, SortByYear };

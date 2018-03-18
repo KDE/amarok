@@ -49,7 +49,7 @@ namespace ConstraintTypes {
             virtual double satisfaction( const Meta::TrackList& ) const;
 
         private:
-            TrackSpreader(ConstraintNode*);
+            explicit TrackSpreader(ConstraintNode*);
 
             double distance( const int, const int ) const;
     };

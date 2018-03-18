@@ -1377,7 +1377,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
         if( !filenameLayout.isEmpty() &&
                 Amarok::QStringx::compare( filenameLayout, "%default%", Qt::CaseInsensitive ) )
         {
-            filenameLayout = filenameLayout.namedArgs( layoutmap );
+            filenameLayout = Amarok::QStringx(filenameLayout.namedArgs( layoutmap ));
             //add the file extension to the filename
             filenameLayout.append( QString( "." ) );
             filenameLayout.append( sqlEpisode->type() );

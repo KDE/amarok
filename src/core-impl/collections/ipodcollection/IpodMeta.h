@@ -240,7 +240,7 @@ namespace IpodMeta
     class Artist : public Meta::Artist
     {
         public:
-            Artist( const QString &name ) : m_name( name ) {}
+            explicit Artist( const QString &name ) : m_name( name ) {}
             virtual ~Artist() {}
 
             virtual QString name() const { return m_name; }
@@ -257,7 +257,7 @@ namespace IpodMeta
     class Album : public Meta::Album
     {
         public:
-            Album( Track *track );
+            explicit Album( Track *track );
 
             virtual QString name() const;
             // dummy, iPod tracks are supposed to be proxied by MemoryMeta which handles this
@@ -287,7 +287,7 @@ namespace IpodMeta
     class Composer : public Meta::Composer
     {
         public:
-            Composer( const QString &name ) : m_name( name ) {}
+            explicit Composer( const QString &name ) : m_name( name ) {}
             virtual ~Composer() {}
 
             virtual QString name() const { return m_name; }
@@ -304,7 +304,7 @@ namespace IpodMeta
     class Genre : public Meta::Genre
     {
         public:
-            Genre( const QString &name ) : m_name( name ) {}
+            explicit Genre( const QString &name ) : m_name( name ) {}
             virtual ~Genre() {}
 
             virtual QString name() const { return m_name; }
@@ -321,7 +321,7 @@ namespace IpodMeta
     class Year : public Meta::Year
     {
         public:
-            Year( const QString &name ) : m_name( name ) {}
+            explicit Year( const QString &name ) : m_name( name ) {}
             virtual ~Year() {}
 
             virtual QString name() const { return m_name; }

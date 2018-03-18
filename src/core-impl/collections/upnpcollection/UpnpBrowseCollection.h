@@ -50,7 +50,7 @@ class UpnpBrowseCollection : public UpnpCollectionBase
 {
   Q_OBJECT
   public:
-    UpnpBrowseCollection( const DeviceInfo& );
+    explicit UpnpBrowseCollection( const DeviceInfo& );
     virtual ~UpnpBrowseCollection();
 
     virtual QueryMaker* queryMaker();
@@ -104,7 +104,7 @@ class UpnpBrowseCollectionScanCapability : public Capabilities::CollectionScanCa
 {
     Q_OBJECT
     public:
-        UpnpBrowseCollectionScanCapability( UpnpBrowseCollection* collection );
+        explicit UpnpBrowseCollectionScanCapability( UpnpBrowseCollection* collection );
         virtual ~UpnpBrowseCollectionScanCapability();
 
         virtual void startFullScan();

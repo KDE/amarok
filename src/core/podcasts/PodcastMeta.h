@@ -82,7 +82,7 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
 {
     public:
         PodcastEpisode();
-        PodcastEpisode( PodcastChannelPtr channel );
+        explicit PodcastEpisode( PodcastChannelPtr channel );
         PodcastEpisode( PodcastEpisodePtr episode, PodcastChannelPtr channel );
 
         virtual ~PodcastEpisode() {}
@@ -195,7 +195,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
             , m_purgeCount( 0 )
         { }
 
-        PodcastChannel( Podcasts::PodcastChannelPtr channel );
+        explicit PodcastChannel( Podcasts::PodcastChannelPtr channel );
         virtual ~PodcastChannel() {}
 
         //Playlist virtual methods
@@ -269,7 +269,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
 class AMAROK_CORE_EXPORT PodcastArtist : public Meta::Artist
 {
 public:
-    PodcastArtist( PodcastEpisode *episode )
+    explicit PodcastArtist( PodcastEpisode *episode )
         : Meta::Artist()
         , episode( episode )
     {}
@@ -304,7 +304,7 @@ public:
 class AMAROK_CORE_EXPORT PodcastAlbum : public Meta::Album
 {
 public:
-    PodcastAlbum( PodcastEpisode *episode )
+    explicit PodcastAlbum( PodcastEpisode *episode )
         : Meta::Album()
         , episode( episode )
     {}
@@ -367,7 +367,7 @@ public:
 class AMAROK_CORE_EXPORT PodcastGenre : public Meta::Genre
 {
 public:
-    PodcastGenre( PodcastEpisode *episode )
+    explicit PodcastGenre( PodcastEpisode *episode )
         : Meta::Genre()
         , episode( episode )
     {}
@@ -394,7 +394,7 @@ public:
 class AMAROK_CORE_EXPORT PodcastComposer : public Meta::Composer
 {
 public:
-    PodcastComposer( PodcastEpisode *episode )
+    explicit PodcastComposer( PodcastEpisode *episode )
         : Meta::Composer()
         , episode( episode )
     {}
@@ -427,7 +427,7 @@ public:
 class AMAROK_CORE_EXPORT PodcastYear : public Meta::Year
 {
 public:
-    PodcastYear( PodcastEpisode *episode )
+    explicit PodcastYear( PodcastEpisode *episode )
         : Meta::Year()
         , episode( episode )
     {}

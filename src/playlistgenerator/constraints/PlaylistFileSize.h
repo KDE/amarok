@@ -54,7 +54,7 @@ namespace ConstraintTypes {
 
         private:
             PlaylistFileSize( QDomElement&, ConstraintNode* );
-            PlaylistFileSize( ConstraintNode* );
+            explicit PlaylistFileSize( ConstraintNode* );
 
             // constraint parameters
             int m_size;

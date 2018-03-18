@@ -26,7 +26,7 @@
 class EditDeleteDelegate : public QStyledItemDelegate
 {
     public:
-        EditDeleteDelegate( QObject *parent );
+        explicit EditDeleteDelegate( QObject *parent );
 
         virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
         virtual QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;

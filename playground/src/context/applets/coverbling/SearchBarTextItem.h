@@ -22,7 +22,7 @@ class SearchBarTextItem : public QGraphicsTextItem
 {
     Q_OBJECT
 public:
-    SearchBarTextItem( QGraphicsItem * parent = 0, QGraphicsScene * scene = 0 );
+    explicit SearchBarTextItem( QGraphicsItem * parent = 0, QGraphicsScene * scene = 0 );
 Q_SIGNALS:
     void editionValidated( QString editioncontent );
 protected:

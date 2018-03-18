@@ -35,7 +35,7 @@ class AMAROK_EXPORT TrackOrganizer : public QObject
 {
     Q_OBJECT
 public:
-    TrackOrganizer( const Meta::TrackList &tracks, QObject* parent = 0 );
+    explicit TrackOrganizer( const Meta::TrackList &tracks, QObject* parent = 0 );
 
     /**
      * Sets the format string. Required.

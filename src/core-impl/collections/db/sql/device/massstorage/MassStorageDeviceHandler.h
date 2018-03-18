@@ -24,7 +24,7 @@ class SqlStorage;
 class MassStorageDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
-    MassStorageDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
+    explicit MassStorageDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
     virtual ~MassStorageDeviceHandlerFactory();
 
     virtual bool canHandle( const Solid::Device &device ) const;

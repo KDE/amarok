@@ -40,7 +40,7 @@ class LastFmTreeView : public Amarok::PrettyTreeView
     Q_OBJECT
 
 public:
-    LastFmTreeView ( QWidget* parent = 0 );
+    explicit LastFmTreeView ( QWidget* parent = 0 );
     ~LastFmTreeView();
 
 Q_SIGNALS:

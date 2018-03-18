@@ -31,7 +31,7 @@ class AMAROK_EXPORT OcsData
 public:
     typedef QList< QPair< QString, KAboutPerson > > OcsPersonList;
 
-    OcsData( const QByteArray &providerId = "opendesktop" );
+    explicit OcsData( const QByteArray &providerId = "opendesktop" );
     virtual ~OcsData();
     void addAuthor( const QString &username, const KAboutPerson &person );
     void addCredit( const QString &username, const KAboutPerson &person );

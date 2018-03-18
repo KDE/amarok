@@ -39,7 +39,7 @@ class NepomukTrack : public Track, public Statistics
 {
 public:
     // construct a NepomukTrack out of a Nepomuk resource
-    NepomukTrack( const QUrl &resUri, Collections::NepomukCollection *coll = 0 );
+    explicit NepomukTrack( const QUrl &resUri, Collections::NepomukCollection *coll = 0 );
     ~NepomukTrack();
 
     virtual QString name() const;

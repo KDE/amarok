@@ -47,7 +47,7 @@ class AMAROK_EXPORT MemoryMatcher{
 class AMAROK_EXPORT TrackMatcher : public MemoryMatcher
 {
     public:
-        TrackMatcher( Meta::TrackPtr track );
+        explicit TrackMatcher( Meta::TrackPtr track );
         virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
         virtual Meta::TrackList match( const Meta::TrackList &tracks );
 
@@ -72,7 +72,7 @@ class AMAROK_EXPORT ArtistMatcher : public MemoryMatcher
 class AMAROK_EXPORT AlbumMatcher : public MemoryMatcher
 {
     public:
-        AlbumMatcher( Meta::AlbumPtr album );
+        explicit AlbumMatcher( Meta::AlbumPtr album );
         virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
         virtual Meta::TrackList match( const Meta::TrackList &tracks );
 
@@ -83,7 +83,7 @@ class AMAROK_EXPORT AlbumMatcher : public MemoryMatcher
 class AMAROK_EXPORT GenreMatcher : public MemoryMatcher
 {
     public:
-        GenreMatcher( Meta::GenrePtr genre );
+        explicit GenreMatcher( Meta::GenrePtr genre );
         virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
         virtual Meta::TrackList match( const Meta::TrackList &tracks );
 
@@ -94,7 +94,7 @@ class AMAROK_EXPORT GenreMatcher : public MemoryMatcher
 class AMAROK_EXPORT ComposerMatcher : public MemoryMatcher
 {
     public:
-        ComposerMatcher( Meta::ComposerPtr composer );
+        explicit ComposerMatcher( Meta::ComposerPtr composer );
         virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
         virtual Meta::TrackList match( const Meta::TrackList &tracks );
 
@@ -105,7 +105,7 @@ class AMAROK_EXPORT ComposerMatcher : public MemoryMatcher
 class AMAROK_EXPORT YearMatcher : public MemoryMatcher
 {
     public:
-        YearMatcher( Meta::YearPtr year );
+        explicit YearMatcher( Meta::YearPtr year );
         virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
         virtual Meta::TrackList match( const Meta::TrackList &tracks );
 
@@ -116,7 +116,7 @@ class AMAROK_EXPORT YearMatcher : public MemoryMatcher
 class AMAROK_EXPORT LabelMatcher : public MemoryMatcher
 {
     public:
-        LabelMatcher( const Meta::LabelPtr &label );
+        explicit LabelMatcher( const Meta::LabelPtr &label );
         virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
         virtual Meta::TrackList match( const Meta::TrackList &tracks );
 

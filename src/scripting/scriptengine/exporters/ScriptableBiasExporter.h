@@ -138,7 +138,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            ScriptableBias( ScriptableBiasFactory *biasProto );
+            explicit ScriptableBias( ScriptableBiasFactory *biasProto );
             ~ScriptableBias() override;
             QScriptValue scriptObject() { return m_biasObject; }
 
@@ -276,7 +276,7 @@ namespace AmarokScript
 
         private:
             static void init( QScriptEngine *engine );
-            TrackSetExporter( const Dynamic::TrackSet &trackSet );
+            explicit TrackSetExporter( const Dynamic::TrackSet &trackSet );
 
             friend class ScriptableBiasFactory;
     };

@@ -53,7 +53,7 @@ class CurriedZeroArityQMFunction : public CurriedQMFunction
     public:
         typedef QueryMaker* ( QueryMaker::*FunPtr ) ();
         
-        CurriedZeroArityQMFunction( FunPtr function )
+        explicit CurriedZeroArityQMFunction( FunPtr function )
             : m_function( function )
         {};
         virtual ~CurriedZeroArityQMFunction() {};

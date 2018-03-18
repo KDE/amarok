@@ -28,7 +28,7 @@ namespace Capabilities
         Q_OBJECT
 
         public:
-            MultiSourceCapabilityImpl( Meta::MultiTrack *track );
+            explicit MultiSourceCapabilityImpl( Meta::MultiTrack *track );
             virtual ~MultiSourceCapabilityImpl();
 
             virtual QStringList sources() const;

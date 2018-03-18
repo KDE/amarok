@@ -47,7 +47,7 @@ class UmsPodcastEpisode : public Podcasts::PodcastEpisode
         static Podcasts::PodcastEpisodePtr toPodcastEpisodePtr( UmsPodcastEpisodePtr episode );
         static Podcasts::PodcastEpisodeList toPodcastEpisodeList( UmsPodcastEpisodeList episodes );
 
-        UmsPodcastEpisode( UmsPodcastChannelPtr channel );
+        explicit UmsPodcastEpisode( UmsPodcastChannelPtr channel );
         ~UmsPodcastEpisode();
 
         void setLocalFile( MetaFile::TrackPtr localFile );
@@ -85,7 +85,7 @@ class UmsPodcastChannel : public Podcasts::PodcastChannel
         static Podcasts::PodcastChannelList toPodcastChannelList(
                 UmsPodcastChannelList umsChannels );
 
-        UmsPodcastChannel( UmsPodcastProvider *provider );
+        explicit UmsPodcastChannel( UmsPodcastProvider *provider );
         UmsPodcastChannel( Podcasts::PodcastChannelPtr channel, UmsPodcastProvider *provider );
         ~UmsPodcastChannel();
 

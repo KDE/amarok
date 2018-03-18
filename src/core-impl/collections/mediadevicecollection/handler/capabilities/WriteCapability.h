@@ -29,7 +29,7 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::Capability
     Q_OBJECT
 
     public:
-        WriteCapability( QObject *parent ) : Capability( parent ) {}
+        explicit WriteCapability( QObject *parent ) : Capability( parent ) {}
         virtual ~WriteCapability();
 
         static Type capabilityInterfaceType() { return Handler::Capability::Writable; }

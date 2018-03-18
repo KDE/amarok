@@ -30,7 +30,7 @@ class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
 {
     Q_OBJECT
     public:
-        Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection *parentCollection );
+        explicit Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection *parentCollection );
         virtual ~Mp3tunesServiceCollectionLocation();
 
         virtual QString prettyLocation() const;

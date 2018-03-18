@@ -30,7 +30,7 @@ class LoveTrackAction : public GlobalCollectionTrackAction
 {
     Q_OBJECT
 public:
-    LoveTrackAction( LastFmService * service );
+    explicit LoveTrackAction( LastFmService * service );
 
 private Q_SLOTS:
     void slotTriggered();

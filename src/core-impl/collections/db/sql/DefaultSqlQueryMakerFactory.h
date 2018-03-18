@@ -24,7 +24,7 @@ namespace Collections {
 class DefaultSqlQueryMakerFactory : public SqlQueryMakerFactory
 {
 public:
-    DefaultSqlQueryMakerFactory( SqlCollection *collection )
+    explicit DefaultSqlQueryMakerFactory( SqlCollection *collection )
         : SqlQueryMakerFactory()
         , m_collection( collection ) {}
 

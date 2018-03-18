@@ -30,7 +30,7 @@ class PowerManager : public QObject
     Q_OBJECT
 
     public:
-        PowerManager( EngineController *engine );
+        explicit PowerManager( EngineController *engine );
         ~PowerManager();
 
     private Q_SLOTS:

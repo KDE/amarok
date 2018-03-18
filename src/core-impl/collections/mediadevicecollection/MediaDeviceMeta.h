@@ -56,7 +56,7 @@ typedef QList<MediaDeviceTrackPtr> MediaDeviceTrackList;
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public Statistics
 {
     public:
-        MediaDeviceTrack( Collections::MediaDeviceCollection *collection );
+        explicit MediaDeviceTrack( Collections::MediaDeviceCollection *collection );
         virtual ~MediaDeviceTrack();
 
         virtual QString name() const;
@@ -189,7 +189,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceArtist : public Meta::Artist
 {
     public:
-        MediaDeviceArtist( const QString &name );
+        explicit MediaDeviceArtist( const QString &name );
         virtual ~MediaDeviceArtist();
 
         virtual QString name() const;
@@ -251,7 +251,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceComposer : public Meta::Composer
 {
     public:
-        MediaDeviceComposer( const QString &name );
+        explicit MediaDeviceComposer( const QString &name );
         virtual ~MediaDeviceComposer();
 
         virtual QString name() const;
@@ -270,7 +270,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceComposer : public Meta::Composer
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceGenre : public Meta::Genre
 {
     public:
-        MediaDeviceGenre( const QString &name );
+        explicit MediaDeviceGenre( const QString &name );
         virtual ~MediaDeviceGenre();
 
         virtual QString name() const;
@@ -290,7 +290,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceGenre : public Meta::Genre
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceYear : public Meta::Year
 {
     public:
-        MediaDeviceYear( const QString &name );
+        explicit MediaDeviceYear( const QString &name );
         virtual ~MediaDeviceYear();
 
         virtual QString name() const;

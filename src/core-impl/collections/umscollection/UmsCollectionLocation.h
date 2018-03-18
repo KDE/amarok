@@ -32,7 +32,7 @@ class UmsCollectionLocation : public Collections::CollectionLocation
 {
     Q_OBJECT
     public:
-        UmsCollectionLocation( UmsCollection *umsCollection );
+        explicit UmsCollectionLocation( UmsCollection *umsCollection );
         ~UmsCollectionLocation();
 
         /* CollectionLocation methods */

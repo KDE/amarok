@@ -36,7 +36,7 @@ class ScriptsConfig : public ConfigDialogBase
     Q_OBJECT
 
 public:
-    ScriptsConfig( Amarok2ConfigDialog *parent );
+    explicit ScriptsConfig( Amarok2ConfigDialog *parent );
     virtual ~ScriptsConfig();
 
     void updateSettings() Q_DECL_OVERRIDE;

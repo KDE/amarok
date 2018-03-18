@@ -36,8 +36,8 @@ class MagnatuneTrack  : public ServiceTrack
 {
     Q_OBJECT
 public:
-    MagnatuneTrack( const QString &name );
-    MagnatuneTrack( const QStringList &resultRow );
+    explicit MagnatuneTrack( const QString &name );
+    explicit  MagnatuneTrack( const QStringList &resultRow );
 
     QString lofiUrl();
     void setLofiUrl( const QString &url );
@@ -79,8 +79,8 @@ private:
     QUrl m_magnatuneUrl;
 
 public:
-    MagnatuneArtist( const QString &name );
-    MagnatuneArtist( const QStringList &resultRow );
+    explicit MagnatuneArtist( const QString &name );
+    explicit MagnatuneArtist( const QStringList &resultRow );
 
     void setPhotoUrl( const QUrl &photoUrl );
     QUrl photoUrl() const;
@@ -105,8 +105,8 @@ private:
 
 
 public:
-    MagnatuneAlbum( const QString &name );
-    MagnatuneAlbum( const QStringList &resultRow );
+    explicit MagnatuneAlbum( const QString &name );
+    explicit MagnatuneAlbum( const QStringList &resultRow );
 
     ~MagnatuneAlbum();
     
@@ -141,8 +141,8 @@ class MagnatuneGenre  : public ServiceGenre
 {
 
 public:
-    MagnatuneGenre( const QString &name );
-    MagnatuneGenre( const QStringList &resultRow );
+    explicit MagnatuneGenre( const QString &name );
+    explicit MagnatuneGenre( const QStringList &resultRow );
 
     virtual bool isBookmarkable() const { return true; }
     virtual QString collectionName() const { return "Magnatune.com"; }

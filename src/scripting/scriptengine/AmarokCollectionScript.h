@@ -46,7 +46,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokCollectionScript( AmarokScriptEngine* scriptEngine );
+            explicit AmarokCollectionScript( AmarokScriptEngine* scriptEngine );
 
             Q_INVOKABLE int totalAlbums() const;
             Q_INVOKABLE int totalArtists() const;

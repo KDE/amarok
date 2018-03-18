@@ -32,7 +32,7 @@ class QLabel;
 class DeleteDialogBase : public QWidget, public Ui::DeleteDialogBase
 {
 public:
-  DeleteDialogBase( QWidget *parent ) : QWidget( parent ) {
+    explicit DeleteDialogBase( QWidget *parent ) : QWidget( parent ) {
     setupUi( this );
   }
 };
@@ -43,7 +43,7 @@ class DeleteWidget : public DeleteDialogBase
     Q_OBJECT
 
 public:
-    DeleteWidget(QWidget *parent = 0);
+    explicit DeleteWidget(QWidget *parent = 0);
 
     void setFiles(const QList<QUrl> &files);
 

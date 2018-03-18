@@ -24,7 +24,7 @@
 class AMAROK_EXPORT TagStatisticsStore : public PersistentStatisticsStore
 {
     public:
-        TagStatisticsStore( Meta::Track *track );
+        explicit TagStatisticsStore( Meta::Track *track );
 
     protected:
         virtual void save();

@@ -37,7 +37,7 @@ class Track;
 class Base
 {
     public:
-        Base( const QString &name ) : m_name( name ) {}
+        explicit Base( const QString &name ) : m_name( name ) {}
         virtual ~Base() {}
 
         // Meta::{Artist,Album,Composer,Genre,Year} methods:
@@ -61,7 +61,7 @@ class Base
 class Artist : public Meta::Artist, public Base
 {
     public:
-        Artist( const QString &name ) : MemoryMeta::Base( name ) {}
+        explicit Artist( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return MemoryMeta::Base::name(); }
         virtual Meta::TrackList tracks() { return MemoryMeta::Base::tracks(); }
@@ -80,7 +80,7 @@ class Album : public Meta::Album, public Base
         /**
          * Copy-like constructor for MapChanger
          */
-        Album( const Meta::AlbumPtr &other );
+        explicit Album( const Meta::AlbumPtr &other );
 
         /* Meta::MetaCapability virtual methods */
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
@@ -122,7 +122,7 @@ class Album : public Meta::Album, public Base
 class Composer : public Meta::Composer, public Base
 {
     public:
-        Composer( const QString &name ) : MemoryMeta::Base( name ) {}
+        explicit Composer( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return MemoryMeta::Base::name(); }
         virtual Meta::TrackList tracks() { return  MemoryMeta::Base::tracks(); }
@@ -131,7 +131,7 @@ class Composer : public Meta::Composer, public Base
 class Genre : public Meta::Genre, public Base
 {
     public:
-        Genre( const QString &name ) : MemoryMeta::Base( name ) {}
+        explicit Genre( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return MemoryMeta::Base::name(); }
         virtual Meta::TrackList tracks() { return MemoryMeta::Base::tracks(); }
@@ -140,7 +140,7 @@ class Genre : public Meta::Genre, public Base
 class Year : public Meta::Year, public Base
 {
     public:
-        Year( const QString &name ) : MemoryMeta::Base( name ) {}
+        explicit Year( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return MemoryMeta::Base::name(); }
         virtual Meta::TrackList tracks() { return MemoryMeta::Base::tracks(); }
@@ -149,7 +149,7 @@ class Year : public Meta::Year, public Base
 class AMAROK_EXPORT Track : public Meta::Track
 {
     public:
-        Track( const Meta::TrackPtr &originalTrack );
+        explicit Track( const Meta::TrackPtr &originalTrack );
         virtual ~Track();
 
         /* Meta::MetaCapability methods */
@@ -264,7 +264,7 @@ class AMAROK_EXPORT Track : public Meta::Track
 class AMAROK_EXPORT MapChanger
 {
     public:
-        MapChanger( MemoryCollection *memoryCollection );
+        explicit MapChanger( MemoryCollection *memoryCollection );
         ~MapChanger();
 
         /**

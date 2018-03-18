@@ -82,7 +82,7 @@ namespace AmarokScript
 
         public:
             static void init( QScriptEngine *engine );
-            PlaylistProviderPrototype( Playlists::PlaylistProvider *provider );
+            explicit PlaylistProviderPrototype( Playlists::PlaylistProvider *provider );
             Playlists::PlaylistProvider* data() const { return m_provider.data(); }
 
             Q_INVOKABLE QString toString() const;

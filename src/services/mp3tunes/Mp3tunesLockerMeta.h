@@ -32,7 +32,7 @@ extern "C" {
 
 class Mp3tunesLockerPlaylist {
     public:
-        Mp3tunesLockerPlaylist( mp3tunes_locker_playlist_t *playlist );
+        explicit Mp3tunesLockerPlaylist( mp3tunes_locker_playlist_t *playlist );
         ~Mp3tunesLockerPlaylist();
 
         QString playlistId() const;
@@ -47,7 +47,7 @@ class Mp3tunesLockerPlaylist {
 
 class Mp3tunesLockerArtist {
     public:
-        Mp3tunesLockerArtist( mp3tunes_locker_artist_t *artist );
+        explicit Mp3tunesLockerArtist( mp3tunes_locker_artist_t *artist );
         ~Mp3tunesLockerArtist();
 
         int artistId() const;
@@ -65,7 +65,7 @@ class Mp3tunesLockerArtist {
 
 class Mp3tunesLockerAlbum {
     public:
-        Mp3tunesLockerAlbum( mp3tunes_locker_album_t *album );
+        explicit Mp3tunesLockerAlbum( mp3tunes_locker_album_t *album );
         ~Mp3tunesLockerAlbum();
         int albumId() const;
         QString albumTitle() const;
@@ -86,7 +86,7 @@ class Mp3tunesLockerAlbum {
 
 class Mp3tunesLockerTrack {
     public:
-        Mp3tunesLockerTrack( mp3tunes_locker_track_t *track = 0 );
+        explicit Mp3tunesLockerTrack( mp3tunes_locker_track_t *track = 0 );
         ~Mp3tunesLockerTrack();
         
         int trackId() const;

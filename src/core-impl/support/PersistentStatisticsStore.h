@@ -46,7 +46,7 @@ class AMAROK_EXPORT PersistentStatisticsStore : public Meta::Statistics, private
          * This methods takes plain pointer so that you can call it in the Track
          * constructor without AmarokSharedPointer deleting it right away.
          */
-        PersistentStatisticsStore( Meta::Track *track );
+        explicit PersistentStatisticsStore( Meta::Track *track );
         virtual ~PersistentStatisticsStore();
 
         // Meta::Statistics methods

@@ -55,7 +55,7 @@ typedef QList<or_list> ParsedExpression;
 class ExpressionParser
 {
     public:
-        ExpressionParser( const QString &expression );
+        explicit ExpressionParser( const QString &expression );
         ParsedExpression parse();
         static ParsedExpression parse( const QString &expression );
 

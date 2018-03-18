@@ -47,7 +47,7 @@ class BrowserCategoryList : public BrowserCategory
         * @param parent The parent widget.
         * @param name The name of this widget.
         */
-        BrowserCategoryList( const QString& name, QWidget* parent = 0, bool sort = false );
+        explicit BrowserCategoryList( const QString& name, QWidget* parent = 0, bool sort = false );
 
         /**
          * Destructor.

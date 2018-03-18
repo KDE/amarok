@@ -44,7 +44,7 @@ class DeviceHandlerFactory : public QObject
     Q_OBJECT
 
 public:
-    DeviceHandlerFactory( QObject *parent ) : QObject( parent ) {}
+    explicit DeviceHandlerFactory( QObject *parent ) : QObject( parent ) {}
     virtual ~DeviceHandlerFactory() {}
 
     /**

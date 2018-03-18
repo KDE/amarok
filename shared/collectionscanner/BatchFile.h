@@ -43,7 +43,7 @@ public:
     BatchFile();
 
     /** Reads the BatchFile from the disk */
-    BatchFile( const QString &path );
+    explicit BatchFile( const QString &path );
 
     /** This type is a pair of directory path and modification time */
     typedef QPair<QString, uint> TimeDefinition;

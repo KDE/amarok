@@ -25,7 +25,7 @@ class GeneralConfig : public ConfigDialogBase, public Ui_GeneralConfig
     Q_OBJECT
 
     public:
-        GeneralConfig( Amarok2ConfigDialog* parent );
+        explicit GeneralConfig( Amarok2ConfigDialog* parent );
         virtual ~GeneralConfig();
 
         bool hasChanged() Q_DECL_OVERRIDE;

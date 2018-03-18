@@ -35,7 +35,7 @@ namespace Playlists
         Q_OBJECT
 
         public:
-            PlaylistFileLoaderJob( const PlaylistFilePtr &playlist );
+            explicit PlaylistFileLoaderJob( const PlaylistFilePtr &playlist );
 
         protected:
             void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;

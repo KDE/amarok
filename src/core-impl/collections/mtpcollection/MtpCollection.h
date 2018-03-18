@@ -50,7 +50,7 @@ class MtpCollection : public MediaDeviceCollection
 
 	public:
 
-    MtpCollection( MediaDeviceInfo* );
+    explicit MtpCollection( MediaDeviceInfo* );
     virtual ~MtpCollection();
 
     virtual QString collectionId() const;

@@ -31,7 +31,7 @@ namespace ScriptConsoleNS
                                           , public KTextEditor::CodeCompletionModel
     {
         public:
-            AmarokScriptCodeCompletionModel( QObject *parent );
+            explicit AmarokScriptCodeCompletionModel( QObject *parent );
             virtual ~AmarokScriptCodeCompletionModel();
 
         private:

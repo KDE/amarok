@@ -48,7 +48,7 @@ class AMAROK_CORE_EXPORT PodcastReader : public QObject
             Note: the PodcastProvider pointer is not owned by the PodcastReader and
                   must remain valid throughout the lifetime of this object.
         */
-        PodcastReader( PodcastProvider *podcastProvider, QObject *parent = 0 );
+        explicit PodcastReader( PodcastProvider *podcastProvider, QObject *parent = 0 );
         ~PodcastReader();
 
         bool read( QIODevice *device );
@@ -129,7 +129,7 @@ class AMAROK_CORE_EXPORT PodcastReader : public QObject
         class Action
         {
             public:
-                Action( ActionMap &actionMap )
+                explicit Action( ActionMap &actionMap )
                     : m_actionMap( actionMap )
                     , m_begin( 0 )
                     , m_end( 0 )

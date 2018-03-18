@@ -42,7 +42,7 @@ public:
      * Constructor
      * @param fileName The file to parse 
      */
-    JamendoXmlParser( const QString &fileName );
+    explicit JamendoXmlParser( const QString &fileName );
 
     /**
      * The function that starts the actual work. Inherited from ThreadWeaver::Job 

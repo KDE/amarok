@@ -36,7 +36,7 @@ namespace Meta
         Q_OBJECT
 
         public:
-            MultiTrack( Playlists::PlaylistPtr playlist );
+            explicit MultiTrack( Playlists::PlaylistPtr playlist );
             ~MultiTrack();
 
             QStringList sources() const;

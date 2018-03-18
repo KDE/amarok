@@ -42,7 +42,7 @@ class LayoutConfigAction : public QAction
          * Constructor.
          * @param parent Parent widget.
          */
-        LayoutConfigAction( QWidget * parent );
+        explicit LayoutConfigAction( QWidget * parent );
 
         /**
          * Destructor.

@@ -49,13 +49,13 @@ public:
      * Constructor, reimplemented from ServiceAlbum.
      * @param name The name of the album.
      */
-    ServiceAlbumWithCover( const QString &name );
+    explicit ServiceAlbumWithCover( const QString &name );
 
     /**
      * Constructor, reimplemented from ServiceAlbum.
      * @param name The result list used to initialize the album.
      */
-    ServiceAlbumWithCover( const QStringList &resultRow );
+    explicit ServiceAlbumWithCover( const QStringList &resultRow );
 
     /**
      * Destructor.

@@ -34,7 +34,7 @@ class DeviceConfigureDialog : public QDialog
     Q_OBJECT
 
     public:
-        DeviceConfigureDialog( MediaDevice *device );
+        explicit DeviceConfigureDialog( MediaDevice *device );
         ~DeviceConfigureDialog();
         bool successful() { return m_accepted; }
 

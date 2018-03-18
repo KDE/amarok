@@ -44,7 +44,7 @@ class QScriptEngine;
         Q_PROPERTY( QString coverUrl WRITE setCoverUrl READ coverUrl )
 
         public:
-            StreamItem( QScriptEngine *engine );
+            explicit StreamItem( QScriptEngine *engine );
 
             QString itemName() const;
             QString infoHtml() const;

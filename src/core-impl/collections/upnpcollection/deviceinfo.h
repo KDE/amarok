@@ -152,7 +152,7 @@ friend const QDBusArgument& operator>>( const QDBusArgument& argument, DeviceInf
 class DeviceInfo0_2_0 : public DeviceInfo
 {
 public:
-    DeviceInfo0_2_0( const DeviceDetailsMap &map )
+    explicit DeviceInfo0_2_0( const DeviceDetailsMap &map )
     {
         m_type = map.value( "deviceType" );
         m_friendlyName = map.value( "friendlyName" );

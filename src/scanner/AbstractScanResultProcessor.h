@@ -53,7 +53,7 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
     Q_OBJECT
 
     public:
-        AbstractScanResultProcessor( GenericScanManager* manager, QObject* parent = 0 );
+        explicit AbstractScanResultProcessor( GenericScanManager* manager, QObject* parent = 0 );
         virtual ~AbstractScanResultProcessor();
 
     Q_SIGNALS:

@@ -198,7 +198,7 @@ class Track::Private : public QObject
 class LastFmArtist : public Meta::Artist
 {
 public:
-    LastFmArtist( Track::Private *dptr )
+    explicit LastFmArtist( Track::Private *dptr )
         : Meta::Artist()
         , d( dptr )
     {}
@@ -223,7 +223,7 @@ public:
 class LastFmAlbum : public Meta::Album
 {
 public:
-    LastFmAlbum( Track::Private *dptr )
+    explicit LastFmAlbum( Track::Private *dptr )
         : Meta::Album()
         , d( dptr )
     {}
@@ -296,7 +296,7 @@ public:
 class LastFmGenre : public Meta::Genre
 {
 public:
-    LastFmGenre( Track::Private *dptr )
+    explicit LastFmGenre( Track::Private *dptr )
         : Meta::Genre()
         , d( dptr )
     {}
@@ -319,7 +319,7 @@ public:
 class LastFmComposer : public Meta::Composer
 {
 public:
-    LastFmComposer( Track::Private *dptr )
+    explicit LastFmComposer( Track::Private *dptr )
         : Meta::Composer()
         , d( dptr )
     {}
@@ -342,7 +342,7 @@ public:
 class LastFmYear : public Meta::Year
 {
 public:
-    LastFmYear( Track::Private *dptr )
+    explicit LastFmYear( Track::Private *dptr )
         : Meta::Year()
         , d( dptr )
     {}

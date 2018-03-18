@@ -58,7 +58,7 @@ class ConstraintGroup : public ConstraintNode {
 
     private:
         ConstraintGroup(QDomElement&, ConstraintNode*);
-        ConstraintGroup(ConstraintNode*);
+        explicit ConstraintGroup(ConstraintNode*);
 
         // parameters
         MatchType m_matchtype;
@@ -71,7 +71,7 @@ class ConstraintGroupEditWidget : public QWidget {
     Q_OBJECT
 
     public:
-        ConstraintGroupEditWidget( const ConstraintGroup::MatchType );
+        explicit ConstraintGroupEditWidget( const ConstraintGroup::MatchType );
 
     Q_SIGNALS:
         void updated();

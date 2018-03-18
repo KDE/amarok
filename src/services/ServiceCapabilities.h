@@ -45,7 +45,7 @@ A service specific implementation of the BookmarkThisCapability
 */
 class AMAROK_EXPORT ServiceBookmarkThisCapability : public Capabilities::BookmarkThisCapability {
 public:
-    ServiceBookmarkThisCapability( BookmarkThisProvider * provider );
+    explicit ServiceBookmarkThisCapability( BookmarkThisProvider * provider );
 
     ~ServiceBookmarkThisCapability();
 
@@ -66,7 +66,7 @@ class AMAROK_EXPORT ServiceActionsCapability : public Capabilities::ActionsCapab
     Q_OBJECT
 
     public:
-        ServiceActionsCapability( ActionsProvider * actionsProvider  );
+        explicit ServiceActionsCapability( ActionsProvider * actionsProvider  );
         virtual ~ServiceActionsCapability();
         virtual QList< QAction * > actions() const;
 
@@ -79,7 +79,7 @@ class AMAROK_EXPORT ServiceActionsCapability : public Capabilities::ActionsCapab
 class AMAROK_EXPORT ServiceSourceInfoCapability : public Capabilities::SourceInfoCapability
 {
 public:
-    ServiceSourceInfoCapability( SourceInfoProvider * sourceInfoProvider );
+    explicit ServiceSourceInfoCapability( SourceInfoProvider * sourceInfoProvider );
 
     ~ServiceSourceInfoCapability();
 
@@ -99,7 +99,7 @@ class AMAROK_EXPORT ServiceFindInSourceCapability : public Capabilities::FindInS
 {
     Q_OBJECT
     public:
-        ServiceFindInSourceCapability( Meta::ServiceTrack *track );
+        explicit ServiceFindInSourceCapability( Meta::ServiceTrack *track );
         virtual void findInSource( QFlags<TargetTag> tag );
 
     private:

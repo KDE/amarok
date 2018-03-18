@@ -35,7 +35,7 @@ class MainToolbar : public QToolBar
     Q_OBJECT
 
 public:
-    MainToolbar( QWidget *parent = 0 );
+    explicit MainToolbar( QWidget *parent = 0 );
 
 protected:
     bool eventFilter( QObject *o, QEvent *ev );

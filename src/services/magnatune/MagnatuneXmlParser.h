@@ -44,7 +44,7 @@ public:
      * @param fileName The file to parse
      * @return Pointer to new object
      */
-    MagnatuneXmlParser( const QString &fileName );
+    explicit MagnatuneXmlParser( const QString &fileName );
 
     /**
      * The function that starts the actual work. Inherited from ThreadWeaver::Job

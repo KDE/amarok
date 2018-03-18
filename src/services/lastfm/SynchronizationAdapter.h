@@ -32,7 +32,7 @@ class SynchronizationAdapter : public StatSyncing::Provider
         /**
          * @param user Last.fm username
          */
-        SynchronizationAdapter( const LastFmServiceConfigPtr &config );
+        explicit SynchronizationAdapter( const LastFmServiceConfigPtr &config );
         virtual ~SynchronizationAdapter();
 
         virtual QString id() const;

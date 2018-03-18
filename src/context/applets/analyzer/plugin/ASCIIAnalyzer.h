@@ -31,7 +31,7 @@ class QResizeEvent;
 class ASCIIAnalyzer : public Analyzer::Base
 {
 public:
-    ASCIIAnalyzer( QWidget* );
+    explicit ASCIIAnalyzer( QWidget* );
 
     static GLuint createTexture( const QImage &image ) { return instance->bindTexture( image ); }
     static void freeTexture( GLuint id ) { instance->deleteTexture( id ); }

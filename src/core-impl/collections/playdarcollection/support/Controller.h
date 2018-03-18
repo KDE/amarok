@@ -55,7 +55,7 @@ namespace Playdar
              *        If true, Playdar::Queries created by this controller will
              *        only use getResultsLongPoll instead of first using getResults.
              */
-            Controller( bool queriesShouldWaitForSolutions = false );
+            explicit Controller( bool queriesShouldWaitForSolutions = false );
             /**
              * Controllers don't hold on to anything, so the deconstructor does nothing.
              */

@@ -35,9 +35,9 @@ class AMAROK_CORE_EXPORT SmartPointerListDaddy : public QObject
 
 public:
 #ifdef Q_CC_MSVC
-    AMAROK_CORE_EXPORT SmartPointerListDaddy( QList<QObject*>* list ) : m_list( *list )
+    AMAROK_CORE_EXPORT explicit SmartPointerListDaddy( QList<QObject*>* list ) : m_list( *list )
 #else
-	SmartPointerListDaddy( QList<QObject*>* list ) : m_list( *list )
+	explicit SmartPointerListDaddy( QList<QObject*>* list ) : m_list( *list )
 #endif
     {}
 

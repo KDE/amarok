@@ -27,7 +27,7 @@ class CoverBling : public QGLWidget
     Q_OBJECT
 
     public:
-        CoverBling( QWidget* parent );
+        explicit CoverBling( QWidget* parent );
 
     protected:
         void initializeGL();

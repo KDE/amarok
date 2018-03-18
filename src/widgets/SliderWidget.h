@@ -108,7 +108,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            TimeSlider( QWidget *parent );
+            explicit TimeSlider( QWidget *parent );
 
             void setSliderValue( int value );
             void drawTriangle( const QString &name, int milliSeconds, bool showPopup = false);

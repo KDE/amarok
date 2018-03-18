@@ -41,7 +41,7 @@ class LayoutEditWidget : public QWidget
          * Constructor.
          * @param parent The parent widget.
          */
-        LayoutEditWidget( QWidget *parent );
+        explicit LayoutEditWidget( QWidget *parent );
 
         /**
          * Destructor.

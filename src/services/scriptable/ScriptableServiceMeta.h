@@ -36,7 +36,7 @@ namespace Meta
 class ScriptableServiceMetaItem
 {
     public:
-        ScriptableServiceMetaItem( int level );
+        explicit ScriptableServiceMetaItem( int level );
 
         void setCallbackString( const QString &callbackString );
         QString callbackString() const;
@@ -64,8 +64,8 @@ class ScriptableServiceMetaItem
 class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServiceMetaItem
 {
     public:
-        ScriptableServiceTrack( const QString &name );
-        ScriptableServiceTrack( const QStringList &resultRow );
+        explicit ScriptableServiceTrack( const QString &name );
+        explicit ScriptableServiceTrack( const QStringList &resultRow );
 
         virtual QString sourceName();
         virtual QString sourceDescription();
@@ -96,8 +96,8 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
 class ScriptableServiceAlbum : public Meta::ServiceAlbumWithCover, public ScriptableServiceMetaItem
 {
     public:
-        ScriptableServiceAlbum( const QString &name );
-        ScriptableServiceAlbum( const QStringList &resultRow );
+        explicit ScriptableServiceAlbum( const QString &name );
+        explicit ScriptableServiceAlbum( const QStringList &resultRow );
 
         virtual QString downloadPrefix() const { return "script"; }
         virtual void setCoverUrl( const QString &coverUrl ) { m_coverUrl = coverUrl; }
@@ -122,8 +122,8 @@ class ScriptableServiceAlbum : public Meta::ServiceAlbumWithCover, public Script
 class ScriptableServiceArtist : public Meta::ServiceArtist, public ScriptableServiceMetaItem
 {
     public:
-        ScriptableServiceArtist( const QString &name );
-        ScriptableServiceArtist( const QStringList &resultRow );
+        explicit ScriptableServiceArtist( const QString &name );
+        explicit ScriptableServiceArtist( const QStringList &resultRow );
 
         void setGenreId( int artistId );
         int genreId() const;
@@ -145,8 +145,8 @@ class ScriptableServiceArtist : public Meta::ServiceArtist, public ScriptableSer
 class ScriptableServiceGenre : public Meta::ServiceGenre, public ScriptableServiceMetaItem
 {
     public:
-        ScriptableServiceGenre( const QString &name );
-        ScriptableServiceGenre( const QStringList &resultRow );
+        explicit ScriptableServiceGenre( const QString &name );
+        explicit ScriptableServiceGenre( const QStringList &resultRow );
 
         void setDescription( const QString &description );
         QString description();

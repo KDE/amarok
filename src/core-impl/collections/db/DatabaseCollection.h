@@ -124,7 +124,7 @@ class DatabaseCollectionScanCapability : public Capabilities::CollectionScanCapa
     Q_OBJECT
     public:
 
-        DatabaseCollectionScanCapability( DatabaseCollection* collection );
+        explicit DatabaseCollectionScanCapability( DatabaseCollection* collection );
         virtual ~DatabaseCollectionScanCapability();
 
         virtual void startFullScan();
@@ -140,7 +140,7 @@ class DatabaseCollectionImportCapability : public Capabilities::CollectionImport
     Q_OBJECT
     public:
 
-        DatabaseCollectionImportCapability( DatabaseCollection* collection );
+        explicit DatabaseCollectionImportCapability( DatabaseCollection* collection );
         virtual ~DatabaseCollectionImportCapability();
 
         virtual void import( QIODevice *input, QObject *listener );

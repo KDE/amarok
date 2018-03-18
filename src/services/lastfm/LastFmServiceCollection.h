@@ -33,7 +33,7 @@ class LastFmServiceCollection : public ServiceCollection
 {
     Q_OBJECT
 public:
-    LastFmServiceCollection( const QString &userName );
+    explicit LastFmServiceCollection( const QString &userName );
     virtual ~LastFmServiceCollection();
 
     virtual bool possiblyContainsTrack( const QUrl &url ) const;

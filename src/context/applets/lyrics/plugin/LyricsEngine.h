@@ -37,7 +37,7 @@ class LyricsEngine : public QObject, public LyricsObserver
     Q_PROPERTY(QString font READ font WRITE setFont NOTIFY fontChanged)
 
 public:
-    LyricsEngine( QObject* parent = Q_NULLPTR );
+    explicit LyricsEngine( QObject* parent = Q_NULLPTR );
 
     // reimplemented from LyricsObserver
     void newLyrics( const LyricsData &lyrics ) Q_DECL_OVERRIDE;

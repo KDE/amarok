@@ -110,7 +110,7 @@ class AMAROK_EXPORT PluginManager : public QObject
         static const int s_pluginFrameworkVersion;
         static PluginManager *s_instance;
 
-        PluginManager( QObject *parent = 0 );
+        explicit PluginManager( QObject *parent = 0 );
 };
 
 } // namespace Plugins

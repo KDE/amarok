@@ -65,7 +65,7 @@ namespace ConstraintTypes {
             class AlbumMatcher;
 
             Checkpoint( QDomElement&, ConstraintNode* );
-            Checkpoint( ConstraintNode* );
+            explicit Checkpoint( ConstraintNode* );
             ~Checkpoint();
 
             // constraint parameters

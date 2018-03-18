@@ -37,7 +37,7 @@ public:
     /**
      * Constructor.
      */
-    SortWidget( QWidget *parent );
+    explicit SortWidget( QWidget *parent );
 
     /**
      * Destructor.

@@ -54,7 +54,7 @@ class Mp3tunesLocker {
          * Initialize the connection, but do not login.
          * @param partnerToken your partnerToken to access the mp3tunes API.
          */
-        Mp3tunesLocker( const QString & partnerToken );
+        explicit Mp3tunesLocker( const QString & partnerToken );
 
         /**
          * Initialize the connection, and login.

@@ -51,7 +51,7 @@ namespace AmarokScript
         Q_PROPERTY( QList<int> availableCategories READ availableCategories )
 
         public:
-            AmarokPlaylistManagerScript( AmarokScriptEngine* engine );
+            explicit AmarokPlaylistManagerScript( AmarokScriptEngine* engine );
 
             /**
              * @returns playlists of a certain category from all registered PlaylistProviders

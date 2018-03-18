@@ -30,7 +30,7 @@ class HintLineEdit : public QLineEdit
 public:
     explicit HintLineEdit( const QString &hint, const QString &text, QWidget *parent = 0 );
     explicit HintLineEdit( const QString &text, QWidget *parent = 0 );
-    HintLineEdit( QWidget *parent = 0 );
+    explicit HintLineEdit( QWidget *parent = 0 );
 
     virtual ~HintLineEdit();
     virtual QObject *parent();

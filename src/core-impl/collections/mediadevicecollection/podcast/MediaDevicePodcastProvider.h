@@ -25,7 +25,7 @@ namespace Podcasts {
 class MediaDevicePodcastProvider : public Podcasts::PodcastProvider
 {
     public:
-        MediaDevicePodcastProvider( Meta::MediaDeviceHandler *handler );
+        explicit MediaDevicePodcastProvider( Meta::MediaDeviceHandler *handler );
 
         //TODO:implement these
         virtual bool possiblyContainsTrack( const QUrl &url ) const { Q_UNUSED(url); return false;}

@@ -29,7 +29,7 @@ namespace Transcoding
 class AMAROK_CORE_EXPORT NullFormat : public Format
 {
 public:
-    NullFormat( const Encoder &encoder );
+    explicit NullFormat( const Encoder &encoder );
     QString prettyName() const;
     QString description() const;
     QIcon icon() const;

@@ -41,7 +41,7 @@ namespace Collections
         Q_OBJECT
         
         public:
-            PlaydarQueryMaker( PlaydarCollection *collection );
+            explicit PlaydarQueryMaker( PlaydarCollection *collection );
             ~PlaydarQueryMaker();
 
             void run();

@@ -83,7 +83,7 @@ namespace ConstraintTypes {
 
         private:
             TagMatch( QDomElement&, ConstraintNode* );
-            TagMatch( ConstraintNode* );
+            explicit TagMatch( ConstraintNode* );
             ~TagMatch();
 
             // constraint parameters

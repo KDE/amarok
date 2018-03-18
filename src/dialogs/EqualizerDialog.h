@@ -62,7 +62,7 @@ class EqualizerDialog : public QDialog, public Ui_EqualizerDialog
         void toggleEqualizer( bool enabled );
 
     private:
-        EqualizerDialog( QWidget *parent = 0 );
+        explicit EqualizerDialog( QWidget *parent = 0 );
 
         void updateToolTips();
         void updateLabels();

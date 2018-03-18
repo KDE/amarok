@@ -51,7 +51,7 @@ class PrettyListView : public QListView, public ViewCommon
     Q_OBJECT
 
 public:
-    PrettyListView( QWidget* parent = 0 );
+    explicit PrettyListView( QWidget* parent = 0 );
     ~PrettyListView();
 
 protected:

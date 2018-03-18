@@ -34,7 +34,7 @@ class ATTICA_EXPORT ProviderInitJob : public KJob
     Q_OBJECT
 
     public:
-        ProviderInitJob(const QString& id, QObject* parent = 0);
+        explicit ProviderInitJob(const QString& id, QObject* parent = 0);
 
         void start();
 

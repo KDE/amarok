@@ -45,7 +45,7 @@ class AMAROK_EXPORT LyricsObserver
 {
     public:
         LyricsObserver();
-        LyricsObserver( LyricsSubject* );
+        explicit LyricsObserver( LyricsSubject* );
         virtual ~LyricsObserver();
 
         /**

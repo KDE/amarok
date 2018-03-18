@@ -57,7 +57,7 @@ public:
     /**
      * Constructor. Overload for creating a connection to SQLite database.
      */
-    ImporterSqlConnection( const QString &dbPath );
+    explicit ImporterSqlConnection( const QString &dbPath );
 
     /**
      * Destructor. Removes connection created in the constructor. If a transaction was

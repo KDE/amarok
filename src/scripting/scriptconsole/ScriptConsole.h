@@ -78,7 +78,7 @@ class ScriptListDockWidget;
         Q_OBJECT
 
         public:
-            ScriptListDockWidget( QWidget *parent );
+            explicit ScriptListDockWidget( QWidget *parent );
             ~ScriptListDockWidget();
             void addScript( ScriptConsoleItem *script );
             void addItem( QListWidgetItem *item );

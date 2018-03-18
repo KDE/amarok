@@ -54,7 +54,7 @@ class AMAROK_EXPORT PopupDropperFactory : public QObject
         static void adjustItemCallback( void *pdi );
 
     private:
-        PopupDropperFactory( QObject* parent );
+        explicit PopupDropperFactory( QObject* parent );
         ~PopupDropperFactory();
  };
 

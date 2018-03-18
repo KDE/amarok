@@ -27,7 +27,7 @@ class Paddle;
 class BallsAnalyzer : public Analyzer::Base
 {
 public:
-    BallsAnalyzer( QWidget * );
+    explicit BallsAnalyzer( QWidget * );
     ~BallsAnalyzer();
     void analyze( const QVector<float> & );
 

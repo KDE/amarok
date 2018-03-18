@@ -31,7 +31,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokServicePluginManagerScript( QScriptEngine* scriptEngine );
+            explicit AmarokServicePluginManagerScript( QScriptEngine* scriptEngine );
 
             Q_INVOKABLE QStringList loadedServices();
             Q_INVOKABLE QStringList loadedServiceNames();

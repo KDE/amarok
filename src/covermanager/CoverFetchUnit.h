@@ -66,7 +66,7 @@ public:
                     const CoverFetchPayload *payload,
                     CoverFetch::Option opt = CoverFetch::Automatic );
     CoverFetchUnit( const CoverFetchPayload *payload, CoverFetch::Option opt );
-    CoverFetchUnit( const CoverFetchSearchPayload *payload );
+    explicit CoverFetchUnit( const CoverFetchSearchPayload *payload );
     ~CoverFetchUnit();
 
     Meta::AlbumPtr album() const;

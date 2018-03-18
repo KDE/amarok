@@ -37,7 +37,7 @@ namespace Amarok
     {
         Q_OBJECT
         public:
-            Menu( QWidget* parent );
+            explicit Menu( QWidget* parent );
             static Menu *instance();
             static QMenu *helpMenu( QWidget *parent = 0 );
 
@@ -133,7 +133,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            BurnMenu( QWidget* parent );
+            explicit BurnMenu( QWidget* parent );
             static QMenu *instance();
 
         private Q_SLOTS:

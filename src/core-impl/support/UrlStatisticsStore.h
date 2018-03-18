@@ -28,7 +28,7 @@ class AMAROK_EXPORT UrlStatisticsStore : public PersistentStatisticsStore
          * Construct persistent per-url statistics store. If @param permanentUrl is not
          * specified, track->uidUrl() is used.
          */
-        UrlStatisticsStore( Meta::Track *track, const QString &permanentUrl = QString() );
+        explicit UrlStatisticsStore( Meta::Track *track, const QString &permanentUrl = QString() );
 
     protected:
         virtual void save();

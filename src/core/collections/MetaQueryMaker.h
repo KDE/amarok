@@ -30,8 +30,8 @@ class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
     Q_OBJECT
 
     public:
-        MetaQueryMaker( const QList<Collections::Collection*> &collections );
-        MetaQueryMaker( const QList<QueryMaker*> &queryMakers );
+        explicit MetaQueryMaker( const QList<Collections::Collection*> &collections );
+        explicit MetaQueryMaker( const QList<QueryMaker*> &queryMakers );
         ~MetaQueryMaker();
 
         virtual void run();

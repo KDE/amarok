@@ -35,7 +35,7 @@ typedef QList<GpodderPodcastChannelPtr> GpodderPodcastChannelList;
 class GpodderPodcastChannel : public PodcastChannel
 {
     public:
-        GpodderPodcastChannel( GpodderProvider *provider );
+        explicit GpodderPodcastChannel( GpodderProvider *provider );
 
         //Copy a PodcastChannel
         GpodderPodcastChannel( GpodderProvider *provider, PodcastChannelPtr channel );

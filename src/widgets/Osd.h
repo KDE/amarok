@@ -141,7 +141,7 @@ class OSDPreviewWidget : public OSDWidget
     Q_OBJECT
 
 public:
-    OSDPreviewWidget( QWidget *parent );
+    explicit OSDPreviewWidget( QWidget *parent );
 
 public Q_SLOTS:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }

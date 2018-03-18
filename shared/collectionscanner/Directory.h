@@ -52,7 +52,7 @@ public:
     /** Reads a directory from an xml stream.
      * @see toXml()
      */
-    Directory( QXmlStreamReader *reader );
+    explicit Directory( QXmlStreamReader *reader );
 
     ~Directory();
 

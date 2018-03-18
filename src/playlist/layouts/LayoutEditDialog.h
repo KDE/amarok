@@ -32,7 +32,7 @@ class LayoutEditDialog : public QDialog
 {
     Q_OBJECT
 public:
-    LayoutEditDialog( QWidget *parent = 0 );
+    explicit LayoutEditDialog( QWidget *parent = 0 );
     void setToken( TokenWithLayout *t );
 public Q_SLOTS:
     void close();

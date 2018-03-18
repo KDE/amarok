@@ -108,7 +108,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
 
     public:
         CollectionLocation();
-        CollectionLocation( Collections::Collection *parentCollection );
+        explicit CollectionLocation( Collections::Collection *parentCollection );
         virtual  ~CollectionLocation();
 
         /**

@@ -34,7 +34,7 @@ class AmarokScriptXml : public QObject
     Q_OBJECT
 
 public:
-    AmarokScriptXml( QScriptEngine *engine );
+    explicit AmarokScriptXml( QScriptEngine *engine );
     ~AmarokScriptXml();
 
     Q_INVOKABLE void setReaderData( const QString &data );

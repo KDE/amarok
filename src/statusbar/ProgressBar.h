@@ -35,7 +35,7 @@ class AMAROK_EXPORT ProgressBar : public QFrame
     Q_OBJECT
 
     public:
-        ProgressBar( QWidget *parent );
+        explicit ProgressBar( QWidget *parent );
         ~ProgressBar();
 
         void setDescription( const QString &description );

@@ -68,8 +68,8 @@ private:
     QString m_coverURL;
 
 public:
-    AmpacheAlbum( const QString &name );
-    AmpacheAlbum( const QStringList &resultRow );
+    explicit AmpacheAlbum( const QString &name );
+    explicit AmpacheAlbum( const QStringList &resultRow );
 
     ~AmpacheAlbum();
 

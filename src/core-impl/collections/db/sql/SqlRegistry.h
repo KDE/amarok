@@ -80,7 +80,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlRegistry : public QObject
     Q_OBJECT
 
     public:
-        SqlRegistry(Collections::SqlCollection *collection);
+        explicit SqlRegistry(Collections::SqlCollection *collection);
         virtual ~SqlRegistry();
 
         /** Searches a directory entry in the scanned directories
