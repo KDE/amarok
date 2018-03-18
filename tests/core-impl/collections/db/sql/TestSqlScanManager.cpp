@@ -1145,7 +1145,7 @@ TestSqlScanManager::createTrack( const Meta::FieldHash &values )
 {
     // -- copy the file from our original
     QVERIFY( values.contains( Meta::valUrl ) );
-    const QString targetPath = m_tmpCollectionDir->path() + "/" + values.value( Meta::valUrl ).toString();
+    const QString targetPath = m_tmpCollectionDir->path() + '/' + values.value( Meta::valUrl ).toString();
     QVERIFY( QDir( m_tmpCollectionDir->path() ).mkpath( QFileInfo( values.value( Meta::valUrl ).toString() ).path() ) );
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 

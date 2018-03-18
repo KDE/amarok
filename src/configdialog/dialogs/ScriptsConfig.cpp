@@ -154,7 +154,7 @@ ScriptsConfig::installLocalScript()
         return;
     }
 
-    QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + QString("amarok/scripts/") + fileName + "/";
+    QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + QString("amarok/scripts/") + fileName + '/';
     const KArchiveDirectory* const archiveDir = archive->directory();
     const QDir dir( destination );
     const KArchiveFile *specFile = findSpecFile( archiveDir );
