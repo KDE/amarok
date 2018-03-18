@@ -25,7 +25,7 @@ that really makes playlist handling easy.
     * Podcast support
     * iPod support, as well as other media players
     * Powerful scripting interface
-    * KDE integration
+    * Integration with Plasma and KDE Applications
     * Integration with multiple web sources including Magnatune, Jamendo,
       Ampache, MP3tunes, and others.
 --------------------------------------------------------------------------------
