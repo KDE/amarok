@@ -60,7 +60,7 @@ class POPUPDROPPER_EXPORT PopupDropper : public QObject
 
 public:    
     enum Fading { NoFade, FadeIn, FadeOut, FadeInOut };
-    Q_ENUMS( Fading )
+    Q_ENUM( Fading )
 
     explicit PopupDropper( QWidget *parent, bool standalone = false );
     ~PopupDropper();

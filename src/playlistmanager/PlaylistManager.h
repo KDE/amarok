@@ -57,7 +57,6 @@ typedef QList<Playlists::PlaylistProvider *> PlaylistProviderList;
 class AMAROK_EXPORT PlaylistManager : public QObject
 {
     Q_OBJECT
-    Q_ENUMS( PlaylistCategory )
 
     public:
         enum PlaylistCategory
@@ -65,6 +64,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
             UserPlaylist = 1,
             PodcastChannel
         };
+        Q_ENUM( PlaylistCategory )
 
         static PlaylistManager *instance();
         static void destroy();

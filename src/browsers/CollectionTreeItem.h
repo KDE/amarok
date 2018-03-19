@@ -31,7 +31,6 @@ class QAction;
 class AMAROK_EXPORT CollectionTreeItem : public QObject
 {
     Q_OBJECT
-    Q_ENUMS( Type )
 
     public:
         enum Type
@@ -42,6 +41,7 @@ class AMAROK_EXPORT CollectionTreeItem : public QObject
             NoLabel,
             Data
         };
+        Q_ENUM( Type )
 
         explicit CollectionTreeItem( CollectionTreeItemModelBase *model ); //root node
         CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //data node

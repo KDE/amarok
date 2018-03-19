@@ -35,7 +35,6 @@ namespace Handler
     class MEDIADEVICECOLLECTION_EXPORT Capability : public QObject
     {
         Q_OBJECT
-        Q_ENUMS( Type )
 
         public:
             //add additional capabilities here
@@ -46,6 +45,7 @@ namespace Handler
                         , Artwork = 4 // can read/write artwork
                         , Podcast = 5 // can read/write podcasts
                       };
+            Q_ENUM( Type )
 
             /**
              * @param handler should be set to associated MediaDeviceHandler or Collection.

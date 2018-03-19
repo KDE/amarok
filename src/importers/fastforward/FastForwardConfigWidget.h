@@ -27,7 +27,6 @@ class FastForwardConfigWidget : public ProviderConfigWidget,
         public Ui::FastForwardConfigWidget
 {
     Q_OBJECT
-    Q_ENUMS( Driver )
 
 public:
     explicit FastForwardConfigWidget( const QVariantMap &config, QWidget *parent = 0,
@@ -42,6 +41,7 @@ public:
         QPSQL,
         QSQLITE
     };
+    Q_ENUM( Driver )
 
 private:
     void populateFields();

@@ -35,7 +35,6 @@ namespace Capabilities
     class AMAROK_CORE_EXPORT Capability : public QObject
     {
         Q_OBJECT
-        Q_ENUMS( Type )
 
         public:
             //add additional capabilities here
@@ -66,6 +65,7 @@ namespace Capabilities
                         , CollectionScan = 24
                         , Transcode = 25
                       };
+            Q_ENUM( Type )
 
             virtual ~Capability();
 

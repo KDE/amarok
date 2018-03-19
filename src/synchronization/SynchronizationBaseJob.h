@@ -35,8 +35,6 @@ namespace Collections {
 class SynchronizationBaseJob : public QObject
 {
     Q_OBJECT
-    Q_ENUMS( State )
-    Q_ENUMS( InSet )
     public:
         enum State
         {
@@ -46,6 +44,7 @@ class SynchronizationBaseJob : public QObject
             ComparingTracks,
             Syncing
         };
+        Q_ENUM( State )
 
         enum InSet
         {
@@ -53,6 +52,7 @@ class SynchronizationBaseJob : public QObject
             OnlyInB,
             InBoth
         };
+        Q_ENUM( InSet )
 
         SynchronizationBaseJob();
         ~SynchronizationBaseJob();

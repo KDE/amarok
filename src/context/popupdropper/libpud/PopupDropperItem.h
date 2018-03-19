@@ -73,13 +73,13 @@ class POPUPDROPPER_EXPORT PopupDropperItem : public QObject, public QAbstractGra
 
 public:
     enum HoverIndicatorShowStyle { Never, OnHover, AlwaysShow };
-    Q_ENUMS( HoverIndicatorShowStyle )
+    Q_ENUM( HoverIndicatorShowStyle )
     enum Orientation { Left, Right };
-    Q_ENUMS( Orientation )
+    Q_ENUM( Orientation )
     enum TextProtection { NoProtection, MultiLine, ScaleFont };
-    Q_ENUMS( TextProtection )
-    enum SeparatorStyle{TextSeparator, LineSeparator};
-    Q_ENUMS( separatorStyle )
+    Q_ENUM( TextProtection )
+    enum SeparatorStyle { TextSeparator, LineSeparator };
+    Q_ENUM( SeparatorStyle )
 
     PopupDropperItem( QGraphicsItem *parent = 0 );
     explicit PopupDropperItem( const QString &file, QGraphicsItem *parent = 0 );

@@ -47,7 +47,6 @@ namespace Collections {
 class AMAROK_EXPORT CollectionManager : public QObject
 {
     Q_OBJECT
-    Q_ENUMS( CollectionStatus )
 
     public:
 
@@ -60,6 +59,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
                                 CollectionQueryable= 4, ///< Collection wil not show up in the browser, but is queryable by global queries
                                 CollectionEnabled = CollectionViewable | CollectionQueryable ///< Collection viewable in the browser and queryable
         };
+        Q_ENUM( CollectionStatus )
 
         static CollectionManager *instance();
 

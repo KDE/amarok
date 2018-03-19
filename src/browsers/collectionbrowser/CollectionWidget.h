@@ -28,7 +28,6 @@ class SearchWidget;
 class CollectionWidget : public BrowserCategory
 {
     Q_OBJECT
-    Q_ENUMS( ViewMode )
 
     public:
         enum ViewMode
@@ -36,6 +35,7 @@ class CollectionWidget : public BrowserCategory
             UnifiedCollection,
             NormalCollections
         };
+        Q_ENUM( ViewMode )
 
         CollectionWidget( const QString &name , QWidget *parent );
         ~CollectionWidget();

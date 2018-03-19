@@ -54,7 +54,6 @@ namespace AmarokScript
     class AmarokCollectionViewScript : public QObject
     {
         Q_OBJECT
-        Q_ENUMS( Category )
 
         Q_PROPERTY( QString filter READ filter WRITE setFilter )
         Q_PROPERTY( QScriptValue selection READ selectionScriptValue )
@@ -89,6 +88,7 @@ namespace AmarokScript
                 Year = CategoryId::Year,
                 Label = CategoryId::Label
             };
+            Q_ENUM( Category )
 
         public Q_SLOTS:
             void setLevel( int level, int type );

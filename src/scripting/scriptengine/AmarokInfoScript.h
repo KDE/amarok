@@ -32,7 +32,6 @@ namespace AmarokScript
     class InfoScript : public QObject
     {
         Q_OBJECT
-        Q_ENUMS( IconSizes )
 
         public:
             // SCRIPTDOX enum Amarok.Info.IconSizes
@@ -44,6 +43,7 @@ namespace AmarokScript
                 Huge=64,
                 Enormous=128
             };
+            Q_ENUM( IconSizes )
 
             InfoScript( const QUrl &scriptUrl, AmarokScriptEngine *engine );
 
