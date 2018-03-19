@@ -20,6 +20,8 @@ include(MacroPushRequiredVars)
 set_package_properties(MySQL PROPERTIES
     DESCRIPTION "MySQL Client Library (libmysqlclient)" URL "http://www.mysql.com")
 
+find_program(MYSQLCONFIG_EXECUTABLE NAMES mysql_config mysql_config5 HINTS ${BIN_INSTALL_DIR})
+
 if(WIN32)
    set(ProgramFilesX86 "ProgramFiles(x86)")
    find_path(MYSQL_INCLUDE_DIR mysql.h
@@ -150,6 +152,11 @@ if(MYSQL_EMBEDDED_LIBRARIES)
     set( CMAKE_REQUIRED_LIBRARIES ${MYSQL_EMBEDDED_LIBRARIES} )
     check_cxx_source_compiles( "#include <mysql.h>\nint main() { int i = MYSQL_OPT_USE_EMBEDDED_CONNECTION; }" HAVE_MYSQL_OPT_EMBEDDED_CONNECTION )
     macro_pop_required_vars()
+
+    exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libmysqld-libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_EMBEDDED_LIBSTEMP)
+    if(MYSQL_EMBEDDED_LIBSTEMP)
+        set(MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
+    endif()
 endif()
 
 # Did we find anything?
