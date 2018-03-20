@@ -153,8 +153,13 @@ if(MYSQL_EMBEDDED_LIBRARIES)
     check_cxx_source_compiles( "#include <mysql.h>\nint main() { int i = MYSQL_OPT_USE_EMBEDDED_CONNECTION; }" HAVE_MYSQL_OPT_EMBEDDED_CONNECTION )
     macro_pop_required_vars()
 
-    exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libmysqld-libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_EMBEDDED_LIBSTEMP)
-    if(MYSQL_EMBEDDED_LIBSTEMP)
+    exec_program(${MYSQLCONFIG_EXECUTABLE}
+        ARGS --libmysqld-libs
+        RETURN_VALUE _return_VALUE
+        OUTPUT_VARIABLE MYSQL_EMBEDDED_LIBSTEMP
+    )
+    # Apparently the --libmysqld-libs option doesn't exist everywhere
+    if(NOT _return_VALUE)
         set(MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
     endif()
 endif()
