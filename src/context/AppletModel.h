@@ -58,6 +58,7 @@ public:
 
     Q_INVOKABLE void setAppletCollapsed(const QString &id, bool collapsed);
     Q_INVOKABLE void setAppletContentHeight(const QString& id, qreal height);
+    Q_INVOKABLE QUrl imageUrl(const QString &id, const QString &imageName);
 
 public Q_SLOTS:
     void newApplets(const QList<KPluginMetaData> &applets);

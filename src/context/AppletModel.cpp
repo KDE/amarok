@@ -115,7 +115,7 @@ QVariant AppletModel::data(const QModelIndex& index, int role) const
             return package.metadata().pluginId();
 
         case Icon:
-            return package.metadata().iconName();
+            return QUrl::fromLocalFile(package.filePath("icon"));
 
         case Mainscript:
             return QUrl::fromLocalFile(package.filePath("mainscript"));
@@ -208,6 +208,14 @@ void Context::AppletModel::setAppletContentHeight(const QString& id, qreal heigh
         auto index = createIndex(row, 0);
         emit dataChanged(index, index, QVector<int>{ContentHeight});
     }
+}
+
+QUrl Context::AppletModel::imageUrl(const QString& id, const QString& imageName)
+{
+    auto package = findPackage(id);
+    if (package.isValid())
+        return QUrl::fromLocalFile( package.filePath("images", imageName) );
+    return QUrl();
 }
 
 AppletPackage AppletModel::findPackage(const QString& id)

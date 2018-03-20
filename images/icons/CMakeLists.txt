@@ -197,14 +197,12 @@ ecm_install_icons(ICONS
     48-actions-amarok_cart_view.png
     48-actions-amarok_change_language.png
     48-actions-amarok_clock.png
-    48-actions-amarok_lyrics.png
     48-actions-amarok_playcount.png
     48-actions-amarok_playlist.png
     48-actions-amarok_playlist_refresh.png
     48-actions-amarok_scripts.png
     48-actions-amarok_track.png
     48-actions-collection-rescan-amarok.png
-    48-actions-current-track-amarok.png
     48-actions-download-amarok.png
     48-actions-dynamic-amarok.png
     48-actions-filename-album-amarok.png
@@ -235,7 +233,6 @@ ecm_install_icons(ICONS
     48-actions-info-amarok.png
     48-actions-label-amarok.png
     48-actions-love-amarok.png
-    48-actions-media-album-cover-manager-amarok.png
     48-actions-media-album-repeat-amarok.png
     48-actions-media-playlist-repeat-amarok.png
     48-actions-media-random-albums-amarok.png
@@ -250,7 +247,6 @@ ecm_install_icons(ICONS
     48-actions-media-track-queue-amarok.png
     48-actions-media-track-remove-amarok.png
     48-actions-music-amarok.png
-    48-actions-photos-amarok.png
     48-actions-playlist-generator.png
     48-actions-podcast-amarok.png
     48-actions-preferences-indicator-amarok.png
@@ -264,7 +260,6 @@ ecm_install_icons(ICONS
     48-actions-view-importers-banshee-amarok.png
     48-actions-view-importers-clementine-amarok.png
     48-actions-view-importers-rhythmbox-amarok.png
-    48-actions-view-media-analyzer-amarok.png
     48-actions-view-services-amazon-amarok.png
     48-actions-view-services-ampache-amarok.png
     48-actions-view-services-gpodder-amarok.png

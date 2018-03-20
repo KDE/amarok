@@ -49,13 +49,14 @@ ScrollView {
                 anchors.fill: parent
 
                 Image {
-                    source: "image://icon/" + icon
+                    source: icon
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignTop
                     Layout.margins: Kirigami.Units.smallSpacing
                     sourceSize.width: width
                     sourceSize.height: height
+                    fillMode: Image.PreserveAspectFit
                 }
                 Label {
                     Layout.alignment: Qt.AlignBottom

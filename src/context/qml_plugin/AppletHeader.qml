@@ -41,6 +41,7 @@ RowLayout {
         width: height
         sourceSize.width: width
         sourceSize.height: height
+        fillMode: Image.PreserveAspectFit
         Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
     }
 

@@ -23,6 +23,7 @@
 #include "network/NetworkAccessManagerProxy.h"
 
 #include <QObject>
+#include <QPalette>
 
 
 class WikipediaEngine : public QObject
@@ -108,6 +109,7 @@ private:
     QString m_message;
     bool m_busy;
     QString m_title;
+    QString m_css;
 
 private slots:
     void _checkRequireUpdate( Meta::TrackPtr track );
@@ -115,6 +117,7 @@ private slots:
     void _parseListingResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void _wikiResult( const QUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e );
     void _stopped();
+    void _paletteChanged( const QPalette &palette );
 };
 
 

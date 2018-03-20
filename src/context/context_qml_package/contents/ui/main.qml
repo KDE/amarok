@@ -55,7 +55,7 @@ Item {
                     setSource(mainscript, {
                         "name": name,
                         "appletId": appletId,
-                        "iconSource": "image://icon/" + icon,
+                        "iconSource": icon,
                         "collapsed": collapsed,
                         "contentHeight": contentHeight,
                         "packagePath": packagePath,

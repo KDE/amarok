@@ -26,6 +26,10 @@
 #include <QCommandLineParser>
 #include <QtGlobal>
 
+#ifdef WITH_QT_WEBENGINE
+    #include <QtWebEngine>
+#endif
+
 #ifdef Q_WS_X11
     #include <X11/Xlib.h>
 #endif
@@ -39,6 +43,11 @@ AMAROK_EXPORT OcsData ocsData;
 int main( int argc, char *argv[] )
 {
     App app(argc, argv);
+
+#ifdef WITH_QT_WEBENGINE
+    QtWebEngine::initialize();
+#endif
+
     app.setApplicationDisplayName(i18n("Amarok"));
 
     QCoreApplication::setApplicationName("amarok");

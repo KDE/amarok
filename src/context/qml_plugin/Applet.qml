@@ -35,6 +35,7 @@ Rectangle {
     property real padding: spacing
     property real contentHeight: content.childrenRect.height
     property Dialog configDialog: null
+    readonly property AppletHeader appletHeader: header
     readonly property SystemPalette palette: palette
 
     radius: Kirigami.Units.smallSpacing
@@ -43,6 +44,10 @@ Rectangle {
     color: "transparent"
     clip: true
     height: content.height + header.height + 2 * padding + !collapsed * spacing
+
+    function imageUrl(filename) {
+        return AppletModel.imageUrl(root.appletId, filename);
+    }
 
     onCollapsedChanged: AppletModel.setAppletCollapsed(appletId, collapsed)
     onContentHeightChanged: AppletModel.setAppletContentHeight(appletId, contentHeight)

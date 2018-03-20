@@ -882,6 +882,11 @@ target_link_libraries(amaroklib
     amarokshared
 )
 
+if( Qt5WebEngine_FOUND )
+    target_link_libraries( amaroklib Qt5::WebEngine )
+    add_definitions( -DWITH_QT_WEBENGINE )
+endif()
+
 include_directories(${TAGLIB_INCLUDES})
 add_definitions(${TAGLIB_CFLAGS})
 target_link_libraries(amaroklib ${TAGLIB_LIBRARIES})

@@ -22,11 +22,14 @@
 #include "WikipediaEngine.h"
 
 #include "EngineController.h"
+#include "PaletteHandler.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
 #include <QHashIterator>
+#include <QRegularExpression>
+#include <QStandardPaths>
 #include <QUrlQuery>
 #include <QXmlStreamReader>
 
@@ -43,6 +46,7 @@ WikipediaEngine::WikipediaEngine( QObject* parent )
     EngineController *engine = The::engineController();
 
     _checkRequireUpdate( engine->currentTrack() );
+    _paletteChanged( The::paletteHandler()->palette() );
 
     connect( engine, &EngineController::trackChanged,
              this, &WikipediaEngine::_checkRequireUpdate );
@@ -50,6 +54,8 @@ WikipediaEngine::WikipediaEngine( QObject* parent )
              this, &WikipediaEngine::_checkRequireUpdate );
     connect( engine, &EngineController::stopped,
              this, &WikipediaEngine::_stopped );
+    connect( The::paletteHandler(), &PaletteHandler::newPalette,
+             this, &WikipediaEngine::_paletteChanged );
 }
 
 WikipediaEngine::~WikipediaEngine()
@@ -380,6 +386,41 @@ WikipediaEngine::_stopped()
 }
 
 void
+WikipediaEngine::_paletteChanged( const QPalette &palette )
+{
+    DEBUG_BLOCK
+
+    // read css, replace color placeholders, write to file, load into page
+    QFile file( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/WikipediaCustomStyle.css" ) );
+    if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
+    {
+        QString contents = QString( file.readAll() );
+        contents.replace( "/*{text_color}*/", palette.text().color().name() );
+        contents.replace( "/*{link_color}*/", palette.link().color().name() );
+        contents.replace( "/*{link_hover_color}*/", palette.linkVisited().color().name() );
+        contents.replace( "/*{background_color}*/", palette.base().color().name() );
+
+        const QString abg = palette.window().color().name();
+        contents.replace( "/*{shaded_text_background_color}*/", abg );
+        contents.replace( "/*{table_background_color}*/", abg );
+        contents.replace( "/*{headings_background_color}*/", abg );
+
+        const QString atbg = palette.alternateBase().color().name();
+        contents.replace( "/*{alternate_table_background_color}*/", atbg );
+
+        if( m_css == contents )
+            return;
+
+        m_css = contents;
+        updateEngine();
+    }
+    else
+    {
+        error() << "Could not load WikipediaCustomStyle.css";
+    }
+}
+
+void
 WikipediaEngine::fetchWikiUrl( const QString &title, const QString &urlPrefix )
 {
     QUrl pageUrl;
@@ -413,8 +454,7 @@ WikipediaEngine::fetchWikiUrl( const QString &title, const QString &urlPrefix )
     wikiCurrentUrl = pageUrl;
     urls << pageUrl;
     emit urlChanged();
-    The::networkAccessManager()->getData( pageUrl, this,
-         SLOT(_wikiResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    The::networkAccessManager()->getData( pageUrl, this, &WikipediaEngine::_wikiResult );
 }
 
 void
@@ -438,8 +478,7 @@ WikipediaEngine::fetchLangLinks( const QString &title,
     url.setQuery( query );
     urls << url;
     debug() << "Fetching langlinks:" << url;
-    The::networkAccessManager()->getData( url, this,
-         SLOT(_parseLangLinksResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    The::networkAccessManager()->getData( url, this, &WikipediaEngine::_parseLangLinksResult );
 }
 
 void
@@ -460,8 +499,7 @@ WikipediaEngine::fetchListing( const QString &title, const QString &hostLang )
     url.setQuery( query );
     urls << url;
     debug() << "Fetching listing:" << url;
-    The::networkAccessManager()->getData( url, this,
-         SLOT(_parseListingResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    The::networkAccessManager()->getData( url, this, &WikipediaEngine::_parseListingResult );
 }
 
 void
@@ -567,8 +605,8 @@ void
 WikipediaEngine::wikiParse( QString &wiki )
 {
     //remove the new-lines and tabs(replace with spaces IS needed).
-    wiki.replace( '\n', QLatin1Char(' ') );
-    wiki.replace( '\t', QLatin1Char(' ') );
+//     wiki.replace( '\n', QLatin1Char(' ') );
+//     wiki.replace( '\t', QLatin1Char(' ') );
 
     // Get the available language list
     QString wikiLanguagesSection;
@@ -635,6 +673,18 @@ WikipediaEngine::wikiParse( QString &wiki )
         }
     };
 
+    QString header = QString( "<html>\n<head>\n<title>%1</title>\n</head>\n<body>\n" ).arg( title );
+
+    // add own stylesheet
+    if( !m_css.isEmpty() )
+    {
+        removeTag( "<link rel=\"stylesheet\"", "/>" );
+        int index = header.indexOf( QStringLiteral( "</head>" ) );
+        header.insert( index, QString( "\n<style>\n%1\n</style>\n" ).arg( m_css ) );
+    }
+
+    wiki.prepend( header );
+
     // lets remove the warning box
     removeTag( "<table class=\"metadata plainlinks ambox", "</table>" );
     // remove protection policy (we don't do edits)
@@ -642,7 +692,7 @@ WikipediaEngine::wikiParse( QString &wiki )
     // lets also remove the "lock" image
     removeTag( "<div class=\"metadata topicon\" ", "</a></div>" );
     // remove <audio> tags (can lead to crashes in QtWebKit)
-    removeTag( "<audio", "</audio>" );
+//     removeTag( "<audio", "</audio>" );
 
     // Adding back style and license information
     wiki = QLatin1String("<div id=\"bodyContent\"") + wiki;
@@ -665,7 +715,7 @@ WikipediaEngine::wikiParse( QString &wiki )
 
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
     wiki.remove( QRegExp( QLatin1String("style= *\"[^\"]*\"") ) );
-    // We need to leave the classes behind, otherwise styling it ourselves gets really nasty and tedious and roughly impossible to do in a sane maner
+    // We need to leave the classes behind, otherwise styling it ourselves gets really nasty and tedious and roughly impossible to do in a sane manner
     //wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString() );
     // let's remove the form elements, we don't want them.
     wiki.remove( QRegExp( QLatin1String("<input[^>]*>") ) );
@@ -676,9 +726,6 @@ WikipediaEngine::wikiParse( QString &wiki )
     wiki.remove( QRegExp( QLatin1String("<textarea[^>]*>") ) );
     wiki.remove( QLatin1String("</textarea>") );
 
-    wiki.prepend( QLatin1String("<html>\n") );
-    wiki.append( QString(QLatin1String("<head><title>%1</title></head>\n")).arg(title) );
-    wiki.append( QLatin1String("<body>\n") );
     // wiki.append( createLanguageComboBox(langMap) ); // BUG:259075
     wiki.append( QLatin1String("</body></html>\n") );
 }
@@ -709,8 +756,7 @@ WikipediaEngine::reloadWikipedia()
         return;
     urls << wikiCurrentUrl;
     setBusy( true );
-    The::networkAccessManager()->getData( wikiCurrentUrl, this,
-         SLOT(_wikiResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    The::networkAccessManager()->getData( wikiCurrentUrl, this, &WikipediaEngine::_wikiResult );
 }
 
 WikipediaEngine::SelectionType
@@ -820,6 +866,6 @@ WikipediaEngine::setUrl(const QUrl& url)
     urls << url;
     emit urlChanged();
 
-    The::networkAccessManager()->getData( url, this, SLOT(_wikiResult(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+    The::networkAccessManager()->getData( url, this, &WikipediaEngine::_wikiResult );
 }
 

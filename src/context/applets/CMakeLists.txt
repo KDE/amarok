@@ -5,8 +5,11 @@ add_subdirectory( currenttrack )
 add_subdirectory( lyrics )
 add_subdirectory( photos )
 #add_subdirectory( tabs )
-#add_subdirectory( wikipedia )
 add_subdirectory( analyzer )
+
+if( Qt5WebEngine_FOUND )
+    add_subdirectory( wikipedia )
+endif()
 
 if( LIBLASTFM_FOUND )
 #    add_subdirectory( upcomingevents )

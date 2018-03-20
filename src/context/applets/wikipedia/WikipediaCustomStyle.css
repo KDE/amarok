@@ -4,13 +4,13 @@ body
 {
   margin: 0px;
   padding: 6px 2px;
+  background-color: /*{background_color}*/;
   color: /*{text_color}*/;
   font-size: medium;
 }
 
 h1, h2, h3, h4, h5, h6
 {
-  border: 2px solid /*{border_color}*/;
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -50,7 +50,6 @@ ul li a:hover
 div#wiki_otherlangs
 {
   clear: both;
-  border: 2px solid /*{border_color}*/;
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -97,8 +96,6 @@ div#bodyContent a:hover
 /* table for embedded media clip boxes */
 table.metadata, table.ambox
 {
-  border-radius: 1.6em;
-  border: 2px solid /*{border_color}*/;
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -115,7 +112,6 @@ table.infobox
   clear: right;
   float: right;
   width: 150pt;
-  border: 2px solid /*{border_color}*/;
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -134,7 +130,6 @@ table.bordered
 table.infobox th
 {
   padding: 2pt;
-  border: 1px solid /*{border_color}*/;
   background-color: /*{alternate_table_background_color}*/;
   color: /*{text_color}*/;
 }
@@ -143,7 +138,6 @@ table.gallery
 {
   clear: both;
   display: block;
-  border: 2px solid /*{border_color}*/;
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -217,7 +211,6 @@ div#stub
 {
   clear: right;
   background-color: /*{shaded_text_background_color}*/;
-  border: 2px solid /*{border_color}*/;
   border-radius: 4px;
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
@@ -232,7 +225,6 @@ div#stub
 
 table.wikitable
 {
-  border: 2px solid /*{border_color}*/;
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -245,18 +237,15 @@ table.wikitable th
 {
   padding: 2pt;
   background-color: /*{alternate_table_background_color}*/;
-  border: 2px solid /*{border_color}*/;
 }
 table.wikitable td
 {
   padding: 2pt;
   background-color: /*{table_background_color}*/;
-  border: 2px solid /*{border_color}*/;
 }
 
 table.navbox
 {
-  border: 2px solid /*{border_color}*/;
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -268,14 +257,12 @@ table.navbox
 }
 table.navbox td
 {
-  border: 2px solid /*{border_color}*/;
   background-color: /*{table_background_color}*/;
 }
 
 /*  article thumbnail images */
 div.thumb
 {
-  border: 2px solid /*{border_color}*/;
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
   -moz-border-radius: 4px;
