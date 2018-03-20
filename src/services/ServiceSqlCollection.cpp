@@ -94,11 +94,11 @@ ServiceSqlCollection::trackForUrl(const QUrl &url)
     from += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
 
     QString queryString = QString( "select DISTINCT %1 FROM %2 WHERE %3_tracks.preview_url = '%4' GROUP BY %5_tracks.id;" )
-            .arg( trackRows)
-            .arg( from )
-            .arg( prefix )
-            .arg( sqlDb->escape( pristineUrl ) )
-            .arg( prefix );
+            .arg( trackRows,
+                  from,
+                  prefix,
+                  sqlDb->escape( pristineUrl ),
+                  prefix );
 
     //debug() << "Querying for track: " << queryString;
     QStringList result = sqlDb->query( queryString );

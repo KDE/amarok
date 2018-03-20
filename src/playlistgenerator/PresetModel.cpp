@@ -250,10 +250,10 @@ APG::PresetModel::loadPresetsFromXml( const QString& filename, bool createDefaul
         } else {
             QDomDocument document;
             QString translatedPresetExamples( presetExamples.arg(
-                                i18n("Example 1: new tracks added this week") ).arg(
-                                i18n("Example 2: rock or pop music") ).arg(
-                                i18n("Example 3: about one hour of tracks from different artists") ).arg(
-                                i18n("Example 4: like my favorite radio station") ).arg(
+                                i18n("Example 1: new tracks added this week"),
+                                i18n("Example 2: rock or pop music"),
+                                i18n("Example 3: about one hour of tracks from different artists"),
+                                i18n("Example 4: like my favorite radio station"),
                                 i18n("Example 5: an 80-minute CD of rock, metal, and industrial") ) );
             document.setContent( translatedPresetExamples );
             debug() << "Reading built-in example presets";

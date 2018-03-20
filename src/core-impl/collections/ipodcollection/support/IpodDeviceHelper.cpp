@@ -197,8 +197,8 @@ fileFound( const QString &mountPoint, const QString &relFilename )
     gchar *controlDir = itdb_get_device_dir( QFile::encodeName( mountPoint ) );
     if( !controlDir )
         return false;
-    QString absFilename = QString( "%1/%2" ).arg( QFile::decodeName( controlDir ) )
-                                            .arg( relFilename );
+    QString absFilename = QString( "%1/%2" ).arg( QFile::decodeName( controlDir ),
+                                                  relFilename );
     g_free( controlDir );
 
     QFileInfo fileInfo( absFilename );

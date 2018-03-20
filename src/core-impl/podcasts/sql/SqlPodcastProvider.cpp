@@ -783,8 +783,8 @@ void
 SqlPodcastProvider::moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr sqlChannel )
 {
     debug() << QString( "We need to move downloaded episodes of \"%1\" to %2" )
-            .arg( sqlChannel->title() )
-            .arg( sqlChannel->saveLocation().toDisplayString() );
+            .arg( sqlChannel->title(),
+                  sqlChannel->saveLocation().toDisplayString() );
 
     QList<QUrl> filesToMove;
     foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )

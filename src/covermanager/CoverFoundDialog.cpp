@@ -857,8 +857,8 @@ void CoverFoundSideBar::updateMetaTable()
         const QString &tooltip = qfm.elidedText( toolUrl, Qt::ElideMiddle, 350 );
         const QString &decoded = QUrl::fromPercentEncoding( refUrl.toLocal8Bit() );
         const QString &url     = QString( "<a href=\"%1\">%2</a>" )
-                                    .arg( decoded )
-                                    .arg( i18nc("@item::intable URL", "link") );
+                                    .arg( decoded,
+                                          i18nc("@item::intable URL", "link") );
 
         QLabel *label = new QLabel( url, 0 );
         label->setOpenExternalLinks( true );
@@ -928,7 +928,7 @@ void CoverFoundItem::setCaption()
     const QString &width = m_metadata.value( QLatin1String("width") );
     const QString &height = m_metadata.value( QLatin1String("height") );
     if( !width.isEmpty() && !height.isEmpty() )
-        captions << QString( "%1 x %2" ).arg( width ).arg( height );
+        captions << QString( "%1 x %2" ).arg( width, height );
 
     int size = m_metadata.value( QLatin1String("size") ).toInt();
     if( size )

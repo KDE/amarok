@@ -1133,10 +1133,10 @@ PodcastReader::endItem()
             foreach( const Enclosure& enclosure, m_enclosures )
             {
                 description += QString( "<li><a href=\"%1\">%2</a> (%3, %4)</li>" )
-                               .arg( enclosure.url().url().toHtmlEscaped() )
-                               .arg( enclosure.url().fileName().toHtmlEscaped() )
-                               .arg( Meta::prettyFilesize( enclosure.fileSize() ) )
-                               .arg( enclosure.mimeType().isEmpty() ?
+                               .arg( enclosure.url().url().toHtmlEscaped(),
+                                     enclosure.url().fileName().toHtmlEscaped(),
+                                     Meta::prettyFilesize( enclosure.fileSize() ),
+                                     enclosure.mimeType().isEmpty() ?
                                      i18n( "unknown type" ) :
                                      enclosure.mimeType().toHtmlEscaped() );
             }
@@ -1326,8 +1326,8 @@ PodcastReader::beginXml()
     foreach( const QXmlStreamAttribute &attr, m_xmlReader.attributes() )
     {
         m_buffer += QString( " %1=\"%2\"" )
-                    .arg( attr.name().toString() )
-                    .arg( attr.value().toString().toHtmlEscaped() );
+                    .arg( attr.name().toString(),
+                          attr.value().toString().toHtmlEscaped() );
     }
 
     m_buffer += '>';

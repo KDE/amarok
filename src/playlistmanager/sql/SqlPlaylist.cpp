@@ -126,9 +126,9 @@ SqlPlaylist::saveToDb( bool tracks )
     {
         //update existing
         QString query = "UPDATE playlists SET parent_id=%1, name='%2' WHERE id=%3;";
-        query = query.arg( QString::number( parentId ) )
-                .arg( sql->escape( m_name ) )
-                .arg( QString::number( m_dbId ) );
+        query = query.arg( QString::number( parentId ),
+                      sql->escape( m_name ),
+                      QString::number( m_dbId ) );
         StorageManager::instance()->sqlStorage()->query( query );
 
         if( tracks )
@@ -145,9 +145,9 @@ SqlPlaylist::saveToDb( bool tracks )
         //insert new
         QString query = "INSERT INTO playlists ( parent_id, name, urlid ) "
                         "VALUES ( %1, '%2', '%3' );";
-        query = query.arg( QString::number( parentId ) )
-                .arg( sql->escape( m_name ) )
-                .arg( sql->escape( m_urlId ) );
+        query = query.arg( QString::number( parentId ),
+                      sql->escape( m_name ),
+                      sql->escape( m_urlId ) );
         m_dbId = StorageManager::instance()->sqlStorage()->insert( query, "playlists" );
         if( tracks )
             saveTracks();

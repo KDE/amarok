@@ -100,8 +100,8 @@ UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
     destination = destination.adjusted(QUrl::StripTrailingSlash);
     destination.setPath(destination.path() + '/' + ( Amarok::vfatPath( localFilePath.fileName() ) ));
 
-    debug() << QString( "Copy episode \"%1\" to %2" ).arg( localFilePath.path())
-            .arg( destination.path() );
+    debug() << QString( "Copy episode \"%1\" to %2" ).arg( localFilePath.path(),
+            destination.path() );
     KIO::FileCopyJob *copyJob = KIO::file_copy( localFilePath, destination );
     connect( copyJob, &KJob::result, this, &UmsPodcastProvider::slotCopyComplete );
     copyJob->start();

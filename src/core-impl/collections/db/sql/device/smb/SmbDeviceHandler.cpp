@@ -177,15 +177,15 @@ SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QStri
     QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint "
                                          "FROM devices WHERE type = 'smb' "
                                          "AND servername = '%1' AND sharename = '%2';" )
-                                         .arg( s->escape( server ) )
-                                         .arg( s->escape( share ) ) );
+                                         .arg( s->escape( server ),
+                                               s->escape( share ) ) );
     if ( ids.size() == 3 )
     {
         debug() << "Found existing SMB config for ID " << ids[0] << " , server " << server << " ,share " << share;
         s->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
                            "id = %1;" )
-                           .arg( ids[0] )
-                           .arg( s->escape( mountPoint ) ) );
+                           .arg( ids[0],
+                                 s->escape( mountPoint ) ) );
         return new SmbDeviceHandler( ids[0].toInt(), server, share, mountPoint, udi );
     }
     else
@@ -193,9 +193,9 @@ SmbDeviceHandlerFactory::createHandler( const Solid::Device &device, const QStri
         int id = s->insert( QString( "INSERT INTO devices"
                                      "( type, servername, sharename, lastmountpoint ) "
                                      "VALUES ( 'smb', '%1', '%2', '%3' );" )
-                                     .arg( s->escape( server ) )
-                                     .arg( s->escape( share ) )
-                                     .arg( s->escape( mountPoint ) ),
+                                     .arg( s->escape( server ),
+                                           s->escape( share ),
+                                           s->escape( mountPoint ) ),
                                      "devices" );
         if ( id == 0 )
         {

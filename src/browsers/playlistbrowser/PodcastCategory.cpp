@@ -165,8 +165,8 @@ PodcastCategory::showInfo( const QModelIndex &index )
     if( !author.isEmpty() )
     {
         authorAndPubDate = QString( "<b>%1</b> %2 " )
-            .arg( i18n( "By" ) )
-            .arg( author.toHtmlEscaped() );
+            .arg( i18n( "By" ),
+                  author.toHtmlEscaped() );
     }
 
     if( !subtitle.isEmpty() )
@@ -204,8 +204,8 @@ PodcastCategory::showInfo( const QModelIndex &index )
         if( pubDate.isValid() )
         {
             authorAndPubDate += QString( "<b>%1</b> %2" )
-                .arg( i18nc( "Podcast published on date", "On" ) )
-                .arg( QLocale().toString( pubDate, QLocale::ShortFormat ) );
+                .arg( i18nc( "Podcast published on date", "On" ),
+                      QLocale().toString( pubDate, QLocale::ShortFormat ) );
         }
     }
 
@@ -222,8 +222,8 @@ PodcastCategory::showInfo( const QModelIndex &index )
         if( fileSize != 0 )
         {
             description += QString( "<p><b>%1</b> %2</p>" )
-                .arg( i18n( "File Size:" ) )
-                .arg( Meta::prettyFilesize( fileSize ) );
+                .arg( i18n( "File Size:" ),
+                      Meta::prettyFilesize( fileSize ) );
         }
 
     }
@@ -234,16 +234,16 @@ PodcastCategory::showInfo( const QModelIndex &index )
         if( subsDate.isValid() )
         {
             description += QString( "<p><b>%1</b> %2</p>" )
-                .arg( i18n( "Subscription Date:" ) )
-                .arg( QLocale().toString( subsDate, QLocale::ShortFormat ) );
+                .arg( i18n( "Subscription Date:" ),
+                      QLocale().toString( subsDate, QLocale::ShortFormat ) );
         }
     }
 
     if( !keywords.isEmpty() )
     {
         description += QString( "<p><b>%1</b> %2</p>" )
-            .arg( i18n( "Keywords:" ) )
-            .arg( keywords.join( ", " ).toHtmlEscaped() );
+            .arg( i18n( "Keywords:" ),
+                  keywords.join( ", " ).toHtmlEscaped() );
     }
 
     description += index.data( PrettyTreeRoles::ByLineRole ).toString();
@@ -264,10 +264,10 @@ PodcastCategory::showInfo( const QModelIndex &index )
         "        %2"
         "    </body>"
         "</html>")
-        .arg( title.toHtmlEscaped() )
-        .arg( description )
-        .arg( pApp->palette().brush( QPalette::Text ).color().name() )
-        .arg( The::paletteHandler()->highlightColor().name() );
+        .arg( title.toHtmlEscaped(),
+              description,
+              pApp->palette().brush( QPalette::Text ).color().name(),
+              The::paletteHandler()->highlightColor().name() );
     
     QVariantMap map;
     map["service_name"] = title;
