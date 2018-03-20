@@ -184,7 +184,7 @@ TestSqlScanManager::testScanSingle()
     QVERIFY( track->modifyDate().secsTo( aDate ) < 5 ); // I just wrote the file
     QVERIFY( track->modifyDate().secsTo( aDate ) >= 0 );
     Meta::StatisticsPtr statistics = track->statistics();
-    qFuzzyCompare( statistics->score(), 0.875 );
+    QVERIFY( qFuzzyCompare( statistics->score(), 0.875 ) );
     QCOMPARE( statistics->playCount(), 5 );
     QVERIFY( !statistics->firstPlayed().isValid() );
     QVERIFY( !statistics->lastPlayed().isValid() );
@@ -737,7 +737,7 @@ TestSqlScanManager::testMerges()
     QCOMPARE( track->sampleRate(), 44100 );
     QCOMPARE( track->filesize(), 389679 );
     Meta::StatisticsPtr statistics = track->statistics();
-    qFuzzyCompare( statistics->score(), 0.875 );
+    QVERIFY( qFuzzyCompare( statistics->score(), 0.875 ) );
     QCOMPARE( statistics->playCount(), 5 );
     QVERIFY( !statistics->firstPlayed().isValid() );
     QVERIFY( !statistics->lastPlayed().isValid() );
