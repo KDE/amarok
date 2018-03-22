@@ -24,6 +24,7 @@
 #include "core/support/Debug.h"
 #include "core-impl/meta/file/File.h"
 
+#include <QAction>
 #include <QDir>
 #include <QFileInfo>
 
