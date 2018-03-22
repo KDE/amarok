@@ -9,22 +9,17 @@
 <authorgroup>
 <author>
 <personname>
-      <firstname>This documentation was converted from the &kde; UserBase 
-<ulink url=" http://userbase.kde.org/Amarok/Manual">Amarok/Manual</ulink> 
-page.</firstname>
+      <firstname>This documentation was converted from the KDE UserBase <ulink url=" http://userbase.kde.org/Amarok/Manual">Amarok/Manual</ulink> page.</firstname>
 <surname></surname>
 </personname>
       </author>
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
       </authorgroup>
 <legalnotice>&FDLNotice;</legalnotice>
-<date>2013-08-13</date>
-      <releaseinfo>2.8.0</releaseinfo>
+<date>2018-03-21</date>
+      <releaseinfo>2.9.0</releaseinfo>
 <abstract>
-<para>&amarok; is a free, versatile and powerful music player for &Linux; and
-&Microsoft; &Windows;, helping you to organize your music collection and 
-rediscover your music. The current stable release is version 2.8 that brings 
-back all the important features known from the 1.x series.</para>
+<para>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including &Linux;, &MacOS; and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.4.</para>
       </abstract>
 <keywordset>
  <keyword>KDE</keyword>
@@ -38,7 +33,7 @@ back all the important features known from the 1.x series.</para>
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2013-07-30T12:51:14Z</timestamp>-->
+<!--userbase <timestamp>2018-03-22T17:01:14Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -982,7 +977,7 @@ back all the important features known from the 1.x series.</para>
 </para>
 </sect2>
 </sect1>
-<sect1 id="glossary"><title>GLOSSARY</title> 
+<sect1 id="glossary"><title>Glossary</title> 
 <sect2 id="breadcrumbs"><title>Breadcrumbs</title> 
 <para>This is a way of navigating a hierarchical file structure; on &amarok; near the top of the Media Sources pane. Starting at the Home folder level, it shows how deep one has navigated into the file system. When you have gone to a particular place in the file system, you will see all folders at a higher level. In &amarok; the <guilabel>&gt;</guilabel> links between folder levels allow you to find out what alternative folders are available at a particular level. The breadcrumbs are an efficient mechanism to navigate the whole file system on your computer.
 </para>
@@ -3637,7 +3632,6 @@ back all the important features known from the 1.x series.</para>
 <listitem><para><link linkend="search-in-collection">Search in Collection</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="organize-collection">Organize Collection</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="statistics-synchronization">Statistics Synchronization Between Collections and with Last.fm</link>&nbsp;</para></listitem>
-<listitem><para><link linkend="nepomuk-collection-in-amarok">Nepomuk Collection</link></para></listitem>
 <listitem><para><link linkend="remote-collections">Remote Collections</link>&nbsp;<itemizedlist>
 <listitem><para><link linkend="ampache">Ampache</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="digital-audio-access-protocol-daap">DAAP</link>&nbsp;</para></listitem>
@@ -4170,89 +4164,6 @@ back all the important features known from the 1.x series.</para>
 </para>
 </sect3>
 </sect2>
-<sect2 id="nepomuk-collection-in-amarok"><title>Nepomuk collection in Amarok</title> 
-<para>Nepomuk has been a great semantic framework in recent years with many applications like &dolphin; using it for managing metadata associated with its files and resources. And now, even &amarok; uses Nepomuk to fetch tracks in your computer. This collection doesn't use the SQLite backend to store statistics and metadata ( artist, album, year, genre, Labels etc ). It instead uses Nepomuk to store them and fetch them.
-</para>
-<para>For more details on Nepomuk, please visit <ulink url="http://nepomuk.kde.org">its official page</ulink>.
-</para>
-<sect3 id="why-use-the-nepomuk-collection-at-all"><title>Why use the Nepomuk Collection at all?</title> 
-<para>Nepomuk is a system wide backend with multiple applications already using it for search and metadata. So when you rate a track in &amarok;, it reflects in &dolphin; as well. When you burn your music tracks onto a disc, the ratings will be included too! You don't have to remember where you have stored your music tracks anymore. Nepomuk fetches tracks from all over your computer. You don't have to organize your music tracks into one single folder! Imagine the number of times you downloaded a track again just 'cos you couldn't find it in your computer -- not anymore.
-</para>
-</sect3>
-<sect3 id="getting-started6"><title>Getting Started</title> 
-<sect4 id="indexing-files"><title>Indexing Files</title> 
-<para>For your tracks to show up in &amarok;, they need to be <emphasis>indexed</emphasis> by Nepomuk first. And Nepomuk does not index every file on the hard drive. Its default configuration in most &Linux; distributions excludes some common patterns for backup files and configuration directories and it only indexes certain directories in your home folder. 
-</para>
-<para>Beware: indexing files may take a lot of time depending upon the number of files that are to be indexed as well as on the amount of memory that is allowed to the desktop search for indexing. See also <ulink url="help:/kcontrol/nepomuk">Search Desktop</ulink>.
-</para>
-</sect4>
-<sect4 id="choosing-directories-to-index"><title>Choosing Directories to Index</title> 
-<para>Directories that are to be indexed can be changed in <menuchoice><guimenu>System Settings</guimenu><guisubmenu>Desktop Search</guisubmenu><guimenuitem>Indexing</guimenuitem><guimenuitem>Customizing folders</guimenuitem></menuchoice>. As of KDE 4.11, this is the dialog you will see:
-</para>
-<para>
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok_2-8_nepomukindexfolders_dialog_kde_4-11.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-</sect4>
-<sect4 id="enabling-nepomuk-collection-in-amarok"><title>Enabling Nepomuk Collection In Amarok</title> 
-<para>
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok_2-8_configurationdialogplugins.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para>The <guilabel>Nepomuk Collection</guilabel> in &amarok; is a plugin that can be enabled in <menuchoice><guimenu>Settings</guimenu><guisubmenu>Configure Amarok</guisubmenu><guimenuitem>Plugins</guimenuitem><guimenuitem>Nepomuk Collection</guimenuitem></menuchoice>. After enabling, restart &amarok; for the plugin to load completely.
-</para>
-</sect4>
-</sect3>
-<sect3 id="collections7"><title>Collections</title> 
-<para>
-<screenshot>
-<screeninfo></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amaroknepomukcollectionbrowser2-7.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<para>After enabling the plugin, there will be a new collection named <guilabel>Nepomuk Collection</guilabel> containing the tracks indexed by Nepomuk.
-</para>
-</sect3>
-<sect3 id="using-nepomuk-collection"><title>Using Nepomuk Collection</title> 
-<sect4 id="rating-tracks"><title>Rating Tracks</title> 
-<para>After enabling the Desktop Search with Nepomuk, tracks and other files can be rated in the &dolphin; file browser. Tracks in the <guilabel>Nepomuk Collection</guilabel> can be rated outside and rating will be shown instantly in &amarok;.
-</para>
-</sect4>
-<sect4 id="moving-tracks"><title>Moving Tracks</title> 
-<para>Tracks shown in the <guilabel>Nepomuk Collection</guilabel> can be played even if they are moved out of their original location. They would  be usable also if you rename them.
-</para>
-</sect4>
-<sect4 id="playlists8"><title>Playlists</title> 
-<para>Every feature of Nepomuk can be used with created playlists too.
-</para>
-</sect4>
-</sect3>
-</sect2>
 <sect2 id="remote-collections"><title>Remote Collections</title> 
 <para>Often it is very useful to share your media files across the network, especially if you want to use it on different computers. This can be done in different ways:
 </para>
@@ -4263,7 +4174,7 @@ back all the important features known from the 1.x series.</para>
 <listitem><para><link linkend="universal-plug-and-play-upnp---dlna">UPnP</link></para></listitem>
 </itemizedlist>
 <sect3 id="ampache"><title>Ampache</title> 
-<para>&amarok; is able to play music from an <guilabel>Ampache</guilabel> media server. If you want to install a server, see <ulink url="http://ampache.org/wiki/os_foundation">here</ulink> for more information. Installation directions are <ulink url="http://ampache.org/wiki/install">here</ulink>.
+<para>&amarok; is able to play music from an <guilabel>Ampache</guilabel> media server. If you want to install a server, see <ulink url="https://github.com/ampache/ampache/wiki/Installation">here</ulink> for more information.
 </para>
 </sect3>
 <sect3 id="ampache-client"><title>Ampache Client</title> 
@@ -4329,7 +4240,7 @@ back all the important features known from the 1.x series.</para>
 </para>
 </sect3>
 <sect3 id="digital-audio-access-protocol-daap"><title>Digital Audio Access Protocol (DAAP)</title> 
-<para>DAAP is a protocol to share media over a network. It was first used for the <guilabel>iTunes</guilabel> music player, but is used widely now.
+<para>DAAP is a protocol to share media over a network. It was first used for the <guilabel>iTunes</guilabel> music player, but is used widely now. The current state is that the DAAP-plugin won't work with a recent iTunes, the Firefly media server is known to work.
 </para>
 </sect3>
 <sect3 id="client"><title>Client</title> 
@@ -4353,7 +4264,7 @@ back all the important features known from the 1.x series.</para>
 <para><guilabel>Samba</guilabel> is a free implementation of the <emphasis>SMB/CIFS</emphasis> protocol which is used to share files and printers in a network. Most modern file managers like &dolphin; and <guilabel>Nautilus</guilabel> support this protocol.
 </para>
 </sect3>
-<sect3 id="client9"><title>Client</title> 
+<sect3 id="client6"><title>Client</title> 
 <para>You need to mount the share to use it in &amarok;. To do this, you need to install the package <emphasis>smbfs</emphasis>. Use the command
 </para>
 <para><userinput>sudo mount -t cifs //<guilabel>host</guilabel>/<guilabel>share</guilabel> <guilabel>/mount-point/</guilabel></userinput>
@@ -4432,7 +4343,7 @@ back all the important features known from the 1.x series.</para>
   </mediaobject>
 </screenshot>
 </para>
-<para>The UPnP feature depends on <guilabel>KDE's</guilabel> UPnP media server support.
+<para>The UPnP feature depends on <guilabel>KDE's</guilabel> UPnP media server support. As of now (2015) there is no working UPnP kio-slave available.
 </para>
 </sect3>
 </sect2>
@@ -4788,7 +4699,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 <sect2 id="edit-tags-manually"><title>Edit Tags Manually</title> 
 <para>Change the proper line to the required value and click <guilabel>Save &amp; Close</guilabel>. Clicking <guilabel>Cancel</guilabel> discards all unsaved changes.
 </para>
-<sect3 id="tags10"><title>Tags</title> 
+<sect3 id="tags7"><title>Tags</title> 
 <para>Tags are metadata such as the track number or the artist of the track contained in the file. A very common kind of tag is the <emphasis>ID3 tag</emphasis>.
 </para>
 <para>Here is a list of tags supported by &amarok;:
@@ -5052,7 +4963,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </screenshot>
 </para>
 </sect3>
-<sect3 id="example11"><title>Example</title> 
+<sect3 id="example8"><title>Example</title> 
 <para>Filename: 01-The Beatles-Hey Jude.mp3
 </para>
 <para>Tracknumber: 01
@@ -5245,7 +5156,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </para>
 </sect1>
 </chapter>
-<chapter id="playlist12"><title>Playlist</title> 
+<chapter id="playlist9"><title>Playlist</title> 
 <para>The <emphasis>Playlist</emphasis> is a powerful part of &amarok;. One can drag in some tracks, but there is a lot more available.
 </para>
 <itemizedlist>
@@ -5306,10 +5217,10 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
   </mediaobject>
 </screenshot>
 </para>
-<sect2 id="edit-box13"><title>Edit Box</title> 
+<sect2 id="edit-box10"><title>Edit Box</title> 
 <para>When you type something in the <guilabel>Search playlist</guilabel> field, &amarok; will search in your playlist and mark matching tracks, artists and so forth.
 </para>
-<sect3 id="examples14"><title>Examples</title> 
+<sect3 id="examples11"><title>Examples</title> 
 <para>The first track that matches the current search will be highlighted as in this example:
 </para>
 <para>
@@ -5447,7 +5358,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </para>
 <para>As you select or add songs to the Queue each of them takes a number. The number indicates the order in which songs will play.
 </para>
-<sect3 id="example15"><title>Example</title> 
+<sect3 id="example12"><title>Example</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5707,7 +5618,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 <para>Below that is the dropdown menu for loading saved playlists, the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-document-save.png" format="PNG"/> </imageobject> </inlinemediaobject> button to save playlists, and the <inlinemediaobject> <imageobject> <imagedata fileref="Icon-edit-delete.png" format="PNG"/> </imageobject> </inlinemediaobject> button to delete them.
 </para>
 </sect2>
-<sect2 id="a-dynamic-playlist-in-use16"><title>A dynamic playlist in use</title> 
+<sect2 id="a-dynamic-playlist-in-use13"><title>A dynamic playlist in use</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -5888,6 +5799,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </para>
 <itemizedlist>
 <listitem><para><link linkend="the-moodbar">Moodbar</link>&nbsp;</para></listitem>
+<listitem><para><link linkend="replay-gain">ReplayGain</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="amarok-on-other-platforms">Amarok on other Desktops and Operating Systems</link>&nbsp;<itemizedlist>
 <listitem><para><link linkend="amarok-on-non-kde-desktops">Non-KDE Desktops</link>&nbsp;</para></listitem>
 <listitem><para><link linkend="amarok-on-windows">Amarok on Windows</link>&nbsp;</para></listitem>
@@ -5913,7 +5825,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 <sect2 id="summary-of-requirements"><title>Summary of Requirements</title> 
 <itemizedlist>
 <listitem><para>The <guilabel>Moodbar</guilabel> binary, in your PATH (it should be listed upon running <userinput>which moodbar</userinput> from a console) &mdash; Remember to configure the <guilabel>Moodbar</guilabel> package with <userinput>./configure --prefix=`pkg-config --variable=prefix gstreamer-0.10`</userinput></para></listitem>
-<listitem><para>The GStreamer 0.10 library and <link linkend="supported-filetypes">plugins</link> for the formats you want <guilabel>Moodbar</guilabel> to be able to analyse.</para></listitem>
+<listitem><para>The GStreamer 0.10 library and <link linkend="supported-filetypes">plugins</link> for the formats you want <guilabel>Moodbar</guilabel> to be able to analyse. A GStreamer 1.0 based fork is also available, see <link linkend="source-downloads">below</link>.</para></listitem>
 <listitem><para>The <emphasis>Fastest Fourier Transform In The West</emphasis> (<ulink url="http://www.fftw.org">fftw.org</ulink>)  FFTW library version 3.0 or above (at least single-precision floating point version - libfftw3f) &mdash; If your platform does not provide this for you or you need to compile your own version, remember to configure the  FFTW package with <userinput>./configure --enable-single</userinput></para></listitem>
 <listitem><para>A version of &amarok; with a <guilabel>Use moods</guilabel> option in the <guilabel>General</guilabel> section of the configuration screen. This means 1.4.4 or higher in the 1.4 series or 2.2.2 or higher in the 2.x series.</para></listitem>
 </itemizedlist>
@@ -5929,6 +5841,8 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 <sect2 id="installation"><title>Installation</title> 
 <sect3 id="source-downloads"><title>Source Downloads</title> 
 <para>Latest release: <ulink url="http://pwsp.net/~qbob/moodbar-0.1.2.tar.gz">moodbar-0.1.2.tar.gz</ulink> &mdash; this is the Moodbar source package, which contains the <guilabel>Moodbar</guilabel> program (which generates .mood files from music files), and a GStreamer plugin that does the work. The Moodbar package  needs GStreamer 0.10.* installed, plus the 0.10.* version of <link linkend="supported-filetypes">various plugins</link>. Be sure to install the Moodbar package into the <emphasis>same prefix</emphasis> as GStreamer &mdash; follow the instructions in the INSTALL file.
+</para>
+<para>As the Moodbar version above uses nowadays obsolete GStreamer 0.10 and the original source code link is dead, sources have been uploaded to <ulink url="https://github.com/Mazhoon/moodbar">GitHub</ulink> and a forked version supporting GStreamer 1.0 has been developed.
 </para>
 <para>If you find any bugs, please submit a bug report at <ulink url="http://bugs.kde.org">bugs.kde.org</ulink>.
 </para>
@@ -6084,6 +5998,8 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
         fi
  done</programlisting> 
 </para>
+<para><important><para>2=Dead Links|1=The links are not available anymore. I don't know if it should be updated or deleted</para></important>
+</para>
 <para>There is another script at <ulink url="https://github.com/aendruk/moodbar-preview-cli">Github</ulink>, which shows previews of the generated mood files on the command line while they are being generated. Read more about it at the <ulink url="https://aendruk.wordpress.com/2011/02/13/moodbar-previews-on-the-command-line/">author's blog</ulink>.
 </para>
 </sect2>
@@ -6189,6 +6105,94 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
     </caption>
   </mediaobject>
 </screenshot>
+</para>
+</sect2>
+</sect1>
+<sect1 id="replay-gain"><title>Replay Gain</title> 
+<para><ulink url="https://en.wikipedia.org/wiki/ReplayGain">Replay gain</ulink> will automatically adjust the volume of the currently played song, relative to other songs, as determined by the person who encoded the audio file. To enable replay gain, see <link linkend="settings-menu">Settings menu</link>.
+</para>
+<para>To handle this, &amarok; relies on metadata embedded in the audio file:
+</para>
+<orderedlist>
+<listitem><para>If no replay gain information is embedded, &amarok; will not adjust the volume</para></listitem>
+<listitem><para>If replay gain information is found, it will be written into &amarok;'s database</para></listitem>
+</orderedlist>
+<para>During playback, &amarok; will only look into its own database for this information. Updates to the metadata of the file will not always get written into the database during a collection update (&eg; replay gain is deleted from file).
+</para>
+<para>This can lead to unexpected behavior: Songs from the same artist play at different volume levels &etc;
+</para>
+<sect2 id="is-replay-gain-being-used"><title>Is replay gain being used?</title> 
+<para>To figure out if the volume problem is caused by replay gain or bad encoding:
+</para>
+<itemizedlist>
+<listitem><para>Disable replay gain processing (see above)</para></listitem>
+<listitem><para>Start &amarok; in debug mode and search for gain- related output:</para></listitem>
+</itemizedlist>
+<para><userinput><command>amarok -d --nofork | grep gain</command></userinput>
+</para>
+<para>If replay gain is active for the played song, the output will be
+</para>
+<para> Using gain of -10.28 with relative peak of -1
+</para>
+</sect2>
+<sect2 id="view-replay-gain-information"><title>View replay gain information</title> 
+<para>For .flac files, <quote>metaflac</quote> can be used to view embedded replay gain data:
+</para>
+<para><userinput><command>metaflac --list Millencolin\ -\ Balanced\ Boy.flac</command></userinput>
+</para>
+<para>Among other things, this will show something like this:
+</para>
+<para> METADATA block #2
+</para>
+<para>  type: 4 (VORBIS_COMMENT)
+</para>
+<para>  is last: false
+</para>
+<para>  length: 390
+</para>
+<para>  vendor string: reference libFLAC 1.2.1 20070917
+</para>
+<para>  comments: 14
+</para>
+<para>    comment[9]: REPLAYGAIN_REFERENCE_LOUDNESS=89.0 dB
+</para>
+<para>    comment[10]: REPLAYGAIN_TRACK_GAIN=-1.55 dB
+</para>
+<para>    comment[11]: REPLAYGAIN_TRACK_PEAK=0.75894165
+</para>
+<para>    comment[12]: REPLAYGAIN_ALBUM_GAIN=-4.19 dB
+</para>
+<para>    comment[13]: REPLAYGAIN_ALBUM_PEAK=0.98712158
+</para>
+<para>To view this tracks information within the &amarok; database:
+</para>
+<para><userinput><command>select id, title, albumgain, albumpeakgain, trackgain, trackpeakgain from tracks where title like &quot;Balanced%&quot;;</command></userinput>
+</para>
+<para>Will show:
+</para>
+<para> +-------+------------------+-----------+---------------+-----------+---------------+
+</para>
+<para> | id    | title            | albumgain | albumpeakgain | trackgain | trackpeakgain |
+</para>
+<para> +-------+------------------+-----------+---------------+-----------+---------------+
+</para>
+<para> | 10459 | Balanced Boy     |      0.53 |      -5.60297 |      0.44 |      -5.60297 |
+</para>
+<para>Note the difference in loudness levels
+</para>
+</sect2>
+<sect2 id="delete-replay-gain-information"><title>Delete replay gain information</title> 
+<para>First, delete the metadata from the file:
+</para>
+<para><userinput><command>metaflac --remove-replay-gain Millencolin\ -\ Balanced\ Boy.flac</command></userinput>
+</para>
+<para>After that, update your &amarok; collection. If it is still using replay gain, update the database entry:
+</para>
+<para><userinput><command>update tracks set albumgain=-1,albumpeakgain=-1,trackgain=-1,trackpeakgain=-1 where id=10459</command></userinput>
+</para>
+<para>Restart &amarok; and the log output should now show the updated values being used.
+</para>
+<para>Feel free to try and mess with the values manually to improve volume levels.
 </para>
 </sect2>
 </sect1>
@@ -6474,7 +6478,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para>The <varname>port</varname> command will fetch all the dependencies, compile, build and install them. This process may take quite some time, four to five hours in a recent install.
 </para>
 </sect3>
-<sect3 id="screenshots17"><title>Screenshots</title> 
+<sect3 id="screenshots14"><title>Screenshots</title> 
 <para>The following screenshot shows &amarok; running on the &MacOS; X:
 </para>
 <para>
@@ -6639,7 +6643,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para>There are many more great features like advanced scripting, dynamic collections, usability improvements, improved media devices handling, a new podcast manager, support for more software platforms, and others.
 </para>
 </sect2>
-<sect2 id="installation18"><title>Installation</title> 
+<sect2 id="installation15"><title>Installation</title> 
 <sect3 id="can-i-use-amarok-without-kde"><title>Can I use Amarok without KDE?</title> 
 <para>&amarok; requires parts of KDE to be installed to run, but will run fine in Gnome or other desktop environments, including Windows and OS X. For &amarok; to run, kdelibs and kdebase-runtime need to be installed.
 </para>
@@ -6861,7 +6865,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </para>
 </sect3>
 </sect2>
-<sect2 id="troubleshooting19"><title>Troubleshooting</title> 
+<sect2 id="troubleshooting16"><title>Troubleshooting</title> 
 <sect3 id="how-can-i-obtain-a-backtrace"><title>How can I obtain a backtrace?</title> 
 <para>If &amarok; has crashed and you want to report it, visit the <ulink url="http://community.kde.org/Amarok/Development/DebuggingHowTo">Debugging HowTo</ulink>. The bug report must be made in <ulink url="http://bugs.kde.org">bugs.kde.org</ulink> after verifying if it has not already been reported.
 </para>
@@ -7005,7 +7009,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <para>Some of the common actions in &amarok; are here, mostly to control media playback.
 </para>
 </sect2>
-<sect2 id="contents20"><title>Contents</title> 
+<sect2 id="contents17"><title>Contents</title> 
 <para>
 <screenshot>
 <screeninfo></screeninfo>
@@ -7556,7 +7560,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 <screeninfo></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-8menutools.png" format="PNG"/>
+      <imagedata fileref="amarok_2-8_menutools.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase>The Tools Menu</phrase>
@@ -7622,8 +7626,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
     <para><guilabel>Synchronize Statistics..</guilabel></para>
     </entry>
     <entry>
-    <para>Opens the Statistics Synchronization dialog.</para>
-    </entry>
+    <para>Opens the Statistics Synchronization dialog.</para></entry>
   </row>
   </tbody>
   </tgroup>
@@ -7691,7 +7694,7 @@ ffmpeg -i example.mp4 -acodec copy -vn example.m4a
 </informaltable>
 </para>
 </sect3>
-<sect3 id="cover-manager21"><title>Cover Manager</title>  
+<sect3 id="cover-manager18"><title>Cover Manager</title>  
 <para>Shows all albums in your collection. Here you can set custom album covers and fetch missing ones. More about the <link linkend="cover-manager">Cover Manager</link>, shown below.
 </para>
 <para>
