@@ -2,6 +2,7 @@
 Name=Amarok-Context-QML-Package
 Name[ca]=Amarok-Context-QML-Package
 Name[ca@valencia]=Amarok-Context-QML-Package
+Name[de]=Amarok-Kontext-QML-Miniprogramm
 Name[en_GB]=Amarok-Context-QML-Package
 Name[es]=Pquete QML para contexto de Amarok
 Name[nl]=Amarok-context-QML-pakket
@@ -13,6 +14,7 @@ Name[x-test]=xxAmarok-Context-QML-Packagexx
 Comment=QML base package for amarok context area
 Comment[ca]=Paquet QML base per a l'àrea de context de l'Amarok
 Comment[ca@valencia]=Paquet QML base per a l'àrea de context de l'Amarok
+Comment[de]=QML-Basispaket für Amarok-Kontextbereich
 Comment[en_GB]=QML base package for amarok context area
 Comment[es]=Paquete QML base para el área de contexto de Amarok
 Comment[nl]=Op QML gebaseerd pakket voor amarok-contextgebied
