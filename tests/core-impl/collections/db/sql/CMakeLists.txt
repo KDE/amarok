@@ -24,6 +24,7 @@ macro(add_database_test test_target test_sources)
         KF5::ThreadWeaver
         Qt5::Test
         Qt5::Core
+        ${MYSQL_LIBRARIES}
         ${MYSQL_EMBEDDED_LIBRARIES}
         ${CMAKE_DL_LIBS}
         ${ZLIB_LIBRARIES}
