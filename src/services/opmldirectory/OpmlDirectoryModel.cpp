@@ -65,7 +65,7 @@ OpmlDirectoryModel::index( int row, int column, const QModelIndex &parent ) cons
     if( !parentOutline->hasChildren() || parentOutline->children().count() <= row )
         return QModelIndex();
 
-    return createIndex( row, column, parentOutline->children()[row] );
+    return createIndex( row, column, parentOutline->children().at(row) );
 }
 
 Qt::ItemFlags
@@ -161,7 +161,7 @@ OpmlDirectoryModel::data( const QModelIndex &idx, int role ) const
     switch( role )
     {
         case Qt::DisplayRole:
-            return outline->attributes()["text"];
+            return outline->attributes().value("text");
         case Qt::DecorationRole:
             return m_imageMap.contains( outline ) ? m_imageMap.value( outline ) : QVariant();
         case ActionRole:
@@ -384,7 +384,7 @@ OpmlDirectoryModel::fetchMore( const QModelIndex &parent )
             return;
         if( outline->attributes().value( "type" ) != "include" )
             return;
-        urlToFetch = QUrl( outline->attributes()["url"] );
+        urlToFetch = QUrl( outline->attributes().value("url") );
     }
 
     if( !urlToFetch.isValid() )
@@ -415,7 +415,7 @@ OpmlDirectoryModel::slotOpmlHeaderDone()
     if( !outline->attributes().contains("text") )
     {
         if( parser->headerData().contains( "title" ) )
-            outline->addAttribute( "text", parser->headerData()["title"] );
+            outline->addAttribute( "text", parser->headerData().value("title") );
         else
             outline->addAttribute( "text", parser->url().fileName() );
 
@@ -475,9 +475,9 @@ OpmlDirectoryModel::subscribe( const QModelIndexList &indexes ) const
 
         QUrl url;
         if( outline->attributes().contains( "xmlUrl" ) )
-            url = QUrl( outline->attributes()["xmlUrl"] );
+            url = QUrl( outline->attributes().value("xmlUrl") );
         else if( outline->attributes().contains( "url" ) )
-            url = QUrl( outline->attributes()["url"] );
+            url = QUrl( outline->attributes().value("url") );
 
         if( url.isEmpty() )
             continue;
