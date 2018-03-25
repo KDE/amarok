@@ -79,17 +79,6 @@ ProgressBar::setDescription( const QString &description )
     m_descriptionLabel->setText( description );
 }
 
-ProgressBar *
-ProgressBar::setAbortSlot( QObject *receiver, const char *slot, Qt::ConnectionType type )
-{
-    cancelButton()->setHidden( false );
-    if( receiver )
-        connect( this, SIGNAL(cancelled(ProgressBar*)), receiver, slot, type );
-    connect( cancelButton(), &QAbstractButton::clicked, this, &ProgressBar::cancel );
-
-    return this;
-}
-
 void ProgressBar::cancel()
 {
     DEBUG_BLOCK

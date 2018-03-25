@@ -56,7 +56,7 @@ IpodParseTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thr
     guint32 trackNumber = itdb_tracks_number( itdb );
     QString operationText = i18nc( "operation when iPod is connected", "Reading iPod tracks" );
     Amarok::Components::logger()->newProgressOperation( this, operationText, trackNumber,
-                                                        this, SLOT(abort()) );
+                                                        this, &IpodParseTracksJob::abort );
 
     Meta::TrackList staleTracks;
     QSet<QString> knownPaths;

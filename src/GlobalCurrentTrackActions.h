@@ -19,7 +19,9 @@
 
 #include "amarok_export.h"
 #include "core/meta/forward_declarations.h"
-#include "core/support/SmartPointerList.h"
+
+#include <QObject>
+
 
 class GlobalCurrentTrackActions;
 class QAction;
@@ -33,7 +35,7 @@ A global list of actions that is made available to all playing tracks.
 
 	@author Nikolaj Hald Nielsen <nhn@kde.org> 
 */
-class AMAROK_EXPORT GlobalCurrentTrackActions
+class AMAROK_EXPORT GlobalCurrentTrackActions : public QObject
 {
     friend GlobalCurrentTrackActions* The::globalCurrentTrackActions();
     
@@ -45,7 +47,7 @@ private:
     GlobalCurrentTrackActions();
     ~GlobalCurrentTrackActions();
     
-    SmartPointerList<QAction> m_actions;
+    QList<QAction*> m_actions;
 };
 
 #endif

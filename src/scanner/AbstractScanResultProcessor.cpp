@@ -67,7 +67,7 @@ AbstractScanResultProcessor::scanStarted( GenericScanManager::ScanType type )
                                                             i18n( "Scanning music" ),
                                                             100,
                                                             this,
-                                                            SLOT(abort()) );
+                                                            &AbstractScanResultProcessor::abort );
 
 }
 

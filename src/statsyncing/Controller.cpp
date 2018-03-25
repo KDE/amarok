@@ -149,11 +149,11 @@ Controller::unregisterProvider( const ProviderPtr &provider )
 }
 
 void
-Controller::setFactories( const QList<Plugins::PluginFactory*> &factories )
+Controller::setFactories( const QList<QSharedPointer<Plugins::PluginFactory> > &factories )
 {
-    foreach( Plugins::PluginFactory *pFactory, factories )
+    for( const auto &pFactory : factories )
     {
-        ProviderFactory *factory = qobject_cast<ProviderFactory*>( pFactory );
+        auto factory = qobject_cast<ProviderFactory*>( pFactory );
         if( !factory )
             continue;
 
@@ -200,7 +200,7 @@ QWidget*
 Controller::providerCreationDialog() const
 {
     CreateProviderDialog *dialog = new CreateProviderDialog( The::mainWindow() );
-    foreach( ProviderFactory * const factory, m_providerFactories )
+    for( const auto &factory : m_providerFactories )
         dialog->addProviderType( factory->type(), factory->prettyName(),
                                  factory->icon(), factory->createConfigWidget() );
 

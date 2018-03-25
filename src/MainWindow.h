@@ -66,8 +66,6 @@ namespace The {
   */
 class AMAROK_EXPORT MainWindow : public KMainWindow
 {
-    friend MainWindow* The::mainWindow();
-
     Q_OBJECT
 
     public:
@@ -210,8 +208,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
 
         int m_lastBrowser;
         int m_searchField;
-
-        static QPointer<MainWindow> s_instance;
 
         bool m_waitingForCd;
 };

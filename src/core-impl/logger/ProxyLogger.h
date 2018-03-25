@@ -28,6 +28,9 @@
 
 #include <KJob>
 
+#include <functional>
+
+
 class QNetworkReply;
 
 typedef QPair<QString, Amarok::Logger::MessageType> LongMessage;
@@ -35,12 +38,14 @@ typedef QPair<QString, Amarok::Logger::MessageType> LongMessage;
 struct ProgressData
 {
     QPointer<QObject> sender;
+    QMetaMethod increment;
+    QMetaMethod end;
     QPointer<KJob> job;
     QPointer<QNetworkReply> reply;
     QString text;
     int maximum;
     QPointer<QObject> cancelObject;
-    const char *slot;
+    std::function<void ()> function;
     Qt::ConnectionType type;
 };
 
@@ -68,15 +73,14 @@ public:
 public Q_SLOTS:
     virtual void shortMessage( const QString &text );
     virtual void longMessage( const QString &text, MessageType type );
-    virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj = 0,
-                                       const char *slot = 0,
-                                       Qt::ConnectionType type = Qt::AutoConnection );
-    virtual void newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj = 0,
-                                       const char *slot = 0,
-                                       Qt::ConnectionType type = Qt::AutoConnection );
-    virtual void newProgressOperation( QObject *sender, const QString &text, int maximum = 100,
-                                       QObject *obj = 0, const char *slot = 0,
-                                       Qt::ConnectionType type = Qt::AutoConnection );
+    virtual void newProgressOperationImpl( KJob * job, const QString & text, QObject * context,
+                                           const std::function<void ()> &function, Qt::ConnectionType type ) override;
+    virtual void newProgressOperationImpl( QNetworkReply *reply, const QString &text, QObject *obj,
+                                           const std::function<void ()> &function,
+                                           Qt::ConnectionType type ) override;
+    virtual void newProgressOperationImpl( QObject *sender, const QMetaMethod &increment, const QMetaMethod &end,
+                                           const QString &text, int maximum, QObject *obj,
+                                           const std::function<void ()> &function, Qt::ConnectionType type ) override;
 
     /**
       * Set the real logger.

@@ -136,17 +136,17 @@ StorageManager::init()
 }
 
 void
-StorageManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
+StorageManager::setFactories( const QList<QSharedPointer<Plugins::PluginFactory> > &factories )
 {
-    foreach( Plugins::PluginFactory* pFactory, factories )
+    for( const auto &pFactory : factories )
     {
-        StorageFactory *factory = qobject_cast<StorageFactory*>( pFactory );
+        auto factory = qobject_cast<StorageFactory*>( pFactory );
         if( !factory )
             continue;
 
-        connect( factory, &StorageFactory::newStorage,
+        connect( factory.data(), &StorageFactory::newStorage,
                  this, &StorageManager::slotNewStorage );
-        connect( factory, &StorageFactory::newError,
+        connect( factory.data(), &StorageFactory::newError,
                  this, &StorageManager::slotNewError );
     }
 }

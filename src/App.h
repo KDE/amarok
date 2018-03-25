@@ -93,7 +93,7 @@ class AMAROK_EXPORT App : public QApplication
         QStringList                 s_delayedAmarokUrls;
 };
 
-#define pApp static_cast<App*>(QCoreApplication::instance())
+#define pApp App::instance()
 
 
 #endif  // AMAROK_APP_H

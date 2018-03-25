@@ -44,7 +44,7 @@ typedef QPair<Collections::Collection*, CollectionManager::CollectionStatus> Col
 struct CollectionManager::Private
 {
     QList<CollectionPair> collections;
-    QList<Plugins::PluginFactory*> factories; // factories belong to PluginManager
+    QList<QSharedPointer<Plugins::PluginFactory> > factories; // factories belong to PluginManager
 
     QList<Collections::TrackProvider*> trackProviders;
     TimecodeTrackProvider *timecodeTrackProvider;
@@ -104,10 +104,6 @@ CollectionManager::~CollectionManager()
         d->trackProviders.clear();
         delete d->timecodeTrackProvider;
         delete d->fileTrackProvider;
-
-        // Hmm, qDeleteAll from Qt 4.8 crashes with our SmartPointerList, do it manually. Bug 285951
-        while (!d->factories.isEmpty() )
-            delete d->factories.takeFirst();
     }
 
     delete d;
@@ -127,13 +123,13 @@ CollectionManager::init()
 }
 
 void
-CollectionManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
+CollectionManager::setFactories( const QList<QSharedPointer<Plugins::PluginFactory> > &factories )
 {
     using Collections::CollectionFactory;
 
 
-    QSet<Plugins::PluginFactory*> newFactories = factories.toSet();
-    QSet<Plugins::PluginFactory*> oldFactories;
+    QSet<QSharedPointer<Plugins::PluginFactory> > newFactories = factories.toSet();
+    QSet<QSharedPointer<Plugins::PluginFactory> > oldFactories;
 
     {
         QReadLocker locker( &d->lock );
@@ -141,14 +137,14 @@ CollectionManager::setFactories( const QList<Plugins::PluginFactory*> &factories
     }
 
     // remove old factories
-    foreach( Plugins::PluginFactory* pFactory, oldFactories - newFactories )
+    for( const auto &pFactory : oldFactories - newFactories )
     {
 
-        CollectionFactory *factory = qobject_cast<CollectionFactory*>( pFactory );
+        auto factory = qobject_cast<CollectionFactory*>( pFactory );
         if( !factory )
             continue;
 
-        disconnect( factory, &CollectionFactory::newCollection,
+        disconnect( factory.data(), &CollectionFactory::newCollection,
                     this, &CollectionManager::slotNewCollection );
         {
             QWriteLocker locker( &d->lock );
@@ -157,13 +153,13 @@ CollectionManager::setFactories( const QList<Plugins::PluginFactory*> &factories
     }
 
     // create new factories
-    foreach( Plugins::PluginFactory* pFactory, newFactories - oldFactories )
+    for( const auto &pFactory : newFactories - oldFactories )
     {
-        CollectionFactory *factory = qobject_cast<CollectionFactory*>( pFactory );
+        auto factory = qobject_cast<CollectionFactory*>( pFactory );
         if( !factory )
             continue;
 
-        connect( factory, &CollectionFactory::newCollection,
+        connect( factory.data(), &CollectionFactory::newCollection,
                  this, &CollectionManager::slotNewCollection );
         {
             QWriteLocker locker( &d->lock );

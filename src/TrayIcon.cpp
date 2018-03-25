@@ -289,20 +289,28 @@ Amarok::TrayIcon::updateMenu()
     if( m_track )
     {
         foreach( QAction *action, The::globalCurrentTrackActions()->actions() )
+        {
             m_extraActions.append( action );
+            connect( action, &QObject::destroyed, this, [this, action]() { m_extraActions.removeAll( action ); } );
+        }
 
         QScopedPointer<Capabilities::ActionsCapability> ac( m_track->create<Capabilities::ActionsCapability>() );
         if( ac )
         {
             QList<QAction*> actions = ac->actions();
             foreach( QAction *action, actions )
+            {
                 m_extraActions.append( action );
+                connect( action, &QObject::destroyed, this, [this, action]() { m_extraActions.removeAll( action ); } );
+            }
         }
 
         QScopedPointer<Capabilities::BookmarkThisCapability> btc( m_track->create<Capabilities::BookmarkThisCapability>() );
         if( btc )
         {
-            m_extraActions.append( btc->bookmarkAction() );
+            QAction *action = btc->bookmarkAction();
+            m_extraActions.append( action );
+            connect( action, &QObject::destroyed, this, [this, action]() { m_extraActions.removeAll( action ); } );
         }
     }
 

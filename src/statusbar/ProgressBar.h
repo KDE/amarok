@@ -25,6 +25,8 @@
 #include <QProgressBar>
 #include <QToolButton>
 
+#include <functional>
+
 #define POST_COMPLETION_DELAY 2000
 
 /**
@@ -40,10 +42,8 @@ class AMAROK_EXPORT ProgressBar : public QFrame
 
         void setDescription( const QString &description );
 
-        ProgressBar *setAbortSlot( QObject *receiver, const char *slot,
-                                   Qt::ConnectionType type = Qt::AutoConnection );
-        template<typename Func>
-        ProgressBar *setAbortSlot( const typename QtPrivate::FunctionPointer<Func>::Object *receiver, Func slot,
+        template<class Receiver, class Func>
+        ProgressBar *setAbortSlot( Receiver receiver, Func slot,
                                    Qt::ConnectionType type = Qt::AutoConnection )
         {
             cancelButton()->setHidden( false );

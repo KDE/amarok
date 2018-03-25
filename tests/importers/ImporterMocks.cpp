@@ -113,6 +113,7 @@ ImporterMocks::cleanup()
 void
 ImporterMocks::cleanupTestCase()
 {
+    Amarok::config( "StatSyncing" ).deleteGroup();
     Amarok::Components::setEngineController( 0 );
     delete m_engineController;
 }

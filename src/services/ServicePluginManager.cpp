@@ -68,15 +68,15 @@ ServicePluginManager::~ServicePluginManager()
 
 
 void
-ServicePluginManager::setFactories( const QList<Plugins::PluginFactory*> &factories )
+ServicePluginManager::setFactories( const QList<QSharedPointer<Plugins::PluginFactory> > &factories )
 {
-    QSet<Plugins::PluginFactory*> newFactories = factories.toSet();
-    QSet<Plugins::PluginFactory*> oldFactories = m_factories.toSet();
+    QSet<QSharedPointer<Plugins::PluginFactory> > newFactories = factories.toSet();
+    QSet<QSharedPointer<Plugins::PluginFactory> > oldFactories = m_factories.toSet();
 
     // remove old factories
-    foreach( Plugins::PluginFactory* pFactory, oldFactories - newFactories )
+    for( const auto &pFactory : oldFactories - newFactories )
     {
-        ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
+        auto factory = qobject_cast<ServiceFactory*>( pFactory );
         if( !factory )
             continue;
 
@@ -86,14 +86,14 @@ ServicePluginManager::setFactories( const QList<Plugins::PluginFactory*> &factor
     }
 
     // create new factories
-    foreach( Plugins::PluginFactory* pFactory, newFactories - oldFactories )
+    for( const auto &pFactory : newFactories - oldFactories )
     {
-        ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
+        auto factory = qobject_cast<ServiceFactory*>( pFactory );
         if( !factory )
             continue;
 
-        connect( factory, &ServiceFactory::newService, this, &ServicePluginManager::slotNewService );
-        connect( factory, &ServiceFactory::removeService, this, &ServicePluginManager::slotRemoveService );
+        connect( factory.data(), &ServiceFactory::newService, this, &ServicePluginManager::slotNewService );
+        connect( factory.data(), &ServiceFactory::removeService, this, &ServicePluginManager::slotRemoveService );
     }
 
     m_factories = factories;
@@ -119,9 +119,9 @@ QStringList
 ServicePluginManager::loadedServices() const
 {
     QStringList names;
-    foreach( Plugins::PluginFactory *pFactory, m_factories )
+    for( const auto &pFactory : m_factories )
     {
-        ServiceFactory *factory = qobject_cast<ServiceFactory*>( pFactory );
+        auto factory = qobject_cast<ServiceFactory*>( pFactory );
         if( !factory )
             continue;
 

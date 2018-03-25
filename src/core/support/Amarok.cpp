@@ -337,6 +337,9 @@ namespace Amarok
 
     QString vfatPath( const QString &path, PathSeparatorBehaviour behaviour )
     {
+        if( path.isEmpty() )
+            return QString();
+
         QString s = path;
 
         QChar separator = ( behaviour == AutoBehaviour ) ? QDir::separator() : ( behaviour == UnixBehaviour ) ? '/' : '\\';

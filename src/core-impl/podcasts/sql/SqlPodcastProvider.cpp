@@ -1097,7 +1097,7 @@ SqlPodcastProvider::slotStatusBarNewProgressOperation( KIO::TransferJob * job,
                                                        const QString &description,
                                                        Podcasts::PodcastReader* reader )
 {
-    Amarok::Components::logger()->newProgressOperation( job, description, reader, SLOT(slotAbort()) );
+    Amarok::Components::logger()->newProgressOperation( job, description, reader, &Podcasts::PodcastReader::slotAbort );
 }
 
 void
@@ -1168,7 +1168,9 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
                                                         : i18n( "Downloading Podcast \"%1\""
                                                                 , sqlEpisode->title() ),
                                                         transferJob,
-                                                        SLOT(kill())
+                                                        &KIO::TransferJob::kill,
+                                                        Qt::AutoConnection,
+                                                        KJob::Quietly
                                                       );
 
     connect( transferJob, &KIO::TransferJob::data,

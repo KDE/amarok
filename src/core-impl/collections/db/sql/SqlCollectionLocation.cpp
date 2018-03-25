@@ -478,7 +478,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &s
     QString statusBarTxt = operationInProgressText( configuration, sources.count() );
     m_transferjob = new TransferJob( this, configuration );
     Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this,
-                                                        SLOT(slotTransferJobAborted()) );
+                                                        &SqlCollectionLocation::slotTransferJobAborted );
     connect( m_transferjob, &Collections::TransferJob::result,
              this, &SqlCollectionLocation::slotTransferJobFinished );
     m_transferjob->start();

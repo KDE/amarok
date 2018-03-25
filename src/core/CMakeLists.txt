@@ -62,7 +62,6 @@ set(libcore_support_SRCS
     support/Amarok.cpp
     support/Components.cpp
     support/SemaphoreReleaser.cpp
-    support/SmartPointerList.cpp
     support/PluginFactory.cpp
     support/Debug.cpp
 )

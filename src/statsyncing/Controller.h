@@ -76,7 +76,7 @@ namespace StatSyncing
              * multiple provider instances. This method is called by Amarok's plugin
              * infrastructure.
              */
-            void setFactories( const QList<Plugins::PluginFactory*> &factories );
+            void setFactories( const QList<QSharedPointer<Plugins::PluginFactory> > &factories );
 
             /**
              * Returns true if any instantiable provider types are registered with the
@@ -212,7 +212,7 @@ namespace StatSyncing
              * Return true if important metadata of both tracks is equal.
              */
             bool tracksVirtuallyEqual( const Meta::TrackPtr &first, const Meta::TrackPtr &second );
-            QMap<QString, ProviderFactory*> m_providerFactories;
+            QMap<QString, QSharedPointer<ProviderFactory> > m_providerFactories;
 
             // synchronization-related
             ProviderPtrList m_providers;

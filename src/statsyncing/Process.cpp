@@ -127,7 +127,7 @@ Process::slotMatchTracks()
     }
     else // background operation
     {
-        Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
+        Amarok::Components::logger()->newProgressOperation( job, text, 100, job, &MatchTracksJob::abort );
     }
 
     connect( job, &StatSyncing::MatchTracksJob::done, this, &Process::slotTracksMatched );
@@ -228,7 +228,7 @@ Process::slotSynchronize()
     SynchronizeTracksJob *job = new SynchronizeTracksJob(
             m_matchedTracksModel->matchedTuples(), m_tracksToScrobble, m_options );
     QString text = i18n( "Synchronizing Track Statistics" );
-    Amarok::Components::logger()->newProgressOperation( job, text, 100, job, SLOT(abort()) );
+    Amarok::Components::logger()->newProgressOperation( job, text, 100, job, &SynchronizeTracksJob::abort );
     connect( job, &StatSyncing::SynchronizeTracksJob::done, this, &Process::slotLogSynchronization );
     connect( job, &StatSyncing::SynchronizeTracksJob::done, job, &StatSyncing::SynchronizeTracksJob::deleteLater );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );

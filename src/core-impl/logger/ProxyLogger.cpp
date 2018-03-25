@@ -80,48 +80,50 @@ ProxyLogger::longMessage( const QString &text, MessageType type )
     emit startTimer();
 }
 
-void
-ProxyLogger::newProgressOperation( KJob *job, const QString &text, QObject *obj, const char *slot, Qt::ConnectionType type )
+void ProxyLogger::newProgressOperationImpl( KJob* job, const QString& text, QObject* context, const std::function<void ()> &function, Qt::ConnectionType type )
 {
     QMutexLocker locker( &m_lock );
     ProgressData data;
     data.job = job;
     data.text = text;
-    data.cancelObject = obj;
-    data.slot = slot;
+    data.cancelObject = context;
+    data.function = function;
     data.type = type;
     m_progressQueue.enqueue( data );
     emit startTimer();
 }
 
 void
-ProxyLogger::newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj, const char *slot, Qt::ConnectionType type )
+ProxyLogger::newProgressOperationImpl( QNetworkReply *reply, const QString &text, QObject *obj, const std::function<void ()> &function, Qt::ConnectionType type )
 {
     QMutexLocker locker( &m_lock );
     ProgressData data;
     data.reply = reply;
     data.text = text;
     data.cancelObject = obj;
-    data.slot = slot;
+    data.function = function;
     data.type = type;
     m_progressQueue.enqueue( data );
     emit startTimer();
 }
 
 void
-ProxyLogger::newProgressOperation( QObject *sender, const QString &text, int maximum, QObject *obj,
-                                   const char *slot, Qt::ConnectionType type )
+ProxyLogger::newProgressOperationImpl( QObject *sender, const QMetaMethod &increment, const QMetaMethod &end, const QString &text,
+                                       int maximum, QObject *obj, const std::function<void ()> &function, Qt::ConnectionType type )
 {
     QMutexLocker locker( &m_lock );
     ProgressData data;
     data.sender = sender;
+    data.increment = increment;
+    data.end = end;
     data.text = text;
     data.maximum = maximum;
     data.cancelObject = obj;
-    data.slot = slot;
+    data.function = function;
     data.type = type;
     m_progressQueue.enqueue( data );
-    connect( sender, SIGNAL(totalSteps(int)), SLOT(slotTotalSteps(int)) );
+    if( sender->staticMetaObject.indexOfSignal( SIGNAL(totalSteps(int)) ) != -1 )
+        connect( sender, SIGNAL(totalSteps(int)), SLOT(slotTotalSteps(int)) );
     emit startTimer();
 }
 
@@ -146,21 +148,21 @@ ProxyLogger::forwardNotifications()
         ProgressData d = m_progressQueue.dequeue();
         if( d.job )
         {
-            m_logger->newProgressOperation( d.job.data(), d.text, d.cancelObject.data(),
-                                            d.cancelObject.data() ? d.slot : 0 , d.type );
+            m_logger->newProgressOperationImpl( d.job.data(), d.text, d.cancelObject.data(),
+                                                d.function, d.type );
         }
         else if( d.reply )
         {
-            m_logger->newProgressOperation( d.reply.data(), d.text, d.cancelObject.data(),
-                                            d.cancelObject.data() ? d.slot : 0 , d.type );
+            m_logger->newProgressOperationImpl( d.reply.data(), d.text, d.cancelObject.data(),
+                                                d.function, d.type );
         }
         else if( d.sender )
         {
             // m_logger handles the signals from now on
             disconnect( d.sender.data(), 0, this, 0 );
-            m_logger->newProgressOperation( d.sender.data(), d.text, d.maximum,
-                                            d.cancelObject.data(),
-                                            d.cancelObject.data() ? d.slot : 0 , d.type );
+            m_logger->newProgressOperationImpl( d.sender.data(), d.increment, d.end, d.text,
+                                                d.maximum, d.cancelObject.data(),
+                                                d.function, d.type );
         }
     }
 }

@@ -28,7 +28,7 @@ CompoundProgressBar::CompoundProgressBar( QWidget *parent )
         : ProgressBar( parent )
         , m_mutex( QMutex::Recursive )
 {
-    m_progressDetailsWidget = new PopupWidget( parent );
+    m_progressDetailsWidget = new PopupWidget();
     m_progressDetailsWidget->hide();
 
     connect( cancelButton(), &QAbstractButton::clicked, this, &CompoundProgressBar::cancelAll );
@@ -138,18 +138,6 @@ void CompoundProgressBar::setProgressTotalSteps( const QObject *owner, int value
 
     m_progressMap.value( owner )->setMaximum( value );
 }
-
-void CompoundProgressBar::setParent( QWidget *parent )
-{
-    QMutexLocker locker( &m_mutex );
-
-    delete m_progressDetailsWidget;
-    m_progressDetailsWidget = new PopupWidget( parent );
-    m_progressDetailsWidget->hide();
-
-    ProgressBar::setParent( parent );
-}
-
 
 void CompoundProgressBar::setProgressStatus( const QObject *owner, const QString &text )
 {

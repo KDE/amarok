@@ -67,12 +67,9 @@ class AMAROK_EXPORT PluginManager : public QObject
 
         /** Returns enabled plugin factories for the given plugin type.
          *
-         *  This function will only return enable factories.
-         *
-         *  Owner of the PluginFactory pointers is the PluginManager
-         *  and the pointers will only be valid while the PluginManager exists.
+         *  This function will only return factories for enabled plugins.
          */
-        QList<PluginFactory*> factories( Type type ) const;
+        QList<QSharedPointer<PluginFactory> > factories( Type type ) const;
 
         KPluginInfo::List plugins( Type type ) const;
 
@@ -98,14 +95,14 @@ class AMAROK_EXPORT PluginManager : public QObject
          */
         bool isPluginEnabled( const KPluginMetaData &plugin ) const;
 
-        /** Creates a factories for an info */
-        PluginFactory* createFactory( const KPluginMetaData &pluginInfo );
+        /** Creates a factories for a plugin */
+        QSharedPointer<PluginFactory> createFactory( const KPluginMetaData &pluginInfo );
 
         /// contains the names of all KPluginInfos that have factories created
         QVector<KPluginMetaData> m_plugins;
         QHash<Type, QList<KPluginMetaData> > m_pluginsByType;
-        QHash<Type, QList<PluginFactory*> > m_factoriesByType;
-        QHash<QString, PluginFactory*> m_factoryCreated;
+        QHash<Type, QList<QSharedPointer<PluginFactory> > > m_factoriesByType;
+        QHash<QString, QSharedPointer<PluginFactory>> m_factoryCreated;
 
         static const int s_pluginFrameworkVersion;
         static PluginManager *s_instance;

@@ -71,7 +71,7 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
         msgText = i18n( "Downloading album from Magnatune.com" );
     }
 
-    Amarok::Components::logger()->newProgressOperation( m_albumDownloadJob, msgText, this, SLOT(albumDownloadAborted()) );
+    Amarok::Components::logger()->newProgressOperation( m_albumDownloadJob, msgText, this, &MagnatuneAlbumDownloader::albumDownloadAborted );
 }
 
 void
@@ -130,7 +130,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     connect( m_coverDownloadJob, &KJob::result, this, &MagnatuneAlbumDownloader::coverDownloadComplete );
 
-    Amarok::Components::logger()->newProgressOperation( m_coverDownloadJob, i18n( "Adding album cover to collection" ), this, SLOT(coverAddAborted()) );
+    Amarok::Components::logger()->newProgressOperation( m_coverDownloadJob, i18n( "Adding album cover to collection" ), this, &MagnatuneAlbumDownloader::coverAddAborted );
 
     emit( downloadComplete( true ) );
 }

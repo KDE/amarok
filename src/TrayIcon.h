@@ -22,9 +22,9 @@
 #include <KStatusNotifierItem> // baseclass
 
 #include "core/meta/forward_declarations.h"
-#include "core/support/SmartPointerList.h"
 
 #include <QPointer>
+
 
 class QAction;
 
@@ -54,7 +54,7 @@ private Q_SLOTS:
 private:
     Meta::TrackPtr m_track;
 
-    SmartPointerList<QAction> m_extraActions;
+    QList<QAction*> m_extraActions;
     QPointer<QAction> m_separator;
 };
 

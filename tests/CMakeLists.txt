@@ -111,19 +111,6 @@ ecm_mark_as_test(testqstringx)
 
 target_link_libraries(testqstringx Qt5::Test)
 
-#------------------------ Test SmartPointerList -----------------------------
-
-set( testsmartpointerlist_SRCS
-        TestSmartPointerList.cpp
-        ${AMAROK_SOURCE_TREE}/core/support/SmartPointerList.cpp
-    )
-
-add_executable( testsmartpointerlist  ${testsmartpointerlist_SRCS} )
-add_test(NAME testsmartpointerlist COMMAND $<TARGET_FILE:testsmartpointerlist>)
-ecm_mark_as_test(testsmartpointerlist)
-
-target_link_libraries(testsmartpointerlist Qt5::Test)
-
 #------------------------ Test TagGuesser -----------------------------
 
 set( testtagguesser_SRCS

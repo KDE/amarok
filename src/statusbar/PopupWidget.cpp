@@ -23,11 +23,10 @@
 #include <QVBoxLayout>
 
 
-PopupWidget::PopupWidget( QWidget *anchor, const QString &name )
-    : BoxWidget( true, The::mainWindow() )
+PopupWidget::PopupWidget( const QString &name )
+    : BoxWidget( true )
 {
     Q_UNUSED( name );
-    Q_UNUSED( anchor );
 
     setBackgroundRole( QPalette::Window );
     setAutoFillBackground( true );
@@ -39,8 +38,6 @@ PopupWidget::PopupWidget( QWidget *anchor, const QString &name )
 
     setContentsMargins( 4, 4, 4, 4 );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-
-    reposition();
 }
 
 PopupWidget::~PopupWidget()
@@ -51,6 +48,9 @@ PopupWidget::~PopupWidget()
 void PopupWidget::reposition()
 {
     adjustSize();
+
+    if( !The::mainWindow() )
+        return;
 
     //HACK: put longmessage popup in the bottom right of the window.
     QPoint p;

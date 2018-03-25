@@ -39,7 +39,7 @@ class LongMessageWidget : public PopupWidget
 {
     Q_OBJECT
 public:
-    LongMessageWidget( QWidget *anchor, const QString &message, Amarok::Logger::MessageType type );
+    LongMessageWidget( const QString &message );
 
     ~LongMessageWidget();
 

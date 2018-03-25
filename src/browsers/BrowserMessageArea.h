@@ -39,15 +39,14 @@ public:
     /* Amarok::Logger virtual methods */
     virtual void shortMessage( const QString &text );
     virtual void longMessage( const QString &text, MessageType type );
+    virtual void newProgressOperationImpl( KJob * job, const QString & text, QObject *context,
+                                           const std::function<void ()> &function, Qt::ConnectionType type ) override;
 
-    virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj,
-                                       const char *slot, Qt::ConnectionType type );
+    virtual void newProgressOperationImpl( QNetworkReply *reply, const QString &text, QObject *obj,
+                                           const std::function<void ()> &function, Qt::ConnectionType type ) override;
 
-    virtual void newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj,
-                                       const char *slot, Qt::ConnectionType type );
-
-    virtual void newProgressOperation( QObject *sender, const QString &text, int maximum,
-                                       QObject *obj, const char *slot, Qt::ConnectionType type );
+    virtual void newProgressOperationImpl( QObject *sender, const QMetaMethod &increment, const QMetaMethod &end, const QString &text,
+                                           int maximum, QObject *obj, const std::function<void ()> &function, Qt::ConnectionType type ) override;
 
 Q_SIGNALS:
     void signalLongMessage( const QString & text, MessageType type );
@@ -55,7 +54,6 @@ Q_SIGNALS:
 private Q_SLOTS:
     void hideProgress();
     void nextShortMessage();
-    void hideLongMessage();
     void slotLongMessage( const QString &text, MessageType type = Information );
 
 private:

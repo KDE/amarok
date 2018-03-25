@@ -108,7 +108,7 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &s
 
     QString loggerText = operationInProgressText( configuration, sources.count(), m_umsCollection->prettyName() );
     Amarok::Components::logger()->newProgressOperation( transferJob, loggerText, transferJob,
-                                                        SLOT(slotCancel()) );
+                                                        &UmsTransferJob::slotCancel );
     transferJob->start();
 }
 
@@ -127,7 +127,7 @@ UmsCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources 
                                 "Removing %1 tracks from %2", sourceUrls.count(),
                                 m_umsCollection->prettyName() );
     KIO::DeleteJob *delJob = KIO::del( sourceUrls, KIO::HideProgressInfo );
-    Amarok::Components::logger()->newProgressOperation( delJob, loggerText, delJob, SLOT(kill()) );
+    Amarok::Components::logger()->newProgressOperation( delJob, loggerText, delJob, &KIO::DeleteJob::kill, Qt::AutoConnection, KIO::Job::Quietly );
 
     connect( delJob, &KIO::DeleteJob::finished, this, &UmsCollectionLocation::slotRemoveOperationFinished );
 }

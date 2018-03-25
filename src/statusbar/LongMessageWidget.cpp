@@ -27,14 +27,11 @@
 #include <QToolTip>
 
 
-LongMessageWidget::LongMessageWidget( QWidget *anchor, const QString &message,
-                                     Amarok::Logger::MessageType type )
-        : PopupWidget( anchor )
-        , m_counter( 0 )
+LongMessageWidget::LongMessageWidget( const QString &message )
+        : m_counter( 0 )
         , m_timeout( 6000 )
 {
     DEBUG_BLOCK
-    Q_UNUSED( type )
 
     setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
 

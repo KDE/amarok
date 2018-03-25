@@ -40,10 +40,9 @@ DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KConfigSkeleton *co
 
     // enable the test button if one of the plugin factories has a correct testSettings slot
     // get all storage factories
-    QList<Plugins::PluginFactory*> factories;
-    factories = Plugins::PluginManager::instance()->factories( Plugins::PluginManager::Storage );
+    auto factories = Plugins::PluginManager::instance()->factories( Plugins::PluginManager::Storage );
     bool testFunctionAvailable = false;
-    foreach( Plugins::PluginFactory* factory, factories )
+    for( const auto &factory : factories )
     {
         // check the meta object if there is a testSettings slot available
         if( factory->metaObject()->
@@ -79,16 +78,15 @@ void
 DatabaseConfig::testDatabaseConnection() //SLOT
 {
     // get all storage factories
-    QList<Plugins::PluginFactory*> factories;
-    factories = Plugins::PluginManager::instance()->factories( Plugins::PluginManager::Storage );
+    auto factories = Plugins::PluginManager::instance()->factories( Plugins::PluginManager::Storage );
 
     // try if they have a testSettings slot that we can call
-    foreach( Plugins::PluginFactory* factory, factories )
+    for( const auto &factory : factories )
     {
         bool callSucceeded = false;
         QStringList connectionErrors;
 
-        callSucceeded = QMetaObject::invokeMethod( factory,
+        callSucceeded = QMetaObject::invokeMethod( factory.data(),
                                "testSettings",
                                Q_RETURN_ARG( QStringList, connectionErrors ),
                                Q_ARG( QString, kcfg_Host->text() ),

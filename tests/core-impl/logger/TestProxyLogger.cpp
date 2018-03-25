@@ -75,7 +75,7 @@ public:
         Q_UNUSED(thread);
         KJob *job = new DummyJob();
         QObject *obj = new QObject();
-        s_logger->newProgressOperation( job, QString( "foo" ), obj, "foo()" );
+        s_logger->newProgressOperation( job, QString( "foo" ), obj );
 
         if( deleteJob ) delete job;
         if( deleteObject ) delete obj;
@@ -116,7 +116,7 @@ TestProxyLogger::testDoNotForwardDeletedJob()
     s_logger = new ProxyLogger();
 
     Amarok::MockLogger *mock = new Amarok::MockLogger();
-    EXPECT_CALL( *mock, newProgressOperation( An<KJob*>(), _, _, _, _ ) ).Times( 0 );
+    EXPECT_CALL( *mock, newProgressOperationImpl( An<KJob*>(), _, _, _, _ ) ).Times( 0 );
 
     s_logger->setLogger( mock );
 
@@ -137,7 +137,7 @@ TestProxyLogger::testDoNotForwardDeletedSlot()
     s_logger = new ProxyLogger();
 
     Amarok::MockLogger *mock = new Amarok::MockLogger();
-    EXPECT_CALL( *mock, newProgressOperation( An<KJob*>(), _, 0, 0, _ ) ).Times( 1 ).WillOnce( Return() );
+    EXPECT_CALL( *mock, newProgressOperationImpl( An<KJob*>(), _, nullptr, _, _ ) ).Times( 1 ).WillOnce( Return() );
 
     s_logger->setLogger( mock );
 
@@ -176,7 +176,7 @@ TestProxyLogger::testForwardProgressOperation()
     s_logger = new ProxyLogger();
 
     Amarok::MockLogger *mock = new Amarok::MockLogger();
-    EXPECT_CALL( *mock, newProgressOperation( An<KJob*>(), _, _, _, _ ) ).Times( 1 ).WillOnce( Return() );
+    EXPECT_CALL( *mock, newProgressOperationImpl( An<KJob*>(), _, _, _, _ ) ).Times( 1 ).WillOnce( Return() );
 
     s_logger->setLogger( mock );
 

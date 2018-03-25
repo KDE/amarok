@@ -75,14 +75,14 @@ BrowserMessageArea::longMessage( const QString &text, MessageType type )
 }
 
 void
-BrowserMessageArea::newProgressOperation( KJob *job, const QString &text, QObject *obj,
-                                          const char *slot, Qt::ConnectionType type )
+BrowserMessageArea::newProgressOperationImpl( KJob *job, const QString &text, QObject *context,
+                                              const std::function<void ()> &function, Qt::ConnectionType type )
 {
     KJobProgressBar *newBar = new KJobProgressBar( 0, job );
     newBar->setDescription( text );
     connect( job, &KJob::destroyed, m_progressBar,
              &CompoundProgressBar::endProgressOperation );
-    newBar->setAbortSlot( obj, slot, type );
+    newBar->setAbortSlot( context, function, type );
     m_progressBar->addProgressBar( newBar, job );
     m_progressBar->show();
 
@@ -90,15 +90,15 @@ BrowserMessageArea::newProgressOperation( KJob *job, const QString &text, QObjec
 }
 
 void
-BrowserMessageArea::newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj,
-                                          const char *slot, Qt::ConnectionType type )
+BrowserMessageArea::newProgressOperationImpl( QNetworkReply *reply, const QString &text, QObject *obj,
+                                              const std::function<void ()> &function, Qt::ConnectionType type )
 {
     NetworkProgressBar *newBar = new NetworkProgressBar( 0, reply );
     newBar->setDescription( text );
     newBar->setAbortSlot( reply, &QNetworkReply::deleteLater );
     connect( reply, &QNetworkReply::destroyed, m_progressBar,
              &CompoundProgressBar::endProgressOperation );
-    newBar->setAbortSlot( obj, slot, type );
+    newBar->setAbortSlot( obj, function, type );
     m_progressBar->addProgressBar( newBar, reply );
     m_progressBar->show();
 
@@ -106,20 +106,25 @@ BrowserMessageArea::newProgressOperation( QNetworkReply *reply, const QString &t
 }
 
 void
-BrowserMessageArea::newProgressOperation( QObject *sender, const QString &text, int maximum,
-                                          QObject *obj, const char *slot, Qt::ConnectionType type )
+BrowserMessageArea::newProgressOperationImpl( QObject *sender, const QMetaMethod &increment, const QMetaMethod &end, const QString &text,
+                                              int maximum, QObject *obj, const std::function<void ()> &function, Qt::ConnectionType type )
 {
     ProgressBar *newBar = new ProgressBar( 0 );
     newBar->setDescription( text );
     newBar->setMaximum( maximum );
     connect( sender, &QObject::destroyed, m_progressBar,
              &CompoundProgressBar::endProgressOperation, Qt::QueuedConnection );
-    connect( sender, SIGNAL(endProgressOperation(QObject*)), m_progressBar,
-             SLOT(endProgressOperation(QObject*)), Qt::QueuedConnection );
-    connect( sender, SIGNAL(incrementProgress()), m_progressBar,
-             SLOT(slotIncrementProgress()), Qt::QueuedConnection );
-    connect( sender, SIGNAL(totalSteps(int)), newBar, SLOT(slotTotalSteps(int)) );
-    newBar->setAbortSlot( obj, slot, type );
+    int endIndex = m_progressBar->staticMetaObject.indexOfMethod( SLOT(endProgressOperation(QObject*)) );
+    auto endSlot = m_progressBar->staticMetaObject.method( endIndex );
+    connect( sender, end, m_progressBar,
+             endSlot, Qt::QueuedConnection );
+    int incrementIndex = m_progressBar->staticMetaObject.indexOfMethod( SLOT(slotIncrementProgress()) );
+    auto incrementSlot = m_progressBar->staticMetaObject.method( incrementIndex );
+    connect( sender, increment, m_progressBar,
+             incrementSlot, Qt::QueuedConnection );
+    if( sender->staticMetaObject.indexOfSignal( SIGNAL(totalSteps(int)) ) != -1 )
+        connect( sender, SIGNAL(totalSteps(int)), newBar, SLOT(slotTotalSteps(int)) );
+    newBar->setAbortSlot( obj, function, type );
     m_progressBar->addProgressBar( newBar, sender );
     m_progressBar->show();
 
@@ -153,14 +158,10 @@ BrowserMessageArea::nextShortMessage()
 }
 
 void
-BrowserMessageArea::hideLongMessage()
-{
-    sender()->deleteLater();
-}
-
-void
 BrowserMessageArea::slotLongMessage( const QString &text, MessageType type )
 {
-    LongMessageWidget *message = new LongMessageWidget( this, text, type );
-    connect( message, &LongMessageWidget::closed, this, &BrowserMessageArea::hideLongMessage );
+    Q_UNUSED(type)
+
+    LongMessageWidget *message = new LongMessageWidget( text );
+    connect( message, &LongMessageWidget::closed, message, &QObject::deleteLater );
 }

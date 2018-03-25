@@ -54,8 +54,8 @@ public:
     qint64 timeDistance() const;
     void setTimeDistance( qint64 value );
 
-    template<typename Func>
-    void connectChanged( typename QtPrivate::FunctionPointer<Func>::Object *receiver, Func slot )
+    template<class Receiver, class Func>
+    void connectChanged( Receiver receiver, Func slot )
     {
         connect( m_timeEdit, QOverload<int>::of(&QSpinBox::valueChanged),
                  receiver, slot );

@@ -131,7 +131,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
          * For every factory that is a CollectionFactory uses it to create new
          * collections and register with this manager.
          */
-        void setFactories( const QList<Plugins::PluginFactory*> &factories );
+        void setFactories( const QList<QSharedPointer<Plugins::PluginFactory> > &factories );
 
     public Q_SLOTS:
         /** Starts the full scan for each collection with CollectionScanCapability */

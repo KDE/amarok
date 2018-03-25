@@ -45,7 +45,7 @@ public:
      * Load any services that are configured to be loaded.
      * Unload any services that have been switched off.
      */
-    void setFactories( const QList<Plugins::PluginFactory*> &factories );
+    void setFactories( const QList<QSharedPointer<Plugins::PluginFactory> > &factories );
 
 public Q_SLOTS:
     QStringList loadedServices() const;
@@ -64,7 +64,7 @@ private:
     /** The list of currently set factories.
      *  Note: the PluginManager owns the pointers.
      */
-    QList<Plugins::PluginFactory*> m_factories;
+    QList<QSharedPointer<Plugins::PluginFactory> > m_factories;
 
 private Q_SLOTS:
     void slotNewService( ServiceBase *newService);

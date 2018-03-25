@@ -36,25 +36,18 @@ namespace The
 GlobalCurrentTrackActions::GlobalCurrentTrackActions()
 {}
 
-
 GlobalCurrentTrackActions::~GlobalCurrentTrackActions()
 {}
 
 void GlobalCurrentTrackActions::addAction( QAction * action )
 {
     m_actions.append( action );
+    QObject::connect( action, &QObject::destroyed, this, [this, action]() { m_actions.removeAll( action ); } );
 }
 
 QList< QAction * > GlobalCurrentTrackActions::actions()
 {
-    // Here we filter out dangling pointers to already destroyed QActions
-
-    QList<QAction*> validActions;
-
-    foreach( QAction* action, m_actions )
-        validActions.append( action );
-
-    return validActions;
+    return m_actions;
 }
 
 

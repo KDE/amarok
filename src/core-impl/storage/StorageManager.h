@@ -58,8 +58,7 @@ class AMAROK_EXPORT StorageManager : public QObject
 
         /**
             retrieve an interface which allows client-code to store/load data in a relational database.
-            Note: code using this method does NOT take ownership of the pointer, but may cache the pointer
-            Note2: You should never modify the database unless you really really know what you do.
+            Note: You should never modify the database unless you really really know what you do.
                    Using the SqlMeta (e.g. SqlRegistry or SqlTrack) is much better.
             @return Returns a pointer to the amarok wide SqlStorage or
                     to an internal dummy SqlStorage if that cannot be found.
@@ -73,7 +72,7 @@ class AMAROK_EXPORT StorageManager : public QObject
          * For every factory that is a CollectionFactory uses it to create new
          * collections and register with this manager.
          */
-        void setFactories( const QList<Plugins::PluginFactory*> &factories );
+        void setFactories( const QList<QSharedPointer<Plugins::PluginFactory> > &factories );
 
         /** Returns a list of the last sql errors.
           The list might not include every one error if the number

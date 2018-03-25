@@ -74,7 +74,7 @@ Plugins::PluginManager::PluginManager( QObject *parent )
 Plugins::PluginManager::~PluginManager()
 {
     // tell the managers to get rid of their current factories
-    QList<Plugins::PluginFactory*> emptyFactories;
+    QList<QSharedPointer<Plugins::PluginFactory> > emptyFactories;
 
     StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
     if( controller )
@@ -119,7 +119,7 @@ Plugins::PluginManager::enabledPlugins(Plugins::PluginManager::Type type) const
     return enabledList;
 }
 
-QList<Plugins::PluginFactory*>
+QList<QSharedPointer<Plugins::PluginFactory> >
 Plugins::PluginManager::factories( Type type ) const
 {
     return m_factoriesByType.value( type );
@@ -155,7 +155,7 @@ Plugins::PluginManager::checkPluginEnabledStates()
     for( const auto &pluginInfo : m_plugins )
     {
         // create the factories and sort them by type
-        PluginFactory *factory = createFactory( pluginInfo );
+        auto factory = createFactory( pluginInfo );
 
         if( factory )
         {
@@ -265,7 +265,7 @@ Plugins::PluginManager::isPluginEnabled( const KPluginMetaData &plugin ) const
 }
 
 
-Plugins::PluginFactory*
+QSharedPointer<Plugins::PluginFactory>
 Plugins::PluginManager::createFactory( const KPluginMetaData &pluginInfo )
 {
     debug() << "Creating factory for plugin:" << pluginInfo.pluginId();
@@ -280,13 +280,14 @@ Plugins::PluginManager::createFactory( const KPluginMetaData &pluginInfo )
         return m_factoryCreated.value( name );
 
     QPluginLoader loader( pluginInfo.fileName() );
-    auto pluginFactory = qobject_cast<PluginFactory*>( loader.instance() );
+    auto pointer = qobject_cast<PluginFactory*>( loader.instance() );
+    auto pluginFactory = QSharedPointer<Plugins::PluginFactory>( pointer );
 
     if( !pluginFactory )
     {
         warning() << QString( "Failed to get factory '%1' from QPluginLoader: %2" )
                      .arg( name, loader.errorString() );
-        return Q_NULLPTR;
+        return QSharedPointer<Plugins::PluginFactory>();
     }
 
     m_factoryCreated[ name ] = pluginFactory;

@@ -23,6 +23,7 @@
 
 #include "MainWindow.h"
 
+#include "App.h"
 #include "ActionClasses.h"
 #include "EngineController.h" //for actions in ctor
 #include "KNotificationBackend.h"
@@ -112,10 +113,8 @@
 
 extern OcsData ocsData;
 
-QPointer<MainWindow> MainWindow::s_instance;
-
 namespace The {
-    MainWindow* mainWindow() { return MainWindow::s_instance.data(); }
+    MainWindow* mainWindow() { return pApp->mainWindow(); }
 }
 
 MainWindow::MainWindow()
@@ -127,7 +126,6 @@ MainWindow::MainWindow()
     DEBUG_BLOCK
 
     setObjectName( "MainWindow" );
-    s_instance = this;
 
 #ifdef Q_WS_MAC
     (void)new GrowlInterface( qApp->applicationName() );

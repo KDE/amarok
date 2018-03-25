@@ -122,7 +122,7 @@ Dynamic::BiasedPlaylist::startSolver( int numRequested )
 
         Amarok::Components::logger()->newProgressOperation( m_solver,
                                                             i18n( "Generating playlist..." ), 100,
-                                                            this, SLOT(requestAbort()) );
+                                                            this, &BiasedPlaylist::requestAbort );
 
         ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_solver) );
 

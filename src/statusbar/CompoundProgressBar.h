@@ -45,9 +45,6 @@ public:
     void setProgressStatus( const QObject *owner, const QString &text );
     void setProgress( const QObject *owner, int steps );
 
-    /* reimplemented from QWidget for correct positioning of progressDetailsWidget */
-    virtual void setParent( QWidget *parent );
-
     /* reimplemented from QWidget to open/close the details widget */
     virtual void mousePressEvent( QMouseEvent *event );
 
