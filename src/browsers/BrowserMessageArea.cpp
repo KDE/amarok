@@ -114,15 +114,13 @@ BrowserMessageArea::newProgressOperationImpl( QObject *sender, const QMetaMethod
     newBar->setMaximum( maximum );
     connect( sender, &QObject::destroyed, m_progressBar,
              &CompoundProgressBar::endProgressOperation, Qt::QueuedConnection );
-    int endIndex = m_progressBar->staticMetaObject.indexOfMethod( SLOT(endProgressOperation(QObject*)) );
-    auto endSlot = m_progressBar->staticMetaObject.method( endIndex );
-    connect( sender, end, m_progressBar,
-             endSlot, Qt::QueuedConnection );
-    int incrementIndex = m_progressBar->staticMetaObject.indexOfMethod( SLOT(slotIncrementProgress()) );
-    auto incrementSlot = m_progressBar->staticMetaObject.method( incrementIndex );
-    connect( sender, increment, m_progressBar,
-             incrementSlot, Qt::QueuedConnection );
-    if( sender->staticMetaObject.indexOfSignal( SIGNAL(totalSteps(int)) ) != -1 )
+    int endIndex = m_progressBar->metaObject()->indexOfSlot( "endProgressOperation(QObject*)" );
+    auto endSlot = m_progressBar->metaObject()->method( endIndex );
+    connect( sender, end, m_progressBar, endSlot, Qt::QueuedConnection );
+    int incrementIndex = m_progressBar->metaObject()->indexOfSlot( "slotIncrementProgress()" );
+    auto incrementSlot = m_progressBar->metaObject()->method( incrementIndex );
+    connect( sender, increment, m_progressBar, incrementSlot, Qt::QueuedConnection );
+    if( sender->metaObject()->indexOfSignal( "totalSteps(int)" ) != -1 )
         connect( sender, SIGNAL(totalSteps(int)), newBar, SLOT(slotTotalSteps(int)) );
     newBar->setAbortSlot( obj, function, type );
     m_progressBar->addProgressBar( newBar, sender );
