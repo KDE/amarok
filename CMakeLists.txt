@@ -183,11 +183,7 @@ if( WITH_PLAYER )
     )
 
     ## gpodder Service
-    # Actually it needs the to-be-released 1.10. Or you use 1.0.9 and add the
-    # patches from the following pull requests:
-    # https://github.com/gpodder/libmygpo-qt/pull/12
-    # -https://github.com/gpodder/libmygpo-qt/pull/13
-    find_package(Mygpo-qt5 1.0.9 CONFIG)
+    find_package(Mygpo-qt5 1.1.0 CONFIG)
     set_package_properties(Mygpo-qt5 PROPERTIES
         DESCRIPTION "A Qt/C++ library wrapping the gpodder.net Webservice."
         URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
