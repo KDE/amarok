@@ -33,6 +33,7 @@
 
 #include <KMessageBox>
 
+#include <QAbstractEventDispatcher>
 #include <QApplication>
 
 SqlScanResultProcessor::SqlScanResultProcessor( GenericScanManager* manager,
@@ -94,6 +95,8 @@ SqlScanResultProcessor::displayMessages()
 void
 SqlScanResultProcessor::blockUpdates()
 {
+    DEBUG_BLOCK
+
     m_collection->blockUpdatedSignal();
     m_collection->registry()->blockDatabaseUpdate();
 }
@@ -101,6 +104,8 @@ SqlScanResultProcessor::blockUpdates()
 void
 SqlScanResultProcessor::unblockUpdates()
 {
+    DEBUG_BLOCK
+
     m_collection->registry()->unblockDatabaseUpdate();
     m_collection->unblockUpdatedSignal();
 }
@@ -627,6 +632,8 @@ SqlScanResultProcessor::deletedDirectories() const
 void
 SqlScanResultProcessor::urlsCacheInit()
 {
+    DEBUG_BLOCK
+
     auto storage = m_collection->sqlStorage();
 
     QString query = QString( "SELECT id, deviceid, rpath, directory, uniqueid FROM urls;");
@@ -660,6 +667,8 @@ SqlScanResultProcessor::urlsCacheInit()
         }
 
         urlsCacheInsert( entry );
+
+        QAbstractEventDispatcher::instance()->processEvents( QEventLoop::AllEvents );
     }
 }
 

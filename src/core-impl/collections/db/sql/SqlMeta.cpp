@@ -59,6 +59,9 @@
 #include <KLocalizedString>
 #include <ThreadWeaver/Queue>
 
+#include <thread>
+
+
 // additional constants
 namespace Meta
 {
@@ -1607,7 +1610,8 @@ SqlAlbum::image( int size ) const
     if( size > 1 && size < 1000 )
     {
         image = image.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        image.save( cachedImagePath, "PNG" );
+        std::thread thread( QOverload<const QString&, const char*, int>::of( &QImage::save ), image, cachedImagePath, "PNG", -1 );
+        thread.detach();
     }
 
     return image;
@@ -1663,7 +1667,8 @@ SqlAlbum::setImage( const QImage &image )
     while( QFile(path).exists() )
         path += '_'; // not that nice but it shouldn't happen that often.
 
-    image.save( path, "JPG" );
+    std::thread thread( QOverload<const QString&, const char*, int>::of( &QImage::save ), image, path, "JPG", -1 );
+    thread.detach();
     setImage( path );
 
     locker.unlock();

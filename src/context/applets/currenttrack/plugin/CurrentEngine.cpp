@@ -42,14 +42,15 @@ CurrentEngine::CurrentEngine( QObject* parent )
 {
     EngineController* engine = The::engineController();
 
+    // Connect queued to reduce interface stuttering.
     connect( engine, &EngineController::trackPlaying,
-             this, &CurrentEngine::slotTrackChanged );
+             this, &CurrentEngine::slotTrackChanged, Qt::QueuedConnection );
     connect( engine, &EngineController::stopped,
-             this, &CurrentEngine::stopped );
+             this, &CurrentEngine::stopped, Qt::QueuedConnection );
     connect( engine, &EngineController::trackMetadataChanged,
-             this, &CurrentEngine::slotTrackMetadataChanged );
+             this, &CurrentEngine::slotTrackMetadataChanged, Qt::QueuedConnection );
     connect( engine, &EngineController::albumMetadataChanged,
-             this, &CurrentEngine::slotAlbumMetadataChanged );
+             this, &CurrentEngine::slotAlbumMetadataChanged, Qt::QueuedConnection );
 }
 
 CurrentEngine::~CurrentEngine()

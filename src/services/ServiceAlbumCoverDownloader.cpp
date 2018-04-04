@@ -81,7 +81,8 @@ ServiceAlbumWithCover::image( int size ) const
     else if( m_hasFetchedCover && !m_cover.isNull() )
     {
         QImage image( m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
-        image.save( cacheCoverPath, "PNG" );
+        std::thread thread( QOverload<const QString&, const char*, int>::of( &QImage::save ), image, cacheCoverPath, "PNG", -1 );
+        thread.detach();
         return image;
     }
     else if( !m_isFetchingCover && !coverUrl().isEmpty() )

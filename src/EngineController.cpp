@@ -54,6 +54,9 @@
 
 #include <KLocalizedString>
 
+#include <thread>
+
+
 // for slotMetaDataChanged()
 typedef QPair<Phonon::MetaData, QString> FieldPair;
 
@@ -1242,7 +1245,10 @@ EngineController::slotTrackFinishedPlaying( Meta::TrackPtr track, double playedF
             << "-" << ( track->album() ? track->album()->name() : QString( "[no album]" ) )
             << "-" << track->name()
             << "," << playedFraction << ")";
-    track->finishedPlaying( playedFraction );
+
+    // Track::finishedPlaying is thread-safe and can take a long time to finish.
+    std::thread thread( &Meta::Track::finishedPlaying, track, playedFraction );
+    thread.detach();
 }
 
 void
