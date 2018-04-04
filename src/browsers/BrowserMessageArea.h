@@ -17,7 +17,7 @@
 #ifndef BROWSERMESSAGEAREA_H
 #define BROWSERMESSAGEAREA_H
 
-#include "core-impl/logger/ProxyLogger.h"
+#include "core/logger/Logger.h"
 #include "statusbar/CompoundProgressBar.h"
 #include "statusbar/KJobProgressBar.h"
 #include "statusbar/NetworkProgressBar.h"
@@ -36,9 +36,10 @@ public:
     {
     }
 
+protected:
     /* Amarok::Logger virtual methods */
-    virtual void shortMessage( const QString &text );
-    virtual void longMessage( const QString &text, MessageType type );
+    virtual void shortMessageImpl( const QString &text ) override;
+    virtual void longMessageImpl( const QString &text, MessageType type ) override;
     virtual void newProgressOperationImpl( KJob * job, const QString & text, QObject *context,
                                            const std::function<void ()> &function, Qt::ConnectionType type ) override;
 

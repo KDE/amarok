@@ -18,7 +18,7 @@
 
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/meta/file/File.h"
 #include "transcoding/TranscodingJob.h"
@@ -107,7 +107,7 @@ UmsCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &s
              this, &UmsCollectionLocation::slotCopyOperationFinished );
 
     QString loggerText = operationInProgressText( configuration, sources.count(), m_umsCollection->prettyName() );
-    Amarok::Components::logger()->newProgressOperation( transferJob, loggerText, transferJob,
+    Amarok::Logger::newProgressOperation( transferJob, loggerText, transferJob,
                                                         &UmsTransferJob::slotCancel );
     transferJob->start();
 }
@@ -127,7 +127,7 @@ UmsCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources 
                                 "Removing %1 tracks from %2", sourceUrls.count(),
                                 m_umsCollection->prettyName() );
     KIO::DeleteJob *delJob = KIO::del( sourceUrls, KIO::HideProgressInfo );
-    Amarok::Components::logger()->newProgressOperation( delJob, loggerText, delJob, &KIO::DeleteJob::kill, Qt::AutoConnection, KIO::Job::Quietly );
+    Amarok::Logger::newProgressOperation( delJob, loggerText, delJob, &KIO::DeleteJob::kill, Qt::AutoConnection, KIO::Job::Quietly );
 
     connect( delJob, &KIO::DeleteJob::finished, this, &UmsCollectionLocation::slotRemoveOperationFinished );
 }

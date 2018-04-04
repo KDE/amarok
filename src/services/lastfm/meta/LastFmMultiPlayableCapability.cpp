@@ -95,14 +95,14 @@ LastFmMultiPlayableCapability::error( lastfm::ws::Error e )
     // a subscriber, even if the credentials are OK
     if( e == lastfm::ws::SubscribersOnly || e == lastfm::ws::AuthenticationFailed )
     {
-        Amarok::Components::logger()->longMessage( i18n( "To listen to Last.fm streams "
+        Amarok::Logger::longMessage( i18n( "To listen to Last.fm streams "
                 "and radio you need to be a paying Last.fm subscriber and you need to "
                 "stream from a <a href='http://www.last.fm/announcements/radio2013'>supported "
                 "country</a>. All other Last.fm features work fine." ) );
     }
     else
     {
-        Amarok::Components::logger()->longMessage(
+        Amarok::Logger::longMessage(
                     i18n( "Error starting track from Last.fm radio" ) );
     }
 }

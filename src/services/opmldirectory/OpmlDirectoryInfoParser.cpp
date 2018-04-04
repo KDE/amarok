@@ -18,7 +18,7 @@
 
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "OpmlDirectoryMeta.h"
 
 #include <QDomDocument>
@@ -62,7 +62,7 @@ void OpmlDirectoryInfoParser::getInfo( TrackPtr track )
     debug() << "OpmlDirectoryInfoParser: getInfo about feed: " << feed->uidUrl();
 
     m_rssDownloadJob = KIO::storedGet( QUrl( feed->uidUrl() ), KIO::Reload, KIO::HideProgressInfo );
-    Amarok::Components::logger()->newProgressOperation( m_rssDownloadJob,
+    Amarok::Logger::newProgressOperation( m_rssDownloadJob,
                                                         i18n( "Fetching Podcast Info" ) );
     connect( m_rssDownloadJob, &KJob::result, this, &OpmlDirectoryInfoParser::rssDownloadComplete );
 }

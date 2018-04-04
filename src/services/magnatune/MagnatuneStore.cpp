@@ -18,7 +18,7 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeView.h"
@@ -323,7 +323,7 @@ bool MagnatuneStore::updateMagnatuneList()
     m_tempFileName = tempFile.fileName();
 
     m_listDownloadJob = KIO::file_copy( QUrl("http://magnatune.com/info/album_info_xml.bz2"),  QUrl::fromLocalFile( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com database..." ), this, &MagnatuneStore::listDownloadCancelled );
+    Amarok::Logger::newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com database..." ), this, &MagnatuneStore::listDownloadCancelled );
 
     connect( m_listDownloadJob, &KJob::result,
             this, &MagnatuneStore::listDownloadComplete );
@@ -352,7 +352,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     }
 
 
-    Amarok::Components::logger()->shortMessage( i18n( "Updating the local Magnatune database."  ) );
+    Amarok::Logger::shortMessage( i18n( "Updating the local Magnatune database."  ) );
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( m_tempFileName );
     parser->setDbHandler( new MagnatuneDatabaseHandler() );
     connect( parser, &MagnatuneXmlParser::doneParsing, this, &MagnatuneStore::doneParsing );
@@ -725,7 +725,7 @@ void MagnatuneStore::favoritesResult( KJob* addToFavoritesJob )
 
     QString result = m_favoritesJob->data();
 
-    Amarok::Components::logger()->longMessage( result );
+    Amarok::Logger::longMessage( result );
 
     //show the favorites page
     showFavoritesPage();

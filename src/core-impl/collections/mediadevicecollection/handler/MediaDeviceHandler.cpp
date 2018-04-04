@@ -18,7 +18,7 @@
 
 #include "MediaDeviceHandler.h"
 
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
 #include "core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.h"
@@ -437,7 +437,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     // Set up progress bar
 
-    Amarok::Components::logger()->newProgressOperation( this,
+    Amarok::Logger::newProgressOperation( this,
             i18n( "Transferring Tracks to Device" ), m_tracksToCopy.size() );
 
     // prepare to copy
@@ -479,7 +479,7 @@ MediaDeviceHandler::copyNextTrackToDevice()
 
         if ( m_copyFailed )
         {
-            Amarok::Components::logger()->shortMessage(
+            Amarok::Logger::shortMessage(
                         i18np( "%1 track failed to copy to the device",
                                "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
@@ -586,7 +586,7 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
     m_tracksToDelete = tracks;
 
     // Set up statusbar for deletion operation
-    Amarok::Components::logger()->newProgressOperation( this,
+    Amarok::Logger::newProgressOperation( this,
             i18np( "Removing Track from Device", "Removing Tracks from Device", tracks.size() ),
             tracks.size() );
 
@@ -653,7 +653,7 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
         /*
         if( m_tracksFailed.size() > 0 )
         {
-            Amarok::Components::logger()->shortMessage(
+            Amarok::Logger::shortMessage(
                         i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         */

@@ -20,7 +20,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core-impl/playlists/types/file/asx/ASXPlaylist.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
@@ -285,7 +285,7 @@ PlaylistFileProvider::loadPlaylists()
         Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url, this );
         if( !playlist )
         {
-            Amarok::Components::logger()->longMessage(
+            Amarok::Logger::longMessage(
                     i18n("The playlist file \"%1\" could not be loaded.", url.fileName() ),
                     Amarok::Logger::Error
                 );

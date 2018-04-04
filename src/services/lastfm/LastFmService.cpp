@@ -34,7 +34,7 @@
 #include "ScrobblerAdapter.h"
 #include "GlobalCurrentTrackActions.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "meta/LastFmMeta.h"
 #include "SynchronizationAdapter.h"
 #include "statsyncing/Controller.h"
@@ -294,12 +294,12 @@ LastFmService::onAuthenticated()
             break;
         }
         case QNetworkReply::AuthenticationRequiredError:
-            Amarok::Components::logger()->longMessage( i18nc("Last.fm: errorMessage",
+            Amarok::Logger::longMessage( i18nc("Last.fm: errorMessage",
                     "Either the username was not recognized, or the password was incorrect." ) );
             break;
 
         default:
-            Amarok::Components::logger()->longMessage( i18nc("Last.fm: errorMessage",
+            Amarok::Logger::longMessage( i18nc("Last.fm: errorMessage",
                     "There was a problem communicating with the Last.fm services. Please try again later." ) );
             break;
     }

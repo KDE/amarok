@@ -19,7 +19,7 @@
 #include "IpodCollection.h"
 #include "IpodMeta.h"
 #include "IpodPlaylistProvider.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/meta/file/File.h"
@@ -55,7 +55,7 @@ IpodParseTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thr
 
     guint32 trackNumber = itdb_tracks_number( itdb );
     QString operationText = i18nc( "operation when iPod is connected", "Reading iPod tracks" );
-    Amarok::Components::logger()->newProgressOperation( this, operationText, trackNumber,
+    Amarok::Logger::newProgressOperation( this, operationText, trackNumber,
                                                         this, &IpodParseTracksJob::abort );
 
     Meta::TrackList staleTracks;
@@ -148,7 +148,7 @@ IpodParseTracksJob::parsePlaylists( const Meta::TrackList &staleTracks,
             "the situation using the <b>%2</b> collection action. You can also view the tracks "
             "under the Saved Playlists tab.", m_coll->prettyName(),
             m_coll->m_consolidateAction->text() );
-        Amarok::Components::logger()->longMessage( text );
+        Amarok::Logger::longMessage( text );
     }
 }
 

@@ -25,7 +25,7 @@
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlist/PlaylistModel.h"
 
@@ -227,12 +227,12 @@ APG::ConstraintSolver::receiveQueryMakerDone()
 
     if (( m_domain.size() > 0 ) || m_domainReductionFailed ) {
         if ( m_domain.size() <= 0 ) {
-            Amarok::Components::logger()->shortMessage( i18n("The playlist generator failed to load any tracks from the collection.") );
+            Amarok::Logger::shortMessage( i18n("The playlist generator failed to load any tracks from the collection.") );
         }
         m_readyToRun = true;
         emit readyToRun();
     } else {
-        Amarok::Components::logger()->longMessage(
+        Amarok::Logger::longMessage(
                     i18n("There are no tracks that match all constraints. " \
                          "The playlist generator will find the tracks that match best, " \
                 "but you may want to consider loosening the constraints to find more tracks.") );

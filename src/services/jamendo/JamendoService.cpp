@@ -22,7 +22,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "EngineController.h"
 #include "JamendoInfoParser.h"
 #include "ServiceSqlRegistry.h"
@@ -190,7 +190,7 @@ JamendoService::updateButtonClicked()
                 /* Deprecated */ QUrl("http://imgjam.com/data/dbdump_artistalbumtrack.xml.gz"),
                 QUrl::fromLocalFile( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
-    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com database..." ), this, SLOT(listDownloadCancelled()) );
+    Amarok::Logger::newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com database..." ), this, SLOT(listDownloadCancelled()) );
 
     connect( m_listDownloadJob, &KJob::result,
             this, &JamendoService::listDownloadComplete );
@@ -212,7 +212,7 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
         return;
     }
 
-    Amarok::Components::logger()->shortMessage( i18n( "Updating the local Jamendo database."  ) );
+    Amarok::Logger::shortMessage( i18n( "Updating the local Jamendo database."  ) );
     debug() << "JamendoService: create xml parser";
 
     if( m_xmlParser == 0 )

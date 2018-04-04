@@ -20,7 +20,7 @@
 #include "LastFmServiceConfig.h"
 
 #include "App.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
@@ -216,7 +216,7 @@ LastFmServiceConfig::slotWalletOpenedToRead( bool success )
     {
         warning() << __PRETTY_FUNCTION__ << "failed to open wallet";
         QString message = i18n( "Failed to open KDE Wallet to read Last.fm credentials" );
-        Amarok::Components::logger()->longMessage( message, Amarok::Logger::Warning );
+        Amarok::Logger::longMessage( message, Amarok::Logger::Warning );
         if( m_wallet )
             m_wallet->deleteLater(); // no point in having invalid wallet around
         m_wallet = 0;

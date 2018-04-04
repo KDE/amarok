@@ -21,7 +21,7 @@
 #include "DaapCollection.h"
 
 #include "amarokconfig.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "DaapMeta.h"
@@ -97,7 +97,7 @@ DaapCollectionFactory::connectToManualServers()
             
         QString host = current.first();
         quint16 port = current.last().toUShort();
-        Amarok::Components::logger()->longMessage(
+        Amarok::Logger::longMessage(
                     i18n( "Loading remote collection from host %1", host),
                     Amarok::Logger::Information );
 

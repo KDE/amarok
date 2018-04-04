@@ -21,7 +21,7 @@
 #include "ProviderFactory.h"
 #include "amarokconfig.h"
 #include "core/collections/Collection.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
@@ -377,7 +377,7 @@ void Controller::synchronizeWithMode( int intMode )
         {
             QString text = i18n( "You only seem to have the Local Collection. Statistics "
                 "synchronization only makes sense if there is more than one collection." );
-            Amarok::Components::logger()->longMessage( text );
+            Amarok::Logger::longMessage( text );
         }
         return;
     }

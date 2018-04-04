@@ -23,7 +23,7 @@
 #include "ConstraintSolver.h"
 #include "constraints/TrackSpreader.h"
 
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/meta/Meta.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
@@ -129,7 +129,7 @@ void APG::Preset::queueSolver() {
     emit lock( true );
 
     ConstraintSolver* s = static_cast<ConstraintSolver*>( sender() );
-    Amarok::Components::logger()->newProgressOperation( s, i18n("Generating a new playlist"), s->iterationCount(), s, &ConstraintSolver::requestAbort, Qt::QueuedConnection );
+    Amarok::Logger::newProgressOperation( s, i18n("Generating a new playlist"), s->iterationCount(), s, &ConstraintSolver::requestAbort, Qt::QueuedConnection );
     connect( s, &APG::ConstraintSolver::done, this, &Preset::solverFinished, Qt::QueuedConnection );
 
     m_constraintTreeRoot->addChild( ConstraintTypes::TrackSpreader::createNew( m_constraintTreeRoot ), 0 ); // private mandatory constraint
@@ -146,7 +146,7 @@ APG::Preset::solverFinished( ThreadWeaver::JobPointer job )
     if ( job->success() ) {
         debug() << "Solver" << solver->serial() << "finished successfully";
         if ( !solver->satisfied() ) {
-            Amarok::Components::logger()->longMessage(
+            Amarok::Logger::longMessage(
                         i18n("The playlist generator created a playlist which does not meet all "
                              "of your constraints.  If you are not satisfied with the results, "
                              "try loosening or removing some constraints and then generating a "

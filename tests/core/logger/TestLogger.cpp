@@ -14,10 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "TestProxyLogger.h"
+#include "TestLogger.h"
 
-#include "core/interfaces/Logger.h"
-#include "core-impl/logger/ProxyLogger.h"
+#include "core/logger/Logger.h"
 
 #include "mocks/MockLogger.h"
 
@@ -26,16 +25,17 @@
 
 #include <QCoreApplication>
 
+#include <KJob>
+
 #include <gmock/gmock.h>
 
-QTEST_GUILESS_MAIN( TestProxyLogger )
+QTEST_GUILESS_MAIN( TestLogger )
 
 using ::testing::Return;
 using ::testing::AnyNumber;
 using ::testing::_;
 using ::testing::Mock;
 
-static ProxyLogger *s_logger;
 
 class DummyJob : public KJob
 {
@@ -43,7 +43,7 @@ public:
     virtual void start() {}
 };
 
-TestProxyLogger::TestProxyLogger()
+TestLogger::TestLogger()
 {
     int argc = 1;
     char **argv = (char **) malloc(sizeof(char *));
@@ -53,15 +53,13 @@ TestProxyLogger::TestProxyLogger()
 }
 
 void
-TestProxyLogger::init()
+TestLogger::init()
 {
-    s_logger = 0;
 }
 
 void
-TestProxyLogger::cleanup()
+TestLogger::cleanup()
 {
-    delete s_logger;
 }
 
 class ProgressJob : public QObject, public ThreadWeaver::Job
@@ -75,7 +73,7 @@ public:
         Q_UNUSED(thread);
         KJob *job = new DummyJob();
         QObject *obj = new QObject();
-        s_logger->newProgressOperation( job, QString( "foo" ), obj );
+        Amarok::Logger::newProgressOperation( job, QString( "foo" ), obj );
 
         if( deleteJob ) delete job;
         if( deleteObject ) delete obj;
@@ -111,58 +109,46 @@ public:
 };
 
 void
-TestProxyLogger::testDoNotForwardDeletedJob()
+TestLogger::testDoNotForwardDeletedJob()
 {
-    s_logger = new ProxyLogger();
-
     Amarok::MockLogger *mock = new Amarok::MockLogger();
     EXPECT_CALL( *mock, newProgressOperationImpl( An<KJob*>(), _, _, _, _ ) ).Times( 0 );
-
-    s_logger->setLogger( mock );
 
     ProgressJob *job = new ProgressJob();
     job->deleteJob = true;
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 
     QTest::qSleep( 10 ); //ensure that the job has time to run
-    QTest::qWait( 20 ); //give the ProxyLogger-internal timer time to fire
+    QTest::qWait( 20 ); //give the Logger-internal timer time to fire
 
     QVERIFY( Mock::VerifyAndClearExpectations( &mock ) );
     delete mock;
 }
 
 void
-TestProxyLogger::testDoNotForwardDeletedSlot()
+TestLogger::testDoNotForwardDeletedSlot()
 {
-    s_logger = new ProxyLogger();
-
     Amarok::MockLogger *mock = new Amarok::MockLogger();
     EXPECT_CALL( *mock, newProgressOperationImpl( An<KJob*>(), _, nullptr, _, _ ) ).Times( 1 ).WillOnce( Return() );
-
-    s_logger->setLogger( mock );
 
     ProgressJob *job = new ProgressJob();
     job->deleteObject = true;
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 
     QTest::qSleep( 10 ); //ensure that the job has time to run
-    QTest::qWait( 20 ); //give the ProxyLogger-internal timer time to fire
+    QTest::qWait( 20 ); //give the Logger-internal timer time to fire
 
     QVERIFY( Mock::VerifyAndClearExpectations( &mock ) );
     delete mock;
 }
 
 void
-TestProxyLogger::testForwardLongMessage()
+TestLogger::testForwardLongMessage()
 {
-    s_logger = new ProxyLogger();
-
     Amarok::MockLogger *mock = new Amarok::MockLogger();
-    EXPECT_CALL( *mock, longMessage( _, _ ) ).Times( 1 ).WillOnce( Return() );
+    EXPECT_CALL( *mock, longMessageImpl( _, _ ) ).Times( 1 ).WillOnce( Return() );
 
-    s_logger->setLogger( mock );
-
-    s_logger->longMessage( "foo", Amarok::Logger::Information );
+    Amarok::Logger::longMessage( "foo", Amarok::Logger::Information );
 
     QTest::qWait( 20 );
 
@@ -171,16 +157,12 @@ TestProxyLogger::testForwardLongMessage()
 }
 
 void
-TestProxyLogger::testForwardProgressOperation()
+TestLogger::testForwardProgressOperation()
 {
-    s_logger = new ProxyLogger();
-
     Amarok::MockLogger *mock = new Amarok::MockLogger();
     EXPECT_CALL( *mock, newProgressOperationImpl( An<KJob*>(), _, _, _, _ ) ).Times( 1 ).WillOnce( Return() );
 
-    s_logger->setLogger( mock );
-
-    s_logger->newProgressOperation( new DummyJob(), QString( "foo" ) );
+    Amarok::Logger::newProgressOperation( new DummyJob(), QString( "foo" ) );
 
     QTest::qWait( 20 );
 
@@ -189,16 +171,12 @@ TestProxyLogger::testForwardProgressOperation()
 }
 
 void
-TestProxyLogger::testForwardShortMessage()
+TestLogger::testForwardShortMessage()
 {
-    s_logger = new ProxyLogger();
-
     Amarok::MockLogger *mock = new Amarok::MockLogger();
-    EXPECT_CALL( *mock, shortMessage( _ ) ).Times( 1 ).WillOnce( Return() );
+    EXPECT_CALL( *mock, shortMessageImpl( _ ) ).Times( 1 ).WillOnce( Return() );
 
-    s_logger->setLogger( mock );
-
-    s_logger->shortMessage( "foo" );
+    Amarok::Logger::shortMessage( "foo" );
 
     QTest::qWait( 20 );
 
@@ -206,4 +184,4 @@ TestProxyLogger::testForwardShortMessage()
     delete mock;
 }
 
-#include "TestProxyLogger.moc"
+#include "TestLogger.moc"

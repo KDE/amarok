@@ -19,7 +19,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 
 #include <KCompressionDevice>
 #include <KLocalizedString>
@@ -72,7 +72,7 @@ MagnatuneXmlParser::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeave
 void
 MagnatuneXmlParser::completeJob( )
 {
-    Amarok::Components::logger()->longMessage(
+    Amarok::Logger::longMessage(
           i18ncp( "First part of: Magnatune.com database update complete. Database contains 3 tracks on 4 albums from 5 artists.",
                   "Magnatune.com database update complete. Database contains 1 track on ",
                   "Magnatune.com database update complete. Database contains %1 tracks on ",

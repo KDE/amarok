@@ -16,7 +16,7 @@
 
 #include "IpodDeleteTracksJob.h"
 
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core-impl/collections/ipodcollection/IpodMeta.h"
 
@@ -43,7 +43,7 @@ IpodDeleteTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *th
     int trackCount = m_sources.size();
     QString operationText = i18np( "Removing one track from iPod",
                                    "Removing %1 tracks from iPod", trackCount );
-    Amarok::Components::logger()->newProgressOperation( this, operationText, trackCount );
+    Amarok::Logger::newProgressOperation( this, operationText, trackCount );
     itdb_start_sync( m_coll->m_itdb );
 
     QListIterator<Meta::TrackPtr> it( m_sources );

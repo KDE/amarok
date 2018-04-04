@@ -27,7 +27,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
 #include <config.h> // for the compile flags
@@ -263,7 +263,7 @@ ScriptManager::handleException(const QScriptValue& value)
     if (!engine)
         return;
 
-    Amarok::Components::logger()->longMessage( i18n( "Script error reported by: %1\n%2", scriptNameForEngine( engine ), value.toString() ), Amarok::Logger::Error );
+    Amarok::Logger::longMessage( i18n( "Script error reported by: %1\n%2", scriptNameForEngine( engine ), value.toString() ), Amarok::Logger::Error );
 }
 
 void

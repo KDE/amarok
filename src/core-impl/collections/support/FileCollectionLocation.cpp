@@ -18,7 +18,7 @@
 #include "FileCollectionLocation.h"
 
 #include "core/collections/CollectionLocationDelegate.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 
@@ -84,7 +84,7 @@ void FileCollectionLocation::startRemoveJobs()
         if( track->artist() )
             name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-        Amarok::Components::logger()->newProgressOperation( job, i18n( "Removing: %1", name ) );
+        Amarok::Logger::newProgressOperation( job, i18n( "Removing: %1", name ) );
         m_removejobs.insert( job, track );
     }
 }

@@ -19,7 +19,7 @@
 #define LONGMESSAGEWIDGET_H
 
 #include "PopupWidget.h"
-#include "core/interfaces/Logger.h"
+
 
 class CountdownFrame : public QFrame
 {

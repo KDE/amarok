@@ -30,7 +30,7 @@
 #include "core/capabilities/MultiPlayableCapability.h"
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/support/MetaUtility.h"
@@ -1080,7 +1080,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
             // reset error count
             errorCount = 0;
 
-            Amarok::Components::logger()->longMessage(
+            Amarok::Logger::longMessage(
                             i18n( "Too many errors encountered in playlist. Playback stopped." ),
                             Amarok::Logger::Warning
                         );

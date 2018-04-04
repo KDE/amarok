@@ -16,7 +16,7 @@
 
 #include "MagnatuneDownloadHandler.h"
 
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
@@ -79,7 +79,7 @@ void MagnatuneDownloadHandler::membershipDownload( int membershipType, const QSt
     m_membershipDownload = true;
 
     m_resultDownloadJob = KIO::storedGet( purchaseURL, KIO::NoReload, KIO::HideProgressInfo );
-    Amarok::Components::logger()->newProgressOperation( m_resultDownloadJob,
+    Amarok::Logger::newProgressOperation( m_resultDownloadJob,
                                                         i18n( "Processing download" ) );
     connect( m_resultDownloadJob, &KJob::result, this, &MagnatuneDownloadHandler::xmlDownloadComplete );
 }

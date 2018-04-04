@@ -19,7 +19,7 @@
 #include "amarokurls/AmarokUrlHandler.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "OpmlDirectoryInfoParser.h"

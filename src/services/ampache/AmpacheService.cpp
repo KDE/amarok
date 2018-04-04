@@ -23,7 +23,7 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include <config.h>

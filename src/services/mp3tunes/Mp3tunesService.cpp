@@ -21,7 +21,7 @@
 
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "Mp3tunesConfig.h"
@@ -214,7 +214,7 @@ void Mp3tunesService::enableHarmony()
 
     debug() << "Daemon running";
     m_harmonyEnabled = true;
-    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes AutoSync Enabled"  ) );
+    Amarok::Logger::shortMessage( i18n( "MP3tunes AutoSync Enabled"  ) );
     polish();
  }
 
@@ -230,7 +230,7 @@ void Mp3tunesService::enableHarmony()
     m_harmonyEnabled = false;
     polish();
 
-    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes AutoSync Disabled"  ) );
+    Amarok::Logger::shortMessage( i18n( "MP3tunes AutoSync Disabled"  ) );
  }
 
 void Mp3tunesService::authenticate( const QString & uname, const QString & passwd )
@@ -250,7 +250,7 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
     //debug() << "Connection complete. Enqueueing..";
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_loginWorker) );
     //debug() << "LoginWorker queue";
-    Amarok::Components::logger()->shortMessage( i18n( "Authenticating"  ) );
+    Amarok::Logger::shortMessage( i18n( "Authenticating"  ) );
 
 }
 
@@ -267,7 +267,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         {
             error = m_locker->errorMessage(); // Not sure how to i18n this
         }
-        Amarok::Components::logger()->longMessage( error );
+        Amarok::Logger::longMessage( error );
 
         setServiceReady( false );
         m_authenticationFailed = true;
@@ -292,14 +292,14 @@ void Mp3tunesService::harmonyDisconnected()
 {
     DEBUG_BLOCK
     debug() << "Harmony Disconnected!";
-    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes Harmony: Disconnected"  ) );
+    Amarok::Logger::shortMessage( i18n( "MP3tunes Harmony: Disconnected"  ) );
 }
 
 void Mp3tunesService::harmonyWaitingForEmail( const QString &pin )
 {
     DEBUG_BLOCK
     debug() << "Waiting for user to input PIN: " << pin;
-    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
+    Amarok::Logger::shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
     KMessageBox::information( this,
                               "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + pin,
                               "MP3tunes Harmony",
@@ -312,7 +312,7 @@ void Mp3tunesService::harmonyWaitingForPin()
     DEBUG_BLOCK
     QString pin = m_harmony->pin();
     debug() << "Waiting for user to input PIN: " << pin;
-    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
+    Amarok::Logger::shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
     KMessageBox::information( this,
                               "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + pin,
                               "MP3tunes Harmony",
@@ -324,7 +324,7 @@ void Mp3tunesService::harmonyConnected()
 {
     DEBUG_BLOCK
     debug() << "Harmony Connected!";
-    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes Harmony: Successfully Connected"  ) );
+    Amarok::Logger::shortMessage( i18n( "MP3tunes Harmony: Successfully Connected"  ) );
     /* at this point since the user has input the pin, we will save the info
        for later authentication*/
     Mp3tunesConfig config;
@@ -339,7 +339,7 @@ void Mp3tunesService::harmonyError( const QString &error )
 {
     DEBUG_BLOCK
     debug() << "Harmony Error: " << error;
-    Amarok::Components::logger()->longMessage( i18n( "MP3tunes Harmony Error\n%1", error ) );
+    Amarok::Logger::longMessage( i18n( "MP3tunes Harmony Error\n%1", error ) );
 }
 
 void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )

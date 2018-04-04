@@ -28,7 +28,7 @@
 #include "MainWindow.h"
 #include "SvgHandler.h"
 #include "core/collections/QueryMaker.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/TrackEditor.h"
 #include "core/meta/support/MetaUtility.h"

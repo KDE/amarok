@@ -50,7 +50,7 @@ BrowserMessageArea::BrowserMessageArea( QWidget *parent )
 }
 
 void
-BrowserMessageArea::shortMessage( const QString &text )
+BrowserMessageArea::shortMessageImpl( const QString &text )
 {
     if( !m_busy )
     {
@@ -66,7 +66,7 @@ BrowserMessageArea::shortMessage( const QString &text )
 }
 
 void
-BrowserMessageArea::longMessage( const QString &text, MessageType type )
+BrowserMessageArea::longMessageImpl( const QString &text, MessageType type )
 {
     // The purpose of this emit is to make the operation thread safe. If this
     // method is called from a non-GUI thread, the "emit" relays it over the

@@ -20,7 +20,7 @@
 #include "IpodCollectionLocation.h"
 #include "IpodPlaylist.h"
 #include "core/capabilities/ActionsCapability.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"
@@ -319,7 +319,7 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
         "stale iTunes database entries, %2 stale database entries removed, %3 orphaned "
         "tracks added back to the iTunes database. %4", matched, removed, added,
         failedText );
-    Amarok::Components::logger()->longMessage( text );
+    Amarok::Logger::longMessage( text );
 }
 
 void

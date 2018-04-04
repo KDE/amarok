@@ -18,7 +18,7 @@
 
 #include "CollectionLocationDelegateImpl.h"
 
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/collections/CollectionLocation.h"
 #include "core/support/Components.h"
 #include "transcoding/TranscodingAssistantDialog.h"
@@ -84,7 +84,7 @@ void
 CollectionLocationDelegateImpl::notWriteable( CollectionLocation *loc ) const
 {
     Q_UNUSED( loc )
-    Amarok::Components::logger()->longMessage(
+    Amarok::Logger::longMessage(
             i18n( "The collection does not have enough free space available or is not writable." ),
             Amarok::Logger::Error );
 }

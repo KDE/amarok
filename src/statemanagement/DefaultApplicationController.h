@@ -33,7 +33,6 @@ namespace Amarok
         virtual void shutdown();
 
     private:
-        void initCoreServiceProxies();
         void initSqlStorage();
         void initEngineController();
         void initCollectionManager();

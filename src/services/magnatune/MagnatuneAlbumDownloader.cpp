@@ -19,7 +19,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "MagnatuneMeta.h"
 
 #include <QTemporaryDir>
@@ -71,7 +71,7 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
         msgText = i18n( "Downloading album from Magnatune.com" );
     }
 
-    Amarok::Components::logger()->newProgressOperation( m_albumDownloadJob, msgText, this, &MagnatuneAlbumDownloader::albumDownloadAborted );
+    Amarok::Logger::newProgressOperation( m_albumDownloadJob, msgText, this, &MagnatuneAlbumDownloader::albumDownloadAborted );
 }
 
 void
@@ -97,7 +97,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     if ( !kzip.open( QIODevice::ReadOnly ) )
     {
-        Amarok::Components::logger()->shortMessage( i18n( "Magnatune download seems to have failed. Cannot read zip file" ) );
+        Amarok::Logger::shortMessage( i18n( "Magnatune download seems to have failed. Cannot read zip file" ) );
         emit( downloadComplete( false ) );
         return;
     }
@@ -106,7 +106,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     const KArchiveDirectory * directory = kzip.directory();
 
-    Amarok::Components::logger()->shortMessage( i18n( "Uncompressing Magnatune.com download..." ) );
+    Amarok::Logger::shortMessage( i18n( "Uncompressing Magnatune.com download..." ) );
 
     //Is this really blocking with no progress status!? Why is it not a KJob?
 
@@ -130,7 +130,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     connect( m_coverDownloadJob, &KJob::result, this, &MagnatuneAlbumDownloader::coverDownloadComplete );
 
-    Amarok::Components::logger()->newProgressOperation( m_coverDownloadJob, i18n( "Adding album cover to collection" ), this, &MagnatuneAlbumDownloader::coverAddAborted );
+    Amarok::Logger::newProgressOperation( m_coverDownloadJob, i18n( "Adding album cover to collection" ), this, &MagnatuneAlbumDownloader::coverAddAborted );
 
     emit( downloadComplete( true ) );
 }

@@ -18,7 +18,7 @@
 
 #include "UpnpBrowseCollection.h"
 
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "MemoryQueryMaker.h"
@@ -115,7 +115,7 @@ UpnpBrowseCollection::startFullScan()
 
     // TODO probably set abort slot
     // TODO figure out what to do with the total steps
-    Amarok::Components::logger()->newProgressOperation( this, i18n( "Scanning %1", prettyName() ) );
+    Amarok::Logger::newProgressOperation( this, i18n( "Scanning %1", prettyName() ) );
 
     startIncrementalScan( "/" );
 
@@ -199,7 +199,7 @@ UpnpBrowseCollection::done( KJob *job )
 DEBUG_BLOCK
     if( job->error() )
     {
-        Amarok::Components::logger()->longMessage( i18n("UPnP Error: %1", job->errorString() ),
+        Amarok::Logger::longMessage( i18n("UPnP Error: %1", job->errorString() ),
                                                    Amarok::Logger::Error );
         return;
     }

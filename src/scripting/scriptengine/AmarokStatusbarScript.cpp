@@ -16,7 +16,7 @@
 
 #include "AmarokStatusbarScript.h"
 
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 
 #include <QScriptEngine>
@@ -35,11 +35,11 @@ AmarokStatusbarScript::AmarokStatusbarScript( QScriptEngine *engine )
 void
 AmarokStatusbarScript::longMessage( const QString &text )
 {
-    Amarok::Components::logger()->longMessage( text );
+    Amarok::Logger::longMessage( text );
 }
 
 void
 AmarokStatusbarScript::shortMessage( const QString &text )
 {
-    Amarok::Components::logger()->shortMessage( text );
+    Amarok::Logger::shortMessage( text );
 }

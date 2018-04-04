@@ -26,7 +26,7 @@
 #include "core/support/Debug.h"
 
 #include "core-impl/meta/file/File.h" // for KIO file handling
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 
 #include <KIO/Job>
 #include <KIO/DeleteJob>
@@ -91,7 +91,7 @@ MtpHandler::~MtpHandler()
         LIBMTP_Release_Device( m_device );
         /* possible race condition with statusbar destructor,
         will uncomment when fixed */
-        //Amarok::Components::logger()->longMessage(
+        //Amarok::Logger::longMessage(
         //                       i18n( "The MTP device %1 has been disconnected", prettyName() ), StatusBar::Information );
         debug() << "Device released";
     }
@@ -359,7 +359,7 @@ MtpHandler::terminate()
         LIBMTP_Release_Device( m_device );
         /* possible race condition with statusbar destructor,
         will uncomment when fixed
-        Amarok::Components::logger()->longMessage(
+        Amarok::Logger::longMessage(
                                     i18n( "The MTP device %1 has been disconnected", prettyName() ),
                                     Amarok::Logger::Information
                             ); */
@@ -600,7 +600,7 @@ MtpHandler::privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track )
     if ( status != 0 )
     {
         debug() << "delete object failed";
-        Amarok::Components::logger()->longMessage( i18n( "Delete failed" ),
+        Amarok::Logger::longMessage( i18n( "Delete failed" ),
                                                    Amarok::Logger::Error
         );
 //       return false;

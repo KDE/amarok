@@ -19,7 +19,7 @@
 
 #include <gmock/gmock.h>
 
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 
 using ::testing::Return;
 using ::testing::An;
@@ -32,15 +32,15 @@ namespace Amarok
     public:
         MockLogger() : Amarok::Logger()
         {
-            ON_CALL( *this, shortMessage( _ ) ).WillByDefault( Return() );
-            ON_CALL( *this, longMessage( _, _ ) ).WillByDefault( Return() );
+            ON_CALL( *this, shortMessageImpl( _ ) ).WillByDefault( Return() );
+            ON_CALL( *this, longMessageImpl( _, _ ) ).WillByDefault( Return() );
             ON_CALL( *this, newProgressOperationImpl( An<KJob*>(), _, _, _, _ ) ).WillByDefault( Return() );
             ON_CALL( *this, newProgressOperationImpl( An<QNetworkReply*>(), _, _, _, _ ) ).WillByDefault( Return() );
             ON_CALL( *this, newProgressOperationImpl( An<QObject *>(), _, _, _, _, _, _, _ ) ).WillByDefault( Return() );
         }
 
-        MOCK_METHOD1( shortMessage, void( const QString& ) );
-        MOCK_METHOD2( longMessage, void( const QString&, Amarok::Logger::MessageType ) );
+        MOCK_METHOD1( shortMessageImpl, void( const QString& ) );
+        MOCK_METHOD2( longMessageImpl, void( const QString&, Amarok::Logger::MessageType ) );
         MOCK_METHOD5( newProgressOperationImpl, void( KJob*, const QString&, QObject*, const std::function<void ()>&,
                                                       Qt::ConnectionType ) );
         MOCK_METHOD5( newProgressOperationImpl, void( QNetworkReply*, const QString&, QObject*,

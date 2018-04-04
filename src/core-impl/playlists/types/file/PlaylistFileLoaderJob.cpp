@@ -17,7 +17,7 @@
 
 #include "core/meta/Meta.h"
 #include "core/playlists/PlaylistFormat.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
@@ -54,7 +54,7 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
 //         m_tempFile.setFileTemplate( QDir::tempPath() + "/XXXXXX." + Amarok::extension( url.url() ) );
         if( !m_tempFile.open() )
         {
-            Amarok::Components::logger()->longMessage(
+            Amarok::Logger::longMessage(
                     i18n( "Could not create a temporary file to download playlist." ) );
             m_downloadSemaphore.release(); // prevent deadlock
             return;
@@ -62,7 +62,7 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
 
         KIO::FileCopyJob *job = KIO::file_copy( url , QUrl::fromLocalFile(m_tempFile.fileName()), 0774,
                                                 KIO::Overwrite | KIO::HideProgressInfo );
-        Amarok::Components::logger()->newProgressOperation( job,
+        Amarok::Logger::newProgressOperation( job,
                 i18n("Downloading remote playlist" ) );
         if( playlist->isLoadingAsync() )
             // job is started automatically by KIO
@@ -88,9 +88,8 @@ PlaylistFileLoaderJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *
     QFile file( m_actualPlaylistFile );
     if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-        using namespace Amarok;
-        Components::logger()->longMessage( i18nc( "%1 is file path",
-                "Cannot read playlist from %1", m_actualPlaylistFile ), Logger::Error );
+        Amarok::Logger::longMessage( i18nc( "%1 is file path",
+                "Cannot read playlist from %1", m_actualPlaylistFile ), Amarok::Logger::Error );
         return;
     }
 

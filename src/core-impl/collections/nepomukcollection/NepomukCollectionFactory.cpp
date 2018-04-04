@@ -19,7 +19,7 @@
 #include "NepomukCollection.h"
 #include "NepomukCollectionFactory.h"
 
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 
@@ -44,7 +44,7 @@ NepomukCollectionFactory::init()
                   "Check if 'Nepomuk Semantic Desktop' is enabled in System Settings -> Desktop Search. "
                   "Nepomuk Plugin won't be loaded unless Nepomuk is enabled.";
 
-        Amarok::Components::logger()->longMessage(
+        Amarok::Logger::longMessage(
             i18n( "Couldn't initialize Nepomuk Collection. "
                   "Check if 'Nepomuk Semantic Desktop' is enabled in System Settings -> Desktop Search. "
                   "Nepomuk Plugin won't be loaded unless Nepomuk is enabled." ),

@@ -24,7 +24,7 @@
 #include "App.h"
 #include "amarokconfig.h"
 #include "core/collections/Collection.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/meta/Meta.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
@@ -120,7 +120,7 @@ Dynamic::BiasedPlaylist::startSolver( int numRequested )
         m_solver = new BiasSolver( numRequested, m_bias, getContext() );
         connect( m_solver, &BiasSolver::done, this, &BiasedPlaylist::solverFinished );
 
-        Amarok::Components::logger()->newProgressOperation( m_solver,
+        Amarok::Logger::newProgressOperation( m_solver,
                                                             i18n( "Generating playlist..." ), 100,
                                                             this, &BiasedPlaylist::requestAbort );
 

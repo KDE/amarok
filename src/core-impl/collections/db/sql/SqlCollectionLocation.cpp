@@ -24,7 +24,7 @@
 #include "MetaTagLib.h" // for getting the uid
 #include "core/collections/CollectionLocationDelegate.h"
 #include <core/storage/SqlStorage.h>
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
@@ -477,7 +477,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &s
 
     QString statusBarTxt = operationInProgressText( configuration, sources.count() );
     m_transferjob = new TransferJob( this, configuration );
-    Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this,
+    Amarok::Logger::newProgressOperation( m_transferjob, statusBarTxt, this,
                                                         &SqlCollectionLocation::slotTransferJobAborted );
     connect( m_transferjob, &Collections::TransferJob::result,
              this, &SqlCollectionLocation::slotTransferJobFinished );
@@ -659,7 +659,7 @@ bool SqlCollectionLocation::startNextRemoveJob()
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            Amarok::Components::logger()->newProgressOperation( job, i18n( "Removing: %1", name ) );
+            Amarok::Logger::newProgressOperation( job, i18n( "Removing: %1", name ) );
             m_removejobs.insert( job, track );
             return true;
         }

@@ -20,7 +20,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 
 #include <KLocalizedString>
 #include <KMessageBox>
@@ -146,7 +146,7 @@ MagnatuneRedownloadHandler::fetchServerSideRedownloadList()
     QUrl redownloadApiUrl = QUrl::fromUserInput( "http://magnatune.com/buy/redownload_xml?email=" + email );
 
     m_redownloadApiJob = KIO::storedGet( redownloadApiUrl, KIO::NoReload, KIO::HideProgressInfo );
-    Amarok::Components::logger()->newProgressOperation( m_redownloadApiJob, i18n( "Getting list of previous Magnatune.com purchases" ) );
+    Amarok::Logger::newProgressOperation( m_redownloadApiJob, i18n( "Getting list of previous Magnatune.com purchases" ) );
     connect( m_redownloadApiJob, &KIO::TransferJob::result, this, &MagnatuneRedownloadHandler::redownloadApiResult );
 
 }

@@ -22,7 +22,7 @@
 #include "ui_UmsConfiguration.h"
 #include "collectionscanner/Track.h"
 #include "core/capabilities/ActionsCapability.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/meta/Meta.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
@@ -288,7 +288,7 @@ UmsCollection::init()
                     "as music folder on the device, but it doesn't exist. Falling back to "
                     "<i>%3</i> instead", m_mountPoint + '/' + s_settingsFileName,
                     m_musicUrl.toLocalFile(), m_mountPoint );
-            Amarok::Components::logger()->longMessage( message, Amarok::Logger::Warning );
+            Amarok::Logger::longMessage( message, Amarok::Logger::Warning );
             m_musicUrl = QUrl::fromLocalFile(m_mountPoint);
         }
     }

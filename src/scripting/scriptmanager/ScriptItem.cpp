@@ -27,7 +27,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
 #include "config.h"
@@ -327,7 +327,7 @@ ScriptItem::slotDeprecatedCall( const QString &call )
                             , "The script %1 uses deprecated scripting API calls. Please contact the script"
                             " author, %2 at %3, and ask him to upgrade it before the next Amarok release."
                             , m_info.name(), m_info.author(), m_info.email() );
-    Amarok::Components::logger()->longMessage( message );
+    Amarok::Logger::longMessage( message );
 }
 
 void

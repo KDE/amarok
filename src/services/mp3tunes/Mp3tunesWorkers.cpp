@@ -16,7 +16,7 @@
 
 #include "Mp3tunesWorkers.h"
 
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "Mp3tunesMeta.h"
@@ -341,7 +341,7 @@ Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStrin
     m_locker = locker;
     m_tracklist = tracklist;
 
-    Amarok::Components::logger()->newProgressOperation( this, i18n( "Upload to MP3tunes Initiated" ), m_tracklist.count() );
+    Amarok::Logger::newProgressOperation( this, i18n( "Upload to MP3tunes Initiated" ), m_tracklist.count() );
     //TODO: port to Amarok::Logger signals
 //    connect( this, SIGNAL(incrementProgress()), The::statusBar(), SLOT(incrementProgress()), Qt::QueuedConnection );
 }

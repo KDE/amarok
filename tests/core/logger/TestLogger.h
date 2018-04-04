@@ -14,4 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Logger.h"
+#ifndef TEST_LOGGER_H
+#define TEST_LOGGER_H
+
+#include <QTest>
+
+class TestLogger : public QObject
+{
+    Q_OBJECT
+public:
+    TestLogger();
+
+private Q_SLOTS:
+    void init();
+    void cleanup();
+
+    void testForwardShortMessage();
+    void testForwardLongMessage();
+    void testForwardProgressOperation();
+    void testDoNotForwardDeletedJob();
+    void testDoNotForwardDeletedSlot();
+};
+
+#endif

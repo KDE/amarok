@@ -18,7 +18,7 @@
 
 #include "IpodMeta.h"
 #include "core/collections/QueryMaker.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core/transcoding/TranscodingController.h"
@@ -229,21 +229,21 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
 
     if( successCount == sourceSize )
     {
-        Amarok::Components::logger()->shortMessage( transferredText );
+        Amarok::Logger::shortMessage( transferredText );
     }
     else if( m_aborted )
     {
         QString text = i18np( "Transfer aborted. Managed to transfer one track.",
                               "Transfer aborted. Managed to transfer %1 tracks.",
                               successCount );
-        Amarok::Components::logger()->longMessage( text );
+        Amarok::Logger::longMessage( text );
     }
     else if( successCount + duplicateCount == sourceSize )
     {
         QString text = i18ncp( "%2 is the 'Transferred 123 tracks to Some collection.' message",
             "%2 One track was already there.", "%2 %1 tracks were already there.",
             duplicateCount, transferredText );
-        Amarok::Components::logger()->longMessage( text );
+        Amarok::Logger::longMessage( text );
     }
     else
     {

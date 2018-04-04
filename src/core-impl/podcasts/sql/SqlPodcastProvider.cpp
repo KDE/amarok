@@ -25,7 +25,7 @@
 // #include "context/popupdropper/libpud/PopupDropper.h"
 // #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include <core/storage/SqlStorage.h>
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/podcasts/PodcastImageFetcher.h"
 #include "core/podcasts/PodcastReader.h"
 #include "core/support/Amarok.h"
@@ -474,7 +474,7 @@ SqlPodcastProvider::addPodcast( const QUrl &url )
     {
         //Already subscribed to this Channel
         //notify the user.
-        Amarok::Components::logger()->longMessage(
+        Amarok::Logger::longMessage(
                     i18n( "Already subscribed to %1.", dbResult.first() ), Amarok::Logger::Error );
     }
     else
@@ -1050,7 +1050,7 @@ SqlPodcastProvider::slotReadResult( Podcasts::PodcastReader *podcastReader )
     if( podcastReader->error() != QXmlStreamReader::NoError )
     {
         debug() << podcastReader->errorString();
-        Amarok::Components::logger()->longMessage( podcastReader->errorString(),
+        Amarok::Logger::longMessage( podcastReader->errorString(),
                                                    Amarok::Logger::Error );
     }
     debug() << "Finished updating: " << podcastReader->url();
@@ -1097,7 +1097,7 @@ SqlPodcastProvider::slotStatusBarNewProgressOperation( KIO::TransferJob * job,
                                                        const QString &description,
                                                        Podcasts::PodcastReader* reader )
 {
-    Amarok::Components::logger()->newProgressOperation( job, description, reader, &Podcasts::PodcastReader::slotAbort );
+    Amarok::Logger::newProgressOperation( job, description, reader, &Podcasts::PodcastReader::slotAbort );
 }
 
 void
@@ -1154,7 +1154,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
 
     if( !tmpFile->open( QIODevice::WriteOnly | QIODevice::Append ) )
     {
-        Amarok::Components::logger()->longMessage( i18n( "Unable to save podcast episode file to %1",
+        Amarok::Logger::longMessage( i18n( "Unable to save podcast episode file to %1",
                                              tmpFile->fileName() ) );
         delete tmpFile;
         return;
@@ -1162,7 +1162,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
 
     debug() << "starting download for " << sqlEpisode->title()
             << " url: " << sqlEpisode->prettyUrl();
-    Amarok::Components::logger()->newProgressOperation( transferJob
+    Amarok::Logger::newProgressOperation( transferJob
                                                         , sqlEpisode->title().isEmpty()
                                                         ? i18n( "Downloading Podcast Media" )
                                                         : i18n( "Downloading Podcast \"%1\""
@@ -1310,7 +1310,7 @@ SqlPodcastProvider::deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode
 void
 SqlPodcastProvider::slotStatusBarSorryMessage( const QString &message )
 {
-    Amarok::Components::logger()->longMessage( message, Amarok::Logger::Error );
+    Amarok::Logger::longMessage( message, Amarok::Logger::Error );
 }
 
 void
@@ -1326,7 +1326,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
         // in the statusbar when the user cancels a download
         if( job->error() != KJob::KilledJobError )
         {
-            Amarok::Components::logger()->longMessage( job->errorText() );
+            Amarok::Logger::longMessage( job->errorText() );
         }
         error() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
         error() << "keeping temporary file for download restart";
@@ -1402,7 +1402,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
         }
         else
         {
-            Amarok::Components::logger()->longMessage( i18n( "Unable to save podcast episode file to %1",
+            Amarok::Logger::longMessage( i18n( "Unable to save podcast episode file to %1",
                                                  finalName ) );
             downloadFailed = true;
         }

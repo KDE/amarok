@@ -126,7 +126,7 @@ AmpacheAccountLogin::authenticate( const QUrl &requestUrl, QByteArray data, Netw
 
     debug() << "Authenticating with string: " << url.url() << passPhrase;
 
-    // TODO: Amarok::Components::logger()->newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
+    // TODO: Amarok::Logger::newProgressOperation( m_xmlDownloadJob, i18n( "Authenticating with Ampache" ) );
     m_authRequest = The::networkAccessManager()->getData( url, this, &AmpacheAccountLogin::authenticationComplete );
 
     if( !m_authRequest )

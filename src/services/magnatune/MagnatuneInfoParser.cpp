@@ -17,7 +17,7 @@
 #include "MagnatuneInfoParser.h"
 
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "MagnatuneConfig.h"
 
 #include <KLocalizedString>
@@ -38,7 +38,7 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
     QString orgHtml;*/
 
     m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl(), KIO::Reload, KIO::HideProgressInfo );
-    Amarok::Components::logger()->newProgressOperation( m_infoDownloadJob, i18n( "Fetching %1 Artist Info", magnatuneArtist->prettyName() ) );
+    Amarok::Logger::newProgressOperation( m_infoDownloadJob, i18n( "Fetching %1 Artist Info", magnatuneArtist->prettyName() ) );
     connect( m_infoDownloadJob, &KJob::result, this, &MagnatuneInfoParser::artistInfoDownloadComplete );
 
 }
@@ -163,7 +163,7 @@ void MagnatuneInfoParser::getFrontPage()
     showLoading( i18n( "Loading Magnatune.com frontpage..." ) );
     
     m_pageDownloadJob = KIO::storedGet( QUrl("http://magnatune.com/amarok_frontpage.html"), KIO::Reload, KIO::HideProgressInfo );
-    Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
+    Amarok::Logger::newProgressOperation( m_pageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
     connect( m_pageDownloadJob, &KJob::result, this, &MagnatuneInfoParser::frontpageDownloadComplete );
 }
 
@@ -188,7 +188,7 @@ void MagnatuneInfoParser::getFavoritesPage()
     QUrl url = QUrl::fromUserInput( "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_favorites.php" );
 
     m_pageDownloadJob = KIO::storedGet( url, KIO::Reload, KIO::HideProgressInfo );
-    Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
+    Amarok::Logger::newProgressOperation( m_pageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
     connect( m_pageDownloadJob, &KJob::result, this, &MagnatuneInfoParser::userPageDownloadComplete );
 }
 
@@ -213,7 +213,7 @@ void MagnatuneInfoParser::getRecommendationsPage()
     QUrl url = QUrl::fromUserInput( "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_recommendations.php" );
 
     m_pageDownloadJob = KIO::storedGet( url, KIO::Reload, KIO::HideProgressInfo );
-    Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com recommendations page..." ) );
+    Amarok::Logger::newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com recommendations page..." ) );
     connect( m_pageDownloadJob, &KJob::result, this, &MagnatuneInfoParser::userPageDownloadComplete );
 }
 

@@ -18,7 +18,7 @@
 
 #include "MainWindow.h"
 #include "MetaValues.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
@@ -127,7 +127,7 @@ Process::slotMatchTracks()
     }
     else // background operation
     {
-        Amarok::Components::logger()->newProgressOperation( job, text, 100, job, &MatchTracksJob::abort );
+        Amarok::Logger::newProgressOperation( job, text, 100, job, &MatchTracksJob::abort );
     }
 
     connect( job, &StatSyncing::MatchTracksJob::done, this, &Process::slotTracksMatched );
@@ -228,7 +228,7 @@ Process::slotSynchronize()
     SynchronizeTracksJob *job = new SynchronizeTracksJob(
             m_matchedTracksModel->matchedTuples(), m_tracksToScrobble, m_options );
     QString text = i18n( "Synchronizing Track Statistics" );
-    Amarok::Components::logger()->newProgressOperation( job, text, 100, job, &SynchronizeTracksJob::abort );
+    Amarok::Logger::newProgressOperation( job, text, 100, job, &SynchronizeTracksJob::abort );
     connect( job, &StatSyncing::SynchronizeTracksJob::done, this, &Process::slotLogSynchronization );
     connect( job, &StatSyncing::SynchronizeTracksJob::done, job, &StatSyncing::SynchronizeTracksJob::deleteLater );
     ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
@@ -297,7 +297,7 @@ Process::slotLogSynchronization( ThreadWeaver::JobPointer job )
                        "Scrobbling of <b>%1</b> tracks was skipped as configured by the user.",
                        scrobbleErrorCounts[ ScrobblingService::SkippedByUser ] );
 
-    Amarok::Components::logger()->longMessage( text.join( "<br>\n" ) );
+    Amarok::Logger::longMessage( text.join( "<br>\n" ) );
 }
 
 void

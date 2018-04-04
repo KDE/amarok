@@ -26,7 +26,7 @@
 #include "support/IpodTranscodeCapability.h"
 
 #include "core/capabilities/ActionsCapability.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/MemoryCollection.h"
@@ -703,7 +703,7 @@ bool IpodCollection::writeDatabase()
     {
         QString message = i18nc( "%1: iPod collection name",
                          "iTunes database successfully written to %1", prettyName() );
-        Amarok::Components::logger()->shortMessage( message );
+        Amarok::Logger::shortMessage( message );
     }
     else
     {
@@ -715,7 +715,7 @@ bool IpodCollection::writeDatabase()
         else
             message = i18nc( "%1: iPod collection name, %2: technical error from libgpod",
                              "Writing iTunes database to %1 failed: %2", prettyName(), gpodError );
-        Amarok::Components::logger()->longMessage( message );
+        Amarok::Logger::longMessage( message );
     }
     return success;
 }

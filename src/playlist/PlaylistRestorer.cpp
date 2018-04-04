@@ -17,7 +17,7 @@
 #include "PlaylistRestorer.h"
 
 #include "amarokconfig.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistActions.h"

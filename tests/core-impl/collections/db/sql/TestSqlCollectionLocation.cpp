@@ -19,7 +19,6 @@
 #include "DatabaseUpdater.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core-impl/logger/ProxyLogger.h"
 #include "DefaultSqlQueryMakerFactory.h"
 #include "core/meta/Meta.h"
 #include "core-impl/storage/sql/mysqlestorage/MySqlEmbeddedStorage.h"
@@ -111,7 +110,6 @@ TestSqlCollectionLocation::TestSqlCollectionLocation()
 void
 TestSqlCollectionLocation::initTestCase()
 {
-    Amarok::Components::setLogger( new ProxyLogger() );
     m_tmpDir = new QTemporaryDir();
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
     QVERIFY( m_storage->init( m_tmpDir->path() ) );
@@ -137,7 +135,6 @@ void
 TestSqlCollectionLocation::cleanupTestCase()
 {
     delete m_collection;
-    delete Amarok::Components::setLogger( 0 );
     //m_storage is deleted by SqlCollection
     delete m_tmpDir;
 }

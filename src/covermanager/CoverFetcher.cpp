@@ -23,7 +23,7 @@
 #include "CoverFetcher.h"
 
 #include "amarokconfig.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
@@ -172,7 +172,7 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
         if( payload->type() == CoverFetchPayload::Art )
         {
             if( unit->isInteractive() )
-                Amarok::Components::logger()->newProgressOperation( reply, i18n( "Fetching Cover" ) );
+                Amarok::Logger::newProgressOperation( reply, i18n( "Fetching Cover" ) );
             else
                 return; // only one is needed when the fetch is non-interactive
         }
@@ -335,7 +335,7 @@ CoverFetcher::fetchRequestRedirected( QNetworkReply *oldReply,
         // If the unit is an interactive one we have to incidate that we're
         // still fetching the cover.
         if( unit->isInteractive() )
-            Amarok::Components::logger()->newProgressOperation( newReply, i18n( "Fetching Cover" ) );
+            Amarok::Logger::newProgressOperation( newReply, i18n( "Fetching Cover" ) );
     }
 }
 
@@ -407,8 +407,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
-            if( Amarok::Components::logger() )
-                Amarok::Components::logger()->shortMessage( text );
+            Amarok::Logger::shortMessage( text );
             debug() << "Finished successfully for album" << albumName;
         }
         album->setImage( m_selectedImages.take( unit ) );
@@ -419,7 +418,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Fetching cover for '%1' failed.", albumName );
-            Amarok::Components::logger()->shortMessage( text );
+            Amarok::Logger::shortMessage( text );
             QString debugMessage;
             if( !message.isEmpty() )
                 debugMessage = '[' + message + ']';
@@ -432,7 +431,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Canceled fetching cover for '%1'.", albumName );
-            Amarok::Components::logger()->shortMessage( text );
+            Amarok::Logger::shortMessage( text );
             debug() << "Finished, cancelled by user for album" << albumName;
         }
         break;
@@ -442,7 +441,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         {
             const QString text = i18n( "Unable to find a cover for '%1'.", albumName );
             //FIXME: Not visible behind cover manager
-            Amarok::Components::logger()->shortMessage( text );
+            Amarok::Logger::shortMessage( text );
             m_errors += text;
             debug() << "Finished due to cover not found for album" << albumName;
         }

@@ -20,7 +20,6 @@
 #include "EngineController.h"
 
 #include "core-impl/collections/support/CollectionLocationDelegateImpl.h"
-#include "core-impl/logger/ProxyLogger.h"
 
 #include <QMetaObject>
 
@@ -44,7 +43,6 @@ void
 DefaultApplicationController::start()
 {
     //construct all central components
-    initCoreServiceProxies();
     initSqlStorage();
     initEngineController();
     initCollectionManager();
@@ -60,19 +58,6 @@ DefaultApplicationController::shutdown()
 
     delete Components::setEngineController( 0 );
     delete Components::setCollectionLocationDelegate( 0 );
-    delete Components::setLogger( 0 );
-}
-
-void
-DefaultApplicationController::initCoreServiceProxies()
-{
-    //we have core services that (e.g. StatusBar) that
-    //basically all other components could sensibly use
-    //unfortunately some of these components are GUI
-    //components and can only be constructed quite late
-    //therefore we provide proxies here that won't do anything, but forward
-    //to the real implementation as soon as possible
-    Components::setLogger( new ProxyLogger() );
 }
 
 void

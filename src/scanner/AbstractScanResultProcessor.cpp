@@ -25,7 +25,7 @@
 #include "collectionscanner/Directory.h"
 #include "collectionscanner/Playlist.h"
 #include "collectionscanner/Track.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
 #include "core-impl/collections/support/ArtistHelper.h"
@@ -62,12 +62,11 @@ AbstractScanResultProcessor::scanStarted( GenericScanManager::ScanType type )
     m_type = type;
 
     // -- show the progress operation for the job
-    if( Amarok::Components::logger() )
-        Amarok::Components::logger()->newProgressOperation( this,
-                                                            i18n( "Scanning music" ),
-                                                            100,
-                                                            this,
-                                                            &AbstractScanResultProcessor::abort );
+    Amarok::Logger::newProgressOperation( this,
+                                          i18n( "Scanning music" ),
+                                          100,
+                                          this,
+                                          &AbstractScanResultProcessor::abort );
 
 }
 

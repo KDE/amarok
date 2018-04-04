@@ -32,7 +32,7 @@
 #include "playlistmanager/SyncedPlaylist.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
 
 #include <kdirlister.h>

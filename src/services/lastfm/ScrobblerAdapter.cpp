@@ -23,7 +23,7 @@
 
 #include "MainWindow.h"
 #include "core/collections/Collection.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Components.h"
@@ -155,7 +155,7 @@ ScrobblerAdapter::loveTrack( const Meta::TrackPtr &track ) // slot
     lastfm::MutableTrack trackInfo;
     copyTrackMetadata( trackInfo, track );
     trackInfo.love();
-    Amarok::Components::logger()->shortMessage( i18nc( "As in Last.fm", "Loved Track: %1", track->prettyName() ) );
+    Amarok::Logger::shortMessage( i18nc( "As in Last.fm", "Loved Track: %1", track->prettyName() ) );
 }
 
 void
@@ -167,7 +167,7 @@ ScrobblerAdapter::banTrack( const Meta::TrackPtr &track ) // slot
     lastfm::MutableTrack trackInfo;
     copyTrackMetadata( trackInfo, track );
     trackInfo.ban();
-    Amarok::Components::logger()->shortMessage( i18nc( "As in Last.fm", "Banned Track: %1", track->prettyName() ) );
+    Amarok::Logger::shortMessage( i18nc( "As in Last.fm", "Banned Track: %1", track->prettyName() ) );
 }
 
 void
@@ -282,7 +282,7 @@ ScrobblerAdapter::announceTrackCorrections( const lastfm::Track &track )
     line = printCorrected( Meta::valAlbumArtist, track.albumArtist( orig ), track.albumArtist( correct ) );
     if( !line.isEmpty() )
         lines << line;
-    Amarok::Components::logger()->longMessage( lines.join( "<br>" ) );
+    Amarok::Logger::longMessage( lines.join( "<br>" ) );
 }
 
 bool

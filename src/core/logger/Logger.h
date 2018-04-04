@@ -20,6 +20,7 @@
 #include "core/amarokcore_export.h"
 
 #include <QMetaMethod>
+#include <QMutex>
 #include <QObject>
 
 #include <functional>
@@ -27,11 +28,14 @@
 
 class KJob;
 class QNetworkReply;
+struct ShortMessage;
+struct LongMessage;
+struct ProgressData;
 
 namespace Amarok
 {
     /**
-      * This interface provides methods that allow backend components to notify the user.
+      * This class provides methods that allow backend components to notify the user.
       * Users of this class may not make assumptions about the kind of notifications that
       * will be sent to the user.
       *
@@ -40,11 +44,10 @@ namespace Amarok
     class AMAROK_CORE_EXPORT Logger
     {
     public:
-
         enum MessageType { Information, Warning, Error };
 
-        Logger() {}
-        virtual ~Logger() {}
+        Logger();
+        virtual ~Logger();
 
         /**
           * Informs the user about the progress of a job, i.e. a download job.
@@ -58,10 +61,13 @@ namespace Amarok
           * @param type The Qt connection type to use for the connection to the receiving slot. Defaults to Qt::AutoConnection
           */
         template<class Object = QObject, class Func = void (QObject::*)()>
-        void newProgressOperation( KJob *job, const QString &text, Object *obj = nullptr, Func slot = nullptr, Qt::ConnectionType type = Qt::AutoConnection )
+        static void newProgressOperation( KJob *job, const QString &text, Object *obj = nullptr, Func slot = nullptr, Qt::ConnectionType type = Qt::AutoConnection )
         {
+            if( !job )
+                return;
+
             std::function<void ()> function = std::bind( slot, obj );
-            newProgressOperationImpl( job, text, obj, obj ? function : nullptr, type );
+            addProgressOperation( job, nullptr, nullptr, QMetaMethod(), QMetaMethod(), text, 100, obj, obj ? function : nullptr, type );
         }
 
         /**
@@ -77,10 +83,13 @@ namespace Amarok
          * @param args Arguments given to the slot.
          */
         template<class Object = QObject, class Func = void (QObject::*)(), class... FuncArgs>
-        void newProgressOperation( KJob *job, const QString &text, Object *obj, Func slot, Qt::ConnectionType type, FuncArgs... args )
+        static void newProgressOperation( KJob *job, const QString &text, Object *obj, Func slot, Qt::ConnectionType type, FuncArgs... args )
         {
+            if( !job )
+                return;
+
             std::function<void ()> function = std::bind( slot, obj, args... );
-            newProgressOperationImpl( job, text, obj, obj ? function : nullptr, type );
+            addProgressOperation( job, nullptr, nullptr, QMetaMethod(), QMetaMethod(), text, 100, obj, obj ? function : nullptr, type );
         }
 
         /**
@@ -95,10 +104,13 @@ namespace Amarok
           * @param type The Qt connection type to use for the connection to the receiving slot. Defaults to Qt::AutoConnection
           */
         template<class Object = QObject, class Func = void (QObject::*)()>
-        void newProgressOperation( QNetworkReply *reply, const QString &text, Object *obj = nullptr, Func slot = nullptr, Qt::ConnectionType type = Qt::AutoConnection )
+        static void newProgressOperation( QNetworkReply *reply, const QString &text, Object *obj = nullptr, Func slot = nullptr, Qt::ConnectionType type = Qt::AutoConnection )
         {
+            if( !reply )
+                return;
+
             std::function<void ()> function = std::bind( slot, obj );
-            newProgressOperationImpl( reply, text, obj, obj ? function : nullptr, type );
+            addProgressOperation( nullptr, reply, nullptr, QMetaMethod(), QMetaMethod(), text, 100, obj, obj ? function : nullptr, type );
         }
 
         /**
@@ -114,10 +126,13 @@ namespace Amarok
          * @param args Arguments given to the slot.
          */
         template<class Object = QObject, class Func = void (QObject::*)(), class... FuncArgs>
-        void newProgressOperation( QNetworkReply *reply, const QString &text, Object *obj, Func slot, Qt::ConnectionType type, FuncArgs... args )
+        static void newProgressOperation( QNetworkReply *reply, const QString &text, Object *obj, Func slot, Qt::ConnectionType type, FuncArgs... args )
         {
+            if( !reply )
+                return;
+
             std::function<void ()> function = std::bind( slot, obj, args... );
-            newProgressOperationImpl( reply, text, obj, obj ? function : nullptr, type );
+            addProgressOperation( nullptr, reply, nullptr, QMetaMethod(), QMetaMethod(), text, 100, obj, obj ? function : nullptr, type );
         }
 
         /**
@@ -137,14 +152,16 @@ namespace Amarok
          *             Defaults to Qt::AutoConnection
          */
         template<class Sender, class Object = QObject, class Func = void (QObject::*)()>
-        typename std::enable_if<!std::is_convertible<Sender*, KJob*>::value && !std::is_convertible<Sender*, QNetworkReply*>::value && std::is_convertible<Sender*, QObject*>::value>::type
+        static typename std::enable_if<!std::is_convertible<Sender*, KJob*>::value && !std::is_convertible<Sender*, QNetworkReply*>::value && std::is_convertible<Sender*, QObject*>::value>::type
         newProgressOperation( Sender *sender, const QString &text, int maximum = 100, Object *obj = nullptr, Func slot = nullptr, Qt::ConnectionType type = Qt::AutoConnection)
         {
+            if( !sender )
+                return;
+
             auto increment = QMetaMethod::fromSignal( &Sender::incrementProgress );
             auto end = QMetaMethod::fromSignal( &Sender::endProgressOperation );
-
             std::function<void ()> function = std::bind( slot, obj );
-            newProgressOperationImpl( sender, increment, end, text, maximum, obj, obj ? function : nullptr, type );
+            addProgressOperation( nullptr, nullptr, sender, increment, end, text, maximum, obj, obj ? function : nullptr, type );
         }
 
         /**
@@ -163,13 +180,16 @@ namespace Amarok
          * @param args Arguments given to the slot.
          */
         template<class Sender, class Object = QObject, class Func = void (QObject::*)(), class... FuncArgs>
-        typename std::enable_if<!std::is_convertible<Sender*, KJob*>::value && !std::is_convertible<Sender*, QNetworkReply*>::value && std::is_convertible<Sender*, QObject*>::value>::type
+        static typename std::enable_if<!std::is_convertible<Sender*, KJob*>::value && !std::is_convertible<Sender*, QNetworkReply*>::value && std::is_convertible<Sender*, QObject*>::value>::type
         newProgressOperation( Sender *sender, const QString &text, int maximum, Object *obj, Func slot, Qt::ConnectionType type, FuncArgs... args )
         {
+            if( !sender )
+                return;
+
             auto increment = QMetaMethod::fromSignal( &Sender::incrementProgress );
             auto end = QMetaMethod::fromSignal( &Sender::endProgressOperation );
             std::function<void ()> function = std::bind( slot, obj, args... );
-            newProgressOperationImpl( sender, increment, end, text, maximum, obj, obj ? function : nullptr, type );
+            addProgressOperation( nullptr, nullptr, sender, increment, end, text, maximum, obj, obj ? function : nullptr, type );
         }
 
         /**
@@ -178,7 +198,7 @@ namespace Amarok
           *
           * @param text The text that the notification will contain
           */
-        virtual void shortMessage( const QString &text ) = 0;
+        static void shortMessage( const QString &text );
 
         /**
           * Send a notification to the user with an additional context.
@@ -186,12 +206,27 @@ namespace Amarok
           * @param text The text that the notification will contain
           * @param type The context of the notification
           */
-        virtual void longMessage( const QString &text, MessageType type = Information ) = 0;
+        static void longMessage( const QString &text, MessageType type = Information );
 
+    protected:
         virtual void newProgressOperationImpl( KJob *job, const QString &text, QObject *context, const std::function<void ()> &function, Qt::ConnectionType type ) = 0;
         virtual void newProgressOperationImpl( QNetworkReply *reply, const QString &text, QObject *context, const std::function<void ()> &function, Qt::ConnectionType type ) = 0;
         virtual void newProgressOperationImpl( QObject *sender, const QMetaMethod &increment, const QMetaMethod &end, const QString &text,
                                                int maximum, QObject *context, const std::function<void ()> &function, Qt::ConnectionType type ) = 0;
+        virtual void longMessageImpl( const QString &text, MessageType type = Information ) = 0;
+        virtual void shortMessageImpl( const QString &text ) = 0;
+
+    private:
+        static void addProgressOperation( KJob *job = nullptr, QNetworkReply *reply = nullptr, QObject *sender = nullptr, const QMetaMethod &increment = QMetaMethod(),
+                                          const QMetaMethod &end = QMetaMethod(), const QString &text = QString(), int maximum = 100, QObject *context = nullptr,
+                                          const std::function<void ()> &function = nullptr, Qt::ConnectionType type = Qt::AutoConnection );
+        void loadExistingMessages();
+
+        static QMutex s_mutex;
+        static QList<Logger*> s_loggers;
+        static QList<QString> s_shortMessageList;
+        static QList<LongMessage> s_longMessageList;
+        static QList<ProgressData> s_progressList;
     };
 }
 

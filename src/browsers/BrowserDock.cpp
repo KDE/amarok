@@ -17,11 +17,10 @@
  
 #include "BrowserDock.h"
 
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core-impl/logger/ProxyLogger.h"
 #include "PaletteHandler.h"
 #include "widgets/BoxWidget.h"
 #include "widgets/HorizontalDivider.h"
@@ -56,13 +55,6 @@ BrowserDock::BrowserDock( QWidget *parent )
     m_messageArea->setAutoFillBackground( true );
     //TODO: set dynamic height for hidpi displays
     m_messageArea->setFixedHeight( 36 );
-
-    Amarok::Logger *logger = Amarok::Components::logger();
-    ProxyLogger *proxy = dynamic_cast<ProxyLogger *>( logger );
-    if( proxy )
-        proxy->setLogger( m_messageArea );
-    else
-        error() << "Was not able to register BrowserDock as logger";
 
     ensurePolish();
 }

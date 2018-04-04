@@ -612,7 +612,6 @@ set(amaroklib_LIB_SRCS
     ${libsynchronization_SRCS}
     ${statsyncing_SRCS}
     ${importers_SRCS}
-    core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
     aboutdialog/ExtendedAboutDialog.cpp
@@ -638,6 +637,7 @@ set(amaroklib_LIB_SRCS
     SvgHandler.cpp
     SvgTinter.cpp
     TrayIcon.cpp
+    core-impl/logger/DebugLogger.cpp
     core-impl/meta/timecode/TimecodeObserver.cpp
     core-impl/meta/timecode/TimecodeMeta.cpp
     core-impl/meta/timecode/TimecodeTrackProvider.cpp

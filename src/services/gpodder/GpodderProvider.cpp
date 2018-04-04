@@ -23,7 +23,7 @@
 
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "core-impl/podcasts/sql/SqlPodcastProvider.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
@@ -465,7 +465,7 @@ void GpodderProvider::synchronizeStatus()
         connect( m_episodeActionsResult.data(), SIGNAL(parseError()),
                  SLOT(synchronizeStatusParseError()) );
 
-        Amarok::Components::logger()->shortMessage( i18n( "Trying to synchronize statuses with gpodder.net" ) );
+        Amarok::Logger::shortMessage( i18n( "Trying to synchronize statuses with gpodder.net" ) );
     }
     else
         m_timerSynchronizeStatus->stop();
@@ -525,7 +525,7 @@ GpodderProvider::synchronizeSubscriptions()
         connect( m_addRemoveResult.data(), SIGNAL(finished()), this,
                  SLOT(slotSuccessfulSubscriptionSynchronisation()) );
 
-        Amarok::Components::logger()->shortMessage( i18n( "Trying to synchronize subscriptions with gpodder.net" ) );
+        Amarok::Logger::shortMessage( i18n( "Trying to synchronize subscriptions with gpodder.net" ) );
     }
     else
         m_timerSynchronizeSubscriptions->stop();
@@ -774,7 +774,7 @@ GpodderProvider::deviceUpdatesParseError()
     QTimer::singleShot( 10000, this, SLOT(requestDeviceUpdates()) );
 
     debug() << "deviceUpdates [Subscription Synchronization] - Parse error";
-    Amarok::Components::logger()->shortMessage( i18n( "GPodder Service failed to get data from the server. Will retry in 10 seconds..." ) );
+    Amarok::Logger::shortMessage( i18n( "GPodder Service failed to get data from the server. Will retry in 10 seconds..." ) );
 }
 
 void
@@ -785,7 +785,7 @@ GpodderProvider::deviceUpdatesRequestError( QNetworkReply::NetworkError error )
     QTimer::singleShot( 10000, this, SLOT(requestDeviceUpdates()) );
 
     debug() << "deviceUpdates [Subscription Synchronization] - Request error nr.: " << error;
-    Amarok::Components::logger()->shortMessage( i18n( "GPodder Service failed to get data from the server. Will retry in 10 seconds..." ) );
+    Amarok::Logger::shortMessage( i18n( "GPodder Service failed to get data from the server. Will retry in 10 seconds..." ) );
 }
 
 void

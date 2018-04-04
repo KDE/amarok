@@ -36,7 +36,6 @@ include_directories(
     ${AMAROK_TEST_TREE}
     ${AMAROK_SOURCE_TREE}
     ${AMAROK_SOURCE_TREE}/core-impl/collections/db/sql
-    ${AMAROK_SOURCE_TREE}/core-impl/logger
     ${AMAROK_UTILITY_TREE}
     ${CMAKE_BINARY_DIR}/src
     ${CMAKE_BINARY_DIR}/tests
@@ -115,8 +114,7 @@ add_database_test( testsqltrack "${testsqltrack_SRCS}" )
 
 set( testsqlcollectionlocation_SRCS
         TestSqlCollectionLocation.cpp
-	${AMAROK_SOURCE_TREE}/core/interfaces/Logger.cpp
-        ${AMAROK_SOURCE_TREE}/core-impl/logger/ProxyLogger.cpp
+	${AMAROK_SOURCE_TREE}/core/logger/Logger.cpp
         ${GOOGLEMOCK_SRCS}
     )
 

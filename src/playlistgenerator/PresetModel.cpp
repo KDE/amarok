@@ -19,7 +19,7 @@
 #include "PresetModel.h"
 
 #include "amarokconfig.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/collections/Collection.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
@@ -213,13 +213,13 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
         xmldoc.save( out, 2, QDomNode::EncodingFromTextStream );
         if( !filename.contains( "playlistgenerator.xml" ) )
         {
-            Amarok::Components::logger()->longMessage( i18n("Preset exported to %1", filename),
+            Amarok::Logger::longMessage( i18n("Preset exported to %1", filename),
                                                        Amarok::Logger::Information );
         }
     }
     else
     {
-        Amarok::Components::logger()->longMessage(
+        Amarok::Logger::longMessage(
                     i18n("Preset could not be exported to %1", filename), Amarok::Logger::Error );
         error() << "Can not write presets to " << filename;
     }
@@ -237,14 +237,14 @@ APG::PresetModel::loadPresetsFromXml( const QString& filename, bool createDefaul
             parseXmlToPresets( document );
         } else {
             error() << "Failed to read" << filename;
-            Amarok::Components::logger()->longMessage(
+            Amarok::Logger::longMessage(
                         i18n("Presets could not be imported from %1", filename),
                         Amarok::Logger::Error );
         }
         file.close();
     } else {
         if ( !createDefaults ) {
-            Amarok::Components::logger()->longMessage(
+            Amarok::Logger::longMessage(
                         i18n("%1 could not be opened for preset import", filename),
                         Amarok::Logger::Error );
         } else {

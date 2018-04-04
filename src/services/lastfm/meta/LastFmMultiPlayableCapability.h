@@ -17,7 +17,6 @@
 #ifndef AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 #define AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 
-#include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"

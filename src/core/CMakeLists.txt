@@ -1,5 +1,4 @@
 set(libcore_interfaces_SRCS
-    interfaces/Logger.cpp
     interfaces/MetaCapability.cpp
 )
 
@@ -80,6 +79,10 @@ set(libcore_transcoding_SRCS
     transcoding/TranscodingProperty.cpp
 )
 
+set(libcore_logger_SRCS
+    logger/Logger.cpp
+)
+
 #####################################################################
 # LIBCORE
 #####################################################################
@@ -93,6 +96,7 @@ set(libcore_LIB_SRCS
     ${libcore_capabilities_SRCS}
     ${libcore_support_SRCS}
     ${libcore_transcoding_SRCS}
+    ${libcore_logger_SRCS}
 )
 
 add_library(amarokcore SHARED ${libcore_LIB_SRCS})

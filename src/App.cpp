@@ -29,7 +29,7 @@
 #include "configdialog/ConfigDialog.h"
 #include "configdialog/dialogs/PlaybackConfig.h"
 #include "core/capabilities/SourceInfoCapability.h"
-#include "core/interfaces/Logger.h"
+#include "core/logger/Logger.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/support/MetaUtility.h"
@@ -41,6 +41,9 @@
 #include "core/support/Debug.h"
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#ifdef DEBUG_BUILD_TYPE
+#include "core-impl/logger/DebugLogger.h"
+#endif // DEBUG_BUILD_TYPE
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core-impl/storage/StorageManager.h"
 #include "covermanager/CoverCache.h"
@@ -442,6 +445,10 @@ App::continueInit()
 
     AmarokConfig::instance( "amarokrc" );
 
+#ifdef DEBUG_BUILD_TYPE
+    new DebugLogger( this );
+#endif // DEBUG_BUILD_TYPE
+
     new Amarok::DefaultApplicationController( this );
     Amarok::Components::applicationController()->start();
 
@@ -573,7 +580,7 @@ void App::slotConfigShortcuts()
 KIO::Job *App::trashFiles( const QList<QUrl> &files )
 {
     KIO::Job *job = KIO::trash( files );
-    Amarok::Components::logger()->newProgressOperation( job, i18n("Moving files to trash") );
+    Amarok::Logger::newProgressOperation( job, i18n("Moving files to trash") );
     connect( job, &KIO::Job::result, this, &App::slotTrashResult );
     return job;
 }
