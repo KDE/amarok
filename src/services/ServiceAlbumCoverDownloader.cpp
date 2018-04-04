@@ -24,6 +24,8 @@
 #include "core/support/Debug.h"
 #include "covermanager/CoverCache.h"
 
+#include <thread>
+
 #include <QDir>
 #include <QImage>
 
