@@ -30,9 +30,6 @@ if(MYSQLCONFIG_EXECUTABLE)
         OUTPUT_VARIABLE MYSQL_LIBRARIES
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
-    #if(NOT MC_return_libraries)
-    #    set(MYSQL_LIBRARIES ${MC_MYSQL_LIBRARIES})
-    #endif()
 
     execute_process(
         COMMAND ${MYSQLCONFIG_EXECUTABLE} --libmysqld-libs
@@ -40,7 +37,7 @@ if(MYSQLCONFIG_EXECUTABLE)
         OUTPUT_VARIABLE MC_MYSQL_EMBEDDED_LIBRARIES
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
-    #if(MC_return_embedded)
+
     if(NOT MC_MYSQL_EMBEDDED_LIBRARIES)
         # At least on OpenSUSE --libmysql-libs doesn't exist, so we just use
         # MYSQL_LIBRARIES for that. We'll see if that's enough when testing
@@ -97,6 +94,12 @@ if(PC_MYSQL_VERSION)
 endif()
 
 if(MYSQL_EMBEDDED_LIBRARIES)
+    # libmysqld on FreeBSD apparently doesn't properly report what libraries
+    # it likes to link with, libmysqlclient does though.
+    if(${CMAKE_HOST_SYSTEM_NAME} MATCHES "FreeBSD")
+        string(REGEX REPLACE "-L.* -lmysqlclient " "" _mysql_libs ${MYSQL_LIBRARIES})
+        set(MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBRARIES} ${_mysql_libs})
+    endif()
     cmake_push_check_state()
     set(CMAKE_REQUIRED_INCLUDES ${MYSQL_INCLUDE_DIR})
     set(CMAKE_REQUIRED_LIBRARIES ${MYSQL_EMBEDDED_LIBRARIES})
