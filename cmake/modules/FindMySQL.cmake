@@ -97,9 +97,9 @@ if(MYSQL_EMBEDDED_LIBRARIES)
     # libmysqld on FreeBSD apparently doesn't properly report what libraries
     # it likes to link with, libmysqlclient does though.
     if(${CMAKE_HOST_SYSTEM_NAME} MATCHES "FreeBSD")
-        string(REGEX REPLACE "-L.* -lmysqlclient " "" _mysql_libs ${MYSQL_LIBRARIES})
+        string(REGEX REPLACE "-lmysqlclient" "-lmysqld" _mysql_libs ${MYSQL_LIBRARIES})
         string(STRIP ${_mysql_libs} _mysql_libs)
-        set(MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBRARIES} ${_mysql_libs})
+        set(MYSQL_EMBEDDED_LIBRARIES ${_mysql_libs})
     endif()
     cmake_push_check_state()
     set(CMAKE_REQUIRED_INCLUDES ${MYSQL_INCLUDE_DIR})
