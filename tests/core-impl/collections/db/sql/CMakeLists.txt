@@ -29,6 +29,9 @@ macro(add_database_test test_target test_sources)
         ${ZLIB_LIBRARIES}
         ${GOOGLEMOCK_LIBRARIES}
     )
+    if(${CMAKE_HOST_SYSTEM_NAME} MATCHES "FreeBSD")
+        target_link_libraries(${test_target} ${MYSQL_LIBRARIES})
+    endif()
 endmacro(add_database_test)
 
 
