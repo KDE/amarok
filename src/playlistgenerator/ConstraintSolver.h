@@ -51,10 +51,8 @@ namespace APG {
 
             // overloaded ThreadWeaver::Job functions
             bool canBeExecuted();
-            bool success() const;
-
-        public Q_SLOTS:
-            void requestAbort();
+            virtual bool success() const override;
+            virtual void requestAbort() override;
 
         Q_SIGNALS:
             void readyToRun();
@@ -71,9 +69,9 @@ namespace APG {
             void failed(ThreadWeaver::JobPointer);
 
         protected:
-            void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-            void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-            void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE; // from ThreadWeaver::Job
+            void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+            void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+            void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override; // from ThreadWeaver::Job
 
         private Q_SLOTS:
             void receiveQueryMakerData( Meta::TrackList );

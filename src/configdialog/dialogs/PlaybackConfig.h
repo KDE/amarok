@@ -29,9 +29,9 @@ class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
         explicit PlaybackConfig( Amarok2ConfigDialog* parent );
         virtual ~PlaybackConfig();
 
-        bool hasChanged() Q_DECL_OVERRIDE;
-        bool isDefault() Q_DECL_OVERRIDE;
-        void updateSettings() Q_DECL_OVERRIDE;
+        bool hasChanged() override;
+        bool isDefault() override;
+        void updateSettings() override;
 
     private Q_SLOTS:
         void configurePhonon();

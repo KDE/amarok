@@ -283,7 +283,13 @@ set( libcontextview_SRCS
     context/AppletModel.cpp
     context/ContextDock.cpp
     context/ContextView.cpp
-    context/LyricsManager.cpp
+)
+
+#####################################################################
+# LYRICS
+#####################################################################
+set( liblyrics_SRCS
+    lyrics/LyricsManager.cpp
 )
 
 #####################################################################
@@ -442,7 +448,6 @@ set(scriptengine_SRCS
     scripting/scriptengine/AmarokEqualizerScript.cpp
     scripting/scriptengine/AmarokInfoScript.cpp
     scripting/scriptengine/AmarokKNotifyScript.cpp
-    scripting/scriptengine/AmarokLyricsScript.cpp
     scripting/scriptengine/AmarokNetworkScript.cpp
     scripting/scriptengine/AmarokOSDScript.cpp
     scripting/scriptengine/AmarokPlaylistManagerScript.cpp
@@ -588,6 +593,7 @@ set(amaroklib_LIB_SRCS
     ${libcontextview_SRCS}
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
+    ${liblyrics_SRCS}
     ${libplaylist_SRCS}
     ${aggregatecollection_SRCS}
     ${libpodcasts_SRCS}

@@ -32,9 +32,9 @@ class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
         explicit MetadataConfig( Amarok2ConfigDialog *parent );
         virtual ~MetadataConfig();
 
-        bool isDefault() Q_DECL_OVERRIDE;
-        bool hasChanged() Q_DECL_OVERRIDE;
-        void updateSettings() Q_DECL_OVERRIDE;
+        bool isDefault() override;
+        bool hasChanged() override;
+        void updateSettings() override;
 
     Q_SIGNALS:
         void changed();

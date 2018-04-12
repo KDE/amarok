@@ -47,37 +47,37 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QString &collectionId );
         virtual ~MemoryQueryMaker();
 
-        virtual void run() Q_DECL_OVERRIDE;
-        virtual void abortQuery();
+        virtual void run() override;
+        virtual void abortQuery() override;
 
-        virtual QueryMaker* setQueryType( QueryType type );
+        virtual QueryMaker* setQueryType( QueryType type ) override;
 
-        virtual QueryMaker* addReturnValue( qint64 value );
-        virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
-        virtual QueryMaker* orderBy( qint64 value, bool descending = false );
+        virtual QueryMaker* addReturnValue( qint64 value ) override;
+        virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value ) override;
+        virtual QueryMaker* orderBy( qint64 value, bool descending = false ) override;
 
-        virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
-        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
-        virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
-        virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
-        virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
-        virtual QueryMaker* addMatch( const Meta::YearPtr &year );
-        virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
+        virtual QueryMaker* addMatch( const Meta::TrackPtr &track ) override;
+        virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists ) override;
+        virtual QueryMaker* addMatch( const Meta::AlbumPtr &album ) override;
+        virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer ) override;
+        virtual QueryMaker* addMatch( const Meta::GenrePtr &genre ) override;
+        virtual QueryMaker* addMatch( const Meta::YearPtr &year ) override;
+        virtual QueryMaker* addMatch( const Meta::LabelPtr &label ) override;
 
-        virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
-        virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
+        virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd ) override;
+        virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd ) override;
 
-        virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, NumberComparison compare );
-        virtual QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, NumberComparison compare );
+        virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, NumberComparison compare ) override;
+        virtual QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, NumberComparison compare ) override;
 
-        virtual QueryMaker* limitMaxResultSize( int size );
+        virtual QueryMaker* limitMaxResultSize( int size ) override;
 
-        virtual QueryMaker* beginAnd();
-        virtual QueryMaker* beginOr();
-        virtual QueryMaker* endAndOr();
+        virtual QueryMaker* beginAnd() override;
+        virtual QueryMaker* beginOr() override;
+        virtual QueryMaker* endAndOr() override;
 
-        virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
-        virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
+        virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode ) override;
+        virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode ) override;
 
     private Q_SLOTS:
         void done( ThreadWeaver::JobPointer job );

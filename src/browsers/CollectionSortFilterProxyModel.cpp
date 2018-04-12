@@ -58,6 +58,24 @@ CollectionSortFilterProxyModel::hasChildren(const QModelIndex & parent) const
 }
 
 bool
+CollectionSortFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
+{
+    bool stringAccepted = QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
+
+    if( AmarokConfig::showYears())
+    {
+        QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+        if( treeItem( index )->isAlbumItem() )
+        {
+            bool yearLoaded = index.data( PrettyTreeRoles::YearRole ) >= 0;
+            return yearLoaded && stringAccepted;
+        }
+    }
+
+    return stringAccepted;
+}
+
+bool
 CollectionSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
     CollectionTreeItem *leftItem = treeItem( left );
@@ -138,8 +156,8 @@ CollectionSortFilterProxyModel::lessThanAlbum( const QModelIndex &left, const QM
     // compare by year
     if( AmarokConfig::showYears() )
     {
-        int leftYear = albumYear( leftAlbum );
-        int rightYear = albumYear( rightAlbum );
+        int leftYear = left.data( PrettyTreeRoles::YearRole ).toInt();
+        int rightYear = right.data( PrettyTreeRoles::YearRole ).toInt();
 
         if( leftYear < rightYear )
             return false; // left album is newer
@@ -162,8 +180,8 @@ CollectionSortFilterProxyModel::lessThanAlbum( const QModelIndex &left, const QM
 bool
 CollectionSortFilterProxyModel::lessThanItem( const QModelIndex &left, const QModelIndex &right ) const
 {
-    Meta::DataPtr leftData = Meta::DataPtr::dynamicCast( treeItem(left)->data() );
-    Meta::DataPtr rightData = Meta::DataPtr::dynamicCast( treeItem(right)->data() );
+    Meta::DataPtr leftData = treeItem(left)->data();
+    Meta::DataPtr rightData = treeItem(right)->data();
 
     if( !leftData || !rightData )
     {
@@ -190,20 +208,3 @@ CollectionSortFilterProxyModel::treeItem( const QModelIndex &index ) const
 {
     return static_cast<CollectionTreeItem*>( index.internalPointer() );
 }
-
-int
-CollectionSortFilterProxyModel::albumYear( Meta::AlbumPtr album ) const
-{
-    if( album->name().isEmpty() ) // an unnamed album has no year
-        return 0;
-
-    Meta::TrackList tracks = album->tracks();
-    if( !tracks.isEmpty() )
-    {
-        Meta::YearPtr year = tracks.first()->year();
-        if( year && (year->year() != 0) )
-            return year->year();
-    }
-    return 0;
-}
-

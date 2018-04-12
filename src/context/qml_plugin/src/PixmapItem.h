@@ -40,8 +40,8 @@ public:
     QPixmap source() const { return m_source; }
     bool valid() const { return !m_source.isNull(); }
 
-    QSGNode* updatePaintNode( QSGNode * oldNode, UpdatePaintNodeData * updatePaintNodeData ) Q_DECL_OVERRIDE;
-    void geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry ) Q_DECL_OVERRIDE;
+    QSGNode* updatePaintNode( QSGNode * oldNode, UpdatePaintNodeData * updatePaintNodeData ) override;
+    void geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry ) override;
 
 signals:
     void sourceChanged();

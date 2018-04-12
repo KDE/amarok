@@ -556,7 +556,7 @@ TimecodeGenre::name() const
 TrackList
 TimecodeGenre::tracks()
 {
-    return tracks();
+    return m_tracks;
 }
 
 void

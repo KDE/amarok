@@ -63,7 +63,7 @@ public:
     * Note the work is performed in a separate thread
     * @return Returns true on success and false on failure
     */
-    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
     bool read( const QUrl &url );
     bool read( QIODevice *device );
@@ -84,8 +84,8 @@ public:
     QList<OpmlOutline *> results() const { return m_outlines; }
 
 protected:
-    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 
 Q_SIGNALS:
 

@@ -30,9 +30,9 @@ class CollectionConfig : public ConfigDialogBase
         explicit CollectionConfig( Amarok2ConfigDialog* parent );
         virtual ~CollectionConfig();
 
-        bool hasChanged() Q_DECL_OVERRIDE;
-        bool isDefault() Q_DECL_OVERRIDE;
-        void updateSettings() Q_DECL_OVERRIDE;
+        bool hasChanged() override;
+        bool isDefault() override;
+        void updateSettings() override;
 
     private:
         CollectionSetup* m_collectionSetup;

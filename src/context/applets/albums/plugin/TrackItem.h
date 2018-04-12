@@ -54,11 +54,11 @@ class TrackItem : public QStandardItem, public Meta::Observer
 
         // overloaded from Meta::Observer
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::TrackPtr track ) Q_DECL_OVERRIDE;
+        virtual void metadataChanged( Meta::TrackPtr track ) override;
 
-        virtual int type() const Q_DECL_OVERRIDE;
+        virtual int type() const override;
 
-        virtual bool operator<( const QStandardItem &other ) const Q_DECL_OVERRIDE;
+        virtual bool operator<( const QStandardItem &other ) const override;
 
     private:
         Meta::TrackPtr m_track;

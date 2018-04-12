@@ -612,7 +612,7 @@ Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
         {
             /*ignore*/
         }
-        else if( typeid( *track.data() ) == typeid( MetaFile::Track  ) )
+        else if( MetaFile::TrackPtr::dynamicCast( track ) )
         {
             QUrl cuesheet = MetaCue::CueFileSupport::locateCueSheet( track->playableUrl() );
             if( !cuesheet.isEmpty() )
@@ -622,7 +622,7 @@ Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
                 {
                     Meta::TrackList cueTracks = MetaCue::CueFileSupport::generateTimeCodeTracks( track, cueMap );
                     if( !cueTracks.isEmpty() )
-                      modifiedList <<  cueTracks;
+                        modifiedList <<  cueTracks;
                     else
                         modifiedList << track;
                 }

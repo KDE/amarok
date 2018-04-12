@@ -32,9 +32,9 @@ class NotificationsConfig : public ConfigDialogBase, public Ui_NotificationsConf
         explicit NotificationsConfig( Amarok2ConfigDialog* parent );
         virtual ~NotificationsConfig();
 
-        bool hasChanged() Q_DECL_OVERRIDE;
-        bool isDefault() Q_DECL_OVERRIDE;
-        void updateSettings() Q_DECL_OVERRIDE;
+        bool hasChanged() override;
+        bool isDefault() override;
+        void updateSettings() override;
 
     Q_SIGNALS:
         void changed();
@@ -50,8 +50,8 @@ class NotificationsConfig : public ConfigDialogBase, public Ui_NotificationsConf
         OSDWidget::Alignment m_oldAlignment;
         uint m_oldYOffset;
 
-        void hideEvent( QHideEvent* );
-        void showEvent( QShowEvent* );
+        void hideEvent( QHideEvent* ) override;
+        void showEvent( QShowEvent* ) override;
 };
 
 #endif

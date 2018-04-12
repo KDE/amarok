@@ -234,9 +234,8 @@ PlaylistManager::removePlaylists( Playlists::PlaylistProvider *provider )
 void
 PlaylistManager::removePlaylist( Playlists::PlaylistPtr playlist, int category )
 {
-    if( typeid( *playlist.data() ) == typeid( SyncedPlaylist ) )
+    if( auto syncedPlaylist = SyncedPlaylistPtr::dynamicCast( playlist ) )
     {
-        SyncedPlaylistPtr syncedPlaylist = SyncedPlaylistPtr::dynamicCast( playlist );
         //TODO: this might be wrong if there were multiple playlists from the same provider.
         //remove the specific child playlist, not all from same provider.
         syncedPlaylist->removePlaylistsFrom( playlist->provider() );

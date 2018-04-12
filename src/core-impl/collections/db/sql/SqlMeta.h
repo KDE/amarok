@@ -26,6 +26,7 @@
 #include "amarok_sqlcollection_export.h"
 #include "FileType.h"
 
+#include <QAtomicInt>
 #include <QByteArray>
 #include <QMutex>
 #include <QReadWriteLock>
@@ -423,19 +424,24 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
          *  The path should point to a valid image.
          *  Note: setImage will not delete the already set image.
          */
-       void setImage( const QString &path );
+        void setImage( const QString &path );
 
-       /** Finds or creates a magic value in the database which tells Amarok not to auto fetch an image since it has been explicitly unset.
-       */
-       int unsetImageId() const;
+        /** Finds or creates a magic value in the database which tells Amarok not to auto fetch an image since it has been explicitly unset.
+        */
+        int unsetImageId() const;
 
-    private:
         Collections::SqlCollection* const m_collection;
 
+        enum TracksLoadingStatus
+        {
+            NotLoaded,
+            Loading,
+            Loaded
+        };
 
-        QString m_name;
-        int m_id; // the id of this album in the database
-        int m_artistId;
+        const QString m_name;
+        const int m_id; // the id of this album in the database
+        const int m_artistId;
         int m_imageId;
         mutable QString m_imagePath; // path read from the database
         mutable bool m_hasImage; // true if we have an original image
@@ -444,7 +450,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
         mutable int m_unsetImageId; // this is the id of the unset magic value in the image sql database
         static const QString AMAROK_UNSET_MAGIC;
 
-        bool m_tracksLoaded;
+        TracksLoadingStatus m_tracksLoaded;
         bool m_suppressAutoFetch;
         Meta::ArtistPtr m_artist;
         Meta::TrackList m_tracks;
@@ -478,6 +484,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlComposer : public Meta::Composer
         const QString m_name;
 
         bool m_tracksLoaded;
+        bool m_tracksLoading;
         Meta::TrackList m_tracks;
         QMutex m_mutex;
 

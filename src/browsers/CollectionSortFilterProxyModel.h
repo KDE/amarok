@@ -36,19 +36,18 @@ class QCollator;
 class CollectionSortFilterProxyModel : public QSortFilterProxyModel
 {
     public:
-        explicit CollectionSortFilterProxyModel( QObject * parent = 0 );
+        explicit CollectionSortFilterProxyModel( QObject *parent = nullptr );
 
         virtual ~CollectionSortFilterProxyModel();
 
-        bool hasChildren(const QModelIndex &parent) const;
+        virtual bool hasChildren(const QModelIndex &parent) const override;
 
     protected:
-        virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+        virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+        virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const override;
 
     private:
         QCollator *m_col;
-        /** Tries to compute a year for the album using the track years. */
-        int albumYear( Meta::AlbumPtr album ) const;
 
         CollectionTreeItem* treeItem( const QModelIndex &index ) const;
         bool lessThanTrack( const QModelIndex &left, const QModelIndex &right ) const;

@@ -51,7 +51,7 @@ public:
 
     explicit BlockAnalyzer( QQuickItem *parent = Q_NULLPTR );
 
-    Renderer* createRenderer() const Q_DECL_OVERRIDE;
+    Renderer* createRenderer() const override;
 
     FallSpeed fallSpeed() const { return m_fallSpeed; }
     void setFallSpeed( FallSpeed fallSpeed );
@@ -74,8 +74,8 @@ signals:
     void refreshRateChanged( qreal );
 
 protected:
-    virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) Q_DECL_OVERRIDE;
-    virtual Analyzer::Worker* createWorker() const Q_DECL_OVERRIDE;
+    virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) override;
+    virtual Analyzer::Worker* createWorker() const override;
     virtual void paletteChange( const QPalette& );
 
     void drawBackground( const QPalette &palette );

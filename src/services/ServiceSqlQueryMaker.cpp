@@ -96,10 +96,9 @@ class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
 
 struct ServiceSqlQueryMaker::Private
 {
-    enum QueryType { NONE, TRACK, ARTIST, ALBUM, ALBUMARTIST, GENRE, COMPOSER, YEAR, CUSTOM };
-    enum {TRACKS_TABLE = 1, ALBUMS_TABLE = 2, ARTISTS_TABLE = 4, GENRE_TABLE = 8, ALBUMARTISTS_TABLE = 16 };
+    enum { TRACKS_TABLE = 1, ALBUMS_TABLE = 2, ARTISTS_TABLE = 4, GENRE_TABLE = 8, ALBUMARTISTS_TABLE = 16 };
     int linkedTables;
-    QueryType queryType;
+    QueryMaker::QueryType queryType;
     QString query;
     QString queryReturnValues;
     QString queryFrom;
@@ -125,7 +124,7 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
     //d->includedBuilder = true;
     //d->collectionRestriction = false;
 
-    d->queryType = Private::NONE;
+    d->queryType = QueryMaker::None;
     d->linkedTables = 0;
     d->withoutDuplicates = false;
     d->maxResultSize = -1;
@@ -145,7 +144,7 @@ ServiceSqlQueryMaker::abortQuery()
 void
 ServiceSqlQueryMaker::run()
 {
-    if( d->queryType == Private::NONE )
+    if( d->queryType == QueryMaker::None )
         return; //better error handling?
     if( d->worker && !d->worker->isFinished() )
     {
@@ -177,14 +176,14 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
     switch( type ) {
     case QueryMaker::Track:
         //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
-        if( d->queryType == Private::NONE )
+        if( d->queryType == QueryMaker::None )
         {
             QString prefix = m_metaFactory->tablePrefix();
             //d->queryFrom = ' ' + prefix + "_tracks";
 
             d->withoutDuplicates = true;
             d->queryFrom = ' ' + prefix + "_tracks";
-            d->queryType = Private::TRACK;
+            d->queryType = QueryMaker::Track;
             d->queryReturnValues =  m_metaFactory->getTrackSqlRows() + ',' +
             m_metaFactory->getAlbumSqlRows() + ',' +
             m_metaFactory->getArtistSqlRows() + ',' +
@@ -204,13 +203,13 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
         return this;
 
     case QueryMaker::Artist:
-        if( d->queryType == Private::NONE )
+        if( d->queryType == QueryMaker::None )
         {
             QString prefix = m_metaFactory->tablePrefix();
             d->queryFrom = ' ' + prefix + "_tracks";
             d->linkedTables |= Private::ARTISTS_TABLE;
             d->linkedTables |= Private::ALBUMS_TABLE;
-            d->queryType = Private::ARTIST;
+            d->queryType = QueryMaker::Artist;
             d->withoutDuplicates = true;
             d->queryReturnValues = m_metaFactory->getArtistSqlRows();
 
@@ -219,12 +218,12 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
         return this;
 
     case QueryMaker::AlbumArtist:
-        if( d->queryType == Private::NONE )
+        if( d->queryType == QueryMaker::None )
         {
             QString prefix = m_metaFactory->tablePrefix();
             d->queryFrom = ' ' + prefix + "_tracks";
             d->linkedTables |= Private::ALBUMARTISTS_TABLE;
-            d->queryType = Private::ALBUMARTIST;
+            d->queryType = QueryMaker::AlbumArtist;
             d->withoutDuplicates = true;
             d->queryReturnValues = QString( "albumartists.id, " ) +
                                             "albumartists.name, " +
@@ -234,11 +233,11 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
         return this;
 
     case QueryMaker::Album:
-        if( d->queryType == Private::NONE )
+        if( d->queryType == QueryMaker::None )
         {
             QString prefix = m_metaFactory->tablePrefix();
             d->queryFrom = ' ' + prefix + "_tracks";
-            d->queryType = Private::ALBUM;
+            d->queryType = QueryMaker::Album;
             d->linkedTables |= Private::ALBUMS_TABLE;
             d->linkedTables |= Private::ARTISTS_TABLE;
             d->withoutDuplicates = true;
@@ -252,21 +251,21 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
     case QueryMaker::Composer:
         /* if( d->queryType == Private::NONE )
             {
-                d->queryType = Private::COMPOSER;
+                d->queryType = QueryMaker::Composer;
                 d->withoutDuplicates = true;
-                d->linkedTables |= Private::COMPOSER_TAB;
+                d->linkedTables |= QueryMaker::Composer_TAB;
                 d->queryReturnValues = "composer.name, composer.id";
             }*/
         return this;
 
     case QueryMaker::Genre:
-        if( d->queryType == Private::NONE )
+        if( d->queryType == QueryMaker::None )
         {
             QString prefix = m_metaFactory->tablePrefix();
             d->queryFrom = ' ' + prefix + "_genre";
-            d->queryType = Private::GENRE;
-            //d->linkedTables |= Private::ALBUMS_TABLE;
-            //d->linkedTables |= Private::GENRE_TABLE;
+            d->queryType = QueryMaker::Genre;
+            //d->linkedTables |= QueryMaker::Albums_TABLE;
+            //d->linkedTables |= QueryMaker::Genre_TABLE;
             d->withoutDuplicates = true;
             d->queryReturnValues = m_metaFactory->getGenreSqlRows();
             d->queryOrderBy = " GROUP BY " + prefix +"_genre.name"; // HAVING COUNT ( " + prefix +"_genre.name ) > 10 ";
@@ -365,7 +364,7 @@ ServiceSqlQueryMaker::addMatch( const Meta::AlbumPtr &album )
 
     d->linkedTables |= Private::ALBUMS_TABLE;
     d->linkedTables |= Private::ARTISTS_TABLE;
-    if( d->queryType == Private::GENRE )
+    if( d->queryType == QueryMaker::Genre )
         d->linkedTables |= Private::GENRE_TABLE;
     if( serviceAlbum )
     {
@@ -392,12 +391,12 @@ ServiceSqlQueryMaker::addMatch( const Meta::GenrePtr &genre )
 
    // if (  d->queryType == Private::TRACK ) {
         //d->queryFrom = ' ' + prefix + "_tracks";
-        d->linkedTables |= Private::ALBUMS_TABLE;
+    d->linkedTables |= Private::ALBUMS_TABLE;
     //} else
         //d->queryFrom = ' ' + prefix + "_albums";
 
         //if ( d->queryType == Private::ARTIST )
-        //d->linkedTables |= Private::ARTISTS_TABLE;
+    //d->linkedTables |= Private::ARTISTS_TABLE;
     d->linkedTables |= Private::GENRE_TABLE;
     d->queryMatch += QString( " AND " + prefix + "_genre.name = '%1'" ).arg( serviceGenre->name() );
 
@@ -436,7 +435,7 @@ ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool match
         return this;
     }
     //a few hacks needed by some of the speedup code:
-    if ( d->queryType == Private::GENRE )
+    if ( d->queryType == QueryMaker::Genre )
     {
         QString prefix = m_metaFactory->tablePrefix();
         d->queryFrom = ' ' + prefix + "_tracks";
@@ -595,26 +594,26 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
         /*case Private::CUSTOM:
             emit newResultReady( result );
             break;*/
-        case Private::TRACK:
+        case QueryMaker::Track:
             handleTracks( result );
             break;
-        case Private::ARTIST:
-        case Private::ALBUMARTIST:
+        case QueryMaker::Artist:
+        case QueryMaker::AlbumArtist:
             handleArtists( result );
             break;
-        case Private::ALBUM:
+        case QueryMaker::Album:
             handleAlbums( result );
             break;
-        case Private::GENRE:
+        case QueryMaker::Genre:
             handleGenres( result );
             break;
-      /*  case Private::COMPOSER:
+      /*  case QueryMaker::Composer:
             handleComposers( result );
             break;
         case Private::YEAR:
             handleYears( result );
             break;*/
-        case Private::NONE:
+        case QueryMaker::None:
             debug() << "Warning: queryResult with queryType == NONE";
 
         default:
@@ -623,7 +622,8 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
     }
     else
     {
-        switch( d->queryType ) {
+        switch( d->queryType )
+        {
             case QueryMaker::Custom:
                 emit newResultReady( QStringList() );
                 break;
@@ -648,9 +648,10 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
             case QueryMaker::Year:
                 emit newYearsReady( Meta::YearList() );
                 break;
-
-        case QueryMaker::None:
-            debug() << "Warning: queryResult with queryType == NONE";
+            case QueryMaker::None:
+                debug() << "Warning: queryResult with queryType == NONE";
+            default:
+                break;
         }
     }
 

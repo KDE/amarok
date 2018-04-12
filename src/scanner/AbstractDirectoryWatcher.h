@@ -57,7 +57,7 @@ class AMAROK_EXPORT AbstractDirectoryWatcher : public QObject, public ThreadWeav
     public:
         AbstractDirectoryWatcher();
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
         void abort();
 
         /** Pauses the emitting of the scan signal */
@@ -88,8 +88,8 @@ class AMAROK_EXPORT AbstractDirectoryWatcher : public QObject, public ThreadWeav
         /** Adds the given directory to the list of directories for the next scan.  */
         void addDirToList( const QString &directory );
 
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 
         QTimer* m_delayedScanTimer;
         KDirWatch *m_watcher;

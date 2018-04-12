@@ -52,13 +52,13 @@ class Amarok2ConfigDialog : public KConfigDialog
         void updateButtons();
 
     protected Q_SLOTS:
-        void updateSettings() Q_DECL_OVERRIDE;
-        void updateWidgets() Q_DECL_OVERRIDE;
-        void updateWidgetsDefault() Q_DECL_OVERRIDE;
+        void updateSettings() override;
+        void updateWidgets() override;
+        void updateWidgetsDefault() override;
 
     protected:
-        bool hasChanged() Q_DECL_OVERRIDE;
-        bool isDefault() Q_DECL_OVERRIDE;
+        bool hasChanged() override;
+        bool isDefault() override;
 
     private:
         QList<ConfigDialogBase*> m_pageList;

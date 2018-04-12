@@ -88,13 +88,13 @@ namespace Dynamic
             Meta::TrackList solution();
 
             /// Politely asks the thread to give up and finish ASAP.
-            void requestAbort();
+            virtual void requestAbort() override;
 
             /**
              * Returns true if the solver was successful, false if it was
              * aborted or encountered some other error.
              */
-            virtual bool success() const;
+            virtual bool success() const  override;
 
             /**
              * Choose whether the BiasSolver instance should delete itself after the query.
@@ -119,9 +119,9 @@ namespace Dynamic
             static void outdateUniverse();
 
         protected:
-            void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
-            void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-            void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+            void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0)  override;
+            void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread)  override;
+            void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread)  override;
 
         Q_SIGNALS:
             /** a job must implement the following signals for the progress bar

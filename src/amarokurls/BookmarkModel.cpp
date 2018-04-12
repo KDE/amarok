@@ -108,13 +108,10 @@ BookmarkModel::data( const QModelIndex & index, int role ) const
     {
         if( index.column() == Name )
         {
-            if ( typeid( * item ) == typeid( BookmarkGroup ) )
+            if ( BookmarkGroupPtr::dynamicCast( item ) )
                 return QVariant( QIcon::fromTheme( "folder-bookmark" ) );
-            else if ( typeid( * item ) == typeid( AmarokUrl ) )
-            {
-                AmarokUrl * url = static_cast<AmarokUrl *>( item.data() );
+            else if ( auto url = AmarokUrlPtr::dynamicCast( item ) )
                 return The::amarokUrlHandler()->iconForCommand( url->command() );
-            }
         }
     }
 
@@ -236,7 +233,7 @@ BookmarkModel::flags( const QModelIndex & index ) const
         return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
     BookmarkViewItemPtr item = BookmarkViewItemPtr::staticCast( m_viewItems.value( index.internalId() ) );
 
-    if ( typeid( * item ) == typeid( BookmarkGroup ) )
+    if ( BookmarkGroupPtr::dynamicCast( item ) )
     {
         if ( index.column() != Command )
             return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
@@ -338,16 +335,10 @@ BookmarkModel::mimeData( const QModelIndexList &indexes ) const
 
         BookmarkViewItemPtr item = m_viewItems.value( index.internalId() );
 
-        if ( typeid( * item ) == typeid( BookmarkGroup ) ) {
-            BookmarkGroupPtr playlistGroup = BookmarkGroupPtr::staticCast( item );
-            groups << playlistGroup;
-        }
-        else
-        {
-            AmarokUrlPtr bookmark = AmarokUrlPtr::dynamicCast( item );
-            if( bookmark )
-                bookmarks << bookmark;
-        }
+        if ( auto group = BookmarkGroupPtr::dynamicCast( item ) )
+            groups << group;
+        else if( auto bookmark = AmarokUrlPtr::dynamicCast( item ) )
+            bookmarks << bookmark;
     }
 
     debug() << "adding " << groups.count() << " groups and " << bookmarks.count() << " bookmarks";

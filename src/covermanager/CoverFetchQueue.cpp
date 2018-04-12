@@ -16,6 +16,7 @@
 
 #include "CoverFetchQueue.h"
 
+
 CoverFetchQueue::CoverFetchQueue( QObject *parent )
     : QObject( parent )
 {
@@ -98,18 +99,6 @@ CoverFetchQueue::addQuery( const QString &query,
     add( AmarokSharedPointer< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
 }
 
-int
-CoverFetchQueue::size() const
-{
-    return m_queue.size();
-}
-
-bool
-CoverFetchQueue::isEmpty() const
-{
-    return m_queue.isEmpty();
-}
-
 void
 CoverFetchQueue::clear()
 {
@@ -158,7 +147,7 @@ CoverFetchQueue::index( const Meta::AlbumPtr album ) const
 const CoverFetchUnit::Ptr
 CoverFetchQueue::take( const Meta::AlbumPtr album )
 {
-    for( int i = 0, end = this->size(); i < end; ++i )
+    for( int i = 0, end = m_queue.size(); i < end; ++i )
     {
         const CoverFetchUnit::Ptr unit = m_queue.at( i );
         if( unit->album() == album )

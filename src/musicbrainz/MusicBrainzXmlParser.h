@@ -36,7 +36,7 @@ class MusicBrainzXmlParser : public QObject, public ThreadWeaver::Job
 
         explicit MusicBrainzXmlParser( const QString &doc );
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
         int type();
 
@@ -80,8 +80,8 @@ class MusicBrainzXmlParser : public QObject, public ThreadWeaver::Job
         QVariantMap m_currentTrackInfo;
 
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 
 };
 

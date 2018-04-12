@@ -27,7 +27,7 @@ class AmarokContextPackageStructure : public KPackage::PackageStructure
     Q_OBJECT
 
 public:
-    virtual void initPackage(KPackage::Package *package) Q_DECL_OVERRIDE;
+    virtual void initPackage(KPackage::Package *package) override;
 };
 
 #endif // AMAROKCONTEXTPACKAGESTRUCTURE_H

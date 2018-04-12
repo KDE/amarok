@@ -18,14 +18,13 @@
 #ifndef AMAROK_LYRICS_ENGINE
 #define AMAROK_LYRICS_ENGINE
 
-#include "context/LyricsManager.h"
 #include "core/meta/Meta.h"
 
 #include <QObject>
 #include <QString>
 #include <QVariantList>
 
-class LyricsEngine : public QObject, public LyricsObserver
+class LyricsEngine : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString text READ text NOTIFY lyricsChanged)
@@ -39,12 +38,11 @@ class LyricsEngine : public QObject, public LyricsObserver
 public:
     explicit LyricsEngine( QObject* parent = Q_NULLPTR );
 
-    // reimplemented from LyricsObserver
-    void newLyrics( const LyricsData &lyrics ) Q_DECL_OVERRIDE;
-    void newSuggestions( const QVariantList &suggest ) Q_DECL_OVERRIDE;
-    void lyricsMessage( const QString& key, const QString& val ) Q_DECL_OVERRIDE;
+    void newLyrics( const Meta::TrackPtr &track );
+    void newSuggestions( const QVariantList &suggest );
+    void lyricsMessage( const QString& key, const QString& val );
 
-    QString text() const { return m_lyrics.text; }
+    QString text() const { return m_lyrics; }
     QVariantList suggestions() const { return m_suggestions; }
     bool fetching() const { return m_fetching; }
     qreal position() const;
@@ -56,7 +54,6 @@ public:
     void setFont( const QString &font );
 
     Q_INVOKABLE void refetchLyrics() const;
-    Q_INVOKABLE void fetchLyrics( const QString &artist, const QString &title, const QString &url );
     Q_INVOKABLE QStringList availableFonts() const;
 
 Q_SIGNALS:
@@ -73,11 +70,9 @@ private Q_SLOTS:
     void onTrackMetadataChanged( Meta::TrackPtr track );
 
 private:
-    void setLyrics( const LyricsData &lyrics );
     void clearLyrics();
-    void refetchLyrics();
 
-    LyricsData m_lyrics;
+    QString m_lyrics;
     QVariantList m_suggestions;
     bool m_fetching;
     bool m_isUpdateInProgress;

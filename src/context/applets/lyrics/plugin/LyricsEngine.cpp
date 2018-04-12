@@ -20,9 +20,9 @@
 #include "LyricsEngine.h"
 
 #include "EngineController.h"
-#include "scripting/scriptmanager/ScriptManager.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "lyrics/LyricsManager.h"
 
 #include <QFont>
 
@@ -31,12 +31,12 @@
 
 LyricsEngine::LyricsEngine( QObject* parent )
     : QObject( parent )
-    , LyricsObserver( LyricsManager::self() )
     , m_fetching( false )
     , m_isUpdateInProgress( false )
 {
 
     EngineController* engine = The::engineController();
+    LyricsManager* lyricsManager = LyricsManager::instance();
 
     connect( engine, &EngineController::trackChanged,
              this, &LyricsEngine::update );
@@ -44,6 +44,8 @@ LyricsEngine::LyricsEngine( QObject* parent )
              this, &LyricsEngine::onTrackMetadataChanged );
     connect( engine, &EngineController::trackPositionChanged,
              this, &LyricsEngine::positionChanged );
+    connect( lyricsManager, &LyricsManager::newLyrics, this, &LyricsEngine::newLyrics );
+    connect( lyricsManager, &LyricsManager::newSuggestions, this, &LyricsEngine::newSuggestions );
 }
 
 void LyricsEngine::onTrackMetadataChanged( Meta::TrackPtr track )
@@ -51,109 +53,36 @@ void LyricsEngine::onTrackMetadataChanged( Meta::TrackPtr track )
     DEBUG_BLOCK
 
     // Only update if the lyrics have changed.
-    QString artist = track->artist() ? track->artist()->name() : QString();
-    if( m_lyrics.artist != artist ||
-        m_lyrics.title != track->name() ||
-        m_lyrics.text != track->cachedLyrics() )
+    if( m_lyrics != track->cachedLyrics() )
         update();
 }
 
 void LyricsEngine::update()
 {
-    if( m_isUpdateInProgress )
-        return;
-
-    m_isUpdateInProgress = true;
-
-    // -- get current title and artist
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( !currentTrack )
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( !track )
     {
-        debug() << "no current track";
-        m_lyrics.clear();
-        emit lyricsChanged();
-        m_isUpdateInProgress = false;
-        return;
-    }
-
-    QString title = currentTrack->name();
-    QString artist = currentTrack->artist() ? currentTrack->artist()->name() : QString();
-
-    // -- clean up title
-    const QString magnatunePreviewString = QLatin1String( "PREVIEW: buy it at www.magnatune.com" );
-    if( title.contains(magnatunePreviewString, Qt::CaseSensitive) )
-        title = title.remove( " (" + magnatunePreviewString + ')' );
-    if( artist.contains(magnatunePreviewString, Qt::CaseSensitive) )
-        artist = artist.remove( " (" + magnatunePreviewString + ')' );
-
-    if( title.isEmpty() && currentTrack )
-    {
-        /* If title is empty, try to use pretty title.
-           The fact that it often (but not always) has "artist name" together, can be bad,
-           but at least the user will hopefully get nice suggestions. */
-        QString prettyTitle = currentTrack->prettyName();
-        int h = prettyTitle.indexOf( QLatin1Char('-') );
-        if ( h != -1 )
-        {
-            title = prettyTitle.mid( h + 1 ).trimmed();
-            if( title.contains(magnatunePreviewString, Qt::CaseSensitive) )
-                title = title.remove( " (" + magnatunePreviewString + ')' );
-
-            if( artist.isEmpty() )
-            {
-                artist = prettyTitle.mid( 0, h ).trimmed();
-                if( artist.contains(magnatunePreviewString, Qt::CaseSensitive) )
-                    artist = artist.remove( " (" + magnatunePreviewString + ')' );
-            }
-        }
-    }
-
-    LyricsData lyrics = { currentTrack->cachedLyrics(), title, artist, QUrl() };
-
-    // Check if the title, the artist and the lyrics are still the same.
-    if( !lyrics.text.isEmpty() && (lyrics.text == m_lyrics.text) )
-    {
-        debug() << "nothing changed:" << lyrics.title;
-        newLyrics( lyrics );
-        m_isUpdateInProgress = false;
-        return;
-    }
-
-    // don't rely on caching for streams
-    const bool cached = !LyricsManager::self()->isEmpty( lyrics.text )
-        && !The::engineController()->isStream();
-
-    if( cached )
-    {
-        newLyrics( lyrics );
-    }
-    else
-    {
-        // no lyrics, and no lyrics script!
-        if( !ScriptManager::instance()->lyricsScriptRunning() )
-        {
-            debug() << "no lyrics script running";
-            clearLyrics();
-            disconnect( ScriptManager::instance(), &ScriptManager::lyricsScriptStarted, this, 0 );
-            connect( ScriptManager::instance(), &ScriptManager::lyricsScriptStarted, this, &LyricsEngine::update );
-            m_isUpdateInProgress = false;
-            return;
-        }
-
-        // fetch by lyrics script
         clearLyrics();
-        m_fetching = true;
-        emit fetchingChanged();
-        ScriptManager::instance()->notifyFetchLyrics( lyrics.artist, lyrics.title, "", currentTrack );
+        return;
     }
-    m_isUpdateInProgress = false;
+
+    if( LyricsManager::instance()->isEmpty( track->cachedLyrics() ) )
+    {
+        clearLyrics();
+        return;
+    }
+
+    newLyrics( track );
 }
 
-void LyricsEngine::newLyrics( const LyricsData &lyrics )
+void LyricsEngine::newLyrics( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
 
-    m_lyrics = lyrics;
+    if( track != The::engineController()->currentTrack() )
+        return;
+
+    m_lyrics = track->cachedLyrics();
     emit lyricsChanged();
 
     m_fetching = false;
@@ -197,36 +126,7 @@ void LyricsEngine::refetchLyrics() const
     if( !currentTrack )
         return;
 
-    ScriptManager::instance()->notifyFetchLyrics( m_lyrics.artist, m_lyrics.title, "", currentTrack );
-}
-
-void LyricsEngine::refetchLyrics()
-{
-    DEBUG_BLOCK
-
-    auto currentTrack = The::engineController()->currentTrack();
-
-    if( currentTrack )
-        ScriptManager::instance()->notifyFetchLyrics( currentTrack->artist()->name(),
-                                                      currentTrack->name(), "", currentTrack );
-
-    m_fetching = true;
-    emit fetchingChanged();
-}
-
-void LyricsEngine::fetchLyrics(const QString& artist, const QString& title, const QString& url)
-{
-    DEBUG_BLOCK
-
-    if( !QUrl( url ).isValid() )
-        return;
-
-    debug() << "clicked suggestion" << url;
-
-    ScriptManager::instance()->notifyFetchLyrics( artist, title, url, Meta::TrackPtr() );
-
-    m_fetching = true;
-    emit fetchingChanged();
+    LyricsManager::instance()->loadLyrics( currentTrack, true );
 }
 
 qreal LyricsEngine::fontSize() const

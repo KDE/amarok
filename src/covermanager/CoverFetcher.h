@@ -31,6 +31,7 @@
 
 class CoverFetchQueue;
 class CoverFoundDialog;
+class QThread;
 
 namespace KIO { class Job; }
 
@@ -62,7 +63,7 @@ private Q_SLOTS:
     void slotFetch( CoverFetchUnit::Ptr unit );
 
     /// Handle result of a fetch job
-    void slotResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void slotResult( const QUrl &url, const QByteArray &data, NetworkAccessManagerProxy::Error e );
 
     /// Cover found dialog is closed by the user
     void slotDialogFinished();
@@ -80,9 +81,8 @@ private:
 
     void queueQueryForAlbum( Meta::AlbumPtr album );
 
-    const int m_limit;            //!< maximum number of concurrent fetches
     CoverFetchQueue *m_queue;     //!< current fetch queue
-    Meta::AlbumList m_queueLater; //!< put here if m_queue exceeds m_limit
+    QThread *m_queueThread;
 
     QHash< QUrl, CoverFetchUnit::Ptr > m_urls;
     QHash< const CoverFetchUnit::Ptr, QImage > m_selectedImages;

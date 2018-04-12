@@ -73,10 +73,8 @@ void BookmarkTreeView::mouseDoubleClickEvent( QMouseEvent * event )
     {
         BookmarkViewItemPtr item = BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>();
 
-        if ( typeid( *item ) == typeid( AmarokUrl ) ) {
-            AmarokUrl * bookmark = static_cast< AmarokUrl* >( item.data() );
+        if ( auto bookmark = AmarokUrlPtr::dynamicCast( item ) )
             bookmark->run();
-        }
     }
 }
 
@@ -144,11 +142,8 @@ void BookmarkTreeView::slotLoad()
     DEBUG_BLOCK
     foreach( BookmarkViewItemPtr item, selectedItems() )
     {
-        if( typeid( * item ) == typeid( AmarokUrl ) )
-        {
-            AmarokUrlPtr bookmark = AmarokUrlPtr::staticCast( item );
+        if( auto bookmark = AmarokUrlPtr::dynamicCast( item ) )
             bookmark->run();
-        }
     }
 }
 
@@ -282,10 +277,10 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
         {
             BookmarkViewItemPtr item = BookmarkModel::instance()->data( sourceIndex, 0xf00d ).value<BookmarkViewItemPtr>();
 
-            if ( typeid( * item ) == typeid( AmarokUrl ) ) {
+            if ( auto bookmark = AmarokUrlPtr::dynamicCast( item ) )
+            {
                 debug() << "a url was selected...";
-                AmarokUrl bookmark = *static_cast< AmarokUrl* >( item.data() );
-                emit( bookmarkSelected( bookmark ) );
+                emit( bookmarkSelected( *bookmark ) );
             }
         }
     }

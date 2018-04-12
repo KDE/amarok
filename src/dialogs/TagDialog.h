@@ -64,9 +64,6 @@ class AMAROK_EXPORT TagDialog : public QDialog, public Meta::Observer
         using Observer::metadataChanged;
         void metadataChanged( Meta::AlbumPtr album );
 
-    Q_SIGNALS:
-        void lyricsChanged( const QString& );
-
     private Q_SLOTS:
         void accept();
         void cancelPressed();
@@ -175,13 +172,6 @@ class AMAROK_EXPORT TagDialog : public QDialog, public Meta::Observer
         void updateCover();
         void setControlsAccessability();
 
-        /**
-        * Stores changes to labels for a specific track
-        * @arg track Track to store the labels to
-        * @arg labels The new set of labels for the track
-        */
-        void saveLabels( Meta::TrackPtr track, const QStringList &labels );
-
         /** Writes all the tags to all the tracks.
             This finally updates the Meta::Tracks
         */
@@ -205,6 +195,7 @@ class AMAROK_EXPORT TagDialog : public QDialog, public Meta::Observer
         bool m_perTrack;
         Meta::TrackList m_tracks;
         Meta::TrackPtr m_currentTrack;
+        Meta::AlbumPtr m_currentAlbum;
         int m_currentTrackNum;
 
         /** True if m_storedTags contains changed.

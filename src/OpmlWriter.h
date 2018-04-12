@@ -45,7 +45,7 @@ class AMAROK_EXPORT OpmlWriter : public QObject, public ThreadWeaver::Job
          * Note the work is performed in a separate thread
          * @return Returns true on success and false on failure
          */
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
         QIODevice *device() { return m_xmlWriter->device(); }
 
@@ -72,8 +72,8 @@ class AMAROK_EXPORT OpmlWriter : public QObject, public ThreadWeaver::Job
         QXmlStreamWriter *m_xmlWriter;
 
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 
 };
 

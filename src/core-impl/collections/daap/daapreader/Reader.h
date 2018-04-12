@@ -126,12 +126,12 @@ namespace Daap
             WorkerThread( const QByteArray &data, Reader* reader, Collections::DaapCollection *coll );
             virtual ~WorkerThread();
 
-            virtual bool success() const Q_DECL_OVERRIDE;
+            virtual bool success() const override;
 
         protected:
-            void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-            void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-            void run(ThreadWeaver::JobPointer self=QSharedPointer<WorkerThread>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+            void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+            void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+            void run(ThreadWeaver::JobPointer self=QSharedPointer<WorkerThread>(), ThreadWeaver::Thread *thread = 0) override;
 
         Q_SIGNALS:
             /** This signal is emitted when this job is being processed by a thread. */

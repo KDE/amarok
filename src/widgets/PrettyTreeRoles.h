@@ -41,7 +41,9 @@ namespace PrettyTreeRoles
         DecoratorRole = Qt::UserRole + 58,
 
         /** True if the item has a cover that should be displayed */
-        HasCoverRole = Qt::UserRole + 59
+        HasCoverRole = Qt::UserRole + 59,
+
+        YearRole = Qt::UserRole + 60
     };
 }
 

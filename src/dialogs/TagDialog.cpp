@@ -49,6 +49,9 @@
 
 #include <KRun>
 
+#include <thread>
+
+
 namespace Meta {
 namespace Field {
     const QString LABELS = "labels";
@@ -127,8 +130,8 @@ TagDialog::~TagDialog()
 
     Amarok::config( "TagDialog" ).writeEntry( "CurrentTab", ui->qTabWidget->currentIndex() );
 
-    if( m_currentTrack && m_currentTrack->album() )
-        unsubscribeFrom( m_currentTrack->album() );
+    if( m_currentAlbum )
+        unsubscribeFrom( m_currentAlbum );
 
     delete ui;
 }
@@ -136,11 +139,11 @@ TagDialog::~TagDialog()
 void
 TagDialog::metadataChanged( Meta::AlbumPtr album )
 {
-    if( !m_currentTrack || !m_currentTrack->album() )
+    if( m_currentAlbum )
         return;
 
     // If the metadata of the current album has changed, reload the cover
-    if( album == m_currentTrack->album() )
+    if( album == m_currentAlbum )
         updateCover();
 
     // TODO: if the lyrics changed: should we show a warning and ask the user
@@ -607,14 +610,15 @@ TagDialog::setCurrentTrack( int num )
     // there is a logical problem here.
     // if the track itself changes (e.g. because it get's a new album)
     // then we don't re-subscribe
-    if( m_currentTrack && m_currentTrack->album() )
-        unsubscribeFrom( m_currentTrack->album() );
+    if( m_currentAlbum )
+        unsubscribeFrom( m_currentAlbum );
 
     m_currentTrack = m_tracks.at( num );
+    m_currentAlbum = m_currentTrack->album();
     m_currentTrackNum = num;
 
-    if( m_currentTrack && m_currentTrack->album() )
-        subscribeTo( m_currentTrack->album() );
+    if( m_currentAlbum )
+        subscribeTo( m_currentAlbum );
 
     setControlsAccessability();
     updateButtons();
@@ -675,14 +679,13 @@ TagDialog::unknownSafe( int i ) const
 void
 TagDialog::showCoverMenu( const QPoint &pos )
 {
-    Meta::AlbumPtr album = m_currentTrack->album();
-    if( !album )
+    if( !m_currentAlbum )
         return; // TODO: warning or something?
 
-    QAction *displayCoverAction = new DisplayCoverAction( this, album );
-    QAction *unsetCoverAction   = new UnsetCoverAction( this, album );
+    QAction *displayCoverAction = new DisplayCoverAction( this, m_currentAlbum );
+    QAction *unsetCoverAction   = new UnsetCoverAction( this, m_currentAlbum );
 
-    if( !album->hasImage() )
+    if( !m_currentAlbum->hasImage() )
     {
         displayCoverAction->setEnabled( false );
         unsetCoverAction->setEnabled( false );
@@ -690,8 +693,8 @@ TagDialog::showCoverMenu( const QPoint &pos )
 
     QMenu *menu = new QMenu( this );
     menu->addAction( displayCoverAction );
-    menu->addAction( new FetchCoverAction( this, album ) );
-    menu->addAction( new SetCustomCoverAction( this, album ) );
+    menu->addAction( new FetchCoverAction( this, m_currentAlbum ) );
+    menu->addAction( new SetCustomCoverAction( this, m_currentAlbum ) );
     menu->addAction( unsetCoverAction );
 
     menu->exec( ui->pixmap_cover->mapToGlobal(pos) );
@@ -729,13 +732,13 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
         QString curTrackName = fnt.elidedText( m_currentTrack->name().toHtmlEscaped(), Qt::ElideRight, len );
         QString curTrackPretName = fnt.elidedText( m_currentTrack->prettyName().toHtmlEscaped(), Qt::ElideRight, len );
 
-        if( m_currentTrack->album() )
-            curTrackAlbName = fnt.elidedText( m_currentTrack->album()->name().toHtmlEscaped(), Qt::ElideRight, len );
+        if( m_currentAlbum )
+            curTrackAlbName = fnt.elidedText( m_currentAlbum->name().toHtmlEscaped(), Qt::ElideRight, len );
         if( m_currentTrack->artist() )
             curArtistName = fnt.elidedText( m_currentTrack->artist()->name().toHtmlEscaped(), Qt::ElideRight, len );
 
 
-        if( m_currentTrack->album() && m_currentTrack->album()->name().isEmpty() )
+        if( m_currentAlbum && m_currentAlbum->name().isEmpty() )
         {
             if( !m_currentTrack->name().isEmpty() )
             {
@@ -747,7 +750,7 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
             else
                 niceTitle = curTrackPretName;
         }
-        else if( m_currentTrack->album() )
+        else if( m_currentAlbum )
             niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" , curTrackName, curArtistName, curTrackAlbName );
         else if( m_currentTrack->artist() )
             niceTitle = i18n( "<b>%1</b> by <b>%2</b>" , curTrackName, curArtistName );
@@ -1217,13 +1220,13 @@ TagDialog::updateCover()
         return;
 
     // -- get the album
-    Meta::AlbumPtr album = m_currentTrack->album();
+    Meta::AlbumPtr album = m_currentAlbum;
     if( !m_perTrack )
     {
         foreach( Meta::TrackPtr track, m_tracks )
         {
             if( track->album() != album )
-                album = 0;
+                album = nullptr;
         }
     }
 
@@ -1281,37 +1284,11 @@ TagDialog::setControlsAccessability()
 }
 
 void
-TagDialog::saveLabels( Meta::TrackPtr track, const QStringList &labels )
-{
-    if( !track )
-        return;
-
-    QHash<QString, Meta::LabelPtr> labelMap;
-    foreach( const Meta::LabelPtr &label, track->labels() )
-    {
-        labelMap.insert( label->name(), label );
-    }
-
-    // labels to remove
-    foreach( const QString &label, labelMap.keys().toSet() - labels.toSet() )
-    {
-        track->removeLabel( labelMap.value( label ) );
-    }
-
-    // labels to add
-    foreach( const QString &label, labels.toSet() - labelMap.keys().toSet() )
-    {
-        track->addLabel( label );
-    }
-}
-
-
-void
 TagDialog::saveTags()
 {
     setTagsToTrack();
 
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( auto &track : m_tracks )
     {
         QVariantMap data = m_storedTags[ track ];
         //there is really no need to write to the file if only info m_stored in the db has changed
@@ -1319,51 +1296,65 @@ TagDialog::saveTags()
         {
             debug() << "File info changed....";
 
-            if( data.contains( Meta::Field::SCORE ) )
-                track->statistics()->setScore( data.value( Meta::Field::SCORE ).toInt() );
-            if( data.contains( Meta::Field::RATING ) )
-                track->statistics()->setRating( data.value( Meta::Field::RATING ).toInt() );
-            if( data.contains( Meta::Field::LYRICS ) )
+            auto lambda = [=] () mutable
             {
-                track->setCachedLyrics( data.value( Meta::Field::LYRICS ).toString() );
-                emit lyricsChanged( track->uidUrl() );
-            }
+                if( data.contains( Meta::Field::SCORE ) )
+                    track->statistics()->setScore( data.value( Meta::Field::SCORE ).toInt() );
+                if( data.contains( Meta::Field::RATING ) )
+                    track->statistics()->setRating( data.value( Meta::Field::RATING ).toInt() );
+                if( data.contains( Meta::Field::LYRICS ) )
+                    track->setCachedLyrics( data.value( Meta::Field::LYRICS ).toString() );
 
-            saveLabels( track, data.value( Meta::Field::LABELS ).toStringList() );
+                QStringList labels = data.value( Meta::Field::LABELS ).toStringList();
+                QHash<QString, Meta::LabelPtr> labelMap;
+                for( const auto &label : track->labels() )
+                    labelMap.insert( label->name(), label );
 
-            Meta::TrackEditorPtr ec = track->editor();
-            if( !ec )
-            {
-                debug() << "Track" << track->prettyUrl() << "does not have Meta::TrackEditor. Skipping.";
-                continue;
-            }
+                // labels to remove
+                for( const auto &label : labelMap.keys().toSet() - labels.toSet() )
+                    track->removeLabel( labelMap.value( label ) );
 
-            ec->beginUpdate();
-            if( data.contains( Meta::Field::TITLE ) )
-                ec->setTitle( data.value( Meta::Field::TITLE ).toString() );
-            if( data.contains( Meta::Field::COMMENT ) )
-                ec->setComment( data.value( Meta::Field::COMMENT ).toString() );
-            if( data.contains( Meta::Field::ARTIST ) )
-                ec->setArtist( data.value( Meta::Field::ARTIST ).toString() );
-            if( data.contains( Meta::Field::ALBUM ) )
-                ec->setAlbum( data.value( Meta::Field::ALBUM ).toString() );
-            if( data.contains( Meta::Field::GENRE ) )
-                ec->setGenre( data.value( Meta::Field::GENRE ).toString() );
-            if( data.contains( Meta::Field::COMPOSER ) )
-                ec->setComposer( data.value( Meta::Field::COMPOSER ).toString() );
-            if( data.contains( Meta::Field::YEAR ) )
-                ec->setYear( data.value( Meta::Field::YEAR ).toInt() );
-            if( data.contains( Meta::Field::TRACKNUMBER ) )
-                ec->setTrackNumber( data.value( Meta::Field::TRACKNUMBER ).toInt() );
-            if( data.contains( Meta::Field::DISCNUMBER ) )
-                ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
-            if( data.contains( Meta::Field::BPM ) )
-                ec->setBpm( data.value( Meta::Field::BPM ).toDouble() );
-            if( data.contains( Meta::Field::ALBUMARTIST ) )
-                ec->setAlbumArtist( data.value( Meta::Field::ALBUMARTIST ).toString() );
+                // labels to add
+                for( const auto &label : labels.toSet() - labelMap.keys().toSet() )
+                    track->addLabel( label );
 
-            ec->endUpdate();
-            // note: the track should by itself emit a collectionUpdated signal if needed
+                Meta::TrackEditorPtr ec = track->editor();
+                if( !ec )
+                {
+                    debug() << "Track" << track->prettyUrl() << "does not have Meta::TrackEditor. Skipping.";
+                    return;
+                }
+
+                ec->beginUpdate();
+
+                if( data.contains( Meta::Field::TITLE ) )
+                    ec->setTitle( data.value( Meta::Field::TITLE ).toString() );
+                if( data.contains( Meta::Field::COMMENT ) )
+                    ec->setComment( data.value( Meta::Field::COMMENT ).toString() );
+                if( data.contains( Meta::Field::ARTIST ) )
+                    ec->setArtist( data.value( Meta::Field::ARTIST ).toString() );
+                if( data.contains( Meta::Field::ALBUM ) )
+                    ec->setAlbum( data.value( Meta::Field::ALBUM ).toString() );
+                if( data.contains( Meta::Field::GENRE ) )
+                    ec->setGenre( data.value( Meta::Field::GENRE ).toString() );
+                if( data.contains( Meta::Field::COMPOSER ) )
+                    ec->setComposer( data.value( Meta::Field::COMPOSER ).toString() );
+                if( data.contains( Meta::Field::YEAR ) )
+                    ec->setYear( data.value( Meta::Field::YEAR ).toInt() );
+                if( data.contains( Meta::Field::TRACKNUMBER ) )
+                    ec->setTrackNumber( data.value( Meta::Field::TRACKNUMBER ).toInt() );
+                if( data.contains( Meta::Field::DISCNUMBER ) )
+                    ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
+                if( data.contains( Meta::Field::BPM ) )
+                    ec->setBpm( data.value( Meta::Field::BPM ).toDouble() );
+                if( data.contains( Meta::Field::ALBUMARTIST ) )
+                    ec->setAlbumArtist( data.value( Meta::Field::ALBUMARTIST ).toString() );
+
+                ec->endUpdate();
+                // note: the track should by itself emit a collectionUpdated signal if needed
+            };
+            std::thread thread( lambda );
+            thread.detach();
         }
     }
 }

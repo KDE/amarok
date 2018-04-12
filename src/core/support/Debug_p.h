@@ -42,19 +42,19 @@ public:
     {
         open(WriteOnly);
     }
-    bool isSequential() const Q_DECL_OVERRIDE
+    bool isSequential() const override
     {
         return true;
     }
-    qint64 readData(char *, qint64) Q_DECL_OVERRIDE
+    qint64 readData(char *, qint64) override
     {
         return 0;
     }
-    qint64 readLineData(char *, qint64) Q_DECL_OVERRIDE
+    qint64 readLineData(char *, qint64) override
     {
         return 0;
     }
-    qint64 writeData(const char *, qint64 len) Q_DECL_OVERRIDE
+    qint64 writeData(const char *, qint64 len) override
     {
         return len;
     }

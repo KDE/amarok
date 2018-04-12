@@ -36,9 +36,9 @@ public:
 
     virtual ~AmpacheSettings();
 
-    virtual void save() Q_DECL_OVERRIDE;
-    virtual void load() Q_DECL_OVERRIDE;
-    virtual void defaults() Q_DECL_OVERRIDE;
+    virtual void save() override;
+    virtual void load() override;
+    virtual void defaults() override;
 
 private:
 

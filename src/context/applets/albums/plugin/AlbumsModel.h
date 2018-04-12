@@ -62,7 +62,7 @@ public:
     Mode mode() const;
     void setMode( Mode mode );
 
-    QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+    virtual QHash<int, QByteArray> roleNames() const override;
 
 signals:
     void modeChanged();
@@ -77,9 +77,9 @@ protected:
      * added <em>more recently</em> than all of the tracks in the album
      * referenced by @param right.
      */
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const Q_DECL_OVERRIDE;
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
 private:
     Mode m_mode;

@@ -245,7 +245,7 @@ void MagnatuneInfoParser::frontpageDownloadComplete( KJob * downLoadJob )
 
 void MagnatuneInfoParser::userPageDownloadComplete( KJob * downLoadJob )
 {
-    if ( !downLoadJob->error() == 0 )
+    if ( downLoadJob->error() )
     {
         //TODO: error handling here
         return ;

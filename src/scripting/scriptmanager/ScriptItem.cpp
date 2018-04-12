@@ -37,7 +37,6 @@
 #include "scripting/scriptengine/AmarokEngineScript.h"
 #include "scripting/scriptengine/AmarokInfoScript.h"
 #include "scripting/scriptengine/AmarokKNotifyScript.h"
-#include "scripting/scriptengine/AmarokLyricsScript.h"
 #include "scripting/scriptengine/AmarokNetworkScript.h"
 #include "scripting/scriptengine/AmarokOSDScript.h"
 #include "scripting/scriptengine/AmarokPlaylistScript.h"
@@ -292,10 +291,6 @@ ScriptItem::initializeScriptEngine()
     AmarokScript::QueryMakerPrototype::init( m_engine.data() );
 
     const QString &category = m_info.category();
-    if( category.contains( QLatin1String("Lyrics") ) )
-    {
-        new AmarokScript::AmarokLyricsScript( m_engine.data() );
-    }
     if( category.contains( QLatin1String("Scriptable Service") ) )
     {
         new StreamItem( m_engine.data() );

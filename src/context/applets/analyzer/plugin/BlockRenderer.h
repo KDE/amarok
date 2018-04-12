@@ -43,14 +43,14 @@ public:
     BlockRenderer() {}
 
 protected:
-    QOpenGLFramebufferObject* createFramebufferObject(const QSize &size) Q_DECL_OVERRIDE
+    QOpenGLFramebufferObject* createFramebufferObject(const QSize &size) override
     {
         QOpenGLFramebufferObject* fo = new QOpenGLFramebufferObject(size);
         fo->setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
         return fo;
     }
 
-    void render() Q_DECL_OVERRIDE
+    void render() override
     {
         QOpenGLPaintDevice d;
         d.setSize(framebufferObject()->size());
@@ -86,7 +86,7 @@ protected:
         }
     }
 
-    void synchronize(QQuickFramebufferObject *item) Q_DECL_OVERRIDE
+    void synchronize(QQuickFramebufferObject *item) override
     {
         auto analyzer = qobject_cast<BlockAnalyzer*>(item);
         if (!analyzer)

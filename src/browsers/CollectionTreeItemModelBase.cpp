@@ -35,9 +35,12 @@
 #include "widgets/PrettyTreeRoles.h"
 
 #include <KLocalizedString>
+#include <ThreadWeaver/Lambda>
+#include <ThreadWeaver/Queue>
 
 #include <QApplication>
 #include <QIcon>
+#include <QMutex>
 #include <QPixmap>
 #include <QStandardPaths>
 #include <QStyle>
@@ -46,6 +49,31 @@
 
 using namespace Meta;
 
+
+class TrackLoaderJob : public ThreadWeaver::Job
+{
+public:
+    TrackLoaderJob( const QModelIndex &index, const Meta::AlbumPtr &album, CollectionTreeItemModelBase *model )
+        : m_index( index )
+        , m_album( album )
+        , m_model( model )
+    {
+    }
+
+protected:
+    void run( ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread ) override
+    {
+        Q_UNUSED( self )
+        Q_UNUSED( thread )
+
+        m_model->tracksLoaded( m_album, m_index, m_album->tracks() );
+    }
+
+private:
+    QModelIndex m_index;
+    Meta::AlbumPtr m_album;
+    CollectionTreeItemModelBase *m_model;
+};
 
 inline uint qHash( const Meta::DataPtr &data )
 {
@@ -61,6 +89,7 @@ static const QSet<CategoryId::CatMenuId> variousArtistCategories =
 
 CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     : QAbstractItemModel()
+    , m_loadingAlbumsMutex( new QMutex )
     , m_rootItem( 0 )
     , m_animFrame( 0 )
     , m_loading1( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading1.png" ) ) )
@@ -84,6 +113,8 @@ CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 
     if( m_rootItem )
         m_rootItem->deleteLater();
+
+    delete m_loadingAlbumsMutex;
 }
 
 Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) const
@@ -247,14 +278,26 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
             {
                 QString name = album->prettyName();
                 // add years for named albums (if enabled)
-                if( AmarokConfig::showYears() && !album->name().isEmpty() )
+                if( AmarokConfig::showYears() )
                 {
-                    Meta::TrackList tracks = album->tracks();
-                    if( !tracks.isEmpty() )
+                    if( m_years.contains( album.data() ) )
                     {
-                        Meta::YearPtr year = tracks.first()->year();
-                        if( year && (year->year() != 0) )
-                            name.prepend( QString("%1 - ").arg( year->name() ) );
+                        int year = m_years.value( album.data() );
+
+                        if( year > 0 )
+                            name.prepend( QString("%1 - ").arg( year ) );
+                    }
+                    else if( !album->name().isEmpty() )
+                    {
+                        QMutexLocker locker( m_loadingAlbumsMutex );
+                        if( !m_loadingAlbums.contains( album ) )
+                        {
+                            m_loadingAlbums.insert( album );
+
+                            auto nonConstThis = const_cast<CollectionTreeItemModelBase*>( this );
+                            auto job = QSharedPointer<TrackLoaderJob>::create( itemIndex( item ), album, nonConstThis );
+                            ThreadWeaver::Queue::instance()->enqueue( job );
+                        }
                     }
                 }
                 return name;
@@ -276,6 +319,26 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
 
         case PrettyTreeRoles::HasCoverRole:
             return AmarokConfig::showAlbumArt();
+
+        case PrettyTreeRoles::YearRole:
+            {
+                if( m_years.contains( album.data() ) )
+                    return m_years.value( album.data() );
+
+                else if( !album->name().isEmpty() )
+                {
+                    QMutexLocker locker( m_loadingAlbumsMutex );
+                    if( !m_loadingAlbums.contains( album ) )
+                    {
+                        m_loadingAlbums.insert( album );
+
+                        auto nonConstThis = const_cast<CollectionTreeItemModelBase*>( this );
+                        auto job = QSharedPointer<TrackLoaderJob>::create( itemIndex( item ), album, nonConstThis );
+                        ThreadWeaver::Queue::instance()->enqueue( job );
+                    }
+                }
+                return -1;
+            }
         }
     }
     else if( item->isDataItem() )
@@ -503,7 +566,8 @@ CollectionTreeItemModelBase::itemIndex( CollectionTreeItem *item ) const
     return createIndex( item->row(), 0, item );
 }
 
-void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMaker * qm, CollectionTreeItem * parent)
+void
+CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMaker * qm, CollectionTreeItem * parent)
 {
     if( qm && parent )
     {
@@ -616,6 +680,42 @@ CollectionTreeItemModelBase::mapCategoryToQueryType( int levelType ) const
 }
 
 void
+CollectionTreeItemModelBase::tracksLoaded( Meta::AlbumPtr album, const QModelIndex &index, const Meta::TrackList& tracks )
+{
+    DEBUG_BLOCK
+
+    if( !album )
+        return;
+
+    QMutexLocker locker( m_loadingAlbumsMutex );
+    m_loadingAlbums.remove( album );
+
+    if( !index.isValid() )
+        return;
+
+    int year = 0;
+
+    if( !tracks.isEmpty() )
+    {
+        Meta::YearPtr yearPtr = tracks.first()->year();
+        if( yearPtr )
+            year = yearPtr->year();
+
+        debug() << "Valid album year found:" << year;
+    }
+
+    // Set the year in the thread associated with this
+    auto lambda = [=] () {
+        if( !m_years.contains( album.data() ) || m_years.value( album.data() ) != year )
+        {
+            m_years[ album.data() ] = year;
+            emit dataChanged( index, index );
+        }
+    };
+    QTimer::singleShot( 0, this, lambda );
+}
+
+void
 CollectionTreeItemModelBase::addQueryMaker( CollectionTreeItem* item,
                                             Collections::QueryMaker *qm ) const
 {
@@ -668,12 +768,12 @@ CollectionTreeItemModelBase::queryDone()
 // TODO
 
 /** Small helper function to convert a list of e.g. tracks to a list of DataPtr */
-template<class PointerType, class ListType>
+template<class PointerType>
 static Meta::DataList
-convertToDataList( const ListType& list )
+convertToDataList( const QList<PointerType>& list )
 {
     Meta::DataList data;
-    foreach( PointerType p, list )
+    for( const auto &p : list )
         data << Meta::DataPtr::staticCast( p );
 
     return data;
@@ -682,43 +782,43 @@ convertToDataList( const ListType& list )
 void
 CollectionTreeItemModelBase::newTracksReady( Meta::TrackList res )
 {
-    newDataReady( convertToDataList<Meta::TrackPtr, Meta::TrackList>( res ) );
+    newDataReady( convertToDataList( res ) );
 }
 
 void
 CollectionTreeItemModelBase::newArtistsReady( Meta::ArtistList res )
 {
-    newDataReady( convertToDataList<Meta::ArtistPtr, Meta::ArtistList>( res ) );
+    newDataReady( convertToDataList( res ) );
 }
 
 void
 CollectionTreeItemModelBase::newAlbumsReady( Meta::AlbumList res )
 {
-    newDataReady( convertToDataList<Meta::AlbumPtr, Meta::AlbumList>( res ) );
+    newDataReady( convertToDataList( res ) );
 }
 
 void
 CollectionTreeItemModelBase::newGenresReady( Meta::GenreList res )
 {
-    newDataReady( convertToDataList<Meta::GenrePtr, Meta::GenreList>( res ) );
+    newDataReady( convertToDataList( res ) );
 }
 
 void
 CollectionTreeItemModelBase::newComposersReady( Meta::ComposerList res )
 {
-    newDataReady( convertToDataList<Meta::ComposerPtr, Meta::ComposerList>( res ) );
+    newDataReady( convertToDataList( res ) );
 }
 
 void
 CollectionTreeItemModelBase::newYearsReady( Meta::YearList res )
 {
-    newDataReady( convertToDataList<Meta::YearPtr, Meta::YearList>( res ) );
+    newDataReady( convertToDataList( res ) );
 }
 
 void
 CollectionTreeItemModelBase::newLabelsReady( Meta::LabelList res )
 {
-    newDataReady( convertToDataList<Meta::LabelPtr, Meta::LabelList>( res ) );
+    newDataReady( convertToDataList( res ) );
 }
 
 void

@@ -49,7 +49,7 @@ class IpodCopyTracksJob : public QObject, public ThreadWeaver::Job
                            const QPointer<IpodCollection> &collection,
                            const Transcoding::Configuration &configuration,
                            bool goingToRemoveSources );
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
     public Q_SLOTS:
         void abort();
@@ -116,8 +116,8 @@ class IpodCopyTracksJob : public QObject, public ThreadWeaver::Job
         QSet<QString> m_copyErrors;
 
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 
 };
 

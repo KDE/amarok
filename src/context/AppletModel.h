@@ -49,10 +49,10 @@ public:
     explicit AppletModel(AppletLoader *loader, QObject *parent = Q_NULLPTR);
     virtual ~AppletModel();
 
-    virtual int rowCount(const QModelIndex& parent) const Q_DECL_OVERRIDE;
-    virtual QVariant data(const QModelIndex& index, int role) const Q_DECL_OVERRIDE;
-    virtual bool setData(const QModelIndex& index, const QVariant& value, int role) Q_DECL_OVERRIDE;
-    virtual QHash< int, QByteArray > roleNames() const Q_DECL_OVERRIDE;
+    virtual int rowCount(const QModelIndex& parent) const override;
+    virtual QVariant data(const QModelIndex& index, int role) const override;
+    virtual bool setData(const QModelIndex& index, const QVariant& value, int role) override;
+    virtual QHash< int, QByteArray > roleNames() const override;
 
     AppletLoader* loader() const { return m_loader; }
 
@@ -134,8 +134,8 @@ Q_SIGNALS:
     void enabledAppletsChanged();
 
 protected:
-    bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const Q_DECL_OVERRIDE;
-    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const Q_DECL_OVERRIDE;
+    bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
 private:
     AppletModel *m_appletModel;

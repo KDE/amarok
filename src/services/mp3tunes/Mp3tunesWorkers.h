@@ -34,7 +34,7 @@ class Mp3tunesLoginWorker : public QObject, public ThreadWeaver::Job
         Mp3tunesLoginWorker( Mp3tunesLocker* locker, const QString &username, const QString &password );
         ~Mp3tunesLoginWorker();
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
     Q_SIGNALS:
         /** This signal is emitted when this job is being processed by a thread. */
@@ -56,8 +56,8 @@ class Mp3tunesLoginWorker : public QObject, public ThreadWeaver::Job
         QString m_username;
         QString m_password;
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 };
 
 /**
@@ -70,7 +70,7 @@ class Mp3tunesArtistFetcher : public QObject, public ThreadWeaver::Job
         explicit Mp3tunesArtistFetcher( Mp3tunesLocker * locker );
         ~Mp3tunesArtistFetcher();
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
     Q_SIGNALS:
         /** This signal is emitted when this job is being processed by a thread. */
@@ -90,8 +90,8 @@ class Mp3tunesArtistFetcher : public QObject, public ThreadWeaver::Job
         Mp3tunesLocker* m_locker;
         QList<Mp3tunesLockerArtist> m_artists;
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 };
 
 /**
@@ -104,7 +104,7 @@ class Mp3tunesAlbumWithArtistIdFetcher : public QObject, public ThreadWeaver::Jo
         Mp3tunesAlbumWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId );
         ~Mp3tunesAlbumWithArtistIdFetcher();
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
     Q_SIGNALS:
         /** This signal is emitted when this job is being processed by a thread. */
@@ -125,8 +125,8 @@ class Mp3tunesAlbumWithArtistIdFetcher : public QObject, public ThreadWeaver::Jo
         Mp3tunesLocker* m_locker;
         QList<Mp3tunesLockerAlbum> m_albums;
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 };
 
 /**
@@ -139,7 +139,7 @@ class Mp3tunesTrackWithAlbumIdFetcher : public QObject, public ThreadWeaver::Job
         Mp3tunesTrackWithAlbumIdFetcher( Mp3tunesLocker * locker, int albumId );
         ~Mp3tunesTrackWithAlbumIdFetcher();
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
     Q_SIGNALS:
         /** This signal is emitted when this job is being processed by a thread. */
@@ -160,8 +160,8 @@ class Mp3tunesTrackWithAlbumIdFetcher : public QObject, public ThreadWeaver::Job
         Mp3tunesLocker* m_locker;
         QList<Mp3tunesLockerTrack> m_tracks;
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 };
 
 /**
@@ -174,7 +174,7 @@ class Mp3tunesTrackWithArtistIdFetcher : public QObject, public ThreadWeaver::Jo
         Mp3tunesTrackWithArtistIdFetcher( Mp3tunesLocker * locker, int artistId );
         ~Mp3tunesTrackWithArtistIdFetcher();
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
     Q_SIGNALS:
         /** This signal is emitted when this job is being processed by a thread. */
@@ -194,8 +194,8 @@ class Mp3tunesTrackWithArtistIdFetcher : public QObject, public ThreadWeaver::Jo
         Mp3tunesLocker* m_locker;
         QList<Mp3tunesLockerTrack> m_tracks;
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 
 };
 
@@ -209,7 +209,7 @@ class Mp3tunesSearchMonkey : public QObject, public ThreadWeaver::Job
         Mp3tunesSearchMonkey( Mp3tunesLocker * locker, QString query, int searchFor );
         ~Mp3tunesSearchMonkey();
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
     Q_SIGNALS:
         /** This signal is emitted when this job is being processed by a thread. */
@@ -233,8 +233,8 @@ class Mp3tunesSearchMonkey : public QObject, public ThreadWeaver::Job
         Mp3tunesLocker* m_locker;
         Mp3tunesSearchResult m_result;
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 };
 
 /**
@@ -247,7 +247,7 @@ class Mp3tunesSimpleUploader : public QObject, public ThreadWeaver::Job
         Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStringList tracklist );
         ~Mp3tunesSimpleUploader();
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
     Q_SIGNALS:
         /** This signal is emitted when this job is being processed by a thread. */
@@ -269,8 +269,8 @@ class Mp3tunesSimpleUploader : public QObject, public ThreadWeaver::Job
         Mp3tunesLocker* m_locker;
         QStringList m_tracklist;
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 };
 
 /**
@@ -283,7 +283,7 @@ class Mp3tunesTrackFromFileKeyFetcher : public QObject, public ThreadWeaver::Job
         Mp3tunesTrackFromFileKeyFetcher( Mp3tunesLocker * locker, QString filekey );
         ~Mp3tunesTrackFromFileKeyFetcher();
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
     Q_SIGNALS:
         /** This signal is emitted when this job is being processed by a thread. */
@@ -305,8 +305,8 @@ class Mp3tunesTrackFromFileKeyFetcher : public QObject, public ThreadWeaver::Job
         QString m_filekey;
 
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 };
 
 #endif

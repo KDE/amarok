@@ -32,17 +32,19 @@
 #include "CoverFoundDialog.h"
 #include "CoverFetchUnit.h"
 
-#include <KLocalizedString>
-#include <QUrl>
-
 #include <QBuffer>
 #include <QImageReader>
+#include <QThread>
 #include <QUrl>
 
 #include <KConfigGroup>
 #include <KLocalizedString>
 
-CoverFetcher* CoverFetcher::s_instance = 0;
+#include <functional>
+#include <thread>
+
+
+CoverFetcher* CoverFetcher::s_instance = nullptr;
 
 CoverFetcher*
 CoverFetcher::instance()
@@ -55,22 +57,26 @@ void CoverFetcher::destroy()
     if( s_instance )
     {
         delete s_instance;
-        s_instance = 0;
+        s_instance = nullptr;
     }
 }
 
 CoverFetcher::CoverFetcher()
     : QObject()
-    , m_limit( 10 )
 {
     DEBUG_BLOCK
     setObjectName( "CoverFetcher" );
     qRegisterMetaType<CoverFetchUnit::Ptr>("CoverFetchUnit::Ptr");
 
-    m_queue = new CoverFetchQueue( this );
+    s_instance = this;
+
+    m_queueThread = new QThread( this );
+    m_queueThread->start();
+    m_queue = new CoverFetchQueue;
+    m_queue->moveToThread( m_queueThread );
+
     connect( m_queue, &CoverFetchQueue::fetchUnitAdded,
              this, &CoverFetcher::slotFetch );
-    s_instance = this;
 
     connect( The::networkAccessManager(), &NetworkAccessManagerProxy::requestRedirectedReply,
              this, &CoverFetcher::fetchRequestRedirected );
@@ -78,6 +84,9 @@ CoverFetcher::CoverFetcher()
 
 CoverFetcher::~CoverFetcher()
 {
+    m_queue->deleteLater();
+    m_queueThread->quit();
+    m_queueThread->wait();
 }
 
 void
@@ -89,7 +98,7 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
     switch( fetchSource() )
     {
     case CoverFetch::LastFm:
-        m_queue->add( album, CoverFetch::Interactive, fetchSource() );
+        QTimer::singleShot( 0, m_queue, [=] () { m_queue->add( album, CoverFetch::Interactive, fetchSource() ); } );
         break;
 
     case CoverFetch::Discogs:
@@ -105,10 +114,7 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
 void
 CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 {
-    if( m_queue->size() > m_limit )
-        m_queueLater.append( album );
-    else
-        m_queue->add( album, CoverFetch::Automatic );
+    QTimer::singleShot( 0, m_queue, [=] () { m_queue->add( album, CoverFetch::Automatic ); } );
     debug() << "Queueing automatic cover fetch for:" << album->name();
 }
 
@@ -117,17 +123,14 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 {
     foreach( Meta::AlbumPtr album, albums )
     {
-        if( m_queue->size() > m_limit )
-            m_queueLater.append( album );
-        else
-            m_queue->add( album, CoverFetch::Automatic );
+        QTimer::singleShot( 0, m_queue, [=] () { m_queue->add( album, CoverFetch::Automatic ); } );
     }
 }
 
 void
 CoverFetcher::queueQuery( Meta::AlbumPtr album, const QString &query, int page )
 {
-    m_queue->addQuery( query, fetchSource(), page, album );
+    QTimer::singleShot( 0, m_queue, [=] () { m_queue->addQuery( query, fetchSource(), page, album ); } );
     debug() << QString( "Queueing cover fetch query: '%1' (page %2)" ).arg( query, QString::number( page ) );
 }
 
@@ -180,17 +183,17 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
 }
 
 void
-CoverFetcher::slotResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+CoverFetcher::slotResult( const QUrl &url, const QByteArray &data, NetworkAccessManagerProxy::Error e )
 {
     DEBUG_BLOCK
     if( !m_urls.contains( url ) )
         return;
-    debug() << "Data dump from the result: " << data;
+//     debug() << "Data dump from the result: " << data;
 
     const CoverFetchUnit::Ptr unit( m_urls.take( url ) );
     if( !unit )
     {
-        m_queue->remove( unit );
+        QTimer::singleShot( 0, m_queue, [=] () { m_queue->remove( unit ); } );
         return;
     }
 
@@ -204,13 +207,13 @@ CoverFetcher::slotResult( const QUrl &url, QByteArray data, NetworkAccessManager
     switch( payload->type() )
     {
     case CoverFetchPayload::Info:
-        m_queue->add( unit->album(), unit->options(), payload->source(), data );
-        m_queue->remove( unit );
+        QTimer::singleShot( 0, m_queue, [=] () { m_queue->add( unit->album(), unit->options(), payload->source(), data );
+                                                 m_queue->remove( unit ); } );
         break;
 
     case CoverFetchPayload::Search:
-        m_queue->add( unit->options(), fetchSource(), data );
-        m_queue->remove( unit );
+        QTimer::singleShot( 0, m_queue, [=] () { m_queue->add( unit->options(), fetchSource(), data );
+                                                 m_queue->remove( unit ); } );
         break;
 
     case CoverFetchPayload::Art:
@@ -261,7 +264,7 @@ CoverFetcher::handleCoverPayload( const CoverFetchUnit::Ptr &unit, const QByteAr
         if( reader.read( &image ) )
         {
             showCover( unit, image, metadata );
-            m_queue->remove( unit );
+            QTimer::singleShot( 0, m_queue, [=] () {  m_queue->remove( unit ); } );
             return;
         }
     }
@@ -353,7 +356,7 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
             return;
         }
 
-        m_dialog = new CoverFoundDialog( unit, data, static_cast<QWidget*>( parent() ) );
+        m_dialog = new CoverFoundDialog( unit, data );
         connect( m_dialog.data(), &CoverFoundDialog::newCustomQuery,
                  this, &CoverFetcher::queueQuery );
         connect( m_dialog.data(), &CoverFoundDialog::accepted,
@@ -384,8 +387,7 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
 void
 CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
 {
-    m_queue->remove( unit );
-    m_queueLater.removeAll( unit->album() );
+    QTimer::singleShot( 0, m_queue, [=] () {  m_queue->remove( unit ); } );
     m_selectedImages.remove( unit );
     QList<QUrl> urls = m_urls.keys( unit );
     foreach( const QUrl &url, urls )
@@ -404,16 +406,19 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
     switch( state )
     {
     case Success:
+    {
         if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
             Amarok::Logger::shortMessage( text );
             debug() << "Finished successfully for album" << albumName;
         }
-        album->setImage( m_selectedImages.take( unit ) );
+        QImage image = m_selectedImages.take( unit );
+        std::thread thread( std::bind( &Meta::Album::setImage, album, image ) );
+        thread.detach();
         abortFetch( unit );
         break;
-
+    }
     case Error:
         if( !albumName.isEmpty() )
         {
@@ -448,21 +453,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         break;
     }
 
-    m_queue->remove( unit );
-
-    if( !m_queueLater.isEmpty() )
-    {
-        const int diff = m_limit - m_queue->size();
-        if( diff > 0 )
-        {
-            for( int i = 0; i < diff && !m_queueLater.isEmpty(); ++i )
-            {
-                Meta::AlbumPtr album = m_queueLater.takeFirst();
-                // automatic fetching only uses Last.fm as source
-                m_queue->add( album, CoverFetch::Automatic, CoverFetch::LastFm );
-            }
-        }
-    }
+    QTimer::singleShot( 0, m_queue, [=] () { m_queue->remove( unit ); } );
 
     emit finishedSingle( static_cast< int >( state ) );
 }

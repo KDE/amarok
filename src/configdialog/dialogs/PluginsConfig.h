@@ -32,9 +32,9 @@ public:
     explicit PluginsConfig( Amarok2ConfigDialog *parent );
     virtual ~PluginsConfig();
 
-    void updateSettings() Q_DECL_OVERRIDE;
-    bool hasChanged() Q_DECL_OVERRIDE;
-    bool isDefault() Q_DECL_OVERRIDE;
+    void updateSettings() override;
+    bool hasChanged() override;
+    bool isDefault() override;
 
 public Q_SLOTS:
     void slotConfigChanged( bool changed );

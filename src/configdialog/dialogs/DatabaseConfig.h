@@ -32,9 +32,9 @@ class DatabaseConfig : public ConfigDialogBase, public Ui_DatabaseConfig
         DatabaseConfig( Amarok2ConfigDialog* parent, KConfigSkeleton *config );
         virtual ~DatabaseConfig();
 
-        virtual bool hasChanged() Q_DECL_OVERRIDE;
-        virtual bool isDefault() Q_DECL_OVERRIDE;
-        virtual void updateSettings() Q_DECL_OVERRIDE;
+        virtual bool hasChanged() override;
+        virtual bool isDefault() override;
+        virtual void updateSettings() override;
 
     public Q_SLOTS:
         void toggleExternalConfigAvailable( int checkBoxState );

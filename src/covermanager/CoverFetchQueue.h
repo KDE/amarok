@@ -83,13 +83,7 @@ public:
                    unsigned int page = 0,
                    Meta::AlbumPtr album = Meta::AlbumPtr(0) );
 
-    bool contains( const Meta::AlbumPtr album ) const;
-    int index( const Meta::AlbumPtr album ) const;
-    int size() const;
-    bool isEmpty() const;
-
     void clear();
-    const CoverFetchUnit::Ptr take( const Meta::AlbumPtr album );
 
 public Q_SLOTS:
     void remove( const CoverFetchUnit::Ptr unit );
@@ -100,6 +94,9 @@ Q_SIGNALS:
 
 private:
     void add( const CoverFetchUnit::Ptr unit );
+    bool contains( const Meta::AlbumPtr album ) const;
+    int index( const Meta::AlbumPtr album ) const;
+    const CoverFetchUnit::Ptr take( const Meta::AlbumPtr album );
 
     CoverFetchUnitList m_queue;
     Q_DISABLE_COPY( CoverFetchQueue )

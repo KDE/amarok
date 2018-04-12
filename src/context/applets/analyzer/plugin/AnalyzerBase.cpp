@@ -49,7 +49,7 @@ Analyzer::Base::Base( QQuickItem *parent )
 {
     DEBUG_BLOCK
 
-    qRegisterMetaType<WindowFunction>();
+    qRegisterMetaType<WindowFunction>("WindowFunction");
 
     m_minFreq = config().readEntry( "minFreq", 50.0 );
     m_maxFreq = config().readEntry( "maxFreq", 15000.0 );

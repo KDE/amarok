@@ -33,7 +33,7 @@ class Plugin : public QQmlExtensionPlugin
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 
 public:
-    void registerTypes(const char* uri) Q_DECL_OVERRIDE
+    void registerTypes(const char* uri) override
     {
         Q_ASSERT(uri == QLatin1String("org.kde.amarok.qml"));
 

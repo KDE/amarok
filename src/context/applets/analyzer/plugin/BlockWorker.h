@@ -43,7 +43,7 @@ signals:
     void finished();
 
 protected:
-    void analyze() Q_DECL_OVERRIDE;
+    void analyze() override;
 
 private:
     struct Fadebar

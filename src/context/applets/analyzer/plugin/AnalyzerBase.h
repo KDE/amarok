@@ -50,11 +50,11 @@ namespace Analyzer
 public:
     enum WindowFunction
     {
-        Rectangular = 0,
-        Hann = 1,
-        Nuttall = 2,
-        Lanczos = 3,
-        Sine = 4
+        Rectangular,
+        Hann,
+        Nuttall,
+        Lanczos,
+        Sine
     };
     Q_ENUM(WindowFunction)
 

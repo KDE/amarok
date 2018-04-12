@@ -59,8 +59,6 @@
 #include <KLocalizedString>
 #include <ThreadWeaver/Queue>
 
-#include <thread>
-
 
 // additional constants
 namespace Meta
@@ -1471,7 +1469,7 @@ SqlAlbum::SqlAlbum( Collections::SqlCollection *collection, int id, const QStrin
     , m_hasImage( false )
     , m_hasImageChecked( false )
     , m_unsetImageId( -1 )
-    , m_tracksLoaded( false )
+    , m_tracksLoaded( NotLoaded )
     , m_suppressAutoFetch( false )
     , m_mutex( QMutex::Recursive )
 {
@@ -1488,7 +1486,7 @@ void
 SqlAlbum::invalidateCache()
 {
     QMutexLocker locker( &m_mutex );
-    m_tracksLoaded = false;
+    m_tracksLoaded = NotLoaded;
     m_hasImage = false;
     m_hasImageChecked = false;
     m_tracks.clear();
@@ -1497,28 +1495,50 @@ SqlAlbum::invalidateCache()
 TrackList
 SqlAlbum::tracks()
 {
+    bool startQuery = false;
+
     {
         QMutexLocker locker( &m_mutex );
-        if( m_tracksLoaded )
+        if( m_tracksLoaded == Loaded )
             return m_tracks;
+        else if( m_tracksLoaded == NotLoaded )
+        {
+            startQuery = true;
+            m_tracksLoaded = Loading;
+        }
     }
 
-    // when running the query maker don't lock. might lead to deadlock via registry
-    Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
-    qm->setQueryType( Collections::QueryMaker::Track );
-    qm->addMatch( Meta::AlbumPtr( this ) );
-    qm->orderBy( Meta::valDiscNr );
-    qm->orderBy( Meta::valTrackNr );
-    qm->orderBy( Meta::valTitle );
-    qm->setBlocking( true );
-    qm->run();
-
+    if( startQuery )
     {
-        QMutexLocker locker( &m_mutex );
-        m_tracks = qm->tracks();
-        m_tracksLoaded = true;
-        delete qm;
-        return m_tracks;
+        // when running the query maker don't lock. might lead to deadlock via registry
+        Collections::SqlQueryMaker *qm = static_cast< Collections::SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( Collections::QueryMaker::Track );
+        qm->addMatch( Meta::AlbumPtr( this ) );
+        qm->orderBy( Meta::valDiscNr );
+        qm->orderBy( Meta::valTrackNr );
+        qm->orderBy( Meta::valTitle );
+        qm->setBlocking( true );
+        qm->run();
+
+        {
+            QMutexLocker locker( &m_mutex );
+            m_tracks = qm->tracks();
+            m_tracksLoaded = Loaded;
+            delete qm;
+            return m_tracks;
+        }
+    }
+    else
+    {
+        // Wait for tracks to be loaded
+        forever
+        {
+            QMutexLocker locker( &m_mutex );
+            if( m_tracksLoaded == Loaded )
+                return m_tracks;
+            else
+                QThread::yieldCurrentThread();
+        }
     }
 }
 
@@ -1610,8 +1630,7 @@ SqlAlbum::image( int size ) const
     if( size > 1 && size < 1000 )
     {
         image = image.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        std::thread thread( QOverload<const QString&, const char*, int>::of( &QImage::save ), image, cachedImagePath, "PNG", -1 );
-        thread.detach();
+        image.save( cachedImagePath, "PNG", -1 );
     }
 
     return image;
@@ -1654,9 +1673,10 @@ SqlAlbum::setImage( const QImage &image )
     if( m_name.isEmpty() )
         return;
 
-    QMutexLocker locker( &m_mutex );
     if( image.isNull() )
         return;
+
+    QMutexLocker locker( &m_mutex );
 
     // removeImage() will destroy all scaled cached versions of the artwork
     // and remove references from the database if required.
@@ -1667,8 +1687,7 @@ SqlAlbum::setImage( const QImage &image )
     while( QFile(path).exists() )
         path += '_'; // not that nice but it shouldn't happen that often.
 
-    std::thread thread( QOverload<const QString&, const char*, int>::of( &QImage::save ), image, path, "JPG", -1 );
-    thread.detach();
+    image.save( path, "JPG", -1 );
     setImage( path );
 
     locker.unlock();
@@ -1917,23 +1936,22 @@ SqlAlbum::largeImagePath()
 void
 SqlAlbum::setImage( const QString &path )
 {
-    if( m_imagePath == path )
-        return;
     if( m_name.isEmpty() ) // the empty album never has an image
         return;
 
     QMutexLocker locker( &m_mutex );
 
-    QString imagePath = path;
+    if( m_imagePath == path )
+        return;
 
     QString query = "SELECT id FROM images WHERE path = '%1'";
-    query = query.arg( m_collection->sqlStorage()->escape( imagePath ) );
+    query = query.arg( m_collection->sqlStorage()->escape( path ) );
     QStringList res = m_collection->sqlStorage()->query( query );
 
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
-                            .arg( m_collection->sqlStorage()->escape( imagePath ) );
+        .arg( m_collection->sqlStorage()->escape( path ) );
         m_imageId = m_collection->sqlStorage()->insert( insert, "images" );
     }
     else
@@ -1945,7 +1963,7 @@ SqlAlbum::setImage( const QString &path )
                     .arg( QString::number( m_imageId ), QString::number( m_id ) );
         m_collection->sqlStorage()->query( query );
 
-        m_imagePath = imagePath;
+        m_imagePath = path;
         m_hasImage = true;
         m_hasImageChecked = true;
         CoverCache::invalidateAlbum( this );

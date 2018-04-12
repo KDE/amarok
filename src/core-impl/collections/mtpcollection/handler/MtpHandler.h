@@ -261,12 +261,12 @@ class WorkerThread : public QObject, public ThreadWeaver::Job
         WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, MtpHandler* handler );
         virtual ~WorkerThread();
 
-        virtual bool success() const Q_DECL_OVERRIDE;
+        virtual bool success() const override;
 
     protected:
-        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
-        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+        void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+        void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 
     Q_SIGNALS:
         /** This signal is emitted when this job is being processed by a thread. */

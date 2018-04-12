@@ -37,7 +37,7 @@ public:
 
     ~MagnatuneDatabaseWorker();
 
-    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) Q_DECL_OVERRIDE;
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
     void fetchMoodMap();
     void fetchTrackswithMood( const QString &mood, int noOfTracks, ServiceSqlRegistry * registry );
@@ -80,8 +80,8 @@ private:
     ServiceSqlRegistry * m_registry;
 
 protected:
-    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+    void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
+    void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 };
 
 #endif

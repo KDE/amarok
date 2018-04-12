@@ -176,5 +176,3 @@ ContextView::error( const QString &error ) const
 }
 
 } // Context namespace
-
-#include <ContextView.moc>

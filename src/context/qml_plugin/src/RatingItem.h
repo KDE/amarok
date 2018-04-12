@@ -144,11 +144,11 @@ public Q_SLOTS:
 
 
 protected:
-    virtual void mousePressEvent( QMouseEvent* e ) Q_DECL_OVERRIDE;
-    virtual void hoverMoveEvent( QHoverEvent* e ) Q_DECL_OVERRIDE;
-    virtual void hoverEnterEvent( QHoverEvent* e ) Q_DECL_OVERRIDE;
-    virtual void hoverLeaveEvent( QHoverEvent* e ) Q_DECL_OVERRIDE;
-    virtual void paint( QPainter* painter ) Q_DECL_OVERRIDE;
+    virtual void mousePressEvent( QMouseEvent* e ) override;
+    virtual void hoverMoveEvent( QHoverEvent* e ) override;
+    virtual void hoverEnterEvent( QHoverEvent* e ) override;
+    virtual void hoverLeaveEvent( QHoverEvent* e ) override;
+    virtual void paint( QPainter* painter ) override;
 
 private:
     class Private;

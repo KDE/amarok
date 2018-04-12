@@ -37,7 +37,9 @@ namespace Collections
     class Collection;
 }
 class CollectionTreeItem;
+class QMutex;
 class QTimeLine;
+class TrackLoaderJob;
 
 typedef QPair<Collections::Collection*, CollectionTreeItem* > CollectionRoot;
 
@@ -47,6 +49,8 @@ typedef QPair<Collections::Collection*, CollectionTreeItem* > CollectionRoot;
 class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 {
         Q_OBJECT
+
+    friend class TrackLoaderJob;
 
     public:
         CollectionTreeItemModelBase();
@@ -141,6 +145,15 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList );
 
         Collections::QueryMaker::QueryType mapCategoryToQueryType( int levelType ) const;
+
+        /**
+         * This function is thread-safe
+         */
+        void tracksLoaded( Meta::AlbumPtr album, const QModelIndex &index, const Meta::TrackList &tracks );
+
+        QMutex *m_loadingAlbumsMutex;
+        QHash<Meta::Album *, int> m_years;
+        mutable QSet<Meta::AlbumPtr> m_loadingAlbums;
 
     protected:
         /** Adds the query maker to the running queries and connects the slots */

@@ -211,14 +211,12 @@ void BookmarkGroup::setDescription( const QString &description )
 
 void BookmarkGroup::deleteChild( BookmarkViewItemPtr item )
 {
-    if ( typeid( * item ) == typeid( BookmarkGroup ) )
+    if ( auto group = BookmarkGroupPtr::dynamicCast( item ) )
     {
-        BookmarkGroupPtr group = BookmarkGroupPtr::staticCast( item );
         m_childGroups.removeAll( group );
     }
-    else if ( typeid( * item ) == typeid( AmarokUrl ) )
+    else if ( auto bookmark = AmarokUrlPtr::dynamicCast( item ) )
     {
-        AmarokUrlPtr bookmark = AmarokUrlPtr::staticCast( item );
         m_childBookmarks.removeAll( bookmark );
     }
 }

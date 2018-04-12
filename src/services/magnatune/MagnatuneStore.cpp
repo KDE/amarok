@@ -440,24 +440,23 @@ void MagnatuneStore::itemSelected( CollectionTreeItem * selectedItem )
     //be an album or a track
     Meta::DataPtr dataPtr = selectedItem->data();
 
-    if ( typeid( * dataPtr.data() ) == typeid( Meta::MagnatuneTrack ) )  {
-
+    if ( auto track = AmarokSharedPointer<Meta::MagnatuneTrack>::dynamicCast( dataPtr ) )
+    {
         debug() << "is right type (track)";
-        Meta::MagnatuneTrack * track = static_cast<Meta::MagnatuneTrack *> ( dataPtr.data() );
         m_currentAlbum = static_cast<Meta::MagnatuneAlbum *> ( track->album().data() );
         m_downloadAlbumButton->setEnabled( true );
-
-    } else if ( typeid( * dataPtr.data() ) == typeid( Meta::MagnatuneAlbum ) ) {
-
-        m_currentAlbum = static_cast<Meta::MagnatuneAlbum *> ( dataPtr.data() );
+    }
+    else if ( auto album = AmarokSharedPointer<Meta::MagnatuneAlbum>::dynamicCast( dataPtr ) )
+    {
+        m_currentAlbum = album.data();
         debug() << "is right type (album) named " << m_currentAlbum->name();
 
         m_downloadAlbumButton->setEnabled( true );
-    } else {
-
+    }
+    else
+    {
         debug() << "is wrong type";
         m_downloadAlbumButton->setEnabled( false );
-
     }
 }
 
