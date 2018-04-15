@@ -25,37 +25,15 @@ AmarokQml.Applet {
     id: applet
 
     //album art
-    Rectangle {
+    Loader {
         id: cover
 
-        color: "white"
-        radius: Kirigami.Units.smallSpacing / 2
-        border.width: 1
-        border.color: applet.palette.light
         height: parent.height
         width: height
 
-        AmarokQml.PixmapItem {
-            id: iconItem
-
-            anchors.fill: parent
-            anchors.margins: parent.radius
-            source: CurrentTrackEngine.cover
-
-            onWidthChanged: CurrentTrackEngine.coverWidth = width
-
-            //show standard empty cover if no data is available
-            AmarokQml.PixmapItem {
-                anchors.fill: parent
-                source: Svg.renderSvg("file://" + applet.packagePath + "images/amarok-currenttrack.svg",
-                                        "CurrentTrack",
-                                        width,
-                                        height,
-                                        "album_old");
-                visible: !iconItem.valid
-            }
-        }
+        sourceComponent: CurrentTrackEngine.hasValidCover ? coverComponent : emptyComponent
     }
+
     ColumnLayout {
         anchors {
             left: cover.right
@@ -80,8 +58,8 @@ AmarokQml.Applet {
             AmarokQml.RatingItem {
                 id: ratingItem
 
-                height: Kirigami.Units.largeSpacing * 2
-                width: height * 6
+                Layout.preferredWidth: height * 6
+                Layout.preferredHeight: parent.height / 5
                 Layout.alignment: Qt.AlignTop | Qt.AlignRight
                 rating: CurrentTrackEngine.rating
                 onClicked: CurrentTrackEngine.rating = newRating
@@ -92,7 +70,40 @@ AmarokQml.Applet {
 
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignBottom
-            height: Kirigami.Units.largeSpacing * 3
+            Layout.preferredHeight: parent.height / 5
+        }
+    }
+
+    Component {
+        id: coverComponent
+
+        Rectangle {
+            id: cover
+
+            color: "white"
+            radius: Kirigami.Units.smallSpacing / 2
+            border.width: 1
+            border.color: applet.palette.light
+
+
+            AmarokQml.PixmapItem {
+                id: iconItem
+
+                anchors.fill: parent
+                anchors.margins: parent.radius
+                source: CurrentTrackEngine.cover
+            }
+        }
+    }
+    Component {
+        id: emptyComponent
+
+        AmarokQml.PixmapItem {
+            source: Svg.renderSvg("file://" + applet.packagePath + "images/amarok-currenttrack.svg",
+                                  "CurrentTrack",
+                                  width,
+                                  height,
+                                  "album_old");
         }
     }
 }

@@ -40,7 +40,7 @@ class CurrentEngine : public QObject
     Q_PROPERTY(QString lastPlayed READ lastPlayed NOTIFY trackChanged)
     Q_PROPERTY(int timesPlayed READ timesPlayed NOTIFY trackChanged)
     Q_PROPERTY(QVariant cover READ cover NOTIFY albumChanged)
-    Q_PROPERTY(int coverWidth READ coverWidth WRITE setCoverWidth NOTIFY coverWidthChanged)
+    Q_PROPERTY(bool hasValidCover READ hasValidCover NOTIFY albumChanged)
 
 public:
     explicit CurrentEngine( QObject* parent = Q_NULLPTR );
@@ -56,8 +56,7 @@ public:
     QString lastPlayed() const;
     int timesPlayed() const;
     QVariant cover() const { return QVariant(m_cover); }
-    int coverWidth() { return m_coverWidth; }
-    void setCoverWidth( int width );
+    bool hasValidCover() const { return !m_cover.isNull(); }
 
 signals:
     void trackChanged();
@@ -74,7 +73,6 @@ private:
     void update( Meta::TrackPtr track );
     void update( Meta::AlbumPtr album );
 
-    int m_coverWidth;
     QPixmap m_cover;
     Meta::AlbumList m_albums;
     Meta::TrackPtr m_currentTrack;

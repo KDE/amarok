@@ -16,78 +16,94 @@
 
 import QtQuick 2.4
 import QtQuick.Controls 2.0
-import QtQuick.Layouts 1.3
-import org.kde.kirigami 2.0 as Kirigami
 import org.kde.amarok.currenttrack 1.0
 
-Column {
+Item {
     id: root
 
-    property real textSize: Kirigami.Units.largeSpacing
     property alias playCount: playCountLabel.text
     property alias score: scoreLabel.text
     property alias lastPlayed: lastPlayedLabel.text
 
     Row {
-        width: parent.width
+        height: parent.height / 2
 
         Label {
             text: i18n("Play Count")
-            width: parent.width / 3
+            width: root.width / 3
+            height: parent.height
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 1
-            font.pixelSize: root.textSize
+            fontSizeMode: Text.Fit
+            font.pointSize: 32
+            minimumPointSize: 9
         }
         Label {
             text: i18n("Score")
-            width: parent.width / 3
+            width: root.width / 3
+            height: parent.height
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 1
-            font.pixelSize: root.textSize
+            fontSizeMode: Text.Fit
+            font.pointSize: 32
+            minimumPointSize: 9
         }
         Label {
             text: i18n("Last played")
-            width: parent.width / 3
+            width: root.width / 3
+            height: parent.height
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 1
-            font.pixelSize: root.textSize
+            fontSizeMode: Text.Fit
+            font.pointSize: 32
+            minimumPointSize: 9
         }
     }
     Rectangle {
         width: parent.width
-        height: childrenRect.height
+        height: parent.height / 2
+        anchors.bottom: parent.bottom
         color: palette.base
 
         Row {
-            width: parent.width
+            height: parent.height
 
             Label {
                 id: playCountLabel
 
-                width: parent.width / 3
+                width: root.width / 3
+                height: parent.height
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 1
-                font.pixelSize: root.textSize
+                fontSizeMode: Text.Fit
+                font.pointSize: 32
+                minimumPointSize: 9
                 text: CurrentTrackEngine.timesPlayed
                 elide: Text.ElideRight
             }
             Label {
                 id: scoreLabel
 
-                width: parent.width / 3
+                width: root.width / 3
+                height: parent.height
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 1
-                font.pixelSize: root.textSize
+                fontSizeMode: Text.Fit
+                font.pointSize: 32
+                minimumPointSize: 9
                 text: CurrentTrackEngine.score
                 elide: Text.ElideRight
             }
             Label {
                 id: lastPlayedLabel
 
-                width: parent.width / 3
+                width: root.width / 3
+                height: parent.height
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 1
-                font.pixelSize: root.textSize
+                fontSizeMode: Text.Fit
+                font.pointSize: 32
+                minimumPointSize: 9
                 text: CurrentTrackEngine.lastPlayed
                 elide: Text.ElideRight
             }

@@ -37,7 +37,6 @@
 
 CurrentEngine::CurrentEngine( QObject* parent )
     : QObject( parent )
-    , m_coverWidth( 0 )
     , m_lastQueryMaker( Q_NULLPTR )
 {
     EngineController* engine = The::engineController();
@@ -69,7 +68,7 @@ CurrentEngine::slotAlbumMetadataChanged( Meta::AlbumPtr album )
     QPixmap cover;
 
     if( album )
-        cover = The::coverCache()->getCover( album, m_coverWidth );
+        cover = The::coverCache()->getCover( album, 1 );
 
     if( m_cover.cacheKey() != cover.cacheKey() )
     {
@@ -268,17 +267,4 @@ CurrentEngine::timesPlayed() const
         return 0;
 
     return m_currentTrack->statistics()->playCount();
-}
-
-void
-CurrentEngine::setCoverWidth(int width)
-{
-    if( m_coverWidth == width )
-        return;
-
-    m_coverWidth = width;
-    emit coverWidthChanged();
-
-    if( m_currentTrack )
-        slotAlbumMetadataChanged( m_currentTrack->album() );
 }

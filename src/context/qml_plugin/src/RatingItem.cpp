@@ -31,27 +31,10 @@
 
 #include <KRatingPainter>
 
-class RatingItem::Private
-{
-public:
-    Private()
-        : rating(0)
-        , hoverRating(-1)
-        , pixSize( 16 )
-    {
-    }
-
-    int rating;
-    int hoverRating;
-    int pixSize;
-
-    KRatingPainter ratingPainter;
-};
-
 
 RatingItem::RatingItem( QQuickItem* parent )
     : QQuickPaintedItem( parent )
-    , d( new Private() )
+    , m_ratingPainter( new KRatingPainter )
 {
     setAcceptedMouseButtons( Qt::LeftButton );
     setAcceptHoverEvents( true );
@@ -62,7 +45,7 @@ RatingItem::RatingItem( QQuickItem* parent )
 
 RatingItem::~RatingItem()
 {
-    delete d;
+    delete m_ratingPainter;
 }
 
 
@@ -72,7 +55,7 @@ RatingItem::setIcon( const QString& iconName )
     if( iconName == icon() )
         return;
 
-    d->ratingPainter.setIcon( QIcon::fromTheme( iconName ) );
+    m_ratingPainter->setIcon( QIcon::fromTheme( iconName ) );
     emit iconChanged();
 
     update();
@@ -82,24 +65,24 @@ RatingItem::setIcon( const QString& iconName )
 int
 RatingItem::spacing() const
 {
-    return d->ratingPainter.spacing();
+    return m_ratingPainter->spacing();
 }
 
 
 QString
 RatingItem::icon() const
 {
-    return d->ratingPainter.icon().name();
+    return m_ratingPainter->icon().name();
 }
 
 
 void
 RatingItem::setSpacing( int s )
 {
-    if( s == d->ratingPainter.spacing() )
+    if( s == m_ratingPainter->spacing() )
         return;
 
-    d->ratingPainter.setSpacing( s );
+    m_ratingPainter->setSpacing( s );
     emit spacingChanged();
 
     update();
@@ -109,17 +92,17 @@ RatingItem::setSpacing( int s )
 Qt::Alignment
 RatingItem::alignment() const
 {
-    return d->ratingPainter.alignment();
+    return m_ratingPainter->alignment();
 }
 
 
 void
 RatingItem::setAlignment( Qt::Alignment align )
 {
-    if( align == d->ratingPainter.alignment() )
+    if( align == m_ratingPainter->alignment() )
         return;
 
-    d->ratingPainter.setAlignment( align );
+    m_ratingPainter->setAlignment( align );
     emit alignmentChanged();
 
     update();
@@ -129,17 +112,17 @@ RatingItem::setAlignment( Qt::Alignment align )
 Qt::LayoutDirection
 RatingItem::layoutDirection() const
 {
-    return d->ratingPainter.layoutDirection();
+    return m_ratingPainter->layoutDirection();
 }
 
 
 void
 RatingItem::setLayoutDirection( Qt::LayoutDirection direction )
 {
-    if( direction == d->ratingPainter.layoutDirection() )
+    if( direction == m_ratingPainter->layoutDirection() )
         return;
 
-    d->ratingPainter.setLayoutDirection( direction );
+    m_ratingPainter->setLayoutDirection( direction );
     emit layoutDirectionChanged();
 
     update();
@@ -149,37 +132,37 @@ RatingItem::setLayoutDirection( Qt::LayoutDirection direction )
 unsigned int
 RatingItem::rating() const
 {
-    return d->rating;
+    return m_rating;
 }
 
 
 int
 RatingItem::maxRating() const
 {
-    return d->ratingPainter.maxRating();
+    return m_ratingPainter->maxRating();
 }
 
 
 int RatingItem::hoverRating() const
 {
-    return d->hoverRating;
+    return m_hoverRating;
 }
 
 
 bool
 RatingItem::halfStepsEnabled() const
 {
-    return d->ratingPainter.halfStepsEnabled();
+    return m_ratingPainter->halfStepsEnabled();
 }
 
 void
 RatingItem::setRating( int rating )
 {
-    if( rating == d->rating )
+    if( rating == m_rating )
         return;
 
-    d->rating = rating;
-    d->hoverRating = rating;
+    m_rating = rating;
+    m_hoverRating = rating;
     emit ratingChanged();
     emit hoverRatingChanged();
 
@@ -189,15 +172,15 @@ RatingItem::setRating( int rating )
 void
 RatingItem::setMaxRating( int max )
 {
-    if( max == d->ratingPainter.maxRating() )
+    if( max == m_ratingPainter->maxRating() )
         return;
 
-    bool halfSteps = d->ratingPainter.halfStepsEnabled();
+    bool halfSteps = m_ratingPainter->halfStepsEnabled();
 
-    d->ratingPainter.setMaxRating( max );
+    m_ratingPainter->setMaxRating( max );
     emit maxRatingChanged();
 
-    if( halfSteps != d->ratingPainter.halfStepsEnabled() )
+    if( halfSteps != m_ratingPainter->halfStepsEnabled() )
         emit halfStepsEnabledChanged();
 
     update();
@@ -207,10 +190,10 @@ RatingItem::setMaxRating( int max )
 void
 RatingItem::setHalfStepsEnabled( bool enabled )
 {
-    if( enabled == d->ratingPainter.halfStepsEnabled() )
+    if( enabled == m_ratingPainter->halfStepsEnabled() )
         return;
 
-    d->ratingPainter.setHalfStepsEnabled( enabled );
+    m_ratingPainter->setHalfStepsEnabled( enabled );
     emit halfStepsEnabledChanged();
 
     update();
@@ -224,35 +207,28 @@ RatingItem::mousePressEvent( QMouseEvent* e )
     if ( e->button() == Qt::LeftButton )
     {
         QRect rect( 0, 0, width(), height() );
-        int ratingFromPos = d->ratingPainter.ratingFromPosition( rect, e->pos() );
+        int ratingFromPos = m_ratingPainter->ratingFromPosition( rect, e->pos() );
         debug() << "Rating item clicked. New rating:" << ratingFromPos;
 
         if ( ratingFromPos >= 0 )
-        {
-            //             setToolTip( i18n( "Track rating: %1", (float)d->rating / 2 ) );
             emit clicked( ratingFromPos );
-        }
     }
 }
-
 
 void
 RatingItem::hoverMoveEvent( QHoverEvent* e )
 {
     QRect rect( 0, 0, width(), height() );
-    d->hoverRating = d->ratingPainter.ratingFromPosition( rect, e->pos() );
+    m_hoverRating = m_ratingPainter->ratingFromPosition( rect, e->pos() );
 
     update();
 }
-
 
 void
 RatingItem::hoverEnterEvent( QHoverEvent* e )
 {
     QRect rect( 0, 0, width(), height() );
-    d->hoverRating = d->ratingPainter.ratingFromPosition( rect, e->pos() );
-
-    //     setToolTip( i18n( "Track rating: %1", (float)d->rating / 2 ) );
+    m_hoverRating = m_ratingPainter->ratingFromPosition( rect, e->pos() );
 
     update();
 }
@@ -260,7 +236,8 @@ RatingItem::hoverEnterEvent( QHoverEvent* e )
 void
 RatingItem::hoverLeaveEvent( QHoverEvent* )
 {
-    d->hoverRating = -1;
+    m_hoverRating = -1;
+
     update();
 }
 
@@ -269,7 +246,7 @@ void
 RatingItem::paint( QPainter* painter )
 {
 
-    d->ratingPainter.setEnabled( isEnabled() );
+    m_ratingPainter->setEnabled( isEnabled() );
     QRect rect( 0, 0, width(), height() );
-    d->ratingPainter.paint( painter, rect, d->rating, d->hoverRating );
+    m_ratingPainter->paint( painter, rect, m_rating, m_hoverRating );
 }

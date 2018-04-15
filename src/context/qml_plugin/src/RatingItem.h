@@ -23,6 +23,9 @@
 
 #include <QQuickPaintedItem>
 
+
+class KRatingPainter;
+
 class RatingItem : public QQuickPaintedItem
 {
     Q_OBJECT
@@ -151,8 +154,10 @@ protected:
     virtual void paint( QPainter* painter ) override;
 
 private:
-    class Private;
-    Private* const d;
+    int m_rating;
+    int m_hoverRating;
+
+    KRatingPainter *m_ratingPainter;
 };
 
 #endif
