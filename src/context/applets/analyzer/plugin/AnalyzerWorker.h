@@ -50,7 +50,7 @@ class Worker : public QObject
 
 public:
     const static int PROCESSING_INTERVAL = 5; // Interval between new data lookups
-    const static int DATA_BUFFER_SIZE = 7; // Higher values increase latency, lower values increase risk of missing frames
+    const static int DATA_BUFFER_SIZE = 8; // Higher values increase latency, lower values increase risk of missing frames
 
     Worker();
     ~Worker();

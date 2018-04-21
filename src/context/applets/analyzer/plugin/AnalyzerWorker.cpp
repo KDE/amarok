@@ -66,12 +66,6 @@ void Analyzer::Worker::receiveData( const QMap<Phonon::AudioDataOutput::Channel,
     if( newData.isEmpty() || newData[Phonon::AudioDataOutput::LeftChannel].size() != newDataSize )
         return;
 
-    if( m_size < newDataSize )
-    {
-        debug() << "Data size mismatch in analyzer!";
-        return;
-    }
-
     m_rawInMutex.lock();
 
     for( int x = 0; x < newDataSize; x++ )
@@ -89,9 +83,6 @@ void Analyzer::Worker::receiveData( const QMap<Phonon::AudioDataOutput::Channel,
         m_rawIn.last() /= ( 1 << 15 ); // Scale to [0, 1]
     }
 
-    while( m_rawIn.size() > (int)m_size + DATA_BUFFER_SIZE * newDataSize )
-        m_rawIn.removeFirst();
-
     m_rawInMutex.unlock();
 }
 
@@ -100,8 +91,8 @@ void Analyzer::Worker::processData()
     int timeElapsed = m_lastUpdate.elapsed();
 
     // Delay if processing is too fast
-    if( timeElapsed < m_expectedDataTime )
-        QThread::currentThread()->msleep( m_expectedDataTime - timeElapsed );
+    if( timeElapsed < m_expectedDataTime - 1 )
+        QThread::currentThread()->msleep( m_expectedDataTime - timeElapsed - 1 );
 
     applyWindowFunction();
 }
@@ -117,6 +108,9 @@ void Analyzer::Worker::applyWindowFunction()
     }
 
     const int newDataSize = EngineController::DATAOUTPUT_DATA_SIZE;
+
+    while( m_rawIn.size() > (int)m_size + DATA_BUFFER_SIZE * newDataSize )
+        m_rawIn.removeFirst();
 
     // Apply window function
     for( uint i = 0; i < m_size; i++ )

@@ -32,13 +32,11 @@ BlockWorker::BlockWorker( int rows, int columns, qreal step, bool showFadebars )
     , m_refreshTime( 16 )
     , m_showFadebars( showFadebars )
 {
-    m_yscale.resize( m_rows + 1 );
-    const double PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
+    m_yscale.resize( m_rows );
+    const double PRO = 1; //PRO allows us to restrict the range somewhat
 
     for( int z = 0; z < m_rows; ++z )
-        m_yscale[z] = 1 - ( log10( PRE + z ) / log10( PRE + m_rows + PRO ) );
-
-    m_yscale[m_rows] = 0;
+        m_yscale[z] = 1 - log10( m_rows - z ) / log10( m_rows + PRO );
 
     m_store.resize( columns );
     m_fadebars.resize( columns );
@@ -55,12 +53,11 @@ void BlockWorker::setRows( int rows )
     m_rows = rows;
     m_yscale.resize( m_rows + 1 );
 
-    const double PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
+    const double PRO = 1; //PRO allows us to restrict the range somewhat
 
     for( int z = 0; z < m_rows; ++z )
-        m_yscale[z] = 1 - ( log10( PRE + z ) / log10( PRE + m_rows + PRO ) );
+        m_yscale[z] = 1 - log10( m_rows - z ) / log10( m_rows + PRO );
 
-    m_yscale[m_rows] = 0;
     m_mutex.unlock();
 }
 
@@ -77,7 +74,7 @@ void BlockWorker::analyze()
     int timeElapsed = m_lastUpdate.elapsed();
 
     // only analyze if screen is fast enough
-    if( timeElapsed < m_refreshTime )
+    if( timeElapsed < m_refreshTime - 1 )
         QThread::currentThread()->msleep( m_refreshTime - timeElapsed - 1 );
 
     const auto scopeData = scope();
@@ -98,7 +95,7 @@ void BlockWorker::analyze()
     {
         // determine y
         int y = 0;
-        while( y < m_yscale.size() && scopeData.at(x) < m_yscale.at(y) )
+        while( y < m_yscale.size() && scopeData.at(x) > m_yscale.at(y) )
             y++;
 
         auto &fadebars = m_fadebars[x];
@@ -116,13 +113,13 @@ void BlockWorker::analyze()
         for( auto &fadebar : fadebars )
             fadebar.intensity -= fadeStep;
 
-        if( ( double )y > store )
+        if( ( double )y < store )
         {
             // add new fadebar at old column height
             if( m_showFadebars )
                 fadebars << Fadebar( store, BlockAnalyzer::FADE_SIZE );
 
-            store = qMin( store + step, double( y ) );
+            store = qMax( store - step, double( y ) );
         }
         else
             store = y;

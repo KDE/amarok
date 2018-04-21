@@ -59,9 +59,6 @@ protected:
         // Draw the background
         p.drawPixmap(QRect(QPoint(0, 0), framebufferObject()->size()), m_backgroundPixmap);
 
-
-        const int frameHeight = framebufferObject()->height();
-
         for( uint x = 0; x < (uint)m_store.size(); ++x )
         {
             // Draw fade bars
@@ -70,14 +67,14 @@ protected:
                 if( fadebar.intensity > 0 )
                 {
                     const uint offset = fadebar.intensity;
-                    const int fadeHeight = frameHeight - fadebar.y * (BLOCK_HEIGHT + 1);
+                    const int fadeHeight = fadebar.y * (BLOCK_HEIGHT + 1);
                     if( fadeHeight > 0 )
                         p.drawPixmap(x * ( m_columnWidth + 1 ), 0, m_fadeBarsPixmaps.value(offset), 0, 0, m_columnWidth, fadeHeight);
                 }
             }
 
             // Draw bars
-            const int height = frameHeight - m_store.at(x) * (BLOCK_HEIGHT + 1);
+            const int height = m_store.at(x) * (BLOCK_HEIGHT + 1);
             if (height > 0)
                 p.drawPixmap(x * (m_columnWidth + 1), 0, m_barPixmap, 0, 0, m_columnWidth, height);
 
