@@ -74,6 +74,7 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KShortcutsDialog>              //slotConfigShortcuts()
+#include <ThreadWeaver/Queue>
 
 #include <QAction>
 #include <QByteArray>
@@ -214,6 +215,11 @@ App::~App()
     Amarok::config().writeEntry( "HiddenOnExit", false );
     AmarokConfig::self()->save();
 #endif
+
+    // wait for threads to finish
+    ThreadWeaver::Queue::instance()->requestAbort();
+    ThreadWeaver::Queue::instance()->finish();
+    ThreadWeaver::Queue::instance()->shutDown();
 
     ScriptManager::destroy();
 

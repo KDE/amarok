@@ -138,7 +138,7 @@ AbstractDirectoryWatcher::defaultEnd(const ThreadWeaver::JobPointer& self, Threa
 }
 
 void
-AbstractDirectoryWatcher::abort()
+AbstractDirectoryWatcher::requestAbort()
 {
     DEBUG_BLOCK
 

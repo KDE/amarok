@@ -100,7 +100,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         QSharedPointer<SqlStorage> m_sqlStorage;
 
         SqlScanResultProcessor* m_scanProcessor;
-        AbstractDirectoryWatcher* m_directoryWatcher;
+        QWeakPointer<AbstractDirectoryWatcher> m_directoryWatcher;
 
         SqlCollectionLocationFactory* m_collectionLocationFactory;
         SqlQueryMakerFactory* m_queryMakerFactory;

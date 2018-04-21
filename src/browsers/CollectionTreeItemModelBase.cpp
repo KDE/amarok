@@ -40,12 +40,15 @@
 
 #include <QApplication>
 #include <QIcon>
-#include <QMutex>
 #include <QPixmap>
+#include <QPointer>
 #include <QStandardPaths>
 #include <QStyle>
 #include <QTimeLine>
 #include <QTimer>
+
+#include <functional>
+
 
 using namespace Meta;
 
@@ -57,7 +60,15 @@ public:
         : m_index( index )
         , m_album( album )
         , m_model( model )
+        , m_abortRequested( false )
     {
+        if( !m_model || !m_album || !m_index.isValid() )
+            requestAbort();
+    }
+
+    void requestAbort() override
+    {
+        m_abortRequested = true;
     }
 
 protected:
@@ -66,13 +77,23 @@ protected:
         Q_UNUSED( self )
         Q_UNUSED( thread )
 
-        m_model->tracksLoaded( m_album, m_index, m_album->tracks() );
+        if( m_abortRequested || !m_model )
+            return;
+
+        const auto tracks = m_album->tracks();
+
+        if( m_model && !m_abortRequested )
+        {
+            auto slot = std::bind( &CollectionTreeItemModelBase::tracksLoaded, m_model, m_album, m_index, tracks );
+            QTimer::singleShot( 0, m_model, slot );
+        }
     }
 
 private:
     QModelIndex m_index;
     Meta::AlbumPtr m_album;
-    CollectionTreeItemModelBase *m_model;
+    QPointer<CollectionTreeItemModelBase> m_model;
+    bool m_abortRequested;
 };
 
 inline uint qHash( const Meta::DataPtr &data )
@@ -89,7 +110,6 @@ static const QSet<CategoryId::CatMenuId> variousArtistCategories =
 
 CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     : QAbstractItemModel()
-    , m_loadingAlbumsMutex( new QMutex )
     , m_rootItem( 0 )
     , m_animFrame( 0 )
     , m_loading1( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading1.png" ) ) )
@@ -113,8 +133,6 @@ CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 
     if( m_rootItem )
         m_rootItem->deleteLater();
-
-    delete m_loadingAlbumsMutex;
 }
 
 Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) const
@@ -125,7 +143,6 @@ Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) cons
         flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEditable;
     }
     return flags;
-
 }
 
 bool
@@ -289,7 +306,6 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
                     }
                     else if( !album->name().isEmpty() )
                     {
-                        QMutexLocker locker( m_loadingAlbumsMutex );
                         if( !m_loadingAlbums.contains( album ) )
                         {
                             m_loadingAlbums.insert( album );
@@ -327,7 +343,6 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
 
                 else if( !album->name().isEmpty() )
                 {
-                    QMutexLocker locker( m_loadingAlbumsMutex );
                     if( !m_loadingAlbums.contains( album ) )
                     {
                         m_loadingAlbums.insert( album );
@@ -680,14 +695,13 @@ CollectionTreeItemModelBase::mapCategoryToQueryType( int levelType ) const
 }
 
 void
-CollectionTreeItemModelBase::tracksLoaded( Meta::AlbumPtr album, const QModelIndex &index, const Meta::TrackList& tracks )
+CollectionTreeItemModelBase::tracksLoaded( const Meta::AlbumPtr &album, const QModelIndex &index, const Meta::TrackList& tracks )
 {
     DEBUG_BLOCK
 
     if( !album )
         return;
 
-    QMutexLocker locker( m_loadingAlbumsMutex );
     m_loadingAlbums.remove( album );
 
     if( !index.isValid() )
@@ -704,15 +718,11 @@ CollectionTreeItemModelBase::tracksLoaded( Meta::AlbumPtr album, const QModelInd
         debug() << "Valid album year found:" << year;
     }
 
-    // Set the year in the thread associated with this
-    auto lambda = [=] () {
-        if( !m_years.contains( album.data() ) || m_years.value( album.data() ) != year )
-        {
-            m_years[ album.data() ] = year;
-            emit dataChanged( index, index );
-        }
-    };
-    QTimer::singleShot( 0, this, lambda );
+    if( !m_years.contains( album.data() ) || m_years.value( album.data() ) != year )
+    {
+        m_years[ album.data() ] = year;
+        emit dataChanged( index, index );
+    }
 }
 
 void

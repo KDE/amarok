@@ -221,12 +221,12 @@ using namespace Collections;
 
 SqlCollection::SqlCollection( QSharedPointer<SqlStorage> storage )
     : DatabaseCollection()
-    , m_registry( 0 )
+    , m_registry( nullptr )
     , m_sqlStorage( storage )
-    , m_scanProcessor( 0 )
-    , m_directoryWatcher( 0 )
-    , m_collectionLocationFactory( 0 )
-    , m_queryMakerFactory( 0 )
+    , m_scanProcessor( nullptr )
+    , m_directoryWatcher( nullptr )
+    , m_collectionLocationFactory( nullptr )
+    , m_queryMakerFactory( nullptr )
 {
     qRegisterMetaType<TrackUrls>( "TrackUrls" );
     qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
@@ -270,19 +270,22 @@ SqlCollection::SqlCollection( QSharedPointer<SqlStorage> storage )
     // scanning
     m_scanManager = new SqlScanManager( this, this );
     m_scanProcessor = new SqlScanResultProcessor( m_scanManager, this, this );
-    m_directoryWatcher = new SqlDirectoryWatcher( this );
-    connect( m_directoryWatcher, &AbstractDirectoryWatcher::done,
-             m_directoryWatcher, &AbstractDirectoryWatcher::deleteLater ); // auto delete
-    connect( m_directoryWatcher, &AbstractDirectoryWatcher::requestScan,
+    auto directoryWatcher = QSharedPointer<SqlDirectoryWatcher>::create( this );
+    m_directoryWatcher = directoryWatcher.toWeakRef();
+    connect( directoryWatcher.data(), &AbstractDirectoryWatcher::done,
+             directoryWatcher.data(), &AbstractDirectoryWatcher::deleteLater ); // auto delete
+    connect( directoryWatcher.data(), &AbstractDirectoryWatcher::requestScan,
              m_scanManager, &GenericScanManager::requestScan );
-    ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(m_directoryWatcher) );
+    ThreadWeaver::Queue::instance()->enqueue( directoryWatcher );
 }
 
 SqlCollection::~SqlCollection()
 {
     DEBUG_BLOCK
 
-    m_directoryWatcher->abort();
+    if( auto directoryWatcher = m_directoryWatcher.toStrongRef() )
+        directoryWatcher->requestAbort();
+
     delete m_scanProcessor; // this prevents any further commits from the scanner
     delete m_collectionLocationFactory;
     delete m_queryMakerFactory;
