@@ -20,8 +20,8 @@
 #include "AnalyzerWorker.h"
 #include "BlockRenderer.h"
 #include "BlockWorker.h"
-
 #include "PaletteHandler.h"
+#include "core/support/Debug.h"
 
 #include <cmath>
 

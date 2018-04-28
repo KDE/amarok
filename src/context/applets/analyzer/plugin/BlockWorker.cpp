@@ -61,7 +61,7 @@ void BlockWorker::setRows( int rows )
     m_mutex.unlock();
 }
 
-void BlockWorker::setColumns(int columns)
+void BlockWorker::setColumns( int columns )
 {
     if( m_columns == columns )
         return;
@@ -85,8 +85,8 @@ void BlockWorker::analyze()
     const qreal step = m_step * timeElapsed / 1000.0;
     const qreal fadeStep = (qreal)timeElapsed / 20.0;
 
-    // block m_store and m_fadebars
-    QMutexLocker locker(&m_mutex);
+    // lock m_store and m_fadebars
+    QMutexLocker locker( &m_mutex );
 
     m_store.resize( scopeSize );
     m_fadebars.resize( scopeSize );
@@ -102,7 +102,7 @@ void BlockWorker::analyze()
         auto &store = m_store[x];
 
         // remove obscured fadebars
-        while( !fadebars.isEmpty() && fadebars.last().y >= y )
+        while( !fadebars.isEmpty() && fadebars.last().y <= y )
             fadebars.removeLast();
 
         // remove completely faded fadebars

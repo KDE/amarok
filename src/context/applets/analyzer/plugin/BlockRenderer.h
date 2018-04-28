@@ -26,21 +26,20 @@
 
 #include "BlockAnalyzer.h"
 #include "BlockWorker.h"
-#include "core/support/Debug.h"
 
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLPaintDevice>
 #include <QPainter>
+#include <QPointer>
 #include <QQuickFramebufferObject>
-#include <QSGTexture>
-#include <QSharedPointer>
+
 
 class BlockRenderer : public QQuickFramebufferObject::Renderer
 {
 public:
     static const int BLOCK_HEIGHT = BlockAnalyzer::BLOCK_HEIGHT;
 
-    BlockRenderer() {}
+    BlockRenderer() : m_worker( nullptr ) {}
 
 protected:
     QOpenGLFramebufferObject* createFramebufferObject(const QSize &size) override
@@ -52,6 +51,15 @@ protected:
 
     void render() override
     {
+        // Synchronize worker data
+        if (!m_worker)
+            return;
+
+        m_worker->m_mutex.lock();
+        const QVector<double> store = m_worker->m_store;
+        const QVector<QList<BlockWorker::Fadebar> > fadebars = m_worker->m_fadebars;
+        m_worker->m_mutex.unlock();
+
         QOpenGLPaintDevice d;
         d.setSize(framebufferObject()->size());
         QPainter p(&d);
@@ -59,22 +67,22 @@ protected:
         // Draw the background
         p.drawPixmap(QRect(QPoint(0, 0), framebufferObject()->size()), m_backgroundPixmap);
 
-        for( uint x = 0; x < (uint)m_store.size(); ++x )
+        for(uint x = 0; x < (uint)store.size(); ++x)
         {
             // Draw fade bars
-            for( const auto &fadebar : m_fadebars.at(x) )
+            for(const auto &fadebar : qAsConst(fadebars.at(x)))
             {
-                if( fadebar.intensity > 0 )
+                if(fadebar.intensity > 0)
                 {
                     const uint offset = fadebar.intensity;
                     const int fadeHeight = fadebar.y * (BLOCK_HEIGHT + 1);
-                    if( fadeHeight > 0 )
-                        p.drawPixmap(x * ( m_columnWidth + 1 ), 0, m_fadeBarsPixmaps.value(offset), 0, 0, m_columnWidth, fadeHeight);
+                    if(fadeHeight > 0)
+                        p.drawPixmap(x * (m_columnWidth + 1), 0, m_fadeBarsPixmaps.value(offset), 0, 0, m_columnWidth, fadeHeight);
                 }
             }
 
             // Draw bars
-            const int height = m_store.at(x) * (BLOCK_HEIGHT + 1);
+            const int height = store.at(x) * (BLOCK_HEIGHT + 1);
             if (height > 0)
                 p.drawPixmap(x * (m_columnWidth + 1), 0, m_barPixmap, 0, 0, m_columnWidth, height);
 
@@ -92,14 +100,8 @@ protected:
         m_rows = analyzer->m_rows;
         m_columnWidth = analyzer->m_columnWidth;
 
-        auto worker = qobject_cast<const BlockWorker*>(analyzer->worker());
-        if (worker)
-        {
-            worker->m_mutex.lock();
-            m_store = worker->m_store;
-            m_fadebars = worker->m_fadebars;
-            worker->m_mutex.unlock();
-        }
+        if (!m_worker)
+            m_worker = qobject_cast<const BlockWorker*>(analyzer->worker());
 
         if (analyzer->m_pixmapsChanged)
         {
@@ -113,8 +115,8 @@ protected:
     }
 
 private:
-    QVector<double> m_store;
-    QVector<QList<BlockWorker::Fadebar> > m_fadebars;
+    QPointer<const BlockWorker> m_worker;
+
     int m_rows;
     int m_columnWidth;
 

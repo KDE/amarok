@@ -68,8 +68,12 @@ Analyzer::Base::~Base()
 {
     DEBUG_BLOCK
 
-    m_worker->deleteLater();
-    m_worker = Q_NULLPTR;
+    if( m_worker )
+    {
+        m_worker->deleteLater();
+        m_worker = nullptr;
+    }
+
     m_workerThread.quit();
     m_workerThread.wait();
 }
