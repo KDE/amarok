@@ -65,7 +65,7 @@ A detailed blog post on how to make a local build can be found here: http://blog
   If you are a regular Amarok contributor, please build with tests enabled. 
   
   Install gmock from http://code.google.com/p/googlemock/
-  Add the following flag to your cmake line: -DKDE4_BUILD_TESTS=ON
+  Add the following flag to your cmake line: -DWITH_TESTS=ON
 
   Once compiled, jsut run the tests with 'make test'
   
