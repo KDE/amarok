@@ -1,4 +1,0 @@
-REVIEWBOARD_URL = "https://git.reviewboard.kde.org"
-TARGET_GROUPS = "Amarok"
-GUESS_FIELDS = True
-REPOSITORY = "git://anongit.kde.org/amarok"
