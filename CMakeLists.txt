@@ -21,6 +21,7 @@ include(ECMSetupVersion)
 include(ECMAddTests)
 include(ECMAddAppIcon)
 include(FindPkgConfig)
+include(CMakePushCheckState)
 
 find_package( Qt5 5.8.0 COMPONENTS QuickControls2 WebEngine )
 set_package_properties( Qt5QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area" )
@@ -49,6 +50,7 @@ set_package_properties( Taglib PROPERTIES DESCRIPTION "Support for Audio metadat
 
 # Check if TagLib is built with ASF and MP4 support
 include(CheckCXXSourceCompiles)
+cmake_push_check_state()
 set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
 set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
 
@@ -75,9 +77,7 @@ IT::File itfile(s); XM::File xmfile(s); return 0; }" TAGLIB_MOD_FOUND)
 
 check_cxx_source_compiles("#include <opusfile.h>
 int main() { char *s; TagLib::Ogg::Opus::File opusfile(s); return 0;}" TAGLIB_OPUS_FOUND)
-
-set(CMAKE_REQUIRED_INCLUDES)
-set(CMAKE_REQUIRED_LIBRARIES)
+cmake_pop_check_state()
 
 set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
 find_package(Taglib-Extras)
