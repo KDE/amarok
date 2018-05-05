@@ -1,8 +1,5 @@
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
-find_package(Googlemock REQUIRED)
-set_package_properties( GOOGLEMOCK PROPERTIES DESCRIPTION "Used in Amarok's tests." URL "http://code.google.com/p/googlemock/" TYPE REQUIRED )
-
 set( AMAROK_SOURCE_TREE ${CMAKE_SOURCE_DIR}/src )
 set( AMAROK_TEST_TREE ${CMAKE_SOURCE_DIR}/tests )
 set( AMAROK_UTILITY_TREE ${CMAKE_SOURCE_DIR}/utilities )

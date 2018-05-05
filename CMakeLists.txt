@@ -41,7 +41,6 @@ option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple ex
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recommended" ON)
 option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
-option(WITH_TESTS "Enable compilation of unit tests" OFF)
 
 ############### Taglib
 set(TAGLIB_MIN_VERSION "1.7")
@@ -90,7 +89,14 @@ check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 
 
 #Needed to conditionally build tests and gui
-set(BUILD_TESTING "${WITH_TESTS}")
+find_package(Googlemock)
+set_package_properties( GOOGLEMOCK PROPERTIES DESCRIPTION "Used in Amarok's tests." URL "https://github.com/google/googlemock" TYPE OPTIONAL )
+
+if(GOOGLEMOCK_FOUND)
+    set(BUILD_TESTING ON)
+else()
+    set(BUILD_TESTING OFF)
+endif()
 
 if(BUILD_TESTING)
    add_definitions(-DDEBUG)

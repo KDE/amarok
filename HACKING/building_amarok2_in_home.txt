@@ -64,12 +64,11 @@ A detailed blog post on how to make a local build can be found here: http://blog
 
   If you are a regular Amarok contributor, please build with tests enabled. 
   
-  Install gmock from http://code.google.com/p/googlemock/
-  Add the following flag to your cmake line: -DWITH_TESTS=ON
+  Install gmock from https://github.com/google/googlemock
 
-  Once compiled, jsut run the tests with 'make test'
+  Once compiled, just run the tests with 'make test'
   
-  For more information about the test infrastructure, read the Qtestlib Manual: http://doc.trolltech.com/4.5/qtestlib-manual.html
+  For more information about the test infrastructure, read the Qtestlib Manual: http://doc.qt.io/qt-5/qtest-overview.html
 
 * Updating KDE Config:
     kbuildsycoca4 --noincremental
