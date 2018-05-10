@@ -26,4 +26,4 @@ target_link_libraries(amarok_context_applet_analyzer
 install(TARGETS amarok_context_applet_analyzer DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/analyzer)
 install(FILES plugin/qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/analyzer)
 
-kpackage_install_package(package org.kde.amarok.analyzer amarok)
+kpackage_install_bundled_package(package org.kde.amarok.analyzer amarok)

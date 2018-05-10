@@ -14,4 +14,4 @@ target_link_libraries(amarok_context_applet_photos
 install(TARGETS amarok_context_applet_photos DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/photos)
 install(FILES plugin/qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/photos)
 
-kpackage_install_package(package org.kde.amarok.photos amarok)
+kpackage_install_bundled_package(package org.kde.amarok.photos amarok)

@@ -79,12 +79,11 @@ ContextView::ContextView( QWidget *parent )
                                                                     QStringLiteral( "org.kde.amarok.context" ) );
     Q_ASSERT( qmlPackage.isValid() );
 
-    const QString sourcePath = qmlPackage.filePath( "mainscript" );
-    Q_ASSERT( QFile::exists( sourcePath ) );
+    const QUrl sourceUrl = qmlPackage.fileUrl( "mainscript" );
 
-    ::debug() << "Loading context qml mainscript:" << sourcePath;
+    ::debug() << "Loading context qml mainscript:" << sourceUrl;
 
-    setSource( QUrl::fromLocalFile( sourcePath ) );
+    setSource( sourceUrl );
     setResizeMode( SizeRootObjectToView );
 
     // keep this assignment at bottom so that premature usage of ::self() asserts out

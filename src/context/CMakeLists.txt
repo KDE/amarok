@@ -52,4 +52,4 @@ install( TARGETS qml_plugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/qml
 
 install( FILES ${qml_plugin_qml_files} DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/qml )
 
-kpackage_install_package( context_qml_package org.kde.amarok.context genericqml )
+kpackage_install_bundled_package( context_qml_package org.kde.amarok.context genericqml )

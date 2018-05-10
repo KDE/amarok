@@ -15,4 +15,4 @@ target_link_libraries(amarok_context_applet_currenttrack
 install(TARGETS amarok_context_applet_currenttrack DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/currenttrack)
 install(FILES plugin/qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/currenttrack)
 
-kpackage_install_package(package org.kde.amarok.currenttrack amarok)
+kpackage_install_bundled_package(package org.kde.amarok.currenttrack amarok)

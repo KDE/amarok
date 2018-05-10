@@ -115,10 +115,10 @@ QVariant AppletModel::data(const QModelIndex& index, int role) const
             return package.metadata().pluginId();
 
         case Icon:
-            return QUrl::fromLocalFile(package.filePath("icon"));
+            return package.fileUrl("icon");
 
         case Mainscript:
-            return QUrl::fromLocalFile(package.filePath("mainscript"));
+            return package.fileUrl("mainscript");
 
         case Collapsed:
             return Amarok::config("Context").readEntry(package.metadata().pluginId() + "_collapsed", false);
@@ -214,7 +214,7 @@ QUrl Context::AppletModel::imageUrl(const QString& id, const QString& imageName)
 {
     auto package = findPackage(id);
     if (package.isValid())
-        return QUrl::fromLocalFile( package.filePath("images", imageName) );
+        return package.fileUrl("images", imageName);
     return QUrl();
 }
 
