@@ -16,7 +16,7 @@
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
       </authorgroup>
 <legalnotice>&FDLNotice;</legalnotice>
-<date>2018-03-21</date>
+<date>2018-05-21</date>
       <releaseinfo>2.9.0</releaseinfo>
 <abstract>
 <para>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including &Linux;, &MacOS; and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.4.</para>
@@ -33,7 +33,7 @@
  <keyword>sound</keyword>
 </keywordset>
 </bookinfo>
-<!--userbase <timestamp>2018-03-22T17:01:14Z</timestamp>-->
+<!--userbase <timestamp>2018-05-21T14:49:54Z</timestamp>-->
 
 <!--userbase-content-->
 <chapter id="amarok--rediscover-your-music"><title>Amarok: Rediscover your music!</title> 
@@ -5824,12 +5824,12 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </para>
 <sect2 id="summary-of-requirements"><title>Summary of Requirements</title> 
 <itemizedlist>
-<listitem><para>The <guilabel>Moodbar</guilabel> binary, in your PATH (it should be listed upon running <userinput>which moodbar</userinput> from a console) &mdash; Remember to configure the <guilabel>Moodbar</guilabel> package with <userinput>./configure --prefix=`pkg-config --variable=prefix gstreamer-0.10`</userinput></para></listitem>
-<listitem><para>The GStreamer 0.10 library and <link linkend="supported-filetypes">plugins</link> for the formats you want <guilabel>Moodbar</guilabel> to be able to analyse. A GStreamer 1.0 based fork is also available, see <link linkend="source-downloads">below</link>.</para></listitem>
+<listitem><para>The <guilabel>Moodbar</guilabel> binary, in your PATH (it should be listed upon running <userinput>which moodbar</userinput> from a console) &mdash; Remember to configure the <guilabel>Moodbar</guilabel> package with proper path, &eg; build and install with commands <userinput>./autogen.sh --prefix=`pkg-config --variable=prefix gstreamer-1.0` &amp;&amp; make &amp;&amp; sudo make install</userinput></para></listitem>
+<listitem><para>The GStreamer 1.0 library and <link linkend="supported-filetypes">plugins</link> for the formats you want <guilabel>Moodbar</guilabel> to be able to analyse. (An earlier GStreamer 0.10 based version is also still available for some distributions)</para></listitem>
 <listitem><para>The <emphasis>Fastest Fourier Transform In The West</emphasis> (<ulink url="http://www.fftw.org">fftw.org</ulink>)  FFTW library version 3.0 or above (at least single-precision floating point version - libfftw3f) &mdash; If your platform does not provide this for you or you need to compile your own version, remember to configure the  FFTW package with <userinput>./configure --enable-single</userinput></para></listitem>
 <listitem><para>A version of &amarok; with a <guilabel>Use moods</guilabel> option in the <guilabel>General</guilabel> section of the configuration screen. This means 1.4.4 or higher in the 1.4 series or 2.2.2 or higher in the 2.x series.</para></listitem>
 </itemizedlist>
-<para><note><para>Systems with package managers should automatically install the GStreamer plugins and FFTW along with the Moodbar package; this information is provided mostly for people who want or need to compile from source or manually install packages.</para></note>
+<para><note><para>Systems with package managers should automatically install the GStreamer plugins and FFTW along with the Moodbar package if available; this information is provided mostly for people who want or need to compile from source or manually install packages, or where the distribution specific instructions are outdated and no updated moodbar package is yet available.</para></note>
 </para>
 </sect2>
 <sect2 id="usage"><title>Usage</title> 
@@ -5840,18 +5840,20 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </sect2>
 <sect2 id="installation"><title>Installation</title> 
 <sect3 id="source-downloads"><title>Source Downloads</title> 
-<para>Latest release: <ulink url="http://pwsp.net/~qbob/moodbar-0.1.2.tar.gz">moodbar-0.1.2.tar.gz</ulink> &mdash; this is the Moodbar source package, which contains the <guilabel>Moodbar</guilabel> program (which generates .mood files from music files), and a GStreamer plugin that does the work. The Moodbar package  needs GStreamer 0.10.* installed, plus the 0.10.* version of <link linkend="supported-filetypes">various plugins</link>. Be sure to install the Moodbar package into the <emphasis>same prefix</emphasis> as GStreamer &mdash; follow the instructions in the INSTALL file.
-</para>
-<para>As the Moodbar version above uses nowadays obsolete GStreamer 0.10 and the original source code link is dead, sources have been uploaded to <ulink url="https://github.com/Mazhoon/moodbar">GitHub</ulink> and a forked version supporting GStreamer 1.0 has been developed.
+<para>Latest release: <ulink url="https://github.com/Mazhoon/moodbar/archive/v0.1.4.tar.gz">moodbar-0.1.4.tar.gz</ulink> &mdash; this is the Moodbar source package, which contains the <guilabel>Moodbar</guilabel> program (which generates .mood files from music files), and a GStreamer plugin that does the work. The Moodbar package  needs GStreamer 1.0.* installed, plus the 1.0.* version of <link linkend="supported-filetypes">various plugins</link>. Be sure to install the Moodbar package into the <emphasis>same prefix</emphasis> as GStreamer &mdash; follow the instructions in <link linkend="summary-of-requirements"> the summary of requirements chapter</link>. The 0.1.4 is a a fork of original 0.1.2 sources, updated to use GStreamer 1.0. The old 0.1.2 sources are not reliably available online any more, but packages might be still available for some distributions.
 </para>
 <para>If you find any bugs, please submit a bug report at <ulink url="http://bugs.kde.org">bugs.kde.org</ulink>.
 </para>
 </sect3>
 <sect3 id="debian-packages"><title>Debian packages</title> 
+<para><note><para>This section contains old instructions for the GStreamer 0.10 based moodbar version 0.1.2, they might be outdated.</para></note>
+</para>
 <para>A package for Moodbar is now available in Debian unstable. Simply run <userinput>apt-get install moodbar</userinput> . You will likely also want to install gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good, and gstreamer0.10-plugins-bad for format support.
 </para>
 </sect3>
 <sect3 id="kubuntu-and-ubuntu-packages"><title>Kubuntu and Ubuntu packages</title> 
+<para><note><para>This section contains old instructions for the GStreamer 0.10 based moodbar version 0.1.2, they might be outdated.</para></note>
+</para>
 <para>A package for Moodbar is available in the official package repository; just ensure the universe section is activated (which should be default anyway). Just install the package moodbar with your preferred package manager (<guilabel>Kpackagekit</guilabel>, <guilabel>Aptitude</guilabel>, <guilabel>Adept</guilabel>, <guilabel>Synaptic</guilabel>). You will likely also want to install gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good, and gstreamer0.10-plugins-bad for format support.
 </para>
 <para>Or, to install, paste this into <guilabel>Firefox</guilabel> or &konqueror; and hit &Enter;.
@@ -5860,55 +5862,43 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </para>
 </sect3>
 <sect3 id="gentoo-ebuilds"><title>Gentoo ebuilds</title> 
+<para><note><para>This section contains old instructions for the GStreamer 0.10 based moodbar version 0.1.2, they might be outdated.</para></note>
+</para>
 <para>Moodbar is available in Portage, simply <userinput>emerge moodbar</userinput>  Unofficial ebuilds are no longer required.
 </para>
 </sect3>
 <sect3 id="rpm-builds"><title>RPM builds</title> 
+<para><note><para>This section contains old instructions for the GStreamer 0.10 based moodbar version 0.1.2, they might be outdated</para></note>
+</para>
 <para>If you are a rpm-based distro user, you can build a .rpm using rpmbuild with latest
 </para>
 <para><ulink url="http://cvs.pld-linux.org/cgi-bin/cvsweb/SPECS/gstreamer-plugins-moodbar.spec">gstreamer-plugins-moodbar.spec</ulink>. The binary package will be soon available for <ulink url="http://pld-linux.org">PLD-linux</ulink> distro.
 </para>
 </sect3>
 <sect3 id="fedora"><title>Fedora</title> 
+<para><note><para>This section contains old instructions for the GStreamer 0.10 based moodbar version 0.1.2, they might be outdated.</para></note>
+</para>
 <para>In Fedora 7 and higher (up to 16 as of this writing) Moodbar is available in the default repositories. Simply install it with your PackageKit GUI or with the following yum command:
 </para>
 <para><userinput>yum install moodbar</userinput>
 </para>
 </sect3>
 <sect3 id="opensuse-packages"><title>openSUSE packages</title> 
-<para>openSUSE 11.0 and later, automatically install the following packages:
+<para>GStreamer 1.0 based version 0.1.4 is available in KDE:Extra repository for openSUSE Leap 42.3 and later. An earlier GStreamer 0.10 based version 0.1.2 is also still available in the main repository for some openSUSE versions.
 </para>
-<itemizedlist>
-<listitem><para>gstreamer-0_10-fluendo-mp3</para></listitem>
-<listitem><para>gstreamer-0_10-plugins-base</para></listitem>
-</itemizedlist>
-<para>Also, if your songs contain ID3 tags, you must install
-</para>
-<itemizedlist>
-<listitem><para>gstreamer-0_10-plugins-good</para></listitem>
-</itemizedlist>
-<sect4 id="moodbar-installation"><title>Moodbar Installation</title> 
-<para>1-Click Install for openSUSE 11. - just choose your version and installation procedure will do the rest:
-</para>
-<itemizedlist>
-<listitem><para><ulink url="http://software.opensuse.org/ymp/home:dstoecker/openSUSE_11.2/moodbar.ymp">openSUSE 11.2</ulink></para></listitem>
-<listitem><para><ulink url="http://software.opensuse.org/ymp/home:dstoecker/openSUSE_11.1/moodbar.ymp">openSUSE 11.1</ulink></para></listitem>
-</itemizedlist>
-<para>To install, add the correct repository for your version of openSUSE to <guilabel>YaST</guilabel> then make sure the following packages are installed:
-</para>
-<itemizedlist>
-<listitem><para>gstreamer-0_10-plugins-good</para></listitem>
-<listitem><para>gstreamer-0_10-plugins-ugly</para></listitem>
-<listitem><para>gstreamer-0_10-plugins-moodbar</para></listitem>
-<listitem><para>mad</para></listitem>
-</itemizedlist>
 <para>For details on how to add repositories, see the <ulink url="http://en.opensuse.org/SDB:Add_package_repositories">openSUSE wiki</ulink>.
 </para>
-<para>If you are using the <guilabel>Smart</guilabel> software management tool, add the channel by entering the following at the command line, remember to change the URL to match your version of openSUSE: <userinput><command>smart channel --add http://software.opensuse.org/download/home:/d7/openSUSE_10.2/home:d7.repo</command></userinput> Then enter <userinput>smart update home:d7</userinput> You can now install the required packages by <userinput>smart install gstreamer10-plugins-moodbar</userinput> Dependencies are resolved automatically.
+<para>1-Click Install for openSUSE - just choose your version and installation procedure will do the rest:
 </para>
-</sect4>
+<itemizedlist>
+<listitem><para><ulink url="https://software.opensuse.org/ymp/KDE:Extra/KDE_Frameworks5_openSUSE_Tumbleweed/moodbar.ymp">openSUSE Tumbleweed</ulink></para></listitem>
+<listitem><para><ulink url="https://software.opensuse.org/ymp/KDE:Extra/openSUSE_Leap_15.0/moodbar.ymp">openSUSE Leap 15.0</ulink></para></listitem>
+<listitem><para><ulink url="https://software.opensuse.org/ymp/KDE:Extra/openSUSE_Leap_42.3/moodbar.ymp">openSUSE Leap 42.3</ulink></para></listitem>
+</itemizedlist>
 </sect3>
 <sect3 id="mandriva-packages"><title>Mandriva packages</title> 
+<para><note><para>This section contains old instructions for the GStreamer 0.10 based moodbar version 0.1.2, they might be outdated.</para></note>
+</para>
 <para>First of all, you need to add PLF repositories, so visit <ulink url="http://easyurpmi.zarb.org">easyurpmi.zarb.org</ulink> and add them to your repositories list.
 </para>
 <para>Then simply install the following packages:
@@ -5921,12 +5911,16 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
 </itemizedlist>
 </sect3>
 <sect3 id="arch-linux"><title>Arch &Linux;</title> 
+<para><note><para>This section contains old instructions for the GStreamer 0.10 based moodbar version 0.1.2, they might be outdated.</para></note>
+</para>
 <para>There is a PKGBUILD for Moodbar in the <ulink url="http://aur.archlinux.org">Arch User Repository (AUR)</ulink> available <ulink url="http://aur.archlinux.org/packages.php?ID=6552">here</ulink>.
 </para>
 <para>For more information about the AUR and working with PKGBUILDs, see the <ulink url="http://wiki.archlinux.org/index.php/AUR_User_Guidelines">AUR User Guidelines</ulink>.
 </para>
 </sect3>
 <sect3 id="freebsd"><title>FreeBSD</title> 
+<para><note><para>This section contains old instructions for the GStreamer 0.10 based moodbar version 0.1.2, they might be outdated.</para></note>
+</para>
 <para>There is a port: <ulink url="http://www.freshports.org/audio/gstreamer-plugins-moodbar">audio/gstreamer-plugins-moodbar here</ulink>.
 </para>
 <para>To install the port: <userinput>cd /usr/ports/audio/gstreamer-plugins-moodbar/ &amp;&amp; make install clean</userinput>
@@ -5998,22 +5992,18 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
         fi
  done</programlisting> 
 </para>
-<para><important><para>The links are not available anymore. I don't know if it should be updated or deleted</para></important>
-</para>
-<para>There is another script at <ulink url="https://github.com/aendruk/moodbar-preview-cli">Github</ulink>, which shows previews of the generated mood files on the command line while they are being generated. Read more about it at the <ulink url="https://aendruk.wordpress.com/2011/02/13/moodbar-previews-on-the-command-line/">author's blog</ulink>.
-</para>
 </sect2>
 <sect2 id="troubleshooting"><title>Troubleshooting</title> 
 <itemizedlist>
-<listitem><para>If the <guilabel>Moodbar</guilabel> executable gives you a <emphasis>bus error</emphasis>, that almost always means it can't decode (or can't find) your file.  Take a look at the <link linkend="supported-filetypes">supported file types</link> below for ideas on which GStreamer plugins to install.  You can also try the command below to test whether GStreamer can decode your file:<userinput>gst-launch filesrc location=[file] ! decodebin ! fakesink</userinput></para></listitem>
+<listitem><para>If the <guilabel>Moodbar</guilabel> executable gives you a <emphasis>bus error</emphasis>, that almost always means it can't decode (or can't find) your file.  Take a look at the <link linkend="supported-filetypes">supported file types</link> below for ideas on which GStreamer plugins to install.  You can also try the command below to test whether GStreamer can decode your file:<userinput>gst-launch-1.0 filesrc location=[file] ! decodebin ! fakesink</userinput></para></listitem>
 <listitem><para>If you are using the ffmpeg plugin to decode mp3s, you may also receive mysterious bus errors. The solution is to stop using the ffmpeg plugin, as it is extremely buggy &mdash; use mad instead.</para></listitem>
 <listitem><para>If the <guilabel>Moodbar</guilabel> executable tells you that it can't find an element &mdash; &ie;, it gives an error message like <screen>Could not create element of type fftwspectrum, please install it.</screen>&mdash; that usually means that you either don't have the required plugins installed (see the plugin list <link linkend="supported-filetypes">here</link>), or that you didn't install the Moodbar package in the same prefix as GStreamer. If libmoodbar.so and libgstdecodebin.so are not in the same directory, then Moodbar is not installed in the same prefix as GStreamer.  Please read the INSTALL file for instructions on how to configure the moodbar package correctly. Alternatively, <emphasis>if you know what you're doing,</emphasis> it may be easier for you to take a look at the <filename>GST_PLUGIN_PATH</filename> environment variable.</para></listitem>
-<listitem><para>If you're wondering why the <guilabel>Moodbar</guilabel> isn't working, either not working at all or not working for a particular file, run the command below, where [file] is a music file:<userinput>moodbar -o test.mood [file]</userinput></para></listitem>
-<listitem><para>If you have multiple versions of GStreamer installed, make sure all of the required plugins are installed <emphasis>for version 0.10.*</emphasis> -- different versions <emphasis>cannot</emphasis> use each other's plugins.</para></listitem>
+<listitem><para>If you're wondering why the <guilabel>Moodbar</guilabel> isn't working, either not working at all or not working for a particular file, run the command below, where [file] is a music file:<userinput>moodbar -o test.mood [file]</userinput>  To generate a test image preview, one can use the commandː<userinput>gst-launch-1.0 filesrc location=[file] ! decodebin ! audioconvert ! fftwspectrum ! moodbar height=50 max-width=300 ! pngenc ! filesink location=mood.png</userinput></para></listitem>
+<listitem><para>If you have multiple versions of GStreamer installed, make sure all of the required plugins are installed <emphasis>for version 1.0.*</emphasis> -- different versions <emphasis>cannot</emphasis> use each other's plugins.</para></listitem>
 </itemizedlist>
 </sect2>
 <sect2 id="supported-filetypes"><title>Supported Filetypes</title> 
-<para>You will need various Gstreamer plugins to enable <guilabel>Moodbar</guilabel> to analyze your files. Here is a list of the plugins you will need; make sure to install the <emphasis>0.10.* version</emphasis> of each plugin:
+<para>You will need various Gstreamer plugins to enable <guilabel>Moodbar</guilabel> to analyze your files. Here is a list of the plugins you will need; make sure to install the <emphasis>1.0.* version</emphasis> of each plugin:
 </para>
 <para>
 <informaltable>
@@ -6031,7 +6021,7 @@ mysql -u amarokuser -p amarok &lt; amarok.mysql</userinput>
     <para>All</para>
     </entry>
     <entry>
-    <para>gstreamer-0.10.*, gst-plugins-base, gst-plugins-good</para>
+    <para>gstreamer-1.0.*, gst-plugins-base, gst-plugins-good</para>
     </entry>
   </row>
   <row>
