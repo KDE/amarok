@@ -27,6 +27,10 @@ target_link_libraries(amarok_storage-mysqlestorage
     ${ZLIB_LIBRARIES}
 )
 
+if(${CMAKE_HOST_SYSTEM_NAME} MATCHES "FreeBSD")
+        target_link_libraries(amarok_storage-mysqlestorage ${MYSQL_LIBRARIES})
+endif()
+
 if(NOT WIN32 AND NOT APPLE)
     target_link_libraries( amarok_storage-mysqlestorage crypt pthread )
 endif()
