@@ -19,7 +19,7 @@
 
 #include "OcsPersonItem.h"
 #include "OcsData.h"
-#include "libattica-ocsclient/provider.h"
+#include <Attica/Provider>
 #include <KAboutData>
 
 class OcsPersonListWidget : public QWidget
@@ -33,7 +33,7 @@ public:
                          QWidget *parent = 0 );
 
 public Q_SLOTS:
-    void switchToOcs( const AmarokAttica::Provider &provider );
+    void switchToOcs( Attica::Provider &provider );
     void onOcsFetchStarted();
     void onOcsDataFetched( int err );
 

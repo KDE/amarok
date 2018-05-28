@@ -31,7 +31,6 @@ add_subdirectory( core-impl/storage/sql )
 add_subdirectory( context )
 add_subdirectory( services )
 add_subdirectory( scripting/scripts )
-add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
 add_subdirectory( importers )
@@ -852,6 +851,7 @@ add_library(amaroklib SHARED ${amaroklib_LIB_SRCS} ${AMAROK_MPRIS1_ADAPTOR_SRCS}
 target_link_libraries(amaroklib
     Phonon::phonon4qt5
     KF5::Archive
+    KF5::Attica
     KF5::CoreAddons
     KF5::Declarative
     KF5::GlobalAccel
@@ -883,7 +883,6 @@ target_link_libraries(amaroklib
     ${EXTRA_LIBS}
     amarokpud
     amarokcore
-    amarokocsclient
     amarok-transcoding
     amarokshared
 )

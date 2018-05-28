@@ -19,16 +19,20 @@
 
 #include "ui_OcsPersonItem.h"
 
-#include "libattica-ocsclient/person.h"
-#include "libattica-ocsclient/provider.h"
 #include "OcsData.h"
 
 #include <kaboutdata.h>
 #include <KToolBar>
+#include <Attica/Person>
+#include <Attica/Provider>
 
 #include <QLabel>
 
 class KJob;
+
+namespace Attica {
+    class BaseJob;
+}
 
 class OcsPersonItem : public QWidget, private Ui::OcsPersonItem
 {
@@ -52,7 +56,7 @@ public:
 
     QString name();
 
-    void switchToOcs( const AmarokAttica::Provider &provider );
+    void switchToOcs( Attica::Provider &provider );
 
 Q_SIGNALS:
     void ocsFetchStarted();
@@ -60,11 +64,12 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void launchUrl( QAction *action );
-    void onJobFinished( KJob *job );
+    void onJobFinished( Attica::BaseJob *job );
+    void onAvatarLoadingJobFinished( KJob *job );
 
 private:
     void init();
-    void fillOcsData( const AmarokAttica::Person &ocsPerson );
+    void fillOcsData( const Attica::Person &ocsPerson );
     const KAboutPerson *m_person;
     QString m_ocsUsername;
     QString m_aboutText;

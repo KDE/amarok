@@ -17,13 +17,13 @@
 #include "OcsPersonItem.h"
 
 #include "core/support/Debug.h"
-#include "libattica-ocsclient/provider.h"
-#include "libattica-ocsclient/providerinitjob.h"
-#include "libattica-ocsclient/personjob.h"
 
 #include <QAction>
 #include <KRun>
 #include <QStandardPaths>
+#include <Attica/Provider>
+#include <Attica/ItemJob>
+#include <KIO/StoredTransferJob>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -128,7 +128,7 @@ OcsPersonItem::launchUrl( QAction *action ) //SLOT
 }
 
 void
-OcsPersonItem::switchToOcs( const AmarokAttica::Provider &provider )
+OcsPersonItem::switchToOcs( Attica::Provider &provider )
 {
     if( m_state == Online )
         return;
@@ -139,37 +139,37 @@ OcsPersonItem::switchToOcs( const AmarokAttica::Provider &provider )
 
     if( !m_ocsUsername.isEmpty() )
     {
-        AmarokAttica::PersonJob *personJob;
+        Attica::ItemJob< Attica::Person > *personJob;
         if( m_ocsUsername == QString( "%%category%%" ) )   //TODO: handle grouping
             return;
 
         personJob = provider.requestPerson( m_ocsUsername );
-        connect( personJob, &AmarokAttica::PersonJob::result, this, &OcsPersonItem::onJobFinished );
+        connect( personJob, &Attica::BaseJob::finished, this, &OcsPersonItem::onJobFinished );
         emit ocsFetchStarted();
         m_state = Online;
+        personJob->start();
     }
 }
 
 void
-OcsPersonItem::onJobFinished( KJob *job )
+OcsPersonItem::onJobFinished( Attica::BaseJob *job )
 {
-    AmarokAttica::PersonJob *personJob = qobject_cast< AmarokAttica::PersonJob * >( job );
-    if( personJob->error() == 0 )
+    Attica::ItemJob< Attica::Person > *personJob = static_cast< Attica::ItemJob< Attica::Person > * >( job );
+    Attica::Metadata metadata = personJob->metadata();
+    if( metadata.error() == Attica::Metadata::NoError )
     {
-        fillOcsData( personJob->person() );
+        fillOcsData( personJob->result() );
     }
-    emit ocsFetchResult( personJob->error() );
+    emit ocsFetchResult( metadata.error() );
 }
 
 void
-OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
+OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
 {
-    if( !( ocsPerson.avatar().isNull() ) )
+    if( ocsPerson.avatarUrl().isValid() )
     {
-        m_avatar->setFixedSize( 56, 56 );
-        m_avatar->setFrameShape( QFrame::StyledPanel ); //this is a FramedLabel, otherwise oxygen wouldn't paint the frame
-        m_avatar->setPixmap( ocsPerson.avatar() );
-        m_avatar->setAlignment( Qt::AlignCenter );
+        auto job = KIO::storedGet( ocsPerson.avatarUrl(), KIO::NoReload, KIO::HideProgressInfo );
+        connect( job, &KIO::StoredTransferJob::result, this, &OcsPersonItem::onAvatarLoadingJobFinished );
     }
 
     if( !ocsPerson.country().isEmpty() )
@@ -348,5 +348,28 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
     }
 
     m_textLabel->setText( m_aboutText );
+}
+
+void
+OcsPersonItem::onAvatarLoadingJobFinished( KJob *job )
+{
+    auto storedJob = qobject_cast< KIO::StoredTransferJob * >( job );
+    if( storedJob->error() )
+    {
+        debug() << "failed to download the avatar of" << m_ocsUsername << "error:" << storedJob->errorString();
+        return;
+    }
+
+    QPixmap pic;
+    if ( !pic.loadFromData( storedJob->data() ) )
+    {
+        debug() << "failed to load the avatar of" << m_ocsUsername;
+        return;
+    }
+
+    m_avatar->setFixedSize( 56, 56 );
+    m_avatar->setFrameShape( QFrame::StyledPanel ); //this is a FramedLabel, otherwise oxygen wouldn't paint the frame
+    m_avatar->setPixmap( pic );
+    m_avatar->setAlignment( Qt::AlignCenter );
 }
 

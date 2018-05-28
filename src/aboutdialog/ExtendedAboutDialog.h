@@ -30,6 +30,7 @@
 
 #include <QDialog>
 #include <QPointer>
+#include <Attica/ProviderManager>
 
 class AMAROK_EXPORT ExtendedAboutDialog : public QDialog
 {
@@ -40,7 +41,7 @@ public:
 
 private Q_SLOTS:
     void switchToOcsWidgets();
-    void onProviderFetched( KJob *job );
+    void onProvidersFetched();
     void showLicense( const QString &number );
 
 private:
@@ -50,6 +51,7 @@ private:
     Q_DISABLE_COPY( ExtendedAboutDialog )
 
     OcsData m_ocsData;
+    Attica::ProviderManager m_providerManager;
 
 //Authors:
     QString m_authorPageTitle;

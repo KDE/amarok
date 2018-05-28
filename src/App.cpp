@@ -90,7 +90,7 @@
 extern void setupEventHandler_mac(SRefCon);
 #endif
 
-AMAROK_EXPORT OcsData ocsData( "opendesktop" );
+AMAROK_EXPORT OcsData ocsData( "api.kde-look.org" );
 
 App::App(int &argc, char **argv)
     : QApplication(argc, argv)

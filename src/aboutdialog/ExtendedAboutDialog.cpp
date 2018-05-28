@@ -24,7 +24,6 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "OcsPersonItem.h"
-#include "libattica-ocsclient/providerinitjob.h"
 
 #include <QApplication>
 #include <QDialogButtonBox>
@@ -45,6 +44,7 @@
 #include <KIconLoader>
 #include <KMessageBox>
 #include <KTitleWidget>
+#include <Attica/Provider>
 
 void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 {
@@ -372,6 +372,8 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
 
     mainLayout->addWidget(buttonBox);
 
+    connect( &m_providerManager, &Attica::ProviderManager::defaultProvidersLoaded, this, &ExtendedAboutDialog::onProvidersFetched );
+
     resize( QSize( 480, 460 ) );
 }
 
@@ -395,27 +397,31 @@ ExtendedAboutDialog::switchToOcsWidgets()
         m_showOcsCreditButton->animate();
     if( m_showOcsDonorButton )
         m_showOcsDonorButton->animate();
-    AmarokAttica::ProviderInitJob *providerJob = AmarokAttica::Provider::byId( m_ocsData.providerId() );
-    connect( providerJob, &AmarokAttica::ProviderInitJob::result, this, &ExtendedAboutDialog::onProviderFetched );
+    m_providerManager.loadDefaultProviders();
 }
 
 void
-ExtendedAboutDialog::onProviderFetched( KJob *job )
+ExtendedAboutDialog::onProvidersFetched()
 {
-    AmarokAttica::ProviderInitJob *providerJob = qobject_cast< AmarokAttica::ProviderInitJob * >( job );
-    if( providerJob->error() == 0 )
+    foreach( const Attica::Provider &provider, m_providerManager.providers() )
     {
-        debug()<<"Successfully fetched OCS provider"<< providerJob->provider().name();
+        if( !provider.isValid() || !provider.isEnabled() )
+            continue;
+
+        if( provider.baseUrl().host() != m_ocsData.providerId() )
+            continue;
+
+        Attica::Provider copy = provider;
+        debug()<<"Successfully fetched OCS provider"<< copy.name();
         debug()<<"About to request OCS data";
         if( m_authorListWidget )
-            m_authorListWidget->switchToOcs( providerJob->provider() );
+            m_authorListWidget->switchToOcs( copy );
         if( m_creditListWidget )
-            m_creditListWidget->switchToOcs( providerJob->provider() );
+            m_creditListWidget->switchToOcs( copy );
         if( m_donorListWidget )
-            m_donorListWidget->switchToOcs( providerJob->provider() );
+            m_donorListWidget->switchToOcs( copy );
+        break;
     }
-    else
-        warning() << "OCS provider fetch failed";
 }
 
 void

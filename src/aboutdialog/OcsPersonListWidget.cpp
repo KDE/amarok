@@ -58,7 +58,7 @@ OcsPersonListWidget::OcsPersonListWidget( const QList< KAboutPerson > &persons,
 }
 
 void
-OcsPersonListWidget::switchToOcs( const AmarokAttica::Provider &provider )
+OcsPersonListWidget::switchToOcs( Attica::Provider &provider )
 {
     for( int i = 0; i < m_areaLayout->count(); ++i )
     {
