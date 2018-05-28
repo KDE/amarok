@@ -248,9 +248,6 @@ if( WITH_PLAYER )
         set_package_properties( GLIB2 PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes" URL "http://www.gtk.org" TYPE OPTIONAL )
     endif()
 
-    find_program( CLAMZ_FOUND clamz PATH )
-    set_package_properties( CLAMZ PROPERTIES DESCRIPTION "Optional requirement to download songs from the Amazon MP3 store. Highly recommended on Linux, as the official downloader from Amazon is quite broken on many systems." URL "https://code.google.com/p/clamz/" TYPE OPTIONAL )
-
     find_package(PythonInterp)
     set_package_properties( PYTHON PROPERTIES DESCRIPTION "Required for generating the autocompletion file for the script console" URL "https://www.python.org" TYPE OPTIONAL )
 

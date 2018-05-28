@@ -121,10 +121,6 @@ Optional
     * CD support requires:
       * audiocd-kio - https://www.kde.org/ (part of KDE multimedia)
 
-    * Downloading songs from Amazon works best on non Windows systems using
-      * clamz - https://code.google.com/p/clamz/
-      * The official downloader should work fine on Windows, too. But it's broken on many Linux systems.
-
     * Building tests require:
       * gmock 1.4 (or newer) - https://github.com/google/googletest
 
