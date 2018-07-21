@@ -264,19 +264,6 @@ CoverManager::slotContinueConstruction() //SLOT
     if( item == 0 )
         item = m_artistView->invisibleRootItem()->child( 0 );
 
-    // signals and slots connections
-    connect( m_artistView, &QTreeWidget::itemSelectionChanged,
-             this, &CoverManager::slotArtistSelected );
-    connect( m_coverView, &CoverView::itemActivated,
-             this, &CoverManager::coverItemClicked );
-    connect( m_timer, &QTimer::timeout,
-             this, &CoverManager::slotSetFilter );
-    connect( m_searchEdit, &Amarok::LineEdit::textChanged,
-             this, &CoverManager::slotSetFilterTimeout );
-
-    if( item == 0 )
-        item = m_artistView->invisibleRootItem()->child( 0 );
-
     item->setSelected( true );
     show();
 }
