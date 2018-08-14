@@ -869,6 +869,7 @@ target_link_libraries(amaroklib
     KF5::Package
     KF5::TextEditor
     KF5::ThreadWeaver
+    KF5::WidgetsAddons
     KF5::WindowSystem
     ${QT_QTSCRIPTTOOLS_LIBRARY}
     Qt5::Gui
