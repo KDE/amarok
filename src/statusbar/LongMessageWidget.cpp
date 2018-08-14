@@ -19,6 +19,8 @@
 
 #include "core/support/Debug.h"
 
+#include <KStandardGuiItem>
+
 #include <QPushButton>
 
 #include <QLabel>
@@ -66,7 +68,8 @@ LongMessageWidget::LongMessageWidget( const QString &message )
 
     hbox = new BoxWidget( false, this );
 
-    QPushButton *button = new QPushButton( QStringLiteral( "closeButton" ), hbox );
+    QPushButton *button = new QPushButton( hbox );
+    KStandardGuiItem::apply( button, KStandardGuiItem::Close );
     connect( button, &QAbstractButton::clicked, this, &LongMessageWidget::close );
 
     reposition();
