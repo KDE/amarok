@@ -69,7 +69,7 @@ LongMessageWidget::LongMessageWidget( const QString &message )
     hbox = new BoxWidget( false, this );
 
     QPushButton *button = new QPushButton( hbox );
-    KStandardGuiItem::apply( button, KStandardGuiItem::Close );
+    KStandardGuiItem::assign( button, KStandardGuiItem::Close );
     connect( button, &QAbstractButton::clicked, this, &LongMessageWidget::close );
 
     reposition();
