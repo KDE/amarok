@@ -84,7 +84,7 @@ namespace AmarokScript
             Q_INVOKABLE void playByIndex( int index );
 
             /**
-             * Prepend the the track represented by the passed url and start playing it.
+             * Prepend the track represented by the passed url and start playing it.
              */
             Q_INVOKABLE void playMedia( const QUrl &url );
 

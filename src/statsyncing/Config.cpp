@@ -25,7 +25,6 @@
 #include <KLocalizedString>
 
 #include <QBrush>
-#include <QIcon>
 #include <QPalette>
 
 namespace StatSyncing

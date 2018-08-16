@@ -105,8 +105,8 @@ DatabaseConfig::testDatabaseConnection() //SLOT
             else
                 KMessageBox::error( this, i18n( "The amarok database reported "
                                                 "the following errors:\n%1\nIn most cases you will need to resolve "
-                                                "these errors before Amarok will run properly." ).
-                                    arg( connectionErrors.join( "\n" ) ),
+                                                "these errors before Amarok will run properly.",
+                                    connectionErrors.join( "\n" ) ),
                                     i18n( "Database Error" ));
         }
     }

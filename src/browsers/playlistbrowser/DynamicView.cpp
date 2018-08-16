@@ -38,7 +38,6 @@
 #include <QAction>
 #include <QMenu>
 
-#include <QAction>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QModelIndex>

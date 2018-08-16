@@ -182,7 +182,7 @@ ScriptsConfig::installLocalScript()
     {
         QString existingVersion = ScriptManager::instance()->m_scripts[ newScriptInfo.pluginName() ]->info().version();
         QString message = i18n( "Another script with the name %1 already exists\nExisting Script's "
-                                "Version: %1\nSelected Script's Version: %2", newScriptInfo.version()
+                                "Version: %2\nSelected Script's Version: %3", newScriptInfo.name()
                                 , existingVersion, newScriptInfo.version() );
         KMessageBox::error( this, message );
         return;

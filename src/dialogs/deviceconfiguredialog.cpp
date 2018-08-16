@@ -35,7 +35,6 @@
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
-#include <QVBoxLayout>
 
 
 DeviceConfigureDialog::DeviceConfigureDialog( MediaDevice *device )
