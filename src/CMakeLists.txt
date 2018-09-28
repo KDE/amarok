@@ -935,6 +935,7 @@ endif()
 
 target_link_libraries(amarok
     KF5::CoreAddons
+    KF5::Crash
     KF5::DBusAddons
     KF5::I18n
 

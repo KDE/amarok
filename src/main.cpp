@@ -21,6 +21,7 @@
 
 #include <KAboutData>
 #include <KDBusService>
+#include <KCrash>
 #include <KLocalizedString>
 
 #include <QCommandLineParser>
@@ -53,6 +54,8 @@ int main( int argc, char *argv[] )
     QCoreApplication::setApplicationName("amarok");
     QCoreApplication::setOrganizationDomain("kde.org");
     QCoreApplication::setApplicationVersion(AMAROK_VERSION);
+
+    KCrash::initialize();
 
     KAboutData aboutData( "amarok",
             ki18n( "Amarok" ).toString(),
