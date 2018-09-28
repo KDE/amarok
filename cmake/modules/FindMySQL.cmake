@@ -66,7 +66,7 @@ find_path(MYSQL_INCLUDE_DIR mysql.h
 )
 
 if(NOT MYSQL_LIBRARIES AND NOT MYSQL_EMBEDDED_LIBRARIES)
-    find_library(MYSQ_LIBRARY NAMES mysqlclient
+    find_library(MYSQL_LIBRARIES NAMES mysqlclient
         PATHS
             $ENV{MYSQL_DIR}/libmysql_r/.libs
             $ENV{MYSQL_DIR}/lib
@@ -77,7 +77,7 @@ if(NOT MYSQL_LIBRARIES AND NOT MYSQL_EMBEDDED_LIBRARIES)
             mysql
    )
 
-    find_library(MYSQL_EMBEDDED_LIBRARIES NAMES mysqld
+    find_library(MYSQL_EMBEDDED_LIBRARIES NAMES mysqld libmysqld
         PATHS
             $ENV{MYSQL_DIR}/libmysql_r/.libs
             $ENV{MYSQL_DIR}/lib
