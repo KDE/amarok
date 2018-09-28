@@ -20,8 +20,10 @@
 #include "aboutdialog/OcsData.h"
 
 #include <KAboutData>
-#include <KDBusService>
 #include <KCrash>
+#include <KDBusService>
+#include <Kdelibs4ConfigMigrator>
+
 #include <KLocalizedString>
 
 #include <QCommandLineParser>
@@ -56,6 +58,14 @@ int main( int argc, char *argv[] )
     QCoreApplication::setApplicationVersion(AMAROK_VERSION);
 
     KCrash::initialize();
+
+    Kdelibs4ConfigMigrator configMigrator(QStringLiteral("amarok"));
+    configMigrator.setConfigFiles(QStringList()
+        << QStringLiteral("amarokrc")
+        << QStringLiteral("amarok_homerc")
+        << QStringLiteral("amarok-appletsrc")
+    );
+    configMigrator.migrate();
 
     KAboutData aboutData( "amarok",
             ki18n( "Amarok" ).toString(),
