@@ -23,6 +23,7 @@
 #include <KCrash>
 #include <KDBusService>
 #include <Kdelibs4ConfigMigrator>
+#include <Kdelibs4Migration>
 
 #include <KLocalizedString>
 
@@ -66,6 +67,30 @@ int main( int argc, char *argv[] )
         << QStringLiteral("amarok-appletsrc")
     );
     configMigrator.migrate();
+
+    if (configMigrator.migrate()) {
+        Kdelibs4Migration dataMigrator;
+        const QString sourceBasePath = dataMigrator.saveLocation("data", QStringLiteral("amarok"));
+        const QString targetBasePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/amarok/");
+        QString targetFilePath;
+
+        QDir sourceDir(sourceBasePath);
+        QDir targetDir(targetBasePath);
+
+        if (sourceDir.exists()) {
+            if (!targetDir.exists()) {
+                QDir().mkpath(targetBasePath);
+            }
+            QStringList fileNames = sourceDir.entryList(
+                QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
+            foreach (const QString &fileName, fileNames) {
+                targetFilePath = targetBasePath + fileName;
+                if (!QFile::exists(targetFilePath)) {
+                    QFile::copy(sourceBasePath + fileName, targetFilePath);
+                }
+            }
+        }
+    }
 
     KAboutData aboutData( "amarok",
             ki18n( "Amarok" ).toString(),
