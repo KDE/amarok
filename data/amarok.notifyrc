@@ -151,7 +151,6 @@ Action=Popup
 
 [Event/message]
 Name=Message
-Name[ast]=Mensaxe
 Name[bs]=Poruka
 Name[ca]=Missatge
 Name[ca@valencia]=Missatge
