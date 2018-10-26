@@ -185,11 +185,17 @@ EqualizerDialog::storeOriginalSettings()
 void
 EqualizerDialog::restoreOriginalSettings()
 {
-    activeCheckBox->setChecked( m_originalActivated );
-    int originalPresetIndex = EqualizerPresets::eqGlobalList().indexOf( m_originalPreset );
-    The::engineController()->equalizerController()->applyEqualizerPresetByIndex( originalPresetIndex );
-    eqPresets->setEditText( m_originalPreset );
-    The::engineController()->equalizerController()->setGains( m_originalGains );
+    // Only restore original settings if the equalizer was originally enabled
+    // or if the equalizer is currently enabled. This prevents a reset of the
+    // equalizer when cancel button is clicked with equalizer toggle off.
+    if( m_originalActivated || activeCheckBox->isChecked() )
+    {
+        activeCheckBox->setChecked( m_originalActivated );
+        int originalPresetIndex = EqualizerPresets::eqGlobalList().indexOf( m_originalPreset );
+        The::engineController()->equalizerController()->applyEqualizerPresetByIndex( originalPresetIndex );
+        eqPresets->setEditText( m_originalPreset );
+        The::engineController()->equalizerController()->setGains( m_originalGains );
+    }
     this->reject();
 }
 
