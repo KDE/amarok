@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_COLLECTIONSSCANCAPABILITY_H
-#define AMAROK_COLLECTIONSSCANCAPABILITY_H
+#ifndef AMAROK_COLLECTIONSCANCAPABILITY_H
+#define AMAROK_COLLECTIONSCANCAPABILITY_H
 
 #include "core/amarokcore_export.h"
 #include "core/capabilities/Capability.h"

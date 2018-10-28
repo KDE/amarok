@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef IMAGE_THUMBNAIL_H
-#define IMAGE_THUMBNAIL_H
+#ifndef IMAGE_LOADER_H
+#define IMAGE_LOADER_H
 
 #include "core/meta/forward_declarations.h"
 
@@ -83,5 +83,5 @@ private:
   int idx;
   QImage img;
 };
-#endif // IMAGE_THUMBNAIL_H
+#endif // IMAGE_LOADER_H
 

@@ -14,6 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#ifndef SEARCHBARTEXTITEM_H
+#define SEARCHBARTEXTITEM_H
+
 #include <QGraphicsTextItem>
 class QKeyEvent;
 
@@ -31,3 +34,4 @@ protected:
 private:
     QString m_content;
 };
+#endif

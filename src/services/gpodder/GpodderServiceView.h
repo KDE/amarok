@@ -16,8 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef GPODDERSERVIECEVIEW_H_
-#define GPODDERSERVIECEVIEW_H_
+#ifndef GPODDERSERVICEVIEW_H_
+#define GPODDERSERVICEVIEW_H_
 
 #include "PrettyTreeView.h"
 
@@ -28,4 +28,4 @@ public:
     explicit GpodderServiceView( QWidget *parent = 0 );
 };
 
-#endif /* GPODDERSERVIECEVIEW_H_ */
+#endif /* GPODDERSERVICEVIEW_H_ */

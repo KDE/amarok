@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_STORAGE_MYSQLEMBEDDEDFACTORY_H
-#define AMAROK_STORAGE_MYSQLEMBEDDEDFACTORY_H
+#ifndef AMAROK_STORAGE_MYSQLEMBEDDEDSTORAGEFACTORY_H
+#define AMAROK_STORAGE_MYSQLEMBEDDEDSTORAGEFACTORY_H
 
 #include "core/storage/StorageFactory.h"
 

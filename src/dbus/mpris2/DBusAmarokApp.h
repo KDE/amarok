@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ***********************************************************************/
 
-#ifndef AMAROK_MEDIAPLAYRER2AMAROKAPP_H
-#define AMAROK_MEDIAPLAYRER2AMAROKAPP_H
+#ifndef AMAROK_DBUS_AMAROKAPP_H
+#define AMAROK_DBUS_AMAROKAPP_H
 
 #include "DBusAbstractAdaptor.h"
 
@@ -43,5 +43,5 @@ namespace Amarok
     };
 }
 
-#endif // AMAROK_MEDIAPLAYRER2AMAROKAPP_H
+#endif // AMAROK_DBUS_AMAROKAPP_H
 

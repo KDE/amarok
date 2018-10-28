@@ -16,6 +16,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#ifndef AMAROK_PLAYLISTQUEUEEDITOR_H
+#define AMAROK_PLAYLISTQUEUEEDITOR_H
+
 #include <QDialog>
 
 #include "ui_PlaylistQueueEditor.h"
@@ -40,3 +43,4 @@ private:
     bool m_blockViewUpdates;
     Ui::PlaylistQueueEditor m_ui;
 };
+#endif

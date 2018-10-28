@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef QUERYMAKER_FUNCTION_TYPES_H
-#define QUERYMAKER_FUNCTION_TYPES_H
+#ifndef QM_FUNCTION_TYPES_H
+#define QM_FUNCTION_TYPES_H
 
 #include "core/collections/QueryMaker.h"
 

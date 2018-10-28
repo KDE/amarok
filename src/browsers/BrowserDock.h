@@ -15,8 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#ifndef BROWSERWIDGET_H
-#define BROWSERWIDGET_H
+#ifndef BROWSERDOCK_H
+#define BROWSERDOCK_H
 
 #include "BrowserBreadcrumbWidget.h"
 #include "BrowserCategoryList.h"

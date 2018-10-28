@@ -15,6 +15,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#ifndef AMAROK_PLAYLISTINFOWIDGET_H
+#define AMAROK_PLAYLISTINFOWIDGET_H
+
 #include <QLabel>
 
 /** A small widget that displays the current length and size of the playlist.
@@ -34,3 +37,4 @@ private Q_SLOTS:
     void updateTotalPlaylistLength();
 
 };
+#endif

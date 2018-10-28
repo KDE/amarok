@@ -13,8 +13,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TESTMETAPRIVATEMETAREGISTRY_H
-#define TESTMETAPRIVATEMETAREGISTRY_H
+#ifndef TESTPRIVATEMETAREGISTRY_H
+#define TESTPRIVATEMETAREGISTRY_H
 
 #include "core/meta/forward_declarations.h"
 
@@ -71,4 +71,4 @@ class TestPrivateMetaRegistry : public QObject
         TrackPtr m_track1, m_track2, m_track3, m_track4, m_track5;
 };
 
-#endif // TESTMETAPRIVATEMETAREGISTRY_H
+#endif // TESTPRIVATEMETAREGISTRY_H

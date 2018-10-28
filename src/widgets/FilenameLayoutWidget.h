@@ -16,8 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef FILENAMELAYOUTDIALOG_H
-#define FILENAMELAYOUTDIALOG_H
+#ifndef FILENAMELAYOUTWIDGET_H
+#define FILENAMELAYOUTWIDGET_H
 
 #include "amarok_export.h"
 
@@ -149,5 +149,5 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget
 };
 
 
-#endif    //FILENAMELAYOUTDIALOG_H
+#endif    //FILENAMELAYOUTWIDGET_H
 

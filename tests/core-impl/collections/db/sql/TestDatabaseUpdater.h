@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef DATABASEUPDATERTEST_H
-#define DATABASEUPDATERTEST_H
+#ifndef TEST_DATABASEUPDATER_H
+#define TEST_DATABASEUPDATER_H
 
 #include <QSharedPointer>
 #include <QTest>
@@ -52,4 +52,4 @@ private:
     QTemporaryDir *m_tmpDir;
 };
 
-#endif // DATABASEUPDATERTEST_H
+#endif // TEST_DATABASEUPDATER_H

@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
-#define AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
+#ifndef AMAROK_LASTFM_MULTIPLAYABLECAPABILITY_H
+#define AMAROK_LASTFM_MULTIPLAYABLECAPABILITY_H
 
 #include "core/support/Components.h"
 #include "core/support/Debug.h"

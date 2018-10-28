@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TESTDYNAMICMODEL_H
-#define TESTDYNAMICMODEL_H
+#ifndef TEST_TRACKSET_H
+#define TEST_TRACKSET_H
 
 #include "dynamic/TrackSet.h"
 

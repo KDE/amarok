@@ -16,8 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_PLAYLISTWIDGET_H
-#define AMAROK_PLAYLISTWIDGET_H
+#ifndef AMAROK_PLAYLISTDOCK_H
+#define AMAROK_PLAYLISTDOCK_H
 
 #include "PlaylistSortWidget.h"
 #include "view/listview/PrettyListView.h"

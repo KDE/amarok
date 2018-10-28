@@ -18,8 +18,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_DYNAMICBIASWIDGETS_H
-#define AMAROK_DYNAMICBIASWIDGETS_H
+#ifndef AMAROK_DYNAMICBIASDIALOG_H
+#define AMAROK_DYNAMICBIASDIALOG_H
 
 #include "amarok_export.h"
 #include "dynamic/Bias.h"

@@ -38,7 +38,7 @@ Rectangle {
         }
         if (items.length > 0) {
             var space = toolbarAppletRow.width - (items.length - 1) * toolbarAppletRow.spacing;
-            var threshhold = space / items.length;
+            var threshold = space / items.length;
             var smallApplets = [];
             var largeApplets = [];
             for (var i=0; i<items.length; i++) {
@@ -48,7 +48,7 @@ Rectangle {
             while (smallApplets.length > 0 && space > 0) {
                 var countSmallApplets = smallApplets.length;
                 smallApplets.forEach(function (applet, index) {
-                    if (applet.implicitWidth >= threshhold) {
+                    if (applet.implicitWidth >= threshold) {
                         largeApplets.push(applet);
                         applet.width = applet.implicitWidth;
                         space -= applet.width;
@@ -61,7 +61,7 @@ Rectangle {
                     });
                     return;
                 }
-                threshhold = space / smallApplets.length;
+                threshold = space / smallApplets.length;
             }
             if (smallApplets.length == 0) return;
             for (var i=0; i<smallApplets.length; i++) {

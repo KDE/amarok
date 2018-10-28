@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PLAYLISTPROVIDER_TYPE_EXPORTER_H
-#define PLAYLISTPROVIDER_TYPE_EXPORTER_H
+#ifndef PLAYLISTPROVIDER_EXPORTER_H
+#define PLAYLISTPROVIDER_EXPORTER_H
 
 #include "core/meta/forward_declarations.h"
 #include "core/playlists/PlaylistProvider.h"

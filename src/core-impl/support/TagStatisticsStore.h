@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TAGSTATISTICSPROVIDER_H
-#define TAGSTATISTICSPROVIDER_H
+#ifndef TAGSTATISTICSSTORE_H
+#define TAGSTATISTICSSTORE_H
 
 #include "core-impl/support/PersistentStatisticsStore.h"
 
@@ -35,4 +35,4 @@ class AMAROK_EXPORT TagStatisticsStore : public PersistentStatisticsStore
         QString m_album;
 };
 
-#endif // PERMANENTURLSTATISTICSPROVIDER_H
+#endif // TAGSTATISTICSSTORE_H

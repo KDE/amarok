@@ -15,8 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PERMANENTSTATISTICSSTORE_H
-#define PERMANENTSTATISTICSSTORE_H
+#ifndef PERSISTENTSTATISTICSSTORE_H
+#define PERSISTENTSTATISTICSSTORE_H
 
 #include "amarok_export.h"
 #include "core/meta/Observer.h"
@@ -98,4 +98,4 @@ class AMAROK_EXPORT PersistentStatisticsStore : public Meta::Statistics, private
         int m_batch;
 };
 
-#endif // PERMANENTSTATISTICSSTORE_H
+#endif // PERSISTENTSTATISTICSSTORE_H

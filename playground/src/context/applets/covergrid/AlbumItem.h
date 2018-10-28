@@ -14,6 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#ifndef ALBUM_ITEM_H
+#define ALBUM_ITEM_H
+
 #include "core/meta/forward_declarations.h"
 
 #include <QLabel>
@@ -44,3 +47,4 @@ private:
     int m_size;
     QPixmap m_pixmap;
 };
+#endif

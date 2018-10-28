@@ -17,8 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef GPODDERPODCASTPROVIDER_H
-#define GPODDERPODCASTPROVIDER_H
+#ifndef GPODDERPROVIDER_H
+#define GPODDERPROVIDER_H
 
 #include "core/podcasts/PodcastProvider.h"
 #include "core/podcasts/PodcastReader.h"

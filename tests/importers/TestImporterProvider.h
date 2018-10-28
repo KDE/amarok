@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef TEST_IMPORTER_MANAGER
-#define TEST_IMPORTER_MANAGER
+#ifndef TEST_IMPORTER_PROVIDER_H
+#define TEST_IMPORTER_PROVIDER_H
 
 #include "ImporterMocks.h"
 
@@ -38,4 +38,4 @@ private Q_SLOTS:
     void defaultPreferenceShouldReturnNoByDefault();
 };
 
-#endif // TEST_IMPORTER_MANAGER
+#endif // TEST_IMPORTER_PROVIDER_H

@@ -18,8 +18,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_METAQUERY_H
-#define AMAROK_METAQUERY_H
+#ifndef AMAROK_METAQUERYWIDGET_H
+#define AMAROK_METAQUERYWIDGET_H
 
 #include <QWidget>
 #include <QPointer>

@@ -18,8 +18,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_METATAGBIAS_H
-#define AMAROK_METATAGBIAS_H
+#ifndef AMAROK_TAGMATCHBIAS_H
+#define AMAROK_TAGMATCHBIAS_H
 
 #include "amarok_export.h"
 #include "core/collections/QueryMaker.h"
