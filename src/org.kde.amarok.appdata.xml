@@ -60,7 +60,7 @@
   <summary xml:lang="uk">Аудіопрогравач</summary>
   <summary xml:lang="x-test">xxAudio Playerxx</summary>
   <description>
-    <p>Amarok is a free, versatile and powerful music player.</p>
+    <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
     <p xml:lang="ar">أماروك مشغّل موسيقى مجّانيّ، وقويّ متعدّد الاستعمالات.</p>
     <p xml:lang="bs">Amarok je besplatan, prilagodljiv i snažan muzički  player.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música lliure, versàtil i potent.</p>
@@ -341,9 +341,11 @@
   <url type="help">https://docs.kde.org/index.php?application=amarok</url>
   <screenshots>
     <screenshot type="default">
+      <caption>Playing music in Amarok</caption>
       <image>http://kde.org/images/screenshots/amarok.png</image>
     </screenshot>
     <screenshot>
+      <caption>Amarok windows</caption>
       <image>https://amarok.kde.org/files/Amarok2.7screenie.png</image>
     </screenshot>
   </screenshots>
