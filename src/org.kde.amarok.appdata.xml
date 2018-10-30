@@ -61,6 +61,12 @@
   <summary xml:lang="x-test">xxAudio Playerxx</summary>
   <description>
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
+    <p xml:lang="ca">L'Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
+    <p xml:lang="es">Amarok es un potente, versátil, libre y multiplataforma reproductor de música y gestor de colecciones que dispone de gran cantidad de funciones.</p>
+    <p xml:lang="nl">Amarok is een vrije muziekspeler en beheerder van een verzameling, cross-platform, veelzijdig, krachtig en rijk aan functies.</p>
+    <p xml:lang="sv">Amarok är en fri, mångsidig, kraftfull och funktionsrik musikspelare och samlingshanterare för flera plattformar.</p>
+    <p xml:lang="uk">Amarok — вільна, універсальна, різнобічна та потужна програма для відтворення звукових даних та керування фонотеками.</p>
+    <p xml:lang="x-test">xxAmarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.xx</p>
     <p>Features:</p>
     <p xml:lang="ar">الميزات:</p>
     <p xml:lang="bs">Svojstva:</p>
@@ -311,10 +317,22 @@
   <screenshots>
     <screenshot type="default">
       <caption>Playing music in Amarok</caption>
+      <caption xml:lang="ca">Reproduint música en l'Amarok</caption>
+      <caption xml:lang="es">Reproduciendo música en Amarok</caption>
+      <caption xml:lang="nl">Muziek afspelen in Amarok</caption>
+      <caption xml:lang="sv">Spela musik i Amarok</caption>
+      <caption xml:lang="uk">Відтворення музики в Amarok</caption>
+      <caption xml:lang="x-test">xxPlaying music in Amarokxx</caption>
       <image>http://kde.org/images/screenshots/amarok.png</image>
     </screenshot>
     <screenshot>
       <caption>Amarok windows</caption>
+      <caption xml:lang="ca">Finestres de l'Amarok</caption>
+      <caption xml:lang="es">Ventanas de Amarok</caption>
+      <caption xml:lang="nl">Vensters in Amarok</caption>
+      <caption xml:lang="sv">Fönster i Amarok</caption>
+      <caption xml:lang="uk">Вікна Amarok</caption>
+      <caption xml:lang="x-test">xxAmarok windowsxx</caption>
       <image>https://amarok.kde.org/files/Amarok2.7screenie.png</image>
     </screenshot>
   </screenshots>
