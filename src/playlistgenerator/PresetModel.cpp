@@ -296,7 +296,7 @@ APG::PresetModel::parseXmlToPresets( QDomDocument& document )
 APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
     : QFileDialog( Q_NULLPTR, i18n( "Export \"%1\" preset", ps->title() ),
                    QStandardPaths::writableLocation( QStandardPaths::MusicLocation ),
-                   QString("*.xml|" + i18n("Preset files (*.xml)") ) )
+                   QString( i18n("Preset files (*.xml)") ) )
 {
     m_presetsToExportList.append( ps );
     setFileMode( QFileDialog::AnyFile );
