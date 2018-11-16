@@ -64,6 +64,7 @@
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
     <p xml:lang="ca-valencia">L'Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
+    <p xml:lang="cs">Amarok je svobodný, multiplatformní, univerzální, mocný přehrávač hudby a správce kolekcí se spoustou funkcí.</p>
     <p xml:lang="es">Amarok es un potente, versátil, libre y multiplataforma reproductor de música y gestor de colecciones que dispone de gran cantidad de funciones.</p>
     <p xml:lang="gl">Amarok é xestor de coleccións de música e reprodutor libre, compatíbel con múltiples plataformas, versátil, potente e cheo de funcionalidades.</p>
     <p xml:lang="nl">Amarok is een vrije muziekspeler en beheerder van een verzameling, cross-platform, veelzijdig, krachtig en rijk aan functies.</p>
@@ -323,6 +324,8 @@
       <caption>Playing music in Amarok</caption>
       <caption xml:lang="ca">Reproduint música en l'Amarok</caption>
       <caption xml:lang="ca-valencia">Reproduint música en l'Amarok</caption>
+      <caption xml:lang="cs">Přehrávání hudby v Amaroku</caption>
+      <caption xml:lang="de">Musik-Wiedergabe in Amarok</caption>
       <caption xml:lang="es">Reproduciendo música en Amarok</caption>
       <caption xml:lang="gl">Reproducindo música en Amarok</caption>
       <caption xml:lang="nl">Muziek afspelen in Amarok</caption>
@@ -337,6 +340,8 @@
       <caption>Amarok windows</caption>
       <caption xml:lang="ca">Finestres de l'Amarok</caption>
       <caption xml:lang="ca-valencia">Finestres de l'Amarok</caption>
+      <caption xml:lang="cs">Okna Amaroku</caption>
+      <caption xml:lang="de">Amarok-Fenster</caption>
       <caption xml:lang="es">Ventanas de Amarok</caption>
       <caption xml:lang="gl">Xanelas de Amarok</caption>
       <caption xml:lang="nl">Vensters in Amarok</caption>
