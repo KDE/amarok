@@ -29,7 +29,7 @@ class AmarokUrl;
  * A class used to generate and modify amarok://play/ urls.
  *
  * The format of a 'play' amarokurl is:
- * amarok://play/<Base 64 Encoded playableUrl() of the track>/<integer seconds>
+ * amarok://play/\<Base 64 Encoded playableUrl() of the track\>/\<integer seconds\>
  */
 class AMAROK_EXPORT PlayUrlGenerator : public AmarokUrlGenerator
 {
@@ -42,7 +42,7 @@ public:
 
     /**
      * Updates the position of the bookmark named @param name to @param newMiliseconds
-     * for the track @param track.
+     * for the track @param track .
      *
      * The name should be a valid bookmark name and should include the trailing "- mm:ss".
      * Bookmark is renamed according to track title and new position, too.

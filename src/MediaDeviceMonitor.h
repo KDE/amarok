@@ -76,14 +76,14 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 
     /**
 
-    checkDevice checks if @param udi is a known device
+    checkDevice checks if @p udi is a known device
     and if so attempts to connect it
 
     checkOneDevice runs an identify check using the given
     assistant and udi
 
     checkDevicesFor checks if the device type described
-    by @param assistant matches any of the udi's in the
+    by @p assistant matches any of the udi's in the
     MediaDeviceCache, and if so, attempts to connect to
     it
 

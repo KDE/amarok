@@ -47,7 +47,7 @@ public:
     static const QString OPML_MIME;
     /**
      * Constructor
-     * @param fileName The file to parse 
+     * @param url The address to parse 
      * @return Pointer to new object
      */
     explicit OpmlParser( const QUrl &url );

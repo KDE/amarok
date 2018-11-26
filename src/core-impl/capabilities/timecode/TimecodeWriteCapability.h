@@ -37,14 +37,14 @@ public:
 
     /**
      * Stores a timecode for the track
-     * @param seconds the position in seconds at which the timecide should be stored.
+     * @param miliseconds the position in milliseconds at which the timecide should be stored.
      * @return  true if the write was successful, false if not.
      */
     virtual bool writeTimecode ( qint64 miliseconds ) = 0;
 
     /**
      * Stores an auto timecode for the track and deletes any previously added auto timecodes
-     * @param seconds the position in seconds at which the timecide should be stored.
+     * @param miliseconds the position in milliseconds at which the timecide should be stored.
      * @return  true if the write was successful, false if not.
      */
     virtual bool writeAutoTimecode ( qint64 miliseconds ) = 0;

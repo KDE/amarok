@@ -122,7 +122,7 @@ public Q_SLOTS:
     void noMatch();
 
     /**
-     * Clear the filter..
+     * Clear the filter.
      */
     void slotFilterClear();
 

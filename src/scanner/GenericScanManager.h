@@ -130,7 +130,7 @@ class AMAROK_EXPORT GenericScanManager : public QObject
         void directoryCount( int count );
 
         /** Emitted once we get the complete data for a directory.
-         *  @dir The directory structure with all containing tracks.
+         *  @param dir The directory structure with all containing tracks.
          *
          *  The dir pointer will stay valid until after the done signal.
          *  Be carefull, you need to have direct connections to

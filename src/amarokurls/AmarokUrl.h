@@ -46,7 +46,7 @@ public:
     void setPath( const QString &path );
 
     /**
-     * Sets the url argument named @param name to @param value. Overrides any possible
+     * Sets the url argument named @param name to @param value . Overrides any possible
      * previous value.
      */
     void setArg( const QString &name, const QString &value );

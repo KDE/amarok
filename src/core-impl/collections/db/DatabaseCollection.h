@@ -59,7 +59,6 @@ class DatabaseCollection : public Collections::Collection
 
     public:
         /** Creates a new DatabaseCollection.
-         *  @param storage The storage this collection should work on. It will be freed by the collection.
          */
         DatabaseCollection();
         virtual ~DatabaseCollection();

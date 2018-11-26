@@ -49,7 +49,7 @@ public:
 
     /**
      * checks whether a DeviceHandler subclass can handle a given Medium.
-     * @param volume the connected solid volume
+     * @param device the connected solid volume
      * @return true if the DeviceHandler implementation can handle the medium,
      * false otherwise
      */
@@ -64,7 +64,7 @@ public:
 
     /**
      * creates a DeviceHandler which represents the Medium.
-     * @param volume the Volume for which a DeviceHandler is required
+     * @param device the Volume for which a DeviceHandler is required
      * @return a DeviceHandler or 0 if the factory cannot handle the Medium
      */
     virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &udi, QSharedPointer<SqlStorage> s ) const = 0;
@@ -128,7 +128,7 @@ public:
 
     /**
      * allows MountPointManager to check if a device handler handles a specific medium.
-     * @param m
+     * @param udi
      * @return true if the device handler handles the Medium m
      */
     virtual bool deviceMatchesUdi( const QString &udi ) const = 0;
@@ -172,7 +172,6 @@ public:
      * calculates a file's/directory's relative path on a given device.
      * @param deviceId the unique id which identifies the device the file/directory is supposed to be on
      * @param absolutePath the file's/directory's absolute path
-     * @param relativePath the calculated relative path
      */
     virtual QString getRelativePath( const int deviceId, const QString& absolutePath ) const;
 

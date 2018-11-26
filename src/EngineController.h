@@ -163,7 +163,7 @@ public:
 
     /**
      * @return QString with a pretty name for the current track
-     * @param whether to include the playing progress (default false)
+     * @param progress whether to include the playing progress (default false)
      */
     QString prettyNowPlaying( bool progress = false ) const;
 

@@ -146,7 +146,7 @@ namespace IpodMeta
              * @param mountPoint a path where iPod is mounted, e.g. /media/MyiPod in local
              * encoding (use QFile::encodeName())
              * @param filePath full absolute path to copied file, must be in form
-             * <@param mountPoint>/iPod_Control/Music/... - it is recommended to use
+             * <@p mountPoint>/iPod_Control/Music/... - it is recommended to use
              * itdb_cp_get_dest_filename() to construct the filename
              *
              * @return true if the track was "accepted", false if not in which case you

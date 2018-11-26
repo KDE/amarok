@@ -68,7 +68,7 @@ namespace AmarokScript
         Q_INVOKABLE void run();
 
         /**
-         * Block until the query completes, returns the tracklist..
+         * Block until the query completes, returns the tracklist.
          */
         Q_INVOKABLE Meta::TrackList blockingRun();
 

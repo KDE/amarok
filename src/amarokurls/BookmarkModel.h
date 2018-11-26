@@ -104,8 +104,8 @@ public Q_SLOTS:
     void renameBookmark( const QString &oldName , const QString &newName );
 
     /**
-     * Sets the bookmark's (whose name is @param name) url argument named @param key
-     * to @param value. Overrides any possible previous value.
+     * Sets the bookmark's (whose name is @param name ) url argument named @param key
+     * to @param value . Overrides any possible previous value.
      */
     void setBookmarkArg(const QString &name, const QString &key, const QString &value);
 

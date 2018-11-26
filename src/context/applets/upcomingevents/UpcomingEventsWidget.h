@@ -45,7 +45,7 @@ class UpcomingEventsWidget : public QGraphicsWidget
     public:
         /**
          * UpcomingEventsWidget constructor
-         * @param QGraphicsWidget*, like QGraphicsWidget constructor
+         * @param parent like QGraphicsWidget constructor
          */
         explicit UpcomingEventsWidget( const LastFmEventPtr &event,
                               QGraphicsItem *parent = 0,
@@ -59,8 +59,8 @@ class UpcomingEventsWidget : public QGraphicsWidget
         { return m_event; }
 
         /**
-         *Set the event's image in Plasma::Label from an url
-         *@param QUrl, image's url to be displayed
+         * Set the event's image in Plasma::Label from an url
+         * @param url image's url to be displayed
          */
         void setImage( const QUrl &url );
 
@@ -72,25 +72,25 @@ class UpcomingEventsWidget : public QGraphicsWidget
 
         /**
          *Set the event's participants text in Plasma::Label from a QString
-         *@param QString, participant's text to be displayed
+         *@param participants participants text to be displayed
          */
         void setParticipants( const QStringList &participants );
 
         /**
          *Set the event's date in Plasma::Label from a KDateTime
-         *@param KDateTime, date to be displayed
+         *@param date date to be displayed
          */
         void setDate( const KDateTime &date );
 
         /**
          *Set the event's name in Plasma::Label from a QString
-         *@param QString, name's text to be displayed
+         *@param name name's text to be displayed
          */
         void setName( const QString &name );
 
         /**
          *Set the event's location in a Plasma::Label from a QString
-         *@param QString, location's text to be displayed
+         *@param location location's text to be displayed
          */
         void setLocation( const LastFmLocationPtr &location );
 
@@ -102,7 +102,7 @@ class UpcomingEventsWidget : public QGraphicsWidget
 
         /**
          *Set the event's url in Plasma::Label from a QUrl
-         *@param QUrl, url to be displayed
+         *@param url url to be displayed
          */
         void setUrl( const QUrl &url );
 

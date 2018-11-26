@@ -42,7 +42,7 @@ namespace Meta
          *
          * @param path path of the file to write the tags to
          * @param changes Meta:val* key to value map of tags to write
-         * @param writeBackStatistics whether to include statistics-related tags when writing
+         * @param writeStatistics whether to include statistics-related tags when writing
          *
          * @see WriteTagsJob
          */
