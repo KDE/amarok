@@ -107,7 +107,7 @@ namespace Dynamic
                 the result was received or invalidate called.
                 @param playlist The current playlist context for the track.
                 @param contextCount The number of songs that are already fixed.
-                @parem finalCount The number of tracks that the playlist should finally contain (including the contextCount)
+                @param finalCount The number of tracks that the playlist should finally contain (including the contextCount)
                 @param universe A TrackCollectionPtr to be used for the resulting TrackSet
             */
             virtual TrackSet matchingTracks( const Meta::TrackList& playlist,

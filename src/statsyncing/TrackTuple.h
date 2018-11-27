@@ -59,7 +59,7 @@ namespace StatSyncing
             ProviderPtr provider( int i ) const;
 
             /**
-             * Returns track associated with @provider provider. Asserts that there's
+             * Returns track associated with @p provider. Asserts that there's
              * a track from @param provider
              */
             TrackPtr track( const ProviderPtr &provider ) const;

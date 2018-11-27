@@ -195,8 +195,8 @@ namespace StatSyncing
      * Comparison function that compares track delegate pointer by pointed value.
      * Useful if you want to semantically sort TrackDelegateList using qSort()
      *
-     * @template param ControllingClass: class name that implements static
-     *      ::comparisonFields() method that returns binary OR of Meta::val* fields
+     * @param ControllingClass: class name that implements static
+     *      \::comparisonFields() method that returns binary OR of Meta::val* fields
      *      (as qint64) that should be used when comparing tracks.
      */
     template <class ControllingClass>

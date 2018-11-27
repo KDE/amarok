@@ -81,7 +81,7 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
          * Starts TrackLoader's job, you'll get finished() signal in the end and
          * TrackLoader will auto-delete itself.
          *
-         * @urls list of urls to load tracks from, you can pass local and remote urls
+         * @param urls list of urls to load tracks from, you can pass local and remote urls
          * pointing to directories, tracks and playlists.
          */
         void init( const QList<QUrl> &urls );

@@ -154,7 +154,7 @@ class UmsCollection : public Collection, public Meta::Observer
         /**
          * Start a count-down that emits updated() signal after it expires.
          * Resets the timer to original timeout if already running. This is to ensure
-         * that we emit update() max. once per <timeout> for batch updates.
+         * that we emit update() max. once per \<timeout\> for batch updates.
          *
          * Timers can only be started from "their" thread so use signals & slots for that.
          */

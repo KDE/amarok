@@ -116,7 +116,7 @@ namespace Handler
 
             /**
              * Saves a playlist of tracks, with a name.
-             * @param tracks the tracks that make up the playlist to be made
+             * @param playlist the playlist to be made
              * @param name the name of the playlist
              */
             virtual void savePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name ) = 0;

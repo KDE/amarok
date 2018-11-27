@@ -240,12 +240,16 @@ namespace AmarokScript
             Q_INVOKABLE void uniteTrack( const Meta::TrackPtr &track );
 
             /**
-             * Add the track @param track to the trackset.
+             * Add the track set @p trackSet to the trackset.
+             *
+             * @param trackSet the track set to be added.
              */
             Q_INVOKABLE void uniteTrackSet( const Dynamic::TrackSet &trackSet );
 
             /**
-             * Add the track @param track to the trackset.
+             * Add the uids @p uids to the trackset.
+             *
+             * @param uids string list of the uids.
              */
             Q_INVOKABLE void uniteUids( const QStringList &uids );
 

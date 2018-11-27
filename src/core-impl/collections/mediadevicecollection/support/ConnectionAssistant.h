@@ -45,7 +45,7 @@ public:
 
     /**
 
-    identify checks if a device identified by @param uid matches the type
+    identify checks if a device identified by @param udi matches the type
     of device described by this ConnectionAssistant
     
     */

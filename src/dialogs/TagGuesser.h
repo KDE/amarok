@@ -62,7 +62,7 @@ class TagGuesser
         bool guess();
 
         /**
-        *   @Returns a list of guessed Tags
+        *  @returns a list of guessed Tags
         */
         QMap<qint64,QString> tags() { return m_tags; };
 

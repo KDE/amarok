@@ -62,16 +62,20 @@ namespace Playlists
             virtual ~PlaylistObserver();
 
             /**
-             * Subscribe to changes made by @param playlist. Does nothing if playlist is
+             * Subscribe to changes made by @p playlist. Does nothing if playlist is
              * null or if already subscribed.
+             *
+             * @param playlist the playlist
              *
              * This method is thread-safe.
              */
             void subscribeTo( PlaylistPtr playlist );
 
             /**
-             * Unsubscribe from changes made by @param playlist. Does nothing if not yet
+             * Unsubscribe from changes made by @p playlist. Does nothing if not yet
              * subscribed to playlist.
+             *
+             * @param playlist the playlist
              *
              * This method is thread-safe.
              */

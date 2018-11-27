@@ -18,7 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 /**
- * @file Provides extra UDSEntry field types for UPnP specific meta-data
+ * @file upnptypes.h
+ * @brief Provides extra UDSEntry field types for UPnP specific meta-data
  */
 
 #ifndef UPNPTYPES_H

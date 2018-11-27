@@ -81,7 +81,7 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         };
 
         enum QueryType {
-            None, // Set to faciliate using this in subclasses
+            None, // Set to facilitate using this in subclasses
             Track,
             Artist,
             Album,
@@ -124,7 +124,8 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
 
         /**
           * only works after starting a custom query with setQueryType( Custom )
-          * Use this to inform the query maker you are looking for results of value @param value.
+          * Use this to inform the query maker you are looking for results of type @p value.
+          * @param value the type of the results
           * @return this
           */
         virtual QueryMaker* addReturnValue( qint64 value ) = 0;
@@ -143,11 +144,12 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track ) = 0;
         /**
          * Match given artist. Depending on @param behaviour matches:
-         *   track artist if TrackArtists is given,
-         *   album artist if AlbumArtists is given,
+         *   @p track artist if TrackArtists is given,
+         *   @p album artist if AlbumArtists is given,
          *   any of track or album artist if AlbumOrTrackArtists is given.
          *
          * By default matches only track artist.
+         * @param artist the track artist.
          */
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists ) = 0;
         virtual QueryMaker* addMatch( const Meta::AlbumPtr &album ) = 0;
@@ -158,7 +160,8 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
 
         /**
          * Add a filter of type @p value and value @p filter. The querymaker applies this to all queries.
-         * @param text the text to match
+         * @param value the type of the filter
+         * @param filter the text to match
          * @param matchBegin If set then wildcard match the beginning of @p text (*text)
          * @param matchEnd If set then wildcard match the end of @p text (text*)
          * @return this
@@ -166,7 +169,8 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
         /**
          * Exclude filter of type @p value and value @p filter. The querymaker applies this to all queries.
-         * @param text the text to match
+         * @param value the type of the filter
+         * @param filter the text to match
          * @param matchBegin If set then wildcard match the beginning of @p text (*text)
          * @param matchEnd If set then wildcard match the end of @p text (text*)
          * @return this
@@ -205,7 +209,7 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         /**
          * Choose whether the query maker instance should delete itself after the query.
          * By passing true the query maker instance will delete itself after emitting queryDone().
-         * Otherwise it is the responsibility of the owner (the code which called ::queryMaker() usually) to delete the instance
+         * Otherwise it is the responsibility of the owner (the code which called \::queryMaker() usually) to delete the instance
          * when it is not needed anymore.
          *
          * Defaults to false, i.e. the querymaker instance will not delete itself.

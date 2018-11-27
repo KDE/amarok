@@ -117,7 +117,7 @@ public:
     int volume() const;
 
     /**
-     * @return @c true if sound output is disabled, @false otherwise
+     * @return @c true if sound output is disabled, @c false otherwise
      */
     bool isMuted() const;
 
@@ -397,7 +397,7 @@ Q_SIGNALS:
 
     /** Called when the track position changes.
         If the track just progresses you will get a notification every couple of milliseconds.
-        @parem position The current position in milliseconds
+        @param position The current position in milliseconds
         @param userSeek True if the position change was caused by the user
     */
     void trackPositionChanged( qint64 position, bool userSeek );

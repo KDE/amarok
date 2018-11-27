@@ -29,8 +29,8 @@ class AMAROK_EXPORT OpmlWriter : public QObject, public ThreadWeaver::Job
     Q_OBJECT
     public:
         /** OpmlWriter will write the OPML outline objects as XML text.
-          * @arg rootOutlines the <body> of the OPML
-          * @arg headerData these fields are put in the <head> of the OPML
+          * @arg rootOutlines the \<body\> of the OPML
+          * @arg headerData these fields are put in the \<head\> of the OPML
           * @arg device QIODevice to write to
           * The children of IncludeNodes will not be written. Remove the type="include" attribute
           * from the include node to force a save of those child nodes.
@@ -43,7 +43,7 @@ class AMAROK_EXPORT OpmlWriter : public QObject, public ThreadWeaver::Job
         /**
          * The function that starts the actual work. Inherited from ThreadWeaver::Job
          * Note the work is performed in a separate thread
-         * @return Returns true on success and false on failure
+         * @return Returns @c true on success and @c false on failure
          */
         void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 

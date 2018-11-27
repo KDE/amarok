@@ -84,7 +84,7 @@ namespace IpodDeviceHelper {
                                        QString &errorMessage );
 
     /**
-     * Sets iPod name to @param name . Does nothing if @param itdb is null
+     * Sets iPod name to @param newName . Does nothing if @param itdb is null
      */
     AMAROK_EXPORT void setIpodName( Itdb_iTunesDB *itdb, const QString &newName );
 

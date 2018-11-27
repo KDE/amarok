@@ -49,7 +49,7 @@ namespace Capabilities
             virtual QStringList sources() const = 0;
 
             /**
-             * Set current source. Does nothing if @param current is out of bounds.
+             * Set current source. Does nothing if @param source is out of bounds.
              */
             virtual void setSource( int source ) = 0;
 

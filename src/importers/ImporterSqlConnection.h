@@ -37,7 +37,7 @@ namespace StatSyncing
 /**
  * A helper class encapsulating communication with the database. It guarantees that
  * a connection is only used in thread that created it, as per
- * @link http://doc.qt.io/qt-5/threads-modules.html#threads-and-the-sql-module @endlink
+ * http://doc.qt.io/qt-5/threads-modules.html#threads-and-the-sql-module
  * This class is very basic, e.g. returns a whole query result as a list of lists,
  * so it may not be suitable for more advanced usage.
  */

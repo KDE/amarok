@@ -40,7 +40,7 @@ class AMAROK_EXPORT PersistentStatisticsStore : public Meta::Statistics, private
 {
     public:
         /**
-         * Create persistent statistics store of @param track statistics. @param trak may
+         * Create persistent statistics store of @param track statistics. @p track may
          * not be null.
          *
          * This methods takes plain pointer so that you can call it in the Track

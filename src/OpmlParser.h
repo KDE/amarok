@@ -76,7 +76,7 @@ public:
 
     /**
      * Get the result of the parsing as a list of OpmlOutlines.
-     * This list contains only root outlines that can be found in the <body> of the OPML.
+     * This list contains only root outlines that can be found in the \<body\> of the OPML.
      * The rest are children of these root items.
      *
      * The user is responsible for deleting the results.
@@ -90,7 +90,7 @@ protected:
 Q_SIGNALS:
 
     /**
-     * Emitted when <head> has been completely parsed.
+     * Emitted when \<head\> has been completely parsed.
      */
     void headerDone();
 

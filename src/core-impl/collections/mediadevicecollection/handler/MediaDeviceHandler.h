@@ -156,7 +156,7 @@ public:
 
     /**
     * Removes a list of tracks from the device.
-    * @param tracklist The list of tracks to remove.
+    * @param tracks The list of tracks to remove.
     */
     void removeTrackListFromDevice( const Meta::TrackList &tracks );
 
@@ -451,7 +451,8 @@ Q_SIGNALS:
 
     /**
     * Is emitted when the job is done successfully
-    * @param job The job that was done
+    * Parameters:
+    * The job that was done
     * @param track The source track used for the copy
     */
 
@@ -459,7 +460,8 @@ Q_SIGNALS:
 
     /**
     * Is emitted when the job is done and has failed
-    * @param job The job that was done
+    * Parameters:
+    * The job that was done
     * @param track The source track used for the copy
     */
     void copyTrackFailed( ThreadWeaver::JobPointer, const Meta::TrackPtr& track );

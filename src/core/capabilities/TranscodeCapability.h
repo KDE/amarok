@@ -68,8 +68,10 @@ namespace Capabilities
             virtual Transcoding::Configuration savedConfiguration() = 0;
 
             /**
-             * Set saved configuration to @param configuration. An invalid configuration
+             * Set saved configuration to @p configuration. An invalid configuration
              * should be interpreted as an action to unset saved configuration.
+             *
+             * @param configuration the transcoding configuration
              */
             virtual void setSavedConfiguration( const Transcoding::Configuration &configuration ) = 0;
 

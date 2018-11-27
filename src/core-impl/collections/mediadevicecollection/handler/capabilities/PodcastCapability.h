@@ -112,13 +112,13 @@ namespace Handler
 
             /**
              * Deletes a particular Podcast from the device
-             * @param Podcast the Podcast to remove
+             * @param channel the channel to remove
              */
             virtual void removePodcast( const MediaDevicePodcastChannelPtr &channel ) = 0;
 
             /**
              * Deletes a particular Podcast Episode from the device
-             * @param Podcast the Podcast to remove
+             * @param episode the episode to remove
              */
             virtual void removePodcastEpisode( const MediaDevicePodcastEpisodePtr &episode ) = 0;
 
@@ -128,7 +128,7 @@ namespace Handler
              * For example, for libgpod one would associate Itdb_Podcast*.  It makes
              * the most sense to use a QHash since it is fastest lookup and order
              * does not matter.
-             * @param Podcast The list to two-way associate with a library list struct
+             * @param channel The channel to two-way associate with a library list struct
              */
             virtual void setAssociatePodcast( const MediaDevicePodcastChannelPtr &channel ) { Q_UNUSED( channel ) }
 

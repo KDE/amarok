@@ -36,14 +36,14 @@ extern "C" {
 }
 
 /**
- * A daemon that receives notfications from mp3tunes'
+ * A daemon that receives notifications from mp3tunes'
  * servers about new/changed tracks that can be synced.
  *
  * Because this classes implements libmp3tunes which uses
  * GLIB's c-style callbacks, all the callbacks must be static.
  * This requires some black magic on my part to keep the OO
  * facade intact. The solution is a global variable: theDaemon
- * delcared after this class. Your code must #define DEFINE_HARMONY
+ * declared after this class. Your code must \#define DEFINE_HARMONY
  * and instantiate a new Mp3tunesHarmonyDaemon for theDaemon.
  * @author Casey Link <unnamedrambler@gmail.com>
  */
@@ -64,7 +64,7 @@ class Mp3tunesHarmonyDaemon : public QCoreApplication
     ~Mp3tunesHarmonyDaemon();
 
     /**
-     * Stats the daemon by intiating the connection Harmony connection.
+     * Stats the daemon by initiating the connection Harmony connection.
      */
     int init();
 
@@ -75,7 +75,7 @@ class Mp3tunesHarmonyDaemon : public QCoreApplication
 
     /**
      * The possible states the daemon can be in.
-     * Before init() it is DISONNECTED
+     * Before init() it is DISCONNECTED
      */
     enum HarmonyState {
         DISCONNECTED,

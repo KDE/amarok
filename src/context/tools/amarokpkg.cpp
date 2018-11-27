@@ -98,7 +98,7 @@ int main(int argc, char **argv)
     app.setApplicationVersion(version);
 
     /**
-     * @TODO: DO WE NEED THIS ?
+     * TODO: DO WE NEED THIS ?
      */
     KAboutData::setApplicationData(aboutData);
 

@@ -63,9 +63,9 @@ namespace MetaProxy
              * Tell MetaProxy::Track to start looking up the real track. Only valid if
              * this Track is constructed with lookupType = ManualLookup. This method
              * returns quickly and the lookup happens asynchronously in a thread (in
-             * other words, @param provider, id supplied, must be thread-safe).
+             * other words, @p provider, id supplied, must be thread-safe).
              *
-             * If @param provider is null (the default), lookup happens in all
+             * If @p provider is null (the default), lookup happens in all
              * registered providers by employing CollectionManager. Otherwise lookup
              * only checks @param provider (still asynchronously).
              */

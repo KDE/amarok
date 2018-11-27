@@ -38,14 +38,14 @@ namespace AmarokScript
 
             /** 
              * Print debug output to the shell. Only printed if amarok is started with --debug.
-             * @text The text to print.
+             * @param text The text to print.
              */
             Q_INVOKABLE void debug( const QString& text ) const;
 
             /**
               * Show an information dialog in Amarok.
-              * @text The text to display.
-              * @type Type of the dialog. See KMessageBox docs.
+              * @param text The text to display.
+              * @param type Type of the dialog. See KMessageBox docs.
               */
             Q_INVOKABLE int alert( const QString& text, const QString& type = "information" ) const;
 

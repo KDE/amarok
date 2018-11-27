@@ -64,7 +64,7 @@ public:
      * @param url the url to get the content from.
      * @param receiver the receiver object to call @p method on.
      * @param method the method to call when content is retrieved.
-     * @param type the #Qt::ConnectionType used for calling the @p method.
+     * @param type the Qt::ConnectionType used for calling the @p method.
      * @return a QNetworkReply object for custom monitoring.
      */
     template<typename Return, typename Object, typename... Args>

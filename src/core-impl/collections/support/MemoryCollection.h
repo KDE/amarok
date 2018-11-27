@@ -38,8 +38,8 @@ class AlbumMap : public QMap<Meta::AlbumKey, Meta::AlbumPtr>
             return QMap<Meta::AlbumKey, Meta::AlbumPtr>::contains( Meta::AlbumKey( album ) ); }
 
         /**
-         * Return true if this map contains album named @param name with album artist
-         * @param artistName. Amarok convention is to use empty artistName for compilaitons.
+         * @return @c true if this map contains album named @param name with album artist
+         * @param artistName Amarok convention is to use empty artistName for compilations.
          */
         bool contains( const QString &name, const QString &artistName ) const {
             return QMap<Meta::AlbumKey, Meta::AlbumPtr>::contains( Meta::AlbumKey( name, artistName ) ); }

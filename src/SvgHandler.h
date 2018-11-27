@@ -94,7 +94,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
          *
          * @param album The AlbumPtr
          * @param size The size of the resulting image (border included)
-         * @borderWidth The desired width of the border
+         * @param borderWidth The desired width of the border
          */
         QPixmap imageWithBorder( Meta::AlbumPtr album, int size = 1, int borderWidth = 5 );
 

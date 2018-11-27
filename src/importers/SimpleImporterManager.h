@@ -25,7 +25,7 @@ using namespace StatSyncing;
   * This macro can be used to reduce the amount of code needed in order to implement
   * ImporterManager subclass and export it as a plugin. If your manager doesn't do
   * anything other than give static info, you can replace the whole class with this macro.
-  * You need to include the .moc file after this macro (#include <YourFile.moc>).
+  * You need to include the .moc file after this macro (\#include <YourFile.moc>).
   * See iTunes importer for usage example (ITunesManager.cpp file).
   */
 #define AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN( libname, JSON, TYPE, PRETTY_NAME, DESCRIPTION, \

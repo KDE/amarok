@@ -48,7 +48,7 @@ namespace Meta {
             virtual ~Observer();
 
             /**
-             * Subscribe to changes made by @param entity.
+             * Subscribe to changes made by @param entity .
              *
              * Changed in 2.7: being subscribed to an entity no longer prevents its
              * destruction.
