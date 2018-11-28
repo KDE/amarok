@@ -24,7 +24,7 @@
 #include <ThreadWeaver/Job>
 
 /**
-A small helper class to do some simple asynchroneous database queries
+A small helper class to do some simple asynchronous database queries
 
 	@author Nikolaj Hald Nielsen <nhn@kde.org>   
 */

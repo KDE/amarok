@@ -156,7 +156,7 @@ ASXPlaylist::writeTrackList( )
         QDomNode creator = createElement( "author" );
 
         //Description of a track
-        QDomNode abstact = createElement( "abstract" );
+        QDomNode abstract = createElement( "abstract" );
 
         location.setAttribute( "href", trackLocation( track ) );
         subNode.appendChild( location );
@@ -185,7 +185,7 @@ ASXPlaylist::writeTrackList( )
                 APPENDNODE( creator, track->artist()->name() );
         }
         if( !track->comment().isEmpty() )
-            APPENDNODE(abstact, track->comment() );
+            APPENDNODE(abstract, track->comment() );
         #undef APPENDNODE
         documentElement().appendChild( subNode );
     }

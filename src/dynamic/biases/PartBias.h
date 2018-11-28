@@ -51,7 +51,7 @@ namespace Dynamic
             void biasWeightsChanged();
 
         protected:
-            /** True if we just handle a signal. Used to protect agains recursion */
+            /** True if we just handle a signal. Used to protect against recursion */
             bool m_inSignal;
 
             Dynamic::PartBias* m_bias;
@@ -71,7 +71,6 @@ namespace Dynamic
 
         public:
             /** Create a new part bias.
-                @param empty If true, then the newly created bias will not have a set of example sub-biases.
             */
             PartBias();
 

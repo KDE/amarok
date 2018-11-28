@@ -207,7 +207,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
 
         //PodcastMetaCommon methods
-        // override this since it's ambigous in PodcastMetaCommon and Playlist
+        // override this since it's ambiguous in PodcastMetaCommon and Playlist
         virtual QString description() const { return m_description; }
 
         //PodcastChannel methods

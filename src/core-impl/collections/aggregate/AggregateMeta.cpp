@@ -875,7 +875,7 @@ AggregateAlbum::canUpdateImage() const
 
     foreach( const Meta::AlbumPtr &album, m_albums )
     {
-        //we can only update the image for all albusm at the same time
+        //we can only update the image for all albums at the same time
         if( !album->canUpdateImage() )
             return false;
     }

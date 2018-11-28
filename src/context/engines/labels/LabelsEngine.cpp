@@ -271,7 +271,7 @@ LabelsEngine::fetchLastFm()
     if( !currentArtist.isEmpty() && !currentTitle.isEmpty() )
     {
         setData( "labels", "message", "fetching");
-        // send the atist and title actually used for searching labels
+        // send the artist and title actually used for searching labels
         setData( "labels", "artist", currentArtist );
         setData( "labels", "title", currentTitle );
         setData( "labels", "album", m_album );

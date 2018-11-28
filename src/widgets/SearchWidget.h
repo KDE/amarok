@@ -65,7 +65,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
          * Tells the widget that a search operation has started. As a consequence the
          * "search" icon changes to a progress animation.
          *
-         * Note: You can call this slot several times if you ahve several search operations
+         * Note: You can call this slot several times if you have several search operations
          * simultaneously. The widget has an internal counter to track them.
          */
         void searchStarted();

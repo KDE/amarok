@@ -3468,7 +3468,7 @@ VERSION 1.4.4
     * When tracks are removed from the collection (deleted on disk or moved
       outside of a collection folder) any corresponding entry in the Playlist
       will be disabled.
-    * Dragging podcasts to to playlist will insert them in a chronological
+    * Dragging podcasts to the playlist will insert them in a chronological
       order, so you can listen to the oldest first automatically!
     * Improve application startup times dramaticaly by lazy loading podcast
       episodes.

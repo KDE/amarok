@@ -66,11 +66,14 @@ public:
     virtual ~ImporterSqlConnection();
 
     /**
-     * Executes a query given in QString @param query , first using QSqlQuery::bindValue
-     * to bind parameters given in @param bindValues . If @param ok is not null the bool
+     * Executes a query given in QString @p query, first using QSqlQuery::bindValue
+     * to bind parameters given in @p bindValues. If @p ok is not null the bool
      * it points at is set to true if the query was successful and false if error occurred.
      * Note that if no transaction is started, the connection is opened for the query and
      * then closed again.
+     * @param query the query
+     * @param bindValues the bind parameters
+     * @param ok whether the query was successful
      *
      * @returns The result of the query.
      */

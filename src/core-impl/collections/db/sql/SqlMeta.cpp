@@ -1971,7 +1971,7 @@ SqlAlbum::setImage( const QString &path )
 }
 
 /** Set the compilation flag.
- *  Actually it does not cange this album but instead moves
+ *  Actually it does not change this album but instead moves
  *  the tracks to other albums (e.g. one with the same name which is a
  *  compilation)
  *  If the compilation flag is set to "false" then all songs

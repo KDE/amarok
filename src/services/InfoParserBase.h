@@ -33,7 +33,7 @@ public:
     InfoParserBase();
 
      /**
-     * Fetches info about artist and emits info( Qstring )
+     * Fetches info about artist and emits info( QString )
      * with a ready to show html page when the info is ready
      * @param artist The artist to get info about
      */
@@ -41,15 +41,15 @@ public:
 
     /**
      * Overloaded function
-     * Fetches info about album and emits info( Qstring )
+     * Fetches info about album and emits info( QString )
      * with a ready to show html page when the info is ready
-     * @param url The album to get info about
+     * @param album The album to get info about
      */
     virtual void getInfo( Meta::AlbumPtr album ) = 0;
 
     /**
      * Overloaded function
-     * Fetches info about track and emits info( Qstring )
+     * Fetches info about track and emits info( QString )
      * with a ready to show html page when the info is ready
      * @param url The track to get info about
      */
@@ -59,7 +59,7 @@ public:
 
 Q_SIGNALS:
     /**
-     * Signal emmited when new html info is ready to be shown
+     * Signal emitted when new html info is ready to be shown
      * @param info The string containing the html formatted information
      */
     void info( const QString &info );

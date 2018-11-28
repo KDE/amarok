@@ -26,7 +26,7 @@ class AMAROK_CORE_EXPORT MetaCapability
         virtual ~MetaCapability() {}
 
         /**
-         * Return true if this entity has capability @param CapIface, false otherwise.
+         * Return true if this entity has capability @c CapIface, false otherwise.
          */
         template <class CapIface> bool has() const
         {

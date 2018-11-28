@@ -53,12 +53,12 @@ public:
 Q_SIGNALS:
     /**
      * Emitted when a non-Shuffle item is triggered from the menu.
-     * @param action the action in the menu that has been triggered.
+     * @param internalColName the internal name of the column in which the menu has been triggered.
      */
     void actionClicked( QString internalColName );
 
     /**
-     * Emmited when the Shuffle item is triggered from the menu.
+     * Emitted when the Shuffle item is triggered from the menu.
      */
     void shuffleActionClicked();
 

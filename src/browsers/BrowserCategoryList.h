@@ -72,7 +72,7 @@ class BrowserCategoryList : public BrowserCategory
          * @param target This is a / delimited string of category names.
          * This list will take the first category name, and if a child category with
          * this name exists, it will switch to it. If there are are more category names
-         * in the target string, and the category activcated is itself a category list,
+         * in the target string, and the category activated is itself a category list,
          * it will strip the first category name and / from the targe string and pass
          * the rest to the navigate() method of the active category list.
          *

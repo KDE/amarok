@@ -43,8 +43,6 @@ public:
      * Constructor, nontrivial.
      * @param icon the icon to paint on the button.
      * @param text the text to show on the button.
-     * @param noArrows true if the button should be shown without order inversion arrows,
-     * otherwise false.
      * @param parent the parent QWidget.
      */
     BreadcrumbItemSortButton( const QIcon &icon, const QString &text, QWidget *parent );

@@ -32,7 +32,7 @@ namespace CoverFetch
 {
     enum Option
     {
-        Automatic,      //!< Automtically save cover for the specified album, if one is found
+        Automatic,      //!< Automatically save cover for the specified album, if one is found
         Interactive,    //!< Opens a dialog for the user to decide, and add more searches if desired
         WildInteractive //!< As @ref Interactive, but without filtering results (used for web search)
     };

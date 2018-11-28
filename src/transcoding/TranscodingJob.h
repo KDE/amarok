@@ -44,7 +44,7 @@ public:
      * @param dest the path of the destination file, to be created.
      * @param configuration the string of parameters to be fed to the encoder. This implementation
      *        uses the FFmpeg executable, @see http://ffmpeg.org/ffmpeg-doc.html#SEC6
-     * @param the parent QObject.
+     * @param parent the parent QObject.
      */
     explicit Job( const QUrl &src,
                   const QUrl &dest,

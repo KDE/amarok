@@ -126,7 +126,7 @@ class AMAROK_EXPORT TagDialog : public QDialog, public Meta::Observer
         void initUi();
 
         /** Set's the current track to the number.
-            Will check agains invalid numbers, so the caller does not have to do that.
+            Will check against invalid numbers, so the caller does not have to do that.
         */
         void setCurrentTrack( int num );
 

@@ -100,8 +100,10 @@ namespace StatSyncing
             virtual ProviderConfigWidget *configWidget();
 
             /**
-             * Reconfigure the provider using configuration stored in @param config.
+             * Reconfigure the provider using configuration stored in @p config.
              * Does nothing by default.
+             *
+             * @param config the configuration
              */
             virtual void reconfigure( const QVariantMap &config );
 

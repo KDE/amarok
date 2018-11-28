@@ -152,8 +152,8 @@ public Q_SLOTS:
 
     /**
      * Moves a track from one row to another in the playlist.
-     * @param from the row containing the track that is about to be moved.
-     * @param to the target row where the track should be moved.
+     * @param topModelFrom the row containing the track that is about to be moved.
+     * @param topModelTo the target row where the track should be moved.
      */
     void moveRow( int topModelFrom, int topModelTo );
 
@@ -175,8 +175,8 @@ public Q_SLOTS:
      *   4 Charlie
      *   5 Foxtrot
      * and the function will return 2, because that's where the rows really ended up.
-     * @param from the list of rows containing the tracks that are about to be moved.
-     * @param to the target row where the tracks should be moved.
+     * @param topModelFrom the list of rows containing the tracks that are about to be moved.
+     * @param topModelTo the target row where the tracks should be moved.
      * @return the first row where the tracks ended up in the new list.
      */
     int moveRows( QList<int>& topModelFrom, int topModelTo );

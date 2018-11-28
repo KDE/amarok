@@ -121,7 +121,6 @@ namespace Dynamic
                                 if we search a track for the end of the playlist.
                 @param playlist The current playlist context for the track.
                 @param contextCount The number of songs that are already fixed.
-                @param universe A TrackCollectionPtr to be used for the resulting TrackSet
             */
             virtual bool trackMatches( int position,
                                        const Meta::TrackList& playlist, int contextCount ) const = 0;
@@ -192,7 +191,6 @@ namespace Dynamic
 
         public:
             /** Create a new And bias.
-                @param empty If true, then the newly created bias will not have a set of example sub-biases.
             */
             AndBias();
             virtual ~AndBias();

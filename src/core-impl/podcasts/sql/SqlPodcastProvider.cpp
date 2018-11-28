@@ -1176,7 +1176,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     connect( transferJob, &KIO::TransferJob::data,
              this, &SqlPodcastProvider::addData );
     //need to connect to finished instead of result because it's always emitted.
-    //We need to cleanup after a download is cancled regardless of the argument in
+    //We need to cleanup after a download is canceled regardless of the argument in
     //KJob::kill()
     connect( transferJob, &KIO::TransferJob::finished,
              this, &SqlPodcastProvider::downloadResult );

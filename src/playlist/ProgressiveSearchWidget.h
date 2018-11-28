@@ -62,7 +62,7 @@ Q_SIGNALS:
     /**
      * Signal emitted when the search term has changed.
      * @param filter The new search term.
-     * @param fiellds The mask containing the fields to match against.
+     * @param fields The mask containing the fields to match against.
      */
     void filterChanged( const QString &filter, int fields, bool showOnlyMatches );
 
@@ -74,14 +74,14 @@ Q_SIGNALS:
     /**
      * Signal emitted when the "next" button is pressed.
      * @param filter The current search term.
-     * @param fiellds The mask containing the fields to match against.
+     * @param fields The mask containing the fields to match against.
      */
     void next( const QString &filter, int fields  );
 
     /**
      * Signal emitted when the "previous" button is pressed.
      * @param filter The current search term.
-     * @param fiellds The mask containing the fields to match against.
+     * @param fields The mask containing the fields to match against.
      */
     void previous( const QString &filter, int fields  );
 

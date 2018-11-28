@@ -227,7 +227,7 @@ QList<int>
 EqualizerPresets::eqCfgGetPresetVal( const QString &presetName )
 {
       // Idea is to return user preset with request name first
-      // if not look into into default preset names
+      // if not look into the default preset names
       const int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( presetName );
       const int idDef = eqDefaultPresetsList().indexOf( presetName );
 

@@ -145,7 +145,7 @@ public:
      * However for rewinding we have isSeekable().
      * Also for streams usually the meta data received by currentTrack() is only
      * for the whole stream while the meta data received by currentMetaDataChanged
-     * will be more current (or contain advertisment)
+     * will be more current (or contain advertisement)
      *
      * @return @c true if the current track is a stream, @c false otherwise
      */
@@ -508,7 +508,7 @@ private:
     /**
      * Try to detect MetaData spam in Streams etc.
      *
-     * Some streams are doing advertisment in the metadata. We try to filter that
+     * Some streams are doing advertisement in the metadata. We try to filter that
      * out. Additionally, some Phonon back-ends emit more than one
      * metadataChanged() signals per on track, so filter it all altogether.
      */

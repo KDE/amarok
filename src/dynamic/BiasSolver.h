@@ -76,7 +76,7 @@ namespace Dynamic
              * Create and prepare the solver. The constructor returns
              *
              * @param n The size of the playlist to generate.
-             * @param biases The system of biases being applied.
+             * @param bias The system of biases being applied.
              * @param context The tracks (if any) that precede the playlist
              * being generated.
              */

@@ -24,7 +24,7 @@
 /**
 Info parser for the scriptable services
 
-	@author
+@author Nikolaj Hald Nielsen
 */
 class ScriptableServiceInfoParser : public InfoParserBase
 {

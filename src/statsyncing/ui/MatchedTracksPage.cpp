@@ -81,7 +81,7 @@ namespace StatSyncing
                     QString leftProvider = sourceModel()->data( l, Qt::DisplayRole ).toString();
                     QString rightProvider = sourceModel()->data( r, Qt::DisplayRole ).toString();
 
-                    // make this sorting ignore the sort order, always sort acsendingly:
+                    // make this sorting ignore the sort order, always sort ascendingly:
                     if( sortOrder() == Qt::AscendingOrder )
                         return leftProvider.localeAwareCompare( rightProvider ) < 0;
                     else

@@ -157,15 +157,18 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         */
         void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
         /**
-           Schedule copying of @param tracks to collection location @param destination.
-           This method takes ownership of the @param destination, you may not reference
+           Schedule copying of @p tracks to collection location @p destination.
+           This method takes ownership of the @param destination , you may not reference
            or delete it after this call. This method returns immediately and the actual
            copy is performed in the event loop and/or another thread.
+           @param tracks tracks
+           @param destination the collection location destination
         */
         void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
         /**
-           Convenience method for copying tracks based on QueryMaker restults,
-           takes ownership of the @param qm.
+           Convenience method for copying tracks based on QueryMaker results,
+           takes ownership of the @p qm.
+           @param qm the QueryMaker query
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
         void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination );
@@ -176,15 +179,18 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
          */
         void prepareMove( Meta::TrackPtr track, CollectionLocation *destination );
         /**
-           Schedule moving of @param tracks to collection location @param destination.
-           This method takes ownership of the @param destination, you may not reference
+           Schedule moving of @p tracks to collection location @p destination.
+           This method takes ownership of the @p destination, you may not reference
            or delete it after this call. This method returns immediately and the actual
            move is performed in the event loop and/or another thread.
+           @param tracks tracks
+           @param destination the collection location destination
         */
         void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );
         /**
            Convenience method for moving tracks based on QueryMaker restults,
-           takes ownership of the @param qm.
+           takes ownership of the @p qm.
+           @param qm the QueryMaker query
            @see prepareMove( Meta::TrackList, CollectionLocation* )
         */
         void prepareMove( Collections::QueryMaker *qm, CollectionLocation *destination );
@@ -195,7 +201,8 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void prepareRemove( const Meta::TrackList &tracks );
         /**
            Convenience method for removing tracks selected by QueryMaker,
-           takes ownership of the @param qm.
+           takes ownership of the @p qm.
+           @param qm the QueryMaker query
            @see prepareRemove( Meta::TrackList )
          */
         void prepareRemove( Collections::QueryMaker *qm );
@@ -203,6 +210,8 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         /**
          * Adds or merges a track to the collection (not to the disk)
          * Inserts a set of TrackPtrs directly into the database without needing to actual move any files
+         * @param track track
+         * @param path path
          * This is a hack required by the DatabaseImporter
          * TODO: Remove this hack
          * @return true if the database entry was inserted, false otherwise
@@ -213,11 +222,14 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
           explicitly inform the source collection of successful transfer.
           The source collection will only remove files (if necessary)
           for which this method was called.
+          @param track track
           */
         void transferSuccessful( const Meta::TrackPtr &track );
 
         /**
         * tells the source location that an error occurred during the transfer of the file
+        * @param track track
+        * @param error error
         */
         virtual void transferError( const Meta::TrackPtr &track, const QString &error );
 
@@ -329,7 +341,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
 
         /**
          * Get nice localised string describing the current operation based on transcoding
-         * configuraiton and isGoingToRemoveSources(); meant to be called by destination
+         * configuration and isGoingToRemoveSources(); meant to be called by destination
          * collection.
          *
          * @return "Copy Tracks", "Transcode and Organize Tracks" etc.

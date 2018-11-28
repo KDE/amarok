@@ -76,7 +76,7 @@ namespace AmarokScript
              */
             void uninstalled();
 
-            // TODO: actaully emit this signal
+            // TODO: actually emit this signal
             void configured();
 
         private:

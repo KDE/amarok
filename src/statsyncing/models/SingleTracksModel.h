@@ -36,10 +36,12 @@ namespace StatSyncing
             /**
              * Construct model of single tracks.
              *
-             * @param matchedTuples list of tracks
+             * @param tracks list of tracks
              * @param columns list of Meta::val* fields that will form columns of the model
              *                must include Meta::valTitle, may include: valRating,
              *                valFirstPlayed, valLastPlayed, valPlaycount, valLabel.
+             * @param options the options
+             * @param parent the parent QObject
              */
             SingleTracksModel( const TrackList &tracks, const QList<qint64> &columns,
                                const Options &options, QObject *parent = 0 );

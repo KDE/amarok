@@ -39,11 +39,14 @@ namespace StatSyncing
             TrackTuple();
 
             /**
-             * Inserts a track into this tuple; if it already contains a track from @param
+             * Inserts a track into this tuple; if it already contains a track from
              * provider, the old track si replaced with the new one.
              *
              * It does make sense to only add tracks that are in some sence equal to tracks
-             * alredy present in the tuple.
+             * already present in the tuple.
+             *
+             * @param provider the provider
+             * @param track the track
              */
             void insert( ProviderPtr provider, const TrackPtr &track );
 

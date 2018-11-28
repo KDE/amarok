@@ -55,7 +55,7 @@ class LayoutEditWidget : public QWidget
         void readLayout( Playlist::LayoutItemConfig config );
 
         /**
-         * Create and return a LayoutItemConfig corrosponding to the current state of the editor
+         * Create and return a LayoutItemConfig corresponding to the current state of the editor
          * @return LayoutItemConfig matching the contents of the editor.
          */
         Playlist::LayoutItemConfig config();
@@ -69,7 +69,7 @@ class LayoutEditWidget : public QWidget
 
         /**
          * Signal emitted when the token drop target receives input focus.
-         * @param The widget that received the focus.
+         * The parameter is a widget that received the focus.
          */
         void focuseReceived( QWidget* );
         void changed();

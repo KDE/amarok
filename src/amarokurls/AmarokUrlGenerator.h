@@ -27,7 +27,7 @@ public:
     virtual ~AmarokUrlGenerator() {};
 
     /**
-       Get the user visible description of what the createUrl() function will actualy bookmarks.
+       Get the user visible description of what the createUrl() function will actually bookmarks.
     */
     virtual QString description() = 0;
 
@@ -37,7 +37,7 @@ public:
     virtual QIcon icon() = 0;
 
     /**
-       Cretate the default url for this generator.
+       Create the default url for this generator.
     */
     virtual AmarokUrl createUrl() = 0;
 };

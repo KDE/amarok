@@ -345,7 +345,7 @@ void
 IpodCollection::slotDestroy()
 {
     // guard against user hitting the button twice or hitting it while there is another
-    // write database job alreaddy running
+    // write database job already running
     if( m_writeDatabaseJob )
     {
         IpodWriteDatabaseJob *job = m_writeDatabaseJob.data();
@@ -374,7 +374,7 @@ void
 IpodCollection::slotEject()
 {
     // guard against user hitting the button twice or hitting it while there is another
-    // write database job alreaddy running
+    // write database job already running
     if( m_writeDatabaseJob )
     {
         IpodWriteDatabaseJob *job = m_writeDatabaseJob.data();
@@ -548,7 +548,7 @@ void IpodCollection::slotInitiateDatabaseWrite()
     if( m_writeDatabaseJob )
     {
         warning() << __PRETTY_FUNCTION__ << "called while m_writeDatabaseJob still points"
-                  << "to an older job. Not doing anyhing.";
+                  << "to an older job. Not doing anything.";
         return;
     }
     IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
@@ -561,7 +561,7 @@ void IpodCollection::slotPerformTeardownAndRemove()
 {
     /* try to eject the device from system. Following technique potentially catches more
      * cases than simply passing the udi from IpodCollectionFactory, think of fuse-based
-     * filesystems for mounting iPhones et caetera.. */
+     * filesystems for mounting iPhones et cetera.. */
     Solid::Predicate query( Solid::DeviceInterface::StorageAccess, QString( "filePath" ),
                             m_mountPoint );
     QList<Solid::Device> devices = Solid::Device::listFromQuery( query );
@@ -582,7 +582,7 @@ void IpodCollection::slotRemove()
     // in the main thread
     if( m_parseTracksJob )
     {
-        // we need to wait until parseTracksJob finishes, because it acceses IpodCollection
+        // we need to wait until parseTracksJob finishes, because it accesses IpodCollection
         // and IpodPlaylistProvider in an asynchronous way that cannot safely cope with
         // IpodCollection disappearing
         connect( m_parseTracksJob.data(), &QObject::destroyed, this, &IpodCollection::remove );

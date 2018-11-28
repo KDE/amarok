@@ -221,7 +221,7 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
             }
         }
 
-        debug() << "udi" << udi << "is AFC cabable (Apple mobile device)";
+        debug() << "udi" << udi << "is AFC capable (Apple mobile device)";
         m_type[udi] = MediaDeviceCache::SolidGenericType;
         m_name[udi] = device.vendor() + " - " + device.product();
     }

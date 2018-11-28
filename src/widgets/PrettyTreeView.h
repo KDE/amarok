@@ -46,7 +46,7 @@ namespace Amarok
 
         public Q_SLOTS:
             /* There is a need to overload even this edit() variant, otherwise it hides
-             * QAbstactItemView's implementation. Note that it is NOT safe to do anything
+             * QAbstractItemView's implementation. Note that it is NOT safe to do anything
              * special in this method, as it is not virtual.
              * bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event )
              * IS virtual. */
@@ -54,7 +54,7 @@ namespace Amarok
 
             /**
              * Return pointer to decorator action which was most recently mouse-pressed
-             * or null it mouse buttom was released since then. Used by PrettyTreeDelegate.
+             * or null it mouse button was released since then. Used by PrettyTreeDelegate.
              */
             QAction *pressedDecoratorAction() const;
 

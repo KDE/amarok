@@ -151,8 +151,8 @@ public:
      * Filtering MUST take its filter parameters from this call, but SHOULD delay doing
      * any work until it gets a 'filterUpdated()' call.
      *
-     * @param searchTerm The term to search for.
-     * @param searchFields A bitmask specifying the fields to look in.
+     * The first parameter is a term to search for.
+     * The second parameter is a bitmask specifying the fields to look in.
      * @return The row of the first found match, -1 if no match is found.
      */
     virtual int find( const QString &, int ) { return -1; }
@@ -178,9 +178,9 @@ public:
      * depending on whether a match is found. If no row is found above the current row, the
      * function wraps around and returns the last match. If no match is found at all, -1
      * is returned.
-     * @param searchTerm The term to search for.
-     * @param selectedRow The offset row.
-     * @param searchFields A bitmask specifying the fields to look in.
+     * The first parameter is a term to search for.
+     * The second parameter is an offset row.
+     * The third parameter is a bitmask specifying the fields to look in.
      * @return The row of the first found match above the offset, -1 if no match is found.
      */
     virtual int findPrevious( const QString &, int, int ) {return -1; }
@@ -257,7 +257,7 @@ public:
 
     /**
      * Decides if FilterProxy or SearchProxy should be used.
-     * @param onlyMatches true if one wants to use SearchProxy, false otherwise.
+     * The parameter is true if one wants to use SearchProxy, false otherwise.
      */
     virtual void showOnlyMatches( bool ) {}
 

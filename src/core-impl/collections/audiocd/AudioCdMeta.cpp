@@ -70,7 +70,7 @@ AudioCdTrack::prettyUrl() const
 QString
 AudioCdTrack::notPlayableReason() const
 {
-    //TODO: check availablity of correct CD somehow
+    //TODO: check availability of correct CD somehow
     return QString();
 }
 

@@ -295,7 +295,7 @@ void
 Dynamic::PartBiasWidget::sliderValueChanged( int val )
 {
     DEBUG_BLOCK;
-    // protect agains recursion
+    // protect against recursion
     if( m_inSignal )
         return;
 
@@ -310,7 +310,7 @@ void
 Dynamic::PartBiasWidget::biasWeightsChanged()
 {
     DEBUG_BLOCK;
-    // protect agains recursion
+    // protect against recursion
     if( m_inSignal )
         return;
 

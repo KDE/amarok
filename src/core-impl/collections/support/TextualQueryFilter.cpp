@@ -173,7 +173,7 @@ Collections::addTextualFilter( Collections::QueryMaker *qm, const QString &filte
                         }
                         /*
                         * A special case is made for Equals (e.g. filesize:100), which actually filters
-                        * for anything beween 100 and 101MBs. Megabytes are used because for audio files
+                        * for anything between 100 and 101MBs. Megabytes are used because for audio files
                         * they are the most reasonable units for the user to deal with.
                         */
                         const qreal bytes = mbytes * 1024.0 * 1024.0;

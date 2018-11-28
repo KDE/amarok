@@ -392,7 +392,7 @@ MetaQueryWidget::compareChanged( int index )
             && m_filter.condition != OlderThan && m_filter.condition != NewerThan
           )
         {
-            // fix some inaccuracies caused by the conversion absoulte/relative time specifications
+            // fix some inaccuracies caused by the conversion absolute/relative time specifications
             // this is actually just for visual consistency
             int unit = 0;
             qint64 value = QDateTime::currentDateTime().toTime_t() - m_filter.numValue;

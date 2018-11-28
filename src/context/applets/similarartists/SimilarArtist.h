@@ -64,7 +64,7 @@ public:
     QString name() const;
 
     /**
-     * @return the pourcent of match of this artist, betwwen 0 and 100
+     * @return the percent of match of this artist, between 0 and 100
      */
     int match() const;
 

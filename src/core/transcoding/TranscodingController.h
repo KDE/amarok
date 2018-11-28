@@ -56,7 +56,7 @@ public:
     QSet<Encoder> availableEncoders() const { return m_availableEncoders; }
 
     /**
-     * Return pointer to format that encodes using @param encoder. You must ensure that
+     * Return pointer to format that encodes using @p encoder. You must ensure that
      * @param encoder is in @see allEncoders(). Always returns non-null pointer which
      * remains owned by Transcoding::Controller.
      */

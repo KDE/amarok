@@ -702,9 +702,9 @@ LabelsApplet::toggleLabel( const QString &label )
         m_addLabel.data()->lineEdit()->setText( saveText );
     }
 
-    // usuallay the engine keeps track of label changes of the playing track
-    // (except if the lables get auto added, this is why we have to keep m_userLabels up to date)
-    // but it doesn't work alway, so we update
+    // usually the engine keeps track of label changes of the playing track
+    // (except if the labels get auto added, this is why we have to keep m_userLabels up to date)
+    // but it doesn't work always, so we update
     updateLabels();
 }
 

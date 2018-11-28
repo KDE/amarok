@@ -359,7 +359,7 @@ CollectionWidget::levels() const
 
 void CollectionWidget::setLevels( const QList<CategoryId::CatMenuId> &levels )
 {
-    // -- select the corrrect menu entries
+    // -- select the correct menu entries
     QSet<CategoryId::CatMenuId> encounteredLevels;
     for( int i = 0; i < CATEGORY_LEVEL_COUNT; i++ )
     {

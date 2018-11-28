@@ -50,7 +50,7 @@ NotificationsConfig::NotificationsConfig( Amarok2ConfigDialog* parent )
                  this,          &NotificationsConfig::setGrowlEnabled );
     #endif
 
-    // Enable/disable the translucency option depending on availablity of desktop compositing
+    // Enable/disable the translucency option depending on availability of desktop compositing
     kcfg_OsdUseTranslucency->setEnabled( KWindowSystem::compositingActive() );
 
     connect( m_osdPreview, &OSDPreviewWidget::positionChanged, this, &NotificationsConfig::slotPositionChanged );

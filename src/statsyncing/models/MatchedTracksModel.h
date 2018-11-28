@@ -95,8 +95,8 @@ namespace StatSyncing
 
             /**
              * Go through all tuples with (both resolved and unresolved) rating conflict
-             * and (re)set their preferred rating provider to @param provider. Null
-             * @param provider resets all tuples to "undecided". If @param provider is
+             * and (re)set their preferred rating provider to @p provider. Null
+             * @param provider resets all tuples to "undecided". If @p provider is
              * not null and given tuple has no track from provider, its state remains
              * unchanged.
              */

@@ -37,7 +37,7 @@ namespace Dynamic
 
     class TagMatchBias;
 
-    /** An abstract bias that will check matching tracks agains the results from a query maker.
+    /** An abstract bias that will check matching tracks against the results from a query maker.
         You can use this base class for writing your own biases.
         In all cases you have to implement newQuery which creates a
         QueryMaker and starts it.

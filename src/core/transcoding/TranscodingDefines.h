@@ -23,7 +23,7 @@ namespace Transcoding
     {
         INVALID,   // denotes invalid transcoding configuration
         JUST_COPY, // just copy or move the tracks (no transcoding)
-        AAC,       // Advanded Audio Coding
+        AAC,       // Advanced Audio Coding
         ALAC,      // Apple Lossless Audio Codec
         FLAC,      // Free Lossless Audio Codec
         MP3,       // MPEG-1 or MPEG-2 Audio Layer III encoded using lame encoder

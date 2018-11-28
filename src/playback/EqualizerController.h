@@ -99,8 +99,8 @@ public Q_SLOTS:
 Q_SIGNALS:
 
     /**
-     * Emitted when preset with index @param idnex is applied or the equalizer is disabled.
-     * index is <0 when disabled.
+     * Emitted when preset with index @param index is applied or the equalizer is disabled.
+     * index is \<0 when disabled.
      */
     void presetApplied( int index );
 

@@ -268,7 +268,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     urlsCacheInsert( entry ); // removes the previous entry (by id) first if necessary
     m_foundTracks.insert( uid, entry.id );
 
-    // TODO: we need to check the modified date of the file agains the last updated of the file
+    // TODO: we need to check the modified date of the file against the last updated of the file
     // to figure out if the track information was updated from outside Amarok.
     // In such a case we would fully reread all the information as if in a FullScan
 

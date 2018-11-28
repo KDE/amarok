@@ -68,11 +68,11 @@ public:
 
 
     //! Configuration
+    QString groupingCategory() const;
     /**
-     * The criterium by which adjacent items are divided into groups.
+     * The criterion by which adjacent items are divided into groups.
      * @param groupingCategory A string from 'groupableCategories', or "None", or empty string.
      */
-    QString groupingCategory() const;
     void setGroupingCategory( const QString &groupingCategory );
 
 

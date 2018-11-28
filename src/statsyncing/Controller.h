@@ -67,7 +67,8 @@ namespace StatSyncing
             virtual void registerProvider( const ProviderPtr &provider );
 
             /**
-             * Forget about StatSyncing::Provider @param provider.
+             * Forget about StatSyncing::Provider @p provider.
+             * @param provider the provider
              */
             virtual void unregisterProvider( const ProviderPtr &provider );
 
@@ -164,8 +165,9 @@ namespace StatSyncing
             void trackScrobbled( const ScrobblingServicePtr &service, const Meta::TrackPtr &track );
 
             /**
-             * Emitted when a scrobbling service @service was unable to scrobble() a track.
+             * Emitted when a scrobbling service @p service was unable to scrobble() a track.
              *
+             * @param service the service
              * @param error is a ScrobblingService::ScrobbleError enum value.
              */
             void scrobbleFailed( const ScrobblingServicePtr &service, const Meta::TrackPtr &track, int error );

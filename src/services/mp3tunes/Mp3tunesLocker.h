@@ -71,7 +71,7 @@ class Mp3tunesLocker {
          * Logs into the locker.
          * for testing use demo@mp3tunes.com:demo
          * @param userName the username
-         * @param passowrd username's password
+         * @param password username's password
          * @return if login successful, the sessionId is returned
          *         if login failed, an empty QString is returned
          */
@@ -213,7 +213,7 @@ class Mp3tunesLocker {
          * and password can be transferred in the URL to retrieve the
          * file. Any access control based on user sessions cannot be
          * used in locker loading.
-         * @param the full URL to the track
+         * @param url the full URL to the track
          * @return true if the lockerload succeeded
          *         false if the lockerload failed.
          * @pre The URL must be accessible by the MP3tunes servers,

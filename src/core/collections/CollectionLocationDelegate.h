@@ -52,7 +52,7 @@ public:
      * remembered per target collection. If null, such option is disabled in the UI.
      * @param operation whether this is copying or moving
      * @param destCollectionName name of the destination collection
-     * @param savedConfiguration the previously saved configuration, for restoring values from
+     * @param prevConfiguration the previously saved configuration, for restoring values from
      *
      * @return Transcoding configuration user requested or invalid configuration if user
      * has hit Cancel or closed the dialog.

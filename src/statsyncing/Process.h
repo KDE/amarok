@@ -59,10 +59,14 @@ namespace StatSyncing
 
             /**
              * Creates the synchronization process that will offer user to synchronize
-             * @param fields of @param providers. If @param mode is Interactive,
+             * @p fields of @p providers. If @p mode is Interactive,
              * introductory dialog will be shown that allows subset of fields and
              * providers to be chosen. Otherwise performs the syncing ing the background
              * and shows a window only if conflict occurs.
+             * @param fields the fields
+             * @param providers the providers
+             * @param mode the mode
+             * @param parent the parent QObject
              */
             Process( const ProviderPtrList &providers, const ProviderPtrSet &preSelectedProviders,
                      qint64 checkedFields, Mode mode, QObject *parent = 0 );

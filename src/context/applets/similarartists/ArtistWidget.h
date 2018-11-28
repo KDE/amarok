@@ -119,7 +119,7 @@ private:
     void setBioSummary( const QString &bio );
 
     /**
-     * Set arist tags
+     * Set artist tags
      */
     void setTags();
 
@@ -174,12 +174,12 @@ private:
     Plasma::PushButton *m_topTrackButton;
 
     /**
-     * Button to add the last.fm simmilar artist station for this artist to the playlist
+     * Button to add the last.fm similar artist station for this artist to the playlist
      */
     Plasma::PushButton *m_lastfmStationButton;
 
     /**
-     * Button to navigate to the artit in the local collection
+     * Button to navigate to the artist in the local collection
      */
     Plasma::PushButton *m_navigateButton;
 

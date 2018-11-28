@@ -28,7 +28,7 @@
 /**
  * A progress bar that wraps a number of simple progress bars and displays their 
  * overall progress. Also features an expanded mode that allows the user to view 
- * and canceld individual operations
+ * and canceled individual operations
  */
 class AMAROK_EXPORT CompoundProgressBar : public ProgressBar
 {

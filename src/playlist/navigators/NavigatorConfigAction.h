@@ -40,7 +40,7 @@ protected Q_SLOTS:
 
     /**
     * Set the currently active navigator based on the selected action.
-    * @param layoutAction The action triggered.
+    * @param navigatorAction The action triggered.
     */
     void setActiveNavigator( QAction *navigatorAction );
 

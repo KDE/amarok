@@ -52,10 +52,12 @@ public:
     virtual void hidePopup();
 
     /**
-     * Updates the position of the bookmark named @param name to @param newMiliseconds.
+     * Updates the position of the bookmark named @p name to @p newMilliseconds.
      *
      * The name should be a valid existing bookmark name and should include the trailing
      * "- m:ss"
+     * @param name the name
+     * @param newMilliseconds the new position in milliseconds
      */
     virtual void moveBookmark( qint64 newMilliseconds, QString name );
 

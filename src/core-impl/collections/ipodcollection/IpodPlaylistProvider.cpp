@@ -217,7 +217,7 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
 {
     int matched = 0, added = 0, removed = 0, failed = 0;
 
-    /* Sometimes users accidentaly rename files on iPod. This creates a pair of a stale
+    /* Sometimes users accidentally rename files on iPod. This creates a pair of a stale
      * iTunes database entry and an orphaned file. Find these specifically and move the files
      * back to their original location. */
     if( m_stalePlaylist && m_orphanedPlaylist )
