@@ -256,7 +256,7 @@ namespace Meta
              */
             virtual bool isCompilation() const = 0;
             /**
-             * Whether toggling the compilation status is currenlty supported. Default
+             * Whether toggling the compilation status is currently supported. Default
              * implementation returns false.
              */
             virtual bool canUpdateCompilation() const { return false; }

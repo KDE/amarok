@@ -299,7 +299,7 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
     if( !headerRow && index.data( ActiveTrackRole ).toBool() )
     {
         //paint this in 3 parts to solve stretching issues with wide playlists
-        //TODO: propper 9 part painting, but I don't want to bother with this until we
+        //TODO: proper 9 part painting, but I don't want to bother with this until we
         //get some new graphics anyway...
 
         // -- try not to highlight the indicator row

@@ -27,7 +27,7 @@
 
 
 /**
-The main class responcible for handling of downloads from Magnatune.com
+The main class responsible for handling of downloads from Magnatune.com
 
 @author Nikolaj Hald Nielsen
 */
@@ -69,7 +69,7 @@ private:
      * or acquire an album in a different file format. Note that no personal information
      * or credit card number is stored. The information is saved to the amarok config
      * directory in the sub folder magnatune.com/purchases. The name of each info file
-     * is genereated from the artist and album names.
+     * is generated from the artist and album names.
      * @param infoXml The info to store.
      */
     void saveDownloadInfo(const QString &infoXml);

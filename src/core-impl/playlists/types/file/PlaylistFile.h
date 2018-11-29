@@ -75,7 +75,7 @@ namespace Playlists
             virtual bool isWritable() const;
 
             /**
-             * Saves the playlist to underlying file immediatelly.
+             * Saves the playlist to underlying file immediately.
              *
              * @param relative whether to use relative paths to track in the file
              */

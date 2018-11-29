@@ -92,7 +92,7 @@ UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
 
     QSizePolicy::Policy minPol = QSizePolicy::Minimum;
     QGraphicsWidget *supportLabel, *venueLabel, *locationLabel, *dateLabel, *attendLabel, *tagsLabel;
-    supportLabel  = createLabel( i18nc("@label:textbox Supporing acts for an event", "Supporting:"), minPol );
+    supportLabel  = createLabel( i18nc("@label:textbox Supporting acts for an event", "Supporting:"), minPol );
     venueLabel    = createLabel( i18nc("@label:textbox", "Venue:"), minPol );
     locationLabel = createLabel( i18nc("@label:textbox", "Location:"), minPol );
     dateLabel     = createLabel( i18nc("@label:textbox", "Date:"), minPol );

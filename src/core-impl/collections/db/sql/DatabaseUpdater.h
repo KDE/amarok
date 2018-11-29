@@ -77,7 +77,7 @@ public:
      *  Note: it can handle also the directories table but that is better
      *  be left to the ScannerProcessor
      *
-     *  TODO: also check the remainding 8 tables
+     *  TODO: also check the remaining 8 tables
      */
     void deleteAllRedundant( const QString &type );
 

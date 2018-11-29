@@ -44,12 +44,12 @@ public:
     DynamicServiceQueryMaker( );
     virtual ~DynamicServiceQueryMaker() {};
 
-    //this is the stuff that must be implmeneted
+    //this is the stuff that must be implemented
     virtual void run() = 0;
     virtual void abortQuery() = 0;
 
     //below here is the stuf that each dynamic querymaker will most likely only need
-    //Some of, hense they are all stubbed out:
+    //Some of, hence they are all stubbed out:
 
     virtual QueryMaker* setQueryType( QueryType type ) { Q_UNUSED( type); return this; }
 

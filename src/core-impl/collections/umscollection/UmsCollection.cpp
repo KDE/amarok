@@ -133,7 +133,7 @@ UmsCollectionFactory::identifySolidDevice( const QString &udi ) const
     Solid::Device device( udi );
     if( !device.is<Solid::StorageAccess>() )
         return false;
-    // HACK to exlude iPods until UMS and iPod have common collection factory
+    // HACK to exclude iPods until UMS and iPod have common collection factory
     if( device.vendor().contains( "Apple", Qt::CaseInsensitive ) )
         return false;
 

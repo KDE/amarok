@@ -70,7 +70,7 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
         Meta::ArtistPtr artistById( int id );
         Meta::GenrePtr genreById( int id );
 
-        //Override some stuff to be able to hande id mappings
+        //Override some stuff to be able to handle id mappings
 
         void addTrack( Meta::TrackPtr trackPtr );
         void addArtist( Meta::ArtistPtr artistPtr );

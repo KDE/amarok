@@ -235,7 +235,7 @@ LastFmService::continueReconfiguring()
 
     if( m_scrobbler && (!authenticated || !m_config->scrobble()) )
     {
-        debug() << __PRETTY_FUNCTION__ << "unregistering and destorying ScrobblerAdapter";
+        debug() << __PRETTY_FUNCTION__ << "unregistering and destroying ScrobblerAdapter";
         controller->unregisterScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
         m_scrobbler.clear();
     }
@@ -248,7 +248,7 @@ LastFmService::continueReconfiguring()
 
     if( m_synchronizationAdapter && !authenticated )
     {
-        debug() << __PRETTY_FUNCTION__ << "unregistering and destorying SynchronizationAdapter";
+        debug() << __PRETTY_FUNCTION__ << "unregistering and destroying SynchronizationAdapter";
         controller->unregisterProvider( m_synchronizationAdapter );
         m_synchronizationAdapter = 0;
     }

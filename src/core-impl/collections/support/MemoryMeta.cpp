@@ -305,7 +305,7 @@ MapChanger::addExistingTrack( Meta::TrackPtr track, Track *memoryTrack )
         {
             /* Even if MemoryQueryMaker doesn't need albumArtists to be in MemoryCollection
              * maps, we add her into artist map so that album artist has the same instance as
-             * indentically-named artist (of potentially different tracks) */
+             * identically-named artist (of potentially different tracks) */
             albumArtist = m_mc->artistMap().value( albumArtistName );
             if( !albumArtist )
             {
@@ -468,7 +468,7 @@ MapChanger::trackChanged( Meta::TrackPtr track )
 
     if( mapsNeedUpdating )
     {
-        // we hold write lock so we can do the followin trick:
+        // we hold write lock so we can do the following trick:
         removeTrack( track );
         addExistingTrack( originalTrack, memoryTrack );
     }
@@ -525,7 +525,7 @@ bool MapChanger::entitiesDiffer( const Meta::Album *first, const Meta::Album *se
     if( entitiesDiffer( first->albumArtist().data(), second->albumArtist().data() ) )
         return true;
 
-    // we only compare images using dimension, it would be too costy otherwise
+    // we only compare images using dimension, it would be too costly otherwise
     if( first->image().width() != second->image().width() )
         return true;
     if( first->image().height() != second->image().height() )

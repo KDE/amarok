@@ -95,7 +95,7 @@ qint64 TimeDistanceWidget::timeDistance() const
 
 void TimeDistanceWidget::setTimeDistance( qint64 value )
 {
-    // as we don't store the time unit we try to reconstuct it
+    // as we don't store the time unit we try to reconstruct it
     int unit = 0;
     if( value > 600 || !(value % 60) ) {
         unit = 1;

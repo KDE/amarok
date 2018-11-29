@@ -53,7 +53,7 @@ namespace StatSyncing
      *
      * Instances of subclasses are guaranteed to be created in the main thread.
      * Providers are memory-managed as explicitly shared data, always use ProviderPtr
-     * to stora a reference to Provider.
+     * to store a reference to Provider.
      */
     class AMAROK_EXPORT Provider : public QObject
     {

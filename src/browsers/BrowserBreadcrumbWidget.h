@@ -52,7 +52,7 @@ public:
     /**
      * Set the BrowserCategoryList which acts as the "root" of the breadcrumb widget.
      * A root breadcrumb item is created that represents the lowest level, and the categories
-     * in the list are added to the items dropdown menu.
+     * in the list are added to the items drop-down menu.
      * @param rootList the BrowserCategoryList representing the lowest level in the navigation hirachy
      */
     void setRootList( BrowserCategoryList *rootList );
@@ -65,7 +65,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     /**
-     * Rebuild the list of breadcrumb items corrosponding to the current location in the hirachy.
+     * Rebuild the list of breadcrumb items corresponding to the current location in the hierarchy.
      * This also allows for categories that add additional breadcrumb items (such as the file browser) to update the
      * breadcrumbs when their internal state changes.
      */

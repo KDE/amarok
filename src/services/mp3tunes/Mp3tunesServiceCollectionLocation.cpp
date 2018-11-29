@@ -76,7 +76,7 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
         else 
         {
             error = i18n( "Only the following types of tracks can be uploaded to MP3tunes: mp3, mp4, m4a, m4p, aac, wma, and ogg. " );
-            debug() << "File type not supprted " << track->type();
+            debug() << "File type not supported " << track->type();
         }
     }
     if( !error.isEmpty() )

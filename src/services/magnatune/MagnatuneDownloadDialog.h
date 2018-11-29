@@ -72,7 +72,7 @@ protected:
 protected Q_SLOTS:
     /*$PROTECTED_SLOTS$*/
     /**
-     * Slot for recieving notification when the download button is clicked.
+     * Slot for receiving notification when the download button is clicked.
      */
     void downloadButtonClicked();
 

@@ -385,7 +385,7 @@ AmpacheServiceQueryMaker::artistDownloadComplete( const QUrl &url, QByteArray da
     doc.setContent( data );
     QDomElement root = doc.firstChildElement( "root" );
 
-    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
+    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before continuing
     QDomElement domError = root.firstChildElement( "error" );
 
     if ( !domError.isNull() )
@@ -455,7 +455,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, QByteArray dat
     doc.setContent( data );
     QDomElement root = doc.firstChildElement( "root" );
 
-    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
+    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before continuing
     QDomElement domError = root.firstChildElement( "error" );
 
     if( !domError.isNull() )
@@ -573,7 +573,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete( const QUrl &url, QByteArray dat
     doc.setContent( data );
     QDomElement root = doc.firstChildElement( "root" );
 
-    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
+    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before continuing
     QDomElement domError = root.firstChildElement( "error" );
 
     if( !domError.isNull() )
@@ -706,7 +706,7 @@ AmpacheServiceQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMak
 int
 AmpacheServiceQueryMaker::validFilterMask()
 {
-    //we only supprt artist and album filters for now...
+    //we only support artist and album filters for now...
     return ArtistFilter | AlbumFilter;
 }
 

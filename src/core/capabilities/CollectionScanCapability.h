@@ -24,7 +24,7 @@ namespace Capabilities
 {
     /**
      * This capability allows to initiate a scan on a collection.
-     * Currently only a few collections have this capablitity and even then it's unclear
+     * Currently only a few collections have this capability and even then it's unclear
      * Which collections uses the collection folders.
      *
      * @author Ralf Engels <ralf-engels@gmx.de>

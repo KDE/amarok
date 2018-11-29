@@ -34,7 +34,7 @@ class IpodCollection;
 namespace IpodMeta
 {
     /**
-     * An iPod track. album, artist, composer etc. are invisible to ouside world, they are
+     * An iPod track. album, artist, composer etc. are invisible to outside world, they are
      * proxied in the MemoMeta track. All methods in this class are thread-safe with a few
      * exceptions that are noted in relevant method docstrings.
      */
@@ -43,7 +43,7 @@ namespace IpodMeta
         public:
             /**
              * Constructs an iPod track from an existing libgpod track structure. Caller
-             * must guarantee that these are already added to the collection's itdb databse.
+             * must guarantee that these are already added to the collection's itdb database.
              */
             explicit Track( Itdb_Track *ipodTrack );
 

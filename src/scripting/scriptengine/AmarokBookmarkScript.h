@@ -56,7 +56,7 @@ namespace AmarokScript
             Q_INVOKABLE AmarokUrlPtr browserView();
 
             /**
-             * Bookmark the current track at the currrent position.
+             * Bookmark the current track at the current position.
              */
             Q_INVOKABLE AmarokUrlPtr createCurrentTrackBookmark();
     };
@@ -91,8 +91,11 @@ namespace AmarokScript
             Q_INVOKABLE StringMap args() const;
 
             /**
-            * Sets the url argument named @param name to @param value. Overrides any possible
+            * Sets the url argument named @p name to @p value. Overrides any possible
             * previous value.
+            *
+            * @param name The name of the url argument.
+            * @param value The value.
             */
             Q_INVOKABLE void setArg( const QString &name, const QString &value );
 

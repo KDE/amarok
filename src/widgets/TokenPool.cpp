@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
- * Copyright (c) 2009 Thomas Lbking <thomas.luebking@web.de>                            *
+ * Copyright (c) 2009 Thomas Luebking <thomas.luebking@web.de>                          *
  * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *

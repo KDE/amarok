@@ -70,7 +70,7 @@ Job::init()
     //First the executable...
     m_transcoder->setProgram( "ffmpeg" );
     //... prevent ffmpeg from being interactive when destination file already exists. We
-    //    would use -n to exit immediatelly, but libav's ffmpeg doesn't support it, so we
+    //    would use -n to exit immediately, but libav's ffmpeg doesn't support it, so we
     //    check for destination file existence manually and pass -y (overwrite) to avoid
     //    race condition
     *m_transcoder << QString( "-y" );

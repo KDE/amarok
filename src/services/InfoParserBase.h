@@ -51,7 +51,7 @@ public:
      * Overloaded function
      * Fetches info about track and emits info( QString )
      * with a ready to show html page when the info is ready
-     * @param url The track to get info about
+     * @param track The track to get info about
      */
     virtual void getInfo( Meta::TrackPtr track ) = 0;
 

@@ -877,7 +877,7 @@ EngineController::slotAboutToFinish()
         else if( m_media->queue().isEmpty() )
         {
             debug() << "no more sources, skip to next track";
-            m_multiSource.reset(); // don't cofuse slotFinished
+            m_multiSource.reset(); // don't confuse slotFinished
             The::playlistActions()->requestNextTrack();
         }
     }

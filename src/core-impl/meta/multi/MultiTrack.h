@@ -98,7 +98,7 @@ namespace Meta
             TrackPtr m_currentTrack;
             /**
              * Guards access to data members; note that m_playlist methods are considered
-             * thread-safe and the pointer itself does not change throughout life of thhis
+             * thread-safe and the pointer itself does not change throughout life of this
              * object, so mere m_playlist->someMethod() doesn't have to be guarded.
              */
             mutable QReadWriteLock m_lock;

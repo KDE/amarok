@@ -91,7 +91,10 @@ namespace AmarokScript
             Q_INVOKABLE bool deletePreset( const QString &presetName );
 
             /**
-             * Save the @param presetGains as a preset with name @param name.
+             * Save the @p presetGains as a preset with name @p name.
+             *
+             * @param name the name.
+             * @param presetGains The untranslated preset name.
              */
             Q_INVOKABLE void savePreset( const QString &name, const QList<int> &presetGains );
 

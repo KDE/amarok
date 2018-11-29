@@ -270,7 +270,7 @@ QtGroupingProxy::addSourceRow( const QModelIndex &idx )
 
 /** Each ModelIndex has in it's internalId a position in the parentCreateList.
   * struct ParentCreate are the instructions to recreate the parent index.
-  * It contains the proxy row number of the parent and the postion in this list of the grandfather.
+  * It contains the proxy row number of the parent and the position in this list of the grandfather.
   * This function creates the ParentCreate structs and saves them in a list.
   */
 int

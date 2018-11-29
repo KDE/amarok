@@ -494,7 +494,7 @@ AggregateCollection::emptyCache()
 
         //elem.count() == 2 is correct because elem is one pointer to the object
         //and the other is stored in the hash map (except for m_trackMap, where
-        //another refence is stored in m_uidMap
+        //another reference is stored in m_uidMap
         #define foreachCollectGarbage( Key, Type, RefCount, x ) \
         for( QMutableHashIterator<Key,Type > iter(x); iter.hasNext(); ) \
         { \

@@ -55,7 +55,7 @@ class PlaylistBrowserModel : public QAbstractItemModel, public Playlists::Playli
             PlaylistRole = Qt::UserRole + 22, // PlaylistPtr for associated playlist or null
             TrackRole = Qt::UserRole + 23, // TrackPtr for associated track or null
             EpisodeIsNewRole = Qt::UserRole + 24, // for podcast episodes, supports setting, type: bool
-            CustomRoleOffset = Qt::UserRole + 25 //first role that can be used by sublasses for their own data
+            CustomRoleOffset = Qt::UserRole + 25 //first role that can be used by subclasses for their own data
         };
 
         PlaylistBrowserModel( int PlaylistCategory );

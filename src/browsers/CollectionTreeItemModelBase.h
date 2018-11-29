@@ -100,7 +100,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void ensureChildrenLoaded( CollectionTreeItem *item );
 
         /**
-         * Get a pointer to colleciton tree item given its index. It is not safe to
+         * Get a pointer to collection tree item given its index. It is not safe to
          * cache this pointer unless QPointer is used.
          */
         CollectionTreeItem *treeItem( const QModelIndex &index ) const;

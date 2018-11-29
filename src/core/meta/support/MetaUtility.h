@@ -54,7 +54,7 @@ namespace Meta
     AMAROK_CORE_EXPORT QString secToPrettyTime( int seconds );
 
     /** Returns the character representation for the time duration.
-        This is a longer human friendy representation looking like this: 5 minutes even when
+        This is a longer human friendly representation looking like this: 5 minutes even when
         the actual seconds are 307.
     */
     AMAROK_CORE_EXPORT QString secToPrettyTimeLong( int seconds );

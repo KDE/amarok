@@ -405,7 +405,7 @@ GenericScannerJob::getScannerOutput()
     int index = m_incompleteTagBuffer.lastIndexOf( "</scanner>" );
     if( index >= 0 )
     {
-        // append new data (we need to be locked. the reader is probalby not thread save)
+        // append new data (we need to be locked. the reader is probably not thread save)
         m_reader.addData( QString( m_incompleteTagBuffer.left( index + 10 ) ) );
         m_incompleteTagBuffer = m_incompleteTagBuffer.mid( index + 10 );
     }
@@ -414,7 +414,7 @@ GenericScannerJob::getScannerOutput()
         index = m_incompleteTagBuffer.lastIndexOf( "</directory>" );
         if( index >= 0 )
         {
-            // append new data (we need to be locked. the reader is probalby not thread save)
+            // append new data (we need to be locked. the reader is probably not thread save)
             m_reader.addData( QString( m_incompleteTagBuffer.left( index + 12 ) ) );
             m_incompleteTagBuffer = m_incompleteTagBuffer.mid( index + 12 );
         }

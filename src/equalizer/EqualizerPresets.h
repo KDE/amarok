@@ -31,7 +31,7 @@ namespace EqualizerPresets
     QStringList eqGlobalTranslatedList();
     QStringList eqGlobalList();
 
-    /** Will return a list of all non default preset name namess */
+    /** Will return a list of all non default preset names */
     QStringList eqUserList();
 
     /** Will return a "user" preset if present. Else a "global". */

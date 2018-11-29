@@ -97,7 +97,7 @@ class AMAROK_EXPORT CollectionTreeItem : public QObject
 
         bool allDescendentTracksLoaded() const;
 
-        //required to mark a tree item as dirty if the model has to requiry its childre
+        //required to mark a tree item as dirty if the model has to require its children
 
         Type type() const;
         bool requiresUpdate() const;

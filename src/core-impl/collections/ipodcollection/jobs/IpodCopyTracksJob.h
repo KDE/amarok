@@ -67,7 +67,7 @@ class IpodCopyTracksJob : public QObject, public ThreadWeaver::Job
         // signals for progress operation:
         void incrementProgress();
         void endProgressOperation( QObject *obj );
-        void totalSteps( int steps ); // not used, defined to keep QObject::conect warning quiet
+        void totalSteps( int steps ); // not used, defined to keep QObject::connect warning quiet
 
         /**
          * Signal various track copy statuses back to IpodCollectionLocation

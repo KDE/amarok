@@ -323,7 +323,7 @@ int main( int argc, char *argv[] )
         qputenv( "PHONON_PULSEAUDIO_DEBUG", QByteArray( "3" ) );
     }
 
-#pragma message("PORT KF5: This *if* hould be moved to activateRequested() slot")
+#pragma message("PORT KF5: This *if* should be moved to activateRequested() slot")
     if( !dbusService.isRegistered() ) {
         QList<QByteArray> instanceOptions;
         instanceOptions << "previous" << "play" << "play-pause" << "stop" << "next"

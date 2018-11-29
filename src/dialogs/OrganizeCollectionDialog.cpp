@@ -254,7 +254,7 @@ OrganizeCollectionDialog::slotUpdatePreview()
     // empty the table, not only its contents
     ui->previewTableWidget->clearContents();
     ui->previewTableWidget->setRowCount( 0 );
-    ui->previewTableWidget->setSortingEnabled( false ); // intereferes with inserting
+    ui->previewTableWidget->setSortingEnabled( false ); // interferes with inserting
     m_trackOrganizer->resetTrackOffset();
     m_conflict = false;
     setCursor( Qt::BusyCursor );

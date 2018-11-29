@@ -53,7 +53,7 @@ namespace Capabilities
             virtual ~ActionsCapability();
 
             /**
-             * Get the custom actions for this capablility
+             * Get the custom actions for this capability
              * The caller must free actions that have no parent after use.
              * Actions with a parent are freed by the parent (obviously)
              * @return The list of actions

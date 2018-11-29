@@ -133,7 +133,7 @@ class AMAROK_EXPORT GenericScanManager : public QObject
          *  @param dir The directory structure with all containing tracks.
          *
          *  The dir pointer will stay valid until after the done signal.
-         *  Be carefull, you need to have direct connections to
+         *  Be careful, you need to have direct connections to
          *  ensure that you don't access the pointer before it's being freed.
          *  That also means that your slots are called within the job context.
         */

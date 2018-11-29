@@ -122,7 +122,7 @@ signer::signFile()
 		file.close();
 		QFile versionFile( versionFilename );
 		if ( !versionFile.open( QIODevice::ReadOnly ) ) {
-			std::cout << "faild to open version file for reading!\n";
+			std::cout << "failed to open version file for reading!\n";
 			continue;
 		}
 		QCA::Hash versionHash( "sha1" );
@@ -176,7 +176,7 @@ signer::checkSignature()
 		file.close();
 		QFile versionFile( versionFilename );
 		if ( !versionFile.open( QIODevice::ReadOnly ) ) {
-			std::cout << "Faild to open version file for reading!\n";
+			std::cout << "Failed to open version file for reading!\n";
 			continue;
 		}
 		QCA::Hash versionHash( "sha1" );

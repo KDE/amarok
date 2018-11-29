@@ -24,7 +24,7 @@ class IpodCollection;
 /**
  * A job designed to call IpodCollection::writeDatabase() in a thread so that main
  * thread is not blocked with it. It is guaranteed by IpodCollection that is doesn't
- * destory itself while this job is alive. Memory management of this job is up to
+ * destroy itself while this job is alive. Memory management of this job is up to
  * the caller of it.
  */
 class IpodWriteDatabaseJob : public QObject, public ThreadWeaver::Job

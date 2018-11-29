@@ -37,7 +37,7 @@
 
 
 /**
- * Base class for the private meta types. This is used to give these private items source info capability which is neede in some cases,for instance when bookmarking.
+ * Base class for the private meta types. This is used to give these private items source info capability which is needed in some cases,for instance when bookmarking.
  */
 class ScriptableServiceInternalMetaItem
 {

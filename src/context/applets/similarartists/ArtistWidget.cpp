@@ -237,7 +237,7 @@ ArtistWidget::fetchPhoto()
 void
 ArtistWidget::fetchInfo()
 {
-    // we genere the url for the demand on the lastFM Api
+    // we generate the url for the demand on the lastFM Api
     QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
@@ -253,7 +253,7 @@ ArtistWidget::fetchInfo()
 void
 ArtistWidget::fetchTopTrack()
 {
-    // we genere the url for the demand on the lastFM Api
+    // we generate the url for the demand on the lastFM Api
     QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );

@@ -272,7 +272,7 @@ Track::setImage( const QImage &newImage )
         if( tempImageFile.open() )
             m_tempImageFilePath = tempImageFile.fileName();
         if( tempImageFile.isOpen() && image.save( &tempImageFile, "PNG" ) )
-            /* this function remembers image path, it also fogots previous images (if any)
+            /* this function remembers image path, it also fogets previous images (if any)
              * and sets artwork_size, artwork_count and has_artwork m_track fields */
             itdb_track_set_thumbnails( m_track, QFile::encodeName( m_tempImageFilePath ) );
     }
@@ -373,7 +373,7 @@ void Track::setComment( const QString &newComment )
 int
 Track::rating() const
 {
-    /* (rating/RATING_STEP) is a number of stars, Amarok uses numer of half-stars.
+    /* (rating/RATING_STEP) is a number of stars, Amarok uses number of half-stars.
      * the order of multiply and divide operations is significant because of rounding */
     return ( ( m_track->rating * 2 ) / ITDB_RATING_STEP );
 }
@@ -382,7 +382,7 @@ void
 Track::setRating( int newRating )
 {
     newRating = ( newRating * ITDB_RATING_STEP ) / 2;
-    if( newRating == (int) m_track->rating ) // casting prevents compiler waring about signedness
+    if( newRating == (int) m_track->rating ) // casting prevents compiler warning about signedness
         return; // nothing to do, do not notify observers
 
     QWriteLocker locker( &m_trackLock );
@@ -730,7 +730,7 @@ Track::commitIfInNonBatchUpdate()
         return;
 
     // we block changing the track meta-data of read-only iPod Collections;
-    // it would only be cofusing to the user as the changes would get discarded.
+    // it would only be confusing to the user as the changes would get discarded.
     if( !m_coll || !m_coll->isWritable() )
         return;
 

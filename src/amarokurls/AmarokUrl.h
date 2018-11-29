@@ -88,7 +88,7 @@ private:
     QString m_description;
     QString m_name;
 
-    //this value is used for storing application specific inoformation that should not be made user visible.
+    //this value is used for storing application specific information that should not be made user visible.
     QString m_customValue;
 };
 

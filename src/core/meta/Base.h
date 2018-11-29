@@ -63,7 +63,7 @@ namespace Meta {
 
         protected:
             /**
-             * Helper so that notifyObservers() implemetation can be shared. Template
+             * Helper so that notifyObservers() implementation can be shared. Template
              * parameter Obs is just Observer, we add it so that Observer.h doesn't need
              * to be included in this header.
              */
@@ -84,7 +84,7 @@ namespace Meta {
 
             /**
              * Unsubscribe @param observer from change updates. Don't ever think of
-             * calling this method yourself or overriging it, it's highly coupled with
+             * calling this method yourself or overriding it, it's highly coupled with
              * Observer.
              */
             void unsubscribe( Observer *observer );
@@ -103,7 +103,7 @@ namespace Meta {
         QWriteLocker locker( &m_observersLock );
         foreach( Obs *observer, m_observers )
         {
-            // observers can potentially remove or even destory other observers during
+            // observers can potentially remove or even destroy other observers during
             // metadataChanged() call. Guard against it. The guarding doesn't need to be
             // thread-safe,  because we already hold m_observersLock (which is recursive),
             // so other threads wait on potential unsubscribe().

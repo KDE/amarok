@@ -49,7 +49,7 @@ public:
     Track( QXmlStreamReader *reader, Directory* directory );
 
     /** Writes the contents of this object to an xml stream.
-        Only the content is writen and no enclosing directory tags.
+        Only the content is written and no enclosing directory tags.
         This is done to make it mirror the constructor which does not read those
         tags either.
      */

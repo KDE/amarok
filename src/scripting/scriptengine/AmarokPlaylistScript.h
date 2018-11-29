@@ -114,12 +114,16 @@ namespace AmarokScript
             Q_INVOKABLE void removeByIndex( int index );
 
             /**
-             * Save the current playlist at the absolute path @param path.
+             * Save the current playlist at the absolute path @p path.
+             *
+             * @param path the absolute path.
              */
             Q_INVOKABLE void savePlaylist( const QString& path );
 
             /**
              * Set whether to stop playing after the current track.
+             *
+             * @param on @c true if on, @c false otherwise.
              */
             Q_INVOKABLE void setStopAfterCurrent( bool on );
 

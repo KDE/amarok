@@ -164,9 +164,9 @@ public:
      * depending on whether a match is found. If no row is found below the current row, the
      * function wraps around and returns the first match. If no match is found at all, -1
      * is returned.
-     * @param searchTerm The term to search for.
-     * @param selectedRow The offset row.
-     * @param searchFields A bitmask specifying the fields to look in.
+     * The first parameter is a term to search for.
+     * The second parameter is an offset row.
+     * The third parameter is a bitmask specifying the fields to look in.
      * @return The row of the first found match below the offset, -1 if no match is found.
      */
     virtual int findNext( const QString &, int, int ) { return -1; }

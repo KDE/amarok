@@ -122,7 +122,7 @@ breakLongLinesHTML( const QString &origText )
 /**
 * Prepares a row for the playlist tooltips consisting of an icon representing
 * an mp3 tag and its value
-* @param column The colunm used to display the icon
+* @param column The column used to display the icon
 * @param value The QString value to be shown
 * @return The line to be shown or an empty QString if the value is null
 */
@@ -146,15 +146,15 @@ HTMLLine( const Playlist::Column& column, const QString& value, bool force = fal
 /**
 * Prepares a row for the playlist tooltips consisting of an icon representing
 * an mp3 tag and its value
-* @param column The colunm used to display the icon
+* @param column The column used to display the icon
 * @param value The integer value to be shown
 * @return The line to be shown or an empty QString if the value is 0
 */
 static QString
 HTMLLine( const Playlist::Column& column, const int value, bool force = false )
 {
-    // there is currenly no numeric meta-data that would have sense if it were negative.
-    // also, zero denotes not available, unknow etc; don't show these unless forced.
+    // there is currently no numeric meta-data that would have sense if it were negative.
+    // also, zero denotes not available, unknown etc; don't show these unless forced.
     if( value > 0 || force )
     {
         return HTMLLine( column, QString::number( value ) );

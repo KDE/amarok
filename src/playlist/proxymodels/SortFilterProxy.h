@@ -101,8 +101,8 @@ class SortFilterProxy : public ProxyBase, public SortProxy
         /**
          * Reimplemented from QSortFilterProxyModel. The filter decision function.
          * When not in 'showOnlyMatches' mode, this always returns true.
-         * @param rowInSourceModel The row in 'sourceModel()' to check.
-         * @param source_parent Ignored.
+         * @param sourceModelRow The row in 'sourceModel()' to check.
+         * @param sourceModelParent Ignored.
          * @return True if the row should be included, false otherwise.
          */
         bool filterAcceptsRow( int sourceModelRow, const QModelIndex &sourceModelParent ) const;

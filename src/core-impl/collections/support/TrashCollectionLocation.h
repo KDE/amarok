@@ -26,7 +26,7 @@ namespace Collections {
 
 /**
   * Utility class that allows moving tracks to the KIO trash using standard
-  * CollectionLocation API. It is not intented to be a collection, but more
+  * CollectionLocation API. It is not intended to be a collection, but more
   * as a black hole destination.
   */
 class TrashCollectionLocation : public CollectionLocation

@@ -994,7 +994,7 @@ CollectionTreeItemModelBase::populateChildren( const DataList &dataList, Collect
     const QSet<Meta::DataPtr> dataToBeRemoved = childrenSet - dataSet;
 
     // first remove all rows that have to be removed
-    // walking through the cildren in reverse order does not screw up the order
+    // walking through the children in reverse order does not screw up the order
     for( int i = parent->childCount() - 1; i >= 0; i-- )
     {
         CollectionTreeItem *child = parent->child( i );
@@ -1022,7 +1022,7 @@ CollectionTreeItemModelBase::populateChildren( const DataList &dataList, Collect
         }
         else
         {
-            // the remainging child items may be dirty, so refresh them
+            // the remaining child items may be dirty, so refresh them
             if( child->isDataItem() && child->data() && m_expandedItems.contains( child->data() ) )
                 ensureChildrenLoaded( child );
 

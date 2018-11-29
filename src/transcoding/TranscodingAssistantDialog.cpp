@@ -151,7 +151,7 @@ AssistantDialog::populateFormatList()
         item->setToolTip( format->description() );
         item->setData( Qt::UserRole, encoder );
 
-        // can be disabled due to unavailabilty
+        // can be disabled due to unavailability
         bool enabled = available.contains( encoder );
         if( !enabled )
             item->setToolTip( i18nc( "Tooltip of a disabled transcoding encoder option",

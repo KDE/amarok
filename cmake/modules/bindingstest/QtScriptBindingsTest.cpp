@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     {
         QScriptValue error = engine.importExtension( binding );
         if( error.isUndefined() )
-        { // undefined indiciates success
+        { // undefined indicates success
             continue;
         }
 

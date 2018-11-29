@@ -60,7 +60,7 @@ namespace Meta
                 virtual Meta::FieldHash tags() const;
                 /**
                  * Write changed metadata to file.
-                 * Return true if something writen.
+                 * Return true if something written.
                  */
                 virtual bool setTags( const Meta::FieldHash &changes );
 
@@ -81,7 +81,7 @@ namespace Meta
 
                 /**
                  * Add or update cover in file. Will be set as FrontCover.
-                 * Return true If something writen.
+                 * Return true If something written.
                  */
                 virtual bool setEmbeddedCover( const QImage &cover );
 

@@ -33,7 +33,7 @@ MetaQueryMaker::MetaQueryMaker( const QList<Collections::Collection*> &collectio
         // actually this is wrong. We would need to combine the results
         // to prevent duplicate album name results.
         // On the other hand we need duplicate AlbumPtr results.
-        // Summary: be carefull when using this class. (Ralf)
+        // Summary: be careful when using this class. (Ralf)
         connect( b, &QueryMaker::newTracksReady, this, &MetaQueryMaker::newTracksReady, Qt::DirectConnection );
         connect( b, &QueryMaker::newArtistsReady, this, &MetaQueryMaker::newArtistsReady, Qt::DirectConnection );
         connect( b, &QueryMaker::newAlbumsReady, this, &MetaQueryMaker::newAlbumsReady, Qt::DirectConnection );

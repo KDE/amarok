@@ -30,7 +30,7 @@ class SynchronizationAdapter : public StatSyncing::Provider
 
     public:
         /**
-         * @param user Last.fm username
+         * @param config a pointer to Last.fm config
          */
         explicit SynchronizationAdapter( const LastFmServiceConfigPtr &config );
         virtual ~SynchronizationAdapter();

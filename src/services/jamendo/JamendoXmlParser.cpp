@@ -287,7 +287,7 @@ JamendoXmlParser::readArtist()
 //     debug() << "    Photo:      " << currentArtist.photoURL();
 //     debug() << "    J_url:      " << currentArtist.jamendoURL();
 //     debug() << "    H_url:      " << currentArtist.homeURL();
-//     debug() << "    Decription: " << currentArtist.description();
+//     debug() << "    Description:" << currentArtist.description();
 
 }
 
@@ -331,7 +331,7 @@ JamendoXmlParser::readAlbum()
                 readTrack();
 //             else if ( currentChildElement.tagName() == "description" )
 //                  description = currentChildElement.text();
-            //we use tags instad of genres for creating genres in the database, as the
+            //we use tags instead of genres for creating genres in the database, as the
             //Jamendo.com genres are messy at best
 //             else if ( currentChildElement.tagName() == "tags" )
 //                 tags = currentChildElement.text().split(' ', QString::SkipEmptyParts);

@@ -38,7 +38,7 @@ namespace MetaProxy
             /**
              * If @param provider is null (the default), all providers registered to
              * CollectionManager are used and a watch for new providers is used.
-             * Otherwise the lookup happes just in @param provider and is one-shot.
+             * Otherwise the lookup happens just in @param provider and is one-shot.
              */
             explicit Worker( const QUrl &url, Collections::TrackProvider *provider = 0 );
 

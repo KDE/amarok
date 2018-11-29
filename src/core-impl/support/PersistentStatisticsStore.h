@@ -26,7 +26,7 @@
 #include <QReadWriteLock>
 
 /**
- * Base class for all permanent statistics storage providers. Use one of the sublassed if
+ * Base class for all permanent statistics storage providers. Use one of the subclassed if
  * your collection cannot store statistics (rating, play count..) natively, but you still
  * want to provide the functionality.
  *
@@ -86,7 +86,7 @@ class AMAROK_EXPORT PersistentStatisticsStore : public Meta::Statistics, private
         double m_score;
         int m_rating;
         int m_playCount;
-        mutable QReadWriteLock m_lock; // lock procecting access to fields.
+        mutable QReadWriteLock m_lock; // lock protecting access to fields.
 
     private:
         void commitIfInNonBatchUpdate(); // must be called with the m_lock locked for writing

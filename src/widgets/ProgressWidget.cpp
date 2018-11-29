@@ -203,7 +203,7 @@ ProgressWidget::trackLengthChanged( qint64 milliseconds )
     QFontMetrics tFm( m_timeLabelRight->font() );
     const int labelSize = tFm.width(QChar('0')) * timeLength;
 
-    //set the sizes of the labesl to the max needed by the length of the track
+    //set the sizes of the labels to the max needed by the length of the track
     //this way the progressbar will not change size during playback of a track
     m_timeLabelRight->setFixedWidth( labelSize );
     m_timeLabelLeft->setFixedWidth( labelSize );
@@ -221,7 +221,7 @@ ProgressWidget::trackPositionChanged( qint64 position )
 {
     m_slider->setSliderValue( position );
 
-    // update the enabled state. Phonon determines isSeekable somtimes too late.
+    // update the enabled state. Phonon determines isSeekable sometimes too late.
     m_slider->setEnabled( (m_slider->maximum() > 0) && The::engineController()->isSeekable() );
     if ( !m_slider->isEnabled() )
         drawTimeDisplay( position );

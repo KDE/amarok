@@ -303,11 +303,11 @@ public Q_SLOTS:
 Q_SIGNALS:
     /**
      * Emitted when the playback stops while playing a track.
-     * This signal is not emitted when the track pauses or the playback stopps because
+     * This signal is not emitted when the track pauses or the playback stops because
      * Amarok was closed and "resume at start" is configured.
      * It is also not emitted if the playback continues with another track. In such
      * a case you would just get another trackPlaying signal.
-     * Both parameters are in milli seconds.
+     * Both parameters are in milliseconds.
      */
     void stopped( qint64 /*ms*/ finalPosition, qint64 /*ms*/ trackLength );
 
@@ -367,7 +367,7 @@ Q_SIGNALS:
     /**
      * Emitted then the information for the current changed.
      * This signal contains data from Phonon about the meta data of the track or stream.
-     * This signal is expecially emitted when a stream changes it's metadata.
+     * This signal is especially emitted when a stream changes it's metadata.
      * This can happen e.g. in a ogg stream where the currentTrack data will probably
      * not be updated.
      *

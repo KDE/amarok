@@ -63,7 +63,7 @@ namespace AmarokScript
              * @param name The name of the icon, without extension. If an absolute
              * path is supplied for this parameter, iconPath will return it
              * directly.
-             * @param size Search icons whose size is @param size.
+             * @param size Search icons whose size is @p size.
              * See Info.IconSizes
              */
             Q_INVOKABLE QString iconPath( const QString& name, int size ) const;

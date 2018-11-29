@@ -64,10 +64,8 @@ namespace AmarokScript
 
             /**
              * Show tooltips with the widget's name on mouseover.
-             * @param showDelay the duration after which toolTip appears.
-             * @param copyDelay the duration after
              *
-             * Must restart Amarok afetr invoking this function to revert tooltips
+             * Must restart Amarok after invoking this function to revert tooltips
              * to normal.
              */
             Q_INVOKABLE void showToolTip();

@@ -162,7 +162,7 @@ BrowserCategory::clearAdditionalItems()
     foreach( BrowserBreadcrumbItem *item, m_additionalItems )
     {
         m_additionalItems.removeAll( item );
-        /* deleting immediatelly isn't safe, this method may be called from an inner
+        /* deleting immediately isn't safe, this method may be called from an inner
          * QEventLoop inside QMenu::exec() of another breadcrumb item, which could
          * then leas to crash bug 265626 */
         item->deleteLater();

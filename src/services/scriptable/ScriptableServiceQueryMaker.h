@@ -26,7 +26,7 @@
 namespace Collections {
 
 /**
- * A query maker for fetching external data from scripred services.
+ * A query maker for fetching external data from scripted services.
  */
 class ScriptableServiceQueryMaker : public DynamicServiceQueryMaker
 {

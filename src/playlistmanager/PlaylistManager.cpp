@@ -176,12 +176,12 @@ PlaylistManager::addPlaylist( Playlists::PlaylistPtr playlist, int category )
         {
             m_syncedPlaylistMap.insert( syncedPlaylist, playlist );
 
-            //The synchronosation will be done in the next mainloop run
+            //The synchronization will be done in the next mainloop run
             m_syncNeeded.append( syncedPlaylist );
             QTimer::singleShot( 0, this, &PlaylistManager::slotSyncNeeded );
         }
 
-        //deliberatly reusing the passed argument
+        //deliberately reusing the passed argument
         playlist = PlaylistPtr::dynamicCast( syncedPlaylist );
 
         if( m_playlistMap.values( category ).contains( playlist ) )
@@ -260,7 +260,7 @@ PlaylistManager::slotUpdated()
     if( !provider )
         return;
 
-    //forcefull reload all the providers playlists.
+    //forceful reload all the providers playlists.
     //This is an expensive operation, the provider should use playlistAdded/Removed signals instead.
     removePlaylists( provider );
     loadPlaylists( provider, provider->category() );

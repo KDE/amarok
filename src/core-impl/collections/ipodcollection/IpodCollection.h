@@ -91,7 +91,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
 
         // IpodCollection methods:
         /**
-         * In-fact second phase of the construcor. Called by CollectionFactory right after
+         * In-fact second phase of the constructor. Called by CollectionFactory right after
          * constructor. Should return true if the collection initialised itself successfully
          * and should be shown to the user; return value of false means it should be
          * destroyed and forgotten by the factory.
@@ -99,7 +99,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         bool init();
 
         /**
-         * Get local mount point. Can return QString() in case no reasonamble mountpoint
+         * Get local mount point. Can return QString() in case no reasonable mountpoint
          * is available
          */
         QString mountPoint();
@@ -135,7 +135,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         void startUpdateTimer();
 
         /**
-         * Start a count-down that initiates iTunes database wrtiging after it expires.
+         * Start a count-down that initiates iTunes database writing after it expires.
          * Resets the timer to original timeout if already running. This is to ensure
          * that we don't write the database all the time for batch updates.
          *

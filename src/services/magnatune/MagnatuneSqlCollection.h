@@ -22,7 +22,7 @@
 namespace Collections {
 
 /**
-A simple ServiceSqlCollection subclass for providing a magnatune membership specific implementaion of trackForUrl
+A simple ServiceSqlCollection subclass for providing a magnatune membership specific implementation of trackForUrl
 
 	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */

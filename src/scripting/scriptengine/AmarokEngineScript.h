@@ -95,13 +95,13 @@ namespace AmarokScript
             void trackSeeked( int ); //return relative time in million second
 
             /** This signal will be emitted when the volume changes.
-                @param volume The relative volume between 0 (mute) and 100.
+                The parameter is the relative volume between 0 (mute) and 100.
             */
             void volumeChanged( int );
 
             /** This signal is emitted when the engine state switches to play or pause.
                 Note: You could get two trackPlayPause(1) in a row if e.g. the state
-                changed to stopped in beetween (which you will notice if connecting to
+                changed to stopped in between (which you will notice if connecting to
                 the trackFinished signal)
                 @param state Is 0 when state changed to playing or 1 when the state switched to pause.
             */

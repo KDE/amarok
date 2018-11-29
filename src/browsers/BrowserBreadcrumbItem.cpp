@@ -73,7 +73,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
 
     connect( m_mainButton, &BreadcrumbItemButton::sizePolicyChanged, this, &BrowserBreadcrumbItem::updateSizePolicy );
 
-    //if this is a list, make cliking on this item cause us
+    //if this is a list, make clicking on this item cause us
     //to navigate to its home.
     BrowserCategoryList *list = qobject_cast<BrowserCategoryList*>( category );
     if ( list )

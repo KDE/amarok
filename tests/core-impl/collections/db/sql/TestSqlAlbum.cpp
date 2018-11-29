@@ -265,7 +265,7 @@ TestSqlAlbum::testSetCompilationWithExistingCompilation()
     // now the track should be in the compilation
     album = track->album();
     sqlAlbum = static_cast<Meta::SqlAlbum*>( album.data() );
-    QCOMPARE( sqlAlbum->id(), 2 ); // the exisitng compilation album
+    QCOMPARE( sqlAlbum->id(), 2 ); // the existing compilation album
     QVERIFY( !album->hasAlbumArtist() );
     QVERIFY( album->isCompilation() );
     QCOMPARE( album, compilation ); //track returns new album, but the same object that we retrieved above

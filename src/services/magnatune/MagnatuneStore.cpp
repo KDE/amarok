@@ -116,7 +116,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
 
 
     //do this stuff now to make us function properly as a track provider on startup. The expensive stuff will
-    //not happen untill the model is added to the view anyway.
+    //not happen until the model is added to the view anyway.
     MagnatuneMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune", this );
     
     MagnatuneConfig config;

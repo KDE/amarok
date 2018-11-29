@@ -90,7 +90,7 @@ protected:
     /**
      * Check if a certain row in the source model matches a search term when looking at
      * the fields specified by the searchFields bitmask.
-     * @param row The row number in the source model to match against.
+     * @param sourceModelRow The row number in the source model to match against.
      * @param searchTerm The search term.
      * @param searchFields A bitmask containing the fields that should be matched against.
      * @return True if a match is found in any field, false otherwise.
@@ -99,7 +99,7 @@ protected:
 
     /**
      * Converts a row number in the underlying model to a row number in this proxy.
-     * @param rowInSource the row number that's valid in 'sourceModel()'.
+     * @param sourceModelRow the row number that's valid in 'sourceModel()'.
      * @return the row number that's valid in this proxy.
      */
     virtual int rowFromSource( int sourceModelRow ) const;
@@ -107,10 +107,10 @@ protected:
     /**
      * Converts a row number in this proxy to a row number in the underlying model.
      *
-     * As a special case, 'rowInProxy == rowCount()' returns the bottom model's
+     * As a special case, 'proxyModelRow == rowCount()' returns the bottom model's
      * 'rowCount()'. See comment at 'rowToBottomModel()'.
      *
-     * @param rowInProxy the row number that's valid in this proxy.
+     * @param proxyModelRow the row number that's valid in this proxy.
      * @return the row number that's valid in 'sourceModel()'.
      */
     virtual int rowToSource( int proxyModelRow ) const;

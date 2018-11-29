@@ -908,7 +908,7 @@ Dynamic::DynamicModel::initPlaylists()
 
     // -- create the empty default random playlists
 
-    // - first one rantom playlist
+    // - first one random playlist
     playlist = new Dynamic::BiasedPlaylist( this );
     insertPlaylist( 0, playlist );
 

@@ -49,7 +49,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                           "preview_ogg " + sqlDb->exactTextColumnType() + ',' +
                           "preview_url " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
-    debug() << "Creating mangnatune_tracks: " << queryString;
+    debug() << "Creating magnatune_tracks: " << queryString;
 
 
     QStringList result = sqlDb->query( queryString );
@@ -67,7 +67,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "cover_url " + sqlDb->exactTextColumnType() + ',' +
                   "description " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
-    debug() << "Creating Mangnatune_albums: " << queryString;
+    debug() << "Creating Magnatune_albums: " << queryString;
 
     result = sqlDb->query( queryString );
 
@@ -83,7 +83,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "description " + sqlDb->textColumnType() + ',' +
                   "photo_url " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
-    debug() << "Creating mangnatune_artist: " << queryString;
+    debug() << "Creating magnatune_artist: " << queryString;
 
     result = sqlDb->query( queryString );
 
@@ -107,7 +107,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "track_id INTEGER," +
                   "mood " + sqlDb->textColumnType() + ") ENGINE = MyISAM;";
 
-    debug() << "Creating mangnatune_moods: " << queryString;
+    debug() << "Creating magnatune_moods: " << queryString;
 
     result = sqlDb->query( queryString );
 

@@ -39,7 +39,7 @@ PlaylistsByProviderProxy::PlaylistsByProviderProxy( int playlistCategory, QObjec
              this, &PlaylistsByProviderProxy::slotProviderRemoved );
 }
 
-//TODO: remove this contructor
+//TODO: remove this constructor
 PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, int column, int playlistCategory )
         : QtGroupingProxy( model, QModelIndex(), column )
         , m_playlistCategory( playlistCategory )

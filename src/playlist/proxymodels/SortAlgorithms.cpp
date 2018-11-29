@@ -70,7 +70,7 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel,
                     // The track with higher lastPlayed value was played more recently
                     //
                     // '!=' is the XOR operation; it simply negates the result if 'inverted'
-                    // is true. It isn't necessarry to do it this way, although later on it will
+                    // is true. It isn't necessary to do it this way, although later on it will
                     // ease figuring out what's actually being returned.
                     if( lastPlayedA != lastPlayedB )
                         return ( lastPlayedA > lastPlayedB ) != inverted;

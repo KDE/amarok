@@ -562,7 +562,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
         if( !m_stoppedstate ) // otherwise there's been an error
         {
             m_userLabels = data[ "user" ].toStringList();
-            m_webLabels.clear(); // we can saftly clear the web labels because user labels will never be updated without the web labels
+            m_webLabels.clear(); // we can safely clear the web labels because user labels will never be updated without the web labels
 
             if( !data.contains( "web" ) ) // avoid calling updateLabels twice
                 updateLabels();

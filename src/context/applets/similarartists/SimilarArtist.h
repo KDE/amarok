@@ -47,7 +47,7 @@ public:
     /**
      * Create a similar artist with data
      * @param name  The name of this similar artist
-     * @param match The match pourcent (between 0 and 100) of the similarity
+     * @param match The match percent (between 0 and 100) of the similarity
      * between this artist and the artist similarTo
      * @param url   A url of this artist on the web, for example on last.fm
      * @param urlImage  A url of an image of this artist, for example on last.fm

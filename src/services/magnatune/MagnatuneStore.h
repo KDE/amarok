@@ -119,21 +119,21 @@ private Q_SLOTS:
     void downloadSku( const QString &sku );
 
     /**
-     * Slot for recieving notification that the update button has been clicked.
+     * Slot for receiving notification that the update button has been clicked.
      */
     void updateButtonClicked();
 
 
     /**
-     * Slot for recieving notification when the Magnatune xml file has been downloaded.
-     * Triggers a parse of the file to get the info added to the databse
+     * Slot for receiving notification when the Magnatune xml file has been downloaded.
+     * Triggers a parse of the file to get the info added to the database
      * @param downLoadJob The calling download Job
      */
     void listDownloadComplete( KJob* downLoadJob );
 
 
     /**
-     * Slot called when the parsing of the Magnatuin xml file is completed.
+     * Slot called when the parsing of the Magnatune xml file is completed.
      * Triggers an update of the list view and the genre combo box
      */
     void doneParsing();
@@ -144,7 +144,7 @@ private Q_SLOTS:
     void processRedownload();
 
     /**
-     * Slot for recieving notifications of completed download operations
+     * Slot for receiving notifications of completed download operations
      * @param success Was the operation a success?
      */
     void downloadCompleted( bool success );

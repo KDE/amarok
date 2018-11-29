@@ -36,7 +36,7 @@ class IpodDeleteTracksJob : public QObject, public ThreadWeaver::Job
         // signals for progress operation:
         void incrementProgress();
         void endProgressOperation( QObject *obj );
-        void totalSteps( int steps ); // not used, defined to keep QObject::conect warning quiet
+        void totalSteps( int steps ); // not used, defined to keep QObject::connect warning quiet
 
         /** This signal is emitted when this job is being processed by a thread. */
         void started(ThreadWeaver::JobPointer);

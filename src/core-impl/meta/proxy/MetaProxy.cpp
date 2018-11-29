@@ -515,7 +515,7 @@ Track::beginUpdate()
 void
 Track::endUpdate()
 {
-    // we intentionally don't call metadataUpdated() so that thi first thing that
+    // we intentionally don't call metadataUpdated() so that the first thing that
     // triggers metadataUpdated() is when the real track is found.
 }
 

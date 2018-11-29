@@ -334,7 +334,7 @@ private:
     bool m_isDeleting;
 
     Meta::TrackList   m_tracksToCopy; ///< List of tracks left to copy
-    Meta::TrackList   m_tracksCopying; ///< List of tracks currrently copying
+    Meta::TrackList   m_tracksCopying; ///< List of tracks currently copying
     Meta::TrackList   m_tracksToDelete; ///< List of tracks left to delete
 
     int m_numTracksToCopy; ///< The number of tracks left to copy

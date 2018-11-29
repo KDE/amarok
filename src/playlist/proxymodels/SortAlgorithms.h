@@ -36,8 +36,6 @@ struct multilevelLessThan
 {
     /**
      * Constructor.
-     * @param sourceProxy a pointer to the underlying proxy instance.
-     * @param scheme the sorting scheme that needs to be applied.
      */
     multilevelLessThan()
         : m_scheme( SortScheme() )
@@ -45,15 +43,17 @@ struct multilevelLessThan
 
     /**
      * Set sort scheme
+     * @param scheme the sorting scheme that needs to be applied.
      */
     void setSortScheme( const SortScheme & scheme );
 
     /**
      * Takes two row numbers from the source model and compares the corresponding indexes
      * based on a number of chosen criteria (columns).
-     * @param rowA the first row.
-     * @param rowB the second row.
-     * @return true if rowA is to be placed before rowB, false otherwise.
+     * @param sourceModel the source model.
+     * @param sourceModelRowA the first row.
+     * @param sourceModelRowB the second row.
+     * @return true if sourceModelRowA is to be placed before sourceModelRowB, false otherwise.
      */
     bool operator()( const QAbstractItemModel* sourceModel, int sourceModelRowA, int sourceModelRowB ) const;
 

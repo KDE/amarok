@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MEDIADEVICE_EDIT_CAPABILITY_H
-#define MEDIADEVICE_EDIT_CAPABILITY_H
+#ifndef MEDIADEVICE_TRACK_EDITOR_H
+#define MEDIADEVICE_TRACK_EDITOR_H
 
 #include "core/meta/TrackEditor.h"
 #include "MediaDeviceMeta.h"

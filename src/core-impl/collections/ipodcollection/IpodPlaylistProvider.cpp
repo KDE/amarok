@@ -278,7 +278,7 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
         static_cast<IpodCollectionLocation *>( location )->setHidingRemoveConfirm( true );
         removed += m_stalePlaylist->trackCount();
         location->prepareRemove( m_stalePlaylist->tracks() );
-        // remove all tracks from the playlist, assume the removal suceeded
+        // remove all tracks from the playlist, assume the removal succeeded
         while( m_stalePlaylist->trackCount() )
             m_stalePlaylist->removeTrack( 0 );
     }
@@ -290,7 +290,7 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
         Collections::CollectionLocation *dest = m_coll->location();
         added += m_orphanedPlaylist->trackCount();
         src->prepareMove( m_orphanedPlaylist->tracks(), dest );
-        // remove all tracks from the playlist, assume the move suceeded
+        // remove all tracks from the playlist, assume the move succeeded
         while( m_orphanedPlaylist->trackCount() )
             m_orphanedPlaylist->removeTrack( 0 );
     }
@@ -313,7 +313,7 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
     QString failedText = failed ? i18np("Failed to process one track. (more info about "
         "it is in the Amarok debugging log)", "Failed to process %1 tracks. (more info "
         "about these is in the Amarok debugging log)", failed ) : QString();
-    QString text = i18nc( "Infrequently displayed message, don't bother with singlar "
+    QString text = i18nc( "Infrequently displayed message, don't bother with singular "
         "forms. %1 to %3 are numbers, %4 is the 'Failed to process ...' sentence or an "
         "empty string.", "Done consolidating iPod files. %1 orphaned tracks matched with "
         "stale iTunes database entries, %2 stale database entries removed, %3 orphaned "

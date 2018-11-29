@@ -587,7 +587,7 @@ Track::commitIfInNonBatchUpdate()
         return;
     }
 
-    d->writeMetaData(); // clears d->chages
+    d->writeMetaData(); // clears d->changes
     d->lock.unlock(); // rather call notifyObservers() without a lock
     notifyObservers();
     d->lock.lockForWrite(); // return to original state

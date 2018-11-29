@@ -48,7 +48,7 @@ namespace Capabilities
             /**
              * Return a list of file types (should be compatible with Meta::Track::type())
              * that your collection is able to play. This is used to disable transcoding
-             * to formats that wouldnt be playable; if your collection is a portable player
+             * to formats that wouldn't be playable; if your collection is a portable player
              * that can only play ogg vorbis and flac, you would return
              * QStringList() << "ogg" << "flac";
              *

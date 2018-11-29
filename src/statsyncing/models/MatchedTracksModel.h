@@ -114,7 +114,7 @@ namespace StatSyncing
              * and remove @param provider from their list of label sources. Tracks that
              * don't have @param provider in their label sources remain unchanged.
              *
-             * If @param provider is null, this methods resets all tubles to "undecided"
+             * If @param provider is null, this methods resets all tuples to "undecided"
              * wrt labels (clears their list of label sources).
              */
             void excludeLabelsFrom( const ProviderPtr &provider );

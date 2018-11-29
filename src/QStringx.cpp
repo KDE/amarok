@@ -77,7 +77,7 @@ Amarok::QStringx::args( const QStringList &args ) const
 QString
 Amarok::QStringx::namedArgs( const QMap<QString, QString> &args, bool opt ) const
 {
-    // Screen all kindes of brackets and format string with namedOptArgs.
+    // Screen all kinds of brackets and format string with namedOptArgs.
     QString formatString = *this;
     formatString.replace( QRegExp( "([\\[\\]{}])" ),"\\\\1" );
 
@@ -236,7 +236,7 @@ Amarok::QStringx::parseBrackets( int *pos, const QMap<QString, QString> &dict ) 
 
     ( *pos )++;
 
-    // Parse token manuly (not by calling parseToken), because we need token name.
+    // Parse token manually (not by calling parseToken), because we need token name.
     CharType ct = testChar( pos );
     QString key;
 

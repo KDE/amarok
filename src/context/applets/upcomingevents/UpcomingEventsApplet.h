@@ -68,7 +68,7 @@ public:
      *
      * This method is called when the interface should be painted
      *
-     * \param painter : the QPainter to use to do the paintiner
+     * \param painter : the QPainter to use to do the paint
      * \param option : the style options object
      * \param contentsRect : the rect to paint within; automatically adjusted for
      *                     the background, if any

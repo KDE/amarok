@@ -79,7 +79,7 @@ void chardet_destroy(chardet_t det);
 int chardet_handle_data(chardet_t det, const char* data, unsigned int len);
 
 /**
- * Notify an end of data to an encoding detctor.
+ * Notify an end of data to an encoding detector.
  * @param det [in] the encoding detector handle
  * @return CHARDET_RESULT_OK if succeeded.
  *         CHARDET_RESULT_INVALID_DETECTOR if det was invalid.

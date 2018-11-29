@@ -254,16 +254,12 @@ AbstractScanResultProcessor::commitPlaylist( const CollectionScanner::Playlist &
         The::playlistManager()->import( QUrl::fromLocalFile( playlist.path() ) );
 }
 
-/** This will just put the tracks into an album.
-    @param album the name of the target album
-    @returns true if the track was put into an album
-*/
 CollectionScanner::Album*
 AbstractScanResultProcessor::sortTrack( CollectionScanner::Track *track, const QString &dirName )
 {
     QString albumName = track->album();
 
-    // we allow albums with empty name and nonepty artist, see bug 272471
+    // we allow albums with empty name and nonempty artist, see bug 272471
     QString albumArtist = track->albumArtist();
     if( track->isCompilation() )
         albumArtist.clear();  // no album artist denotes a compilation

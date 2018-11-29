@@ -528,7 +528,7 @@ WikipediaAppletPrivate::_pageLoadFinished( bool ok )
 void
 WikipediaAppletPrivate::_searchLineEditTextEdited( const QString &text )
 {
-    webView->page()->findText( QString(), QWebPage::HighlightAllOccurrences ); // clears preivous highlights
+    webView->page()->findText( QString(), QWebPage::HighlightAllOccurrences ); // clears previous highlights
     webView->page()->findText( text, QWebPage::FindWrapsAroundDocument | QWebPage::HighlightAllOccurrences );
 }
 

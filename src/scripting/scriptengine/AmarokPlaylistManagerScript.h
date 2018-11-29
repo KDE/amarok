@@ -73,7 +73,10 @@ namespace AmarokScript
             //void setupSync( const Playlists::PlaylistPtr master, const Playlists::PlaylistPtr slave );
 
             /**
-             * Return provider with name @param name and category @param category.
+             * Return provider with @p name and @p category.
+             *
+             * @param category the category.
+             * @param name the name.
              */
             Q_INVOKABLE Playlists::PlaylistProvider *playlistProvider( int category, QString name );
 
@@ -88,13 +91,16 @@ namespace AmarokScript
 
             /**
              *  Saves a playlist from a file to the database.
-             *  @arg fromLocation Saved playlist file to load
+             *  @param fromLocation Saved playlist file to load
              */
             Q_INVOKABLE bool import( const QUrl &fromLocation );
 
             /**
-             * Rename @param playlist to @param newName, return true if renaming was successful,
+             * Rename @p playlist to @p newName, return true if renaming was successful,
              * false otherwise.
+             *
+             * @param playlist the playlist.
+             * @param name the name.
              */
             Q_INVOKABLE bool rename( Playlists::PlaylistPtr playlist, const QString &newName );
 

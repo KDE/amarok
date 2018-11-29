@@ -341,7 +341,7 @@ TimecodeTrack::setAlbum( TimecodeAlbumPtr album )
 void
 TimecodeTrack::setAlbumArtist( const QString & )
 {
-    // no suport for it
+    // no support for it
 }
 
 void

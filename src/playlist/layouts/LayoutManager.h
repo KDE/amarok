@@ -31,7 +31,7 @@ namespace Playlist {
 
 /**
  * Class for keeping track of playlist layouts and loading/saving them to xml files. Also keeps track
- * Of the order in which these layouts are shown to the user and makes this persistant between sessions.
+ * Of the order in which these layouts are shown to the user and makes this persistent between sessions.
  * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class LayoutManager : public QObject
@@ -71,7 +71,7 @@ public:
     void updateCurrentLayout( const PlaylistLayout &layout );
     
     /**
-     * Get the layout with a specific name. Returns an empty layout if there is no layout matchig the name.
+     * Get the layout with a specific name. Returns an empty layout if there is no layout matching the name.
      * @param layout The name of the layout.
      * @return The layout matching the name.
      */
@@ -90,7 +90,7 @@ public:
     QString activeLayoutName() const;
 
     /**
-     * Check if a named layout if one of Amaroks defaults or is one added by a user, This is important
+     * Check if a named layout if one of Amarok's defaults or is one added by a user, This is important
      * as default layouts cannot be changed or deleted.
      * @param layout The name of the layout.
      * @return Is layout one of the defaults.
@@ -179,11 +179,11 @@ protected:
     void loadLayouts( const QString &fileName, bool user );
 
     /**
-     * Create a DOM element corrosponding to a LayoutItemConfig. Used when storing a layout to a file.
+     * Create a DOM element corresponding to a LayoutItemConfig. Used when storing a layout to a file.
      * @param doc The QDomDocument that is the parent of the current tree.
      * @param name The name of the layoutItem
      * @param item The layout item.
-     * @return A DOM element containig the XML encoded layout item.
+     * @return A DOM element containing the XML encoded layout item.
      */
     QDomElement createItemElement( QDomDocument doc, const QString &name, const LayoutItemConfig &item ) const;
     

@@ -282,7 +282,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics, pu
         FieldHash m_cache;
 
         /** This ReadWriteLock is protecting all internal variables.
-            It is ensuring that m_cache, m_batchUpdate and the othre internal variable are
+            It is ensuring that m_cache, m_batchUpdate and the other internal variable are
             in a consistent state all the time.
         */
         mutable QReadWriteLock m_lock;

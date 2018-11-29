@@ -222,7 +222,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
         /**
         *  Because there is no way to set the length for the last track in a normal way,
         *  we have to do some magic here. Having the total length of the media file given
-        *  we can set the lenth for the last track after all the cue file was loaded into array.
+        *  we can set the length for the last track after all the cue file was loaded into array.
         */
 
         cueItems[index].setLength ( trackLen - index );

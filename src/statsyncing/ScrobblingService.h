@@ -79,10 +79,10 @@ namespace StatSyncing
              * Update the "Now Playing" info on the scrobbling site without scrobbling the
              * track permanently. Scrobbler may check certain criteria and refuse to update
              * Now Playing if they are not met. If track is null, it means that no track is
-             * playing and scrobbler shoudl clear the Now Playing status. You may safely
+             * playing and scrobbler should clear the Now Playing status. You may safely
              * assume this is not called too frequently.
              *
-             * @param track that is currently playing or null if playbak was stopped
+             * @param track that is currently playing or null if playback was stopped
              */
             virtual void updateNowPlaying( const Meta::TrackPtr &track ) = 0;
     };

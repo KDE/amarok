@@ -50,6 +50,7 @@ public:
     /** Gives the item view a special darker palette and transparent background.
         You need to connect to the newPalette signal afterwards because this
         darker palette does not automatically update.
+        @param view the item view.
     */
     void updateItemView( QAbstractItemView * view );
 

@@ -27,7 +27,7 @@ namespace Capabilities
     /**
      * A capability for tracks that can have several different source urls, such as
      * multiple fallback streams for a radio station. If one source url fails or finishes,
-     * the track will automatically use the next one. It is also possbile to get a list
+     * the track will automatically use the next one. It is also possible to get a list
      * of all urls that can be presented to the user so tha she can choose.
      *
      * @author Nikolaj Hald Nielsen <nhn@kde.org>

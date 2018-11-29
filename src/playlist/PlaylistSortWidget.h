@@ -56,7 +56,7 @@ public:
     QString sortPath() const;
 
     /**
-     * Generate current sort scheme from a sorth path stored in a QString.
+     * Generate current sort scheme from a sort path stored in a QString.
      */
     void readSortPath( const QString &sortPath );
 

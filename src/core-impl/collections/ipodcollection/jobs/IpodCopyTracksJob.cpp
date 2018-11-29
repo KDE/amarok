@@ -200,7 +200,7 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
         if( !m_coll )
         {
             delete ipodTrack;
-            break;  // we were waiting for copying, m_coll may got destoryed
+            break;  // we were waiting for copying, m_coll may got destroyed
         }
         Meta::TrackPtr newTrack = m_coll->addTrack( ipodTrack );
         if( !newTrack )
@@ -247,7 +247,7 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
     }
     else
     {
-        // somethig more severe failed, notify user using a dialog
+        // something more severe failed, notify user using a dialog
         emit displaySorryDialog();
     }
 }

@@ -604,9 +604,9 @@ SqlScanResultProcessor::deletedDirectories() const
         }
     }
 
-    // now we must fileter-out all found directories *and their children*, because the
+    // now we must filter out all found directories *and their children*, because the
     // children are *not* in m_foundDirectories and deleteDeletedDirectories() would
-    // remove them errorneously
+    // remove them erroneously
     foreach( int foundDirectoryId, m_foundDirectories )
     {
         if( idToDirEntryMap.contains( foundDirectoryId ) )
@@ -679,7 +679,7 @@ SqlScanResultProcessor::urlsCacheInsert( const UrlEntry &entry )
     if( m_urlsCache.contains( entry.id ) )
         urlsCacheRemove( m_urlsCache[ entry.id ] );
 
-    // following shoudn't normally happen:
+    // following shouldn't normally happen:
     if( m_pathCache.contains( entry.path ) )
     {
         int oldId = m_pathCache.value( entry.path );

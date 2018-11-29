@@ -344,7 +344,7 @@ OpmlParser::continueRead()
                     action->characters( this );
                 }
 
-                // ignoreable whitespaces
+                // ignorable whitespaces
             case Comment:
             case EntityReference:
             case ProcessingInstruction:

@@ -929,7 +929,7 @@ SqlRegistry::emptyCache()
 
         // elem.count() == 2 is correct because elem is one pointer to the object
         // and the other is stored in the hash map (except for m_trackMap, m_albumMap
-        // and m_artistMap , where another refence is stored in m_uidMap, m_albumIdMap
+        // and m_artistMap , where another reference is stored in m_uidMap, m_albumIdMap
         // and m_artistIdMap
         #define foreachCollectGarbage( Key, Type, RefCount, x ) \
         for( QMutableHashIterator<Key,Type > iter(x); iter.hasNext(); ) \

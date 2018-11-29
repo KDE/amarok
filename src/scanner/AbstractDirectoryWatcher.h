@@ -66,8 +66,9 @@ class AMAROK_EXPORT AbstractDirectoryWatcher : public QObject, public ThreadWeav
     Q_SIGNALS:
         /** Requests the scanner to do an incremental scan.
          *  The incremental scan will check for new files or sub-folders.
-         *  @param directory The directory to scan or and empty string if every
+         *  @param directories The directories to scan or and empty string if every
          *  collection folder should be checked for changes.
+         *  @param type The type of the scan.
          */
         void requestScan( QList<QUrl> directories, GenericScanManager::ScanType type );
         /** This signal is emitted when this job is being processed by a thread. */

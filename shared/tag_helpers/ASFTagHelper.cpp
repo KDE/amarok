@@ -32,7 +32,7 @@ ASFTagHelper::ASFTagHelper( TagLib::Tag *tag, TagLib::ASF::Tag *asfTag, Amarok::
 {
     m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "WM/AlbumArtist" ) );
     m_fieldMap.insert( Meta::valBpm,         TagLib::String( "WM/BeatsPerMinute" ) );
-    m_fieldMap.insert( Meta::valCompilation, TagLib::String( "Amarok/Compilation" ) );  //Not standatd tag
+    m_fieldMap.insert( Meta::valCompilation, TagLib::String( "Amarok/Compilation" ) );  //Not standard tag
     m_fieldMap.insert( Meta::valComposer,    TagLib::String( "WM/Composer" ) );
     m_fieldMap.insert( Meta::valDiscNr,      TagLib::String( "WM/PartOfSet" ) );
     m_fieldMap.insert( Meta::valHasCover,    TagLib::String( "WM/Picture" ) );

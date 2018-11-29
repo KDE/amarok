@@ -18,7 +18,7 @@
 #define STATSYNCING_CONTROLLER_H
 
 #include "amarok_export.h"
-// for CollectionManager::CollectionStatus that cannont be fwd-declared
+// for CollectionManager::CollectionStatus that cannot be fwd-declared
 #include "core-impl/collections/support/CollectionManager.h"
 
 #include <QPointer>
@@ -80,7 +80,7 @@ namespace StatSyncing
             void setFactories( const QList<QSharedPointer<Plugins::PluginFactory> > &factories );
 
             /**
-             * Returns true if any instantiable provider types are registered with the
+             * Returns true if any instantiatable provider types are registered with the
              * controller.
              */
             bool hasProviderFactories() const;
@@ -228,7 +228,7 @@ namespace StatSyncing
              * milliseconds to let the collection settle down. Moreover, if the newly
              * added collection emits updated(), the timeout will run from start again.
              *
-             * (reason: e.g. iPod Collectin appears quickly, but with no tracks, which
+             * (reason: e.g. iPod Collection appears quickly, but with no tracks, which
              * are added gradually as they are parsed. This "ensures" we only start
              * syncing as soon as all tracks are parsed.)
              */

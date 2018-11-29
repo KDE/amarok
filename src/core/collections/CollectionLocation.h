@@ -125,7 +125,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual QString prettyLocation() const;
 
         /**
-            Returns a list of machine usable strings representingthe collection location.
+            Returns a list of machine usable strings representing the collection location.
             For example, a local collection would return a list of paths where tracks are
             stored, while an Ampache collection would return a list with one string
             containing the URL of an ampache server. An iPod collection and a MTP device
@@ -158,7 +158,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
         /**
            Schedule copying of @p tracks to collection location @p destination.
-           This method takes ownership of the @param destination , you may not reference
+           This method takes ownership of the @p destination, you may not reference
            or delete it after this call. This method returns immediately and the actual
            copy is performed in the event loop and/or another thread.
            @param tracks tracks

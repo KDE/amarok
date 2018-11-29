@@ -458,7 +458,7 @@ QueryMaker * Mp3tunesServiceQueryMaker::addFilter(qint64 value, const QString & 
 
 int Mp3tunesServiceQueryMaker::validFilterMask()
 {
-    //we only supprt artist filters for now...
+    //we only support artist filters for now...
     return ArtistFilter;
 }
 

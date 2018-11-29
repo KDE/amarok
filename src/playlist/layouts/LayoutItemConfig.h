@@ -123,7 +123,7 @@ class LayoutItemConfigRowElement
 };
 
 /**
- * This class corrosponds to a  row in a playlist layout
+ * This class corresponds to a  row in a playlist layout
  * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class LayoutItemConfigRow

@@ -63,8 +63,8 @@ LyricsManager::lyricsResult( const QByteArray& lyricsXML, Meta::TrackPtr track )
             QString lyrics( xml.readElementText() );
             if( !isEmpty( lyrics ) )
             {
-                // overwrite cached lyrics (as either there were no lyircs available previously OR
-                // the user exlicitly agreed to overwrite the lyrics)
+                // overwrite cached lyrics (as either there were no lyrics available previously OR
+                // the user explicitly agreed to overwrite the lyrics)
                 debug() << "setting cached lyrics...";
                 track->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
                 emit newLyrics( track );

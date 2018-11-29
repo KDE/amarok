@@ -40,7 +40,7 @@ namespace Meta
 
     /** Returns a short localized name for the given field.
         The short form is only one word and is used for the collection filter.
-        e.g. the "added to collecition" is just "added"
+        e.g. the "added to collection" is just "added"
      */
     AMAROK_CORE_EXPORT QString shortI18nForField( qint64 field );
 

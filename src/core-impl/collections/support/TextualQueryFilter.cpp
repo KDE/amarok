@@ -257,7 +257,7 @@ QDateTime
 Collections::semanticDateTimeParser( const QString &text, bool *absolute )
 {
     /* TODO: semanticDateTimeParser: has potential to extend and form a class of its own */
-    // some code duplications, see EditFilterDialog::parseTextFilter
+    // some code duplication, see EditFilterDialog::parseTextFilter
 
     const QString lowerText = text.toLower();
     const QDateTime curTime = QDateTime::currentDateTime();

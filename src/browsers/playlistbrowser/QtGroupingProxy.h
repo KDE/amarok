@@ -107,7 +107,7 @@ class QtGroupingProxy : public QAbstractProxyModel
           */
         QList<RowData> m_groupMaps;
 
-        /** "instuctions" how to create an item in the tree.
+        /** "instructions" how to create an item in the tree.
           * This is used by parent( QModelIndex )
         */
         struct ParentCreate

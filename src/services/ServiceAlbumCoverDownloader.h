@@ -53,7 +53,7 @@ public:
 
     /**
      * Constructor, reimplemented from ServiceAlbum.
-     * @param name The result list used to initialize the album.
+     * @param resultRow The result raw used to initialize the album.
      */
     explicit ServiceAlbumWithCover( const QStringList &resultRow );
 
@@ -81,7 +81,7 @@ public:
     virtual QString coverUrl() const = 0;
 
     /**
-     * Set the cover image of thes album.
+     * Set the cover image of the album.
      * @param image The cover image.
      */
     void setImage( const QImage &image );
@@ -102,7 +102,6 @@ public:
      * Get the image of this album. If the image has not yet been fetched, this call will return a standard
      * "no-cover" cover and then start the download of the real cover. When the download is complete, any oberserves will be notified that the metadata of this album has been changed.
      * @param size The required size of the album.
-     * @param withShadow Unused.
      * @return The cover image or a default cover.
      */
     virtual QImage image( int size = 0 ) const; //overridden from Meta::Album

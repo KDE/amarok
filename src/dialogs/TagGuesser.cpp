@@ -51,7 +51,7 @@ TagGuesser::setCaseType( const int caseOptions )
     m_caseOptions = caseOptions;
 }
 
-// sets whether trailing spcaes should be removes
+// sets whether trailing spaces should be removes
 void
 TagGuesser::setCutTrailingSpaces( const bool cutTrailingSpaces )
 {
@@ -106,9 +106,9 @@ TagGuesser::convertTagCaseType( const QString &tag, int type )
         case 2:
         {
             QString complete;
-            QStringList splitted = tag.toLower().split( ' ', QString::SkipEmptyParts );
+            QStringList splitList = tag.toLower().split( ' ', QString::SkipEmptyParts );
 
-            foreach( QString word, splitted )
+            foreach( QString word, splitList )
             {
                 if( word.length() > 1 )
                     word.replace( 0, 1, word.left( 1 ).toUpper() );

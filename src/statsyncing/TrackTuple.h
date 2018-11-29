@@ -78,9 +78,13 @@ namespace StatSyncing
             bool isEmpty() const;
 
             /**
-             * Return true if Meta::val* field @param field is going to be updated.
-             * If @param provider is null, returns true if at least one child track
-             * is going to be updated; otherwise works on a track from @param provider.
+             * Return true if Meta::val* field @p field is going to be updated.
+             * If @p provider is null, returns true if at least one child track
+             * is going to be updated; otherwise works on a track from @p provider.
+             *
+             * @param field the field.
+             * @param options the options.
+             * @param provider the provider.
              */
             bool fieldUpdated( qint64 field, const Options &options, ProviderPtr provider = ProviderPtr() ) const;
 

@@ -99,7 +99,7 @@ namespace Daap
             static quint32 getTagAndLength( QDataStream &raw, char tag[5] );
             QVariant readTagData(QDataStream &, char[5], quint32);
             void addTrack( const QString& itemId, const QString& title, const QString& artist, const QString& composer,
-                           const QString& commment, const QString& album, const QString& genre, int year,
+                           const QString& comment, const QString& album, const QString& genre, int year,
                            const QString& format, qint32 trackNumber, qint32 songTime );
 
             QMap<QString, Code> m_codes;

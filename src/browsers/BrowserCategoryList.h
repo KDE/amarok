@@ -46,6 +46,7 @@ class BrowserCategoryList : public BrowserCategory
         * Constructor
         * @param parent The parent widget.
         * @param name The name of this widget.
+        * @param sort Whether to sort the list.
         */
         explicit BrowserCategoryList( const QString& name, QWidget* parent = 0, bool sort = false );
 
@@ -140,7 +141,7 @@ class BrowserCategoryList : public BrowserCategory
     private Q_SLOTS:
         /**
          * Slot called when an item in the list has been activated and the
-         * corrosponding category should be shown.
+         * corresponding category should be shown.
          * @param index The index that was activated
          */
         void categoryActivated( const QModelIndex &index );

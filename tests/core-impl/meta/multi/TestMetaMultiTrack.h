@@ -72,7 +72,7 @@ class NotifyObserversWaiter : public QObject, private Meta::Observer
         void done();
 
     private Q_SLOTS:
-        void slotFilterResovled();
+        void slotFilterResolved();
 
     private:
         using Observer::metadataChanged; // silence gcc warning

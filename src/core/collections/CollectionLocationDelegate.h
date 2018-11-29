@@ -47,7 +47,7 @@ public:
     /**
      * Displays a dialog requesting what transcoding configuration to use.
      *
-     * @param playableFileTypes list of filetypes that are playable (empty if everyhing playable)
+     * @param playableFileTypes list of filetypes that are playable (empty if everything playable)
      * @param remember is set to true if user checks this transcoding config should be
      * remembered per target collection. If null, such option is disabled in the UI.
      * @param operation whether this is copying or moving

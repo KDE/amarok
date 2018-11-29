@@ -95,7 +95,7 @@ LastFmServiceCollection::LastFmServiceCollection( const QString &userName )
     connect( m_jobs[ "user.getFriends" ], &QNetworkReply::finished, this, &LastFmServiceCollection::slotAddFriendsLoved );
     //connect( m_jobs[ "user.getFriends" ], &QNetworkReply::finished, this, &LastFmServiceCollection::slotAddFriendsPersonal );
 
-    //TODO Automatically add simmilar artist streams for the users favorite artists.
+    //TODO Automatically add similar artist streams for the users favorite artists.
 }
 
 LastFmServiceCollection::~LastFmServiceCollection()

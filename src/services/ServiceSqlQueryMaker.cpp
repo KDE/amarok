@@ -300,7 +300,7 @@ ServiceSqlQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
     //DEBUG_BLOCK
     Q_UNUSED( track );
-    //TODO still pondereing this one...
+    //TODO still pondering this one...
     return this;
 }
 

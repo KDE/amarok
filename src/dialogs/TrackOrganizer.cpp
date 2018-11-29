@@ -97,7 +97,7 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
     args["filesize"] = track->filesize();
     args["length"] = track->length() / 1000;
 
-    // Fill up default empty values for StringX formater
+    // Fill up default empty values for StringX formatter
     // TODO make this values changeable by user
     args["default_album"]           = i18n( "Unknown album" );
     args["default_albumartist"]     = i18n( "Unknown artist" );

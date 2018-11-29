@@ -310,7 +310,7 @@ public:
     {}
 
     /* Its all a little bit stupid.
-       When the cannel image (and also the album image) changes the album get's no indication.
+       When the channel image (and also the album image) changes the album get's no indication.
        Also the CoverCache is not in amarokcorelib but in amaroklib.
        Why the PodcastAlbum is the only one with a concrete implementation in amarokcorelib is another question.
 

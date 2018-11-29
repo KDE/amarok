@@ -243,7 +243,7 @@ void Meta::MagnatuneTrack::setAlbumPtr( Meta::AlbumPtr album )
 {
     ServiceTrack::setAlbumPtr( album );
 
-    //get year from magnatue album:
+    //get year from magnatune album:
     MagnatuneAlbum * ma = dynamic_cast<MagnatuneAlbum *>( album.data() );
     if ( ma )
     {

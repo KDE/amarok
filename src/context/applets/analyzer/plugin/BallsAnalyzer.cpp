@@ -70,7 +70,7 @@ public:
 
     void updatePhysics( float dT )
     {
-        x += vx * dT;                // posision
+        x += vx * dT;                // position
         vx += ( 1300 * ( X - x ) / mass ) * dT;    // elasticity
         vx *= ( 1 - 4.0 * dT );          // air friction
     }
@@ -240,7 +240,7 @@ void BallsAnalyzer::analyze( const QVector<float> &s )
     m_show.gridScrollK += 0.2 * m_show.peakEnergy * m_show.dT;
 
     // Roll camera up/down handling the beat
-    m_show.camRot += m_show.camRoll * m_show.dT;        // posision
+    m_show.camRot += m_show.camRoll * m_show.dT;        // position
     m_show.camRoll -= 400 * m_show.camRot * m_show.dT;    // elasticity
     m_show.camRoll *= ( 1 - 2.0 * m_show.dT );      // friction
     if( !m_frame.silence && m_frame.dEnergy > 0.4 )

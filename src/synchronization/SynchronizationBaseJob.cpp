@@ -83,7 +83,7 @@ SynchronizationBaseJob::synchronize()
     DEBUG_BLOCK
     if( !m_collectionA || !m_collectionB )
     {
-        debug() << "aborting synchronization, at least one collecton is missing";
+        debug() << "aborting synchronization, at least one collection is missing";
         deleteLater();
         return;
     }

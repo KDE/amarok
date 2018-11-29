@@ -84,7 +84,7 @@ protected:
     virtual StatSyncing::ProviderPtr getWritableProvider();
 
     /**
-     * Return a binary or of Meta::val* representing statistics suported
+     * Return a binary or of Meta::val* representing statistics supported
      * by the provider being tested.
      */
     virtual qint64 reliableStatistics() const = 0;

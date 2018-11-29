@@ -31,15 +31,15 @@ namespace Meta
             * Try to guess metadata from file name, using common filename
             * templates, can't work with full file path.
             * @arg fileName file name, if fileName contains full path, It will be
-            * truckated.
+            * truncated.
             * @returns guessed metadata.
             */
             AMAROKSHARED_EXPORT Meta::FieldHash guessTags( const QString &fileName );
 
             /**
-            * Try to guess metadata from fil name,using specified scheme.
+            * Try to guess metadata from file name,using specified scheme.
             * @arg fileName file path
-            * @arg scheme is a regular exprassion with tokens
+            * @arg scheme is a regular expression with tokens
             * @arg cutTrailingSpaces - if true - force guesser to cut trailing spaces
             * @arg convertUnderscores - if true - force guesser too replace all underscores with spaces
             * @arg isRegExp - if true - prevents guesser from screening special symbols

@@ -112,7 +112,7 @@ namespace AmarokScript
         Q_PROPERTY( QString prettyLocation READ prettyLocation )
 
         /**
-         * Returns a list of machine usable string*s representingthe collection location.
+         * Returns a list of machine usable string*s representing the collection location.
          * For example, a local collection would return a list of paths where tracks are
          * stored, while an Ampache collection would return a list with one string
          * containing the URL of an ampache server. Empty for collections like iPod collection and
@@ -137,9 +137,12 @@ namespace AmarokScript
 
             /**
              * Convenience method for copying tracks based on QueryMaker results,
-             * takes ownership of the @param qm (The querymaker is rendered invalid
+             * takes ownership of the @p queryMaker. (The querymaker is rendered invalid
              * after copying).
              * @see copyTracks( Meta::TrackList, CollectionLocation* )
+             *
+             * @param queryMaker the Query maker.
+             * @param targetCollection the target collection.
              */
             Q_INVOKABLE void queryAndCopyTracks( Collections::QueryMaker *queryMaker, Collections::Collection *targetCollection );
 
@@ -155,9 +158,12 @@ namespace AmarokScript
 
             /**
              * Convenience method for moving tracks based on QueryMaker results,
-             * takes ownership of the @param qm (The querymaker is rendered invalid
+             * takes ownership of the @p queryMaker (The querymaker is rendered invalid
              * after moving).
              * @see moveTracks( Meta::TrackList, CollectionLocation* )
+             *
+             * @param queryMaker the Query maker.
+             * @param targetCollection the target collection.
              */
             Q_INVOKABLE void queryAndMoveTracks( Collections::QueryMaker *queryMaker, Collections::Collection *targetCollection );
 

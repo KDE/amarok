@@ -21,7 +21,7 @@
 #include "core/collections/Collection.h"
 
 /**
- * A simple track provider that contructs MetaFile::Tracks for local and
+ * A simple track provider that constructs MetaFile::Tracks for local and
  * existing urls. (no remote protocols supported, just "file" protocol.)
  */
 class AMAROK_EXPORT FileTrackProvider : public Collections::TrackProvider

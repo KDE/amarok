@@ -30,7 +30,7 @@ namespace Collections {
 namespace StatSyncing
 {
     /**
-     * Provider that has Collections::Colections as a back-end.
+     * Provider that has Collections::Collections as a back-end.
      */
     class CollectionProvider : public Provider
     {

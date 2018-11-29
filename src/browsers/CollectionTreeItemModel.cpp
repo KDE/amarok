@@ -137,7 +137,7 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
             sourceLocation = new Collections::FileCollectionLocation();
         }
 
-        // we need to create target collection location per each source colleciton location
+        // we need to create target collection location per each source collection location
         // -- prepareSomething() takes ownership of the pointer.
         Collections::CollectionLocation *targetLocation = targetCollection->location();
         Q_ASSERT(targetLocation);

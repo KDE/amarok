@@ -32,7 +32,7 @@
 
 /**
  *  A browser for selecting and displaying a service in the style of the first
- *  imbedded Magnatune store from a list of available services. Allows
+ *  embedded Magnatune store from a list of available services. Allows
  *  many services to be shown as a single category.
  *  Implemented as a singleton.
  *

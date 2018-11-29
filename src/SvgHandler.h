@@ -67,6 +67,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
 
         /**
          * Another overloaded function that loads a svg file from an url. This function is usable from QML.
+         * @param url the given URL
          * @param keyname the name of the key to save in the cache
          * @param width Width of the resulting pixmap
          * @param height Height of the resulting pixmap
@@ -100,7 +101,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
 
         /**
          * Add nice borders to a pixmap. The function will create and return a new
-         * Pixmal that is the size of the old one plus twice the border width in
+         * Pixmap that is the size of the old one plus twice the border width in
          * each dimension.
          * 
          * @param orgPixmap The original pixmap.
@@ -117,7 +118,9 @@ class AMAROK_EXPORT SvgHandler : public QObject
          * The background part before the knob, is painted in a different color than the
          * part after (and under) the knob.
          * @param p The painter to use.
-         * @param percentage The percentange of the slider that the knob is positioned at.
+         * @param slider The slider.
+         * @param percentage The percentage of the slider that the knob is positioned at.
+         * @param paintMoodbar Whether to paint a moodbar.
          */
         void paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qreal percentage, bool paintMoodbar  = false );
 

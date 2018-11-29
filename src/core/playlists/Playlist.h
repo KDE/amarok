@@ -234,7 +234,7 @@ namespace Playlists
             // added everywhere
             /**
              * Call this method to assure synchronously loading.
-             * @note not all playlist implemetations support asynchronous loading
+             * @note not all playlist implementations support asynchronous loading
              */
             QT_DEPRECATED void makeLoadingSync() { m_async = false; }
             /**

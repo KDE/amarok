@@ -44,7 +44,7 @@ class AMAROKSHARED_EXPORT Directory
 {
 public:
     /**
-     * This contructor actually scans the directory and is supposed only to be
+     * This constructor actually scans the directory and is supposed only to be
      * called by CollectionScanner directly.
      */
     Directory( const QString &path, ScanningState *state, bool skip );
@@ -78,7 +78,7 @@ public:
     const QList<Playlist>& playlists() const;
 
     /** Writes the contents of this object to an xml stream.
-     *  Only the content is writen and no enclosing directory tags.
+     *  Only the content is written and no enclosing directory tags.
      *  This is done to make it mirror the constructor which does not read those
      *  tags either.
      */
@@ -91,7 +91,7 @@ private:
     QString m_rpath;
     uint m_mtime;
     bool m_skipped;
-    bool m_ignored; // the directory was ingored e.g. because of "fmps_ignore"
+    bool m_ignored; // the directory was ignored e.g. because of "fmps_ignore"
 
     QStringList m_covers;
     QList<Track*> m_tracks;

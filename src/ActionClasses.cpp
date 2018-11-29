@@ -341,7 +341,7 @@ ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *pare
     else
     {
         // Note: it would be nice to set a tooltip that would explain why this is disabled
-        // to users, but tooltips aren't shown in meny anyway :-(
+        // to users, but tooltips aren't shown in menu anyway :-(
         actions().at( 1 )->setEnabled( false );
         actions().at( 2 )->setEnabled( false );
     }

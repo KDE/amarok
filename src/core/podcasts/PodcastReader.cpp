@@ -629,7 +629,7 @@ PodcastReader::continueRead()
 {
     // this is some kind of pushdown automata
     // with this it should be possible to parse feeds in parallel
-    // woithout using threads
+    // without using threads
     DEBUG_BLOCK
 
     while( !m_xmlReader.atEnd() && m_xmlReader.error() != QXmlStreamReader::CustomError )
@@ -692,7 +692,7 @@ PodcastReader::continueRead()
                     action->characters( this );
                 }
 
-                // ignoreable whitespaces
+                // ignorable whitespaces
             case QXmlStreamReader::Comment:
             case QXmlStreamReader::EntityReference:
             case QXmlStreamReader::ProcessingInstruction:
@@ -1645,7 +1645,7 @@ PodcastReader::slotPermanentRedirection( KIO::Job * job, const QUrl &fromUrl,
     debug() << "permanently redirected to: " << toUrl.url();
     m_url = toUrl;
     /* change the url for existing feeds as well. Permanent redirection means the old one
-    might dissapear soon. */
+    might disappear soon. */
     if( m_channel )
         m_channel->setUrl( m_url );
 }

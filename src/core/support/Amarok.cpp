@@ -351,7 +351,7 @@ namespace Amarok
 
         int start = 0;
 #ifdef Q_OS_WIN
-        // exclude the leading "C:/" from special character replecement in the loop below
+        // exclude the leading "C:/" from special character replacement in the loop below
         // bug 279560, bug 302251
         if( QDir::isAbsolutePath( s ) )
             start = 3;

@@ -492,7 +492,7 @@ TestAggregateMeta::testEditableCapabilityOnMultipleTracks()
 
     //the signal is delayed a bit, but that is ok
     QTest::qWait( 50 );
-    //required so that the colleection browser refreshes itself
+    //required so that the collection browser refreshes itself
     QCOMPARE( spy.count(), 1 );
 }
 

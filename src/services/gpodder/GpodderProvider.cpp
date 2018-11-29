@@ -412,7 +412,7 @@ void
 GpodderProvider::slotSyncPlaylistRemoved( Playlists::PlaylistPtr playlist )
 {
     Podcasts::PodcastChannelPtr channel = Podcasts::PodcastChannelPtr::dynamicCast( playlist );
-    //If gpodder channels doesn't contais the removed channel from default
+    //If gpodder channels doesn't contains the removed channel from default
     //podcast provider, then we don't have to remove it from gpodder.net
     foreach( PodcastChannelPtr tempChannel, m_channels )
         if( channel->url() == tempChannel->url() )

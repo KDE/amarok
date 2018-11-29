@@ -126,7 +126,7 @@ void
 TestASXPlaylist::testUidUrl()
 {
     QString tempPath = m_tempDir->path() + "/test.asx";
-    //we have chaged the name around so much, better reset it
+    //we have changed the name around so much, better reset it
     m_testPlaylist->setName( "test" );
     QCOMPARE( m_testPlaylist->uidUrl().toLocalFile(), tempPath );
 }

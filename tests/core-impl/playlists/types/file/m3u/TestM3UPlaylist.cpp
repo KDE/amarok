@@ -114,7 +114,7 @@ void TestM3UPlaylist::testTracks()
 void TestM3UPlaylist::testUidUrl()
 {
     QString tempPath = m_tempDir->path() + "/test.m3u";
-    //we have chaged the name around so much, better reset it
+    //we have changed the name around so much, better reset it
     m_testPlaylist->setName( "test" );
     QCOMPARE( m_testPlaylist->uidUrl().toLocalFile(), tempPath );
 }

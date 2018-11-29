@@ -323,7 +323,7 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
         case 4: //Genre
             if( track1->genre() && track2->genre() )
             {
-                debug() << "gruping by genre. Comparing " << track1->genre()->prettyName() << " with " << track2->genre()->prettyName();
+                debug() << "grouping by genre. Comparing " << track1->genre()->prettyName() << " with " << track2->genre()->prettyName();
                 debug() << track1->genre().data() << " == " << track2->genre().data() << " : " << ( *track1->genre().data() == *track2->genre().data());
                 return ( *track1->genre().data() ) == ( *track2->genre().data() );
             }

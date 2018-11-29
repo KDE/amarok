@@ -504,7 +504,7 @@ MusicBrainzFinder::checkDone()
     {
         /*
          * Empty the queue of tracks waiting for release group requests. If the requests
-         * fail (hint: network failure), remeaining queued tracks will silently disappear.
+         * fail (hint: network failure), remaining queued tracks will silently disappear.
          * Sending an empty result makes the user aware of the fact that the track will
          * not be tagged.
          */

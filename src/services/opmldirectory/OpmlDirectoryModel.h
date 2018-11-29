@@ -37,7 +37,7 @@ public:
     {
         ActionRole = Qt::UserRole, //list of QActions for the index
         DecorationUriRole, //a URI for the decoration to be fetched by the view.
-        CustomRoleOffset //first role that can be used by sublasses for their own data
+        CustomRoleOffset //first role that can be used by subclasses for their own data
     };
 
     explicit OpmlDirectoryModel( QUrl outlineUrl, QObject *parent = 0 );

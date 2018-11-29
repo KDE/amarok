@@ -286,7 +286,7 @@ EditFilterDialog::updateDropTarget( const QString &text )
 
     m_ui->dropTarget->clear();
 
-    // some code duplications, see Collections::semanticDateTimeParser
+    // some code duplication, see Collections::semanticDateTimeParser
 
     ParsedExpression parsed = ExpressionParser::parse( text );
     bool AND = false; // need an AND token

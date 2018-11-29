@@ -74,8 +74,8 @@ private:
     int m_mseconds; /// position of the bookmark on the slider in terms of milliseconds
     QString m_name; /// name of the bookmark
     int m_sliderwidth; /// width of the slider on which the bookmark will appear
-    bool m_showPopup; /// used to determine whether to show the Pop-up on focussing the bookmark
-    BookmarkPopup* m_tooltip; /// the tooltip that appears on focussing the bookmark
+    bool m_showPopup; /// used to determine whether to show the Pop-up on focusing the bookmark
+    BookmarkPopup* m_tooltip; /// the tooltip that appears on focusing the bookmark
     QPoint m_offset; /// used while moving the bookmark, holds the position of the bookmark before moving
     int m_pos; /// used while moving the bookmark, holds the x co-ordinate of the bookmark after moving
 };

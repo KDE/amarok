@@ -337,7 +337,7 @@ PlaylistBrowserModel::canFetchMore( const QModelIndex &parent ) const
     else if( !IS_TRACK(parent) )
     {
         Playlists::PlaylistPtr playlist = m_playlists.value( parent.internalId() );
-        //TODO: imeplement incremental loading of tracks by checking for ==
+        //TODO: implement incremental loading of tracks by checking for ==
         if( playlist->trackCount() != playlist->tracks().count() )
             return true; //tracks still need to be loaded.
     }

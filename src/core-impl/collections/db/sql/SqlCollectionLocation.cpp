@@ -271,7 +271,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &path 
     metaTrack->endUpdate();
     metaTrack->setWriteFile( true );
 
-    // we have a first shot at the meta data (expecially ratings and playcounts from media
+    // we have a first shot at the meta data (especially ratings and playcounts from media
     // collections) but we still need to trigger the collection scanner
     // to get the album and other meta data correct.
     // TODO m_collection->directoryWatcher()->delayedIncrementalScan( QFileInfo(url).path() );

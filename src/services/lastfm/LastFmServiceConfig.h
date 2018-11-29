@@ -115,7 +115,7 @@ private:
     void prepareOpenedWallet();
     void askAboutMissingKWallet();
 
-    // don't remove or reorder entires, would break saved config
+    // don't remove or reorder entries, would break saved config
     enum KWalletUsage {
         NoPasswordEnteredYet,
         PasswodInKWallet,

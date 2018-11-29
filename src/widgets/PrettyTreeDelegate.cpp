@@ -246,7 +246,7 @@ QSize
 PrettyTreeDelegate::sizeHint( const QStyleOptionViewItem &option,
                               const QModelIndex &index ) const
 {
-    // note: the QStyledItemDelegage::sizeHint seems to be extremly slow. don't call it
+    // note: the QStyledItemDelegage::sizeHint seems to be extremely slow. don't call it
 
     updateFonts( option );
     QStyle *style = m_view->style();

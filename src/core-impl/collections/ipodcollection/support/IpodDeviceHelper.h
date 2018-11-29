@@ -57,7 +57,7 @@ namespace IpodDeviceHelper {
     /**
      * Fills in a dialog with iPod configuration.
      *
-     * @param configureDialog QDialog that coutains the ui. Must not be null
+     * @param configureDialog QDialog that contains the ui. Must not be null
      * @param configureDialogUi ui of the dialog. Must not be null
      * @param itdb itdb of the device or null if could not be parsed
      * @param transcodeConfig current transcoding configuration preference

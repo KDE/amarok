@@ -32,7 +32,7 @@ namespace Meta {
      * Subclass this class to be able to listen to changes of track, artist, album, genre,
      * composer and year metadata. Must useful just for tracks and albums though.
      *
-     * If you want to everride just one metadataChanged() and want to get rid of "method
+     * If you want to override just one metadataChanged() and want to get rid of "method
      * hidden compiler warnings", use following pattern in your class declaration:
      *
      * using Observer::metadataChanged;

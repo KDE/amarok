@@ -85,7 +85,7 @@ protected Q_SLOTS:
     void refresh();
 
     /**
-     * Handle results of tryiong to setup an item in "places" that needed mouting or other
+     * Handle results of trying to setup an item in "places" that needed mounting or other
      * special setup.
      * @param index the index that we tried to setup
      * @param success did the setup succeed?

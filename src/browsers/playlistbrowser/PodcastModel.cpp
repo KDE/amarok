@@ -80,7 +80,7 @@ PlaylistBrowserNS::PodcastModel::isOnDisk( PodcastEpisodePtr episode ) const
     {
         isOnDisk = QFileInfo( episodeFile.toLocalFile() ).exists();
         // reset localUrl because the file is not there.
-        // FIXME: changing a podcast in innoncent-looking getter method is convoluted
+        // FIXME: changing a podcast in innocent-looking getter method is convoluted
         if( !isOnDisk )
             episode->setLocalUrl( QUrl() );
     }

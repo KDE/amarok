@@ -76,7 +76,7 @@ LastFmMultiPlayableCapability::slotNewTrackAvailable()
     if( m_currentTrack.isNull() ) // we only force a track change at the beginning
     {
         fetchNext();
-        // we update metadata immediatelly for the very first track
+        // we update metadata immediately for the very first track
         m_track->setTrackInfo( m_currentTrack );
     }
 }

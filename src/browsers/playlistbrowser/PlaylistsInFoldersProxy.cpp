@@ -77,7 +77,7 @@ PlaylistsInFoldersProxy::data( const QModelIndex &idx, int role ) const
         QPersistentModelIndexList actionList =
                 m_deleteFolderAction->data().value<QPersistentModelIndexList>();
 
-        //make a persistant modelindex since the location of the groups can change while executing
+        //make a persistent modelindex since the location of the groups can change while executing
         //actions.
         actionList << QPersistentModelIndex( idx );
         QVariant value = QVariant::fromValue( actionList );

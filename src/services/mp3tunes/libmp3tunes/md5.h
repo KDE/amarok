@@ -40,7 +40,7 @@
  *
  * signature - a 16 byte buffer that contains the MD5 signature.
  *
- * str - a string of charactes which should be at least 33 bytes long (2
+ * str - a string of characters which should be at least 33 bytes long (2
  * characters per MD5 byte and 1 for the \0).
  *
  * str_len - the length of the string.

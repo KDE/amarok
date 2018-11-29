@@ -138,7 +138,7 @@ public:
     virtual void polish() {}
     virtual void setupAddItems() {}
 
-    //These 2 functions are forwarded to simplifiy the creation of urls
+    //These 2 functions are forwarded to simplify the creation of urls
     //even though they might not be needed in many cases.
     virtual QString filter() const { return QString(); }
     virtual QList<CategoryId::CatMenuId> levels() const { return QList<CategoryId::CatMenuId>(); }

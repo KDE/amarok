@@ -163,13 +163,17 @@ namespace AmarokScript
             Q_INVOKABLE Collections::QueryMaker* queryMaker();
 
             /**
-             * Add a filter representing this item to @param queryMaker.
+             * Add a filter representing this item to @p queryMaker.
              * For example, for obtaining a specific collection's items in the merged view.
+             *
+             * @param queryMaker the Query maker.
              */
             Q_INVOKABLE void addFilter( Collections::QueryMaker *queryMaker );
 
             /**
-             * Return the child item at @param row.
+             * Return the child item at @p row.
+             *
+             * @param row the number of the row.
              */
             Q_INVOKABLE CollectionTreeItem* child( int row );
 

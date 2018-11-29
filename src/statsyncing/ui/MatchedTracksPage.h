@@ -42,7 +42,7 @@ namespace StatSyncing
             void setProviders( const ProviderPtrList &providers );
 
             /**
-             * Set mathed tracks model. MatchedTracksPage does _not_ take ownership of
+             * Set matched tracks model. MatchedTracksPage does _not_ take ownership of
              * the pointer.
              */
             void setMatchedTracksModel( MatchedTracksModel *model );

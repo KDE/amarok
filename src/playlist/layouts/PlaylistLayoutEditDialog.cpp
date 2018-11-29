@@ -303,7 +303,7 @@ Playlist::PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //S
         groupByComboBox->setCurrentIndex( groupByComboBox->findData( layout.groupBy() ) );
 
         setEnabledTabs();
-        //make sure that it is not marked dirty (it will be because of the changed signal triggereing when loagin it)
+        //make sure that it is not marked dirty (it will be because of the changed signal triggering when loading it)
         //unless it is actually changed
         debug() << "not dirty anyway!!";
         (*m_layoutsMap)[m_layoutName].setDirty( false );
@@ -369,7 +369,7 @@ Playlist::PlaylistLayoutEditDialog::toggleUpDownButtons()
     else if ( layoutListWidget->currentRow() >= m_layoutsMap->size() -1 )
     {
         moveDownButton->setEnabled( 0 );
-        moveUpButton->setEnabled( 1 ); //we already cheked that this is not row 0
+        moveUpButton->setEnabled( 1 ); //we already checked that this is not row 0
     }
     else
     {

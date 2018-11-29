@@ -59,7 +59,7 @@ private:
 
 
 /**
- * This is a Memorycollection sublclass that uses the KIO audiocd:/ slave to
+ * This is a Memorycollection subclass that uses the KIO audiocd:/ slave to
  * populate itself whenever it detects a CD.
  *
  * @author Nikolaj Hald Nielsen <nhn@kde.org>

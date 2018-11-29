@@ -322,7 +322,7 @@ void TestXSPFPlaylist::testUidUrl()
 {
     QString tempPath = m_tempDir->path() + "/test.xspf";
 
-    //we have chaged the name around so much, better reset it
+    //we have changed the name around so much, better reset it
     m_testPlaylist1->setName( "test" );
     QCOMPARE( m_testPlaylist1->uidUrl().toLocalFile(), tempPath );
 }
