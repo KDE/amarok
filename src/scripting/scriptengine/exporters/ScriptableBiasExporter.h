@@ -259,7 +259,7 @@ namespace AmarokScript
             Q_INVOKABLE void intersectTrackSet( const Dynamic::TrackSet &trackSet );
 
             /**
-             * Perform an intersection on this trackset with the trackset represtented by @param uids
+             * Perform an intersection on this trackset with the trackset represented by @param uids
              */
             Q_INVOKABLE void intersectUids( const QStringList &uids );
 

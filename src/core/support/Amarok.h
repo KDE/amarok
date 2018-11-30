@@ -188,6 +188,7 @@ namespace Amarok
      *                    reserved device names are being prefixed with '_'
      *                    for file/folder names or extensions that end with a space it will be replaced by '_'
      * @param path The original path.
+     * @param behaviour see PathSeparatorBehaviour.
      * @return The cleaned up path.
      */
     AMAROK_CORE_EXPORT QString vfatPath( const QString &path,

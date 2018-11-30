@@ -188,7 +188,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         */
         void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );
         /**
-           Convenience method for moving tracks based on QueryMaker restults,
+           Convenience method for moving tracks based on QueryMaker results,
            takes ownership of the @p qm.
            @param qm the QueryMaker query
            @see prepareMove( Meta::TrackList, CollectionLocation* )

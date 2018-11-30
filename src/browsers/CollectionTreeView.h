@@ -131,13 +131,13 @@ class AMAROK_EXPORT CollectionTreeView : public Amarok::PrettyTreeView
 
         // creates different actions from the different objects.
         // note: you should not delete the created actions.
-        QActionList createBasicActions( const QModelIndexList &indcies );
-        QActionList createExtendedActions( const QModelIndexList &indcies );
+        QActionList createBasicActions( const QModelIndexList &indices );
+        QActionList createExtendedActions( const QModelIndexList &indices );
         QActionList createCollectionActions( const QModelIndexList &indices );
         QActionList createCustomActions( const QModelIndexList &indices );
 
-        QHash<QAction*, Collections::Collection*> getCopyActions( const QModelIndexList &indcies );
-        QHash<QAction*, Collections::Collection*> getMoveActions( const QModelIndexList &indcies );
+        QHash<QAction*, Collections::Collection*> getCopyActions( const QModelIndexList &indices );
+        QHash<QAction*, Collections::Collection*> getMoveActions( const QModelIndexList &indices );
 
         CollectionTreeItem* getItemFromIndex( QModelIndex &index );
 

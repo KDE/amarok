@@ -59,7 +59,7 @@ IpodCollectionLocation::isWritable() const
 {
     if( !m_coll )
         return false;
-    return m_coll->isWritable(); // no infinite loop, IpodCollection iplements this
+    return m_coll->isWritable(); // no infinite loop, IpodCollection implements this
 }
 
 void

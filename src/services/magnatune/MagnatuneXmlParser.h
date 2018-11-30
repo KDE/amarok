@@ -77,7 +77,7 @@ Q_SIGNALS:
     void failed(ThreadWeaver::JobPointer);
 
     /**
-     * Signal emmited when parsing is complete.
+     * Signal emitted when parsing is complete.
      */
     void doneParsing();
 

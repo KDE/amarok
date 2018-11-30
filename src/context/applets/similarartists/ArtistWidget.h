@@ -51,7 +51,9 @@ class ArtistWidget : public QGraphicsWidget
 public:
     /**
      * ArtistWidget constructor
+     * @param artist The pointer to the artist item
      * @param parent The widget parent
+     * @param wFlags The Qt::WindowFlags
      */
     explicit ArtistWidget( const SimilarArtistPtr &artist,
                   QGraphicsWidget *parent = 0, Qt::WindowFlags wFlags = 0 );

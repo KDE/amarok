@@ -116,7 +116,7 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          *
          * if you set QueryType custom, this starts a custom query. Unlike other query types, you have to set up the return
          * values yourself using addReturnValue( qint64 ) and addReturnFunction(). The results will
-         * be returned as a QStringList. Threfore you have to connect to the
+         * be returned as a QStringList. Therefore you have to connect to the
          * newResultReady( QStringList ) signal to receive the results.
          * @return this
          */

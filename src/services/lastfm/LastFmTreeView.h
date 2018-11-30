@@ -61,7 +61,7 @@ private:
     enum ContextMenuActionType { ExecQMenu, DoQMenuDefaultAction };
     void playChildTracks ( const QModelIndex &item, Playlist::AddOptions insertMode );
     void playChildTracks ( const QModelIndexList &items, Playlist::AddOptions insertMode );
-    QActionList createBasicActions( const QModelIndexList &indcies );
+    QActionList createBasicActions( const QModelIndexList &indices );
 
     QTimer* m_timer;
     LastFmTreeModel* m_model;

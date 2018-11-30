@@ -327,7 +327,7 @@ void
 MainToolbar::layoutTrackBar()
 {
     m_dummy.label->hide();
-    // this is the label parenting widge ("info") offset
+    // this is the label parenting widget ("info") offset
     const QPoint off = m_current.label->parentWidget()->geometry().topLeft();
     QRect r = m_trackBarSpacer->geometry();
     r.setWidth( r.width() / 3);

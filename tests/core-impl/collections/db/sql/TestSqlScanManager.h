@@ -163,8 +163,8 @@ private:
     void createCompilationTrack();
 
     /**
-     * Album that looks alike compillation: various track's artists
-     * but single album artist and no compillation flag.
+     * Album that looks alike compilation: various track's artists
+     * but single album artist and no compilation flag.
      */
     void createCompilationLookAlikeAlbum();
 

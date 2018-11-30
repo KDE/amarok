@@ -76,7 +76,7 @@ namespace StatSyncing
 
             /**
              * User-visible short localized description. Default implementation returns
-             * an empy string.
+             * an empty string.
              */
             virtual QString description() const;
 

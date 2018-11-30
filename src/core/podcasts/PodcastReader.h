@@ -375,7 +375,7 @@ class AMAROK_CORE_EXPORT PodcastReader : public QObject
             the data of the current item */
         Podcasts::PodcastMetaCommon *m_current;
 
-        // this somewhat emulates a callstack (whithout local variables):
+        // this somewhat emulates a callstack (without local variables):
         QStack<const Action*> m_actionStack;
 
         ContentType m_contentType;

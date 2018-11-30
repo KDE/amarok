@@ -56,7 +56,7 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject
         virtual int playlistCount() const { return -1; }
 
         /**
-         * Return a list of plyalists of this provider. If playlistCount() is negative,
+         * Return a list of playlists of this provider. If playlistCount() is negative,
          * this list may be incomplete.
          */
         virtual PlaylistList playlists() = 0;

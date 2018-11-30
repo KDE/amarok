@@ -95,7 +95,7 @@ Q_SIGNALS:
     void headerDone();
 
     /**
-     * Signal emmited when parsing is complete.
+     * Signal emitted when parsing is complete.
      * The data is complete now and accessible via results().
      * Children of all the outlines are available via OpmlOutline::children().
      */

@@ -624,7 +624,7 @@ DatabaseUpdater::upgradeVersion13to14()
     storage->query( "UPDATE lyrics l SET l.url = (SELECT u.id FROM urls u WHERE u.rpath = l.rpath LIMIT 1)" );
     // delete entries with no matches in urls table; these should be just stale ones
     storage->query( "DELETE FROM lyrics WHERE url IS NULL" );
-    // make the url columnt non-null
+    // make the url column non-null
     storage->query( "ALTER TABLE lyrics MODIFY url INT NOT NULL" );
     // select duplicate ids into temporary table
     storage->query( "CREATE TEMPORARY TABLE duplicate_lyrics_ids ( id INT NOT NULL ) "
@@ -1062,7 +1062,7 @@ DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bo
     // that clashes with INFORMATION_SCHEMA.statistics, a build in table.
     if( table == "statistics" && columns.count() > 15 )
     {
-        // delete all columns with full upper case name. Those are the buildins.
+        // delete all columns with full upper case name. Those are the builtins.
         for( int i = columns.count()-1; i>= 0; --i )
         {
             if( columns[i].toUpper() == columns[i] )

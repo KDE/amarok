@@ -28,7 +28,7 @@ extern "C" {
 #include <QList>
 
 /**
- * A psudeo type to encapsulate the various return types from a search query.
+ * A pseudo type to encapsulate the various return types from a search query.
  */
 class Mp3tunesSearchResult {
     public:

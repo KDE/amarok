@@ -56,8 +56,10 @@ public:
 
     /**
     * Returns the foreground color for the painter by checking the painting QWidget::foregroundRole() and falling back to
-    * QPalette::WindowText (or QPalette::HighlightedText if @param selected)
+    * QPalette::WindowText (or QPalette::HighlightedText if @p selected)
     * Uses the widgets palette or the application palette as fallback
+    * @param p the painter.
+    * @param selected the mode switcher.
     */    
     QColor foregroundColor( const QPainter *p, bool selected = false );
 

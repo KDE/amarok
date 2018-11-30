@@ -366,7 +366,7 @@ PCK4BITS(eError,eError,eStart,eStart,eStart,eStart,eStart,eStart) //28-2f
 
 // To be accurate, the length of class 6 can be either 2 or 4. 
 // But it is not necessary to discriminate between the two since 
-// it is used for frequency analysis only, and we are validing 
+// it is used for frequency analysis only, and we are validating 
 // each code range there as well. So it is safe to set it to be 
 // 2 here. 
 static const PRUint32 GB18030CharLenTable[] = {0, 1, 1, 1, 1, 1, 2};

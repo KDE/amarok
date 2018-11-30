@@ -100,7 +100,7 @@ namespace AmarokScript
              * false otherwise.
              *
              * @param playlist the playlist.
-             * @param name the name.
+             * @param newName the new name.
              */
             Q_INVOKABLE bool rename( Playlists::PlaylistPtr playlist, const QString &newName );
 

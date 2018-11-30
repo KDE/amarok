@@ -139,7 +139,7 @@ GpodderServiceConfig::save()
     {
         if( m_enableProvider )
         {
-            debug() << "Couldnt access the wallet to save the gpodder.net credentials";
+            debug() << "Couldn't access the wallet to save the gpodder.net credentials";
             askAboutMissingKWallet();
         }
         else

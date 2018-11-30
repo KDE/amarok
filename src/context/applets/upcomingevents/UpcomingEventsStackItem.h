@@ -78,6 +78,7 @@ public:
 
     /**
      * Adds custom actions to appear in the drag handle.
+     * @param name the given name in our collection
      * @param action the action to add. Actions will be displayed as an icon in the drag
      * handle.
      */

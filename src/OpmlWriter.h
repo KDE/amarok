@@ -51,7 +51,7 @@ class AMAROK_EXPORT OpmlWriter : public QObject, public ThreadWeaver::Job
 
     Q_SIGNALS:
         /**
-         * Signal emmited when writing is complete.
+         * Signal emitted when writing is complete.
          */
         void result( int error );
 

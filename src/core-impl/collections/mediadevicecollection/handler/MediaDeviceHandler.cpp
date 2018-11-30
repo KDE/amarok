@@ -150,7 +150,7 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     }
 
     if( isCompilation && albumArtist.isEmpty() )
-        // iPod doesn't handle empy album artist well for compilation albums (splits these albums)
+        // iPod doesn't handle empty album artist well for compilation albums (splits these albums)
         albumArtist = i18n( "Various Artists" );
     else
         albumArtist = ArtistHelper::bestGuessAlbumArtist( albumArtist, trackArtist, genre, composer );

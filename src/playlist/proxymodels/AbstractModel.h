@@ -124,7 +124,7 @@ public:
 
     /**
      * Get the current search term.
-     * @return The curent search term.
+     * @return The current search term.
      */
     virtual QString currentSearchTerm() { return QString(); }   //dummy, needed by Playlist::Model
 

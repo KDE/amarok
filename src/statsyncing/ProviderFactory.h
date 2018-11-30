@@ -56,7 +56,7 @@ namespace StatSyncing
 
             /**
              * User-visible short localized description. This is the default description
-             * of created providers. Default implementation returns an empy string.
+             * of created providers. Default implementation returns an empty string.
              */
             virtual QString description() const;
 

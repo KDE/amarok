@@ -346,7 +346,7 @@ Mp3tunesHarmonyDaemon::signalStateChangeHandler( MP3tunesHarmony* harmony, guint
             theDaemon->setState( Mp3tunesHarmonyDaemon::CONNECTED );
             theDaemon->emitConnected();
             /* At this point, it would be best to store the pin, if you haven't
-               * already, and the email in some somewhat permenant storage for
+               * already, and the email in some somewhat permanent storage for
                * when reauthenticating.
                */
             break;

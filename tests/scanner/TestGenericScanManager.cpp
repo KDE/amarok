@@ -42,7 +42,7 @@ TestGenericScanManager::initTestCase()
 {
     AmarokConfig::instance("amarokrc");
 
-    // setenv( "LC_ALL", "", 1 ); // this breakes the test
+    // setenv( "LC_ALL", "", 1 ); // this breaks the test
     // Amarok does not force LC_ALL=C but obviously the test does it which
     // will prevent scanning of files with umlauts.
 

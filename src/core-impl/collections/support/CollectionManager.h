@@ -136,7 +136,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
     public Q_SLOTS:
         /** Starts the full scan for each collection with CollectionScanCapability */
         void startFullScan();
-        /** Starts the incremetal scan for each collection with CollectionScanCapability */
+        /** Starts the incremental scan for each collection with CollectionScanCapability */
         void startIncrementalScan( const QString &directory = QString() );
         void stopScan();
         void checkCollectionChanges();
