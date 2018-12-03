@@ -30,6 +30,7 @@ Name[sv]=MySQLServer-lagring
 Name[tr]=MySQL Sunucu Depolaması
 Name[uk]=Сховище даних MySQLServer
 Name[x-test]=xxMySQLServer Storagexx
+Name[zh_TW]=MySQLServer 儲存空間
 Comment=Storage plugin for Amarok
 Comment[bs]=Priključak za Amarok
 Comment[ca]=Connector d'emmagatzematge per l'Amarok
@@ -59,6 +60,7 @@ Comment[sv]=Lagringsinsticksprogram för Amarok
 Comment[tr]=Amarok için depolama eklentisi
 Comment[uk]=Додаток сховища даних для Amarok
 Comment[x-test]=xxStorage plugin for Amarokxx
+Comment[zh_TW]=Amarok 的裝置外掛程式
 NoDisplay=true
 
 ServiceTypes=Amarok/Plugin
