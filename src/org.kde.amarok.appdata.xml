@@ -70,6 +70,7 @@
     <p xml:lang="gl">Amarok é xestor de coleccións de música e reprodutor libre, compatíbel con múltiples plataformas, versátil, potente e cheo de funcionalidades.</p>
     <p xml:lang="it">Amarok è un lettore musicale e gestore delle raccolte libero, versatile, potente e ricco di funzionalità</p>
     <p xml:lang="nl">Amarok is een vrije muziekspeler en beheerder van een verzameling, cross-platform, veelzijdig, krachtig en rijk aan functies.</p>
+    <p xml:lang="pl">Amarok jest darmowym, wieloplatformowym, wszechstronnym i zaawansowanym odtwarzaczem muzyki i programem do zarządzania nią.</p>
     <p xml:lang="pt">O Amarok é um leitor multimédia e gestor de colecções gratuito, multi-plataforma, versátil, poderoso e rico em funcionalidades.</p>
     <p xml:lang="pt-BR">Amarok é um reprodutor de músicas e gerenciador de coleção livre, multiplataforma, versátil, poderoso e rico em recursos.</p>
     <p xml:lang="sv">Amarok är en fri, mångsidig, kraftfull och funktionsrik musikspelare och samlingshanterare för flera plattformar.</p>
@@ -334,6 +335,7 @@
       <caption xml:lang="gl">Reproducindo música en Amarok</caption>
       <caption xml:lang="it">Riproduzione della musica con Amarok</caption>
       <caption xml:lang="nl">Muziek afspelen in Amarok</caption>
+      <caption xml:lang="pl">Odtwarzanie muzyki w Amaroku</caption>
       <caption xml:lang="pt">A tocar música no Amarok</caption>
       <caption xml:lang="pt-BR">Reproduzindo músicas no Amarok</caption>
       <caption xml:lang="sv">Spela musik i Amarok</caption>
@@ -352,6 +354,7 @@
       <caption xml:lang="gl">Xanelas de Amarok</caption>
       <caption xml:lang="it">Finestre di Amarok</caption>
       <caption xml:lang="nl">Vensters in Amarok</caption>
+      <caption xml:lang="pl">Okna Amaroka</caption>
       <caption xml:lang="pt">Janelas do Amarok</caption>
       <caption xml:lang="pt-BR">Janela do Amarok</caption>
       <caption xml:lang="sv">Fönster i Amarok</caption>
