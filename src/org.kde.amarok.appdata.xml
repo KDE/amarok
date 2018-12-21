@@ -68,6 +68,7 @@
     <p xml:lang="el">Το Amarok είναι ένας ελεύθερος, πολλαπλών πλατφορμών και χρήσεων, πανίσχυρος και πλούσιος σε χαρακτηριστικά αναπαραγωγέας μουσικής και διαχειριστής συλλογών.</p>
     <p xml:lang="en-GB">Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
     <p xml:lang="es">Amarok es un potente, versátil, libre y multiplataforma reproductor de música y gestor de colecciones que dispone de gran cantidad de funciones.</p>
+    <p xml:lang="fr">Amarok est un lecteur de musique et un gestionnaire de collections libre, multiplateforme, polyvalent, puissant et riche en fonctionnalités.</p>
     <p xml:lang="gl">Amarok é xestor de coleccións de música e reprodutor libre, compatíbel con múltiples plataformas, versátil, potente e cheo de funcionalidades.</p>
     <p xml:lang="it">Amarok è un lettore musicale e gestore delle raccolte libero, versatile, potente e ricco di funzionalità</p>
     <p xml:lang="nl">Amarok is een vrije muziekspeler en beheerder van een verzameling, cross-platform, veelzijdig, krachtig en rijk aan functies.</p>
@@ -334,6 +335,7 @@
       <caption xml:lang="el">Αναπαραγωγή μοθσικής στο Amarok</caption>
       <caption xml:lang="en-GB">Playing music in Amarok</caption>
       <caption xml:lang="es">Reproduciendo música en Amarok</caption>
+      <caption xml:lang="fr">Lecture de musique dans Amarok</caption>
       <caption xml:lang="gl">Reproducindo música en Amarok</caption>
       <caption xml:lang="it">Riproduzione della musica con Amarok</caption>
       <caption xml:lang="nl">Muziek afspelen in Amarok</caption>
@@ -354,6 +356,7 @@
       <caption xml:lang="el">Amarok παράθυρα</caption>
       <caption xml:lang="en-GB">Amarok windows</caption>
       <caption xml:lang="es">Ventanas de Amarok</caption>
+      <caption xml:lang="fr">Fenêtres Amarok</caption>
       <caption xml:lang="gl">Xanelas de Amarok</caption>
       <caption xml:lang="it">Finestre di Amarok</caption>
       <caption xml:lang="nl">Vensters in Amarok</caption>
