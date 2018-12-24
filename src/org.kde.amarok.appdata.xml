@@ -70,6 +70,7 @@
     <p xml:lang="es">Amarok es un potente, versátil, libre y multiplataforma reproductor de música y gestor de colecciones que dispone de gran cantidad de funciones.</p>
     <p xml:lang="fr">Amarok est un lecteur de musique et un gestionnaire de collections libre, multiplateforme, polyvalent, puissant et riche en fonctionnalités.</p>
     <p xml:lang="gl">Amarok é xestor de coleccións de música e reprodutor libre, compatíbel con múltiples plataformas, versátil, potente e cheo de funcionalidades.</p>
+    <p xml:lang="id">Amarok adalah player musik dan pengelola koleksi gratis, lintas platform, serbaguna, hebat, dan kaya fitur.</p>
     <p xml:lang="it">Amarok è un lettore musicale e gestore delle raccolte libero, versatile, potente e ricco di funzionalità</p>
     <p xml:lang="nl">Amarok is een vrije muziekspeler en beheerder van een verzameling, cross-platform, veelzijdig, krachtig en rijk aan functies.</p>
     <p xml:lang="pl">Amarok jest darmowym, wieloplatformowym, wszechstronnym i zaawansowanym odtwarzaczem muzyki i programem do zarządzania nią.</p>
@@ -126,7 +127,7 @@
       <li xml:lang="fi">Eri ehtoja vastaavat dynaamiset soittolistat</li>
       <li xml:lang="fr">Listes de lectures dynamiques selon différents critères</li>
       <li xml:lang="gl">Listas de reprodución dinámicas que se axeitan a distintos criterios.</li>
-      <li xml:lang="id">Daftarmain dinamis menyesuaikan kriteria yang berbeda</li>
+      <li xml:lang="id">Playlist dinamis menyesuaikan kriteria yang berbeda</li>
       <li xml:lang="it">Scalette dinamiche che verificano diversi criteri</li>
       <li xml:lang="ko">조건에 따른 동적 재생 목록</li>
       <li xml:lang="nl">Dynamische afspeellijsten die voldoen aan verschillende criteria</li>
@@ -337,6 +338,7 @@
       <caption xml:lang="es">Reproduciendo música en Amarok</caption>
       <caption xml:lang="fr">Lecture de musique dans Amarok</caption>
       <caption xml:lang="gl">Reproducindo música en Amarok</caption>
+      <caption xml:lang="id">Memainkan musik di Amarok</caption>
       <caption xml:lang="it">Riproduzione della musica con Amarok</caption>
       <caption xml:lang="nl">Muziek afspelen in Amarok</caption>
       <caption xml:lang="pl">Odtwarzanie muzyki w Amaroku</caption>
@@ -358,6 +360,7 @@
       <caption xml:lang="es">Ventanas de Amarok</caption>
       <caption xml:lang="fr">Fenêtres Amarok</caption>
       <caption xml:lang="gl">Xanelas de Amarok</caption>
+      <caption xml:lang="id">Window Amarok</caption>
       <caption xml:lang="it">Finestre di Amarok</caption>
       <caption xml:lang="nl">Vensters in Amarok</caption>
       <caption xml:lang="pl">Okna Amaroka</caption>
