@@ -33,7 +33,7 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
-            explicit MatchedTracksPage( QWidget *parent = 0, Qt::WindowFlags f = 0 );
+            explicit MatchedTracksPage( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
             virtual ~MatchedTracksPage();
 
             /**

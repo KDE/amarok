@@ -24,7 +24,7 @@
 class CountdownFrame : public QFrame
 {
 public:
-    explicit CountdownFrame( QWidget *parent = 0 );
+    explicit CountdownFrame( QWidget *parent = nullptr );
     void setFilledRatio( float filled ); // 0 to 1
 
     virtual void paintEvent( QPaintEvent *e );

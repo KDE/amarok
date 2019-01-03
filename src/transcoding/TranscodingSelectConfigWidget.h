@@ -34,7 +34,7 @@ namespace Transcoding
         Q_OBJECT
 
         public:
-            explicit SelectConfigWidget( QWidget *parent = 0 );
+            explicit SelectConfigWidget( QWidget *parent = nullptr );
 
             /**
              * Fills the combobox widget with appropriate transcoding configurations.

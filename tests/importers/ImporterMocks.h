@@ -66,7 +66,7 @@ public:
 class MockController : public StatSyncing::Controller
 {
 public:
-    MockController( QObject *parent = 0 );
+    MockController( QObject *parent = nullptr );
 
     MOCK_METHOD1( registerProvider, void(const StatSyncing::ProviderPtr&) );
     MOCK_METHOD1( unregisterProvider, void(const StatSyncing::ProviderPtr&) );

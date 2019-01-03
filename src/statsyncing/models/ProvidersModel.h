@@ -33,7 +33,7 @@ namespace StatSyncing
 
         public:
             ProvidersModel( const ProviderPtrList &providers,
-                            const ProviderPtrSet &preSelectedProviders, QObject *parent = 0 );
+                            const ProviderPtrSet &preSelectedProviders, QObject *parent = nullptr );
             virtual ~ProvidersModel();
 
             // QAbstractItemModel methods:

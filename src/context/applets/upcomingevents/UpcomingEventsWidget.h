@@ -50,7 +50,7 @@ class UpcomingEventsWidget : public QGraphicsWidget
          * @param wFlags the Qt::WindowFlags
          */
         explicit UpcomingEventsWidget( const LastFmEventPtr &event,
-                              QGraphicsItem *parent = 0,
+                              QGraphicsItem *parent = nullptr,
                               Qt::WindowFlags wFlags = 0 );
         ~UpcomingEventsWidget();
 
@@ -147,7 +147,7 @@ class UpcomingEventsListWidget : public Plasma::ScrollWidget
     Q_PROPERTY( LastFmEvent::List events READ events )
 
 public:
-    explicit UpcomingEventsListWidget( QGraphicsWidget *parent = 0 );
+    explicit UpcomingEventsListWidget( QGraphicsWidget *parent = nullptr );
     ~UpcomingEventsListWidget();
 
     int count() const;

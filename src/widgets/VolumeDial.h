@@ -25,7 +25,7 @@ class VolumeDial : public QDial
     Q_OBJECT
 
 public:
-    explicit VolumeDial( QWidget *parent = 0 );
+    explicit VolumeDial( QWidget *parent = nullptr );
     /**
         Add a list of widgets that should not hide the tooltip on wheelevents, but instead cause
         wheelevents on the dial

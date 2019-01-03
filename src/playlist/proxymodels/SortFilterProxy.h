@@ -64,7 +64,7 @@ class SortFilterProxy : public ProxyBase, public SortProxy
 
     public:
         //! Basics.
-        explicit SortFilterProxy( AbstractModel *belowModel, QObject *parent = 0 );
+        explicit SortFilterProxy( AbstractModel *belowModel, QObject *parent = nullptr );
         ~SortFilterProxy();
 
         //! Sort-related functions.

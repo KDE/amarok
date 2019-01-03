@@ -150,7 +150,7 @@ class WikipediaSearchLineEdit : public Plasma::LineEdit
     Q_OBJECT
 
 public:
-    explicit WikipediaSearchLineEdit( QGraphicsWidget *parent = 0 )
+    explicit WikipediaSearchLineEdit( QGraphicsWidget *parent = nullptr )
         : Plasma::LineEdit( parent ) {}
     ~WikipediaSearchLineEdit() {}
 
@@ -185,7 +185,7 @@ class WikipediaWebView : public KGraphicsWebView
     Q_OBJECT
 
 public:
-    explicit WikipediaWebView( QGraphicsItem *parent = 0 )
+    explicit WikipediaWebView( QGraphicsItem *parent = nullptr )
         : KGraphicsWebView( parent )
     {
         m_lineEdit = new WikipediaSearchLineEdit( this );

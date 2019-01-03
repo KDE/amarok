@@ -30,7 +30,7 @@ class MusicBrainzFinder : public QObject
     Q_OBJECT
 
     public:
-        explicit MusicBrainzFinder( QObject *parent = 0,
+        explicit MusicBrainzFinder( QObject *parent = nullptr,
                                     const QString &host = "musicbrainz.org",
                                     const int port = 80,
                                     const QString &pathPrefix = "/ws/2",

@@ -36,7 +36,7 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
-            explicit MatchTracksJob( const ProviderPtrList &providers, QObject *parent = 0 );
+            explicit MatchTracksJob( const ProviderPtrList &providers, QObject *parent = nullptr );
 
             virtual bool success() const override;
 

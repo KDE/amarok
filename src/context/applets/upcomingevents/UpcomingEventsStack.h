@@ -30,7 +30,7 @@ class UpcomingEventsStack : public QGraphicsWidget
     Q_PROPERTY( bool empty READ isEmpty )
 
 public:
-    explicit UpcomingEventsStack( QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0 );
+    explicit UpcomingEventsStack( QGraphicsItem *parent = nullptr, Qt::WindowFlags wFlags = 0 );
     ~UpcomingEventsStack();
 
     int count() const; ///< number of list widgets in the stack widget

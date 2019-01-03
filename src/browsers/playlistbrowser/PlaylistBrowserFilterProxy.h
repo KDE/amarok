@@ -26,7 +26,7 @@ class PlaylistBrowserFilterProxy : public QSortFilterProxyModel
         /** simple reimplementation of QSortFilterProxyModel to allow editing call from down the
          * modelstack.
          */
-        explicit PlaylistBrowserFilterProxy( QObject *parent = 0 );
+        explicit PlaylistBrowserFilterProxy( QObject *parent = nullptr );
         ~PlaylistBrowserFilterProxy() {}
 
         // QSortFilterProxyModel methods

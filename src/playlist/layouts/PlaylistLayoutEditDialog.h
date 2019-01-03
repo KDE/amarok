@@ -43,7 +43,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
          * Populates the token pool, loads the available layouts from the LayoutManager in the right area and loads the configuration of the currently active layout.
          * @param parent The parent widget.
          */
-        explicit PlaylistLayoutEditDialog( QWidget *parent = 0 );
+        explicit PlaylistLayoutEditDialog( QWidget *parent = nullptr );
 
         /**
          * Destructor.

@@ -23,7 +23,7 @@
 class MusicBrainzTagsModelDelegate : public QItemDelegate
 {
     public:
-        explicit MusicBrainzTagsModelDelegate( QObject *parent = 0 );
+        explicit MusicBrainzTagsModelDelegate( QObject *parent = nullptr );
 
     protected:
         virtual void drawCheck( QPainter *painter, const QStyleOptionViewItem &option,

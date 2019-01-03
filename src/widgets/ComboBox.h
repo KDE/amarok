@@ -37,7 +37,7 @@ class ComboBox : public KComboBox
     Q_OBJECT
 
     public:
-        explicit ComboBox( QWidget *parent = 0 );
+        explicit ComboBox( QWidget *parent = nullptr );
         virtual ~ComboBox() {};
 
     protected:

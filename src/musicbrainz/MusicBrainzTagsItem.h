@@ -26,7 +26,7 @@
 class MusicBrainzTagsItem
 {
     public:
-        explicit MusicBrainzTagsItem( MusicBrainzTagsItem *parent = 0,
+        explicit MusicBrainzTagsItem( MusicBrainzTagsItem *parent = nullptr,
                                       const Meta::TrackPtr track = Meta::TrackPtr(),
                                       const QVariantMap tags = QVariantMap() );
         ~MusicBrainzTagsItem();

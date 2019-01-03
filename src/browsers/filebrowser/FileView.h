@@ -38,7 +38,7 @@ class PopupDropper;
 class CollectionAction : public QAction
 {
     public:
-        explicit CollectionAction( Collections::Collection *coll, QObject *parent = 0 )
+        explicit CollectionAction( Collections::Collection *coll, QObject *parent = nullptr )
         : QAction( parent )
         , m_collection( coll )
         {

@@ -53,7 +53,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
     Q_OBJECT
 
     public:
-        explicit Model( QObject *parent = 0 );
+        explicit Model( QObject *parent = nullptr );
         ~Model();
 
         // Inherited from QAbstractItemModel  (via QAbstractListModel)

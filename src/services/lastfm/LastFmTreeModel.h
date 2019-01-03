@@ -94,7 +94,7 @@ class LastFmTreeModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    explicit LastFmTreeModel( QObject *parent = 0 );
+    explicit LastFmTreeModel( QObject *parent = nullptr );
     ~LastFmTreeModel();
 
     QVariant data( const QModelIndex &index, int role ) const;
@@ -137,10 +137,10 @@ private:
 class LastFmTreeItem
 {
 public:
-    LastFmTreeItem ( const LastFm::Type &type, const QVariant &data, LastFmTreeItem *parent = 0 );
-    LastFmTreeItem ( const QString &url, const LastFm::Type &type, const QVariant &data, LastFmTreeItem *parent = 0 );
-    explicit LastFmTreeItem ( const LastFm::Type &type, LastFmTreeItem *parent = 0 );
-    LastFmTreeItem ( const QString &url, const LastFm::Type &type, LastFmTreeItem *parent = 0 );
+    LastFmTreeItem ( const LastFm::Type &type, const QVariant &data, LastFmTreeItem *parent = nullptr );
+    LastFmTreeItem ( const QString &url, const LastFm::Type &type, const QVariant &data, LastFmTreeItem *parent = nullptr );
+    explicit LastFmTreeItem ( const LastFm::Type &type, LastFmTreeItem *parent = nullptr );
+    LastFmTreeItem ( const QString &url, const LastFm::Type &type, LastFmTreeItem *parent = nullptr );
     ~LastFmTreeItem();
 
     void appendChild ( LastFmTreeItem *child );

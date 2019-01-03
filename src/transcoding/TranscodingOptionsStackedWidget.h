@@ -31,7 +31,7 @@ class OptionsStackedWidget : public QStackedWidget
 {
     Q_OBJECT
 public:
-    explicit OptionsStackedWidget( QWidget *parent = 0 );
+    explicit OptionsStackedWidget( QWidget *parent = nullptr );
 
     const Configuration configuration( const Configuration::TrackSelection trackSelection ) const;
 

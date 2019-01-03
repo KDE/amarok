@@ -37,7 +37,7 @@ namespace StatSyncing
     class SortFilterProxyModel : public QSortFilterProxyModel
     {
         public:
-            SortFilterProxyModel( QObject *parent = 0 )
+            SortFilterProxyModel( QObject *parent = nullptr )
                 : QSortFilterProxyModel( parent )
                 , m_tupleFilter( -1 )
             {

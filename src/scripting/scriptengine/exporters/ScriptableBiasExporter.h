@@ -151,7 +151,7 @@ namespace AmarokScript
             QString toString() const override;
             QString name() const override;
             void paintOperator( QPainter *painter, const QRect &rect, AbstractBias *bias ) override;
-            QWidget* widget( QWidget *parent = 0 ) override;
+            QWidget* widget( QWidget *parent = nullptr ) override;
 
         private Q_SLOTS:
             Dynamic::TrackSet slotMatchingTracks( const Meta::TrackList &playlist, int contextCount,

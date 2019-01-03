@@ -38,7 +38,7 @@ namespace StatSyncing
         Q_OBJECT
 
     public:
-        explicit CreateProviderDialog( QWidget *parent = 0, Qt::WindowFlags f = 0 );
+        explicit CreateProviderDialog( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
         virtual ~CreateProviderDialog();
 
     public Q_SLOTS:

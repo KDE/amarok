@@ -53,7 +53,7 @@ public:
                      Collections::CollectionLocationDelegate::OperationType operation,
                      const QString &destCollectionName,
                      const Configuration &prevConfiguration,
-                     QWidget *parent = 0 );
+                     QWidget *parent = nullptr );
 
     Configuration configuration() const { return m_configuration; }
 

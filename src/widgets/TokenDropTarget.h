@@ -37,7 +37,7 @@ class TokenDropTarget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TokenDropTarget( QWidget *parent = 0 );
+    explicit TokenDropTarget( QWidget *parent = nullptr );
     virtual ~TokenDropTarget();
 
     QSize sizeHint() const;

@@ -43,7 +43,7 @@ class DeleteWidget : public DeleteDialogBase
     Q_OBJECT
 
 public:
-    explicit DeleteWidget(QWidget *parent = 0);
+    explicit DeleteWidget(QWidget *parent = nullptr);
 
     void setFiles(const QList<QUrl> &files);
 

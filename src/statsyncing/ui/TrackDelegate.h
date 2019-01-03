@@ -24,7 +24,7 @@ namespace StatSyncing
     class TrackDelegate : public QStyledItemDelegate
     {
         public:
-            explicit TrackDelegate( QObject *parent = 0 );
+            explicit TrackDelegate( QObject *parent = nullptr );
 
             void paint( QPainter *painter, const QStyleOptionViewItem &option,
                         const QModelIndex &index ) const;

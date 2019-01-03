@@ -32,7 +32,7 @@ class LabelListModel : public QAbstractListModel
     Q_OBJECT
 
     public:
-        explicit LabelListModel( const QStringList &m_labels, QObject *parent = 0 );
+        explicit LabelListModel( const QStringList &m_labels, QObject *parent = nullptr );
 
         int rowCount( const QModelIndex &parent = QModelIndex() ) const;
         QVariant data( const QModelIndex &index, int role ) const;

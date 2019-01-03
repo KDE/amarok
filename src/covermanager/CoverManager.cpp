@@ -72,7 +72,7 @@ class ArtistItem : public QTreeWidgetItem
             setText( 0, artist->prettyName() );
         }
 
-        ArtistItem( const QString &text, QTreeWidget *parent = 0 )
+        ArtistItem( const QString &text, QTreeWidget *parent = nullptr )
             : QTreeWidgetItem( parent )
             , m_artist( 0 )
         {

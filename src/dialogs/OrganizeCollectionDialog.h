@@ -43,7 +43,7 @@ class AMAROK_EXPORT OrganizeCollectionOptionWidget : public QGroupBox, public Ui
     Q_OBJECT
 
     public:
-        explicit OrganizeCollectionOptionWidget( QWidget *parent = 0 );
+        explicit OrganizeCollectionOptionWidget( QWidget *parent = nullptr );
 
         bool asciiOnly() const { return asciiCheck->isChecked(); }
         void setAsciiOnly( bool enable ) { asciiCheck->setChecked( enable ); }
@@ -71,7 +71,7 @@ class AMAROK_EXPORT OrganizeCollectionWidget : public FilenameLayoutWidget
     Q_OBJECT
 
     public:
-        explicit OrganizeCollectionWidget( QWidget *parent = 0 );
+        explicit OrganizeCollectionWidget( QWidget *parent = nullptr );
         virtual ~OrganizeCollectionWidget() {}
 
     protected:
@@ -88,7 +88,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public QDialog
         explicit OrganizeCollectionDialog( const Meta::TrackList &tracks,
                                            const QStringList &folders,
                                            const QString &targetExtension = QString(),
-                                           QWidget *parent = 0,
+                                           QWidget *parent = nullptr,
                                            const char *name = 0,
                                            bool modal = true,
                                            const QString &caption = QString(),

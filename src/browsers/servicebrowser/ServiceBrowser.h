@@ -76,7 +76,7 @@ class ServiceBrowser : public BrowserCategoryList
          * @param parent The parent widget.
          * @param name The name of this widget.
          */
-        ServiceBrowser( const QString& name, QWidget *parent = 0 );
+        ServiceBrowser( const QString& name, QWidget *parent = nullptr );
 
         static ServiceBrowser    *s_instance;
 

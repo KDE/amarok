@@ -28,7 +28,7 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
-            explicit ChooseProvidersPage( QWidget *parent = 0, Qt::WindowFlags f = 0 );
+            explicit ChooseProvidersPage( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
             virtual ~ChooseProvidersPage();
 
             void setFields( const QList<qint64> &fields, qint64 checkedFields );

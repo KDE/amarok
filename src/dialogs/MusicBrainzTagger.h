@@ -46,7 +46,7 @@ class MusicBrainzTagger : public QDialog
          * @arg tracks Track list for search
          */
         explicit MusicBrainzTagger( const Meta::TrackList &tracks,
-                                    QWidget *parent = 0 );
+                                    QWidget *parent = nullptr );
         virtual ~MusicBrainzTagger();
 
     Q_SIGNALS:

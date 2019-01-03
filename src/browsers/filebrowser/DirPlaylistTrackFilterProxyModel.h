@@ -29,7 +29,7 @@ class DirPlaylistTrackFilterProxyModel : public KDirSortFilterProxyModel
     Q_OBJECT
 
     public:
-        explicit DirPlaylistTrackFilterProxyModel( QObject *parent = 0 );
+        explicit DirPlaylistTrackFilterProxyModel( QObject *parent = nullptr );
 
     protected:
         virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;

@@ -30,7 +30,7 @@ public:
     OcsPersonListWidget( const QList< KAboutPerson > &persons,
                          const OcsData::OcsPersonList *ocsPersons,
                          OcsPersonItem::PersonStatus status = OcsPersonItem::Author,
-                         QWidget *parent = 0 );
+                         QWidget *parent = nullptr );
 
 public Q_SLOTS:
     void switchToOcs( Attica::Provider &provider );

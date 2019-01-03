@@ -41,7 +41,7 @@ namespace StatSyncing
         public:
             explicit SynchronizeTracksJob( const QList<TrackTuple> &tuples,
                                            const TrackList &trackToScrobble,
-                                           const Options &options, QObject *parent = 0 );
+                                           const Options &options, QObject *parent = nullptr );
 
             /**
              * Return count of tracks that were updated during synchronization

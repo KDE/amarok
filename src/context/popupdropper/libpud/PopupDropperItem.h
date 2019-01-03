@@ -81,8 +81,8 @@ public:
     enum SeparatorStyle { TextSeparator, LineSeparator };
     Q_ENUM( SeparatorStyle )
 
-    PopupDropperItem( QGraphicsItem *parent = 0 );
-    explicit PopupDropperItem( const QString &file, QGraphicsItem *parent = 0 );
+    PopupDropperItem( QGraphicsItem *parent = nullptr );
+    explicit PopupDropperItem( const QString &file, QGraphicsItem *parent = nullptr );
     virtual ~PopupDropperItem();
 
     void show();

@@ -25,7 +25,7 @@ class GpodderServiceView: public Amarok::PrettyTreeView
 {
     Q_OBJECT
 public:
-    explicit GpodderServiceView( QWidget *parent = 0 );
+    explicit GpodderServiceView( QWidget *parent = nullptr );
 };
 
 #endif /* GPODDERSERVICEVIEW_H_ */

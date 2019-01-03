@@ -41,7 +41,7 @@ Q_SIGNALS:
 class TokenWithLayoutFactory : public TokenFactory
 {
 public:
-    virtual Token * createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 ) const;
+    virtual Token * createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent = nullptr ) const;
 };
 
 /**
@@ -53,7 +53,7 @@ class TokenWithLayout : public Token
 {
     Q_OBJECT
 public:
-    TokenWithLayout( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 );
+    TokenWithLayout( const QString &text, const QString &iconName, qint64 value, QWidget *parent = nullptr );
     ~TokenWithLayout();
 
     Qt::Alignment alignment();

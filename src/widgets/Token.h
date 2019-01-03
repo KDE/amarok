@@ -50,7 +50,7 @@ class Token : public QWidget
 
     public:
 
-        explicit Token( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 );
+        explicit Token( const QString &text, const QString &iconName, qint64 value, QWidget *parent = nullptr );
 
         QIcon icon() const;
         QString iconName() const;

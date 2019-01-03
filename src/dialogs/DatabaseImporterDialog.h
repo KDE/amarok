@@ -38,7 +38,7 @@ class DatabaseImporterDialog : public KAssistantDialog
     Q_OBJECT
 
     public:
-        explicit DatabaseImporterDialog( QWidget *parent = 0 );
+        explicit DatabaseImporterDialog( QWidget *parent = nullptr );
         ~DatabaseImporterDialog();
 
     private Q_SLOTS:

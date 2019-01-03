@@ -33,7 +33,7 @@ class GpodderServiceModel: public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    explicit GpodderServiceModel( mygpo::ApiRequest *request, QObject *parent = 0 );
+    explicit GpodderServiceModel( mygpo::ApiRequest *request, QObject *parent = nullptr );
     virtual ~GpodderServiceModel();
 
     // QAbstractItemModel methods

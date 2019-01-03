@@ -30,7 +30,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            explicit Mpris2( QObject *parent = 0 );
+            explicit Mpris2( QObject *parent = nullptr );
             ~Mpris2();
     };
 }

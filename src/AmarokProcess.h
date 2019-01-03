@@ -35,7 +35,7 @@ class AMAROK_EXPORT AmarokProcess : public KProcess
     Q_OBJECT
 
     public:
-        explicit AmarokProcess(QObject *parent = 0);
+        explicit AmarokProcess(QObject *parent = nullptr);
 
         void setLowPriority(bool lowPriority) { this->lowPriority = lowPriority; }
 
@@ -68,7 +68,7 @@ class AMAROK_EXPORT AmarokProcIO : public AmarokProcess
     Q_OBJECT
 
     public:
-        explicit AmarokProcIO(QObject *parent = 0);
+        explicit AmarokProcIO(QObject *parent = nullptr);
 
         int readln (QString &line);
         bool writeStdin(const QString &line);
@@ -92,7 +92,7 @@ class AMAROK_EXPORT AmarokProcIO : public AmarokProcess
 class AMAROK_EXPORT AmarokShellProcess : public AmarokProcess
 {
     public:
-        explicit AmarokShellProcess(QObject *parent = 0) : AmarokProcess(parent) {}
+        explicit AmarokShellProcess(QObject *parent = nullptr) : AmarokProcess(parent) {}
 
         AmarokShellProcess &operator<<(const QString& arg);
         AmarokShellProcess &operator<<(const QStringList& args);

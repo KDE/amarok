@@ -29,7 +29,7 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject
     Q_OBJECT
 
     public:
-        explicit PlaylistProvider( QObject *parent = 0 );
+        explicit PlaylistProvider( QObject *parent = nullptr );
 
         /**
          * A translated string to identify this Provider.

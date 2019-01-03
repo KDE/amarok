@@ -49,7 +49,7 @@ public:
     explicit Job( const QUrl &src,
                   const QUrl &dest,
                   const Transcoding::Configuration &configuration,
-                  QObject *parent = 0 );
+                  QObject *parent = nullptr );
 
     /**
      * Convenience constructor. Creates a Transcoding::Job with the destination file to be
@@ -57,7 +57,7 @@ public:
      */
     explicit Job( QUrl &src,
                   const Transcoding::Configuration &configuration,
-                  QObject *parent = 0 );
+                  QObject *parent = nullptr );
 
     /**
      * Sets the path of the source file.

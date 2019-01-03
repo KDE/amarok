@@ -35,7 +35,7 @@ class DynamicView : public Amarok::PrettyTreeView
 {
 Q_OBJECT
 public:
-    explicit DynamicView( QWidget *parent = 0 );
+    explicit DynamicView( QWidget *parent = nullptr );
     ~DynamicView();
 
 Q_SIGNALS:

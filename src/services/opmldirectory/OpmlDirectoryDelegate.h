@@ -23,7 +23,7 @@ class OpmlDirectoryDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
-    explicit OpmlDirectoryDelegate(QObject *parent = 0);
+    explicit OpmlDirectoryDelegate(QObject *parent = nullptr);
 
 Q_SIGNALS:
 

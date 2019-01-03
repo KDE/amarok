@@ -853,7 +853,7 @@ CollectionTreeItemModelBase::newDataReady( Meta::DataList data )
 void
 CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type type, Collections::QueryMaker *qm, const Meta::DataList &dataList )
 {
-    CollectionTreeItem *parent = 0;
+    CollectionTreeItem *parent = nullptr;
 
     if( type == CollectionTreeItem::VariousArtist )
         parent = m_compilationQueries.value( qm );

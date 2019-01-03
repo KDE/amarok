@@ -38,7 +38,7 @@ class PlaylistBrowserView : public Amarok::PrettyTreeView
 {
 Q_OBJECT
 public:
-    explicit PlaylistBrowserView( QAbstractItemModel *model, QWidget *parent = 0 );
+    explicit PlaylistBrowserView( QAbstractItemModel *model, QWidget *parent = nullptr );
 
     virtual void setModel( QAbstractItemModel *model );
 

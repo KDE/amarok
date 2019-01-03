@@ -25,7 +25,7 @@ namespace StatSyncing
 class RhythmboxConfigWidget : public SimpleImporterConfigWidget
 {
 public:
-    explicit RhythmboxConfigWidget( const QVariantMap &config, QWidget *parent = 0,
+    explicit RhythmboxConfigWidget( const QVariantMap &config, QWidget *parent = nullptr,
                                     Qt::WindowFlags f = 0 );
     ~RhythmboxConfigWidget();
 };

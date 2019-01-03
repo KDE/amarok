@@ -39,7 +39,7 @@ public:
      * configuration for this widget.
      */
     SimpleImporterConfigWidget( const QString &targetName, const QVariantMap &config,
-                                QWidget *parent = 0, Qt::WindowFlags f = 0 );
+                                QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
 
     /**
       * Destructor.

@@ -31,7 +31,7 @@ class PodcastFilenameLayoutConfigDialog : public KPageDialog
 
     Q_OBJECT
 public:
-    explicit PodcastFilenameLayoutConfigDialog( Podcasts::SqlPodcastChannelPtr channel, QWidget *parent = 0 );
+    explicit PodcastFilenameLayoutConfigDialog( Podcasts::SqlPodcastChannelPtr channel, QWidget *parent = nullptr );
     //shows the filename configuration dialog
     bool configure();
 

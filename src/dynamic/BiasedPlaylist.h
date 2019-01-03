@@ -46,10 +46,10 @@ namespace Dynamic
 
         public:
             /** Creates a new random playlist */
-            explicit BiasedPlaylist( QObject *parent = 0 );
+            explicit BiasedPlaylist( QObject *parent = nullptr );
 
             /** Creates a new playlist from an xml stream */
-            explicit BiasedPlaylist( QXmlStreamReader *reader, QObject *parent = 0 );
+            explicit BiasedPlaylist( QXmlStreamReader *reader, QObject *parent = nullptr );
 
             ~BiasedPlaylist();
 

@@ -40,7 +40,7 @@ public:
         CustomRoleOffset //first role that can be used by subclasses for their own data
     };
 
-    explicit OpmlDirectoryModel( QUrl outlineUrl, QObject *parent = 0 );
+    explicit OpmlDirectoryModel( QUrl outlineUrl, QObject *parent = nullptr );
     ~OpmlDirectoryModel();
 
     // QAbstractItemModel methods

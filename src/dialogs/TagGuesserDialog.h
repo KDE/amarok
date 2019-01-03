@@ -37,7 +37,7 @@ class TagGuessOptionWidget : public QWidget, public Ui::TagGuessOptions
     Q_OBJECT
 
     public:
-        explicit TagGuessOptionWidget( QWidget *parent = 0 );
+        explicit TagGuessOptionWidget( QWidget *parent = nullptr );
 
         int getCaseOptions();
         bool getWhitespaceOptions();
@@ -62,7 +62,7 @@ class AMAROK_EXPORT TagGuesserWidget : public FilenameLayoutWidget
     Q_OBJECT
 
     public:
-        explicit TagGuesserWidget( QWidget *parent = 0 );
+        explicit TagGuesserWidget( QWidget *parent = nullptr );
         virtual ~TagGuesserWidget() {}
 
     protected:
@@ -75,7 +75,7 @@ class AMAROK_EXPORT TagGuesserDialog : public QDialog
     Q_OBJECT
 
     public:
-        explicit TagGuesserDialog( const QString &fileName, QWidget *parent = 0 );
+        explicit TagGuesserDialog( const QString &fileName, QWidget *parent = nullptr );
 
         QMap<qint64,QString> guessedTags();
 

@@ -32,7 +32,7 @@ class FormatSelectionDialog
 {
     Q_OBJECT
 public:
-    explicit FormatSelectionDialog( QWidget *parent = 0 );
+    explicit FormatSelectionDialog( QWidget *parent = nullptr );
 
     ~FormatSelectionDialog();
 

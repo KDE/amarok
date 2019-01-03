@@ -28,7 +28,7 @@ class GpodderSortFilterProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    explicit GpodderSortFilterProxyModel( QObject *parent = 0 );
+    explicit GpodderSortFilterProxyModel( QObject *parent = nullptr );
     virtual ~GpodderSortFilterProxyModel();
 
 protected:

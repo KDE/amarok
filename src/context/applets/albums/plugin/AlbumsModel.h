@@ -30,7 +30,7 @@ class AlbumsModel : public QStandardItemModel
     Q_OBJECT
 
 public:
-    explicit AlbumsModel( QObject *parent = 0 );
+    explicit AlbumsModel( QObject *parent = nullptr );
     virtual ~AlbumsModel() {}
     virtual QVariant data( const QModelIndex &index, int role ) const;
     virtual QMimeData* mimeData( const QModelIndexList &indices ) const;

@@ -41,7 +41,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            explicit PrettyTreeView( QWidget *parent = 0 );
+            explicit PrettyTreeView( QWidget *parent = nullptr );
             virtual ~PrettyTreeView();
 
         public Q_SLOTS:

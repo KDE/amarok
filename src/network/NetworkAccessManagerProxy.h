@@ -120,7 +120,7 @@ protected:
                                          QIODevice *outgoingData = 0);
 
 private:
-    NetworkAccessManagerProxy( QObject *parent = 0 );
+    NetworkAccessManagerProxy( QObject *parent = nullptr );
 
     template <typename Return, typename Object, typename... Args>
     void replyFinished( QNetworkReply *reply, QPointer<Object> receiver, Return ( Object::*method )( Args... ), Qt::ConnectionType type )

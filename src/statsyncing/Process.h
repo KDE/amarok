@@ -70,7 +70,7 @@ namespace StatSyncing
              * @param parent the parent QObject
              */
             Process( const ProviderPtrList &providers, const ProviderPtrSet &preSelectedProviders,
-                     qint64 checkedFields, Mode mode, QObject *parent = 0 );
+                     qint64 checkedFields, Mode mode, QObject *parent = nullptr );
             virtual ~Process();
 
         public Q_SLOTS:

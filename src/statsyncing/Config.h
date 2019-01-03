@@ -127,7 +127,7 @@ namespace StatSyncing
             friend class Controller;
 
             // Only StatSyncing::Controller can construct config
-            Config( QObject *parent = 0 );
+            Config( QObject *parent = nullptr );
 
             QList<ProviderData> m_providerData;
             qint64 m_checkedFields;

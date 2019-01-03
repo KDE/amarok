@@ -25,7 +25,7 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
 {
     Q_OBJECT
     public:
-        explicit PlaylistsByProviderProxy( int playlistCategory, QObject *parent = 0 );
+        explicit PlaylistsByProviderProxy( int playlistCategory, QObject *parent = nullptr );
         PlaylistsByProviderProxy( QAbstractItemModel *model, int column, int playlistCategory );
         ~PlaylistsByProviderProxy() {}
 

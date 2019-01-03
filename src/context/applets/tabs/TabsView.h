@@ -35,7 +35,7 @@ class TabsView : public QGraphicsProxyWidget
     Q_OBJECT
 
 public:
-    explicit TabsView( QGraphicsWidget *parent = 0 );
+    explicit TabsView( QGraphicsWidget *parent = nullptr );
     ~TabsView();
 
     void appendTab( TabsItem *tabsItem );

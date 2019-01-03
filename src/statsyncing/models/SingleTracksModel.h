@@ -44,7 +44,7 @@ namespace StatSyncing
              * @param parent the parent QObject
              */
             SingleTracksModel( const TrackList &tracks, const QList<qint64> &columns,
-                               const Options &options, QObject *parent = 0 );
+                               const Options &options, QObject *parent = nullptr );
 
             int rowCount( const QModelIndex &parent = QModelIndex() ) const;
             int columnCount( const QModelIndex &parent = QModelIndex() ) const;

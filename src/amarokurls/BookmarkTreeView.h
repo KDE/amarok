@@ -37,7 +37,7 @@ class AMAROK_EXPORT BookmarkTreeView : public QTreeView
     Q_OBJECT
 
 public:
-    explicit BookmarkTreeView( QWidget *parent = 0 );
+    explicit BookmarkTreeView( QWidget *parent = nullptr );
     ~BookmarkTreeView();
 
     void setNewGroupAction( QAction * action );

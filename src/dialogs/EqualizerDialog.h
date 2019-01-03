@@ -32,7 +32,7 @@ class EqualizerDialog : public QDialog, public Ui_EqualizerDialog
     public:
         ~EqualizerDialog();
 
-        static void showOnce( QWidget *parent = 0 );;
+        static void showOnce( QWidget *parent = nullptr );;
 
         /** Returns the untranslated current preset name. */
         QString selectedPresetName() const;
@@ -62,7 +62,7 @@ class EqualizerDialog : public QDialog, public Ui_EqualizerDialog
         void toggleEqualizer( bool enabled );
 
     private:
-        explicit EqualizerDialog( QWidget *parent = 0 );
+        explicit EqualizerDialog( QWidget *parent = nullptr );
 
         void updateToolTips();
         void updateLabels();

@@ -56,7 +56,7 @@ public:
      * @param wFlags The Qt::WindowFlags
      */
     explicit ArtistWidget( const SimilarArtistPtr &artist,
-                  QGraphicsWidget *parent = 0, Qt::WindowFlags wFlags = 0 );
+                  QGraphicsWidget *parent = nullptr, Qt::WindowFlags wFlags = 0 );
 
     /**
      * ArtistWidget destructor
@@ -275,7 +275,7 @@ class ArtistsListWidget : public Plasma::ScrollWidget
     Q_PROPERTY( QString name READ name WRITE setName )
 
 public:
-    explicit ArtistsListWidget( QGraphicsWidget *parent = 0 );
+    explicit ArtistsListWidget( QGraphicsWidget *parent = nullptr );
     ~ArtistsListWidget();
 
     int count() const;

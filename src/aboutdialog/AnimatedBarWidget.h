@@ -27,7 +27,7 @@ class AnimatedBarWidget : public QAbstractButton
 {
     Q_OBJECT
 public:
-    AnimatedBarWidget( const QIcon &icon, const QString &text, const QString &animatedIconName = "process-working", QWidget *parent = 0 );
+    AnimatedBarWidget( const QIcon &icon, const QString &text, const QString &animatedIconName = "process-working", QWidget *parent = nullptr );
     ~AnimatedBarWidget();
 
     bool isAnimating() const { return m_animating; }

@@ -33,7 +33,7 @@ class UpcomingEventsMapWidget : public KGraphicsWebView
     Q_PROPERTY( LastFmEvent::List events READ events )
 
 public:
-    explicit UpcomingEventsMapWidget( QGraphicsItem *parent = 0 );
+    explicit UpcomingEventsMapWidget( QGraphicsItem *parent = nullptr );
     ~UpcomingEventsMapWidget();
 
     bool isLoaded() const;

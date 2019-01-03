@@ -54,7 +54,7 @@ class CoverManager : public QDialog, public Meta::Observer
         static bool s_constructed;
 
     public:
-        explicit CoverManager( QWidget *parent = 0 );
+        explicit CoverManager( QWidget *parent = nullptr );
        ~CoverManager();
 
         static bool isConstructed() { return s_constructed; }
@@ -151,7 +151,7 @@ class CoverView : public QListWidget
     Q_OBJECT
 
     public:
-        explicit CoverView( QWidget *parent = 0, const char *name = 0, Qt::WindowFlags f = 0 );
+        explicit CoverView( QWidget *parent = nullptr, const char *name = 0, Qt::WindowFlags f = 0 );
 
     protected:
         void contextMenuEvent( QContextMenuEvent *event );

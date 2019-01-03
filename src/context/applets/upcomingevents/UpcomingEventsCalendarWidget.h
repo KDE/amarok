@@ -30,7 +30,7 @@ class UpcomingEventsCalendarWidget : public QGraphicsProxyWidget
     Q_PROPERTY( QAction* todayAction READ todayAction )
 
 public:
-    explicit UpcomingEventsCalendarWidget( QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0 );
+    explicit UpcomingEventsCalendarWidget( QGraphicsItem *parent = nullptr, Qt::WindowFlags wFlags = 0 );
     ~UpcomingEventsCalendarWidget();
 
     void clear();

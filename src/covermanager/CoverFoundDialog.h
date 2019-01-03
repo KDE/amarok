@@ -52,7 +52,7 @@ class CoverFoundDialog : public QDialog
 public:
     explicit CoverFoundDialog( const CoverFetchUnit::Ptr unit,
                                const CoverFetch::Metadata &data = CoverFetch::Metadata(),
-                               QWidget *parent = 0 );
+                               QWidget *parent = nullptr );
     ~CoverFoundDialog();
 
     /**
@@ -132,7 +132,7 @@ class CoverFoundSideBar : public BoxWidget
     Q_OBJECT
 
 public:
-    explicit CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent = 0 );
+    explicit CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent = nullptr );
     ~CoverFoundSideBar();
 
 public Q_SLOTS:
@@ -162,7 +162,7 @@ public:
     explicit CoverFoundItem( const QImage &cover,
                              const CoverFetch::Metadata &data,
                              const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize,
-                             QListWidget *parent = 0 );
+                             QListWidget *parent = nullptr );
     ~CoverFoundItem();
 
     const CoverFetch::Metadata metadata() const { return m_metadata; }

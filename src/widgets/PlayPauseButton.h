@@ -26,7 +26,7 @@ class PlayPauseButton : public IconButton
     Q_OBJECT
 
 public:
-    explicit PlayPauseButton( QWidget *parent = 0 );
+    explicit PlayPauseButton( QWidget *parent = nullptr );
     inline bool playing() const { return m_isPlaying; }
     void setPlaying( bool playing );
 

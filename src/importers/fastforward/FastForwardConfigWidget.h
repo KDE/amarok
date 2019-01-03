@@ -29,7 +29,7 @@ class FastForwardConfigWidget : public ProviderConfigWidget,
     Q_OBJECT
 
 public:
-    explicit FastForwardConfigWidget( const QVariantMap &config, QWidget *parent = 0,
+    explicit FastForwardConfigWidget( const QVariantMap &config, QWidget *parent = nullptr,
                                       Qt::WindowFlags f = 0 );
     ~FastForwardConfigWidget();
 

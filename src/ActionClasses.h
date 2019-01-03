@@ -39,7 +39,7 @@ namespace Amarok
         public:
             explicit Menu( QWidget* parent );
             static Menu *instance();
-            static QMenu *helpMenu( QWidget *parent = 0 );
+            static QMenu *helpMenu( QWidget *parent = nullptr );
 
         private:
             static Menu       *s_instance;

@@ -50,7 +50,7 @@ public:
         Online = 1
     };
 
-    OcsPersonItem( const KAboutPerson &person, const QString ocsUsername, PersonStatus status, QWidget *parent = 0 );
+    OcsPersonItem( const KAboutPerson &person, const QString ocsUsername, PersonStatus status, QWidget *parent = nullptr );
 
     virtual ~OcsPersonItem();
 

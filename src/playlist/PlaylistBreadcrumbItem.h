@@ -43,7 +43,7 @@ public:
      * @param currentColumn The column corresponding to the current sort level
      * @param parent The parent QWidget
      */
-    explicit BreadcrumbItemMenu( Column currentColumn, QWidget *parent = 0 );
+    explicit BreadcrumbItemMenu( Column currentColumn, QWidget *parent = nullptr );
 
     /**
      * Destructor.
@@ -84,7 +84,7 @@ public:
      * @param level The BreadcrumbLevel assigned to this item.
      * @param parent The parent QWidget.
      */
-    explicit BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent = 0 );
+    explicit BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent = nullptr );
 
     /**
      * Destructor.

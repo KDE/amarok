@@ -43,7 +43,7 @@ class MusicBrainzTagsModel : public QAbstractItemModel
             Chosen
         };
 
-        explicit MusicBrainzTagsModel( QObject *parent = 0 );
+        explicit MusicBrainzTagsModel( QObject *parent = nullptr );
         ~MusicBrainzTagsModel();
 
         QModelIndex index( int row, int column,

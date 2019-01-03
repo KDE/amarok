@@ -153,7 +153,7 @@ namespace AmarokScript
         Q_PROPERTY( bool childrenLoaded READ childrenLoaded )
 
         public:
-            explicit CollectionViewItem( CollectionTreeItem *item, QObject *parent = 0 );
+            explicit CollectionViewItem( CollectionTreeItem *item, QObject *parent = nullptr );
             CollectionTreeItem* data() const;
             static QScriptValue toScriptValue( QScriptEngine *engine, CollectionTreeItem* const &item );
 

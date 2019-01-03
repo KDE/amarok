@@ -26,7 +26,7 @@ class OpmlDirectoryView : public Amarok::PrettyTreeView
 {
     Q_OBJECT
     public:
-        explicit OpmlDirectoryView( QWidget *parent = 0 );
+        explicit OpmlDirectoryView( QWidget *parent = nullptr );
 
         virtual void contextMenuEvent( QContextMenuEvent *event );
         virtual void keyPressEvent( QKeyEvent *event );

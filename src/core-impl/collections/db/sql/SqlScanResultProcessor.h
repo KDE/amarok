@@ -32,7 +32,7 @@ class SqlScanResultProcessor : public AbstractScanResultProcessor
     public:
         SqlScanResultProcessor( GenericScanManager* manager,
                                 Collections::SqlCollection *collection,
-                                QObject *parent = 0 );
+                                QObject *parent = nullptr );
         virtual ~SqlScanResultProcessor();
 
 

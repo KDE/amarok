@@ -40,7 +40,7 @@
 class HintingLineEdit : public QLineEdit
 {
 public:
-    HintingLineEdit( const QString &hint = QString(), QWidget *parent = 0 ) : QLineEdit( parent ), m_hint( hint )
+    HintingLineEdit( const QString &hint = QString(), QWidget *parent = nullptr ) : QLineEdit( parent ), m_hint( hint )
     { }
     void setHint( const QString &hint )
     {

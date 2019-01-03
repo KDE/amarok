@@ -55,8 +55,8 @@ class AMAROK_EXPORT TagDialog : public QDialog, public Meta::Observer
 
         enum Tabs { SUMMARYTAB, TAGSTAB, LYRICSTAB, LABELSTAB };
 
-        explicit TagDialog( const Meta::TrackList &tracks, QWidget *parent = 0 );
-        explicit TagDialog( Meta::TrackPtr track, QWidget *parent = 0 );
+        explicit TagDialog( const Meta::TrackList &tracks, QWidget *parent = nullptr );
+        explicit TagDialog( Meta::TrackPtr track, QWidget *parent = nullptr );
         explicit TagDialog( Collections::QueryMaker *qm );
         ~TagDialog();
 

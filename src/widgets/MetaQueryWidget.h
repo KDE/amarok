@@ -50,7 +50,7 @@ class TimeDistanceWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit TimeDistanceWidget( QWidget *parent = 0 );
+    explicit TimeDistanceWidget( QWidget *parent = nullptr );
     qint64 timeDistance() const;
     void setTimeDistance( qint64 value );
 

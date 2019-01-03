@@ -58,7 +58,7 @@ namespace StatSyncing
              */
             MatchedTracksModel( const QList<TrackTuple> &matchedTuples,
                                 const QList<qint64> &columns, const Options &options,
-                                QObject *parent = 0 );
+                                QObject *parent = nullptr );
 
             QModelIndex index( int row, int column,
                                const QModelIndex &parent = QModelIndex() ) const;

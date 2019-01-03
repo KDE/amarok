@@ -29,7 +29,7 @@ class MusicBrainzTagsView : public QTreeView
     Q_OBJECT
 
     public:
-        explicit MusicBrainzTagsView( QWidget *parent = 0 );
+        explicit MusicBrainzTagsView( QWidget *parent = nullptr );
 
         MusicBrainzTagsModel *sourceModel() const;
 

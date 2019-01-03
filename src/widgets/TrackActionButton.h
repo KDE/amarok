@@ -28,7 +28,7 @@ class TrackActionButton : public IconButton
     Q_OBJECT
 
 public:
-    explicit TrackActionButton( QWidget *parent = 0, const QAction *act = 0 );
+    explicit TrackActionButton( QWidget *parent = nullptr, const QAction *act = 0 );
     void setAction( const QAction *act );
     QSize sizeHint() const;
 protected:

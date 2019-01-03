@@ -31,9 +31,9 @@ class QtGroupingProxy : public QAbstractProxyModel
 {
     Q_OBJECT
     public:
-        explicit QtGroupingProxy( QObject *parent = 0 );
+        explicit QtGroupingProxy( QObject *parent = nullptr );
         explicit QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootIndex = QModelIndex(),
-                                  int groupedColumn = -1, QObject *parent = 0 );
+                                  int groupedColumn = -1, QObject *parent = nullptr );
         ~QtGroupingProxy();
 
         /* QtGroupingProxy methods */

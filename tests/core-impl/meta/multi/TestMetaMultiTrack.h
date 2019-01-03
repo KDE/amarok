@@ -66,7 +66,7 @@ class NotifyObserversWaiter : public QObject, private Meta::Observer
     Q_OBJECT
 
     public:
-        NotifyObserversWaiter( const QSet<Meta::TrackPtr> &tracks, QObject *parent = 0 );
+        NotifyObserversWaiter( const QSet<Meta::TrackPtr> &tracks, QObject *parent = nullptr );
 
     Q_SIGNALS:
         void done();

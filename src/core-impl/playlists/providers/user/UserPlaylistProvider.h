@@ -31,7 +31,7 @@ namespace Playlists {
         Q_OBJECT
 
         public:
-            explicit UserPlaylistProvider( QObject *parent = 0 );
+            explicit UserPlaylistProvider( QObject *parent = nullptr );
 
             /* PlaylistProvider functions */
             virtual int category() const;
