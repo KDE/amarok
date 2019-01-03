@@ -40,7 +40,7 @@ class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
 {
     Q_OBJECT
     public:
-        AmpacheAccountLogin ( const QUrl& url, const QString& username, const QString& password, QWidget* parent = 0 );
+        AmpacheAccountLogin ( const QUrl& url, const QString& username, const QString& password, QWidget* parent = nullptr );
         ~AmpacheAccountLogin();
         QUrl server() const { return m_server; }
         QString sessionId() const { return m_sessionId; }

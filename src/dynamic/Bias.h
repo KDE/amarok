@@ -95,7 +95,7 @@ namespace Dynamic
 
             /** Create a widget appropriate for editing the bias.
             */
-            virtual QWidget* widget( QWidget* parent = 0 );
+            virtual QWidget* widget( QWidget* parent = nullptr );
 
             /** Paints an operator (like "and" or a progress bar") in front of a bias item */
             virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
@@ -166,7 +166,7 @@ namespace Dynamic
             virtual QString name() const;
             virtual QString toString() const;
 
-            virtual QWidget* widget( QWidget* parent = 0 );
+            virtual QWidget* widget( QWidget* parent = nullptr );
 
             virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
@@ -202,7 +202,7 @@ namespace Dynamic
             virtual QString name() const;
             virtual QString toString() const;
 
-            virtual QWidget* widget( QWidget* parent = 0 );
+            virtual QWidget* widget( QWidget* parent = nullptr );
             virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
             virtual TrackSet matchingTracks( const Meta::TrackList& playlist,

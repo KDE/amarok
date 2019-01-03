@@ -35,8 +35,8 @@ class TokenFactory
 
 public:
     virtual ~TokenFactory() {}
-    virtual Token* createToken( const QString &text, const QString &iconName, qint64 value, QWidget* parent = 0 ) const;
-    virtual Token* createTokenFromMime( const QMimeData* mimeData, QWidget* parent = 0 ) const;
+    virtual Token* createToken( const QString &text, const QString &iconName, qint64 value, QWidget* parent = nullptr ) const;
+    virtual Token* createTokenFromMime( const QMimeData* mimeData, QWidget* parent = nullptr ) const;
 };
 
 /** A widget that is used in the FilenameLayoutWidget to display part of a filename

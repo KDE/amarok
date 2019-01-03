@@ -31,7 +31,7 @@ class PhotoBrowser: public PictureFlow
   Q_OBJECT
 
 public:
-    explicit PhotoBrowser(QWidget* parent = 0, bool enableOpenGL = false);
+    explicit PhotoBrowser(QWidget* parent = nullptr, bool enableOpenGL = false);
     virtual ~PhotoBrowser();
 
     void fillAlbums(Meta::AlbumList albums);

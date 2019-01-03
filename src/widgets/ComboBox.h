@@ -41,7 +41,7 @@ class ComboBox : public KComboBox
         virtual ~ComboBox() {};
 
     protected:
-        virtual void keyPressEvent( QKeyEvent *event );
+        void keyPressEvent( QKeyEvent *event ) override;
 
     Q_SIGNALS:
         void downPressed();

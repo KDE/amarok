@@ -108,7 +108,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            explicit TagMatchBiasWidget( Dynamic::TagMatchBias* bias, QWidget* parent = 0 );
+            explicit TagMatchBiasWidget( Dynamic::TagMatchBias* bias, QWidget* parent = nullptr );
 
         private Q_SLOTS:
             void syncControlsToBias();
@@ -137,7 +137,7 @@ namespace Dynamic
             virtual QString name() const;
             virtual QString toString() const;
 
-            virtual QWidget* widget( QWidget* parent = 0 );
+            virtual QWidget* widget( QWidget* parent = nullptr );
 
             virtual bool trackMatches( int position,
                                        const Meta::TrackList& playlist,

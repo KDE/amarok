@@ -68,7 +68,7 @@ public:
   /*!
     Creates a new PictureFlow widget.
   */  
-  explicit PictureFlow(QWidget* parent = 0, bool enableOpenGL = false);
+  explicit PictureFlow(QWidget* parent = nullptr, bool enableOpenGL = false);
 
   /*!
     Destroys the widget.

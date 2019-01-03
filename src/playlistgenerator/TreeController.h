@@ -30,7 +30,7 @@ namespace APG {
         Q_OBJECT
 
         public:
-            TreeController( TreeModel*, QTreeView*, QWidget* parent = 0);
+            TreeController( TreeModel*, QTreeView*, QWidget* parent = nullptr);
             ~TreeController();
 
         public Q_SLOTS:

@@ -28,7 +28,7 @@ class MagnatuneRedownloadDialog : public QDialog, public Ui::magnatuneReDownload
     Q_OBJECT
 
 public:
-    explicit MagnatuneRedownloadDialog( QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
+    explicit MagnatuneRedownloadDialog( QWidget* parent = nullptr, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0 );
     ~MagnatuneRedownloadDialog();
     /*$PUBLIC_FUNCTIONS$*/
 

@@ -47,7 +47,7 @@ class BrowserBreadcrumbItem : public BoxWidget
 {
     Q_OBJECT
 public:
-    explicit BrowserBreadcrumbItem( BrowserCategory* category, QWidget* parent = 0 );
+    explicit BrowserBreadcrumbItem( BrowserCategory* category, QWidget* parent = nullptr );
 
     /**
      * Overloaded constructor for creating breadcrumb items not bound to a particular BrowserCategory

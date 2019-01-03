@@ -40,7 +40,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            explicit PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent = 0 );
+            explicit PartBiasWidget( Dynamic::PartBias* bias, QWidget* parent = nullptr );
 
         protected Q_SLOTS:
             void biasAppended( Dynamic::BiasPtr bias );
@@ -81,7 +81,7 @@ namespace Dynamic
             virtual QString name() const;
             virtual QString toString() const;
 
-            virtual QWidget* widget( QWidget* parent = 0 );
+            virtual QWidget* widget( QWidget* parent = nullptr );
             virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
 
             virtual TrackSet matchingTracks( const Meta::TrackList& playlist,

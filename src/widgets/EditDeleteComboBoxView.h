@@ -29,7 +29,7 @@ class EditDeleteComboBoxView : public QListView
     Q_OBJECT
 
     public:
-        explicit EditDeleteComboBoxView( QWidget* parent = 0 );
+        explicit EditDeleteComboBoxView( QWidget* parent = nullptr );
 
     Q_SIGNALS:
         void editItem( const QString &itemName );

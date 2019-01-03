@@ -38,7 +38,7 @@ public:
      * @param parent Pointer to the parent QWidget.
      * @param fl Additional dialog flags.
      */
-    explicit MagnatuneDownloadDialog( QWidget* parent = 0, Qt::WindowFlags fl = 0 );
+    explicit MagnatuneDownloadDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
 
     /**
      * Destructor

@@ -83,7 +83,7 @@ class MetaQueryWidget : public QWidget
          *  @param onlyNumeric If set to true the widget will only display numeric fields.
          *  @param noCondition If set to true no condition can be selected.
          */
-        explicit MetaQueryWidget( QWidget* parent = 0, bool onlyNumeric = false, bool noCondition = false );
+        explicit MetaQueryWidget( QWidget* parent = nullptr, bool onlyNumeric = false, bool noCondition = false );
         ~MetaQueryWidget();
 
         enum FilterCondition

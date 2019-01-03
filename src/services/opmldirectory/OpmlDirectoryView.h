@@ -29,7 +29,7 @@ class OpmlDirectoryView : public Amarok::PrettyTreeView
         explicit OpmlDirectoryView( QWidget *parent = nullptr );
 
         virtual void contextMenuEvent( QContextMenuEvent *event );
-        virtual void keyPressEvent( QKeyEvent *event );
+        void keyPressEvent( QKeyEvent *event ) override;
 
     protected:
         //reimplemented to allow only leaf nodes to be selected

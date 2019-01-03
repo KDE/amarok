@@ -47,7 +47,7 @@ public:
     void slotEdit( const QModelIndex &index );
 
 protected:
-    void keyPressEvent( QKeyEvent *event );
+    void keyPressEvent( QKeyEvent *event ) override;
     void mouseDoubleClickEvent( QMouseEvent *event );
     void contextMenuEvent( QContextMenuEvent *event );
     void resizeEvent( QResizeEvent *event );

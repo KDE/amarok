@@ -94,13 +94,13 @@ protected:
     void addIndexToPlaylist( const QModelIndex &idx, Playlist::AddOptions options );
     void addIndicesToPlaylist( QModelIndexList indices, Playlist::AddOptions options );
 
-    virtual void contextMenuEvent( QContextMenuEvent *e );
-    virtual void mouseReleaseEvent( QMouseEvent *event );
-    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+    void contextMenuEvent( QContextMenuEvent *e ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
 
-    virtual void keyPressEvent( QKeyEvent *event );
+    void keyPressEvent( QKeyEvent *event ) override;
 
-    virtual void startDrag( Qt::DropActions supportedActions );
+    void startDrag( Qt::DropActions supportedActions ) override;
     KFileItemList selectedItems() const;
 
 private:

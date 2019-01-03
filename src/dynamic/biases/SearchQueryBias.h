@@ -43,7 +43,7 @@ namespace Dynamic
             virtual QString name() const;
             virtual QString toString() const;
 
-            virtual QWidget* widget( QWidget* parent = 0 );
+            virtual QWidget* widget( QWidget* parent = nullptr );
 
             QString filter() const;
 

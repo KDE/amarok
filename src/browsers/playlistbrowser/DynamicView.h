@@ -53,8 +53,8 @@ protected Q_SLOTS:
     void collapseRecursive(const QModelIndex &index);
 
 protected:
-    virtual void keyPressEvent( QKeyEvent *event );
-    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+    void keyPressEvent( QKeyEvent *event ) override;
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
 
     virtual void contextMenuEvent( QContextMenuEvent* event );
 };

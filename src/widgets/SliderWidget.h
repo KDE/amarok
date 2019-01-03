@@ -36,7 +36,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            explicit Slider( Qt::Orientation, uint max = 0, QWidget* parent = 0 );
+            explicit Slider( Qt::Orientation, uint max = 0, QWidget* parent = nullptr );
 
             virtual void setValue( int );
 

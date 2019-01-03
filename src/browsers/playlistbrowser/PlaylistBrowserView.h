@@ -48,10 +48,10 @@ Q_SIGNALS:
 protected:
     // TODO: re-implement QWidget::dragEnterEvent() to show drop-not-allowed indicator
 
-    virtual void keyPressEvent( QKeyEvent *event );
-    virtual void mouseDoubleClickEvent( QMouseEvent *event );
-    virtual void mouseReleaseEvent( QMouseEvent *event );
-    virtual void startDrag( Qt::DropActions supportedActions );
+    void keyPressEvent( QKeyEvent *event ) override;
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void startDrag( Qt::DropActions supportedActions ) override;
 
     virtual void contextMenuEvent( QContextMenuEvent *event );
 

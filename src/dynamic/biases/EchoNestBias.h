@@ -56,7 +56,7 @@ namespace Dynamic
             virtual QString name() const;
             virtual QString toString() const;
 
-            virtual QWidget* widget( QWidget* parent = 0 );
+            virtual QWidget* widget( QWidget* parent = nullptr );
 
             virtual Dynamic::TrackSet matchingTracks( const Meta::TrackList& playlist,
                                                       int contextCount, int finalCount,

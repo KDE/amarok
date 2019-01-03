@@ -41,7 +41,7 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-            explicit BiasDialog( Dynamic::BiasPtr bias, QWidget* parent = 0 );
+            explicit BiasDialog( Dynamic::BiasPtr bias, QWidget* parent = nullptr );
             virtual ~BiasDialog();
 
         public Q_SLOTS:

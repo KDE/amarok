@@ -32,7 +32,7 @@ namespace PlaylistBrowserNS
 class DynamicBiasDelegate : public QStyledItemDelegate
 {
     public:
-        explicit DynamicBiasDelegate( QWidget* parent = 0 );
+        explicit DynamicBiasDelegate( QWidget* parent = nullptr );
         ~DynamicBiasDelegate();
 
         void paint( QPainter* painter,

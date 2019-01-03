@@ -27,7 +27,7 @@ class PlaylistInfoWidget : public QLabel
     Q_OBJECT
 
 public:
-    explicit PlaylistInfoWidget( QWidget* parent = 0 );
+    explicit PlaylistInfoWidget( QWidget* parent = nullptr );
     virtual ~PlaylistInfoWidget();
 
 protected:

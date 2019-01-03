@@ -194,7 +194,7 @@ protected Q_SLOTS:
     void slotSearchYears( bool search );
 
 protected:
-    void keyPressEvent( QKeyEvent *event );
+    void keyPressEvent( QKeyEvent *event ) override;
 
 private Q_SLOTS:
     void defocus() { m_searchEdit->clearFocus(); }

@@ -28,11 +28,11 @@ public:
     static BookmarkManager * instance();
     ~BookmarkManager();
 
-     static void showOnce( QWidget* parent = 0 );
+     static void showOnce( QWidget* parent = nullptr );
 
 private:
 
-    explicit BookmarkManager( QWidget* parent = 0 );
+    explicit BookmarkManager( QWidget* parent = nullptr );
 
     static BookmarkManager *s_instance;
     BookmarkManagerWidget * m_widget;

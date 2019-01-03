@@ -46,7 +46,7 @@ public:
 
 protected:
 
-    virtual void paintEvent ( QPaintEvent* event );
+    void paintEvent ( QPaintEvent* event ) override;
 
 protected Q_SLOTS:
     virtual void editValueChanged();

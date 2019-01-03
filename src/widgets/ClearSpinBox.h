@@ -24,7 +24,7 @@
 class ClearSpinBox : public QSpinBox
 {
     public:
-        explicit ClearSpinBox( QWidget* parent = 0 );
+        explicit ClearSpinBox( QWidget* parent = nullptr );
 
     protected:
         virtual QValidator::State validate( QString &input, int &pos ) const;
