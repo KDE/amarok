@@ -40,7 +40,7 @@ public:
      * Has a horizontal if false.
      * @param parent the parent widget.
      */
-    explicit BoxWidget( bool vertical = true, QWidget *parent = Q_NULLPTR );
+    explicit BoxWidget( bool vertical = true, QWidget *parent = nullptr );
     virtual ~BoxWidget() {}
 
     QBoxLayout* layout() const;

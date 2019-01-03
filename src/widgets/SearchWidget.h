@@ -37,7 +37,7 @@ class AMAROK_EXPORT SearchWidget : public QWidget
          * @param parent The parent widget
          * @param advanced If true generates a button that opens a edit filter dialog.
         */
-        explicit SearchWidget( QWidget *parent = Q_NULLPTR, bool advanced = true );
+        explicit SearchWidget( QWidget *parent = nullptr, bool advanced = true );
 
         QString currentText() const { return m_sw->currentText(); }
         Amarok::ComboBox *comboBox() { return m_sw; }

@@ -43,7 +43,7 @@ class CurrentEngine : public QObject
     Q_PROPERTY(bool hasValidCover READ hasValidCover NOTIFY albumChanged)
 
 public:
-    explicit CurrentEngine( QObject* parent = Q_NULLPTR );
+    explicit CurrentEngine( QObject* parent = nullptr );
     virtual ~CurrentEngine();
 
     QString artist() const;

@@ -29,7 +29,7 @@ using namespace AmarokScript;
 
 AmarokScriptXml::AmarokScriptXml( QScriptEngine *engine )
     : QObject( engine )
-    , m_reader( Q_NULLPTR )
+    , m_reader( nullptr )
     , m_domDocument( new QDomDocument )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,

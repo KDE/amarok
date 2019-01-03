@@ -41,7 +41,7 @@
  *  This must match the desktop files.
  */
 const int Plugins::PluginManager::s_pluginFrameworkVersion = 73;
-Plugins::PluginManager* Plugins::PluginManager::s_instance = Q_NULLPTR;
+Plugins::PluginManager* Plugins::PluginManager::s_instance = nullptr;
 
 Plugins::PluginManager*
 Plugins::PluginManager::instance()
@@ -55,7 +55,7 @@ Plugins::PluginManager::destroy()
     if( s_instance )
     {
         delete s_instance;
-        s_instance = Q_NULLPTR;
+        s_instance = nullptr;
     }
 }
 

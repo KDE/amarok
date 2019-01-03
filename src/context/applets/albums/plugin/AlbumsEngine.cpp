@@ -36,7 +36,7 @@
 
 AlbumsEngine::AlbumsEngine( QObject *parent )
     : QObject( parent )
-    , m_lastQueryMaker( Q_NULLPTR )
+    , m_lastQueryMaker( nullptr )
     , m_model( new AlbumsModel( this ) )
     , m_proxyModel( new AlbumsProxyModel( this ) )
 {

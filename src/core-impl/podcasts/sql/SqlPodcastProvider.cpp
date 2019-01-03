@@ -849,7 +849,7 @@ SqlPodcastProvider::confirmUnsubscribe( Podcasts::SqlPodcastChannelPtr channel )
     unsubscribeDialog.setText( i18n( "Do you really want to unsubscribe from \"%1\"?", channel->title() ) );
     unsubscribeDialog.setStandardButtons( QMessageBox::Ok | QMessageBox::Cancel );
 
-    QCheckBox *deleteMediaCheckBox = new QCheckBox( i18n( "Delete downloaded episodes" ), Q_NULLPTR );
+    QCheckBox *deleteMediaCheckBox = new QCheckBox( i18n( "Delete downloaded episodes" ), nullptr );
     unsubscribeDialog.setCheckBox( deleteMediaCheckBox );
     
     QPair<bool, bool> result;

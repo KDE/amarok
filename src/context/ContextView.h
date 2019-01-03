@@ -45,7 +45,7 @@ class AMAROK_EXPORT ContextView : public QQuickWidget
     Q_OBJECT
 
 public:
-     explicit ContextView( QWidget *parent = Q_NULLPTR );
+     explicit ContextView( QWidget *parent = nullptr );
     ~ContextView();
 
     /**

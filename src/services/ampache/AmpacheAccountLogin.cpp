@@ -41,8 +41,8 @@ AmpacheAccountLogin::AmpacheAccountLogin( const QUrl& url, const QString& userna
     , m_server( url )
     , m_username( username )
     , m_password( password )
-    , m_authRequest( Q_NULLPTR )
-    , m_pingRequest( Q_NULLPTR )
+    , m_authRequest( nullptr )
+    , m_pingRequest( nullptr )
 {
     reauthenticate();
 }

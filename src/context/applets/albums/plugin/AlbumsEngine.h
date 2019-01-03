@@ -37,7 +37,7 @@ class AlbumsEngine : public QObject
     Q_PROPERTY( QString filterPattern READ filterPattern WRITE setFilterPattern NOTIFY filterPatternChanged )
 
 public:
-    explicit AlbumsEngine( QObject *parent = Q_NULLPTR );
+    explicit AlbumsEngine( QObject *parent = nullptr );
 
     AlbumsProxyModel * model() const { return m_proxyModel; }
     QString filterPattern() const;

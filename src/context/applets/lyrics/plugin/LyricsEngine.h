@@ -36,7 +36,7 @@ class LyricsEngine : public QObject
     Q_PROPERTY(QString font READ font WRITE setFont NOTIFY fontChanged)
 
 public:
-    explicit LyricsEngine( QObject* parent = Q_NULLPTR );
+    explicit LyricsEngine( QObject* parent = nullptr );
 
     void newLyrics( const Meta::TrackPtr &track );
     void newSuggestions( const QVariantList &suggest );

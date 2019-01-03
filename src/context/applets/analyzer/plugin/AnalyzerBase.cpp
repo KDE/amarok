@@ -45,7 +45,7 @@ Analyzer::Base::Base( QQuickItem *parent )
     : QQuickFramebufferObject( parent )
     , m_sampleRate( 44100 )
     , m_scopeSize( 0 )
-    , m_worker( Q_NULLPTR )
+    , m_worker( nullptr )
 {
     DEBUG_BLOCK
 

@@ -27,7 +27,7 @@ template<class T>
 class AmarokSharedPointer
 {
 public:
-    inline AmarokSharedPointer() : d(Q_NULLPTR) {}
+    inline AmarokSharedPointer() : d(nullptr) {}
     inline explicit AmarokSharedPointer(T *t) : d(t) { if (d) d->ref.ref(); }
     inline AmarokSharedPointer(const AmarokSharedPointer& other) : d(other.d) { if (d) d->ref.ref(); }
     inline ~AmarokSharedPointer() { if (d && !d->ref.deref()) delete d; }
@@ -63,12 +63,12 @@ public:
     inline T& operator*() { Q_ASSERT(d); return *d; }
     inline const T* operator->() const { Q_ASSERT(d); return d; }
     inline T* operator->() { Q_ASSERT(d); return d; }
-    inline operator bool() const { return ( d != Q_NULLPTR ); }
+    inline operator bool() const { return ( d != nullptr ); }
 
-    inline bool isNull() const { return d == Q_NULLPTR; }
+    inline bool isNull() const { return d == nullptr; }
     inline int count() const { return d ? d->ref.load() : 0; }
     inline T* data() const { return d; }
-    inline void clear() { if (d && !d->ref.deref()) delete d; d = Q_NULLPTR; }
+    inline void clear() { if (d && !d->ref.deref()) delete d; d = nullptr; }
 
     template <class U>
     static AmarokSharedPointer<T> staticCast(const AmarokSharedPointer<U>& o)

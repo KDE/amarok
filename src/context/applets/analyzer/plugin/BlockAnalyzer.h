@@ -49,7 +49,7 @@ public:
     };
     Q_ENUM( FallSpeed )
 
-    explicit BlockAnalyzer( QQuickItem *parent = Q_NULLPTR );
+    explicit BlockAnalyzer( QQuickItem *parent = nullptr );
 
     Renderer* createRenderer() const override;
 

@@ -37,7 +37,7 @@
 
 CurrentEngine::CurrentEngine( QObject* parent )
     : QObject( parent )
-    , m_lastQueryMaker( Q_NULLPTR )
+    , m_lastQueryMaker( nullptr )
 {
     EngineController* engine = The::engineController();
 
@@ -129,7 +129,7 @@ CurrentEngine::stopped()
 void
 CurrentEngine::update( Meta::AlbumPtr album )
 {
-    m_lastQueryMaker = Q_NULLPTR;
+    m_lastQueryMaker = nullptr;
 
     if( !album )
         return;

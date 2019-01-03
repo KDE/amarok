@@ -29,8 +29,8 @@
 
 MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
     : QObject()
-    , m_albumDownloadJob( Q_NULLPTR )
-    , m_coverDownloadJob( Q_NULLPTR )
+    , m_albumDownloadJob( nullptr )
+    , m_coverDownloadJob( nullptr )
     , m_currentAlbumFileName()
 {
     m_tempDir = new QTemporaryDir();
@@ -159,7 +159,7 @@ MagnatuneAlbumDownloader::albumDownloadAborted( )
     DEBUG_BLOCK
     
     m_albumDownloadJob->kill();
-    m_albumDownloadJob = Q_NULLPTR;
+    m_albumDownloadJob = nullptr;
     debug() << "Aborted album download";
 
     emit( downloadComplete( false ) );
@@ -171,7 +171,7 @@ MagnatuneAlbumDownloader::coverAddAborted()
     DEBUG_BLOCK
 
     m_coverDownloadJob->kill();
-    m_coverDownloadJob = Q_NULLPTR;
+    m_coverDownloadJob = nullptr;
     debug() << "Aborted cover download";
 
     emit( downloadComplete( false ) );

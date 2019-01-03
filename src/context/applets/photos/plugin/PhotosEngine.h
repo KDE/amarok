@@ -52,7 +52,7 @@ public:
     };
     Q_ENUM( Status )
 
-    explicit PhotosEngine( QObject* parent = Q_NULLPTR );
+    explicit PhotosEngine( QObject* parent = nullptr );
     virtual ~PhotosEngine();
 
     int fetchSize() const;

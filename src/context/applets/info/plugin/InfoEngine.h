@@ -45,7 +45,7 @@ class InfoEngine : public QObject,
 
 public:
 
-    explicit InfoEngine( QObject* parent = Q_NULLPTR );
+    explicit InfoEngine( QObject* parent = nullptr );
     ~InfoEngine();
 
     QString serviceName() const { return m_storedInfo.value("service_name").toString(); }

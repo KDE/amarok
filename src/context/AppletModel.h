@@ -46,7 +46,7 @@ public:
     };
     Q_ENUM(Role)
 
-    explicit AppletModel(AppletLoader *loader, QObject *parent = Q_NULLPTR);
+    explicit AppletModel(AppletLoader *loader, QObject *parent = nullptr);
     virtual ~AppletModel();
 
     virtual int rowCount(const QModelIndex& parent) const override;
@@ -78,7 +78,7 @@ class AppletProxyModel : public QSortFilterProxyModel
     Q_PROPERTY(QStringList enabledApplets READ enabledApplets NOTIFY enabledAppletsChanged)
 
 public:
-    explicit AppletProxyModel(AppletModel *appletModel, QObject *parent = Q_NULLPTR);
+    explicit AppletProxyModel(AppletModel *appletModel, QObject *parent = nullptr);
     virtual ~AppletProxyModel();
 
     /**

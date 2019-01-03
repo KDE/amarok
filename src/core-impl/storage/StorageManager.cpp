@@ -83,7 +83,7 @@ struct StorageManager::Private
     QStringList errorList;
 };
 
-StorageManager *StorageManager::s_instance = Q_NULLPTR;
+StorageManager *StorageManager::s_instance = nullptr;
 
 
 StorageManager *

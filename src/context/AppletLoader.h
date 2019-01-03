@@ -30,7 +30,7 @@ class AppletLoader : public QObject
     Q_OBJECT
 
 public:
-    explicit AppletLoader(QObject *parent = Q_NULLPTR);
+    explicit AppletLoader(QObject *parent = nullptr);
     ~AppletLoader();
 
     QList<KPluginMetaData> applets() const;

@@ -316,7 +316,7 @@ PlaylistsInFoldersProxy::slotRenameFolder()
     QModelIndex folder = indexes.first();
     QString folderName = folder.data( Qt::DisplayRole ).toString();
     bool ok;
-    const QString newName = QInputDialog::getText( Q_NULLPTR,
+    const QString newName = QInputDialog::getText( nullptr,
                                                    i18n("New name"),
                                                    i18nc("Enter a new name for a folder that already exists",
                                                          "Enter new folder name:"),

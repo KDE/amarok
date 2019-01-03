@@ -34,7 +34,7 @@ class ExcludedLabelsDialog : public QDialog, private Ui_ExcludedLabelsDialog
     Q_OBJECT
 
     public:
-        explicit ExcludedLabelsDialog( StatSyncing::Config *config, QWidget *parent = Q_NULLPTR,
+        explicit ExcludedLabelsDialog( StatSyncing::Config *config, QWidget *parent = nullptr,
                                        Qt::WindowFlags flags = Qt::WindowFlags() );
 
     private Q_SLOTS:

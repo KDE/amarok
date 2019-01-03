@@ -33,7 +33,7 @@ int ContentFetcher::s_requestId = 10;
 
 ContentFetcher::ContentFetcher( const QString & hostname, quint16 port, const QString& password, QObject * parent, const char * name )
  : QObject(parent)
- , m_reply( Q_NULLPTR )
+ , m_reply( nullptr )
  , m_hostname( hostname )
  , m_port( port )
  , m_selfDestruct( false )
@@ -123,7 +123,7 @@ ContentFetcher::onFinished()
 
     emit finished();
     m_reply->deleteLater();
-    m_reply = Q_NULLPTR;
+    m_reply = nullptr;
 }
 
 

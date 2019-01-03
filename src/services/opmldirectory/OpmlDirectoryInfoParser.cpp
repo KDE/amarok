@@ -29,7 +29,7 @@ using namespace Meta;
 
 OpmlDirectoryInfoParser::OpmlDirectoryInfoParser()
  : InfoParserBase()
- , m_rssDownloadJob( Q_NULLPTR )
+ , m_rssDownloadJob( nullptr )
 {
 }
 

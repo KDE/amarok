@@ -42,7 +42,7 @@ public:
     /**
      * Creates a new rating widget.
      */
-    explicit RatingItem( QQuickItem* parent = Q_NULLPTR );
+    explicit RatingItem( QQuickItem* parent = nullptr );
 
     /**
      * Destructor

@@ -46,12 +46,12 @@
 namespace Context
 {
 
-ContextView* ContextView::s_self = Q_NULLPTR;
+ContextView* ContextView::s_self = nullptr;
 
 
 ContextView::ContextView( QWidget *parent )
     : QQuickWidget( parent )
-    , m_urlRunner( Q_NULLPTR )
+    , m_urlRunner( nullptr )
     , m_loader( new AppletLoader( this ) )
     , m_appletModel( new AppletModel( m_loader, this ) )
     , m_proxyModel( new AppletProxyModel( m_appletModel, this ) )
@@ -95,7 +95,7 @@ ContextView::~ContextView()
     DEBUG_BLOCK
 
     delete m_urlRunner;
-    s_self = Q_NULLPTR;
+    s_self = nullptr;
 }
 
 QStringList
