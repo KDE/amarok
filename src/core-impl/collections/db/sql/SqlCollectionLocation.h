@@ -48,8 +48,8 @@ class TransferJob : public KCompositeJob
     public:
         TransferJob( SqlCollectionLocation * location, const Transcoding::Configuration & configuration );
 
-        void start();
-        virtual bool addSubjob( KJob* job );
+        void start() override;
+        bool addSubjob( KJob* job ) override;
 
         void emitInfo( const QString &message );
     public Q_SLOTS:
@@ -58,11 +58,11 @@ class TransferJob : public KCompositeJob
          */
         void slotJobFinished( KJob *job );
     protected Q_SLOTS:
-        void slotResult( KJob *job );
+        void slotResult( KJob *job ) override;
         void doWork();
         void propagateProcessedAmount( KJob *job, KJob::Unit unit, qulonglong amount);
     protected:
-        virtual bool doKill();
+        bool doKill() override;
     private:
         SqlCollectionLocation* m_location;
         bool m_killed;
@@ -77,24 +77,24 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionLocation : public CollectionLocat
         explicit SqlCollectionLocation( SqlCollection *collection );
         virtual ~SqlCollectionLocation();
 
-        virtual QString prettyLocation() const;
-        virtual QStringList actualLocation() const;
-        virtual bool isWritable() const;
-        virtual bool isOrganizable() const;
+        QString prettyLocation() const override;
+        QStringList actualLocation() const override;
+        bool isWritable() const override;
+        bool isOrganizable() const override;
 
         bool remove( const Meta::TrackPtr &track );
-        virtual bool insert( const Meta::TrackPtr &track, const QString &path );
+        bool insert( const Meta::TrackPtr &track, const QString &path ) override;
 
         //dependency injectors
         void setOrganizeCollectionDelegateFactory( OrganizeCollectionDelegateFactory *fac );
 
     protected:
-        virtual void showDestinationDialog( const Meta::TrackList &tracks,
+        void showDestinationDialog( const Meta::TrackList &tracks,
                                             bool removeSources,
-                                            const Transcoding::Configuration &configuration );
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
-                                           const Transcoding::Configuration & configuration );
-        virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
+                                            const Transcoding::Configuration &configuration ) override;
+        void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
+                                           const Transcoding::Configuration & configuration ) override;
+        void removeUrlsFromCollection( const Meta::TrackList &sources ) override;
 
     private Q_SLOTS:
         void slotDialogAccepted();

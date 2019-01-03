@@ -45,7 +45,7 @@ namespace Collections
             PlaydarCollectionFactory();
             virtual ~PlaydarCollectionFactory();
             
-            virtual void init();
+            void init() override;
             
         private Q_SLOTS:
             void checkStatus();
@@ -67,24 +67,24 @@ namespace Collections
             PlaydarCollection();
             ~PlaydarCollection();
             
-            QueryMaker* queryMaker();
+            QueryMaker* queryMaker() override;
             Playlists::UserPlaylistProvider* userPlaylistProvider();
             
-            QString uidUrlProtocol() const;
-            QString collectionId() const;
-            QString prettyName() const;
-            QIcon icon() const;
+            QString uidUrlProtocol() const override;
+            QString collectionId() const override;
+            QString prettyName() const override;
+            QIcon icon() const override;
             
-            bool isWritable() const;
-            bool isOrganizable() const;
+            bool isWritable() const override;
+            bool isOrganizable() const override;
             
             //Methods from Collections::TrackProvider
-            bool possiblyContainsTrack( const QUrl &url ) const;
-            Meta::TrackPtr trackForUrl( const QUrl &url );
+            bool possiblyContainsTrack( const QUrl &url ) const override;
+            Meta::TrackPtr trackForUrl( const QUrl &url ) override;
             
             //Methods from Collections::CollectionBase
-            bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-            Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+            bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+            Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
             //PlaydarCollection-specific
             void addNewTrack( Meta::PlaydarTrackPtr track );

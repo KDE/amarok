@@ -32,9 +32,9 @@ public:
 
     MagnatuneSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry );
     
-    virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+    Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
-    virtual CollectionLocation* location();
+    CollectionLocation* location() override;
 
 };
 

@@ -32,10 +32,10 @@ public:
     ContextUrlRunner();
     ~ContextUrlRunner();
     
-    virtual QIcon icon() const;
-    virtual bool run(AmarokUrl url);
-    virtual QString command() const;
-    virtual QString prettyCommand() const;
+    QIcon icon() const override;
+    bool run(AmarokUrl url) override;
+    QString command() const override;
+    QString prettyCommand() const override;
 };
 
 #endif // CONTEXTURLRUNNER_H

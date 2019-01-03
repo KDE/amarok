@@ -34,7 +34,7 @@ class ScriptableServiceCollectionTreeModel : public SingleCollectionTreeItemMode
         /**
          * Overridden to masquerade playlist tracks as MultiTracks
          */
-        virtual QMimeData* mimeData( const QList<CollectionTreeItem *> &items ) const;
+        QMimeData* mimeData( const QList<CollectionTreeItem *> &items ) const override;
 };
 
 #endif // SCRIPTABLESERVICECOLLECTIONTREEMODEL_H

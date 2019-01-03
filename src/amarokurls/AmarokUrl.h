@@ -52,7 +52,7 @@ public:
     void setArg( const QString &name, const QString &value );
 
     void setName( const QString &name );
-    void setDescription( const QString &description );
+    void setDescription( const QString &description ) override;
 
     void setCustomValue( const QString &custom );
     QString customValue() const;
@@ -68,11 +68,11 @@ public:
 
     bool isNull() const;
 
-    virtual QString name() const;
-    virtual QString description() const;
-    virtual BookmarkGroupPtr parent() const { return m_parent; }
-    virtual void removeFromDb();
-    virtual void rename( const QString &name );
+    QString name() const override;
+    QString description() const override;
+    BookmarkGroupPtr parent() const override { return m_parent; }
+    void removeFromDb() override;
+    void rename( const QString &name ) override;
 
     static QString escape( const QString &in );
     static QString unescape( const QString &in );

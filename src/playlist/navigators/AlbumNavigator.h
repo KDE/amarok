@@ -42,8 +42,8 @@ namespace Playlist
 
         protected:
             //! Overrides from 'NonlinearTrackNavigator'
-            void notifyItemsInserted( const QSet<quint64> &insertedItems );
-            void notifyItemsRemoved( const QSet<quint64> &removedItems );
+            void notifyItemsInserted( const QSet<quint64> &insertedItems ) override;
+            void notifyItemsRemoved( const QSet<quint64> &removedItems ) override;
 
             typedef QString AlbumId;    // Not Meta::AlbumPtr but QString '->name()'. Reason: Meta::AlbumPtr doesn't work for meta types that use private album pointers.
 

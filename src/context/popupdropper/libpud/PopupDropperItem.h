@@ -166,8 +166,8 @@ public:
 
     void fullUpdate();
     
-    virtual QRectF boundingRect() const;
-    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr );
+    QRectF boundingRect() const override;
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr ) override;
 
 public Q_SLOTS:
     virtual void dropped( QDropEvent *event );

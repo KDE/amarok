@@ -69,12 +69,12 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         /**
          * Accepts the currently changed layouts and stores them. Closes the dialog.
          */
-        virtual void accept();
+        void accept() override;
 
         /**
          * Reject the changed layouts and close the dialog.
          */
-        virtual void reject();
+        void reject() override;
 
         /**
          * Accepts the currently changed layouts and stores them.

@@ -45,37 +45,37 @@ public:
     virtual ~DynamicServiceQueryMaker() {};
 
     //this is the stuff that must be implemented
-    virtual void run() = 0;
-    virtual void abortQuery() = 0;
+    void run() override = 0;
+    void abortQuery() override = 0;
 
     //below here is the stuf that each dynamic querymaker will most likely only need
     //Some of, hence they are all stubbed out:
 
-    virtual QueryMaker* setQueryType( QueryType type ) { Q_UNUSED( type); return this; }
+    QueryMaker* setQueryType( QueryType type ) override { Q_UNUSED( type); return this; }
 
-    virtual QueryMaker* addReturnValue ( qint64 value );
-    virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
-    virtual QueryMaker* orderBy ( qint64 value, bool descending = false );
+    QueryMaker* addReturnValue ( qint64 value ) override;
+    QueryMaker* addReturnFunction( ReturnFunction function, qint64 value ) override;
+    QueryMaker* orderBy ( qint64 value, bool descending = false ) override;
 
-    virtual QueryMaker* addMatch ( const Meta::TrackPtr &track );
-    virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
-    virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
-    virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
-    virtual QueryMaker* addMatch ( const Meta::ComposerPtr &composer );
-    virtual QueryMaker* addMatch ( const Meta::YearPtr &year );
-    virtual QueryMaker* addMatch ( const Meta::LabelPtr &label );
+    QueryMaker* addMatch ( const Meta::TrackPtr &track ) override;
+    QueryMaker* addMatch ( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists ) override;
+    QueryMaker* addMatch ( const Meta::AlbumPtr &album ) override;
+    QueryMaker* addMatch ( const Meta::GenrePtr &genre ) override;
+    QueryMaker* addMatch ( const Meta::ComposerPtr &composer ) override;
+    QueryMaker* addMatch ( const Meta::YearPtr &year ) override;
+    QueryMaker* addMatch ( const Meta::LabelPtr &label ) override;
 
-    virtual QueryMaker* addFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
-    virtual QueryMaker* excludeFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
+    QueryMaker* addFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd ) override;
+    QueryMaker* excludeFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd ) override;
 
-    virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare );
-    virtual QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare );
+    QueryMaker* addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare ) override;
+    QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare ) override;
 
-    virtual QueryMaker* limitMaxResultSize ( int size );
+    QueryMaker* limitMaxResultSize ( int size ) override;
 
-    virtual QueryMaker* beginAnd() { return this; }
-    virtual QueryMaker* beginOr() { return this; }
-    virtual QueryMaker* endAndOr() { return this; }
+    QueryMaker* beginAnd() override { return this; }
+    QueryMaker* beginOr() override { return this; }
+    QueryMaker* endAndOr() override { return this; }
 
     static Meta::AlbumList matchAlbums( ServiceCollection *coll, const Meta::ArtistPtr &artist );
 };

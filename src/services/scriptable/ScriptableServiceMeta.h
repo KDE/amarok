@@ -67,10 +67,10 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
         explicit ScriptableServiceTrack( const QString &name );
         explicit ScriptableServiceTrack( const QStringList &resultRow );
 
-        virtual QString sourceName();
-        virtual QString sourceDescription();
-        virtual QPixmap emblem();
-        virtual QString scalableEmblem();
+        QString sourceName() override;
+        QString sourceDescription() override;
+        QPixmap emblem() override;
+        QString scalableEmblem() override;
 
         void setAlbumName( const QString &newAlbum );
         void setArtistName( const QString &newArtist );
@@ -80,8 +80,8 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
 
         void setCustomAlbumCoverUrl( const QString &coverurl );
 
-        virtual QString collectionName() const { return m_serviceName; }
-        virtual void setUidUrl( const QString &url );
+        QString collectionName() const override { return m_serviceName; }
+        void setUidUrl( const QString &url ) override;
 
         /**
          * If this track is in fact a remote playlist, return Meta::MultiTrack that wraps
@@ -99,20 +99,20 @@ class ScriptableServiceAlbum : public Meta::ServiceAlbumWithCover, public Script
         explicit ScriptableServiceAlbum( const QString &name );
         explicit ScriptableServiceAlbum( const QStringList &resultRow );
 
-        virtual QString downloadPrefix() const { return "script"; }
-        virtual void setCoverUrl( const QString &coverUrl ) { m_coverUrl = coverUrl; }
-        virtual QString coverUrl() const { return m_coverUrl; }
+        QString downloadPrefix() const override { return "script"; }
+        void setCoverUrl( const QString &coverUrl ) override { m_coverUrl = coverUrl; }
+        QString coverUrl() const override { return m_coverUrl; }
 
-        virtual QUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return QUrl( coverUrl() ); }
+        QUrl imageLocation( int size = 1 ) override { Q_UNUSED( size ); return QUrl( coverUrl() ); }
 
-        virtual QString sourceName();
-        virtual QString sourceDescription();
-        virtual QPixmap emblem();
-        virtual QString scalableEmblem();
+        QString sourceName() override;
+        QString sourceDescription() override;
+        QPixmap emblem() override;
+        QString scalableEmblem() override;
 
-        virtual bool isBookmarkable() const;
-        virtual QString collectionName() const { return m_serviceName; }
-        virtual bool simpleFiltering() const  { return true; }
+        bool isBookmarkable() const override;
+        QString collectionName() const override { return m_serviceName; }
+        bool simpleFiltering() const  override { return true; }
 
     private:
         QString m_coverUrl;
@@ -128,14 +128,14 @@ class ScriptableServiceArtist : public Meta::ServiceArtist, public ScriptableSer
         void setGenreId( int artistId );
         int genreId() const;
 
-        virtual QString sourceName();
-        virtual QString sourceDescription();
-        virtual QPixmap emblem();
-        virtual QString scalableEmblem();
+        QString sourceName() override;
+        QString sourceDescription() override;
+        QPixmap emblem() override;
+        QString scalableEmblem() override;
 
-        virtual bool isBookmarkable() const;
-        virtual QString collectionName() const { return m_serviceName; }
-        virtual bool simpleFiltering() const { return true; }
+        bool isBookmarkable() const override;
+        QString collectionName() const override { return m_serviceName; }
+        bool simpleFiltering() const override { return true; }
 
     private:
         int m_genreId;
@@ -151,10 +151,10 @@ class ScriptableServiceGenre : public Meta::ServiceGenre, public ScriptableServi
         void setDescription( const QString &description );
         QString description();
 
-        virtual QString sourceName();
-        virtual QString sourceDescription();
-        virtual QPixmap emblem();
-        virtual QString scalableEmblem();
+        QString sourceName() override;
+        QString sourceDescription() override;
+        QPixmap emblem() override;
+        QString scalableEmblem() override;
 
     private:
         QString m_description;

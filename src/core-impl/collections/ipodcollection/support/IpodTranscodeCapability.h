@@ -36,9 +36,9 @@ namespace Capabilities
             IpodTranscodeCapability( IpodCollection *coll, const QString &deviceDirPath );
             virtual ~IpodTranscodeCapability();
 
-            virtual QStringList playableFileTypes();
-            virtual Transcoding::Configuration savedConfiguration();
-            virtual void setSavedConfiguration( const Transcoding::Configuration &configuration );
+            QStringList playableFileTypes() override;
+            Transcoding::Configuration savedConfiguration() override;
+            void setSavedConfiguration( const Transcoding::Configuration &configuration ) override;
 
         private:
             QPointer<IpodCollection> m_coll;

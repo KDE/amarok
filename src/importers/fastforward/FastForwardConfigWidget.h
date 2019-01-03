@@ -33,7 +33,7 @@ public:
                                       Qt::WindowFlags f = 0 );
     ~FastForwardConfigWidget();
 
-    QVariantMap config() const;
+    QVariantMap config() const override;
 
     enum Driver
     {

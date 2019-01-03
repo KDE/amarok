@@ -55,14 +55,14 @@ public:
     void showActiveTrack();
     void editTrackInfo();
 
-    void polish();
+    void polish() override;
 
 public Q_SLOTS:
     void clearFilterIfActive();
     void slotEditQueue();
 
 protected:
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
 private Q_SLOTS:
     /** show or hide the dynamic playlist mode indicator */

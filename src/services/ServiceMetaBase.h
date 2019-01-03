@@ -150,55 +150,55 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         explicit ServiceTrack( const QStringList & resultRow );
         virtual ~ServiceTrack();
 
-        virtual QString name() const;
+        QString name() const override;
         virtual QUrl downloadableUrl() const;
-        virtual QUrl playableUrl() const;
-        virtual QString uidUrl() const;
-        virtual QString prettyUrl() const;
-        virtual QString notPlayableReason() const;
+        QUrl playableUrl() const override;
+        QString uidUrl() const override;
+        QString prettyUrl() const override;
+        QString notPlayableReason() const override;
 
-        virtual AlbumPtr album() const;
+        AlbumPtr album() const override;
         virtual void setAlbum( const QString &newAlbum );
 
-        virtual ArtistPtr artist() const;
+        ArtistPtr artist() const override;
         virtual void setArtist( const QString &newArtist );
 
-        virtual GenrePtr genre() const;
+        GenrePtr genre() const override;
         virtual void setGenre( const QString &newGenre );
 
-        virtual ComposerPtr composer() const;
+        ComposerPtr composer() const override;
         virtual void setComposer( const QString &newComposer );
 
-        virtual YearPtr year() const;
+        YearPtr year() const override;
         virtual void setYear( int newYear );
 
         virtual void setTitle( const QString &newTitle );
 
-        virtual qreal bpm() const;
+        qreal bpm() const override;
 
-        virtual QString comment() const;
+        QString comment() const override;
         virtual void setComment( const QString &newComment );
 
         virtual QString description() const;
         virtual void setDescription( const QString &newDescription );
 
-        virtual qint64 length() const;
+        qint64 length() const override;
 
-        virtual int filesize() const;
-        virtual int sampleRate() const;
-        virtual int bitrate() const;
+        int filesize() const override;
+        int sampleRate() const override;
+        int bitrate() const override;
 
-        virtual int trackNumber() const;
+        int trackNumber() const override;
         virtual void setTrackNumber( int newTrackNumber );
 
-        virtual int discNumber() const;
+        int discNumber() const override;
         virtual void setDiscNumber( int newDiscNumber );
 
-        virtual QString type() const;
+        QString type() const override;
 
-        virtual void processInfoOf( InfoParserBase * infoParser );
+        void processInfoOf( InfoParserBase * infoParser ) override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             return ( type == Capabilities::Capability::Actions ) ||
                    ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
@@ -206,7 +206,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
                    ( type == Capabilities::Capability::FindInSource && isBookmarkable() );
         }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             if ( type == Capabilities::Capability::Actions )
                 return new ServiceActionsCapability( this );
@@ -219,7 +219,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
             return 0;
         }
 
-        virtual StatisticsPtr statistics();
+        StatisticsPtr statistics() override;
 
         //ServiceTrack specific methods
 
@@ -275,21 +275,21 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
         explicit ServiceArtist( const QString & name );
         virtual ~ServiceArtist();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
-        virtual void processInfoOf( InfoParserBase * infoParser );
+        void processInfoOf( InfoParserBase * infoParser ) override;
 
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             return ( type == Capabilities::Capability::Actions ) ||
                     ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
                     ( type == Capabilities::Capability::BookmarkThis );
         }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             if ( type == Capabilities::Capability::Actions )
                 return new ServiceActionsCapability( this );
@@ -300,7 +300,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
             return 0;
         }
 
-        virtual QAction * bookmarkAction() {
+        QAction * bookmarkAction() override {
 
             if ( isBookmarkable() ) {
                 if ( m_bookmarkAction.isNull())
@@ -322,7 +322,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
         void setTitle( const QString &title );
 
         void setSourceName( const QString source ) { m_sourceName = source; }
-        virtual QString sourceName() { return m_sourceName; }
+        QString sourceName() override { return m_sourceName; }
 
     private:
         int       m_id;
@@ -343,26 +343,26 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
         explicit ServiceAlbum( const QString & name  );
         virtual ~ServiceAlbum();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual bool isCompilation() const;
-        virtual bool canUpdateCompilation() const;
-        virtual void setCompilation( bool compilation );
+        bool isCompilation() const override;
+        bool canUpdateCompilation() const override;
+        void setCompilation( bool compilation ) override;
 
-        virtual bool hasAlbumArtist() const;
-        virtual ArtistPtr albumArtist() const;
-        virtual TrackList tracks();
+        bool hasAlbumArtist() const override;
+        ArtistPtr albumArtist() const override;
+        TrackList tracks() override;
 
-        virtual void processInfoOf( InfoParserBase * infoParser );
+        void processInfoOf( InfoParserBase * infoParser ) override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             return ( type == Capabilities::Capability::Actions ) ||
                     ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
                     ( type == Capabilities::Capability::BookmarkThis );
         }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             if ( type == Capabilities::Capability::Actions )
                 return new ServiceActionsCapability( this );
@@ -373,7 +373,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
             return 0;
         }
 
-        virtual QAction * bookmarkAction() {
+        QAction * bookmarkAction() override {
 
             if ( isBookmarkable() ) {
                 if ( m_bookmarkAction.isNull())
@@ -403,7 +403,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
         void setTitle( const QString &title );
 
         void setSourceName( const QString source ) { m_sourceName = source; }
-        virtual QString sourceName() { return m_sourceName; }
+        QString sourceName() override { return m_sourceName; }
 
     private:
         int       m_id;
@@ -428,20 +428,20 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
         explicit ServiceGenre( const QStringList &row );
         virtual ~ServiceGenre();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
-        virtual void processInfoOf( InfoParserBase * infoParser );
+        void processInfoOf( InfoParserBase * infoParser ) override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             return ( type == Capabilities::Capability::Actions ) ||
                     ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
                     ( type == Capabilities::Capability::BookmarkThis );
         }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             if ( type == Capabilities::Capability::Actions )
                 return new ServiceActionsCapability( this );
@@ -463,7 +463,7 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
         void setAlbumId( int albumId );
 
         void setSourceName( const QString source ) { m_sourceName = source; }
-        virtual QString sourceName() { return m_sourceName; }
+        QString sourceName() override { return m_sourceName; }
 
     private:
         int       m_id;
@@ -483,20 +483,20 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
         explicit ServiceComposer( const QString &name );
         virtual ~ServiceComposer();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
-        virtual void processInfoOf( InfoParserBase * infoParser );
+        void processInfoOf( InfoParserBase * infoParser ) override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             return ( type == Capabilities::Capability::Actions ) ||
                     ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
                     ( type == Capabilities::Capability::BookmarkThis );
         }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             if ( type == Capabilities::Capability::Actions )
                 return new ServiceActionsCapability( this );
@@ -525,20 +525,20 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
         explicit ServiceYear( const QString &name );
         virtual ~ServiceYear();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
-        virtual void processInfoOf( InfoParserBase * infoParser );
+        void processInfoOf( InfoParserBase * infoParser ) override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             return ( type == Capabilities::Capability::Actions ) ||
                     ( type == Capabilities::Capability::SourceInfo && hasSourceInfo() ) ||
                     ( type == Capabilities::Capability::BookmarkThis );
         }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             if ( type == Capabilities::Capability::Actions )
                 return new ServiceActionsCapability( this );

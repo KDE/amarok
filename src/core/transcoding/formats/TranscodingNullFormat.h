@@ -30,11 +30,11 @@ class AMAROK_CORE_EXPORT NullFormat : public Format
 {
 public:
     explicit NullFormat( const Encoder &encoder );
-    QString prettyName() const;
-    QString description() const;
-    QIcon icon() const;
-    QStringList ffmpegParameters( const Configuration &configuration ) const;
-    bool verifyAvailability( const QString &ffmpegOutput ) const;
+    QString prettyName() const override;
+    QString description() const override;
+    QIcon icon() const override;
+    QStringList ffmpegParameters( const Configuration &configuration ) const override;
+    bool verifyAvailability( const QString &ffmpegOutput ) const override;
 };
 
 }

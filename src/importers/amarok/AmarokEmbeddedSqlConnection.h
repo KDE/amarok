@@ -37,7 +37,7 @@ public:
     ~AmarokEmbeddedSqlConnection();
 
 protected:
-    QSqlDatabase connection();
+    QSqlDatabase connection() override;
 
 private:
     bool startServer( const int port, const QString &socketPath, const QString &pidPath );

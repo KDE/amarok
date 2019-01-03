@@ -38,9 +38,9 @@ class OpmlDirectoryServiceFactory: public ServiceFactory
         OpmlDirectoryServiceFactory();
         virtual ~OpmlDirectoryServiceFactory();
 
-        virtual void init();
-        virtual QString name();
-        virtual KConfigGroup config();
+        void init() override;
+        QString name() override;
+        KConfigGroup config() override;
 };
 
 /**
@@ -57,15 +57,15 @@ class OpmlDirectoryService : public ServiceBase, public AmarokUrlRunnerBase
 
         ~OpmlDirectoryService();
 
-        void polish();
+        void polish() override;
 
-        virtual Collections::Collection * collection() { return 0; }
+        Collections::Collection * collection() override { return 0; }
 
         /* UrlRunnerBase methods */
-        virtual QString command() const;
-        virtual QString prettyCommand() const;
-        virtual bool run( AmarokUrl url );
-        virtual QIcon icon() const { return QIcon::fromTheme( "view-services-opml-amarok" ); }
+        QString command() const override;
+        QString prettyCommand() const override;
+        bool run( AmarokUrl url ) override;
+        QIcon icon() const override { return QIcon::fromTheme( "view-services-opml-amarok" ); }
 
     private Q_SLOTS:
         void subscribe();

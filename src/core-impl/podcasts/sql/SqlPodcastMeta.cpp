@@ -45,14 +45,14 @@ class TimecodeWriteCapabilityPodcastImpl : public Capabilities::TimecodeWriteCap
             , m_episode( episode )
         {}
 
-    virtual bool writeTimecode ( qint64 miliseconds )
+    bool writeTimecode ( qint64 miliseconds ) override
     {
         DEBUG_BLOCK
         return Capabilities::TimecodeWriteCapability::writeTimecode( miliseconds,
                 Meta::TrackPtr::dynamicCast( m_episode ) );
     }
 
-    virtual bool writeAutoTimecode ( qint64 miliseconds )
+    bool writeAutoTimecode ( qint64 miliseconds ) override
     {
         DEBUG_BLOCK
         return Capabilities::TimecodeWriteCapability::writeAutoTimecode( miliseconds,
@@ -74,14 +74,14 @@ class TimecodeLoadCapabilityPodcastImpl : public Capabilities::TimecodeLoadCapab
             debug() << "episode: " << m_episode->name();
         }
 
-        virtual bool hasTimecodes()
+        bool hasTimecodes() override
         {
             if ( loadTimecodes().size() > 0 )
                 return true;
             return false;
         }
 
-        virtual BookmarkList loadTimecodes()
+        BookmarkList loadTimecodes() override
         {
             DEBUG_BLOCK
             if ( m_episode && m_episode->playableUrl().isValid() )

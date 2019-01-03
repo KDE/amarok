@@ -48,10 +48,10 @@ public:
 
 protected:
     void keyPressEvent( QKeyEvent *event ) override;
-    void mouseDoubleClickEvent( QMouseEvent *event );
-    void contextMenuEvent( QContextMenuEvent *event );
-    void resizeEvent( QResizeEvent *event );
-    bool viewportEvent( QEvent *event );
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
+    void contextMenuEvent( QContextMenuEvent *event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
+    bool viewportEvent( QEvent *event ) override;
 
 protected Q_SLOTS:
     void slotLoad();
@@ -65,7 +65,7 @@ protected Q_SLOTS:
     void slotSectionResized( int logicalIndex, int oldSize, int newSize );
     void slotSectionCountChanged( int oldCount, int newCount );
 
-    void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
+    void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected ) override;
 
 Q_SIGNALS:
     void bookmarkSelected( AmarokUrl bookmark );

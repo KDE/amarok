@@ -74,8 +74,8 @@ signals:
     void refreshRateChanged( qreal );
 
 protected:
-    virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) override;
-    virtual Analyzer::Worker* createWorker() const override;
+    void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry) override;
+    Analyzer::Worker* createWorker() const override;
     virtual void paletteChange( const QPalette& );
 
     void drawBackground( const QPalette &palette );

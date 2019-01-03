@@ -37,17 +37,17 @@ public:
     BookmarkTriangle( QWidget *parent, int milliseconds, QString name, int sliderwidth,
                       bool showPopup = false );
     ~BookmarkTriangle();
-    virtual QSize sizeHint() const;
+    QSize sizeHint() const override;
     virtual QSizePolicy sizePolicy() const;
-    virtual QSize minimumSizeHint() const;
+    QSize minimumSizeHint() const override;
 
-    virtual void showEvent ( QShowEvent * event );
-    virtual void mousePressEvent ( QMouseEvent * event );
-    virtual void mouseMoveEvent ( QMouseEvent * event );
-    virtual void mouseReleaseEvent  (QMouseEvent *);
-    virtual void enterEvent ( QEvent * event );
-    virtual void leaveEvent ( QEvent * event );
-    virtual void paintEvent ( QPaintEvent* );
+    void showEvent ( QShowEvent * event ) override;
+    void mousePressEvent ( QMouseEvent * event ) override;
+    void mouseMoveEvent ( QMouseEvent * event ) override;
+    void mouseReleaseEvent  (QMouseEvent *) override;
+    void enterEvent ( QEvent * event ) override;
+    void leaveEvent ( QEvent * event ) override;
+    void paintEvent ( QPaintEvent* ) override;
 
     virtual void hidePopup();
 

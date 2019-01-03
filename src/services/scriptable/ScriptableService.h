@@ -57,9 +57,9 @@ public:
 
     void init( int levels, const QString &rootHtml, bool showSearchBar );
 
-    void polish();
+    void polish() override;
 
-    Collections::ServiceCollection * collection();
+    Collections::ServiceCollection * collection() override;
 
     int insertItem( int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl,
                     const QString & albumOverride, const QString & artistOverride, const QString & genreOverride,

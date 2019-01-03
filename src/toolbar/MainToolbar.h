@@ -38,12 +38,12 @@ public:
     explicit MainToolbar( QWidget *parent = nullptr );
 
 protected:
-    bool eventFilter( QObject *o, QEvent *ev );
-    void showEvent( QShowEvent *ev );
-    void hideEvent( QHideEvent *ev );
-    void paintEvent( QPaintEvent *ev );
-    void resizeEvent( QResizeEvent *ev );
-    void timerEvent( QTimerEvent *ev );
+    bool eventFilter( QObject *o, QEvent *ev ) override;
+    void showEvent( QShowEvent *ev ) override;
+    void hideEvent( QHideEvent *ev ) override;
+    void paintEvent( QPaintEvent *ev ) override;
+    void resizeEvent( QResizeEvent *ev ) override;
+    void timerEvent( QTimerEvent *ev ) override;
 
 private:
     void animateTrackLabels();

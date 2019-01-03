@@ -44,28 +44,28 @@ public:
         , m_editors( editors )
     {}
 
-    void beginUpdate()
+    void beginUpdate() override
     {
         m_batchMode = true;
         foreach( TrackEditorPtr ec, m_editors ) ec->beginUpdate();
     }
-    void endUpdate()
+    void endUpdate() override
     {
         foreach( TrackEditorPtr ec, m_editors ) ec->endUpdate();
         m_batchMode = false;
         QTimer::singleShot( 0, m_collection, &Collections::AggregateCollection::slotUpdated );
     }
-    void setComment( const QString &newComment ) { FORWARD( setComment( newComment ) ) }
-    void setTrackNumber( int newTrackNumber ) { FORWARD( setTrackNumber( newTrackNumber ) ) }
-    void setDiscNumber( int newDiscNumber ) { FORWARD( setDiscNumber( newDiscNumber ) ) }
-    void setBpm( const qreal newBpm ) { FORWARD( setBpm( newBpm ) ) }
-    void setTitle( const QString &newTitle ) { FORWARD( setTitle( newTitle ) ) }
-    void setArtist( const QString &newArtist ) { FORWARD( setArtist( newArtist ) ) }
-    void setAlbum( const QString &newAlbum ) { FORWARD( setAlbum( newAlbum ) ) }
-    void setAlbumArtist( const QString &newAlbumArtist ) { FORWARD( setAlbumArtist ( newAlbumArtist ) ) }
-    void setGenre( const QString &newGenre ) { FORWARD( setGenre( newGenre ) ) }
-    void setComposer( const QString &newComposer ) { FORWARD( setComposer( newComposer ) ) }
-    void setYear( int newYear ) { FORWARD( setYear( newYear ) ) }
+    void setComment( const QString &newComment ) override { FORWARD( setComment( newComment ) ) }
+    void setTrackNumber( int newTrackNumber ) override { FORWARD( setTrackNumber( newTrackNumber ) ) }
+    void setDiscNumber( int newDiscNumber ) override { FORWARD( setDiscNumber( newDiscNumber ) ) }
+    void setBpm( const qreal newBpm ) override { FORWARD( setBpm( newBpm ) ) }
+    void setTitle( const QString &newTitle ) override { FORWARD( setTitle( newTitle ) ) }
+    void setArtist( const QString &newArtist ) override { FORWARD( setArtist( newArtist ) ) }
+    void setAlbum( const QString &newAlbum ) override { FORWARD( setAlbum( newAlbum ) ) }
+    void setAlbumArtist( const QString &newAlbumArtist ) override { FORWARD( setAlbumArtist ( newAlbumArtist ) ) }
+    void setGenre( const QString &newGenre ) override { FORWARD( setGenre( newGenre ) ) }
+    void setComposer( const QString &newComposer ) override { FORWARD( setComposer( newComposer ) ) }
+    void setYear( int newYear ) override { FORWARD( setYear( newYear ) ) }
 private:
     bool m_batchMode;
     Collections::AggregateCollection *m_collection;

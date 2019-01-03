@@ -59,20 +59,20 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
         explicit MediaDeviceTrack( Collections::MediaDeviceCollection *collection );
         virtual ~MediaDeviceTrack();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual QUrl playableUrl() const;
-        virtual QString uidUrl() const;
-        virtual QString prettyUrl() const;
-        virtual QString notPlayableReason() const;
+        QUrl playableUrl() const override;
+        QString uidUrl() const override;
+        QString prettyUrl() const override;
+        QString notPlayableReason() const override;
 
         bool isEditable() const;
 
-        virtual AlbumPtr album() const;
-        virtual ArtistPtr artist() const;
-        virtual GenrePtr genre() const;
-        virtual ComposerPtr composer() const;
-        virtual YearPtr year() const;
+        AlbumPtr album() const override;
+        ArtistPtr artist() const override;
+        GenrePtr genre() const override;
+        ComposerPtr composer() const override;
+        YearPtr year() const override;
 
         virtual void setAlbum ( const QString &newAlbum );
         virtual void setAlbumArtist( const QString &newAlbumArtist );
@@ -84,56 +84,56 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
         virtual QString title() const;
         virtual void setTitle( const QString &newTitle );
 
-        virtual QString comment() const;
+        QString comment() const override;
         virtual void setComment ( const QString &newComment );
 
-        virtual qint64 length() const;
+        qint64 length() const override;
 
         void setFileSize( int newFileSize );
-        virtual int filesize() const;
+        int filesize() const override;
 
-        virtual int bitrate() const;
+        int bitrate() const override;
         virtual void setBitrate( int newBitrate );
 
-        virtual int sampleRate() const;
+        int sampleRate() const override;
         virtual void setSamplerate( int newSamplerate );
 
-        virtual qreal bpm() const;
+        qreal bpm() const override;
         virtual void setBpm( const qreal newBpm );
 
-        virtual int trackNumber() const;
+        int trackNumber() const override;
         virtual void setTrackNumber ( int newTrackNumber );
 
-        virtual int discNumber() const;
+        int discNumber() const override;
         virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual qreal replayGain( ReplayGainTag mode ) const;
+        qreal replayGain( ReplayGainTag mode ) const override;
         /* Set the track replay gain (other types unsupported) */
         void setReplayGain( qreal newReplayGain );
 
-        virtual QString type() const;
-        virtual void prepareToPlay();
+        QString type() const override;
+        void prepareToPlay() override;
 
-        virtual bool inCollection() const;
-        virtual Collections::Collection* collection() const;
+        bool inCollection() const override;
+        Collections::Collection* collection() const override;
 
-        virtual TrackEditorPtr editor();
-        virtual StatisticsPtr statistics();
+        TrackEditorPtr editor() override;
+        StatisticsPtr statistics() override;
 
         // Meta::Statistics methods
-        virtual double score() const;
-        virtual void setScore ( double newScore );
+        double score() const override;
+        void setScore ( double newScore ) override;
 
-        virtual int rating() const;
-        virtual void setRating ( int newRating );
+        int rating() const override;
+        void setRating ( int newRating ) override;
 
-        virtual QDateTime lastPlayed() const;
-        void setLastPlayed( const QDateTime &newTime );
+        QDateTime lastPlayed() const override;
+        void setLastPlayed( const QDateTime &newTime ) override;
 
         // firstPlayed() not available in any media device
 
-        virtual int playCount() const;
-        void setPlayCount( const int newCount );
+        int playCount() const override;
+        void setPlayCount( const int newCount ) override;
 
         //MediaDeviceTrack specific methods
 
@@ -192,9 +192,9 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceArtist : public Meta::Artist
         explicit MediaDeviceArtist( const QString &name );
         virtual ~MediaDeviceArtist();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //MediaDeviceArtist specific methods
         virtual void addTrack( MediaDeviceTrackPtr track );
@@ -211,23 +211,23 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         MediaDeviceAlbum( Collections::MediaDeviceCollection *collection, const QString &name );
         virtual ~MediaDeviceAlbum();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual bool isCompilation() const;
+        bool isCompilation() const override;
         void setIsCompilation( bool compilation );
 
-        virtual bool hasAlbumArtist() const;
-        virtual ArtistPtr albumArtist() const;
-        virtual TrackList tracks();
+        bool hasAlbumArtist() const override;
+        ArtistPtr albumArtist() const override;
+        TrackList tracks() override;
 
-        virtual bool hasImage( int size = 0 ) const;
-        virtual QImage image( int size = 0 ) const;
-        virtual bool canUpdateImage() const;
-        virtual void setImage( const QImage &image );
+        bool hasImage( int size = 0 ) const override;
+        QImage image( int size = 0 ) const override;
+        bool canUpdateImage() const override;
+        void setImage( const QImage &image ) override;
         virtual void setImagePath( const QString &path );
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         //MediaDeviceAlbum specific methods
 
@@ -254,9 +254,9 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceComposer : public Meta::Composer
         explicit MediaDeviceComposer( const QString &name );
         virtual ~MediaDeviceComposer();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //MediaDeviceComposer specific methods
         void addTrack( MediaDeviceTrackPtr track );
@@ -273,9 +273,9 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceGenre : public Meta::Genre
         explicit MediaDeviceGenre( const QString &name );
         virtual ~MediaDeviceGenre();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //MediaDeviceGenre specific methods
         void addTrack( MediaDeviceTrackPtr track );
@@ -293,9 +293,9 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceYear : public Meta::Year
         explicit MediaDeviceYear( const QString &name );
         virtual ~MediaDeviceYear();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //MediaDeviceYear specific methods
         void addTrack( MediaDeviceTrackPtr track );

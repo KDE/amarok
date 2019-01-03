@@ -43,8 +43,8 @@ public:
     explicit PrettyItemDelegate( QObject* parent = nullptr );
     ~PrettyItemDelegate();
 
-    QSize sizeHint( const QStyleOptionViewItem&, const QModelIndex& ) const;
-    void paint( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const;
+    QSize sizeHint( const QStyleOptionViewItem&, const QModelIndex& ) const override;
+    void paint( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const override;
 
     // helper function for view which lets us determine if a click is within an album group's header
     bool insideItemHeader( const QPoint&, const QRect& );
@@ -60,10 +60,10 @@ public:
     */
     bool clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index );
 
-    QWidget * createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    QWidget * createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
 
-    void setModelData ( QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const;
-    void updateEditorGeometry ( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    void setModelData ( QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const override;
+    void updateEditorGeometry ( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
 
 
     /**

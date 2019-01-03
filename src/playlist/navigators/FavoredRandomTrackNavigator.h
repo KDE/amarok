@@ -34,9 +34,9 @@ namespace Playlist
 
         private:
             //! Override from 'NonlinearTrackNavigator'
-            void planOne();
-            void notifyItemsInserted( const QSet<quint64> &insertedItems ) { Q_UNUSED( insertedItems ); }
-            void notifyItemsRemoved( const QSet<quint64> &removedItems ) { Q_UNUSED( removedItems ); }
+            void planOne() override;
+            void notifyItemsInserted( const QSet<quint64> &insertedItems ) override { Q_UNUSED( insertedItems ); }
+            void notifyItemsRemoved( const QSet<quint64> &removedItems ) override { Q_UNUSED( removedItems ); }
 
             QList<qreal> rowWeights( QSet<quint64> avoidSet );
             QSet<quint64> getRecentHistory( int size );

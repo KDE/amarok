@@ -54,7 +54,7 @@ class OSDWidget : public QWidget
         /** reimplemented, hide the OSD */
         virtual void hide();
 
-        virtual void setVisible( bool visible );
+        void setVisible( bool visible ) override;
 
         /**
          * For the sake of simplicity, when these settings are
@@ -108,9 +108,9 @@ class OSDWidget : public QWidget
         void unsetColors();
 
         // Reimplemented from QWidget
-        virtual void paintEvent( QPaintEvent* );
-        virtual void mousePressEvent( QMouseEvent* );
-        virtual void changeEvent( QEvent* );
+        void paintEvent( QPaintEvent* ) override;
+        void mousePressEvent( QMouseEvent* ) override;
+        void changeEvent( QEvent* ) override;
 
         /** distance from screen edge */
         static const int MARGIN = 15;
@@ -151,7 +151,7 @@ public Q_SLOTS:
 
     void setUseCustomColors( const bool use, const QColor &fg );
 
-    virtual void hide() { QWidget::hide(); }
+    void hide() override { QWidget::hide(); }
 
 private:
     inline void doUpdate() { if( !isHidden() ) show(); }
@@ -160,9 +160,9 @@ Q_SIGNALS:
     void positionChanged();
 
 protected:
-    void mousePressEvent( QMouseEvent * );
-    void mouseReleaseEvent( QMouseEvent * );
-    void mouseMoveEvent( QMouseEvent * );
+    void mousePressEvent( QMouseEvent * ) override;
+    void mouseReleaseEvent( QMouseEvent * ) override;
+    void mouseMoveEvent( QMouseEvent * ) override;
 
 private:
     bool   m_dragging;
@@ -185,7 +185,7 @@ namespace Amarok
         virtual void show( Meta::TrackPtr track );
 
         // Don't hide baseclass methods - prevent compiler warnings
-        virtual void show() { OSDWidget::show(); }
+        void show() override { OSDWidget::show(); }
 
     protected Q_SLOTS:
         void muteStateChanged( bool mute );

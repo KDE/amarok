@@ -36,19 +36,19 @@ public:
     ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, QString name );
     ~ScriptableServiceQueryMaker();
 
-    virtual void run();
-    virtual void abortQuery();
+    void run() override;
+    void abortQuery() override;
 
-    virtual QueryMaker* setQueryType( QueryType type );
+    QueryMaker* setQueryType( QueryType type ) override;
 
-    virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
+    QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) override;
 
     using QueryMaker::addMatch;
-    virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
-    virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
-    virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
+    QueryMaker* addMatch( const Meta::GenrePtr &genre ) override;
+    QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists ) override;
+    QueryMaker* addMatch( const Meta::AlbumPtr &album ) override;
 
-    virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+    QueryMaker* setAlbumQueryMode( AlbumQueryMode mode ) override;
 
     // ScriptableServiceQueryMaker-specific methods
 

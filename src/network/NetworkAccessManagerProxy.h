@@ -116,8 +116,8 @@ public Q_SLOTS:
     void slotError( QObject *reply );
 
 protected:
-    virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req,
-                                         QIODevice *outgoingData = 0);
+    QNetworkReply *createRequest(Operation op, const QNetworkRequest &req,
+                                         QIODevice *outgoingData = 0) override;
 
 private:
     NetworkAccessManagerProxy( QObject *parent = nullptr );

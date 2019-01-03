@@ -50,31 +50,31 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         virtual ~SqlPodcastProvider();
 
         //TrackProvider methods
-        virtual bool possiblyContainsTrack( const QUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+        bool possiblyContainsTrack( const QUrl &url ) const override;
+        Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
         //PlaylistProvider methods
-        virtual QString prettyName() const { return i18n("Local Podcasts"); }
-        virtual QIcon icon() const { return QIcon::fromTheme( "server-database" ); }
+        QString prettyName() const override { return i18n("Local Podcasts"); }
+        QIcon icon() const override { return QIcon::fromTheme( "server-database" ); }
 
-        virtual Playlists::PlaylistList playlists();
+        Playlists::PlaylistList playlists() override;
 
         //PlaylistProvider methods
-        virtual QActionList providerActions();
-        virtual QActionList playlistActions( const Playlists::PlaylistList &playlists );
-        virtual QActionList trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks );
+        QActionList providerActions() override;
+        QActionList playlistActions( const Playlists::PlaylistList &playlists ) override;
+        QActionList trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks ) override;
 
         //PodcastProvider methods
-        virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid );
+        Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid ) override;
 
-        virtual void addPodcast( const QUrl &url );
+        void addPodcast( const QUrl &url ) override;
 
-        virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
-        virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
+        Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel ) override;
+        Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override;
 
-        virtual Podcasts::PodcastChannelList channels();
+        Podcasts::PodcastChannelList channels() override;
 
-        virtual void completePodcastDownloads();
+        void completePodcastDownloads() override;
 
         //SqlPodcastProvider specific methods
         virtual Podcasts::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
@@ -82,7 +82,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         virtual QUrl baseDownloadDir() const { return m_baseDownloadDir; }
 
     public Q_SLOTS:
-        void updateAll();
+        void updateAll() override;
         void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );
 

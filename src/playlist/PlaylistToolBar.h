@@ -60,8 +60,8 @@ private Q_SLOTS:
     void onActionsAdded();
 
 protected:
-    void resizeEvent( QResizeEvent *event );
-    void actionEvent( QActionEvent *event );
+    void resizeEvent( QResizeEvent *event ) override;
+    void actionEvent( QActionEvent *event ) override;
 
 private:
     /**

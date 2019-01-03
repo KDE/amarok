@@ -28,15 +28,15 @@ class MediaDevicePodcastProvider : public Podcasts::PodcastProvider
         explicit MediaDevicePodcastProvider( Meta::MediaDeviceHandler *handler );
 
         //TODO:implement these
-        virtual bool possiblyContainsTrack( const QUrl &url ) const { Q_UNUSED(url); return false;}
-        virtual Meta::TrackPtr trackForUrl( const QUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  }
+        bool possiblyContainsTrack( const QUrl &url ) const override { Q_UNUSED(url); return false;}
+        Meta::TrackPtr trackForUrl( const QUrl &url ) override { Q_UNUSED(url); return Meta::TrackPtr();  }
 
-        virtual void addPodcast( const QUrl &url );
+        void addPodcast( const QUrl &url ) override;
 
-        virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
-        virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
+        Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel ) override;
+        Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override;
 
-        virtual Podcasts::PodcastChannelList channels();
+        Podcasts::PodcastChannelList channels() override;
 
         virtual void removeSubscription( Podcasts::PodcastChannelPtr channel );
 
@@ -44,13 +44,13 @@ class MediaDevicePodcastProvider : public Podcasts::PodcastProvider
         virtual void configureChannel( Podcasts::PodcastChannelPtr channel );
 
         // PlaylistProvider methods
-        virtual QString prettyName() const;
-        virtual int category() const { return (int)Playlists::PodcastChannelPlaylist; }
+        QString prettyName() const override;
+        int category() const override { return (int)Playlists::PodcastChannelPlaylist; }
 
-        virtual Playlists::PlaylistList playlists();
+        Playlists::PlaylistList playlists() override;
 
-        virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
-        virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
+        Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist ) override;
+        Meta::TrackPtr addTrack( Meta::TrackPtr track ) override;
 
     private:
         Meta::MediaDeviceHandler *m_handler;

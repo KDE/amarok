@@ -39,11 +39,11 @@ namespace APG {
                                                  // user opens the APG
 
             // Overloaded QAbstractListModel methods
-            QVariant data( const QModelIndex&, int role = Qt::DisplayRole ) const;
-            QModelIndex index( int, int, const QModelIndex& parent = QModelIndex() ) const;
-            QModelIndex parent( const QModelIndex& ) const { return QModelIndex(); }
-            int rowCount( const QModelIndex& parent = QModelIndex() ) const;
-            int columnCount( const QModelIndex& ) const { return 1; }
+            QVariant data( const QModelIndex&, int role = Qt::DisplayRole ) const override;
+            QModelIndex index( int, int, const QModelIndex& parent = QModelIndex() ) const override;
+            QModelIndex parent( const QModelIndex& ) const override { return QModelIndex(); }
+            int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
+            int columnCount( const QModelIndex& ) const override { return 1; }
 
             APG::PresetPtr activePreset() const;
 

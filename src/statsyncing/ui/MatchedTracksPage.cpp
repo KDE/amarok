@@ -57,7 +57,7 @@ namespace StatSyncing
             }
 
         protected:
-            bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+            bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override
             {
                 if( source_parent.isValid() )
                     return true; // we match all child items, we filter only root ones
@@ -71,7 +71,7 @@ namespace StatSyncing
                 return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
             }
 
-            bool lessThan( const QModelIndex &left, const QModelIndex &right ) const
+            bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override
             {
                 if( left.parent().isValid() ) // we are comparing childs, special mode:
                 {

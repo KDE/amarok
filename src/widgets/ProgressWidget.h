@@ -36,7 +36,7 @@ class ProgressWidget : public QWidget
     public:
         explicit ProgressWidget( QWidget* );
 
-        virtual QSize sizeHint() const;
+        QSize sizeHint() const override;
         void addBookmark( const QString &name, int milliSeconds , bool instantDisplayPopUp );
         Amarok::TimeSlider* slider() const { return m_slider; }
 
@@ -51,7 +51,7 @@ class ProgressWidget : public QWidget
         void trackPositionChanged( qint64 position );
 
     protected:
-        virtual void mousePressEvent( QMouseEvent * );
+        void mousePressEvent( QMouseEvent * ) override;
 
     private Q_SLOTS:
         void addBookmarkNoPopup( const QString &name, int milliSeconds );

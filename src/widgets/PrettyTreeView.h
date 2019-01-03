@@ -59,32 +59,32 @@ namespace Amarok
             QAction *pressedDecoratorAction() const;
 
         protected:
-            bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event );
-            void drawRow( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+            bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event ) override;
+            void drawRow( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
             /**
              * Reimplemented to trigger item redraw in case mouse is over an item which
              * has decorator actions.
              */
-            void mouseMoveEvent( QMouseEvent *event );
+            void mouseMoveEvent( QMouseEvent *event ) override;
 
             /**
              * Reimplemented to handle expanding with single-click mouse setting event
              * when it is clicked outside the arrow and for consistency with
              * mouseReleaseEvent() in case of decorator actions.
              */
-            void mousePressEvent( QMouseEvent *event );
+            void mousePressEvent( QMouseEvent *event ) override;
 
             /**
              * Reimplemented to handle expanding with single-click mouse setting event
              * when it is clicked outside the arrow and to handle clicking on decorator
              * actions */
-            void mouseReleaseEvent( QMouseEvent *event );
+            void mouseReleaseEvent( QMouseEvent *event ) override;
 
             /**
              * Reimplemented to show proper tooltips for decorator actions.
              */
-            bool viewportEvent( QEvent *event );
+            bool viewportEvent( QEvent *event ) override;
 
             /**
              * Get dectorator action (little action icon as seen for example in collection

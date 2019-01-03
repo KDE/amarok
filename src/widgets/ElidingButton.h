@@ -43,7 +43,7 @@ namespace Amarok
             QSizePolicy sizePolicy() const;
 
             virtual void setText( const QString &text );
-            virtual void resizeEvent( QResizeEvent *event );
+            void resizeEvent( QResizeEvent *event ) override;
 
         Q_SIGNALS:
             void sizePolicyChanged();

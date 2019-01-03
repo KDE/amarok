@@ -41,7 +41,7 @@ public:
 
     BrowserCategoryList *list() const;
     void navigate( const QString &target );
-    void polish();
+    void polish() override;
 
 private Q_SLOTS:
     void home();

@@ -44,7 +44,7 @@ public:
     void setTarget( Collections::Collection *target );
 
 protected:
-    void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB );
+    void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB ) override;
 
 private:
     Collections::Collection *m_source;

@@ -49,13 +49,13 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
         ServiceCollection( ServiceBase * service, const QString &id, const QString &prettyName );
         virtual ~ServiceCollection();
 
-        virtual Collections::QueryMaker* queryMaker();
+        Collections::QueryMaker* queryMaker() override;
 
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;
-        virtual QIcon icon() const { return QIcon::fromTheme("action-view-services-scripted-amarok"); }
+        QString collectionId() const override;
+        QString prettyName() const override;
+        QIcon icon() const override { return QIcon::fromTheme("action-view-services-scripted-amarok"); }
 
-        virtual CollectionLocation* location();
+        CollectionLocation* location() override;
 
         void emitUpdated();
 

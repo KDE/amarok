@@ -43,14 +43,14 @@ class ConstraintGroup : public ConstraintNode {
         static ConstraintGroup* createFromXml( QDomElement&, ConstraintNode* );
         static ConstraintGroup* createNew( ConstraintNode* );
 
-        virtual QString getName() const;
-        virtual int getNodeType() const { return ConstraintNode::ConstraintGroupType; }
-        virtual QWidget* editWidget() const;
-        virtual void toXml( QDomDocument&, QDomElement& ) const;
+        QString getName() const override;
+        int getNodeType() const override { return ConstraintNode::ConstraintGroupType; }
+        QWidget* editWidget() const override;
+        void toXml( QDomDocument&, QDomElement& ) const override;
 
-        virtual Collections::QueryMaker* initQueryMaker( Collections::QueryMaker* ) const;
-        virtual double satisfaction( const Meta::TrackList& ) const;
-        virtual quint32 suggestPlaylistSize() const;
+        Collections::QueryMaker* initQueryMaker( Collections::QueryMaker* ) const override;
+        double satisfaction( const Meta::TrackList& ) const override;
+        quint32 suggestPlaylistSize() const override;
 
     private Q_SLOTS:
         void setMatchAny();

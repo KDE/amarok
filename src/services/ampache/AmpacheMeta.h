@@ -46,14 +46,14 @@ public:
         Q_UNUSED(m_service); // might be used again later
     }
 
-    virtual QString sourceName() { return "Ampache"; }
-    virtual QString sourceDescription() { return "The Ampache music server project: http://Ampache.org"; }
-    virtual QPixmap emblem()  { return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-ampache.png" ) );  }
-    virtual QString scalableEmblem()  { return  QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-ampache-scalable.svgz" );  }
-    virtual QString notPlayableReason() const;
+    QString sourceName() override { return "Ampache"; }
+    QString sourceDescription() override { return "The Ampache music server project: http://Ampache.org"; }
+    QPixmap emblem()  override { return QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-ampache.png" ) );  }
+    QString scalableEmblem()  override { return  QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-ampache-scalable.svgz" );  }
+    QString notPlayableReason() const override;
 
-    virtual int discNumber() const { return m_discNumber; }
-    virtual void setDiscNumber( int newDiscNumber ) { m_discNumber = newDiscNumber; }
+    int discNumber() const override { return m_discNumber; }
+    void setDiscNumber( int newDiscNumber ) override { m_discNumber = newDiscNumber; }
 
 private:
     ServiceBase * m_service;
@@ -73,12 +73,12 @@ public:
 
     ~AmpacheAlbum();
 
-    virtual QString downloadPrefix() const { return "ampache"; }
+    QString downloadPrefix() const override { return "ampache"; }
 
-    virtual void setCoverUrl( const QString &coverURL );
-    virtual QString coverUrl() const;
+    void setCoverUrl( const QString &coverURL ) override;
+    QString coverUrl() const override;
 
-    bool operator==( const Meta::Album &other ) const
+    bool operator==( const Meta::Album &other ) const override
     {
         return name() == other.name();
     }
@@ -119,11 +119,11 @@ class AmpacheArtist : public ServiceArtist
             , m_service( service )
         {}
 
-        virtual bool isBookmarkable() const { return true; }
-        virtual QString collectionName() const { return m_service->name(); }
-        virtual bool simpleFiltering() const { return true; }
+        bool isBookmarkable() const override { return true; }
+        QString collectionName() const override { return m_service->name(); }
+        bool simpleFiltering() const override { return true; }
 
-        bool operator==( const Meta::Artist &other ) const
+        bool operator==( const Meta::Artist &other ) const override
         {
             return name() == other.name();
         }

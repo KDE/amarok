@@ -62,17 +62,17 @@ namespace ConstraintTypes {
             static Constraint* createNew(ConstraintNode*);
             static ConstraintFactoryEntry* registerMe();
 
-            virtual QWidget* editWidget() const;
-            virtual void toXml(QDomDocument&, QDomElement&) const;
+            QWidget* editWidget() const override;
+            void toXml(QDomDocument&, QDomElement&) const override;
 
-            virtual QString getName() const;
+            QString getName() const override;
 
-            virtual Collections::QueryMaker* initQueryMaker(Collections::QueryMaker*) const;
-            virtual double satisfaction(const Meta::TrackList&) const;
+            Collections::QueryMaker* initQueryMaker(Collections::QueryMaker*) const override;
+            double satisfaction(const Meta::TrackList&) const override;
 
             // Implementation of MatchingConstraint virtuals
-            const QBitArray whatTracksMatch( const Meta::TrackList& );
-            int constraintMatchType() const;
+            const QBitArray whatTracksMatch( const Meta::TrackList& ) override;
+            int constraintMatchType() const override;
 
         private Q_SLOTS:
             void setComparison( int );
@@ -138,8 +138,8 @@ namespace ConstraintTypes {
             ~TagMatchFieldsModel();
 
             // required by QAbstractListModel
-            QVariant data( const QModelIndex&, int role = Qt::DisplayRole ) const;
-            int rowCount( const QModelIndex& parent = QModelIndex() ) const;
+            QVariant data( const QModelIndex&, int role = Qt::DisplayRole ) const override;
+            int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
 
             bool contains( const QString& ) const;
             int index_of( const QString& ) const;

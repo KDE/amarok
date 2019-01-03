@@ -56,7 +56,7 @@ class AMAROK_EXPORT AndContainerMemoryFilter : public ContainerMemoryFilter
     public:
         AndContainerMemoryFilter();
         virtual ~AndContainerMemoryFilter();
-        virtual bool filterMatches( Meta::TrackPtr track ) const;
+        bool filterMatches( Meta::TrackPtr track ) const override;
 };
 
 class AMAROK_EXPORT OrContainerMemoryFilter : public ContainerMemoryFilter
@@ -64,7 +64,7 @@ class AMAROK_EXPORT OrContainerMemoryFilter : public ContainerMemoryFilter
     public:
         OrContainerMemoryFilter();
         virtual ~OrContainerMemoryFilter();
-        virtual bool filterMatches( Meta::TrackPtr track ) const;
+        bool filterMatches( Meta::TrackPtr track ) const override;
 };
 
 class AMAROK_EXPORT NegateMemoryFilter : public MemoryFilter
@@ -72,7 +72,7 @@ class AMAROK_EXPORT NegateMemoryFilter : public MemoryFilter
     public:
         explicit NegateMemoryFilter( MemoryFilter *filter );
         virtual ~NegateMemoryFilter();
-        virtual bool filterMatches( Meta::TrackPtr track ) const;
+        bool filterMatches( Meta::TrackPtr track ) const override;
     private:
         MemoryFilter *m_filter;
 };
@@ -82,7 +82,7 @@ class AMAROK_EXPORT StringMemoryFilter : public MemoryFilter
     public:
         StringMemoryFilter();
         virtual ~StringMemoryFilter();
-        virtual bool filterMatches( Meta::TrackPtr track ) const;
+        bool filterMatches( Meta::TrackPtr track ) const override;
 
         void setFilter( const QString &filter, bool matchBegin, bool matchEnd );
     protected:
@@ -101,7 +101,7 @@ class AMAROK_EXPORT NumberMemoryFilter : public MemoryFilter
         NumberMemoryFilter();
         virtual ~NumberMemoryFilter();
         void setFilter( qint64 filter, Collections::QueryMaker::NumberComparison compare );
-        bool filterMatches( Meta::TrackPtr track ) const;
+        bool filterMatches( Meta::TrackPtr track ) const override;
     protected:
         virtual qint64 value( Meta::TrackPtr track ) const = 0;
     private:
@@ -115,7 +115,7 @@ class AMAROK_EXPORT LabelFilter : public MemoryFilter
 public:
     LabelFilter( const QString &filter, bool matchBegin, bool matchEnd );
     virtual ~ LabelFilter();
-    bool filterMatches( Meta::TrackPtr track ) const;
+    bool filterMatches( Meta::TrackPtr track ) const override;
 
 private:
     QRegExp m_expression;

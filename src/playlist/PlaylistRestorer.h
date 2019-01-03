@@ -41,7 +41,7 @@ class Restorer: public QObject, public Playlists::PlaylistObserver
         void restore( const QUrl &path );
 
         // PlaylistObserver methods:
-        virtual void tracksLoaded( Playlists::PlaylistPtr );
+        void tracksLoaded( Playlists::PlaylistPtr ) override;
 
     Q_SIGNALS:
         void restoreFinished();

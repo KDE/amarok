@@ -27,40 +27,40 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
         virtual ~SyncedPodcast() {}
 
         //Playlist virtual methods
-        virtual QString name() const { return title(); }
+        QString name() const override { return title(); }
 
         //PodcastMetaCommon methods
-        virtual QString title() const { return m_master->title(); }
-        virtual QString description() const { return m_master->description(); }
-        virtual QStringList keywords() const { return m_master->keywords(); }
-        virtual QString subtitle() const { return m_master->subtitle(); }
-        virtual QString summary() const { return m_master->summary(); }
-        virtual QString author() const { return m_master->author(); }
+        QString title() const override { return m_master->title(); }
+        QString description() const override { return m_master->description(); }
+        QStringList keywords() const override { return m_master->keywords(); }
+        QString subtitle() const override { return m_master->subtitle(); }
+        QString summary() const override { return m_master->summary(); }
+        QString author() const override { return m_master->author(); }
 
         //Podcasts::PodcastChannel methods
-        virtual QUrl url() const { return m_master->url(); }
-        virtual QUrl webLink() const { return m_master->webLink(); }
-        virtual bool hasImage() const { return m_master->hasImage(); }
-        virtual QUrl imageUrl() const { return m_master->imageUrl(); }
-        virtual QImage image() const { return m_master->image(); }
-        virtual QString copyright() const { return m_master->copyright(); }
-        virtual QStringList labels() const { return m_master->labels(); }
-        virtual QDate subscribeDate() const { return m_master->subscribeDate(); }
+        QUrl url() const override { return m_master->url(); }
+        QUrl webLink() const override { return m_master->webLink(); }
+        bool hasImage() const override { return m_master->hasImage(); }
+        QUrl imageUrl() const override { return m_master->imageUrl(); }
+        QImage image() const override { return m_master->image(); }
+        QString copyright() const override { return m_master->copyright(); }
+        QStringList labels() const override { return m_master->labels(); }
+        QDate subscribeDate() const override { return m_master->subscribeDate(); }
 
-        virtual void setUrl( const QUrl &url ) { m_master->setUrl( url ); }
-        virtual void setWebLink( const QUrl &link ) { m_master->setWebLink( link ); }
-        virtual void setImage( const QImage &image ) { m_master->setImage( image ); }
-        virtual void setImageUrl( const QUrl &imageUrl ) { m_master->setImageUrl( imageUrl ); }
-        virtual void setCopyright( const QString &copyright ) { m_master->setCopyright( copyright ); }
-        virtual void setLabels( const QStringList &labels ) { m_master->setLabels( labels ); }
-        virtual void addLabel( const QString &label ) { m_master->addLabel( label ); }
-        virtual void setSubscribeDate( const QDate &date ) { m_master->setSubscribeDate( date ); }
+        void setUrl( const QUrl &url ) override { m_master->setUrl( url ); }
+        void setWebLink( const QUrl &link ) override { m_master->setWebLink( link ); }
+        void setImage( const QImage &image ) override { m_master->setImage( image ); }
+        void setImageUrl( const QUrl &imageUrl ) override { m_master->setImageUrl( imageUrl ); }
+        void setCopyright( const QString &copyright ) override { m_master->setCopyright( copyright ); }
+        void setLabels( const QStringList &labels ) override { m_master->setLabels( labels ); }
+        void addLabel( const QString &label ) override { m_master->addLabel( label ); }
+        void setSubscribeDate( const QDate &date ) override { m_master->setSubscribeDate( date ); }
 
-        virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode )
+        Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override
         {
             return m_master->addEpisode( episode );
         }
-        virtual Podcasts::PodcastEpisodeList episodes() const { return m_master->episodes(); }
+        Podcasts::PodcastEpisodeList episodes() const override { return m_master->episodes(); }
 
         bool load( QTextStream &stream ) { return m_master->load( stream ); }
 

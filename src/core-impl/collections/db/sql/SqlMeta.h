@@ -75,81 +75,81 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics, pu
         SqlTrack( Collections::SqlCollection *collection, const QStringList &queryResult );
         ~ SqlTrack();
 
-        virtual QString name() const;
-        virtual QString prettyName() const;
-        virtual QUrl playableUrl() const;
-        virtual QString prettyUrl() const;
-        virtual QString uidUrl() const;
-        virtual QString notPlayableReason() const;
+        QString name() const override;
+        QString prettyName() const override;
+        QUrl playableUrl() const override;
+        QString prettyUrl() const override;
+        QString uidUrl() const override;
+        QString notPlayableReason() const override;
 
-        virtual Meta::AlbumPtr album() const;
-        virtual Meta::ArtistPtr artist() const;
-        virtual Meta::ComposerPtr composer() const;
-        virtual Meta::YearPtr year() const;
-        virtual Meta::GenrePtr genre() const;
+        Meta::AlbumPtr album() const override;
+        Meta::ArtistPtr artist() const override;
+        Meta::ComposerPtr composer() const override;
+        Meta::YearPtr year() const override;
+        Meta::GenrePtr genre() const override;
 
-        virtual QString type() const;
-        virtual qreal bpm() const;
-        virtual QString comment() const;
-        virtual qint64 length() const;
-        virtual int filesize() const;
-        virtual int sampleRate() const;
-        virtual int bitrate() const;
-        virtual QDateTime createDate() const;
-        virtual QDateTime modifyDate() const;
-        virtual int trackNumber() const;
-        virtual int discNumber() const;
-        virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
+        QString type() const override;
+        qreal bpm() const override;
+        QString comment() const override;
+        qint64 length() const override;
+        int filesize() const override;
+        int sampleRate() const override;
+        int bitrate() const override;
+        QDateTime createDate() const override;
+        QDateTime modifyDate() const override;
+        int trackNumber() const override;
+        int discNumber() const override;
+        qreal replayGain( Meta::ReplayGainTag mode ) const override;
 
-        virtual bool inCollection() const;
-        virtual Collections::Collection* collection() const;
+        bool inCollection() const override;
+        Collections::Collection* collection() const override;
 
-        virtual QString cachedLyrics() const;
-        virtual void setCachedLyrics( const QString &lyrics );
+        QString cachedLyrics() const override;
+        void setCachedLyrics( const QString &lyrics ) override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
-        virtual void addLabel( const QString &label );
-        virtual void addLabel( const Meta::LabelPtr &label );
-        virtual void removeLabel( const Meta::LabelPtr &label );
-        virtual Meta::LabelList labels() const;
+        void addLabel( const QString &label ) override;
+        void addLabel( const Meta::LabelPtr &label ) override;
+        void removeLabel( const Meta::LabelPtr &label ) override;
+        Meta::LabelList labels() const override;
 
-        virtual TrackEditorPtr editor();
-        virtual StatisticsPtr statistics();
+        TrackEditorPtr editor() override;
+        StatisticsPtr statistics() override;
 
         // Meta::TrackEditor methods:
-        virtual void setAlbum( const QString &newAlbum );
-        virtual void setAlbumArtist( const QString &newAlbumArtist );
-        virtual void setArtist( const QString &newArtist );
-        virtual void setComposer( const QString &newComposer );
-        virtual void setGenre( const QString &newGenre );
-        virtual void setYear( int newYear );
-        virtual void setTitle( const QString &newTitle );
-        virtual void setComment( const QString &newComment );
-        virtual void setTrackNumber( int newTrackNumber );
-        virtual void setDiscNumber( int newDiscNumber );
-        virtual void setBpm( const qreal newBpm );
+        void setAlbum( const QString &newAlbum ) override;
+        void setAlbumArtist( const QString &newAlbumArtist ) override;
+        void setArtist( const QString &newArtist ) override;
+        void setComposer( const QString &newComposer ) override;
+        void setGenre( const QString &newGenre ) override;
+        void setYear( int newYear ) override;
+        void setTitle( const QString &newTitle ) override;
+        void setComment( const QString &newComment ) override;
+        void setTrackNumber( int newTrackNumber ) override;
+        void setDiscNumber( int newDiscNumber ) override;
+        void setBpm( const qreal newBpm ) override;
 
         // Meta::Statistics methods:
-        virtual double score() const;
-        virtual void setScore( double newScore );
+        double score() const override;
+        void setScore( double newScore ) override;
 
-        virtual int rating() const;
-        virtual void setRating( int newRating );
+        int rating() const override;
+        void setRating( int newRating ) override;
 
-        virtual QDateTime firstPlayed() const;
-        virtual void setFirstPlayed( const QDateTime &newTime );
+        QDateTime firstPlayed() const override;
+        void setFirstPlayed( const QDateTime &newTime ) override;
 
-        virtual QDateTime lastPlayed() const;
-        virtual void setLastPlayed( const QDateTime &newTime );
+        QDateTime lastPlayed() const override;
+        void setLastPlayed( const QDateTime &newTime ) override;
 
-        virtual int playCount() const;
-        virtual void setPlayCount( const int newCount );
+        int playCount() const override;
+        void setPlayCount( const int newCount ) override;
 
         // combined Meta::Statistics and Meta::TrackEditor methods:
-        virtual void beginUpdate();
-        virtual void endUpdate();
+        void beginUpdate() override;
+        void endUpdate() override;
 
         // SqlTrack specific methods
         /** true if there is a collection, the file exists on disk and is writable */
@@ -302,15 +302,15 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlArtist : public Meta::Artist
         SqlArtist( Collections::SqlCollection* collection, int id, const QString &name );
         ~SqlArtist();
 
-        virtual QString name() const { return m_name; }
+        QString name() const override { return m_name; }
 
         virtual void invalidateCache();
 
-        virtual Meta::TrackList tracks();
+        Meta::TrackList tracks() override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         //SQL specific methods
         int id() const { return m_id; }
@@ -337,26 +337,26 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
         SqlAlbum( Collections::SqlCollection* collection, int id, const QString &name, int artist );
         ~SqlAlbum();
 
-        virtual QString name() const { return m_name; }
+        QString name() const override { return m_name; }
 
         virtual void invalidateCache();
 
-        virtual Meta::TrackList tracks();
+        Meta::TrackList tracks() override;
 
-        virtual bool isCompilation() const;
-        virtual bool canUpdateCompilation() const { return true; }
-        void setCompilation( bool compilation );
+        bool isCompilation() const override;
+        bool canUpdateCompilation() const override { return true; }
+        void setCompilation( bool compilation ) override;
 
         /** Returns true if this album has an artist.
          *  The following equation is always true: isCompilation() != hasAlbumArtist()
          */
-        virtual bool hasAlbumArtist() const;
+        bool hasAlbumArtist() const override;
 
         /** Returns the album artist.
          *  Note that setting the album artist is not supported.
          *  A compilation does not have an artist and not only an empty artist.
          */
-        virtual Meta::ArtistPtr albumArtist() const;
+        Meta::ArtistPtr albumArtist() const override;
 
         //updating album images is possible for local tracks, but let's ignore it for now
 
@@ -364,8 +364,8 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
          *  @param size The maximum width or height of the result.
          *  when size is <= 1, return the full size image
          */
-        virtual bool hasImage(int size = 0) const;
-        virtual bool canUpdateImage() const { return true; }
+        bool hasImage(int size = 0) const override;
+        bool canUpdateImage() const override { return true; }
 
         /** Returns the album cover image.
          *  Returns a default image if no specific album image could be found.
@@ -374,17 +374,17 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
          *  @param size is the maximum width or height of the resulting image.
          *  when size is <= 1, return the full size image
          */
-        virtual QImage image( int size = 0 ) const;
+        QImage image( int size = 0 ) const override;
 
-        virtual QUrl imageLocation( int size = 0 );
-        virtual void setImage( const QImage &image );
-        virtual void removeImage();
-        virtual void setSuppressImageAutoFetch( const bool suppress ) { m_suppressAutoFetch = suppress; }
-        virtual bool suppressImageAutoFetch() const { return m_suppressAutoFetch; }
+        QUrl imageLocation( int size = 0 ) override;
+        void setImage( const QImage &image ) override;
+        void removeImage() override;
+        void setSuppressImageAutoFetch( const bool suppress ) override { m_suppressAutoFetch = suppress; }
+        bool suppressImageAutoFetch() const override { return m_suppressAutoFetch; }
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         //SQL specific methods
         int id() const { return m_id; }
@@ -468,11 +468,11 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlComposer : public Meta::Composer
     public:
         SqlComposer( Collections::SqlCollection* collection, int id, const QString &name );
 
-        virtual QString name() const { return m_name; }
+        QString name() const override { return m_name; }
 
         virtual void invalidateCache();
 
-        virtual Meta::TrackList tracks();
+        Meta::TrackList tracks() override;
 
         //SQL specific methods
         int id() const { return m_id; }
@@ -497,13 +497,13 @@ class SqlGenre : public Meta::Genre
     public:
         SqlGenre( Collections::SqlCollection* collection, int id, const QString &name );
 
-        virtual QString name() const { return m_name; }
+        QString name() const override { return m_name; }
 
         /** Invalidates the tracks cache */
         /** Invalidates the tracks cache */
         virtual void invalidateCache();
 
-        virtual Meta::TrackList tracks();
+        Meta::TrackList tracks() override;
 
         //SQL specific methods
         int id() const { return m_id; }
@@ -527,14 +527,14 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlYear : public Meta::Year
     public:
         SqlYear( Collections::SqlCollection* collection, int id, int year );
 
-        virtual QString name() const { return QString::number(m_year); }
+        QString name() const override { return QString::number(m_year); }
 
-        virtual int year() const { return m_year; }
+        int year() const override { return m_year; }
 
         /** Invalidates the tracks cache */
         virtual void invalidateCache();
 
-        virtual Meta::TrackList tracks();
+        Meta::TrackList tracks() override;
 
         //SQL specific methods
         int id() const { return m_id; }
@@ -558,7 +558,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlLabel : public Meta::Label
 public:
     SqlLabel( Collections::SqlCollection *collection, int id, const QString &name );
 
-    virtual QString name() const { return m_name; }
+    QString name() const override { return m_name; }
 
     /** Invalidates the tracks cache */
     virtual void invalidateCache();

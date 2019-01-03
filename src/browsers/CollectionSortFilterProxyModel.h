@@ -40,11 +40,11 @@ class CollectionSortFilterProxyModel : public QSortFilterProxyModel
 
         virtual ~CollectionSortFilterProxyModel();
 
-        virtual bool hasChildren(const QModelIndex &parent) const override;
+        bool hasChildren(const QModelIndex &parent) const override;
 
     protected:
-        virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
-        virtual bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const override;
+        bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+        bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const override;
 
     private:
         QCollator *m_col;

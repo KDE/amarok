@@ -56,13 +56,13 @@ class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
             , m_track( track )
         {}
 
-    virtual bool writeTimecode ( qint64 miliseconds )
+    bool writeTimecode ( qint64 miliseconds ) override
     {
         DEBUG_BLOCK
         return Capabilities::TimecodeWriteCapability::writeTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
     }
 
-    virtual bool writeAutoTimecode ( qint64 miliseconds )
+    bool writeAutoTimecode ( qint64 miliseconds ) override
     {
         DEBUG_BLOCK
         return Capabilities::TimecodeWriteCapability::writeAutoTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
@@ -80,14 +80,14 @@ class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
         , m_track( track )
         {}
 
-        virtual bool hasTimecodes()
+        bool hasTimecodes() override
         {
             if ( loadTimecodes().size() > 0 )
                 return true;
             return false;
         }
 
-        virtual BookmarkList loadTimecodes()
+        BookmarkList loadTimecodes() override
         {
             BookmarkList list = PlayUrlRunner::bookmarksFromUrl( m_track->playableUrl() );
             return list;
@@ -106,7 +106,7 @@ public:
         , m_track( track )
         {}
 
-    virtual void findInSource( QFlags<TargetTag> tag )
+    void findInSource( QFlags<TargetTag> tag ) override
     {
         Q_UNUSED( tag )
         //first show the filebrowser

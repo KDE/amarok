@@ -33,10 +33,10 @@ namespace Playlist
         public:
             RepeatTrackNavigator();
 
-            quint64 likelyNextTrack() { return m_trackid ? m_trackid : bestFallbackItem(); }
+            quint64 likelyNextTrack() override { return m_trackid ? m_trackid : bestFallbackItem(); }
             // likelyLastTrack(): The user explicitly asks for change. Let parent 'StandardTrackNavigator' handle that.
-            quint64 requestNextTrack() { return likelyNextTrack(); }
-            quint64 requestUserNextTrack() { return StandardTrackNavigator::requestNextTrack(); }  // The user explicitly asks for change. Use the 'next' behaviour of parent 'StandardTrackNavigator'.
+            quint64 requestNextTrack() override { return likelyNextTrack(); }
+            quint64 requestUserNextTrack() override { return StandardTrackNavigator::requestNextTrack(); }  // The user explicitly asks for change. Use the 'next' behaviour of parent 'StandardTrackNavigator'.
             // requestLastTrack(): The user explicitly asks for change. Let parent 'StandardTrackNavigator' handle that.
 
         private Q_SLOTS:

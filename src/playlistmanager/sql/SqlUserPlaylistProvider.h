@@ -42,20 +42,20 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         ~SqlUserPlaylistProvider();
 
         /* PlaylistProvider functions */
-        virtual QString prettyName() const { return i18n( "Amarok Database" ); }
+        QString prettyName() const override { return i18n( "Amarok Database" ); }
         virtual QString description() const { return i18n( "Local playlists stored in the database" ); }
-        virtual QIcon icon() const { return QIcon::fromTheme( "server-database" ); }
+        QIcon icon() const override { return QIcon::fromTheme( "server-database" ); }
 
-        virtual int playlistCount() const;
-        virtual Playlists::PlaylistList playlists();
+        int playlistCount() const override;
+        Playlists::PlaylistList playlists() override;
 
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks );
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
+        Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name ) override;
 
         /* UserPlaylistProvider functions */
-        virtual bool isWritable();
-        virtual bool deletePlaylists( const Playlists::PlaylistList &playlistlist );
-        virtual void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName );
+        bool isWritable() override;
+        bool deletePlaylists( const Playlists::PlaylistList &playlistlist ) override;
+        void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName ) override;
 
         Playlists::SqlPlaylistGroupPtr group( const QString &name );
 

@@ -48,7 +48,7 @@ class AMAROK_EXPORT AmarokProcess : public KProcess
         void receivedStderr(AmarokProcess *proc);
 
     protected:
-        virtual void setupChildProcess();
+        void setupChildProcess() override;
 
     private Q_SLOTS:
         void finished();  // TODO: This has the same name as a signal in QProcess. Rename it.

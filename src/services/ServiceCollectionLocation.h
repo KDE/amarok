@@ -35,12 +35,12 @@ class AMAROK_EXPORT ServiceCollectionLocation : public CollectionLocation
         explicit ServiceCollectionLocation( ServiceCollection *parentCollection );
         virtual ~ServiceCollectionLocation();
 
-        virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
+        void getKIOCopyableUrls( const Meta::TrackList &tracks ) override;
 
         //These are service dependent
-        virtual QString prettyLocation() const;
-        virtual bool isWritable() const;
-        virtual bool isOrganizable() const;
+        QString prettyLocation() const override;
+        bool isWritable() const override;
+        bool isOrganizable() const override;
     private:
         ServiceCollection *m_collection; //parent collection
         bool m_removeSources;    //used by the destination to remember the value, needed in copyurlsToCollection

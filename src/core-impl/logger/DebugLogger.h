@@ -35,11 +35,11 @@ public:
     DebugLogger( QObject *parent = nullptr );
 
 protected:
-    virtual void shortMessageImpl( const QString& text ) override;
-    virtual void longMessageImpl( const QString& text, Amarok::Logger::MessageType type ) override;
-    virtual void newProgressOperationImpl( QObject* sender, const QMetaMethod& increment, const QMetaMethod& end, const QString& text, int maximum, QObject* context, const std::function<void ()>& function, Qt::ConnectionType type ) override;
-    virtual void newProgressOperationImpl( QNetworkReply* reply, const QString& text, QObject* context, const std::function<void ()>& function, Qt::ConnectionType type ) override;
-    virtual void newProgressOperationImpl( KJob* job, const QString& text, QObject* context, const std::function<void ()>& function, Qt::ConnectionType type ) override;
+    void shortMessageImpl( const QString& text ) override;
+    void longMessageImpl( const QString& text, Amarok::Logger::MessageType type ) override;
+    void newProgressOperationImpl( QObject* sender, const QMetaMethod& increment, const QMetaMethod& end, const QString& text, int maximum, QObject* context, const std::function<void ()>& function, Qt::ConnectionType type ) override;
+    void newProgressOperationImpl( QNetworkReply* reply, const QString& text, QObject* context, const std::function<void ()>& function, Qt::ConnectionType type ) override;
+    void newProgressOperationImpl( KJob* job, const QString& text, QObject* context, const std::function<void ()>& function, Qt::ConnectionType type ) override;
 };
 
 #endif // DEBUGLOGGER_H

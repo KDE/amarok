@@ -39,16 +39,16 @@ namespace Dynamic
             IfElseBias();
 
             static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
+            QString name() const override;
+            QString toString() const override;
 
-            virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
+            void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias ) override;
 
-            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+            TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const;
+                                             const TrackCollectionPtr universe ) const override;
 
-            virtual void resultReceived( const Dynamic::TrackSet &tracks );
+            void resultReceived( const Dynamic::TrackSet &tracks ) override;
 
         private:
             /** Removes duplicate tracks from m_tracks
@@ -70,10 +70,10 @@ namespace Dynamic
     class AMAROK_EXPORT IfElseBiasFactory : public Dynamic::AbstractBiasFactory
     {
         public:
-            virtual QString i18nName() const;
-            virtual QString name() const;
-            virtual QString i18nDescription() const;
-            virtual BiasPtr createBias();
+            QString i18nName() const override;
+            QString name() const override;
+            QString i18nDescription() const override;
+            BiasPtr createBias() override;
     };
 
 }

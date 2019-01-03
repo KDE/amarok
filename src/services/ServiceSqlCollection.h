@@ -33,20 +33,20 @@ class AMAROK_EXPORT ServiceSqlCollection : public ServiceCollection
         virtual ~ServiceSqlCollection();
 
         virtual void startFullScan() {} //TODO
-        virtual QueryMaker* queryMaker();
+        QueryMaker* queryMaker() override;
 
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;
+        QString collectionId() const override;
+        QString prettyName() const override;
 
-        virtual QStringList query( const QString &query );
-        virtual int insert( const QString &statement, const QString &table );
+        QStringList query( const QString &query ) override;
+        int insert( const QString &statement, const QString &table ) override;
 
-        virtual QString escape( QString text ) const;
+        QString escape( QString text ) const override;
 
         void emitUpdated() { emit( updated() ); }
 
-        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
-        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        Meta::TrackPtr trackForUrl( const QUrl &url ) override;
+        bool possiblyContainsTrack( const QUrl &url ) const override;
 
 
     private:

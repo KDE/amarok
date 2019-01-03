@@ -31,7 +31,7 @@ public:
     virtual ~PlaylistInfoWidget();
 
 protected:
-    bool event( QEvent *event );
+    bool event( QEvent *event ) override;
 
 private Q_SLOTS:
     void updateTotalPlaylistLength();

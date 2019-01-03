@@ -63,7 +63,7 @@ public:
     { }
 
 protected:
-    QList<QString> collectionFolders()
+    QList<QString> collectionFolders() override
     { return m_collection->mountPointManager()->collectionFolders(); }
 
     Collections::SqlCollection* m_collection;
@@ -112,7 +112,7 @@ protected:
         return result;
     }
 
-    QString getBatchFile( const QStringList &scanDirsRequested )
+    QString getBatchFile( const QStringList &scanDirsRequested ) override
     {
         // -- write the batch file
         // the batch file contains the known modification dates so that the scanner only
@@ -151,15 +151,15 @@ public:
         , m_organizing( false ) {}
     virtual ~ OrganizeCollectionDelegateImpl() { delete m_dialog; }
 
-    virtual void setTracks( const Meta::TrackList &tracks ) { m_tracks = tracks; }
-    virtual void setFolders( const QStringList &folders ) { m_folders = folders; }
-    virtual void setIsOrganizing( bool organizing ) { m_organizing = organizing; }
-    virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration )
+    void setTracks( const Meta::TrackList &tracks ) override { m_tracks = tracks; }
+    void setFolders( const QStringList &folders ) override { m_folders = folders; }
+    void setIsOrganizing( bool organizing ) override { m_organizing = organizing; }
+    void setTranscodingConfiguration( const Transcoding::Configuration &configuration ) override
     { m_targetFileExtension =
       Amarok::Components::transcodingController()->format( configuration.encoder() )->fileExtension(); }
-    virtual void setCaption( const QString &caption ) { m_caption = caption; }
+    void setCaption( const QString &caption ) override { m_caption = caption; }
 
-    virtual void show()
+    void show() override
     {
         m_dialog = new OrganizeCollectionDialog( m_tracks,
                     m_folders,
@@ -177,8 +177,8 @@ public:
         m_dialog->show();
     }
 
-    virtual bool overwriteDestinations() const { return m_dialog->overwriteDestinations(); }
-    virtual QMap<Meta::TrackPtr, QString> destinations() const { return m_dialog->getDestinations(); }
+    bool overwriteDestinations() const override { return m_dialog->overwriteDestinations(); }
+    QMap<Meta::TrackPtr, QString> destinations() const override { return m_dialog->getDestinations(); }
 
 private:
     Meta::TrackList m_tracks;
@@ -193,7 +193,7 @@ private:
 class OrganizeCollectionDelegateFactoryImpl : public OrganizeCollectionDelegateFactory
 {
 public:
-    virtual OrganizeCollectionDelegate* createDelegate() { return new OrganizeCollectionDelegateImpl(); }
+    OrganizeCollectionDelegate* createDelegate() override { return new OrganizeCollectionDelegateImpl(); }
 };
 
 
@@ -204,7 +204,7 @@ public:
         : SqlCollectionLocationFactory()
         , m_collection( collection ) {}
 
-    SqlCollectionLocation *createSqlCollectionLocation() const
+    SqlCollectionLocation *createSqlCollectionLocation() const override
     {
         Q_ASSERT( m_collection );
         SqlCollectionLocation *loc = new SqlCollectionLocation( m_collection );

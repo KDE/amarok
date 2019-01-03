@@ -106,7 +106,7 @@ public:
 
     virtual ~DirBrowserModel() {}
 
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override
     {
         if( role == Qt::SizeHintRole )
             return QSize( 1, QFontMetrics( QFont() ).height() + 4 );
@@ -126,7 +126,7 @@ public:
 
     virtual ~FilePlacesModel() {}
 
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override
     {
         if( role == Qt::SizeHintRole )
             return QSize( 1, QFontMetrics( QFont() ).height() + 4 );

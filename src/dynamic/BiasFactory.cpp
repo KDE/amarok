@@ -46,54 +46,54 @@ Dynamic::AbstractBiasFactory::createFromXml( QXmlStreamReader *reader )
 
 class RandomBiasFactory : public Dynamic::AbstractBiasFactory
 {
-    QString i18nName() const
+    QString i18nName() const override
     { return i18nc("Name of the random bias", "Random"); }
 
-    QString name() const
+    QString name() const override
     { return Dynamic::RandomBias::sName(); }
 
-    QString i18nDescription() const
+    QString i18nDescription() const override
     { return i18nc("Description of the random bias",
                    "The random bias adds random tracks from the\n"
                    "whole collection without any bias."); }
 
-    Dynamic::BiasPtr createBias()
+    Dynamic::BiasPtr createBias() override
     { return Dynamic::BiasPtr( new Dynamic::RandomBias() ); }
 };
 
 
 class AndBiasFactory : public Dynamic::AbstractBiasFactory
 {
-    QString i18nName() const
+    QString i18nName() const override
     { return i18nc("Name of the \"And\" bias", "And"); }
 
-    QString name() const
+    QString name() const override
     { return Dynamic::AndBias::sName(); }
 
-    QString i18nDescription() const
+    QString i18nDescription() const override
     { return i18nc("Description of the \"And\" bias",
                    "The \"And\" bias adds tracks that match all\n"
                    "of the sub biases."); }
 
-    Dynamic::BiasPtr createBias()
+    Dynamic::BiasPtr createBias() override
     { return Dynamic::BiasPtr( new Dynamic::AndBias() ); }
 };
 
 
 class OrBiasFactory : public Dynamic::AbstractBiasFactory
 {
-    QString i18nName() const
+    QString i18nName() const override
     { return i18nc("Name of the \"Or\" bias", "Or"); }
 
-    QString name() const
+    QString name() const override
     { return Dynamic::OrBias::sName(); }
 
-    QString i18nDescription() const
+    QString i18nDescription() const override
     { return i18nc("Description of the \"Or\" bias",
                    "The \"Or\" bias adds tracks that match at\n"
                    "least one of the sub biases."); }
 
-    Dynamic::BiasPtr createBias()
+    Dynamic::BiasPtr createBias() override
     { return Dynamic::BiasPtr( new Dynamic::OrBias() ); }
 };
 

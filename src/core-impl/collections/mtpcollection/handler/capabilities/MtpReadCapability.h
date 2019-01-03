@@ -38,39 +38,39 @@ class MtpReadCapability : public ReadCapability
     public:
         explicit MtpReadCapability( Meta::MtpHandler *handler );
 
-        virtual void prepareToParseTracks();
+        void prepareToParseTracks() override;
 
-        virtual bool isEndOfParseTracksList();
+        bool isEndOfParseTracksList() override;
 
-        virtual void prepareToParseNextTrack();
+        void prepareToParseNextTrack() override;
 
-        virtual void nextTrackToParse();
+        void nextTrackToParse() override;
 
-        virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
+        void setAssociateTrack( const Meta::MediaDeviceTrackPtr track ) override;
 
-        virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
-        virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
-        virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
-        virtual QString libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track );
-        virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
-        virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
-        virtual qint64  libGetLength( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track );
-        virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track );
-        virtual qreal   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
-        virtual QDateTime libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track );
-        virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
-        virtual QUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
+        QString libGetTitle( const Meta::MediaDeviceTrackPtr &track ) override;
+        QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track ) override;
+        QString libGetArtist( const Meta::MediaDeviceTrackPtr &track ) override;
+        QString libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track ) override;
+        QString libGetComposer( const Meta::MediaDeviceTrackPtr &track ) override;
+        QString libGetGenre( const Meta::MediaDeviceTrackPtr &track ) override;
+        int     libGetYear( const Meta::MediaDeviceTrackPtr &track ) override;
+        qint64  libGetLength( const Meta::MediaDeviceTrackPtr &track ) override;
+        int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track ) override;
+        QString libGetComment( const Meta::MediaDeviceTrackPtr &track ) override;
+        int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track ) override;
+        int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track ) override;
+        int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track ) override;
+        qreal   libGetBpm( const Meta::MediaDeviceTrackPtr &track ) override;
+        int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track ) override;
+        int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track ) override;
+        QDateTime libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track ) override;
+        int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) override;
+        QString libGetType( const Meta::MediaDeviceTrackPtr &track ) override;
+        QUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) override;
 
-        virtual float usedCapacity() const;
-        virtual float totalCapacity() const;
+        float usedCapacity() const override;
+        float totalCapacity() const override;
 
     private:
         QPointer<Meta::MtpHandler> m_handler;

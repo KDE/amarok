@@ -61,31 +61,31 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         virtual ~IpodCollection();
 
         // TrackProvider methods:
-        virtual bool possiblyContainsTrack( const QUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+        bool possiblyContainsTrack( const QUrl &url ) const override;
+        Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
         // CollectionBase methods:
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         // Collection methods:
-        virtual Collections::QueryMaker *queryMaker();
+        Collections::QueryMaker *queryMaker() override;
 
-        virtual QString uidUrlProtocol() const;
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;
-        virtual QIcon icon() const;
+        QString uidUrlProtocol() const override;
+        QString collectionId() const override;
+        QString prettyName() const override;
+        QIcon icon() const override;
 
-        virtual bool hasCapacity() const;
-        virtual float usedCapacity() const;
-        virtual float totalCapacity() const;
+        bool hasCapacity() const override;
+        float usedCapacity() const override;
+        float totalCapacity() const override;
 
-        virtual Collections::CollectionLocation *location();
-        virtual bool isWritable() const;
-        virtual bool isOrganizable() const;
+        Collections::CollectionLocation *location() override;
+        bool isWritable() const override;
+        bool isOrganizable() const override;
 
         // Observer methods:
-        virtual void metadataChanged( Meta::TrackPtr track );
+        void metadataChanged( Meta::TrackPtr track ) override;
         // so that the compiler doesn't complain about hidden virtual functions:
         using Meta::Observer::metadataChanged;
 

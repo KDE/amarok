@@ -45,7 +45,7 @@ namespace MetaProxy
             explicit Worker( const QUrl &url, Collections::TrackProvider *provider = 0 );
 
             //TrackForUrlWorker virtual methods
-            virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+            void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 
         protected:
             void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;

@@ -42,19 +42,19 @@ class CollectionWidget : public BrowserCategory
         static CollectionWidget *instance() { return s_instance; }
 
 
-        QString filter() const;
+        QString filter() const override;
 
         /**
          * Apply a filter to the tree view.
          * @param filter The filter to apply.
          */
-        void setFilter( const QString &filter );
+        void setFilter( const QString &filter ) override;
 
         /** Return the current views selected levels */
-        QList<CategoryId::CatMenuId> levels() const;
+        QList<CategoryId::CatMenuId> levels() const override;
 
         /** Set the current views selected levels */
-        void setLevels( const QList<CategoryId::CatMenuId> &levels );
+        void setLevels( const QList<CategoryId::CatMenuId> &levels ) override;
 
         void focusInputLine();
         CollectionBrowserTreeView *currentView();

@@ -60,14 +60,14 @@ public:
      * createProvider( config ), and then registers created providers with
      * StatSyncing::Controller. This method is called by PluginManager.
      */
-    virtual void init();
+    void init() override;
 
     /**
      * Basic implementation for StatSyncing::ProviderFactory createConfigWidget() method,
      * used for configuring new providers. By default calls @see getConfigWidget with
      * empty config parameter.
      */
-    virtual ProviderConfigWidget *createConfigWidget();
+    ProviderConfigWidget *createConfigWidget() override;
 
     /**
      * Returns a configuration widget prepopulated with given config values.
@@ -81,7 +81,7 @@ public Q_SLOTS:
      *
      * This method can also be used to replace existing provider instances.
      */
-    virtual ProviderPtr createProvider( QVariantMap config );
+    ProviderPtr createProvider( QVariantMap config ) override;
 
 protected:
     /**

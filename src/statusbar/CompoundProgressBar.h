@@ -46,7 +46,7 @@ public:
     void setProgress( const QObject *owner, int steps );
 
     /* reimplemented from QWidget to open/close the details widget */
-    virtual void mousePressEvent( QMouseEvent *event );
+    void mousePressEvent( QMouseEvent *event ) override;
 
 public Q_SLOTS:
     void endProgressOperation( QObject *owner );

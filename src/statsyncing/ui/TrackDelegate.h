@@ -27,8 +27,8 @@ namespace StatSyncing
             explicit TrackDelegate( QObject *parent = nullptr );
 
             void paint( QPainter *painter, const QStyleOptionViewItem &option,
-                        const QModelIndex &index ) const;
-            QString displayText( const QVariant &value, const QLocale &locale ) const;
+                        const QModelIndex &index ) const override;
+            QString displayText( const QVariant &value, const QLocale &locale ) const override;
     };
 }
 

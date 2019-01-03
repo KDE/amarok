@@ -37,7 +37,7 @@ class DynamicBiasDelegate : public QStyledItemDelegate
 
         void paint( QPainter* painter,
                     const QStyleOptionViewItem& option,
-                    const QModelIndex& index ) const;
+                    const QModelIndex& index ) const override;
 
     private:
       QFont m_normalFont;

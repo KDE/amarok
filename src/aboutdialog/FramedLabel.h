@@ -34,7 +34,7 @@ public:
     ~FramedLabel();
 
 protected:
-    virtual void paintEvent( QPaintEvent *event );
+    void paintEvent( QPaintEvent *event ) override;
 };
 
 #endif //AMAROK_FRAMEDLABEL_H

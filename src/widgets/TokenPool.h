@@ -38,18 +38,18 @@ class TokenPool : public QListWidget
         */
         void addToken( Token * token );
 
-        QSize sizeHint() const;
+        QSize sizeHint() const override;
     protected:
-        void mouseDoubleClickEvent( QMouseEvent *event );
+        void mouseDoubleClickEvent( QMouseEvent *event ) override;
 
         /** Handles start of drag. */
-        void mousePressEvent( QMouseEvent *event );
+        void mousePressEvent( QMouseEvent *event ) override;
 
         /** Handles start of drag. */
-        void mouseMoveEvent( QMouseEvent *event );
-        void dragEnterEvent( QDragEnterEvent *event );
+        void mouseMoveEvent( QMouseEvent *event ) override;
+        void dragEnterEvent( QDragEnterEvent *event ) override;
         // void dragMoveEvent( QDragMoveEvent *event );
-        void dropEvent( QDropEvent *event );
+        void dropEvent( QDropEvent *event ) override;
 
     Q_SIGNALS:
         /** Emitted if somebody double clicks a token.

@@ -29,11 +29,11 @@ class Wrench : public QLabel
 public:
     explicit Wrench( QWidget *parent );
 protected:
-    void enterEvent(QEvent *);
-    void leaveEvent(QEvent *);
-    void mousePressEvent( QMouseEvent *e );
-    void mouseReleaseEvent( QMouseEvent *e );
-    void paintEvent( QPaintEvent *pe );
+    void enterEvent(QEvent *) override;
+    void leaveEvent(QEvent *) override;
+    void mousePressEvent( QMouseEvent *e ) override;
+    void mouseReleaseEvent( QMouseEvent *e ) override;
+    void paintEvent( QPaintEvent *pe ) override;
 Q_SIGNALS:
     void clicked();
 };
@@ -41,7 +41,7 @@ Q_SIGNALS:
 class TokenWithLayoutFactory : public TokenFactory
 {
 public:
-    virtual Token * createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent = nullptr ) const;
+    Token * createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent = nullptr ) const override;
 };
 
 /**
@@ -88,10 +88,10 @@ public Q_SLOTS:
     void setWidth( int width );
 
 protected:
-    virtual void enterEvent(QEvent *);
-    virtual bool eventFilter( QObject*, QEvent* );
-    virtual void leaveEvent(QEvent *);
-    virtual void timerEvent( QTimerEvent* );
+    void enterEvent(QEvent *) override;
+    bool eventFilter( QObject*, QEvent* ) override;
+    void leaveEvent(QEvent *) override;
+    void timerEvent( QTimerEvent* ) override;
 
 private Q_SLOTS:
     void showConfig();

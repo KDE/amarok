@@ -126,7 +126,7 @@ namespace Daap
             WorkerThread( const QByteArray &data, Reader* reader, Collections::DaapCollection *coll );
             virtual ~WorkerThread();
 
-            virtual bool success() const override;
+            bool success() const override;
 
         protected:
             void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;

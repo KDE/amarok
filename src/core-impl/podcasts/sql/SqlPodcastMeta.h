@@ -51,28 +51,28 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         ~SqlPodcastEpisode();
 
         //PodcastEpisode methods
-        PodcastChannelPtr channel() const { return PodcastChannelPtr::dynamicCast( m_channel ); }
+        PodcastChannelPtr channel() const override { return PodcastChannelPtr::dynamicCast( m_channel ); }
         virtual bool isKeep() const { return m_isKeep; }
 
-        virtual void setNew( bool isNew );
+        void setNew( bool isNew ) override;
         virtual void setKeep( bool isKeep );
-        virtual void setLocalUrl( const QUrl &url );
+        void setLocalUrl( const QUrl &url ) override;
 
         //Track Methods
-        virtual QString name() const;
-        virtual QString prettyName() const;
-        virtual void setTitle( const QString &title );
-        virtual qint64 length() const;
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
-        virtual void finishedPlaying( double playedFraction );
+        QString name() const override;
+        QString prettyName() const override;
+        void setTitle( const QString &title ) override;
+        qint64 length() const override;
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
+        void finishedPlaying( double playedFraction ) override;
 
-        virtual Meta::ArtistPtr artist() const;
-        virtual Meta::ComposerPtr composer() const;
-        virtual Meta::GenrePtr genre() const;
-        virtual Meta::YearPtr year() const;
+        Meta::ArtistPtr artist() const override;
+        Meta::ComposerPtr composer() const override;
+        Meta::GenrePtr genre() const override;
+        Meta::YearPtr year() const override;
 
-        virtual Meta::TrackEditorPtr editor();
+        Meta::TrackEditorPtr editor() override;
 
         //SqlPodcastEpisode specific methods
         bool writeTagsToFile();
@@ -108,33 +108,33 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
 
         ~SqlPodcastChannel();
         // Playlists::Playlist methods
-        virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack );
-        virtual int trackCount() const;
+        void syncTrackStatus( int position, Meta::TrackPtr otherTrack ) override;
+        int trackCount() const override;
 
         virtual QString filenameLayout() const { return m_filenameLayout; }
 
-        virtual Meta::TrackList tracks();
-        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
+        Meta::TrackList tracks() override;
+        void addTrack( Meta::TrackPtr track, int position = -1 ) override;
 
-        virtual void triggerTrackLoad();
-        virtual Playlists::PlaylistProvider *provider() const;
+        void triggerTrackLoad() override;
+        Playlists::PlaylistProvider *provider() const override;
 
-        virtual QStringList groups();
-        virtual void setGroups( const QStringList &groups );
+        QStringList groups() override;
+        void setGroups( const QStringList &groups ) override;
 
         //Podcasts::PodcastChannel methods
-        virtual QUrl uidUrl() const;
-        virtual void setTitle( const QString &title );
-        virtual Podcasts::PodcastEpisodeList episodes() const;
-        virtual bool hasImage() const { return !m_image.isNull(); }
-        virtual void setImage( const QImage &image );
-        virtual QImage image() const { return m_image; }
-        virtual QUrl imageUrl() const { return m_imageUrl; }
-        virtual void setImageUrl( const QUrl &imageUrl );
+        QUrl uidUrl() const override;
+        void setTitle( const QString &title ) override;
+        Podcasts::PodcastEpisodeList episodes() const override;
+        bool hasImage() const override { return !m_image.isNull(); }
+        void setImage( const QImage &image ) override;
+        QImage image() const override { return m_image; }
+        QUrl imageUrl() const override { return m_imageUrl; }
+        void setImageUrl( const QUrl &imageUrl ) override;
         virtual void setFilenameLayout( const QString &filenameLayout ) { m_filenameLayout = filenameLayout; }
 
 
-        PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
+        PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode ) override;
 
         //SqlPodcastChannel specific methods
         int dbId() const { return m_dbId; }

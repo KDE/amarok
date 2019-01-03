@@ -34,11 +34,11 @@ class AmpacheServiceFactory: public ServiceFactory
         AmpacheServiceFactory();
         virtual ~AmpacheServiceFactory() {}
 
-        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        bool possiblyContainsTrack( const QUrl &url ) const override;
 
-        virtual void init();
-        virtual QString name();
-        virtual KConfigGroup config();
+        void init() override;
+        QString name() override;
+        KConfigGroup config() override;
 };
 
 
@@ -59,10 +59,10 @@ public:
 
     ~AmpacheService();
 
-    void polish();
+    void polish() override;
     void reauthenticate();
 
-    virtual Collections::Collection * collection() { return m_collection; }
+    Collections::Collection * collection() override { return m_collection; }
 
 private Q_SLOTS:
     void onLoginSuccessful();

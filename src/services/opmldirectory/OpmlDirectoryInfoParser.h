@@ -33,9 +33,9 @@ public:
     OpmlDirectoryInfoParser();
     ~OpmlDirectoryInfoParser();
 
-    virtual void getInfo( Meta::ArtistPtr artist );
-    virtual void getInfo( Meta::AlbumPtr album );
-    virtual void getInfo( Meta::TrackPtr track );
+    void getInfo( Meta::ArtistPtr artist ) override;
+    void getInfo( Meta::AlbumPtr album ) override;
+    void getInfo( Meta::TrackPtr track ) override;
 
 private:
     KJob * m_rssDownloadJob;

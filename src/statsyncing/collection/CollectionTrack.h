@@ -29,28 +29,28 @@ namespace StatSyncing
             explicit CollectionTrack( Meta::TrackPtr track );
             virtual ~CollectionTrack();
 
-            virtual QString name() const;
-            virtual QString album() const;
-            virtual QString artist() const;
-            virtual QString composer() const;
-            virtual int year() const;
-            virtual int trackNumber() const;
-            virtual int discNumber() const;
+            QString name() const override;
+            QString album() const override;
+            QString artist() const override;
+            QString composer() const override;
+            int year() const override;
+            int trackNumber() const override;
+            int discNumber() const override;
 
-            virtual int rating() const;
-            virtual void setRating( int rating );
-            virtual QDateTime firstPlayed() const;
-            virtual void setFirstPlayed( const QDateTime &firstPlayed );
-            virtual QDateTime lastPlayed() const;
-            virtual void setLastPlayed( const QDateTime &lastPlayed );
-            virtual int playCount() const;
-            virtual int recentPlayCount() const;
-            virtual void setPlayCount( int playCount );
-            virtual QSet<QString> labels() const;
-            virtual void setLabels( const QSet<QString> &labels );
+            int rating() const override;
+            void setRating( int rating ) override;
+            QDateTime firstPlayed() const override;
+            void setFirstPlayed( const QDateTime &firstPlayed ) override;
+            QDateTime lastPlayed() const override;
+            void setLastPlayed( const QDateTime &lastPlayed ) override;
+            int playCount() const override;
+            int recentPlayCount() const override;
+            void setPlayCount( int playCount ) override;
+            QSet<QString> labels() const override;
+            void setLabels( const QSet<QString> &labels ) override;
 
-            virtual Meta::TrackPtr metaTrack() const;
-            virtual void commit();
+            Meta::TrackPtr metaTrack() const override;
+            void commit() override;
 
         private:
             Q_DISABLE_COPY( CollectionTrack )

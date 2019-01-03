@@ -57,7 +57,7 @@ class AMAROK_EXPORT CollectionTreeView : public Amarok::PrettyTreeView
 
         void setLevel( int level, CategoryId::CatMenuId type );
 
-        void setModel( QAbstractItemModel *model );
+        void setModel( QAbstractItemModel *model ) override;
 
         //Helper function to remove children if their parent is already present
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
@@ -91,16 +91,16 @@ class AMAROK_EXPORT CollectionTreeView : public Amarok::PrettyTreeView
         void addingFilteredTracksDone();
 
     protected:
-        void contextMenuEvent( QContextMenuEvent *event );
-        void mouseDoubleClickEvent( QMouseEvent *event );
-        void mouseReleaseEvent( QMouseEvent *event );
+        void contextMenuEvent( QContextMenuEvent *event ) override;
+        void mouseDoubleClickEvent( QMouseEvent *event ) override;
+        void mouseReleaseEvent( QMouseEvent *event ) override;
         void keyPressEvent( QKeyEvent *event ) override;
-        void dragEnterEvent( QDragEnterEvent *event );
-        void dragMoveEvent( QDragMoveEvent *event );
-        void startDrag( Qt::DropActions supportedActions );
+        void dragEnterEvent( QDragEnterEvent *event ) override;
+        void dragMoveEvent( QDragMoveEvent *event ) override;
+        void startDrag( Qt::DropActions supportedActions ) override;
 
     protected Q_SLOTS:
-        virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
+        void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected ) override;
         void slotCollapsed( const QModelIndex &index );
         void slotExpanded( const QModelIndex &index );
         void slotExpandIndex( const QModelIndex &index );

@@ -26,8 +26,8 @@ class MusicBrainzTagsModelDelegate : public QItemDelegate
         explicit MusicBrainzTagsModelDelegate( QObject *parent = nullptr );
 
     protected:
-        virtual void drawCheck( QPainter *painter, const QStyleOptionViewItem &option,
-                                const QRect &rect, Qt::CheckState state ) const;
+        void drawCheck( QPainter *painter, const QStyleOptionViewItem &option,
+                                const QRect &rect, Qt::CheckState state ) const override;
 };
 
 #endif // MUSICBRAINZTAGSMODELDELEGATE_H

@@ -55,7 +55,7 @@ public:
     ~PrettyListView();
 
 protected:
-    int verticalOffset() const;
+    int verticalOffset() const override;
 
 Q_SIGNALS:
     void found();
@@ -91,21 +91,21 @@ public Q_SLOTS:
     void findInSource();
 
 protected:
-    void showEvent( QShowEvent* );
-    void contextMenuEvent( QContextMenuEvent* );
-    void dragEnterEvent( QDragEnterEvent *event );
-    void dragLeaveEvent( QDragLeaveEvent* );
-    void dragMoveEvent( QDragMoveEvent* );
-    void dropEvent( QDropEvent* );
-    void keyPressEvent( QKeyEvent* );
-    void mousePressEvent( QMouseEvent* );
-    void mouseReleaseEvent( QMouseEvent* );
+    void showEvent( QShowEvent* ) override;
+    void contextMenuEvent( QContextMenuEvent* ) override;
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent* ) override;
+    void dragMoveEvent( QDragMoveEvent* ) override;
+    void dropEvent( QDropEvent* ) override;
+    void keyPressEvent( QKeyEvent* ) override;
+    void mousePressEvent( QMouseEvent* ) override;
+    void mouseReleaseEvent( QMouseEvent* ) override;
 
     /** Draws a "drop here" text if empty */
-    void paintEvent( QPaintEvent* );
+    void paintEvent( QPaintEvent* ) override;
 
-    void startDrag( Qt::DropActions supportedActions );
-    bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event );
+    void startDrag( Qt::DropActions supportedActions ) override;
+    bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event ) override;
 
 protected Q_SLOTS:
     void newPalette( const QPalette & palette );

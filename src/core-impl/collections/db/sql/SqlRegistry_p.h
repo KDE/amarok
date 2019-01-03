@@ -62,11 +62,11 @@ class TrackUrlsTableCommitter: public AbstractTrackTableCommitter
         virtual ~TrackUrlsTableCommitter() {}
 
     protected:
-        virtual QString tableName();
-        virtual int getId( Meta::SqlTrack *track );
-        virtual void setId( Meta::SqlTrack *track, int id );
-        virtual QStringList getFields();
-        virtual QStringList getValues( Meta::SqlTrack *track );
+        QString tableName() override;
+        int getId( Meta::SqlTrack *track ) override;
+        void setId( Meta::SqlTrack *track, int id ) override;
+        QStringList getFields() override;
+        QStringList getValues( Meta::SqlTrack *track ) override;
 };
 
 class TrackTracksTableCommitter: public AbstractTrackTableCommitter
@@ -75,11 +75,11 @@ class TrackTracksTableCommitter: public AbstractTrackTableCommitter
         virtual ~TrackTracksTableCommitter() {}
 
     protected:
-        virtual QString tableName();
-        virtual int getId( Meta::SqlTrack *track );
-        virtual void setId( Meta::SqlTrack *track, int id );
-        virtual QStringList getFields();
-        virtual QStringList getValues( Meta::SqlTrack *track );
+        QString tableName() override;
+        int getId( Meta::SqlTrack *track ) override;
+        void setId( Meta::SqlTrack *track, int id ) override;
+        QStringList getFields() override;
+        QStringList getValues( Meta::SqlTrack *track ) override;
 };
 
 class TrackStatisticsTableCommitter: public AbstractTrackTableCommitter
@@ -88,11 +88,11 @@ class TrackStatisticsTableCommitter: public AbstractTrackTableCommitter
         virtual ~TrackStatisticsTableCommitter() {}
 
     protected:
-        virtual QString tableName();
-        virtual int getId( Meta::SqlTrack *track );
-        virtual void setId( Meta::SqlTrack *track, int id );
-        virtual QStringList getFields();
-        virtual QStringList getValues( Meta::SqlTrack *track );
+        QString tableName() override;
+        int getId( Meta::SqlTrack *track ) override;
+        void setId( Meta::SqlTrack *track, int id ) override;
+        QStringList getFields() override;
+        QStringList getValues( Meta::SqlTrack *track ) override;
 };
 
 

@@ -34,8 +34,8 @@ class InsertTracksCmd : public QUndoCommand
 {
 public:
     InsertTracksCmd( QUndoCommand* parent, const InsertCmdList& );
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 private:
     const InsertCmdList m_cmdlist;
 };
@@ -46,8 +46,8 @@ class RemoveTracksCmd: public QUndoCommand
 {
 public:
     RemoveTracksCmd( QUndoCommand* parent, const RemoveCmdList& );
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 private:
     const RemoveCmdList m_cmdlist;
 };
@@ -58,8 +58,8 @@ class MoveTracksCmd: public QUndoCommand
 {
 public:
     MoveTracksCmd( QUndoCommand* parent, const MoveCmdList& );
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 private:
     const MoveCmdList m_cmdlist;
 };

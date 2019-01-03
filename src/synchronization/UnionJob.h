@@ -45,7 +45,7 @@ class UnionJob : public SynchronizationBaseJob
         virtual ~UnionJob();
 
     protected:
-        void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB );
+        void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB ) override;
 };
 
 

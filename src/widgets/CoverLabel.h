@@ -31,7 +31,7 @@ public:
     void setInformation( const QString &artist, const QString &album );
 
 protected:
-    virtual void mouseReleaseEvent( QMouseEvent *pEvent );
+    void mouseReleaseEvent( QMouseEvent *pEvent ) override;
 
 private:
     QString m_artist;

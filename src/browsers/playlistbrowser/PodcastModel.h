@@ -58,18 +58,18 @@ class AMAROK_EXPORT PodcastModel : public PlaylistBrowserModel
         static void destroy();
 
         /* QAbstractItemModel methods */
-        virtual QVariant data(const QModelIndex &index, int role) const;
-        virtual bool setData( const QModelIndex &index, const QVariant &value,
-                              int role = Qt::EditRole );
-        virtual QVariant headerData(int section, Qt::Orientation orientation,
-                            int role = Qt::DisplayRole) const;
-        virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+        QVariant data(const QModelIndex &index, int role) const override;
+        bool setData( const QModelIndex &index, const QVariant &value,
+                              int role = Qt::EditRole ) override;
+        QVariant headerData(int section, Qt::Orientation orientation,
+                            int role = Qt::DisplayRole) const override;
+        int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-        virtual Qt::DropActions supportedDropActions() const {
+        Qt::DropActions supportedDropActions() const override {
             return Qt::CopyAction | Qt::MoveAction;
         }
 
-        virtual Qt::DropActions supportedDragActions() const {
+        Qt::DropActions supportedDragActions() const override {
             return Qt::MoveAction | Qt::CopyAction;
         }
 

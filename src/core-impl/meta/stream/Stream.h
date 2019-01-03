@@ -31,33 +31,33 @@ namespace MetaStream
             virtual ~Track();
 
         // methods inherited from Meta::Base
-            virtual QString name() const;
+            QString name() const override;
 
         // methods inherited from Meta::Track
-            virtual QUrl playableUrl() const;
-            virtual QString prettyUrl() const;
-            virtual QString uidUrl() const;
-            virtual QString notPlayableReason() const;
+            QUrl playableUrl() const override;
+            QString prettyUrl() const override;
+            QString uidUrl() const override;
+            QString notPlayableReason() const override;
 
-            virtual Meta::AlbumPtr album() const;
-            virtual Meta::ArtistPtr artist() const;
-            virtual Meta::GenrePtr genre() const;
-            virtual Meta::ComposerPtr composer() const;
-            virtual Meta::YearPtr year() const;
+            Meta::AlbumPtr album() const override;
+            Meta::ArtistPtr artist() const override;
+            Meta::GenrePtr genre() const override;
+            Meta::ComposerPtr composer() const override;
+            Meta::YearPtr year() const override;
 
-            virtual qreal bpm() const;
-            virtual QString comment() const;
-            virtual int trackNumber() const;
-            virtual int discNumber() const;
+            qreal bpm() const override;
+            QString comment() const override;
+            int trackNumber() const override;
+            int discNumber() const override;
 
-            virtual qint64 length() const;
-            virtual int filesize() const;
-            virtual int sampleRate() const;
-            virtual int bitrate() const;
+            qint64 length() const override;
+            int filesize() const override;
+            int sampleRate() const override;
+            int bitrate() const override;
 
-            virtual void finishedPlaying( double playedFraction );
+            void finishedPlaying( double playedFraction ) override;
 
-            virtual QString type() const;
+            QString type() const override;
 
         // MetaStream::Track methods, used to restore initial stream info
 

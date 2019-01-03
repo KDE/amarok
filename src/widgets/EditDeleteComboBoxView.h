@@ -36,7 +36,7 @@ class EditDeleteComboBoxView : public QListView
         void deleteItem( const QString &itemName );
 
     protected:
-        virtual void mousePressEvent( QMouseEvent* );
+        void mousePressEvent( QMouseEvent* ) override;
 };
 
 #endif

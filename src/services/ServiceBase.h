@@ -76,7 +76,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          * @param url The url to test.
          * @return A bool representing whether the ServiceFactory believes that a service of this kind can process the given url.
          */
-        virtual bool possiblyContainsTrack( const QUrl &url ) const { Q_UNUSED( url ); return false; }
+        bool possiblyContainsTrack( const QUrl &url ) const override { Q_UNUSED( url ); return false; }
 
         /**
          * Attempt to create a Meta::Track object from a given url. This method is meant as a proxy that will forward this call to one or more
@@ -85,7 +85,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          * @param url The url to test.
          * @return A Meta::TrackPtr based one the url, or empty if nothing was known about the url.
          */
-        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+        Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
         /**
          * Clear the list of active services created by this factory. Used when unloading services.
@@ -197,7 +197,7 @@ public:
     /**
      * Do expensive initialization. This method is called when the service is first shown.
      */
-    virtual void polish() = 0;
+    void polish() override = 0;
 
     /**
      * ??????
@@ -209,7 +209,7 @@ public:
      * Apply a filter to the tree view.
      * @param filter The filter to apply.
      */
-    void setFilter( const QString &filter );
+    void setFilter( const QString &filter ) override;
 
     /**
      * Returns a list of the messages that the current service accepts. Default implementation does not
@@ -239,8 +239,8 @@ public:
      */
     ServiceFactory* parent() const;
 
-    virtual QString filter() const;
-    virtual QList<CategoryId::CatMenuId> levels() const;
+    QString filter() const override;
+    QList<CategoryId::CatMenuId> levels() const override;
 
 public Q_SLOTS:
     //void treeViewSelectionChanged( const QItemSelection & selected );
@@ -275,7 +275,7 @@ public Q_SLOTS:
      */
     void sortByGenreArtistAlbum();
 
-    void setLevels( const QList<CategoryId::CatMenuId> &levels );
+    void setLevels( const QList<CategoryId::CatMenuId> &levels ) override;
 
 Q_SIGNALS:
     /**

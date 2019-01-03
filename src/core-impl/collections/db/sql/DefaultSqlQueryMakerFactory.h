@@ -28,7 +28,7 @@ public:
         : SqlQueryMakerFactory()
         , m_collection( collection ) {}
 
-    SqlQueryMaker *createQueryMaker() const
+    SqlQueryMaker *createQueryMaker() const override
     {
         Q_ASSERT( m_collection );
         return new SqlQueryMaker( m_collection );

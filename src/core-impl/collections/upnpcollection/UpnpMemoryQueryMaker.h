@@ -33,7 +33,7 @@ class UpnpMemoryQueryMaker : public MemoryQueryMaker
         UpnpMemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QString &collectionId );
         virtual ~UpnpMemoryQueryMaker();
 
-        virtual void run();
+        void run() override;
 
     Q_SIGNALS:
         void startFullScan();

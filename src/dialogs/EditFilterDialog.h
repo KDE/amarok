@@ -52,7 +52,7 @@ class EditFilterDialog : public QDialog
         void slotSeparatorChange();
         void slotSearchEditChanged( const QString &filterText );
         void slotReset();
-        void accept();
+        void accept() override;
 
         void updateAttributeEditor();
         void updateSearchEdit();

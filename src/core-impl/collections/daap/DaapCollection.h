@@ -51,7 +51,7 @@ class DaapCollectionFactory : public Collections::CollectionFactory
         DaapCollectionFactory();
         virtual ~DaapCollectionFactory();
 
-        virtual void init();
+        void init() override;
 
     private:
         QString serverKey( const QString& host, quint16 port ) const;
@@ -82,11 +82,11 @@ class DaapCollection : public Collections::Collection
         DaapCollection( const QString &host, const QString &ip, quint16 port );
         virtual ~DaapCollection();
 
-        virtual QueryMaker* queryMaker();
+        QueryMaker* queryMaker() override;
 
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;
-        virtual QIcon icon() const { return QIcon::fromTheme("network-server"); }
+        QString collectionId() const override;
+        QString prettyName() const override;
+        QIcon icon() const override { return QIcon::fromTheme("network-server"); }
 
         void serverOffline();
 

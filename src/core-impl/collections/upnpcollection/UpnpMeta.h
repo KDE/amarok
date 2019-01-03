@@ -46,18 +46,18 @@ class UpnpTrack : public Meta::Track
         explicit UpnpTrack( Collections::UpnpCollectionBase *collection );
         virtual ~UpnpTrack();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual QUrl playableUrl() const;
-        virtual QString uidUrl() const;
-        virtual QString prettyUrl() const;
-        virtual QString notPlayableReason() const;
+        QUrl playableUrl() const override;
+        QString uidUrl() const override;
+        QString prettyUrl() const override;
+        QString notPlayableReason() const override;
 
-        virtual AlbumPtr album() const;
-        virtual ArtistPtr artist() const;
-        virtual GenrePtr genre() const;
-        virtual ComposerPtr composer() const;
-        virtual YearPtr year() const;
+        AlbumPtr album() const override;
+        ArtistPtr artist() const override;
+        GenrePtr genre() const override;
+        ComposerPtr composer() const override;
+        YearPtr year() const override;
 
         virtual void setAlbum ( const QString &newAlbum );
         virtual void setArtist ( const QString &newArtist );
@@ -69,27 +69,27 @@ class UpnpTrack : public Meta::Track
 
         virtual void setUidUrl( const QString &url );
 
-        virtual qreal bpm() const;
+        qreal bpm() const override;
 
-        virtual QString comment() const;
+        QString comment() const override;
         virtual void setComment ( const QString &newComment );
 
-        virtual qint64 length() const;
+        qint64 length() const override;
 
-        virtual int filesize() const;
-        virtual int sampleRate() const;
-        virtual int bitrate() const;
+        int filesize() const override;
+        int sampleRate() const override;
+        int bitrate() const override;
 
-        virtual int trackNumber() const;
+        int trackNumber() const override;
         virtual void setTrackNumber ( int newTrackNumber );
 
-        virtual int discNumber() const;
+        int discNumber() const override;
         virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual QString type() const;
+        QString type() const override;
 
-        virtual bool inCollection() const;
-        virtual Collections::Collection* collection() const;
+        bool inCollection() const override;
+        Collections::Collection* collection() const override;
 
         //UpnpTrack specific methods
         void setAlbum( UpnpAlbumPtr album );
@@ -127,9 +127,9 @@ class UpnpArtist : public Meta::Artist
         explicit UpnpArtist( const QString &name );
         virtual ~UpnpArtist();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //UpnpArtist specific methods
         void addTrack( UpnpTrackPtr track );
@@ -147,18 +147,18 @@ class UpnpAlbum : public QObject, public Meta::Album
         explicit UpnpAlbum( const QString &name );
         virtual ~UpnpAlbum();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual bool isCompilation() const;
-        virtual bool hasAlbumArtist() const;
-        virtual ArtistPtr albumArtist() const;
-        virtual TrackList tracks();
+        bool isCompilation() const override;
+        bool hasAlbumArtist() const override;
+        ArtistPtr albumArtist() const override;
+        TrackList tracks() override;
 
-        virtual bool hasImage( int size = 0 ) const;
-        virtual QImage image( int size = 0 ) const;
-        virtual QUrl imageLocation( int size = 0 );
+        bool hasImage( int size = 0 ) const override;
+        QImage image( int size = 0 ) const override;
+        QUrl imageLocation( int size = 0 ) override;
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         //UpnpAlbum specific methods
         void addTrack( UpnpTrackPtr track );
@@ -181,9 +181,9 @@ class UpnpGenre : public Meta::Genre
         explicit UpnpGenre( const QString &name );
         virtual ~UpnpGenre();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //UpnpGenre specific methods
         void addTrack( UpnpTrackPtr track );
@@ -200,9 +200,9 @@ class UpnpComposer : public Meta::Composer
         explicit UpnpComposer( const QString &name );
         virtual ~UpnpComposer();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //UpnpComposer specific methods
         void addTrack( UpnpTrackPtr track );
@@ -219,9 +219,9 @@ class UpnpYear : public Meta::Year
         explicit UpnpYear( int year );
         virtual ~UpnpYear();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //UpnpYear specific methods
         void addTrack( UpnpTrackPtr track );

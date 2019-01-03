@@ -53,13 +53,13 @@ class UpnpBrowseCollection : public UpnpCollectionBase
     explicit UpnpBrowseCollection( const DeviceInfo& );
     virtual ~UpnpBrowseCollection();
 
-    virtual QueryMaker* queryMaker();
+    QueryMaker* queryMaker() override;
 
-    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+    Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
-    Meta::TrackPtr trackForUrl( const QUrl &url );
-    virtual QIcon icon() const { return QIcon::fromTheme("network-server"); }
+    Meta::TrackPtr trackForUrl( const QUrl &url ) override;
+    QIcon icon() const override { return QIcon::fromTheme("network-server"); }
 
     QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
@@ -107,9 +107,9 @@ class UpnpBrowseCollectionScanCapability : public Capabilities::CollectionScanCa
         explicit UpnpBrowseCollectionScanCapability( UpnpBrowseCollection* collection );
         virtual ~UpnpBrowseCollectionScanCapability();
 
-        virtual void startFullScan();
-        virtual void startIncrementalScan( const QString &directory = QString() );
-        virtual void stopScan();
+        void startFullScan() override;
+        void startIncrementalScan( const QString &directory = QString() ) override;
+        void stopScan() override;
 
     private:
         UpnpBrowseCollection *m_collection;

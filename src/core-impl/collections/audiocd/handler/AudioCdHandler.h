@@ -33,9 +33,9 @@ public:
 
     ~AudioCdHandler();
 
-    virtual void init();
-    virtual bool isWritable() const { return false; }
-    virtual QString prettyName() const;
+    void init() override;
+    bool isWritable() const override { return false; }
+    QString prettyName() const override;
 
 };
 

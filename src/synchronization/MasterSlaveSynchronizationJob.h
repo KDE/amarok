@@ -45,7 +45,7 @@ class MasterSlaveSynchronizationJob : public SynchronizationBaseJob
         void setSlave( Collections::Collection *slave );
 
     protected:
-        void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB );
+        void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB ) override;
 
     private:
         Collections::Collection *m_master;

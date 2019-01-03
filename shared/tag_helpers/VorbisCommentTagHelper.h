@@ -34,14 +34,14 @@ namespace Meta
             public:
                 VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType, TagLib::FLAC::File *file = 0 );
 
-                virtual Meta::FieldHash tags() const;
-                virtual bool setTags( const Meta::FieldHash &changes );
+                Meta::FieldHash tags() const override;
+                bool setTags( const Meta::FieldHash &changes ) override;
 
-                virtual TagLib::ByteVector render() const;
+                TagLib::ByteVector render() const override;
 
-                virtual bool hasEmbeddedCover() const;
-                virtual QImage embeddedCover() const;
-                virtual bool setEmbeddedCover( const QImage &cover );
+                bool hasEmbeddedCover() const override;
+                QImage embeddedCover() const override;
+                bool setEmbeddedCover( const QImage &cover ) override;
 
             private:
                 static bool parsePictureBlock( const TagLib::StringList& block, QImage* result = 0 );

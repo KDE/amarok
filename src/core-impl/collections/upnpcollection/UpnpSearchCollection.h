@@ -49,11 +49,11 @@ class UpnpSearchCollection : public UpnpCollectionBase
   public:
     UpnpSearchCollection( const DeviceInfo&, QStringList searchCapabilities );
     virtual ~UpnpSearchCollection();
-    virtual QueryMaker* queryMaker();
+    QueryMaker* queryMaker() override;
 
-    virtual QIcon icon() const { return QIcon::fromTheme("network-server"); }
+    QIcon icon() const override { return QIcon::fromTheme("network-server"); }
 
-    Meta::TrackPtr trackForUrl( const QUrl &url );
+    Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
     UpnpCache* cache() { return m_cache; }
     QStringList searchCapabilities() { return m_searchCapabilities; }

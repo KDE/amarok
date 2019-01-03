@@ -39,9 +39,9 @@ public:
     AmarokUrl urlFromAlbum( Meta::AlbumPtr album );
     AmarokUrl urlFromArtist( Meta::ArtistPtr artist );
 
-    QString description();
-    QIcon icon();
-    AmarokUrl createUrl();
+    QString description() override;
+    QIcon icon() override;
+    AmarokUrl createUrl() override;
 
 private:
     NavigationUrlGenerator();

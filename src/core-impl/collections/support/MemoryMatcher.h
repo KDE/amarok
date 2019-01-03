@@ -48,8 +48,8 @@ class AMAROK_EXPORT TrackMatcher : public MemoryMatcher
 {
     public:
         explicit TrackMatcher( Meta::TrackPtr track );
-        virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
-        virtual Meta::TrackList match( const Meta::TrackList &tracks );
+        Meta::TrackList match( Collections::MemoryCollection *memColl ) override;
+        Meta::TrackList match( const Meta::TrackList &tracks ) override;
 
     private:
         Meta::TrackPtr m_track;
@@ -61,8 +61,8 @@ class AMAROK_EXPORT ArtistMatcher : public MemoryMatcher
     public:
         ArtistMatcher( Meta::ArtistPtr artist, Collections::QueryMaker::ArtistMatchBehaviour artistMode
                        = Collections::QueryMaker::TrackArtists );
-        virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
-        virtual Meta::TrackList match( const Meta::TrackList &tracks );
+        Meta::TrackList match( Collections::MemoryCollection *memColl ) override;
+        Meta::TrackList match( const Meta::TrackList &tracks ) override;
 
     private:
         Meta::ArtistPtr m_artist;
@@ -73,8 +73,8 @@ class AMAROK_EXPORT AlbumMatcher : public MemoryMatcher
 {
     public:
         explicit AlbumMatcher( Meta::AlbumPtr album );
-        virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
-        virtual Meta::TrackList match( const Meta::TrackList &tracks );
+        Meta::TrackList match( Collections::MemoryCollection *memColl ) override;
+        Meta::TrackList match( const Meta::TrackList &tracks ) override;
 
     private:
         Meta::AlbumPtr m_album;
@@ -84,8 +84,8 @@ class AMAROK_EXPORT GenreMatcher : public MemoryMatcher
 {
     public:
         explicit GenreMatcher( Meta::GenrePtr genre );
-        virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
-        virtual Meta::TrackList match( const Meta::TrackList &tracks );
+        Meta::TrackList match( Collections::MemoryCollection *memColl ) override;
+        Meta::TrackList match( const Meta::TrackList &tracks ) override;
 
     private:
         Meta::GenrePtr m_genre;
@@ -95,8 +95,8 @@ class AMAROK_EXPORT ComposerMatcher : public MemoryMatcher
 {
     public:
         explicit ComposerMatcher( Meta::ComposerPtr composer );
-        virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
-        virtual Meta::TrackList match( const Meta::TrackList &tracks );
+        Meta::TrackList match( Collections::MemoryCollection *memColl ) override;
+        Meta::TrackList match( const Meta::TrackList &tracks ) override;
 
     private:
         Meta::ComposerPtr m_composer;
@@ -106,8 +106,8 @@ class AMAROK_EXPORT YearMatcher : public MemoryMatcher
 {
     public:
         explicit YearMatcher( Meta::YearPtr year );
-        virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
-        virtual Meta::TrackList match( const Meta::TrackList &tracks );
+        Meta::TrackList match( Collections::MemoryCollection *memColl ) override;
+        Meta::TrackList match( const Meta::TrackList &tracks ) override;
 
     private:
         Meta::YearPtr m_year;
@@ -117,8 +117,8 @@ class AMAROK_EXPORT LabelMatcher : public MemoryMatcher
 {
     public:
         explicit LabelMatcher( const Meta::LabelPtr &label );
-        virtual Meta::TrackList match( Collections::MemoryCollection *memColl );
-        virtual Meta::TrackList match( const Meta::TrackList &tracks );
+        Meta::TrackList match( Collections::MemoryCollection *memColl ) override;
+        Meta::TrackList match( const Meta::TrackList &tracks ) override;
 
     private:
         Meta::LabelPtr m_label;

@@ -61,7 +61,7 @@ class AMAROK_EXPORT FetchCoverAction : public BaseCoverAction
             : BaseCoverAction( parent, albums ) { init(); }
 
     protected Q_SLOTS:
-        virtual void slotTriggered();
+        void slotTriggered() override;
     protected:
         virtual void init();
 };
@@ -76,7 +76,7 @@ class AMAROK_EXPORT DisplayCoverAction : public BaseCoverAction
             : BaseCoverAction( parent, albums ) { init(); }
 
     protected Q_SLOTS:
-        virtual void slotTriggered();
+        void slotTriggered() override;
     protected:
         virtual void init();
 };
@@ -91,7 +91,7 @@ class AMAROK_EXPORT UnsetCoverAction : public BaseCoverAction
             : BaseCoverAction( parent, albums ) { init(); }
 
     protected Q_SLOTS:
-        virtual void slotTriggered();
+        void slotTriggered() override;
     protected:
         virtual void init();
 };
@@ -106,7 +106,7 @@ class AMAROK_EXPORT SetCustomCoverAction : public BaseCoverAction
             : BaseCoverAction( parent, albums ) { init(); }
 
     protected Q_SLOTS:
-        virtual void slotTriggered();
+        void slotTriggered() override;
     protected:
         virtual void init();
 };

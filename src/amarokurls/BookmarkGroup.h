@@ -49,15 +49,15 @@ class BookmarkGroup : public BookmarkViewItem
         ~BookmarkGroup();
 
         int id() const;
-        QString name() const;
-        QString description() const;
+        QString name() const override;
+        QString description() const override;
 
-        virtual int childCount() const;
+        int childCount() const override;
 
-        virtual BookmarkGroupPtr parent() const { return m_parent; }
+        BookmarkGroupPtr parent() const override { return m_parent; }
 
-        virtual void rename( const QString &name );
-        virtual void setDescription( const QString &description );
+        void rename( const QString &name ) override;
+        void setDescription( const QString &description ) override;
 
         void save();
         BookmarkGroupList childGroups() const;
@@ -68,7 +68,7 @@ class BookmarkGroup : public BookmarkViewItem
         void clear();
 
         void deleteChild( BookmarkViewItemPtr item );
-        virtual void removeFromDb();
+        void removeFromDb() override;
 
     private:
         int m_dbId;

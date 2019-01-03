@@ -27,7 +27,7 @@ public:
     explicit CountdownFrame( QWidget *parent = nullptr );
     void setFilledRatio( float filled ); // 0 to 1
 
-    virtual void paintEvent( QPaintEvent *e );
+    void paintEvent( QPaintEvent *e ) override;
 
 protected:
     float m_filled;
@@ -47,7 +47,7 @@ Q_SIGNALS:
     void closed();
 
 protected:
-    void timerEvent( QTimerEvent * );
+    void timerEvent( QTimerEvent * ) override;
 
 private Q_SLOTS:
     void close();

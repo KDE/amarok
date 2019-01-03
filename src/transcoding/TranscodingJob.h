@@ -74,7 +74,7 @@ public:
     /**
      * Starts the transcoding job.
      */
-    void start();
+    void start() override;
 
     /**
      * Get the source url.

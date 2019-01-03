@@ -53,14 +53,14 @@ namespace Dynamic
 
             ~BiasedPlaylist();
 
-            void toXml( QXmlStreamWriter *writer ) const;
+            void toXml( QXmlStreamWriter *writer ) const override;
 
-            void requestTracks(int);
+            void requestTracks(int) override;
 
             BiasPtr bias() const;
 
         public Q_SLOTS:
-            virtual void requestAbort();
+            void requestAbort() override;
 
         private Q_SLOTS:
             void solverFinished();

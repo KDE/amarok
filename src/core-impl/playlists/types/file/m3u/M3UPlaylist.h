@@ -30,13 +30,13 @@ class AMAROK_EXPORT M3UPlaylist : public PlaylistFile
 
         /* PlaylistFile methods */
         using PlaylistFile::load;
-        virtual bool load( QTextStream &stream ) { return loadM3u( stream ); }
+        bool load( QTextStream &stream ) override { return loadM3u( stream ); }
 
-        virtual QString extension() const { return "m3u"; }
-        virtual QString mimetype() const { return "audio/x-mpegurl"; }
+        QString extension() const override { return "m3u"; }
+        QString mimetype() const override { return "audio/x-mpegurl"; }
 
     protected:
-        virtual void savePlaylist( QFile &file );
+        void savePlaylist( QFile &file ) override;
 
     private:
         bool loadM3u( QTextStream &stream );

@@ -29,7 +29,7 @@ class ContextDock : public AmarokDockWidget
 public:
     explicit ContextDock( QWidget *parent );
 
-    void polish();
+    void polish() override;
 
 protected Q_SLOTS:
      void createContextView();

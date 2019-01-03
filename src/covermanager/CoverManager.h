@@ -67,7 +67,7 @@ class CoverManager : public QDialog, public Meta::Observer
 
         // Reimplemented from Meta::Observer
         using Observer::metadataChanged;
-        void metadataChanged( Meta::AlbumPtr album );
+        void metadataChanged( Meta::AlbumPtr album ) override;
 
     public Q_SLOTS:
         void updateStatusBar();
@@ -154,7 +154,7 @@ class CoverView : public QListWidget
         explicit CoverView( QWidget *parent = nullptr, const char *name = 0, Qt::WindowFlags f = 0 );
 
     protected:
-        void contextMenuEvent( QContextMenuEvent *event );
+        void contextMenuEvent( QContextMenuEvent *event ) override;
 
     private Q_SLOTS:
         void setStatusText( QListWidgetItem *item );

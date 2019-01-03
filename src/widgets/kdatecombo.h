@@ -49,8 +49,8 @@ private:
    QDate & string2Date(const QString &, QDate * );
 
 protected:
-  bool eventFilter (QObject*, QEvent*);
-  virtual void mousePressEvent (QMouseEvent * e);
+  bool eventFilter (QObject*, QEvent*) override;
+  void mousePressEvent (QMouseEvent * e) override;
 
 protected Q_SLOTS:
    void dateEnteredEvent(const QDate &d);

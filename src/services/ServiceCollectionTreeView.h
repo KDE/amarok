@@ -38,8 +38,8 @@ public:
     bool playableTracks() const;
 
 protected:
-    void mouseDoubleClickEvent(QMouseEvent* event);
-    void contextMenuEvent(QContextMenuEvent* event);
+    void mouseDoubleClickEvent(QMouseEvent* event) override;
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
 private:
     bool m_playableTracks;

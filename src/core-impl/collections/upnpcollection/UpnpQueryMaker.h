@@ -49,41 +49,41 @@ class UpnpQueryMaker : public QueryMaker
         ~UpnpQueryMaker();
 
         QueryMaker* reset();
-        void run() ;
-        void abortQuery() ;
+        void run()  override;
+        void abortQuery()  override;
 
-        QueryMaker* setQueryType( QueryType type ) ;
-        QueryMaker* addReturnValue( qint64 value ) ;
-        QueryMaker* addReturnFunction( ReturnFunction function, qint64 value ) ;
-        QueryMaker* orderBy( qint64 value, bool descending = false ) ;
+        QueryMaker* setQueryType( QueryType type )  override;
+        QueryMaker* addReturnValue( qint64 value )  override;
+        QueryMaker* addReturnFunction( ReturnFunction function, qint64 value )  override;
+        QueryMaker* orderBy( qint64 value, bool descending = false )  override;
 
-        QueryMaker* addMatch( const Meta::TrackPtr &track ) ;
-        QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
-        QueryMaker* addMatch( const Meta::AlbumPtr &album ) ;
-        QueryMaker* addMatch( const Meta::ComposerPtr &composer ) ;
-        QueryMaker* addMatch( const Meta::GenrePtr &genre ) ;
-        QueryMaker* addMatch( const Meta::YearPtr &year ) ;
-        QueryMaker* addMatch( const Meta::LabelPtr &label );
+        QueryMaker* addMatch( const Meta::TrackPtr &track )  override;
+        QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists ) override;
+        QueryMaker* addMatch( const Meta::AlbumPtr &album )  override;
+        QueryMaker* addMatch( const Meta::ComposerPtr &composer )  override;
+        QueryMaker* addMatch( const Meta::GenrePtr &genre )  override;
+        QueryMaker* addMatch( const Meta::YearPtr &year )  override;
+        QueryMaker* addMatch( const Meta::LabelPtr &label ) override;
 
-        QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) ;
-        QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) ;
+        QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false )  override;
+        QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false )  override;
 
-        QueryMaker* addNumberFilter( qint64 value, qint64 filter, NumberComparison compare ) ;
-        QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, NumberComparison compare ) ;
+        QueryMaker* addNumberFilter( qint64 value, qint64 filter, NumberComparison compare )  override;
+        QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, NumberComparison compare )  override;
 
-        QueryMaker* limitMaxResultSize( int size ) ;
+        QueryMaker* limitMaxResultSize( int size )  override;
 
-        QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+        QueryMaker* setAlbumQueryMode( AlbumQueryMode mode ) override;
 
-        QueryMaker* setLabelQueryMode( LabelQueryMode mode );
+        QueryMaker* setLabelQueryMode( LabelQueryMode mode ) override;
 
-        QueryMaker* beginAnd() ;
-        QueryMaker* beginOr() ;
-        QueryMaker* endAndOr() ;
+        QueryMaker* beginAnd()  override;
+        QueryMaker* beginOr()  override;
+        QueryMaker* endAndOr()  override;
 
         QueryMaker* setAutoDelete( bool autoDelete );
 
-        int validFilterMask();
+        int validFilterMask() override;
 
     Q_SIGNALS:
         void newTracksReady( Meta::TrackList );

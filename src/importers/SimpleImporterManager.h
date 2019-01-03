@@ -42,33 +42,33 @@ using namespace StatSyncing;
         } \
     \
         QString type() const \
-        { \
+        override { \
             return TYPE; \
         } \
     \
         QString prettyName() const \
-        { \
+        override { \
             return PRETTY_NAME; \
         } \
     \
         QString description() const \
-        { \
+        override { \
             return DESCRIPTION; \
         } \
     \
         QIcon icon() const \
-        { \
+        override { \
             return ICON; \
         } \
     \
         ProviderConfigWidget *configWidget( const QVariantMap &config ) \
-        { \
+        override { \
             return new ConfigWidget_T( config ); \
         } \
     \
     protected: \
         ImporterProviderPtr newInstance( const QVariantMap &config ) \
-        { \
+        override { \
             return ImporterProviderPtr( new ImporterProvider_T( config, this ) ); \
         } \
     }; \

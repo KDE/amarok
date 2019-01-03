@@ -35,7 +35,7 @@ public:
 
     ~ScriptableServiceCollection();
 
-    virtual Collections::QueryMaker* queryMaker();
+    Collections::QueryMaker* queryMaker() override;
 
     void donePopulating( int parentId );
 

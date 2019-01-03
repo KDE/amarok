@@ -40,29 +40,29 @@ class MySqlStorage: public SqlStorage
         MySqlStorage();
         virtual ~MySqlStorage();
 
-        virtual QStringList query( const QString &query );
-        virtual int insert( const QString &statement, const QString &table = QString() );
+        QStringList query( const QString &query ) override;
+        int insert( const QString &statement, const QString &table = QString() ) override;
 
-        virtual QString escape( const QString &text ) const;
-        virtual QString randomFunc() const;
+        QString escape( const QString &text ) const override;
+        QString randomFunc() const override;
 
-        virtual QString boolTrue() const;
-        virtual QString boolFalse() const;
-        virtual QString idType() const;
-        virtual QString textColumnType( int length = 255 ) const;
-        virtual QString exactTextColumnType( int length = 1000 ) const;
+        QString boolTrue() const override;
+        QString boolFalse() const override;
+        QString idType() const override;
+        QString textColumnType( int length = 255 ) const override;
+        QString exactTextColumnType( int length = 1000 ) const override;
         //the below value may have to be decreased even more for different indexes; only time will tell
-        virtual QString exactIndexableTextColumnType( int length = 324 ) const;
-        virtual QString longTextColumnType() const;
+        QString exactIndexableTextColumnType( int length = 324 ) const override;
+        QString longTextColumnType() const override;
 
         /** Returns a list of the last sql errors.
             The list might not include every one error if the number
             is beyond a sensible limit.
         */
-        QStringList getLastErrors() const;
+        QStringList getLastErrors() const override;
 
         /** Clears the list of the last errors. */
-        void clearLastErrors();
+        void clearLastErrors() override;
 
     protected:
         /** Adds an error message to the m_lastErrors.

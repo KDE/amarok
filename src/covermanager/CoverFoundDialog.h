@@ -73,7 +73,7 @@ public Q_SLOTS:
               const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
 
 protected:
-    void hideEvent( QHideEvent *event );
+    void hideEvent( QHideEvent *event ) override;
 
 protected Q_SLOTS:
     void slotButtonClicked( int button );

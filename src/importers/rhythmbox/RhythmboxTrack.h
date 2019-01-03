@@ -31,11 +31,11 @@ public:
     RhythmboxTrack( const QString &location, const Meta::FieldHash &metadata );
     ~RhythmboxTrack();
 
-    int rating() const;
-    void setRating( int rating );
+    int rating() const override;
+    void setRating( int rating ) override;
 
 protected:
-    void doCommit( const qint64 fields );
+    void doCommit( const qint64 fields ) override;
 
 Q_SIGNALS:
     void commitCalled( const QString &location, const Meta::FieldHash &statistics );

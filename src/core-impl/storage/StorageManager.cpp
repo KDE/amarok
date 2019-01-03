@@ -46,26 +46,26 @@ public:
 
     virtual QString type() const { return QLatin1String("Empty"); }
 
-    virtual QString escape( const QString &text) const { return text; }
+    QString escape( const QString &text) const override { return text; }
 
-    virtual QStringList query( const QString &) { return QStringList(); }
-    virtual int insert( const QString &, const QString &) { return 0; }
+    QStringList query( const QString &) override { return QStringList(); }
+    int insert( const QString &, const QString &) override { return 0; }
 
-    virtual QString boolTrue() const { return QString(); }
-    virtual QString boolFalse() const { return QString(); }
+    QString boolTrue() const override { return QString(); }
+    QString boolFalse() const override { return QString(); }
 
-    virtual QString idType() const { return QString(); };
-    virtual QString textColumnType( int ) const { return QString(); }
-    virtual QString exactTextColumnType( int ) const { return QString(); }
+    QString idType() const override { return QString(); };
+    QString textColumnType( int ) const override { return QString(); }
+    QString exactTextColumnType( int ) const override { return QString(); }
 
-    virtual QString exactIndexableTextColumnType( int ) const { return QString(); }
-    virtual QString longTextColumnType() const { return QString(); }
-    virtual QString randomFunc() const { return QString(); }
+    QString exactIndexableTextColumnType( int ) const override { return QString(); }
+    QString longTextColumnType() const override { return QString(); }
+    QString randomFunc() const override { return QString(); }
 
-    virtual QStringList getLastErrors() const { return QStringList(); }
+    QStringList getLastErrors() const override { return QStringList(); }
 
     /** Clears the list of the last errors. */
-    virtual void clearLastErrors() { }
+    void clearLastErrors() override { }
 };
 
 

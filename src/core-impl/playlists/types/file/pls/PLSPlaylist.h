@@ -30,13 +30,13 @@ class AMAROK_EXPORT PLSPlaylist : public PlaylistFile
 
         /* PlaylistFile methods */
         using PlaylistFile::load;
-        virtual bool load( QTextStream &stream ) { return loadPls( stream ); }
+        bool load( QTextStream &stream ) override { return loadPls( stream ); }
 
-        virtual QString extension() const { return "pls"; }
-        virtual QString mimetype() const { return "audio/x-scpls"; }
+        QString extension() const override { return "pls"; }
+        QString mimetype() const override { return "audio/x-scpls"; }
 
     protected:
-        virtual void savePlaylist( QFile &file );
+        void savePlaylist( QFile &file ) override;
 
     private:
         bool loadPls( QTextStream &stream );

@@ -40,8 +40,8 @@ namespace APG {
             void removeNode();
             void currentNodeChanged( const QModelIndex& );
 
-            void accept();
-            void reject();
+            void accept() override;
+            void reject() override;
 
             void on_lineEdit_Title_textChanged( const QString& );
 

@@ -36,9 +36,9 @@ public:
 
     virtual ~AmpacheSettings();
 
-    virtual void save() override;
-    virtual void load() override;
-    virtual void defaults() override;
+    void save() override;
+    void load() override;
+    void defaults() override;
 
 private:
 

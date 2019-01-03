@@ -34,9 +34,9 @@ class AnimatedWidget : public QWidget
         void stop();
 
     protected:
-        void paintEvent( QPaintEvent *event );
-        void resizeEvent( QResizeEvent *event );
-        void timerEvent( QTimerEvent *event );
+        void paintEvent( QPaintEvent *event ) override;
+        void resizeEvent( QResizeEvent *event ) override;
+        void timerEvent( QTimerEvent *event ) override;
 
     private:
         void load();

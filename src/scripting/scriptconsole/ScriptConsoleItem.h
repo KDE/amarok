@@ -42,24 +42,24 @@ namespace ScriptConsoleNS
                             , const QString &category, ScriptEditorDocument *document );
             virtual ~ScriptConsoleItem();
             ScriptEditorDocument* document() { return m_viewFactory; }
-            bool start( bool silent = false );
+            bool start( bool silent = false ) override;
             KTextEditor::View *createEditorView( QWidget *parent );
 
             /**
              * Clear script files on disk upon object deletion
              */
             void setClearOnDeletion( bool clearOnDelete );
-            void pause();
+            void pause() override;
 
         private:
             bool m_clearOnDelete;
             ScriptEditorDocument *m_viewFactory;
             QPointer<KTextEditor::View> m_view;
 
-            void timerEvent(QTimerEvent* event);
-            void initializeScriptEngine();
+            void timerEvent(QTimerEvent* event) override;
+            void initializeScriptEngine() override;
             static KPluginInfo createSpecFile( const QString &name, const QString &category, const QString &path );
-            QString handleError( QScriptEngine *engine );
+            QString handleError( QScriptEngine *engine ) override;
     };
 }
 

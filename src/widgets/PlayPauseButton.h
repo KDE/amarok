@@ -34,10 +34,10 @@ Q_SIGNALS:
     void toggled(bool playing);
 
 protected:
-    void enterEvent( QEvent * );
-    void leaveEvent( QEvent * );
-    void mousePressEvent( QMouseEvent * );
-    void reloadContent( const QSize &sz );
+    void enterEvent( QEvent * ) override;
+    void leaveEvent( QEvent * ) override;
+    void mousePressEvent( QMouseEvent * ) override;
+    void reloadContent( const QSize &sz ) override;
 
 private Q_SLOTS:
     void toggle();

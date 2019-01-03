@@ -48,15 +48,15 @@ Q_SIGNALS:
     void clicked( const QString &current );
 
 protected:
-    void enterEvent( QEvent * );
-    void hideEvent( QHideEvent * );
-    void leaveEvent( QEvent * );
-    void paintEvent( QPaintEvent * );
-    void mouseReleaseEvent( QMouseEvent * );
-    void mousePressEvent( QMouseEvent * );
-    void showEvent( QShowEvent * );
-    void timerEvent( QTimerEvent * );
-    void wheelEvent( QWheelEvent * );
+    void enterEvent( QEvent * ) override;
+    void hideEvent( QHideEvent * ) override;
+    void leaveEvent( QEvent * ) override;
+    void paintEvent( QPaintEvent * ) override;
+    void mouseReleaseEvent( QMouseEvent * ) override;
+    void mousePressEvent( QMouseEvent * ) override;
+    void showEvent( QShowEvent * ) override;
+    void timerEvent( QTimerEvent * ) override;
+    void wheelEvent( QWheelEvent * ) override;
 
 private:
     void ensureAnimationStatus();

@@ -32,8 +32,8 @@ public:
 
     bool isAnimating() const { return m_animating; }
 
-    virtual QSize sizeHint() const;
-    virtual int heightForWidth(int w) const;
+    QSize sizeHint() const override;
+    int heightForWidth(int w) const override;
 
 public Q_SLOTS:
     void animate();
@@ -44,10 +44,10 @@ protected:
     void setHoverHintEnabled( bool enable);
     bool isHoverHintEnabled() const;
 
-    virtual void enterEvent(QEvent* event);
-    virtual void leaveEvent(QEvent* event);
+    void enterEvent(QEvent* event) override;
+    void leaveEvent(QEvent* event) override;
 
-    virtual void paintEvent(QPaintEvent* event);
+    void paintEvent(QPaintEvent* event) override;
     void drawHoverBackground(QPainter* painter);
 
     //! Returns the foreground color by respecting the current display hint.

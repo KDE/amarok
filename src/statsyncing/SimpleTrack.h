@@ -38,20 +38,20 @@ public:
                           const QSet<QString> &labels = QSet<QString>() );
     virtual ~SimpleTrack();
 
-    virtual QString name() const;
-    virtual QString album() const;
-    virtual QString artist() const;
-    virtual QString composer() const;
-    virtual int year() const;
-    virtual int trackNumber() const;
-    virtual int discNumber() const;
+    QString name() const override;
+    QString album() const override;
+    QString artist() const override;
+    QString composer() const override;
+    int year() const override;
+    int trackNumber() const override;
+    int discNumber() const override;
 
-    virtual QDateTime firstPlayed() const;
-    virtual QDateTime lastPlayed() const;
-    virtual int playCount() const;
-    virtual int rating() const;
+    QDateTime firstPlayed() const override;
+    QDateTime lastPlayed() const override;
+    int playCount() const override;
+    int rating() const override;
 
-    virtual QSet<QString> labels() const;
+    QSet<QString> labels() const override;
 
 protected:
     QDateTime getDateTime( const QVariant &v ) const;

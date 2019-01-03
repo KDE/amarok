@@ -36,14 +36,14 @@ class UmsCollectionLocation : public Collections::CollectionLocation
         ~UmsCollectionLocation();
 
         /* CollectionLocation methods */
-        virtual QString prettyLocation() const;
-        virtual QStringList actualLocation() const;
-        virtual bool isWritable() const;
-        virtual bool isOrganizable() const;
+        QString prettyLocation() const override;
+        QStringList actualLocation() const override;
+        bool isWritable() const override;
+        bool isOrganizable() const override;
 
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
-                                           const Transcoding::Configuration &configuration );
-        virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
+        void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
+                                           const Transcoding::Configuration &configuration ) override;
+        void removeUrlsFromCollection( const Meta::TrackList &sources ) override;
 
     protected Q_SLOTS:
         void slotRemoveOperationFinished(); // hides intentionally parent methods
@@ -67,7 +67,7 @@ class UmsTransferJob : public KCompositeJob
 
         void addCopy( const QUrl &from, const QUrl &to );
         void addTranscode( const QUrl &from, const QUrl &to );
-        virtual void start();
+        void start() override;
 
     Q_SIGNALS:
         void sourceFileTransferDone( QUrl source );
@@ -81,7 +81,7 @@ class UmsTransferJob : public KCompositeJob
         void slotChildJobPercent( KJob *job, unsigned long percentage );
 
         //reimplemented from KCompositeJob
-        virtual void slotResult( KJob *job );
+        void slotResult( KJob *job ) override;
 
     private:
         UmsCollectionLocation *m_location;

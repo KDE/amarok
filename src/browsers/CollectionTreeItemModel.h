@@ -37,21 +37,21 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         explicit CollectionTreeItemModel( const QList<CategoryId::CatMenuId> &levelType );
 
         /* QAbstractItemModel methods */
-        virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-        virtual QVariant data( const QModelIndex &index, int role ) const;
-        virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row,
-                                  int column, const QModelIndex &parent );
-        virtual bool canFetchMore( const QModelIndex &parent ) const;
-        virtual void fetchMore( const QModelIndex &parent );
-        virtual Qt::DropActions supportedDropActions() const;
+        Qt::ItemFlags flags( const QModelIndex &index ) const override;
+        QVariant data( const QModelIndex &index, int role ) const override;
+        bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row,
+                                  int column, const QModelIndex &parent ) override;
+        bool canFetchMore( const QModelIndex &parent ) const override;
+        void fetchMore( const QModelIndex &parent ) override;
+        Qt::DropActions supportedDropActions() const override;
 
     public Q_SLOTS:
         virtual void collectionAdded( Collections::Collection *newCollection );
         virtual void collectionRemoved( const QString &collectionId );
 
     protected:
-        virtual void filterChildren();
-        virtual int levelModifier() const { return 0; }
+        void filterChildren() override;
+        int levelModifier() const override { return 0; }
 
     private Q_SLOTS:
         void requestCollectionsExpansion();

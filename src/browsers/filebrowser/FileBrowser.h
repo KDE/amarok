@@ -32,7 +32,7 @@ public:
     FileBrowser( const char *name, QWidget *parent );
     ~FileBrowser();
 
-    virtual void setupAddItems();
+    void setupAddItems() override;
 
     /**
     * Navigate to a specific directory
@@ -50,7 +50,7 @@ public Q_SLOTS:
 protected Q_SLOTS:
     void slotNavigateToDirectory( const QModelIndex &index );
 
-    virtual void reActivate();
+    void reActivate() override;
 
     /**
      * Shows/hides the columns as selected in the context menu of the header of the

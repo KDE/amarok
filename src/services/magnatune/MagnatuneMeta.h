@@ -47,18 +47,18 @@ public:
 
     void setDownloadMembership();
 
-    virtual QString sourceName();
-    virtual QString sourceDescription();
-    virtual QPixmap emblem();
+    QString sourceName() override;
+    QString sourceDescription() override;
+    QPixmap emblem() override;
 
-    virtual bool isBookmarkable() const { return true; }
-    virtual QString collectionName() const { return "Magnatune.com"; }
-    virtual bool simpleFiltering() const { return false; }
+    bool isBookmarkable() const override { return true; }
+    QString collectionName() const override { return "Magnatune.com"; }
+    bool simpleFiltering() const override { return false; }
 
     void setOggUrl( const QString& url );
     QString oggUrl() const;
 
-    void setAlbumPtr( Meta::AlbumPtr album );
+    void setAlbumPtr( Meta::AlbumPtr album ) override;
 
 public Q_SLOTS:
     void download();
@@ -88,9 +88,9 @@ public:
     void setMagnatuneUrl( const QUrl &url );
     QUrl magnatuneUrl() const;
 
-    virtual bool isBookmarkable() const { return true; }
-    virtual QString collectionName() const { return "Magnatune.com"; }
-    virtual bool simpleFiltering() const { return false; }
+    bool isBookmarkable() const override { return true; }
+    QString collectionName() const override { return "Magnatune.com"; }
+    bool simpleFiltering() const override { return false; }
 };
 
 class MagnatuneAlbum : public ServiceAlbumWithCover
@@ -110,15 +110,15 @@ public:
 
     ~MagnatuneAlbum();
     
-    virtual QString downloadPrefix() const { return "magnatune"; }
+    QString downloadPrefix() const override { return "magnatune"; }
 
     void setLaunchYear( int launchYear );
     int launchYear() const;
 
-    virtual void setCoverUrl( const QString &coverUrl );
-    virtual QString coverUrl() const;
+    void setCoverUrl( const QString &coverUrl ) override;
+    QString coverUrl() const override;
 
-    virtual QUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return QUrl( coverUrl() ); }
+    QUrl imageLocation( int size = 1 ) override { Q_UNUSED( size ); return QUrl( coverUrl() ); }
     
     void setAlbumCode(  const QString &albumCode );
     QString albumCode();
@@ -128,9 +128,9 @@ public:
 
     void setDownloadMembership();
 
-    virtual bool isBookmarkable() const { return true; }
-    virtual QString collectionName() const { return "Magnatune.com"; }
-    virtual bool simpleFiltering() const { return false; }
+    bool isBookmarkable() const override { return true; }
+    QString collectionName() const override { return "Magnatune.com"; }
+    bool simpleFiltering() const override { return false; }
 
 public Q_SLOTS:
     void download();
@@ -144,9 +144,9 @@ public:
     explicit MagnatuneGenre( const QString &name );
     explicit MagnatuneGenre( const QStringList &resultRow );
 
-    virtual bool isBookmarkable() const { return true; }
-    virtual QString collectionName() const { return "Magnatune.com"; }
-    virtual bool simpleFiltering() const { return false; }
+    bool isBookmarkable() const override { return true; }
+    QString collectionName() const override { return "Magnatune.com"; }
+    bool simpleFiltering() const override { return false; }
 };
 
 }
@@ -160,21 +160,21 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
         MagnatuneMetaFactory( const QString &dbPrefix, MagnatuneStore * store );
         virtual ~MagnatuneMetaFactory() {}
 
-        virtual int getTrackSqlRowCount();
-        virtual QString getTrackSqlRows();
-        virtual Meta::TrackPtr createTrack( const QStringList &rows );
+        int getTrackSqlRowCount() override;
+        QString getTrackSqlRows() override;
+        Meta::TrackPtr createTrack( const QStringList &rows ) override;
 
-        virtual int getAlbumSqlRowCount();
-        virtual QString getAlbumSqlRows();
-        virtual Meta::AlbumPtr createAlbum( const QStringList &rows );
+        int getAlbumSqlRowCount() override;
+        QString getAlbumSqlRows() override;
+        Meta::AlbumPtr createAlbum( const QStringList &rows ) override;
 
-        virtual int getArtistSqlRowCount();
-        virtual QString getArtistSqlRows();
-        virtual Meta::ArtistPtr createArtist( const QStringList &rows );
+        int getArtistSqlRowCount() override;
+        QString getArtistSqlRows() override;
+        Meta::ArtistPtr createArtist( const QStringList &rows ) override;
 
     //virtual int getGenreSqlRowCount();
     //virtual QString getGenreSqlRows();
-        virtual Meta::GenrePtr createGenre( const QStringList &rows );
+        Meta::GenrePtr createGenre( const QStringList &rows ) override;
 
         //stuff for supporting the new membership services at Magnatune.com
 

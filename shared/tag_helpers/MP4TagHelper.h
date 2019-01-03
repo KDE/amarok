@@ -31,12 +31,12 @@ namespace Meta
             public:
                 MP4TagHelper( TagLib::Tag *tag, TagLib::MP4::Tag *mp4Tag, Amarok::FileType fileType );
 
-                virtual Meta::FieldHash tags() const;
-                virtual bool setTags( const Meta::FieldHash &changes );
+                Meta::FieldHash tags() const override;
+                bool setTags( const Meta::FieldHash &changes ) override;
 
-                virtual bool hasEmbeddedCover() const;
-                virtual QImage embeddedCover() const;
-                virtual bool setEmbeddedCover( const QImage &cover );
+                bool hasEmbeddedCover() const override;
+                QImage embeddedCover() const override;
+                bool setEmbeddedCover( const QImage &cover ) override;
 
             private:
                 TagLib::MP4::Tag *m_tag;

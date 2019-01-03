@@ -31,10 +31,10 @@ namespace Capabilities
             explicit MultiSourceCapabilityImpl( Meta::MultiTrack *track );
             virtual ~MultiSourceCapabilityImpl();
 
-            virtual QStringList sources() const;
-            virtual void setSource( int source );
-            virtual int current() const;
-            virtual QUrl nextUrl() const;
+            QStringList sources() const override;
+            void setSource( int source ) override;
+            int current() const override;
+            QUrl nextUrl() const override;
 
         private:
             Meta::MultiTrack *m_track;

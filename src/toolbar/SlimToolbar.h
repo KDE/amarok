@@ -36,7 +36,7 @@ public:
     explicit SlimToolbar( QWidget * parent );
     ~SlimToolbar();
 
-    virtual bool eventFilter( QObject* object, QEvent* event );
+    bool eventFilter( QObject* object, QEvent* event ) override;
 
 private:
     CurrentTrackToolbar * m_currentTrackToolbar;

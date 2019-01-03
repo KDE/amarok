@@ -32,11 +32,11 @@ namespace Playlist
         public:
             StandardTrackNavigator();
 
-            virtual quint64 likelyNextTrack() { return chooseNextTrack( m_repeatPlaylist ); }
-            virtual quint64 likelyLastTrack();
-            virtual quint64 requestNextTrack();
-            virtual quint64 requestUserNextTrack();
-            virtual quint64 requestLastTrack();
+            quint64 likelyNextTrack() override { return chooseNextTrack( m_repeatPlaylist ); }
+            quint64 likelyLastTrack() override;
+            quint64 requestNextTrack() override;
+            quint64 requestUserNextTrack() override;
+            quint64 requestLastTrack() override;
 
         private:
             /**

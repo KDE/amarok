@@ -44,13 +44,13 @@ namespace ConstraintTypes {
             static Constraint* createNew(ConstraintNode*);
             static ConstraintFactoryEntry* registerMe();
 
-            virtual QWidget* editWidget() const;
-            virtual void toXml(QDomDocument&, QDomElement&) const;
+            QWidget* editWidget() const override;
+            void toXml(QDomDocument&, QDomElement&) const override;
 
-            virtual QString getName() const;
+            QString getName() const override;
 
-            virtual double satisfaction( const Meta::TrackList& ) const;
-            virtual quint32 suggestPlaylistSize() const;
+            double satisfaction( const Meta::TrackList& ) const override;
+            quint32 suggestPlaylistSize() const override;
 
         private Q_SLOTS:
             void setPosition( const int );
@@ -99,8 +99,8 @@ namespace ConstraintTypes {
             TrackMatcher( const Meta::TrackPtr& );
             virtual ~TrackMatcher();
 
-            virtual QList<int> find( const Meta::TrackList& ) const;
-            virtual bool match( const Meta::TrackPtr& ) const;
+            QList<int> find( const Meta::TrackList& ) const override;
+            bool match( const Meta::TrackPtr& ) const override;
 
         private:
             Meta::TrackPtr m_trackToMatch;
@@ -112,8 +112,8 @@ namespace ConstraintTypes {
             AlbumMatcher( const Meta::AlbumPtr& );
             virtual ~AlbumMatcher();
 
-            virtual QList<int> find( const Meta::TrackList& ) const;
-            virtual bool match( const Meta::TrackPtr& ) const;
+            QList<int> find( const Meta::TrackList& ) const override;
+            bool match( const Meta::TrackPtr& ) const override;
 
         private:
             Meta::AlbumPtr m_albumToMatch;
@@ -125,8 +125,8 @@ namespace ConstraintTypes {
             ArtistMatcher( const Meta::ArtistPtr& );
             virtual ~ArtistMatcher();
 
-            virtual QList<int> find( const Meta::TrackList& ) const;
-            virtual bool match( const Meta::TrackPtr& ) const;
+            QList<int> find( const Meta::TrackList& ) const override;
+            bool match( const Meta::TrackPtr& ) const override;
 
         private:
             Meta::ArtistPtr m_artistToMatch;

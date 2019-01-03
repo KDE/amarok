@@ -30,12 +30,12 @@ class TrackActionButton : public IconButton
 public:
     explicit TrackActionButton( QWidget *parent = nullptr, const QAction *act = 0 );
     void setAction( const QAction *act );
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 protected:
-    bool eventFilter( QObject *o, QEvent *e );
-    void enterEvent( QEvent * );
-    void leaveEvent( QEvent * );
-    void reloadContent( const QSize &sz );
+    bool eventFilter( QObject *o, QEvent *e ) override;
+    void enterEvent( QEvent * ) override;
+    void leaveEvent( QEvent * ) override;
+    void reloadContent( const QSize &sz ) override;
 private Q_SLOTS:
     void updateAction();
     void init();

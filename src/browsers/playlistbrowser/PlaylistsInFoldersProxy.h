@@ -38,22 +38,22 @@ class PlaylistsInFoldersProxy : public QtGroupingProxy
 
         /* QtGroupingProxy methods */
         //re-implemented to make folder name (== label) editable.
-        virtual Qt::ItemFlags flags(const QModelIndex &idx) const;
-        virtual QVariant data( const QModelIndex &idx, int role ) const;
+        Qt::ItemFlags flags(const QModelIndex &idx) const override;
+        QVariant data( const QModelIndex &idx, int role ) const override;
 
         /* QAbstractModel methods */
-        virtual bool removeRows( int row, int count,
-                                 const QModelIndex &parent = QModelIndex() );
-        virtual QStringList mimeTypes() const;
-        virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
-        virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action,
-                                   int row, int column, const QModelIndex &parent );
+        bool removeRows( int row, int count,
+                                 const QModelIndex &parent = QModelIndex() ) override;
+        QStringList mimeTypes() const override;
+        QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+        bool dropMimeData( const QMimeData *data, Qt::DropAction action,
+                                   int row, int column, const QModelIndex &parent ) override;
 
-        virtual Qt::DropActions supportedDropActions() const;
-        virtual Qt::DropActions supportedDragActions() const;
+        Qt::DropActions supportedDropActions() const override;
+        Qt::DropActions supportedDragActions() const override;
 
         // re-implement to connect renameIndex signal
-        virtual void setSourceModel( QAbstractItemModel *sourceModel );
+        void setSourceModel( QAbstractItemModel *sourceModel ) override;
 
     private Q_SLOTS:
         void slotRenameIndex( const QModelIndex &idx );

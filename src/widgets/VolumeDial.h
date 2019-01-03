@@ -32,7 +32,7 @@ public:
         You do NOT have to remove them on deconstruction.
     */
     void addWheelProxies( QList<QWidget*> proxies );
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
 public Q_SLOTS:
     /**
@@ -46,18 +46,18 @@ Q_SIGNALS:
     void muteToggled( bool mute );
 
 protected:
-    void enterEvent( QEvent * );
-    bool eventFilter( QObject *o, QEvent *e );
-    void leaveEvent( QEvent * );
-    void paintEvent( QPaintEvent * );
-    void mouseMoveEvent( QMouseEvent * );
-    void mousePressEvent( QMouseEvent * );
-    void mouseReleaseEvent( QMouseEvent * );
-    void resizeEvent(QResizeEvent *);
-    void sliderChange( SliderChange change );
-    void timerEvent ( QTimerEvent * );
+    void enterEvent( QEvent * ) override;
+    bool eventFilter( QObject *o, QEvent *e ) override;
+    void leaveEvent( QEvent * ) override;
+    void paintEvent( QPaintEvent * ) override;
+    void mouseMoveEvent( QMouseEvent * ) override;
+    void mousePressEvent( QMouseEvent * ) override;
+    void mouseReleaseEvent( QMouseEvent * ) override;
+    void resizeEvent(QResizeEvent *) override;
+    void sliderChange( SliderChange change ) override;
+    void timerEvent ( QTimerEvent * ) override;
     friend class MainToolbar;
-    void wheelEvent( QWheelEvent * );
+    void wheelEvent( QWheelEvent * ) override;
 
 private:
     void startFade();

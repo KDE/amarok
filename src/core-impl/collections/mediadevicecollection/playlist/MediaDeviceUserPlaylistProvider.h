@@ -38,18 +38,18 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
         ~MediaDeviceUserPlaylistProvider();
 
         /* PlaylistProvider functions */
-        virtual QString prettyName() const { return i18n( "Media Device playlists" ); };
-        virtual QIcon icon() const { return QIcon::fromTheme( "multimedia-player" ); }
+        QString prettyName() const override { return i18n( "Media Device playlists" ); };
+        QIcon icon() const override { return QIcon::fromTheme( "multimedia-player" ); }
 
         /* Playlists::UserPlaylistProvider functions */
-        virtual Playlists::PlaylistList playlists();
+        Playlists::PlaylistList playlists() override;
 
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks );
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
+        Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name ) override;
 
-        virtual bool isWritable() { return true; }
-        virtual void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName );
-        virtual bool deletePlaylists( const Playlists::PlaylistList &playlistlist );
+        bool isWritable() override { return true; }
+        void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName ) override;
+        bool deletePlaylists( const Playlists::PlaylistList &playlistlist ) override;
 
         /// MediaDevice-specific Functions
 

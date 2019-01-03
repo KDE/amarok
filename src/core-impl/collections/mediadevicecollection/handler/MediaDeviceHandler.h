@@ -316,12 +316,12 @@ private:
     // Observer Methods
 
     /** These methods are called when the metadata of a track has changed. They invoke an MediaDevice DB update */
-    virtual void metadataChanged( Meta::TrackPtr track );
-    virtual void metadataChanged( Meta::ArtistPtr artist );
-    virtual void metadataChanged( Meta::AlbumPtr album );
-    virtual void metadataChanged( Meta::GenrePtr genre );
-    virtual void metadataChanged( Meta::ComposerPtr composer );
-    virtual void metadataChanged( Meta::YearPtr year );
+    void metadataChanged( Meta::TrackPtr track ) override;
+    void metadataChanged( Meta::ArtistPtr artist ) override;
+    void metadataChanged( Meta::AlbumPtr album ) override;
+    void metadataChanged( Meta::GenrePtr genre ) override;
+    void metadataChanged( Meta::ComposerPtr composer ) override;
+    void metadataChanged( Meta::YearPtr year ) override;
 
     /**
     * Handler Variables
@@ -381,7 +381,7 @@ successfully.
     * @return Whether or not the copy was successful, i.e. m_success
     */
 
-    virtual bool success() const override;
+    bool success() const override;
 
 Q_SIGNALS:
     /** This signal is emitted when this job is being processed by a thread. */
@@ -405,7 +405,7 @@ protected:
     /**
     * Reimplemented, simply runs the parse method.
     */
-    virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
     void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
     void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 
@@ -445,7 +445,7 @@ public:
     * @return Whether or not the copy was successful, i.e. m_success
     */
 
-    virtual bool success() const override;
+    bool success() const override;
 
 Q_SIGNALS:
 
@@ -495,7 +495,7 @@ protected:
     /**
     * Reimplemented, simply runs the copy track method.
     */
-    virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
     void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
     void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 

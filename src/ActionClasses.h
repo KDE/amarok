@@ -96,7 +96,7 @@ namespace Amarok
             QString currentIcon() const;
 
         protected Q_SLOTS:
-            virtual void actionTriggered( QAction *a );
+            void actionTriggered( QAction *a ) override;
 
         private:
             void ( *m_function ) ( int );
@@ -107,7 +107,7 @@ namespace Amarok
     {
         public:
             RandomAction( KActionCollection *ac, QObject* );
-            virtual void setCurrentItem( int n );
+            void setCurrentItem( int n ) override;
     };
 
     class FavorAction : public SelectAction

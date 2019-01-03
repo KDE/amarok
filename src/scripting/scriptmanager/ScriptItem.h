@@ -76,7 +76,7 @@ public Q_SLOTS:
     virtual void slotDeprecatedCall( const QString &call );
 
 private Q_SLOTS:
-    virtual void timerEvent( QTimerEvent *event );
+    void timerEvent( QTimerEvent *event ) override;
 
 Q_SIGNALS:
     void signalHandlerException(QScriptValue);

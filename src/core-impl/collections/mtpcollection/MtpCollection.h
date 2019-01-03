@@ -53,9 +53,9 @@ class MtpCollection : public MediaDeviceCollection
     explicit MtpCollection( MediaDeviceInfo* );
     virtual ~MtpCollection();
 
-    virtual QString collectionId() const;
-    virtual QString prettyName() const;
-    virtual QIcon icon() const { return QIcon::fromTheme("multimedia-player"); }
+    QString collectionId() const override;
+    QString prettyName() const override;
+    QIcon icon() const override { return QIcon::fromTheme("multimedia-player"); }
 
     //void writeDatabase();
 };

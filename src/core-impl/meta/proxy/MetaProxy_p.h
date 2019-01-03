@@ -62,7 +62,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
 
     public:
         using Observer::metadataChanged;
-        void metadataChanged( Meta::TrackPtr track )
+        void metadataChanged( Meta::TrackPtr track ) override
         {
             Q_UNUSED( track )
             proxy->notifyObservers();
@@ -105,14 +105,14 @@ public:
         , d( dptr )
     {}
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         Meta::TrackPtr realTrack = d ? d->realTrack : Meta::TrackPtr();
         Meta::ArtistPtr artist = realTrack ? realTrack->artist() : Meta::ArtistPtr();
         return artist ? artist->tracks() : Meta::TrackList();
     }
 
-    QString name() const
+    QString name() const override
     {
         Meta::TrackPtr realTrack = d ? d->realTrack : Meta::TrackPtr();
         if( realTrack )
@@ -123,7 +123,7 @@ public:
         return d ? d->cachedArtist : QString();
     }
 
-    QString prettyName() const
+    QString prettyName() const override
     {
         Meta::TrackPtr realTrack = d ? d->realTrack : Meta::TrackPtr();
         if( realTrack )
@@ -134,7 +134,7 @@ public:
         return d ? d->cachedArtist : QString();
     }
 
-    virtual bool operator==( const Meta::Artist &artist ) const
+    bool operator==( const Meta::Artist &artist ) const override
     {
         const ProxyArtist *proxy = dynamic_cast<const ProxyArtist*>( &artist );
         if( proxy )
@@ -159,7 +159,7 @@ public:
         , d( dptr )
     {}
 
-    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->hasCapabilityInterface( type );
@@ -167,7 +167,7 @@ public:
             return false;
     }
 
-    Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+    Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->createCapabilityInterface( type );
@@ -175,7 +175,7 @@ public:
             return 0;
     }
 
-    bool isCompilation() const
+    bool isCompilation() const override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->isCompilation();
@@ -183,7 +183,7 @@ public:
             return false;
     }
 
-    bool canUpdateCompilation() const
+    bool canUpdateCompilation() const override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->canUpdateCompilation();
@@ -191,13 +191,13 @@ public:
             return Meta::Album::canUpdateCompilation();
     }
 
-    void setCompilation( bool isCompilation )
+    void setCompilation( bool isCompilation ) override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->setCompilation( isCompilation );
     }
 
-    bool hasAlbumArtist() const
+    bool hasAlbumArtist() const override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->hasAlbumArtist();
@@ -205,7 +205,7 @@ public:
             return false;
     }
 
-    Meta::ArtistPtr albumArtist() const
+    Meta::ArtistPtr albumArtist() const override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->albumArtist();
@@ -213,7 +213,7 @@ public:
             return Meta::ArtistPtr();
     }
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->tracks();
@@ -221,7 +221,7 @@ public:
             return Meta::TrackList();
     }
 
-    QString name() const
+    QString name() const override
     {
         if( d && d->realTrack )
         {
@@ -235,7 +235,7 @@ public:
             return QString();
     }
 
-    QString prettyName() const
+    QString prettyName() const override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->prettyName();
@@ -243,7 +243,7 @@ public:
             return name();
     }
 
-    QImage image( int size ) const
+    QImage image( int size ) const override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->image( size );
@@ -251,7 +251,7 @@ public:
             return Meta::Album::image( size );
     }
 
-    bool hasImage( int size ) const
+    bool hasImage( int size ) const override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->hasImage( size );
@@ -259,7 +259,7 @@ public:
             return Meta::Album::hasImage( size );
     }
 
-    QUrl imageLocation( int size = 0 )
+    QUrl imageLocation( int size = 0 ) override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->imageLocation( size );
@@ -267,7 +267,7 @@ public:
             return Meta::Album::imageLocation( size );
     }
 
-    bool canUpdateImage() const
+    bool canUpdateImage() const override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->canUpdateImage();
@@ -275,19 +275,19 @@ public:
             return Meta::Album::canUpdateImage();
     }
 
-    void setImage( const QImage &image )
+    void setImage( const QImage &image ) override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->setImage( image );
     }
 
-    void removeImage()
+    void removeImage() override
     {
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->removeImage();
     }
 
-    virtual bool operator==( const Meta::Album &album ) const
+    bool operator==( const Meta::Album &album ) const override
     {
         const ProxyAlbum *proxy = dynamic_cast<const ProxyAlbum*>( &album );
         if( proxy )
@@ -311,7 +311,7 @@ public:
         , d( dptr )
     {}
 
-    QString name() const
+    QString name() const override
     {
         if( d && d->realTrack && d->realTrack->genre() )
             return d->realTrack->genre()->name();
@@ -321,7 +321,7 @@ public:
             return QString();
     }
 
-    QString prettyName() const
+    QString prettyName() const override
     {
         if( d && d->realTrack && d->realTrack->genre() )
             return d->realTrack->genre()->prettyName();
@@ -329,7 +329,7 @@ public:
             return QString();
     }
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         if( d && d->realTrack && d->realTrack->genre() )
             return d->realTrack->genre()->tracks();
@@ -337,7 +337,7 @@ public:
             return Meta::TrackList();
     }
 
-    virtual bool operator==( const Meta::Genre &genre ) const
+    bool operator==( const Meta::Genre &genre ) const override
     {
         const ProxyGenre *proxy = dynamic_cast<const ProxyGenre*>( &genre );
         if( proxy )
@@ -361,7 +361,7 @@ public:
         , d( dptr )
     {}
 
-    QString name() const
+    QString name() const override
     {
         if( d && d->realTrack && d->realTrack->composer() )
             return d->realTrack->composer()->name();
@@ -371,7 +371,7 @@ public:
             return QString();
     }
 
-    QString prettyName() const
+    QString prettyName() const override
     {
         if( d && d->realTrack && d->realTrack->composer())
             return d->realTrack->composer()->prettyName();
@@ -379,7 +379,7 @@ public:
             return name();
     }
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         if( d && d->realTrack && d->realTrack->composer() )
             return d->realTrack->composer()->tracks();
@@ -387,7 +387,7 @@ public:
             return Meta::TrackList();
     }
 
-    virtual bool operator==( const Meta::Composer &composer ) const
+    bool operator==( const Meta::Composer &composer ) const override
     {
         const ProxyComposer *proxy = dynamic_cast<const ProxyComposer*>( &composer );
         if( proxy )
@@ -411,7 +411,7 @@ public:
         , d( dptr )
     {}
 
-    QString name() const
+    QString name() const override
     {
         if( d && d->realTrack && d->realTrack->year() )
             return d->realTrack->year()->name();
@@ -421,7 +421,7 @@ public:
             return QString();
     }
 
-    QString prettyName() const
+    QString prettyName() const override
     {
         if( d && d->realTrack && d->realTrack->year() )
             return d->realTrack->year()->prettyName();
@@ -429,7 +429,7 @@ public:
             return name();
     }
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         if( d && d->realTrack && d->realTrack->year() )
             return d->realTrack->year()->tracks();
@@ -437,7 +437,7 @@ public:
             return Meta::TrackList();
     }
 
-    virtual bool operator==( const Meta::Year &year ) const
+    bool operator==( const Meta::Year &year ) const override
     {
         const ProxyYear *proxy = dynamic_cast<const ProxyYear*>( &year );
         if( proxy )

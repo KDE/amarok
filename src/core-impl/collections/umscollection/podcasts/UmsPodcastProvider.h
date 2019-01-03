@@ -34,17 +34,17 @@ class UmsPodcastProvider : public PodcastProvider
         UmsPodcastEpisodePtr addFile( MetaFile::TrackPtr metafileTrack );
         int addPath( const QString &path );
 
-        virtual bool possiblyContainsTrack( const QUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+        bool possiblyContainsTrack( const QUrl &url ) const override;
+        Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
-        virtual Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid );
+        Podcasts::PodcastEpisodePtr episodeForGuid( const QString &guid ) override;
 
-        virtual void addPodcast( const QUrl &url );
+        void addPodcast( const QUrl &url ) override;
 
-        virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
-        virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
+        Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel ) override;
+        Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override;
 
-        virtual Podcasts::PodcastChannelList channels();
+        Podcasts::PodcastChannelList channels() override;
 
         virtual void removeSubscription( Podcasts::PodcastChannelPtr channel );
 
@@ -52,18 +52,18 @@ class UmsPodcastProvider : public PodcastProvider
         virtual void configureChannel( Podcasts::PodcastChannelPtr channel );
 
         // PlaylistProvider methods
-        virtual QString prettyName() const;
-        virtual QIcon icon() const;
+        QString prettyName() const override;
+        QIcon icon() const override;
 
-        virtual Playlists::PlaylistList playlists();
+        Playlists::PlaylistList playlists() override;
 
-        virtual QActionList playlistActions( const Playlists::PlaylistList &playlists );
-        virtual QActionList trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks );
+        QActionList playlistActions( const Playlists::PlaylistList &playlists ) override;
+        QActionList trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks ) override;
 
-        virtual void completePodcastDownloads();
+        void completePodcastDownloads() override;
 
     public Q_SLOTS:
-        virtual void updateAll();
+        void updateAll() override;
         virtual void update( Podcasts::PodcastChannelPtr channel );
         virtual void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
         virtual void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );

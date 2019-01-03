@@ -67,19 +67,19 @@ class MtpHandler : public MediaDeviceHandler
 
         friend class WorkerThread;
 
-        virtual void init(); // collection
-        virtual bool isWritable() const;
+        void init() override; // collection
+        bool isWritable() const override;
 
-        virtual void getCopyableUrls( const Meta::TrackList &tracks );
+        void getCopyableUrls( const Meta::TrackList &tracks ) override;
 
-        virtual QString prettyName() const;
+        QString prettyName() const override;
 
-        virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track );
+        void prepareToPlay( Meta::MediaDeviceTrackPtr &track ) override;
 
         /// Capability-related methods
 
-        virtual bool hasCapabilityInterface( Handler::Capability::Type type ) const;
-        virtual Handler::Capability* createCapabilityInterface( Handler::Capability::Type type );
+        bool hasCapabilityInterface( Handler::Capability::Type type ) const override;
+        Handler::Capability* createCapabilityInterface( Handler::Capability::Type type ) override;
 
         friend class Handler::MtpPlaylistCapability;
         friend class Handler::MtpReadCapability;
@@ -261,10 +261,10 @@ class WorkerThread : public QObject, public ThreadWeaver::Job
         WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, MtpHandler* handler );
         virtual ~WorkerThread();
 
-        virtual bool success() const override;
+        bool success() const override;
 
     protected:
-        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
         void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
         void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
 

@@ -35,13 +35,13 @@ class IpodCollectionLocation : public Collections::CollectionLocation
         virtual ~IpodCollectionLocation();
 
         // CollectionLocation methods:
-        virtual Collections::Collection *collection() const;
-        virtual QString prettyLocation() const;
-        virtual bool isWritable() const;
+        Collections::Collection *collection() const override;
+        QString prettyLocation() const override;
+        bool isWritable() const override;
 
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
-                                           const Transcoding::Configuration &configuration );
-        virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
+        void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
+                                           const Transcoding::Configuration &configuration ) override;
+        void removeUrlsFromCollection( const Meta::TrackList &sources ) override;
 
         // IpodCollectionLocation specific methods:
         /**

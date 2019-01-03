@@ -37,27 +37,27 @@ class SqlScanResultProcessor : public AbstractScanResultProcessor
 
 
     protected Q_SLOTS:
-        virtual void scanStarted( GenericScanManager::ScanType type );
-        virtual void scanSucceeded();
+        void scanStarted( GenericScanManager::ScanType type ) override;
+        void scanSucceeded() override;
 
         virtual void displayMessages();
 
     protected:
-        virtual void message( const QString& message );
+        void message( const QString& message ) override;
 
-        virtual void commitDirectory( QSharedPointer<CollectionScanner::Directory> directory );
-        virtual void commitAlbum( CollectionScanner::Album *album );
-        virtual void commitTrack( CollectionScanner::Track *track, CollectionScanner::Album *srcAlbum );
+        void commitDirectory( QSharedPointer<CollectionScanner::Directory> directory ) override;
+        void commitAlbum( CollectionScanner::Album *album ) override;
+        void commitTrack( CollectionScanner::Track *track, CollectionScanner::Album *srcAlbum ) override;
 
         /** Deletes all directories (and it's tracks) not contained in m_foundDirectories */
-        virtual void deleteDeletedDirectories();
+        void deleteDeletedDirectories() override;
 
-        virtual void deleteDeletedTracksAndSubdirs( QSharedPointer<CollectionScanner::Directory> directory );
+        void deleteDeletedTracksAndSubdirs( QSharedPointer<CollectionScanner::Directory> directory ) override;
 
         /** Removes all tracks contained in the directory dirId that are not contained in m_foundTracks. */
         virtual void deleteDeletedTracks( int directoryId );
 
-        virtual void cleanupMembers();
+        void cleanupMembers() override;
 
         void blockUpdates();
         void unblockUpdates();

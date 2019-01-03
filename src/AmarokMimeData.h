@@ -48,8 +48,8 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         AmarokMimeData();
         virtual ~AmarokMimeData();
 
-        virtual QStringList formats() const;
-        virtual bool hasFormat( const QString &mimeType ) const;
+        QStringList formats() const override;
+        bool hasFormat( const QString &mimeType ) const override;
 
         Meta::TrackList tracks() const;
         void setTracks( const Meta::TrackList &tracks );
@@ -97,7 +97,7 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         void getTrackListSignal() const;
 
     protected:
-        virtual QVariant retrieveData( const QString &mimeType, QVariant::Type type ) const;
+        QVariant retrieveData( const QString &mimeType, QVariant::Type type ) const override;
 
     private Q_SLOTS:
         void newResultReady( const Meta::TrackList &tracks );

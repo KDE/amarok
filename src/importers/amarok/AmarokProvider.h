@@ -31,11 +31,11 @@ public:
     AmarokProvider( const QVariantMap &config, ImporterManager *importer );
     ~AmarokProvider();
 
-    qint64 reliableTrackMetaData() const;
-    qint64 writableTrackStatsData() const;
+    qint64 reliableTrackMetaData() const override;
+    qint64 writableTrackStatsData() const override;
 
-    QSet<QString> artists();
-    TrackList artistTracks( const QString &artistName );
+    QSet<QString> artists() override;
+    TrackList artistTracks( const QString &artistName ) override;
 
 private:
     ImporterSqlConnectionPtr m_connection;

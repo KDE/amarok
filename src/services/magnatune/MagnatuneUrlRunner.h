@@ -34,10 +34,10 @@ public:
 
     virtual ~MagnatuneUrlRunner();
 
-    virtual QString command() const;
-    virtual QString prettyCommand() const;
-    virtual QIcon icon() const;
-    virtual bool run( AmarokUrl url );
+    QString command() const override;
+    QString prettyCommand() const override;
+    QIcon icon() const override;
+    bool run( AmarokUrl url ) override;
 
 Q_SIGNALS:
     void showFavorites();

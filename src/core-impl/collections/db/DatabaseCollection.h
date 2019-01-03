@@ -63,9 +63,9 @@ class DatabaseCollection : public Collections::Collection
         DatabaseCollection();
         virtual ~DatabaseCollection();
 
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;
-        virtual QIcon icon() const;
+        QString collectionId() const override;
+        QString prettyName() const override;
+        QIcon icon() const override;
 
         virtual GenericScanManager *scanManager() const;
         virtual MountPointManager *mountPointManager() const;
@@ -95,8 +95,8 @@ class DatabaseCollection : public Collections::Collection
          */
         void collectionUpdated();
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
     public Q_SLOTS:
         /** Dumps the complete database content.
@@ -126,9 +126,9 @@ class DatabaseCollectionScanCapability : public Capabilities::CollectionScanCapa
         explicit DatabaseCollectionScanCapability( DatabaseCollection* collection );
         virtual ~DatabaseCollectionScanCapability();
 
-        virtual void startFullScan();
-        virtual void startIncrementalScan( const QString &directory = QString() );
-        virtual void stopScan();
+        void startFullScan() override;
+        void startIncrementalScan( const QString &directory = QString() ) override;
+        void stopScan() override;
 
     private:
         DatabaseCollection* m_collection;
@@ -142,7 +142,7 @@ class DatabaseCollectionImportCapability : public Capabilities::CollectionImport
         explicit DatabaseCollectionImportCapability( DatabaseCollection* collection );
         virtual ~DatabaseCollectionImportCapability();
 
-        virtual void import( QIODevice *input, QObject *listener );
+        void import( QIODevice *input, QObject *listener ) override;
 
     private:
         DatabaseCollection* m_collection;

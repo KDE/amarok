@@ -38,7 +38,7 @@ class IpodCollectionFactory : public Collections::CollectionFactory
         IpodCollectionFactory();
         virtual ~IpodCollectionFactory();
 
-        virtual void init();
+        void init() override;
 
     private Q_SLOTS:
         /**

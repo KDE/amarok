@@ -62,7 +62,7 @@ public:
     /**
      * Returns a config generated from this widget's fields.
      */
-    QVariantMap config() const;
+    QVariantMap config() const override;
 
 private:
     const QVariantMap m_config;

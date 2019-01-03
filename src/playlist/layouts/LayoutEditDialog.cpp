@@ -47,7 +47,7 @@ public:
         m_hint = hint;
     }
 protected:
-    void paintEvent ( QPaintEvent *pe )
+    void paintEvent ( QPaintEvent *pe ) override
     {
         QLineEdit::paintEvent( pe );
         if ( !hasFocus() && text().isEmpty() )

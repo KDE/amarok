@@ -62,9 +62,9 @@ class UpnpCollectionBase : public Collections::Collection
     virtual ~UpnpCollectionBase();
     void removeCollection() { emit remove(); }
 
-    virtual QString collectionId() const;
-    virtual QString prettyName() const;
-    bool possiblyContainsTrack( const QUrl &url ) const;
+    QString collectionId() const override;
+    QString prettyName() const override;
+    bool possiblyContainsTrack( const QUrl &url ) const override;
 
   private Q_SLOTS:
     void slotSlaveError( KIO::Slave *slave, int err, const QString &msg );

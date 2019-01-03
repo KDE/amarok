@@ -38,17 +38,17 @@ class SqlReadLabelCapability : public Capabilities::ReadLabelCapability
         /**
         *   fetches a list of labels assigned to this track
         */
-        virtual void fetchLabels();
+        void fetchLabels() override;
 
         /**
         *   fetches a list of all labels in the database
         */
-        virtual void fetchGlobalLabels();   //TODO: This shouldn't be in a Track capability
+        void fetchGlobalLabels() override;   //TODO: This shouldn't be in a Track capability
 
         /**
         *   @returns all labels assigned to this track
         */
-        virtual QStringList labels();
+        QStringList labels() override;
 
     private:
         QStringList m_labels;

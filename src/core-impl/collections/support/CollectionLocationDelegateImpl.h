@@ -32,16 +32,16 @@ public:
     CollectionLocationDelegateImpl() {};
     virtual ~ CollectionLocationDelegateImpl() {};
 
-    virtual bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const;
-    virtual bool reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const;
-    virtual bool reallyTrash( CollectionLocation *loc, const Meta::TrackList &tracks ) const;
-    virtual void errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const;
-    virtual void notWriteable(CollectionLocation* loc) const;
-    virtual bool deleteEmptyDirs(CollectionLocation* loc) const;
-    virtual Transcoding::Configuration transcode( const QStringList &playableFileTypes,
+    bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const override;
+    bool reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const override;
+    bool reallyTrash( CollectionLocation *loc, const Meta::TrackList &tracks ) const override;
+    void errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const override;
+    void notWriteable(CollectionLocation* loc) const override;
+    bool deleteEmptyDirs(CollectionLocation* loc) const override;
+    Transcoding::Configuration transcode( const QStringList &playableFileTypes,
                                                   bool *remember, OperationType operation,
                                                   const QString &destCollectionName,
-                                                  const Transcoding::Configuration &prevConfiguration ) const;
+                                                  const Transcoding::Configuration &prevConfiguration ) const override;
 
 private:
     QStringList trackList( const Meta::TrackList &tracks ) const;

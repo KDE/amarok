@@ -32,10 +32,10 @@ public:
 
     virtual  ~PlayUrlRunner ();
 
-    virtual QString command () const;
-    virtual QString prettyCommand() const;
-    virtual bool run ( AmarokUrl url );
-    virtual QIcon icon () const;
+    QString command () const override;
+    QString prettyCommand() const override;
+    bool run ( AmarokUrl url ) override;
+    QIcon icon () const override;
 
     /**
      * This function takes a url for a track, and returns a list

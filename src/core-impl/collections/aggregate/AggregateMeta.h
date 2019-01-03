@@ -36,70 +36,70 @@ namespace Meta {
             AggregateTrack( Collections::AggregateCollection *coll, const Meta::TrackPtr &track );
             ~AggregateTrack();
 
-            QString name() const;
-            QString prettyName() const;
-            virtual QString sortableName() const;
+            QString name() const override;
+            QString prettyName() const override;
+            QString sortableName() const override;
 
-            QUrl playableUrl() const;
-            QString prettyUrl() const;
-            QString uidUrl() const;
+            QUrl playableUrl() const override;
+            QString prettyUrl() const override;
+            QString uidUrl() const override;
 
             /**
              * Return a comma separated list of reasons why constituent
              * tracks are unplayable or an empty string if any of the tracks is playable
              */
-            QString notPlayableReason() const;
+            QString notPlayableReason() const override;
 
-            Meta::AlbumPtr album() const;
-            Meta::ArtistPtr artist() const;
-            Meta::ComposerPtr composer() const;
-            Meta::GenrePtr genre() const;
-            Meta::YearPtr year() const;
+            Meta::AlbumPtr album() const override;
+            Meta::ArtistPtr artist() const override;
+            Meta::ComposerPtr composer() const override;
+            Meta::GenrePtr genre() const override;
+            Meta::YearPtr year() const override;
 
-            QString comment() const;
-            qreal   bpm() const;
+            QString comment() const override;
+            qreal   bpm() const override;
 
-            void finishedPlaying( double playedFraction );
+            void finishedPlaying( double playedFraction ) override;
 
-            qint64 length() const;
-            int filesize() const;
-            int sampleRate() const;
-            int bitrate() const;
-            QDateTime createDate() const;
-            int trackNumber() const;
-            int discNumber() const;
-            QString type() const;
+            qint64 length() const override;
+            int filesize() const override;
+            int sampleRate() const override;
+            int bitrate() const override;
+            QDateTime createDate() const override;
+            int trackNumber() const override;
+            int discNumber() const override;
+            QString type() const override;
 
-            Collections::Collection* collection() const;
+            Collections::Collection* collection() const override;
 
-            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-            virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+            bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+            Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
-            virtual void addLabel( const QString &label );
-            virtual void addLabel( const Meta::LabelPtr &label );
-            virtual void removeLabel( const Meta::LabelPtr &label );
-            virtual Meta::LabelList labels() const;
+            void addLabel( const QString &label ) override;
+            void addLabel( const Meta::LabelPtr &label ) override;
+            void removeLabel( const Meta::LabelPtr &label ) override;
+            Meta::LabelList labels() const override;
 
-            virtual TrackEditorPtr editor();
-            virtual StatisticsPtr statistics();
+            TrackEditorPtr editor() override;
+            StatisticsPtr statistics() override;
 
             // Meta::Statistics methods:
-            double score() const;
-            void setScore( double newScore );
-            int rating() const;
-            void setRating( int newRating );
-            QDateTime firstPlayed() const;
-            void setFirstPlayed( const QDateTime &date );
-            QDateTime lastPlayed() const;
-            void setLastPlayed( const QDateTime &date );
-            int playCount() const;
-            void setPlayCount( int newPlayCount );
+            double score() const override;
+            void setScore( double newScore ) override;
+            int rating() const override;
+            void setRating( int newRating ) override;
+            QDateTime firstPlayed() const override;
+            void setFirstPlayed( const QDateTime &date ) override;
+            QDateTime lastPlayed() const override;
+            void setLastPlayed( const QDateTime &date ) override;
+            int playCount() const override;
+            void setPlayCount( int newPlayCount ) override;
 
             void add( const Meta::TrackPtr &track );
 
         protected:
             using Observer::metadataChanged;
-            virtual void metadataChanged( Meta::TrackPtr track );
+            void metadataChanged( Meta::TrackPtr track ) override;
 
         private:
             Collections::AggregateCollection *m_collection;
@@ -118,41 +118,41 @@ namespace Meta {
         AggregateAlbum( Collections::AggregateCollection *coll, Meta::AlbumPtr album );
         ~AggregateAlbum();
 
-        QString name() const;
-        QString prettyName() const;
-        virtual QString sortableName() const;
+        QString name() const override;
+        QString prettyName() const override;
+        QString sortableName() const override;
 
-        Meta::TrackList tracks();
-        Meta::ArtistPtr albumArtist() const;
-        bool isCompilation() const;
-        bool hasAlbumArtist() const;
+        Meta::TrackList tracks() override;
+        Meta::ArtistPtr albumArtist() const override;
+        bool isCompilation() const override;
+        bool hasAlbumArtist() const override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         void add( Meta::AlbumPtr album );
 
         /** returns true if the album has a cover set */
-        virtual bool hasImage( int size = 0 ) const;
+        bool hasImage( int size = 0 ) const override;
         /** returns the cover of the album */
-        virtual QImage image( int size = 0 ) const;
+        QImage image( int size = 0 ) const override;
         /** returns the image location on disk */
-        virtual QUrl imageLocation( int size = 0 );
+        QUrl imageLocation( int size = 0 ) override;
         /** returns the cover of the album with a nice border around it*/
         virtual QPixmap imageWithBorder( int size = 0, int borderWidth = 5 );
         /** Returns true if it is possible to update the cover of the album */
-        virtual bool canUpdateImage() const;
+        bool canUpdateImage() const override;
         /** updates the cover of the album */
-        virtual void setImage( const QImage &image );
-        virtual void removeImage();
+        void setImage( const QImage &image ) override;
+        void removeImage() override;
         /** don't automatically fetch artwork */
-        virtual void setSuppressImageAutoFetch( const bool suppress );
+        void setSuppressImageAutoFetch( const bool suppress ) override;
         /** should automatic artwork retrieval be suppressed? */
-        virtual bool suppressImageAutoFetch() const;
+        bool suppressImageAutoFetch() const override;
 
         protected:
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::AlbumPtr album );
+        void metadataChanged( Meta::AlbumPtr album ) override;
 
         private:
         Collections::AggregateCollection *m_collection;
@@ -167,20 +167,20 @@ namespace Meta {
         AggregateArtist( Collections::AggregateCollection *coll, Meta::ArtistPtr artist );
         ~AggregateArtist();
 
-        QString name() const;
-        QString prettyName() const;
-        virtual QString sortableName() const;
+        QString name() const override;
+        QString prettyName() const override;
+        QString sortableName() const override;
 
-        Meta::TrackList tracks();
+        Meta::TrackList tracks() override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         void add( Meta::ArtistPtr artist );
 
         protected:
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::ArtistPtr artist );
+        void metadataChanged( Meta::ArtistPtr artist ) override;
 
         private:
         Collections::AggregateCollection *m_collection;
@@ -194,20 +194,20 @@ namespace Meta {
         AggregateGenre( Collections::AggregateCollection *coll, Meta::GenrePtr genre );
         ~AggregateGenre();
 
-        QString name() const;
-        QString prettyName() const;
-        virtual QString sortableName() const;
+        QString name() const override;
+        QString prettyName() const override;
+        QString sortableName() const override;
 
-        Meta::TrackList tracks();
+        Meta::TrackList tracks() override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         void add( Meta::GenrePtr genre );
 
         protected:
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::GenrePtr genre );
+        void metadataChanged( Meta::GenrePtr genre ) override;
 
         private:
         Collections::AggregateCollection *m_collection;
@@ -221,20 +221,20 @@ namespace Meta {
         AggregateComposer( Collections::AggregateCollection *coll, Meta::ComposerPtr composer );
         ~AggregateComposer();
 
-        QString name() const;
-        QString prettyName() const;
-        virtual QString sortableName() const;
+        QString name() const override;
+        QString prettyName() const override;
+        QString sortableName() const override;
 
-        Meta::TrackList tracks();
+        Meta::TrackList tracks() override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         void add( Meta::ComposerPtr composer );
 
         protected:
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::ComposerPtr composer );
+        void metadataChanged( Meta::ComposerPtr composer ) override;
 
         private:
         Collections::AggregateCollection *m_collection;
@@ -248,14 +248,14 @@ namespace Meta {
         AggreagateYear( Collections::AggregateCollection * coll, Meta::YearPtr year );
         ~AggreagateYear();
 
-        QString name() const;
-        QString prettyName() const;
-        virtual QString sortableName() const;
+        QString name() const override;
+        QString prettyName() const override;
+        QString sortableName() const override;
 
-        Meta::TrackList tracks();
+        Meta::TrackList tracks() override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         /**
           * adds another Meta::Year instance to be proxied.
@@ -264,7 +264,7 @@ namespace Meta {
 
         protected:
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::YearPtr year );
+        void metadataChanged( Meta::YearPtr year ) override;
 
         private:
         Collections::AggregateCollection *m_collection;
@@ -279,12 +279,12 @@ namespace Meta {
         AggregateLabel( Collections::AggregateCollection *coll, const Meta::LabelPtr &label );
         virtual ~AggregateLabel();
 
-        virtual QString name() const;
-        virtual QString prettyName() const;
-        virtual QString sortableName() const;
+        QString name() const override;
+        QString prettyName() const override;
+        QString sortableName() const override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         /**
           adds another Meta::Label instance to be proxied.

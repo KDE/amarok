@@ -36,14 +36,14 @@ namespace Dynamic
         public:
             explicit SearchQueryBias( QString filter = QString("genre:Rock") );
 
-            virtual void fromXml( QXmlStreamReader *reader );
-            virtual void toXml( QXmlStreamWriter *writer ) const;
+            void fromXml( QXmlStreamReader *reader ) override;
+            void toXml( QXmlStreamWriter *writer ) const override;
 
             static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
+            QString name() const override;
+            QString toString() const override;
 
-            virtual QWidget* widget( QWidget* parent = nullptr );
+            QWidget* widget( QWidget* parent = nullptr ) override;
 
             QString filter() const;
 
@@ -51,7 +51,7 @@ namespace Dynamic
             void setFilter( const QString &filter );
 
         protected Q_SLOTS:
-            virtual void newQuery();
+            void newQuery() override;
 
         private:
             QString m_filter;
@@ -66,10 +66,10 @@ namespace Dynamic
     class AMAROK_EXPORT SearchQueryBiasFactory : public Dynamic::AbstractBiasFactory
     {
         public:
-            virtual QString i18nName() const;
-            virtual QString name() const;
-            virtual QString i18nDescription() const;
-            virtual BiasPtr createBias();
+            QString i18nName() const override;
+            QString name() const override;
+            QString i18nDescription() const override;
+            BiasPtr createBias() override;
     };
 
 }

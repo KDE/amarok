@@ -31,28 +31,28 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
 
         /* QtGroupingProxy methods */
         /* reimplement to handle tracks with multiple providers (synced) */
-        virtual QVariant data( const QModelIndex &idx, int role ) const;
+        QVariant data( const QModelIndex &idx, int role ) const override;
 
         /* reimplemented to prevent changing providers name */
-        virtual Qt::ItemFlags flags( const QModelIndex &idx ) const;
+        Qt::ItemFlags flags( const QModelIndex &idx ) const override;
 
         /* QAbstractModel methods */
-        virtual bool removeRows( int row, int count,
-                                 const QModelIndex &parent = QModelIndex() );
-        virtual QStringList mimeTypes() const;
-        virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
-        virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action,
-                                   int row, int column, const QModelIndex &parent );
+        bool removeRows( int row, int count,
+                                 const QModelIndex &parent = QModelIndex() ) override;
+        QStringList mimeTypes() const override;
+        QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+        bool dropMimeData( const QMimeData *data, Qt::DropAction action,
+                                   int row, int column, const QModelIndex &parent ) override;
 
-        virtual Qt::DropActions supportedDropActions() const;
-        virtual Qt::DropActions supportedDragActions() const;
+        Qt::DropActions supportedDropActions() const override;
+        Qt::DropActions supportedDragActions() const override;
 
         // re-implement to connect renameIndex signal
-        virtual void setSourceModel( QAbstractItemModel *sourceModel );
+        void setSourceModel( QAbstractItemModel *sourceModel ) override;
 
     protected Q_SLOTS:
         //re-implemented to add empty providers
-        virtual void buildTree();
+        void buildTree() override;
 
     private Q_SLOTS:
         void slotRenameIndex( const QModelIndex &index );

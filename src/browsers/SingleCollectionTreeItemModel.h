@@ -40,14 +40,14 @@ class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemMode
         SingleCollectionTreeItemModel( Collections::Collection *collection,
                                        const QList<CategoryId::CatMenuId> &levelType );
 
-        virtual QVariant data(const QModelIndex &index, int role) const;
-        virtual bool canFetchMore( const QModelIndex &parent ) const;
-        virtual void fetchMore( const QModelIndex &parent );
-        virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+        QVariant data(const QModelIndex &index, int role) const override;
+        bool canFetchMore( const QModelIndex &parent ) const override;
+        void fetchMore( const QModelIndex &parent ) override;
+        Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     protected:
-        virtual void filterChildren();
-        virtual int levelModifier() const { return 1; }
+        void filterChildren() override;
+        int levelModifier() const override { return 1; }
 
     private:
 

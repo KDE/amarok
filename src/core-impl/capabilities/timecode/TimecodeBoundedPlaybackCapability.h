@@ -31,8 +31,8 @@ public:
         : m_track( track )
     {}
 
-    virtual qint64 startPosition();
-    virtual qint64 endPosition();
+    qint64 startPosition() override;
+    qint64 endPosition() override;
 
 private:
     Meta::TimecodeTrack * m_track;

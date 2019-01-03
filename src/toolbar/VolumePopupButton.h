@@ -38,8 +38,8 @@ public:
     explicit VolumePopupButton( QWidget * parent );
 
 protected:
-    virtual void mouseReleaseEvent( QMouseEvent * event );
-    virtual void wheelEvent( QWheelEvent * event );
+    void mouseReleaseEvent( QMouseEvent * event ) override;
+    void wheelEvent( QWheelEvent * event ) override;
 
 private Q_SLOTS:
     void volumeChanged( int newVolume );

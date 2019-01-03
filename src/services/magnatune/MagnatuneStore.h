@@ -47,11 +47,11 @@ class MagnatuneServiceFactory : public ServiceFactory
         MagnatuneServiceFactory();
         virtual ~MagnatuneServiceFactory() {}
 
-        virtual void init();
-        virtual QString name();
-        virtual KConfigGroup config();
+        void init() override;
+        QString name() override;
+        KConfigGroup config() override;
 
-        virtual bool possiblyContainsTrack( const QUrl &url ) const { return url.url().contains( "magnatune.com", Qt::CaseInsensitive ); }
+        bool possiblyContainsTrack( const QUrl &url ) const override { return url.url().contains( "magnatune.com", Qt::CaseInsensitive ); }
 };
 
 
@@ -85,13 +85,13 @@ public:
      /**
      * Do not do expensive initializations before we are actually shown
      */
-    void polish();
+    void polish() override;
    // bool updateContextView();
 
-    virtual Collections::Collection * collection() { return m_collection; }
+    Collections::Collection * collection() override { return m_collection; }
 
-    virtual QString messages();
-    virtual QString sendMessage( const QString &message );
+    QString messages() override;
+    QString sendMessage( const QString &message ) override;
 
 public Q_SLOTS:
     /**

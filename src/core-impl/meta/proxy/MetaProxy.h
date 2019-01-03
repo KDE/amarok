@@ -75,74 +75,74 @@ namespace MetaProxy
             void lookupTrack( Collections::TrackProvider *provider = 0 );
 
         // methods inherited from Meta::MetaCapability
-            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-            virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+            bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+            Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         // methods inherited from Meta::Base
-            virtual QString name() const;
-            virtual QString prettyName() const;
-            virtual QString sortableName() const;
+            QString name() const override;
+            QString prettyName() const override;
+            QString sortableName() const override;
 
         // methods inherited from Meta::Track
-            virtual QUrl playableUrl() const;
-            virtual QString prettyUrl() const;
-            virtual QString uidUrl() const;
-            virtual QString notPlayableReason() const;
+            QUrl playableUrl() const override;
+            QString prettyUrl() const override;
+            QString uidUrl() const override;
+            QString notPlayableReason() const override;
 
-            virtual Meta::AlbumPtr album() const;
-            virtual Meta::ArtistPtr artist() const;
-            virtual Meta::GenrePtr genre() const;
-            virtual Meta::ComposerPtr composer() const;
-            virtual Meta::YearPtr year() const;
+            Meta::AlbumPtr album() const override;
+            Meta::ArtistPtr artist() const override;
+            Meta::GenrePtr genre() const override;
+            Meta::ComposerPtr composer() const override;
+            Meta::YearPtr year() const override;
 
-            virtual Meta::LabelList labels() const;
-            virtual qreal bpm() const;
-            virtual QString comment() const;
-            virtual qint64 length() const;
-            virtual int filesize() const;
-            virtual int sampleRate() const;
-            virtual int bitrate() const;
-            virtual QDateTime createDate() const;
-            virtual QDateTime modifyDate() const;
-            virtual int trackNumber() const;
-            virtual int discNumber() const;
-            virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
+            Meta::LabelList labels() const override;
+            qreal bpm() const override;
+            QString comment() const override;
+            qint64 length() const override;
+            int filesize() const override;
+            int sampleRate() const override;
+            int bitrate() const override;
+            QDateTime createDate() const override;
+            QDateTime modifyDate() const override;
+            int trackNumber() const override;
+            int discNumber() const override;
+            qreal replayGain( Meta::ReplayGainTag mode ) const override;
 
-            virtual QString type() const;
+            QString type() const override;
 
-            virtual void prepareToPlay();
-            virtual void finishedPlaying( double playedFraction );
+            void prepareToPlay() override;
+            void finishedPlaying( double playedFraction ) override;
 
-            virtual bool inCollection() const;
-            virtual Collections::Collection *collection() const;
+            bool inCollection() const override;
+            Collections::Collection *collection() const override;
 
-            virtual QString cachedLyrics() const;
-            virtual void setCachedLyrics( const QString &lyrics );
+            QString cachedLyrics() const override;
+            void setCachedLyrics( const QString &lyrics ) override;
 
-            virtual void addLabel( const QString &label );
-            virtual void addLabel( const Meta::LabelPtr &label );
-            virtual void removeLabel( const Meta::LabelPtr &label );
+            void addLabel( const QString &label ) override;
+            void addLabel( const Meta::LabelPtr &label ) override;
+            void removeLabel( const Meta::LabelPtr &label ) override;
 
-            virtual Meta::TrackEditorPtr editor();
-            virtual Meta::StatisticsPtr statistics();
+            Meta::TrackEditorPtr editor() override;
+            Meta::StatisticsPtr statistics() override;
 
-            virtual bool operator==( const Meta::Track &track ) const;
+            bool operator==( const Meta::Track &track ) const override;
 
         // Meta::TrackEditor methods:
-            virtual void setAlbum( const QString &album );
-            virtual void setAlbumArtist( const QString &artist );
-            virtual void setArtist( const QString &artist );
-            virtual void setComposer( const QString &composer );
-            virtual void setGenre( const QString &genre );
-            virtual void setYear( int year );
-            virtual void setComment( const QString &comment );
-            virtual void setTitle( const QString &name );
-            virtual void setTrackNumber( int number );
-            virtual void setDiscNumber( int discNumber );
-            virtual void setBpm( const qreal bpm );
+            void setAlbum( const QString &album ) override;
+            void setAlbumArtist( const QString &artist ) override;
+            void setArtist( const QString &artist ) override;
+            void setComposer( const QString &composer ) override;
+            void setGenre( const QString &genre ) override;
+            void setYear( int year ) override;
+            void setComment( const QString &comment ) override;
+            void setTitle( const QString &name ) override;
+            void setTrackNumber( int number ) override;
+            void setDiscNumber( int discNumber ) override;
+            void setBpm( const qreal bpm ) override;
 
-            virtual void beginUpdate();
-            virtual void endUpdate();
+            void beginUpdate() override;
+            void endUpdate() override;
 
         // custom MetaProxy methods
             /**

@@ -30,7 +30,7 @@ class PlaylistBrowserFilterProxy : public QSortFilterProxyModel
         ~PlaylistBrowserFilterProxy() {}
 
         // QSortFilterProxyModel methods
-        virtual void setSourceModel( QAbstractItemModel *sourceModel );
+        void setSourceModel( QAbstractItemModel *sourceModel ) override;
 
     Q_SIGNALS:
         void renameIndex( const QModelIndex &index );

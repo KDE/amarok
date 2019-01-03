@@ -33,50 +33,50 @@ class MtpWriteCapability : public WriteCapability
     public:
     explicit MtpWriteCapability( Meta::MtpHandler *handler );
 
-    virtual QStringList supportedFormats();
+    QStringList supportedFormats() override;
 
-    virtual void findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack );
+    void findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack ) override;
 
-    virtual bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack );
+    bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack ) override;
 
-    virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track );
+    bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track ) override;
 
-    virtual void libCreateTrack( const Meta::MediaDeviceTrackPtr &track );
+    void libCreateTrack( const Meta::MediaDeviceTrackPtr &track ) override;
 
-    virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track );
+    void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track ) override;
 
-    virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
+    void addTrackInDB( const Meta::MediaDeviceTrackPtr &track ) override;
 
-    virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
+    void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track ) override;
 
-    virtual void setDatabaseChanged();
+    void setDatabaseChanged() override;
 
-    virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
-    virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
-    virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
-    virtual void libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString& albumArtist );
-    virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
-    virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
-    virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
-    virtual void libSetLength( Meta::MediaDeviceTrackPtr &track, int length );
-    virtual void libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum );
-    virtual void libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment );
-    virtual void libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
-    virtual void libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
-    virtual void libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
-    virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm );
-    virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
-    virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
-    virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed );
-    virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
-    virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
-    virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
-    virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &cover );
+    void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title ) override;
+    void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album ) override;
+    void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist ) override;
+    void libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString& albumArtist ) override;
+    void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer ) override;
+    void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre ) override;
+    void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year ) override;
+    void libSetLength( Meta::MediaDeviceTrackPtr &track, int length ) override;
+    void libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum ) override;
+    void libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment ) override;
+    void libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum ) override;
+    void libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate ) override;
+    void libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate ) override;
+    void libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm ) override;
+    void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize ) override;
+    void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount ) override;
+    void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed ) override;
+    void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )  override;
+    void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type ) override;
+    void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack ) override;
+    void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &cover ) override;
 
-    virtual void prepareToCopy();
-    virtual void prepareToDelete();
+    void prepareToCopy() override;
+    void prepareToDelete() override;
 
-    virtual void updateTrack( Meta::MediaDeviceTrackPtr &track );
+    void updateTrack( Meta::MediaDeviceTrackPtr &track ) override;
 
     private:
         Meta::MtpHandler *m_handler;

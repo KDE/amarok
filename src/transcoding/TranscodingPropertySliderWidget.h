@@ -35,9 +35,9 @@ class PropertySliderWidget : public QWidget, public PropertyWidget
 public:
     explicit PropertySliderWidget( Property property, QWidget * parent = nullptr );
 
-    QVariant value() const;
+    QVariant value() const override;
 
-    QWidget *widget() { return qobject_cast< QWidget *>( this ); }
+    QWidget *widget() override { return qobject_cast< QWidget *>( this ); }
 
 private Q_SLOTS:
     void onSliderChanged( int value );

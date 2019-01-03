@@ -50,12 +50,12 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         explicit SqlCollection( QSharedPointer<SqlStorage> storage );
         virtual ~SqlCollection();
 
-        virtual QueryMaker *queryMaker();
+        QueryMaker *queryMaker() override;
 
         /** Returns the protocol for the uid urls of this collection.
             The SqlCollection support "amarok-sqltrackuid" and "file" protocol.
         */
-        virtual QString uidUrlProtocol() const;
+        QString uidUrlProtocol() const override;
         /**
          * Generates uidUrl out of a hash (as returned by tag reader) that can be then
          * fed to Track::setUidUrl().
@@ -69,9 +69,9 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         QSharedPointer<SqlStorage> sqlStorage() const;
 
         /** Every collection has this function. */
-        virtual bool possiblyContainsTrack( const QUrl &url ) const;
+        bool possiblyContainsTrack( const QUrl &url ) const override;
 
-        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+        Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
         /** Gets an existing track (or a new one) at the given position.
             This function should only be used by the SqlScanResultProcessor. */
@@ -79,21 +79,21 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual Meta::TrackPtr getTrackFromUid( const QString &uniqueid );
         virtual Meta::AlbumPtr getAlbum( const QString &album, const QString &artist );
 
-        virtual CollectionLocation* location();
+        CollectionLocation* location() override;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
     public Q_SLOTS:
         /** Dumps the complete database content.
          *  The content of all Amarok tables is dumped in a couple of files
          *  in the users homedirectory.
          */
-        void dumpDatabaseContent();
+        void dumpDatabaseContent() override;
 
     private Q_SLOTS:
-        void slotDeviceAdded( int id );
-        void slotDeviceRemoved( int id );
+        void slotDeviceAdded( int id ) override;
+        void slotDeviceRemoved( int id ) override;
 
     private:
         SqlRegistry* m_registry;
@@ -113,8 +113,8 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionTranscodeCapability : public Capa
 
         virtual ~SqlCollectionTranscodeCapability();
 
-        virtual Transcoding::Configuration savedConfiguration();
-        virtual void setSavedConfiguration( const Transcoding::Configuration &configuration );
+        Transcoding::Configuration savedConfiguration() override;
+        void setSavedConfiguration( const Transcoding::Configuration &configuration ) override;
 };
 
 }

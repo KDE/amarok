@@ -30,7 +30,7 @@ public:
     MySqlServerStorageFactory();
     virtual ~MySqlServerStorageFactory();
 
-    virtual void init();
+    void init() override;
 
 public Q_SLOTS:
 

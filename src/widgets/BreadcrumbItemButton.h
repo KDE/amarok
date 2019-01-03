@@ -45,7 +45,7 @@ class BreadcrumbItemButton : public Amarok::ElidingButton
 
         void setActive( const bool active );
 
-        virtual QSize sizeHint() const;
+        QSize sizeHint() const override;
 
     protected:
         enum DisplayHint
@@ -57,10 +57,10 @@ class BreadcrumbItemButton : public Amarok::ElidingButton
         void setDisplayHintEnabled(DisplayHint hint, bool enable);
         bool isDisplayHintEnabled(DisplayHint hint) const;
 
-        virtual void enterEvent(QEvent* event);
-        virtual void leaveEvent(QEvent* event);
+        void enterEvent(QEvent* event) override;
+        void leaveEvent(QEvent* event) override;
 
-        virtual void paintEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent* event) override;
         virtual void drawHoverBackground(QPainter* painter);
 
         /** Returns the foreground color by respecting the current display hint. */
@@ -80,7 +80,7 @@ class BreadcrumbItemMenuButton : public BreadcrumbItemButton
         virtual ~BreadcrumbItemMenuButton() { }
 
     protected:
-        virtual void paintEvent(QPaintEvent* event);
+        void paintEvent(QPaintEvent* event) override;
 };
 
 class BreadcrumbUrlMenuButton : public BreadcrumbItemButton

@@ -41,7 +41,7 @@ class ToolTipEventFilter : public QObject
 
     private:
         ToolTipEventFilter();
-        bool eventFilter( QObject *object, QEvent *event );
+        bool eventFilter( QObject *object, QEvent *event ) override;
 
         static QPointer<ToolTipEventFilter> s_instance;
 };

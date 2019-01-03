@@ -229,19 +229,19 @@ namespace MetaFile
             , m_isAlbumArtist( isAlbumArtist )
         {}
 
-        Meta::TrackList tracks()
+        Meta::TrackList tracks() override
         {
             return Meta::TrackList();
         }
 
-        QString name() const
+        QString name() const override
         {
             const QString artist = m_isAlbumArtist ? d.data()->m_data.albumArtist
                                                    : d.data()->m_data.artist;
             return artist;
         }
 
-        bool operator==( const Meta::Artist &other ) const {
+        bool operator==( const Meta::Artist &other ) const override {
             return name() == other.name();
         }
 
@@ -257,7 +257,7 @@ namespace MetaFile
             , d( dptr )
         {}
 
-        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             switch( type )
             {
@@ -268,7 +268,7 @@ namespace MetaFile
             }
         }
 
-        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             switch( type )
             {
@@ -279,19 +279,19 @@ namespace MetaFile
             }
         }
 
-        bool isCompilation() const
+        bool isCompilation() const override
         {
             /* non-compilation albums with no album artists may be hidden in collection
              * browser if certain modes are used, so force compilation in this case */
             return !hasAlbumArtist();
         }
 
-        bool hasAlbumArtist() const
+        bool hasAlbumArtist() const override
         {
             return !d.data()->albumArtist->name().isEmpty();
         }
 
-        Meta::ArtistPtr albumArtist() const
+        Meta::ArtistPtr albumArtist() const override
         {
             /* only return album artist if it would be non-empty, some Amarok parts do not
              * call hasAlbumArtist() prior to calling albumArtist() and it is better to be
@@ -301,12 +301,12 @@ namespace MetaFile
             return Meta::ArtistPtr();
         }
 
-        Meta::TrackList tracks()
+        Meta::TrackList tracks() override
         {
             return Meta::TrackList();
         }
 
-        QString name() const
+        QString name() const override
         {
             if( d )
             {
@@ -317,14 +317,14 @@ namespace MetaFile
                 return QString();
         }
 
-        bool hasImage( int /* size */ = 0 ) const
+        bool hasImage( int /* size */ = 0 ) const override
         {
             if( d && d.data()->m_data.embeddedImage )
                 return true;
             return false;
         }
 
-        QImage image( int size = 0 ) const
+        QImage image( int size = 0 ) const override
         {
             QImage image;
             if( d && d.data()->m_data.embeddedImage )
@@ -337,12 +337,12 @@ namespace MetaFile
             return image.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         }
 
-        bool canUpdateImage() const
+        bool canUpdateImage() const override
         {
             return d; // true if underlying track is not null
         }
 
-        void setImage( const QImage &image )
+        void setImage( const QImage &image ) override
         {
             if( !d )
                 return;
@@ -366,12 +366,12 @@ namespace MetaFile
             d.data()->notifyObservers();
         }
 
-        void removeImage()
+        void removeImage() override
         {
             setImage( QImage() );
         }
 
-        bool operator==( const Meta::Album &other ) const {
+        bool operator==( const Meta::Album &other ) const override {
             return name() == other.name();
         }
 
@@ -386,18 +386,18 @@ namespace MetaFile
             , d( dptr )
         {}
 
-        Meta::TrackList tracks()
+        Meta::TrackList tracks() override
         {
             return Meta::TrackList();
         }
 
-        QString name() const
+        QString name() const override
         {
             const QString genreName = d.data()->m_data.genre;
             return genreName;
         }
 
-        bool operator==( const Meta::Genre &other ) const {
+        bool operator==( const Meta::Genre &other ) const override {
             return name() == other.name();
         }
 
@@ -412,18 +412,18 @@ namespace MetaFile
             , d( dptr )
         {}
 
-        Meta::TrackList tracks()
+        Meta::TrackList tracks() override
         {
             return Meta::TrackList();
         }
 
-        QString name() const
+        QString name() const override
         {
             const QString composer = d.data()->m_data.composer;
             return composer;
          }
 
-        bool operator==( const Meta::Composer &other ) const {
+        bool operator==( const Meta::Composer &other ) const override {
             return name() == other.name();
         }
 
@@ -438,18 +438,18 @@ namespace MetaFile
             , d( dptr )
         {}
 
-        Meta::TrackList tracks()
+        Meta::TrackList tracks() override
         {
             return Meta::TrackList();
         }
 
-        QString name() const
+        QString name() const override
         {
             const QString year = QString::number( d.data()->m_data.year );
             return year;
         }
 
-        bool operator==( const Meta::Year &other ) const {
+        bool operator==( const Meta::Year &other ) const override {
             return name() == other.name();
         }
 

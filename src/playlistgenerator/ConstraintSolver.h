@@ -51,8 +51,8 @@ namespace APG {
 
             // overloaded ThreadWeaver::Job functions
             bool canBeExecuted();
-            virtual bool success() const override;
-            virtual void requestAbort() override;
+            bool success() const override;
+            void requestAbort() override;
 
         Q_SIGNALS:
             void readyToRun();

@@ -32,8 +32,8 @@ class AMAROK_CORE_EXPORT PodcastProvider : public Collections::TrackProvider, pu
         static bool couldBeFeed( const QString &urlString );
         static QUrl toFeedUrl( const QString &urlString );
 
-        virtual bool possiblyContainsTrack( const QUrl &url ) const = 0;
-        virtual Meta::TrackPtr trackForUrl( const QUrl &url ) = 0;
+        bool possiblyContainsTrack( const QUrl &url ) const override = 0;
+        Meta::TrackPtr trackForUrl( const QUrl &url ) override = 0;
 
         /** Special function to get an episode for a given guid.
           *
@@ -56,15 +56,15 @@ class AMAROK_CORE_EXPORT PodcastProvider : public Collections::TrackProvider, pu
         virtual void completePodcastDownloads() = 0;
 
         // PlaylistProvider methods
-        virtual int category() const { return Playlists::PodcastChannelPlaylist; }
+        int category() const override { return Playlists::PodcastChannelPlaylist; }
 
         /** convenience function that downcast the argument to PodcastChannel and calls addChannel()
           */
-        virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
+        Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist ) override;
 
         /** convenience function that downcast the argument to PodcastEpisode and calls addEpisode()
           */
-        virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
+        Meta::TrackPtr addTrack( Meta::TrackPtr track ) override;
 };
 
 } //namespace Podcasts

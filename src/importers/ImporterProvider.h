@@ -53,47 +53,47 @@ public:
      * Provider's unique id which may be used as a key for configuration storage.
      * Returns m_config["uid"] by default.
      */
-    virtual QString id() const;
+    QString id() const override;
 
     /**
      * Description of the provider. Returns m_importer->description() by default.
      */
-    virtual QString description() const;
+    QString description() const override;
 
     /**
      * Provider's icon. Returns m_importer->icon() by default.
      */
-    virtual QIcon icon() const;
+    QIcon icon() const override;
 
     /**
      * Provider's name as displayed in Amarok's Metadata Configuration tab. Returns
      * m_config["name"] by default.
      */
-    virtual QString prettyName() const;
+    QString prettyName() const override;
 
     /**
      * Returns true if provider is configurable. Returns true by default.
      */
-    virtual bool isConfigurable() const;
+    bool isConfigurable() const override;
 
     /**
      * Returns configuration widget used to reconfigure this provider. By default
      * delegates to m_importer->getConfigWidget( m_config ).
      */
-    virtual ProviderConfigWidget *configWidget();
+    ProviderConfigWidget *configWidget() override;
 
     /**
      * Reconfigures current provider. An ImporterManager subclass handles the
      * task, _recreating_ this provider with new configuration. Please note that
      * m_config["uid"] is not subject to reconfiguration.
      */
-    virtual void reconfigure( const QVariantMap &config );
+    void reconfigure( const QVariantMap &config ) override;
 
     /**
      * Determines if this provider should participate in statistics synchronization
      * by default. By default returns StatSyncing::Provider::NoByDefault .
      */
-    virtual Preference defaultPreference();
+    Preference defaultPreference() override;
 
 Q_SIGNALS:
     void reconfigurationRequested( const QVariantMap &config );

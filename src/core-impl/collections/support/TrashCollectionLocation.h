@@ -37,14 +37,14 @@ public:
     TrashCollectionLocation();
     ~TrashCollectionLocation();
 
-    QString prettyLocation() const;
-    bool isWritable() const;
+    QString prettyLocation() const override;
+    bool isWritable() const override;
 
 protected:
     void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
-                               const Transcoding::Configuration &configuration );
+                               const Transcoding::Configuration &configuration ) override;
     void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources,
-                                const Transcoding::Configuration &configuration );
+                                const Transcoding::Configuration &configuration ) override;
 
 private Q_SLOTS:
     void slotTrashJobFinished( KJob *job );

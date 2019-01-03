@@ -45,8 +45,8 @@ namespace PlaylistBrowserNS
             virtual ~BiasDialog();
 
         public Q_SLOTS:
-            void accept();
-            void reject();
+            void accept() override;
+            void reject() override;
 
         protected Q_SLOTS:
             /** Updates the list of biases in the bias type selection list */

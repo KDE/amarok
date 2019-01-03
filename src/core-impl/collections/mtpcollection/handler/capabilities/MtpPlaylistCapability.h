@@ -34,22 +34,22 @@ class MtpPlaylistCapability : public PlaylistCapability
     public:
         explicit MtpPlaylistCapability( Meta::MtpHandler *handler );
 
-        virtual void prepareToParsePlaylists();
-        virtual bool isEndOfParsePlaylistsList();
-        virtual void prepareToParseNextPlaylist();
-        virtual void nextPlaylistToParse();
-        virtual bool shouldNotParseNextPlaylist();
-        virtual void prepareToParsePlaylistTracks();
-        virtual bool isEndOfParsePlaylist();
-        virtual void prepareToParseNextPlaylistTrack();
-        virtual void nextPlaylistTrackToParse();
+        void prepareToParsePlaylists() override;
+        bool isEndOfParsePlaylistsList() override;
+        void prepareToParseNextPlaylist() override;
+        void nextPlaylistToParse() override;
+        bool shouldNotParseNextPlaylist() override;
+        void prepareToParsePlaylistTracks() override;
+        bool isEndOfParsePlaylist() override;
+        void prepareToParseNextPlaylistTrack() override;
+        void nextPlaylistTrackToParse() override;
         
-        virtual void savePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name );
-        virtual void deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
-        virtual void renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist );
+        void savePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, const QString& name ) override;
+        void deletePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist ) override;
+        void renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist ) override;
 
-        virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
-        virtual QString libGetPlaylistName();
+        Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct() override;
+        QString libGetPlaylistName() override;
 
     private:
         Meta::MtpHandler *m_handler;

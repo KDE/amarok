@@ -35,11 +35,11 @@ class AMAROK_EXPORT FileCollectionLocation : public CollectionLocation
         FileCollectionLocation();
         virtual ~FileCollectionLocation();
 
-        virtual QString prettyLocation() const;
-        virtual bool isWritable() const;
-        virtual bool isOrganizable() const;
-        virtual void removeUrlsFromCollection( const Meta::TrackList& sources );
-        virtual void showRemoveDialog( const Meta::TrackList &tracks );
+        QString prettyLocation() const override;
+        bool isWritable() const override;
+        bool isOrganizable() const override;
+        void removeUrlsFromCollection( const Meta::TrackList& sources ) override;
+        void showRemoveDialog( const Meta::TrackList &tracks ) override;
     public Q_SLOTS:
         void slotRemoveJobFinished( KJob *job );
     private:

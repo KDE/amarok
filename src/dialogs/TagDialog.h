@@ -62,10 +62,10 @@ class AMAROK_EXPORT TagDialog : public QDialog, public Meta::Observer
 
         // inherited from Meta::Observer
         using Observer::metadataChanged;
-        void metadataChanged( Meta::AlbumPtr album );
+        void metadataChanged( Meta::AlbumPtr album ) override;
 
     private Q_SLOTS:
-        void accept();
+        void accept() override;
         void cancelPressed();
         void openPressed();
         void previousTrack();

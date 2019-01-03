@@ -43,14 +43,14 @@ namespace StatSyncing
             explicit CollectionProvider( Collections::Collection *collection );
             virtual ~CollectionProvider();
 
-            virtual QString id() const;
-            virtual QString prettyName() const;
-            virtual QIcon icon() const;
-            virtual qint64 reliableTrackMetaData() const;
-            virtual qint64 writableTrackStatsData() const;
-            virtual Preference defaultPreference();
-            virtual QSet<QString> artists();
-            virtual TrackList artistTracks( const QString &artistName );
+            QString id() const override;
+            QString prettyName() const override;
+            QIcon icon() const override;
+            qint64 reliableTrackMetaData() const override;
+            qint64 writableTrackStatsData() const override;
+            Preference defaultPreference() override;
+            QSet<QString> artists() override;
+            TrackList artistTracks( const QString &artistName ) override;
 
         Q_SIGNALS:
             /// hacks to create and start QueryMaker in main eventloop

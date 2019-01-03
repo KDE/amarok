@@ -27,17 +27,17 @@ public:
     explicit MassStorageDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
     virtual ~MassStorageDeviceHandlerFactory();
 
-    virtual bool canHandle( const Solid::Device &device ) const;
+    bool canHandle( const Solid::Device &device ) const override;
 
-    virtual bool canCreateFromMedium() const;
+    bool canCreateFromMedium() const override;
 
-    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &uuid, QSharedPointer<SqlStorage> s ) const;
+    DeviceHandler* createHandler( const Solid::Device &device, const QString &uuid, QSharedPointer<SqlStorage> s ) const override;
 
-    virtual bool canCreateFromConfig() const;
+    bool canCreateFromConfig() const override;
 
-    virtual DeviceHandler* createHandler( KSharedConfigPtr c, QSharedPointer<SqlStorage> s ) const;
+    DeviceHandler* createHandler( KSharedConfigPtr c, QSharedPointer<SqlStorage> s ) const override;
 
-    virtual QString type() const;
+    QString type() const override;
 
 private:
     bool excludedFilesystem( const QString &fstype ) const;
@@ -54,13 +54,13 @@ public:
 
     virtual ~MassStorageDeviceHandler();
 
-    virtual bool isAvailable() const;
-    virtual QString type() const;
-    virtual int getDeviceID( );
-    virtual const QString &getDevicePath() const;
-    virtual void getURL( QUrl &absolutePath, const QUrl &relativePath );
-    virtual void getPlayableURL( QUrl &absolutePath, const QUrl &relativePath );
-    virtual bool deviceMatchesUdi( const QString &udi ) const;
+    bool isAvailable() const override;
+    QString type() const override;
+    int getDeviceID( ) override;
+    const QString &getDevicePath() const override;
+    void getURL( QUrl &absolutePath, const QUrl &relativePath ) override;
+    void getPlayableURL( QUrl &absolutePath, const QUrl &relativePath ) override;
+    bool deviceMatchesUdi( const QString &udi ) const override;
 
 private:
 

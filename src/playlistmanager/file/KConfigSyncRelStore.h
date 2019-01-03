@@ -30,9 +30,9 @@ public:
 
     virtual ~KConfigSyncRelStore();
 
-    virtual void addSync( const Playlists::PlaylistPtr master, const Playlists::PlaylistPtr slave );
-    virtual bool hasToSync( Playlists::PlaylistPtr master, Playlists::PlaylistPtr slave ) const;
-    virtual SyncedPlaylistPtr asSyncedPlaylist( const Playlists::PlaylistPtr playlist );
+    void addSync( const Playlists::PlaylistPtr master, const Playlists::PlaylistPtr slave ) override;
+    bool hasToSync( Playlists::PlaylistPtr master, Playlists::PlaylistPtr slave ) const override;
+    SyncedPlaylistPtr asSyncedPlaylist( const Playlists::PlaylistPtr playlist ) override;
 
 private:
     KConfigGroup syncedPlaylistsConfig() const;

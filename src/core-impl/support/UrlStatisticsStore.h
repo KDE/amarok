@@ -31,7 +31,7 @@ class AMAROK_EXPORT UrlStatisticsStore : public PersistentStatisticsStore
         explicit UrlStatisticsStore( Meta::Track *track, const QString &permanentUrl = QString() );
 
     protected:
-        virtual void save();
+        void save() override;
 
     private:
         QString m_permanentUrl;

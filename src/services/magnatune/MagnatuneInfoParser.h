@@ -43,9 +43,9 @@ public:
 
 
     
-    virtual void getInfo( Meta::ArtistPtr artist );
-    virtual void getInfo( Meta::AlbumPtr album );
-    virtual void getInfo( Meta::TrackPtr track );
+    void getInfo( Meta::ArtistPtr artist ) override;
+    void getInfo( Meta::AlbumPtr album ) override;
+    void getInfo( Meta::TrackPtr track ) override;
 
     void getFrontPage();
     void getFavoritesPage();

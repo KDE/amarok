@@ -109,7 +109,7 @@ public:
 
 
     //! Custom version of functions inherited from QSortFilterProxyModel
-    QVariant data( const QModelIndex &index, int role ) const;
+    QVariant data( const QModelIndex &index, int role ) const override;
 
 //Q_SIGNALS:
     // Emits signals inherited from QSortFilterProxy

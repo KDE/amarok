@@ -36,7 +36,7 @@ public:
     void setText( const QString &text ); 
 
 protected:
-    virtual QSize sizeHint() const;
+    QSize sizeHint() const override;
 
 private:
     bool m_showTime;

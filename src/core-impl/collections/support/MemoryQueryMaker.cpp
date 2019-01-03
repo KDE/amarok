@@ -55,13 +55,13 @@ class QueryJob : public QObject, public ThreadWeaver::Job
         }
 
     protected:
-        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread) override
         {
             Q_EMIT started(self);
             ThreadWeaver::Job::defaultBegin(self, thread);
         }
 
-        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread) override
         {
             ThreadWeaver::Job::defaultEnd(self, thread);
             if (!self->success()) {
@@ -69,7 +69,7 @@ class QueryJob : public QObject, public ThreadWeaver::Job
             }
             Q_EMIT done(self);
         }
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread=0)
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread=0) override
         {
             Q_UNUSED(self);
             Q_UNUSED(thread);

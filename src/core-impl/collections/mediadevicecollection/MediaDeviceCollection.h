@@ -42,7 +42,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Col
 
     public:
         virtual ~MediaDeviceCollectionFactoryBase();
-        virtual void init();
+        void init() override;
 
     protected:
         MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant );
@@ -71,7 +71,7 @@ class MediaDeviceCollectionFactory : public MediaDeviceCollectionFactoryBase
         virtual ~MediaDeviceCollectionFactory() {}
 
     private:
-        virtual MediaDeviceCollection* createCollection( MediaDeviceInfo* info )
+        MediaDeviceCollection* createCollection( MediaDeviceInfo* info ) override
         {
             return new CollType( info );
         }
@@ -91,10 +91,10 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
          * url-based methods can be abstracted via use of Amarok URLs
          * subclasses simply define a protocol prefix, e.g. ipod
          */
-        virtual bool possiblyContainsTrack( const QUrl &url ) const { Q_UNUSED(url); return false;} // TODO: NYI
-        virtual Meta::TrackPtr trackForUrl( const QUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
+        bool possiblyContainsTrack( const QUrl &url ) const override { Q_UNUSED(url); return false;} // TODO: NYI
+        Meta::TrackPtr trackForUrl( const QUrl &url ) override { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
 
-        virtual QueryMaker* queryMaker();
+        QueryMaker* queryMaker() override;
         virtual void startFullScanDevice();
 
         // NOTE: incrementalscan and stopscan not implemented, might be used by UMS later though
@@ -105,22 +105,22 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
 
             This has to be overridden for every device type, e.g. ipod://
         */
-        virtual QString uidUrlProtocol() const { return QString(); } // TODO: NYI
-        virtual QString collectionId() const; // uses udi
+        QString uidUrlProtocol() const override { return QString(); } // TODO: NYI
+        QString collectionId() const override; // uses udi
 
-        virtual QString prettyName() const = 0; // NOTE: must be overridden based on device type
-        virtual QIcon icon() const = 0; // NOTE: must be overridden based on device type
+        QString prettyName() const override = 0; // NOTE: must be overridden based on device type
+        QIcon icon() const override = 0; // NOTE: must be overridden based on device type
 
-        virtual bool hasCapacity() const;
-        virtual float usedCapacity() const;
-        virtual float totalCapacity() const;
+        bool hasCapacity() const override;
+        float usedCapacity() const override;
+        float totalCapacity() const override;
 
         // NOTE: location will have same method calls always, no need to redo each time
-        virtual CollectionLocation* location() { return new MediaDeviceCollectionLocation( this ); }
+        CollectionLocation* location() override { return new MediaDeviceCollectionLocation( this ); }
 
         /** Capability-related methods */
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         /** MediaDeviceCollection methods */
         QString udi() const { return m_udi; }

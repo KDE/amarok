@@ -88,49 +88,49 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual ~PodcastEpisode() {}
 
         // Meta::Base methods
-        virtual QString name() const { return m_title; }
+        QString name() const override { return m_title; }
 
         // Meta::Track Methods
-        virtual QUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
-        virtual QString prettyUrl() const { return playableUrl().toDisplayString(); }
-        virtual QString uidUrl() const { return m_url.url(); }
-        virtual QString notPlayableReason() const;
+        QUrl playableUrl() const override { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
+        QString prettyUrl() const override { return playableUrl().toDisplayString(); }
+        QString uidUrl() const override { return m_url.url(); }
+        QString notPlayableReason() const override;
 
-        virtual Meta::AlbumPtr album() const { return m_albumPtr; }
-        virtual Meta::ArtistPtr artist() const { return m_artistPtr; }
-        virtual Meta::ComposerPtr composer() const { return m_composerPtr; }
-        virtual Meta::GenrePtr genre() const { return m_genrePtr; }
-        virtual Meta::YearPtr year() const { return m_yearPtr; }
+        Meta::AlbumPtr album() const override { return m_albumPtr; }
+        Meta::ArtistPtr artist() const override { return m_artistPtr; }
+        Meta::ComposerPtr composer() const override { return m_composerPtr; }
+        Meta::GenrePtr genre() const override { return m_genrePtr; }
+        Meta::YearPtr year() const override { return m_yearPtr; }
 
-        virtual qreal bpm() const { return -1.0; }
+        qreal bpm() const override { return -1.0; }
 
-        virtual QString comment() const { return QString(); }
+        QString comment() const override { return QString(); }
         virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ); }
-        virtual qint64 length() const { return m_duration * 1000; }
-        virtual int filesize() const { return m_fileSize; }
-        virtual int sampleRate() const { return 0; }
-        virtual int bitrate() const { return 0; }
-        virtual int trackNumber() const { return m_sequenceNumber; }
+        qint64 length() const override { return m_duration * 1000; }
+        int filesize() const override { return m_fileSize; }
+        int sampleRate() const override { return 0; }
+        int bitrate() const override { return 0; }
+        int trackNumber() const override { return m_sequenceNumber; }
         virtual void setTrackNumber( int newTrackNumber ) { Q_UNUSED( newTrackNumber ); }
-        virtual int discNumber() const { return 0; }
+        int discNumber() const override { return 0; }
         virtual void setDiscNumber( int newDiscNumber ) { Q_UNUSED( newDiscNumber ); }
         virtual QString mimeType() const { return m_mimeType; }
 
-        virtual QString type() const
+        QString type() const override
         {
             const QString fileName = playableUrl().fileName();
             return Amarok::extension( fileName );
         }
 
         virtual void addMatchTo( Collections::QueryMaker* qm ) { Q_UNUSED( qm ); }
-        virtual bool inCollection() const { return false; }
-        virtual QString cachedLyrics() const { return QString(); }
-        virtual void setCachedLyrics( const QString &lyrics ) { Q_UNUSED( lyrics ); }
+        bool inCollection() const override { return false; }
+        QString cachedLyrics() const override { return QString(); }
+        void setCachedLyrics( const QString &lyrics ) override { Q_UNUSED( lyrics ); }
 
-        virtual bool operator==( const Meta::Track &track ) const;
+        bool operator==( const Meta::Track &track ) const override;
 
         //PodcastMetaCommon methods
-        virtual void setTitle( const QString &title ) { m_title = title; }
+        void setTitle( const QString &title ) override { m_title = title; }
 
         //PodcastEpisode methods
         virtual QUrl localUrl() const { return m_localUrl; }
@@ -199,16 +199,16 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual ~PodcastChannel() {}
 
         //Playlist virtual methods
-        virtual QUrl uidUrl() const { return m_url; }
-        virtual QString name() const { return title(); }
+        QUrl uidUrl() const override { return m_url; }
+        QString name() const override { return title(); }
 
-        virtual int trackCount() const { return m_episodes.count(); }
-        virtual Meta::TrackList tracks();
-        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
+        int trackCount() const override { return m_episodes.count(); }
+        Meta::TrackList tracks() override;
+        void addTrack( Meta::TrackPtr track, int position = -1 ) override;
 
         //PodcastMetaCommon methods
         // override this since it's ambiguous in PodcastMetaCommon and Playlist
-        virtual QString description() const { return m_description; }
+        QString description() const override { return m_description; }
 
         //PodcastChannel methods
         virtual QUrl url() const { return m_url; }
@@ -274,7 +274,7 @@ public:
         , episode( episode )
     {}
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         return Meta::TrackList();
     }
@@ -284,7 +284,7 @@ public:
         return Meta::AlbumList();
     }
 
-    QString name() const
+    QString name() const override
     {
         QString author;
         if( episode && episode->channel() )
@@ -293,7 +293,7 @@ public:
         return author;
     }
 
-    bool operator==( const Meta::Artist &other ) const
+    bool operator==( const Meta::Artist &other ) const override
     {
         return name() == other.name();
     }
@@ -318,27 +318,27 @@ public:
        { CoverCache::invalidateAlbum( Meta::AlbumPtr(this) ); }
     */
 
-    bool isCompilation() const
+    bool isCompilation() const override
     {
         return false;
     }
 
-    bool hasAlbumArtist() const
+    bool hasAlbumArtist() const override
     {
         return false;
     }
 
-    Meta::ArtistPtr albumArtist() const
+    Meta::ArtistPtr albumArtist() const override
     {
         return Meta::ArtistPtr();
     }
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         return Meta::TrackList();
     }
 
-    QString name() const
+    QString name() const override
     {
         if( episode != 0 )
         {
@@ -349,14 +349,14 @@ public:
             return QString();
     }
 
-    QImage image( int size ) const
+    QImage image( int size ) const override
     {
         // This is a little stupid. If Channel::setImage is called we don't emit a MetaDataChanged or invalidate the cache
         QImage image = episode->channel()->image();
         return image.scaledToHeight( size );
     }
 
-    bool operator==( const Meta::Album &other ) const
+    bool operator==( const Meta::Album &other ) const override
     {
         return name() == other.name();
     }
@@ -372,18 +372,18 @@ public:
         , episode( episode )
     {}
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         return Meta::TrackList();
     }
 
-    QString name() const
+    QString name() const override
     {
         const QString genreName = i18n( "Podcast" );
         return genreName;
     }
 
-    bool operator==( const Meta::Genre &other ) const
+    bool operator==( const Meta::Genre &other ) const override
     {
         return name() == other.name();
     }
@@ -399,12 +399,12 @@ public:
         , episode( episode )
     {}
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         return Meta::TrackList();
     }
 
-    QString name() const
+    QString name() const override
     {
         if( episode != 0 )
         {
@@ -416,7 +416,7 @@ public:
 
      }
 
-    bool operator==( const Meta::Composer &other ) const
+    bool operator==( const Meta::Composer &other ) const override
     {
         return name() == other.name();
     }
@@ -432,12 +432,12 @@ public:
         , episode( episode )
     {}
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         return Meta::TrackList();
     }
 
-    QString name() const
+    QString name() const override
     {
         if( episode != 0 )
         {
@@ -448,7 +448,7 @@ public:
             return QString();
     }
 
-    bool operator==( const Meta::Year &other ) const
+    bool operator==( const Meta::Year &other ) const override
     {
         return name() == other.name();
     }

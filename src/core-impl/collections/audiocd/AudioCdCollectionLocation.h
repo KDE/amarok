@@ -35,9 +35,9 @@ public:
     explicit AudioCdCollectionLocation( AudioCdCollection *parentCollection );
     ~AudioCdCollectionLocation();
 
-    virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
+    void getKIOCopyableUrls( const Meta::TrackList &tracks ) override;
 
-    virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
+    void showSourceDialog( const Meta::TrackList &tracks, bool removeSources ) override;
 
 private Q_SLOTS:
     void formatSelected( int format );

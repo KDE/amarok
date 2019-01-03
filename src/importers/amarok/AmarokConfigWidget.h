@@ -32,7 +32,7 @@ public:
                                  Qt::WindowFlags f = 0 );
     ~AmarokConfigWidget();
 
-    QVariantMap config() const;
+    QVariantMap config() const override;
 
     enum ConnectionType
     {

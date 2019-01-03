@@ -45,49 +45,49 @@ public:
     TimecodeTrack( const QString &name, const QUrl &url, qint64 start, qint64 end );
     virtual ~TimecodeTrack();
 
-    virtual QString name() const;
+    QString name() const override;
 
-    virtual QUrl playableUrl() const;
-    virtual QString uidUrl() const;
-    virtual QString prettyUrl() const;
-    virtual QString notPlayableReason() const;
+    QUrl playableUrl() const override;
+    QString uidUrl() const override;
+    QString prettyUrl() const override;
+    QString notPlayableReason() const override;
 
-    virtual AlbumPtr album() const;
-    virtual ArtistPtr artist() const;
-    virtual GenrePtr genre() const;
-    virtual ComposerPtr composer() const;
-    virtual YearPtr year() const;
+    AlbumPtr album() const override;
+    ArtistPtr artist() const override;
+    GenrePtr genre() const override;
+    ComposerPtr composer() const override;
+    YearPtr year() const override;
 
-    virtual qreal bpm() const;
-    virtual QString comment() const;
-    virtual qint64 length() const;
-    virtual int filesize() const;
-    virtual int sampleRate() const;
-    virtual int bitrate() const;
-    virtual int trackNumber() const;
-    virtual int discNumber() const;
-    virtual QString type() const;
+    qreal bpm() const override;
+    QString comment() const override;
+    qint64 length() const override;
+    int filesize() const override;
+    int sampleRate() const override;
+    int bitrate() const override;
+    int trackNumber() const override;
+    int discNumber() const override;
+    QString type() const override;
 
-    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-    virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type );
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+    Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
-    virtual TrackEditorPtr editor();
+    TrackEditorPtr editor() override;
 
     // TrackEditor methods
-    virtual void setAlbum( const QString &newAlbum );
-    virtual void setAlbumArtist( const QString &newAlbumArtist );
-    virtual void setArtist( const QString &newArtist );
-    virtual void setComposer( const QString &newComposer );
-    virtual void setGenre( const QString &newGenre );
-    virtual void setYear( int newYear );
-    virtual void setTitle( const QString &newTitle );
-    virtual void setComment( const QString &newComment );
-    virtual void setTrackNumber( int newTrackNumber );
-    virtual void setDiscNumber( int newDiscNumber );
-    virtual void setBpm( const qreal newBpm );
+    void setAlbum( const QString &newAlbum ) override;
+    void setAlbumArtist( const QString &newAlbumArtist ) override;
+    void setArtist( const QString &newArtist ) override;
+    void setComposer( const QString &newComposer ) override;
+    void setGenre( const QString &newGenre ) override;
+    void setYear( int newYear ) override;
+    void setTitle( const QString &newTitle ) override;
+    void setComment( const QString &newComment ) override;
+    void setTrackNumber( int newTrackNumber ) override;
+    void setDiscNumber( int newDiscNumber ) override;
+    void setBpm( const qreal newBpm ) override;
 
-    virtual void beginUpdate();
-    virtual void endUpdate();
+    void beginUpdate() override;
+    void endUpdate() override;
 
     //TimecodeTrack specific methods
     void setAlbum( TimecodeAlbumPtr album );
@@ -145,13 +145,13 @@ public:
     explicit TimecodeArtist( const QString &name );
     virtual ~TimecodeArtist();
 
-    virtual QString name() const;
+    QString name() const override;
 
-    virtual TrackList tracks();
+    TrackList tracks() override;
 
     virtual AlbumList albums();
 
-    bool operator==( const Meta::Artist &other ) const
+    bool operator==( const Meta::Artist &other ) const override
     {
         return name() == other.name();
     }
@@ -171,25 +171,25 @@ public:
     explicit TimecodeAlbum( const QString &name );
     virtual ~TimecodeAlbum();
 
-    virtual QString name() const;
+    QString name() const override;
 
-    virtual bool isCompilation() const;
-    virtual bool hasAlbumArtist() const;
-    virtual ArtistPtr albumArtist() const;
-    virtual TrackList tracks();
+    bool isCompilation() const override;
+    bool hasAlbumArtist() const override;
+    ArtistPtr albumArtist() const override;
+    TrackList tracks() override;
 
-    virtual QImage image( int size = 0 ) const;
-    virtual bool canUpdateImage() const;
-    virtual void setImage( const QImage &image );
+    QImage image( int size = 0 ) const override;
+    bool canUpdateImage() const override;
+    void setImage( const QImage &image ) override;
 
-    virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-    virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+    Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
     //TimecodeAlbum specific methods
     void addTrack( TimecodeTrackPtr track );
     void setAlbumArtist( TimecodeArtistPtr artist );
 
-    bool operator==( const Meta::Album &other ) const
+    bool operator==( const Meta::Album &other ) const override
     {
         return name() == other.name();
     }
@@ -209,11 +209,11 @@ public:
     explicit TimecodeGenre( const QString &name );
     virtual ~TimecodeGenre();
 
-    virtual QString name() const;
+    QString name() const override;
 
-    virtual TrackList tracks();
+    TrackList tracks() override;
 
-    bool operator==( const Meta::Genre &other ) const
+    bool operator==( const Meta::Genre &other ) const override
     {
         return name() == other.name();
     }
@@ -232,11 +232,11 @@ public:
     explicit TimecodeComposer( const QString &name );
     virtual ~TimecodeComposer();
 
-    virtual QString name() const;
+    QString name() const override;
 
-    virtual TrackList tracks();
+    TrackList tracks() override;
 
-    bool operator==( const Meta::Composer &other ) const
+    bool operator==( const Meta::Composer &other ) const override
     {
         return name() == other.name();
     }
@@ -255,11 +255,11 @@ public:
     explicit TimecodeYear( const QString &name );
     virtual ~TimecodeYear();
 
-    virtual QString name() const;
+    QString name() const override;
 
-    virtual TrackList tracks();
+    TrackList tracks() override;
 
-    bool operator==( const Meta::Year &other ) const
+    bool operator==( const Meta::Year &other ) const override
     {
         return name() == other.name();
     }

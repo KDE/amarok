@@ -121,7 +121,7 @@ class BrowserCategoryList : public BrowserCategory
 
     private Q_SLOTS:
         /** Sets the current filter value and updates the content */
-        virtual void setFilter( const QString &filter );
+        void setFilter( const QString &filter ) override;
 
     private:
 

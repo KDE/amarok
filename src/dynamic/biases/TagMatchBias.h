@@ -49,23 +49,23 @@ namespace Dynamic
         public:
             SimpleMatchBias();
 
-            virtual void fromXml( QXmlStreamReader *reader );
-            virtual void toXml( QXmlStreamWriter *writer ) const;
+            void fromXml( QXmlStreamReader *reader ) override;
+            void toXml( QXmlStreamWriter *writer ) const override;
 
-            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+            TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const;
+                                             const TrackCollectionPtr universe ) const override;
 
-            virtual bool trackMatches( int position,
+            bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
-                                       int contextCount ) const;
+                                       int contextCount ) const override;
 
             /** Is the result inverted (e.g. does NOT contain) */
             bool isInvert() const;
             void setInvert( bool value );
 
         public Q_SLOTS:
-            virtual void invalidate();
+            void invalidate() override;
 
         protected Q_SLOTS:
             /** Called when we get new uids from the query maker */
@@ -130,25 +130,25 @@ namespace Dynamic
         public:
             TagMatchBias();
 
-            virtual void fromXml( QXmlStreamReader *reader );
-            virtual void toXml( QXmlStreamWriter *writer ) const;
+            void fromXml( QXmlStreamReader *reader ) override;
+            void toXml( QXmlStreamWriter *writer ) const override;
 
             static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
+            QString name() const override;
+            QString toString() const override;
 
-            virtual QWidget* widget( QWidget* parent = nullptr );
+            QWidget* widget( QWidget* parent = nullptr ) override;
 
-            virtual bool trackMatches( int position,
+            bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
-                                       int contextCount ) const;
+                                       int contextCount ) const override;
 
 
             MetaQueryWidget::Filter filter() const;
             void setFilter( const MetaQueryWidget::Filter &filter );
 
         protected Q_SLOTS:
-            virtual void newQuery();
+            void newQuery() override;
 
         protected:
             static QString nameForCondition( MetaQueryWidget::FilterCondition cond );
@@ -164,10 +164,10 @@ namespace Dynamic
     class AMAROK_EXPORT TagMatchBiasFactory : public Dynamic::AbstractBiasFactory
     {
         public:
-            virtual QString i18nName() const;
-            virtual QString name() const;
-            virtual QString i18nDescription() const;
-            virtual BiasPtr createBias();
+            QString i18nName() const override;
+            QString name() const override;
+            QString i18nDescription() const override;
+            BiasPtr createBias() override;
     };
 
 }

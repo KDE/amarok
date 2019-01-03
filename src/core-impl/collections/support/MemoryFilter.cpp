@@ -24,7 +24,7 @@
 class UrlMemoryFilter : public StringMemoryFilter
 {
 protected:
-    virtual QString value( Meta::TrackPtr track ) const
+    QString value( Meta::TrackPtr track ) const override
     { return track->playableUrl().url(); }
 
 };
@@ -38,7 +38,7 @@ class GenericStringMemoryFilter : public StringMemoryFilter
         { setFilter( filter, matchBegin, matchEnd ); }
 
     protected:
-        virtual QString value( Meta::TrackPtr track ) const
+        QString value( Meta::TrackPtr track ) const override
         { return Meta::valueForField( m_value, track ).toString(); }
 
     private:
@@ -54,7 +54,7 @@ class GenericNumberMemoryFilter : public NumberMemoryFilter
         { setFilter( filter, compare ); }
 
     protected:
-        virtual qint64 value( Meta::TrackPtr track ) const
+        qint64 value( Meta::TrackPtr track ) const override
         {
             QVariant v = Meta::valueForField( m_value, track );
             if( v.type() == QVariant::DateTime )

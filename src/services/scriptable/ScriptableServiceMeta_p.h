@@ -70,10 +70,10 @@ class AMAROK_EXPORT ScriptableServiceInternalSourceInfoCapability : public Capab
         }
         ~ScriptableServiceInternalSourceInfoCapability() {};
 
-        QString sourceName() { return m_sourceInfoProvider->serviceName(); }
-        QString sourceDescription() { return m_sourceInfoProvider->serviceDescription(); }
-        QPixmap emblem() { return m_sourceInfoProvider->serviceEmblem(); }
-        QString scalableEmblem() { return m_sourceInfoProvider->serviceScalableEmblem(); }
+        QString sourceName() override { return m_sourceInfoProvider->serviceName(); }
+        QString sourceDescription() override { return m_sourceInfoProvider->serviceDescription(); }
+        QPixmap emblem() override { return m_sourceInfoProvider->serviceEmblem(); }
+        QString scalableEmblem() override { return m_sourceInfoProvider->serviceScalableEmblem(); }
         
 
     private:
@@ -90,12 +90,12 @@ class ScriptableServiceInternalArtist : public Meta::Artist, public ScriptableSe
         , m_name( name )
         {}
 
-        Meta::TrackList tracks()
+        Meta::TrackList tracks() override
         {
             return Meta::TrackList();
         }
 
-        QString name() const
+        QString name() const override
         {
             if( !m_name.isEmpty() )
                 return m_name;
@@ -103,17 +103,17 @@ class ScriptableServiceInternalArtist : public Meta::Artist, public ScriptableSe
                 return i18nc( "The value is not known", "Unknown" );
         }
 
-        QString prettyName() const
+        QString prettyName() const override
         {
             return name();
         }
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             return ( type == Capabilities::Capability::SourceInfo );
         }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
@@ -133,27 +133,27 @@ class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover, publi
         , m_name( name )
         {}
 
-        bool isCompilation() const
+        bool isCompilation() const override
         {
             return false;
         }
 
-        bool hasAlbumArtist() const
+        bool hasAlbumArtist() const override
         {
             return false;
         }
 
-        Meta::ArtistPtr albumArtist() const
+        Meta::ArtistPtr albumArtist() const override
         {
             return Meta::ArtistPtr();
         }
 
-        Meta::TrackList tracks()
+        Meta::TrackList tracks() override
         {
             return Meta::TrackList();
         }
 
-        QString name() const
+        QString name() const override
         {
             if( !m_name.isEmpty() )
                 return m_name;
@@ -161,23 +161,23 @@ class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover, publi
                 return i18nc( "The value is not known", "Unknown" );
         }
 
-        QString prettyName() const
+        QString prettyName() const override
         {
             return name();
         }
 
-        virtual QString downloadPrefix() const { return "script"; }
-        virtual void setCoverUrl( const QString &coverUrl ) { m_coverUrl = coverUrl; }
-        virtual QString coverUrl() const { return m_coverUrl; }
+        QString downloadPrefix() const override { return "script"; }
+        void setCoverUrl( const QString &coverUrl ) override { m_coverUrl = coverUrl; }
+        QString coverUrl() const override { return m_coverUrl; }
 
-        virtual QUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return QUrl( coverUrl() ); }
+        QUrl imageLocation( int size = 1 ) override { Q_UNUSED( size ); return QUrl( coverUrl() ); }
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             return ( type == Capabilities::Capability::SourceInfo );
         }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
@@ -197,12 +197,12 @@ class ScriptableServiceInternalGenre : public Meta::Genre, public ScriptableServ
         , m_name( name )
         {}
 
-        Meta::TrackList tracks()
+        Meta::TrackList tracks() override
         {
             return Meta::TrackList();
         }
 
-        QString name() const
+        QString name() const override
         {
             if( !m_name.isEmpty() )
                 return m_name;
@@ -210,17 +210,17 @@ class ScriptableServiceInternalGenre : public Meta::Genre, public ScriptableServ
                 return i18nc( "The value is not known", "Unknown" );
         }
 
-        QString prettyName() const
+        QString prettyName() const override
         {
             return name();
         }
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             return ( type == Capabilities::Capability::SourceInfo );
         }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
@@ -239,12 +239,12 @@ class ScriptableServiceInternalComposer : public Meta::Composer, public Scriptab
         , m_name( name )
         {}
 
-        Meta::TrackList tracks()
+        Meta::TrackList tracks() override
         {
             return Meta::TrackList();
         }
 
-        QString name() const
+        QString name() const override
         {
 
             if( !m_name.isEmpty() )
@@ -253,17 +253,17 @@ class ScriptableServiceInternalComposer : public Meta::Composer, public Scriptab
                 return i18nc( "The value is not known", "Unknown" );
         }
 
-        QString prettyName() const
+        QString prettyName() const override
         {
             return name();
         }
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             return ( type == Capabilities::Capability::SourceInfo );
         }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
@@ -282,12 +282,12 @@ class ScriptableServiceInternalYear : public Meta::Year, public ScriptableServic
         , m_name( name )
         {}
 
-        Meta::TrackList tracks()
+        Meta::TrackList tracks() override
         {
             return Meta::TrackList();
         }
 
-        QString name() const
+        QString name() const override
         {
             if( !m_name.isEmpty() )
                 return m_name;
@@ -295,17 +295,17 @@ class ScriptableServiceInternalYear : public Meta::Year, public ScriptableServic
                 return i18nc( "The value is not known", "Unknown" );
         }
 
-        QString prettyName() const
+        QString prettyName() const override
         {
             return name();
         }
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             return ( type == Capabilities::Capability::SourceInfo );
         }
 
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );

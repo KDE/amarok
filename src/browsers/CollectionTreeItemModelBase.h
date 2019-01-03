@@ -55,21 +55,21 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         CollectionTreeItemModelBase();
         virtual ~CollectionTreeItemModelBase();
 
-        virtual Qt::ItemFlags flags(const QModelIndex &index) const;
-        virtual QVariant headerData(int section, Qt::Orientation orientation,
-                            int role = Qt::DisplayRole) const;
-        virtual QModelIndex index(int row, int column,
-                        const QModelIndex &parent = QModelIndex()) const;
-        virtual QModelIndex parent(const QModelIndex &index) const;
-        virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-        virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
-        virtual bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
+        Qt::ItemFlags flags(const QModelIndex &index) const override;
+        QVariant headerData(int section, Qt::Orientation orientation,
+                            int role = Qt::DisplayRole) const override;
+        QModelIndex index(int row, int column,
+                        const QModelIndex &parent = QModelIndex()) const override;
+        QModelIndex parent(const QModelIndex &index) const override;
+        int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+        int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+        bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const override;
 
         // Writable..
-        virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+        bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
-        virtual QStringList mimeTypes() const;
-        virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
+        QStringList mimeTypes() const override;
+        QMimeData* mimeData( const QModelIndexList &indices ) const override;
         virtual QMimeData* mimeData( const QList<CollectionTreeItem *> &items ) const;
 
         virtual void listForLevel( int level, Collections::QueryMaker *qm, CollectionTreeItem* parent );

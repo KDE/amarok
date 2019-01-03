@@ -45,19 +45,19 @@ namespace Playlists
 
         public:
             /* Playlist methods */
-            virtual QUrl uidUrl() const { return m_url; }
-            virtual QString name() const { return m_url.fileName(); }
-            virtual Meta::TrackList tracks() { return m_tracks; }
-            virtual int trackCount() const;
-            virtual void addTrack( Meta::TrackPtr track, int position );
-            virtual void removeTrack( int position );
-            virtual void triggerTrackLoad();
+            QUrl uidUrl() const override { return m_url; }
+            QString name() const override { return m_url.fileName(); }
+            Meta::TrackList tracks() override { return m_tracks; }
+            int trackCount() const override;
+            void addTrack( Meta::TrackPtr track, int position ) override;
+            void removeTrack( int position ) override;
+            void triggerTrackLoad() override;
 
             /**
              * Overrides filename
              */
-            virtual void setName( const QString &name );
-            virtual PlaylistProvider *provider() const { return m_provider; }
+            void setName( const QString &name ) override;
+            PlaylistProvider *provider() const override { return m_provider; }
 
             /* PlaylistFile methods */
             virtual QList<int> queue() { return QList<int>(); }
@@ -87,8 +87,8 @@ namespace Playlists
              * @note in order to save tracks to file, save method should be called
              **/
             virtual void addTracks( const Meta::TrackList &tracks ) { m_tracks += tracks; }
-            virtual void setGroups( const QStringList &groups ) { m_groups = groups; }
-            virtual QStringList groups() { return m_groups; }
+            void setGroups( const QStringList &groups ) override { m_groups = groups; }
+            QStringList groups() override { return m_groups; }
 
         protected:
             PlaylistFile( const QUrl &url, PlaylistProvider *provider );

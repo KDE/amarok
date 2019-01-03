@@ -35,7 +35,7 @@ public:
     ~FastForwardTrack();
 
 protected:
-    void doCommit( const qint64 fields );
+    void doCommit( const qint64 fields ) override;
 
 private:
     const ImporterSqlConnectionPtr m_connection;

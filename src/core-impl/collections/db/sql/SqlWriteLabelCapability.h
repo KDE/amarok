@@ -34,7 +34,7 @@ class SqlWriteLabelCapability : public WriteLabelCapability
     Q_OBJECT
     public:
         SqlWriteLabelCapability( Meta::SqlTrack *track, QSharedPointer<SqlStorage> storage );
-        void setLabels( const QStringList &removedLabels, const QStringList &newlabels );
+        void setLabels( const QStringList &removedLabels, const QStringList &newlabels ) override;
 
     private:
         Meta::TrackPtr m_track;

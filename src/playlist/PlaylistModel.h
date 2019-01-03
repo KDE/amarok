@@ -57,52 +57,52 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         ~Model();
 
         // Inherited from QAbstractItemModel  (via QAbstractListModel)
-        int columnCount( const QModelIndex& parent = QModelIndex() ) const { Q_UNUSED( parent ); return NUM_COLUMNS; }
-        QVariant data( const QModelIndex& index, int role ) const;
-        bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent );
-        Qt::ItemFlags flags( const QModelIndex &index ) const;
-        QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
-        QMimeData* mimeData( const QModelIndexList &indexes ) const;
-        QStringList mimeTypes() const;
-        int rowCount( const QModelIndex& parent = QModelIndex() ) const { Q_UNUSED( parent ); return m_items.size(); }
-        Qt::DropActions supportedDropActions() const;
+        int columnCount( const QModelIndex& parent = QModelIndex() ) const override { Q_UNUSED( parent ); return NUM_COLUMNS; }
+        QVariant data( const QModelIndex& index, int role ) const override;
+        bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent ) override;
+        Qt::ItemFlags flags( const QModelIndex &index ) const override;
+        QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+        QMimeData* mimeData( const QModelIndexList &indexes ) const override;
+        QStringList mimeTypes() const override;
+        int rowCount( const QModelIndex& parent = QModelIndex() ) const override { Q_UNUSED( parent ); return m_items.size(); }
+        Qt::DropActions supportedDropActions() const override;
 
         // Inherited from Playlist::AbstractModel
-        QAbstractItemModel* qaim() const { return const_cast<Model*>( this ); }
+        QAbstractItemModel* qaim() const override { return const_cast<Model*>( this ); }
 
-        quint64 activeId() const;
-        Meta::TrackPtr activeTrack() const;
-        int activeRow() const { return m_activeRow; } // returns -1 if there is no active row
+        quint64 activeId() const override;
+        Meta::TrackPtr activeTrack() const override;
+        int activeRow() const override { return m_activeRow; } // returns -1 if there is no active row
 
-        bool containsTrack( const Meta::TrackPtr& track ) const;
-        int firstRowForTrack( const Meta::TrackPtr& track ) const;
-        QSet<int> allRowsForTrack( const Meta::TrackPtr& track ) const;
+        bool containsTrack( const Meta::TrackPtr& track ) const override;
+        int firstRowForTrack( const Meta::TrackPtr& track ) const override;
+        QSet<int> allRowsForTrack( const Meta::TrackPtr& track ) const override;
 
-        quint64 idAt( const int row ) const;
-        bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }
-        int rowForId( const quint64 id ) const; // returns -1 if the id is invalid
-        int rowFromBottomModel( const int row ) { return row; }
-        int rowToBottomModel( const int row ) { return row; }
-        void setActiveId( const quint64 id ) { setActiveRow( rowForId( id ) ); }
-        void setActiveRow( int row );
+        quint64 idAt( const int row ) const override;
+        bool rowExists( int row ) const override { return (( row >= 0 ) && ( row < m_items.size() ) ); }
+        int rowForId( const quint64 id ) const override; // returns -1 if the id is invalid
+        int rowFromBottomModel( const int row ) override { return row; }
+        int rowToBottomModel( const int row ) override { return row; }
+        void setActiveId( const quint64 id ) override { setActiveRow( rowForId( id ) ); }
+        void setActiveRow( int row ) override;
         void setAllNewlyAddedToUnplayed();
-        void setAllUnplayed();
-        void emitQueueChanged();
-        int queuePositionOfRow( int row );
-        Item::State stateOfId( quint64 id ) const;
-        Item::State stateOfRow( int row ) const;
-        qint64 totalLength() const { return m_totalLength; }
-        quint64 totalSize() const { return m_totalSize; }
-        Meta::TrackPtr trackAt( int row ) const;
-        Meta::TrackPtr trackForId( const quint64 id ) const;
+        void setAllUnplayed() override;
+        void emitQueueChanged() override;
+        int queuePositionOfRow( int row ) override;
+        Item::State stateOfId( quint64 id ) const override;
+        Item::State stateOfRow( int row ) const override;
+        qint64 totalLength() const override { return m_totalLength; }
+        quint64 totalSize() const override { return m_totalSize; }
+        Meta::TrackPtr trackAt( int row ) const override;
+        Meta::TrackPtr trackForId( const quint64 id ) const override;
 
-        virtual bool exportPlaylist( const QString &path, bool relative = false ) const;
-        virtual Meta::TrackList tracks() const;
+        bool exportPlaylist( const QString &path, bool relative = false ) const override;
+        Meta::TrackList tracks() const override;
 
         // Inherited from Meta::Observer
         using Observer::metadataChanged;
-        void metadataChanged( Meta::TrackPtr track );
-        void metadataChanged( Meta::AlbumPtr album );
+        void metadataChanged( Meta::TrackPtr track ) override;
+        void metadataChanged( Meta::AlbumPtr album ) override;
 
         // static member functions
         static QString prettyColumnName( Column index ); //!< takes a Column enum and returns its string name
@@ -129,9 +129,9 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
         // Inherited from QAbstractItemModel. Make them private so that nobody is tempted to use them.
         bool insertRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
-        bool insertRows( int, int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
+        bool insertRows( int, int, const QModelIndex& parent = QModelIndex() ) override { Q_UNUSED( parent ); return false; }
         bool removeRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
-        bool removeRows( int, int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
+        bool removeRows( int, int, const QModelIndex& parent = QModelIndex() ) override { Q_UNUSED( parent ); return false; }
 
         // These functions do the real work of modifying the playlist, and should be called ONLY by UndoCommands
         void insertTracksCommand( const InsertCmdList& );

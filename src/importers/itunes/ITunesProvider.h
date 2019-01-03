@@ -37,12 +37,12 @@ public:
     ITunesProvider( const QVariantMap &config, ImporterManager *importer );
     ~ITunesProvider();
 
-    qint64 reliableTrackMetaData() const;
-    qint64 writableTrackStatsData() const;
-    QSet<QString> artists();
-    TrackList artistTracks( const QString &artistName );
+    qint64 reliableTrackMetaData() const override;
+    qint64 writableTrackStatsData() const override;
+    QSet<QString> artists() override;
+    TrackList artistTracks( const QString &artistName ) override;
 
-    void commitTracks();
+    void commitTracks() override;
 
 private:
     void readXml( const QString &byArtist );

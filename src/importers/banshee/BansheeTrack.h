@@ -34,11 +34,11 @@ public:
                   const Meta::FieldHash &metadata );
     ~BansheeTrack();
 
-    int rating() const;
-    void setRating( int rating );
+    int rating() const override;
+    void setRating( int rating ) override;
 
 protected:
-    virtual void doCommit( const qint64 fields );
+    void doCommit( const qint64 fields ) override;
 
 private:
     const ImporterSqlConnectionPtr m_connection;

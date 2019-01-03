@@ -45,8 +45,8 @@ class PrettyTreeDelegate : public QStyledItemDelegate
         explicit PrettyTreeDelegate( Amarok::PrettyTreeView *view );
         ~PrettyTreeDelegate();
 
-        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-        QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+        QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
         /** Returns the rectangle where the action icon with the specific nr is located. */
         QRect decoratorRect( const QRect &itemRect, int nr ) const;

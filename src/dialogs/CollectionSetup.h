@@ -91,10 +91,10 @@ namespace CollectionFolder //just to keep it out of the global namespace
         public:
             explicit Model( QObject *parent );
 
-            virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-            QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const;
-            bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
-            virtual int columnCount( const QModelIndex& ) const { return 1; }
+            Qt::ItemFlags flags( const QModelIndex &index ) const override;
+            QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
+            bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole ) override;
+            int columnCount( const QModelIndex& ) const override { return 1; }
 
             /** Set the currently checked directories according to dirs */
             void setDirectories( QStringList &dirs );

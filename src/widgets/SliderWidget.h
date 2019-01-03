@@ -47,13 +47,13 @@ namespace Amarok
             void sliderReleased( int );
 
         protected:
-            virtual void wheelEvent( QWheelEvent* );
-            virtual void mouseMoveEvent( QMouseEvent* );
-            virtual void mouseReleaseEvent( QMouseEvent* );
-            virtual void mousePressEvent( QMouseEvent* );
+            void wheelEvent( QWheelEvent* ) override;
+            void mouseMoveEvent( QMouseEvent* ) override;
+            void mouseReleaseEvent( QMouseEvent* ) override;
+            void mousePressEvent( QMouseEvent* ) override;
             virtual void slideEvent( QMouseEvent* );
             QRect sliderHandleRect( const QRect &slider, qreal percent ) const;
-            virtual void resizeEvent( QResizeEvent * ) { m_needsResize = true; }
+            void resizeEvent( QResizeEvent * ) override { m_needsResize = true; }
 
             void paintCustomSlider( QPainter *p, bool paintMoodbar = false );
 
@@ -92,12 +92,12 @@ namespace Amarok
             explicit VolumeSlider( uint max, QWidget *parent, bool customStyle = true );
 
             // VolumePopupButton needs to access this
-            virtual void wheelEvent( QWheelEvent *e );
+            void wheelEvent( QWheelEvent *e ) override;
 
         protected:
-            virtual void paintEvent( QPaintEvent* );
-            virtual void mousePressEvent( QMouseEvent* );
-            virtual void contextMenuEvent( QContextMenuEvent* );
+            void paintEvent( QPaintEvent* ) override;
+            void mousePressEvent( QMouseEvent* ) override;
+            void contextMenuEvent( QContextMenuEvent* ) override;
 
         private:
             Q_DISABLE_COPY( VolumeSlider )
@@ -115,11 +115,11 @@ namespace Amarok
             void clearTriangles();
 
         protected:
-            virtual void paintEvent( QPaintEvent* );
-            virtual void mousePressEvent( QMouseEvent* );
-            virtual void resizeEvent( QResizeEvent * event );
-            virtual void sliderChange( SliderChange change );
-            virtual bool event( QEvent * event );
+            void paintEvent( QPaintEvent* ) override;
+            void mousePressEvent( QMouseEvent* ) override;
+            void resizeEvent( QResizeEvent * event ) override;
+            void sliderChange( SliderChange change ) override;
+            bool event( QEvent * event ) override;
 
         private Q_SLOTS:
             void slotTriangleClicked( int );

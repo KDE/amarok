@@ -40,12 +40,12 @@ namespace ConstraintTypes {
             static Constraint* createNew( ConstraintNode* );
             static ConstraintFactoryEntry* registerMe();
 
-            virtual QWidget* editWidget() const;
-            virtual void toXml( QDomDocument&, QDomElement& ) const;
+            QWidget* editWidget() const override;
+            void toXml( QDomDocument&, QDomElement& ) const override;
 
-            virtual QString getName() const;
+            QString getName() const override;
             
-            virtual double satisfaction( const Meta::TrackList& ) const;
+            double satisfaction( const Meta::TrackList& ) const override;
 
         private Q_SLOTS:
             void setField( const int );

@@ -48,7 +48,7 @@ class UmsCollectionFactory : public CollectionFactory
         UmsCollectionFactory();
         virtual ~UmsCollectionFactory();
 
-        virtual void init();
+        void init() override;
 
     private Q_SLOTS:
         /**
@@ -108,32 +108,32 @@ class UmsCollection : public Collection, public Meta::Observer
         virtual ~UmsCollection();
 
         /* TrackProvider methods */
-        virtual bool possiblyContainsTrack( const QUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+        bool possiblyContainsTrack( const QUrl &url ) const override;
+        Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
         /* Collection methods */
-        virtual QueryMaker *queryMaker();
-        virtual QString uidUrlProtocol() const;
+        QueryMaker *queryMaker() override;
+        QString uidUrlProtocol() const override;
 
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;
-        virtual QIcon icon() const;
+        QString collectionId() const override;
+        QString prettyName() const override;
+        QIcon icon() const override;
 
-        virtual bool hasCapacity() const;
-        virtual float usedCapacity() const;
-        virtual float totalCapacity() const;
+        bool hasCapacity() const override;
+        float usedCapacity() const override;
+        float totalCapacity() const override;
 
-        virtual CollectionLocation *location();
+        CollectionLocation *location() override;
 
-        virtual bool isOrganizable() const;
+        bool isOrganizable() const override;
 
         /* Capability-related methods */
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability *createCapabilityInterface(
-                Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability *createCapabilityInterface(
+                Capabilities::Capability::Type type ) override;
 
         /* Meta::Observer methods */
-        virtual void metadataChanged( Meta::TrackPtr track );
+        void metadataChanged( Meta::TrackPtr track ) override;
         using Meta::Observer::metadataChanged; // silence compiler warning about hidder overloads
 
         /* own methods */

@@ -48,22 +48,22 @@ class SqlPlaylist : public Playlist
         ~SqlPlaylist();
 
         /* Playlist virtual functions */
-        virtual QUrl uidUrl() const;
-        virtual QString name() const { return m_name; }
+        QUrl uidUrl() const override;
+        QString name() const override { return m_name; }
 
-        virtual PlaylistProvider *provider() const { return m_provider; }
+        PlaylistProvider *provider() const override { return m_provider; }
 
-        virtual void setName( const QString &name );
+        void setName( const QString &name ) override;
 
-        virtual QStringList groups();
-        void setGroups( const QStringList &groups );
+        QStringList groups() override;
+        void setGroups( const QStringList &groups ) override;
 
-        virtual int trackCount() const;
-        virtual Meta::TrackList tracks();
-        virtual void triggerTrackLoad();
+        int trackCount() const override;
+        Meta::TrackList tracks() override;
+        void triggerTrackLoad() override;
 
-        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
-        virtual void removeTrack( int position );
+        void addTrack( Meta::TrackPtr track, int position = -1 ) override;
+        void removeTrack( int position ) override;
 
         // SqlPlaylist-specific methods
         bool saveToDb( bool tracks = true );

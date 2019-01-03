@@ -30,10 +30,10 @@ namespace Meta
             public:
                 APETagHelper( TagLib::Tag *tag, TagLib::APE::Tag *apeTag, Amarok::FileType fileType );
 
-                virtual Meta::FieldHash tags() const;
-                virtual bool setTags( const Meta::FieldHash &changes );
+                Meta::FieldHash tags() const override;
+                bool setTags( const Meta::FieldHash &changes ) override;
 
-                virtual TagLib::ByteVector render() const;
+                TagLib::ByteVector render() const override;
 
             private:
                 TagLib::APE::Tag *m_tag;

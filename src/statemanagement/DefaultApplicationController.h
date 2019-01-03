@@ -29,8 +29,8 @@ namespace Amarok
         virtual ~ DefaultApplicationController();
 
     public Q_SLOTS:
-        virtual void start();
-        virtual void shutdown();
+        void start() override;
+        void shutdown() override;
 
     private:
         void initSqlStorage();

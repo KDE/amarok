@@ -56,7 +56,7 @@ public:
      * Returns the recommended size for the button depending on the contents.
      * @return the recommended size.
      */
-    virtual QSize sizeHint() const;
+    QSize sizeHint() const override;
 
     /**
      * Returns the state of the sort order defined by the order inversion arrow.
@@ -81,32 +81,32 @@ protected:
      * Repaints the widget.
      * @param event the triggered QPaintEvent as provided by Qt.
      */
-    virtual void paintEvent( QPaintEvent *event );
+    void paintEvent( QPaintEvent *event ) override;
 
     /**
      * Checks if the mouse is hovering the arrow rectangle.
      * @param e the triggered QMouseEvent as provided by Qt.
      */
-    virtual void mouseMoveEvent( QMouseEvent *e );
+    void mouseMoveEvent( QMouseEvent *e ) override;
 
     /**
      * Handles the beginning of a mouse click.
      * @param e the triggered QMouseEvent as provided by Qt.
      */
-    virtual void mousePressEvent( QMouseEvent *e );
+    void mousePressEvent( QMouseEvent *e ) override;
 
     /**
      * Handles the release of the mouse button which completes a click action.
      * @param e the triggered QMouseEvent as provided by Qt.
      */
-    virtual void mouseReleaseEvent( QMouseEvent *e );
+    void mouseReleaseEvent( QMouseEvent *e ) override;
 
     /**
      * Reimplemented from BreadcrumbItemButton, handles the painting of the widget's
      * background, used by paintEvent().
      * @param painter the QPainter object used by paintEvent().
      */
-    virtual void drawHoverBackground( QPainter *painter );
+    void drawHoverBackground( QPainter *painter ) override;
 
 private:
     /**

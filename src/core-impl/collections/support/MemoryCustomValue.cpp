@@ -27,7 +27,7 @@ class SumReturnFunction : public CustomReturnFunction
         SumReturnFunction( CustomReturnValue * rv ) : returnValue( rv ) {}
         ~SumReturnFunction() { delete returnValue; }
 
-        QString value( const Meta::TrackList &tracks ) const
+        QString value( const Meta::TrackList &tracks ) const override
         {
             if( !returnValue )
                 return QString::number( 0 );
@@ -49,7 +49,7 @@ class MinimumReturnFunction : public CustomReturnFunction
         MinimumReturnFunction( CustomReturnValue * rv ) : returnValue( rv ) {}
         ~MinimumReturnFunction() { delete returnValue; }
 
-        QString value( const Meta::TrackList &tracks ) const
+        QString value( const Meta::TrackList &tracks ) const override
         {
             if( tracks.empty() || !returnValue )
                 return QString::number( 0 );
@@ -71,7 +71,7 @@ class MaximumReturnFunction : public CustomReturnFunction
         MaximumReturnFunction( CustomReturnValue * rv ) : returnValue( rv ) {}
         ~MaximumReturnFunction() { delete returnValue; }
 
-        QString value( const Meta::TrackList &tracks ) const
+        QString value( const Meta::TrackList &tracks ) const override
         {
             if( tracks.empty() || !returnValue )
                 return QString::number( 0 );
@@ -311,7 +311,7 @@ class ArtistReturnValue : public CustomReturnValue
     public:
         ArtistReturnValue() {}
         virtual ~ArtistReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return track->artist() ? track->artist()->name() : QString(); }
+        QString value( const Meta::TrackPtr &track ) const override { return track->artist() ? track->artist()->name() : QString(); }
 };
 
 class AlbumReturnValue : public CustomReturnValue
@@ -319,7 +319,7 @@ class AlbumReturnValue : public CustomReturnValue
     public:
         AlbumReturnValue() {}
         virtual ~AlbumReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return track->album() ? track->album()->name() : QString(); }
+        QString value( const Meta::TrackPtr &track ) const override { return track->album() ? track->album()->name() : QString(); }
 };
 
 class ComposerReturnValue : public CustomReturnValue
@@ -327,7 +327,7 @@ class ComposerReturnValue : public CustomReturnValue
     public:
         ComposerReturnValue() {}
         virtual ~ComposerReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return track->composer() ? track->composer()->name() : QString(); }
+        QString value( const Meta::TrackPtr &track ) const override { return track->composer() ? track->composer()->name() : QString(); }
 };
 
 class GenreReturnValue : public CustomReturnValue
@@ -335,7 +335,7 @@ class GenreReturnValue : public CustomReturnValue
     public:
         GenreReturnValue() {}
         virtual ~GenreReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return track->genre() ? track->genre()->name() : QString(); }
+        QString value( const Meta::TrackPtr &track ) const override { return track->genre() ? track->genre()->name() : QString(); }
 };
 
 class YearReturnValue : public CustomReturnValue
@@ -343,7 +343,7 @@ class YearReturnValue : public CustomReturnValue
     public:
         YearReturnValue() {}
         virtual ~YearReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return track->year() ? track->year()->name() : QString(); }
+        QString value( const Meta::TrackPtr &track ) const override { return track->year() ? track->year()->name() : QString(); }
 };
 
 class CommentReturnValue : public CustomReturnValue
@@ -351,7 +351,7 @@ class CommentReturnValue : public CustomReturnValue
     public:
         CommentReturnValue() {}
         virtual ~CommentReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return track->comment(); }
+        QString value( const Meta::TrackPtr &track ) const override { return track->comment(); }
 };
 
 class TrackNrReturnValue : public CustomReturnValue
@@ -359,7 +359,7 @@ class TrackNrReturnValue : public CustomReturnValue
     public:
         TrackNrReturnValue() {}
         virtual ~TrackNrReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->trackNumber() ); }
+        QString value( const Meta::TrackPtr &track ) const override { return QString::number( track->trackNumber() ); }
 };
 
 class DiscNrReturnValue : public CustomReturnValue
@@ -367,7 +367,7 @@ class DiscNrReturnValue : public CustomReturnValue
     public:
         DiscNrReturnValue() {}
         virtual ~DiscNrReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->discNumber() ); }
+        QString value( const Meta::TrackPtr &track ) const override { return QString::number( track->discNumber() ); }
 };
 
 class ScoreReturnValue : public CustomReturnValue
@@ -375,7 +375,7 @@ class ScoreReturnValue : public CustomReturnValue
     public:
         ScoreReturnValue() {}
         virtual ~ScoreReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->statistics()->score() ); }
+        QString value( const Meta::TrackPtr &track ) const override { return QString::number( track->statistics()->score() ); }
 };
 
 class RatingReturnValue : public CustomReturnValue
@@ -383,7 +383,7 @@ class RatingReturnValue : public CustomReturnValue
     public:
         RatingReturnValue() {}
         virtual ~RatingReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->statistics()->rating() ); }
+        QString value( const Meta::TrackPtr &track ) const override { return QString::number( track->statistics()->rating() ); }
 };
 
 class PlaycountReturnValue : public CustomReturnValue
@@ -391,7 +391,7 @@ class PlaycountReturnValue : public CustomReturnValue
     public:
         PlaycountReturnValue() {}
         virtual ~PlaycountReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->statistics()->playCount() ); }
+        QString value( const Meta::TrackPtr &track ) const override { return QString::number( track->statistics()->playCount() ); }
 };
 
 class LengthReturnValue : public CustomReturnValue
@@ -399,7 +399,7 @@ class LengthReturnValue : public CustomReturnValue
     public:
         LengthReturnValue() {}
         virtual ~LengthReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->length() / 1000 ); }
+        QString value( const Meta::TrackPtr &track ) const override { return QString::number( track->length() / 1000 ); }
 };
 
 class BitrateReturnValue : public CustomReturnValue
@@ -407,7 +407,7 @@ class BitrateReturnValue : public CustomReturnValue
     public:
         BitrateReturnValue() {}
         virtual ~BitrateReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->bitrate() ); }
+        QString value( const Meta::TrackPtr &track ) const override { return QString::number( track->bitrate() ); }
 };
 
 class FileSizeReturnValue : public CustomReturnValue
@@ -415,7 +415,7 @@ class FileSizeReturnValue : public CustomReturnValue
     public:
         FileSizeReturnValue() {}
         virtual ~FileSizeReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->filesize() ); }
+        QString value( const Meta::TrackPtr &track ) const override { return QString::number( track->filesize() ); }
 };
 
 class SampleRateReturnValue : public CustomReturnValue
@@ -423,7 +423,7 @@ class SampleRateReturnValue : public CustomReturnValue
     public:
         SampleRateReturnValue() {}
         virtual ~SampleRateReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->sampleRate() ); }
+        QString value( const Meta::TrackPtr &track ) const override { return QString::number( track->sampleRate() ); }
 };
 
 CustomReturnValue*

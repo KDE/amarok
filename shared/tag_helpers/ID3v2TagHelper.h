@@ -30,14 +30,14 @@ namespace Meta
             public:
                 ID3v2TagHelper( TagLib::Tag *tag, TagLib::ID3v2::Tag *id3v2Tag, Amarok::FileType fileType );
 
-                virtual Meta::FieldHash tags() const;
-                virtual bool setTags( const Meta::FieldHash &changes );
+                Meta::FieldHash tags() const override;
+                bool setTags( const Meta::FieldHash &changes ) override;
 
-                virtual TagLib::ByteVector render() const;
+                TagLib::ByteVector render() const override;
 
-                virtual bool hasEmbeddedCover() const;
-                virtual QImage embeddedCover() const;
-                virtual bool setEmbeddedCover( const QImage &cover );
+                bool hasEmbeddedCover() const override;
+                QImage embeddedCover() const override;
+                bool setEmbeddedCover( const QImage &cover ) override;
 
             private:
                 TagLib::ID3v2::Tag *m_tag;

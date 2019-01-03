@@ -71,8 +71,8 @@ class Token : public QWidget
         /** Returns the mime type for an amarok tag token */
         static QString mimeType();
 
-        QSize sizeHint() const;
-        QSize minimumSizeHint() const;
+        QSize sizeHint() const override;
+        QSize minimumSizeHint() const override;
 
     Q_SIGNALS:
         void changed();
@@ -82,19 +82,19 @@ class Token : public QWidget
 
     protected:
         /** overloaded to update the cursor in case the token is set to inactive */
-        void changeEvent( QEvent* event = 0 );
+        void changeEvent( QEvent* event = 0 ) override;
 
-        void focusInEvent( QFocusEvent* event );
+        void focusInEvent( QFocusEvent* event ) override;
 
         void updateCursor();
 
         /** Handles start of drag. */
-        void mousePressEvent( QMouseEvent* event );
+        void mousePressEvent( QMouseEvent* event ) override;
 
         /** Handles start of drag. */
-        void mouseMoveEvent( QMouseEvent* event );
+        void mouseMoveEvent( QMouseEvent* event ) override;
 
-        void paintEvent(QPaintEvent *pe);
+        void paintEvent(QPaintEvent *pe) override;
 
         void performDrag();
 

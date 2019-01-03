@@ -38,13 +38,13 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         PlaylistFileProvider();
         virtual ~PlaylistFileProvider();
 
-        virtual QString prettyName() const;
-        virtual QIcon icon() const;
+        QString prettyName() const override;
+        QIcon icon() const override;
 
-        virtual int category() const { return Playlists::UserPlaylist; }
+        int category() const override { return Playlists::UserPlaylist; }
 
-        virtual int playlistCount() const;
-        virtual Playlists::PlaylistList playlists();
+        int playlistCount() const override;
+        Playlists::PlaylistList playlists() override;
 
         /**
         * Returns a Playlists::PlaylistPtr to the new playlist, NULL if something failed.
@@ -52,14 +52,14 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         * @param name File name of the new playlist. If no extension is being given we
         *             default to xspf. '/' and '\' are being replaced by '-'.
         */
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
-                                             const QString &name = QString() );
+        Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
+                                             const QString &name = QString() ) override;
 
         virtual bool import( const QUrl &path );
 
-        virtual bool isWritable() { return true; }
-        virtual void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName );
-        virtual bool deletePlaylists( const Playlists::PlaylistList &playlists );
+        bool isWritable() override { return true; }
+        void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName ) override;
+        bool deletePlaylists( const Playlists::PlaylistList &playlists ) override;
 
         /* PlaylistFileProvider methods */
         /** Schedules a PlaylistFile to be saved on the next iteration of the mainloop.

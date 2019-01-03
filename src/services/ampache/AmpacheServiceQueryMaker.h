@@ -42,21 +42,21 @@ public:
     AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QUrl &server, const QString &sessionId );
     ~AmpacheServiceQueryMaker();
 
-    virtual void run();
-    virtual void abortQuery();
+    void run() override;
+    void abortQuery() override;
 
-    virtual QueryMaker* setQueryType( QueryType type );
+    QueryMaker* setQueryType( QueryType type ) override;
 
     using DynamicServiceQueryMaker::addMatch;
-    virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
-    virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists );
-    virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
+    QueryMaker* addMatch( const Meta::TrackPtr &track ) override;
+    QueryMaker* addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour = TrackArtists ) override;
+    QueryMaker* addMatch( const Meta::AlbumPtr &album ) override;
 
-    virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
-    virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare );
+    QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) override;
+    QueryMaker* addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare ) override;
 
-    virtual int validFilterMask();
-    virtual QueryMaker* limitMaxResultSize( int size );
+    int validFilterMask() override;
+    QueryMaker* limitMaxResultSize( int size ) override;
 
     void fetchArtists();
     void fetchAlbums();

@@ -30,7 +30,7 @@ class MySqlQueryMaker : public SqlQueryMaker
         virtual ~MySqlQueryMaker();
 
     protected:
-        virtual QString escape( QString text ) const;
+        QString escape( QString text ) const override;
 };
 
 }

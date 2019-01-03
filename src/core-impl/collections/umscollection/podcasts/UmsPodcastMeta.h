@@ -53,22 +53,22 @@ class UmsPodcastEpisode : public Podcasts::PodcastEpisode
         void setLocalFile( MetaFile::TrackPtr localFile );
 
         //PodcastEpisode methods
-        virtual QString title() const;
-        virtual void setLocalUrl( const QUrl &localUrl );
+        QString title() const override;
+        void setLocalUrl( const QUrl &localUrl ) override;
 
         //Track Methods
-        virtual QString name() const { return title(); }
-        virtual QUrl playableUrl() const;
-        virtual QString notPlayableReason() const;
-        virtual QString prettyName() const { return name(); }
-        virtual void setTitle( const QString &title );
-        virtual QDateTime createDate() const;
+        QString name() const override { return title(); }
+        QUrl playableUrl() const override;
+        QString notPlayableReason() const override;
+        QString prettyName() const override { return name(); }
+        void setTitle( const QString &title ) override;
+        QDateTime createDate() const override;
 
-        virtual Meta::AlbumPtr album() const;
-        virtual Meta::ArtistPtr artist() const;
-        virtual Meta::ComposerPtr composer() const;
-        virtual Meta::GenrePtr genre() const;
-        virtual Meta::YearPtr year() const;
+        Meta::AlbumPtr album() const override;
+        Meta::ArtistPtr artist() const override;
+        Meta::ComposerPtr composer() const override;
+        Meta::GenrePtr genre() const override;
+        Meta::YearPtr year() const override;
 
     private:
         MetaFile::TrackPtr m_localFile;
@@ -89,7 +89,7 @@ class UmsPodcastChannel : public Podcasts::PodcastChannel
         UmsPodcastChannel( Podcasts::PodcastChannelPtr channel, UmsPodcastProvider *provider );
         ~UmsPodcastChannel();
 
-        virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
+        Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override;
 
         UmsPodcastEpisodeList umsEpisodes() { return m_umsEpisodes; }
         void addUmsEpisode( UmsPodcastEpisodePtr episode );
@@ -97,9 +97,9 @@ class UmsPodcastChannel : public Podcasts::PodcastChannel
         void setPlaylistFileSource( const QUrl &playlistFilePath );
         QUrl playlistFilePath() const { return m_playlistFilePath; }
 
-        virtual Podcasts::PodcastEpisodeList episodes() const
+        Podcasts::PodcastEpisodeList episodes() const override
                 { return UmsPodcastEpisode::toPodcastEpisodeList( m_umsEpisodes ); }
-        virtual Playlists::PlaylistProvider *provider() const;
+        Playlists::PlaylistProvider *provider() const override;
 
     protected:
         void removeEpisode( UmsPodcastEpisodePtr episode );

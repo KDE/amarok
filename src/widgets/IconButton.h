@@ -27,18 +27,18 @@ class IconButton : public QWidget
 
 public:
     explicit IconButton( QWidget *parent = nullptr );
-    virtual QSize sizeHint() const;
+    QSize sizeHint() const override;
     void setIcon( const QImage &img, int steps = 0 );
 
 Q_SIGNALS:
     void clicked();
 
 protected:
-    virtual void mousePressEvent( QMouseEvent * );
-    virtual void mouseReleaseEvent( QMouseEvent * );
-    virtual void paintEvent( QPaintEvent * );
-    virtual void resizeEvent(QResizeEvent *);
-    virtual void timerEvent ( QTimerEvent * );
+    void mousePressEvent( QMouseEvent * ) override;
+    void mouseReleaseEvent( QMouseEvent * ) override;
+    void paintEvent( QPaintEvent * ) override;
+    void resizeEvent(QResizeEvent *) override;
+    void timerEvent ( QTimerEvent * ) override;
 
     /**
      Reload the content for the given size

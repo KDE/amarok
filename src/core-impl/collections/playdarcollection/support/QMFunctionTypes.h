@@ -58,7 +58,7 @@ class CurriedZeroArityQMFunction : public CurriedQMFunction
         {};
         virtual ~CurriedZeroArityQMFunction() {};
         
-        QueryMaker* operator()( QueryMaker *qm = 0 )
+        QueryMaker* operator()( QueryMaker *qm = 0 ) override
         {
             if( qm )
                 return ( qm->*m_function )();
@@ -84,7 +84,7 @@ class CurriedUnaryQMFunction : public CurriedQMFunction
         {};
         virtual ~CurriedUnaryQMFunction() {};
         
-        QueryMaker* operator()( QueryMaker *qm )
+        QueryMaker* operator()( QueryMaker *qm ) override
         {
             if( qm )
                 return ( qm->*m_function )( m_parameter );
@@ -112,7 +112,7 @@ class CurriedBinaryQMFunction : public CurriedQMFunction
         {};
         virtual ~CurriedBinaryQMFunction() {};
         
-        QueryMaker* operator()( QueryMaker *qm )
+        QueryMaker* operator()( QueryMaker *qm ) override
         {
             if( qm )
                 return ( qm->*m_function )( m_parameterOne, m_parameterTwo );
@@ -142,7 +142,7 @@ class CurriedTrinaryQMFunction : public CurriedQMFunction
         {};
         virtual ~CurriedTrinaryQMFunction() {};
         
-        QueryMaker* operator()( QueryMaker *qm )
+        QueryMaker* operator()( QueryMaker *qm ) override
         {
             if( qm )
                 return ( qm->*m_function )( m_parameterOne, m_parameterTwo, m_parameterThree );
@@ -177,7 +177,7 @@ class CurriedQMStringFilterFunction : public CurriedQMFunction
         {};
         virtual ~CurriedQMStringFilterFunction() {};
 
-        QueryMaker* operator()( QueryMaker *qm )
+        QueryMaker* operator()( QueryMaker *qm ) override
         {
             if( qm )
                 return ( qm->*m_function )( m_value, m_filter, m_matchBegin, m_matchEnd );

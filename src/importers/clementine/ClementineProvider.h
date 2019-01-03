@@ -31,11 +31,11 @@ public:
     ClementineProvider( const QVariantMap &config, ImporterManager *importer );
     ~ClementineProvider();
 
-    qint64 reliableTrackMetaData() const;
-    qint64 writableTrackStatsData() const;
+    qint64 reliableTrackMetaData() const override;
+    qint64 writableTrackStatsData() const override;
 
-    QSet<QString> artists();
-    TrackList artistTracks( const QString &artistName );
+    QSet<QString> artists() override;
+    TrackList artistTracks( const QString &artistName ) override;
 
 private:
     const ImporterSqlConnectionPtr m_connection;

@@ -30,9 +30,9 @@ public:
 
     static ViewUrlGenerator * instance();
 
-    QString description();
-    QIcon icon();
-    AmarokUrl createUrl();
+    QString description() override;
+    QIcon icon() override;
+    AmarokUrl createUrl() override;
 
 private:
 

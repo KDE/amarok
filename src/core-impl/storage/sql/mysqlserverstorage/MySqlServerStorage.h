@@ -39,7 +39,7 @@ class AMAROK_SQLSTORAGE_MYSQLE_EXPORT MySqlServerStorage: public MySqlStorage
          */
         virtual bool init( const QString &host, const QString &user, const QString &password, int port, const QString &databaseName );
 
-        virtual QStringList query( const QString &query );
+        QStringList query( const QString &query ) override;
 
     private:
         QString m_databaseName; ///< remember the name given at init for reconnects

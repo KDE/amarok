@@ -72,7 +72,7 @@ class AMAROK_EXPORT DelayedSeeker : public DelayedDoer
         void trackPositionChanged( qint64 position, bool userSeek );
 
     protected:
-        virtual void performAction();
+        void performAction() override;
 
         qint64 m_seekTo;
         bool m_startPaused;
@@ -88,7 +88,7 @@ class AMAROK_EXPORT DelayedTrackChanger : public DelayedSeeker
                                       int trackNumber, qint64 seekTo, bool startPaused );
 
     protected:
-        virtual void performAction();
+        void performAction() override;
 
     private:
         Phonon::MediaController *m_mediaController;

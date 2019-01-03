@@ -55,73 +55,73 @@ namespace IpodMeta
             virtual ~Track();
 
             // Meta::Base methods:
-            virtual QString name() const;
+            QString name() const override;
 
             // Meta::Track methods:
-            virtual QUrl playableUrl() const;
-            virtual QString prettyUrl() const;
-            virtual QString uidUrl() const;
-            virtual QString notPlayableReason() const;
+            QUrl playableUrl() const override;
+            QString prettyUrl() const override;
+            QString uidUrl() const override;
+            QString notPlayableReason() const override;
 
-            virtual Meta::AlbumPtr album() const;
-            virtual Meta::ArtistPtr artist() const;
-            virtual Meta::ComposerPtr composer() const;
-            virtual Meta::GenrePtr genre() const;
-            virtual Meta::YearPtr year() const;
+            Meta::AlbumPtr album() const override;
+            Meta::ArtistPtr artist() const override;
+            Meta::ComposerPtr composer() const override;
+            Meta::GenrePtr genre() const override;
+            Meta::YearPtr year() const override;
 
-            virtual qreal bpm() const;
-            virtual QString comment() const;
+            qreal bpm() const override;
+            QString comment() const override;
 
-            virtual qint64 length() const;
-            virtual int filesize() const;
-            virtual int sampleRate() const;
-            virtual int bitrate() const;
+            qint64 length() const override;
+            int filesize() const override;
+            int sampleRate() const override;
+            int bitrate() const override;
 
-            virtual QDateTime createDate() const;
-            virtual QDateTime modifyDate() const;
+            QDateTime createDate() const override;
+            QDateTime modifyDate() const override;
 
-            virtual int trackNumber() const;
-            virtual int discNumber() const;
+            int trackNumber() const override;
+            int discNumber() const override;
 
-            virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
-            virtual QString type() const;
+            qreal replayGain( Meta::ReplayGainTag mode ) const override;
+            QString type() const override;
 
-            virtual bool inCollection() const;
-            virtual Collections::Collection* collection() const;
+            bool inCollection() const override;
+            Collections::Collection* collection() const override;
 
-            virtual Meta::TrackEditorPtr editor();
-            virtual Meta::StatisticsPtr statistics();
+            Meta::TrackEditorPtr editor() override;
+            Meta::StatisticsPtr statistics() override;
 
             // Meta::TrackEditor methods:
-            virtual void setAlbum( const QString &newAlbum );
-            virtual void setAlbumArtist( const QString &newAlbumArtist );
-            virtual void setArtist( const QString &newArtist );
-            virtual void setComposer( const QString &newComposer );
-            virtual void setGenre( const QString &newGenre );
-            virtual void setYear( int newYear );
-            virtual void setTitle( const QString &newTitle );
-            virtual void setComment( const QString &newComment );
-            virtual void setTrackNumber( int newTrackNumber );
-            virtual void setDiscNumber( int newDiscNumber );
-            virtual void setBpm( const qreal newBpm );
+            void setAlbum( const QString &newAlbum ) override;
+            void setAlbumArtist( const QString &newAlbumArtist ) override;
+            void setArtist( const QString &newArtist ) override;
+            void setComposer( const QString &newComposer ) override;
+            void setGenre( const QString &newGenre ) override;
+            void setYear( int newYear ) override;
+            void setTitle( const QString &newTitle ) override;
+            void setComment( const QString &newComment ) override;
+            void setTrackNumber( int newTrackNumber ) override;
+            void setDiscNumber( int newDiscNumber ) override;
+            void setBpm( const qreal newBpm ) override;
 
             // Meta::Statistics methods:
-            virtual int rating() const;
-            virtual void setRating( int newRating );
+            int rating() const override;
+            void setRating( int newRating ) override;
 
-            virtual QDateTime lastPlayed() const;
-            virtual void setLastPlayed( const QDateTime &time );
+            QDateTime lastPlayed() const override;
+            void setLastPlayed( const QDateTime &time ) override;
 
-            virtual QDateTime firstPlayed() const;
-            virtual void setFirstPlayed( const QDateTime &time );
+            QDateTime firstPlayed() const override;
+            void setFirstPlayed( const QDateTime &time ) override;
 
-            virtual int playCount() const;
-            virtual int recentPlayCount() const;
-            virtual void setPlayCount( const int playcount );
+            int playCount() const override;
+            int recentPlayCount() const override;
+            void setPlayCount( const int playcount ) override;
 
             // Combined Meta::TrackEditor, Meta::Statistics methods:
-            virtual void beginUpdate();
-            virtual void endUpdate();
+            void beginUpdate() override;
+            void endUpdate() override;
 
             // IpodMeta::Track methods:
             /**
@@ -243,8 +243,8 @@ namespace IpodMeta
             explicit Artist( const QString &name ) : m_name( name ) {}
             virtual ~Artist() {}
 
-            virtual QString name() const { return m_name; }
-            virtual Meta::TrackList tracks() { return Meta::TrackList(); }
+            QString name() const override { return m_name; }
+            Meta::TrackList tracks() override { return Meta::TrackList(); }
 
         private:
             QString m_name;
@@ -259,22 +259,22 @@ namespace IpodMeta
         public:
             explicit Album( Track *track );
 
-            virtual QString name() const;
+            QString name() const override;
             // dummy, iPod tracks are supposed to be proxied by MemoryMeta which handles this
-            virtual Meta::TrackList tracks() { return Meta::TrackList(); }
+            Meta::TrackList tracks() override { return Meta::TrackList(); }
 
-            virtual bool isCompilation() const;
-            virtual bool canUpdateCompilation() const;
-            virtual void setCompilation( bool isCompilation );
+            bool isCompilation() const override;
+            bool canUpdateCompilation() const override;
+            void setCompilation( bool isCompilation ) override;
 
-            virtual bool hasAlbumArtist() const;
-            virtual Meta::ArtistPtr albumArtist() const;
+            bool hasAlbumArtist() const override;
+            Meta::ArtistPtr albumArtist() const override;
 
-            virtual bool hasImage( int size = 0 ) const;
-            virtual QImage image( int size = 0 ) const;
-            virtual bool canUpdateImage() const;
-            virtual void setImage( const QImage &image );
-            virtual void removeImage();
+            bool hasImage( int size = 0 ) const override;
+            QImage image( int size = 0 ) const override;
+            bool canUpdateImage() const override;
+            void setImage( const QImage &image ) override;
+            void removeImage() override;
 
         private:
             AmarokSharedPointer<Track> m_track;
@@ -290,8 +290,8 @@ namespace IpodMeta
             explicit Composer( const QString &name ) : m_name( name ) {}
             virtual ~Composer() {}
 
-            virtual QString name() const { return m_name; }
-            virtual Meta::TrackList tracks() { return Meta::TrackList(); }
+            QString name() const override { return m_name; }
+            Meta::TrackList tracks() override { return Meta::TrackList(); }
 
         private:
             QString m_name;
@@ -307,8 +307,8 @@ namespace IpodMeta
             explicit Genre( const QString &name ) : m_name( name ) {}
             virtual ~Genre() {}
 
-            virtual QString name() const { return m_name; }
-            virtual Meta::TrackList tracks() { return Meta::TrackList(); }
+            QString name() const override { return m_name; }
+            Meta::TrackList tracks() override { return Meta::TrackList(); }
 
         private:
             QString m_name;
@@ -324,8 +324,8 @@ namespace IpodMeta
             explicit Year( const QString &name ) : m_name( name ) {}
             virtual ~Year() {}
 
-            virtual QString name() const { return m_name; }
-            virtual Meta::TrackList tracks() { return Meta::TrackList(); }
+            QString name() const override { return m_name; }
+            Meta::TrackList tracks() override { return Meta::TrackList(); }
 
         private:
             QString m_name;

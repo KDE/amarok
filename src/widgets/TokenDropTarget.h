@@ -40,8 +40,8 @@ public:
     explicit TokenDropTarget( QWidget *parent = nullptr );
     virtual ~TokenDropTarget();
 
-    QSize sizeHint() const;
-    QSize minimumSizeHint() const;
+    QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
 
     /** Removes all tokens from the drop target. */
     void clear();
@@ -93,11 +93,11 @@ Q_SIGNALS:
     void tokenSelected( Token* );
 
 protected:
-    void dragEnterEvent( QDragEnterEvent *event );
-    void dropEvent( QDropEvent *event );
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
 
     /** Draws a "drop here" text if empty */
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
 
     /** Return the enclosing box layout and the row and column position of the widget \p w.  */
     QBoxLayout *rowBox( QWidget *w, QPoint *idx = 0 ) const;

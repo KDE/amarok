@@ -68,7 +68,7 @@ public:
 
     ~XSPFPlaylist();
 
-    virtual QString name() const;
+    QString name() const override;
 
     /* convenience functions */
     QString title() const;
@@ -98,20 +98,20 @@ public:
     void setTrackList( Meta::TrackList trackList, bool append = false );
 
     /* PlaylistFile methods */
-    virtual bool load( QTextStream &stream ) { return loadXSPF( stream ); }
-    virtual bool load( QByteArray &content ) { return loadXSPF( content ); }
+    bool load( QTextStream &stream ) override { return loadXSPF( stream ); }
+    bool load( QByteArray &content ) override { return loadXSPF( content ); }
     /* Overrides filename and title */
-    void setName(const QString &name);
-    virtual QString extension() const { return "xspf"; }
-    virtual QString mimetype() const { return "application/xspf+xml"; }
+    void setName(const QString &name) override;
+    QString extension() const override { return "xspf"; }
+    QString mimetype() const override { return "application/xspf+xml"; }
 
     virtual bool save( bool relative ) { return PlaylistFile::save( relative ); }
 
-    void setQueue( const QList<int> &queue );
-    QList<int> queue();
+    void setQueue( const QList<int> &queue ) override;
+    QList<int> queue() override;
 
 protected:
-    virtual void savePlaylist( QFile &file );
+    void savePlaylist( QFile &file ) override;
 
 private:
     XSPFTrackList trackList();

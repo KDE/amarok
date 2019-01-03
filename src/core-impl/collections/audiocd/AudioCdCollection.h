@@ -79,22 +79,22 @@ public:
 
     void setEncodingFormat( int format ) const;
 
-    virtual QString collectionId() const;
-    virtual QString prettyName() const;
-    virtual QIcon icon() const;
+    QString collectionId() const override;
+    QString prettyName() const override;
+    QIcon icon() const override;
 
-    virtual CollectionLocation* location();
+    CollectionLocation* location() override;
 
-    virtual bool possiblyContainsTrack( const QUrl &url ) const;
-    virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+    bool possiblyContainsTrack( const QUrl &url ) const override;
+    Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
     void cdRemoved();
 
     virtual void startFullScan(); //Override this one as I really don't want to move parsing to the handler atm.
-    virtual void startFullScanDevice() { startFullScan(); }
+    void startFullScanDevice() override { startFullScan(); }
 
 public Q_SLOTS:
-    virtual void eject();
+    void eject() override;
 
 private Q_SLOTS:
     void audioCdEntries( KIO::Job *job, const KIO::UDSEntryList &list );

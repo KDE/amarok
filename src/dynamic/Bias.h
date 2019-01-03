@@ -163,18 +163,18 @@ namespace Dynamic
             virtual ~RandomBias();
 
             static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
+            QString name() const override;
+            QString toString() const override;
 
-            virtual QWidget* widget( QWidget* parent = nullptr );
+            QWidget* widget( QWidget* parent = nullptr ) override;
 
-            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+            TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const;
+                                             const TrackCollectionPtr universe ) const override;
 
-            virtual bool trackMatches( int position,
+            bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
-                                       int contextCount ) const;
+                                       int contextCount ) const override;
 
         private:
             Q_DISABLE_COPY(RandomBias)
@@ -195,23 +195,23 @@ namespace Dynamic
             AndBias();
             virtual ~AndBias();
 
-            virtual void fromXml( QXmlStreamReader *reader );
-            virtual void toXml( QXmlStreamWriter *writer ) const;
+            void fromXml( QXmlStreamReader *reader ) override;
+            void toXml( QXmlStreamWriter *writer ) const override;
 
             static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
+            QString name() const override;
+            QString toString() const override;
 
-            virtual QWidget* widget( QWidget* parent = nullptr );
-            virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
+            QWidget* widget( QWidget* parent = nullptr ) override;
+            void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias ) override;
 
-            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+            TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const;
+                                             const TrackCollectionPtr universe ) const override;
 
-            virtual bool trackMatches( int position,
+            bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
-                                       int contextCount ) const;
+                                       int contextCount ) const override;
 
             /** Appends a bias to this bias.
                 This object will take ownership of the bias and free it when destroyed.
@@ -228,7 +228,7 @@ namespace Dynamic
             void biasMoved( int from, int to );
 
         public Q_SLOTS:
-            virtual void invalidate();
+            void invalidate() override;
 
         protected Q_SLOTS:
             virtual void resultReceived( const Dynamic::TrackSet &tracks );
@@ -253,21 +253,21 @@ namespace Dynamic
             OrBias();
 
             static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
+            QString name() const override;
+            QString toString() const override;
 
-            virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
+            void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias ) override;
 
-            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+            TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const;
+                                             const TrackCollectionPtr universe ) const override;
 
-            virtual bool trackMatches( int position,
+            bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
-                                       int contextCount ) const;
+                                       int contextCount ) const override;
 
         protected Q_SLOTS:
-            virtual void resultReceived( const Dynamic::TrackSet &tracks );
+            void resultReceived( const Dynamic::TrackSet &tracks ) override;
 
         private:
             Q_DISABLE_COPY(OrBias)

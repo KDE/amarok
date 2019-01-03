@@ -60,8 +60,8 @@ public:
                                   QWidget *parent );
     ~PlaylistBrowserCategory();
 
-    virtual QString filter() const;
-    virtual void setFilter( const QString &filter );
+    QString filter() const override;
+    void setFilter( const QString &filter ) override;
 
     /**
      * Sets the help text for the action.

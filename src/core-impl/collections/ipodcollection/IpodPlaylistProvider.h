@@ -35,31 +35,31 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
         virtual ~IpodPlaylistProvider();
 
         // PlaylistProvider methods:
-        virtual QString prettyName() const;
-        virtual QIcon icon() const;
+        QString prettyName() const override;
+        QIcon icon() const override;
 
-        virtual int playlistCount() const;
-        virtual Playlists::PlaylistList playlists();
+        int playlistCount() const override;
+        Playlists::PlaylistList playlists() override;
 
-        virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
-        virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
+        Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist ) override;
+        Meta::TrackPtr addTrack( Meta::TrackPtr track ) override;
 
         // UserPlaylistProvider methods:
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
-                                             const QString& name = QString() );
+        Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
+                                             const QString& name = QString() ) override;
 
-        virtual QActionList providerActions();
-        virtual QActionList playlistActions( const Playlists::PlaylistList &playlists );
-        virtual QActionList trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks );
+        QActionList providerActions() override;
+        QActionList playlistActions( const Playlists::PlaylistList &playlists ) override;
+        QActionList trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks ) override;
 
-        virtual bool isWritable();
-        virtual void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName );
-        virtual bool deletePlaylists( const Playlists::PlaylistList &playlistlist );
+        bool isWritable() override;
+        void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName ) override;
+        bool deletePlaylists( const Playlists::PlaylistList &playlistlist ) override;
 
         // PlaylistObserver methods:
-        virtual void metadataChanged( Playlists::PlaylistPtr playlist );
-        virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position );
-        virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
+        void metadataChanged( Playlists::PlaylistPtr playlist ) override;
+        void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position ) override;
+        void trackRemoved( Playlists::PlaylistPtr playlist, int position ) override;
 
         // IpodPlaylistProvider specific methods:
         /**

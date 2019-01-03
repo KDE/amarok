@@ -62,31 +62,31 @@ class PlaylistBrowserModel : public QAbstractItemModel, public Playlists::Playli
         virtual ~PlaylistBrowserModel() {}
 
         /* QAbstractItemModel methods */
-        virtual QVariant data( const QModelIndex &index, int role ) const;
-        virtual bool setData( const QModelIndex &idx, const QVariant &value, int role );
-        virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-        virtual QVariant headerData( int section, Qt::Orientation orientation,
-                            int role = Qt::DisplayRole ) const;
-        virtual QModelIndex index( int row, int column,
-                        const QModelIndex &parent = QModelIndex() ) const;
-        virtual QModelIndex parent( const QModelIndex &index ) const;
+        QVariant data( const QModelIndex &index, int role ) const override;
+        bool setData( const QModelIndex &idx, const QVariant &value, int role ) override;
+        Qt::ItemFlags flags( const QModelIndex &index ) const override;
+        QVariant headerData( int section, Qt::Orientation orientation,
+                            int role = Qt::DisplayRole ) const override;
+        QModelIndex index( int row, int column,
+                        const QModelIndex &parent = QModelIndex() ) const override;
+        QModelIndex parent( const QModelIndex &index ) const override;
 
-        virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
-        virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-        virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+        bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
+        int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+        int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
-        virtual bool canFetchMore( const QModelIndex &parent ) const;
-        virtual void fetchMore( const QModelIndex &parent );
+        bool canFetchMore( const QModelIndex &parent ) const override;
+        void fetchMore( const QModelIndex &parent ) override;
 
-        virtual QStringList mimeTypes() const;
-        virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
-        virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row,
-                                   int column, const QModelIndex &parent );
+        QStringList mimeTypes() const override;
+        QMimeData* mimeData( const QModelIndexList &indexes ) const override;
+        bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row,
+                                   int column, const QModelIndex &parent ) override;
 
         /* Playlists::PlaylistObserver methods */
-        virtual void metadataChanged( Playlists::PlaylistPtr playlist );
-        virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position );
-        virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
+        void metadataChanged( Playlists::PlaylistPtr playlist ) override;
+        void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position ) override;
+        void trackRemoved( Playlists::PlaylistPtr playlist, int position ) override;
 
     public Q_SLOTS:
         void slotRenamePlaylist( Playlists::PlaylistPtr playlist );

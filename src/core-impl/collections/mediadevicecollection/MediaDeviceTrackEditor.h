@@ -27,20 +27,20 @@ class MediaDeviceTrackEditor : public Meta::TrackEditor
     public:
         explicit MediaDeviceTrackEditor( MediaDeviceTrack *track );
 
-        virtual void setAlbum( const QString &newAlbum );
-        virtual void setAlbumArtist( const QString &newAlbumArtist );
-        virtual void setArtist( const QString &newArtist );
-        virtual void setComposer( const QString &newComposer );
-        virtual void setGenre( const QString &newGenre );
-        virtual void setYear( int newYear );
-        virtual void setBpm( const qreal newBpm );
-        virtual void setTitle( const QString &newTitle );
-        virtual void setComment( const QString &newComment );
-        virtual void setTrackNumber( int newTrackNumber );
-        virtual void setDiscNumber( int newDiscNumber );
+        void setAlbum( const QString &newAlbum ) override;
+        void setAlbumArtist( const QString &newAlbumArtist ) override;
+        void setArtist( const QString &newArtist ) override;
+        void setComposer( const QString &newComposer ) override;
+        void setGenre( const QString &newGenre ) override;
+        void setYear( int newYear ) override;
+        void setBpm( const qreal newBpm ) override;
+        void setTitle( const QString &newTitle ) override;
+        void setComment( const QString &newComment ) override;
+        void setTrackNumber( int newTrackNumber ) override;
+        void setDiscNumber( int newDiscNumber ) override;
 
-        virtual void beginUpdate();
-        virtual void endUpdate();
+        void beginUpdate() override;
+        void endUpdate() override;
 
     private:
         /**

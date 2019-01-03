@@ -39,22 +39,22 @@ namespace Dynamic
 
             AlbumPlayBias();
 
-            virtual void fromXml( QXmlStreamReader *reader );
-            virtual void toXml( QXmlStreamWriter *writer ) const;
+            void fromXml( QXmlStreamReader *reader ) override;
+            void toXml( QXmlStreamWriter *writer ) const override;
 
             static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
+            QString name() const override;
+            QString toString() const override;
 
-            virtual QWidget* widget( QWidget* parent = nullptr );
+            QWidget* widget( QWidget* parent = nullptr ) override;
 
-            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+            TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const;
+                                             const TrackCollectionPtr universe ) const override;
 
-            virtual bool trackMatches( int position,
+            bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
-                                       int contextCount ) const;
+                                       int contextCount ) const override;
 
             FollowType follow() const;
             void setFollow( FollowType value );
@@ -77,10 +77,10 @@ namespace Dynamic
     class AMAROK_EXPORT AlbumPlayBiasFactory : public Dynamic::AbstractBiasFactory
     {
         public:
-            virtual QString i18nName() const;
-            virtual QString name() const;
-            virtual QString i18nDescription() const;
-            virtual BiasPtr createBias();
+            QString i18nName() const override;
+            QString name() const override;
+            QString i18nDescription() const override;
+            BiasPtr createBias() override;
     };
 
 }

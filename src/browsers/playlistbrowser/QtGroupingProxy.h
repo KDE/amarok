@@ -44,25 +44,25 @@ class QtGroupingProxy : public QAbstractProxyModel
 
         /* QAbstractProxyModel methods */
         //re-implemented to connect to source signals
-        virtual void setSourceModel( QAbstractItemModel *sourceModel );
-        virtual QModelIndex index( int row, int column = 0,
-                                   const QModelIndex& parent = QModelIndex() ) const;
-        virtual Qt::ItemFlags flags( const QModelIndex &idx ) const;
-        virtual QModelIndex buddy( const QModelIndex &index ) const;
-        virtual QModelIndex parent( const QModelIndex &idx ) const;
-        virtual int rowCount( const QModelIndex &idx = QModelIndex() ) const;
-        virtual int columnCount( const QModelIndex &idx ) const;
-        virtual QModelIndex mapToSource( const QModelIndex &idx ) const;
+        void setSourceModel( QAbstractItemModel *sourceModel ) override;
+        QModelIndex index( int row, int column = 0,
+                                   const QModelIndex& parent = QModelIndex() ) const override;
+        Qt::ItemFlags flags( const QModelIndex &idx ) const override;
+        QModelIndex buddy( const QModelIndex &index ) const override;
+        QModelIndex parent( const QModelIndex &idx ) const override;
+        int rowCount( const QModelIndex &idx = QModelIndex() ) const override;
+        int columnCount( const QModelIndex &idx ) const override;
+        QModelIndex mapToSource( const QModelIndex &idx ) const override;
         virtual QModelIndexList mapToSource( const QModelIndexList &list ) const;
-        virtual QModelIndex mapFromSource( const QModelIndex &idx ) const;
-        virtual QVariant data( const QModelIndex &idx, int role ) const;
-        virtual bool setData( const QModelIndex &index, const QVariant &value,
-                              int role = Qt::EditRole );
-        virtual QVariant headerData ( int section, Qt::Orientation orientation,
-                                      int role ) const;
-        virtual bool canFetchMore( const QModelIndex &parent ) const;
-        virtual void fetchMore( const QModelIndex &parent );
-        virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
+        QModelIndex mapFromSource( const QModelIndex &idx ) const override;
+        QVariant data( const QModelIndex &idx, int role ) const override;
+        bool setData( const QModelIndex &index, const QVariant &value,
+                              int role = Qt::EditRole ) override;
+        QVariant headerData ( int section, Qt::Orientation orientation,
+                                      int role ) const override;
+        bool canFetchMore( const QModelIndex &parent ) const override;
+        void fetchMore( const QModelIndex &parent ) override;
+        bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
 
     Q_SIGNALS:
         void renameIndex( const QModelIndex &idx );

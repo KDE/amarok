@@ -74,43 +74,43 @@ namespace Meta
                           QString &source );
             ~PlaydarTrack();
             
-            QString name() const;
-            QUrl playableUrl() const;
-            QString prettyUrl() const;
-            QString uidUrl() const;
+            QString name() const override;
+            QUrl playableUrl() const override;
+            QString prettyUrl() const override;
+            QString uidUrl() const override;
             QString sid() const;
-            QString notPlayableReason() const;
+            QString notPlayableReason() const override;
 
-            AlbumPtr album() const;
-            ArtistPtr artist() const;
-            ComposerPtr composer() const;
-            GenrePtr genre() const;
-            YearPtr year() const;
-            LabelList labels() const;
-            qreal bpm() const;
-            QString comment() const;
+            AlbumPtr album() const override;
+            ArtistPtr artist() const override;
+            ComposerPtr composer() const override;
+            GenrePtr genre() const override;
+            YearPtr year() const override;
+            LabelList labels() const override;
+            qreal bpm() const override;
+            QString comment() const override;
             double score() const;
-            qint64 length() const;
-            int filesize() const;
-            int sampleRate() const;
-            int bitrate() const;
-            QDateTime createDate() const;
-            int trackNumber() const;
-            int discNumber() const;
+            qint64 length() const override;
+            int filesize() const override;
+            int sampleRate() const override;
+            int bitrate() const override;
+            QDateTime createDate() const override;
+            int trackNumber() const override;
+            int discNumber() const override;
             
-            QString type() const;
+            QString type() const override;
             
-            bool inCollection() const;
-            Collections::Collection* collection() const;
+            bool inCollection() const override;
+            Collections::Collection* collection() const override;
             
-            QString cachedLyrics() const;
-            void setCachedLyrics( const QString &lyrics );
+            QString cachedLyrics() const override;
+            void setCachedLyrics( const QString &lyrics ) override;
             
-            void addLabel( const QString &label );
-            void addLabel( const LabelPtr &label );
-            void removeLabel( const LabelPtr &label );
+            void addLabel( const QString &label ) override;
+            void addLabel( const LabelPtr &label ) override;
+            void removeLabel( const LabelPtr &label ) override;
 
-            StatisticsPtr statistics();
+            StatisticsPtr statistics() override;
 
             //PlaydarTrack-specific:
             QString source() const;
@@ -164,9 +164,9 @@ namespace Meta
             explicit PlaydarArtist( const QString &name );
             ~PlaydarArtist();
 
-            QString name() const;
+            QString name() const override;
 
-            TrackList tracks();
+            TrackList tracks() override;
             AlbumList albums();
 
             void addTrack( PlaydarTrackPtr newTrack );
@@ -183,21 +183,21 @@ namespace Meta
         public:
             explicit PlaydarAlbum( const QString &name );
             ~PlaydarAlbum();
-            bool isCompilation() const;
+            bool isCompilation() const override;
             
-            QString name() const;
+            QString name() const override;
             
-            bool hasAlbumArtist() const;
-            ArtistPtr albumArtist() const;
-            TrackList tracks();
-            bool hasImage( int size = 0 ) const;
-            QImage image( int size = 0 ) const;
-            QUrl imageLocation( int size = 0 );
-            bool canUpdateImage() const;
-            void setImage( const QImage &image );
-            void removeImage();
-            void setSuppressImageAutoFetch( const bool suppress );
-            bool suppressImageAutoFetch() const;
+            bool hasAlbumArtist() const override;
+            ArtistPtr albumArtist() const override;
+            TrackList tracks() override;
+            bool hasImage( int size = 0 ) const override;
+            QImage image( int size = 0 ) const override;
+            QUrl imageLocation( int size = 0 ) override;
+            bool canUpdateImage() const override;
+            void setImage( const QImage &image ) override;
+            void removeImage() override;
+            void setSuppressImageAutoFetch( const bool suppress ) override;
+            bool suppressImageAutoFetch() const override;
 
             void addTrack( PlaydarTrackPtr newTrack );
             void setAlbumArtist( PlaydarArtistPtr newAlbumArtist );
@@ -218,9 +218,9 @@ namespace Meta
             explicit PlaydarComposer( const QString &name );
             ~PlaydarComposer();
 
-            QString name() const;
+            QString name() const override;
 
-            TrackList tracks();
+            TrackList tracks() override;
 
             void addTrack( PlaydarTrackPtr newTrack );
 
@@ -235,9 +235,9 @@ namespace Meta
             explicit PlaydarGenre( const QString &name );
             ~PlaydarGenre();
 
-            QString name() const;
+            QString name() const override;
 
-            TrackList tracks();
+            TrackList tracks() override;
 
             void addTrack( PlaydarTrackPtr newTrack );
 
@@ -252,9 +252,9 @@ namespace Meta
             explicit PlaydarYear( const QString &name );
             ~PlaydarYear();
 
-            QString name() const;
+            QString name() const override;
 
-            TrackList tracks();
+            TrackList tracks() override;
 
             void addTrack( PlaydarTrackPtr newTrack );
 
@@ -269,7 +269,7 @@ namespace Meta
             explicit PlaydarLabel( const QString &name );
             ~PlaydarLabel();
 
-            QString name() const;
+            QString name() const override;
 
             void addTrack( PlaydarTrackPtr newTrack );
 

@@ -31,14 +31,14 @@ class AmarokManager : public ImporterManager
 public:
     AmarokManager();
 
-    QString type() const;
-    QString prettyName() const;
-    QString description() const;
-    QIcon icon() const;
-    ProviderConfigWidget *configWidget( const QVariantMap &config );
+    QString type() const override;
+    QString prettyName() const override;
+    QString description() const override;
+    QIcon icon() const override;
+    ProviderConfigWidget *configWidget( const QVariantMap &config ) override;
 
 protected:
-    virtual ImporterProviderPtr newInstance( const QVariantMap &config );
+    ImporterProviderPtr newInstance( const QVariantMap &config ) override;
 };
 
 } // namespace StatSyncing

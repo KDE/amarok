@@ -62,16 +62,16 @@ class IpodPlaylist : public Playlists::Playlist
 
         virtual ~IpodPlaylist();
 
-        virtual QUrl uidUrl() const;
-        virtual QString name() const;
-        virtual void setName( const QString &name );
+        QUrl uidUrl() const override;
+        QString name() const override;
+        void setName( const QString &name ) override;
 
-        virtual Playlists::PlaylistProvider *provider() const;
+        Playlists::PlaylistProvider *provider() const override;
 
-        virtual int trackCount() const;
-        virtual Meta::TrackList tracks();
-        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
-        virtual void removeTrack( int position );
+        int trackCount() const override;
+        Meta::TrackList tracks() override;
+        void addTrack( Meta::TrackPtr track, int position = -1 ) override;
+        void removeTrack( int position ) override;
 
         // IpodPlaylist specific:
         Itdb_Playlist *itdbPlaylist();

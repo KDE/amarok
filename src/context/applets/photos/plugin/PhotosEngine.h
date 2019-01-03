@@ -63,7 +63,7 @@ public:
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track );
+    void metadataChanged( Meta::TrackPtr track ) override;
 
     QList<QUrl> photoUrls() const;
     QList<QUrl> pageUrls() const;

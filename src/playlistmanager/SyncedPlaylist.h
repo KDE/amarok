@@ -30,24 +30,24 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual ~SyncedPlaylist() {}
 
         //Playlists::Playlist methods
-        virtual QUrl uidUrl() const;
-        virtual QString name() const;
-        virtual QString prettyName() const;
-        virtual Playlists::PlaylistProvider *provider() const;
-        virtual void setName( const QString &name ) { Q_UNUSED( name ); }
+        QUrl uidUrl() const override;
+        QString name() const override;
+        QString prettyName() const override;
+        Playlists::PlaylistProvider *provider() const override;
+        void setName( const QString &name ) override { Q_UNUSED( name ); }
 
-        virtual Meta::TrackList tracks();
-        virtual int trackCount() const;
+        Meta::TrackList tracks() override;
+        int trackCount() const override;
 
-        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
-        virtual void removeTrack( int position );
+        void addTrack( Meta::TrackPtr track, int position = -1 ) override;
+        void removeTrack( int position ) override;
 
         //PlaylistObserver methods
-        virtual void metadataChanged( Playlists::PlaylistPtr playlist );
-        virtual void tracksLoaded( Playlists::PlaylistPtr);
-        virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
-                                 int position );
-        virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );
+        void metadataChanged( Playlists::PlaylistPtr playlist ) override;
+        void tracksLoaded( Playlists::PlaylistPtr) override;
+        void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
+                                 int position ) override;
+        void trackRemoved( Playlists::PlaylistPtr playlist, int position ) override;
 
         //SyncedPlaylist methods
         /** returns true when there is no active playlist associated with it anymore. */

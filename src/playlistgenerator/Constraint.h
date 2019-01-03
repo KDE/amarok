@@ -25,7 +25,7 @@
 class Constraint : public ConstraintNode {
     Q_OBJECT
     public:
-        virtual int getNodeType() const { return ConstraintNode::ConstraintType; }
+        int getNodeType() const override { return ConstraintNode::ConstraintType; }
 
     protected:
         Constraint( ConstraintNode* );

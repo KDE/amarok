@@ -63,8 +63,8 @@ class Artist : public Meta::Artist, public Base
     public:
         explicit Artist( const QString &name ) : MemoryMeta::Base( name ) {}
 
-        virtual QString name() const { return MemoryMeta::Base::name(); }
-        virtual Meta::TrackList tracks() { return MemoryMeta::Base::tracks(); }
+        QString name() const override { return MemoryMeta::Base::name(); }
+        Meta::TrackList tracks() override { return MemoryMeta::Base::tracks(); }
 };
 
 class Album : public Meta::Album, public Base
@@ -83,26 +83,26 @@ class Album : public Meta::Album, public Base
         explicit Album( const Meta::AlbumPtr &other );
 
         /* Meta::MetaCapability virtual methods */
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+        Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         /* Meta::Base virtual methods */
-        virtual QString name() const { return MemoryMeta::Base::name(); }
+        QString name() const override { return MemoryMeta::Base::name(); }
 
         /* Meta::Album virtual methods */
-        virtual bool isCompilation() const { return m_isCompilation; }
-        virtual bool canUpdateCompilation() const { return m_canUpdateCompilation; }
-        virtual void setCompilation( bool isCompilation );
+        bool isCompilation() const override { return m_isCompilation; }
+        bool canUpdateCompilation() const override { return m_canUpdateCompilation; }
+        void setCompilation( bool isCompilation ) override;
 
-        virtual bool hasAlbumArtist() const { return !m_albumArtist.isNull(); }
-        virtual Meta::ArtistPtr albumArtist() const { return m_albumArtist; }
-        virtual Meta::TrackList tracks() { return MemoryMeta::Base::tracks(); }
+        bool hasAlbumArtist() const override { return !m_albumArtist.isNull(); }
+        Meta::ArtistPtr albumArtist() const override { return m_albumArtist; }
+        Meta::TrackList tracks() override { return MemoryMeta::Base::tracks(); }
 
-        virtual bool hasImage( int /* size */ = 0 ) const { return !m_image.isNull(); }
-        virtual QImage image( int size = 0 ) const;
-        virtual bool canUpdateImage() const { return m_canUpdateImage; }
-        virtual void setImage( const QImage &image );
-        virtual void removeImage();
+        bool hasImage( int /* size */ = 0 ) const override { return !m_image.isNull(); }
+        QImage image( int size = 0 ) const override;
+        bool canUpdateImage() const override { return m_canUpdateImage; }
+        void setImage( const QImage &image ) override;
+        void removeImage() override;
 
         /* MemoryMeta::Album methods: */
         /**
@@ -124,8 +124,8 @@ class Composer : public Meta::Composer, public Base
     public:
         explicit Composer( const QString &name ) : MemoryMeta::Base( name ) {}
 
-        virtual QString name() const { return MemoryMeta::Base::name(); }
-        virtual Meta::TrackList tracks() { return  MemoryMeta::Base::tracks(); }
+        QString name() const override { return MemoryMeta::Base::name(); }
+        Meta::TrackList tracks() override { return  MemoryMeta::Base::tracks(); }
 };
 
 class Genre : public Meta::Genre, public Base
@@ -133,8 +133,8 @@ class Genre : public Meta::Genre, public Base
     public:
         explicit Genre( const QString &name ) : MemoryMeta::Base( name ) {}
 
-        virtual QString name() const { return MemoryMeta::Base::name(); }
-        virtual Meta::TrackList tracks() { return MemoryMeta::Base::tracks(); }
+        QString name() const override { return MemoryMeta::Base::name(); }
+        Meta::TrackList tracks() override { return MemoryMeta::Base::tracks(); }
 };
 
 class Year : public Meta::Year, public Base
@@ -142,8 +142,8 @@ class Year : public Meta::Year, public Base
     public:
         explicit Year( const QString &name ) : MemoryMeta::Base( name ) {}
 
-        virtual QString name() const { return MemoryMeta::Base::name(); }
-        virtual Meta::TrackList tracks() { return MemoryMeta::Base::tracks(); }
+        QString name() const override { return MemoryMeta::Base::name(); }
+        Meta::TrackList tracks() override { return MemoryMeta::Base::tracks(); }
 };
 
 class AMAROK_EXPORT Track : public Meta::Track
@@ -153,60 +153,60 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual ~Track();
 
         /* Meta::MetaCapability methods */
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
             { return m_track->hasCapabilityInterface( type ); }
-        virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type ) override
             { return m_track->createCapabilityInterface( type ); }
 
         /* Meta::Base virtual methods */
-        virtual QString name() const { return m_track->name(); }
+        QString name() const override { return m_track->name(); }
 
         /* Meta::Track virtual methods */
-        virtual QUrl playableUrl() const { return m_track->playableUrl(); }
-        virtual QString prettyUrl() const { return m_track->prettyUrl(); }
-        virtual QString uidUrl() const { return m_track->uidUrl(); }
-        virtual QString notPlayableReason() const { return m_track->notPlayableReason(); }
+        QUrl playableUrl() const override { return m_track->playableUrl(); }
+        QString prettyUrl() const override { return m_track->prettyUrl(); }
+        QString uidUrl() const override { return m_track->uidUrl(); }
+        QString notPlayableReason() const override { return m_track->notPlayableReason(); }
 
         //these functions return the proxy track values
-        virtual Meta::AlbumPtr album() const { return m_album; }
-        virtual Meta::ArtistPtr artist() const { return m_artist; }
-        virtual Meta::ComposerPtr composer() const { return m_composer; }
-        virtual Meta::GenrePtr genre() const { return m_genre; }
-        virtual Meta::YearPtr year() const { return m_year; }
+        Meta::AlbumPtr album() const override { return m_album; }
+        Meta::ArtistPtr artist() const override { return m_artist; }
+        Meta::ComposerPtr composer() const override { return m_composer; }
+        Meta::GenrePtr genre() const override { return m_genre; }
+        Meta::YearPtr year() const override { return m_year; }
 
         //TODO:implement labels
-        virtual Meta::LabelList labels() const { return Meta::LabelList(); }
-        virtual qreal bpm() const { return m_track->bpm(); }
-        virtual QString comment() const { return m_track->comment(); }
-        virtual qint64 length() const { return m_track->length(); }
-        virtual int filesize() const { return m_track->filesize(); }
-        virtual int sampleRate() const { return m_track->sampleRate(); }
-        virtual int bitrate() const { return m_track->bitrate(); }
-        virtual QDateTime createDate() const { return m_track->createDate(); }
-        virtual QDateTime modifyDate() const { return m_track->modifyDate(); }
-        virtual int trackNumber() const { return m_track->trackNumber(); }
-        virtual int discNumber() const { return m_track->discNumber(); }
+        Meta::LabelList labels() const override { return Meta::LabelList(); }
+        qreal bpm() const override { return m_track->bpm(); }
+        QString comment() const override { return m_track->comment(); }
+        qint64 length() const override { return m_track->length(); }
+        int filesize() const override { return m_track->filesize(); }
+        int sampleRate() const override { return m_track->sampleRate(); }
+        int bitrate() const override { return m_track->bitrate(); }
+        QDateTime createDate() const override { return m_track->createDate(); }
+        QDateTime modifyDate() const override { return m_track->modifyDate(); }
+        int trackNumber() const override { return m_track->trackNumber(); }
+        int discNumber() const override { return m_track->discNumber(); }
 
-        virtual qreal replayGain( Meta::ReplayGainTag mode ) const
+        qreal replayGain( Meta::ReplayGainTag mode ) const override
                 { return m_track->replayGain( mode ); }
-        virtual QString type() const { return m_track->type(); }
+        QString type() const override { return m_track->type(); }
 
-        virtual void prepareToPlay() { m_track->prepareToPlay(); }
-        virtual void finishedPlaying( double fraction ) { m_track->finishedPlaying( fraction ); }
+        void prepareToPlay() override { m_track->prepareToPlay(); }
+        void finishedPlaying( double fraction ) override { m_track->finishedPlaying( fraction ); }
 
-        virtual bool inCollection() const { return m_track->inCollection(); }
-        virtual Collections::Collection *collection() const { return m_track->collection(); }
+        bool inCollection() const override { return m_track->inCollection(); }
+        Collections::Collection *collection() const override { return m_track->collection(); }
 
-        virtual QString cachedLyrics() const { return m_track->cachedLyrics(); }
-        virtual void setCachedLyrics( const QString &lyrics ) { m_track->setCachedLyrics( lyrics ); }
+        QString cachedLyrics() const override { return m_track->cachedLyrics(); }
+        void setCachedLyrics( const QString &lyrics ) override { m_track->setCachedLyrics( lyrics ); }
 
         //TODO: implement labels
-        virtual void addLabel( const QString &label ) { Q_UNUSED( label ) }
-        virtual void addLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
-        virtual void removeLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
+        void addLabel( const QString &label ) override { Q_UNUSED( label ) }
+        void addLabel( const Meta::LabelPtr &label ) override { Q_UNUSED( label ) }
+        void removeLabel( const Meta::LabelPtr &label ) override { Q_UNUSED( label ) }
 
-        virtual Meta::TrackEditorPtr editor();
-        virtual Meta::StatisticsPtr statistics();
+        Meta::TrackEditorPtr editor() override;
+        Meta::StatisticsPtr statistics() override;
 
         // MemoryMeta::Track methods:
 

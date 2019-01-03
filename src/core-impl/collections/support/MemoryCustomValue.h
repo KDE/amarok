@@ -48,7 +48,7 @@ class AMAROK_EXPORT TrackCounter : public CustomReturnFunction
         TrackCounter();
         virtual ~TrackCounter();
 
-        virtual QString value( const Meta::TrackList &tracks ) const;
+        QString value( const Meta::TrackList &tracks ) const override;
 };
 
 class AMAROK_EXPORT ArtistCounter : public CustomReturnFunction
@@ -57,7 +57,7 @@ class AMAROK_EXPORT ArtistCounter : public CustomReturnFunction
         ArtistCounter();
         virtual ~ArtistCounter();
 
-        virtual QString value( const Meta::TrackList &tracks ) const;
+        QString value( const Meta::TrackList &tracks ) const override;
 };
 
 class AMAROK_EXPORT GenreCounter : public CustomReturnFunction
@@ -66,7 +66,7 @@ class AMAROK_EXPORT GenreCounter : public CustomReturnFunction
         GenreCounter();
         virtual ~GenreCounter();
 
-        virtual QString value( const Meta::TrackList &tracks ) const;
+        QString value( const Meta::TrackList &tracks ) const override;
 };
 
 class AMAROK_EXPORT ComposerCounter : public CustomReturnFunction
@@ -75,7 +75,7 @@ class AMAROK_EXPORT ComposerCounter : public CustomReturnFunction
         ComposerCounter();
         virtual ~ComposerCounter();
 
-        virtual QString value( const Meta::TrackList &tracks ) const;
+        QString value( const Meta::TrackList &tracks ) const override;
 };
 
 class AMAROK_EXPORT AlbumCounter : public CustomReturnFunction
@@ -84,7 +84,7 @@ class AMAROK_EXPORT AlbumCounter : public CustomReturnFunction
         AlbumCounter();
         virtual ~AlbumCounter();
 
-        virtual QString value( const Meta::TrackList &tracks ) const;
+        QString value( const Meta::TrackList &tracks ) const override;
 };
 
 class AMAROK_EXPORT YearCounter : public CustomReturnFunction
@@ -93,7 +93,7 @@ class AMAROK_EXPORT YearCounter : public CustomReturnFunction
         YearCounter();
         virtual ~YearCounter();
 
-        virtual QString value( const Meta::TrackList &tracks ) const;
+        QString value( const Meta::TrackList &tracks ) const override;
 };
 
 class AMAROK_EXPORT CustomReturnValue
@@ -110,7 +110,7 @@ class AMAROK_EXPORT TitleReturnValue : public CustomReturnValue
     public:
         TitleReturnValue();
         virtual ~TitleReturnValue();
-        virtual QString value( const Meta::TrackPtr &track ) const;
+        QString value( const Meta::TrackPtr &track ) const override;
 };
 
 class AMAROK_EXPORT UrlReturnValue : public CustomReturnValue
@@ -118,7 +118,7 @@ class AMAROK_EXPORT UrlReturnValue : public CustomReturnValue
     public:
         UrlReturnValue();
         virtual ~UrlReturnValue();
-        virtual QString value( const Meta::TrackPtr &track ) const;
+        QString value( const Meta::TrackPtr &track ) const override;
 };
 
 

@@ -38,32 +38,32 @@ public:
                                   const QSet<QString> &labels = QSet<QString>() );
     virtual ~SimpleWritableTrack();
 
-    virtual QDateTime firstPlayed() const;
+    QDateTime firstPlayed() const override;
 
     /**
      * Sets the First Played statistic. This method saves @param firstPlayed in the form
      * of unix timestamp.
      */
-    virtual void setFirstPlayed( const QDateTime &firstPlayed );
+    void setFirstPlayed( const QDateTime &firstPlayed ) override;
 
-    virtual QDateTime lastPlayed() const;
+    QDateTime lastPlayed() const override;
 
     /**
      * Sets the Last Played statistic. This method saves @param lastPlayed in the form
      * of unix timestamp.
      */
-    virtual void setLastPlayed( const QDateTime &lastPlayed );
+    void setLastPlayed( const QDateTime &lastPlayed ) override;
 
-    virtual int playCount() const;
-    virtual void setPlayCount( int playCount );
+    int playCount() const override;
+    void setPlayCount( int playCount ) override;
 
-    virtual int rating() const;
-    virtual void setRating( int rating );
+    int rating() const override;
+    void setRating( int rating ) override;
 
-    virtual QSet<QString> labels() const;
-    virtual void setLabels( const QSet<QString> &labels );
+    QSet<QString> labels() const override;
+    void setLabels( const QSet<QString> &labels ) override;
 
-    void commit();
+    void commit() override;
 
 protected:
     /**

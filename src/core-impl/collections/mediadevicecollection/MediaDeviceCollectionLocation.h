@@ -38,17 +38,17 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public Collec
         explicit MediaDeviceCollectionLocation( MediaDeviceCollection *collection );
         virtual ~MediaDeviceCollectionLocation();
 
-        virtual QString prettyLocation() const;
-        virtual bool isWritable() const;
+        QString prettyLocation() const override;
+        bool isWritable() const override;
 
     protected:
-        virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
+        void getKIOCopyableUrls( const Meta::TrackList &tracks ) override;
 
         /// Copies these tracks to the Collection using the Handler
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
-                                           const Transcoding::Configuration &configuration );
+        void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
+                                           const Transcoding::Configuration &configuration ) override;
 
-        virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
+        void removeUrlsFromCollection( const Meta::TrackList &sources ) override;
 
 
     private Q_SLOTS:

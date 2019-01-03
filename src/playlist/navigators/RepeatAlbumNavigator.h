@@ -42,10 +42,10 @@ namespace Playlist
 
         private:
             //! Override from 'AlbumNavigator'
-            void notifyAlbumsInserted( const QList<AlbumId> insertedAlbums ) { Q_UNUSED( insertedAlbums ); }
+            void notifyAlbumsInserted( const QList<AlbumId> insertedAlbums ) override { Q_UNUSED( insertedAlbums ); }
 
             //! Override from 'NonlinearTrackNavigator'
-            void planOne();
+            void planOne() override;
     };
 }
 #endif

@@ -33,14 +33,14 @@ class BookmarkPopup : public QWidget
 public:
     BookmarkPopup ( QWidget* parent, QString label, BookmarkTriangle* triangle );
 
-    virtual QSize sizeHint () const;
+    QSize sizeHint () const override;
     virtual QSizePolicy sizePolicy () const;
-    virtual QSize minimumSizeHint () const;
+    QSize minimumSizeHint () const override;
 
-    virtual void mouseReleaseEvent ( QMouseEvent * event );
-    virtual void mouseMoveEvent ( QMouseEvent * event );
-    virtual void enterEvent ( QEvent* );
-    virtual void leaveEvent ( QEvent* );
+    void mouseReleaseEvent ( QMouseEvent * event ) override;
+    void mouseMoveEvent ( QMouseEvent * event ) override;
+    void enterEvent ( QEvent* ) override;
+    void leaveEvent ( QEvent* ) override;
 
     virtual void displayNeeded ( bool value );
 

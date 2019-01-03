@@ -36,9 +36,9 @@ class AMAROK_EXPORT DefaultArtist : public Meta::Artist
         DefaultArtist() {};
         virtual ~DefaultArtist() {};
 
-        virtual QString name() const { return i18nc( "The value is not known", "Unknown" ); }
+        QString name() const override { return i18nc( "The value is not known", "Unknown" ); }
 
-        virtual TrackList tracks() { return TrackList(); }
+        TrackList tracks() override { return TrackList(); }
 };
 
 class AMAROK_EXPORT DefaultAlbum : public Meta::Album
@@ -50,14 +50,14 @@ class AMAROK_EXPORT DefaultAlbum : public Meta::Album
             , m_albumArtist( new DefaultArtist() ) {}
         virtual ~DefaultAlbum() {};
 
-        virtual bool hasAlbumArtist() const { return true; }
-        virtual ArtistPtr albumArtist() const { return m_albumArtist; }
+        bool hasAlbumArtist() const override { return true; }
+        ArtistPtr albumArtist() const override { return m_albumArtist; }
 
-        virtual bool isCompilation() const { return false; }
+        bool isCompilation() const override { return false; }
 
-        virtual QString name() const { return i18nc( "The Value is not known", "Unknown" ); }
+        QString name() const override { return i18nc( "The Value is not known", "Unknown" ); }
 
-        virtual TrackList tracks() { return TrackList(); }
+        TrackList tracks() override { return TrackList(); }
 
     private:
         Meta::ArtistPtr m_albumArtist;
@@ -72,9 +72,9 @@ class AMAROK_EXPORT DefaultComposer : public Meta::Composer
         DefaultComposer() {};
         virtual ~DefaultComposer() {};
 
-        virtual QString name() const { return i18nc( "The value is not known", "Unknown" ); }
+        QString name() const override { return i18nc( "The value is not known", "Unknown" ); }
 
-        virtual TrackList tracks() { return TrackList(); }
+        TrackList tracks() override { return TrackList(); }
 
     private:
 
@@ -89,9 +89,9 @@ class AMAROK_EXPORT DefaultGenre : public Meta::Genre
         DefaultGenre() {};
         virtual ~DefaultGenre() {};
 
-        virtual QString name() const { return i18nc( "The value is not known", "Unknown" ); }
+        QString name() const override { return i18nc( "The value is not known", "Unknown" ); }
 
-        virtual TrackList tracks() { return TrackList(); }
+        TrackList tracks() override { return TrackList(); }
 
 };
 class AMAROK_EXPORT DefaultYear : public Meta::Year
@@ -101,9 +101,9 @@ class AMAROK_EXPORT DefaultYear : public Meta::Year
         DefaultYear() {};
         virtual ~DefaultYear() {};
 
-        virtual QString name() const { return "0"; }
+        QString name() const override { return "0"; }
 
-        virtual TrackList tracks() { return TrackList(); }
+        TrackList tracks() override { return TrackList(); }
 
 };
 

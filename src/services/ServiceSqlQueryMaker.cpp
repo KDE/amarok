@@ -43,7 +43,7 @@ class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
             //nothing to do
         }
 
-        virtual void requestAbort()
+        void requestAbort() override
         {
             m_aborted = true;
         }
@@ -59,7 +59,7 @@ class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
 
     protected:
 
-        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0)
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override
         {
             Q_UNUSED(self);
             Q_UNUSED(thread);
@@ -74,13 +74,13 @@ class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
                 setStatus(Status_Running);
         }
 
-        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread) override
         {
             Q_EMIT started(self);
             ThreadWeaver::Job::defaultBegin(self, thread);
         }
 
-        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread) override
         {
             ThreadWeaver::Job::defaultEnd(self, thread);
             if (!self->success()) {

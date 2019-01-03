@@ -50,15 +50,15 @@ namespace Collections {
 
         // Collections::Collection methods
 
-        virtual QString prettyName() const;
-        virtual QIcon icon() const;
+        QString prettyName() const override;
+        QIcon icon() const override;
 
-        virtual bool possiblyContainsTrack( const QUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+        bool possiblyContainsTrack( const QUrl &url ) const override;
+        Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
-        virtual QueryMaker* queryMaker();
+        QueryMaker* queryMaker() override;
 
-        virtual QString collectionId() const;
+        QString collectionId() const override;
 
         // AggregateCollection methods
 

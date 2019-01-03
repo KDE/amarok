@@ -50,7 +50,7 @@ class OrganiseCapabilityImpl : public Capabilities::OrganiseCapability
     explicit OrganiseCapabilityImpl( Meta::SqlTrack *track );
     virtual ~OrganiseCapabilityImpl();
 
-    virtual void deleteTrack();
+    void deleteTrack() override;
 
     private:
         AmarokSharedPointer<Meta::SqlTrack> m_track;
@@ -65,12 +65,12 @@ class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
     explicit TimecodeWriteCapabilityImpl( Meta::SqlTrack *track );
     virtual ~TimecodeWriteCapabilityImpl();
 
-    virtual bool writeTimecode( qint64 miliseconds )
+    bool writeTimecode( qint64 miliseconds ) override
     {
         return Capabilities::TimecodeWriteCapability::writeTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
     }
 
-    virtual bool writeAutoTimecode( qint64 miliseconds )
+    bool writeAutoTimecode( qint64 miliseconds ) override
     {
         return Capabilities::TimecodeWriteCapability::writeAutoTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
     }
@@ -88,8 +88,8 @@ class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
     explicit TimecodeLoadCapabilityImpl( Meta::SqlTrack *track );
     virtual ~TimecodeLoadCapabilityImpl();
 
-    virtual bool hasTimecodes();
-    virtual QList<AmarokSharedPointer<AmarokUrl> > loadTimecodes();
+    bool hasTimecodes() override;
+    QList<AmarokSharedPointer<AmarokUrl> > loadTimecodes() override;
 
     private:
         AmarokSharedPointer<Meta::SqlTrack> m_track;
@@ -104,7 +104,7 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
     explicit FindInSourceCapabilityImpl( Meta::SqlTrack *track );
     virtual ~FindInSourceCapabilityImpl();
 
-    virtual void findInSource( QFlags<TargetTag> tag );
+    void findInSource( QFlags<TargetTag> tag ) override;
 
     private:
         AmarokSharedPointer<Meta::SqlTrack> m_track;

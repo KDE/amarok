@@ -28,8 +28,8 @@ class AudioCdConnectionAssistant : public ConnectionAssistant
 public:
     virtual ~AudioCdConnectionAssistant();
 
-    virtual bool identify( const QString& udi );
-    virtual MediaDeviceInfo* deviceInfo( const QString& udi );
+    bool identify( const QString& udi ) override;
+    MediaDeviceInfo* deviceInfo( const QString& udi ) override;
 
 };
 

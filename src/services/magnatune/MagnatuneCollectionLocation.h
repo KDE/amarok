@@ -34,7 +34,7 @@ public:
 
     virtual ~MagnatuneCollectionLocation();
 
-    virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
+    void showSourceDialog( const Meta::TrackList &tracks, bool removeSources ) override;
 
 };
 

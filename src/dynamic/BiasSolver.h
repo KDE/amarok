@@ -88,13 +88,13 @@ namespace Dynamic
             Meta::TrackList solution();
 
             /// Politely asks the thread to give up and finish ASAP.
-            virtual void requestAbort() override;
+            void requestAbort() override;
 
             /**
              * Returns true if the solver was successful, false if it was
              * aborted or encountered some other error.
              */
-            virtual bool success() const  override;
+            bool success() const  override;
 
             /**
              * Choose whether the BiasSolver instance should delete itself after the query.

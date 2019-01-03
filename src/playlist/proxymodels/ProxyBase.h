@@ -46,40 +46,40 @@ public:
     virtual ~ProxyBase();
 
     //! Inherited from Playlist::AbstractModel
-    QAbstractItemModel* qaim() const { return const_cast<ProxyBase*>( this ); }
+    QAbstractItemModel* qaim() const override { return const_cast<ProxyBase*>( this ); }
 
-    virtual quint64 activeId() const;
-    virtual int activeRow() const;
-    virtual Meta::TrackPtr activeTrack() const;
-    virtual QSet<int> allRowsForTrack( const Meta::TrackPtr& track ) const;
-    virtual void clearSearchTerm();
-    virtual bool containsTrack( const Meta::TrackPtr& track ) const;
-    virtual int currentSearchFields();
-    virtual QString currentSearchTerm();
-    virtual bool exportPlaylist( const QString &path, bool relative = false ) const;
-    virtual void filterUpdated();
-    virtual int find( const QString &searchTerm, int searchFields );
-    virtual int findNext( const QString &searchTerm, int selectedRow, int searchFields );
-    virtual int findPrevious( const QString &searchTerm, int selectedRow, int searchFields );
-    virtual int firstRowForTrack( const Meta::TrackPtr& track ) const;
-    virtual quint64 idAt( const int row ) const;
-    virtual bool rowExists( int row ) const;
-    virtual int rowForId( const quint64 id ) const;
-    virtual int rowFromBottomModel( const int rowInBase );
-    virtual int rowToBottomModel( const int rowInProxy );
-    virtual void setActiveId( const quint64 id );
-    virtual void setActiveRow( int row );
-    virtual void setAllUnplayed();
-    virtual void emitQueueChanged();
-    virtual int queuePositionOfRow( int row );
-    virtual void showOnlyMatches( bool onlyMatches );
-    virtual Item::State stateOfId( quint64 id ) const;
-    virtual Item::State stateOfRow( int row ) const;
-    virtual qint64 totalLength() const;
-    virtual quint64 totalSize() const;
-    virtual Meta::TrackPtr trackAt( int row ) const;
-    virtual Meta::TrackPtr trackForId( const quint64 id ) const;
-    virtual Meta::TrackList tracks() const;
+    quint64 activeId() const override;
+    int activeRow() const override;
+    Meta::TrackPtr activeTrack() const override;
+    QSet<int> allRowsForTrack( const Meta::TrackPtr& track ) const override;
+    void clearSearchTerm() override;
+    bool containsTrack( const Meta::TrackPtr& track ) const override;
+    int currentSearchFields() override;
+    QString currentSearchTerm() override;
+    bool exportPlaylist( const QString &path, bool relative = false ) const override;
+    void filterUpdated() override;
+    int find( const QString &searchTerm, int searchFields ) override;
+    int findNext( const QString &searchTerm, int selectedRow, int searchFields ) override;
+    int findPrevious( const QString &searchTerm, int selectedRow, int searchFields ) override;
+    int firstRowForTrack( const Meta::TrackPtr& track ) const override;
+    quint64 idAt( const int row ) const override;
+    bool rowExists( int row ) const override;
+    int rowForId( const quint64 id ) const override;
+    int rowFromBottomModel( const int rowInBase ) override;
+    int rowToBottomModel( const int rowInProxy ) override;
+    void setActiveId( const quint64 id ) override;
+    void setActiveRow( int row ) override;
+    void setAllUnplayed() override;
+    void emitQueueChanged() override;
+    int queuePositionOfRow( int row ) override;
+    void showOnlyMatches( bool onlyMatches ) override;
+    Item::State stateOfId( quint64 id ) const override;
+    Item::State stateOfRow( int row ) const override;
+    qint64 totalLength() const override;
+    quint64 totalSize() const override;
+    Meta::TrackPtr trackAt( int row ) const override;
+    Meta::TrackPtr trackForId( const quint64 id ) const override;
+    Meta::TrackList tracks() const override;
 
 Q_SIGNALS:
     //! Proxied from Playlist::Model.

@@ -30,8 +30,8 @@ public:
 
     ~TimecodeTrackProvider();
 
-    virtual bool possiblyContainsTrack( const QUrl &url ) const;
-    virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+    bool possiblyContainsTrack( const QUrl &url ) const override;
+    Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
 };
 

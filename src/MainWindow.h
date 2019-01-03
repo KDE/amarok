@@ -93,7 +93,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void deleteBrowsers();
 
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
-        virtual QMenu* createPopupMenu();
+        QMenu* createPopupMenu() override;
 
         void addViewMenuItems(QMenu* menu);
 
@@ -170,8 +170,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
 #endif // DEBUG_BUILD_TYPE
 
     protected:
-        virtual void closeEvent( QCloseEvent* );
-        virtual void changeEvent( QEvent *event );
+        void closeEvent( QCloseEvent* ) override;
+        void changeEvent( QEvent *event ) override;
 
     private Q_SLOTS:
         void setRating1() { setRating( 1 ); }

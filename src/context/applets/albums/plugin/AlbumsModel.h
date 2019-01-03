@@ -32,9 +32,9 @@ class AlbumsModel : public QStandardItemModel
 public:
     explicit AlbumsModel( QObject *parent = nullptr );
     virtual ~AlbumsModel() {}
-    virtual QVariant data( const QModelIndex &index, int role ) const;
-    virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
-    virtual QStringList mimeTypes() const;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    QMimeData* mimeData( const QModelIndexList &indices ) const override;
+    QStringList mimeTypes() const override;
     int rowHeight() const;
 
 private Q_SLOTS:
@@ -77,9 +77,9 @@ protected:
      * added <em>more recently</em> than all of the tracks in the album
      * referenced by @param right .
      */
-    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
-    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
 private:
     Mode m_mode;

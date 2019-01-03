@@ -46,7 +46,7 @@ protected Q_SLOTS:
 
 private:
     void createChildWidgets();
-    bool eventFilter( QObject *obj, QEvent *event );
+    bool eventFilter( QObject *obj, QEvent *event ) override;
 
     QPersistentModelIndex m_index;
     Playlist::PlaylistLayout m_layout;

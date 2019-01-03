@@ -95,11 +95,11 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
 
         /* PlaylistObserver methods */
         using PlaylistObserver::metadataChanged;
-        virtual void tracksLoaded( Playlists::PlaylistPtr playlist );
+        void tracksLoaded( Playlists::PlaylistPtr playlist ) override;
 
         /* Meta::Observer methods */
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::TrackPtr track );
+        void metadataChanged( Meta::TrackPtr track ) override;
 
     Q_SIGNALS:
         void finished( const Meta::TrackList &tracks );

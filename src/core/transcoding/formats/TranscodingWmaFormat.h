@@ -31,11 +31,11 @@ class AMAROK_CORE_EXPORT WmaFormat : public Format
 {
 public:
     WmaFormat();
-    QString prettyName() const;
-    QString description() const;
-    QIcon icon() const;
-    QStringList ffmpegParameters( const Configuration &configuration ) const;
-    bool verifyAvailability( const QString &ffmpegOutput ) const;
+    QString prettyName() const override;
+    QString description() const override;
+    QIcon icon() const override;
+    QStringList ffmpegParameters( const Configuration &configuration ) const override;
+    bool verifyAvailability( const QString &ffmpegOutput ) const override;
 
 private:
     inline int toFfmpegBitrate( int setting ) const;

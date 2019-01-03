@@ -69,21 +69,21 @@ class SortFilterProxy : public ProxyBase, public SortProxy
 
         //! Sort-related functions.
         //!   SortProxy public functions
-        bool isSorted();
-        void updateSortMap( SortScheme scheme );
+        bool isSorted() override;
+        void updateSortMap( SortScheme scheme ) override;
 
         //! Filter-related functions.
         //!   Playlist::AbstractModel search-related functions.
-        void clearSearchTerm();
-        void filterUpdated();
+        void clearSearchTerm() override;
+        void filterUpdated() override;
 
         /** This will set the search term for the filter.
             filterUpdated() must be called to update the results.
             This allows client 'PrettyListView' to give the user the time to type a few
             characters before we do a filter run that might block for a few seconds.
         */
-        int find( const QString & searchTerm, int searchFields = MatchTrack );
-        void showOnlyMatches( bool onlyMatches );
+        int find( const QString & searchTerm, int searchFields = MatchTrack ) override;
+        void showOnlyMatches( bool onlyMatches ) override;
 
     //!Q_SIGNALS:
         //! Emits signals inherited from QSortFilterProxy
@@ -96,7 +96,7 @@ class SortFilterProxy : public ProxyBase, public SortProxy
          * @param right the second index to compare.
          * @return true if left is to be placed before right, false otherwise.
          */
-        bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+        bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
         /**
          * Reimplemented from QSortFilterProxyModel. The filter decision function.
@@ -105,7 +105,7 @@ class SortFilterProxy : public ProxyBase, public SortProxy
          * @param sourceModelParent Ignored.
          * @return True if the row should be included, false otherwise.
          */
-        bool filterAcceptsRow( int sourceModelRow, const QModelIndex &sourceModelParent ) const;
+        bool filterAcceptsRow( int sourceModelRow, const QModelIndex &sourceModelParent ) const override;
 
 
         SortScheme m_scheme;               //!< The current sorting scheme.

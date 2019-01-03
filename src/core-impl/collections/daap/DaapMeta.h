@@ -46,18 +46,18 @@ class DaapTrack : public Meta::Track
         DaapTrack( Collections::DaapCollection *collection, const QString &host, quint16 port, const QString &dbId, const QString &itemId, const QString &format);
         virtual ~DaapTrack();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual QUrl playableUrl() const;
-        virtual QString uidUrl() const;
-        virtual QString prettyUrl() const;
-        virtual QString notPlayableReason() const;
+        QUrl playableUrl() const override;
+        QString uidUrl() const override;
+        QString prettyUrl() const override;
+        QString notPlayableReason() const override;
 
-        virtual AlbumPtr album() const;
-        virtual ArtistPtr artist() const;
-        virtual GenrePtr genre() const;
-        virtual ComposerPtr composer() const;
-        virtual YearPtr year() const;
+        AlbumPtr album() const override;
+        ArtistPtr artist() const override;
+        GenrePtr genre() const override;
+        ComposerPtr composer() const override;
+        YearPtr year() const override;
 
         virtual void setAlbum ( const QString &newAlbum );
         virtual void setArtist ( const QString &newArtist );
@@ -67,27 +67,27 @@ class DaapTrack : public Meta::Track
 
         virtual void setTitle( const QString &newTitle );
 
-        virtual qreal bpm() const;
+        qreal bpm() const override;
 
-        virtual QString comment() const;
+        QString comment() const override;
         virtual void setComment ( const QString &newComment );
 
-        virtual qint64 length() const;
+        qint64 length() const override;
 
-        virtual int filesize() const;
-        virtual int sampleRate() const;
-        virtual int bitrate() const;
+        int filesize() const override;
+        int sampleRate() const override;
+        int bitrate() const override;
 
-        virtual int trackNumber() const;
+        int trackNumber() const override;
         virtual void setTrackNumber ( int newTrackNumber );
 
-        virtual int discNumber() const;
+        int discNumber() const override;
         virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual QString type() const;
+        QString type() const override;
 
-        virtual bool inCollection() const;
-        virtual Collections::Collection* collection() const;
+        bool inCollection() const override;
+        Collections::Collection* collection() const override;
 
         //DaapTrack specific methods
         void setAlbum( DaapAlbumPtr album );
@@ -121,9 +121,9 @@ class DaapArtist : public Meta::Artist
         explicit DaapArtist( const QString &name );
         virtual ~DaapArtist();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         virtual AlbumList albums();
 
@@ -141,12 +141,12 @@ class DaapAlbum : public Meta::Album
         explicit DaapAlbum( const QString &name );
         virtual ~DaapAlbum();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual bool isCompilation() const;
-        virtual bool hasAlbumArtist() const;
-        virtual ArtistPtr albumArtist() const;
-        virtual TrackList tracks();
+        bool isCompilation() const override;
+        bool hasAlbumArtist() const override;
+        ArtistPtr albumArtist() const override;
+        TrackList tracks() override;
 
         //DaapAlbum specific methods
         void addTrack( DaapTrackPtr track );
@@ -165,9 +165,9 @@ class DaapGenre : public Meta::Genre
         explicit DaapGenre( const QString &name );
         virtual ~DaapGenre();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //DaapGenre specific methods
         void addTrack( DaapTrackPtr track );
@@ -183,9 +183,9 @@ class DaapComposer : public Meta::Composer
         explicit DaapComposer( const QString &name );
         virtual ~DaapComposer();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //DaapComposer specific methods
         void addTrack( DaapTrackPtr track );
@@ -201,9 +201,9 @@ class DaapYear : public Meta::Year
         explicit DaapYear( const QString &name );
         virtual ~DaapYear();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //DaapYear specific methods
         void addTrack( DaapTrackPtr track );

@@ -61,11 +61,11 @@ class AlbumItem : public QObject, public QStandardItem, public Meta::Observer
 
         // overloaded from Meta::Observer
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::AlbumPtr album ) override;
+        void metadataChanged( Meta::AlbumPtr album ) override;
 
-        virtual int type() const override;
+        int type() const override;
 
-        virtual bool operator<( const QStandardItem &other ) const override;
+        bool operator<( const QStandardItem &other ) const override;
 
     private Q_SLOTS:
         /** Updates the item after metadataChanged was called.

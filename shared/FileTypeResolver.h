@@ -35,7 +35,7 @@ namespace Meta
         {
             TagLib::File *createFile(TagLib::FileName fileName,
                                      bool readAudioProperties,
-                                     TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const;
+                                     TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const override;
 
         public:
             virtual ~FileTypeResolver() {}

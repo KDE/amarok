@@ -120,7 +120,7 @@ class StreamArtist : public Meta::DefaultArtist
             , d( dptr )
             {}
 
-        QString name() const
+        QString name() const override
         {
             if( d && !d->artist.isEmpty() )
                 return d->artist;
@@ -143,19 +143,19 @@ public:
         CoverCache::invalidateAlbum( this );
     }
 
-    bool hasAlbumArtist() const
+    bool hasAlbumArtist() const override
     {
         return false;
     }
 
-    QString name() const
+    QString name() const override
     {
         if( d && !d->album.isEmpty() )
             return d->album;
         return DefaultAlbum::name();
     }
 
-    bool hasImage( int size ) const
+    bool hasImage( int size ) const override
     {
         if( m_cover.isNull() )
             return Meta::Album::hasImage( size );
@@ -163,7 +163,7 @@ public:
             return true;
     }
 
-    QImage image( int size ) const
+    QImage image( int size ) const override
     {
         if( m_cover.isNull() )
             return Meta::Album::image( size );
@@ -171,7 +171,7 @@ public:
             return m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
     }
 
-    void setImage( const QImage &image )
+    void setImage( const QImage &image ) override
     {
         m_cover = image;
         CoverCache::invalidateAlbum( this );
@@ -189,7 +189,7 @@ public:
         , d( dptr )
     {}
 
-    QString name() const
+    QString name() const override
     {
         if( d && !d->genre.isEmpty() )
             return d->genre;

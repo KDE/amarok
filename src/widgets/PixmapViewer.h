@@ -45,8 +45,8 @@ Q_SIGNALS:
     void zoomFactorChanged( qreal );
 
 protected:
-    void paintEvent( QPaintEvent *event );
-    void wheelEvent( QWheelEvent *event );
+    void paintEvent( QPaintEvent *event ) override;
+    void wheelEvent( QWheelEvent *event ) override;
 
 private:
     const QPixmap m_pixmap;

@@ -34,7 +34,7 @@ class MySqlCollectionFactory : public Collections::CollectionFactory
 
         virtual ~MySqlCollectionFactory() {}
 
-        virtual void init();
+        void init() override;
 };
 
 } //namespace Collections

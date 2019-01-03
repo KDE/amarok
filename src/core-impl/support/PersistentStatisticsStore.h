@@ -50,30 +50,30 @@ class AMAROK_EXPORT PersistentStatisticsStore : public Meta::Statistics, private
         virtual ~PersistentStatisticsStore();
 
         // Meta::Statistics methods
-        virtual double score() const;
-        virtual void setScore( double newScore );
+        double score() const override;
+        void setScore( double newScore ) override;
 
-        virtual int rating() const;
-        virtual void setRating( int newRating );
+        int rating() const override;
+        void setRating( int newRating ) override;
 
-        virtual QDateTime lastPlayed() const;
-        virtual void setLastPlayed( const QDateTime &dt );
+        QDateTime lastPlayed() const override;
+        void setLastPlayed( const QDateTime &dt ) override;
 
-        virtual QDateTime firstPlayed() const;
-        virtual void setFirstPlayed( const QDateTime &dt );
+        QDateTime firstPlayed() const override;
+        void setFirstPlayed( const QDateTime &dt ) override;
 
-        virtual int playCount() const;
-        virtual void setPlayCount( int playCount );
+        int playCount() const override;
+        void setPlayCount( int playCount ) override;
 
-        virtual void beginUpdate();
-        virtual void endUpdate();
+        void beginUpdate() override;
+        void endUpdate() override;
 
         // Meta::Observer methods
 
         /**
          * Notice that the linked track was destroyed.
          */
-        virtual void entityDestroyed();
+        void entityDestroyed() override;
 
     protected:
         virtual void save() = 0; // called with m_lock locked for writing!

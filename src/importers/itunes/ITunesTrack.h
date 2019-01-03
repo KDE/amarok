@@ -32,15 +32,15 @@ public:
     explicit ITunesTrack( const int trackId, const Meta::FieldHash &metadata );
     ~ITunesTrack();
 
-    int rating() const;
-    void setRating( int rating );
-    QDateTime lastPlayed() const;
+    int rating() const override;
+    void setRating( int rating ) override;
+    QDateTime lastPlayed() const override;
 
 Q_SIGNALS:
     void commitCalled( const int trackId, const Meta::FieldHash &statistics );
 
 protected:
-    void doCommit( const qint64 changes );
+    void doCommit( const qint64 changes ) override;
 
 private:
     const int m_trackId;

@@ -47,42 +47,42 @@ class AudioCdTrack : public Meta::Track
         AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const QUrl &url );
         virtual ~AudioCdTrack();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual QUrl playableUrl() const;
-        virtual QString uidUrl() const;
-        virtual QString prettyUrl() const;
-        virtual QString notPlayableReason() const;
+        QUrl playableUrl() const override;
+        QString uidUrl() const override;
+        QString prettyUrl() const override;
+        QString notPlayableReason() const override;
 
-        virtual AlbumPtr album() const;
-        virtual ArtistPtr artist() const;
-        virtual GenrePtr genre() const;
-        virtual ComposerPtr composer() const;
-        virtual YearPtr year() const;
+        AlbumPtr album() const override;
+        ArtistPtr artist() const override;
+        GenrePtr genre() const override;
+        ComposerPtr composer() const override;
+        YearPtr year() const override;
 
         virtual void setTitle( const QString &newTitle );
 
-        virtual qreal bpm() const;
+        qreal bpm() const override;
 
-        virtual QString comment() const;
+        QString comment() const override;
         virtual void setComment ( const QString &newComment );
 
-        virtual qint64 length() const;
+        qint64 length() const override;
 
-        virtual int filesize() const;
-        virtual int sampleRate() const;
-        virtual int bitrate() const;
+        int filesize() const override;
+        int sampleRate() const override;
+        int bitrate() const override;
 
-        virtual int trackNumber() const;
+        int trackNumber() const override;
         virtual void setTrackNumber ( int newTrackNumber );
 
-        virtual int discNumber() const;
+        int discNumber() const override;
         virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual QString type() const;
+        QString type() const override;
 
-        virtual bool inCollection() const;
-        virtual Collections::Collection* collection() const;
+        bool inCollection() const override;
+        Collections::Collection* collection() const override;
 
         //AudioCdTrack specific methods
         void setAlbum( AudioCdAlbumPtr album );
@@ -118,9 +118,9 @@ class AudioCdArtist : public Meta::Artist
         explicit AudioCdArtist( const QString &name );
         virtual ~AudioCdArtist();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         virtual AlbumList albums();
 
@@ -138,20 +138,20 @@ class AudioCdAlbum : public Meta::Album
         explicit AudioCdAlbum( const QString &name );
         virtual ~AudioCdAlbum();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual bool isCompilation() const;
-        virtual bool canUpdateCompilation() const;
-        virtual void setCompilation( bool compilation );
+        bool isCompilation() const override;
+        bool canUpdateCompilation() const override;
+        void setCompilation( bool compilation ) override;
 
-        virtual bool hasAlbumArtist() const;
-        virtual ArtistPtr albumArtist() const;
-        virtual TrackList tracks();
+        bool hasAlbumArtist() const override;
+        ArtistPtr albumArtist() const override;
+        TrackList tracks() override;
 
-        virtual QImage image( int size = 0 ) const;
-        virtual bool hasImage( int size = 0 ) const;
-        virtual bool canUpdateImage() const;
-        virtual void setImage( const QImage &image );
+        QImage image( int size = 0 ) const override;
+        bool hasImage( int size = 0 ) const override;
+        bool canUpdateImage() const override;
+        void setImage( const QImage &image ) override;
 
         //AudioCdAlbum specific methods
         void addTrack( AudioCdTrackPtr track );
@@ -171,9 +171,9 @@ class AudioCdGenre : public Meta::Genre
         explicit AudioCdGenre( const QString &name );
         virtual ~AudioCdGenre();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //AudioCdGenre specific methods
         void addTrack( AudioCdTrackPtr track );
@@ -189,9 +189,9 @@ class AudioCdComposer : public Meta::Composer
         explicit AudioCdComposer( const QString &name );
         virtual ~AudioCdComposer();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //AudioCdComposer specific methods
         void addTrack( AudioCdTrackPtr track );
@@ -207,9 +207,9 @@ class AudioCdYear : public Meta::Year
         explicit AudioCdYear( const QString &name );
         virtual ~AudioCdYear();
 
-        virtual QString name() const;
+        QString name() const override;
 
-        virtual TrackList tracks();
+        TrackList tracks() override;
 
         //AudioCdYear specific methods
         void addTrack( AudioCdTrackPtr track );

@@ -40,7 +40,7 @@ Q_OBJECT
 public:
     explicit PlaylistBrowserView( QAbstractItemModel *model, QWidget *parent = nullptr );
 
-    virtual void setModel( QAbstractItemModel *model );
+    void setModel( QAbstractItemModel *model ) override;
 
 Q_SIGNALS:
     void currentItemChanged( const QModelIndex &current );
@@ -53,11 +53,11 @@ protected:
     void mouseReleaseEvent( QMouseEvent *event ) override;
     void startDrag( Qt::DropActions supportedActions ) override;
 
-    virtual void contextMenuEvent( QContextMenuEvent *event );
+    void contextMenuEvent( QContextMenuEvent *event ) override;
 
 protected Q_SLOTS:
     /** reimplemented to emit a signal */
-    void currentChanged( const QModelIndex &current, const QModelIndex &previous );
+    void currentChanged( const QModelIndex &current, const QModelIndex &previous ) override;
 
 private Q_SLOTS:
     // these are connected to m_*Actions:

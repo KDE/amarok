@@ -38,8 +38,8 @@ public:
 
 protected:
     /* Amarok::Logger virtual methods */
-    virtual void shortMessageImpl( const QString &text ) override;
-    virtual void longMessageImpl( const QString &text, MessageType type ) override;
+    void shortMessageImpl( const QString &text ) override;
+    void longMessageImpl( const QString &text, MessageType type ) override;
     virtual void newProgressOperationImpl( KJob * job, const QString & text, QObject *context,
                                            const std::function<void ()> &function, Qt::ConnectionType type ) override;
 

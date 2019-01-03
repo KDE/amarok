@@ -29,7 +29,7 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
                                   const QUrl &server, const QString &sessionId,
                                   ServiceBase *service);
         ~AmpacheTrackForUrlWorker();
-        virtual void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0);
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
         void parseTrack( const QString &xml );
     Q_SIGNALS:
         void authenticationNeeded();
@@ -66,13 +66,13 @@ public:
 
     virtual ~AmpacheServiceCollection();
 
-    virtual QueryMaker *queryMaker();
+    QueryMaker *queryMaker() override;
 
-    virtual QString collectionId() const;
-    virtual QString prettyName() const;
+    QString collectionId() const override;
+    QString prettyName() const override;
 
-    virtual Meta::TrackPtr trackForUrl( const QUrl &url );
-    virtual bool possiblyContainsTrack( const QUrl &url ) const;
+    Meta::TrackPtr trackForUrl( const QUrl &url ) override;
+    bool possiblyContainsTrack( const QUrl &url ) const override;
 
 Q_SIGNALS:
     void authenticationNeeded();

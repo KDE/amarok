@@ -42,7 +42,7 @@ namespace Meta
     {
         public:
             /** used to display the trackname, should never be empty, returns prettyUrl() by default if name() is empty */
-            virtual QString prettyName() const;
+            QString prettyName() const override;
             /** an url which can be played by the engine backends */
             virtual QUrl playableUrl() const = 0;
             /** an url for display purposes */
@@ -213,14 +213,14 @@ namespace Meta
     class AMAROK_CORE_EXPORT Artist : public Base
     {
         public:
-            virtual QString prettyName() const;
+            QString prettyName() const override;
 
             /** returns all tracks by this artist */
             virtual TrackList tracks() = 0;
 
             virtual bool operator==( const Meta::Artist &artist ) const;
 
-            virtual QString sortableName() const;
+            QString sortableName() const override;
 
         protected:
             virtual void notifyObservers() const;
@@ -248,7 +248,7 @@ namespace Meta
     class AMAROK_CORE_EXPORT Album : public Base
     {
         public:
-            virtual QString prettyName() const;
+            QString prettyName() const override;
 
             /**
              * Whether this album is considered to be a compilation of tracks from various
@@ -318,7 +318,7 @@ namespace Meta
     class AMAROK_CORE_EXPORT Composer : public Base
     {
         public:
-            virtual QString prettyName() const;
+            QString prettyName() const override;
 
             /** returns all tracks by this composer */
             virtual TrackList tracks() = 0;
@@ -332,7 +332,7 @@ namespace Meta
     class AMAROK_CORE_EXPORT Genre : public Base
     {
         public:
-            virtual QString prettyName() const;
+            QString prettyName() const override;
 
             /** returns all tracks which belong to the genre */
             virtual TrackList tracks() = 0;

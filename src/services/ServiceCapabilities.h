@@ -49,11 +49,11 @@ public:
 
     ~ServiceBookmarkThisCapability();
 
-    virtual bool isBookmarkable();
-    virtual QString browserName();
-    virtual QString collectionName();
-    virtual bool simpleFiltering();
-    virtual QAction * bookmarkAction() const;
+    bool isBookmarkable() override;
+    QString browserName() override;
+    QString collectionName() override;
+    bool simpleFiltering() override;
+    QAction * bookmarkAction() const override;
 
 private:
 
@@ -68,7 +68,7 @@ class AMAROK_EXPORT ServiceActionsCapability : public Capabilities::ActionsCapab
     public:
         explicit ServiceActionsCapability( ActionsProvider * actionsProvider  );
         virtual ~ServiceActionsCapability();
-        virtual QList< QAction * > actions() const;
+        QList< QAction * > actions() const override;
 
     private:
         ActionsProvider * m_actionsProvider;
@@ -83,10 +83,10 @@ public:
 
     ~ServiceSourceInfoCapability();
 
-    QString sourceName();
-    QString sourceDescription();
-    QPixmap emblem();
-    QString scalableEmblem();
+    QString sourceName() override;
+    QString sourceDescription() override;
+    QPixmap emblem() override;
+    QString scalableEmblem() override;
 
 private:
     SourceInfoProvider * m_sourceInfoProvider;
@@ -100,7 +100,7 @@ class AMAROK_EXPORT ServiceFindInSourceCapability : public Capabilities::FindInS
     Q_OBJECT
     public:
         explicit ServiceFindInSourceCapability( Meta::ServiceTrack *track );
-        virtual void findInSource( QFlags<TargetTag> tag );
+        void findInSource( QFlags<TargetTag> tag ) override;
 
     private:
         Meta::ServiceTrack * m_track;

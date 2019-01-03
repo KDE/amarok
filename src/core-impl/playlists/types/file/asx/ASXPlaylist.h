@@ -31,16 +31,16 @@ class AMAROK_EXPORT ASXPlaylist : public PlaylistFile, public QDomDocument
         virtual bool save( bool relative ) { return PlaylistFile::save( relative ); }
 
         using PlaylistFile::load;
-        virtual bool load( QTextStream &stream ) { return loadAsx( stream ); }
+        bool load( QTextStream &stream ) override { return loadAsx( stream ); }
 
-        virtual QString extension() const { return "asx"; }
-        virtual QString mimetype() const { return "video/x-ms-asf"; }
+        QString extension() const override { return "asx"; }
+        QString mimetype() const override { return "video/x-ms-asf"; }
 
     protected:
         bool loadAsx( QTextStream &stream );
         /** Writes tracks to file */
         void writeTrackList();
-        virtual void savePlaylist( QFile &file );
+        void savePlaylist( QFile &file ) override;
         bool processContent( QTextStream &stream );
 };
 }

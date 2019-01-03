@@ -36,17 +36,17 @@ namespace Playlists
             ~MediaDevicePlaylist();
 
             // Playlist Functions
-            virtual QString name() const { return m_name; }
-            virtual QUrl uidUrl() const { return QUrl(); }
+            QString name() const override { return m_name; }
+            QUrl uidUrl() const override { return QUrl(); }
 
             /**override showing just the filename */
-            virtual void setName( const QString &name );
+            void setName( const QString &name ) override;
 
-            virtual int trackCount() const;
-            virtual Meta::TrackList tracks();
-            virtual void addTrack( Meta::TrackPtr track, int position = -1 );
+            int trackCount() const override;
+            Meta::TrackList tracks() override;
+            void addTrack( Meta::TrackPtr track, int position = -1 ) override;
 
-            virtual void removeTrack( int position );
+            void removeTrack( int position ) override;
 
     private:
         Meta::TrackList m_tracks;

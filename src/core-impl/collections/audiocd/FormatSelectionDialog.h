@@ -37,7 +37,7 @@ public:
     ~FormatSelectionDialog();
 
 public Q_SLOTS:
-    virtual void accept();
+    void accept() override;
 
     virtual void showAdvancedSettings();
 

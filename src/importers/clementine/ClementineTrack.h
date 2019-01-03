@@ -34,19 +34,19 @@ public:
                      const Meta::FieldHash &metadata );
     ~ClementineTrack();
 
-    int year() const;
-    int trackNumber() const;
-    int discNumber() const;
+    int year() const override;
+    int trackNumber() const override;
+    int discNumber() const override;
 
-    QDateTime lastPlayed() const;
-    void setLastPlayed( const QDateTime &lastPlayed );
-    int playCount() const;
-    void setPlayCount( int playCount );
-    int rating() const;
-    void setRating( int rating );
+    QDateTime lastPlayed() const override;
+    void setLastPlayed( const QDateTime &lastPlayed ) override;
+    int playCount() const override;
+    void setPlayCount( int playCount ) override;
+    int rating() const override;
+    void setRating( int rating ) override;
 
 protected:
-    void doCommit( const qint64 fields );
+    void doCommit( const qint64 fields ) override;
 
 private:
     const ImporterSqlConnectionPtr m_connection;

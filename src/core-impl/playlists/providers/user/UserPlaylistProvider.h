@@ -34,7 +34,7 @@ namespace Playlists {
             explicit UserPlaylistProvider( QObject *parent = nullptr );
 
             /* PlaylistProvider functions */
-            virtual int category() const;
+            int category() const override;
 
             /* UserPlaylistProvider functions */
             virtual PlaylistPtr save( const Meta::TrackList &tracks,

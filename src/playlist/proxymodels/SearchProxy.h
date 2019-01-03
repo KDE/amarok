@@ -45,12 +45,12 @@ public:
     /**
      * Implementation of Playlist::AbstractModel: search/filter-related functions.
      */
-    void clearSearchTerm();
-    int currentSearchFields() { return m_currentSearchFields; }
-    QString currentSearchTerm() { return m_currentSearchTerm; }
-    int find( const QString & searchTerm, int searchFields = MatchTrack );
-    int findNext( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack   );
-    int findPrevious( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack  );
+    void clearSearchTerm() override;
+    int currentSearchFields() override { return m_currentSearchFields; }
+    QString currentSearchTerm() override { return m_currentSearchTerm; }
+    int find( const QString & searchTerm, int searchFields = MatchTrack ) override;
+    int findNext( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack   ) override;
+    int findPrevious( const QString & searchTerm, int selectedRow, int searchFields = MatchTrack  ) override;
 
 private:
     QString m_currentSearchTerm;

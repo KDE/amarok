@@ -28,8 +28,8 @@ class MtpConnectionAssistant : public ConnectionAssistant
 public:
     virtual ~MtpConnectionAssistant();
 
-    virtual bool identify( const QString& udi );
-    virtual MediaDeviceInfo* deviceInfo( const QString& udi );
+    bool identify( const QString& udi ) override;
+    MediaDeviceInfo* deviceInfo( const QString& udi ) override;
 
 };
 

@@ -35,11 +35,11 @@ namespace ScriptConsoleNS
             virtual ~AmarokScriptCodeCompletionModel();
 
         private:
-            QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-            void completionInvoked( KTextEditor::View *view, const KTextEditor::Range &range, InvocationType invocationType );
-            void executeCompletionItem( KTextEditor::View *view, const KTextEditor::Range &range, const QModelIndex &index ) const;
-            KTextEditor::Range completionRange( KTextEditor::View *view, const KTextEditor::Cursor &position );
-            bool shouldAbortCompletion( KTextEditor::View *view, const KTextEditor::Range &range, const QString &currentCompletion );
+            QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+            void completionInvoked( KTextEditor::View *view, const KTextEditor::Range &range, InvocationType invocationType ) override;
+            void executeCompletionItem( KTextEditor::View *view, const KTextEditor::Range &range, const QModelIndex &index ) const override;
+            KTextEditor::Range completionRange( KTextEditor::View *view, const KTextEditor::Cursor &position ) override;
+            bool shouldAbortCompletion( KTextEditor::View *view, const KTextEditor::Range &range, const QString &currentCompletion ) override;
 
             QStringList m_completionList;
             QStringList m_autoCompleteStrings;

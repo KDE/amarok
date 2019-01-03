@@ -49,9 +49,9 @@ public:
      */
     void moveTrackBookmark( Meta::TrackPtr track, qint64 newMiliseconds, QString name );
 
-    QString description();
-    QIcon icon();
-    AmarokUrl createUrl();
+    QString description() override;
+    QIcon icon() override;
+    AmarokUrl createUrl() override;
 
 private:
     PlayUrlGenerator();

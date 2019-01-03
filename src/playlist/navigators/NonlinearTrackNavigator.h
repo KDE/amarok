@@ -51,12 +51,12 @@ namespace Playlist
             NonlinearTrackNavigator();
 
             //! Overrides from 'TrackNavigator'
-            quint64 likelyNextTrack();
-            quint64 requestNextTrack();
-            quint64 requestUserNextTrack() { return requestNextTrack(); }
+            quint64 likelyNextTrack() override;
+            quint64 requestNextTrack() override;
+            quint64 requestUserNextTrack() override { return requestNextTrack(); }
 
-            quint64 likelyLastTrack();
-            quint64 requestLastTrack();
+            quint64 likelyLastTrack() override;
+            quint64 requestLastTrack() override;
 
             static const int MAX_HISTORY_SIZE = 1000;    // This is probably enough for even the most crazed user.
 

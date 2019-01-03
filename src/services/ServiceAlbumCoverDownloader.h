@@ -84,7 +84,7 @@ public:
      * Set the cover image of the album.
      * @param image The cover image.
      */
-    void setImage( const QImage &image );
+    void setImage( const QImage &image ) override;
 
     /**
      * Notify album that the download of the cover has been cancelled.
@@ -96,7 +96,7 @@ public:
      * @param size Unused.
      * @return True.
      */
-    virtual bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return true; }
+    bool hasImage( int size = 1 ) const override { Q_UNUSED( size ); return true; }
 
     /**
      * Get the image of this album. If the image has not yet been fetched, this call will return a standard
@@ -104,7 +104,7 @@ public:
      * @param size The required size of the album.
      * @return The cover image or a default cover.
      */
-    virtual QImage image( int size = 0 ) const; //overridden from Meta::Album
+    QImage image( int size = 0 ) const override; //overridden from Meta::Album
 
 protected:
 

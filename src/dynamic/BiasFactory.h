@@ -44,13 +44,13 @@ namespace Dynamic
             explicit ReplacementBias( const QString &n );
             ReplacementBias( const QString &n, QXmlStreamReader *reader );
 
-            void toXml( QXmlStreamWriter *writer ) const;
+            void toXml( QXmlStreamWriter *writer ) const override;
 
             static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
+            QString name() const override;
+            QString toString() const override;
 
-            virtual QWidget* widget( QWidget* parent = nullptr );
+            QWidget* widget( QWidget* parent = nullptr ) override;
 
         protected Q_SLOTS:
                 void factoryChanged();

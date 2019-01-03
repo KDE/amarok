@@ -38,7 +38,7 @@ class MusicBrainzTagsView : public QTreeView
         void expandUnchosen();
 
     protected:
-        virtual void contextMenuEvent( QContextMenuEvent *event );
+        void contextMenuEvent( QContextMenuEvent *event ) override;
 
     private Q_SLOTS:
         void chooseBestMatchesFromRelease() const;

@@ -137,7 +137,7 @@ public:
     ~CoverFetchInfoPayload();
 
 protected:
-    void prepareUrls();
+    void prepareUrls() override;
 
 private:
     void prepareDiscogsUrls( const QByteArray &data );
@@ -160,7 +160,7 @@ public:
     QString query() const;
 
 protected:
-    void prepareUrls();
+    void prepareUrls() override;
 
 private:
     const unsigned int m_page;
@@ -191,7 +191,7 @@ public:
     void setXml( const QByteArray &xml );
 
 protected:
-    void prepareUrls();
+    void prepareUrls() override;
 
 private:
     CoverFetch::ImageSize m_size;

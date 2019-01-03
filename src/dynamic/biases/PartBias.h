@@ -74,23 +74,23 @@ namespace Dynamic
             */
             PartBias();
 
-            virtual void fromXml( QXmlStreamReader *reader );
-            virtual void toXml( QXmlStreamWriter *writer ) const;
+            void fromXml( QXmlStreamReader *reader ) override;
+            void toXml( QXmlStreamWriter *writer ) const override;
 
             static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
+            QString name() const override;
+            QString toString() const override;
 
-            virtual QWidget* widget( QWidget* parent = nullptr );
-            virtual void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias );
+            QWidget* widget( QWidget* parent = nullptr ) override;
+            void paintOperator( QPainter* painter, const QRect &rect, Dynamic::AbstractBias* bias ) override;
 
-            virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
+            TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const;
+                                             const TrackCollectionPtr universe ) const override;
 
-            virtual bool trackMatches( int position,
+            bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
-                                       int contextCount ) const;
+                                       int contextCount ) const override;
 
             /** Returns the weights of the bias itself and all the sub-biases. */
             virtual QList<qreal> weights() const;
@@ -98,11 +98,11 @@ namespace Dynamic
             /** Appends a bias to this bias.
                 This object will take ownership of the bias and free it when destroyed.
             */
-            virtual void appendBias( Dynamic::BiasPtr bias );
-            virtual void moveBias( int from, int to );
+            void appendBias( Dynamic::BiasPtr bias ) override;
+            void moveBias( int from, int to ) override;
 
         public Q_SLOTS:
-            void resultReceived( const Dynamic::TrackSet &tracks );
+            void resultReceived( const Dynamic::TrackSet &tracks ) override;
 
             /** The overall weight has changed */
             void changeBiasWeight( int biasNum, qreal value );
@@ -112,7 +112,7 @@ namespace Dynamic
             void weightsChanged();
 
         protected Q_SLOTS:
-            virtual void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
+            void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias ) override;
 
         private:
             /** Using the data from m_matchingTracks it tries to compute a valid m_tracks */
@@ -134,10 +134,10 @@ namespace Dynamic
     class AMAROK_EXPORT PartBiasFactory : public Dynamic::AbstractBiasFactory
     {
         public:
-            virtual QString i18nName() const;
-            virtual QString name() const;
-            virtual QString i18nDescription() const;
-            virtual BiasPtr createBias();
+            QString i18nName() const override;
+            QString name() const override;
+            QString i18nDescription() const override;
+            BiasPtr createBias() override;
     };
 
 }

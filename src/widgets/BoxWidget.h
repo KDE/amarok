@@ -46,7 +46,7 @@ public:
     QBoxLayout* layout() const;
 
 protected:
-    virtual void childEvent(QChildEvent* event) override;
+    void childEvent(QChildEvent* event) override;
 };
 
 #endif // BOXWIDGET_H

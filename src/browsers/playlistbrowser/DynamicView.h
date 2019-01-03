@@ -56,7 +56,7 @@ protected:
     void keyPressEvent( QKeyEvent *event ) override;
     void mouseDoubleClickEvent( QMouseEvent *event ) override;
 
-    virtual void contextMenuEvent( QContextMenuEvent* event );
+    void contextMenuEvent( QContextMenuEvent* event ) override;
 };
 
 } // namespace PlaylistBrowserNS

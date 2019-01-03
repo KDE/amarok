@@ -38,7 +38,7 @@ namespace StatSyncing
         public:
             explicit MatchTracksJob( const ProviderPtrList &providers, QObject *parent = nullptr );
 
-            virtual bool success() const override;
+            bool success() const override;
 
             /**
              * Binary OR of MetaValues.h Meta::val* flags that are used to compare tracks

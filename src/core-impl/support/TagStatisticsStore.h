@@ -27,7 +27,7 @@ class AMAROK_EXPORT TagStatisticsStore : public PersistentStatisticsStore
         explicit TagStatisticsStore( Meta::Track *track );
 
     protected:
-        virtual void save();
+        void save() override;
 
     private:
         QString m_name;

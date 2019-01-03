@@ -51,7 +51,7 @@ protected Q_SLOTS:
     /*$PROTECTED_SLOTS$*/
     void slotRedownload();
     void selectionChanged();
-    void reject();
+    void reject() override;
 
 };
 

@@ -33,10 +33,10 @@ public:
     PopupDropperView( PopupDropper *pd, QGraphicsScene *scene, QWidget *parent );
     ~PopupDropperView();
 
-    void dropEvent( QDropEvent *event );
-    void dragEnterEvent( QDragEnterEvent *event );
-    void dragMoveEvent( QDragMoveEvent *event );
-    void dragLeaveEvent( QDragLeaveEvent *event );
+    void dropEvent( QDropEvent *event ) override;
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragMoveEvent( QDragMoveEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
 
     void resetView();
 

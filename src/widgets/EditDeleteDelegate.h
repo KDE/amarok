@@ -28,8 +28,8 @@ class EditDeleteDelegate : public QStyledItemDelegate
     public:
         explicit EditDeleteDelegate( QObject *parent );
 
-        virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-        virtual QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+        void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
+        QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
 
         static bool hitsEdit( const QPoint &point, const QRect &rect );
         static bool hitsDelete( const QPoint &point, const QRect &rect );

@@ -75,7 +75,7 @@ class AMAROK_EXPORT App : public QApplication
         void quit();
 
     protected:
-        virtual bool event( QEvent *event );
+        bool event( QEvent *event ) override;
 
     private Q_SLOTS:
         void slotTrashResult( KJob *job );
