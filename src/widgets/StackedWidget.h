@@ -29,7 +29,7 @@ A simple QStackedWidget subclass with transparent background
 class StackedWidget : public QStackedWidget
 {
 public:
-    explicit StackedWidget( QWidget * parent = 0 )
+    explicit StackedWidget( QWidget * parent = nullptr )
     : QStackedWidget( parent ) {}
 
     ~StackedWidget( ) {}

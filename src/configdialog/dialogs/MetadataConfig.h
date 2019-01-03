@@ -30,7 +30,7 @@ class MetadataConfig : public ConfigDialogBase, private Ui_MetadataConfig
 
     public:
         explicit MetadataConfig( Amarok2ConfigDialog *parent );
-        virtual ~MetadataConfig();
+        ~MetadataConfig() override;
 
         bool isDefault() override;
         bool hasChanged() override;

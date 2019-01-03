@@ -168,7 +168,7 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         bool loadPlaylists( const QString &filename );
         void initPlaylists();
 
-        DynamicModel(QObject* parent = 0);
+        DynamicModel(QObject* parent = nullptr);
         static DynamicModel* s_instance;
 
         int m_activePlaylistIndex;

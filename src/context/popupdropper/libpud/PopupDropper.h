@@ -66,7 +66,7 @@ public:
     ~PopupDropper();
 
     int overlayLevel() const;
-    void initOverlay( QWidget* parent, PopupDropperPrivate* priv = 0 );
+    void initOverlay( QWidget* parent, PopupDropperPrivate* priv = nullptr );
 
     void addOverlay();
 

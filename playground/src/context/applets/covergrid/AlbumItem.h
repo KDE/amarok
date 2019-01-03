@@ -31,7 +31,7 @@ class AlbumItem : public QLabel
     Q_OBJECT
 
 public:
-    AlbumItem( const QPixmap & pixmap, Meta::AlbumPtr album, QWidget * parent = 0, Qt::WindowFlags f = 0  );
+    AlbumItem( const QPixmap & pixmap, Meta::AlbumPtr album, QWidget * parent = nullptr, Qt::WindowFlags f = 0  );
     ~AlbumItem();
 
     Meta::AlbumPtr getAlbum();

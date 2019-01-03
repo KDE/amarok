@@ -24,7 +24,7 @@
 class BrowserCategoryListSortFilterProxyModel : public QSortFilterProxyModel
 {
     public:
-        explicit BrowserCategoryListSortFilterProxyModel( QObject * parent = 0 );
+        explicit BrowserCategoryListSortFilterProxyModel( QObject * parent = nullptr );
         virtual ~BrowserCategoryListSortFilterProxyModel();
 };
 

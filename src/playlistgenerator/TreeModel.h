@@ -31,7 +31,7 @@ namespace APG {
         Q_OBJECT
 
         public:
-            explicit TreeModel( ConstraintNode*, QObject* parent = 0 );
+            explicit TreeModel( ConstraintNode*, QObject* parent = nullptr );
             ~TreeModel();
 
             QVariant data( const QModelIndex& index, int role ) const;

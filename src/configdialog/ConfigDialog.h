@@ -33,7 +33,7 @@ class Amarok2ConfigDialog : public KConfigDialog
 
     public:
         Amarok2ConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config );
-        ~Amarok2ConfigDialog();
+        ~Amarok2ConfigDialog() override;
 
         void addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName,
                       const QString &header = QString(), bool manage = true );

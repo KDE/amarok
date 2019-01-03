@@ -54,7 +54,7 @@ class AlbumsProxyModel : public QSortFilterProxyModel
 
 public:
     explicit AlbumsProxyModel( QObject *parent );
-    ~AlbumsProxyModel();
+    ~AlbumsProxyModel() override;
 
     enum Mode { SortByCreateDate, SortByYear };
     Q_ENUM( Mode )
@@ -62,7 +62,7 @@ public:
     Mode mode() const;
     void setMode( Mode mode );
 
-    virtual QHash<int, QByteArray> roleNames() const override;
+    QHash<int, QByteArray> roleNames() const override;
 
 signals:
     void modeChanged();

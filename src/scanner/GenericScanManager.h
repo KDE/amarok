@@ -48,7 +48,7 @@ class AMAROK_EXPORT GenericScanManager : public QObject
 {
     Q_OBJECT
     public:
-        explicit GenericScanManager( QObject* parent = 0 );
+        explicit GenericScanManager( QObject* parent = nullptr );
         virtual ~GenericScanManager();
 
         /** The scan mode.

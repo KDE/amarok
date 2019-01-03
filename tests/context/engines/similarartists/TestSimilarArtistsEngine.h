@@ -26,7 +26,7 @@ class TestSimilarArtistsEngine : public QObject
 {
     Q_OBJECT
     public:    
-        TestSimilarArtistsEngine(QObject* parent = 0);
+        TestSimilarArtistsEngine(QObject* parent = nullptr);
     private Q_SLOTS:
         void initTestCase();
         void testDataEngineMethod();

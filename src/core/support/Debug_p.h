@@ -27,7 +27,7 @@ class IndentPrivate
     : public QObject
 {
 private:
-    explicit IndentPrivate(QObject* parent = 0);
+    explicit IndentPrivate(QObject* parent = nullptr);
 
 public:
     static IndentPrivate* instance();

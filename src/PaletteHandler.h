@@ -89,7 +89,7 @@ Q_SIGNALS:
     void newPalette( const QPalette & palette );
 
 private:
-    PaletteHandler( QObject* parent = 0 );
+    PaletteHandler( QObject* parent = nullptr );
 
     QPalette m_palette;
 };

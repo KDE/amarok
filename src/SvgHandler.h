@@ -156,7 +156,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
         void discardCache();
 
     private:
-        SvgHandler( QObject* parent = 0 );
+        SvgHandler( QObject* parent = nullptr );
 
         bool loadSvg( const QString& name, bool forceCustomTheme = false );
 

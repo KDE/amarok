@@ -30,7 +30,7 @@ class PluginsConfig : public ConfigDialogBase
 
 public:
     explicit PluginsConfig( Amarok2ConfigDialog *parent );
-    virtual ~PluginsConfig();
+    ~PluginsConfig() override;
 
     void updateSettings() override;
     bool hasChanged() override;

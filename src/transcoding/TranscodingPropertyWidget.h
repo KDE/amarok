@@ -32,7 +32,7 @@ namespace Transcoding
 class PropertyWidget
 {
 public:
-    static PropertyWidget * create( Property &property, QWidget * parent = 0 );
+    static PropertyWidget * create( Property &property, QWidget * parent = nullptr );
 
     virtual ~PropertyWidget(){}
 

@@ -26,7 +26,7 @@ class TestDataEngine : public QObject
     Q_OBJECT
 
     public:
-        TestDataEngine(QObject* parent = 0);
+        TestDataEngine(QObject* parent = nullptr);
         
     private:
 };

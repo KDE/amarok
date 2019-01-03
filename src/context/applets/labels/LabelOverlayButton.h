@@ -35,7 +35,7 @@ class LabelOverlayButton : public QObject, public QGraphicsItem
 
 public:
     explicit LabelOverlayButton( QGraphicsItem *parent );
-    ~LabelOverlayButton();
+    ~LabelOverlayButton() override;
 
     void setPixmap( const QPixmap& pixmap );
     QPixmap pixmap();
@@ -47,8 +47,8 @@ public:
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
 protected:
-    virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
-    virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
+    void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
+    void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
 
 private:
     KIconEffect     *m_iconEffect;

@@ -27,7 +27,7 @@ class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
 
     public:
         explicit PlaybackConfig( Amarok2ConfigDialog* parent );
-        virtual ~PlaybackConfig();
+        ~PlaybackConfig() override;
 
         bool hasChanged() override;
         bool isDefault() override;

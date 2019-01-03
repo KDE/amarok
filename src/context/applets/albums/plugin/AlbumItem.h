@@ -29,7 +29,7 @@ class AlbumItem : public QObject, public QStandardItem, public Meta::Observer
 
     public:
         AlbumItem();
-        ~AlbumItem();
+        ~AlbumItem() override;
 
         /**
          * Sets the AlbumPtr for this item to associate with

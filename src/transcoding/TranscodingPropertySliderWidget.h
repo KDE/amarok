@@ -33,7 +33,7 @@ class PropertySliderWidget : public QWidget, public PropertyWidget
 {
     Q_OBJECT
 public:
-    explicit PropertySliderWidget( Property property, QWidget * parent = 0 );
+    explicit PropertySliderWidget( Property property, QWidget * parent = nullptr );
 
     QVariant value() const;
 

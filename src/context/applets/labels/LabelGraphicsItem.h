@@ -38,7 +38,7 @@ class LabelGraphicsItem : public QGraphicsObject
 
 public:
     LabelGraphicsItem( const QString& text, qreal deltaPointSize, QGraphicsItem *parent );
-    ~LabelGraphicsItem();
+    ~LabelGraphicsItem() override;
 
     QString text();
     void setText( const QString& text );
@@ -54,9 +54,9 @@ public:
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
 
 protected:
-    virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
-    virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
-    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+    void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
+    void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
+    void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
 
 private:
     qreal hoverValue();

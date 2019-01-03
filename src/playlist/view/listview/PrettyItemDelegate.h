@@ -40,7 +40,7 @@ class PrettyItemDelegate : public QStyledItemDelegate
 public:
     static int rowsForItem( const QModelIndex &index );
 
-    explicit PrettyItemDelegate( QObject* parent = 0 );
+    explicit PrettyItemDelegate( QObject* parent = nullptr );
     ~PrettyItemDelegate();
 
     QSize sizeHint( const QStyleOptionViewItem&, const QModelIndex& ) const;

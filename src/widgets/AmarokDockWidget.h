@@ -25,7 +25,7 @@ class AmarokDockWidget : public QDockWidget
     Q_OBJECT
 
 public:
-    explicit AmarokDockWidget( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 );
+    explicit AmarokDockWidget( const QString & title, QWidget * parent = nullptr, Qt::WindowFlags flags = 0 );
 
     void setMovable( bool movable );
 

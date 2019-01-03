@@ -27,7 +27,7 @@ class TestUpcomingEventsEngine : public TestDataEngine
     Q_OBJECT
     
     public:    
-        TestUpcomingEventsEngine(QObject* parent = 0);
+        TestUpcomingEventsEngine(QObject* parent = nullptr);
     
     private Q_SLOTS:
         void initTestCase();

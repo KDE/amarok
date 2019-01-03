@@ -37,7 +37,7 @@ class ScriptsConfig : public ConfigDialogBase
 
 public:
     explicit ScriptsConfig( Amarok2ConfigDialog *parent );
-    virtual ~ScriptsConfig();
+    ~ScriptsConfig() override;
 
     void updateSettings() override;
     bool hasChanged() override;

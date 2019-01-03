@@ -26,7 +26,7 @@ class TrackItem : public QStandardItem, public Meta::Observer
 {
     public:
         TrackItem();
-        ~TrackItem();
+        ~TrackItem() override;
 
         /**
          * Sets the TrackPtr for this item to associate with
@@ -54,11 +54,11 @@ class TrackItem : public QStandardItem, public Meta::Observer
 
         // overloaded from Meta::Observer
         using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::TrackPtr track ) override;
+        void metadataChanged( Meta::TrackPtr track ) override;
 
-        virtual int type() const override;
+        int type() const override;
 
-        virtual bool operator<( const QStandardItem &other ) const override;
+        bool operator<( const QStandardItem &other ) const override;
 
     private:
         Meta::TrackPtr m_track;
