@@ -66,7 +66,11 @@ namespace MetaStream
              * This method doesn't call notifyObservers(), it is the caller's
              * responsibility; it also doesn't overwrite already filled entries.
              *
+             * @param artist track artist
+             * @param album track album
+             * @param title track title
              * @param length is in milliseconds
+             * @param trackNumber track number
              */
             void setInitialInfo( const QString &artist, const QString &album,
                                  const QString &title, qint64 length, int trackNumber );

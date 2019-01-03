@@ -48,13 +48,16 @@ namespace MetaProxy
              * Construct a lazy-loading proxying track. You must assign this track to a
              * AmarokSharedPointer right after constructing it.
              *
-             * If @param lookupType is AutomaticLookup (the default), an asynchronous
+             * If @p lookupType is AutomaticLookup (the default), an asynchronous
              * job employing CollectionManager to lookup the track in TrackProviders is
              * enqueued and started right from this constructor.
              *
-             * If @param lookupType is ManualLookup, lookup is not done automatically
+             * If @p lookupType is ManualLookup, lookup is not done automatically
              * and you are responsible to call lookupTrack() once it is feasible. This way
              * you can also optionally define which TrackProvider will be used.
+             *
+             * @param url th URL
+             * @param lookupType lookup type
              */
             explicit Track( const QUrl &url, LookupType lookupType = AutomaticLookup );
             virtual ~Track();

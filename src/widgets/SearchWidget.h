@@ -34,7 +34,8 @@ class AMAROK_EXPORT SearchWidget : public QWidget
     Q_OBJECT
     public:
         /** Creates a search widget.
-            @param advanced If true generates a button that opens a edit filter dialog.
+         * @param parent The parent widget
+         * @param advanced If true generates a button that opens a edit filter dialog.
         */
         explicit SearchWidget( QWidget *parent = Q_NULLPTR, bool advanced = true );
 

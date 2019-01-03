@@ -79,6 +79,7 @@ class MetaQueryWidget : public QWidget
 
     public:
         /** Creates a MetaQueryWidget which can be used to select one meta query filter.
+         *  @param parent The parent widget
          *  @param onlyNumeric If set to true the widget will only display numeric fields.
          *  @param noCondition If set to true no condition can be selected.
          */
@@ -149,7 +150,8 @@ class MetaQueryWidget : public QWidget
         static bool isDate( qint64 field );
 
         /** Returns a localized text of the condition.
-            @param field Needed in order to test whether the field is a date, numeric or a string since the texts differ slightly
+         *  @param condition The condition
+         *  @param field Needed in order to test whether the field is a date, numeric or a string since the texts differ slightly
         */
         static QString conditionToString( FilterCondition condition, qint64 field );
 

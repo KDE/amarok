@@ -49,9 +49,12 @@ class IpodPlaylist : public Playlists::Playlist
         IpodPlaylist( Itdb_Playlist *ipodPlaylist, IpodCollection *collection );
 
         /**
-         * Create new Amarok iPod playlist. Some @param tracks may not be in corresponding
+         * Create new Amarok iPod playlist. Some @p tracks may not be in corresponding
          * iPod collection, these are copied to iPod (unless not matched by meta tags)
          *
+         * @param tracks the tracks
+         * @param name the playlist name
+         * @param collection iPod collection
          * @param type whether this playlist is an ordinatory one or a kind of special
          */
         IpodPlaylist( const Meta::TrackList &tracks, const QString &name,
@@ -96,9 +99,11 @@ class IpodPlaylist : public Playlists::Playlist
         void scheduleCopyAndInsert();
 
         /**
-         * Does the dirty job of adding @param track to this playlist, both to m_tracks
-         * and to underlying libgpoid playlist. @param position must be a valid position
+         * Does the dirty job of adding @p track to this playlist, both to m_tracks
+         * and to underlying libgpoid playlist. @p position must be a valid position
          * otherwise this method asserts out.
+         * @param track the track
+         * @param position the position
          */
         void addIpodTrack( Meta::TrackPtr track, int position );
 

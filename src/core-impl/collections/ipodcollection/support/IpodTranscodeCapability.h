@@ -30,6 +30,7 @@ namespace Capabilities
 
         public:
             /**
+             * @param coll collection
              * @param deviceDirPath path to .../iPod_Control/Device directory
              */
             IpodTranscodeCapability( IpodCollection *coll, const QString &deviceDirPath );

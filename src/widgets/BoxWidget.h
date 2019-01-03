@@ -38,6 +38,7 @@ public:
      * Constructor
      * @param vertical defines if this BoxWidget has a vertical Layout.
      * Has a horizontal if false.
+     * @param parent the parent widget.
      */
     explicit BoxWidget( bool vertical = true, QWidget *parent = Q_NULLPTR );
     virtual ~BoxWidget() {}

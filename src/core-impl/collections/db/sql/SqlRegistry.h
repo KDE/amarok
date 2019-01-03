@@ -85,6 +85,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlRegistry : public QObject
 
         /** Searches a directory entry in the scanned directories
             This function searches an existing directory entry.
+            @param path the directory path
             @param mtime if mtime is != 0 then the mtime of the entry is updated
             @returns the directory id
          */

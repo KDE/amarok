@@ -41,10 +41,13 @@ class AMAROK_TRANSCODING_EXPORT AssistantDialog : public KPageDialog
 public:
     /**
      * Create transcoding assistant dialog. Only encoders that encode to one of the
-     * @param playableFileTypes will be enabled.
+     * @p playableFileTypes will be enabled.
+     * @param playableFileTypes the playable file types
      * @param saveSupported true if transcoding config preference can be saved
      * @param operation whether this is copying or moving
      * @param destCollectionName name of the destination collection
+     * @param prevConfiguration previous configuration
+     * @param paren the parent widget
      */
     AssistantDialog( const QStringList &playableFileTypes, bool saveSupported,
                      Collections::CollectionLocationDelegate::OperationType operation,

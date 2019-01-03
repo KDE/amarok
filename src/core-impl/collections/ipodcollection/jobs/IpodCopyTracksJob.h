@@ -43,6 +43,9 @@ class IpodCopyTracksJob : public QObject, public ThreadWeaver::Job
         };
 
         /**
+         * @param sources list of sources
+         * @param collection collection
+         * @param configuration transcoding configuration
          * @param goingToRemoveSources whether this is in fact a move operation
          */
         IpodCopyTracksJob( const QMap<Meta::TrackPtr,QUrl> &sources,

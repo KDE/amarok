@@ -41,6 +41,7 @@ public:
     /**
      * Construct the engine
      * @param parent The object parent to this engine
+     * @param args The list of arguments
      */
     SimilarArtistsEngine( QObject *parent, const QList<QVariant> &args );
 

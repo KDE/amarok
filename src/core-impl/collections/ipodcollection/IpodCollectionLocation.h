@@ -46,7 +46,9 @@ class IpodCollectionLocation : public Collections::CollectionLocation
         // IpodCollectionLocation specific methods:
         /**
          * Calling this causes that when the tracks are copied, they are added to iPod
-         * playlist @param destPlaylist
+         * playlist @p destPlaylist
+         * @param destPlaylist destination playlist
+         * @param trackPlaylistPositions positions of tracks in the playlist
          */
         void setDestinationPlaylist( Playlists::PlaylistPtr destPlaylist,
                                      const QMap<Meta::TrackPtr, int> &trackPlaylistPositions );

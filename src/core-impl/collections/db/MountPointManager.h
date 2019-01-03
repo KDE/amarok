@@ -65,6 +65,8 @@ public:
     /**
      * creates a DeviceHandler which represents the Medium.
      * @param device the Volume for which a DeviceHandler is required
+     * @param udi the device UUID
+     * @param s SQL storage
      * @return a DeviceHandler or 0 if the factory cannot handle the Medium
      */
     virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &udi, QSharedPointer<SqlStorage> s ) const = 0;
@@ -75,7 +77,7 @@ public:
 
     /**
      * returns the type of the DeviceHandler. Should be the same as the value used in
-     * ~/.kde/share/config/amarokrc
+     * ~/.config/amarokrc
      * @return a QString describing the type of the DeviceHandler
      */
     virtual QString type() const = 0;
