@@ -8,8 +8,11 @@ if (POLICY CMP0028)
 endif()
 
 ###############
+
+set(KF5_MIN_VERSION "5.41.0")
+set(QT_REQUIRED_VERSION "5.8.0")
 find_package(PkgConfig REQUIRED)
-find_package(ECM 1.7.0 REQUIRED CONFIG)
+find_package(ECM ${KF5_MIN_VERSION} REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
@@ -23,15 +26,15 @@ include(ECMAddAppIcon)
 include(FindPkgConfig)
 include(CMakePushCheckState)
 
-find_package( Qt5 5.8.0 COMPONENTS QuickControls2 WebEngine )
+find_package( Qt5 ${QT_REQUIRED_VERSION} COMPONENTS QuickControls2 WebEngine )
 set_package_properties( Qt5QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area" )
 
 find_package( Qt5 5.8.0 REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Script ScriptTools Sql Svg Test Widgets Xml )
 set_package_properties( Qt5WebEngine PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet" )
 
-find_package( KF5 5.41 REQUIRED COMPONENTS Archive Attica Codecs CoreAddons Crash DBusAddons Declarative DNSSD GlobalAccel GuiAddons I18n IconThemes KCMUtils KIO NewStuff Notifications NotifyConfig Package Solid TextEditor ThreadWeaver WidgetsAddons WindowSystem )
+find_package( KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Archive Attica Codecs CoreAddons Crash DBusAddons Declarative DNSSD GlobalAccel GuiAddons I18n IconThemes KCMUtils KIO NewStuff Notifications NotifyConfig Package Solid TextEditor ThreadWeaver WidgetsAddons WindowSystem )
 
-find_package( KF5 COMPONENTS Kirigami2 )
+find_package( KF5 ${KF5_MIN_VERSION} COMPONENTS Kirigami2 )
 set_package_properties( KF5Kirigami2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area" )
 
 ###############
