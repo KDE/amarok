@@ -45,8 +45,8 @@ public:
     void load();
     void save();
 
-    int serverCount();
-    AmpacheServerList servers();
+    int serverCount() const;
+    AmpacheServerList servers() const;
 
     void addServer( const AmpacheServerEntry &server );
     void removeServer( int index);

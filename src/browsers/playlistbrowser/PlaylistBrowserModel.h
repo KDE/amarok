@@ -59,7 +59,7 @@ class PlaylistBrowserModel : public QAbstractItemModel, public Playlists::Playli
         };
 
         PlaylistBrowserModel( int PlaylistCategory );
-        virtual ~PlaylistBrowserModel() {}
+        ~PlaylistBrowserModel() override {}
 
         /* QAbstractItemModel methods */
         QVariant data( const QModelIndex &index, int role ) const override;

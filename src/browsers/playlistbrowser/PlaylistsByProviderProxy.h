@@ -27,7 +27,7 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
     public:
         explicit PlaylistsByProviderProxy( int playlistCategory, QObject *parent = nullptr );
         PlaylistsByProviderProxy( QAbstractItemModel *model, int column, int playlistCategory );
-        ~PlaylistsByProviderProxy() {}
+        ~PlaylistsByProviderProxy() override {}
 
         /* QtGroupingProxy methods */
         /* reimplement to handle tracks with multiple providers (synced) */

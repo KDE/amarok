@@ -31,7 +31,7 @@ class PlaylistsInFoldersProxy : public QtGroupingProxy
     Q_OBJECT
     public:
         explicit PlaylistsInFoldersProxy( QAbstractItemModel *model );
-        ~PlaylistsInFoldersProxy();
+        ~PlaylistsInFoldersProxy() override;
 
         /* PlaylistInGroupsProxy methods */
         QModelIndex createNewFolder( const QString &groupName );

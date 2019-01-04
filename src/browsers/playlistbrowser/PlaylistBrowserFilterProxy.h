@@ -27,7 +27,7 @@ class PlaylistBrowserFilterProxy : public QSortFilterProxyModel
          * modelstack.
          */
         explicit PlaylistBrowserFilterProxy( QObject *parent = nullptr );
-        ~PlaylistBrowserFilterProxy() {}
+        ~PlaylistBrowserFilterProxy() override {}
 
         // QSortFilterProxyModel methods
         void setSourceModel( QAbstractItemModel *sourceModel ) override;

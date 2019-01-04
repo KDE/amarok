@@ -31,7 +31,7 @@ class FramedLabel : public QLabel
 public:
     explicit FramedLabel( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
     explicit FramedLabel( const QString &text, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~FramedLabel();
+    ~FramedLabel() override;
 
 protected:
     void paintEvent( QPaintEvent *event ) override;

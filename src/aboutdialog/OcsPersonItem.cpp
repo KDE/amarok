@@ -115,7 +115,7 @@ OcsPersonItem::~OcsPersonItem()
 {}
 
 QString
-OcsPersonItem::name()
+OcsPersonItem::name() const
 {
     return m_person->name();
 }

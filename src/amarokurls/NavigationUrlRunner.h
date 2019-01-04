@@ -28,7 +28,7 @@ class NavigationUrlRunner : public AmarokUrlRunnerBase
 public:
     NavigationUrlRunner();
 
-    virtual ~NavigationUrlRunner();
+    ~NavigationUrlRunner() override;
 
     QString command() const override;
     QString prettyCommand() const override;

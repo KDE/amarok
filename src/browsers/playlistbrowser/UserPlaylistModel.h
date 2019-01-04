@@ -41,7 +41,7 @@ class UserModel : public PlaylistBrowserModel
         static UserModel * instance();
         static void destroy();
 
-        ~UserModel();
+        ~UserModel() override;
 
         bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
         bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) override;

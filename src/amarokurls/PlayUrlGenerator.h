@@ -55,7 +55,7 @@ public:
 
 private:
     PlayUrlGenerator();
-    ~PlayUrlGenerator();
+    ~PlayUrlGenerator() override;
 
     static PlayUrlGenerator * s_instance;
 };

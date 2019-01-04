@@ -61,7 +61,7 @@ public:
     BookmarkList urlsByCommand( const QString &command );
     QIcon iconForCommand( const QString &command );
 
-    void updateTimecodes( const QString * BookmarkName = 0 );
+    void updateTimecodes( const QString * BookmarkName = nullptr );
     void paintNewTimecode( const QString &name, int pos );
 
     QList<AmarokUrlGenerator *> generators() { return m_registeredGenerators; }

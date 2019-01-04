@@ -54,7 +54,7 @@ public:
 
     virtual ~OcsPersonItem();
 
-    QString name();
+    QString name() const;
 
     void switchToOcs( Attica::Provider &provider );
 

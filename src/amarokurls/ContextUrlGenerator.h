@@ -36,7 +36,7 @@ public:
 
 private:
     ContextUrlGenerator();
-    virtual ~ContextUrlGenerator();
+    ~ContextUrlGenerator() override;
 
     static ContextUrlGenerator * s_instance;
     

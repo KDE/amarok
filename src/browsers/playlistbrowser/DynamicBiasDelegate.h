@@ -33,7 +33,7 @@ class DynamicBiasDelegate : public QStyledItemDelegate
 {
     public:
         explicit DynamicBiasDelegate( QWidget* parent = nullptr );
-        ~DynamicBiasDelegate();
+        ~DynamicBiasDelegate() override;
 
         void paint( QPainter* painter,
                     const QStyleOptionViewItem& option,

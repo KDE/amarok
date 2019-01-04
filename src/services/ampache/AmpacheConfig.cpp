@@ -86,13 +86,13 @@ AmpacheConfig::save()
 }
 
 int
-AmpacheConfig::serverCount()
+AmpacheConfig::serverCount() const
 {
     return m_servers.size();
 }
 
 AmpacheServerList
-AmpacheConfig::servers()
+AmpacheConfig::servers() const
 {
     return m_servers;
 }

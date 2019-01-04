@@ -45,7 +45,7 @@ public:
 
 private:
     NavigationUrlGenerator();
-    virtual ~NavigationUrlGenerator();
+    ~NavigationUrlGenerator() override;
 
     static NavigationUrlGenerator * s_instance;
 

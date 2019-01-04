@@ -36,7 +36,7 @@ class DynamicView : public Amarok::PrettyTreeView
 Q_OBJECT
 public:
     explicit DynamicView( QWidget *parent = nullptr );
-    ~DynamicView();
+    ~DynamicView() override;
 
 Q_SIGNALS:
     void currentItemChanged( const QModelIndex &current );

@@ -27,7 +27,7 @@ class AnimatedWidget : public QWidget
 
     public:
         explicit AnimatedWidget( const QString& iconName, QWidget *parent = nullptr );
-        virtual ~AnimatedWidget();
+        ~AnimatedWidget() override;
 
     public Q_SLOTS:
         void start();

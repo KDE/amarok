@@ -37,8 +37,8 @@ class CollectionWidget : public BrowserCategory
         };
         Q_ENUM( ViewMode )
 
-        CollectionWidget( const QString &name , QWidget *parent );
-        ~CollectionWidget();
+        explicit CollectionWidget( const QString &name , QWidget *parent );
+        ~CollectionWidget() override;
         static CollectionWidget *instance() { return s_instance; }
 
 

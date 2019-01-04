@@ -30,7 +30,7 @@ class AMAROK_EXPORT ContextUrlRunner : public AmarokUrlRunnerBase
 {
 public:
     ContextUrlRunner();
-    ~ContextUrlRunner();
+    ~ContextUrlRunner() override;
     
     QIcon icon() const override;
     bool run(AmarokUrl url) override;

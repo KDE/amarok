@@ -31,11 +31,10 @@ PropertySliderWidget::PropertySliderWidget( Property property, QWidget * parent 
 {
     m_name = property.name();
 
-    QBoxLayout *mainLayout;
     m_mainLabel = new QLabel( m_property.prettyName(), this );
     m_mainLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
-    mainLayout = new QVBoxLayout( this );
+    QBoxLayout *mainLayout = new QVBoxLayout( this );
     QBoxLayout *secondaryTopLayout = new QHBoxLayout( this );
     QBoxLayout *secondaryBotLayout = new QHBoxLayout( this );
     mainLayout->addWidget( m_mainLabel );

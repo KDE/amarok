@@ -247,9 +247,9 @@ CollectionScanner::Scanner::addDir( const QString& dir, QSet<QString>* entries )
         return; // finished
 
     d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs );
-    QFileInfoList fileInfos = d.entryInfoList();
+    const QFileInfoList fileInfos = d.entryInfoList();
 
-    foreach( const QFileInfo &fi, fileInfos )
+    for ( const QFileInfo &fi : fileInfos )
     {
         if( !fi.exists() )
             continue;

@@ -35,7 +35,7 @@ class PlaylistViewItem : public virtual QSharedData
     public:
         PlaylistViewItem() : QSharedData() {}
 
-        virtual  ~PlaylistViewItem() {};
+        virtual  ~PlaylistViewItem() {}
 
         virtual Meta::PlaylistGroupPtr parent() const = 0;
         virtual int childCount() const { return 0; }

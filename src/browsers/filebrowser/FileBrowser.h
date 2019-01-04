@@ -30,7 +30,7 @@ class FileBrowser : public BrowserCategory
 
 public:
     FileBrowser( const char *name, QWidget *parent );
-    ~FileBrowser();
+    ~FileBrowser() override;
 
     void setupAddItems() override;
 

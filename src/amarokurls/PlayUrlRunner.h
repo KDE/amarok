@@ -30,7 +30,7 @@ class AMAROK_EXPORT PlayUrlRunner : public AmarokUrlRunnerBase
 public:
     PlayUrlRunner ();
 
-    virtual  ~PlayUrlRunner ();
+    ~PlayUrlRunner () override;
 
     QString command () const override;
     QString prettyCommand() const override;

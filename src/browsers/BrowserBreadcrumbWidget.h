@@ -47,7 +47,7 @@ public:
     /**
      * Destructor
      */
-    ~BrowserBreadcrumbWidget();
+    ~BrowserBreadcrumbWidget() override;
 
     /**
      * Set the BrowserCategoryList which acts as the "root" of the breadcrumb widget.
