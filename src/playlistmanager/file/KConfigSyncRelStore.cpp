@@ -37,7 +37,7 @@ KConfigSyncRelStore::KConfigSyncRelStore()
 
         m_syncMasterMap.insert( masterUrl, SyncedPlaylistPtr() );
 
-        foreach( const QString &value, syncedPlaylistsConfig().readEntry( key ).split( ',' ) )
+        foreach( const QString &value, syncedPlaylistsConfig().readEntry( key ).split( QLatin1Char(',') ) )
         {
             m_syncSlaveMap.insert( QUrl( value ), masterUrl );
         }

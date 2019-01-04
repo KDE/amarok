@@ -106,7 +106,7 @@ SqlTrack::getTrackJoinConditions()
 int
 SqlTrack::getTrackReturnValueCount()
 {
-    static int count = getTrackReturnValues().split( ',' ).count();
+    static int count = getTrackReturnValues().split( QLatin1Char(',') ).count();
     return count;
 }
 

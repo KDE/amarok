@@ -1274,7 +1274,7 @@ PodcastReader::endKeywords()
 {
     QList<QString> keywords( m_current->keywords() );
 
-    foreach( const QString &keyword, m_buffer.split( ',' ) )
+    foreach( const QString &keyword, m_buffer.split( QLatin1Char(',') ) )
     {
         QString kwd( keyword.simplified() );
         if( !kwd.isEmpty() && !keywords.contains( kwd ) )

@@ -49,7 +49,7 @@ bool ContextUrlRunner::run( AmarokUrl url )
 
     QString appletsString = url.args().value( "applets" );
     debug() << "applet string: " << appletsString;
-    QStringList appletList = appletsString.split( ',' );
+    QStringList appletList = appletsString.split( QLatin1Char(',') );
     auto model = Context::ContextView::self()->appletModel();
     if( model )
     {

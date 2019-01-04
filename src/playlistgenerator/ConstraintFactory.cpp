@@ -55,7 +55,7 @@ ConstraintFactoryEntry::ConstraintFactoryEntry( const QString& name,
  * Constraint Factory Singleton           *
  ******************************************/
 
-ConstraintFactory* ConstraintFactory::s_self = 0;
+ConstraintFactory* ConstraintFactory::s_self = nullptr;
 
 ConstraintFactory* ConstraintFactory::instance()
 {
@@ -68,7 +68,7 @@ ConstraintFactory* ConstraintFactory::instance()
 void ConstraintFactory::destroy()
 {
     delete ConstraintFactory::s_self;
-    ConstraintFactory::s_self = 0;
+    ConstraintFactory::s_self = nullptr;
 }
 
 ConstraintFactory::ConstraintFactory()

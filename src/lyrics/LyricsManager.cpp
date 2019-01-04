@@ -34,7 +34,7 @@
 #define APIURL "http://lyrics.wikia.com/api.php?action=query&prop=revisions&rvprop=content&format=xml&titles="
 
 
-LyricsManager* LyricsManager::s_self = 0;
+LyricsManager* LyricsManager::s_self = nullptr;
 
 LyricsManager::LyricsManager()
 {

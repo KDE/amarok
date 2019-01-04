@@ -37,7 +37,7 @@ ConstraintTypes::Checkpoint::createFromXml( QDomElement& xmlelem, ConstraintNode
     if ( p ) {
         return new Checkpoint( xmlelem, p );
     } else {
-        return 0;
+        return nullptr;
     }
 }
 
@@ -47,7 +47,7 @@ ConstraintTypes::Checkpoint::createNew( ConstraintNode* p )
     if ( p ) {
         return new Checkpoint( p );
     } else {
-        return 0;
+        return nullptr;
     }
 }
 

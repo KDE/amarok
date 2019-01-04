@@ -72,23 +72,23 @@ ConstraintNode*
 ConstraintNode::getChild( int idx )
 {
     if ( idx < 0 )
-        return 0;
+        return nullptr;
 
     if ( idx < m_children.size() )
         return m_children.at( idx );
 
-    return 0;
+    return nullptr;
 }
 
 ConstraintNode*
 ConstraintNode::pruneChild( int idx )
 {
     if ( idx < 0 )
-        return 0;
+        return nullptr;
     if ( idx < m_children.size() ) {
         return m_children.takeAt( idx );
     }
-    return 0;
+    return nullptr;
 }
 
 bool
