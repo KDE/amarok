@@ -183,7 +183,7 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
     foreach( QAction * action, actions )
         menu->addAction( action );
 
-    if( indices.isEmpty() )
+    if( indices.isEmpty() && m_addGroupAction)
         menu->addAction( m_addGroupAction );
 
     menu->exec( event->globalPos() );
