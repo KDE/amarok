@@ -41,6 +41,7 @@ class AvatarDownloader : public QObject
 
         /**
         * Start the download
+        * @param username The username for which avatar should be downloaded.
         * @param url The url that should be downloaded.
         */
         void downloadAvatar( const QString& username, const QUrl &url );

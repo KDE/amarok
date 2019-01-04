@@ -185,8 +185,9 @@ class Mp3tunesLocker {
          *      search results. If the search returned empty, then the
          *      QLists will be empty.
          * @param container contains the QList's to be filled with search results
-         * @return true if search succeeded. Note: Zero search results is not failure.
-         *         false if search failed.
+         * @param query the query string
+         * @return @c true if search succeeded. Note: Zero search results is not a failure.
+         *         @c false if search failed.
          */
         bool search( Mp3tunesSearchResult &container, const QString &query ) const;
 

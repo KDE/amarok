@@ -53,9 +53,10 @@ public:
     int headerHeight() const;
 
    /**
-    * Handle clicks witin a delegate.
+    * Handle clicks within a delegate.
     * @param pos The position of the click, in delegate coordinates.
-    * @param pos The index of the clicked item.
+    * @param itemRect QRect for the item.
+    * @param index The index of the clicked item.
     * @return True if delegate acts on this click, false otherwise.
     */
     bool clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index );

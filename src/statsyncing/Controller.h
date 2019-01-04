@@ -168,6 +168,7 @@ namespace StatSyncing
              * Emitted when a scrobbling service @p service was unable to scrobble() a track.
              *
              * @param service the service
+             * @param track the track
              * @param error is a ScrobblingService::ScrobbleError enum value.
              */
             void scrobbleFailed( const ScrobblingServicePtr &service, const Meta::TrackPtr &track, int error );

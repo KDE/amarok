@@ -47,7 +47,7 @@ public:
      * @param operation whether this is copying or moving
      * @param destCollectionName name of the destination collection
      * @param prevConfiguration previous configuration
-     * @param paren the parent widget
+     * @param parent the parent widget
      */
     AssistantDialog( const QStringList &playableFileTypes, bool saveSupported,
                      Collections::CollectionLocationDelegate::OperationType operation,

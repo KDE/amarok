@@ -86,7 +86,8 @@ namespace Dynamic
             TrackSet( const TrackSet& other );
 
             /** Creates a TrackSet that represents the whole universe.
-                @param value If true set is set to "full". Else to "empty".
+             *  @param collection The collection of the tracks
+             *  @param value If true set is set to "full". Else to "empty".
             */
             TrackSet( const Dynamic::TrackCollectionPtr collection, bool value );
 

@@ -62,7 +62,9 @@ class GenericScannerJob : public QObject, public ThreadWeaver::Job
     public:
         /** Creates the parse job.
             The constructor itself should be called from the UI thread.
+            @param manager The scan manager.
             @param input An input io device for the scanner. The input must remain valid as long as the scanner is working (TODO: is this smart?)
+            @param type The scan type. @see GenericScanManager::ScanType
         */
         GenericScannerJob( GenericScanManager* manager,
                            QIODevice *input,

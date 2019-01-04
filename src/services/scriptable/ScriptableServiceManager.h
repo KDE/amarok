@@ -55,9 +55,11 @@ class ScriptableServiceManager : public QObject
 
         /**
          * Initialzises a new service. This method is exported to DBUS
-         * @param name the name of the service to create. Mujst be the same as the name of the script
+         * @param name the name of the service to create. Must be the same as the name of the script
          * @param levels How many levels of items should be added ( 1 - 4 )
+         * @param shortDescription Some short description
          * @param rootHtml The html to display when the service is selected
+         * @param showSearchBar Determines whether to show search bar
          * @return returns true if successful and false otherwise
          */
         bool initService( const QString &name, int levels, const QString &shortDescription, const QString &rootHtml, bool showSearchBar );
@@ -71,6 +73,12 @@ class ScriptableServiceManager : public QObject
          * @param infoHtml The html info to display when this item is selected
          * @param callbackData The callback data needed to let the script know how to populate this items children ( Empty string if leaf item )
          * @param playableUrl The url to play if added to the playlist ( Empty string if not leaf node )
+         * @param albumOverride The album override
+         * @param artistOverride The artist override
+         * @param genreOverride The genre override
+         * @param composerOverride The composer override
+         * @param yearOverride The year override
+         * @param coverUrl The cover URL
          * @return the id of the created item ( or -1 on failure )
          */
         int insertItem( const QString &serviceName, int level, int parentId, const QString &name, const QString &infoHtml, const QString &callbackData, const QString &playableUrl,

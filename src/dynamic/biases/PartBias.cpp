@@ -75,7 +75,6 @@ class MatchState
 {
     public:
         /** Creates the matching
-            @param ignoreTrack a track number that should be ignored for matching. -1 if no track should be ignored.
         */
         MatchState( const Dynamic::PartBias *bias,
                     const Meta::TrackList& playlist,

@@ -169,6 +169,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
            Convenience method for copying tracks based on QueryMaker results,
            takes ownership of the @p qm.
            @param qm the QueryMaker query
+           @param destination the collection destination
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
         void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination );
@@ -191,6 +192,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
            Convenience method for moving tracks based on QueryMaker results,
            takes ownership of the @p qm.
            @param qm the QueryMaker query
+           @param destination the collection destination
            @see prepareMove( Meta::TrackList, CollectionLocation* )
         */
         void prepareMove( Collections::QueryMaker *qm, CollectionLocation *destination );
@@ -352,6 +354,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
          * Get nice localised string that can be used as progress bar text for the current
          * operation; meant to be called by the destination collection.
          *
+         * @param configuration the transcoding configuration
          * @param trackCount number of tracks in the transfer
          * @param destinationName pretty localised name of the destination collection;
          *        prettyLocation() is used if the string is empty or not specified

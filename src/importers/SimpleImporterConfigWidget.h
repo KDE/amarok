@@ -35,8 +35,12 @@ class AMAROK_EXPORT SimpleImporterConfigWidget : public ProviderConfigWidget
 public:
     /**
      * Constructor. Creates a widget with one label: "Target name," and one text field
-     * with its default value specified in @param targetName . @param config contains
+     * with its default value specified in @p targetName . @p config contains
      * configuration for this widget.
+     * @param targetName the target name
+     * @param config configuration for the created widget
+     * @param parent the parent widget
+     * @param f Qt window flags
      */
     SimpleImporterConfigWidget( const QString &targetName, const QVariantMap &config,
                                 QWidget *parent = nullptr, Qt::WindowFlags f = 0 );

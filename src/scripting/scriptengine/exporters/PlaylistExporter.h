@@ -90,6 +90,7 @@ namespace AmarokScript
         /**
         * Add the track to a certain position in the playlist
         *
+        * @param track the track.
         * @param position place to add this track. The default value -1 appends to
         * the end.
         *

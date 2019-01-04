@@ -124,6 +124,7 @@ breakLongLinesHTML( const QString &origText )
 * an mp3 tag and its value
 * @param column The column used to display the icon
 * @param value The QString value to be shown
+* @param force If @c true, allows to set empty values
 * @return The line to be shown or an empty QString if the value is null
 */
 static QString
@@ -148,6 +149,7 @@ HTMLLine( const Playlist::Column& column, const QString& value, bool force = fal
 * an mp3 tag and its value
 * @param column The column used to display the icon
 * @param value The integer value to be shown
+* @param force If @c true, allows to set non-positive values
 * @return The line to be shown or an empty QString if the value is 0
 */
 static QString

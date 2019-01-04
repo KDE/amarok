@@ -55,6 +55,7 @@ namespace EqualizerPresets
 
     /** Sets the preset (create a user preset).
         @param presetName The untranslated preset name.
+        @param presetValues The preset values.
     */
     void eqCfgSetPresetVal( const QString &presetName, const QList<int> &presetValues );
 

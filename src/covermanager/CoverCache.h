@@ -56,6 +56,7 @@ class AMAROK_EXPORT CoverCache
             Note: as this function can create a pixmap it is not recommended to
             call this function from outside the UI thread.
 
+            @param album the album to get cover
             @param size is the maximum width or height of the resulting image.
             when size is <= 1, return the full size image
         */

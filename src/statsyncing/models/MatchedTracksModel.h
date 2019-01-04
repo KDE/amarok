@@ -55,6 +55,7 @@ namespace StatSyncing
              *                must include Meta::valTitle, may include: valRating,
              *                valFirstPlayed, valLastPlayed, valPlaycount, valLabel.
              * @param options options for synchronizing individual tracks
+             * @param parent parent QObject
              */
             MatchedTracksModel( const QList<TrackTuple> &matchedTuples,
                                 const QList<qint64> &columns, const Options &options,

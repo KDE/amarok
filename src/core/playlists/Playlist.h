@@ -192,6 +192,7 @@ namespace Playlists
             /**
              * Add the track to a certain position in the playlist
              *
+             * @param track the track to add
              * @param position place to add this track. The default value -1 appends to
              *                 the end.
              *
@@ -265,6 +266,7 @@ namespace Playlists
             /**
              * Implementations must call this when a track is added to playlist
              *
+             * @param track the track that was added
              * @param position is the actual new position of the added track, never negative
              * @note calling this from (code called by) Playlist constructor is FORBIDDEN.
              */

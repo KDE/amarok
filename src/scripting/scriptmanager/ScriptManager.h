@@ -46,6 +46,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
         /**
          * Runs the script with the given name.
          * @param name The pluginName of the script.
+         * @param silent Whether to suppress the script output.
          * @return True if successful.
          */
         bool runScript( const QString& name, bool silent = false );

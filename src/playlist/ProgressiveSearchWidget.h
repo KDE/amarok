@@ -63,6 +63,7 @@ Q_SIGNALS:
      * Signal emitted when the search term has changed.
      * @param filter The new search term.
      * @param fields The mask containing the fields to match against.
+     * @param showOnlyMatches Determines whether to show only matches.
      */
     void filterChanged( const QString &filter, int fields, bool showOnlyMatches );
 
