@@ -123,9 +123,9 @@ namespace Amarok
      */
     inline QString extension( const QString &fileName )
     {
-        if( fileName.contains( '.' ) )
+        if( fileName.contains( QLatin1Char('.') ) )
         {
-            QString ext = fileName.mid( fileName.lastIndexOf( '.' ) + 1 ).toLower();
+            QString ext = fileName.mid( fileName.lastIndexOf( QLatin1Char('.') ) + 1 ).toLower();
             // Remove url parameters (some remote playlists use these)
             if( ext.contains( '?' ) )
                 return ext.left( ext.indexOf( '?' ) );

@@ -581,7 +581,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
             else
             {
                 QString destPath = dest.path();
-                destPath.truncate( dest.path().lastIndexOf( '.' ) + 1 );
+                destPath.truncate( dest.path().lastIndexOf( QLatin1Char('.') ) + 1 );
                 destPath.append( Amarok::Components::transcodingController()->
                                  format( configuration.encoder() )->fileExtension() );
                 dest.setPath( destPath );

@@ -33,7 +33,7 @@ static qint64 duration( QString duration ) {
     QString rest = parts.takeFirst();
     int seconds = 0;
     int mseconds = 0;
-    if( rest.contains( '.' ) ) {
+    if( rest.contains( QLatin1Char('.') ) ) {
         int dotIndex = rest.indexOf( "." );
         seconds = rest.left( dotIndex ).toInt();
         QString frac = rest.mid( dotIndex + 1 );

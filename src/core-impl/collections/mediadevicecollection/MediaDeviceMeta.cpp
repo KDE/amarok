@@ -309,7 +309,7 @@ MediaDeviceTrack::type() const
     if( m_type.isEmpty() && !m_playableUrl.path().isEmpty() )
     {
         QString path = m_playableUrl.path();
-        return path.mid( path.lastIndexOf( '.' ) + 1 );
+        return path.mid( path.lastIndexOf( QLatin1Char('.') ) + 1 );
     }
     return m_type;
 }

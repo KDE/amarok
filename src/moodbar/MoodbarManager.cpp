@@ -506,7 +506,7 @@ QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, in
 
 QString MoodbarManager::moodPath( const QString &trackPath ) const
 {
-    QStringList parts = trackPath.split( '.' );
+    QStringList parts = trackPath.split( QLatin1Char('.') );
     parts.takeLast();
     parts.append( "mood" );
     QString moodPath = parts.join( "." );

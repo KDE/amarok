@@ -53,7 +53,7 @@ Job::Job( QUrl &src,
     if( !( fileExtension.isEmpty() ) )
     {
         QString destPath = src.path();
-        destPath.truncate( destPath.lastIndexOf( '.' ) + 1 );
+        destPath.truncate( destPath.lastIndexOf( QLatin1Char('.') ) + 1 );
         destPath.append( fileExtension );
         m_dest.setPath( destPath );
     }

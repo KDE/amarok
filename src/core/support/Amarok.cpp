@@ -420,7 +420,7 @@ namespace Amarok
         }
 
         /* correct trailing spaces in file name itself, not needed for dots */
-        int extensionIndex = s.lastIndexOf( '.' );
+        int extensionIndex = s.lastIndexOf( QLatin1Char('.') );
         if( ( s.length() > 1 ) &&  ( extensionIndex > 0 ) )
             if( s.at(extensionIndex - 1) == ' ' )
                 s[extensionIndex - 1] = '_';

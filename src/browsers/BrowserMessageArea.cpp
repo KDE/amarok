@@ -78,7 +78,7 @@ void
 BrowserMessageArea::newProgressOperationImpl( KJob *job, const QString &text, QObject *context,
                                               const std::function<void ()> &function, Qt::ConnectionType type )
 {
-    KJobProgressBar *newBar = new KJobProgressBar( 0, job );
+    KJobProgressBar *newBar = new KJobProgressBar( nullptr, job );
     newBar->setDescription( text );
     connect( job, &KJob::destroyed, m_progressBar,
              &CompoundProgressBar::endProgressOperation );
@@ -93,7 +93,7 @@ void
 BrowserMessageArea::newProgressOperationImpl( QNetworkReply *reply, const QString &text, QObject *obj,
                                               const std::function<void ()> &function, Qt::ConnectionType type )
 {
-    NetworkProgressBar *newBar = new NetworkProgressBar( 0, reply );
+    NetworkProgressBar *newBar = new NetworkProgressBar( nullptr, reply );
     newBar->setDescription( text );
     newBar->setAbortSlot( reply, &QNetworkReply::deleteLater );
     connect( reply, &QNetworkReply::destroyed, m_progressBar,
@@ -109,7 +109,7 @@ void
 BrowserMessageArea::newProgressOperationImpl( QObject *sender, const QMetaMethod &increment, const QMetaMethod &end, const QString &text,
                                               int maximum, QObject *obj, const std::function<void ()> &function, Qt::ConnectionType type )
 {
-    ProgressBar *newBar = new ProgressBar( 0 );
+    ProgressBar *newBar = new ProgressBar( nullptr );
     newBar->setDescription( text );
     newBar->setMaximum( maximum );
     connect( sender, &QObject::destroyed, m_progressBar,

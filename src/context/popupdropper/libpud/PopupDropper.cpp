@@ -920,6 +920,7 @@ QList<PopupDropperItem*> PopupDropper::submenuItems( const PopupDropperItem *ite
         return list;
 
     PopupDropperPrivate *pdp = d->submenuMap[item->action()];
+    list.reserve(pdp->pdiItems.count());
     foreach( PopupDropperItem *pdi, pdp->pdiItems )
         list.append( pdi );
 

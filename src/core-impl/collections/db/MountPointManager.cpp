@@ -306,7 +306,7 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
     KConfigGroup folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
 
-    foreach( const QString &folder, folders )
+    for( const QString &folder : folders )
     {
         int id = getIdForUrl( QUrl::fromLocalFile(folder) );
         const QString rpath = getRelativePath( id, folder );
@@ -318,8 +318,8 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
             folderMap[id] = QStringList( rpath );
     }
     //make sure that collection folders on devices which are not in foldermap are deleted
-    IdList ids = getMountedDeviceIds();
-    foreach( int deviceId, ids )
+    const IdList ids = getMountedDeviceIds();
+    for ( int deviceId : ids )
     {
         if( !folderMap.contains( deviceId ) )
         {

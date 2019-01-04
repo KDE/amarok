@@ -364,7 +364,7 @@ TagGuesserDialog::parsableFileName( const QFileInfo &fileInfo ) const
             pathLevels--;
 
     // -- cut extension
-    int dotPos = path.lastIndexOf( '.' );
+    int dotPos = path.lastIndexOf( QLatin1Char('.') );
     if( dotPos >= 0 )
         dotPos -= pos;
 

@@ -257,7 +257,7 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
     //we didn't set a FileType till now, let's look it up via FileExtension
     if( !result.contains( Meta::valFormat ) )
     {
-        QString ext = path.mid( path.lastIndexOf( '.' ) + 1 );
+        QString ext = path.mid( path.lastIndexOf( QLatin1Char('.') ) + 1 );
         result.insert( Meta::valFormat, Amarok::FileTypeSupport::fileType( ext ) );
     }
 

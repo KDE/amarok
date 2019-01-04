@@ -255,8 +255,8 @@ ScriptUpdater::isNewer( const QString & update, const QString & installed )
 {
     // only dots are supported as separators, and only integers are supported
     // between the dots (so no fancy stuff like 2.1-1 or 2.1.beta2)
-    QStringList uList = update.split( '.' );
-    QStringList iList = installed.split( '.' );
+    QStringList uList = update.split( QLatin1Char('.') );
+    QStringList iList = installed.split( QLatin1Char('.') );
     int i = 0;
     // stop working if the end of both lists is reached
     while ( i < uList.length() || i < iList.length() ) {
