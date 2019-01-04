@@ -52,7 +52,7 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
     QWidget *mainWidget = new QWidget;
 
     dialog->setWindowTitle(i18n("License Agreement"));
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, q);
     dialog->connect(buttonBox, &QDialogButtonBox::accepted, dialog, &QDialog::accept);
     dialog->connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
     buttonBox->button(QDialogButtonBox::Close)->setDefault(true);

@@ -34,7 +34,7 @@ AddServerDialog::AddServerDialog()
     setLayout(new QVBoxLayout);
     layout()->addWidget(widget);
 
-    auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    auto buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);

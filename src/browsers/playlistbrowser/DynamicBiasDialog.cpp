@@ -64,7 +64,7 @@ PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* paren
     m_mainLayout->addLayout( m_biasLayout );
 
     // -- button box
-    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this );
     m_mainLayout->addWidget( buttonBox );
 
     factoriesChanged();

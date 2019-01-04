@@ -104,7 +104,7 @@ CoverManager::CoverManager( QWidget *parent )
     // Sets caption and icon correctly (needed e.g. for GNOME)
     //kapp->setTopWidget( this );
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close, this );
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &CoverManager::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &CoverManager::reject);

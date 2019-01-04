@@ -222,7 +222,7 @@ TagGuesserDialog::TagGuesserDialog( const QString &fileName, QWidget *parent )
 {
     setWindowTitle( i18n( "Guess Tags from Filename" ) );
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, this);
     QWidget* mainWidget = new QWidget( this );
     QBoxLayout* mainLayout = new QVBoxLayout(this);
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
