@@ -95,10 +95,10 @@ UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
 
     QUrl destination = m_scanDirectory;
     destination = destination.adjusted(QUrl::StripTrailingSlash);
-    destination.setPath(destination.path() + '/' + ( Amarok::vfatPath( episode->channel()->prettyName() ) ));
+    destination.setPath(destination.path() + QLatin1Char('/') + ( Amarok::vfatPath( episode->channel()->prettyName() ) ));
     KIO::mkdir( destination );
     destination = destination.adjusted(QUrl::StripTrailingSlash);
-    destination.setPath(destination.path() + '/' + ( Amarok::vfatPath( localFilePath.fileName() ) ));
+    destination.setPath(destination.path() + QLatin1Char('/') + ( Amarok::vfatPath( localFilePath.fileName() ) ));
 
     debug() << QString( "Copy episode \"%1\" to %2" ).arg( localFilePath.path(),
             destination.path() );

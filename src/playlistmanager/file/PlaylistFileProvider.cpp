@@ -66,7 +66,7 @@ PlaylistFileProvider::PlaylistFileProvider()
     {
         QUrl url( playlistDir.path() );
         url = url.adjusted(QUrl::StripTrailingSlash);
-        url.setPath(url.path() + '/' + ( file ));
+        url.setPath(url.path() + QLatin1Char('/') + ( file ));
         if( Playlists::isPlaylist( url ) )
             m_urlsToLoad << url;
     }
@@ -148,7 +148,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 
     QUrl path( Amarok::saveLocation( "playlists" ) );
     path = path.adjusted(QUrl::StripTrailingSlash);
-    path.setPath(path.path() + '/' + ( Amarok::vfatPath( filename ) ));
+    path.setPath(path.path() + QLatin1Char('/') + ( Amarok::vfatPath( filename ) ));
     if( QFileInfo( path.toLocalFile() ).exists() )
     {
         //TODO:request overwrite

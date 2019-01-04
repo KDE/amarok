@@ -561,7 +561,7 @@ CollectionLocation::slotFinishRemove()
                 continue;
 
             dir.setFilter( QDir::NoDotAndDotDot );
-            while( !dir.isRoot() && dir.count() == 0 )
+            while( !dir.isRoot() && dir.isEmpty() )
             {
                 const QString name = dir.dirName();
                 dir.cdUp();

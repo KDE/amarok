@@ -175,7 +175,7 @@ PlaylistFile::getAbsolutePath( const QUrl &url )
         // example: url = QUrl( "file://../tunes/tune.ogg" )
         absUrl = m_url.adjusted(QUrl::RemoveFilename); // file:///playlists/
         absUrl = absUrl.adjusted(QUrl::StripTrailingSlash);
-        absUrl.setPath( absUrl.path() + '/' + url.path() );
+        absUrl.setPath( absUrl.path() + QLatin1Char('/') + url.path() );
         absUrl.setPath( QDir::cleanPath(absUrl.path()) ); // file:///playlists/tunes/tune.ogg
     }
     return absUrl;

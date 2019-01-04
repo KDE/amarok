@@ -161,7 +161,7 @@ namespace Amarok
     {
         QString datePart = QLocale::system().toString( QDateTime::currentDateTime(),
                                                        QLocale::ShortFormat );
-        if( tracks.count() == 0 )
+        if( tracks.isEmpty() )
         {
             return i18nc( "A saved playlist with the current time (KLocalizedString::Shortdate) added between \
                           the parentheses",

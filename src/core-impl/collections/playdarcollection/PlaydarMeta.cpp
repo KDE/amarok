@@ -72,7 +72,7 @@ Meta::PlaydarTrack::PlaydarTrack( QString &sid,
 {
     QUrlQuery query;
     m_uidUrl.setScheme( QString( "playdar" ) );
-    m_uidUrl.setPath(m_uidUrl.path() + '/' + source );
+    m_uidUrl.setPath(m_uidUrl.path() + QLatin1Char('/') + source );
     query.addQueryItem( QString( "artist" ), artist );
     query.addQueryItem( QString( "album" ), album );
     query.addQueryItem( QString( "title" ), name );

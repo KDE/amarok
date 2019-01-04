@@ -54,7 +54,7 @@ ScriptUpdater::updateScript()
 
     // 1a. detect currently installed version
     QFileInfo info( m_scriptPath );
-    const QString specPath = info.path() + '/' + "script.spec";
+    const QString specPath = info.path() + QLatin1Char('/') + "script.spec";
     if( !QFile::exists( specPath ) )
     {
         // no .spec file found, can't continue
@@ -80,9 +80,9 @@ ScriptUpdater::updateScript()
     // 2. check if there are updates: get 'version' file from server
     QUrl versionUrl( updateBaseUrl );
     versionUrl = versionUrl.adjusted(QUrl::StripTrailingSlash);
-    versionUrl.setPath(versionUrl.path() + '/' + ( m_scriptname ));
+    versionUrl.setPath(versionUrl.path() + QLatin1Char('/') + ( m_scriptname ));
     versionUrl = versionUrl.adjusted(QUrl::StripTrailingSlash);
-    versionUrl.setPath(versionUrl.path() + '/' + ( '/' + versionFilename ));
+    versionUrl.setPath(versionUrl.path() + QLatin1Char('/') + ( '/' + versionFilename ));
     m_versionFile.open();
     debug() << m_scriptname << ": Accessing " << versionUrl.toDisplayString() << " ...";
     QUrl versionDest( m_versionFile.fileName() );
@@ -120,9 +120,9 @@ ScriptUpdater::phase2( KJob * job )
     // 3. get the update archive, download it to a temporary file
     QUrl archiveSrc( updateBaseUrl );
     archiveSrc = archiveSrc.adjusted(QUrl::StripTrailingSlash);
-    archiveSrc.setPath(archiveSrc.path() + '/' + ( m_scriptname ));
+    archiveSrc.setPath(archiveSrc.path() + QLatin1Char('/') + ( m_scriptname ));
     archiveSrc = archiveSrc.adjusted(QUrl::StripTrailingSlash);
-    archiveSrc.setPath(archiveSrc.path() + '/' + ( '/' + archiveFilename ));
+    archiveSrc.setPath(archiveSrc.path() + QLatin1Char('/') + ( '/' + archiveFilename ));
     m_archiveFile.open(); // temporary files only have a fileName() after they've been opened
     QUrl archiveDest( m_archiveFile.fileName() );
     KIO::FileCopyJob *archiveJob = KIO::file_copy( archiveSrc, archiveDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
@@ -141,9 +141,9 @@ void ScriptUpdater::phase3( KJob * job )
     // 4. get the archive's signature, download it to a temporary file as well
     QUrl sigSrc( updateBaseUrl );
     sigSrc = sigSrc.adjusted(QUrl::StripTrailingSlash);
-    sigSrc.setPath(sigSrc.path() + '/' + ( m_scriptname ));
+    sigSrc.setPath(sigSrc.path() + QLatin1Char('/') + ( m_scriptname ));
     sigSrc = sigSrc.adjusted(QUrl::StripTrailingSlash);
-    sigSrc.setPath(sigSrc.path() + '/' + ( '/' + signatureFilename ));
+    sigSrc.setPath(sigSrc.path() + QLatin1Char('/') + ( '/' + signatureFilename ));
     m_sigFile.open();
     QUrl sigDest( m_sigFile.fileName() );
     KIO::FileCopyJob *sigJob = KIO::file_copy( sigSrc, sigDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
@@ -233,7 +233,7 @@ ScriptUpdater::phase4( KJob * job )
     if( relativePath.startsWith( '/' ) )
        relativePath.remove( 0, 1 );
     const QFileInfo fileinfo( relativePath );
-    const QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + '/' + fileinfo.path();
+    const QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + QLatin1Char('/') + fileinfo.path();
     const QDir dir;
     if( !dir.exists( destination ) )
     {

@@ -184,7 +184,7 @@ SetCustomCoverAction::slotTriggered()
             QTemporaryDir tempDir;
             tempDir.setAutoRemove( true );
 
-            const QString coverDownloadPath = tempDir.path() + '/' + file.fileName();
+            const QString coverDownloadPath = tempDir.path() + QLatin1Char('/') + file.fileName();
 
             auto copyJob = KIO::copy( file, QUrl::fromLocalFile( coverDownloadPath ) );
             bool ret = copyJob->exec();

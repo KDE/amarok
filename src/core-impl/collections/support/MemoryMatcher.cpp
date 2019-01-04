@@ -181,7 +181,7 @@ TrackList AlbumMatcher::match( const TrackList &tracks )
     foreach( TrackPtr track, tracks )
         if ( track->album()->name() == name )
             matchingTracks.append( track );
-    if ( isLast() || matchingTracks.count() == 0)
+    if ( isLast() || matchingTracks.isEmpty())
         return matchingTracks;
     else
         return next()->match( matchingTracks );
@@ -221,7 +221,7 @@ TrackList GenreMatcher::match( const TrackList &tracks )
     foreach( TrackPtr track, tracks )
         if ( track->genre()->name() == name )
             matchingTracks.append( track );
-    if ( isLast() || matchingTracks.count() == 0)
+    if ( isLast() || matchingTracks.isEmpty())
         return matchingTracks;
     else
         return next()->match( matchingTracks );
@@ -261,7 +261,7 @@ TrackList ComposerMatcher::match( const TrackList &tracks )
     foreach( TrackPtr track, tracks )
         if ( track->composer()->name() == name )
             matchingTracks.append( track );
-    if ( isLast() || matchingTracks.count() == 0)
+    if ( isLast() || matchingTracks.isEmpty())
         return matchingTracks;
     else
         return next()->match( matchingTracks );
@@ -301,7 +301,7 @@ TrackList YearMatcher::match( const TrackList &tracks )
     foreach( TrackPtr track, tracks )
         if ( track->year()->year() == year )
             matchingTracks.append( track );
-    if ( isLast() || matchingTracks.count() == 0)
+    if ( isLast() || matchingTracks.isEmpty())
         return matchingTracks;
     else
         return next()->match( matchingTracks );
@@ -334,7 +334,7 @@ LabelMatcher::match( const Meta::TrackList &tracks )
             }
         }
     }
-    if( isLast() || matchingTracks.count() == 0 )
+    if( isLast() || matchingTracks.isEmpty() )
         return matchingTracks;
     else
         return next()->match( matchingTracks );
@@ -354,7 +354,7 @@ LabelMatcher::match( Collections::MemoryCollection *memColl )
         Meta::LabelPtr realLabel = memColl->labelMap().value( m_label->name() );
         matchingTracks = memColl->labelToTrackMap().value( realLabel );
     }
-    if( isLast() || matchingTracks.count() == 0 )
+    if( isLast() || matchingTracks.isEmpty() )
         return matchingTracks;
     else
         return next()->match( matchingTracks );

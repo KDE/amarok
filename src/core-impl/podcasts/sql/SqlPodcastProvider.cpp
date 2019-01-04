@@ -525,7 +525,7 @@ SqlPodcastProvider::addChannel( Podcasts::PodcastChannelPtr channel )
             SqlPodcastChannelPtr( new Podcasts::SqlPodcastChannel( this, channel ) );
     m_channels << sqlChannel;
 
-    if( sqlChannel->episodes().count() == 0 )
+    if( sqlChannel->episodes().isEmpty() )
         updateSqlChannel( sqlChannel );
 
     emit playlistAdded( Playlists::PlaylistPtr( sqlChannel.data() ) );
@@ -640,7 +640,7 @@ SqlPodcastProvider::configureProvider()
                         QUrl oldSaveLocation = sqlChannel->saveLocation();
                         QUrl newSaveLocation = m_baseDownloadDir;
                         newSaveLocation = newSaveLocation.adjusted(QUrl::StripTrailingSlash);
-                        newSaveLocation.setPath(newSaveLocation.path() + '/' + ( oldSaveLocation.fileName() ));
+                        newSaveLocation.setPath(newSaveLocation.path() + QLatin1Char('/') + ( oldSaveLocation.fileName() ));
                         sqlChannel->setSaveLocation( newSaveLocation );
                         debug() << newSaveLocation.path();
                         moveDownloadedEpisodes( sqlChannel );
@@ -796,7 +796,7 @@ SqlPodcastProvider::moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr sqlCh
             dir.mkpath( "." );
 
             newLocation = newLocation.adjusted(QUrl::StripTrailingSlash);
-            newLocation.setPath(newLocation.path() + '/' + ( episode->localUrl().fileName() ));
+            newLocation.setPath(newLocation.path() + QLatin1Char('/') + ( episode->localUrl().fileName() ));
             debug() << "Moving from " << episode->localUrl() << " to " << newLocation;
             KIO::Job *moveJob = KIO::move( episode->localUrl(), newLocation,
                                            KIO::HideProgressInfo );
@@ -1236,7 +1236,7 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     QString tempNameMd5( QCryptographicHash::hash( tempName.toUtf8(), QCryptographicHash::Md5 ).toHex() );
 
     localUrl = localUrl.adjusted(QUrl::StripTrailingSlash);
-    localUrl.setPath(localUrl.path() + '/' + ( tempNameMd5 + PODCAST_TMP_POSTFIX ));
+    localUrl.setPath(localUrl.path() + QLatin1Char('/') + ( tempNameMd5 + PODCAST_TMP_POSTFIX ));
 
     return new QFile( localUrl.toLocalFile() );
 }

@@ -870,7 +870,7 @@ AggregateAlbum::imageWithBorder( int size, int borderWidth )
 bool
 AggregateAlbum::canUpdateImage() const
 {
-    if( m_albums.count() == 0 )
+    if( m_albums.isEmpty() )
         return false;
 
     foreach( const Meta::AlbumPtr &album, m_albums )

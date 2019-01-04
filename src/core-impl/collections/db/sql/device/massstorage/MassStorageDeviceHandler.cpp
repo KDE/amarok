@@ -69,7 +69,7 @@ void MassStorageDeviceHandler::getURL( QUrl &absolutePath, const QUrl &relativeP
 {
     absolutePath.setPath( m_mountPoint );
     absolutePath = absolutePath.adjusted(QUrl::StripTrailingSlash);
-    absolutePath.setPath(absolutePath.path() + '/' + ( relativePath.path() ));
+    absolutePath.setPath(absolutePath.path() + QLatin1Char('/') + ( relativePath.path() ));
     absolutePath.setPath( QDir::cleanPath(absolutePath.path()) );
 }
 

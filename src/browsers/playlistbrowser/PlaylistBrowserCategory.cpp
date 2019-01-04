@@ -242,7 +242,7 @@ PlaylistBrowserCategory::createProviderButton( const Playlists::PlaylistProvider
 
     //if there is only one provider the button needs to be disabled.
     //When a second is added we can enable the first.
-    if( m_providerActions.count() == 0 )
+    if( m_providerActions.isEmpty() )
         providerToggle->setEnabled( false );
     else if( m_providerActions.count() == 1 )
         m_providerActions.values().first()->setEnabled( true );

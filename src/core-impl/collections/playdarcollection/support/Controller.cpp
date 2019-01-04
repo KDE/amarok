@@ -112,7 +112,7 @@ namespace Playdar {
         QUrl playableUrl( baseUrl );
         
         playableUrl = playableUrl.adjusted(QUrl::StripTrailingSlash);
-        playableUrl.setPath(playableUrl.path() + '/' + ( sid ));
+        playableUrl.setPath(playableUrl.path() + QLatin1Char('/') + ( sid ));
         
         return playableUrl;
     }

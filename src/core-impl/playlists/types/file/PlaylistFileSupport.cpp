@@ -148,7 +148,7 @@ Playlists::newPlaylistFilePath( const QString &fileExtension )
     KLocalizedString fileName = ki18n("Playlist_%1");
     QUrl url = QUrl::fromLocalFile( Amarok::saveLocation( "playlists" ) );
     url = url.adjusted(QUrl::StripTrailingSlash);
-    url.setPath(url.path() + '/' + ( fileName.subs( trailingNumber ).toString() ));
+    url.setPath(url.path() + QLatin1Char('/') + ( fileName.subs( trailingNumber ).toString() ));
 
     while( QFileInfo( url.path() ).exists() )
     {

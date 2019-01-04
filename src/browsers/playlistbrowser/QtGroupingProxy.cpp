@@ -431,7 +431,7 @@ QtGroupingProxy::data( const QModelIndex &index, int role ) const
         if( variantsOfChildren.count() == 1 )
             return variantsOfChildren.first();
 
-        if( variantsOfChildren.count() == 0 )
+        if( variantsOfChildren.isEmpty() )
             return QVariant();
 
         return variantsOfChildren;
@@ -610,7 +610,7 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
         bool groupIsEditable = true;
 
         //it's possible to have empty groups
-        if( m_groupHash.value( idx.row() ).count() == 0 )
+        if( m_groupHash.value( idx.row() ).isEmpty() )
         {
             //check the flags of this column with the root node
             QModelIndex originalRootNode = sourceModel()->index( m_rootIndex.row(), m_groupedColumn,

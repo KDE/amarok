@@ -140,7 +140,7 @@ ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCoverPtr album )
 
     QUrl downloadUrl( album->coverUrl() );
 
-    m_coverDownloadPath = m_tempDir->path() + '/' + downloadUrl.fileName();
+    m_coverDownloadPath = m_tempDir->path() + QLatin1Char('/') + downloadUrl.fileName();
 
     debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_coverDownloadPath;
 

@@ -121,7 +121,7 @@ MemoryQueryMakerInternal::handleResult()
                     || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
                     ( m_labelQueryMode == QueryMaker::NoConstraint
                       || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
-                      || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                      || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().isEmpty()) ) )
                 {
                     tracks.append( track );
                 }
@@ -174,7 +174,7 @@ MemoryQueryMakerInternal::handleResult()
                     || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && (album && !album->isCompilation()) ) ) &&
                     ( m_labelQueryMode == QueryMaker::NoConstraint
                       || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
-                      || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                      || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().isEmpty()) ) )
                 {
                     tracks.append( track );
                 }
@@ -206,7 +206,7 @@ MemoryQueryMakerInternal::handleResult()
                         || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && (album && !album->isCompilation()) ) ) &&
                         ( m_labelQueryMode == QueryMaker::NoConstraint
                           || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
-                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().isEmpty()) ) )
                     {
                         albums.append( album );
                         break;
@@ -233,7 +233,7 @@ MemoryQueryMakerInternal::handleResult()
                         || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
                         ( m_labelQueryMode == QueryMaker::NoConstraint
                           || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
-                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().isEmpty()) ) )
                     {
                         artists.append( artist );
                         break;
@@ -261,7 +261,7 @@ MemoryQueryMakerInternal::handleResult()
                         || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !album->isCompilation()) ) &&
                         ( m_labelQueryMode == QueryMaker::NoConstraint
                           || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
-                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().isEmpty()) ) )
                     {
                         artists.append( album->albumArtist() );
                         break;
@@ -286,7 +286,7 @@ MemoryQueryMakerInternal::handleResult()
                         || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
                         ( m_labelQueryMode == QueryMaker::NoConstraint
                           || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
-                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().isEmpty()) ) )
                     {
                         composers.append( composer );
                         break;
@@ -312,7 +312,7 @@ MemoryQueryMakerInternal::handleResult()
                         || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
                         ( m_labelQueryMode == QueryMaker::NoConstraint
                           || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
-                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().isEmpty()) ) )
                     {
                         genres.append( genre );
                         break;
@@ -339,7 +339,7 @@ MemoryQueryMakerInternal::handleResult()
                         || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
                         ( m_labelQueryMode == QueryMaker::NoConstraint
                           || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
-                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().isEmpty()) ) )
                     {
                         years.append( year );
                         break;
@@ -371,7 +371,7 @@ MemoryQueryMakerInternal::handleResult()
                         || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
                         ( m_labelQueryMode == QueryMaker::NoConstraint
                           || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
-                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().isEmpty()) ) )
                     {
                         labels.append( label );
                         break;
@@ -401,7 +401,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
             ( m_labelQueryMode == QueryMaker::NoConstraint
               || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
-              || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+              || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().isEmpty()) ) )
         {
             tracks.append( track );
         }

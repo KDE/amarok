@@ -63,7 +63,7 @@ ScriptImporter::include( const QString& relativeFilename )
 {
     QUrl includeUrl = KIO::upUrl(m_scriptUrl);
     includeUrl = includeUrl.adjusted(QUrl::StripTrailingSlash);
-    includeUrl.setPath(includeUrl.path() + '/' + ( relativeFilename ));
+    includeUrl.setPath(includeUrl.path() + QLatin1Char('/') + ( relativeFilename ));
     QFile file( includeUrl.toLocalFile() );
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {

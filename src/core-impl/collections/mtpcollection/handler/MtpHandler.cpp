@@ -385,7 +385,7 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
 
         QString trackFileName = QString::fromUtf8( m_mtpTrackHash.value( track )->filename );
 
-        QString filename = m_tempDir->path() + '/' + trackFileName;
+        QString filename = m_tempDir->path() + QLatin1Char('/') + trackFileName;
 
         debug() << "Temp Filename: " << filename;
 

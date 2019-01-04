@@ -152,7 +152,7 @@ int main(int argc, char **argv)
             package = parser.value("install");
         }
         if (!QDir::isAbsolutePath(package)) {
-            packageFile = QDir(QDir::currentPath() + '/' + package).absolutePath();
+            packageFile = QDir(QDir::currentPath() + QLatin1Char('/') + package).absolutePath();
         } else {
             packageFile = package;
         }

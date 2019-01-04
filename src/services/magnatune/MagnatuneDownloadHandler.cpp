@@ -173,7 +173,7 @@ void MagnatuneDownloadHandler::saveDownloadInfo( const QString &infoXml )
 
     QString fileName = m_currentAlbum->albumArtist()->name() + " - " + m_currentAlbum->name();
 
-    QFile file( purchaseDir.absolutePath() + '/' + fileName );
+    QFile file( purchaseDir.absolutePath() + QLatin1Char('/') + fileName );
 
     //Skip if file already exists
     if ( file.exists () )

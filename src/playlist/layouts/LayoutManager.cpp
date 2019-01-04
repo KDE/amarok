@@ -401,7 +401,7 @@ void LayoutManager::deleteLayout( const QString &layout )
     if ( m_layouts.value( layout ).isEditable() )
     {
         QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
-        QString xmlFile = layoutsDir.path() + '/' + layout + ".xml";
+        QString xmlFile = layoutsDir.path() + QLatin1Char('/') + layout + ".xml";
 
         if ( !QFile::remove( xmlFile ) )
             debug() << "error deleting file" << xmlFile;

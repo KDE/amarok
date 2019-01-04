@@ -223,7 +223,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
             {
                 absoluteUrl = QUrl::fromLocalFile( lastMountPoint.first() );
                 absoluteUrl = absoluteUrl.adjusted(QUrl::StripTrailingSlash);
-                absoluteUrl.setPath( absoluteUrl.path() + '/' + rurl.path() );
+                absoluteUrl.setPath( absoluteUrl.path() + QLatin1Char('/') + rurl.path() );
                 absoluteUrl.setPath( QDir::cleanPath( absoluteUrl.path() ) );
                 //debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absoluteUrl.toLocalFile();
             }

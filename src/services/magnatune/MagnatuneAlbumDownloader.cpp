@@ -55,9 +55,9 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
 
     m_currentAlbumFileName = info.albumCode() + ".zip";
 
-    debug() << "Using temporary location: " << m_tempDir->path() + '/' + m_currentAlbumFileName;
+    debug() << "Using temporary location: " << m_tempDir->path() + QLatin1Char('/') + m_currentAlbumFileName;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, QUrl::fromLocalFile( m_tempDir->path() + '/' + m_currentAlbumFileName ), -1, KIO::Overwrite | KIO::HideProgressInfo );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, QUrl::fromLocalFile( m_tempDir->path() + QLatin1Char('/') + m_currentAlbumFileName ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
     connect( m_albumDownloadJob, &KJob::result, this, &MagnatuneAlbumDownloader::albumDownloadComplete );
 
@@ -89,11 +89,11 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
     if ( downloadJob != m_albumDownloadJob )
         return ; //not the right job, so let's ignore it
 
-    const QString finalAlbumPath = m_currentAlbumUnpackLocation + '/' + m_currentAlbumInfo.artistName() + '/' + m_currentAlbumInfo.albumName();
+    const QString finalAlbumPath = m_currentAlbumUnpackLocation + QLatin1Char('/') + m_currentAlbumInfo.artistName() + QLatin1Char('/') + m_currentAlbumInfo.albumName();
 
     //ok, now we have the .zip file downloaded. All we need is to unpack it to the desired location and add it to the collection.
 
-    KZip kzip( m_tempDir->path() + '/' + m_currentAlbumFileName );
+    KZip kzip( m_tempDir->path() + QLatin1Char('/') + m_currentAlbumFileName );
 
     if ( !kzip.open( QIODevice::ReadOnly ) )
     {
@@ -102,7 +102,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
         return;
     }
 
-    debug() << m_tempDir->path() + '/' + m_currentAlbumFileName << " opened for decompression";
+    debug() << m_tempDir->path() + QLatin1Char('/') + m_currentAlbumFileName << " opened for decompression";
 
     const KArchiveDirectory * directory = kzip.directory();
 

@@ -135,7 +135,7 @@ AFTTagger::processPath( const QString &path )
             foreach( const QString &pathEntry, QDir( path ).entryList() )
             {
                 if( pathEntry != "." && pathEntry != ".." )
-                    processPath( QDir( path ).canonicalPath() + '/' +  pathEntry );
+                    processPath( QDir( path ).canonicalPath() + QLatin1Char('/') +  pathEntry );
             }
         }
     }

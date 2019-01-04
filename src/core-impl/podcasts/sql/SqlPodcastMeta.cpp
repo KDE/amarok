@@ -585,7 +585,7 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
 
     m_directory = QUrl( m_provider->baseDownloadDir() );
     m_directory = m_directory.adjusted(QUrl::StripTrailingSlash);
-    m_directory.setPath( QDir::toNativeSeparators(m_directory.path() + '/' + Amarok::vfatPath( m_title )) );
+    m_directory.setPath( QDir::toNativeSeparators(m_directory.path() + QLatin1Char('/') + Amarok::vfatPath( m_title )) );
 
     m_autoScan = true;
     m_fetchType = StreamOrDownloadOnDemand;
@@ -659,7 +659,7 @@ SqlPodcastChannel::setTitle( const QString &title )
     if( m_title.isEmpty() )
     {
         m_directory = m_directory.adjusted(QUrl::StripTrailingSlash);
-        m_directory.setPath( QDir::toNativeSeparators(m_directory.path() + '/' + Amarok::vfatPath( title )) );
+        m_directory.setPath( QDir::toNativeSeparators(m_directory.path() + QLatin1Char('/') + Amarok::vfatPath( title )) );
     }
     m_title = title;
 }

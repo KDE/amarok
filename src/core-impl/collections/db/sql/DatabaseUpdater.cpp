@@ -1101,7 +1101,7 @@ DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bo
             stream << data;
             stream << ';';
             ++i;
-            if( i % columns.count() == 0 )
+            if( i % columns.isEmpty() )
                 stream << '\n';
         }
         file.close();

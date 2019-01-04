@@ -1348,7 +1348,7 @@ MainWindow::playAudioCd()
 
             Collections::MemoryCollection * cdColl = dynamic_cast<Collections::MemoryCollection *>( collection );
 
-            if( !cdColl || cdColl->trackMap().count() == 0 )
+            if( !cdColl || cdColl->trackMap().isEmpty() )
             {
                 debug() << "cd collection not ready yet (track count = 0 )";
                 m_waitingForCd = true;

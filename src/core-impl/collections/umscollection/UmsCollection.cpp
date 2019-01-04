@@ -274,19 +274,19 @@ UmsCollection::init()
     debug() << "Mounted at: " << m_mountPoint << "collection id:" << m_collectionId;
 
     // read .is_audio_player from filesystem
-    KConfig config( m_mountPoint + '/' + s_settingsFileName, KConfig::SimpleConfig );
+    KConfig config( m_mountPoint + QLatin1Char('/') + s_settingsFileName, KConfig::SimpleConfig );
     KConfigGroup entries = config.group( QString() ); // default group
     if( entries.hasKey( s_musicFolderKey ) )
     {
         m_musicUrl = QUrl::fromLocalFile( m_mountPoint );
         m_musicUrl = m_musicUrl.adjusted(QUrl::StripTrailingSlash);
-        m_musicUrl.setPath(m_musicUrl.path() + '/' + ( entries.readPathEntry( s_musicFolderKey, QString() ) ));
+        m_musicUrl.setPath(m_musicUrl.path() + QLatin1Char('/') + ( entries.readPathEntry( s_musicFolderKey, QString() ) ));
         m_musicUrl.setPath( QDir::cleanPath(m_musicUrl.path()) );
         if( !QDir( m_musicUrl.toLocalFile() ).exists() )
         {
             QString message = i18n( "File <i>%1</i> suggests that we should use <i>%2</i> "
                     "as music folder on the device, but it doesn't exist. Falling back to "
-                    "<i>%3</i> instead", m_mountPoint + '/' + s_settingsFileName,
+                    "<i>%3</i> instead", m_mountPoint + QLatin1Char('/') + s_settingsFileName,
                     m_musicUrl.toLocalFile(), m_mountPoint );
             Amarok::Logger::longMessage( message, Amarok::Logger::Warning );
             m_musicUrl = QUrl::fromLocalFile(m_mountPoint);
@@ -309,7 +309,7 @@ UmsCollection::init()
     {
         m_podcastUrl = QUrl::fromLocalFile( m_mountPoint );
         m_podcastUrl = m_podcastUrl.adjusted(QUrl::StripTrailingSlash);
-        m_podcastUrl.setPath(m_podcastUrl.path() + '/' + ( entries.readPathEntry( s_podcastFolderKey, QString() ) ));
+        m_podcastUrl.setPath(m_podcastUrl.path() + QLatin1Char('/') + ( entries.readPathEntry( s_podcastFolderKey, QString() ) ));
         m_podcastUrl.setPath( QDir::cleanPath(m_podcastUrl.path()) );
     }
     m_autoConnect = entries.readEntry( s_autoConnectKey, m_autoConnect );
@@ -461,7 +461,7 @@ UmsCollection::createCapabilityInterface( Capabilities::Capability::Type type )
             return new Capabilities::ActionsCapability( actions );
         }
         case Capabilities::Capability::Transcode:
-            return new UmsTranscodeCapability( m_mountPoint + '/' + s_settingsFileName,
+            return new UmsTranscodeCapability( m_mountPoint + QLatin1Char('/') + s_settingsFileName,
                                                s_transcodingGroup );
         default:
             return 0;
@@ -682,7 +682,7 @@ UmsCollection::slotConfigure()
             QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
 
         // write the data to the on-disk file
-        KConfig config( m_mountPoint + '/' + s_settingsFileName, KConfig::SimpleConfig );
+        KConfig config( m_mountPoint + QLatin1Char('/') + s_settingsFileName, KConfig::SimpleConfig );
         KConfigGroup entries = config.group( QString() ); // default group
         if( !m_musicUrl.isEmpty() )
             entries.writePathEntry( s_musicFolderKey, QDir( m_mountPoint ).relativeFilePath( m_musicUrl.toLocalFile() ));

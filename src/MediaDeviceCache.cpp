@@ -349,7 +349,7 @@ MediaDeviceCache::isGenericEnabled( const QString &udi ) const
         debug() << "Could convert parent to PortableMediaPlayer, returning true";
         return true;
     }
-    if( QFile::exists( ssa->filePath() + '/' + ".is_audio_player" ) )
+    if( QFile::exists( ssa->filePath() + QLatin1Char('/') + ".is_audio_player" ) )
     {
         return true;
     }

@@ -87,7 +87,7 @@ AudioCdCollection::audiocdUrl( const QString &path ) const
 {
     QUrl url("audiocd:/");
     url = url.adjusted(QUrl::StripTrailingSlash);
-    url.setPath(url.path() + '/' + ( path ));
+    url.setPath(url.path() + QLatin1Char('/') + ( path ));
 
     if( !m_device.isEmpty() )
     {
@@ -285,7 +285,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
             baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
 
             //we hack the url so the engine controller knows what track on the CD to play..
-            QUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i + 1 ) );
+            QUrl baseUrl = audiocdUrl( m_discCddbId + QLatin1Char('/') + QString::number( i + 1 ) );
 
             debug() << "Track Base File Name (after): " << baseFileName;
             debug() << "Track url: " << baseUrl;
@@ -511,7 +511,7 @@ AudioCdCollection::noInfoAvailable()
         debug() << "got track url: " << audiocdUrl( trackWav );
 
         //we hack the url so the engine controller knows what track on the CD to play..
-        QUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i ) );
+        QUrl baseUrl = audiocdUrl( m_discCddbId + QLatin1Char('/') + QString::number( i ) );
 
         Meta::AudioCdTrackPtr trackPtr = Meta::AudioCdTrackPtr( new Meta::AudioCdTrack( this, trackDisplayName( i ), baseUrl ) );
 
