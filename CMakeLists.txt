@@ -123,6 +123,14 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-delayed-template-parsing")
 endif ()
 
+####################################################################################
+# CMAKE_AUTOMOC
+
+if(NOT CMAKE_VERSION VERSION_LESS "3.10.0")
+    # CMake 3.9+ warns about automoc on files without Q_OBJECT, and doesn't know about other macros.
+    # 3.10+ lets us provide more macro names that require automoc.
+    list(APPEND CMAKE_AUTOMOC_MACRO_NAMES AMAROK_EXPORT_SIMPLE_IMPORTER_PLUGIN)
+endif()
 
 add_definitions(-DQT_NO_URL_CAST_FROM_STRING)
 
