@@ -174,19 +174,21 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
 {
     DEBUG_BLOCK
 
-    QModelIndexList indices = selectionModel()->selectedIndexes();
+    const QModelIndexList indices = selectionModel()->selectedIndexes();
 
     QMenu* menu = new QMenu( this );
+    const QList<QAction *> actions = createCommonActions( indices );
 
-    QList<QAction *> actions = createCommonActions( indices );
-
-    foreach( QAction * action, actions )
+    for ( QAction * action : actions )
         menu->addAction( action );
 
     if( indices.isEmpty() && m_addGroupAction)
         menu->addAction( m_addGroupAction );
 
-    menu->exec( event->globalPos() );
+    if (!menu->isEmpty()) {
+        menu->exec( event->globalPos() );
+    }
+    delete menu;
 }
 
 void BookmarkTreeView::resizeEvent( QResizeEvent *event )

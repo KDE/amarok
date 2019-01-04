@@ -74,6 +74,7 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
     menu->addActions( parentCheckActions( parent, editActionsFor( parent, index ) ) );
 
     menu->exec( pos );
+    delete menu;
 }
 
 
