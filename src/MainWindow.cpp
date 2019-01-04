@@ -1191,6 +1191,7 @@ MainWindow::showReportBug()
     KBugReport * rbDialog = new KBugReport( KAboutData::applicationData() ,this  );
     rbDialog->setObjectName( "KBugReport" );
     rbDialog->exec();
+    delete rbDialog;
 }
 
 void

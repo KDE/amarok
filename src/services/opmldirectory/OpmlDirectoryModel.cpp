@@ -301,8 +301,10 @@ OpmlDirectoryModel::slotAddOpmlAction()
     connect( buttonBox, &QDialogButtonBox::accepted, dialog, &QDialog::accept );
     connect( buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject );
 
-    if( dialog->exec() != QDialog::Accepted )
+    if( dialog->exec() != QDialog::Accepted ) {
+        delete dialog;
         return;
+    }
 
     QString url = widget.urlEdit->url().url();
     QString title = widget.titleEdit->text();
