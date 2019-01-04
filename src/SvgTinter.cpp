@@ -25,7 +25,7 @@
 
 #include <KCompressionDevice>
 
-SvgTinter * SvgTinter::s_instance = 0;
+SvgTinter * SvgTinter::s_instance = nullptr;
 
 SvgTinter::SvgTinter()
     : m_firstRun( true )
@@ -129,7 +129,7 @@ namespace The {
     SvgTinter*
     svgTinter()
     {
-        if ( SvgTinter::s_instance == 0 )
+        if ( SvgTinter::s_instance == nullptr )
             SvgTinter::s_instance = new SvgTinter();
 
         return SvgTinter::s_instance;

@@ -38,7 +38,7 @@
 namespace Playlist {
 
 static const QString PREVIEW_LAYOUT = "%%PREVIEW%%";
-LayoutManager* LayoutManager::s_instance = 0;
+LayoutManager* LayoutManager::s_instance = nullptr;
 
 LayoutManager* LayoutManager::instance()
 {

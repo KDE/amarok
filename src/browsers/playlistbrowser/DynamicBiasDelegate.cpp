@@ -47,7 +47,7 @@ PlaylistBrowserNS::DynamicBiasDelegate::paint( QPainter* painter,
                                                const QStyleOptionViewItem& option,
                                                const QModelIndex& index ) const
 {
-    Dynamic::AbstractBias* bias = 0;
+    Dynamic::AbstractBias* bias = nullptr;
     QVariant v;
     if( index.isValid() ) {
         v = index.model()->data( index, Dynamic::DynamicModel::BiasRole );
@@ -59,7 +59,7 @@ PlaylistBrowserNS::DynamicBiasDelegate::paint( QPainter* painter,
     if( bias )
     {
         QModelIndex parentIndex = index.parent();
-        Dynamic::AbstractBias* parentBias = 0;
+        Dynamic::AbstractBias* parentBias = nullptr;
 
         const bool isRTL = QApplication::isRightToLeft();
         Q_UNUSED( isRTL );

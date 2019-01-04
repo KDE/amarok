@@ -29,11 +29,11 @@
 namespace Playlist
 {
 
-ViewUrlGenerator * ViewUrlGenerator::s_instance = 0;
+ViewUrlGenerator * ViewUrlGenerator::s_instance = nullptr;
 
 ViewUrlGenerator * ViewUrlGenerator::instance()
 {
-    if( s_instance == 0)
+    if( s_instance == nullptr)
         s_instance = new ViewUrlGenerator();
 
     return s_instance;

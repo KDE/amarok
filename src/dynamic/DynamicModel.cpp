@@ -50,7 +50,7 @@
    a different one.
 */
 
-Dynamic::DynamicModel* Dynamic::DynamicModel::s_instance = 0;
+Dynamic::DynamicModel* Dynamic::DynamicModel::s_instance = nullptr;
 
 Dynamic::DynamicModel*
 Dynamic::DynamicModel::instance()

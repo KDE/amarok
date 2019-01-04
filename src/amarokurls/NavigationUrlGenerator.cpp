@@ -31,11 +31,11 @@
 #include "core-impl/collections/db/sql/SqlMeta.h"
 #include "playlistmanager/PlaylistManager.h"
 
-NavigationUrlGenerator * NavigationUrlGenerator::s_instance = 0;
+NavigationUrlGenerator * NavigationUrlGenerator::s_instance = nullptr;
 
 NavigationUrlGenerator * NavigationUrlGenerator::instance()
 {
-    if( s_instance == 0 )
+    if( s_instance == nullptr )
         s_instance = new NavigationUrlGenerator();
 
     return s_instance;
@@ -60,13 +60,13 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     //get the path
     QString path = The::mainWindow()->browserDock()->list()->path();
 
-    QStringList pathParts = path.split( '/' );
+    QStringList pathParts = path.split( QLatin1Char('/') );
 
     //we don't use the "Home" part in navigation urls
     if ( pathParts.at( 0 ) == "root list" )
         pathParts.removeFirst();
     
-    url.setPath( pathParts.join( "/" ) );
+    url.setPath( pathParts.join( QLatin1Char('/') ) );
 
 
     QString filter = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->filter();

@@ -289,7 +289,7 @@ CoverFetchInfoPayload::prepareDiscogsUrls( const QByteArray &data )
                         {
                             QUrl releaseUrl( xml.readElementText() );
                             QString releaseStr = releaseUrl.adjusted(QUrl::StripTrailingSlash).toString();
-                            QString releaseId = releaseStr.split( '/' ).last();
+                            QString releaseId = releaseStr.split( QLatin1Char('/') ).last();
 
                             QUrl url;
                             url.setScheme( "http" );

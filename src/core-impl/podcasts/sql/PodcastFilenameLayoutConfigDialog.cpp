@@ -37,8 +37,7 @@ PodcastFilenameLayoutConfigDialog::PodcastFilenameLayoutConfigDialog( Podcasts::
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
 //    showButtonSeparator( true ); TODO KF5: Replace with a Qt5 equivalent (if any equivalent exists)
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    setLayout(mainLayout);
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);

@@ -47,7 +47,7 @@
 #include <sys/types.h>
 
 
-ScriptManager* ScriptManager::s_instance = 0;
+ScriptManager* ScriptManager::s_instance = nullptr;
 
 ScriptManager::ScriptManager( QObject* parent )
     : QObject( parent )
@@ -73,7 +73,7 @@ void
 ScriptManager::destroy() {
     if (s_instance) {
         delete s_instance;
-        s_instance = 0;
+        s_instance = nullptr;
     }
 }
 

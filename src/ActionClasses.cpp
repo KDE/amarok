@@ -95,7 +95,7 @@ void MenuAction::setShortcutConfigurable(bool b)
     setProperty("isShortcutConfigurable", b);
 }
 
-Menu* Menu::s_instance = 0;
+Menu* Menu::s_instance = nullptr;
 
 Menu::Menu( QWidget* parent )
     : QMenu( parent )
@@ -385,7 +385,7 @@ BurnMenuAction::createWidget( QWidget *w )
 }
 
 
-BurnMenu* BurnMenu::s_instance = 0;
+BurnMenu* BurnMenu::s_instance = nullptr;
 
 BurnMenu::BurnMenu( QWidget* parent )
     : QMenu( parent )

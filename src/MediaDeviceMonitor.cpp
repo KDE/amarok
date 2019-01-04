@@ -33,7 +33,7 @@
 
 #include <QTimer>
 
-MediaDeviceMonitor* MediaDeviceMonitor::s_instance = 0;
+MediaDeviceMonitor* MediaDeviceMonitor::s_instance = nullptr;
 
 MediaDeviceMonitor::MediaDeviceMonitor() : QObject()
  , m_udiAssistants()
@@ -50,7 +50,7 @@ MediaDeviceMonitor::MediaDeviceMonitor() : QObject()
 
 MediaDeviceMonitor::~MediaDeviceMonitor()
 {
-    s_instance = 0;
+    s_instance = nullptr;
 }
 
 void

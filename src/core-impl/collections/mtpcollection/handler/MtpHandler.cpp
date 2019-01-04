@@ -439,7 +439,7 @@ MtpHandler::checkFolderStructure( const Meta::TrackPtr track, bool create )
         genreName = genre->prettyName();
 
     uint32_t parent_id = getDefaultParentId();
-    QStringList folders = m_folderStructure.split( '/' ); // use slash as a dir separator
+    QStringList folders = m_folderStructure.split( QLatin1Char('/') ); // use slash as a dir separator
     QString completePath;
     for ( QStringList::Iterator it = folders.begin(); it != folders.end(); ++it )
     {

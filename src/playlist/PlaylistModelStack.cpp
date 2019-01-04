@@ -32,12 +32,12 @@ namespace The
 namespace Playlist
 {
 
-ModelStack* ModelStack::s_instance = 0;
+ModelStack* ModelStack::s_instance = nullptr;
 
 ModelStack*
 ModelStack::instance()
 {
-    if( s_instance == 0 )
+    if( s_instance == nullptr )
         s_instance = new ModelStack();
     return s_instance;
 }
@@ -48,7 +48,7 @@ ModelStack::destroy()
     if( s_instance )
     {
         delete s_instance;
-        s_instance = 0;
+        s_instance = nullptr;
     }
 }
 

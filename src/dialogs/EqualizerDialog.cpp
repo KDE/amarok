@@ -24,7 +24,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-EqualizerDialog * EqualizerDialog::s_instance = 0;
+EqualizerDialog * EqualizerDialog::s_instance = nullptr;
 
 EqualizerDialog::EqualizerDialog( QWidget* parent )
     : QDialog( parent )
@@ -141,7 +141,7 @@ void EqualizerDialog::showOnce( QWidget *parent )
 {
     DEBUG_BLOCK
 
-    if( s_instance == 0 )
+    if( s_instance == nullptr )
         s_instance = new EqualizerDialog( parent );
 
     s_instance->activateWindow();

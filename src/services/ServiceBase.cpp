@@ -107,7 +107,7 @@ ServiceFactory::slotRemoveService( ServiceBase *service )
     service->deleteLater();
 }
 
-ServiceBase *ServiceBase::s_instance = 0;
+ServiceBase *ServiceBase::s_instance = nullptr;
 
 ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView, const QString &prettyName )
     : BrowserCategory( name, 0 )

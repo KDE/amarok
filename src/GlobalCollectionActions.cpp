@@ -20,7 +20,7 @@
 
 namespace The
 {
-    static GlobalCollectionActions* s_GlobalCollectionActions_instance = 0;
+    static GlobalCollectionActions* s_GlobalCollectionActions_instance = nullptr;
 
     GlobalCollectionActions* globalCollectionActions()
     {

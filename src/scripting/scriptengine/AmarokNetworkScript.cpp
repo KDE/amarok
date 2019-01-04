@@ -29,7 +29,7 @@
 
 using namespace AmarokScript;
 
-AmarokDownloadHelper *AmarokDownloadHelper::s_instance = 0;
+AmarokDownloadHelper *AmarokDownloadHelper::s_instance = nullptr;
 
 Downloader::Downloader( QScriptEngine* engine )
     : QObject( engine )

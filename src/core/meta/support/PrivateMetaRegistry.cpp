@@ -21,12 +21,12 @@
 namespace Meta {
 
 
-PrivateMetaRegistry* PrivateMetaRegistry::s_instance = 0;
+PrivateMetaRegistry* PrivateMetaRegistry::s_instance = nullptr;
 
 
 PrivateMetaRegistry * PrivateMetaRegistry::instance()
 {
-    if ( s_instance == 0 )
+    if ( s_instance == nullptr )
         s_instance = new PrivateMetaRegistry();
     return s_instance;
 }

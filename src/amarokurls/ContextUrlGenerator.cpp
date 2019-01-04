@@ -23,11 +23,11 @@
 #include <KLocalizedString>
 
 
-ContextUrlGenerator * ContextUrlGenerator::s_instance = 0;
+ContextUrlGenerator * ContextUrlGenerator::s_instance = nullptr;
 
 ContextUrlGenerator * ContextUrlGenerator::instance()
 {
-    if( s_instance == 0 )
+    if( s_instance == nullptr )
         s_instance = new ContextUrlGenerator();
 
     return s_instance;

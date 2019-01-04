@@ -602,7 +602,7 @@ AudioCdCollection::updateProxyTracks()
     {
 
         QString urlString = url.url().remove( "audiocd:/" );
-        const QStringList &parts = urlString.split( '/' );
+        const QStringList &parts = urlString.split( QLatin1Char('/') );
 
         if( parts.count() != 2 )
             continue;

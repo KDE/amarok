@@ -39,8 +39,7 @@ PodcastSettingsDialog::PodcastSettingsDialog( Podcasts::SqlPodcastChannelPtr cha
     setWindowTitle( i18nc("change options", "Configure %1", m_channel->title() ) );
     setModal( true );
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel|QDialogButtonBox::Apply);
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    setLayout(mainLayout);
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(main);
 
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);

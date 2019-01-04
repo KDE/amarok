@@ -50,7 +50,7 @@
 #include <QStandardPaths>
 #include <typeinfo>
 
-Playlist::Actions* Playlist::Actions::s_instance = 0;
+Playlist::Actions* Playlist::Actions::s_instance = nullptr;
 
 Playlist::Actions* Playlist::Actions::instance()
 {
@@ -66,7 +66,7 @@ void
 Playlist::Actions::destroy()
 {
     delete s_instance;
-    s_instance = 0;
+    s_instance = nullptr;
 }
 
 Playlist::Actions::Actions()

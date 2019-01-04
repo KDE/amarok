@@ -277,9 +277,9 @@ OrganizeCollectionDialog::processPreviewPaths()
         originals << it.key()->prettyUrl();
         previews << it.value();
 
-        QStringList originalPrefix = originals.last().split( '/' );
+        QStringList originalPrefix = originals.last().split( QLatin1Char('/') );
         originalPrefix.removeLast(); // we never include file name in the common prefix
-        QStringList previewPrefix = previews.last().split( '/' );
+        QStringList previewPrefix = previews.last().split( QLatin1Char('/') );
         previewPrefix.removeLast();
 
         if( it == destinations.constBegin() )
@@ -307,8 +307,8 @@ OrganizeCollectionDialog::processPreviewPaths()
         }
     }
 
-    QString originalPrefix = commonOriginalPrefix.isEmpty() ? QString() : commonOriginalPrefix.join( "/" ) + '/';
-    m_previewPrefix = commonPreviewPrefix.isEmpty() ? QString() : commonPreviewPrefix.join( "/" ) + '/';
+    QString originalPrefix = commonOriginalPrefix.isEmpty() ? QString() : commonOriginalPrefix.join( QLatin1Char('/') ) + '/';
+    m_previewPrefix = commonPreviewPrefix.isEmpty() ? QString() : commonPreviewPrefix.join( QLatin1Char('/') ) + '/';
     ui->previewTableWidget->horizontalHeaderItem( 1 )->setText( i18n( "Original: %1", originalPrefix ) );
     ui->previewTableWidget->horizontalHeaderItem( 0 )->setText( i18n( "Preview: %1", m_previewPrefix ) );
 

@@ -59,12 +59,12 @@ namespace The
 }
 
 
-Controller* Controller::s_instance = 0;
+Controller* Controller::s_instance = nullptr;
 
 Controller*
 Controller::instance()
 {
-    if( s_instance == 0 )
+    if( s_instance == nullptr )
         s_instance = new Controller();
     return s_instance;
 }
@@ -75,7 +75,7 @@ Controller::destroy()
     if( s_instance )
     {
         delete s_instance;
-        s_instance = 0;
+        s_instance = nullptr;
     }
 }
 

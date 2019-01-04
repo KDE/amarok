@@ -28,7 +28,7 @@
 
 using namespace Meta;
 
-ScriptableServiceManager * ScriptableServiceManager::s_instance = 0;
+ScriptableServiceManager * ScriptableServiceManager::s_instance = nullptr;
 
 
 ScriptableServiceManager::ScriptableServiceManager()
@@ -165,7 +165,7 @@ namespace The {
     ScriptableServiceManager*
     scriptableServiceManager()
     {
-        if ( ScriptableServiceManager::s_instance == 0 )
+        if ( ScriptableServiceManager::s_instance == nullptr )
             ScriptableServiceManager::s_instance = new ScriptableServiceManager();
 
         return ScriptableServiceManager::s_instance;

@@ -26,11 +26,11 @@
 
 #include <KLocalizedString>
 
-PlayUrlGenerator * PlayUrlGenerator::s_instance = 0;
+PlayUrlGenerator * PlayUrlGenerator::s_instance = nullptr;
 
 PlayUrlGenerator * PlayUrlGenerator::instance()
 {
-    if( s_instance == 0)
+    if( s_instance == nullptr)
         s_instance = new PlayUrlGenerator();
 
     return s_instance;

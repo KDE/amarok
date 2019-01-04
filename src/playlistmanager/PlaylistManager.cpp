@@ -49,7 +49,7 @@
 using namespace Meta;
 using namespace Playlists;
 
-PlaylistManager *PlaylistManager::s_instance = 0;
+PlaylistManager *PlaylistManager::s_instance = nullptr;
 
 namespace The
 {
@@ -67,7 +67,7 @@ PlaylistManager::destroy()
 {
     if (s_instance) {
         delete s_instance;
-        s_instance = 0;
+        s_instance = nullptr;
     }
 }
 

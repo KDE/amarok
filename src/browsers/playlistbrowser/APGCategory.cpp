@@ -32,7 +32,7 @@
 #include <QToolBar>
 
 PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
-    : BrowserCategory ( "APG", 0 )
+    : BrowserCategory ( "APG", nullptr )
 {
     m_qualityFactor = AmarokConfig::qualityFactorAPG();
 

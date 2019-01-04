@@ -46,7 +46,7 @@ namespace The
     }
 }
 
-PlaylistBrowserNS::PodcastModel* PlaylistBrowserNS::PodcastModel::s_instance = 0;
+PlaylistBrowserNS::PodcastModel* PlaylistBrowserNS::PodcastModel::s_instance = nullptr;
 
 PlaylistBrowserNS::PodcastModel*
 PlaylistBrowserNS::PodcastModel::instance()
@@ -60,7 +60,7 @@ PlaylistBrowserNS::PodcastModel::destroy()
     if ( s_instance )
     {
         delete s_instance;
-        s_instance = 0;
+        s_instance = nullptr;
     }
 }
 

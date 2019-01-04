@@ -25,7 +25,7 @@
 #include <KConfigGroup>
 #include <KLocalizedString>
 
-BookmarkManager * BookmarkManager::s_instance = 0;
+BookmarkManager * BookmarkManager::s_instance = nullptr;
 
 BookmarkManager::BookmarkManager( QWidget* parent )
     : QDialog( parent )
@@ -48,12 +48,12 @@ BookmarkManager::BookmarkManager( QWidget* parent )
 BookmarkManager::~BookmarkManager()
 {
     Amarok::config( "Bookmark Manager" ).writeEntry( "Window Size", size() );
-    s_instance = 0;
+    s_instance = nullptr;
 }
 
 void BookmarkManager::showOnce( QWidget* parent )
 {
-    if( s_instance == 0 )
+    if( s_instance == nullptr )
         s_instance = new BookmarkManager( parent );
 
     s_instance->activateWindow();

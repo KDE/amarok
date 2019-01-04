@@ -28,7 +28,7 @@
 #include <QPixmap>
 
 
-StarManager* StarManager::s_instance = 0;
+StarManager* StarManager::s_instance = nullptr;
 
 StarManager* StarManager::instance()
 {

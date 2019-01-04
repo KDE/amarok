@@ -28,7 +28,7 @@
 #include <QSet>
 #include <QCoreApplication>
 
-ServicePluginManager *ServicePluginManager::s_instance = 0;
+ServicePluginManager *ServicePluginManager::s_instance = nullptr;
 
 ServicePluginManager *
 ServicePluginManager::instance()
@@ -46,7 +46,7 @@ ServicePluginManager::destroy()
 {
     if( s_instance ) {
         delete s_instance;
-        s_instance = 0;
+        s_instance = nullptr;
     }
 }
 

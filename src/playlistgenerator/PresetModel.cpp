@@ -38,11 +38,11 @@
 #include <QUrl>
 #include <QVariant>
 
-APG::PresetModel* APG::PresetModel::s_instance = 0;
+APG::PresetModel* APG::PresetModel::s_instance = nullptr;
 
 APG::PresetModel* APG::PresetModel::instance()
 {
-    if ( s_instance == 0 ) {
+    if ( s_instance == nullptr ) {
         s_instance = new PresetModel();
     }
 
@@ -54,7 +54,7 @@ APG::PresetModel::destroy()
 {
     s_instance->savePresetsToXml( Amarok::saveLocation() + "playlistgenerator.xml", s_instance->m_presetList );
     delete s_instance;
-    s_instance = 0;
+    s_instance = nullptr;
 }
 
 APG::PresetModel::PresetModel()

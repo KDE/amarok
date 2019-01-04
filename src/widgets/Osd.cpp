@@ -607,7 +607,7 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 // Class OSD
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Amarok::OSD* Amarok::OSD::s_instance = 0;
+Amarok::OSD* Amarok::OSD::s_instance = nullptr;
 
 Amarok::OSD*
 Amarok::OSD::instance()
@@ -621,7 +621,7 @@ Amarok::OSD::destroy()
     if ( s_instance )
     {
         delete s_instance;
-        s_instance = 0;
+        s_instance = nullptr;
     }
 }
 

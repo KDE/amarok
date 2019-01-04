@@ -234,7 +234,7 @@ QString BrowserCategoryList::navigate( const QString & target )
 {
     DEBUG_BLOCK
     debug() << "target: " << target;
-    QStringList categories = target.split( '/' );
+    QStringList categories = target.split( QLatin1Char('/') );
     if ( categories.size() == 0 )
         return QString();
 
@@ -270,7 +270,7 @@ QString BrowserCategoryList::navigate( const QString & target )
         if ( categories.size() > 1 )
         {
             categories.removeFirst();
-            QString leftover = categories.join( "/" );
+            QString leftover = categories.join( QLatin1Char('/') );
             return leftover;
         }
         return QString();
@@ -288,8 +288,8 @@ QString BrowserCategoryList::navigate( const QString & target )
     }
 
     categories.removeFirst();
-    debug() << "passing remaining path to child: " << categories.join( "/" );
-    return childList->navigate( categories.join( "/" ) );
+    debug() << "passing remaining path to child: " << categories.join( QLatin1Char('/') );
+    return childList->navigate( categories.join( QLatin1Char('/') ) );
 
 }
 

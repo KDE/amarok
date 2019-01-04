@@ -60,7 +60,7 @@
 #include <KToolBar>
 
 static QString artistToSelectInInitFunction;
-CoverManager *CoverManager::s_instance = 0;
+CoverManager *CoverManager::s_instance = nullptr;
 
 class ArtistItem : public QTreeWidgetItem
 {
@@ -105,8 +105,7 @@ CoverManager::CoverManager( QWidget *parent )
     //kapp->setTopWidget( this );
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close );
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    setLayout(mainLayout);
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &CoverManager::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &CoverManager::reject);
     setWindowTitle( i18n("Cover Manager") );
@@ -274,7 +273,7 @@ CoverManager::~CoverManager()
     qDeleteAll( m_coverItems );
     delete m_coverView;
     m_coverView = 0;
-    s_instance = 0;
+    s_instance = nullptr;
 }
 
 void

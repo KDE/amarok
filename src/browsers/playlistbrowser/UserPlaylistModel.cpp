@@ -45,11 +45,11 @@ namespace The
     }
 }
 
-PlaylistBrowserNS::UserModel *PlaylistBrowserNS::UserModel::s_instance = 0;
+PlaylistBrowserNS::UserModel *PlaylistBrowserNS::UserModel::s_instance = nullptr;
 
 PlaylistBrowserNS::UserModel *PlaylistBrowserNS::UserModel::instance()
 {
-    if( s_instance == 0 )
+    if( s_instance == nullptr )
         s_instance = new UserModel();
 
     return s_instance;
@@ -61,7 +61,7 @@ PlaylistBrowserNS::UserModel::destroy()
     if( s_instance )
     {
         delete s_instance;
-        s_instance = 0;
+        s_instance = nullptr;
     }
 }
 

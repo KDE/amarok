@@ -54,7 +54,7 @@ using namespace PlaylistBrowserNS;
 
 QString PodcastCategory::s_configGroup( "Podcast View" );
 
-PodcastCategory* PodcastCategory::s_instance = 0;
+PodcastCategory* PodcastCategory::s_instance = nullptr;
 
 PodcastCategory*
 PodcastCategory::instance()
@@ -68,7 +68,7 @@ PodcastCategory::destroy()
     if( s_instance )
     {
         delete s_instance;
-        s_instance = 0;
+        s_instance = nullptr;
     }
 }
 

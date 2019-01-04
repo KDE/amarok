@@ -29,7 +29,7 @@
 using namespace Amarok;
 
 KNotificationBackend *
-KNotificationBackend::s_instance = 0;
+KNotificationBackend::s_instance = nullptr;
 
 KNotificationBackend *
 KNotificationBackend::instance()
@@ -43,7 +43,7 @@ void
 KNotificationBackend::destroy()
 {
     delete s_instance;
-    s_instance = 0;
+    s_instance = nullptr;
 }
 
 KNotificationBackend::KNotificationBackend()

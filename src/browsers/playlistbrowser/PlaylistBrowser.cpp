@@ -36,9 +36,9 @@ PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const QString &name, QWidge
 {
     setContentsMargins(0,0,0,0);
 
-    addCategory( new DynamicCategory( 0 ) );
-    addCategory( new UserPlaylistCategory( 0 ) );
-    addCategory( new APGCategory( 0 ) );
+    addCategory( new DynamicCategory( nullptr ) );
+    addCategory( new UserPlaylistCategory( nullptr ) );
+    addCategory( new APGCategory( nullptr ) );
 
     setLongDescription( i18n( "The playlist browser contains your list of imported and saved playlists. It is also where you can specify powerful dynamic playlists and manage your podcast subscriptions and episodes." ) );
 

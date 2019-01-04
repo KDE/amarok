@@ -97,7 +97,7 @@ class OrBiasFactory : public Dynamic::AbstractBiasFactory
     { return Dynamic::BiasPtr( new Dynamic::OrBias() ); }
 };
 
-Dynamic::BiasFactory* Dynamic::BiasFactory::s_instance = 0;
+Dynamic::BiasFactory* Dynamic::BiasFactory::s_instance = nullptr;
 
 QList<Dynamic::AbstractBiasFactory*> Dynamic::BiasFactory::s_biasFactories = QList<Dynamic::AbstractBiasFactory*>();
 

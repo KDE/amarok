@@ -35,11 +35,11 @@
 static const int BOOKMARK_DB_VERSION = 4;
 static const QString key("AMAROK_BOOKMARKS");
 
-BookmarkModel * BookmarkModel::s_instance = 0;
+BookmarkModel * BookmarkModel::s_instance = nullptr;
 
 BookmarkModel * BookmarkModel::instance()
 {
-    if ( s_instance == 0 )
+    if ( s_instance == nullptr )
         s_instance = new BookmarkModel();
 
     return s_instance;

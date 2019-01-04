@@ -52,7 +52,7 @@
 #include <QToolBar>
 #include <QToolButton>
 
-CollectionWidget *CollectionWidget::s_instance = 0;
+CollectionWidget *CollectionWidget::s_instance = nullptr;
 
 #define CATEGORY_LEVEL_COUNT 3
 
@@ -82,7 +82,7 @@ public:
 CollectionBrowserTreeView *
 CollectionWidget::Private::view( CollectionWidget::ViewMode mode )
 {
-    CollectionBrowserTreeView *v(0);
+    CollectionBrowserTreeView *v(nullptr);
 
     switch( mode )
     {
@@ -180,7 +180,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
                     QString(Meta::shortI18nForField( Meta::valCreateDate ) + ":<1m") );
     combo->insertSeparator( combo->count() );
 
-    QMenu *filterMenu = new QMenu( 0 );
+    QMenu *filterMenu = new QMenu( nullptr );
 
     using namespace CategoryId;
     static const QList<QList<CatMenuId> > levelPresets = QList<QList<CatMenuId> >()

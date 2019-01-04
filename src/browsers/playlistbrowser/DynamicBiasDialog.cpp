@@ -151,9 +151,9 @@ PlaylistBrowserNS::BiasDialog::selectionChanged( int index )
         return;
     }
 
-debug() << "replace bias" << oldBias->toString() << "with" << newBias->toString();
+    debug() << "replace bias" << oldBias->toString() << "with" << newBias->toString();
     m_bias->replace( newBias ); // tell the old bias it has just been replaced
-debug() << "replaced";
+    debug() << "replaced";
 
     // -- if the new bias is AndBias, try to add the old biase(s) into it
     Dynamic::AndBias *oldABias = qobject_cast<Dynamic::AndBias*>(oldBias.data());
@@ -181,7 +181,7 @@ PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::
     {
         m_biasLayout->removeWidget( m_biasWidget );
         m_biasWidget->deleteLater();
-        m_biasWidget = 0;
+        m_biasWidget = nullptr;
     }
 
     m_bias = newBias;
@@ -191,7 +191,7 @@ PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::
     connect( newBias.data(), &Dynamic::AbstractBias::replaced,
              this, &PlaylistBrowserNS::BiasDialog::biasReplaced );
 
-    m_biasWidget = newBias->widget( 0 );
+    m_biasWidget = newBias->widget( nullptr );
     if( !m_biasWidget )
         m_biasWidget = new QLabel( i18n("This bias has no settings.") );
     m_biasLayout->addWidget( m_biasWidget );

@@ -96,7 +96,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
 BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString &callback,
         const BreadcrumbSiblingList &childItems, FileBrowser *handler, QWidget *parent )
     : BoxWidget( false, parent )
-    , m_menuButton( 0 )
+    , m_menuButton( nullptr )
     , m_callback( callback )
 {
     if ( !childItems.isEmpty() )

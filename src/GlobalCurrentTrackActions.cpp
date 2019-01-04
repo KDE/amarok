@@ -21,7 +21,7 @@
 
 namespace The
 {
-    static GlobalCurrentTrackActions* s_GlobalCurrentTrackActions_instance = 0;
+    static GlobalCurrentTrackActions* s_GlobalCurrentTrackActions_instance = nullptr;
 
     GlobalCurrentTrackActions* globalCurrentTrackActions()
     {

@@ -82,10 +82,10 @@ void AmarokUrl::initFromString( const QString & urlString )
 
     //get the command
 
-    parts = commandAndPath.split( '/' );
+    parts = commandAndPath.split( QLatin1Char('/') );
     m_command = parts.takeFirst();
 
-    m_path = parts.join( "/" );
+    m_path = parts.join( QLatin1Char('/') );
 
     m_path = unescape( m_path );
 }

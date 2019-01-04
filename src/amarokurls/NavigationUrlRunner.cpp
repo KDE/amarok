@@ -57,7 +57,7 @@ NavigationUrlRunner::run( AmarokUrl url )
         QString levelsString = args.value( "levels" );
         QList<CategoryId::CatMenuId> levels;
 
-        QStringList levelsStringList = levelsString.split( '-' );
+        QStringList levelsStringList = levelsString.split( QLatin1Char('-') );
 
         foreach( const QString &levelString, levelsStringList ) {
             if( levelString == "genre" )

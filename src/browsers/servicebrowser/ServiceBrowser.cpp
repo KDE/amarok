@@ -20,11 +20,11 @@
 
 #include <QStandardPaths>
 
-ServiceBrowser * ServiceBrowser::s_instance = 0;
+ServiceBrowser * ServiceBrowser::s_instance = nullptr;
 
 ServiceBrowser * ServiceBrowser::instance()
 {
-    if ( s_instance == 0 )
+    if ( s_instance == nullptr )
         s_instance = new ServiceBrowser( "internet" );
 
     return s_instance;

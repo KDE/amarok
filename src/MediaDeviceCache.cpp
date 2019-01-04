@@ -38,7 +38,7 @@
 
 #include <KConfigGroup>
 
-MediaDeviceCache* MediaDeviceCache::s_instance = 0;
+MediaDeviceCache* MediaDeviceCache::s_instance = nullptr;
 
 MediaDeviceCache::MediaDeviceCache() : QObject()
                              , m_type()
@@ -55,7 +55,7 @@ MediaDeviceCache::MediaDeviceCache() : QObject()
 
 MediaDeviceCache::~MediaDeviceCache()
 {
-    s_instance = 0;
+    s_instance = nullptr;
 }
 
 void

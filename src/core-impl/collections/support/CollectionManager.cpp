@@ -55,7 +55,7 @@ struct CollectionManager::Private
     QReadWriteLock lock; ///< protects all other variables against threading issues
 };
 
-CollectionManager *CollectionManager::s_instance = 0;
+CollectionManager *CollectionManager::s_instance = nullptr;
 
 CollectionManager *
 CollectionManager::instance()
@@ -73,7 +73,7 @@ CollectionManager::destroy()
 {
     if( s_instance ) {
         delete s_instance;
-        s_instance = 0;
+        s_instance = nullptr;
     }
 }
 
