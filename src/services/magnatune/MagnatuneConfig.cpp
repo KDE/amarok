@@ -50,10 +50,10 @@ MagnatuneConfig::load()
     if( m_membershipType == -1 )
     {
         //try to read the old style string version if that is present and valid.
-        QString oldMEmbershipType = config.readEntry( "membershipType", QString() );
-        if( oldMEmbershipType.toLower() == "stream" )
+        const QString oldMEmbershipType = config.readEntry( "membershipType", QString() ).toLower();
+        if( oldMEmbershipType == QLatin1String("stream") )
             m_membershipType = MagnatuneConfig::STREAM;
-        else if ( oldMEmbershipType.toLower() == "download" )
+        else if ( oldMEmbershipType == QLatin1String("download") )
             m_membershipType = MagnatuneConfig::DOWNLOAD;
         else
             m_membershipType = MagnatuneConfig::DOWNLOAD;
@@ -68,13 +68,13 @@ MagnatuneConfig::load()
     qulonglong defaultLong = 0;
     m_lastUpdateTimestamp = config.readEntry( "lastUpdate", defaultLong );
 
-    QString streamTypeString = config.readEntry( "streamType", QString() );
+    const QString streamTypeString = config.readEntry( "streamType", QString() );
    
 
     //make ogg the default
-    if ( streamTypeString == "mp3" )
+    if ( streamTypeString == QLatin1String("mp3") )
         m_streamType = MagnatuneMetaFactory::MP3;
-    else if (  streamTypeString == "lofi_mp3"  )
+    else if (  streamTypeString == QLatin1String("lofi_mp3") )
         m_streamType = MagnatuneMetaFactory::LOFI;
     else 
         m_streamType = MagnatuneMetaFactory::OGG;
@@ -161,13 +161,13 @@ MagnatuneConfig::membershipPrefix()
 }
 
 QString
-MagnatuneConfig::username()
+MagnatuneConfig::username() const
 {
     return m_username;
 }
 
 QString
-MagnatuneConfig::password()
+MagnatuneConfig::password() const
 {
     return m_password;
 }
@@ -202,7 +202,7 @@ MagnatuneConfig::setStreamType( int theValue )
 
 
 qulonglong
-MagnatuneConfig::lastUpdateTimestamp()
+MagnatuneConfig::lastUpdateTimestamp() const
 {
     return m_lastUpdateTimestamp;
 }
@@ -215,7 +215,7 @@ MagnatuneConfig::setLastUpdateTimestamp( qulonglong timestamp )
 }
 
 QString
-MagnatuneConfig::email()
+MagnatuneConfig::email() const
 {
     return m_email;
 }

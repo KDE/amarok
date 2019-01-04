@@ -54,11 +54,11 @@ public:
     void setMembershipType( int membershipType );
     QString membershipPrefix();
 
-    QString email();
+    QString email() const;
     void setEmail( const QString &email );
 
-    QString username();
-    QString password();
+    QString username() const;
+    QString password() const;
 
     void setUsername( const QString &username );
     void setPassword( const QString &password );
@@ -66,7 +66,7 @@ public:
     void setStreamType( int theValue );
     int streamType() const;
 
-    qulonglong lastUpdateTimestamp();
+    qulonglong lastUpdateTimestamp() const;
     void setLastUpdateTimestamp( qulonglong timestamp );
     
 

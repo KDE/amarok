@@ -31,7 +31,7 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
     showLoading( i18n( "Loading artist info..." ) );
 
     MagnatuneArtist * magnatuneArtist = dynamic_cast<MagnatuneArtist *>( artist.data() );
-    if ( magnatuneArtist == 0) return;
+    if ( !magnatuneArtist ) return;
 
     // first get the entire artist html page
    /* QString tempFile;

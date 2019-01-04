@@ -34,9 +34,9 @@ using namespace Meta;
 
 MagnatuneDownloadHandler::MagnatuneDownloadHandler()
         : QObject()
-        , m_downloadDialog( 0 )
-        , m_albumDownloader( 0 )
-        , m_currentAlbum( 0 )
+        , m_downloadDialog( nullptr )
+        , m_albumDownloader( nullptr )
+        , m_currentAlbum( nullptr )
         , m_membershipDownload( false )
 {
 }
@@ -106,13 +106,13 @@ void MagnatuneDownloadHandler::xmlDownloadComplete( KJob * downloadJob )
     debug() << endl << endl << "result: " << resultXml;
 
 
-    if ( m_albumDownloader == 0 )
+    if ( !m_albumDownloader )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
         connect( m_albumDownloader, &MagnatuneAlbumDownloader::downloadComplete, this, &MagnatuneDownloadHandler::albumDownloadComplete );
     }
 
-    if ( m_downloadDialog == 0 )
+    if ( !m_downloadDialog )
     {
         m_downloadDialog = new MagnatuneDownloadDialog( m_parent );
         m_downloadDialog->setModal( true );
@@ -195,7 +195,7 @@ void MagnatuneDownloadHandler::albumDownloadComplete( bool success )
     debug() << "MagnatuneDownloadHandler::albumDownloadComplete";
 
     delete m_downloadDialog;
-    m_downloadDialog = 0;
+    m_downloadDialog = nullptr;
 
     emit( downloadCompleted( success ) );
 

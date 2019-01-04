@@ -43,7 +43,7 @@ void MagnatuneRedownloadDialog::setRedownloadItems( const QStringList &items )
      QStringListIterator it(items);
      while ( it.hasNext() ) {
 
-           QString currentItem = it.next();
+           const QString currentItem = it.next();
            debug() << "Adding item to redownload dialog: " << currentItem;
            redownloadListView->addTopLevelItem( new QTreeWidgetItem( QStringList(currentItem) ) );
      }
@@ -52,7 +52,7 @@ void MagnatuneRedownloadDialog::setRedownloadItems( const QStringList &items )
 
 }
 
-void MagnatuneRedownloadDialog::setRedownloadItems( QList<MagnatuneDownloadInfo> previousPurchases )
+void MagnatuneRedownloadDialog::setRedownloadItems( const QList<MagnatuneDownloadInfo> &previousPurchases )
 {
     m_infoMap.clear();
     
@@ -88,7 +88,7 @@ void MagnatuneRedownloadDialog::reject( )
 
 void MagnatuneRedownloadDialog::selectionChanged( )
 {
-    if (redownloadListView->currentItem() != 0) {
+    if (redownloadListView->currentItem()) {
         redownloadButton->setEnabled ( true );
     } else { 
         redownloadButton->setEnabled ( false );

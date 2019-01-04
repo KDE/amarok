@@ -46,7 +46,7 @@ MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool m
     if ( testIndex == -1 )
     {
         return false;
-    };
+    }
 
     int startIndex;
     int endIndex;
@@ -214,25 +214,25 @@ MagnatuneDownloadInfo::initFromRedownloadXml( const QDomElement &element )
 }
 
 QString
-MagnatuneDownloadInfo::userName( )
+MagnatuneDownloadInfo::userName( ) const
 {
     return m_userName;
 }
 
 QString
-MagnatuneDownloadInfo::password( )
+MagnatuneDownloadInfo::password( ) const
 {
     return m_password;
 }
 
 QString
-MagnatuneDownloadInfo::downloadMessage( )
+MagnatuneDownloadInfo::downloadMessage( ) const
 {
     return m_downloadMessage;
 }
 
 DownloadFormatMap
-MagnatuneDownloadInfo::formatMap()
+MagnatuneDownloadInfo::formatMap() const
 {
     return m_downloadFormats;
 }
@@ -267,7 +267,7 @@ MagnatuneDownloadInfo::setUnpackUrl( const QString &unpackUrl )
 }
 
 QString
-MagnatuneDownloadInfo::unpackLocation( )
+MagnatuneDownloadInfo::unpackLocation( ) const
 {
     return m_unpackUrl;
 }
@@ -275,7 +275,7 @@ MagnatuneDownloadInfo::unpackLocation( )
 
 
 QString
-MagnatuneDownloadInfo::albumCode()
+MagnatuneDownloadInfo::albumCode() const
 {
     return m_albumCode;
 }
@@ -289,7 +289,7 @@ MagnatuneDownloadInfo::setAlbumCode( const QString &albumCode )
 }
 
 bool
-MagnatuneDownloadInfo::isMembershipDownload()
+MagnatuneDownloadInfo::isMembershipDownload() const
 {
     return m_membershipDownload;
 }
@@ -301,11 +301,6 @@ MagnatuneDownloadInfo::setMembershipInfo( const QString &username, const QString
     m_password = password;
 }
 
-QString
-MagnatuneDownloadInfo::albumName()
-{
-    return m_albumName; 
-}
 
 const QString
 MagnatuneDownloadInfo::albumName() const
@@ -313,22 +308,10 @@ MagnatuneDownloadInfo::albumName() const
     return m_albumName;
 }
 
-QString
-MagnatuneDownloadInfo::artistName()
-{
-    return m_artistName;
-}
-
 const QString
 MagnatuneDownloadInfo::artistName() const
 {
     return m_artistName;
-}
-
-QString
-MagnatuneDownloadInfo::coverUrl()
-{
-    return m_coverUrl;
 }
 
 const QString

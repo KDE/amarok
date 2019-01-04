@@ -33,7 +33,7 @@ public:
     /*$PUBLIC_FUNCTIONS$*/
 
     void setRedownloadItems( const QStringList &items );
-    void setRedownloadItems( QList<MagnatuneDownloadInfo> previousPurchases );
+    void setRedownloadItems(const QList<MagnatuneDownloadInfo> &previousPurchases );
 
 Q_SIGNALS:
 

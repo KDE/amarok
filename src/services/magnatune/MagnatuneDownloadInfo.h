@@ -40,17 +40,14 @@ public:
     bool initFromRedownloadXml( const QDomElement &element );
 
     void setMembershipInfo( const QString &username, const QString &password );
-    bool isMembershipDownload();
+    bool isMembershipDownload() const;
 
-    DownloadFormatMap formatMap();
-    QString userName();
-    QString password();
-    QString downloadMessage();
-    QString albumCode();
+    DownloadFormatMap formatMap() const;
+    QString userName() const;
+    QString password() const;
+    QString downloadMessage() const;
+    QString albumCode() const;
 
-    QString albumName();
-    QString artistName();
-    QString coverUrl();
     const QString albumName() const;
     const QString artistName() const;
     const QString coverUrl() const;
@@ -63,7 +60,7 @@ public:
     void setAlbumCode( const QString & albumCode );
     bool isReadyForDownload();
     QUrl completeDownloadUrl();
-    QString unpackLocation();
+    QString unpackLocation() const;
 
 
 

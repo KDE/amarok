@@ -67,9 +67,7 @@ void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo info )
 
     DownloadFormatMap formatMap = info.formatMap();
 
-    DownloadFormatMap::Iterator it;
-
-    for ( it = formatMap.begin(); it != formatMap.end(); ++it )
+    for (DownloadFormatMap::Iterator it = formatMap.begin(), total = formatMap.end(); it != total; ++it )
     {
         formatComboBox->addItem( it.key() );
     }

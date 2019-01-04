@@ -30,7 +30,12 @@ MagnatuneNeedUpdateWidget::MagnatuneNeedUpdateWidget(QWidget *parent) :
     connect(ui->autoUpdate, &QCheckBox::stateChanged, this, &MagnatuneNeedUpdateWidget::saveSettings );
 
     ui->autoUpdate->setCheckState( MagnatuneConfig().autoUpdateDatabase()?
-                                   Qt::Checked : Qt::Unchecked );
+                                       Qt::Checked : Qt::Unchecked );
+}
+
+MagnatuneNeedUpdateWidget::~MagnatuneNeedUpdateWidget()
+{
+    delete ui;
 }
 
 void
