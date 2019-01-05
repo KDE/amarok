@@ -35,7 +35,7 @@ class OneWaySynchronizationJob : public SynchronizationBaseJob
     Q_OBJECT
 public:
     OneWaySynchronizationJob();
-    ~OneWaySynchronizationJob();
+    ~OneWaySynchronizationJob() override;
 
     //source/target are not settable in the ctor
     //to make explicit which collection is the source and which is the target

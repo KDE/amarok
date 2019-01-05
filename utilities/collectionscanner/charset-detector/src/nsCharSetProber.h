@@ -52,7 +52,7 @@ typedef enum {
 
 class nsCharSetProber {
 public:
-  virtual ~nsCharSetProber() {};
+  virtual ~nsCharSetProber() {}
   virtual const char* GetCharSetName() = 0;
   virtual nsProbingState HandleData(const char* aBuf, PRUint32 aLen) = 0;
   virtual nsProbingState GetState(void) = 0;
@@ -61,7 +61,7 @@ public:
   virtual void      SetOpion() = 0;
 
 #ifdef DEBUG_chardet
-  virtual void  DumpStatus() {};
+  virtual void  DumpStatus() {}
 #endif
 
   // Helper functions used in the Latin1 and Group probers.

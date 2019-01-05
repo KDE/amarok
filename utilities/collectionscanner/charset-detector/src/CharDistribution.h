@@ -85,7 +85,7 @@ public:
 
   //This function is for future extension. Caller can use this function to control
   //analyser's behavior
-  void      SetOpion(){};
+  void      SetOpion(){}
 
   //It is not necessary to receive all data to draw conclusion. For charset detection,
   // certain amount of data is enough

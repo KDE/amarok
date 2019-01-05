@@ -76,8 +76,8 @@ class Log: public QList<LogEntry>
 	QStringList files;
     };
 
-    Log() {};
-    ~Log() {};
+    Log() {}
+    ~Log() {}
 
     void printFullReport( LogEntry::PrintStyle style, QString filename ) { print( style, true, true, true, true, filename ); };
     void printErrorReport( LogEntry::PrintStyle style, bool warnings, QString filename ) { print( style, true, warnings, true, false, filename ); };

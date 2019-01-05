@@ -29,8 +29,8 @@ namespace Collections {
 class AMAROK_EXPORT CollectionLocationDelegateImpl : public CollectionLocationDelegate
 {
 public:
-    CollectionLocationDelegateImpl() {};
-    virtual ~ CollectionLocationDelegateImpl() {};
+    CollectionLocationDelegateImpl() {}
+    virtual ~ CollectionLocationDelegateImpl() {}
 
     bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const override;
     bool reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const override;

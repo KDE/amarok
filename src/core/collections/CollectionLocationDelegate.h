@@ -34,8 +34,8 @@ public:
         Move
     };
 
-    CollectionLocationDelegate() {};
-    virtual ~ CollectionLocationDelegate() {};
+    CollectionLocationDelegate() {}
+    virtual ~ CollectionLocationDelegate() {}
 
     virtual bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
     virtual bool reallyMove( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;

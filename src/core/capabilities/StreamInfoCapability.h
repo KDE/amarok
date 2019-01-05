@@ -38,8 +38,8 @@ namespace Capabilities
     {
         Q_OBJECT
         public:
-            StreamInfoCapability() {};
-            virtual ~StreamInfoCapability() {};
+            StreamInfoCapability() {}
+            virtual ~StreamInfoCapability() {}
 
             /**
              * The human readable name of this stream

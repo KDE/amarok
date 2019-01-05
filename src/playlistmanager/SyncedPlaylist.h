@@ -65,7 +65,7 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual Playlists::PlaylistList slaves() const;
 
     protected:
-        SyncedPlaylist() {};
+        SyncedPlaylist() {}
 
     private:
         Playlists::PlaylistList m_playlists;

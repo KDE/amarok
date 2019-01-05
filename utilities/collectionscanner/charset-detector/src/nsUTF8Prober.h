@@ -52,7 +52,7 @@ public:
   nsProbingState GetState(void) {return mState;};
   void      Reset(void);
   float     GetConfidence(void);
-  void      SetOpion() {};
+  void      SetOpion() {}
 
 protected:
   nsCodingStateMachine* mCodingSM;

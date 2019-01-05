@@ -42,7 +42,7 @@ class AudioCdCollectionFactory : public MediaDeviceCollectionFactory<AudioCdColl
 
 public:
     AudioCdCollectionFactory();
-    virtual ~AudioCdCollectionFactory() {};
+    virtual ~AudioCdCollectionFactory() {}
 
 /*    virtual void init();
 

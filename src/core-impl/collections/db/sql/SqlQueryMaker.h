@@ -127,7 +127,7 @@ class SqlQueryMakerFactory
 {
 public:
     virtual SqlQueryMaker* createQueryMaker() const = 0;
-    virtual ~SqlQueryMakerFactory() {};
+    virtual ~SqlQueryMakerFactory() {}
 };
 
 } //namespace Collections

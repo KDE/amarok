@@ -36,7 +36,7 @@ using namespace Collections;
 class CurriedQMFunction
 {
     public:
-        virtual ~CurriedQMFunction() {};
+        virtual ~CurriedQMFunction() {}
         /**
          * Invokes the stored function, with the stored
          * parameters, providing @param qm as the this pointer.
@@ -55,8 +55,8 @@ class CurriedZeroArityQMFunction : public CurriedQMFunction
         
         explicit CurriedZeroArityQMFunction( FunPtr function )
             : m_function( function )
-        {};
-        virtual ~CurriedZeroArityQMFunction() {};
+        {}
+        virtual ~CurriedZeroArityQMFunction() {}
         
         QueryMaker* operator()( QueryMaker *qm = 0 ) override
         {
@@ -81,8 +81,8 @@ class CurriedUnaryQMFunction : public CurriedQMFunction
         CurriedUnaryQMFunction( FunPtr function, Type parameter )
             : m_function( function )
             , m_parameter( parameter )
-        {};
-        virtual ~CurriedUnaryQMFunction() {};
+        {}
+        virtual ~CurriedUnaryQMFunction() {}
         
         QueryMaker* operator()( QueryMaker *qm ) override
         {
@@ -109,8 +109,8 @@ class CurriedBinaryQMFunction : public CurriedQMFunction
             : m_function( function )
             , m_parameterOne( parameterOne )
             , m_parameterTwo( parameterTwo )
-        {};
-        virtual ~CurriedBinaryQMFunction() {};
+        {}
+        virtual ~CurriedBinaryQMFunction() {}
         
         QueryMaker* operator()( QueryMaker *qm ) override
         {
@@ -139,8 +139,8 @@ class CurriedTrinaryQMFunction : public CurriedQMFunction
             , m_parameterOne( parameterOne )
             , m_parameterTwo( parameterTwo )
             , m_parameterThree( parameterThree )
-        {};
-        virtual ~CurriedTrinaryQMFunction() {};
+        {}
+        virtual ~CurriedTrinaryQMFunction() {}
         
         QueryMaker* operator()( QueryMaker *qm ) override
         {
@@ -174,8 +174,8 @@ class CurriedQMStringFilterFunction : public CurriedQMFunction
             , m_filter( filter )
             , m_matchBegin( matchBegin )
             , m_matchEnd( matchEnd )
-        {};
-        virtual ~CurriedQMStringFilterFunction() {};
+        {}
+        virtual ~CurriedQMStringFilterFunction() {}
 
         QueryMaker* operator()( QueryMaker *qm ) override
         {

@@ -71,7 +71,7 @@ public:
   virtual nsProbingState GetState(void) {return mState;};
   virtual void      Reset(void);
   virtual float     GetConfidence(void);
-  virtual void      SetOpion() {};
+  virtual void      SetOpion() {}
   
   // This feature is not implemented yet. any current language model
   // contain this parameter as PR_FALSE. No one is looking at this

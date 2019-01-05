@@ -77,7 +77,7 @@ public:
 
   float GetConfidence();
   void      Reset(void);
-  void      SetOpion(){};
+  void      SetOpion(){}
   PRBool GotEnoughData() {return mTotalRel > ENOUGH_REL_THRESHOLD;};
 
 protected:
@@ -104,7 +104,7 @@ protected:
 
 class SJISContextAnalysis : public JapaneseContextAnalysis
 {
-  //SJISContextAnalysis(){};
+  //SJISContextAnalysis(){}
 protected:
   PRInt32 GetOrder(const char* str, PRUint32 *charLen);
 

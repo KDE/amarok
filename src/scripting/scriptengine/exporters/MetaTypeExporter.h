@@ -127,7 +127,7 @@ namespace AmarokScript
              * @param respectConfig Whether to respect the user's preferences of writing tags to tracks.
              *
              * For example,
-             * var tags = {};
+             * var tags = {}
              * tags["lyrics"] = "My lyrics";
              * tags["title"]= "My Song";
              * track.changeTags( tags );

@@ -37,7 +37,7 @@ public:
     virtual QIcon icon() const = 0;
 
 protected:
-    virtual ~AmarokUrlRunnerBase() {};
+    virtual ~AmarokUrlRunnerBase() {}
 };
 
 #endif

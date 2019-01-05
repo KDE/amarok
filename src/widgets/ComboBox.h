@@ -38,7 +38,7 @@ class ComboBox : public KComboBox
 
     public:
         explicit ComboBox( QWidget *parent = nullptr );
-        virtual ~ComboBox() {};
+        virtual ~ComboBox() {}
 
     protected:
         void keyPressEvent( QKeyEvent *event ) override;
