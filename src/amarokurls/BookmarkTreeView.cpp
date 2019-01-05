@@ -292,7 +292,7 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
 QMenu* BookmarkTreeView::contextMenu( const QPoint& point )
 {
     DEBUG_BLOCK
-    QMenu* menu = new QMenu( 0 );
+    QMenu* menu = new QMenu( nullptr );
 
     debug() << "getting menu for point:" << point;
     QModelIndex index = m_proxyModel->mapToSource( indexAt( point ) );

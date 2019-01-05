@@ -131,6 +131,7 @@ MusicBrainzTagsView::contextMenuEvent( QContextMenuEvent *event )
     menu->addActions( actions );
     menu->exec( event->globalPos() );
     event->accept();
+    delete menu;
 }
 
 void

@@ -698,6 +698,7 @@ TagDialog::showCoverMenu( const QPoint &pos )
     menu->addAction( unsetCoverAction );
 
     menu->exec( ui->pixmap_cover->mapToGlobal(pos) );
+    delete menu;
 }
 
 void
