@@ -18,7 +18,7 @@
 #ifndef TESTMEMORYQUERYMAKER_H
 #define TESTMEMORYQUERYMAKER_H
 
-#include<QtTest/QTest>
+#include<QTest>
 
 #include "core/meta/forward_declarations.h"
 #include "core/collections/QueryMaker.h"
