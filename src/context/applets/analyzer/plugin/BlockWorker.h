@@ -39,7 +39,7 @@ public:
     void setRefreshRate( qreal refreshRate ) { m_refreshTime = std::floor( 1000.0 / refreshRate ); }
     void setShowFadebars( bool showFadebars ) { m_showFadebars = showFadebars; }
 
-signals:
+Q_SIGNALS:
     void finished();
 
 protected:

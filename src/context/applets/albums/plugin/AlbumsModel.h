@@ -64,7 +64,7 @@ public:
 
     QHash<int, QByteArray> roleNames() const override;
 
-signals:
+Q_SIGNALS:
     void modeChanged();
 
 protected:

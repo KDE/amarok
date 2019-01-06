@@ -45,7 +45,7 @@ public:
 
     Q_INVOKABLE void showContextMenu( const QModelIndexList &indexes, const QModelIndex &mouseOverIndex ) const;
 
-signals:
+Q_SIGNALS:
     void lengthAlignmentChanged();
     void filterPatternChanged();
 

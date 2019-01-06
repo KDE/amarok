@@ -61,7 +61,7 @@ public:
     QString language() const { return preferredLangs.first(); }
     void setLanguage( const QString &language );
 
-signals:
+Q_SIGNALS:
     void pageChanged();
     void messageChanged();
     void busyChanged();

@@ -43,7 +43,7 @@ public:
     QSGNode* updatePaintNode( QSGNode * oldNode, UpdatePaintNodeData * updatePaintNodeData ) override;
     void geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry ) override;
 
-signals:
+Q_SIGNALS:
     void sourceChanged();
 
 private:

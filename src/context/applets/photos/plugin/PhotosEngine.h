@@ -73,7 +73,7 @@ public:
     QString error() const { return m_error; }
     QString artist() const { return m_artist; }
 
-signals:
+Q_SIGNALS:
     void fetchSizeChanged();
     void keywordsChanged();
     void photosChanged();

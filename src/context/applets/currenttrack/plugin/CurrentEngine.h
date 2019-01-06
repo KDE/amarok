@@ -58,7 +58,7 @@ public:
     QVariant cover() const { return QVariant(m_cover); }
     bool hasValidCover() const { return !m_cover.isNull(); }
 
-signals:
+Q_SIGNALS:
     void trackChanged();
     void albumChanged();
     void coverWidthChanged();

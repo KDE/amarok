@@ -76,7 +76,7 @@ public:
      */
     const Worker* worker() const;
 
-signals:
+Q_SIGNALS:
     void minFreqChanged();
     void maxFreqChanged();
     void scopeSizeChanged( uint );

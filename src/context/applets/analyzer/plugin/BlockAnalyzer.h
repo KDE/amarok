@@ -64,7 +64,7 @@ public:
     static const int BLOCK_HEIGHT = 2;
     static const int FADE_SIZE    = 90;
 
-signals:
+Q_SIGNALS:
     void fallSpeedChanged();
     void columnWidthChanged();
     void showFadebarsChanged( bool );

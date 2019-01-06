@@ -53,7 +53,7 @@ public:
 
     void infoChanged( QVariantMap infoMap );
 
-signals:
+Q_SIGNALS:
     void serviceChanged();
     
 private:
