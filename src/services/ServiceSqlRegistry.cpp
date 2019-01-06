@@ -27,7 +27,7 @@
 using namespace Meta;
 
 ServiceSqlRegistry::ServiceSqlRegistry( ServiceMetaFactory * metaFactory )
-    : QObject( 0 )
+    : QObject( nullptr )
     , m_metaFactory( metaFactory )
 {
     setObjectName( "ServiceSqlRegistry" );

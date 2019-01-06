@@ -410,7 +410,7 @@ Selection::selectedItems()
 }
 
 Selection::Selection( const QModelIndexList &indices )
-    : QObject( 0 )
+    : QObject( nullptr )
     , m_indices( indices )
 {}
 

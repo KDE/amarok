@@ -76,7 +76,7 @@ QueryMakerPrototype::abort()
 //private
 
 QueryMakerPrototype::QueryMakerPrototype( QueryMaker *queryMaker )
-: QObject( 0 ) //engine ownership
+: QObject( nullptr ) //engine ownership
 , m_querymaker( queryMaker )
 {
     if( !queryMaker )

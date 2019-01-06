@@ -211,7 +211,7 @@ CollectionPrototype::supportsTranscode() const
 //private
 
 CollectionPrototype::CollectionPrototype( Collection *collection )
-: QObject( 0 ) //script owned
+: QObject( nullptr ) //script owned
 , m_collection( collection )
 {
     connect( collection, SIGNAL(updated()), SIGNAL(updated()) );

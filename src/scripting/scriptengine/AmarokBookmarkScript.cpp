@@ -105,7 +105,7 @@ BookmarkGroupPrototype::bookmarkGroupCtor( QScriptContext *context, QScriptEngin
 }
 
 BookmarkGroupPrototype::BookmarkGroupPrototype( BookmarkGroupPtr group )
-:QObject( 0 )
+:QObject( nullptr )
 , m_group( group )
 {}
 
@@ -248,7 +248,7 @@ BookmarkPrototype::bookmarkCtor( QScriptContext *context, QScriptEngine *engine 
 }
 
 BookmarkPrototype::BookmarkPrototype( AmarokUrlPtr bookmark )
-: QObject( 0 )
+: QObject( nullptr )
 , m_url( bookmark )
 {}
 

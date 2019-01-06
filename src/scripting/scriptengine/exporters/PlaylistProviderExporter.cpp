@@ -29,7 +29,7 @@
 using namespace AmarokScript;
 
 PlaylistProviderPrototype::PlaylistProviderPrototype( Playlists::PlaylistProvider *provider )
-: QObject( 0 )
+: QObject( nullptr )
 , m_provider( provider )
 {}
 

@@ -74,7 +74,7 @@ MetaTrackPrototype::trackCtor( QScriptContext *context, QScriptEngine *engine )
 }
 
 MetaTrackPrototype::MetaTrackPrototype( const Meta::TrackPtr &track )
-: QObject( 0 )
+: QObject( nullptr )
 , m_track( track )
 {
 }

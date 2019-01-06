@@ -99,7 +99,7 @@ PlaylistPrototype::tracks()
 // private
 
 PlaylistPrototype::PlaylistPrototype( Playlists::PlaylistPtr playlist )
-: QObject( 0 )
+: QObject( nullptr )
 , m_playlist( playlist )
 {
     PlaylistObserver::subscribeTo( playlist );

@@ -30,7 +30,7 @@
 #include <QMutexLocker>
 
 SqlRegistry::SqlRegistry( Collections::SqlCollection* collection )
-    : QObject( 0 )
+    : QObject( nullptr )
     , m_collection( collection )
     , m_blockDatabaseUpdateCount( 0 )
     , m_collectionChanged( false )

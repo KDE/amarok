@@ -556,6 +556,6 @@ TrackSetExporter::containsTrack( const Meta::TrackPtr track ) const
 
 // private
 TrackSetExporter::TrackSetExporter( const Dynamic::TrackSet &trackSet )
-: QObject( 0 )
+: QObject( nullptr )
 , TrackSet( trackSet )
 {}
