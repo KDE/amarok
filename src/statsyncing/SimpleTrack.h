@@ -36,7 +36,7 @@ class AMAROK_EXPORT SimpleTrack : public Track
 public:
     explicit SimpleTrack( const Meta::FieldHash &metadata,
                           const QSet<QString> &labels = QSet<QString>() );
-    virtual ~SimpleTrack();
+    ~SimpleTrack() override;
 
     QString name() const override;
     QString album() const override;

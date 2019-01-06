@@ -138,7 +138,7 @@ CollectionProvider::slotStartArtistSearch()
 }
 
 void
-CollectionProvider::slotStartTrackSearch( QString artistName )
+CollectionProvider::slotStartTrackSearch( const QString &artistName )
 {
     if( !m_coll )
     {

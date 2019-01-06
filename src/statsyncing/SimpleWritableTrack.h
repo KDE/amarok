@@ -36,7 +36,7 @@ class AMAROK_EXPORT SimpleWritableTrack : public SimpleTrack
 public:
     explicit SimpleWritableTrack( const Meta::FieldHash &metadata,
                                   const QSet<QString> &labels = QSet<QString>() );
-    virtual ~SimpleWritableTrack();
+    ~SimpleWritableTrack() override;
 
     QDateTime firstPlayed() const override;
 

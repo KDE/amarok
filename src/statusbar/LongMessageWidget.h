@@ -41,7 +41,7 @@ class LongMessageWidget : public PopupWidget
 public:
     LongMessageWidget( const QString &message );
 
-    ~LongMessageWidget();
+    ~LongMessageWidget() override;
 
 Q_SIGNALS:
     void closed();

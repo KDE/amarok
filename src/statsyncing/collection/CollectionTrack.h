@@ -27,7 +27,7 @@ namespace StatSyncing
     {
         public:
             explicit CollectionTrack( Meta::TrackPtr track );
-            virtual ~CollectionTrack();
+            ~CollectionTrack() override;
 
             QString name() const override;
             QString album() const override;

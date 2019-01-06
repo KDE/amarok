@@ -24,7 +24,7 @@
 
 #include <KLocalizedString>
 
-AlbumBreadcrumbWidget::AlbumBreadcrumbWidget( const Meta::AlbumPtr album, QWidget *parent )
+AlbumBreadcrumbWidget::AlbumBreadcrumbWidget( const Meta::AlbumPtr &album, QWidget *parent )
     : BoxWidget( false, parent )
     , m_album( album )
 {

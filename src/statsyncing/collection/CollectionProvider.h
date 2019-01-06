@@ -41,7 +41,7 @@ namespace StatSyncing
              * Construct provider that has @param collection as a back-end.
              */
             explicit CollectionProvider( Collections::Collection *collection );
-            virtual ~CollectionProvider();
+            ~CollectionProvider() override;
 
             QString id() const override;
             QString prettyName() const override;
@@ -55,12 +55,12 @@ namespace StatSyncing
         Q_SIGNALS:
             /// hacks to create and start QueryMaker in main eventloop
             void startArtistSearch();
-            void startTrackSearch( QString artistName );
+            void startTrackSearch( const QString &artistName );
 
         private Q_SLOTS:
             /// @see startArtistSearch
             void slotStartArtistSearch();
-            void slotStartTrackSearch( QString artistName );
+            void slotStartTrackSearch(const QString &artistName );
 
             void slotNewArtistsReady( Meta::ArtistList list );
             void slotNewTracksReady( Meta::TrackList list );

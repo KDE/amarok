@@ -41,7 +41,7 @@ namespace StatSyncing
         virtual ~ConfigureProviderDialog();
 
     Q_SIGNALS:
-        void providerConfigured( QString id, QVariantMap config );
+        void providerConfigured( const QString &id, const QVariantMap &config );
 
     private:
         QString m_providerId;

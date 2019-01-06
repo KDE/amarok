@@ -42,7 +42,7 @@ class AlbumBreadcrumbWidget : public BoxWidget
     Q_OBJECT
 
 public:
-    explicit AlbumBreadcrumbWidget( const Meta::AlbumPtr album, QWidget *parent = nullptr );
+    explicit AlbumBreadcrumbWidget( const Meta::AlbumPtr &album, QWidget *parent = nullptr );
     ~AlbumBreadcrumbWidget();
 
     void setAlbum( const Meta::AlbumPtr &album );

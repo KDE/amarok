@@ -38,7 +38,7 @@ namespace StatSyncing
             enum {
                 ProviderIdRole = Qt::UserRole
             };
-            virtual ~Config();
+            ~Config() override;
 
             // QAbstractListModel methods:
             int rowCount( const QModelIndex &parent = QModelIndex() ) const override;

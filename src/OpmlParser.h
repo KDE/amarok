@@ -72,7 +72,7 @@ public:
     */
     QUrl url() const { return m_url; }
 
-    QMap<QString,QString> headerData() { return m_headerData; }
+    QMap<QString,QString> headerData() const { return m_headerData; }
 
     /**
      * Get the result of the parsing as a list of OpmlOutlines.
