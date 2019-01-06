@@ -74,7 +74,7 @@ void AppletModel::newApplets(const QList<KPluginMetaData>& applets)
 
     m_packages.clear();
 
-    for (const auto applet : applets)
+    for (const auto &applet : applets)
     {
         auto loader = KPackage::PackageLoader::self();
         auto structure = new AmarokContextPackageStructure;
