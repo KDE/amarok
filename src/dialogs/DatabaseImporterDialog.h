@@ -44,13 +44,13 @@ class DatabaseImporterDialog : public KAssistantDialog
     private Q_SLOTS:
         void importFailed();
         void importSucceeded();
-        void importError( QString error );
+        void importError( const QString &error );
         void importedTrack( Meta::TrackPtr track );
-        void discardedTrack( QString url );
-        void matchedTrack( Meta::TrackPtr track, QString oldUrl );
-        void ambigousTrack( Meta::TrackList tracks, QString oldUrl );
+        void discardedTrack( const QString &url );
+        void matchedTrack(Meta::TrackPtr track, const QString &oldUrl );
+        void ambigousTrack( Meta::TrackList tracks, const QString &oldUrl );
         void pageChanged( KPageWidgetItem *current, KPageWidgetItem *before );
-        void showMessage( QString message );
+        void showMessage( const QString &message );
 
     private:
         SqlBatchImporter *m_importer;

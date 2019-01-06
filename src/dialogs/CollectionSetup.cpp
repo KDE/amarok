@@ -304,7 +304,7 @@ namespace CollectionFolder {
                     QString topAncestor;
                     // Remove all selected ancestor of path, and find shallowest
                     // ancestor
-                    foreach( QString elem, ancestors )
+                    foreach( const QString &elem, ancestors )
                     {
                         m_checked.remove( elem );
                         if( elem < topAncestor || topAncestor.isEmpty() )

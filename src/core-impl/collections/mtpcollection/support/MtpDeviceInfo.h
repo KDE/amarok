@@ -23,7 +23,7 @@ class MtpDeviceInfo : public MediaDeviceInfo
 {
     Q_OBJECT
     public:
-        explicit MtpDeviceInfo( QString udi );
+        explicit MtpDeviceInfo(const QString &udi );
         ~MtpDeviceInfo();
 
     private:

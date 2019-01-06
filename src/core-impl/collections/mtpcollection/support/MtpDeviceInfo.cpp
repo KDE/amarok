@@ -17,7 +17,7 @@
 #include "MtpDeviceInfo.h"
 #include "MediaDeviceInfo.h"
 
-MtpDeviceInfo::MtpDeviceInfo( QString udi )
+MtpDeviceInfo::MtpDeviceInfo( const QString &udi )
 : MediaDeviceInfo()
 {
     m_udi = udi;

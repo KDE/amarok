@@ -63,7 +63,7 @@ class CoverManager : public QDialog, public Meta::Observer
         static void showOnce( const QString &artist = QString(), QWidget* parent = nullptr );
         static void viewCover( Meta::AlbumPtr album, QWidget* parent = nullptr );
 
-        void setStatusText( QString text );
+        void setStatusText(const QString &text );
 
         // Reimplemented from Meta::Observer
         using Observer::metadataChanged;

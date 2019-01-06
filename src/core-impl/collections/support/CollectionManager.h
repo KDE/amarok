@@ -146,7 +146,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
 //         void collectionAdded( Collections::Collection *newCollection );
 
         void collectionAdded( Collections::Collection *newCollection, CollectionManager::CollectionStatus status );
-        void collectionRemoved( QString collectionId );
+        void collectionRemoved( const QString &collectionId );
         void trackProviderAdded( Collections::TrackProvider *provider );
         //this signal will be emitted after major changes to the collection
         //e.g. new songs where added, or an album changed

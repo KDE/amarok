@@ -23,10 +23,10 @@ class AudioCdDeviceInfo : public MediaDeviceInfo
 {
     Q_OBJECT
     public:
-        AudioCdDeviceInfo( QString device, QString udi );
+        AudioCdDeviceInfo(const QString &device, const QString &udi );
         ~AudioCdDeviceInfo();
 
-        QString device();
+        QString device() const;
 
     private:
         QString m_device;

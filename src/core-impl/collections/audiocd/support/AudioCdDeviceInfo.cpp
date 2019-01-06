@@ -17,7 +17,7 @@
 #include "AudioCdDeviceInfo.h"
 #include "MediaDeviceInfo.h"
 
-AudioCdDeviceInfo::AudioCdDeviceInfo( QString device, QString udi )
+AudioCdDeviceInfo::AudioCdDeviceInfo( const QString &device, const QString &udi )
 : MediaDeviceInfo(),
 m_device( device )
 {
@@ -29,7 +29,7 @@ AudioCdDeviceInfo::~AudioCdDeviceInfo()
 }
 
 QString
-AudioCdDeviceInfo::device()
+AudioCdDeviceInfo::device() const
 {
     return m_device;
 }

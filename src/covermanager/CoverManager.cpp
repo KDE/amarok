@@ -722,7 +722,7 @@ CoverManager::delayedDestruct()
 }
 
 void
-CoverManager::setStatusText( QString text )
+CoverManager::setStatusText( const QString &text )
 {
     m_oldStatusText = m_statusLabel->text();
     m_statusLabel->setText( text );

@@ -55,12 +55,12 @@ class SqlBatchImporter : public QObject
     Q_SIGNALS:
         void importFailed();
         void importSucceeded();
-        void importError( QString );
-        void showMessage( QString );
+        void importError( const QString& );
+        void showMessage( const QString& );
         void trackAdded( Meta::TrackPtr );
-        void trackDiscarded( QString );
-        void trackMatchFound( Meta::TrackPtr, QString );
-        void trackMatchMultiple( Meta::TrackList, QString );
+        void trackDiscarded( const QString& );
+        void trackMatchFound( Meta::TrackPtr, const QString& );
+        void trackMatchMultiple( Meta::TrackList, const QString& );
 
     protected:
         void import();

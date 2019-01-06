@@ -121,13 +121,13 @@ DatabaseImporterDialog::importFailed()
 }
 
 void
-DatabaseImporterDialog::showMessage( QString message )
+DatabaseImporterDialog::showMessage( const QString &message )
 {
     m_results->appendHtml( message );
 }
 
 void
-DatabaseImporterDialog::importError( QString error )
+DatabaseImporterDialog::importError( const QString &error )
 {
     QString text = i18n( "<b><font color='red'>Error:</font></b> %1", error );
     m_results->appendHtml( text );
@@ -155,7 +155,7 @@ DatabaseImporterDialog::importedTrack( Meta::TrackPtr track )
     m_results->appendHtml( text );
 }
 
-void DatabaseImporterDialog::discardedTrack( QString url )
+void DatabaseImporterDialog::discardedTrack( const QString &url )
 {
     QString text;
     text = i18nc( "Track has been discarded, format: Url",
@@ -163,7 +163,7 @@ void DatabaseImporterDialog::discardedTrack( QString url )
     m_results->appendHtml( text );
 }
 
-void DatabaseImporterDialog::matchedTrack( Meta::TrackPtr track, QString oldUrl )
+void DatabaseImporterDialog::matchedTrack( Meta::TrackPtr track, const QString &oldUrl )
 {
     if( !track ) return;
 
@@ -185,7 +185,7 @@ void DatabaseImporterDialog::matchedTrack( Meta::TrackPtr track, QString oldUrl 
     m_results->appendHtml( text );
 }
 
-void DatabaseImporterDialog::ambigousTrack( Meta::TrackList tracks, QString oldUrl )
+void DatabaseImporterDialog::ambigousTrack( Meta::TrackList tracks, const QString &oldUrl )
 {
     Q_UNUSED( tracks );
 

@@ -23,7 +23,7 @@
 #include "UpnpCollectionBase.h"
 
 // TODO : move this to CollectionBase
-static qint64 duration( QString duration ) {
+static qint64 duration( const QString &duration ) {
     if( duration.isEmpty() )
         return 0;
 
