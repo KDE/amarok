@@ -49,7 +49,7 @@ FileCollectionLocation::~FileCollectionLocation()
 QString
 FileCollectionLocation::prettyLocation() const
 {
-    return "File Browser Location";
+    return QStringLiteral("File Browser Location");
 }
 
 
@@ -82,7 +82,7 @@ void FileCollectionLocation::startRemoveJobs()
         connect( job, &KIO::Job::result, this, &FileCollectionLocation::slotRemoveJobFinished );
         QString name = track->prettyName();
         if( track->artist() )
-            name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
+            name = QStringLiteral( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
         Amarok::Logger::newProgressOperation( job, i18n( "Removing: %1", name ) );
         m_removejobs.insert( job, track );

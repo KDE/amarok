@@ -201,7 +201,7 @@ class MetaQueryWidget : public QWidget
         void makeMetaComboSelection( qint64 field );
 
         void makeFormatComboSelection();
-        void makeGenericNumberSelection( qint64 field, const QString& unit = "" );
+        void makeGenericNumberSelection( qint64 field, const QString& unit = QLatin1String("") );
         void makePlaycountSelection();
         void makeRatingSelection();
         void makeLengthSelection();

@@ -46,7 +46,7 @@ PlaybackConfig::PlaybackConfig( Amarok2ConfigDialog* parent )
         kcfg_FadeoutLength->setToolTip( toolTip );
     }
 
-    connect( findChild<QPushButton*>( "pushButtonPhonon" ), &QAbstractButton::clicked, this, &PlaybackConfig::configurePhonon );
+    connect( findChild<QPushButton*>( QStringLiteral("pushButtonPhonon") ), &QAbstractButton::clicked, this, &PlaybackConfig::configurePhonon );
     connect( kcfg_FadeoutOnStop, &QCheckBox::toggled, this, &PlaybackConfig::setFadeoutState );
     connect( kcfg_FadeoutOnPause, &QCheckBox::toggled, this, &PlaybackConfig::setFadeoutState );
 }
@@ -88,7 +88,7 @@ PlaybackConfig::configurePhonon() //SLOT
     KCMultiDialog KCM;
 
     KCM.setWindowTitle( i18n( "Sound System - Amarok" ) );
-    KCM.addModule( "kcm_phonon" );
+    KCM.addModule( QStringLiteral("kcm_phonon") );
     KCM.exec();
 }
 

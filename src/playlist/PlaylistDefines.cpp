@@ -40,40 +40,40 @@ Playlist::PlaylistColumnInfos::internalNames()
         //this list is used internally and for reading writing config files and sths should not be translated!
 
         s_internalNames = new QStringList();
-        *s_internalNames << QLatin1String( "Placeholder" )
-            << QLatin1String( "Album" )
-            << QLatin1String( "Album artist" )
-            << QLatin1String( "Artist" )
-            << QLatin1String( "Bitrate" )
-            << QLatin1String( "Bpm" )
-            << QLatin1String( "Comment" )
-            << QLatin1String( "Composer" )
-            << QLatin1String( "Cover image" )
-            << QLatin1String( "Directory" )
-            << QLatin1String( "Disc number" )
-            << QLatin1String( "Divider" )
-            << QLatin1String( "File name" )
-            << QLatin1String( "File size" )
-            << QLatin1String( "Genre" )
-            << QLatin1String( "Group length" )
-            << QLatin1String( "Group tracks" )
-            << QLatin1String( "Labels" )
-            << QLatin1String( "Last played" )
-            << QLatin1String( "Length" )
-            << QLatin1String( "Length (seconds)" )
-            << QLatin1String( "Mood" )
-            << QLatin1String( "Moodbar" )
-            << QLatin1String( "Play count" )
-            << QLatin1String( "Rating" )
-            << QLatin1String( "Sample rate" )
-            << QLatin1String( "Score" )
-            << QLatin1String( "Source" )
-            << QLatin1String( "SourceEmblem" )
-            << QLatin1String( "Title" )
-            << QLatin1String( "Title (with track number)" )
-            << QLatin1String( "Track number" )
-            << QLatin1String( "Type" )
-            << QLatin1String( "Year" );
+        *s_internalNames << QStringLiteral( "Placeholder" )
+            << QStringLiteral( "Album" )
+            << QStringLiteral( "Album artist" )
+            << QStringLiteral( "Artist" )
+            << QStringLiteral( "Bitrate" )
+            << QStringLiteral( "Bpm" )
+            << QStringLiteral( "Comment" )
+            << QStringLiteral( "Composer" )
+            << QStringLiteral( "Cover image" )
+            << QStringLiteral( "Directory" )
+            << QStringLiteral( "Disc number" )
+            << QStringLiteral( "Divider" )
+            << QStringLiteral( "File name" )
+            << QStringLiteral( "File size" )
+            << QStringLiteral( "Genre" )
+            << QStringLiteral( "Group length" )
+            << QStringLiteral( "Group tracks" )
+            << QStringLiteral( "Labels" )
+            << QStringLiteral( "Last played" )
+            << QStringLiteral( "Length" )
+            << QStringLiteral( "Length (seconds)" )
+            << QStringLiteral( "Mood" )
+            << QStringLiteral( "Moodbar" )
+            << QStringLiteral( "Play count" )
+            << QStringLiteral( "Rating" )
+            << QStringLiteral( "Sample rate" )
+            << QStringLiteral( "Score" )
+            << QStringLiteral( "Source" )
+            << QStringLiteral( "SourceEmblem" )
+            << QStringLiteral( "Title" )
+            << QStringLiteral( "Title (with track number)" )
+            << QStringLiteral( "Track number" )
+            << QStringLiteral( "Type" )
+            << QStringLiteral( "Year" );
     }
 
     return *s_internalNames;
@@ -133,7 +133,7 @@ Playlist::PlaylistColumnInfos::icons()
         // the order is important. See PlaylistDefines
         // should be kept in sync with Meta::iconForField() for shared fields
         s_icons = new QStringList();
-        *s_icons << "filename-space-amarok"
+        *s_icons << QStringLiteral("filename-space-amarok")
             << Meta::iconForField( Meta::valAlbum )
             << Meta::iconForField( Meta::valAlbumArtist )
             << Meta::iconForField( Meta::valArtist )
@@ -141,27 +141,27 @@ Playlist::PlaylistColumnInfos::icons()
             << Meta::iconForField( Meta::valBpm )
             << Meta::iconForField( Meta::valComment )
             << Meta::iconForField( Meta::valComposer )
-            << "" // cover image
-            << "folder-blue" // directory
+            << QLatin1String("") // cover image
+            << QStringLiteral("folder-blue") // directory
             << Meta::iconForField( Meta::valDiscNr )
-            << "filename-divider"
-            << "filename-filetype-amarok" // filename
+            << QStringLiteral("filename-divider")
+            << QStringLiteral("filename-filetype-amarok") // filename
             << Meta::iconForField( Meta::valFilesize )
             << Meta::iconForField( Meta::valGenre )
-            << "filename-group-length"
-            << "filename-group-tracks"
+            << QStringLiteral("filename-group-length")
+            << QStringLiteral("filename-group-tracks")
             << Meta::iconForField( Meta::valLabel )
             << Meta::iconForField( Meta::valLastPlayed )
             << Meta::iconForField( Meta::valLength )
             << Meta::iconForField( Meta::valLength )
-            << ""
-            << "filename-moodbar"
+            << QLatin1String("")
+            << QStringLiteral("filename-moodbar")
             << Meta::iconForField( Meta::valPlaycount )
             << Meta::iconForField( Meta::valRating )
             << Meta::iconForField( Meta::valSamplerate )
             << Meta::iconForField( Meta::valScore )
-            << "applications-internet"
-            << "" // source emblem
+            << QStringLiteral("applications-internet")
+            << QLatin1String("") // source emblem
             << Meta::iconForField( Meta::valTitle )
             << Meta::iconForField( Meta::valTitle )
             << Meta::iconForField( Meta::valTrackNr )

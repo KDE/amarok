@@ -129,7 +129,7 @@ PlaylistFile::save( bool relative )
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        warning() << QString( "Cannot write playlist (%1)." ).arg( file.fileName() )
+        warning() << QStringLiteral( "Cannot write playlist (%1)." ).arg( file.fileName() )
                   << file.errorString();
         return false;
     }
@@ -145,9 +145,9 @@ PlaylistFile::setName( const QString &name )
     //can't save to a new file if we don't know where.
     if( !m_url.isEmpty() && !name.isEmpty() )
     {
-        QString exten = QString( ".%1" ).arg(extension());
+        QString exten = QStringLiteral( ".%1" ).arg(extension());
         m_url = m_url.adjusted(QUrl::RemoveFilename);
-        m_url.setPath(m_url.path() + name + ( name.endsWith( exten, Qt::CaseInsensitive ) ? "" : exten ));
+        m_url.setPath(m_url.path() + name + ( name.endsWith( exten, Qt::CaseInsensitive ) ? QLatin1String("") : exten ));
     }
 }
 

@@ -39,7 +39,7 @@
 Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QObject *parent )
     : ProxyBase( belowModel, parent )
 {
-    setGroupingCategory( QString( "Album" ) );
+    setGroupingCategory( QStringLiteral( "Album" ) );
 
 
     // Adjust our internal state based on changes in the source model.
@@ -71,7 +71,7 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
     // No need to scan the pre-existing entries in sourceModel(), because we build our
     // internal state on-the-fly.
 
-    setObjectName( "GroupingProxy" );
+    setObjectName( QStringLiteral("GroupingProxy") );
 }
 
 Playlist::GroupingProxy::~GroupingProxy()

@@ -58,7 +58,7 @@ ServicePluginManager::ServicePluginManager()
     // ensure this object is created in a main thread
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
 
-    setObjectName( "ServicePluginManager" );
+    setObjectName( QStringLiteral("ServicePluginManager") );
 }
 
 

@@ -56,8 +56,8 @@ class AMAROK_EXPORT LyricsManager : public QObject
 
     Q_SIGNALS:
         void newLyrics( Meta::TrackPtr );
-        void newSuggestions( QVariantList );
-        void error( QString );
+        void newSuggestions( const QVariantList& );
+        void error( const QString &);
 
     private:
         LyricsManager();

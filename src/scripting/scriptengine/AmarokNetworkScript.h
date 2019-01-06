@@ -61,7 +61,7 @@ namespace AmarokScript
             static AmarokDownloadHelper *instance();
 
             // called by the wrapper class to register a new download
-            void newStringDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
+            void newStringDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding = QStringLiteral("UTF-8") );
             void newDataDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj );
 
         private Q_SLOTS:

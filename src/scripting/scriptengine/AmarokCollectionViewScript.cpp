@@ -52,14 +52,14 @@ AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engi
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
+    QScriptValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
     Q_ASSERT( !windowObject.isUndefined() );
-    windowObject.setProperty( "CollectionView", scriptObject );
+    windowObject.setProperty( QStringLiteral("CollectionView"), scriptObject );
     const QMetaEnum typeEnum = CollectionTreeItem::staticMetaObject.enumerator( CollectionTreeItem::staticMetaObject.indexOfEnumerator( "Type" ) );
     Q_ASSERT( typeEnum.isValid() );
-    scriptObject.setProperty( "Type", engine->enumObject( typeEnum ) );
+    scriptObject.setProperty( QStringLiteral("Type"), engine->enumObject( typeEnum ) );
     Q_ASSERT( m_categoryEnum.isValid() );
-    scriptObject.setProperty( "Category", engine->enumObject( m_categoryEnum ) );
+    scriptObject.setProperty( QStringLiteral("Category"), engine->enumObject( m_categoryEnum ) );
     qScriptRegisterMetaType<CollectionTreeItem*>( engine, CollectionViewItem::toScriptValue, fromScriptValue<CollectionTreeItem*, CollectionViewItem> );
     engine->registerArrayType< QList<CollectionTreeItem*> >();
     engine->registerArrayType<QActionList>();
@@ -206,7 +206,7 @@ AmarokCollectionViewScript::setLevel( int level, int type )
 {
     if( m_categoryEnum.valueToKey( type ) )
         return m_collectionWidget->currentView()->setLevel( level, CategoryId::CatMenuId( type ) );
-    m_engine->currentContext()->throwError( QScriptContext::TypeError, "Invalid category!" );
+    m_engine->currentContext()->throwError( QScriptContext::TypeError, QStringLiteral("Invalid category!") );
 }
 
 void
@@ -217,7 +217,7 @@ AmarokCollectionViewScript::setLevels( const QList<int> &levels )
     {
         if( !m_categoryEnum.valueToKey( level ) )
         {
-            m_engine->currentContext()->throwError( QScriptContext::TypeError, "Invalid category!" );
+            m_engine->currentContext()->throwError( QScriptContext::TypeError, QStringLiteral("Invalid category!") );
             return;
         }
         catLevels << CategoryId::CatMenuId( level );

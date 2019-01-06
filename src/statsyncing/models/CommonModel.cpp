@@ -100,7 +100,7 @@ CommonModel::sizeHintData( qint64 field ) const
             QStyleOptionViewItem opt;
             opt.features = QStyleOptionViewItem::HasDisplay;
             opt.state = QStyle::State_Enabled;
-            opt.text = "88.88.8888 88:88";
+            opt.text = QLatin1String("88.88.8888 88:88");
 
             QStyle *style = QApplication::style();
             size = style->sizeFromContents( QStyle::CT_ItemViewItem, &opt, QSize(), 0 );
@@ -114,7 +114,7 @@ CommonModel::sizeHintData( qint64 field ) const
             QStyleOptionViewItem opt;
             opt.features = QStyleOptionViewItem::HasDisplay;
             opt.state = QStyle::State_Enabled;
-            opt.text = "888 (88)";
+            opt.text = QLatin1String("888 (88)");
             opt.font.setBold( true );
 
             QStyle *style = QApplication::style();
@@ -165,7 +165,7 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                     return QStringList( ( track->labels() - m_options.excludedLabels() ).toList() ).join( i18nc(
                         "comma between list words", ", " ) );
                 default:
-                    return QString( "Unknown field!" );
+                    return QStringLiteral( "Unknown field!" );
             }
             break;
         case Qt::ToolTipRole:
@@ -188,7 +188,7 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                     if( !excludedLabels.isEmpty() )
                         texts << i18n( "Ignored labels: %1", QStringList( excludedLabels.toList() ).join( i18nc(
                             "comma between list words", ", " ) ) );
-                    return texts.isEmpty() ? QVariant() : texts.join( "\n" );
+                    return texts.isEmpty() ? QVariant() : texts.join( QStringLiteral("\n") );
                 }
             }
             break;

@@ -76,11 +76,11 @@ static QString toString( DebugLevel level )
     switch( level )
     {
         case KDEBUG_WARN:
-            return "[WARNING]";
+            return QStringLiteral("[WARNING]");
         case KDEBUG_ERROR:
-            return "[ERROR__]";
+            return QStringLiteral("[ERROR__]");
         case KDEBUG_FATAL:
-            return "[FATAL__]";
+            return QStringLiteral("[FATAL__]");
         default:
             return QString();
     }
@@ -149,7 +149,7 @@ QDebug Debug::dbgstream( DebugLevel level )
     const QString currentIndent = indent();
     mutex.unlock();
 
-    QString text = QString("%1%2").arg( APP_PREFIX ).arg( currentIndent );
+    QString text = QStringLiteral("%1%2").arg( APP_PREFIX ).arg( currentIndent );
     if ( level > KDEBUG_INFO )
         text.append( ' ' + reverseColorize( toString(level), toColor( level ) ) );
 
@@ -162,7 +162,7 @@ void Debug::perfLog( const QString &message, const QString &func )
     if( !debugEnabled() )
         return;
 
-    QString str = QString( "MARK: %1: %2 %3" ).arg( qApp->applicationName(), func, message );
+    QString str = QStringLiteral( "MARK: %1: %2 %3" ).arg( qApp->applicationName(), func, message );
     access( str.toLocal8Bit().data(), F_OK );
 #endif
 }

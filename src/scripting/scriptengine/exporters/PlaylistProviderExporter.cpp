@@ -93,7 +93,7 @@ QString PlaylistProviderPrototype::toString() const
 {
     if( m_provider )
         return m_provider->prettyName();
-    return QString( "Invalid" );
+    return QStringLiteral( "Invalid" );
 }
 
 // private

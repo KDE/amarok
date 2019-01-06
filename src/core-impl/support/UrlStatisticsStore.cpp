@@ -58,7 +58,7 @@ UrlStatisticsStore::save()
         return;
     }
 
-    const QString check = "SELECT COUNT(*) FROM statistics_permanent WHERE url = '%1'";
+    const QString check = QStringLiteral("SELECT COUNT(*) FROM statistics_permanent WHERE url = '%1'");
     QStringList rsCheck = sql->query( check.arg( sql->escape( m_permanentUrl ) ) );
     if( !rsCheck.isEmpty() )
     {

@@ -47,7 +47,7 @@ ConstraintTypes::PreventDuplicates::createNew( ConstraintNode* p )
 ConstraintFactoryEntry*
 ConstraintTypes::PreventDuplicates::registerMe()
 {
-    return new ConstraintFactoryEntry( "PreventDuplicates",
+    return new ConstraintFactoryEntry( QStringLiteral("PreventDuplicates"),
                                        i18n("Prevent Duplicates"),
                                        i18n("Prevents duplicate tracks, albums, or artists from appearing in the playlist"),
                                        &PreventDuplicates::createFromXml, &PreventDuplicates::createNew );
@@ -58,7 +58,7 @@ ConstraintTypes::PreventDuplicates::PreventDuplicates( QDomElement& xmlelem, Con
 {
     QDomAttr a;
 
-    a = xmlelem.attributeNode( "field" );
+    a = xmlelem.attributeNode( QStringLiteral("field") );
     if ( !a.isNull() ) {
         m_field = static_cast<DupeField>( a.value().toInt() );
     }
@@ -81,9 +81,9 @@ ConstraintTypes::PreventDuplicates::editWidget() const
 void
 ConstraintTypes::PreventDuplicates::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
-    QDomElement c = doc.createElement( "constraint" );
-    c.setAttribute( "type", "PreventDuplicates" );
-    c.setAttribute( "field", QString::number( m_field ) );
+    QDomElement c = doc.createElement( QStringLiteral("constraint") );
+    c.setAttribute( QStringLiteral("type"), QStringLiteral("PreventDuplicates") );
+    c.setAttribute( QStringLiteral("field"), QString::number( m_field ) );
     elem.appendChild( c );
 }
 

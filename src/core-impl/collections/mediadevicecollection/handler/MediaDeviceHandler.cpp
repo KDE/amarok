@@ -698,7 +698,7 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 {
     const QString album( m_rc->libGetAlbum( track ) );
     QString albumArtist( m_rc->libGetAlbumArtist( track ) );
-    if( albumArtist.compare( "Various Artists", Qt::CaseInsensitive ) == 0 ||
+    if( albumArtist.compare( QLatin1String("Various Artists"), Qt::CaseInsensitive ) == 0 ||
         albumArtist.compare( i18n( "Various Artists" ), Qt::CaseInsensitive ) == 0 )
     {
         albumArtist.clear();

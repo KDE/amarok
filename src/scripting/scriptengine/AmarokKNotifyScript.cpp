@@ -31,8 +31,8 @@ AmarokKNotifyScript::AmarokKNotifyScript( QScriptEngine *engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
-    windowObject.setProperty( "KNotify", scriptObject );
+    QScriptValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
+    windowObject.setProperty( QStringLiteral("KNotify"), scriptObject );
 }
 
 bool

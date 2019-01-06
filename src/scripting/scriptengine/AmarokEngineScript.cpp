@@ -33,7 +33,7 @@ AmarokEngineScript::AmarokEngineScript( QScriptEngine* scriptEngine )
 {
     QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership
                                                         , QScriptEngine::ExcludeSuperClassContents );
-    scriptEngine->globalObject().property( "Amarok" ).setProperty( "Engine", scriptObject );
+    scriptEngine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Engine"), scriptObject );
 
     EngineController *engine = The::engineController();
     connect( engine, &EngineController::trackPositionChanged,

@@ -46,8 +46,8 @@ SimpleImporterConfigWidget::SimpleImporterConfigWidget( const QString &targetNam
     mainLayout->addStretch( 1 );
     setLayout( mainLayout );
 
-    addField( "name", i18nc( "Name of the synchronization target", "Target name" ),
-              new QLineEdit( targetName ),  "text" );
+    addField( QStringLiteral("name"), i18nc( "Name of the synchronization target", "Target name" ),
+              new QLineEdit( targetName ),  QStringLiteral("text") );
 }
 
 SimpleImporterConfigWidget::~SimpleImporterConfigWidget()

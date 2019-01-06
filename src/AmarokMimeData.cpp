@@ -24,13 +24,13 @@
 #include <QTimer>
 #include <QUrl>
 
-const QString AmarokMimeData::TRACK_MIME = "application/x-amarok-tracks";
-const QString AmarokMimeData::PLAYLIST_MIME = "application/x-amarok-playlists";
-const QString AmarokMimeData::PLAYLISTBROWSERGROUP_MIME = "application/x-amarok-playlistbrowsergroup";
-const QString AmarokMimeData::PODCASTCHANNEL_MIME = "application/x-amarok-podcastchannel";
-const QString AmarokMimeData::PODCASTEPISODE_MIME = "application/x-amarok-podcastepisode";
-const QString AmarokMimeData::AMAROKURL_MIME = "application/x-amarok-amarokurl";
-const QString AmarokMimeData::BOOKMARKGROUP_MIME = "application/x-amarok-bookmarkgroup";
+const QString AmarokMimeData::TRACK_MIME = QStringLiteral("application/x-amarok-tracks");
+const QString AmarokMimeData::PLAYLIST_MIME = QStringLiteral("application/x-amarok-playlists");
+const QString AmarokMimeData::PLAYLISTBROWSERGROUP_MIME = QStringLiteral("application/x-amarok-playlistbrowsergroup");
+const QString AmarokMimeData::PODCASTCHANNEL_MIME = QStringLiteral("application/x-amarok-podcastchannel");
+const QString AmarokMimeData::PODCASTEPISODE_MIME = QStringLiteral("application/x-amarok-podcastepisode");
+const QString AmarokMimeData::AMAROKURL_MIME = QStringLiteral("application/x-amarok-amarokurl");
+const QString AmarokMimeData::BOOKMARKGROUP_MIME = QStringLiteral("application/x-amarok-bookmarkgroup");
 
 
 class AmarokMimeData::Private
@@ -87,10 +87,10 @@ AmarokMimeData::formats() const
         formats.append( BOOKMARKGROUP_MIME );
         formats.append( AMAROKURL_MIME );
 
-        if( !formats.contains( "text/uri-list" ) )
-            formats.append( "text/uri-list" );
-        if( !formats.contains( "text/plain" ) )
-            formats.append( "text/plain" );
+        if( !formats.contains( QStringLiteral("text/uri-list") ) )
+            formats.append( QStringLiteral("text/uri-list") );
+        if( !formats.contains( QStringLiteral("text/plain") ) )
+            formats.append( QStringLiteral("text/plain") );
     }
 
     return formats;
@@ -113,7 +113,7 @@ AmarokMimeData::hasFormat( const QString &mimeType ) const
         return !d->bookmarkGroups.isEmpty();
     else if( mimeType == AMAROKURL_MIME )
         return !d->bookmarks.isEmpty();
-    else if( mimeType == "text/uri-list" || mimeType == "text/plain" )
+    else if( mimeType == QLatin1String("text/uri-list") || mimeType == QLatin1String("text/plain") )
         return !d->tracks.isEmpty() || !d->playlists.isEmpty()
             || !d->m_podcastChannels.isEmpty() || !d->m_podcastEpisodes.isEmpty()
             || !d->queryMakers.isEmpty();
@@ -304,7 +304,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
     Podcasts::PodcastEpisodeList episodes = this->podcastEpisodes();
     if( !tracks.isEmpty() )
     {
-        if( mimeType == "text/uri-list" && (type == QVariant::List || type == QVariant::ByteArray) )
+        if( mimeType == QLatin1String("text/uri-list") && (type == QVariant::List || type == QVariant::ByteArray) )
         {
             QList<QVariant> list;
             foreach( Meta::TrackPtr track, tracks )
@@ -325,7 +325,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
             }
             return QVariant( list );
         }
-        if( mimeType == "text/plain" && (type == QVariant::String || type == QVariant::ByteArray) )
+        if( mimeType == QLatin1String("text/plain") && (type == QVariant::String || type == QVariant::ByteArray) )
         {
             QString result;
             foreach( Meta::TrackPtr track, tracks )
@@ -333,7 +333,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
                 if( !result.isEmpty() )
                     result += '\n';
                 result += track->artist()->prettyName();
-                result += " - ";
+                result += QLatin1String(" - ");
                 result += track->prettyName();
             }
             foreach( Podcasts::PodcastEpisodePtr episode, episodes )
@@ -341,7 +341,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
                 if( !result.isEmpty() )
                     result += '\n';
                 result += episode->prettyName();
-                result += " - ";
+                result += QLatin1String(" - ");
                 result += episode->channel()->prettyName();
             }
             foreach( Playlists::PlaylistPtr playlist, playlists )

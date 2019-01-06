@@ -94,12 +94,12 @@ QString MediaPlayer2::Identity() const
 
 QString MediaPlayer2::DesktopEntry() const
 {
-    return QLatin1String("org.kde.amarok");
+    return QStringLiteral("org.kde.amarok");
 }
 
 QStringList MediaPlayer2::SupportedUriSchemes() const
 {
-    return QStringList() << "file" << "http";
+    return QStringList() << QStringLiteral("file") << QStringLiteral("http");
 }
 
 QStringList MediaPlayer2::SupportedMimeTypes() const

@@ -83,7 +83,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
             {
                 line = stream.readLine().simplified();
 
-                if ( line.startsWith ( "title", Qt::CaseInsensitive ) )
+                if ( line.startsWith ( QLatin1String("title"), Qt::CaseInsensitive ) )
                 {
                     title = line.mid ( 6 ).remove ( '"' );
                     if ( mode == BEGIN && !filesSection )
@@ -101,7 +101,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
                         debug() << "Title: " << title;
                 }
 
-                else if ( line.startsWith ( "performer", Qt::CaseInsensitive ) )
+                else if ( line.startsWith ( QLatin1String("performer"), Qt::CaseInsensitive ) )
                 {
                     artist = line.mid ( 10 ).remove ( '"' );
                     if ( mode == BEGIN && !filesSection  )
@@ -119,7 +119,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
                         debug() << "Artist: " << artist;
                 }
 
-                else if ( line.startsWith ( "track", Qt::CaseInsensitive ) && fileFound )
+                else if ( line.startsWith ( QLatin1String("track"), Qt::CaseInsensitive ) && fileFound )
                 {
                     if ( mode == TRACK_FOUND )
                     {
@@ -145,7 +145,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
                     debug() << "Track: " << trackNr;
                     mode = TRACK_FOUND;
                 }
-                else if ( line.startsWith ( "index", Qt::CaseInsensitive ) && fileFound  )
+                else if ( line.startsWith ( QLatin1String("index"), Qt::CaseInsensitive ) && fileFound  )
                 {
                     if ( mode == TRACK_FOUND )
                     {
@@ -199,7 +199,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
                     }
                     debug() << "index: " << index;
                 }
-                else if( line.startsWith ( "file", Qt::CaseInsensitive ) )
+                else if( line.startsWith ( QLatin1String("file"), Qt::CaseInsensitive ) )
                 {
                     QString file = line.mid ( 5 ).remove ( '"' );
                     if( fileFound )
@@ -251,7 +251,7 @@ QUrl CueFileSupport::locateCueSheet ( const QUrl &trackurl )
     bool foundCueFile = false;
     QDir dir ( trackurl.adjusted(QUrl::RemoveFilename|QUrl::StripTrailingSlash).path() );
     QStringList filters;
-    filters << "*.cue" << "*.CUE";
+    filters << QStringLiteral("*.cue") << QStringLiteral("*.CUE");
     dir.setNameFilters ( filters );
 
     QStringList cueFilesList = dir.entryList();
@@ -270,7 +270,7 @@ QUrl CueFileSupport::locateCueSheet ( const QUrl &trackurl )
                 {
                     line = stream.readLine().simplified();
 
-                    if ( line.startsWith ( "file", Qt::CaseInsensitive ) )
+                    if ( line.startsWith ( QLatin1String("file"), Qt::CaseInsensitive ) )
                     {
                         line = line.mid ( 5 ).remove ( '"' );
 
@@ -323,7 +323,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
         {
             line = stream.readLine().simplified();
 
-            if ( line.startsWith ( "title", Qt::CaseInsensitive ) )
+            if ( line.startsWith ( QLatin1String("title"), Qt::CaseInsensitive ) )
             {
                 title = line.mid ( 6 ).remove ( '"' );
                 if ( mode == BEGIN )
@@ -336,7 +336,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
                     debug() << "Title: " << title;
             }
 
-            else if ( line.startsWith ( "performer", Qt::CaseInsensitive ) )
+            else if ( line.startsWith ( QLatin1String("performer"), Qt::CaseInsensitive ) )
             {
                 artist = line.mid ( 10 ).remove ( '"' );
                 if ( mode == BEGIN )
@@ -349,7 +349,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
                     debug() << "Artist: " << artist;
             }
 
-            else if ( line.startsWith ( "track", Qt::CaseInsensitive ) )
+            else if ( line.startsWith ( QLatin1String("track"), Qt::CaseInsensitive ) )
             {
                 if ( mode == TRACK_FOUND )
                 {
@@ -372,7 +372,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
                 debug() << "Track: " << track;
                 mode = TRACK_FOUND;
             }
-            else if ( line.startsWith ( "index", Qt::CaseInsensitive ) )
+            else if ( line.startsWith ( QLatin1String("index"), Qt::CaseInsensitive ) )
             {
                 if ( mode == TRACK_FOUND )
                 {

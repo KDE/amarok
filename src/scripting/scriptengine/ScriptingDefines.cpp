@@ -25,21 +25,21 @@ using namespace AmarokScript;
 
 AmarokScriptEngine::AmarokScriptEngine( QObject *parent )
 : QScriptEngine(parent)
-, internalObject( "UndocumentedAmarokScriptingInternals" )
+, internalObject( QStringLiteral("UndocumentedAmarokScriptingInternals") )
 {
     QScriptValue scriptObject = newQObject( this, QtOwnership,
                                             ExcludeChildObjects | ExcludeSuperClassContents );
     globalObject().setProperty( internalObject, scriptObject, QScriptValue::ReadOnly );
-    QScriptValue setTimeoutObject = scriptObject.property( "setTimeout" );
+    QScriptValue setTimeoutObject = scriptObject.property( QStringLiteral("setTimeout") );
     Q_ASSERT( !setTimeoutObject.isUndefined() );
     Q_ASSERT( !globalObject().property( internalObject ).property( "invokableDeprecatedCall" ).isUndefined() );
-    globalObject().setProperty( "setTimeout", setTimeoutObject );
+    globalObject().setProperty( QStringLiteral("setTimeout"), setTimeoutObject );
 }
 
 void
 AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property )
 {
-    const QString objName = QString( "%1%2" ).arg( name, QString::number( qrand() ) );
+    const QString objName = QStringLiteral( "%1%2" ).arg( name, QString::number( qrand() ) );
     globalObject().property( internalObject ).setProperty( objName, property, QScriptValue::ReadOnly | QScriptValue::SkipInEnumeration );
     const QString command = QString( "Object.defineProperty( %1, \"%2\", {get : function(){ var iobj= %3; iobj.invokableDeprecatedCall(\""
                                                                             " %1.%2 \"); return iobj.%4; },\
@@ -80,7 +80,7 @@ AmarokScriptEngine::slotTimeout()
     {
         thisObject = m_callbacks[timer][1];
         if( m_callbacks[timer].size() == 3 )
-            for ( quint32 i = 0; i < m_callbacks[timer][2].property("length").toUInt32(); ++i )
+            for ( quint32 i = 0; i < m_callbacks[timer][2].property(QStringLiteral("length")).toUInt32(); ++i )
                 args << m_callbacks[timer][2].property( i );
     }
     m_callbacks[timer][0].call( thisObject, args );

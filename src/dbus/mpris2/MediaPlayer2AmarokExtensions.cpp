@@ -67,6 +67,6 @@ void MediaPlayer2AmarokExtensions::AdjustVolume( double increaseBy )
 
 void MediaPlayer2AmarokExtensions::mutedChanged( bool newValue )
 {
-    signalPropertyChange( "Muted", newValue );
+    signalPropertyChange( QStringLiteral("Muted"), newValue );
 }
 

@@ -65,7 +65,7 @@ Configuration::fromConfigGroup( const KConfigGroup &serialized )
     foreach( const Property &property, format ? format->propertyList() : emptyList )
     {
         Configuration invalid( INVALID );
-        QString key = QString( "Parameter ").append( property.name() );
+        QString key = QStringLiteral( "Parameter ").append( property.name() );
         QVariant value = serialized.readEntry( key, QString() /* does not work with QVariant() */ );
 
         if( !value.isValid() )
@@ -92,13 +92,13 @@ Configuration::saveToConfigGroup( KConfigGroup &group ) const
     group.deleteGroup(); // remove all keys
     Q_ASSERT( encoderNames().contains( m_encoder ) );
     QString encoderName = encoderNames().value( m_encoder );
-    group.writeEntry( QLatin1String( "Encoder" ), encoderName );
-    group.writeEntry( QLatin1String( "TrackSelection" ), int( m_trackSelection ) );
+    group.writeEntry( QStringLiteral( "Encoder" ), encoderName );
+    group.writeEntry( QStringLiteral( "TrackSelection" ), int( m_trackSelection ) );
     QMapIterator<QByteArray, QVariant> it( m_values );
     while( it.hasNext() )
     {
         it.next();
-        group.writeEntry( QString( "Parameter " ).append( it.key() ), it.value() );
+        group.writeEntry( QStringLiteral( "Parameter " ).append( it.key() ), it.value() );
     }
 }
 
@@ -149,15 +149,15 @@ Configuration::encoderNames()
     if( !s_encoderNames.isEmpty() )
         return s_encoderNames;
 
-    s_encoderNames.insert( INVALID, QLatin1String( "INVALID" ) );
-    s_encoderNames.insert( JUST_COPY, QLatin1String( "JUST_COPY" ) );
-    s_encoderNames.insert( AAC, QLatin1String( "AAC" ) );
-    s_encoderNames.insert( ALAC, QLatin1String( "ALAC" ) );
-    s_encoderNames.insert( FLAC, QLatin1String( "FLAC" ) );
-    s_encoderNames.insert( MP3, QLatin1String( "MP3" ) );
-    s_encoderNames.insert( OPUS, QLatin1String( "OPUS" ) );
-    s_encoderNames.insert( VORBIS, QLatin1String( "VORBIS" ) );
-    s_encoderNames.insert( WMA2, QLatin1String( "WMA2" ) );
+    s_encoderNames.insert( INVALID, QStringLiteral( "INVALID" ) );
+    s_encoderNames.insert( JUST_COPY, QStringLiteral( "JUST_COPY" ) );
+    s_encoderNames.insert( AAC, QStringLiteral( "AAC" ) );
+    s_encoderNames.insert( ALAC, QStringLiteral( "ALAC" ) );
+    s_encoderNames.insert( FLAC, QStringLiteral( "FLAC" ) );
+    s_encoderNames.insert( MP3, QStringLiteral( "MP3" ) );
+    s_encoderNames.insert( OPUS, QStringLiteral( "OPUS" ) );
+    s_encoderNames.insert( VORBIS, QStringLiteral( "VORBIS" ) );
+    s_encoderNames.insert( WMA2, QStringLiteral( "WMA2" ) );
     return s_encoderNames;
 }
 

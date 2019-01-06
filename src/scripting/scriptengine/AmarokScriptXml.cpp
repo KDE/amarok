@@ -34,7 +34,7 @@ AmarokScriptXml::AmarokScriptXml( QScriptEngine *engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    engine->globalObject().property( "Amarok" ).setProperty( "Xml", scriptObject );
+    engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Xml"), scriptObject );
 }
 
 AmarokScriptXml::~AmarokScriptXml()

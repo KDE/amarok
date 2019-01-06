@@ -78,10 +78,10 @@ AmarokWindowScript::AmarokWindowScript( AmarokScriptEngine* scriptEngine )
 {
     QScriptValue windowObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership,
                                                             QScriptEngine::ExcludeSuperClassContents );
-    scriptEngine->globalObject().property( "Amarok" ).setProperty( "Window", windowObject );
+    scriptEngine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Window"), windowObject );
 
-    windowObject.setProperty( "ToolsMenu", scriptEngine->newObject() );
-    windowObject.setProperty( "SettingsMenu", scriptEngine->newObject() );
+    windowObject.setProperty( QStringLiteral("ToolsMenu"), scriptEngine->newObject() );
+    windowObject.setProperty( QStringLiteral("SettingsMenu"), scriptEngine->newObject() );
 
     connect( pApp, &App::prepareToQuit, this, &AmarokWindowScript::prepareToQuit );
 }
@@ -96,7 +96,7 @@ AmarokWindowScript::addToolsMenu( const QString &name )
     m_customMenus.insert( name, menu );
     m_toolsMenu->addMenu( menu );
     QScriptValue scriptMenu = m_scriptEngine->newQObject( menu );
-    m_scriptEngine->globalObject().property( "Amarok" ).property( "Window" ).setProperty( name, scriptMenu );
+    m_scriptEngine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") ).setProperty( name, scriptMenu );
 }
 
 void
@@ -109,13 +109,13 @@ AmarokWindowScript::addSettingsMenu( const QString &name )
     m_customMenus.insert( name, menu );
     m_settingsMenu->addMenu( menu );
     QScriptValue scriptMenu = m_scriptEngine->newQObject( menu );
-    m_scriptEngine->globalObject().property( "Amarok" ).property( "Window" ).setProperty( name, scriptMenu );
+    m_scriptEngine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") ).setProperty( name, scriptMenu );
 }
 
 bool
 AmarokWindowScript::addToolsAction( QString id, QString actionName, QString icon )
 {
-    return addMenuAction( m_toolsMenu, id, actionName, "ToolsMenu", icon );
+    return addMenuAction( m_toolsMenu, id, actionName, QStringLiteral("ToolsMenu"), icon );
 }
 
 void
@@ -127,7 +127,7 @@ AmarokWindowScript::addToolsSeparator()
 bool
 AmarokWindowScript::addSettingsAction( QString id, QString actionName, QString icon )
 {
-    return addMenuAction( m_settingsMenu, id, actionName, "SettingsMenu", icon );
+    return addMenuAction( m_settingsMenu, id, actionName, QStringLiteral("SettingsMenu"), icon );
 }
 
 bool
@@ -163,7 +163,7 @@ AmarokWindowScript::addMenuAction( QMenu *menu, QString id, QString actionName, 
     menu->addAction( ac->action( id ) );
 
     QScriptValue newMenu = m_scriptEngine->newQObject( action );
-    m_scriptEngine->globalObject().property( "Amarok" ).property( "Window" ).property( menuProperty ).setProperty( id, newMenu );
+    m_scriptEngine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") ).property( menuProperty ).setProperty( id, newMenu );
     return true;
 }
 

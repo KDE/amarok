@@ -37,7 +37,7 @@
 
 namespace Playlist {
 
-static const QString PREVIEW_LAYOUT = "%%PREVIEW%%";
+static const QString PREVIEW_LAYOUT = QStringLiteral("%%PREVIEW%%");
 LayoutManager* LayoutManager::s_instance = nullptr;
 
 LayoutManager* LayoutManager::instance()
@@ -56,10 +56,10 @@ LayoutManager::LayoutManager()
     loadUserLayouts();
     orderLayouts();
 
-    KConfigGroup config = Amarok::config("Playlist Layout");
+    KConfigGroup config = Amarok::config(QStringLiteral("Playlist Layout"));
     m_activeLayout = config.readEntry( "CurrentLayout", "Default" );
     if( !layouts().contains( m_activeLayout ) )
-        m_activeLayout = "Default";
+        m_activeLayout = QStringLiteral("Default");
     Playlist::ModelStack::instance()->groupingProxy()->setGroupingCategory( activeLayout().groupBy() );
 }
 
@@ -71,7 +71,7 @@ QStringList LayoutManager::layouts() const
 void LayoutManager::setActiveLayout( const QString &layout )
 {
     m_activeLayout = layout;
-    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );
+    Amarok::config( QStringLiteral("Playlist Layout") ).writeEntry( "CurrentLayout", m_activeLayout );
     emit( activeLayoutChanged() );
 
     //Change the grouping style to that of this layout.
@@ -135,12 +135,12 @@ PlaylistLayout LayoutManager::activeLayout() const
 
 void LayoutManager::loadUserLayouts()
 {
-    QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
+    QDir layoutsDir = QDir( Amarok::saveLocation( QStringLiteral("playlist_layouts/") ) );
 
     layoutsDir.setSorting( QDir::Name );
 
     QStringList filters;
-    filters << "*.xml" << "*.XML";
+    filters << QStringLiteral("*.xml") << QStringLiteral("*.XML");
     layoutsDir.setNameFilters( filters );
     layoutsDir.setSorting( QDir::Name );
 
@@ -156,7 +156,7 @@ void LayoutManager::loadUserLayouts()
 void LayoutManager::loadDefaultLayouts()
 {
     const QString dataLocation = QStandardPaths::locate(QStandardPaths::GenericDataLocation,
-                                                       "amarok/data",
+                                                       QStringLiteral("amarok/data"),
                                                        QStandardPaths::LocateDirectory);
 
 
@@ -168,7 +168,7 @@ void LayoutManager::loadDefaultLayouts()
 void LayoutManager::loadLayouts( const QString &fileName, bool user )
 {
     DEBUG_BLOCK
-    QDomDocument doc( "layouts" );
+    QDomDocument doc( QStringLiteral("layouts") );
 
     if ( !QFile::exists( fileName ) )
     {
@@ -191,8 +191,8 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
     file->close();
     delete file;
 
-    QDomElement layouts_element = doc.firstChildElement( "playlist_layouts" );
-    QDomNodeList layouts = layouts_element.elementsByTagName("layout");
+    QDomElement layouts_element = doc.firstChildElement( QStringLiteral("playlist_layouts") );
+    QDomNodeList layouts = layouts_element.elementsByTagName(QStringLiteral("layout"));
 
     int index = 0;
     while ( index < layouts.size() )
@@ -200,27 +200,27 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         QDomNode layout = layouts.item( index );
         index++;
 
-        QString layoutName = layout.toElement().attribute( "name", "" );
+        QString layoutName = layout.toElement().attribute( QStringLiteral("name"), QLatin1String("") );
         debug() << "loading layout " << layoutName;
 
         PlaylistLayout currentLayout;
         currentLayout.setEditable( user );
-        currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
-        currentLayout.setTooltips( layout.toElement().attribute( "tooltips", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+        currentLayout.setInlineControls( layout.toElement().attribute( QStringLiteral("inline_controls"), QStringLiteral("false") ).compare( QLatin1String("true"), Qt::CaseInsensitive ) == 0 );
+        currentLayout.setTooltips( layout.toElement().attribute( QStringLiteral("tooltips"), QStringLiteral("false") ).compare( QLatin1String("true"), Qt::CaseInsensitive ) == 0 );
 
         //For backwards compatibility, if a grouping is not set in the XML file assume "group by album" (which was previously the default)
-        currentLayout.setGroupBy( layout.toElement().attribute( "group_by", "Album" ) );
-        debug() << "grouping mode is: " << layout.toElement().attribute( "group_by", "Album" );
+        currentLayout.setGroupBy( layout.toElement().attribute( QStringLiteral("group_by"), QStringLiteral("Album") ) );
+        debug() << "grouping mode is: " << layout.toElement().attribute( QStringLiteral("group_by"), QStringLiteral("Album") );
 
 
-        currentLayout.setLayoutForPart( PlaylistLayout::Head, parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
-        currentLayout.setLayoutForPart( PlaylistLayout::StandardBody, parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
-        QDomElement variousArtistsXML = layout.toElement().firstChildElement( "group_variousArtistsBody" );
+        currentLayout.setLayoutForPart( PlaylistLayout::Head, parseItemConfig( layout.toElement().firstChildElement( QStringLiteral("group_head") ) ) );
+        currentLayout.setLayoutForPart( PlaylistLayout::StandardBody, parseItemConfig( layout.toElement().firstChildElement( QStringLiteral("group_body") ) ) );
+        QDomElement variousArtistsXML = layout.toElement().firstChildElement( QStringLiteral("group_variousArtistsBody") );
         if ( !variousArtistsXML.isNull() )
             currentLayout.setLayoutForPart( PlaylistLayout::VariousArtistsBody, parseItemConfig( variousArtistsXML ) );
         else    // Handle old custom layout XMLs
-            currentLayout.setLayoutForPart( PlaylistLayout::VariousArtistsBody, parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
-        currentLayout.setLayoutForPart( PlaylistLayout::Single, parseItemConfig( layout.toElement().firstChildElement( "single_track" ) ) );
+            currentLayout.setLayoutForPart( PlaylistLayout::VariousArtistsBody, parseItemConfig( layout.toElement().firstChildElement( QStringLiteral("group_body") ) ) );
+        currentLayout.setLayoutForPart( PlaylistLayout::Single, parseItemConfig( layout.toElement().firstChildElement( QStringLiteral("single_track") ) ) );
 
         if ( !layoutName.isEmpty() )
             m_layouts.insert( layoutName, currentLayout );
@@ -229,14 +229,14 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
 
 LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
 {
-    const bool showCover = ( elem.attribute( "show_cover", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
-    const int activeIndicatorRow = elem.attribute( "active_indicator_row", "0" ).toInt();
+    const bool showCover = ( elem.attribute( QStringLiteral("show_cover"), QStringLiteral("false") ).compare( QLatin1String("true"), Qt::CaseInsensitive ) == 0 );
+    const int activeIndicatorRow = elem.attribute( QStringLiteral("active_indicator_row"), QStringLiteral("0") ).toInt();
 
     LayoutItemConfig config;
     config.setShowCover( showCover );
     config.setActiveIndicatorRow( activeIndicatorRow );
 
-    QDomNodeList rows = elem.elementsByTagName("row");
+    QDomNodeList rows = elem.elementsByTagName(QStringLiteral("row"));
 
     int index = 0;
     while ( index < rows.size() )
@@ -246,7 +246,7 @@ LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
 
         LayoutItemConfigRow row;
 
-        QDomNodeList elements = rowNode.toElement().elementsByTagName("element");
+        QDomNodeList elements = rowNode.toElement().elementsByTagName(QStringLiteral("element"));
 
         int index2 = 0;
         while ( index2 < elements.size() )
@@ -254,20 +254,20 @@ LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
             QDomNode elementNode = elements.item( index2 );
             index2++;
 
-            int value = columnForName( elementNode.toElement().attribute( "value", "Title" ) );
-            QString prefix = elementNode.toElement().attribute( "prefix", QString() );
-            QString sufix = elementNode.toElement().attribute( "suffix", QString() );
-            qreal size = elementNode.toElement().attribute( "size", "0.0" ).toDouble();
-            bool bold = ( elementNode.toElement().attribute( "bold", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
-            bool italic = ( elementNode.toElement().attribute( "italic", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
-            bool underline = ( elementNode.toElement().attribute( "underline", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
-            QString alignmentString = elementNode.toElement().attribute( "alignment", "left" );
+            int value = columnForName( elementNode.toElement().attribute( QStringLiteral("value"), QStringLiteral("Title") ) );
+            QString prefix = elementNode.toElement().attribute( QStringLiteral("prefix"), QString() );
+            QString sufix = elementNode.toElement().attribute( QStringLiteral("suffix"), QString() );
+            qreal size = elementNode.toElement().attribute( QStringLiteral("size"), QStringLiteral("0.0") ).toDouble();
+            bool bold = ( elementNode.toElement().attribute( QStringLiteral("bold"), QStringLiteral("false") ).compare( QLatin1String("true"), Qt::CaseInsensitive ) == 0 );
+            bool italic = ( elementNode.toElement().attribute( QStringLiteral("italic"), QStringLiteral("false") ).compare( QLatin1String("true"), Qt::CaseInsensitive ) == 0 );
+            bool underline = ( elementNode.toElement().attribute( QStringLiteral("underline"), QStringLiteral("false") ).compare( QLatin1String("true"), Qt::CaseInsensitive ) == 0 );
+            QString alignmentString = elementNode.toElement().attribute( QStringLiteral("alignment"), QStringLiteral("left") );
             Qt::Alignment alignment;
 
 
-            if ( alignmentString.compare( "left", Qt::CaseInsensitive ) == 0 )
+            if ( alignmentString.compare( QLatin1String("left"), Qt::CaseInsensitive ) == 0 )
                 alignment = Qt::AlignLeft | Qt::AlignVCenter;
-            else if ( alignmentString.compare( "right", Qt::CaseInsensitive ) == 0 )
+            else if ( alignmentString.compare( QLatin1String("right"), Qt::CaseInsensitive ) == 0 )
                  alignment = Qt::AlignRight| Qt::AlignVCenter;
             else
                 alignment = Qt::AlignCenter| Qt::AlignVCenter;
@@ -298,37 +298,37 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     m_layouts.insert( name, layout );
 
 
-    QDomDocument doc( "layouts" );
-    QDomElement layouts_element = doc.createElement( "playlist_layouts" );
+    QDomDocument doc( QStringLiteral("layouts") );
+    QDomElement layouts_element = doc.createElement( QStringLiteral("playlist_layouts") );
     QDomElement newLayout = doc.createElement( ("layout" ) );
-    newLayout.setAttribute( "name", name );
+    newLayout.setAttribute( QStringLiteral("name"), name );
 
     doc.appendChild( layouts_element );
     layouts_element.appendChild( newLayout );
 
     emit( layoutListChanged() );
 
-    QDomElement body = doc.createElement( "body" );
-    QDomElement single = doc.createElement( "single" );
+    QDomElement body = doc.createElement( QStringLiteral("body") );
+    QDomElement single = doc.createElement( QStringLiteral("single") );
 
-    newLayout.appendChild( createItemElement( doc, "single_track", layout.layoutForPart( PlaylistLayout::Single ) ) );
-    newLayout.appendChild( createItemElement( doc, "group_head", layout.layoutForPart( PlaylistLayout::Head ) ) );
-    newLayout.appendChild( createItemElement( doc, "group_body", layout.layoutForPart( PlaylistLayout::StandardBody ) ) );
-    newLayout.appendChild( createItemElement( doc, "group_variousArtistsBody", layout.layoutForPart( PlaylistLayout::VariousArtistsBody ) ) );
+    newLayout.appendChild( createItemElement( doc, QStringLiteral("single_track"), layout.layoutForPart( PlaylistLayout::Single ) ) );
+    newLayout.appendChild( createItemElement( doc, QStringLiteral("group_head"), layout.layoutForPart( PlaylistLayout::Head ) ) );
+    newLayout.appendChild( createItemElement( doc, QStringLiteral("group_body"), layout.layoutForPart( PlaylistLayout::StandardBody ) ) );
+    newLayout.appendChild( createItemElement( doc, QStringLiteral("group_variousArtistsBody"), layout.layoutForPart( PlaylistLayout::VariousArtistsBody ) ) );
 
     if( layout.inlineControls() )
-        newLayout.setAttribute( "inline_controls", "true" );
+        newLayout.setAttribute( QStringLiteral("inline_controls"), QStringLiteral("true") );
 
     if( layout.tooltips() )
-        newLayout.setAttribute( "tooltips", "true" );
+        newLayout.setAttribute( QStringLiteral("tooltips"), QStringLiteral("true") );
 
-    newLayout.setAttribute( "group_by", layout.groupBy() );
+    newLayout.setAttribute( QStringLiteral("group_by"), layout.groupBy() );
 
-    QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
+    QDir layoutsDir = QDir( Amarok::saveLocation( QStringLiteral("playlist_layouts/") ) );
 
     //make sure that this directory exists
     if ( !layoutsDir.exists() )
-        layoutsDir.mkpath( Amarok::saveLocation( "playlist_layouts/" ) );
+        layoutsDir.mkpath( Amarok::saveLocation( QStringLiteral("playlist_layouts/") ) );
 
     QFile file( layoutsDir.filePath( name + ".xml" ) );
     if ( !file.open(QIODevice::WriteOnly | QIODevice::Text) )
@@ -343,37 +343,37 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
     QDomElement element = doc.createElement( name );
 
     QString showCover = item.showCover() ? "true" : "false";
-    element.setAttribute ( "show_cover", showCover );
-    element.setAttribute ( "active_indicator_row", QString::number( item.activeIndicatorRow() ) );
+    element.setAttribute ( QStringLiteral("show_cover"), showCover );
+    element.setAttribute ( QStringLiteral("active_indicator_row"), QString::number( item.activeIndicatorRow() ) );
 
     for( int i = 0; i < item.rows(); i++ )
     {
         LayoutItemConfigRow row = item.row( i );
 
-        QDomElement rowElement = doc.createElement( "row" );
+        QDomElement rowElement = doc.createElement( QStringLiteral("row") );
         element.appendChild( rowElement );
 
         for( int j = 0; j < row.count(); j++ ) {
             LayoutItemConfigRowElement element = row.element( j );
-            QDomElement elementElement = doc.createElement( "element" );
+            QDomElement elementElement = doc.createElement( QStringLiteral("element") );
 
-            elementElement.setAttribute ( "prefix", element.prefix() );
-            elementElement.setAttribute ( "suffix", element.suffix() );
-            elementElement.setAttribute ( "value", internalColumnName( static_cast<Playlist::Column>( element.value() ) ) );
-            elementElement.setAttribute ( "size", QString::number( element.size() ) );
-            elementElement.setAttribute ( "bold", element.bold() ? "true" : "false" );
-            elementElement.setAttribute ( "italic", element.italic() ? "true" : "false" );
-            elementElement.setAttribute ( "underline", element.underline() ? "true" : "false" );
+            elementElement.setAttribute ( QStringLiteral("prefix"), element.prefix() );
+            elementElement.setAttribute ( QStringLiteral("suffix"), element.suffix() );
+            elementElement.setAttribute ( QStringLiteral("value"), internalColumnName( static_cast<Playlist::Column>( element.value() ) ) );
+            elementElement.setAttribute ( QStringLiteral("size"), QString::number( element.size() ) );
+            elementElement.setAttribute ( QStringLiteral("bold"), element.bold() ? "true" : "false" );
+            elementElement.setAttribute ( QStringLiteral("italic"), element.italic() ? "true" : "false" );
+            elementElement.setAttribute ( QStringLiteral("underline"), element.underline() ? "true" : "false" );
 
             QString alignmentString;
             if ( element.alignment() & Qt::AlignLeft )
-                alignmentString = "left";
+                alignmentString = QStringLiteral("left");
             else  if ( element.alignment() & Qt::AlignRight )
-                alignmentString = "right";
+                alignmentString = QStringLiteral("right");
             else
-                alignmentString = "center";
+                alignmentString = QStringLiteral("center");
 
-            elementElement.setAttribute ( "alignment", alignmentString );
+            elementElement.setAttribute ( QStringLiteral("alignment"), alignmentString );
 
             rowElement.appendChild( elementElement );
         }
@@ -400,7 +400,7 @@ void LayoutManager::deleteLayout( const QString &layout )
     //check if layout is editable
     if ( m_layouts.value( layout ).isEditable() )
     {
-        QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
+        QDir layoutsDir = QDir( Amarok::saveLocation( QStringLiteral("playlist_layouts/") ) );
         QString xmlFile = layoutsDir.path() + QLatin1Char('/') + layout + ".xml";
 
         if ( !QFile::remove( xmlFile ) )
@@ -411,7 +411,7 @@ void LayoutManager::deleteLayout( const QString &layout )
         emit( layoutListChanged() );
 
         if ( layout == m_activeLayout )
-            setActiveLayout( "Default" );
+            setActiveLayout( QStringLiteral("Default") );
     }
     else
         KMessageBox::sorry( 0, i18n( "The layout '%1' is one of the default layouts and cannot be deleted.", layout ), i18n( "Cannot Delete Default Layouts" ) );
@@ -450,7 +450,7 @@ int LayoutManager::moveDown( const QString &layout )
 
 void LayoutManager::orderLayouts()
 {
-    KConfigGroup config = Amarok::config( "Playlist Layout" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Playlist Layout") );
     QString orderString = config.readEntry( "Order", "Default" );
 
     QStringList knownLayouts = m_layouts.keys();
@@ -488,7 +488,7 @@ void Playlist::LayoutManager::storeLayoutOrdering()
     if ( !ordering.isEmpty() )
         ordering.chop( 1 ); //remove trailing;
 
-    KConfigGroup config = Amarok::config("Playlist Layout");
+    KConfigGroup config = Amarok::config(QStringLiteral("Playlist Layout"));
     config.writeEntry( "Order", ordering );
 }
 

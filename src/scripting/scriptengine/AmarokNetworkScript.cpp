@@ -37,10 +37,10 @@ Downloader::Downloader( QScriptEngine* engine )
 {
     engine->setDefaultPrototype( qMetaTypeId<Downloader*>(), QScriptValue() );
     const QScriptValue stringCtor = engine->newFunction( stringDownloader_prototype_ctor );
-    engine->globalObject().setProperty( "Downloader", stringCtor ); //kept for compat
-    engine->globalObject().setProperty( "StringDownloader", stringCtor ); //added for clarity
+    engine->globalObject().setProperty( QStringLiteral("Downloader"), stringCtor ); //kept for compat
+    engine->globalObject().setProperty( QStringLiteral("StringDownloader"), stringCtor ); //added for clarity
     const QScriptValue dataCtor = engine->newFunction( dataDownloader_prototype_ctor );
-    engine->globalObject().setProperty( "DataDownloader", dataCtor );
+    engine->globalObject().setProperty( QStringLiteral("DataDownloader"), dataCtor );
 }
 
 QScriptValue
@@ -52,7 +52,7 @@ Downloader::stringDownloader_prototype_ctor( QScriptContext* context, QScriptEng
 QScriptValue
 Downloader::dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine )
 {
-    if( engine->importedExtensions().contains( "qt.core" ) )
+    if( engine->importedExtensions().contains( QStringLiteral("qt.core") ) )
         return init( context, engine, false );
     else
     {
@@ -73,7 +73,7 @@ Downloader::init( QScriptContext* context, QScriptEngine *engine, bool stringRes
     else
     {
         object = engine->newObject();
-        object.setPrototype( context->callee().property("prototype") );
+        object.setPrototype( context->callee().property(QStringLiteral("prototype")) );
     }
 
     if( context->argumentCount() < 2 )
@@ -99,7 +99,7 @@ Downloader::init( QScriptContext* context, QScriptEngine *engine, bool stringRes
     // start download, and connect to it
     if( stringResult )
     {
-        QString encoding = "UTF-8";
+        QString encoding = QStringLiteral("UTF-8");
         if( context->argumentCount() == 3 ) // encoding specified
             encoding = context->argument( 2 ).toString();
         AmarokDownloadHelper::instance()->newStringDownload( url, engine, context->argument( 1 ), encoding );

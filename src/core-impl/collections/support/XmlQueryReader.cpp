@@ -74,7 +74,7 @@ XmlQueryReader::read( const QString &xmlData )
             //so fail if we find more than one
             if( name() == "query" )
             {
-                if( attributes().value( "version" ) == "1.0" )
+                if( attributes().value( QStringLiteral("version") ) == "1.0" )
                 {
                     queryCount++;
                     readQuery();
@@ -100,8 +100,8 @@ XmlQueryReader::readQuery()
             else if( name() == "order" )
             {
                 QXmlStreamAttributes attr = attributes();
-                QStringRef fieldStr =  attr.value( "field" );
-                QStringRef valueStr =  attr.value( "value" );
+                QStringRef fieldStr =  attr.value( QStringLiteral("field") );
+                QStringRef valueStr =  attr.value( QStringLiteral("value") );
 
                 qint64 field = Meta::fieldForName( fieldStr.toString() );
                 bool descending = valueStr == "descending";
@@ -111,7 +111,7 @@ XmlQueryReader::readQuery()
             }
             else if( name() == "limit" )
             {
-                QStringRef value = attributes().value( "value" );
+                QStringRef value = attributes().value( QStringLiteral("value") );
                 if( !value.isEmpty() )
                     d->qm->limitMaxResultSize( value.toString().toInt() );
             }
@@ -225,10 +225,10 @@ XmlQueryReader::readFilter(QXmlStreamReader *reader)
     QXmlStreamAttributes attr = reader->attributes();
 
     filter.exclude = (reader->name() != "include");
-    filter.field = Meta::fieldForName( attr.value( "field" ).toString() );
-    filter.value = attr.value( "value" ).toString();
+    filter.field = Meta::fieldForName( attr.value( QStringLiteral("field") ).toString() );
+    filter.value = attr.value( QStringLiteral("value") ).toString();
 
-    QStringRef compareStr = attr.value( "compare" );
+    QStringRef compareStr = attr.value( QStringLiteral("compare") );
     if( compareStr.isEmpty() )
         filter.compare = -1;
     else

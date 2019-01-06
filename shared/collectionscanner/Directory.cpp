@@ -53,16 +53,16 @@ CollectionScanner::Directory::Directory( const QString &path,
         return;
 
     QDir dir( path );
-    if( dir.exists( "fmps_ignore" ) )
+    if( dir.exists( QStringLiteral("fmps_ignore") ) )
     {
         m_ignored = true;
         return;
     }
 
     QStringList validImages;
-    validImages << "jpg" << "png" << "gif" << "jpeg" << "bmp" << "svg" << "xpm";
+    validImages << QStringLiteral("jpg") << QStringLiteral("png") << QStringLiteral("gif") << QStringLiteral("jpeg") << QStringLiteral("bmp") << QStringLiteral("svg") << QStringLiteral("xpm");
     QStringList validPlaylists;
-    validPlaylists << "m3u" << "pls" << "xspf";
+    validPlaylists << QStringLiteral("m3u") << QStringLiteral("pls") << QStringLiteral("xspf");
 
     // --- check if we were restarted and failed at a file
     QStringList badFiles;
@@ -219,28 +219,28 @@ CollectionScanner::Directory::playlists() const
 void
 CollectionScanner::Directory::toXml( QXmlStreamWriter *writer ) const
 {
-    writer->writeTextElement( "path", escapeXml10(m_path) );
-    writer->writeTextElement( "rpath", escapeXml10(m_rpath) );
-    writer->writeTextElement( "mtime", QString::number( m_mtime ) );
+    writer->writeTextElement( QStringLiteral("path"), escapeXml10(m_path) );
+    writer->writeTextElement( QStringLiteral("rpath"), escapeXml10(m_rpath) );
+    writer->writeTextElement( QStringLiteral("mtime"), QString::number( m_mtime ) );
     if( m_skipped )
-        writer->writeEmptyElement( "skipped" );
+        writer->writeEmptyElement( QStringLiteral("skipped") );
     if( m_ignored )
-        writer->writeEmptyElement( "ignored" );
+        writer->writeEmptyElement( QStringLiteral("ignored") );
 
     foreach( const QString &cover, m_covers )
     {
-        writer->writeTextElement( "cover", escapeXml10(cover) );
+        writer->writeTextElement( QStringLiteral("cover"), escapeXml10(cover) );
     }
     foreach( CollectionScanner::Track *track, m_tracks )
     {
-        writer->writeStartElement( QLatin1String("track") );
+        writer->writeStartElement( QStringLiteral("track") );
         track->toXml( writer );
         writer->writeEndElement();
     }
 
     foreach( const CollectionScanner::Playlist &playlist, m_playlists )
     {
-        writer->writeStartElement( "playlist" );
+        writer->writeStartElement( QStringLiteral("playlist") );
         playlist.toXml( writer );
         writer->writeEndElement();
     }

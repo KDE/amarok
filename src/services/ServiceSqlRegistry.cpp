@@ -30,7 +30,7 @@ ServiceSqlRegistry::ServiceSqlRegistry( ServiceMetaFactory * metaFactory )
     : QObject( nullptr )
     , m_metaFactory( metaFactory )
 {
-    setObjectName( "ServiceSqlRegistry" );
+    setObjectName( QStringLiteral("ServiceSqlRegistry") );
 
    /* m_timer = new QTimer( this );
     m_timer->setInterval( 60000 );  //try to clean up every 60 seconds, change if necessary

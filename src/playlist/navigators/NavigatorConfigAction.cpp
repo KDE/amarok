@@ -36,12 +36,12 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     navigatorActions->setExclusive( true );
 
     m_standardNavigatorAction = navigatorActions->addAction( i18n( "Standard" ) );
-    m_standardNavigatorAction->setIcon( QIcon::fromTheme( "media-standard-track-progression-amarok" ) );
+    m_standardNavigatorAction->setIcon( QIcon::fromTheme( QStringLiteral("media-standard-track-progression-amarok") ) );
     m_standardNavigatorAction->setCheckable( true );
     //action->setIcon( true );
 
     m_onlyQueueNavigatorAction = navigatorActions->addAction( i18n( "Only Queue" ) );
-    m_onlyQueueNavigatorAction->setIcon( QIcon::fromTheme( "media-standard-track-progression-amarok" ) );
+    m_onlyQueueNavigatorAction->setIcon( QIcon::fromTheme( QStringLiteral("media-standard-track-progression-amarok") ) );
     m_onlyQueueNavigatorAction->setCheckable( true );
 
     QAction * action = new QAction( parent );
@@ -49,15 +49,15 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     navigatorActions->addAction( action );
 
     m_repeatTrackNavigatorAction = navigatorActions->addAction( i18n( "Repeat Track" ) );
-    m_repeatTrackNavigatorAction->setIcon( QIcon::fromTheme( "media-repeat-track-amarok" ) );
+    m_repeatTrackNavigatorAction->setIcon( QIcon::fromTheme( QStringLiteral("media-repeat-track-amarok") ) );
     m_repeatTrackNavigatorAction->setCheckable( true );
 
     m_repeatAlbumNavigatorAction = navigatorActions->addAction( i18n( "Repeat Album" ) );
-    m_repeatAlbumNavigatorAction->setIcon( QIcon::fromTheme( "media-repeat-album-amarok" ) );
+    m_repeatAlbumNavigatorAction->setIcon( QIcon::fromTheme( QStringLiteral("media-repeat-album-amarok") ) );
     m_repeatAlbumNavigatorAction->setCheckable( true );
 
     m_repeatPlaylistNavigatorAction = navigatorActions->addAction( i18n( "Repeat Playlist" ) );
-    m_repeatPlaylistNavigatorAction->setIcon( QIcon::fromTheme( "media-repeat-playlist-amarok" ) );
+    m_repeatPlaylistNavigatorAction->setIcon( QIcon::fromTheme( QStringLiteral("media-repeat-playlist-amarok") ) );
     m_repeatPlaylistNavigatorAction->setCheckable( true );
 
     action = new QAction( parent );
@@ -65,11 +65,11 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     navigatorActions->addAction( action );
 
     m_randomTrackNavigatorAction = navigatorActions->addAction( i18n( "Random Tracks" ) );
-    m_randomTrackNavigatorAction->setIcon( QIcon::fromTheme( "media-random-tracks-amarok" ) );
+    m_randomTrackNavigatorAction->setIcon( QIcon::fromTheme( QStringLiteral("media-random-tracks-amarok") ) );
     m_randomTrackNavigatorAction->setCheckable( true );
 
     m_randomAlbumNavigatorAction = navigatorActions->addAction( i18n( "Random Albums" ) );
-    m_randomAlbumNavigatorAction->setIcon( QIcon::fromTheme( "media-random-albums-amarok" ) );
+    m_randomAlbumNavigatorAction->setIcon( QIcon::fromTheme( QStringLiteral("media-random-albums-amarok") ) );
     m_randomAlbumNavigatorAction->setCheckable( true );
 
     navigatorMenu->addActions( navigatorActions->actions() );

@@ -25,7 +25,7 @@ ServiceBrowser * ServiceBrowser::s_instance = nullptr;
 ServiceBrowser * ServiceBrowser::instance()
 {
     if ( s_instance == nullptr )
-        s_instance = new ServiceBrowser( "internet" );
+        s_instance = new ServiceBrowser( QStringLiteral("internet") );
 
     return s_instance;
 }
@@ -38,7 +38,7 @@ ServiceBrowser::ServiceBrowser( const QString& name, QWidget* parent )
 
     setLongDescription( i18n( "The Internet browser lets you browse online sources of content that integrates directly into Amarok. Amarok ships with a number of these sources, but many more can be added using scripts." ) );
 
-    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_internet.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/hover_info_internet.png") ) );
 }
 
 

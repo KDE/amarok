@@ -51,7 +51,7 @@ ImporterSqlConnection::ImporterSqlConnection( const QString &dbPath )
     , m_apiMutex( QMutex::Recursive )
     , m_openTransaction( false )
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE", m_connectionName );
+    QSqlDatabase db = QSqlDatabase::addDatabase( QStringLiteral("QSQLITE"), m_connectionName );
     db.setDatabaseName( dbPath );
 }
 

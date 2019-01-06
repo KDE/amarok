@@ -37,7 +37,7 @@ ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
     m_scriptEngine = engine;
     engine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QScriptValue() );
     const QScriptValue ctor = engine->newFunction( ScriptableServiceScript_prototype_ctor );
-    engine->globalObject().setProperty( "ScriptableServiceScript", ctor );
+    engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), ctor );
 }
 
 QScriptValue
@@ -56,7 +56,7 @@ ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QScriptContext 
     }
     QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts.value(serviceName)->service(),
                                            QScriptEngine::AutoOwnership, QScriptEngine::ExcludeSuperClassContents );
-    engine->globalObject().setProperty( "ScriptableServiceScript", obj );
+    engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), obj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
     return engine->undefinedValue();
 }

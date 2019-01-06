@@ -49,10 +49,10 @@ ContextUrlGenerator::createContextBookmark()
     QStringList appletNames = Context::ContextView::self()->currentAppletNames();
     AmarokUrl url;
 
-    url.setCommand( "context" );
-    url.setArg( "applets", pluginNames.join( "," ) );
+    url.setCommand( QStringLiteral("context") );
+    url.setArg( QStringLiteral("applets"), pluginNames.join( QStringLiteral(",") ) );
 
-    url.setName( i18n( "Context: %1", appletNames.join( "," ) ) );
+    url.setName( i18n( "Context: %1", appletNames.join( QStringLiteral(",") ) ) );
     return url;
 }
 

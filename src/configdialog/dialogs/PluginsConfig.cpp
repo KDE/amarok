@@ -41,13 +41,13 @@ PluginsConfig::PluginsConfig( Amarok2ConfigDialog *parent )
     layout->addWidget( m_selector );
 
     m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Collection ),
-                            KPluginSelector::ReadConfigFile, i18n("Collections"), "Collection" );
+                            KPluginSelector::ReadConfigFile, i18n("Collections"), QStringLiteral("Collection") );
 
     m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Service ),
-                            KPluginSelector::ReadConfigFile, i18n("Internet Services"), "Service" );
+                            KPluginSelector::ReadConfigFile, i18n("Internet Services"), QStringLiteral("Service") );
 
     m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Importer ),
-                            KPluginSelector::ReadConfigFile, i18n("Statistics importers"), "Importer" );
+                            KPluginSelector::ReadConfigFile, i18n("Statistics importers"), QStringLiteral("Importer") );
 
     connect( m_selector, &KPluginSelector::changed, this, &PluginsConfig::slotConfigChanged );
     connect( m_selector, &KPluginSelector::changed, parent, &Amarok2ConfigDialog::updateButtons );

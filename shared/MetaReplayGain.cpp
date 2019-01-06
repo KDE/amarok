@@ -113,7 +113,7 @@ static void maybeAddPeak( const TagLib::String &scaleVal, Meta::ReplayGainTag ke
 
 static void maybeAddGain( const TagLib::String &input, Meta::ReplayGainTag key, Meta::ReplayGainTagMap *map )
 {
-    QString value = TStringToQString( input ).remove( " dB" );
+    QString value = TStringToQString( input ).remove( QStringLiteral(" dB") );
     bool ok = false;
     qreal gain = value.toFloat( &ok );
     if (ok)
@@ -150,12 +150,12 @@ static Meta::ReplayGainTagMap readID3v2Tags( TagLib::ID3v2::Tag *tag )
                     qreal peak = readRVA2PeakValue( data.mid( offset ), peakBits, &ok );
                     if ( ok )
                     {
-                        if ( desc.toLower() == "album" )
+                        if ( desc.toLower() == QLatin1String("album") )
                         {
                             map[Meta::ReplayGain_Album_Gain] = adjustment;
                             map[Meta::ReplayGain_Album_Peak] = peakToDecibels( peak );
                         }
-                        else if ( desc.toLower() == "track" || !map.contains( Meta::ReplayGain_Track_Gain ) )
+                        else if ( desc.toLower() == QLatin1String("track") || !map.contains( Meta::ReplayGain_Track_Gain ) )
                         {
                             map[Meta::ReplayGain_Track_Gain] = adjustment;
                             map[Meta::ReplayGain_Track_Peak] = peakToDecibels( peak );
@@ -176,13 +176,13 @@ static Meta::ReplayGainTagMap readID3v2Tags( TagLib::ID3v2::Tag *tag )
             if ( frame && frame->fieldList().size() >= 2 )
             {
                 QString desc = TStringToQString( frame->description() ).toLower();
-                if ( desc == "replaygain_album_gain" )
+                if ( desc == QLatin1String("replaygain_album_gain") )
                     maybeAddGain( frame->fieldList()[1], Meta::ReplayGain_Album_Gain, &map );
-                if ( desc == "replaygain_album_peak" )
+                if ( desc == QLatin1String("replaygain_album_peak") )
                     maybeAddPeak( frame->fieldList()[1], Meta::ReplayGain_Album_Peak, &map );
-                if ( desc == "replaygain_track_gain" )
+                if ( desc == QLatin1String("replaygain_track_gain") )
                     maybeAddGain( frame->fieldList()[1], Meta::ReplayGain_Track_Gain, &map );
-                if ( desc == "replaygain_track_peak" )
+                if ( desc == QLatin1String("replaygain_track_peak") )
                     maybeAddPeak( frame->fieldList()[1], Meta::ReplayGain_Track_Peak, &map );
             }
         }

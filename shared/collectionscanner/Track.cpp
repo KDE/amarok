@@ -68,7 +68,7 @@ CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directo
     // for the unit test.
     // in a debug build a file called "crash_amarok_here.ogg" will crash the collection
     // scanner
-    if( path.contains("crash_amarok_here.ogg") )
+    if( path.contains(QLatin1String("crash_amarok_here.ogg")) )
     {
         qDebug() << "Crashing at"<<path;
         Q_ASSERT( false );
@@ -278,60 +278,60 @@ CollectionScanner::Track::toXml( QXmlStreamWriter *writer ) const
     if( !m_valid )
         return;
 
-    write( writer, QLatin1String("uniqueid"), m_uniqueid );
-    write( writer, QLatin1String("path"), m_path );
-    write( writer, QLatin1String("rpath"), m_rpath );
+    write( writer, QStringLiteral("uniqueid"), m_uniqueid );
+    write( writer, QStringLiteral("path"), m_path );
+    write( writer, QStringLiteral("rpath"), m_rpath );
 
-    write(writer, QLatin1String("filetype"), QString::number( (int)m_filetype ) );
+    write(writer, QStringLiteral("filetype"), QString::number( (int)m_filetype ) );
 
-    write( writer, QLatin1String("title"), m_title);
-    write( writer, QLatin1String("artist"), m_artist);
-    write( writer, QLatin1String("albumArtist"), m_albumArtist);
-    write( writer, QLatin1String("album"), m_album);
+    write( writer, QStringLiteral("title"), m_title);
+    write( writer, QStringLiteral("artist"), m_artist);
+    write( writer, QStringLiteral("albumArtist"), m_albumArtist);
+    write( writer, QStringLiteral("album"), m_album);
     if( m_compilation )
-        writer->writeEmptyElement( QLatin1String("compilation") );
+        writer->writeEmptyElement( QStringLiteral("compilation") );
     if( m_noCompilation )
-        writer->writeEmptyElement( QLatin1String("noCompilation") );
+        writer->writeEmptyElement( QStringLiteral("noCompilation") );
     if( m_hasCover )
-        writer->writeEmptyElement( QLatin1String("hasCover") );
-    write( writer, QLatin1String("comment"), m_comment);
-    write( writer, QLatin1String("genre"), m_genre);
+        writer->writeEmptyElement( QStringLiteral("hasCover") );
+    write( writer, QStringLiteral("comment"), m_comment);
+    write( writer, QStringLiteral("genre"), m_genre);
     if( m_year != -1 )
-        write(writer, QLatin1String("year"), QString::number( m_year ) );
+        write(writer, QStringLiteral("year"), QString::number( m_year ) );
     if( m_disc != -1 )
-        write(writer, QLatin1String("disc"), QString::number( m_disc ) );
+        write(writer, QStringLiteral("disc"), QString::number( m_disc ) );
     if( m_track != -1 )
-        write(writer, QLatin1String("track"), QString::number( m_track ) );
+        write(writer, QStringLiteral("track"), QString::number( m_track ) );
     if( m_bpm != -1 )
-        write(writer, QLatin1String("bpm"), QString::number( m_bpm ) );
+        write(writer, QStringLiteral("bpm"), QString::number( m_bpm ) );
     if( m_bitrate != -1 )
-        write(writer, QLatin1String("bitrate"), QString::number( m_bitrate ) );
+        write(writer, QStringLiteral("bitrate"), QString::number( m_bitrate ) );
     if( m_length != -1 )
-        write(writer, QLatin1String("length"), QString::number( m_length ) );
+        write(writer, QStringLiteral("length"), QString::number( m_length ) );
     if( m_samplerate != -1 )
-        write(writer, QLatin1String("samplerate"), QString::number( m_samplerate ) );
+        write(writer, QStringLiteral("samplerate"), QString::number( m_samplerate ) );
     if( m_filesize != -1 )
-        write(writer, QLatin1String("filesize"), QString::number( m_filesize ) );
+        write(writer, QStringLiteral("filesize"), QString::number( m_filesize ) );
     if( m_modified.isValid() )
-        write(writer, QLatin1String("mtime"), QString::number( m_modified.toTime_t() ) );
+        write(writer, QStringLiteral("mtime"), QString::number( m_modified.toTime_t() ) );
 
     if( m_trackGain != 0 )
-        write(writer, QLatin1String("trackGain"), QString::number( m_trackGain ) );
+        write(writer, QStringLiteral("trackGain"), QString::number( m_trackGain ) );
     if( m_trackPeakGain != 0 )
-        write(writer, QLatin1String("trackPeakGain"), QString::number( m_trackPeakGain ) );
+        write(writer, QStringLiteral("trackPeakGain"), QString::number( m_trackPeakGain ) );
     if( m_albumGain != 0 )
-        write(writer, QLatin1String("albumGain"), QString::number( m_albumGain ) );
+        write(writer, QStringLiteral("albumGain"), QString::number( m_albumGain ) );
     if( m_albumPeakGain != 0 )
-        write(writer, QLatin1String("albumPeakGain"), QString::number( m_albumPeakGain ) );
+        write(writer, QStringLiteral("albumPeakGain"), QString::number( m_albumPeakGain ) );
 
-    write( writer, QLatin1String("composer"), m_composer);
+    write( writer, QStringLiteral("composer"), m_composer);
 
     if( m_rating != -1 )
-        write(writer, QLatin1String("rating"), QString::number( m_rating ) );
+        write(writer, QStringLiteral("rating"), QString::number( m_rating ) );
     if( m_score != -1 )
-        write(writer, QLatin1String("score"), QString::number( m_score ) );
+        write(writer, QStringLiteral("score"), QString::number( m_score ) );
     if( m_playcount != -1 )
-        write(writer, QLatin1String("playcount"), QString::number( m_playcount ) );
+        write(writer, QStringLiteral("playcount"), QString::number( m_playcount ) );
 
 }
 

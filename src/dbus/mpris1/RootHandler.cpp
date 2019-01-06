@@ -55,12 +55,12 @@ namespace Mpris1
         new Mpris1RootAdaptor( this );
         // amarok extensions:
         new Mpris1AmarokAppAdaptor( this );
-        QDBusConnection::sessionBus().registerObject("/", this);
+        QDBusConnection::sessionBus().registerObject(QStringLiteral("/"), this);
     }
 
     QString RootHandler::Identity()
     {
-        return QString( "%1 %2" ).arg( "Amarok", AMAROK_VERSION );
+        return QStringLiteral( "%1 %2" ).arg( QStringLiteral("Amarok"), AMAROK_VERSION );
     }
 
     void RootHandler::Quit()

@@ -29,31 +29,31 @@
 #include <KIO/Global>
 #include <KLocalizedString>
 
-        static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
-        static const QString XESAM_ALBUMARTIST    = "http://freedesktop.org/standards/xesam/1.0/core#albumArtist";
-        static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#artist";
-        static const QString XESAM_BITRATE        = "http://freedesktop.org/standards/xesam/1.0/core#audioBitrate";
-        static const QString XESAM_BPM            = "http://freedesktop.org/standards/xesam/1.0/core#audioBPM";
-        static const QString XESAM_CODEC          = "http://freedesktop.org/standards/xesam/1.0/core#audioCodec";
-        static const QString XESAM_COMMENT        = "http://freedesktop.org/standards/xesam/1.0/core#comment";
-        static const QString XESAM_COMPOSER       = "http://freedesktop.org/standards/xesam/1.0/core#composer";
-        static const QString XESAM_DISCNUMBER     = "http://freedesktop.org/standards/xesam/1.0/core#discNumber";
-        static const QString XESAM_FILESIZE       = "http://freedesktop.org/standards/xesam/1.0/core#size";
-        static const QString XESAM_GENRE          = "http://freedesktop.org/standards/xesam/1.0/core#genre";
-        static const QString XESAM_LENGTH         = "http://freedesktop.org/standards/xesam/1.0/core#mediaDuration";
-        static const QString XESAM_RATING         = "http://freedesktop.org/standards/xesam/1.0/core#userRating";
-        static const QString XESAM_SAMPLERATE     = "http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate";
-        static const QString XESAM_TITLE          = "http://freedesktop.org/standards/xesam/1.0/core#title";
-        static const QString XESAM_TRACKNUMBER    = "http://freedesktop.org/standards/xesam/1.0/core#trackNumber";
-        static const QString XESAM_URL            = "http://freedesktop.org/standards/xesam/1.0/core#url";
-        static const QString XESAM_YEAR           = "http://freedesktop.org/standards/xesam/1.0/core#contentCreated";
+        static const QString XESAM_ALBUM          = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#album");
+        static const QString XESAM_ALBUMARTIST    = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#albumArtist");
+        static const QString XESAM_ARTIST         = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#artist");
+        static const QString XESAM_BITRATE        = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#audioBitrate");
+        static const QString XESAM_BPM            = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#audioBPM");
+        static const QString XESAM_CODEC          = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#audioCodec");
+        static const QString XESAM_COMMENT        = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#comment");
+        static const QString XESAM_COMPOSER       = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#composer");
+        static const QString XESAM_DISCNUMBER     = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#discNumber");
+        static const QString XESAM_FILESIZE       = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#size");
+        static const QString XESAM_GENRE          = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#genre");
+        static const QString XESAM_LENGTH         = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#mediaDuration");
+        static const QString XESAM_RATING         = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#userRating");
+        static const QString XESAM_SAMPLERATE     = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#audioSampleRate");
+        static const QString XESAM_TITLE          = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#title");
+        static const QString XESAM_TRACKNUMBER    = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#trackNumber");
+        static const QString XESAM_URL            = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#url");
+        static const QString XESAM_YEAR           = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#contentCreated");
 
-        static const QString XESAM_SCORE          = "http://freedesktop.org/standards/xesam/1.0/core#autoRating";
-        static const QString XESAM_PLAYCOUNT      = "http://freedesktop.org/standards/xesam/1.0/core#useCount";
-        static const QString XESAM_FIRST_PLAYED   = "http://freedesktop.org/standards/xesam/1.0/core#firstUsed";
-        static const QString XESAM_LAST_PLAYED    = "http://freedesktop.org/standards/xesam/1.0/core#lastUsed";
+        static const QString XESAM_SCORE          = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#autoRating");
+        static const QString XESAM_PLAYCOUNT      = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#useCount");
+        static const QString XESAM_FIRST_PLAYED   = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#firstUsed");
+        static const QString XESAM_LAST_PLAYED    = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#lastUsed");
 
-        static const QString XESAM_ID             = "http://freedesktop.org/standards/xesam/1.0/core#id";
+        static const QString XESAM_ID             = QStringLiteral("http://freedesktop.org/standards/xesam/1.0/core#id");
         //static bool conversionMapsInitialised = false;
 
 QVariantMap
@@ -119,18 +119,18 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
     if( track )
     {
         // MANDATORY:
-        map["location"] = track->playableUrl().url();
+        map[QStringLiteral("location")] = track->playableUrl().url();
         // INFORMATIONAL:
-        map["title"] = track->prettyName();
+        map[QStringLiteral("title")] = track->prettyName();
 
         if( track->artist() )
-            map["artist"] = track->artist()->name();
+            map[QStringLiteral("artist")] = track->artist()->name();
 
         if( track->album() )
         {
-            map["album"] = track->album()->name();
+            map[QStringLiteral("album")] = track->album()->name();
             if( track->album()->hasAlbumArtist() && !track->album()->albumArtist()->name().isEmpty() )
-                map[ "albumartist" ] = track->album()->albumArtist()->name();
+                map[ QStringLiteral("albumartist") ] = track->album()->albumArtist()->name();
 
             QUrl url = track->album()->imageLocation();
             if ( url.isValid() && !url.isLocalFile() )
@@ -142,33 +142,33 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
                 debug() << "MPRIS: New location for width" << width << "is" << url;
             }
             if ( url.isValid() && url.isLocalFile() )
-                map["arturl"] = QString::fromLatin1( url.toEncoded() );
+                map[QStringLiteral("arturl")] = QString::fromLatin1( url.toEncoded() );
         }
 
-        map["tracknumber"] = track->trackNumber();
-        map["time"] = track->length() / 1000;
-        map["mtime"] = track->length();
+        map[QStringLiteral("tracknumber")] = track->trackNumber();
+        map[QStringLiteral("time")] = track->length() / 1000;
+        map[QStringLiteral("mtime")] = track->length();
 
         if( track->genre() )
-            map["genre"] = track->genre()->name();
+            map[QStringLiteral("genre")] = track->genre()->name();
 
-        map["comment"] = track->comment();
-        map["rating"] = track->statistics()->rating()/2;  //out of 5, not 10.
+        map[QStringLiteral("comment")] = track->comment();
+        map[QStringLiteral("rating")] = track->statistics()->rating()/2;  //out of 5, not 10.
 
         if( track->year() )
-            map["year"] = track->year()->name();
+            map[QStringLiteral("year")] = track->year()->name();
 
         //TODO: external service meta info
 
         // TECHNICAL:
-        map["audio-bitrate"] = track->bitrate();
-        map["audio-samplerate"] = track->sampleRate();
+        map[QStringLiteral("audio-bitrate")] = track->bitrate();
+        map[QStringLiteral("audio-samplerate")] = track->sampleRate();
         //amarok has no video-bitrate
 
         // EXTRA Amarok specific
         const QString lyrics = track->cachedLyrics();
         if( !lyrics.isEmpty() )
-            map["lyrics"] = lyrics;
+            map[QStringLiteral("lyrics")] = lyrics;
     }
     return map;
 }
@@ -183,7 +183,7 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
     {
         // We do not set mpris::trackid here because it depends on the position
         // of the track in the playlist
-        map["mpris:length"] = track->length() * 1000; // microseconds
+        map[QStringLiteral("mpris:length")] = track->length() * 1000; // microseconds
 
         // get strong pointers (BR 317980)
         Meta::AlbumPtr    album = track->album();
@@ -205,54 +205,54 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
                 debug() << "MPRIS2: New location for width" << width << "is" << url;
             }
             if ( url.isValid() && url.isLocalFile() )
-                map["mpris:artUrl"] = QString::fromLatin1( url.toEncoded() );
+                map[QStringLiteral("mpris:artUrl")] = QString::fromLatin1( url.toEncoded() );
 
-            map["xesam:album"] = album->name();
+            map[QStringLiteral("xesam:album")] = album->name();
             if ( album->hasAlbumArtist() )
-                map["xesam:albumArtist"] = QStringList() << album->albumArtist()->name();
+                map[QStringLiteral("xesam:albumArtist")] = QStringList() << album->albumArtist()->name();
         }
 
         if( artist )
-            map["xesam:artist"] = QStringList() << artist->name();
+            map[QStringLiteral("xesam:artist")] = QStringList() << artist->name();
 
         const QString lyrics = track->cachedLyrics();
         if( !lyrics.isEmpty() )
-            map["xesam:asText"] = lyrics;
+            map[QStringLiteral("xesam:asText")] = lyrics;
 
         if( track->bpm() > 0 )
-            map["xesam:audioBPM"] = int(track->bpm());
+            map[QStringLiteral("xesam:audioBPM")] = int(track->bpm());
 
-        map["xesam:autoRating"] = statistics->score();
+        map[QStringLiteral("xesam:autoRating")] = statistics->score();
 
-        map["xesam:comment"] = QStringList() << track->comment();
+        map[QStringLiteral("xesam:comment")] = QStringList() << track->comment();
 
         if( composer )
-            map["xesam:composer"] = QStringList() << composer->name();
+            map[QStringLiteral("xesam:composer")] = QStringList() << composer->name();
 
         if( year )
-            map["xesam:contentCreated"] = QDateTime(QDate(year->year(), 1, 1)).toString(Qt::ISODate);
+            map[QStringLiteral("xesam:contentCreated")] = QDateTime(QDate(year->year(), 1, 1)).toString(Qt::ISODate);
 
         if( track->discNumber() )
-            map["xesam:discNumber"] = track->discNumber();
+            map[QStringLiteral("xesam:discNumber")] = track->discNumber();
 
         if( statistics->firstPlayed().isValid() )
-            map["xesam:firstUsed"] = statistics->firstPlayed().toString(Qt::ISODate);
+            map[QStringLiteral("xesam:firstUsed")] = statistics->firstPlayed().toString(Qt::ISODate);
 
         if( genre )
-            map["xesam:genre"] = QStringList() << genre->name();
+            map[QStringLiteral("xesam:genre")] = QStringList() << genre->name();
 
         if( statistics->lastPlayed().isValid() )
-            map["xesam:lastUsed"] = statistics->lastPlayed().toString(Qt::ISODate);
+            map[QStringLiteral("xesam:lastUsed")] = statistics->lastPlayed().toString(Qt::ISODate);
 
-        map["xesam:title"] = track->prettyName();
+        map[QStringLiteral("xesam:title")] = track->prettyName();
 
-        map["xesam:trackNumber"] = track->trackNumber();
+        map[QStringLiteral("xesam:trackNumber")] = track->trackNumber();
 
-        map["xesam:url"] = track->playableUrl().url();
+        map[QStringLiteral("xesam:url")] = track->playableUrl().url();
 
-        map["xesam:useCount"] = statistics->playCount();
+        map[QStringLiteral("xesam:useCount")] = statistics->playCount();
 
-        map["xesam:userRating"] = statistics->rating() / 10.; // xesam:userRating is a float
+        map[QStringLiteral("xesam:userRating")] = statistics->rating() / 10.; // xesam:userRating is a float
     }
     return map;
 }
@@ -422,7 +422,7 @@ Meta::secToPrettyTime( int seconds )
     // QDateTime isn't suitable as it thinks it's a date)
     int days = seconds / 86400;
     seconds %= 86400;
-    QString reply = "";
+    QString reply = QLatin1String("");
     if ( days > 0 )
         reply += i18ncp("number of days with spacing for the pretty time", "%1 day, ", "%1 days, ", days);
     reply += QTime(0, 0, 0).addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 hour or above see QTime documentation.", "h:mm:ss" ) );
@@ -467,5 +467,5 @@ Meta::prettyBitrate( int bitrate )
 
     return (bitrate >=0 && bitrate <= 256 && bitrate % 32 == 0)
                 ? bitrateStore[ bitrate / 32 ]
-    : QString( "%1" ).arg( bitrate );
+    : QStringLiteral( "%1" ).arg( bitrate );
 }

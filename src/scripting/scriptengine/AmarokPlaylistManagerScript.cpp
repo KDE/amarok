@@ -31,25 +31,25 @@ AmarokPlaylistManagerScript::AmarokPlaylistManagerScript( AmarokScriptEngine* en
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    engine->globalObject().property( "Amarok" ).setProperty( "PlaylistManager", scriptObject );
+    engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("PlaylistManager"), scriptObject );
 
     const QMetaObject *metaObject = &PlaylistManager::staticMetaObject;
     const QMetaEnum categoryEnum = metaObject->enumerator( metaObject->indexOfEnumerator("PlaylistCategory") );
     Q_ASSERT( categoryEnum.isValid() );
-    scriptObject.setProperty( "PlaylistCategory", engine->enumObject( categoryEnum ) );
+    scriptObject.setProperty( QStringLiteral("PlaylistCategory"), engine->enumObject( categoryEnum ) );
 
     PlaylistPrototype::init( engine );
     PlaylistProviderPrototype::init( engine );
 
     PlaylistManager *instance =  PlaylistManager::instance();
-    connect( instance, SIGNAL(categoryAdded(int)), SIGNAL(categoryAdded(int)) );
+    connect( instance, &PlaylistManager::categoryAdded, this, &AmarokPlaylistManagerScript::categoryAdded );
     connect( instance, SIGNAL(playlistAdded(Playlists::PlaylistPtr,int)), SIGNAL(playlistAdded(Playlists::PlaylistPtr,int)) );
     connect( instance, SIGNAL(playlistRemoved(Playlists::PlaylistPtr,int)), SIGNAL(playlistRemoved(Playlists::PlaylistPtr,int)) );
     connect( instance, SIGNAL(playlistUpdated(Playlists::PlaylistPtr,int)), SIGNAL(playlistUpdated(Playlists::PlaylistPtr,int)) );
-    connect( instance, SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)), SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)) );
-    connect( instance, SIGNAL(providerRemoved(Playlists::PlaylistProvider*,int)), SIGNAL(providerRemoved(Playlists::PlaylistProvider*,int)) );
+    connect( instance, &PlaylistManager::providerAdded, this, &AmarokPlaylistManagerScript::providerAdded );
+    connect( instance, &PlaylistManager::providerRemoved, this, &AmarokPlaylistManagerScript::providerRemoved );
     connect( instance, SIGNAL(renamePlaylist(Playlists::PlaylistPtr)), SIGNAL(renamePlaylist(Playlists::PlaylistPtr)) );
-    connect( instance, SIGNAL(updated(int)), SIGNAL(updated(int)) );
+    connect( instance, &PlaylistManager::updated, this, &AmarokPlaylistManagerScript::updated );
 }
 
 // script invokable

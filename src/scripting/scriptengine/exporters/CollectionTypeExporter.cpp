@@ -214,11 +214,11 @@ CollectionPrototype::CollectionPrototype( Collection *collection )
 : QObject( nullptr ) //script owned
 , m_collection( collection )
 {
-    connect( collection, SIGNAL(updated()), SIGNAL(updated()) );
-    connect( collection->location(), SIGNAL(aborted()), SIGNAL(aborted()) );
-    connect( collection->location(), SIGNAL(finishCopy()), SIGNAL(finishCopy()) );
-    connect( collection->location(), SIGNAL(finishRemove()), SIGNAL(finishRemove()) );
-    connect( collection, SIGNAL(remove()), SIGNAL(removed()) );
+    connect( collection, &Collections::Collection::updated, this, &CollectionPrototype::updated );
+    connect( collection->location(), &Collections::CollectionLocation::aborted, this, &CollectionPrototype::aborted );
+    connect( collection->location(), &Collections::CollectionLocation::finishCopy, this, &CollectionPrototype::finishCopy );
+    connect( collection->location(), &Collections::CollectionLocation::finishRemove, this, &CollectionPrototype::finishRemove );
+    connect( collection, &Collections::Collection::remove, this, &CollectionPrototype::removed );
 }
 
 Meta::TrackList

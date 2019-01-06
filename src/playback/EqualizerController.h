@@ -107,12 +107,12 @@ Q_SIGNALS:
     /**
      * Emitted when the current gains are changed.
      */
-    void gainsChanged( QList<int> gains );
+    void gainsChanged( const QList<int> &gains );
 
     /**
      * Emitted when preset @param name is added, removed or modified.
      */
-    void presetsChanged( QString name );
+    void presetsChanged( const QString &name );
 
 private:
     QPointer<Phonon::Effect>            m_equalizer;

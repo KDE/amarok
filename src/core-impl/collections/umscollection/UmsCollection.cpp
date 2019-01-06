@@ -318,7 +318,7 @@ UmsCollection::init()
     m_mc = QSharedPointer<MemoryCollection>(new MemoryCollection());
 
     if( m_autoConnect )
-        QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
+        QTimer::singleShot( 0, this, &UmsCollection::slotParseTracks );
 }
 
 bool
@@ -570,7 +570,7 @@ void
 UmsCollection::slotParseActionTriggered()
 {
     if( m_mc->trackMap().isEmpty() )
-        QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
+        QTimer::singleShot( 0, this, &UmsCollection::slotParseTracks );
 }
 
 void
@@ -679,7 +679,7 @@ UmsCollection::slotConfigure()
 
         m_autoConnect = settings->m_autoConnect->isChecked();
         if( !m_musicUrl.isEmpty() && m_autoConnect )
-            QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
+            QTimer::singleShot( 0, this, &UmsCollection::slotParseTracks );
 
         // write the data to the on-disk file
         KConfig config( m_mountPoint + QLatin1Char('/') + s_settingsFileName, KConfig::SimpleConfig );

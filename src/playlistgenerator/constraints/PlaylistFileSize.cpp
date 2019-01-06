@@ -51,7 +51,7 @@ ConstraintTypes::PlaylistFileSize::createNew( ConstraintNode* p )
 ConstraintFactoryEntry*
 ConstraintTypes::PlaylistFileSize::registerMe()
 {
-    return new ConstraintFactoryEntry( "PlaylistFileSize",
+    return new ConstraintFactoryEntry( QStringLiteral("PlaylistFileSize"),
                                        i18n("Total File Size of Playlist"),
                                        i18n("Sets the preferred total file size of the playlist"),
                                        &PlaylistFileSize::createFromXml, &PlaylistFileSize::createNew );
@@ -66,19 +66,19 @@ ConstraintTypes::PlaylistFileSize::PlaylistFileSize( QDomElement& xmlelem, Const
 {
     QDomAttr a;
 
-    a = xmlelem.attributeNode( "size" );
+    a = xmlelem.attributeNode( QStringLiteral("size") );
     if ( !a.isNull() )
         m_size = a.value().toInt();
 
-    a = xmlelem.attributeNode( "unit" );
+    a = xmlelem.attributeNode( QStringLiteral("unit") );
     if ( !a.isNull() )
         m_unit = a.value().toInt();
 
-    a = xmlelem.attributeNode( "comparison" );
+    a = xmlelem.attributeNode( QStringLiteral("comparison") );
     if ( !a.isNull() )
         m_comparison = a.value().toInt();
 
-    a = xmlelem.attributeNode( "strictness" );
+    a = xmlelem.attributeNode( QStringLiteral("strictness") );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
 }
@@ -106,12 +106,12 @@ ConstraintTypes::PlaylistFileSize::editWidget() const
 void
 ConstraintTypes::PlaylistFileSize::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
-    QDomElement c = doc.createElement( "constraint" );
-    c.setAttribute( "type", "PlaylistFileSize" );
-    c.setAttribute( "size", QString::number( m_size ) );
-    c.setAttribute( "unit", QString::number( m_unit ) );
-    c.setAttribute( "comparison", QString::number( m_comparison ) );
-    c.setAttribute( "strictness", QString::number( m_strictness ) );
+    QDomElement c = doc.createElement( QStringLiteral("constraint") );
+    c.setAttribute( QStringLiteral("type"), QStringLiteral("PlaylistFileSize") );
+    c.setAttribute( QStringLiteral("size"), QString::number( m_size ) );
+    c.setAttribute( QStringLiteral("unit"), QString::number( m_unit ) );
+    c.setAttribute( QStringLiteral("comparison"), QString::number( m_comparison ) );
+    c.setAttribute( QStringLiteral("strictness"), QString::number( m_strictness ) );
     elem.appendChild( c );
 }
 

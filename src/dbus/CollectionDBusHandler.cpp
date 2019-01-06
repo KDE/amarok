@@ -27,11 +27,11 @@ CollectionDBusHandler::CollectionDBusHandler( QObject *parent )
     : QObject( parent )
     , QDBusContext()
 {
-    setObjectName("CollectionDBusHandler");
+    setObjectName(QStringLiteral("CollectionDBusHandler"));
     qDBusRegisterMetaType<VariantMapList>();
     
     new CollectionAdaptor( this );
-    bool result = QDBusConnection::sessionBus().registerObject("/Collection", this);
+    bool result = QDBusConnection::sessionBus().registerObject(QStringLiteral("/Collection"), this);
     debug() << "Register object: " << result;
 }
 

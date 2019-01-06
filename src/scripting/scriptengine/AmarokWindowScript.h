@@ -55,10 +55,10 @@ namespace AmarokScript
 
             Q_INVOKABLE void addToolsMenu( const QString &name );
             Q_INVOKABLE void addSettingsMenu( const QString &name );
-            Q_INVOKABLE bool addToolsAction( QString id, QString actionName, QString icon = "amarok" );
+            Q_INVOKABLE bool addToolsAction( QString id, QString actionName, QString icon = QStringLiteral("amarok") );
             Q_INVOKABLE void addToolsSeparator();
-            Q_INVOKABLE bool addSettingsAction( QString id, QString actionName, QString icon = "amarok" );
-            Q_INVOKABLE bool addCustomAction( QString menuName, QString id, QString actionName, QString icon = "amarok" );
+            Q_INVOKABLE bool addSettingsAction( QString id, QString actionName, QString icon = QStringLiteral("amarok") );
+            Q_INVOKABLE bool addCustomAction( QString menuName, QString id, QString actionName, QString icon = QStringLiteral("amarok") );
             Q_INVOKABLE void addSettingsSeparator();
             Q_INVOKABLE void showTrayIcon( bool show );
 

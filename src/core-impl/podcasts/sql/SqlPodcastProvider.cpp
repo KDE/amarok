@@ -61,8 +61,8 @@
 using namespace Podcasts;
 
 static const int PODCAST_DB_VERSION = 6;
-static const QString key( "AMAROK_PODCAST" );
-static const QString PODCAST_TMP_POSTFIX( ".tmp" );
+static const QString key( QStringLiteral("AMAROK_PODCAST") );
+static const QString PODCAST_TMP_POSTFIX( QStringLiteral(".tmp") );
 
 SqlPodcastProvider::SqlPodcastProvider()
         : m_updateTimer( new QTimer( this ) )
@@ -89,19 +89,19 @@ SqlPodcastProvider::SqlPodcastProvider()
         return;
     }
 
-    m_autoUpdateInterval = Amarok::config( "Podcasts" )
+    m_autoUpdateInterval = Amarok::config( QStringLiteral("Podcasts") )
                            .readEntry( "AutoUpdate Interval", 30 );
-    m_maxConcurrentDownloads = Amarok::config( "Podcasts" )
+    m_maxConcurrentDownloads = Amarok::config( QStringLiteral("Podcasts") )
                                .readEntry( "Maximum Simultaneous Downloads", 4 );
-    m_maxConcurrentUpdates = Amarok::config( "Podcasts" )
+    m_maxConcurrentUpdates = Amarok::config( QStringLiteral("Podcasts") )
                              .readEntry( "Maximum Simultaneous Updates", 4 );
-    m_baseDownloadDir = QUrl::fromUserInput( Amarok::config( "Podcasts" ).readEntry( "Base Download Directory",
-                                                           Amarok::saveLocation( "podcasts" ) ) );
+    m_baseDownloadDir = QUrl::fromUserInput( Amarok::config( QStringLiteral("Podcasts") ).readEntry( "Base Download Directory",
+                                                           Amarok::saveLocation( QStringLiteral("podcasts") ) ) );
 
     QStringList values;
 
     values = sqlStorage->query(
-                 QString( "SELECT version FROM admin WHERE component = '%1';" )
+                 QStringLiteral( "SELECT version FROM admin WHERE component = '%1';" )
                     .arg( sqlStorage->escape( key ) )
              );
     if( values.isEmpty() )
@@ -155,11 +155,11 @@ SqlPodcastProvider::~SqlPodcastProvider()
     }
     m_channels.clear();
 
-    Amarok::config( "Podcasts" )
+    Amarok::config( QStringLiteral("Podcasts") )
         .writeEntry( "AutoUpdate Interval", m_autoUpdateInterval );
-    Amarok::config( "Podcasts" )
+    Amarok::config( QStringLiteral("Podcasts") )
         .writeEntry( "Maximum Simultaneous Downloads", m_maxConcurrentDownloads );
-    Amarok::config( "Podcasts" )
+    Amarok::config( QStringLiteral("Podcasts") )
         .writeEntry( "Maximum Simultaneous Updates", m_maxConcurrentUpdates );
 }
 
@@ -286,19 +286,19 @@ SqlPodcastProvider::providerActions()
 {
     if( m_providerActions.isEmpty() )
     {
-        QAction *updateAllAction = new QAction( QIcon::fromTheme( "view-refresh-amarok" ),
+        QAction *updateAllAction = new QAction( QIcon::fromTheme( QStringLiteral("view-refresh-amarok") ),
                 i18n( "&Update All Channels" ), this );
         updateAllAction->setProperty( "popupdropper_svg_id", "update" );
         connect( updateAllAction, &QAction::triggered, this, &SqlPodcastProvider::updateAll );
         m_providerActions << updateAllAction;
 
-        QAction *configureAction = new QAction( QIcon::fromTheme( "configure" ),
+        QAction *configureAction = new QAction( QIcon::fromTheme( QStringLiteral("configure") ),
                 i18n( "&Configure General Settings" ), this );
         configureAction->setProperty( "popupdropper_svg_id", "configure" );
         connect( configureAction, &QAction::triggered, this, &SqlPodcastProvider::slotConfigureProvider );
         m_providerActions << configureAction;
 
-        QAction *exportOpmlAction = new QAction( QIcon::fromTheme( "document-export" ),
+        QAction *exportOpmlAction = new QAction( QIcon::fromTheme( QStringLiteral("document-export") ),
                 i18n( "&Export subscriptions to OPML file" ), this );
         connect( exportOpmlAction, &QAction::triggered, this, &SqlPodcastProvider::slotExportOpml );
         m_providerActions << exportOpmlAction;
@@ -325,7 +325,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
     //TODO: add export OPML action for selected playlists only. Use the QAction::data() trick.
     if( m_configureChannelAction == 0 )
     {
-        m_configureChannelAction = new QAction( QIcon::fromTheme( "configure" ), i18n( "&Configure" ), this );
+        m_configureChannelAction = new QAction( QIcon::fromTheme( QStringLiteral("configure") ), i18n( "&Configure" ), this );
         m_configureChannelAction->setProperty( "popupdropper_svg_id", "configure" );
         connect( m_configureChannelAction, &QAction::triggered, this, &SqlPodcastProvider::slotConfigureChannel );
     }
@@ -338,7 +338,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
 
     if( m_removeAction == 0 )
     {
-        m_removeAction = new QAction( QIcon::fromTheme( "news-unsubscribe" ), i18n( "&Remove Subscription" ), this );
+        m_removeAction = new QAction( QIcon::fromTheme( QStringLiteral("news-unsubscribe") ), i18n( "&Remove Subscription" ), this );
         m_removeAction->setProperty( "popupdropper_svg_id", "remove" );
         connect( m_removeAction, &QAction::triggered, this, &SqlPodcastProvider::slotRemoveChannels );
     }
@@ -347,7 +347,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
 
     if( m_updateAction == 0 )
     {
-        m_updateAction = new QAction( QIcon::fromTheme( "view-refresh-amarok" ), i18n( "&Update Channel" ), this );
+        m_updateAction = new QAction( QIcon::fromTheme( QStringLiteral("view-refresh-amarok") ), i18n( "&Update Channel" ), this );
         m_updateAction->setProperty( "popupdropper_svg_id", "update" );
         connect( m_updateAction, &QAction::triggered, this, &SqlPodcastProvider::slotUpdateChannels );
     }
@@ -383,23 +383,23 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
 
     if( m_downloadAction == 0 )
     {
-        m_downloadAction = new QAction( QIcon::fromTheme( "go-down" ), i18n( "&Download Episode" ), this );
+        m_downloadAction = new QAction( QIcon::fromTheme( QStringLiteral("go-down") ), i18n( "&Download Episode" ), this );
         m_downloadAction->setProperty( "popupdropper_svg_id", "download" );
         connect( m_downloadAction, &QAction::triggered, this, &SqlPodcastProvider::slotDownloadEpisodes );
     }
 
     if( m_deleteAction == 0 )
     {
-        m_deleteAction = new QAction( QIcon::fromTheme( "edit-delete" ),
+        m_deleteAction = new QAction( QIcon::fromTheme( QStringLiteral("edit-delete") ),
             i18n( "&Delete Downloaded Episode" ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
-        m_deleteAction->setObjectName( "deleteAction" );
+        m_deleteAction->setObjectName( QStringLiteral("deleteAction") );
         connect( m_deleteAction, &QAction::triggered, this, &SqlPodcastProvider::slotDeleteDownloadedEpisodes );
     }
 
     if( m_writeTagsAction == 0 )
     {
-        m_writeTagsAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
+        m_writeTagsAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ),
             i18n( "&Write Feed Information to File" ), this );
         m_writeTagsAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_writeTagsAction, &QAction::triggered, this, &SqlPodcastProvider::slotWriteTagsToFiles );
@@ -407,7 +407,7 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
 
     if( m_keepAction == 0 )
     {
-        m_keepAction = new QAction( QIcon::fromTheme( "podcast-amarok" ),
+        m_keepAction = new QAction( QIcon::fromTheme( QStringLiteral("podcast-amarok") ),
                 i18n( "&Keep downloaded file" ), this );
         m_keepAction->setToolTip( i18n( "Toggle the \"keep\" downloaded file status of "
                 "this podcast episode. Downloaded files with this status wouldn't be "
@@ -466,7 +466,7 @@ SqlPodcastProvider::addPodcast( const QUrl &url )
     if( !sqlStorage )
         return;
 
-    QString command = "SELECT title FROM podcastchannels WHERE url='%1';";
+    QString command = QStringLiteral("SELECT title FROM podcastchannels WHERE url='%1';");
     command = command.arg( sqlStorage->escape( kurl.url() ) );
 
     QStringList dbResult = sqlStorage->query( command );
@@ -579,7 +579,7 @@ SqlPodcastProvider::removeSubscription( Podcasts::SqlPodcastChannelPtr sqlChanne
         if( !sqlStorage )
             return;
         debug() << "Unsubscribed from last channel, cleaning out the podcastepisodes table.";
-        sqlStorage->query( "DELETE FROM podcastepisodes WHERE 1;" );
+        sqlStorage->query( QStringLiteral("DELETE FROM podcastepisodes WHERE 1;") );
     }
 
     emit playlistRemoved( Playlists::PlaylistPtr::dynamicCast( sqlChannel ) );
@@ -590,7 +590,7 @@ SqlPodcastProvider::configureProvider()
 {
     m_providerSettingsDialog = new QDialog( The::mainWindow() );
     QWidget *settingsWidget = new QWidget( m_providerSettingsDialog );
-    m_providerSettingsDialog->setObjectName( "SqlPodcastProviderSettings" );
+    m_providerSettingsDialog->setObjectName( QStringLiteral("SqlPodcastProviderSettings") );
     Ui::SqlPodcastProviderSettingsWidget settings;
     m_providerSettingsWidget = &settings;
     settings.setupUi( settingsWidget );
@@ -625,7 +625,7 @@ SqlPodcastProvider::configureProvider()
         if( adjustedNewPath != m_baseDownloadDir )
         {
             m_baseDownloadDir = adjustedNewPath;
-            Amarok::config( "Podcasts" ).writeEntry( "Base Download Directory", m_baseDownloadDir );
+            Amarok::config( QStringLiteral("Podcasts") ).writeEntry( "Base Download Directory", m_baseDownloadDir );
             if( !m_channels.isEmpty() )
             {
                 //TODO: check if there actually are downloaded episodes
@@ -693,7 +693,7 @@ SqlPodcastProvider::slotExportOpml()
 
     //TODO: add checkbox as widget to filedialog to include podcast settings.
     QFileDialog fileDialog;
-    fileDialog.restoreState( Amarok::config( "amarok-podcast-export-dialog" ).readEntry( "state", QByteArray() ) );
+    fileDialog.restoreState( Amarok::config( QStringLiteral("amarok-podcast-export-dialog") ).readEntry( "state", QByteArray() ) );
 
     fileDialog.setMimeTypeFilters( QStringList( QStringLiteral( "*.opml" ) ) );
     fileDialog.setAcceptMode( QFileDialog::AcceptSave );
@@ -782,7 +782,7 @@ SqlPodcastProvider::deleteDownloadedEpisodes( Podcasts::SqlPodcastEpisodeList &e
 void
 SqlPodcastProvider::moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr sqlChannel )
 {
-    debug() << QString( "We need to move downloaded episodes of \"%1\" to %2" )
+    debug() << QStringLiteral( "We need to move downloaded episodes of \"%1\" to %2" )
             .arg( sqlChannel->title(),
                   sqlChannel->saveLocation().toDisplayString() );
 
@@ -793,7 +793,7 @@ SqlPodcastProvider::moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr sqlCh
         {
             QUrl newLocation = sqlChannel->saveLocation();
             QDir dir( newLocation.toLocalFile() );
-            dir.mkpath( "." );
+            dir.mkpath( QStringLiteral(".") );
 
             newLocation = newLocation.adjusted(QUrl::StripTrailingSlash);
             newLocation.setPath(newLocation.path() + QLatin1Char('/') + ( episode->localUrl().fileName() ));
@@ -970,7 +970,7 @@ SqlPodcastProvider::completePodcastDownloads()
     //check to see if there are still downloads in progress
     if( !m_downloadJobMap.isEmpty() )
     {
-        debug() << QString( "There are still %1 podcast download jobs running!" )
+        debug() << QStringLiteral( "There are still %1 podcast download jobs running!" )
                 .arg( m_downloadJobMap.count() );
         QProgressDialog progressDialog( i18np( "There is still a podcast download in progress",
                                         "There are still %1 podcast downloads in progress",
@@ -1148,7 +1148,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
         qint64 offset = tmpFile->size();
         debug() << "temporary file exists, resume download from offset " << offset;
         QMap<QString, QString> resumeData;
-        resumeData.insert( "resume", QString::number( offset ) );
+        resumeData.insert( QStringLiteral("resume"), QString::number( offset ) );
         transferJob->addMetaData( resumeData );
     }
 
@@ -1223,7 +1223,7 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     }
 
     QDir dir( sqlChannel->saveLocation().toLocalFile() );
-    dir.mkpath( "." );  // ensure that the path is there
+    dir.mkpath( QStringLiteral(".") );  // ensure that the path is there
     //TODO: what if result is false?
 
     QUrl localUrl = QUrl::fromLocalFile( dir.absolutePath() );
@@ -1355,33 +1355,33 @@ SqlPodcastProvider::downloadResult( KJob *job )
         QString sequenceNumber;
 
         if( sqlEpisode->artist() )
-            layoutmap.insert( "artist", sqlEpisode->artist()->prettyName() );
+            layoutmap.insert( QStringLiteral("artist"), sqlEpisode->artist()->prettyName() );
 
-        layoutmap.insert( "title", sqlEpisode->title() );
+        layoutmap.insert( QStringLiteral("title"), sqlEpisode->title() );
 
         if( sqlEpisode->genre() )
-            layoutmap.insert( "genre", sqlEpisode->genre()->prettyName() );
+            layoutmap.insert( QStringLiteral("genre"), sqlEpisode->genre()->prettyName() );
 
         if( sqlEpisode->year() )
-            layoutmap.insert( "year", sqlEpisode->year()->prettyName() );
+            layoutmap.insert( QStringLiteral("year"), sqlEpisode->year()->prettyName() );
 
         if( sqlEpisode->composer() )
-            layoutmap.insert( "composer", sqlEpisode->composer()->prettyName() );
+            layoutmap.insert( QStringLiteral("composer"), sqlEpisode->composer()->prettyName() );
 
-        layoutmap.insert( "pubdate", sqlEpisode->pubDate().toString() );
+        layoutmap.insert( QStringLiteral("pubdate"), sqlEpisode->pubDate().toString() );
 
         sequenceNumber.sprintf( "%.6d", sqlEpisode->sequenceNumber() );
-        layoutmap.insert( "number", sequenceNumber );
+        layoutmap.insert( QStringLiteral("number"), sequenceNumber );
 
         if( sqlEpisode->album() )
-            layoutmap.insert( "album", sqlEpisode->album()->prettyName() );
+            layoutmap.insert( QStringLiteral("album"), sqlEpisode->album()->prettyName() );
 
         if( !filenameLayout.isEmpty() &&
-                Amarok::QStringx::compare( filenameLayout, "%default%", Qt::CaseInsensitive ) )
+                Amarok::QStringx::compare( filenameLayout, QStringLiteral("%default%"), Qt::CaseInsensitive ) )
         {
             filenameLayout = Amarok::QStringx(filenameLayout.namedArgs( layoutmap ));
             //add the file extension to the filename
-            filenameLayout.append( QString( "." ) );
+            filenameLayout.append( QStringLiteral( "." ) );
             filenameLayout.append( sqlEpisode->type() );
             download.fileName = QString( filenameLayout );
         }
@@ -1464,16 +1464,16 @@ SqlPodcastProvider::createTables() const
                                 ",isnew BOOL"
                                 ",iskeep BOOL) ENGINE = MyISAM;" ) );
 
-    sqlStorage->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url );" );
-    sqlStorage->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url );" );
+    sqlStorage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url );") );
+    sqlStorage->query( QStringLiteral("CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url );") );
     sqlStorage->query(
-            "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl );" );
+            QStringLiteral("CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl );") );
 }
 
 void
 SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
 {
-    debug() << QString( "Updating Podcast tables from version %1 to version %2" )
+    debug() << QStringLiteral( "Updating Podcast tables from version %1 to version %2" )
             .arg( fromVersion ).arg( toVersion );
 
     auto sqlStorage = StorageManager::instance()->sqlStorage();
@@ -1488,7 +1488,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
 
         sqlStorage->query( updateChannelQuery );
 
-        QString setDateQuery = QString(
+        QString setDateQuery = QStringLiteral(
                 "UPDATE podcastchannels SET subscribedate='%1' WHERE subscribedate='';" )
                 .arg( escape( QDate::currentDate().toString() ) );
         sqlStorage->query( setDateQuery );
@@ -1526,19 +1526,19 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
                                     ",isnew BOOL"
                                     ",iskeep BOOL) ENGINE = MyISAM;" ) );
 
-        sqlStorage->query( "INSERT INTO podcastchannels_temp SELECT * FROM podcastchannels;" );
-        sqlStorage->query( "INSERT INTO podcastepisodes_temp SELECT * FROM podcastepisodes;" );
+        sqlStorage->query( QStringLiteral("INSERT INTO podcastchannels_temp SELECT * FROM podcastchannels;") );
+        sqlStorage->query( QStringLiteral("INSERT INTO podcastepisodes_temp SELECT * FROM podcastepisodes;") );
 
-        sqlStorage->query( "DROP TABLE podcastchannels;" );
-        sqlStorage->query( "DROP TABLE podcastepisodes;" );
+        sqlStorage->query( QStringLiteral("DROP TABLE podcastchannels;") );
+        sqlStorage->query( QStringLiteral("DROP TABLE podcastepisodes;") );
 
         createTables();
 
-        sqlStorage->query( "INSERT INTO podcastchannels SELECT * FROM podcastchannels_temp;" );
-        sqlStorage->query( "INSERT INTO podcastepisodes SELECT * FROM podcastepisodes_temp;" );
+        sqlStorage->query( QStringLiteral("INSERT INTO podcastchannels SELECT * FROM podcastchannels_temp;") );
+        sqlStorage->query( QStringLiteral("INSERT INTO podcastepisodes SELECT * FROM podcastepisodes_temp;") );
 
-        sqlStorage->query( "DROP TABLE podcastchannels_temp;" );
-        sqlStorage->query( "DROP TABLE podcastepisodes_temp;" );
+        sqlStorage->query( QStringLiteral("DROP TABLE podcastchannels_temp;") );
+        sqlStorage->query( QStringLiteral("DROP TABLE podcastepisodes_temp;") );
     }
 
     if( fromVersion < 4 && toVersion == 4 )
@@ -1557,7 +1557,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
         QString updateChannelQuery = QString ( "ALTER TABLE podcastchannels"
                                                " ADD filenamelayout VARCHAR(1024);" );
         sqlStorage->query( updateChannelQuery );
-        QString setWriteTagsQuery = QString( "UPDATE podcastchannels SET filenamelayout='%default%'" );
+        QString setWriteTagsQuery = QStringLiteral( "UPDATE podcastchannels SET filenamelayout='%default%'" );
         sqlStorage->query( setWriteTagsQuery );
     }
 
@@ -1566,11 +1566,11 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
         QString updateEpisodeQuery = QString ( "ALTER TABLE podcastepisodes"
                                                " ADD iskeep BOOL;" );
         sqlStorage->query( updateEpisodeQuery );
-        QString setIsKeepQuery = QString( "UPDATE podcastepisodes SET iskeep=FALSE;" );
+        QString setIsKeepQuery = QStringLiteral( "UPDATE podcastepisodes SET iskeep=FALSE;" );
         sqlStorage->query( setIsKeepQuery );
     }
 
-    QString updateAdmin = QString( "UPDATE admin SET version=%1 WHERE component='%2';" );
+    QString updateAdmin = QStringLiteral( "UPDATE admin SET version=%1 WHERE component='%2';" );
     sqlStorage->query( updateAdmin.arg( toVersion ).arg( escape( key ) ) );
 
     loadPodcasts();

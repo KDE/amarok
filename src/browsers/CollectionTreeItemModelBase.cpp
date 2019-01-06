@@ -112,8 +112,8 @@ CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     : QAbstractItemModel()
     , m_rootItem( 0 )
     , m_animFrame( 0 )
-    , m_loading1( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading1.png" ) ) )
-    , m_loading2( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/loading2.png" ) ) )
+    , m_loading1( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/loading1.png") ) ) )
+    , m_loading2( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/loading2.png") ) ) )
     , m_currentAnimPixmap( m_loading1 )
     , m_autoExpand( false )
 {
@@ -125,7 +125,7 @@ CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
 
 CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 {
-    KConfigGroup config = Amarok::config( "Collection Browser" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Collection Browser") );
     QList<int> levelNumbers;
     foreach( CategoryId::CatMenuId category, levels() )
         levelNumbers.append( category );
@@ -264,13 +264,13 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
                 Meta::ArtistPtr artist = track->artist();
 
                 if( album && artist && album->isCompilation() )
-                    name.prepend( QString("%1 - ").arg(artist->prettyName()) );
+                    name.prepend( QStringLiteral("%1 - ").arg(artist->prettyName()) );
 
                 if( AmarokConfig::showTrackNumbers() )
                 {
                     int trackNum = track->trackNumber();
                     if( trackNum > 0 )
-                        name.prepend( QString("%1 - ").arg(trackNum) );
+                        name.prepend( QStringLiteral("%1 - ").arg(trackNum) );
                 }
 
                 // Check empty after track logic and before album logic
@@ -280,7 +280,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
             }
 
         case Qt::DecorationRole:
-            return QIcon::fromTheme( "media-album-track" );
+            return QIcon::fromTheme( QStringLiteral("media-album-track") );
         case PrettyTreeRoles::SortRole:
             return track->sortableName();
         }
@@ -302,7 +302,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
                         int year = m_years.value( album.data() );
 
                         if( year > 0 )
-                            name.prepend( QString("%1 - ").arg( year ) );
+                            name.prepend( QStringLiteral("%1 - ").arg( year ) );
                     }
                     else if( !album->name().isEmpty() )
                     {
@@ -389,7 +389,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         switch( role )
         {
         case Qt::DecorationRole:
-            return QIcon::fromTheme( "similarartists-amarok" );
+            return QIcon::fromTheme( QStringLiteral("similarartists-amarok") );
         case Qt::DisplayRole:
             return i18n( "Various Artists" );
         case PrettyTreeRoles::SortRole:

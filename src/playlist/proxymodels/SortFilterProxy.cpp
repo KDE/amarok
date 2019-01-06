@@ -52,7 +52,7 @@ SortFilterProxy::SortFilterProxy( AbstractModel *belowModel, QObject *parent )
     // Tell QSortFilterProxyModel: activate sorting.
     sort( 0 );    // 0 is a dummy column.
 
-    KConfigGroup config = Amarok::config("Playlist Search");
+    KConfigGroup config = Amarok::config(QStringLiteral("Playlist Search"));
     m_showOnlyMatches = config.readEntry( "ShowOnlyMatches", true );
 }
 

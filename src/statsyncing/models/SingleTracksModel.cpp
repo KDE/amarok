@@ -73,7 +73,7 @@ SingleTracksModel::flags( const QModelIndex &index ) const
 QStringList
 SingleTracksModel::mimeTypes() const
 {
-    return QStringList() << AmarokMimeData::TRACK_MIME << "text/uri-list" << "text/plain";
+    return QStringList() << AmarokMimeData::TRACK_MIME << QStringLiteral("text/uri-list") << QStringLiteral("text/plain");
 }
 
 QMimeData *

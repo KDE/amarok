@@ -238,7 +238,7 @@ MediaDeviceCollection::ejectAction() const
 {
     if( !m_ejectAction )
     {
-        m_ejectAction = new QAction( QIcon::fromTheme( "media-eject" ), i18n( "&Disconnect Device" ),
+        m_ejectAction = new QAction( QIcon::fromTheme( QStringLiteral("media-eject") ), i18n( "&Disconnect Device" ),
                                      const_cast<MediaDeviceCollection*>(this) );
         m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
 

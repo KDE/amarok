@@ -52,25 +52,25 @@ NavigationUrlRunner::run( AmarokUrl url )
 
     QMap<QString, QString> args = url.args();
 
-    if ( args.keys().contains( "levels" ) )
+    if ( args.keys().contains( QStringLiteral("levels") ) )
     {
-        QString levelsString = args.value( "levels" );
+        QString levelsString = args.value( QStringLiteral("levels") );
         QList<CategoryId::CatMenuId> levels;
 
         QStringList levelsStringList = levelsString.split( QLatin1Char('-') );
 
         foreach( const QString &levelString, levelsStringList ) {
-            if( levelString == "genre" )
+            if( levelString == QLatin1String("genre") )
                 levels.append( CategoryId::Genre );
-            else if( levelString == "artist" )
+            else if( levelString == QLatin1String("artist") )
                 levels.append( CategoryId::Artist );
-            else if( levelString == "album" )
+            else if( levelString == QLatin1String("album") )
                 levels.append( CategoryId::Album );
-            else if( levelString == "albumartist" )
+            else if( levelString == QLatin1String("albumartist") )
                 levels.append( CategoryId::AlbumArtist );
-            else if( levelString == "composer" )
+            else if( levelString == QLatin1String("composer") )
                 levels.append( CategoryId::Composer );
-            else if( levelString == "year" )
+            else if( levelString == QLatin1String("year") )
                 levels.append( CategoryId::Year );
         }
 
@@ -81,40 +81,40 @@ NavigationUrlRunner::run( AmarokUrl url )
 
     //if we are activating the local collection, check if we need to restore "show cover" and "show year"
     //if in the local collection view, also store "show covers" and "show years"
-    if( url.path().endsWith( "collections", Qt::CaseInsensitive ) )
+    if( url.path().endsWith( QLatin1String("collections"), Qt::CaseInsensitive ) )
     {
-        if ( args.keys().contains( "show_cover" ) )
+        if ( args.keys().contains( QStringLiteral("show_cover") ) )
         {
-            if( args.value( "show_cover" ).compare( "true", Qt::CaseInsensitive ) == 0 )
+            if( args.value( QStringLiteral("show_cover") ).compare( QLatin1String("true"), Qt::CaseInsensitive ) == 0 )
                 AmarokConfig::setShowAlbumArt( true );
-            else if( args.value( "show_cover" ).compare( "false", Qt::CaseInsensitive ) == 0 )
+            else if( args.value( QStringLiteral("show_cover") ).compare( QLatin1String("false"), Qt::CaseInsensitive ) == 0 )
                 AmarokConfig::setShowAlbumArt( false );
         }
 
-        if ( args.keys().contains( "show_years" ) )
+        if ( args.keys().contains( QStringLiteral("show_years") ) )
         {
-            if( args.value( "show_years" ).compare( "true", Qt::CaseInsensitive ) == 0 )
+            if( args.value( QStringLiteral("show_years") ).compare( QLatin1String("true"), Qt::CaseInsensitive ) == 0 )
                 AmarokConfig::setShowYears( true );
-            else if( args.value( "show_years" ).compare( "false", Qt::CaseInsensitive ) == 0 )
+            else if( args.value( QStringLiteral("show_years") ).compare( QLatin1String("false"), Qt::CaseInsensitive ) == 0 )
                 AmarokConfig::setShowYears( false );
         }
     }
 
     //also set the correct path if we are navigating to the file browser
-    if( url.path().endsWith( "files", Qt::CaseInsensitive ) )
+    if( url.path().endsWith( QLatin1String("files"), Qt::CaseInsensitive ) )
     {
         FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserDock()->list()->activeCategory() );
         if( fileBrowser )
         {
-            if( args.keys().contains( "path" ) )
+            if( args.keys().contains( QStringLiteral("path") ) )
             {
-                fileBrowser->setDir( QUrl::fromUserInput(args.value( "path" )) );
+                fileBrowser->setDir( QUrl::fromUserInput(args.value( QStringLiteral("path") )) );
             }
         }
     }
 
-    if ( args.keys().contains( "filter" ) )
-        active->setFilter( QUrl::fromPercentEncoding(args.value( "filter" ).toUtf8()) );
+    if ( args.keys().contains( QStringLiteral("filter") ) )
+        active->setFilter( QUrl::fromPercentEncoding(args.value( QStringLiteral("filter") ).toUtf8()) );
 
     The::mainWindow()->showDock( MainWindow::AmarokDockNavigation );
 
@@ -123,7 +123,7 @@ NavigationUrlRunner::run( AmarokUrl url )
 
 QString NavigationUrlRunner::command() const
 {
-    return "navigate";
+    return QStringLiteral("navigate");
 }
 
 QString NavigationUrlRunner::prettyCommand() const

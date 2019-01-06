@@ -120,7 +120,7 @@ void LayoutConfigAction::onActiveLayoutChanged()
 {
     QString layoutName( LayoutManager::instance()->activeLayoutName() );
     layoutName = layoutName.remove( QChar( '&' ) );        //need to remove the & from the string, used for the shortcut key underscore
-    if( layoutName != QString( "%%PREVIEW%%" ) )           //if it's not just a preview
+    if( layoutName != QStringLiteral( "%%PREVIEW%%" ) )           //if it's not just a preview
     {
         int index = LayoutManager::instance()->layouts().indexOf( layoutName );
         if( index != -1 && m_layoutActions->actions()[ index ] != m_layoutActions->checkedAction() )

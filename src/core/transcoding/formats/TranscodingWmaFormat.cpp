@@ -23,7 +23,7 @@ using namespace Transcoding;
 WmaFormat::WmaFormat()
 {
     m_encoder = WMA2;
-    m_fileExtension = "wma";
+    m_fileExtension = QStringLiteral("wma");
     QString description1 =
         i18n( "The bitrate is a measure of the quantity of data used to represent a "
         "second of the audio track.<br>Due to the limitations of the proprietary <b>WMA</b> "
@@ -88,7 +88,7 @@ QStringList
 WmaFormat::ffmpegParameters( const Configuration &configuration ) const
 {
     QStringList parameters;
-    parameters << "-acodec" << "wmav2";
+    parameters << QStringLiteral("-acodec") << QStringLiteral("wmav2");
     foreach( const Property &property, m_propertyList )
     {
         if( !configuration.property( property.name() ).isNull()
@@ -97,11 +97,11 @@ WmaFormat::ffmpegParameters( const Configuration &configuration ) const
             if( property.name() == "bitrate" )
             {
                 int ffmpegBitrate = toFfmpegBitrate( configuration.property( "bitrate" ).toInt() );
-                parameters << "-ab" << QString::number( ffmpegBitrate );
+                parameters << QStringLiteral("-ab") << QString::number( ffmpegBitrate );
             }
         }
     }
-    parameters << "-vn"; // no video stream or album art
+    parameters << QStringLiteral("-vn"); // no video stream or album art
     return parameters;
 }
 

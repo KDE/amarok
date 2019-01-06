@@ -38,10 +38,10 @@ static QDBusObjectPath mprisTrackId(quint64 playlistTrackId)
 {
     QString path;
     if( playlistTrackId > 0 ) {
-        path = QString( "/org/kde/amarok/Track/%1" ).arg( playlistTrackId );
+        path = QStringLiteral( "/org/kde/amarok/Track/%1" ).arg( playlistTrackId );
     } else {
         // dropped out of the playlist
-        path = QLatin1String( "/org/kde/amarok/OrphanTrack" );
+        path = QStringLiteral( "/org/kde/amarok/OrphanTrack" );
     }
     return QDBusObjectPath( path );
 }
@@ -178,11 +178,11 @@ void MediaPlayer2Player::OpenUri( QString Uri ) const
 QString MediaPlayer2Player::PlaybackStatus() const
 {
     if( The::engineController()->isPlaying() )
-        return QLatin1String( "Playing" );
+        return QStringLiteral( "Playing" );
     else if ( The::engineController()->isPaused() )
-        return QLatin1String( "Paused" );
+        return QStringLiteral( "Paused" );
     else
-        return QLatin1String( "Stopped" );
+        return QStringLiteral( "Stopped" );
 }
 
 QString MediaPlayer2Player::LoopStatus() const
@@ -193,15 +193,15 @@ QString MediaPlayer2Player::LoopStatus() const
         case AmarokConfig::EnumTrackProgression::OnlyQueue:
         case AmarokConfig::EnumTrackProgression::RandomTrack:
         case AmarokConfig::EnumTrackProgression::RandomAlbum:
-            return QLatin1String( "None" );
+            return QStringLiteral( "None" );
         case AmarokConfig::EnumTrackProgression::RepeatTrack:
-            return QLatin1String( "Track" );
+            return QStringLiteral( "Track" );
         case AmarokConfig::EnumTrackProgression::RepeatAlbum:
         case AmarokConfig::EnumTrackProgression::RepeatPlaylist:
-            return QLatin1String( "Playlist" );
+            return QStringLiteral( "Playlist" );
         default:
             Q_ASSERT( false );
-            return QLatin1String( "None" );
+            return QStringLiteral( "None" );
     }
 }
 
@@ -265,11 +265,11 @@ QVariantMap MediaPlayer2Player::metadataForTrack( Meta::TrackPtr track ) const
 
     QVariantMap metaData = Meta::Field::mpris20MapFromTrack( track );
     if ( track == The::playlist()->activeTrack() )
-        metaData["mpris:trackid"] = QVariant::fromValue<QDBusObjectPath>( activeMprisTrackId() );
+        metaData[QStringLiteral("mpris:trackid")] = QVariant::fromValue<QDBusObjectPath>( activeMprisTrackId() );
     else {
         // we should be updated shortly
-        QString path = QLatin1String( "/org/kde/amarok/PendingTrack" );
-        metaData["mpris:trackid"] = QVariant::fromValue<QDBusObjectPath>( QDBusObjectPath( path ) );
+        QString path = QStringLiteral( "/org/kde/amarok/PendingTrack" );
+        metaData[QStringLiteral("mpris:trackid")] = QVariant::fromValue<QDBusObjectPath>( QDBusObjectPath( path ) );
     }
     return metaData;
 }
@@ -339,30 +339,30 @@ void MediaPlayer2Player::trackPositionChanged( qint64 position, bool userSeek )
 
 void MediaPlayer2Player::trackChanged( Meta::TrackPtr track )
 {
-    signalPropertyChange( "CanPause", CanPause() );
-    signalPropertyChange( "Metadata", metadataForTrack( track ) );
+    signalPropertyChange( QStringLiteral("CanPause"), CanPause() );
+    signalPropertyChange( QStringLiteral("Metadata"), metadataForTrack( track ) );
 }
 
 void MediaPlayer2Player::trackMetadataChanged( Meta::TrackPtr track )
 {
-    signalPropertyChange( "Metadata", metadataForTrack( track ) );
+    signalPropertyChange( QStringLiteral("Metadata"), metadataForTrack( track ) );
 }
 
 void MediaPlayer2Player::albumMetadataChanged( Meta::AlbumPtr album )
 {
     Q_UNUSED( album )
-    signalPropertyChange( "Metadata", Metadata() );
+    signalPropertyChange( QStringLiteral("Metadata"), Metadata() );
 }
 
 void MediaPlayer2Player::seekableChanged( bool seekable )
 {
-    signalPropertyChange( "CanSeek", seekable );
+    signalPropertyChange( QStringLiteral("CanSeek"), seekable );
 }
 
 void MediaPlayer2Player::volumeChanged( int percent )
 {
     DEBUG_BLOCK
-    signalPropertyChange( "Volume", static_cast<double>(percent) / 100.0 );
+    signalPropertyChange( QStringLiteral("Volume"), static_cast<double>(percent) / 100.0 );
 }
 
 void MediaPlayer2Player::trackLengthChanged( qint64 milliseconds )
@@ -371,50 +371,50 @@ void MediaPlayer2Player::trackLengthChanged( qint64 milliseconds )
     // when the track changes or playback is stopped; these cases are
     // dealt with better by other signal handlers
     if ( milliseconds >= 0 )
-        signalPropertyChange( "Metadata", Metadata() );
+        signalPropertyChange( QStringLiteral("Metadata"), Metadata() );
 }
 
 void MediaPlayer2Player::playbackStateChanged()
 {
-    signalPropertyChange( "PlaybackStatus", PlaybackStatus() );
+    signalPropertyChange( QStringLiteral("PlaybackStatus"), PlaybackStatus() );
 }
 
 void MediaPlayer2Player::playlistNavigatorChanged()
 {
-    signalPropertyChange( "CanGoNext", CanGoNext() );
-    signalPropertyChange( "CanGoPrevious", CanGoPrevious() );
-    signalPropertyChange( "LoopStatus", LoopStatus() );
-    signalPropertyChange( "Shuffle", Shuffle() );
+    signalPropertyChange( QStringLiteral("CanGoNext"), CanGoNext() );
+    signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
+    signalPropertyChange( QStringLiteral("LoopStatus"), LoopStatus() );
+    signalPropertyChange( QStringLiteral("Shuffle"), Shuffle() );
 }
 
 void MediaPlayer2Player::playlistRowsInserted( QModelIndex, int, int )
 {
-    signalPropertyChange( "CanGoPrevious", CanGoPrevious() );
-    signalPropertyChange( "CanGoPrevious", CanGoPrevious() );
+    signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
+    signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
 }
 
 void MediaPlayer2Player::playlistRowsMoved( QModelIndex, int, int, QModelIndex, int )
 {
-    signalPropertyChange( "CanGoPrevious", CanGoPrevious() );
-    signalPropertyChange( "CanGoPrevious", CanGoPrevious() );
+    signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
+    signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
 }
 
 void MediaPlayer2Player::playlistRowsRemoved( QModelIndex, int, int )
 {
-    signalPropertyChange( "CanGoPrevious", CanGoPrevious() );
-    signalPropertyChange( "CanGoPrevious", CanGoPrevious() );
+    signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
+    signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
 }
 
 void MediaPlayer2Player::playlistReplaced()
 {
-    signalPropertyChange( "CanGoPrevious", CanGoPrevious() );
-    signalPropertyChange( "CanGoPrevious", CanGoPrevious() );
+    signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
+    signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
 }
 
 void MediaPlayer2Player::playlistActiveTrackChanged( quint64 )
 {
-    signalPropertyChange( "CanGoPrevious", CanGoPrevious() );
-    signalPropertyChange( "CanGoPrevious", CanGoPrevious() );
+    signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
+    signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
 }
 
 

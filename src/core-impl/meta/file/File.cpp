@@ -111,8 +111,8 @@ public:
         Q_UNUSED( tag )
         //first show the filebrowser
         AmarokUrl url;
-        url.setCommand( "navigate" );
-        url.setPath( "files" );
+        url.setCommand( QStringLiteral("navigate") );
+        url.setPath( QStringLiteral("files") );
         url.run();
 
         //then navigate to the correct directory
@@ -161,7 +161,7 @@ Track::name() const
         const QString trackName = d->m_data.title;
         return trackName;
     }
-    return "This is a bug!";
+    return QStringLiteral("This is a bug!");
 }
 
 QUrl
@@ -423,7 +423,7 @@ Track::isTrack( const QUrl &url )
     QMimeDatabase db;
     const QMimeType mimeType = db.mimeTypeForFile( url.toLocalFile() );
     const QString name = mimeType.name();
-    return name.startsWith( "audio/" ) || name.startsWith( "video/" );
+    return name.startsWith( QLatin1String("audio/") ) || name.startsWith( QLatin1String("video/") );
 }
 
 void

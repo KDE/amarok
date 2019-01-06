@@ -81,7 +81,7 @@ Dynamic::AbstractBias::clone() const
 QString
 Dynamic::AbstractBias::sName()
 {
-    return QLatin1String( "abstractBias" );
+    return QStringLiteral( "abstractBias" );
 }
 
 QString
@@ -126,7 +126,7 @@ Dynamic::RandomBias::~RandomBias()
 QString
 Dynamic::RandomBias::sName()
 {
-    return QLatin1String( "randomBias" );
+    return QStringLiteral( "randomBias" );
 }
 
 QString
@@ -218,7 +218,7 @@ Dynamic::AndBias::toXml( QXmlStreamWriter *writer ) const
 QString
 Dynamic::AndBias::sName()
 {
-    return QLatin1String( "andBias" );
+    return QStringLiteral( "andBias" );
 }
 
 QString
@@ -433,7 +433,7 @@ Dynamic::OrBias::OrBias()
 QString
 Dynamic::OrBias::sName()
 {
-    return QLatin1String( "orBias" );
+    return QStringLiteral( "orBias" );
 }
 
 QString

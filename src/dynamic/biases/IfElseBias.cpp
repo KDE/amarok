@@ -57,7 +57,7 @@ Dynamic::IfElseBias::IfElseBias()
 QString
 Dynamic::IfElseBias::sName()
 {
-    return QLatin1String( "ifElseBias" );
+    return QStringLiteral( "ifElseBias" );
 }
 
 QString

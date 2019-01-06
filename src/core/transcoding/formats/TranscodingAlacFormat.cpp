@@ -23,7 +23,7 @@ using namespace Transcoding;
 AlacFormat::AlacFormat()
 {
     m_encoder = ALAC;
-    m_fileExtension = "m4a";
+    m_fileExtension = QStringLiteral("m4a");
     //ALAC seems to have absolutely no configurable options whatsoever. Gnomes would love it.
 }
 
@@ -55,8 +55,8 @@ AlacFormat::ffmpegParameters( const Configuration &configuration ) const
 {
     Q_UNUSED( configuration )
     QStringList parameters;
-    parameters << "-acodec" << "alac";
-    parameters << "-vn"; // no album art, writing it to m4a is not supported by ffmpeg
+    parameters << QStringLiteral("-acodec") << QStringLiteral("alac");
+    parameters << QStringLiteral("-vn"); // no album art, writing it to m4a is not supported by ffmpeg
     return parameters;
 }
 

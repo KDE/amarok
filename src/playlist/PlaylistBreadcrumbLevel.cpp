@@ -23,7 +23,7 @@
 namespace Playlist
 {
 
-BreadcrumbLevel::BreadcrumbLevel( QString internalColumnName )
+BreadcrumbLevel::BreadcrumbLevel( const QString &internalColumnName )
     : m_name( internalColumnName )
 {
     Column col = columnForName( internalColumnName );

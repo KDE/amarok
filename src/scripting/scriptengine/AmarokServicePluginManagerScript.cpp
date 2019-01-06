@@ -28,7 +28,7 @@ AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QScriptEngin
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    engine->globalObject().property( "Amarok" ).setProperty( "ServicePluginManager", scriptObject );
+    engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("ServicePluginManager"), scriptObject );
 }
 
 QStringList

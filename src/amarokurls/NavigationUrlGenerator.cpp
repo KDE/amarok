@@ -55,7 +55,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     DEBUG_BLOCK
 
     AmarokUrl url;
-    url.setCommand( "navigate" );
+    url.setCommand( QStringLiteral("navigate") );
 
     //get the path
     QString path = The::mainWindow()->browserDock()->list()->path();
@@ -63,7 +63,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     QStringList pathParts = path.split( QLatin1Char('/') );
 
     //we don't use the "Home" part in navigation urls
-    if ( pathParts.at( 0 ) == "root list" )
+    if ( pathParts.at( 0 ) == QLatin1String("root list") )
         pathParts.removeFirst();
     
     url.setPath( pathParts.join( QLatin1Char('/') ) );
@@ -72,7 +72,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     QString filter = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->filter();
 
     if ( !filter.isEmpty() )
-        url.setArg( "filter", filter );
+        url.setArg( QStringLiteral("filter"), filter );
 
     QList<CategoryId::CatMenuId> levels = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->levels();
     QString sortMode;
@@ -80,22 +80,22 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     foreach( CategoryId::CatMenuId level, levels ) {
         switch( level ) {
             case CategoryId::Genre:
-                sortMode += "genre-";
+                sortMode += QLatin1String("genre-");
                 break;
             case CategoryId::Artist:
-                sortMode += "artist-";
+                sortMode += QLatin1String("artist-");
                 break;
             case CategoryId::Album:
-                sortMode += "album-";
+                sortMode += QLatin1String("album-");
                 break;
             case CategoryId::AlbumArtist:
-                sortMode += "albumartist-";
+                sortMode += QLatin1String("albumartist-");
                 break;
             case CategoryId::Composer:
-                sortMode += "composer-";
+                sortMode += QLatin1String("composer-");
                 break;
             case CategoryId::Year:
-                sortMode += "year-";
+                sortMode += QLatin1String("year-");
                 break;
             default:
                 break;
@@ -107,30 +107,30 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         sortMode = sortMode.left( sortMode.size() - 1 );
     
     if ( !sortMode.isEmpty() )
-        url.setArg( "levels", sortMode );
+        url.setArg( QStringLiteral("levels"), sortMode );
 
 
     //if in the local collection view, also store "show covers" and "show years"
-    if( url.path().endsWith( "collections", Qt::CaseInsensitive ) )
+    if( url.path().endsWith( QLatin1String("collections"), Qt::CaseInsensitive ) )
     {
         debug() << "bookmarking in local collection";
 
         if( AmarokConfig::showAlbumArt() )
-            url.setArg( "show_cover", "true" );
+            url.setArg( QStringLiteral("show_cover"), QStringLiteral("true") );
         else
-            url.setArg( "show_cover", "false" );
+            url.setArg( QStringLiteral("show_cover"), QStringLiteral("false") );
 
         if(  AmarokConfig::showYears() )
-            url.setArg( "show_years", "true" );
+            url.setArg( QStringLiteral("show_years"), QStringLiteral("true") );
         else
-            url.setArg( "show_years", "false" );
+            url.setArg( QStringLiteral("show_years"), QStringLiteral("false") );
     }
 
     //come up with a default name for this url..
     QString name = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->prettyName();
 
     //if in the file browser, also store the file path
-    if( url.path().endsWith( "files", Qt::CaseInsensitive ) )
+    if( url.path().endsWith( QLatin1String("files"), Qt::CaseInsensitive ) )
     {
 
         //Give a proper name since it will return "/" as that is what is used in the breadcrumb.
@@ -139,7 +139,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserDock()->list()->activeCategory() );
         if( fileBrowser )
         {
-            url.setArg( "path", fileBrowser->currentDir() );
+            url.setArg( QStringLiteral("path"), fileBrowser->currentDir() );
             name = i18n( "Files (%1)", fileBrowser->currentDir() );
         }
     }
@@ -161,7 +161,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
 
             QString albumName = album->prettyName();
 
-            url.setCommand( "navigate" );
+            url.setCommand( QStringLiteral("navigate") );
 
             QString path = btc->browserName();
             if ( !btc->collectionName().isEmpty() )
@@ -174,7 +174,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
             }
             else
             {
-                url.setArg( "levels", "album" );
+                url.setArg( QStringLiteral("levels"), QStringLiteral("album") );
 
                 QString artistName;
                 if ( album->albumArtist() )
@@ -185,7 +185,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
                     filter += ( " AND artist:\"" + artistName + "\"" );
             }
 
-            url.setArg( "filter", filter );
+            url.setArg( QStringLiteral("filter"), filter );
 
             if ( !btc->collectionName().isEmpty() )
                 url.setName( i18n( "Album \"%1\" from %2", albumName, btc->collectionName() ) );
@@ -212,7 +212,7 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 
             QString artistName = artist->prettyName();
 
-            url.setCommand( "navigate" );
+            url.setCommand( QStringLiteral("navigate") );
             
             QString path = btc->browserName();
             if ( !btc->collectionName().isEmpty() )
@@ -228,11 +228,11 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
             }
             else
             {
-                url.setArg( "levels", "artist-album" );
+                url.setArg( QStringLiteral("levels"), QStringLiteral("artist-album") );
                 filter = ( "artist:\"" + artistName + "\"" );
             }
 
-            url.setArg( "filter", filter );
+            url.setArg( QStringLiteral("filter"), filter );
 
             if ( !btc->collectionName().isEmpty() )
                 url.setName( i18n( "Artist \"%1\" from %2", artistName, btc->collectionName() ) );

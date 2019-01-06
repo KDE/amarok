@@ -29,8 +29,8 @@ AmarokOSDScript::AmarokOSDScript( QScriptEngine *engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
-    windowObject.setProperty( "OSD", scriptObject );
+    QScriptValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
+    windowObject.setProperty( QStringLiteral("OSD"), scriptObject );
 }
 
 void

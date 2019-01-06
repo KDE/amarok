@@ -117,7 +117,7 @@ ConstraintFactory::~ConstraintFactory()
 
 ConstraintNode* ConstraintFactory::createConstraint( QDomElement& xmlelem, ConstraintNode* parent, int row ) const
 {
-    QString t = xmlelem.attributeNode( "type" ).value();
+    QString t = xmlelem.attributeNode( QStringLiteral("type") ).value();
     if ( !m_registryNames.contains( t ) || !parent )
         return 0;
 

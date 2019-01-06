@@ -29,7 +29,7 @@ AmarokEqualizerScript::AmarokEqualizerScript( QScriptEngine *scriptEngine )
 {
     QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership
                                                         , QScriptEngine::ExcludeSuperClassContents );
-    scriptEngine->globalObject().property( "Amarok" ).property( "Engine" ).setProperty( "Equalizer", scriptObject );
+    scriptEngine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Engine") ).setProperty( QStringLiteral("Equalizer"), scriptObject );
 
     EqualizerController *equalizer  = The::engineController()->equalizerController();
     connect( equalizer, &EqualizerController::gainsChanged, this, &AmarokEqualizerScript::gainsChanged );

@@ -25,7 +25,7 @@ using namespace Transcoding;
 AacFormat::AacFormat()
 {
     m_encoder = AAC;
-    m_fileExtension = "m4a";
+    m_fileExtension = QStringLiteral("m4a");
     QString description1 =
         i18n( "The bitrate is a measure of the quantity of data used to represent a "
               "second of the audio track.<br>"
@@ -77,7 +77,7 @@ QStringList
 AacFormat::ffmpegParameters( const Configuration &configuration ) const
 {
     QStringList parameters;
-    parameters << "-acodec" << "aac" << "-strict" << "-2";
+    parameters << QStringLiteral("-acodec") << QStringLiteral("aac") << QStringLiteral("-strict") << QStringLiteral("-2");
     foreach( const Property &property, m_propertyList )
     {
         if( !configuration.property( property.name() ).isNull()
@@ -85,12 +85,12 @@ AacFormat::ffmpegParameters( const Configuration &configuration ) const
         {
             if( property.name() == "bitrate" )
             {
-                parameters << "-b:a"
+                parameters << QStringLiteral("-b:a")
                            << QString::number( ( configuration.property( "bitrate" ).toInt() + 1 ) * 32000);
             }
         }
     }
-    parameters << "-vn"; // no album art, writing it to m4a is not supported by ffmpeg
+    parameters << QStringLiteral("-vn"); // no album art, writing it to m4a is not supported by ffmpeg
     return parameters;
 }
 

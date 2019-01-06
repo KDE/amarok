@@ -54,7 +54,7 @@ namespace Amarok
             return i18nc( "When this track was last played", "Unknown" );
 
         if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
-            QString month_year = datetime.date().toString("MM yyyy");
+            QString month_year = datetime.date().toString(QStringLiteral("MM yyyy"));
             return i18nc( "monthname year", "%1", month_year );
         }
 
@@ -126,9 +126,9 @@ namespace Amarok
         //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
 
         if( timediff >= 60 )  // return difference in minutes
-            return QString("%1'").arg( ( timediff + 30 )/60 );
+            return QStringLiteral("%1'").arg( ( timediff + 30 )/60 );
         if( timediff >= 0 )  // return difference in seconds
-            return QString("%1\"").arg( ( timediff + 1 )/60 );
+            return QStringLiteral("%1\"").arg( ( timediff + 1 )/60 );
 
         return i18n( "0" );
     }
@@ -137,7 +137,7 @@ namespace Amarok
     {
         if( reverse )
         {
-            if( !str.startsWith( "the ", Qt::CaseInsensitive ) )
+            if( !str.startsWith( QLatin1String("the "), Qt::CaseInsensitive ) )
                 return;
 
             QString begin = str.left( 3 );
@@ -146,7 +146,7 @@ namespace Amarok
             return;
         }
 
-        if( !str.endsWith( ", the", Qt::CaseInsensitive ) )
+        if( !str.endsWith( QLatin1String(", the"), Qt::CaseInsensitive ) )
             return;
 
         QString end = str.right( 3 );
@@ -232,7 +232,7 @@ namespace Amarok
         if( !actionCollectionObject )
         {
             actionCollectionObject = new KActionCollection( qApp );
-            actionCollectionObject->setObjectName( "Amarok-KActionCollection" );
+            actionCollectionObject->setObjectName( QStringLiteral("Amarok-KActionCollection") );
         }
 
         return actionCollectionObject.data();
@@ -296,17 +296,17 @@ namespace Amarok
         QString result = path;
 
         // German umlauts
-        result.replace( QChar(0x00e4), "ae" ).replace( QChar(0x00c4), "Ae" );
-        result.replace( QChar(0x00f6), "oe" ).replace( QChar(0x00d6), "Oe" );
-        result.replace( QChar(0x00fc), "ue" ).replace( QChar(0x00dc), "Ue" );
-        result.replace( QChar(0x00df), "ss" );
+        result.replace( QChar(0x00e4), QLatin1String("ae") ).replace( QChar(0x00c4), QLatin1String("Ae") );
+        result.replace( QChar(0x00f6), QLatin1String("oe") ).replace( QChar(0x00d6), QLatin1String("Oe") );
+        result.replace( QChar(0x00fc), QLatin1String("ue") ).replace( QChar(0x00dc), QLatin1String("Ue") );
+        result.replace( QChar(0x00df), QLatin1String("ss") );
 
         // other special cases
-        result.replace( QChar(0x00C6), "AE" );
-        result.replace( QChar(0x00E6), "ae" );
+        result.replace( QChar(0x00C6), QLatin1String("AE") );
+        result.replace( QChar(0x00E6), QLatin1String("ae") );
 
-        result.replace( QChar(0x00D8), "OE" );
-        result.replace( QChar(0x00F8), "oe" );
+        result.replace( QChar(0x00D8), QLatin1String("OE") );
+        result.replace( QChar(0x00F8), QLatin1String("oe") );
 
         // normalize in a form where accents are separate characters
         result = result.normalized( QString::NormalizationForm_D );
@@ -375,22 +375,22 @@ namespace Amarok
         if( len == 3 || (len > 3 && s[3] == '.') )
         {
             QString l = s.left(3).toLower();
-            if( l=="aux" || l=="con" || l=="nul" || l=="prn" )
+            if( l==QLatin1String("aux") || l==QLatin1String("con") || l==QLatin1String("nul") || l==QLatin1String("prn") )
                 s = '_' + s;
         }
         else if( len == 4 || (len > 4 && s[4] == '.') )
         {
             QString l = s.left(3).toLower();
             QString d = s.mid(3,1);
-            if( (l=="com" || l=="lpt") &&
-                    (d=="0" || d=="1" || d=="2" || d=="3" || d=="4" ||
-                     d=="5" || d=="6" || d=="7" || d=="8" || d=="9") )
+            if( (l==QLatin1String("com") || l==QLatin1String("lpt")) &&
+                    (d==QLatin1String("0") || d==QLatin1String("1") || d==QLatin1String("2") || d==QLatin1String("3") || d==QLatin1String("4") ||
+                     d==QLatin1String("5") || d==QLatin1String("6") || d==QLatin1String("7") || d==QLatin1String("8") || d==QLatin1String("9")) )
                 s = '_' + s;
         }
 
         // "clock$" is only allowed WITH extension, according to:
         // http://en.wikipedia.org/w/index.php?title=Filename&oldid=303934888#Comparison_of_file_name_limitations
-        if( QString::compare( s, "clock$", Qt::CaseInsensitive ) == 0 )
+        if( QString::compare( s, QStringLiteral("clock$"), Qt::CaseInsensitive ) == 0 )
             s = '_' + s;
 
         /* max path length of Windows API */
@@ -434,7 +434,7 @@ namespace Amarok
         #define AMAROK_LOGO_CACHE_KEY QLatin1String("AmarokSemiTransparentLogo")+QString::number(dim)
         if( !QPixmapCache::find( AMAROK_LOGO_CACHE_KEY, &logo ) )
         {
-            QImage amarokIcon = QIcon::fromTheme( QLatin1String("amarok") ).pixmap( dim, dim ).toImage();
+            QImage amarokIcon = QIcon::fromTheme( QStringLiteral("amarok") ).pixmap( dim, dim ).toImage();
             amarokIcon = amarokIcon.convertToFormat( QImage::Format_ARGB32 );
             QRgb *data = reinterpret_cast<QRgb*>( amarokIcon.bits() );
             QRgb *end = data + amarokIcon.byteCount() / 4;

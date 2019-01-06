@@ -36,7 +36,7 @@ public:
     virtual ~BookmarkThisCapability();
 
     virtual bool isBookmarkable() { return true; }
-    virtual QString browserName() { return "collections"; }
+    virtual QString browserName() { return QStringLiteral("collections"); }
     virtual QString collectionName() { return QString(); }
     virtual bool simpleFiltering() { return false; }
 

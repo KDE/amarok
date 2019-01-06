@@ -37,7 +37,7 @@ using namespace ScriptConsoleNS;
 
 ScriptConsoleItem::ScriptConsoleItem( QObject *parent, const QString &name, const QString &category
                                     , const QString &path, ScriptEditorDocument *document )
-: ScriptItem( parent, name, QString("%1/main.js").arg(path), createSpecFile( name, category, path ) )
+: ScriptItem( parent, name, QStringLiteral("%1/main.js").arg(path), createSpecFile( name, category, path ) )
 , m_clearOnDelete( false )
 , m_viewFactory( document )
 {
@@ -56,8 +56,8 @@ ScriptConsoleItem::~ScriptConsoleItem()
         QDir dir( info.path() );
         if( !dir.exists() )
             return;
-        dir.remove( "main.js" );
-        dir.remove( "script.spec" );
+        dir.remove( QStringLiteral("main.js") );
+        dir.remove( QStringLiteral("script.spec") );
         if( !dir.rmdir( dir.absolutePath() ) )
             debug() << "Directory %1 not removed, contains other files";
     }
@@ -79,7 +79,7 @@ ScriptConsoleItem::createSpecFile( const QString &name, const QString &category,
                             "\nX-KDE-PluginInfo-Depends=Amarok2.0"
                             "\nX-KDE-PluginInfo-EnabledByDefault=false\n" ).arg( name, category );
 
-    QString specPath = QString( "%1/script.spec" ).arg( path );
+    QString specPath = QStringLiteral( "%1/script.spec" ).arg( path );
     QFile file( specPath );
     if( !file.open( QIODevice::WriteOnly ) )
     {
@@ -140,7 +140,7 @@ ScriptConsoleItem::setClearOnDeletion( bool clearOnDelete )
 QString
 ScriptConsoleItem::handleError( QScriptEngine *engine )
 {
-    QString errorString = QString( "Script Error: %1 (line: %2)" )
+    QString errorString = QStringLiteral( "Script Error: %1 (line: %2)" )
                         .arg( engine->uncaughtException().toString(),
                               QString::number( engine->uncaughtExceptionLineNumber() ) );
     return errorString;

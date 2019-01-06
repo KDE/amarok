@@ -72,10 +72,10 @@ ScriptConsole::ScriptConsole( QWidget *parent )
 
     setDockNestingEnabled( true );
     setWindowTitle( i18n( "Script Console" ) );
-    setObjectName( "scriptconsole" );
+    setObjectName( QStringLiteral("scriptconsole") );
 
     m_debugger->setAutoShowStandardWindow( false );
-    m_codeWidget = getWidget( "Code", QScriptEngineDebugger::CodeWidget );
+    m_codeWidget = getWidget( QStringLiteral("Code"), QScriptEngineDebugger::CodeWidget );
     addDockWidget( Qt::BottomDockWidgetArea, m_codeWidget );
     QList<QDockWidget*> debugWidgets = QList<QDockWidget*>() << getWidget( i18n( "Console" ), QScriptEngineDebugger::ConsoleWidget )
                     << getWidget( i18n( "Error" ), QScriptEngineDebugger::ErrorLogWidget )
@@ -102,15 +102,15 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     action->setIcon( QApplication::style()->standardIcon( QStyle::SP_MediaStop ) );
     connect( action, &QAction::toggled, this, &ScriptConsole::slotAbortEvaluation );
     toolBar->addAction( action );
-    action = new QAction( QIcon::fromTheme( "media-playback-start" ), i18n("Execute Script"), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("media-playback-start") ), i18n("Execute Script"), this );
     action->setShortcut( Qt::CTRL + Qt::Key_Enter );
     connect( action, &QAction::triggered, this, &ScriptConsole::slotExecuteNewScript );
     toolBar->addAction( action );
-    action = new QAction( QIcon::fromTheme( "document-new" ), i18n( "&New Script" ), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("document-new") ), i18n( "&New Script" ), this );
     action->setShortcut( Qt::CTRL + Qt::Key_N );
     toolBar->addAction( action );
     connect( action, &QAction::triggered, this, &ScriptConsole::slotNewScript );
-    action = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete Script" ), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("edit-delete") ), i18n( "&Delete Script" ), this );
     toolBar->addAction( action );
     connect( action, &QAction::triggered, m_scriptListDock, &ScriptListDockWidget::removeCurrentScript );
     action = new QAction( i18n( "&Clear All Scripts" ), this );
@@ -151,14 +151,14 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     item->setFlags( Qt::NoItemFlags );
     m_scriptListDock->addItem( item );
 
-    QSettings settings( "KDE", "Amarok" );
-    settings.beginGroup( "ScriptConsole" );
-    restoreGeometry( settings.value("geometry").toByteArray() );
-    m_savePath = settings.value("savepath").toString();
+    QSettings settings( QStringLiteral("KDE"), QStringLiteral("Amarok") );
+    settings.beginGroup( QStringLiteral("ScriptConsole") );
+    restoreGeometry( settings.value(QStringLiteral("geometry")).toByteArray() );
+    m_savePath = settings.value(QStringLiteral("savepath")).toString();
     settings.endGroup();
 
     if( m_savePath.isEmpty() )
-        m_savePath = Amarok::saveLocation("scriptconsole");
+        m_savePath = Amarok::saveLocation(QStringLiteral("scriptconsole"));
 
     slotNewScript();
     connect( m_debugger, &QScriptEngineDebugger::evaluationSuspended, this, &ScriptConsole::slotEvaluationSuspended );
@@ -194,10 +194,10 @@ ScriptConsole::slotExecuteNewScript()
 void
 ScriptConsole::closeEvent( QCloseEvent *event )
 {
-    QSettings settings( "KDE", "Amarok" );
-    settings.beginGroup( "ScriptConsole" );
-    settings.setValue( "geometry", saveGeometry() );
-    settings.setValue( "savepath", m_savePath );
+    QSettings settings( QStringLiteral("KDE"), QStringLiteral("Amarok") );
+    settings.beginGroup( QStringLiteral("ScriptConsole") );
+    settings.setValue( QStringLiteral("geometry"), saveGeometry() );
+    settings.setValue( QStringLiteral("savepath"), m_savePath );
     settings.endGroup();
     QMainWindow::closeEvent( event );
     deleteLater();
@@ -207,7 +207,7 @@ void
 ScriptConsole::slotEditScript( ScriptConsoleItem *item )
 {
     if( m_scriptItem->running() && KMessageBox::warningContinueCancel( this, i18n( "This will stop this script! Continue?" ), QString(), KStandardGuiItem::cont()
-                                        , KStandardGuiItem::cancel(), "stopRunningScriptWarning" ) == KMessageBox::Cancel )
+                                        , KStandardGuiItem::cancel(), QStringLiteral("stopRunningScriptWarning") ) == KMessageBox::Cancel )
         return;
 
     item->pause();
@@ -218,7 +218,7 @@ ScriptConsoleItem*
 ScriptConsole::createScriptItem( const QString &script )
 {
     if( ( m_savePath.isEmpty() || !QDir( m_savePath ).exists() )
-        && ( m_savePath = QFileDialog::getExistingDirectory(this, i18n( "Choose where to save your scripts" ), "~",
+        && ( m_savePath = QFileDialog::getExistingDirectory(this, i18n( "Choose where to save your scripts" ), QStringLiteral("~"),
             QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks) ).isEmpty() )
         return 0;
 
@@ -226,14 +226,14 @@ ScriptConsole::createScriptItem( const QString &script )
     QString scriptName;
     do
     {
-        scriptName = QString( "Script-%1" ).arg( qrand() );
-        scriptPath =  QString( "%1/%2" ).arg( m_savePath, scriptName );
+        scriptName = QStringLiteral( "Script-%1" ).arg( qrand() );
+        scriptPath =  QStringLiteral( "%1/%2" ).arg( m_savePath, scriptName );
     } while ( QDir( scriptPath ).exists() );
     QDir().mkdir( scriptPath );
 
     ScriptEditorDocument *document = new ScriptEditorDocument( this, m_editor->createDocument( 0 ) );
     document->setText( script );
-    ScriptConsoleItem *scriptItem = new ScriptConsoleItem( this, scriptName, "Generic", scriptPath, document );
+    ScriptConsoleItem *scriptItem = new ScriptConsoleItem( this, scriptName, QStringLiteral("Generic"), scriptPath, document );
     return scriptItem;
 }
 
@@ -311,7 +311,7 @@ ScriptConsole::setCurrentScriptItem( ScriptConsoleItem *item )
 void
 ScriptConsole::slotNewScript()
 {
-    ScriptConsoleItem *item = createScriptItem( "" );
+    ScriptConsoleItem *item = createScriptItem( QLatin1String("") );
     m_scriptListDock->addScript( item );
     setCurrentScriptItem( item );
 }

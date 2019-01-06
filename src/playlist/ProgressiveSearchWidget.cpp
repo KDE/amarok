@@ -59,10 +59,10 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     connect( m_searchEdit, &Amarok::LineEdit::downPressed, this, &ProgressiveSearchWidget::downPressed );
     connect( m_searchEdit, &Amarok::LineEdit::upPressed, this, &ProgressiveSearchWidget::upPressed );
 
-    m_nextAction = new QAction( QIcon::fromTheme( "go-down" ), i18n( "&Next" ), this );
+    m_nextAction = new QAction( QIcon::fromTheme( QStringLiteral("go-down") ), i18n( "&Next" ), this );
     connect( m_nextAction, &QAction::triggered, this, &ProgressiveSearchWidget::slotNext );
 
-    m_previousAction = new QAction( QIcon::fromTheme( "go-up" ), i18n( "&Previous" ), this );
+    m_previousAction = new QAction( QIcon::fromTheme( QStringLiteral("go-up") ), i18n( "&Previous" ), this );
     connect( m_previousAction, &QAction::triggered, this, &ProgressiveSearchWidget::slotPrevious );
 
     m_nextAction->setEnabled( false );
@@ -133,7 +133,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     m_nextAction->setVisible( !m_showOnlyMatches );
     m_previousAction->setVisible( !m_showOnlyMatches );
 
-    QAction *searchMenuAction = new QAction( QIcon::fromTheme( "preferences-other" ), i18n( "Search Preferences" ), this );
+    QAction *searchMenuAction = new QAction( QIcon::fromTheme( QStringLiteral("preferences-other") ), i18n( "Search Preferences" ), this );
     searchMenuAction->setMenu( m_menu );
 
     m_toolBar->addAction( searchMenuAction );
@@ -145,7 +145,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     m_toolBar->setFixedHeight( m_searchEdit->sizeHint().height() );
 
     //make sure that this edit is cleared when the playlist is cleared:
-    connect( Amarok::actionCollection()->action( "playlist_clear" ), &QAction::triggered, this, &ProgressiveSearchWidget::slotFilterClear );
+    connect( Amarok::actionCollection()->action( QStringLiteral("playlist_clear") ), &QAction::triggered, this, &ProgressiveSearchWidget::slotFilterClear );
 }
 
 void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
@@ -219,7 +219,7 @@ void ProgressiveSearchWidget::slotSearchTracks( bool search )
     else
         m_searchFieldsMask ^= Playlist::MatchTrack;
 
-    Amarok::config( "Playlist Search" ).writeEntry( "MatchTrack", search );
+    Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchTrack", search );
 
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
@@ -232,7 +232,7 @@ void ProgressiveSearchWidget::slotSearchArtists( bool search )
     else
         m_searchFieldsMask ^= Playlist::MatchArtist;
 
-    Amarok::config( "Playlist Search" ).writeEntry( "MatchArtist", search );
+    Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchArtist", search );
 
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
@@ -245,7 +245,7 @@ void ProgressiveSearchWidget::slotSearchAlbums( bool search )
     else
         m_searchFieldsMask ^= Playlist::MatchAlbum;
 
-    Amarok::config( "Playlist Search" ).writeEntry( "MatchAlbum", search );
+    Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchAlbum", search );
 
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
@@ -258,7 +258,7 @@ void ProgressiveSearchWidget::slotSearchGenre( bool search )
     else
         m_searchFieldsMask ^= Playlist::MatchGenre;
 
-    Amarok::config( "Playlist Search" ).writeEntry( "MatchGenre", search );
+    Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchGenre", search );
 
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
@@ -271,7 +271,7 @@ void ProgressiveSearchWidget::slotSearchComposers( bool search )
     else
         m_searchFieldsMask ^= Playlist::MatchComposer;
 
-    Amarok::config( "Playlist Search" ).writeEntry( "MatchComposer", search );
+    Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchComposer", search );
 
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
@@ -284,7 +284,7 @@ void ProgressiveSearchWidget::slotSearchRating( bool search )
     else
         m_searchFieldsMask ^= Playlist::MatchRating;
 
-    Amarok::config( "Playlist Search" ).writeEntry( "MatchRating", search );
+    Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchRating", search );
 
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
@@ -297,7 +297,7 @@ void ProgressiveSearchWidget::slotSearchYears( bool search )
     else
         m_searchFieldsMask ^= Playlist::MatchYear;
 
-    Amarok::config( "Playlist Search" ).writeEntry( "MatchYear", search );
+    Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchYear", search );
 
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
@@ -307,7 +307,7 @@ void ProgressiveSearchWidget::readConfig()
 {
     m_searchFieldsMask = 0;
 
-    KConfigGroup config = Amarok::config("Playlist Search");
+    KConfigGroup config = Amarok::config(QStringLiteral("Playlist Search"));
 
     if( config.readEntry( "MatchTrack", true ) )
         m_searchFieldsMask |= Playlist::MatchTrack;
@@ -346,7 +346,7 @@ void ProgressiveSearchWidget::slotShowOnlyMatches( bool onlyMatches )
     m_nextAction->setVisible( !onlyMatches );
     m_previousAction->setVisible( !onlyMatches );
 
-    KConfigGroup cg = Amarok::config( "Playlist Search" );
+    KConfigGroup cg = Amarok::config( QStringLiteral("Playlist Search") );
     cg.writeEntry( "ShowOnlyMatches", m_showOnlyMatches );
     cg.sync();
 

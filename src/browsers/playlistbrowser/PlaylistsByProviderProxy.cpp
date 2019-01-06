@@ -69,7 +69,7 @@ PlaylistsByProviderProxy::data( const QModelIndex &idx, int role ) const
         if( indexData.type() != QVariant::List )
             return indexData;
 
-        QString providerString = indexData.toStringList().join( ", " );
+        QString providerString = indexData.toStringList().join( QStringLiteral(", ") );
         return QVariant( providerString );
     }
 

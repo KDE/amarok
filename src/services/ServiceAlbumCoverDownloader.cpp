@@ -60,10 +60,10 @@ ServiceAlbumWithCover::image( int size ) const
 
     const QString artist = hasAlbumArtist() ?
         albumArtist()->name() :
-        QLatin1String("NULL"); //no need to translate, only used as a caching key/temp filename
+        QStringLiteral("NULL"); //no need to translate, only used as a caching key/temp filename
 
-    const QString coverName = QString( "%1_%2_%3_cover.png" ).arg( downloadPrefix(), artist, name() );
-    const QString saveLocation = Amarok::saveLocation( "albumcovers/cache/" );
+    const QString coverName = QStringLiteral( "%1_%2_%3_cover.png" ).arg( downloadPrefix(), artist, name() );
+    const QString saveLocation = Amarok::saveLocation( QStringLiteral("albumcovers/cache/") );
     const QDir cacheCoverDir = QDir( saveLocation );
 
     //make sure that this dir exists

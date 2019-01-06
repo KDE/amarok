@@ -32,7 +32,7 @@ BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album 
     , m_album( album )
 {
     connect( this, &BookmarkAlbumAction::triggered, this, &BookmarkAlbumAction::slotTriggered );
-    setIcon( QIcon::fromTheme("bookmark-new") );
+    setIcon( QIcon::fromTheme(QStringLiteral("bookmark-new")) );
     setProperty( "popupdropper_svg_id", "lastfm" );
 }
 
@@ -48,7 +48,7 @@ BookmarkArtistAction::BookmarkArtistAction( QObject *parent, Meta::ArtistPtr art
     , m_artist( artist )
 {
     connect( this, &BookmarkArtistAction::triggered, this, &BookmarkArtistAction::slotTriggered );
-    setIcon( QIcon::fromTheme("bookmark-new") );
+    setIcon( QIcon::fromTheme(QStringLiteral("bookmark-new")) );
     setProperty( "popupdropper_svg_id", "lastfm" );
 }
 
@@ -62,7 +62,7 @@ BookmarkCurrentTrackPositionAction::BookmarkCurrentTrackPositionAction( QObject 
     : QAction( i18n( "Add Position Marker" ), parent )
 {
     connect( this, &BookmarkCurrentTrackPositionAction::triggered, this, &BookmarkCurrentTrackPositionAction::slotTriggered );
-    setIcon( QIcon::fromTheme("flag-amarok") );
+    setIcon( QIcon::fromTheme(QStringLiteral("flag-amarok")) );
 }
 
 void

@@ -69,8 +69,8 @@ SqlPlaylistGroup::save()
     if ( m_dbId != -1 )
     {
         //update existing
-        QString query = "UPDATE playlist_groups SET parent_id=%1, name='%2', \
-                description='%3' WHERE id=%4;";
+        QString query = QStringLiteral("UPDATE playlist_groups SET parent_id=%1, name='%2', \
+                description='%3' WHERE id=%4;");
         query = query.arg( QString::number( parentId ), m_name,
                            m_description, QString::number( m_dbId ) );
         sqlStorage->query( query );
@@ -78,8 +78,8 @@ SqlPlaylistGroup::save()
     else
     {
         //insert new
-        QString query = "INSERT INTO playlist_groups ( parent_id, name, \
-                description) VALUES ( %1, '%2', '%3' );";
+        QString query = QStringLiteral("INSERT INTO playlist_groups ( parent_id, name, \
+                description) VALUES ( %1, '%2', '%3' );");
         query = query.arg( QString::number( parentId ), m_name, m_description );
         m_dbId = sqlStorage->insert( query, NULL );
     }
@@ -107,7 +107,7 @@ SqlPlaylistGroup::removeFromDb()
         return;
 
 
-    QString query = "DELETE FROM playlist_groups where id=%1;";
+    QString query = QStringLiteral("DELETE FROM playlist_groups where id=%1;");
     query = query.arg( QString::number( m_dbId ) );
     QStringList result = sqlStorage->query( query );
 }
@@ -145,8 +145,8 @@ SqlPlaylistGroup::childSqlGroups() const
 
     if ( !m_hasFetchedChildGroups )
     {
-        QString query = "SELECT id, parent_id, name, description FROM \
-                playlist_groups where parent_id=%1 ORDER BY name;";
+        QString query = QStringLiteral("SELECT id, parent_id, name, description FROM \
+                playlist_groups where parent_id=%1 ORDER BY name;");
         query = query.arg( QString::number( m_dbId ) );
         QStringList result = sqlStorage->query( query );
 
@@ -177,8 +177,8 @@ SqlPlaylistGroup::childSqlPlaylists() const
 
     if ( !m_hasFetchedChildPlaylists )
     {
-        QString query = "SELECT id, parent_id, name, urlid FROM \
-                playlists where parent_id=%1 ORDER BY name;";
+        QString query = QStringLiteral("SELECT id, parent_id, name, urlid FROM \
+                playlists where parent_id=%1 ORDER BY name;");
         query = query.arg( QString::number( m_dbId ) );
         QStringList result = sqlStorage->query( query );
 

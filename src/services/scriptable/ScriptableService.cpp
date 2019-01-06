@@ -109,12 +109,12 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             if ( !m_customEmblem.isNull() )
                 track->setServiceEmblem( m_customEmblem );
             else
-                track->setServiceEmblem( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-scripted.png" ) ) );
+                track->setServiceEmblem( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-scripted.png") ) ) );
 
             if ( !m_customScalableEmblem.isEmpty() )
                 track->setServiceScalableEmblem( m_customScalableEmblem );
             else
-                track->setServiceEmblem( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-scripted-scalable.svgz" ) );
+                track->setServiceEmblem( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-scripted-scalable.svgz") ) );
 
             if ( !albumOverride.isEmpty() )
                 track->setAlbumName( albumOverride );
@@ -151,12 +151,12 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             if ( !m_customEmblem.isNull() )
                 album->setServiceEmblem( m_customEmblem );
             else
-                album->setServiceEmblem( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-scripted.png" ) ) );
+                album->setServiceEmblem( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-scripted.png") ) ) );
 
             if ( !m_customScalableEmblem.isEmpty() )
                 album->setServiceScalableEmblem( m_customScalableEmblem );
             else
-                album->setServiceEmblem( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-scripted-scalable.svgz" ) );
+                album->setServiceEmblem( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-scripted-scalable.svgz") ) );
             
             return addAlbum( album );
             
@@ -177,12 +177,12 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             if ( !m_customEmblem.isNull() )
                 artist->setServiceEmblem( m_customEmblem );
             else
-                artist->setServiceEmblem( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-scripted.png" ) ) );
+                artist->setServiceEmblem( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-scripted.png") ) ) );
 
             if ( !m_customScalableEmblem.isEmpty() )
                 artist->setServiceScalableEmblem( m_customScalableEmblem );
             else
-                artist->setServiceEmblem( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-scripted-scalable.svgz" ) );
+                artist->setServiceEmblem( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-scripted-scalable.svgz") ) );
 
             
             return addArtist( artist );
@@ -204,12 +204,12 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
             if ( !m_customEmblem.isNull() )
                 genre->setServiceEmblem( m_customEmblem );
             else
-                genre->setServiceEmblem( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-scripted.png" ) ) );
+                genre->setServiceEmblem( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-scripted.png") ) ) );
 
             if ( !m_customScalableEmblem.isEmpty() )
                 genre->setServiceScalableEmblem( m_customScalableEmblem );
             else
-                genre->setServiceEmblem( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-scripted-scalable.svgz" ) );
+                genre->setServiceEmblem( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/emblem-scripted-scalable.svgz") ) );
 
             
             return addGenre( genre );

@@ -59,7 +59,7 @@ TrackDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
             if( rating < 0 ) // unresolved conflict
             {
                 rating = 0;
-                ratingPainter.setIcon( QIcon::fromTheme( "status_unknown" ) );
+                ratingPainter.setIcon( QIcon::fromTheme( QStringLiteral("status_unknown") ) );
                 ratingPainter.setEnabled( false );
                 ratingPainter.setMaxRating( 2 );
             }

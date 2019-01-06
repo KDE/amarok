@@ -33,15 +33,15 @@
 PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::LabelColumn )
 {
-    m_renameFolderAction =  new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
+    m_renameFolderAction =  new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ),
                                          i18n( "&Rename Folder..." ), this );
     m_renameFolderAction->setProperty( "popupdropper_svg_id", "edit_group" );
     connect( m_renameFolderAction, &QAction::triggered, this, &PlaylistsInFoldersProxy::slotRenameFolder );
 
-    m_deleteFolderAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
+    m_deleteFolderAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-remove-amarok") ),
                                         i18n( "&Delete Folder" ), this );
     m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
-    m_deleteFolderAction->setObjectName( "deleteAction" );
+    m_deleteFolderAction->setObjectName( QStringLiteral("deleteAction") );
     connect( m_deleteFolderAction, &QAction::triggered, this, &PlaylistsInFoldersProxy::slotDeleteFolder );
 
     if( auto m = static_cast<PlaylistBrowserNS::PlaylistBrowserModel*>(sourceModel()) )
@@ -65,7 +65,7 @@ PlaylistsInFoldersProxy::data( const QModelIndex &idx, int role ) const
         if( indexData.type() != QVariant::List )
             return indexData;
 
-        QString providerString = indexData.toStringList().join( ", " );
+        QString providerString = indexData.toStringList().join( QStringLiteral(", ") );
         return QVariant( providerString );
     }
 
@@ -184,7 +184,7 @@ PlaylistsInFoldersProxy::dropMimeData( const QMimeData *data, Qt::DropAction act
     DEBUG_BLOCK
     Q_UNUSED( row );
     Q_UNUSED( column );
-    debug() << "dropped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
+    debug() << "dropped on " << QStringLiteral("row: %1, column: %2, parent:").arg( row ).arg( column );
     debug() << parent;
     if( action == Qt::IgnoreAction )
     {
@@ -357,7 +357,7 @@ PlaylistsInFoldersProxy::createNewFolder( const QString &groupName )
     RowData data;
     ItemData roleData;
     roleData.insert( Qt::DisplayRole, groupName );
-    roleData.insert( Qt::DecorationRole, QVariant( QIcon::fromTheme( "folder" ) ) );
+    roleData.insert( Qt::DecorationRole, QVariant( QIcon::fromTheme( QStringLiteral("folder") ) ) );
     roleData.insert( Qt::EditRole, groupName );
     data.insert( 0, roleData );
     return addEmptyGroup( data );

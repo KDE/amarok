@@ -225,7 +225,7 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
             d->linkedTables |= Private::ALBUMARTISTS_TABLE;
             d->queryType = QueryMaker::AlbumArtist;
             d->withoutDuplicates = true;
-            d->queryReturnValues = QString( "albumartists.id, " ) +
+            d->queryReturnValues = QStringLiteral( "albumartists.id, " ) +
                                             "albumartists.name, " +
                                             "albumartists.description ";
             d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
@@ -326,7 +326,7 @@ ServiceSqlQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::Artis
                  d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
                  break;
             case AlbumArtists:
-                 d->queryMatch += QString( " AND albumartists.id= '%1'" ).arg( serviceArtist->id() );
+                 d->queryMatch += QStringLiteral( " AND albumartists.id= '%1'" ).arg( serviceArtist->id() );
                  break;
             case AlbumOrTrackArtists:
                  d->queryMatch += QString( " AND ( " + prefix + "_artists.id= '%1' OR albumartists.id= '%1' )" ).arg( serviceArtist->id() );
@@ -341,7 +341,7 @@ ServiceSqlQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::Artis
                  d->queryMatch += QString( " AND " + prefix + "_artists.name= '%1'" ).arg( escape( artist->name() ) );
                  break;
             case AlbumArtists:
-                 d->queryMatch += QString( " AND albumartists.name= '%1'" ).arg( escape( artist->name() ) );
+                 d->queryMatch += QStringLiteral( " AND albumartists.name= '%1'" ).arg( escape( artist->name() ) );
                  break;
             case AlbumOrTrackArtists:
                  d->queryMatch += QString( " AND ( " + prefix + "_artists.name= '%1' OR albumartists.name= '%1' )" ).arg( escape( artist->name() ) );
@@ -444,7 +444,7 @@ ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool match
         d->linkedTables |= Private::GENRE_TABLE;
     }
     QString like = likeCondition( filter, !matchBegin, !matchEnd );
-    d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
+    d->queryFilter += QStringLiteral( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
 }
 
@@ -455,7 +455,7 @@ ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool m
     if( isValidValue( value ) )
     {
         QString like = likeCondition( filter, !matchBegin, !matchEnd );
-        d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
+        d->queryFilter += QStringLiteral( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     }
     return this;
 }
@@ -506,8 +506,8 @@ ServiceSqlQueryMaker::orderBy( qint64 value, bool descending )
 {
     Q_UNUSED( value );
     if ( d->queryOrderBy.isEmpty() )
-    d->queryOrderBy = " ORDER BY name "; //TODO FIX!!
-    d->queryOrderBy += QString( " %1 " ).arg( descending ? "DESC" : "ASC" );
+    d->queryOrderBy = QStringLiteral(" ORDER BY name "); //TODO FIX!!
+    d->queryOrderBy += QStringLiteral( " %1 " ).arg( descending ? "DESC" : "ASC" );
     return this;
 }
 
@@ -545,25 +545,25 @@ ServiceSqlQueryMaker::buildQuery()
         return;
 
     linkTables();
-    QString query = "SELECT ";
+    QString query = QStringLiteral("SELECT ");
     if ( d->withoutDuplicates )
-        query += "DISTINCT ";
+        query += QLatin1String("DISTINCT ");
     query += d->queryReturnValues;
-    query += " FROM ";
+    query += QLatin1String(" FROM ");
     query += d->queryFrom;
-    query += " WHERE 1 "; // oh... to not have to bother with the leadig "AND"
+    query += QLatin1String(" WHERE 1 "); // oh... to not have to bother with the leadig "AND"
                           // that may or may not be needed
     query += d->queryMatch;
     if ( !d->queryFilter.isEmpty() )
     {
-        query += " AND ( 1 ";
+        query += QLatin1String(" AND ( 1 ");
         query += d->queryFilter;
-        query += " ) ";
+        query += QLatin1String(" ) ");
     }
     //query += d->queryFilter;
     query += d->queryOrderBy;
     if ( d->maxResultSize > -1 )
-        query += QString( " LIMIT %1 OFFSET 0 " ).arg( d->maxResultSize );
+        query += QStringLiteral( " LIMIT %1 OFFSET 0 " ).arg( d->maxResultSize );
     query += ';';
     d->query = query;
 }
@@ -808,9 +808,9 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
         QString escaped = text;
         escaped = escape( escaped );
         //see comments in SqlQueryMaker::likeCondition
-        escaped.replace( '%', "/%" ).replace( '_', "/_" );
+        escaped.replace( '%', QLatin1String("/%") ).replace( '_', QLatin1String("/_") );
 
-        QString ret = " LIKE ";
+        QString ret = QStringLiteral(" LIKE ");
 
         ret += '\'';
         if ( anyBegin )
@@ -821,16 +821,16 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
         ret += '\'';
 
         //Case insensitive collation for queries
-        ret += " COLLATE utf8_unicode_ci ";
+        ret += QLatin1String(" COLLATE utf8_unicode_ci ");
 
         //Use / as the escape character
-        ret += " ESCAPE '/' ";
+        ret += QLatin1String(" ESCAPE '/' ");
 
         return ret;
     }
     else
     {
-        return QString( " = '%1' " ).arg( escape( text ) );
+        return QStringLiteral( " = '%1' " ).arg( escape( text ) );
     }
 }
 
@@ -838,7 +838,7 @@ QueryMaker*
 ServiceSqlQueryMaker::beginAnd()
 {
     d->queryFilter += andOr();
-    d->queryFilter += " ( 1 ";
+    d->queryFilter += QLatin1String(" ( 1 ");
     d->andStack.push( true );
     return this;
 }
@@ -847,7 +847,7 @@ QueryMaker*
 ServiceSqlQueryMaker::beginOr()
 {
     d->queryFilter += andOr();
-    d->queryFilter += " ( 0 ";
+    d->queryFilter += QLatin1String(" ( 0 ");
     d->andStack.push( false );
     return this;
 }

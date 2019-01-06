@@ -70,21 +70,21 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
     QMimeType mimetype = db.mimeTypeForFile( fn );
 
     // -- check by mime type
-    if( mimetype.inherits( QLatin1String("audio/mpeg") )
-            || mimetype.inherits( QLatin1String("audio/x-mpegurl") )
-            || mimetype.inherits( QLatin1String("audio/mpeg") ))
+    if( mimetype.inherits( QStringLiteral("audio/mpeg") )
+            || mimetype.inherits( QStringLiteral("audio/x-mpegurl") )
+            || mimetype.inherits( QStringLiteral("audio/mpeg") ))
     {
         result = new TagLib::MPEG::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/mp4") )
-             || mimetype.inherits( QLatin1String("video/mp4") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/mp4") )
+             || mimetype.inherits( QStringLiteral("video/mp4") ) )
     {
         result = new TagLib::MP4::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-ms-wma") )
-            || mimetype.inherits( QLatin1String("video/x-ms-asf") )
-            || mimetype.inherits( QLatin1String("video/x-msvideo") )
-            || mimetype.inherits( QLatin1String("video/x-ms-wmv") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-ms-wma") )
+            || mimetype.inherits( QStringLiteral("video/x-ms-asf") )
+            || mimetype.inherits( QStringLiteral("video/x-msvideo") )
+            || mimetype.inherits( QStringLiteral("video/x-ms-wmv") ) )
     {
         result = new TagLib::ASF::File(fileName, readProperties, propertiesStyle);
     }
@@ -97,64 +97,64 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
     }
 #endif
 #ifdef TAGLIB_OPUS_FOUND
-    else if( mimetype.inherits( QLatin1String("audio/opus") )
-            || mimetype.inherits( QLatin1String("audio/x-opus+ogg") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/opus") )
+            || mimetype.inherits( QStringLiteral("audio/x-opus+ogg") ) )
     {
         result = new TagLib::Ogg::Opus::File(fileName, readProperties, propertiesStyle);
     }
 #endif
-    else if( mimetype.inherits( QLatin1String("audio/vorbis") )
-            || mimetype.inherits( QLatin1String("audio/x-vorbis+ogg") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/vorbis") )
+            || mimetype.inherits( QStringLiteral("audio/x-vorbis+ogg") ) )
     {
         result = new TagLib::Ogg::Vorbis::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-flac+ogg") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-flac+ogg") ) )
     {
         result = new TagLib::Ogg::FLAC::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-aiff") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-aiff") ) )
     {
         result = new TagLib::RIFF::AIFF::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-flac") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-flac") ) )
     {
         result = new TagLib::FLAC::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-musepack") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-musepack") ) )
     {
         result = new TagLib::MPC::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-wav") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-wav") ) )
     {
         result = new TagLib::RIFF::WAV::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-wavpack") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-wavpack") ) )
     {
         result = new TagLib::WavPack::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-tta") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-tta") ) )
     {
         result = new TagLib::TrueAudio::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-speex") )
-             || mimetype.inherits( QLatin1String("audio/x-speex+ogg") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-speex") )
+             || mimetype.inherits( QStringLiteral("audio/x-speex+ogg") ) )
     {
         result = new TagLib::Ogg::Speex::File(fileName, readProperties, propertiesStyle);
     }
 #ifdef TAGLIB_MOD_FOUND
-    else if( mimetype.inherits( QLatin1String("audio/x-mod") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-mod") ) )
     {
         result = new TagLib::Mod::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-s3m") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-s3m") ) )
     {
         result = new TagLib::S3M::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-it") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-it") ) )
     {
         result = new TagLib::IT::File(fileName, readProperties, propertiesStyle);
     }
-    else if( mimetype.inherits( QLatin1String("audio/x-xm") ) )
+    else if( mimetype.inherits( QStringLiteral("audio/x-xm") ) )
     {
         result = new TagLib::XM::File(fileName, readProperties, propertiesStyle);
     }

@@ -37,7 +37,7 @@ class SqlCollectionLocationFactory;
 class SqlQueryMakerFactory;
 
 /// Configuration group name in amarokrc for preferred transcoding configuration for SqlCollection
-static const QString SQL_TRANSCODING_GROUP_NAME = "Collection Transcoding Preference";
+static const QString SQL_TRANSCODING_GROUP_NAME = QStringLiteral("Collection Transcoding Preference");
 
 class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCollection
 {

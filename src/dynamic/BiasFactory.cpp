@@ -160,14 +160,14 @@ void
 Dynamic::ReplacementBias::toXml( QXmlStreamWriter *writer ) const
 {
     Q_UNUSED( writer );
-    writer->writeComment("Replacement"); // we need to force the closing of the bias start tag
+    writer->writeComment(QStringLiteral("Replacement")); // we need to force the closing of the bias start tag
     writer->device()->write( m_html.left( m_html.size() - m_name.length() - 3 ) );
 }
 
 QString
 Dynamic::ReplacementBias::sName()
 {
-    return QLatin1String( "replacementBias" );
+    return QStringLiteral( "replacementBias" );
 }
 
 QString

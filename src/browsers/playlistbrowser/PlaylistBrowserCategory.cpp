@@ -44,7 +44,7 @@
 
 using namespace PlaylistBrowserNS;
 
-QString PlaylistBrowserCategory::s_mergeViewKey( "Merged View" );
+QString PlaylistBrowserCategory::s_mergeViewKey( QStringLiteral("Merged View") );
 
 PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
                                                   const QString &categoryName,
@@ -56,7 +56,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_playlistCategory( playlistCategory )
 {
     setContentsMargins( 0, 0, 0, 0 );
-    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_podcasts.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/hover_info_podcasts.png") ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )
@@ -74,17 +74,17 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
 
     m_toolBar->addSeparator();
 
-    m_addFolderAction = new QAction( QIcon::fromTheme( "folder-new" ), i18n( "Add Folder" ), this  );
+    m_addFolderAction = new QAction( QIcon::fromTheme( QStringLiteral("folder-new") ), i18n( "Add Folder" ), this  );
     m_addFolderAction->setPriority( QAction::LowPriority );
     m_toolBar->addAction( m_addFolderAction );
     connect( m_addFolderAction, &QAction::triggered, this, &PlaylistBrowserCategory::createNewFolder );
 
-    m_providerMenu = new KActionMenu( QIcon::fromTheme( "checkbox" ), i18n( "Visible Sources"), this );
+    m_providerMenu = new KActionMenu( QIcon::fromTheme( QStringLiteral("checkbox") ), i18n( "Visible Sources"), this );
     m_providerMenu->setDelayed( false );
     m_providerMenu->setPriority( QAction::HighPriority );
     m_toolBar->addAction( m_providerMenu );
 
-    QAction *toggleAction = new QAction( QIcon::fromTheme( "view-list-tree" ), i18n( "Merged View" ),
+    QAction *toggleAction = new QAction( QIcon::fromTheme( QStringLiteral("view-list-tree") ), i18n( "Merged View" ),
                                          m_toolBar );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( Amarok::config( m_configGroup ).readEntry( s_mergeViewKey, false ) );
@@ -260,7 +260,7 @@ PlaylistBrowserCategory::slotToggleProviderButton()
         QAction *action = m_providerActions.value( p );
         if( action->isChecked() )
         {
-            QString escapedName = QRegExp::escape( p->prettyName() ).replace( ' ', "\\ " );
+            QString escapedName = QRegExp::escape( p->prettyName() ).replace( ' ', QLatin1String("\\ ") );
             filter += QString( filter.isEmpty() ? "%1" : "|%1" ).arg( escapedName );
             checkedActions << action;
             action->setEnabled( true );
@@ -298,7 +298,7 @@ PlaylistBrowserCategory::createNewFolder()
                     folderCount = newNumber;
             }
         }
-        groupName += QString( " (%1)" ).arg( folderCount + 1 );
+        groupName += QStringLiteral( " (%1)" ).arg( folderCount + 1 );
     }
     QModelIndex idx = m_filterProxy->mapFromSource( m_byFolderProxy->createNewFolder( groupName ) );
     m_playlistView->setCurrentIndex( idx );

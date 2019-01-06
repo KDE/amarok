@@ -512,7 +512,7 @@ MatchedTracksPage::openConfiguration()
 {
     App *app = pApp;
     if( app )
-        app->slotConfigAmarok( "MetadataConfig" );
+        app->slotConfigAmarok( QStringLiteral("MetadataConfig") );
 }
 
 void

@@ -68,7 +68,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
     {
         // root item
         m_mainButton->setToolTip( i18n( "Media Sources Home" ) );
-        m_mainButton->setIcon( QIcon::fromTheme( "user-home" ) );
+        m_mainButton->setIcon( QIcon::fromTheme( QStringLiteral("user-home") ) );
     }
 
     connect( m_mainButton, &BreadcrumbItemButton::sizePolicyChanged, this, &BrowserBreadcrumbItem::updateSizePolicy );
@@ -108,7 +108,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
         foreach( const BreadcrumbSibling &sibling, childItems )
         {
             QString visibleName = sibling.name;
-            visibleName.replace( '&', "&&" ); // prevent bug 244817
+            visibleName.replace( '&', QLatin1String("&&") ); // prevent bug 244817
             QAction *action = menu->addAction( sibling.icon, visibleName );
             action->setProperty( "callback", sibling.callback );
 

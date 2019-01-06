@@ -33,7 +33,7 @@
 BrowserDock::BrowserDock( QWidget *parent )
     : AmarokDockWidget( i18n( "&Media Sources" ), parent )
 {
-    setObjectName( "Media Sources dock" );
+    setObjectName( QStringLiteral("Media Sources dock") );
     setAllowedAreas( Qt::AllDockWidgetAreas );
 
     //we have to create this here as it is used when setting up the
@@ -48,7 +48,7 @@ BrowserDock::BrowserDock( QWidget *parent )
 
     m_breadcrumbWidget = new BrowserBreadcrumbWidget( m_mainWidget );
     new HorizontalDivider( m_mainWidget );
-    m_categoryList = new BrowserCategoryList( "root list", m_mainWidget );
+    m_categoryList = new BrowserCategoryList( QStringLiteral("root list"), m_mainWidget );
     m_breadcrumbWidget->setRootList( m_categoryList.data() );
 
     m_messageArea = new BrowserMessageArea( m_mainWidget );
@@ -64,16 +64,16 @@ BrowserDock::~BrowserDock()
 
 void BrowserDock::polish()
 {
-    m_categoryList->setIcon( QIcon::fromTheme( "user-home" ) );
+    m_categoryList->setIcon( QIcon::fromTheme( QStringLiteral("user-home") ) );
 
     m_categoryList->setMinimumSize( 100, 300 );
 
     connect( m_breadcrumbWidget, &BrowserBreadcrumbWidget::toHome, this, &BrowserDock::home );
 
     // Keyboard shortcut for going back one level
-    QAction *action = new QAction( QIcon::fromTheme( "go-up" ), i18n( "Go Up in Media Sources Pane" ),
+    QAction *action = new QAction( QIcon::fromTheme( QStringLiteral("go-up") ), i18n( "Go Up in Media Sources Pane" ),
                                   m_mainWidget );
-    Amarok::actionCollection()->addAction( "browser_previous", action );
+    Amarok::actionCollection()->addAction( QStringLiteral("browser_previous"), action );
     connect( action, &QAction::triggered, m_categoryList.data(), &BrowserCategoryList::back );
 //    action->setShortcut( QKeySequence( Qt::Key_Backspace ) );
     action->setShortcut( Qt::Key_Backspace );

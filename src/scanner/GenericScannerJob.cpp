@@ -189,7 +189,7 @@ GenericScannerJob::scannerPath()
     QString path;
     if( overridePath.isEmpty() ) // Not running a test
     {
-        path = QStandardPaths::findExecutable( "amarokcollectionscanner" );
+        path = QStandardPaths::findExecutable( QStringLiteral("amarokcollectionscanner") );
 
         // TODO: Not sure this is still useful...
         // If the binary is not in $PATH, then search in the application folder too
@@ -233,29 +233,29 @@ GenericScannerJob::createScannerProcess( bool restart )
     scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
 
     // debug() << "creating options";
-    *scanner << scannerPath() << "--idlepriority";
+    *scanner << scannerPath() << QStringLiteral("--idlepriority");
 
     if( m_type != GenericScanManager::FullScan ) // we don't need a batch file for a full scan
         m_batchfilePath = m_manager->getBatchFile( m_scanDirsRequested );
 
     if( m_type != GenericScanManager::FullScan )
-        *scanner << "-i";
+        *scanner << QStringLiteral("-i");
 
     if( !m_batchfilePath.isEmpty() )
-        *scanner << "--batch" << m_batchfilePath;
+        *scanner << QStringLiteral("--batch") << m_batchfilePath;
 
     if( m_recursive )
-        *scanner << "-r";
+        *scanner << QStringLiteral("-r");
 
     if( m_charsetDetect )
-        *scanner << "-c";
+        *scanner << QStringLiteral("-c");
 
     if( restart )
-        *scanner << "-s";
+        *scanner << QStringLiteral("-s");
 
     // debug() << "creating shared memory";
     if( m_scannerStateMemory )
-        *scanner << "--sharedmemory" << m_scannerStateMemory->key();
+        *scanner << QStringLiteral("--sharedmemory") << m_scannerStateMemory->key();
 
     *scanner << m_scanDirsRequested;
 
@@ -317,7 +317,7 @@ GenericScannerJob::restartScannerProcess()
         // TODO: this message doesn't seem to be propagated to the UI
         QString text = i18n( "The collection scan had to be aborted. Too many crashes (%1) "
                 "were encountered during the scan. Following files caused the crashes:\n\n%2",
-                m_restartCount, badFiles.join( "\n" ) );
+                m_restartCount, badFiles.join( QStringLiteral("\n") ) );
 
         emit failed( text );
         return false;
@@ -364,7 +364,7 @@ GenericScannerJob::parseScannerOutput()
             QStringRef name = m_reader.name();
             if( name == "scanner" )
             {
-                int totalCount = m_reader.attributes().value( "count" ).toString().toInt();
+                int totalCount = m_reader.attributes().value( QStringLiteral("count") ).toString().toInt();
                 emit directoryCount( totalCount );
             }
             else if( name == "directory" )
@@ -402,7 +402,7 @@ GenericScannerJob::getScannerOutput()
     QByteArray newData = m_scanner->readAll();
     m_incompleteTagBuffer += newData;
 
-    int index = m_incompleteTagBuffer.lastIndexOf( "</scanner>" );
+    int index = m_incompleteTagBuffer.lastIndexOf( QLatin1String("</scanner>") );
     if( index >= 0 )
     {
         // append new data (we need to be locked. the reader is probably not thread save)
@@ -411,7 +411,7 @@ GenericScannerJob::getScannerOutput()
     }
     else
     {
-        index = m_incompleteTagBuffer.lastIndexOf( "</directory>" );
+        index = m_incompleteTagBuffer.lastIndexOf( QLatin1String("</directory>") );
         if( index >= 0 )
         {
             // append new data (we need to be locked. the reader is probably not thread save)

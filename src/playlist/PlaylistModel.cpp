@@ -75,9 +75,9 @@ breakLongLinesHTML( const QString &origText )
 {
     // filter-out HTML tags..
     QString text( origText );
-    text.replace( '&', "&amp;" ); // needs to be first, obviously
-    text.replace( '<', "&lt;" );
-    text.replace( '>', "&gt;" );
+    text.replace( '&', QLatin1String("&amp;") ); // needs to be first, obviously
+    text.replace( '<', QLatin1String("&lt;") );
+    text.replace( '>', QLatin1String("&gt;") );
 
     // Now let's break up long lines so that the tooltip doesn't become hideously large
     if( fitsInOneLineHTML( text ) )
@@ -98,7 +98,7 @@ breakLongLinesHTML( const QString &origText )
             {
                 if (lineLength > 0)
                 {
-                    textInLines += "<br/>";
+                    textInLines += QLatin1String("<br/>");
                 }
                 lineLength = 0;
                 // Let's check if the next word is not too long for the new line to contain
@@ -133,11 +133,11 @@ HTMLLine( const Playlist::Column& column, const QString& value, bool force = fal
     if( !value.isEmpty() || force )
     {
         QString line;
-        line += "<tr><td align=\"right\">";
+        line += QLatin1String("<tr><td align=\"right\">");
         line += "<img src=\""+KIconLoader::global()->iconPath( Playlist::iconName( column ), -16)+"\" />";
-        line += "</td><td align=\"left\">";
+        line += QLatin1String("</td><td align=\"left\">");
         line += breakLongLinesHTML( value );
-        line += "</td></tr>";
+        line += QLatin1String("</td></tr>");
         return line;
     }
     else
@@ -314,7 +314,7 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
             if( label )
                 labels << label->name();
         }
-        text += HTMLLine( Playlist::Labels, labels.join( QString(", ") ) );
+        text += HTMLLine( Playlist::Labels, labels.join( QStringLiteral(", ") ) );
     }
 
     if( s_tooltipColumns[Playlist::Score] )
@@ -487,7 +487,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                     {
                         labelNames << label->prettyName();
                     }
-                    return labelNames.join( ", " );
+                    return labelNames.join( QStringLiteral(", ") );
                 }
                 break;
             }
@@ -620,7 +620,7 @@ Playlist::Model::mimeTypes() const
 {
     QStringList ret = QAbstractListModel::mimeTypes();
     ret << AmarokMimeData::TRACK_MIME;
-    ret << "text/uri-list"; //we do accept urls
+    ret << QStringLiteral("text/uri-list"); //we do accept urls
     return ret;
 }
 
@@ -944,7 +944,7 @@ Playlist::Model::prettyColumnName( Column index ) //static
     case LastPlayed: return i18nc( "Column name", "Last Played" );
     case Mood:       return i18n( "Mood" );
     case Filesize:   return i18n( "File Size" );
-    default:         return "This is a bug.";
+    default:         return QStringLiteral("This is a bug.");
     }
 
 }

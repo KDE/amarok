@@ -39,7 +39,7 @@ namespace Mpris1
         : QObject( qApp )
     {
         new Mpris1TrackListAdaptor(this);
-        QDBusConnection::sessionBus().registerObject( "/TrackList", this );
+        QDBusConnection::sessionBus().registerObject( QStringLiteral("/TrackList"), this );
         connect( The::playlist()->qaim(), &QAbstractItemModel::rowsInserted, this, &TrackListHandler::slotTrackListChange );
         connect( The::playlist()->qaim(), &QAbstractItemModel::rowsRemoved, this, &TrackListHandler::slotTrackListChange );
     }

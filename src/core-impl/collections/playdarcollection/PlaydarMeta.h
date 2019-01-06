@@ -72,7 +72,7 @@ namespace Meta
                           int bitrate,
                           int filesize,
                           QString &source );
-            ~PlaydarTrack();
+            ~PlaydarTrack() override;
             
             QString name() const override;
             QUrl playableUrl() const override;

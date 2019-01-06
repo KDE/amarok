@@ -79,12 +79,12 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             {
                 track = playlist->tracks()[index.row()];
                 name = track->prettyName();
-                icon = QIcon::fromTheme( "amarok_track" );
+                icon = QIcon::fromTheme( QStringLiteral("amarok_track") );
             }
             else
             {
                 name = playlist->prettyName();
-                icon = QIcon::fromTheme( "amarok_playlist" );
+                icon = QIcon::fromTheme( QStringLiteral("amarok_playlist") );
             }
             break;
         }
@@ -93,7 +93,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             if( !playlist->groups().isEmpty() )
             {
                 name = playlist->groups().first();
-                icon = QIcon::fromTheme( "folder" );
+                icon = QIcon::fromTheme( QStringLiteral("folder") );
             }
             break;
         }
@@ -204,7 +204,7 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
                     Meta::TrackPtr track = trackFromIndex( idx );
                     if( !track )
                         return false;
-                    debug() << QString( "Copy track \"%1\" to \"%2\"." )
+                    debug() << QStringLiteral( "Copy track \"%1\" to \"%2\"." )
                             .arg( track->prettyName(),  provider->prettyName() );
     //                return !provider->addTrack( track ).isNull();
                     provider->addTrack( track ); //ignore result since UmsPodcastProvider returns NULL
@@ -222,7 +222,7 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
                             return false;
                     }
 
-                    debug() << QString( "Copy playlist \"%1\" to \"%2\"." )
+                    debug() << QStringLiteral( "Copy playlist \"%1\" to \"%2\"." )
                             .arg( playlist->prettyName(), provider->prettyName() );
 
                     return !provider->addPlaylist( playlist ).isNull();

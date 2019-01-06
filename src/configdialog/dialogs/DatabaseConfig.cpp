@@ -106,7 +106,7 @@ DatabaseConfig::testDatabaseConnection() //SLOT
                 KMessageBox::error( this, i18n( "The amarok database reported "
                                                 "the following errors:\n%1\nIn most cases you will need to resolve "
                                                 "these errors before Amarok will run properly.",
-                                    connectionErrors.join( "\n" ) ),
+                                    connectionErrors.join( QStringLiteral("\n") ) ),
                                     i18n( "Database Error" ));
         }
     }
@@ -154,7 +154,7 @@ DatabaseConfig::updateSQLQuery() //SLOT
 
         // Don't print the actual password!
         const QString examplePassword = i18nc( "A default password for insertion into an example SQL command (so as not to print the real one). To be manually replaced by the user.", "password" );
-        query = QString( "CREATE DATABASE %1;\nGRANT ALL PRIVILEGES ON %1.* TO '%2' IDENTIFIED BY '%3'; FLUSH PRIVILEGES;" )
+        query = QStringLiteral( "CREATE DATABASE %1;\nGRANT ALL PRIVILEGES ON %1.* TO '%2' IDENTIFIED BY '%3'; FLUSH PRIVILEGES;" )
                    .arg( kcfg_Database->text(), kcfg_User->text(), examplePassword );
     }
     text_SQL->setPlainText( query );

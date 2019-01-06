@@ -37,11 +37,11 @@ AmarokBookmarkScript::AmarokBookmarkScript( QScriptEngine *engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    engine->globalObject().property( "Amarok" ).setProperty( "Bookmark", scriptObject );
+    engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Bookmark"), scriptObject );
     qScriptRegisterMetaType<BookmarkGroupPtr>( engine, toScriptValue<BookmarkGroupPtr, BookmarkGroupPrototype>, fromScriptValue<BookmarkGroupPtr, BookmarkGroupPrototype> );
     qScriptRegisterMetaType<AmarokUrlPtr>( engine, toScriptValue<AmarokUrlPtr, BookmarkPrototype>, fromScriptValue<AmarokUrlPtr, BookmarkPrototype> );
-    engine->globalObject().setProperty( "BookmarkGroup", engine->newFunction( BookmarkGroupPrototype::bookmarkGroupCtor ) );
-    engine->globalObject().setProperty( "Bookmark", engine->newFunction( BookmarkPrototype::bookmarkCtor ) );
+    engine->globalObject().setProperty( QStringLiteral("BookmarkGroup"), engine->newFunction( BookmarkGroupPrototype::bookmarkGroupCtor ) );
+    engine->globalObject().setProperty( QStringLiteral("Bookmark"), engine->newFunction( BookmarkPrototype::bookmarkCtor ) );
     qScriptRegisterMetaType<BookmarkGroupList>( engine, toScriptArray, fromScriptArray );
     qScriptRegisterMetaType<BookmarkList>( engine, toScriptArray, fromScriptArray );
 }
@@ -81,7 +81,7 @@ BookmarkGroupPrototype::bookmarkGroupCtor( QScriptContext *context, QScriptEngin
     switch( context->argumentCount() )
     {
         case 0:
-            return context->throwError( QScriptContext::SyntaxError, "Not enough arguments!!" );
+            return context->throwError( QScriptContext::SyntaxError, QStringLiteral("Not enough arguments!!") );
 
         case 1:
             if( context->argument( 0 ).isString() )
@@ -100,7 +100,7 @@ BookmarkGroupPrototype::bookmarkGroupCtor( QScriptContext *context, QScriptEngin
             break;
     }
     if( !group )
-        return context->throwError( QScriptContext::TypeError, "Invalid arguments!" );
+        return context->throwError( QScriptContext::TypeError, QStringLiteral("Invalid arguments!") );
     return engine->newQObject( new BookmarkGroupPrototype( BookmarkGroupPtr( group ) ), QScriptEngine::ScriptOwnership, QScriptEngine::ExcludeSuperClassContents );
 }
 
@@ -217,7 +217,7 @@ BookmarkPrototype::bookmarkCtor( QScriptContext *context, QScriptEngine *engine 
     switch( context->argumentCount() )
     {
         case 0:
-            return context->throwError( QScriptContext::SyntaxError, "Not enough arguments!!" );
+            return context->throwError( QScriptContext::SyntaxError, QStringLiteral("Not enough arguments!!") );
 
         case 1:
             if( context->argument( 0 ).isString() )
@@ -240,7 +240,7 @@ BookmarkPrototype::bookmarkCtor( QScriptContext *context, QScriptEngine *engine 
             break;
     }
     if( !url )
-        return context->throwError( QScriptContext::TypeError, "Invalid arguments!" );
+        return context->throwError( QScriptContext::TypeError, QStringLiteral("Invalid arguments!") );
 
     return engine->newQObject( new BookmarkPrototype( url ),
                                QScriptEngine::ScriptOwnership,

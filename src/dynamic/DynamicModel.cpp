@@ -257,9 +257,9 @@ Dynamic::DynamicModel::data( const QModelIndex& i, int role ) const
 
         case Qt::DecorationRole:
             if( activePlaylist() == indexPlaylist )
-                return QIcon::fromTheme( "amarok_playlist" );
+                return QIcon::fromTheme( QStringLiteral("amarok_playlist") );
             else
-                return QIcon::fromTheme( "amarok_playlist_clear" );
+                return QIcon::fromTheme( QStringLiteral("amarok_playlist_clear") );
 
         case Qt::FontRole:
             {
@@ -523,7 +523,7 @@ QStringList
 Dynamic::DynamicModel::mimeTypes() const
 {
     QStringList types;
-    types << "application/amarok.biasModel.index";
+    types << QStringLiteral("application/amarok.biasModel.index");
     return types;
 }
 
@@ -544,7 +544,7 @@ Dynamic::DynamicModel::mimeData(const QModelIndexList &indexes) const
     QDataStream stream( &bytes, QIODevice::WriteOnly );
     serializeIndex( &stream, index );
     QMimeData *mimeData = new QMimeData();
-    mimeData->setData("application/amarok.biasModel.index", bytes);
+    mimeData->setData(QStringLiteral("application/amarok.biasModel.index"), bytes);
     return mimeData;
 }
 
@@ -560,10 +560,10 @@ Dynamic::DynamicModel::dropMimeData(const QMimeData *data,
     if( action == Qt::IgnoreAction )
         return true;
 
-    if( data->hasFormat("application/amarok.biasModel.index") )
+    if( data->hasFormat(QStringLiteral("application/amarok.biasModel.index")) )
     {
         // get the source index from the mime data
-        QByteArray bytes = data->data("application/amarok.biasModel.index");
+        QByteArray bytes = data->data(QStringLiteral("application/amarok.biasModel.index"));
         QDataStream stream( &bytes, QIODevice::ReadOnly );
         QModelIndex index = unserializeIndex( &stream );
 
@@ -672,13 +672,13 @@ Dynamic::DynamicModel::index( Dynamic::DynamicPlaylist* playlist ) const
 void
 Dynamic::DynamicModel::savePlaylists()
 {
-    savePlaylists( "dynamic.xml" );
+    savePlaylists( QStringLiteral("dynamic.xml") );
 }
 
 void
 Dynamic::DynamicModel::loadPlaylists()
 {
-    loadPlaylists( "dynamic.xml" );
+    loadPlaylists( QStringLiteral("dynamic.xml") );
 }
 
 void
@@ -797,13 +797,13 @@ Dynamic::DynamicModel::savePlaylists( const QString &filename )
     QXmlStreamWriter xmlWriter( &xmlFile );
     xmlWriter.setAutoFormatting( true );
     xmlWriter.writeStartDocument();
-    xmlWriter.writeStartElement("biasedPlaylists");
-    xmlWriter.writeAttribute("version", "2" );
-    xmlWriter.writeAttribute("current", QString::number( m_activePlaylistIndex ) );
+    xmlWriter.writeStartElement(QStringLiteral("biasedPlaylists"));
+    xmlWriter.writeAttribute(QStringLiteral("version"), QStringLiteral("2") );
+    xmlWriter.writeAttribute(QStringLiteral("current"), QString::number( m_activePlaylistIndex ) );
 
     foreach( Dynamic::DynamicPlaylist *playlist, m_playlists )
     {
-        xmlWriter.writeStartElement("playlist");
+        xmlWriter.writeStartElement(QStringLiteral("playlist"));
         playlist->toXml( &xmlWriter );
         xmlWriter.writeEndElement();
     }
@@ -918,7 +918,7 @@ Dynamic::DynamicModel::initPlaylists()
     QString query = Meta::shortI18nForField( Meta::valGenre ) + ':' + i18n( "Rock" );
     /* following cannot be currently translated, see ExpressionParser::isAdvancedExpression()
      * and ExpressionParser::finishedToken() */
-    query += " AND ";
+    query += QLatin1String(" AND ");
     query += Meta::shortI18nForField( Meta::valGenre ) + ':' + i18n( "Pop" );
     playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( query ) ) );
     insertPlaylist( 1, playlist );
@@ -1009,7 +1009,7 @@ Dynamic::DynamicModel::cloneList( Dynamic::BiasedPlaylist* list )
 
     // write the list
     QXmlStreamWriter xmlWriter( &buffer );
-    xmlWriter.writeStartElement( QLatin1String("playlist") );
+    xmlWriter.writeStartElement( QStringLiteral("playlist") );
     list->toXml( &xmlWriter );
     xmlWriter.writeEndElement();
 
@@ -1103,7 +1103,7 @@ static QString
 biasToString( Dynamic::BiasPtr bias, int level )
 {
     QString result;
-    result += QString(" ").repeated(level) + bias->toString() + ' ' + QString::number(quintptr(bias.data()), 16) + '\n';
+    result += QStringLiteral(" ").repeated(level) + bias->toString() + ' ' + QString::number(quintptr(bias.data()), 16) + '\n';
     if( Dynamic::AndBias* aBias = qobject_cast<Dynamic::AndBias*>(bias.data()) )
     {
         foreach( Dynamic::BiasPtr bias2, aBias->biases() )

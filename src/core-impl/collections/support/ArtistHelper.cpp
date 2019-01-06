@@ -49,25 +49,25 @@ ArtistHelper::realTrackArtist( const QString &trackArtistTag )
 {
     bool featuring = false;
     QStringList trackArtists;
-    if( trackArtistTag.contains( "featuring" ) )
+    if( trackArtistTag.contains( QLatin1String("featuring") ) )
     {
         featuring = true;
-        trackArtists = trackArtistTag.split( "featuring" );
+        trackArtists = trackArtistTag.split( QStringLiteral("featuring") );
     }
-    else if( trackArtistTag.contains( "feat." ) )
+    else if( trackArtistTag.contains( QLatin1String("feat.") ) )
     {
         featuring = true;
-        trackArtists = trackArtistTag.split( "feat." );
+        trackArtists = trackArtistTag.split( QStringLiteral("feat.") );
     }
-    else if( trackArtistTag.contains( "ft." ) )
+    else if( trackArtistTag.contains( QLatin1String("ft.") ) )
     {
         featuring = true;
-        trackArtists = trackArtistTag.split( "ft." );
+        trackArtists = trackArtistTag.split( QStringLiteral("ft.") );
     }
-    else if( trackArtistTag.contains( "f." ) )
+    else if( trackArtistTag.contains( QLatin1String("f.") ) )
     {
         featuring = true;
-        trackArtists = trackArtistTag.split( "f." );
+        trackArtists = trackArtistTag.split( QStringLiteral("f.") );
     }
 
     //this needs to be improved
@@ -77,7 +77,7 @@ ArtistHelper::realTrackArtist( const QString &trackArtistTag )
         //always use the first artist
         QString tmp = trackArtists[0].simplified();
         //artists are written as "A (feat. B)" or "A [feat. B]" as well
-        if( tmp.endsWith(" (") || tmp.endsWith( " [" ) )
+        if( tmp.endsWith(QLatin1String(" (")) || tmp.endsWith( QLatin1String(" [") ) )
             tmp = tmp.left( tmp.length() -2 ).simplified(); //remove last two characters
 
         if( tmp.isEmpty() )

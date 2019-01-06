@@ -23,7 +23,7 @@ using namespace Transcoding;
 Mp3Format::Mp3Format()
 {
     m_encoder = MP3;
-    m_fileExtension = "mp3";
+    m_fileExtension = QStringLiteral("mp3");
     QString description1 =
         i18n( "The bitrate is a measure of the quantity of data used to represent a "
         "second of the audio track.<br>The <b>MP3</b> encoder used by Amarok supports "
@@ -84,7 +84,7 @@ QStringList
 Mp3Format::ffmpegParameters( const Configuration &configuration ) const
 {
     QStringList parameters;
-    parameters << "-acodec" << "libmp3lame";
+    parameters << QStringLiteral("-acodec") << QStringLiteral("libmp3lame");
     foreach( const Property &property, m_propertyList )
     {
         if( !configuration.property( property.name() ).isNull()
@@ -93,11 +93,11 @@ Mp3Format::ffmpegParameters( const Configuration &configuration ) const
             if( property.name() == "quality" )
             {
                 int ffmpegQuality = qAbs( configuration.property( "quality" ).toInt() - 9 );
-                parameters << "-aq" << QString::number( ffmpegQuality );
+                parameters << QStringLiteral("-aq") << QString::number( ffmpegQuality );
             }
         }
     }
-    parameters << "-vcodec" << "copy"; // keep album art unchanged
+    parameters << QStringLiteral("-vcodec") << QStringLiteral("copy"); // keep album art unchanged
     return parameters;
 }
 

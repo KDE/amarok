@@ -83,7 +83,7 @@ PodcastFilenameLayoutConfigDialog::slotApply()
     if( m_pflc->m_filenameLayoutCustom->isChecked() )
         m_channel->setFilenameLayout( m_pflc->m_filenameLayoutText->text() );
     else
-        m_channel->setFilenameLayout( "%default%" );
+        m_channel->setFilenameLayout( QStringLiteral("%default%") );
 }
 
 bool

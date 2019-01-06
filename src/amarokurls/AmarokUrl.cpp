@@ -56,7 +56,7 @@ void AmarokUrl::initFromString( const QString & urlString )
 {
     //first, strip amarok://
     QString strippedUrlString = urlString;
-    strippedUrlString = strippedUrlString.replace( "amarok://", "" );
+    strippedUrlString = strippedUrlString.replace( QLatin1String("amarok://"), QLatin1String("") );
 
     //separate path from arguments
     QStringList parts = strippedUrlString.split( '?' );
@@ -125,7 +125,7 @@ bool AmarokUrl::run()
 QString AmarokUrl::url() const
 {
     QUrl url;
-    url.setScheme( "amarok" );
+    url.setScheme( QStringLiteral("amarok") );
     url.setHost( m_command );
     url.setPath( '/' + m_path ); // the path must begin by /
     QUrlQuery query;
@@ -152,7 +152,7 @@ bool AmarokUrl::saveToDb()
     {
         //update existing
         debug() << "Updating bookmark";
-        QString query = "UPDATE bookmarks SET parent_id=%1, name='%2', url='%3', description='%4', custom='%5' WHERE id=%6;";
+        QString query = QStringLiteral("UPDATE bookmarks SET parent_id=%1, name='%2', url='%3', description='%4', custom='%5' WHERE id=%6;");
         query = query.arg( QString::number( parentId ), sql->escape( m_name ), sql->escape( url() ),
                            sql->escape( m_description ), sql->escape( m_customValue ), QString::number( m_id ) );
         StorageManager::instance()->sqlStorage()->query( query );
@@ -161,7 +161,7 @@ bool AmarokUrl::saveToDb()
     {
         //insert new
         debug() << "Creating new bookmark in the db";
-        QString query = "INSERT INTO bookmarks ( parent_id, name, url, description, custom ) VALUES ( %1, '%2', '%3', '%4', '%5' );";
+        QString query = QStringLiteral("INSERT INTO bookmarks ( parent_id, name, url, description, custom ) VALUES ( %1, '%2', '%3', '%4', '%5' );");
         query = query.arg( QString::number( parentId ), sql->escape( m_name ), sql->escape( url() ),
                            sql->escape( m_description ), sql->escape( m_customValue ) );
         m_id = StorageManager::instance()->sqlStorage()->insert( query, NULL );
@@ -192,7 +192,7 @@ QString AmarokUrl::description() const
 
 void AmarokUrl::removeFromDb()
 {
-    QString query = "DELETE FROM bookmarks WHERE id=%1";
+    QString query = QStringLiteral("DELETE FROM bookmarks WHERE id=%1");
     query = query.arg( QString::number( m_id ) );
     StorageManager::instance()->sqlStorage()->query( query );
 }

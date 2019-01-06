@@ -277,13 +277,13 @@ Meta::Artist::sortableName() const
     {
         QStringRef article = n.leftRef( 3 );
         QStringRef subject = n.midRef( 4 );
-        m_sortableName = QString( "%1, %2" ).arg( subject.toString(), article.toString() );
+        m_sortableName = QStringLiteral( "%1, %2" ).arg( subject.toString(), article.toString() );
     }
     else if( n.startsWith( QLatin1String("dj "), Qt::CaseInsensitive ) )
     {
         QStringRef article = n.leftRef( 2 );
         QStringRef subject = n.midRef( 3 );
-        m_sortableName = QString( "%1, %2" ).arg( subject.toString(), article.toString() );
+        m_sortableName = QStringLiteral( "%1, %2" ).arg( subject.toString(), article.toString() );
     }
     else
         m_sortableName = n;

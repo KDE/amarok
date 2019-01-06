@@ -996,7 +996,7 @@ MtpHandler::libGetGenre( const Meta::MediaDeviceTrackPtr &track )
 int
 MtpHandler::libGetYear( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_mtpTrackHash.value( track )->date ).mid( 0, 4 ).toUInt();
+    return QString::fromUtf8( m_mtpTrackHash.value( track )->date ).midRef( 0, 4 ).toUInt();
 }
 
 qint64

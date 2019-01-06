@@ -221,7 +221,7 @@ void LyricsManager::lyricsLoaded( const QUrl& url, const QByteArray& data, Netwo
 
 void LyricsManager::sanitizeTitle( QString& title )
 {
-    const QString magnatunePreviewString = QLatin1String( "PREVIEW: buy it at www.magnatune.com" );
+    const QString magnatunePreviewString = QStringLiteral( "PREVIEW: buy it at www.magnatune.com" );
 
     if( title.contains(magnatunePreviewString, Qt::CaseSensitive) )
         title = title.remove( " (" + magnatunePreviewString + ')' );
@@ -234,21 +234,21 @@ void LyricsManager::sanitizeTitle( QString& title )
 
 void LyricsManager::sanitizeArtist( QString& artist )
 {
-    const QString magnatunePreviewString = QLatin1String( "PREVIEW: buy it at www.magnatune.com" );
+    const QString magnatunePreviewString = QStringLiteral( "PREVIEW: buy it at www.magnatune.com" );
 
     if( artist.contains(magnatunePreviewString, Qt::CaseSensitive) )
         artist = artist.remove( " (" + magnatunePreviewString + ')' );
 
     // strip "featuring <someone else>" from the artist
-    int strip = artist.toLower().indexOf( " ft. ");
+    int strip = artist.toLower().indexOf( QLatin1String(" ft. "));
     if ( strip != -1 )
         artist = artist.mid( 0, strip );
 
-    strip = artist.toLower().indexOf( " feat. " );
+    strip = artist.toLower().indexOf( QLatin1String(" feat. ") );
     if ( strip != -1 )
         artist = artist.mid( 0, strip );
 
-    strip = artist.toLower().indexOf( " featuring " );
+    strip = artist.toLower().indexOf( QLatin1String(" featuring ") );
     if ( strip != -1 )
         artist = artist.mid( 0, strip );
 

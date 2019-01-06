@@ -130,7 +130,7 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     metrics->addItem( "chars" );
     l5->addWidget( metrics );
 #else
-    QLabel *metrics = new QLabel( "%", this );
+    QLabel *metrics = new QLabel( QStringLiteral("%"), this );
     l5->addWidget( metrics );
 #endif
 
@@ -168,11 +168,11 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
 
     l1->addStretch();
 
-    m_alignLeft->setIcon( QIcon::fromTheme( "format-justify-left" ) );
+    m_alignLeft->setIcon( QIcon::fromTheme( QStringLiteral("format-justify-left") ) );
     m_alignLeft->setCheckable( true );
-    m_alignCenter->setIcon( QIcon::fromTheme( "format-justify-center" ) );
+    m_alignCenter->setIcon( QIcon::fromTheme( QStringLiteral("format-justify-center") ) );
     m_alignCenter->setCheckable( true );
-    m_alignRight->setIcon( QIcon::fromTheme( "format-justify-right" ) );
+    m_alignRight->setIcon( QIcon::fromTheme( QStringLiteral("format-justify-right") ) );
     m_alignRight->setCheckable( true );
     QButtonGroup *align = new QButtonGroup( this );
     align->setExclusive( true );
@@ -180,11 +180,11 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     align->addButton( m_alignCenter );
     align->addButton( m_alignRight );
 
-    m_bold->setIcon( QIcon::fromTheme( "format-text-bold" ) );
+    m_bold->setIcon( QIcon::fromTheme( QStringLiteral("format-text-bold") ) );
     m_bold->setCheckable( true );
-    m_italic->setIcon( QIcon::fromTheme( "format-text-italic" ) );
+    m_italic->setIcon( QIcon::fromTheme( QStringLiteral("format-text-italic") ) );
     m_italic->setCheckable( true );
-    m_underline->setIcon( QIcon::fromTheme( "format-text-underline" ) );
+    m_underline->setIcon( QIcon::fromTheme( QStringLiteral("format-text-underline") ) );
     m_underline->setCheckable( true );
 
 }

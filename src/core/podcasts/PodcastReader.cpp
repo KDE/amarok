@@ -275,37 +275,37 @@ PodcastReader::StaticData::StaticData()
             &PodcastReader::readAtomTextCharacters )
 {
     // known elements:
-    knownElements[ "rss"          ] = Rss;
-    knownElements[ "RDF"          ] = Rdf;
-    knownElements[ "feed"         ] = Feed;
-    knownElements[ "channel"      ] = Channel;
-    knownElements[ "item"         ] = Item;
-    knownElements[ "image"        ] = Image;
-    knownElements[ "link"         ] = Link;
-    knownElements[ "url"          ] = Url;
-    knownElements[ "title"        ] = Title;
-    knownElements[ "author"       ] = Author;
-    knownElements[ "enclosure"    ] = EnclosureElement;
-    knownElements[ "guid"         ] = Guid;
-    knownElements[ "pubDate"      ] = PubDate;
-    knownElements[ "description"  ] = Description;
-    knownElements[ "summary"      ] = Summary;
-    knownElements[ "body"         ] = Body;
-    knownElements[ "entry"        ] = Entry;
-    knownElements[ "content"      ] = Content;
-    knownElements[ "name"         ] = Name;
-    knownElements[ "id"           ] = Id;
-    knownElements[ "subtitle"     ] = Subtitle;
-    knownElements[ "updated"      ] = Updated;
-    knownElements[ "published"    ] = Published;
-    knownElements[ "logo"         ] = Logo;
-    knownElements[ "icon"         ] = Icon;
-    knownElements[ "encoded"      ] = Encoded;
-    knownElements[ "creator"      ] = Creator;
-    knownElements[ "keywords"     ] = Keywords;
-    knownElements[ "new-feed-url" ] = NewFeedUrl;
-    knownElements[ "html"         ] = Html;
-    knownElements[ "HTML"         ] = Html;
+    knownElements[ QStringLiteral("rss")          ] = Rss;
+    knownElements[ QStringLiteral("RDF")          ] = Rdf;
+    knownElements[ QStringLiteral("feed")         ] = Feed;
+    knownElements[ QStringLiteral("channel")      ] = Channel;
+    knownElements[ QStringLiteral("item")         ] = Item;
+    knownElements[ QStringLiteral("image")        ] = Image;
+    knownElements[ QStringLiteral("link")         ] = Link;
+    knownElements[ QStringLiteral("url")          ] = Url;
+    knownElements[ QStringLiteral("title")        ] = Title;
+    knownElements[ QStringLiteral("author")       ] = Author;
+    knownElements[ QStringLiteral("enclosure")    ] = EnclosureElement;
+    knownElements[ QStringLiteral("guid")         ] = Guid;
+    knownElements[ QStringLiteral("pubDate")      ] = PubDate;
+    knownElements[ QStringLiteral("description")  ] = Description;
+    knownElements[ QStringLiteral("summary")      ] = Summary;
+    knownElements[ QStringLiteral("body")         ] = Body;
+    knownElements[ QStringLiteral("entry")        ] = Entry;
+    knownElements[ QStringLiteral("content")      ] = Content;
+    knownElements[ QStringLiteral("name")         ] = Name;
+    knownElements[ QStringLiteral("id")           ] = Id;
+    knownElements[ QStringLiteral("subtitle")     ] = Subtitle;
+    knownElements[ QStringLiteral("updated")      ] = Updated;
+    knownElements[ QStringLiteral("published")    ] = Published;
+    knownElements[ QStringLiteral("logo")         ] = Logo;
+    knownElements[ QStringLiteral("icon")         ] = Icon;
+    knownElements[ QStringLiteral("encoded")      ] = Encoded;
+    knownElements[ QStringLiteral("creator")      ] = Creator;
+    knownElements[ QStringLiteral("keywords")     ] = Keywords;
+    knownElements[ QStringLiteral("new-feed-url") ] = NewFeedUrl;
+    knownElements[ QStringLiteral("html")         ] = Html;
+    knownElements[ QStringLiteral("HTML")         ] = Html;
 
     // before start document/after end document
     rootMap.insert( Document, &docAction );
@@ -823,27 +823,27 @@ PodcastReader::unescape( const QString &text )
             {
                 QString entity( text.mid( i + 1, endIndex - i - 1 ) );
 
-                if( entity == "lt" )
+                if( entity == QLatin1String("lt") )
                 {
                     buf += '<';
                     i = endIndex;
                 }
-                else if( entity == "gt" )
+                else if( entity == QLatin1String("gt") )
                 {
                     buf += '>';
                     i = endIndex;
                 }
-                else if( entity == "amp" )
+                else if( entity == QLatin1String("amp") )
                 {
                     buf += '&';
                     i = endIndex;
                 }
-                else if( entity == "apos" )
+                else if( entity == QLatin1String("apos") )
                 {
                     buf += '\'';
                     i = endIndex;
                 }
-                else if( entity == "quot" )
+                else if( entity == QLatin1String("quot") )
                 {
                     buf += '"';
                     i = endIndex;
@@ -940,18 +940,18 @@ PodcastReader::textToHtml( const QString &text )
             }
             else
             {
-                buf += QString( "<a href=\"%1\">%1</a>" )
+                buf += QStringLiteral( "<a href=\"%1\">%1</a>" )
                     .arg( s.toHtmlEscaped() );
             }
         }
         else if( !(s = re.cap( 2 )).isEmpty() )
         {
-            buf += QString( "<a href=\"mailto:%1\">%1</a>" )
+            buf += QStringLiteral( "<a href=\"mailto:%1\">%1</a>" )
                 .arg( s.toHtmlEscaped() );
         }
         else if( !re.cap( 3 ).isEmpty() )
         {
-            buf += "<br/>\n";
+            buf += QLatin1String("<br/>\n");
         }
 
         index = re.pos() + re.matchedLength();
@@ -1003,7 +1003,7 @@ PodcastReader::beginUnknownFeedType()
 void
 PodcastReader::beginRss()
 {
-    if( m_xmlReader.attributes().value( "version" ) != "2.0" )
+    if( m_xmlReader.attributes().value( QStringLiteral("version") ) != "2.0" )
     {
         // TODO: change this string once we support more
         stopWithError( i18n( "%1 is not an RSS version 2.0 feed.", m_url.url() ) );
@@ -1087,8 +1087,8 @@ PodcastReader::beginChannel()
     // they only get changed when longer information is read as there is stored in
     // the appropriate field already. In order to still be able to correctly update
     // the feed's description/summary I set it here to the empty string:
-    m_channel->setDescription( "" );
-    m_channel->setSummary( "" );
+    m_channel->setDescription( QLatin1String("") );
+    m_channel->setSummary( QLatin1String("") );
     m_channel->setKeywords( QStringList() );
 }
 
@@ -1126,13 +1126,13 @@ PodcastReader::endItem()
         if( !m_enclosures.isEmpty() )
         {
             QString description( m_item->description() );
-            description += "\n<p><b>";
+            description += QLatin1String("\n<p><b>");
             description += i18n( "Alternative Enclosures:" );
-            description += "</b><br/>\n<ul>";
+            description += QLatin1String("</b><br/>\n<ul>");
 
             foreach( const Enclosure& enclosure, m_enclosures )
             {
-                description += QString( "<li><a href=\"%1\">%2</a> (%3, %4)</li>" )
+                description += QStringLiteral( "<li><a href=\"%1\">%2</a> (%3, %4)</li>" )
                                .arg( enclosure.url().url().toHtmlEscaped(),
                                      enclosure.url().fileName().toHtmlEscaped(),
                                      Meta::prettyFilesize( enclosure.fileSize() ),
@@ -1141,7 +1141,7 @@ PodcastReader::endItem()
                                      enclosure.mimeType().toHtmlEscaped() );
             }
 
-            description += "</ul></p>";
+            description += QLatin1String("</ul></p>");
             m_item->setDescription( description );
         }
 
@@ -1203,7 +1203,7 @@ PodcastReader::beginEnclosure()
     //    http://www.xs4all.nl/~foz/mod_enclosure.html
     QStringRef str;
 
-    str = m_xmlReader.attributes().value( "url" );
+    str = m_xmlReader.attributes().value( QStringLiteral("url") );
 
     if( str.isEmpty() )
         str = attribute( RDF_NS, "about" );
@@ -1216,14 +1216,14 @@ PodcastReader::beginEnclosure()
 
     QUrl url( str.toString() );
 
-    str = m_xmlReader.attributes().value( "length" );
+    str = m_xmlReader.attributes().value( QStringLiteral("length") );
 
     if( str.isEmpty() )
         str = attribute( ENC_NS, "length" );
 
     int length = str.toString().toInt();
 
-    str = m_xmlReader.attributes().value( "type" );
+    str = m_xmlReader.attributes().value( QStringLiteral("type") );
 
     if( str.isEmpty() )
         str = attribute( ENC_NS, "type" );
@@ -1258,7 +1258,7 @@ PodcastReader::beginImage()
 {
     if( m_xmlReader.namespaceUri() == ITUNES_NS )
     {
-        m_channel->setImageUrl( QUrl( m_xmlReader.attributes().value( "href" ).toString() ) );
+        m_channel->setImageUrl( QUrl( m_xmlReader.attributes().value( QStringLiteral("href") ).toString() ) );
     }
 }
 
@@ -1325,7 +1325,7 @@ PodcastReader::beginXml()
 
     foreach( const QXmlStreamAttribute &attr, m_xmlReader.attributes() )
     {
-        m_buffer += QString( " %1=\"%2\"" )
+        m_buffer += QStringLiteral( " %1=\"%2\"" )
                     .arg( attr.name().toString(),
                           attr.value().toString().toHtmlEscaped() );
     }
@@ -1559,7 +1559,7 @@ PodcastReader::readNoCharacters()
 void
 PodcastReader::endXml()
 {
-    m_buffer += "</";
+    m_buffer += QLatin1String("</");
     m_buffer += m_xmlReader.name().toString();
     m_buffer += '>';
 }

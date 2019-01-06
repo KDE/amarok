@@ -65,14 +65,14 @@ Dynamic::SimpleMatchBias::SimpleMatchBias()
 void
 Dynamic::SimpleMatchBias::fromXml( QXmlStreamReader *reader )
 {
-    m_invert = reader->attributes().value( "invert" ).toString().toInt();
+    m_invert = reader->attributes().value( QStringLiteral("invert") ).toString().toInt();
 }
 
 void
 Dynamic::SimpleMatchBias::toXml( QXmlStreamWriter *writer ) const
 {
     if( m_invert )
-        writer->writeAttribute("invert", "1");
+        writer->writeAttribute(QStringLiteral("invert"), QStringLiteral("1"));
 }
 
 bool
@@ -250,25 +250,25 @@ void
 Dynamic::TagMatchBias::toXml( QXmlStreamWriter *writer ) const
 {
     SimpleMatchBias::toXml( writer );
-    writer->writeTextElement( "field", Meta::playlistNameForField( m_filter.field() ) );
+    writer->writeTextElement( QStringLiteral("field"), Meta::playlistNameForField( m_filter.field() ) );
 
     if( m_filter.isNumeric() )
     {
-        writer->writeTextElement( "numValue",  QString::number( m_filter.numValue ) );
-        writer->writeTextElement( "numValue2", QString::number( m_filter.numValue2 ) );
+        writer->writeTextElement( QStringLiteral("numValue"),  QString::number( m_filter.numValue ) );
+        writer->writeTextElement( QStringLiteral("numValue2"), QString::number( m_filter.numValue2 ) );
     }
     else
     {
-        writer->writeTextElement( "value", m_filter.value );
+        writer->writeTextElement( QStringLiteral("value"), m_filter.value );
     }
 
-    writer->writeTextElement( "condition", nameForCondition( m_filter.condition ) );
+    writer->writeTextElement( QStringLiteral("condition"), nameForCondition( m_filter.condition ) );
 }
 
 QString
 Dynamic::TagMatchBias::sName()
 {
-    return QLatin1String( "tagMatchBias" );
+    return QStringLiteral( "tagMatchBias" );
 }
 
 QString
@@ -424,12 +424,12 @@ Dynamic::TagMatchBias::nameForCondition( MetaQueryWidget::FilterCondition cond )
 {
     switch( cond )
     {
-    case MetaQueryWidget::Equals:      return "equals";
-    case MetaQueryWidget::GreaterThan: return "greater";
-    case MetaQueryWidget::LessThan:    return "less";
-    case MetaQueryWidget::Between:     return "between";
-    case MetaQueryWidget::OlderThan:   return "older";
-    case MetaQueryWidget::Contains:    return "contains";
+    case MetaQueryWidget::Equals:      return QStringLiteral("equals");
+    case MetaQueryWidget::GreaterThan: return QStringLiteral("greater");
+    case MetaQueryWidget::LessThan:    return QStringLiteral("less");
+    case MetaQueryWidget::Between:     return QStringLiteral("between");
+    case MetaQueryWidget::OlderThan:   return QStringLiteral("older");
+    case MetaQueryWidget::Contains:    return QStringLiteral("contains");
     default:
         ;// the other conditions are only for the advanced playlist generator
     }
@@ -439,12 +439,12 @@ Dynamic::TagMatchBias::nameForCondition( MetaQueryWidget::FilterCondition cond )
 MetaQueryWidget::FilterCondition
 Dynamic::TagMatchBias::conditionForName( const QString &name )
 {
-    if( name == "equals" )        return MetaQueryWidget::Equals;
-    else if( name == "greater" )  return MetaQueryWidget::GreaterThan;
-    else if( name == "less" )     return MetaQueryWidget::LessThan;
-    else if( name == "between" )  return MetaQueryWidget::Between;
-    else if( name == "older" )    return MetaQueryWidget::OlderThan;
-    else if( name == "contains" ) return MetaQueryWidget::Contains;
+    if( name == QLatin1String("equals") )        return MetaQueryWidget::Equals;
+    else if( name == QLatin1String("greater") )  return MetaQueryWidget::GreaterThan;
+    else if( name == QLatin1String("less") )     return MetaQueryWidget::LessThan;
+    else if( name == QLatin1String("between") )  return MetaQueryWidget::Between;
+    else if( name == QLatin1String("older") )    return MetaQueryWidget::OlderThan;
+    else if( name == QLatin1String("contains") ) return MetaQueryWidget::Contains;
     else return MetaQueryWidget::Equals;
 }
 

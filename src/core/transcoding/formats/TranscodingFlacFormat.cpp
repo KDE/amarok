@@ -25,7 +25,7 @@ using namespace Transcoding;
 FlacFormat::FlacFormat()
 {
     m_encoder = FLAC;
-    m_fileExtension = "flac";
+    m_fileExtension = QStringLiteral("flac");
     QString description1 =
             i18n( "The <a href=http://flac.sourceforge.net/documentation_tools_flac.html>"
             "compression level</a> is an integer value between 0 and 8 that represents "
@@ -70,7 +70,7 @@ QStringList
 FlacFormat::ffmpegParameters( const Configuration &configuration ) const
 {
     QStringList parameters;
-    parameters << "-acodec" << "flac";
+    parameters << QStringLiteral("-acodec") << QStringLiteral("flac");
     foreach( const Property &property, m_propertyList )
     {
         if( !configuration.property( property.name() ).isNull()
@@ -78,12 +78,12 @@ FlacFormat::ffmpegParameters( const Configuration &configuration ) const
         {
             if( property.name() == "level" )
             {
-                parameters << "-compression_level"
+                parameters << QStringLiteral("-compression_level")
                            << QString::number( configuration.property( "level" ).toInt() );
             }
         }
     }
-    parameters << "-vn"; // no album art, writing it to flac is not supported by ffmpeg
+    parameters << QStringLiteral("-vn"); // no album art, writing it to flac is not supported by ffmpeg
     return parameters;
 }
 

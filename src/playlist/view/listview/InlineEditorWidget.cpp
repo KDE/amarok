@@ -200,13 +200,13 @@ void InlineEditorWidget::createChildWidgets()
             }
             else if( value == Divider )
             {
-                QPixmap left = The::svgHandler()->renderSvg( "divider_left",
+                QPixmap left = The::svgHandler()->renderSvg( QStringLiteral("divider_left"),
                                                              1, rowHeight,
-                                                             "divider_left" );
+                                                             QStringLiteral("divider_left") );
 
-                QPixmap right = The::svgHandler()->renderSvg( "divider_right",
+                QPixmap right = The::svgHandler()->renderSvg( QStringLiteral("divider_right"),
                                                               1, rowHeight,
-                                                              "divider_right" );
+                                                              QStringLiteral("divider_right") );
 
                 QPixmap dividerPixmap( 2, rowHeight );
                 dividerPixmap.fill( Qt::transparent );

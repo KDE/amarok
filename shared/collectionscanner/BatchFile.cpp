@@ -126,13 +126,13 @@ CollectionScanner::BatchFile::write( const QString &batchPath )
     writer.setAutoFormatting( true );
 
     writer.writeStartDocument();
-    writer.writeStartElement( QLatin1String("scanner") );
+    writer.writeStartElement( QStringLiteral("scanner") );
     writer.writeComment("Batch file for amarokcollectionscanner " AMAROK_VERSION " created on "+QDateTime::currentDateTime().toString());
 
     foreach( const QString &dir, m_directories )
     {
-        writer.writeStartElement( QLatin1String("directory") );
-        writer.writeTextElement( QLatin1String("path"), dir );
+        writer.writeStartElement( QStringLiteral("directory") );
+        writer.writeTextElement( QStringLiteral("path"), dir );
         writer.writeEndElement();
     }
 
@@ -141,10 +141,10 @@ CollectionScanner::BatchFile::write( const QString &batchPath )
         QString path( pair.first );
         uint mtime = pair.second;
 
-        writer.writeStartElement( QLatin1String("directory") );
-        writer.writeTextElement( QLatin1String("path"), path );
+        writer.writeStartElement( QStringLiteral("directory") );
+        writer.writeTextElement( QStringLiteral("path"), path );
         // note: some file systems return an mtime of 0
-        writer.writeTextElement( QLatin1String("mtime"), QString::number( mtime ) );
+        writer.writeTextElement( QStringLiteral("mtime"), QString::number( mtime ) );
         writer.writeEndElement();
     }
 

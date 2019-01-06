@@ -47,8 +47,8 @@ bool ExpressionParser::isAdvancedExpression( const QString &expression ) //stati
     return ( expression.contains( '"'   ) ||
              expression.contains( ':'   ) ||
              expression.contains( '-'   ) ||
-             expression.contains( "AND" ) ||
-             expression.contains( "OR"  ) );
+             expression.contains( QLatin1String("AND") ) ||
+             expression.contains( QLatin1String("OR")  ) );
 }
 
 /* PRIVATE */
@@ -147,9 +147,9 @@ void ExpressionParser::finishedToken()
     int s;
     if( m_haveGroup || !m_element.field.isEmpty() )
         s = Neither;
-    else if( m_string == "AND" )
+    else if( m_string == QLatin1String("AND") )
         s = And;
-    else if( m_string == "OR" )
+    else if( m_string == QLatin1String("OR") )
         s = Or;
     else
         s = Neither;

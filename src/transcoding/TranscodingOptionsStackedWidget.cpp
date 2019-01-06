@@ -51,7 +51,7 @@ OptionsStackedWidget::initWelcomePage()
     vbl->addLayout( hbl );
     hbl->addStretch();
     QLabel *arrow = new QLabel( welcomeWidget );
-    arrow->setPixmap( QIcon::fromTheme( "arrow-left" ).pixmap( 16, 16 ) );
+    arrow->setPixmap( QIcon::fromTheme( QStringLiteral("arrow-left") ).pixmap( 16, 16 ) );
     QLabel *message = new QLabel( i18n(
             "In order to configure the parameters of the transcoding operation, please "
             "pick an encoder from the list." ), this );

@@ -34,12 +34,12 @@ class CompilationAction : public QAction
                 connect( this, &CompilationAction::triggered, this, &CompilationAction::slotTriggered );
                 if( m_album->isCompilation() )
                 {
-                    setIcon( QIcon::fromTheme( "filename-artist-amarok" ) );
+                    setIcon( QIcon::fromTheme( QStringLiteral("filename-artist-amarok") ) );
                     setText( i18n( "Do not show under Various Artists" ) );
                 }
                 else
                 {
-                    setIcon( QIcon::fromTheme( "similarartists-amarok" ) );
+                    setIcon( QIcon::fromTheme( QStringLiteral("similarartists-amarok") ) );
                     setText( i18n( "Show under Various Artists" ) );
                 }
                 setEnabled( m_album->canUpdateCompilation() );

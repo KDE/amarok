@@ -77,9 +77,9 @@ ImporterManager::createProvider( QVariantMap config )
     // First, get rid of the old provider instance. Note: the StatSyncing::Config
     // remembers the provider by the id, even when it's unregistered. After this
     // block, old instance should be destroyed, its destructor called.
-    if( config.contains( "uid" ) )
+    if( config.contains( QStringLiteral("uid") ) )
     {
-        const QString providerId = config.value( "uid" ).toString();
+        const QString providerId = config.value( QStringLiteral("uid") ).toString();
         if( m_providers.contains( providerId ) )
         {
             ProviderPtr oldProvider = m_providers.take( providerId );
@@ -128,7 +128,7 @@ ImporterManager::createProvider( QVariantMap config )
 KConfigGroup
 ImporterManager::managerConfig() const
 {
-    return Amarok::config( "Importers" ).group( type() );
+    return Amarok::config( QStringLiteral("Importers") ).group( type() );
 }
 
 KConfigGroup

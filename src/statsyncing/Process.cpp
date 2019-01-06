@@ -47,7 +47,7 @@ Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &preSel
 {
     m_dialog->setWindowTitle( i18n( "Synchronize Statistics" ) );
     m_dialog->resize( QSize( 860, 500 ) );
-    KWindowConfig::restoreWindowSize( m_dialog->windowHandle(), Amarok::config( "StatSyncingDialog" ) );
+    KWindowConfig::restoreWindowSize( m_dialog->windowHandle(), Amarok::config( QStringLiteral("StatSyncingDialog") ) );
 
     // delete this process when user hits the close button
     connect( m_dialog.data(), &QDialog::finished, this, &Process::slotSaveSizeAndDelete );
@@ -297,7 +297,7 @@ Process::slotLogSynchronization( ThreadWeaver::JobPointer job )
                        "Scrobbling of <b>%1</b> tracks was skipped as configured by the user.",
                        scrobbleErrorCounts[ ScrobblingService::SkippedByUser ] );
 
-    Amarok::Logger::longMessage( text.join( "<br>\n" ) );
+    Amarok::Logger::longMessage( text.join( QStringLiteral("<br>\n") ) );
 }
 
 void
@@ -305,7 +305,7 @@ Process::slotSaveSizeAndDelete()
 {
     if( m_dialog )
     {
-        KConfigGroup group = Amarok::config( "StatSyncingDialog" );
+        KConfigGroup group = Amarok::config( QStringLiteral("StatSyncingDialog") );
         group.writeEntry( "geometry", m_dialog->saveGeometry() );
     }
     deleteLater();

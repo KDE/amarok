@@ -108,9 +108,9 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     connect( moveUpButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::moveUp );
     connect( moveDownButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::moveDown );
 
-    buttonBox->button(QDialogButtonBox::Apply)->setIcon( QIcon::fromTheme( "dialog-ok-apply" ) );
-    buttonBox->button(QDialogButtonBox::Ok)->setIcon( QIcon::fromTheme( "dialog-ok" ) );
-    buttonBox->button(QDialogButtonBox::Cancel)->setIcon( QIcon::fromTheme( "dialog-cancel" ) );
+    buttonBox->button(QDialogButtonBox::Apply)->setIcon( QIcon::fromTheme( QStringLiteral("dialog-ok-apply") ) );
+    buttonBox->button(QDialogButtonBox::Ok)->setIcon( QIcon::fromTheme( QStringLiteral("dialog-ok") ) );
+    buttonBox->button(QDialogButtonBox::Cancel)->setIcon( QIcon::fromTheme( QStringLiteral("dialog-cancel") ) );
     connect( buttonBox->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::apply );
 
     const QIcon newIcon( "document-new" );
@@ -445,7 +445,7 @@ Playlist::PlaylistLayoutEditDialog::reject()     //SLOT
 
     debug() << "Applying initial layout: " << m_firstActiveLayout;
     if( layoutListWidget->findItems( m_firstActiveLayout, Qt::MatchExactly ).isEmpty() )
-        LayoutManager::instance()->setActiveLayout( "Default" );
+        LayoutManager::instance()->setActiveLayout( QStringLiteral("Default") );
     else
         LayoutManager::instance()->setActiveLayout( m_firstActiveLayout );
 
@@ -481,7 +481,7 @@ Playlist::PlaylistLayoutEditDialog::setEnabledTabs()
 
     //Enable or disable tabs depending on whether grouping is allowed.
     QString grouping = groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString();
-    bool groupingEnabled = ( !grouping.isEmpty() && grouping != "None" );
+    bool groupingEnabled = ( !grouping.isEmpty() && grouping != QLatin1String("None") );
 
     if ( !groupingEnabled )
         elementTabs->setCurrentWidget( m_partsEdit[PlaylistLayout::Single] );

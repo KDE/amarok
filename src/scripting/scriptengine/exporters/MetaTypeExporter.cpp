@@ -53,18 +53,18 @@ MetaTrackPrototype::init( QScriptEngine *engine )
     qScriptRegisterMetaType<Meta::TrackList>( engine, toScriptArray, fromScriptArray );
     qScriptRegisterMetaType<StringMap>( engine, toScriptMap, fromScriptMap );
     qScriptRegisterMetaType<Meta::FieldHash>( engine, toScriptTagMap, fromScriptTagMap );
-    engine->globalObject().setProperty( "Track", engine->newFunction( trackCtor ) );
+    engine->globalObject().setProperty( QStringLiteral("Track"), engine->newFunction( trackCtor ) );
 }
 
 QScriptValue
 MetaTrackPrototype::trackCtor( QScriptContext *context, QScriptEngine *engine )
 {
     if( context->argumentCount() < 1 )
-        return context->throwError( QScriptContext::SyntaxError, "Not enough arguments! Pass the track url." );
+        return context->throwError( QScriptContext::SyntaxError, QStringLiteral("Not enough arguments! Pass the track url.") );
 
     QUrl url( qscriptvalue_cast<QUrl>( context->argument( 0 ) ) );
     if( !url.isValid() )
-        return context->throwError( QScriptContext::TypeError, "Invalid QUrl" );
+        return context->throwError( QScriptContext::TypeError, QStringLiteral("Invalid QUrl") );
 
     MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
     proxyTrack->setTitle( url.fileName() ); // set temporary name

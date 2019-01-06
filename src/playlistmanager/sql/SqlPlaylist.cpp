@@ -64,7 +64,7 @@ SqlPlaylist::~SqlPlaylist()
 QUrl
 SqlPlaylist::uidUrl() const
 {
-    return QUrl( QString( "amarok-sqlplaylistuid://%1").arg( m_dbId ) );
+    return QUrl( QStringLiteral( "amarok-sqlplaylistuid://%1").arg( m_dbId ) );
 }
 
 QStringList
@@ -110,7 +110,7 @@ SqlPlaylist::saveToDb( bool tracks )
         debug() << "Checking " << m_urlId << " against db";
 
         //check if urlId exists
-        QString query = "SELECT id from playlists WHERE urlid='%1'";
+        QString query = QStringLiteral("SELECT id from playlists WHERE urlid='%1'");
         query = query.arg( sql->escape( m_urlId ) );
         QStringList result = sql->query( query );
 
@@ -125,7 +125,7 @@ SqlPlaylist::saveToDb( bool tracks )
     if( m_dbId != -1 )
     {
         //update existing
-        QString query = "UPDATE playlists SET parent_id=%1, name='%2' WHERE id=%3;";
+        QString query = QStringLiteral("UPDATE playlists SET parent_id=%1, name='%2' WHERE id=%3;");
         query = query.arg( QString::number( parentId ),
                       sql->escape( m_name ),
                       QString::number( m_dbId ) );
@@ -134,7 +134,7 @@ SqlPlaylist::saveToDb( bool tracks )
         if( tracks )
         {
             //delete existing tracks and insert all
-            query = "DELETE FROM playlist_tracks where playlist_id=%1;";
+            query = QStringLiteral("DELETE FROM playlist_tracks where playlist_id=%1;");
             query = query.arg( QString::number( m_dbId ) );
             StorageManager::instance()->sqlStorage()->query( query );
             saveTracks();
@@ -148,7 +148,7 @@ SqlPlaylist::saveToDb( bool tracks )
         query = query.arg( QString::number( parentId ),
                       sql->escape( m_name ),
                       sql->escape( m_urlId ) );
-        m_dbId = StorageManager::instance()->sqlStorage()->insert( query, "playlists" );
+        m_dbId = StorageManager::instance()->sqlStorage()->insert( query, QStringLiteral("playlists") );
         if( tracks )
             saveTracks();
     }
@@ -187,11 +187,11 @@ SqlPlaylist::saveTracks()
             query = query.arg( QString::number( m_dbId ), QString::number( trackNum ),
                         sql->escape( trackPtr->uidUrl() ),
                         sql->escape( trackPtr->prettyName() ),
-                        trackPtr->album() ? sql->escape( trackPtr->album()->prettyName() ) : "",
-                        trackPtr->artist()? sql->escape( trackPtr->artist()->prettyName() ) : "",
+                        trackPtr->album() ? sql->escape( trackPtr->album()->prettyName() ) : QLatin1String(""),
+                        trackPtr->artist()? sql->escape( trackPtr->artist()->prettyName() ) : QLatin1String(""),
                         QString::number( trackPtr->length() ),
                         sql->escape( trackPtr->uidUrl() ) );
-            sql->insert( query, "playlist_tracks" );
+            sql->insert( query, QStringLiteral("playlist_tracks") );
 
             trackNum++;
         }
@@ -286,11 +286,11 @@ SqlPlaylist::setName( const QString &name )
 void
 SqlPlaylist::removeFromDb()
 {
-    QString query = "DELETE FROM playlist_tracks WHERE playlist_id=%1";
+    QString query = QStringLiteral("DELETE FROM playlist_tracks WHERE playlist_id=%1");
     query = query.arg( QString::number( m_dbId ) );
     StorageManager::instance()->sqlStorage()->query( query );
 
-    query = "DELETE FROM playlists WHERE id=%1";
+    query = QStringLiteral("DELETE FROM playlists WHERE id=%1");
     query = query.arg( QString::number( m_dbId ) );
     StorageManager::instance()->sqlStorage()->query( query );
 }

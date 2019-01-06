@@ -140,7 +140,7 @@ CollectionTreeItem::data( int role ) const
         case Qt::DisplayRole:
             return i18nc( "No labels are assigned to the given item are any of its subitems", "No Labels" );
         case Qt::DecorationRole:
-            return QIcon::fromTheme( "label-amarok" );
+            return QIcon::fromTheme( QStringLiteral("label-amarok") );
         }
         return QVariant();
     }

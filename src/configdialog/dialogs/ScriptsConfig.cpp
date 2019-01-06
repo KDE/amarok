@@ -59,7 +59,7 @@ ScriptsConfig::ScriptsConfig( Amarok2ConfigDialog *parent )
 
     // Load config
     gui.kcfg_AutoUpdateScripts->setChecked( AmarokConfig::autoUpdateScripts() );
-    gui.manageButton->setIcon( QIcon::fromTheme( "get-hot-new-stuff-amarok" ) );
+    gui.manageButton->setIcon( QIcon::fromTheme( QStringLiteral("get-hot-new-stuff-amarok") ) );
     connect( gui.manageButton, &QAbstractButton::clicked,
              this, &ScriptsConfig::slotManageScripts );
     connect( gui.installButton, &QAbstractButton::clicked,
@@ -85,7 +85,7 @@ void
 ScriptsConfig::slotManageScripts()
 {
     QStringList updateScriptsList;
-    KNS3::DownloadDialog dialog("amarok.knsrc", this);
+    KNS3::DownloadDialog dialog(QStringLiteral("amarok.knsrc"), this);
     dialog.exec();
 
     if( !dialog.installedEntries().isEmpty() || !dialog.changedEntries().isEmpty() )
@@ -131,7 +131,7 @@ ScriptsConfig::installLocalScript()
     // the script can actually be updated if you get the folder name right
     int response =  KMessageBox::warningContinueCancel( this, i18n( "Manually installed scripts "
                                         "cannot be automatically updated, continue?" ), QString(), KStandardGuiItem::cont()
-                                        , KStandardGuiItem::cancel(), "manualScriptInstallWarning" );
+                                        , KStandardGuiItem::cancel(), QStringLiteral("manualScriptInstallWarning") );
     if( response == KMessageBox::Cancel )
         return;
 
@@ -143,7 +143,7 @@ ScriptsConfig::installLocalScript()
     QMimeDatabase db;
     QMimeType mimeType = db.mimeTypeForFile( filePath );
     QScopedPointer<KArchive> archive;
-    if( mimeType.inherits( "application/zip" ) )
+    if( mimeType.inherits( QStringLiteral("application/zip") ) )
         archive.reset( new KZip( filePath ) );
     else
         archive.reset( new KTar( filePath ) );
@@ -154,7 +154,7 @@ ScriptsConfig::installLocalScript()
         return;
     }
 
-    QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + QString("amarok/scripts/") + fileName + '/';
+    QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + QStringLiteral("amarok/scripts/") + fileName + '/';
     const KArchiveDirectory* const archiveDir = archive->directory();
     const QDir dir( destination );
     const KArchiveFile *specFile = findSpecFile( archiveDir );
@@ -202,15 +202,15 @@ ScriptsConfig::slotReloadScriptSelector()
     DEBUG_BLOCK
     m_oldSelector = m_selector;
     m_selector = new ScriptSelector( this );
-    QString key = QLatin1String( "Generic" );
+    QString key = QStringLiteral( "Generic" );
     m_selector->addScripts( ScriptManager::instance()->scripts( key ),
                             KPluginSelector::ReadConfigFile, i18n("Generic"), key );
 
-    key = QLatin1String( "Lyrics" );
+    key = QStringLiteral( "Lyrics" );
     m_selector->addScripts( ScriptManager::instance()->scripts( key ),
                             KPluginSelector::ReadConfigFile, i18n("Lyrics"), key );
 
-    key = QLatin1String( "Scriptable Service" );
+    key = QStringLiteral( "Scriptable Service" );
     m_selector->addScripts( ScriptManager::instance()->scripts( key ),
                             KPluginSelector::ReadConfigFile, i18n("Scriptable Service"), key );
     connect( m_selector, &ScriptSelector::changed, this, &ScriptsConfig::slotConfigChanged );
@@ -268,12 +268,12 @@ ScriptsConfig::findSpecFile( const KArchiveDirectory *dir ) const
     {
         if( dir->entry( entry )->isFile() )
         {
-            if( entry == "script.spec" )
+            if( entry == QLatin1String("script.spec") )
                 return static_cast<const KArchiveFile*>( dir->entry( entry ) );
         }
         else
         {
-            if( entry != "." && entry != ".." )
+            if( entry != QLatin1String(".") && entry != QLatin1String("..") )
             {
                 const KArchiveDirectory *subDir = static_cast<const KArchiveDirectory*>( dir->entry( entry ) );
                 if( subDir )

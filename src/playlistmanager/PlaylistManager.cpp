@@ -347,7 +347,7 @@ PlaylistManager::rename( Playlists::PlaylistPtr playlist )
     if( playlist.isNull() )
         return;
 
-    AmarokUrl("amarok://navigate/playlists/user playlists").run();
+    AmarokUrl(QStringLiteral("amarok://navigate/playlists/user playlists")).run();
     emit renamePlaylist( playlist ); // connected to PlaylistBrowserModel
 }
 

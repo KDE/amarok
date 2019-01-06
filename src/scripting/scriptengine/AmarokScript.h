@@ -47,7 +47,7 @@ namespace AmarokScript
               * @param text The text to display.
               * @param type Type of the dialog. See KMessageBox docs.
               */
-            Q_INVOKABLE int alert( const QString& text, const QString& type = "information" ) const;
+            Q_INVOKABLE int alert( const QString& text, const QString& type = QStringLiteral("information") ) const;
 
             /** Signals Amarok that this script has ended. */
             Q_INVOKABLE void end();

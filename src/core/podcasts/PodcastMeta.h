@@ -441,7 +441,7 @@ public:
     {
         if( episode != 0 )
         {
-            const QString year = episode->pubDate().toString( "yyyy" );
+            const QString year = episode->pubDate().toString( QStringLiteral("yyyy") );
             return year;
         }
         else

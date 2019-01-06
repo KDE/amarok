@@ -72,38 +72,38 @@ namespace Meta
     namespace Field
     {
         //actual string values are not final yet
-        static const QString ALBUM          = "xesam:album";
-        static const QString ARTIST         = "xesam:author";
-        static const QString BITRATE        = "xesam:audioBitrate";
-        static const QString BPM            = "xesam:audioBPM";
-        static const QString CODEC          = "xesam:audioCodec";
-        static const QString COMMENT        = "xesam:comment";
-        static const QString COMPOSER       = "xesam:composer";
-        static const QString DISCNUMBER     = "xesam:discNumber";
-        static const QString FILESIZE       = "xesam:size";
-        static const QString GENRE          = "xesam:genre";
-        static const QString LENGTH         = "xesam:mediaDuration";
-        static const QString RATING         = "xesam:userRating";
-        static const QString SAMPLERATE     = "xesam:audioSampleRate";
-        static const QString TITLE          = "xesam:title";
-        static const QString TRACKNUMBER    = "xesam:trackNumber";
-        static const QString URL            = "xesam:url";
-        static const QString YEAR           = "xesam:contentCreated";
-        static const QString ALBUMARTIST    = "xesam:albumArtist";
-        static const QString ALBUMGAIN      = "xesam:albumGain";
-        static const QString ALBUMPEAKGAIN  = "xesam:albumPeakGain";
-        static const QString TRACKGAIN      = "xesam:trackGain";
-        static const QString TRACKPEAKGAIN  = "xesam:trackPeakGain";
+        static const QString ALBUM          = QStringLiteral("xesam:album");
+        static const QString ARTIST         = QStringLiteral("xesam:author");
+        static const QString BITRATE        = QStringLiteral("xesam:audioBitrate");
+        static const QString BPM            = QStringLiteral("xesam:audioBPM");
+        static const QString CODEC          = QStringLiteral("xesam:audioCodec");
+        static const QString COMMENT        = QStringLiteral("xesam:comment");
+        static const QString COMPOSER       = QStringLiteral("xesam:composer");
+        static const QString DISCNUMBER     = QStringLiteral("xesam:discNumber");
+        static const QString FILESIZE       = QStringLiteral("xesam:size");
+        static const QString GENRE          = QStringLiteral("xesam:genre");
+        static const QString LENGTH         = QStringLiteral("xesam:mediaDuration");
+        static const QString RATING         = QStringLiteral("xesam:userRating");
+        static const QString SAMPLERATE     = QStringLiteral("xesam:audioSampleRate");
+        static const QString TITLE          = QStringLiteral("xesam:title");
+        static const QString TRACKNUMBER    = QStringLiteral("xesam:trackNumber");
+        static const QString URL            = QStringLiteral("xesam:url");
+        static const QString YEAR           = QStringLiteral("xesam:contentCreated");
+        static const QString ALBUMARTIST    = QStringLiteral("xesam:albumArtist");
+        static const QString ALBUMGAIN      = QStringLiteral("xesam:albumGain");
+        static const QString ALBUMPEAKGAIN  = QStringLiteral("xesam:albumPeakGain");
+        static const QString TRACKGAIN      = QStringLiteral("xesam:trackGain");
+        static const QString TRACKPEAKGAIN  = QStringLiteral("xesam:trackPeakGain");
 
-        static const QString SCORE          = "xesam:autoRating";
-        static const QString PLAYCOUNT      = "xesam:useCount";
-        static const QString FIRST_PLAYED   = "xesam:firstUsed";
-        static const QString LAST_PLAYED    = "xesam:lastUsed";
+        static const QString SCORE          = QStringLiteral("xesam:autoRating");
+        static const QString PLAYCOUNT      = QStringLiteral("xesam:useCount");
+        static const QString FIRST_PLAYED   = QStringLiteral("xesam:firstUsed");
+        static const QString LAST_PLAYED    = QStringLiteral("xesam:lastUsed");
 
-        static const QString UNIQUEID       = "xesam:id";
+        static const QString UNIQUEID       = QStringLiteral("xesam:id");
 
         // new
-        static const QString COMPILATION    = "xesam:compilation";
+        static const QString COMPILATION    = QStringLiteral("xesam:compilation");
     }
 }
 

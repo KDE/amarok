@@ -32,21 +32,21 @@ void
 SelectConfigWidget::fillInChoices( const Configuration &savedConfiguration )
 {
     clear();
-    addItem( QIcon::fromTheme( "edit-copy" ), i18n( "Never" ), JustCopy );
-    addItem( QIcon::fromTheme( "view-choose" ), i18n( "Ask before each transfer" ), Invalid );
+    addItem( QIcon::fromTheme( QStringLiteral("edit-copy") ), i18n( "Never" ), JustCopy );
+    addItem( QIcon::fromTheme( QStringLiteral("view-choose") ), i18n( "Ask before each transfer" ), Invalid );
     if( savedConfiguration.isValid() )
     {
         if( !savedConfiguration.isJustCopy() )
         {
             Configuration temp = savedConfiguration;
             temp.setTrackSelection( Configuration::TranscodeAll );
-            addItem( QIcon::fromTheme( "audio-x-generic" ), temp.prettyName(),
+            addItem( QIcon::fromTheme( QStringLiteral("audio-x-generic") ), temp.prettyName(),
                     TranscodeAll );
             temp.setTrackSelection( Configuration::TranscodeUnlessSameType );
-            addItem( QIcon::fromTheme( "audio-x-generic" ), temp.prettyName(),
+            addItem( QIcon::fromTheme( QStringLiteral("audio-x-generic") ), temp.prettyName(),
                     TranscodeUnlessSameType );
             temp.setTrackSelection( Configuration::TranscodeOnlyIfNeeded );
-            addItem( QIcon::fromTheme( "audio-x-generic" ),temp.prettyName(),
+            addItem( QIcon::fromTheme( QStringLiteral("audio-x-generic") ),temp.prettyName(),
                     TranscodeOnlyIfNeeded );
             setCurrentIndex( savedConfiguration.trackSelection() + 2 );
         }

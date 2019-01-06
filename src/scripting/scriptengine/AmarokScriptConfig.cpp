@@ -32,7 +32,7 @@ AmarokScriptConfig::AmarokScriptConfig( const QString &name, QScriptEngine *engi
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
     //better name?
-    engine->globalObject().property( "Amarok" ).setProperty( "Script", scriptObject );
+    engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Script"), scriptObject );
 }
 
 QVariant

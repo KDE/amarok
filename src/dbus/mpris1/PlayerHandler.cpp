@@ -66,12 +66,12 @@ namespace Mpris1
     {
         qDBusRegisterMetaType<Status>();
 
-        setObjectName("PlayerHandler");
+        setObjectName(QStringLiteral("PlayerHandler"));
 
         new Mpris1PlayerAdaptor( this );
         // amarok extensions:
         new Mpris1AmarokPlayerAdaptor( this );
-        QDBusConnection::sessionBus().registerObject("/Player", this);
+        QDBusConnection::sessionBus().registerObject(QStringLiteral("/Player"), this);
 
         connect( The::playlistActions(), &Playlist::Actions::navigatorChanged,
                  this, &PlayerHandler::updateStatus );

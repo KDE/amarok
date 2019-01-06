@@ -501,7 +501,7 @@ SqlPodcastEpisode::updateInDb()
         stream << (isNew() ? boolTrue : boolFalse) << ", ";
         stream << (isKeep() ? boolTrue : boolFalse);
         stream << ");";
-        m_dbId = sqlStorage->insert( command, "podcastepisodes" );
+        m_dbId = sqlStorage->insert( command, QStringLiteral("podcastepisodes") );
     }
 }
 
@@ -510,7 +510,7 @@ SqlPodcastEpisode::deleteFromDb()
 {
     auto sqlStorage = StorageManager::instance()->sqlStorage();
     sqlStorage->query(
-        QString( "DELETE FROM podcastepisodes WHERE id = %1;" ).arg( dbId() ) );
+        QStringLiteral( "DELETE FROM podcastepisodes WHERE id = %1;" ).arg( dbId() ) );
 }
 
 Playlists::PlaylistPtr
@@ -560,7 +560,7 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
     , m_dbId( 0 )
     , m_trackCacheIsValid( false )
     , m_provider( provider )
-    , m_filenameLayout( "%default%" )
+    , m_filenameLayout( QStringLiteral("%default%") )
 {
     // PodcastMetaCommon
     m_title = channel->title();
@@ -643,7 +643,7 @@ SqlPodcastChannel::setGroups( const QStringList &groups )
 QUrl
 SqlPodcastChannel::uidUrl() const
 {
-    return QUrl( QString( "amarok-sqlpodcastuid://%1").arg( m_dbId ) );
+    return QUrl( QStringLiteral( "amarok-sqlpodcastuid://%1").arg( m_dbId ) );
 }
 
 SqlPodcastChannel::~SqlPodcastChannel()
@@ -846,7 +846,7 @@ SqlPodcastChannel::updateInDb()
         stream << escape(m_filenameLayout);
         stream << "');";
         debug() << command;
-        m_dbId = sqlStorage->insert( command, "podcastchannels" );
+        m_dbId = sqlStorage->insert( command, QStringLiteral("podcastchannels") );
     }
 }
 
@@ -862,7 +862,7 @@ SqlPodcastChannel::deleteFromDb()
     m_trackCacheIsValid = false;
 
     sqlStorage->query(
-        QString( "DELETE FROM podcastchannels WHERE id = %1;" ).arg( dbId() ) );
+        QStringLiteral( "DELETE FROM podcastchannels WHERE id = %1;" ).arg( dbId() ) );
 }
 
 void

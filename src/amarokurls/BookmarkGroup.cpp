@@ -59,7 +59,7 @@ BookmarkGroup::BookmarkGroup( const QString &name, const QString &customType )
     
     debug() << "custom type: " << customType << " named '" << name << "'";
     //check if this custom group already exists and if so, just load that data.
-    QString query = "SELECT id, parent_id, name, description FROM bookmark_groups where custom='%1';";
+    QString query = QStringLiteral("SELECT id, parent_id, name, description FROM bookmark_groups where custom='%1';");
     query = query.arg( customType );
     QStringList result = StorageManager::instance()->sqlStorage()->query( query );
 
@@ -99,14 +99,14 @@ void BookmarkGroup::save()
 
     if ( m_dbId != -1 ) {
         //update existing
-        QString query = "UPDATE bookmark_groups SET parent_id=%1, name='%2', description='%3', custom='%4%' WHERE id=%5;";
+        QString query = QStringLiteral("UPDATE bookmark_groups SET parent_id=%1, name='%2', description='%3', custom='%4%' WHERE id=%5;");
         query = query.arg( QString::number( parentId ), m_name, m_description, m_customType, QString::number( m_dbId ) );
         StorageManager::instance()->sqlStorage()->query( query );
     }
     else
     {
         //insert new
-        QString query = "INSERT INTO bookmark_groups ( parent_id, name, description, custom) VALUES ( %1, '%2', '%3', '%4' );";
+        QString query = QStringLiteral("INSERT INTO bookmark_groups ( parent_id, name, description, custom) VALUES ( %1, '%2', '%3', '%4' );");
         query = query.arg( QString::number( parentId ), m_name, m_description, m_customType );
         m_dbId = StorageManager::instance()->sqlStorage()->insert( query, NULL );
 
@@ -119,7 +119,7 @@ BookmarkGroupList BookmarkGroup::childGroups() const
     if ( !m_hasFetchedChildGroups )
     {
 
-        QString query = "SELECT id, parent_id, name, description FROM bookmark_groups where parent_id=%1 ORDER BY name;";
+        QString query = QStringLiteral("SELECT id, parent_id, name, description FROM bookmark_groups where parent_id=%1 ORDER BY name;");
         query = query.arg( QString::number( m_dbId ) );
         QStringList result = StorageManager::instance()->sqlStorage()->query( query );
 
@@ -145,7 +145,7 @@ BookmarkList BookmarkGroup::childBookmarks() const
     //DEBUG_BLOCK
     //debug() << "my name: " << m_name << " my pointer: " << this;
     if ( !m_hasFetchedChildPlaylists ) {
-        QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks where parent_id=%1 ORDER BY name;";
+        QString query = QStringLiteral("SELECT id, parent_id, name, url, description, custom FROM bookmarks where parent_id=%1 ORDER BY name;");
         query = query.arg( QString::number( m_dbId ) );
         QStringList result = StorageManager::instance()->sqlStorage()->query( query );
 
@@ -230,7 +230,7 @@ void BookmarkGroup::removeFromDb()
     foreach( AmarokUrlPtr bookmark, m_childBookmarks )
         bookmark->removeFromDb();
 
-    QString query = QString( "DELETE FROM bookmark_groups where id=%1;").arg( QString::number( m_dbId ) );
+    QString query = QStringLiteral( "DELETE FROM bookmark_groups where id=%1;").arg( QString::number( m_dbId ) );
     debug() << "query: " << query;
     QStringList result = StorageManager::instance()->sqlStorage()->query( query );
 }

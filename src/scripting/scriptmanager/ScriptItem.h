@@ -61,7 +61,7 @@ public:
     KPluginInfo info() const { return m_info; }
     bool running() const { return m_running; }
     QString specPath() const;
-    QString output() const { return m_output.join("\n"); }
+    QString output() const { return m_output.join(QStringLiteral("\n")); }
 
     virtual bool start( bool silent );
     virtual void pause();

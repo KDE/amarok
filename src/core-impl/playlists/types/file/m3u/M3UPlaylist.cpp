@@ -39,7 +39,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
     do
     {
         QString line = stream.readLine();
-        if( line.startsWith( "#EXTINF" ) )
+        if( line.startsWith( QLatin1String("#EXTINF") ) )
         {
             const QString extinf = line.section( ':', 1 );
             bool ok;
@@ -50,13 +50,13 @@ M3UPlaylist::loadM3u( QTextStream &stream )
         }
         else if( !line.startsWith( '#' ) && !line.isEmpty() )
         {
-            line = line.replace( "\\", "/" );
+            line = line.replace( QLatin1String("\\"), QLatin1String("/") );
 
             QUrl url = getAbsolutePath( QUrl( line ) );
 
             MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
-            QString artist = extinfTitle.section( " - ", 0, 0 );
-            QString title = extinfTitle.section( " - ", 1, 1 );
+            QString artist = extinfTitle.section( QStringLiteral(" - "), 0, 0 );
+            QString title = extinfTitle.section( QStringLiteral(" - "), 1, 1 );
             //if title and artist are saved such as in M3UPlaylist::save()
             if( !title.isEmpty() && !artist.isEmpty() )
             {
@@ -106,7 +106,7 @@ M3UPlaylist::savePlaylist( QFile &file )
             stream << '\n';
         }
 
-        if( url.scheme() == "file" )
+        if( url.scheme() == QLatin1String("file") )
             stream << trackLocation( track );
         else
             stream << url.url();

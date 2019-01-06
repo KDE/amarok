@@ -26,7 +26,7 @@
 ContextDock::ContextDock( QWidget *parent )
     : AmarokDockWidget( i18n( "&Context" ), parent )
 {
-    setObjectName( "Context dock" );
+    setObjectName( QStringLiteral("Context dock") );
     setAllowedAreas( Qt::AllDockWidgetAreas );
     setMinimumWidth( 50 );
     setContentsMargins( 0, 0, 0, 0 );

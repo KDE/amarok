@@ -44,7 +44,7 @@ public:
     virtual int sqlDatabasePriority() const
     { return 10; }
 
-    virtual QString type() const { return QLatin1String("Empty"); }
+    virtual QString type() const { return QStringLiteral("Empty"); }
 
     QString escape( const QString &text) const override { return text; }
 
@@ -112,7 +112,7 @@ StorageManager::StorageManager()
 {
     DEBUG_BLOCK
 
-    setObjectName( "StorageManager" );
+    setObjectName( QStringLiteral("StorageManager") );
     qRegisterMetaType<SqlStorage *>( "SqlStorage*" );
     d->sqlDatabase = QSharedPointer<SqlStorage>( new EmptySqlStorage );
 }

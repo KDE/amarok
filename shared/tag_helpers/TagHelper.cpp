@@ -182,7 +182,7 @@ TagHelper::splitUID( const QString &uidUrl ) const
     TagHelper::UIDType type = UIDInvalid;
     QString uid = uidUrl;
 
-    if( uid.startsWith( "amarok-" ) )
+    if( uid.startsWith( QLatin1String("amarok-") ) )
         uid = uid.remove( QRegExp( "^(amarok-\\w+://).+$" ) );
 
     if( isValidUID( uid, UIDAFT ) )
@@ -223,7 +223,7 @@ TagHelper::isValidUID( const QString &uid, const TagHelper::UIDType type ) const
     QRegExp regexp( "^$" );
 
     if( type == UIDAFT )
-        regexp.setPattern( "^[0-9a-fA-F]{32}$" );
+        regexp.setPattern( QStringLiteral("^[0-9a-fA-F]{32}$") );
 
     return regexp.exactMatch( uid );
 }

@@ -71,7 +71,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
     , m_textStream( stderr )
 {
 
-    setObjectName( "amarok_afttagger" );
+    setObjectName( QStringLiteral("amarok_afttagger") );
 
     readArgs();
 
@@ -134,7 +134,7 @@ AFTTagger::processPath( const QString &path )
                 m_textStream << tr( "INFO: Processing directory %1" ).arg( path ) << endl;
             foreach( const QString &pathEntry, QDir( path ).entryList() )
             {
-                if( pathEntry != "." && pathEntry != ".." )
+                if( pathEntry != QLatin1String(".") && pathEntry != QLatin1String("..") )
                     processPath( QDir( path ).canonicalPath() + QLatin1Char('/') +  pathEntry );
             }
         }
@@ -164,7 +164,7 @@ AFTTagger::processPath( const QString &path )
 
         SafeFileSaver sfs( filePath );
         sfs.setVerbose( false );
-        sfs.setPrefix( "amarok-afttagger" );
+        sfs.setPrefix( QStringLiteral("amarok-afttagger") );
         QString tempFilePath = sfs.prepareToSave();
         if( tempFilePath.isEmpty() )
         {
@@ -258,7 +258,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                 if( currFrame )
                 {
                     QString owner = TStringToQString( currFrame->owner() ).toUpper();
-                    if( owner.startsWith( "AMAROK - REDISCOVER YOUR MUSIC" ) )
+                    if( owner.startsWith( QLatin1String("AMAROK - REDISCOVER YOUR MUSIC") ) )
                     {
                         nothingfound = false;
                         if( m_verbose )
@@ -272,7 +272,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                         else
                             return true;
                     }
-                    if( owner.startsWith( "AMAROK 2 AFT" ) )
+                    if( owner.startsWith( QLatin1String("AMAROK 2 AFT") ) )
                     {
                         nothingfound = false;
                         if( m_verbose )
@@ -410,7 +410,7 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
         {
             TagLib::String key = iter->first;
             QString qkey = TStringToQString( key ).toUpper();
-            if( qkey.startsWith( "AMAROK - REDISCOVER YOUR MUSIC" ) )
+            if( qkey.startsWith( QLatin1String("AMAROK - REDISCOVER YOUR MUSIC") ) )
             {
                 nothingfound = false;
 
@@ -421,7 +421,7 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
                 if( !m_delete )
                     newUid = true;
             }
-            else if( qkey.startsWith( "AMAROK 2 AFT" ) )
+            else if( qkey.startsWith( QLatin1String("AMAROK 2 AFT") ) )
             {
                 nothingfound = false;
 
@@ -515,7 +515,7 @@ AFTTagger::handleMPC( TagLib::MPC::File *file )
         {
             TagLib::String key = it->first;
             QString qkey = TStringToQString( key ).toUpper();
-            if( qkey.startsWith( "AMAROK - REDISCOVER YOUR MUSIC" ) )
+            if( qkey.startsWith( QLatin1String("AMAROK - REDISCOVER YOUR MUSIC") ) )
             {
                 nothingfound = false;
 
@@ -526,7 +526,7 @@ AFTTagger::handleMPC( TagLib::MPC::File *file )
                 if( !m_delete )
                     newUid = true;
             }
-            else if( qkey.startsWith( "AMAROK 2 AFT" ) )
+            else if( qkey.startsWith( QLatin1String("AMAROK 2 AFT") ) )
             {
                 nothingfound = false;
 
@@ -617,7 +617,7 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
         {
             TagLib::String key = it->first;
             const QString qkey = TStringToQString( key ).toUpper();
-            if( qkey.contains( "AMAROK - REDISCOVER YOUR MUSIC" ) )
+            if( qkey.contains( QLatin1String("AMAROK - REDISCOVER YOUR MUSIC") ) )
             {
                 nothingfound = false;
 
@@ -628,7 +628,7 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
                 if( !m_delete )
                     newUid = true;
             }
-            else if( qkey.contains( "AMAROK 2 AFT" ) )
+            else if( qkey.contains( QLatin1String("AMAROK 2 AFT") ) )
             {
                 nothingfound = false;
 
@@ -643,7 +643,7 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
                 }
                 else
                 {
-                    int version = qkey.at( qkey.indexOf( "AMAROK 2 AFT" ) + 13 ).digitValue();
+                    int version = qkey.at( qkey.indexOf( QLatin1String("AMAROK 2 AFT") ) + 13 ).digitValue();
                     if( m_verbose )
                         m_textStream << tr( "INFO: AFT identifier is version %1" ).arg( version ) << endl;
                     if( version < s_currentVersion )
@@ -747,18 +747,18 @@ AFTTagger::readArgs()
         {
             m_fileFolderList.append( arg );
         }
-        else if( arg.startsWith( "--" ) )
+        else if( arg.startsWith( QLatin1String("--") ) )
         {
             QString myarg = QString( arg ).remove( 0, 2 );
-            if ( myarg == "recurse" || myarg == "recursively" )
+            if ( myarg == QLatin1String("recurse") || myarg == QLatin1String("recursively") )
                 m_recurse = true;
-            else if( myarg == "verbose" )
+            else if( myarg == QLatin1String("verbose") )
                 m_verbose = true;
-            else if( myarg == "quiet" )
+            else if( myarg == QLatin1String("quiet") )
                 m_quiet = true;
-            else if( myarg == "newid" )
+            else if( myarg == QLatin1String("newid") )
                 m_newid = true;
-            else if( myarg == "delete" )
+            else if( myarg == QLatin1String("delete") )
                 m_delete = true;
             else
                 displayHelp();

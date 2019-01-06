@@ -187,7 +187,7 @@ AggregateTrack::notPlayableReason() const
         else
             return QString(); // no reason if at least one playable
     }
-    return reasons.join( QString( ", " ) );
+    return reasons.join( QStringLiteral( ", " ) );
 }
 
 Meta::AlbumPtr

@@ -34,11 +34,11 @@ InfoScript::InfoScript( const QUrl &scriptUrl, AmarokScriptEngine *engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    engine->globalObject().property( "Amarok" ).setProperty( "Info", scriptObject );
+    engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Info"), scriptObject );
 
     const QMetaEnum iconEnum = metaObject()->enumerator( metaObject()->indexOfEnumerator("IconSizes") );
     Q_ASSERT( iconEnum.isValid() );
-    scriptObject.setProperty( "IconSizes", engine->enumObject( iconEnum ) );
+    scriptObject.setProperty( QStringLiteral("IconSizes"), engine->enumObject( iconEnum ) );
 }
 
 QString

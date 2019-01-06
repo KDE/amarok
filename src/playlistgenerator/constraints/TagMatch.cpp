@@ -50,7 +50,7 @@ ConstraintTypes::TagMatch::createNew( ConstraintNode* p )
 ConstraintFactoryEntry*
 ConstraintTypes::TagMatch::registerMe()
 {
-    return new ConstraintFactoryEntry( "TagMatch",
+    return new ConstraintFactoryEntry( QStringLiteral("TagMatch"),
                                        i18n("Match Tags"),
                                        i18n("Make all tracks in the playlist match the specified characteristic"),
                                        &TagMatch::createFromXml, &TagMatch::createNew );
@@ -63,18 +63,18 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
 {
     QDomAttr a;
 
-    a = xmlelem.attributeNode( "field" );
+    a = xmlelem.attributeNode( QStringLiteral("field") );
     if ( !a.isNull() ) {
         if ( m_fieldsModel->contains( a.value() ) )
             m_field = a.value();
     }
 
-    a = xmlelem.attributeNode( "comparison" );
+    a = xmlelem.attributeNode( QStringLiteral("comparison") );
     if ( !a.isNull() ) {
         m_comparison = a.value().toInt();
     }
 
-    a = xmlelem.attributeNode( "value" );
+    a = xmlelem.attributeNode( QStringLiteral("value") );
     if ( !a.isNull() ) {
         if ( m_fieldsModel->type_of( m_field ) == FieldTypeInt ) {
             m_value = a.value().toInt();
@@ -84,9 +84,9 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
                 if ( parts.size() == 2 ) {
                     int u = parts.at( 0 ).toInt();
                     int v = 0;
-                    if ( parts.at( 1 ) == "months" )
+                    if ( parts.at( 1 ) == QLatin1String("months") )
                         v = 1;
-                    else if ( parts.at( 1 ) == "years" )
+                    else if ( parts.at( 1 ) == QLatin1String("years") )
                         v = 2;
                     m_value = QVariant::fromValue( DateRange( u, v ) );
                 } else
@@ -98,13 +98,13 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
         }
     }
 
-    a = xmlelem.attributeNode( "invert" );
-    if ( !a.isNull() && a.value() == "true" )
+    a = xmlelem.attributeNode( QStringLiteral("invert") );
+    if ( !a.isNull() && a.value() == QLatin1String("true") )
         m_invert = true;
     else
         m_invert = false;
 
-    a = xmlelem.attributeNode( "strictness" );
+    a = xmlelem.attributeNode( QStringLiteral("strictness") );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
 }
@@ -112,7 +112,7 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
 ConstraintTypes::TagMatch::TagMatch( ConstraintNode* p )
         : MatchingConstraint( p )
         , m_comparison( CompareStrEquals )
-        , m_field( "title" )
+        , m_field( QStringLiteral("title") )
         , m_invert( false )
         , m_strictness( 1.0 )
         , m_value()
@@ -147,19 +147,19 @@ ConstraintTypes::TagMatch::editWidget() const
 void
 ConstraintTypes::TagMatch::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
-    QDomElement c = doc.createElement( "constraint" );
+    QDomElement c = doc.createElement( QStringLiteral("constraint") );
 
-    c.setAttribute( "type", "TagMatch" );
-    c.setAttribute( "field", m_field );
-    c.setAttribute( "comparison", m_comparison );
-    c.setAttribute( "value", valueToString() );
+    c.setAttribute( QStringLiteral("type"), QStringLiteral("TagMatch") );
+    c.setAttribute( QStringLiteral("field"), m_field );
+    c.setAttribute( QStringLiteral("comparison"), m_comparison );
+    c.setAttribute( QStringLiteral("value"), valueToString() );
 
     if ( m_invert )
-        c.setAttribute( "invert", "true" );
+        c.setAttribute( QStringLiteral("invert"), QStringLiteral("true") );
     else
-        c.setAttribute( "invert", "false" );
+        c.setAttribute( QStringLiteral("invert"), QStringLiteral("false") );
 
-    c.setAttribute( "strictness", QString::number( m_strictness ) );
+    c.setAttribute( QStringLiteral("strictness"), QString::number( m_strictness ) );
 
     elem.appendChild( c );
 }
@@ -172,12 +172,12 @@ ConstraintTypes::TagMatch::getName() const
                       "%3 = a predicate, can be equals, starts with, ends with or contains; "
                       "%4 = a string to match; "
                       "Example: Match tag: not title contains \"foo\"", "Match tag:%1 %2 %3 %4") );
-    v = v.arg( ( m_invert ? i18n(" not") : "" ), m_fieldsModel->pretty_name_of( m_field ), comparisonToString() );
-    if ( m_field == "rating" ) {
+    v = v.arg( ( m_invert ? i18n(" not") : QLatin1String("") ), m_fieldsModel->pretty_name_of( m_field ), comparisonToString() );
+    if ( m_field == QLatin1String("rating") ) {
         double r = m_value.toDouble() / 2.0;
         return v.arg( i18ncp("number of stars in the rating of a track", "%1 star", "%1 stars", r) );
-    } else if ( m_field == "length" ) {
-        return v.arg( QTime(0, 0, 0).addMSecs( m_value.toInt() ).toString( "H:mm:ss" ) );
+    } else if ( m_field == QLatin1String("length") ) {
+        return v.arg( QTime(0, 0, 0).addMSecs( m_value.toInt() ).toString( QStringLiteral("H:mm:ss") ) );
     } else {
         if ( m_fieldsModel->type_of( m_field ) == FieldTypeString ) {
             // put quotes around any strings (eg, track title or artist name) ...
@@ -543,11 +543,11 @@ ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget(
     ui.comboBox_Field->setModel( m_fieldsModel );
     ui.checkBox_Invert->setChecked( invert );
 
-    if ( field == "rating" ) {
+    if ( field == QLatin1String("rating") ) {
         ui.comboBox_ComparisonRating->setCurrentIndex( comparison );
         ui.slider_StrictnessRating->setValue( strictness );
         ui.rating_RatingValue->setRating( value.toInt() );
-    } else if ( field == "length" ) {
+    } else if ( field == QLatin1String("length") ) {
         ui.comboBox_ComparisonTime->setCurrentIndex( comparison );
         ui.slider_StrictnessTime->setValue( strictness );
         ui.timeEdit_TimeValue->setTime( QTime(0, 0, 0).addMSecs( value.toInt() ) );
@@ -623,12 +623,12 @@ ConstraintTypes::TagMatchEditWidget::on_comboBox_Field_currentIndexChanged( int 
     int c = 0;
     int s = 0;
     QVariant v;
-    if ( field == "length" ) {
+    if ( field == QLatin1String("length") ) {
         ui.stackedWidget_Field->setCurrentIndex( 3 );
         c = ui.comboBox_ComparisonTime->currentIndex();
         s = ui.slider_StrictnessTime->value();
         v = QTime(0, 0, 0).msecsTo( ui.timeEdit_TimeValue->time() );
-    } else if ( field == "rating" ) {
+    } else if ( field == QLatin1String("rating") ) {
         ui.stackedWidget_Field->setCurrentIndex( 4 );
         c = ui.comboBox_ComparisonRating->currentIndex();
         s = ui.slider_StrictnessRating->value();

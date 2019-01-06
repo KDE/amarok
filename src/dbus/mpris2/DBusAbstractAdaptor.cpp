@@ -93,8 +93,8 @@ void DBusAbstractAdaptor::_m_emitPropertiesChanged()
         warning() << "MPRIS2: No D-Bus interface given (missing Q_CLASSINFO)";
     } else {
         QDBusMessage signal = QDBusMessage::createSignal( m_path,
-             "org.freedesktop.DBus.Properties",
-             "PropertiesChanged" );
+             QStringLiteral("org.freedesktop.DBus.Properties"),
+             QStringLiteral("PropertiesChanged") );
         signal << metaObject()->classInfo( ifaceIndex ).value();
         signal << m_updatedProperties;
         signal << m_invalidatedProperties;

@@ -29,7 +29,7 @@ using namespace ScriptConsoleNS;
 AmarokScriptCodeCompletionModel::AmarokScriptCodeCompletionModel( QObject *parent )
     : CodeCompletionModel( parent )
 {
-    const QUrl url( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/scriptconsole/" ) );
+    const QUrl url( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/scriptconsole/") ) );
     QFile file( url.path() + "AutoComplete.txt" );
     if( file.open( QFile::ReadOnly ) )
     {

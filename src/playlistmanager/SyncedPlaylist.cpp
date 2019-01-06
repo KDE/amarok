@@ -33,7 +33,7 @@ SyncedPlaylist::SyncedPlaylist( Playlists::PlaylistPtr playlist )
 QUrl
 SyncedPlaylist::uidUrl() const
 {
-    return QUrl( QString( "amarok-syncedplaylist://" ) +  m_playlists.first()->name() );
+    return QUrl( QStringLiteral( "amarok-syncedplaylist://" ) +  m_playlists.first()->name() );
 }
 
 QString
@@ -245,7 +245,7 @@ SyncedPlaylist::doSync() const
     int position = 0;
     debug() << "Master Playlist: " << master->name() << " - " << master->uidUrl().url();
     while( m.hasNext() )
-        debug() << QString( "%1 : %2" ).arg( position++ ).arg( m.next()->name() );
+        debug() << QStringLiteral( "%1 : %2" ).arg( position++ ).arg( m.next()->name() );
     m.toFront();
 
     for( ;i != m_playlists.end(); ++i)
@@ -256,7 +256,7 @@ SyncedPlaylist::doSync() const
         position = 0;
         debug() << "Slave Playlist: " << slave->name() << " - " << slave->uidUrl().url();
         foreach( const TrackPtr track, slaveTracks )
-            debug() << QString( "%1 : %2" ).arg( position++ ).arg( track->name() );
+            debug() << QStringLiteral( "%1 : %2" ).arg( position++ ).arg( track->name() );
 
         //Add first. Tracks in slave that are not in master will eventually shift to the end.
         position = 0;
@@ -266,7 +266,7 @@ SyncedPlaylist::doSync() const
             if( position >= slaveTracks.size()
                     || track->uidUrl() != slaveTracks.at( position )->uidUrl() )
             {
-                debug() << QString( "insert %2 at %1" ).arg( position ).arg( track->name() );
+                debug() << QStringLiteral( "insert %2 at %1" ).arg( position ).arg( track->name() );
                 slave->addTrack( track, position );
 
                 slave->syncTrackStatus( position, track );
@@ -281,7 +281,7 @@ SyncedPlaylist::doSync() const
         position = 0;
         debug() << "slave playlist after insertions:";
         foreach( const TrackPtr track, slaveTracks )
-            debug() << QString( "%1 : %2" ).arg( position++ ).arg( track->name() );
+            debug() << QStringLiteral( "%1 : %2" ).arg( position++ ).arg( track->name() );
 
         //Then remove everything after the position of the last track in master.
         //This removes any tracks that are not in master.
@@ -294,7 +294,7 @@ SyncedPlaylist::doSync() const
         position = 0;
         debug() << "slave playlist after removal:";
         foreach( const TrackPtr track, slave->tracks() )
-            debug() << QString( "%1 : %2" ).arg( position++ ).arg( track->name() );
+            debug() << QStringLiteral( "%1 : %2" ).arg( position++ ).arg( track->name() );
 
     }
 }

@@ -37,7 +37,7 @@ SafeFileSaver::SafeFileSaver( const QString &origPath )
     , m_origRenamedSavePath()
     , m_cleanupNeeded( false )
     , m_verbose( false )
-    , m_prefix( "safefilesaver" )
+    , m_prefix( QStringLiteral("safefilesaver") )
 {
 }
 

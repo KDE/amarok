@@ -26,22 +26,22 @@
 
 using namespace PlaylistBrowserNS;
 
-QString UserPlaylistCategory::s_configGroup( "Saved Playlists View" );
+QString UserPlaylistCategory::s_configGroup( QStringLiteral("Saved Playlists View") );
 
 UserPlaylistCategory::UserPlaylistCategory( QWidget * parent )
     : PlaylistBrowserCategory( Playlists::UserPlaylist,
-                               "user playlists", s_configGroup,
+                               QStringLiteral("user playlists"), s_configGroup,
                                The::userPlaylistModel(), parent )
 {
     setPrettyName( i18n( "Saved Playlists" ) );
     setShortDescription( i18n( "User generated and imported playlists" ) );
-    setIcon( QIcon::fromTheme( "amarok_playlist" ) );
+    setIcon( QIcon::fromTheme( QStringLiteral("amarok_playlist") ) );
 
     setLongDescription( i18n( "Create, edit, organize and load playlists. "
         "Amarok automatically adds any playlists found when scanning your collection, "
         "and any playlists that you save are also shown here." ) );
 
-    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_user_playlists.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/hover_info_user_playlists.png") ) );
 }
 
 UserPlaylistCategory::~UserPlaylistCategory()

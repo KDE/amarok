@@ -25,8 +25,8 @@ ImporterProvider::ImporterProvider( const QVariantMap &config, ImporterManager *
     : m_config( config )
     , m_manager( manager )
 {
-    if( !m_config.contains( "uid" ) )
-        m_config.insert( "uid", qrand() );
+    if( !m_config.contains( QStringLiteral("uid") ) )
+        m_config.insert( QStringLiteral("uid"), qrand() );
 
     if( m_manager == 0 )
         warning() << __PRETTY_FUNCTION__ << "manager pointer is not set";
@@ -39,7 +39,7 @@ ImporterProvider::~ImporterProvider()
 QString
 StatSyncing::ImporterProvider::id() const
 {
-    return m_config.value( "uid" ).toString();
+    return m_config.value( QStringLiteral("uid") ).toString();
 }
 
 QString
@@ -57,7 +57,7 @@ ImporterProvider::icon() const
 QString
 ImporterProvider::prettyName() const
 {
-    return m_config.value( "name" ).toString();
+    return m_config.value( QStringLiteral("name") ).toString();
 }
 
 bool
@@ -76,7 +76,7 @@ ImporterProvider::configWidget()
 void
 ImporterProvider::reconfigure( const QVariantMap &config )
 {
-    if( config.value( "uid" ) == m_config.value( "uid" ) )
+    if( config.value( QStringLiteral("uid") ) == m_config.value( QStringLiteral("uid") ) )
         emit reconfigurationRequested( config );
     else
         warning() << __PRETTY_FUNCTION__ << "reconfigure called with different provider"

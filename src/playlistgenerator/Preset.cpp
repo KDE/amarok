@@ -64,15 +64,15 @@ APG::Preset::Preset( const QString& title, QDomElement& xmlelem )
         , m_constraintTreeRoot( 0 )
 {
 
-    if ( xmlelem.hasAttribute( "title" ) ) {
-        m_title = xmlelem.attribute( "title" );
+    if ( xmlelem.hasAttribute( QStringLiteral("title") ) ) {
+        m_title = xmlelem.attribute( QStringLiteral("title") );
     } else {
         m_title = i18n("Unnamed playlist preset");
     }
     for ( int i = 0; i < xmlelem.childNodes().count(); i++ ) {
         QDomElement childXmlElem = xmlelem.childNodes().item( i ).toElement();
         if ( !childXmlElem.isNull() ) {
-            if ( childXmlElem.tagName() == "constrainttree" ) {
+            if ( childXmlElem.tagName() == QLatin1String("constrainttree") ) {
                 m_constraintTreeRoot = ConstraintFactory::instance()->createGroup( childXmlElem, 0 );
             } else {
                 error() << "unknown child: " << childXmlElem.nodeName();
@@ -100,8 +100,8 @@ APG::Preset::~Preset()
 QDomElement*
 APG::Preset::toXml( QDomDocument& xmldoc ) const
 {
-    QDomElement e = xmldoc.createElement( "generatorpreset" );
-    e.setAttribute( "title", m_title );
+    QDomElement e = xmldoc.createElement( QStringLiteral("generatorpreset") );
+    e.setAttribute( QStringLiteral("title"), m_title );
     m_constraintTreeRoot->toXml( xmldoc, e );
     return new QDomElement( e );
 }

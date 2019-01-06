@@ -28,8 +28,8 @@ AmarokStatusbarScript::AmarokStatusbarScript( QScriptEngine *engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    QScriptValue windowObject = engine->globalObject().property( "Amarok" ).property( "Window" );
-    windowObject.setProperty( "Statusbar", scriptObject );
+    QScriptValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
+    windowObject.setProperty( QStringLiteral("Statusbar"), scriptObject );
 }
 
 void

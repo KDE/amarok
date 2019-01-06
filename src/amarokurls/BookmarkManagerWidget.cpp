@@ -41,7 +41,7 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_toolBar = new QToolBar( topLayout );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    QAction * addGroupAction = new QAction( QIcon::fromTheme("media-track-add-amarok" ), i18n( "Add Group" ), this  );
+    QAction * addGroupAction = new QAction( QIcon::fromTheme(QStringLiteral("media-track-add-amarok") ), i18n( "Add Group" ), this  );
     m_toolBar->addAction( addGroupAction );
     connect( addGroupAction, &QAction::triggered, BookmarkModel::instance(), &BookmarkModel::createNewGroup );
 

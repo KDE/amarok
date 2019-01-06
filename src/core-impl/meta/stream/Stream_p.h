@@ -45,8 +45,8 @@ class MetaStream::Track::Private : public QObject
 
             // force a direct connection or slot might not be called because of thread
             // affinity. (see BUG 300334)
-            connect( engine, SIGNAL(currentMetadataChanged( QVariantMap) ),
-                     this, SLOT(currentMetadataChanged( QVariantMap )),
+            connect( engine, &EngineController::currentMetadataChanged,
+                     this, &Private::currentMetadataChanged,
                      Qt::DirectConnection );
         }
 
@@ -75,9 +75,9 @@ class MetaStream::Track::Private : public QObject
                 //TODO: move special handling to subclass or using some configurable XSPF
                 // Special demangling of artist/title for Shoutcast streams, which usually
                 // have "Artist - Title" in the title tag:
-                if( artist.isEmpty() && title.contains( " - " ) )
+                if( artist.isEmpty() && title.contains( QLatin1String(" - ") ) )
                 {
-                    const QStringList artist_title = title.split( " - " );
+                    const QStringList artist_title = title.split( QStringLiteral(" - ") );
                     if( artist_title.size() >= 2 )
                     {
                         artist = artist_title[0];

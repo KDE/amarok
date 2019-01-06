@@ -99,7 +99,7 @@ QString
 AggregateCollection::collectionId() const
 {
     // do we need more than one AggregateCollection?
-    return QLatin1String( "AggregateCollection" );
+    return QStringLiteral( "AggregateCollection" );
 }
 
 void

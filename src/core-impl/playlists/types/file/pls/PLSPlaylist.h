@@ -32,8 +32,8 @@ class AMAROK_EXPORT PLSPlaylist : public PlaylistFile
         using PlaylistFile::load;
         bool load( QTextStream &stream ) override { return loadPls( stream ); }
 
-        QString extension() const override { return "pls"; }
-        QString mimetype() const override { return "audio/x-scpls"; }
+        QString extension() const override { return QStringLiteral("pls"); }
+        QString mimetype() const override { return QStringLiteral("audio/x-scpls"); }
 
     protected:
         void savePlaylist( QFile &file ) override;

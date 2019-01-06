@@ -97,7 +97,7 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastChannelPtr &channel ) const
     {
         if( ep->isNew() )
         {
-            emblems << "rating";
+            emblems << QStringLiteral("rating");
             break;
         }
     }
@@ -120,7 +120,7 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastChannelPtr &channel ) const
         // if it's a new episode draw the overlay:
         if( !emblems.isEmpty() )
             // draw the overlay the same way KIconLoader does:
-            p.drawPixmap( 2, 32 - 16 - 2, QIcon::fromTheme( "rating" ).pixmap( 16, 16 ) );
+            p.drawPixmap( 2, 32 - 16 - 2, QIcon::fromTheme( QStringLiteral("rating") ).pixmap( 16, 16 ) );
         p.end();
 
         return pixmap;
@@ -134,7 +134,7 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastEpisodePtr &episode ) const
 {
     QStringList emblems;
     if( isOnDisk( episode ) )
-        emblems << "go-down";
+        emblems << QStringLiteral("go-down");
 
     if( episode->isNew() )
         return ( QIcon( new KIconEngine( "rating", 0, emblems )).pixmap( 24, 24 ) );

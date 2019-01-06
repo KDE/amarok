@@ -36,7 +36,7 @@ ScriptEditorDocument::ScriptEditorDocument( QObject *parent, KTextEditor::Docume
 {
     m_document = document;
     m_document->setParent( this );
-    m_document->setHighlightingMode("JavaScript");
+    m_document->setHighlightingMode(QStringLiteral("JavaScript"));
 }
 
 KTextEditor::View*
@@ -53,7 +53,7 @@ ScriptEditorDocument::createView( QWidget* parent )
     }
     KTextEditor::ConfigInterface *configIface = qobject_cast<KTextEditor::ConfigInterface*>( view );
     if( configIface )
-        configIface->setConfigValue( "line-numbers", true );
+        configIface->setConfigValue( QStringLiteral("line-numbers"), true );
     return view;
 }
 

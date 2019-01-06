@@ -34,20 +34,20 @@ BookmarkManager::BookmarkManager( QWidget* parent )
     //kapp->setTopWidget( this );
     setWindowTitle( i18n("Bookmark Manager") );
     setAttribute( Qt::WA_DeleteOnClose );
-    setObjectName( "BookmarkManager" );
+    setObjectName( QStringLiteral("BookmarkManager") );
 
     QHBoxLayout *layout = new QHBoxLayout( this );
     m_widget = new BookmarkManagerWidget( this );
     layout->addWidget( m_widget );
     layout->setContentsMargins( 0, 0, 0, 0 );
 
-    const QSize winSize = Amarok::config( "Bookmark Manager" ).readEntry( "Window Size", QSize( 600, 400 ) );
+    const QSize winSize = Amarok::config( QStringLiteral("Bookmark Manager") ).readEntry( "Window Size", QSize( 600, 400 ) );
     resize( winSize );
 }
 
 BookmarkManager::~BookmarkManager()
 {
-    Amarok::config( "Bookmark Manager" ).writeEntry( "Window Size", size() );
+    Amarok::config( QStringLiteral("Bookmark Manager") ).writeEntry( "Window Size", size() );
     s_instance = nullptr;
 }
 

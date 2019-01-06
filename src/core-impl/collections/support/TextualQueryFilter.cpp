@@ -274,15 +274,15 @@ Collections::semanticDateTimeParser( const QString &text, bool *absolute )
 
     if( text.at(0).isLetter() )
     {
-        if( ( lowerText.compare( "today" ) == 0 ) || ( lowerText.compare( i18n( "today" ) ) == 0 ) )
+        if( ( lowerText.compare( QLatin1String("today") ) == 0 ) || ( lowerText.compare( i18n( "today" ) ) == 0 ) )
             result = curTime.addDays( -1 );
-        else if( ( lowerText.compare( "last week" ) == 0 ) || ( lowerText.compare( i18n( "last week" ) ) == 0 ) )
+        else if( ( lowerText.compare( QLatin1String("last week") ) == 0 ) || ( lowerText.compare( i18n( "last week" ) ) == 0 ) )
             result = curTime.addDays( -7 );
-        else if( ( lowerText.compare( "last month" ) == 0 ) || ( lowerText.compare( i18n( "last month" ) ) == 0 ) )
+        else if( ( lowerText.compare( QLatin1String("last month") ) == 0 ) || ( lowerText.compare( i18n( "last month" ) ) == 0 ) )
             result = curTime.addMonths( -1 );
-        else if( ( lowerText.compare( "two months ago" ) == 0 ) || ( lowerText.compare( i18n( "two months ago" ) ) == 0 ) )
+        else if( ( lowerText.compare( QLatin1String("two months ago") ) == 0 ) || ( lowerText.compare( i18n( "two months ago" ) ) == 0 ) )
             result = curTime.addMonths( -2 );
-        else if( ( lowerText.compare( "three months ago" ) == 0 ) || ( lowerText.compare( i18n( "three months ago" ) ) == 0 ) )
+        else if( ( lowerText.compare( QLatin1String("three months ago") ) == 0 ) || ( lowerText.compare( i18n( "three months ago" ) ) == 0 ) )
             result = curTime.addMonths( -3 );
     }
     else if( result.isValid() )

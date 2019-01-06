@@ -39,7 +39,7 @@ ScriptImporter::ScriptImporter( AmarokScriptEngine *scriptEngine, const QUrl &ur
 {
     QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership
                                                         , QScriptEngine::ExcludeSuperClassContents );
-    scriptEngine->globalObject().setProperty( "Importer", scriptObject );
+    scriptEngine->globalObject().setProperty( QStringLiteral("Importer"), scriptObject );
 }
 
 void
@@ -85,11 +85,11 @@ ScriptImporter::availableBindings() const
 bool
 ScriptImporter::loadAmarokBinding( const QString &name )
 {
-    if( name == "bookmarks" )
+    if( name == QLatin1String("bookmarks") )
         new AmarokBookmarkScript( m_scriptEngine );
-    else if( name == "collectionview" )
+    else if( name == QLatin1String("collectionview") )
         new AmarokCollectionViewScript( m_scriptEngine, ScriptManager::instance()->scriptNameForEngine( m_scriptEngine ) );
-    else if( name == "playlistmanager" )
+    else if( name == QLatin1String("playlistmanager") )
         new AmarokPlaylistManagerScript( m_scriptEngine );
     else
     {

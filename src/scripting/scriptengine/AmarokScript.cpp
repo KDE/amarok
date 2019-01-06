@@ -32,7 +32,7 @@ AmarokScript::AmarokScript::AmarokScript( const QString &name, QScriptEngine *en
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    engine->globalObject().setProperty( "Amarok", scriptObject );
+    engine->globalObject().setProperty( QStringLiteral("Amarok"), scriptObject );
     if( ScriptManager::instance()->m_scripts.contains( name ) )
         connect( ScriptManager::instance()->m_scripts[name], &ScriptItem::uninstalled, this, &AmarokScript::uninstalled );
 }
@@ -53,33 +53,33 @@ int
 AmarokScript::AmarokScript::alert( const QString& text, const QString& type ) const
 {
     //Ok = 1, Cancel = 2, Yes = 3, No = 4, Continue = 5
-    if( type == "error" )
+    if( type == QLatin1String("error") )
     {
         KMessageBox::error( 0, text );
         return -1;
     }
-    else if( type == "sorry" )
+    else if( type == QLatin1String("sorry") )
     {
         KMessageBox::sorry( 0, text );
         return -1;
     }
-    else if( type == "information" )
+    else if( type == QLatin1String("information") )
     {
         KMessageBox::information( 0, text );
         return -1;
     }
-    else if( type == "questionYesNo" )
+    else if( type == QLatin1String("questionYesNo") )
         return KMessageBox::questionYesNo( 0, text );
-    else if( type == "questionYesNoCancel" )
+    else if( type == QLatin1String("questionYesNoCancel") )
         return KMessageBox::questionYesNo( 0, text );
-    else if( type == "warningYesNo" )
+    else if( type == QLatin1String("warningYesNo") )
         return KMessageBox::warningYesNo( 0, text );
-    else if( type == "warningContinueCancel" )
+    else if( type == QLatin1String("warningContinueCancel") )
         return KMessageBox::warningContinueCancel( 0, text );
-    else if( type == "warningYesNoCancel" )
+    else if( type == QLatin1String("warningYesNoCancel") )
         return KMessageBox::warningYesNoCancel( 0, text );
 
-    debug( "alert type not found!" );
+    debug( QStringLiteral("alert type not found!") );
     return -1;
 }
 

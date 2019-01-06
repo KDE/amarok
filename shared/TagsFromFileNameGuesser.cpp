@@ -20,19 +20,19 @@
 
 const QStringList m_schemes( QStringList()
     //01 Artist - Title.ext
-    << "^%track%\\W*-?\\W*%artist%\\W*-\\W*%title%\\.+(?:\\w{2,5})$"
+    << QStringLiteral("^%track%\\W*-?\\W*%artist%\\W*-\\W*%title%\\.+(?:\\w{2,5})$")
     //01 Title.ext
-    << "^%track%\\W*-?\\W*%title%\\.+?:\\w{2,5}$"
+    << QStringLiteral("^%track%\\W*-?\\W*%title%\\.+?:\\w{2,5}$")
     //Album - 01 - Artist - Title.ext
-    << "^%album%\\W*-\\W*%track%\\W*-\\W*%artist%\\W*-\\W*%title%\\.+(?:\\w{2,5})$"
+    << QStringLiteral("^%album%\\W*-\\W*%track%\\W*-\\W*%artist%\\W*-\\W*%title%\\.+(?:\\w{2,5})$")
     //Artist - Album - 01 - Title.ext
-    << "^%artist%\\W*-\\W*%album%\\W*-\\W*%track%\\W*-\\W*%title%\\.+(?:\\w{2,5})$"
+    << QStringLiteral("^%artist%\\W*-\\W*%album%\\W*-\\W*%track%\\W*-\\W*%title%\\.+(?:\\w{2,5})$")
     // Artist - Album - Title.ext
-    << "^%artist%\\W*-\\W*%album%\\W*-\\W*%title%\\.+(?:\\w{2,5})$"
+    << QStringLiteral("^%artist%\\W*-\\W*%album%\\W*-\\W*%title%\\.+(?:\\w{2,5})$")
     //Artist - Title.ext
-    << "^%artist%\\W*-\\W*%title%\\.+(?:\\w{2,5})$"
+    << QStringLiteral("^%artist%\\W*-\\W*%title%\\.+(?:\\w{2,5})$")
     //Title.ext
-    << "^%title%\\.+(?:\\w{2,5})$"
+    << QStringLiteral("^%title%\\.+(?:\\w{2,5})$")
 );
 
 const QRegExp m_digitalFields( "(%(?:discnumber|track|year)%)" );
@@ -41,25 +41,25 @@ const QRegExp m_literalFields( "(%(?:album|albumartist|artist|comment|composer|g
 quint64
 fieldName( const QString &field )
 {
-    if( field == "album" )
+    if( field == QLatin1String("album") )
         return Meta::valAlbum;
-    else if( field == "albumartist" )
+    else if( field == QLatin1String("albumartist") )
         return Meta::valAlbumArtist;
-    else if( field == "artist" )
+    else if( field == QLatin1String("artist") )
         return Meta::valArtist;
-    else if( field == "comment" )
+    else if( field == QLatin1String("comment") )
         return Meta::valComment;
-    else if( field == "composer" )
+    else if( field == QLatin1String("composer") )
         return Meta::valComposer;
-    else if( field == "discnumber" )
+    else if( field == QLatin1String("discnumber") )
         return Meta::valDiscNr;
-    else if( field == "genre" )
+    else if( field == QLatin1String("genre") )
         return Meta::valGenre;
-    else if( field == "title" )
+    else if( field == QLatin1String("title") )
         return Meta::valTitle;
-    else if( field == "track" )
+    else if( field == QLatin1String("track") )
         return Meta::valTrackNr;
-    else if( field == "year" )
+    else if( field == QLatin1String("year") )
         return Meta::valYear;
 
     return 0;
@@ -103,10 +103,10 @@ Meta::Tag::TagGuesser::guessTagsByScheme( const QString &fileName, const QString
         m_scheme = m_scheme.replace( QRegExp( "([~!\\^&*()\\-+\\[\\]{}\\\\:\"?\\.])" ),"\\\\1" );
     
     QRegExp spaces( "(\\s+)" );
-    rx.setPattern( m_scheme.replace( spaces, "\\s+" )
-                           .replace( m_digitalFields, "(\\d+)" )
-                           .replace( m_literalFields, "(.+)" )
-                           .replace( "%ignore%", "(?:.+)" ) );
+    rx.setPattern( m_scheme.replace( spaces, QStringLiteral("\\s+") )
+                           .replace( m_digitalFields, QStringLiteral("(\\d+)") )
+                           .replace( m_literalFields, QStringLiteral("(.+)") )
+                           .replace( QLatin1String("%ignore%"), QLatin1String("(?:.+)") ) );
 
     if( !rx.exactMatch( m_fileName ) )
         return metadata;

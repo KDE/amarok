@@ -92,7 +92,7 @@ OcsPersonItem::init()
 
     if( !m_person->emailAddress().isEmpty() )
     {
-        QAction *email = new QAction( QIcon::fromTheme( "internet-mail" ), i18n("Email contributor"), this );
+        QAction *email = new QAction( QIcon::fromTheme( QStringLiteral("internet-mail") ), i18n("Email contributor"), this );
         email->setToolTip( m_person->emailAddress() );
         email->setData( QString( "mailto:" + m_person->emailAddress() ) );
         m_iconsBar->addAction( email );
@@ -100,7 +100,7 @@ OcsPersonItem::init()
 
     if( !m_person->webAddress().isEmpty() )
     {
-        QAction *homepage = new QAction( QIcon::fromTheme( "applications-internet" ), i18n("Visit contributor's homepage"), this );
+        QAction *homepage = new QAction( QIcon::fromTheme( QStringLiteral("applications-internet") ), i18n("Visit contributor's homepage"), this );
         homepage->setToolTip( m_person->webAddress() );
         homepage->setData( m_person->webAddress() );
         m_iconsBar->addAction( homepage );
@@ -124,7 +124,7 @@ void
 OcsPersonItem::launchUrl( QAction *action ) //SLOT
 {
     QUrl url = QUrl( action->data().toString() );
-    KRun::runUrl( url, "text/html", nullptr, KRun::RunExecutables, QString() );
+    KRun::runUrl( url, QStringLiteral("text/html"), nullptr, KRun::RunExecutables, QString() );
 }
 
 void
@@ -140,7 +140,7 @@ OcsPersonItem::switchToOcs( Attica::Provider &provider )
     if( !m_ocsUsername.isEmpty() )
     {
         Attica::ItemJob< Attica::Person > *personJob;
-        if( m_ocsUsername == QString( "%%category%%" ) )   //TODO: handle grouping
+        if( m_ocsUsername == QStringLiteral( "%%category%%" ) )   //TODO: handle grouping
             return;
 
         personJob = provider.requestPerson( m_ocsUsername );
@@ -183,9 +183,9 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
 
     if( m_status == Author )
     {
-        if( !ocsPerson.extendedAttribute( "ircchannels" ).isEmpty() )
+        if( !ocsPerson.extendedAttribute( QStringLiteral("ircchannels") ).isEmpty() )
         {
-            QString channelsString = ocsPerson.extendedAttribute( "ircchannels" );
+            QString channelsString = ocsPerson.extendedAttribute( QStringLiteral("ircchannels") );
             //We extract the channel names from the string provided by OCS:
             QRegExp channelrx = QRegExp( "#+[\\w\\.\\-\\/!()+]+([\\w\\-\\/!()+]?)", Qt::CaseInsensitive );
             QStringList channels;
@@ -201,15 +201,15 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
             foreach( const QString &channel, channels )
             {
                 const QString channelName = QString( channel ).remove( '#' );
-                link = QString( "irc://irc.freenode.org/%1" ).arg( channelName );
-                m_aboutText.append( QString( "<a href=\"%1\">%2</a>" ).arg( link, channel ) + "  " );
+                link = QStringLiteral( "irc://irc.freenode.org/%1" ).arg( channelName );
+                m_aboutText.append( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( link, channel ) + "  " );
             }
         }
-        if( !ocsPerson.extendedAttribute( "favouritemusic" ).isEmpty() )
+        if( !ocsPerson.extendedAttribute( QStringLiteral("favouritemusic") ).isEmpty() )
         {
-            QStringList artists = ocsPerson.extendedAttribute( "favouritemusic" ).split( ", " );
+            QStringList artists = ocsPerson.extendedAttribute( QStringLiteral("favouritemusic") ).split( QStringLiteral(", ") );
             //TODO: make them clickable
-            m_aboutText.append( "<br/>" + i18n( "Favorite music: " ) + artists.join( ", " ) );
+            m_aboutText.append( "<br/>" + i18n( "Favorite music: " ) + artists.join( QStringLiteral(", ") ) );
         }
     }
 
@@ -218,22 +218,22 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
 
     visitProfile->setToolTip( i18n( "Visit %1's profile on openDesktop.org", ocsPerson.firstName() ) );
 
-    visitProfile->setData( ocsPerson.extendedAttribute( "profilepage" ) );
+    visitProfile->setData( ocsPerson.extendedAttribute( QStringLiteral("profilepage") ) );
     m_iconsBar->addAction( visitProfile );
 
     if( m_status == Author )
     {
         QList< QPair< QString, QString > > ocsHomepages;
-        ocsHomepages.append( QPair< QString, QString >( ocsPerson.extendedAttribute( "homepagetype" ), ocsPerson.homepage() ) );
+        ocsHomepages.append( QPair< QString, QString >( ocsPerson.extendedAttribute( QStringLiteral("homepagetype") ), ocsPerson.homepage() ) );
 
         debug() << "USER HOMEPAGE DATA STARTS HERE";
         debug() << ocsHomepages.last().first << " :: " << ocsHomepages.last().second;
 
         for( int i = 2; i <= 10; i++ )  //OCS supports 10 total homepages as of 2/oct/2009
         {
-            QString type = ocsPerson.extendedAttribute( QString( "homepagetype%1" ).arg( i ) );
-            ocsHomepages.append( QPair< QString, QString >( ( type == "&nbsp;" ) ? "" : type,
-                                                            ocsPerson.extendedAttribute( QString( "homepage%1" ).arg( i ) ) ) );
+            QString type = ocsPerson.extendedAttribute( QStringLiteral( "homepagetype%1" ).arg( i ) );
+            ocsHomepages.append( QPair< QString, QString >( ( type == QLatin1String("&nbsp;") ) ? QLatin1String("") : type,
+                                                            ocsPerson.extendedAttribute( QStringLiteral( "homepage%1" ).arg( i ) ) ) );
             debug() << ocsHomepages.last().first << " :: " << ocsHomepages.last().second;
         }
 
@@ -247,38 +247,38 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
             QIcon icon;
             QString text;
 
-            if( type == "Blog" )
+            if( type == QLatin1String("Blog") )
             {
-                icon = QIcon::fromTheme( "kblogger" );
+                icon = QIcon::fromTheme( QStringLiteral("kblogger") );
                 text = i18n( "Visit contributor's blog" );
             }
-            else if( type == "delicious" )
+            else if( type == QLatin1String("delicious") )
             {
                 icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-delicious.png" ) ) );
                 text = i18n( "Visit contributor's del.icio.us profile" );
             }
-            else if( type == "Digg" )
+            else if( type == QLatin1String("Digg") )
             {
                 icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-digg.png" ) ) );
                 text = i18n( "Visit contributor's Digg profile" );
             }
-            else if( type == "Facebook" )
+            else if( type == QLatin1String("Facebook") )
             {
                 icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-facebook.png" ) ) );
                 text = i18n( "Visit contributor's Facebook profile" );
             }
-            else if( type == "Homepage" || type == "other" || ( type.isEmpty() && !url.isEmpty() ) )
+            else if( type == QLatin1String("Homepage") || type == QLatin1String("other") || ( type.isEmpty() && !url.isEmpty() ) )
             {
                 if( fillHomepageFromOcs )
                 {
-                    QAction *homepage = new QAction( QIcon::fromTheme( "applications-internet" ), i18n("Visit contributor's homepage"), this );
+                    QAction *homepage = new QAction( QIcon::fromTheme( QStringLiteral("applications-internet") ), i18n("Visit contributor's homepage"), this );
                     homepage->setToolTip( url );
                     homepage->setData( url );
                     m_iconsBar->addAction( homepage );
                     fillHomepageFromOcs = false;
                     continue;
                 }
-                if( type == "other" && url.contains( "last.fm/" ) )     //HACK: assign a last.fm icon if the URL contains last.fm
+                if( type == QLatin1String("other") && url.contains( QLatin1String("last.fm/") ) )     //HACK: assign a last.fm icon if the URL contains last.fm
                 {
                     icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-lastfm.png" ) ) );
                     text = i18n( "Visit contributor's Last.fm profile" );
@@ -286,52 +286,52 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
                 else
                     continue;
             }
-            else if( type == "LinkedIn" )
+            else if( type == QLatin1String("LinkedIn") )
             {
                 icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-linkedin.png" ) ) );
                 text = i18n( "Visit contributor's LinkedIn profile" );
             }
-            else if( type == "MySpace" )
+            else if( type == QLatin1String("MySpace") )
             {
                 icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-myspace.png" ) ) );
                 text = i18n( "Visit contributor's MySpace homepage" );
             }
-            else if( type == "Reddit" )
+            else if( type == QLatin1String("Reddit") )
             {
                 icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-reddit.png" ) ) );
                 text = i18n( "Visit contributor's Reddit profile" );
             }
-            else if( type == "YouTube" )
+            else if( type == QLatin1String("YouTube") )
             {
                 icon = QIcon( "dragonplayer" ); //FIXME: icon
                 text = i18n( "Visit contributor's YouTube profile" );
             }
-            else if( type == "Twitter" )
+            else if( type == QLatin1String("Twitter") )
             {
                 icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-twitter.png" ) ) );
                 text = i18n( "Visit contributor's Twitter feed" );
             }
-            else if( type == "Wikipedia" )
+            else if( type == QLatin1String("Wikipedia") )
             {
                 icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-wikipedia.png" ) ) );
                 text = i18n( "Visit contributor's Wikipedia profile" );
             }
-            else if( type == "Xing" )
+            else if( type == QLatin1String("Xing") )
             {
                 icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-xing.png" ) ) );
                 text = i18n( "Visit contributor's Xing profile" );
             }
-            else if( type == "identi.ca" )
+            else if( type == QLatin1String("identi.ca") )
             {
                 icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-identica.png" ) ) );
                 text = i18n( "Visit contributor's identi.ca feed" );
             }
-            else if( type == "libre.fm" )
+            else if( type == QLatin1String("libre.fm") )
             {
                 icon = QIcon( "juk" );  //FIXME: icon
                 text = i18n( "Visit contributor's libre.fm profile" );
             }
-            else if( type == "StackOverflow" )
+            else if( type == QLatin1String("StackOverflow") )
             {
                 icon = QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/emblem-stackoverflow.png" ) ) );
                 text = i18n( "Visit contributor's StackOverflow profile" );

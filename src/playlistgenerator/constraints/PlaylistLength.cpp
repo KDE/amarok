@@ -47,7 +47,7 @@ ConstraintTypes::PlaylistLength::createNew( ConstraintNode* p )
 ConstraintFactoryEntry*
 ConstraintTypes::PlaylistLength::registerMe()
 {
-    return new ConstraintFactoryEntry( "PlaylistLength",
+    return new ConstraintFactoryEntry( QStringLiteral("PlaylistLength"),
                                        i18n("Playlist Length"),
                                        i18n("Sets the preferred number of tracks in the playlist"),
                                        &PlaylistLength::createFromXml, &PlaylistLength::createNew );
@@ -61,7 +61,7 @@ ConstraintTypes::PlaylistLength::PlaylistLength( QDomElement& xmlelem, Constrain
 {
     QDomAttr a;
 
-    a = xmlelem.attributeNode( "length" );
+    a = xmlelem.attributeNode( QStringLiteral("length") );
     if ( !a.isNull() ) {
         m_length = a.value().toInt();
         /* after 2.3.2, what was the PlaylistLength constraint became the
@@ -71,11 +71,11 @@ ConstraintTypes::PlaylistLength::PlaylistLength( QDomElement& xmlelem, Constrain
             m_length /= 240000;
     }
 
-    a = xmlelem.attributeNode( "comparison" );
+    a = xmlelem.attributeNode( QStringLiteral("comparison") );
     if ( !a.isNull() )
         m_comparison = a.value().toInt();
 
-    a = xmlelem.attributeNode( "strictness" );
+    a = xmlelem.attributeNode( QStringLiteral("strictness") );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
 }
@@ -101,11 +101,11 @@ ConstraintTypes::PlaylistLength::editWidget() const
 void
 ConstraintTypes::PlaylistLength::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
-    QDomElement c = doc.createElement( "constraint" );
-    c.setAttribute( "type", "PlaylistLength" );
-    c.setAttribute( "length", QString::number( m_length ) );
-    c.setAttribute( "comparison", QString::number( m_comparison ) );
-    c.setAttribute( "strictness", QString::number( m_strictness ) );
+    QDomElement c = doc.createElement( QStringLiteral("constraint") );
+    c.setAttribute( QStringLiteral("type"), QStringLiteral("PlaylistLength") );
+    c.setAttribute( QStringLiteral("length"), QString::number( m_length ) );
+    c.setAttribute( QStringLiteral("comparison"), QString::number( m_comparison ) );
+    c.setAttribute( QStringLiteral("strictness"), QString::number( m_strictness ) );
     elem.appendChild( c );
 }
 

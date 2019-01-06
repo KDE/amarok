@@ -34,7 +34,7 @@ using namespace Amarok;
 Mpris2::Mpris2( QObject *parent )
     : QObject( parent )
 {
-    QString mpris2Name( "org.mpris.MediaPlayer2.amarok" );
+    QString mpris2Name( QStringLiteral("org.mpris.MediaPlayer2.amarok") );
 
     bool success = QDBusConnection::sessionBus().registerService( mpris2Name );
 
@@ -49,14 +49,14 @@ Mpris2::Mpris2( QObject *parent )
     if ( success )
     {
         DBusAbstractAdaptor *adaptor = new MediaPlayer2( this );
-        adaptor->setDBusPath( "/org/mpris/MediaPlayer2" );
+        adaptor->setDBusPath( QStringLiteral("/org/mpris/MediaPlayer2") );
         adaptor = new MediaPlayer2Player( this );
-        adaptor->setDBusPath( "/org/mpris/MediaPlayer2" );
+        adaptor->setDBusPath( QStringLiteral("/org/mpris/MediaPlayer2") );
         adaptor = new MediaPlayer2AmarokExtensions( this );
-        adaptor->setDBusPath( "/org/mpris/MediaPlayer2" );
+        adaptor->setDBusPath( QStringLiteral("/org/mpris/MediaPlayer2") );
         adaptor = new DBusAmarokApp( this );
-        adaptor->setDBusPath( "/org/mpris/MediaPlayer2" );
-        QDBusConnection::sessionBus().registerObject( "/org/mpris/MediaPlayer2", this, QDBusConnection::ExportAdaptors );
+        adaptor->setDBusPath( QStringLiteral("/org/mpris/MediaPlayer2") );
+        QDBusConnection::sessionBus().registerObject( QStringLiteral("/org/mpris/MediaPlayer2"), this, QDBusConnection::ExportAdaptors );
     }
 }
 

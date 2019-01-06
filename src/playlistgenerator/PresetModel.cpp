@@ -197,7 +197,7 @@ void
 APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::PresetPtr> &pl ) const
 {
     QDomDocument xmldoc;
-    QDomElement base = xmldoc.createElement( "playlistgenerator" );
+    QDomElement base = xmldoc.createElement( QStringLiteral("playlistgenerator") );
     QList<QDomNode*> nodes;
     foreach ( APG::PresetPtr ps, pl ) {
         QDomElement* elemPtr = ps->toXml( xmldoc );
@@ -211,7 +211,7 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
         QTextStream out( &file );
         out.setCodec( "UTF-8" );
         xmldoc.save( out, 2, QDomNode::EncodingFromTextStream );
-        if( !filename.contains( "playlistgenerator.xml" ) )
+        if( !filename.contains( QLatin1String("playlistgenerator.xml") ) )
         {
             Amarok::Logger::longMessage( i18n("Preset exported to %1", filename),
                                                        Amarok::Logger::Information );
@@ -281,7 +281,7 @@ APG::PresetModel::parseXmlToPresets( QDomDocument& document )
     QDomElement rootelem = document.documentElement();
     for ( int i = 0; i < rootelem.childNodes().count(); i++ ) {
         QDomElement e = rootelem.childNodes().at( i ).toElement();
-        if ( e.tagName() == "generatorpreset" ) {
+        if ( e.tagName() == QLatin1String("generatorpreset") ) {
             debug() << "creating a new generator preset";
             insertPreset( APG::Preset::createFromXml( e ) );
         } else {

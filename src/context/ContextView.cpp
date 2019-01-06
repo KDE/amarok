@@ -66,7 +66,7 @@ ContextView::ContextView( QWidget *parent )
     connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &ContextView::updatePalette );
 
     m_urlRunner = new ContextUrlRunner();
-    The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
+    The::amarokUrlHandler()->registerRunner( m_urlRunner, QStringLiteral("context") );
 
     rootContext()->setContextProperty( QStringLiteral( "AppletModel" ), m_appletModel );
     rootContext()->setContextProperty( QStringLiteral( "AppletProxyModel" ), m_proxyModel );

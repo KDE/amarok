@@ -54,7 +54,7 @@ Playlists::loadPlaylistFile( const QUrl &url, PlaylistFileProvider *provider )
     {
         if( !QFileInfo( url.toLocalFile() ).exists() )
         {
-            error() << QString("Could not load local playlist file %1!").arg( url.toLocalFile() );
+            error() << QStringLiteral("Could not load local playlist file %1!").arg( url.toLocalFile() );
             return PlaylistFilePtr();
         }
     }
@@ -146,7 +146,7 @@ Playlists::newPlaylistFilePath( const QString &fileExtension )
 {
     int trailingNumber = 1;
     KLocalizedString fileName = ki18n("Playlist_%1");
-    QUrl url = QUrl::fromLocalFile( Amarok::saveLocation( "playlists" ) );
+    QUrl url = QUrl::fromLocalFile( Amarok::saveLocation( QStringLiteral("playlists") ) );
     url = url.adjusted(QUrl::StripTrailingSlash);
     url.setPath(url.path() + QLatin1Char('/') + ( fileName.subs( trailingNumber ).toString() ));
 
@@ -156,5 +156,5 @@ Playlists::newPlaylistFilePath( const QString &fileExtension )
         url.setPath(url.path() +  fileName.subs( ++trailingNumber ).toString() );
     }
 
-    return QUrl::fromLocalFile( QString( "%1.%2" ).arg( url.path(), fileExtension ) );
+    return QUrl::fromLocalFile( QStringLiteral( "%1.%2" ).arg( url.path(), fileExtension ) );
 }

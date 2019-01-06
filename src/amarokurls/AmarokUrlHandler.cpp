@@ -137,7 +137,7 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
 {
     DEBUG_BLOCK
 
-    QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks where url like 'amarok://%1%' ORDER BY name;";
+    QString query = QStringLiteral("SELECT id, parent_id, name, url, description, custom FROM bookmarks where url like 'amarok://%1%' ORDER BY name;");
     query = query.arg( command );
     QStringList result = StorageManager::instance()->sqlStorage()->query( query );
 

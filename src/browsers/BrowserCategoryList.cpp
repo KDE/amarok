@@ -329,7 +329,7 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
         if ( m_infoHtmlTemplate.isEmpty() )
         {
 
-            QString dataPath = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/", QStandardPaths::LocateDirectory );
+            QString dataPath = QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/data/"), QStandardPaths::LocateDirectory );
 
             //load html
             QString htmlPath = dataPath + "/hover_info_template.html";
@@ -342,23 +342,23 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
             m_infoHtmlTemplate = file.readAll();
             file.close();
 
-            m_infoHtmlTemplate.replace( "{background_color}", The::paletteHandler()->highlightColor().lighter( 150 ).name() );
-            m_infoHtmlTemplate.replace( "{border_color}", The::paletteHandler()->highlightColor().lighter( 150 ).name() );
-            m_infoHtmlTemplate.replace( "{text_color}", pApp->palette().brush( QPalette::Text ).color().name() );
+            m_infoHtmlTemplate.replace( QLatin1String("{background_color}"), The::paletteHandler()->highlightColor().lighter( 150 ).name() );
+            m_infoHtmlTemplate.replace( QLatin1String("{border_color}"), The::paletteHandler()->highlightColor().lighter( 150 ).name() );
+            m_infoHtmlTemplate.replace( QLatin1String("{text_color}"), pApp->palette().brush( QPalette::Text ).color().name() );
             QColor highlight( pApp->palette().highlight().color() );
             highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
-            m_infoHtmlTemplate.replace( "{header_background_color}", highlight.name() );
+            m_infoHtmlTemplate.replace( QLatin1String("{header_background_color}"), highlight.name() );
 
         }
 
         QString currentHtml = m_infoHtmlTemplate;
 
-        currentHtml.replace( "%%NAME%%", category->prettyName() );
-        currentHtml.replace( "%%DESCRIPTION%%", category->longDescription() );
-        currentHtml.replace( "%%IMAGE_PATH%%", "file://" + category->imagePath() );
+        currentHtml.replace( QLatin1String("%%NAME%%"), category->prettyName() );
+        currentHtml.replace( QLatin1String("%%DESCRIPTION%%"), category->longDescription() );
+        currentHtml.replace( QLatin1String("%%IMAGE_PATH%%"), "file://" + category->imagePath() );
 
         QVariantMap variantMap;
-        variantMap["main_info"] = QVariant( currentHtml );
+        variantMap[QStringLiteral("main_info")] = QVariant( currentHtml );
         The::infoProxy()->setInfo( variantMap );
     }
 }

@@ -92,13 +92,13 @@ Dynamic::SearchQueryBias::fromXml( QXmlStreamReader *reader )
 void
 Dynamic::SearchQueryBias::toXml( QXmlStreamWriter *writer ) const
 {
-    writer->writeTextElement( "filter", m_filter );
+    writer->writeTextElement( QStringLiteral("filter"), m_filter );
 }
 
 QString
 Dynamic::SearchQueryBias::sName()
 {
-    return QLatin1String( "searchQueryBias" );
+    return QStringLiteral( "searchQueryBias" );
 }
 
 QString

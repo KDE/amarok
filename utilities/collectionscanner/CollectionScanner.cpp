@@ -81,7 +81,7 @@ CollectionScanner::Scanner::Scanner( int &argc, char **argv )
         , m_restart( false )
         , m_idlePriority( false )
 {
-    setObjectName( "amarokcollectionscanner" );
+    setObjectName( QStringLiteral("amarokcollectionscanner") );
 
     readArgs();
 
@@ -196,10 +196,10 @@ CollectionScanner::Scanner::doJob() //SLOT
         m_scanningState.writeFull(); // just trigger write to initialise memory
 
         xmlWriter.writeStartDocument();
-        xmlWriter.writeStartElement("scanner");
-        xmlWriter.writeAttribute("count", QString::number( entries.count() ) );
+        xmlWriter.writeStartElement(QStringLiteral("scanner"));
+        xmlWriter.writeAttribute(QStringLiteral("count"), QString::number( entries.count() ) );
         if( m_incremental )
-            xmlWriter.writeAttribute("incremental", QString());
+            xmlWriter.writeAttribute(QStringLiteral("incremental"), QString());
         // write some information into the file and close previous tag
         xmlWriter.writeComment("Created by amarokcollectionscanner " AMAROK_VERSION " on "+QDateTime::currentDateTime().toString());
         xmlFile.flush();
@@ -211,7 +211,7 @@ CollectionScanner::Scanner::doJob() //SLOT
         CollectionScanner::Directory dir( path, &m_scanningState,
                                           m_incremental && !isModified( path ) );
 
-        xmlWriter.writeStartElement( "directory" );
+        xmlWriter.writeStartElement( QStringLiteral("directory") );
         dir.toXml( &xmlWriter );
         xmlWriter.writeEndElement();
         xmlFile.flush();
@@ -227,7 +227,7 @@ void
 CollectionScanner::Scanner::addDir( const QString& dir, QSet<QString>* entries )
 {
     // Linux specific, but this fits the 90% rule
-    if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
+    if( dir.startsWith( QLatin1String("/dev") ) || dir.startsWith( QLatin1String("/sys") ) || dir.startsWith( QLatin1String("/proc") ) )
         return;
 
     if( entries->contains( dir ) )
@@ -294,10 +294,10 @@ CollectionScanner::Scanner::readArgs()
     {
         QString arg = argslist.at( argnum );
 
-        if( arg.startsWith( "--" ) )
+        if( arg.startsWith( QLatin1String("--") ) )
         {
             QString myarg = QString( arg ).remove( 0, 2 );
-            if( myarg == "newer" )
+            if( myarg == QLatin1String("newer") )
             {
                 if( argslist.count() > argnum + 1 )
                     readNewerTime( argslist.at( argnum + 1 ) );
@@ -305,7 +305,7 @@ CollectionScanner::Scanner::readArgs()
                     missingArg = true;
                 argnum++;
             }
-            else if( myarg == "batch" )
+            else if( myarg == QLatin1String("batch") )
             {
                 if( argslist.count() > argnum + 1 )
                     readBatchFile( argslist.at( argnum + 1 ) );
@@ -313,7 +313,7 @@ CollectionScanner::Scanner::readArgs()
                     missingArg = true;
                 argnum++;
             }
-            else if( myarg == "sharedmemory" )
+            else if( myarg == QLatin1String("sharedmemory") )
             {
                 if( argslist.count() > argnum + 1 )
                     m_scanningState.setKey( argslist.at( argnum + 1 ) );
@@ -321,17 +321,17 @@ CollectionScanner::Scanner::readArgs()
                     missingArg = true;
                 argnum++;
             }
-            else if( myarg == "version" )
+            else if( myarg == QLatin1String("version") )
                 displayVersion();
-            else if( myarg == "incremental" )
+            else if( myarg == QLatin1String("incremental") )
                 m_incremental = true;
-            else if( myarg == "recursive" )
+            else if( myarg == QLatin1String("recursive") )
                 m_recursively = true;
-            else if( myarg == "restart" )
+            else if( myarg == QLatin1String("restart") )
                 m_restart = true;
-            else if( myarg == "idlepriority" )
+            else if( myarg == QLatin1String("idlepriority") )
                 m_idlePriority = true;
-            else if( myarg == "charset" )
+            else if( myarg == QLatin1String("charset") )
                 m_charset = true;
             else
                 displayHelp();

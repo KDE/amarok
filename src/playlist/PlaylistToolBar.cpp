@@ -30,12 +30,12 @@ ToolBar::ToolBar( QWidget *parent ) :
     QToolBar( parent ),
     m_collapsed( false )
 {
-    setObjectName( "PlaylistToolBar" );
+    setObjectName( QStringLiteral("PlaylistToolBar") );
 
     m_collapsibleActions = new QActionGroup( parent ); //needs to exist before adding any
                                                      //other action to the toolbar
 
-    m_playlistOperationsMenu = new KActionMenu( QIcon::fromTheme( "amarok_playlist" ),
+    m_playlistOperationsMenu = new KActionMenu( QIcon::fromTheme( QStringLiteral("amarok_playlist") ),
                                                 i18n( "&Playlist" ), parent );
     m_playlistOperationsMenu->setDelayed( false );
     m_playlistOperationsMenu->setVisible( false );

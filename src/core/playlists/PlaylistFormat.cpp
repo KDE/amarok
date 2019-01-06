@@ -32,13 +32,13 @@ getFormat( const QUrl &path )
 {
     const QString ext = Amarok::extension( path.fileName() );
 
-    if( ext == "m3u" || ext == "m3u8" ) return M3U; //m3u8 is M3U in UTF8
-    if( ext == "pls" ) return PLS;
-    if( ext == "ram" ) return RAM;
-    if( ext == "smil") return SMIL;
-    if( ext == "asx" || ext == "wax" || ext == "asf" ) return ASX;
-    if( ext == "xml" ) return XML;
-    if( ext == "xspf" ) return XSPF;
+    if( ext == QLatin1String("m3u") || ext == QLatin1String("m3u8") ) return M3U; //m3u8 is M3U in UTF8
+    if( ext == QLatin1String("pls") ) return PLS;
+    if( ext == QLatin1String("ram") ) return RAM;
+    if( ext == QLatin1String("smil")) return SMIL;
+    if( ext == QLatin1String("asx") || ext == QLatin1String("wax") || ext == QLatin1String("asf") ) return ASX;
+    if( ext == QLatin1String("xml") ) return XML;
+    if( ext == QLatin1String("xspf") ) return XSPF;
 
     return Unknown;
 }

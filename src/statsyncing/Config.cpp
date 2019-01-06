@@ -267,7 +267,7 @@ Config::hasChanged() const
 void
 Config::read()
 {
-    KConfigGroup group = Amarok::config( "StatSyncing" );
+    KConfigGroup group = Amarok::config( QStringLiteral("StatSyncing") );
 
     QStringList providerIds = group.readEntry( "providerIds", QStringList() );
     QStringList providerNames = group.readEntry( "providerNames", QStringList() );
@@ -287,8 +287,8 @@ Config::read()
     endResetModel();
 
     m_checkedFields = 0;
-    QStringList fieldNames = group.readEntry( "checkedFields", QStringList( "FIRST" ) );
-    if( fieldNames == QStringList( "FIRST" ) )
+    QStringList fieldNames = group.readEntry( "checkedFields", QStringList( QStringLiteral("FIRST") ) );
+    if( fieldNames == QStringList( QStringLiteral("FIRST") ) )
         m_checkedFields = Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed |
                           Meta::valPlaycount | Meta::valLabel;
     else
@@ -315,7 +315,7 @@ Config::save()
         providerEnabledStatuses << data.enabled;
     }
 
-    KConfigGroup group = Amarok::config( "StatSyncing" );
+    KConfigGroup group = Amarok::config( QStringLiteral("StatSyncing") );
     group.writeEntry( "providerIds", providerIds );
     group.writeEntry( "providerNames", providerNames );
     group.writeEntry( "providerEnabledStatuses", providerEnabledStatuses );

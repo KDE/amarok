@@ -92,7 +92,7 @@ MediaDeviceTrack::prettyUrl() const
     // Check name() to prevent infinite recursion
     QString trackName = !name().isEmpty()? prettyName() : i18n( "Unknown track" );
 
-    return  QString( "%1: %2 - %3" ).arg( collName, artistName, trackName );
+    return  QStringLiteral( "%1: %2 - %3" ).arg( collName, artistName, trackName );
 }
 
 QString

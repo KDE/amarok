@@ -139,7 +139,7 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
         emit replacingPlaylist();   //make sure that we clear filters
         clear();
         //make sure that we turn off dynamic mode.
-        Amarok::actionCollection()->action( "disable_dynamic" )->trigger();
+        Amarok::actionCollection()->action( QStringLiteral("disable_dynamic") )->trigger();
     }
 
     int bottomModelRowCount = m_bottomModel->qaim()->rowCount();
@@ -381,7 +381,7 @@ Controller::removeDeadAndDuplicates()
 
     if( !topModelRowsToRemove.empty() )
     {
-        m_undoStack->beginMacro( "Remove dead and duplicate entries" );     // TODO: Internationalize?
+        m_undoStack->beginMacro( QStringLiteral("Remove dead and duplicate entries") );     // TODO: Internationalize?
         removeRows( topModelRowsToRemove );
         m_undoStack->endMacro();
     }

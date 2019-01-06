@@ -31,13 +31,13 @@
 ConstraintGroup::ConstraintGroup( QDomElement& xmlelem, ConstraintNode* p ) : ConstraintNode( p )
 {
     DEBUG_BLOCK
-    if ( xmlelem.tagName() == "group" ) {
-        if ( xmlelem.attribute( "matchtype" ) == "any" ) {
+    if ( xmlelem.tagName() == QLatin1String("group") ) {
+        if ( xmlelem.attribute( QStringLiteral("matchtype") ) == QLatin1String("any") ) {
             m_matchtype = MatchAny;
         } else {
             m_matchtype = MatchAll;
         }
-    } else if ( xmlelem.tagName() == "constrainttree" ) {
+    } else if ( xmlelem.tagName() == QLatin1String("constrainttree") ) {
         // root node of a constraint tree
         m_matchtype = MatchAll;
     } else {
@@ -62,9 +62,9 @@ ConstraintGroup::createFromXml( QDomElement& xmlelem, ConstraintNode* p )
     for ( int i = 0; i < xmlelem.childNodes().count(); i++ ) {
         QDomElement childXmlElem = xmlelem.childNodes().item( i ).toElement();
         if ( !childXmlElem.isNull() ) {
-            if ( childXmlElem.tagName() == "group" ) {
+            if ( childXmlElem.tagName() == QLatin1String("group") ) {
                 cfact->createGroup( childXmlElem, cg );
-            } else if ( childXmlElem.tagName() == "constraint" ) {
+            } else if ( childXmlElem.tagName() == QLatin1String("constraint") ) {
                 cfact->createConstraint( childXmlElem, cg );
             } else {
                 debug() << "unknown child: " << childXmlElem.nodeName();
@@ -106,14 +106,14 @@ ConstraintGroup::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
     QDomElement group;
 
-    if ( elem.tagName() == "generatorpreset" ) {
-        group = doc.createElement( "constrainttree" ); // unmodifiable root element of the constraint tree
+    if ( elem.tagName() == QLatin1String("generatorpreset") ) {
+        group = doc.createElement( QStringLiteral("constrainttree") ); // unmodifiable root element of the constraint tree
     } else {
-        group = doc.createElement( "group" );
+        group = doc.createElement( QStringLiteral("group") );
         if ( m_matchtype == MatchAny ) {
-            group.setAttribute( "matchtype", "any" );
+            group.setAttribute( QStringLiteral("matchtype"), QStringLiteral("any") );
         } else {
-            group.setAttribute( "matchtype", "all" );
+            group.setAttribute( QStringLiteral("matchtype"), QStringLiteral("all") );
         }
     }
 

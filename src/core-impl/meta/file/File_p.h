@@ -350,13 +350,13 @@ namespace MetaFile
             Meta::FieldHash fields;
             fields.insert( Meta::valImage, image );
             WriteTagsJob *job = new WriteTagsJob( d.data()->url.toLocalFile(), fields );
-            QObject::connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), job, SLOT(deleteLater()) );
+            QObject::connect( job, &WriteTagsJob::done, job, &QObject::deleteLater );
 
             ThreadWeaver::Queue::instance()->enqueue( QSharedPointer<ThreadWeaver::Job>(job) );
 
             if( d.data()->m_data.embeddedImage == image.isNull() )
                 // we need to toggle the embeddedImage switch in this case
-                QObject::connect( job, SIGNAL(done(ThreadWeaver::JobPointer)), d.data(), SLOT(readMetaData()) );
+                QObject::connect( job, &WriteTagsJob::done, d.data(), &Track::Private::readMetaData );
 
             CoverCache::invalidateAlbum( this );
             notifyObservers();

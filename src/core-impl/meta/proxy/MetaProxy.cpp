@@ -372,7 +372,7 @@ MetaProxy::Track::type() const
         return d->realTrack->type();
     else
         // just debugging, normal users shouldn't hit this
-        return QString( "MetaProxy::Track" );
+        return QStringLiteral( "MetaProxy::Track" );
 }
 
 void

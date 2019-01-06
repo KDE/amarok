@@ -51,25 +51,25 @@ ViewUrlRunner::run( AmarokUrl url )
     const QMap< QString, QString > args = url.args();
     auto playlistDock = The::mainWindow()->playlistDock();
 
-    if( args.keys().contains( "filter" ) )
+    if( args.keys().contains( QStringLiteral("filter") ) )
     {
-        const QString filterExpr = args.value( "filter" );
+        const QString filterExpr = args.value( QStringLiteral("filter") );
         playlistDock->searchWidget()->setCurrentFilter( filterExpr );
-        if( args.keys().contains( "matches" ) )
+        if( args.keys().contains( QStringLiteral("matches") ) )
         {
-            const QString onlyMatches = args.value( "matches" );
-            playlistDock->searchWidget()->slotShowOnlyMatches( ( onlyMatches == QString( "true" ) ) );
+            const QString onlyMatches = args.value( QStringLiteral("matches") );
+            playlistDock->searchWidget()->slotShowOnlyMatches( ( onlyMatches == QStringLiteral( "true" ) ) );
         }
     }
-    if( args.keys().contains( "sort" ) )
+    if( args.keys().contains( QStringLiteral("sort") ) )
     {
-        const QString sortPath = args.value( "sort" );
+        const QString sortPath = args.value( QStringLiteral("sort") );
         playlistDock->sortWidget()->readSortPath( sortPath );
     }
 
-    if( args.keys().contains( "layout" ) )
+    if( args.keys().contains( QStringLiteral("layout") ) )
     {
-        const QString layout = args.value( "layout" );
+        const QString layout = args.value( QStringLiteral("layout") );
         LayoutManager::instance()->setActiveLayout( layout );
     }
 
@@ -81,7 +81,7 @@ ViewUrlRunner::run( AmarokUrl url )
 QString
 ViewUrlRunner::command() const
 {
-    return "playlist";
+    return QStringLiteral("playlist");
 }
 
 QString

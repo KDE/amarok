@@ -35,9 +35,9 @@ void
 ScriptableBiasFactory::init( QScriptEngine *engine )
 {
     TrackSetExporter::init( engine );
-    engine->globalObject().setProperty( "BiasFactory", engine->newFunction( biasCtor ),
+    engine->globalObject().setProperty( QStringLiteral("BiasFactory"), engine->newFunction( biasCtor ),
                                         QScriptValue:: Undeletable | QScriptValue::ReadOnly );
-    engine->globalObject().setProperty( "GroupBiasFactory", engine->newFunction( groupBiasCtor ),
+    engine->globalObject().setProperty( QStringLiteral("GroupBiasFactory"), engine->newFunction( groupBiasCtor ),
                                         QScriptValue:: Undeletable | QScriptValue::ReadOnly );
 }
 
@@ -387,7 +387,7 @@ void
 TrackSetExporter::init( QScriptEngine *engine )
 {
     qScriptRegisterMetaType<Dynamic::TrackSet>( engine, toScriptValue, fromScriptValue );
-    engine->globalObject().setProperty( "TrackSet", engine->newFunction( trackSetConstructor ),
+    engine->globalObject().setProperty( QStringLiteral("TrackSet"), engine->newFunction( trackSetConstructor ),
                                         QScriptValue:: Undeletable | QScriptValue::ReadOnly );
 }
 
@@ -478,7 +478,7 @@ TrackSetExporter::trackSetConstructor( QScriptContext *context, QScriptEngine *e
     }
     if( invalid )
     {
-        context->throwError( QScriptContext::SyntaxError, "Invalid arguments for TrackSet!" );
+        context->throwError( QScriptContext::SyntaxError, QStringLiteral("Invalid arguments for TrackSet!") );
         return engine->undefinedValue();
     }
 

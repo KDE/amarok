@@ -145,7 +145,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     setObjectName( name );
     //TODO: we have a really nice opportunity to make these info blurbs both helpful and pretty
     setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and CDs." ) );
-    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_collections.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/hover_info_collections.png") ) );
 
     // set background
     if( AmarokConfig::showBrowserBackgroundImage() )
@@ -159,7 +159,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     // -- read the current view mode from the configuration
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
-    const QString &value = Amarok::config( "Collection Browser" ).readEntry( "View Mode" );
+    const QString &value = Amarok::config( QStringLiteral("Collection Browser") ).readEntry( "View Mode" );
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
     enumValue == -1 ? d->viewMode = NormalCollections : d->viewMode = (ViewMode) enumValue;
 
@@ -261,14 +261,14 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     d->searchWidget->toolBar()->addSeparator();
 
-    QAction *toggleAction = new QAction( QIcon::fromTheme( "view-list-tree" ), i18n( "Merged View" ), this );
+    QAction *toggleAction = new QAction( QIcon::fromTheme( QStringLiteral("view-list-tree") ), i18n( "Merged View" ), this );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( d->viewMode == CollectionWidget::UnifiedCollection );
     toggleView( d->viewMode == CollectionWidget::UnifiedCollection );
     connect( toggleAction, &QAction::triggered, this, &CollectionWidget::toggleView );
     d->searchWidget->toolBar()->addAction( toggleAction );
 
-    QAction *searchMenuAction = new QAction( QIcon::fromTheme( "preferences-other" ), i18n( "Sort Options" ), this );
+    QAction *searchMenuAction = new QAction( QIcon::fromTheme( QStringLiteral("preferences-other") ), i18n( "Sort Options" ), this );
     searchMenuAction->setMenu( filterMenu );
     d->searchWidget->toolBar()->addAction( searchMenuAction );
 
@@ -423,13 +423,13 @@ void CollectionWidget::toggleView( bool merged )
 
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
-    Amarok::config( "Collection Browser" ).writeEntry( "View Mode", me.valueToKey( d->viewMode ) );
+    Amarok::config( QStringLiteral("Collection Browser") ).writeEntry( "View Mode", me.valueToKey( d->viewMode ) );
 }
 
 QList<CategoryId::CatMenuId>
 CollectionWidget::readLevelsFromConfig() const
 {
-    QList<int> levelNumbers = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
+    QList<int> levelNumbers = Amarok::config( QStringLiteral("Collection Browser") ).readEntry( "TreeCategory", QList<int>() );
     QList<CategoryId::CatMenuId> levels;
 
     // we changed "Track Artist" to "Album Artist" default before Amarok 2.8. Migrate user

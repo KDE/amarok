@@ -239,8 +239,8 @@ void
 ServiceBase::infoChanged( const QString &infoHtml )
 {
     QVariantMap map;
-    map["service_name"] = prettyName();
-    map["main_info"] = infoHtml;
+    map[QStringLiteral("service_name")] = prettyName();
+    map[QStringLiteral("main_info")] = infoHtml;
     The::infoProxy()->setInfo( map );
 }
 
@@ -263,8 +263,8 @@ void
 ServiceBase::generateWidgetInfo( const QString &html ) const
 {
     QVariantMap map;
-    map["service_name"] = prettyName();
-    map["main_info"] = html;
+    map[QStringLiteral("service_name")] = prettyName();
+    map[QStringLiteral("main_info")] = html;
     The::infoProxy()->setInfo( map );
 }
 

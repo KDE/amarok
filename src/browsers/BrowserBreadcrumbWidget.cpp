@@ -46,7 +46,7 @@ BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
     m_breadcrumbArea->setContentsMargins( 0, 0, 0, 0 );
     static_cast<QBoxLayout*>( layout() )->setStretchFactor( m_breadcrumbArea, 10 );
 
-    new BreadcrumbUrlMenuButton( "navigate", this );
+    new BreadcrumbUrlMenuButton( QStringLiteral("navigate"), this );
 
     m_spacer = new QWidget( 0 );
 }

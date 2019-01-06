@@ -66,7 +66,7 @@ ASXPlaylist::processContent( QTextStream &stream )
         {
             // Some playlists have unescaped & characters in URLs
             QString url = urlPattern.cap( 2 );
-            url.replace( QRegExp( "&(?!amp;|quot;|apos;|lt;|gt;)" ), "&amp;" );
+            url.replace( QRegExp( "&(?!amp;|quot;|apos;|lt;|gt;)" ), QStringLiteral("&amp;") );
 
             QString urlReplacement = urlPattern.cap( 1 ) % url % "\"";
             tagReplacement.replace( urlPattern.cap(0).toLocal8Bit().toLower(),
@@ -100,21 +100,21 @@ ASXPlaylist::loadAsx( QTextStream &stream )
     {
         XSPFTrack track;
         subSubNode = subNode.firstChild();
-        if( subNode.nodeName() == "entry" )
+        if( subNode.nodeName() == QLatin1String("entry") )
         {
             while( !subSubNode.isNull() )
             {
-                if( subSubNode.nodeName() == "ref" )
+                if( subSubNode.nodeName() == QLatin1String("ref") )
                 {
-                    QByteArray path = subSubNode.attributes().namedItem("href").nodeValue().toUtf8();
+                    QByteArray path = subSubNode.attributes().namedItem(QStringLiteral("href")).nodeValue().toUtf8();
                     path.replace( '\\', '/' );
 
                     QUrl url = getAbsolutePath( QUrl::fromEncoded( path ) );
                     track.location = url;
                 }
-                else if( subSubNode.nodeName() == "title" )
+                else if( subSubNode.nodeName() == QLatin1String("title") )
                      track.title = subSubNode.firstChild().nodeValue();
-                else if( subSubNode.nodeName() == "author" )
+                else if( subSubNode.nodeName() == QLatin1String("author") )
                      track.creator = subSubNode.firstChild().nodeValue();
 
                 subSubNode = subSubNode.nextSibling();
@@ -135,30 +135,30 @@ ASXPlaylist::writeTrackList( )
 {
     Meta::TrackList trackList = tracks();
 
-    if ( documentElement().namedItem( "asx" ).isNull() )
+    if ( documentElement().namedItem( QStringLiteral("asx") ).isNull() )
     {
-        QDomElement root = createElement( "asx" );
-        root.setAttribute( "version", 3.0 );
+        QDomElement root = createElement( QStringLiteral("asx") );
+        root.setAttribute( QStringLiteral("version"), 3.0 );
         appendChild( root );
     }
 
     foreach( Meta::TrackPtr track, trackList )
     {
-        QDomNode subNode = createElement( "entry" );
+        QDomNode subNode = createElement( QStringLiteral("entry") );
 
         //URI of resource to be rendered.
-        QDomElement location = createElement( "ref" );
+        QDomElement location = createElement( QStringLiteral("ref") );
 
         //Track title
-        QDomNode title = createElement( "title" );
+        QDomNode title = createElement( QStringLiteral("title") );
 
         //Human-readable name of the entity that authored the resource.
-        QDomNode creator = createElement( "author" );
+        QDomNode creator = createElement( QStringLiteral("author") );
 
         //Description of a track
-        QDomNode abstract = createElement( "abstract" );
+        QDomNode abstract = createElement( QStringLiteral("abstract") );
 
-        location.setAttribute( "href", trackLocation( track ) );
+        location.setAttribute( QStringLiteral("href"), trackLocation( track ) );
         subNode.appendChild( location );
 
         #define APPENDNODE( X, Y ) \

@@ -82,7 +82,7 @@ PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannel *channel )
 {
     QUrl imagePath = channel->saveLocation();
     if( imagePath.isEmpty() || !imagePath.isLocalFile() )
-        imagePath = QUrl::fromLocalFile( Amarok::saveLocation( "podcasts" ) );
+        imagePath = QUrl::fromLocalFile( Amarok::saveLocation( QStringLiteral("podcasts") ) );
     QCryptographicHash md5( QCryptographicHash::Md5 );
     md5.addData( channel->url().url().toLocal8Bit() );
     QString extension = Amarok::extension( channel->imageUrl().fileName() );

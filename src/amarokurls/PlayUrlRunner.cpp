@@ -49,9 +49,9 @@ bool PlayUrlRunner::run ( AmarokUrl url )
 
     //get the position
     qint64 pos = 0;
-    if ( url.args().keys().contains( "pos" ) )
+    if ( url.args().keys().contains( QStringLiteral("pos") ) )
     {
-        pos = (qint64) ( url.args().value( "pos" ).toDouble() * 1000.0 );
+        pos = (qint64) ( url.args().value( QStringLiteral("pos") ).toDouble() * 1000.0 );
     }
 
     debug() << "seek pos: " << pos;
@@ -78,7 +78,7 @@ bool PlayUrlRunner::run ( AmarokUrl url )
 
 QString PlayUrlRunner::command() const
 {
-    return "play";
+    return QStringLiteral("play");
 }
 
 QString PlayUrlRunner::prettyCommand() const
@@ -103,7 +103,7 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl( QUrl url )
 
     // Queries the database for bookmarks where the url field contains
     // the base64 encoded url (minus the '=').
-    QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks WHERE url LIKE '%%1%'";
+    QString query = QStringLiteral("SELECT id, parent_id, name, url, description, custom FROM bookmarks WHERE url LIKE '%%1%'");
     query = query.arg ( track_encoded );
     QStringList result = StorageManager::instance()->sqlStorage()->query ( query );
 

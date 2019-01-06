@@ -54,12 +54,12 @@ PlaylistFileProvider::PlaylistFileProvider()
     {
         QUrl url( key );
         //Don't load these from the config file, they are read from the directory anyway
-        if( KIO::upUrl(url).matches( QUrl::fromUserInput(Amarok::saveLocation("playlists")), QUrl::StripTrailingSlash ) )
+        if( KIO::upUrl(url).matches( QUrl::fromUserInput(Amarok::saveLocation(QStringLiteral("playlists"))), QUrl::StripTrailingSlash ) )
             continue;
         m_urlsToLoad << url;
     }
     //also add all files in the $KDEHOME/share/apps/amarok/playlists
-    QDir playlistDir = QDir( Amarok::saveLocation( "playlists" ), "",
+    QDir playlistDir = QDir( Amarok::saveLocation( QStringLiteral("playlists") ), QLatin1String(""),
                              QDir::Name,
                              QDir::Files | QDir::Readable );
     foreach( const QString &file, playlistDir.entryList() )
@@ -82,7 +82,7 @@ PlaylistFileProvider::~PlaylistFileProvider()
     {
         QUrl url = playlistFile->uidUrl();
         //only save files NOT in "playlists", those are automatically loaded.
-        if( KIO::upUrl(url).matches( QUrl::fromUserInput(Amarok::saveLocation( "playlists" )), QUrl::StripTrailingSlash ) )
+        if( KIO::upUrl(url).matches( QUrl::fromUserInput(Amarok::saveLocation( QStringLiteral("playlists") )), QUrl::StripTrailingSlash ) )
             continue;
 
         //debug() << "storing to rc-file: " << url.url();
@@ -135,7 +135,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     DEBUG_BLOCK
 
-    QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") : name;
+    QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( QStringLiteral("ddd MMMM d yy hh-mm")) : name;
     filename.replace( '/', QLatin1Char('-') );
     filename.replace( QLatin1Char('\\'), QLatin1Char('-') );
 
@@ -146,7 +146,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
         filename.append( QLatin1String( ".xspf" ) );
     }
 
-    QUrl path( Amarok::saveLocation( "playlists" ) );
+    QUrl path( Amarok::saveLocation( QStringLiteral("playlists") ) );
     path = path.adjusted(QUrl::StripTrailingSlash);
     path.setPath(path.path() + QLatin1Char('/') + ( Amarok::vfatPath( filename ) ));
     if( QFileInfo( path.toLocalFile() ).exists() )
@@ -339,7 +339,7 @@ PlaylistFileProvider::slotSaveLater() //SLOT
 KConfigGroup
 PlaylistFileProvider::loadedPlaylistsConfig() const
 {
-    return Amarok::config( "Loaded Playlist Files" );
+    return Amarok::config( QStringLiteral("Loaded Playlist Files") );
 }
 
 } //namespace Playlists

@@ -722,10 +722,10 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd && m_pd->isHidden() )
     {
-        m_pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
-        qDebug() << "svgHandler SVG renderer is " << (QObject*)(The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ));
+        m_pd->setSvgRenderer( The::svgHandler()->getRenderer( QStringLiteral("amarok/images/pud_items.svg") ) );
+        qDebug() << "svgHandler SVG renderer is " << (QObject*)(The::svgHandler()->getRenderer( QStringLiteral("amarok/images/pud_items.svg") ));
         qDebug() << "m_pd SVG renderer is " << (QObject*)(m_pd->svgRenderer());
-        qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
+        qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( QStringLiteral("amarok/images/pud_items.svg") )->elementExists( QStringLiteral("load") ) );
 
         QList<QAction*> actions =  actionsFor( this, &indices.first() );
         foreach( QAction * action, actions )

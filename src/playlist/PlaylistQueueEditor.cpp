@@ -35,10 +35,10 @@ PlaylistQueueEditor::PlaylistQueueEditor()
     m_ui.setupUi( this );
     updateView();
     connect( qobject_cast<Playlist::Model*>(The::playlist()->qaim()), &Playlist::Model::queueChanged, this, &PlaylistQueueEditor::queueChanged );
-    m_ui.upButton->setIcon( QIcon::fromTheme( "go-up" ) );
-    m_ui.downButton->setIcon( QIcon::fromTheme( "go-down" ) );
-    m_ui.dequeueTrackButton->setIcon( QIcon::fromTheme( "list-remove" ) );
-    m_ui.clearButton->setIcon( QIcon::fromTheme( "edit-clear-list" ) );
+    m_ui.upButton->setIcon( QIcon::fromTheme( QStringLiteral("go-up") ) );
+    m_ui.downButton->setIcon( QIcon::fromTheme( QStringLiteral("go-down") ) );
+    m_ui.dequeueTrackButton->setIcon( QIcon::fromTheme( QStringLiteral("list-remove") ) );
+    m_ui.clearButton->setIcon( QIcon::fromTheme( QStringLiteral("edit-clear-list") ) );
     connect( m_ui.upButton, &QAbstractButton::clicked, this, &PlaylistQueueEditor::moveUp );
     connect( m_ui.downButton, &QAbstractButton::clicked, this, &PlaylistQueueEditor::moveDown );
     connect( m_ui.clearButton, &QAbstractButton::clicked, this, &PlaylistQueueEditor::clear );

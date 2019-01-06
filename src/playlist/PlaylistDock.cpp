@@ -50,15 +50,15 @@
 #include <KActionMenu>
 #include <KToolBarSpacerAction>
 
-static const QString s_dynMode( "dynamic_mode" );
-static const QString s_repopulate( "repopulate" );
-static const QString s_turnOff( "turn_off" );
+static const QString s_dynMode( QStringLiteral("dynamic_mode") );
+static const QString s_repopulate( QStringLiteral("repopulate") );
+static const QString s_turnOff( QStringLiteral("turn_off") );
 
 Playlist::Dock::Dock( QWidget* parent )
     : AmarokDockWidget( i18n( "&Playlist" ), parent )
     , m_barBox( 0 )
 {
-    setObjectName( "Playlist dock" );
+    setObjectName( QStringLiteral("Playlist dock") );
     setAllowedAreas( Qt::AllDockWidgetAreas );
 }
 
@@ -146,7 +146,7 @@ Playlist::Dock::polish()
     connect( The::mainWindow(), &MainWindow::switchQueueStateShortcut,
              m_playlistView, &Playlist::PrettyListView::switchQueueState );
 
-    KConfigGroup searchConfig = Amarok::config("Playlist Search");
+    KConfigGroup searchConfig = Amarok::config(QStringLiteral("Playlist Search"));
     m_playlistView->showOnlyMatches( searchConfig.readEntry( "ShowOnlyMatches", false ) );
 
     connect( m_playlistView, &Playlist::PrettyListView::found, m_searchWidget, &Playlist::ProgressiveSearchWidget::match );
@@ -163,7 +163,7 @@ Playlist::Dock::polish()
     { // START: Playlist toolbar
         // action toolbar
         m_barBox = new BoxWidget( false, m_mainWidget );
-        m_barBox->setObjectName( "PlaylistBarBox" );
+        m_barBox->setObjectName( QStringLiteral("PlaylistBarBox") );
         m_barBox->setContentsMargins( 0, 0, 4, 0 );
         m_barBox->setFixedHeight( 36 );
 
@@ -173,11 +173,11 @@ Playlist::Dock::polish()
         plBar->setMovable( false );
 
         QActionGroup *playlistActions = new QActionGroup( m_mainWidget );
-        playlistActions->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
+        playlistActions->addAction( Amarok::actionCollection()->action( QStringLiteral("playlist_clear") ) );
 
-        m_savePlaylistMenu = new KActionMenu( QIcon::fromTheme( "document-save-amarok" ),
+        m_savePlaylistMenu = new KActionMenu( QIcon::fromTheme( QStringLiteral("document-save-amarok") ),
                                               i18n("&Save Current Playlist"), m_mainWidget );
-        m_savePlaylistMenu->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
+        m_savePlaylistMenu->addAction( Amarok::actionCollection()->action( QStringLiteral("playlist_export") ) );
 
         m_saveActions = new KActionCollection( m_mainWidget );
 
@@ -196,10 +196,10 @@ Playlist::Dock::polish()
 
         playlistActions->addAction( m_savePlaylistMenu );
 
-        playlistActions->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
+        playlistActions->addAction( Amarok::actionCollection()->action( QStringLiteral("playlist_undo") ) );
         //redo action can be accessed from menu > Playlist
 
-        playlistActions->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
+        playlistActions->addAction( Amarok::actionCollection()->action( QStringLiteral("show_active_track") ) );
 
         plBar->addCollapsibleActions( playlistActions );
 
@@ -273,7 +273,7 @@ Playlist::Dock::playlistProviderAdded( Playlists::PlaylistProvider *provider, in
     m_saveActions->addAction( QString::number( (qlonglong) userProvider ), action );
 
     // insert the playlist provider actions before "export"
-    QAction* exportAction = Amarok::actionCollection()->action( "playlist_export" );
+    QAction* exportAction = Amarok::actionCollection()->action( QStringLiteral("playlist_export") );
     m_savePlaylistMenu->insertAction( exportAction, action );
     connect( action, &QAction::triggered, this, &Playlist::Dock::slotSaveCurrentPlaylist );
 }
@@ -348,7 +348,7 @@ void
 Playlist::Dock::clearFilterIfActive() // slot
 {
     DEBUG_BLOCK
-    KConfigGroup config = Amarok::config( "Playlist Search" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Playlist Search") );
     bool filterActive = config.readEntry( "ShowOnlyMatches", true );
 
     if( filterActive )
@@ -359,7 +359,7 @@ void
 Playlist::Dock::slotDynamicHintLinkActivated( const QString &href )
 {
     if( href == s_dynMode )
-        AmarokUrl( "amarok://navigate/playlists/dynamic category" ).run();
+        AmarokUrl( QStringLiteral("amarok://navigate/playlists/dynamic category") ).run();
     else if( href == s_repopulate )
         The::playlistActions()->repopulateDynamicPlaylist();
     else if( href == s_turnOff )

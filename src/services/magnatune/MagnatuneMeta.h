@@ -52,7 +52,7 @@ public:
     QPixmap emblem() override;
 
     bool isBookmarkable() const override { return true; }
-    QString collectionName() const override { return "Magnatune.com"; }
+    QString collectionName() const override { return QStringLiteral("Magnatune.com"); }
     bool simpleFiltering() const override { return false; }
 
     void setOggUrl( const QString& url );
@@ -89,7 +89,7 @@ public:
     QUrl magnatuneUrl() const;
 
     bool isBookmarkable() const override { return true; }
-    QString collectionName() const override { return "Magnatune.com"; }
+    QString collectionName() const override { return QStringLiteral("Magnatune.com"); }
     bool simpleFiltering() const override { return false; }
 };
 
@@ -110,7 +110,7 @@ public:
 
     ~MagnatuneAlbum();
     
-    QString downloadPrefix() const override { return "magnatune"; }
+    QString downloadPrefix() const override { return QStringLiteral("magnatune"); }
 
     void setLaunchYear( int launchYear );
     int launchYear() const;
@@ -129,7 +129,7 @@ public:
     void setDownloadMembership();
 
     bool isBookmarkable() const override { return true; }
-    QString collectionName() const override { return "Magnatune.com"; }
+    QString collectionName() const override { return QStringLiteral("Magnatune.com"); }
     bool simpleFiltering() const override { return false; }
 
 public Q_SLOTS:
@@ -145,7 +145,7 @@ public:
     explicit MagnatuneGenre( const QStringList &resultRow );
 
     bool isBookmarkable() const override { return true; }
-    QString collectionName() const override { return "Magnatune.com"; }
+    QString collectionName() const override { return QStringLiteral("Magnatune.com"); }
     bool simpleFiltering() const override { return false; }
 };
 

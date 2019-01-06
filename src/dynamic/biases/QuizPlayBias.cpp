@@ -91,13 +91,13 @@ Dynamic::QuizPlayBias::fromXml( QXmlStreamReader *reader )
 void
 Dynamic::QuizPlayBias::toXml( QXmlStreamWriter *writer ) const
 {
-    writer->writeTextElement( "follow", nameForFollow( m_follow ) );
+    writer->writeTextElement( QStringLiteral("follow"), nameForFollow( m_follow ) );
 }
 
 QString
 Dynamic::QuizPlayBias::sName()
 {
-    return QLatin1String( "quizPlayBias" );
+    return QStringLiteral( "quizPlayBias" );
 }
 
 QString
@@ -339,9 +339,9 @@ Dynamic::QuizPlayBias::nameForFollow( Dynamic::QuizPlayBias::FollowType match )
 {
     switch( match )
     {
-    case Dynamic::QuizPlayBias::TitleToTitle:   return "titleQuiz";
-    case Dynamic::QuizPlayBias::ArtistToArtist: return "artistQuiz";
-    case Dynamic::QuizPlayBias::AlbumToAlbum:   return "albumQuiz";
+    case Dynamic::QuizPlayBias::TitleToTitle:   return QStringLiteral("titleQuiz");
+    case Dynamic::QuizPlayBias::ArtistToArtist: return QStringLiteral("artistQuiz");
+    case Dynamic::QuizPlayBias::AlbumToAlbum:   return QStringLiteral("albumQuiz");
     }
     return QString();
 }
@@ -349,9 +349,9 @@ Dynamic::QuizPlayBias::nameForFollow( Dynamic::QuizPlayBias::FollowType match )
 Dynamic::QuizPlayBias::FollowType
 Dynamic::QuizPlayBias::followForName( const QString &name )
 {
-    if( name == "titleQuiz" )       return TitleToTitle;
-    else if( name == "artistQuiz" ) return ArtistToArtist;
-    else if( name == "albumQuiz" )  return AlbumToAlbum;
+    if( name == QLatin1String("titleQuiz") )       return TitleToTitle;
+    else if( name == QLatin1String("artistQuiz") ) return ArtistToArtist;
+    else if( name == QLatin1String("albumQuiz") )  return AlbumToAlbum;
     else return TitleToTitle;
 }
 

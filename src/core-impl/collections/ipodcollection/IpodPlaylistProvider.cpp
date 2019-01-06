@@ -191,7 +191,7 @@ void
 IpodPlaylistProvider::scheduleCopyAndInsertToPlaylist( AmarokSharedPointer<IpodPlaylist> playlist )
 {
     m_copyTracksTo.insert( playlist );
-    QTimer::singleShot( 0, this, SLOT(slotCopyAndInsertToPlaylists()) );
+    QTimer::singleShot( 0, this, &IpodPlaylistProvider::slotCopyAndInsertToPlaylists );
 }
 
 void

@@ -86,7 +86,7 @@ MenuAction::MenuAction( KActionCollection *ac, QObject *parent )
   : QAction( parent )
 {
     setText(i18n( "Amarok Menu" ));
-    ac->addAction("amarok_menu", this);
+    ac->addAction(QStringLiteral("amarok_menu"), this);
     setShortcutConfigurable ( false ); //FIXME disabled as it doesn't work, should use QCursor::pos()
 }
 
@@ -175,7 +175,7 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
         : KToggleAction( parent )
 {
 
-    ac->addAction( "play_pause", this );
+    ac->addAction( QStringLiteral("play_pause"), this );
     setText( i18n( "Play/Pause" ) );
     setShortcut( Qt::Key_Space );
 
@@ -203,21 +203,21 @@ void
 PlayPauseAction::stopped()
 {
     setChecked( false );
-    setIcon( QIcon::fromTheme("media-playback-start-amarok") );
+    setIcon( QIcon::fromTheme(QStringLiteral("media-playback-start-amarok")) );
 }
 
 void
 PlayPauseAction::paused()
 {
     setChecked( true );
-    setIcon( QIcon::fromTheme("media-playback-start-amarok") );
+    setIcon( QIcon::fromTheme(QStringLiteral("media-playback-start-amarok")) );
 }
 
 void
 PlayPauseAction::playing()
 {
     setChecked( false );
-    setIcon( QIcon::fromTheme("media-playback-pause-amarok") );
+    setIcon( QIcon::fromTheme(QStringLiteral("media-playback-pause-amarok")) );
 }
 
 
@@ -354,7 +354,7 @@ BurnMenuAction::BurnMenuAction( KActionCollection *ac, QObject *parent )
   : QAction( parent )
 {
     setText(i18n( "Burn" ));
-    ac->addAction("burn_menu", this);
+    ac->addAction(QStringLiteral("burn_menu"), this);
 }
 
 QWidget*
@@ -423,9 +423,9 @@ BurnMenu::slotBurnSelectedTracks() //SLOT
 StopAction::StopAction( KActionCollection *ac, QObject *parent )
   : QAction( parent )
 {
-    ac->addAction( "stop", this );
+    ac->addAction( QStringLiteral("stop"), this );
     setText( i18n( "Stop" ) );
-    setIcon( QIcon::fromTheme("media-playback-stop-amarok") );
+    setIcon( QIcon::fromTheme(QStringLiteral("media-playback-stop-amarok")) );
     KGlobalAccel::setGlobalShortcut(this, QKeySequence() );
     connect( this, &StopAction::triggered, this, &StopAction::stop );
 
@@ -467,9 +467,9 @@ StopAction::stop()
 StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionCollection *ac, QObject *parent )
 : QAction( parent )
 {
-    ac->addAction( "stop_after_current", this );
+    ac->addAction( QStringLiteral("stop_after_current"), this );
     setText( i18n( "Stop after current Track" ) );
-    setIcon( QIcon::fromTheme("media-playback-stop-amarok") );
+    setIcon( QIcon::fromTheme(QStringLiteral("media-playback-stop-amarok")) );
     KGlobalAccel::setGlobalShortcut(this, QKeySequence( Qt::META + Qt::SHIFT + Qt::Key_V ) );
     connect( this, &StopPlayingAfterCurrentTrackAction::triggered, this, &StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack );
 }

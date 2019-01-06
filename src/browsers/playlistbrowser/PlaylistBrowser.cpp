@@ -42,7 +42,7 @@ PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const QString &name, QWidge
 
     setLongDescription( i18n( "The playlist browser contains your list of imported and saved playlists. It is also where you can specify powerful dynamic playlists and manage your podcast subscriptions and episodes." ) );
 
-    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_playlists.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/hover_info_playlists.png") ) );
 }
 
 PlaylistBrowserNS::PlaylistBrowser::~PlaylistBrowser()

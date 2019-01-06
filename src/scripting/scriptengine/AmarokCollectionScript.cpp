@@ -43,9 +43,9 @@ AmarokCollectionScript::AmarokCollectionScript( AmarokScriptEngine *engine )
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
     //deprecate
-    engine->setDeprecatedProperty( "Amarok", "Collection", scriptObject );
+    engine->setDeprecatedProperty( QStringLiteral("Amarok"), QStringLiteral("Collection"), scriptObject );
 
-    engine->globalObject().property( "Amarok" ).setProperty( "CollectionManager", scriptObject );
+    engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("CollectionManager"), scriptObject );
 
     CollectionManager *instance = CollectionManager::instance();
     connect( instance, &CollectionManager::collectionDataChanged,
@@ -59,7 +59,7 @@ AmarokCollectionScript::AmarokCollectionScript( AmarokScriptEngine *engine )
 int
 AmarokCollectionScript::totalAlbums() const
 {
-    QStringList albums = query( "SELECT COUNT( id ) FROM albums;" );
+    QStringList albums = query( QStringLiteral("SELECT COUNT( id ) FROM albums;") );
     if( albums.size() < 1 )
         return 0;
     QString total = albums[0];
@@ -69,7 +69,7 @@ AmarokCollectionScript::totalAlbums() const
 int
 AmarokCollectionScript::totalArtists() const
 {
-    QStringList artists = query( "SELECT COUNT( id ) FROM artists;" );
+    QStringList artists = query( QStringLiteral("SELECT COUNT( id ) FROM artists;") );
     if( artists.size() < 1 )
         return 0;
     QString total = artists[0];
@@ -79,7 +79,7 @@ AmarokCollectionScript::totalArtists() const
 int
 AmarokCollectionScript::totalComposers() const
 {
-    QStringList composers = query( "SELECT COUNT( id ) FROM composers;" );
+    QStringList composers = query( QStringLiteral("SELECT COUNT( id ) FROM composers;") );
     if( composers.size() < 1 )
         return 0;
     QString total = composers[0];
@@ -89,7 +89,7 @@ AmarokCollectionScript::totalComposers() const
 int
 AmarokCollectionScript::totalGenres() const
 {
-    QStringList genres = query( "SELECT COUNT( id ) FROM genres;" );
+    QStringList genres = query( QStringLiteral("SELECT COUNT( id ) FROM genres;") );
     if( genres.size() < 1 )
         return 0;
     QString total = genres[0];
@@ -99,7 +99,7 @@ AmarokCollectionScript::totalGenres() const
 int
 AmarokCollectionScript::totalTracks() const
 {
-    QStringList tracks = query( "SELECT COUNT( url ) FROM tracks;" );
+    QStringList tracks = query( QStringLiteral("SELECT COUNT( url ) FROM tracks;") );
     if( tracks.size() < 0 )
         return 0;
     QString total = tracks[0];

@@ -22,7 +22,7 @@ using namespace Transcoding;
 NullFormat::NullFormat( const Encoder &encoder )
 {
     m_encoder = encoder;
-    m_fileExtension = "";
+    m_fileExtension = QLatin1String("");
 }
 
 QString
@@ -47,7 +47,7 @@ QStringList
 NullFormat::ffmpegParameters( const Configuration &configuration ) const
 {
     Q_UNUSED( configuration )
-    return QStringList() << "-acodec" << "copy";
+    return QStringList() << QStringLiteral("-acodec") << QStringLiteral("copy");
 }
 
 bool

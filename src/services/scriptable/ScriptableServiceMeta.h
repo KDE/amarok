@@ -99,7 +99,7 @@ class ScriptableServiceAlbum : public Meta::ServiceAlbumWithCover, public Script
         explicit ScriptableServiceAlbum( const QString &name );
         explicit ScriptableServiceAlbum( const QStringList &resultRow );
 
-        QString downloadPrefix() const override { return "script"; }
+        QString downloadPrefix() const override { return QStringLiteral("script"); }
         void setCoverUrl( const QString &coverUrl ) override { m_coverUrl = coverUrl; }
         QString coverUrl() const override { return m_coverUrl; }
 

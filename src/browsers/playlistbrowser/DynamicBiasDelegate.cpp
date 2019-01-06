@@ -71,7 +71,7 @@ PlaylistBrowserNS::DynamicBiasDelegate::paint( QPainter* painter,
         if( parentBias )
         {
             // sub-biases have a operator drawn in front of them.
-            const int operatorWidth = m_smallFm->boundingRect( "mmmm" ).width();
+            const int operatorWidth = m_smallFm->boundingRect( QStringLiteral("mmmm") ).width();
 
             // draw the selection
             QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );

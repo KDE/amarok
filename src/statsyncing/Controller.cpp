@@ -371,7 +371,7 @@ void Controller::synchronizeWithMode( int intMode )
     }
     if( usedProviders.isEmpty() )
         return; // nothing to do
-    if( usedProviders.count() == 1 && usedProviders.first()->id() == "localCollection" )
+    if( usedProviders.count() == 1 && usedProviders.first()->id() == QLatin1String("localCollection") )
     {
         if( mode == StatSyncing::Process::Interactive )
         {

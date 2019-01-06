@@ -25,7 +25,7 @@ BrowserMessageArea::BrowserMessageArea( QWidget *parent )
     : BoxWidget( true, parent )
     , m_busy( false )
 {
-    setObjectName( "BrowserMessageArea" );
+    setObjectName( QStringLiteral("BrowserMessageArea") );
 
     m_progressBar = new CompoundProgressBar( this );
     connect( m_progressBar, &CompoundProgressBar::allDone, this, &BrowserMessageArea::hideProgress );

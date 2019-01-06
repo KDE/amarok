@@ -54,7 +54,7 @@ ConstraintTypes::Checkpoint::createNew( ConstraintNode* p )
 ConstraintFactoryEntry*
 ConstraintTypes::Checkpoint::registerMe()
 {
-    return new ConstraintFactoryEntry( "Checkpoint",
+    return new ConstraintFactoryEntry( QStringLiteral("Checkpoint"),
                                        i18n("Checkpoint"),
                                        i18n("Fixes a track, album, or artist to a certain position in the playlist"),
                                        &Checkpoint::createFromXml, &Checkpoint::createNew );
@@ -69,16 +69,16 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
 {
     QDomAttr a;
 
-    a = xmlelem.attributeNode( "position" );
+    a = xmlelem.attributeNode( QStringLiteral("position") );
     if ( !a.isNull() )
         m_position = a.value().toInt();
 
 
-    a = xmlelem.attributeNode( "checkpointtype" );
+    a = xmlelem.attributeNode( QStringLiteral("checkpointtype") );
     if ( !a.isNull() )
         m_checkpointType = static_cast<CheckpointType>( a.value().toInt() );
 
-    a = xmlelem.attributeNode( "trackurl" );
+    a = xmlelem.attributeNode( QStringLiteral("trackurl") );
     if ( !a.isNull() ) {
         Meta::TrackPtr trk = CollectionManager::instance()->trackForUrl( QUrl( a.value() ) );
         if ( trk ) {
@@ -94,7 +94,7 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
 
     setCheckpoint( m_checkpointObject );
 
-    a = xmlelem.attributeNode( "strictness" );
+    a = xmlelem.attributeNode( QStringLiteral("strictness") );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
     debug() << getName();
@@ -131,36 +131,36 @@ ConstraintTypes::Checkpoint::toXml( QDomDocument& doc, QDomElement& elem ) const
     if( !m_checkpointObject )
         return;
 
-    QDomElement c = doc.createElement( "constraint" );
+    QDomElement c = doc.createElement( QStringLiteral("constraint") );
     QDomText t = doc.createTextNode( getName() );
     c.appendChild( t );
-    c.setAttribute( "type", "Checkpoint" );
-    c.setAttribute( "position", m_position );
-    c.setAttribute( "checkpointtype", m_checkpointType );
+    c.setAttribute( QStringLiteral("type"), QStringLiteral("Checkpoint") );
+    c.setAttribute( QStringLiteral("position"), m_position );
+    c.setAttribute( QStringLiteral("checkpointtype"), m_checkpointType );
     Meta::TrackPtr r;
     Meta::ArtistPtr a;
     Meta::AlbumPtr l;
     switch ( m_checkpointType ) {
         case CheckpointTrack:
             r = Meta::TrackPtr::dynamicCast( m_checkpointObject );
-            c.setAttribute( "trackurl", r->uidUrl() );
+            c.setAttribute( QStringLiteral("trackurl"), r->uidUrl() );
             break;
         case CheckpointAlbum:
             l = Meta::AlbumPtr::dynamicCast( m_checkpointObject );
             if ( l->tracks().length() > 0 ) {
                 r = l->tracks().first();
-                c.setAttribute( "trackurl", r->uidUrl() );
+                c.setAttribute( QStringLiteral("trackurl"), r->uidUrl() );
             }
             break;
         case CheckpointArtist:
             a = Meta::ArtistPtr::dynamicCast( m_checkpointObject );
             if ( a->tracks().length() > 0 ) {
                 r = a->tracks().first();
-                c.setAttribute( "trackurl", r->uidUrl() );
+                c.setAttribute( QStringLiteral("trackurl"), r->uidUrl() );
             }
             break;
     }
-    c.setAttribute( "strictness", QString::number( m_strictness ) );
+    c.setAttribute( QStringLiteral("strictness"), QString::number( m_strictness ) );
     elem.appendChild( c );
 }
 

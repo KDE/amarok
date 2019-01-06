@@ -220,19 +220,19 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         Q_UNUSED( playlist );
         QAction* action;
 
-        action = new QAction( QIcon::fromTheme( "document-properties-amarok" ), i18n( "&Rename playlist" ), this );
+        action = new QAction( QIcon::fromTheme( QStringLiteral("document-properties-amarok") ), i18n( "&Rename playlist" ), this );
         connect( action, &QAction::triggered, this, &DynamicView::editSelected );
         actions.append( action );
 
-        action = new QAction( QIcon::fromTheme( "document-new" ), i18n( "&Add new Bias" ), this );
+        action = new QAction( QIcon::fromTheme( QStringLiteral("document-new") ), i18n( "&Add new Bias" ), this );
         connect( action, &QAction::triggered, this, &DynamicView::addToSelected );
         actions.append( action );
 
-        action = new QAction( QIcon::fromTheme( "edit-copy" ), i18n( "&Clone Playlist" ), this );
+        action = new QAction( QIcon::fromTheme( QStringLiteral("edit-copy") ), i18n( "&Clone Playlist" ), this );
         connect( action, &QAction::triggered, this, &DynamicView::cloneSelected );
         actions.append( action );
 
-        action = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete playlist" ), this );
+        action = new QAction( QIcon::fromTheme( QStringLiteral("edit-delete") ), i18n( "&Delete playlist" ), this );
         connect( action, &QAction::triggered, this, &DynamicView::removeSelected );
         actions.append( action );
     }
@@ -246,11 +246,11 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         Dynamic::AndBias* aBias = qobject_cast<Dynamic::AndBias*>(v.value<QObject*>() );
         QAction* action;
 
-        action = new QAction( QIcon::fromTheme( "document-properties-amarok" ), i18n( "&Edit bias..." ), this );
+        action = new QAction( QIcon::fromTheme( QStringLiteral("document-properties-amarok") ), i18n( "&Edit bias..." ), this );
         connect( action, &QAction::triggered, this, &DynamicView::editSelected );
         actions.append( action );
 
-        action = new QAction( QIcon::fromTheme( "edit-copy" ), i18n( "&Clone bias" ), this );
+        action = new QAction( QIcon::fromTheme( QStringLiteral("edit-copy") ), i18n( "&Clone bias" ), this );
         connect( action, &QAction::triggered, this, &DynamicView::cloneSelected );
         actions.append( action );
 
@@ -260,14 +260,14 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         QVariant parentV = model()->data( parentIndex, Dynamic::DynamicModel::PlaylistRole );
         if( !parentV.isValid() || (aBias && aBias->biases().count() > 0) )
         {
-            action = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete bias" ), this );
+            action = new QAction( QIcon::fromTheme( QStringLiteral("edit-delete") ), i18n( "&Delete bias" ), this );
             connect( action, &QAction::triggered, this, &DynamicView::removeSelected );
             actions.append( action );
         }
 
         if( aBias )
         {
-            action = new QAction( QIcon::fromTheme( "document-new" ), i18n( "&Add new bias" ), this );
+            action = new QAction( QIcon::fromTheme( QStringLiteral("document-new") ), i18n( "&Add new bias" ), this );
             connect( action, &QAction::triggered, this, &DynamicView::addToSelected );
             actions.append( action );
         }

@@ -49,7 +49,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
     const QRegExp regExp_Title("^Title\\d+\\s*=");
     const QRegExp regExp_Length("^Length\\d+\\s*=\\s*-?\\d+$"); // Length Can be -1
     const QRegExp regExp_Version("^Version\\s*=\\s*\\d+$");
-    const QString section_playlist("[playlist]");
+    const QString section_playlist(QStringLiteral("[playlist]"));
 
 
 

@@ -101,7 +101,7 @@ class AMAROK_EXPORT DefaultYear : public Meta::Year
         DefaultYear() {}
         virtual ~DefaultYear() {}
 
-        QString name() const override { return "0"; }
+        QString name() const override { return QStringLiteral("0"); }
 
         TrackList tracks() override { return TrackList(); }
 

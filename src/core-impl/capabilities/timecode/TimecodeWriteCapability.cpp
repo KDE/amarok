@@ -69,8 +69,8 @@ bool Capabilities::TimecodeWriteCapability::writeAutoTimecode( qint64 milisecond
         BookmarkList list = tcl->loadTimecodes();
         foreach( AmarokUrlPtr oldUrl, list )
         {
-            if( oldUrl->command() == "play"  ) {
-                if( oldUrl->customValue() == "auto timecode" ) {
+            if( oldUrl->command() == QLatin1String("play")  ) {
+                if( oldUrl->customValue() == QLatin1String("auto timecode") ) {
                     debug() << "deleting: " << oldUrl->name();
                     oldUrl->removeFromDb();
                 }
@@ -89,23 +89,23 @@ bool Capabilities::TimecodeWriteCapability::writeAutoTimecode( qint64 milisecond
     {
         debug() << " current track";
         QMap<QString, QString> args = url.args();
-        if ( args.keys().contains( "pos" ) )
+        if ( args.keys().contains( QStringLiteral("pos") ) )
         {
-            int pos = args.value( "pos" ).toInt();
+            int pos = args.value( QStringLiteral("pos") ).toInt();
             The::amarokUrlHandler()->paintNewTimecode( url.name(), pos * 1000 );
         }
     }
 
     //change the name a little bit
-    url.setCustomValue( "auto timecode" );
+    url.setCustomValue( QStringLiteral("auto timecode") );
 
-    QString date = QDateTime::currentDateTime().toString( "dd.MM.yyyy" );
+    QString date = QDateTime::currentDateTime().toString( QStringLiteral("dd.MM.yyyy") );
     url.setName( i18n( "%1 - Stopped %2", track->prettyName(), date ) );
 
     debug() << "creating new auto timecode: " << url.name();
 
     //put in custom group to ensure that we do not clutter the list of bookmarks.
-    BookmarkGroupPtr parentPtr = BookmarkGroupPtr( new BookmarkGroup( i18n( "Playback Ended Markers" ), "auto_markers" ) );
+    BookmarkGroupPtr parentPtr = BookmarkGroupPtr( new BookmarkGroup( i18n( "Playback Ended Markers" ), QStringLiteral("auto_markers") ) );
     url.reparent( parentPtr );
 
     //save it

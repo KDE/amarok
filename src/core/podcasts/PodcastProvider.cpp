@@ -28,11 +28,11 @@ PodcastProvider::couldBeFeed( const QString &urlString )
     DEBUG_BLOCK
 
     QStringList feedProtocols;
-    feedProtocols << "itpc";
-    feedProtocols << "pcast";
-    feedProtocols << "feed";
+    feedProtocols << QStringLiteral("itpc");
+    feedProtocols << QStringLiteral("pcast");
+    feedProtocols << QStringLiteral("feed");
 
-    QString matchString = QString( "^(%1)" ).arg( feedProtocols.join( "|" ) );
+    QString matchString = QStringLiteral( "^(%1)" ).arg( feedProtocols.join( QStringLiteral("|") ) );
     QRegExp rx( matchString );
     int pos = rx.indexIn( urlString.trimmed() );
 
@@ -47,21 +47,21 @@ PodcastProvider::toFeedUrl( const QString &urlString )
 
     QUrl kurl( urlString.trimmed() );
 
-    if( kurl.scheme() == "itpc" )
+    if( kurl.scheme() == QLatin1String("itpc") )
     {
         debug() << "itpc:// url.";
-        kurl.setScheme( "http" );
+        kurl.setScheme( QStringLiteral("http") );
     }
-    else if( kurl.scheme() == "pcast" )
+    else if( kurl.scheme() == QLatin1String("pcast") )
     {
         debug() << "pcast:// url.";
-        kurl.setScheme( "http" );
+        kurl.setScheme( QStringLiteral("http") );
     }
-    else if( kurl.scheme() == "feed" )
+    else if( kurl.scheme() == QLatin1String("feed") )
     {
         //TODO: also handle the case feed:https://example.com/entries.atom
         debug() << "feed:// url.";
-        kurl.setScheme( "http" );
+        kurl.setScheme( QStringLiteral("http") );
     }
 
     return kurl;

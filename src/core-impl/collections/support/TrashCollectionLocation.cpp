@@ -91,12 +91,12 @@ TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> 
             int max = 3;
             while( !tracks.isEmpty() && (max > 0) )
             {
-                name += QString( ", %1" ).arg( tracks.takeFirst()->prettyName() );
+                name += QStringLiteral( ", %1" ).arg( tracks.takeFirst()->prettyName() );
                 --max;
             }
 
             if( max == 0 && !tracks.isEmpty() )
-                name += " ...";
+                name += QLatin1String(" ...");
         }
         Amarok::Logger::newProgressOperation( job, i18n( "Moving to trash: %1", name ) );
     }

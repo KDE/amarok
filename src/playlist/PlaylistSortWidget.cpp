@@ -55,7 +55,7 @@ SortWidget::SortWidget( QWidget *parent )
     m_layout->addWidget( m_addButton );
     m_layout->addStretch( 10 );
 
-    m_urlButton = new BreadcrumbUrlMenuButton( "playlist", this );
+    m_urlButton = new BreadcrumbUrlMenuButton( QStringLiteral("playlist"), this );
     m_layout->addWidget( m_urlButton );
 
     connect( m_addButton->menu(), &BreadcrumbItemMenu::actionClicked,
@@ -63,7 +63,7 @@ SortWidget::SortWidget( QWidget *parent )
     connect( m_addButton->menu(), &BreadcrumbItemMenu::shuffleActionClicked,
              The::playlistActions(), &Actions::shuffle );
 
-    QString sortPath = Amarok::config( "Playlist Sorting" ).readEntry( "SortPath", QString() );
+    QString sortPath = Amarok::config( QStringLiteral("Playlist Sorting") ).readEntry( "SortPath", QString() );
     readSortPath( sortPath );
 }
 
@@ -150,7 +150,7 @@ SortWidget::updateSortScheme()
     }
     ModelStack::instance()->sortProxy()->updateSortMap( scheme );
 
-    KConfigGroup config = Amarok::config( "Playlist Sorting" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Playlist Sorting") );
     config.writeEntry( "SortPath", sortPath() );
 }
 
@@ -188,9 +188,9 @@ SortWidget::readSortPath( const QString &sortPath )
         || ( Playlist::PlaylistColumnInfos::internalNames().
                            indexOf( levelParts.value(0) ) == -1) )
             warning() << "Playlist sorting load error: Invalid sort level " << level;
-        else if( levelParts.value( 1 ) == QString( "asc" ) )
+        else if( levelParts.value( 1 ) == QStringLiteral( "asc" ) )
             addLevel( levelParts.value( 0 ), Qt::AscendingOrder );
-        else if( levelParts.value( 1 ) == QString( "des" ) )
+        else if( levelParts.value( 1 ) == QStringLiteral( "des" ) )
             addLevel( levelParts.value( 0 ), Qt::DescendingOrder );
         else
             warning() << "Playlist sorting load error: Invalid sort order for level " << level;

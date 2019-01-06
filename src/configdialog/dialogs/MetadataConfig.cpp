@@ -67,8 +67,8 @@ MetadataConfig::MetadataConfig( Amarok2ConfigDialog *parent )
     StatSyncing::Config *config = controller ? controller->config() : 0;
     m_statSyncingConfig = config;
     m_statSyncingProvidersView->setModel( config );
-    m_synchronizeButton->setIcon( QIcon::fromTheme( "amarok_playcount" ) );
-    m_configureTargetButton->setIcon( QIcon::fromTheme( "configure" ) );
+    m_synchronizeButton->setIcon( QIcon::fromTheme( QStringLiteral("amarok_playcount") ) );
+    m_configureTargetButton->setIcon( QIcon::fromTheme( QStringLiteral("configure") ) );
     connect( config, &StatSyncing::Config::dataChanged, this, &MetadataConfig::changed );
     connect( config, &StatSyncing::Config::rowsInserted, this, &MetadataConfig::changed );
     connect( config, &StatSyncing::Config::rowsRemoved, this, &MetadataConfig::changed );
@@ -126,7 +126,7 @@ MetadataConfig::MetadataConfig( Amarok2ConfigDialog *parent )
         {
             QHBoxLayout *lineLayout = new QHBoxLayout();
             QLabel *button = new QLabel();
-            button->setObjectName( "configureLabelExceptions" );
+            button->setObjectName( QStringLiteral("configureLabelExceptions") );
             connect( button, &QLabel::linkActivated,
                      this, &MetadataConfig::slotConfigureExcludedLabels );
 
@@ -219,15 +219,15 @@ MetadataConfig::slotUpdateForgetButton()
 void
 MetadataConfig::slotUpdateConfigureExcludedLabelsLabel()
 {
-    QLabel *label = findChild<QLabel *>( "configureLabelExceptions" );
+    QLabel *label = findChild<QLabel *>( QStringLiteral("configureLabelExceptions") );
     if( !label || !m_statSyncingConfig )
     {
         warning() << __PRETTY_FUNCTION__ << "label or m_statSyncingConfig is null!";
         return;
     }
     int exceptions = m_statSyncingConfig->excludedLabels().count();
-    QString begin = "<a href='dummy'>";
-    QString end = "</a>";
+    QString begin = QStringLiteral("<a href='dummy'>");
+    QString end = QStringLiteral("</a>");
     label->setText( i18np( "(%2one exception%3)", "(%2%1 exceptions%3)", exceptions,
                            begin, end ) );
 }

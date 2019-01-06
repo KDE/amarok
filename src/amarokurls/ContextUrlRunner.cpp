@@ -47,7 +47,7 @@ bool ContextUrlRunner::run( AmarokUrl url )
         return false;
 
 
-    QString appletsString = url.args().value( "applets" );
+    QString appletsString = url.args().value( QStringLiteral("applets") );
     debug() << "applet string: " << appletsString;
     QStringList appletList = appletsString.split( QLatin1Char(',') );
     auto model = Context::ContextView::self()->appletModel();
@@ -66,7 +66,7 @@ bool ContextUrlRunner::run( AmarokUrl url )
 
 QString ContextUrlRunner::command() const
 {
-    return "context";
+    return QStringLiteral("context");
 }
 
 QString ContextUrlRunner::prettyCommand() const

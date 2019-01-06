@@ -106,20 +106,20 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
     QList< QAction * > actions;
     if ( m_loadAction == 0 )
     {
-        m_loadAction = new QAction( QIcon::fromTheme( "folder-open" ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
+        m_loadAction = new QAction( QIcon::fromTheme( QStringLiteral("folder-open") ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
         connect( m_loadAction, &QAction::triggered, this, &BookmarkTreeView::slotLoad );
     }
 
     if ( m_deleteAction == 0 )
     {
-        m_deleteAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-remove-amarok") ), i18n( "&Delete" ), this );
         connect( m_deleteAction, &QAction::triggered, this, &BookmarkTreeView::slotDelete );
     }
 
     if ( m_createTimecodeTrackAction == 0 )
     {
         debug() << "creating m_createTimecodeTrackAction";
-        m_createTimecodeTrackAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
+        m_createTimecodeTrackAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ), i18n( "&Create timecode track" ), this );
         connect( m_createTimecodeTrackAction, &QAction::triggered, this, &BookmarkTreeView::slotCreateTimecodeTrack );
     }
 
@@ -328,14 +328,14 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
 
     if ( url1 == 0 )
         return;
-    if ( url1->command() != "play" )
+    if ( url1->command() != QLatin1String("play") )
         return;
 
     const AmarokUrl * url2 = dynamic_cast<const AmarokUrl *>( list.at( 1 ).data() );
 
     if ( url2 == 0 )
         return;
-    if ( url2->command() != "play" )
+    if ( url2->command() != QLatin1String("play") )
         return;
 
     if ( url1->path() != url2->path() )
@@ -346,14 +346,14 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
     qreal pos1 = 0;
     qreal pos2 = 0;
 
-    if ( url1->args().keys().contains( "pos" ) )
+    if ( url1->args().keys().contains( QStringLiteral("pos") ) )
     {
-        pos1 = url1->args().value( "pos" ).toDouble();
+        pos1 = url1->args().value( QStringLiteral("pos") ).toDouble();
     }
 
-    if ( url2->args().keys().contains( "pos" ) )
+    if ( url2->args().keys().contains( QStringLiteral("pos") ) )
     {
-        pos2 = url2->args().value( "pos" ).toDouble();
+        pos2 = url2->args().value( QStringLiteral("pos") ).toDouble();
     }
 
     if ( pos1 == pos2 )

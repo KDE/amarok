@@ -39,9 +39,9 @@ BreadcrumbItemMenu::BreadcrumbItemMenu( Column currentColumn, QWidget *parent )
     }
 
     addSeparator();
-    QAction *shuffleAction = addAction( QIcon::fromTheme( "media-playlist-shuffle" ),
+    QAction *shuffleAction = addAction( QIcon::fromTheme( QStringLiteral("media-playlist-shuffle") ),
                                         QString( i18n( "Shuffle" ) ) );
-    shuffleAction->setData( QString( "Shuffle" ) );
+    shuffleAction->setData( QStringLiteral( "Shuffle" ) );
 
     connect( this, &BreadcrumbItemMenu::triggered, this, &BreadcrumbItemMenu::actionTriggered );
 }
@@ -53,7 +53,7 @@ void
 BreadcrumbItemMenu::actionTriggered( QAction *action )
 {
     const QString actionName( action->data().toString() );
-    if( actionName == "Shuffle" )
+    if( actionName == QLatin1String("Shuffle") )
         emit shuffleActionClicked();
     else
         emit actionClicked( actionName );

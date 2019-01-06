@@ -25,81 +25,81 @@
 
 ConstraintTypes::TagMatchFieldsModel::TagMatchFieldsModel()
 {
-    m_fieldNames << "url"
-                 << "title"
-                 << "artist name"
-                 << "album name"
-                 << "genre"
-                 << "composer"
-                 << "year"
-                 << "comment"
-                 << "track number"
-                 << "disc number"
-                 << "length"
-                 << "score"
-                 << "rating"
-                 << "create date"
-                 << "first played"
-                 << "last played"
-                 << "play count"
-                 << "label";
+    m_fieldNames << QStringLiteral("url")
+                 << QStringLiteral("title")
+                 << QStringLiteral("artist name")
+                 << QStringLiteral("album name")
+                 << QStringLiteral("genre")
+                 << QStringLiteral("composer")
+                 << QStringLiteral("year")
+                 << QStringLiteral("comment")
+                 << QStringLiteral("track number")
+                 << QStringLiteral("disc number")
+                 << QStringLiteral("length")
+                 << QStringLiteral("score")
+                 << QStringLiteral("rating")
+                 << QStringLiteral("create date")
+                 << QStringLiteral("first played")
+                 << QStringLiteral("last played")
+                 << QStringLiteral("play count")
+                 << QStringLiteral("label");
 
-    m_fieldTypes.insert( "url", TagMatch::FieldTypeString );
-    m_fieldTypes.insert( "title", TagMatch::FieldTypeString );
-    m_fieldTypes.insert( "artist name", TagMatch::FieldTypeString );
-    m_fieldTypes.insert( "album name", TagMatch::FieldTypeString );
-    m_fieldTypes.insert( "genre", TagMatch::FieldTypeString );
-    m_fieldTypes.insert( "composer", TagMatch::FieldTypeString );
-    m_fieldTypes.insert( "year", TagMatch::FieldTypeInt );
-    m_fieldTypes.insert( "comment", TagMatch::FieldTypeString );
-    m_fieldTypes.insert( "track number", TagMatch::FieldTypeInt );
-    m_fieldTypes.insert( "disc number", TagMatch::FieldTypeInt );
-    m_fieldTypes.insert( "length", TagMatch::FieldTypeInt );
-    m_fieldTypes.insert( "create date", TagMatch::FieldTypeDate);
-    m_fieldTypes.insert( "score", TagMatch::FieldTypeInt );
-    m_fieldTypes.insert( "rating", TagMatch::FieldTypeInt );
-    m_fieldTypes.insert( "first played", TagMatch::FieldTypeDate );
-    m_fieldTypes.insert( "last played", TagMatch::FieldTypeDate );
-    m_fieldTypes.insert( "play count", TagMatch::FieldTypeInt );
-    m_fieldTypes.insert( "label", TagMatch::FieldTypeString );
+    m_fieldTypes.insert( QStringLiteral("url"), TagMatch::FieldTypeString );
+    m_fieldTypes.insert( QStringLiteral("title"), TagMatch::FieldTypeString );
+    m_fieldTypes.insert( QStringLiteral("artist name"), TagMatch::FieldTypeString );
+    m_fieldTypes.insert( QStringLiteral("album name"), TagMatch::FieldTypeString );
+    m_fieldTypes.insert( QStringLiteral("genre"), TagMatch::FieldTypeString );
+    m_fieldTypes.insert( QStringLiteral("composer"), TagMatch::FieldTypeString );
+    m_fieldTypes.insert( QStringLiteral("year"), TagMatch::FieldTypeInt );
+    m_fieldTypes.insert( QStringLiteral("comment"), TagMatch::FieldTypeString );
+    m_fieldTypes.insert( QStringLiteral("track number"), TagMatch::FieldTypeInt );
+    m_fieldTypes.insert( QStringLiteral("disc number"), TagMatch::FieldTypeInt );
+    m_fieldTypes.insert( QStringLiteral("length"), TagMatch::FieldTypeInt );
+    m_fieldTypes.insert( QStringLiteral("create date"), TagMatch::FieldTypeDate);
+    m_fieldTypes.insert( QStringLiteral("score"), TagMatch::FieldTypeInt );
+    m_fieldTypes.insert( QStringLiteral("rating"), TagMatch::FieldTypeInt );
+    m_fieldTypes.insert( QStringLiteral("first played"), TagMatch::FieldTypeDate );
+    m_fieldTypes.insert( QStringLiteral("last played"), TagMatch::FieldTypeDate );
+    m_fieldTypes.insert( QStringLiteral("play count"), TagMatch::FieldTypeInt );
+    m_fieldTypes.insert( QStringLiteral("label"), TagMatch::FieldTypeString );
 
-    m_fieldMetaValues.insert( "url", Meta::valUrl );
-    m_fieldMetaValues.insert( "title", Meta::valTitle );
-    m_fieldMetaValues.insert( "artist name", Meta::valArtist );
-    m_fieldMetaValues.insert( "album name", Meta::valAlbum );
-    m_fieldMetaValues.insert( "genre", Meta::valGenre );
-    m_fieldMetaValues.insert( "composer", Meta::valComposer );
-    m_fieldMetaValues.insert( "year", Meta::valYear );
-    m_fieldMetaValues.insert( "comment", Meta::valComment );
-    m_fieldMetaValues.insert( "track number", Meta::valTrackNr );
-    m_fieldMetaValues.insert( "disc number", Meta::valDiscNr );
-    m_fieldMetaValues.insert( "length", Meta::valLength );
-    m_fieldMetaValues.insert( "create date", Meta::valCreateDate);
-    m_fieldMetaValues.insert( "score", Meta::valScore );
-    m_fieldMetaValues.insert( "rating", Meta::valRating );
-    m_fieldMetaValues.insert( "first played", Meta::valFirstPlayed );
-    m_fieldMetaValues.insert( "last played", Meta::valLastPlayed );
-    m_fieldMetaValues.insert( "play count", Meta::valPlaycount );
-    m_fieldMetaValues.insert( "label", Meta::valLabel );
+    m_fieldMetaValues.insert( QStringLiteral("url"), Meta::valUrl );
+    m_fieldMetaValues.insert( QStringLiteral("title"), Meta::valTitle );
+    m_fieldMetaValues.insert( QStringLiteral("artist name"), Meta::valArtist );
+    m_fieldMetaValues.insert( QStringLiteral("album name"), Meta::valAlbum );
+    m_fieldMetaValues.insert( QStringLiteral("genre"), Meta::valGenre );
+    m_fieldMetaValues.insert( QStringLiteral("composer"), Meta::valComposer );
+    m_fieldMetaValues.insert( QStringLiteral("year"), Meta::valYear );
+    m_fieldMetaValues.insert( QStringLiteral("comment"), Meta::valComment );
+    m_fieldMetaValues.insert( QStringLiteral("track number"), Meta::valTrackNr );
+    m_fieldMetaValues.insert( QStringLiteral("disc number"), Meta::valDiscNr );
+    m_fieldMetaValues.insert( QStringLiteral("length"), Meta::valLength );
+    m_fieldMetaValues.insert( QStringLiteral("create date"), Meta::valCreateDate);
+    m_fieldMetaValues.insert( QStringLiteral("score"), Meta::valScore );
+    m_fieldMetaValues.insert( QStringLiteral("rating"), Meta::valRating );
+    m_fieldMetaValues.insert( QStringLiteral("first played"), Meta::valFirstPlayed );
+    m_fieldMetaValues.insert( QStringLiteral("last played"), Meta::valLastPlayed );
+    m_fieldMetaValues.insert( QStringLiteral("play count"), Meta::valPlaycount );
+    m_fieldMetaValues.insert( QStringLiteral("label"), Meta::valLabel );
 
-    m_fieldPrettyNames.insert( "url", i18n("url") );
-    m_fieldPrettyNames.insert( "title", i18n("title") );
-    m_fieldPrettyNames.insert( "artist name", i18n("artist name") );
-    m_fieldPrettyNames.insert( "album name", i18n("album name") );
-    m_fieldPrettyNames.insert( "genre", i18n("genre") );
-    m_fieldPrettyNames.insert( "composer", i18n("composer") );
-    m_fieldPrettyNames.insert( "year", i18n("year") );
-    m_fieldPrettyNames.insert( "comment", i18n("comment") );
-    m_fieldPrettyNames.insert( "track number", i18n("track number") );
-    m_fieldPrettyNames.insert( "disc number", i18n("disc number") );
-    m_fieldPrettyNames.insert( "length", i18n("length") );
-    m_fieldPrettyNames.insert( "create date", i18n("added to collection") );
-    m_fieldPrettyNames.insert( "score", i18n("score") );
-    m_fieldPrettyNames.insert( "rating", i18n("rating") );
-    m_fieldPrettyNames.insert( "first played", i18n("first played") );
-    m_fieldPrettyNames.insert( "last played", i18n("last played") );
-    m_fieldPrettyNames.insert( "play count", i18n("play count") );
-    m_fieldPrettyNames.insert( "label", i18n("label") );
+    m_fieldPrettyNames.insert( QStringLiteral("url"), i18n("url") );
+    m_fieldPrettyNames.insert( QStringLiteral("title"), i18n("title") );
+    m_fieldPrettyNames.insert( QStringLiteral("artist name"), i18n("artist name") );
+    m_fieldPrettyNames.insert( QStringLiteral("album name"), i18n("album name") );
+    m_fieldPrettyNames.insert( QStringLiteral("genre"), i18n("genre") );
+    m_fieldPrettyNames.insert( QStringLiteral("composer"), i18n("composer") );
+    m_fieldPrettyNames.insert( QStringLiteral("year"), i18n("year") );
+    m_fieldPrettyNames.insert( QStringLiteral("comment"), i18n("comment") );
+    m_fieldPrettyNames.insert( QStringLiteral("track number"), i18n("track number") );
+    m_fieldPrettyNames.insert( QStringLiteral("disc number"), i18n("disc number") );
+    m_fieldPrettyNames.insert( QStringLiteral("length"), i18n("length") );
+    m_fieldPrettyNames.insert( QStringLiteral("create date"), i18n("added to collection") );
+    m_fieldPrettyNames.insert( QStringLiteral("score"), i18n("score") );
+    m_fieldPrettyNames.insert( QStringLiteral("rating"), i18n("rating") );
+    m_fieldPrettyNames.insert( QStringLiteral("first played"), i18n("first played") );
+    m_fieldPrettyNames.insert( QStringLiteral("last played"), i18n("last played") );
+    m_fieldPrettyNames.insert( QStringLiteral("play count"), i18n("play count") );
+    m_fieldPrettyNames.insert( QStringLiteral("label"), i18n("label") );
 }
 
 ConstraintTypes::TagMatchFieldsModel::~TagMatchFieldsModel()

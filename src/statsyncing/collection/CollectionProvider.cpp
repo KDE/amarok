@@ -59,7 +59,7 @@ CollectionProvider::icon() const
 qint64
 CollectionProvider::reliableTrackMetaData() const
 {
-    if( id().startsWith("amarok-nepomuk:") )
+    if( id().startsWith(QLatin1String("amarok-nepomuk:")) )
         return Meta::valTitle | Meta::valArtist | Meta::valAlbum | Meta::valComposer |
                Meta::valTrackNr;
     else
@@ -71,7 +71,7 @@ qint64
 CollectionProvider::writableTrackStatsData() const
 {
     // TODO: this is unreliable and hacky, but serves for now:
-    if( id() == "localCollection" )
+    if( id() == QLatin1String("localCollection") )
         return Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed | Meta::valPlaycount | Meta::valLabel;
     else
         return Meta::valRating | Meta::valFirstPlayed | Meta::valLastPlayed | Meta::valPlaycount;
@@ -81,9 +81,9 @@ Provider::Preference
 CollectionProvider::defaultPreference()
 {
     // currently only Local Collection and iPod one have good syncing capabilities
-    if( id() == "localCollection" )
+    if( id() == QLatin1String("localCollection") )
         return YesByDefault;
-    if( id().startsWith( "amarok-ipodtrackuid" ) )
+    if( id().startsWith( QLatin1String("amarok-ipodtrackuid") ) )
         return Ask;
     return NoByDefault;
 }

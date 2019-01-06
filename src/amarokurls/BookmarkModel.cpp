@@ -33,7 +33,7 @@
 #include <typeinfo>
 
 static const int BOOKMARK_DB_VERSION = 4;
-static const QString key("AMAROK_BOOKMARKS");
+static const QString key(QStringLiteral("AMAROK_BOOKMARKS"));
 
 BookmarkModel * BookmarkModel::s_instance = nullptr;
 
@@ -51,7 +51,7 @@ BookmarkModel::BookmarkModel()
 {
     checkTables();
 
-    m_root = BookmarkGroupPtr( new BookmarkGroup( "root", BookmarkGroupPtr() ) );
+    m_root = BookmarkGroupPtr( new BookmarkGroup( QStringLiteral("root"), BookmarkGroupPtr() ) );
 }
 
 
@@ -109,7 +109,7 @@ BookmarkModel::data( const QModelIndex & index, int role ) const
         if( index.column() == Name )
         {
             if ( BookmarkGroupPtr::dynamicCast( item ) )
-                return QVariant( QIcon::fromTheme( "folder-bookmark" ) );
+                return QVariant( QIcon::fromTheme( QStringLiteral("folder-bookmark") ) );
             else if ( auto url = AmarokUrlPtr::dynamicCast( item ) )
                 return The::amarokUrlHandler()->iconForCommand( url->command() );
         }
@@ -445,8 +445,8 @@ void BookmarkModel::deleteTables()
     if( !sqlStorage )
         return;
 
-    sqlStorage->query( "DROP TABLE IF EXISTS bookmark_groups;" );
-    sqlStorage->query( "DROP TABLE IF EXISTS bookmarks;" );
+    sqlStorage->query( QStringLiteral("DROP TABLE IF EXISTS bookmark_groups;") );
+    sqlStorage->query( QStringLiteral("DROP TABLE IF EXISTS bookmarks;") );
 
 }
 
@@ -459,10 +459,10 @@ void BookmarkModel::checkTables()
     if( !sqlStorage )
         return;
 
-    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
+    QStringList values = sqlStorage->query( QStringLiteral("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
 
     //also check if the db  version is correct but the table is simply missing... can happen due to a bug in 2.2.0 beta1 and beta2
-    QStringList values2 = sqlStorage->query( "show tables like 'bookmarks';");
+    QStringList values2 = sqlStorage->query( QStringLiteral("show tables like 'bookmarks';"));
     
     if( values.isEmpty() || values2.isEmpty() )
     {

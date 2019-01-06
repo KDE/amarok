@@ -102,8 +102,8 @@ public:
     bool load( QByteArray &content ) override { return loadXSPF( content ); }
     /* Overrides filename and title */
     void setName(const QString &name) override;
-    QString extension() const override { return "xspf"; }
-    QString mimetype() const override { return "application/xspf+xml"; }
+    QString extension() const override { return QStringLiteral("xspf"); }
+    QString mimetype() const override { return QStringLiteral("application/xspf+xml"); }
 
     virtual bool save( bool relative ) { return PlaylistFile::save( relative ); }
 

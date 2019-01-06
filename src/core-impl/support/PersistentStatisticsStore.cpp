@@ -21,7 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-const QString PersistentStatisticsStore::s_sqlDateFormat( "yyyy-MM-dd hh:mm:ss" );
+const QString PersistentStatisticsStore::s_sqlDateFormat( QStringLiteral("yyyy-MM-dd hh:mm:ss") );
 
 PersistentStatisticsStore::PersistentStatisticsStore( Meta::Track *track )
     : m_track( track )

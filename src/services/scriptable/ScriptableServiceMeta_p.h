@@ -166,7 +166,7 @@ class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover, publi
             return name();
         }
 
-        QString downloadPrefix() const override { return "script"; }
+        QString downloadPrefix() const override { return QStringLiteral("script"); }
         void setCoverUrl( const QString &coverUrl ) override { m_coverUrl = coverUrl; }
         QString coverUrl() const override { return m_coverUrl; }
 

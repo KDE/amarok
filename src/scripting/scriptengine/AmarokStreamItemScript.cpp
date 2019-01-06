@@ -29,7 +29,7 @@ StreamItem::StreamItem( QScriptEngine *engine )
 {
     QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
                                                     QScriptEngine::ExcludeSuperClassContents );
-    engine->globalObject().property( "Amarok" ).setProperty( "StreamItem", scriptObject );
+    engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("StreamItem"), scriptObject );
     engine->setDefaultPrototype( qMetaTypeId<StreamItem*>(), QScriptValue() );
 }
 

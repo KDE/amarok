@@ -85,7 +85,7 @@ CollectionManager::CollectionManager()
     // ensure this object is created in a main thread
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
 
-    setObjectName( "CollectionManager" );
+    setObjectName( QStringLiteral("CollectionManager") );
     d->primaryCollection = 0;
     d->timecodeTrackProvider = 0;
     d->fileTrackProvider = 0;
@@ -254,7 +254,7 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
 
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "CollectionStatus" ) );
-    const QString &value = Amarok::config( "CollectionManager" ).readEntry( newCollection->collectionId() );
+    const QString &value = Amarok::config( QStringLiteral("CollectionManager") ).readEntry( newCollection->collectionId() );
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
     CollectionStatus status;
     enumValue == -1 ? status = CollectionEnabled : status = (CollectionStatus) enumValue;
@@ -367,7 +367,7 @@ CollectionManager::trackForUrl( const QUrl &url )
 
     // TODO: create specific TrackProviders for these:
     static const QSet<QString> remoteProtocols = QSet<QString>()
-            << "http" << "https" << "mms" << "smb"; // consider unifying with TrackLoader::tracksLoaded()
+            << QStringLiteral("http") << QStringLiteral("https") << QStringLiteral("mms") << QStringLiteral("smb"); // consider unifying with TrackLoader::tracksLoaded()
     if( remoteProtocols.contains( url.scheme() ) )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 

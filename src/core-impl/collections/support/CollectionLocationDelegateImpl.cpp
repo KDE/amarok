@@ -64,7 +64,7 @@ CollectionLocationDelegateImpl::reallyMove( CollectionLocation *loc, const Meta:
         "Do you really want to move these %1 tracks? They will be renamed and the originals deleted.",
         tracks.count() ) );
     int ret = KMessageBox::warningContinueCancelList( 0, text, files,
-        i18nc( "@title:window", "Move Files" ), KGuiItem( i18nc( "rename files button", "&Rename" ), "go-jump" ) );
+        i18nc( "@title:window", "Move Files" ), KGuiItem( i18nc( "rename files button", "&Rename" ), QStringLiteral("go-jump") ) );
     return ret == KMessageBox::Continue;
 }
 

@@ -36,7 +36,7 @@
 #include <QMap>
 
 // static const int USERPLAYLIST_DB_VERSION = 2;
-static const QString key("AMAROK_USERPLAYLIST");
+static const QString key(QStringLiteral("AMAROK_USERPLAYLIST"));
 
 namespace Playlists {
 
@@ -89,7 +89,7 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks )
             filteredTracks << track;
 
     return save( filteredTracks,
-                 QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm" ) );
+                 QDateTime::currentDateTime().toString( QStringLiteral("ddd MMMM d yy hh-mm") ) );
 }
 
 Playlists::PlaylistPtr

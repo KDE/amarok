@@ -51,8 +51,8 @@ ViewUrlGenerator::createUrl()
 {
     DEBUG_BLOCK
     AmarokUrl url;
-    url.setCommand( "playlist" );
-    url.setPath( "view" );
+    url.setCommand( QStringLiteral("playlist") );
+    url.setPath( QStringLiteral("view") );
     Dock * playlistDock = The::mainWindow()->playlistDock();
 
     QString filterExpr = playlistDock->searchWidget()->currentFilter();
@@ -69,23 +69,23 @@ ViewUrlGenerator::createUrl()
 
     if( !sortPath.isEmpty() )
     {
-        url.setArg( "sort", sortPath );
+        url.setArg( QStringLiteral("sort"), sortPath );
         prettyUrlName.append( prettySortPath );
     }
     if( !filterExpr.isEmpty() )
     {
-        url.setArg( "filter", filterExpr );
-        url.setArg( "matches", onlyMatches );
+        url.setArg( QStringLiteral("filter"), filterExpr );
+        url.setArg( QStringLiteral("matches"), onlyMatches );
         if( !prettyUrlName.isEmpty() )
             prettyUrlName.append( "  |  " );
         QString prettyFilterExpr = "\"" + filterExpr + "\"";
-        prettyUrlName.append( ( onlyMatches == QString( "true" ) )
+        prettyUrlName.append( ( onlyMatches == QStringLiteral( "true" ) )
                               ? i18n( "Filter %1", prettyFilterExpr )
                               : i18n( "Search %1", prettyFilterExpr ) );
     }
     if( !layout.isEmpty() )
     {
-        url.setArg( "layout", layout );
+        url.setArg( QStringLiteral("layout"), layout );
         if( !prettyUrlName.isEmpty() )
             prettyUrlName.append( "  |  " );
         prettyUrlName.append( i18n( "%1 layout", layout ) );

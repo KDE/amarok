@@ -50,7 +50,7 @@ bool ScriptableServiceManager::initService( const QString &name, int levels, con
     ScriptableService * service = new ScriptableService ( name );
     m_serviceMap[name] = service;
 
-    service->setIcon( QIcon::fromTheme( "view-services-scripted-amarok" ) );
+    service->setIcon( QIcon::fromTheme( QStringLiteral("view-services-scripted-amarok") ) );
     service->setShortDescription( shortDescription );
     service->init( levels, rootHtml, showSearchBar );
     m_rootHtml = rootHtml;

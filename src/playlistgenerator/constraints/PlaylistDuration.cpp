@@ -48,7 +48,7 @@ ConstraintTypes::PlaylistDuration::createNew( ConstraintNode* p )
 ConstraintFactoryEntry*
 ConstraintTypes::PlaylistDuration::registerMe()
 {
-    return new ConstraintFactoryEntry( "PlaylistDuration",
+    return new ConstraintFactoryEntry( QStringLiteral("PlaylistDuration"),
                                        i18n("Playlist Duration"),
                                        i18n("Sets the preferred duration of the playlist"),
                                        &PlaylistDuration::createFromXml, &PlaylistDuration::createNew );
@@ -62,22 +62,22 @@ ConstraintTypes::PlaylistDuration::PlaylistDuration( QDomElement& xmlelem, Const
 {
     QDomAttr a;
 
-    a = xmlelem.attributeNode( "duration" );
+    a = xmlelem.attributeNode( QStringLiteral("duration") );
     if ( !a.isNull() ) {
         m_duration = a.value().toInt();
     } else {
         // Accommodate schema change when PlaylistLength became PlaylistDuration
-        a = xmlelem.attributeNode( "length" );
+        a = xmlelem.attributeNode( QStringLiteral("length") );
         if ( !a.isNull() )
             m_duration = a.value().toInt();
     }
 
 
-    a = xmlelem.attributeNode( "comparison" );
+    a = xmlelem.attributeNode( QStringLiteral("comparison") );
     if ( !a.isNull() )
         m_comparison = a.value().toInt();
 
-    a = xmlelem.attributeNode( "strictness" );
+    a = xmlelem.attributeNode( QStringLiteral("strictness") );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
 }
@@ -103,11 +103,11 @@ ConstraintTypes::PlaylistDuration::editWidget() const
 void
 ConstraintTypes::PlaylistDuration::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
-    QDomElement c = doc.createElement( "constraint" );
-    c.setAttribute( "type", "PlaylistDuration" );
-    c.setAttribute( "duration", QString::number( m_duration ) );
-    c.setAttribute( "comparison", QString::number( m_comparison ) );
-    c.setAttribute( "strictness", QString::number( m_strictness ) );
+    QDomElement c = doc.createElement( QStringLiteral("constraint") );
+    c.setAttribute( QStringLiteral("type"), QStringLiteral("PlaylistDuration") );
+    c.setAttribute( QStringLiteral("duration"), QString::number( m_duration ) );
+    c.setAttribute( QStringLiteral("comparison"), QString::number( m_comparison ) );
+    c.setAttribute( QStringLiteral("strictness"), QString::number( m_strictness ) );
     elem.appendChild( c );
 }
 
@@ -124,7 +124,7 @@ ConstraintTypes::PlaylistDuration::getName() const
     } else {
         v = ki18n( "Playlist duration: unknown");
     }
-    v = v.subs( QTime(0, 0, 0).addMSecs( m_duration ).toString( "H:mm:ss" ) );
+    v = v.subs( QTime(0, 0, 0).addMSecs( m_duration ).toString( QStringLiteral("H:mm:ss") ) );
     return v.toString();
 }
 

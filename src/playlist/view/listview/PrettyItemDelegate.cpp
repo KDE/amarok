@@ -127,7 +127,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
     QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
     painter->translate( option.rect.topLeft() );
 
-    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "track", ( int )option.rect.width(), ( int )option.rect.height(), "track" ) );
+    painter->drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( QStringLiteral("track"), ( int )option.rect.width(), ( int )option.rect.height(), QStringLiteral("track") ) );
 
     painter->setPen( The::paletteHandler()->foregroundColor( painter, option.state & QStyle::State_Selected ) );
 
@@ -327,26 +327,26 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
         const bool skipCache = opacity == 1.0 ? false : true;
 
         painter->drawPixmap( overlayXOffset, overlayYOffset,
-                             The::svgHandler()->renderSvg( "active_overlay_left",
+                             The::svgHandler()->renderSvg( QStringLiteral("active_overlay_left"),
                                                            endWidth,
                                                            overlayHeight,
-                                                           "active_overlay_left",
+                                                           QStringLiteral("active_overlay_left"),
                                                            skipCache,
                                                            opacity ) );
 
         painter->drawPixmap( overlayXOffset + endWidth, overlayYOffset,
-                             The::svgHandler()->renderSvg( "active_overlay_mid",
+                             The::svgHandler()->renderSvg( QStringLiteral("active_overlay_mid"),
                                                            overlayLength - endWidth * 2,
                                                            overlayHeight,
-                                                           "active_overlay_mid",
+                                                           QStringLiteral("active_overlay_mid"),
                                                            skipCache,
                                                            opacity ) );
 
         painter->drawPixmap( overlayXOffset + ( overlayLength - endWidth ), overlayYOffset,
-                             The::svgHandler()->renderSvg( "active_overlay_right",
+                             The::svgHandler()->renderSvg( QStringLiteral("active_overlay_right"),
                                                            endWidth,
                                                            overlayHeight,
-                                                           "active_overlay_right",
+                                                           QStringLiteral("active_overlay_right"),
                                                            skipCache,
                                                            opacity ) );
     }
@@ -416,7 +416,7 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
         {
             const int x = markerOffsetX;
             const int y = nominalImageRect.y() + ( coverHeight - smallIconSize );
-            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "multi_marker", smallIconSize, smallIconSize, "multi_marker" ) );
+            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( QStringLiteral("multi_marker"), smallIconSize, smallIconSize, QStringLiteral("multi_marker") ) );
 
             markerOffsetX += ( smallIconSize + iconSpacing );
 
@@ -428,7 +428,7 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
         {
             const int x = markerOffsetX;
             const int y = nominalImageRect.y() + ( coverHeight - smallIconSize );
-            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "stop_button", smallIconSize, smallIconSize, "stop_button" ) );
+            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( QStringLiteral("stop_button"), smallIconSize, smallIconSize, QStringLiteral("stop_button") ) );
 
             markerOffsetX += ( smallIconSize + iconSpacing );
 
@@ -519,13 +519,13 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
             }
             else if( value == Divider )
             {
-                QPixmap left = The::svgHandler()->renderSvg( "divider_left",
+                QPixmap left = The::svgHandler()->renderSvg( QStringLiteral("divider_left"),
                                                              1, rowHeight ,
-                                                             "divider_left" );
+                                                             QStringLiteral("divider_left") );
 
-                QPixmap right = The::svgHandler()->renderSvg( "divider_right",
+                QPixmap right = The::svgHandler()->renderSvg( QStringLiteral("divider_right"),
                                                               1, rowHeight,
-                                                              "divider_right" );
+                                                              QStringLiteral("divider_right") );
 
                 if( alignment & Qt::AlignLeft )
                 {
@@ -618,39 +618,39 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
 
     int offset = x + frameHMargin;
     painter->drawPixmap( offset, y + 2,
-                         The::svgHandler()->renderSvg( "back_button",
+                         The::svgHandler()->renderSvg( QStringLiteral("back_button"),
                                                        buttonSize, buttonSize,
-                                                       "back_button" ) );
+                                                       QStringLiteral("back_button") ) );
 
     if( The::engineController()->isPlaying() )
     {
         offset += ( buttonSize + iconSpacing );
         painter->drawPixmap( offset, y + 2,
-                             The::svgHandler()->renderSvg( "pause_button",
+                             The::svgHandler()->renderSvg( QStringLiteral("pause_button"),
                                                            buttonSize, buttonSize,
-                                                           "pause_button" ) );
+                                                           QStringLiteral("pause_button") ) );
 
     }
     else
     {
         offset += ( buttonSize + iconSpacing );
         painter->drawPixmap( offset, y + 2,
-                             The::svgHandler()->renderSvg( "play_button",
+                             The::svgHandler()->renderSvg( QStringLiteral("play_button"),
                                                            buttonSize, buttonSize,
-                                                           "play_button" ) );
+                                                           QStringLiteral("play_button") ) );
     }
 
     offset += ( buttonSize + iconSpacing );
     painter->drawPixmap( offset, y + 2,
-                         The::svgHandler()->renderSvg( "stop_button",
+                         The::svgHandler()->renderSvg( QStringLiteral("stop_button"),
                                                        buttonSize, buttonSize,
-                                                       "stop_button" ) );
+                                                       QStringLiteral("stop_button") ) );
 
     offset += ( buttonSize + iconSpacing );
     painter->drawPixmap( offset, y + 2,
-                         The::svgHandler()->renderSvg( "next_button",
+                         The::svgHandler()->renderSvg( QStringLiteral("next_button"),
                                                        buttonSize, buttonSize,
-                                                       "next_button" ) );
+                                                       QStringLiteral("next_button") ) );
 
     offset += ( buttonSize + iconSpacing );
 
@@ -703,7 +703,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     QRect backRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
     if( backRect.contains( pos ) )
     {
-         Amarok::actionCollection()->action( "prev" )->trigger();
+         Amarok::actionCollection()->action( QStringLiteral("prev") )->trigger();
          return true;
     }
 
@@ -711,7 +711,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     QRect playRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
     if( playRect.contains( pos ) )
     {
-         Amarok::actionCollection()->action( "play_pause" )->trigger();
+         Amarok::actionCollection()->action( QStringLiteral("play_pause") )->trigger();
          return true;
     }
 
@@ -719,7 +719,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     QRect stopRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
     if( stopRect.contains( pos ) )
     {
-         Amarok::actionCollection()->action( "stop" )->trigger();
+         Amarok::actionCollection()->action( QStringLiteral("stop") )->trigger();
          return true;
     }
 
@@ -728,7 +728,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     QRect nextRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
     if( nextRect.contains( pos ) )
     {
-         Amarok::actionCollection()->action( "next" )->trigger();
+         Amarok::actionCollection()->action( QStringLiteral("next") )->trigger();
          return true;
     }
 
@@ -908,32 +908,32 @@ Playlist::PrettyItemDelegate::buildTrackArgsMap( const Meta::TrackPtr track ) co
         albumartist = artist;
 
 
-    args["title"] = track->name();
-    args["composer"] = track->composer() ? track->composer()->name() : QString();
+    args[QStringLiteral("title")] = track->name();
+    args[QStringLiteral("composer")] = track->composer() ? track->composer()->name() : QString();
 
     // if year == 0 then we don't want include it
     QString year = track->year() ? track->year()->name() : QString();
-    args["year"] = year.localeAwareCompare( "0" ) == 0 ? QString() : year;
-    args["album"] = track->album() ? track->album()->name() : QString();
+    args[QStringLiteral("year")] = year.localeAwareCompare( QStringLiteral("0") ) == 0 ? QString() : year;
+    args[QStringLiteral("album")] = track->album() ? track->album()->name() : QString();
 
     if( track->discNumber() )
-        args["discnumber"] = QString::number( track->discNumber() );
+        args[QStringLiteral("discnumber")] = QString::number( track->discNumber() );
 
-    args["genre"] = track->genre() ? track->genre()->name() : QString();
-    args["comment"] = track->comment();
-    args["artist"] = artist;
-    args["albumartist"] = albumartist;
-    args["initial"] = albumartist.mid( 0, 1 ).toUpper();    //artists starting with The are already handled above
-    args["filetype"] = track->type();
+    args[QStringLiteral("genre")] = track->genre() ? track->genre()->name() : QString();
+    args[QStringLiteral("comment")] = track->comment();
+    args[QStringLiteral("artist")] = artist;
+    args[QStringLiteral("albumartist")] = albumartist;
+    args[QStringLiteral("initial")] = albumartist.mid( 0, 1 ).toUpper();    //artists starting with The are already handled above
+    args[QStringLiteral("filetype")] = track->type();
 
-    args["rating"] = track->statistics()->rating();
-    args["filesize"] = track->filesize();
-    args["length"] = track->length() / 1000;
+    args[QStringLiteral("rating")] = track->statistics()->rating();
+    args[QStringLiteral("filesize")] = track->filesize();
+    args[QStringLiteral("length")] = track->length() / 1000;
 
     if ( track->trackNumber() )
     {
-        QString trackNum = QString( "%1" ).arg( track->trackNumber(), 2, 10, QChar('0') );
-        args["track"] = trackNum;
+        QString trackNum = QStringLiteral( "%1" ).arg( track->trackNumber(), 2, 10, QChar('0') );
+        args[QStringLiteral("track")] = trackNum;
     }
 
     return args;

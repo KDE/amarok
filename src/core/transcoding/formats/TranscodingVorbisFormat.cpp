@@ -23,7 +23,7 @@ using namespace Transcoding;
 VorbisFormat::VorbisFormat()
 {
     m_encoder = VORBIS;
-    m_fileExtension = "ogg";
+    m_fileExtension = QStringLiteral("ogg");
     QString description1 =
         i18n( "The bitrate is a measure of the quantity of data used to represent a "
         "second of the audio track.<br>The <b>Vorbis</b> encoder used by Amarok supports "
@@ -89,7 +89,7 @@ QStringList
 VorbisFormat::ffmpegParameters( const Configuration &configuration ) const
 {
     QStringList parameters;
-    parameters << "-acodec" << "libvorbis";   //libvorbis is better than FFmpeg's
+    parameters << QStringLiteral("-acodec") << QStringLiteral("libvorbis");   //libvorbis is better than FFmpeg's
                                               //vorbis implementation in many ways
     foreach( const Property &property, m_propertyList )
     {
@@ -99,11 +99,11 @@ VorbisFormat::ffmpegParameters( const Configuration &configuration ) const
             if( property.name() == "quality" )
             {
                 int ffmpegQuality = configuration.property( "quality" ).toInt() - 1;
-                parameters << "-aq" << QString::number( ffmpegQuality );
+                parameters << QStringLiteral("-aq") << QString::number( ffmpegQuality );
             }
         }
     }
-    parameters << "-vn"; // no video stream or album art, some devices can't handle that
+    parameters << QStringLiteral("-vn"); // no video stream or album art, some devices can't handle that
     return parameters;
 }
 

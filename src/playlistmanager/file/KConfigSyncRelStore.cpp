@@ -59,7 +59,7 @@ KConfigSyncRelStore::asSyncedPlaylist( const PlaylistPtr playlist )
 {
     DEBUG_BLOCK
 
-    debug() << QString("UIDurl: %1").arg( playlist->uidUrl().url() );
+    debug() << QStringLiteral("UIDurl: %1").arg( playlist->uidUrl().url() );
 
     SyncedPlaylistPtr syncedPlaylist;
 
@@ -89,7 +89,7 @@ KConfigSyncRelStore::asSyncedPlaylist( const PlaylistPtr playlist )
 inline KConfigGroup
 KConfigSyncRelStore::syncedPlaylistsConfig() const
 {
-    return Amarok::config( "Synchronized Playlists" );
+    return Amarok::config( QStringLiteral("Synchronized Playlists") );
 }
 
 void

@@ -68,14 +68,14 @@ Job::init()
     m_transcoder->setOutputChannelMode( KProcess::MergedChannels );
 
     //First the executable...
-    m_transcoder->setProgram( "ffmpeg" );
+    m_transcoder->setProgram( QStringLiteral("ffmpeg") );
     //... prevent ffmpeg from being interactive when destination file already exists. We
     //    would use -n to exit immediately, but libav's ffmpeg doesn't support it, so we
     //    check for destination file existence manually and pass -y (overwrite) to avoid
     //    race condition
-    *m_transcoder << QString( "-y" );
+    *m_transcoder << QStringLiteral( "-y" );
     //... then we'd have the infile configuration followed by "-i" and the infile path...
-    *m_transcoder << QString( "-i" )
+    *m_transcoder << QStringLiteral( "-i" )
                   << m_src.path();
     //... and finally, outfile configuration followed by the outfile path.
     const Transcoding::Format *format = Amarok::Components::transcodingController()->format( m_configuration.encoder() );
@@ -99,7 +99,7 @@ Job::start()
     }
     else
     {
-        QString commandline = QString( "'" ) + m_transcoder->program().join("' '") + QString( "'" );
+        QString commandline = QStringLiteral( "'" ) + m_transcoder->program().join(QStringLiteral("' '")) + QStringLiteral( "'" );
         debug()<< "Calling" << commandline.toLocal8Bit().constData();
         m_transcoder->start();
     }
@@ -114,7 +114,7 @@ Job::transcoderDone( int exitCode, QProcess::ExitStatus exitStatus ) //SLOT
     {
         debug() << "NAY, transcoding fail!";
         setError( KJob::UserDefinedError );
-        setErrorText( QString( "Calling `" ) + m_transcoder->program().join(" ") + "` failed" );
+        setErrorText( QStringLiteral( "Calling `" ) + m_transcoder->program().join(QStringLiteral(" ")) + "` failed" );
     }
     emitResult();
 }

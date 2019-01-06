@@ -76,7 +76,7 @@ void ScriptableServiceQueryMaker::run()
         return;
 
     if ( d->callbackString.isEmpty() )
-        d->callbackString = "none";
+        d->callbackString = QStringLiteral("none");
 
 
     if ( d->type == Private::GENRE ) {
@@ -430,7 +430,7 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter( qint64 value, const QString
     {
         //I am sure there is a really good reason to add this space, as nothing works if it is removed, but WHY?!?
         d->filter += filter + ' ';
-        d->filter = d->filter.replace( ' ', "%20" );
+        d->filter = d->filter.replace( ' ', QLatin1String("%20") );
     }
 
     int level = 0;

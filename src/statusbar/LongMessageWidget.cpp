@@ -50,8 +50,8 @@ LongMessageWidget::LongMessageWidget( const QString &message )
     hbox->layout()->setSpacing( 12 );
 
     m_countdownFrame = new CountdownFrame( hbox );
-    m_countdownFrame->setObjectName( "counterVisual" );
-    m_countdownFrame->setFixedWidth( fontMetrics().width( "X" ) );
+    m_countdownFrame->setObjectName( QStringLiteral("counterVisual") );
+    m_countdownFrame->setFixedWidth( fontMetrics().width( QStringLiteral("X") ) );
     m_countdownFrame->setFrameStyle( QFrame::Plain | QFrame::Box );
     QPalette pal;
     pal.setColor( m_countdownFrame->foregroundRole(), p.dark().color() );
@@ -60,7 +60,7 @@ LongMessageWidget::LongMessageWidget( const QString &message )
     QLabel *alabel = new QLabel( message, hbox );
     alabel->setWordWrap( true );
     alabel->setOpenExternalLinks( true );
-    alabel->setObjectName( "label" );
+    alabel->setObjectName( QStringLiteral("label") );
     alabel->setTextFormat( Qt::RichText );
     alabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
     alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );

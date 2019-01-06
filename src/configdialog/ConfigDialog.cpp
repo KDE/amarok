@@ -34,7 +34,7 @@
 #include <KLocalizedString>
 
 
-QString Amarok2ConfigDialog::s_currentPage = "GeneralConfig";
+QString Amarok2ConfigDialog::s_currentPage = QStringLiteral("GeneralConfig");
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
@@ -56,21 +56,21 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase *scripts = new ScriptsConfig( this );
     //ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
-    addPage( general, i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
-    addPage( collection, i18n( "Local Collection" ), "drive-harddisk", i18n( "Configure Local Collection" ) );
-    addPage( metadata, i18n( "Metadata" ), "amarok_playcount", i18n( "Configure Metadata Handling" ) );
-    addPage( playback, i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
-    addPage( notify, i18n( "Notifications" ), "preferences-indicator-amarok", i18n( "Configure Notifications" ) );
-    addPage( database, i18n( "Database" ), "server-database", i18n( "Configure Database" ) );
-    addPage( plugins, i18n( "Plugins" ), "preferences-plugin", i18n( "Configure Plugins" ) );
-    addPage( scripts, i18n( "Scripts" ), "preferences-plugin-script", i18n( "Configure Scripts" ) );
+    addPage( general, i18nc( "Miscellaneous settings", "General" ), QStringLiteral("preferences-other-amarok"), i18n( "Configure General Options" ) );
+    addPage( collection, i18n( "Local Collection" ), QStringLiteral("drive-harddisk"), i18n( "Configure Local Collection" ) );
+    addPage( metadata, i18n( "Metadata" ), QStringLiteral("amarok_playcount"), i18n( "Configure Metadata Handling" ) );
+    addPage( playback, i18n( "Playback" ), QStringLiteral("preferences-media-playback-amarok"), i18n( "Configure Playback" ) );
+    addPage( notify, i18n( "Notifications" ), QStringLiteral("preferences-indicator-amarok"), i18n( "Configure Notifications" ) );
+    addPage( database, i18n( "Database" ), QStringLiteral("server-database"), i18n( "Configure Database" ) );
+    addPage( plugins, i18n( "Plugins" ), QStringLiteral("preferences-plugin"), i18n( "Configure Plugins" ) );
+    addPage( scripts, i18n( "Scripts" ), QStringLiteral("preferences-plugin-script"), i18n( "Configure Scripts" ) );
     //addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
     QPushButton *okButton = buttonBox()->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
 
-    KWindowConfig::restoreWindowSize(windowHandle(), Amarok::config( "ConfigDialog" ));
+    KWindowConfig::restoreWindowSize(windowHandle(), Amarok::config( QStringLiteral("ConfigDialog") ));
 }
 
 Amarok2ConfigDialog::~Amarok2ConfigDialog()
@@ -88,7 +88,7 @@ Amarok2ConfigDialog::~Amarok2ConfigDialog()
         }
     }
 
-    KConfigGroup config = Amarok::config( "ConfigDialog" );
+    KConfigGroup config = Amarok::config( QStringLiteral("ConfigDialog") );
     KWindowConfig::saveWindowSize(windowHandle(), config);
     AmarokConfig::self()->save();
 }

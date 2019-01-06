@@ -344,7 +344,7 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
                     return QStringList( tuple.syncedLabels( m_options ).toList() ).join(
                         i18nc( "comma between list words", ", " ) );
                 default:
-                    return QString( "Unknown field!" );
+                    return QStringLiteral( "Unknown field!" );
             }
             break;
         case Qt::ToolTipRole:

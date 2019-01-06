@@ -49,9 +49,9 @@ InfoProxy::InfoProxy()
 
     weights << 10 << 4 << 8 << 2 << 6 << 5 << 10 << 9 << 3 << 1 << 3 << 5 << 7 << 9 << 3 << 2 << 10 << 6 << 4;
 
-    m_storedCloud["cloud_name"] = QVariant( "test cloud" );
-    m_storedCloud["cloud_strings"] = QVariant( strings );
-    m_storedCloud["cloud_weights"] = QVariant( weights );
+    m_storedCloud[QStringLiteral("cloud_name")] = QVariant( "test cloud" );
+    m_storedCloud[QStringLiteral("cloud_strings")] = QVariant( strings );
+    m_storedCloud[QStringLiteral("cloud_weights")] = QVariant( weights );
 
     loadHomePage();
 }
@@ -135,7 +135,7 @@ InfoProxy::loadHomePage()
 {
     DEBUG_BLOCK
 
-    QUrl dataUrl( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/" ) );
+    QUrl dataUrl( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/data/") ) );
     QString dataPath = dataUrl.path();
 
     //load html
@@ -150,21 +150,21 @@ InfoProxy::loadHomePage()
 
     QString html = file.readAll();
 
-    QUrl imageUrl( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/" ) );
+    QUrl imageUrl( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/") ) );
     QString imagePath = imageUrl.url();
 
-    html.replace( "_PATH_", imagePath );
+    html.replace( QLatin1String("_PATH_"), imagePath );
 
-    html.replace( "{background_color}", The::paletteHandler()->highlightColor().lighter( 150 ).name() );
-    html.replace( "{border_color}", The::paletteHandler()->highlightColor().lighter( 150 ).name() );
-    html.replace( "{text_color}", pApp->palette().brush( QPalette::Text ).color().name() );
+    html.replace( QLatin1String("{background_color}"), The::paletteHandler()->highlightColor().lighter( 150 ).name() );
+    html.replace( QLatin1String("{border_color}"), The::paletteHandler()->highlightColor().lighter( 150 ).name() );
+    html.replace( QLatin1String("{text_color}"), pApp->palette().brush( QPalette::Text ).color().name() );
     QColor highlight( pApp->palette().highlight().color() );
     highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
-    html.replace( "{header_background_color}", highlight.name() );
+    html.replace( QLatin1String("{header_background_color}"), highlight.name() );
 
 
-    m_storedInfo["service_name"] =  i18n( "Home" );
-    m_storedInfo["main_info"] = html;
+    m_storedInfo[QStringLiteral("service_name")] =  i18n( "Home" );
+    m_storedInfo[QStringLiteral("main_info")] = html;
 
     notifyObservers( m_storedInfo );
 }

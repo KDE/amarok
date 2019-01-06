@@ -82,13 +82,13 @@ Dynamic::AlbumPlayBias::fromXml( QXmlStreamReader *reader )
 void
 Dynamic::AlbumPlayBias::toXml( QXmlStreamWriter *writer ) const
 {
-    writer->writeTextElement( "follow", nameForFollow( m_follow ) );
+    writer->writeTextElement( QStringLiteral("follow"), nameForFollow( m_follow ) );
 }
 
 QString
 Dynamic::AlbumPlayBias::sName()
 {
-    return QLatin1String( "albumPlayBias" );
+    return QStringLiteral( "albumPlayBias" );
 }
 
 QString
@@ -270,9 +270,9 @@ Dynamic::AlbumPlayBias::nameForFollow( Dynamic::AlbumPlayBias::FollowType match 
 {
     switch( match )
     {
-    case Dynamic::AlbumPlayBias::DirectlyFollow: return "directlyFollow";
-    case Dynamic::AlbumPlayBias::Follow:         return "follow";
-    case Dynamic::AlbumPlayBias::DontCare:       return "dontCare";
+    case Dynamic::AlbumPlayBias::DirectlyFollow: return QStringLiteral("directlyFollow");
+    case Dynamic::AlbumPlayBias::Follow:         return QStringLiteral("follow");
+    case Dynamic::AlbumPlayBias::DontCare:       return QStringLiteral("dontCare");
     }
     return QString();
 }
@@ -280,9 +280,9 @@ Dynamic::AlbumPlayBias::nameForFollow( Dynamic::AlbumPlayBias::FollowType match 
 Dynamic::AlbumPlayBias::FollowType
 Dynamic::AlbumPlayBias::followForName( const QString &name )
 {
-    if( name == "directlyFollow" ) return DirectlyFollow;
-    else if( name == "follow" )    return Follow;
-    else if( name == "dontCare" )  return DontCare;
+    if( name == QLatin1String("directlyFollow") ) return DirectlyFollow;
+    else if( name == QLatin1String("follow") )    return Follow;
+    else if( name == QLatin1String("dontCare") )  return DontCare;
     else return DontCare;
 }
 

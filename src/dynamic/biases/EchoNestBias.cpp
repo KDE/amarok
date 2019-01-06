@@ -101,13 +101,13 @@ Dynamic::EchoNestBias::fromXml( QXmlStreamReader *reader )
 void
 Dynamic::EchoNestBias::toXml( QXmlStreamWriter *writer ) const
 {
-    writer->writeTextElement( "match", nameForMatch( m_match ) );
+    writer->writeTextElement( QStringLiteral("match"), nameForMatch( m_match ) );
 }
 
 QString
 Dynamic::EchoNestBias::sName()
 {
-    return QLatin1String( "echoNestBias" );
+    return QStringLiteral( "echoNestBias" );
 }
 
 QString
@@ -138,7 +138,7 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
     QLabel *imageLabel = new QLabel();
-    imageLabel->setPixmap( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/echonest.png" ) ) );
+    imageLabel->setPixmap( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/echonest.png") ) ) );
     QLabel *label = new QLabel( i18n( "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is similar to" ) );
 
     QRadioButton *rb1 = new QRadioButton( i18n( "the previous track's artist" ) );
@@ -241,7 +241,7 @@ Dynamic::EchoNestBias::newQuery()
         if( m_similarArtistMap.contains( key ) )
         {
             similar = m_similarArtistMap.value( key );
-            debug() << "got similar artists:" << similar.join(", ");
+            debug() << "got similar artists:" << similar.join(QStringLiteral(", "));
         }
         else
         {
@@ -280,9 +280,9 @@ Dynamic::EchoNestBias::newSimilarArtistQuery()
     QMultiMap< QString, QString > params;
 
     // -- start the query
-    params.insert( "results", "30" );
-    params.insert( "name", m_currentArtists.join(", ") );
-    m_artistSuggestedQuery = KIO::storedGet( createUrl( "artist/similar", params ), KIO::NoReload, KIO::HideProgressInfo );
+    params.insert( QStringLiteral("results"), QStringLiteral("30") );
+    params.insert( QStringLiteral("name"), m_currentArtists.join(QStringLiteral(", ")) );
+    m_artistSuggestedQuery = KIO::storedGet( createUrl( QStringLiteral("artist/similar"), params ), KIO::NoReload, KIO::HideProgressInfo );
     connect( m_artistSuggestedQuery, &KJob::result,
              this, &EchoNestBias::similarArtistQueryDone );
 }
@@ -309,7 +309,7 @@ Dynamic::EchoNestBias::similarArtistQueryDone( KJob* job ) // slot
     }
 
     // -- decode the result
-    QDomNodeList artists = doc.elementsByTagName( "artist" );
+    QDomNodeList artists = doc.elementsByTagName( QStringLiteral("artist") );
     if( artists.isEmpty() )
     {
         debug() << "Got no similar artists! Bailing!";
@@ -321,7 +321,7 @@ Dynamic::EchoNestBias::similarArtistQueryDone( KJob* job ) // slot
     QStringList similarArtists;
     for( int i = 0; i < artists.count(); i++ )
     {
-        similarArtists.append( artists.at(i).firstChildElement( "name" ).text() );
+        similarArtists.append( artists.at(i).firstChildElement( QStringLiteral("name") ).text() );
     }
 
     // -- commit the result
@@ -377,13 +377,13 @@ Dynamic::EchoNestBias::currentArtists( int position, const Meta::TrackList& play
 // this method shamelessly inspired by liblastfm/src/ws/ws.cpp
 QUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QString > params )
 {
-    params.insert( "api_key", "DD9P0OV9OYFH1LCAE" );
-    params.insert( "format", "xml" );
+    params.insert( QStringLiteral("api_key"), QStringLiteral("DD9P0OV9OYFH1LCAE") );
+    params.insert( QStringLiteral("format"), QStringLiteral("xml") );
 
     QUrl url;
     QUrlQuery query;
-    url.setScheme( "http" );
-    url.setHost( "developer.echonest.com" );
+    url.setScheme( QStringLiteral("http") );
+    url.setHost( QStringLiteral("developer.echonest.com") );
     url.setPath( "/api/v4/" + method );
 
     // take care of the ID possibility  manually
@@ -411,16 +411,16 @@ Dynamic::EchoNestBias::saveDataToFile() const
     writer.setAutoFormatting( true );
 
     writer.writeStartDocument();
-    writer.writeStartElement( QLatin1String("echonestSimilar") );
+    writer.writeStartElement( QStringLiteral("echonestSimilar") );
 
     // -- write the similar artists
     foreach( const QString& key, m_similarArtistMap.keys() )
     {
-        writer.writeStartElement( QLatin1String("similarArtist") );
-        writer.writeTextElement( QLatin1String("artist"), key );
+        writer.writeStartElement( QStringLiteral("similarArtist") );
+        writer.writeTextElement( QStringLiteral("artist"), key );
         foreach( const QString& name, m_similarArtistMap.value( key ) )
         {
-            writer.writeTextElement( QLatin1String("similar"), name );
+            writer.writeTextElement( QStringLiteral("similar"), name );
         }
         writer.writeEndElement();
     }
@@ -521,8 +521,8 @@ Dynamic::EchoNestBias::nameForMatch( Dynamic::EchoNestBias::MatchType match )
 {
     switch( match )
     {
-    case Dynamic::EchoNestBias::PreviousTrack: return "previous";
-    case Dynamic::EchoNestBias::Playlist:      return "playlist";
+    case Dynamic::EchoNestBias::PreviousTrack: return QStringLiteral("previous");
+    case Dynamic::EchoNestBias::Playlist:      return QStringLiteral("playlist");
     }
     return QString();
 }
@@ -530,14 +530,14 @@ Dynamic::EchoNestBias::nameForMatch( Dynamic::EchoNestBias::MatchType match )
 Dynamic::EchoNestBias::MatchType
 Dynamic::EchoNestBias::matchForName( const QString &name )
 {
-    if( name == "previous" )      return PreviousTrack;
-    else if( name == "playlist" ) return Playlist;
+    if( name == QLatin1String("previous") )      return PreviousTrack;
+    else if( name == QLatin1String("playlist") ) return Playlist;
     else return PreviousTrack;
 }
 
 QString
 Dynamic::EchoNestBias::tracksMapKey( QStringList artists )
 {
-    return artists.join("|");
+    return artists.join(QStringLiteral("|"));
 }
 

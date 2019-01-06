@@ -115,7 +115,7 @@ QString
 PlaylistPrototype::toString() const
 {
     if( !m_playlist )
-        return QString( "Invalid" );
+        return QStringLiteral( "Invalid" );
     return m_playlist->name();
 }
 

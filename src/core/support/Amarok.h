@@ -63,7 +63,7 @@ namespace Amarok
     }
 
     /** The version of the playlist XML format. Increase whenever it changes backwards-incompatibly. */
-    inline QString xmlVersion() { return "2.4"; }
+    inline QString xmlVersion() { return QStringLiteral("2.4"); }
 
     /**
      * Convenience function to return the QApplication instance KConfig object
@@ -72,7 +72,7 @@ namespace Amarok
      */
     /* FIXME: This function can lead to very bizarre and hard to figure bugs.
               While we don`t fix it properly, use it like this: amarok::config( Group )->readEntry( ... ) */
-    AMAROK_CORE_EXPORT KConfigGroup config( const QString &group = "General" );
+    AMAROK_CORE_EXPORT KConfigGroup config( const QString &group = QStringLiteral("General") );
 
     /**
      * @return the KActionCollection used by Amarok

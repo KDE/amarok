@@ -70,7 +70,7 @@ CollectionScanner::Album::cover() const
         // IMPROVEMENT: skip covers that have a strange aspect ratio or are
         // unrealistically small, or do not resolve to a valid image
         if( track->hasCover() )
-            return QLatin1String("amarok-sqltrackuid://") + track->uniqueid();
+            return QStringLiteral("amarok-sqltrackuid://") + track->uniqueid();
     }
 
     // ok. Now we have to figure out which of the cover images is

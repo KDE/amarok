@@ -23,7 +23,7 @@ using namespace Transcoding;
 OpusFormat::OpusFormat()
 {
     m_encoder = OPUS;
-    m_fileExtension = "opus";
+    m_fileExtension = QStringLiteral("opus");
     QString description1 =
         i18n( "The bitrate is a measure of the quantity of data used to represent a "
         "second of the audio track.<br>The <b>Opus</b> encoder used by Amarok supports "
@@ -91,7 +91,7 @@ QStringList
 OpusFormat::ffmpegParameters( const Configuration &configuration ) const
 {
     QStringList parameters;
-    parameters << "-acodec" << "libopus";
+    parameters << QStringLiteral("-acodec") << QStringLiteral("libopus");
     foreach( const Property &property, m_propertyList )
     {
         if( !configuration.property( property.name() ).isNull()
@@ -100,11 +100,11 @@ OpusFormat::ffmpegParameters( const Configuration &configuration ) const
             if( property.name() == "bitrate" )
             {
                 int ffmpegBitrate = toFfmpegBitrate( configuration.property( "bitrate" ).toInt() );
-                parameters << "-ab" << QString::number( ffmpegBitrate );
+                parameters << QStringLiteral("-ab") << QString::number( ffmpegBitrate );
             }
         }
     }
-    parameters << "-vn"; // no video stream or album art
+    parameters << QStringLiteral("-vn"); // no video stream or album art
     return parameters;
 }
 

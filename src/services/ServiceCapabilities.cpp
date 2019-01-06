@@ -130,12 +130,12 @@ void ServiceFindInSourceCapability::findInSource( QFlags<TargetTag> tag )
         QString album = m_track->album()->prettyName();
 
         AmarokUrl url;
-        url.setCommand( "navigate" );
+        url.setCommand( QStringLiteral("navigate") );
         url.setPath( "internet/" + collection );
         if( !m_track->simpleFiltering() )
         {
-            url.setArg( "filter", "artist:\"" + artist + "\" AND album:\"" + album + "\"" );
-            url.setArg( "levels", "artist-album" );
+            url.setArg( QStringLiteral("filter"), "artist:\"" + artist + "\" AND album:\"" + album + "\"" );
+            url.setArg( QStringLiteral("levels"), QStringLiteral("artist-album") );
             debug() << "running url: " << url.url();
             url.run();
         }

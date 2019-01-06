@@ -96,13 +96,13 @@ AbstractScanResultProcessor::scanSucceeded()
     if( nonCompilationAlbumNames.isEmpty() )
     {
         nonCompilationAlbumNames
-            << "" // don't throw together albums without name. At least not here
-            << "Best Of"
-            << "Anthology"
-            << "Hit collection"
-            << "Greatest Hits"
-            << "All Time Greatest Hits"
-            << "Live";
+            << QLatin1String("") // don't throw together albums without name. At least not here
+            << QStringLiteral("Best Of")
+            << QStringLiteral("Anthology")
+            << QStringLiteral("Hit collection")
+            << QStringLiteral("Greatest Hits")
+            << QStringLiteral("All Time Greatest Hits")
+            << QStringLiteral("Live");
     }
 
     // -- commit the directories

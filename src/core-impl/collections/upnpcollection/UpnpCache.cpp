@@ -35,12 +35,12 @@ static qint64 duration( const QString &duration ) {
     int mseconds = 0;
     if( rest.contains( QLatin1Char('.') ) ) {
         int dotIndex = rest.indexOf( "." );
-        seconds = rest.left( dotIndex ).toInt();
+        seconds = rest.leftRef( dotIndex ).toInt();
         QString frac = rest.mid( dotIndex + 1 );
         if( frac.contains( '/' ) ) {
             int slashIndex = frac.indexOf( '/' );
-            int num = frac.left( frac.indexOf( '/' ) ).toInt();
-            int den = frac.mid( slashIndex + 1 ).toInt();
+            int num = frac.leftRef( frac.indexOf( '/' ) ).toInt();
+            int den = frac.midRef( slashIndex + 1 ).toInt();
             mseconds = num * 1000 / den;
         }
         else {

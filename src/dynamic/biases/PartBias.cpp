@@ -344,7 +344,7 @@ Dynamic::PartBias::fromXml( QXmlStreamReader *reader )
 
         if( reader->isStartElement() )
         {
-            float weight = reader->attributes().value( "weight" ).toString().toFloat();
+            float weight = reader->attributes().value( QStringLiteral("weight") ).toString().toFloat();
             Dynamic::BiasPtr bias( Dynamic::BiasFactory::fromXml( reader ) );
             if( bias )
             {
@@ -372,7 +372,7 @@ Dynamic::PartBias::toXml( QXmlStreamWriter *writer ) const
     for( int i = 0; i < m_biases.count(); i++ )
     {
         writer->writeStartElement( m_biases[i]->name() );
-        writer->writeAttribute( "weight", QString::number(m_weights[i]) );
+        writer->writeAttribute( QStringLiteral("weight"), QString::number(m_weights[i]) );
         m_biases[i]->toXml( writer );
         writer->writeEndElement();
     }
@@ -381,7 +381,7 @@ Dynamic::PartBias::toXml( QXmlStreamWriter *writer ) const
 QString
 Dynamic::PartBias::sName()
 {
-    return QLatin1String( "partBias" );
+    return QStringLiteral( "partBias" );
 }
 
 QString

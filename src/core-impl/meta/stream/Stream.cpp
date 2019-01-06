@@ -170,7 +170,7 @@ QString
 Track::type() const
 {
     // don't localize. See EngineController quirks
-    return "stream";
+    return QStringLiteral("stream");
 }
 
 void

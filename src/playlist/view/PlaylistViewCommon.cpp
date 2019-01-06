@@ -64,7 +64,7 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
         // there are no cover actions if the song/album is not in the collection
         QMenu *menuCover = new QMenu( i18n( "Album" ), menu );
         menuCover->addActions( albumActionsList );
-        menuCover->setIcon( QIcon::fromTheme( "filename-album-amarok" ) );
+        menuCover->setIcon( QIcon::fromTheme( QStringLiteral("filename-album-amarok") ) );
         menu->addMenu( menuCover );
         menu->addSeparator();
     }
@@ -122,7 +122,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
 
         if( m_cueTrackAction == 0 )
         {
-            m_cueTrackAction = new QAction( QIcon::fromTheme( "media-track-queue-amarok" ), queueText, parent );
+            m_cueTrackAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-queue-amarok") ), queueText, parent );
         }
         else
         {
@@ -153,7 +153,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     {
         if( m_stopAfterTrackAction == 0 )
         {
-            m_stopAfterTrackAction = new QAction( QIcon::fromTheme( "media-playback-stop-amarok" ),
+            m_stopAfterTrackAction = new QAction( QIcon::fromTheme( QStringLiteral("media-playback-stop-amarok") ),
                                                   i18n( "Stop Playing After This Track" ), parent );
 
             if ( auto p = static_cast<Playlist::PrettyListView*>(parent) )
@@ -167,7 +167,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
 
     if( m_removeTracTrackAction == 0 )
     {
-        m_removeTracTrackAction = new QAction( QIcon::fromTheme( "media-track-remove-amarok" ),
+        m_removeTracTrackAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-remove-amarok") ),
                                                i18n( "Remove From Playlist" ), parent );
 
         if ( auto p = static_cast<Playlist::PrettyListView*>(parent) )
@@ -198,7 +198,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     {
         if( m_findInSourceAction == 0 )
         {
-            m_findInSourceAction = new QAction( QIcon::fromTheme( "edit-find" ),
+            m_findInSourceAction = new QAction( QIcon::fromTheme( QStringLiteral("edit-find") ),
                                                 i18n( "Show in Media Sources" ), parent );
 
             if( auto p = static_cast<Playlist::PrettyListView*>(parent) )
@@ -241,7 +241,7 @@ Playlist::ViewCommon::multiSourceActionsFor( QWidget *parent, const QModelIndex 
 
     if( isMultiSource )
     {
-        QAction *selectSourceAction = new QAction( QIcon::fromTheme( "media-playlist-repeat" ),
+        QAction *selectSourceAction = new QAction( QIcon::fromTheme( QStringLiteral("media-playlist-repeat") ),
                                                    i18n( "Select Source" ), parent );
 
         if( auto p = static_cast<Playlist::PrettyListView*>(parent) )
@@ -261,7 +261,7 @@ Playlist::ViewCommon::editActionsFor( QWidget *parent, const QModelIndex *index 
 
     Meta::TrackPtr track = index->data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
-    QAction *editAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
+    QAction *editAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ),
                                        i18n( "Edit Track Details" ), parent );
     editAction->setProperty( "popupdropper_svg_id", "edit" );
 

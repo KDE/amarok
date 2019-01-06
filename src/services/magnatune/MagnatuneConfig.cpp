@@ -39,7 +39,7 @@ MagnatuneConfig::load()
 
 //     qDebug() << "load";
 
-    KConfigGroup config = Amarok::config( "Service_Magnatune" );
+    KConfigGroup config = Amarok::config( QStringLiteral("Service_Magnatune") );
 
     m_isMember = config.readEntry( "isMember", false );
 
@@ -86,7 +86,7 @@ MagnatuneConfig::save()
 {
     qDebug() << "save";
     if ( m_hasChanged ) {
-        KConfigGroup config = Amarok::config( "Service_Magnatune" );
+        KConfigGroup config = Amarok::config( QStringLiteral("Service_Magnatune") );
 
         config.writeEntry( "isMember", m_isMember );
         config.writeEntry( "autoUpdateDatabase", m_autoUpdate );
@@ -98,11 +98,11 @@ MagnatuneConfig::save()
         
         QString streamTypeString;
         if ( m_streamType == MagnatuneMetaFactory::MP3 )
-            streamTypeString = "mp3";
+            streamTypeString = QStringLiteral("mp3");
         else if ( m_streamType == MagnatuneMetaFactory::LOFI )
-            streamTypeString = "lofi_mp3";
+            streamTypeString = QStringLiteral("lofi_mp3");
         else
-            streamTypeString = "ogg";
+            streamTypeString = QStringLiteral("ogg");
 
         config.writeEntry( "streamType", streamTypeString );
 
@@ -153,9 +153,9 @@ MagnatuneConfig::membershipPrefix()
 {
     QString prefix;
     if( m_membershipType == MagnatuneConfig::STREAM )
-        prefix = "stream";
+        prefix = QStringLiteral("stream");
     else
-        prefix = "download";
+        prefix = QStringLiteral("download");
 
     return prefix;
 }

@@ -42,7 +42,7 @@
 
 static const int USERPLAYLIST_DB_VERSION = 3;
 // a database updater has been added in checkTables(). Use that when updating db version
-static const QString key("AMAROK_USERPLAYLIST");
+static const QString key(QStringLiteral("AMAROK_USERPLAYLIST"));
 
 namespace Playlists {
 
@@ -198,7 +198,7 @@ SqlUserPlaylistProvider::createTables()
             ", parent_id INTEGER"
             ", name " + sqlStorage->textColumnType() +
             ", description " + sqlStorage->textColumnType() + " ) ENGINE = MyISAM;" ) );
-    sqlStorage->query( "CREATE INDEX parent_podchannel ON playlist_groups( parent_id );" );
+    sqlStorage->query( QStringLiteral("CREATE INDEX parent_podchannel ON playlist_groups( parent_id );") );
 
 
     sqlStorage->query( QString( "CREATE TABLE playlists ("
@@ -206,7 +206,7 @@ SqlUserPlaylistProvider::createTables()
             ", parent_id INTEGER"
             ", name " + sqlStorage->textColumnType() +
             ", urlid " + sqlStorage->exactTextColumnType() + " ) ENGINE = MyISAM;" ) );
-    sqlStorage->query( "CREATE INDEX parent_playlist ON playlists( parent_id );" );
+    sqlStorage->query( QStringLiteral("CREATE INDEX parent_playlist ON playlists( parent_id );") );
 
     sqlStorage->query( QString( "CREATE TABLE playlist_tracks ("
             " id " + sqlStorage->idType() +
@@ -219,8 +219,8 @@ SqlUserPlaylistProvider::createTables()
             ", length INTEGER "
             ", uniqueid " + sqlStorage->textColumnType(128) + ") ENGINE = MyISAM;" ) );
 
-    sqlStorage->query( "CREATE INDEX parent_playlist_tracks ON playlist_tracks( playlist_id );" );
-    sqlStorage->query( "CREATE INDEX playlist_tracks_uniqueid ON playlist_tracks( uniqueid );" );
+    sqlStorage->query( QStringLiteral("CREATE INDEX parent_playlist_tracks ON playlist_tracks( playlist_id );") );
+    sqlStorage->query( QStringLiteral("CREATE INDEX playlist_tracks_uniqueid ON playlist_tracks( uniqueid );") );
 }
 
 void
@@ -236,14 +236,14 @@ SqlUserPlaylistProvider::deleteTables()
         return;
     }
 
-    sqlStorage->query( "DROP INDEX parent_podchannel ON playlist_groups;" );
-    sqlStorage->query( "DROP INDEX parent_playlist ON playlists;" );
-    sqlStorage->query( "DROP INDEX parent_playlist_tracks ON playlist_tracks;" );
-    sqlStorage->query( "DROP INDEX playlist_tracks_uniqueid ON playlist_tracks;" );
+    sqlStorage->query( QStringLiteral("DROP INDEX parent_podchannel ON playlist_groups;") );
+    sqlStorage->query( QStringLiteral("DROP INDEX parent_playlist ON playlists;") );
+    sqlStorage->query( QStringLiteral("DROP INDEX parent_playlist_tracks ON playlist_tracks;") );
+    sqlStorage->query( QStringLiteral("DROP INDEX playlist_tracks_uniqueid ON playlist_tracks;") );
 
-    sqlStorage->query( "DROP TABLE IF EXISTS playlist_groups;" );
-    sqlStorage->query( "DROP TABLE IF EXISTS playlists;" );
-    sqlStorage->query( "DROP TABLE IF EXISTS playlist_tracks;" );
+    sqlStorage->query( QStringLiteral("DROP TABLE IF EXISTS playlist_groups;") );
+    sqlStorage->query( QStringLiteral("DROP TABLE IF EXISTS playlists;") );
+    sqlStorage->query( QStringLiteral("DROP TABLE IF EXISTS playlist_tracks;") );
 
 }
 
@@ -259,7 +259,7 @@ SqlUserPlaylistProvider::checkTables()
     if ( !sqlStorage )
 	    return;
 
-    values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
+    values = sqlStorage->query( QStringLiteral("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
     
     if( values.isEmpty() )
     {
@@ -299,7 +299,7 @@ SqlUserPlaylistProvider::upgradeVersion2to3()
 {
     DEBUG_BLOCK
     auto sqlStorage = StorageManager::instance()->sqlStorage();
-    sqlStorage->query( "ALTER TABLE playlists DROP COLUMN description" );
+    sqlStorage->query( QStringLiteral("ALTER TABLE playlists DROP COLUMN description") );
 }
 
 Playlists::SqlPlaylistList
