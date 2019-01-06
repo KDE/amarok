@@ -131,7 +131,7 @@ namespace AmarokScript
             void slotTimeout();
 
         Q_SIGNALS:
-            void deprecatedCall(QString);
+            void deprecatedCall(const QString &);
 
         private:
             const QString internalObject;
