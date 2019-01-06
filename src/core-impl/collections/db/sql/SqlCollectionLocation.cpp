@@ -291,9 +291,9 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
     foreach( Meta::TrackPtr track, tracks )
         transferSize += track->filesize();
 
-    QStringList actual_folders = actualLocation(); // the folders in the collection
+    const QStringList actual_folders = actualLocation(); // the folders in the collection
     QStringList available_folders; // the folders which have freespace available
-    foreach(QString path, actual_folders)
+    foreach(const QString &path, actual_folders)
     {
         if( path.isEmpty() )
             continue;
