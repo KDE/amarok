@@ -50,7 +50,7 @@ class MusicBrainzTagger : public QDialog
         virtual ~MusicBrainzTagger();
 
     Q_SIGNALS:
-        void sendResult( const QMap<Meta::TrackPtr, QVariantMap> result );
+        void sendResult( const QMap<Meta::TrackPtr, QVariantMap> &result );
 
     private Q_SLOTS:
         void search();

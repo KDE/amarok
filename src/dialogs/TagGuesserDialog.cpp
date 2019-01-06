@@ -380,7 +380,7 @@ TagGuesserDialog::getParsableFileName()
 
 // creates a colored version of the filename
 QString
-TagGuesserDialog::coloredFileName( QMap<qint64,QString> tags )
+TagGuesserDialog::coloredFileName( const QMap<qint64,QString> &tags )
 {
     QString coloredFileName = m_fileName;
 

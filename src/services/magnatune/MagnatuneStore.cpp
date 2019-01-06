@@ -533,7 +533,7 @@ void MagnatuneStore::setMembership( int type, const QString & username, const QS
 }
 
 
-void MagnatuneStore::moodMapReady(QMap< QString, int > map)
+void MagnatuneStore::moodMapReady(const QMap< QString, int > &map)
 {
     QVariantMap variantMap;
     QList<QVariant> strings;

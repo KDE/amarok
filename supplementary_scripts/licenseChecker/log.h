@@ -41,9 +41,9 @@ class LogEntry
     LogEntry( const QString &filename, const QString &message, Type type );
     ~LogEntry();
 
-    QString getFilename() { return m_filename; };
-    QString getMessage() { return m_message; };
-    Type getType() { return m_type; };
+    QString getFilename() { return m_filename; }
+    QString getMessage() { return m_message; }
+    Type getType() { return m_type; }
 
   private:
     QString m_filename;
@@ -79,11 +79,11 @@ class Log: public QList<LogEntry>
     Log() {}
     ~Log() {}
 
-    void printFullReport( LogEntry::PrintStyle style, const QString &filename ) { print( style, true, true, true, true, filename ); };
-    void printErrorReport( LogEntry::PrintStyle style, bool warnings, const QString &filename ) { print( style, true, warnings, true, false, filename ); };
+    void printFullReport( LogEntry::PrintStyle style, const QString &filename ) { print( style, true, true, true, true, filename ); }
+    void printErrorReport( LogEntry::PrintStyle style, bool warnings, const QString &filename ) { print( style, true, warnings, true, false, filename ); }
     void writeShellScript( const QString & filename );
     void addCopyHolder( const QString &a, const QString & b, const QString & filename );
-    void addProblemFile( const QString &a ) { problemFiles.append( a ); };
+    void addProblemFile( const QString &a ) { problemFiles.append( a ); }
 
   private:
     void print( LogEntry::PrintStyle style, bool errors, bool warnings, bool information, bool success, QString filename );

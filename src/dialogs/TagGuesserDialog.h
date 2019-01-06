@@ -103,7 +103,7 @@ class AMAROK_EXPORT TagGuesserDialog : public QDialog
         /**
         *   @Returns a colored version of the filename
         */
-        QString coloredFileName( QMap<qint64,QString> tags );
+        QString coloredFileName(const QMap<qint64, QString> &tags );
 
         /**
          * @Returns color name for specified metadata field

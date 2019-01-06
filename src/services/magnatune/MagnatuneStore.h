@@ -164,7 +164,7 @@ private Q_SLOTS:
     void itemSelected( CollectionTreeItem * selectedItem );
 
 
-    void moodMapReady( QMap<QString, int> map );
+    void moodMapReady(const QMap<QString, int> &map );
     void moodyTracksReady( Meta::TrackList tracks );
 
     void timestampDownloadComplete( KJob * job );

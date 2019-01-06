@@ -91,7 +91,7 @@ class AMAROK_EXPORT TagDialog : public QDialog, public Meta::Observer
         void guessFromFilename();
 
         void musicbrainzTagger();
-        void musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap > result );
+        void musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap > &result );
 
         /** Safely adds a track to m_tracks.
             Ensures that tracks are not added twice.

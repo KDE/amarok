@@ -56,7 +56,7 @@ public:
     int row ( Token* ) const;
 
     /** Returns the number of rows that this layout has. */
-    uint rows() const { return m_rows; };
+    uint rows() const { return m_rows; }
 
     /** Returns the maximum allowed number of rows.
         A number of 0 means that the row count is not limited at all.

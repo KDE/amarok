@@ -64,7 +64,7 @@ class TagGuesser
         /**
         *  @returns a list of guessed Tags
         */
-        QMap<qint64,QString> tags() { return m_tags; };
+        QMap<qint64,QString> tags() const { return m_tags; }
 
     private:
 

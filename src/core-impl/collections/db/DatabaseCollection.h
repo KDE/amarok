@@ -106,8 +106,8 @@ class DatabaseCollection : public Collections::Collection
         virtual void dumpDatabaseContent() = 0;
 
     protected Q_SLOTS:
-        virtual void slotDeviceAdded( int id ) { Q_UNUSED( id ); };
-        virtual void slotDeviceRemoved( int id ) { Q_UNUSED( id ); };
+        virtual void slotDeviceAdded( int id ) { Q_UNUSED( id ); }
+        virtual void slotDeviceRemoved( int id ) { Q_UNUSED( id ); }
 
     protected:
         MountPointManager *m_mpm;

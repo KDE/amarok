@@ -52,7 +52,7 @@ Q_SIGNALS:
      * This signal is emitted when success() returns false after the job is executed. */
     void failed(ThreadWeaver::JobPointer);
 
-    void gotMoodMap( QMap<QString, int> map );
+    void gotMoodMap( const QMap<QString, int> &map );
     void gotMoodyTracks( Meta::TrackList tracks );
     void gotAlbumBySku( Meta::MagnatuneAlbum * album );
 

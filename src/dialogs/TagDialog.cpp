@@ -1388,7 +1388,7 @@ TagDialog::musicbrainzTagger()
 }
 
 void
-TagDialog::musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap> result )
+TagDialog::musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap> &result )
 {
     if( result.isEmpty() )
         return;
