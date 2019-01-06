@@ -36,7 +36,7 @@ class MasterSlaveSynchronizationJob : public SynchronizationBaseJob
     Q_OBJECT
     public:
         MasterSlaveSynchronizationJob();
-        ~MasterSlaveSynchronizationJob();
+        ~MasterSlaveSynchronizationJob() override;
 
         //master/slave are not settable in the ctor
         //to make explicit which collection is the master and which is the slave

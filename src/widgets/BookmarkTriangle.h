@@ -34,9 +34,9 @@ class BookmarkTriangle : public QWidget
 {
     Q_OBJECT
 public:
-    BookmarkTriangle( QWidget *parent, int milliseconds, QString name, int sliderwidth,
+    BookmarkTriangle( QWidget *parent, int milliseconds, const QString &name, int sliderwidth,
                       bool showPopup = false );
-    ~BookmarkTriangle();
+    ~BookmarkTriangle() override;
     QSize sizeHint() const override;
     virtual QSizePolicy sizePolicy() const;
     QSize minimumSizeHint() const override;

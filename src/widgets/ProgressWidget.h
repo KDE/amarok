@@ -55,7 +55,7 @@ class ProgressWidget : public QWidget
 
     private Q_SLOTS:
         void addBookmarkNoPopup( const QString &name, int milliSeconds );
-        void redrawBookmarks(const QString *BookmarkName = 0);
+        void redrawBookmarks(const QString *BookmarkName = nullptr);
 
     private:
         void updateTimeLabelTooltips();

@@ -56,14 +56,14 @@ public:
      * Destructor
      * @return none
      */
-    ~OpmlParser();
+    ~OpmlParser() override;
 
     /**
     * The function that starts the actual work. Inherited from ThreadWeaver::Job
     * Note the work is performed in a separate thread
     * @return Returns true on success and false on failure
     */
-    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
 
     bool read( const QUrl &url );
     bool read( QIODevice *device );

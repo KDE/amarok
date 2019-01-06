@@ -41,7 +41,7 @@ class BreadcrumbItemButton : public Amarok::ElidingButton
         explicit BreadcrumbItemButton( QWidget* parent );
         BreadcrumbItemButton( const QString &text, QWidget *parent );
         BreadcrumbItemButton( const QIcon &icon, const QString &text, QWidget *parent );
-        virtual ~BreadcrumbItemButton();
+        ~BreadcrumbItemButton() override;
 
         void setActive( const bool active );
 

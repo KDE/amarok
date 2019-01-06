@@ -47,7 +47,7 @@ class AMAROK_EXPORT App : public QApplication
 
     public:
         App(int &argc, char **argv);
-        ~App();
+        ~App() override;
 
         static App *instance() { return static_cast<App*>( qApp ); }
 

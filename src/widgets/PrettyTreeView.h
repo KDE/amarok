@@ -42,7 +42,7 @@ namespace Amarok
 
         public:
             explicit PrettyTreeView( QWidget *parent = nullptr );
-            virtual ~PrettyTreeView();
+            ~PrettyTreeView() override;
 
         public Q_SLOTS:
             /* There is a need to overload even this edit() variant, otherwise it hides

@@ -251,9 +251,9 @@ Amarok::TrayIcon::slotScrollRequested( int delta, Qt::Orientation orientation )
 }
 
 QAction*
-Amarok::TrayIcon::action( const QString& name, QMap<QString, QAction*> actionByName )
+Amarok::TrayIcon::action( const QString& name, const QMap<QString, QAction*> &actionByName )
 {
-  QAction* action = 0L;
+  QAction* action = nullptr;
 
   if ( !name.isEmpty() )
     action = actionByName.value(name);

@@ -61,7 +61,7 @@ class Token : public QWidget
         void setTextColor( QColor textColor );
 
         /** Return true if somebody has previously set the text color */
-        bool hasCustomColor() const { return m_customColor; };
+        bool hasCustomColor() const { return m_customColor; }
 
         /** Returns the mime data for this token.
             Caller has to free the QMimeData object.

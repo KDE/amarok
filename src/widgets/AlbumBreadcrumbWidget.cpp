@@ -52,7 +52,7 @@ AlbumBreadcrumbWidget::~AlbumBreadcrumbWidget()
 {
 }
 
-void AlbumBreadcrumbWidget::setAlbum( const Meta::AlbumPtr album )
+void AlbumBreadcrumbWidget::setAlbum(const Meta::AlbumPtr &album )
 {
     m_album = album;
     updateBreadcrumbs();

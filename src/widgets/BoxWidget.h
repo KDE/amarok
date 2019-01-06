@@ -41,7 +41,7 @@ public:
      * @param parent the parent widget.
      */
     explicit BoxWidget( bool vertical = true, QWidget *parent = nullptr );
-    virtual ~BoxWidget() {}
+    ~BoxWidget() override {}
 
     QBoxLayout* layout() const;
 

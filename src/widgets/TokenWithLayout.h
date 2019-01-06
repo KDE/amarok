@@ -54,7 +54,7 @@ class TokenWithLayout : public Token
     Q_OBJECT
 public:
     TokenWithLayout( const QString &text, const QString &iconName, qint64 value, QWidget *parent = nullptr );
-    ~TokenWithLayout();
+    ~TokenWithLayout() override;
 
     Qt::Alignment alignment();
     bool bold() const;

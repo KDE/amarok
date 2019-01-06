@@ -31,7 +31,7 @@ public:
         wheelevents on the dial
         You do NOT have to remove them on deconstruction.
     */
-    void addWheelProxies( QList<QWidget*> proxies );
+    void addWheelProxies( const QList<QWidget*> &proxies );
     QSize sizeHint() const override;
 
 public Q_SLOTS:

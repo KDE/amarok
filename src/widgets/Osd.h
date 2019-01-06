@@ -86,7 +86,7 @@ class OSDWidget : public QWidget
 
     protected:
         explicit OSDWidget( QWidget *parent, const char *name = "osd" );
-        virtual ~OSDWidget();
+        ~OSDWidget() override;
 
         // work-around to get default point size on this platform, Qt API does not offer this directly
         inline qreal defaultPointSize() const { return QFont(font().family()).pointSizeF(); }
@@ -203,7 +203,7 @@ namespace Amarok
 
     private:
         OSD();
-        ~OSD();
+        ~OSD() override;
 
         static OSD* s_instance;
 

@@ -62,7 +62,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            PlayPauseAction( KActionCollection*, QObject* );
+            explicit PlayPauseAction( KActionCollection*, QObject* );
 
         private Q_SLOTS:
             void stopped();

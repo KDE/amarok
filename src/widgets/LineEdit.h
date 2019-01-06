@@ -36,7 +36,7 @@ namespace Amarok
 
         public:
             explicit LineEdit( QWidget *parent = nullptr );
-            virtual ~LineEdit() {}
+            ~LineEdit() override {}
 
             void keyPressEvent( QKeyEvent *event ) override;
 

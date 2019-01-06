@@ -46,7 +46,7 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         static const QString BOOKMARKGROUP_MIME;
 
         AmarokMimeData();
-        virtual ~AmarokMimeData();
+        ~AmarokMimeData() override;
 
         QStringList formats() const override;
         bool hasFormat( const QString &mimeType ) const override;

@@ -34,7 +34,7 @@
 #include <QSize>
 #include <QSizePolicy>
 
-BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int milliseconds, QString name,
+BookmarkTriangle::BookmarkTriangle (QWidget *parent, int milliseconds, const QString &name,
                                      int sliderwidth, bool showPopup )
     : QWidget ( parent ),
     m_mseconds ( milliseconds ),

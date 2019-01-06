@@ -38,7 +38,7 @@ class LogEntry
       HTML
     };
 
-    LogEntry( QString filename, QString message, Type type );
+    LogEntry( const QString &filename, const QString &message, Type type );
     ~LogEntry();
 
     QString getFilename() { return m_filename; };
@@ -59,13 +59,13 @@ class Log: public QList<LogEntry>
 
     class CopyHolder {
       public:
-	CopyHolder( QString a, QString b )
+    CopyHolder( const QString &a, const QString &b )
 	{
 	  name = a;
 	  email = b;
-	};
+    }
 
-	void addFile( QString a )
+    void addFile( const QString &a )
 	{
 	  files.append( a );
 	  files.sort();
@@ -79,11 +79,11 @@ class Log: public QList<LogEntry>
     Log() {}
     ~Log() {}
 
-    void printFullReport( LogEntry::PrintStyle style, QString filename ) { print( style, true, true, true, true, filename ); };
-    void printErrorReport( LogEntry::PrintStyle style, bool warnings, QString filename ) { print( style, true, warnings, true, false, filename ); };
-    void writeShellScript( QString filename );
-    void addCopyHolder( QString a, QString b, QString filename );
-    void addProblemFile( QString a ) { problemFiles.append( a ); };
+    void printFullReport( LogEntry::PrintStyle style, const QString &filename ) { print( style, true, true, true, true, filename ); };
+    void printErrorReport( LogEntry::PrintStyle style, bool warnings, const QString &filename ) { print( style, true, warnings, true, false, filename ); };
+    void writeShellScript( const QString & filename );
+    void addCopyHolder( const QString &a, const QString & b, const QString & filename );
+    void addProblemFile( const QString &a ) { problemFiles.append( a ); };
 
   private:
     void print( LogEntry::PrintStyle style, bool errors, bool warnings, bool information, bool success, QString filename );

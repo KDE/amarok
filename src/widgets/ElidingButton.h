@@ -37,7 +37,7 @@ namespace Amarok
             explicit ElidingButton( QWidget *parent );
             ElidingButton( const QString & text, QWidget *parent );
             ElidingButton( const QIcon & icon, const QString & text, QWidget *parent );
-            ~ElidingButton();
+            ~ElidingButton() override;
 
             bool isElided() const;
             QSizePolicy sizePolicy() const;

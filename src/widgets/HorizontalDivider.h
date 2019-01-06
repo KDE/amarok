@@ -29,7 +29,7 @@ class HorizontalDivider : public QWidget
 public:
     explicit HorizontalDivider( QWidget * parent );
 
-    ~HorizontalDivider();
+    ~HorizontalDivider() override;
 
 protected:
     void paintEvent ( QPaintEvent* event ) override;

@@ -29,9 +29,9 @@ class AnalyzerWidget : public QWidget
     public:
         explicit AnalyzerWidget( QWidget *parent );
     protected:
-        virtual void resizeEvent( QResizeEvent* );
-        virtual void mousePressEvent( QMouseEvent* );
-        virtual void contextMenuEvent( QContextMenuEvent* );
+        void resizeEvent( QResizeEvent* ) override;
+        void mousePressEvent( QMouseEvent* ) override;
+        void contextMenuEvent( QContextMenuEvent* ) override;
     private:
         void changeAnalyzer();
         QWidget *m_child;

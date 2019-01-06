@@ -19,8 +19,8 @@
 
 #include <QUrl>
 
-OpmlWriter::OpmlWriter( const QList<OpmlOutline *> rootOutlines,
-                        const QMap<QString,QString> headerData,
+OpmlWriter::OpmlWriter(const QList<OpmlOutline *> &rootOutlines,
+                        const QMap<QString, QString> &headerData,
                         QIODevice *device )
     : QObject()
     , ThreadWeaver::Job()

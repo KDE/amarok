@@ -76,7 +76,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         };
         
         MainWindow();
-        ~MainWindow();
+        ~MainWindow() override;
 
         void activate();
 

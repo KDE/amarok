@@ -31,7 +31,7 @@ class BookmarkPopup : public QWidget
     Q_OBJECT
 
 public:
-    BookmarkPopup ( QWidget* parent, QString label, BookmarkTriangle* triangle );
+    BookmarkPopup ( QWidget* parent, const QString &label, BookmarkTriangle* triangle );
 
     QSize sizeHint () const override;
     virtual QSizePolicy sizePolicy () const;

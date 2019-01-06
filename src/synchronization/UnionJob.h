@@ -42,7 +42,7 @@ class UnionJob : public SynchronizationBaseJob
     Q_OBJECT
     public:
         UnionJob( Collections::Collection *collA, Collections::Collection *collB );
-        virtual ~UnionJob();
+        ~UnionJob() override;
 
     protected:
         void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB ) override;

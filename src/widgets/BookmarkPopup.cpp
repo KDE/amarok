@@ -27,7 +27,7 @@
 #include <QPainter>
 #include <QHBoxLayout>
 
-BookmarkPopup::BookmarkPopup ( QWidget* parent, QString label, BookmarkTriangle* triangle )
+BookmarkPopup::BookmarkPopup (QWidget* parent, const QString &label, BookmarkTriangle* triangle )
         : QWidget ( parent )
         , m_label ( label )
         , m_triangle ( triangle )

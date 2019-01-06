@@ -34,7 +34,7 @@ class SlimToolbar : public QToolBar
 
 public:
     explicit SlimToolbar( QWidget * parent );
-    ~SlimToolbar();
+    ~SlimToolbar() override;
 
     bool eventFilter( QObject* object, QEvent* event ) override;
 

@@ -44,7 +44,7 @@ VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
     connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &VolumeDial::paletteChanged );
 }
 
-void VolumeDial::addWheelProxies( QList<QWidget*> proxies )
+void VolumeDial::addWheelProxies(const QList<QWidget *> &proxies )
 {
     foreach ( QWidget *proxy, proxies )
     {

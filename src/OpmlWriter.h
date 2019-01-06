@@ -35,17 +35,17 @@ class AMAROK_EXPORT OpmlWriter : public QObject, public ThreadWeaver::Job
           * The children of IncludeNodes will not be written. Remove the type="include" attribute
           * from the include node to force a save of those child nodes.
           */
-        OpmlWriter( const QList<OpmlOutline *> rootOutlines,
-                    const QMap<QString,QString> headerData,
+        OpmlWriter( const QList<OpmlOutline *> &rootOutlines,
+                    const QMap<QString,QString> &headerData,
                     QIODevice *device );
 
-        void setHeaderData( const QMap<QString,QString> data ) { m_headerData = data; }
+        void setHeaderData( const QMap<QString,QString> &data ) { m_headerData = data; }
         /**
          * The function that starts the actual work. Inherited from ThreadWeaver::Job
          * Note the work is performed in a separate thread
          * @return Returns @c true on success and @c false on failure
          */
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
 
         QIODevice *device() { return m_xmlWriter->device(); }
 

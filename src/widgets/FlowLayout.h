@@ -36,7 +36,7 @@
     public:
         explicit FlowLayout(QWidget *parent, int margin = 0, int spacing = -1);
         explicit FlowLayout(int spacing = -1);
-        ~FlowLayout();
+        ~FlowLayout() override;
 
         void addItem(QLayoutItem *item) override;
         Qt::Orientations expandingDirections() const override;

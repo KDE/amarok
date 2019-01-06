@@ -34,7 +34,7 @@ class PixmapViewer : public QWidget
 
 public:
     PixmapViewer( QWidget *parent, const QPixmap &pixmap, int screenNumber );
-    virtual ~PixmapViewer();
+    ~PixmapViewer() override;
 
     qreal zoomFactor() const;
 
