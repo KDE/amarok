@@ -52,7 +52,7 @@ namespace Meta {
              * We will try to prevent this name from being empty. E.g. a track will fall
              * back to the filename if possible.
              */
-            virtual QString prettyName() const { return name(); };
+            virtual QString prettyName() const { return name(); }
 
             /**
              * A name that can be used for sorting.

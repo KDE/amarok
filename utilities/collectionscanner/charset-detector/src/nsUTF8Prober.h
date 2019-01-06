@@ -45,7 +45,7 @@ class nsUTF8Prober: public nsCharSetProber {
 public:
   nsUTF8Prober(){mNumOfMBChar = 0; 
                 mCodingSM = new nsCodingStateMachine(&UTF8SMModel);
-                Reset(); };
+                Reset(); }
   virtual ~nsUTF8Prober(){delete mCodingSM;};
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
   const char* GetCharSetName() {return "UTF-8";};

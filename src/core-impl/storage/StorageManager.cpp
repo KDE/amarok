@@ -54,7 +54,7 @@ public:
     QString boolTrue() const override { return QString(); }
     QString boolFalse() const override { return QString(); }
 
-    QString idType() const override { return QString(); };
+    QString idType() const override { return QString(); }
     QString textColumnType( int ) const override { return QString(); }
     QString exactTextColumnType( int ) const override { return QString(); }
 
