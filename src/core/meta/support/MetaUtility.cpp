@@ -199,8 +199,8 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
             if ( url.isValid() && !url.isLocalFile() )
             {
                 // embedded id?  Request a version to be put in the cache
-                QImage image = album->image();
-                int width = album->image().width();
+                const QImage image = album->image();
+                int width = image.width();
                 url = album->imageLocation( width );
                 debug() << "MPRIS2: New location for width" << width << "is" << url;
             }
