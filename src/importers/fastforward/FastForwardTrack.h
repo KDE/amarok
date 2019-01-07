@@ -30,9 +30,9 @@ typedef QSharedPointer<ImporterSqlConnection> ImporterSqlConnectionPtr;
 class FastForwardTrack : public SimpleWritableTrack
 {
 public:
-    FastForwardTrack( const QString &trackUrl, const ImporterSqlConnectionPtr &connection,
-                      const Meta::FieldHash &metadata, const QSet<QString> labels );
-    ~FastForwardTrack();
+    FastForwardTrack(const QString &trackUrl, const ImporterSqlConnectionPtr &connection,
+                      const Meta::FieldHash &metadata, const QSet<QString> &labels );
+    ~FastForwardTrack() override;
 
 protected:
     void doCommit( const qint64 fields ) override;

@@ -44,7 +44,7 @@ namespace Playlist
             void notifyItemsRemoved( const QSet<quint64> &removedItems ) override { Q_UNUSED( removedItems ); }
 
             QSet<quint64> getRecentHistory( int size );
-            quint64 chooseRandomItem( QSet<quint64> avoidSet );
+            quint64 chooseRandomItem(const QSet<quint64> &avoidSet );
     };
 }
 

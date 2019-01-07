@@ -38,7 +38,7 @@ namespace Playlist
             void notifyItemsInserted( const QSet<quint64> &insertedItems ) override { Q_UNUSED( insertedItems ); }
             void notifyItemsRemoved( const QSet<quint64> &removedItems ) override { Q_UNUSED( removedItems ); }
 
-            QList<qreal> rowWeights( QSet<quint64> avoidSet );
+            QList<qreal> rowWeights( const QSet<quint64> &avoidSet );
             QSet<quint64> getRecentHistory( int size );
     };
 

@@ -24,7 +24,7 @@ using namespace StatSyncing;
 FastForwardTrack::FastForwardTrack( const QString &trackUrl,
                                     const ImporterSqlConnectionPtr &connection,
                                     const Meta::FieldHash &metadata,
-                                    const QSet<QString> labels )
+                                    const QSet<QString> &labels )
     : SimpleWritableTrack( metadata, labels )
     , m_connection( connection )
     , m_trackUrl( trackUrl )

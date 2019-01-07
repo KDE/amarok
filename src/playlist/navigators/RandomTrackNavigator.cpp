@@ -82,7 +82,7 @@ Playlist::RandomTrackNavigator::getRecentHistory( int size )
 }
 
 quint64
-Playlist::RandomTrackNavigator::chooseRandomItem( QSet<quint64> avoidSet )
+Playlist::RandomTrackNavigator::chooseRandomItem( const QSet<quint64> &avoidSet )
 {
     quint64 chosenItem;
 

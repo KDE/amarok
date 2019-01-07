@@ -72,7 +72,7 @@ Playlist::FavoredRandomTrackNavigator::planOne()
 }
 
 QList<qreal>
-Playlist::FavoredRandomTrackNavigator::rowWeights( QSet<quint64> avoidSet )
+Playlist::FavoredRandomTrackNavigator::rowWeights(const QSet<quint64> &avoidSet )
 {
     QList<qreal> weights;
 
