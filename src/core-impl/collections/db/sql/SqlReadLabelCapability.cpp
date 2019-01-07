@@ -25,7 +25,7 @@
 namespace Capabilities
 {
 
-SqlReadLabelCapability::SqlReadLabelCapability( Meta::SqlTrack *track, QSharedPointer<SqlStorage> storage )
+SqlReadLabelCapability::SqlReadLabelCapability( Meta::SqlTrack *track, const QSharedPointer<SqlStorage>& storage )
     : ReadLabelCapability()
     , m_track( track )
     , m_storage( storage )
@@ -35,7 +35,7 @@ SqlReadLabelCapability::SqlReadLabelCapability( Meta::SqlTrack *track, QSharedPo
 }
 
 void
-SqlReadLabelCapability::fetch( QString uniqueURL )
+SqlReadLabelCapability::fetch( const QString &uniqueURL )
 {
     QStringList labels;
 

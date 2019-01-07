@@ -102,7 +102,7 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
 
     public:
     explicit FindInSourceCapabilityImpl( Meta::SqlTrack *track );
-    virtual ~FindInSourceCapabilityImpl();
+    ~FindInSourceCapabilityImpl() override;
 
     void findInSource( QFlags<TargetTag> tag ) override;
 

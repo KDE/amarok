@@ -62,7 +62,7 @@ ScriptConsole::ScriptConsole( QWidget *parent )
     m_editor = KTextEditor::Editor::instance();
     if ( !m_editor )
     {
-        KMessageBox::error( 0, i18n("A KDE text-editor component could not be found.\n"
+        KMessageBox::error( nullptr, i18n("A KDE text-editor component could not be found.\n"
                                    "Please check your KDE installation.  Exiting the console!") );
         deleteLater();
         return;
@@ -397,7 +397,7 @@ ScriptListDockWidget::slotDoubleClicked( const QModelIndex &index )
 void
 ScriptListDockWidget::clear()
 {
-    if( sender() && KMessageBox::warningContinueCancel( 0, i18n("Are you absolutely certain?") ) == KMessageBox::Cancel )
+    if( sender() && KMessageBox::warningContinueCancel( nullptr, i18n("Are you absolutely certain?") ) == KMessageBox::Cancel )
         return;
     for( int i = 0; i<m_scriptListWidget->count(); ++i )
         qvariant_cast<ScriptConsoleItem*>( m_scriptListWidget->item( i )->data( ScriptRole ) )->deleteLater();

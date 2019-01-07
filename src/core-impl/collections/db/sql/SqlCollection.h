@@ -47,8 +47,8 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         /** Creates a new SqlCollection.
          *  @param storage The storage this collection should work on. It will be freed by the collection.
          */
-        explicit SqlCollection( QSharedPointer<SqlStorage> storage );
-        virtual ~SqlCollection();
+        explicit SqlCollection( const QSharedPointer<SqlStorage> &storage );
+        ~SqlCollection() override;
 
         QueryMaker *queryMaker() override;
 

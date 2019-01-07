@@ -22,7 +22,7 @@
 using namespace Collections;
 
 ScriptableServiceCollection::ScriptableServiceCollection( const QString &name )
-    : ServiceCollection( 0, name, name )
+    : ServiceCollection( nullptr, name, name )
 {
     DEBUG_BLOCK
     m_name = name;

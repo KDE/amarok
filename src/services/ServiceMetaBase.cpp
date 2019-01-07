@@ -30,7 +30,7 @@ ServiceMetaFactory::ServiceMetaFactory(const QString &dbPrefix)
 }
 
 QString
-ServiceMetaFactory::tablePrefix()
+ServiceMetaFactory::tablePrefix() const
 {
     return m_dbTablePrefix;
 }

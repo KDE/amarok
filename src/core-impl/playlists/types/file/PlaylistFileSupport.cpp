@@ -118,7 +118,7 @@ Playlists::exportPlaylistFile( const Meta::TrackList &list, const QUrl &url, boo
     }
     else
     {
-        KMessageBox::error( 0,
+        KMessageBox::error( nullptr,
                             i18n( "The used file extension is not valid for playlists." ),
                             i18n( "Unknown playlist format" ) );
     }

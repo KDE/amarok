@@ -33,7 +33,7 @@ class SqlReadLabelCapability : public Capabilities::ReadLabelCapability
 {
     Q_OBJECT
     public:
-        SqlReadLabelCapability( Meta::SqlTrack *track, QSharedPointer<SqlStorage> storage );
+        SqlReadLabelCapability( Meta::SqlTrack *track, const QSharedPointer<SqlStorage> &storage );
 
         /**
         *   fetches a list of labels assigned to this track
@@ -54,7 +54,7 @@ class SqlReadLabelCapability : public Capabilities::ReadLabelCapability
         QStringList m_labels;
         Meta::TrackPtr m_track;
         QSharedPointer<SqlStorage> m_storage;
-        void fetch( QString uniqueURL );
+        void fetch(const QString &uniqueURL );
 };
 
 }

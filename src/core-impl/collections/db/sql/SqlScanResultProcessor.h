@@ -33,7 +33,7 @@ class SqlScanResultProcessor : public AbstractScanResultProcessor
         SqlScanResultProcessor( GenericScanManager* manager,
                                 Collections::SqlCollection *collection,
                                 QObject *parent = nullptr );
-        virtual ~SqlScanResultProcessor();
+        ~SqlScanResultProcessor() override;
 
 
     protected Q_SLOTS:

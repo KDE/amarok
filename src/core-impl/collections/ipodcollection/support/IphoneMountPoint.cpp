@@ -53,7 +53,7 @@ IphoneMountPoint::IphoneMountPoint( const QString &uuid )
     if( !call( "ifuse", args ) )
     {
         logMessage( QString( "Failed to mount iPhone on %1" ).arg( mountPointCandidate ) );
-        KMessageBox::detailedSorry( 0, i18n( "Connecting to iPhone, iPad or iPod touch failed."),
+        KMessageBox::detailedSorry( nullptr, i18n( "Connecting to iPhone, iPad or iPod touch failed."),
             failureDetails() );
         return;
     }

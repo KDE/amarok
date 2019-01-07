@@ -486,7 +486,7 @@ MtpHandler::getDefaultParentId( void )
         parent_id = m_default_parent_folder;
     }
     // Otherwise look for a folder called "Music"
-    else if ( m_folders != 0 )
+    else if ( m_folders != nullptr )
     {
         parent_id = folderNameToID( qstrdup( QString( "Music" ).toUtf8() ), m_folders );
         if ( !parent_id )
@@ -511,7 +511,7 @@ MtpHandler::folderNameToID( char *name, LIBMTP_folder_t *folderlist )
 {
     uint32_t i;
 
-    if ( folderlist == 0 )
+    if ( folderlist == nullptr )
         return 0;
 
     if ( !strcasecmp( name, folderlist->name ) )
@@ -534,7 +534,7 @@ MtpHandler::subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, ui
 {
     uint32_t i;
 
-    if ( folderlist == 0 )
+    if ( folderlist == nullptr )
         return 0;
 
     if ( !strcasecmp( name, folderlist->name ) && folderlist->parent_id == parent_id )
@@ -577,7 +577,7 @@ void
 MtpHandler::updateFolders( void )
 {
     LIBMTP_destroy_folder_t( m_folders );
-    m_folders = 0;
+    m_folders = nullptr;
     m_folders = LIBMTP_Get_Folder_List( m_device );
 }
 #if 0

@@ -25,7 +25,7 @@
 namespace Capabilities
 {
 
-SqlWriteLabelCapability::SqlWriteLabelCapability( Meta::SqlTrack* track, QSharedPointer<SqlStorage> storage )
+SqlWriteLabelCapability::SqlWriteLabelCapability( Meta::SqlTrack* track, const QSharedPointer<SqlStorage> &storage )
     : WriteLabelCapability()
     , m_track( track )
     , m_storage( storage )

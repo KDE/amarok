@@ -315,7 +315,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     if ( m_isCopying )
     {
-        KMessageBox::error( 0, i18n( "Tracks not copied: the device is already being copied to" ), copyErrorCaption );
+        KMessageBox::error( nullptr, i18n( "Tracks not copied: the device is already being copied to" ), copyErrorCaption );
         return;
     }
 
@@ -407,7 +407,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     if( m_tracksToCopy.size() == 0 )
     {
-        KMessageBox::error( 0, i18n( "Tracks not copied: the device already has these tracks" ), copyErrorCaption );
+        KMessageBox::error( nullptr, i18n( "Tracks not copied: the device already has these tracks" ), copyErrorCaption );
         m_isCopying = false;
         emit copyTracksDone( false );
         return;
@@ -428,7 +428,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     {
         debug() << "Free space: " << freeSpace();
         debug() << "Space would've been after copy: " << (freeSpace() - transfersize);
-        KMessageBox::error( 0, i18n( "Tracks not copied: the device has insufficient space" ), copyErrorCaption );
+        KMessageBox::error( nullptr, i18n( "Tracks not copied: the device has insufficient space" ), copyErrorCaption );
         m_isCopying = false;
         emit copyTracksDone( false );
         return;
@@ -573,7 +573,7 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
 
     if ( m_isDeleting )
     {
-        KMessageBox::error( 0, i18n( "%1 tracks are already being deleted from the device.", removeError ), removeErrorCaption );
+        KMessageBox::error( nullptr, i18n( "%1 tracks are already being deleted from the device.", removeError ), removeErrorCaption );
         return;
     }
 

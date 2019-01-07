@@ -77,7 +77,7 @@ public:
         , m_collection( collection )
     { }
 
-    ~SqlScanManager()
+    ~SqlScanManager() override
     { }
 
 protected:
@@ -219,7 +219,7 @@ public:
 
 using namespace Collections;
 
-SqlCollection::SqlCollection( QSharedPointer<SqlStorage> storage )
+SqlCollection::SqlCollection( const QSharedPointer<SqlStorage> &storage )
     : DatabaseCollection()
     , m_registry( nullptr )
     , m_sqlStorage( storage )

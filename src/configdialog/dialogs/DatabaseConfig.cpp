@@ -132,7 +132,7 @@ void
 DatabaseConfig::updateSettings()
 {
     if( m_configManager->hasChanged() )
-        KMessageBox::messageBox( 0, KMessageBox::Information,
+        KMessageBox::messageBox( nullptr, KMessageBox::Information,
                  i18n( "Changes to database settings only take\neffect after Amarok is restarted." ),
                  i18n( "Database settings changed" ) );
 }

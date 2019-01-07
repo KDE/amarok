@@ -31,7 +31,7 @@
 using namespace Meta;
 
 ScriptableService::ScriptableService( const QString & name )
-    : ServiceBase( name, 0 )
+    : ServiceBase( name, nullptr )
     , m_polished( false )
     , m_name( name )
     , m_trackIdCounter( 0 )
@@ -41,7 +41,7 @@ ScriptableService::ScriptableService( const QString & name )
 {
     DEBUG_BLOCK
     debug() << "creating ScriptableService " << name;
-    m_collection = 0;
+    m_collection = nullptr;
     m_bottomPanel->hide();
 }
 

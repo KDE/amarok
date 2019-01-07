@@ -36,7 +36,7 @@ CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Met
         "Do you really want to delete this track? It will be removed from %2 and from underlying storage medium.",
         "Do you really want to delete these %1 tracks? They will be removed from %2 and from underlying storage medium.",
          tracks.count(), loc->prettyLocation()) );
-    int ret = KMessageBox::warningContinueCancelList(0, text, files,
+    int ret = KMessageBox::warningContinueCancelList(nullptr, text, files,
         i18nc( "@title:window", "Confirm Delete" ), KStandardGuiItem::del() );
     return ret == KMessageBox::Continue;
 }
@@ -49,7 +49,7 @@ CollectionLocationDelegateImpl::reallyTrash( CollectionLocation *loc, const Meta
         "Do you really want to move this track to the trash? It will be removed from %2.",
         "Do you really want to move these %1 tracks to the trash? They will be removed from %2.",
         tracks.count(), loc->prettyLocation() ) );
-    int ret = KMessageBox::warningContinueCancelList( 0, text, files,
+    int ret = KMessageBox::warningContinueCancelList( nullptr, text, files,
         i18nc( "@title:window", "Confirm Move to Trash" ), KStandardGuiItem::remove() );
     return ret == KMessageBox::Continue;
 }
@@ -63,7 +63,7 @@ CollectionLocationDelegateImpl::reallyMove( CollectionLocation *loc, const Meta:
         "Do you really want to move this track? It will be renamed and the original deleted.",
         "Do you really want to move these %1 tracks? They will be renamed and the originals deleted.",
         tracks.count() ) );
-    int ret = KMessageBox::warningContinueCancelList( 0, text, files,
+    int ret = KMessageBox::warningContinueCancelList( nullptr, text, files,
         i18nc( "@title:window", "Move Files" ), KGuiItem( i18nc( "rename files button", "&Rename" ), QStringLiteral("go-jump") ) );
     return ret == KMessageBox::Continue;
 }
@@ -77,7 +77,7 @@ CollectionLocationDelegateImpl::errorDeleting( CollectionLocation *loc, const Me
         "There was a problem and this track could not be removed. Make sure the directory is writable.",
         "There was a problem and %1 tracks could not be removed. Make sure the directory is writable.",
         files.count() ) );
-    KMessageBox::informationList( 0, text, files, i18n( "Unable to remove tracks") );
+    KMessageBox::informationList( nullptr, text, files, i18n( "Unable to remove tracks") );
 }
 
 void
@@ -94,7 +94,7 @@ CollectionLocationDelegateImpl::deleteEmptyDirs( CollectionLocation *loc ) const
 {
     const QString text( i18n( "Do you want to remove empty folders?" ) );
     const QString caption( i18n( "Remove empty folders?" ) );
-    int result = KMessageBox::questionYesNo( 0, text, caption, KStandardGuiItem::yes(),
+    int result = KMessageBox::questionYesNo( nullptr, text, caption, KStandardGuiItem::yes(),
         KStandardGuiItem::no(), QString( "Delete empty dirs from " + loc->prettyLocation() ) );
     return result == KMessageBox::Yes;
 }

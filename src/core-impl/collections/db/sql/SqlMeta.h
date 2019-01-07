@@ -73,7 +73,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics, pu
         SqlTrack( Collections::SqlCollection *collection, int deviceId,
                   const QString &rpath, int directoryId, const QString &uidUrl );
         SqlTrack( Collections::SqlCollection *collection, const QStringList &queryResult );
-        ~ SqlTrack();
+        ~ SqlTrack() override;
 
         QString name() const override;
         QString prettyName() const override;

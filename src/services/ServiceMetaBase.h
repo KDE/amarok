@@ -40,7 +40,7 @@ class AMAROK_EXPORT ServiceMetaFactory
         explicit ServiceMetaFactory( const QString &dbPrefix );
         virtual ~ServiceMetaFactory() {}
 
-        QString tablePrefix();
+        QString tablePrefix() const;
 
         virtual int getTrackSqlRowCount();
         virtual QString getTrackSqlRows();

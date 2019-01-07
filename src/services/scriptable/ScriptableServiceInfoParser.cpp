@@ -35,7 +35,7 @@ ScriptableServiceInfoParser::~ScriptableServiceInfoParser()
 void ScriptableServiceInfoParser::getInfo( ArtistPtr artist )
 {
     ScriptableServiceArtist * serviceArtist = dynamic_cast< ScriptableServiceArtist * >( artist.data() );
-    if (serviceArtist == 0) return;
+    if (!serviceArtist) return;
 
     emit( info( serviceArtist->description() ) );
 

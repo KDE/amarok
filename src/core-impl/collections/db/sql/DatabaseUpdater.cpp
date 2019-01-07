@@ -139,7 +139,7 @@ DatabaseUpdater::update()
 
     if( dbVersion > DB_VERSION )
     {
-        KMessageBox::error(0,
+        KMessageBox::error(nullptr,
                 "<p>The Amarok collection database was created by a newer version of Amarok, "
                 "and this version of Amarok cannot use it.</p>",
                 "Database Type Unknown");
