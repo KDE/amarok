@@ -36,7 +36,7 @@ void KJobProgressBar::updateJobStatus( KJob * job, unsigned long value )
     emit( percentageChanged( percentage() ) );
 }
 
-void KJobProgressBar::infoMessage( KJob* job, QString plain, QString rich )
+void KJobProgressBar::infoMessage(KJob* job, const QString &plain, const QString &rich )
 {
     Q_UNUSED( job );
     Q_UNUSED( rich );

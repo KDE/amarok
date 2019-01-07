@@ -87,7 +87,7 @@ ScriptableServiceScript::donePopulating() const
 }
 
 void
-ScriptableServiceScript::slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter )
+ScriptableServiceScript::slotPopulate( const QString &name, int level, int parent_id, const QString &callbackData, const QString &filter )
 {
     DEBUG_BLOCK
     m_currentId = parent_id;
@@ -96,7 +96,7 @@ ScriptableServiceScript::slotPopulate( QString name, int level, int parent_id, Q
 }
 
 void
-ScriptableServiceScript::slotRequestInfo( QString name, int level, QString callbackData )
+ScriptableServiceScript::slotRequestInfo( const QString &name, int level, const QString &callbackData )
 {
     DEBUG_BLOCK
     m_serviceName = name;

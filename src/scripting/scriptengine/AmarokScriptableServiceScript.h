@@ -41,8 +41,8 @@ namespace AmarokScript
         public:
             explicit ScriptableServiceScript( QScriptEngine* engine );
 
-            void slotPopulate( QString name, int level, int parent_id, QString callbackData, QString filter );
-            void slotRequestInfo( QString name, int level, QString callbackData );
+            void slotPopulate(const QString &name, int level, int parent_id, const QString &callbackData, const QString &filter );
+            void slotRequestInfo(const QString &name, int level, const QString &callbackData );
 
             void slotCustomize( const QString &name );
 
@@ -64,8 +64,8 @@ namespace AmarokScript
             static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
 
         Q_SIGNALS:
-            void populate( int, QString, QString );
-            void fetchInfo( int, QString );
+            void populate( int, const QString&, const QString& );
+            void fetchInfo( int, const QString& );
             void customize();
     };
 }
