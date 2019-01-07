@@ -288,6 +288,7 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
     ec->setAlbum( album );
     QString albumArtist = metadata.contains( Meta::Field::ALBUMARTIST ) ?
                             metadata.value( Meta::Field::ALBUMARTIST ).toString() : QString();
+    ec->setAlbumArtist(albumArtist);
     QString genre = metadata.contains( Meta::Field::GENRE ) ?
                             metadata.value( Meta::Field::GENRE ).toString() : QString();
     ec->setGenre( genre );
