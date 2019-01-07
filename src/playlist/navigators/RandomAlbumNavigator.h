@@ -41,7 +41,7 @@ namespace Playlist
 
         private:
             //! Override from 'AlbumNavigator'
-            void notifyAlbumsInserted( const QList<AlbumId> insertedAlbums ) override;
+            void notifyAlbumsInserted( const QList<AlbumId> &insertedAlbums ) override;
 
             //! Override from 'NonlinearTrackNavigator'
             void planOne() override;

@@ -75,7 +75,7 @@ Playlist::RandomAlbumNavigator::planOne()
 }
 
 void
-Playlist::RandomAlbumNavigator::notifyAlbumsInserted( const QList<AlbumId> insertedAlbums )
+Playlist::RandomAlbumNavigator::notifyAlbumsInserted( const QList<AlbumId> &insertedAlbums )
 {
     DEBUG_BLOCK
 

@@ -55,7 +55,7 @@ namespace Playlist
             /**
              * Empty notification callback for child classes: new albums have been inserted.
              */
-            virtual void notifyAlbumsInserted( const QList<AlbumId> insertedAlbums ) = 0;
+            virtual void notifyAlbumsInserted( const QList<AlbumId> &insertedAlbums ) = 0;
 
             /**
              * Convenience function: the album of 'currentItem()'.
