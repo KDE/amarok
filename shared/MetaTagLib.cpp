@@ -152,7 +152,6 @@ Meta::Tag::generateUniqueId( const QString &path )
 
     char databuf[16384];
     int readlen = 0;
-    QString returnval;
 
     if( qfile.open( QIODevice::ReadOnly ) )
     {

@@ -203,7 +203,6 @@ SortWidget::prettySortPath() const
     QString prettyPath;
     for( int i = 0; i < m_ribbon->count(); ++i )    //could be faster if done with iterator
     {
-        QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
         QString prettyName( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->prettyName() );
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
         QString prettyLevel = prettyName + ( sortOrder ? "↓" : "↑" );

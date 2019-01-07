@@ -786,7 +786,6 @@ SqlPodcastProvider::moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr sqlCh
             .arg( sqlChannel->title(),
                   sqlChannel->saveLocation().toDisplayString() );
 
-    QList<QUrl> filesToMove;
     foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
     {
         if( !episode->localUrl().isEmpty() )

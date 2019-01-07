@@ -504,9 +504,6 @@ void MagnatuneStore::polish()
         The::amarokUrlHandler()->registerRunner( runner, runner->command() );
     }
 
-    QString imagePath = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/data/" );
-    const QUrl url = QUrl::fromLocalFile( imagePath );
-
     MagnatuneInfoParser * parser = dynamic_cast<MagnatuneInfoParser *> ( infoParser() );
     if ( parser )
         parser->getFrontPage();

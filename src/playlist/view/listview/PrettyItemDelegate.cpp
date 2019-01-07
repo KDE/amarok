@@ -164,7 +164,6 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
 
         QFont boldfont( option.font );
         boldfont.setBold( true );
-        QFontMetricsF bfm( boldfont );
 
         QStyleOptionViewItem headOption( option );
         QStyleOptionViewItem trackOption( option );

@@ -66,7 +66,6 @@ void MagnatuneSettingsModule::save()
     m_config.setEmail( m_configDialog->emailEdit->text() );
 
 
-    QString streamTypeString = m_configDialog->streamTypeComboBox->currentText();
     m_config.setStreamType( m_configDialog->streamTypeComboBox->currentIndex() );
 
     m_config.save();

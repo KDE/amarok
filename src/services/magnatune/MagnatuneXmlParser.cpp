@@ -159,8 +159,6 @@ void
 MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 {
     //DEBUG_BLOCK
-    QString sElementName;
-
 
     QString name;
     QString albumCode;
@@ -330,12 +328,7 @@ MagnatuneXmlParser::parseTrack( const QDomElement &e )
     //DEBUG_BLOCK
     m_currentTrackMoodList.clear();
 
-    QString trackName;
-    QString trackNumber;
-    QString streamingUrl;
 
-
-    QString sElementName;
     QDomElement childElement;
 
     MagnatuneTrack * pCurrentTrack = new MagnatuneTrack( QString() );

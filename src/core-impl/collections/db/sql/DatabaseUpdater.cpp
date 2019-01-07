@@ -1087,7 +1087,6 @@ DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bo
     {
         QTextStream stream( &file );
         int i = 0;
-        QString line;
         //write header
         foreach( const QString &column, columns )
         {

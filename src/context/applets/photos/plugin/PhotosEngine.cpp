@@ -102,7 +102,6 @@ PhotosEngine::metadataChanged( Meta::TrackPtr track )
 void
 PhotosEngine::update( bool force )
 {
-    QString tmpYoutStr;
     // prevent
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( !currentTrack || !currentTrack->artist() )
