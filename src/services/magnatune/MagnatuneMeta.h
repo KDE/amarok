@@ -42,8 +42,8 @@ public:
     QString lofiUrl();
     void setLofiUrl( const QString &url );
 
-    QList<QString> moods();
-    void setMoods(  QList<QString> moods );
+    QList<QString> moods() const;
+    void setMoods(  const QList<QString> &moods );
 
     void setDownloadMembership();
 

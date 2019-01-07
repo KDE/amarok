@@ -90,7 +90,7 @@ private Q_SLOTS:
      * http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=My+Bloody+Valentine
      * see here for details: http://www.flickr.com/services/api/
      */
-    void resultFlickr( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void resultFlickr(const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
 
     void stopped();
     void trackChanged( Meta::TrackPtr track );

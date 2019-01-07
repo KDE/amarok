@@ -64,9 +64,9 @@ Q_SIGNALS:
     void coverWidthChanged();
 
 private Q_SLOTS:
-    void slotAlbumMetadataChanged( Meta::AlbumPtr album );
+    void slotAlbumMetadataChanged(const Meta::AlbumPtr &album );
     void slotTrackMetadataChanged( Meta::TrackPtr track );
-    void slotTrackChanged( Meta::TrackPtr track );
+    void slotTrackChanged( const Meta::TrackPtr &track );
     void stopped();
 
 private:

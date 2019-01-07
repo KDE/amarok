@@ -63,7 +63,7 @@ WikipediaEngine::~WikipediaEngine()
 }
 
 void
-WikipediaEngine::_wikiResult( const QUrl &url, QByteArray result, NetworkAccessManagerProxy::Error e )
+WikipediaEngine::_wikiResult( const QUrl &url, const QByteArray &result, NetworkAccessManagerProxy::Error e )
 {
     if( !urls.contains( url ) )
         return;
@@ -125,7 +125,7 @@ WikipediaEngine::_wikiResult( const QUrl &url, QByteArray result, NetworkAccessM
 }
 
 void
-WikipediaEngine::_parseLangLinksResult( const QUrl &url, QByteArray data,
+WikipediaEngine::_parseLangLinksResult( const QUrl &url, const QByteArray &data,
                                                NetworkAccessManagerProxy::Error e )
 {
     if( !urls.contains( url ) )
@@ -253,7 +253,7 @@ WikipediaEngine::_parseLangLinksResult( const QUrl &url, QByteArray data,
 
 void
 WikipediaEngine::_parseListingResult( const QUrl &url,
-                                             QByteArray data,
+                                             const QByteArray &data,
                                              NetworkAccessManagerProxy::Error e )
 {
     if( !urls.contains( url ) )

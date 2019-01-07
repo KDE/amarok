@@ -103,8 +103,8 @@ class MemoryCollection
         void setArtistMap( const ArtistMap &map ) { m_artistMap = map; }
         void addArtist( Meta::ArtistPtr artistPtr) { m_artistMap.insert( artistPtr->name(), artistPtr ); }
         void setAlbumMap( const AlbumMap &map ) { m_albumMap = map; }
-        void addAlbum ( Meta::AlbumPtr albumPtr ) { m_albumMap.insert( albumPtr ); }
-        void setGenreMap( GenreMap map ) { m_genreMap = map; }
+        void addAlbum ( const Meta::AlbumPtr &albumPtr ) { m_albumMap.insert( albumPtr ); }
+        void setGenreMap( const GenreMap &map ) { m_genreMap = map; }
         void addGenre( Meta::GenrePtr genrePtr) { m_genreMap.insert( genrePtr->name(), genrePtr ); }
         void setComposerMap( const ComposerMap &map ) { m_composerMap = map; }
         void addComposer( Meta::ComposerPtr composerPtr ) { m_composerMap.insert( composerPtr->name(), composerPtr ); }

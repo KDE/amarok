@@ -167,7 +167,7 @@ PhotosEngine::update( bool force )
 }
 
 void
-PhotosEngine::resultFlickr( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+PhotosEngine::resultFlickr(const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e )
 {
     if( !m_flickrUrls.contains( url ) )
         return;

@@ -462,7 +462,7 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
         int  albumId();
         void setAlbumId( int albumId );
 
-        void setSourceName( const QString source ) { m_sourceName = source; }
+        void setSourceName( const QString &source ) { m_sourceName = source; }
         QString sourceName() override { return m_sourceName; }
 
     private:

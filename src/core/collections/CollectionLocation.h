@@ -417,7 +417,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         CollectionLocation *m_source;
 
         Meta::TrackList getSourceTracks() const { return m_sourceTracks; }
-        void setSourceTracks( Meta::TrackList tracks ) { m_sourceTracks = tracks; }
+        void setSourceTracks( const Meta::TrackList &tracks ) { m_sourceTracks = tracks; }
         Meta::TrackList m_sourceTracks;
 
         Collections::Collection *m_parentCollection;

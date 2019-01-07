@@ -221,12 +221,12 @@ QPixmap Meta::MagnatuneTrack::emblem()
 }
 
 
-QList< QString > Meta::MagnatuneTrack::moods()
+QList< QString > Meta::MagnatuneTrack::moods() const
 {
     return m_moods;
 }
 
-void Meta::MagnatuneTrack::setMoods(QList< QString > moods)
+void Meta::MagnatuneTrack::setMoods(const QList<QString> &moods)
 {
     m_moods = moods;
 }

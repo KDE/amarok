@@ -57,7 +57,7 @@ CurrentEngine::~CurrentEngine()
 }
 
 void
-CurrentEngine::slotAlbumMetadataChanged( Meta::AlbumPtr album )
+CurrentEngine::slotAlbumMetadataChanged( const Meta::AlbumPtr &album )
 {
     DEBUG_BLOCK
 
@@ -88,7 +88,7 @@ CurrentEngine::slotTrackMetadataChanged( Meta::TrackPtr track )
 }
 
 void
-CurrentEngine::slotTrackChanged(Meta::TrackPtr track)
+CurrentEngine::slotTrackChanged(const Meta::TrackPtr &track)
 {
     DEBUG_BLOCK
 
