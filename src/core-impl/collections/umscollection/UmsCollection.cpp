@@ -354,7 +354,7 @@ UmsCollection::queryMaker()
 QString
 UmsCollection::uidUrlProtocol() const
 {
-    return QString( "file://" );
+    return QStringLiteral( "file://" );
 }
 
 QString

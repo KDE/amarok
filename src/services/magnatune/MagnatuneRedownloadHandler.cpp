@@ -78,17 +78,17 @@ MagnatuneRedownloadHandler::GetPurchaseList( )
 
 }
 
-void MagnatuneRedownloadHandler::redownload( MagnatuneDownloadInfo info )
+void MagnatuneRedownloadHandler::redownload( const MagnatuneDownloadInfo &info )
 {
 
-    if ( m_albumDownloader == 0 )
+    if ( m_albumDownloader == nullptr )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
         connect( m_albumDownloader, &MagnatuneAlbumDownloader::downloadComplete, this, &MagnatuneRedownloadHandler::albumDownloadComplete );
     }
 
 
-    if ( m_downloadDialog == 0 )
+    if ( m_downloadDialog == nullptr )
     {
         m_downloadDialog = new MagnatuneDownloadDialog(m_parent);
         connect( m_downloadDialog, &MagnatuneDownloadDialog::downloadAlbum, m_albumDownloader, &MagnatuneAlbumDownloader::downloadAlbum );
@@ -102,10 +102,10 @@ void MagnatuneRedownloadHandler::redownload( MagnatuneDownloadInfo info )
 void
 MagnatuneRedownloadHandler::selectionDialogCancelled( )
 {
-    if (m_redownloadDialog != 0) {
+    if (m_redownloadDialog != nullptr) {
         m_redownloadDialog->hide();
         delete m_redownloadDialog;
-        m_redownloadDialog = 0;
+        m_redownloadDialog = nullptr;
     }
 }
 
@@ -115,13 +115,13 @@ MagnatuneRedownloadHandler::albumDownloadComplete( bool success )
     Q_UNUSED( success );
     //cleanup time!
 
-    if (m_downloadDialog != 0) {
+    if (m_downloadDialog != nullptr) {
        delete m_downloadDialog;
-       m_downloadDialog = 0;
+       m_downloadDialog = nullptr;
     }
-    if (m_albumDownloader != 0) {
+    if (m_albumDownloader != nullptr) {
         delete m_albumDownloader;
-        m_albumDownloader = 0;
+        m_albumDownloader = nullptr;
     }
 
 }

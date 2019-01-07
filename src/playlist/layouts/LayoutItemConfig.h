@@ -134,7 +134,7 @@ class LayoutItemConfigRow
          * Add an element to the end of this row.
          * @param element The element to add.
          */
-        void addElement( LayoutItemConfigRowElement element );
+        void addElement(const LayoutItemConfigRowElement &element );
 
         /**
          * Get the number of elements in this row.

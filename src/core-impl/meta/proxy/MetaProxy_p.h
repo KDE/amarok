@@ -194,7 +194,7 @@ public:
     void setCompilation( bool isCompilation ) override
     {
         if( d && d->realTrack && d->realTrack->album() )
-            return d->realTrack->album()->setCompilation( isCompilation );
+            d->realTrack->album()->setCompilation( isCompilation );
     }
 
     bool hasAlbumArtist() const override
@@ -278,13 +278,13 @@ public:
     void setImage( const QImage &image ) override
     {
         if( d && d->realTrack && d->realTrack->album() )
-            return d->realTrack->album()->setImage( image );
+            d->realTrack->album()->setImage( image );
     }
 
     void removeImage() override
     {
         if( d && d->realTrack && d->realTrack->album() )
-            return d->realTrack->album()->removeImage();
+            d->realTrack->album()->removeImage();
     }
 
     bool operator==( const Meta::Album &album ) const override

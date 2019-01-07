@@ -92,7 +92,7 @@ CoverFetcher::~CoverFetcher()
 void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
-    debug() << QString("Adding interactive cover fetch for: '%1' from %2")
+    debug() << QStringLiteral("Adding interactive cover fetch for: '%1' from %2")
         .arg( album->name(),
               Amarok::config("Cover Fetcher").readEntry("Interactive Image Source", "LastFm") );
     switch( fetchSource() )

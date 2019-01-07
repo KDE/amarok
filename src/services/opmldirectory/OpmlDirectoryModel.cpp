@@ -489,7 +489,7 @@ OpmlDirectoryModel::subscribe( const QModelIndexList &indexes ) const
 }
 
 QModelIndex
-OpmlDirectoryModel::addOutlineToModel( QModelIndex parentIdx, OpmlOutline *outline )
+OpmlDirectoryModel::addOutlineToModel(const QModelIndex &parentIdx, OpmlOutline *outline )
 {
     int newRow = rowCount( parentIdx );
     beginInsertRows( parentIdx, newRow, newRow );

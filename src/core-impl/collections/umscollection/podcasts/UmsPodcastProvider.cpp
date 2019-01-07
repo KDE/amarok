@@ -162,7 +162,7 @@ UmsPodcastProvider::configureChannel( PodcastChannelPtr channel )
 QString
 UmsPodcastProvider::prettyName() const
 {
-    return i18nc( "Podcasts on a media device", "Podcasts on %1", QString("TODO: replace me") );
+    return i18nc( "Podcasts on a media device", "Podcasts on %1", QStringLiteral("TODO: replace me") );
 }
 
 QIcon
@@ -274,7 +274,7 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
     layout->addWidget( buttonBox );
 
     buttonBox->button( QDialogButtonBox::Ok )->setText( i18n( "Yes, delete from %1.",
-                                                        QString("TODO: replace me") ) );
+                                                        QStringLiteral("TODO: replace me") ) );
 
     if( dialog.exec() != QDialog::Accepted )
         return;

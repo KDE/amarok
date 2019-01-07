@@ -285,7 +285,7 @@ Dynamic::DynamicModel::data( const QModelIndex& i, int role ) const
         {
         case Qt::DisplayRole:
             return QVariant(indexBias->toString());
-            // return QVariant(QString("and: ")+indexBias->toString());
+            // return QVariant(QStringLiteral("and: ")+indexBias->toString());
 
         case Qt::ToolTipRole:
             {

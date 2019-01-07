@@ -288,7 +288,7 @@ CollectionWidget::~CollectionWidget()
 void
 CollectionWidget::focusInputLine()
 {
-    return d->searchWidget->comboBox()->setFocus();
+    d->searchWidget->comboBox()->setFocus();
 }
 
 void

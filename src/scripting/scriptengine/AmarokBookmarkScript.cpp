@@ -353,7 +353,7 @@ BookmarkPrototype::name() const
 void
 BookmarkPrototype::setName( const QString &name )
 {
-    return m_url->setName( name );
+    m_url->setName( name );
 }
 
 

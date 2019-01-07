@@ -159,13 +159,13 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
     QString aboutPageText = aboutData->shortDescription() + '\n';
 
     if (!aboutData->otherText().isEmpty())
-        aboutPageText += '\n' + aboutData->otherText() + '\n';
+        aboutPageText += QLatin1Char('\n') + aboutData->otherText() + '\n';
 
     if (!aboutData->copyrightStatement().isEmpty())
-        aboutPageText += '\n' + aboutData->copyrightStatement() + '\n';
+        aboutPageText += QLatin1Char('\n') + aboutData->copyrightStatement() + '\n';
 
     if (!aboutData->homepage().isEmpty())
-        aboutPageText += '\n' + QString("<a href=\"%1\">%1</a>").arg(aboutData->homepage()) + '\n';
+        aboutPageText += QLatin1Char('\n') + QStringLiteral("<a href=\"%1\">%1</a>").arg(aboutData->homepage()) + '\n';
     aboutPageText = aboutPageText.trimmed();
 
     QLabel *aboutLabel = new QLabel;
@@ -185,7 +185,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
         const KAboutLicense &license = aboutData->licenses().at(i);
 
         QLabel *showLicenseLabel = new QLabel;
-        showLicenseLabel->setText(QString("<a href=\"%1\">%2</a>").arg(QString::number(i),
+        showLicenseLabel->setText(QStringLiteral("<a href=\"%1\">%2</a>").arg(QString::number(i),
                                                                        i18n("License: %1",
                                                                             license.name(KAboutLicense::FullName))));
         showLicenseLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
@@ -350,10 +350,10 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *
 
         QList<KAboutPerson>::ConstIterator it;
         for(it = translatorList.begin(); it != translatorList.end(); ++it) {
-            translatorPageText += QString("<p style=\"margin: 0px;\">%1</p>").arg((*it).name());
+            translatorPageText += QStringLiteral("<p style=\"margin: 0px;\">%1</p>").arg((*it).name());
             if (!(*it).emailAddress().isEmpty())
-                translatorPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\"><a href=\"mailto:%1\">%1</a></p>").arg((*it).emailAddress());
-            translatorPageText += "<p style=\"margin: 0px;\">&nbsp;</p>";
+                translatorPageText += QStringLiteral("<p style=\"margin: 0px; margin-left: 15px;\"><a href=\"mailto:%1\">%1</a></p>").arg((*it).emailAddress());
+            translatorPageText += QStringLiteral("<p style=\"margin: 0px;\">&nbsp;</p>");
         }
 
         translatorPageText += KAboutData::aboutTranslationTeam();

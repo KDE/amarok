@@ -56,7 +56,7 @@ UpnpCollectionBase::~UpnpCollectionBase()
 
 QString UpnpCollectionBase::collectionId() const
 {
-    return QString("upnp-ms://") + m_device.uuid();
+    return QStringLiteral("upnp-ms://") + m_device.uuid();
 }
 
 QString UpnpCollectionBase::prettyName() const

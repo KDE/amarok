@@ -67,7 +67,7 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
 
     if ( track->trackNumber() )
     {
-        QString trackNum = QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
+        QString trackNum = QStringLiteral("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
         args["track"] = trackNum;
     }
     args["title"] = track->name();

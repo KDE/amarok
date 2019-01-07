@@ -104,7 +104,7 @@ SqlBatchImporter::trackImported( Meta::TrackPtr track )
 }
 
 void
-SqlBatchImporter::trackMatched( Meta::TrackPtr track, QString oldUrl )
+SqlBatchImporter::trackMatched(Meta::TrackPtr track, const QString &oldUrl )
 {
     Q_UNUSED( track )
     Q_UNUSED( oldUrl )

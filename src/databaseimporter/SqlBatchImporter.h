@@ -68,7 +68,7 @@ class SqlBatchImporter : public QObject
     protected Q_SLOTS:
         void importingFinished();
         void trackImported( Meta::TrackPtr track );
-        void trackMatched( Meta::TrackPtr track, QString oldUrl );
+        void trackMatched( Meta::TrackPtr track, const QString &oldUrl );
 
     private:
         SqlBatchImporterConfig *m_config;

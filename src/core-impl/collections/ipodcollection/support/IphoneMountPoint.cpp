@@ -100,13 +100,13 @@ IphoneMountPoint::constructMountpoint( const QString &uuid )
     mountPointCandidate += "imobiledevice";
     if( !uuid.isEmpty() )
         mountPointCandidate += "_uuid_" + uuid;
-    logMessage( QString( "determined mount-point path to %1" ).arg( mountPointCandidate ) );
+    logMessage( QStringLiteral( "determined mount-point path to %1" ).arg( mountPointCandidate ) );
 
     QDir mp( mountPointCandidate );
     if( !mp.exists() )
     {
         mp.mkpath( mountPointCandidate );
-        logMessage( QString( "created %1 directory" ).arg( mountPointCandidate ) );
+        logMessage( QStringLiteral( "created %1 directory" ).arg( mountPointCandidate ) );
     }
     return mountPointCandidate;
 }
@@ -115,7 +115,7 @@ bool IphoneMountPoint::call( const QString &command, const QStringList &argument
 {
     QProcess process;
     process.setProcessChannelMode( QProcess::MergedChannels );
-    logMessage( QString( "calling `%1 \"%2\"` with timeout of %3s" ).arg( command, arguments.join( "\" \"" ) ).arg( timeout/1000.0 ) );
+    logMessage( QStringLiteral( "calling `%1 \"%2\"` with timeout of %3s" ).arg( command, arguments.join( "\" \"" ) ).arg( timeout/1000.0 ) );
     process.start( command, arguments );
 
     if( !process.waitForStarted( timeout ) )
@@ -132,7 +132,7 @@ bool IphoneMountPoint::call( const QString &command, const QStringList &argument
     QByteArray output( process.readAllStandardOutput() );
     foreach( const QString &line, QString::fromLocal8Bit( output ).split( QChar( '\n' ) ) )
     {
-        logMessage( QString("%1: %2").arg( command, line ) );
+        logMessage( QStringLiteral("%1: %2").arg( command, line ) );
     }
 
     if( process.exitStatus() != QProcess::NormalExit )

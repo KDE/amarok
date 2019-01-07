@@ -501,7 +501,7 @@ SqlCollectionLocation::setOrganizeCollectionDelegateFactory( OrganizeCollectionD
     m_delegateFactory = fac;
 }
 
-bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration configuration )
+bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
     if( !m_sources.isEmpty() )
@@ -610,7 +610,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
 
             QString name = track->prettyName();
             if( track->artist() )
-                name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
+                name = QStringLiteral( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
             if( isJustCopy )
                 m_transferjob->emitInfo( i18n( "Transferring: %1", name ) );
@@ -657,7 +657,7 @@ bool SqlCollectionLocation::startNextRemoveJob()
             connect( job, &KIO::DeleteJob::result, this, &SqlCollectionLocation::slotRemoveJobFinished );
             QString name = track->prettyName();
             if( track->artist() )
-                name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
+                name = QStringLiteral( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
             Amarok::Logger::newProgressOperation( job, i18n( "Removing: %1", name ) );
             m_removejobs.insert( job, track );

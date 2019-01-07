@@ -118,8 +118,8 @@ namespace The {
 }
 
 MainWindow::MainWindow()
-    : KMainWindow( 0 )
-    , m_showMenuBar( 0 )
+    : KMainWindow( nullptr )
+    , m_showMenuBar( nullptr )
     , m_lastBrowser( 0 )
     , m_waitingForCd( false )
 {
@@ -562,7 +562,7 @@ void
 MainWindow::slotFocusCollectionSearch()
 {
     // ensure collection browser is activated within navigation dock:
-    browserDock()->list()->navigate( QString("collections") );
+    browserDock()->list()->navigate( QStringLiteral("collections") );
     showDock( AmarokDockNavigation );  // ensure that the dock is visible if tabbed
     m_collectionBrowser->focusInputLine();
 }

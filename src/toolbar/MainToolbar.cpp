@@ -882,7 +882,7 @@ MainToolbar::setLabelTime( int ms )
             tf = timeFrame( remainingSecs );
             if( m_lastRemainingTime < 0 || tf != timeFrame( m_lastRemainingTime ) )
             {
-                const int w = QFontMetrics( m_remainingTimeLabel->font() ).width( QString("-") + timeString[tf] );
+                const int w = QFontMetrics( m_remainingTimeLabel->font() ).width( QStringLiteral("-") + timeString[tf] );
                 m_remainingTimeLabel->setFixedWidth( w );
                 relayout = true;
             }

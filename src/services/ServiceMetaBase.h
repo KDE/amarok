@@ -481,7 +481,7 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
 {
     public:
         explicit ServiceComposer( const QString &name );
-        virtual ~ServiceComposer();
+        ~ServiceComposer() override;
 
         QString name() const override;
 

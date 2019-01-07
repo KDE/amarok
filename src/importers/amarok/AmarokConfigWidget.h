@@ -29,7 +29,7 @@ class AmarokConfigWidget : public ProviderConfigWidget, public Ui::AmarokConfigW
 
 public:
     explicit AmarokConfigWidget( const QVariantMap &config, QWidget *parent = nullptr,
-                                 Qt::WindowFlags f = 0 );
+                                 Qt::WindowFlags f = {} );
     ~AmarokConfigWidget();
 
     QVariantMap config() const override;

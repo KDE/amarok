@@ -40,7 +40,7 @@
 using namespace Playlist;
 
 InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index,
-                                        PlaylistLayout layout, int height, int width )
+                                        const PlaylistLayout &layout, int height, int width )
     : BoxWidget( false, parent )
     , m_index( index )
     , m_layout( layout )

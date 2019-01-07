@@ -53,7 +53,7 @@ public:
     /**
      * Destructor
      */
-    ~ScriptableService();
+    ~ScriptableService() override;
 
     void init( int levels, const QString &rootHtml, bool showSearchBar );
 
@@ -78,8 +78,8 @@ public:
     
     void setCurrentInfo( const QString & info );
 
-    int contentLevels() { return m_levels; }
-    bool hasSearchBar() { return m_hasSearchBar; }
+    int contentLevels() const { return m_levels; }
+    bool hasSearchBar() const { return m_hasSearchBar; }
 
 private Q_SLOTS:
 

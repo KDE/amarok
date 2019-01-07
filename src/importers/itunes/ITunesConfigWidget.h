@@ -26,7 +26,7 @@ class ITunesConfigWidget : public SimpleImporterConfigWidget
 {
 public:
     explicit ITunesConfigWidget( const QVariantMap &config, QWidget *parent = nullptr,
-                                 Qt::WindowFlags f = 0 );
+                                 Qt::WindowFlags f = {} );
     ~ITunesConfigWidget();
 };
 

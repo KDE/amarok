@@ -387,19 +387,19 @@ void MediaPlayer2Player::playlistNavigatorChanged()
     signalPropertyChange( QStringLiteral("Shuffle"), Shuffle() );
 }
 
-void MediaPlayer2Player::playlistRowsInserted( QModelIndex, int, int )
+void MediaPlayer2Player::playlistRowsInserted( const QModelIndex&, int, int )
 {
     signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
     signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
 }
 
-void MediaPlayer2Player::playlistRowsMoved( QModelIndex, int, int, QModelIndex, int )
+void MediaPlayer2Player::playlistRowsMoved( const QModelIndex&, int, int, const QModelIndex&, int )
 {
     signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
     signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
 }
 
-void MediaPlayer2Player::playlistRowsRemoved( QModelIndex, int, int )
+void MediaPlayer2Player::playlistRowsRemoved( const QModelIndex&, int, int )
 {
     signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );
     signalPropertyChange( QStringLiteral("CanGoPrevious"), CanGoPrevious() );

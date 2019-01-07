@@ -547,8 +547,8 @@ void MagnatuneStore::moodMapReady(const QMap< QString, int > &map)
         QVariantMap action;
         action["component"]  = "/ServicePluginManager";
         action["function"] = "sendMessage";
-        action["arg1"] = QString( "Magnatune.com");
-        action["arg2"] = QString( "addMoodyTracks %1 10").arg( escapedKey );
+        action["arg1"] = QStringLiteral( "Magnatune.com");
+        action["arg2"] = QStringLiteral( "addMoodyTracks %1 10").arg( escapedKey );
 
         dbusActions[key] = action;
 

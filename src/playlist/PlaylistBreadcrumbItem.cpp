@@ -40,7 +40,7 @@ BreadcrumbItemMenu::BreadcrumbItemMenu( Column currentColumn, QWidget *parent )
 
     addSeparator();
     QAction *shuffleAction = addAction( QIcon::fromTheme( QStringLiteral("media-playlist-shuffle") ),
-                                        QString( i18n( "Shuffle" ) ) );
+                                        i18n( "Shuffle" ) );
     shuffleAction->setData( QStringLiteral( "Shuffle" ) );
 
     connect( this, &BreadcrumbItemMenu::triggered, this, &BreadcrumbItemMenu::actionTriggered );

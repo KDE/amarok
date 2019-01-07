@@ -1139,7 +1139,7 @@ QString
 SqlTrack::cachedLyrics() const
 {
     /* We don't cache the string as it may be potentially very long */
-    QString query = QString( "SELECT lyrics FROM lyrics WHERE url = %1" ).arg( m_urlId );
+    QString query = QStringLiteral( "SELECT lyrics FROM lyrics WHERE url = %1" ).arg( m_urlId );
     QStringList result = m_collection->sqlStorage()->query( query );
     if( result.isEmpty() )
         return QString();
@@ -1766,7 +1766,7 @@ SqlAlbum::removeImage()
             foreach( const QString &image, cachedImages )
             {
                 bool r = QFile::remove( cacheDir.filePath( image ) );
-                debug() << "deleting cached image: " << image << " : " + ( r ? QString("ok") : QString("fail") );
+                debug() << "deleting cached image: " << image << " : " + ( r ? QStringLiteral("ok") : QStringLiteral("fail") );
             }
 
             CoverCache::invalidateAlbum( this );
@@ -1959,7 +1959,7 @@ SqlAlbum::setImage( const QString &path )
 
     if( m_imageId >= 0 )
     {
-        query = QString("UPDATE albums SET image = %1 WHERE albums.id = %2" )
+        query = QStringLiteral("UPDATE albums SET image = %1 WHERE albums.id = %2" )
                     .arg( QString::number( m_imageId ), QString::number( m_id ) );
         m_collection->sqlStorage()->query( query );
 

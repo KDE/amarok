@@ -37,7 +37,7 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
-            explicit ProviderConfigWidget( QWidget *parent, Qt::WindowFlags f = 0 );
+            explicit ProviderConfigWidget( QWidget *parent, Qt::WindowFlags f = {} );
             virtual ~ProviderConfigWidget();
 
             /**

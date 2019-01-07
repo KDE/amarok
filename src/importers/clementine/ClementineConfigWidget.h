@@ -26,7 +26,7 @@ class ClementineConfigWidget : public SimpleImporterConfigWidget
 {
 public:
     explicit ClementineConfigWidget( const QVariantMap &config, QWidget *parent = nullptr,
-                                     Qt::WindowFlags f = 0 );
+                                     Qt::WindowFlags f = {} );
     ~ClementineConfigWidget();
 };
 

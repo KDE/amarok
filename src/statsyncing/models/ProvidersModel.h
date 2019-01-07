@@ -32,9 +32,9 @@ namespace StatSyncing
         Q_OBJECT
 
         public:
-            ProvidersModel( const ProviderPtrList &providers,
+            explicit ProvidersModel( const ProviderPtrList &providers,
                             const ProviderPtrSet &preSelectedProviders, QObject *parent = nullptr );
-            virtual ~ProvidersModel();
+            ~ProvidersModel() override;
 
             // QAbstractItemModel methods:
             QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;

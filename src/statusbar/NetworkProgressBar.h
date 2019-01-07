@@ -29,7 +29,7 @@ class NetworkProgressBar : public ProgressBar
     Q_OBJECT
 
     public:
-        NetworkProgressBar( QWidget *parent, QNetworkReply *reply );
+        explicit NetworkProgressBar( QWidget *parent, QNetworkReply *reply );
         ~NetworkProgressBar();
 
     private Q_SLOTS:

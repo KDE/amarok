@@ -35,7 +35,7 @@ QtGroupingProxy::QtGroupingProxy( QObject *parent )
 {
 }
 
-QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootIndex,
+QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, const QModelIndex &rootIndex,
                                   int groupedColumn, QObject *parent )
     : QAbstractProxyModel( parent )
     , m_rootIndex( rootIndex )
@@ -171,7 +171,7 @@ QtGroupingProxy::buildTree()
     m_parentCreateList.clear();
 
     int max = sourceModel()->rowCount( m_rootIndex );
-    //qDebug() << QString("building tree with %1 leafs.").arg( max );
+    //qDebug() << QStringLiteral("building tree with %1 leafs.").arg( max );
     //WARNING: these have to be added in order because the addToGroups function is optimized for
     //modelRowsInserted(). Failure to do so will result in wrong data shown in the view at best.
     for( int row = 0; row < max; row++ )
@@ -205,7 +205,7 @@ QtGroupingProxy::addSourceRow( const QModelIndex &idx )
         int updatedGroup = -1;
         if( !data.isEmpty() )
         {
-//            qDebug() << QString("index %1 belongs to group %2").arg( row )
+//            qDebug() << QStringLiteral("index %1 belongs to group %2").arg( row )
 //                         .arg( data[0][Qt::DisplayRole].toString() );
 
             foreach( const RowData &cachedData, m_groupMaps )
@@ -426,7 +426,7 @@ QtGroupingProxy::data( const QModelIndex &index, int role ) const
                 roleMap.insert( role, variantsOfChildren );
         }
 
-        //qDebug() << QString("roleMap[%1]:").arg(role) << roleMap[role];
+        //qDebug() << QStringLiteral("roleMap[%1]:").arg(role) << roleMap[role];
         //only one unique variant? No need to return a list
         if( variantsOfChildren.count() == 1 )
             return variantsOfChildren.first();
@@ -700,7 +700,7 @@ QtGroupingProxy::fetchMore ( const QModelIndex & parent )
     if( isGroup( parent ) )
         return;
 
-    return sourceModel()->fetchMore( mapToSource( parent ) );
+    sourceModel()->fetchMore( mapToSource( parent ) );
 }
 
 QModelIndex

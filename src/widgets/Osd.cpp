@@ -185,7 +185,7 @@ OSDWidget::ratingChanged( const QString& path, int rating )
 void
 OSDWidget::ratingChanged( const short rating )
 {
-    m_text = '\n' + i18n( "Rating changed" );
+    m_text = QLatin1Char('\n') + i18n( "Rating changed" );
     setRating( rating ); //Checks isEnabled() before doing anything
 
     show();

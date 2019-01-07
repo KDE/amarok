@@ -60,7 +60,7 @@ APG::PresetEditDialog::PresetEditDialog( PresetPtr p )
 
     QAction* a;
     QMenu* m = new QMenu( i18n("Add new"), this );
-    a = m->addAction( QString( i18n("Constraint Group") ) );
+    a = m->addAction( i18n("Constraint Group") );
     connect( a, &QAction::triggered, adderMapper, QOverload<>::of(&QSignalMapper::map) );
     adderMapper->setMapping( a, i18n("Constraint Group") );
     foreach( const QString& name, ConstraintFactory::instance()->i18nNames() ) {

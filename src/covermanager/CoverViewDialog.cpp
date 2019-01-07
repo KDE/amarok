@@ -57,8 +57,8 @@ CoverViewDialog::updateCaption()
     QString width   = QString::number( m_size.width() );
     QString height  = QString::number( m_size.height() );
     QString zoom    = QString::number( m_zoom );
-    QString size    = QString( "%1x%2" ).arg( width, height );
-    QString caption = QString( "%1 - %2 - %3\%" ).arg( m_title, size, zoom );
+    QString size    = QStringLiteral( "%1x%2" ).arg( width, height );
+    QString caption = QStringLiteral( "%1 - %2 - %3%" ).arg( m_title, size, zoom );
     setWindowTitle( caption );
 }
 

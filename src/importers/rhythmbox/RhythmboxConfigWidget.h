@@ -26,7 +26,7 @@ class RhythmboxConfigWidget : public SimpleImporterConfigWidget
 {
 public:
     explicit RhythmboxConfigWidget( const QVariantMap &config, QWidget *parent = nullptr,
-                                    Qt::WindowFlags f = 0 );
+                                    Qt::WindowFlags f = {} );
     ~RhythmboxConfigWidget();
 };
 

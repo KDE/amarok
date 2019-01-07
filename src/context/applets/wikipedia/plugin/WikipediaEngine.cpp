@@ -432,7 +432,7 @@ WikipediaEngine::fetchWikiUrl( const QString &title, const QString &urlPrefix )
 //         host.prepend( ".m" );
 //         host.prepend( urlPrefix );
 //         pageUrl.setHost( host );
-//         pageUrl.setPath( QString("/wiki/%1").arg(title) );
+//         pageUrl.setPath( QStringLiteral("/wiki/%1").arg(title) );
 //         DataEngine::Data data;
 //         data[QLatin1String("sourceUrl")] = pageUrl;
 //         removeAllData( QLatin1String("wikipedia") );
@@ -741,11 +741,11 @@ WikipediaEngine::createLanguageComboBox( const QMap<QString, QString> &languageM
     while( i.hasNext() )
     {
         i.next();
-        html += QString( "<option value=\"%1\">%2</option>" ).arg( i.value(), i.key() );
+        html += QStringLiteral( "<option value=\"%1\">%2</option>" ).arg( i.value(), i.key() );
     }
-    html.prepend( QString("<form name=\"langform\"><select name=\"links\" size=\"1\">") );
-    html.append( QString("/select><input type=\"button\" value=\"%1\" ").arg( i18n("Choose Language") ) );
-    html.append( QString("onClick=\"mWebPage.loadWikipediaUrl(document.langform.links.options[document.langform.links.selectedIndex].value);\"></form>") );
+    html.prepend( QStringLiteral("<form name=\"langform\"><select name=\"links\" size=\"1\">") );
+    html.append( QStringLiteral("/select><input type=\"button\" value=\"%1\" ").arg( i18n("Choose Language") ) );
+    html.append( QStringLiteral("onClick=\"mWebPage.loadWikipediaUrl(document.langform.links.options[document.langform.links.selectedIndex].value);\"></form>") );
     return html;
 }
 

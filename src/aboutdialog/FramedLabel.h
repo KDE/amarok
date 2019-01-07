@@ -29,8 +29,8 @@ class FramedLabel : public QLabel
     Q_OBJECT
 
 public:
-    explicit FramedLabel( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    explicit FramedLabel( const QString &text, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    explicit FramedLabel( QWidget *parent = nullptr, Qt::WindowFlags f = {} );
+    explicit FramedLabel( const QString &text, QWidget *parent = nullptr, Qt::WindowFlags f = {} );
     ~FramedLabel() override;
 
 protected:

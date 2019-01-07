@@ -77,7 +77,7 @@ class BreadcrumbItemMenuButton : public BreadcrumbItemButton
 
     public:
         explicit BreadcrumbItemMenuButton( QWidget* parent );
-        virtual ~BreadcrumbItemMenuButton() { }
+        ~BreadcrumbItemMenuButton() override { }
 
     protected:
         void paintEvent(QPaintEvent* event) override;

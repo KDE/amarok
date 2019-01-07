@@ -60,7 +60,7 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
 
 }
 
-void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo info )
+void MagnatuneDownloadDialog::setDownloadInfo( const MagnatuneDownloadInfo &info )
 {
 
     m_currentDownloadInfo = info;

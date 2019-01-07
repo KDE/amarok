@@ -100,9 +100,9 @@ namespace Amarok
             void trackLengthChanged( qint64 milliseconds );
             void playbackStateChanged();
             void playlistNavigatorChanged();
-            void playlistRowsInserted( QModelIndex, int, int );
-            void playlistRowsMoved( QModelIndex, int, int, QModelIndex, int );
-            void playlistRowsRemoved( QModelIndex, int, int );
+            void playlistRowsInserted(const QModelIndex &, int, int );
+            void playlistRowsMoved(const QModelIndex &, int, int, const QModelIndex &, int );
+            void playlistRowsRemoved(const QModelIndex &, int, int );
             void playlistReplaced();
             void playlistActiveTrackChanged( quint64 );
 

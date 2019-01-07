@@ -128,7 +128,7 @@ QPixmap SvgHandler::renderSvg( const QString &name,
     QString key;
     if( !skipCache )
     {
-        key = QString("%1:%2x%3")
+        key = QStringLiteral("%1:%2x%3")
             .arg( keyname )
             .arg( width )
             .arg( height );
@@ -174,7 +174,7 @@ QPixmap SvgHandler::renderSvg( const QUrl& url, const QString& keyname, int widt
     QString key;
     if( !skipCache )
     {
-        key = QString("%1:%2x%3")
+        key = QStringLiteral("%1:%2x%3")
         .arg( keyname )
         .arg( width )
         .arg( height );
@@ -220,14 +220,14 @@ QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, co
 
 QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, int height, const QString & element)
 {
-    const QString key = QString("%1:%2x%3-div")
+    const QString key = QStringLiteral("%1:%2x%3-div")
             .arg( keyname )
             .arg( width )
             .arg( height );
 
     QPixmap pixmap;
     if ( !m_cache->findPixmap( key, &pixmap ) ) {
-//         debug() << QString("svg %1 not in cache...").arg( key );
+//         debug() << QStringLiteral("svg %1 not in cache...").arg( key );
 
         pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
@@ -314,7 +314,7 @@ QPixmap SvgHandler::addBordersToPixmap( const QPixmap &orgPixmap, int borderWidt
     QString key;
     if( !skipCache )
     {
-        key = QString("%1:%2x%3b%4")
+        key = QStringLiteral("%1:%2x%3b%4")
             .arg( name )
             .arg( newWidth )
             .arg( newHeight )

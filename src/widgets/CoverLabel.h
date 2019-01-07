@@ -26,7 +26,7 @@
 class CoverLabel : public QLabel
 {
 public:
-    explicit CoverLabel( QWidget * parent, Qt::WindowFlags f = 0 );
+    explicit CoverLabel( QWidget * parent, Qt::WindowFlags f = {} );
 
     void setInformation( const QString &artist, const QString &album );
 

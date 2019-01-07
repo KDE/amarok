@@ -333,7 +333,7 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
         text += HTMLLine( Playlist::Bitrate, i18nc( "%1: bitrate", "%1 kbps", track->bitrate() ) );
 
     if( text.isEmpty() )
-        text = QString( i18n( "No extra information available" ) );
+        text = i18n( "No extra information available" );
     else
         text = QString("<table>"+ text +"</table>");
 

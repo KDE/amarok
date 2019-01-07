@@ -67,7 +67,7 @@ protected:
 
 protected Q_SLOTS:
 
-    void redownload( MagnatuneDownloadInfo info );
+    void redownload(const MagnatuneDownloadInfo &info );
     void selectionDialogCancelled();
     void albumDownloadComplete( bool success );
     void redownloadApiResult( KJob* job );

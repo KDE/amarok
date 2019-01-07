@@ -51,7 +51,7 @@ public:
      * @param info The MagnatuneDownloadInfo class containing the information abut the
      * download to display
      */
-    void setDownloadInfo( MagnatuneDownloadInfo info );
+    void setDownloadInfo(const MagnatuneDownloadInfo &info );
 
 Q_SIGNALS:
 

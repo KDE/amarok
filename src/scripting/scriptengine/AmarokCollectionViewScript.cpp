@@ -77,7 +77,7 @@ AmarokCollectionViewScript::~AmarokCollectionViewScript()
 void
 AmarokCollectionViewScript::setFilter( const QString &filter )
 {
-    return m_collectionWidget->setFilter( filter );
+    m_collectionWidget->setFilter( filter );
 }
 
 QString
@@ -204,8 +204,10 @@ AmarokCollectionViewScript::levels() const
 void
 AmarokCollectionViewScript::setLevel( int level, int type )
 {
-    if( m_categoryEnum.valueToKey( type ) )
-        return m_collectionWidget->currentView()->setLevel( level, CategoryId::CatMenuId( type ) );
+    if( m_categoryEnum.valueToKey( type ) ) {
+        m_collectionWidget->currentView()->setLevel( level, CategoryId::CatMenuId( type ) );
+        return;
+    }
     m_engine->currentContext()->throwError( QScriptContext::TypeError, QStringLiteral("Invalid category!") );
 }
 

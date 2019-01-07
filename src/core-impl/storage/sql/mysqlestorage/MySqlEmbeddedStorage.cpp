@@ -61,7 +61,7 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
     }
 
     QVector<const char*> mysql_args;
-    QByteArray dataDir = QString( "--datadir=%1" ).arg( databaseDir ).toLocal8Bit();
+    QByteArray dataDir = QStringLiteral( "--datadir=%1" ).arg( databaseDir ).toLocal8Bit();
     mysql_args << "amarok"
                << dataDir.constData()
                // CAUTION: if we ever change the table type we will need to fix a number of MYISAM specific

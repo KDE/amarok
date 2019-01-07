@@ -26,7 +26,7 @@ class BansheeConfigWidget : public SimpleImporterConfigWidget
 {
 public:
     explicit BansheeConfigWidget( const QVariantMap &config, QWidget *parent = nullptr,
-                                  Qt::WindowFlags f = 0 );
+                                  Qt::WindowFlags f = {} );
     ~BansheeConfigWidget();
 };
 

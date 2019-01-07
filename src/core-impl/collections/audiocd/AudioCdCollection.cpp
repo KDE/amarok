@@ -349,7 +349,7 @@ AudioCdCollection::checkForStartPlayRequest()
 QString
 AudioCdCollection::trackBaseFileName( int i ) const
 {
-    return QString( "Track%1" ).arg( i, 2, 10, QChar('0') );
+    return QStringLiteral( "Track%1" ).arg( i, 2, 10, QChar('0') );
 }
 
 

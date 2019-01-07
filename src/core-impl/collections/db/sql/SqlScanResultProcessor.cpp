@@ -636,7 +636,7 @@ SqlScanResultProcessor::urlsCacheInit()
 
     auto storage = m_collection->sqlStorage();
 
-    QString query = QString( "SELECT id, deviceid, rpath, directory, uniqueid FROM urls;");
+    QString query = QStringLiteral( "SELECT id, deviceid, rpath, directory, uniqueid FROM urls;");
     QStringList res = storage->query( query );
 
     for( int i = 0; i < res.count(); )

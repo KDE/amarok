@@ -25,7 +25,7 @@
 namespace Transcoding
 {
 
-PropertySliderWidget::PropertySliderWidget( Property property, QWidget * parent )
+PropertySliderWidget::PropertySliderWidget( const Property &property, QWidget * parent )
     : QWidget( parent )
     , m_property( property )
 {

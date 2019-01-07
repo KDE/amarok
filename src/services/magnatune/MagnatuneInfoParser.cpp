@@ -302,7 +302,7 @@ MagnatuneInfoParser::createArtistLinks( const QString &page )
 
     QString returnPage = page;
 
-    int startTokenLength = QString( "<!--ARTIST_TOKEN-->" ).length();
+    int startTokenLength = QStringLiteral( "<!--ARTIST_TOKEN-->" ).length();
 
     int offset = 0;
     int startTokenIndex = page.indexOf( "<!--ARTIST_TOKEN-->", offset );

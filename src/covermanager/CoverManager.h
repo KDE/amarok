@@ -151,7 +151,7 @@ class CoverView : public QListWidget
     Q_OBJECT
 
     public:
-        explicit CoverView( QWidget *parent = nullptr, const char *name = 0, Qt::WindowFlags f = 0 );
+        explicit CoverView( QWidget *parent = nullptr, const char *name = 0, Qt::WindowFlags f = {} );
 
     protected:
         void contextMenuEvent( QContextMenuEvent *event ) override;

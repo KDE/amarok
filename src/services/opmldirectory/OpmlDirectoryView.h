@@ -34,7 +34,7 @@ class OpmlDirectoryView : public Amarok::PrettyTreeView
     protected:
         //reimplemented to allow only leaf nodes to be selected
         QItemSelectionModel::SelectionFlags selectionCommand( const QModelIndex &index,
-                                                                    const QEvent *event = 0 ) const override;
+                                                                    const QEvent *event = nullptr ) const override;
 
 };
 

@@ -107,7 +107,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionLocation : public CollectionLocat
     private:
         QUrl moodFile( const QUrl &track ) const;
         void migrateLabels( const QMap<Meta::TrackPtr, QString> &trackMap );
-        bool startNextJob( const Transcoding::Configuration configuration );
+        bool startNextJob(const Transcoding::Configuration &configuration );
         bool startNextRemoveJob();
 
         Collections::SqlCollection *m_collection;

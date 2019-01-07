@@ -88,13 +88,13 @@ const QString TrackSelectWidget::dataToLabel( const Meta::DataPtr& data ) const
 {
     if ( data != Meta::DataPtr() ) {
         if ( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( data ) ) {
-            return QString( i18n("Track: %1", track->prettyName() ) );
+            return i18n("Track: %1", track->prettyName() );
         } else if ( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( data ) ) {
-            return QString( i18n("Album: %1", album->prettyName() ) );
+            return i18n("Album: %1", album->prettyName() );
         } else if ( Meta::ArtistPtr artist = Meta::ArtistPtr::dynamicCast( data ) ) {
-            return QString( i18n("Artist: %1", artist->prettyName() ) );
+            return i18n("Artist: %1", artist->prettyName() );
         }
         // TODO: can things other than tracks, artists, and albums end up here?
     }
-    return QString( i18n("empty") );
+    return i18n("empty");
 }

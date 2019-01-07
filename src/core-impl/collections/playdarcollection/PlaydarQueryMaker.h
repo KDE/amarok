@@ -42,7 +42,7 @@ namespace Collections
         
         public:
             explicit PlaydarQueryMaker( PlaydarCollection *collection );
-            ~PlaydarQueryMaker();
+            ~PlaydarQueryMaker() override;
 
             void run() override;
             void abortQuery() override;
@@ -80,14 +80,14 @@ namespace Collections
             int validFilterMask() override;
 
         Q_SIGNALS:
-            void newTracksReady( Meta::TrackList );
-            void newArtistsReady( Meta::ArtistList );
-            void newAlbumsReady( Meta::AlbumList );
-            void newGenresReady( Meta::GenreList );
-            void newComposersReady( Meta::ComposerList );
-            void newYearsReady( Meta::YearList );
-            void newResultReady( QStringList );
-            void newLabelsReady( Meta::LabelList );
+            void newTracksReady( const Meta::TrackList& );
+            void newArtistsReady( const Meta::ArtistList& );
+            void newAlbumsReady( const Meta::AlbumList& );
+            void newGenresReady( const Meta::GenreList& );
+            void newComposersReady(const  Meta::ComposerList& );
+            void newYearsReady( const Meta::YearList& );
+            void newResultReady( const QStringList &);
+            void newLabelsReady( const Meta::LabelList& );
 
             void queryDone();
 

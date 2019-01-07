@@ -29,7 +29,7 @@ class KJobProgressBar : public ProgressBar
     Q_OBJECT
 
     public:
-        KJobProgressBar( QWidget *parent, KJob * job );
+        explicit KJobProgressBar( QWidget *parent, KJob * job );
         ~KJobProgressBar();
 
     private Q_SLOTS:

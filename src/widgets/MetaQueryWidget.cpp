@@ -1037,7 +1037,7 @@ MetaQueryWidget::conditionToString( FilterCondition condition, qint64 field )
             ; // fall through
         }
     }
-    return QString( i18n("unknown comparison") );
+    return i18n("unknown comparison");
 }
 
 QString

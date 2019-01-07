@@ -212,7 +212,7 @@ public:
     {
         if( d )
             return d->artist;
-        return QString( "Last.fm" );
+        return QStringLiteral( "Last.fm" );
     }
 
     Track::Private * const d;

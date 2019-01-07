@@ -78,7 +78,7 @@ private Q_SLOTS:
     void slotOpmlWriterDone( int result );
 
 private:
-    QModelIndex addOutlineToModel( QModelIndex parentIdx, OpmlOutline *oultine );
+    QModelIndex addOutlineToModel( const QModelIndex &parentIdx, OpmlOutline *oultine );
 
     QUrl m_rootOpmlUrl;
     QList<OpmlOutline *> m_rootOutlines;

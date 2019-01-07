@@ -93,7 +93,7 @@ KNotificationBackend::show( const QString &title, const QString &body, const QPi
     if( pixmap.isNull() )
     {
         KIconLoader loader;
-        icon = loader.loadIcon( QString("amarok"), KIconLoader::Desktop );
+        icon = loader.loadIcon( QStringLiteral("amarok"), KIconLoader::Desktop );
     }
     else
         icon = pixmap;

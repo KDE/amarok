@@ -43,7 +43,7 @@ public:
      * @param f Qt window flags
      */
     SimpleImporterConfigWidget( const QString &targetName, const QVariantMap &config,
-                                QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+                                QWidget *parent = nullptr, Qt::WindowFlags f = {} );
 
     /**
       * Destructor.

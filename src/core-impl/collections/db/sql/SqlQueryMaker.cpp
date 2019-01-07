@@ -356,7 +356,7 @@ SqlQueryMaker::addMatch( const Meta::TrackPtr &track )
     if( kurl.scheme() == "amarok-sqltrackuid" )
     */
     {
-        d->queryMatch += QString( " AND urls.uniqueid = '%1' " ).arg( url /*kurl.url()*/ );
+        d->queryMatch += QStringLiteral( " AND urls.uniqueid = '%1' " ).arg( url /*kurl.url()*/ );
     }
     else
     {
@@ -392,8 +392,8 @@ SqlQueryMaker::addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour beh
 
     if( artist && !artist->name().isEmpty() )
     {
-        artistQuery = QString("artists.name = '%1'").arg( escape( artist->name() ) );
-        albumArtistQuery = QString("albumartists.name = '%1'").arg( escape( artist->name() ) );
+        artistQuery = QStringLiteral("artists.name = '%1'").arg( escape( artist->name() ) );
+        albumArtistQuery = QStringLiteral("albumartists.name = '%1'").arg( escape( artist->name() ) );
     }
     else
     {

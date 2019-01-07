@@ -55,8 +55,8 @@ EqualizerController::initialize( const Phonon::Path &path )
     using namespace Phonon;
 
     // Add an equalizer effect if available
-    QList<EffectDescription> effects = BackendCapabilities::availableAudioEffects();
-    QRegExp equalizerRegExp( QString( "equalizer.*%1.*bands" ).arg( s_equalizerBandsNum ),
+    const QList<EffectDescription> effects = BackendCapabilities::availableAudioEffects();
+    QRegExp equalizerRegExp( QStringLiteral( "equalizer.*%1.*bands" ).arg( s_equalizerBandsNum ),
                              Qt::CaseInsensitive );
     foreach( const EffectDescription &description, effects )
     {
@@ -201,7 +201,7 @@ EqualizerController::equalizerPreset() const
     if( index > 0 )
         return EqualizerPresets::eqGlobalList()[index];
     else
-        return QString("");
+        return QString();
 }
 
 void
@@ -223,8 +223,8 @@ void
 EqualizerController::applyEqualizerPresetByName( const QString &name )
 {
     DEBUG_BLOCK
-    int index = EqualizerPresets::eqGlobalTranslatedList().indexOf( name );
-    return applyEqualizerPresetByIndex( index > 0 ? index : 0 );
+    const int index = EqualizerPresets::eqGlobalTranslatedList().indexOf( name );
+    applyEqualizerPresetByIndex( index > 0 ? index : 0 );
 }
 
 void

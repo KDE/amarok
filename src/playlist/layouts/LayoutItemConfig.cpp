@@ -86,7 +86,7 @@ QString LayoutItemConfigRowElement::suffix() const
 
 //////////////////////////////////////////////
 
-void LayoutItemConfigRow::addElement( LayoutItemConfigRowElement element )
+void LayoutItemConfigRow::addElement( const LayoutItemConfigRowElement &element )
 {
     m_elements.append( element );
 }

@@ -181,7 +181,7 @@ ConstraintTypes::TagMatch::getName() const
     } else {
         if ( m_fieldsModel->type_of( m_field ) == FieldTypeString ) {
             // put quotes around any strings (eg, track title or artist name) ...
-            QString s = QString( i18nc("an arbitrary string surrounded by quotes", "\"%1\"") ).arg( valueToString() );
+            QString s = i18nc("an arbitrary string surrounded by quotes", "\"%1\"", valueToString() );
             return v.arg( s );
         } else {
             // ... but don't quote put quotes around anything else
@@ -332,36 +332,36 @@ ConstraintTypes::TagMatch::comparisonToString() const
 {
     if ( m_fieldsModel->type_of( m_field ) == FieldTypeInt ) {
         if ( m_comparison == CompareNumEquals ) {
-            return QString( i18nc("a numerical tag (like year or track number) equals a value","equals") );
+            return i18nc("a numerical tag (like year or track number) equals a value","equals");
         } else if ( m_comparison == CompareNumGreaterThan ) {
-            return QString( i18n("greater than") );
+            return i18n("greater than");
         } else if ( m_comparison == CompareNumLessThan ) {
-            return QString( i18n("less than") );
+            return i18n("less than");
         }
     } else if ( m_fieldsModel->type_of( m_field ) == FieldTypeDate ) {
         if ( m_comparison == CompareDateBefore ) {
-            return QString( i18n("before") );
+            return i18n("before");
         } else if ( m_comparison == CompareDateOn ) {
-            return QString( i18n("on") );
+            return i18n("on");
         } else if ( m_comparison == CompareDateAfter ) {
-            return QString( i18n("after") );
+            return i18n("after");
         } else if ( m_comparison == CompareDateWithin ) {
-            return QString( i18n("within") );
+            return i18n("within");
         }
     } else {
         if ( m_comparison == CompareStrEquals ) {
-            return QString( i18nc("an alphabetical tag (like title or artist name) equals some string","equals") );
+            return i18nc("an alphabetical tag (like title or artist name) equals some string","equals");
         } else if ( m_comparison == CompareStrStartsWith ) {
-            return QString( i18nc("an alphabetical tag (like title or artist name) starts with some string","starts with") );
+            return i18nc("an alphabetical tag (like title or artist name) starts with some string","starts with");
         } else if ( m_comparison == CompareStrEndsWith ) {
-            return QString( i18nc("an alphabetical tag (like title or artist name) ends with some string","ends with") );
+            return i18nc("an alphabetical tag (like title or artist name) ends with some string","ends with");
         } else if ( m_comparison == CompareStrContains ) {
-            return QString( i18nc("an alphabetical tag (like title or artist name) contains some string","contains") );
+            return i18nc("an alphabetical tag (like title or artist name) contains some string","contains");
         } else if ( m_comparison == CompareStrRegExp ) {
-            return QString( i18n("regexp") );
+            return i18n("regexp");
         }
     }
-    return QString( i18n("unknown comparison") );
+    return i18n("unknown comparison");
 }
 
 QString

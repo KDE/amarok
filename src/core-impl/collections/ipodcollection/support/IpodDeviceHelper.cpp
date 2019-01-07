@@ -197,7 +197,7 @@ fileFound( const QString &mountPoint, const QString &relFilename )
     gchar *controlDir = itdb_get_device_dir( QFile::encodeName( mountPoint ) );
     if( !controlDir )
         return false;
-    QString absFilename = QString( "%1/%2" ).arg( QFile::decodeName( controlDir ),
+    QString absFilename = QStringLiteral( "%1/%2" ).arg( QFile::decodeName( controlDir ),
                                                   relFilename );
     g_free( controlDir );
 
@@ -268,7 +268,7 @@ fillInModelComboBox( QComboBox *comboBox, bool someSysInfoFound )
     if( !info )
     {
         // this is not i18n-ed for purpose: it should never happen
-        comboBox->addItem( QString( "Failed to get iPod info table!" ), QString() );
+        comboBox->addItem( QStringLiteral( "Failed to get iPod info table!" ), QString() );
         return;
     }
 

@@ -220,7 +220,7 @@ ScriptItem::start( bool silent )
     m_running = true;
     m_evaluating = true;
 
-    m_log << QString( "%1 Script started" ).arg( QTime::currentTime().toString() );
+    m_log << QStringLiteral( "%1 Script started" ).arg( QTime::currentTime().toString() );
 
     m_timerId = startTimer( 100 );
     Q_ASSERT( m_engine );

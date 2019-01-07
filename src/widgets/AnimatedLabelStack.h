@@ -25,7 +25,7 @@ class AnimatedLabelStack : public QWidget
     Q_OBJECT
 
 public:
-    explicit AnimatedLabelStack( const QStringList &data, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    explicit AnimatedLabelStack( const QStringList &data, QWidget *parent = nullptr, Qt::WindowFlags f = {} );
     inline const QStringList &data() const { return m_data; }
     inline int opacity() { return m_targetOpacity; }
     void pulse( int cycles = -1, int minimum = 3 );

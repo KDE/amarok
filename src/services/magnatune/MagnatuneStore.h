@@ -69,11 +69,11 @@ public:
      /**
      * Constructor
      */
-    MagnatuneStore( MagnatuneServiceFactory* parent, const char *name );
+    explicit MagnatuneStore( MagnatuneServiceFactory* parent, const char *name );
     /**
      * Destructor
      */
-    ~MagnatuneStore();
+    ~MagnatuneStore() override;
 
     void setMembership( int type, const QString &username,  const QString &password );
 

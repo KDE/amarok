@@ -39,7 +39,7 @@ class LongMessageWidget : public PopupWidget
 {
     Q_OBJECT
 public:
-    LongMessageWidget( const QString &message );
+    explicit LongMessageWidget( const QString &message );
 
     ~LongMessageWidget() override;
 

@@ -1241,8 +1241,8 @@ EngineController::slotTrackFinishedPlaying( Meta::TrackPtr track, double playedF
 {
     Q_ASSERT( track );
     debug() << "slotTrackFinishedPlaying("
-            << ( track->artist() ? track->artist()->name() : QString( "[no artist]" ) )
-            << "-" << ( track->album() ? track->album()->name() : QString( "[no album]" ) )
+            << ( track->artist() ? track->artist()->name() : QStringLiteral( "[no artist]" ) )
+            << "-" << ( track->album() ? track->album()->name() : QStringLiteral( "[no album]" ) )
             << "-" << track->name()
             << "," << playedFraction << ")";
 

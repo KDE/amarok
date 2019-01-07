@@ -32,7 +32,7 @@ Q_OBJECT
 public:
     explicit ScriptableServiceInfoParser( const QString &serviceName );
 
-    ~ScriptableServiceInfoParser();
+    ~ScriptableServiceInfoParser() override;
 
 
     virtual void getInfo( Meta::GenrePtr genre );

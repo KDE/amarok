@@ -71,11 +71,11 @@ Meta::PlaydarTrack::PlaydarTrack( QString &sid,
     , m_source( source )
 {
     QUrlQuery query;
-    m_uidUrl.setScheme( QString( "playdar" ) );
+    m_uidUrl.setScheme( QStringLiteral( "playdar" ) );
     m_uidUrl.setPath(m_uidUrl.path() + QLatin1Char('/') + source );
-    query.addQueryItem( QString( "artist" ), artist );
-    query.addQueryItem( QString( "album" ), album );
-    query.addQueryItem( QString( "title" ), name );
+    query.addQueryItem( QStringLiteral( "artist" ), artist );
+    query.addQueryItem( QStringLiteral( "album" ), album );
+    query.addQueryItem( QStringLiteral( "title" ), name );
     m_uidUrl.setQuery( query );
     m_statsStore = new UrlStatisticsStore( this );
 }
@@ -229,7 +229,7 @@ Meta::PlaydarTrack::discNumber() const
 QString
 Meta::PlaydarTrack::type() const
 {
-    return QString( "stream" );
+    return QStringLiteral( "stream" );
 }
 
 QString
