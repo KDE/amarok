@@ -35,7 +35,7 @@ ConstraintTypes::TagMatch::createFromXml( QDomElement& xmlelem, ConstraintNode* 
     if ( p )
         return new TagMatch( xmlelem, p );
     else
-        return 0;
+        return nullptr;
 }
 
 Constraint*
@@ -44,7 +44,7 @@ ConstraintTypes::TagMatch::createNew( ConstraintNode* p )
     if ( p )
         return new TagMatch( p );
     else
-        return 0;
+        return nullptr;
 }
 
 ConstraintFactoryEntry*
@@ -524,7 +524,7 @@ ConstraintTypes::TagMatchEditWidget::TagMatchEditWidget(
                         const bool invert,
                         const int strictness,
                         const QVariant& value )
-        : QWidget( 0 )
+        : QWidget( nullptr )
         , m_fieldsModel( new TagMatchFieldsModel() )
 {
     ui.setupUi( this );
