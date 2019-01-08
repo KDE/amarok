@@ -65,9 +65,9 @@ void ScriptableServiceInfoParser::getInfo(TrackPtr track)
 {
     DEBUG_BLOCK
     ScriptableServiceTrack * serviceTrack = dynamic_cast< ScriptableServiceTrack * >( track.data() );
-    if (serviceTrack == 0) return;
+    if (!serviceTrack) return;
 
-    emit( info( serviceTrack->description() ) );
+    emit  info( serviceTrack->description() );
 
     if ( serviceTrack->description().isEmpty() )
     {
@@ -79,9 +79,9 @@ void ScriptableServiceInfoParser::getInfo(TrackPtr track)
 void ScriptableServiceInfoParser::getInfo( Meta::GenrePtr genre )
 {
     ScriptableServiceGenre * serviceGenre = dynamic_cast< ScriptableServiceGenre * >( genre.data() );
-    if (serviceGenre == 0) return;
+    if (!serviceGenre) return;
 
-    emit( info( serviceGenre->description() ) );
+    emit info( serviceGenre->description() );
 
     if ( serviceGenre->description().isEmpty() )
     {

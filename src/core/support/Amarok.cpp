@@ -157,7 +157,7 @@ namespace Amarok
         str.truncate( newLen );
     }
 
-    QString generatePlaylistName( const Meta::TrackList tracks )
+    QString generatePlaylistName( const Meta::TrackList& tracks )
     {
         QString datePart = QLocale::system().toString( QDateTime::currentDateTime(),
                                                        QLocale::ShortFormat );

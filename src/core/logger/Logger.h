@@ -217,7 +217,7 @@ namespace Amarok
         virtual void shortMessageImpl( const QString &text ) = 0;
 
     private:
-        static void addProgressOperation( KJob *job = nullptr, QNetworkReply *reply = nullptr, QObject *sender = nullptr, const QMetaMethod &increment = QMetaMethod(),
+        static void addProgressOperation(KJob *job = nullptr, QNetworkReply *reply = nullptr, QObject *sender = nullptr, QMetaMethod increment = QMetaMethod(),
                                           const QMetaMethod &end = QMetaMethod(), const QString &text = QString(), int maximum = 100, QObject *context = nullptr,
                                           const std::function<void ()> &function = nullptr, Qt::ConnectionType type = Qt::AutoConnection );
         void loadExistingMessages();

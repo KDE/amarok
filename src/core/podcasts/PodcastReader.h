@@ -53,7 +53,7 @@ class AMAROK_CORE_EXPORT PodcastReader : public QObject
 
         bool read( QIODevice *device );
         bool read( const QUrl &url );
-        bool update( Podcasts::PodcastChannelPtr channel );
+        bool update(const PodcastChannelPtr &channel );
         QUrl & url() { return m_url; }
 
         Podcasts::PodcastChannelPtr channel() { return m_channel; }

@@ -23,6 +23,7 @@
 
 class BrowserCategoryListSortFilterProxyModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
     public:
         explicit BrowserCategoryListSortFilterProxyModel( QObject * parent = nullptr );
         virtual ~BrowserCategoryListSortFilterProxyModel();

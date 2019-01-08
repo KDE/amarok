@@ -34,13 +34,13 @@ Configuration::Configuration( Encoder encoder, TrackSelection trackSelection )
 }
 
 void
-Configuration::addProperty( QByteArray name, QVariant value )
+Configuration::addProperty( const QByteArray &name, const QVariant &value )
 {
     m_values.insert( name, value );
 }
 
 QVariant
-Configuration::property( QByteArray name ) const
+Configuration::property( const QByteArray &name ) const
 {
     return m_values.value( name );
 }

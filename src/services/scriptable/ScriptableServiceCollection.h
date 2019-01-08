@@ -33,7 +33,7 @@ class ScriptableServiceCollection : public ServiceCollection
 public:
     explicit ScriptableServiceCollection( const QString &name );
 
-    ~ScriptableServiceCollection();
+    ~ScriptableServiceCollection() override;
 
     Collections::QueryMaker* queryMaker() override;
 

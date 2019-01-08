@@ -82,8 +82,8 @@ public:
     bool isJustCopy( const Meta::TrackPtr &srcTrack = Meta::TrackPtr(),
                      const QStringList &playableFileTypes = QStringList() ) const;
 
-    QVariant property( QByteArray name ) const;
-    void addProperty( QByteArray name, QVariant value );
+    QVariant property( const QByteArray &name ) const;
+    void addProperty(const QByteArray &name, const QVariant &value );
 
     /**
      * Re-create transcoding configuration from serialized form stored in a KConfigGroup.

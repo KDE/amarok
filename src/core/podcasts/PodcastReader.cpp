@@ -469,7 +469,7 @@ PodcastReader::slotAbort()
 }
 
 bool
-PodcastReader::update( PodcastChannelPtr channel )
+PodcastReader::update( const PodcastChannelPtr &channel )
 {
     DEBUG_BLOCK
     m_channel = channel;

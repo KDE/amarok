@@ -207,7 +207,7 @@ namespace Amarok
       * Return a playlist name based on the artist and album info of the tracks or a string
       * containing the creation date.
       */
-    AMAROK_CORE_EXPORT QString generatePlaylistName( const Meta::TrackList tracks );
+    AMAROK_CORE_EXPORT QString generatePlaylistName( const Meta::TrackList &tracks );
 
     /**
      * Creates a semi-transparent Amarok logo for suitable for painting.

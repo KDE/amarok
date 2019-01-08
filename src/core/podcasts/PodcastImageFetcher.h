@@ -28,23 +28,23 @@ public:
     PodcastImageFetcher();
 
     void addChannel( Podcasts::PodcastChannelPtr channel );
-    void addEpisode( Podcasts::PodcastEpisodePtr episode );
+    void addEpisode( const Podcasts::PodcastEpisodePtr &episode );
 
     void run();
 
-    static QUrl cachedImagePath( Podcasts::PodcastChannelPtr channel );
+    static QUrl cachedImagePath(const Podcasts::PodcastChannelPtr &channel );
     static QUrl cachedImagePath( Podcasts::PodcastChannel *channel );
 
 Q_SIGNALS:
-    void channelImageReady( Podcasts::PodcastChannelPtr channel, QImage image );
-    void episodeImageReady( Podcasts::PodcastEpisodePtr episode, QImage image );
+    void channelImageReady( const Podcasts::PodcastChannelPtr &channel, const QImage &image );
+    void episodeImageReady( const Podcasts::PodcastEpisodePtr &episode, const QImage &image );
     void done( PodcastImageFetcher * );
 
 private Q_SLOTS:
     void slotDownloadFinished( KJob *job );
 
 private:
-    static bool hasCachedImage( Podcasts::PodcastChannelPtr channel );
+    static bool hasCachedImage(const Podcasts::PodcastChannelPtr &channel );
 
     Podcasts::PodcastChannelList m_channels;
     Podcasts::PodcastEpisodeList m_episodes;

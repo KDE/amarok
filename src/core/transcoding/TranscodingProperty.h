@@ -40,7 +40,7 @@ public:
         TRADEOFF
     };
 
-    static Property Tradeoff( const QByteArray name,
+    static Property Tradeoff( const QByteArray &name,
                               const QString &prettyName,
                               const QString &description,
                               const QString &leftText,
@@ -49,7 +49,7 @@ public:
                               int max,
                               int defaultValue );
 
-    static Property Tradeoff( const QByteArray name,
+    static Property Tradeoff( const QByteArray &name,
                               const QString &prettyName,
                               const QString &description,
                               const QString &leftText,
@@ -78,7 +78,7 @@ public:
     const QStringList & endLabels() const { return m_endLabels; }
 
 private:
-    Property( const QByteArray name,
+    Property( const QByteArray &name,
               const QString &prettyName,
               const QString &description,
               Type type,

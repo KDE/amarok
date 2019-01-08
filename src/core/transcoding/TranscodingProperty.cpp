@@ -27,7 +27,7 @@ namespace Transcoding
 {
 
 Property
-Property::Tradeoff( const QByteArray name,
+Property::Tradeoff( const QByteArray &name,
                     const QString &prettyName,
                     const QString &description,
                     const QString &leftText,
@@ -44,7 +44,7 @@ Property::Tradeoff( const QByteArray name,
 }
 
 Property
-Property::Tradeoff( const QByteArray name,
+Property::Tradeoff(const QByteArray &name,
                     const QString &prettyName,
                     const QString &description,
                     const QString &leftText,
@@ -68,7 +68,7 @@ Property::variantType() const
     return QVariant::Invalid;
 }
 
-Property::Property( const QByteArray name,
+Property::Property( const QByteArray &name,
                     const QString &prettyName,
                     const QString &description,
                     Type type,

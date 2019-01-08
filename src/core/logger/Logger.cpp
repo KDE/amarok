@@ -81,7 +81,7 @@ Amarok::Logger::~Logger()
     s_loggers.removeAll( this );
 }
 
-void Amarok::Logger::addProgressOperation( KJob* job, QNetworkReply* reply, QObject* sender, const QMetaMethod& increment, const QMetaMethod& end,
+void Amarok::Logger::addProgressOperation( KJob* job, QNetworkReply* reply, QObject* sender, QMetaMethod increment, const QMetaMethod& end,
                                            const QString& text, int maximum, QObject* context, const std::function<void ()>& function, Qt::ConnectionType type )
 {
     ProgressData data;

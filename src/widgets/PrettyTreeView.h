@@ -43,6 +43,11 @@ namespace Amarok
         public:
             explicit PrettyTreeView( QWidget *parent = nullptr );
             ~PrettyTreeView() override;
+        /**
+         * Return pointer to decorator action which was most recently mouse-pressed
+         * or null it mouse button was released since then. Used by PrettyTreeDelegate.
+         */
+        QAction *pressedDecoratorAction() const;
 
         public Q_SLOTS:
             /* There is a need to overload even this edit() variant, otherwise it hides
@@ -52,11 +57,6 @@ namespace Amarok
              * IS virtual. */
             void edit( const QModelIndex &index );
 
-            /**
-             * Return pointer to decorator action which was most recently mouse-pressed
-             * or null it mouse button was released since then. Used by PrettyTreeDelegate.
-             */
-            QAction *pressedDecoratorAction() const;
 
         protected:
             bool edit( const QModelIndex &index, EditTrigger trigger, QEvent *event ) override;

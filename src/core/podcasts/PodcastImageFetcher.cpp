@@ -66,13 +66,13 @@ PodcastImageFetcher::addChannel( Podcasts::PodcastChannelPtr channel )
 }
 
 void
-PodcastImageFetcher::addEpisode( Podcasts::PodcastEpisodePtr episode )
+PodcastImageFetcher::addEpisode( const Podcasts::PodcastEpisodePtr &episode )
 {
     Q_UNUSED( episode );
 }
 
 QUrl
-PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannelPtr channel )
+PodcastImageFetcher::cachedImagePath( const Podcasts::PodcastChannelPtr &channel )
 {
     return cachedImagePath( channel.data() );
 }
@@ -92,7 +92,7 @@ PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannel *channel )
 }
 
 bool
-PodcastImageFetcher::hasCachedImage( Podcasts::PodcastChannelPtr channel )
+PodcastImageFetcher::hasCachedImage( const Podcasts::PodcastChannelPtr &channel )
 {
     DEBUG_BLOCK
     return QFile( PodcastImageFetcher::cachedImagePath(
