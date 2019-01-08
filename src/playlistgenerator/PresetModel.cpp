@@ -302,7 +302,7 @@ APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
     setFileMode( QFileDialog::AnyFile );
     selectFile( ps->title() + ".xml" );
     setAcceptMode( QFileDialog::AcceptSave );
-    connect( this, &ExportDialog::accept, this, &ExportDialog::recvAccept );
+    connect( this, &ExportDialog::accepted, this, &ExportDialog::recvAccept );
 }
 
 APG::PresetModel::ExportDialog::~ExportDialog() {}
