@@ -73,7 +73,7 @@ class AMAROK_EXPORT PluginManager : public QObject
 
         KPluginInfo::List plugins( Type type ) const;
 
-        QList<KPluginMetaData> enabledPlugins (Type type ) const;
+        QVector<KPluginMetaData> enabledPlugins(Type type ) const;
 
         /** Check if any services were disabled and needs to be removed, or any
          *  that are hidden needs to be enabled

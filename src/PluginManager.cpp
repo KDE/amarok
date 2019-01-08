@@ -105,10 +105,10 @@ Plugins::PluginManager::plugins( Type type ) const
     return infos;
 }
 
-QList<KPluginMetaData>
+QVector<KPluginMetaData>
 Plugins::PluginManager::enabledPlugins(Plugins::PluginManager::Type type) const
 {
-    QList<KPluginMetaData> enabledList;
+    QVector<KPluginMetaData> enabledList;
 
     for( const auto &plugin : m_pluginsByType.value( type ) )
     {

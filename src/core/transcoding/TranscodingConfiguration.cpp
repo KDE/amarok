@@ -58,8 +58,8 @@ Configuration::fromConfigGroup( const KConfigGroup &serialized )
     Controller *controller = Amarok::Components::transcodingController();
     // reset controller to 0 if it doesn't contain encoder to prevent bogus format() call
     if( controller && !controller->allEncoders().contains( ret.encoder() ) )
-        controller = 0;
-    Format *format = controller ? controller->format( ret.encoder() ) : 0;
+        controller = nullptr;
+    Format *format = controller ? controller->format( ret.encoder() ) : nullptr;
 
     PropertyList emptyList;
     foreach( const Property &property, format ? format->propertyList() : emptyList )

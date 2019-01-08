@@ -83,14 +83,14 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
 
 
     // Get plugins -- we have to assemble a list again.
-    QList<KPluginMetaData> aPlugins;
+    QVector<KPluginMetaData> aPlugins;
     const auto aPluginManager = Plugins::PluginManager::instance();
     aPlugins.append( aPluginManager->enabledPlugins( Plugins::PluginManager::Collection ) );
     aPlugins.append( aPluginManager->enabledPlugins( Plugins::PluginManager::Service ) );
     aPlugins.append( aPluginManager->enabledPlugins( Plugins::PluginManager::Importer ) );
 
     QString aPluginString;
-    for( const auto &aInfo : aPlugins )
+    for( const auto &aInfo : qAsConst(aPlugins) )
     {
         aPluginString += "   " + aInfo.name() + " (" + aInfo.version() + ")\n";
     }
@@ -99,7 +99,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     QString appletString;
     const QStringList appletList = Context::ContextView::self()->currentAppletNames();
 
-    foreach( const QString &applet, appletList )
+    for ( const QString &applet : appletList )
     {
         // Currently we cannot extract the applet version number this way
         appletString += "   " + applet + '\n';

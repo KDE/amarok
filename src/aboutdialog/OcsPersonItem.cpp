@@ -223,7 +223,7 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
 
     if( m_status == Author )
     {
-        QList< QPair< QString, QString > > ocsHomepages;
+        QVector< QPair< QString, QString > > ocsHomepages;
         ocsHomepages.append( QPair< QString, QString >( ocsPerson.extendedAttribute( QStringLiteral("homepagetype") ), ocsPerson.homepage() ) );
 
         debug() << "USER HOMEPAGE DATA STARTS HERE";
@@ -239,7 +239,7 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
 
         bool fillHomepageFromOcs = m_person->webAddress().isEmpty();    //We check if the person already has a homepage in KAboutPerson.
 
-        for( QList< QPair< QString, QString > >::const_iterator entry = ocsHomepages.constBegin();
+        for( QVector< QPair< QString, QString > >::const_iterator entry = ocsHomepages.constBegin();
              entry != ocsHomepages.constEnd(); ++entry )
         {
             QString type = (*entry).first;
