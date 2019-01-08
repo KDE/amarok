@@ -151,9 +151,9 @@ APG::PresetModel::exportActive()
 void
 APG::PresetModel::import()
 {
-    QString filename = QFileDialog::getOpenFileName( nullptr, i18n("Import preset"),
+    const QString filename = QFileDialog::getOpenFileName( nullptr, i18n("Import preset"),
                                                      QStandardPaths::writableLocation( QStandardPaths::MusicLocation ),
-                                                     QStringLiteral("*.xml|") + i18n("Preset files (*.xml)") );
+                                                     QStringLiteral("%1 (*.xml)").arg(i18n("Preset files") ));
     if( !filename.isEmpty() )
         loadPresetsFromXml( filename );
 }
