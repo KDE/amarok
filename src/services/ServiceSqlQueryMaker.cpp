@@ -59,7 +59,7 @@ class ServiceSqlWorkerThread : public QObject, public ThreadWeaver::Job
 
     protected:
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override
         {
             Q_UNUSED(self);
             Q_UNUSED(thread);

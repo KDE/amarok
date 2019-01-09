@@ -333,7 +333,7 @@ void Mp3tunesSearchMonkey::defaultEnd(const ThreadWeaver::JobPointer& self, Thre
 }
 
 /*  SIMPLE UPLOADER */
-Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStringList tracklist )
+Mp3tunesSimpleUploader:: Mp3tunesSimpleUploader( Mp3tunesLocker * locker, const QStringList &tracklist )
 {
     DEBUG_BLOCK
     connect( this, &Mp3tunesSimpleUploader::done, this, &Mp3tunesSimpleUploader::completeJob );

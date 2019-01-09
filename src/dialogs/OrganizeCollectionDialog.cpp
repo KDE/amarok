@@ -120,7 +120,7 @@ OrganizeCollectionWidget::buildFormatTip() const
     QString tooltip = i18n( "You can use the following tokens:" );
     tooltip += "<ul>";
 
-    for( QMap<QString, QString>::iterator it = args.begin(); it != args.end(); ++it )
+    for( QMap<QString, QString>::iterator it = args.begin(), total = args.end(); it != total; ++it )
         tooltip += QString( "<li>%1 - %%2%" ).arg( it.value(), it.key() );
 
     tooltip += "</ul>";

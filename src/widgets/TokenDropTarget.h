@@ -100,7 +100,7 @@ protected:
     void paintEvent(QPaintEvent *) override;
 
     /** Return the enclosing box layout and the row and column position of the widget \p w.  */
-    QBoxLayout *rowBox( QWidget *w, QPoint *idx = 0 ) const;
+    QBoxLayout *rowBox( QWidget *w, QPoint *idx = nullptr ) const;
 
     /** Return the box layout at the position \p pt. */
     QBoxLayout *rowBox( const QPoint &pt ) const;

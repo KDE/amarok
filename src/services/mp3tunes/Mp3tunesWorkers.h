@@ -244,8 +244,8 @@ class Mp3tunesSimpleUploader : public QObject, public ThreadWeaver::Job
 {
     Q_OBJECT
     public:
-        Mp3tunesSimpleUploader( Mp3tunesLocker * locker, QStringList tracklist );
-        ~Mp3tunesSimpleUploader();
+        Mp3tunesSimpleUploader( Mp3tunesLocker * locker, const QStringList &tracklist );
+        ~Mp3tunesSimpleUploader() override;
 
         void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 

@@ -47,8 +47,8 @@ class UpnpSearchCollection : public UpnpCollectionBase
 {
   Q_OBJECT
   public:
-    UpnpSearchCollection( const DeviceInfo&, QStringList searchCapabilities );
-    virtual ~UpnpSearchCollection();
+    UpnpSearchCollection( const DeviceInfo&, const QStringList &searchCapabilities );
+    ~UpnpSearchCollection() override;
     QueryMaker* queryMaker() override;
 
     QIcon icon() const override { return QIcon::fromTheme("network-server"); }
@@ -56,7 +56,7 @@ class UpnpSearchCollection : public UpnpCollectionBase
     Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
     UpnpCache* cache() { return m_cache; }
-    QStringList searchCapabilities() { return m_searchCapabilities; }
+    QStringList searchCapabilities() const { return m_searchCapabilities; }
   private Q_SLOTS:
     void slotFilesChanged(const QStringList &);
 

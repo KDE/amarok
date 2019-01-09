@@ -431,7 +431,7 @@ QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, in
     // First average the moodbar samples that will go into each
     // vertical bar on the screen.
 
-    if( data.size() == 0 ) // Play it safe -- see below
+    if( data.isEmpty() ) // Play it safe -- see below
       return QPixmap();
 
     MoodbarColorList screenColors;

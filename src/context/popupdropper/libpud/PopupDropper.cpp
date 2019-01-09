@@ -410,10 +410,10 @@ bool PopupDropper::addMenu( const QMenu *menu )
     if( !menu )
         return false;
         
-    if( menu->actions().size() == 0 )
+    if( menu->actions().isEmpty() )
         return true;
 
-    PopupDropperItem *pdi = 0;
+    PopupDropperItem *pdi = nullptr;
     foreach( QAction *action, menu->actions() )
     {
         if( !action->menu() )
@@ -424,12 +424,12 @@ bool PopupDropper::addMenu( const QMenu *menu )
         }
         else
         {
-            PopupDropper *pd = new PopupDropper( 0 );
+            PopupDropper *pd = new PopupDropper( nullptr );
             bool success = pd->addMenu( action->menu() );
             if( success )
                 pdi = addSubmenu( &pd, action->text() );
         }
-        pdi = 0;
+        pdi = nullptr;
     }
     
     return true;

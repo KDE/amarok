@@ -33,7 +33,7 @@ class PixmapViewer : public QWidget
     Q_PROPERTY( qreal zoomFactor READ zoomFactor WRITE setZoomFactor NOTIFY zoomFactorChanged )
 
 public:
-    PixmapViewer( QWidget *parent, const QPixmap &pixmap, int screenNumber );
+    explicit PixmapViewer( QWidget *parent, const QPixmap &pixmap, int screenNumber );
     ~PixmapViewer() override;
 
     qreal zoomFactor() const;

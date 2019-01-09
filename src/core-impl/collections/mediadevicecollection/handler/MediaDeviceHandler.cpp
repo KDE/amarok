@@ -405,7 +405,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     // Do not bother copying 0 tracks
     // This could happen if all tracks to copy are dupes
 
-    if( m_tracksToCopy.size() == 0 )
+    if( m_tracksToCopy.isEmpty() )
     {
         KMessageBox::error( nullptr, i18n( "Tracks not copied: the device already has these tracks" ), copyErrorCaption );
         m_isCopying = false;

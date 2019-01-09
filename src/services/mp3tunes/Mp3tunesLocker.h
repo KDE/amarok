@@ -164,7 +164,7 @@ class Mp3tunesLocker {
          *         of tracks be in the same order as the supplied filekeys.
          *         Might return an empty List.
          */
-        QList<Mp3tunesLockerTrack> tracksWithFileKeys( QStringList filekeys ) const;
+        QList<Mp3tunesLockerTrack> tracksWithFileKeys(const QStringList &filekeys ) const;
 
         /**
          * Get a single track from a single filekey.

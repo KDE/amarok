@@ -747,7 +747,7 @@ MetaQueryWidget::makeMetaComboSelection( qint64 field )
 }
 
 void
-MetaQueryWidget::populateComboBox( QStringList results )
+MetaQueryWidget::populateComboBox( const QStringList &results )
 {
     QObject* query = sender();
     if( !query )

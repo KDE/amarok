@@ -235,7 +235,7 @@ QString BrowserCategoryList::navigate( const QString & target )
     DEBUG_BLOCK
     debug() << "target: " << target;
     QStringList categories = target.split( QLatin1Char('/') );
-    if ( categories.size() == 0 )
+    if ( categories.isEmpty() )
         return QString();
 
     //remove our own name if present, before passing on...
@@ -244,7 +244,7 @@ QString BrowserCategoryList::navigate( const QString & target )
         debug() << "removing own name (" << categories.at( 0 ) << ") from path";
         categories.removeFirst();
 
-        if ( categories.size() == 0 )
+        if ( categories.isEmpty() )
         {
             //nothing else left, make sure this category is visible
             home();

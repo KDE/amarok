@@ -64,7 +64,7 @@ class LabelListModel : public QAbstractListModel
         * Sets the labels
         * @arg labels List of new Labels
         */
-        void setLabels( const QStringList labels );
+        void setLabels( const QStringList& labels );
 
         /**
         * @returns List of labels

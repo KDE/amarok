@@ -48,7 +48,7 @@ ServiceFactory::~ServiceFactory()
 Meta::TrackPtr
 ServiceFactory::trackForUrl( const QUrl &url )
 {
-    if ( m_activeServices.size() == 0 ) {
+    if ( m_activeServices.isEmpty() ) {
         debug() << "our service (" << name() << ") is needed for a url, so init it!";
         init();
     }
@@ -110,15 +110,15 @@ ServiceFactory::slotRemoveService( ServiceBase *service )
 ServiceBase *ServiceBase::s_instance = nullptr;
 
 ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView, const QString &prettyName )
-    : BrowserCategory( name, 0 )
-    , m_contentView ( 0 )
+    : BrowserCategory( name, nullptr )
+    , m_contentView ( nullptr )
     , m_parentFactory( parent )
     , m_polished( false )
     , m_useCollectionTreeView( useCollectionTreeView )
-    , m_infoParser( 0 )
+    , m_infoParser( nullptr )
     , m_serviceready( false )
-    , m_model( 0 )
-    , m_filterModel( 0 )
+    , m_model( nullptr )
+    , m_filterModel( nullptr )
 {
     DEBUG_BLOCK
 

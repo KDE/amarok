@@ -46,7 +46,7 @@ class StarManager : public QObject
         void ratingsColorsChanged();
 
     private:
-        StarManager( QObject* parent );
+        explicit StarManager( QObject* parent );
         ~StarManager();
 
         static StarManager* s_instance;

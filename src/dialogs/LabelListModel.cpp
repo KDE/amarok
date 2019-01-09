@@ -126,7 +126,7 @@ QStringList LabelListModel::labels()
 }
 
 //Sets label list to "labels"
-void LabelListModel::setLabels( QStringList labels )
+void LabelListModel::setLabels( const QStringList &labels )
 {
     beginInsertRows( QModelIndex(), 0, m_labels.length() );
     m_labels = labels;
