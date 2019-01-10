@@ -136,7 +136,7 @@ UpcomingEventsEngine::updateDataForArtist()
 }
 
 void
-UpcomingEventsEngine::artistEventsFetched( const QUrl &url, QByteArray data,
+UpcomingEventsEngine::artistEventsFetched( const QUrl &url, const QByteArray &data,
                                            NetworkAccessManagerProxy::Error e )
 {
     if( !m_urls.contains( url ) )
@@ -163,7 +163,7 @@ UpcomingEventsEngine::artistEventsFetched( const QUrl &url, QByteArray data,
 }
 
 void
-UpcomingEventsEngine::venueEventsFetched( const QUrl &url, QByteArray data,
+UpcomingEventsEngine::venueEventsFetched( const QUrl &url, const QByteArray data&,
                                           NetworkAccessManagerProxy::Error e )
 {
     Q_UNUSED( url )

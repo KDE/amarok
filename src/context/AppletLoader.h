@@ -38,7 +38,7 @@ public:
     void findApplets();
 
 Q_SIGNALS:
-    void finished(QList<KPluginMetaData>);
+    void finished(const QList<KPluginMetaData>&);
 
 private:
     QList<KPluginMetaData> m_applets;

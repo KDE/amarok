@@ -47,7 +47,7 @@ public:
     /**
      * Destructor
      */
-    ~RatingItem();
+    ~RatingItem() override;
 
     /**
      * @return The current rating.

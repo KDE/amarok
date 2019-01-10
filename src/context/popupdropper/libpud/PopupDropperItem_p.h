@@ -33,7 +33,7 @@ class PopupDropperItemPrivate
 
 public:
 
-    PopupDropperItemPrivate( PopupDropperItem* parent );
+    explicit PopupDropperItemPrivate( PopupDropperItem* parent );
     
     ~PopupDropperItemPrivate();
 

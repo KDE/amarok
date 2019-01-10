@@ -79,7 +79,7 @@ class AppletProxyModel : public QSortFilterProxyModel
 
 public:
     explicit AppletProxyModel(AppletModel *appletModel, QObject *parent = nullptr);
-    virtual ~AppletProxyModel();
+    ~AppletProxyModel() override;
 
     /**
      * @returns QStringList with ids of all enabled applets.

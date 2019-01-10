@@ -128,7 +128,7 @@ SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
 }
 
 void
-SimilarArtistsEngine::parseSimilarArtists( const QUrl &url, QByteArray data,
+SimilarArtistsEngine::parseSimilarArtists( const QUrl &url, consr QByteArray &data,
                                            NetworkAccessManagerProxy::Error e )
 {
     if( e.code != QNetworkReply::NoError )

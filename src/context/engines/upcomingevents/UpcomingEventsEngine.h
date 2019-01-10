@@ -48,7 +48,7 @@ public:
      *
      * Creates a new instance of UpcomingEventsEngine
      */
-    UpcomingEventsEngine( QObject* parent, const QList<QVariant>& args );
+    explicit UpcomingEventsEngine( QObject* parent, const QList<QVariant>& args );
 
     /**
      * \brief Destructor
@@ -103,8 +103,8 @@ private Q_SLOTS:
      */
     void updateDataForVenues();
 
-    void artistEventsFetched( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void venueEventsFetched( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void artistEventsFetched( const QUrl &url, const QByteArray &data, NetworkAccessManagerProxy::Error e );
+    void venueEventsFetched( const QUrl &url, const QByteArray &data, NetworkAccessManagerProxy::Error e );
 };
 
 #endif

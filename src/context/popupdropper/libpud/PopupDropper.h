@@ -132,7 +132,7 @@ public:
     QList<PopupDropperItem *> items() const;
     QList<PopupDropperItem *> submenuItems( const PopupDropperItem *item ) const;
     void forEachItem( void callback(void*) );
-    void addSeparator( PopupDropperItem *separator = 0 );
+    void addSeparator( PopupDropperItem *separator = nullptr );
 
 Q_SIGNALS:
     void fadeHideFinished();

@@ -53,7 +53,7 @@ Q_SIGNALS:
      *  In order to report their issues they will instead Q_EMIT
      *  newError with the list of errors.
      */
-    void newError( QStringList errorMessageList );
+    void newError( const QStringList &errorMessageList );
 };
 
 #endif /* AMAROK_STORAGE_FACTORY_H */

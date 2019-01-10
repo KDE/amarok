@@ -37,9 +37,9 @@ class AMAROK_CORE_EXPORT TrackForUrlWorker : public QObject, public ThreadWeaver
 public:
     explicit TrackForUrlWorker( const QUrl &url );
     explicit TrackForUrlWorker( const QString &url );
-    ~TrackForUrlWorker();
+    ~TrackForUrlWorker() override;
 
-    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override = 0;
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override = 0;
 
 Q_SIGNALS:
     void finishedLookup( const Meta::TrackPtr &track );

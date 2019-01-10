@@ -85,7 +85,7 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         explicit PodcastEpisode( PodcastChannelPtr channel );
         PodcastEpisode( PodcastEpisodePtr episode, PodcastChannelPtr channel );
 
-        virtual ~PodcastEpisode() {}
+        ~PodcastEpisode() override {}
 
         // Meta::Base methods
         QString name() const override { return m_title; }
