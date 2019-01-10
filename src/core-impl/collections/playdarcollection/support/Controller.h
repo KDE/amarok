@@ -50,7 +50,7 @@ namespace Playdar
         public:
             /**
              * We invoke the private function status() here, return immediately,
-             * and will emit playdarReady() once things are actually set up.
+             * and will Q_EMIT playdarReady() once things are actually set up.
              * @param queriesShouldWaitForSolutions
              *        If true, Playdar::Queries created by this controller will
              *        only use getResultsLongPoll instead of first using getResults.

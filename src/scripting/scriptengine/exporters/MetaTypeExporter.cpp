@@ -376,7 +376,7 @@ MetaTrackPrototype::metadataChanged( Meta::TrackPtr track )
 {
     Observer::unsubscribeFrom( track );
     debug() << "Loaded track: " << track->prettyName();
-    emit loaded( track );
+    Q_EMIT loaded( track );
 }
 
 void

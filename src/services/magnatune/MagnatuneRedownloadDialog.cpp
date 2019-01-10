@@ -72,10 +72,10 @@ void MagnatuneRedownloadDialog::slotRedownload( )
     QTreeWidgetItem * current = redownloadListView->currentItem();
     if ( m_infoMap.keys().contains( current ) )
     {
-        emit( redownload( m_infoMap.value( current ) ) );
+        Q_EMIT( redownload( m_infoMap.value( current ) ) );
     }
     
-    //emit ( redownload( redownloadListView->currentItem()->text( 0 ) ) );
+    //Q_EMIT ( redownload( redownloadListView->currentItem()->text( 0 ) ) );
 
     hide();
 }
@@ -83,7 +83,7 @@ void MagnatuneRedownloadDialog::slotRedownload( )
 void MagnatuneRedownloadDialog::reject( )
 {
     hide();
-    emit(cancelled());
+    Q_EMIT(cancelled());
 }
 
 void MagnatuneRedownloadDialog::selectionChanged( )

@@ -64,7 +64,7 @@ bool LabelListModel::setData( const QModelIndex &index, const QVariant &value, i
     if ( index.isValid() && role == Qt::EditRole )
     {
         m_labels.replace( index.row(), value.toString() );
-        emit dataChanged( index, index );
+        Q_EMIT dataChanged( index, index );
         m_labels.sort();
         return true;
     }

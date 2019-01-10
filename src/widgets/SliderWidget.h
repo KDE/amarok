@@ -41,7 +41,7 @@ namespace Amarok
             virtual void setValue( int );
 
         Q_SIGNALS:
-            //we emit this when the user has specifically changed the slider
+            //we Q_EMIT this when the user has specifically changed the slider
             //so connect to it if valueChanged() is too generic
             //Qt also emits valueChanged( int )
             void sliderReleased( int );

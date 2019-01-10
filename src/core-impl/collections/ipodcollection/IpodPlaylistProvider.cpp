@@ -88,8 +88,8 @@ IpodPlaylistProvider::save( const Meta::TrackList &tracks, const QString &name )
     Playlists::PlaylistPtr playlistPtr( playlist );
     m_playlists << playlistPtr;
     subscribeTo( playlistPtr );
-    emit playlistAdded( playlistPtr );
-    emit startWriteDatabaseTimer();
+    Q_EMIT playlistAdded( playlistPtr );
+    Q_EMIT startWriteDatabaseTimer();
     return playlistPtr;
 }
 
@@ -141,8 +141,8 @@ IpodPlaylistProvider::renamePlaylist( Playlists::PlaylistPtr playlist, const QSt
         return;  // special playlists cannot be renamed
 
     playlist->setName( newName );
-    emit updated();
-    emit startWriteDatabaseTimer();
+    Q_EMIT updated();
+    Q_EMIT startWriteDatabaseTimer();
 }
 
 bool
@@ -163,8 +163,8 @@ IpodPlaylistProvider::deletePlaylists( const Playlists::PlaylistList &playlistli
         IpodPlaylist *ipodPlaylist = static_cast<IpodPlaylist *>( playlist.data() );
         itdb_playlist_unlink( ipodPlaylist->itdbPlaylist() );
 
-        emit playlistRemoved( playlist );
-        emit startWriteDatabaseTimer();
+        Q_EMIT playlistRemoved( playlist );
+        Q_EMIT startWriteDatabaseTimer();
     }
     return true;
 }
@@ -172,19 +172,19 @@ IpodPlaylistProvider::deletePlaylists( const Playlists::PlaylistList &playlistli
 void
 IpodPlaylistProvider::metadataChanged( Playlists::PlaylistPtr )
 {
-    emit startWriteDatabaseTimer();
+    Q_EMIT startWriteDatabaseTimer();
 }
 
 void
 IpodPlaylistProvider::trackAdded( Playlists::PlaylistPtr, Meta::TrackPtr, int )
 {
-    emit startWriteDatabaseTimer();
+    Q_EMIT startWriteDatabaseTimer();
 }
 
 void
 IpodPlaylistProvider::trackRemoved( Playlists::PlaylistPtr, int )
 {
-    emit startWriteDatabaseTimer();
+    Q_EMIT startWriteDatabaseTimer();
 }
 
 void
@@ -300,13 +300,13 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
     if( m_stalePlaylist && m_stalePlaylist->trackCount() == 0 )
     {
         m_playlists.removeOne( m_stalePlaylist );
-        emit playlistRemoved( m_stalePlaylist );
+        Q_EMIT playlistRemoved( m_stalePlaylist );
         m_stalePlaylist = 0;
     }
     if( m_orphanedPlaylist && m_orphanedPlaylist->trackCount() == 0 )
     {
         m_playlists.removeOne( m_orphanedPlaylist );
-        emit playlistRemoved( m_orphanedPlaylist );
+        Q_EMIT playlistRemoved( m_orphanedPlaylist );
         m_orphanedPlaylist = 0;
     }
 

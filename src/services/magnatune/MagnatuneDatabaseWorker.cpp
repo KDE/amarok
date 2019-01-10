@@ -77,13 +77,13 @@ void MagnatuneDatabaseWorker::completeJob()
     DEBUG_BLOCK
     switch ( m_task ) {
         case FETCH_MODS:
-            emit( gotMoodMap( m_moodMap ) );
+            Q_EMIT( gotMoodMap( m_moodMap ) );
             break;
         case FETCH_MOODY_TRACKS:
-            emit( gotMoodyTracks( m_moodyTracks ) );
+            Q_EMIT( gotMoodyTracks( m_moodyTracks ) );
             break;
         case ALBUM_BY_SKU:
-            emit( gotAlbumBySku( m_album ) );
+            Q_EMIT( gotAlbumBySku( m_album ) );
             break;
         default:
             break;

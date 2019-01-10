@@ -68,10 +68,10 @@ BrowserMessageArea::shortMessageImpl( const QString &text )
 void
 BrowserMessageArea::longMessageImpl( const QString &text, MessageType type )
 {
-    // The purpose of this emit is to make the operation thread safe. If this
-    // method is called from a non-GUI thread, the "emit" relays it over the
+    // The purpose of this Q_EMIT is to make the operation thread safe. If this
+    // method is called from a non-GUI thread, the "Q_EMIT" relays it over the
     // event loop to the GUI thread, so that we can safely create widgets.
-    emit signalLongMessage( text, type );
+    Q_EMIT signalLongMessage( text, type );
 }
 
 void

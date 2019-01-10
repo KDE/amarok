@@ -255,7 +255,7 @@ void FilenameLayoutWidget::setScheme(const QString& scheme)
     inferScheme( scheme );
 
     slotUpdatePresetButton();
-    emit schemeChanged();
+    Q_EMIT schemeChanged();
 }
 
 //Handles the modifications to the dialog to toggle between advanced and basic editing mode.

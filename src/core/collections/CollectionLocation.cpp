@@ -244,7 +244,7 @@ CollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 void
 CollectionLocation::abort()
 {
-    emit aborted();
+    Q_EMIT aborted();
 }
 
 void
@@ -436,37 +436,37 @@ CollectionLocation::operationInProgressText( const Transcoding::Configuration &c
 void
 CollectionLocation::slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, QUrl> &sources )
 {
-    emit startCopy( sources, m_transcodingConfiguration );
+    Q_EMIT startCopy( sources, m_transcodingConfiguration );
 }
 
 void
 CollectionLocation::slotCopyOperationFinished()
 {
-    emit finishCopy();
+    Q_EMIT finishCopy();
 }
 
 void
 CollectionLocation::slotRemoveOperationFinished()
 {
-    emit finishRemove();
+    Q_EMIT finishRemove();
 }
 
 void
 CollectionLocation::slotShowSourceDialogDone()
 {
-    emit prepareOperation( m_sourceTracks, m_removeSources, m_transcodingConfiguration );
+    Q_EMIT prepareOperation( m_sourceTracks, m_removeSources, m_transcodingConfiguration );
 }
 
 void
 CollectionLocation::slotShowDestinationDialogDone()
 {
-    emit operationPrepared();
+    Q_EMIT operationPrepared();
 }
 
 void
 CollectionLocation::slotShowRemoveDialogDone()
 {
-    emit startRemove();
+    Q_EMIT startRemove();
 }
 
 void

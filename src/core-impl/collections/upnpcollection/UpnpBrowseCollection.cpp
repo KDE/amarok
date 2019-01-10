@@ -44,7 +44,7 @@ namespace Collections {
 
 //UpnpBrowseCollection
 
-// TODO register for the device bye bye and emit remove()
+// TODO register for the device bye bye and Q_EMIT remove()
 UpnpBrowseCollection::UpnpBrowseCollection( const DeviceInfo& dev )
     : UpnpCollectionBase( dev )
     , m_mc( new MemoryCollection() )
@@ -158,8 +158,8 @@ UpnpBrowseCollection::entries( KIO::Job *job, const KIO::UDSEntryList &list )
             createTrack( entry, sj->url().toDisplayString() );
         }
         count++;
-        emit totalSteps( count );
-        emit incrementProgress();
+        Q_EMIT totalSteps( count );
+        Q_EMIT incrementProgress();
     }
     updateMemoryCollection();
 }
@@ -172,7 +172,7 @@ UpnpBrowseCollection::updateMemoryCollection()
     memoryCollection()->setAlbumMap( m_cache->albums() );
     memoryCollection()->setGenreMap( m_cache->genres() );
     memoryCollection()->setYearMap( m_cache->years() );
-    emit updated();
+    Q_EMIT updated();
 }
 
 void
@@ -208,7 +208,7 @@ DEBUG_BLOCK
     {
         m_fullScanTimer->stop();
         m_fullScanInProgress = false;
-        emit endProgressOperation( this );
+        Q_EMIT endProgressOperation( this );
         debug() << "Full Scan done";
     }
 

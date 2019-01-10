@@ -75,14 +75,14 @@ AbstractScanResultProcessor::scanDirectoryCount( int count )
 {
     // message( i18np("Found one directory", "Found %1 directories", count ) );
     debug() << "got" << count << "directories";
-    emit totalSteps( count * 2 );
+    Q_EMIT totalSteps( count * 2 );
 }
 
 void
 AbstractScanResultProcessor::scanDirectoryScanned( QSharedPointer<CollectionScanner::Directory> dir )
 {
     m_directories.append( dir );
-    emit incrementProgress();
+    Q_EMIT incrementProgress();
 }
 
 void
@@ -144,7 +144,7 @@ AbstractScanResultProcessor::scanSucceeded()
 
     // --- add all albums
     QList<QString> keys = m_albumNames.uniqueKeys();
-    emit totalSteps( m_directories.count() + keys.count() ); // update progress bar
+    Q_EMIT totalSteps( m_directories.count() + keys.count() ); // update progress bar
     foreach( const QString &key, keys )
     {
         // --- commit the albums as compilation or normal album
@@ -201,7 +201,7 @@ AbstractScanResultProcessor::scanSucceeded()
                 commitAlbum( albums.takeFirst() );
         }
 
-        emit incrementProgress();
+        Q_EMIT incrementProgress();
     }
 
     // -- now check if some of the tracks are not longer used and also not moved to another directory
@@ -213,7 +213,7 @@ AbstractScanResultProcessor::scanSucceeded()
     deleteDeletedDirectories();
 
     cleanupMembers();
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
 }
 
 void
@@ -222,7 +222,7 @@ AbstractScanResultProcessor::scanFailed( const QString& text )
     message( text );
 
     cleanupMembers();
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
 }
 
 void

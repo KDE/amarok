@@ -83,7 +83,7 @@ MagnatuneXmlParser::completeJob( )
                   "1 artist.", "%1 artists.", m_nNumberOfArtists )
         , Amarok::Logger::Information );
 
-    emit doneParsing();
+    Q_EMIT doneParsing();
     deleteLater();
 }
 

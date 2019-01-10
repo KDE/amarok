@@ -37,9 +37,9 @@ void EditDeleteComboBoxView::mousePressEvent( QMouseEvent *event )
     mousePressPos.ry() += verticalOffset();
 
     if ( EditDeleteDelegate::hitsEdit( mousePressPos, rectForIndex( index ) ) )
-        emit( editItem( index.data().toString() ) );
+        Q_EMIT( editItem( index.data().toString() ) );
     else if ( EditDeleteDelegate::hitsDelete( mousePressPos, rectForIndex( index ) ) )
-        emit( deleteItem( index.data().toString() ) );
+        Q_EMIT( deleteItem( index.data().toString() ) );
 
     QListView::mousePressEvent( event );
 }

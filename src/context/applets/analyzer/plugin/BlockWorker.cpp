@@ -125,5 +125,5 @@ void BlockWorker::analyze()
             store = y;
     }
 
-    emit finished();
+    Q_EMIT finished();
 }

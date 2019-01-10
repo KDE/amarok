@@ -133,7 +133,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
         virtual QAction *ejectAction() const;
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
-        void collectionUpdated() { emit updated(); }
+        void collectionUpdated() { Q_EMIT updated(); }
 
     Q_SIGNALS:
         void collectionReady( Collections::Collection* );

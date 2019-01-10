@@ -39,7 +39,7 @@ void ComboBox::keyPressEvent( QKeyEvent *event )
     else if( event->key() == Qt::Key_Down )
     {
         event->accept();
-        emit downPressed();
+        Q_EMIT downPressed();
         return;
     }
     KComboBox::keyPressEvent( event );

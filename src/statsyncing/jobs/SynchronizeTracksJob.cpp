@@ -27,7 +27,7 @@
 
 using namespace StatSyncing;
 
-static const int denom = 20; // emit incementProgress() signal each N tracks
+static const int denom = 20; // Q_EMIT incementProgress() signal each N tracks
 static const int fuzz = denom / 2;
 
 SynchronizeTracksJob::SynchronizeTracksJob( const QList<TrackTuple> &tuples,
@@ -54,7 +54,7 @@ SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
 {
     Q_UNUSED(self);
     Q_UNUSED(thread);
-    emit totalSteps( ( m_tuples.size() + fuzz ) / denom );
+    Q_EMIT totalSteps( ( m_tuples.size() + fuzz ) / denom );
 
     Controller *controller = Amarok::Components::statSyncingController();
     if( controller )
@@ -79,7 +79,7 @@ SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
         if( metaTrack && playcount > 0 )
         {
             m_scrobbledTracks << metaTrack;
-            emit scrobble( metaTrack, playcount, track->lastPlayed() );
+            Q_EMIT scrobble( metaTrack, playcount, track->lastPlayed() );
         }
     }
 
@@ -95,7 +95,7 @@ SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
         updatedProviders |= tupleUpdatedProviders;
         m_updatedTracksCount += tupleUpdatedProviders.count();
         if( ( i + fuzz ) % denom == 0 )
-            emit incrementProgress();
+            Q_EMIT incrementProgress();
         i++;
     }
 
@@ -117,7 +117,7 @@ SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
         disconnect( controller, &StatSyncing::Controller::trackScrobbled, this, 0 );
     disconnect( controller, &StatSyncing::Controller::scrobbleFailed, this, 0 );
 
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
 }
 
 void SynchronizeTracksJob::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)

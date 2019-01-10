@@ -832,7 +832,7 @@ SqlRegistry::commitDirtyTracks()
     foreach( Meta::SqlYearPtr year, dirtyYears )
     {
         // this means that a new year was added to track or an old removed (or both),
-        // Collection docs says we need to emit updated() in this case. Ditto below.
+        // Collection docs says we need to Q_EMIT updated() in this case. Ditto below.
         m_collectionChanged = true;
         year->invalidateCache();
         year->notifyObservers();
@@ -851,7 +851,7 @@ SqlRegistry::commitDirtyTracks()
     }
     foreach( Meta::SqlTrackPtr track, dirtyTracks )
     {
-        // if only track changes, no need to emit updated() from here
+        // if only track changes, no need to Q_EMIT updated() from here
         track->notifyObservers();
     }
     foreach( Meta::SqlArtistPtr artist, dirtyArtists )

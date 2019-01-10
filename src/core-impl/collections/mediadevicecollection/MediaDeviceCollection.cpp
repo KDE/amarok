@@ -135,7 +135,7 @@ MediaDeviceCollection::startFullScanDevice()
     // If handler successfully connected to device
 
     m_handler->parseTracks();
-    //emit collectionReady( this );
+    //Q_EMIT collectionReady( this );
 }
 
 Meta::MediaDeviceHandler*
@@ -149,15 +149,15 @@ MediaDeviceCollection::eject()
 {
     DEBUG_BLOCK
     // Do nothing special here.
-    emit collectionDisconnected( m_udi );
+    Q_EMIT collectionDisconnected( m_udi );
 }
 
 void
 MediaDeviceCollection::deleteCollection()
 {
     DEBUG_BLOCK
-    emit deletingCollection();
-    emit remove();
+    Q_EMIT deletingCollection();
+    Q_EMIT remove();
 }
 
 void
@@ -173,7 +173,7 @@ MediaDeviceCollection::slotAttemptConnectionDone( bool success )
     else
     {
         debug() << "connection failed, not scanning";
-        emit collectionDisconnected( m_udi );
+        Q_EMIT collectionDisconnected( m_udi );
     }
 }
 
@@ -230,7 +230,7 @@ MediaDeviceCollection::totalCapacity() const
 void
 MediaDeviceCollection::emitCollectionReady()
 {
-    emit collectionReady( this );
+    Q_EMIT collectionReady( this );
 }
 
 QAction *

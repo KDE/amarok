@@ -260,8 +260,8 @@ namespace Mpris1
     void PlayerHandler::updateStatus()
     {
         Status status = GetStatus();
-        emit StatusChange( status );
-        emit CapsChange( GetCaps() );
+        Q_EMIT StatusChange( status );
+        Q_EMIT CapsChange( GetCaps() );
     }
 
     QVariantMap PlayerHandler::GetTrackMetadata( Meta::TrackPtr track )
@@ -271,7 +271,7 @@ namespace Mpris1
 
     void PlayerHandler::slotTrackChanged( Meta::TrackPtr track )
     {
-        emit TrackChange( GetTrackMetadata( track ) );
+        Q_EMIT TrackChange( GetTrackMetadata( track ) );
     }
 
     void PlayerHandler::slotStateChanged()

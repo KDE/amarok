@@ -90,7 +90,7 @@ Dynamic::SimpleMatchBias::setInvert( bool value )
 
     m_invert = value;
     // setting "invert" does not invalidate the search results
-    emit changed( BiasPtr(this) );
+    Q_EMIT changed( BiasPtr(this) );
 }
 
 
@@ -130,7 +130,7 @@ Dynamic::SimpleMatchBias::updateFinished()
     m_tracksTime = QDateTime::currentDateTime();
     m_qm.reset();
     debug() << "SimpleMatchBias::"<<name()<<"updateFinished"<<m_tracks.trackCount();
-    emit resultReady( m_tracks );
+    Q_EMIT resultReady( m_tracks );
 }
 
 bool
@@ -317,7 +317,7 @@ Dynamic::TagMatchBias::setFilter( const MetaQueryWidget::Filter &filter)
     DEBUG_BLOCK;
     m_filter = filter;
     invalidate();
-    emit changed( BiasPtr(this) );
+    Q_EMIT changed( BiasPtr(this) );
 }
 
 void

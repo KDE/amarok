@@ -113,28 +113,28 @@ AggregateCollection::addCollection( Collections::Collection *collection, Collect
 
     m_idCollectionMap.insert( collection->collectionId(), collection );
     //TODO
-    emit updated();
+    Q_EMIT updated();
 }
 
 void
 AggregateCollection::removeCollectionById( const QString &collectionId )
 {
     m_idCollectionMap.remove( collectionId );
-    emit updated();
+    Q_EMIT updated();
 }
 
 void
 AggregateCollection::removeCollection( Collections::Collection *collection )
 {
     m_idCollectionMap.remove( collection->collectionId() );
-    emit updated();
+    Q_EMIT updated();
 }
 
 void
 AggregateCollection::slotUpdated()
 {
     //TODO
-    emit updated();
+    Q_EMIT updated();
 }
 
 void

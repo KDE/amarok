@@ -203,7 +203,7 @@ MtpHandler::init()
     else
     {
         free( rawdevices );
-    //        emit failed();
+    //        Q_EMIT failed();
     }
 }
 
@@ -405,7 +405,7 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
         }
     }
 
-    emit gotCopyableUrls( urls );
+    Q_EMIT gotCopyableUrls( urls );
 }
 
 /**
@@ -698,9 +698,9 @@ MtpHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrack
                                            0, 0 );
 
     debug() << "sent";
-//    emit canCopyMoreTracks();
+//    Q_EMIT canCopyMoreTracks();
 
-//    emit libCopyTrackDone( srcTrack );
+//    Q_EMIT libCopyTrackDone( srcTrack );
 
     return ( ret == 0 );
 }
@@ -1489,7 +1489,7 @@ MtpHandler::slotCopyNextTrackToDevice( ThreadWeaver::Job* job )
 {
     if ( job->success() )
     {
-        emit incrementProgress();
+        Q_EMIT incrementProgress();
     }
     else
     {

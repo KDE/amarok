@@ -44,5 +44,5 @@ void
 RhythmboxTrack::doCommit( const qint64 fields )
 {
     Q_UNUSED( fields );
-    emit commitCalled( m_location, m_statistics );
+    Q_EMIT commitCalled( m_location, m_statistics );
 }

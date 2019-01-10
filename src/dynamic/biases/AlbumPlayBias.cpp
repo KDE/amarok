@@ -255,7 +255,7 @@ Dynamic::AlbumPlayBias::setFollow( Dynamic::AlbumPlayBias::FollowType value )
 {
     m_follow = value;
     invalidate();
-    emit changed( BiasPtr(this) );
+    Q_EMIT changed( BiasPtr(this) );
 }
 
 void

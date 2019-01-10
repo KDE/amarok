@@ -75,7 +75,7 @@ class IpodCollectionFactory : public Collections::CollectionFactory
 
         /**
          * Attempts to create appropriate collection for already identified solid device
-         * @param udi. Should emit newCollection() if the collection was successfully
+         * @param udi. Should Q_EMIT newCollection() if the collection was successfully
          * created and should become visible to the user.
          */
         void createCollectionForSolidDevice( const QString &udi );

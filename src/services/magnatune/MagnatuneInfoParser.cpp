@@ -81,7 +81,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
     infoHtml += "</p><br><br>" + i18n( "From Magnatune.com" ) + "</div>";
     infoHtml += "</BODY></HTML>";
 
-    emit ( info( infoHtml ) );
+    Q_EMIT ( info( infoHtml ) );
 }
 
 void MagnatuneInfoParser::getInfo(TrackPtr track)
@@ -113,7 +113,7 @@ MagnatuneInfoParser::artistInfoDownloadComplete( KJob *downLoadJob )
 
     //debug() << "html: " << trimmedInfo;
 
-    emit ( info( infoString ) );
+    Q_EMIT ( info( infoString ) );
 
 }
 
@@ -156,7 +156,7 @@ void MagnatuneInfoParser::getFrontPage()
 
     if( !m_cachedFrontpage.isEmpty() )
     {
-        emit ( info( m_cachedFrontpage ) );
+        Q_EMIT ( info( m_cachedFrontpage ) );
         return;
     }
 
@@ -240,7 +240,7 @@ void MagnatuneInfoParser::frontpageDownloadComplete( KJob * downLoadJob )
     if( m_cachedFrontpage.isEmpty() )
         m_cachedFrontpage = infoString;
 
-    emit ( info( infoString ) );
+    Q_EMIT ( info( infoString ) );
 }
 
 void MagnatuneInfoParser::userPageDownloadComplete( KJob * downLoadJob )
@@ -265,7 +265,7 @@ void MagnatuneInfoParser::userPageDownloadComplete( KJob * downLoadJob )
     //make sure that any pages that use the old command name "service_magnatune" replaces it with "service-magnatune"
     infoString.replace( "service_magnatune", "service-magnatune" );
 
-    emit ( info( infoString ) );
+    Q_EMIT ( info( infoString ) );
 }
 
 

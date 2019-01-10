@@ -72,7 +72,7 @@ void LayoutManager::setActiveLayout( const QString &layout )
 {
     m_activeLayout = layout;
     Amarok::config( QStringLiteral("Playlist Layout") ).writeEntry( "CurrentLayout", m_activeLayout );
-    emit( activeLayoutChanged() );
+    Q_EMIT( activeLayoutChanged() );
 
     //Change the grouping style to that of this layout.
     Playlist::ModelStack::instance()->groupingProxy()->setGroupingCategory( activeLayout().groupBy() );
@@ -84,7 +84,7 @@ void LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
     DEBUG_BLOCK
     m_activeLayout = PREVIEW_LAYOUT;
     m_previewLayout = layout;
-    emit( activeLayoutChanged() );
+    Q_EMIT( activeLayoutChanged() );
 
     //Change the grouping style to that of this layout.
     Playlist::ModelStack::instance()->groupingProxy()->setGroupingCategory( activeLayout().groupBy() );
@@ -306,7 +306,7 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     doc.appendChild( layouts_element );
     layouts_element.appendChild( newLayout );
 
-    emit( layoutListChanged() );
+    Q_EMIT( layoutListChanged() );
 
     QDomElement body = doc.createElement( QStringLiteral("body") );
     QDomElement single = doc.createElement( QStringLiteral("single") );
@@ -408,7 +408,7 @@ void LayoutManager::deleteLayout( const QString &layout )
 
         m_layouts.remove( layout );
         m_layoutNames.removeAll( layout );
-        emit( layoutListChanged() );
+        Q_EMIT( layoutListChanged() );
 
         if ( layout == m_activeLayout )
             setActiveLayout( QStringLiteral("Default") );
@@ -427,7 +427,7 @@ int LayoutManager::moveUp( const QString &layout )
     int index = m_layoutNames.indexOf( layout );
     if ( index > 0 ) {
         m_layoutNames.swap ( index, index - 1 );
-        emit( layoutListChanged() );
+        Q_EMIT( layoutListChanged() );
         storeLayoutOrdering();
         return index - 1;
     }
@@ -440,7 +440,7 @@ int LayoutManager::moveDown( const QString &layout )
     int index = m_layoutNames.indexOf( layout );
     if ( index < m_layoutNames.size() -1 ) {
         m_layoutNames.swap ( index, index + 1 );
-        emit( layoutListChanged() );
+        Q_EMIT( layoutListChanged() );
         storeLayoutOrdering();
         return index + 1;
     }

@@ -183,12 +183,12 @@ MatchedTracksModel::setData( const QModelIndex &idx, const QVariant &value, int 
     // parent changes:
     QModelIndex parent = idx.parent();
     QModelIndex parentRating = index( parent.row(), idx.column(), parent.parent() );
-    emit dataChanged( parentRating, parentRating );
+    Q_EMIT dataChanged( parentRating, parentRating );
 
     // children change:
     QModelIndex topLeft = index( 0, idx.column(), parent );
     QModelIndex bottomRight = index( tuple.count() - 1, idx.column(), parent );
-    emit dataChanged( topLeft, bottomRight );
+    Q_EMIT dataChanged( topLeft, bottomRight );
     return true;
 }
 
@@ -245,13 +245,13 @@ MatchedTracksModel::takeRatingsFrom( const ProviderPtr &provider )
         // parent changes:
         int ratingColumn = m_columns.indexOf( Meta::valRating );
         QModelIndex parentRating = index( i, ratingColumn );
-        emit dataChanged( parentRating, parentRating );
+        Q_EMIT dataChanged( parentRating, parentRating );
 
         // children change:
         QModelIndex parent = index( i, 0 );
         QModelIndex topLeft = index( 0, ratingColumn, parent );
         QModelIndex bottomRight = index( tuple.count() - 1, ratingColumn, parent );
-        emit dataChanged( topLeft, bottomRight );
+        Q_EMIT dataChanged( topLeft, bottomRight );
     }
 }
 
@@ -275,13 +275,13 @@ MatchedTracksModel::includeLabelsFrom( const ProviderPtr &provider )
         // parent changes:
         int ratingColumn = m_columns.indexOf( Meta::valRating );
         QModelIndex parentRating = index( i, ratingColumn );
-        emit dataChanged( parentRating, parentRating );
+        Q_EMIT dataChanged( parentRating, parentRating );
 
         // children change:
         QModelIndex parent = index( i, 0 );
         QModelIndex topLeft = index( 0, ratingColumn, parent );
         QModelIndex bottomRight = index( tuple.count() - 1, ratingColumn, parent );
-        emit dataChanged( topLeft, bottomRight );
+        Q_EMIT dataChanged( topLeft, bottomRight );
     }
 }
 
@@ -308,13 +308,13 @@ MatchedTracksModel::excludeLabelsFrom( const ProviderPtr &provider )
         // parent changes:
         int ratingColumn = m_columns.indexOf( Meta::valRating );
         QModelIndex parentRating = index( i, ratingColumn );
-        emit dataChanged( parentRating, parentRating );
+        Q_EMIT dataChanged( parentRating, parentRating );
 
         // children change:
         QModelIndex parent = index( i, 0 );
         QModelIndex topLeft = index( 0, ratingColumn, parent );
         QModelIndex bottomRight = index( tuple.count() - 1, ratingColumn, parent );
-        emit dataChanged( topLeft, bottomRight );
+        Q_EMIT dataChanged( topLeft, bottomRight );
     }
 }
 

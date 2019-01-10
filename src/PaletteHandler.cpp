@@ -49,7 +49,7 @@ void
 PaletteHandler::setPalette( const QPalette & palette )
 {
     m_palette = palette;
-    emit( newPalette( m_palette ) );
+    Q_EMIT( newPalette( m_palette ) );
 }
 
 void

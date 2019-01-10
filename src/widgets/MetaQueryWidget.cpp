@@ -298,7 +298,7 @@ MetaQueryWidget::setFilter( const MetaQueryWidget::Filter &value )
     setValueSelection();
 
     m_settingFilter = false;
-    emit changed(m_filter);
+    Q_EMIT changed(m_filter);
 }
 
 static void addIconItem( QComboBox *box, qint64 field )
@@ -375,7 +375,7 @@ MetaQueryWidget::fieldChanged( int i )
 
     setValueSelection();
 
-    emit changed(m_filter);
+    Q_EMIT changed(m_filter);
 }
 
 void
@@ -459,7 +459,7 @@ MetaQueryWidget::compareChanged( int index )
 
     setValueSelection();
 
-    emit changed(m_filter);
+    Q_EMIT changed(m_filter);
 }
 
 void
@@ -467,7 +467,7 @@ MetaQueryWidget::valueChanged( const QString& value )
 {
     m_filter.value = value;
 
-    emit changed(m_filter);
+    Q_EMIT changed(m_filter);
 }
 
 void
@@ -475,7 +475,7 @@ MetaQueryWidget::numValueChanged( int value )
 {
     m_filter.numValue = value;
 
-    emit changed(m_filter);
+    Q_EMIT changed(m_filter);
 }
 
 void
@@ -483,7 +483,7 @@ MetaQueryWidget::numValue2Changed( int value )
 {
     m_filter.numValue2 = value;
 
-    emit changed(m_filter);
+    Q_EMIT changed(m_filter);
 }
 
 void
@@ -491,7 +491,7 @@ MetaQueryWidget::numValueChanged( qint64 value )
 {
     m_filter.numValue = value;
 
-    emit changed(m_filter);
+    Q_EMIT changed(m_filter);
 }
 
 void
@@ -499,7 +499,7 @@ MetaQueryWidget::numValue2Changed( qint64 value )
 {
     m_filter.numValue2 = value;
 
-    emit changed(m_filter);
+    Q_EMIT changed(m_filter);
 }
 
 void
@@ -507,7 +507,7 @@ MetaQueryWidget::numValueChanged( const QTime& value )
 {
     m_filter.numValue = qAbs( value.secsTo( QTime(0,0,0) ) );
 
-    emit changed(m_filter);
+    Q_EMIT changed(m_filter);
 }
 
 void
@@ -515,7 +515,7 @@ MetaQueryWidget::numValue2Changed( const QTime& value )
 {
     m_filter.numValue2 = qAbs( value.secsTo( QTime(0,0,0) ) );
 
-    emit changed(m_filter);
+    Q_EMIT changed(m_filter);
 }
 
 void
@@ -528,7 +528,7 @@ MetaQueryWidget::numValueDateChanged()
         dateSelection->getDate( &date );
         m_filter.numValue = QDateTime( date ).toTime_t();
 
-        emit changed(m_filter);
+        Q_EMIT changed(m_filter);
     }
 }
 
@@ -542,7 +542,7 @@ MetaQueryWidget::numValue2DateChanged()
         dateSelection->getDate( &date );
         m_filter.numValue2 = QDateTime( date ).toTime_t();
 
-        emit changed(m_filter);
+        Q_EMIT changed(m_filter);
     }
 }
 
@@ -558,7 +558,7 @@ MetaQueryWidget::numValueTimeDistanceChanged()
     {
         m_filter.numValue = distanceSelection->timeDistance();
 
-        emit changed(m_filter);
+        Q_EMIT changed(m_filter);
     }
 }
 
@@ -569,7 +569,7 @@ MetaQueryWidget::numValueFormatChanged(int index)
     if( combo ) {
         m_filter.numValue = combo->itemData( index ).toInt();
 
-        emit changed(m_filter);
+        Q_EMIT changed(m_filter);
     }
 }
 

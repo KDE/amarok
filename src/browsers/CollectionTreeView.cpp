@@ -561,7 +561,7 @@ CollectionTreeView::keyPressEvent( QKeyEvent *event )
         case Qt::Key_Up:
             if( current.parent() == QModelIndex() && current.row() == 0 )
             {
-                emit leavingTree();
+                Q_EMIT leavingTree();
                 return;
             }
             break;
@@ -737,7 +737,7 @@ CollectionTreeView::selectionChanged( const QItemSelection &selected,
 
     CollectionTreeItem *item =
             static_cast<CollectionTreeItem *>( index.internalPointer() );
-    emit( itemSelected ( item ) );
+    Q_EMIT( itemSelected ( item ) );
 }
 
 void
@@ -1054,7 +1054,7 @@ CollectionTreeView::slotAddFilteredTracksToPlaylist()
         }
         if( !items.isEmpty() )
             playChildTracks( items, Playlist::OnAppendToPlaylistAction );
-        emit addingFilteredTracksDone();
+        Q_EMIT addingFilteredTracksDone();
     }
 }
 

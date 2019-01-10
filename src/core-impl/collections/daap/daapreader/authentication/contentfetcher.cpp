@@ -97,13 +97,13 @@ ContentFetcher::onFinished()
     {
         if( m_reply->error() == QNetworkReply::AuthenticationRequiredError )
         {
-            emit loginRequired();
+            Q_EMIT loginRequired();
             return;
         }
 
         debug() << "there is an error? " << m_reply->error() << " " << m_reply->errorString();
         m_selfDestruct = true;
-        emit httpError( m_reply->errorString() );
+        Q_EMIT httpError( m_reply->errorString() );
     }
 
     QByteArray read = m_reply->readAll();
@@ -121,7 +121,7 @@ ContentFetcher::onFinished()
     else
         m_lastResult = read;
 
-    emit finished();
+    Q_EMIT finished();
     m_reply->deleteLater();
     m_reply = nullptr;
 }

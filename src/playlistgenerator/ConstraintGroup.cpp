@@ -267,14 +267,14 @@ void
 ConstraintGroup::setMatchAny()
 {
     m_matchtype = MatchAny;
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 void
 ConstraintGroup::setMatchAll()
 {
     m_matchtype = MatchAll;
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 /******************************
@@ -300,8 +300,8 @@ void
 ConstraintGroupEditWidget::on_radioButton_MatchAll_clicked( bool c )
 {
     if ( c ) {
-        emit clickedMatchAll();
-        emit updated();
+        Q_EMIT clickedMatchAll();
+        Q_EMIT updated();
     }
 }
 
@@ -309,7 +309,7 @@ void
 ConstraintGroupEditWidget::on_radioButton_MatchAny_clicked( bool c )
 {
     if ( c ) {
-        emit clickedMatchAny();
-        emit updated();
+        Q_EMIT clickedMatchAny();
+        Q_EMIT updated();
     }
 }

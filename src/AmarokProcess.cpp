@@ -70,19 +70,19 @@ AmarokProcess::start()
 void
 AmarokProcess::finished() // SLOT
 {
-    emit processExited( this );
+    Q_EMIT processExited( this );
 }
 
 void
 AmarokProcess::readyReadStandardOutput() // SLOT
 {
-    emit receivedStdout( this );
+    Q_EMIT receivedStdout( this );
 }
 
 void
 AmarokProcess::readyReadStandardError() // SLOT
 {
-    emit receivedStderr( this );
+    Q_EMIT receivedStderr( this );
 }
 
 // AmarokProcIO
@@ -125,7 +125,7 @@ void
 AmarokProcIO::readyReadStandardOutput()
 {
     if( canReadLine() )
-        emit readReady( this );
+        Q_EMIT readReady( this );
 }
 
 // AmarokShellProcess

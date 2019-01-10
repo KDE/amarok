@@ -48,9 +48,9 @@ Q_SIGNALS:
     void newStorage( QSharedPointer<SqlStorage> newStorage );
 
     /**
-     *  The factories will not emit the newStorage signal in case
+     *  The factories will not Q_EMIT the newStorage signal in case
      *  of initialization problems.
-     *  In order to report their issues they will instead emit
+     *  In order to report their issues they will instead Q_EMIT
      *  newError with the list of errors.
      */
     void newError( QStringList errorMessageList );

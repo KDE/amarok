@@ -249,7 +249,7 @@ void UpnpCollectionFactory::slotSearchCapabilitiesDone( KJob *job )
             qDebug() << "Supported Search() meta-data" << searchCaps << "not enough. Using UpnpBrowseCollection";
             m_devices[dev.uuid()] = new UpnpBrowseCollection( dev );
         }
-        emit newCollection( m_devices[dev.uuid()] );
+        Q_EMIT newCollection( m_devices[dev.uuid()] );
     }
 }
 

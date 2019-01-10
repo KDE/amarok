@@ -281,8 +281,8 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
 
     if( status & CollectionViewable )
     {
-//         emit collectionAdded( newCollection );
-        emit collectionAdded( newCollection, status );
+//         Q_EMIT collectionAdded( newCollection );
+        Q_EMIT collectionAdded( newCollection, status );
     }
 }
 
@@ -301,7 +301,7 @@ CollectionManager::slotRemoveCollection()
             d->trackProviders.removeAll( collection );
         }
 
-        emit collectionRemoved( collection->collectionId() );
+        Q_EMIT collectionRemoved( collection->collectionId() );
         QTimer::singleShot( 500, collection, &QObject::deleteLater ); // give the tree some time to update itself until we really delete the collection pointers.
     }
 }
@@ -315,7 +315,7 @@ CollectionManager::slotCollectionChanged()
         CollectionStatus status = collectionStatus( collection->collectionId() );
         if( status & CollectionViewable )
         {
-            emit collectionDataChanged( collection );
+            Q_EMIT collectionDataChanged( collection );
         }
     }
 }
@@ -410,7 +410,7 @@ CollectionManager::addTrackProvider( Collections::TrackProvider *provider )
         QWriteLocker locker( &d->lock );
         d->trackProviders.append( provider );
     }
-    emit trackProviderAdded( provider );
+    Q_EMIT trackProviderAdded( provider );
 }
 
 void

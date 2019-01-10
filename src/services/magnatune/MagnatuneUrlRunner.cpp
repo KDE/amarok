@@ -52,15 +52,15 @@ bool MagnatuneUrlRunner::run( AmarokUrl url )
 
         if( command == "show_favorites" )
         {
-            emit( showFavorites() );
+            Q_EMIT( showFavorites() );
         }
         else if ( command == "show_home" )
         {
-            emit( showHome() );
+            Q_EMIT( showHome() );
         }
         else if ( command == "show_recommendations" )
         {
-            emit( showRecommendations() );
+            Q_EMIT( showRecommendations() );
         }
         else if ( command == "download" || command == "purchase" || command == "buy" )
         {
@@ -72,7 +72,7 @@ bool MagnatuneUrlRunner::run( AmarokUrl url )
             if ( url.args().keys().contains( "sku" ) )
             {
                 QString sku = url.args().value( "sku" );
-                emit( buyOrDownload( sku ) );
+                Q_EMIT( buyOrDownload( sku ) );
             }
         }
         else if ( command == "remove_favorite" )
@@ -81,7 +81,7 @@ bool MagnatuneUrlRunner::run( AmarokUrl url )
             {
                 QString sku = url.args().value( "sku" );
                 debug() << "remove from favorites sku: " << sku;
-                emit( removeFromFavorites( sku ) );
+                Q_EMIT( removeFromFavorites( sku ) );
             }
         }
 

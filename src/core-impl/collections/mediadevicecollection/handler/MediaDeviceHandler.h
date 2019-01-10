@@ -134,7 +134,7 @@ public:
     *  of this type of device.  If the device needs to
     *  do some work to get URLs (e.g. copy tracks to a
     *  temporary location) the overridden method in
-    *  the handler takes care of it, but must emit
+    *  the handler takes care of it, but must Q_EMIT
     *  gotCopyableUrls when finished.
     *  @param tracks The list of tracks for which to fetch urls
     */

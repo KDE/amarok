@@ -191,7 +191,7 @@ EqualizerController::eqUpdate()
             }
         }
     }
-    emit gainsChanged( equalizerParametersCfg );
+    Q_EMIT gainsChanged( equalizerParametersCfg );
 }
 
 QString
@@ -216,7 +216,7 @@ EqualizerController::applyEqualizerPresetByIndex( int index )
         AmarokConfig::setEqualizerMode( 0 );
 
     eqUpdate();
-    emit presetApplied( index );
+    Q_EMIT presetApplied( index );
 }
 
 void
@@ -231,7 +231,7 @@ void
 EqualizerController::savePreset( const QString &name, const QList<int> &gains )
 {
     EqualizerPresets::eqCfgSetPresetVal( name, gains );
-    emit presetsChanged( name );
+    Q_EMIT presetsChanged( name );
 }
 
 bool
@@ -240,7 +240,7 @@ EqualizerController::deletePreset( const QString &name )
     if( !EqualizerPresets::eqCfgDeletePreset( name ) )
         return false;
 
-    emit presetsChanged( name );
+    Q_EMIT presetsChanged( name );
     return true;
 }
 

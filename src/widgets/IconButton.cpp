@@ -66,7 +66,7 @@ void IconButton::mouseReleaseEvent( QMouseEvent *me )
     if ( m_isClick && rect().contains( me->pos() ) )
     {
         m_isClick = false;
-        emit clicked();
+        Q_EMIT clicked();
     }
 }
 

@@ -62,7 +62,7 @@ public:
 
     bool wait();
 
-    // Simply emit identified( info )
+    // Simply Q_EMIT identified( info )
     virtual void tellIdentified( const QString &udi );
     virtual void tellDisconnected( const QString &udi );
 

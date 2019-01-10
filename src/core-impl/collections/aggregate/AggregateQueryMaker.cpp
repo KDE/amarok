@@ -305,7 +305,7 @@ AggregateQueryMaker::slotQueryDone()
         //make sure we don't give control to code outside this class while holding the lock
         m_queryDoneCountMutex.unlock();
         handleResult();
-        emit queryDone();
+        Q_EMIT queryDone();
     }
     else
     {
@@ -358,7 +358,7 @@ AggregateQueryMaker::handleResult()
                     count++;
                 }
             }
-            emit newResultReady( result );
+            Q_EMIT newResultReady( result );
             break;
         }
         case QueryMaker::Track :
@@ -380,7 +380,7 @@ AggregateQueryMaker::handleResult()
             if ( m_maxResultSize >= 0 && tracks.count() > m_maxResultSize )
                 tracks = tracks.mid( 0, m_maxResultSize );
 
-            emit newTracksReady(tracks);
+            Q_EMIT newTracksReady(tracks);
             break;
         }
         case QueryMaker::Album :
@@ -396,7 +396,7 @@ AggregateQueryMaker::handleResult()
             if ( m_maxResultSize >= 0 && albums.count() > m_maxResultSize )
                 albums = albums.mid( 0, m_maxResultSize );
 
-            emit newAlbumsReady(albums);
+            Q_EMIT newAlbumsReady(albums);
             break;
         }
         case QueryMaker::Artist :
@@ -413,7 +413,7 @@ AggregateQueryMaker::handleResult()
             if ( m_maxResultSize >= 0 && artists.count() > m_maxResultSize )
                 artists = artists.mid( 0, m_maxResultSize );
 
-            emit newArtistsReady(artists);
+            Q_EMIT newArtistsReady(artists);
             break;
         }
         case QueryMaker::Composer :
@@ -429,7 +429,7 @@ AggregateQueryMaker::handleResult()
             if ( m_maxResultSize >= 0 && composers.count() > m_maxResultSize )
                 composers = composers.mid( 0, m_maxResultSize );
 
-            emit newComposersReady(composers);
+            Q_EMIT newComposersReady(composers);
             break;
         }
         case QueryMaker::Genre :
@@ -445,7 +445,7 @@ AggregateQueryMaker::handleResult()
             if ( m_maxResultSize >= 0 && genres.count() > m_maxResultSize )
                 genres = genres.mid( 0, m_maxResultSize );
 
-            emit newGenresReady(genres);
+            Q_EMIT newGenresReady(genres);
             break;
         }
         case QueryMaker::Year :
@@ -465,7 +465,7 @@ AggregateQueryMaker::handleResult()
             if ( m_maxResultSize >= 0 && years.count() > m_maxResultSize )
                 years = years.mid( 0, m_maxResultSize );
 
-            emit newYearsReady(years);
+            Q_EMIT newYearsReady(years);
             break;
         }
         case QueryMaker::Label :
@@ -481,7 +481,7 @@ AggregateQueryMaker::handleResult()
             if ( m_maxResultSize >= 0 && labels.count() > m_maxResultSize )
                 labels = labels.mid( 0, m_maxResultSize );
 
-            emit newLabelsReady(labels);
+            Q_EMIT newLabelsReady(labels);
             break;
         }
         case QueryMaker::None :

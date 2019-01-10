@@ -84,7 +84,7 @@ IpodParseTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thr
     }
 
     parsePlaylists( staleTracks, knownPaths );
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
 }
 
 void 
@@ -117,7 +117,7 @@ IpodParseTracksJob::parsePlaylists( const Meta::TrackList &staleTracks,
         prov->m_stalePlaylist = Playlists::PlaylistPtr( new IpodPlaylist( staleTracks,
             i18nc( "iPod playlist name", "Stale tracks" ), m_coll, IpodPlaylist::Stale ) );
         prov->m_playlists << prov->m_stalePlaylist;  // we don't subscribe to this playlist, no need to update database
-        emit prov->playlistAdded( prov->m_stalePlaylist );
+        Q_EMIT prov->playlistAdded( prov->m_stalePlaylist );
     }
 
     Meta::TrackList orphanedTracks = findOrphanedTracks( knownPaths );
@@ -126,7 +126,7 @@ IpodParseTracksJob::parsePlaylists( const Meta::TrackList &staleTracks,
         prov->m_orphanedPlaylist = Playlists::PlaylistPtr( new IpodPlaylist( orphanedTracks,
             i18nc( "iPod playlist name", "Orphaned tracks" ), m_coll, IpodPlaylist::Orphaned ) );
         prov->m_playlists << prov->m_orphanedPlaylist;  // we don't subscribe to this playlist, no need to update database
-        emit prov->playlistAdded( prov->m_orphanedPlaylist );
+        Q_EMIT prov->playlistAdded( prov->m_orphanedPlaylist );
     }
 
     if( !m_coll->m_itdb || m_aborted )
@@ -139,7 +139,7 @@ IpodParseTracksJob::parsePlaylists( const Meta::TrackList &staleTracks,
         Playlists::PlaylistPtr playlistPtr( new IpodPlaylist( playlist, m_coll ) );
         prov->m_playlists << playlistPtr;
         prov->subscribeTo( playlistPtr );
-        emit prov->playlistAdded( playlistPtr );
+        Q_EMIT prov->playlistAdded( playlistPtr );
     }
 
     if( !m_aborted && ( prov->m_stalePlaylist || prov->m_orphanedPlaylist ) )

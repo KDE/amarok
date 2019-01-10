@@ -145,7 +145,7 @@ void
 ConstraintTypes::PreventDuplicates::setField( const int c )
 {
     m_field = static_cast<DupeField>( c );
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 
@@ -163,6 +163,6 @@ ConstraintTypes::PreventDuplicatesEditWidget::PreventDuplicatesEditWidget( const
 void
 ConstraintTypes::PreventDuplicatesEditWidget::on_comboBox_Field_currentIndexChanged( const int v )
 {
-    emit fieldChanged( v );
-    emit updated();
+    Q_EMIT fieldChanged( v );
+    Q_EMIT updated();
 }

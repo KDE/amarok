@@ -290,7 +290,7 @@ Q_SIGNALS:
     void selectionChanged( CollectionTreeItem *item );
 
     /**
-     * Signal emitted when the service is ready to be used. You don't need to emit this
+     * Signal emitted when the service is ready to be used. You don't need to Q_EMIT this
      * manually, just call setServiceReady() as appropriate.
      */
     void ready();

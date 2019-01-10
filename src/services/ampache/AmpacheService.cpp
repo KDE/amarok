@@ -51,7 +51,7 @@ void AmpacheServiceFactory::init()
     {
         AmpacheServerEntry server = servers.at( i );
         ServiceBase* service = new AmpacheService( this, "Ampache (" + server.name + ')', server.url, server. username, server.password );
-        emit newService( service );
+        Q_EMIT newService( service );
     }
 }
 

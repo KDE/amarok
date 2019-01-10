@@ -101,7 +101,7 @@ Analyzer::Base::connectSignals()
 
         setSampleSize( config().readEntry( "sampleSize", 4096 ) );
         setWindowFunction( (WindowFunction) config().readEntry( "windowFunction", (int)Hann ) );
-        emit calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate);
+        Q_EMIT calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate);
     }
 }
 
@@ -137,7 +137,7 @@ Analyzer::Base::refreshSampleRate()
 
     m_sampleRate = sampleRate;
 
-    emit calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate );
+    Q_EMIT calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate );
 }
 
 KConfigGroup
@@ -159,8 +159,8 @@ Analyzer::Base::setScopeSize( int scopeSize )
         return;
 
     m_scopeSize = scopeSize;
-    emit scopeSizeChanged( scopeSize );
-    emit calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate );
+    Q_EMIT scopeSizeChanged( scopeSize );
+    Q_EMIT calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate );
 }
 
 void
@@ -175,8 +175,8 @@ Analyzer::Base::setMaxFreq( qreal maxFreq )
 
     config().writeEntry( "maxFreq", maxFreq );
     m_maxFreq = maxFreq;
-    emit maxFreqChanged();
-    emit calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate );
+    Q_EMIT maxFreqChanged();
+    Q_EMIT calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate );
 }
 
 void
@@ -191,8 +191,8 @@ Analyzer::Base::setMinFreq( qreal minFreq )
 
     config().writeEntry( "minFreq", minFreq );
     m_minFreq = minFreq;
-    emit minFreqChanged();
-    emit calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate );
+    Q_EMIT minFreqChanged();
+    Q_EMIT calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate );
 }
 
 Analyzer::Base::WindowFunction
@@ -209,7 +209,7 @@ Analyzer::Base::setWindowFunction( WindowFunction windowFunction )
     debug() << "Set window function to:" << windowFunction;
 
     config().writeEntry( "windowFunction", (int)windowFunction );
-    emit windowFunctionChanged( windowFunction );
+    Q_EMIT windowFunctionChanged( windowFunction );
 }
 
 int Analyzer::Base::sampleSize() const
@@ -231,8 +231,8 @@ Analyzer::Base::setSampleSize( uint sampleSize )
     }
 
     config().writeEntry( "sampleSize", sampleSize );
-    emit sampleSizeChanged( sampleSize );
-    emit calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate );
+    Q_EMIT sampleSizeChanged( sampleSize );
+    Q_EMIT calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate );
 }
 
 const Analyzer::Worker *

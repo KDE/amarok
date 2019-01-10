@@ -310,7 +310,7 @@ APG::PresetModel::ExportDialog::~ExportDialog() {}
 void
 APG::PresetModel::ExportDialog::recvAccept() const
 {
-    emit pleaseExport( selectedFiles().first(), m_presetsToExportList );
+    Q_EMIT pleaseExport( selectedFiles().first(), m_presetsToExportList );
 }
 
 const QString APG::PresetModel::presetExamples =

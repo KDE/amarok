@@ -49,7 +49,7 @@ void PlayPauseButton::mousePressEvent( QMouseEvent *me )
 
 void PlayPauseButton::toggle()
 {
-    emit toggled( !m_isPlaying );
+    Q_EMIT toggled( !m_isPlaying );
 }
 
 void PlayPauseButton::reloadContent( const QSize &sz )

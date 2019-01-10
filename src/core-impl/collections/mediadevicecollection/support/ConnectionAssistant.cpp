@@ -48,14 +48,14 @@ void
 ConnectionAssistant::tellIdentified( const QString &udi )
 {
     DEBUG_BLOCK
-    emit identified( deviceInfo( udi ) );
+    Q_EMIT identified( deviceInfo( udi ) );
 }
 
 void
 ConnectionAssistant::tellDisconnected( const QString& udi )
 {
     DEBUG_BLOCK
-    emit disconnected( udi );
+    Q_EMIT disconnected( udi );
 }
 
 bool

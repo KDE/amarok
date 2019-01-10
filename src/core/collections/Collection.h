@@ -154,14 +154,14 @@ namespace Collections
              * This signal must be emitted when the collection contents has changed
              * significantly.
              *
-             * More specifically, you must emit this signal (only) in such situations:
+             * More specifically, you must Q_EMIT this signal (only) in such situations:
              *  a) the set of entities (tracks, albums, years, ...) in this collection has
              *     changed: a track was added, album is renamed, year was removed...
              *  b) the relationship between the entities has changed: the track changed
              *     album, album is no longer associated to an album artist and became a
              *     compilation, an alum changed its year...
              *
-             * You should not emit this signal when some minor data of an entity change,
+             * You should not Q_EMIT this signal when some minor data of an entity change,
              * for example when a track comment changes, etc.
              *
              * Also note there are \::notifyObservers() methods of various entities.

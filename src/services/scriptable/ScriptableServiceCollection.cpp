@@ -42,7 +42,7 @@ void ScriptableServiceCollection::donePopulating( int parentId )
 {
     DEBUG_BLOCK
     Q_UNUSED( parentId );
-    emit updateComplete();
+    Q_EMIT updateComplete();
 }
 
 void ScriptableServiceCollection::clear()

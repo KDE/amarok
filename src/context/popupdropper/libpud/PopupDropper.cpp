@@ -140,7 +140,7 @@ void PopupDropperPrivate::fadeHideTimerFinished() //SLOT
 {
     view->hide();
     //qDebug() << "Emitting fadeHideFinished in d pointer " << this;
-    emit q->fadeHideFinished();
+    Q_EMIT q->fadeHideFinished();
 }
 
 void PopupDropperPrivate::fadeShowTimerFinished() //SLOT

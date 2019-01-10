@@ -67,7 +67,7 @@ void MagnatuneServiceFactory::init()
     DEBUG_BLOCK
     MagnatuneStore* service = new MagnatuneStore( this, "Magnatune.com" );
     m_initialized = true;
-    emit newService( service );
+    Q_EMIT newService( service );
 }
 
 QString MagnatuneServiceFactory::name()

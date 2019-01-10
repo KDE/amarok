@@ -188,7 +188,7 @@ SqlPodcastProvider::loadPodcasts()
     }
     if( m_podcastImageFetcher )
         m_podcastImageFetcher->run();
-    emit updated();
+    Q_EMIT updated();
 }
 
 SqlPodcastEpisodePtr
@@ -528,7 +528,7 @@ SqlPodcastProvider::addChannel( Podcasts::PodcastChannelPtr channel )
     if( sqlChannel->episodes().isEmpty() )
         updateSqlChannel( sqlChannel );
 
-    emit playlistAdded( Playlists::PlaylistPtr( sqlChannel.data() ) );
+    Q_EMIT playlistAdded( Playlists::PlaylistPtr( sqlChannel.data() ) );
     return PodcastChannelPtr( sqlChannel.data() );
 }
 
@@ -582,7 +582,7 @@ SqlPodcastProvider::removeSubscription( Podcasts::SqlPodcastChannelPtr sqlChanne
         sqlStorage->query( QStringLiteral("DELETE FROM podcastepisodes WHERE 1;") );
     }
 
-    emit playlistRemoved( Playlists::PlaylistPtr::dynamicCast( sqlChannel ) );
+    Q_EMIT playlistRemoved( Playlists::PlaylistPtr::dynamicCast( sqlChannel ) );
 }
 
 void
@@ -754,7 +754,7 @@ SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel 
     else
         sqlChannel->applyPurge();
 
-    emit updated();
+    Q_EMIT updated();
 
     if( oldSaveLocation != sqlChannel->saveLocation() )
     {
@@ -908,7 +908,7 @@ SqlPodcastProvider::slotDownloadProgress( KJob *job, unsigned long percent )
     //keep the completed jobs in mind as well.
     totalDownloadPercentage += m_completedDownloads * 100;
 
-    emit totalPodcastDownloadProgress(
+    Q_EMIT totalPodcastDownloadProgress(
         totalDownloadPercentage / ( m_downloadJobMap.count() + m_completedDownloads ) );
 }
 
@@ -947,7 +947,7 @@ SqlPodcastProvider::deleteDownloadedEpisode( Podcasts::SqlPodcastEpisodePtr epis
 
     episode->setLocalUrl( QUrl() );
 
-    emit episodeDeleted( Podcasts::PodcastEpisodePtr::dynamicCast( episode ) );
+    Q_EMIT episodeDeleted( Podcasts::PodcastEpisodePtr::dynamicCast( episode ) );
 }
 
 Podcasts::SqlPodcastChannelPtr
@@ -1266,7 +1266,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
         return false;
 
     debug() << fileName << " already exists, no need to redownload";
-    // NOTE: we need to emit because the KJobProgressBar relies on it to clean up
+    // NOTE: we need to Q_EMIT because the KJobProgressBar relies on it to clean up
     job->kill( KJob::EmitResult );
     sqlEpisode->setLocalUrl( QUrl::fromLocalFile(fileName) );
     //TODO: repaint icons, probably with signal metadataUpdate()
@@ -1397,7 +1397,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
                 sqlEpisode->writeTagsToFile();
             //TODO: force a redraw of the view so the icon can be updated in the PlaylistBrowser
 
-            emit episodeDownloaded( Podcasts::PodcastEpisodePtr::dynamicCast( sqlEpisode ) );
+            Q_EMIT episodeDownloaded( Podcasts::PodcastEpisodePtr::dynamicCast( sqlEpisode ) );
         }
         else
         {

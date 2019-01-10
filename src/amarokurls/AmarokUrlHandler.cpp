@@ -206,13 +206,13 @@ AmarokUrlHandler::iconForCommand( const QString &command )
 
 void AmarokUrlHandler::updateTimecodes(const QString* BookmarkName)
 {
-    emit timecodesUpdated( BookmarkName );
+    Q_EMIT timecodesUpdated( BookmarkName );
 }
 
 void
 AmarokUrlHandler::paintNewTimecode( const QString &name, int pos )
 {
-    emit timecodeAdded( name, pos );
+    Q_EMIT timecodeAdded( name, pos );
 }
 
 QString

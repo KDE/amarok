@@ -83,10 +83,10 @@ void LyricsEngine::newLyrics( const Meta::TrackPtr &track )
         return;
 
     m_lyrics = track->cachedLyrics();
-    emit lyricsChanged();
+    Q_EMIT lyricsChanged();
 
     m_fetching = false;
-    emit fetchingChanged();
+    Q_EMIT fetchingChanged();
 }
 
 void LyricsEngine::newSuggestions( const QVariantList &suggested )
@@ -103,16 +103,16 @@ void LyricsEngine::lyricsMessage( const QString& key, const QString &val )
     DEBUG_BLOCK
 
     clearLyrics();
-    emit newLyricsMessage( key, val );
+    Q_EMIT newLyricsMessage( key, val );
 }
 
 void LyricsEngine::clearLyrics()
 {
     m_fetching = false;
-    emit fetchingChanged();
+    Q_EMIT fetchingChanged();
 
     m_lyrics.clear();
-    emit lyricsChanged();
+    Q_EMIT lyricsChanged();
 }
 
 qreal LyricsEngine::position() const
@@ -142,7 +142,7 @@ void LyricsEngine::setFontSize(qreal fontSize)
         return;
 
     Amarok::config( "Context" ).group( "Lyrics" ).writeEntry( "fontSize", fontSize );
-    emit fontSizeChanged();
+    Q_EMIT fontSizeChanged();
 }
 
 int LyricsEngine::alignment() const
@@ -158,7 +158,7 @@ void LyricsEngine::setAlignment(int alignment)
         return;
 
     Amarok::config( "Context" ).group( "Lyrics" ).writeEntry( "alignment", alignment );
-    emit alignmentChanged();
+    Q_EMIT alignmentChanged();
 }
 
 QString LyricsEngine::font() const
@@ -174,7 +174,7 @@ void LyricsEngine::setFont(const QString& font)
         return;
 
     Amarok::config( "Context" ).group( "Lyrics" ).writeEntry( "font", font );
-    emit fontChanged();
+    Q_EMIT fontChanged();
 }
 
 QStringList LyricsEngine::availableFonts() const

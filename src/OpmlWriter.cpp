@@ -52,7 +52,7 @@ OpmlWriter::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
     foreach( const OpmlOutline *childOutline, m_rootOutlines )
         writeOutline( childOutline );
     _x->writeEndDocument(); //implicitly closes all open tags (opml & body)
-    emit result( 0 );
+    Q_EMIT result( 0 );
 }
 
 void

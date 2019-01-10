@@ -254,7 +254,7 @@ Dynamic::QuizPlayBias::setFollow( Dynamic::QuizPlayBias::FollowType value )
 {
     m_follow = value;
     invalidate();
-    emit changed( BiasPtr(this) );
+    Q_EMIT changed( BiasPtr(this) );
 }
 
 void

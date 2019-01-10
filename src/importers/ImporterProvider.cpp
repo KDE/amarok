@@ -77,7 +77,7 @@ void
 ImporterProvider::reconfigure( const QVariantMap &config )
 {
     if( config.value( QStringLiteral("uid") ) == m_config.value( QStringLiteral("uid") ) )
-        emit reconfigurationRequested( config );
+        Q_EMIT reconfigurationRequested( config );
     else
         warning() << __PRETTY_FUNCTION__ << "reconfigure called with different provider"
                   << "uid!";

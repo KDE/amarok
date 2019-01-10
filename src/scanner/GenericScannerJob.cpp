@@ -48,11 +48,11 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_manager( manager )
     , m_type( type )
     , m_scanDirsRequested( scanDirsRequested )
-    , m_input( 0 )
+    , m_input( nullptr )
     , m_restartCount( 0 )
     , m_abortRequested( false )
-    , m_scanner( 0 )
-    , m_scannerStateMemory( 0 )
+    , m_scanner( nullptr )
+    , m_scannerStateMemory( nullptr )
     , m_recursive( recursive )
     , m_charsetDetect( detectCharset )
 {
@@ -68,8 +68,8 @@ GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
     , m_input( input )
     , m_restartCount( 0 )
     , m_abortRequested( false )
-    , m_scanner( 0 )
-    , m_scannerStateMemory( 0 )
+    , m_scanner( nullptr )
+    , m_scannerStateMemory( nullptr )
     , m_recursive( true )
     , m_charsetDetect( false )
 {
@@ -103,7 +103,7 @@ GenericScannerJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
             return;
     }
 
-    emit started( m_type );
+    Q_EMIT started( m_type );
 
     // -- read the input and loop
     bool finished = false;
@@ -115,7 +115,7 @@ GenericScannerJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
             if( m_abortRequested )
             {
                 debug() << "Aborting ScannerJob";
-                emit failed( i18n( "Abort for scanner requested" ) );
+                Q_EMIT failed( i18n( "Abort for scanner requested" ) );
                 closeScannerProcess();
                 return;
             }
@@ -144,13 +144,13 @@ GenericScannerJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
         if( !finished && m_reader.hasError() )
         {
             warning() << "Aborting ScannerJob with error" << m_reader.errorString();
-            emit failed( i18n( "Aborting scanner with error: %1", m_reader.errorString() ) );
+            Q_EMIT failed( i18n( "Aborting scanner with error: %1", m_reader.errorString() ) );
             closeScannerProcess();
             return;
         }
         else
         {
-            emit succeeded();
+            Q_EMIT succeeded();
             closeScannerProcess();
             return;
         }
@@ -205,7 +205,7 @@ GenericScannerJob::scannerPath()
     if( !QFile::exists( path ) )
     {
         error() << "Cannot find amarokcollectionscanner! Check your install";
-        emit failed( i18n( "Could not find amarokcollectionscanner!" ) );
+        Q_EMIT failed( i18n( "Could not find amarokcollectionscanner!" ) );
         return QString();
     }
     return path;
@@ -224,7 +224,7 @@ GenericScannerJob::createScannerProcess( bool restart )
             warning() << "Unable to create shared memory for collection scanner";
             warning() << "Shared Memory error: " << m_scannerStateMemory->errorString();
             delete m_scannerStateMemory;
-            m_scannerStateMemory = 0;
+            m_scannerStateMemory = nullptr;
         }
     }
 
@@ -266,7 +266,7 @@ GenericScannerJob::createScannerProcess( bool restart )
         delete scanner;
 
         warning() << "Unable to start Amarok collection scanner.";
-        emit failed( i18n("Unable to start Amarok collection scanner." ) );
+        Q_EMIT failed( i18n("Unable to start Amarok collection scanner." ) );
         return false;
     }
     // debug() << "finished";
@@ -306,7 +306,7 @@ GenericScannerJob::restartScannerProcess()
 
     // -- delete the old scanner
     delete m_scanner;
-    m_scanner = 0;
+    m_scanner = nullptr;
 
     if( m_restartCount >= MAX_RESTARTS )
     {
@@ -319,13 +319,13 @@ GenericScannerJob::restartScannerProcess()
                 "were encountered during the scan. Following files caused the crashes:\n\n%2",
                 m_restartCount, badFiles.join( QStringLiteral("\n") ) );
 
-        emit failed( text );
+        Q_EMIT failed( text );
         return false;
     }
 
     createScannerProcess( true );
 
-    return (m_scanner != 0);
+    return (m_scanner != nullptr);
 }
 
 void
@@ -337,7 +337,7 @@ GenericScannerJob::closeScannerProcess()
     m_scanner->close();
     m_scanner->waitForFinished(); // waits at most 3 seconds
     delete m_scanner;
-    m_scanner = 0;
+    m_scanner = nullptr;
 }
 
 
@@ -365,13 +365,13 @@ GenericScannerJob::parseScannerOutput()
             if( name == "scanner" )
             {
                 int totalCount = m_reader.attributes().value( QStringLiteral("count") ).toString().toInt();
-                emit directoryCount( totalCount );
+                Q_EMIT directoryCount( totalCount );
             }
             else if( name == "directory" )
             {
                 QSharedPointer<CollectionScanner::Directory> dir( new CollectionScanner::Directory( &m_reader ) );
 
-                emit directoryScanned( dir );
+                Q_EMIT directoryScanned( dir );
             }
             else
             {

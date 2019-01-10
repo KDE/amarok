@@ -123,7 +123,7 @@ DatabaseCollection::unblockUpdatedSignal()
     {
         m_updatedSignalRequested = false;
         locker.unlock();
-        emit updated();
+        Q_EMIT updated();
     }
 }
 
@@ -135,7 +135,7 @@ DatabaseCollection::collectionUpdated()
     {
         m_updatedSignalRequested = false;
         locker.unlock();
-        emit updated();
+        Q_EMIT updated();
     }
     else
     {

@@ -30,19 +30,19 @@ class Observer : public QObject, public Playlists::PlaylistObserver
     public:
         virtual void metadataChanged( Playlists::PlaylistPtr )
         {
-            emit metadataChangedSignal();
+            Q_EMIT metadataChangedSignal();
         }
         virtual void tracksLoaded( Playlists::PlaylistPtr )
         {
-            emit tracksLoadedSignal();
+            Q_EMIT tracksLoadedSignal();
         }
         virtual void trackAdded( Playlists::PlaylistPtr, Meta::TrackPtr, int )
         {
-            emit trackAddedSignal();
+            Q_EMIT trackAddedSignal();
         }
         virtual void trackRemoved( Playlists::PlaylistPtr, int )
         {
-            emit trackRemovedSignal();
+            Q_EMIT trackRemovedSignal();
         }
 
     Q_SIGNALS:

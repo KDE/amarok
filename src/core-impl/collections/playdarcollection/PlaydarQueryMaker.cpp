@@ -484,7 +484,7 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        emit playdarError( error );
+        Q_EMIT playdarError( error );
     }
     
     void
@@ -528,7 +528,7 @@ namespace Collections
             }
             else
             {
-                emit queryDone();
+                Q_EMIT queryDone();
                 if( m_autoDelete )
                     deleteLater();
             }
@@ -545,7 +545,7 @@ namespace Collections
 
         if( m_activeQueryCount <= 0 )
         {
-            emit queryDone();
+            Q_EMIT queryDone();
             if( m_autoDelete )
                 deleteLater();
         }

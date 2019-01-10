@@ -88,7 +88,7 @@ PhotosEngine::setKeywords( const QStringList &keywords )
         return;
 
     m_keywords = keywords;
-    emit keywordsChanged();
+    Q_EMIT keywordsChanged();
 }
 
 void
@@ -245,7 +245,7 @@ PhotosEngine::setPhotos( const QList<PhotoInfo> &photos )
         return;
 
     m_photos = photos;
-    emit photosChanged();
+    Q_EMIT photosChanged();
 }
 
 void
@@ -255,7 +255,7 @@ PhotosEngine::setStatus( Status status )
         return;
 
     m_status = status;
-    emit statusChanged();
+    Q_EMIT statusChanged();
 }
 
 void
@@ -265,7 +265,7 @@ PhotosEngine::setError( const QString &error )
         return;
 
     m_error = error;
-    emit errorChanged();
+    Q_EMIT errorChanged();
 }
 
 void
@@ -275,7 +275,7 @@ PhotosEngine::setArtist( const QString &artist )
         return;
 
     m_artist = artist;
-    emit artistChanged();
+    Q_EMIT artistChanged();
 }
 
 QList<QUrl>

@@ -304,7 +304,7 @@ MediaDeviceHandler::getCopyableUrls(const Meta::TrackList &tracks)
             urls.insert( track, track->playableUrl() );
     }
 
-    emit gotCopyableUrls( urls );
+    Q_EMIT gotCopyableUrls( urls );
 }
 
 void
@@ -409,7 +409,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     {
         KMessageBox::error( nullptr, i18n( "Tracks not copied: the device already has these tracks" ), copyErrorCaption );
         m_isCopying = false;
-        emit copyTracksDone( false );
+        Q_EMIT copyTracksDone( false );
         return;
     }
 
@@ -430,7 +430,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         debug() << "Space would've been after copy: " << (freeSpace() - transfersize);
         KMessageBox::error( nullptr, i18n( "Tracks not copied: the device has insufficient space" ), copyErrorCaption );
         m_isCopying = false;
-        emit copyTracksDone( false );
+        Q_EMIT copyTracksDone( false );
         return;
     }
     debug() << "Copying " << m_tracksToCopy.size() << " tracks";
@@ -493,7 +493,7 @@ MediaDeviceHandler::copyNextTrackToDevice()
         // copying done
 
         m_isCopying = false;
-        emit copyTracksDone( true );
+        Q_EMIT copyTracksDone( true );
     }
 }
 
@@ -546,7 +546,7 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
     // add track to collection
     addMediaDeviceTrackToCollection( destTrack );
 
-    emit incrementProgress();
+    Q_EMIT incrementProgress();
     m_numTracksToCopy--;
 }
 
@@ -554,7 +554,7 @@ void
 MediaDeviceHandler::slotCopyTrackFailed( const Meta::TrackPtr & track )
 {
     DEBUG_BLOCK
-    emit incrementProgress();
+    Q_EMIT incrementProgress();
 
     m_numTracksToCopy--;
 
@@ -644,7 +644,7 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
     // remove from memory collection
     removeMediaDeviceTrackFromCollection( devicetrack );
 
-    emit incrementProgress();
+    Q_EMIT incrementProgress();
 
     m_numTracksToRemove--;
 
@@ -659,7 +659,7 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
         */
         debug() << "Done removing tracks";
         m_isDeleting = false;
-        emit removeTracksDone();
+        Q_EMIT removeTracksDone();
     }
 }
 
@@ -669,7 +669,7 @@ MediaDeviceHandler::slotDatabaseWritten( bool success )
     DEBUG_BLOCK
     Q_UNUSED( success )
 
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
 
     m_memColl->collectionUpdated();
 }
@@ -968,12 +968,12 @@ MediaDeviceHandler::enqueueNextCopyThread()
     else
     {
 	// Finish the progress bar
-	emit incrementProgress();
-	emit endProgressOperation( this );
+	Q_EMIT incrementProgress();
+	Q_EMIT endProgressOperation( this );
 
 	// Inform CollectionLocation that copying is done
 	m_isCopying = false;
-	emit copyTracksDone( true );
+	Q_EMIT copyTracksDone( true );
     }
 }
 
@@ -1274,11 +1274,11 @@ CopyWorkerThread::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver:
 void
 CopyWorkerThread::slotDoneSuccess( ThreadWeaver::JobPointer )
 {
-    emit copyTrackDone( QSharedPointer<ThreadWeaver::Job>(this), m_track );
+    Q_EMIT copyTrackDone( QSharedPointer<ThreadWeaver::Job>(this), m_track );
 }
 
 void
 CopyWorkerThread::slotDoneFailed( ThreadWeaver::JobPointer )
 {
-    emit copyTrackFailed( QSharedPointer<ThreadWeaver::Job>(this), m_track );
+    Q_EMIT copyTrackFailed( QSharedPointer<ThreadWeaver::Job>(this), m_track );
 }

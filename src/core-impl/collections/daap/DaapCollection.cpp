@@ -160,7 +160,7 @@ DaapCollectionFactory::slotCollectionReady()
     if( collection )
     {
         disconnect( collection, &DaapCollection::remove, this, &DaapCollectionFactory::slotCollectionDownloadFailed );
-        emit newCollection( collection );
+        Q_EMIT newCollection( collection );
     }
 }
 
@@ -288,25 +288,25 @@ DaapCollection::httpError( const QString &error )
 {
     DEBUG_BLOCK
     debug() << "Http error in DaapReader: " << error;
-    emit remove();
+    Q_EMIT remove();
 }
 
 void
 DaapCollection::serverOffline()
 {
-    emit remove();
+    Q_EMIT remove();
 }
 
 void
 DaapCollection::loadedDataFromServer()
 {
     DEBUG_BLOCK
-    emit collectionReady();
+    Q_EMIT collectionReady();
 }
 
 void
 DaapCollection::parsingFailed()
 {
     DEBUG_BLOCK
-    emit remove();
+    Q_EMIT remove();
 }

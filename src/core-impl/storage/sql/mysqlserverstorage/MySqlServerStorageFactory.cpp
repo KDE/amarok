@@ -48,11 +48,11 @@ MySqlServerStorageFactory::init()
 
         // handle errors during creation
         if( !storage->getLastErrors().isEmpty() )
-            emit newError( storage->getLastErrors() );
+            Q_EMIT newError( storage->getLastErrors() );
         storage->clearLastErrors();
 
         if( initResult )
-            emit newStorage( storage );
+            Q_EMIT newStorage( storage );
     }
 }
 

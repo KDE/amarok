@@ -117,7 +117,7 @@ Config::setData( const QModelIndex &index, const QVariant &value, int role )
     Qt::CheckState state = Qt::CheckState( value.toInt() );
     m_providerData[ index.row() ].enabled = ( state == Qt::Checked ) ? true : false;
     m_hasChanged = true;
-    emit dataChanged( index, index );
+    Q_EMIT dataChanged( index, index );
     return true;
 }
 
@@ -148,7 +148,7 @@ Config::updateProvider( const QString &id, const QString &name, const QIcon &ico
         {
             m_providerData[ i ] = providerData;
             m_hasChanged = true;
-            emit dataChanged( index( i ), index( i ) );
+            Q_EMIT dataChanged( index( i ), index( i ) );
             return;
         }
     }
@@ -180,7 +180,7 @@ Config::forgetProvider( const QString &id )
             it.remove();
             m_hasChanged = true;
             endRemoveRows();
-            emit providerForgotten( id );
+            Q_EMIT providerForgotten( id );
             return true;
         }
         i++;

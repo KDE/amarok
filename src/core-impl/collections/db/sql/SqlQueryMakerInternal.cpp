@@ -74,7 +74,7 @@ SqlQueryMakerInternal::handleResult( const QStringList &result )
     {
         switch( m_queryType ) {
         case QueryMaker::Custom:
-            emit newResultReady( result );
+            Q_EMIT newResultReady( result );
             break;
         case QueryMaker::Track:
             handleTracks( result );
@@ -107,29 +107,29 @@ SqlQueryMakerInternal::handleResult( const QStringList &result )
     {
         switch( m_queryType ) {
             case QueryMaker::Custom:
-                emit newResultReady( QStringList() );
+                Q_EMIT newResultReady( QStringList() );
                 break;
             case QueryMaker::Track:
-                emit newTracksReady( Meta::TrackList() );
+                Q_EMIT newTracksReady( Meta::TrackList() );
                 break;
             case QueryMaker::Artist:
             case QueryMaker::AlbumArtist:
-                emit newArtistsReady( Meta::ArtistList() );
+                Q_EMIT newArtistsReady( Meta::ArtistList() );
                 break;
             case QueryMaker::Album:
-                emit newAlbumsReady( Meta::AlbumList() );
+                Q_EMIT newAlbumsReady( Meta::AlbumList() );
                 break;
             case QueryMaker::Genre:
-                emit newGenresReady( Meta::GenreList() );
+                Q_EMIT newGenresReady( Meta::GenreList() );
                 break;
             case QueryMaker::Composer:
-                emit newComposersReady( Meta::ComposerList() );
+                Q_EMIT newComposersReady( Meta::ComposerList() );
                 break;
             case QueryMaker::Year:
-                emit newYearsReady( Meta::YearList() );
+                Q_EMIT newYearsReady( Meta::YearList() );
                 break;
             case QueryMaker::Label:
-                emit newLabelsReady( Meta::LabelList() );
+                Q_EMIT newLabelsReady( Meta::LabelList() );
                 break;
 
             case QueryMaker::None:
@@ -152,7 +152,7 @@ SqlQueryMakerInternal::handleTracks( const QStringList &result )
         QStringList row = result.mid( i*returnCount, returnCount );
         tracks.append( reg->getTrack( row[Meta::SqlTrack::returnIndex_trackId].toInt(), row ) );
     }
-    emit newTracksReady( tracks );
+    Q_EMIT newTracksReady( tracks );
 }
 
 void
@@ -167,7 +167,7 @@ SqlQueryMakerInternal::handleArtists( const QStringList &result )
         if( id.toInt() > 0 )
             artists.append( reg->getArtist( id.toInt(), name ) );
     }
-    emit newArtistsReady( artists );
+    Q_EMIT newArtistsReady( artists );
 }
 
 void
@@ -182,7 +182,7 @@ SqlQueryMakerInternal::handleAlbums( const QStringList &result )
         QString artist = iter.next();
         albums.append( reg->getAlbum( id.toInt(), name, artist.toInt() ) );
     }
-    emit newAlbumsReady( albums );
+    Q_EMIT newAlbumsReady( albums );
 }
 
 void
@@ -196,7 +196,7 @@ SqlQueryMakerInternal::handleGenres( const QStringList &result )
         QString id = iter.next();
         genres.append( reg->getGenre( id.toInt(), name ) );
     }
-    emit newGenresReady( genres );
+    Q_EMIT newGenresReady( genres );
 }
 
 void
@@ -210,7 +210,7 @@ SqlQueryMakerInternal::handleComposers( const QStringList &result )
         QString id = iter.next();
         composers.append( reg->getComposer( id.toInt(), name ) );
     }
-    emit newComposersReady( composers );
+    Q_EMIT newComposersReady( composers );
 }
 
 void
@@ -224,7 +224,7 @@ SqlQueryMakerInternal::handleYears( const QStringList &result )
         QString id = iter.next();
         years.append( reg->getYear( id.toInt(), name.toInt() ) );
     }
-    emit newYearsReady( years );
+    Q_EMIT newYearsReady( years );
 }
 
 void
@@ -239,6 +239,6 @@ SqlQueryMakerInternal::handleLabels( const QStringList &result )
         labels.append( reg->getLabel( id.toInt(), label ) );
     }
 
-    emit newLabelsReady( labels );
+    Q_EMIT newLabelsReady( labels );
 }
 

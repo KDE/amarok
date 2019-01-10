@@ -165,7 +165,7 @@ AmarokMimeData::getTrackListSignal() const
             if( d->trackMap.contains( qm ) )
                 result << d->trackMap.value( qm );
         }
-        emit trackListSignal( result );
+        Q_EMIT trackListSignal( result );
     }
 }
 

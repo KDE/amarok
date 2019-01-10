@@ -385,13 +385,13 @@ void
 ScriptListDockWidget::slotCurrentItemChanged( QListWidgetItem *newItem, QListWidgetItem *oldItem )
 {
     Q_UNUSED( oldItem )
-    emit currentItemChanged( newItem ? qvariant_cast<ScriptConsoleItem*>( newItem->data(ScriptRole) ) : 0 );
+    Q_EMIT currentItemChanged( newItem ? qvariant_cast<ScriptConsoleItem*>( newItem->data(ScriptRole) ) : nullptr );
 }
 
 void
 ScriptListDockWidget::slotDoubleClicked( const QModelIndex &index )
 {
-    emit edit( qvariant_cast<ScriptConsoleItem*>( index.data(ScriptRole) ) );
+    Q_EMIT edit( qvariant_cast<ScriptConsoleItem*>( index.data(ScriptRole) ) );
 }
 
 void

@@ -605,7 +605,7 @@ void CoverFoundDialog::processQuery( const QString &input )
 
     if( !q.isEmpty() )
     {
-        emit newCustomQuery( m_album, q, m_queryPage );
+        Q_EMIT newCustomQuery( m_album, q, m_queryPage );
         updateSearchButton( q );
         m_queryPage++;
     }
@@ -860,7 +860,7 @@ void CoverFoundSideBar::updateMetaTable()
                                     .arg( decoded,
                                           i18nc("@item::intable URL", "link") );
 
-        QLabel *label = new QLabel( url, 0 );
+        QLabel *label = new QLabel( url, nullptr );
         label->setOpenExternalLinks( true );
         label->setTextInteractionFlags( Qt::TextBrowserInteraction );
         label->setToolTip( tooltip );

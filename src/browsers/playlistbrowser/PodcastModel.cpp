@@ -277,8 +277,8 @@ PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant
     bool checked = value.toBool();
     episode->setNew( checked );
     if( checked )
-        emit episodeMarkedAsNew( episode );
-    emit dataChanged( idx, idx );
+        Q_EMIT episodeMarkedAsNew( episode );
+    Q_EMIT dataChanged( idx, idx );
     return true;
 }
 

@@ -125,7 +125,7 @@ Dynamic::IfElseBias::resultReceived( const Dynamic::TrackSet &tracks )
     removeDuplicate();
     if( !m_tracks.isEmpty() )
     {
-        emit resultReady( m_tracks );
+        Q_EMIT resultReady( m_tracks );
         return;
     }
 
@@ -155,12 +155,12 @@ Dynamic::IfElseBias::resultReceived( const Dynamic::TrackSet &tracks )
         {
             removeDuplicate();
             if( !m_tracks.isEmpty() ) {
-                emit resultReady( m_tracks );
+                Q_EMIT resultReady( m_tracks );
                 return;
             }
         }
     }
-    emit resultReady( m_tracks );
+    Q_EMIT resultReady( m_tracks );
 }
 
 // we need to eliminate duplicates now to have a proper check for an empty result

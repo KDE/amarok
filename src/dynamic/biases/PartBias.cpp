@@ -516,7 +516,7 @@ Dynamic::PartBias::resultReceived( const Dynamic::TrackSet &tracks )
     updateResults();
 
     if( !m_tracks.isOutstanding() )
-        emit resultReady( m_tracks );
+        Q_EMIT resultReady( m_tracks );
 }
 
 bool
@@ -560,7 +560,7 @@ Dynamic::PartBias::changeBiasWeight( int biasNum, qreal value )
         if( m_weights.at(0) != 1.0 )
         {
             m_weights[0] = 1.0;
-            emit weightsChanged();
+            Q_EMIT weightsChanged();
         }
         return;
     }
@@ -609,8 +609,8 @@ Dynamic::PartBias::changeBiasWeight( int biasNum, qreal value )
     for( int i = 0; i < m_weights.count(); i++ )
         debug() << "Weight"<<i<<":"<<m_weights[i];
 
-    emit weightsChanged();
-    emit changed( BiasPtr( this ) );
+    Q_EMIT weightsChanged();
+    Q_EMIT changed( BiasPtr( this ) );
 }
 
 void

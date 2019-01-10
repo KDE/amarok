@@ -159,14 +159,14 @@ void BrowserBreadcrumbItem::updateSizePolicy()
 
 void BrowserBreadcrumbItem::activate()
 {
-    emit activated( m_callback );
+    Q_EMIT activated( m_callback );
 }
 
 void BrowserBreadcrumbItem::activateSibling()
 {
     QAction *action = qobject_cast<QAction *>( sender() );
     if( action )
-        emit activated( action->property( "callback" ).toString() );
+        Q_EMIT activated( action->property( "callback" ).toString() );
 }
 
 int BrowserBreadcrumbItem::nominalWidth() const

@@ -104,7 +104,7 @@ void FormatSelectionDialog::accept()
     KConfigGroup config = Amarok::config("Audio CD Collection");
     config.writeEntry( "Import Format", format );
     
-    emit formatSelected( m_selectedFormat );
+    Q_EMIT formatSelected( m_selectedFormat );
     QDialog::accept();
 }
 

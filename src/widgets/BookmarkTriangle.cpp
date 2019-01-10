@@ -109,7 +109,7 @@ void BookmarkTriangle::mouseReleaseEvent ( QMouseEvent * event )
     event->accept();
 
     if( this->x() == m_pos ){
-        emit clicked ( m_mseconds );
+        Q_EMIT clicked ( m_mseconds );
     }
     else
     {
@@ -149,7 +149,7 @@ void BookmarkTriangle::enterEvent ( QEvent * event )
     DEBUG_BLOCK
     Q_UNUSED ( event )
 
-    emit focused ( m_mseconds );
+    Q_EMIT focused ( m_mseconds );
     initPopup();
 }
 

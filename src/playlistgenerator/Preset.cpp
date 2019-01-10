@@ -126,7 +126,7 @@ void APG::Preset::queueSolver() {
      * until it's ready to run, and then the Weaver will start running it
      * pretty much immediately. -- sth */
 
-    emit lock( true );
+    Q_EMIT lock( true );
 
     ConstraintSolver* s = static_cast<ConstraintSolver*>( sender() );
     Amarok::Logger::newProgressOperation( s, i18n("Generating a new playlist"), s->iterationCount(), s, &ConstraintSolver::requestAbort, Qt::QueuedConnection );
@@ -157,5 +157,5 @@ APG::Preset::solverFinished( ThreadWeaver::JobPointer job )
         debug() << "Ignoring results from aborted Solver" << solver->serial();
     }
 
-    emit lock( false );
+    Q_EMIT lock( false );
 }

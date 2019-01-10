@@ -40,14 +40,14 @@ Worker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
     if( m_provider )
     {
         track = m_provider->trackForUrl( m_url );
-        emit finishedLookup( track );
+        Q_EMIT finishedLookup( track );
         return;
     }
 
     track = CollectionManager::instance()->trackForUrl( m_url );
     if( track )
     {
-        emit finishedLookup( track );
+        Q_EMIT finishedLookup( track );
         return;
     }
 
@@ -89,7 +89,7 @@ Worker::slotNewTrackProvider( Collections::TrackProvider *newTrackProvider )
     if( newTrackProvider->possiblyContainsTrack( m_url ) )
     {
         Meta::TrackPtr track = newTrackProvider->trackForUrl( m_url );
-        emit finishedLookup( track );
+        Q_EMIT finishedLookup( track );
     }
 }
 

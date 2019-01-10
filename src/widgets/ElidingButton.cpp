@@ -122,7 +122,7 @@ void ElidingButton::elideText( const QSize &widgetSize )
     if( m_isElided != elided )
     {
         m_isElided = elided;
-        emit( sizePolicyChanged() );
+        Q_EMIT( sizePolicyChanged() );
     }
 }
 

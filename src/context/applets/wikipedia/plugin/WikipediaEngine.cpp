@@ -453,7 +453,7 @@ WikipediaEngine::fetchWikiUrl( const QString &title, const QString &urlPrefix )
     pageUrl.setQuery( query );
     wikiCurrentUrl = pageUrl;
     urls << pageUrl;
-    emit urlChanged();
+    Q_EMIT urlChanged();
     The::networkAccessManager()->getData( pageUrl, this, &WikipediaEngine::_wikiResult );
 }
 
@@ -772,7 +772,7 @@ WikipediaEngine::setSelection( SelectionType type )
         return false;
 
     currentSelection = type;
-    emit selectionChanged();
+    Q_EMIT selectionChanged();
 
     updateEngine();
 
@@ -801,7 +801,7 @@ WikipediaEngine::setPage(const QString& page)
         return;
 
     m_page = page;
-    emit pageChanged();
+    Q_EMIT pageChanged();
 }
 
 void
@@ -811,7 +811,7 @@ WikipediaEngine::setMessage(const QString& message)
         return;
 
     m_message = message;
-    emit messageChanged();
+    Q_EMIT messageChanged();
 }
 
 
@@ -822,7 +822,7 @@ WikipediaEngine::setBusy(bool busy)
         return;
 
     m_busy = busy;
-    emit busyChanged();
+    Q_EMIT busyChanged();
 }
 
 void
@@ -832,7 +832,7 @@ WikipediaEngine::setTitle(const QString& title)
         return;
 
     m_title = title;
-    emit titleChanged();
+    Q_EMIT titleChanged();
 }
 
 void
@@ -851,7 +851,7 @@ WikipediaEngine::setLanguage(const QString& language)
 
     preferredLangs.removeAll( language );
     preferredLangs.prepend( language );
-    emit languageChanged();
+    Q_EMIT languageChanged();
 
     updateEngine();
 }
@@ -864,7 +864,7 @@ WikipediaEngine::setUrl(const QUrl& url)
 
     wikiCurrentUrl = url;
     urls << url;
-    emit urlChanged();
+    Q_EMIT urlChanged();
 
     The::networkAccessManager()->getData( url, this, &WikipediaEngine::_wikiResult );
 }

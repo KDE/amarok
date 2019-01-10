@@ -88,7 +88,7 @@ class UmsCollectionFactory : public CollectionFactory
 
         /**
          * Attempts to create appropriate collection for already identified solid device
-         * @param udi. Should emit newCollection() if the collection was successfully
+         * @param udi. Should Q_EMIT newCollection() if the collection was successfully
          * created and should become visible to the user.
          */
         void createCollectionForSolidDevice( const QString &udi );
@@ -154,7 +154,7 @@ class UmsCollection : public Collection, public Meta::Observer
         /**
          * Start a count-down that emits updated() signal after it expires.
          * Resets the timer to original timeout if already running. This is to ensure
-         * that we emit update() max. once per \<timeout\> for batch updates.
+         * that we Q_EMIT update() max. once per \<timeout\> for batch updates.
          *
          * Timers can only be started from "their" thread so use signals & slots for that.
          */
@@ -176,7 +176,7 @@ class UmsCollection : public Collection, public Meta::Observer
 
     private Q_SLOTS:
         /**
-         * Update m_lastUpdated timestamp and emit updated()
+         * Update m_lastUpdated timestamp and Q_EMIT updated()
          */
         void collectionUpdated();
 
@@ -187,7 +187,7 @@ class UmsCollection : public Collection, public Meta::Observer
         void slotDirectoryScanned( QSharedPointer<CollectionScanner::Directory> dir );
 
         /**
-         * Starts a timer that ensures we emit updated() signal sometime in future.
+         * Starts a timer that ensures we Q_EMIT updated() signal sometime in future.
          */
         void slotStartUpdateTimer();
 

@@ -106,7 +106,7 @@ SyncedPlaylist::tracksLoaded( Playlists::PlaylistPtr playlist )
     if( !m_playlists.contains( playlist ) )
         return;
 
-    // TODO: me may give more thought to this and emit tracksLoaded() only when all subplaylists load
+    // TODO: me may give more thought to this and Q_EMIT tracksLoaded() only when all subplaylists load
     notifyObserversTracksLoaded();
 }
 

@@ -283,7 +283,7 @@ PlaylistsInFoldersProxy::slotRenameIndex( const QModelIndex &sourceIdx )
 {
     QModelIndex idx = mapFromSource( sourceIdx );
     if( idx.isValid() )
-        emit renameIndex( idx );
+        Q_EMIT renameIndex( idx );
 }
 
 void

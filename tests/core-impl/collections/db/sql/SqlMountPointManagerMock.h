@@ -89,12 +89,12 @@ public:
 
     void emitDeviceAdded( int id )
     {
-        emit deviceAdded( id );
+        Q_EMIT deviceAdded( id );
     }
 
     void emitDeviceRemoved( int id )
     {
-        emit deviceRemoved( id );
+        Q_EMIT deviceRemoved( id );
     }
 
     QMap<int,QString> m_mountPoints;

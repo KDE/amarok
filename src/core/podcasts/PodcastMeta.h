@@ -351,7 +351,7 @@ public:
 
     QImage image( int size ) const override
     {
-        // This is a little stupid. If Channel::setImage is called we don't emit a MetaDataChanged or invalidate the cache
+        // This is a little stupid. If Channel::setImage is called we don't Q_EMIT a MetaDataChanged or invalidate the cache
         QImage image = episode->channel()->image();
         return image.scaledToHeight( size );
     }

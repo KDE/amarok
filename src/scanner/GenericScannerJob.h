@@ -76,10 +76,10 @@ class GenericScannerJob : public QObject, public ThreadWeaver::Job
                            bool recursive = true,
                            bool detectCharset = false );
 
-        ~GenericScannerJob();
+        ~GenericScannerJob() override;
 
         /* ThreadWeaver::Job virtual methods */
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
         virtual void abort();
         void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;
         void defaultEnd(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;

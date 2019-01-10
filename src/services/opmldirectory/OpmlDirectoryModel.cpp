@@ -422,7 +422,7 @@ OpmlDirectoryModel::slotOpmlHeaderDone()
             outline->addAttribute( "text", parser->url().fileName() );
 
         //force a view update
-        emit dataChanged( idx, idx );
+        Q_EMIT dataChanged( idx, idx );
 
         saveOpml( m_rootOpmlUrl );
     }

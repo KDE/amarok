@@ -95,7 +95,7 @@ CollectionProvider::artists()
         return QSet<QString>();
 
     m_foundArtists.clear();
-    emit startArtistSearch();
+    Q_EMIT startArtistSearch();
     m_queryMakerSemaphore.acquire(); // blocks until slotQueryDone() releases the semaphore
     QSet<QString> ret = m_foundArtists;
     m_foundArtists.clear();  // don't waste memory
@@ -110,7 +110,7 @@ CollectionProvider::artistTracks( const QString &artistName )
         return TrackList();
 
     m_foundTracks.clear();
-    emit startTrackSearch( artistName );
+    Q_EMIT startTrackSearch( artistName );
     m_queryMakerSemaphore.acquire(); // blocks until slotQueryDone() releases the semaphore
     TrackList ret = m_foundTracks;
     m_foundTracks.clear();  // don't waste memory

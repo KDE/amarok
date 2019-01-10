@@ -209,7 +209,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::JobPointer _parser )
         Meta::TrackPtr trackPtr = m_parsers.value( parser );
         bool found = false;
 
-        emit progressStep();
+        Q_EMIT progressStep();
         if( parser->type() == MusicBrainzXmlParser::TrackList &&
             !parser->tracks.isEmpty() )
         {
@@ -494,7 +494,7 @@ MusicBrainzFinder::sendTrack( const Meta::TrackPtr &track, QVariantMap tags )
         tags.remove( MusicBrainz::TRACKINFO );
     }
 
-    emit trackFound( track, tags );
+    Q_EMIT trackFound( track, tags );
 }
 
 void
@@ -515,7 +515,7 @@ MusicBrainzFinder::checkDone()
 
         debug() << "There is no queued request. Stopping timer.";
         m_timer->stop();
-        emit done();
+        Q_EMIT done();
     }
 }
 

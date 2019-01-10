@@ -104,7 +104,7 @@ Amarok::Slider::wheelEvent( QWheelEvent *e )
 
     QSlider::setValue( nval );
 
-    emit sliderReleased( value() );
+    Q_EMIT sliderReleased( value() );
 }
 
 void
@@ -120,8 +120,8 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
             if ( !m_outside )
             {
                 QSlider::setValue( m_prevValue );
-                //if mouse released outside of slider, emit sliderMoved to previous value
-                emit sliderMoved( m_prevValue );
+                //if mouse released outside of slider, Q_EMIT sliderMoved to previous value
+                Q_EMIT sliderMoved( m_prevValue );
             }
             m_outside = true;
         }
@@ -129,7 +129,7 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
         {
             m_outside = false;
             slideEvent( e );
-            emit sliderMoved( value() );
+            Q_EMIT sliderMoved( value() );
         }
     }
     else
@@ -181,7 +181,7 @@ void
 Amarok::Slider::mouseReleaseEvent( QMouseEvent* )
 {
     if( !m_outside && value() != m_prevValue )
-       emit sliderReleased( value() );
+       Q_EMIT sliderReleased( value() );
 
     m_sliding = false;
     m_outside = false;
@@ -261,7 +261,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
         if( n >= 0 )
         {
             QSlider::setValue( n );
-            emit sliderReleased( n );
+            Q_EMIT sliderReleased( n );
         }
     }
 }
@@ -272,7 +272,7 @@ Amarok::VolumeSlider::wheelEvent( QWheelEvent *e )
     const uint step = e->delta() / Amarok::VOLUME_SENSITIVITY;
     QSlider::setValue( QSlider::value() + step );
 
-    emit sliderReleased( value() );
+    Q_EMIT sliderReleased( value() );
 }
 
 void
@@ -364,7 +364,7 @@ void Amarok::TimeSlider::drawTriangle( const QString& name, int milliSeconds, bo
 
 void Amarok::TimeSlider::slotTriangleClicked( int seconds )
 {
-    emit sliderReleased( seconds );
+    Q_EMIT sliderReleased( seconds );
 }
 
 void Amarok::TimeSlider::slotTriangleFocused( int seconds )

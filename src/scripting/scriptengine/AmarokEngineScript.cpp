@@ -164,25 +164,25 @@ AmarokEngineScript::currentTrack() const
 void
 AmarokEngineScript::trackPositionChanged( qint64 pos )
 {
-    emit trackSeeked( pos );
+    Q_EMIT trackSeeked( pos );
 }
 
 void
 AmarokEngineScript::slotNewMetaData()
 {
-    emit newMetaData( QHash<qint64, QString>(), false );
+    Q_EMIT newMetaData( QHash<qint64, QString>(), false );
 }
 
 void
 AmarokEngineScript::slotPaused()
 {
-    emit trackPlayPause( Paused );
+    Q_EMIT trackPlayPause( Paused );
 }
 
 void
 AmarokEngineScript::slotPlaying()
 {
-    emit trackPlayPause( Playing );
+    Q_EMIT trackPlayPause( Playing );
 }
 
 bool

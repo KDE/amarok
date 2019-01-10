@@ -147,13 +147,13 @@ bool Context::AppletModel::setData(const QModelIndex& index, const QVariant& val
         case Collapsed:
         {
             Amarok::config(QStringLiteral("Context")).writeEntry(package.metadata().pluginId() + "_collapsed", value.toBool());
-            emit dataChanged(index, index, QVector<int>{role});
+            Q_EMIT dataChanged(index, index, QVector<int>{role});
             return true;
         }
         case ContentHeight:
         {
             Amarok::config(QStringLiteral("Context")).writeEntry(package.metadata().pluginId() + "_contentHeight", value.toReal());
-            emit dataChanged(index, index, QVector<int>{role});
+            Q_EMIT dataChanged(index, index, QVector<int>{role});
             return true;
         }
 
@@ -190,7 +190,7 @@ void AppletModel::setAppletCollapsed(const QString& id, bool collapsed)
         Amarok::config(QStringLiteral("Context")).writeEntry(id + "_collapsed", collapsed);
         int row = m_packages.indexOf(package);
         auto index = createIndex(row, 0);
-        emit dataChanged(index, index, QVector<int>{Collapsed});
+        Q_EMIT dataChanged(index, index, QVector<int>{Collapsed});
     }
 }
 
@@ -206,7 +206,7 @@ void Context::AppletModel::setAppletContentHeight(const QString& id, qreal heigh
         Amarok::config(QStringLiteral("Context")).writeEntry(id + "_contentHeight", height);
         int row = m_packages.indexOf(package);
         auto index = createIndex(row, 0);
-        emit dataChanged(index, index, QVector<int>{ContentHeight});
+        Q_EMIT dataChanged(index, index, QVector<int>{ContentHeight});
     }
 }
 
@@ -294,7 +294,7 @@ void AppletProxyModel::setAppletEnabled(const QString& id, bool enabled, int pla
 
     invalidateFilter();
 
-    emit enabledAppletsChanged();
+    Q_EMIT enabledAppletsChanged();
 }
 
 void AppletProxyModel::setAppletPlace(const QString& id, int place)

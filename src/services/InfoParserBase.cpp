@@ -62,7 +62,7 @@ void InfoParserBase::showLoading( const QString &message )
     currentHtml = currentHtml.replace( QLatin1String("%%TEXT%%"), message );
 
     // debug() << "showing html: " << currentHtml;
-    emit ( info( currentHtml ) );
+    Q_EMIT ( info( currentHtml ) );
 }
 
 

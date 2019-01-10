@@ -67,7 +67,7 @@ LyricsManager::lyricsResult( const QByteArray& lyricsXML, Meta::TrackPtr track )
                 // the user explicitly agreed to overwrite the lyrics)
                 debug() << "setting cached lyrics...";
                 track->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
-                emit newLyrics( track );
+                Q_EMIT newLyrics( track );
             }
             else
             {
@@ -98,7 +98,7 @@ LyricsManager::lyricsResult( const QByteArray& lyricsXML, Meta::TrackPtr track )
             debug() << "got" << suggestions.size() << "suggestions";
 
             if( !suggestions.isEmpty() )
-                emit newSuggestions( suggestions );
+                Q_EMIT newSuggestions( suggestions );
 
             return;
         }
@@ -107,7 +107,7 @@ LyricsManager::lyricsResult( const QByteArray& lyricsXML, Meta::TrackPtr track )
     if( xml.hasError() )
     {
         warning() << "errors occurred during reading lyrics xml result:" << xml.errorString();
-        emit error( i18n("Lyrics data could not be parsed") );
+        Q_EMIT error( i18n("Lyrics data could not be parsed") );
     }
 }
 

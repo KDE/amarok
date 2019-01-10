@@ -196,25 +196,25 @@ ScriptableServiceQueryMaker::setConvertToMultiTracks( bool convert )
 void ScriptableServiceQueryMaker::handleResult( const Meta::GenreList & genres )
 {
     if ( d->maxsize >= 0 && genres.count() > d->maxsize )
-        emit newGenresReady( genres.mid( 0, d->maxsize ) );
+        Q_EMIT newGenresReady( genres.mid( 0, d->maxsize ) );
     else
-        emit newGenresReady( genres );
+        Q_EMIT newGenresReady( genres );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::AlbumList & albums )
 {
     if ( d->maxsize >= 0 && albums.count() > d->maxsize )
-        emit newAlbumsReady( albums.mid( 0, d->maxsize ) );
+        Q_EMIT newAlbumsReady( albums.mid( 0, d->maxsize ) );
     else
-        emit newAlbumsReady( albums );
+        Q_EMIT newAlbumsReady( albums );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::ArtistList & artists )
 {
     if ( d->maxsize >= 0 && artists.count() > d->maxsize )
-        emit newArtistsReady( artists.mid( 0, d->maxsize ) );
+        Q_EMIT newArtistsReady( artists.mid( 0, d->maxsize ) );
     else
-        emit newArtistsReady( artists );
+        Q_EMIT newArtistsReady( artists );
 }
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList &tracks )
@@ -239,9 +239,9 @@ void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList &tracks )
         ret = tracks;
 
     if ( d->maxsize >= 0 && ret.count() > d->maxsize )
-        emit newTracksReady( ret.mid( 0, d->maxsize ) );
+        Q_EMIT newTracksReady( ret.mid( 0, d->maxsize ) );
     else
-        emit newTracksReady( ret );
+        Q_EMIT newTracksReady( ret );
 }
 
 void ScriptableServiceQueryMaker::fetchGenre()
@@ -252,7 +252,7 @@ void ScriptableServiceQueryMaker::fetchGenre()
     if ( genre.count() > 0 )
     {
         handleResult( genre );
-        emit( queryDone() );
+        Q_EMIT( queryDone() );
     }
     else
         //this is where we call the script to get it to add more stuff!
@@ -284,7 +284,7 @@ void ScriptableServiceQueryMaker::fetchArtists()
     if ( artists.count() > 0 )
     {
         handleResult( artists );
-        emit( queryDone() );
+        Q_EMIT( queryDone() );
     }
     else
         //this is where we call the script to get it to add more stuff!
@@ -310,7 +310,7 @@ void ScriptableServiceQueryMaker::fetchAlbums()
     if ( albums.count() > 0 )
     {
         handleResult( albums );
-        emit( queryDone() );
+        Q_EMIT( queryDone() );
     }
     else
         //this is where we call the script to get it to add more stuff!
@@ -336,7 +336,7 @@ void ScriptableServiceQueryMaker::fetchTracks()
 
     if ( tracks.count() > 0 ) {
         handleResult( tracks );
-        emit( queryDone() );
+        Q_EMIT( queryDone() );
     }
     else
         //this is where we call the script to get it to add more stuff!
@@ -410,7 +410,7 @@ void ScriptableServiceQueryMaker::slotScriptComplete()
         debug() << "there are " << tracks.count() << " tracks";
         handleResult( tracks );
     }
-    emit( queryDone() );
+    Q_EMIT( queryDone() );
 }
 
 QueryMaker * ScriptableServiceQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )

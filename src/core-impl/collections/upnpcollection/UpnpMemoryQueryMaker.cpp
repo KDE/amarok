@@ -41,7 +41,7 @@ UpnpMemoryQueryMaker::run()
 DEBUG_BLOCK
     if( m_firstRun ) {
         m_firstRun = false;
-        emit startFullScan();
+        Q_EMIT startFullScan();
     }
     MemoryQueryMaker::run();
 }

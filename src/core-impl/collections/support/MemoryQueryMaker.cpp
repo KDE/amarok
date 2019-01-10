@@ -500,7 +500,7 @@ MemoryQueryMaker::done( ThreadWeaver::JobPointer job )
 {
     ThreadWeaver::Queue::instance()->dequeue( job );
     d->job = 0;
-    emit queryDone();
+    Q_EMIT queryDone();
 }
 
 QueryMaker * MemoryQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )

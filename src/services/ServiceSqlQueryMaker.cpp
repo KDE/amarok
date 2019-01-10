@@ -167,7 +167,7 @@ ServiceSqlQueryMaker::done( ThreadWeaver::JobPointer job )
     Q_UNUSED( job )
 
     d->worker.clear();
-    emit queryDone();
+    Q_EMIT queryDone();
 }
 
 QueryMaker*
@@ -592,7 +592,7 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
     {
         switch( d->queryType ) {
         /*case Private::CUSTOM:
-            emit newResultReady( result );
+            Q_EMIT newResultReady( result );
             break;*/
         case QueryMaker::Track:
             handleTracks( result );
@@ -625,28 +625,28 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
         switch( d->queryType )
         {
             case QueryMaker::Custom:
-                emit newResultReady( QStringList() );
+                Q_EMIT newResultReady( QStringList() );
                 break;
             case QueryMaker::Track:
-                emit newTracksReady( Meta::TrackList() );
+                Q_EMIT newTracksReady( Meta::TrackList() );
                 break;
             case QueryMaker::Artist:
-                emit newArtistsReady( Meta::ArtistList() );
+                Q_EMIT newArtistsReady( Meta::ArtistList() );
                 break;
             case QueryMaker::Album:
-                emit newAlbumsReady( Meta::AlbumList() );
+                Q_EMIT newAlbumsReady( Meta::AlbumList() );
                 break;
             case QueryMaker::AlbumArtist:
-                emit newArtistsReady( Meta::ArtistList() );
+                Q_EMIT newArtistsReady( Meta::ArtistList() );
                 break;
             case QueryMaker::Genre:
-                emit newGenresReady( Meta::GenreList() );
+                Q_EMIT newGenresReady( Meta::GenreList() );
                 break;
             case QueryMaker::Composer:
-                emit newComposersReady( Meta::ComposerList() );
+                Q_EMIT newComposersReady( Meta::ComposerList() );
                 break;
             case QueryMaker::Year:
-                emit newYearsReady( Meta::YearList() );
+                Q_EMIT newYearsReady( Meta::YearList() );
                 break;
             case QueryMaker::None:
                 debug() << "Warning: queryResult with queryType == NONE";
@@ -714,7 +714,7 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
         tracks.append( trackptr );
     }
 
-    emit newTracksReady( tracks );
+    Q_EMIT newTracksReady( tracks );
 }
 
 void
@@ -729,7 +729,7 @@ ServiceSqlQueryMaker::handleArtists( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         artists.append( m_registry->getArtist( row ) );
     }
-    emit newArtistsReady( artists );
+    Q_EMIT newArtistsReady( artists );
 }
 
 void
@@ -744,7 +744,7 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         albums.append( m_registry->getAlbum( row ) );
     }
-    emit newAlbumsReady( albums );
+    Q_EMIT newAlbumsReady( albums );
 }
 
 void
@@ -759,7 +759,7 @@ ServiceSqlQueryMaker::handleGenres( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         genres.append( m_registry->getGenre( row ) );
     }
-    emit newGenresReady( genres );
+    Q_EMIT newGenresReady( genres );
 }
 
 /*void
@@ -773,7 +773,7 @@ ServiceSqlQueryMaker::handleComposers( const QStringList &result )
         QString id = iter.next();
         composers.append( reg->getComposer( name, id.toInt() ) );
     }
-    emit newResultReady( composers );
+    Q_EMIT newResultReady( composers );
 }
 
 void
@@ -787,7 +787,7 @@ ServiceSqlQueryMaker::handleYears( const QStringList &result )
         QString id = iter.next();
         years.append( reg->getYear( name, id.toInt() ) );
     }
-    emit newResultReady( years );
+    Q_EMIT newResultReady( years );
 }*/
 
 QString

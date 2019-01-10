@@ -282,7 +282,7 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
             if ( auto bookmark = AmarokUrlPtr::dynamicCast( item ) )
             {
                 debug() << "a url was selected...";
-                emit( bookmarkSelected( *bookmark ) );
+                Q_EMIT( bookmarkSelected( *bookmark ) );
             }
         }
     }

@@ -239,7 +239,7 @@ MetadataConfig::slotConfigureExcludedLabels()
     if( dialog.exec() == QDialog::Accepted )
     {
         slotUpdateConfigureExcludedLabelsLabel();
-        emit changed();
+        Q_EMIT changed();
     }
 }
 

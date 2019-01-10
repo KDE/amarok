@@ -266,7 +266,7 @@ MetaQueryMaker::slotQueryDone()
     {
         //make sure we don't give control to code outside this class while holding the lock
         m_queryDoneCountMutex.unlock();
-        emit queryDone();
+        Q_EMIT queryDone();
     }
     else
         m_queryDoneCountMutex.unlock();

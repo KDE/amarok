@@ -232,7 +232,7 @@ EngineController::supportedMimeTypes()
     // this ensures that slotFillInSupportedMimeTypes() is called in the main thread. It
     // will be called directly if we are called in the main thread (so that no deadlock
     // can occur) and indirectly if we are called in non-main thread.
-    emit fillInSupportedMimeTypes();
+    Q_EMIT fillInSupportedMimeTypes();
 
     // ensure slotFillInSupportedMimeTypes() called above has already finished:
     m_supportedMimeTypesSemaphore.acquire();
@@ -300,13 +300,13 @@ EngineController::endSession()
     //only update song stats, when we're not going to resume it
     if ( !AmarokConfig::resumePlayback() && m_currentTrack )
     {
-        emit stopped( trackPositionMs(), m_currentTrack->length() );
+        Q_EMIT stopped( trackPositionMs(), m_currentTrack->length() );
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
-        emit trackChanged( Meta::TrackPtr( 0 ) );
+        Q_EMIT trackChanged( Meta::TrackPtr( 0 ) );
     }
-    emit sessionEnded( AmarokConfig::resumePlayback() && m_currentTrack );
+    Q_EMIT sessionEnded( AmarokConfig::resumePlayback() && m_currentTrack );
 }
 
 EqualizerController*
@@ -341,7 +341,7 @@ EngineController::play() //SLOT
             if( supportsFadeout() )
                 m_fader->setVolume( 1.0 );
             m_media->play();
-            emit trackPlaying( m_currentTrack );
+            Q_EMIT trackPlaying( m_currentTrack );
             return;
         }
     }
@@ -393,7 +393,7 @@ EngineController::replay() // slot
     DEBUG_BLOCK
 
     seekTo( 0 );
-    emit trackPositionChanged( 0, true );
+    Q_EMIT trackPositionChanged( 0, true );
 }
 
 void
@@ -500,7 +500,7 @@ EngineController::slotPause()
         m_media->pause();
     }
 
-    emit paused();
+    Q_EMIT paused();
 }
 
 void
@@ -533,14 +533,14 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
         const qint64 pos = trackPositionMs();
         // updateStreamLength() intentionally not here, we're probably in the middle of a track
         const qint64 length = trackLength();
-        emit trackFinishedPlaying( m_currentTrack, pos / qMax<double>( length, pos ) );
+        Q_EMIT trackFinishedPlaying( m_currentTrack, pos / qMax<double>( length, pos ) );
 
         m_currentTrack = 0;
         m_currentAlbum = 0;
         if( !playingWillContinue )
         {
-            emit stopped( pos, length );
-            emit trackChanged( m_currentTrack );
+            Q_EMIT stopped( pos, length );
+            Q_EMIT trackChanged( m_currentTrack );
         }
     }
 
@@ -634,7 +634,7 @@ EngineController::seekTo( int ms ) //SLOT
             seekTo = ms;
 
         m_media->seek( static_cast<qint64>( seekTo ) );
-        emit trackPositionChanged( seekTo, true ); /* User seek */
+        Q_EMIT trackPositionChanged( seekTo, true ); /* User seek */
     }
     else
         debug() << "Stream is not seekable.";
@@ -673,7 +673,7 @@ EngineController::setVolume( int percent ) //SLOT
         m_audio->setVolume( volume );
 
         AmarokConfig::setMasterVolume( percent );
-        emit volumeChanged( percent );
+        Q_EMIT volumeChanged( percent );
     }
     m_ignoreVolumeChangeAction = false;
 
@@ -700,7 +700,7 @@ EngineController::setMuted( bool mute ) //SLOT
         setVolume( m_volume );
 
     AmarokConfig::setMuteState( mute );
-    emit muteStateChanged( mute );
+    Q_EMIT muteStateChanged( mute );
 }
 
 void
@@ -811,7 +811,7 @@ EngineController::slotTick( qint64 position )
     if( m_boundedPlayback )
     {
         qint64 newPosition = position;
-        emit trackPositionChanged(
+        Q_EMIT trackPositionChanged(
                     static_cast<long>( position - m_boundedPlayback->startPosition() ),
                     false
                 );
@@ -837,7 +837,7 @@ EngineController::slotTick( qint64 position )
     else
     {
         m_lastTickPosition = position;
-        emit trackPositionChanged( static_cast<long>( position ), false );
+        Q_EMIT trackPositionChanged( static_cast<long>( position ), false );
     }
 }
 
@@ -905,7 +905,7 @@ EngineController::slotFinished()
         debug() << "Track finished completely, updating statistics";
         unsubscribeFrom( m_currentTrack ); // don't bother with trackMetadataChanged()
         stampStreamTrackLength(); // update track length in stream for accurate scrobbling
-        emit trackFinishedPlaying( m_currentTrack, 1.0 );
+        Q_EMIT trackFinishedPlaying( m_currentTrack, 1.0 );
         subscribeTo( m_currentTrack );
     }
 
@@ -913,7 +913,7 @@ EngineController::slotFinished()
     {
         // again. at this point the track is finished so it's trackPositionMs is 0
         if( !m_nextTrack && m_nextUrl.isEmpty() )
-            emit stopped( m_currentTrack ? m_currentTrack->length() : 0,
+            Q_EMIT stopped( m_currentTrack ? m_currentTrack->length() : 0,
                           m_currentTrack ? m_currentTrack->length() : 0 );
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
@@ -921,7 +921,7 @@ EngineController::slotFinished()
         m_currentTrack = 0;
         m_currentAlbum = 0;
         if( !m_nextTrack && m_nextUrl.isEmpty() ) // we will the trackChanged signal later
-            emit trackChanged( Meta::TrackPtr() );
+            Q_EMIT trackChanged( Meta::TrackPtr() );
         m_media->setCurrentSource( Phonon::MediaSource() );
     }
 
@@ -973,7 +973,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     {
         debug() << "Previous track finished completely, updating statistics";
         stampStreamTrackLength(); // update track length in stream for accurate scrobbling
-        emit trackFinishedPlaying( m_currentTrack, 1.0 );
+        Q_EMIT trackFinishedPlaying( m_currentTrack, 1.0 );
 
         if( m_multiSource )
             // advance source of a multi-source track
@@ -1048,8 +1048,8 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     }
 
     m_lastStreamStampPosition = useTrackWithinStreamDetection ? 0 : -1;
-    emit trackChanged( m_currentTrack );
-    emit trackPlaying( m_currentTrack );
+    Q_EMIT trackChanged( m_currentTrack );
+    Q_EMIT trackPlaying( m_currentTrack );
 }
 
 void
@@ -1066,7 +1066,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
 
     if( newState == Phonon::ErrorState )  // If media is borked, skip to next track
     {
-        emit trackError( m_currentTrack );
+        Q_EMIT trackError( m_currentTrack );
 
         warning() << "Phonon failed to play this URL. Error: " << m_media->errorString();
         warning() << "Forcing phonon engine reinitialization.";
@@ -1097,12 +1097,12 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
     else if( newState == Phonon::PlayingState )
     {
         errorCount = 0;
-        emit playbackStateChanged();
+        Q_EMIT playbackStateChanged();
     }
     else if( newState == Phonon::StoppedState ||
              newState == Phonon::PausedState )
     {
-        emit playbackStateChanged();
+        Q_EMIT playbackStateChanged();
     }
 }
 
@@ -1145,7 +1145,7 @@ void
 EngineController::slotTrackLengthChanged( qint64 milliseconds )
 {
     debug() << "slotTrackLengthChanged(" << milliseconds << ")";
-    emit trackLengthChanged( ( !m_multiPlayback || !m_boundedPlayback )
+    Q_EMIT trackLengthChanged( ( !m_multiPlayback || !m_boundedPlayback )
                              ? trackLength() : milliseconds );
 }
 
@@ -1168,7 +1168,7 @@ EngineController::slotMetaDataChanged()
             meta.insert( pair.second, values.first() );
     }
 
-    // note: don't rely on m_currentTrack here. At least some Phonon backends first emit
+    // note: don't rely on m_currentTrack here. At least some Phonon backends first Q_EMIT
     // totalTimeChanged(), then metaDataChanged() and only then currentSourceChanged()
     // which currently sets correct m_currentTrack.
     if( isInRecentMetaDataHistory( meta ) )
@@ -1184,7 +1184,7 @@ EngineController::slotMetaDataChanged()
     if( m_currentTrack && m_lastStreamStampPosition >= 0 )
     {
         stampStreamTrackLength();
-        emit trackFinishedPlaying( m_currentTrack, 1.0 );
+        Q_EMIT trackFinishedPlaying( m_currentTrack, 1.0 );
 
         // update track length to 0 because length emitted by stampStreamTrackLength()
         // is for the previous song
@@ -1192,13 +1192,13 @@ EngineController::slotMetaDataChanged()
     }
 
     debug() << "slotMetaDataChanged(): new meta-data:" << meta;
-    emit currentMetadataChanged( meta );
+    Q_EMIT currentMetadataChanged( meta );
 }
 
 void
 EngineController::slotSeekableChanged( bool seekable )
 {
-    emit seekableChanged( seekable );
+    Q_EMIT seekableChanged( seekable );
 }
 
 void
@@ -1222,7 +1222,7 @@ void EngineController::slotVolumeChanged( qreal newVolume )
 
         m_volume = percent;
         AmarokConfig::setMasterVolume( percent );
-        emit volumeChanged( percent );
+        Q_EMIT volumeChanged( percent );
     }
     else
         m_volume = percent;
@@ -1233,7 +1233,7 @@ void EngineController::slotVolumeChanged( qreal newVolume )
 void EngineController::slotMutedChanged( bool mute )
 {
     AmarokConfig::setMuteState( mute );
-    emit muteStateChanged( mute );
+    Q_EMIT muteStateChanged( mute );
 }
 
 void
@@ -1262,13 +1262,13 @@ EngineController::metadataChanged( Meta::TrackPtr track )
         if( m_currentAlbum )
             subscribeTo( m_currentAlbum );
     }
-    emit trackMetadataChanged( track );
+    Q_EMIT trackMetadataChanged( track );
 }
 
 void
 EngineController::metadataChanged( Meta::AlbumPtr album )
 {
-    emit albumMetadataChanged( album );
+    Q_EMIT albumMetadataChanged( album );
 }
 
 QString EngineController::prettyNowPlaying( bool progress ) const
@@ -1371,6 +1371,6 @@ EngineController::updateStreamLength( qint64 length )
     lengthMetaData.insert( Meta::Field::URL, QUrl( m_currentTrack->playableUrl() ) );
     lengthMetaData.insert( Meta::Field::LENGTH, length );
     debug() << "updateStreamLength(): emitting currentMetadataChanged(" << lengthMetaData << ")";
-    emit currentMetadataChanged( lengthMetaData );
+    Q_EMIT currentMetadataChanged( lengthMetaData );
 }
 

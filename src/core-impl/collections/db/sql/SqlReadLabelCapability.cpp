@@ -66,7 +66,7 @@ SqlReadLabelCapability::fetch( const QString &uniqueURL )
     }
 
     m_labels = labels;
-    emit labelsFetched( labels );
+    Q_EMIT labelsFetched( labels );
 }
 
 

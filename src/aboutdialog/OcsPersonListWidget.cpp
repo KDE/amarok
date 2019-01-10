@@ -83,6 +83,6 @@ OcsPersonListWidget::onOcsDataFetched( int err )    //SLOT
     if( m_fetchCount == 0 )
     {
         debug()<<m_status<<"FETCH COMPLETE";
-        emit switchedToOcs();
+        Q_EMIT switchedToOcs();
     }
 }

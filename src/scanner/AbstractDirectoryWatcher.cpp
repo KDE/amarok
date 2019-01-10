@@ -82,7 +82,7 @@ AbstractDirectoryWatcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
                 {
                     urls.append( QUrl::fromLocalFile( path ) );
                 }
-                emit requestScan( urls, GenericScanManager::PartialUpdateScan );
+                Q_EMIT requestScan( urls, GenericScanManager::PartialUpdateScan );
                 m_watcher->startScan( true );
             }
 
@@ -167,7 +167,7 @@ AbstractDirectoryWatcher::delayTimeout()
     if( m_scanDirsRequested.isEmpty() )
         return;
 
-    emit requestScan( m_scanDirsRequested.toList(), GenericScanManager::PartialUpdateScan );
+    Q_EMIT requestScan( m_scanDirsRequested.toList(), GenericScanManager::PartialUpdateScan );
     m_scanDirsRequested.clear();
 }
 

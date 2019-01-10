@@ -295,6 +295,6 @@ Dynamic::BiasFactory::factories()
 void
 Dynamic::BiasFactory::emitChanged()
 {
-    emit changed();
+    Q_EMIT changed();
 }
 

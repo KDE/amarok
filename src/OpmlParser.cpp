@@ -127,7 +127,7 @@ OpmlParser::downloadResult( KJob *job )
             i18n( "Reading OPML podcast from %1 failed with error:\n", m_url.url() );
         errorMessage = errorMessage.append( job->errorString() );
 
-//        emit statusBarSorryMessage( errorMessage );
+//        Q_EMIT statusBarSorryMessage( errorMessage );
     }
 
     m_transferJob = 0;
@@ -291,7 +291,7 @@ OpmlParser::continueRead()
 
         if( hasError() )
         {
-            emit doneParsing();
+            Q_EMIT doneParsing();
             return false;
         }
 
@@ -369,7 +369,7 @@ OpmlParser::stopWithError( const QString &message )
         m_transferJob = 0;
     }
 
-    emit doneParsing();
+    Q_EMIT doneParsing();
 }
 
 void
@@ -400,7 +400,7 @@ OpmlParser::beginOutline()
     foreach( const QXmlStreamAttribute &attribute, attributes() )
         outline->addAttribute( attribute.name().toString(), attribute.value().toString() );
 
-    emit outlineParsed( outline );
+    Q_EMIT outlineParsed( outline );
 }
 
 void
@@ -412,13 +412,13 @@ OpmlParser::beginNoElement()
 void
 OpmlParser::endDocument()
 {
-    emit doneParsing();
+    Q_EMIT doneParsing();
 }
 
 void
 OpmlParser::endHead()
 {
-    emit headerDone();
+    Q_EMIT headerDone();
 }
 
 void

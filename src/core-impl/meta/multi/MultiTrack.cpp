@@ -60,7 +60,7 @@ MultiTrack::setSource( int source )
     locker.unlock();
 
     notifyObservers();
-    emit urlChanged( playableUrl() );
+    Q_EMIT urlChanged( playableUrl() );
 }
 
 int
@@ -136,7 +136,7 @@ MultiTrack::trackAdded( Playlists::PlaylistPtr, TrackPtr, int )
         locker.unlock();
 
         notifyObservers();
-        emit urlChanged( playableUrl() );
+        Q_EMIT urlChanged( playableUrl() );
     }
 }
 

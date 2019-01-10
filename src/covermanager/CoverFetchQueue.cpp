@@ -30,7 +30,7 @@ void
 CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
 {
     m_queue.append( unit );
-    emit fetchUnitAdded( unit );
+    Q_EMIT fetchUnitAdded( unit );
 }
 
 void

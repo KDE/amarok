@@ -317,7 +317,7 @@ namespace CollectionFolder {
             }
             // A check or un-check can possibly require the whole view to change,
             // so we signal that the root's data is changed
-            emit dataChanged( QModelIndex(), QModelIndex() );
+            Q_EMIT dataChanged( QModelIndex(), QModelIndex() );
             return true;
         }
         return QFileSystemModel::setData( index, value, role );

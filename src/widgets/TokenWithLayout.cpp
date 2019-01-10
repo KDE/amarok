@@ -55,14 +55,14 @@ void Wrench::mousePressEvent( QMouseEvent * )
 {
     setMargin( 4 );
     update();
-    emit clicked();
+    Q_EMIT clicked();
 }
 
 void Wrench::mouseReleaseEvent( QMouseEvent * )
 {
     setMargin( 1 );
     update();
-    emit clicked();
+    Q_EMIT clicked();
 }
 
 void Wrench::paintEvent( QPaintEvent *pe )
@@ -196,7 +196,7 @@ void TokenWithLayout::setAlignment( Qt::Alignment alignment )
 
     m_alignment = alignment;
     m_label->setAlignment( alignment );
-    emit changed();
+    Q_EMIT changed();
 }
 
 bool TokenWithLayout::bold() const
@@ -213,7 +213,7 @@ void TokenWithLayout::setBold( bool bold )
     QFont font = m_label->font();
     font.setBold( bold );
     m_label->setFont( font );
-    emit changed();
+    Q_EMIT changed();
 }
 
 void TokenWithLayout::setPrefix( const QString& string )
@@ -224,7 +224,7 @@ void TokenWithLayout::setPrefix( const QString& string )
         m_prefix.clear();
     else
         m_prefix = string;
-    emit changed();
+    Q_EMIT changed();
 }
 
 void TokenWithLayout::setSuffix( const QString& string )
@@ -235,14 +235,14 @@ void TokenWithLayout::setSuffix( const QString& string )
         m_suffix.clear();
     else
         m_suffix = string;
-    emit changed();
+    Q_EMIT changed();
 }
 
 void TokenWithLayout::setWidth( int size )
 {
     m_width = qMax( qMin( 1.0, size/100.0 ), 0.0 ) ;
 
-    emit changed();
+    Q_EMIT changed();
 }
 
 qreal TokenWithLayout::width() const
@@ -270,7 +270,7 @@ void TokenWithLayout::setItalic( bool italic )
     font.setItalic( italic );
     m_label->setFont( font );
 
-    emit changed();
+    Q_EMIT changed();
 }
 
 void TokenWithLayout::setUnderline( bool underline )
@@ -283,7 +283,7 @@ void TokenWithLayout::setUnderline( bool underline )
     font.setUnderline( underline );
     m_label->setFont( font );
 
-    emit changed();
+    Q_EMIT changed();
 }
 
 

@@ -162,7 +162,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         if( ec )
         {
             ec->setTitle( value.toString() );
-            emit dataChanged( index, index );
+            Q_EMIT dataChanged( index, index );
             return true;
         }
     }
@@ -177,7 +177,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
                 if( ec )
                     ec->setAlbum( value.toString() );
             }
-            emit dataChanged( index, index );
+            Q_EMIT dataChanged( index, index );
             return true;
         }
     }
@@ -192,7 +192,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
                 if( ec )
                     ec->setArtist( value.toString() );
             }
-            emit dataChanged( index, index );
+            Q_EMIT dataChanged( index, index );
             return true;
         }
     }
@@ -207,7 +207,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
                 if( ec )
                     ec->setGenre( value.toString() );
             }
-            emit dataChanged( index, index );
+            Q_EMIT dataChanged( index, index );
             return true;
         }
     }
@@ -222,7 +222,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
                 if( ec )
                     ec->setYear( value.toInt() );
             }
-            emit dataChanged( index, index );
+            Q_EMIT dataChanged( index, index );
             return true;
         }
     }
@@ -237,7 +237,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
                 if( ec )
                     ec->setComposer( value.toString() );
             }
-            emit dataChanged( index, index );
+            Q_EMIT dataChanged( index, index );
             return true;
         }
     }
@@ -721,7 +721,7 @@ CollectionTreeItemModelBase::tracksLoaded( const Meta::AlbumPtr &album, const QM
     if( !m_years.contains( album.data() ) || m_years.value( album.data() ) != year )
     {
         m_years[ album.data() ] = year;
-        emit dataChanged( index, index );
+        Q_EMIT dataChanged( index, index );
     }
 }
 
@@ -762,13 +762,13 @@ CollectionTreeItemModelBase::queryDone()
     //reset icon for this item
     if( item && item != m_rootItem )
     {
-        emit dataChanged( itemIndex( item ), itemIndex( item ) );
+        Q_EMIT dataChanged( itemIndex( item ), itemIndex( item ) );
     }
 
     //stop timer if there are no more animations active
     if( m_runningQueries.isEmpty() )
     {
-        emit allQueriesFinished( m_autoExpand );
+        Q_EMIT allQueriesFinished( m_autoExpand );
         m_autoExpand = false; // reset to default value
         m_timeLine->stop();
     }
@@ -945,7 +945,7 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
         {
             if( m_expandedSpecialNodes.contains( parent->parentCollection() ) )
             {
-                emit expandIndex( createIndex( 0, 0, specialNode ) ); //we have just inserted the vaItem at row 0
+                Q_EMIT expandIndex( createIndex( 0, 0, specialNode ) ); //we have just inserted the vaItem at row 0
             }
         }
     }
@@ -962,7 +962,7 @@ CollectionTreeItemModelBase::handleNormalQueryResult( Collections::QueryMaker *q
         if ( parent->isDataItem() )
         {
             if ( m_expandedItems.contains( parent->data() ) )
-                emit expandIndex( parentIndex );
+                Q_EMIT expandIndex( parentIndex );
             else
                 //simply insert the item, nothing will change if it is already in the set
                 m_expandedItems.insert( parent->data() );
@@ -978,7 +978,7 @@ CollectionTreeItemModelBase::populateChildren( const DataList &dataList, Collect
     // add new rows after existing ones here (which means all artists nodes
     // will be inserted after the "Various Artists" node)
     // figure out which children of parent have to be removed,
-    // which new children have to be added, and preemptively emit dataChanged for the rest
+    // which new children have to be added, and preemptively Q_EMIT dataChanged for the rest
     // have to check how that influences performance...
     const QSet<Meta::DataPtr> dataSet = dataList.toSet();
     QSet<Meta::DataPtr> childrenSet;
@@ -1028,7 +1028,7 @@ CollectionTreeItemModelBase::populateChildren( const DataList &dataList, Collect
 
             // tell the view that the existing children may have changed
             QModelIndex idx = index( i, 0, parentIndex );
-            emit dataChanged( idx, idx );
+            Q_EMIT dataChanged( idx, idx );
         }
     }
 
@@ -1179,7 +1179,7 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
     {
         if( item == m_rootItem )
             continue;
-        emit dataChanged( itemIndex( item ), itemIndex( item ) );
+        Q_EMIT dataChanged( itemIndex( item ), itemIndex( item ) );
     }
 }
 
@@ -1207,7 +1207,7 @@ CollectionTreeItemModelBase::slotFilter( bool autoExpand )
     {
         CollectionTreeItem *expandedItem = m_collections.value( expanded->collectionId() ).second;
         if( expandedItem )
-            emit expandIndex( itemIndex( expandedItem ) );
+            Q_EMIT expandIndex( itemIndex( expandedItem ) );
     }
 }
 

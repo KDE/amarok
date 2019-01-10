@@ -406,7 +406,7 @@ void App::applySettings()
 
     Amarok::OSD::instance()->applySettings();
 
-    emit settingsChanged();
+    Q_EMIT settingsChanged();
 
     if( AmarokConfig::enableScriptConsole() && !m_scriptConsole )
         m_scriptConsole = ScriptConsoleNS::ScriptConsole::instance();
@@ -603,7 +603,7 @@ void App::quit()
     The::playlistManager()->completePodcastDownloads();
 
     // Following signal is relayed to scripts, which may block quitting for a while
-    emit prepareToQuit();
+    Q_EMIT prepareToQuit();
     QApplication::quit();
 }
 

@@ -136,7 +136,7 @@ NotificationsConfig::updateSettings()
 
     Amarok::KNotificationBackend::instance()->setEnabled( kcfg_KNotifyEnabled->isChecked() );
 
-    emit settingsChanged( QString() );
+    Q_EMIT settingsChanged( QString() );
 }
 
 
@@ -154,7 +154,7 @@ NotificationsConfig::slotPositionChanged()
     kcfg_OsdScreen->blockSignals( false );
 
     // Update button states (e.g. "Apply")
-    emit changed();
+    Q_EMIT changed();
 }
 
 void

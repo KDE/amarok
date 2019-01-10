@@ -129,10 +129,10 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider *provider, int categor
              this, &PlaylistManager::slotPlaylistRemoved );
 
     if( newCategory )
-        emit categoryAdded( category );
+        Q_EMIT categoryAdded( category );
 
-    emit providerAdded( provider, category );
-    emit updated( category );
+    Q_EMIT providerAdded( provider, category );
+    Q_EMIT updated( category );
 
     loadPlaylists( provider, category );
 }
@@ -187,14 +187,14 @@ PlaylistManager::addPlaylist( Playlists::PlaylistPtr playlist, int category )
         if( m_playlistMap.values( category ).contains( playlist ) )
         {
              //no need to add it again but do let the model know something changed.
-             emit playlistUpdated( playlist, category );
+             Q_EMIT playlistUpdated( playlist, category );
              return;
         }
     }
 
     m_playlistMap.insert( category, playlist );
     //reemit so models know about new playlist in their category
-    emit playlistAdded( playlist, category );
+    Q_EMIT playlistAdded( playlist, category );
 }
 
 void
@@ -214,8 +214,8 @@ PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
 
     m_providerMap.remove( provider->category(), provider );
 
-    emit providerRemoved( provider, provider->category() );
-    emit updated( provider->category() );
+    Q_EMIT providerRemoved( provider, provider->category() );
+    Q_EMIT updated( provider->category() );
 }
 
 void
@@ -249,7 +249,7 @@ PlaylistManager::removePlaylist( Playlists::PlaylistPtr playlist, int category )
         m_playlistMap.remove( category, playlist );
     }
 
-    emit playlistRemoved( playlist, category );
+    Q_EMIT playlistRemoved( playlist, category );
 }
 
 void
@@ -264,7 +264,7 @@ PlaylistManager::slotUpdated()
     //This is an expensive operation, the provider should use playlistAdded/Removed signals instead.
     removePlaylists( provider );
     loadPlaylists( provider, provider->category() );
-    emit updated( provider->category() );
+    Q_EMIT updated( provider->category() );
 }
 
 void
@@ -348,7 +348,7 @@ PlaylistManager::rename( Playlists::PlaylistPtr playlist )
         return;
 
     AmarokUrl(QStringLiteral("amarok://navigate/playlists/user playlists")).run();
-    emit renamePlaylist( playlist ); // connected to PlaylistBrowserModel
+    Q_EMIT renamePlaylist( playlist ); // connected to PlaylistBrowserModel
 }
 
 bool
@@ -515,7 +515,7 @@ PlaylistManager::setupSync( const Playlists::PlaylistPtr master, const Playlists
 
             m_playlistMap.insert( category, syncedPlaylistPtr );
             //reemit so models know about new playlist in their category
-            emit playlistAdded( syncedPlaylistPtr, category );
+            Q_EMIT playlistAdded( syncedPlaylistPtr, category );
         }
     }
 }

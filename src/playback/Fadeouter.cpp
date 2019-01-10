@@ -56,6 +56,6 @@ Fadeouter::~Fadeouter()
 void
 Fadeouter::slotFinalizeFadeout()
 {
-    emit fadeoutFinished();
+    Q_EMIT fadeoutFinished();
     deleteLater();
 }

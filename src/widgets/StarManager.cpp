@@ -106,7 +106,7 @@ StarManager::reinitStars( int height, int margin )
     if( CollectionView::instance() &&
             CollectionView::instance()->viewMode() == CollectionView::modeFlatView )
         CollectionView::instance()->triggerUpdate(); */
-    emit ratingsColorsChanged();
+    Q_EMIT ratingsColorsChanged();
 }
 
 QPixmap*

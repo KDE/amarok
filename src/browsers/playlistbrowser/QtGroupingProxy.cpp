@@ -472,7 +472,7 @@ QtGroupingProxy::setData( const QModelIndex &idx, const QVariant &value, int rol
         }
         //TODO: we might need to reload the data from the children at this point
 
-        emit dataChanged( idx, idx );
+        Q_EMIT dataChanged( idx, idx );
         return true;
     }
 
@@ -860,12 +860,12 @@ QtGroupingProxy::modelDataChanged( const QModelIndex &topLeft, const QModelIndex
 
     if( topLeft == bottomRight )
     {
-        emit dataChanged( proxyTopLeft, proxyTopLeft );
+        Q_EMIT dataChanged( proxyTopLeft, proxyTopLeft );
     }
     else
     {
         QModelIndex proxyBottomRight = mapFromSource( bottomRight );
-        emit dataChanged( proxyTopLeft, proxyBottomRight );
+        Q_EMIT dataChanged( proxyTopLeft, proxyBottomRight );
     }
 }
 

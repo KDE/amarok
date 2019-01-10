@@ -832,12 +832,12 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
 void
 CoverView::setStatusText( QListWidgetItem *item )
 {
-    #define item static_cast<CoverViewItem *>( item )
-    if ( !item )
+    #define itemmacro static_cast<CoverViewItem *>( item )
+    if ( !itemmacro )
         return;
 
-    const QString artist = item->albumPtr()->isCompilation() ? i18n( "Various Artists" ) : item->artist();
-    const QString tipContent = i18n( "%1 - %2", artist , item->album() );
+    const QString artist = itemmacro->albumPtr()->isCompilation() ? i18n( "Various Artists" ) : itemmacro->artist();
+    const QString tipContent = i18n( "%1 - %2", artist , itemmacro->album() );
     CoverManager::instance()->setStatusText( tipContent );
     #undef item
 }

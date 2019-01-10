@@ -165,7 +165,7 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
         style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) &&
         ( file.isDir() || file.isNull() ) )
     {
-        emit navigateToDirectory( index );
+        Q_EMIT navigateToDirectory( index );
         event->accept();
         return;
     }
@@ -197,7 +197,7 @@ FileView::mouseDoubleClickEvent( QMouseEvent *event )
         if( !file.isNull() && ( Playlists::isPlaylist( url ) || MetaFile::Track::isTrack( url ) ) )
             addIndexToPlaylist( index, Playlist::OnDoubleClickOnSelectedItems );
         else
-            emit navigateToDirectory( index );
+            Q_EMIT navigateToDirectory( index );
 
         event->accept();
         return;
@@ -224,7 +224,7 @@ FileView::keyPressEvent( QKeyEvent *event )
                 // right, we test the current item, but then add the selection to playlist
                 addSelectionToPlaylist( Playlist::OnReturnPressedOnSelectedItems );
             else
-                emit navigateToDirectory( index );
+                Q_EMIT navigateToDirectory( index );
 
             return;
         }
@@ -232,7 +232,7 @@ FileView::keyPressEvent( QKeyEvent *event )
             slotMoveToTrash( Qt::NoButton, event->modifiers() );
             break;
         case Qt::Key_F5:
-            emit refreshBrowser();
+            Q_EMIT refreshBrowser();
             break;
         default:
             break;

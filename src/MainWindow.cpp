@@ -636,13 +636,13 @@ MainWindow::slotFullScreen() // slot
 void
 MainWindow::slotLoveTrack()
 {
-    emit loveTrack( The::engineController()->currentTrack() );
+    Q_EMIT loveTrack( The::engineController()->currentTrack() );
 }
 
 void
 MainWindow::slotBanTrack()
 {
-    emit banTrack( The::engineController()->currentTrack() );
+    Q_EMIT banTrack( The::engineController()->currentTrack() );
 }
 
 void

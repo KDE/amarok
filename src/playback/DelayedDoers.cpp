@@ -60,7 +60,7 @@ void
 DelayedSeeker::performAction()
 {
     m_mediaObject->seek( m_seekTo );
-    emit trackPositionChanged( m_seekTo, /* userSeek */ true );
+    Q_EMIT trackPositionChanged( m_seekTo, /* userSeek */ true );
 
     if( !m_startPaused )
         m_mediaObject->play();
@@ -85,7 +85,7 @@ DelayedTrackChanger::performAction()
     if( m_seekTo )
     {
         m_mediaObject->seek( m_seekTo );
-        emit trackPositionChanged( m_seekTo, /* userSeek */ true );
+        Q_EMIT trackPositionChanged( m_seekTo, /* userSeek */ true );
     }
 
     if( !m_startPaused )

@@ -358,7 +358,7 @@ CollectionViewItem::slotDataChanged( const QModelIndex &topLeft, const QModelInd
     Q_UNUSED( bottomRight )
     if( static_cast<CollectionTreeItem*>( topLeft.internalPointer() ) != m_item )
         return;
-    emit loaded( m_item );
+    Q_EMIT loaded( m_item );
     Q_ASSERT( disconnect( qobject_cast<QAbstractItemModel*>(sender()), &QAbstractItemModel::dataChanged, this, 0 ) );
 }
 

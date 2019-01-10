@@ -112,7 +112,7 @@ SqlUserPlaylistProvider::deleteSqlPlaylists( Playlists::SqlPlaylistList playlist
         {
             debug() << "deleting " << sqlPlaylist->name();
             m_root->m_childPlaylists.removeAll( sqlPlaylist );
-            emit playlistRemoved( Playlists::PlaylistPtr::dynamicCast( sqlPlaylist ) );
+            Q_EMIT playlistRemoved( Playlists::PlaylistPtr::dynamicCast( sqlPlaylist ) );
             sqlPlaylist->removeFromDb();
         }
     }
@@ -141,7 +141,7 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& nam
     m_root->m_childPlaylists << sqlPlaylist;
     Playlists::PlaylistPtr playlist( sqlPlaylist.data() );
 
-    emit playlistAdded( playlist );
+    Q_EMIT playlistAdded( playlist );
     return playlist; // assumes insertion in db was successful!
 }
 
@@ -150,7 +150,7 @@ SqlUserPlaylistProvider::reloadFromDb()
 {
     DEBUG_BLOCK;
     m_root->clear();
-    emit updated();
+    Q_EMIT updated();
 }
 
 Playlists::SqlPlaylistGroupPtr

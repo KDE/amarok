@@ -207,7 +207,7 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
     connect( token, &Token::destroyed, this, &TokenDropTarget::changed );
     connect( token, &Token::destroyed, this, &TokenDropTarget::deleteEmptyRows );
 
-    emit changed();
+    Q_EMIT changed();
 }
 
 

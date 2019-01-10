@@ -70,7 +70,7 @@ Controller::Controller( QObject* parent )
     // little to prevent frequent updates of rapidly - changing metadata
     connect( engine, &EngineController::trackChanged,
              m_updateNowPlayingTimer, QOverload<>::of(&QTimer::start) );
-    // following is needed for streams that don't emit newTrackPlaying on song change
+    // following is needed for streams that don't Q_EMIT newTrackPlaying on song change
     connect( engine, &EngineController::trackMetadataChanged,
              m_updateNowPlayingTimer, QOverload<>::of(&QTimer::start) );
     connect( m_updateNowPlayingTimer, &QTimer::timeout,
@@ -269,9 +269,9 @@ Controller::scrobble( const Meta::TrackPtr &track, double playedFraction, const 
     {
         ScrobblingService::ScrobbleError error = service->scrobble( track, playedFraction, time );
         if( error == ScrobblingService::NoError )
-            emit trackScrobbled( service, track );
+            Q_EMIT trackScrobbled( service, track );
         else
-            emit scrobbleFailed( service, track, error );
+            Q_EMIT scrobbleFailed( service, track, error );
     }
 }
 

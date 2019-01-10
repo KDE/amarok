@@ -200,7 +200,7 @@ void CompoundProgressBar::childBarFinished( ProgressBar *bar )
     {
         progressBar()->setValue( 0 );
         hideDetails();
-        emit( allDone() );
+        Q_EMIT( allDone() );
         return;
     }
     else

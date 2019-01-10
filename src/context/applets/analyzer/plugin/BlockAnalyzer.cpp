@@ -81,9 +81,9 @@ BlockAnalyzer::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeome
 
     // Rounded up so that the last column/line is covered if partially visible
     m_columns = std::lround( std::ceil( (double)newGeometry.width() / ( m_columnWidth + 1 ) ) );
-    emit columnsChanged( m_columns );
+    Q_EMIT columnsChanged( m_columns );
     m_rows    = std::ceil( (double)newGeometry.height() / ( BLOCK_HEIGHT + 1 ) );
-    emit rowsChanged( m_rows );
+    Q_EMIT rowsChanged( m_rows );
 
     setScopeSize( m_columns );
 
@@ -105,7 +105,7 @@ BlockAnalyzer::determineStep()
 
     const qreal fallTime = 1.0 / pow( 1.5, m_fallSpeed );  // time to fall from top to bottom
     m_step = qreal( m_rows ) / fallTime;  // the amount of rows to fall per second
-    emit stepChanged( m_step );
+    Q_EMIT stepChanged( m_step );
 }
 
 void
@@ -182,7 +182,7 @@ BlockAnalyzer::setFallSpeed( FallSpeed fallSpeed )
 
     m_fallSpeed = fallSpeed;
     config().writeEntry( "fallSpeed", (int) m_fallSpeed );
-    emit fallSpeedChanged();
+    Q_EMIT fallSpeedChanged();
 
     determineStep();
 }
@@ -205,10 +205,10 @@ BlockAnalyzer::setColumnWidth( int columnWidth )
 
     m_columnWidth = columnWidth;
     config().writeEntry( "columnWidth", m_columnWidth );
-    emit columnWidthChanged();
+    Q_EMIT columnWidthChanged();
 
     m_columns = std::lround( std::ceil( (double)width() / ( m_columnWidth + 1 ) ) );
-    emit columnsChanged( m_columns );
+    Q_EMIT columnsChanged( m_columns );
     setScopeSize( m_columns );
     m_barPixmap = QPixmap( m_columnWidth, m_rows * ( BLOCK_HEIGHT + 1 ) );
     paletteChange( The::paletteHandler()->palette() );
@@ -225,12 +225,12 @@ BlockAnalyzer::setShowFadebars( bool showFadebars )
         return;
 
     m_showFadebars = showFadebars;
-    emit showFadebarsChanged( m_showFadebars );
+    Q_EMIT showFadebarsChanged( m_showFadebars );
 }
 
 void
 BlockAnalyzer::newWindow( QQuickWindow* window )
 {
     if( window )
-        emit refreshRateChanged( window->screen()->refreshRate() );
+        Q_EMIT refreshRateChanged( window->screen()->refreshRate() );
 }

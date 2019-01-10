@@ -88,7 +88,7 @@ PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &v
             if( newName.isEmpty() )
                 return false;
             Playlists::PlaylistPtr playlist = m_playlists.value( idx.internalId() );
-            // we emit dataChanged signals later
+            // we Q_EMIT dataChanged signals later
             return The::playlistManager()->rename( playlist, newName );
         }
         case PlaylistBrowserModel::LabelColumn:
@@ -96,7 +96,7 @@ PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &v
             debug() << "changing group of item " << idx.internalId() << " to " << value.toString();
             Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setGroups( value.toStringList() );
-            // we emit dataChanged signals later
+            // we Q_EMIT dataChanged signals later
             return true;
         }
         default:

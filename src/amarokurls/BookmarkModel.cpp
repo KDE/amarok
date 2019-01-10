@@ -279,7 +279,7 @@ bool BookmarkModel::setData( const QModelIndex & index, const QVariant & value, 
     {
         case Name:
             item->rename( value.toString() );
-            emit dataChanged( index, index );
+            Q_EMIT dataChanged( index, index );
             break;
         case Url:
         {
@@ -290,7 +290,7 @@ bool BookmarkModel::setData( const QModelIndex & index, const QVariant & value, 
                 url->initFromString( value.toString() );
                 url->saveToDb();
 
-                emit dataChanged( index, index );
+                Q_EMIT dataChanged( index, index );
             }
             break;
         }
@@ -302,7 +302,7 @@ bool BookmarkModel::setData( const QModelIndex & index, const QVariant & value, 
             if ( url )
             {
                 url->saveToDb();
-                emit dataChanged( index, index );
+                Q_EMIT dataChanged( index, index );
             }
 
             break;
@@ -498,7 +498,7 @@ BookmarkModel::editBookmark( int id )
     foreach ( AmarokUrlPtr bookmark, m_root->childBookmarks() ) {
         row++;
         if ( bookmark->id() == id ) {
-            emit editIndex( createIndex( row , 0, BookmarkViewItemPtr::staticCast( bookmark ) ) );
+            Q_EMIT editIndex( createIndex( row , 0, BookmarkViewItemPtr::staticCast( bookmark ) ) );
         }
     }
 }
@@ -520,7 +520,7 @@ BookmarkModel::createNewGroup()
         if ( childGroup->id() == id )
         {
             debug() << "emitting edit for " << childGroup->name() << " id " << childGroup->id() << " in row " << row;
-            emit editIndex( createIndex( row , 0, BookmarkViewItemPtr::staticCast( childGroup ) ) );
+            Q_EMIT editIndex( createIndex( row , 0, BookmarkViewItemPtr::staticCast( childGroup ) ) );
         }
         row++;
     }
@@ -547,7 +547,7 @@ BookmarkModel::createNewBookmark()
         if ( childBookmark->id() == id )
         {
             debug() << "emitting edit for " << childBookmark->name() << " id " << childBookmark->id() << " in row " << row;
-            emit editIndex( createIndex( row , 0, BookmarkViewItemPtr::staticCast( childBookmark ) ) );
+            Q_EMIT editIndex( createIndex( row , 0, BookmarkViewItemPtr::staticCast( childBookmark ) ) );
         }
         row++;
     }

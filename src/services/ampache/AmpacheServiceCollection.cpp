@@ -70,7 +70,7 @@ AmpacheServiceCollection::possiblyContainsTrack( const QUrl &url ) const
 void
 AmpacheServiceCollection::slotAuthenticationNeeded()
 {
-    emit authenticationNeeded();
+    Q_EMIT authenticationNeeded();
 }
 
 Meta::TrackPtr
@@ -186,7 +186,7 @@ AmpacheTrackForUrlWorker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
         if( reply->error() == QNetworkReply::ContentAccessDenied )
         {
             debug() << "Trying to re-authenticate Ampache..";
-            emit authenticationNeeded();
+            Q_EMIT authenticationNeeded();
         }
     }
     parseTrack( reply->readAll() );

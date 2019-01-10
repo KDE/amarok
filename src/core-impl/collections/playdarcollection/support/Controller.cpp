@@ -134,7 +134,7 @@ namespace Playdar {
     {
         if( statusJob->error() != 0 ) {
             // debug() << "Error getting status from Playdar";
-            emit playdarError( Playdar::Controller::ErrorState( ExternalError ) );
+            Q_EMIT playdarError( Playdar::Controller::ErrorState( ExternalError ) );
             return;
         }
         
@@ -158,18 +158,18 @@ namespace Playdar {
         if( !object.contains("name") )
         {
             debug() << "Expected a service name from Playdar, received none";
-            emit playdarError( Playdar::Controller::ErrorState( MissingServiceName ) );
+            Q_EMIT playdarError( Playdar::Controller::ErrorState( MissingServiceName ) );
             return;
         }
         if( object.value("name").toString() != QStringLiteral( "playdar" ) )
         {
             debug() << "Expected Playdar, got response from some other service";
-            emit playdarError( Playdar::Controller::ErrorState( WrongServiceName ) );
+            Q_EMIT playdarError( Playdar::Controller::ErrorState( WrongServiceName ) );
             return;
         }
         
         debug() << "All good! Emitting playdarReady()";
-        emit playdarReady();
+        Q_EMIT playdarReady();
     }
     
     void
@@ -180,7 +180,7 @@ namespace Playdar {
         if( queryJob->error() != 0 )
         {
             debug() << "Error getting qid from Playdar";
-            emit playdarError( Playdar::Controller::ErrorState( ExternalError ) );
+            Q_EMIT playdarError( Playdar::Controller::ErrorState( ExternalError ) );
             return;
         }
         
@@ -205,14 +205,14 @@ namespace Playdar {
         if( !object.contains( "qid" ) )
         {
             debug() << "Expected qid in Playdar's response, but didn't get it";
-            emit playdarError( Playdar::Controller::ErrorState( MissingQid ) );
+            Q_EMIT playdarError( Playdar::Controller::ErrorState( MissingQid ) );
             return;
         }
         
         Query* query = new Query( object.value( "qid" ).toString(), this, m_queriesShouldWaitForSolutions );
         
         debug() << "All good! Emitting queryReady( Playdar::Query* )...";
-        emit queryReady( query );
+        Q_EMIT queryReady( query );
         
         connect( query, &Query::playdarError, this, &Controller::playdarError );
     }

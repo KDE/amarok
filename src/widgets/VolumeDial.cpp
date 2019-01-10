@@ -157,7 +157,7 @@ void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
     {
         m_isClick = !onRing( rect(), me->pos() );
         if ( m_isClick )
-            emit muteToggled( !m_muted );
+            Q_EMIT muteToggled( !m_muted );
     }
 
     m_isClick = false;
@@ -323,8 +323,8 @@ void VolumeDial::sliderChange( SliderChange change )
                 d = -5;
             m_formerValue += d;
             blockSignals( false );
-            emit sliderMoved( m_formerValue );
-            emit valueChanged( m_formerValue );
+            Q_EMIT sliderMoved( m_formerValue );
+            Q_EMIT valueChanged( m_formerValue );
             blockSignals( true );
         }
         if ( d )

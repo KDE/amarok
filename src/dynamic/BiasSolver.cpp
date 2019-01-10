@@ -101,7 +101,7 @@ BiasSolver::BiasSolver( int n, BiasPtr bias, Meta::TrackList context )
 BiasSolver::~BiasSolver()
 {
     debug() << "DESTROYING BiasSolver in thread:" << QThread::currentThreadId();
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
 }
 
 
@@ -109,7 +109,7 @@ void
 BiasSolver::requestAbort()
 {
     m_abortRequested = true;
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
 }
 
 bool
@@ -346,7 +346,7 @@ BiasSolver::updateProgress( const SolverList* list )
     while( m_currentProgress < progress )
     {
         m_currentProgress++;
-        emit incrementProgress();
+        Q_EMIT incrementProgress();
     }
 }
 

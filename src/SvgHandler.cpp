@@ -270,7 +270,7 @@ void SvgHandler::reTint()
     The::svgTinter()->init();
     if ( !loadSvg( m_themeFile ))
         warning() << "Unable to load theme file: " << m_themeFile;
-    emit retinted();
+    Q_EMIT retinted();
 }
 
 QString SvgHandler::themeFile()

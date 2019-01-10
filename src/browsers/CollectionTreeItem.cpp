@@ -209,7 +209,7 @@ CollectionTreeItem::tracksCounted( QStringList res )
     else
         m_trackCount = 0;
     m_isCounting = false;
-    emit dataUpdated();
+    Q_EMIT dataUpdated();
 }
 
 void

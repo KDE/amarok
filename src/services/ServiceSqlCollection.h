@@ -43,7 +43,7 @@ class AMAROK_EXPORT ServiceSqlCollection : public ServiceCollection
 
         QString escape( QString text ) const override;
 
-        void emitUpdated() { emit( updated() ); }
+        void emitUpdated() { Q_EMIT( updated() ); }
 
         Meta::TrackPtr trackForUrl( const QUrl &url ) override;
         bool possiblyContainsTrack( const QUrl &url ) const override;

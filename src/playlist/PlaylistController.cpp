@@ -136,7 +136,7 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
 
     if( options.testFlag( Replace ) )
     {
-        emit replacingPlaylist();   //make sure that we clear filters
+        Q_EMIT replacingPlaylist();   //make sure that we clear filters
         clear();
         //make sure that we turn off dynamic mode.
         Amarok::actionCollection()->action( QStringLiteral("disable_dynamic") )->trigger();
@@ -219,7 +219,7 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
     if( startPlaying )
         Actions::instance()->requestUserNextTrack(); // desired track will be first in queue
 
-    emit changed();
+    Q_EMIT changed();
 }
 
 void
@@ -349,7 +349,7 @@ Controller::removeRows( QList<int>& topModelRows )
     if( bottomModelCmds.size() > 0 )
         m_undoStack->push( new RemoveTracksCmd( 0, bottomModelCmds ) );
 
-    emit changed();
+    Q_EMIT changed();
 }
 
 void
@@ -508,7 +508,7 @@ Controller::reorderRows( const QList<int> &from, const QList<int> &to )
     if( bottomModelCmds.size() > 0 )
         m_undoStack->push( new MoveTracksCmd( 0, bottomModelCmds ) );
 
-    emit changed();
+    Q_EMIT changed();
 }
 
 void
@@ -516,7 +516,7 @@ Controller::undo()
 {
     DEBUG_BLOCK
     m_undoStack->undo();
-    emit changed();
+    Q_EMIT changed();
 }
 
 void
@@ -524,7 +524,7 @@ Controller::redo()
 {
     DEBUG_BLOCK
     m_undoStack->redo();
-    emit changed();
+    Q_EMIT changed();
 }
 
 void
@@ -532,7 +532,7 @@ Controller::clear()
 {
     DEBUG_BLOCK
     removeRows( 0, ModelStack::instance()->bottom()->qaim()->rowCount() );
-    emit changed();
+    Q_EMIT changed();
 }
 
 /**************************************************
@@ -646,5 +646,5 @@ Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
     if( bottomModelCmds.size() > 0 )
         m_undoStack->push( new InsertTracksCmd( 0, bottomModelCmds ) );
 
-    emit changed();
+    Q_EMIT changed();
 }

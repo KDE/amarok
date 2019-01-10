@@ -456,7 +456,7 @@ PodcastReader::read( const QUrl &url )
                       : i18n( "Updating \"%1\"", m_channel->title() );
     }
 
-    emit statusBarNewProgressOperation( m_transferJob, description, this );
+    Q_EMIT statusBarNewProgressOperation( m_transferJob, description, this );
 
     // parse data
     return read();
@@ -510,7 +510,7 @@ PodcastReader::downloadResult( KJob * job )
         }
         errorMessage = errorMessage.append( job->errorString() );
 
-        emit statusBarSorryMessage( errorMessage );
+        Q_EMIT statusBarSorryMessage( errorMessage );
     }
     else if( job->error() )
     {
@@ -524,7 +524,7 @@ PodcastReader::downloadResult( KJob * job )
         }
         errorMessage = errorMessage.append( job->errorString() );
 
-        emit statusBarSorryMessage( errorMessage );
+        Q_EMIT statusBarSorryMessage( errorMessage );
     }
 
     m_transferJob = 0;
@@ -643,7 +643,7 @@ PodcastReader::continueRead()
 
         if( m_xmlReader.hasError() )
         {
-            emit finished( this );
+            Q_EMIT finished( this );
             return false;
         }
 
@@ -717,7 +717,7 @@ PodcastReader::stopWithError( const QString &message )
         m_transferJob = 0;
     }
 
-    emit finished( this );
+    Q_EMIT finished( this );
 }
 
 void
@@ -1056,7 +1056,7 @@ void
 PodcastReader::endDocument()
 {
     debug() << "successfully parsed feed: " << m_url.url();
-    emit finished( this );
+    Q_EMIT finished( this );
 }
 
 void

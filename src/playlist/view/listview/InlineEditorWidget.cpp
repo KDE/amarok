@@ -407,7 +407,7 @@ InlineEditorWidget::eventFilter( QObject *obj, QEvent *event )
                     if( widget )
                     {
                         widget->clearFocus();
-                        emit editingDone( this );
+                        Q_EMIT editingDone( this );
                     }
                     return true;
             }

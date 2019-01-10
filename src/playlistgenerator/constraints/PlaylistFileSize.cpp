@@ -194,14 +194,14 @@ void
 ConstraintTypes::PlaylistFileSize::setComparison( const int c )
 {
     m_comparison = c;
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 void
 ConstraintTypes::PlaylistFileSize::setSize( const int l )
 {
     m_size = l;
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 void
@@ -214,7 +214,7 @@ void
 ConstraintTypes::PlaylistFileSize::setUnit( const int u )
 {
     m_unit = u;
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 /******************************
@@ -237,27 +237,27 @@ ConstraintTypes::PlaylistFileSizeEditWidget::PlaylistFileSizeEditWidget( const i
 void
 ConstraintTypes::PlaylistFileSizeEditWidget::on_spinBox_Size_valueChanged( const int l )
 {
-    emit sizeChanged( l );
-    emit updated();
+    Q_EMIT sizeChanged( l );
+    Q_EMIT updated();
 }
 
 void
 ConstraintTypes::PlaylistFileSizeEditWidget::on_comboBox_Unit_currentIndexChanged( const int l )
 {
-    emit unitChanged( l );
-    emit updated();
+    Q_EMIT unitChanged( l );
+    Q_EMIT updated();
 }
 
 void
 ConstraintTypes::PlaylistFileSizeEditWidget::on_comboBox_Comparison_currentIndexChanged( const int v )
 {
-    emit comparisonChanged( v );
-    emit updated();
+    Q_EMIT comparisonChanged( v );
+    Q_EMIT updated();
 }
 
 void
 ConstraintTypes::PlaylistFileSizeEditWidget::on_slider_Strictness_valueChanged( const int v )
 {
-    emit strictnessChanged( v );
-    emit updated();
+    Q_EMIT strictnessChanged( v );
+    Q_EMIT updated();
 }

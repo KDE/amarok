@@ -106,7 +106,7 @@ PodcastImageFetcher::run()
         && m_jobChannelMap.isEmpty() && m_jobEpisodeMap.isEmpty() )
     {
         //nothing to do
-        emit( done( this ) );
+        Q_EMIT( done( this ) );
         return;
     }
 
@@ -114,7 +114,7 @@ PodcastImageFetcher::run()
     if( !mgr.isOnline() )
     {
         debug() << "QNetworkConfigurationManager reports we are not online, canceling podcast image download";
-        emit( done( this ) );
+        Q_EMIT( done( this ) );
         //TODO: schedule another run after Solid reports we are online again
         return;
     }

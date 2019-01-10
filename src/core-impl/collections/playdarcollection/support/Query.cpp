@@ -120,7 +120,7 @@ namespace Playdar
         
         if( resultsJob->error() != 0 ) {
             debug() << "Error getting results from Playdar";
-            emit playdarError( Playdar::Controller::ErrorState( 1 ) );
+            Q_EMIT playdarError( Playdar::Controller::ErrorState( 1 ) );
             return;
         }
         
@@ -144,19 +144,19 @@ namespace Playdar
         if( !object.contains( "results" ) )
         {
             debug() << "Expecting results in Playdar's response, received none";
-            emit playdarError( Playdar::Controller::ErrorState( 6 ) );
+            Q_EMIT playdarError( Playdar::Controller::ErrorState( 6 ) );
             return;
         }
         if( !object.contains( "qid" ) )
         {
             debug() << "Expected qid in Playdar's response, received none";
-            emit playdarError( Playdar::Controller::ErrorState( 4 ) );
+            Q_EMIT playdarError( Playdar::Controller::ErrorState( 4 ) );
             return;
         }
         if( object.value( "qid" ) != m_qid )
         {
             debug() << "A query received the wrong results from Playdar...";
-            emit playdarError( Playdar::Controller::ErrorState( 5 ) );
+            Q_EMIT playdarError( Playdar::Controller::ErrorState( 5 ) );
             return;
         }
         
@@ -197,11 +197,11 @@ namespace Playdar
             {
                 m_solved = true;
                 m_trackList.prepend( aTrack );
-                emit querySolved( aTrack );
+                Q_EMIT querySolved( aTrack );
                 
                 if( m_waitForSolution )
                 {
-                    emit queryDone( this, m_trackList );
+                    Q_EMIT queryDone( this, m_trackList );
                     return;
                 }
             }
@@ -209,13 +209,13 @@ namespace Playdar
             {
                 m_trackList.append( aTrack );
             }
-            emit newTrackAdded( aTrack );
+            Q_EMIT newTrackAdded( aTrack );
         }
         
         if( m_receivedFirstResults || m_solved )
         {
             m_receivedFirstResults = true;
-            emit queryDone( this, m_trackList );
+            Q_EMIT queryDone( this, m_trackList );
         }
         else
         {

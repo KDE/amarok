@@ -39,5 +39,5 @@ PlaylistBrowserFilterProxy::slotRenameIndex( const QModelIndex &sourceIdx )
 {
     const QModelIndex &idx = mapFromSource( sourceIdx );
     if( idx.isValid() )
-        emit renameIndex( idx );
+        Q_EMIT renameIndex( idx );
 }

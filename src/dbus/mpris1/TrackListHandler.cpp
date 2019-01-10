@@ -114,7 +114,7 @@ namespace Mpris1
 
     void TrackListHandler::slotTrackListChange()
     {
-        emit TrackListChange( The::playlist()->qaim()->rowCount() );
+        Q_EMIT TrackListChange( The::playlist()->qaim()->rowCount() );
     }
 
     void TrackListHandler::UpdateAllPodcasts()

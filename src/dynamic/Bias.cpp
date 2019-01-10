@@ -112,7 +112,7 @@ Dynamic::AbstractBias::invalidate()
 void
 Dynamic::AbstractBias::replace( Dynamic::BiasPtr newBias )
 {
-    emit replaced( BiasPtr(const_cast<Dynamic::AbstractBias*>(this)), newBias );
+    Q_EMIT replaced( BiasPtr(const_cast<Dynamic::AbstractBias*>(this)), newBias );
 }
 
 // -------- RandomBias ------
@@ -331,12 +331,12 @@ Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
              this, &AndBias::biasReplaced );
     connect( bias.data(), &Dynamic::AbstractBias::changed,
              this, &AndBias::biasChanged );
-    emit biasAppended( bias );
+    Q_EMIT biasAppended( bias );
 
     // creating a shared pointer and destructing it just afterwards would
     // also destruct this object.
     // so we give the object creating this bias a chance to increment the refcount
-    emit changed( thisPtr );
+    Q_EMIT changed( thisPtr );
 }
 
 void
@@ -357,8 +357,8 @@ Dynamic::AndBias::moveBias( int from, int to )
     if( inModel )
         DynamicModel::instance()->endMoveBias();
 
-    emit biasMoved( from, to );
-    emit changed( BiasPtr( this ) );
+    Q_EMIT biasMoved( from, to );
+    Q_EMIT changed( BiasPtr( this ) );
 }
 
 
@@ -371,7 +371,7 @@ Dynamic::AndBias::resultReceived( const Dynamic::TrackSet &tracks )
     if( m_outstandingMatches < 0 )
         warning() << "Received more results than expected.";
     else if( m_outstandingMatches == 0 )
-        emit resultReady( m_tracks );
+        Q_EMIT resultReady( m_tracks );
 }
 
 void
@@ -389,7 +389,7 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
     m_biases.removeAt( index );
     if( inModel )
         DynamicModel::instance()->endRemoveBias();
-    emit biasRemoved( index );
+    Q_EMIT biasRemoved( index );
 
     if( newBias )
     {
@@ -407,18 +407,18 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
             DynamicModel::instance()->endInsertBias();
 
         // we don't have an bias inserted signal
-        emit biasAppended( newBias );
-        emit biasMoved( m_biases.count()-1, index );
+        Q_EMIT biasAppended( newBias );
+        Q_EMIT biasMoved( m_biases.count()-1, index );
     }
 
-    emit changed( thisPtr );
+    Q_EMIT changed( thisPtr );
 }
 
 void
 Dynamic::AndBias::biasChanged( Dynamic::BiasPtr bias )
 {
     BiasPtr thisPtr( this );
-    emit changed( thisPtr );
+    Q_EMIT changed( thisPtr );
     bool inModel = DynamicModel::instance()->index( thisPtr ).isValid();
     if( inModel )
         DynamicModel::instance()->biasChanged( bias );
@@ -508,7 +508,7 @@ Dynamic::OrBias::resultReceived( const Dynamic::TrackSet &tracks )
     if( m_outstandingMatches < 0 )
         warning() << "Received more results than expected.";
     else if( m_outstandingMatches == 0 )
-        emit resultReady( m_tracks );
+        Q_EMIT resultReady( m_tracks );
 }
 
 

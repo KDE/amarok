@@ -371,7 +371,7 @@ MountPointManager::slotDeviceRemoved( const QString &udi )
             debug() << "removed device " << key;
             m_handlerMapMutex.unlock();
             //we found the medium which was removed, so we can abort the loop
-            emit deviceRemoved( key );
+            Q_EMIT deviceRemoved( key );
             return;
         }
     }
@@ -406,7 +406,7 @@ void MountPointManager::createHandlerFromDevice( const Solid::Device& device, co
                 m_handlerMap.insert( key, handler );
                 m_handlerMapMutex.unlock();
 //                 debug() << "added device " << key << " with mount point " << volumeAccess->mountPoint();
-                emit deviceAdded( key );
+                Q_EMIT deviceAdded( key );
                 break;  //we found the added medium and don't have to check the other device handlers
             }
             else

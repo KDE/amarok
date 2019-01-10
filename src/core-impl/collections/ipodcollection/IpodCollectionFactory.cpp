@@ -264,7 +264,7 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
         connect( ssa, &Solid::StorageAccess::teardownRequested, collection, &IpodCollection::slotEject );
 
     if( collection->init() )
-        emit newCollection( collection );
+        Q_EMIT newCollection( collection );
     else
         collection->deleteLater();
 }

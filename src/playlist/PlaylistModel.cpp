@@ -721,19 +721,19 @@ Playlist::Model::setActiveRow( int row )
     {
         setStateOfRow( row, Item::Played );
         m_activeRow = row;
-        emit activeTrackChanged( m_items.at( row )->id() );
+        Q_EMIT activeTrackChanged( m_items.at( row )->id() );
     }
     else
     {
         m_activeRow = -1;
-        emit activeTrackChanged( 0 );
+        Q_EMIT activeTrackChanged( 0 );
     }
 }
 
 void
 Playlist::Model::emitQueueChanged()
 {
-    emit queueChanged();
+    Q_EMIT queueChanged();
 }
 
 int
@@ -865,7 +865,7 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
             if( album )
                 subscribeTo( album );
 
-            emit dataChanged( index( row, 0 ), index( row, columnCount() - 1 ) );
+            Q_EMIT dataChanged( index( row, 0 ), index( row, columnCount() - 1 ) );
         }
         row++;
     }
@@ -883,7 +883,7 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
     {
         if ( m_items.at( i )->track()->album() == album )
         {
-            emit dataChanged( index( i, 0 ), index( i, columnCount() - 1 ) );
+            Q_EMIT dataChanged( index( i, 0 ), index( i, columnCount() - 1 ) );
             found = true;
             debug()<<"Metadata updated for album"<<album->prettyName();
         }
@@ -1190,14 +1190,14 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
     //   - Call 'beginMoveRows()' / 'endMoveRows()'. Drawback: we'd need to do N of them, all causing resorts etc.
     //   - Emit 'layoutAboutToChange' / 'layoutChanged'. Drawback: unspecific, 'changePersistentIndex()' complications.
     //   - Emit 'dataChanged'. Drawback: a bit inappropriate. But not wrong.
-    emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );
+    Q_EMIT dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );
 
     //update the active row
     m_activeRow = newActiveRow;
 }
 
 
-// When doing a 'setStateOfItem_batch', we emit 1 crude 'dataChanged' signal. If we're
+// When doing a 'setStateOfItem_batch', we Q_EMIT 1 crude 'dataChanged' signal. If we're
 // unlucky, that signal may span many innocent rows that haven't changed at all.
 // Although that "worst case" will cause unnecessary work in our listeners "upstream", it
 // still has much better performance than the worst case of emitting very many tiny
@@ -1215,7 +1215,7 @@ void
 Playlist::Model::setStateOfItem_batchEnd()
 {
     if ( ( m_setStateOfItem_batchMaxRow - m_setStateOfItem_batchMinRow ) >= 0 )
-        emit dataChanged( index( m_setStateOfItem_batchMinRow, 0 ), index( m_setStateOfItem_batchMaxRow, columnCount() - 1 ) );
+        Q_EMIT dataChanged( index( m_setStateOfItem_batchMinRow, 0 ), index( m_setStateOfItem_batchMaxRow, columnCount() - 1 ) );
 
     m_setStateOfItem_batchMinRow = -1;
 }
@@ -1226,7 +1226,7 @@ Playlist::Model::setStateOfItem( Item *item, int row, Item::State state )
     item->setState( state );
 
     if ( m_setStateOfItem_batchMinRow == -1 )    // If not in batch mode
-        emit dataChanged( index( row, 0 ), index( row, columnCount() - 1 ) );
+        Q_EMIT dataChanged( index( row, 0 ), index( row, columnCount() - 1 ) );
     else
     {
         m_setStateOfItem_batchMinRow = qMin( m_setStateOfItem_batchMinRow, row );

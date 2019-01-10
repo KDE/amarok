@@ -53,7 +53,7 @@ void
 AmarokScriptEngine::invokableDeprecatedCall( const QString &call )
 {
     warning() << "Deprecated function " + call;
-    emit deprecatedCall( call );
+    Q_EMIT deprecatedCall( call );
 }
 
 void

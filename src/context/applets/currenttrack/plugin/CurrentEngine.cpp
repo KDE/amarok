@@ -73,7 +73,7 @@ CurrentEngine::slotAlbumMetadataChanged( const Meta::AlbumPtr &album )
     if( m_cover.cacheKey() != cover.cacheKey() )
     {
         m_cover = cover;
-        emit albumChanged();
+        Q_EMIT albumChanged();
     }
 }
 
@@ -84,7 +84,7 @@ CurrentEngine::slotTrackMetadataChanged( Meta::TrackPtr track )
         return;
 
     update( track->album() );
-    emit trackChanged();
+    Q_EMIT trackChanged();
 }
 
 void
@@ -104,13 +104,13 @@ void
 CurrentEngine::stopped()
 {
     m_currentTrack.clear();
-    emit trackChanged();
+    Q_EMIT trackChanged();
 
     m_cover = QPixmap();
 
     // Collect data for the recently added albums
     m_albums.clear();
-    emit albumChanged();
+    Q_EMIT albumChanged();
 
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     qm->setAutoDelete( true );
@@ -223,7 +223,7 @@ CurrentEngine::setRating(int rating)
         return;
 
     m_currentTrack->statistics()->setRating( rating );
-    emit trackChanged();
+    Q_EMIT trackChanged();
 }
 
 int

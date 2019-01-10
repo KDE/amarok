@@ -172,7 +172,7 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
 {
     // this method needs to be thread-safe!
 
-    // some playlists used to emit tracksLoaded() in ->tracks(), prevent infinite
+    // some playlists used to Q_EMIT tracksLoaded() in ->tracks(), prevent infinite
     // recursion by unsubscribing early
     PlaylistObserver::unsubscribeFrom( playlist );
 
@@ -250,13 +250,13 @@ TrackLoader::mayFinish()
 void
 TrackLoader::finish()
 {
-    // prevent double emit of finished(), race between singleshot QTimers from mayFinish()
+    // prevent double Q_EMIT of finished(), race between singleshot QTimers from mayFinish()
     // and metadataChanged()
     if( m_status != MayFinish )
         return;
 
     m_status = Finished;
-    emit finished( m_tracks );
+    Q_EMIT finished( m_tracks );
     deleteLater();
 }
 

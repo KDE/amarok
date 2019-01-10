@@ -65,7 +65,7 @@ IpodDeleteTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *th
         incrementProgress();
     }
 
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
     if( m_coll )
         itdb_stop_sync( m_coll->m_itdb );
 }

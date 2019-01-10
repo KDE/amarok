@@ -83,13 +83,13 @@ Dynamic::DynamicModel::setActivePlaylist( int index )
     if( m_activePlaylistIndex == index )
         return m_playlists[m_activePlaylistIndex];
 
-    emit dataChanged( this->index( m_activePlaylistIndex, 0 ),
+    Q_EMIT dataChanged( this->index( m_activePlaylistIndex, 0 ),
                       this->index( m_activePlaylistIndex, 0 ) );
     m_activePlaylistIndex = index;
-    emit dataChanged( this->index( m_activePlaylistIndex, 0 ),
+    Q_EMIT dataChanged( this->index( m_activePlaylistIndex, 0 ),
                       this->index( m_activePlaylistIndex, 0 ) );
 
-    emit activeChanged( index );
+    Q_EMIT activeChanged( index );
     savePlaylists(); // save in between to prevent loosing too much in case of a crash
 
     return m_playlists[m_activePlaylistIndex];
@@ -889,7 +889,7 @@ Dynamic::DynamicModel::loadPlaylists( const QString &filename )
 
     m_activePlaylistIndex = qBound( 0, newPlaylistIndex, m_playlists.count()-1 );
 
-    emit activeChanged( m_activePlaylistIndex );
+    Q_EMIT activeChanged( m_activePlaylistIndex );
     endResetModel();
 
     return true;
@@ -965,7 +965,7 @@ Dynamic::DynamicModel::initPlaylists()
 
     m_activePlaylistIndex = 0;
 
-    emit activeChanged( m_activePlaylistIndex );
+    Q_EMIT activeChanged( m_activePlaylistIndex );
     endResetModel();
 }
 
@@ -1032,14 +1032,14 @@ Dynamic::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
 {
     DEBUG_BLOCK;
     QModelIndex index = this->index( p );
-    emit dataChanged( index, index );
+    Q_EMIT dataChanged( index, index );
 }
 
 void
 Dynamic::DynamicModel::biasChanged( Dynamic::BiasPtr b )
 {
     QModelIndex index = this->index( b );
-    emit dataChanged( index, index );
+    Q_EMIT dataChanged( index, index );
 }
 
 void

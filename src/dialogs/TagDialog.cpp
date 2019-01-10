@@ -1352,7 +1352,7 @@ TagDialog::saveTags()
                     ec->setAlbumArtist( data.value( Meta::Field::ALBUMARTIST ).toString() );
 
                 ec->endUpdate();
-                // note: the track should by itself emit a collectionUpdated signal if needed
+                // note: the track should by itself Q_EMIT a collectionUpdated signal if needed
             };
             std::thread thread( lambda );
             thread.detach();

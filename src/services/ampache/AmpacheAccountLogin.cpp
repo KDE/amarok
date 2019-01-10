@@ -65,7 +65,7 @@ AmpacheAccountLogin::reauthenticate()
     m_pingRequest = The::networkAccessManager()->getData( url, this, &AmpacheAccountLogin::authenticate );
 
     if( !m_pingRequest )
-        emit finished();
+        Q_EMIT finished();
 }
 
 void
@@ -130,7 +130,7 @@ AmpacheAccountLogin::authenticate( const QUrl &requestUrl, QByteArray data, Netw
     m_authRequest = The::networkAccessManager()->getData( url, this, &AmpacheAccountLogin::authenticationComplete );
 
     if( !m_authRequest )
-        emit finished();
+        Q_EMIT finished();
 }
 
 void AmpacheAccountLogin::authenticationComplete( const QUrl &requestUrl, QByteArray data, NetworkAccessManagerProxy::Error e )
@@ -161,15 +161,15 @@ void AmpacheAccountLogin::authenticationComplete( const QUrl &requestUrl, QByteA
         KMessageBox::error( qobject_cast<QWidget*>(parent()),
                             i18n( "Authentication failed." ),
                             i18n( "Authentication Error" ) );
-        emit finished();
+        Q_EMIT finished();
         return;
     }
 
     m_sessionId = element.text();
     m_authenticated = true;
 
-    emit loginSuccessful();
-    emit finished();
+    Q_EMIT loginSuccessful();
+    Q_EMIT finished();
 }
 
 int
@@ -213,14 +213,14 @@ AmpacheAccountLogin::generalVerify( QNetworkReply *reply, const QDomDocument& do
             reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt() <<
             reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString();
 
-        emit finished();
+        Q_EMIT finished();
         return false;
     }
 
     if( e.code != QNetworkReply::NoError )
     {
         debug() << "authenticate Error:" << e.description;
-        emit finished();
+        Q_EMIT finished();
         return false;
     }
 
@@ -232,7 +232,7 @@ AmpacheAccountLogin::generalVerify( QNetworkReply *reply, const QDomDocument& do
         // Default the Version down if it didn't work
         debug() << "generalVerify error: " << error.text();
         KMessageBox::error( qobject_cast<QWidget*>(parent()), error.text(), i18n( "Authentication Error" ) );
-        emit finished();
+        Q_EMIT finished();
         return false;
     }
 

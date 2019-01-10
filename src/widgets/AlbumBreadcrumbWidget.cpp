@@ -70,11 +70,11 @@ void AlbumBreadcrumbWidget::updateBreadcrumbs()
 void AlbumBreadcrumbWidget::slotArtistClicked()
 {
     if( m_album->hasAlbumArtist() )
-        emit artistClicked( m_album->albumArtist()->name() );
+        Q_EMIT artistClicked( m_album->albumArtist()->name() );
 }
 
 void AlbumBreadcrumbWidget::slotAlbumClicked()
 {
-    emit albumClicked( m_album->name() );
+    Q_EMIT albumClicked( m_album->name() );
 }
 

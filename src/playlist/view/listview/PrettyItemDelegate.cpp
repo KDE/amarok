@@ -883,7 +883,7 @@ Playlist::PrettyItemDelegate::updateEditorGeometry( QWidget * editor, const QSty
 void
 Playlist::PrettyItemDelegate::editorDone( InlineEditorWidget * editor )
 {
-    emit commitData( editor );
+    Q_EMIT commitData( editor );
 }
 
 void

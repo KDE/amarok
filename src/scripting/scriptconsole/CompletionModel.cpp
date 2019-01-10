@@ -30,7 +30,7 @@ AmarokScriptCodeCompletionModel::AmarokScriptCodeCompletionModel( QObject *paren
     : CodeCompletionModel( parent )
 {
     const QUrl url( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/scriptconsole/") ) );
-    QFile file( url.path() + "AutoComplete.txt" );
+    QFile file( url.path() + QStringLiteral("AutoComplete.txt") );
     if( file.open( QFile::ReadOnly ) )
     {
         QTextStream in( &file );

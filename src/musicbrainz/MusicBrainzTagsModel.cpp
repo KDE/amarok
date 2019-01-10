@@ -196,7 +196,7 @@ MusicBrainzTagsModel::setData( const QModelIndex &index, const QVariant &value, 
     parentItem->clearChoices();
     item->setChosen( value.toBool() );
     QModelIndex parent = index.parent();
-    emit dataChanged( this->index( 0, 0, parent ),
+    Q_EMIT dataChanged( this->index( 0, 0, parent ),
                       this->index( rowCount( parent ) - 1, 0, parent ) );
     return true;
 }
@@ -298,7 +298,7 @@ MusicBrainzTagsModel::addTrack( const Meta::TrackPtr track, const QVariantMap ta
             similarItem = item;
 
             item->mergeData( tags );
-            emit dataChanged( index( i, 0, trackIndex ), index(i, columnCount() - 1, trackIndex ) );
+            Q_EMIT dataChanged( index( i, 0, trackIndex ), index(i, columnCount() - 1, trackIndex ) );
 
             break;
         }
@@ -348,7 +348,7 @@ MusicBrainzTagsModel::chooseBestMatches()
         if( item->chooseBestMatch() )
         {
             QModelIndex parent = index( i, 0 );
-            emit dataChanged( index( 0, 0, parent ),
+            Q_EMIT dataChanged( index( 0, 0, parent ),
                               index( rowCount( parent ) - 1, 0, parent ) );
         }
     }
@@ -363,7 +363,7 @@ MusicBrainzTagsModel::chooseBestMatchesFromRelease( const QStringList &releases 
         if( item->chooseBestMatchFromRelease( releases ) )
         {
             QModelIndex parent = index( i, 0 );
-            emit dataChanged( index( 0, 0, parent ),
+            Q_EMIT dataChanged( index( 0, 0, parent ),
                               index( rowCount( parent ) - 1, 0, parent ) );
         }
     }
@@ -377,7 +377,7 @@ MusicBrainzTagsModel::clearChoices()
         MusicBrainzTagsItem *item = m_rootItem->child( i );
         item->clearChoices();
         QModelIndex parent = index( i, 0 );
-        emit dataChanged( index( 0, 0, parent ),
+        Q_EMIT dataChanged( index( 0, 0, parent ),
                           index( rowCount( parent ) - 1, 0, parent ) );
     }
 }

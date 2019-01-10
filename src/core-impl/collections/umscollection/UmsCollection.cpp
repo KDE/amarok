@@ -201,7 +201,7 @@ UmsCollectionFactory::createCollectionForSolidDevice( const QString &udi )
     // fail if we hold some files on the device open, we try to tearDown the device too.
     connect( ssa, &Solid::StorageAccess::teardownRequested, this, &UmsCollectionFactory::slotRemoveAndTeardownSolidDevice );
 
-    emit newCollection( collection );
+    Q_EMIT newCollection( collection );
 }
 
 //UmsCollection
@@ -473,7 +473,7 @@ UmsCollection::metadataChanged( Meta::TrackPtr track )
 {
     if( MemoryMeta::MapChanger( m_mc.data() ).trackChanged( track ) )
         // big-enough change:
-        emit startUpdateTimer();
+        Q_EMIT startUpdateTimer();
 }
 
 QUrl
@@ -500,7 +500,7 @@ UmsCollection::slotDestroy()
     //TODO: stop scanner if running
     //unregister PlaylistProvider
     //CollectionManager will call destructor.
-    emit remove();
+    Q_EMIT remove();
 }
 
 void
@@ -522,7 +522,7 @@ UmsCollection::slotTrackAdded( QUrl location )
     if( proxyTrack )
     {
         subscribeTo( fileTrackPtr );
-        emit startUpdateTimer();
+        Q_EMIT startUpdateTimer();
     }
     else
         warning() << __PRETTY_FUNCTION__ << "Failed to add" << fileTrackPtr->playableUrl()
@@ -538,7 +538,7 @@ UmsCollection::slotTrackRemoved( const Meta::TrackPtr &track )
         unsubscribeFrom( removedTrack );
         // we only added MetaFile::Tracks, following static cast is safe
         static_cast<MetaFile::Track*>( removedTrack.data() )->setCollection( 0 );
-        emit startUpdateTimer();
+        Q_EMIT startUpdateTimer();
     }
     else
         warning() << __PRETTY_FUNCTION__ << "Failed to remove" << track->playableUrl()
@@ -549,7 +549,7 @@ void
 UmsCollection::collectionUpdated()
 {
     m_lastUpdated = QDateTime::currentMSecsSinceEpoch();
-    emit updated();
+    Q_EMIT updated();
 }
 
 void
@@ -722,7 +722,7 @@ UmsCollection::slotDirectoryScanned( QSharedPointer<CollectionScanner::Directory
     foreach( const CollectionScanner::Track *scannerTrack, dir->tracks() )
     {
         //TODO: use proxy tracks so no real file read is required
-        // following method calls startUpdateTimer(), no need to emit updated()
+        // following method calls startUpdateTimer(), no need to Q_EMIT updated()
         slotTrackAdded( QUrl::fromLocalFile(scannerTrack->path()) );
     }
 

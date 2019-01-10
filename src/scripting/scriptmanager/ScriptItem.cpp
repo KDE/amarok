@@ -226,7 +226,7 @@ ScriptItem::start( bool silent )
     Q_ASSERT( m_engine );
     m_output << m_engine->evaluate( scriptFile.readAll() ).toString();
     debug() << "After Evaluation "<< m_name;
-    emit evaluated( m_output.join( "\n" ) );
+    Q_EMIT evaluated( m_output.join( "\n" ) );
     scriptFile.close();
 
     if ( m_evaluating )
@@ -328,7 +328,7 @@ ScriptItem::slotDeprecatedCall( const QString &call )
 void
 ScriptItem::uninstall()
 {
-    emit uninstalled();
+    Q_EMIT uninstalled();
     deleteLater();
 }
 

@@ -50,7 +50,7 @@ Playdar::ProxyResolver::~ProxyResolver()
 void
 Playdar::ProxyResolver::slotPlaydarError( Playdar::Controller::ErrorState error )
 {
-    emit playdarError( error );
+    Q_EMIT playdarError( error );
     this->deleteLater();
 }
 

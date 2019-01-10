@@ -83,7 +83,7 @@ ServiceBase * ServiceCollection::service()
 
 void ServiceCollection::emitUpdated()
 {
-    emit( updated() );
+    Q_EMIT( updated() );
 }
 
 

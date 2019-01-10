@@ -148,7 +148,7 @@ Dynamic::SearchQueryBias::setFilter( const QString &filter )
 
     m_filter = filter;
     invalidate();
-    emit changed( BiasPtr(this) );
+    Q_EMIT changed( BiasPtr(this) );
 }
 
 void

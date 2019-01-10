@@ -80,7 +80,7 @@ TokenPool::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QListWidgetItem *tokenItem = itemAt( event->pos() );
     if( tokenItem )
-        emit onDoubleClick( m_itemTokenMap.value( tokenItem ) );
+        Q_EMIT onDoubleClick( m_itemTokenMap.value( tokenItem ) );
 }
 
 //Executed on mouse press, handles start of drag.

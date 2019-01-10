@@ -87,7 +87,7 @@ class AMAROK_EXPORT StorageManager : public QObject
 
         /** Will be called whenever a factory emits a newStorage signal.
          *
-         *  The first factory to emit this signal will get it's storage
+         *  The first factory to Q_EMIT this signal will get it's storage
          *  registered as "the" storage.
          *
          *  StorageManager will take ownership of the pointer and free it
@@ -97,9 +97,9 @@ class AMAROK_EXPORT StorageManager : public QObject
 
         /** Will be called whenever a factory emits a newError signal.
          *
-         *  The factories will not emit the newStorage signal in case
+         *  The factories will not Q_EMIT the newStorage signal in case
          *  of initialization problems.
-         *  In order to report their issues they will instead emit
+         *  In order to report their issues they will instead Q_EMIT
          *  newError with the list of errors.
          */
         void slotNewError( QStringList errorMessageList );

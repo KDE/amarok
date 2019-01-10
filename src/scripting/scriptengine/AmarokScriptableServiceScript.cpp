@@ -92,7 +92,7 @@ ScriptableServiceScript::slotPopulate( const QString &name, int level, int paren
     DEBUG_BLOCK
     m_currentId = parent_id;
     m_serviceName = name;
-    emit( populate( level, callbackData, filter ) );
+    Q_EMIT( populate( level, callbackData, filter ) );
 }
 
 void
@@ -100,7 +100,7 @@ ScriptableServiceScript::slotRequestInfo( const QString &name, int level, const 
 {
     DEBUG_BLOCK
     m_serviceName = name;
-    emit( fetchInfo( level, callbackData ) );
+    Q_EMIT( fetchInfo( level, callbackData ) );
 }
 
 void
@@ -108,7 +108,7 @@ ScriptableServiceScript::slotCustomize( const QString &name )
 {
     DEBUG_BLOCK
     m_serviceName = name;
-    emit( customize() );
+    Q_EMIT( customize() );
 }
 
 

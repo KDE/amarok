@@ -98,7 +98,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
     if ( !kzip.open( QIODevice::ReadOnly ) )
     {
         Amarok::Logger::shortMessage( i18n( "Magnatune download seems to have failed. Cannot read zip file" ) );
-        emit( downloadComplete( false ) );
+        Q_EMIT( downloadComplete( false ) );
         return;
     }
 
@@ -132,7 +132,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     Amarok::Logger::newProgressOperation( m_coverDownloadJob, i18n( "Adding album cover to collection" ), this, &MagnatuneAlbumDownloader::coverAddAborted );
 
-    emit( downloadComplete( true ) );
+    Q_EMIT( downloadComplete( true ) );
 }
 
 void
@@ -162,7 +162,7 @@ MagnatuneAlbumDownloader::albumDownloadAborted( )
     m_albumDownloadJob = nullptr;
     debug() << "Aborted album download";
 
-    emit( downloadComplete( false ) );
+    Q_EMIT( downloadComplete( false ) );
 }
 
 void
@@ -174,6 +174,6 @@ MagnatuneAlbumDownloader::coverAddAborted()
     m_coverDownloadJob = nullptr;
     debug() << "Aborted cover download";
 
-    emit( downloadComplete( false ) );
+    Q_EMIT( downloadComplete( false ) );
 }
 

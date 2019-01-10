@@ -230,7 +230,7 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
         debug() << "udi " << udi << " does not describe a portable media player or storage volume";
         return;
     }
-    emit deviceAdded( udi );
+    Q_EMIT deviceAdded( udi );
 }
 
 void
@@ -244,17 +244,17 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
         disconnect( device.as<Solid::StorageAccess>(), &Solid::StorageAccess::accessibilityChanged,
                     this, &MediaDeviceCache::slotAccessibilityChanged );
         m_volumes.removeAll( udi );
-        emit deviceRemoved( udi );
+        Q_EMIT deviceRemoved( udi );
     }
     if( m_type.contains( udi ) )
     {
         m_type.remove( udi );
         m_name.remove( udi );
-        emit deviceRemoved( udi );
+        Q_EMIT deviceRemoved( udi );
         return;
     }
     debug() << "Odd, got a deviceRemoved at udi " << udi << " but it did not seem to exist in the first place...";
-    emit deviceRemoved( udi );
+    Q_EMIT deviceRemoved( udi );
 }
 
 void
@@ -268,7 +268,7 @@ MediaDeviceCache::slotAccessibilityChanged( bool accessible, const QString &udi 
         Solid::StorageAccess *ssa = device.as<Solid::StorageAccess>();
         if( ssa )
             m_name[udi] = ssa->filePath();
-        emit deviceAdded( udi );
+        Q_EMIT deviceAdded( udi );
         return;
     }
     else
@@ -277,13 +277,13 @@ MediaDeviceCache::slotAccessibilityChanged( bool accessible, const QString &udi 
         {
             m_type.remove( udi );
             m_name.remove( udi );
-            emit deviceRemoved( udi );
+            Q_EMIT deviceRemoved( udi );
             return;
         }
         debug() << "Got accessibility changed to false but was not there in the first place...";
     }
 
-    emit accessibilityChanged( accessible, udi );
+    Q_EMIT accessibilityChanged( accessible, udi );
 }
 
 MediaDeviceCache::DeviceType

@@ -287,7 +287,7 @@ Playlist::Actions::playlistModeChanged()
     if ( AmarokConfig::dynamicMode() )
     {
         m_navigator = new DynamicTrackNavigator();
-        emit navigatorChanged();
+        Q_EMIT navigatorChanged();
         return;
     }
 
@@ -335,7 +335,7 @@ Playlist::Actions::playlistModeChanged()
 
     m_navigator->queueIds( currentQueue );
 
-    emit navigatorChanged();
+    Q_EMIT navigatorChanged();
 }
 
 void

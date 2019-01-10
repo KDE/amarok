@@ -157,7 +157,7 @@ APG::ConstraintSolver::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *
 
     debug() << "Running ConstraintSolver" << m_serialNumber;
 
-    emit totalSteps( m_maxGenerations );
+    Q_EMIT totalSteps( m_maxGenerations );
 
     // GENETIC ALGORITHM LOOP
     Population population;
@@ -172,7 +172,7 @@ APG::ConstraintSolver::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *
             select_population( population, best );
             mutate_population( population );
             generation++;
-            emit incrementProgress();
+            Q_EMIT incrementProgress();
         } else {
             break;
         }
@@ -193,7 +193,7 @@ APG::ConstraintSolver::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *
         it = population.erase( it );
     }
 
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
 }
 
 void APG::ConstraintSolver::defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
@@ -230,7 +230,7 @@ APG::ConstraintSolver::receiveQueryMakerDone()
             Amarok::Logger::shortMessage( i18n("The playlist generator failed to load any tracks from the collection.") );
         }
         m_readyToRun = true;
-        emit readyToRun();
+        Q_EMIT readyToRun();
     } else {
         Amarok::Logger::longMessage(
                     i18n("There are no tracks that match all constraints. " \

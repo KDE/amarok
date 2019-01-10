@@ -65,7 +65,7 @@ PixmapViewer::setZoomFactor( qreal f )
         return;
 
     m_zoomFactor = f;
-    emit( zoomFactorChanged( m_zoomFactor ) );
+    Q_EMIT( zoomFactorChanged( m_zoomFactor ) );
 
     w = m_pixmap.width() * m_zoomFactor;
     h = m_pixmap.height() * m_zoomFactor;

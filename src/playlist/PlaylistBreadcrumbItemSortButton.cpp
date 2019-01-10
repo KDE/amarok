@@ -54,7 +54,7 @@ void
 BreadcrumbItemSortButton::init()
 {
     setMouseTracking( true );
-    emit arrowToggled( m_order );
+    Q_EMIT arrowToggled( m_order );
     repaint();
 }
 
@@ -155,7 +155,7 @@ BreadcrumbItemSortButton::invertOrder()
         m_order = Qt::AscendingOrder;
     else    //ascending
         m_order = Qt::DescendingOrder;
-    emit arrowToggled( m_order );
+    Q_EMIT arrowToggled( m_order );
     repaint();
 }
 

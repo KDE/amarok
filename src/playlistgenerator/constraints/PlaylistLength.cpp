@@ -165,14 +165,14 @@ void
 ConstraintTypes::PlaylistLength::setComparison( const int c )
 {
     m_comparison = c;
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 void
 ConstraintTypes::PlaylistLength::setLength( const int l )
 {
     m_length = static_cast<quint32>(l);
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 void
@@ -199,20 +199,20 @@ ConstraintTypes::PlaylistLengthEditWidget::PlaylistLengthEditWidget( const int l
 void
 ConstraintTypes::PlaylistLengthEditWidget::on_spinBox_Length_valueChanged( const int l )
 {
-    emit lengthChanged( l );
-    emit updated();
+    Q_EMIT lengthChanged( l );
+    Q_EMIT updated();
 }
 
 void
 ConstraintTypes::PlaylistLengthEditWidget::on_comboBox_Comparison_currentIndexChanged( const int v )
 {
-    emit comparisonChanged( v );
-    emit updated();
+    Q_EMIT comparisonChanged( v );
+    Q_EMIT updated();
 }
 
 void
 ConstraintTypes::PlaylistLengthEditWidget::on_slider_Strictness_valueChanged( const int v )
 {
-    emit strictnessChanged( v );
-    emit updated();
+    Q_EMIT strictnessChanged( v );
+    Q_EMIT updated();
 }

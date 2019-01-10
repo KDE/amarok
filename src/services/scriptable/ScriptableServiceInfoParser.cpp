@@ -37,7 +37,7 @@ void ScriptableServiceInfoParser::getInfo( ArtistPtr artist )
     ScriptableServiceArtist * serviceArtist = dynamic_cast< ScriptableServiceArtist * >( artist.data() );
     if (!serviceArtist) return;
 
-    emit( info( serviceArtist->description() ) );
+    Q_EMIT( info( serviceArtist->description() ) );
 
     if ( serviceArtist->description().isEmpty() )
     {
@@ -52,7 +52,7 @@ void ScriptableServiceInfoParser::getInfo(AlbumPtr album)
     ScriptableServiceAlbum * serviceAlbum = dynamic_cast< ScriptableServiceAlbum * >( album.data() );
     if (serviceAlbum == 0) return;
 
-    emit( info( serviceAlbum->description() ) );
+    Q_EMIT( info( serviceAlbum->description() ) );
 
     if ( serviceAlbum->description().isEmpty() )
     {
@@ -67,7 +67,7 @@ void ScriptableServiceInfoParser::getInfo(TrackPtr track)
     ScriptableServiceTrack * serviceTrack = dynamic_cast< ScriptableServiceTrack * >( track.data() );
     if (!serviceTrack) return;
 
-    emit  info( serviceTrack->description() );
+    Q_EMIT  info( serviceTrack->description() );
 
     if ( serviceTrack->description().isEmpty() )
     {
@@ -81,7 +81,7 @@ void ScriptableServiceInfoParser::getInfo( Meta::GenrePtr genre )
     ScriptableServiceGenre * serviceGenre = dynamic_cast< ScriptableServiceGenre * >( genre.data() );
     if (!serviceGenre) return;
 
-    emit info( serviceGenre->description() );
+    Q_EMIT info( serviceGenre->description() );
 
     if ( serviceGenre->description().isEmpty() )
     {

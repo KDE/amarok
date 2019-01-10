@@ -25,7 +25,7 @@
 #include "amarokconfig.h"
 
 
-// Note: the 'sort' mode of QSortFilterProxyModel can emit QAbstractItemModel::layoutChanged signals.
+// Note: the 'sort' mode of QSortFilterProxyModel can Q_EMIT QAbstractItemModel::layoutChanged signals.
 
 // Note: the QSortFilterProxyModel sorting is always on, even with an empty SortScheme.
 //         - That case does not seem worth special-casing

@@ -56,7 +56,7 @@ RatingItem::setIcon( const QString& iconName )
         return;
 
     m_ratingPainter->setIcon( QIcon::fromTheme( iconName ) );
-    emit iconChanged();
+    Q_EMIT iconChanged();
 
     update();
 }
@@ -83,7 +83,7 @@ RatingItem::setSpacing( int s )
         return;
 
     m_ratingPainter->setSpacing( s );
-    emit spacingChanged();
+    Q_EMIT spacingChanged();
 
     update();
 }
@@ -103,7 +103,7 @@ RatingItem::setAlignment( Qt::Alignment align )
         return;
 
     m_ratingPainter->setAlignment( align );
-    emit alignmentChanged();
+    Q_EMIT alignmentChanged();
 
     update();
 }
@@ -123,7 +123,7 @@ RatingItem::setLayoutDirection( Qt::LayoutDirection direction )
         return;
 
     m_ratingPainter->setLayoutDirection( direction );
-    emit layoutDirectionChanged();
+    Q_EMIT layoutDirectionChanged();
 
     update();
 }
@@ -163,8 +163,8 @@ RatingItem::setRating( int rating )
 
     m_rating = rating;
     m_hoverRating = rating;
-    emit ratingChanged();
-    emit hoverRatingChanged();
+    Q_EMIT ratingChanged();
+    Q_EMIT hoverRatingChanged();
 
     update();
 }
@@ -178,10 +178,10 @@ RatingItem::setMaxRating( int max )
     bool halfSteps = m_ratingPainter->halfStepsEnabled();
 
     m_ratingPainter->setMaxRating( max );
-    emit maxRatingChanged();
+    Q_EMIT maxRatingChanged();
 
     if( halfSteps != m_ratingPainter->halfStepsEnabled() )
-        emit halfStepsEnabledChanged();
+        Q_EMIT halfStepsEnabledChanged();
 
     update();
 }
@@ -194,7 +194,7 @@ RatingItem::setHalfStepsEnabled( bool enabled )
         return;
 
     m_ratingPainter->setHalfStepsEnabled( enabled );
-    emit halfStepsEnabledChanged();
+    Q_EMIT halfStepsEnabledChanged();
 
     update();
 }
@@ -211,7 +211,7 @@ RatingItem::mousePressEvent( QMouseEvent* e )
         debug() << "Rating item clicked. New rating:" << ratingFromPos;
 
         if ( ratingFromPos >= 0 )
-            emit clicked( ratingFromPos );
+            Q_EMIT clicked( ratingFromPos );
     }
 }
 

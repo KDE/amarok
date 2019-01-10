@@ -210,7 +210,7 @@ void AlbumsEngine::setFilterPattern( const QString &pattern )
         return;
 
     m_proxyModel->setFilterRegExp( QRegExp(pattern, Qt::CaseInsensitive) );
-    emit filterPatternChanged();
+    Q_EMIT filterPatternChanged();
 }
 
 void AlbumsEngine::clear()

@@ -697,7 +697,7 @@ bool TransferJob::addSubjob( KJob* job )
 
 void TransferJob::emitInfo(const QString& message)
 {
-    emit infoMessage( this, message );
+    Q_EMIT infoMessage( this, message );
 }
 
 void TransferJob::slotResult( KJob *job )

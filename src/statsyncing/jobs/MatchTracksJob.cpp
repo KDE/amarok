@@ -127,7 +127,7 @@ void MatchTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *th
     }
     Q_UNUSED( requiredFields ) // silence gcc warning about unused var in non-debug build
     Q_ASSERT( ( s_comparisonFields & requiredFields ) == requiredFields );
-    emit totalSteps( providerArtists.size() );
+    Q_EMIT totalSteps( providerArtists.size() );
 #ifdef VERBOSE_DEBUG
     debug() << "Matching using:" << comparisonFieldNames( s_comparisonFields ).toLocal8Bit().constData();
 #endif
@@ -137,9 +137,9 @@ void MatchTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *th
         if( m_abort )
             break;
         matchTracksFromArtist( artistProviders );
-        emit incrementProgress();
+        Q_EMIT incrementProgress();
     }
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
 
 #ifdef VERBOSE_DEBUG
     debug();

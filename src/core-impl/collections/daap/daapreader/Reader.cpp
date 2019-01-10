@@ -137,7 +137,7 @@ Reader::loginHeaderReceived()
     disconnect( http, &ContentFetcher::loginRequired,
                 this, &Reader::loginHeaderReceived );
 
-    emit passwordRequired();
+    Q_EMIT passwordRequired();
     http->deleteLater();
 
 //     connect( http, &ContentFetcher::finished, this, &Reader::loginFinished );
@@ -536,7 +536,7 @@ Reader::fetchingError( const QString& error )
 {
     DEBUG_BLOCK
     sender()->deleteLater();
-    emit httpError( error );
+    Q_EMIT httpError( error );
 }
 
 WorkerThread::WorkerThread( const QByteArray &data, Reader *reader, Collections::DaapCollection *coll )

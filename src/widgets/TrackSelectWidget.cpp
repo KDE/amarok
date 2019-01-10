@@ -79,7 +79,7 @@ TrackSelectWidget::recvNewSelection( CollectionTreeItem* item )
         if ( data != Meta::DataPtr() ) {
             setData( data );
             debug() << "new selection" << data->prettyName();
-            emit selectionChanged( data );
+            Q_EMIT selectionChanged( data );
         }
     }
 }

@@ -84,7 +84,7 @@ LongMessageWidget::~LongMessageWidget()
 void LongMessageWidget::close()
 {
     hide();
-    emit( closed() );
+    Q_EMIT( closed() );
 }
 
 void LongMessageWidget::timerEvent( QTimerEvent* )

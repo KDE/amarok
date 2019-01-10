@@ -166,8 +166,8 @@ private:
             // Let's try to fetch the data again, but this time from the new url.
             QNetworkReply *newReply = getData( redirectUrl, receiver.data(), method, type );
 
-            emit requestRedirectedUrl( url, redirectUrl );
-            emit requestRedirectedReply( reply, newReply );
+            Q_EMIT requestRedirectedUrl( url, redirectUrl );
+            Q_EMIT requestRedirectedReply( reply, newReply );
         }
 
         reply->deleteLater();

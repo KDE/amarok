@@ -162,7 +162,7 @@ MusicBrainzTagger::saveAndExit()
     QMap<Meta::TrackPtr, QVariantMap> result = m_resultsModel->chosenItems();
 
     if( !result.isEmpty() )
-        emit sendResult( result );
+        Q_EMIT sendResult( result );
 
     accept();
 }

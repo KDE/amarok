@@ -197,7 +197,7 @@ void MagnatuneDownloadHandler::albumDownloadComplete( bool success )
     delete m_downloadDialog;
     m_downloadDialog = nullptr;
 
-    emit( downloadCompleted( success ) );
+    Q_EMIT( downloadCompleted( success ) );
 
 }
 

@@ -56,14 +56,14 @@ void
 PlaylistPrototype::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position )
 {
     Q_UNUSED( playlist )
-    emit addedTrack( track, position );
+    Q_EMIT addedTrack( track, position );
 }
 
 void
 PlaylistPrototype::trackRemoved( Playlists::PlaylistPtr playlist, int position )
 {
     Q_UNUSED( playlist )
-    emit removedTrack( position );
+    Q_EMIT removedTrack( position );
 }
 
 void

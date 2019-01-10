@@ -187,7 +187,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     m_playlistsLoaded = true;
 
     Playlists::PlaylistPtr playlist( playlistFile );
-    emit playlistAdded( playlist );
+    Q_EMIT playlistAdded( playlist );
     return playlist;
 }
 
@@ -231,7 +231,7 @@ PlaylistFileProvider::import( const QUrl &path )
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;
 
-    emit playlistAdded( PlaylistPtr( playlistFile.data() ) );
+    Q_EMIT playlistAdded( PlaylistPtr( playlistFile.data() ) );
     return true;
 }
 
@@ -264,7 +264,7 @@ PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistF
         m_playlists.removeAll( playlistFile );
         loadedPlaylistsConfig().deleteEntry( playlistFile->uidUrl().url() );
         QFile::remove( playlistFile->uidUrl().path() );
-        emit playlistRemoved( Playlists::PlaylistPtr::dynamicCast( playlistFile ) );
+        Q_EMIT playlistRemoved( Playlists::PlaylistPtr::dynamicCast( playlistFile ) );
     }
     loadedPlaylistsConfig().sync();
 
@@ -296,7 +296,7 @@ PlaylistFileProvider::loadPlaylists()
             playlist->setGroups( groups.split( ',',  QString::SkipEmptyParts ) );
 
         m_playlists << playlist;
-        emit playlistAdded( PlaylistPtr( playlist.data() ) );
+        Q_EMIT playlistAdded( PlaylistPtr( playlist.data() ) );
     }
 
     //give the mainloop time to run

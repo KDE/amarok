@@ -38,7 +38,7 @@ namespace Collections {
 
 //UpnpSearchCollection
 
-// TODO register for the device bye bye and emit remove()
+// TODO register for the device bye bye and Q_EMIT remove()
 UpnpSearchCollection::UpnpSearchCollection(const DeviceInfo& dev, const QStringList &searchCapabilities )
     : UpnpCollectionBase( dev )
     , m_searchCapabilities( searchCapabilities )

@@ -187,7 +187,7 @@ void
 Token::focusInEvent( QFocusEvent* event )
 {
     QWidget::focusInEvent( event );
-    emit gotFocus( this );
+    Q_EMIT gotFocus( this );
 }
 
 void

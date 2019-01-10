@@ -295,7 +295,7 @@ Dynamic::EchoNestBias::similarArtistQueryDone( KJob* job ) // slot
     {
         debug() << "job was deleted from under us...wtf! blame the gerbils.";
         m_tracks.reset( false );
-        emit resultReady( m_tracks );
+        Q_EMIT resultReady( m_tracks );
         return;
     }
 
@@ -304,7 +304,7 @@ Dynamic::EchoNestBias::similarArtistQueryDone( KJob* job ) // slot
     {
         debug() << "got invalid XML from EchoNest::get_similar!";
         m_tracks.reset( false );
-        emit resultReady( m_tracks );
+        Q_EMIT resultReady( m_tracks );
         return;
     }
 
@@ -314,7 +314,7 @@ Dynamic::EchoNestBias::similarArtistQueryDone( KJob* job ) // slot
     {
         debug() << "Got no similar artists! Bailing!";
         m_tracks.reset( false );
-        emit resultReady( m_tracks );
+        Q_EMIT resultReady( m_tracks );
         return;
     }
 
@@ -505,7 +505,7 @@ Dynamic::EchoNestBias::setMatch( Dynamic::EchoNestBias::MatchType value )
 {
     m_match = value;
     invalidate();
-    emit changed( BiasPtr(this) );
+    Q_EMIT changed( BiasPtr(this) );
 }
 
 

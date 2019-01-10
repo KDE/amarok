@@ -145,7 +145,7 @@ OcsPersonItem::switchToOcs( Attica::Provider &provider )
 
         personJob = provider.requestPerson( m_ocsUsername );
         connect( personJob, &Attica::BaseJob::finished, this, &OcsPersonItem::onJobFinished );
-        emit ocsFetchStarted();
+        Q_EMIT ocsFetchStarted();
         m_state = Online;
         personJob->start();
     }
@@ -160,7 +160,7 @@ OcsPersonItem::onJobFinished( Attica::BaseJob *job )
     {
         fillOcsData( personJob->result() );
     }
-    emit ocsFetchResult( metadata.error() );
+    Q_EMIT ocsFetchResult( metadata.error() );
 }
 
 void

@@ -80,14 +80,14 @@ SqlBatchImporter::import()
                 numStarted++;
             } else {
                 debug() << "could not open";
-                emit importError( i18n( "Could not open file \"%1\".", m_config->inputFilePath() ) );
+                Q_EMIT importError( i18n( "Could not open file \"%1\".", m_config->inputFilePath() ) );
                 delete file;
             }
         }
     }
 
     if( !numStarted )
-        emit importFailed();
+        Q_EMIT importFailed();
 }
 
 int

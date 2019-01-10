@@ -64,7 +64,7 @@ void AppletLoader::findApplets()
                                      QString(),
                                      [] (const KPluginMetaData &data)
                                      { return data.serviceTypes().contains(QStringLiteral("Amarok/ContextApplet")); });
-    emit finished(m_applets);
+    Q_EMIT finished(m_applets);
 
     for (const auto &applet : m_applets)
     {

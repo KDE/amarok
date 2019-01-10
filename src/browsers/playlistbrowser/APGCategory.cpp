@@ -135,7 +135,7 @@ void
 PlaylistBrowserNS::APGCategory::activeChanged( const QModelIndex& index )
 {
     APG::PresetModel::instance()->setActivePreset( index );
-    emit validIndexSelected( index.isValid() );
+    Q_EMIT validIndexSelected( index.isValid() );
 }
 
 void

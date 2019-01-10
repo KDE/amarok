@@ -333,7 +333,7 @@ bool MediaPlayer2Player::CanControl() const
 void MediaPlayer2Player::trackPositionChanged( qint64 position, bool userSeek )
 {
     if ( userSeek )
-        emit Seeked( position * 1000 );
+        Q_EMIT Seeked( position * 1000 );
     m_lastPosition = position;
 }
 

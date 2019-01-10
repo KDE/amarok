@@ -49,7 +49,7 @@ void OpmlDirectoryServiceFactory::init()
 {
     ServiceBase* service = new OpmlDirectoryService( this, "OpmlDirectory", i18n( "Podcast Directory" ) );
     m_initialized = true;
-    emit newService( service );
+    Q_EMIT newService( service );
 }
 
 

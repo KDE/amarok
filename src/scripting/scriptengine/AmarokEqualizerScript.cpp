@@ -74,7 +74,7 @@ AmarokEqualizerScript::defaultPresetList() const
 void
 AmarokEqualizerScript::equalizerPresetApplied( int index )
 {
-    emit presetApplied( EqualizerPresets::eqGlobalList().value( index ) );
+    Q_EMIT presetApplied( EqualizerPresets::eqGlobalList().value( index ) );
 }
 
 QList<int>

@@ -62,7 +62,7 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::Capability
 
         /**
          * libDeleteTrack does the actual file deleting.  For Ipods, it uses KIO,
-         * for MTPs this uses a libmtp call.  Must emit libRemoveTrackDone when finished.
+         * for MTPs this uses a libmtp call.  Must Q_EMIT libRemoveTrackDone when finished.
          * @param track The track whose file is to be deleted
          * @return Whether or not the track removal was successful
          */

@@ -111,8 +111,8 @@ void
 ScriptSelector::slotFiltered( const QString &filter )
 {
     if( filter.isEmpty() )
-        emit filtered( false );
+        Q_EMIT filtered( false );
     else
-        emit filtered( true );
+        Q_EMIT filtered( true );
 }
 

@@ -33,7 +33,7 @@ void KJobProgressBar::updateJobStatus( KJob * job, unsigned long value )
 {
     Q_UNUSED( job );
     setValue( value );
-    emit( percentageChanged( percentage() ) );
+    Q_EMIT( percentageChanged( percentage() ) );
 }
 
 void KJobProgressBar::infoMessage(KJob* job, const QString &plain, const QString &rich )

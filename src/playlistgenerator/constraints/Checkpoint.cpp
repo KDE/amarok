@@ -295,7 +295,7 @@ ConstraintTypes::Checkpoint::setCheckpoint( const Meta::DataPtr& data )
     }
 
     m_checkpointObject = data;
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 /******************************
@@ -409,20 +409,20 @@ ConstraintTypes::CheckpointEditWidget::CheckpointEditWidget( const qint64 length
 void
 ConstraintTypes::CheckpointEditWidget::on_timeEdit_Position_timeChanged( const QTime& t )
 {
-    emit positionChanged( QTime(0, 0, 0).msecsTo( t ) );
-    emit updated();
+    Q_EMIT positionChanged( QTime(0, 0, 0).msecsTo( t ) );
+    Q_EMIT updated();
 }
 
 void
 ConstraintTypes::CheckpointEditWidget::on_slider_Strictness_valueChanged( const int v )
 {
-    emit strictnessChanged( v );
-    emit updated();
+    Q_EMIT strictnessChanged( v );
+    Q_EMIT updated();
 }
 
 void
 ConstraintTypes::CheckpointEditWidget::on_trackSelector_selectionChanged( const Meta::DataPtr& data )
 {
-    emit checkpointChanged( data );
-    emit updated();
+    Q_EMIT checkpointChanged( data );
+    Q_EMIT updated();
 }

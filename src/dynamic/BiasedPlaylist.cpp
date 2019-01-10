@@ -135,7 +135,7 @@ Dynamic::BiasedPlaylist::startSolver( int numRequested )
 void
 Dynamic::BiasedPlaylist::biasChanged()
 {
-    emit changed( this );
+    Q_EMIT changed( this );
     bool inModel = DynamicModel::instance()->index( this ).isValid();
     if( inModel )
         DynamicModel::instance()->biasChanged( m_bias );
@@ -170,7 +170,7 @@ Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPt
     connect( m_bias.data(), &AbstractBias::replaced,
              this, &BiasedPlaylist::biasReplaced );
 
-    if( oldBias ) // don't emit a changed during construction
+    if( oldBias ) // don't Q_EMIT a changed during construction
         biasChanged();
 }
 
@@ -201,7 +201,7 @@ Dynamic::BiasedPlaylist::solverFinished()
         // remove the additional requested track
         if( list.count() > 1 )
             list.removeLast();
-        emit tracksReady( list );
+        Q_EMIT tracksReady( list );
     }
 
     m_solver->deleteLater();

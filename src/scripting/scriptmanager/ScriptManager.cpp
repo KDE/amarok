@@ -137,7 +137,7 @@ void
 ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title, const QString& url, Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    emit fetchLyrics( artist, title, url, track );
+    Q_EMIT fetchLyrics( artist, title, url, track );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -249,7 +249,7 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
     {
         m_lyricsScript = name;
         debug() << "lyrics script started:" << name;
-        emit lyricsScriptStarted();
+        Q_EMIT lyricsScriptStarted();
     }
     return item->start( silent );
 }
@@ -291,7 +291,7 @@ ScriptManager::ServiceScriptRequestInfo( const QString &name, int level, const Q
 void
 ScriptManager::configChanged( bool changed )
 {
-    emit scriptsChanged();
+    Q_EMIT scriptsChanged();
     if( !changed )
         return;
     //evil scripts may prevent the config dialog from dismissing, delay execution

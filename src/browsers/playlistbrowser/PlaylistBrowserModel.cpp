@@ -507,7 +507,7 @@ PlaylistBrowserModel::metadataChanged( Playlists::PlaylistPtr playlist )
         return;
     }
     QModelIndex playlistIdx = index( indexNumber, 0 );
-    emit dataChanged( playlistIdx, playlistIdx );
+    Q_EMIT dataChanged( playlistIdx, playlistIdx );
 }
 
 void
@@ -551,7 +551,7 @@ PlaylistBrowserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
     {
         if( p == playlist )
         {
-            emit renameIndex( index( row, 0 ) );
+            Q_EMIT renameIndex( index( row, 0 ) );
             break;
         }
         row++;
@@ -649,7 +649,7 @@ PlaylistBrowserModel::slotPlaylistUpdated( Playlists::PlaylistPtr playlist, int 
     //TODO: this should work by signaling a change in the model data, but QtGroupingProxy doesn't
     //work like that ATM
 //    const QModelIndex &idx = index( position, 0 );
-//    emit dataChanged( idx, idx );
+//    Q_EMIT dataChanged( idx, idx );
 
     //HACK: remove and readd so QtGroupingProxy can put it in the correct groups.
     beginRemoveRows( QModelIndex(), position, position );

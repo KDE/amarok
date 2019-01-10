@@ -44,11 +44,11 @@ MySqleStorageFactory::init()
 
         // handle errors during creation
         if( !storage->getLastErrors().isEmpty() )
-            emit newError( storage->getLastErrors() );
+            Q_EMIT newError( storage->getLastErrors() );
         storage->clearLastErrors();
 
         if( initResult )
-            emit newStorage( QSharedPointer<SqlStorage>( storage ) );
+            Q_EMIT newStorage( QSharedPointer<SqlStorage>( storage ) );
         else
             delete storage;
     }

@@ -60,7 +60,7 @@ Restorer::runJingle()
         The::playlistController()->insertTrack( 0, CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(jingle) ) );
         AmarokConfig::setPlayFirstRunJingle( false );
     }
-    emit restoreFinished();
+    Q_EMIT restoreFinished();
 }
 
 void
@@ -115,5 +115,5 @@ Restorer::processTracks()
     const int lastPlayingRow = AmarokConfig::lastPlaying();
     if( lastPlayingRow >= 0 )
         ModelStack::instance()->bottom()->setActiveRow( lastPlayingRow );
-    emit restoreFinished();
+    Q_EMIT restoreFinished();
 }

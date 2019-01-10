@@ -110,9 +110,9 @@ void UpnpQueryMakerInternal::slotEntries( KIO::Job *job, const KIO::UDSEntryList
     // are available or not using queryItem("filter") details
     //
     if( job->error() )
-        emit results( true, KIO::UDSEntryList() );
+        Q_EMIT results( true, KIO::UDSEntryList() );
     else
-        emit results( false, list );
+        Q_EMIT results( false, list );
 
     debug() << this << "SLOT ENTRIES" << list.length() << m_queryType;
 
@@ -141,15 +141,15 @@ void UpnpQueryMakerInternal::slotEntries( KIO::Job *job, const KIO::UDSEntryList
 
 void UpnpQueryMakerInternal::slotDone( KJob *job )
 {
-    // here check if all jobs done, then we might want to emit done()
+    // here check if all jobs done, then we might want to Q_EMIT done()
     // clean up this job, remove it from the hash and so on.
     m_jobCount--;
     job->deleteLater();
 
     if( m_jobCount <= 0 ) {
-        //emit newResultReady( list );
+        //Q_EMIT newResultReady( list );
         debug() << "ALL JOBS DONE< TERMINATING THIS QM" << this;
-        emit done();
+        Q_EMIT done();
     }
 }
 
@@ -166,9 +166,9 @@ void UpnpQueryMakerInternal::slotStatDone( KJob *job )
     }
     sj->deleteLater();
     if( m_jobCount <= 0 ) {
-        //emit newResultReady( list );
+        //Q_EMIT newResultReady( list );
         debug() << "ALL JOBS DONE< TERMINATING THIS QM" << this;
-        emit done();
+        Q_EMIT done();
     }
 }
 
@@ -189,7 +189,7 @@ void UpnpQueryMakerInternal::handleArtists( const KIO::UDSEntryList &list )
             }
         }
     }
-    emit newArtistsReady( ret );
+    Q_EMIT newArtistsReady( ret );
 }
 
 void UpnpQueryMakerInternal::handleAlbums( const KIO::UDSEntryList &list )
@@ -211,7 +211,7 @@ DEBUG_BLOCK
             }
         }
     }
-    emit newAlbumsReady( ret );
+    Q_EMIT newAlbumsReady( ret );
 }
 
 void UpnpQueryMakerInternal::handleTracks( const KIO::UDSEntryList &list )
@@ -247,12 +247,12 @@ DEBUG_BLOCK
         }
         ret << m_collection->cache()->getTrack( entry );
     }
-    emit newTracksReady( ret );
+    Q_EMIT newTracksReady( ret );
 }
 
 void UpnpQueryMakerInternal::handleCustom( const KIO::UDSEntryList &list )
 {
-    emit newResultReady( list );
+    Q_EMIT newResultReady( list );
 }
 
 }

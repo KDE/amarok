@@ -40,6 +40,6 @@ Amarok::TrackForUrlWorker::~TrackForUrlWorker()
 void
 Amarok::TrackForUrlWorker::completeJob()
 {
-    emit finishedLookup( m_track );
+    Q_EMIT finishedLookup( m_track );
 //     deleteLater();
 }

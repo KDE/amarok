@@ -56,7 +56,7 @@ bool ScriptableServiceManager::initService( const QString &name, int levels, con
     m_rootHtml = rootHtml;
 
     debug() << "emitting scripted service " << name;
-    emit addService( service );
+    Q_EMIT addService( service );
 
     return true;
 }
@@ -123,7 +123,7 @@ void ScriptableServiceManager::setIcon( const QString & serviceName, const QPixm
 
 
     m_serviceMap[serviceName]->setIcon( QIcon( icon ) );
-    emit( serviceUpdated( m_serviceMap[serviceName] ) );
+    Q_EMIT( serviceUpdated( m_serviceMap[serviceName] ) );
 }
 
 void ScriptableServiceManager::setEmblem( const QString & serviceName, const QPixmap & emblem )
@@ -134,7 +134,7 @@ void ScriptableServiceManager::setEmblem( const QString & serviceName, const QPi
     }
     
     m_serviceMap[serviceName]->setCustomEmblem( emblem );
-    emit( serviceUpdated( m_serviceMap[serviceName] ) );
+    Q_EMIT( serviceUpdated( m_serviceMap[serviceName] ) );
 }
 
 
@@ -146,7 +146,7 @@ void ScriptableServiceManager::setScalableEmblem ( const QString& serviceName, c
     }
     
     m_serviceMap[serviceName]->setCustomScalableEmblem( emblemPath );
-    emit( serviceUpdated( m_serviceMap[serviceName] ) );
+    Q_EMIT( serviceUpdated( m_serviceMap[serviceName] ) );
 }
 
 

@@ -120,7 +120,7 @@ BrowserCategoryList::home()
         activeCategory()->clearAdditionalItems();
         m_widgetStack->setCurrentIndex( 0 );
 
-        emit( viewChanged() );
+        Q_EMIT( viewChanged() );
     }
 }
 
@@ -157,7 +157,7 @@ BrowserCategoryList::addCategory( BrowserCategory *category )
     {
         m_proxyModel->sort( 0 );
     }
-    emit( viewChanged() );
+    Q_EMIT( viewChanged() );
 }
 
 
@@ -179,7 +179,7 @@ BrowserCategoryList::removeCategory( BrowserCategory *category )
 
     m_categoryListView->reset();
 
-    emit( viewChanged() );
+    Q_EMIT( viewChanged() );
 }
 
 BrowserCategory*
@@ -204,7 +204,7 @@ void BrowserCategoryList::setActiveCategory( BrowserCategory* category )
 
     m_widgetStack->setCurrentWidget( category );
 
-    emit( viewChanged() );
+    Q_EMIT( viewChanged() );
 }
 
 void BrowserCategoryList::back()
@@ -227,7 +227,7 @@ void BrowserCategoryList::back()
 void BrowserCategoryList::childViewChanged()
 {
     DEBUG_BLOCK
-    emit( viewChanged() );
+    Q_EMIT( viewChanged() );
 }
 
 QString BrowserCategoryList::navigate( const QString & target )

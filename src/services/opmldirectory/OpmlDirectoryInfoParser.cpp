@@ -121,7 +121,7 @@ void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
     infoHtml += "<br><p align=\"left\" >" + description;
     infoHtml += "</BODY></HTML>";
 
-    emit ( info( infoHtml ) );
+    Q_EMIT ( info( infoHtml ) );
 
     downLoadJob->deleteLater();
 }

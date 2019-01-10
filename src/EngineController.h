@@ -198,7 +198,7 @@ public Q_SLOTS:
      * This happens asynchronously.
      *
      * @param forceInstant skip any fade-out effects
-     * @param playingWillContinue don't emit stopped() or trackChanged( 0 ) signals
+     * @param playingWillContinue don't Q_EMIT stopped() or trackChanged( 0 ) signals
      */
     void stop( bool forceInstant = false, bool playingWillContinue = false );
 
@@ -509,7 +509,7 @@ private:
      * Try to detect MetaData spam in Streams etc.
      *
      * Some streams are doing advertisement in the metadata. We try to filter that
-     * out. Additionally, some Phonon back-ends emit more than one
+     * out. Additionally, some Phonon back-ends Q_EMIT more than one
      * metadataChanged() signals per on track, so filter it all altogether.
      */
     bool isInRecentMetaDataHistory( const QVariantMap &meta );
@@ -521,7 +521,7 @@ private:
     void stampStreamTrackLength();
 
     /**
-     * emit metadataChanged() with info so that MetaStream::Track that is
+     * Q_EMIT metadataChanged() with info so that MetaStream::Track that is
      * currently listening updates its length.
      *
      * @param length new track length in milliseconds

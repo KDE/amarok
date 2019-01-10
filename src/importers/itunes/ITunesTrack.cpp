@@ -64,5 +64,5 @@ void
 ITunesTrack::doCommit( const qint64 changes )
 {
     Q_UNUSED( changes );
-    emit commitCalled( m_trackId, m_statistics );
+    Q_EMIT commitCalled( m_trackId, m_statistics );
 }

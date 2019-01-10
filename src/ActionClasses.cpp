@@ -240,7 +240,7 @@ void ToggleAction::setChecked( bool b )
     m_function( b );
     KToggleAction::setChecked( b );
     AmarokConfig::self()->save(); //So we don't lose the setting when crashing
-    if( announce ) emit toggled( b ); //KToggleAction doesn't do this for us. How gay!
+    if( announce ) Q_EMIT toggled( b ); //KToggleAction doesn't do this for us. How gay!
 }
 
 void ToggleAction::setEnabled( bool b )
@@ -249,7 +249,7 @@ void ToggleAction::setEnabled( bool b )
 
     KToggleAction::setEnabled( b );
     AmarokConfig::self()->save(); //So we don't lose the setting when crashing
-    if( announce ) emit QAction::triggered( b );
+    if( announce ) Q_EMIT QAction::triggered( b );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +274,7 @@ void SelectAction::setCurrentItem( int n )
     m_function( n );
     KSelectAction::setCurrentItem( n );
     AmarokConfig::self()->save(); //So we don't lose the setting when crashing
-    if( announce ) emit triggered( n );
+    if( announce ) Q_EMIT triggered( n );
 }
 
 void SelectAction::actionTriggered( QAction *a )
@@ -290,7 +290,7 @@ void SelectAction::setEnabled( bool b )
 
     KSelectAction::setEnabled( b );
     AmarokConfig::self()->save(); //So we don't lose the setting when crashing
-    if( announce ) emit QAction::triggered( b );
+    if( announce ) Q_EMIT QAction::triggered( b );
 }
 
 void SelectAction::setIcons( QStringList icons )

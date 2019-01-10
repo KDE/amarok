@@ -54,7 +54,7 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
     QUrl unpackLocation = downloadTargetURLRequester->url();
     m_currentDownloadInfo.setUnpackUrl( unpackLocation.path() );
 
-    emit( downloadAlbum( m_currentDownloadInfo ) );
+    Q_EMIT( downloadAlbum( m_currentDownloadInfo ) );
 
     close();
 

@@ -59,7 +59,7 @@ MediaDeviceUserPlaylistProvider::~MediaDeviceUserPlaylistProvider()
 //         playlist->saveToDb( true );
 //     }
     m_playlists.clear();
-//    emit updated();
+//    Q_EMIT updated();
 //    The::playlistManager()->removeProvider( this );
 
 }
@@ -101,7 +101,7 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QStr
     Playlists::MediaDevicePlaylistPtr pl = Playlists::MediaDevicePlaylistPtr( new Playlists::MediaDevicePlaylist( name, tracks ) );
     //pl = 0;
 
-    emit playlistSaved( pl, name ); // inform handler of new playlist
+    Q_EMIT playlistSaved( pl, name ); // inform handler of new playlist
 
     addMediaDevicePlaylist( pl );
 
@@ -118,7 +118,7 @@ MediaDeviceUserPlaylistProvider::renamePlaylist( Playlists::PlaylistPtr playlist
         debug() << "Setting name of playlist";
         pl->setName( newName );
 
-        emit playlistRenamed( pl );
+        Q_EMIT playlistRenamed( pl );
     }
 }
 
@@ -139,7 +139,7 @@ MediaDeviceUserPlaylistProvider::deletePlaylists( const Playlists::PlaylistList 
         }
     }
 
-    emit playlistsDeleted( pllist );
+    Q_EMIT playlistsDeleted( pllist );
 
     return true;
 }
@@ -148,14 +148,14 @@ void
 MediaDeviceUserPlaylistProvider::addMediaDevicePlaylist( Playlists::MediaDevicePlaylistPtr &playlist )
 {
     m_playlists << playlist;
-    emit updated();
+    Q_EMIT updated();
 }
 
 void
 MediaDeviceUserPlaylistProvider::removePlaylist( Playlists::MediaDevicePlaylistPtr &playlist )
 {
     m_playlists.removeOne( playlist );
-    emit updated();
+    Q_EMIT updated();
 }
 
 } //namespace Playlists

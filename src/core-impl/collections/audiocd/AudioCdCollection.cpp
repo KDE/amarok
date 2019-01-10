@@ -331,7 +331,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
         The::coverFetcher()->queueAlbum( Meta::AlbumPtr::staticCast( albumPtr ) );
 
     updateProxyTracks();
-    emit collectionReady( this );
+    Q_EMIT collectionReady( this );
 }
 
 void
@@ -402,7 +402,7 @@ AudioCdCollection::icon() const
 void
 AudioCdCollection::cdRemoved()
 {
-    emit remove();
+    Q_EMIT remove();
 }
 
 QString
@@ -541,7 +541,7 @@ AudioCdCollection::noInfoAvailable()
     }
 
     updateProxyTracks();
-    emit collectionReady( this );
+    Q_EMIT collectionReady( this );
 }
 
 void

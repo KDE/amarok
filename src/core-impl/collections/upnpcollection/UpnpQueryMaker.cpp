@@ -107,15 +107,15 @@ DEBUG_BLOCK
     // we don't deal with compilations
     else if( m_queryType == Album && m_albumMode == OnlyCompilations ) {
         // we don't support any other attribute
-        emit newTracksReady( Meta::TrackList() );
-        emit newArtistsReady( Meta::ArtistList() );
-        emit newAlbumsReady( Meta::AlbumList() );
-        emit newGenresReady( Meta::GenreList() );
-        emit newComposersReady( Meta::ComposerList() );
-        emit newYearsReady( Meta::YearList() );
-        emit newResultReady( QStringList() );
-        emit newLabelsReady( Meta::LabelList() );
-        emit queryDone();
+        Q_EMIT newTracksReady( Meta::TrackList() );
+        Q_EMIT newArtistsReady( Meta::ArtistList() );
+        Q_EMIT newAlbumsReady( Meta::AlbumList() );
+        Q_EMIT newGenresReady( Meta::GenreList() );
+        Q_EMIT newComposersReady( Meta::ComposerList() );
+        Q_EMIT newYearsReady( Meta::YearList() );
+        Q_EMIT newResultReady( QStringList() );
+        Q_EMIT newLabelsReady( Meta::LabelList() );
+        Q_EMIT queryDone();
         return;
     }
 
@@ -148,15 +148,15 @@ DEBUG_BLOCK
              default:
                  debug() << this << "Default case: Query type";
                  // we don't support any other attribute
-                 emit newTracksReady( Meta::TrackList() );
-                 emit newArtistsReady( Meta::ArtistList() );
-                 emit newAlbumsReady( Meta::AlbumList() );
-                 emit newGenresReady( Meta::GenreList() );
-                 emit newComposersReady( Meta::ComposerList() );
-                 emit newYearsReady( Meta::YearList() );
-                 emit newResultReady( QStringList() );
-                 emit newLabelsReady( Meta::LabelList() );
-                 emit queryDone();
+                 Q_EMIT newTracksReady( Meta::TrackList() );
+                 Q_EMIT newArtistsReady( Meta::ArtistList() );
+                 Q_EMIT newAlbumsReady( Meta::AlbumList() );
+                 Q_EMIT newGenresReady( Meta::GenreList() );
+                 Q_EMIT newComposersReady( Meta::ComposerList() );
+                 Q_EMIT newYearsReady( Meta::YearList() );
+                 Q_EMIT newResultReady( QStringList() );
+                 Q_EMIT newLabelsReady( Meta::LabelList() );
+                 Q_EMIT queryDone();
                  return;
         }
     }
@@ -411,19 +411,19 @@ int UpnpQueryMaker::validFilterMask()
 void UpnpQueryMaker::handleArtists( Meta::ArtistList list )
 {
     // TODO Post filtering
-    emit newArtistsReady( list );
+    Q_EMIT newArtistsReady( list );
 }
 
 void UpnpQueryMaker::handleAlbums( Meta::AlbumList list )
 {
     // TODO Post filtering
-    emit newAlbumsReady( list );
+    Q_EMIT newAlbumsReady( list );
 }
 
 void UpnpQueryMaker::handleTracks( Meta::TrackList list )
 {
     // TODO Post filtering
-    emit newTracksReady( list );
+    Q_EMIT newTracksReady( list );
 }
 
 /*
@@ -435,7 +435,7 @@ void UpnpQueryMaker::handleCustom( const KIO::UDSEntryList& list )
         Q_ASSERT( !list.empty() );
         QString count = list.first().stringValue( KIO::UDSEntry::UDS_NAME );
         m_collection->setProperty( "numberOfTracks", count.toUInt() );
-        emit newResultReady( QStringList( count ) );
+        Q_EMIT newResultReady( QStringList( count ) );
         }
         default:
             debug() << "Custom result functions other than \"Count\" are not supported by UpnpQueryMaker";
@@ -455,7 +455,7 @@ DEBUG_BLOCK
         fake->setYear( Meta::UpnpYearPtr( new Meta::UpnpYear( 2010 ) ) );
         Meta::DataPtr ptr( fake );
         ret << ptr;
-        //emit newResultReady( ret );
+        //Q_EMIT newResultReady( ret );
     }
 
     switch( m_queryType ) {
@@ -464,7 +464,7 @@ DEBUG_BLOCK
             Meta::ArtistList list;
             foreach( Meta::DataPtr ptr, m_cacheEntries )
                 list << Meta::ArtistPtr::staticCast( ptr );
-            emit newArtistsReady( list );
+            Q_EMIT newArtistsReady( list );
             break;
         }
 
@@ -473,7 +473,7 @@ DEBUG_BLOCK
             Meta::AlbumList list;
             foreach( Meta::DataPtr ptr, m_cacheEntries )
                 list << Meta::AlbumPtr::staticCast( ptr );
-            emit newAlbumsReady( list );
+            Q_EMIT newAlbumsReady( list );
             break;
         }
 
@@ -482,7 +482,7 @@ DEBUG_BLOCK
             Meta::TrackList list;
             foreach( Meta::DataPtr ptr, m_cacheEntries )
                 list << Meta::TrackPtr::staticCast( ptr );
-            emit newTracksReady( list );
+            Q_EMIT newTracksReady( list );
             break;
         }
         default:
@@ -492,7 +492,7 @@ DEBUG_BLOCK
     }
 
     debug() << "ALL JOBS DONE< TERMINATING THIS QM" << this;
-    emit queryDone();
+    Q_EMIT queryDone();
 }
 
 QString UpnpQueryMaker::propertyForValue( qint64 value )

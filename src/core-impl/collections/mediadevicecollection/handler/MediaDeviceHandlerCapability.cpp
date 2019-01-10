@@ -28,7 +28,7 @@ Handler::Capability::Capability( QObject *handler )
      * Qt builds. This is a workaround that is safe as long as this object is only deleted
      * using deleteLater() or form the handler's thread */
     connect( this, &Handler::Capability::signalSetParent, this, &Handler::Capability::slotSetParent );
-    emit signalSetParent( handler );
+    Q_EMIT signalSetParent( handler );
 }
 
 Handler::Capability::~Capability()

@@ -212,7 +212,7 @@ APG::TreeModel::slotConstraintDataChanged()
     ConstraintNode* n = static_cast<ConstraintNode*>( sender() );
     if ( n ) {
         QModelIndex idx = createIndex( n->row(), 0, n );
-        emit dataChanged( idx, idx );
+        Q_EMIT dataChanged( idx, idx );
     }
 }
 

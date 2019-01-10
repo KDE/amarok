@@ -92,7 +92,7 @@ namespace Collections
         if( !m_collectionIsManaged )
         {
             m_collectionIsManaged = true;
-            emit newCollection( m_collection.data() );
+            Q_EMIT newCollection( m_collection.data() );
         }
     }
 
@@ -352,7 +352,7 @@ namespace Collections
             }
 
             m_memoryCollection->releaseLock();
-            emit updated();
+            Q_EMIT updated();
         }
         else
             m_memoryCollection->releaseLock();
@@ -368,6 +368,6 @@ namespace Collections
     PlaydarCollection::slotPlaydarError( Playdar::Controller::ErrorState error )
     {
         if( error == Playdar::Controller::ErrorState( 1 ) )
-            emit remove();
+            Q_EMIT remove();
     }
 }

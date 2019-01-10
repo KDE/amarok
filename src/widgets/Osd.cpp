@@ -541,7 +541,7 @@ OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
         m_dragging = false;
         releaseMouse();
 
-        emit positionChanged();
+        Q_EMIT positionChanged();
     }
 }
 

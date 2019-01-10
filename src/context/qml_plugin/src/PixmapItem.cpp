@@ -41,7 +41,7 @@ void PixmapItem::setSource( const QPixmap& source )
 
     m_source = source;
     m_pixmapChanged = true;
-    emit sourceChanged();
+    Q_EMIT sourceChanged();
 
     setImplicitSize( source.width(), source.height() );
 

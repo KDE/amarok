@@ -56,7 +56,7 @@ public:
     explicit NepomukParser( NepomukCollection *coll );
 
     /**
-     * Parse all the query results in the given QueryResultIterator and emit
+     * Parse all the query results in the given QueryResultIterator and Q_EMIT
      * newResultReady with the constructed objects.
      */
     virtual void parse( Soprano::QueryResultIterator& ) = 0;
@@ -102,7 +102,7 @@ public:
         while( queryResult.next() )
             parseOne( queryResult, result );
 
-        emit newResultReady( result );
+        Q_EMIT newResultReady( result );
     }
 };
 

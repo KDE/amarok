@@ -95,7 +95,7 @@ SearchWidget::filterNow()
 {
     m_filterTimer.stop();
     addCompletion( m_sw->currentText() );
-    emit filterChanged( m_sw->currentText() );
+    Q_EMIT filterChanged( m_sw->currentText() );
 }
 
 void

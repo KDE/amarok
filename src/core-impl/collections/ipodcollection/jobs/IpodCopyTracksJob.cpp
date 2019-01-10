@@ -74,7 +74,7 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
         it.next();
         Meta::TrackPtr track = it.key();
         QUrl sourceUrl = it.value();
-        emit startDuplicateTrackSearch( track );
+        Q_EMIT startDuplicateTrackSearch( track );
 
         // wait for searching to finish:
         m_searchingForDuplicates.acquire( 1 );
@@ -133,7 +133,7 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
 
         // start the physical copying
         QUrl destUrl = QUrl::fromLocalFile( QFile::decodeName( destFilename ) );
-        emit startCopyOrTranscodeJob( sourceUrl, destUrl, isJustCopy );
+        Q_EMIT startCopyOrTranscodeJob( sourceUrl, destUrl, isJustCopy );
 
         // wait for copying to finish:
         m_copying.acquire( 1 );
@@ -214,7 +214,7 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
 
     if( m_coll )
         itdb_stop_sync( m_coll->m_itdb );
-    emit endProgressOperation( this );
+    Q_EMIT endProgressOperation( this );
 
     int sourceSize = m_sources.size();
     int successCount = m_sourceTrackStatus.count( Success );
@@ -248,7 +248,7 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
     else
     {
         // something more severe failed, notify user using a dialog
-        emit displaySorryDialog();
+        Q_EMIT displaySorryDialog();
     }
 }
 
@@ -427,7 +427,7 @@ void
 IpodCopyTracksJob::trackProcessed( CopiedStatus status, Meta::TrackPtr srcTrack, Meta::TrackPtr destTrack )
 {
     m_sourceTrackStatus.insert( status, srcTrack );
-    emit incrementProgress();
-    emit signalTrackProcessed( srcTrack, destTrack, status );
+    Q_EMIT incrementProgress();
+    Q_EMIT signalTrackProcessed( srcTrack, destTrack, status );
 }
 

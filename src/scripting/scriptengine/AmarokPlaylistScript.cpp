@@ -214,11 +214,11 @@ AmarokPlaylistScript::selectedFilenames()
 void
 AmarokPlaylistScript::slotTrackInserted( const QModelIndex&, int start, int end )
 {
-    emit trackInserted( start, end );
+    Q_EMIT trackInserted( start, end );
 }
 
 void
 AmarokPlaylistScript::slotTrackRemoved( const QModelIndex&, int start, int end )
 {
-    emit trackRemoved( start, end );
+    Q_EMIT trackRemoved( start, end );
 }

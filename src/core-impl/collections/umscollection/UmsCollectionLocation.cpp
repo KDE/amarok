@@ -251,13 +251,13 @@ UmsTransferJob::slotResult( KJob *job )
         Transcoding::Job *transcodingJob = dynamic_cast<Transcoding::Job *>( job );
         if( copyJob )
         {
-            emit sourceFileTransferDone( copyJob->srcUrl() );
-            emit fileTransferDone( copyJob->destUrl() );
+            Q_EMIT sourceFileTransferDone( copyJob->srcUrl() );
+            Q_EMIT fileTransferDone( copyJob->destUrl() );
         }
         else if( transcodingJob )
         {
-            emit sourceFileTransferDone( transcodingJob->srcUrl() );
-            emit fileTransferDone( transcodingJob->destUrl() );
+            Q_EMIT sourceFileTransferDone( transcodingJob->srcUrl() );
+            Q_EMIT fileTransferDone( transcodingJob->destUrl() );
         }
         else
             Debug::warning() << __PRETTY_FUNCTION__ << "invalid job passed to me!";
@@ -265,7 +265,7 @@ UmsTransferJob::slotResult( KJob *job )
     else
         Debug::warning() << __PRETTY_FUNCTION__ << "job failed with" << job->error();
 
-    // transcoding job currently doesn't emit percentage, so emit it at least once for track
+    // transcoding job currently doesn't Q_EMIT percentage, so Q_EMIT it at least once for track
     emitPercent( m_totalTracks - ( m_transcodeList.size() + m_copyList.size() ),
                  m_totalTracks );
     startNextJob();

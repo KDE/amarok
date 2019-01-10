@@ -54,9 +54,9 @@ BreadcrumbItemMenu::actionTriggered( QAction *action )
 {
     const QString actionName( action->data().toString() );
     if( actionName == QLatin1String("Shuffle") )
-        emit shuffleActionClicked();
+        Q_EMIT shuffleActionClicked();
     else
-        emit actionClicked( actionName );
+        Q_EMIT actionClicked( actionName );
 }
 
 /////// BreadcrumbItem methods begin here

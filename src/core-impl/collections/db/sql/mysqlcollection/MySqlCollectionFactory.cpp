@@ -37,5 +37,5 @@ MySqlCollectionFactory::init()
     SqlCollection *collection = fac.createSqlCollection( storage );
     m_initialized = true;
 
-    emit newCollection( collection );
+    Q_EMIT newCollection( collection );
 }

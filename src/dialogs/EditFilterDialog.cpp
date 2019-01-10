@@ -234,7 +234,7 @@ EditFilterDialog::slotReset()
 void
 EditFilterDialog::accept()
 {
-    emit filterChanged( filter() );
+    Q_EMIT filterChanged( filter() );
     QDialog::accept();
 }
 

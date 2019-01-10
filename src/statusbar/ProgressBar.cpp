@@ -83,13 +83,13 @@ void ProgressBar::cancel()
 {
     DEBUG_BLOCK
     debug() << "cancelling operation: " << m_descriptionLabel->text();
-    emit( cancelled( this ) );
+    Q_EMIT( cancelled( this ) );
 }
 
 void ProgressBar::setValue( int percentage )
 {
     progressBar()->setValue( percentage );
-    emit( percentageChanged( percentage ) );
+    Q_EMIT( percentageChanged( percentage ) );
 
     //this safety check has to be removed as KJobs sometimes start out
     //by showing 100%, thus removing the progress info before it even gets started
@@ -99,7 +99,7 @@ void ProgressBar::setValue( int percentage )
 
 void ProgressBar::delayedDone()
 {
-    emit( complete( this ) );
+    Q_EMIT( complete( this ) );
 }
 
 int ProgressBar::percentage()

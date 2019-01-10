@@ -163,14 +163,14 @@ void
 ConstraintTypes::PlaylistDuration::setComparison( const int c )
 {
     m_comparison = c;
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 void
 ConstraintTypes::PlaylistDuration::setDuration( const int v )
 {
     m_duration = v;
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 void
@@ -197,20 +197,20 @@ ConstraintTypes::PlaylistDurationEditWidget::PlaylistDurationEditWidget( const i
 void
 ConstraintTypes::PlaylistDurationEditWidget::on_timeEdit_Duration_timeChanged( const QTime& t )
 {
-    emit durationChanged( QTime(0, 0, 0).msecsTo( t ) );
-    emit updated();
+    Q_EMIT durationChanged( QTime(0, 0, 0).msecsTo( t ) );
+    Q_EMIT updated();
 }
 
 void
 ConstraintTypes::PlaylistDurationEditWidget::on_comboBox_Comparison_currentIndexChanged( const int v )
 {
-    emit comparisonChanged( v );
-    emit updated();
+    Q_EMIT comparisonChanged( v );
+    Q_EMIT updated();
 }
 
 void
 ConstraintTypes::PlaylistDurationEditWidget::on_slider_Strictness_valueChanged( const int v )
 {
-    emit strictnessChanged( v );
-    emit updated();
+    Q_EMIT strictnessChanged( v );
+    Q_EMIT updated();
 }

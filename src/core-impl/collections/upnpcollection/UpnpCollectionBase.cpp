@@ -90,7 +90,7 @@ void UpnpCollectionBase::slotRemoveJob(KJob* job)
         m_continuousJobFailureCount++;
         if( m_continuousJobFailureCount >= MAX_JOB_FAILURES_BEFORE_ABORT ) {
             debug() << prettyName() << "Had" << m_continuousJobFailureCount << "continuous job failures, something wrong with the device. Removing this collection.";
-            emit remove();
+            Q_EMIT remove();
         }
     }
     else {
@@ -107,12 +107,12 @@ void UpnpCollectionBase::slotSlaveError(KIO::Slave* slave, int err, const QStrin
     if( err == KIO::ERR_COULD_NOT_CONNECT
         || err == KIO::ERR_CONNECTION_BROKEN ) {
         debug() << "COULD NOT CONNECT TO " << msg << "REMOVING THE COLLECTION";
-        emit remove();
+        Q_EMIT remove();
     }
 
     if( err == KIO::ERR_SLAVE_DIED ) {
         m_slave = 0;
-        emit remove();
+        Q_EMIT remove();
     }
 }
 

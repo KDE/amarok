@@ -232,7 +232,7 @@ ServiceBase::setServiceReady( bool newReady )
 
     m_serviceready = newReady;
     if( m_serviceready )
-        emit ready();
+        Q_EMIT ready();
 }
 
 void

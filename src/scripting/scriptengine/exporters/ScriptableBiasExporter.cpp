@@ -329,7 +329,7 @@ void
 ScriptableBias::ready( const Dynamic::TrackSet &trackSet )
 {
     debug() << "Received trackset, count: " << trackSet.trackCount() << "Is outstanding:" << trackSet.isOutstanding();
-    emit resultReady( trackSet );
+    Q_EMIT resultReady( trackSet );
 }
 
 void

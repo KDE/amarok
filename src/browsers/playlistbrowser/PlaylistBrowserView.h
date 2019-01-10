@@ -56,7 +56,7 @@ protected:
     void contextMenuEvent( QContextMenuEvent *event ) override;
 
 protected Q_SLOTS:
-    /** reimplemented to emit a signal */
+    /** reimplemented to Q_EMIT a signal */
     void currentChanged( const QModelIndex &current, const QModelIndex &previous ) override;
 
 private Q_SLOTS:

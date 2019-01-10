@@ -104,7 +104,7 @@ void
 OptionsStackedWidget::switchPage( Encoder encoder)
 {
     setCurrentIndex( m_pagesMap.value( encoder ) );
-    emit formatChanged( encoder );
+    Q_EMIT formatChanged( encoder );
 }
 
 } //namespace Transcoding

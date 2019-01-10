@@ -476,7 +476,7 @@ ConstraintTypes::TagMatch::setComparison( int c )
 {
     m_comparison = c;
     m_matchCache.clear();
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 void
@@ -484,7 +484,7 @@ ConstraintTypes::TagMatch::setField( const QString& s )
 {
     m_field = s;
     m_matchCache.clear();
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 void
@@ -496,7 +496,7 @@ ConstraintTypes::TagMatch::setInvert( bool v )
         }
     }
     m_invert = v;
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 void
@@ -511,7 +511,7 @@ ConstraintTypes::TagMatch::setValue( const QVariant& v )
 {
     m_value = v;
     m_matchCache.clear();
-    emit dataChanged();
+    Q_EMIT dataChanged();
 }
 
 /******************************
@@ -588,31 +588,31 @@ ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonDate_currentIndexChan
         ui.stackedWidget_Date->setCurrentIndex( 1 );
     else
         ui.stackedWidget_Date->setCurrentIndex( 0 );
-    emit comparisonChanged( c );
+    Q_EMIT comparisonChanged( c );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonInt_currentIndexChanged( int c )
 {
-    emit comparisonChanged( c );
+    Q_EMIT comparisonChanged( c );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonRating_currentIndexChanged( int c )
 {
-    emit comparisonChanged( c );
+    Q_EMIT comparisonChanged( c );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonString_currentIndexChanged( int c )
 {
-    emit comparisonChanged( c );
+    Q_EMIT comparisonChanged( c );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_comboBox_ComparisonTime_currentIndexChanged( int c )
 {
-    emit comparisonChanged( c );
+    Q_EMIT comparisonChanged( c );
 }
 
 // ComboBox slots for field
@@ -662,88 +662,88 @@ ConstraintTypes::TagMatchEditWidget::on_comboBox_Field_currentIndexChanged( int 
 
     // TODO: set range limitations and default values depending on field
 
-    emit fieldChanged( field );
-    emit valueChanged( v );
-    emit comparisonChanged( c );
-    emit strictnessChanged( s );
+    Q_EMIT fieldChanged( field );
+    Q_EMIT valueChanged( v );
+    Q_EMIT comparisonChanged( c );
+    Q_EMIT strictnessChanged( s );
 }
 
 // Invert checkbox slot
 void
 ConstraintTypes::TagMatchEditWidget::on_checkBox_Invert_clicked( bool v )
 {
-    emit invertChanged( v );
+    Q_EMIT invertChanged( v );
 }
 
 // Strictness Slider slots
 void
 ConstraintTypes::TagMatchEditWidget::on_slider_StrictnessDate_valueChanged( int v )
 {
-    emit strictnessChanged( v );
+    Q_EMIT strictnessChanged( v );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_slider_StrictnessInt_valueChanged( int v )
 {
-    emit strictnessChanged( v );
+    Q_EMIT strictnessChanged( v );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_slider_StrictnessRating_valueChanged( int v )
 {
-    emit strictnessChanged( v );
+    Q_EMIT strictnessChanged( v );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_slider_StrictnessTime_valueChanged( int v )
 {
-    emit strictnessChanged( v );
+    Q_EMIT strictnessChanged( v );
 }
 
 // various value slots
 void
 ConstraintTypes::TagMatchEditWidget::on_kdatewidget_DateSpecific_changed( const QDate& v )
 {
-    emit valueChanged( QVariant( v ) );
+    Q_EMIT valueChanged( QVariant( v ) );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_comboBox_ValueDateUnit_currentIndexChanged( int u )
 {
     int v = ui.spinBox_ValueDateValue->value();
-    emit valueChanged( QVariant::fromValue( DateRange( v, u ) ) );
+    Q_EMIT valueChanged( QVariant::fromValue( DateRange( v, u ) ) );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_spinBox_ValueDateValue_valueChanged( int v )
 {
     int u = ui.comboBox_ValueDateUnit->currentIndex();
-    emit valueChanged( QVariant::fromValue( DateRange( v, u ) ) );
+    Q_EMIT valueChanged( QVariant::fromValue( DateRange( v, u ) ) );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_spinBox_ValueInt_valueChanged( int v )
 {
-    emit valueChanged( QVariant( v ) );
+    Q_EMIT valueChanged( QVariant( v ) );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_lineEdit_StringValue_textChanged( const QString& v )
 {
-    emit valueChanged( QVariant( v ) );
+    Q_EMIT valueChanged( QVariant( v ) );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_rating_RatingValue_ratingChanged( int v )
 {
-    emit valueChanged( QVariant( v ) );
+    Q_EMIT valueChanged( QVariant( v ) );
 }
 
 void
 ConstraintTypes::TagMatchEditWidget::on_timeEdit_TimeValue_timeChanged( const QTime& t )
 {
     int v = QTime(0, 0, 0).msecsTo( t );
-    emit valueChanged( QVariant( v ) );
+    Q_EMIT valueChanged( QVariant( v ) );
 }
 
 void

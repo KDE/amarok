@@ -860,10 +860,10 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
 
-        emit( found() );
+        Q_EMIT( found() );
     }
     else
-        emit( notFound() );
+        Q_EMIT( notFound() );
 
     if ( updateProxy )
         The::playlist()->filterUpdated();
@@ -896,10 +896,10 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
 
-        emit( found() );
+        Q_EMIT( found() );
     }
     else
-        emit( notFound() );
+        Q_EMIT( notFound() );
 
     if ( updateProxy )
         The::playlist()->filterUpdated();
@@ -956,10 +956,10 @@ void Playlist::PrettyListView::updateProxyTimeout()
                 scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
         }
 
-        emit( found() );
+        Q_EMIT( found() );
     }
     else
-        emit( notFound() );
+        Q_EMIT( notFound() );
 }
 
 void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
@@ -972,7 +972,7 @@ void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
 // Handle scrolling to newly inserted playlist items.
 // Warning, this slot is connected to the 'rowsInserted' signal of the *bottom* model,
 // not the normal top model.
-// The reason: FilterProxy can emit *A LOT* (thousands) of 'rowsInserted' signals when its
+// The reason: FilterProxy can Q_EMIT *A LOT* (thousands) of 'rowsInserted' signals when its
 // search string changes. For that case we don't want to do any scrollTo() at all.
 void
 Playlist::PrettyListView::bottomModelRowsInserted( const QModelIndex& parent, int start, int end )

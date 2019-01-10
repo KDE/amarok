@@ -214,8 +214,8 @@ AmpacheServiceQueryMaker::fetchArtists()
     if( !artists.isEmpty() )
     {
         debug() << "got" << artists.count() << "artists from the memory collection";
-        emit newArtistsReady( artists );
-        emit queryDone();
+        Q_EMIT newArtistsReady( artists );
+        Q_EMIT queryDone();
         return;
     }
 
@@ -248,8 +248,8 @@ AmpacheServiceQueryMaker::fetchAlbums()
     if( !albums.isEmpty() )
     {
         debug() << "got" << albums.count() << "albums from the memory collection";
-        emit newAlbumsReady( albums );
-        emit queryDone();
+        Q_EMIT newAlbumsReady( albums );
+        Q_EMIT queryDone();
         return;
     }
 
@@ -322,8 +322,8 @@ AmpacheServiceQueryMaker::fetchTracks()
     if( !tracks.isEmpty() )
     {
         debug() << "got" << tracks.count() << "tracks from the memory collection";
-        emit newTracksReady( tracks );
-        emit queryDone();
+        Q_EMIT newTracksReady( tracks );
+        Q_EMIT queryDone();
         return;
     }
 
@@ -374,7 +374,7 @@ AmpacheServiceQueryMaker::artistDownloadComplete( const QUrl &url, QByteArray da
     {
         warning() << "Artist download error:" << e.description;
         if( !d->expectedReplies.deref() )
-            emit queryDone();
+            Q_EMIT queryDone();
         return;
     }
 
@@ -429,8 +429,8 @@ AmpacheServiceQueryMaker::artistDownloadComplete( const QUrl &url, QByteArray da
 
     if( !d->expectedReplies.deref() )
     {
-        emit newArtistsReady( d->artistResults );
-        emit queryDone();
+        Q_EMIT newArtistsReady( d->artistResults );
+        Q_EMIT queryDone();
         d->artistResults.clear();
     }
 }
@@ -444,7 +444,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, QByteArray dat
     {
         warning() << "Album download error:" << e.description;
         if( !d->expectedReplies.deref() )
-            emit queryDone();
+            Q_EMIT queryDone();
         return;
     }
 
@@ -547,8 +547,8 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, QByteArray dat
 
     if( !d->expectedReplies.deref() )
     {
-        emit newAlbumsReady( d->albumResults );
-        emit queryDone();
+        Q_EMIT newAlbumsReady( d->albumResults );
+        Q_EMIT queryDone();
         d->albumResults.clear();
     }
 }
@@ -562,7 +562,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete( const QUrl &url, QByteArray dat
     {
         warning() << "Track download error:" << e.description;
         if( !d->expectedReplies.deref() )
-            emit queryDone();
+            Q_EMIT queryDone();
         return;
     }
 
@@ -658,8 +658,8 @@ AmpacheServiceQueryMaker::trackDownloadComplete( const QUrl &url, QByteArray dat
 
     if( !d->expectedReplies.deref() )
     {
-        emit newTracksReady( d->trackResults );
-        emit queryDone();
+        Q_EMIT newTracksReady( d->trackResults );
+        Q_EMIT queryDone();
         d->trackResults.clear();
     }
 }

@@ -300,9 +300,9 @@ IpodCollection::metadataChanged( Meta::TrackPtr track )
     // reflect change to outside world:
     bool mapsChanged = MemoryMeta::MapChanger( m_mc.data() ).trackChanged( track );
     if( mapsChanged )
-        // while docs say something different, collection browser doesn't update unless we emit updated()
-        emit startUpdateTimer();
-    emit startWriteDatabaseTimer();
+        // while docs say something different, collection browser doesn't update unless we Q_EMIT updated()
+        Q_EMIT startUpdateTimer();
+    Q_EMIT startWriteDatabaseTimer();
 }
 
 QString
@@ -456,7 +456,7 @@ IpodCollection::slotShowConfigureDialogWithError( const QString &errorMessage )
 void IpodCollection::collectionUpdated()
 {
     m_lastUpdated = QDateTime::currentMSecsSinceEpoch();
-    emit updated();
+    Q_EMIT updated();
 }
 
 void
@@ -507,8 +507,8 @@ IpodCollection::slotApplyConfiguration()
     {
         IpodDeviceHelper::setIpodName( m_itdb, newName );
         m_prettyName = IpodDeviceHelper::collectionName( m_itdb );
-        emit startWriteDatabaseTimer(); // the change should be written down to the database
-        emit startUpdateTimer();
+        Q_EMIT startWriteDatabaseTimer(); // the change should be written down to the database
+        Q_EMIT startUpdateTimer();
     }
 
     QScopedPointer<Capabilities::TranscodeCapability> tc( create<Capabilities::TranscodeCapability>() );
@@ -589,7 +589,7 @@ void IpodCollection::slotRemove()
         m_parseTracksJob->abort();
     }
     else
-        emit remove();
+        Q_EMIT remove();
 }
 
 Meta::TrackPtr
@@ -611,7 +611,7 @@ IpodCollection::addTrack( IpodMeta::Track *track )
         itdb_playlist_add_track( itdb_playlist_mpl( m_itdb ), itdbTrack, -1 );
 
         justAdded = true;
-        emit startWriteDatabaseTimer();
+        Q_EMIT startWriteDatabaseTimer();
     }
     track->setCollection( QPointer<IpodCollection>( this ) );
 
@@ -629,7 +629,7 @@ IpodCollection::addTrack( IpodMeta::Track *track )
     if( memTrack )
     {
         subscribeTo( trackPtr );
-        emit startUpdateTimer();
+        Q_EMIT startUpdateTimer();
     }
     return memTrack;
 }
@@ -668,10 +668,10 @@ IpodCollection::removeTrack( const Meta::TrackPtr &track )
         itdb_playlist_remove_track( itdb_playlist_mpl( m_itdb ), itdbTrack );
         // remove it from the db:
         itdb_track_unlink( itdbTrack );
-        emit startWriteDatabaseTimer();
+        Q_EMIT startWriteDatabaseTimer();
     }
 
-    emit startUpdateTimer();
+    Q_EMIT startUpdateTimer();
 }
 
 bool IpodCollection::writeDatabase()

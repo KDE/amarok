@@ -455,7 +455,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
 
     QTimer::singleShot( 0, m_queue, [=] () { m_queue->remove( unit ); } );
 
-    emit finishedSingle( static_cast< int >( state ) );
+    Q_EMIT finishedSingle( static_cast< int >( state ) );
 }
 
 CoverFetch::Source

@@ -138,7 +138,7 @@ namespace Amarok
         /**
          * Informs the user about the progress of a generic QObject
          *
-         * @param sender The object sending the required signals. This sender must emit signals
+         * @param sender The object sending the required signals. This sender must Q_EMIT signals
          *        incrementProgress() and endProgressOperation() and optionally totalSteps().
          * @param text An additional text that will be part of the notification
          * @param maximum The maximum value of the progress operation
@@ -167,7 +167,7 @@ namespace Amarok
         /**
          * Informs the user about the progress of a generic QObject
          *
-         * @param sender The object sending the required signals. This sender must emit signals
+         * @param sender The object sending the required signals. This sender must Q_EMIT signals
          *        incrementProgress() and endProgressOperation() and optionally totalSteps().
          * @param text An additional text that will be part of the notification
          * @param maximum The maximum value of the progress operation

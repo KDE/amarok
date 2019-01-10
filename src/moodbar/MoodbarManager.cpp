@@ -147,7 +147,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
         m_lastPaintMode = AmarokConfig::moodbarPaintStyle();
         m_cache->clear();
         m_moodDataMap.clear();
-        emit moodbarStyleChanged();
+        Q_EMIT moodbarStyleChanged();
     }
 
 

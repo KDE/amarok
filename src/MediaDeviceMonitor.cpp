@@ -180,7 +180,7 @@ MediaDeviceMonitor::slotDeviceRemoved( const QString &udi )
     }
 
 
-//    emit deviceRemoved( udi );
+//    Q_EMIT deviceRemoved( udi );
 }
 
 void

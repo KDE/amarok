@@ -168,7 +168,7 @@ class MockQueryMaker : public QueryMaker
          */
         virtual void emitQueryDone()
         {
-             emit queryDone();
+             Q_EMIT queryDone();
         }
 
     public Q_SLOTS:
@@ -179,7 +179,7 @@ class MockQueryMaker : public QueryMaker
          */
         virtual void deleteLater()
         {
-            emit destroyed();
+            Q_EMIT destroyed();
         }
 };
 

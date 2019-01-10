@@ -54,7 +54,7 @@ void
 MagnatuneNeedUpdateWidget::startUpdate()
 {
     disable();
-    emit wantUpdate();
+    Q_EMIT wantUpdate();
 }
 
 void

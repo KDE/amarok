@@ -130,7 +130,7 @@ CreateProviderDialog::slotAccepted()
     const ProviderConfigWidget *configWidget =
             qobject_cast<ProviderConfigWidget*>( configPage->widget() );
 
-    emit providerConfigured( id, configWidget->config() );
+    Q_EMIT providerConfigured( id, configWidget->config() );
 }
 
 } // namespace StatSyncing

@@ -139,7 +139,7 @@ AnimatedLabelStack::mouseReleaseEvent( QMouseEvent *me )
     {
         m_isClick = false;
         if ( !m_data.isEmpty() )
-            emit clicked ( m_data.at( m_visibleIndex ) );
+            Q_EMIT clicked ( m_data.at( m_visibleIndex ) );
     }
 }
 
@@ -281,7 +281,7 @@ AnimatedLabelStack::setPulsating( bool on )
             m_time = m_fadeTime + 1;
     }
     ensureAnimationStatus();
-    emit pulsing( on );
+    Q_EMIT pulsing( on );
 }
 
 void

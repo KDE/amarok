@@ -37,13 +37,13 @@ void LineEdit::keyPressEvent( QKeyEvent *event )
     else if( event->key() == Qt::Key_Down )
     {
         event->accept();
-        emit downPressed();
+        Q_EMIT downPressed();
         return;
     }
     else if ( event->key() == Qt::Key_Up )
     {
         event->accept();
-        emit upPressed();
+        Q_EMIT upPressed();
         return;
     }
     QLineEdit::keyPressEvent( event );

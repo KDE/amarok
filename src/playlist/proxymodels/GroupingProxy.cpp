@@ -97,7 +97,7 @@ Playlist::GroupingProxy::setGroupingCategory( const QString &groupingCategory )
     //   - Not 'layoutChanged': that is for when rows have been moved around, which they haven't.
     //   - Not 'modelReset': that is too heavy. E.g. it also invalidates QListView item selections, etc.
     if ( rowCount() > 0 )
-        emit dataChanged( index( 0, 0 ), index( rowCount() - 1, columnCount() - 1 ) );
+        Q_EMIT dataChanged( index( 0, 0 ), index( rowCount() - 1, columnCount() - 1 ) );
 }
 
 

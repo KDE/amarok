@@ -170,24 +170,24 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
         p.setColor( QPalette::Base, palette().color( QPalette::Base ) );
         m_searchEdit->setPalette( p );
 
-        emit( filterCleared() );
+        Q_EMIT( filterCleared() );
 
         return;
     }
 
-    emit( filterChanged( filter, m_searchFieldsMask, m_showOnlyMatches ) );
+    Q_EMIT( filterChanged( filter, m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotNext()
 {
     DEBUG_BLOCK
-    emit( next( m_searchEdit->text(), m_searchFieldsMask ) );
+    Q_EMIT( next( m_searchEdit->text(), m_searchFieldsMask ) );
 }
 
 void ProgressiveSearchWidget::slotPrevious()
 {
     DEBUG_BLOCK
-    emit( previous( m_searchEdit->text(), m_searchFieldsMask ) );
+    Q_EMIT( previous( m_searchEdit->text(), m_searchFieldsMask ) );
 }
 
 void ProgressiveSearchWidget::match()
@@ -222,7 +222,7 @@ void ProgressiveSearchWidget::slotSearchTracks( bool search )
     Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchTrack", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
+        Q_EMIT( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchArtists( bool search )
@@ -235,7 +235,7 @@ void ProgressiveSearchWidget::slotSearchArtists( bool search )
     Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchArtist", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
+        Q_EMIT( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchAlbums( bool search )
@@ -248,7 +248,7 @@ void ProgressiveSearchWidget::slotSearchAlbums( bool search )
     Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchAlbum", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
+        Q_EMIT( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchGenre( bool search )
@@ -261,7 +261,7 @@ void ProgressiveSearchWidget::slotSearchGenre( bool search )
     Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchGenre", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
+        Q_EMIT( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchComposers( bool search )
@@ -274,7 +274,7 @@ void ProgressiveSearchWidget::slotSearchComposers( bool search )
     Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchComposer", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
+        Q_EMIT( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchRating( bool search )
@@ -287,7 +287,7 @@ void ProgressiveSearchWidget::slotSearchRating( bool search )
     Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchRating", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
+        Q_EMIT( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchYears( bool search )
@@ -300,7 +300,7 @@ void ProgressiveSearchWidget::slotSearchYears( bool search )
     Amarok::config( QStringLiteral("Playlist Search") ).writeEntry( "MatchYear", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
+        Q_EMIT( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::readConfig()
@@ -350,7 +350,7 @@ void ProgressiveSearchWidget::slotShowOnlyMatches( bool onlyMatches )
     cg.writeEntry( "ShowOnlyMatches", m_showOnlyMatches );
     cg.sync();
 
-    emit( showOnlyMatches( onlyMatches ) );
+    Q_EMIT( showOnlyMatches( onlyMatches ) );
 }
 
 void
