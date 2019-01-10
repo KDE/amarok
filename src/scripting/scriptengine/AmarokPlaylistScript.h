@@ -61,7 +61,7 @@ namespace AmarokScript
             /**
              * Append @param track to playlist.
              */
-            Q_INVOKABLE void addTrack( Meta::TrackPtr track );
+            Q_INVOKABLE void addTrack( const Meta::TrackPtr &track );
 
             /**
              * Load the list of tracks represented by the urls and append to playlist.
@@ -91,7 +91,7 @@ namespace AmarokScript
             /**
              * Prepend @param track and start playing it.
              */
-            Q_INVOKABLE void playTrack( Meta::TrackPtr track );
+            Q_INVOKABLE void playTrack( const Meta::TrackPtr &track );
 
             /**
              * Prepend the tracks represented by the passed urls and start playing them.

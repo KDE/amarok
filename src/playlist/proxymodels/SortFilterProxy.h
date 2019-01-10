@@ -49,7 +49,7 @@ class SortProxy
          * Applies a sorting scheme to the playlist.
          * @param scheme the sorting scheme that will be applied.
          */
-        virtual void updateSortMap( SortScheme scheme ) = 0;
+        virtual void updateSortMap( const SortScheme &scheme ) = 0;
 };
 
 
@@ -70,7 +70,7 @@ class SortFilterProxy : public ProxyBase, public SortProxy
         //! Sort-related functions.
         //!   SortProxy public functions
         bool isSorted() override;
-        void updateSortMap( SortScheme scheme ) override;
+        void updateSortMap( const SortScheme &scheme ) override;
 
         //! Filter-related functions.
         //!   Playlist::AbstractModel search-related functions.

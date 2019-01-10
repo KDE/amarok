@@ -87,7 +87,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlQueryMaker : public QueryMaker
         Meta::LabelList labels() const;
 
     protected:
-        virtual QString escape( QString text ) const;
+        virtual QString escape( const QString &text ) const;
 
         /**
          * returns a pattern for LIKE operator that will match given text with given options

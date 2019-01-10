@@ -117,14 +117,14 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
     public Q_SLOTS:
         virtual void queryDone();
-        void newTracksReady( Meta::TrackList );
-        void newArtistsReady( Meta::ArtistList );
-        void newAlbumsReady( Meta::AlbumList );
-        void newGenresReady( Meta::GenreList );
-        void newComposersReady( Meta::ComposerList );
-        void newYearsReady( Meta::YearList );
-        void newLabelsReady( Meta::LabelList );
-        virtual void newDataReady( Meta::DataList data );
+        void newTracksReady( const Meta::TrackList &);
+        void newArtistsReady( const Meta::ArtistList &);
+        void newAlbumsReady( const Meta::AlbumList &);
+        void newGenresReady( const Meta::GenreList &);
+        void newComposersReady( const Meta::ComposerList &);
+        void newYearsReady( const Meta::YearList &);
+        void newLabelsReady( const Meta::LabelList &);
+        virtual void newDataReady( const Meta::DataList &data );
 
         /**
          * Apply the current filter.

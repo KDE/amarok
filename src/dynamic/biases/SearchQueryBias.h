@@ -34,7 +34,7 @@ namespace Dynamic
         Q_OBJECT
 
         public:
-            explicit SearchQueryBias( QString filter = QStringLiteral("genre:Rock") );
+            explicit SearchQueryBias( const QString &filter = QStringLiteral("genre:Rock") );
 
             void fromXml( QXmlStreamReader *reader ) override;
             void toXml( QXmlStreamWriter *writer ) const override;

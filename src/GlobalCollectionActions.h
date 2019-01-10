@@ -35,7 +35,7 @@ class AMAROK_EXPORT GlobalCollectionGenreAction : public GlobalCollectionAction
     public:
 
         GlobalCollectionGenreAction( const QString &text, QObject * parent );
-        void setGenre( Meta::GenrePtr genre );
+        void setGenre( const Meta::GenrePtr &genre );
 
     protected:
         Meta::GenrePtr genre();
@@ -50,7 +50,7 @@ class AMAROK_EXPORT GlobalCollectionArtistAction : public GlobalCollectionAction
     public:
 
         GlobalCollectionArtistAction( const QString &text, QObject * parent );
-        void setArtist( Meta::ArtistPtr artist );
+        void setArtist( const Meta::ArtistPtr &artist );
         
     protected:
         Meta::ArtistPtr artist();
@@ -65,7 +65,7 @@ class AMAROK_EXPORT GlobalCollectionAlbumAction : public GlobalCollectionAction
     public:
 
         GlobalCollectionAlbumAction( const QString &text, QObject * parent );
-        void setAlbum( Meta::AlbumPtr album );
+        void setAlbum( const Meta::AlbumPtr &album );
 
     protected:
         Meta::AlbumPtr album();
@@ -80,7 +80,7 @@ class AMAROK_EXPORT GlobalCollectionTrackAction : public GlobalCollectionAction
     public:
 
         GlobalCollectionTrackAction( const QString &text, QObject * parent );
-        void setTrack( Meta::TrackPtr track );
+        void setTrack( const Meta::TrackPtr &track );
         
     protected:
         Meta::TrackPtr track();
@@ -95,7 +95,7 @@ class AMAROK_EXPORT GlobalCollectionYearAction : public GlobalCollectionAction
     public:
 
         GlobalCollectionYearAction( const QString &text, QObject * parent );
-        void setYear( Meta::YearPtr year );
+        void setYear( const Meta::YearPtr &year );
 
     protected:
         Meta::YearPtr year();
@@ -110,7 +110,7 @@ class GlobalCollectionComposerAction : public GlobalCollectionAction
     public:
 
         GlobalCollectionComposerAction( const QString &text, QObject * parent );
-        void setComposer( Meta::ComposerPtr composer );
+        void setComposer( const Meta::ComposerPtr &composer );
 
     protected:
         Meta::ComposerPtr composer();
@@ -136,7 +136,7 @@ class AMAROK_EXPORT GlobalCollectionActions : public QObject
     friend GlobalCollectionActions* The::globalCollectionActions();
 
 public:
-    QList<QAction *> actionsFor( Meta::DataPtr item );
+    QList<QAction *> actionsFor( const Meta::DataPtr &item );
 
     void addGenreAction( GlobalCollectionGenreAction * action );
     void addArtistAction( GlobalCollectionArtistAction * action );
@@ -149,12 +149,12 @@ private:
     GlobalCollectionActions();
     ~GlobalCollectionActions();
 
-    QList<QAction *> actionsFor( Meta::GenrePtr genre );
-    QList<QAction *> actionsFor( Meta::ArtistPtr artist );
-    QList<QAction *> actionsFor( Meta::AlbumPtr album );
-    QList<QAction *> actionsFor( Meta::TrackPtr track );
-    QList<QAction *> actionsFor( Meta::YearPtr year );
-    QList<QAction *> actionsFor( Meta::ComposerPtr composer );
+    QList<QAction *> actionsFor( const Meta::GenrePtr &genre );
+    QList<QAction *> actionsFor( const Meta::ArtistPtr &artist );
+    QList<QAction *> actionsFor( const Meta::AlbumPtr &album );
+    QList<QAction *> actionsFor( const Meta::TrackPtr &track );
+    QList<QAction *> actionsFor( const Meta::YearPtr &year );
+    QList<QAction *> actionsFor( const Meta::ComposerPtr &composer );
 
     QList<GlobalCollectionGenreAction*> m_genreActions;
     QList<GlobalCollectionArtistAction*> m_artistActions;

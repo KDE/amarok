@@ -160,7 +160,7 @@ Dynamic::QuizPlayBias::widget( QWidget* parent )
 Dynamic::TrackSet
 Dynamic::QuizPlayBias::matchingTracks( const Meta::TrackList& playlist,
                                        int contextCount, int finalCount,
-                                       Dynamic::TrackCollectionPtr universe ) const
+                                       const Dynamic::TrackCollectionPtr &universe ) const
 {
     Q_UNUSED( contextCount );
     Q_UNUSED( finalCount );

@@ -23,7 +23,7 @@
 
 #include <typeinfo>
 
-BookmarkGroup::BookmarkGroup( const QStringList & dbResultRow, BookmarkGroupPtr parent )
+BookmarkGroup::BookmarkGroup( const QStringList & dbResultRow, const BookmarkGroupPtr &parent )
     : BookmarkViewItem()
     , m_parent( parent )
     , m_customType()
@@ -35,7 +35,7 @@ BookmarkGroup::BookmarkGroup( const QStringList & dbResultRow, BookmarkGroupPtr 
     m_description = dbResultRow[3];
 }
 
-BookmarkGroup::BookmarkGroup( const QString & name, BookmarkGroupPtr parent )
+BookmarkGroup::BookmarkGroup( const QString & name, const BookmarkGroupPtr &parent )
     : BookmarkViewItem()
     , m_dbId( -1 )
     , m_parent( parent )
@@ -209,7 +209,7 @@ void BookmarkGroup::setDescription( const QString &description )
     save();
 }
 
-void BookmarkGroup::deleteChild( BookmarkViewItemPtr item )
+void BookmarkGroup::deleteChild( const BookmarkViewItemPtr &item )
 {
     if ( auto group = BookmarkGroupPtr::dynamicCast( item ) )
     {
@@ -235,7 +235,7 @@ void BookmarkGroup::removeFromDb()
     QStringList result = StorageManager::instance()->sqlStorage()->query( query );
 }
 
-void BookmarkGroup::reparent( BookmarkGroupPtr parent )
+void BookmarkGroup::reparent( const BookmarkGroupPtr &parent )
 {
     m_parent = parent;
     save();

@@ -724,7 +724,7 @@ AFTTagger::createV1UID( TagLib::File *file )
 }
 
 QString
-AFTTagger::upgradeUID( int version, QString currValue )
+AFTTagger::upgradeUID( int version, const QString &currValue )
 {
     Q_UNUSED(version)
     return currValue + "abcd";

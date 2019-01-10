@@ -30,7 +30,7 @@
 #include <QSignalMapper>
 #include <QWhatsThis>
 
-APG::PresetEditDialog::PresetEditDialog( PresetPtr p )
+APG::PresetEditDialog::PresetEditDialog( const PresetPtr &p )
             : QDialog( 0 )
             , m_preset( p )
 {

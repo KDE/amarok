@@ -92,11 +92,11 @@ class UpnpTrack : public Meta::Track
         Collections::Collection* collection() const override;
 
         //UpnpTrack specific methods
-        void setAlbum( UpnpAlbumPtr album );
-        void setArtist( UpnpArtistPtr artist );
-        void setComposer( UpnpComposerPtr composer );
-        void setGenre( UpnpGenrePtr genre );
-        void setYear( UpnpYearPtr year );
+        void setAlbum( const UpnpAlbumPtr &album );
+        void setArtist( const UpnpArtistPtr &artist );
+        void setComposer( const UpnpComposerPtr &composer );
+        void setGenre( const UpnpGenrePtr &genre );
+        void setYear( const UpnpYearPtr &year );
         void setPlayableUrl( const QString &url );
 
         void setLength( qint64 length );
@@ -132,8 +132,8 @@ class UpnpArtist : public Meta::Artist
         TrackList tracks() override;
 
         //UpnpArtist specific methods
-        void addTrack( UpnpTrackPtr track );
-        void removeTrack( UpnpTrackPtr track );
+        void addTrack( const UpnpTrackPtr &track );
+        void removeTrack( const UpnpTrackPtr &track );
 
     private:
         QString m_name;
@@ -161,9 +161,9 @@ class UpnpAlbum : public QObject, public Meta::Album
         Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
         //UpnpAlbum specific methods
-        void addTrack( UpnpTrackPtr track );
-        void removeTrack( UpnpTrackPtr track );
-        void setAlbumArtist( UpnpArtistPtr artist );
+        void addTrack( const UpnpTrackPtr &track );
+        void removeTrack( const UpnpTrackPtr &track );
+        void setAlbumArtist( const UpnpArtistPtr &artist );
         void setAlbumArtUrl( const QUrl &url );
 
     private:
@@ -186,8 +186,8 @@ class UpnpGenre : public Meta::Genre
         TrackList tracks() override;
 
         //UpnpGenre specific methods
-        void addTrack( UpnpTrackPtr track );
-        void removeTrack( UpnpTrackPtr track );
+        void addTrack( const UpnpTrackPtr &track );
+        void removeTrack( const UpnpTrackPtr &track );
 
     private:
         QString m_name;
@@ -205,8 +205,8 @@ class UpnpComposer : public Meta::Composer
         TrackList tracks() override;
 
         //UpnpComposer specific methods
-        void addTrack( UpnpTrackPtr track );
-        void removeTrack( UpnpTrackPtr track );
+        void addTrack( const UpnpTrackPtr &track );
+        void removeTrack( const UpnpTrackPtr &track );
 
     private:
         QString m_name;
@@ -224,8 +224,8 @@ class UpnpYear : public Meta::Year
         TrackList tracks() override;
 
         //UpnpYear specific methods
-        void addTrack( UpnpTrackPtr track );
-        void removeTrack( UpnpTrackPtr track );
+        void addTrack( const UpnpTrackPtr &track );
+        void removeTrack( const UpnpTrackPtr &track );
 
     private:
         QString m_name;

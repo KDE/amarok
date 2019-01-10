@@ -125,7 +125,7 @@ LayoutItemConfigRow Playlist::LayoutItemConfig::row( int at ) const
     return m_rows.at( at );
 }
 
-void Playlist::LayoutItemConfig::addRow( LayoutItemConfigRow row )
+void Playlist::LayoutItemConfig::addRow( const LayoutItemConfigRow &row )
 {
     m_rows.append( row );
 }
@@ -192,7 +192,7 @@ Playlist::PlaylistLayout::layoutForPart( Part part ) const
 }
 
 void
-Playlist::PlaylistLayout::setLayoutForPart( Part part, LayoutItemConfig itemConfig )
+Playlist::PlaylistLayout::setLayoutForPart( Part part, const LayoutItemConfig &itemConfig )
 {
     m_layoutItemConfigs[part] = itemConfig;
 }

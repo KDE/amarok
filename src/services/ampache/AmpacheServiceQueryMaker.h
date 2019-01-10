@@ -67,9 +67,9 @@ protected:
     Private * const d;
 
 public Q_SLOTS:
-    void artistDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void albumDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-    void trackDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void artistDownloadComplete( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
+    void albumDownloadComplete( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
+    void trackDownloadComplete( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
 
 private:
     // Disable copy constructor and assignment

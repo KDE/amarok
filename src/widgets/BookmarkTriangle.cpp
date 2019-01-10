@@ -127,7 +127,7 @@ void BookmarkTriangle::mouseReleaseEvent ( QMouseEvent * event )
     }
 }
 
-void BookmarkTriangle::moveBookmark ( qint64 newMilliseconds, QString name )
+void BookmarkTriangle::moveBookmark ( qint64 newMilliseconds, const QString &name )
 {
     hidePopup();
     Meta::TrackPtr track = The::engineController()->currentTrack();

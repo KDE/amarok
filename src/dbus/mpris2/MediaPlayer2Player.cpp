@@ -169,7 +169,7 @@ void MediaPlayer2Player::SetPosition( const QDBusObjectPath& TrackId, qlonglong 
         debug() << "SetPosition() called with a trackId (" << TrackId.path() << ") which is not for the active track (" << activeTrackId.path() << ")";
 }
 
-void MediaPlayer2Player::OpenUri( QString Uri ) const
+void MediaPlayer2Player::OpenUri( const QString &Uri ) const
 {
     QUrl url( Uri );
     The::playlistController()->insertOptioned( url, Playlist::OnPlayMediaAction );
@@ -258,7 +258,7 @@ void MediaPlayer2Player::setShuffle( bool shuffle ) const
     The::playlistActions()->playlistModeChanged();
 }
 
-QVariantMap MediaPlayer2Player::metadataForTrack( Meta::TrackPtr track ) const
+QVariantMap MediaPlayer2Player::metadataForTrack( const Meta::TrackPtr &track ) const
 {
     if ( !track )
         return QVariantMap();
@@ -337,18 +337,18 @@ void MediaPlayer2Player::trackPositionChanged( qint64 position, bool userSeek )
     m_lastPosition = position;
 }
 
-void MediaPlayer2Player::trackChanged( Meta::TrackPtr track )
+void MediaPlayer2Player::trackChanged( const Meta::TrackPtr &track )
 {
     signalPropertyChange( QStringLiteral("CanPause"), CanPause() );
     signalPropertyChange( QStringLiteral("Metadata"), metadataForTrack( track ) );
 }
 
-void MediaPlayer2Player::trackMetadataChanged( Meta::TrackPtr track )
+void MediaPlayer2Player::trackMetadataChanged( const Meta::TrackPtr &track )
 {
     signalPropertyChange( QStringLiteral("Metadata"), metadataForTrack( track ) );
 }
 
-void MediaPlayer2Player::albumMetadataChanged( Meta::AlbumPtr album )
+void MediaPlayer2Player::albumMetadataChanged( const Meta::AlbumPtr &album )
 {
     Q_UNUSED( album )
     signalPropertyChange( QStringLiteral("Metadata"), Metadata() );

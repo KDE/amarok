@@ -32,7 +32,7 @@ ScriptableServiceInfoParser::~ScriptableServiceInfoParser()
 {
 }
 
-void ScriptableServiceInfoParser::getInfo( ArtistPtr artist )
+void ScriptableServiceInfoParser::getInfo( const ArtistPtr &artist )
 {
     ScriptableServiceArtist * serviceArtist = dynamic_cast< ScriptableServiceArtist * >( artist.data() );
     if (!serviceArtist) return;
@@ -46,7 +46,7 @@ void ScriptableServiceInfoParser::getInfo( ArtistPtr artist )
     }
 }
 
-void ScriptableServiceInfoParser::getInfo(AlbumPtr album)
+void ScriptableServiceInfoParser::getInfo(const AlbumPtr &album)
 {
     DEBUG_BLOCK
     ScriptableServiceAlbum * serviceAlbum = dynamic_cast< ScriptableServiceAlbum * >( album.data() );
@@ -61,7 +61,7 @@ void ScriptableServiceInfoParser::getInfo(AlbumPtr album)
     }
 }
 
-void ScriptableServiceInfoParser::getInfo(TrackPtr track)
+void ScriptableServiceInfoParser::getInfo(const TrackPtr &track)
 {
     DEBUG_BLOCK
     ScriptableServiceTrack * serviceTrack = dynamic_cast< ScriptableServiceTrack * >( track.data() );
@@ -76,7 +76,7 @@ void ScriptableServiceInfoParser::getInfo(TrackPtr track)
     }
 }
 
-void ScriptableServiceInfoParser::getInfo( Meta::GenrePtr genre )
+void ScriptableServiceInfoParser::getInfo( const Meta::GenrePtr &genre )
 {
     ScriptableServiceGenre * serviceGenre = dynamic_cast< ScriptableServiceGenre * >( genre.data() );
     if (!serviceGenre) return;

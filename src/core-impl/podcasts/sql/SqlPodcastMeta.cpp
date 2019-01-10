@@ -117,7 +117,7 @@ SqlPodcastEpisode::toPodcastEpisodeList( SqlPodcastEpisodeList episodes )
     return sqlEpisodes;
 }
 
-SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChannelPtr sqlChannel )
+SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, const SqlPodcastChannelPtr &sqlChannel )
     : Podcasts::PodcastEpisode( Podcasts::PodcastChannelPtr::staticCast( sqlChannel ) )
     , m_channel( sqlChannel )
 {
@@ -189,7 +189,7 @@ SqlPodcastEpisode::SqlPodcastEpisode( Podcasts::PodcastEpisodePtr episode )
     setupLocalFile();
 }
 
-SqlPodcastEpisode::SqlPodcastEpisode( PodcastChannelPtr channel, Podcasts::PodcastEpisodePtr episode )
+SqlPodcastEpisode::SqlPodcastEpisode( const PodcastChannelPtr &channel, Podcasts::PodcastEpisodePtr episode )
     : Podcasts::PodcastEpisode()
     , m_dbId( 0 )
     , m_isKeep( false )
@@ -514,14 +514,14 @@ SqlPodcastEpisode::deleteFromDb()
 }
 
 Playlists::PlaylistPtr
-SqlPodcastChannel::toPlaylistPtr( SqlPodcastChannelPtr sqlChannel )
+SqlPodcastChannel::toPlaylistPtr( const SqlPodcastChannelPtr &sqlChannel )
 {
     Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( sqlChannel );
     return playlist;
 }
 
 SqlPodcastChannelPtr
-SqlPodcastChannel::fromPlaylistPtr( Playlists::PlaylistPtr playlist )
+SqlPodcastChannel::fromPlaylistPtr( const Playlists::PlaylistPtr &playlist )
 {
     SqlPodcastChannelPtr sqlChannel = SqlPodcastChannelPtr::dynamicCast( playlist );
     return sqlChannel;
@@ -695,7 +695,7 @@ SqlPodcastChannel::setImageUrl( const QUrl &imageUrl )
 }
 
 Podcasts::PodcastEpisodePtr
-SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
+SqlPodcastChannel::addEpisode(const PodcastEpisodePtr &episode )
 {
     if( !m_provider )
         return PodcastEpisodePtr();
@@ -929,7 +929,7 @@ Podcasts::SqlPodcastChannel::tracks()
 }
 
 void
-Podcasts::SqlPodcastChannel::syncTrackStatus( int position, Meta::TrackPtr otherTrack )
+Podcasts::SqlPodcastChannel::syncTrackStatus(int position, const Meta::TrackPtr &otherTrack )
 {
     Q_UNUSED( position );
 
@@ -945,7 +945,7 @@ Podcasts::SqlPodcastChannel::syncTrackStatus( int position, Meta::TrackPtr other
 }
 
 void
-Podcasts::SqlPodcastChannel::addTrack( Meta::TrackPtr track, int position )
+Podcasts::SqlPodcastChannel::addTrack( const Meta::TrackPtr &track, int position )
 {
     Q_UNUSED( position );
 

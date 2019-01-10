@@ -71,7 +71,7 @@ class GenericScannerJob : public QObject, public ThreadWeaver::Job
                            GenericScanManager::ScanType type );
 
         GenericScannerJob( GenericScanManager* manager,
-                           QStringList scanDirsRequested,
+                           const QStringList &scanDirsRequested,
                            GenericScanManager::ScanType type,
                            bool recursive = true,
                            bool detectCharset = false );

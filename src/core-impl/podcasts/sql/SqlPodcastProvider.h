@@ -69,7 +69,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
 
         void addPodcast( const QUrl &url ) override;
 
-        Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel ) override;
+        Podcasts::PodcastChannelPtr addChannel( const Podcasts::PodcastChannelPtr &channel ) override;
         Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override;
 
         Podcasts::PodcastChannelList channels() override;
@@ -83,8 +83,8 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
 
     public Q_SLOTS:
         void updateAll() override;
-        void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
-        void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );
+        void downloadEpisode( const Podcasts::PodcastEpisodePtr &episode );
+        void deleteDownloadedEpisode( const Podcasts::PodcastEpisodePtr &episode );
 
         void slotReadResult( PodcastReader *podcastReader );
         void downloadEpisode( Podcasts::SqlPodcastEpisodePtr episode );
@@ -114,7 +114,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         void episodeDeleted( Podcasts::PodcastEpisodePtr );
 
     private Q_SLOTS:
-        void channelImageReady( Podcasts::PodcastChannelPtr, QImage );
+        void channelImageReady( Podcasts::PodcastChannelPtr, const QImage &);
         void podcastImageFetcherDone( PodcastImageFetcher * );
         void slotConfigureProvider();
 
@@ -138,7 +138,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         Podcasts::SqlPodcastEpisodePtr sqlEpisodeForString( const QString &string );
 
         void updateDatabase( int fromVersion, int toVersion );
-        void fetchImage( Podcasts::SqlPodcastChannelPtr channel );
+        void fetchImage( const Podcasts::SqlPodcastChannelPtr &channel );
 
         /** shows a modal dialog asking the user if he really wants to unsubscribe
             and if he wants to keep the podcast media */

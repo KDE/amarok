@@ -424,7 +424,7 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
 }
 
 void
-IpodCopyTracksJob::trackProcessed( CopiedStatus status, Meta::TrackPtr srcTrack, Meta::TrackPtr destTrack )
+IpodCopyTracksJob::trackProcessed( CopiedStatus status, const Meta::TrackPtr &srcTrack, const Meta::TrackPtr &destTrack )
 {
     m_sourceTrackStatus.insert( status, srcTrack );
     Q_EMIT incrementProgress();

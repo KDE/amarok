@@ -82,7 +82,7 @@ PlaylistFile::trackCount() const
 }
 
 void
-PlaylistFile::addTrack( Meta::TrackPtr track, int position )
+PlaylistFile::addTrack( const Meta::TrackPtr &track, int position )
 {
     if( !track ) // playlists might contain invalid tracks. see BUG: 303056
         return;

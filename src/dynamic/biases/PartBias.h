@@ -86,7 +86,7 @@ namespace Dynamic
 
             TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const override;
+                                             const TrackCollectionPtr &universe ) const override;
 
             bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
@@ -98,7 +98,7 @@ namespace Dynamic
             /** Appends a bias to this bias.
                 This object will take ownership of the bias and free it when destroyed.
             */
-            void appendBias( Dynamic::BiasPtr bias ) override;
+            void appendBias( const Dynamic::BiasPtr &bias ) override;
             void moveBias( int from, int to ) override;
 
         public Q_SLOTS:
@@ -112,7 +112,7 @@ namespace Dynamic
             void weightsChanged();
 
         protected Q_SLOTS:
-            void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias ) override;
+            void biasReplaced( const Dynamic::BiasPtr &oldBias, const Dynamic::BiasPtr &newBias ) override;
 
         private:
             /** Using the data from m_matchingTracks it tries to compute a valid m_tracks */

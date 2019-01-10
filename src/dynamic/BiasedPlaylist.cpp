@@ -142,7 +142,7 @@ Dynamic::BiasedPlaylist::biasChanged()
 }
 
 void
-Dynamic::BiasedPlaylist::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
+Dynamic::BiasedPlaylist::biasReplaced( const Dynamic::BiasPtr &oldBias, const Dynamic::BiasPtr &newBias )
 {
     if( oldBias && !newBias ) // don't move the last bias away from this playlist without replacement
         return;

@@ -58,7 +58,7 @@ public:
     void setOggUrl( const QString& url );
     QString oggUrl() const;
 
-    void setAlbumPtr( Meta::AlbumPtr album ) override;
+    void setAlbumPtr( const Meta::AlbumPtr &album ) override;
 
 public Q_SLOTS:
     void download();

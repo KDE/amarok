@@ -333,7 +333,7 @@ void TimecodeTrack::endUpdate()
 }
 
 void
-TimecodeTrack::setAlbum( TimecodeAlbumPtr album )
+TimecodeTrack::setAlbum( const TimecodeAlbumPtr &album )
 {
     m_album = album;
 }
@@ -345,25 +345,25 @@ TimecodeTrack::setAlbumArtist( const QString & )
 }
 
 void
-TimecodeTrack::setYear( TimecodeYearPtr year )
+TimecodeTrack::setYear( const TimecodeYearPtr &year )
 {
     m_year = year;
 }
 
 void
-TimecodeTrack::setGenre( TimecodeGenrePtr genre )
+TimecodeTrack::setGenre( const TimecodeGenrePtr &genre )
 {
     m_genre = genre;
 }
 
 void
-TimecodeTrack::setComposer( TimecodeComposerPtr composer )
+TimecodeTrack::setComposer( const TimecodeComposerPtr &composer )
 {
     m_composer = composer;
 }
 
 void
-TimecodeTrack::setArtist( TimecodeArtistPtr artist )
+TimecodeTrack::setArtist( const TimecodeArtistPtr &artist )
 {
     m_artist = artist;
 }
@@ -433,7 +433,7 @@ TimecodeArtist::albums()
 }
 
 void
-TimecodeArtist::addTrack( TimecodeTrackPtr track )
+TimecodeArtist::addTrack( const TimecodeTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
@@ -504,12 +504,12 @@ TimecodeAlbum::setImage( const QImage &image )
 }
 
 void
-TimecodeAlbum::addTrack( TimecodeTrackPtr track )
+TimecodeAlbum::addTrack( const TimecodeTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
-void TimecodeAlbum::setAlbumArtist( TimecodeArtistPtr artist )
+void TimecodeAlbum::setAlbumArtist( const TimecodeArtistPtr &artist )
 {
     m_albumArtist = artist;
 }
@@ -560,7 +560,7 @@ TimecodeGenre::tracks()
 }
 
 void
-TimecodeGenre::addTrack( TimecodeTrackPtr track )
+TimecodeGenre::addTrack( const TimecodeTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
@@ -589,7 +589,7 @@ TimecodeComposer::tracks()
 }
 
 void
-TimecodeComposer::addTrack( TimecodeTrackPtr track )
+TimecodeComposer::addTrack( const TimecodeTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
@@ -618,7 +618,7 @@ TimecodeYear::tracks()
 }
 
 void
-TimecodeYear::addTrack( TimecodeTrackPtr track )
+TimecodeYear::addTrack( const TimecodeTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }

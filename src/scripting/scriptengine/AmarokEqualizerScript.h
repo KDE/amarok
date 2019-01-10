@@ -131,7 +131,7 @@ namespace AmarokScript
             QStringList translatedDefaultPresetList() const;
             QStringList defaultPresetList() const;
             QList<int> gains() const;
-            void setGains( QList<int> gains );
+            void setGains( const QList<int> &gains );
             int maxGain() const;
 
             friend class AmarokEngineScript;

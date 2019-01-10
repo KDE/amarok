@@ -63,7 +63,7 @@ public:
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track ) override;
+    void metadataChanged( const Meta::TrackPtr &track ) override;
 
     QList<QUrl> photoUrls() const;
     QList<QUrl> pageUrls() const;
@@ -93,7 +93,7 @@ private Q_SLOTS:
     void resultFlickr(const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
 
     void stopped();
-    void trackChanged( Meta::TrackPtr track );
+    void trackChanged( const Meta::TrackPtr &track );
 
 private:
     struct PhotoInfo

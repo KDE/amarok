@@ -33,7 +33,7 @@ public:
     QString command() const override;
     QString prettyCommand() const override;
     QIcon icon() const override;
-    bool run( AmarokUrl url ) override;
+    bool run( const AmarokUrl &url ) override;
 };
 
 #endif

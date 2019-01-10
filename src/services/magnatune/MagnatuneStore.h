@@ -165,7 +165,7 @@ private Q_SLOTS:
 
 
     void moodMapReady(const QMap<QString, int> &map );
-    void moodyTracksReady( Meta::TrackList tracks );
+    void moodyTracksReady( const Meta::TrackList &tracks );
 
     void timestampDownloadComplete( KJob * job );
     void favoritesResult( KJob* addToFavoritesJob );

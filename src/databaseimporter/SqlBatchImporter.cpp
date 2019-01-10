@@ -97,14 +97,14 @@ SqlBatchImporter::importedCount() const
 }
 
 void
-SqlBatchImporter::trackImported( Meta::TrackPtr track )
+SqlBatchImporter::trackImported( const Meta::TrackPtr &track )
 {
     Q_UNUSED( track )
     ++m_count;
 }
 
 void
-SqlBatchImporter::trackMatched(Meta::TrackPtr track, const QString &oldUrl )
+SqlBatchImporter::trackMatched(const Meta::TrackPtr &track, const QString &oldUrl )
 {
     Q_UNUSED( track )
     Q_UNUSED( oldUrl )

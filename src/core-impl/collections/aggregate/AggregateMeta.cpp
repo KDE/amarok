@@ -79,11 +79,11 @@ AggregateTrack::AggregateTrack( Collections::AggregateCollection *coll, const Tr
         , Observer()
         , m_collection( coll )
         , m_name( track->name() )
-        , m_album( 0 )
-        , m_artist( 0 )
-        , m_genre( 0 )
-        , m_composer( 0 )
-        , m_year( 0 )
+        , m_album( nullptr )
+        , m_artist( nullptr )
+        , m_genre( nullptr )
+        , m_composer( nullptr )
+        , m_year( nullptr )
 {
     subscribeTo( track );
     m_tracks.append( track );
@@ -553,7 +553,7 @@ AggregateTrack::createCapabilityInterface( Capabilities::Capability::Type type )
     if( m_tracks.count() == 1 )
         return m_tracks.first()->createCapabilityInterface( type );
     else
-        return 0;
+        return nullptr;
 }
 
 TrackEditorPtr
@@ -639,7 +639,7 @@ AggregateTrack::add( const Meta::TrackPtr &track )
 }
 
 void
-AggregateTrack::metadataChanged( Meta::TrackPtr track )
+AggregateTrack::metadataChanged(const TrackPtr &track )
 {
     if( !track )
         return;
@@ -797,12 +797,12 @@ AggregateAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
     }
     else
     {
-        return 0;
+        return nullptr;
     }
 }
 
 void
-AggregateAlbum::add( Meta::AlbumPtr album )
+AggregateAlbum::add( const Meta::AlbumPtr &album )
 {
     if( !album || m_albums.contains( album ) )
         return;
@@ -921,7 +921,7 @@ AggregateAlbum::suppressImageAutoFetch() const
 }
 
 void
-AggregateAlbum::metadataChanged( Meta::AlbumPtr album )
+AggregateAlbum::metadataChanged(const AlbumPtr &album )
 {
     if( !album || !m_albums.contains( album ) )
         return;
@@ -953,7 +953,7 @@ AggregateAlbum::metadataChanged( Meta::AlbumPtr album )
     notifyObservers();
 }
 
-AggregateArtist::AggregateArtist( Collections::AggregateCollection *coll, Meta::ArtistPtr artist )
+AggregateArtist::AggregateArtist( Collections::AggregateCollection *coll, const Meta::ArtistPtr &artist )
         : Meta::Artist()
         , Meta::Observer()
         , m_collection( coll )
@@ -1032,12 +1032,12 @@ AggregateArtist::createCapabilityInterface( Capabilities::Capability::Type type 
     }
     else
     {
-        return 0;
+        return nullptr;
     }
 }
 
 void
-AggregateArtist::add( Meta::ArtistPtr artist )
+AggregateArtist::add( const Meta::ArtistPtr &artist )
 {
     if( !artist || m_artists.contains( artist ) )
         return;
@@ -1049,7 +1049,7 @@ AggregateArtist::add( Meta::ArtistPtr artist )
 }
 
 void
-AggregateArtist::metadataChanged( Meta::ArtistPtr artist )
+AggregateArtist::metadataChanged(const ArtistPtr &artist )
 {
     if( !artist || !m_artists.contains( artist ) )
         return;
@@ -1079,7 +1079,7 @@ AggregateArtist::metadataChanged( Meta::ArtistPtr artist )
     notifyObservers();
 }
 
-AggregateGenre::AggregateGenre( Collections::AggregateCollection *coll, Meta::GenrePtr genre )
+AggregateGenre::AggregateGenre( Collections::AggregateCollection *coll, const Meta::GenrePtr &genre )
         : Meta::Genre()
         , Meta::Observer()
         , m_collection( coll )
@@ -1158,12 +1158,12 @@ AggregateGenre::createCapabilityInterface( Capabilities::Capability::Type type )
     }
     else
     {
-        return 0;
+        return nullptr;
     }
 }
 
 void
-AggregateGenre::add( Meta::GenrePtr genre )
+AggregateGenre::add( const Meta::GenrePtr &genre )
 {
     if( !genre || m_genres.contains( genre ) )
         return;
@@ -1175,7 +1175,7 @@ AggregateGenre::add( Meta::GenrePtr genre )
 }
 
 void
-AggregateGenre::metadataChanged( Meta::GenrePtr genre )
+AggregateGenre::metadataChanged( const Meta::GenrePtr &genre )
 {
     if( !genre || !m_genres.contains( genre ) )
         return;
@@ -1199,7 +1199,7 @@ AggregateGenre::metadataChanged( Meta::GenrePtr genre )
     notifyObservers();
 }
 
-AggregateComposer::AggregateComposer( Collections::AggregateCollection *coll, Meta::ComposerPtr composer )
+AggregateComposer::AggregateComposer( Collections::AggregateCollection *coll, const Meta::ComposerPtr &composer )
         : Meta::Composer()
         , Meta::Observer()
         , m_collection( coll )
@@ -1278,12 +1278,12 @@ AggregateComposer::createCapabilityInterface( Capabilities::Capability::Type typ
     }
     else
     {
-        return 0;
+        return nullptr;
     }
 }
 
 void
-AggregateComposer::add( Meta::ComposerPtr composer )
+AggregateComposer::add( const Meta::ComposerPtr &composer )
 {
     if( !composer || m_composers.contains( composer ) )
         return;
@@ -1295,7 +1295,7 @@ AggregateComposer::add( Meta::ComposerPtr composer )
 }
 
 void
-AggregateComposer::metadataChanged( Meta::ComposerPtr composer )
+AggregateComposer::metadataChanged(const ComposerPtr &composer )
 {
     if( !composer || !m_composers.contains( composer ) )
         return;
@@ -1319,7 +1319,7 @@ AggregateComposer::metadataChanged( Meta::ComposerPtr composer )
     notifyObservers();
 }
 
-AggreagateYear::AggreagateYear( Collections::AggregateCollection *coll, Meta::YearPtr year )
+AggreagateYear::AggreagateYear( Collections::AggregateCollection *coll, const Meta::YearPtr &year )
         : Meta::Year()
         , Meta::Observer()
         , m_collection( coll )
@@ -1399,12 +1399,12 @@ AggreagateYear::createCapabilityInterface( Capabilities::Capability::Type type )
     }
     else
     {
-        return 0;
+        return nullptr;
     }
 }
 
 void
-AggreagateYear::add( Meta::YearPtr year )
+AggreagateYear::add( const Meta::YearPtr &year )
 {
     if( !year || m_years.contains( year ) )
         return;
@@ -1416,7 +1416,7 @@ AggreagateYear::add( Meta::YearPtr year )
 }
 
 void
-AggreagateYear::metadataChanged( Meta::YearPtr year )
+AggreagateYear::metadataChanged( const Meta::YearPtr &year )
 {
     if( !year || !m_years.contains( year ) )
         return;
@@ -1516,7 +1516,7 @@ AggregateLabel::createCapabilityInterface( Capabilities::Capability::Type type )
     }
     else
     {
-        return 0;
+        return nullptr;
     }
 }
 

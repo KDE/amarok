@@ -26,7 +26,7 @@
 #include <QUrlQuery>
 
 Playdar::ProxyResolver::ProxyResolver( Collections::PlaydarCollection *collection,
-                                       const QUrl &url, MetaProxy::TrackPtr track )
+                                       const QUrl &url, const MetaProxy::TrackPtr &track )
     : m_collection( collection )
     , m_proxyTrack( track )
     , m_controller( new Playdar::Controller( true ) )

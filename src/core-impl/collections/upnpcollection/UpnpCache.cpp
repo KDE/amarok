@@ -162,7 +162,7 @@ Meta::YearPtr UpnpCache::getYear(int name)
     return m_yearMap[name];
 }
 
-void UpnpCache::removeTrack( Meta::TrackPtr t )
+void UpnpCache::removeTrack( const Meta::TrackPtr &t )
 {
 #define DOWNCAST( Type, item ) Meta::Upnp##Type##Ptr::staticCast( item )
     Meta::UpnpTrackPtr track = DOWNCAST( Track, t );

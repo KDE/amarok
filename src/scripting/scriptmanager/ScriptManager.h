@@ -74,7 +74,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
         QString scriptNameForEngine( const QScriptEngine *engine ) const;
 
         /** Notifies any running lyric scripts to fetch desired lyric from given URL */
-        void notifyFetchLyrics( const QString& artist, const QString& title, const QString& url, Meta::TrackPtr track );
+        void notifyFetchLyrics( const QString& artist, const QString& title, const QString& url, const Meta::TrackPtr &track );
 
         void ServiceScriptPopulate( const QString &name,
                                     int level,

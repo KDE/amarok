@@ -896,7 +896,7 @@ Playlist::PrettyItemDelegate::currentDesktopChanged()
 }
 
 QMap<QString, QString>
-Playlist::PrettyItemDelegate::buildTrackArgsMap( const Meta::TrackPtr track ) const
+Playlist::PrettyItemDelegate::buildTrackArgsMap( const Meta::TrackPtr &track ) const
 {
     QMap<QString, QString> args;
     QString artist = track->artist() ? track->artist()->name() : QString();

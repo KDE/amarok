@@ -36,7 +36,7 @@ class AlbumItem : public QObject, public QStandardItem, public Meta::Observer
          *
          * @arg album pointer to associate with
          */
-        void setAlbum( Meta::AlbumPtr albumPtr );
+        void setAlbum( const Meta::AlbumPtr &albumPtr );
 
         /**
          * @return the album pointer associated with this item
@@ -61,7 +61,7 @@ class AlbumItem : public QObject, public QStandardItem, public Meta::Observer
 
         // overloaded from Meta::Observer
         using Observer::metadataChanged;
-        void metadataChanged( Meta::AlbumPtr album ) override;
+        void metadataChanged( const Meta::AlbumPtr &album ) override;
 
         int type() const override;
 

@@ -791,7 +791,7 @@ ServiceSqlQueryMaker::handleYears( const QStringList &result )
 }*/
 
 QString
-ServiceSqlQueryMaker::escape( QString text ) const //krazy2:exclude=constref
+ServiceSqlQueryMaker::escape( const QString &text ) const //krazy2:exclude=constref
 {
     auto storage = StorageManager::instance()->sqlStorage();
     if( storage )

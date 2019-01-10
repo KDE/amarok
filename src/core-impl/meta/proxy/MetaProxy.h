@@ -154,7 +154,7 @@ namespace MetaProxy
             /**
              * MetaProxy will update the proxy with the track.
              */
-            void updateTrack( Meta::TrackPtr track );
+            void updateTrack( const Meta::TrackPtr &track );
 
         private:
             Q_DISABLE_COPY( Track )

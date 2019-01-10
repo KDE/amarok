@@ -77,7 +77,7 @@ namespace AmarokScript
 
         public:
             static QScriptValue bookmarkCtor( QScriptContext *context, QScriptEngine *engine );
-            explicit BookmarkPrototype( AmarokUrlPtr bookmark );
+            explicit BookmarkPrototype( const AmarokUrlPtr &bookmark );
             AmarokUrlPtr data() const { return m_url; }
 
             /**
@@ -102,7 +102,7 @@ namespace AmarokScript
         private:
             void setId( int id );
             int id() const;
-            void setParent( BookmarkGroupPtr parent );
+            void setParent( const BookmarkGroupPtr &parent );
             QString command() const;
             void setCommand( const QString &command );
             void setName( const QString &name );
@@ -131,7 +131,7 @@ namespace AmarokScript
         Q_PROPERTY( int childCount READ childCount )
 
         public:
-            explicit BookmarkGroupPrototype( BookmarkGroupPtr group );
+            explicit BookmarkGroupPrototype( const BookmarkGroupPtr &group );
             static QScriptValue bookmarkGroupCtor( QScriptContext *context, QScriptEngine *engine );
             BookmarkGroupPtr data() const { return m_group; }
 
@@ -142,8 +142,8 @@ namespace AmarokScript
             Q_INVOKABLE BookmarkGroupList childGroups() const;
             Q_INVOKABLE BookmarkList childBookmarks() const;
             Q_INVOKABLE void clear();
-            Q_INVOKABLE void deleteChildBookmark( AmarokUrlPtr bookmark );
-            Q_INVOKABLE void deleteChildBookmarkgroup( BookmarkGroupPtr bookmarkGroup );
+            Q_INVOKABLE void deleteChildBookmark( const AmarokUrlPtr &bookmark );
+            Q_INVOKABLE void deleteChildBookmarkgroup( const BookmarkGroupPtr &bookmarkGroup );
 
         private:
             int id() const;
@@ -153,7 +153,7 @@ namespace AmarokScript
             void setName( const QString &name );
             void setDescription( const QString &description );
             BookmarkGroupPtr parent() const;
-            void setParent( BookmarkGroupPtr parent );
+            void setParent( const BookmarkGroupPtr &parent );
 
             BookmarkGroupPtr m_group;
     };

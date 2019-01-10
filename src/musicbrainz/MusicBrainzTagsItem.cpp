@@ -25,8 +25,8 @@
 #include "core/collections/QueryMaker.h"
 
 MusicBrainzTagsItem::MusicBrainzTagsItem( MusicBrainzTagsItem *parent,
-                                          const Meta::TrackPtr track,
-                                          const QVariantMap tags )
+                                          const Meta::TrackPtr &track,
+                                          const QVariantMap &tags )
     : m_parent( parent )
     , m_track( track )
     , m_data( tags )

@@ -28,7 +28,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-PodcastSettingsDialog::PodcastSettingsDialog( Podcasts::SqlPodcastChannelPtr channel, QWidget* parent )
+PodcastSettingsDialog::PodcastSettingsDialog( const Podcasts::SqlPodcastChannelPtr &channel, QWidget* parent )
     : KPageDialog( parent )
     , m_ps( new Ui::PodcastSettingsBase() )
     , m_channel( channel )

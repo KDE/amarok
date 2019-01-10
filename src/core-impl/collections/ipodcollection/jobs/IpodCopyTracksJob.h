@@ -104,7 +104,7 @@ class IpodCopyTracksJob : public QObject, public ThreadWeaver::Job
         void slotDisplaySorryDialog();
 
     private:
-        void trackProcessed( CopiedStatus status, Meta::TrackPtr srcTrack, Meta::TrackPtr destTrack = Meta::TrackPtr() );
+        void trackProcessed( CopiedStatus status, const Meta::TrackPtr &srcTrack, const Meta::TrackPtr &destTrack = Meta::TrackPtr() );
 
         QPointer<IpodCollection> m_coll;
         Transcoding::Configuration m_transcodingConfig;

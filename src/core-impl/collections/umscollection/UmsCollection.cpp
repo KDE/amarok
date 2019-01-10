@@ -220,7 +220,7 @@ QString UmsCollection::s_autoConnectKey( "use_automatically" );
 QString UmsCollection::s_collectionName( "collection_name" );
 QString UmsCollection::s_transcodingGroup( "transcoding" );
 
-UmsCollection::UmsCollection( Solid::Device device )
+UmsCollection::UmsCollection( const Solid::Device &device )
     : Collection()
     , m_device( device )
     , m_mc( 0 )
@@ -464,12 +464,12 @@ UmsCollection::createCapabilityInterface( Capabilities::Capability::Type type )
             return new UmsTranscodeCapability( m_mountPoint + QLatin1Char('/') + s_settingsFileName,
                                                s_transcodingGroup );
         default:
-            return 0;
+            return nullptr;
     }
 }
 
 void
-UmsCollection::metadataChanged( Meta::TrackPtr track )
+UmsCollection::metadataChanged(const Meta::TrackPtr &track )
 {
     if( MemoryMeta::MapChanger( m_mc.data() ).trackChanged( track ) )
         // big-enough change:
@@ -477,7 +477,7 @@ UmsCollection::metadataChanged( Meta::TrackPtr track )
 }
 
 QUrl
-UmsCollection::organizedUrl( Meta::TrackPtr track, const QString &fileExtension ) const
+UmsCollection::organizedUrl( const Meta::TrackPtr &track, const QString &fileExtension ) const
 {
     TrackOrganizer trackOrganizer( Meta::TrackList() << track );
     //%folder% prefix required to get absolute url.
@@ -512,7 +512,7 @@ UmsCollection::slotEject()
 }
 
 void
-UmsCollection::slotTrackAdded( QUrl location )
+UmsCollection::slotTrackAdded( const QUrl &location )
 {
     Q_ASSERT( m_musicUrl.isParentOf( location ) || m_musicUrl.matches( location , QUrl::StripTrailingSlash) );
     MetaFile::Track *fileTrack = new MetaFile::Track( location );

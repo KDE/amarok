@@ -53,7 +53,7 @@ Dynamic::TrackSet::TrackSet( const TrackSet& other )
     , m_collection( other.m_collection )
 { }
 
-Dynamic::TrackSet::TrackSet( const Dynamic::TrackCollectionPtr collection, bool value )
+Dynamic::TrackSet::TrackSet( const Dynamic::TrackCollectionPtr &collection, bool value )
     : m_bits( collection->count(), value )
     , m_collection( collection )
 {}

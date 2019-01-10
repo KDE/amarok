@@ -102,7 +102,7 @@ class AMAROK_EXPORT StorageManager : public QObject
          *  In order to report their issues they will instead Q_EMIT
          *  newError with the list of errors.
          */
-        void slotNewError( QStringList errorMessageList );
+        void slotNewError( const QStringList &errorMessageList );
 
     private:
         static StorageManager* s_instance;

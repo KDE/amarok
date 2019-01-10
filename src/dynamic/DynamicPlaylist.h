@@ -50,7 +50,7 @@ class AMAROK_EXPORT DynamicPlaylist : public QObject
         virtual void requestTracks(int) = 0;
 
         QString title() const;
-        void setTitle( QString );
+        void setTitle( const QString &);
 
     Q_SIGNALS:
         void tracksReady( Meta::TrackList );

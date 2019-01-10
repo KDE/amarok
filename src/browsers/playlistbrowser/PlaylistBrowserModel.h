@@ -84,9 +84,9 @@ class PlaylistBrowserModel : public QAbstractItemModel, public Playlists::Playli
                                    int column, const QModelIndex &parent ) override;
 
         /* Playlists::PlaylistObserver methods */
-        void metadataChanged( Playlists::PlaylistPtr playlist ) override;
-        void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position ) override;
-        void trackRemoved( Playlists::PlaylistPtr playlist, int position ) override;
+        void metadataChanged( const Playlists::PlaylistPtr &playlist ) override;
+        void trackAdded( const Playlists::PlaylistPtr &playlist, const Meta::TrackPtr &track, int position ) override;
+        void trackRemoved( const Playlists::PlaylistPtr &playlist, int position ) override;
 
     public Q_SLOTS:
         void slotRenamePlaylist( Playlists::PlaylistPtr playlist );

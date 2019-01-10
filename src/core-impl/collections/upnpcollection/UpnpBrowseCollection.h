@@ -76,7 +76,7 @@ class UpnpBrowseCollection : public UpnpCollectionBase
     void entries( KIO::Job *, const KIO::UDSEntryList& );
     void done( KJob * );
     void createTrack( const KIO::UDSEntry &, const QString &baseUrl );
-    void removeTrack( Meta::TrackPtr t );
+    void removeTrack( const Meta::TrackPtr &t );
     void invalidateTracksIn( const QString &dir );
     void updateMemoryCollection();
     void slotFilesChanged(const QStringList &);

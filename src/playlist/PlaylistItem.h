@@ -43,7 +43,7 @@ namespace Playlist
             static void listRemove( QList<quint64> &target, QSet<quint64> &removeSet );
 
             Item();
-            explicit Item( Meta::TrackPtr track );
+            explicit Item( const Meta::TrackPtr &track );
             ~Item();
 
             const Meta::TrackPtr& track() const;

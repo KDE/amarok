@@ -168,7 +168,7 @@ class CurriedQMStringFilterFunction : public CurriedQMFunction
     public:
         typedef QueryMaker* ( QueryMaker::*FunPtr ) ( qint64, const QString&, bool, bool );
         
-        CurriedQMStringFilterFunction( FunPtr function, qint64 value, QString filter, bool matchBegin, bool matchEnd )
+        CurriedQMStringFilterFunction( FunPtr function, qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
             : m_function( function )
             , m_value( value )
             , m_filter( filter )

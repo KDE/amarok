@@ -20,7 +20,7 @@
 
 #include "core/support/Debug.h"
 
-GpodderPodcastRequestHandler::GpodderPodcastRequestHandler( mygpo::PodcastListPtr podcasts, QModelIndex parentItem,
+GpodderPodcastRequestHandler::GpodderPodcastRequestHandler( mygpo::PodcastListPtr podcasts, const QModelIndex &parentItem,
         GpodderServiceModel *model )
     : QObject( model )
     , m_podcasts( podcasts )

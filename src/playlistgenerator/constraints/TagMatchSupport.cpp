@@ -291,7 +291,7 @@ ConstraintTypes::TagMatch::Comparer::compareDate( const uint test,
 }
 
 double
-ConstraintTypes::TagMatch::Comparer::compareLabels( const Meta::TrackPtr t,
+ConstraintTypes::TagMatch::Comparer::compareLabels( const Meta::TrackPtr &t,
                                                     const int comparison,
                                                     const QString& target ) const
 {

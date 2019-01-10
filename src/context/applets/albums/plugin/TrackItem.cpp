@@ -38,7 +38,7 @@ TrackItem::~TrackItem()
 }
 
 void
-TrackItem::setTrack( Meta::TrackPtr trackPtr )
+TrackItem::setTrack( const Meta::TrackPtr &trackPtr )
 {
     if( m_track )
         unsubscribeFrom( m_track );
@@ -49,7 +49,7 @@ TrackItem::setTrack( Meta::TrackPtr trackPtr )
 }
 
 void
-TrackItem::metadataChanged( Meta::TrackPtr track )
+TrackItem::metadataChanged(const Meta::TrackPtr &track )
 {
     QMutexLocker locker( &m_mutex );
     if( !track )

@@ -25,7 +25,7 @@
 
 using namespace Meta;
 
-void MagnatuneInfoParser::getInfo(ArtistPtr artist)
+void MagnatuneInfoParser::getInfo(const ArtistPtr &artist)
 {
 
     showLoading( i18n( "Loading artist info..." ) );
@@ -44,7 +44,7 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
 }
 
 
-void MagnatuneInfoParser::getInfo(AlbumPtr album)
+void MagnatuneInfoParser::getInfo(const AlbumPtr &album)
 {
 
     showLoading( i18n( "Loading album info..." ) );
@@ -84,7 +84,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
     Q_EMIT ( info( infoHtml ) );
 }
 
-void MagnatuneInfoParser::getInfo(TrackPtr track)
+void MagnatuneInfoParser::getInfo(const TrackPtr &track)
 {
     Q_UNUSED( track );
     return;

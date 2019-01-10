@@ -97,7 +97,7 @@ Dynamic::SimpleMatchBias::setInvert( bool value )
 Dynamic::TrackSet
 Dynamic::SimpleMatchBias::matchingTracks( const Meta::TrackList& playlist,
                                           int contextCount, int finalCount,
-                                          Dynamic::TrackCollectionPtr universe ) const
+                                          const Dynamic::TrackCollectionPtr &universe ) const
 {
     Q_UNUSED( playlist );
     Q_UNUSED( contextCount );
@@ -116,7 +116,7 @@ Dynamic::SimpleMatchBias::matchingTracks( const Meta::TrackList& playlist,
 }
 
 void
-Dynamic::SimpleMatchBias::updateReady( QStringList uids )
+Dynamic::SimpleMatchBias::updateReady( const QStringList &uids )
 {
     if( m_invert )
         m_tracks.subtract( uids );

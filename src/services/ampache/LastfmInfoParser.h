@@ -31,9 +31,9 @@ class LastfmInfoParser : public InfoParserBase
     public:
         LastfmInfoParser() : InfoParserBase() {}
         ~LastfmInfoParser() {}
-        virtual void getInfo(Meta::TrackPtr track);
-        virtual void getInfo(Meta::AlbumPtr album);
-        virtual void getInfo(Meta::ArtistPtr artist);
+        virtual void getInfo(const Meta::TrackPtr &track);
+        virtual void getInfo(const Meta::AlbumPtr &album);
+        virtual void getInfo(const Meta::ArtistPtr &artist);
 
     private Q_SLOTS:
         void onGetTrackInfo();

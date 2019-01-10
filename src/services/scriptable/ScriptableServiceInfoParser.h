@@ -35,10 +35,10 @@ public:
     ~ScriptableServiceInfoParser() override;
 
 
-    virtual void getInfo( Meta::GenrePtr genre );
-    void getInfo( Meta::ArtistPtr artist ) override;
-    void getInfo( Meta::AlbumPtr album )  override;
-    void getInfo( Meta::TrackPtr track ) override;
+    virtual void getInfo( const Meta::GenrePtr &genre );
+    void getInfo( const Meta::ArtistPtr &artist ) override;
+    void getInfo( const Meta::AlbumPtr &album )  override;
+    void getInfo( const Meta::TrackPtr &track ) override;
 
 private:
     QString m_serviceName;

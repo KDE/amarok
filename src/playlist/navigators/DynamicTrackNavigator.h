@@ -51,7 +51,7 @@ namespace Playlist
 
         private Q_SLOTS:
             void activePlaylistChanged();
-            void receiveTracks( Meta::TrackList );
+            void receiveTracks( const Meta::TrackList &);
             void trackChanged();
 
         private:

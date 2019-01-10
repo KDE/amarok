@@ -30,7 +30,7 @@
 #include <QPainter>
 #include <QStyleOption>
 
-OcsPersonItem::OcsPersonItem( const KAboutPerson &person, const QString ocsUsername, PersonStatus status, QWidget *parent )
+OcsPersonItem::OcsPersonItem( const KAboutPerson &person, const QString &ocsUsername, PersonStatus status, QWidget *parent )
     : QWidget( parent )
     , m_status( status )
     , m_state( Offline )

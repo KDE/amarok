@@ -73,7 +73,7 @@ Q_SIGNALS:
     
 private:
     QSet<BookmarkViewItemPtr> selectedItems() const;
-    QList<QAction *> createCommonActions( QModelIndexList indices );
+    QList<QAction *> createCommonActions( const QModelIndexList &indices );
 
     QAction *m_loadAction;
     QAction *m_deleteAction;

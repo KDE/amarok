@@ -335,7 +335,7 @@ AggregateCollection::removeAlbum( const QString &album, const QString &albumarti
 }
 
 Meta::AggregateAlbum*
-AggregateCollection::getAlbum( Meta::AlbumPtr album )
+AggregateCollection::getAlbum( const Meta::AlbumPtr &album )
 {
     Meta::AlbumKey key( album );
     m_albumLock.lockForRead();
@@ -384,7 +384,7 @@ AggregateCollection::removeTrack( const Meta::TrackKey &key )
 }
 
 Meta::AggregateTrack*
-AggregateCollection::getTrack( Meta::TrackPtr track )
+AggregateCollection::getTrack( const Meta::TrackPtr &track )
 {
     const Meta::TrackKey key( track );
     m_trackLock.lockForRead();

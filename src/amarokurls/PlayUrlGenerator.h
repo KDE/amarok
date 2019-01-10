@@ -38,7 +38,7 @@ public:
     static PlayUrlGenerator * instance();
 
     AmarokUrl createCurrentTrackBookmark();
-    AmarokUrl createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds, QString name = QString() );
+    AmarokUrl createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds, const QString &name = QString() );
 
     /**
      * Updates the position of the bookmark named @param name to @param newMiliseconds
@@ -47,7 +47,7 @@ public:
      * The name should be a valid bookmark name and should include the trailing "- mm:ss".
      * Bookmark is renamed according to track title and new position, too.
      */
-    void moveTrackBookmark( Meta::TrackPtr track, qint64 newMiliseconds, QString name );
+    void moveTrackBookmark( Meta::TrackPtr track, qint64 newMiliseconds, const QString &name );
 
     QString description() override;
     QIcon icon() override;

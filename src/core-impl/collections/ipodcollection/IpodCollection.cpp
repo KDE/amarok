@@ -295,7 +295,7 @@ IpodCollection::isOrganizable() const
 }
 
 void
-IpodCollection::metadataChanged( Meta::TrackPtr track )
+IpodCollection::metadataChanged(const Meta::TrackPtr &track )
 {
     // reflect change to outside world:
     bool mapsChanged = MemoryMeta::MapChanger( m_mc.data() ).trackChanged( track );

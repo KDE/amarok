@@ -50,7 +50,7 @@ Q_SIGNALS:
     void filterPatternChanged();
 
 private Q_SLOTS:
-    void slotTrackChanged( Meta::TrackPtr track );
+    void slotTrackChanged( const Meta::TrackPtr &track );
     void slotTrackMetadataChanged( Meta::TrackPtr track );
     void stopped();
     void resultReady( const Meta::AlbumList &albums );

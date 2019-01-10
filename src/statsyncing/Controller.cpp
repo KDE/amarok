@@ -213,14 +213,14 @@ Controller::providerCreationDialog() const
 }
 
 void
-Controller::createProvider( QString type, QVariantMap config )
+Controller::createProvider( const QString &type, const QVariantMap &config )
 {
     Q_ASSERT( m_providerFactories.contains( type ) );
     m_providerFactories[type]->createProvider( config );
 }
 
 void
-Controller::reconfigureProvider( QString id, QVariantMap config )
+Controller::reconfigureProvider( const QString &id, const QVariantMap &config )
 {
     ProviderPtr provider = findRegisteredProvider( id );
     if( provider )

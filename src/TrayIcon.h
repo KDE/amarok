@@ -43,11 +43,11 @@ private Q_SLOTS:
     void updateToolTip();
     void updateMenu();
 
-    void trackPlaying( Meta::TrackPtr track );
+    void trackPlaying( const Meta::TrackPtr &track );
     void stopped();
     void paused();
-    void trackMetadataChanged( Meta::TrackPtr track );
-    void albumMetadataChanged( Meta::AlbumPtr album );
+    void trackMetadataChanged( const Meta::TrackPtr &track );
+    void albumMetadataChanged( const Meta::AlbumPtr &album );
 
     void slotScrollRequested( int delta, Qt::Orientation orientation );
     QAction* action(const QString& name, const QMap<QString, QAction *> &actionByName );

@@ -243,7 +243,7 @@ GpodderProvider::addPlaylist( Playlists::PlaylistPtr playlist )
 
 
 PodcastChannelPtr
-GpodderProvider::addChannel( PodcastChannelPtr channel )
+GpodderProvider::addChannel( const PodcastChannelPtr &channel )
 {
     DEBUG_BLOCK
 

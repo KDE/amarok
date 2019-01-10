@@ -316,12 +316,12 @@ private:
     // Observer Methods
 
     /** These methods are called when the metadata of a track has changed. They invoke an MediaDevice DB update */
-    void metadataChanged( Meta::TrackPtr track ) override;
-    void metadataChanged( Meta::ArtistPtr artist ) override;
-    void metadataChanged( Meta::AlbumPtr album ) override;
-    void metadataChanged( Meta::GenrePtr genre ) override;
-    void metadataChanged( Meta::ComposerPtr composer ) override;
-    void metadataChanged( Meta::YearPtr year ) override;
+    void metadataChanged( const Meta::TrackPtr &track ) override;
+    void metadataChanged( const Meta::ArtistPtr &artist ) override;
+    void metadataChanged( const Meta::AlbumPtr &album ) override;
+    void metadataChanged( const Meta::GenrePtr &genre ) override;
+    void metadataChanged( const Meta::ComposerPtr &composer ) override;
+    void metadataChanged(const YearPtr &year ) override;
 
     /**
     * Handler Variables

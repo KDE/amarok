@@ -30,7 +30,7 @@
 namespace StatSyncing
 {
     struct ProviderData {
-        ProviderData( QString id_, QString name_, QIcon icon_, bool online_, bool enabled_ )
+        ProviderData( const QString &id_, const QString &name_, const QIcon &icon_, bool online_, bool enabled_ )
             : id( id_ ), name( name_ ), icon( icon_ ), online( online_ ), enabled( enabled_ )
         {}
 

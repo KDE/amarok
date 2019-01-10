@@ -72,7 +72,7 @@ AmarokPlaylistScript::addMedia( const QUrl &url )
 }
 
 void
-AmarokPlaylistScript::addTrack( Meta::TrackPtr track )
+AmarokPlaylistScript::addTrack( const Meta::TrackPtr &track )
 {
     The::playlistController()->insertOptioned( track );
 }
@@ -111,7 +111,7 @@ AmarokPlaylistScript::playMedia( const QUrl &url )
 }
 
 void
-AmarokPlaylistScript::playTrack( Meta::TrackPtr track )
+AmarokPlaylistScript::playTrack( const Meta::TrackPtr &track )
 {
     The::playlistController()->insertOptioned( track, Playlist::OnPlayMediaAction );
 }

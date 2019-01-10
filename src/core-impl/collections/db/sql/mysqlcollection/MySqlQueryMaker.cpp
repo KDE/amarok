@@ -28,7 +28,8 @@ Collections::MySqlQueryMaker::~MySqlQueryMaker()
 }
 
 QString
-Collections::MySqlQueryMaker::escape( QString text ) const // krazy:exclude=constref
+Collections::MySqlQueryMaker::escape(const QString &text ) const
 {
-    return text.replace("\\", "\\\\").replace( '\'', "''" );
+    QString str = text;
+    return str.replace("\\", "\\\\").replace( '\'', "''" );
 }

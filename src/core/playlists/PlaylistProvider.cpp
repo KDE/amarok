@@ -50,13 +50,13 @@ PlaylistProvider::isWritable()
 }
 
 PlaylistPtr
-PlaylistProvider::addPlaylist( Playlists::PlaylistPtr )
+PlaylistProvider::addPlaylist(PlaylistPtr)
 {
     return PlaylistPtr();
 }
 
 void
-PlaylistProvider::renamePlaylist( PlaylistPtr, const QString & )
+PlaylistProvider::renamePlaylist(PlaylistPtr, const QString & )
 {
 }
 
@@ -67,7 +67,7 @@ PlaylistProvider::deletePlaylists( const PlaylistList & )
 }
 
 Meta::TrackPtr
-PlaylistProvider::addTrack( Meta::TrackPtr )
+PlaylistProvider::addTrack( const Meta::TrackPtr &)
 {
     return Meta::TrackPtr();
 }

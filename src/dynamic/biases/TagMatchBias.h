@@ -54,7 +54,7 @@ namespace Dynamic
 
             TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const override;
+                                             const TrackCollectionPtr &universe ) const override;
 
             bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
@@ -69,7 +69,7 @@ namespace Dynamic
 
         protected Q_SLOTS:
             /** Called when we get new uids from the query maker */
-            virtual void updateReady( QStringList uids );
+            virtual void updateReady( const QStringList &uids );
 
             /** Called when the querymaker is finished */
             virtual void updateFinished();

@@ -56,15 +56,15 @@ PlaylistObserver::unsubscribeFrom( PlaylistPtr playlist )
     }
 }
 
-void PlaylistObserver::metadataChanged( PlaylistPtr )
+void PlaylistObserver::metadataChanged( const PlaylistPtr &)
 {
 }
 
-void PlaylistObserver::trackAdded( PlaylistPtr, Meta::TrackPtr, int )
+void PlaylistObserver::trackAdded( const PlaylistPtr&, const Meta::TrackPtr&, int )
 {
 }
 
-void PlaylistObserver::trackRemoved( PlaylistPtr, int )
+void PlaylistObserver::trackRemoved( const PlaylistPtr&, int )
 {
 }
 
@@ -93,7 +93,7 @@ Playlist::triggerTrackLoad()
     notifyObserversTracksLoaded();
 }
 
-void Playlist::addTrack( Meta::TrackPtr, int )
+void Playlist::addTrack( const Meta::TrackPtr&, int )
 {
 }
 
@@ -102,7 +102,7 @@ void Playlist::removeTrack( int )
 }
 
 void
-Playlist::syncTrackStatus( int, Meta::TrackPtr )
+Playlist::syncTrackStatus( int, const Meta::TrackPtr &)
 {
 }
 

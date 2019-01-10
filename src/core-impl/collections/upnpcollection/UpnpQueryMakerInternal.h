@@ -48,13 +48,13 @@ class UpnpQueryMakerInternal : public QObject
         void runQuery( QUrl query, bool filter=true );
 
     Q_SIGNALS:
-        void results( bool error, const KIO::UDSEntryList list );
+        void results( bool error, const KIO::UDSEntryList &list );
         void done();
 
-        void newTracksReady( Meta::TrackList );
-        void newArtistsReady( Meta::ArtistList );
-        void newAlbumsReady( Meta::AlbumList );
-        void newGenresReady( Meta::GenreList );
+        void newTracksReady( const Meta::TrackList &);
+        void newArtistsReady( const Meta::ArtistList &);
+        void newAlbumsReady( const Meta::AlbumList &);
+        void newGenresReady( const Meta::GenreList &);
         void newResultReady( const KIO::UDSEntryList & );
     private Q_SLOTS:
         void slotEntries( KIO::Job *, const KIO::UDSEntryList & );

@@ -1112,7 +1112,7 @@ MediaDeviceHandler::setupWriteCapability()
 
 /** Observer Methods **/
 void
-MediaDeviceHandler::metadataChanged( TrackPtr track )
+MediaDeviceHandler::metadataChanged( const TrackPtr &track )
 {
     DEBUG_BLOCK
 
@@ -1128,31 +1128,31 @@ MediaDeviceHandler::metadataChanged( TrackPtr track )
 }
 
 void
-MediaDeviceHandler::metadataChanged( ArtistPtr artist )
+MediaDeviceHandler::metadataChanged(const  ArtistPtr &artist )
 {
     Q_UNUSED( artist );
 }
 
 void
-MediaDeviceHandler::metadataChanged( AlbumPtr album )
+MediaDeviceHandler::metadataChanged(const  AlbumPtr &album )
 {
     Q_UNUSED( album );
 }
 
 void
-MediaDeviceHandler::metadataChanged( GenrePtr genre )
+MediaDeviceHandler::metadataChanged(const  GenrePtr &genre )
 {
     Q_UNUSED( genre );
 }
 
 void
-MediaDeviceHandler::metadataChanged( ComposerPtr composer )
+MediaDeviceHandler::metadataChanged(const  ComposerPtr &composer )
 {
     Q_UNUSED( composer );
 }
 
 void
-MediaDeviceHandler::metadataChanged( YearPtr year )
+MediaDeviceHandler::metadataChanged(const YearPtr &year )
 {
     Q_UNUSED( year );
 }

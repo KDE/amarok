@@ -49,7 +49,7 @@ namespace Playlists
             QString name() const override { return m_url.fileName(); }
             Meta::TrackList tracks() override { return m_tracks; }
             int trackCount() const override;
-            void addTrack( Meta::TrackPtr track, int position ) override;
+            void addTrack( const Meta::TrackPtr &track, int position ) override;
             void removeTrack( int position ) override;
             void triggerTrackLoad() override;
 

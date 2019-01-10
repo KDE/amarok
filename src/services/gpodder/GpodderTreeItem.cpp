@@ -22,7 +22,7 @@
 #include "GpodderServiceModel.h"
 #include "GpodderTagTreeItem.h"
 
-GpodderTreeItem::GpodderTreeItem( GpodderTreeItem *parent, QString name )
+GpodderTreeItem::GpodderTreeItem( GpodderTreeItem *parent, const QString &name )
     : QObject( parent )
     , m_parentItem( parent )
     , m_name( name )

@@ -161,7 +161,7 @@ Dynamic::DynamicModel::insertPlaylist( int index, Dynamic::DynamicPlaylist* play
 }
 
 QModelIndex
-Dynamic::DynamicModel::insertBias( int row, const QModelIndex &parentIndex, Dynamic::BiasPtr bias )
+Dynamic::DynamicModel::insertBias( int row, const QModelIndex &parentIndex, const Dynamic::BiasPtr &bias )
 {
     QObject* o = static_cast<QObject*>(parentIndex.internalPointer());
     BiasedPlaylist* parentPlaylist = qobject_cast<BiasedPlaylist*>(o);
@@ -431,7 +431,7 @@ Dynamic::DynamicModel::index( int row, int column, const QModelIndex& parent ) c
 }
 
 QModelIndex
-Dynamic::DynamicModel::parent( int row, BiasedPlaylist* list, BiasPtr bias ) const
+Dynamic::DynamicModel::parent( int row, BiasedPlaylist* list, const BiasPtr &bias ) const
 {
     if( list->bias() == bias )
         return createIndex( row, 0, list );
@@ -439,7 +439,7 @@ Dynamic::DynamicModel::parent( int row, BiasedPlaylist* list, BiasPtr bias ) con
 }
 
 QModelIndex
-Dynamic::DynamicModel::parent( int row, BiasPtr parent, BiasPtr bias ) const
+Dynamic::DynamicModel::parent( int row, const BiasPtr &parent, const BiasPtr &bias ) const
 {
     Dynamic::AndBias* andBias = qobject_cast<Dynamic::AndBias*>(parent.data());
     if( !andBias )
@@ -627,7 +627,7 @@ debug() << "dropMimeData action" << action;
 
 
 QModelIndex
-Dynamic::DynamicModel::index( Dynamic::BiasPtr bias ) const
+Dynamic::DynamicModel::index( const Dynamic::BiasPtr &bias ) const
 {
     QModelIndex res;
 
@@ -1036,7 +1036,7 @@ Dynamic::DynamicModel::playlistChanged( Dynamic::DynamicPlaylist* p )
 }
 
 void
-Dynamic::DynamicModel::biasChanged( Dynamic::BiasPtr b )
+Dynamic::DynamicModel::biasChanged( const Dynamic::BiasPtr &b )
 {
     QModelIndex index = this->index( b );
     Q_EMIT dataChanged( index, index );
@@ -1050,7 +1050,7 @@ Dynamic::DynamicModel::beginRemoveBias( Dynamic::BiasedPlaylist* parent )
 }
 
 void
-Dynamic::DynamicModel::beginRemoveBias( Dynamic::BiasPtr parent, int index )
+Dynamic::DynamicModel::beginRemoveBias( const Dynamic::BiasPtr &parent, int index )
 {
     QModelIndex parentIndex = this->index( parent );
     beginRemoveRows( parentIndex, index, index );
@@ -1071,7 +1071,7 @@ Dynamic::DynamicModel::beginInsertBias( Dynamic::BiasedPlaylist* parent )
 
 
 void
-Dynamic::DynamicModel::beginInsertBias( Dynamic::BiasPtr parent, int index )
+Dynamic::DynamicModel::beginInsertBias( const Dynamic::BiasPtr &parent, int index )
 {
     QModelIndex parentIndex = this->index( parent );
     beginInsertRows( parentIndex, index, index );
@@ -1084,7 +1084,7 @@ Dynamic::DynamicModel::endInsertBias()
 }
 
 void
-Dynamic::DynamicModel::beginMoveBias( Dynamic::BiasPtr parent, int from, int to )
+Dynamic::DynamicModel::beginMoveBias( const Dynamic::BiasPtr &parent, int from, int to )
 {
     QModelIndex parentIndex = this->index( parent );
     beginMoveRows( parentIndex, from, from, parentIndex, to );

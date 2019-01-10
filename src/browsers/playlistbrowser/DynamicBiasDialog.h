@@ -41,7 +41,7 @@ namespace PlaylistBrowserNS
         Q_OBJECT
 
         public:
-            explicit BiasDialog( Dynamic::BiasPtr bias, QWidget* parent = nullptr );
+            explicit BiasDialog( const Dynamic::BiasPtr &bias, QWidget* parent = nullptr );
             ~BiasDialog() override;
 
         public Q_SLOTS:
@@ -53,7 +53,7 @@ namespace PlaylistBrowserNS
             void factoriesChanged();
             /** Called when a new bias type has been selected */
             void selectionChanged( int index );
-            void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
+            void biasReplaced( const Dynamic::BiasPtr &oldBias, Dynamic::BiasPtr newBias );
 
         protected:
 

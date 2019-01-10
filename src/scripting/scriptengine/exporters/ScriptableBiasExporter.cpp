@@ -279,7 +279,7 @@ ScriptableBias::invalidate()
 }
 
 Dynamic::TrackSet
-ScriptableBias::matchingTracks( const Meta::TrackList &playlist, int contextCount, int finalCount, const Dynamic::TrackCollectionPtr universe ) const
+ScriptableBias::matchingTracks(const Meta::TrackList &playlist, int contextCount, int finalCount, const Dynamic::TrackCollectionPtr &universe ) const
 {
     DEBUG_BLOCK
     if( QThread::currentThread() == QCoreApplication::instance()->thread() )
@@ -298,7 +298,7 @@ ScriptableBias::matchingTracks( const Meta::TrackList &playlist, int contextCoun
 }
 
 Dynamic::TrackSet
-ScriptableBias::slotMatchingTracks( const Meta::TrackList &playlist, int contextCount, int finalCount, const Dynamic::TrackCollectionPtr universe ) const
+ScriptableBias::slotMatchingTracks( const Meta::TrackList &playlist, int contextCount, int finalCount, const Dynamic::TrackCollectionPtr &universe ) const
 {
     Q_ASSERT( QThread::currentThread() == QCoreApplication::instance()->thread() );
     if( m_scriptBias->matchingTracksFunction().isFunction() )
@@ -339,7 +339,7 @@ ScriptableBias::paintOperator( QPainter *painter, const QRect &rect, Dynamic::Ab
 }
 
 void
-ScriptableBias::replace( Dynamic::BiasPtr newBias )
+ScriptableBias::replace(const Dynamic::BiasPtr &newBias )
 {
     Dynamic::AbstractBias::replace( newBias );
 }
@@ -549,7 +549,7 @@ TrackSetExporter::getRandomTrack() const
 }
 
 bool
-TrackSetExporter::containsTrack( const Meta::TrackPtr track ) const
+TrackSetExporter::containsTrack( const Meta::TrackPtr &track ) const
 {
     return Dynamic::TrackSet::contains( track );
 }

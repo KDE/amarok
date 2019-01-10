@@ -27,7 +27,7 @@
 #include <QIcon>
 #include <KLocalizedString>
 
-BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album )
+BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, const Meta::AlbumPtr &album )
     : QAction( i18n( "Bookmark this Album" ), parent )
     , m_album( album )
 {
@@ -43,7 +43,7 @@ BookmarkAlbumAction::slotTriggered()
 }
 
 
-BookmarkArtistAction::BookmarkArtistAction( QObject *parent, Meta::ArtistPtr artist )
+BookmarkArtistAction::BookmarkArtistAction( QObject *parent, const Meta::ArtistPtr &artist )
     : QAction( i18n( "Bookmark this Artist" ), parent )
     , m_artist( artist )
 {

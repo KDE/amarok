@@ -58,11 +58,11 @@ class AMAROK_EXPORT TagDialog : public QDialog, public Meta::Observer
         explicit TagDialog( const Meta::TrackList &tracks, QWidget *parent = nullptr );
         explicit TagDialog( Meta::TrackPtr track, QWidget *parent = nullptr );
         explicit TagDialog( Collections::QueryMaker *qm );
-        ~TagDialog();
+        ~TagDialog() override;
 
         // inherited from Meta::Observer
         using Observer::metadataChanged;
-        void metadataChanged( Meta::AlbumPtr album ) override;
+        void metadataChanged( const Meta::AlbumPtr &album ) override;
 
     private Q_SLOTS:
         void accept() override;

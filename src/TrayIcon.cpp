@@ -201,7 +201,7 @@ Amarok::TrayIcon::updateToolTip()
 }
 
 void
-Amarok::TrayIcon::trackPlaying( Meta::TrackPtr track )
+Amarok::TrayIcon::trackPlaying( const Meta::TrackPtr &track )
 {
     m_track = track;
 
@@ -225,7 +225,7 @@ Amarok::TrayIcon::stopped()
 }
 
 void
-Amarok::TrayIcon::trackMetadataChanged( Meta::TrackPtr track )
+Amarok::TrayIcon::trackMetadataChanged( const Meta::TrackPtr &track )
 {
     Q_UNUSED( track )
 
@@ -234,7 +234,7 @@ Amarok::TrayIcon::trackMetadataChanged( Meta::TrackPtr track )
 }
 
 void
-Amarok::TrayIcon::albumMetadataChanged( Meta::AlbumPtr album )
+Amarok::TrayIcon::albumMetadataChanged( const Meta::AlbumPtr &album )
 {
     Q_UNUSED( album )
 

@@ -519,7 +519,7 @@ SqlPodcastProvider::subscribe( const QUrl &url )
 }
 
 Podcasts::PodcastChannelPtr
-SqlPodcastProvider::addChannel( Podcasts::PodcastChannelPtr channel )
+SqlPodcastProvider::addChannel(const PodcastChannelPtr &channel )
 {
     Podcasts::SqlPodcastChannelPtr sqlChannel =
             SqlPodcastChannelPtr( new Podcasts::SqlPodcastChannel( this, channel ) );
@@ -1184,7 +1184,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
 }
 
 void
-SqlPodcastProvider::downloadEpisode( Podcasts::PodcastEpisodePtr episode )
+SqlPodcastProvider::downloadEpisode( const Podcasts::PodcastEpisodePtr &episode )
 {
     downloadEpisode( SqlPodcastEpisodePtr::dynamicCast( episode ) );
 }
@@ -1301,7 +1301,7 @@ SqlPodcastProvider::addData( KIO::Job *job, const QByteArray &data )
 }
 
 void
-SqlPodcastProvider::deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode )
+SqlPodcastProvider::deleteDownloadedEpisode( const Podcasts::PodcastEpisodePtr &episode )
 {
     deleteDownloadedEpisode( SqlPodcastEpisodePtr::dynamicCast( episode ) );
 }
@@ -1576,7 +1576,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
 }
 
 void
-SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
+SqlPodcastProvider::fetchImage( const SqlPodcastChannelPtr &channel )
 {
     if( m_podcastImageFetcher == 0 )
     {
@@ -1591,7 +1591,7 @@ SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
 }
 
 void
-SqlPodcastProvider::channelImageReady( Podcasts::PodcastChannelPtr channel, QImage image )
+SqlPodcastProvider::channelImageReady( Podcasts::PodcastChannelPtr channel, const QImage &image )
 {
     if( image.isNull() )
         return;

@@ -41,7 +41,7 @@ class AMAROK_EXPORT ServiceSqlCollection : public ServiceCollection
         QStringList query( const QString &query ) override;
         int insert( const QString &statement, const QString &table ) override;
 
-        QString escape( QString text ) const override;
+        QString escape( const QString &text ) const override;
 
         void emitUpdated() { Q_EMIT( updated() ); }
 

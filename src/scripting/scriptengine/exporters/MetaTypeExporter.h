@@ -143,12 +143,12 @@ namespace AmarokScript
         private:
             Meta::TrackPtr m_track;
 
-            void metadataChanged( Meta::TrackPtr track ) override;
-            void metadataChanged( Meta::ArtistPtr artist ) override {  Q_UNUSED( artist ) }
-            void metadataChanged( Meta::AlbumPtr album ) override { Q_UNUSED( album ) }
-            void metadataChanged( Meta::GenrePtr genre ) override {  Q_UNUSED( genre ) }
-            void metadataChanged( Meta::ComposerPtr composer ) override {  Q_UNUSED( composer ) }
-            void metadataChanged( Meta::YearPtr year ) override {  Q_UNUSED( year ) }
+            void metadataChanged( const Meta::TrackPtr &track ) override;
+            void metadataChanged( const Meta::ArtistPtr &artist ) override {  Q_UNUSED( artist ) }
+            void metadataChanged( const Meta::AlbumPtr &album ) override { Q_UNUSED( album ) }
+            void metadataChanged( const Meta::GenrePtr &genre ) override {  Q_UNUSED( genre ) }
+            void metadataChanged( const Meta::ComposerPtr &composer ) override {  Q_UNUSED( composer ) }
+            void metadataChanged( const Meta::YearPtr &year ) override {  Q_UNUSED( year ) }
 
             QScriptEngine *m_engine;
 

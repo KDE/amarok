@@ -69,7 +69,7 @@ void AlbumsEngine::slotTrackMetadataChanged( Meta::TrackPtr track )
     update();
 }
 
-void AlbumsEngine::slotTrackChanged( Meta::TrackPtr track )
+void AlbumsEngine::slotTrackChanged( const Meta::TrackPtr &track )
 {
     if( !track || track == m_currentTrack )
         return;

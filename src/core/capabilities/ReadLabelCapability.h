@@ -38,7 +38,7 @@ class AMAROK_CORE_EXPORT ReadLabelCapability : public Capabilities::Capability
         virtual QStringList labels() = 0;
 
     Q_SIGNALS:
-        void labelsFetched( QStringList );
+        void labelsFetched( const QStringList &);
 
 };
 

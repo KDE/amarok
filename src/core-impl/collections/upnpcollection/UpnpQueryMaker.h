@@ -99,9 +99,9 @@ class UpnpQueryMaker : public QueryMaker
 
     private Q_SLOTS:
         void slotDone();
-        void handleArtists( Meta::ArtistList );
-        void handleAlbums( Meta::AlbumList );
-        void handleTracks( Meta::TrackList );
+        void handleArtists( const Meta::ArtistList &);
+        void handleAlbums( const Meta::AlbumList &);
+        void handleTracks( const Meta::TrackList &);
 
     private:
         /*

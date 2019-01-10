@@ -65,7 +65,7 @@ namespace Dynamic
         private Q_SLOTS:
             void solverFinished();
             void biasChanged();
-            void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
+            void biasReplaced( const Dynamic::BiasPtr &oldBias, const Dynamic::BiasPtr &newBias );
 
         private:
             /** Starts the BiasSolver (if not already running) and requests a couple of new tracks. */

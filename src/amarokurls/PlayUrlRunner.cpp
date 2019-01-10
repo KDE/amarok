@@ -38,7 +38,7 @@ PlayUrlRunner::~PlayUrlRunner()
     The::amarokUrlHandler()->unRegisterRunner ( this );
 }
 
-bool PlayUrlRunner::run ( AmarokUrl url )
+bool PlayUrlRunner::run (const AmarokUrl &url )
 {
     DEBUG_BLOCK
     if ( url.isNull() )
@@ -86,7 +86,7 @@ QString PlayUrlRunner::prettyCommand() const
     return i18nc( "A type of command that starts playing at a specific position in a track", "Play" );
 }
 
-BookmarkList PlayUrlRunner::bookmarksFromUrl( QUrl url )
+BookmarkList PlayUrlRunner::bookmarksFromUrl( const QUrl &url )
 {
     BookmarkList list;
 

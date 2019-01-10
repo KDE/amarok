@@ -25,7 +25,7 @@
 namespace Playlists {
 
 SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow,
-                                          SqlPlaylistGroupPtr parent,
+                                          const SqlPlaylistGroupPtr &parent,
                                           PlaylistProvider *provider )
     : m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
@@ -38,7 +38,7 @@ SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow,
 }
 
 SqlPlaylistGroup::SqlPlaylistGroup( const QString & name,
-                                          SqlPlaylistGroupPtr parent,
+                                          const SqlPlaylistGroupPtr &parent,
                                           PlaylistProvider *provider )
     : m_dbId( -1 )
     , m_hasFetchedChildGroups( false )
@@ -126,7 +126,7 @@ SqlPlaylistGroup::clear()
 }
 
 void
-SqlPlaylistGroup::setParent( SqlPlaylistGroupPtr parent )
+SqlPlaylistGroup::setParent( const SqlPlaylistGroupPtr &parent )
 {
     if( parent )
         m_parent = SqlPlaylistGroupPtr::staticCast( parent );

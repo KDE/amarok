@@ -239,7 +239,7 @@ void Meta::MagnatuneTrack::download()
         mAlbum->store()->downloadTrack( this );
 }
 
-void Meta::MagnatuneTrack::setAlbumPtr( Meta::AlbumPtr album )
+void Meta::MagnatuneTrack::setAlbumPtr(const AlbumPtr &album )
 {
     ServiceTrack::setAlbumPtr( album );
 

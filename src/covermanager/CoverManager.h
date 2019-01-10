@@ -61,13 +61,13 @@ class CoverManager : public QDialog, public Meta::Observer
         static CoverManager *instance() { return s_instance; }
 
         static void showOnce( const QString &artist = QString(), QWidget* parent = nullptr );
-        static void viewCover( Meta::AlbumPtr album, QWidget* parent = nullptr );
+        static void viewCover( const Meta::AlbumPtr &album, QWidget* parent = nullptr );
 
         void setStatusText(const QString &text );
 
         // Reimplemented from Meta::Observer
         using Observer::metadataChanged;
-        void metadataChanged( Meta::AlbumPtr album ) override;
+        void metadataChanged( const Meta::AlbumPtr &album ) override;
 
     public Q_SLOTS:
         void updateStatusBar();
@@ -81,7 +81,7 @@ class CoverManager : public QDialog, public Meta::Observer
         void slotContinueConstruction();
 
         void slotArtistSelected();
-        void slotAlbumQueryResult( Meta::AlbumList albums );
+        void slotAlbumQueryResult( const Meta::AlbumList &albums );
         void slotAlbumFilterTriggered( QAction *action );
         void slotArtistQueryDone();
         void coverItemClicked( QListWidgetItem *item );

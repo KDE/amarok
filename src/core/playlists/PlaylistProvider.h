@@ -97,12 +97,12 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject
          * It's up to the implementation to decide what to do but could for instance allow the
          * creation of a new playlist from scratch.
          */
-        virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
+        virtual Meta::TrackPtr addTrack( const Meta::TrackPtr &track );
 
     Q_SIGNALS:
         void updated();
-        void playlistAdded( Playlists::PlaylistPtr playlist );
-        void playlistRemoved( Playlists::PlaylistPtr playlist );
+        void playlistAdded( const Playlists::PlaylistPtr &playlist );
+        void playlistRemoved( const Playlists::PlaylistPtr &playlist );
 };
 
 } //namespace Playlists

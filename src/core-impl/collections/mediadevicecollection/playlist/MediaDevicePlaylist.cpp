@@ -50,7 +50,7 @@ Playlists::MediaDevicePlaylist::tracks()
 }
 
 void
-Playlists::MediaDevicePlaylist::addTrack( Meta::TrackPtr track, int position )
+Playlists::MediaDevicePlaylist::addTrack(const Meta::TrackPtr &track, int position )
 {
     DEBUG_BLOCK
     int insertAt = (position == -1) ? m_tracks.count() : position;

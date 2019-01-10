@@ -71,7 +71,7 @@ SortWidget::~SortWidget()
 {}
 
 void
-SortWidget::addLevel( QString internalColumnName, Qt::SortOrder sortOrder )  //private slot
+SortWidget::addLevel( const QString &internalColumnName, Qt::SortOrder sortOrder )  //private slot
 {
     BreadcrumbLevel *bLevel = new BreadcrumbLevel( internalColumnName );
     BreadcrumbItem *item = new BreadcrumbItem( bLevel, this );
@@ -87,7 +87,7 @@ SortWidget::addLevel( QString internalColumnName, Qt::SortOrder sortOrder )  //p
 }
 
 void
-SortWidget::addLevelAscending ( QString internalColumnName )
+SortWidget::addLevelAscending ( const QString &internalColumnName )
 {
     addLevel(internalColumnName, Qt::AscendingOrder);
 }
@@ -122,7 +122,7 @@ SortWidget::onItemClicked()
 }
 
 void
-SortWidget::onItemSiblingClicked( QString internalColumnName )
+SortWidget::onItemSiblingClicked( const QString &internalColumnName )
 {
     const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender()->parent() ) );
     trimToLevel( level - 1 );

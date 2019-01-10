@@ -39,9 +39,9 @@ namespace Playlists
     {
         public:
             SqlPlaylistGroup( const QStringList &dbResultRow,
-                    SqlPlaylistGroupPtr parent, PlaylistProvider *provider );
+                    const SqlPlaylistGroupPtr &parent, PlaylistProvider *provider );
             SqlPlaylistGroup( const QString &name,
-                    SqlPlaylistGroupPtr parent, PlaylistProvider *provider );
+                    const SqlPlaylistGroupPtr &parent, PlaylistProvider *provider );
 
             ~SqlPlaylistGroup();
 
@@ -51,7 +51,7 @@ namespace Playlists
             SqlPlaylistGroupPtr parent() const { return m_parent; }
 
             void setName( const QString &name );
-            void setParent( Playlists::SqlPlaylistGroupPtr parent );
+            void setParent( const Playlists::SqlPlaylistGroupPtr &parent );
             void setDescription( const QString &description );
 
             int id() const { return m_dbId; }

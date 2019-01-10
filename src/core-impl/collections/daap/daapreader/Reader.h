@@ -95,7 +95,7 @@ namespace Daap
             * @param raw stream of DAAP reply
             */
             Map parse( QDataStream &raw);
-            static void addElement( Map &parentMap, char* tag, QVariant element ); //!< supporter function for parse
+            static void addElement( Map &parentMap, char* tag, const QVariant &element ); //!< supporter function for parse
             static quint32 getTagAndLength( QDataStream &raw, char tag[5] );
             QVariant readTagData(QDataStream &, char[5], quint32);
             void addTrack( const QString& itemId, const QString& title, const QString& artist, const QString& composer,

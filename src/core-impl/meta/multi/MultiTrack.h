@@ -83,10 +83,10 @@ namespace Meta
 
         private:
             using Observer::metadataChanged;
-            virtual void metadataChanged( Meta::TrackPtr track );
+            void metadataChanged( const Meta::TrackPtr &track ) override;
 
             using PlaylistObserver::metadataChanged;
-            virtual void trackAdded( Playlists::PlaylistPtr playlist, TrackPtr track, int position );
+            void trackAdded( const Playlists::PlaylistPtr &playlist, const TrackPtr &track, int position ) override;
 
             /**
              * Implementation for setSource. Must be called with m_lock held for writing.

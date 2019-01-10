@@ -39,7 +39,7 @@ public:
     virtual void tracksLoaded( Playlists::PlaylistPtr playlist );
 
 Q_SIGNALS:
-    void tracksLoadedSignal( Playlists::PlaylistPtr playlist );
+    void tracksLoadedSignal( const Playlists::PlaylistPtr &playlist );
 
 private Q_SLOTS:
     void initTestCase();

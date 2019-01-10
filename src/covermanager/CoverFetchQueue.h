@@ -55,7 +55,7 @@ public:
      * @param xml xml document from the cover provider. Can be empty on first
      * pass of the fetching process.
      */
-    void add( const Meta::AlbumPtr album,
+    void add( const Meta::AlbumPtr &album,
               const CoverFetch::Option opt = CoverFetch::Automatic,
               const CoverFetch::Source src = CoverFetch::LastFm,
               const QByteArray &xml = QByteArray() );
@@ -81,22 +81,22 @@ public:
     void addQuery( const QString &query,
                    const CoverFetch::Source src = CoverFetch::LastFm,
                    unsigned int page = 0,
-                   Meta::AlbumPtr album = Meta::AlbumPtr(0) );
+                   const Meta::AlbumPtr &album = Meta::AlbumPtr(0) );
 
     void clear();
 
 public Q_SLOTS:
-    void remove( const CoverFetchUnit::Ptr unit );
-    void remove( const Meta::AlbumPtr album );
+    void remove( const CoverFetchUnit::Ptr &unit );
+    void remove( const Meta::AlbumPtr &album );
 
 Q_SIGNALS:
     void fetchUnitAdded( CoverFetchUnit::Ptr );
 
 private:
-    void add( const CoverFetchUnit::Ptr unit );
-    bool contains( const Meta::AlbumPtr album ) const;
-    int index( const Meta::AlbumPtr album ) const;
-    const CoverFetchUnit::Ptr take( const Meta::AlbumPtr album );
+    void add( const CoverFetchUnit::Ptr &unit );
+    bool contains( const Meta::AlbumPtr &album ) const;
+    int index( const Meta::AlbumPtr &album ) const;
+    const CoverFetchUnit::Ptr take( const Meta::AlbumPtr &album );
 
     CoverFetchUnitList m_queue;
     Q_DISABLE_COPY( CoverFetchQueue )

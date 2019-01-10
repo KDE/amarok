@@ -46,7 +46,7 @@ class AMAROK_CORE_EXPORT PodcastProvider : public Collections::TrackProvider, pu
         virtual void addPodcast( const QUrl &url ) = 0;
         virtual void updateAll() {}
 
-        virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel ) = 0;
+        virtual Podcasts::PodcastChannelPtr addChannel( const Podcasts::PodcastChannelPtr &channel ) = 0;
         virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) = 0;
 
         virtual Podcasts::PodcastChannelList channels() = 0;
@@ -60,11 +60,11 @@ class AMAROK_CORE_EXPORT PodcastProvider : public Collections::TrackProvider, pu
 
         /** convenience function that downcast the argument to PodcastChannel and calls addChannel()
           */
-        Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist ) override;
+        Playlists::PlaylistPtr addPlaylist(Playlists::PlaylistPtr playlist ) override;
 
         /** convenience function that downcast the argument to PodcastEpisode and calls addEpisode()
           */
-        Meta::TrackPtr addTrack( Meta::TrackPtr track ) override;
+        Meta::TrackPtr addTrack( const Meta::TrackPtr &track ) override;
 };
 
 } //namespace Podcasts

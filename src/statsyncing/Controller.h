@@ -178,13 +178,13 @@ namespace StatSyncing
              * Creates new instance of provider type identified by @param type
              * with configuration stored in @param config.
              */
-            void createProvider( QString type, QVariantMap config );
+            void createProvider( const QString &type, const QVariantMap &config );
 
             /**
              * Reconfigures provider identified by @param id with configuration
              * stored in @param config.
              */
-            void reconfigureProvider( QString id, QVariantMap config );
+            void reconfigureProvider( const QString &id, const QVariantMap &config );
 
             /**
              * Can only be connected to provider changed() signal

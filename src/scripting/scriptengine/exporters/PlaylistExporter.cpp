@@ -53,14 +53,14 @@ PlaylistPrototype::triggerQuickLoad()
 }
 
 void
-PlaylistPrototype::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position )
+PlaylistPrototype::trackAdded(const Playlists::PlaylistPtr &playlist, const Meta::TrackPtr &track, int position )
 {
     Q_UNUSED( playlist )
     Q_EMIT addedTrack( track, position );
 }
 
 void
-PlaylistPrototype::trackRemoved( Playlists::PlaylistPtr playlist, int position )
+PlaylistPrototype::trackRemoved(const Playlists::PlaylistPtr &playlist, int position )
 {
     Q_UNUSED( playlist )
     Q_EMIT removedTrack( position );
@@ -78,7 +78,7 @@ PlaylistPrototype::provider() const
 {
     if( m_playlist )
         return m_playlist->provider();
-    return 0;
+    return nullptr;
 }
 
 void

@@ -114,7 +114,7 @@ namespace ConstraintTypes {
                 double compareNum( const double, const int, const double, const double, const qint64 ) const;
                 double compareStr( const QString&, const int, const QString& ) const;
                 double compareDate( const uint, const int, const QVariant&, const double ) const;
-                double compareLabels( const Meta::TrackPtr, const int, const QString& ) const;
+                double compareLabels( const Meta::TrackPtr&, const int, const QString& ) const;
 
                 // rough inverses of the comparison
                 uint rangeDate( const double ) const;

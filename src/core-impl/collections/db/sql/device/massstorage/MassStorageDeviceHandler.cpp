@@ -125,7 +125,7 @@ MassStorageDeviceHandlerFactory::~MassStorageDeviceHandlerFactory( )
 {
 }
 
-DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( KSharedConfigPtr, QSharedPointer<SqlStorage> ) const
+DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const KSharedConfigPtr&, QSharedPointer<SqlStorage> ) const
 {
     return 0;
 }

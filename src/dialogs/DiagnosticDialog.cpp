@@ -39,7 +39,7 @@
 
 
 
-DiagnosticDialog::DiagnosticDialog( const KAboutData about, QWidget *parent )
+DiagnosticDialog::DiagnosticDialog( const KAboutData &about, QWidget *parent )
     : QDialog( parent )
 {
     setLayout( new QVBoxLayout );

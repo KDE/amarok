@@ -43,7 +43,7 @@ LyricsManager::LyricsManager()
 }
 
 void
-LyricsManager::newTrack( Meta::TrackPtr track )
+LyricsManager::newTrack( const Meta::TrackPtr &track )
 {
     loadLyrics( track );
 }
@@ -139,7 +139,7 @@ void LyricsManager::loadLyrics( Meta::TrackPtr track, bool overwrite )
     NetworkAccessManagerProxy::instance()->getData( url, this, &LyricsManager::lyricsLoaded );
 }
 
-void LyricsManager::lyricsLoaded( const QUrl& url, const QByteArray& data, NetworkAccessManagerProxy::Error err )
+void LyricsManager::lyricsLoaded( const QUrl& url, const QByteArray& data, const NetworkAccessManagerProxy::Error &err )
 {
     DEBUG_BLOCK
 

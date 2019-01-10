@@ -83,18 +83,18 @@ namespace Playdar
              * Emitted each time a new track is added to the list of results,
              * returning the latest result as a Meta::PlaydarTrack.
              */
-            void newTrackAdded( Meta::PlaydarTrackPtr );
+            void newTrackAdded( const Meta::PlaydarTrackPtr &);
             /**
              * Emitted once if a query is solved, and returns the first track
              * with a perfect score of 1.00. Will not be emitted if the query
              * ends otherwise. (Emitted alongside newTrackAdded).
              */
-            void querySolved( Meta::PlaydarTrackPtr );
+            void querySolved( const Meta::PlaydarTrackPtr &);
             /**
              * Emitted once all results that may be found by our means have
              * been found, and returns the internal results list in its final state.
              */
-            void queryDone( Playdar::Query*, Meta::PlaydarTrackList );
+            void queryDone( Playdar::Query*, const Meta::PlaydarTrackList &);
             /**
              * Indicates an error. Don't bother connecting to this if you're
              * already connected to Controller::error, since the controller

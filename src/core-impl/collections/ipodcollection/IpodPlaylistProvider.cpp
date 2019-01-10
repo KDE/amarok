@@ -65,13 +65,13 @@ IpodPlaylistProvider::playlists()
 }
 
 Playlists::PlaylistPtr
-IpodPlaylistProvider::addPlaylist( Playlists::PlaylistPtr playlist )
+IpodPlaylistProvider::addPlaylist(Playlists::PlaylistPtr playlist )
 {
     return save( playlist->tracks(), playlist->name() );
 }
 
 Meta::TrackPtr
-IpodPlaylistProvider::addTrack( Meta::TrackPtr track )
+IpodPlaylistProvider::addTrack(const Meta::TrackPtr &track )
 {
     QString name = QLocale().toString( QDateTime::currentDateTime() );
     return save( Meta::TrackList() << track , name )->tracks().last();
@@ -170,19 +170,19 @@ IpodPlaylistProvider::deletePlaylists( const Playlists::PlaylistList &playlistli
 }
 
 void
-IpodPlaylistProvider::metadataChanged( Playlists::PlaylistPtr )
+IpodPlaylistProvider::metadataChanged(const Playlists::PlaylistPtr & )
 {
     Q_EMIT startWriteDatabaseTimer();
 }
 
 void
-IpodPlaylistProvider::trackAdded( Playlists::PlaylistPtr, Meta::TrackPtr, int )
+IpodPlaylistProvider::trackAdded(const Playlists::PlaylistPtr &, const Meta::TrackPtr &, int )
 {
     Q_EMIT startWriteDatabaseTimer();
 }
 
 void
-IpodPlaylistProvider::trackRemoved( Playlists::PlaylistPtr, int )
+IpodPlaylistProvider::trackRemoved(const Playlists::PlaylistPtr &, int )
 {
     Q_EMIT startWriteDatabaseTimer();
 }

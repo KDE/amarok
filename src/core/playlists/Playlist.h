@@ -90,7 +90,7 @@ namespace Playlists
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
              */
-            virtual void metadataChanged( PlaylistPtr playlist );
+            virtual void metadataChanged( const PlaylistPtr &playlist );
 
             /**
              * This method is called when a track has been added to the playlist.
@@ -102,7 +102,7 @@ namespace Playlists
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
              */
-            virtual void trackAdded( PlaylistPtr playlist, Meta::TrackPtr track, int position );
+            virtual void trackAdded( const PlaylistPtr &playlist, const Meta::TrackPtr &track, int position );
 
             /**
              * This method is called after a track is removed from to the playlist.
@@ -113,7 +113,7 @@ namespace Playlists
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
              */
-            virtual void trackRemoved( PlaylistPtr playlist, int position );
+            virtual void trackRemoved( const PlaylistPtr &playlist, int position );
 
             /**
              * This method is called after loading of playlist is finished
@@ -199,7 +199,7 @@ namespace Playlists
              * @note if the position is larger then the size of the playlist append to the
              * end without generating an error.
              */
-            virtual void addTrack( Meta::TrackPtr track, int position = -1 );
+            virtual void addTrack( const Meta::TrackPtr &track, int position = -1 );
 
             /**
              * Remove track at the specified position
@@ -211,7 +211,7 @@ namespace Playlists
              * useful for podcasts providers and some other exotic
              * playlist providers.
              */
-            virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack );
+            virtual void syncTrackStatus( int position, const Meta::TrackPtr &otherTrack );
 
             /**
              * A list of groups or labels this playlist belongs to.

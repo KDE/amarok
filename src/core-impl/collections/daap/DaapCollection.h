@@ -64,8 +64,8 @@ class DaapCollectionFactory : public Collections::CollectionFactory
         void slotCollectionReady();
         void slotCollectionDownloadFailed();
 
-        void resolvedServiceIp(QHostInfo);
-        void resolvedManualServerIp(QHostInfo);
+        void resolvedServiceIp(const QHostInfo&);
+        void resolvedManualServerIp(const QHostInfo&);
 
     private:
         KDNSSD::ServiceBrowser* m_browser;

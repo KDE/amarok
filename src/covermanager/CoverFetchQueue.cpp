@@ -27,14 +27,14 @@ CoverFetchQueue::~CoverFetchQueue()
 }
 
 void
-CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
+CoverFetchQueue::add( const CoverFetchUnit::Ptr &unit )
 {
     m_queue.append( unit );
     Q_EMIT fetchUnitAdded( unit );
 }
 
 void
-CoverFetchQueue::add( const Meta::AlbumPtr album,
+CoverFetchQueue::add( const Meta::AlbumPtr &album,
                       const CoverFetch::Option opt,
                       const CoverFetch::Source src,
                       const QByteArray &xml )
@@ -93,7 +93,7 @@ void
 CoverFetchQueue::addQuery( const QString &query,
                            const CoverFetch::Source src,
                            unsigned int page,
-                           Meta::AlbumPtr album )
+                           const Meta::AlbumPtr &album )
 {
     CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query, src, page, album );
     add( AmarokSharedPointer< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
@@ -106,19 +106,19 @@ CoverFetchQueue::clear()
 }
 
 void
-CoverFetchQueue::remove( const CoverFetchUnit::Ptr unit )
+CoverFetchQueue::remove( const CoverFetchUnit::Ptr &unit )
 {
     m_queue.removeAll( unit );
 }
 
 void
-CoverFetchQueue::remove( const Meta::AlbumPtr album )
+CoverFetchQueue::remove( const Meta::AlbumPtr &album )
 {
     m_queue.removeAt( index( album ) );
 }
 
 bool
-CoverFetchQueue::contains( const Meta::AlbumPtr album ) const
+CoverFetchQueue::contains( const Meta::AlbumPtr &album ) const
 {
     typedef CoverFetchUnitList::const_iterator ListIter;
     ListIter it   = m_queue.constBegin();
@@ -134,7 +134,7 @@ CoverFetchQueue::contains( const Meta::AlbumPtr album ) const
 }
 
 int
-CoverFetchQueue::index( const Meta::AlbumPtr album ) const
+CoverFetchQueue::index( const Meta::AlbumPtr &album ) const
 {
     for( int i = 0, len = m_queue.size(); i < len; ++i )
     {
@@ -145,7 +145,7 @@ CoverFetchQueue::index( const Meta::AlbumPtr album ) const
 }
 
 const CoverFetchUnit::Ptr
-CoverFetchQueue::take( const Meta::AlbumPtr album )
+CoverFetchQueue::take( const Meta::AlbumPtr &album )
 {
     for( int i = 0, end = m_queue.size(); i < end; ++i )
     {

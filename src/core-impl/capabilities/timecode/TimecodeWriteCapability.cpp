@@ -35,7 +35,7 @@ namespace Capabilities
 TimecodeWriteCapability::~TimecodeWriteCapability()
 {}
 
-bool TimecodeWriteCapability::writeTimecode( qint64 miliseconds, Meta::TrackPtr track )
+bool TimecodeWriteCapability::writeTimecode( qint64 miliseconds, const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
     AmarokUrl url = PlayUrlGenerator::instance()->createTrackBookmark( track, miliseconds );

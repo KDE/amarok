@@ -41,8 +41,8 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
         int playlistCount() const override;
         Playlists::PlaylistList playlists() override;
 
-        Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist ) override;
-        Meta::TrackPtr addTrack( Meta::TrackPtr track ) override;
+        Playlists::PlaylistPtr addPlaylist(Playlists::PlaylistPtr playlist ) override;
+        Meta::TrackPtr addTrack( const Meta::TrackPtr &track ) override;
 
         // UserPlaylistProvider methods:
         Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
@@ -57,9 +57,9 @@ class IpodPlaylistProvider : public Playlists::UserPlaylistProvider, private Pla
         bool deletePlaylists( const Playlists::PlaylistList &playlistlist ) override;
 
         // PlaylistObserver methods:
-        void metadataChanged( Playlists::PlaylistPtr playlist ) override;
-        void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position ) override;
-        void trackRemoved( Playlists::PlaylistPtr playlist, int position ) override;
+        void metadataChanged( const Playlists::PlaylistPtr &playlist ) override;
+        void trackAdded( const Playlists::PlaylistPtr &playlist, const Meta::TrackPtr &track, int position ) override;
+        void trackRemoved( const Playlists::PlaylistPtr &playlist, int position ) override;
 
         // IpodPlaylistProvider specific methods:
         /**

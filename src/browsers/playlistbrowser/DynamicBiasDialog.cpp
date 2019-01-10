@@ -32,7 +32,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-PlaylistBrowserNS::BiasDialog::BiasDialog( Dynamic::BiasPtr bias, QWidget* parent )
+PlaylistBrowserNS::BiasDialog::BiasDialog( const Dynamic::BiasPtr &bias, QWidget* parent )
     : QDialog( parent )
     , m_mainLayout( 0 )
     , m_biasLayout( 0 )
@@ -173,7 +173,7 @@ PlaylistBrowserNS::BiasDialog::selectionChanged( int index )
 }
 
 void
-PlaylistBrowserNS::BiasDialog::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
+PlaylistBrowserNS::BiasDialog::biasReplaced( const Dynamic::BiasPtr &oldBias, Dynamic::BiasPtr newBias )
 {
     Q_UNUSED( oldBias );
 

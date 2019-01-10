@@ -744,7 +744,7 @@ Amarok::OSD::muteStateChanged( bool mute )
 }
 
 void
-Amarok::OSD::trackPlaying( Meta::TrackPtr track )
+Amarok::OSD::trackPlaying( const Meta::TrackPtr &track )
 {
     m_currentTrack = track;
 

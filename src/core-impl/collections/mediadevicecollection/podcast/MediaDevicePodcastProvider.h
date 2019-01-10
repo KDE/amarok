@@ -33,7 +33,7 @@ class MediaDevicePodcastProvider : public Podcasts::PodcastProvider
 
         void addPodcast( const QUrl &url ) override;
 
-        Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel ) override;
+        Podcasts::PodcastChannelPtr addChannel( const Podcasts::PodcastChannelPtr &channel ) override;
         Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override;
 
         Podcasts::PodcastChannelList channels() override;
@@ -49,8 +49,8 @@ class MediaDevicePodcastProvider : public Podcasts::PodcastProvider
 
         Playlists::PlaylistList playlists() override;
 
-        Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist ) override;
-        Meta::TrackPtr addTrack( Meta::TrackPtr track ) override;
+        Playlists::PlaylistPtr addPlaylist(Playlists::PlaylistPtr playlist ) override;
+        Meta::TrackPtr addTrack( const Meta::TrackPtr &track ) override;
 
     private:
         Meta::MediaDeviceHandler *m_handler;

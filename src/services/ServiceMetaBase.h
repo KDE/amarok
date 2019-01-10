@@ -223,12 +223,12 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 
         //ServiceTrack specific methods
 
-        virtual void setAlbumPtr( Meta::AlbumPtr album );
-        void setArtist( Meta::ArtistPtr artist );
-        void setComposer( Meta::ComposerPtr composer );
-        void setGenre( Meta::GenrePtr genre );
-        void setYear( Meta::YearPtr year );
-        void setStatisticsProvider( Meta::StatisticsPtr provider );
+        virtual void setAlbumPtr( const Meta::AlbumPtr &album );
+        void setArtist( const Meta::ArtistPtr &artist );
+        void setComposer( const Meta::ComposerPtr &composer );
+        void setGenre( const Meta::GenrePtr &genre );
+        void setYear( const Meta::YearPtr &year );
+        void setStatisticsProvider( const Meta::StatisticsPtr &provider );
 
         void setLength( qint64 length );
 
@@ -313,7 +313,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
 
         //ServiceArtist specific methods
 
-        void addTrack( TrackPtr track );
+        void addTrack( const TrackPtr &track );
 
         void setDescription( const QString &description );
         QString description( ) const;
@@ -321,7 +321,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
         int id( ) const;
         void setTitle( const QString &title );
 
-        void setSourceName( const QString source ) { m_sourceName = source; }
+        void setSourceName( const QString &source ) { m_sourceName = source; }
         QString sourceName() override { return m_sourceName; }
 
     private:
@@ -385,8 +385,8 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
         }
 
         //ServiceAlbum specific methods
-        void addTrack( TrackPtr track );
-        void setAlbumArtist( ArtistPtr artist );
+        void addTrack( const TrackPtr &track );
+        void setAlbumArtist( const ArtistPtr &artist );
 
         void setDescription( const QString &description );
         QString description( ) const;
@@ -402,7 +402,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
 
         void setTitle( const QString &title );
 
-        void setSourceName( const QString source ) { m_sourceName = source; }
+        void setSourceName( const QString &source ) { m_sourceName = source; }
         QString sourceName() override { return m_sourceName; }
 
     private:
@@ -457,7 +457,7 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
         void setId( int id );
         int id() const;
 
-        void addTrack( TrackPtr track );
+        void addTrack( const TrackPtr &track );
 
         int  albumId();
         void setAlbumId( int albumId );
@@ -508,7 +508,7 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
         }
 
         //ServiceComposer specific methods
-        void addTrack( ServiceTrackPtr track );
+        void addTrack( const ServiceTrackPtr &track );
 
     private:
         QString   m_name;
@@ -550,7 +550,7 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
         }
 
         //ServiceYear specific methods
-        void addTrack( ServiceTrackPtr track );
+        void addTrack( const ServiceTrackPtr &track );
 
     private:
         QString   m_name;

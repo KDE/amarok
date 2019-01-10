@@ -498,7 +498,7 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
 }
 
 void
-PlaylistBrowserModel::metadataChanged( Playlists::PlaylistPtr playlist )
+PlaylistBrowserModel::metadataChanged( const Playlists::PlaylistPtr &playlist )
 {
     int indexNumber = m_playlists.indexOf( playlist );
     if( indexNumber == -1 )
@@ -511,7 +511,7 @@ PlaylistBrowserModel::metadataChanged( Playlists::PlaylistPtr playlist )
 }
 
 void
-PlaylistBrowserModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
+PlaylistBrowserModel::trackAdded(const Playlists::PlaylistPtr &playlist, const Meta::TrackPtr &track,
                                           int position )
 {
     Q_UNUSED( track );
@@ -527,7 +527,7 @@ PlaylistBrowserModel::trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPt
 }
 
 void
-PlaylistBrowserModel::trackRemoved( Playlists::PlaylistPtr playlist, int position )
+PlaylistBrowserModel::trackRemoved(const Playlists::PlaylistPtr &playlist, int position )
 {
     int indexNumber = m_playlists.indexOf( playlist );
     if( indexNumber == -1 )

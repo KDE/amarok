@@ -64,7 +64,7 @@ Restorer::runJingle()
 }
 
 void
-Restorer::tracksLoaded( Playlists::PlaylistPtr playlist )
+Restorer::tracksLoaded(Playlists::PlaylistPtr playlist )
 {
     if( m_playlistToRestore == playlist )
     {

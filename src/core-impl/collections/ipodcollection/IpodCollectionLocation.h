@@ -31,7 +31,7 @@ class IpodCollectionLocation : public Collections::CollectionLocation
     Q_OBJECT
 
     public:
-        explicit IpodCollectionLocation( QPointer<IpodCollection> parentCollection );
+        explicit IpodCollectionLocation( const QPointer<IpodCollection> &parentCollection );
         virtual ~IpodCollectionLocation();
 
         // CollectionLocation methods:
@@ -50,7 +50,7 @@ class IpodCollectionLocation : public Collections::CollectionLocation
          * @param destPlaylist destination playlist
          * @param trackPlaylistPositions positions of tracks in the playlist
          */
-        void setDestinationPlaylist( Playlists::PlaylistPtr destPlaylist,
+        void setDestinationPlaylist( const Playlists::PlaylistPtr &destPlaylist,
                                      const QMap<Meta::TrackPtr, int> &trackPlaylistPositions );
 
         /**
@@ -59,7 +59,7 @@ class IpodCollectionLocation : public Collections::CollectionLocation
         using Collections::CollectionLocation::setHidingRemoveConfirm;
 
     private Q_SLOTS:
-        void slotCopyTrackProcessed( Meta::TrackPtr srcTrack, Meta::TrackPtr destTrack,
+        void slotCopyTrackProcessed( const Meta::TrackPtr &srcTrack, const Meta::TrackPtr &destTrack,
                                      IpodCopyTracksJob::CopiedStatus status );
 
     private:

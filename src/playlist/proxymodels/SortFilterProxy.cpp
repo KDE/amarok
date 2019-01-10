@@ -78,7 +78,7 @@ SortFilterProxy::isSorted()
 }
 
 void
-SortFilterProxy::updateSortMap( SortScheme scheme )
+SortFilterProxy::updateSortMap( const SortScheme &scheme )
 {
     m_scheme = scheme;
     m_mlt.setSortScheme( m_scheme );

@@ -48,7 +48,7 @@ class DatabaseImporterDialog : public KAssistantDialog
         void importedTrack( Meta::TrackPtr track );
         void discardedTrack( const QString &url );
         void matchedTrack(Meta::TrackPtr track, const QString &oldUrl );
-        void ambigousTrack( Meta::TrackList tracks, const QString &oldUrl );
+        void ambigousTrack( const Meta::TrackList &tracks, const QString &oldUrl );
         void pageChanged( KPageWidgetItem *current, KPageWidgetItem *before );
         void showMessage( const QString &message );
 

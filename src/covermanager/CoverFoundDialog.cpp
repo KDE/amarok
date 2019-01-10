@@ -55,7 +55,7 @@
 #include <KMessageBox>
 #include <KWindowConfig>
 
-CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
+CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr &unit,
                                     const CoverFetch::Metadata &data,
                                     QWidget *parent )
     : QDialog( parent )
@@ -499,8 +499,8 @@ void CoverFoundDialog::fetchRequestRedirected( QNetworkReply *oldReply,
     }
 }
 
-void CoverFoundDialog::handleFetchResult( const QUrl &url, QByteArray data,
-                                          NetworkAccessManagerProxy::Error e )
+void CoverFoundDialog::handleFetchResult( const QUrl &url, const QByteArray &data,
+                                          const NetworkAccessManagerProxy::Error &e )
 {
     CoverFoundItem *item = m_urls.take( url );
     QImage image;
@@ -720,7 +720,7 @@ void CoverFoundDialog::updateTitle()
     setWindowTitle( caption );
 }
 
-CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent )
+CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr &album, QWidget *parent )
     : BoxWidget( true, parent )
     , m_album( album )
 {
@@ -758,7 +758,7 @@ void CoverFoundSideBar::clear()
     m_metadata.clear();
 }
 
-void CoverFoundSideBar::setPixmap( const QPixmap &pixmap, CoverFetch::Metadata metadata )
+void CoverFoundSideBar::setPixmap( const QPixmap &pixmap, const CoverFetch::Metadata &metadata )
 {
     m_metadata = metadata;
     updateNotes();

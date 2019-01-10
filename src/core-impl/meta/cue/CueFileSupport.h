@@ -105,7 +105,7 @@ class CueFileSupport
         INDEX_FOUND
     };
 
-     static CueFileItemMap loadCueFile( const QUrl &cuefile, const Meta::TrackPtr track );
+     static CueFileItemMap loadCueFile( const QUrl &cuefile, const Meta::TrackPtr &track );
      static CueFileItemMap loadCueFile( const QUrl &cuefile, const QUrl &trackUrl, qint64 trackLen );
 
      /**

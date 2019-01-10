@@ -51,7 +51,7 @@ class MetaStream::Track::Private : public QObject
         }
 
     public Q_SLOTS:
-        void currentMetadataChanged( QVariantMap metaData )
+        void currentMetadataChanged( const QVariantMap &metaData )
         {
             const QUrl metaDataUrl = metaData.value( Meta::Field::URL ).toUrl();
             if( metaDataUrl == url )

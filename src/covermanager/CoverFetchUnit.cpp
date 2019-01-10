@@ -32,7 +32,7 @@
  * CoverFetchUnit
  */
 
-CoverFetchUnit::CoverFetchUnit( Meta::AlbumPtr album,
+CoverFetchUnit::CoverFetchUnit( const Meta::AlbumPtr &album,
                                 const CoverFetchPayload *payload,
                                 CoverFetch::Option opt )
     : m_album( album )
@@ -123,7 +123,7 @@ bool CoverFetchUnit::operator!=( const CoverFetchUnit &other ) const
  * CoverFetchPayload
  */
 
-CoverFetchPayload::CoverFetchPayload( const Meta::AlbumPtr album,
+CoverFetchPayload::CoverFetchPayload( const Meta::AlbumPtr &album,
                                       CoverFetchPayload::Type type,
                                       CoverFetch::Source src )
     : m_src( src )
@@ -202,7 +202,7 @@ CoverFetchPayload::isPrepared() const
  * CoverFetchInfoPayload
  */
 
-CoverFetchInfoPayload::CoverFetchInfoPayload( const Meta::AlbumPtr album, const CoverFetch::Source src )
+CoverFetchInfoPayload::CoverFetchInfoPayload( const Meta::AlbumPtr &album, const CoverFetch::Source src )
     : CoverFetchPayload( album, CoverFetchPayload::Info, src )
 {
     prepareUrls();
@@ -324,7 +324,7 @@ CoverFetchInfoPayload::prepareDiscogsUrls( const QByteArray &data )
 CoverFetchSearchPayload::CoverFetchSearchPayload( const QString &query,
                                                   const CoverFetch::Source src,
                                                   unsigned int page,
-                                                  Meta::AlbumPtr album )
+                                                  const Meta::AlbumPtr &album )
     : CoverFetchPayload( album, CoverFetchPayload::Search, src )
     , m_page( page )
     , m_query( query )
@@ -398,7 +398,7 @@ CoverFetchSearchPayload::prepareUrls()
  * CoverFetchArtPayload
  */
 
-CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album,
+CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr &album,
                                             const CoverFetch::ImageSize size,
                                             const CoverFetch::Source src,
                                             bool wild )

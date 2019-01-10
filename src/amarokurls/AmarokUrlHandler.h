@@ -56,7 +56,7 @@ public:
     void registerGenerator( AmarokUrlGenerator * generator );
     void unRegisterGenerator( AmarokUrlGenerator * generator );
 
-    bool run( AmarokUrl url );
+    bool run( const AmarokUrl &url );
 
     BookmarkList urlsByCommand( const QString &command );
     QIcon iconForCommand( const QString &command );
@@ -74,8 +74,8 @@ public:
 
 
 public Q_SLOTS:
-    void bookmarkAlbum( Meta::AlbumPtr album );
-    void bookmarkArtist( Meta::ArtistPtr artist );
+    void bookmarkAlbum( const Meta::AlbumPtr &album );
+    void bookmarkArtist( const Meta::ArtistPtr &artist );
 
     void bookmarkCurrentBrowserView();
     void bookmarkCurrentPlaylistView();

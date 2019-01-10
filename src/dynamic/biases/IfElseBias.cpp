@@ -84,7 +84,7 @@ Dynamic::IfElseBias::paintOperator( QPainter* painter, const QRect& rect, Dynami
 Dynamic::TrackSet
 Dynamic::IfElseBias::matchingTracks( const Meta::TrackList& playlist,
                                      int contextCount, int finalCount,
-                                     Dynamic::TrackCollectionPtr universe ) const
+                                     const Dynamic::TrackCollectionPtr &universe ) const
 {
     // store the parameters in case we need to request additional matching tracks later
     m_playlist = playlist;

@@ -155,7 +155,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
            Convenience method for copying a single track.
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
-        void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
+        void prepareCopy( const Meta::TrackPtr &track, CollectionLocation *destination );
         /**
            Schedule copying of @p tracks to collection location @p destination.
            This method takes ownership of the @p destination, you may not reference
@@ -178,7 +178,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
          * Convenience method for moving a single track.
          * @see prepareMove( Meta::TrackList, CollectionLocation* )
          */
-        void prepareMove( Meta::TrackPtr track, CollectionLocation *destination );
+        void prepareMove( const Meta::TrackPtr &track, CollectionLocation *destination );
         /**
            Schedule moving of @p tracks to collection location @p destination.
            This method takes ownership of the @p destination, you may not reference

@@ -90,11 +90,11 @@ class DaapTrack : public Meta::Track
         Collections::Collection* collection() const override;
 
         //DaapTrack specific methods
-        void setAlbum( DaapAlbumPtr album );
-        void setArtist( DaapArtistPtr artist );
-        void setComposer( DaapComposerPtr composer );
-        void setGenre( DaapGenrePtr genre );
-        void setYear( DaapYearPtr year );
+        void setAlbum( const DaapAlbumPtr &album );
+        void setArtist( const DaapArtistPtr &artist );
+        void setComposer( const DaapComposerPtr &composer );
+        void setGenre( const DaapGenrePtr &genre );
+        void setYear( const DaapYearPtr &year );
 
         void setLength( qint64 length );
 
@@ -128,7 +128,7 @@ class DaapArtist : public Meta::Artist
         virtual AlbumList albums();
 
         //DaapArtist specific methods
-        void addTrack( DaapTrackPtr track );
+        void addTrack( const DaapTrackPtr &track );
 
     private:
         QString m_name;
@@ -149,8 +149,8 @@ class DaapAlbum : public Meta::Album
         TrackList tracks() override;
 
         //DaapAlbum specific methods
-        void addTrack( DaapTrackPtr track );
-        void setAlbumArtist( DaapArtistPtr artist );
+        void addTrack( const DaapTrackPtr &track );
+        void setAlbumArtist( const DaapArtistPtr &artist );
 
     private:
         QString m_name;
@@ -170,7 +170,7 @@ class DaapGenre : public Meta::Genre
         TrackList tracks() override;
 
         //DaapGenre specific methods
-        void addTrack( DaapTrackPtr track );
+        void addTrack( const DaapTrackPtr &track );
 
     private:
         QString m_name;
@@ -188,7 +188,7 @@ class DaapComposer : public Meta::Composer
         TrackList tracks() override;
 
         //DaapComposer specific methods
-        void addTrack( DaapTrackPtr track );
+        void addTrack( const DaapTrackPtr &track );
 
     private:
         QString m_name;
@@ -206,7 +206,7 @@ class DaapYear : public Meta::Year
         TrackList tracks() override;
 
         //DaapYear specific methods
-        void addTrack( DaapTrackPtr track );
+        void addTrack( const DaapTrackPtr &track );
 
     private:
         QString m_name;

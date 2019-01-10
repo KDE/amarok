@@ -225,15 +225,15 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          * (e.g. in case when the result is received in several batches).
          * The results will be terminated by a queryDone signal.
          */
-        void newResultReady( QStringList );
-        void newTracksReady( Meta::TrackList );
-        void newArtistsReady( Meta::ArtistList );
-        void newAlbumsReady( Meta::AlbumList );
-        void newGenresReady( Meta::GenreList );
-        void newComposersReady( Meta::ComposerList );
-        void newYearsReady( Meta::YearList );
-        void newLabelsReady( Meta::LabelList );
-        void newDataReady( Meta::DataList );
+        void newResultReady( const QStringList &);
+        void newTracksReady( const Meta::TrackList &);
+        void newArtistsReady( const Meta::ArtistList &);
+        void newAlbumsReady( const Meta::AlbumList &);
+        void newGenresReady( const Meta::GenreList &);
+        void newComposersReady( const Meta::ComposerList &);
+        void newYearsReady( const Meta::YearList &);
+        void newLabelsReady( const Meta::LabelList &);
+        void newDataReady( const Meta::DataList &);
 
         /**
          * This signal is emitted after all the results have been submitted via zero or more newResultReady signals.

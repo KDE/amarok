@@ -46,15 +46,15 @@ class SolverList
 {
     public:
 
-    SolverList( Meta::TrackList trackList,
+    SolverList( const Meta::TrackList &trackList,
                 int contextCount,
-                BiasPtr bias )
+                const BiasPtr &bias )
         : m_trackList(trackList)
         , m_contextCount( contextCount )
         , m_bias( bias )
     {}
 
-    void appendTrack( Meta::TrackPtr track )
+    void appendTrack( const Meta::TrackPtr &track )
     {
         m_trackList.append( track );
     }
@@ -80,7 +80,7 @@ class SolverList
 
 
 
-BiasSolver::BiasSolver( int n, BiasPtr bias, Meta::TrackList context )
+BiasSolver::BiasSolver( int n, const BiasPtr &bias, const Meta::TrackList &context )
     : m_n( n )
     , m_bias( bias )
     , m_context( context )
@@ -302,7 +302,7 @@ BiasSolver::withoutDuplicate( int position, const Meta::TrackList& playlist,
 // ---- getting the TrackCollection ----
 
 void
-BiasSolver::trackCollectionResultsReady( QStringList uids )
+BiasSolver::trackCollectionResultsReady( const QStringList &uids )
 {
     m_collectionUids.append( uids );
 }

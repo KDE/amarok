@@ -59,7 +59,7 @@ public:
      * @param name the name
      * @param newMilliseconds the new position in milliseconds
      */
-    virtual void moveBookmark( qint64 newMilliseconds, QString name );
+    virtual void moveBookmark( qint64 newMilliseconds, const QString &name );
 
     virtual void deleteBookmark();
     virtual int getTimeValue();

@@ -63,12 +63,12 @@ namespace Collections {
         // AggregateCollection methods
 
         void removeTrack( const Meta::TrackKey &key );
-        Meta::AggregateTrack* getTrack( Meta::TrackPtr track );
+        Meta::AggregateTrack* getTrack( const Meta::TrackPtr &track );
         void setTrack( Meta::AggregateTrack *track );
         bool hasTrack( const Meta::TrackKey &key );
 
         void removeAlbum( const QString &album, const QString &albumArtist );
-        Meta::AggregateAlbum* getAlbum( Meta::AlbumPtr album );
+        Meta::AggregateAlbum* getAlbum( const Meta::AlbumPtr &album );
         void setAlbum( Meta::AggregateAlbum *album );
         bool hasAlbum( const QString &album, const QString &albumArtist );
 

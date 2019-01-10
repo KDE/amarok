@@ -55,7 +55,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         /* UserPlaylistProvider functions */
         bool isWritable() override;
         bool deletePlaylists( const Playlists::PlaylistList &playlistlist ) override;
-        void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName ) override;
+        void renamePlaylist(Playlists::PlaylistPtr playlist, const QString &newName ) override;
 
         Playlists::SqlPlaylistGroupPtr group( const QString &name );
 

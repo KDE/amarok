@@ -144,7 +144,7 @@ namespace Meta
          * @return TagHelper or NULL if file doesn't have tags.
          * Should be deleted by user after use.
          */
-        AMAROKSHARED_EXPORT TagHelper *selectHelper( const TagLib::FileRef fileref, bool forceCreation = false );
+        AMAROKSHARED_EXPORT TagHelper *selectHelper( const TagLib::FileRef &fileref, bool forceCreation = false );
     }
 }
 

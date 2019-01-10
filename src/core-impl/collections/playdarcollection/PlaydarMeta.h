@@ -117,11 +117,11 @@ namespace Meta
             QString mimetype() const;
             
             void addToCollection( Collections::PlaydarCollection *collection );
-            void setAlbum( PlaydarAlbumPtr album );
-            void setArtist( PlaydarArtistPtr artist );
-            void setComposer( PlaydarComposerPtr composer );
-            void setGenre( PlaydarGenrePtr genre );
-            void setYear( PlaydarYearPtr year );
+            void setAlbum( const PlaydarAlbumPtr &album );
+            void setArtist( const PlaydarArtistPtr &artist );
+            void setComposer( const PlaydarComposerPtr &composer );
+            void setGenre( const PlaydarGenrePtr &genre );
+            void setYear( const PlaydarYearPtr &year );
             
             PlaydarAlbumPtr playdarAlbum();
             PlaydarArtistPtr playdarArtist();
@@ -169,8 +169,8 @@ namespace Meta
             TrackList tracks() override;
             AlbumList albums();
 
-            void addTrack( PlaydarTrackPtr newTrack );
-            void addAlbum( PlaydarAlbumPtr newAlbum );
+            void addTrack( const PlaydarTrackPtr &newTrack );
+            void addAlbum( const PlaydarAlbumPtr &newAlbum );
             
         private:
             QString m_name;
@@ -199,8 +199,8 @@ namespace Meta
             void setSuppressImageAutoFetch( const bool suppress ) override;
             bool suppressImageAutoFetch() const override;
 
-            void addTrack( PlaydarTrackPtr newTrack );
-            void setAlbumArtist( PlaydarArtistPtr newAlbumArtist );
+            void addTrack( const PlaydarTrackPtr &newTrack );
+            void setAlbumArtist( const PlaydarArtistPtr &newAlbumArtist );
 
         private:
             QString m_name;
@@ -222,7 +222,7 @@ namespace Meta
 
             TrackList tracks() override;
 
-            void addTrack( PlaydarTrackPtr newTrack );
+            void addTrack( const PlaydarTrackPtr &newTrack );
 
         private:
             QString m_name;
@@ -239,7 +239,7 @@ namespace Meta
 
             TrackList tracks() override;
 
-            void addTrack( PlaydarTrackPtr newTrack );
+            void addTrack( const PlaydarTrackPtr &newTrack );
 
         private:
             QString m_name;
@@ -256,7 +256,7 @@ namespace Meta
 
             TrackList tracks() override;
 
-            void addTrack( PlaydarTrackPtr newTrack );
+            void addTrack( const PlaydarTrackPtr &newTrack );
 
         private:
             QString m_name;
@@ -271,7 +271,7 @@ namespace Meta
 
             QString name() const override;
 
-            void addTrack( PlaydarTrackPtr newTrack );
+            void addTrack( const PlaydarTrackPtr &newTrack );
 
         private:
             QString m_name;

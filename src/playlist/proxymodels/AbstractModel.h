@@ -133,7 +133,7 @@ public:
      * @param path the path of the playlist file, as chosen by a FileDialog in MainWindow.
      * @param relative use relative paths. Defaults to false, uses absolute paths.
      */
-    virtual bool exportPlaylist( const QString &path, bool relative = false ) const = 0;
+    virtual bool exportPlaylist( const QString &path, bool relative = false ) = 0;
 
     /**
      * Notify FilterProxy that the search term of searched fields has changed. Since this
@@ -305,7 +305,7 @@ public:
      * Returns an ordered list of tracks exposed by the current model.
      * @return the tracklist.
      */
-    virtual Meta::TrackList tracks() const = 0;
+    virtual Meta::TrackList tracks() = 0;
 };
 
 }   //namespace Playlist

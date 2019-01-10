@@ -41,12 +41,12 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         static Meta::TrackList toTrackList( SqlPodcastEpisodeList episodes );
         static PodcastEpisodeList toPodcastEpisodeList( SqlPodcastEpisodeList episodes );
 
-        SqlPodcastEpisode( const QStringList &queryResult, SqlPodcastChannelPtr sqlChannel );
+        SqlPodcastEpisode( const QStringList &queryResult, const SqlPodcastChannelPtr &sqlChannel );
 
         /** Copy from another PodcastEpisode
         */
         explicit SqlPodcastEpisode( PodcastEpisodePtr episode );
-        SqlPodcastEpisode( PodcastChannelPtr channel, PodcastEpisodePtr episode );
+        SqlPodcastEpisode( const PodcastChannelPtr &channel, PodcastEpisodePtr episode );
 
         ~SqlPodcastEpisode();
 
@@ -97,8 +97,8 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
 class SqlPodcastChannel : public Podcasts::PodcastChannel
 {
     public:
-        static Playlists::PlaylistPtr toPlaylistPtr( SqlPodcastChannelPtr sqlChannel );
-        static SqlPodcastChannelPtr fromPlaylistPtr( Playlists::PlaylistPtr playlist );
+        static Playlists::PlaylistPtr toPlaylistPtr( const SqlPodcastChannelPtr &sqlChannel );
+        static SqlPodcastChannelPtr fromPlaylistPtr( const Playlists::PlaylistPtr &playlist );
 
         SqlPodcastChannel( SqlPodcastProvider *provider, const QStringList &queryResult );
 
@@ -106,15 +106,15 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         */
         SqlPodcastChannel( SqlPodcastProvider *provider, PodcastChannelPtr channel );
 
-        ~SqlPodcastChannel();
+        ~SqlPodcastChannel() override;
         // Playlists::Playlist methods
-        void syncTrackStatus( int position, Meta::TrackPtr otherTrack ) override;
+        void syncTrackStatus( int position, const Meta::TrackPtr &otherTrack ) override;
         int trackCount() const override;
 
         virtual QString filenameLayout() const { return m_filenameLayout; }
 
         Meta::TrackList tracks() override;
-        void addTrack( Meta::TrackPtr track, int position = -1 ) override;
+        void addTrack( const Meta::TrackPtr &track, int position = -1 ) override;
 
         void triggerTrackLoad() override;
         Playlists::PlaylistProvider *provider() const override;
@@ -134,7 +134,7 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         virtual void setFilenameLayout( const QString &filenameLayout ) { m_filenameLayout = filenameLayout; }
 
 
-        PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode ) override;
+        PodcastEpisodePtr addEpisode( const PodcastEpisodePtr &episode ) override;
 
         //SqlPodcastChannel specific methods
         int dbId() const { return m_dbId; }

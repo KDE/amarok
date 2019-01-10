@@ -98,7 +98,7 @@ GlobalCollectionActions::addComposerAction( GlobalCollectionComposerAction * act
     connect( action, &QObject::destroyed, this, [this, action]() { m_composerActions.removeAll( action ); } );
 }
 
-QList< QAction * > GlobalCollectionActions::actionsFor( Meta::DataPtr item )
+QList< QAction * > GlobalCollectionActions::actionsFor( const Meta::DataPtr &item )
 {
 
     Meta::GenrePtr genrePtr = Meta::GenrePtr::dynamicCast( item );
@@ -131,7 +131,7 @@ QList< QAction * > GlobalCollectionActions::actionsFor( Meta::DataPtr item )
 
 
 QList< QAction * >
-GlobalCollectionActions::actionsFor( Meta::GenrePtr genre )
+GlobalCollectionActions::actionsFor( const Meta::GenrePtr &genre )
 {
     QList< QAction * > returnList;
     foreach( GlobalCollectionGenreAction * genreAction, m_genreActions )
@@ -144,7 +144,7 @@ GlobalCollectionActions::actionsFor( Meta::GenrePtr genre )
 }
 
 QList< QAction * >
-GlobalCollectionActions::actionsFor( Meta::ArtistPtr artist )
+GlobalCollectionActions::actionsFor( const Meta::ArtistPtr &artist )
 {
     QList< QAction * > returnList;
     foreach( GlobalCollectionArtistAction * artistAction, m_artistActions )
@@ -157,7 +157,7 @@ GlobalCollectionActions::actionsFor( Meta::ArtistPtr artist )
 }
 
 QList< QAction * >
-GlobalCollectionActions::actionsFor( Meta::AlbumPtr album )
+GlobalCollectionActions::actionsFor( const Meta::AlbumPtr &album )
 {
     QList< QAction * > returnList;
     foreach( GlobalCollectionAlbumAction * albumAction, m_albumActions )
@@ -170,7 +170,7 @@ GlobalCollectionActions::actionsFor( Meta::AlbumPtr album )
 }
 
 QList< QAction * >
-GlobalCollectionActions::actionsFor( Meta::TrackPtr track )
+GlobalCollectionActions::actionsFor( const Meta::TrackPtr &track )
 {
     QList< QAction * > returnList;
     foreach( GlobalCollectionTrackAction * trackAction, m_trackActions )
@@ -183,7 +183,7 @@ GlobalCollectionActions::actionsFor( Meta::TrackPtr track )
 }
 
 QList< QAction * >
-GlobalCollectionActions::actionsFor( Meta::YearPtr year )
+GlobalCollectionActions::actionsFor( const Meta::YearPtr &year )
 {
     QList< QAction * > returnList;
     foreach( GlobalCollectionYearAction * yearAction, m_yearActions )
@@ -196,7 +196,7 @@ GlobalCollectionActions::actionsFor( Meta::YearPtr year )
 }
 
 QList< QAction * >
-GlobalCollectionActions::actionsFor( Meta::ComposerPtr composer )
+GlobalCollectionActions::actionsFor( const Meta::ComposerPtr &composer )
 {
     QList< QAction * > returnList;
     foreach( GlobalCollectionComposerAction * composerAction, m_composerActions )
@@ -217,7 +217,7 @@ GlobalCollectionGenreAction::GlobalCollectionGenreAction( const QString &text, Q
 {}
 
 void
-GlobalCollectionGenreAction::setGenre( Meta::GenrePtr genre )
+GlobalCollectionGenreAction::setGenre( const Meta::GenrePtr &genre )
 {
     m_currentGenre = genre;
 }
@@ -232,7 +232,7 @@ GlobalCollectionArtistAction::GlobalCollectionArtistAction( const QString &text,
 {}
 
 void
-GlobalCollectionArtistAction::setArtist( Meta::ArtistPtr artist )
+GlobalCollectionArtistAction::setArtist( const Meta::ArtistPtr &artist )
 {
     m_currentArtist = artist;
 }
@@ -246,7 +246,7 @@ GlobalCollectionAlbumAction::GlobalCollectionAlbumAction( const QString &text, Q
     : GlobalCollectionAction( text, parent )
 {}
 
-void GlobalCollectionAlbumAction::setAlbum( Meta::AlbumPtr album )
+void GlobalCollectionAlbumAction::setAlbum( const Meta::AlbumPtr &album )
 {
     m_currentAlbum = album;
 }
@@ -260,7 +260,7 @@ GlobalCollectionTrackAction::GlobalCollectionTrackAction( const QString &text, Q
     : GlobalCollectionAction( text, parent )
 {}
 
-void GlobalCollectionTrackAction::setTrack( Meta::TrackPtr track )
+void GlobalCollectionTrackAction::setTrack( const Meta::TrackPtr &track )
 {
     m_currentTrack = track;
 }
@@ -276,7 +276,7 @@ GlobalCollectionYearAction::GlobalCollectionYearAction( const QString &text, QOb
 {}
 
 void
-GlobalCollectionYearAction::setYear( Meta::YearPtr year )
+GlobalCollectionYearAction::setYear( const Meta::YearPtr &year )
 {
     m_currentYear = year;
 }
@@ -292,7 +292,7 @@ GlobalCollectionComposerAction::GlobalCollectionComposerAction( const QString &t
 {}
 
 void
-GlobalCollectionComposerAction::setComposer(Meta::ComposerPtr composer)
+GlobalCollectionComposerAction::setComposer(const Meta::ComposerPtr &composer)
 {
     m_currentComposer = composer;
 }

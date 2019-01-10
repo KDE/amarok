@@ -128,7 +128,7 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 }
 
 void
-CoverFetcher::queueQuery( Meta::AlbumPtr album, const QString &query, int page )
+CoverFetcher::queueQuery( const Meta::AlbumPtr &album, const QString &query, int page )
 {
     QTimer::singleShot( 0, m_queue, [=] () { m_queue->addQuery( query, fetchSource(), page, album ); } );
     debug() << QString( "Queueing cover fetch query: '%1' (page %2)" ).arg( query, QString::number( page ) );
@@ -183,7 +183,7 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
 }
 
 void
-CoverFetcher::slotResult( const QUrl &url, const QByteArray &data, NetworkAccessManagerProxy::Error e )
+CoverFetcher::slotResult( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e )
 {
     DEBUG_BLOCK
     if( !m_urls.contains( url ) )
@@ -385,7 +385,7 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
 }
 
 void
-CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
+CoverFetcher::abortFetch( const CoverFetchUnit::Ptr &unit )
 {
     QTimer::singleShot( 0, m_queue, [=] () {  m_queue->remove( unit ); } );
     m_selectedImages.remove( unit );
@@ -396,7 +396,7 @@ CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
 }
 
 void
-CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
+CoverFetcher::finish( const CoverFetchUnit::Ptr &unit,
                       CoverFetcher::FinishState state,
                       const QString &message )
 {

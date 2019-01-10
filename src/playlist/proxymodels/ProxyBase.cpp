@@ -106,7 +106,7 @@ ProxyBase::currentSearchTerm()
 }
 
 bool
-ProxyBase::exportPlaylist( const QString &path, bool relative ) const
+ProxyBase::exportPlaylist( const QString &path, bool relative )
 {
     return Playlists::exportPlaylistFile( tracks(), QUrl::fromLocalFile(path), relative );
 }
@@ -281,7 +281,7 @@ ProxyBase::trackForId( const quint64 id ) const
 }
 
 Meta::TrackList
-ProxyBase::tracks() const
+ProxyBase::tracks()
 {
     Meta::TrackList tl;
     for( int i = 0; i < rowCount(); ++i )

@@ -147,7 +147,7 @@ SmbDeviceHandlerFactory::~SmbDeviceHandlerFactory( )
 }
 
 DeviceHandler *
-SmbDeviceHandlerFactory::createHandler( KSharedConfigPtr, QSharedPointer<SqlStorage> ) const
+SmbDeviceHandlerFactory::createHandler( const KSharedConfigPtr&, QSharedPointer<SqlStorage> ) const
 {
     return 0;
 }

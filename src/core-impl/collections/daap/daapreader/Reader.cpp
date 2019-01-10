@@ -517,7 +517,7 @@ Reader::parse( QDataStream &raw )
 }
 
 void
-Reader::addElement( Map &parentMap, char* tag, QVariant element )
+Reader::addElement( Map &parentMap, char* tag, const QVariant &element )
 {
     QList<QVariant> list;
     Map::Iterator it = parentMap.find( tag );

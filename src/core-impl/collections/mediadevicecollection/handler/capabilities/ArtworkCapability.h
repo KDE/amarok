@@ -34,7 +34,7 @@ namespace Handler
 
             virtual void setCover( Meta::MediaDeviceAlbumPtr album, const QImage &image ) = 0;
 
-            virtual void setCoverPath( Meta::MediaDeviceAlbumPtr album, const QString &path );
+            virtual void setCoverPath( const Meta::MediaDeviceAlbumPtr &album, const QString &path );
 
             virtual bool canUpdateCover() const = 0;
 

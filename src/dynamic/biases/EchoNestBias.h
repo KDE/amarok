@@ -60,7 +60,7 @@ namespace Dynamic
 
             Dynamic::TrackSet matchingTracks( const Meta::TrackList& playlist,
                                                       int contextCount, int finalCount,
-                                                      Dynamic::TrackCollectionPtr universe ) const override;
+                                                      const Dynamic::TrackCollectionPtr &universe ) const override;
 
             bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
@@ -85,12 +85,12 @@ namespace Dynamic
         private:
             /** Returns the artists we should lookup */
             QStringList currentArtists( int position, const Meta::TrackList& playlist ) const;
-            static QUrl createUrl( QString method, QMultiMap< QString, QString > params );
+            static QUrl createUrl( const QString &method, QMultiMap< QString, QString > params );
             static QString nameForMatch( MatchType match );
             static MatchType matchForName( const QString &name );
 
             /** Returns the key used for m_tracksMap */
-            static QString tracksMapKey( QStringList artists );
+            static QString tracksMapKey( const QStringList &artists );
 
             void saveDataToFile() const;
 

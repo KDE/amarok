@@ -29,12 +29,12 @@ class AMAROK_EXPORT AmarokUrl : public BookmarkViewItem
 {
 public:
     AmarokUrl();
-    explicit AmarokUrl( const QString & urlString, BookmarkGroupPtr parent = BookmarkGroupPtr() );
-    explicit AmarokUrl( const QStringList & resultRow, BookmarkGroupPtr parent  = BookmarkGroupPtr() );
+    explicit AmarokUrl( const QString & urlString, const BookmarkGroupPtr &parent = BookmarkGroupPtr() );
+    explicit AmarokUrl( const QStringList & resultRow, const BookmarkGroupPtr &parent  = BookmarkGroupPtr() );
 
     ~AmarokUrl();
 
-    void reparent( BookmarkGroupPtr parent );
+    void reparent( const BookmarkGroupPtr &parent );
     void initFromString( const QString & urlString );
 
     QString command() const;

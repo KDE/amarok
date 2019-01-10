@@ -189,7 +189,7 @@ namespace Amarok
 
     protected Q_SLOTS:
         void muteStateChanged( bool mute );
-        void trackPlaying( Meta::TrackPtr track );
+        void trackPlaying( const Meta::TrackPtr &track );
         void stopped();
         void paused();
         void metadataChanged();

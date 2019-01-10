@@ -315,31 +315,31 @@ Meta::PlaydarTrack::addToCollection( Collections::PlaydarCollection *collection 
 }
 
 void
-Meta::PlaydarTrack::setAlbum( PlaydarAlbumPtr album )
+Meta::PlaydarTrack::setAlbum( const PlaydarAlbumPtr &album )
 {
     m_album = album;
 }
 
 void
-Meta::PlaydarTrack::setArtist( PlaydarArtistPtr artist )
+Meta::PlaydarTrack::setArtist( const PlaydarArtistPtr &artist )
 {
     m_artist = artist;
 }
 
 void
-Meta::PlaydarTrack::setComposer( PlaydarComposerPtr composer )
+Meta::PlaydarTrack::setComposer( const PlaydarComposerPtr &composer )
 {
     m_composer = composer;
 }
 
 void
-Meta::PlaydarTrack::setGenre( PlaydarGenrePtr genre )
+Meta::PlaydarTrack::setGenre( const PlaydarGenrePtr &genre )
 {
     m_genre = genre;
 }
 
 void
-Meta::PlaydarTrack::setYear( PlaydarYearPtr year )
+Meta::PlaydarTrack::setYear( const PlaydarYearPtr &year )
 {
     m_year = year;
 }
@@ -412,13 +412,13 @@ Meta::PlaydarArtist::albums()
 }
 
 void
-Meta::PlaydarArtist::addTrack( PlaydarTrackPtr newTrack )
+Meta::PlaydarArtist::addTrack( const PlaydarTrackPtr &newTrack )
 {
     m_tracks.append( TrackPtr::staticCast( newTrack ) );
 }
 
 void
-Meta::PlaydarArtist::addAlbum( PlaydarAlbumPtr newAlbum )
+Meta::PlaydarArtist::addAlbum( const PlaydarAlbumPtr &newAlbum )
 {
     m_albums.append( AlbumPtr::staticCast( newAlbum ) );
 }
@@ -543,13 +543,13 @@ Meta::PlaydarAlbum::suppressImageAutoFetch() const
 }
 
 void
-Meta::PlaydarAlbum::addTrack( PlaydarTrackPtr newTrack )
+Meta::PlaydarAlbum::addTrack( const PlaydarTrackPtr &newTrack )
 {
     m_tracks.append( TrackPtr::staticCast( newTrack ) );
 }
 
 void
-Meta::PlaydarAlbum::setAlbumArtist( PlaydarArtistPtr newArtist )
+Meta::PlaydarAlbum::setAlbumArtist( const PlaydarArtistPtr &newArtist )
 {
     m_albumArtist = ArtistPtr::staticCast( newArtist );
 }
@@ -579,7 +579,7 @@ Meta::PlaydarComposer::tracks()
 }
 
 void
-Meta::PlaydarComposer::addTrack( PlaydarTrackPtr newTrack )
+Meta::PlaydarComposer::addTrack( const PlaydarTrackPtr &newTrack )
 {
     m_tracks.append( Meta::TrackPtr::staticCast( newTrack ) );
 }
@@ -609,7 +609,7 @@ Meta::PlaydarGenre::tracks()
 }
 
 void
-Meta::PlaydarGenre::addTrack( PlaydarTrackPtr newTrack )
+Meta::PlaydarGenre::addTrack( const PlaydarTrackPtr &newTrack )
 {
     m_tracks.append( Meta::TrackPtr::staticCast( newTrack ) );
 }
@@ -639,7 +639,7 @@ Meta::PlaydarYear::tracks()
 }
 
 void
-Meta::PlaydarYear::addTrack( PlaydarTrackPtr newTrack )
+Meta::PlaydarYear::addTrack( const PlaydarTrackPtr &newTrack )
 {
     m_tracks.append( Meta::TrackPtr::staticCast( newTrack ) );
 }
@@ -663,7 +663,7 @@ Meta::PlaydarLabel::name() const
 }
 
 void
-Meta::PlaydarLabel::addTrack( PlaydarTrackPtr newTrack )
+Meta::PlaydarLabel::addTrack( const PlaydarTrackPtr &newTrack )
 {
     m_tracks.append( Meta::TrackPtr::staticCast( newTrack ) );
 }

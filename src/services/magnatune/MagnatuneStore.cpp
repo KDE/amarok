@@ -606,7 +606,7 @@ void MagnatuneStore::timestampDownloadComplete( KJob *  job )
 }
 
 
-void MagnatuneStore::moodyTracksReady( Meta::TrackList tracks )
+void MagnatuneStore::moodyTracksReady( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
     The::playlistController()->insertOptioned( tracks, Playlist::Replace );

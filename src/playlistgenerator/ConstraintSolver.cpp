@@ -212,7 +212,7 @@ void APG::ConstraintSolver::defaultEnd(const ThreadWeaver::JobPointer& self, Thr
 }
 
 void
-APG::ConstraintSolver::receiveQueryMakerData( Meta::TrackList results )
+APG::ConstraintSolver::receiveQueryMakerData( const Meta::TrackList &results )
 {
     m_domainMutex.lock();
     m_domain += results;

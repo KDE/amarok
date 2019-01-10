@@ -50,7 +50,7 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
 LayoutEditWidget::~LayoutEditWidget()
 { }
 
-void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
+void LayoutEditWidget::readLayout( const Playlist::LayoutItemConfig &config )
 {
     DEBUG_BLOCK
     int rowCount = config.rows();

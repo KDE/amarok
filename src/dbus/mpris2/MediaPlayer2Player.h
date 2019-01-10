@@ -88,13 +88,13 @@ namespace Amarok
             void Play() const;
             void Seek( qlonglong Offset ) const;
             void SetPosition( const QDBusObjectPath& TrackId, qlonglong Position ) const;
-            void OpenUri( QString Uri ) const;
+            void OpenUri( const QString &Uri ) const;
 
         private Q_SLOTS:
             void trackPositionChanged( qint64 position, bool userSeek );
-            void trackChanged( Meta::TrackPtr track );
-            void trackMetadataChanged( Meta::TrackPtr track );
-            void albumMetadataChanged( Meta::AlbumPtr album );
+            void trackChanged( const Meta::TrackPtr &track );
+            void trackMetadataChanged( const Meta::TrackPtr &track );
+            void albumMetadataChanged( const Meta::AlbumPtr &album );
             void seekableChanged( bool seekable );
             void volumeChanged( int newVolPercent );
             void trackLengthChanged( qint64 milliseconds );
@@ -107,7 +107,7 @@ namespace Amarok
             void playlistActiveTrackChanged( quint64 );
 
         private:
-            QVariantMap metadataForTrack( Meta::TrackPtr track ) const;
+            QVariantMap metadataForTrack( const Meta::TrackPtr &track ) const;
 
             qint64 m_lastPosition;
     };

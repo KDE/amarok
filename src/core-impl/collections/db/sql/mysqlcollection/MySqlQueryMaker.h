@@ -27,10 +27,10 @@ class MySqlQueryMaker : public SqlQueryMaker
 {
     public:
         explicit MySqlQueryMaker( SqlCollection* collection );
-        virtual ~MySqlQueryMaker();
+        ~MySqlQueryMaker() override;
 
     protected:
-        QString escape( QString text ) const override;
+        QString escape( const QString &text ) const override;
 };
 
 }

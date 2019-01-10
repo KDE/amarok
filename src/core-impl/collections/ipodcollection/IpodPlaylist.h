@@ -70,7 +70,7 @@ class IpodPlaylist : public Playlists::Playlist
 
         int trackCount() const override;
         Meta::TrackList tracks() override;
-        void addTrack( Meta::TrackPtr track, int position = -1 ) override;
+        void addTrack( const Meta::TrackPtr &track, int position = -1 ) override;
         void removeTrack( int position ) override;
 
         // IpodPlaylist specific:

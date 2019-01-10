@@ -33,37 +33,37 @@ Observer::~Observer()
 }
 
 void
-Observer::metadataChanged( TrackPtr track )
+Observer::metadataChanged( const TrackPtr &track )
 {
     Q_UNUSED( track );
 }
 
 void
-Observer::metadataChanged( ArtistPtr artist )
+Observer::metadataChanged( const ArtistPtr &artist )
 {
     Q_UNUSED( artist );
 }
 
 void
-Observer::metadataChanged( AlbumPtr album )
+Observer::metadataChanged( const AlbumPtr &album )
 {
     Q_UNUSED( album );
 }
 
 void
-Observer::metadataChanged( ComposerPtr composer )
+Observer::metadataChanged( const ComposerPtr &composer )
 {
     Q_UNUSED( composer );
 }
 
 void
-Observer::metadataChanged( GenrePtr genre )
+Observer::metadataChanged( const GenrePtr &genre )
 {
     Q_UNUSED( genre );
 }
 
 void
-Observer::metadataChanged( YearPtr year )
+Observer::metadataChanged( const YearPtr &year )
 {
     Q_UNUSED( year );
 }

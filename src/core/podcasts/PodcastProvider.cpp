@@ -68,7 +68,7 @@ PodcastProvider::toFeedUrl( const QString &urlString )
 }
 
 Playlists::PlaylistPtr
-PodcastProvider::addPlaylist( Playlists::PlaylistPtr playlist )
+PodcastProvider::addPlaylist(Playlists::PlaylistPtr playlist )
 {
     PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
     if( channel.isNull() )
@@ -78,7 +78,7 @@ PodcastProvider::addPlaylist( Playlists::PlaylistPtr playlist )
 }
 
 Meta::TrackPtr
-PodcastProvider::addTrack( Meta::TrackPtr track )
+PodcastProvider::addTrack( const Meta::TrackPtr &track )
 {
     PodcastEpisodePtr episode = PodcastEpisodePtr::dynamicCast( track );
     if( episode.isNull() )

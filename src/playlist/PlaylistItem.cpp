@@ -34,7 +34,7 @@ Playlist::Item::Item()
 {
 }
 
-Playlist::Item::Item( Meta::TrackPtr track )
+Playlist::Item::Item( const Meta::TrackPtr &track )
         : m_track( track ), m_state( NewlyAdded )
 {
     m_id = ( static_cast<quint64>( KRandom::random() ) << 32 ) | static_cast<quint64>( KRandom::random() );

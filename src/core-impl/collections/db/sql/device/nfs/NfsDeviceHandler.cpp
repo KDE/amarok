@@ -147,7 +147,7 @@ NfsDeviceHandlerFactory::~NfsDeviceHandlerFactory( )
 }
 
 DeviceHandler *
-NfsDeviceHandlerFactory::createHandler( KSharedConfigPtr, QSharedPointer<SqlStorage> ) const
+NfsDeviceHandlerFactory::createHandler( const KSharedConfigPtr&, QSharedPointer<SqlStorage> ) const
 {
     return 0;
 }

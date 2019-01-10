@@ -82,7 +82,7 @@ private:
               const QString &prettyName,
               const QString &description,
               Type type,
-              QVariant defaultValue,
+              const QVariant &defaultValue,
               int min,
               int max,
               const QStringList &valueLabels,

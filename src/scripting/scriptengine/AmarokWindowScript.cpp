@@ -113,7 +113,7 @@ AmarokWindowScript::addSettingsMenu( const QString &name )
 }
 
 bool
-AmarokWindowScript::addToolsAction( QString id, QString actionName, QString icon )
+AmarokWindowScript::addToolsAction( const QString &id, const QString &actionName, const QString &icon )
 {
     return addMenuAction( m_toolsMenu, id, actionName, QStringLiteral("ToolsMenu"), icon );
 }
@@ -125,13 +125,13 @@ AmarokWindowScript::addToolsSeparator()
 }
 
 bool
-AmarokWindowScript::addSettingsAction( QString id, QString actionName, QString icon )
+AmarokWindowScript::addSettingsAction( const QString &id, const QString &actionName, const QString &icon )
 {
     return addMenuAction( m_settingsMenu, id, actionName, QStringLiteral("SettingsMenu"), icon );
 }
 
 bool
-AmarokScript::AmarokWindowScript::addCustomAction(QString menuName, QString id, QString actionName, QString icon)
+AmarokScript::AmarokWindowScript::addCustomAction(const QString &menuName, const QString &id, const QString &actionName, const QString &icon)
 {
     if( !m_customMenus.contains( menuName ) )
         return false;
@@ -146,7 +146,7 @@ AmarokWindowScript::addSettingsSeparator()
 }
 
 bool
-AmarokWindowScript::addMenuAction( QMenu *menu, QString id, QString actionName, QString menuProperty, QString icon )
+AmarokWindowScript::addMenuAction( QMenu *menu, const QString &id, const QString &actionName, const QString &menuProperty, const QString &icon )
 {
     KActionCollection* const ac = Amarok::actionCollection();
     if( ac->action( id ) )

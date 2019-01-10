@@ -184,7 +184,7 @@ DaapCollectionFactory::slotCollectionDownloadFailed()
 }
 
 void
-DaapCollectionFactory::resolvedManualServerIp( QHostInfo hostInfo )
+DaapCollectionFactory::resolvedManualServerIp( const QHostInfo &hostInfo )
 {
     if ( !m_lookupHash.contains(hostInfo.lookupId()) )
         return;
@@ -203,7 +203,7 @@ DaapCollectionFactory::resolvedManualServerIp( QHostInfo hostInfo )
 }
 
 void
-DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
+DaapCollectionFactory::resolvedServiceIp( const QHostInfo &hostInfo )
 {
     DEBUG_BLOCK
    // debug() << "got address:" << hostInfo.addresses() << "and lookup hash contains id" << hostInfo.lookupId() << "?" << m_lookupHash.contains(hostInfo.lookupId());

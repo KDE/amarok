@@ -46,19 +46,19 @@ class LabelListModel : public QAbstractListModel
         * Adds a label
         * @arg label Label that should be added
         */
-        void addLabel( const QString label );
+        void addLabel( const QString &label );
 
         /**
         * Removes a label
         * @arg label Label that should be removed
         */
-        void removeLabel( const QString label );
+        void removeLabel( const QString &label );
 
         /**
         * Removes labels
         * @arg labels List of labels that should be removed
         */
-        void removeLabels( const QStringList labels );
+        void removeLabels( const QStringList &labels );
 
         /**
         * Sets the labels
@@ -73,7 +73,7 @@ class LabelListModel : public QAbstractListModel
 
     private:
         QStringList m_labels;
-        bool isPresent( const QString label );
+        bool isPresent( const QString &label );
 };
 
 #endif

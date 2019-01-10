@@ -68,7 +68,7 @@ ServiceSqlCollection::insert( const QString &statement, const QString &table )
 
 
 QString
-ServiceSqlCollection::escape( QString text ) const
+ServiceSqlCollection::escape(const QString &text ) const
 {
     return StorageManager::instance()->sqlStorage()->escape( text );
 }

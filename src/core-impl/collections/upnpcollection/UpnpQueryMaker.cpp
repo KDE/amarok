@@ -408,19 +408,19 @@ int UpnpQueryMaker::validFilterMask()
     return mask;
 }
 
-void UpnpQueryMaker::handleArtists( Meta::ArtistList list )
+void UpnpQueryMaker::handleArtists( const Meta::ArtistList &list )
 {
     // TODO Post filtering
     Q_EMIT newArtistsReady( list );
 }
 
-void UpnpQueryMaker::handleAlbums( Meta::AlbumList list )
+void UpnpQueryMaker::handleAlbums( const Meta::AlbumList &list )
 {
     // TODO Post filtering
     Q_EMIT newAlbumsReady( list );
 }
 
-void UpnpQueryMaker::handleTracks( Meta::TrackList list )
+void UpnpQueryMaker::handleTracks( const Meta::TrackList &list )
 {
     // TODO Post filtering
     Q_EMIT newTracksReady( list );

@@ -74,7 +74,7 @@ namespace APG {
             void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override; // from ThreadWeaver::Job
 
         private Q_SLOTS:
-            void receiveQueryMakerData( Meta::TrackList );
+            void receiveQueryMakerData( const Meta::TrackList &);
             void receiveQueryMakerDone();
 
         private:

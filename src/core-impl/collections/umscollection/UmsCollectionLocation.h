@@ -70,8 +70,8 @@ class UmsTransferJob : public KCompositeJob
         void start() override;
 
     Q_SIGNALS:
-        void sourceFileTransferDone( QUrl source );
-        void fileTransferDone( QUrl destination );
+        void sourceFileTransferDone( const QUrl &source );
+        void fileTransferDone( const QUrl &destination );
 
     public Q_SLOTS:
         void slotCancel();

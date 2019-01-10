@@ -53,7 +53,7 @@ Q_SIGNALS:
     void failed(ThreadWeaver::JobPointer);
 
     void gotMoodMap( const QMap<QString, int> &map );
-    void gotMoodyTracks( Meta::TrackList tracks );
+    void gotMoodyTracks( const Meta::TrackList &tracks );
     void gotAlbumBySku( Meta::MagnatuneAlbum * album );
 
 private Q_SLOTS:

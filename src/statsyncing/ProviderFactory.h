@@ -77,7 +77,7 @@ namespace StatSyncing
             /**
              * Create a new provider instance using configuration stored in @param config
              */
-            virtual ProviderPtr createProvider( QVariantMap config ) = 0;
+            virtual ProviderPtr createProvider( const QVariantMap &config ) = 0;
     };
 
 } // namespace StatSyncing

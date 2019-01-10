@@ -69,7 +69,7 @@ AmpacheAccountLogin::reauthenticate()
 }
 
 void
-AmpacheAccountLogin::authenticate( const QUrl &requestUrl, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmpacheAccountLogin::authenticate( const QUrl &requestUrl, const QByteArray &data, const NetworkAccessManagerProxy::Error &e )
 {
     if( !m_pingRequest )
         return;
@@ -133,7 +133,7 @@ AmpacheAccountLogin::authenticate( const QUrl &requestUrl, QByteArray data, Netw
         Q_EMIT finished();
 }
 
-void AmpacheAccountLogin::authenticationComplete( const QUrl &requestUrl, QByteArray data, NetworkAccessManagerProxy::Error e )
+void AmpacheAccountLogin::authenticationComplete( const QUrl &requestUrl, const QByteArray &data, const NetworkAccessManagerProxy::Error &e )
 {
     Q_UNUSED( requestUrl );
 
@@ -203,7 +203,7 @@ AmpacheAccountLogin::getVersion( const QDomDocument& doc ) const
 }
 
 bool
-AmpacheAccountLogin::generalVerify( QNetworkReply *reply, const QDomDocument& doc, NetworkAccessManagerProxy::Error e )
+AmpacheAccountLogin::generalVerify( QNetworkReply *reply, const QDomDocument& doc, const NetworkAccessManagerProxy::Error &e )
 {
     Q_ASSERT( reply );
 

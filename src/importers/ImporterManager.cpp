@@ -70,7 +70,7 @@ ImporterManager::createConfigWidget()
 }
 
 ProviderPtr
-ImporterManager::createProvider( QVariantMap config )
+ImporterManager::createProvider( const QVariantMap &config )
 {
     Controller *controller = Amarok::Components::statSyncingController();
 

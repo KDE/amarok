@@ -87,7 +87,7 @@ void ServiceCollection::emitUpdated()
 }
 
 
-void ServiceCollection::addTrack( Meta::TrackPtr trackPtr )
+void ServiceCollection::addTrack( const Meta::TrackPtr &trackPtr )
 {
     m_mc->addTrack( trackPtr );
     const Meta::ServiceTrackPtr track = Meta::ServiceTrackPtr::dynamicCast( trackPtr );
@@ -96,7 +96,7 @@ void ServiceCollection::addTrack( Meta::TrackPtr trackPtr )
         m_trackIdMap.insert( track->id(), trackPtr );
 }
 
-void ServiceCollection::addArtist( Meta::ArtistPtr artistPtr )
+void ServiceCollection::addArtist( const Meta::ArtistPtr &artistPtr )
 {
     m_mc->addArtist( artistPtr );
     const Meta::ServiceArtistPtr artist = Meta::ServiceArtistPtr::dynamicCast( artistPtr );
@@ -105,7 +105,7 @@ void ServiceCollection::addArtist( Meta::ArtistPtr artistPtr )
         m_artistIdMap.insert( artist->id(), artistPtr );
 }
 
-void ServiceCollection::addAlbum( Meta::AlbumPtr albumPtr )
+void ServiceCollection::addAlbum( const Meta::AlbumPtr &albumPtr )
 {
     m_mc->addAlbum( albumPtr );
     const Meta::ServiceAlbumPtr album = Meta::ServiceAlbumPtr::dynamicCast( albumPtr );
@@ -114,7 +114,7 @@ void ServiceCollection::addAlbum( Meta::AlbumPtr albumPtr )
         m_albumIdMap.insert( album->id(), albumPtr );
 }
 
-void ServiceCollection::addGenre( Meta::GenrePtr genrePtr )
+void ServiceCollection::addGenre( const Meta::GenrePtr &genrePtr )
 {
     m_mc->addGenre( genrePtr );
     const Meta::ServiceGenrePtr genre = Meta::ServiceGenrePtr::dynamicCast( genrePtr );

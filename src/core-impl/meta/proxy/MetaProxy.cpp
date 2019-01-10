@@ -453,7 +453,7 @@ Track::removeLabel( const Meta::LabelPtr &label )
 }
 
 void
-MetaProxy::Track::updateTrack( Meta::TrackPtr track )
+MetaProxy::Track::updateTrack( const Meta::TrackPtr &track )
 {
     d->slotUpdateTrack( track );
 }

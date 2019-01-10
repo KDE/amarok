@@ -340,7 +340,7 @@ SqlRegistry::getTrackFromUid( const QString &uid )
 }
 
 void
-SqlRegistry::removeTrack( int urlId, const QString uid )
+SqlRegistry::removeTrack( int urlId, const QString &uid )
 {
     // delete all entries linked to the url, including track
     QStringList tables = QStringList() << "tracks" << "lyrics" << "statistics" << "urls_labels";

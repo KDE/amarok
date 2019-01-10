@@ -104,7 +104,7 @@ void AmarokUrlHandler::unRegisterGenerator( AmarokUrlGenerator * generator )
     m_registeredGenerators.removeAll( generator );
 }
 
-bool AmarokUrlHandler::run( AmarokUrl url )
+bool AmarokUrlHandler::run( const AmarokUrl &url )
 {
 
     DEBUG_BLOCK
@@ -121,13 +121,13 @@ bool AmarokUrlHandler::run( AmarokUrl url )
 
 }
 
-void AmarokUrlHandler::bookmarkAlbum( Meta::AlbumPtr album ) //slot
+void AmarokUrlHandler::bookmarkAlbum( const Meta::AlbumPtr &album ) //slot
 {
     NavigationUrlGenerator::instance()->urlFromAlbum( album ).saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
 
-void AmarokUrlHandler::bookmarkArtist( Meta::ArtistPtr artist ) //slot
+void AmarokUrlHandler::bookmarkArtist( const Meta::ArtistPtr &artist ) //slot
 {
     NavigationUrlGenerator::instance()->urlFromArtist( artist ).saveToDb();
     BookmarkModel::instance()->reloadFromDb();

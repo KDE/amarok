@@ -62,7 +62,7 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
         virtual QStringList query( const QString &query ) { Q_UNUSED( query ); return QStringList(); }
         virtual int insert( const QString &statement, const QString &table ) { Q_UNUSED( statement ); Q_UNUSED( table ); return 0; }
 
-        virtual QString escape( QString text ) const { Q_UNUSED( text ); return QString(); }
+        virtual QString escape( const QString &text ) const { Q_UNUSED( text ); return QString(); }
 
 
         Meta::TrackPtr trackById( int id );
@@ -72,10 +72,10 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
 
         //Override some stuff to be able to handle id mappings
 
-        void addTrack( Meta::TrackPtr trackPtr );
-        void addArtist( Meta::ArtistPtr artistPtr );
-        void addAlbum( Meta::AlbumPtr albumPtr );
-        void addGenre( Meta::GenrePtr genrePtr );
+        void addTrack( const Meta::TrackPtr &trackPtr );
+        void addArtist( const Meta::ArtistPtr &artistPtr );
+        void addAlbum( const Meta::AlbumPtr &albumPtr );
+        void addGenre( const Meta::GenrePtr &genrePtr );
 
         //TODO:
         //void setTrackMap( TrackMap map ) { m_trackMap = map; }

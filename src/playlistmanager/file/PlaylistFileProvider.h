@@ -58,7 +58,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         virtual bool import( const QUrl &path );
 
         bool isWritable() override { return true; }
-        void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName ) override;
+        void renamePlaylist(Playlists::PlaylistPtr playlist, const QString &newName ) override;
         bool deletePlaylists( const Playlists::PlaylistList &playlists ) override;
 
         /* PlaylistFileProvider methods */

@@ -153,7 +153,6 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
                                          targetLocation );
         }
     }
-
     return true;
 }
 

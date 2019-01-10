@@ -33,7 +33,7 @@ class ScriptableServiceQueryMaker : public DynamicServiceQueryMaker
     Q_OBJECT
 
 public:
-    ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, QString name );
+    ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, const QString &name );
     ~ScriptableServiceQueryMaker();
 
     void run() override;

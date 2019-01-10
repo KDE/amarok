@@ -42,31 +42,31 @@ PrivateMetaRegistry::~PrivateMetaRegistry()
 }
 
 
-void PrivateMetaRegistry::insertAlbum( const QString &owner, const QString &key, AlbumPtr album )
+void PrivateMetaRegistry::insertAlbum( const QString &owner, const QString &key, const AlbumPtr &album )
 {
     const QString compositeKey = owner + '-' + key;
     m_albums.insert( compositeKey, album );
 }
 
-void PrivateMetaRegistry::insertArtist( const QString &owner, const QString &key, ArtistPtr artist )
+void PrivateMetaRegistry::insertArtist( const QString &owner, const QString &key, const ArtistPtr &artist )
 {
     const QString compositeKey = owner + '-' + key;
     m_artists.insert( compositeKey, artist );
 }
 
-void PrivateMetaRegistry::insertGenre( const QString &owner, const QString &key, GenrePtr genre )
+void PrivateMetaRegistry::insertGenre( const QString &owner, const QString &key, const GenrePtr &genre )
 {
     const QString compositeKey = owner + '-' + key;
     m_genre.insert( compositeKey, genre );
 }
 
-void PrivateMetaRegistry::insertComposer( const QString &owner, const QString &key, ComposerPtr composer )
+void PrivateMetaRegistry::insertComposer( const QString &owner, const QString &key, const ComposerPtr &composer )
 {
     const QString compositeKey = owner + '-' + key;
     m_composers.insert( compositeKey, composer );
 }
 
-void PrivateMetaRegistry::insertYear( const QString &owner, const QString &key, YearPtr year )
+void PrivateMetaRegistry::insertYear( const QString &owner, const QString &key, const YearPtr &year )
 {
     const QString compositeKey = owner + '-' + key;
     m_years.insert( compositeKey, year );

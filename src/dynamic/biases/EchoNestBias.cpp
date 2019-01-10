@@ -161,7 +161,7 @@ Dynamic::EchoNestBias::widget( QWidget* parent )
 Dynamic::TrackSet
 Dynamic::EchoNestBias::matchingTracks( const Meta::TrackList& playlist,
                                        int contextCount, int finalCount,
-                                       Dynamic::TrackCollectionPtr universe ) const
+                                       const Dynamic::TrackCollectionPtr &universe ) const
 {
     Q_UNUSED( contextCount );
     Q_UNUSED( finalCount );
@@ -375,7 +375,7 @@ Dynamic::EchoNestBias::currentArtists( int position, const Meta::TrackList& play
 
 
 // this method shamelessly inspired by liblastfm/src/ws/ws.cpp
-QUrl Dynamic::EchoNestBias::createUrl( QString method, QMultiMap< QString, QString > params )
+QUrl Dynamic::EchoNestBias::createUrl( const QString &method, QMultiMap< QString, QString > params )
 {
     params.insert( QStringLiteral("api_key"), QStringLiteral("DD9P0OV9OYFH1LCAE") );
     params.insert( QStringLiteral("format"), QStringLiteral("xml") );
@@ -536,7 +536,7 @@ Dynamic::EchoNestBias::matchForName( const QString &name )
 }
 
 QString
-Dynamic::EchoNestBias::tracksMapKey( QStringList artists )
+Dynamic::EchoNestBias::tracksMapKey( const QStringList &artists )
 {
     return artists.join(QStringLiteral("|"));
 }

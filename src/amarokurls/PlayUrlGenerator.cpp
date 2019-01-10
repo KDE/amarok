@@ -56,7 +56,7 @@ PlayUrlGenerator::createCurrentTrackBookmark()
 }
 
 AmarokUrl
-PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds, QString name )
+PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds, const QString &name )
 {
     DEBUG_BLOCK
 
@@ -84,7 +84,7 @@ PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds,
 }
 
 void
-PlayUrlGenerator::moveTrackBookmark( Meta::TrackPtr track, qint64 newMiliseconds, QString name )
+PlayUrlGenerator::moveTrackBookmark( Meta::TrackPtr track, qint64 newMiliseconds, const QString &name )
 {
     qreal seconds = qreal ( newMiliseconds ) / 1000;
     QString trackPosition;

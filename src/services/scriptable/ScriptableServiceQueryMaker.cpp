@@ -41,7 +41,7 @@ struct ScriptableServiceQueryMaker::Private {
     QString lastFilter;
 };
 
-ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, QString name )
+ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, const QString &name )
     : DynamicServiceQueryMaker()
     , d( new Private )
     , m_convertToMultiTracks( false )

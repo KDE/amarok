@@ -38,7 +38,7 @@ namespace Playdar
         
         public:
             ProxyResolver( Collections::PlaydarCollection *collection,
-                           const QUrl &url, MetaProxy::TrackPtr track );
+                           const QUrl &url, const MetaProxy::TrackPtr &track );
             ~ProxyResolver();
         
         Q_SIGNALS:

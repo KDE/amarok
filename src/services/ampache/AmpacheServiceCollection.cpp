@@ -139,7 +139,7 @@ void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
 }
 
 AmpacheTrackForUrlWorker::AmpacheTrackForUrlWorker( const QUrl &url,
-                                                    MetaProxy::TrackPtr track,
+                                                    const MetaProxy::TrackPtr &track,
                                                     const QUrl &server,
                                                     const QString &sessionId,
                                                     ServiceBase *service )

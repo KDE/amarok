@@ -55,16 +55,16 @@ class OpmlDirectoryService : public ServiceBase, public AmarokUrlRunnerBase
         OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name,
                               const QString &prettyName );
 
-        ~OpmlDirectoryService();
+        ~OpmlDirectoryService() override;
 
         void polish() override;
 
-        Collections::Collection * collection() override { return 0; }
+        Collections::Collection * collection() override { return nullptr; }
 
         /* UrlRunnerBase methods */
         QString command() const override;
         QString prettyCommand() const override;
-        bool run( AmarokUrl url ) override;
+        bool run( const AmarokUrl &url ) override;
         QIcon icon() const override { return QIcon::fromTheme( "view-services-opml-amarok" ); }
 
     private Q_SLOTS:

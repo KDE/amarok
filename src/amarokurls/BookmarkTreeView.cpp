@@ -96,7 +96,7 @@ BookmarkTreeView::keyPressEvent( QKeyEvent *event )
 }
 
 QList<QAction *>
-BookmarkTreeView::createCommonActions( QModelIndexList indices )
+BookmarkTreeView::createCommonActions( const QModelIndexList &indices )
 {
     DEBUG_BLOCK
 

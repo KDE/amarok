@@ -40,7 +40,7 @@ static const int MAX_RESTARTS = 40;
 static const int SHARED_MEMORY_SIZE = 1024 * 1024; // 1 MB shared memory
 
 GenericScannerJob::GenericScannerJob( GenericScanManager* manager,
-                                      QStringList scanDirsRequested,
+                                      const QStringList &scanDirsRequested,
                                       GenericScanManager::ScanType type,
                                       bool recursive, bool detectCharset )
     : QObject()

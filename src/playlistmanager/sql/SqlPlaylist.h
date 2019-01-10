@@ -62,7 +62,7 @@ class SqlPlaylist : public Playlist
         Meta::TrackList tracks() override;
         void triggerTrackLoad() override;
 
-        void addTrack( Meta::TrackPtr track, int position = -1 ) override;
+        void addTrack( const Meta::TrackPtr &track, int position = -1 ) override;
         void removeTrack( int position ) override;
 
         // SqlPlaylist-specific methods

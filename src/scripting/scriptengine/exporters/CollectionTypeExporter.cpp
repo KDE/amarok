@@ -45,7 +45,7 @@ CollectionPrototype::init( QScriptEngine *engine )
 //script invokable
 
 void
-CollectionPrototype::copyTracks( const Meta::TrackPtr track, Collection* targetCollection )
+CollectionPrototype::copyTracks( const Meta::TrackPtr &track, Collection* targetCollection )
 {
     copyTracks( Meta::TrackList() << track, targetCollection );
 }
@@ -69,7 +69,7 @@ CollectionPrototype::queryAndCopyTracks( QueryMaker *queryMaker, Collection* tar
 }
 
 void
-CollectionPrototype::moveTracks( const Meta::TrackPtr track, Collection *targetCollection )
+CollectionPrototype::moveTracks( const Meta::TrackPtr &track, Collection *targetCollection )
 {
     moveTracks( Meta::TrackList() << track, targetCollection );
 }
@@ -99,7 +99,7 @@ CollectionPrototype::removeTracks( const Meta::TrackList &list )
     collection->location()->prepareRemove( removeInvalidTracks( list ) );
 }
 
-void CollectionPrototype::removeTracks( const Meta::TrackPtr track )
+void CollectionPrototype::removeTracks( const Meta::TrackPtr &track )
 {
     removeTracks( Meta::TrackList() << track );
 }

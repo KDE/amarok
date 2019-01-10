@@ -103,7 +103,7 @@ private:
 
     static int getGroupMode( const QModelIndex &index);
 
-    QMap<QString, QString> buildTrackArgsMap( const Meta::TrackPtr track ) const;
+    QMap<QString, QString> buildTrackArgsMap( const Meta::TrackPtr &track ) const;
 
     static QFontMetricsF* s_nfm; //normal
     static QFontMetricsF* s_ufm; //underline

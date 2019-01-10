@@ -42,15 +42,15 @@ class UmsPodcastEpisode : public Podcasts::PodcastEpisode
     friend class UmsPodcastProvider;
 
     public:
-        static UmsPodcastEpisodePtr fromPodcastEpisodePtr( Podcasts::PodcastEpisodePtr episode );
-        static UmsPodcastEpisodePtr fromTrackPtr( Meta::TrackPtr track );
-        static Podcasts::PodcastEpisodePtr toPodcastEpisodePtr( UmsPodcastEpisodePtr episode );
+        static UmsPodcastEpisodePtr fromPodcastEpisodePtr( const Podcasts::PodcastEpisodePtr &episode );
+        static UmsPodcastEpisodePtr fromTrackPtr( const Meta::TrackPtr &track );
+        static Podcasts::PodcastEpisodePtr toPodcastEpisodePtr( const UmsPodcastEpisodePtr &episode );
         static Podcasts::PodcastEpisodeList toPodcastEpisodeList( UmsPodcastEpisodeList episodes );
 
-        explicit UmsPodcastEpisode( UmsPodcastChannelPtr channel );
+        explicit UmsPodcastEpisode( const UmsPodcastChannelPtr &channel );
         ~UmsPodcastEpisode();
 
-        void setLocalFile( MetaFile::TrackPtr localFile );
+        void setLocalFile( const MetaFile::TrackPtr &localFile );
 
         //PodcastEpisode methods
         QString title() const override;
@@ -80,16 +80,16 @@ class UmsPodcastChannel : public Podcasts::PodcastChannel
     friend class UmsPodcastProvider;
     public:
         static UmsPodcastChannelPtr fromPodcastChannelPtr(
-                Podcasts::PodcastChannelPtr channel );
-        static Podcasts::PodcastChannelPtr toPodcastChannelPtr( UmsPodcastChannelPtr channel );
+                const Podcasts::PodcastChannelPtr &channel );
+        static Podcasts::PodcastChannelPtr toPodcastChannelPtr( const UmsPodcastChannelPtr &channel );
         static Podcasts::PodcastChannelList toPodcastChannelList(
                 UmsPodcastChannelList umsChannels );
 
         explicit UmsPodcastChannel( UmsPodcastProvider *provider );
         UmsPodcastChannel( Podcasts::PodcastChannelPtr channel, UmsPodcastProvider *provider );
-        ~UmsPodcastChannel();
+        ~UmsPodcastChannel() override;
 
-        Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override;
+        Podcasts::PodcastEpisodePtr addEpisode( const Podcasts::PodcastEpisodePtr &episode ) override;
 
         UmsPodcastEpisodeList umsEpisodes() { return m_umsEpisodes; }
         void addUmsEpisode( UmsPodcastEpisodePtr episode );
@@ -102,7 +102,7 @@ class UmsPodcastChannel : public Podcasts::PodcastChannel
         Playlists::PlaylistProvider *provider() const override;
 
     protected:
-        void removeEpisode( UmsPodcastEpisodePtr episode );
+        void removeEpisode( const UmsPodcastEpisodePtr &episode );
 
     private:
         UmsPodcastProvider *m_provider;

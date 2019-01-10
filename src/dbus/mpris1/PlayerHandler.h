@@ -106,10 +106,10 @@ namespace Mpris1
             void StatusChange( Mpris1::Status );
 
         public:
-            QVariantMap GetTrackMetadata( Meta::TrackPtr track );
+            QVariantMap GetTrackMetadata( const Meta::TrackPtr &track );
 
         private Q_SLOTS:
-            void slotTrackChanged( Meta::TrackPtr track );
+            void slotTrackChanged( const Meta::TrackPtr &track );
             void slotStateChanged();
     };
 

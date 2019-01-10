@@ -107,8 +107,8 @@ namespace AmarokScript
         Q_INVOKABLE QString toString() const;
 
     private:
-        void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track, int position ) override;
-        void trackRemoved( Playlists::PlaylistPtr playlist, int position ) override;
+        void trackAdded( const Playlists::PlaylistPtr &playlist, const Meta::TrackPtr &track, int position ) override;
+        void trackRemoved( const Playlists::PlaylistPtr &playlist, int position ) override;
 
         bool isValid() const;
         QUrl uidUrl() const;

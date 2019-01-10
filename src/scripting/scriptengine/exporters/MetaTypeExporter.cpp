@@ -372,7 +372,7 @@ MetaTrackPrototype::setImageUrl( const QString& imageUrl )
 }
 
 void
-MetaTrackPrototype::metadataChanged( Meta::TrackPtr track )
+MetaTrackPrototype::metadataChanged(const Meta::TrackPtr &track )
 {
     Observer::unsubscribeFrom( track );
     debug() << "Loaded track: " << track->prettyName();

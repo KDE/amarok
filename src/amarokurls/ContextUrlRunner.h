@@ -33,7 +33,7 @@ public:
     ~ContextUrlRunner() override;
     
     QIcon icon() const override;
-    bool run(AmarokUrl url) override;
+    bool run(const AmarokUrl &url) override;
     QString command() const override;
     QString prettyCommand() const override;
 };

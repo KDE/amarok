@@ -40,7 +40,7 @@ Dynamic::DynamicPlaylist::repopulate()
 QString Dynamic::DynamicPlaylist::title() const
 { return m_title; }
 
-void Dynamic::DynamicPlaylist::setTitle( QString title )
+void Dynamic::DynamicPlaylist::setTitle( const QString &title )
 {
     m_title = title;
     bool inModel = DynamicModel::instance()->index( this ).isValid();

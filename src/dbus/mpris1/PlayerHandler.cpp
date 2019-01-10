@@ -264,12 +264,12 @@ namespace Mpris1
         Q_EMIT CapsChange( GetCaps() );
     }
 
-    QVariantMap PlayerHandler::GetTrackMetadata( Meta::TrackPtr track )
+    QVariantMap PlayerHandler::GetTrackMetadata( const Meta::TrackPtr &track )
     {
         return Meta::Field::mprisMapFromTrack( track );
     }
 
-    void PlayerHandler::slotTrackChanged( Meta::TrackPtr track )
+    void PlayerHandler::slotTrackChanged( const Meta::TrackPtr &track )
     {
         Q_EMIT TrackChange( GetTrackMetadata( track ) );
     }

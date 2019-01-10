@@ -26,8 +26,8 @@
 class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObserver
 {
     public:
-        explicit SyncedPlaylist( Playlists::PlaylistPtr playlist );
-        virtual ~SyncedPlaylist() {}
+        explicit SyncedPlaylist( const Playlists::PlaylistPtr &playlist );
+        ~SyncedPlaylist() override {}
 
         //Playlists::Playlist methods
         QUrl uidUrl() const override;
@@ -39,15 +39,15 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         Meta::TrackList tracks() override;
         int trackCount() const override;
 
-        void addTrack( Meta::TrackPtr track, int position = -1 ) override;
+        void addTrack( const Meta::TrackPtr &track, int position = -1 ) override;
         void removeTrack( int position ) override;
 
         //PlaylistObserver methods
-        void metadataChanged( Playlists::PlaylistPtr playlist ) override;
+        void metadataChanged( const Playlists::PlaylistPtr &playlist ) override;
         void tracksLoaded( Playlists::PlaylistPtr) override;
-        void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
+        void trackAdded( const Playlists::PlaylistPtr &playlist, const Meta::TrackPtr &track,
                                  int position ) override;
-        void trackRemoved( Playlists::PlaylistPtr playlist, int position ) override;
+        void trackRemoved( const Playlists::PlaylistPtr &playlist, int position ) override;
 
         //SyncedPlaylist methods
         /** returns true when there is no active playlist associated with it anymore. */

@@ -213,7 +213,7 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
 }
 
 void
-TrackLoader::metadataChanged( Meta::TrackPtr track )
+TrackLoader::metadataChanged( const Meta::TrackPtr &track )
 {
     // first metadataChanged() from a MetaProxy::Track means that it has found the real track
     bool isEmpty;

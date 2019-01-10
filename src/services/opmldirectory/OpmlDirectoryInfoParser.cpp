@@ -38,19 +38,19 @@ OpmlDirectoryInfoParser::~OpmlDirectoryInfoParser()
 {
 }
 
-void OpmlDirectoryInfoParser::getInfo(ArtistPtr artist)
+void OpmlDirectoryInfoParser::getInfo(const ArtistPtr &artist)
 {
     AMAROK_NOTIMPLEMENTED
     Q_UNUSED( artist );
 }
 
-void OpmlDirectoryInfoParser::getInfo(AlbumPtr album)
+void OpmlDirectoryInfoParser::getInfo(const AlbumPtr &album)
 {
     AMAROK_NOTIMPLEMENTED
     Q_UNUSED( album );
 }
 
-void OpmlDirectoryInfoParser::getInfo( TrackPtr track )
+void OpmlDirectoryInfoParser::getInfo(const TrackPtr &track )
 {
     DEBUG_BLOCK
     showLoading( i18n( "Loading Podcast Info..." ) );

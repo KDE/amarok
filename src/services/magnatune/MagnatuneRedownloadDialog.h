@@ -38,7 +38,7 @@ public:
 Q_SIGNALS:
 
 //     void redownload( const QString &downloadInfoFileName );
-    void redownload( MagnatuneDownloadInfo info );
+    void redownload( const MagnatuneDownloadInfo &info );
     void cancelled();
 
 public Q_SLOTS:

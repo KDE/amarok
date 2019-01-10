@@ -188,7 +188,7 @@ DEBUG_BLOCK
 }
 
 void
-UpnpBrowseCollection::removeTrack( TrackPtr t )
+UpnpBrowseCollection::removeTrack( const TrackPtr &t )
 {
     m_cache->removeTrack( t );
 }

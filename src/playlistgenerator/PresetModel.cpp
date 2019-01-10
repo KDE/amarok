@@ -264,7 +264,7 @@ APG::PresetModel::loadPresetsFromXml( const QString& filename, bool createDefaul
 }
 
 void
-APG::PresetModel::insertPreset( APG::PresetPtr ps )
+APG::PresetModel::insertPreset( const APG::PresetPtr &ps )
 {
     if ( ps ) {
         int row = m_presetList.size();

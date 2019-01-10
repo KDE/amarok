@@ -100,7 +100,7 @@ CollectionLocation::isOrganizable() const
 }
 
 void
-CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination )
+CollectionLocation::prepareCopy( const Meta::TrackPtr &track, CollectionLocation *destination )
 {
     Q_ASSERT(destination);
     Meta::TrackList list;
@@ -148,7 +148,7 @@ CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation
 }
 
 void
-CollectionLocation::prepareMove( Meta::TrackPtr track, CollectionLocation *destination )
+CollectionLocation::prepareMove( const Meta::TrackPtr &track, CollectionLocation *destination )
 {
     Meta::TrackList list;
     list.append( track );

@@ -426,37 +426,37 @@ ServiceTrack::type() const
 }
 
 void
-ServiceTrack::setAlbumPtr( AlbumPtr album )
+ServiceTrack::setAlbumPtr( const AlbumPtr &album )
 {
     m_album = album;
 }
 
 void
-ServiceTrack::setArtist( ArtistPtr artist )
+ServiceTrack::setArtist( const ArtistPtr &artist )
 {
     m_artist = artist;
 }
 
 void
-ServiceTrack::setGenre( GenrePtr genre )
+ServiceTrack::setGenre( const GenrePtr &genre )
 {
     m_genre = genre;
 }
 
 void
-ServiceTrack::setComposer( ComposerPtr composer )
+ServiceTrack::setComposer( const ComposerPtr &composer )
 {
     m_composer = composer;
 }
 
 void
-ServiceTrack::setYear( YearPtr year )
+ServiceTrack::setYear( const YearPtr &year )
 {
     m_year = year;
 }
 
 void
-ServiceTrack::setStatisticsProvider( StatisticsPtr provider )
+ServiceTrack::setStatisticsProvider( const StatisticsPtr &provider )
 {
     m_statsStore = provider;
 }
@@ -553,7 +553,7 @@ ServiceArtist::tracks()
 }
 
 void
-ServiceArtist::addTrack( TrackPtr track )
+ServiceArtist::addTrack( const TrackPtr &track )
 {
     m_tracks.append( track );
 }
@@ -700,13 +700,13 @@ ServiceAlbum::tracks()
 }
 
 void
-ServiceAlbum::addTrack( TrackPtr track )
+ServiceAlbum::addTrack( const TrackPtr &track )
 {
     m_tracks.append( track );
 }
 
 void
-ServiceAlbum::setAlbumArtist( ArtistPtr artist )
+ServiceAlbum::setAlbumArtist( const ArtistPtr &artist )
 {
     m_albumArtist = artist;
 }
@@ -801,7 +801,7 @@ ServiceGenre::tracks()
 }
 
 void
-ServiceGenre::addTrack( TrackPtr track )
+ServiceGenre::addTrack( const TrackPtr &track )
 {
     m_tracks.append( track );
 }
@@ -845,7 +845,7 @@ ServiceComposer::tracks()
 }
 
 void
-ServiceComposer::addTrack( ServiceTrackPtr track )
+ServiceComposer::addTrack( const ServiceTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
@@ -889,7 +889,7 @@ ServiceYear::tracks()
 }
 
 void
-ServiceYear::addTrack( ServiceTrackPtr track )
+ServiceYear::addTrack( const ServiceTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }

@@ -236,7 +236,7 @@ PlaylistFileProvider::import( const QUrl &path )
 }
 
 void
-PlaylistFileProvider::renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName )
+PlaylistFileProvider::renamePlaylist(PlaylistPtr playlist, const QString &newName )
 {
     DEBUG_BLOCK
     playlist->setName( newName );

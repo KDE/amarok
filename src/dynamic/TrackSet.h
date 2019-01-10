@@ -89,7 +89,7 @@ namespace Dynamic
              *  @param collection The collection of the tracks
              *  @param value If true set is set to "full". Else to "empty".
             */
-            TrackSet( const Dynamic::TrackCollectionPtr collection, bool value );
+            TrackSet( const Dynamic::TrackCollectionPtr &collection, bool value );
 
             /** Includes or excludes all tracks in the set.
                 @param value If true set is set to "full". Else to "empty".

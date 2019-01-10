@@ -60,7 +60,7 @@ public:
 
 protected:
 
-    bool writeTimecode( qint64 miliseconds, Meta::TrackPtr track );
+    bool writeTimecode( qint64 miliseconds, const Meta::TrackPtr &track );
     bool writeAutoTimecode( qint64 miliseconds, Meta::TrackPtr track );
 };
 

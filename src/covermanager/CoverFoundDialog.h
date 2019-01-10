@@ -50,7 +50,7 @@ class CoverFoundDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CoverFoundDialog( const CoverFetchUnit::Ptr unit,
+    explicit CoverFoundDialog( const CoverFetchUnit::Ptr &unit,
                                const CoverFetch::Metadata &data = CoverFetch::Metadata(),
                                QWidget *parent = nullptr );
     ~CoverFoundDialog();
@@ -84,7 +84,7 @@ private Q_SLOTS:
     void clearView();
     void downloadProgressed( qint64 bytesReceived, qint64 bytesTotal );
     void fetchRequestRedirected( QNetworkReply *oldReply, QNetworkReply *newReply );
-    void handleFetchResult( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void handleFetchResult( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
     void insertComboText( const QString &text );
     void currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void itemDoubleClicked( QListWidgetItem *item );
@@ -132,12 +132,12 @@ class CoverFoundSideBar : public BoxWidget
     Q_OBJECT
 
 public:
-    explicit CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent = nullptr );
+    explicit CoverFoundSideBar( const Meta::AlbumPtr &album, QWidget *parent = nullptr );
     ~CoverFoundSideBar();
 
 public Q_SLOTS:
     void clear();
-    void setPixmap( const QPixmap &pixmap, CoverFetch::Metadata metadata );
+    void setPixmap( const QPixmap &pixmap, const CoverFetch::Metadata &metadata );
     void setPixmap( const QPixmap &pixmap );
 
 private:

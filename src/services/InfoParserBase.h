@@ -37,7 +37,7 @@ public:
      * with a ready to show html page when the info is ready
      * @param artist The artist to get info about
      */
-    virtual void getInfo( Meta::ArtistPtr artist ) = 0;
+    virtual void getInfo( const Meta::ArtistPtr &artist ) = 0;
 
     /**
      * Overloaded function
@@ -45,7 +45,7 @@ public:
      * with a ready to show html page when the info is ready
      * @param album The album to get info about
      */
-    virtual void getInfo( Meta::AlbumPtr album ) = 0;
+    virtual void getInfo( const Meta::AlbumPtr &album ) = 0;
 
     /**
      * Overloaded function
@@ -53,7 +53,7 @@ public:
      * with a ready to show html page when the info is ready
      * @param track The track to get info about
      */
-    virtual void getInfo( Meta::TrackPtr track ) = 0;
+    virtual void getInfo( const Meta::TrackPtr &track ) = 0;
 
     void showLoading( const QString &message );
 

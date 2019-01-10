@@ -77,7 +77,7 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
             The bias must not be part of a model. When in doubt call bias->replace(BiasPtr())
             to remove the bias from it's current position.
         */
-        QModelIndex insertBias( int row, const QModelIndex &parentIndex, Dynamic::BiasPtr bias );
+        QModelIndex insertBias( int row, const QModelIndex &parentIndex, const Dynamic::BiasPtr &bias );
 
         Qt::DropActions supportedDropActions() const override;
 
@@ -101,7 +101,7 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         /** Returns the index for the bias
             @return Returns an invalid index if the bias is not in the model.
         */
-        QModelIndex index( Dynamic::BiasPtr bias ) const;
+        QModelIndex index( const Dynamic::BiasPtr &bias ) const;
 
         /** Returns the index for the playlist
             @return Returns an invalid index if the playlist is not in the model.
@@ -132,8 +132,8 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
 
     private:
         // two functions to search for parents
-        QModelIndex parent( int row, Dynamic::BiasedPlaylist* list, Dynamic::BiasPtr bias ) const;
-        QModelIndex parent( int row, Dynamic::BiasPtr parent, Dynamic::BiasPtr bias ) const;
+        QModelIndex parent( int row, Dynamic::BiasedPlaylist* list, const Dynamic::BiasPtr &bias ) const;
+        QModelIndex parent( int row, const Dynamic::BiasPtr &parent, const Dynamic::BiasPtr &bias ) const;
 
         /** Writes the index to the data stream */
         void serializeIndex( QDataStream *stream, const QModelIndex& index ) const;
@@ -149,17 +149,17 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
         // notify the model about changes.
 
         void playlistChanged( Dynamic::DynamicPlaylist* playlist );
-        void biasChanged( Dynamic::BiasPtr bias );
+        void biasChanged( const Dynamic::BiasPtr &bias );
 
         void beginRemoveBias( Dynamic::BiasedPlaylist* parent );
-        void beginRemoveBias( Dynamic::BiasPtr parent, int index );
+        void beginRemoveBias( const Dynamic::BiasPtr &parent, int index );
         void endRemoveBias();
 
         void beginInsertBias( Dynamic::BiasedPlaylist* parent );
-        void beginInsertBias( Dynamic::BiasPtr parent, int index );
+        void beginInsertBias( const Dynamic::BiasPtr &parent, int index );
         void endInsertBias();
 
-        void beginMoveBias( Dynamic::BiasPtr parent, int from, int to );
+        void beginMoveBias( const Dynamic::BiasPtr &parent, int from, int to );
         void endMoveBias();
 
         // ----

@@ -104,7 +104,7 @@ class UmsCollection : public Collection, public Meta::Observer
     public:
         // inherited methods
 
-        explicit UmsCollection( Solid::Device device );
+        explicit UmsCollection( const Solid::Device &device );
         virtual ~UmsCollection();
 
         /* TrackProvider methods */
@@ -133,7 +133,7 @@ class UmsCollection : public Collection, public Meta::Observer
                 Capabilities::Capability::Type type ) override;
 
         /* Meta::Observer methods */
-        void metadataChanged( Meta::TrackPtr track ) override;
+        void metadataChanged( const Meta::TrackPtr &track ) override;
         using Meta::Observer::metadataChanged; // silence compiler warning about hidder overloads
 
         /* own methods */
@@ -146,7 +146,7 @@ class UmsCollection : public Collection, public Meta::Observer
          * @param fileExtension new extension to use. Leave empty if you don't wish to
          * change file extension
          */
-        QUrl organizedUrl( Meta::TrackPtr track, const QString &fileExtension = QString() ) const;
+        QUrl organizedUrl( const Meta::TrackPtr &track, const QString &fileExtension = QString() ) const;
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
@@ -171,7 +171,7 @@ class UmsCollection : public Collection, public Meta::Observer
          */
         void slotEject();
 
-        void slotTrackAdded( QUrl trackLocation );
+        void slotTrackAdded( const QUrl &trackLocation );
         void slotTrackRemoved( const Meta::TrackPtr &track );
 
     private Q_SLOTS:

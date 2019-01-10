@@ -109,7 +109,7 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QStr
 }
 
 void
-MediaDeviceUserPlaylistProvider::renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName )
+MediaDeviceUserPlaylistProvider::renamePlaylist(PlaylistPtr playlist, const QString &newName )
 {
     DEBUG_BLOCK
     Playlists::MediaDevicePlaylistPtr pl = Playlists::MediaDevicePlaylistPtr::staticCast( playlist );

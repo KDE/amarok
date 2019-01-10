@@ -102,25 +102,25 @@ StreamItem::coverUrl()
 
 
 void
-StreamItem::setItemName( QString name )
+StreamItem::setItemName( const QString &name )
 {
     m_name = name;
 }
 
 void
-StreamItem::setInfoHtml( QString infoHtml )
+StreamItem::setInfoHtml( const QString &infoHtml )
 {
     m_infoHtml = infoHtml;
 }
 
 void
-StreamItem::setPlayableUrl( QString playableUrl )
+StreamItem::setPlayableUrl( const QString &playableUrl )
 {
     m_playableUrl = playableUrl;
 }
 
 void
-StreamItem::setCallbackData( QString callbackData )
+StreamItem::setCallbackData( const QString &callbackData )
 {
     m_callbackData = callbackData;
 }
@@ -132,25 +132,25 @@ StreamItem::setLevel( int level )
 }
 
 void
-StreamItem::setAlbum( QString album )
+StreamItem::setAlbum( const QString &album )
 {
     m_album = album;
 }
 
 void
-StreamItem::setArtist( QString artist )
+StreamItem::setArtist( const QString &artist )
 {
     m_artist = artist;
 }
 
 void
-StreamItem::setGenre( QString genre )
+StreamItem::setGenre( const QString &genre )
 {
     m_genre = genre;
 }
 
 void
-StreamItem::setComposer( QString composer )
+StreamItem::setComposer( const QString &composer )
 {
     m_composer = composer;
 }
@@ -162,7 +162,7 @@ StreamItem::setYear( int year )
 }
 
 void
-StreamItem::setCoverUrl( QString url )
+StreamItem::setCoverUrl( const QString &url )
 {
     m_coverUrl = url;
 }

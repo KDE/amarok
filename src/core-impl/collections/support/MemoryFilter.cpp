@@ -24,7 +24,7 @@
 class UrlMemoryFilter : public StringMemoryFilter
 {
 protected:
-    QString value( Meta::TrackPtr track ) const override
+    QString value( const Meta::TrackPtr &track ) const override
     { return track->playableUrl().url(); }
 
 };
@@ -38,7 +38,7 @@ class GenericStringMemoryFilter : public StringMemoryFilter
         { setFilter( filter, matchBegin, matchEnd ); }
 
     protected:
-        QString value( Meta::TrackPtr track ) const override
+        QString value( const Meta::TrackPtr &track ) const override
         { return Meta::valueForField( m_value, track ).toString(); }
 
     private:
@@ -54,7 +54,7 @@ class GenericNumberMemoryFilter : public NumberMemoryFilter
         { setFilter( filter, compare ); }
 
     protected:
-        qint64 value( Meta::TrackPtr track ) const override
+        qint64 value( const Meta::TrackPtr &track ) const override
         {
             QVariant v = Meta::valueForField( m_value, track );
             if( v.type() == QVariant::DateTime )
@@ -118,7 +118,7 @@ AndContainerMemoryFilter::~AndContainerMemoryFilter()
 }
 
 bool
-AndContainerMemoryFilter::filterMatches( Meta::TrackPtr track ) const
+AndContainerMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
 {
     if( m_filters.isEmpty() )
         return false;
@@ -141,7 +141,7 @@ OrContainerMemoryFilter::~OrContainerMemoryFilter()
 }
 
 bool
-OrContainerMemoryFilter::filterMatches( Meta::TrackPtr track ) const
+OrContainerMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
 {
     if( m_filters.isEmpty() )
         return false;
@@ -166,7 +166,7 @@ NegateMemoryFilter::~NegateMemoryFilter()
 }
 
 bool
-NegateMemoryFilter::filterMatches( Meta::TrackPtr track ) const
+NegateMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
 {
     return !m_filter->filterMatches( track );
 }
@@ -192,7 +192,7 @@ StringMemoryFilter::setFilter( const QString &filter, bool matchBegin, bool matc
 }
 
 bool
-StringMemoryFilter::filterMatches( Meta::TrackPtr track ) const
+StringMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
 {
     const QString &str = value( track );
     if( m_matchBegin && m_matchEnd )
@@ -232,7 +232,7 @@ NumberMemoryFilter::setFilter( qint64 filter, Collections::QueryMaker::NumberCom
 }
 
 bool
-NumberMemoryFilter::filterMatches( Meta::TrackPtr track ) const
+NumberMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
 {
     qint64 currentValue = value( track );
     switch( m_compare )
@@ -266,7 +266,7 @@ LabelFilter::~LabelFilter()
 }
 
 bool
-LabelFilter::filterMatches( Meta::TrackPtr track ) const
+LabelFilter::filterMatches(const Meta::TrackPtr &track ) const
 {
     foreach( const Meta::LabelPtr &label, track->labels() )
     {

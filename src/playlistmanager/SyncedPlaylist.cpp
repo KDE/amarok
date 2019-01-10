@@ -25,7 +25,7 @@
 
 using namespace Meta;
 
-SyncedPlaylist::SyncedPlaylist( Playlists::PlaylistPtr playlist )
+SyncedPlaylist::SyncedPlaylist( const Playlists::PlaylistPtr &playlist )
 {
     addPlaylist( playlist );
 }
@@ -77,7 +77,7 @@ SyncedPlaylist::trackCount() const
 }
 
 void
-SyncedPlaylist::addTrack( Meta::TrackPtr track, int position )
+SyncedPlaylist::addTrack( const Meta::TrackPtr &track, int position )
 {
     //only apply it to the first, the rest will follow in trackAdded()
     m_playlists.first()->addTrack( track, position );
@@ -91,7 +91,7 @@ SyncedPlaylist::removeTrack( int position )
 }
 
 void
-SyncedPlaylist::metadataChanged( Playlists::PlaylistPtr playlist )
+SyncedPlaylist::metadataChanged( const Playlists::PlaylistPtr &playlist )
 {
     if( !m_playlists.contains( playlist ) )
         return;
@@ -111,7 +111,7 @@ SyncedPlaylist::tracksLoaded( Playlists::PlaylistPtr playlist )
 }
 
 void
-SyncedPlaylist::trackAdded( Playlists::PlaylistPtr playlist, TrackPtr track, int position )
+SyncedPlaylist::trackAdded( const Playlists::PlaylistPtr &playlist, const TrackPtr &track, int position )
 {
     if( !m_playlists.contains( playlist ) )
         return;
@@ -132,7 +132,7 @@ SyncedPlaylist::trackAdded( Playlists::PlaylistPtr playlist, TrackPtr track, int
 }
 
 void
-SyncedPlaylist::trackRemoved( Playlists::PlaylistPtr playlist, int position )
+SyncedPlaylist::trackRemoved( const Playlists::PlaylistPtr &playlist, int position )
 {
     if( !m_playlists.contains( playlist ) )
         return;

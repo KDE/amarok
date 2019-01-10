@@ -33,7 +33,7 @@ namespace APG {
         Q_OBJECT
 
         public:
-            explicit PresetEditDialog( PresetPtr );
+            explicit PresetEditDialog( const PresetPtr &);
 
         private Q_SLOTS:
             void addNode( const QString& );

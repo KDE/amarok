@@ -44,7 +44,7 @@ ViewUrlRunner::~ViewUrlRunner()
 }
 
 bool
-ViewUrlRunner::run( AmarokUrl url )
+ViewUrlRunner::run( const AmarokUrl &url )
 {
     DEBUG_BLOCK
 

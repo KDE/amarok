@@ -111,7 +111,7 @@ struct MemoryQueryMaker::Private {
     QString collectionId;
 };
 
-MemoryQueryMaker::MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QString &collectionId )
+MemoryQueryMaker::MemoryQueryMaker( const QWeakPointer<MemoryCollection> &mc, const QString &collectionId )
     : QueryMaker()
     , m_collection( mc )
     , d( new Private )

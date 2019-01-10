@@ -222,7 +222,7 @@ SqlPlaylist::triggerTrackLoad()
 }
 
 void
-SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
+SqlPlaylist::addTrack(const Meta::TrackPtr &track, int position )
 {
     if( !m_tracksLoaded )
         loadTracks();

@@ -90,11 +90,11 @@ public:
     void endUpdate() override;
 
     //TimecodeTrack specific methods
-    void setAlbum( TimecodeAlbumPtr album );
-    void setArtist( TimecodeArtistPtr artist );
-    void setComposer( TimecodeComposerPtr composer );
-    void setGenre( TimecodeGenrePtr genre );
-    void setYear( TimecodeYearPtr year );
+    void setAlbum( const TimecodeAlbumPtr &album );
+    void setArtist( const TimecodeArtistPtr &artist );
+    void setComposer( const TimecodeComposerPtr &composer );
+    void setGenre( const TimecodeGenrePtr &genre );
+    void setYear( const TimecodeYearPtr &year );
 
     qint64 start();
     qint64 end();
@@ -157,7 +157,7 @@ public:
     }
 
     //TimecodeArtist specific methods
-    void addTrack( TimecodeTrackPtr track );
+    void addTrack( const TimecodeTrackPtr &track );
 
 private:
     QString m_name;
@@ -186,8 +186,8 @@ public:
     Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
     //TimecodeAlbum specific methods
-    void addTrack( TimecodeTrackPtr track );
-    void setAlbumArtist( TimecodeArtistPtr artist );
+    void addTrack( const TimecodeTrackPtr &track );
+    void setAlbumArtist( const TimecodeArtistPtr &artist );
 
     bool operator==( const Meta::Album &other ) const override
     {
@@ -219,7 +219,7 @@ public:
     }
 
     //TimecodeGenre specific methods
-    void addTrack( TimecodeTrackPtr track );
+    void addTrack( const TimecodeTrackPtr &track );
 
 private:
     QString m_name;
@@ -242,7 +242,7 @@ public:
     }
 
     //TimecodeComposer specific methods
-    void addTrack( TimecodeTrackPtr track );
+    void addTrack( const TimecodeTrackPtr &track );
 
 private:
     QString m_name;
@@ -265,7 +265,7 @@ public:
     }
 
     //TimecodeYear specific methods
-    void addTrack( TimecodeTrackPtr track );
+    void addTrack( const TimecodeTrackPtr &track );
 
 private:
     QString m_name;

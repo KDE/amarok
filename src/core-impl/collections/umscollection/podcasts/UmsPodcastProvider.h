@@ -28,8 +28,8 @@ class UmsPodcastProvider : public PodcastProvider
 {
     Q_OBJECT
     public:
-        explicit UmsPodcastProvider( QUrl scanDirectory );
-        ~UmsPodcastProvider();
+        explicit UmsPodcastProvider( const QUrl &scanDirectory );
+        ~UmsPodcastProvider() override;
 
         UmsPodcastEpisodePtr addFile( MetaFile::TrackPtr metafileTrack );
         int addPath( const QString &path );
@@ -41,15 +41,15 @@ class UmsPodcastProvider : public PodcastProvider
 
         void addPodcast( const QUrl &url ) override;
 
-        Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel ) override;
+        Podcasts::PodcastChannelPtr addChannel( const Podcasts::PodcastChannelPtr &channel ) override;
         Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override;
 
         Podcasts::PodcastChannelList channels() override;
 
-        virtual void removeSubscription( Podcasts::PodcastChannelPtr channel );
+        virtual void removeSubscription( const Podcasts::PodcastChannelPtr &channel );
 
         virtual void configureProvider();
-        virtual void configureChannel( Podcasts::PodcastChannelPtr channel );
+        virtual void configureChannel( const Podcasts::PodcastChannelPtr &channel );
 
         // PlaylistProvider methods
         QString prettyName() const override;
@@ -64,9 +64,9 @@ class UmsPodcastProvider : public PodcastProvider
 
     public Q_SLOTS:
         void updateAll() override;
-        virtual void update( Podcasts::PodcastChannelPtr channel );
-        virtual void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
-        virtual void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );
+        virtual void update( const Podcasts::PodcastChannelPtr &channel );
+        virtual void downloadEpisode( const Podcasts::PodcastEpisodePtr &episode );
+        virtual void deleteDownloadedEpisode( const Podcasts::PodcastEpisodePtr &episode );
         virtual void slotUpdated();
         virtual void scan();
 
@@ -80,8 +80,8 @@ class UmsPodcastProvider : public PodcastProvider
         void slotCopyComplete( KJob *job );
 
     private:
-        QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList );
-        QList<QAction *> channelActions( Podcasts::PodcastChannelList );
+        QList<QAction *> episodeActions( const Podcasts::PodcastEpisodeList &);
+        QList<QAction *> channelActions( const Podcasts::PodcastChannelList &);
         void deleteEpisodes( UmsPodcastEpisodeList umsEpisodes );
 
         QUrl m_scanDirectory;

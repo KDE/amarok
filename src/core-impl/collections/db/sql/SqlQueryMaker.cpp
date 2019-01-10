@@ -1092,7 +1092,7 @@ SqlQueryMaker::andOr() const
 }
 
 QString
-SqlQueryMaker::escape( QString text ) const           //krazy:exclude=constref
+SqlQueryMaker::escape( const QString &text ) const           //krazy:exclude=constref
 {
     return m_collection->sqlStorage()->escape( text );
 }

@@ -60,18 +60,18 @@ class QScriptEngine;
             QString coverUrl();
 
         private:
-            void setItemName( QString name );
-            void setInfoHtml( QString infoHtml );
-            void setPlayableUrl( QString playableUrl );
-            void setCallbackData( QString callbackData );
+            void setItemName( const QString &name );
+            void setInfoHtml( const QString &infoHtml );
+            void setPlayableUrl( const QString &playableUrl );
+            void setCallbackData( const QString &callbackData );
             void setLevel( int level );
 
-            void setAlbum( QString album );
-            void setArtist( QString artist );
-            void setGenre( QString genre );
-            void setComposer( QString composer );
+            void setAlbum( const QString &album );
+            void setArtist( const QString &artist );
+            void setGenre( const QString &genre );
+            void setComposer( const QString &composer );
             void setYear( int year );
-            void setCoverUrl( QString url );
+            void setCoverUrl( const QString &url );
 
             QString m_name;
             QString m_infoHtml;

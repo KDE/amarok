@@ -117,7 +117,7 @@ Meta::MultiTrack::statistics()
 }
 
 void
-Meta::MultiTrack::metadataChanged( Meta::TrackPtr track )
+Meta::MultiTrack::metadataChanged(const TrackPtr &track )
 {
     Q_UNUSED( track )
     // forward changes from active tracks
@@ -125,7 +125,7 @@ Meta::MultiTrack::metadataChanged( Meta::TrackPtr track )
 }
 
 void
-MultiTrack::trackAdded( Playlists::PlaylistPtr, TrackPtr, int )
+MultiTrack::trackAdded(const Playlists::PlaylistPtr &, const TrackPtr &, int )
 {
     PlaylistObserver::unsubscribeFrom( m_playlist );
 

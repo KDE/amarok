@@ -32,13 +32,13 @@ class AMAROK_EXPORT BaseCoverAction : public QAction
 {
     Q_OBJECT
     public:
-        BaseCoverAction( QObject *parent, Meta::AlbumPtr album )
+        BaseCoverAction( QObject *parent, const Meta::AlbumPtr &album )
             : QAction( parent )
         {
             m_albums.append( album );
             connect( this, &QAction::triggered, this, &BaseCoverAction::slotTriggered );
         }
-        BaseCoverAction( QObject *parent, Meta::AlbumList albums )
+        BaseCoverAction( QObject *parent, const Meta::AlbumList &albums )
             : QAction( parent )
         {
             m_albums = albums;
@@ -55,9 +55,9 @@ class AMAROK_EXPORT FetchCoverAction : public BaseCoverAction
 {
     Q_OBJECT
     public:
-        FetchCoverAction( QObject *parent, Meta::AlbumPtr album )
+        FetchCoverAction( QObject *parent, const Meta::AlbumPtr &album )
             : BaseCoverAction( parent, album ) { init(); }
-        FetchCoverAction( QObject *parent, Meta::AlbumList albums )
+        FetchCoverAction( QObject *parent, const Meta::AlbumList &albums )
             : BaseCoverAction( parent, albums ) { init(); }
 
     protected Q_SLOTS:
@@ -70,9 +70,9 @@ class AMAROK_EXPORT DisplayCoverAction : public BaseCoverAction
 {
     Q_OBJECT
     public:
-        DisplayCoverAction( QObject *parent, Meta::AlbumPtr album )
+        DisplayCoverAction( QObject *parent, const Meta::AlbumPtr &album )
             : BaseCoverAction( parent, album ) { init(); }
-        DisplayCoverAction( QObject *parent, Meta::AlbumList albums )
+        DisplayCoverAction( QObject *parent, const Meta::AlbumList &albums )
             : BaseCoverAction( parent, albums ) { init(); }
 
     protected Q_SLOTS:
@@ -85,9 +85,9 @@ class AMAROK_EXPORT UnsetCoverAction : public BaseCoverAction
 {
     Q_OBJECT
     public:
-        UnsetCoverAction( QObject *parent, Meta::AlbumPtr album )
+        UnsetCoverAction( QObject *parent, const Meta::AlbumPtr &album )
             : BaseCoverAction( parent, album ) { init(); }
-        UnsetCoverAction( QObject *parent, Meta::AlbumList albums )
+        UnsetCoverAction( QObject *parent, const Meta::AlbumList &albums )
             : BaseCoverAction( parent, albums ) { init(); }
 
     protected Q_SLOTS:
@@ -100,9 +100,9 @@ class AMAROK_EXPORT SetCustomCoverAction : public BaseCoverAction
 {
     Q_OBJECT
     public:
-        SetCustomCoverAction( QObject *parent, Meta::AlbumPtr album )
+        SetCustomCoverAction( QObject *parent, const Meta::AlbumPtr &album )
             : BaseCoverAction( parent, album ) { init(); }
-        SetCustomCoverAction( QObject *parent, Meta::AlbumList albums )
+        SetCustomCoverAction( QObject *parent, const Meta::AlbumList &albums )
             : BaseCoverAction( parent, albums ) { init(); }
 
     protected Q_SLOTS:

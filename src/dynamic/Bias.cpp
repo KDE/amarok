@@ -110,7 +110,7 @@ Dynamic::AbstractBias::invalidate()
 { }
 
 void
-Dynamic::AbstractBias::replace( Dynamic::BiasPtr newBias )
+Dynamic::AbstractBias::replace( const Dynamic::BiasPtr &newBias )
 {
     Q_EMIT replaced( BiasPtr(const_cast<Dynamic::AbstractBias*>(this)), newBias );
 }
@@ -151,7 +151,7 @@ Dynamic::RandomBias::widget( QWidget* parent )
 Dynamic::TrackSet
 Dynamic::RandomBias::matchingTracks( const Meta::TrackList& playlist,
                                      int contextCount, int finalCount,
-                                     Dynamic::TrackCollectionPtr universe ) const
+                                     const Dynamic::TrackCollectionPtr &universe ) const
 {
     Q_UNUSED( playlist );
     Q_UNUSED( contextCount );
@@ -255,7 +255,7 @@ Dynamic::AndBias::paintOperator( QPainter* painter, const QRect& rect, Dynamic::
 Dynamic::TrackSet
 Dynamic::AndBias::matchingTracks( const Meta::TrackList& playlist,
                                   int contextCount, int finalCount,
-                                  Dynamic::TrackCollectionPtr universe ) const
+                                  const Dynamic::TrackCollectionPtr &universe ) const
 {
     DEBUG_BLOCK;
 debug() << "universe:" << universe.data();
@@ -309,7 +309,7 @@ Dynamic::AndBias::invalidate()
 }
 
 void
-Dynamic::AndBias::appendBias( Dynamic::BiasPtr bias )
+Dynamic::AndBias::appendBias(const BiasPtr &bias )
 {
     bool newInModel = DynamicModel::instance()->index( bias ).isValid();
     if (newInModel) {
@@ -375,7 +375,7 @@ Dynamic::AndBias::resultReceived( const Dynamic::TrackSet &tracks )
 }
 
 void
-Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
+Dynamic::AndBias::biasReplaced( const Dynamic::BiasPtr &oldBias, const Dynamic::BiasPtr &newBias )
 {
     DEBUG_BLOCK;
     BiasPtr thisPtr( this );
@@ -415,7 +415,7 @@ Dynamic::AndBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBi
 }
 
 void
-Dynamic::AndBias::biasChanged( Dynamic::BiasPtr bias )
+Dynamic::AndBias::biasChanged( const Dynamic::BiasPtr &bias )
 {
     BiasPtr thisPtr( this );
     Q_EMIT changed( thisPtr );
@@ -463,7 +463,7 @@ Dynamic::OrBias::toString() const
 Dynamic::TrackSet
 Dynamic::OrBias::matchingTracks( const Meta::TrackList& playlist,
                                  int contextCount, int finalCount,
-                                 Dynamic::TrackCollectionPtr universe ) const
+                                 const Dynamic::TrackCollectionPtr &universe ) const
 {
     m_tracks = Dynamic::TrackSet( universe, false );
     m_outstandingMatches = 0;

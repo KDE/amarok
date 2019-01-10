@@ -35,7 +35,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
     Q_OBJECT
     public:
         explicit MediaDeviceUserPlaylistProvider( Collections::MediaDeviceCollection *collection );
-        ~MediaDeviceUserPlaylistProvider();
+        ~MediaDeviceUserPlaylistProvider() override;
 
         /* PlaylistProvider functions */
         QString prettyName() const override { return i18n( "Media Device playlists" ); }
@@ -48,7 +48,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
         Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name ) override;
 
         bool isWritable() override { return true; }
-        void renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName ) override;
+        void renamePlaylist(Playlists::PlaylistPtr playlist, const QString &newName ) override;
         bool deletePlaylists( const Playlists::PlaylistList &playlistlist ) override;
 
         /// MediaDevice-specific Functions

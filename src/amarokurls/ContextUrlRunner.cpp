@@ -36,7 +36,7 @@ QIcon ContextUrlRunner::icon() const
     return QIcon::fromTheme( "x-media-podcast-amarok" );
 }
 
-bool ContextUrlRunner::run( AmarokUrl url )
+bool ContextUrlRunner::run( const AmarokUrl &url )
 {
     DEBUG_BLOCK
     

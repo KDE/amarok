@@ -34,7 +34,7 @@ public:
 
     QString command () const override;
     QString prettyCommand() const override;
-    bool run ( AmarokUrl url ) override;
+    bool run ( const AmarokUrl &url ) override;
     QIcon icon () const override;
 
     /**
@@ -46,7 +46,7 @@ public:
      * @return a list of bookmarks. the list is empty if no bookmarks exist.
      * @see PlayUrlGenerator
      */
-    static BookmarkList bookmarksFromUrl( QUrl url );
+    static BookmarkList bookmarksFromUrl( const QUrl &url );
 
 };
 

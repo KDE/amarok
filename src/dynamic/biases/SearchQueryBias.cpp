@@ -58,7 +58,7 @@ Dynamic::SearchQueryBiasFactory::createBias()
 
 // ----- SearchQueryBias --------
 
-Dynamic::SearchQueryBias::SearchQueryBias( QString filter )
+Dynamic::SearchQueryBias::SearchQueryBias( const QString &filter )
     : SimpleMatchBias()
     , m_filter( filter )
 { }

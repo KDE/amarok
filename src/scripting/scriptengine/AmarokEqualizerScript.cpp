@@ -138,7 +138,7 @@ AmarokEqualizerScript::userPresets() const
 }
 
 void
-AmarokEqualizerScript::setGains( QList<int> gains )
+AmarokEqualizerScript::setGains( const QList<int> &gains )
 {
     The::engineController()->equalizerController()->setGains( gains );
 }

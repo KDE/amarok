@@ -228,31 +228,31 @@ DaapTrack::collection() const
 }
 
 void
-DaapTrack::setAlbum( DaapAlbumPtr album )
+DaapTrack::setAlbum( const DaapAlbumPtr &album )
 {
     m_album = album;
 }
 
 void
-DaapTrack::setArtist( DaapArtistPtr artist )
+DaapTrack::setArtist( const DaapArtistPtr &artist )
 {
     m_artist = artist;
 }
 
 void
-DaapTrack::setGenre( DaapGenrePtr genre )
+DaapTrack::setGenre( const DaapGenrePtr &genre )
 {
     m_genre = genre;
 }
 
 void
-DaapTrack::setComposer( DaapComposerPtr composer )
+DaapTrack::setComposer( const DaapComposerPtr &composer )
 {
     m_composer = composer;
 }
 
 void
-DaapTrack::setYear( DaapYearPtr year )
+DaapTrack::setYear( const DaapYearPtr &year )
 {
     m_year = year;
 }
@@ -304,7 +304,7 @@ DaapArtist::albums()
 }
 
 void
-DaapArtist::addTrack( DaapTrackPtr track )
+DaapArtist::addTrack( const DaapTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
@@ -355,13 +355,13 @@ DaapAlbum::tracks()
 }
 
 void
-DaapAlbum::addTrack( DaapTrackPtr track )
+DaapAlbum::addTrack( const DaapTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
 void
-DaapAlbum::setAlbumArtist( DaapArtistPtr artist )
+DaapAlbum::setAlbumArtist( const DaapArtistPtr &artist )
 {
     m_albumArtist = artist;
 }
@@ -394,7 +394,7 @@ DaapGenre::tracks()
 }
 
 void
-DaapGenre::addTrack( DaapTrackPtr track )
+DaapGenre::addTrack( const DaapTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
@@ -427,7 +427,7 @@ DaapComposer::tracks()
 }
 
 void
-DaapComposer::addTrack( DaapTrackPtr track )
+DaapComposer::addTrack( const DaapTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
@@ -460,7 +460,7 @@ DaapYear::tracks()
 }
 
 void
-DaapYear::addTrack( DaapTrackPtr track )
+DaapYear::addTrack( const DaapTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }

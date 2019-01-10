@@ -56,7 +56,7 @@ public:
     bool containsTrack( const Meta::TrackPtr& track ) const override;
     int currentSearchFields() override;
     QString currentSearchTerm() override;
-    bool exportPlaylist( const QString &path, bool relative = false ) const override;
+    bool exportPlaylist( const QString &path, bool relative = false ) override;
     void filterUpdated() override;
     int find( const QString &searchTerm, int searchFields ) override;
     int findNext( const QString &searchTerm, int selectedRow, int searchFields ) override;
@@ -79,7 +79,7 @@ public:
     quint64 totalSize() const override;
     Meta::TrackPtr trackAt( int row ) const override;
     Meta::TrackPtr trackForId( const quint64 id ) const override;
-    Meta::TrackList tracks() const override;
+    Meta::TrackList tracks() override;
 
 Q_SIGNALS:
     //! Proxied from Playlist::Model.

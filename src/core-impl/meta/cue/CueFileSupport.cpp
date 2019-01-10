@@ -35,7 +35,7 @@ using namespace MetaCue;
 * @author (C) 2005 by Martin Ehmke <ehmke@gmx.de>
 */
 
-CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const Meta::TrackPtr track )
+CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const Meta::TrackPtr &track )
 {
     return loadCueFile( cuefile, track->playableUrl(), track->length() );
 }

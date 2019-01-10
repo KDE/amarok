@@ -55,7 +55,7 @@ PhotosEngine::stopped()
 }
 
 void
-PhotosEngine::trackChanged( Meta::TrackPtr track )
+PhotosEngine::trackChanged( const Meta::TrackPtr &track )
 {
     if( !track )
         return;
@@ -92,7 +92,7 @@ PhotosEngine::setKeywords( const QStringList &keywords )
 }
 
 void
-PhotosEngine::metadataChanged( Meta::TrackPtr track )
+PhotosEngine::metadataChanged(const Meta::TrackPtr &track )
 {
     const bool hasChanged = !track->artist() || track->artist()->name() != m_artist;
     if ( hasChanged )

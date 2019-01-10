@@ -23,7 +23,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-PodcastFilenameLayoutConfigDialog::PodcastFilenameLayoutConfigDialog( Podcasts::SqlPodcastChannelPtr channel, QWidget *parent )
+PodcastFilenameLayoutConfigDialog::PodcastFilenameLayoutConfigDialog( const Podcasts::SqlPodcastChannelPtr &channel, QWidget *parent )
     : KPageDialog( parent )
     , m_channel( channel )
     , m_pflc( new Ui::PodcastFilenameLayoutConfigWidget )

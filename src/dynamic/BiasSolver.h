@@ -80,7 +80,7 @@ namespace Dynamic
              * @param context The tracks (if any) that precede the playlist
              * being generated.
              */
-            BiasSolver( int n, BiasPtr bias, Meta::TrackList context );
+            BiasSolver( int n, const BiasPtr &bias, const Meta::TrackList &context );
 
             ~BiasSolver();
 
@@ -146,7 +146,7 @@ namespace Dynamic
         private Q_SLOTS:
             void biasResultReady( const Dynamic::TrackSet &set );
 
-            void trackCollectionResultsReady( QStringList );
+            void trackCollectionResultsReady( const QStringList &);
             void trackCollectionDone();
 
 

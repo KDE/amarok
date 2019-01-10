@@ -61,12 +61,12 @@ namespace AmarokScript
             static AmarokDownloadHelper *instance();
 
             // called by the wrapper class to register a new download
-            void newStringDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding = QStringLiteral("UTF-8") );
-            void newDataDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj );
+            void newStringDownload( const QUrl &url, QScriptEngine* engine, const QScriptValue &obj, const QString &encoding = QStringLiteral("UTF-8") );
+            void newDataDownload( const QUrl &url, QScriptEngine* engine, const QScriptValue &obj );
 
         private Q_SLOTS:
-            void resultString( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-            void resultData( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+            void resultString( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
+            void resultData( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
 
             void requestRedirected( const QUrl &sourceUrl, const QUrl &targetUrl );
 
@@ -74,7 +74,7 @@ namespace AmarokScript
             void cleanUp( const QUrl &url );
 
             template<typename Function>
-            void newDownload( const QUrl &url, QScriptEngine* engine, QScriptValue obj, Function slot )
+            void newDownload( const QUrl &url, QScriptEngine* engine, const QScriptValue &obj, Function slot )
             {
                 m_values[ url ] = obj;
                 m_engines[ url ] = engine;

@@ -26,7 +26,7 @@ Meta::Tag::setCodec( QTextCodec *codec )
 }
 
 void
-Meta::Tag::setCodecByName( QByteArray codecName )
+Meta::Tag::setCodecByName( const QByteArray &codecName )
 {
     s_codec = QTextCodec::codecForName( codecName );
 }

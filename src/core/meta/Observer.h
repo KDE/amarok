@@ -62,12 +62,12 @@ namespace Meta {
              * This method is called when the metadata of a track has changed.
              * The called class may not cache the pointer.
              */
-            virtual void metadataChanged( TrackPtr track );
-            virtual void metadataChanged( ArtistPtr artist );
-            virtual void metadataChanged( AlbumPtr album );
-            virtual void metadataChanged( GenrePtr genre );
-            virtual void metadataChanged( ComposerPtr composer );
-            virtual void metadataChanged( YearPtr year );
+            virtual void metadataChanged( const TrackPtr &track );
+            virtual void metadataChanged( const ArtistPtr &artist );
+            virtual void metadataChanged( const AlbumPtr &album );
+            virtual void metadataChanged( const GenrePtr &genre );
+            virtual void metadataChanged( const ComposerPtr &composer );
+            virtual void metadataChanged( const YearPtr &year );
 
             /**
              * One of the subscribed entities was destroyed. You don't get which one

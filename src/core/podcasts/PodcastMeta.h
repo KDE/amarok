@@ -82,8 +82,8 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
 {
     public:
         PodcastEpisode();
-        explicit PodcastEpisode( PodcastChannelPtr channel );
-        PodcastEpisode( PodcastEpisodePtr episode, PodcastChannelPtr channel );
+        explicit PodcastEpisode( const PodcastChannelPtr &channel );
+        PodcastEpisode( const PodcastEpisodePtr &episode, const PodcastChannelPtr &channel );
 
         ~PodcastEpisode() override {}
 
@@ -150,7 +150,7 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual void setGuid( const QString &guid ) { m_guid = guid; }
         virtual void setNew( bool isNew ) { m_isNew = isNew; }
         virtual void setSequenceNumber( int sequenceNumber ) { m_sequenceNumber = sequenceNumber; }
-        virtual void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; }
+        virtual void setChannel( const PodcastChannelPtr &channel ) { m_channel = channel; }
 
     protected:
         PodcastChannelPtr m_channel;
@@ -195,8 +195,8 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
             , m_purgeCount( 0 )
         { }
 
-        explicit PodcastChannel( Podcasts::PodcastChannelPtr channel );
-        virtual ~PodcastChannel() {}
+        explicit PodcastChannel(const PodcastChannelPtr &channel );
+        ~PodcastChannel() override {}
 
         //Playlist virtual methods
         QUrl uidUrl() const override { return m_url; }
@@ -204,7 +204,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
 
         int trackCount() const override { return m_episodes.count(); }
         Meta::TrackList tracks() override;
-        void addTrack( Meta::TrackPtr track, int position = -1 ) override;
+        void addTrack( const Meta::TrackPtr &track, int position = -1 ) override;
 
         //PodcastMetaCommon methods
         // override this since it's ambiguous in PodcastMetaCommon and Playlist
@@ -230,7 +230,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual void addLabel( const QString &label ) { m_labels << label; }
         virtual void setSubscribeDate( const QDate &date ) { m_subscribeDate = date; }
 
-        virtual Podcasts::PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
+        virtual Podcasts::PodcastEpisodePtr addEpisode( const PodcastEpisodePtr &episode );
         virtual PodcastEpisodeList episodes() const { return m_episodes; }
 
         bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }

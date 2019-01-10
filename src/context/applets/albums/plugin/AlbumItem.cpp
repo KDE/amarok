@@ -42,7 +42,7 @@ AlbumItem::~AlbumItem()
 }
 
 void
-AlbumItem::setAlbum( Meta::AlbumPtr albumPtr )
+AlbumItem::setAlbum( const Meta::AlbumPtr &albumPtr )
 {
     if( m_album )
         unsubscribeFrom( m_album );
@@ -74,7 +74,7 @@ AlbumItem::setShowArtist( const bool showArtist )
 }
 
 void
-AlbumItem::metadataChanged( Meta::AlbumPtr album )
+AlbumItem::metadataChanged(const Meta::AlbumPtr &album )
 {
     Q_UNUSED( album );
     QMetaObject::invokeMethod(this, "update", Qt::QueuedConnection);

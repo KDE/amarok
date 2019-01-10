@@ -113,9 +113,9 @@ private:
 
 private slots:
     void _checkRequireUpdate( Meta::TrackPtr track );
-    void _parseLangLinksResult(const QUrl &url, const QByteArray &data, NetworkAccessManagerProxy::Error e );
-    void _parseListingResult(const QUrl &url, const QByteArray &data, NetworkAccessManagerProxy::Error e );
-    void _wikiResult(const QUrl &url, const QByteArray &result, NetworkAccessManagerProxy::Error e );
+    void _parseLangLinksResult(const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
+    void _parseListingResult(const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
+    void _wikiResult(const QUrl &url, const QByteArray &result, const NetworkAccessManagerProxy::Error &e );
     void _stopped();
     void _paletteChanged( const QPalette &palette );
 };

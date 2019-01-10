@@ -46,7 +46,7 @@ namespace Dynamic
 
             TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const override;
+                                             const TrackCollectionPtr &universe ) const override;
 
             void resultReceived( const Dynamic::TrackSet &tracks ) override;
 

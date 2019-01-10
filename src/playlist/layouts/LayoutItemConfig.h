@@ -200,7 +200,7 @@ class LayoutItemConfig
          * Add a row to this config.
          * @param row The row to add.
          */
-        void addRow( LayoutItemConfigRow row );
+        void addRow( const LayoutItemConfigRow &row );
 
         /**
          * Set whether the cover image should be shown or not.
@@ -273,7 +273,7 @@ class PlaylistLayout
         /**
          * Set the layout config for the specified part type.
          */
-        void setLayoutForPart( Part part, LayoutItemConfig itemConfig );
+        void setLayoutForPart( Part part, const LayoutItemConfig &itemConfig );
 
         /**
          * Set whether this config can be edited by the user.

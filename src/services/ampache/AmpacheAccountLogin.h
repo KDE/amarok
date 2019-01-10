@@ -52,8 +52,8 @@ class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
         void finished(); //!authentication was or was not successful
 
     private Q_SLOTS:
-        void authenticate( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-        void authenticationComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+        void authenticate( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
+        void authenticationComplete( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
 
     private:
         int getVersion( const QDomDocument& doc ) const;
@@ -62,7 +62,7 @@ class AMPACHE_ACCOUNT_EXPORT AmpacheAccountLogin : public QObject
             Emits finished if something is fishy.
             @returns true if the check was successful.
         */
-        bool generalVerify( QNetworkReply *reply, const QDomDocument& doc, NetworkAccessManagerProxy::Error e );
+        bool generalVerify( QNetworkReply *reply, const QDomDocument& doc, const NetworkAccessManagerProxy::Error &e );
 
         /** Returns the base url.
             You would need to add query items to use it. */

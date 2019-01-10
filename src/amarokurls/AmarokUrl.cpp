@@ -30,14 +30,14 @@ AmarokUrl::AmarokUrl()
     , m_parent( 0 )
 {}
 
-AmarokUrl::AmarokUrl( const QString & urlString, BookmarkGroupPtr parent )
+AmarokUrl::AmarokUrl( const QString & urlString, const BookmarkGroupPtr &parent )
     : m_id( -1 )
     , m_parent( parent )
 {
     initFromString( urlString );
 }
 
-AmarokUrl::AmarokUrl( const QStringList & resultRow, BookmarkGroupPtr parent )
+AmarokUrl::AmarokUrl( const QStringList & resultRow, const BookmarkGroupPtr &parent )
     : m_parent( parent )
 {
     m_id = resultRow[0].toInt();
@@ -204,7 +204,7 @@ void AmarokUrl::rename( const QString &name )
         saveToDb();
 }
 
-void AmarokUrl::reparent( BookmarkGroupPtr parent )
+void AmarokUrl::reparent( const BookmarkGroupPtr &parent )
 {
     m_parent = parent;
     saveToDb();

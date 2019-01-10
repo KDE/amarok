@@ -52,7 +52,7 @@ class LayoutEditWidget : public QWidget
          * Setup the edit widget to represent an existing LayoutItemConfig.
          * @param config The config to read.
          */
-        void readLayout( Playlist::LayoutItemConfig config );
+        void readLayout( const Playlist::LayoutItemConfig &config );
 
         /**
          * Create and return a LayoutItemConfig corresponding to the current state of the editor

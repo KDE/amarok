@@ -54,7 +54,7 @@ public:
     QString currentFilter() const { return m_searchEdit->text(); }
 
     void focusInputLine();
-    void setCurrentFilter( const QString filterExpr ) { m_searchEdit->setText( filterExpr ); }
+    void setCurrentFilter( const QString &filterExpr ) { m_searchEdit->setText( filterExpr ); }
 
     bool onlyMatches() const { return m_showOnlyMatches; }
 

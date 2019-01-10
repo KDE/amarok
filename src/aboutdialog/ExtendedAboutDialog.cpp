@@ -86,7 +86,7 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
     dialog->show();
 }
 
-ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData about, const OcsData *ocsData, QWidget *parent)
+ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData *ocsData, QWidget *parent)
   : QDialog(parent)
   , d(new Private(this))
 {

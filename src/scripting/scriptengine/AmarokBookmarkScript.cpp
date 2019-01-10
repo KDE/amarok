@@ -104,7 +104,7 @@ BookmarkGroupPrototype::bookmarkGroupCtor( QScriptContext *context, QScriptEngin
     return engine->newQObject( new BookmarkGroupPrototype( BookmarkGroupPtr( group ) ), QScriptEngine::ScriptOwnership, QScriptEngine::ExcludeSuperClassContents );
 }
 
-BookmarkGroupPrototype::BookmarkGroupPrototype( BookmarkGroupPtr group )
+BookmarkGroupPrototype::BookmarkGroupPrototype( const BookmarkGroupPtr &group )
 :QObject( nullptr )
 , m_group( group )
 {}
@@ -127,13 +127,13 @@ BookmarkGroupPrototype::clear()
     m_group->clear();
 }
 
-void BookmarkGroupPrototype::deleteChildBookmark( AmarokUrlPtr bookmark )
+void BookmarkGroupPrototype::deleteChildBookmark( const AmarokUrlPtr &bookmark )
 {
     m_group->deleteChild( BookmarkViewItemPtr::staticCast( bookmark ) );
 }
 
 void
-BookmarkGroupPrototype::deleteChildBookmarkgroup( BookmarkGroupPtr bookmarkGroup )
+BookmarkGroupPrototype::deleteChildBookmarkgroup( const BookmarkGroupPtr &bookmarkGroup )
 {
     m_group->deleteChild( BookmarkViewItemPtr::staticCast( bookmarkGroup ) );
 }
@@ -189,7 +189,7 @@ BookmarkGroupPrototype::setName( const QString &name )
 }
 
 void
-BookmarkGroupPrototype::setParent( BookmarkGroupPtr parent )
+BookmarkGroupPrototype::setParent( const BookmarkGroupPtr &parent )
 {
     m_group->reparent( parent );
 }
@@ -247,7 +247,7 @@ BookmarkPrototype::bookmarkCtor( QScriptContext *context, QScriptEngine *engine 
                                QScriptEngine::ExcludeSuperClassContents );
 }
 
-BookmarkPrototype::BookmarkPrototype( AmarokUrlPtr bookmark )
+BookmarkPrototype::BookmarkPrototype( const AmarokUrlPtr &bookmark )
 : QObject( nullptr )
 , m_url( bookmark )
 {}
@@ -364,7 +364,7 @@ BookmarkPrototype::parent() const
 }
 
 void
-BookmarkPrototype::setParent( BookmarkGroupPtr parent )
+BookmarkPrototype::setParent( const BookmarkGroupPtr &parent )
 {
     m_url->reparent( parent );
 }

@@ -185,7 +185,7 @@ void DatabaseImporterDialog::matchedTrack( Meta::TrackPtr track, const QString &
     m_results->appendHtml( text );
 }
 
-void DatabaseImporterDialog::ambigousTrack( Meta::TrackList tracks, const QString &oldUrl )
+void DatabaseImporterDialog::ambigousTrack( const Meta::TrackList &tracks, const QString &oldUrl )
 {
     Q_UNUSED( tracks );
 

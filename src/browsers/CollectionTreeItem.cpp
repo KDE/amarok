@@ -44,7 +44,7 @@ CollectionTreeItem::CollectionTreeItem( CollectionTreeItemModelBase *model )
 {
 }
 
-CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
+CollectionTreeItem::CollectionTreeItem( const Meta::DataPtr &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
     : m_data( data )
     , m_parent( parent )
     , m_model( model )

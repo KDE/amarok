@@ -249,7 +249,7 @@ MusicBrainzTagsModel::columnCount( const QModelIndex &parent ) const
 }
 
 void
-MusicBrainzTagsModel::addTrack( const Meta::TrackPtr track, const QVariantMap tags )
+MusicBrainzTagsModel::addTrack( const Meta::TrackPtr &track, const QVariantMap &tags )
 {
     DEBUG_BLOCK
 

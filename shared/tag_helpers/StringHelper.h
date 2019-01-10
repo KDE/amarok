@@ -46,7 +46,7 @@ namespace Meta
          * Set codec for TStringToQString conversion.
          */
         void setCodec( QTextCodec *codec );
-        void setCodecByName( QByteArray codecName );
+        void setCodecByName( const QByteArray &codecName );
     }
 }
 

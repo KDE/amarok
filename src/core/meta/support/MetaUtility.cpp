@@ -57,7 +57,7 @@
         //static bool conversionMapsInitialised = false;
 
 QVariantMap
-Meta::Field::mapFromTrack( const Meta::TrackPtr track )
+Meta::Field::mapFromTrack( const Meta::TrackPtr &track )
 {
     QVariantMap map;
     if( !track )
@@ -111,7 +111,7 @@ Meta::Field::mapFromTrack( const Meta::TrackPtr track )
 }
 
 QVariantMap
-Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
+Meta::Field::mprisMapFromTrack( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
 
@@ -174,7 +174,7 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
 }
 
 QVariantMap
-Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
+Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
 

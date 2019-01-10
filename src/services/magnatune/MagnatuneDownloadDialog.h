@@ -60,7 +60,7 @@ Q_SIGNALS:
      * should start album download.
      * @param completedInfo A DownloadInfo object containing all needed information
      */
-    void downloadAlbum( MagnatuneDownloadInfo completedInfo );
+    void downloadAlbum( const MagnatuneDownloadInfo &completedInfo );
 
 public Q_SLOTS:
     /*$PUBLIC_SLOTS$*/

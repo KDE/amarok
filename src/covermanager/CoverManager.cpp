@@ -277,7 +277,7 @@ CoverManager::~CoverManager()
 }
 
 void
-CoverManager::viewCover( Meta::AlbumPtr album, QWidget *parent ) //static
+CoverManager::viewCover( const Meta::AlbumPtr &album, QWidget *parent ) //static
 {
     //QDialog means "escape" works as expected
     QDialog *dialog = new CoverViewDialog( album, parent );
@@ -285,7 +285,7 @@ CoverManager::viewCover( Meta::AlbumPtr album, QWidget *parent ) //static
 }
 
 void
-CoverManager::metadataChanged( Meta::AlbumPtr album )
+CoverManager::metadataChanged(const Meta::AlbumPtr &album )
 {
     const QString albumName = album->name();
     foreach( CoverViewItem *item, m_coverItems )
@@ -385,7 +385,7 @@ CoverManager::slotArtistSelected() //SLOT
 }
 
 void
-CoverManager::slotAlbumQueryResult( Meta::AlbumList albums ) //SLOT
+CoverManager::slotAlbumQueryResult( const Meta::AlbumList &albums ) //SLOT
 {
     m_albumList = albums;
 }

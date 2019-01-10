@@ -33,11 +33,11 @@ namespace Meta
     {
 
         //deprecated
-        AMAROK_CORE_EXPORT QVariantMap mapFromTrack( const Meta::TrackPtr track );
+        AMAROK_CORE_EXPORT QVariantMap mapFromTrack( const Meta::TrackPtr &track );
         //this method will return a map with keys that are compatible to the fdo MPRIS 1.0 specification
-        AMAROK_CORE_EXPORT QVariantMap mprisMapFromTrack( const Meta::TrackPtr track );
+        AMAROK_CORE_EXPORT QVariantMap mprisMapFromTrack( const Meta::TrackPtr &track );
         //this method will return a map with keys that are compatible to the fdo MPRIS 2.0 specification
-        AMAROK_CORE_EXPORT QVariantMap mpris20MapFromTrack( const Meta::TrackPtr track );
+        AMAROK_CORE_EXPORT QVariantMap mpris20MapFromTrack( const Meta::TrackPtr &track );
         AMAROK_CORE_EXPORT void updateTrack( Meta::TrackPtr track, const QVariantMap &metadata );
         AMAROK_CORE_EXPORT QString xesamPrettyToFullFieldName( const QString &name );
         AMAROK_CORE_EXPORT QString xesamFullToPrettyFieldName( const QString &name );

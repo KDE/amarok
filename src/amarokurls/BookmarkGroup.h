@@ -41,8 +41,8 @@ A class for allowing a "folder structure" in the bookmark browser and the databa
 class BookmarkGroup : public BookmarkViewItem
 {
     public:
-        BookmarkGroup( const QStringList &dbResultRow, BookmarkGroupPtr parent );
-        explicit BookmarkGroup( const QString &name, BookmarkGroupPtr parent = BookmarkGroupPtr() );
+        BookmarkGroup( const QStringList &dbResultRow, const BookmarkGroupPtr &parent );
+        explicit BookmarkGroup( const QString &name, const BookmarkGroupPtr &parent = BookmarkGroupPtr() );
 
         BookmarkGroup( const QString &name, const QString &customType );
 
@@ -63,11 +63,11 @@ class BookmarkGroup : public BookmarkViewItem
         BookmarkGroupList childGroups() const;
         BookmarkList childBookmarks() const;
 
-        void reparent( BookmarkGroupPtr parent );
+        void reparent( const BookmarkGroupPtr &parent );
 
         void clear();
 
-        void deleteChild( BookmarkViewItemPtr item );
+        void deleteChild( const BookmarkViewItemPtr &item );
         void removeFromDb() override;
 
     private:

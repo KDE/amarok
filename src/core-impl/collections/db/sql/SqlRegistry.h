@@ -162,7 +162,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlRegistry : public QObject
          * is normally called by SqlTrack. Do not call directly unless you know what you
          * do.
          */
-        void removeTrack( int urlId, const QString uid );
+        void removeTrack( int urlId, const QString &uid );
 
         // --- functions needed to commit a track
 

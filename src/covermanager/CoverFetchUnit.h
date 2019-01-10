@@ -62,7 +62,7 @@ class CoverFetchUnit : public QSharedData
 public:
     typedef AmarokSharedPointer< CoverFetchUnit > Ptr;
 
-    CoverFetchUnit( Meta::AlbumPtr album,
+    CoverFetchUnit( const Meta::AlbumPtr &album,
                     const CoverFetchPayload *payload,
                     CoverFetch::Option opt = CoverFetch::Automatic );
     CoverFetchUnit( const CoverFetchPayload *payload, CoverFetch::Option opt );
@@ -99,7 +99,7 @@ class CoverFetchPayload
 {
 public:
     enum Type { Info, Search, Art };
-    CoverFetchPayload( const Meta::AlbumPtr album, enum Type type, const CoverFetch::Source src );
+    CoverFetchPayload( const Meta::AlbumPtr &album, enum Type type, const CoverFetch::Source src );
     virtual ~CoverFetchPayload();
 
     Meta::AlbumPtr album() const;
@@ -132,7 +132,7 @@ private:
 class CoverFetchInfoPayload : public CoverFetchPayload
 {
 public:
-    explicit CoverFetchInfoPayload( const Meta::AlbumPtr album, const CoverFetch::Source src );
+    explicit CoverFetchInfoPayload( const Meta::AlbumPtr &album, const CoverFetch::Source src );
     explicit CoverFetchInfoPayload( const CoverFetch::Source src, const QByteArray &xml );
     ~CoverFetchInfoPayload();
 
@@ -154,7 +154,7 @@ public:
     explicit CoverFetchSearchPayload( const QString &query = QString(),
                                       const CoverFetch::Source src = CoverFetch::LastFm,
                                       unsigned int page = 0,
-                                      Meta::AlbumPtr album = Meta::AlbumPtr() );
+                                      const Meta::AlbumPtr &album = Meta::AlbumPtr() );
     ~CoverFetchSearchPayload();
 
     QString query() const;
@@ -175,7 +175,7 @@ private:
 class CoverFetchArtPayload : public CoverFetchPayload
 {
 public:
-    explicit CoverFetchArtPayload( const Meta::AlbumPtr album,
+    explicit CoverFetchArtPayload( const Meta::AlbumPtr &album,
                                    const CoverFetch::ImageSize size = CoverFetch::NormalSize,
                                    const CoverFetch::Source src = CoverFetch::LastFm,
                                    bool wild = false );

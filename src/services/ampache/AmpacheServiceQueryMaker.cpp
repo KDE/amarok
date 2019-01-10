@@ -366,7 +366,7 @@ AmpacheServiceQueryMaker::fetchTracks()
 }
 
 void
-AmpacheServiceQueryMaker::artistDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmpacheServiceQueryMaker::artistDownloadComplete( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e )
 {
     Q_UNUSED( url );
 
@@ -436,7 +436,7 @@ AmpacheServiceQueryMaker::artistDownloadComplete( const QUrl &url, QByteArray da
 }
 
 void
-AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e )
 {
     Q_UNUSED( url );
 
@@ -554,7 +554,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, QByteArray dat
 }
 
 void
-AmpacheServiceQueryMaker::trackDownloadComplete( const QUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
+AmpacheServiceQueryMaker::trackDownloadComplete( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e )
 {
     Q_UNUSED( url );
 

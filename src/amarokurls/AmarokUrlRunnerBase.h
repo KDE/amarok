@@ -33,7 +33,7 @@ class AmarokUrlRunnerBase
 public:
     virtual QString command() const = 0;
     virtual QString prettyCommand() const = 0;
-    virtual bool run( AmarokUrl url ) = 0;
+    virtual bool run( const AmarokUrl &url ) = 0;
     virtual QIcon icon() const = 0;
 
 protected:

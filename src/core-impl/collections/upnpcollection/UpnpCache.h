@@ -39,7 +39,7 @@ public:
     Meta::GenrePtr getGenre( const QString &name );
     Meta::YearPtr getYear( int name );
 
-    void removeTrack( Meta::TrackPtr track );
+    void removeTrack( const Meta::TrackPtr &track );
 
     TrackMap tracks() { return m_trackMap; }
     ArtistMap artists() { return m_artistMap; }

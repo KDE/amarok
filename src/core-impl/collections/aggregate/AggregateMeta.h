@@ -34,7 +34,7 @@ namespace Meta {
     {
         public:
             AggregateTrack( Collections::AggregateCollection *coll, const Meta::TrackPtr &track );
-            ~AggregateTrack();
+            ~AggregateTrack() override;
 
             QString name() const override;
             QString prettyName() const override;
@@ -99,7 +99,7 @@ namespace Meta {
 
         protected:
             using Observer::metadataChanged;
-            void metadataChanged( Meta::TrackPtr track ) override;
+            void metadataChanged( const Meta::TrackPtr &track ) override;
 
         private:
             Collections::AggregateCollection *m_collection;
@@ -116,7 +116,7 @@ namespace Meta {
     {
         public:
         AggregateAlbum( Collections::AggregateCollection *coll, Meta::AlbumPtr album );
-        ~AggregateAlbum();
+        ~AggregateAlbum() override;
 
         QString name() const override;
         QString prettyName() const override;
@@ -130,7 +130,7 @@ namespace Meta {
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
         Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
-        void add( Meta::AlbumPtr album );
+        void add( const Meta::AlbumPtr &album );
 
         /** returns true if the album has a cover set */
         bool hasImage( int size = 0 ) const override;
@@ -152,7 +152,7 @@ namespace Meta {
 
         protected:
         using Observer::metadataChanged;
-        void metadataChanged( Meta::AlbumPtr album ) override;
+        void metadataChanged(const  Meta::AlbumPtr &album ) override;
 
         private:
         Collections::AggregateCollection *m_collection;
@@ -164,8 +164,8 @@ namespace Meta {
     class AMAROK_EXPORT AggregateArtist : public Meta::Artist, private Meta::Observer
     {
         public:
-        AggregateArtist( Collections::AggregateCollection *coll, Meta::ArtistPtr artist );
-        ~AggregateArtist();
+        AggregateArtist( Collections::AggregateCollection *coll, const Meta::ArtistPtr &artist );
+        ~AggregateArtist() override;
 
         QString name() const override;
         QString prettyName() const override;
@@ -176,11 +176,11 @@ namespace Meta {
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
         Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
-        void add( Meta::ArtistPtr artist );
+        void add( const Meta::ArtistPtr &artist );
 
         protected:
         using Observer::metadataChanged;
-        void metadataChanged( Meta::ArtistPtr artist ) override;
+        void metadataChanged( const Meta::ArtistPtr &artist ) override;
 
         private:
         Collections::AggregateCollection *m_collection;
@@ -191,7 +191,7 @@ namespace Meta {
     class AMAROK_EXPORT AggregateGenre : public Meta::Genre, private Meta::Observer
     {
         public:
-        AggregateGenre( Collections::AggregateCollection *coll, Meta::GenrePtr genre );
+        AggregateGenre( Collections::AggregateCollection *coll, const Meta::GenrePtr &genre );
         ~AggregateGenre();
 
         QString name() const override;
@@ -203,11 +203,11 @@ namespace Meta {
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
         Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
-        void add( Meta::GenrePtr genre );
+        void add( const Meta::GenrePtr &genre );
 
         protected:
         using Observer::metadataChanged;
-        void metadataChanged( Meta::GenrePtr genre ) override;
+        void metadataChanged( const Meta::GenrePtr &genre ) override;
 
         private:
         Collections::AggregateCollection *m_collection;
@@ -218,8 +218,8 @@ namespace Meta {
     class AMAROK_EXPORT AggregateComposer : public Meta::Composer, private Meta::Observer
     {
         public:
-        AggregateComposer( Collections::AggregateCollection *coll, Meta::ComposerPtr composer );
-        ~AggregateComposer();
+        AggregateComposer(Collections::AggregateCollection *coll, const ComposerPtr &composer );
+        ~AggregateComposer() override;
 
         QString name() const override;
         QString prettyName() const override;
@@ -230,11 +230,11 @@ namespace Meta {
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
         Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
-        void add( Meta::ComposerPtr composer );
+        void add( const Meta::ComposerPtr &composer );
 
         protected:
         using Observer::metadataChanged;
-        void metadataChanged( Meta::ComposerPtr composer ) override;
+        void metadataChanged( const Meta::ComposerPtr &composer ) override;
 
         private:
         Collections::AggregateCollection *m_collection;
@@ -245,8 +245,8 @@ namespace Meta {
     class AMAROK_EXPORT AggreagateYear : public Meta::Year, private Meta::Observer
     {
         public:
-        AggreagateYear( Collections::AggregateCollection * coll, Meta::YearPtr year );
-        ~AggreagateYear();
+        AggreagateYear( Collections::AggregateCollection * coll, const Meta::YearPtr &year );
+        ~AggreagateYear() override;
 
         QString name() const override;
         QString prettyName() const override;
@@ -260,11 +260,11 @@ namespace Meta {
         /**
           * adds another Meta::Year instance to be proxied.
           */
-        void add( Meta::YearPtr year );
+        void add( const Meta::YearPtr &year );
 
         protected:
         using Observer::metadataChanged;
-        void metadataChanged( Meta::YearPtr year ) override;
+        void metadataChanged( const Meta::YearPtr &year ) override;
 
         private:
         Collections::AggregateCollection *m_collection;

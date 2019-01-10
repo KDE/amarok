@@ -257,7 +257,7 @@ TagHelper::testString() const
 
 
 Meta::Tag::TagHelper *
-Meta::Tag::selectHelper( const TagLib::FileRef fileref, bool forceCreation )
+Meta::Tag::selectHelper( const TagLib::FileRef &fileref, bool forceCreation )
 {
     TagHelper *tagHelper = NULL;
 

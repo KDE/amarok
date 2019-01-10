@@ -35,7 +35,7 @@
 
 using namespace Podcasts;
 
-UmsPodcastProvider::UmsPodcastProvider( QUrl scanDirectory )
+UmsPodcastProvider::UmsPodcastProvider( const QUrl &scanDirectory )
         : m_scanDirectory( scanDirectory )
         , m_deleteEpisodeAction( 0 )
         , m_deleteChannelAction( 0 )
@@ -76,7 +76,7 @@ UmsPodcastProvider::addPodcast( const QUrl &url )
 }
 
 PodcastChannelPtr
-UmsPodcastProvider::addChannel( PodcastChannelPtr channel )
+UmsPodcastProvider::addChannel( const PodcastChannelPtr &channel )
 {
     UmsPodcastChannelPtr umsChannel = UmsPodcastChannelPtr(
             new UmsPodcastChannel( channel, this ) );
@@ -130,7 +130,7 @@ UmsPodcastProvider::channels()
 }
 
 void
-UmsPodcastProvider::removeSubscription( PodcastChannelPtr channel )
+UmsPodcastProvider::removeSubscription( const PodcastChannelPtr &channel )
 {
     UmsPodcastChannelPtr umsChannel = UmsPodcastChannelPtr::dynamicCast( channel );
     if( umsChannel.isNull() )
@@ -154,7 +154,7 @@ UmsPodcastProvider::configureProvider()
 }
 
 void
-UmsPodcastProvider::configureChannel( PodcastChannelPtr channel )
+UmsPodcastProvider::configureChannel( const PodcastChannelPtr &channel )
 {
     Q_UNUSED( channel );
 }
@@ -181,7 +181,7 @@ UmsPodcastProvider::playlists()
 }
 
 QActionList
-UmsPodcastProvider::episodeActions( PodcastEpisodeList episodes )
+UmsPodcastProvider::episodeActions( const PodcastEpisodeList &episodes )
 {
     QActionList actions;
     if( episodes.isEmpty() )
@@ -320,7 +320,7 @@ UmsPodcastProvider::deleteJobComplete( KJob *job )
 }
 
 QActionList
-UmsPodcastProvider::channelActions( PodcastChannelList channels )
+UmsPodcastProvider::channelActions( const PodcastChannelList &channels )
 {
     QActionList actions;
     if( channels.isEmpty() )
@@ -417,19 +417,19 @@ UmsPodcastProvider::updateAll() //slot
 }
 
 void
-UmsPodcastProvider::update( Podcasts::PodcastChannelPtr channel ) //slot
+UmsPodcastProvider::update( const Podcasts::PodcastChannelPtr &channel ) //slot
 {
     Q_UNUSED( channel );
 }
 
 void
-UmsPodcastProvider::downloadEpisode( Podcasts::PodcastEpisodePtr episode ) //slot
+UmsPodcastProvider::downloadEpisode( const Podcasts::PodcastEpisodePtr &episode ) //slot
 {
     Q_UNUSED( episode );
 }
 
 void
-UmsPodcastProvider::deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode ) //slot
+UmsPodcastProvider::deleteDownloadedEpisode( const Podcasts::PodcastEpisodePtr &episode ) //slot
 {
     Q_UNUSED( episode );
 }

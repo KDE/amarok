@@ -55,10 +55,10 @@ namespace AmarokScript
 
             Q_INVOKABLE void addToolsMenu( const QString &name );
             Q_INVOKABLE void addSettingsMenu( const QString &name );
-            Q_INVOKABLE bool addToolsAction( QString id, QString actionName, QString icon = QStringLiteral("amarok") );
+            Q_INVOKABLE bool addToolsAction( const QString &id, const QString &actionName, const QString &icon = QStringLiteral("amarok") );
             Q_INVOKABLE void addToolsSeparator();
-            Q_INVOKABLE bool addSettingsAction( QString id, QString actionName, QString icon = QStringLiteral("amarok") );
-            Q_INVOKABLE bool addCustomAction( QString menuName, QString id, QString actionName, QString icon = QStringLiteral("amarok") );
+            Q_INVOKABLE bool addSettingsAction( const QString &id, const QString &actionName, const QString &icon = QStringLiteral("amarok") );
+            Q_INVOKABLE bool addCustomAction( const QString &menuName, const QString &id, const QString &actionName, const QString &icon = QStringLiteral("amarok") );
             Q_INVOKABLE void addSettingsSeparator();
             Q_INVOKABLE void showTrayIcon( bool show );
 
@@ -86,7 +86,7 @@ namespace AmarokScript
               *
               * @return true if adding the action was successful, false otherwise
               */
-            bool addMenuAction( QMenu *menu, QString id, QString actionName, QString menuProperty, QString icon );
+            bool addMenuAction( QMenu *menu, const QString &id, const QString &actionName, const QString &menuProperty, const QString &icon );
 
             QString activeBrowserName();
             bool isTrayIconShown();

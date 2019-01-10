@@ -43,7 +43,7 @@ QIcon MagnatuneUrlRunner::icon() const
     return QIcon::fromTheme( "view-services-magnatune-amarok" );
 }
 
-bool MagnatuneUrlRunner::run( AmarokUrl url )
+bool MagnatuneUrlRunner::run( const AmarokUrl &url )
 {
     DEBUG_BLOCK
     if ( !url.isNull() )

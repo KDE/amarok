@@ -194,7 +194,7 @@ StorageManager::slotNewStorage( QSharedPointer<SqlStorage> newStorage )
 }
 
 void
-StorageManager::slotNewError( QStringList errorMessageList )
+StorageManager::slotNewError( const QStringList &errorMessageList )
 {
     d->errorList << errorMessageList;
 }

@@ -49,9 +49,9 @@ class AMAROK_EXPORT LyricsManager : public QObject
          */
         bool isEmpty( const QString &lyrics ) const;
 
-        void newTrack( Meta::TrackPtr track );
+        void newTrack( const Meta::TrackPtr &track );
         void lyricsResult( const QByteArray& lyrics, Meta::TrackPtr track );
-        void lyricsLoaded( const QUrl &url, const QByteArray &data, NetworkAccessManagerProxy::Error err );
+        void lyricsLoaded( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &err );
         void loadLyrics( Meta::TrackPtr track, bool overwrite = false );
 
     Q_SIGNALS:

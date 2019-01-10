@@ -62,14 +62,14 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
 
     public:
         using Observer::metadataChanged;
-        void metadataChanged( Meta::TrackPtr track ) override
+        void metadataChanged( const Meta::TrackPtr &track ) override
         {
             Q_UNUSED( track )
             proxy->notifyObservers();
         }
 
     public Q_SLOTS:
-        void slotUpdateTrack( Meta::TrackPtr track )
+        void slotUpdateTrack( const Meta::TrackPtr &track )
         {
             if( track )
             {

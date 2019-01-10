@@ -134,7 +134,7 @@ ScriptManager::lyricsScriptRunning() const
 }
 
 void
-ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title, const QString& url, Meta::TrackPtr track )
+ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title, const QString& url, const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
     Q_EMIT fetchLyrics( artist, title, url, track );

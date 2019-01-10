@@ -75,7 +75,7 @@ class ServiceSqlQueryMaker : public QueryMaker
         void handleResult( const QStringList &result );
 
     protected:
-        virtual QString escape( QString text ) const;
+        virtual QString escape( const QString &text ) const;
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
 
     public Q_SLOTS:

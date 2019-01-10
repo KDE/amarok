@@ -37,7 +37,7 @@ PodcastEpisode::PodcastEpisode()
     m_yearPtr = Meta::YearPtr( new PodcastYear( this ) );
 }
 
-PodcastEpisode::PodcastEpisode( PodcastChannelPtr channel )
+PodcastEpisode::PodcastEpisode( const PodcastChannelPtr &channel )
     : PodcastMetaCommon()
     , Track()
     , m_channel( channel )
@@ -56,8 +56,8 @@ PodcastEpisode::PodcastEpisode( PodcastChannelPtr channel )
     m_yearPtr = Meta::YearPtr( new PodcastYear( this ) );
 }
 
-PodcastEpisode::PodcastEpisode( PodcastEpisodePtr episode,
-                                      PodcastChannelPtr channel )
+PodcastEpisode::PodcastEpisode( const PodcastEpisodePtr &episode,
+                                      const PodcastChannelPtr &channel )
     : m_channel( channel )
 {
     m_author = episode->author();
@@ -100,7 +100,7 @@ PodcastEpisode::operator==( const Meta::Track &track ) const
                 );
 }
 
-PodcastChannel::PodcastChannel( PodcastChannelPtr channel )
+PodcastChannel::PodcastChannel( const PodcastChannelPtr &channel )
 {
     m_author = channel->author();
     m_autoScan = channel->autoScan();
@@ -138,14 +138,14 @@ PodcastChannel::tracks()
 }
 
 void
-PodcastChannel::addTrack( Meta::TrackPtr track, int position )
+PodcastChannel::addTrack( const Meta::TrackPtr &track, int position )
 {
     Q_UNUSED( position );
     addEpisode( PodcastEpisodePtr::dynamicCast( track ) );
 }
 
 Podcasts::PodcastEpisodePtr
-PodcastChannel::addEpisode( PodcastEpisodePtr episode )
+PodcastChannel::addEpisode( const PodcastEpisodePtr &episode )
 {
     if( !episode.isNull() )
         m_episodes << episode;

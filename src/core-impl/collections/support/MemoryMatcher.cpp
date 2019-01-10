@@ -48,7 +48,7 @@ MemoryMatcher::setNext( MemoryMatcher *next )
     m_next = next;
 }
 
-TrackMatcher::TrackMatcher( TrackPtr track )
+TrackMatcher::TrackMatcher( const TrackPtr &track )
     : MemoryMatcher()
     , m_track( track )
 {}
@@ -81,7 +81,7 @@ TrackList TrackMatcher::match( const TrackList &tracks )
 
 
 
-ArtistMatcher::ArtistMatcher( ArtistPtr artist, Collections::QueryMaker::ArtistMatchBehaviour artistMode )
+ArtistMatcher::ArtistMatcher( const ArtistPtr &artist, Collections::QueryMaker::ArtistMatchBehaviour artistMode )
     : MemoryMatcher()
     , m_artist( artist )
     , m_queryMode( artistMode )
@@ -149,7 +149,7 @@ TrackList ArtistMatcher::match( const TrackList &tracks )
 
 
 
-AlbumMatcher::AlbumMatcher( AlbumPtr album )
+AlbumMatcher::AlbumMatcher( const AlbumPtr &album )
     : MemoryMatcher()
     , m_album( album )
 {}
@@ -189,7 +189,7 @@ TrackList AlbumMatcher::match( const TrackList &tracks )
 
 
 
-GenreMatcher::GenreMatcher( GenrePtr genre )
+GenreMatcher::GenreMatcher( const GenrePtr &genre )
     : MemoryMatcher()
     , m_genre( genre )
 {}
@@ -229,7 +229,7 @@ TrackList GenreMatcher::match( const TrackList &tracks )
 
 
 
-ComposerMatcher::ComposerMatcher( ComposerPtr composer )
+ComposerMatcher::ComposerMatcher( const ComposerPtr &composer )
     : MemoryMatcher()
     , m_composer( composer )
 {}
@@ -269,7 +269,7 @@ TrackList ComposerMatcher::match( const TrackList &tracks )
 
 
 
-YearMatcher::YearMatcher( YearPtr year )
+YearMatcher::YearMatcher( const YearPtr &year )
     : MemoryMatcher()
     , m_year( year )
 {}

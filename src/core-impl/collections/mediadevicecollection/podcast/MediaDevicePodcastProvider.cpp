@@ -32,7 +32,7 @@ MediaDevicePodcastProvider::addPodcast( const QUrl &url )
 }
 
 PodcastChannelPtr
-MediaDevicePodcastProvider::addChannel( PodcastChannelPtr channel )
+MediaDevicePodcastProvider::addChannel( const PodcastChannelPtr &channel )
 {
     Q_UNUSED( channel )
     return PodcastChannelPtr();
@@ -87,7 +87,7 @@ MediaDevicePodcastProvider::playlists()
 }
 
 Playlists::PlaylistPtr
-MediaDevicePodcastProvider::addPlaylist( Playlists::PlaylistPtr playlist )
+MediaDevicePodcastProvider::addPlaylist(Playlists::PlaylistPtr playlist )
 {
     PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
     if( channel.isNull() )
@@ -97,7 +97,7 @@ MediaDevicePodcastProvider::addPlaylist( Playlists::PlaylistPtr playlist )
 }
 
 Meta::TrackPtr
-MediaDevicePodcastProvider::addTrack( Meta::TrackPtr track )
+MediaDevicePodcastProvider::addTrack(const Meta::TrackPtr &track )
 {
     PodcastEpisodePtr episode = PodcastEpisodePtr::dynamicCast( track );
     if( episode.isNull() )

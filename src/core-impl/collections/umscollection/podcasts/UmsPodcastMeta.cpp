@@ -25,19 +25,19 @@
 using namespace Podcasts;
 
 UmsPodcastEpisodePtr
-UmsPodcastEpisode::fromPodcastEpisodePtr( PodcastEpisodePtr episode )
+UmsPodcastEpisode::fromPodcastEpisodePtr( const PodcastEpisodePtr &episode )
 {
     return UmsPodcastEpisodePtr::dynamicCast( episode );
 }
 
 UmsPodcastEpisodePtr
-UmsPodcastEpisode::fromTrackPtr( Meta::TrackPtr track )
+UmsPodcastEpisode::fromTrackPtr( const Meta::TrackPtr &track )
 {
     return UmsPodcastEpisodePtr::dynamicCast( track );
 }
 
 PodcastEpisodePtr
-UmsPodcastEpisode::toPodcastEpisodePtr( UmsPodcastEpisodePtr episode )
+UmsPodcastEpisode::toPodcastEpisodePtr( const UmsPodcastEpisodePtr &episode )
 {
     return PodcastEpisodePtr::dynamicCast( episode );
 }
@@ -51,7 +51,7 @@ UmsPodcastEpisode::toPodcastEpisodeList( UmsPodcastEpisodeList episodes )
     return list;
 }
 
-UmsPodcastEpisode::UmsPodcastEpisode( UmsPodcastChannelPtr channel )
+UmsPodcastEpisode::UmsPodcastEpisode( const UmsPodcastChannelPtr &channel )
         : Podcasts::PodcastEpisode( UmsPodcastChannel::toPodcastChannelPtr( channel ) )
 {
 }
@@ -85,7 +85,7 @@ UmsPodcastEpisode::notPlayableReason() const
 }
 
 void
-UmsPodcastEpisode::setLocalFile( MetaFile::TrackPtr localFile )
+UmsPodcastEpisode::setLocalFile( const MetaFile::TrackPtr &localFile )
 {
     m_localFile = localFile;
 }
@@ -164,13 +164,13 @@ UmsPodcastEpisode::year() const
 }
 
 UmsPodcastChannelPtr
-UmsPodcastChannel::fromPodcastChannelPtr( PodcastChannelPtr channel )
+UmsPodcastChannel::fromPodcastChannelPtr( const PodcastChannelPtr &channel )
 {
     return UmsPodcastChannelPtr::dynamicCast( channel );
 }
 
 PodcastChannelPtr
-UmsPodcastChannel::toPodcastChannelPtr( UmsPodcastChannelPtr channel )
+UmsPodcastChannel::toPodcastChannelPtr( const UmsPodcastChannelPtr &channel )
 {
     return PodcastChannelPtr::dynamicCast( channel );
 }
@@ -210,7 +210,7 @@ UmsPodcastChannel::~UmsPodcastChannel()
 }
 
 PodcastEpisodePtr
-UmsPodcastChannel::addEpisode( PodcastEpisodePtr episode )
+UmsPodcastChannel::addEpisode(const PodcastEpisodePtr &episode )
 {
     DEBUG_BLOCK
 
@@ -258,7 +258,7 @@ UmsPodcastChannel::provider() const
 }
 
 void
-UmsPodcastChannel::removeEpisode( UmsPodcastEpisodePtr episode )
+UmsPodcastChannel::removeEpisode( const UmsPodcastEpisodePtr &episode )
 {
     int position = m_umsEpisodes.indexOf( episode );
 

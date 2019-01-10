@@ -55,7 +55,7 @@ public:
     bool handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *file );
     QString createCurrentUID( TagLib::File *file );
     QString createV1UID( TagLib::File *file );
-    QString upgradeUID( int version, QString currValue );
+    QString upgradeUID( int version, const QString &currValue );
     void readArgs();
     void displayHelp();
 

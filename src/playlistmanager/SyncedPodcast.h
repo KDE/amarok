@@ -56,7 +56,7 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
         void addLabel( const QString &label ) override { m_master->addLabel( label ); }
         void setSubscribeDate( const QDate &date ) override { m_master->setSubscribeDate( date ); }
 
-        Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override
+        Podcasts::PodcastEpisodePtr addEpisode( const Podcasts::PodcastEpisodePtr &episode ) override
         {
             return m_master->addEpisode( episode );
         }

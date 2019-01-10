@@ -35,11 +35,11 @@ class AMAROK_CORE_EXPORT PrivateMetaRegistry
 public:
     static PrivateMetaRegistry *instance();
 
-    void insertAlbum( const QString &owner, const QString &key, AlbumPtr album );
-    void insertArtist( const QString &owner, const QString &key, ArtistPtr artist );
-    void insertGenre( const QString &owner, const QString &key, GenrePtr genre );
-    void insertComposer( const QString &owner, const QString &key, ComposerPtr composer );
-    void insertYear( const QString &owner, const QString &key, YearPtr year );
+    void insertAlbum( const QString &owner, const QString &key, const AlbumPtr &album );
+    void insertArtist( const QString &owner, const QString &key, const ArtistPtr &artist );
+    void insertGenre( const QString &owner, const QString &key, const GenrePtr &genre );
+    void insertComposer( const QString &owner, const QString &key, const ComposerPtr &composer );
+    void insertYear( const QString &owner, const QString &key, const YearPtr &year );
 
     AlbumPtr album( const QString &owner, const QString &key );
     ArtistPtr artist( const QString &owner, const QString &key );

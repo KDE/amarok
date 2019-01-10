@@ -112,7 +112,7 @@ namespace Dynamic
             */
             virtual TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const = 0;
+                                             const TrackCollectionPtr &universe ) const = 0;
 
             /** Returns true if indicated track fits that position.
                 The function might block until a result is ready.
@@ -150,7 +150,7 @@ namespace Dynamic
                 @param newBias The bias that replaces this bias. If you give
                 an empty BiasPtr as argument the bias will be removed.
             */
-            virtual void replace( Dynamic::BiasPtr newBias );
+            virtual void replace( const Dynamic::BiasPtr &newBias );
     };
 
     /** A bias that returns all the tracks in the universe as possible tracks */
@@ -170,7 +170,7 @@ namespace Dynamic
 
             TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const override;
+                                             const TrackCollectionPtr &universe ) const override;
 
             bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
@@ -193,7 +193,7 @@ namespace Dynamic
             /** Create a new And bias.
             */
             AndBias();
-            virtual ~AndBias();
+            ~AndBias() override;
 
             void fromXml( QXmlStreamReader *reader ) override;
             void toXml( QXmlStreamWriter *writer ) const override;
@@ -207,7 +207,7 @@ namespace Dynamic
 
             TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const override;
+                                             const TrackCollectionPtr &universe ) const override;
 
             bool trackMatches( int position,
                                        const Meta::TrackList& playlist,
@@ -216,7 +216,7 @@ namespace Dynamic
             /** Appends a bias to this bias.
                 This object will take ownership of the bias and free it when destroyed.
             */
-            virtual void appendBias( Dynamic::BiasPtr bias );
+            virtual void appendBias( const Dynamic::BiasPtr &bias );
             virtual void moveBias( int from, int to );
 
             BiasList biases() const
@@ -232,8 +232,8 @@ namespace Dynamic
 
         protected Q_SLOTS:
             virtual void resultReceived( const Dynamic::TrackSet &tracks );
-            virtual void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
-            virtual void biasChanged( Dynamic::BiasPtr bias );
+            virtual void biasReplaced( const Dynamic::BiasPtr &oldBias, const Dynamic::BiasPtr &newBias );
+            virtual void biasChanged( const Dynamic::BiasPtr &bias );
 
         protected:
             BiasList m_biases;
@@ -260,7 +260,7 @@ namespace Dynamic
 
             TrackSet matchingTracks( const Meta::TrackList& playlist,
                                              int contextCount, int finalCount,
-                                             const TrackCollectionPtr universe ) const override;
+                                             const TrackCollectionPtr &universe ) const override;
 
             bool trackMatches( int position,
                                        const Meta::TrackList& playlist,

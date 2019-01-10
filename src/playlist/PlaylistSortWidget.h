@@ -91,14 +91,14 @@ private Q_SLOTS:
      * @param internalColumnName the name of the level.
      * @param sortOrder the Qt::SortOrder of the level.
      */
-    void addLevel( QString internalColumnName, Qt::SortOrder sortOrder = Qt::AscendingOrder );
+    void addLevel( const QString &internalColumnName, Qt::SortOrder sortOrder = Qt::AscendingOrder );
 
     /**
      * Adds a level to the breadcrumb path.
      * Orders the level in ascending order.
      * @param internalColumnName the name of the level.
      */
-    void addLevelAscending( QString internalColumnName );
+    void addLevelAscending( const QString &internalColumnName );
 
     /**
      * Handles the (possible) deletion of further levels when an item is clicked.
@@ -109,7 +109,7 @@ private Q_SLOTS:
      * Handles the rearrangement of the breadcrumb path when a sibling of an item is clicked.
      * @param action the action in the menu.
      */
-    void onItemSiblingClicked( QString internalColumnName );
+    void onItemSiblingClicked( const QString &internalColumnName );
 
     /**
      * Handles the rearrangement of the breadcrumb path when a Shuffle action is clicked.

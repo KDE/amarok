@@ -124,7 +124,7 @@ IpodPlaylist::tracks()
 }
 
 void
-IpodPlaylist::addTrack( Meta::TrackPtr track, int position )
+IpodPlaylist::addTrack(const Meta::TrackPtr &track, int position )
 {
     if( m_type != Normal || !m_coll || !m_coll->isWritable() )
         return;

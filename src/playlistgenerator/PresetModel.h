@@ -72,7 +72,7 @@ namespace APG {
 
             class ExportDialog;
 
-            void insertPreset(APG::PresetPtr);
+            void insertPreset(const APG::PresetPtr&);
             void parseXmlToPresets( QDomDocument& );
 
             QPersistentModelIndex* m_activePresetIndex;

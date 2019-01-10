@@ -85,7 +85,7 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         bool isOrganizable() const override;
 
         // Observer methods:
-        void metadataChanged( Meta::TrackPtr track ) override;
+        void metadataChanged( const Meta::TrackPtr &track ) override;
         // so that the compiler doesn't complain about hidden virtual functions:
         using Meta::Observer::metadataChanged;
 

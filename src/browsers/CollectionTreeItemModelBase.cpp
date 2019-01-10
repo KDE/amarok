@@ -790,49 +790,49 @@ convertToDataList( const QList<PointerType>& list )
 }
 
 void
-CollectionTreeItemModelBase::newTracksReady( Meta::TrackList res )
+CollectionTreeItemModelBase::newTracksReady( const Meta::TrackList &res )
 {
     newDataReady( convertToDataList( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newArtistsReady( Meta::ArtistList res )
+CollectionTreeItemModelBase::newArtistsReady( const Meta::ArtistList &res )
 {
     newDataReady( convertToDataList( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newAlbumsReady( Meta::AlbumList res )
+CollectionTreeItemModelBase::newAlbumsReady( const Meta::AlbumList &res )
 {
     newDataReady( convertToDataList( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newGenresReady( Meta::GenreList res )
+CollectionTreeItemModelBase::newGenresReady( const Meta::GenreList &res )
 {
     newDataReady( convertToDataList( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newComposersReady( Meta::ComposerList res )
+CollectionTreeItemModelBase::newComposersReady( const Meta::ComposerList &res )
 {
     newDataReady( convertToDataList( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newYearsReady( Meta::YearList res )
+CollectionTreeItemModelBase::newYearsReady( const Meta::YearList &res )
 {
     newDataReady( convertToDataList( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newLabelsReady( Meta::LabelList res )
+CollectionTreeItemModelBase::newLabelsReady( const Meta::LabelList &res )
 {
     newDataReady( convertToDataList( res ) );
 }
 
 void
-CollectionTreeItemModelBase::newDataReady( Meta::DataList data )
+CollectionTreeItemModelBase::newDataReady( const Meta::DataList &data )
 {
     //if we are expanding an item, we'll find the sender in childQueries
     //otherwise we are filtering all collections

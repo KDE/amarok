@@ -853,7 +853,7 @@ Playlist::Model::stateOfId( quint64 id ) const
 }
 
 void
-Playlist::Model::metadataChanged( Meta::TrackPtr track )
+Playlist::Model::metadataChanged(const Meta::TrackPtr &track )
 {
     int row = 0;
     foreach( Item* i, m_items )
@@ -872,7 +872,7 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
 }
 
 void
-Playlist::Model::metadataChanged( Meta::AlbumPtr album )
+Playlist::Model::metadataChanged(const Meta::AlbumPtr &album )
 {
     // Mainly to get update about changed covers
 
@@ -896,7 +896,7 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 }
 
 bool
-Playlist::Model::exportPlaylist( const QString &path, bool relative ) const
+Playlist::Model::exportPlaylist( const QString &path, bool relative )
 {
     // check queue state
     QQueue<quint64> queueIds = The::playlistActions()->queue();
@@ -908,7 +908,7 @@ Playlist::Model::exportPlaylist( const QString &path, bool relative ) const
 }
 
 Meta::TrackList
-Playlist::Model::tracks() const
+Playlist::Model::tracks()
 {
     Meta::TrackList tl;
     foreach( Item* item, m_items )

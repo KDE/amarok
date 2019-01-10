@@ -26,7 +26,7 @@
 namespace Collections {
 
 bool UpnpMemoryQueryMaker::m_firstRun = true;
-UpnpMemoryQueryMaker::UpnpMemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QString &collectionId )
+UpnpMemoryQueryMaker::UpnpMemoryQueryMaker( const QWeakPointer<MemoryCollection> &mc, const QString &collectionId )
     : MemoryQueryMaker( mc, collectionId )
 {
 }

@@ -240,31 +240,31 @@ UpnpTrack::collection() const
 }
 
 void
-UpnpTrack::setAlbum( UpnpAlbumPtr album )
+UpnpTrack::setAlbum( const UpnpAlbumPtr &album )
 {
     m_album = album;
 }
 
 void
-UpnpTrack::setArtist( UpnpArtistPtr artist )
+UpnpTrack::setArtist( const UpnpArtistPtr &artist )
 {
     m_artist = artist;
 }
 
 void
-UpnpTrack::setGenre( UpnpGenrePtr genre )
+UpnpTrack::setGenre( const UpnpGenrePtr &genre )
 {
     m_genre = genre;
 }
 
 void
-UpnpTrack::setComposer( UpnpComposerPtr composer )
+UpnpTrack::setComposer( const UpnpComposerPtr &composer )
 {
     m_composer = composer;
 }
 
 void
-UpnpTrack::setYear( UpnpYearPtr year )
+UpnpTrack::setYear( const UpnpYearPtr &year )
 {
     m_year = year;
 }
@@ -316,13 +316,13 @@ UpnpArtist::tracks()
 }
 
 void
-UpnpArtist::addTrack( UpnpTrackPtr track )
+UpnpArtist::addTrack( const UpnpTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
 void
-UpnpArtist::removeTrack( UpnpTrackPtr track )
+UpnpArtist::removeTrack( const UpnpTrackPtr &track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
 }
@@ -408,19 +408,19 @@ UpnpAlbum::imageLocation( int size )
 }
 
 void
-UpnpAlbum::addTrack( UpnpTrackPtr track )
+UpnpAlbum::addTrack( const UpnpTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
 void
-UpnpAlbum::removeTrack( UpnpTrackPtr track )
+UpnpAlbum::removeTrack( const UpnpTrackPtr &track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
 }
 
 void
-UpnpAlbum::setAlbumArtist( UpnpArtistPtr artist )
+UpnpAlbum::setAlbumArtist( const UpnpArtistPtr &artist )
 {
     m_albumArtist = artist;
 }
@@ -470,13 +470,13 @@ UpnpGenre::tracks()
 }
 
 void
-UpnpGenre::addTrack( UpnpTrackPtr track )
+UpnpGenre::addTrack( const UpnpTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
 void
-UpnpGenre::removeTrack( UpnpTrackPtr track )
+UpnpGenre::removeTrack( const UpnpTrackPtr &track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
 }
@@ -509,13 +509,13 @@ UpnpComposer::tracks()
 }
 
 void
-UpnpComposer::addTrack( UpnpTrackPtr track )
+UpnpComposer::addTrack( const UpnpTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
 void
-UpnpComposer::removeTrack( UpnpTrackPtr track )
+UpnpComposer::removeTrack( const UpnpTrackPtr &track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
 }
@@ -548,13 +548,13 @@ UpnpYear::tracks()
 }
 
 void
-UpnpYear::addTrack( UpnpTrackPtr track )
+UpnpYear::addTrack( const UpnpTrackPtr &track )
 {
     m_tracks.append( TrackPtr::staticCast( track ) );
 }
 
 void
-UpnpYear::removeTrack( UpnpTrackPtr track )
+UpnpYear::removeTrack( const UpnpTrackPtr &track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
 }

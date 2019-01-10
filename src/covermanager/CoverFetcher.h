@@ -52,7 +52,7 @@ public:
     enum FinishState { Success, Error, NotFound, Cancelled };
 
 public Q_SLOTS:
-    AMAROK_EXPORT void queueQuery( Meta::AlbumPtr album, const QString &query, int page = 0 );
+    AMAROK_EXPORT void queueQuery( const Meta::AlbumPtr &album, const QString &query, int page = 0 );
 
 Q_SIGNALS:
     void finishedSingle( int state );
@@ -63,7 +63,7 @@ private Q_SLOTS:
     void slotFetch( CoverFetchUnit::Ptr unit );
 
     /// Handle result of a fetch job
-    void slotResult( const QUrl &url, const QByteArray &data, NetworkAccessManagerProxy::Error e );
+    void slotResult( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
 
     /// Cover found dialog is closed by the user
     void slotDialogFinished();
@@ -77,7 +77,7 @@ private:
     ~CoverFetcher();
 
     /// Remove a fetch unit from the queue, and clean up any running jobs
-    void abortFetch( CoverFetchUnit::Ptr unit );
+    void abortFetch( const CoverFetchUnit::Ptr &unit );
 
     void queueQueryForAlbum( Meta::AlbumPtr album );
 
@@ -92,7 +92,7 @@ private:
     QPointer<CoverFoundDialog> m_dialog;
 
     /// cleanup depending on the fetch result
-    void finish( const CoverFetchUnit::Ptr unit,
+    void finish( const CoverFetchUnit::Ptr &unit,
                  FinishState state = Success,
                  const QString &message = QString() );
 

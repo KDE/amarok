@@ -27,7 +27,7 @@ class CompilationAction : public QAction
     Q_OBJECT
 
     public:
-        CompilationAction( QObject* parent, Meta::AlbumPtr album )
+        CompilationAction( QObject* parent, const Meta::AlbumPtr &album )
                 : QAction( parent )
                 , m_album( album )
             {
@@ -59,7 +59,7 @@ class CompilationAction : public QAction
 
 using namespace Capabilities;
 
-AlbumActionsCapability::AlbumActionsCapability( Meta::AlbumPtr album, QList<QAction *> actions )
+AlbumActionsCapability::AlbumActionsCapability( const Meta::AlbumPtr &album, const QList<QAction *> &actions )
     : ActionsCapability()
 {
     m_actions.append( new DisplayCoverAction( 0, album ) );

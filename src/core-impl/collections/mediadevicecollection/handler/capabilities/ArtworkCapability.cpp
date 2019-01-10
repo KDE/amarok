@@ -22,7 +22,7 @@ Handler::ArtworkCapability::~ArtworkCapability()
 }
 
 void
-Handler::ArtworkCapability::setCoverPath( Meta::MediaDeviceAlbumPtr album, const QString &path )
+Handler::ArtworkCapability::setCoverPath( const Meta::MediaDeviceAlbumPtr &album, const QString &path )
 {
     const QImage pix( path );
     if( !pix.isNull() )

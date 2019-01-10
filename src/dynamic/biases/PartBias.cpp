@@ -428,7 +428,7 @@ Dynamic::PartBias::weights() const
 Dynamic::TrackSet
 Dynamic::PartBias::matchingTracks( const Meta::TrackList& playlist,
                                    int contextCount, int finalCount,
-                                   Dynamic::TrackCollectionPtr universe ) const
+                                   const Dynamic::TrackCollectionPtr &universe ) const
 {
     DEBUG_BLOCK;
 
@@ -530,7 +530,7 @@ Dynamic::PartBias::trackMatches( int position,
 }
 
 void
-Dynamic::PartBias::appendBias( Dynamic::BiasPtr bias )
+Dynamic::PartBias::appendBias( const Dynamic::BiasPtr &bias )
 {
     DEBUG_BLOCK;
     m_weights.append( qreal(0.0) );
@@ -614,7 +614,7 @@ Dynamic::PartBias::changeBiasWeight( int biasNum, qreal value )
 }
 
 void
-Dynamic::PartBias::biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias )
+Dynamic::PartBias::biasReplaced( const Dynamic::BiasPtr &oldBias, const Dynamic::BiasPtr &newBias )
 {
     DEBUG_BLOCK;
     int index = m_biases.indexOf( oldBias );

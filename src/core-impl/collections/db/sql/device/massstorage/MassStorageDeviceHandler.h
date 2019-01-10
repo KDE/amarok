@@ -35,7 +35,7 @@ public:
 
     bool canCreateFromConfig() const override;
 
-    DeviceHandler* createHandler( KSharedConfigPtr c, QSharedPointer<SqlStorage> s ) const override;
+    DeviceHandler* createHandler( const KSharedConfigPtr &c, QSharedPointer<SqlStorage> s ) const override;
 
     QString type() const override;
 

@@ -28,7 +28,7 @@
 
 #include <gpod/itdb.h>
 
-IpodCollectionLocation::IpodCollectionLocation( QPointer<IpodCollection> parentCollection )
+IpodCollectionLocation::IpodCollectionLocation( const QPointer<IpodCollection> &parentCollection )
     : CollectionLocation()  // we implement collection(), we need not pass parentCollection
     , m_coll( parentCollection )
 {
@@ -97,14 +97,14 @@ IpodCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources
 }
 
 void
-IpodCollectionLocation::setDestinationPlaylist( Playlists::PlaylistPtr destPlaylist, const QMap<Meta::TrackPtr, int> &trackPlaylistPositions )
+IpodCollectionLocation::setDestinationPlaylist( const Playlists::PlaylistPtr &destPlaylist, const QMap<Meta::TrackPtr, int> &trackPlaylistPositions )
 {
     m_destPlaylist = destPlaylist;
     m_trackPlaylistPositions = trackPlaylistPositions;
 }
 
 void
-IpodCollectionLocation::slotCopyTrackProcessed( Meta::TrackPtr srcTrack, Meta::TrackPtr destTrack,
+IpodCollectionLocation::slotCopyTrackProcessed( const Meta::TrackPtr &srcTrack, const Meta::TrackPtr &destTrack,
                                                 IpodCopyTracksJob::CopiedStatus status )
 {
     if( status == IpodCopyTracksJob::Success )

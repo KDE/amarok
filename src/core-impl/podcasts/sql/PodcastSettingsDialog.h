@@ -30,7 +30,7 @@ class PodcastSettingsDialog : public KPageDialog
     Q_OBJECT
 
     public:
-        explicit PodcastSettingsDialog( Podcasts::SqlPodcastChannelPtr channel, QWidget* parent=0 );
+        explicit PodcastSettingsDialog( const Podcasts::SqlPodcastChannelPtr &channel, QWidget* parent=0 );
 
         bool configure();
 

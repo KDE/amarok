@@ -25,7 +25,7 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
 {
     Q_OBJECT
     public:
-        AmpacheTrackForUrlWorker( const QUrl &url, MetaProxy::TrackPtr track,
+        AmpacheTrackForUrlWorker( const QUrl &url, const MetaProxy::TrackPtr &track,
                                   const QUrl &server, const QString &sessionId,
                                   ServiceBase *service);
         ~AmpacheTrackForUrlWorker();

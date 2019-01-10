@@ -492,8 +492,8 @@ private Q_SLOTS:
 protected:
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track ) override;
-    void metadataChanged( Meta::AlbumPtr album ) override;
+    void metadataChanged( const Meta::TrackPtr &track ) override;
+    void metadataChanged( const Meta::AlbumPtr &album ) override;
 
 private:
     /**

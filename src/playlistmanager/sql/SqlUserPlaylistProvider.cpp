@@ -77,7 +77,7 @@ SqlUserPlaylistProvider::playlists()
 }
 
 void
-SqlUserPlaylistProvider::renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName )
+SqlUserPlaylistProvider::renamePlaylist(PlaylistPtr playlist, const QString &newName )
 {
     playlist->setName( newName.trimmed() );
 }

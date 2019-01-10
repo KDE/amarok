@@ -133,7 +133,7 @@ namespace AmarokScript
             /**
              * Copy a single track to the destination collection
              */
-            Q_INVOKABLE void copyTracks( const Meta::TrackPtr track, Collections::Collection *targetCollection );
+            Q_INVOKABLE void copyTracks( const Meta::TrackPtr &track, Collections::Collection *targetCollection );
 
             /**
              * Convenience method for copying tracks based on QueryMaker results,
@@ -154,7 +154,7 @@ namespace AmarokScript
             /**
              * Move a single track to the destination collection.
              */
-            Q_INVOKABLE void moveTracks( const Meta::TrackPtr track, Collections::Collection *targetCollection );
+            Q_INVOKABLE void moveTracks( const Meta::TrackPtr &track, Collections::Collection *targetCollection );
 
             /**
              * Convenience method for moving tracks based on QueryMaker results,
@@ -175,7 +175,7 @@ namespace AmarokScript
             /**
              * Remove single track from collection.
              */
-            Q_INVOKABLE void removeTracks( const Meta::TrackPtr track );
+            Q_INVOKABLE void removeTracks( const Meta::TrackPtr &track );
 
             /**
              * Convenience method for removing tracks selected by QueryMaker,

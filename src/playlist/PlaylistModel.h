@@ -96,13 +96,13 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         Meta::TrackPtr trackAt( int row ) const override;
         Meta::TrackPtr trackForId( const quint64 id ) const override;
 
-        bool exportPlaylist( const QString &path, bool relative = false ) const override;
-        Meta::TrackList tracks() const override;
+        bool exportPlaylist( const QString &path, bool relative = false ) override;
+        Meta::TrackList tracks() override;
 
         // Inherited from Meta::Observer
         using Observer::metadataChanged;
-        void metadataChanged( Meta::TrackPtr track ) override;
-        void metadataChanged( Meta::AlbumPtr album ) override;
+        void metadataChanged( const Meta::TrackPtr &track ) override;
+        void metadataChanged( const Meta::AlbumPtr &album ) override;
 
         // static member functions
         static QString prettyColumnName( Column index ); //!< takes a Column enum and returns its string name

@@ -1252,7 +1252,7 @@ EngineController::slotTrackFinishedPlaying( Meta::TrackPtr track, double playedF
 }
 
 void
-EngineController::metadataChanged( Meta::TrackPtr track )
+EngineController::metadataChanged( const Meta::TrackPtr &track )
 {
     Meta::AlbumPtr album = m_currentTrack->album();
     if( m_currentAlbum != album ) {
@@ -1266,7 +1266,7 @@ EngineController::metadataChanged( Meta::TrackPtr track )
 }
 
 void
-EngineController::metadataChanged( Meta::AlbumPtr album )
+EngineController::metadataChanged( const Meta::AlbumPtr &album )
 {
     Q_EMIT albumMetadataChanged( album );
 }

@@ -161,7 +161,7 @@ OpmlDirectoryService::prettyCommand() const
 }
 
 bool
-OpmlDirectoryService::run( AmarokUrl url )
+OpmlDirectoryService::run(const AmarokUrl &url )
 {
     //make sure this category is shown.
     AmarokUrl( "amarok://navigate/internet/OpmlDirectory" ).run();

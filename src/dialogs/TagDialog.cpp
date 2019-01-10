@@ -137,7 +137,7 @@ TagDialog::~TagDialog()
 }
 
 void
-TagDialog::metadataChanged( Meta::AlbumPtr album )
+TagDialog::metadataChanged( const Meta::AlbumPtr &album )
 {
     if( m_currentAlbum )
         return;

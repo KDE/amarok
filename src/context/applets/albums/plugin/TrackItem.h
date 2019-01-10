@@ -33,7 +33,7 @@ class TrackItem : public QStandardItem, public Meta::Observer
          *
          * @arg track pointer to associate with
          */
-        void setTrack( Meta::TrackPtr trackPtr );
+        void setTrack( const Meta::TrackPtr &trackPtr );
 
         /**
          * @return the track pointer associated with this item
@@ -54,7 +54,7 @@ class TrackItem : public QStandardItem, public Meta::Observer
 
         // overloaded from Meta::Observer
         using Observer::metadataChanged;
-        void metadataChanged( Meta::TrackPtr track ) override;
+        void metadataChanged( const Meta::TrackPtr &track ) override;
 
         int type() const override;
 

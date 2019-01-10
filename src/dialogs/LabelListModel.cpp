@@ -72,7 +72,7 @@ bool LabelListModel::setData( const QModelIndex &index, const QVariant &value, i
 }
 
 //Adds a label to the list if not present
-void LabelListModel::addLabel( const QString label )
+void LabelListModel::addLabel( const QString &label )
 {
     if ( ( !label.isEmpty() ) && ( !isPresent( label ) ) )
     {
@@ -84,7 +84,7 @@ void LabelListModel::addLabel( const QString label )
 }
 
 //Checks if a label is already present
-bool LabelListModel::isPresent( const QString label )
+bool LabelListModel::isPresent( const QString &label )
 {
     if ( m_labels.indexOf( label ) > -1 )
     {
@@ -95,7 +95,7 @@ bool LabelListModel::isPresent( const QString label )
 }
 
 // Removes the label "label" from the list if present
-void LabelListModel::removeLabel( const QString label )
+void LabelListModel::removeLabel( const QString &label )
 {
     int index = m_labels.indexOf( label );
 
@@ -108,7 +108,7 @@ void LabelListModel::removeLabel( const QString label )
 }
 
 //Wrapper function for remove label
-void LabelListModel::removeLabels( const QStringList labels )
+void LabelListModel::removeLabels( const QStringList &labels )
 {
     if ( !labels.isEmpty() )
     {

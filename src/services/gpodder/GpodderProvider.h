@@ -49,8 +49,8 @@ public:
     ~GpodderProvider();
 
     //TrackProvider methods
-    bool possiblyContainsTrack( const QUrl &url ) const;
-    Meta::TrackPtr trackForUrl( const QUrl &url );
+    bool possiblyContainsTrack( const QUrl &url ) const override;
+    Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
     //PodcastProvider methods
     /** Special function to get an episode for a given guid.
@@ -59,25 +59,25 @@ public:
      * This means we can not use trackForUrl().
      * Problematic guids contain non-latin characters, percent encoded parts, capitals, etc.
      */
-    virtual PodcastEpisodePtr episodeForGuid( const QString &guid );
+    PodcastEpisodePtr episodeForGuid( const QString &guid ) override;
 
     virtual void addPodcast( const QUrl &url );
 
-    virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
-    virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
+    Podcasts::PodcastChannelPtr addChannel( const Podcasts::PodcastChannelPtr &channel ) override;
+    Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override;
 
-    virtual Podcasts::PodcastChannelList channels();
+    Podcasts::PodcastChannelList channels() override;
 
     // PlaylistProvider methods
-    virtual QString prettyName() const;
-    virtual QIcon icon() const;
-    virtual Playlists::PlaylistList playlists();
-    virtual void completePodcastDownloads();
+    QString prettyName() const override;
+    QIcon icon() const override;
+    Playlists::PlaylistList playlists() override;
+    void completePodcastDownloads() override;
 
     /** Copy a playlist to the provider.
     */
-    virtual Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist );
-    virtual QActionList playlistActions( const Playlists::PlaylistList &playlists );
+    Playlists::PlaylistPtr addPlaylist( Playlists::PlaylistPtr playlist ) override;
+    QActionList playlistActions( const Playlists::PlaylistList &playlists ) override;
 
 private Q_SLOTS:
     void requestDeviceUpdates();

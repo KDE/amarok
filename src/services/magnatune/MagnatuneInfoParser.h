@@ -39,13 +39,13 @@ public:
     MagnatuneInfoParser()
        : InfoParserBase() {}
 
-    ~MagnatuneInfoParser() {}
+    ~MagnatuneInfoParser() override {}
 
 
     
-    void getInfo( Meta::ArtistPtr artist ) override;
-    void getInfo( Meta::AlbumPtr album ) override;
-    void getInfo( Meta::TrackPtr track ) override;
+    void getInfo( const Meta::ArtistPtr &artist ) override;
+    void getInfo( const Meta::AlbumPtr &album ) override;
+    void getInfo( const Meta::TrackPtr &track ) override;
 
     void getFrontPage();
     void getFavoritesPage();

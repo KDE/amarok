@@ -146,7 +146,7 @@ namespace AmarokScript
             void fromXml( QXmlStreamReader *reader ) override;
             void toXml(QXmlStreamWriter *writer) const override;
             Dynamic::TrackSet matchingTracks( const Meta::TrackList &playlist, int contextCount,
-                                              int finalCount, const Dynamic::TrackCollectionPtr universe ) const override;
+                                              int finalCount, const Dynamic::TrackCollectionPtr &universe ) const override;
             bool trackMatches( int position, const Meta::TrackList &playlist, int contextCount ) const override;
             QString toString() const override;
             QString name() const override;
@@ -155,7 +155,7 @@ namespace AmarokScript
 
         private Q_SLOTS:
             Dynamic::TrackSet slotMatchingTracks( const Meta::TrackList &playlist, int contextCount,
-                                              int finalCount, const Dynamic::TrackCollectionPtr universe ) const;
+                                              int finalCount, const Dynamic::TrackCollectionPtr &universe ) const;
             void removeBias();
 
         public Q_SLOTS:
@@ -170,7 +170,7 @@ namespace AmarokScript
             *                @param newBias The bias that replaces this bias. If you give
             *                an empty BiasPrt as argument the bias will be removed.
             */
-            void replace( Dynamic::BiasPtr newBias ) override;
+            void replace( const Dynamic::BiasPtr &newBias ) override;
 
             /**
              * Call after an outstanding result is completed
@@ -227,7 +227,7 @@ namespace AmarokScript
              */
             Q_INVOKABLE bool containsUid( const QString& uid ) const;
 
-            Q_INVOKABLE bool containsTrack( const Meta::TrackPtr track ) const;
+            Q_INVOKABLE bool containsTrack( const Meta::TrackPtr &track ) const;
 
             /**
              * Returns the uids of a random track contains in this set

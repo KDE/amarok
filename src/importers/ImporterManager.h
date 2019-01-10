@@ -53,7 +53,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~ImporterManager();
+    ~ImporterManager() override;
 
     /**
      * Loads up saved configuration, for every retrieved config calls
@@ -81,7 +81,7 @@ public Q_SLOTS:
      *
      * This method can also be used to replace existing provider instances.
      */
-    ProviderPtr createProvider( QVariantMap config ) override;
+    ProviderPtr createProvider( const QVariantMap &config ) override;
 
 protected:
     /**
