@@ -199,7 +199,7 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
         }
 
         // we are definitely interested in this device, listen for accessibility changes
-        disconnect( ssa, &Solid::StorageAccess::accessibilityChanged, this, 0 );
+        disconnect( ssa, &Solid::StorageAccess::accessibilityChanged, this, nullptr );
         connect( ssa, &Solid::StorageAccess::accessibilityChanged,
                  this, &IpodCollectionFactory::slotAccessibilityChanged );
 

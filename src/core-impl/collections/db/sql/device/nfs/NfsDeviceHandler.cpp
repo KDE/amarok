@@ -149,7 +149,7 @@ NfsDeviceHandlerFactory::~NfsDeviceHandlerFactory( )
 DeviceHandler *
 NfsDeviceHandlerFactory::createHandler( const KSharedConfigPtr&, QSharedPointer<SqlStorage> ) const
 {
-    return 0;
+    return nullptr;
 }
 
 DeviceHandler *
@@ -159,10 +159,10 @@ NfsDeviceHandlerFactory::createHandler( const Solid::Device &device, const QStri
     if( !s )
     {
         debug() << "!s, returning 0";
-        return 0;
+        return nullptr;
     }
     if( !canHandle( device ) )
-        return 0;
+        return nullptr;
 
     const Solid::StorageAccess *access = device.as<Solid::StorageAccess>();
     Q_ASSERT( access );  // canHandle() checks it
@@ -200,7 +200,7 @@ NfsDeviceHandlerFactory::createHandler( const Solid::Device &device, const QStri
         if ( id == 0 )
         {
             warning() << "Inserting into devices failed for type=nfs, server=" << server << ", share=" << share;
-            return 0;
+            return nullptr;
         }
         debug() << "Created new NFS device with ID " << id << " , server " << server << " ,share " << share;
         return new NfsDeviceHandler( id, server, share, mountPoint, udi );

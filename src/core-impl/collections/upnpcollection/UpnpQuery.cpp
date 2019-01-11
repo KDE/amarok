@@ -46,7 +46,7 @@ void UpnpQuery::setType(const QString& type )
 
 void UpnpQuery::beginAnd()
 {
-    for( int i = 0; i < m_expressions.length() ; ++i ) {
+    for( int i = 0, total = m_expressions.length(); i < total ; ++i ) {
         m_expressions[i] += " and ";
     }
 }

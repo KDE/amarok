@@ -104,7 +104,7 @@ static QString colorize( const QString &text, int color = s_colorIndex )
     if( !debugColorEnabled() )
         return text;
 
-    return QString( "\x1b[00;3%1m%2\x1b[00;39m" ).arg( QString::number(s_colors[color]), text );
+    return QStringLiteral( "\x1b[00;3%1m%2\x1b[00;39m" ).arg( QString::number(s_colors[color]), text );
 }
 
 static QString reverseColorize( const QString &text, int color )
@@ -112,7 +112,7 @@ static QString reverseColorize( const QString &text, int color )
     if( !debugColorEnabled() )
         return text;
 
-    return QString( "\x1b[07;3%1m%2\x1b[00;39m" ).arg( QString::number(color), text );
+    return QStringLiteral( "\x1b[07;3%1m%2\x1b[00;39m" ).arg( QString::number(color), text );
 }
 
 QString Debug::indent()

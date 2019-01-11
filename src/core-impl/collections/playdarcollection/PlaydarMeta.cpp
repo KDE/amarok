@@ -253,7 +253,7 @@ Meta::PlaydarTrack::collection() const
 QString
 Meta::PlaydarTrack::cachedLyrics() const
 {
-    return QString( "" );
+    return QStringLiteral( "" );
 }
 
 void

@@ -44,7 +44,7 @@ ConstraintTypes::PlaylistFileSize::createNew( ConstraintNode* p )
     if ( p ) {
         return new PlaylistFileSize( p );
     } else {
-        return 0;
+        return nullptr;
     }
 }
 

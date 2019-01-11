@@ -99,7 +99,7 @@ AlbumsModel::mimeData( const QModelIndexList &indices ) const
 {
     DEBUG_BLOCK
     if( indices.isEmpty() )
-        return 0;
+        return nullptr;
 
     Meta::TrackList tracks;
     foreach( const QModelIndex &index, indices )
@@ -110,7 +110,7 @@ AlbumsModel::mimeData( const QModelIndexList &indices ) const
     // If the list of indexes is empty, or there are no supported MIME types,
     // 0 is returned rather than a serialized empty list.
     if( tracks.isEmpty() )
-        return 0;
+        return nullptr;
 
     AmarokMimeData *mimeData = new AmarokMimeData();
     mimeData->setTracks( tracks );

@@ -243,7 +243,7 @@ IpodCollection::uidUrlProtocol() const
 QString
 IpodCollection::collectionId() const
 {
-    return QString( "%1://%2" ).arg( s_uidUrlProtocol, m_uuid );
+    return QStringLiteral( "%1://%2" ).arg( s_uidUrlProtocol, m_uuid );
 }
 
 QString

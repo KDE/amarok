@@ -228,20 +228,20 @@ PrettyTreeView::decoratorActionAt( const QModelIndex &index, const QPoint &pos )
 {
     const int actionsCount = index.data( PrettyTreeRoles::DecoratorRoleCount ).toInt();
     if( actionsCount <= 0 )
-        return 0;
+        return nullptr;
 
     PrettyTreeDelegate* ptd = qobject_cast<PrettyTreeDelegate*>( itemDelegate( index ) );
     if( !ptd )
-        return 0;
+        return nullptr;
 
-    QList<QAction *> actions = index.data( PrettyTreeRoles::DecoratorRole ).value<QList<QAction *> >();
+    const QList<QAction *> actions = index.data( PrettyTreeRoles::DecoratorRole ).value<QList<QAction *> >();
     QRect rect = visualRect( index );
 
     for( int i = 0; i < actions.count(); i++ )
         if( ptd->decoratorRect( rect, i ).contains( pos ) )
             return actions.at( i );
 
-    return 0;
+    return nullptr;
 }
 
 QAction *

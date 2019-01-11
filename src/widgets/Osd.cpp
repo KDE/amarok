@@ -199,8 +199,7 @@ OSDWidget::volumeChanged( int volume )
     if ( isEnabled() )
     {
         m_showVolume = true;
-        const KLocalizedString text = The::engineController()->isMuted() ? ki18n( "Volume: %1% (muted)" ) : ki18n( "Volume: %1%" );
-        m_text = text.subs( m_volume ).toString();
+        m_text = The::engineController()->isMuted() ? i18n( "Volume: %1% (muted)", m_volume) : i18n( "Volume: %1%", m_volume);
 
         show();
     }

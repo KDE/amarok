@@ -101,8 +101,7 @@ VolumePopupButton::volumeChanged( int newVolume )
     if ( newVolume )
         m_muteAction->setChecked( false );
 
-    const KLocalizedString tip = m_muteAction->isChecked() ? ki18n( "Volume: %1% (muted)" ) : ki18n( "Volume: %1%" );
-    setToolTip( tip.subs( newVolume ).toString() );
+    setToolTip( m_muteAction->isChecked() ? i18n( "Volume: %1% (muted)", newVolume ) : i18n( "Volume: %1%", newVolume ));
 }
 
 void

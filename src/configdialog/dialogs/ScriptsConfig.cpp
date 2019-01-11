@@ -286,7 +286,7 @@ ScriptsConfig::findSpecFile( const KArchiveDirectory *dir ) const
             }
         }
     }
-    return 0;
+    return nullptr;
 }
 
 void

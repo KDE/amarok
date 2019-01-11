@@ -132,7 +132,7 @@ double
 ConstraintTypes::PlaylistDuration::satisfaction( const Meta::TrackList& tl ) const
 {
     qint64 l = 0;
-    foreach( Meta::TrackPtr t, tl ) {
+    for( const Meta::TrackPtr &t : tl ) {
         l += t->length();
     }
 
@@ -185,7 +185,7 @@ ConstraintTypes::PlaylistDuration::setStrictness( const int sv )
 
 ConstraintTypes::PlaylistDurationEditWidget::PlaylistDurationEditWidget( const int duration,
                                                                      const int comparison,
-                                                                     const int strictness ) : QWidget( 0 )
+                                                                     const int strictness ) : QWidget( nullptr )
 {
     ui.setupUi( this );
 

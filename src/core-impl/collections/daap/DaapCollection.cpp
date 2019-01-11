@@ -235,7 +235,7 @@ DaapCollection::DaapCollection( const QString &host, const QString &ip, quint16 
     , m_host( host )
     , m_port( port )
     , m_ip( ip )
-    , m_reader( 0 )
+    , m_reader( nullptr )
     , m_mc( new MemoryCollection() )
 {
     debug() << "Host: " << host << " port: " << port;
@@ -258,7 +258,7 @@ DaapCollection::queryMaker()
 QString
 DaapCollection::collectionId() const
 {
-    return QString( "daap://" + m_ip + ':' ) + QString::number( m_port );
+    return QString( QStringLiteral("daap://") + m_ip + QLatin1Char(':') ) + QString::number( m_port );
 }
 
 QString

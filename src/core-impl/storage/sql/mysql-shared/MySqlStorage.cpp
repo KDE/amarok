@@ -234,7 +234,7 @@ MySqlStorage::idType() const
 QString
 MySqlStorage::textColumnType( int length ) const
 {
-    return QString( "VARCHAR(%1)" ).arg( length );
+    return QStringLiteral( "VARCHAR(%1)" ).arg( length );
 }
 
 QString

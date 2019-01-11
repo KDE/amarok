@@ -149,13 +149,13 @@ namespace Collections
     {
         DEBUG_BLOCK
 
-        return 0;
+        return nullptr;
     }
 
     QString
     PlaydarCollection::uidUrlProtocol() const
     {
-        return QString( "playdar" );
+        return QStringLiteral( "playdar" );
     }
 
     QString
