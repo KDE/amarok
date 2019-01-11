@@ -134,7 +134,7 @@ void LyricsManager::loadLyrics( Meta::TrackPtr track, bool overwrite )
         return;
     }
 
-    QUrl url( APIURL + artist + ':' + title );
+    QUrl url( APIURL + artist + QLatin1Char(':') + title );
     m_trackMap.insert( url, track );
     NetworkAccessManagerProxy::instance()->getData( url, this, &LyricsManager::lyricsLoaded );
 }
@@ -171,11 +171,11 @@ void LyricsManager::lyricsLoaded( const QUrl& url, const QByteArray& data, const
             sanitizeArtist( albumArtist );
 
             //Try with album artist
-            if( url == QUrl( APIURL + artist + ':' + title ) && albumArtist != artist )
+            if( url == QUrl( APIURL + artist + QLatin1Char(':') + title ) && albumArtist != artist )
             {
                 debug() << "Try again with album artist.";
 
-                QUrl newUrl( APIURL + albumArtist + ':' + title );
+                QUrl newUrl( APIURL + albumArtist + QLatin1Char(':') + title );
                 m_trackMap.insert( newUrl, track );
                 NetworkAccessManagerProxy::instance()->getData( newUrl, this, &LyricsManager::lyricsLoaded );
                 return;

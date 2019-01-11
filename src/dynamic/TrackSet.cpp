@@ -45,7 +45,7 @@ Dynamic::TrackCollection::uids() const
 
 Dynamic::TrackSet::TrackSet()
     : m_bits()
-    , m_collection( 0 )
+    , m_collection( nullptr )
 { }
 
 Dynamic::TrackSet::TrackSet( const TrackSet& other )

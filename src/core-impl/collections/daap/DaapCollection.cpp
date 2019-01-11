@@ -149,7 +149,7 @@ DaapCollectionFactory::resolvedDaap( bool success )
 QString
 DaapCollectionFactory::serverKey( const QString& host, quint16 port) const
 {
-    return host + ':' + QString::number( port );
+    return host + QLatin1Char(':') + QString::number( port );
 }
 
 void

@@ -45,7 +45,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
                                          //parent is only for memory management.
         QMap<QString,BrowserCategory *> siblingMap = parentList->categories();
 
-        QStringList siblingNames = siblingMap.keys();
+        const QStringList siblingNames = siblingMap.keys();
 
         foreach( const QString &siblingName, siblingNames )
         {

@@ -127,7 +127,7 @@ EqualizerPresets::eqUserList()
     QStringList userList;
     foreach( const QString &mUsrName, AmarokConfig::equalizerPresetsNames() )
     {
-        if( defaultList.indexOf( mUsrName ) < 0 )
+        if( !defaultList.contains( mUsrName ) )
             userList.append( mUsrName );
     }
     return userList;

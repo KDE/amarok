@@ -915,11 +915,11 @@ Dynamic::DynamicModel::initPlaylists()
     // - a playlist demonstrating the SearchQueryBias
     playlist = new Dynamic::BiasedPlaylist( this );
     playlist->setTitle( i18n("Rock and Pop") );
-    QString query = Meta::shortI18nForField( Meta::valGenre ) + ':' + i18n( "Rock" );
+    QString query = Meta::shortI18nForField( Meta::valGenre ) + QLatin1Char(':') + i18n( "Rock" );
     /* following cannot be currently translated, see ExpressionParser::isAdvancedExpression()
      * and ExpressionParser::finishedToken() */
     query += QLatin1String(" AND ");
-    query += Meta::shortI18nForField( Meta::valGenre ) + ':' + i18n( "Pop" );
+    query += Meta::shortI18nForField( Meta::valGenre ) + QLatin1Char(':') + i18n( "Pop" );
     playlist->bias()->replace( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( query ) ) );
     insertPlaylist( 1, playlist );
 
