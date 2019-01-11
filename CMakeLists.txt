@@ -32,7 +32,33 @@ set_package_properties( Qt5QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Neede
 find_package( Qt5 5.8.0 REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Script ScriptTools Sql Svg Test Widgets Xml )
 set_package_properties( Qt5WebEngine PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet" )
 
-find_package( KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Archive Attica Codecs CoreAddons Crash DBusAddons Declarative DNSSD GlobalAccel GuiAddons I18n IconThemes KCMUtils KIO NewStuff Notifications NotifyConfig Package Solid TextEditor ThreadWeaver WidgetsAddons WindowSystem )
+find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
+    Archive
+    Attica
+    Codecs
+    Config
+    ConfigWidgets
+    CoreAddons
+    Crash
+    DBusAddons
+    Declarative
+    DNSSD
+    GlobalAccel
+    GuiAddons
+    I18n
+    IconThemes
+    KCMUtils
+    KIO
+    NewStuff
+    Notifications
+    NotifyConfig
+    Package
+    Solid
+    TextEditor
+    ThreadWeaver
+    WidgetsAddons
+    WindowSystem
+)
 
 find_package( KF5 ${KF5_MIN_VERSION} COMPONENTS Kirigami2 )
 set_package_properties( KF5Kirigami2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area" )
