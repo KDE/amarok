@@ -1,9 +1,6 @@
 # Improves speed of string concatenation
 add_definitions(-DQT_USE_FAST_CONCATENATION)
 add_definitions(-DQT_USE_FAST_OPERATOR_PLUS)
-if(NOT MSVC)
-    add_definitions(-DQT_STRICT_ITERATORS)
-endif()
 
 if(APPLE)
     set(mac_SRCS
