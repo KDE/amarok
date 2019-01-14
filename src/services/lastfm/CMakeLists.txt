@@ -13,7 +13,7 @@ set( amarok_service_lastfm_config_SRCS
 )
 
 add_library( amarok_service_lastfm_config SHARED ${amarok_service_lastfm_config_SRCS} )
-
+generate_export_header(amarok_service_lastfm_config BASE_NAME amarok_service_lastfm_config)
 target_link_libraries( amarok_service_lastfm_config
     amarokcore
     KF5::Wallet
