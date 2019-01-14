@@ -15,7 +15,7 @@
  ****************************************************************************************/
 
 #include "core/support/Components.h"
-
+#include <QObject>
 
 class ComponentsPrivate
 {

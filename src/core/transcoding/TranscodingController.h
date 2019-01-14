@@ -37,7 +37,7 @@ namespace Transcoding
  * Singleton class that handles and wraps around the Transcoding architecture.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_CORE_EXPORT Controller : public QObject
+class AMAROKCORE_EXPORT Controller : public QObject
 {
     Q_OBJECT
 public:

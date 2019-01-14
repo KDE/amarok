@@ -28,7 +28,7 @@ This capability exposes a method that shows this track (or the closest possible 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 
-class AMAROK_CORE_EXPORT FindInSourceCapability : public Capabilities::Capability
+class AMAROKCORE_EXPORT FindInSourceCapability : public Capabilities::Capability
 {
     Q_OBJECT
     Q_FLAGS( TargetTag TargetTags )

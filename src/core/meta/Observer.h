@@ -40,7 +40,7 @@ namespace Meta {
      *
      * This class is thread-safe.
      */
-    class AMAROK_CORE_EXPORT Observer
+    class AMAROKCORE_EXPORT Observer
     {
         friend class Base; // so that it can call destroyedNotify()
 

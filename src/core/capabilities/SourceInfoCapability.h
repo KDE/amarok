@@ -30,7 +30,7 @@ namespace Capabilities
 
         @author Nikolaj Hald Nielsen <nhn@kde.org>
     */
-    class AMAROK_CORE_EXPORT SourceInfoCapability : public Capabilities::Capability{
+    class AMAROKCORE_EXPORT SourceInfoCapability : public Capabilities::Capability{
     public:
         Q_OBJECT
         public:

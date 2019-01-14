@@ -37,7 +37,7 @@
 
 #define DEBUG_INDENT_OBJECTNAME QLatin1String("Debug_Indent_object")
 
-AMAROK_CORE_EXPORT QMutex Debug::mutex( QMutex::Recursive );
+AMAROKCORE_EXPORT QMutex Debug::mutex( QMutex::Recursive );
 
 using namespace Debug;
 

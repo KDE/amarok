@@ -24,7 +24,7 @@ class QIcon;
 
 namespace Playlists {
 
-class AMAROK_CORE_EXPORT PlaylistProvider : public QObject
+class AMAROKCORE_EXPORT PlaylistProvider : public QObject
 {
     Q_OBJECT
 

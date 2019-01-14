@@ -100,7 +100,7 @@ set(libcore_LIB_SRCS
 )
 
 add_library(amarokcore SHARED ${libcore_LIB_SRCS})
-
+generate_export_header(amarokcore BASE_NAME amarokcore)
 target_include_directories( amarokcore PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}

@@ -26,7 +26,7 @@ namespace Transcoding
  * This class implements the interface for a dummy codec.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_CORE_EXPORT NullFormat : public Format
+class AMAROKCORE_EXPORT NullFormat : public Format
 {
 public:
     explicit NullFormat( const Encoder &encoder );

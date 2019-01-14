@@ -20,7 +20,7 @@
 #include "core/capabilities/Capability.h"
 #include "core/amarokcore_export.h"
 
-class AMAROK_CORE_EXPORT MetaCapability
+class AMAROKCORE_EXPORT MetaCapability
 {
     public:
         virtual ~MetaCapability() {}

@@ -38,7 +38,7 @@ class PersistentStatisticsStore;
 
 namespace Meta
 {
-    class AMAROK_CORE_EXPORT Track : public Base
+    class AMAROKCORE_EXPORT Track : public Base
     {
         public:
             /** used to display the trackname, should never be empty, returns prettyUrl() by default if name() is empty */
@@ -210,7 +210,7 @@ namespace Meta
             QString localFileNotPlayableReason( const QString &path ) const;
     };
 
-    class AMAROK_CORE_EXPORT Artist : public Base
+    class AMAROKCORE_EXPORT Artist : public Base
     {
         public:
             QString prettyName() const override;
@@ -245,7 +245,7 @@ namespace Meta
      * with an artist should contain all singles of the specific artist. There should
      * be one album without title and artist for all the rest.
      */
-    class AMAROK_CORE_EXPORT Album : public Base
+    class AMAROKCORE_EXPORT Album : public Base
     {
         public:
             QString prettyName() const override;
@@ -315,7 +315,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_CORE_EXPORT Composer : public Base
+    class AMAROKCORE_EXPORT Composer : public Base
     {
         public:
             QString prettyName() const override;
@@ -329,7 +329,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_CORE_EXPORT Genre : public Base
+    class AMAROKCORE_EXPORT Genre : public Base
     {
         public:
             QString prettyName() const override;
@@ -343,7 +343,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_CORE_EXPORT Year : public Base
+    class AMAROKCORE_EXPORT Year : public Base
     {
         public:
             /**
@@ -364,7 +364,7 @@ namespace Meta
     /**
      * A Label represents an arbitrary classification of a Track.
      */
-    class AMAROK_CORE_EXPORT Label : public Base
+    class AMAROKCORE_EXPORT Label : public Base
     {
         // we need nothing more than what Meta::Base has
     };

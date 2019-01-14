@@ -22,7 +22,7 @@
 
 namespace Capabilities
 {
-    class AMAROK_CORE_EXPORT OrganiseCapability : public Capabilities::Capability
+    class AMAROKCORE_EXPORT OrganiseCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:

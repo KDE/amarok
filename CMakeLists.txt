@@ -25,6 +25,8 @@ include(ECMAddTests)
 include(ECMAddAppIcon)
 include(FindPkgConfig)
 include(CMakePushCheckState)
+include(GenerateExportHeader)
+
 
 find_package( Qt5 ${QT_REQUIRED_VERSION} COMPONENTS QuickControls2 WebEngine )
 set_package_properties( Qt5QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area" )

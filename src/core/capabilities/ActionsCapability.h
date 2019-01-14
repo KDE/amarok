@@ -36,7 +36,7 @@ namespace Capabilities
      *
      * @author Nikolaj Hald Nielsen <nhn@kde.org>
      */
-    class AMAROK_CORE_EXPORT ActionsCapability : public Capabilities::Capability
+    class AMAROKCORE_EXPORT ActionsCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:

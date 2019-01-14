@@ -26,7 +26,7 @@ namespace Transcoding
  * This class implements the interface for the FFmpeg FLAC codec.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_CORE_EXPORT FlacFormat : public Format
+class AMAROKCORE_EXPORT FlacFormat : public Format
 {
 public:
     FlacFormat();

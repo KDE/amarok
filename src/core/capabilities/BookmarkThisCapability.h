@@ -29,7 +29,7 @@ namespace Capabilities {
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class AMAROK_CORE_EXPORT BookmarkThisCapability : public Capability {
+class AMAROKCORE_EXPORT BookmarkThisCapability : public Capability {
     Q_OBJECT
 public:
     explicit BookmarkThisCapability( QAction* action );

@@ -44,7 +44,7 @@ namespace Collections
 
     /** A plugin that creates new collections.
      */
-    class AMAROK_CORE_EXPORT CollectionFactory : public Plugins::PluginFactory
+    class AMAROKCORE_EXPORT CollectionFactory : public Plugins::PluginFactory
     {
         Q_OBJECT
 
@@ -62,7 +62,7 @@ namespace Collections
      *  are also a couple of other track providers.
      *  All TrackProvider are managed by the CollectionManager.
      */
-    class AMAROK_CORE_EXPORT TrackProvider
+    class AMAROKCORE_EXPORT TrackProvider
     {
         public:
             TrackProvider();
@@ -84,7 +84,7 @@ namespace Collections
             virtual Meta::TrackPtr trackForUrl( const QUrl &url );
     };
 
-    class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, public MetaCapability
+    class AMAROKCORE_EXPORT Collection : public QObject, public TrackProvider, public MetaCapability
     {
         Q_OBJECT
 

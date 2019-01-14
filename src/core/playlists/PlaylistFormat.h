@@ -39,8 +39,8 @@ namespace Playlists
         NotPlaylist = Unknown
     };
 
-    AMAROK_CORE_EXPORT PlaylistFormat getFormat( const QUrl &path );
-    AMAROK_CORE_EXPORT bool isPlaylist( const QUrl &path );
+    AMAROKCORE_EXPORT PlaylistFormat getFormat( const QUrl &path );
+    AMAROKCORE_EXPORT bool isPlaylist( const QUrl &path );
 }
 
 #endif

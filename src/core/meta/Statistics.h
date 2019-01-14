@@ -35,7 +35,7 @@ namespace Meta
      * thread-safe -- if you return same instance of Statistics every time then it means
      * that even the instance must be thread-safe.
      */
-    class AMAROK_CORE_EXPORT Statistics : public virtual QSharedData // virtual inheritance
+    class AMAROKCORE_EXPORT Statistics : public virtual QSharedData // virtual inheritance
     // so that Track implementations can inherit both Meta::Track and Meta::Statistics
     {
         public:

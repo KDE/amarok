@@ -30,7 +30,7 @@ namespace Meta {
  * are from the same album). This, besides saving memory, also makes it possible to group
  * by pointers in the playlist instead of some album/artist name foo.
 */
-class AMAROK_CORE_EXPORT PrivateMetaRegistry
+class AMAROKCORE_EXPORT PrivateMetaRegistry
 {
 public:
     static PrivateMetaRegistry *instance();

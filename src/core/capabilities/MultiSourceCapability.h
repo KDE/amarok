@@ -32,7 +32,7 @@ namespace Capabilities
      *
      * @author Nikolaj Hald Nielsen <nhn@kde.org>
      */
-    class AMAROK_CORE_EXPORT MultiSourceCapability : public Capability
+    class AMAROKCORE_EXPORT MultiSourceCapability : public Capability
     {
         Q_OBJECT
 

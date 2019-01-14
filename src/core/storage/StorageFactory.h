@@ -33,7 +33,7 @@ class SqlStorage;
  *  that have the same symbols.
  *
  */
-class AMAROK_CORE_EXPORT StorageFactory : public Plugins::PluginFactory
+class AMAROKCORE_EXPORT StorageFactory : public Plugins::PluginFactory
 {
     Q_OBJECT
 

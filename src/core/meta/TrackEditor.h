@@ -36,7 +36,7 @@ namespace Meta
      * be thread-safe -- if you return same instance of TrackEditor every time then it
      * means that even the instance must be thread-safe.
      */
-    class AMAROK_CORE_EXPORT TrackEditor : public virtual QSharedData // virtual inheritance
+    class AMAROKCORE_EXPORT TrackEditor : public virtual QSharedData // virtual inheritance
     // so that Track implementations can inherit both Meta::Track and Meta::TrackEditor
     {
         public:

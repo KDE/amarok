@@ -72,12 +72,12 @@ namespace Amarok
      */
     /* FIXME: This function can lead to very bizarre and hard to figure bugs.
               While we don`t fix it properly, use it like this: amarok::config( Group )->readEntry( ... ) */
-    AMAROK_CORE_EXPORT KConfigGroup config( const QString &group = QStringLiteral("General") );
+    AMAROKCORE_EXPORT KConfigGroup config( const QString &group = QStringLiteral("General") );
 
     /**
      * @return the KActionCollection used by Amarok
      */
-    AMAROK_CORE_EXPORT KActionCollection *actionCollection();
+    AMAROKCORE_EXPORT KActionCollection *actionCollection();
 
     /**
      * Compute score for a track that has finished playing.
@@ -110,13 +110,13 @@ namespace Amarok
      * For saving files to ~/.local/share/amarok/
      * @param directory: Subdirectory of ~/.local/share/amarok/ to save files to.
      */
-    AMAROK_CORE_EXPORT QString saveLocation( const QString &directory = QString() );
+    AMAROKCORE_EXPORT QString saveLocation( const QString &directory = QString() );
 
-    AMAROK_CORE_EXPORT QString defaultPlaylistPath();
+    AMAROKCORE_EXPORT QString defaultPlaylistPath();
 
-    AMAROK_CORE_EXPORT QString verboseTimeSince( const QDateTime &datetime );
-    AMAROK_CORE_EXPORT QString verboseTimeSince( uint time_t );
-    AMAROK_CORE_EXPORT QString conciseTimeSince( uint time_t );
+    AMAROKCORE_EXPORT QString verboseTimeSince( const QDateTime &datetime );
+    AMAROKCORE_EXPORT QString verboseTimeSince( uint time_t );
+    AMAROKCORE_EXPORT QString conciseTimeSince( uint time_t );
 
     /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none
@@ -157,14 +157,14 @@ namespace Amarok
      * @param path The original path.
      * @return The cleaned up path.
      */
-    AMAROK_CORE_EXPORT QString cleanPath( const QString &path );
+    AMAROKCORE_EXPORT QString cleanPath( const QString &path );
 
     /**
      * Replaces all non-ASCII characters with '_'.
      * @param path The original path.
      * @return The ASCIIfied path.
      */
-    AMAROK_CORE_EXPORT QString asciiPath( const QString &path );
+    AMAROKCORE_EXPORT QString asciiPath( const QString &path );
 
     /**
      * Define how Amarok::vfatPath() should behave wrt path separators:
@@ -191,7 +191,7 @@ namespace Amarok
      * @param behaviour see PathSeparatorBehaviour.
      * @return The cleaned up path.
      */
-    AMAROK_CORE_EXPORT QString vfatPath( const QString &path,
+    AMAROKCORE_EXPORT QString vfatPath( const QString &path,
                                          PathSeparatorBehaviour behaviour = AutoBehaviour );
 
     /* defined in browsers/CollectionTreeItemModel.cpp */
@@ -201,20 +201,20 @@ namespace Amarok
      * @param str the string to manipulate
      * @param reverse if true, The Eagles -> Eagles, The. If false, Eagles, The -> The Eagles
      */
-    AMAROK_CORE_EXPORT void manipulateThe( QString &str, bool reverse );
+    AMAROKCORE_EXPORT void manipulateThe( QString &str, bool reverse );
 
     /**
       * Return a playlist name based on the artist and album info of the tracks or a string
       * containing the creation date.
       */
-    AMAROK_CORE_EXPORT QString generatePlaylistName( const Meta::TrackList &tracks );
+    AMAROKCORE_EXPORT QString generatePlaylistName( const Meta::TrackList &tracks );
 
     /**
      * Creates a semi-transparent Amarok logo for suitable for painting.
      * @param dim width of the logo
      * @return A QPixmap of the logo
      */
-    AMAROK_CORE_EXPORT QPixmap semiTransparentLogo( int dim );
+    AMAROKCORE_EXPORT QPixmap semiTransparentLogo( int dim );
 
     inline const char* discogsApiKey() { return "91734dd989"; }
     inline const char* lastfmApiKey() { return "402d3ca8e9bc9d3cf9b85e1202944ca5"; }

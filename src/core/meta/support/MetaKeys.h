@@ -30,7 +30,7 @@ namespace Meta
 {
 
     /** The AlbumKey can be used when an album needs to be identified independent of a collection */
-    class AMAROK_CORE_EXPORT AlbumKey
+    class AMAROKCORE_EXPORT AlbumKey
     {
         public:
             AlbumKey();
@@ -58,7 +58,7 @@ namespace Meta
     };
 
     /** The TrackKey can be used when an album needs to be identified independent of a collection */
-    class AMAROK_CORE_EXPORT TrackKey
+    class AMAROKCORE_EXPORT TrackKey
     {
         public:
             TrackKey();

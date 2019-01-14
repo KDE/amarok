@@ -26,7 +26,7 @@ namespace Transcoding
  * This class implements the interface for the FFmpeg ALAC encoder.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_CORE_EXPORT AlacFormat : public Format
+class AMAROKCORE_EXPORT AlacFormat : public Format
 {
 public:
     AlacFormat();

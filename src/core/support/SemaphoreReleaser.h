@@ -18,14 +18,14 @@
 #define SEMAPHORERELEASER_H
 
 #include "core/amarokcore_export.h"
-
+#include <QObject>
 class QSemaphore;
 
 /**
  * Helper RAII class that releases passed QSemaphore upon deletion. Similar to
  * QMutexLocker.
  */
-class AMAROK_CORE_EXPORT SemaphoreReleaser
+class AMAROKCORE_EXPORT SemaphoreReleaser
 {
     public:
         explicit SemaphoreReleaser( QSemaphore *semaphore );

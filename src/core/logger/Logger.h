@@ -41,7 +41,7 @@ namespace Amarok
       *
       * The class name is up for discussion btw.
       */
-    class AMAROK_CORE_EXPORT Logger
+    class AMAROKCORE_EXPORT Logger
     {
     public:
         enum MessageType { Information, Warning, Error };

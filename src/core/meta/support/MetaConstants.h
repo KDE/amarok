@@ -28,41 +28,41 @@ namespace Meta
     /** Returns a textual identification for the given field.
         This name can be used e.g. for identifying the field in a xml file.
      */
-    AMAROK_CORE_EXPORT QString nameForField( qint64 field );
+    AMAROKCORE_EXPORT QString nameForField( qint64 field );
 
     /** The inverse of nameForField
      */
-    AMAROK_CORE_EXPORT qint64 fieldForName( const QString &name );
+    AMAROKCORE_EXPORT qint64 fieldForName( const QString &name );
 
     /** Returns a localized name for the given field.
      */
-    AMAROK_CORE_EXPORT QString i18nForField( qint64 field );
+    AMAROKCORE_EXPORT QString i18nForField( qint64 field );
 
     /** Returns a short localized name for the given field.
         The short form is only one word and is used for the collection filter.
         e.g. the "added to collection" is just "added"
      */
-    AMAROK_CORE_EXPORT QString shortI18nForField( qint64 field );
+    AMAROKCORE_EXPORT QString shortI18nForField( qint64 field );
 
     /** Returns a textual identification for the given field.
         This name is used in the playlist generator and is slightly different from
         the one in nameForField
      */
-    AMAROK_CORE_EXPORT QString playlistNameForField( qint64 field );
+    AMAROKCORE_EXPORT QString playlistNameForField( qint64 field );
 
     /** The inverse of playlistNameForField
      */
-    AMAROK_CORE_EXPORT qint64 fieldForPlaylistName( const QString &name );
+    AMAROKCORE_EXPORT qint64 fieldForPlaylistName( const QString &name );
 
     /** Returns the name of the icon representing the field.
         May return an empty string if no such icon exists.
         Create the icon with QIcon::fromTheme(iconForField(field))
      */
-    AMAROK_CORE_EXPORT QString iconForField( qint64 field );
+    AMAROKCORE_EXPORT QString iconForField( qint64 field );
 
     /** Returns the value for the given field.
      */
-    AMAROK_CORE_EXPORT QVariant valueForField( qint64 field, TrackPtr track );
+    AMAROKCORE_EXPORT QVariant valueForField( qint64 field, TrackPtr track );
 
     /**
      * The Field variables. Please note that these constants are considered deprecated.

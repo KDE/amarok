@@ -17,7 +17,7 @@
 #ifndef AMAROK_CAPABILITY_H
 #define AMAROK_CAPABILITY_H
 
-#include "core/amarokcore_export.h"
+#include "amarokcore_export.h"
 
 #include <QObject>
 
@@ -32,7 +32,7 @@ namespace Capabilities
         Please note that the capability object will be created on demand and
         also destroyed.
     */
-    class AMAROK_CORE_EXPORT Capability : public QObject
+    class AMAROKCORE_EXPORT Capability : public QObject
     {
         Q_OBJECT
 

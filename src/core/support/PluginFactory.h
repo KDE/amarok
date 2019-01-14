@@ -34,7 +34,7 @@ namespace Plugins {
  *  - StoragePlugin
  *
  */
-class AMAROK_CORE_EXPORT PluginFactory : public QObject
+class AMAROKCORE_EXPORT PluginFactory : public QObject
 {
     Q_OBJECT
 

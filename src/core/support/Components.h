@@ -47,26 +47,26 @@ namespace Amarok
 {
     namespace Components
     {
-        AMAROK_CORE_EXPORT CollectionManager *collectionManager();
-        AMAROK_CORE_EXPORT CollectionManager *setCollectionManager( CollectionManager *mgr );
+        AMAROKCORE_EXPORT CollectionManager *collectionManager();
+        AMAROKCORE_EXPORT CollectionManager *setCollectionManager( CollectionManager *mgr );
 
-        AMAROK_CORE_EXPORT EngineController *engineController();
-        AMAROK_CORE_EXPORT EngineController *setEngineController( EngineController *controller );
+        AMAROKCORE_EXPORT EngineController *engineController();
+        AMAROKCORE_EXPORT EngineController *setEngineController( EngineController *controller );
 
-        AMAROK_CORE_EXPORT SqlStorage *sqlStorage();
-        AMAROK_CORE_EXPORT SqlStorage *setSqlStorage( SqlStorage *storage );
+        AMAROKCORE_EXPORT SqlStorage *sqlStorage();
+        AMAROKCORE_EXPORT SqlStorage *setSqlStorage( SqlStorage *storage );
 
-        AMAROK_CORE_EXPORT Amarok::ApplicationController *applicationController();
-        AMAROK_CORE_EXPORT Amarok::ApplicationController *setApplicationController( Amarok::ApplicationController *controller );
+        AMAROKCORE_EXPORT Amarok::ApplicationController *applicationController();
+        AMAROKCORE_EXPORT Amarok::ApplicationController *setApplicationController( Amarok::ApplicationController *controller );
 
-        AMAROK_CORE_EXPORT Collections::CollectionLocationDelegate *collectionLocationDelegate();
-        AMAROK_CORE_EXPORT Collections::CollectionLocationDelegate *setCollectionLocationDelegate( Collections::CollectionLocationDelegate *delegate );
+        AMAROKCORE_EXPORT Collections::CollectionLocationDelegate *collectionLocationDelegate();
+        AMAROKCORE_EXPORT Collections::CollectionLocationDelegate *setCollectionLocationDelegate( Collections::CollectionLocationDelegate *delegate );
 
-        AMAROK_CORE_EXPORT Transcoding::Controller *transcodingController();
-        AMAROK_CORE_EXPORT Transcoding::Controller *setTranscodingController( Transcoding::Controller *controller );
+        AMAROKCORE_EXPORT Transcoding::Controller *transcodingController();
+        AMAROKCORE_EXPORT Transcoding::Controller *setTranscodingController( Transcoding::Controller *controller );
 
-        AMAROK_CORE_EXPORT StatSyncing::Controller *statSyncingController();
-        AMAROK_CORE_EXPORT StatSyncing::Controller *setStatSyncingController( StatSyncing::Controller *controller );
+        AMAROKCORE_EXPORT StatSyncing::Controller *statSyncingController();
+        AMAROKCORE_EXPORT StatSyncing::Controller *setStatSyncingController( StatSyncing::Controller *controller );
     }
 }
 

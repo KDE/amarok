@@ -31,6 +31,9 @@ add_library( amarokshared SHARED
     ${amarokshared_collectionscanner_SRCS}
     ${amarokshared_tag_helpers_SRCS} )
 
+generate_export_header(amarokshared BASE_NAME amarokshared)
+
+
 target_include_directories( amarokshared PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
 
 include_directories( ${TAGLIB_INCLUDES} )

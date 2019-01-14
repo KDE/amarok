@@ -21,7 +21,7 @@
 
 #include <KJob>
 
-class AMAROK_CORE_EXPORT PodcastImageFetcher : public QObject
+class AMAROKCORE_EXPORT PodcastImageFetcher : public QObject
 {
 Q_OBJECT
 public:

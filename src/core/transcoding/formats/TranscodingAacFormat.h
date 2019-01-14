@@ -32,7 +32,7 @@ namespace Transcoding
  * FAAC with another encoder.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_CORE_EXPORT AacFormat : public Format
+class AMAROKCORE_EXPORT AacFormat : public Format
 {
 public:
     AacFormat();

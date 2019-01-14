@@ -38,7 +38,7 @@ namespace Capabilities
      *
      * @author Matěj Laitl <matej@laitl.cz>
      */
-    class AMAROK_CORE_EXPORT TranscodeCapability : public Capability
+    class AMAROKCORE_EXPORT TranscodeCapability : public Capability
     {
         Q_OBJECT
 

@@ -20,10 +20,10 @@ set( amarok_collection-sqlcollection_SRCS
 )
 
 add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
+generate_export_header(amarok-sqlcollection BASE_NAME amarok_sqlcollection)
 
 target_link_libraries(amarok-sqlcollection
     KF5::KIOCore
-    ${KDE4_SOLID_LIBRARY}
     KF5::ThreadWeaver
     Qt5::Core
     Qt5::Gui

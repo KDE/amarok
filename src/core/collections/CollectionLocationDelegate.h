@@ -26,7 +26,7 @@ namespace Collections {
 
 class CollectionLocation;
 
-class AMAROK_CORE_EXPORT CollectionLocationDelegate
+class AMAROKCORE_EXPORT CollectionLocationDelegate
 {
 public:
     enum OperationType {

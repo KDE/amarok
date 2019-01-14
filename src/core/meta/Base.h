@@ -31,7 +31,7 @@
 namespace Meta {
     class Observer;
 
-    class AMAROK_CORE_EXPORT Base : public virtual QSharedData, public MetaCapability
+    class AMAROKCORE_EXPORT Base : public virtual QSharedData, public MetaCapability
     // virtual inherit. so that implementations can be both Meta::Track and Meta::Statistics
     {
         public:
@@ -116,6 +116,6 @@ namespace Meta {
 Q_DECLARE_METATYPE( Meta::DataPtr )
 Q_DECLARE_METATYPE( Meta::DataList )
 
-AMAROK_CORE_EXPORT QDebug operator<<( QDebug dbg, const Meta::Base &base );
+AMAROKCORE_EXPORT QDebug operator<<( QDebug dbg, const Meta::Base &base );
 
 #endif // META_BASE_H

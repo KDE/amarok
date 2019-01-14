@@ -27,7 +27,7 @@ namespace Transcoding
  * cares about WMA any more...
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_CORE_EXPORT WmaFormat : public Format
+class AMAROKCORE_EXPORT WmaFormat : public Format
 {
 public:
     WmaFormat();

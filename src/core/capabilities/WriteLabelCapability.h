@@ -24,7 +24,7 @@
 namespace Capabilities
 {
 
-class AMAROK_CORE_EXPORT WriteLabelCapability : public Capabilities::Capability
+class AMAROKCORE_EXPORT WriteLabelCapability : public Capabilities::Capability
 {
     Q_OBJECT
     public:

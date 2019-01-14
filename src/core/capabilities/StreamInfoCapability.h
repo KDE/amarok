@@ -34,7 +34,7 @@ namespace Capabilities
 
         @author Dan Meltzer <parallelgrapefruit@gmail.com>
     */
-    class AMAROK_CORE_EXPORT StreamInfoCapability : public Capabilities::Capability
+    class AMAROKCORE_EXPORT StreamInfoCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:

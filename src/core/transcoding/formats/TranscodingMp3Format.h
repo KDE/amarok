@@ -29,7 +29,7 @@ namespace Transcoding
  * requiring LAME support in FFmpeg should not be an excessive demand.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_CORE_EXPORT Mp3Format : public Format
+class AMAROKCORE_EXPORT Mp3Format : public Format
 {
 public:
     Mp3Format();

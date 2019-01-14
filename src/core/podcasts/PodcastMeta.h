@@ -48,7 +48,7 @@ typedef AmarokSharedPointer<PodcastChannel> PodcastChannelPtr;
 typedef QList<PodcastEpisodePtr> PodcastEpisodeList;
 typedef QList<PodcastChannelPtr> PodcastChannelList;
 
-class AMAROK_CORE_EXPORT PodcastMetaCommon
+class AMAROKCORE_EXPORT PodcastMetaCommon
 {
     public:
         PodcastMetaCommon() {}
@@ -78,7 +78,7 @@ class AMAROK_CORE_EXPORT PodcastMetaCommon
         QString m_author; // TODO: save to DB
 };
 
-class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta::Track
+class AMAROKCORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta::Track
 {
     public:
         PodcastEpisode();
@@ -173,7 +173,7 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         Meta::YearPtr m_yearPtr;
 };
 
-class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists::Playlist
+class AMAROKCORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlists::Playlist
 {
     public:
 
@@ -266,7 +266,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
 
 // internal helper classes
 
-class AMAROK_CORE_EXPORT PodcastArtist : public Meta::Artist
+class AMAROKCORE_EXPORT PodcastArtist : public Meta::Artist
 {
 public:
     explicit PodcastArtist( PodcastEpisode *episode )
@@ -301,7 +301,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class AMAROK_CORE_EXPORT PodcastAlbum : public Meta::Album
+class AMAROKCORE_EXPORT PodcastAlbum : public Meta::Album
 {
 public:
     explicit PodcastAlbum( PodcastEpisode *episode )
@@ -364,7 +364,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class AMAROK_CORE_EXPORT PodcastGenre : public Meta::Genre
+class AMAROKCORE_EXPORT PodcastGenre : public Meta::Genre
 {
 public:
     explicit PodcastGenre( PodcastEpisode *episode )
@@ -391,7 +391,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class AMAROK_CORE_EXPORT PodcastComposer : public Meta::Composer
+class AMAROKCORE_EXPORT PodcastComposer : public Meta::Composer
 {
 public:
     explicit PodcastComposer( PodcastEpisode *episode )
@@ -424,7 +424,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class AMAROK_CORE_EXPORT PodcastYear : public Meta::Year
+class AMAROKCORE_EXPORT PodcastYear : public Meta::Year
 {
 public:
     explicit PodcastYear( PodcastEpisode *episode )

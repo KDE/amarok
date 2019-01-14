@@ -55,7 +55,7 @@ namespace Playlists
      * Subclass this class in order to be able to watch playlists as their metadata and
      * track list changes.
      */
-    class AMAROK_CORE_EXPORT PlaylistObserver
+    class AMAROKCORE_EXPORT PlaylistObserver
     {
         public:
             PlaylistObserver();
@@ -131,7 +131,7 @@ namespace Playlists
             QMutex m_playlistSubscriptionsMutex; // guards access to m_playlistSubscriptions
     };
 
-    class AMAROK_CORE_EXPORT Playlist : public virtual QSharedData
+    class AMAROKCORE_EXPORT Playlist : public virtual QSharedData
     {
         public:
             Playlist();

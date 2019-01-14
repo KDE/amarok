@@ -35,7 +35,7 @@ namespace Transcoding
  * All transcoding format descriptor classes must inherit from this class.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_CORE_EXPORT Format //: public QObject
+class AMAROKCORE_EXPORT Format //: public QObject
 {
 public:
     /**

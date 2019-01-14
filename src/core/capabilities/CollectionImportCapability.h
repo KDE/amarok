@@ -31,7 +31,7 @@ namespace Capabilities
      * @author Ralf Engels <ralf-engels@gmx.de>
      */
 
-    class AMAROK_CORE_EXPORT CollectionImportCapability : public Capabilities::Capability
+    class AMAROKCORE_EXPORT CollectionImportCapability : public Capabilities::Capability
     {
         Q_OBJECT
         public:

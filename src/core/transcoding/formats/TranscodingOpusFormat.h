@@ -27,7 +27,7 @@ namespace Transcoding
  * be compiled with support for the libopus library for this to work.
  * @author Martin Brodbeck <martin@brodbeck-online.de>
  */
-class AMAROK_CORE_EXPORT OpusFormat : public Format
+class AMAROKCORE_EXPORT OpusFormat : public Format
 {
 public:
     OpusFormat();

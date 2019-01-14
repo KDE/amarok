@@ -32,7 +32,7 @@ namespace Transcoding
  * defined by a Transcoding::Format subclass.
  * @author Téo Mrnjavac <teo@kde.org>
  */
-class AMAROK_CORE_EXPORT Property
+class AMAROKCORE_EXPORT Property
 {
 public:
     enum Type

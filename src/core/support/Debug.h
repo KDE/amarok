@@ -116,7 +116,7 @@
  */
 namespace Debug
 {
-    extern AMAROK_CORE_EXPORT QMutex mutex;
+    extern AMAROKCORE_EXPORT QMutex mutex;
 
     // from kdebug.h
     enum DebugLevel {
@@ -126,12 +126,12 @@ namespace Debug
         KDEBUG_FATAL = 3
     };
 
-    AMAROK_CORE_EXPORT QDebug dbgstream( DebugLevel level = KDEBUG_INFO );
-    AMAROK_CORE_EXPORT bool debugEnabled();
-    AMAROK_CORE_EXPORT bool debugColorEnabled();
-    AMAROK_CORE_EXPORT void setDebugEnabled( bool enable );
-    AMAROK_CORE_EXPORT void setColoredDebug( bool enable );
-    AMAROK_CORE_EXPORT QString indent();
+    AMAROKCORE_EXPORT QDebug dbgstream( DebugLevel level = KDEBUG_INFO );
+    AMAROKCORE_EXPORT bool debugEnabled();
+    AMAROKCORE_EXPORT bool debugColorEnabled();
+    AMAROKCORE_EXPORT void setDebugEnabled( bool enable );
+    AMAROKCORE_EXPORT void setColoredDebug( bool enable );
+    AMAROKCORE_EXPORT QString indent();
 
     static inline QDebug dbgstreamwrapper( DebugLevel level ) {
 #ifdef DEBUG_PREFIX
@@ -146,7 +146,7 @@ namespace Debug
     static inline QDebug error()   { return dbgstreamwrapper( KDEBUG_ERROR ); }
     static inline QDebug fatal()   { return dbgstreamwrapper( KDEBUG_FATAL ); }
 
-    AMAROK_CORE_EXPORT void perfLog( const QString &message, const QString &func );
+    AMAROKCORE_EXPORT void perfLog( const QString &message, const QString &func );
 }
 
 using Debug::debug;
@@ -201,8 +201,8 @@ namespace Debug
     class Block
     {
     public:
-        AMAROK_CORE_EXPORT explicit Block( const char *name );
-        AMAROK_CORE_EXPORT ~Block();
+        AMAROKCORE_EXPORT explicit Block( const char *name );
+        AMAROKCORE_EXPORT ~Block();
 
     private:
         QElapsedTimer m_startTime;
@@ -231,7 +231,7 @@ namespace Debug
      *     app: Stamp: 2
      *
      */
-    AMAROK_CORE_EXPORT void stamp();
+    AMAROKCORE_EXPORT void stamp();
 
     /**
      * @class Debug::List
