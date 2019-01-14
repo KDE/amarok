@@ -24,7 +24,7 @@ class SmbDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
     explicit SmbDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
-    virtual ~SmbDeviceHandlerFactory();
+    ~SmbDeviceHandlerFactory() override;
 
     bool canHandle( const Solid::Device &device ) const override;
 

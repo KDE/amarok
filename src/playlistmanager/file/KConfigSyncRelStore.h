@@ -28,7 +28,7 @@ class KConfigSyncRelStore : public SyncRelationStorage
 public:
     KConfigSyncRelStore();
 
-    virtual ~KConfigSyncRelStore();
+    ~KConfigSyncRelStore() override;
 
     void addSync( const Playlists::PlaylistPtr master, const Playlists::PlaylistPtr slave ) override;
     bool hasToSync( Playlists::PlaylistPtr master, Playlists::PlaylistPtr slave ) const override;

@@ -45,7 +45,7 @@ class MagnatuneServiceFactory : public ServiceFactory
 
     public:
         MagnatuneServiceFactory();
-        virtual ~MagnatuneServiceFactory() {}
+        ~MagnatuneServiceFactory() override {}
 
         void init() override;
         QString name() override;

@@ -125,7 +125,7 @@ class UpnpArtist : public Meta::Artist
 {
     public:
         explicit UpnpArtist( const QString &name );
-        virtual ~UpnpArtist();
+        ~UpnpArtist() override;
 
         QString name() const override;
 

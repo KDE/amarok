@@ -52,7 +52,7 @@ class ScriptItem : public QObject
     Q_OBJECT
 public:
     ScriptItem( QObject *parent, const QString &name, const QString &path, const KPluginInfo &info );
-    virtual ~ScriptItem();
+    ~ScriptItem() override;
 
     QString name() const { return m_name; }
     AmarokScript::AmarokScriptEngine* engine() { return m_engine.data(); }

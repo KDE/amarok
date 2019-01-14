@@ -32,7 +32,7 @@ class MySqlCollectionFactory : public Collections::CollectionFactory
         MySqlCollectionFactory()
             : Collections::CollectionFactory() {}
 
-        virtual ~MySqlCollectionFactory() {}
+        ~MySqlCollectionFactory() override {}
 
         void init() override;
 };

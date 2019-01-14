@@ -82,7 +82,7 @@ class Token : public QWidget
 
     protected:
         /** overloaded to update the cursor in case the token is set to inactive */
-        void changeEvent( QEvent* event = 0 ) override;
+        void changeEvent( QEvent* event = nullptr ) override;
 
         void focusInEvent( QFocusEvent* event ) override;
 

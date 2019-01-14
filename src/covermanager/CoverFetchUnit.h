@@ -134,7 +134,7 @@ class CoverFetchInfoPayload : public CoverFetchPayload
 public:
     explicit CoverFetchInfoPayload( const Meta::AlbumPtr &album, const CoverFetch::Source src );
     explicit CoverFetchInfoPayload( const CoverFetch::Source src, const QByteArray &xml );
-    ~CoverFetchInfoPayload();
+    ~CoverFetchInfoPayload() override;
 
 protected:
     void prepareUrls() override;
