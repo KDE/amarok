@@ -183,7 +183,7 @@ TagHelper::splitUID( const QString &uidUrl ) const
     QString uid = uidUrl;
 
     if( uid.startsWith( QLatin1String("amarok-") ) )
-        uid = uid.remove( QRegExp( "^(amarok-\\w+://).+$" ) );
+        uid = uid.remove( QRegExp( QStringLiteral("^(amarok-\\w+://).+$") ) );
 
     if( isValidUID( uid, UIDAFT ) )
         type = UIDAFT;
@@ -196,15 +196,15 @@ TagHelper::splitDiscNr( const QString &value ) const
 {
     int disc;
     int count = 0;
-    if( value.indexOf( '/' ) != -1 )
+    if( value.indexOf( QLatin1Char('/') ) != -1 )
     {
-        QStringList list = value.split( '/', QString::SkipEmptyParts );
+        QStringList list = value.split( QLatin1Char('/'), QString::SkipEmptyParts );
         disc = list.value( 0 ).toInt();
         count = list.value( 1 ).toInt();
     }
-    else if( value.indexOf( ':' ) != -1 )
+    else if( value.indexOf( QLatin1Char(':') ) != -1 )
     {
-        QStringList list = value.split( ':', QString::SkipEmptyParts );
+        QStringList list = value.split( QLatin1Char(':'), QString::SkipEmptyParts );
         disc = list.value( 0 ).toInt();
         count = list.value( 1 ).toInt();
     }
@@ -220,7 +220,7 @@ TagHelper::isValidUID( const QString &uid, const TagHelper::UIDType type ) const
     if( uid.length() >= 127 ) // the database can't handle longer uids
         return false;
 
-    QRegExp regexp( "^$" );
+    QRegExp regexp( QStringLiteral("^$") );
 
     if( type == UIDAFT )
         regexp.setPattern( QStringLiteral("^[0-9a-fA-F]{32}$") );
@@ -307,7 +307,7 @@ Meta::Tag::selectHelper( const TagLib::FileRef &fileref, bool forceCreation )
         if( tag )
         {
             Amarok::FileType specificType = Amarok::Mp4;
-            QString filename = QString( fileref.file()->name() );
+            QString filename = QString::fromLatin1( fileref.file()->name() );
             foreach( Amarok::FileType type, QList<Amarok::FileType>() << Amarok::M4a << Amarok::M4v )
             {
                 if( filename.endsWith( Amarok::FileTypeSupport::toString( type ), Qt::CaseInsensitive ) )

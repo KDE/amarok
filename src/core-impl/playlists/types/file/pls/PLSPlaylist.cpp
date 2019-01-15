@@ -77,7 +77,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
         }
         if( tmp.contains( regExp_NumberOfEntries ) )
         {
-            numberOfEntries = tmp.section( '=', -1 ).trimmed().toUInt();
+            numberOfEntries = tmp.section( QLatin1Char('='), -1 ).trimmed().toUInt();
             continue;
         }
     }
@@ -122,7 +122,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             index = loadPls_extractIndex( *i );
             if( index > numberOfEntries || index == 0 )
                 continue;
-            tmp = (*i).section( '=', 1 ).trimmed();
+            tmp = (*i).section( QLatin1Char('='), 1 ).trimmed();
             QUrl url = getAbsolutePath( QUrl( tmp ) );
             proxyTrack = new MetaProxy::Track( url );
             Meta::TrackPtr track( proxyTrack.data() );
@@ -135,7 +135,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             index = loadPls_extractIndex(*i);
             if( index > numberOfEntries || index == 0 )
                 continue;
-            tmp = (*i).section( '=', 1 ).trimmed();
+            tmp = (*i).section( QLatin1Char('='), 1 ).trimmed();
             proxyTrack->setTitle( tmp );
             continue;
         }
@@ -145,7 +145,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             index = loadPls_extractIndex(*i);
             if( index > numberOfEntries || index == 0 )
                 continue;
-            tmp = (*i).section( '=', 1 ).trimmed();
+            tmp = (*i).section( QLatin1Char('='), 1 ).trimmed();
             bool ok = false;
             int seconds = tmp.toInt( &ok );
             if( ok )
@@ -160,7 +160,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
         if( (*i).contains( regExp_Version ) )
         {
             // Have the "Version=#" line.
-            tmp = (*i).section( '=', 1 ).trimmed();
+            tmp = (*i).section( QLatin1Char('='), 1 ).trimmed();
             // We only support Version=2
             if (tmp.toUInt( &ok ) != 2)
                 warning() << ".pls playlist: Unsupported version." << endl;
@@ -179,7 +179,7 @@ PLSPlaylist::loadPls_extractIndex( const QString &str ) const
      *   loadPls_extractIndex("File2=foobar") == 2 */
     bool ok = false;
     unsigned int ret;
-    QString tmp( str.section( '=', 0, 0 ) );
+    QString tmp( str.section( QLatin1Char('='), 0, 0 ) );
     tmp.remove( QRegExp( "^\\D*" ) );
     ret = tmp.trimmed().toUInt( &ok );
     Q_ASSERT(ok);

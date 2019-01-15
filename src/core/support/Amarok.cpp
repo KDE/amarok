@@ -347,7 +347,7 @@ namespace Amarok
         if( behaviour == UnixBehaviour ) // we are on *nix, \ is a valid character in file or directory names, NOT the dir separator
             s.replace( '\\', '_' );
         else
-            s.replace( '/', '_' ); // on windows we have to replace / instead
+            s.replace( QLatin1Char('/'), '_' ); // on windows we have to replace / instead
 
         int start = 0;
 #ifdef Q_OS_WIN

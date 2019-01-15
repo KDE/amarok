@@ -41,7 +41,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
         QString line = stream.readLine();
         if( line.startsWith( QLatin1String("#EXTINF") ) )
         {
-            const QString extinf = line.section( ':', 1 );
+            const QString extinf = line.section( QLatin1Char(':'), 1 );
             bool ok;
             length = extinf.section( ',', 0, 0 ).toInt( &ok );
             if( !ok )

@@ -153,7 +153,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
 
                         if ( indexNo == 1 )
                         {
-                            QStringList time = line.section ( ' ', -1, -1 ).split ( ':' );
+                            QStringList time = line.section ( ' ', -1, -1 ).split ( QLatin1Char(':') );
 
                             index = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
 
@@ -171,7 +171,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
 
                         else if ( indexNo == 0 ) // gap, use to calc prev track length
                         {
-                            QStringList time = line.section ( ' ', -1, -1 ).split ( ':' );
+                            QStringList time = line.section ( ' ', -1, -1 ).split ( QLatin1Char(':') );
 
                             length = time[0].toLong() * 60 * 1000 + time[1].toLong() * 1000 + time[2].toLong() *1000/75; //75 frames per second
 
@@ -380,7 +380,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
 
                     if ( indexNo == 1 )
                     {
-                        QStringList time = line.section ( ' ', -1, -1 ).split ( ':' );
+                        QStringList time = line.section ( ' ', -1, -1 ).split ( QLatin1Char(':') );
 
                         index = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
 
@@ -396,7 +396,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
 
                     else if ( indexNo == 0 ) // gap, use to calc prev track length
                     {
-                        QStringList time = line.section ( ' ', -1, -1 ).split ( ':' );
+                        QStringList time = line.section ( ' ', -1, -1 ).split ( QLatin1Char(':') );
 
                         length = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
 

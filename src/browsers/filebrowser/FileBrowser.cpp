@@ -469,7 +469,7 @@ FileBrowser::setupAddItems()
     // other additional items
     while( !workingUrl.midRef( currentPosition ).isEmpty() )
     {
-        int nextPosition = workingUrl.indexOf( '/', currentPosition ) + 1;
+        int nextPosition = workingUrl.indexOf( QLatin1Char('/'), currentPosition ) + 1;
         if( nextPosition <= 0 )
             nextPosition = workingUrl.length();
 

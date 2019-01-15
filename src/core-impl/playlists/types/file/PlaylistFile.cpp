@@ -169,7 +169,7 @@ PlaylistFile::getAbsolutePath( const QUrl &url )
     if( !absUrl.isLocalFile() )
         return url;
 
-    if( !url.path().startsWith( '/' ) )
+    if( !url.path().startsWith( QLatin1Char('/') ) )
     {
         m_relativePaths = true;
         // example: url = QUrl( "file://../tunes/tune.ogg" )

@@ -39,14 +39,14 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     // create table containing tracks
     QString queryString = "CREATE TABLE magnatune_tracks ("
-                          "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
-                          "name " + sqlDb->textColumnType() + ',' +
+                          "id INTEGER PRIMARY KEY " + autoIncrement + QLatin1Char(',') +
+                          "name " + sqlDb->textColumnType() + QLatin1Char(',') +
                           "track_number INTEGER,"
                           "length INTEGER,"
                           "album_id INTEGER,"
                           "artist_id INTEGER,"
-                          "preview_lofi " + sqlDb->exactTextColumnType() + ',' +
-                          "preview_ogg " + sqlDb->exactTextColumnType() + ',' +
+                          "preview_lofi " + sqlDb->exactTextColumnType() + QLatin1Char(',') +
+                          "preview_ogg " + sqlDb->exactTextColumnType() + QLatin1Char(',') +
                           "preview_url " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating magnatune_tracks: " << queryString;
@@ -59,12 +59,12 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     //Create album table
     queryString = "CREATE TABLE magnatune_albums ("
-                  "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
-                  "name " + sqlDb->textColumnType() + ',' +
+                  "id INTEGER PRIMARY KEY " + autoIncrement + QLatin1Char(',') +
+                  "name " + sqlDb->textColumnType() + QLatin1Char(',') +
                   "year INTEGER,"
                   "artist_id INTEGER,"
-                  "album_code " + sqlDb->textColumnType() + ',' +
-                  "cover_url " + sqlDb->exactTextColumnType() + ',' +
+                  "album_code " + sqlDb->textColumnType() + QLatin1Char(',') +
+                  "cover_url " + sqlDb->exactTextColumnType() + QLatin1Char(',') +
                   "description " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating Magnatune_albums: " << queryString;
@@ -77,10 +77,10 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     //Create artist table
     queryString = "CREATE TABLE magnatune_artists ("
-                  "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
-                  "name " + sqlDb->textColumnType() + ',' +
-                  "artist_page " + sqlDb->exactTextColumnType() + ',' +
-                  "description " + sqlDb->textColumnType() + ',' +
+                  "id INTEGER PRIMARY KEY " + autoIncrement + QLatin1Char(',') +
+                  "name " + sqlDb->textColumnType() + QLatin1Char(',') +
+                  "artist_page " + sqlDb->exactTextColumnType() + QLatin1Char(',') +
+                  "description " + sqlDb->textColumnType() + QLatin1Char(',') +
                   "photo_url " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating magnatune_artist: " << queryString;
@@ -91,8 +91,8 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     //create genre table
     queryString = "CREATE TABLE magnatune_genre ("
-                  "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
-                  "name " + sqlDb->textColumnType() + ',' +
+                  "id INTEGER PRIMARY KEY " + autoIncrement + QLatin1Char(',') +
+                  "name " + sqlDb->textColumnType() + QLatin1Char(',') +
                   "album_id INTEGER" + ") ENGINE = MyISAM;";
 
     result = sqlDb->query( queryString );
@@ -103,7 +103,7 @@ MagnatuneDatabaseHandler::createDatabase( )
 
     //create moods table
      queryString = "CREATE TABLE magnatune_moods ("
-                  "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
+                  "id INTEGER PRIMARY KEY " + autoIncrement + QLatin1Char(',') +
                   "track_id INTEGER," +
                   "mood " + sqlDb->textColumnType() + ") ENGINE = MyISAM;";
 

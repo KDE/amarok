@@ -167,7 +167,7 @@ CollectionScanner::Scanner::doJob() //SLOT
             if( QDir::isRelativePath( dir ) )
                 dir = QDir::cleanPath( QDir::currentPath() + QLatin1Char('/') + dir );
 
-            if( !dir.endsWith( '/' ) )
+            if( !dir.endsWith( QLatin1Char('/') ) )
                 dir += '/';
 
             addDir( dir, &entriesSet ); // checks m_recursively

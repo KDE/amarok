@@ -27,7 +27,7 @@ static qint64 duration( const QString &duration ) {
     if( duration.isEmpty() )
         return 0;
 
-    QStringList parts = duration.split( ':' );
+    QStringList parts = duration.split( QLatin1Char(':') );
     int hours = parts.takeFirst().toInt();
     int minutes = parts.takeFirst().toInt();
     QString rest = parts.takeFirst();
@@ -37,9 +37,9 @@ static qint64 duration( const QString &duration ) {
         int dotIndex = rest.indexOf( "." );
         seconds = rest.leftRef( dotIndex ).toInt();
         QString frac = rest.mid( dotIndex + 1 );
-        if( frac.contains( '/' ) ) {
-            int slashIndex = frac.indexOf( '/' );
-            int num = frac.leftRef( frac.indexOf( '/' ) ).toInt();
+        if( frac.contains( QLatin1Char('/') ) ) {
+            int slashIndex = frac.indexOf( QLatin1Char('/') );
+            int num = frac.leftRef( frac.indexOf( QLatin1Char('/') ) ).toInt();
             int den = frac.midRef( slashIndex + 1 ).toInt();
             mseconds = num * 1000 / den;
         }

@@ -409,7 +409,7 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
     m_currentAudioCdTrack = 0;
     if( url.scheme() == "audiocd" )
     {
-        QStringList pathItems = url.path().split( '/', QString::KeepEmptyParts );
+        QStringList pathItems = url.path().split( QLatin1Char('/'), QString::KeepEmptyParts );
         if( pathItems.count() != 3 )
         {
             error() << __PRETTY_FUNCTION__ << url.url() << "is not in expected format";

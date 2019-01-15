@@ -184,9 +184,9 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
             d->withoutDuplicates = true;
             d->queryFrom = ' ' + prefix + "_tracks";
             d->queryType = QueryMaker::Track;
-            d->queryReturnValues =  m_metaFactory->getTrackSqlRows() + ',' +
-            m_metaFactory->getAlbumSqlRows() + ',' +
-            m_metaFactory->getArtistSqlRows() + ',' +
+            d->queryReturnValues =  m_metaFactory->getTrackSqlRows() + QLatin1Char(',') +
+            m_metaFactory->getAlbumSqlRows() + QLatin1Char(',') +
+            m_metaFactory->getArtistSqlRows() + QLatin1Char(',') +
             m_metaFactory->getGenreSqlRows();
 
             d->linkedTables |= Private::GENRE_TABLE;
@@ -241,7 +241,7 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
             d->linkedTables |= Private::ALBUMS_TABLE;
             d->linkedTables |= Private::ARTISTS_TABLE;
             d->withoutDuplicates = true;
-            d->queryReturnValues = m_metaFactory->getAlbumSqlRows() + ',' +
+            d->queryReturnValues = m_metaFactory->getAlbumSqlRows() + QLatin1Char(',') +
             m_metaFactory->getArtistSqlRows();
 
             d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres

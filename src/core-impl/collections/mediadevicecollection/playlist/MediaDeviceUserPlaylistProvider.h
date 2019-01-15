@@ -39,7 +39,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public Playlists::UserPlay
 
         /* PlaylistProvider functions */
         QString prettyName() const override { return i18n( "Media Device playlists" ); }
-        QIcon icon() const override { return QIcon::fromTheme( "multimedia-player" ); }
+        QIcon icon() const override { return QIcon::fromTheme( QStringLiteral("multimedia-player") ); }
 
         /* Playlists::UserPlaylistProvider functions */
         Playlists::PlaylistList playlists() override;

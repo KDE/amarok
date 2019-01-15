@@ -113,7 +113,7 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
 
     foreach( const QString &key, args.keys() )
         if( key != "collectionroot" && key != "folder" )
-            args[key] = args[key].replace( '/', '-' );
+            args[key] = args[key].replace( QLatin1Char('/'), '-' );
 
     Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );

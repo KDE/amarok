@@ -42,7 +42,7 @@ void AudioCdCollectionLocation::getKIOCopyableUrls( const Meta::TrackList & trac
     {
         Meta::AudioCdTrackPtr cdTrack = Meta::AudioCdTrackPtr::staticCast( trackPtr );
 
-        const QString path = m_collection->copyableFilePath( cdTrack->fileNameBase() + '.' + m_collection->encodingFormat() );
+        const QString path = m_collection->copyableFilePath( cdTrack->fileNameBase() + QLatin1Char('.') + m_collection->encodingFormat() );
         resultMap.insert( trackPtr, QUrl::fromLocalFile( path ) );
     }
 

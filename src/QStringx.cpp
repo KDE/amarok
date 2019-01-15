@@ -119,7 +119,7 @@ Amarok::QStringx::testChar( int *pos ) const
     if( c == QLatin1Char( '[' ) )
         return CTBracketOpen;
 
-    if( c == QLatin1Char( ':' ) )
+    if( c == QLatin1Char( QLatin1Char(':') ) )
         return CTBracketSeparator;
 
     if( c == QLatin1Char( ']' ) )

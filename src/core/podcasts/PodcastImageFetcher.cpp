@@ -87,7 +87,7 @@ PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannel *channel )
     md5.addData( channel->url().url().toLocal8Bit() );
     QString extension = Amarok::extension( channel->imageUrl().fileName() );
     imagePath = imagePath.adjusted( QUrl::StripTrailingSlash );
-    imagePath.setPath( imagePath.path() + QLatin1Char('/') + ( md5.result().toHex() + '.' + extension ) );
+    imagePath.setPath( imagePath.path() + QLatin1Char('/') + ( md5.result().toHex() + QLatin1Char('.') + extension ) );
     return imagePath;
 }
 

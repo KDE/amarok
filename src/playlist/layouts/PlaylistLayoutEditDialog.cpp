@@ -169,7 +169,7 @@ Playlist::PlaylistLayoutEditDialog::newLayout()      //SLOT
         KMessageBox::sorry( this, i18n( "Cannot create a layout with the same name as an existing layout." ), i18n( "Layout name error" ) );
         return;
     }
-    if( layoutName.contains( '/' ) )
+    if( layoutName.contains( QLatin1Char('/') ) )
     {
         KMessageBox::sorry( this, i18n( "Cannot create a layout containing '/'." ), i18n( "Layout name error" ) );
         return;

@@ -134,7 +134,7 @@ namespace CollectionFolder //just to keep it out of the global namespace
 
             static inline QString normalPath( const QString &path )
             {
-                return path.endsWith( '/' ) ? path : path + '/';
+                return path.endsWith( QLatin1Char('/') ) ? path : path + '/';
             }
 
             QSet<QString> m_checked;

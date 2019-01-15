@@ -136,7 +136,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     DEBUG_BLOCK
 
     QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( QStringLiteral("ddd MMMM d yy hh-mm")) : name;
-    filename.replace( '/', QLatin1Char('-') );
+    filename.replace( QLatin1Char('/'), QLatin1Char('-') );
     filename.replace( QLatin1Char('\\'), QLatin1Char('-') );
 
     Playlists::PlaylistFormat format = Playlists::getFormat( QUrl::fromUserInput(filename) );

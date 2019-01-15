@@ -129,7 +129,7 @@ CollectionScanner::Track::Track( const QString &path, CollectionScanner::Directo
         m_albumGain = values.value(Meta::valAlbumGain).toReal();
     if( values.contains(Meta::valAlbumGainPeak) )
         m_albumPeakGain = values.value(Meta::valAlbumGainPeak).toReal();
-    while( m_uniqueid.startsWith('/') )
+    while( m_uniqueid.startsWith(QLatin1Char('/')) )
         m_uniqueid = m_uniqueid.mid(1);
 
     if( values.contains(Meta::valComposer) )

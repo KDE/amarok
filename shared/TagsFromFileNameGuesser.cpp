@@ -35,8 +35,8 @@ const QStringList m_schemes( QStringList()
     << QStringLiteral("^%title%\\.+(?:\\w{2,5})$")
 );
 
-const QRegExp m_digitalFields( "(%(?:discnumber|track|year)%)" );
-const QRegExp m_literalFields( "(%(?:album|albumartist|artist|comment|composer|genre|title)%)" );
+const QRegExp m_digitalFields( QStringLiteral("(%(?:discnumber|track|year)%)") );
+const QRegExp m_literalFields( QStringLiteral("(%(?:album|albumartist|artist|comment|composer|genre|title)%)") );
 
 quint64
 fieldName( const QString &field )
@@ -68,7 +68,7 @@ fieldName( const QString &field )
 QList< qint64 >
 parseTokens( const QString &scheme )
 {
-    QRegExp rxm( "%(\\w+)%" );
+    QRegExp rxm( QStringLiteral("%(\\w+)%") );
     QList< qint64 > tokens;
 
     int pos = 0;
@@ -100,9 +100,9 @@ Meta::Tag::TagGuesser::guessTagsByScheme( const QString &fileName, const QString
     
     // Screen all special symbols
     if( !isRegExp )
-        m_scheme = m_scheme.replace( QRegExp( "([~!\\^&*()\\-+\\[\\]{}\\\\:\"?\\.])" ),"\\\\1" );
+        m_scheme = m_scheme.replace( QRegExp( QStringLiteral("([~!\\^&*()\\-+\\[\\]{}\\\\:\"?\\.])" )), QStringLiteral("\\\\1") );
     
-    QRegExp spaces( "(\\s+)" );
+    QRegExp spaces( QStringLiteral("(\\s+)") );
     rx.setPattern( m_scheme.replace( spaces, QStringLiteral("\\s+") )
                            .replace( m_digitalFields, QStringLiteral("(\\d+)") )
                            .replace( m_literalFields, QStringLiteral("(.+)") )
@@ -116,7 +116,7 @@ Meta::Tag::TagGuesser::guessTagsByScheme( const QString &fileName, const QString
     {
         value = rx.cap( i + 1 );
         if( convertUnderscores )
-            value.replace( '_', ' ' );
+            value.replace( QLatin1Char('_'), QLatin1Char(' ') );
         if( cutTrailingSpaces )
             value = value.trimmed();
         metadata.insert( tokens[i], value );
@@ -129,7 +129,7 @@ Meta::Tag::TagGuesser::guessTags( const QString &fileName )
 {
     QString tmpStr = fileName;
     int pos = 0;
-    if( ( pos = fileName.lastIndexOf( '/' ) ) != -1 )
+    if( ( pos = fileName.lastIndexOf( QLatin1Char('/') ) ) != -1 )
             tmpStr = fileName.mid( pos + 1 );
 
     foreach( const QString &scheme, m_schemes )

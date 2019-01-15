@@ -455,7 +455,7 @@ void LayoutManager::orderLayouts()
 
     QStringList knownLayouts = m_layouts.keys();
 
-    QStringList orderingList = orderString.split( ';', QString::SkipEmptyParts );
+    QStringList orderingList = orderString.split( QLatin1Char(';'), QString::SkipEmptyParts );
 
     foreach( const QString &layout, orderingList )
     {

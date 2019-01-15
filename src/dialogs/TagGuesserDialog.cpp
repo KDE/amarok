@@ -354,8 +354,8 @@ TagGuesserDialog::parsableFileName( const QFileInfo &fileInfo ) const
 
     debug() << m_layoutWidget->getParsableScheme() << "; " << path;
 
-    int schemaLevels = m_layoutWidget->getParsableScheme().count( '/' );
-    int pathLevels   = path.count( '/' );
+    int schemaLevels = m_layoutWidget->getParsableScheme().count( QLatin1Char('/') );
+    int pathLevels   = path.count( QLatin1Char('/') );
 
     // -- cut paths
     int pos;

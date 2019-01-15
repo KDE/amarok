@@ -127,8 +127,8 @@ namespace Amarok
         {
             QString ext = fileName.mid( fileName.lastIndexOf( QLatin1Char('.') ) + 1 ).toLower();
             // Remove url parameters (some remote playlists use these)
-            if( ext.contains( '?' ) )
-                return ext.left( ext.indexOf( '?' ) );
+            if( ext.contains( QLatin1Char('?') ) )
+                return ext.left( ext.indexOf( QLatin1Char('?') ) );
             return ext;
         }
 

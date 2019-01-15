@@ -79,13 +79,13 @@ LayoutConfigAction::~LayoutConfigAction()
 void LayoutConfigAction::setActiveLayout( QAction *layoutAction )
 {
     QString layoutName( layoutAction->text() );
-    layoutName = layoutName.remove( QChar( '&' ) );        //need to remove the & from the string, used for the shortcut key underscore
+    layoutName = layoutName.remove( QLatin1Char( '&' ) );        //need to remove the & from the string, used for the shortcut key underscore
     LayoutManager::instance()->setActiveLayout( layoutName );
 }
 
 void LayoutConfigAction::configureLayouts()
 {
-    if( m_layoutDialog == 0 )
+    if( m_layoutDialog == nullptr )
         m_layoutDialog = new PlaylistLayoutEditDialog( The::mainWindow() );
 
     m_layoutDialog->setModal( false );
@@ -119,7 +119,7 @@ void Playlist::LayoutConfigAction::layoutListChanged()
 void LayoutConfigAction::onActiveLayoutChanged()
 {
     QString layoutName( LayoutManager::instance()->activeLayoutName() );
-    layoutName = layoutName.remove( QChar( '&' ) );        //need to remove the & from the string, used for the shortcut key underscore
+    layoutName = layoutName.remove( QLatin1Char( '&' ) );        //need to remove the & from the string, used for the shortcut key underscore
     if( layoutName != QStringLiteral( "%%PREVIEW%%" ) )           //if it's not just a preview
     {
         int index = LayoutManager::instance()->layouts().indexOf( layoutName );

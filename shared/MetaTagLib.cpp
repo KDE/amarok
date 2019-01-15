@@ -169,7 +169,7 @@ Meta::Tag::generateUniqueId( const QString &path )
     else
         addRandomness( &md5 );
 
-    return QString( md5.result().toHex() );
+    return QString::fromLatin1( md5.result().toHex() );
 }
 
 

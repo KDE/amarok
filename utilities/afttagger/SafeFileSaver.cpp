@@ -77,8 +77,8 @@ SafeFileSaver::prepareToSave()
 
     QString randomString = str;
 
-    m_tempSavePath = m_origPath + '.' + m_prefix + "temp.pid-" + pid + ".random-" + randomString + '.' + QFileInfo( m_origPath ).suffix();
-    m_origRenamedSavePath = m_origPath + '.' + m_prefix + "original.pid-" + pid + ".random-" + randomString + '.' + QFileInfo( m_origPath ).suffix();
+    m_tempSavePath = m_origPath + QLatin1Char('.') + m_prefix + "temp.pid-" + pid + ".random-" + randomString + QLatin1Char('.') + QFileInfo( m_origPath ).suffix();
+    m_origRenamedSavePath = m_origPath + QLatin1Char('.') + m_prefix + "original.pid-" + pid + ".random-" + randomString + QLatin1Char('.') + QFileInfo( m_origPath ).suffix();
 
 
     if( m_verbose )

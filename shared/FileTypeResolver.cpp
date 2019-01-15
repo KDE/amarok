@@ -189,13 +189,13 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
 
 #ifndef Q_WS_WIN
      if( !result )
-         qDebug() << QString( "FileTypeResolver: file %1 (mimetype %2) not recognized as "
-                "Amarok-compatible" ).arg( fileName, mimetype.name() ).toLocal8Bit().data();
+         qDebug() << QStringLiteral( "FileTypeResolver: file %1 (mimetype %2) not recognized as "
+                "Amarok-compatible" ).arg( QString::fromLatin1(fileName), mimetype.name() );
 #endif
 
     if( result && !result->isValid() ) {
         delete result;
-        result = 0;
+        result = nullptr;
     }
 
     return result;

@@ -84,7 +84,7 @@ PodcastReader::Action::characters( PodcastReader *podcastReader ) const
 
 // initialization of the feed parser automata:
 PodcastReader::StaticData::StaticData()
-        : removeScripts( "<script[^<]*</script>|<script[^>]*>", Qt::CaseInsensitive )
+        : removeScripts( QStringLiteral("<script[^<]*</script>|<script[^>]*>"), Qt::CaseInsensitive )
         , mightBeHtml( "<\\?xml[^>]*\\?>|<br[^>]*>|<p[^>]*>|&lt;|&gt;|&amp;|&quot;|"
                        "<([-:\\w\\d]+)[^>]*(/>|>.*</\\1>)|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;", Qt::CaseInsensitive )
         , linkify( "\\b(" RE_URL ")|\\b(" RE_MAIL ")|(\n)" )
@@ -527,7 +527,7 @@ PodcastReader::downloadResult( KJob * job )
         Q_EMIT statusBarSorryMessage( errorMessage );
     }
 
-    m_transferJob = 0;
+    m_transferJob = nullptr;
 }
 
 PodcastReader::ElementType
@@ -786,7 +786,7 @@ PodcastReader::unescape( const QString &text )
 
         if( c == '&' )
         {
-            int endIndex = text.indexOf( ';', i );
+            int endIndex = text.indexOf( QLatin1Char(';'), i );
 
             if( endIndex == -1 )
             {
@@ -1605,14 +1605,14 @@ PodcastReader::parsePubDate( const QString &dateString )
     QString parseInput = dateString;
     debug() << "Parsing pubdate: " << parseInput;
 
-    QRegExp rfcDateDayRegex( "^[A-Z]{1}[a-z]{2}\\s*,\\s*(.*)" );
+    QRegExp rfcDateDayRegex( QStringLiteral("^[A-Z]{1}[a-z]{2}\\s*,\\s*(.*)") );
     if( rfcDateDayRegex.indexIn( parseInput ) != -1 )
     {
         parseInput = rfcDateDayRegex.cap(1);
     }
     //Hack around a to strict RFCDate implementation in KDateTime.
     //See http://bugs.kde.org/show_bug.cgi?id=231062
-    QRegExp rfcMonthLowercase( "^\\d+\\s+\\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\b" );
+    QRegExp rfcMonthLowercase( QStringLiteral("^\\d+\\s+\\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\b") );
     if( rfcMonthLowercase.indexIn( parseInput ) != -1 )
     {
         QString lowerMonth = rfcMonthLowercase.cap( 1 );

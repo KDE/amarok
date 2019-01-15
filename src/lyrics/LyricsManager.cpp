@@ -205,12 +205,12 @@ void LyricsManager::lyricsLoaded( const QUrl& url, const QByteArray& data, const
 
         int lindex = rev.indexOf( QStringLiteral( "#REDIRECT [[" ) ) + 12;
         int rindex = rev.indexOf( QStringLiteral( "]]" ) );
-        QStringList list = rev.mid( lindex, rindex - lindex ).split( ':' );
+        QStringList list = rev.mid( lindex, rindex - lindex ).split( QLatin1Char(':') );
         if( list.size() == 2 )
         {
             list[0] = list[0].replace( '&', QStringLiteral( "%26" ) );
             list[1] = list[1].replace( '&', QStringLiteral( "%26" ) );
-            QUrl newUrl( APIURL + list.join( ':' ) );
+            QUrl newUrl( APIURL + list.join( QLatin1Char(':') ) );
             m_trackMap.insert( newUrl, track );
             NetworkAccessManagerProxy::instance()->getData( newUrl, this, &LyricsManager::lyricsLoaded );
         }

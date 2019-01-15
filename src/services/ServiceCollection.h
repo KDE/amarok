@@ -53,7 +53,7 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
 
         QString collectionId() const override;
         QString prettyName() const override;
-        QIcon icon() const override { return QIcon::fromTheme("action-view-services-scripted-amarok"); }
+        QIcon icon() const override { return QIcon::fromTheme(QStringLiteral("action-view-services-scripted-amarok")); }
 
         CollectionLocation* location() override;
 

@@ -230,7 +230,7 @@ ScriptUpdater::phase4( KJob * job )
     for( const auto &location : locations )
         if( m_fileName.startsWith( location ) )
             relativePath = m_fileName.remove( location );
-    if( relativePath.startsWith( '/' ) )
+    if( relativePath.startsWith( QLatin1Char('/') ) )
        relativePath.remove( 0, 1 );
     const QFileInfo fileinfo( relativePath );
     const QString destination = QStandardPaths::writableLocation( QStandardPaths::GenericDataLocation ) + QLatin1Char('/') + fileinfo.path();

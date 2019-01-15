@@ -80,7 +80,7 @@ ServiceSqlCollection::trackForUrl(const QUrl &url)
         return Meta::TrackPtr();
 
     //split out the parts we can be sure about ( strip username and such info )
-    QString trackRows = m_metaFactory->getTrackSqlRows() + ',' + m_metaFactory->getAlbumSqlRows() + ',' +  m_metaFactory->getArtistSqlRows() + ',' +  m_metaFactory->getGenreSqlRows();
+    QString trackRows = m_metaFactory->getTrackSqlRows() + QLatin1Char(',') + m_metaFactory->getAlbumSqlRows() + QLatin1Char(',') +  m_metaFactory->getArtistSqlRows() + QLatin1Char(',') +  m_metaFactory->getGenreSqlRows();
 
     QString prefix = m_metaFactory->tablePrefix();
 

@@ -132,27 +132,27 @@ CollectionScanner::Directory::Directory( QXmlStreamReader *reader )
         if( reader->isStartElement() )
         {
             QStringRef name = reader->name();
-            if( name == "path" )
+            if( name == QLatin1String("path") )
                 m_path = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "rpath" )
+            else if( name == QLatin1String("rpath") )
                 m_rpath = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "mtime" )
+            else if( name == QLatin1String("mtime") )
                 m_mtime = reader->readElementText(QXmlStreamReader::SkipChildElements).toUInt();
-            else if( name == "cover" )
+            else if( name == QLatin1String("cover") )
                 m_covers.append(reader->readElementText(QXmlStreamReader::SkipChildElements));
-            else if( name == "skipped" )
+            else if( name == QLatin1String("skipped") )
             {
                 m_skipped = true;
                 reader->skipCurrentElement();
             }
-            else if( name == "ignored" )
+            else if( name == QLatin1String("ignored") )
             {
                 m_ignored = true;
                 reader->skipCurrentElement();
             }
-            else if( name == "track" )
+            else if( name == QLatin1String("track") )
                 m_tracks.append( new CollectionScanner::Track( reader, this ) );
-            else if( name == "playlist" )
+            else if( name == QLatin1String("playlist") )
                 m_playlists.append( CollectionScanner::Playlist( reader ) );
             else
             {

@@ -156,9 +156,9 @@ void MagnatuneDatabaseWorker::doFetchTrackswithMood()
         QString queryString = "SELECT DISTINCT ";
         
                 
-        queryString += m_registry->factory()->getTrackSqlRows() + ',' +
-                    m_registry->factory()->getAlbumSqlRows() + ',' +
-                    m_registry->factory()->getArtistSqlRows() + ',' +
+        queryString += m_registry->factory()->getTrackSqlRows() + QLatin1Char(',') +
+                    m_registry->factory()->getAlbumSqlRows() + QLatin1Char(',') +
+                    m_registry->factory()->getArtistSqlRows() + QLatin1Char(',') +
                     m_registry->factory()->getGenreSqlRows();
 
         queryString += " FROM magnatune_tracks LEFT JOIN magnatune_albums ON magnatune_tracks.album_id = magnatune_albums.id LEFT JOIN magnatune_artists ON magnatune_albums.artist_id = magnatune_artists.id LEFT JOIN magnatune_genre ON magnatune_genre.album_id = magnatune_albums.id";
