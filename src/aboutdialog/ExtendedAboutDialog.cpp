@@ -345,7 +345,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
 
     const QList<KAboutPerson> translatorList = aboutData->translators();
 
-    if(translatorList.count() > 0) {
+    if(!translatorList.isEmpty()) {
         QString translatorPageText;
 
         QList<KAboutPerson>::ConstIterator it;

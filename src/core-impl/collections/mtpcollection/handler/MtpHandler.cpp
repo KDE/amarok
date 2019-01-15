@@ -222,7 +222,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
     {
             debug() << "Opening raw device number: " << ( i + 1 );
             device = LIBMTP_Open_Raw_Device( &rawdevices[i] );
-            if ( device == NULL )
+            if ( device == nullptr )
             {
                 debug() << "Unable to open raw device: " << ( i + 1 );
                 success = false;

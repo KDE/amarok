@@ -57,7 +57,6 @@ private:
     void init();
     bool m_hoverHint;
     AnimatedWidget *m_animatedWidget;
-    QString *m_text;
     bool m_animating;
     QIcon m_icon;
 };

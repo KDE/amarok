@@ -553,7 +553,7 @@ GpodderProvider::slotSuccessfulSubscriptionSynchronisation()
 void
 GpodderProvider::slotTrackChanged( Meta::TrackPtr track )
 {
-    m_trackToSyncStatus = NULL;
+    m_trackToSyncStatus = nullptr;
 
     if( track != Meta::TrackPtr( 0 ) )
     {

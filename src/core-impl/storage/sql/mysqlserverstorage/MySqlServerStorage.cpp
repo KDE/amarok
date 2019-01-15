@@ -46,7 +46,7 @@ MySqlServerStorage::init( const QString &host, const QString &user, const QStrin
     // we only need to do this once
     if( !libraryInitRef.fetchAndAddOrdered( 1 ) )
     {
-        int ret = mysql_library_init( 0, NULL, NULL );
+        int ret = mysql_library_init( 0, nullptr, nullptr );
         if( ret != 0 )
         {
             // mysql sources show that there is only 0 and 1 as return code

@@ -259,7 +259,7 @@ TagHelper::testString() const
 Meta::Tag::TagHelper *
 Meta::Tag::selectHelper( const TagLib::FileRef &fileref, bool forceCreation )
 {
-    TagHelper *tagHelper = NULL;
+    TagHelper *tagHelper = nullptr;
 
     if( TagLib::MPEG::File *file = dynamic_cast< TagLib::MPEG::File * >( fileref.file() ) )
     {

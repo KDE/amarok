@@ -250,7 +250,7 @@ ID3v2TagHelper::setTags( const Meta::FieldHash &changes )
                 m_tag->removeFrames( field );
             else
             {
-                TagLib::ID3v2::TextIdentificationFrame *frame = NULL;
+                TagLib::ID3v2::TextIdentificationFrame *frame = nullptr;
                 if( !m_tag->frameListMap()[field].isEmpty() )
                     frame = dynamic_cast< TagLib::ID3v2::TextIdentificationFrame * >(
                                                   m_tag->frameListMap()[field].front()
@@ -288,7 +288,7 @@ ID3v2TagHelper::setTags( const Meta::FieldHash &changes )
 
             if( key == Meta::valRating || key == Meta::valPlaycount )
             {
-                TagLib::ID3v2::PopularimeterFrame *popFrame = NULL;
+                TagLib::ID3v2::PopularimeterFrame *popFrame = nullptr;
                 if( !m_tag->frameListMap()[POPM_Frame].isEmpty() )
                     popFrame = dynamic_cast< TagLib::ID3v2::PopularimeterFrame * >( m_tag->frameListMap()[POPM_Frame].front() );
 
@@ -372,8 +372,8 @@ QImage
 ID3v2TagHelper::embeddedCover() const
 {
     TagLib::ID3v2::FrameList apicList = m_tag->frameListMap()[fieldName( Meta::valHasCover ).toCString()];
-    TagLib::ID3v2::AttachedPictureFrame *cover = NULL;
-    TagLib::ID3v2::AttachedPictureFrame *otherCover = NULL;
+    TagLib::ID3v2::AttachedPictureFrame *cover = nullptr;
+    TagLib::ID3v2::AttachedPictureFrame *otherCover = nullptr;
 
     for( TagLib::ID3v2::FrameList::ConstIterator it = apicList.begin(); it != apicList.end(); ++it )
     {
@@ -420,7 +420,7 @@ ID3v2TagHelper::setEmbeddedCover( const QImage &cover )
 
     TagLib::ByteVector field = fieldName( Meta::valHasCover ).toCString();
     TagLib::ID3v2::FrameList apicList = m_tag->frameListMap()[field];
-    TagLib::ID3v2::AttachedPictureFrame *frontCover = NULL;
+    TagLib::ID3v2::AttachedPictureFrame *frontCover = nullptr;
 
     // remove covers
     TagLib::List<TagLib::ID3v2::AttachedPictureFrame*> backedUpPictures;

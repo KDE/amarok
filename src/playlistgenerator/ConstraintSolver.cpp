@@ -162,7 +162,7 @@ APG::ConstraintSolver::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *
     // GENETIC ALGORITHM LOOP
     Population population;
     quint32 generation = 0;
-    Meta::TrackList* best = NULL;
+    Meta::TrackList* best = nullptr;
     while ( !m_abortRequested && ( generation < m_maxGenerations ) ) {
         quint32 s = m_constraintTreeRoot->suggestPlaylistSize();
         m_suggestedPlaylistSize = (s > 0) ? s : m_suggestedPlaylistSize;

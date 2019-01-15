@@ -164,7 +164,7 @@ MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
 
 
     // debug() << "Adding Magnatune track " << queryString;
-    int trackId = sqlDb->insert( queryString, NULL );
+    int trackId = sqlDb->insert( queryString, nullptr );
 
     return trackId;
 
@@ -249,7 +249,7 @@ void MagnatuneDatabaseHandler::insertMoods(int trackId, const QStringList &moods
 
 
         //debug() << "Adding Magnatune mood: " << queryString;
-        sqlDb->insert( queryString, NULL );
+        sqlDb->insert( queryString, nullptr );
     }
 }
 
