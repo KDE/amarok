@@ -58,13 +58,13 @@ void AmpacheServiceFactory::init()
 QString
 AmpacheServiceFactory::name()
 {
-    return "Ampache";
+    return QStringLiteral("Ampache");
 }
 
 KConfigGroup
 AmpacheServiceFactory::config()
 {
-    return Amarok::config( "Service_Ampache" );
+    return Amarok::config( QStringLiteral("Service_Ampache") );
 }
 
 bool
@@ -82,8 +82,8 @@ AmpacheServiceFactory::possiblyContainsTrack(const QUrl &url) const
 
 AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & name, const QUrl &url, const QString &username, const QString &password )
     : ServiceBase( name,  parent )
-    , m_infoParser( 0 )
-    , m_collection( 0 )
+    , m_infoParser( nullptr )
+    , m_collection( nullptr )
     , m_ampacheLogin( new AmpacheAccountLogin( url, username, password, this ) )
 {
     DEBUG_BLOCK

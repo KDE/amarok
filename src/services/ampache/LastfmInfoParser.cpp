@@ -63,7 +63,7 @@ void LastfmInfoParser::onGetTrackInfo()
 
             QString html;
             if( !contentText.isEmpty() )
-                html = QString("<p><font size=3><i>%1<i></font></p> <p align='right'><font size=1>Updated: %2</font></p>").arg( contentText, publishedDate );
+                html = QStringLiteral("<p><font size=3><i>%2<i></font></p> <p align='right'><font size=1>%1</font></p>").arg( i18n("Updated: %1", publishedDate), contentText );
             else
                 html = i18n( "<p>No information found for this track.</p>" );
             emit info( html );

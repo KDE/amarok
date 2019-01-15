@@ -36,7 +36,7 @@ AmpacheServiceCollection::AmpacheServiceCollection( ServiceBase *service,
     , m_server( server )
     , m_sessionId( sessionId )
 {
-    m_trackForUrlWorker = 0;
+    m_trackForUrlWorker = nullptr;
 }
 
 AmpacheServiceCollection::~AmpacheServiceCollection()
@@ -160,9 +160,9 @@ AmpacheTrackForUrlWorker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
     Q_UNUSED( self )
     Q_UNUSED( thread )
 
-    m_urlTrack = 0;
-    m_urlAlbum = 0;
-    m_urlArtist = 0;
+    m_urlTrack = nullptr;
+    m_urlAlbum = nullptr;
+    m_urlArtist = nullptr;
 
     m_urlTrackId = 0;
     m_urlAlbumId = 0;
@@ -171,7 +171,7 @@ AmpacheTrackForUrlWorker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
     //send url_to_song to Ampache
 
     QUrl requestUrl = m_server;
-    requestUrl.setPath( m_server.path() + "/server/xml.server.php" );
+    requestUrl.setPath( m_server.path() + QStringLiteral("/server/xml.server.php") );
     QUrlQuery query;
     query.addQueryItem( "action", "url_to_song" );
     query.addQueryItem( "auth", m_sessionId );

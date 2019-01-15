@@ -207,7 +207,7 @@ AmpacheServiceQueryMaker::fetchArtists()
     // first try the cache
     if( !d->parentArtistIds.isEmpty() )
     {
-        foreach( int artistId, d->parentArtistIds )
+        for( int artistId : qAsConst(d->parentArtistIds) )
             artists << d->collection->artistById( artistId );
     }
 
@@ -462,7 +462,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const QUrl &url, const QByteArr
     {
         warning() << "Error getting Album List" << domError.text() << "Code:" << domError.attribute("code");
         AmpacheService *parentService = dynamic_cast< AmpacheService * >(d->collection->service());
-        if( parentService == 0 )
+        if( parentService == nullptr )
             return;
         else
             parentService->reauthenticate();
@@ -580,7 +580,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete( const QUrl &url, const QByteArr
     {
         warning() << "Error getting Track Download " << domError.text() << "Code:" << domError.attribute("code");
         AmpacheService *parentService = dynamic_cast< AmpacheService * >( d->collection->service() );
-        if( parentService == 0 )
+        if( parentService == nullptr )
             return;
         else
             parentService->reauthenticate();
