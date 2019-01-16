@@ -24,7 +24,7 @@ VorbisFormat::VorbisFormat()
 {
     m_encoder = VORBIS;
     m_fileExtension = QStringLiteral("ogg");
-    QString description1 =
+    const QString description1 =
         i18n( "The bitrate is a measure of the quantity of data used to represent a "
         "second of the audio track.<br>The <b>Vorbis</b> encoder used by Amarok supports "
         "a <a href=http://en.wikipedia.org/wiki/Vorbis#Technical_details>variable bitrate "
@@ -42,7 +42,7 @@ VorbisFormat::VorbisFormat()
         "Anything below <b>-q3</b> might be unsatisfactory for music and anything above "
         "<b>-q8</b> is probably overkill.");
     QStringList valueLabels;
-    QByteArray vbr = "-q%1 ~%2kb/s";
+    const QByteArray vbr = "-q%1 ~%2kb/s";
     valueLabels
         << i18n( vbr, -1, 45 )
         << i18n( vbr, 0, 64 )
@@ -110,5 +110,5 @@ VorbisFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 VorbisFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA... vorbis +.*libvorbis" ) );
+    return ffmpegOutput.contains( QRegExp( QStringLiteral("^ .EA... vorbis +.*libvorbis") ) );
 }

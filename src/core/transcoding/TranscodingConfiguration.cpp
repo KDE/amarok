@@ -70,7 +70,7 @@ Configuration::fromConfigGroup( const KConfigGroup &serialized )
 
         if( !value.isValid() )
             return invalid;
-        if( !value.convert( property.variantType() ) )
+        if( !value.canConvert( property.variantType() ) )
             return invalid;
         switch( property.type() )
         {

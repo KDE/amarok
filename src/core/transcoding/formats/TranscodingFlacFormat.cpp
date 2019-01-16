@@ -26,7 +26,7 @@ FlacFormat::FlacFormat()
 {
     m_encoder = FLAC;
     m_fileExtension = QStringLiteral("flac");
-    QString description1 =
+    const QString description1 =
             i18n( "The <a href=http://flac.sourceforge.net/documentation_tools_flac.html>"
             "compression level</a> is an integer value between 0 and 8 that represents "
             "the tradeoff between file size and compression speed while encoding with <b>FLAC</b>.<br/> "
@@ -90,5 +90,5 @@ FlacFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 FlacFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA... flac +" ) );
+    return ffmpegOutput.contains( QRegExp( QStringLiteral("^ .EA... flac +") ) );
 }

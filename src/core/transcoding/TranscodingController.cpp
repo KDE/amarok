@@ -63,11 +63,11 @@ Controller::onAvailabilityVerified( int exitCode, QProcess::ExitStatus exitStatu
     QString output = qobject_cast< KProcess * >( sender() )->readAllStandardOutput().data();
     if( output.simplified().isEmpty() )
         return;
-    QStringList lines = output.split( QRegExp( "\r|\n" ), QString::SkipEmptyParts );
+    const QStringList lines = output.split( QRegExp( QStringLiteral("\r|\n") ), QString::SkipEmptyParts );
     foreach( Format *format, m_formats )
     {
         bool formatAvailable = false;
-        foreach( const QString &line, lines )
+        for( const QString &line : lines )
         {
             formatAvailable |= format->verifyAvailability( line );
             if( formatAvailable )

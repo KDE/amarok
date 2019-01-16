@@ -24,7 +24,7 @@ Mp3Format::Mp3Format()
 {
     m_encoder = MP3;
     m_fileExtension = QStringLiteral("mp3");
-    QString description1 =
+    const QString description1 =
         i18n( "The bitrate is a measure of the quantity of data used to represent a "
         "second of the audio track.<br>The <b>MP3</b> encoder used by Amarok supports "
         "a <a href=http://en.wikipedia.org/wiki/MP3#VBR>variable bitrate (VBR)</a> "
@@ -104,5 +104,5 @@ Mp3Format::ffmpegParameters( const Configuration &configuration ) const
 bool
 Mp3Format::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA... mp3 +.*libmp3lame" ) );
+    return ffmpegOutput.contains( QRegExp( QStringLiteral("^ .EA... mp3 +.*libmp3lame") ) );
 }

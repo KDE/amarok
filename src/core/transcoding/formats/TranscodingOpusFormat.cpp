@@ -24,7 +24,7 @@ OpusFormat::OpusFormat()
 {
     m_encoder = OPUS;
     m_fileExtension = QStringLiteral("opus");
-    QString description1 =
+    const QString description1 =
         i18n( "The bitrate is a measure of the quantity of data used to represent a "
         "second of the audio track.<br>The <b>Opus</b> encoder used by Amarok supports "
         "a <a href=http://en.wikipedia.org/wiki/Variable_bitrate>variable bitrate (VBR)</a> "
@@ -117,5 +117,5 @@ OpusFormat::toFfmpegBitrate( int setting ) const
 bool
 OpusFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA... opus +.*libopus" ) );
+    return ffmpegOutput.contains( QRegExp( QStringLiteral("^ .EA... opus +.*libopus") ) );
 }

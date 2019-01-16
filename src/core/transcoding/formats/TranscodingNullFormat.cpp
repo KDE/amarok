@@ -22,7 +22,7 @@ using namespace Transcoding;
 NullFormat::NullFormat( const Encoder &encoder )
 {
     m_encoder = encoder;
-    m_fileExtension = QLatin1String("");
+    m_fileExtension = QString();
 }
 
 QString

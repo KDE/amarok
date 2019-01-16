@@ -24,7 +24,7 @@ WmaFormat::WmaFormat()
 {
     m_encoder = WMA2;
     m_fileExtension = QStringLiteral("wma");
-    QString description1 =
+    const QString description1 =
         i18n( "The bitrate is a measure of the quantity of data used to represent a "
         "second of the audio track.<br>Due to the limitations of the proprietary <b>WMA</b> "
         "format and the difficulty of reverse-engineering a proprietary encoder, the "
@@ -36,7 +36,7 @@ WmaFormat::WmaFormat()
         "Anything below <b>112kb/s</b> might be unsatisfactory for music and anything above "
         "<b>182kb/s</b> is probably overkill.");
     QStringList valueLabels;
-    QByteArray cbr = "CBR %1kb/s";
+    const QByteArray cbr = "CBR %1kb/s";
     valueLabels
         << i18n( cbr, 64 )
         << i18n( cbr, 80 )
@@ -115,5 +115,5 @@ WmaFormat::toFfmpegBitrate( int setting ) const
 bool
 WmaFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA... wmav2 +" ) );
+    return ffmpegOutput.contains( QRegExp( QStringLiteral("^ .EA... wmav2 +") ) );
 }
