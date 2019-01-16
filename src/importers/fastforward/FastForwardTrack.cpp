@@ -60,22 +60,22 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
 
     if( fields & Meta::valFirstPlayed )
     {
-        updates << "createdate = :createdate";
+        updates << QStringLiteral("createdate = :createdate");
         uBindValues.insert( ":createdate", m_statistics.value( Meta::valFirstPlayed ) );
     }
     if( fields & Meta::valLastPlayed )
     {
-        updates << "accessdate = :accessdate";
+        updates << QStringLiteral("accessdate = :accessdate");
         uBindValues.insert( ":accessdate", m_statistics.value( Meta::valLastPlayed ) );
     }
     if( fields & Meta::valRating )
     {
-        updates << "rating = :rating";
+        updates << QStringLiteral("rating = :rating");
         uBindValues.insert( ":rating", m_statistics.value( Meta::valRating ) );
     }
     if( fields & Meta::valPlaycount )
     {
-        updates << "playcounter = :playcount";
+        updates << QStringLiteral("playcounter = :playcount");
         uBindValues.insert( ":playcount", m_statistics.value( Meta::valPlaycount ) );
     }
 

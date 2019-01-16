@@ -25,13 +25,13 @@ using namespace StatSyncing;
 
 ClementineConfigWidget::ClementineConfigWidget( const QVariantMap &config,
                                                 QWidget *parent, Qt::WindowFlags f )
-    : SimpleImporterConfigWidget( "Clementine", config, parent, f )
+    : SimpleImporterConfigWidget( QStringLiteral("Clementine"), config, parent, f )
 {
     const QString defaultPath = QDir::toNativeSeparators(
-                QDir::homePath() + "/.config/Clementine/clementine.db" );
+                QDir::homePath() + QStringLiteral("/.config/Clementine/clementine.db") );
 
     KUrlRequester *dbField = new KUrlRequester( QUrl::fromLocalFile(defaultPath) );
-    dbField->setFilter( "clementine.db" );
+    dbField->setFilter( QStringLiteral("clementine.db") );
     addField( "dbPath", i18n( "Database location" ), dbField, "text" );
 }
 

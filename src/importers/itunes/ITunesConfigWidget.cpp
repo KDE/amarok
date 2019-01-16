@@ -23,10 +23,10 @@ using namespace StatSyncing;
 
 ITunesConfigWidget::ITunesConfigWidget( const QVariantMap &config, QWidget *parent,
                                         Qt::WindowFlags f )
-    : SimpleImporterConfigWidget( "iTunes", config, parent, f )
+    : SimpleImporterConfigWidget( QStringLiteral("iTunes"), config, parent, f )
 {
     KUrlRequester *dbField = new KUrlRequester;
-    dbField->setFilter( "iTunes Music Library.xml" );
+    dbField->setFilter( QStringLiteral("iTunes Music Library.xml") );
     addField( "dbPath", i18n( "Database location" ), dbField, "text" );
 }
 

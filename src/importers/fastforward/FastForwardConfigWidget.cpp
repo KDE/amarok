@@ -100,7 +100,7 @@ FastForwardConfigWidget::populateFields()
     m_connectionType->setCurrentIndex( index );
 
     const QString defaultPath = QDir::toNativeSeparators(
-                QDir::homePath() + "/.kde/share/apps/amarok/collection.db" );
+                QDir::homePath() + QStringLiteral("/.kde/share/apps/amarok/collection.db") );
 
     m_databaseLocation->setText( m_config.value( "dbPath", defaultPath ).toString() );
     m_databaseName->setText( m_config.value( "dbName", "amarokdb" ).toString() );

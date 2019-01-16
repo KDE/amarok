@@ -30,7 +30,7 @@ AmarokManager::AmarokManager()
 QString
 AmarokManager::type() const
 {
-    return "AmarokImporter";
+    return QStringLiteral("AmarokImporter");
 }
 
 QString
