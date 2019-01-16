@@ -55,7 +55,7 @@ PodcastReader::PodcastReader( PodcastProvider *podcastProvider, QObject *parent 
         , m_xmlReader()
         , m_podcastProvider( podcastProvider )
         , m_transferJob( )
-        , m_current( 0 )
+        , m_current( nullptr )
         , m_actionStack()
         , m_contentType( TextContent )
         , m_buffer()
@@ -613,8 +613,8 @@ PodcastReader::read()
 {
     DEBUG_BLOCK
 
-    m_current = 0;
-    m_item    = 0;
+    m_current = nullptr;
+    m_item    = nullptr;
     m_contentType = TextContent;
     m_buffer.clear();
     m_actionStack.clear();
@@ -654,7 +654,7 @@ PodcastReader::continueRead()
         }
 
         const Action* action = m_actionStack.top();
-        const Action* subAction = 0;
+        const Action* subAction = nullptr;
 
         switch( token )
         {
@@ -691,7 +691,7 @@ PodcastReader::continueRead()
                 {
                     action->characters( this );
                 }
-
+            break;
                 // ignorable whitespaces
             case QXmlStreamReader::Comment:
             case QXmlStreamReader::EntityReference:
@@ -714,7 +714,7 @@ PodcastReader::stopWithError( const QString &message )
     if( m_transferJob )
     {
         m_transferJob->kill(KJob::EmitResult);
-        m_transferJob = 0;
+        m_transferJob = nullptr;
     }
 
     Q_EMIT finished( this );
@@ -825,27 +825,27 @@ PodcastReader::unescape( const QString &text )
 
                 if( entity == QLatin1String("lt") )
                 {
-                    buf += '<';
+                    buf += QLatin1Char('<');
                     i = endIndex;
                 }
                 else if( entity == QLatin1String("gt") )
                 {
-                    buf += '>';
+                    buf += QLatin1Char('>');
                     i = endIndex;
                 }
                 else if( entity == QLatin1String("amp") )
                 {
-                    buf += '&';
+                    buf += QLatin1Char('&');
                     i = endIndex;
                 }
                 else if( entity == QLatin1String("apos") )
                 {
-                    buf += '\'';
+                    buf += QLatin1Char('\'');
                     i = endIndex;
                 }
                 else if( entity == QLatin1String("quot") )
                 {
-                    buf += '"';
+                    buf += QLatin1Char('"');
                     i = endIndex;
                 }
                 else
@@ -1585,7 +1585,7 @@ PodcastReader::attribute( const char *namespaceUri, const char *name ) const
     if( m_xmlReader.attributes().hasAttribute( namespaceUri, name ) )
         return m_xmlReader.attributes().value( namespaceUri, name );
     else
-        return m_xmlReader.attributes().value( NULL, name );
+        return m_xmlReader.attributes().value( QString(), name );
 }
 
 bool
@@ -1595,7 +1595,7 @@ PodcastReader::hasAttribute( const char *namespaceUri, const char *name ) const
     if( m_xmlReader.attributes().hasAttribute( namespaceUri, name ) )
         return true;
     else
-        return m_xmlReader.attributes().hasAttribute( NULL, name );
+        return m_xmlReader.attributes().hasAttribute( QString(), name );
 }
 
 QDateTime

@@ -739,22 +739,22 @@ MainWindow::createActions()
     KStandardAction::preferences( pApp, &App::slotConfigAmarokWithEmptyPage, ac );
 
     m_showMenuBar = KStandardAction::showMenubar(this, &MainWindow::slotShowMenuBar, ac);
-    ac->action( KStandardAction::name( KStandardAction::KeyBindings ) )->setIcon( QIcon::fromTheme( "configure-shortcuts-amarok" ) );
-    ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setIcon( QIcon::fromTheme( "configure-amarok" ) );
+    ac->action( KStandardAction::name( KStandardAction::KeyBindings ) )->setIcon( QIcon::fromTheme( QStringLiteral("configure-shortcuts-amarok") ) );
+    ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setIcon( QIcon::fromTheme( QStringLiteral("configure-amarok") ) );
     ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setMenuRole(QAction::PreferencesRole); // Define OS X Prefs menu here, removes need for ifdef later
 
     KStandardAction::quit( pApp, &App::quit, ac );
 
-    QAction *action = new QAction( QIcon::fromTheme( "document-open" ), i18n("&Add Media..."), this );
+    QAction *action = new QAction( QIcon::fromTheme( QStringLiteral("document-open") ), i18n("&Add Media..."), this );
     ac->addAction( "playlist_add", action );
     connect( action, &QAction::triggered, this, &MainWindow::slotAddLocation );
     KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_A ) );
 
-    action = new QAction( QIcon::fromTheme( "edit-clear-list" ), i18nc( "clear playlist", "&Clear Playlist" ), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("edit-clear-list") ), i18nc( "clear playlist", "&Clear Playlist" ), this );
     connect( action, &QAction::triggered, pc, &Playlist::Controller::clear );
     ac->addAction( "playlist_clear", action );
 
-    action = new QAction( QIcon::fromTheme( "format-list-ordered" ),
+    action = new QAction( QIcon::fromTheme( QStringLiteral("format-list-ordered") ),
                           i18nc( "edit play queue of playlist", "Edit &Queue" ), this );
     //Qt::META+Qt::Key_Q is taken by Plasma as a global
     action->setShortcut( QKeySequence( Qt::META + Qt::Key_U ) );
@@ -767,131 +767,131 @@ MainWindow::createActions()
     action = new Playlist::LayoutConfigAction( this );
     ac->addAction( "playlist_layout", action );
 
-    action = new QAction( QIcon::fromTheme( "document-open-remote" ), i18n("&Add Stream..."), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("document-open-remote") ), i18n("&Add Stream..."), this );
     connect( action, &QAction::triggered, this, &MainWindow::slotAddStream );
     ac->addAction( "stream_add", action );
 
-    action = new QAction( QIcon::fromTheme( "document-export-amarok" ), i18n("&Export Playlist As..."), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("document-export-amarok") ), i18n("&Export Playlist As..."), this );
     connect( action, &QAction::triggered, this, &MainWindow::exportPlaylist );
     ac->addAction( "playlist_export", action );
 
-    action = new QAction( QIcon::fromTheme( "bookmark-new" ), i18n( "Bookmark Media Sources View" ), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("bookmark-new") ), i18n( "Bookmark Media Sources View" ), this );
     ac->addAction( "bookmark_browser", action );
     connect( action, &QAction::triggered, The::amarokUrlHandler(), &AmarokUrlHandler::bookmarkCurrentBrowserView );
 
-    action = new QAction( QIcon::fromTheme( "bookmarks-organize" ), i18n( "Bookmark Manager" ), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("bookmarks-organize") ), i18n( "Bookmark Manager" ), this );
     ac->addAction( "bookmark_manager", action );
     connect( action, &QAction::triggered, this, &MainWindow::slotShowBookmarkManager );
 
-    action = new QAction( QIcon::fromTheme( "view-media-equalizer" ), i18n( "Equalizer" ), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("view-media-equalizer") ), i18n( "Equalizer" ), this );
     ac->addAction( "equalizer_dialog", action );
     connect( action, &QAction::triggered, this, &MainWindow::slotShowEqualizer );
 
-    action = new QAction( QIcon::fromTheme( "bookmark-new" ), i18n( "Bookmark Playlist Setup" ), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("bookmark-new") ), i18n( "Bookmark Playlist Setup" ), this );
     ac->addAction( "bookmark_playlistview", action );
     connect( action, &QAction::triggered, The::amarokUrlHandler(), &AmarokUrlHandler::bookmarkCurrentPlaylistView );
 
-    action = new QAction( QIcon::fromTheme( "bookmark-new" ), i18n( "Bookmark Context Applets" ), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("bookmark-new") ), i18n( "Bookmark Context Applets" ), this );
     ac->addAction( "bookmark_contextview", action );
     connect( action, &QAction::triggered, The::amarokUrlHandler(), &AmarokUrlHandler::bookmarkCurrentContextView );
 
-    action = new QAction( QIcon::fromTheme( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
+    action = new QAction( QIcon::fromTheme( QStringLiteral("media-album-cover-manager-amarok") ), i18n( "Cover Manager" ), this );
     connect( action, &QAction::triggered, this, &MainWindow::slotShowCoverManager );
     ac->addAction( "cover_manager", action );
 
-    action = new QAction( QIcon::fromTheme("document-open"), i18n("Play Media..."), this );
+    action = new QAction( QIcon::fromTheme(QStringLiteral("document-open")), i18n("Play Media..."), this );
     ac->addAction( "playlist_playmedia", action );
     action->setShortcut( Qt::CTRL + Qt::Key_O );
     connect( action, &QAction::triggered, this, &MainWindow::slotPlayMedia );
 
-    action = new QAction( QIcon::fromTheme("media-track-edit-amarok"), i18n("Edit Details of Currently Selected Track"), this );
+    action = new QAction( QIcon::fromTheme(QStringLiteral("media-track-edit-amarok")), i18n("Edit Details of Currently Selected Track"), this );
     ac->addAction( "trackdetails_edit", action );
     action->setShortcut( Qt::CTRL + Qt::Key_E );
     connect( action, &QAction::triggered, this, &MainWindow::slotEditTrackInfo );
 
-    action = new QAction( QIcon::fromTheme( "media-seek-forward-amarok" ),
+    action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-forward-amarok") ),
                           i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekShort() * 1000 ) ), this );
     ac->addAction( "seek_forward_short", action );
     action->setShortcut( Qt::CTRL + Qt::Key_Right );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardShort );
 
-    action = new QAction( QIcon::fromTheme( "media-seek-forward-amarok" ),
+    action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-forward-amarok") ),
                           i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
     ac->addAction( "seek_forward_medium", action );
     action->setShortcut( Qt::Key_Right );
     KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardMedium );
 
-    action = new QAction( QIcon::fromTheme( "media-seek-forward-amarok" ),
+    action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-forward-amarok") ),
                           i18n( "Seek Forward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekLong() * 1000 ) ), this );
     ac->addAction( "seek_forward_long", action );
     action->setShortcut( Qt::SHIFT + Qt::Key_Right );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekForwardLong );
 
 
-    action = new QAction( QIcon::fromTheme( "media-seek-backward-amarok" ),
+    action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-backward-amarok") ),
                           i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekShort() * 1000 ) ), this );
     ac->addAction( "seek_backward_short", action );
     action->setShortcut( Qt::CTRL + Qt::Key_Left );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardShort );
 
-    action = new QAction( QIcon::fromTheme( "media-seek-backward-amarok" ),
+    action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-backward-amarok") ),
                           i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekMedium() * 1000 ) ), this );
     ac->addAction( "seek_backward_medium", action );
     action->setShortcut( Qt::Key_Left );
     KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardMedium );
 
-    action = new QAction( QIcon::fromTheme( "media-seek-backward-amarok" ),
+    action = new QAction( QIcon::fromTheme( QStringLiteral("media-seek-backward-amarok") ),
                           i18n( "Seek Backward by %1 seconds", KFormat().formatDecimalDuration( AmarokConfig::seekLong() * 1000 ) ), this );
     ac->addAction( "seek_backward_long", action );
     action->setShortcut( Qt::SHIFT + Qt::Key_Left );
     connect( action, &QAction::triggered, this, &MainWindow::slotSeekBackwardLong );
 
     PERF_LOG( "MainWindow::createActions 6" )
-    action = new QAction( QIcon::fromTheme("view-refresh"), i18n( "Update Collection" ), this );
+    action = new QAction( QIcon::fromTheme(QStringLiteral("view-refresh")), i18n( "Update Collection" ), this );
     connect ( action, &QAction::triggered, CollectionManager::instance(), &CollectionManager::checkCollectionChanges );
     ac->addAction( "update_collection", action );
 
-    action =  new QAction( QIcon::fromTheme( "amarok_playcount" ), i18n( "Synchronize Statistics..." ), this );
+    action =  new QAction( QIcon::fromTheme( QStringLiteral("amarok_playcount") ), i18n( "Synchronize Statistics..." ), this );
     ac->addAction( "synchronize_statistics", action );
     connect( action, &QAction::triggered, Amarok::Components::statSyncingController(),
              &StatSyncing::Controller::synchronize );
     Amarok::Components::statSyncingController();
     action = new QAction( this );
     ac->addAction( "prev", action );
-    action->setIcon( QIcon::fromTheme("media-skip-backward-amarok") );
+    action->setIcon( QIcon::fromTheme(QStringLiteral("media-skip-backward-amarok")) );
     action->setText( i18n( "Previous Track" ) );
     KGlobalAccel::setGlobalShortcut(action, QKeySequence() );
     connect( action, &QAction::triggered, pa, &Playlist::Actions::back );
 
     action = new QAction( this );
     ac->addAction( "replay", action );
-    action->setIcon( QIcon::fromTheme("media-playback-start") );
+    action->setIcon( QIcon::fromTheme(QStringLiteral("media-playback-start")) );
     action->setText( i18n( "Restart current track" ) );
     KGlobalAccel::setGlobalShortcut(action, QKeySequence() );
     connect( action, &QAction::triggered, ec, &EngineController::replay );
 
     action = new QAction( this );
     ac->addAction( "shuffle_playlist", action );
-    action->setIcon( QIcon::fromTheme("media-playlist-shuffle") );
+    action->setIcon( QIcon::fromTheme(QStringLiteral("media-playlist-shuffle")) );
     action->setText( i18n( "Shuffle Playlist" ) );
     action->setShortcut( Qt::CTRL + Qt::Key_H );
     connect( action, &QAction::triggered, this, &MainWindow::slotShufflePlaylist );
 
     action = new QAction( this );
-    ac->addAction( "repopulate", action );
+    ac->addAction( QStringLiteral("repopulate"), action );
     action->setText( i18n( "Repopulate Playlist" ) );
     action->setIcon( QIcon::fromTheme("view-refresh-amarok") );
     connect( action, &QAction::triggered, pa, &Playlist::Actions::repopulateDynamicPlaylist );
 
     action = new QAction( this );
-    ac->addAction( "disable_dynamic", action );
+    ac->addAction( QStringLiteral("disable_dynamic"), action );
     action->setText( i18n( "Disable Dynamic Playlist" ) );
     action->setIcon( QIcon::fromTheme("edit-delete-amarok") );
     //this is connected inside the dynamic playlist category
 
-    action = new QAction( QIcon::fromTheme("media-skip-forward-amarok"), i18n( "Next Track" ), this );
+    action = new QAction( QIcon::fromTheme(QStringLiteral("media-skip-forward-amarok")), i18n( "Next Track" ), this );
     ac->addAction( "next", action );
     KGlobalAccel::setGlobalShortcut(action, QKeySequence() );
     connect( action, &QAction::triggered, pa, &Playlist::Actions::next );

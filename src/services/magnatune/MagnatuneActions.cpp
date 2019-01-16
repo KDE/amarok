@@ -40,7 +40,7 @@ void MagnatuneDownloadAction::slotTriggered()
 
 
 MagnatuneAddToFavoritesAction::MagnatuneAddToFavoritesAction( const QString &text, Meta::MagnatuneAlbum * album )
-    : QAction( QIcon::fromTheme("favorites" ), text, album )
+    : QAction( QIcon::fromTheme(QStringLiteral("favorites") ), text, album )
     , m_album( album )
 {
     setProperty( "popupdropper_svg_id", "append" );

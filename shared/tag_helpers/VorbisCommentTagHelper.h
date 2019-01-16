@@ -32,7 +32,7 @@ namespace Meta
         class AMAROKSHARED_EXPORT VorbisCommentTagHelper : public TagHelper
         {
             public:
-                VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType, TagLib::FLAC::File *file = 0 );
+                VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType, TagLib::FLAC::File *file = nullptr );
 
                 Meta::FieldHash tags() const override;
                 bool setTags( const Meta::FieldHash &changes ) override;
@@ -44,7 +44,7 @@ namespace Meta
                 bool setEmbeddedCover( const QImage &cover ) override;
 
             private:
-                static bool parsePictureBlock( const TagLib::StringList& block, QImage* result = 0 );
+                static bool parsePictureBlock( const TagLib::StringList& block, QImage* result = nullptr );
                 TagLib::Ogg::XiphComment *m_tag;
                 TagLib::FLAC::File *m_flacFile;
         };

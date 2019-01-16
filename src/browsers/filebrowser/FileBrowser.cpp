@@ -67,7 +67,7 @@ FileBrowser::Private::Private( FileBrowser *parent )
 
     upAction = KStandardAction::up( q, &FileBrowser::up, topHBox );
     homeAction = KStandardAction::home( q, &FileBrowser::home, topHBox );
-    refreshAction = new QAction( QIcon::fromTheme("view-refresh"), i18n( "Refresh" ), topHBox );
+    refreshAction = new QAction( QIcon::fromTheme(QStringLiteral("view-refresh")), i18n( "Refresh" ), topHBox );
     QObject::connect( refreshAction, &QAction::triggered, q, &FileBrowser::refresh );
 
     navigationToolbar->addAction( backAction );

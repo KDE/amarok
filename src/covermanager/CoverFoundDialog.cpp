@@ -313,7 +313,7 @@ void CoverFoundDialog::addToCustomSearch( const QString &text )
         if( !query.isEmpty() )
             q << query;
         q << text;
-        const QString result = q.join( QChar( ' ' ) );
+        const QString result = q.join( QLatin1Char( ' ' ) );
         qobject_cast<QLineEdit*>( m_search->lineEdit() )->setText( result );
     }
 }
@@ -377,10 +377,10 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
     item->setSelected( true );
 
     QMenu menu( this );
-    QAction *display = new QAction( QIcon::fromTheme("zoom-original"), i18n("Display Cover"), &menu );
+    QAction *display = new QAction( QIcon::fromTheme(QStringLiteral("zoom-original")), i18n("Display Cover"), &menu );
     connect( display, &QAction::triggered, this, &CoverFoundDialog::display );
 
-    QAction *save = new QAction( QIcon::fromTheme("document-save"), i18n("Save As"), &menu );
+    QAction *save = new QAction( QIcon::fromTheme(QStringLiteral("document-save")), i18n("Save As"), &menu );
     connect( save, &QAction::triggered, this, &CoverFoundDialog::saveAs );
 
     menu.addAction( display );

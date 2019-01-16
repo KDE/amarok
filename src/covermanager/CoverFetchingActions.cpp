@@ -45,7 +45,7 @@
 void FetchCoverAction::init()
 {
     setText( i18np("Fetch Cover", "Fetch Covers", m_albums.count()) );
-    setIcon( QIcon::fromTheme("insert-image") );
+    setIcon( QIcon::fromTheme(QStringLiteral("insert-image")) );
     setToolTip( i18np("Fetch the artwork for this album", "Fetch artwork for %1 albums", m_albums.count()) );
 
     bool enabled = !m_albums.isEmpty();

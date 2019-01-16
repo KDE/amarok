@@ -122,7 +122,7 @@ EqualizerPresets::eqGlobalList()
 QStringList
 EqualizerPresets::eqUserList()
 {
-    QStringList defaultList = eqDefaultPresetsList();
+    const QStringList defaultList = eqDefaultPresetsList();
 
     QStringList userList;
     foreach( const QString &mUsrName, AmarokConfig::equalizerPresetsNames() )
