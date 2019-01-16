@@ -47,7 +47,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
     Q_OBJECT
     public:
         SqlPodcastProvider();
-        virtual ~SqlPodcastProvider();
+        ~SqlPodcastProvider() override;
 
         //TrackProvider methods
         bool possiblyContainsTrack( const QUrl &url ) const override;
@@ -55,7 +55,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
 
         //PlaylistProvider methods
         QString prettyName() const override { return i18n("Local Podcasts"); }
-        QIcon icon() const override { return QIcon::fromTheme( "server-database" ); }
+        QIcon icon() const override { return QIcon::fromTheme( QStringLiteral("server-database") ); }
 
         Playlists::PlaylistList playlists() override;
 

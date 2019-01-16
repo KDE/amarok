@@ -113,22 +113,22 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     buttonBox->button(QDialogButtonBox::Cancel)->setIcon( QIcon::fromTheme( QStringLiteral("dialog-cancel") ) );
     connect( buttonBox->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::apply );
 
-    const QIcon newIcon( "document-new" );
+    const QIcon newIcon = QIcon::fromTheme( QStringLiteral("document-new") );
     newLayoutButton->setIcon( newIcon );
     newLayoutButton->setToolTip( i18n( "New playlist layout" ) );
     connect( newLayoutButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::newLayout );
 
-    const QIcon copyIcon( "edit-copy" );
+    const QIcon copyIcon = QIcon::fromTheme( QStringLiteral("edit-copy") );
     copyLayoutButton->setIcon( copyIcon );
     copyLayoutButton->setToolTip( i18n( "Copy playlist layout" ) );
     connect( copyLayoutButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::copyLayout );
 
-    const QIcon deleteIcon( "edit-delete" );
+    const QIcon deleteIcon( QStringLiteral("edit-delete") );
     deleteLayoutButton->setIcon( deleteIcon );
     deleteLayoutButton->setToolTip( i18n( "Delete playlist layout" ) );
     connect( deleteLayoutButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::deleteLayout );
 
-    const QIcon renameIcon( "edit-rename" );
+    const QIcon renameIcon = QIcon::fromTheme( QStringLiteral("edit-rename") );
     renameLayoutButton->setIcon( renameIcon );
     renameLayoutButton->setToolTip( i18n( "Rename playlist layout" ) );
     connect( renameLayoutButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::renameLayout );
@@ -509,7 +509,7 @@ Playlist::PlaylistLayoutEditDialog::setupGroupByCombo()
 
     //Add the option to not perform grouping
     //Use a null string to specify "no grouping"
-    groupByComboBox->addItem( i18n( "No Grouping" ), QVariant( "None" ) );
+    groupByComboBox->addItem( i18n( "No Grouping" ), QVariant( QStringLiteral("None") ) );
 }
 
 void

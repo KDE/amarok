@@ -544,7 +544,7 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     m_description = *(iter++);
     m_copyright = *(iter++);
     m_directory = QUrl( *(iter++) );
-    m_labels = QStringList( QString( *(iter++) ).split( ',', QString::SkipEmptyParts ) );
+    m_labels = QStringList( QString( *(iter++) ).split( QLatin1Char(','), QString::SkipEmptyParts ) );
     m_subscribeDate = QDate::fromString( *(iter++) );
     m_autoScan = sqlStorage->boolTrue() == *(iter++);
     m_fetchType = (*(iter++)).toInt() == DownloadWhenAvailable ? DownloadWhenAvailable : StreamOrDownloadOnDemand;
@@ -802,7 +802,7 @@ SqlPodcastChannel::updateInDb()
         stream << "', directory='";
         stream << escape(m_directory.url());
         stream << "', labels='";
-        stream << escape(m_labels.join( "," ));
+        stream << escape(m_labels.join( QLatin1Char(',') ));
         stream << "', subscribedate='";
         stream << escape(m_subscribeDate.toString());
         stream << "', autoscan=";
@@ -836,7 +836,7 @@ SqlPodcastChannel::updateInDb()
         stream << escape(m_description) << "', '";
         stream << escape(m_copyright) << "', '";
         stream << escape(m_directory.url()) << "', '";
-        stream << escape(m_labels.join( "," )) << "', '";
+        stream << escape(m_labels.join( QLatin1Char(',') )) << "', '";
         stream << escape(m_subscribeDate.toString()) << "', ";
         stream << (m_autoScan ? boolTrue : boolFalse) << ", ";
         stream << QString::number(m_fetchType) << ", ";

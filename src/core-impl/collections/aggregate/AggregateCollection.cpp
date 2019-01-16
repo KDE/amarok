@@ -54,7 +54,7 @@ AggregateCollection::prettyName() const
 QIcon
 AggregateCollection::icon() const
 {
-    return QIcon::fromTheme("drive-harddisk");
+    return QIcon::fromTheme(QStringLiteral("drive-harddisk"));
 }
 
 bool

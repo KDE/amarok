@@ -77,7 +77,7 @@ Mp3Format::description() const
 QIcon
 Mp3Format::icon() const
 {
-    return QIcon::fromTheme( "audio-x-generic" );  //TODO: get a *real* icon!
+    return QIcon::fromTheme( QStringLiteral("audio-x-generic") );  //TODO: get a *real* icon!
 }
 
 QStringList

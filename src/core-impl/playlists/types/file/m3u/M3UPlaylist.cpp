@@ -43,10 +43,10 @@ M3UPlaylist::loadM3u( QTextStream &stream )
         {
             const QString extinf = line.section( QLatin1Char(':'), 1 );
             bool ok;
-            length = extinf.section( ',', 0, 0 ).toInt( &ok );
+            length = extinf.section( QLatin1Char(','), 0, 0 ).toInt( &ok );
             if( !ok )
                 length = -1;
-            extinfTitle = extinf.section( ',', 1 );
+            extinfTitle = extinf.section( QLatin1Char(','), 1 );
         }
         else if( !line.startsWith( '#' ) && !line.isEmpty() )
         {

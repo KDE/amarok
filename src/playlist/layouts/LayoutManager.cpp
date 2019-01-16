@@ -160,7 +160,7 @@ void LayoutManager::loadDefaultLayouts()
                                                        QStandardPaths::LocateDirectory);
 
 
-    QString configFile = dataLocation + "/DefaultPlaylistLayouts.xml";
+    QString configFile = dataLocation + QStringLiteral("/DefaultPlaylistLayouts.xml");
     loadLayouts( configFile, false );
 }
 
