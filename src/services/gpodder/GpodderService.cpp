@@ -58,7 +58,7 @@ GpodderServiceFactory::init()
 QString
 GpodderServiceFactory::name()
 {
-    return "gpodder.net";
+    return QStringLiteral("gpodder.net");
 }
 
 KConfigGroup

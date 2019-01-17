@@ -42,7 +42,7 @@ K_PLUGIN_FACTORY_WITH_JSON( GpodderServiceSettingsFactory, "amarok_service_gpodd
 GpodderServiceSettings::GpodderServiceSettings( QWidget *parent, const QVariantList &args )
         : KCModule( parent, args )
         , m_enableProvider( false )
-        , m_createDevice( 0 )
+        , m_createDevice( nullptr )
 {
     debug() << "Creating gpodder.net config object";
 
@@ -238,8 +238,8 @@ GpodderServiceSettings::defaults()
 {
     m_config.reset();
 
-    m_configDialog->kcfg_GpodderUsername->setText( "" );
-    m_configDialog->kcfg_GpodderPassword->setText( "" );
+    m_configDialog->kcfg_GpodderUsername->clear();
+    m_configDialog->kcfg_GpodderPassword->clear();
     m_enableProvider = false;
 }
 

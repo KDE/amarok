@@ -35,13 +35,11 @@
 
 
 GpodderServiceConfig::GpodderServiceConfig()
-    : m_username( "" )
-    , m_password( "" )
-    , m_enableProvider( false )
+    : m_enableProvider( false )
     , m_ignoreWallet( false )
     , m_isDataLoaded( false )
-    , m_askDiag( 0 )
-    , m_wallet( 0 )
+    , m_askDiag( nullptr )
+    , m_wallet( nullptr )
 {
     DEBUG_BLOCK
     
@@ -154,7 +152,7 @@ GpodderServiceConfig::askAboutMissingKWallet()
 {
     if ( !m_askDiag )
     {
-        m_askDiag = new QMessageBox( Q_NULLPTR );
+        m_askDiag = new QMessageBox( nullptr );
 
         m_askDiag->setWindowTitle( i18n( "gpodder.net credentials" ) );
         m_askDiag->setText( i18n( "No running KWallet found. Would you like Amarok to save your gpodder.net credentials in plaintext?" ) );
@@ -186,7 +184,7 @@ void GpodderServiceConfig::tryToOpenWallet()
     else
     {
         debug() << "The wallet was ignored or is not needed.";
-        m_wallet = 0;
+        m_wallet = nullptr;
     }
 }
 

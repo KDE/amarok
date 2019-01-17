@@ -35,11 +35,11 @@ using namespace mygpo;
 
 GpodderServiceModel::GpodderServiceModel( ApiRequest *request, QObject *parent )
     : QAbstractItemModel( parent )
-    , m_rootItem( 0 )
-    , m_topTagsItem( 0 )
-    , m_topPodcastsItem( 0 )
-    , m_suggestedPodcastsItem( 0 )
-    , m_topTags( 0 )
+    , m_rootItem( nullptr )
+    , m_topTagsItem( nullptr )
+    , m_topPodcastsItem( nullptr )
+    , m_suggestedPodcastsItem( nullptr )
+    , m_topTags( nullptr )
     , m_apiRequest( request )
 {
     GpodderServiceConfig config;
@@ -78,7 +78,7 @@ GpodderServiceModel::index( int row, int column, const QModelIndex &parent ) con
     else
         parentItem = static_cast<GpodderTreeItem *>( parent.internalPointer() );
 
-    if( parentItem == 0 )
+    if( parentItem == nullptr )
         return QModelIndex();
 
     GpodderTreeItem *childItem = parentItem->child( row );
@@ -96,12 +96,12 @@ GpodderServiceModel::parent( const QModelIndex &index ) const
 
     GpodderTreeItem *childItem = static_cast<GpodderTreeItem *>( index.internalPointer() );
 
-    if( childItem == 0 || childItem->isRoot() )
+    if( childItem == nullptr || childItem->isRoot() )
         return QModelIndex();
 
     GpodderTreeItem *parentItem = childItem->parent();
 
-    if( parentItem == 0 )
+    if( parentItem == nullptr )
         return QModelIndex();
 
     int childIndex;
@@ -125,7 +125,7 @@ GpodderServiceModel::rowCount( const QModelIndex &parent ) const
 
     parentItem = static_cast<GpodderTreeItem *>( parent.internalPointer() );
 
-    if( parentItem == 0 )
+    if( parentItem == nullptr )
         return 0;
 
     return parentItem->childCount();
@@ -148,7 +148,7 @@ GpodderServiceModel::data( const QModelIndex &index, int role ) const
         return QVariant();
 
     GpodderTreeItem *item = static_cast<GpodderTreeItem*>( index.internalPointer() );
-    if( item == 0 )
+    if( item == nullptr )
     {
         return QVariant();
     }
@@ -159,7 +159,7 @@ GpodderServiceModel::data( const QModelIndex &index, int role ) const
 void
 GpodderServiceModel::insertTagList()
 {
-    if( m_rootItem != 0 )
+    if( m_rootItem != nullptr )
     {
         beginInsertRows( createIndex( 0,0, m_topTagsItem), 0, m_topTags->list().count() - 1 );
         m_topTagsItem->appendTags( m_topTags );
@@ -236,7 +236,7 @@ GpodderServiceModel::insertPodcastList( mygpo::PodcastListPtr podcasts,
     emit layoutAboutToBeChanged();
     beginInsertRows( parentItem, 0, podcasts->list().count() - 1 );
     GpodderTreeItem *item = static_cast<GpodderTreeItem*>( parentItem.internalPointer() );
-    if( item != 0 )
+    if( item != nullptr )
     {
         debug() << "Appending Podcasts...";
         item->appendPodcasts( podcasts );
@@ -254,7 +254,7 @@ GpodderServiceModel::hasChildren( const QModelIndex &parent ) const
 
     GpodderTreeItem *treeItem = static_cast<GpodderTreeItem *>( parent.internalPointer() );
 
-    if( treeItem == 0 )
+    if( treeItem == nullptr )
         return false;
 
     if( treeItem->childCount() > 0 )
@@ -306,7 +306,7 @@ GpodderServiceModel::fetchMore( const QModelIndex &parent )
     {
         requestTopTags();
         requestTopPodcasts();
-        if ( m_suggestedPodcastsItem != 0 )
+        if ( m_suggestedPodcastsItem != nullptr )
             requestSuggestedPodcasts();
     }
 

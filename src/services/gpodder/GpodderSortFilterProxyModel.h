@@ -29,10 +29,10 @@ class GpodderSortFilterProxyModel : public QSortFilterProxyModel
 
 public:
     explicit GpodderSortFilterProxyModel( QObject *parent = nullptr );
-    virtual ~GpodderSortFilterProxyModel();
+    ~GpodderSortFilterProxyModel() override;
 
 protected:
-    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 };
 
 #endif /* GPODDERSORTFILTERPROXYMODEL_H_ */

@@ -54,7 +54,7 @@ GpodderProvider::GpodderProvider( const QString& username,
     , m_episodeActionListResult()
     , m_timestampStatus( 0 )
     , m_timestampSubscription( subscriptionTimestamp() )
-    , m_removeAction( 0 )
+    , m_removeAction( nullptr )
     , m_addList()
     , m_removeList()
     , m_timerGeneratePlayAction( new QTimer( this ) )

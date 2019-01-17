@@ -80,7 +80,7 @@ GpodderTreeItem::displayData() const
 bool
 GpodderTreeItem::isRoot() const
 {
-    return ( m_parentItem == 0 );
+    return ( m_parentItem == nullptr );
 }
 
 void
