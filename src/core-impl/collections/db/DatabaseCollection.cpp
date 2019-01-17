@@ -57,7 +57,7 @@ DatabaseCollection::prettyName() const
 QIcon
 DatabaseCollection::icon() const
 {
-    return QIcon::fromTheme("drive-harddisk");
+    return QIcon::fromTheme(QStringLiteral("drive-harddisk"));
 }
 
 GenericScanManager*

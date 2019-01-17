@@ -55,7 +55,7 @@ class MtpCollection : public MediaDeviceCollection
 
     QString collectionId() const override;
     QString prettyName() const override;
-    QIcon icon() const override { return QIcon::fromTheme("multimedia-player"); }
+    QIcon icon() const override { return QIcon::fromTheme(QStringLiteral("multimedia-player")); }
 
     //void writeDatabase();
 };

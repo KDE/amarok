@@ -201,7 +201,7 @@ AmarokUrlHandler::iconForCommand( const QString &command )
     if( m_registeredRunners.keys().contains( command ) )
         return m_registeredRunners.value( command )->icon();
 
-    return QIcon::fromTheme( "unknown" );
+    return QIcon::fromTheme( QStringLiteral("unknown") );
 }
 
 void AmarokUrlHandler::updateTimecodes(const QString* BookmarkName)

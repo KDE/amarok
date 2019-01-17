@@ -133,7 +133,7 @@ QString NavigationUrlRunner::prettyCommand() const
 
 QIcon NavigationUrlRunner::icon() const
 {
-    return QIcon::fromTheme( "flag-amarok" );
+    return QIcon::fromTheme( QStringLiteral("flag-amarok") );
 }
 
 

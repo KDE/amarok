@@ -65,7 +65,7 @@ ContextUrlGenerator::description()
 
 QIcon ContextUrlGenerator::icon()
 {
-    return QIcon::fromTheme( "x-media-podcast-amarok" );
+    return QIcon::fromTheme( QStringLiteral("x-media-podcast-amarok") );
 }
 
 AmarokUrl

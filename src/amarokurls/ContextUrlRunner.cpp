@@ -33,7 +33,7 @@ ContextUrlRunner::~ContextUrlRunner()
 
 QIcon ContextUrlRunner::icon() const
 {
-    return QIcon::fromTheme( "x-media-podcast-amarok" );
+    return QIcon::fromTheme( QStringLiteral("x-media-podcast-amarok") );
 }
 
 bool ContextUrlRunner::run( const AmarokUrl &url )

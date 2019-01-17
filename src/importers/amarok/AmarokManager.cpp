@@ -48,7 +48,7 @@ AmarokManager::description() const
 QIcon
 AmarokManager::icon() const
 {
-    return QIcon::fromTheme( "amarok" );
+    return QIcon::fromTheme( QStringLiteral("amarok") );
 }
 
 ProviderConfigWidget*

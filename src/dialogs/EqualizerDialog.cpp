@@ -124,13 +124,13 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     foreach( QSlider* mSlider, m_bands )
         connect( mSlider, &QSlider::valueChanged, this, &EqualizerDialog::bandsChanged );
 
-    eqPresetSaveBtn->setIcon( QIcon::fromTheme( "document-save" ) );
+    eqPresetSaveBtn->setIcon( QIcon::fromTheme( QStringLiteral("document-save") ) );
     connect( eqPresetSaveBtn, &QAbstractButton::clicked, this, &EqualizerDialog::savePreset );
 
-    eqPresetDeleteBtn->setIcon( QIcon::fromTheme( "edit-delete" ) );
+    eqPresetDeleteBtn->setIcon( QIcon::fromTheme( QStringLiteral("edit-delete") ) );
     connect( eqPresetDeleteBtn, &QAbstractButton::clicked, this, &EqualizerDialog::deletePreset );
 
-    eqPresetResetBtn->setIcon( QIcon::fromTheme( "edit-undo" ) );
+    eqPresetResetBtn->setIcon( QIcon::fromTheme( QStringLiteral("edit-undo") ) );
     connect( eqPresetResetBtn, &QAbstractButton::clicked, this, &EqualizerDialog::restorePreset );
 }
 

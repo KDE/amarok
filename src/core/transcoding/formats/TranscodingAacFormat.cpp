@@ -70,7 +70,7 @@ AacFormat::description() const
 QIcon
 AacFormat::icon() const
 {
-    return QIcon::fromTheme( "audio-ac3" ); //TODO: get a *real* icon!
+    return QIcon::fromTheme( QStringLiteral("audio-ac3") ); //TODO: get a *real* icon!
 }
 
 QStringList

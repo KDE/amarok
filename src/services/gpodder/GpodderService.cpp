@@ -102,19 +102,19 @@ GpodderServiceFactory::createGpodderService()
 GpodderService::GpodderService( GpodderServiceFactory *parent, const QString &name )
     : ServiceBase( name, parent, false )
     , m_inited( false )
-    , m_apiRequest( 0 )
-    , m_podcastProvider( 0 )
-    , m_proxyModel( 0 )
-    , m_subscribeButton( 0 )
-    , m_selectionModel( 0 )
+    , m_apiRequest( nullptr )
+    , m_podcastProvider( nullptr )
+    , m_proxyModel( nullptr )
+    , m_subscribeButton( nullptr )
+    , m_selectionModel( nullptr )
 {
     DEBUG_BLOCK
 
     setShortDescription( i18n( "gpodder.net: Podcast Directory Service" ) );
-    setIcon( QIcon::fromTheme( "view-services-gpodder-amarok" ) );
+    setIcon( QIcon::fromTheme( QStringLiteral("view-services-gpodder-amarok") ) );
     setLongDescription(
                 i18n( "gpodder.net is an online Podcast Directory & Synchonisation Service." ) );
-    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/mygpo.png" ) );
+    setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/mygpo.png") ) );
 
     init();
 }
@@ -221,7 +221,7 @@ GpodderService::polish()
     m_subscribeButton->setParent( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
     m_subscribeButton->setObjectName( "subscribeButton" );
-    m_subscribeButton->setIcon( QIcon::fromTheme( "get-hot-new-stuff-amarok" ) );
+    m_subscribeButton->setIcon( QIcon::fromTheme( QStringLiteral("get-hot-new-stuff-amarok") ) );
 
     m_subscribeButton->setEnabled( true );
 

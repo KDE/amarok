@@ -126,7 +126,7 @@ void OpmlDirectoryService::polish()
     m_subscribeButton = new QPushButton( m_bottomPanel );
     m_subscribeButton->setText( i18n( "Subscribe" ) );
     m_subscribeButton->setObjectName( "subscribeButton" );
-    m_subscribeButton->setIcon( QIcon::fromTheme( "get-hot-new-stuff-amarok" ) );
+    m_subscribeButton->setIcon( QIcon::fromTheme( QStringLiteral("get-hot-new-stuff-amarok") ) );
 
     m_subscribeButton->setEnabled( false );
 
@@ -134,8 +134,8 @@ void OpmlDirectoryService::polish()
 
     m_addOpmlButton = new QPushButton( m_bottomPanel );
     m_addOpmlButton->setText( i18n( "Add OPML" ) );
-    m_addOpmlButton->setObjectName( "addOpmlButton" );
-    m_addOpmlButton->setIcon( QIcon::fromTheme( "list-add-amarok" ) );
+    m_addOpmlButton->setObjectName( QStringLiteral("addOpmlButton") );
+    m_addOpmlButton->setIcon( QIcon::fromTheme( QStringLiteral("list-add-amarok") ) );
 
     connect( m_addOpmlButton, &QPushButton::clicked,
              dynamic_cast<OpmlDirectoryModel*>( model() ), &OpmlDirectoryModel::slotAddOpmlAction );

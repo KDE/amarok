@@ -34,7 +34,7 @@
 Wrench::Wrench( QWidget *parent ) : QLabel( parent )
 {
     setCursor( Qt::ArrowCursor );
-    setPixmap( QIcon::fromTheme( "configure" ).pixmap( 64 ) );
+    setPixmap( QIcon::fromTheme( QStringLiteral("configure") ).pixmap( 64 ) );
     setScaledContents( true );
     setMargin( 4 );
 }

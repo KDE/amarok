@@ -63,7 +63,7 @@ FlacFormat::description() const
 QIcon
 FlacFormat::icon() const
 {
-    return QIcon::fromTheme( "audio-x-flac" ); //TODO: get a *real* icon!
+    return QIcon::fromTheme( QStringLiteral("audio-x-flac") ); //TODO: get a *real* icon!
 }
 
 QStringList

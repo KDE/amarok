@@ -1064,22 +1064,22 @@ CollectionTreeItemModelBase::iconForCategory( CategoryId::CatMenuId category )
     switch( category )
     {
         case CategoryId::Album :
-            return QIcon::fromTheme( "media-optical-amarok" );
+            return QIcon::fromTheme( QStringLiteral("media-optical-amarok") );
         case CategoryId::Artist :
-            return QIcon::fromTheme( "view-media-artist-amarok" );
+            return QIcon::fromTheme( QStringLiteral("view-media-artist-amarok") );
         case CategoryId::AlbumArtist :
-            return QIcon::fromTheme( "view-media-artist-amarok" );
+            return QIcon::fromTheme( QStringLiteral("view-media-artist-amarok") );
         case CategoryId::Composer :
-            return QIcon::fromTheme( "filename-composer-amarok" );
+            return QIcon::fromTheme( QStringLiteral("filename-composer-amarok") );
         case CategoryId::Genre :
-            return QIcon::fromTheme( "favorite-genres-amarok" );
+            return QIcon::fromTheme( QStringLiteral("favorite-genres-amarok") );
         case CategoryId::Year :
-            return QIcon::fromTheme( "clock" );
+            return QIcon::fromTheme( QStringLiteral("clock") );
         case CategoryId::Label :
-            return QIcon::fromTheme( "label-amarok" );
+            return QIcon::fromTheme( QStringLiteral("label-amarok") );
         case CategoryId::None:
         default:
-            return QIcon::fromTheme( "image-missing" );
+            return QIcon::fromTheme( QStringLiteral("image-missing") );
     }
 
 }

@@ -201,7 +201,7 @@ CoverManager::slotContinueConstruction() //SLOT
     viewGroup->addAction( m_selectAlbumsWithoutCover );
 
     m_viewButton->setMenu( m_viewMenu );
-    m_viewButton->setIcon( QIcon::fromTheme( "filename-album-amarok" ) );
+    m_viewButton->setIcon( QIcon::fromTheme( QStringLiteral("filename-album-amarok") ) );
     connect( m_viewMenu, &QMenu::triggered, this, &CoverManager::slotAlbumFilterTriggered );
 
     //fetch missing covers button

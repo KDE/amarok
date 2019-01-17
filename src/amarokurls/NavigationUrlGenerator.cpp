@@ -254,7 +254,7 @@ NavigationUrlGenerator::description()
 
 QIcon NavigationUrlGenerator::icon()
 {
-    return QIcon::fromTheme( "flag-amarok" );
+    return QIcon::fromTheme( QStringLiteral("flag-amarok") );
 }
 
 AmarokUrl

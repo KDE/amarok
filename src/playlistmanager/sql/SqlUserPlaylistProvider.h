@@ -44,7 +44,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         /* PlaylistProvider functions */
         QString prettyName() const override { return i18n( "Amarok Database" ); }
         virtual QString description() const { return i18n( "Local playlists stored in the database" ); }
-        QIcon icon() const override { return QIcon::fromTheme( "server-database" ); }
+        QIcon icon() const override { return QIcon::fromTheme( QStringLiteral("server-database") ); }
 
         int playlistCount() const override;
         Playlists::PlaylistList playlists() override;

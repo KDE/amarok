@@ -31,7 +31,7 @@
 
 BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget *parent )
     : BoxWidget( false, parent )
-    , m_menuButton( 0 )
+    , m_menuButton( nullptr )
 {
     //figure out if we want to add a menu to this item. A menu allows you to select
     //any of the _sibling_ items. (yes, I know, this is different from how Dolphin

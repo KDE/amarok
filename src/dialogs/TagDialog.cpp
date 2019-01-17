@@ -542,7 +542,7 @@ void TagDialog::initUi()
     ui->removeButton->setEnabled( false );
 
     // set an icon for the open-in-konqui button
-    ui->pushButton_open->setIcon( QIcon::fromTheme( "folder-amarok" ) );
+    ui->pushButton_open->setIcon( QIcon::fromTheme( QStringLiteral("folder-amarok") ) );
 
     connect( ui->pushButton_guessTags, &QAbstractButton::clicked, this, &TagDialog::guessFromFilename );
 

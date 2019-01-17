@@ -111,8 +111,8 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     }
     if( !writableCollections.isEmpty() )
     {
-        QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), &menu );
-        copyMenu->setIcon( QIcon::fromTheme( "edit-copy" ) );
+        QMenu *copyMenu = new QMenu( i18n( ("Copy to Collection") ), &menu );
+        copyMenu->setIcon( QIcon::fromTheme( QStringLiteral("edit-copy") ) );
         foreach( Collections::Collection *coll, writableCollections )
         {
             CollectionAction *copyAction = new CollectionAction( coll, &menu );
@@ -122,7 +122,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
         menu.addMenu( copyMenu );
 
         QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), &menu );
-        moveMenu->setIcon( QIcon::fromTheme( "go-jump" ) );
+        moveMenu->setIcon( QIcon::fromTheme( QStringLiteral("go-jump") ) );
         foreach( Collections::Collection *coll, writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, &menu );

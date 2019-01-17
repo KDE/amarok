@@ -264,7 +264,7 @@ QString BrowserCategoryList::navigate( const QString & target )
     //check if this category is also BrowserCategoryList.target
     BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( activeCategory() );
 
-    if ( childList == 0 )
+    if ( childList == nullptr )
     {
         debug() << "child is not a list...";
         if ( categories.size() > 1 )
@@ -313,7 +313,7 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
 {
     //get the long description for this item and pass it to info proxy.
 
-    BrowserCategory *category = 0;
+    BrowserCategory *category = nullptr;
 
     if ( index.data( CustomCategoryRoles::CategoryRole ).canConvert<BrowserCategory *>() )
         category = index.data( CustomCategoryRoles::CategoryRole ).value<BrowserCategory *>();

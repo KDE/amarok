@@ -86,11 +86,11 @@ void
 VolumePopupButton::volumeChanged( int newVolume )
 {
     if ( newVolume < 34 )
-        setIcon( QIcon::fromTheme( "audio-volume-low" ) );
+        setIcon( QIcon::fromTheme( QStringLiteral("audio-volume-low") ) );
     else if ( newVolume < 67 )
-        setIcon( QIcon::fromTheme( "audio-volume-medium" ) );
+        setIcon( QIcon::fromTheme( QStringLiteral("audio-volume-medium") ) );
     else
-        setIcon( QIcon::fromTheme( "audio-volume-high" ) );
+        setIcon( QIcon::fromTheme( QStringLiteral("audio-volume-high") ) );
 
     m_volumeLabel->setText( QString::number( newVolume ) + '%' );
 
@@ -111,7 +111,7 @@ VolumePopupButton::muteStateChanged( bool muted )
 
     if ( muted )
     {
-        setIcon( QIcon::fromTheme( "audio-volume-muted" ) );
+        setIcon( QIcon::fromTheme( QStringLiteral("audio-volume-muted") ) );
         setToolTip( i18n( "Volume: %1% (muted)", volume ) );
     }
     else

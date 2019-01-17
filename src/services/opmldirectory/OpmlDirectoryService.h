@@ -65,7 +65,7 @@ class OpmlDirectoryService : public ServiceBase, public AmarokUrlRunnerBase
         QString command() const override;
         QString prettyCommand() const override;
         bool run( const AmarokUrl &url ) override;
-        QIcon icon() const override { return QIcon::fromTheme( "view-services-opml-amarok" ); }
+        QIcon icon() const override { return QIcon::fromTheme( QStringLiteral("view-services-opml-amarok") ); }
 
     private Q_SLOTS:
         void subscribe();

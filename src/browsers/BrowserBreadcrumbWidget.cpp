@@ -36,8 +36,8 @@
 
 BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
     : BoxWidget( false, parent)
-    , m_rootList( 0 )
-    , m_childMenuButton( 0 )
+    , m_rootList( nullptr )
+    , m_childMenuButton( nullptr )
 {
     setFixedHeight( 28 );
     setContentsMargins( 3, 0, 3, 0 );
@@ -48,7 +48,7 @@ BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
 
     new BreadcrumbUrlMenuButton( QStringLiteral("navigate"), this );
 
-    m_spacer = new QWidget( 0 );
+    m_spacer = new QWidget( nullptr );
 }
 
 BrowserBreadcrumbWidget::~BrowserBreadcrumbWidget()

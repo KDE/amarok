@@ -84,7 +84,7 @@ OpusFormat::description() const
 QIcon
 OpusFormat::icon() const
 {
-    return QIcon::fromTheme( "audio-x-generic" );  //TODO: get a *real* icon!
+    return QIcon::fromTheme( QStringLiteral("audio-x-generic") );  //TODO: get a *real* icon!
 }
 
 QStringList

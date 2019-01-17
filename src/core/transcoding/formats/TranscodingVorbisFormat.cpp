@@ -82,7 +82,7 @@ VorbisFormat::description() const
 QIcon
 VorbisFormat::icon() const
 {
-    return QIcon::fromTheme( "audio-x-wav" );  //TODO: get a *real* icon!
+    return QIcon::fromTheme( QStringLiteral("audio-x-wav") );  //TODO: get a *real* icon!
 }
 
 QStringList
