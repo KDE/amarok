@@ -111,7 +111,7 @@ private:
     QString m_title;
     QString m_css;
 
-private slots:
+private Q_SLOTS:
     void _checkRequireUpdate( Meta::TrackPtr track );
     void _parseLangLinksResult(const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
     void _parseListingResult(const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );

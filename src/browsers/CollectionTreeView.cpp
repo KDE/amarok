@@ -87,7 +87,7 @@ class DelayedScroller : public QObject
                 deleteLater(); // nothing to do
         }
 
-    private slots:
+    private Q_SLOTS:
         void slotScroll()
         {
             deleteLater();
@@ -134,7 +134,7 @@ class AutoExpander : public QObject
             slotExpandMore();
         }
 
-    private slots:
+    private Q_SLOTS:
         void slotExpandMore()
         {
             const int maxChildrenToExpand = 3;

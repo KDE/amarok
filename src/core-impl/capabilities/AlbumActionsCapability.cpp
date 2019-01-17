@@ -45,7 +45,7 @@ class CompilationAction : public QAction
                 setEnabled( m_album->canUpdateCompilation() );
             }
 
-    private slots:
+    private Q_SLOTS:
         void slotTriggered()
         {
             if( !m_album->canUpdateCompilation() )

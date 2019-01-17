@@ -74,7 +74,7 @@ public:
     Q_INVOKABLE void warning( const QString &error ) const;
     Q_INVOKABLE void error( const QString &error ) const;
 
-private slots:
+private Q_SLOTS:
     void slotStatusChanged( QQuickWidget::Status status );
     void updatePalette( const QPalette &palette );
 

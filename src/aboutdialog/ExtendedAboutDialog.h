@@ -79,7 +79,7 @@ class ExtendedAboutDialog::Private
 public:
     Private(ExtendedAboutDialog *parent)
         : q(parent),
-          aboutData(0)
+          aboutData(nullptr)
     {}
 
     void _k_showLicense( const QString &number );

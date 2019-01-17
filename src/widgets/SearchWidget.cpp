@@ -243,7 +243,7 @@ SearchWidget::searchEnded()
 }
 
 
-// private slots:
+// private Q_SLOTS:
 
 void
 SearchWidget::nextAnimationTick()
