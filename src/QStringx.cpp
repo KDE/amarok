@@ -280,7 +280,7 @@ Amarok::QStringx::parseBrackets( int *pos, const QMap<QString, QString> &dict ) 
                 }
             case CTToken:
                 {
-                    replacement += parseToken( pos, dict );;
+                    replacement += parseToken( pos, dict );
                     break;
                 }
 

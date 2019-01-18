@@ -216,7 +216,7 @@ OrganizeCollectionDialog::~OrganizeCollectionDialog()
 }
 
 QMap<Meta::TrackPtr, QString>
-OrganizeCollectionDialog::getDestinations()
+OrganizeCollectionDialog::getDestinations() const
 {
     return m_trackOrganizer->getDestinations();
 }

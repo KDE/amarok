@@ -90,7 +90,7 @@ ScriptTerminatorWidget::ScriptTerminatorWidget( const QString &message )
     alabel->setPalette( p );
 
     QPushButton *button = new QPushButton( i18n( "Terminate" ), this );
-    button->setPalette(p);;
+    button->setPalette(p);
     connect( button, &QAbstractButton::clicked, this, &ScriptTerminatorWidget::terminate );
     auto closeItem = KStandardGuiItem::close();
     button = new QPushButton( closeItem.icon(), closeItem.text(), this );
@@ -130,7 +130,7 @@ ScriptItem::pause()
     if( m_popupWidget )
     {
         m_popupWidget->hide();
-        m_popupWidget->deleteLater();;
+        m_popupWidget->deleteLater();
     }
     //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
     if( m_engine->isEvaluating() )

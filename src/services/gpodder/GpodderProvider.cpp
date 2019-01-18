@@ -249,7 +249,7 @@ GpodderProvider::addChannel( const PodcastChannelPtr &channel )
 
     GpodderPodcastChannelPtr gpodderChannel( new GpodderPodcastChannel( this, channel ) );
 
-    m_channels << PodcastChannelPtr::dynamicCast( gpodderChannel );;
+    m_channels << PodcastChannelPtr::dynamicCast( gpodderChannel );
 
     emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( gpodderChannel ) );
 
@@ -899,7 +899,7 @@ GpodderProvider::episodeActionsInCascadeFinished()
             {
                 //For some reason the podcast and/or episode for this action
                 //wasn't found
-                debug() << QString( "Episode and/or channel not found" );;
+                debug() << QString( "Episode and/or channel not found" );
             }
 
         }

@@ -97,7 +97,7 @@ namespace CollectionFolder //just to keep it out of the global namespace
             int columnCount( const QModelIndex& ) const override { return 1; }
 
             /** Set the currently checked directories according to dirs */
-            void setDirectories( QStringList &dirs );
+            void setDirectories(const QStringList &dirs );
 
             /** Returns the currently checked directories in this model. */
             QStringList directories() const;
@@ -134,7 +134,7 @@ namespace CollectionFolder //just to keep it out of the global namespace
 
             static inline QString normalPath( const QString &path )
             {
-                return path.endsWith( QLatin1Char('/') ) ? path : path + '/';
+                return path.endsWith( QLatin1Char('/') ) ? path : path + QLatin1Char('/');
             }
 
             QSet<QString> m_checked;

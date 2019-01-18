@@ -304,7 +304,7 @@ namespace CollectionFolder {
                     QString topAncestor;
                     // Remove all selected ancestor of path, and find shallowest
                     // ancestor
-                    foreach( const QString &elem, ancestors )
+                    for ( const QString &elem : ancestors )
                     {
                         m_checked.remove( elem );
                         if( elem < topAncestor || topAncestor.isEmpty() )
@@ -324,7 +324,7 @@ namespace CollectionFolder {
     }
 
     void
-    Model::setDirectories( QStringList &dirs )
+    Model::setDirectories( const QStringList &dirs )
     {
         m_checked.clear();
         foreach( const QString &dir, dirs )

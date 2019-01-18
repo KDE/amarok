@@ -245,7 +245,7 @@ MusicBrainzTagsItem::data( const int column ) const
             return title;
         }
     case 1:
-        return dataValue( Meta::Field::ARTIST );;
+        return dataValue( Meta::Field::ARTIST );
     case 2:
         {
             QString album = dataValue( Meta::Field::ALBUM ).toString();

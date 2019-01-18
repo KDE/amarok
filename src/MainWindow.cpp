@@ -758,7 +758,7 @@ MainWindow::createActions()
                           i18nc( "edit play queue of playlist", "Edit &Queue" ), this );
     //Qt::META+Qt::Key_Q is taken by Plasma as a global
     action->setShortcut( QKeySequence( Qt::META + Qt::Key_U ) );
-    ac->addAction( "playlist_edit_queue", action );;
+    ac->addAction( "playlist_edit_queue", action );
 
     action = new QAction( i18nc( "Remove duplicate and dead (unplayable) tracks from the playlist", "Re&move Duplicates" ), this );
     connect( action, &QAction::triggered, pc, &Playlist::Controller::removeDeadAndDuplicates );

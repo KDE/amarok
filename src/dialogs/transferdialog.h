@@ -38,9 +38,9 @@ class AMAROK_EXPORT TransferDialog : public QDialog
 
     public:
         explicit TransferDialog( MediaDevice* mdev );
-        ~TransferDialog() {}
+        virtual ~TransferDialog() {}
 
-        bool isAccepted() { return m_accepted; }
+        bool isAccepted() const { return m_accepted; }
 
     private Q_SLOTS:
         void slotOk();

@@ -114,7 +114,7 @@ private Q_SLOTS:
     /**
      *  Test images
      */
-    void testAlbumImage();;
+    void testAlbumImage();
 
     /**
      * Test merging of the result with an incremental scan.

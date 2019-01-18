@@ -144,7 +144,7 @@ MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     connect( buttonBox, &QDialogButtonBox::accepted, this, &MatchedTracksPage::accepted );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &MatchedTracksPage::rejected );
 
-    tabWidget->setTabEnabled( 1, false );;
+    tabWidget->setTabEnabled( 1, false );
     tabWidget->setTabToolTip( 1, i18n( "There are no tracks unique to one of the sources "
                                        "participating in the synchronization" ) );
     tabWidget->setTabEnabled( 2, false );

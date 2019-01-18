@@ -60,7 +60,7 @@ private Q_SLOTS:
     /**
      *  Test images
      */
-    void testAlbumImage();;
+    void testAlbumImage();
 
 
 public Q_SLOTS:

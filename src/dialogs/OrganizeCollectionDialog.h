@@ -89,14 +89,14 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public QDialog
                                            const QStringList &folders,
                                            const QString &targetExtension = QString(),
                                            QWidget *parent = nullptr,
-                                           const char *name = 0,
+                                           const char *name = nullptr,
                                            bool modal = true,
                                            const QString &caption = QString(),
                                            QFlags<QDialogButtonBox::StandardButton> buttonMask = QDialogButtonBox::Ok|QDialogButtonBox::Cancel );
 
         ~OrganizeCollectionDialog();
 
-        QMap<Meta::TrackPtr, QString> getDestinations();
+        QMap<Meta::TrackPtr, QString> getDestinations() const;
         bool overwriteDestinations() const;
 
     public Q_SLOTS:

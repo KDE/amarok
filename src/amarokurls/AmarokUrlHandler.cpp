@@ -157,7 +157,7 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
 AmarokUrl
 AmarokUrlHandler::createBrowserViewBookmark()
 {
-    return NavigationUrlGenerator::instance()->CreateAmarokUrl();;
+    return NavigationUrlGenerator::instance()->CreateAmarokUrl();
 }
 
 AmarokUrl

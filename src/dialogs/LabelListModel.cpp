@@ -120,7 +120,7 @@ void LabelListModel::removeLabels( const QStringList &labels )
 }
 
 //Returns all labels in the list
-QStringList LabelListModel::labels()
+QStringList LabelListModel::labels() const
 {
     return m_labels;
 }
