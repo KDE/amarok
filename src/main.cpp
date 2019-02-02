@@ -28,6 +28,7 @@
 #include <KLocalizedString>
 
 #include <QCommandLineParser>
+#include <QStandardPaths>
 #include <QtGlobal>
 
 #ifdef WITH_QT_WEBENGINE
