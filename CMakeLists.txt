@@ -28,12 +28,13 @@ include(FindPkgConfig)
 include(CMakePushCheckState)
 include(GenerateExportHeader)
 
+find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Script ScriptTools Sql Svg Test Widgets Xml)
 
-find_package( Qt5 ${QT_REQUIRED_VERSION} COMPONENTS QuickControls2 WebEngine )
-set_package_properties( Qt5QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area" )
+find_package(Qt5QuickControls2 ${QT_REQUIRED_VERSION})
+set_package_properties(Qt5QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
 
-find_package( Qt5 5.8.0 REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Script ScriptTools Sql Svg Test Widgets Xml )
-set_package_properties( Qt5WebEngine PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet" )
+find_package(Qt5WebEngine ${QT_REQUIRED_VERSION})
+set_package_properties(Qt5WebEngine PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet")
 
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     Archive
@@ -63,8 +64,8 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     WindowSystem
 )
 
-find_package( KF5 ${KF5_MIN_VERSION} COMPONENTS Kirigami2 )
-set_package_properties( KF5Kirigami2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area" )
+find_package(KF5Kirigami2 ${KF5_MIN_VERSION})
+set_package_properties(KF5Kirigami2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
 
 ###############
 option(WITH_UTILITIES "Enable building of utilities" ON)
