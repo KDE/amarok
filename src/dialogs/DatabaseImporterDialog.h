@@ -24,9 +24,6 @@
 #include <QHash>
 #include <QPushButton>
 
-class QAbstractButton;
-class QButtonGroup;
-class QRadioButton;
 class QPlainTextEdit;
 class KPageWidgetItem;
 class BoxWidget;

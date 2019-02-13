@@ -37,12 +37,10 @@ class CoverFoundItem;
 class CoverFoundSideBar;
 class QDialog;
 class KJob;
-class KJobProgressBar;
 class KComboBox;
 class QListWidget;
 class QPushButton;
 class BoxWidget;
-class QGridLayout;
 class QTabWidget;
 
 class CoverFoundDialog : public QDialog

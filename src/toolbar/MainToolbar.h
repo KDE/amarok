@@ -20,7 +20,6 @@
 
 class AnimatedLabelStack;
 class PlayPauseButton;
-class QBoxLayout;
 class QLabel;
 class QSpacerItem;
 class VolumeDial;

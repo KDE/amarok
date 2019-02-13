@@ -26,7 +26,6 @@
 #include <QPointer>
 
 class QScriptEngine;
-class QScriptValue;
 
 
 namespace Playlists

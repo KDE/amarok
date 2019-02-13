@@ -41,7 +41,6 @@ class QMenu;
 class QLabel;
 class CoverView;
 class QHBoxLayout;
-class QProgressBar;
 class QHBoxLayout;
 class QColorGroup;
 class QSplitter;

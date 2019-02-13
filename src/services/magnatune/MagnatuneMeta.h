@@ -26,7 +26,6 @@
 #include <QString>
 #include <QStringList>
 
-class MagnatuneAlbumCoverDownloader;
 class MagnatuneStore;
 
 namespace Meta

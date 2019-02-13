@@ -31,7 +31,7 @@
 #include <QString>
 
 class QLabel;
-
+class QFileInfo;
 class TagGuessOptionWidget : public QWidget, public Ui::TagGuessOptions
 {
     Q_OBJECT

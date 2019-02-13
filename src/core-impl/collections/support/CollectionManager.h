@@ -25,7 +25,6 @@
 #include <QList>
 #include <QObject>
 
-class CollectionManagerSingleton;
 
 namespace Plugins {
     class PluginFactory;

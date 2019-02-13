@@ -29,7 +29,6 @@
 
 class QAction;
 class QCheckBox;
-class TranscodingConfig;
 
 namespace CollectionFolder { class Model; }
 

@@ -20,7 +20,6 @@
 
 #include <QLabel>
 
-class QMouseEvent;
 
 class TimeLabel : public QLabel
 {

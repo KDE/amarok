@@ -22,7 +22,6 @@
 
 class HintLineEdit;
 class MediaDevice;
-class Medium;
 class QCheckBox;
 class QRadioButton;
 

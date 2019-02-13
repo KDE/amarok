@@ -19,7 +19,6 @@
 
 #include <QObject>
 
-class QLayout;
 class QTreeView;
 class QWidget;
 

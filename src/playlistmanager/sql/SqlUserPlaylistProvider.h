@@ -25,7 +25,6 @@
 
 #include <KLocalizedString>
 
-class QAction;
 
 namespace Playlists {
 

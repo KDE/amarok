@@ -22,7 +22,6 @@
 
 #include <QUrl>
 
-class QFile;
 
 namespace Playlists
 {

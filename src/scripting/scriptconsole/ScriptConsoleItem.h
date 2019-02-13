@@ -22,11 +22,7 @@
 namespace KTextEditor{
     class View;
 }
-class QUrl;
-class QIcon;
-class QScriptContext;
 class QScriptEngine;
-class QScriptEngineDebugger;
 class QWidget;
 
 namespace ScriptConsoleNS

@@ -24,13 +24,11 @@
 
 namespace KTextEditor
 {
-    class Attribute;
     class Document;
     class View;
 }
 class QUrl;
 class QColor;
-class QIcon;
 class QWidget;
 
 namespace ScriptConsoleNS

@@ -21,11 +21,9 @@
 
 #include <QMap>
 
-class PodcastCollection;
 
 namespace PlaylistBrowserNS {
 
-class PodcastCategory;
 
 /**
 	@author Bart Cerneels

@@ -24,8 +24,6 @@
 #include <QSlider>
 #include <QVector>
 
-class QPalette;
-class QTimer;
 class BookmarkTriangle;
 
 

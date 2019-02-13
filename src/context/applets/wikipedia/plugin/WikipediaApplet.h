@@ -22,16 +22,12 @@
 #include "context/DataEngine.h"
 #include "NetworkAccessManagerProxy.h"
 
-class QAction;
-class QDialog;
 class KConfigDialog;
 class QListWidgetItem;
 class WikipediaAppletPrivate;
 
 namespace Plasma
 {
-    class WebView;
-    class IconWidget;
 }
 
 class WikipediaApplet : public Context::Applet

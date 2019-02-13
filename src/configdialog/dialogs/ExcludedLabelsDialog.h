@@ -25,9 +25,6 @@
 namespace StatSyncing {
     class Config;
 }
-class QLineEdit;
-class QGridLayout;
-class QListWidget;
 
 class ExcludedLabelsDialog : public QDialog, private Ui_ExcludedLabelsDialog
 {

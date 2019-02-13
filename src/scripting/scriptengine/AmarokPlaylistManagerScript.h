@@ -21,7 +21,6 @@
 
 #include <QObject>
 
-class QScriptEngine;
 namespace Playlists
 {
     class Playlist;

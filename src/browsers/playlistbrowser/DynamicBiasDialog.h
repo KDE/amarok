@@ -32,7 +32,6 @@ class QComboBox;
 
 namespace PlaylistBrowserNS
 {
-    class BiasWidget;
 
     /** A dialog that contains the widget from a bias and allows to edit it.
     */

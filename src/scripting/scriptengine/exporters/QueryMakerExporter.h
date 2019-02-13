@@ -30,7 +30,6 @@ namespace Collections
     class QueryMaker;
 }
 class QScriptEngine;
-class QScriptValue;
 
 namespace AmarokScript
 {

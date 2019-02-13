@@ -30,7 +30,6 @@ namespace Meta {
     typedef AmarokSharedPointer<Track> TrackPtr;
 }
 namespace Playlists {
-    class UserPlaylistProvider;
 }
 
 class QIcon;

@@ -23,8 +23,6 @@
 
 #include <QMutex>
 
-class PopupDropper;
-class QAction;
 class QKeyEvent;
 class QMouseEvent;
 class QContextMenuEvent;

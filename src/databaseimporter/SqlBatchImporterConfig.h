@@ -22,7 +22,6 @@
 #include <QFrame>
 #include <QString>
 
-class QLabel;
 class QLineEdit;
 
 class SqlBatchImporterConfig : public BoxWidget

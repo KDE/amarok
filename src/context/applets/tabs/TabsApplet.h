@@ -34,7 +34,6 @@ class TabsView;
 namespace Plasma
 {
     class IconWidget;
-    class Label;
 }
 
 class KConfigDialog;

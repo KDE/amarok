@@ -25,7 +25,6 @@
 #include <QTimer>
 
 class QToolBar;
-class QPushButton;
 // A Custom Widget that can be used globally to implement
 // searching a treeview.
 

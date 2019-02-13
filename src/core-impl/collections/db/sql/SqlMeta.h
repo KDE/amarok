@@ -35,11 +35,7 @@
 #include <QVariant>
 
 namespace Capabilities {
-    class AlbumCapabilityDelegate;
-    class ArtistCapabilityDelegate;
-    class TrackCapabilityDelegate;
 }
-class QAction;
 
 class SqlRegistry;
 class TrackUrlsTableCommitter;

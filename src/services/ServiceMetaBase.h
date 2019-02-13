@@ -31,7 +31,6 @@
 
 namespace Amarok
 {
-    class TrackProvider;
 }
 
 class AMAROK_EXPORT ServiceMetaFactory

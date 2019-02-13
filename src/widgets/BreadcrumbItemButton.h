@@ -23,9 +23,7 @@
 
 #include "widgets/ElidingButton.h"
 
-class QUrl;
 class QEvent;
-class KUrlNavigator;
 
 /**
  * @brief Base class for buttons of the URL navigator.

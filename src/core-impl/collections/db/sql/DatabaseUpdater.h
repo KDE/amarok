@@ -22,7 +22,6 @@
 
 #include "amarok_sqlcollection_export.h"
 
-class SqlStorage;
 
 namespace Collections {
     class SqlCollection;

@@ -29,7 +29,6 @@
 #include <QLocale>
 #include <QXmlStreamReader>
 
-class QNetworkReply;
 
 using namespace Context;
 

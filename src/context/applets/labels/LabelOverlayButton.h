@@ -22,7 +22,6 @@
 
 class KIconEffect;
 class QGraphicsSceneHoverEvent;
-class QGraphicsSceneMouseEvent;
 class QPainter;
 class QStyleOptionGraphicsItem;
 class QWidget;

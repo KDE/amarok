@@ -23,7 +23,6 @@
 class KCategorizedView;
 class QLineEdit;
 class KPluginInfo;
-class QScrollBar;
 
 class ScriptSelector : public KPluginSelector
 {

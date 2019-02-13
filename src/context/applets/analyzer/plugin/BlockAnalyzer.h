@@ -27,7 +27,6 @@
 #include <QSize>
 
 class QPalette;
-class QSGTexture;
 
 class BlockAnalyzer : public Analyzer::Base
 {

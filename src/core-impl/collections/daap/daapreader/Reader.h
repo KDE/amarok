@@ -32,7 +32,6 @@ namespace Collections {
     class DaapCollection;
 }
 
-class QHttpResponseHeader;
 
 namespace Daap
 {

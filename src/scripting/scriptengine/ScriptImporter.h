@@ -23,7 +23,6 @@
 #include <QStringList>
 #include <QUrl>
 
-class QScriptEngine;
 class QStringList;
 
 namespace AmarokScript

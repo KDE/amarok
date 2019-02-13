@@ -21,16 +21,13 @@
 
 #include "browsers/BrowserCategory.h"
 
-class QCheckBox;
 class QPushButton;
 class QToolButton;
-class QStandardItemModel;
 class QSpinBox;
 
 namespace PlaylistBrowserNS {
 
     class DynamicView;
-    class DynamicBiasDelegate;
 
     /**
     */

@@ -27,7 +27,6 @@
 #include <QObject>
 #include <QUrl>
 
-class CoverFetchPayload;
 
 typedef QList< CoverFetchUnit::Ptr > CoverFetchUnitList;
 

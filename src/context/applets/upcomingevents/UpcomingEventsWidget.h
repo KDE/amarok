@@ -30,8 +30,6 @@ class KDateTime;
 class QLabel;
 class QGraphicsLinearLayout;
 class QGraphicsProxyWidget;
-class QPixmap;
-class QPointF;
 class QSignalMapper;
 namespace Plasma {
     class Label;

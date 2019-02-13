@@ -27,7 +27,6 @@
 
 class QMenu;
  
-class PopupDropper;
 class QAction;
 
 class QAction;

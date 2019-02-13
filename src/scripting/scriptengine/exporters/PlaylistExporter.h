@@ -24,12 +24,10 @@
 #include <QString>
 #include <QUrl>
 
-class QScriptValue;
 class QScriptEngine;
 
 namespace AmarokScript
 {
-    class AmarokScriptEngine;
 
     // SCRIPTDOX PROTOTYPE Playlists::Playlist Playlist
     class PlaylistPrototype : public QObject, public Playlists::PlaylistObserver

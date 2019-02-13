@@ -21,7 +21,6 @@
 #include <QPointer>
 
 class HintingLineEdit;
-class QLineEdit;
 class QLabel;
 class QRadioButton;
 class QSlider;

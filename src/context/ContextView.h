@@ -31,7 +31,6 @@
 
 class ContextUrlRunner;
 class QPalette;
-class QScreen;
 
 namespace Context
 {

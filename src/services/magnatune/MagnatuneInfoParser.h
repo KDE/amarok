@@ -24,7 +24,6 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
-class MagnatuneStore;
 
 /**
 Handles the fetching and processing of Jamendo specific information for meta items

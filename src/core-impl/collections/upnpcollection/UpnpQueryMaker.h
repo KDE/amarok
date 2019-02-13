@@ -30,10 +30,8 @@ namespace KIO {
   class UDSEntry;
   typedef QList<UDSEntry> UDSEntryList;
   class Job;
-  class ListJob;
 }
 
-class KJob;
 
 namespace Collections {
 

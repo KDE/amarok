@@ -25,10 +25,8 @@
 #include <KDialog>
 
 class QGraphicsPixmapItem;
-class QLabel;
 class QHBoxLayout;
 class QSpinBox;
-class QCheckBox;
 
 class PlaylistInfo : public Context::Applet
 {

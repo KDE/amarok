@@ -30,6 +30,14 @@
 #include <QString>
 #include <QSharedPointer>
 
+namespace Playlists
+{
+class UserPlaylistProvider;
+}
+namespace Playdar
+{
+class ProxyResolver;
+}
 namespace Collections
 {
     

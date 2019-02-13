@@ -22,7 +22,6 @@
 namespace Playlist
 {
 
-class Actions;
 /**
  * Implements loading of default playlist or default track
  * in case if no playlist was saved (e.g. first run of Amarok)

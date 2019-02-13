@@ -26,7 +26,6 @@
 #include "core/support/Amarok.h"
 #include <KIO/Job>
 
-class OpmlOutline;
 
 class OpmlDirectoryServiceFactory: public ServiceFactory
 {

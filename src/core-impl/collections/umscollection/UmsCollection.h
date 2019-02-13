@@ -33,7 +33,6 @@
 class GenericScanManager;
 class UmsPodcastProvider;
 class UmsCollection;
-class UmsCollectionLocation;
 class QAction;
 
 using namespace Collections;

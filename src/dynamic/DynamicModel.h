@@ -33,7 +33,6 @@ class TestDynamicModel;
 namespace Dynamic {
 
 class BiasedPlaylist;
-class AbstractBias;
 
 class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
 {

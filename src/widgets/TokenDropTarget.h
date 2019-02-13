@@ -24,7 +24,6 @@ class QBoxLayout;
 class QHBoxLayout;
 class QDropEvent;
 class Token;
-class TokenDragger;
 class TokenFactory;
 
 /** A widget that accepts dragging Tokens into it.

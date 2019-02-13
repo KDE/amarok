@@ -25,7 +25,6 @@
 
 #include <QVariant>
 
-class KJob;
 using namespace Context;
 
  /**

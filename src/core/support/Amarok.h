@@ -30,10 +30,8 @@
 
 class QColor;
 class QDateTime;
-class QEvent;
 class QMutex;
 class QPixmap;
-class QWidget;
 
 namespace KIO { class Job; }
 

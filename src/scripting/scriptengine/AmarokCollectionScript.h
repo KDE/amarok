@@ -22,7 +22,6 @@
 #include <QObject>
 #include <QStringList>
 
-class QScriptEngine;
 namespace Collections
 {
     class QueryMaker;
@@ -32,7 +31,6 @@ namespace Collections
 
 namespace Playlists
 {
-    class PlaylistProvider;
 }
 
 namespace AmarokScript

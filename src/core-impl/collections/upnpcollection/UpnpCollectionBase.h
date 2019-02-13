@@ -38,11 +38,9 @@ namespace KIO {
 }
 class KJob;
 
-class QTimer;
 
 namespace Collections {
 
-class UpnpMemoryQueryMaker;
 
 /**
  * UPnP Collections are of two types.

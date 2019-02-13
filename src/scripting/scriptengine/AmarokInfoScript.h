@@ -22,7 +22,6 @@
 #include <QObject>
 #include <QUrl>
 
-class QScriptEngine;
 
 namespace AmarokScript
 {

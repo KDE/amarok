@@ -32,7 +32,6 @@ class QString;
 namespace Playdar
 {
     class Query;
-    class ProxyResolver;
     
     /**
      * This class provides a basic interface to Playdar's resolution

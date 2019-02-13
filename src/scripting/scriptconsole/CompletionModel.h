@@ -22,7 +22,6 @@
 
 namespace KTextEditor {
     class View;
-    class Document;
 }
 
 namespace ScriptConsoleNS

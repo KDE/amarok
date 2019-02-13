@@ -26,8 +26,6 @@
 
 #include "PopupDropper_Export.h"
 
-class QGraphicsSvgItem;
-class QGraphicsItem;
 class QMenu;
 class QSvgRenderer;
 class QTimeLine;

@@ -20,7 +20,6 @@
 
 #include "dynamic/biases/TagMatchBias.h"
 
-class KJob;
 class QNetworkReply;
 
 namespace Dynamic

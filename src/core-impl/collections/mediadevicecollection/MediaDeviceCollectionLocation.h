@@ -25,7 +25,6 @@
 #include <QSet>
 #include <QString>
 
-class KJob;
 
 namespace Collections {
 

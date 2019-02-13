@@ -28,7 +28,6 @@
 
 class QDropEvent;
 class QGraphicsTextItem;
-class QGraphicsView;
 class QSvgRenderer;
 class QAction;
 class PopupDropper;

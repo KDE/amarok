@@ -31,11 +31,8 @@
 
 namespace KIO {
   class Job;
-  class ListJob;
 }
-class KJob;
 
-class QTimer;
 
 namespace Collections {
 

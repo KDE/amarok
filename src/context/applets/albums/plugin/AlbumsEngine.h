@@ -24,7 +24,6 @@
 
 #include <QObject>
 
-class QMenu;
 namespace Collections
 {
     class QueryMaker;

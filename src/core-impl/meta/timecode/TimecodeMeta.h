@@ -20,7 +20,6 @@
 #include "core/meta/Meta.h"
 #include "core/meta/TrackEditor.h"
 
-class QAction;
 
 namespace Meta {
 

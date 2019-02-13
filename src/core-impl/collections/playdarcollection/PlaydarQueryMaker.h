@@ -34,7 +34,6 @@
 
 namespace Collections
 {
-    class QueryMakerFunction;
     
     class PlaydarQueryMaker : public QueryMaker
     {

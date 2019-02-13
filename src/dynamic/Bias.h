@@ -37,7 +37,6 @@ class QXmlStreamWriter;
 
 namespace Collections {
     class Collection;
-    class QueryMaker;
 }
 
 namespace Dynamic

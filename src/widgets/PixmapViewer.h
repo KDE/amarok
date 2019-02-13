@@ -24,7 +24,6 @@
 #include <QString>
 #include <QPixmap>
 
-class QMouseEvent;
 class QPixmap;
 
 class PixmapViewer : public QWidget

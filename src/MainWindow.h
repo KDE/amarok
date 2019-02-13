@@ -37,7 +37,6 @@ class MainWindow;
 #ifdef DEBUG_BUILD_TYPE
 class NetworkAccessViewer;
 #endif // DEBUG_BUILD_TYPE
-class PlaylistFileProvider;
 
 namespace PlaylistBrowserNS { class PlaylistBrowser; }
 namespace Playlist { class Dock; }
@@ -46,10 +45,7 @@ class ContextDock;
 
 
 class QMenu;
-class QAction;
 class QMenuBar;
-class QSplitter;
-class QTimer;
 
 namespace The {
     AMAROK_EXPORT MainWindow* mainWindow();

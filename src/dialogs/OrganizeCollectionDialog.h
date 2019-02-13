@@ -33,7 +33,6 @@ namespace Ui
     class OrganizeCollectionDialogBase;
 }
 
-class QLineEdit;
 class TrackOrganizer;
 
 

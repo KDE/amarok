@@ -26,7 +26,6 @@
 #include <QModelIndex>
 #include <QVariant>
 
-class GpodderServiceModel;
 
 class GpodderTreeItem : public QObject
 {

@@ -37,7 +37,6 @@ class GenericScanManager;
 namespace Collections {
 
 class CollectionLocation;
-class DatabaseCollectionLocationFactory;
 
 /** The DatabaseCollection is intended to be a base class for all database backed primary collections.
  *  Primary collection implies that the basis for the collection is a file system.

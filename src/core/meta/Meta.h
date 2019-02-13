@@ -32,7 +32,6 @@
 namespace Collections
 {
     class Collection;
-    class QueryMaker;
 }
 class PersistentStatisticsStore;
 

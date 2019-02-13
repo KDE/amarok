@@ -22,7 +22,6 @@
 
 class QAction;
 class QKeyEvent;
-class QLabel;
 class QMenu;
 class QToolBar;
 

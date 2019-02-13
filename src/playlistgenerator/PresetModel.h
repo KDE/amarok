@@ -24,7 +24,6 @@
 #include <QList>
 #include <QString>
 
-class ConstraintModel;
 class QPersistentModelIndex;
 
 namespace APG {

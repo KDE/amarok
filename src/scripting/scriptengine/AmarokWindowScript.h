@@ -26,11 +26,9 @@
 #include <QString>
 #include <QPointer>
 
-class EventFilter;
 class QMenu;
 class QMainWindow;
 class QMenu;
-class QScriptEngine;
 
 namespace AmarokScript
 {

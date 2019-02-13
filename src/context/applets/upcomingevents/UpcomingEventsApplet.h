@@ -28,16 +28,13 @@
 #include "ui_upcomingEventsVenueSettings.h"
 
 class KConfigDialog;
-class QGraphicsLinearLayout;
 class QListWidgetItem;
-class QXmlStreamReader;
 class UpcomingEventsMapWidget;
 class UpcomingEventsStackItem;
 class UpcomingEventsStack;
 
 namespace Plasma
 {
-    class WebView;
 }
 
  /**

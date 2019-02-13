@@ -35,7 +35,6 @@
 
 #include <QtGlobal>
 
-class AmarokMimeData;
 class QMimeData;
 class QModelIndex;
 class TestPlaylistModels;

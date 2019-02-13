@@ -35,7 +35,6 @@
 
 namespace KIO {
   class Job;
-  class ListJob;
 }
 class KJob;
 
@@ -44,7 +43,6 @@ class QTimer;
 namespace Collections {
 
 class UpnpCache;
-class UpnpMemoryQueryMaker;
 
 class UpnpBrowseCollection : public UpnpCollectionBase
 {

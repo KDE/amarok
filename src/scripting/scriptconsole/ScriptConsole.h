@@ -25,14 +25,12 @@
 
 namespace KTextEditor{
     class Editor;
-    class View;
 }
 class QEvent;
 class QListWidget;
 class QListWidgetItem;
 class QModelIndex;
 class QScriptEngine;
-class QSplitter;
 
 namespace ScriptConsoleNS
 {

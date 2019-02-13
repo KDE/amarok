@@ -28,7 +28,6 @@
 
 #include <User.h>
 
-class QNetworkReply;
 
 namespace LastFm
 {
@@ -86,7 +85,6 @@ enum SortOrder
 
 class LastFmTreeItem;
 class QUrl;
-class WsReply;
 
 
 class LastFmTreeModel : public QAbstractItemModel

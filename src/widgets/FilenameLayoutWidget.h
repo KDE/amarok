@@ -27,7 +27,6 @@ class Token;
 class TokenPool;
 class TokenDropTarget;
 
-class QFileInfo;
 class QStackedWidget;
 class QLabel;
 class QFrame;

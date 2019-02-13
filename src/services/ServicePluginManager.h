@@ -22,8 +22,6 @@
 #include <QSet>
 
 class ServiceBase;
-class ServiceBrowser;
-class ServiceFactory;
 namespace Plugins {
     class PluginFactory;
 }

@@ -21,7 +21,6 @@
 #include <QToolButton>
 
 class QAction;
-class QEvent;
 class QLabel;
 class QMenu;
 class QMouseEvent;

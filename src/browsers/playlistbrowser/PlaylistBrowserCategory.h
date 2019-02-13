@@ -31,7 +31,6 @@ class QTreeView;
 
 class QAction;
 class KActionMenu;
-class QLineEdit;
 class KToolBar;
 
 class PlaylistsInFoldersProxy;

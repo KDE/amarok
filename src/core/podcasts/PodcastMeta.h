@@ -30,7 +30,10 @@
 #include <QUrl>
 
 #include <KLocalizedString>
-
+namespace Collections 
+{
+class QueryMaker;
+}
 namespace Podcasts
 {
 class PodcastEpisode;

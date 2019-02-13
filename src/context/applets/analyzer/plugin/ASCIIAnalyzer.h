@@ -24,9 +24,7 @@
 #include <QSharedPointer>
 #include <QSize>
 
-class QMouseEvent;
 class QPalette;
-class QResizeEvent;
 
 class ASCIIAnalyzer : public Analyzer::Base
 {

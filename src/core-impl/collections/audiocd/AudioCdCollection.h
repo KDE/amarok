@@ -29,7 +29,7 @@
 #include <KIO/UDSEntry>
 
 class MediaDeviceInfo;
-
+class KJob;
 namespace Collections {
 
 class AudioCdCollection;

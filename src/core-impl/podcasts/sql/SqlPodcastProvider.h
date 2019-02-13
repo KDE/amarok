@@ -30,7 +30,6 @@ class PodcastImageFetcher;
 class QDialog;
 class QUrl;
 class PodcastReader;
-class SqlStorage;
 class QTimer;
 
 namespace Ui {

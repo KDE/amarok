@@ -29,13 +29,9 @@
 #include <KComboBox>
 #include <QSpinBox>
 
-class QFrame;
-class QGridLayout;
 class QHBoxLayout;
 class QLabel;
-class QToolButton;
 class QVBoxLayout;
-class KToolBar;
 
 namespace Collections
 {

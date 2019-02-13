@@ -22,7 +22,6 @@
 #include <QPushButton>
 #include <QMenu>
 
-class QComboBox;
 
 namespace Playlist {
 

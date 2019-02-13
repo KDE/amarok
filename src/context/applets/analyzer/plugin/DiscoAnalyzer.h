@@ -21,7 +21,6 @@
 #include "AnalyzerBase.h"
 
 
-class QPaintEvent;
 
 class DiscoAnalyzer : public Analyzer::Base
 {

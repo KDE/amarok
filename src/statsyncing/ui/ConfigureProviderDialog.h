@@ -29,7 +29,6 @@
 namespace StatSyncing
 {
 
-    class ProviderConfigWidget;
 
     class ConfigureProviderDialog : public KPageDialog
     {

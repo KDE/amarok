@@ -33,7 +33,6 @@ namespace AmarokScript {
     class AmarokScript;
 }
 class ScriptItem;
-class QScriptContext;
 class QScriptEngine;
 class QTimerEvent;
 

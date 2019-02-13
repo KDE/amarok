@@ -30,7 +30,6 @@ namespace Collections {
     class MediaDeviceCollection;
 }
 
-class QAction;
 
 namespace Handler { class ArtworkCapability; }
 

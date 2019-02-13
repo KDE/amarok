@@ -26,7 +26,6 @@
 
 namespace ThreadWeaver
 {
-    class Job;
 }
 
 namespace Collections {

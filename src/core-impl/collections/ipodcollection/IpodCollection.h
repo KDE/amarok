@@ -36,6 +36,11 @@ class QTemporaryFile;
 struct _Itdb_iTunesDB;
 typedef _Itdb_iTunesDB Itdb_iTunesDB;
 
+namespace Playlists
+{
+class UserPlaylistProvider;
+}
+
 class IpodCollection : public Collections::Collection, public Meta::Observer
 {
     Q_OBJECT

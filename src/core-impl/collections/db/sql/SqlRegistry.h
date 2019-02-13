@@ -27,9 +27,7 @@
 #include <QTimer>
 #include <QList>
 
-class SqlStorage;
 
-class TestScanResultProcessorFull;
 class TestSqlAlbum;
 class TestSqlArtist;
 class TestSqlTrack;
