@@ -51,6 +51,7 @@
   <summary xml:lang="gl">Reprodutor de son</summary>
   <summary xml:lang="id">Player Audio</summary>
   <summary xml:lang="it">Lettore audio</summary>
+  <summary xml:lang="ko">오디오 재생기</summary>
   <summary xml:lang="nl">Audiospeler</summary>
   <summary xml:lang="pl">Odtwarzacz muzyki</summary>
   <summary xml:lang="pt">Leitor de Áudio</summary>
@@ -78,6 +79,7 @@
     <p xml:lang="gl">Amarok é xestor de coleccións de música e reprodutor libre, compatíbel con múltiples plataformas, versátil, potente e cheo de funcionalidades.</p>
     <p xml:lang="id">Amarok adalah player musik dan pengelola koleksi gratis, lintas platform, serbaguna, hebat, dan kaya fitur.</p>
     <p xml:lang="it">Amarok è un lettore musicale e gestore delle raccolte libero, versatile, potente e ricco di funzionalità</p>
+    <p xml:lang="ko">Amarok은 강력한 크로스 플랫폼 자유 소프트웨어 음악 재생기 및 모음집 관리 도구입니다.</p>
     <p xml:lang="nl">Amarok is een vrije muziekspeler en beheerder van een verzameling, cross-platform, veelzijdig, krachtig en rijk aan functies.</p>
     <p xml:lang="pl">Amarok jest darmowym, wieloplatformowym, wszechstronnym i zaawansowanym odtwarzaczem muzyki i programem do zarządzania nią.</p>
     <p xml:lang="pt">O Amarok é um leitor multimédia e gestor de colecções gratuito, multi-plataforma, versátil, poderoso e rico em funcionalidades.</p>
@@ -356,6 +358,7 @@
       <caption xml:lang="gl">Reproducindo música en Amarok</caption>
       <caption xml:lang="id">Memainkan musik di Amarok</caption>
       <caption xml:lang="it">Riproduzione della musica con Amarok</caption>
+      <caption xml:lang="ko">Amarok으로 음악 재생</caption>
       <caption xml:lang="nl">Muziek afspelen in Amarok</caption>
       <caption xml:lang="pl">Odtwarzanie muzyki w Amaroku</caption>
       <caption xml:lang="pt">A tocar música no Amarok</caption>
@@ -381,6 +384,7 @@
       <caption xml:lang="gl">Xanelas de Amarok</caption>
       <caption xml:lang="id">Window Amarok</caption>
       <caption xml:lang="it">Finestre di Amarok</caption>
+      <caption xml:lang="ko">Amarok 창</caption>
       <caption xml:lang="nl">Vensters in Amarok</caption>
       <caption xml:lang="pl">Okna Amaroka</caption>
       <caption xml:lang="pt">Janelas do Amarok</caption>
