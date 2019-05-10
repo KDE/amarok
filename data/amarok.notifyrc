@@ -1,5 +1,6 @@
 [Global]
 IconName=amarok
+DesktopEntry=org.kde.amarok
 Comment=Amarok
 Comment[bg]=Amarok
 Comment[bs]=Amarok
