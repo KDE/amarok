@@ -150,6 +150,7 @@ Comment[uk]=Композиція у Amarok змінилася
 Comment[x-test]=xxAmarok changed to a new trackxx
 Comment[zh_TW]=Amarok 已變更至新的曲目
 Action=Popup
+Urgency=Low
 
 [Event/message]
 Name=Message
