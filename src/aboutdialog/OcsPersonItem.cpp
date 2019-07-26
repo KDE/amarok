@@ -92,7 +92,7 @@ OcsPersonItem::init()
 
     if( !m_person->emailAddress().isEmpty() )
     {
-        QAction *email = new QAction( QIcon::fromTheme( QStringLiteral("internet-mail") ), i18n("Email contributor"), this );
+        QAction *email = new QAction( QIcon::fromTheme( QStringLiteral("mail-send") ), i18n("Email contributor"), this );
         email->setToolTip( m_person->emailAddress() );
         email->setData( QString( "mailto:" + m_person->emailAddress() ) );
         m_iconsBar->addAction( email );
@@ -100,7 +100,7 @@ OcsPersonItem::init()
 
     if( !m_person->webAddress().isEmpty() )
     {
-        QAction *homepage = new QAction( QIcon::fromTheme( QStringLiteral("applications-internet") ), i18n("Visit contributor's homepage"), this );
+        QAction *homepage = new QAction( QIcon::fromTheme( QStringLiteral("internet-services") ), i18n("Visit contributor's homepage"), this );
         homepage->setToolTip( m_person->webAddress() );
         homepage->setData( m_person->webAddress() );
         m_iconsBar->addAction( homepage );
@@ -271,7 +271,7 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
             {
                 if( fillHomepageFromOcs )
                 {
-                    QAction *homepage = new QAction( QIcon::fromTheme( QStringLiteral("applications-internet") ), i18n("Visit contributor's homepage"), this );
+                    QAction *homepage = new QAction( QIcon::fromTheme( QStringLiteral("internet-services") ), i18n("Visit contributor's homepage"), this );
                     homepage->setToolTip( url );
                     homepage->setData( url );
                     m_iconsBar->addAction( homepage );

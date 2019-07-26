@@ -262,7 +262,7 @@ MainWindow::init()
         ServiceBrowser *serviceBrowser = ServiceBrowser::instance();
         serviceBrowser->setParent( 0 );
         serviceBrowser->setPrettyName( i18n( "Internet" ) );
-        serviceBrowser->setIcon( QIcon::fromTheme( "applications-internet" ) );
+        serviceBrowser->setIcon( QIcon::fromTheme( "internet-services" ) );
         serviceBrowser->setShortDescription( i18n( "Online sources of content" ) );
         m_browserDock->list()->addCategory( serviceBrowser );
         PERF_LOG( "Created ServiceBrowser" )

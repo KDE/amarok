@@ -160,7 +160,7 @@ Playlist::PlaylistColumnInfos::icons()
             << Meta::iconForField( Meta::valRating )
             << Meta::iconForField( Meta::valSamplerate )
             << Meta::iconForField( Meta::valScore )
-            << QStringLiteral("applications-internet")
+            << QStringLiteral("internet-services")
             << QLatin1String("") // source emblem
             << Meta::iconForField( Meta::valTitle )
             << Meta::iconForField( Meta::valTitle )

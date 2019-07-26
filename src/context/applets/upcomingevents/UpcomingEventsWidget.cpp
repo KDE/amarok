@@ -84,7 +84,7 @@ UpcomingEventsWidget::UpcomingEventsWidget( const LastFmEventPtr &event,
     {
         m_urlButton = new Plasma::PushButton( this );
         m_urlButton->setMaximumSize( QSizeF( 22, 22 ) );
-        m_urlButton->setIcon( QIcon::fromTheme("applications-internet") );
+        m_urlButton->setIcon( QIcon::fromTheme("internet-services") );
         m_urlButton->setToolTip( i18n( "Open Last.fm webpage for this event" ) );
         connect( m_urlButton, SIGNAL(clicked()), this, SLOT(openUrl()) );
         buttonsLayout->addItem( m_urlButton );
