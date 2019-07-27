@@ -22,6 +22,7 @@
 #include <KPluginInfo>
 #include <KPluginMetaData>
 
+#include <QVector>
 
 namespace Plugins {
 
