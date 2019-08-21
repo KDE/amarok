@@ -443,13 +443,12 @@ App::continueInit()
 
     PERF_LOG( "Begin App::continueInit" )
 
+    AmarokConfig::instance( "amarokrc" );
     newInstance();
 
     const bool restoreSession = m_args->positionalArguments().isEmpty() || m_args->isSet( "append" )
                                 || m_args->isSet( "queue" )
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
-
-    AmarokConfig::instance( "amarokrc" );
 
 #ifdef DEBUG_BUILD_TYPE
     new DebugLogger( this );
