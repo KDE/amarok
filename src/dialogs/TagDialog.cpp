@@ -826,9 +826,9 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
 
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
     QString urlString = tags.value( Meta::Field::URL ).toString();
-    QUrl url( urlString );
-    //pathOrUrl will give localpath or proper url for remote.
-    ui->kLineEdit_location->setText( url.toDisplayString() );
+    QUrl url = QUrl::fromUserInput( urlString );
+    //QUrl::PreferLocalFile will give localpath or proper url for remote.
+    ui->kLineEdit_location->setText( url.toDisplayString( QUrl::PreferLocalFile ) );
     if( url.isLocalFile() )
     {
         ui->locationLabel->show();
