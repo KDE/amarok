@@ -672,8 +672,9 @@ QUrl
 SqlCollectionLocation::moodFile( const QUrl &track ) const
 {
     QUrl moodPath = track;
+    QString fileName = moodPath.fileName();
     moodPath = moodPath.adjusted(QUrl::RemoveFilename);
-    moodPath.setPath(moodPath.path() +  '.' + moodPath.fileName().replace( QRegExp( "(\\.\\w{2,5})$" ), ".mood" ) );
+    moodPath.setPath(moodPath.path() +  '.' + fileName.replace( QRegExp( "(\\.\\w{2,5})$" ), ".mood" ) );
     return moodPath;
 }
 
