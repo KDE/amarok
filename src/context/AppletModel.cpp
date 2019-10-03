@@ -125,9 +125,6 @@ QVariant AppletModel::data(const QModelIndex& index, int role) const
 
         case ContentHeight:
             return Amarok::config(QStringLiteral("Context")).readEntry(package.metadata().pluginId() + "_contentHeight", 300);
-
-        case PackagePath:
-            return QVariant(package.path() + "contents/");
     }
 
     return QVariant();
@@ -172,7 +169,6 @@ QHash< int, QByteArray > AppletModel::roleNames() const
     roles.insert(Icon, "icon");
     roles.insert(Mainscript, "mainscript");
     roles.insert(Collapsed, "collapsed");
-    roles.insert(PackagePath, "packagePath");
     roles.insert(ContentHeight, "contentHeight");
 
     return roles;

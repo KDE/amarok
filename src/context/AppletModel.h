@@ -41,7 +41,6 @@ public:
         Icon,
         Mainscript,
         Collapsed,
-        PackagePath,
         ContentHeight
     };
     Q_ENUM(Role)

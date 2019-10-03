@@ -39,7 +39,7 @@ SvgTinter::~SvgTinter()
 {}
 
 QByteArray
-SvgTinter::tint( const QString &filename)
+SvgTinter::tint( const QString &filename )
 {
     QFile file( filename );
     if ( !file.open( QIODevice::ReadOnly ) )

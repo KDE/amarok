@@ -17,7 +17,6 @@
 import QtQuick 2.4
 import QtQuick.Dialogs 1.2
 import org.kde.kirigami 2.0 as Kirigami
-import org.kde.kirigami 2.0 as Kirigami
 
 
 Rectangle {
@@ -27,7 +26,6 @@ Rectangle {
     property alias title: header.title
     property string name: "Nameless Applet"
     property string appletId
-    property string packagePath
     property url iconSource
     property bool collapsed: false
     property bool configEnabled: false

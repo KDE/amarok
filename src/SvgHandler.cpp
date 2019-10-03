@@ -168,9 +168,6 @@ QPixmap SvgHandler::renderSvg( const QString &name,
 
 QPixmap SvgHandler::renderSvg( const QUrl& url, const QString& keyname, int width, int height, const QString& element, bool skipCache, const qreal opacity )
 {
-    if( !url.isLocalFile() )
-        return QPixmap();
-
     QString key;
     if( !skipCache )
     {
@@ -186,7 +183,7 @@ QPixmap SvgHandler::renderSvg( const QUrl& url, const QString& keyname, int widt
         pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
 
-        QString name = url.toLocalFile();
+        QString name = url.isLocalFile() ? url.toLocalFile() : ":" + url.path();
         QReadLocker readLocker( &m_lock );
         if( ! m_renderers[name] )
         {

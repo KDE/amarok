@@ -29,69 +29,80 @@ Item {
     ColumnLayout {
         anchors.fill: parent
 
-        ListView {
-            id: appletListView
+        Flickable {
+            id: appletFlickable
 
             signal scrollToApplet(string id)
 
             Layout.alignment: Qt.AlignTop
             Layout.fillHeight: true
             Layout.fillWidth: true
-            spacing: Kirigami.Units.smallSpacing
-            displayMarginEnd: 100000
-            displayMarginBeginning: 100000
-            clip: true
+            contentWidth: scrollBar.visible ? width - scrollBar.width : width
+            contentHeight: appletColumn.height
+            flickableDirection: Flickable.VerticalFlick
+            focus: true
 
-            model: AppletProxyModel
+            Keys.onUpPressed: scrollBar.decrease()
+            Keys.onDownPressed: scrollBar.increase()
 
             ScrollBar.vertical: ScrollBar { id: scrollBar }
 
-            delegate: Loader {
-                width: scrollBar.visible ? parent.width - scrollBar.width : parent.width
-                active: true
-                asynchronous: true
+            Column {
+                id: appletColumn
 
-                function initialize() {
-                    setSource(mainscript, {
-                        "name": name,
-                        "appletId": appletId,
-                        "iconSource": icon,
-                        "collapsed": collapsed,
-                        "contentHeight": contentHeight,
-                        "packagePath": packagePath,
-                        "configEnabled": Qt.binding(function() { return appletToolbar.configEnabled; } )
-                    });
-                }
+                width: parent.width
+                spacing: Kirigami.Units.smallSpacing
 
-                Component.onCompleted: initialize()
+                Repeater {
+                    model: AppletProxyModel
 
-                onStatusChanged: {
-                    if (status == Loader.Error) {
-                        Context.error("Error loading applet: " + appletId);
-                        Context.error(sourceComponent.errorString());
-                    }
-                    if (status == Loader.Ready) {
-                        Context.debug("Applet loaded: " + appletId);
-                    }
-                }
+                    delegate: Loader {
+                        width: appletColumn.width
+                        active: true
+                        asynchronous: false
 
-                Connections {
-                    target: AppletProxyModel
-
-                    onDataChanged: {
-                        if (!!mainscript && mainscript != source) {
-                            Context.debug("Data changed for applet " + appletId);
-                            initialize();
+                        function initialize() {
+                            setSource(mainscript, {
+                                "name": name,
+                                "appletId": appletId,
+                                "iconSource": icon,
+                                "collapsed": collapsed,
+                                "contentHeight": contentHeight,
+                                "configEnabled": Qt.binding(function() { return appletToolbar.configEnabled; } )
+                            });
                         }
-                    }
-                }
-                Connections {
-                    target: appletListView
 
-                    onScrollToApplet: {
-                        if (id == appletId) {
-                            appletListView.positionViewAtIndex(index, ListView.Beginning);
-                            Context.debug("Scroll to applet: " + appletId);
+                        Component.onCompleted: initialize()
+
+                        onStatusChanged: {
+                            if (status == Loader.Error) {
+                                Context.error("Error loading applet: " + appletId);
+                                Context.error(sourceComponent.errorString());
+                            }
+                            if (status == Loader.Ready) {
+                                Context.debug("Applet loaded: " + appletId);
+                            }
+                        }
+
+                        Connections {
+                            target: AppletProxyModel
+
+                            onDataChanged: {
+                                if (!!mainscript && mainscript != source) {
+                                    Context.debug("Data changed for applet " + appletId);
+                                    initialize();
+                                }
+                            }
+                        }
+                        Connections {
+                            target: appletFlickable
+
+                            onScrollToApplet: {
+                                if (id == appletId) {
+                                    appletFlickable.contentY = y;
+                                    Context.debug("Scroll to applet: " + appletId);
+                                }
+                            }
                         }
                     }
                 }
@@ -109,7 +120,7 @@ Item {
 
             contextRoot: root
             addItem: appletToolbarAddItem
-            listView: appletListView
+            flickable: appletFlickable
             Layout.alignment: Qt.AlignBottom
             Layout.fillWidth: true
         }

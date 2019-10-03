@@ -99,7 +99,7 @@ AmarokQml.Applet {
         id: emptyComponent
 
         AmarokQml.PixmapItem {
-            source: Svg.renderSvg("file://" + applet.packagePath + "images/amarok-currenttrack.svg",
+            source: Svg.renderSvg(applet.imageUrl("amarok-currenttrack.svg"),
                                   "CurrentTrack",
                                   width,
                                   height,

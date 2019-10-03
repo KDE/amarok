@@ -26,7 +26,7 @@ Rectangle {
 
     readonly property alias configEnabled: configureButton.checked
     property var addItem
-    property var listView
+    property var flickable
     property var contextRoot
 
     function resizeApplets() {
@@ -102,7 +102,7 @@ Rectangle {
                     "name": name,
                     "appletId": appletId,
                     "toolbar": root,
-                    "listView": root.listView,
+                    "flickable": root.flickable,
                     "contextRoot": root.contextRoot
                 });
             }

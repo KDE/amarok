@@ -26,7 +26,7 @@ MouseArea {
     property alias name: label.text
     property string appletId
     property var toolbar
-    property var listView
+    property var flickable
     property bool configEnabled: !!toolbar ? toolbar.configEnabled : false
     property bool held: false
 
@@ -42,7 +42,7 @@ MouseArea {
 
     onPressAndHold: if (configEnabled) held = true
     onReleased: held = false
-    onPressed: if (!configEnabled) listView.scrollToApplet(appletId)
+    onPressed: if (!configEnabled) flickable.scrollToApplet(appletId)
     onImplicitWidthChanged: toolbar.resizeApplets()
 
     DropArea {
