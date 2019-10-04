@@ -1258,8 +1258,9 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
         return false;
     }
 
-    QString fileName = sqlChannel->saveLocation().adjusted(QUrl::StripTrailingSlash).toLocalFile();
-    fileName += download.fileName;
+    QString fileName = sqlChannel->saveLocation().adjusted(QUrl::StripTrailingSlash).toLocalFile()
+                       + QLatin1Char('/')
+                       + download.fileName;
     debug() << "checking " << fileName;
     QFileInfo fileInfo( fileName );
     if( !fileInfo.exists() )
@@ -1386,6 +1387,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
         }
 
         QString finalName = sqlChannel->saveLocation().adjusted(QUrl::StripTrailingSlash).toLocalFile()
+                            + QLatin1Char('/')
                             + download.fileName;
         if( tmpFile->rename( finalName ) )
         {
