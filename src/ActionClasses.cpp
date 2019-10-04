@@ -178,6 +178,7 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
     ac->addAction( QStringLiteral("play_pause"), this );
     setText( i18n( "Play/Pause" ) );
     setShortcut( Qt::Key_Space );
+    KGlobalAccel::setGlobalShortcut( this, QKeySequence() );
 
     EngineController *engine = The::engineController();
 
