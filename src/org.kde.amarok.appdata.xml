@@ -13,6 +13,7 @@
   <name xml:lang="el">Amarok</name>
   <name xml:lang="en-GB">Amarok</name>
   <name xml:lang="es">Amarok</name>
+  <name xml:lang="et">Amarok</name>
   <name xml:lang="eu">Amarok</name>
   <name xml:lang="fi">Amarok</name>
   <name xml:lang="fr">Amarok</name>
@@ -47,6 +48,7 @@
   <summary xml:lang="el">Αναπαραγωγέας ήχου</summary>
   <summary xml:lang="en-GB">Audio Player</summary>
   <summary xml:lang="es">Reproductor de sonido</summary>
+  <summary xml:lang="et">Helimängija</summary>
   <summary xml:lang="eu">Audio jotzailea</summary>
   <summary xml:lang="fi">Äänisoitin</summary>
   <summary xml:lang="fr">Lecteur audio</summary>
@@ -77,6 +79,7 @@
     <p xml:lang="el">Το Amarok είναι ένας ελεύθερος, πολλαπλών πλατφορμών και χρήσεων, πανίσχυρος και πλούσιος σε χαρακτηριστικά αναπαραγωγέας μουσικής και διαχειριστής συλλογών.</p>
     <p xml:lang="en-GB">Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
     <p xml:lang="es">Amarok es un potente, versátil, libre y multiplataforma reproductor de música y gestor de colecciones que dispone de gran cantidad de funciones.</p>
+    <p xml:lang="et">Amarok on vaba platvormiülene töökindel, võimas ja võimalusterohke muusikamängija ja muusikakogu haldaja.</p>
     <p xml:lang="eu">Amarok musika jotzaile eta bilduma kudeatzaile askea, plataforma-anitza, erabilera askokoa, ahaltsua eta eginbidetan aberatsa da.</p>
     <p xml:lang="fi">Amarok on vapaa, monipuolinen ja tehokas monen alustan musiikkisoitin- ja -kokoelmanhallintasovellus.</p>
     <p xml:lang="fr">Amarok est un lecteur de musique et un gestionnaire de collections libre, multiplateforme, polyvalent, puissant et riche en fonctionnalités.</p>
@@ -103,6 +106,7 @@
     <p xml:lang="el">Χαρακτηριστικά:</p>
     <p xml:lang="en-GB">Features:</p>
     <p xml:lang="es">Funciones:</p>
+    <p xml:lang="et">Omadused:</p>
     <p xml:lang="eu">Eginbideak:</p>
     <p xml:lang="fi">Ominaisuudet:</p>
     <p xml:lang="fr">Fonctionnalités :</p>
@@ -140,6 +144,7 @@
       <li xml:lang="el">Δυναμικές λίστες αναπαραγωγής που ανταποκρίνονται σε διαφορετικά κριτήρια</li>
       <li xml:lang="en-GB">Dynamic playlists matching different criteria</li>
       <li xml:lang="es">Listas de reproducción dinámicas según distintos criterios</li>
+      <li xml:lang="et">Dünaamilised esitusloendid vastavalt mitmesugustele kriteeriumidele</li>
       <li xml:lang="eu">Irizpide ezberdinak uztartzen dituen jotze-zerrenda dinamikoa</li>
       <li xml:lang="fi">Eri ehtoja vastaavat dynaamiset soittolistat</li>
       <li xml:lang="fr">Listes de lectures dynamiques selon différents critères</li>
@@ -171,6 +176,7 @@
       <li xml:lang="el">Διαχείριση συλλογών με υποστήριξη αξιολόγησης</li>
       <li xml:lang="en-GB">Collection managing with rating support</li>
       <li xml:lang="es">Gestión de colección con uso de puntuaciones</li>
+      <li xml:lang="et">Kogude haldamine, mis pakub ka hindamise võimalust</li>
       <li xml:lang="eu">Bilduma kudeaketa balorazioak onartzen dituelarik</li>
       <li xml:lang="fi">Kokoelmanhallinta arviointituella</li>
       <li xml:lang="fr">Gestion de collection avec prise en charge des évaluations</li>
@@ -203,6 +209,7 @@
       <li xml:lang="el">Υποστήριξη για τις βασικές συσκευές iPod, MTP και UMS αναπαραγωγής μουσικής</li>
       <li xml:lang="en-GB">Support for basic iPod, MTP and UMS music player devices</li>
       <li xml:lang="es">Implementación básica de dispositivos de reproducción de música como iPod y los que usan los protocolos MTP y UMS</li>
+      <li xml:lang="et">Peamiste iPodi, MTP ja UMS muusikaesitamise seadmete toetus</li>
       <li xml:lang="eu">iPod, MTP eta UMS musika gailu jotzaileen oinarrizko euskarrirekin</li>
       <li xml:lang="fi">Tuki tavallisille iPod-, MTP- ja UMS-musiikkisoitinlaitteille</li>
       <li xml:lang="fr">Prise en charge basique des iPod et des lecteurs de musique conformes à MTP et UMS</li>
@@ -234,6 +241,7 @@
       <li xml:lang="el">Ενσωματωμένες Διαδικτυακές υπηρεσίες: last.fm, Magnatune, Jamendo, Ampache, mp3tunes και άλλα.</li>
       <li xml:lang="en-GB">Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
       <li xml:lang="es">Servicios de Internet integrados: last.fm, Magnatune, Jamendo, Ampache, mp3tunes y más.</li>
+      <li xml:lang="et">Lõimimine internetiteenustega: last.fm, Magnatune, Jamendo, Ampache, mp3tunes jpm.</li>
       <li xml:lang="eu">Barneratutako Internet zerbitzuak: last.fm, Magnatune, Jamendo, Ampache, mp3tunes eta gehiago.</li>
       <li xml:lang="fi">Sisäänrakennetut internetpalvelut: Last.fm, Magnatune, Jamendo, Ampache, mp3tunes ja muita.</li>
       <li xml:lang="fr">Intégration des services Internet : last.fm, Magnatune, Jamendo, Ampache, mp3tune et plus.</li>
@@ -265,6 +273,7 @@
       <li xml:lang="el">Υποστήριξη συγγραφής σεναρίων</li>
       <li xml:lang="en-GB">Scripting support</li>
       <li xml:lang="es">Uso de guiones</li>
+      <li xml:lang="et">Skriptimise toetus</li>
       <li xml:lang="eu">Script-ekin lan egitea onartzen du</li>
       <li xml:lang="fi">Skriptaustuki</li>
       <li xml:lang="fr">Gestion de scripts</li>
@@ -298,6 +307,7 @@
       <li xml:lang="el">Διαχειριστής εξωφύλλων</li>
       <li xml:lang="en-GB">Cover manager</li>
       <li xml:lang="es">Gestor de carátulas</li>
+      <li xml:lang="et">Kaanepiltide haldamine</li>
       <li xml:lang="eu">Azal kudeatzailea</li>
       <li xml:lang="fi">Kansikuvien hallinta</li>
       <li xml:lang="fr">Gestionnaire de pochettes</li>
@@ -329,6 +339,7 @@
       <li xml:lang="el">Υποστήριξη κανονικοποίησης ακουστότητας</li>
       <li xml:lang="en-GB">Replay gain support</li>
       <li xml:lang="es">Implementación de normalización de audio</li>
+      <li xml:lang="et">Helitugevuse parandamise toetus</li>
       <li xml:lang="eu">Berriz-jotze irabazi (rg) euskarria</li>
       <li xml:lang="fi">Voimakkuudentasauksen tuki</li>
       <li xml:lang="fr">Prise en charge de Replay Gain</li>
@@ -365,6 +376,7 @@
       <caption xml:lang="el">Αναπαραγωγή μοθσικής στο Amarok</caption>
       <caption xml:lang="en-GB">Playing music in Amarok</caption>
       <caption xml:lang="es">Reproduciendo música en Amarok</caption>
+      <caption xml:lang="et">Muusika esitamine Amarokis</caption>
       <caption xml:lang="eu">Amaroken musika jotzea</caption>
       <caption xml:lang="fi">Musiikin toistaminen Amarokissa</caption>
       <caption xml:lang="fr">Lecture de musique dans Amarok</caption>
@@ -392,6 +404,7 @@
       <caption xml:lang="el">Amarok παράθυρα</caption>
       <caption xml:lang="en-GB">Amarok windows</caption>
       <caption xml:lang="es">Ventanas de Amarok</caption>
+      <caption xml:lang="et">Amaroki aknad</caption>
       <caption xml:lang="eu">Amarokeko leihoak</caption>
       <caption xml:lang="fi">Amarok-ikkunat</caption>
       <caption xml:lang="fr">Fenêtres Amarok</caption>
