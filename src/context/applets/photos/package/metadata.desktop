@@ -58,6 +58,7 @@ Name[zh_TW]=Photos
 Type=Service
 Icon=photos-amarok
 ServiceTypes=Amarok/ContextApplet
+Comment=Photos applet for Amarok
 
 X-KDE-PluginInfo-Author=Simon Esneault
 X-KDE-PluginInfo-Email=simon.esneault@gmail.com

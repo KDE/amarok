@@ -65,6 +65,7 @@ Name[zh_TW]=專輯
 Type=Service
 Icon=media-album-cover-manager-amarok
 ServiceTypes=Amarok/ContextApplet
+Comment=Album cover manager for Amarok
 
 X-KDE-PluginInfo-Author=Seb Ruiz
 X-KDE-PluginInfo-Email=ruiz@kde.org

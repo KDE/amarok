@@ -59,6 +59,7 @@ Name[zh_TW]=歌詞
 Type=Service
 Icon=amarok_lyrics
 ServiceTypes=Amarok/ContextApplet
+Comment=Lyrics applet for Amarok
 
 X-KDE-PluginInfo-Name=org.kde.amarok.lyrics
 X-KDE-PluginInfo-Author=Leo Franchi

@@ -56,6 +56,7 @@ Name[zh_TW]=現在的曲目
 Type=Service
 Icon=current-track-amarok
 ServiceTypes=Amarok/ContextApplet
+Comment=Current track applet for Amarok
 
 X-KDE-PluginInfo-Name=org.kde.amarok.currenttrack
 X-KDE-PluginInfo-Author=Leo Franchi

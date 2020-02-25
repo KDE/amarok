@@ -58,6 +58,7 @@ Name[zh_TW]=維基百科
 Type=Service
 ServiceTypes=Amarok/ContextApplet
 Icon=amarok-wikipedia
+Comment=Wikipedia applet for Amarok
 
 X-KDE-PluginInfo-Author=Leo Franchi
 X-KDE-PluginInfo-Email=lfranchi@gmail.com

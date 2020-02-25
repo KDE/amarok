@@ -40,6 +40,7 @@ Name[zh_TW]=分析器
 Type=Service
 ServiceTypes=Amarok/ContextApplet
 Icon=view-media-analyzer-amarok
+Comment=Analyzer applet for Amarok
 
 X-KDE-PluginInfo-Author=Mark Kretschmann
 X-KDE-PluginInfo-Email=kretschmann@kde.org
