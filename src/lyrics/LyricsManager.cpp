@@ -31,7 +31,7 @@
 #include <KLocalizedString>
 
 
-#define APIURL "http://lyrics.wikia.com/api.php?action=query&prop=revisions&rvprop=content&format=xml&titles="
+#define APIURL "https://lyrics.fandom.com/api.php?action=query&prop=revisions&rvprop=content&format=xml&titles="
 
 
 LyricsManager* LyricsManager::s_self = nullptr;
@@ -136,6 +136,10 @@ void LyricsManager::loadLyrics( Meta::TrackPtr track, bool overwrite )
 
     QUrl url( APIURL + artist + QLatin1Char(':') + title );
     m_trackMap.insert( url, track );
+
+    connect( NetworkAccessManagerProxy::instance(), &NetworkAccessManagerProxy::requestRedirectedUrl,
+             this, &LyricsManager::updateRedirectedUrl);
+
     NetworkAccessManagerProxy::instance()->getData( url, this, &LyricsManager::lyricsLoaded );
 }
 
@@ -272,4 +276,17 @@ bool LyricsManager::isEmpty( const QString &lyrics ) const
     QString testText = testItem.toPlainText().trimmed();
 
     return testText.isEmpty();
+}
+
+void LyricsManager::updateRedirectedUrl(const QUrl& oldUrl, const QUrl& newUrl)
+{
+    if( m_trackMap.contains( oldUrl ) && !m_trackMap.contains( newUrl ) )
+    {
+        // Get track for the old URL.
+        Meta::TrackPtr track = m_trackMap.value( oldUrl );
+
+        // Replace with redirected url for correct lookup
+        m_trackMap.insert( newUrl, track );
+        m_trackMap.remove( oldUrl );
+    }
 }

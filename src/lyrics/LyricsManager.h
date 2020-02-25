@@ -68,6 +68,9 @@ class AMAROK_EXPORT LyricsManager : public QObject
         static LyricsManager* s_self;
 
         QMap<QUrl, Meta::TrackPtr> m_trackMap;
+
+    private Q_SLOTS:
+        void updateRedirectedUrl( const QUrl& oldUrl, const QUrl& newUrl );
 };
 
 #endif
