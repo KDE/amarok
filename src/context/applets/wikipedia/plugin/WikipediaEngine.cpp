@@ -493,7 +493,6 @@ WikipediaEngine::fetchListing( const QString &title, const QString &hostLang )
     query.addQueryItem( QLatin1String("list"), QLatin1String("search") );
     query.addQueryItem( QLatin1String("srsearch"), title );
     query.addQueryItem( QLatin1String("srprop"), QLatin1String("size") );
-    query.addQueryItem( QLatin1String("srredirects"), QString::number(1) );
     query.addQueryItem( QLatin1String("srlimit"), QString::number(20) );
     query.addQueryItem( QLatin1String("format"), QLatin1String("xml") );
     url.setQuery( query );

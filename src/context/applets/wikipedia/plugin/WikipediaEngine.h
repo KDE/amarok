@@ -60,6 +60,7 @@ public:
     QString title() const { return m_title; }
     QString language() const { return preferredLangs.first(); }
     void setLanguage( const QString &language );
+    Q_INVOKABLE void reloadWikipedia();
 
 Q_SIGNALS:
     void pageChanged();
@@ -74,7 +75,6 @@ private:
     void fetchWikiUrl( const QString &title, const QString &urlPrefix );
     void fetchLangLinks( const QString &title, const QString &hostLang, const QString &llcontinue = QString() );
     void fetchListing( const QString &title, const QString &hostLang );
-    void reloadWikipedia();
     bool setSelection( const QString &type );
     void updateEngine();
     void wikiParse( QString &page );

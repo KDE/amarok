@@ -53,7 +53,7 @@ AmarokQml.Applet {
                 Layout.alignment: Qt.AlignLeft
                 tooltip: i18n("Refresh")
 
-                onClicked: content.reload()
+                onClicked: WikipediaEngine.reloadWikipedia()
             }
             Item {
                 Layout.fillWidth: true
@@ -98,8 +98,10 @@ AmarokQml.Applet {
             Layout.alignment: Qt.AlignBottom
 
             onNavigationRequested: {
-                request.action = WebEngineNavigationRequest.IgnoreRequest;
-                WikipediaEngine.url = request.url;
+                if (request.navigationType == WebEngineNavigationRequest.LinkClickedNavigation) {
+                    request.action = WebEngineNavigationRequest.IgnoreRequest
+                    WikipediaEngine.url = request.url
+                }
             }
 
             Connections {
