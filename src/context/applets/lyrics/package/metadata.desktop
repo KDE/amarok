@@ -60,6 +60,13 @@ Type=Service
 Icon=amarok_lyrics
 ServiceTypes=Amarok/ContextApplet
 Comment=Lyrics applet for Amarok
+Comment[ca]=Miniaplicació de lletres per a l'Amarok
+Comment[et]=Amaroki sõnadeaplett
+Comment[nl]=Liedtekst-applet voor Amarok
+Comment[pt]='Applet' de letras musicais do Amarok
+Comment[sv]=Sångtextminiprogram för Amarok
+Comment[uk]=Аплет слів пісні для Amarok
+Comment[x-test]=xxLyrics applet for Amarokxx
 
 X-KDE-PluginInfo-Name=org.kde.amarok.lyrics
 X-KDE-PluginInfo-Author=Leo Franchi

@@ -57,6 +57,13 @@ Type=Service
 Icon=current-track-amarok
 ServiceTypes=Amarok/ContextApplet
 Comment=Current track applet for Amarok
+Comment[ca]=Miniaplicació de peça actual per a l'Amarok
+Comment[et]=Amaroki aktiivse raja aplett
+Comment[nl]=Huidig track-applet voor Amarok
+Comment[pt]='Applet' da faixa actual para o Amarok
+Comment[sv]=Miniprogram med aktuellt spår för Amarok
+Comment[uk]=Аплет поточної композиції для Amarok
+Comment[x-test]=xxCurrent track applet for Amarokxx
 
 X-KDE-PluginInfo-Name=org.kde.amarok.currenttrack
 X-KDE-PluginInfo-Author=Leo Franchi

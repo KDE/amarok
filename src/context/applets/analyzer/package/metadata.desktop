@@ -41,6 +41,13 @@ Type=Service
 ServiceTypes=Amarok/ContextApplet
 Icon=view-media-analyzer-amarok
 Comment=Analyzer applet for Amarok
+Comment[ca]=Miniaplicació analitzadora per a l'Amarok
+Comment[et]=Amaroki analüüsiaplett
+Comment[nl]=Analyse-applet voor Amarok
+Comment[pt]='Applet' de analisador do Amarok
+Comment[sv]=Analysatorminiprogram för Amarok
+Comment[uk]=Аплет аналізатора для Amarok
+Comment[x-test]=xxAnalyzer applet for Amarokxx
 
 X-KDE-PluginInfo-Author=Mark Kretschmann
 X-KDE-PluginInfo-Email=kretschmann@kde.org

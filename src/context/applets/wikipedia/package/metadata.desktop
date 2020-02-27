@@ -59,6 +59,13 @@ Type=Service
 ServiceTypes=Amarok/ContextApplet
 Icon=amarok-wikipedia
 Comment=Wikipedia applet for Amarok
+Comment[ca]=Miniaplicació de la viquipèdia per a l'Amarok
+Comment[et]=Amaroki Wikipedia aplett
+Comment[nl]=Wikipedia-applet voor Amarok
+Comment[pt]='Applet' do Wikipédia para o Amarok
+Comment[sv]=Wikipediaminiprogram för Amarok
+Comment[uk]=Аплет Вікіпедії для Amarok
+Comment[x-test]=xxWikipedia applet for Amarokxx
 
 X-KDE-PluginInfo-Author=Leo Franchi
 X-KDE-PluginInfo-Email=lfranchi@gmail.com

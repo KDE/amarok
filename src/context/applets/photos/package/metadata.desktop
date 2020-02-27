@@ -59,6 +59,13 @@ Type=Service
 Icon=photos-amarok
 ServiceTypes=Amarok/ContextApplet
 Comment=Photos applet for Amarok
+Comment[ca]=Miniaplicació de fotos per a l'Amarok
+Comment[et]=Amaroki fotoaplett
+Comment[nl]=Foto's-applet voor Amarok
+Comment[pt]='Applet' de fotografias do Amarok
+Comment[sv]=Fotominiprogram för Amarok
+Comment[uk]=Аплет фотографій для Amarok
+Comment[x-test]=xxPhotos applet for Amarokxx
 
 X-KDE-PluginInfo-Author=Simon Esneault
 X-KDE-PluginInfo-Email=simon.esneault@gmail.com
