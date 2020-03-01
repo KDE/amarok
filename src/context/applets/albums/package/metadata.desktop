@@ -67,6 +67,7 @@ Icon=media-album-cover-manager-amarok
 ServiceTypes=Amarok/ContextApplet
 Comment=Album cover manager for Amarok
 Comment[ca]=Gestor per a les caràtules d'àlbum per a l'Amarok
+Comment[ca@valencia]=Gestor per a les caràtules d'àlbum per a l'Amarok
 Comment[et]=Amaroki kaanepildihaldur
 Comment[nl]=Albumhoesbeheerder voor Amarok
 Comment[pt]=Gestor de capas de álbuns para o Amarok

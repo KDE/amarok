@@ -42,6 +42,7 @@ ServiceTypes=Amarok/ContextApplet
 Icon=view-media-analyzer-amarok
 Comment=Analyzer applet for Amarok
 Comment[ca]=Miniaplicació analitzadora per a l'Amarok
+Comment[ca@valencia]=Miniaplicació analitzadora per a l'Amarok
 Comment[et]=Amaroki analüüsiaplett
 Comment[nl]=Analyse-applet voor Amarok
 Comment[pt]='Applet' de analisador do Amarok

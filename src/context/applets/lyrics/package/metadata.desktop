@@ -61,6 +61,7 @@ Icon=amarok_lyrics
 ServiceTypes=Amarok/ContextApplet
 Comment=Lyrics applet for Amarok
 Comment[ca]=Miniaplicació de lletres per a l'Amarok
+Comment[ca@valencia]=Miniaplicació de lletres per a l'Amarok
 Comment[et]=Amaroki sõnadeaplett
 Comment[nl]=Liedtekst-applet voor Amarok
 Comment[pt]='Applet' de letras musicais do Amarok

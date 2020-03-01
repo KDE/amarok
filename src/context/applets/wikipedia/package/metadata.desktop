@@ -60,6 +60,7 @@ ServiceTypes=Amarok/ContextApplet
 Icon=amarok-wikipedia
 Comment=Wikipedia applet for Amarok
 Comment[ca]=Miniaplicació de la viquipèdia per a l'Amarok
+Comment[ca@valencia]=Miniaplicació de la viquipèdia per a l'Amarok
 Comment[et]=Amaroki Wikipedia aplett
 Comment[nl]=Wikipedia-applet voor Amarok
 Comment[pt]='Applet' do Wikipédia para o Amarok
