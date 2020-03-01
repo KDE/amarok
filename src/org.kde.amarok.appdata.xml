@@ -362,7 +362,7 @@
       <li xml:lang="x-test">xxReplay gain supportxx</li>
     </ul>
   </description>
-  <url type="homepage">http://amarok.kde.org</url>
+  <url type="homepage">https://amarok.kde.org</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=amarok</url>
   <url type="help">https://docs.kde.org/index.php?application=amarok</url>
   <screenshots>
@@ -392,7 +392,7 @@
       <caption xml:lang="uk">Відтворення музики в Amarok</caption>
       <caption xml:lang="x-test">xxPlaying music in Amarokxx</caption>
       <caption xml:lang="zh-TW">Amarok 播放音樂時的畫面</caption>
-      <image>http://kde.org/images/screenshots/amarok.png</image>
+      <image>https://cdn.kde.org/screenshots/amarok/amarok.png</image>
     </screenshot>
     <screenshot>
       <caption>Amarok windows</caption>
