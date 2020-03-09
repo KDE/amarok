@@ -54,12 +54,6 @@
 #include <XmlQuery.h>
 
 
-QString md5( const QByteArray& src )
-{
-    QByteArray const digest = QCryptographicHash::hash( src, QCryptographicHash::Md5 );
-    return QString::fromLatin1( digest.toHex() ).rightJustified( 32, '0' );
-}
-
 LastFmServiceFactory::LastFmServiceFactory()
     : ServiceFactory()
 {}
@@ -114,6 +108,9 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     // set the global static Lastfm::Ws stuff
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = Amarok::lastfmApiSharedSecret();
+
+    // HTTPS is the only scheme supported by Auth
+    lastfm::ws::setScheme(lastfm::ws::Https);
 
     // set the nam TWICE. Yes. It prevents liblastfm from deleting it, see their code
     lastfm::setNetworkAccessManager( The::networkAccessManager() );
@@ -207,12 +204,10 @@ LastFmService::slotReconfigure()
             m_authenticateReply = 0;
         }
 
-        const QString authToken = md5( QString( "%1%2" ).arg( m_config->username(),
-                md5( m_config->password().toUtf8() ) ).toUtf8() );
         QMap<QString, QString> query;
         query[ "method" ] = "auth.getMobileSession";
+        query[ "password" ] = m_config->password();
         query[ "username" ] = m_config->username();
-        query[ "authToken" ] = authToken;
         m_authenticateReply = lastfm::ws::post( query );
         connect( m_authenticateReply, &QNetworkReply::finished, this, &LastFmService::onAuthenticated ); // calls continueReconfiguring()
     }
