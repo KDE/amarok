@@ -64,7 +64,7 @@ def generatePseudoHeader( rootDir, fileName ):
             accessMap = {}
             for access in ( 'private slots:', 'protected slots:', 'public slots:', 'private:', 'public:', 'protected:', 'signals:', '};' ):
                 indexFromBeg = contents[classBeg:].find( access ) + classBeg
-                if indexFromBeg is not -1:
+                if indexFromBeg != -1:
                     accessMap[ indexFromBeg ] = access
 
             sortedKeys = sorted( accessMap.keys() )
