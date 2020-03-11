@@ -49,10 +49,10 @@ class MyCollectionLocation : public CollectionLocation
 public:
     Collections::CollectionTestImpl *coll;
 
-    QString prettyLocation() const { return "foo"; }
-    bool isWritable() const { return true; }
+    QString prettyLocation() const override { return "foo"; }
+    bool isWritable() const override { return true; }
 
-    void removeUrlsFromCollection( const Meta::TrackList &sources )
+    void removeUrlsFromCollection( const Meta::TrackList &sources ) override
     {
         trackRemoveCount += sources.count();
         coll->mc->acquireWriteLock();
@@ -64,7 +64,7 @@ public:
         slotRemoveOperationFinished();
     }
 
-    void copyUrlsToCollection(const QMap<Meta::TrackPtr, QUrl> &sources, const Transcoding::Configuration& conf)
+    void copyUrlsToCollection(const QMap<Meta::TrackPtr, QUrl> &sources, const Transcoding::Configuration& conf) override
     {
         Q_UNUSED( conf )
         trackCopyCount = sources.count();
@@ -80,7 +80,7 @@ class MyCollectionTestImpl : public CollectionTestImpl
 public:
     MyCollectionTestImpl( const QString &id ) : CollectionTestImpl( id ) {}
 
-    CollectionLocation* location()
+    CollectionLocation* location() override
     {
         MyCollectionLocation *r = new MyCollectionLocation();
         r->coll = this;

@@ -48,7 +48,7 @@ class TestRemoveCL : public CollectionLocation
 {
 public:
 
-    void removeUrlsFromCollection( const Meta::TrackList &tracks )
+    void removeUrlsFromCollection( const Meta::TrackList &tracks ) override
     {
         count += tracks.count();
         slotRemoveOperationFinished();

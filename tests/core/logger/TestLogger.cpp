@@ -40,7 +40,7 @@ using ::testing::Mock;
 class DummyJob : public KJob
 {
 public:
-    virtual void start() {}
+    void start() override {}
 };
 
 TestLogger::TestLogger()
@@ -67,7 +67,7 @@ class ProgressJob : public QObject, public ThreadWeaver::Job
     Q_OBJECT
 public:
     ProgressJob() : deleteJob( false ), deleteObject( false ) {}
-    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
+    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread) override
     {
         Q_UNUSED(self);
         Q_UNUSED(thread);
@@ -83,13 +83,13 @@ public:
     bool deleteObject;
 
     protected:
-    void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+    void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread) override
     {
         Q_EMIT started(self);
         ThreadWeaver::Job::defaultBegin(self, thread);
     }
 
-    void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+    void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread) override
     {
         ThreadWeaver::Job::defaultEnd(self, thread);
         if (!self->success()) {
