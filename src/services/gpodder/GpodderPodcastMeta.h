@@ -44,10 +44,10 @@ class GpodderPodcastChannel : public PodcastChannel
         GpodderPodcastChannel( GpodderProvider *provider, mygpo::PodcastPtr channel );
 
         //PodcastChannel Methods
-        virtual Playlists::PlaylistProvider *provider() const;
+        Playlists::PlaylistProvider *provider() const override;
 
         //Playlist virtual methods
-        virtual QUrl uidUrl() const;
+        QUrl uidUrl() const override;
 
     private:
         GpodderProvider *m_provider;

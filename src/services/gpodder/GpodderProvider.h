@@ -61,7 +61,7 @@ public:
      */
     PodcastEpisodePtr episodeForGuid( const QString &guid ) override;
 
-    virtual void addPodcast( const QUrl &url );
+    void addPodcast( const QUrl &url ) override;
 
     Podcasts::PodcastChannelPtr addChannel( const Podcasts::PodcastChannelPtr &channel ) override;
     Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode ) override;

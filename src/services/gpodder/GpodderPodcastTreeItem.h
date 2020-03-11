@@ -27,8 +27,8 @@ class GpodderPodcastTreeItem: public GpodderTreeItem
     Q_OBJECT
 public:
     explicit GpodderPodcastTreeItem( mygpo::PodcastPtr podcast, GpodderTreeItem *parent = nullptr );
-    virtual ~GpodderPodcastTreeItem();
-    virtual QVariant displayData() const;
+    ~GpodderPodcastTreeItem() override;
+    QVariant displayData() const override;
 
     mygpo::PodcastPtr podcast() const;
 private:

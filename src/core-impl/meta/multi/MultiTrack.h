@@ -44,11 +44,11 @@ namespace Meta
             int current() const;
             QUrl nextUrl() const;
 
-            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-            virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type );
+            bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+            Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
             // forward lots of stuff:
-#define FORWARD( Type, method, default ) Type method() const { return m_currentTrack ? m_currentTrack->method() : default; }
+#define FORWARD( Type, method, default ) Type method() const override { return m_currentTrack ? m_currentTrack->method() : default; }
             FORWARD( QString, name, QString() )
             FORWARD( QString, prettyName, QString() )
             FORWARD( QUrl, playableUrl, QUrl() )
@@ -75,8 +75,8 @@ namespace Meta
             FORWARD( QString, type, QString() )
 #undef FORWARD
 
-            void prepareToPlay();
-            virtual StatisticsPtr statistics();
+            void prepareToPlay() override;
+            StatisticsPtr statistics() override;
 
         Q_SIGNALS:
             void urlChanged( const QUrl &url );

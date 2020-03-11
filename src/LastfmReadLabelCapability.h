@@ -34,9 +34,9 @@ class LastfmReadLabelCapability : public Capabilities::ReadLabelCapability
     Q_OBJECT
     public:
         explicit LastfmReadLabelCapability( Meta::Track *track );
-        virtual void fetchLabels();
-        virtual void fetchGlobalLabels();
-        virtual QStringList labels();
+        void fetchLabels() override;
+        void fetchGlobalLabels() override;
+        QStringList labels() override;
 
     private:
         QStringList m_labels;

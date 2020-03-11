@@ -38,11 +38,11 @@ class GpodderServiceFactory : public ServiceFactory
 
 public:
     GpodderServiceFactory();
-    virtual ~GpodderServiceFactory();
+    ~GpodderServiceFactory() override;
 
-    virtual void init();
-    virtual QString name();
-    virtual KConfigGroup config();
+    void init() override;
+    QString name() override;
+    KConfigGroup config() override;
 
 private Q_SLOTS:
     void slotCreateGpodderService();
@@ -66,11 +66,11 @@ private Q_SLOTS:
 
 private:
     void init();
-    void polish();
+    void polish() override;
 
     void enableGpodderProvider( const QString &username );
 
-    virtual Collections::Collection *collection() { return 0; }
+    Collections::Collection *collection() override { return 0; }
 
     bool m_inited;
 
