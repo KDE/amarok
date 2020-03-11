@@ -32,7 +32,7 @@ class MetaCapabilityMock : public MetaCapability
         static Capabilities::ActionsCapability *actionsCapability;
         static Capabilities::BookmarkThisCapability *bookmarkThisCapability;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+        bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
         {
             switch( type )
             {
@@ -45,7 +45,7 @@ class MetaCapabilityMock : public MetaCapability
             return false;
         }
 
-        virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type )
+        Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type ) override
         {
             switch( type )
             {

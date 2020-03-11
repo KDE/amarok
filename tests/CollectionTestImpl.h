@@ -41,37 +41,37 @@ public:
     {
     }
 
-    QueryMaker* queryMaker()
+    QueryMaker* queryMaker() override
     {
         return new MemoryQueryMaker( mc.toWeakRef(), id );
     }
 
-    QIcon icon() const
+    QIcon icon() const override
     {
         return QIcon();
     }
 
-    QString collectionId() const
+    QString collectionId() const override
     {
         return id;
     }
 
-    QString prettyName() const
+    QString prettyName() const override
     {
         return id;
     }
 
-    CollectionLocation *location()
+    CollectionLocation *location() override
     {
         return new CollectionLocationTestImpl( mc, this );
     }
 
-    bool possiblyContainsTrack( const QUrl &url ) const
+    bool possiblyContainsTrack( const QUrl &url ) const override
     {
         return findTrackForUrl( url );
     }
 
-    Meta::TrackPtr trackForUrl( const QUrl &url )
+    Meta::TrackPtr trackForUrl( const QUrl &url ) override
     {
         return findTrackForUrl( url );
     }
@@ -101,18 +101,18 @@ private:
         {
         }
 
-        QString prettyLocation() const
+        QString prettyLocation() const override
         {
             return "/" + collection()->prettyName();
         }
 
-        bool isWritable() const
+        bool isWritable() const override
         {
             return true;
         }
 
         void copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> &sources,
-                                   const Transcoding::Configuration &configuration )
+                                   const Transcoding::Configuration &configuration ) override
         {
             Q_UNUSED( configuration );
 
@@ -127,7 +127,7 @@ private:
             slotCopyOperationFinished();
         }
 
-        bool insert( const Meta::TrackPtr &track, const QString &url )
+        bool insert( const Meta::TrackPtr &track, const QString &url ) override
         {
             Q_UNUSED( url );
 

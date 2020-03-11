@@ -37,25 +37,25 @@ class CollectionMock : public Collection
          *
          * NOT TO BE USED ANYWHERE IN THE TEST
          */
-        virtual QueryMaker *queryMaker()
+        QueryMaker *queryMaker() override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
             return 0;
         }
 
-        virtual QString collectionId() const
+        QString collectionId() const override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
             return QString();
         }
 
-        virtual QString prettyName() const
+        QString prettyName() const override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
             return QString();
         }
 
-        virtual QIcon icon() const
+        QIcon icon() const override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
             return QIcon();
@@ -69,13 +69,13 @@ class CollectionMock : public Collection
 class CollectionLocationMock : public CollectionLocation
 {
     public:
-        virtual bool isWritable() const
+        bool isWritable() const override
         {
             QFETCH( bool, isWritable );
             return isWritable;
         }
 
-        virtual bool isOrganizable() const
+        bool isOrganizable() const override
         {
             QFETCH( bool, isOrganizable );
             return isOrganizable;
@@ -89,7 +89,7 @@ class CollectionLocationMock : public CollectionLocation
 class TestingCollectionMock : public CollectionMock
 {
     public:
-        virtual Collections::CollectionLocation *location()
+        Collections::CollectionLocation *location() override
         {
             return new CollectionLocationMock();
         }

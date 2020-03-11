@@ -32,7 +32,7 @@ class Observer : public QObject, public Playlists::PlaylistObserver
         {
             Q_EMIT metadataChangedSignal();
         }
-        virtual void tracksLoaded( Playlists::PlaylistPtr )
+        void tracksLoaded( Playlists::PlaylistPtr ) override
         {
             Q_EMIT tracksLoadedSignal();
         }

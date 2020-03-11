@@ -32,7 +32,7 @@ class CallSupportedMimeTypesJob : public QObject, public ThreadWeaver::Job
     Q_OBJECT
 
     protected:
-        void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
+        void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread) override
         {
             Q_UNUSED(self);
             Q_UNUSED(thread);
@@ -42,13 +42,13 @@ class CallSupportedMimeTypesJob : public QObject, public ThreadWeaver::Job
             QVERIFY( !types.isEmpty() );
         }
 
-        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        void defaultBegin(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread) override
         {
             Q_EMIT started(self);
             ThreadWeaver::Job::defaultBegin(self, thread);
         }
 
-        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread)
+        void defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWeaver::Thread *thread) override
         {
             ThreadWeaver::Job::defaultEnd(self, thread);
             if (!self->success()) {

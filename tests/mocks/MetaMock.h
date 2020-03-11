@@ -35,46 +35,46 @@ public:
     MetaMock( const QVariantMap &data ) : Meta::Track(), m_data( data ), m_labels( Meta::LabelList() ) {}
     virtual ~MetaMock() {}
 
-    Meta::AlbumPtr album() const { return m_album; }
-    Meta::YearPtr year() const { return m_year; }
-    Meta::GenrePtr genre() const { return m_genre; }
-    Meta::ArtistPtr artist() const { return m_artist; }
-    Meta::ComposerPtr composer() const { return m_composer; }
+    Meta::AlbumPtr album() const override { return m_album; }
+    Meta::YearPtr year() const override { return m_year; }
+    Meta::GenrePtr genre() const override { return m_genre; }
+    Meta::ArtistPtr artist() const override { return m_artist; }
+    Meta::ComposerPtr composer() const override { return m_composer; }
 
-    QString name() const { return m_data.value( Meta::Field::TITLE ).toString(); }
-    QString prettyName() const { return name(); }
-    QUrl playableUrl() const { return m_data.value( Meta::Field::URL ).value<QUrl>(); }
-    QString prettyUrl() const { return playableUrl().url(); }
-    QString uidUrl() const { return m_data.value( Meta::Field::UNIQUEID ).toString(); }
-    QString notPlayableReason() const { return QStringLiteral( "dummy reason" ); }
-    QString comment() const { return m_data.value( Meta::Field::COMMENT ).toString(); }
-    qreal bpm() const { return m_data.value( Meta::Field::BPM ).toDouble(); }
-    qint64 length() const { return m_data.value( Meta::Field::LENGTH ).toInt(); }
-    int filesize() const { return m_data.value( Meta::Field::FILESIZE ).toInt(); }
-    int sampleRate() const { return m_data.value( Meta::Field::SAMPLERATE ).toInt(); }
-    int bitrate() const { return m_data.value( Meta::Field::BITRATE ).toInt(); }
-    QDateTime createDate() const { return QDateTime(); }    //field missing
-    int trackNumber() const { return m_data.value( Meta::Field::TRACKNUMBER ).toInt(); }
-    int discNumber() const { return m_data.value( Meta::Field::DISCNUMBER ).toInt(); }
-    QString type() const { return "Mock"; }
+    QString name() const override { return m_data.value( Meta::Field::TITLE ).toString(); }
+    QString prettyName() const override { return name(); }
+    QUrl playableUrl() const override { return m_data.value( Meta::Field::URL ).value<QUrl>(); }
+    QString prettyUrl() const override { return playableUrl().url(); }
+    QString uidUrl() const override { return m_data.value( Meta::Field::UNIQUEID ).toString(); }
+    QString notPlayableReason() const override { return QStringLiteral( "dummy reason" ); }
+    QString comment() const override { return m_data.value( Meta::Field::COMMENT ).toString(); }
+    qreal bpm() const override { return m_data.value( Meta::Field::BPM ).toDouble(); }
+    qint64 length() const override { return m_data.value( Meta::Field::LENGTH ).toInt(); }
+    int filesize() const override { return m_data.value( Meta::Field::FILESIZE ).toInt(); }
+    int sampleRate() const override { return m_data.value( Meta::Field::SAMPLERATE ).toInt(); }
+    int bitrate() const override { return m_data.value( Meta::Field::BITRATE ).toInt(); }
+    QDateTime createDate() const override { return QDateTime(); }    //field missing
+    int trackNumber() const override { return m_data.value( Meta::Field::TRACKNUMBER ).toInt(); }
+    int discNumber() const override { return m_data.value( Meta::Field::DISCNUMBER ).toInt(); }
+    QString type() const override { return "Mock"; }
 
-    Meta::LabelList labels() const { return m_labels; }
+    Meta::LabelList labels() const override { return m_labels; }
 
-    virtual Meta::StatisticsPtr statistics() { return Meta::StatisticsPtr( this ); }
+    virtual Meta::StatisticsPtr statistics() override { return Meta::StatisticsPtr( this ); }
 
     // Meta::Statistics getters
-    double score() const { return m_data.value( Meta::Field::SCORE ).toDouble(); }
-    int rating() const { return m_data.value( Meta::Field::RATING ).toInt(); }
-    QDateTime firstPlayed() const { return m_data.value( Meta::Field::FIRST_PLAYED ).toDateTime(); }
-    QDateTime lastPlayed() const { return m_data.value( Meta::Field::LAST_PLAYED ).toDateTime(); }
-    int playCount() const { return m_data.value( Meta::Field::PLAYCOUNT ).toInt(); }
+    double score() const override { return m_data.value( Meta::Field::SCORE ).toDouble(); }
+    int rating() const override { return m_data.value( Meta::Field::RATING ).toInt(); }
+    QDateTime firstPlayed() const override { return m_data.value( Meta::Field::FIRST_PLAYED ).toDateTime(); }
+    QDateTime lastPlayed() const override { return m_data.value( Meta::Field::LAST_PLAYED ).toDateTime(); }
+    int playCount() const override { return m_data.value( Meta::Field::PLAYCOUNT ).toInt(); }
 
     // Meta::Statistics setters
-    void setScore( double newScore ) { m_data[Meta::Field::SCORE].setValue( newScore ); }
-    void setRating( int newRating ) { m_data[Meta::Field::RATING].setValue( newRating ); }
-    void setFirstPlayed( const QDateTime &date ) { m_data[Meta::Field::FIRST_PLAYED].setValue( date ); }
-    void setLastPlayed( const QDateTime &date ) { m_data[Meta::Field::LAST_PLAYED].setValue( date ); }
-    void setPlayCount( int newPlayCount ) { m_data[Meta::Field::PLAYCOUNT].setValue( newPlayCount ); }
+    void setScore( double newScore ) override { m_data[Meta::Field::SCORE].setValue( newScore ); }
+    void setRating( int newRating ) override { m_data[Meta::Field::RATING].setValue( newRating ); }
+    void setFirstPlayed( const QDateTime &date ) override { m_data[Meta::Field::FIRST_PLAYED].setValue( date ); }
+    void setLastPlayed( const QDateTime &date ) override { m_data[Meta::Field::LAST_PLAYED].setValue( date ); }
+    void setPlayCount( int newPlayCount ) override { m_data[Meta::Field::PLAYCOUNT].setValue( newPlayCount ); }
 
 public:
     QVariantMap m_data;
@@ -93,9 +93,9 @@ public:
         : Meta::Year()
         , m_name( name ) {}
 
-    QString name() const { return m_name; }
-    QString prettyName() const { return m_name; }
-    Meta::TrackList tracks() { return Meta::TrackList(); }
+    QString name() const override { return m_name; }
+    QString prettyName() const override { return m_name; }
+    Meta::TrackList tracks() override { return Meta::TrackList(); }
 
     QString m_name;
 };
@@ -107,9 +107,9 @@ public:
         : Meta::Genre()
         , m_name( name ) {}
 
-    QString name() const { return m_name; }
-    QString prettyName() const { return m_name; }
-    Meta::TrackList tracks() { return Meta::TrackList(); }
+    QString name() const override { return m_name; }
+    QString prettyName() const override { return m_name; }
+    Meta::TrackList tracks() override { return Meta::TrackList(); }
 
     QString m_name;
 };
@@ -121,9 +121,9 @@ public:
         : Meta::Composer()
         , m_name( name ) {}
 
-    QString name() const { return m_name; }
-    QString prettyName() const { return m_name; }
-    Meta::TrackList tracks() { return Meta::TrackList(); }
+    QString name() const override { return m_name; }
+    QString prettyName() const override { return m_name; }
+    Meta::TrackList tracks() override { return Meta::TrackList(); }
 
     QString m_name;
 };
@@ -135,9 +135,9 @@ public:
         : Meta::Artist()
         , m_name( name ) {}
 
-    QString name() const { return m_name; }
-    QString prettyName() const { return m_name; }
-    Meta::TrackList tracks() { return Meta::TrackList(); }
+    QString name() const override { return m_name; }
+    QString prettyName() const override { return m_name; }
+    Meta::TrackList tracks() override { return Meta::TrackList(); }
     Meta::AlbumList albums() { return Meta::AlbumList(); }
 
     QString m_name;
@@ -151,12 +151,12 @@ public:
         , m_name( name )
         , m_albumArtist( albumArtist ) {}
 
-    QString name() const { return m_name; }
-    QString prettyName() const { return m_name; }
-    Meta::TrackList tracks() { return Meta::TrackList(); }
-    bool hasAlbumArtist() const { return ( m_albumArtist ) ? true : false; }
-    Meta::ArtistPtr albumArtist() const { return m_albumArtist; }
-    bool isCompilation() const { return !hasAlbumArtist(); }
+    QString name() const override { return m_name; }
+    QString prettyName() const override { return m_name; }
+    Meta::TrackList tracks() override { return Meta::TrackList(); }
+    bool hasAlbumArtist() const override { return ( m_albumArtist ) ? true : false; }
+    Meta::ArtistPtr albumArtist() const override { return m_albumArtist; }
+    bool isCompilation() const override { return !hasAlbumArtist(); }
 
     QString m_name;
     Meta::ArtistPtr m_albumArtist;
@@ -169,7 +169,7 @@ class MockLabel : public Meta::Label
             : Meta::Label()
             , m_name( name ) {}
 
-    QString name() const { return m_name; }
+    QString name() const override { return m_name; }
 
     QString m_name;
 };
