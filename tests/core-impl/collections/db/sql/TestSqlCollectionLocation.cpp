@@ -48,28 +48,28 @@ class MySqlCollectionLocation : public Collections::SqlCollectionLocation
 {
 public:
     MySqlCollectionLocation( Collections::SqlCollection *coll ) : Collections::SqlCollectionLocation( coll ) {}
-    virtual ~MySqlCollectionLocation() {}
+    ~MySqlCollectionLocation() override {}
 
-    bool isWritable() const { return true; }
+    bool isWritable() const override { return true; }
 };
 
 class MyOrganizeCollectionDelegate : public OrganizeCollectionDelegate
 {
 public:
     MyOrganizeCollectionDelegate() : OrganizeCollectionDelegate(), overwrite( false ), migrate( false ) {}
-    virtual ~ MyOrganizeCollectionDelegate() {}
+    ~MyOrganizeCollectionDelegate() override {}
 
-    void setTracks( const Meta::TrackList &tracks ) { Q_UNUSED( tracks ) }
-    void setFolders( const QStringList &folders ) { Q_UNUSED( folders ) }
-    void setIsOrganizing( bool organizing ) { Q_UNUSED( organizing ) }
-    void setTranscodingConfiguration(const Transcoding::Configuration &configuration)
+    void setTracks( const Meta::TrackList &tracks ) override { Q_UNUSED( tracks ) }
+    void setFolders( const QStringList &folders ) override { Q_UNUSED( folders ) }
+    void setIsOrganizing( bool organizing ) override { Q_UNUSED( organizing ) }
+    void setTranscodingConfiguration(const Transcoding::Configuration &configuration) override
     { Q_UNUSED( configuration ) }
-    void setCaption( const QString& ) {}
+    void setCaption( const QString& ) override {}
 
-    void show() { emit accepted(); }
+    void show() override { emit accepted(); }
 
-    bool overwriteDestinations() const { return overwrite; }
-    QMap<Meta::TrackPtr, QString> destinations() const { return dests; }
+    bool overwriteDestinations() const override { return overwrite; }
+    QMap<Meta::TrackPtr, QString> destinations() const override { return dests; }
     bool migrateLabels() const { return migrate; }
 
     bool overwrite;
@@ -83,10 +83,10 @@ public:
     MyOrganizeCollectionDelegateFactory( OrganizeCollectionDelegate *d )
         : OrganizeCollectionDelegateFactory()
         , delegate( d ) {}
-    virtual ~ MyOrganizeCollectionDelegateFactory() {}
+    ~MyOrganizeCollectionDelegateFactory() override {}
 
     //warning: SqlCollectionLocation will delete the delegate
-    OrganizeCollectionDelegate* createDelegate() { return delegate; }
+    OrganizeCollectionDelegate* createDelegate() override { return delegate; }
 
     OrganizeCollectionDelegate *delegate;
 };

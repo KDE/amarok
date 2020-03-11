@@ -34,7 +34,7 @@ public:
     {
     }
 
-    int getIdForUrl( const QUrl &url )
+    int getIdForUrl( const QUrl &url ) override
     {
         QString path = url.path();
         foreach( int id, m_mountPoints.keys() )
@@ -48,7 +48,7 @@ public:
         return -1;
     }
 
-    virtual QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const
+    QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const override
     {
         if( deviceId == -1 )
             return relativePath.right( relativePath.length() -1 );
@@ -58,7 +58,7 @@ public:
         }
     }
 
-    virtual QString getRelativePath( const int deviceId, const QString& absolutePath ) const
+    QString getRelativePath( const int deviceId, const QString& absolutePath ) const override
     {
         if( deviceId == -1 )
             return '.' + absolutePath;
@@ -69,7 +69,7 @@ public:
         }
     }
 
-    IdList getMountedDeviceIds() const
+    IdList getMountedDeviceIds() const override
     {
         IdList result;
         result << -1;
@@ -77,12 +77,12 @@ public:
         return result;
     }
 
-    virtual QStringList collectionFolders() const
+    QStringList collectionFolders() const override
     {
         return m_folders;
     }
 
-    void setCollectionFolders( const QStringList &folders )
+    void setCollectionFolders( const QStringList &folders ) override
     {
         m_folders = folders;
     }

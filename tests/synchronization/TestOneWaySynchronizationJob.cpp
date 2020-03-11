@@ -44,9 +44,9 @@ class MyCollectionLocation : public CollectionLocation
 public:
     Collections::CollectionTestImpl *coll;
 
-    QString prettyLocation() const { return "foo"; }
-    bool isWritable() const { return true; }
-    void copyUrlsToCollection(const QMap<Meta::TrackPtr, QUrl> &sources, const Transcoding::Configuration& conf)
+    QString prettyLocation() const override { return "foo"; }
+    bool isWritable() const override { return true; }
+    void copyUrlsToCollection(const QMap<Meta::TrackPtr, QUrl> &sources, const Transcoding::Configuration& conf) override
     {
         Q_UNUSED( conf )
         // qDebug() << "adding " << sources.count() << " tracks to " << coll->collectionId();
@@ -63,7 +63,7 @@ class MyCollectionTestImpl : public CollectionTestImpl
 public:
     MyCollectionTestImpl( const QString &id ) : CollectionTestImpl( id ) {}
 
-    CollectionLocation* location()
+    CollectionLocation* location() override
     {
         MyCollectionLocation *r = new MyCollectionLocation();
         r->coll = this;

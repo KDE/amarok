@@ -29,9 +29,9 @@ private:
     QVariantMap m_cfg;
 
 protected:
-    virtual StatSyncing::ProviderPtr getProvider();
-    virtual StatSyncing::ProviderPtr getWritableProvider();
-    virtual qint64 reliableStatistics() const;
+    StatSyncing::ProviderPtr getProvider() override;
+    StatSyncing::ProviderPtr getWritableProvider() override;
+    qint64 reliableStatistics() const override;
 
 private Q_SLOTS:
     void init();

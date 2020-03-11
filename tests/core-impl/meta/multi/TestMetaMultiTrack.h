@@ -36,7 +36,7 @@ Q_OBJECT
 public:
     TestMetaMultiTrack();
 
-    virtual void tracksLoaded( Playlists::PlaylistPtr playlist );
+    void tracksLoaded( Playlists::PlaylistPtr playlist ) override;
 
 Q_SIGNALS:
     void tracksLoadedSignal( const Playlists::PlaylistPtr &playlist );

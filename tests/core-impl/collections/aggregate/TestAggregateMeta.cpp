@@ -46,21 +46,21 @@ class MyTrackMock : public MetaMock
 public:
     MyTrackMock() : MetaMock( QVariantMap() ) {}
 
-    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type) override
     {
         Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
         return cap;
     }
 
-    Meta::TrackEditorPtr editor()
+    Meta::TrackEditorPtr editor() override
     {
         return trackEditors.isEmpty() ? Meta::TrackEditorPtr() : trackEditors.takeFirst();
     }
@@ -75,14 +75,14 @@ class MyAlbumMock : public MockAlbum
 public:
     MyAlbumMock() : MockAlbum( "testAlbum" ) {}
 
-    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type) override
     {
         Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
@@ -99,14 +99,14 @@ class MyArtistMock : public MockArtist
 public:
     MyArtistMock() : MockArtist( "testArtist" ) {}
 
-    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type) override
     {
         Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
@@ -123,14 +123,14 @@ class MyGenreMock : public MockGenre
 public:
     MyGenreMock() : MockGenre( "testGenre" ) {}
 
-    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type) override
     {
         Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
@@ -147,14 +147,14 @@ class MyComposerMock : public MockComposer
 public:
     MyComposerMock() : MockComposer( "testComposer" ) {}
 
-    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type) override
     {
         Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
@@ -171,14 +171,14 @@ class MyYearMock : public MockYear
 public:
     MyYearMock() : MockYear( "testYear" ) {}
 
-    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override
     {
         bool result = results.value( type );
         results.remove( type );
         return result;
     }
 
-    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type)
+    Capabilities::Capability* createCapabilityInterface(Capabilities::Capability::Type type) override
     {
         Capabilities::Capability* cap = capabilities.value( type );
         capabilities.remove( type );
@@ -193,7 +193,7 @@ public:
 class MyOrganiseCapability : public Capabilities::OrganiseCapability
 {
 public:
-    void deleteTrack() {}
+    void deleteTrack() override {}
 };
 
 void
@@ -436,19 +436,19 @@ public:
     MyTrackEditor() : Meta::TrackEditor()
             , beginCallCount(0)
             , endCallcount(0) {}
-    virtual void setAlbum( const QString &newAlbum ) { Q_UNUSED( newAlbum ) }
-    virtual void setAlbumArtist( const QString &newAlbumArtist ) { Q_UNUSED( newAlbumArtist ) }
-    virtual void setArtist( const QString &newArtist ) { Q_UNUSED( newArtist ) }
-    virtual void setComposer( const QString &newComposer ) { Q_UNUSED( newComposer ) };
-    virtual void setGenre( const QString &newGenre ) { Q_UNUSED( newGenre ) };
-    virtual void setYear( int newYear ) { Q_UNUSED( newYear ) };
-    virtual void setTitle( const QString &newTitle ) { Q_UNUSED( newTitle ) };
-    virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ) };
-    virtual void setTrackNumber( int newTrackNumber ) { Q_UNUSED( newTrackNumber ) };
-    virtual void setDiscNumber( int newDiscNumber ) { Q_UNUSED( newDiscNumber ) };
-    virtual void setBpm( const qreal newBpm ) { Q_UNUSED( newBpm ) };
-    virtual void beginUpdate() { beginCallCount++; };
-    virtual void endUpdate() { endCallcount++; };
+    void setAlbum( const QString &newAlbum ) override { Q_UNUSED( newAlbum ) }
+    void setAlbumArtist( const QString &newAlbumArtist ) override { Q_UNUSED( newAlbumArtist ) }
+    void setArtist( const QString &newArtist ) override { Q_UNUSED( newArtist ) }
+    void setComposer( const QString &newComposer ) override { Q_UNUSED( newComposer ) };
+    void setGenre( const QString &newGenre ) override { Q_UNUSED( newGenre ) };
+    void setYear( int newYear ) override { Q_UNUSED( newYear ) };
+    void setTitle( const QString &newTitle ) override { Q_UNUSED( newTitle ) };
+    void setComment( const QString &newComment ) override { Q_UNUSED( newComment ) };
+    void setTrackNumber( int newTrackNumber ) override { Q_UNUSED( newTrackNumber ) };
+    void setDiscNumber( int newDiscNumber ) override { Q_UNUSED( newDiscNumber ) };
+    void setBpm( const qreal newBpm ) override { Q_UNUSED( newBpm ) };
+    void beginUpdate() override { beginCallCount++; };
+    void endUpdate() override { endCallcount++; };
 
     int beginCallCount;
     int endCallcount;

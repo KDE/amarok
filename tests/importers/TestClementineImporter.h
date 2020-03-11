@@ -26,9 +26,9 @@ class TestClementineImporter : public TestImporterBase
     Q_OBJECT
 
 protected:
-    StatSyncing::ProviderPtr getProvider();
-    StatSyncing::ProviderPtr getWritableProvider();
-    qint64 reliableStatistics() const;
+    StatSyncing::ProviderPtr getProvider() override;
+    StatSyncing::ProviderPtr getWritableProvider() override;
+    qint64 reliableStatistics() const override;
 
 private:
     QVariantMap m_cfg;

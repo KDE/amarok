@@ -140,7 +140,7 @@ private:
             return true;
         }
 
-        QStringList actualLocation() const
+        QStringList actualLocation() const override
         {
             return QStringList() << prettyLocation();
         }

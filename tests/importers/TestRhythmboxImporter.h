@@ -26,10 +26,10 @@ class TestRhythmboxImporter : public TestImporterBase
     Q_OBJECT
 
 protected:
-    StatSyncing::ProviderPtr getProvider();
-    StatSyncing::ProviderPtr getWritableProvider();
-    qint64 reliableStatistics() const;
-    bool hasOddRatings() const;
+    StatSyncing::ProviderPtr getProvider() override;
+    StatSyncing::ProviderPtr getWritableProvider() override;
+    qint64 reliableStatistics() const override;
+    bool hasOddRatings() const override;
 
 private:
     QVariantMap m_cfg;
