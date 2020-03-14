@@ -68,6 +68,7 @@ Comment[pt_BR]=Miniaplicativo de faixa atual para o Amarok
 Comment[sv]=Miniprogram med aktuellt spår för Amarok
 Comment[uk]=Аплет поточної композиції для Amarok
 Comment[x-test]=xxCurrent track applet for Amarokxx
+Comment[zh_TW]=Amarok 的目前曲目小程式
 
 X-KDE-PluginInfo-Name=org.kde.amarok.currenttrack
 X-KDE-PluginInfo-Author=Leo Franchi

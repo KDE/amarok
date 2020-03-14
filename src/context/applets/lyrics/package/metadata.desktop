@@ -71,6 +71,7 @@ Comment[pt_BR]=Miniaplicativo de letras para o Amarok
 Comment[sv]=Sångtextminiprogram för Amarok
 Comment[uk]=Аплет слів пісні для Amarok
 Comment[x-test]=xxLyrics applet for Amarokxx
+Comment[zh_TW]=Amarok 的歌詞小程式
 
 X-KDE-PluginInfo-Name=org.kde.amarok.lyrics
 X-KDE-PluginInfo-Author=Leo Franchi
