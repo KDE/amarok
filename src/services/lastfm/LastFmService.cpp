@@ -158,7 +158,7 @@ LastFmService::~LastFmService()
 
     StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
     if( m_scrobbler && controller )
-        controller->unregisterScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+        controller->unregisterScrobblingService( m_scrobbler.staticCast<StatSyncing::ScrobblingService>() );
     if( m_synchronizationAdapter && controller )
         controller->unregisterProvider( m_synchronizationAdapter );
 }
@@ -231,14 +231,14 @@ LastFmService::continueReconfiguring()
     if( m_scrobbler && (!authenticated || !m_config->scrobble()) )
     {
         debug() << __PRETTY_FUNCTION__ << "unregistering and destroying ScrobblerAdapter";
-        controller->unregisterScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+        controller->unregisterScrobblingService( m_scrobbler.staticCast<StatSyncing::ScrobblingService>() );
         m_scrobbler.clear();
     }
     else if( !m_scrobbler && authenticated && m_config->scrobble() )
     {
         debug() << __PRETTY_FUNCTION__ << "creating and registering ScrobblerAdapter";
         m_scrobbler = QSharedPointer<ScrobblerAdapter>( new ScrobblerAdapter( "Amarok", m_config ) );
-        controller->registerScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+        controller->registerScrobblingService( m_scrobbler.staticCast<StatSyncing::ScrobblingService>() );
     }
 
     if( m_synchronizationAdapter && !authenticated )
