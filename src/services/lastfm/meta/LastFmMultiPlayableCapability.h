@@ -19,6 +19,7 @@
 
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "core/logger/Logger.h"
 #include "MainWindow.h"
 #include "LastFmMeta.h"
 #include "core/meta/forward_declarations.h"

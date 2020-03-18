@@ -54,12 +54,6 @@
 #include <XmlQuery.h>
 
 
-QString md5( const QByteArray& src )
-{
-    QByteArray const digest = QCryptographicHash::hash( src, QCryptographicHash::Md5 );
-    return QString::fromLatin1( digest.toHex() ).rightJustified( 32, '0' );
-}
-
 LastFmServiceFactory::LastFmServiceFactory()
     : ServiceFactory()
 {}
@@ -105,7 +99,7 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     DEBUG_BLOCK
     setShortDescription( i18n( "Last.fm: The social music revolution" ) );
     setIcon( QIcon::fromTheme( "view-services-lastfm-amarok" ) );
-    setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends or that Last.fm considers your musical \"neighbors\"" ) );
+    setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends" ) );
     setImagePath( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/hover_info_lastfm.png" ) );
 
     //We have no use for searching currently..
@@ -114,6 +108,9 @@ LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name 
     // set the global static Lastfm::Ws stuff
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = Amarok::lastfmApiSharedSecret();
+
+    // HTTPS is the only scheme supported by Auth
+    lastfm::ws::setScheme(lastfm::ws::Https);
 
     // set the nam TWICE. Yes. It prevents liblastfm from deleting it, see their code
     lastfm::setNetworkAccessManager( The::networkAccessManager() );
@@ -161,7 +158,7 @@ LastFmService::~LastFmService()
 
     StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
     if( m_scrobbler && controller )
-        controller->unregisterScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+        controller->unregisterScrobblingService( m_scrobbler.staticCast<StatSyncing::ScrobblingService>() );
     if( m_synchronizationAdapter && controller )
         controller->unregisterProvider( m_synchronizationAdapter );
 }
@@ -207,12 +204,10 @@ LastFmService::slotReconfigure()
             m_authenticateReply = 0;
         }
 
-        const QString authToken = md5( QString( "%1%2" ).arg( m_config->username(),
-                md5( m_config->password().toUtf8() ) ).toUtf8() );
         QMap<QString, QString> query;
         query[ "method" ] = "auth.getMobileSession";
+        query[ "password" ] = m_config->password();
         query[ "username" ] = m_config->username();
-        query[ "authToken" ] = authToken;
         m_authenticateReply = lastfm::ws::post( query );
         connect( m_authenticateReply, &QNetworkReply::finished, this, &LastFmService::onAuthenticated ); // calls continueReconfiguring()
     }
@@ -236,14 +231,14 @@ LastFmService::continueReconfiguring()
     if( m_scrobbler && (!authenticated || !m_config->scrobble()) )
     {
         debug() << __PRETTY_FUNCTION__ << "unregistering and destroying ScrobblerAdapter";
-        controller->unregisterScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+        controller->unregisterScrobblingService( m_scrobbler.staticCast<StatSyncing::ScrobblingService>() );
         m_scrobbler.clear();
     }
     else if( !m_scrobbler && authenticated && m_config->scrobble() )
     {
         debug() << __PRETTY_FUNCTION__ << "creating and registering ScrobblerAdapter";
         m_scrobbler = QSharedPointer<ScrobblerAdapter>( new ScrobblerAdapter( "Amarok", m_config ) );
-        controller->registerScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+        controller->registerScrobblingService( m_scrobbler.staticCast<StatSyncing::ScrobblingService>() );
     }
 
     if( m_synchronizationAdapter && !authenticated )

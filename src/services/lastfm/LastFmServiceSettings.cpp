@@ -37,13 +37,6 @@
 
 K_PLUGIN_FACTORY_WITH_JSON( LastFmServiceSettingsFactory, "amarok_service_lastfm_config.json", registerPlugin<LastFmServiceSettings>(); )
 
-QString md5( const QByteArray& src )
-{
-    QByteArray const digest = QCryptographicHash::hash( src, QCryptographicHash::Md5 );
-    return QString::fromLatin1( digest.toHex() ).rightJustified( 32, '0' );
-}
-
-
 LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantList &args )
     : KCModule( parent, args )
     , m_config( LastFmServiceConfig::instance() )
@@ -110,20 +103,17 @@ LastFmServiceSettings::testLogin()
     // set the global static Lastfm::Ws stuff
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = Amarok::lastfmApiSharedSecret();
-    lastfm::ws::Username = m_configDialog->kcfg_ScrobblerUsername->text();
+    lastfm::ws::setScheme(lastfm::ws::Https);
     if( lastfm::nam() != The::networkAccessManager() )
         lastfm::setNetworkAccessManager( The::networkAccessManager() );
 
-    debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
+    debug() << "username:" << QString( QUrl::toPercentEncoding( m_configDialog->kcfg_ScrobblerUsername->text().toUtf8() ) );
 
-    const QString authToken = md5( QString( "%1%2" ).arg( m_configDialog->kcfg_ScrobblerUsername->text() )
-                                                    .arg( md5( m_configDialog->kcfg_ScrobblerPassword->text().toUtf8() ) ).toUtf8() );
-
-    // now authenticate w/ last.fm and get our session key
     QMap<QString, QString> query;
+
     query[ "method" ] = "auth.getMobileSession";
-    query[ "username" ] = m_configDialog->kcfg_ScrobblerUsername->text();
-    query[ "authToken" ] = authToken;
+    query[ "password" ] = m_configDialog->kcfg_ScrobblerPassword->text().toUtf8();
+    query[ "username" ] = m_configDialog->kcfg_ScrobblerUsername->text().toUtf8();
     m_authQuery = lastfm::ws::post( query );
 
     connect( m_authQuery, &QNetworkReply::finished, this, &LastFmServiceSettings::onAuthenticated );

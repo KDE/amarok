@@ -18,8 +18,6 @@
 #ifndef LASTFMSERVICECONFIG_H
 #define LASTFMSERVICECONFIG_H
 
-#include "services/lastfm/amarok_lastfm_shared_export.h"
-
 #include <QObject>
 #include <QSharedPointer>
 #include <QString>
@@ -30,6 +28,12 @@ namespace KWallet {
 class QMessageBox;
 class LastFmServiceConfig;
 typedef QSharedPointer<LastFmServiceConfig> LastFmServiceConfigPtr;
+
+#ifdef AMAROK_LASTFM_SHARED_EXPORT
+ #define AMAROK_LASTFM_SHARED_EXPORT Q_DECL_EXPORT
+#else
+ #define AMAROK_LASTFM_SHARED_EXPORT Q_DECL_IMPORT
+#endif
 
 /**
  * Configuration of the Last.fm plugin. Because some operations are async, you should
