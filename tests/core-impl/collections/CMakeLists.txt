@@ -1,3 +1,5 @@
 add_subdirectory( aggregate )
-add_subdirectory( db/sql )
+if( BUILD_MYSQLE_COLLECTION )
+    add_subdirectory( db/sql )
+endif()
 add_subdirectory( support )
