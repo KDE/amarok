@@ -24,9 +24,9 @@ target_link_libraries(amarok_collection-mysqlcollection
     ${ZLIB_LIBRARIES}
 )
 
-if(WITH_MYSQL_EMBEDDED)
-    target_link_libraries( amarok_collection-mysqlcollection ${MYSQL_EMBEDDED_LIBRARIES} )
-endif(WITH_MYSQL_EMBEDDED)
+if(BUILD_MYSQLE_COLLECTION)
+    target_link_libraries( amarok_collection-mysqlcollection ${MYSQLE_LIBRARIES} )
+endif()
 
 if(APPLE)
 	SET_TARGET_PROPERTIES(amarok_collection-mysqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
