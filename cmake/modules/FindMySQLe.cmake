@@ -13,10 +13,14 @@ include(CheckCXXSourceCompiles)
 include(CMakePushCheckState)
 
 if(NOT MySQL_FOUND)
-    find_package(MySQL REQUIRED)
+    find_package(MySQL)
+
+    if( NOT MySQL_FOUND )
+        find_package(MariaDB REQUIRED)
+    endif()
 endif()
 
-if(MySQL_FOUND)
+if(MySQL_FOUND OR MariaDB_FOUND)
 
 # First try to get information from mysql_config which might be a shell script
 # or an executable. Unfortunately not every distro has pkgconfig files for

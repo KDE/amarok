@@ -196,7 +196,11 @@ if( WITH_PLAYER )
     find_package(X11)
     find_package(Threads REQUIRED)
 
-    find_package(MySQL REQUIRED)
+    find_package(MySQL)
+
+    if( NOT MySQL_FOUND )
+        find_package(MariaDB REQUIRED)
+    endif()
 
     find_package(MySQLe)
     if( MySQLe_FOUND )
