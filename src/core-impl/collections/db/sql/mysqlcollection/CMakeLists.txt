@@ -21,7 +21,6 @@ target_link_libraries(amarok_collection-mysqlcollection
     Qt5::Core
     Qt5::Gui
     ${CMAKE_DL_LIBS}
-    ${ZLIB_LIBRARIES}
 )
 
 if(BUILD_MYSQLE_COLLECTION)

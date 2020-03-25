@@ -26,7 +26,6 @@ macro(add_database_test test_target test_sources)
         Qt5::Core
         ${MYSQLE_LIBRARIES}
         ${CMAKE_DL_LIBS}
-        ${ZLIB_LIBRARIES}
         ${GOOGLEMOCK_LIBRARIES}
     )
     if(${CMAKE_HOST_SYSTEM_NAME} MATCHES "FreeBSD")
