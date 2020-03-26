@@ -168,6 +168,7 @@ endif()
 add_definitions(-DQT_NO_URL_CAST_FROM_STRING)
 
 find_package(Phonon4Qt5 4.6.60 REQUIRED NO_MODULE)
+add_definitions(-DPHONON_LIB_SONAME=\"${PHONON_LIB_SONAME}\")
 
 find_package( LibLastFm )
 set( LIBLASTFM_MIN_VERSION "1.0.0" )

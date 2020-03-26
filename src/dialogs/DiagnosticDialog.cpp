@@ -24,18 +24,49 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QDialogButtonBox>
+#include <QDir>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QSettings>
 #include <QVBoxLayout>
 
 #include <KAboutData>
 #include <KCoreAddons>
 #include <KLocalizedString>
 #include <KPluginInfo>
-#include <KService>
-#include <KServiceTypeTrader>
 
 #include <phonon/pulsesupport.h>
+
+
+
+BackendDescriptor::BackendDescriptor(const QString &path)
+    : isValid(false)
+{
+    QPluginLoader loader(path);
+
+    iid = loader.metaData().value(QStringLiteral("IID")).toString();
+
+    const QJsonObject metaData = loader.metaData().value(QStringLiteral("MetaData")).toObject();
+    name = metaData.value(QStringLiteral("Name")).toString();
+    version = metaData.value(QStringLiteral("Version")).toString();
+    website = metaData.value(QStringLiteral("Website")).toString();
+    preference = metaData.value(QStringLiteral("InitialPreference")).toDouble();
+
+    pluginPath = path;
+
+    if (name.isEmpty())
+        name = QFileInfo(path).baseName();
+
+    if (iid.isEmpty())
+        return; // Not valid.
+
+    isValid = true;
+}
+
+bool BackendDescriptor::operator <(const BackendDescriptor &rhs) const
+{
+    return this->preference < rhs.preference;
+}
 
 
 
@@ -104,8 +135,8 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
         // Currently we cannot extract the applet version number this way
         appletString += "   " + applet + '\n';
     }
-    const KService::Ptr aPhononBackend =
-        KServiceTypeTrader::self()->preferredService( "PhononBackend" );
+
+    const BackendDescriptor aPhononBackend = getPreferredBackend();
 
     const bool hasPulse = Phonon::PulseSupport::getInstance()->isActive();
     const QString pulse = hasPulse ? i18nc( "Usage", "Yes" ) : i18nc( "Usage", "No" );
@@ -116,15 +147,16 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
                "   KDE Frameworks Version: %3\n"
                "   Qt Version: %4\n"
                "   Phonon Version: %5\n"
-               "   Phonon Backend: %6 (%7)\n"
-               "   PulseAudio: %8\n\n",
+               "   Phonon Backend: %6 (%7, %8)\n"
+               "   PulseAudio: %9\n\n",
 
                KAboutData::applicationData().displayName(), aboutData->version(),      // Amarok
                KCoreAddons::versionString(),                        // KDE Frameworks
                qVersion(),                                          // Qt
                Phonon::phononVersion(),                             // Phonon
-               aPhononBackend->name(),
-               aPhononBackend->property( "X-KDE-PhononBackendInfo-Version", QVariant::String ).toString(), // & Backend
+               aPhononBackend.name,
+               aPhononBackend.version,
+               aPhononBackend.website,                              // & Backend
                pulse                                                // PulseAudio
            ) + i18n(
                "Enabled Scripts:\n%1\n"
@@ -132,6 +164,49 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
                "Enabled Applets:\n%3\n",
                aScriptString, aPluginString, appletString
            );
+}
+
+const BackendDescriptor
+DiagnosticDialog::getPreferredBackend() const
+{
+    QList<QString> iidPreference;
+    QSettings settings("kde.org", "libphonon");
+    const int size = settings.beginReadArray("Backends");
+    for (int i = 0; i < size; ++i) {
+        settings.setArrayIndex(i);
+        iidPreference.append(settings.value(QStringLiteral("iid")).toString());
+    }
+    settings.endArray();
+
+    const QLatin1String suffix("/" PHONON_LIB_SONAME "_backend/");
+    const QStringList paths = QCoreApplication::libraryPaths();
+
+    QList<struct BackendDescriptor> backendList;
+
+    foreach (const QString &path, paths) {
+        const QString libPath = path + suffix;
+        const QDir dir(libPath);
+        if (!dir.exists()) {
+            continue;
+        }
+
+        const QStringList plugins(dir.entryList(QDir::Files));
+
+        for (const QString &plugin : plugins) {
+            BackendDescriptor bd = BackendDescriptor(libPath + plugin);
+            if (bd.isValid) {
+                int preference = iidPreference.indexOf(bd.iid);
+                if (preference != -1) {
+                    bd.preference = preference;
+                }
+                backendList.append(bd);
+            }
+        }
+    }
+
+    std::sort(backendList.begin(), backendList.end());
+
+    return backendList.first();
 }
 
 void
