@@ -19,6 +19,7 @@
 #define AMAROK_STORAGE_MYSQLSTORAGE_H
 
 #include "core/storage/SqlStorage.h"
+#include <mysql/mysql.h>
 
 
 #include <QMutex>
@@ -28,8 +29,9 @@
   #include <winsock2.h>
 #endif
 
-struct st_mysql;
-typedef struct st_mysql MYSQL;
+#if !defined(MARIADB_VERSION_ID) && MYSQL_VERSION_ID >= 80000
+using my_bool = bool;
+#endif
 
 /**
  * Implements a SqlStorage using a MySQL backend
