@@ -100,9 +100,9 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
     // Get scripts -- we have to assemble 3 lists into one
     KPluginInfo::List aScripts;
     const auto aScriptManager = ScriptManager::instance();
-    aScripts.append( aScriptManager->scripts( QLatin1String( "Generic" ) ) );
-    aScripts.append( aScriptManager->scripts( QLatin1String( "Lyrics" ) ) );
-    aScripts.append( aScriptManager->scripts( QLatin1String( "Scriptable Service" ) ) );
+    aScripts.append( aScriptManager->scripts( QStringLiteral( "Generic" ) ) );
+    aScripts.append( aScriptManager->scripts( QStringLiteral( "Lyrics" ) ) );
+    aScripts.append( aScriptManager->scripts( QStringLiteral( "Scriptable Service" ) ) );
 
     // Format the data to be readable
     QString aScriptString;
