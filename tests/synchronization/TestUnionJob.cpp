@@ -28,7 +28,7 @@
 #include <QList>
 #include <QSignalSpy>
 
-#include <gmock.h>
+#include <gmock/gmock.h>
 
 QTEST_GUILESS_MAIN( TestUnionJob )
 

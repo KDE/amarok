@@ -27,7 +27,7 @@
 #include <QSignalSpy>
 #include <QVariantMap>
 
-#include <gmock.h>
+#include <gmock/gmock.h>
 
 QTEST_GUILESS_MAIN( CollectionLocationTest )
 

@@ -18,7 +18,7 @@
 #ifndef META_MOCKCOMPOSER_H
 #define META_MOCKCOMPOSER_H
 
-#include <gmock.h>
+#include <gmock/gmock.h>
 
 #include "core/meta/Meta.h"
 

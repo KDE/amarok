@@ -32,7 +32,7 @@
 #include <QSignalSpy>
 #include <QStringList>
 
-#include <gmock.h>
+#include <gmock/gmock.h>
 
 using ::testing::Return;
 using ::testing::AnyNumber;

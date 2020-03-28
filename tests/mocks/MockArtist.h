@@ -18,7 +18,7 @@
 #ifndef META_MOCKARTIST_H
 #define META_MOCKARTIST_H
 
-#include <gmock.h>
+#include <gmock/gmock.h>
 
 #include "core/meta/Meta.h"
 

@@ -27,7 +27,7 @@
 
 #include <KJob>
 
-#include <gmock.h>
+#include <gmock/gmock.h>
 
 QTEST_GUILESS_MAIN( TestLogger )
 

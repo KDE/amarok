@@ -17,7 +17,7 @@
 #ifndef AMAROK_MOCKLOGGER_H
 #define AMAROK_MOCKLOGGER_H
 
-#include <gmock.h>
+#include <gmock/gmock.h>
 
 #include "core/logger/Logger.h"
 

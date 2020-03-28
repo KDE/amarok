@@ -26,7 +26,7 @@
 #include <QSharedPointer>
 #include <QSignalSpy>
 
-#include <gmock.h>
+#include <gmock/gmock.h>
 
 using ::testing::AnyNumber;
 using ::testing::Return;

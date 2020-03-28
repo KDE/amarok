@@ -18,7 +18,7 @@
 #ifndef META_MOCKYEAR_H
 #define META_MOCKYEAR_H
 
-#include <gmock.h>
+#include <gmock/gmock.h>
 
 #include "core/meta/Meta.h"
 

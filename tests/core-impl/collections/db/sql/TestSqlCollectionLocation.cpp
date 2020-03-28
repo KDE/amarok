@@ -34,7 +34,7 @@
 #include <QProcess>
 #include <QTimer>
 
-#include <gmock.h>
+#include <gmock/gmock.h>
 #include <KConfigGroup>
 
 using ::testing::AnyNumber;

@@ -21,7 +21,7 @@
 #include "importers/ImporterProvider.h"
 #include "statsyncing/Controller.h"
 
-#include <gmock.h>
+#include <gmock/gmock.h>
 
 class EngineController;
 namespace StatSyncing
