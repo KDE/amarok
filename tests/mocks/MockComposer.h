@@ -27,9 +27,9 @@ namespace Meta
 class MockComposer : public Meta::Composer
 {
     public:
-    MOCK_CONST_METHOD0( name, QString() );
-    MOCK_CONST_METHOD0( prettyName, QString() );
-    MOCK_METHOD0( tracks, Meta::TrackList() );
+    MOCK_METHOD( QString, name, (), ( const ) );
+    MOCK_METHOD( QString, prettyName, (), ( const ) );
+    MOCK_METHOD( Meta::TrackList, tracks, () );
 };
 }
 
