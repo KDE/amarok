@@ -47,6 +47,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     DBusAddons
     Declarative
     DNSSD
+    DocTools
     GlobalAccel
     GuiAddons
     I18n
@@ -301,13 +302,13 @@ if( WITH_PLAYER )
     endif()
 
     add_subdirectory( src )
+    add_subdirectory( doc )
 
     feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
     #Do not remove or modify these.  The release script substitutes in for these
     #comments with appropriate doc and translation directories.
     #PO_SUBDIR
-    #DOC_SUBDIR
 
 endif()
 
