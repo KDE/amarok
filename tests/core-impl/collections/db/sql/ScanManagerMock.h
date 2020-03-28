@@ -18,7 +18,7 @@
 #ifndef SCANMANAGERMOCK_H
 #define SCANMANAGERMOCK_H
 
-#include <gmock/gmock.h>
+#include <gmock.h>
 
 #include <core-impl/collections/sqlcollection/SqlCollection.h>
 

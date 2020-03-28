@@ -29,7 +29,7 @@
 #include <QMap>
 #include <QSignalSpy>
 
-#include <gmock/gmock.h>
+#include <gmock.h>
 
 QTEST_GUILESS_MAIN( TestAggregateMeta )
 

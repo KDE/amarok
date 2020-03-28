@@ -18,7 +18,7 @@
 #ifndef META_MOCKGENRE_H
 #define META_MOCKGENRE_H
 
-#include <gmock/gmock.h>
+#include <gmock.h>
 
 #include "core/meta/Meta.h"
 

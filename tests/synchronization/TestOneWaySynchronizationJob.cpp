@@ -25,7 +25,7 @@
 #include "mocks/MockAlbum.h"
 #include "mocks/MockArtist.h"
 
-#include <gmock/gmock.h>
+#include <gmock.h>
 
 #include <QSignalSpy>
 

@@ -18,7 +18,7 @@
 #define META_MOCKTRACK_H
 
 #undef kWarning  // WORKAROUND: Prevent symbols clash with KDE's kWarning macro
-#include <gmock/gmock.h>
+#include <gmock.h>
 
 #include "core/meta/Meta.h"
 

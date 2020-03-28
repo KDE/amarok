@@ -24,7 +24,7 @@
 #include "core/collections/CollectionLocationDelegate.h"
 
 #undef kWarning  // WORKAROUND: Prevent symbols clash with KDE's kWarning macro
-#include <gmock/gmock.h>
+#include <gmock.h>
 
 namespace Collections {
 

@@ -32,7 +32,7 @@
 #include <QMap>
 #include <QTest>
 
-#include <gmock/gmock.h>
+#include <gmock.h>
 
 using ::testing::Return;
 using ::testing::AnyNumber;
