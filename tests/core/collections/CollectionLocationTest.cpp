@@ -54,8 +54,8 @@ public:
         slotRemoveOperationFinished();
     }
 
-    MOCK_METHOD( bool, isWritable, (), ( const, override ) );
-    MOCK_METHOD( bool, isOrganizable, (), ( const, override ) );
+    MOCK_CONST_METHOD0( isWritable, bool() );
+    MOCK_CONST_METHOD0( isOrganizable, bool() );
 
     int count;
 };

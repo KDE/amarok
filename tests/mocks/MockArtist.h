@@ -27,10 +27,10 @@ namespace Meta
 class MockArtist : public Meta::Artist
 {
     public:
-    MOCK_METHOD( QString, name, (), ( const, override ) );
-    MOCK_METHOD( QString, prettyName, (), ( const, override ) );
-    MOCK_METHOD( Meta::TrackList, tracks, (), ( override ) );
-    MOCK_METHOD( Meta::AlbumList, albums, () );
+    MOCK_CONST_METHOD0( name, QString() );
+    MOCK_CONST_METHOD0( prettyName, QString() );
+    MOCK_METHOD0( tracks, Meta::TrackList() );
+    MOCK_METHOD0( albums, Meta::AlbumList() );
 };
 }
 
