@@ -18,6 +18,8 @@
 #ifndef LASTFMSERVICECONFIG_H
 #define LASTFMSERVICECONFIG_H
 
+#include "services/lastfm/amarok_service_lastfm_config_export.h"
+
 #include <QObject>
 #include <QSharedPointer>
 #include <QString>
@@ -29,18 +31,12 @@ class QMessageBox;
 class LastFmServiceConfig;
 typedef QSharedPointer<LastFmServiceConfig> LastFmServiceConfigPtr;
 
-#ifdef AMAROK_LASTFM_SHARED_EXPORT
- #define AMAROK_LASTFM_SHARED_EXPORT Q_DECL_EXPORT
-#else
- #define AMAROK_LASTFM_SHARED_EXPORT Q_DECL_IMPORT
-#endif
-
 /**
  * Configuration of the Last.fm plugin. Because some operations are async, you should
  * connect to the updated() signal and listen to changes, especially ones to username,
  * password or sessionKey.
  */
-class AMAROK_LASTFM_SHARED_EXPORT LastFmServiceConfig : public QObject
+class AMAROK_SERVICE_LASTFM_CONFIG_EXPORT LastFmServiceConfig : public QObject
 {
     Q_OBJECT
 public:
