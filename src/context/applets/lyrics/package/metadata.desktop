@@ -62,6 +62,7 @@ ServiceTypes=Amarok/ContextApplet
 Comment=Lyrics applet for Amarok
 Comment[ca]=Miniaplicació de lletres per a l'Amarok
 Comment[ca@valencia]=Miniaplicació de lletres per a l'Amarok
+Comment[en_GB]=Lyrics applet for Amarok
 Comment[es]=Miniaplicación de letras para Amarok
 Comment[et]=Amaroki sõnadeaplett
 Comment[it]=Applet dei testi per Amarok
