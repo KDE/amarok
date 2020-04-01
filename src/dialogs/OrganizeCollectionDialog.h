@@ -90,8 +90,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public QDialog
                                            QWidget *parent = nullptr,
                                            const char *name = nullptr,
                                            bool modal = true,
-                                           const QString &caption = QString(),
-                                           QFlags<QDialogButtonBox::StandardButton> buttonMask = QDialogButtonBox::Ok|QDialogButtonBox::Cancel );
+                                           const QString &caption = QString() );
 
         ~OrganizeCollectionDialog();
 

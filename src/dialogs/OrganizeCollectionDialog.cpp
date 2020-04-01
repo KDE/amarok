@@ -137,8 +137,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
                                                     QWidget *parent,
                                                     const char *name,
                                                     bool modal,
-                                                    const QString &caption,
-                                                    QFlags<QDialogButtonBox::StandardButton> buttonMask )
+                                                    const QString &caption )
     : QDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
     , m_conflict( false )
@@ -152,11 +151,9 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     if( tracks.size() > 0 )
         m_allTracks = tracks;
 
-    BoxWidget *mainVBox = new BoxWidget( true, this );
-    QWidget *mainContainer = new QWidget( mainVBox );
-    new QDialogButtonBox( buttonMask, mainVBox );
-
-    ui->setupUi( mainContainer );
+    ui->setupUi( new QWidget( this ) );
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &OrganizeCollectionDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &OrganizeCollectionDialog::rejected);
 
     m_trackOrganizer = new TrackOrganizer( m_allTracks, this );
 

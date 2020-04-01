@@ -7,12 +7,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>684</width>
+    <width>665</width>
     <height>542</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -64,7 +64,8 @@
         <string>Options</string>
        </property>
        <property name="icon">
-        <iconset theme="arrow-down"/>
+        <iconset theme="arrow-down">
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -80,12 +81,19 @@
     <widget class="OrganizeCollectionWidget" name="organizeCollectionWidget" native="true"/>
    </item>
    <item>
-    <widget class="OrganizeCollectionOptionWidget" name="optionsWidget"/>
+    <widget class="OrganizeCollectionOptionWidget" name="optionsWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="previewBox">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -122,7 +130,7 @@
           <string notr="true">Preview: &lt;placeholder&gt;</string>
          </property>
          <property name="textAlignment">
-          <set>AlignLeft|AlignVCenter</set>
+          <set>AlignLeading|AlignVCenter</set>
          </property>
         </column>
         <column>
@@ -130,7 +138,7 @@
           <string notr="true">Original: &lt;placeholder&gt;</string>
          </property>
          <property name="textAlignment">
-          <set>AlignLeft|AlignVCenter</set>
+          <set>AlignLeading|AlignVCenter</set>
          </property>
         </column>
        </widget>
@@ -167,6 +175,13 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="text">
            <string>Overwrite &amp;Destination</string>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignRight">
+         <widget class="QDialogButtonBox" name="buttonBox">
+          <property name="standardButtons">
+           <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
           </property>
          </widget>
         </item>
