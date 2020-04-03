@@ -157,10 +157,9 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect(buttonBox, &QDialogButtonBox::accepted, this, &OrganizeCollectionDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &OrganizeCollectionDialog::reject);
 
-    QVBoxLayout* mainLayout = new QVBoxLayout;
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget( mainContainer );
     mainLayout->addWidget( buttonBox );
-    setLayout( mainLayout );
 
     ui->setupUi( mainContainer );
 
