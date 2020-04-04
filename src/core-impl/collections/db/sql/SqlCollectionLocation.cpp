@@ -529,7 +529,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration &conf
             return true; // Attempt to copy/move the next item in m_sources
         }
 
-        QFileInfo destInfo( dest.toDisplayString() );
+        QFileInfo destInfo( dest.toLocalFile() );
         QDir dir = destInfo.dir();
         if( !dir.exists() )
         {
