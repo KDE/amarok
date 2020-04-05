@@ -26,7 +26,6 @@
 #include "core/support/Debug.h"
 #include "core-impl/meta/file/File.h"
 #include "dialogs/TrackOrganizer.h"
-#include "widgets/BoxWidget.h"
 #include "widgets/TokenPool.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 
