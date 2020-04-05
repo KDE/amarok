@@ -45,7 +45,7 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     ui.setupUi( uiBase );
     setModal( true );
     setWindowTitle( i18n( "Transcode Tracks" ) );
-    setMinimumSize( 620, 520 );
+    setMinimumSize( 620, 500 );
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
     QDialogButtonBox *buttonBox = this->buttonBox();
