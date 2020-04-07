@@ -33,13 +33,12 @@ endif()
 
 else()
 
-find_path(GOOGLEMOCK_INCLUDE_DIR NAMES gmock.h
+find_path(GOOGLEMOCK_INCLUDE_DIR NAMES gmock/gmock.h
    HINTS
    ~/usr/include
    /opt/local/include
    /usr/include
    /usr/local/include
-   PATH_SUFFIXES gmock gmock/src
 )
 
 find_library( GOOGLEMOCK_LIBRARY NAMES gmock

@@ -47,6 +47,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     DBusAddons
     Declarative
     DNSSD
+    DocTools
     GlobalAccel
     GuiAddons
     I18n
@@ -168,6 +169,7 @@ endif()
 add_definitions(-DQT_NO_URL_CAST_FROM_STRING)
 
 find_package(Phonon4Qt5 4.6.60 REQUIRED NO_MODULE)
+add_definitions(-DPHONON_LIB_SONAME=\"${PHONON_LIB_SONAME}\")
 
 find_package( LibLastFm )
 set( LIBLASTFM_MIN_VERSION "1.0.0" )
@@ -300,13 +302,13 @@ if( WITH_PLAYER )
     endif()
 
     add_subdirectory( src )
+    add_subdirectory( doc )
 
     feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
     #Do not remove or modify these.  The release script substitutes in for these
     #comments with appropriate doc and translation directories.
     #PO_SUBDIR
-    #DOC_SUBDIR
 
 endif()
 

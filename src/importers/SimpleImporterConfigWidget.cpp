@@ -74,8 +74,8 @@ SimpleImporterConfigWidget::addField( const QString &configName, const QString &
     // Populate field with previously configured value
     if( m_config.contains( configName ) )
     {
-        const char * const propertyName = property.toLocal8Bit().constData();
-        field->setProperty( propertyName, m_config.value( configName ) );
+        const QByteArray propertyName = property.toLocal8Bit();
+        field->setProperty( propertyName.constData(), m_config.value( configName ) );
     }
 
     m_fieldForName.insert( configName, qMakePair( field, property ) );
@@ -89,8 +89,8 @@ SimpleImporterConfigWidget::config() const
     foreach( const QString &key, m_fieldForName.keys() )
     {
         const QPair<QWidget*, QString> val = m_fieldForName.value( key );
-        const char * const propertyName = val.second.toLocal8Bit().constData();
-        cfg.insert( key, val.first->property( propertyName ) );
+        const QByteArray propertyName = val.second.toLocal8Bit();
+        cfg.insert( key, val.first->property( propertyName.constData() ) );
     }
 
     return cfg;

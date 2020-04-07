@@ -61,6 +61,7 @@
   <summary xml:lang="pt">Leitor de Áudio</summary>
   <summary xml:lang="pt-BR">Reprodutor de áudio</summary>
   <summary xml:lang="sk">Audio prehrávač</summary>
+  <summary xml:lang="sl">Predvajalnik glasbe</summary>
   <summary xml:lang="sr">Аудио плејер</summary>
   <summary xml:lang="sr-Latn">Audio plejer</summary>
   <summary xml:lang="sr-ijekavian">Аудио плејер</summary>
@@ -91,6 +92,7 @@
     <p xml:lang="pl">Amarok jest darmowym, wieloplatformowym, wszechstronnym i zaawansowanym odtwarzaczem muzyki i programem do zarządzania nią.</p>
     <p xml:lang="pt">O Amarok é um leitor multimédia e gestor de colecções gratuito, multi-plataforma, versátil, poderoso e rico em funcionalidades.</p>
     <p xml:lang="pt-BR">Amarok é um reprodutor de músicas e gerenciador de coleção livre, multiplataforma, versátil, poderoso e rico em recursos.</p>
+    <p xml:lang="sl">Amarok je prost program, dostopen na več platformah, vsestranski, močan in s funkcijami nabil predvajalnik glasbe in upravljalnik glasbene zbirke.</p>
     <p xml:lang="sv">Amarok är en fri, mångsidig, kraftfull och funktionsrik musikspelare och samlingshanterare för flera plattformar.</p>
     <p xml:lang="uk">Amarok — вільна, універсальна, різнобічна та потужна програма для відтворення звукових даних та керування фонотеками.</p>
     <p xml:lang="x-test">xxAmarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.xx</p>
@@ -248,13 +250,13 @@
       <li xml:lang="gl">Compatíbel con servizos de Internet: last.fm, Magnatune, Jamendo, Ampache, mp3tunes e máis.</li>
       <li xml:lang="id">Layanan Internet terpadu: last.fm, Magnatune, Jamendo, Ampache, mp3tunes dan lebih banyak lagi.</li>
       <li xml:lang="it">Servizi Internet integrati: last.fm, Magnatune, Jamendo, Ampache, mp3tunes e altri.</li>
-      <li xml:lang="ko">last.fm, Magnatune, Jamendo, Ampache, mp3tunes 등 온라인 서비스 지원</li>
+      <li xml:lang="ko">last.fm, Magnatune, Jamendo, Ampache, mp3tunes 등 온라인 서비스 지원.</li>
       <li xml:lang="nl">Geïntegreerde internetservices: last.fm, Magnatune, Jamendo, Ampache, mp3tunes en meer.</li>
       <li xml:lang="pl">Zintegrowane usługi internetowe: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i więcej.</li>
       <li xml:lang="pt">Serviços da Internet integrados: last.fm, Magnatune, Jamendo, Ampache, mp3tunes entre outros.</li>
       <li xml:lang="pt-BR">Serviços de Internet integrados: last.fm, Magnatune, Jamendo, Ampache, mp3tunes entre outros.</li>
       <li xml:lang="sk">Integrované internetové služby: last.fm, Magnatune, Jamendo, Ampache, mp3tunes a viac.</li>
-      <li xml:lang="sl">Vgrajene internetne storitve: last.fm, Magnatune, Jamendo, Ampache, mp3tunes in več.</li>
+      <li xml:lang="sl">Vgrajene internetne storitve: last.fm, Magnatune, Jamendo, Ampache, mp3tunes in druge.</li>
       <li xml:lang="sr">Уклопљени интернет сервиси: ЛастФМ, Магнатјун, Џамендо, Ампач, МП3‑тјунс, и други.</li>
       <li xml:lang="sr-Latn">Uklopljeni internet servisi: last.fm, Magnatune, Jamendo, Ampache, MP3Tunes, i drugi.</li>
       <li xml:lang="sr-ijekavian">Уклопљени интернет сервиси: ЛастФМ, Магнатјун, Џамендо, Ампач, МП3‑тјунс, и други.</li>
@@ -388,6 +390,7 @@
       <caption xml:lang="pl">Odtwarzanie muzyki w Amaroku</caption>
       <caption xml:lang="pt">A tocar música no Amarok</caption>
       <caption xml:lang="pt-BR">Reproduzindo músicas no Amarok</caption>
+      <caption xml:lang="sl">Predvajanje glasbe v Amaroku</caption>
       <caption xml:lang="sv">Spela musik i Amarok</caption>
       <caption xml:lang="uk">Відтворення музики в Amarok</caption>
       <caption xml:lang="x-test">xxPlaying music in Amarokxx</caption>
@@ -416,6 +419,7 @@
       <caption xml:lang="pl">Okna Amaroka</caption>
       <caption xml:lang="pt">Janelas do Amarok</caption>
       <caption xml:lang="pt-BR">Janela do Amarok</caption>
+      <caption xml:lang="sl">Amarokova okna</caption>
       <caption xml:lang="sv">Fönster i Amarok</caption>
       <caption xml:lang="uk">Вікна Amarok</caption>
       <caption xml:lang="x-test">xxAmarok windowsxx</caption>

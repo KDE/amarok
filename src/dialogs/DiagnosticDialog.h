@@ -24,6 +24,23 @@
 class KAboutData;
 class QPlainTextEdit;
 
+struct BackendDescriptor {
+    explicit BackendDescriptor(const QString &path = QString());
+
+    bool isValid;
+
+    QString iid;
+
+    QString name;
+    QString version;
+    QString website;
+    int preference;
+
+    QString pluginPath;
+
+    /** Implemented for qSort(QList) */
+    bool operator <(const BackendDescriptor &rhs) const;
+};
 
 class AMAROK_EXPORT DiagnosticDialog : public QDialog
 {
@@ -36,6 +53,7 @@ private:
     QPlainTextEdit *m_textBox;
 
     const QString generateReport( const KAboutData *aboutData );
+    const BackendDescriptor getPreferredBackend() const;
 
 private Q_SLOTS:
     void slotCopyToClipboard() const;

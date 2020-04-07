@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef SQLREGISTRY_H
-#define SQLREGISTRY_H
+#ifndef SERVICESQLREGISTRY_H
+#define SERVICESQLREGISTRY_H
 
 //#include "ServiceSqlCollection.h"
 #include "amarok_export.h"
@@ -74,4 +74,4 @@ class AMAROK_EXPORT ServiceSqlRegistry : public QObject
         ServiceMetaFactory * m_metaFactory;
 };
 
-#endif /* SQLREGISTRY_H */
+#endif /* SERVICESQLREGISTRY_H */
