@@ -634,7 +634,7 @@ TestImporterBase::commitAfterSettingAllStatisticsShouldSaveThem_data()
     QTest::addColumn<int>( "newPlayCount" );
     QTest::addColumn<QStringList>( "newLabels" );
 
-    const uint now = QDateTime::currentDateTime().toTime_t();
+    const uint now = QDateTime::currentDateTimeUtc().toTime_t();
 
     QTest::newRow( "Replace all" ) << "title0" << "testStatistics"
                                    << QDateTime::fromTime_t( now - 100 )
@@ -745,7 +745,7 @@ TestImporterBase::commitAfterSettingFirstPlayedShouldSaveIt_data()
      QTest::addColumn<QString>( "title" );
      QTest::addColumn<QDateTime>( "newFirstPlayed" );
 
-     const uint now = QDateTime::currentDateTime().toTime_t();
+     const uint now = QDateTime::currentDateTimeUtc().toTime_t();
 
      QTest::newRow( "Add stat 1" ) << "title0" << QDateTime::fromTime_t( now );
      QTest::newRow( "Add stat 2" ) << "title1" << QDateTime::fromTime_t( now + 2 );
@@ -790,7 +790,7 @@ TestImporterBase::commitAfterSettingLastPlayedShouldSaveIt_data()
     QTest::addColumn<QString>( "title" );
     QTest::addColumn<QDateTime>( "newLastPlayed" );
 
-    const uint now = QDateTime::currentDateTime().toTime_t();
+    const uint now = QDateTime::currentDateTimeUtc().toTime_t();
 
     QTest::newRow( "Add stat 1" ) << "title0" << QDateTime::fromTime_t( now );
     QTest::newRow( "Add stat 2" ) << "title2" << QDateTime::fromTime_t( now + 2 );

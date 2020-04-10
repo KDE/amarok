@@ -385,7 +385,7 @@ void MagnatuneStore::doneParsing()
 
     MagnatuneConfig config;
     if ( m_magnatuneTimestamp == 0 )
-        config.setLastUpdateTimestamp( QDateTime::currentDateTime().toTime_t() );
+        config.setLastUpdateTimestamp( QDateTime::currentDateTimeUtc().toTime_t() );
     else
         config.setLastUpdateTimestamp( m_magnatuneTimestamp );
 

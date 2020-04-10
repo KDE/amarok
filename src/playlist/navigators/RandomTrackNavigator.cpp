@@ -35,7 +35,7 @@
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {
     loadFromSourceModel();
-    qsrand( QDateTime::currentDateTime().toTime_t() );
+    qsrand( QDateTime::currentDateTimeUtc().toTime_t() );
 }
 
 void

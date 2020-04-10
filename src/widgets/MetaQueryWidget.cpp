@@ -155,8 +155,8 @@ MetaQueryWidget::Filter::setField( qint64 newField )
     }
     if( !MetaQueryWidget::isDate( m_field ) && MetaQueryWidget::isDate( newField ) )
     {
-        numValue = QDateTime::currentDateTime().toTime_t();
-        numValue2 = QDateTime::currentDateTime().toTime_t();
+        numValue = QDateTime::currentDateTimeUtc().toTime_t();
+        numValue2 = QDateTime::currentDateTimeUtc().toTime_t();
     }
     else
     {
@@ -395,7 +395,7 @@ MetaQueryWidget::compareChanged( int index )
             // fix some inaccuracies caused by the conversion absolute/relative time specifications
             // this is actually just for visual consistency
             int unit = 0;
-            qint64 value = QDateTime::currentDateTime().toTime_t() - m_filter.numValue;
+            qint64 value = QDateTime::currentDateTimeUtc().toTime_t() - m_filter.numValue;
             if( value > 600 || !(value % 60) ) {
                 unit = 1;
                 value /= 60;
@@ -448,7 +448,7 @@ MetaQueryWidget::compareChanged( int index )
             && ( m_filter.condition == OlderThan || m_filter.condition == NewerThan )
           )
         {
-            m_filter.numValue = QDateTime::currentDateTime().toTime_t() - m_filter.numValue;
+            m_filter.numValue = QDateTime::currentDateTimeUtc().toTime_t() - m_filter.numValue;
         }
     }
 

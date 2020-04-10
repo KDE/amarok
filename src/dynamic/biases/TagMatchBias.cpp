@@ -348,7 +348,7 @@ Dynamic::TagMatchBias::newQuery()
             m_qm->endAndOr();
             break;
         case MetaQueryWidget::OlderThan:
-            m_qm->addNumberFilter( m_filter.field(), QDateTime::currentDateTime().toTime_t() - m_filter.numValue,
+            m_qm->addNumberFilter( m_filter.field(), QDateTime::currentDateTimeUtc().toTime_t() - m_filter.numValue,
                                 Collections::QueryMaker::LessThan );
             break;
         default:
@@ -472,7 +472,7 @@ Dynamic::TagMatchBias::matches( const Meta::TrackPtr &track ) const
                 value.toLongLong() < m_filter.numValue2;
             break;
         case MetaQueryWidget::OlderThan:
-            result = value.toLongLong() < m_filter.numValue + QDateTime::currentDateTime().toTime_t();
+            result = value.toLongLong() < m_filter.numValue + QDateTime::currentDateTimeUtc().toTime_t();
             break;
         default:
             ;
