@@ -25,6 +25,8 @@
 
 #include <QNetworkReply>
 
+#include <Auth.h>
+
 namespace Ui { class LastFmConfigWidget; }
 
 class LastFmServiceSettings : public KCModule

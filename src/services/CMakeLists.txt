@@ -17,7 +17,7 @@ if ( Mygpo-qt5_FOUND )
 endif()
 
 if( LIBLASTFM_FOUND )
-#    add_subdirectory( lastfm ) // Needs more work
+    add_subdirectory( lastfm )
 endif()
 
 add_subdirectory( opmldirectory )

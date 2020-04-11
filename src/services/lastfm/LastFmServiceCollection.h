@@ -45,15 +45,11 @@ public:
     virtual QueryMaker* queryMaker();
 
 private Q_SLOTS:
-    void slotAddNeighboursLoved();
-    void slotAddNeighboursPersonal();
     void slotAddFriendsLoved();
     void slotAddFriendsPersonal();
     
 private:
     QMap< QString, QNetworkReply* > m_jobs;
-    Meta::ServiceGenre *m_neighborsLoved;
-    Meta::ServiceGenre *m_neighborsPersonal;
     Meta::ServiceGenre *m_friendsLoved;
     Meta::ServiceGenre *m_friendsPersonal;
 };

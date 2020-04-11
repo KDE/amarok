@@ -18,7 +18,7 @@
 #ifndef LASTFMSERVICECONFIG_H
 #define LASTFMSERVICECONFIG_H
 
-#include "services/lastfm/amarok_lastfm_shared_export.h"
+#include "services/lastfm/amarok_service_lastfm_config_export.h"
 
 #include <QObject>
 #include <QSharedPointer>
@@ -36,7 +36,7 @@ typedef QSharedPointer<LastFmServiceConfig> LastFmServiceConfigPtr;
  * connect to the updated() signal and listen to changes, especially ones to username,
  * password or sessionKey.
  */
-class AMAROK_LASTFM_SHARED_EXPORT LastFmServiceConfig : public QObject
+class AMAROK_SERVICE_LASTFM_CONFIG_EXPORT LastFmServiceConfig : public QObject
 {
     Q_OBJECT
 public:

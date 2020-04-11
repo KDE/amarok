@@ -38,7 +38,8 @@ AvatarDownloader::downloadAvatar( const QString& username, const QUrl &url )
 
     m_userAvatarUrls.insert( url, username );
     The::networkAccessManager()->getData( url, this,
-         SLOT(downloaded(QUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+         &AvatarDownloader::downloaded);
+
 }
 
 void

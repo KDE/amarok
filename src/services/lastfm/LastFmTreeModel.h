@@ -37,31 +37,18 @@ enum Type
     MyRecommendations,
     PersonalRadio,
     MixRadio,
-    NeighborhoodRadio,
-    //         RecentlyPlayed,
-    //         RecentlyLoved,
-    //         RecentlyBanned,
     TopArtists,
     MyTags,
     Friends,
-    Neighbors,
-
-    //         History,
-
     RowCount,
-
     MyTagsChild,
     FriendsChild,
-    NeighborsChild,
     ArtistsChild,
     RecentlyBannedTrack,
     RecentlyPlayedTrack,
     RecentlyLovedTrack,
     HistoryStation,
-
     UserChildPersonal,
-    UserChildNeighborhood,
-
     TypeUnknown
 };
 
@@ -109,7 +96,6 @@ public:
 
 private Q_SLOTS:
     void onAvatarDownloaded( const QString& username, QPixmap );
-    void slotAddNeighbors();
     void slotAddFriends();
     void slotAddTags();
     void slotAddTopArtists();
@@ -127,7 +113,6 @@ private:
     LastFmTreeItem *m_rootItem;
     LastFmTreeItem *m_myTags;
     LastFmTreeItem *m_myFriends;
-    LastFmTreeItem *m_myNeighbors;
     LastFmTreeItem *m_myTopArtists;
     QHash<QString, QIcon> m_avatars;
 };
