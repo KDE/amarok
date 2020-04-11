@@ -183,7 +183,7 @@ ScriptManager::updateAllScripts() // SLOT
     // get timestamp of the last update check
     KConfigGroup config = Amarok::config( "ScriptManager" );
     const uint lastCheck = config.readEntry( "LastUpdateCheck", QVariant( 0 ) ).toUInt();
-    const uint now = QDateTime::currentDateTimeUtc().toTime_t();
+    const uint now = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
     bool autoUpdateScripts = AmarokConfig::autoUpdateScripts();
     // note: we can't update scripts without the QtCryptoArchitecture, so don't even try
     #ifndef QCA2_FOUND

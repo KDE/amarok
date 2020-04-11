@@ -100,7 +100,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
         }
     }
 
-    qsrand(QDateTime::currentDateTimeUtc().toTime_t());
+    qsrand(QDateTime::currentDateTimeUtc().toSecsSinceEpoch());
     m_time.start();
 
     foreach( const QString &path, m_fileFolderList )

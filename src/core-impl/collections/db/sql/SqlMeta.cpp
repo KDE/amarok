@@ -191,15 +191,15 @@ SqlTrack::SqlTrack( Collections::SqlCollection *collection, const QStringList &r
     m_statisticsId = (*(iter++)).toInt();
     uint time = (*(iter++)).toUInt();
     if( time > 0 )
-        m_firstPlayed = QDateTime::fromTime_t(time);
+        m_firstPlayed = QDateTime::fromSecsSinceEpoch(time);
     time = (*(iter++)).toUInt();
     if( time > 0 )
-        m_lastPlayed = QDateTime::fromTime_t(time);
+        m_lastPlayed = QDateTime::fromSecsSinceEpoch(time);
     m_playCount = (*(iter++)).toInt();
     m_filetype = Amarok::FileType( (*(iter++)).toInt() );
     m_bpm = (*(iter++)).toFloat();
-    m_createDate = QDateTime::fromTime_t((*(iter++)).toUInt());
-    m_modifyDate = QDateTime::fromTime_t((*(iter++)).toUInt());
+    m_createDate = QDateTime::fromSecsSinceEpoch((*(iter++)).toUInt());
+    m_modifyDate = QDateTime::fromSecsSinceEpoch((*(iter++)).toUInt());
 
     // if there is no track gain, we assume a gain of 0
     // if there is no album gain, we use the track gain

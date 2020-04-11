@@ -157,8 +157,8 @@ TestSqlTrack::setAllValues( Meta::SqlTrack *track )
     track->setTrackNumber( 4 );
     track->setDiscNumber( 1 );
 
-    track->setFirstPlayed( QDateTime::fromTime_t(100) );
-    track->setLastPlayed( QDateTime::fromTime_t(200) );
+    track->setFirstPlayed( QDateTime::fromSecsSinceEpoch(100) );
+    track->setLastPlayed( QDateTime::fromSecsSinceEpoch(200) );
     track->setPlayCount( 20 );
 
     Meta::ReplayGainTag modes[] = { Meta::ReplayGain_Track_Gain,
@@ -196,8 +196,8 @@ TestSqlTrack::getAllValues( Meta::SqlTrack *track )
     QCOMPARE( track->trackNumber(), 4 );
     QCOMPARE( track->discNumber(), 1 );
 
-    QCOMPARE( track->firstPlayed(), QDateTime::fromTime_t(100) );
-    QCOMPARE( track->lastPlayed(), QDateTime::fromTime_t(200) );
+    QCOMPARE( track->firstPlayed(), QDateTime::fromSecsSinceEpoch(100) );
+    QCOMPARE( track->lastPlayed(), QDateTime::fromSecsSinceEpoch(200) );
     QCOMPARE( track->playCount(), 20 );
 
     Meta::ReplayGainTag modes[] = { Meta::ReplayGain_Track_Gain,

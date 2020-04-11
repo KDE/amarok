@@ -60,7 +60,7 @@ SimpleWritableTrack::setFirstPlayed( const QDateTime &firstPlayed )
 {
     QWriteLocker lock( &m_lock );
     m_statistics.insert( Meta::valFirstPlayed, firstPlayed.isValid()
-                                               ? firstPlayed.toTime_t() : 0u );
+                                               ? firstPlayed.toSecsSinceEpoch() : 0u );
     m_changes |= Meta::valFirstPlayed;
 }
 
@@ -76,7 +76,7 @@ SimpleWritableTrack::setLastPlayed( const QDateTime &lastPlayed )
 {
     QWriteLocker lock( &m_lock );
     m_statistics.insert( Meta::valLastPlayed, lastPlayed.isValid()
-                                              ? lastPlayed.toTime_t() : 0u );
+                                              ? lastPlayed.toSecsSinceEpoch() : 0u );
     m_changes |= Meta::valLastPlayed;
 }
 

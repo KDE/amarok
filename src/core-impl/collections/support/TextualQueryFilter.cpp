@@ -213,7 +213,7 @@ Collections::addDateFilter( qint64 field, Collections::QueryMaker::NumberCompari
                             bool negate, const QString &text, Collections::QueryMaker *qm )
 {
     bool absolute = false;
-    const uint date = semanticDateTimeParser( text, &absolute ).toTime_t();
+    const uint date = semanticDateTimeParser( text, &absolute ).toSecsSinceEpoch();
     if( date == 0 )
         return;
 

@@ -739,7 +739,7 @@ AmpacheServiceQueryMaker::getRequestUrl( const QString &action ) const
     if( d->dateFilter > 0 )
     {
         QDateTime from;
-        from.setTime_t( d->dateFilter );
+        from.setSecsSinceEpoch( d->dateFilter );
         query.addQueryItem( "add", from.toString( Qt::ISODate ) );
     }
     query.addQueryItem( "limit", QString::number( d->maxsize ) );

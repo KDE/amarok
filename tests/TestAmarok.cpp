@@ -192,16 +192,16 @@ void TestAmarok::testVerboseTimeSince()
 {
     /* There are two overloaded variants of this function */
     QCOMPARE( Amarok::verboseTimeSince( 0 ).isEmpty(), false );
-    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromTime_t( 0 ) ).isEmpty(), false );
+    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromSecsSinceEpoch( 0 ) ).isEmpty(), false );
 
     QCOMPARE( Amarok::verboseTimeSince( 10 ).isEmpty(), false );
-    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromTime_t( 10 ) ).isEmpty(), false );
+    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromSecsSinceEpoch( 10 ) ).isEmpty(), false );
 
     QCOMPARE( Amarok::verboseTimeSince( 100 ).isEmpty(), false );
-    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromTime_t( 100 ) ).isEmpty(), false );
+    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromSecsSinceEpoch( 100 ) ).isEmpty(), false );
 
     QCOMPARE( Amarok::verboseTimeSince( 1000 ).isEmpty(), false );
-    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromTime_t( 1000 ) ).isEmpty(), false );
+    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromSecsSinceEpoch( 1000 ) ).isEmpty(), false );
     /* any other good ideas what to test here? */
 }
 

@@ -113,7 +113,7 @@ class Track::Private : public QObject
             if( newTrackInfo )
             {
                 statsStore = new TagStatisticsStore( t );
-                currentTrackStartTime = QDateTime::currentDateTimeUtc().toTime_t();
+                currentTrackStartTime = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
             }
 
             notifyObservers();

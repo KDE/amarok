@@ -138,7 +138,7 @@ CollectionScanner::Scanner::readNewerTime( const QString &path )
     if( !file.exists() )
         error( tr( "File \"%1\" not found." ).arg( path ) );
 
-    m_newerTime = qMax( m_newerTime, file.lastModified().toTime_t() );
+    m_newerTime = qMax<qint64>( m_newerTime, file.lastModified().toSecsSinceEpoch() );
 }
 
 
@@ -273,7 +273,7 @@ CollectionScanner::Scanner::isModified( const QString& dir )
     if( !info.exists() )
         return false;
 
-    uint lastModified = info.lastModified().toTime_t();
+    uint lastModified = info.lastModified().toSecsSinceEpoch();
 
     if( m_mTimes.contains( dir ) )
         return m_mTimes.value( dir ) != lastModified;
