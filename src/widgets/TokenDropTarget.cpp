@@ -94,7 +94,7 @@ TokenDropTarget::clear()
     foreach( Token* token, allTokens )
         delete token;
 
-    emit changed();
+    Q_EMIT changed();
 }
 
 int
