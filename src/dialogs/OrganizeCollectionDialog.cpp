@@ -26,7 +26,6 @@
 #include "core/support/Debug.h"
 #include "core-impl/meta/file/File.h"
 #include "dialogs/TrackOrganizer.h"
-#include "widgets/BoxWidget.h"
 #include "widgets/TokenPool.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 
@@ -152,9 +151,14 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     if( tracks.size() > 0 )
         m_allTracks = tracks;
 
-    BoxWidget *mainVBox = new BoxWidget( true, this );
-    QWidget *mainContainer = new QWidget( mainVBox );
-    new QDialogButtonBox( buttonMask, mainVBox );
+    QWidget *mainContainer = new QWidget( this );
+    QDialogButtonBox* buttonBox = new QDialogButtonBox( buttonMask, this );
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &OrganizeCollectionDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &OrganizeCollectionDialog::reject);
+
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget( mainContainer );
+    mainLayout->addWidget( buttonBox );
 
     ui->setupUi( mainContainer );
 

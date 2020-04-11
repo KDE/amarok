@@ -45,22 +45,17 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     ui.setupUi( uiBase );
     setModal( true );
     setWindowTitle( i18n( "Transcode Tracks" ) );
-    setMinimumSize( 620, 480 );
+    setMinimumSize( 620, 500 );
     setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-    QWidget *mainWidget = new QWidget(this);
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(mainWidget);
+    QDialogButtonBox *buttonBox = this->buttonBox();
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
     connect(buttonBox, &QDialogButtonBox::accepted, this, &AssistantDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &AssistantDialog::reject);
-    mainLayout->addWidget(uiBase);
     okButton->setText( i18n( "Transc&ode" ) );
     okButton->setEnabled( false );
-    mainLayout->addWidget(buttonBox);
 
     QString explanatoryText;
     QIcon justCopyIcon;

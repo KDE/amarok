@@ -304,7 +304,7 @@ FileView::slotPrepareCopyTracks()
 
     // prevent bug 313003, require full metadata
     TrackLoader* dl = new TrackLoader( TrackLoader::FullMetadataRequired ); // auto-deletes itself
-    connect( dl, &TrackLoader::finished, this, &FileView::slotMoveTracks );
+    connect( dl, &TrackLoader::finished, this, &FileView::slotCopyTracks );
     dl->init( list.urlList() );
 }
 

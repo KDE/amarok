@@ -35,8 +35,8 @@ PropertySliderWidget::PropertySliderWidget( const Property &property, QWidget * 
     m_mainLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
     QBoxLayout *mainLayout = new QVBoxLayout( this );
-    QBoxLayout *secondaryTopLayout = new QHBoxLayout( this );
-    QBoxLayout *secondaryBotLayout = new QHBoxLayout( this );
+    QBoxLayout *secondaryTopLayout = new QHBoxLayout;
+    QBoxLayout *secondaryBotLayout = new QHBoxLayout;
     mainLayout->addWidget( m_mainLabel );
     mainLayout->addLayout( secondaryTopLayout );
     mainLayout->addLayout( secondaryBotLayout );
