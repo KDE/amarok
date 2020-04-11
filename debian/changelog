@@ -1,0 +1,17 @@
+amarok (2.9+1SNAPSHOT20200410173239+0200-0ubuntu1ppa1ubuntu1) eoan; urgency=medium
+
+  * add missing libkf5doctools-dev to control file
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 10 Apr 2020 17:32:23 +0200
+
+amarok (2.9+1SNAPSHOT20200407170839+0200-0ubuntu1ppa1) eoan; urgency=medium
+
+  * Fix snapshot naming
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 10 Apr 2020 09:20:01 +0200
+
+amarok (2.9+120200407170839+0200-0ubuntu1ppa1-1) eoan; urgency=medium
+
+  * Initial release 
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 07 Apr 2020 17:16:20 +0200
