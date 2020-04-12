@@ -5,9 +5,6 @@ include(CheckTypeSize)
 include(MacroBoolTo01)
 include(MacroLogFeature)
 
-set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
-                          ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
-
 # Add a variable which points to amarok's source directory.
 set( AMAROK_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/ )
 
