@@ -125,6 +125,7 @@ GenericName[wa]=Djouweu d' son
 GenericName[x-test]=xxAudio Playerxx
 GenericName[zh_TW]=音效播放器
 Exec=amarok %U
+StartupWMClass=amarok
 Comment=Amarok - Rediscover Your Music!
 Comment[be]=Amarok - адкрыйце для сябе сваю музыку!
 Comment[bg]=Amarok - преоткрийте музиката!
