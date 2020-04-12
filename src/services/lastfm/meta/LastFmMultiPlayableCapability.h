@@ -41,8 +41,8 @@ class LastFmMultiPlayableCapability : public Capabilities::MultiPlayableCapabili
         virtual ~LastFmMultiPlayableCapability();
 
         // Capabilities::MultiPlayableCapability methods
-        virtual void fetchFirst();
-        virtual void fetchNext();
+        void fetchFirst() override;
+        void fetchNext() override;
 
     private Q_SLOTS:
         void slotTrackPlaying( const Meta::TrackPtr &track );

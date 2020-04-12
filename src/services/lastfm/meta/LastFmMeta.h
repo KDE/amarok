@@ -40,51 +40,51 @@ namespace LastFm
             virtual ~Track();
 
         // methods inherited from Meta::Base
-            virtual QString name() const;
-            virtual QString sortableName() const;
+            QString name() const override;
+            QString sortableName() const override;
 
         // methods inherited from Meta::Track
-            virtual QUrl playableUrl() const;
-            virtual QString prettyUrl() const;
-            virtual QString uidUrl() const;
-            virtual QString notPlayableReason() const;
+            QUrl playableUrl() const override;
+            QString prettyUrl() const override;
+            QString uidUrl() const override;
+            QString notPlayableReason() const override;
 
-            virtual Meta::AlbumPtr album() const;
-            virtual Meta::ArtistPtr artist() const;
-            virtual Meta::GenrePtr genre() const;
-            virtual Meta::ComposerPtr composer() const;
-            virtual Meta::YearPtr year() const;
+            Meta::AlbumPtr album() const override;
+            Meta::ArtistPtr artist() const override;
+            Meta::GenrePtr genre() const override;
+            Meta::ComposerPtr composer() const override;
+            Meta::YearPtr year() const override;
 
-            virtual qreal bpm() const;
+            qreal bpm() const override;
 
-            virtual QString comment() const;
+            QString comment() const override;
 
-            virtual int trackNumber() const;
+            int trackNumber() const override;
 
-            virtual int discNumber() const;
+            int discNumber() const override;
 
-            virtual qint64 length() const;
-            virtual int filesize() const;
-            virtual int sampleRate() const;
-            virtual int bitrate() const;
+            qint64 length() const override;
+            int filesize() const override;
+            int sampleRate() const override;
+            int bitrate() const override;
 
-            virtual QString type() const;
+            QString type() const override;
 
-            virtual bool inCollection() const;
-            virtual Collections::Collection *collection() const;
+            bool inCollection() const override;
+            Collections::Collection *collection() const override;
 
-            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-            virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+            bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;
+            Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) override;
 
-            virtual Meta::StatisticsPtr statistics();
+            Meta::StatisticsPtr statistics() override;
 
         // own methods:
             void setTrackInfo( const lastfm::Track &trackInfo );
 
-            virtual QString sourceName();
-            virtual QString sourceDescription();
-            virtual QPixmap emblem();
-            virtual QString scalableEmblem();
+            QString sourceName() override;
+            QString sourceDescription() override;
+            QPixmap emblem() override;
+            QString scalableEmblem() override;
 
             //LastFm specific methods, cast the object to LastFm::Track to use them
             //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)

@@ -42,32 +42,32 @@ namespace Dynamic
             LastFmBias();
             ~LastFmBias();
 
-            virtual void fromXml( QXmlStreamReader *reader );
-            virtual void toXml( QXmlStreamWriter *writer ) const;
+            void fromXml( QXmlStreamReader *reader ) override;
+            void toXml( QXmlStreamWriter *writer ) const override;
 
             static QString sName();
-            virtual QString name() const;
-            virtual QString toString() const;
+            QString name() const override;
+            QString toString() const override;
 
-            virtual QWidget* widget( QWidget* parent = nullptr );
+            QWidget* widget( QWidget* parent = nullptr ) override;
 
             virtual Dynamic::TrackSet matchingTracks( const Meta::TrackList& playlist,
                                                       int contextCount, int finalCount,
                                                       Dynamic::TrackCollectionPtr universe ) const;
 
-            virtual bool trackMatches( int position,
-                                       const Meta::TrackList& playlist,
-                                       int contextCount ) const;
+            bool trackMatches( int position,
+                               const Meta::TrackList& playlist,
+                               int contextCount ) const override;
 
 
             MatchType match() const;
             void setMatch( MatchType value );
 
         public Q_SLOTS:
-            virtual void invalidate();
+            void invalidate() override;
 
         private Q_SLOTS:
-            virtual void newQuery();
+            void newQuery() override;
             virtual void newSimilarQuery();
 
             void similarArtistQueryDone();
@@ -108,10 +108,10 @@ namespace Dynamic
     class LastFmBiasFactory : public Dynamic::AbstractBiasFactory
     {
         public:
-            virtual QString i18nName() const;
-            virtual QString name() const;
-            virtual QString i18nDescription() const;
-            virtual BiasPtr createBias();
+            QString i18nName() const override;
+            QString name() const override;
+            QString i18nDescription() const override;
+            BiasPtr createBias() override;
     };
 
 }

@@ -30,8 +30,8 @@ class LastFmStreamInfoCapability : public Capabilities::StreamInfoCapability
         explicit LastFmStreamInfoCapability( LastFm::Track *track );
         ~LastFmStreamInfoCapability();
 
-        virtual QString streamName() const;
-        virtual QString streamSource() const;
+        QString streamName() const override;
+        QString streamSource() const override;
 
     private:
         LastFm::Track *m_sourceTrack;

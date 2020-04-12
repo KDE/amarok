@@ -53,9 +53,9 @@ private Q_SLOTS:
     void slotAppendChildTracks();
 
 protected:
-    virtual void contextMenuEvent ( QContextMenuEvent* );
-    void mouseDoubleClickEvent( QMouseEvent *event );
-    void startDrag( Qt::DropActions supportedActions );
+    void contextMenuEvent ( QContextMenuEvent* ) override;
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
+    void startDrag( Qt::DropActions supportedActions ) override;
 
 private:
     enum ContextMenuActionType { ExecQMenu, DoQMenuDefaultAction };
