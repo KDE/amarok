@@ -40,7 +40,7 @@ class SynchronizationAdapter : public StatSyncing::Provider
         QString description() const override;
         QIcon icon() const override;
         qint64 reliableTrackMetaData() const override;
-        qint64 writableTrackStatsData() const;
+        qint64 writableTrackStatsData() const override;
         Preference defaultPreference() override;
         QSet<QString> artists() override;
         StatSyncing::TrackList artistTracks( const QString &artistName ) override;
