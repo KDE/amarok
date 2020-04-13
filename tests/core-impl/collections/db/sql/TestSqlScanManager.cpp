@@ -797,7 +797,7 @@ TestSqlScanManager::testLargeInsert()
         writer.writeStartElement( "directory" );
         writer.writeTextElement( "path", QString::number(dirId) );
         writer.writeTextElement( "rpath", '/' + QString::number(dirId) );
-        writer.writeTextElement( "mtime", QString::number(aDate.toTime_t()) );
+        writer.writeTextElement( "mtime", QString::number(aDate.toSecsSinceEpoch()) );
 
         for( int trackId = 0; trackId < 20; trackId++ )
         {
@@ -821,7 +821,7 @@ TestSqlScanManager::testLargeInsert()
         writer.writeStartElement( "directory" );
         writer.writeTextElement( "path", "genre" + QString::number(dirId) );
         writer.writeTextElement( "rpath", "/genre" + QString::number(dirId) );
-        writer.writeTextElement( "mtime", QString::number(aDate.toTime_t()) );
+        writer.writeTextElement( "mtime", QString::number(aDate.toSecsSinceEpoch()) );
 
         for( int albumId = 0; albumId < 1000; albumId++ )
         {
@@ -849,7 +849,7 @@ TestSqlScanManager::testLargeInsert()
         writer.writeStartElement( "directory" );
         writer.writeTextElement( "path", "collection" + QString::number(dirId) );
         writer.writeTextElement( "rpath", "/collection" + QString::number(dirId) );
-        writer.writeTextElement( "mtime", QString::number(aDate.toTime_t()) );
+        writer.writeTextElement( "mtime", QString::number(aDate.toSecsSinceEpoch()) );
 
         writer.writeStartElement( "track" );
         writer.writeTextElement( "uniqueid", "uid" + QString::number(trackCount) );

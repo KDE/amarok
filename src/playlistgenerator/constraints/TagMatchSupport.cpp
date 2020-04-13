@@ -256,13 +256,13 @@ ConstraintTypes::TagMatch::Comparer::compareDate( const uint test,
         DateRange r = targetVar.value<DateRange>();
         switch ( r.second ) {
             case 0:
-                target = now.addDays( -1 * r.first ).toTime_t();
+                target = now.addDays( -1 * r.first ).toSecsSinceEpoch();
                 break;
             case 1:
-                target = now.addMonths( -1 * r.first ).toTime_t();
+                target = now.addMonths( -1 * r.first ).toSecsSinceEpoch();
                 break;
             case 2:
-                target = now.addYears( -1 * r.first ).toTime_t();
+                target = now.addYears( -1 * r.first ).toSecsSinceEpoch();
                 break;
             default:
                 break;

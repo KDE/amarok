@@ -1,6 +1,8 @@
 [Desktop Entry]
-ServiceTypes=text/html,application/xml,application/xml,application/rss+xml,text/rdf
+Type=Service
+X-KDE-ServiceTypes=text/html,application/xml,application/xml,application/rss+xml,text/rdf
 Actions=addAsPodcast;
+
 [Desktop Action addAsPodcast]
 Name=Add as Podcast to Amarok
 Name[be]=Дадаць як подкаст у Amarok

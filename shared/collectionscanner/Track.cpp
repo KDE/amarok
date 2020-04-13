@@ -228,7 +228,7 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader, CollectionScanner::Di
             else if( name == QLatin1String("filesize") )
                 m_filesize = reader->readElementText(QXmlStreamReader::SkipChildElements).toLong();
             else if( name == QLatin1String("mtime") )
-                m_modified = QDateTime::fromTime_t(reader->readElementText(QXmlStreamReader::SkipChildElements).toLong());
+                m_modified = QDateTime::fromSecsSinceEpoch(reader->readElementText(QXmlStreamReader::SkipChildElements).toLong());
 
             else if( name == QLatin1String("trackGain") )
                 m_trackGain = reader->readElementText(QXmlStreamReader::SkipChildElements).toFloat();
@@ -313,7 +313,7 @@ CollectionScanner::Track::toXml( QXmlStreamWriter *writer ) const
     if( m_filesize != -1 )
         write(writer, QStringLiteral("filesize"), QString::number( m_filesize ) );
     if( m_modified.isValid() )
-        write(writer, QStringLiteral("mtime"), QString::number( m_modified.toTime_t() ) );
+        write(writer, QStringLiteral("mtime"), QString::number( m_modified.toSecsSinceEpoch() ) );
 
     if( m_trackGain != 0 )
         write(writer, QStringLiteral("trackGain"), QString::number( m_trackGain ) );

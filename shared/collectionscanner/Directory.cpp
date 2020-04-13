@@ -46,7 +46,7 @@ CollectionScanner::Directory::Directory( const QString &path,
 {
     m_path = path;
     m_rpath = QDir::current().relativeFilePath( path );
-    m_mtime = QFileInfo( path ).lastModified().toTime_t();
+    m_mtime = QFileInfo( path ).lastModified().toSecsSinceEpoch();
     m_skipped = skip;
 
     if( m_skipped )

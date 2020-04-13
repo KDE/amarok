@@ -58,7 +58,7 @@ class GenericNumberMemoryFilter : public NumberMemoryFilter
         {
             QVariant v = Meta::valueForField( m_value, track );
             if( v.type() == QVariant::DateTime )
-                return v.toDateTime().toTime_t();
+                return v.toDateTime().toSecsSinceEpoch();
             else
                 return v.toLongLong();
         }

@@ -48,6 +48,7 @@ AMAROK_EXPORT OcsData ocsData;
 int main( int argc, char *argv[] )
 {
     App app(argc, argv);
+    app.setAttribute(Qt::AA_UseHighDpiPixmaps, true);
 
 #ifdef WITH_QT_WEBENGINE
     QtWebEngine::initialize();

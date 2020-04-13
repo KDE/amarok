@@ -534,7 +534,7 @@ bool UpnpQueryMaker::postFilter( const KIO::UDSEntry &entry )
                 QDateTime time = QDateTime::fromString( dateString, Qt::ISODate );
                 if( !time.isValid() )
                     return false;
-                aValue = time.toTime_t();
+                aValue = time.toSecsSinceEpoch();
                 debug() << "FILTER BY creation timestamp entry:" << aValue << "query:" << filter.value << "OP:" << filter.compare;
                 break;
             }

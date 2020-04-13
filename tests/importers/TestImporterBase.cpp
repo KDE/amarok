@@ -434,7 +434,7 @@ TestImporterBase::tracksShouldHaveStatistics_data()
 
     QVector<QDateTime> d;
     for( uint t = 0; t < 20; ++t )
-        d.push_back( QDateTime::fromTime_t( 1378125780u + t ) );
+        d.push_back( QDateTime::fromSecsSinceEpoch( 1378125780u + t ) );
 
     QTest::newRow( "title0" ) << d[ 0] << d[ 1] <<  1 << 20;
     QTest::newRow( "title1" ) << d[ 2] << d[ 3] <<  2 << 15;
@@ -464,7 +464,7 @@ TestImporterBase::tracksShouldBehaveNicelyWithNoStatistics_data()
 
     QVector<QDateTime> d;
     for( uint t = 0; t < 20; ++t )
-        d.push_back( QDateTime::fromTime_t( 1378125780u + t ) );
+        d.push_back( QDateTime::fromSecsSinceEpoch( 1378125780u + t ) );
 
     QTest::newRow( "title0" ) << QDateTime() << QDateTime() <<  0 <<  0;
     QTest::newRow( "title1" ) << QDateTime() <<       d[ 3] <<  2 << 15;
@@ -634,31 +634,31 @@ TestImporterBase::commitAfterSettingAllStatisticsShouldSaveThem_data()
     QTest::addColumn<int>( "newPlayCount" );
     QTest::addColumn<QStringList>( "newLabels" );
 
-    const uint now = QDateTime::currentDateTime().toTime_t();
+    const uint now = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
 
     QTest::newRow( "Replace all" ) << "title0" << "testStatistics"
-                                   << QDateTime::fromTime_t( now - 100 )
-                                   << QDateTime::fromTime_t( now + 100 )
+                                   << QDateTime::fromSecsSinceEpoch( now - 100 )
+                                   << QDateTime::fromSecsSinceEpoch( now + 100 )
                                    << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
 
     QTest::newRow( "Add all" ) << "title0" << "testStatisticsNotSet"
-                               << QDateTime::fromTime_t( now - 100 )
-                               << QDateTime::fromTime_t( now + 100 )
+                               << QDateTime::fromSecsSinceEpoch( now - 100 )
+                               << QDateTime::fromSecsSinceEpoch(now + 100 )
                                << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
 
     QTest::newRow( "Add some 1" ) << "title2" << "testStatisticsNotSet"
-                                  << QDateTime::fromTime_t( now - 100 )
-                                  << QDateTime::fromTime_t( now + 100 )
+                                  << QDateTime::fromSecsSinceEpoch( now - 100 )
+                                  << QDateTime::fromSecsSinceEpoch( now + 100 )
                                   << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
 
     QTest::newRow( "Add some 1" ) << "title4" << "testStatisticsNotSet"
-                                  << QDateTime::fromTime_t( now - 100 )
-                                  << QDateTime::fromTime_t( now + 100 )
+                                  << QDateTime::fromSecsSinceEpoch( now - 100 )
+                                  << QDateTime::fromSecsSinceEpoch( now + 100 )
                                   << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
 
     QTest::newRow( "Add some 1" ) << "title6" << "testStatisticsNotSet"
-                                  << QDateTime::fromTime_t( now - 100 )
-                                  << QDateTime::fromTime_t( now + 100 )
+                                  << QDateTime::fromSecsSinceEpoch( now - 100 )
+                                  << QDateTime::fromSecsSinceEpoch( now + 100 )
                                   << 9 << 25 << ( QStringList() << "teh" << "lab'ls" );
 }
 
@@ -745,15 +745,15 @@ TestImporterBase::commitAfterSettingFirstPlayedShouldSaveIt_data()
      QTest::addColumn<QString>( "title" );
      QTest::addColumn<QDateTime>( "newFirstPlayed" );
 
-     const uint now = QDateTime::currentDateTime().toTime_t();
+     const uint now = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
 
-     QTest::newRow( "Add stat 1" ) << "title0" << QDateTime::fromTime_t( now );
-     QTest::newRow( "Add stat 2" ) << "title1" << QDateTime::fromTime_t( now + 2 );
-     QTest::newRow( "Add stat 3" ) << "title2" << QDateTime::fromTime_t( now + 3 );
+     QTest::newRow( "Add stat 1" ) << "title0" << QDateTime::fromSecsSinceEpoch( now );
+     QTest::newRow( "Add stat 2" ) << "title1" << QDateTime::fromSecsSinceEpoch( now + 2 );
+     QTest::newRow( "Add stat 3" ) << "title2" << QDateTime::fromSecsSinceEpoch( now + 3 );
 
-     QTest::newRow( "Replace stat 1" ) << "title5" << QDateTime::fromTime_t( now + 11 );
-     QTest::newRow( "Replace stat 2" ) << "title6" << QDateTime::fromTime_t( now + 13 );
-     QTest::newRow( "Replace stat 3" ) << "title7" << QDateTime::fromTime_t( now + 17 );
+     QTest::newRow( "Replace stat 1" ) << "title5" << QDateTime::fromSecsSinceEpoch( now + 11 );
+     QTest::newRow( "Replace stat 2" ) << "title6" << QDateTime::fromSecsSinceEpoch( now + 13 );
+     QTest::newRow( "Replace stat 3" ) << "title7" << QDateTime::fromSecsSinceEpoch( now + 17 );
 
      QTest::newRow( "Remove stat 1" ) << "title5" << QDateTime();
      QTest::newRow( "Remove stat 2" ) << "title6" << QDateTime();
@@ -790,15 +790,15 @@ TestImporterBase::commitAfterSettingLastPlayedShouldSaveIt_data()
     QTest::addColumn<QString>( "title" );
     QTest::addColumn<QDateTime>( "newLastPlayed" );
 
-    const uint now = QDateTime::currentDateTime().toTime_t();
+    const uint now = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
 
-    QTest::newRow( "Add stat 1" ) << "title0" << QDateTime::fromTime_t( now );
-    QTest::newRow( "Add stat 2" ) << "title2" << QDateTime::fromTime_t( now + 2 );
-    QTest::newRow( "Add stat 3" ) << "title4" << QDateTime::fromTime_t( now + 3 );
+    QTest::newRow( "Add stat 1" ) << "title0" << QDateTime::fromSecsSinceEpoch( now );
+    QTest::newRow( "Add stat 2" ) << "title2" << QDateTime::fromSecsSinceEpoch( now + 2 );
+    QTest::newRow( "Add stat 3" ) << "title4" << QDateTime::fromSecsSinceEpoch( now + 3 );
 
-    QTest::newRow( "Replace stat 1" ) << "title1" << QDateTime::fromTime_t( now + 11 );
-    QTest::newRow( "Replace stat 2" ) << "title3" << QDateTime::fromTime_t( now + 13 );
-    QTest::newRow( "Replace stat 3" ) << "title5" << QDateTime::fromTime_t( now + 17 );
+    QTest::newRow( "Replace stat 1" ) << "title1" << QDateTime::fromSecsSinceEpoch( now + 11 );
+    QTest::newRow( "Replace stat 2" ) << "title3" << QDateTime::fromSecsSinceEpoch( now + 13 );
+    QTest::newRow( "Replace stat 3" ) << "title5" << QDateTime::fromSecsSinceEpoch( now + 17 );
 
     QTest::newRow( "Remove stat 1" ) << "title1" << QDateTime();
     QTest::newRow( "Remove stat 2" ) << "title3" << QDateTime();

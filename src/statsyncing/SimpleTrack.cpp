@@ -106,7 +106,7 @@ SimpleTrack::getDateTime( const QVariant &v ) const
     if( v.toDateTime().isValid() )
         return v.toDateTime();
     else if( v.toUInt() != 0 )
-        return QDateTime::fromTime_t( v.toUInt() );
+        return QDateTime::fromSecsSinceEpoch( v.toUInt() );
     else
         return QDateTime();
 }

@@ -226,13 +226,13 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
         uint referenceDate = 0;
         int range = m_comparer->rangeDate( m_strictness );
         if ( m_comparison == CompareDateBefore ) {
-            referenceDate = m_value.toDateTime().toTime_t();
+            referenceDate = m_value.toDateTime().toSecsSinceEpoch();
             if ( m_invert )
                 qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate - range, Collections::QueryMaker::LessThan );
             else
                 qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate + range, Collections::QueryMaker::LessThan );
         } else if ( m_comparison == CompareDateOn ) {
-            referenceDate = m_value.toDateTime().toTime_t();
+            referenceDate = m_value.toDateTime().toSecsSinceEpoch();
             if ( !m_invert ) {
                 qm->beginAnd();
                 qm->addNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate - range, Collections::QueryMaker::GreaterThan );
@@ -240,7 +240,7 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
                 qm->endAndOr();
             }
         } else if ( m_comparison == CompareDateAfter ) {
-            referenceDate = m_value.toDateTime().toTime_t();
+            referenceDate = m_value.toDateTime().toSecsSinceEpoch();
             if ( m_invert )
                 qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate + range, Collections::QueryMaker::GreaterThan );
             else
@@ -250,13 +250,13 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
             DateRange r = m_value.value<DateRange>();
             switch ( r.second ) {
                 case 0:
-                    referenceDate = now.addDays( -1 * r.first ).toTime_t();
+                    referenceDate = now.addDays( -1 * r.first ).toSecsSinceEpoch();
                     break;
                 case 1:
-                    referenceDate = now.addMonths( -1 * r.first ).toTime_t();
+                    referenceDate = now.addMonths( -1 * r.first ).toSecsSinceEpoch();
                     break;
                 case 2:
-                    referenceDate = now.addYears( -1 * r.first ).toTime_t();
+                    referenceDate = now.addYears( -1 * r.first ).toSecsSinceEpoch();
                     break;
                 default:
                     break;
@@ -439,7 +439,7 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
                 v = m_comparer->compareNum( track->filesize(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valCreateDate:
-                v = m_comparer->compareDate( track->createDate().toTime_t(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->createDate().toSecsSinceEpoch(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valScore:
                 v = m_comparer->compareNum( track->statistics()->score(), m_comparison, m_value.toDouble(), m_strictness, fmv );
@@ -448,10 +448,10 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
                 v = m_comparer->compareNum( track->statistics()->rating(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valFirstPlayed:
-                v = m_comparer->compareDate( track->statistics()->firstPlayed().toTime_t(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->statistics()->firstPlayed().toSecsSinceEpoch(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valLastPlayed:
-                v = m_comparer->compareDate( track->statistics()->lastPlayed().toTime_t(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->statistics()->lastPlayed().toSecsSinceEpoch(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valPlaycount:
                 v = m_comparer->compareNum( track->statistics()->playCount(), m_comparison, m_value.toInt(), m_strictness, fmv );

@@ -113,7 +113,7 @@ class Track::Private : public QObject
             if( newTrackInfo )
             {
                 statsStore = new TagStatisticsStore( t );
-                currentTrackStartTime = QDateTime::currentDateTime().toTime_t();
+                currentTrackStartTime = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
             }
 
             notifyObservers();
@@ -203,12 +203,12 @@ public:
         , d( dptr )
     {}
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         return Meta::TrackList();
     }
 
-    QString name() const
+    QString name() const override
     {
         if( d )
             return d->artist;
@@ -228,23 +228,23 @@ public:
         , d( dptr )
     {}
 
-    bool isCompilation() const { return false; }
-    bool hasAlbumArtist() const { return false; }
-    Meta::ArtistPtr albumArtist() const { return Meta::ArtistPtr(); }
+    bool isCompilation() const override { return false; }
+    bool hasAlbumArtist() const override { return false; }
+    Meta::ArtistPtr albumArtist() const override { return Meta::ArtistPtr(); }
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         return Meta::TrackList();
     }
 
-    QString name() const
+    QString name() const override
     {
         if( d )
             return d->album;
         return QString();
     }
 
-    QImage image( int size ) const
+    QImage image( int size ) const override
     {
         if( !d || d->albumArt.isNull() )
         {
@@ -277,7 +277,7 @@ public:
         return d->albumArt;
     }
 
-    QUrl imageLocation( int size )
+    QUrl imageLocation( int size ) override
     {
         Q_UNUSED( size );
         if( d && !d->imageUrl.isEmpty() )
@@ -286,7 +286,7 @@ public:
     }
 
     // return true since we handle our own fetching
-    bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return true; }
+    bool hasImage( int size = 1 ) const override { Q_UNUSED( size ); return true; }
 
     Track::Private * const d;
 
@@ -301,12 +301,12 @@ public:
         , d( dptr )
     {}
 
-    QString name() const
+    QString name() const override
     {
         return QString();
     }
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         return Meta::TrackList();
     }
@@ -324,12 +324,12 @@ public:
         , d( dptr )
     {}
 
-    QString name() const
+    QString name() const override
     {
         return QString();
     }
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         return Meta::TrackList();
     }
@@ -347,12 +347,12 @@ public:
         , d( dptr )
     {}
 
-    QString name() const
+    QString name() const override
     {
         return QString();
     }
 
-    Meta::TrackList tracks()
+    Meta::TrackList tracks() override
     {
         return Meta::TrackList();
     }

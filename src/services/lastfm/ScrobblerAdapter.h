@@ -40,10 +40,10 @@ class ScrobblerAdapter : public QObject, public StatSyncing::ScrobblingService
 
     public:
         // ScrobblingService methods:
-        QString prettyName() const;
+        QString prettyName() const override;
         ScrobbleError scrobble( const Meta::TrackPtr &track, double playedFraction = 1.0,
-                                const QDateTime &time = QDateTime() );
-        void updateNowPlaying( const Meta::TrackPtr &track );
+                                const QDateTime &time = QDateTime() ) override;
+        void updateNowPlaying( const Meta::TrackPtr &track ) override;
 
     public Q_SLOTS:
         // own methods

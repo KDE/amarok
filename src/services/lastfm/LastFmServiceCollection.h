@@ -36,13 +36,13 @@ public:
     explicit LastFmServiceCollection( const QString &userName );
     virtual ~LastFmServiceCollection();
 
-    virtual bool possiblyContainsTrack( const QUrl &url ) const;
-    virtual Meta::TrackPtr trackForUrl( const QUrl &url );
+    bool possiblyContainsTrack( const QUrl &url ) const override;
+    Meta::TrackPtr trackForUrl( const QUrl &url ) override;
 
-    virtual QString collectionId() const;
-    virtual QString prettyName() const;
+    QString collectionId() const override;
+    QString prettyName() const override;
 
-    virtual QueryMaker* queryMaker();
+    QueryMaker* queryMaker() override;
 
 private Q_SLOTS:
     void slotAddFriendsLoved();

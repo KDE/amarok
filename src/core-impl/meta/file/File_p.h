@@ -158,7 +158,7 @@ namespace MetaFile
         void readMetaData()
         {
             QFileInfo fi( url.isLocalFile() ? url.toLocalFile() : url.path() );
-            m_data.created = fi.created().toTime_t();
+            m_data.created = fi.created().toSecsSinceEpoch();
 
             Meta::FieldHash values = Meta::Tag::readTags( fi.absoluteFilePath() );
 

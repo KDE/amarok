@@ -81,9 +81,9 @@ Dynamic::WeeklyTopBias::fromXml( QXmlStreamReader *reader )
         {
             QStringRef name = reader->name();
             if( name == "from" )
-                m_range.from = QDateTime::fromTime_t( reader->readElementText(QXmlStreamReader::SkipChildElements).toLong() );
+                m_range.from = QDateTime::fromSecsSinceEpoch( reader->readElementText(QXmlStreamReader::SkipChildElements).toLong() );
             else if( name == "to" )
-                m_range.to = QDateTime::fromTime_t( reader->readElementText(QXmlStreamReader::SkipChildElements).toLong() );
+                m_range.to = QDateTime::fromSecsSinceEpoch( reader->readElementText(QXmlStreamReader::SkipChildElements).toLong() );
             else
             {
                 debug()<<"Unexpected xml start element"<<name<<"in input";
@@ -100,8 +100,8 @@ Dynamic::WeeklyTopBias::fromXml( QXmlStreamReader *reader )
 void
 Dynamic::WeeklyTopBias::toXml( QXmlStreamWriter *writer ) const
 {
-    writer->writeTextElement( "from", QString::number( m_range.from.toTime_t() ) );
-    writer->writeTextElement( "to",   QString::number( m_range.to.toTime_t() ) );
+    writer->writeTextElement( "from", QString::number( m_range.from.toSecsSinceEpoch() ) );
+    writer->writeTextElement( "to",   QString::number( m_range.to.toSecsSinceEpoch() ) );
 }
 
 QString
@@ -131,7 +131,7 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
 
     QLabel *label = new QLabel( i18nc( "in WeeklyTopBias. Label for the date widget", "from:" ) );
     QDateTimeEdit *fromEdit = new QDateTimeEdit( QDate::currentDate().addDays( -7 ) );
-    fromEdit->setMinimumDate( QDateTime::fromTime_t( 1111320001 ).date() ); // That's the first week in last fm
+    fromEdit->setMinimumDate( QDateTime::fromSecsSinceEpoch( 1111320001 ).date() ); // That's the first week in last fm
     fromEdit->setMaximumDate( QDate::currentDate() );
     fromEdit->setCalendarPopup( true );
     if( m_range.from.isValid() )
@@ -144,7 +144,7 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
 
     label = new QLabel( i18nc( "in WeeklyTopBias. Label for the date widget", "to:" ) );
     QDateTimeEdit *toEdit = new QDateTimeEdit( QDate::currentDate().addDays( -7 ) );
-    toEdit->setMinimumDate( QDateTime::fromTime_t( 1111320001 ).date() ); // That's the first week in last fm
+    toEdit->setMinimumDate( QDateTime::fromSecsSinceEpoch( 1111320001 ).date() ); // That's the first week in last fm
     toEdit->setMaximumDate( QDate::currentDate() );
     toEdit->setCalendarPopup( true );
     if( m_range.to.isValid() )
@@ -178,8 +178,8 @@ Dynamic::WeeklyTopBias::trackMatches( int position,
     QStringList artists;
     bool weeksMissing = false;
 
-    uint fromTime = m_range.from.toTime_t();
-    uint toTime   = m_range.to.toTime_t();
+    uint fromTime = m_range.from.toSecsSinceEpoch();
+    uint toTime   = m_range.to.toSecsSinceEpoch();
     uint lastWeekTime = 0;
     foreach( uint weekTime, m_weeklyFromTimes )
     {
@@ -221,8 +221,8 @@ Dynamic::WeeklyTopBias::newQuery()
     QStringList artists;
     bool weeksMissing = false;
 
-    uint fromTime = m_range.from.toTime_t();
-    uint toTime   = m_range.to.toTime_t();
+    uint fromTime = m_range.from.toSecsSinceEpoch();
+    uint toTime   = m_range.to.toSecsSinceEpoch();
     uint lastWeekTime = 0;
     foreach( uint weekTime, m_weeklyFromTimes )
     {
@@ -305,8 +305,8 @@ void Dynamic::WeeklyTopBias::newWeeklyArtistQuery()
     if( jobCount >= 5 )
         return;
 
-    uint fromTime = m_range.from.toTime_t();
-    uint toTime   = m_range.to.toTime_t();
+    uint fromTime = m_range.from.toSecsSinceEpoch();
+    uint toTime   = m_range.to.toSecsSinceEpoch();
     uint lastWeekTime = 0;
     foreach( uint weekTime, m_weeklyFromTimes )
     {

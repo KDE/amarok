@@ -42,7 +42,7 @@ namespace Amarok
     //   in such a case we should maybe display "Unknown" and not "Never"
     QString verboseTimeSince( const QDateTime &datetime )
     {
-        if( datetime.isNull() || !datetime.toTime_t() )
+        if( datetime.isNull() || !datetime.toSecsSinceEpoch() )
             return i18nc( "The amount of time since last played", "Never" );
 
         const QDateTime now = QDateTime::currentDateTime();
@@ -89,7 +89,7 @@ namespace Amarok
             return i18nc( "The amount of time since last played", "Never" );
 
         QDateTime dt;
-        dt.setTime_t( time_t );
+        dt.setSecsSinceEpoch( time_t );
         return verboseTimeSince( dt );
     }
 
@@ -99,7 +99,7 @@ namespace Amarok
             return i18nc( "The amount of time since last played", "0" );
 
         QDateTime datetime;
-        datetime.setTime_t( time_t );
+        datetime.setSecsSinceEpoch( time_t );
 
         const QDateTime now = QDateTime::currentDateTime();
         const int datediff = datetime.daysTo( now );

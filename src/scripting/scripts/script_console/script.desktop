@@ -1,7 +1,7 @@
 [Desktop Entry]
 Icon=preferences-other-amarok
 Type=script
-ServiceTypes=KPluginInfo
+X-KDE-ServiceTypes=KPluginInfo
 
 Name=Amarok Script Console
 Name[bs]=Amarok skript konzola

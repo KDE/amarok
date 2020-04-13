@@ -374,7 +374,7 @@ QDateTime
 Track::createDate() const
 {
     if( d->m_data.created > 0 )
-        return QDateTime::fromTime_t(d->m_data.created);
+        return QDateTime::fromSecsSinceEpoch(d->m_data.created);
     else
         return QDateTime();
 }

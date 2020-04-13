@@ -46,11 +46,11 @@ class LastFmServiceFactory : public ServiceFactory
 public:
     LastFmServiceFactory();
 
-    virtual void init();
-    virtual QString name();
-    virtual KConfigGroup config();
+    void init() override;
+    QString name() override;
+    KConfigGroup config() override;
 
-    virtual bool possiblyContainsTrack( const QUrl &url ) const;
+    bool possiblyContainsTrack( const QUrl &url ) const override;
 };
 
 class LastFmService : public ServiceBase
@@ -61,9 +61,9 @@ public:
     LastFmService( LastFmServiceFactory* parent, const QString &name );
     virtual ~LastFmService();
 
-    virtual void polish();
+    void polish() override;
 
-    virtual Collections::Collection * collection();
+    Collections::Collection * collection() override;
 
     void love( Meta::TrackPtr track );
 

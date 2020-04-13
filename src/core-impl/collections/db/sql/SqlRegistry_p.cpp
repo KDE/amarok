@@ -177,7 +177,7 @@ QString
 AbstractTrackTableCommitter::nullDate( const QDateTime &date ) const
 {
     if( date.isValid() )
-        return QString::number( date.toTime_t() );
+        return QString::number( date.toSecsSinceEpoch() );
     else
         return "NULL";
 }

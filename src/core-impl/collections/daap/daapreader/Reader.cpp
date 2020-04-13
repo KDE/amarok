@@ -454,7 +454,7 @@ Reader::readTagData( QDataStream &raw, char *tag, quint32 tagLength)
             qint64 dateData;
             READ_DATA( dateData )
             QDateTime date;
-            date.setTime_t( dateData );
+            date.setSecsSinceEpoch( dateData );
             ret = QVariant( date );
             break;
         }

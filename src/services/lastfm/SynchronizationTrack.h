@@ -36,17 +36,17 @@ class SynchronizationTrack : public QObject, public StatSyncing::Track
          */
         SynchronizationTrack( QString artist, QString album, QString name, int playCount, bool useFancyRatingTags );
 
-        virtual QString name() const;
-        virtual QString album() const;
-        virtual QString artist() const;
-        virtual int rating() const;
-        virtual void setRating( int rating );
-        virtual QDateTime firstPlayed() const;
-        virtual QDateTime lastPlayed() const;
-        virtual int playCount() const;
-        virtual QSet<QString> labels() const;
-        virtual void setLabels( const QSet<QString> &labels );
-        virtual void commit();
+        QString name() const override;
+        QString album() const override;
+        QString artist() const override;
+        int rating() const override;
+        void setRating( int rating ) override;
+        QDateTime firstPlayed() const override;
+        QDateTime lastPlayed() const override;
+        int playCount() const override;
+        QSet<QString> labels() const override;
+        void setLabels( const QSet<QString> &labels ) override;
+        void commit() override;
 
         /**
          * Set tags from Last.fm, parse them into Amarok labels and rating

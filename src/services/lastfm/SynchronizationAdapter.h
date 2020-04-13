@@ -35,15 +35,15 @@ class SynchronizationAdapter : public StatSyncing::Provider
         explicit SynchronizationAdapter( const LastFmServiceConfigPtr &config );
         virtual ~SynchronizationAdapter();
 
-        virtual QString id() const;
-        virtual QString prettyName() const;
-        virtual QString description() const;
-        virtual QIcon icon() const;
-        virtual qint64 reliableTrackMetaData() const;
-        virtual qint64 writableTrackStatsData() const;
-        virtual Preference defaultPreference();
-        virtual QSet<QString> artists();
-        virtual StatSyncing::TrackList artistTracks( const QString &artistName );
+        QString id() const override;
+        QString prettyName() const override;
+        QString description() const override;
+        QIcon icon() const override;
+        qint64 reliableTrackMetaData() const override;
+        qint64 writableTrackStatsData() const override;
+        Preference defaultPreference() override;
+        QSet<QString> artists() override;
+        StatSyncing::TrackList artistTracks( const QString &artistName ) override;
 
     Q_SIGNALS:
         /// hacks to create and start Last.fm queries in main eventloop

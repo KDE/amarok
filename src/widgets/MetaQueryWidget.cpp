@@ -155,8 +155,8 @@ MetaQueryWidget::Filter::setField( qint64 newField )
     }
     if( !MetaQueryWidget::isDate( m_field ) && MetaQueryWidget::isDate( newField ) )
     {
-        numValue = QDateTime::currentDateTime().toTime_t();
-        numValue2 = QDateTime::currentDateTime().toTime_t();
+        numValue = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
+        numValue2 = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
     }
     else
     {
@@ -395,7 +395,7 @@ MetaQueryWidget::compareChanged( int index )
             // fix some inaccuracies caused by the conversion absolute/relative time specifications
             // this is actually just for visual consistency
             int unit = 0;
-            qint64 value = QDateTime::currentDateTime().toTime_t() - m_filter.numValue;
+            qint64 value = QDateTime::currentDateTimeUtc().toSecsSinceEpoch() - m_filter.numValue;
             if( value > 600 || !(value % 60) ) {
                 unit = 1;
                 value /= 60;
@@ -448,7 +448,7 @@ MetaQueryWidget::compareChanged( int index )
             && ( m_filter.condition == OlderThan || m_filter.condition == NewerThan )
           )
         {
-            m_filter.numValue = QDateTime::currentDateTime().toTime_t() - m_filter.numValue;
+            m_filter.numValue = QDateTime::currentDateTimeUtc().toSecsSinceEpoch() - m_filter.numValue;
         }
     }
 
@@ -526,7 +526,7 @@ MetaQueryWidget::numValueDateChanged()
     {
         QDate date;
         dateSelection->getDate( &date );
-        m_filter.numValue = QDateTime( date ).toTime_t();
+        m_filter.numValue = QDateTime( date ).toSecsSinceEpoch();
 
         Q_EMIT changed(m_filter);
     }
@@ -540,7 +540,7 @@ MetaQueryWidget::numValue2DateChanged()
     {
         QDate date;
         dateSelection->getDate( &date );
-        m_filter.numValue2 = QDateTime( date ).toTime_t();
+        m_filter.numValue2 = QDateTime( date ).toSecsSinceEpoch();
 
         Q_EMIT changed(m_filter);
     }
@@ -919,8 +919,8 @@ MetaQueryWidget::makeDateTimeSelection()
 //         if( m_filter.condition == Contains || m_filter.condition == Equals )
 //             dt = QDateTime::currentDateTime();
 //         else
-//             dt.setTime_t( m_filter.numValue );
-        dt.setTime_t( m_filter.numValue );
+//             dt.setSecsSinceEpoch( m_filter.numValue );
+        dt.setSecsSinceEpoch( m_filter.numValue );
         dateSelection->setDate( dt.date() );
 
         connect( dateSelection, QOverload<int>::of(&KDateCombo::currentIndexChanged),
@@ -933,7 +933,7 @@ MetaQueryWidget::makeDateTimeSelection()
 
         // second KDateCombo for the between selection
         KDateCombo* dateSelection2 = new KDateCombo();
-        dt.setTime_t( m_filter.numValue2 );
+        dt.setSecsSinceEpoch( m_filter.numValue2 );
         dateSelection2->setDate( dt.date() );
 
         connect( dateSelection2, QOverload<int>::of(&KDateCombo::currentIndexChanged),
@@ -1070,8 +1070,8 @@ QString MetaQueryWidget::Filter::toString( bool invert ) const
         }
         else
         {
-            strValue1 = QLocale().toString( QDateTime::fromTime_t(numValue).date(), QLocale::ShortFormat );
-            strValue2 = QLocale().toString( QDateTime::fromTime_t(numValue2).date(), QLocale::ShortFormat );
+            strValue1 = QLocale().toString( QDateTime::fromSecsSinceEpoch(numValue).date(), QLocale::ShortFormat );
+            strValue2 = QLocale().toString( QDateTime::fromSecsSinceEpoch(numValue2).date(), QLocale::ShortFormat );
         }
     }
     else if( isNumeric() )

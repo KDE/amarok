@@ -71,7 +71,7 @@ ClementineTrack::setLastPlayed( const QDateTime &lastPlayed )
 {
     QWriteLocker lock( &m_lock );
         m_statistics.insert( Meta::valLastPlayed, lastPlayed.isValid()
-                                                  ? lastPlayed.toTime_t() : -1 );
+                                                  ? lastPlayed.toSecsSinceEpoch() : -1 );
     m_changes |= Meta::valLastPlayed;
 }
 
