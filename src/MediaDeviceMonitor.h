@@ -51,7 +51,7 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     static MediaDeviceMonitor* instance() { return s_instance ? s_instance : new MediaDeviceMonitor(); }
 
     MediaDeviceMonitor();
-    ~MediaDeviceMonitor();
+    ~MediaDeviceMonitor() override;
 
     void init(); // connect to MediaDeviceCache
 

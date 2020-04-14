@@ -71,7 +71,7 @@ public:
     explicit AmpacheAlbum( const QString &name );
     explicit AmpacheAlbum( const QStringList &resultRow );
 
-    ~AmpacheAlbum();
+    ~AmpacheAlbum() override;
 
     QString downloadPrefix() const override { return "ampache"; }
 

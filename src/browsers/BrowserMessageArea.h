@@ -32,7 +32,7 @@ class BrowserMessageArea : public BoxWidget, public Amarok::Logger
 public:
     explicit BrowserMessageArea( QWidget *parent );
 
-    ~BrowserMessageArea()
+    ~BrowserMessageArea() override
     {
     }
 
@@ -40,13 +40,13 @@ protected:
     /* Amarok::Logger virtual methods */
     void shortMessageImpl( const QString &text ) override;
     void longMessageImpl( const QString &text, MessageType type ) override;
-    virtual void newProgressOperationImpl( KJob * job, const QString & text, QObject *context,
+    void newProgressOperationImpl( KJob * job, const QString & text, QObject *context,
                                            const std::function<void ()> &function, Qt::ConnectionType type ) override;
 
-    virtual void newProgressOperationImpl( QNetworkReply *reply, const QString &text, QObject *obj,
+    void newProgressOperationImpl( QNetworkReply *reply, const QString &text, QObject *obj,
                                            const std::function<void ()> &function, Qt::ConnectionType type ) override;
 
-    virtual void newProgressOperationImpl( QObject *sender, const QMetaMethod &increment, const QMetaMethod &end, const QString &text,
+    void newProgressOperationImpl( QObject *sender, const QMetaMethod &increment, const QMetaMethod &end, const QString &text,
                                            int maximum, QObject *obj, const std::function<void ()> &function, Qt::ConnectionType type ) override;
 
 Q_SIGNALS:

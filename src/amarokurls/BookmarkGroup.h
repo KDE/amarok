@@ -46,7 +46,7 @@ class BookmarkGroup : public BookmarkViewItem
 
         BookmarkGroup( const QString &name, const QString &customType );
 
-        ~BookmarkGroup();
+        ~BookmarkGroup() override;
 
         int id() const;
         QString name() const override;

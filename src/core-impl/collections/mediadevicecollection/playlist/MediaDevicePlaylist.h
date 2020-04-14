@@ -33,7 +33,7 @@ namespace Playlists
     {
         public:
             MediaDevicePlaylist( const QString &name, const Meta::TrackList &tracks );
-            ~MediaDevicePlaylist();
+            ~MediaDevicePlaylist() override;
 
             // Playlist Functions
             QString name() const override { return m_name; }

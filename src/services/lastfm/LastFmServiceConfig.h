@@ -48,7 +48,7 @@ public:
      */
     static LastFmServiceConfigPtr instance();
 
-    ~LastFmServiceConfig();
+    ~LastFmServiceConfig() override;
 
     /**
      * Saves the configuration back to the storage and notifies other users about

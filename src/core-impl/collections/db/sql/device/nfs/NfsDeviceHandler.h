@@ -24,7 +24,7 @@ class NfsDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
     explicit NfsDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
-    virtual ~NfsDeviceHandlerFactory();
+    ~NfsDeviceHandlerFactory() override;
 
     bool canHandle( const Solid::Device &device ) const override;
 
@@ -49,7 +49,7 @@ public:
     NfsDeviceHandler(int deviceId, const QString &mountPoint, const QString &udi );
     NfsDeviceHandler(int deviceId, const QString &server, const QString &share, const QString &mountPoint, const QString &udi );
 
-    virtual ~NfsDeviceHandler();
+    ~NfsDeviceHandler() override;
 
     bool isAvailable() const override;
     QString type() const override;

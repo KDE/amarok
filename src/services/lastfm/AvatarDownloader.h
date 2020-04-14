@@ -37,7 +37,7 @@ class AvatarDownloader : public QObject
         /**
         * Destructor.
         */
-        ~AvatarDownloader();
+        ~AvatarDownloader() override;
 
         /**
         * Start the download

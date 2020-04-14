@@ -48,7 +48,7 @@ public:
     Q_ENUM(SelectionType)
 
     explicit WikipediaEngine( QObject* parent = nullptr );
-    virtual ~WikipediaEngine();
+    ~WikipediaEngine() override;
 
     QString page() const { return m_page; }
     QUrl url() const { return wikiCurrentUrl; }

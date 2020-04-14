@@ -46,7 +46,7 @@ class GpodderProvider : public PodcastProvider
     Q_OBJECT
 public:
     GpodderProvider( const QString& username, const QString& devicename, ApiRequest *apiRequest );
-    ~GpodderProvider();
+    ~GpodderProvider() override;
 
     //TrackProvider methods
     bool possiblyContainsTrack( const QUrl &url ) const override;

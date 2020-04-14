@@ -37,7 +37,7 @@ class ServiceSqlQueryMaker : public QueryMaker
 
     public:
        ServiceSqlQueryMaker( ServiceSqlCollection* collection, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry );
-        virtual ~ServiceSqlQueryMaker();
+        ~ServiceSqlQueryMaker() override;
 
         void abortQuery() override;
         void run() override;

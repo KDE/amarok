@@ -39,7 +39,7 @@ namespace APG {
         public:
             static AmarokSharedPointer<Preset> createFromXml( QDomElement& );
             static AmarokSharedPointer<Preset> createNew();
-            ~Preset();
+            ~Preset() override;
 
             QString title() const { return m_title; }
             void setTitle( const QString& t ) { m_title = t; }

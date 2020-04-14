@@ -33,7 +33,7 @@ class UmsCollectionLocation : public Collections::CollectionLocation
     Q_OBJECT
     public:
         explicit UmsCollectionLocation( UmsCollection *umsCollection );
-        ~UmsCollectionLocation();
+        ~UmsCollectionLocation() override;
 
         /* CollectionLocation methods */
         QString prettyLocation() const override;

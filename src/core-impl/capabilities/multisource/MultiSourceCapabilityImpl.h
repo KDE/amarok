@@ -29,7 +29,7 @@ namespace Capabilities
 
         public:
             explicit MultiSourceCapabilityImpl( Meta::MultiTrack *track );
-            virtual ~MultiSourceCapabilityImpl();
+            ~MultiSourceCapabilityImpl() override;
 
             QStringList sources() const override;
             void setSource( int source ) override;

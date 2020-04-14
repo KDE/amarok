@@ -28,7 +28,7 @@ class CurrentTrackToolbar : public QToolBar
 public:
     explicit CurrentTrackToolbar( QWidget * parent );
 
-    ~CurrentTrackToolbar();
+    ~CurrentTrackToolbar() override;
 
 protected Q_SLOTS:
     void handleAddActions();

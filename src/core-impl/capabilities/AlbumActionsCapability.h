@@ -35,7 +35,7 @@ namespace Capabilities
              * @param actions custom actions to append after common actions
              */
             explicit AlbumActionsCapability( const Meta::AlbumPtr &album, const QList<QAction *> &actions = QList<QAction *>() );
-            virtual ~AlbumActionsCapability();
+            ~AlbumActionsCapability() override;
 
         protected:
             Meta::AlbumPtr m_album;

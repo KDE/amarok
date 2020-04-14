@@ -50,7 +50,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~BreadcrumbItemSortButton();
+    ~BreadcrumbItemSortButton() override;
 
     /**
      * Returns the recommended size for the button depending on the contents.

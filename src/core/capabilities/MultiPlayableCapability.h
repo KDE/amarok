@@ -28,7 +28,7 @@ namespace Capabilities
         Q_OBJECT
 
         public:
-            virtual ~MultiPlayableCapability();
+            ~MultiPlayableCapability() override;
 
             static Type capabilityInterfaceType()
                 { return Capabilities::Capability::MultiPlayable; }

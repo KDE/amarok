@@ -44,7 +44,7 @@ class MusicBrainzTagsModel : public QAbstractItemModel
         };
 
         explicit MusicBrainzTagsModel( QObject *parent = nullptr );
-        ~MusicBrainzTagsModel();
+        ~MusicBrainzTagsModel() override;
 
         QModelIndex index( int row, int column,
                            const QModelIndex &parent = QModelIndex() ) const override;

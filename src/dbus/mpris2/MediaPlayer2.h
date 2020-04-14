@@ -45,7 +45,7 @@ namespace Amarok {
 
         public:
             explicit MediaPlayer2(QObject* parent);
-            ~MediaPlayer2();
+            ~MediaPlayer2() override;
 
             bool CanRaise() const;
             bool CanQuit() const;

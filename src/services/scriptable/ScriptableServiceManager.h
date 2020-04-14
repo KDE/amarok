@@ -112,7 +112,7 @@ class ScriptableServiceManager : public QObject
         /**
         * Destructor
         */
-        ~ScriptableServiceManager();
+        ~ScriptableServiceManager() override;
 
         static ScriptableServiceManager * s_instance;
 

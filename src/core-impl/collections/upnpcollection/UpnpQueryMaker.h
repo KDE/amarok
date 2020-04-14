@@ -44,7 +44,7 @@ class UpnpQueryMaker : public QueryMaker
 
     public:
         explicit UpnpQueryMaker( UpnpSearchCollection * );
-        ~UpnpQueryMaker();
+        ~UpnpQueryMaker() override;
 
         QueryMaker* reset();
         void run()  override;

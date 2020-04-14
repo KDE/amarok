@@ -47,7 +47,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
     friend SvgHandler* The::svgHandler();
 
     public:
-        ~SvgHandler();
+        ~SvgHandler() override;
 
         QSvgRenderer* getRenderer( const QString &name );
         QSvgRenderer* getRenderer();

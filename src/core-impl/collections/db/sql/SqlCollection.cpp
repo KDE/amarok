@@ -59,7 +59,7 @@ public:
         , m_collection( collection )
     { }
 
-    ~SqlDirectoryWatcher()
+    ~SqlDirectoryWatcher() override
     { }
 
 protected:
@@ -149,7 +149,7 @@ public:
         : OrganizeCollectionDelegate()
         , m_dialog( 0 )
         , m_organizing( false ) {}
-    virtual ~ OrganizeCollectionDelegateImpl() { delete m_dialog; }
+    ~ OrganizeCollectionDelegateImpl() override { delete m_dialog; }
 
     void setTracks( const Meta::TrackList &tracks ) override { m_tracks = tracks; }
     void setFolders( const QStringList &folders ) override { m_folders = folders; }

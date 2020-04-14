@@ -32,7 +32,7 @@ public:
     explicit AmarokUrl( const QString & urlString, const BookmarkGroupPtr &parent = BookmarkGroupPtr() );
     explicit AmarokUrl( const QStringList & resultRow, const BookmarkGroupPtr &parent  = BookmarkGroupPtr() );
 
-    ~AmarokUrl();
+    ~AmarokUrl() override;
 
     void reparent( const BookmarkGroupPtr &parent );
     void initFromString( const QString & urlString );

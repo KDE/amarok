@@ -49,7 +49,7 @@ class AMAROK_EXPORT CollectionTreeItem : public QObject
         //this ctor creates a "Various Artists" and "No Labels" nodes. do not use it for anything else
         CollectionTreeItem( Type type, const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //various artist node
 
-        ~CollectionTreeItem();
+        ~CollectionTreeItem() override;
 
         CollectionTreeItem* parent() const { return m_parent; }
 

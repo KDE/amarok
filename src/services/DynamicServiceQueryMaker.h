@@ -41,7 +41,7 @@ class AMAROK_EXPORT DynamicServiceQueryMaker : public QueryMaker
 Q_OBJECT
 public:
     DynamicServiceQueryMaker( );
-    virtual ~DynamicServiceQueryMaker() {}
+    ~DynamicServiceQueryMaker() override {}
 
     //this is the stuff that must be implemented
     void run() override = 0;

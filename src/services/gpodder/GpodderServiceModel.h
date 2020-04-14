@@ -34,7 +34,7 @@ class GpodderServiceModel: public QAbstractItemModel
     Q_OBJECT
 public:
     explicit GpodderServiceModel( mygpo::ApiRequest *request, QObject *parent = nullptr );
-    virtual ~GpodderServiceModel();
+    ~GpodderServiceModel() override;
 
     // QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;

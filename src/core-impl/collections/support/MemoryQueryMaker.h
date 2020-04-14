@@ -45,7 +45,7 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
       * @param collectionId the collectionid that has to be emitted by this querymaker.
       */
         MemoryQueryMaker( const QWeakPointer<MemoryCollection> &mc, const QString &collectionId );
-        virtual ~MemoryQueryMaker();
+        ~MemoryQueryMaker() override;
 
         void run() override;
         void abortQuery() override;

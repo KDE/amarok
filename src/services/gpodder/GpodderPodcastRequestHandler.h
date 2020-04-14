@@ -29,7 +29,7 @@ class GpodderPodcastRequestHandler : public QObject
     Q_OBJECT
 public:
     GpodderPodcastRequestHandler( mygpo::PodcastListPtr podcasts, const QModelIndex &parentItem, GpodderServiceModel *model );
-    virtual ~GpodderPodcastRequestHandler();
+    ~GpodderPodcastRequestHandler() override;
 
 public Q_SLOTS:
     void finished();

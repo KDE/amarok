@@ -39,7 +39,7 @@ namespace StatSyncing
 
     public:
         explicit CreateProviderDialog( QWidget *parent = nullptr, Qt::WindowFlags f = {} );
-        virtual ~CreateProviderDialog();
+        ~CreateProviderDialog() override;
 
     public Q_SLOTS:
         void addProviderType( const QString &id, const QString &prettyName, const QIcon &icon,

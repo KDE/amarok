@@ -73,7 +73,7 @@ namespace AmarokScript
 
         public:
             AmarokCollectionViewScript( AmarokScriptEngine *scriptEngine, const QString &scriptName );
-            ~AmarokCollectionViewScript();
+            ~AmarokCollectionViewScript() override;
             static void createScriptedActions( QMenu &menu, const QModelIndexList &indices );
             QActionList actions();
             static Selection *selection();

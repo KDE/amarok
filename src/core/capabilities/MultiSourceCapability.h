@@ -38,7 +38,7 @@ namespace Capabilities
 
         public:
             MultiSourceCapability();
-            virtual ~MultiSourceCapability();
+            ~MultiSourceCapability() override;
 
             static Type capabilityInterfaceType() { return MultiSource; }
 

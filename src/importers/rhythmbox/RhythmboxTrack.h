@@ -29,7 +29,7 @@ class RhythmboxTrack : public QObject, public SimpleWritableTrack
 
 public:
     RhythmboxTrack( const QString &location, const Meta::FieldHash &metadata );
-    ~RhythmboxTrack();
+    ~RhythmboxTrack() override;
 
     int rating() const override;
     void setRating( int rating ) override;

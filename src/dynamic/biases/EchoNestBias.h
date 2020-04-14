@@ -47,7 +47,7 @@ namespace Dynamic
             };
 
             EchoNestBias();
-            ~EchoNestBias();
+            ~EchoNestBias() override;
 
             void fromXml( QXmlStreamReader *reader ) override;
             void toXml( QXmlStreamWriter *writer ) const override;

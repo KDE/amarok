@@ -82,7 +82,7 @@ public:
 
     PopupDropperItem( QGraphicsItem *parent = nullptr );
     explicit PopupDropperItem( const QString &file, QGraphicsItem *parent = nullptr );
-    virtual ~PopupDropperItem();
+    ~PopupDropperItem() override;
 
     void show();
 

@@ -24,7 +24,7 @@ class AudioCdDeviceInfo : public MediaDeviceInfo
     Q_OBJECT
     public:
         AudioCdDeviceInfo(const QString &device, const QString &udi );
-        ~AudioCdDeviceInfo();
+        ~AudioCdDeviceInfo() override;
 
         QString device() const;
 

@@ -37,7 +37,7 @@ Q_OBJECT
 public:
     MagnatuneAlbumDownloader();
 
-    ~MagnatuneAlbumDownloader();
+    ~MagnatuneAlbumDownloader() override;
 
 Q_SIGNALS:
 

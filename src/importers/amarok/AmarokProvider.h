@@ -29,7 +29,7 @@ class AmarokProvider : public ImporterProvider
 {
 public:
     AmarokProvider( const QVariantMap &config, ImporterManager *importer );
-    ~AmarokProvider();
+    ~AmarokProvider() override;
 
     qint64 reliableTrackMetaData() const override;
     qint64 writableTrackStatsData() const override;

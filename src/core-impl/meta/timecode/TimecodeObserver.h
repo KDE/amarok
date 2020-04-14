@@ -32,7 +32,7 @@ class TimecodeObserver : public QObject
 
 public:
     explicit TimecodeObserver( QObject *parent = nullptr );
-    virtual ~TimecodeObserver();
+    ~TimecodeObserver() override;
 
 protected Q_SLOTS:
     void stopped( qint64 finalPosition, qint64 trackLength );

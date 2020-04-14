@@ -31,7 +31,7 @@ class UpnpMemoryQueryMaker : public MemoryQueryMaker
     Q_OBJECT
     public:
         UpnpMemoryQueryMaker( const QWeakPointer<MemoryCollection> &mc, const QString &collectionId );
-        virtual ~UpnpMemoryQueryMaker();
+        ~UpnpMemoryQueryMaker() override;
 
         void run() override;
 

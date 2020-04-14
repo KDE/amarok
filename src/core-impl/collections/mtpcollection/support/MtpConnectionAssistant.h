@@ -26,7 +26,7 @@ class MtpConnectionAssistant : public ConnectionAssistant
     Q_OBJECT
     
 public:
-    virtual ~MtpConnectionAssistant();
+    ~MtpConnectionAssistant() override;
 
     bool identify( const QString& udi ) override;
     MediaDeviceInfo* deviceInfo( const QString& udi ) override;

@@ -29,7 +29,7 @@ class ClementineProvider : public ImporterProvider
 {
 public:
     ClementineProvider( const QVariantMap &config, ImporterManager *importer );
-    ~ClementineProvider();
+    ~ClementineProvider() override;
 
     qint64 reliableTrackMetaData() const override;
     qint64 writableTrackStatsData() const override;

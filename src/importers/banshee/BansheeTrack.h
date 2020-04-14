@@ -32,7 +32,7 @@ class BansheeTrack : public SimpleWritableTrack
 public:
     BansheeTrack( const qint64 trackId, const ImporterSqlConnectionPtr &connection,
                   const Meta::FieldHash &metadata );
-    ~BansheeTrack();
+    ~BansheeTrack() override;
 
     int rating() const override;
     void setRating( int rating ) override;

@@ -51,7 +51,7 @@ class AMAROK_EXPORT DynamicModel : public QAbstractItemModel
 
         static DynamicModel* instance();
 
-        ~DynamicModel();
+        ~DynamicModel() override;
 
         // void changePlaylist( int i );
 

@@ -48,7 +48,7 @@ class UmsPodcastEpisode : public Podcasts::PodcastEpisode
         static Podcasts::PodcastEpisodeList toPodcastEpisodeList( UmsPodcastEpisodeList episodes );
 
         explicit UmsPodcastEpisode( const UmsPodcastChannelPtr &channel );
-        ~UmsPodcastEpisode();
+        ~UmsPodcastEpisode() override;
 
         void setLocalFile( const MetaFile::TrackPtr &localFile );
 

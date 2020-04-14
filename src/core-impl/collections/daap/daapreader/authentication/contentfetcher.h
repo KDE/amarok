@@ -38,7 +38,7 @@ class ContentFetcher : public QObject
 
     public:
         ContentFetcher( const QString & hostname, quint16 port, const QString& password, QObject * parent = nullptr, const char * name = 0 );
-        ~ContentFetcher();
+        ~ContentFetcher() override;
 
         void getDaap( const QString & command, QIODevice* musicFile = 0 );
         QByteArray results();

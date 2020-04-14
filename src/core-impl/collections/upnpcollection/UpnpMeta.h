@@ -44,7 +44,7 @@ class UpnpTrack : public Meta::Track
 {
     public:
         explicit UpnpTrack( Collections::UpnpCollectionBase *collection );
-        virtual ~UpnpTrack();
+        ~UpnpTrack() override;
 
         QString name() const override;
 
@@ -145,7 +145,7 @@ class UpnpAlbum : public QObject, public Meta::Album
   Q_OBJECT
     public:
         explicit UpnpAlbum( const QString &name );
-        virtual ~UpnpAlbum();
+        ~UpnpAlbum() override;
 
         QString name() const override;
 
@@ -179,7 +179,7 @@ class UpnpGenre : public Meta::Genre
 {
     public:
         explicit UpnpGenre( const QString &name );
-        virtual ~UpnpGenre();
+        ~UpnpGenre() override;
 
         QString name() const override;
 
@@ -198,7 +198,7 @@ class UpnpComposer : public Meta::Composer
 {
     public:
         explicit UpnpComposer( const QString &name );
-        virtual ~UpnpComposer();
+        ~UpnpComposer() override;
 
         QString name() const override;
 
@@ -217,7 +217,7 @@ class UpnpYear : public Meta::Year
 {
     public:
         explicit UpnpYear( int year );
-        virtual ~UpnpYear();
+        ~UpnpYear() override;
 
         QString name() const override;
 

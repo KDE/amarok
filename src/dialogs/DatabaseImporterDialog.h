@@ -36,7 +36,7 @@ class DatabaseImporterDialog : public KAssistantDialog
 
     public:
         explicit DatabaseImporterDialog( QWidget *parent = nullptr );
-        ~DatabaseImporterDialog();
+        ~DatabaseImporterDialog() override;
 
     private Q_SLOTS:
         void importFailed();

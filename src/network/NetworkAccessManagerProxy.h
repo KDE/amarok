@@ -47,7 +47,7 @@ class AMAROK_EXPORT NetworkAccessManagerProxy : public KIO::Integration::AccessM
 public:
     static NetworkAccessManagerProxy *instance();
     static void destroy();
-    virtual ~NetworkAccessManagerProxy();
+    ~NetworkAccessManagerProxy() override;
 
     struct Error
     {

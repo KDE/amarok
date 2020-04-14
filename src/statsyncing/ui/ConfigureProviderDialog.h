@@ -37,7 +37,7 @@ namespace StatSyncing
     public:
         explicit ConfigureProviderDialog( const QString &providerId, QWidget *configWidget,
                                           QWidget *parent = nullptr, Qt::WindowFlags f = {} );
-        virtual ~ConfigureProviderDialog();
+        ~ConfigureProviderDialog() override;
 
     Q_SIGNALS:
         void providerConfigured( const QString &id, const QVariantMap &config );

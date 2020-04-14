@@ -35,7 +35,7 @@ class ITunesProvider : public ImporterProvider
 
 public:
     ITunesProvider( const QVariantMap &config, ImporterManager *importer );
-    ~ITunesProvider();
+    ~ITunesProvider() override;
 
     qint64 reliableTrackMetaData() const override;
     qint64 writableTrackStatsData() const override;

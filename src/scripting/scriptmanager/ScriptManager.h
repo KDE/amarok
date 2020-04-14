@@ -112,7 +112,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
 
     private:
         explicit ScriptManager( QObject* parent );
-        virtual ~ScriptManager();
+        ~ScriptManager() override;
 
         /// \return false if loadScript failed.
         bool loadScript( const QString& path );

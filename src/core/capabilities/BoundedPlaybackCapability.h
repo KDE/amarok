@@ -31,7 +31,7 @@ class AMAROKCORE_EXPORT BoundedPlaybackCapability : public Capability
     Q_OBJECT
 public:
     BoundedPlaybackCapability();
-    ~BoundedPlaybackCapability();
+    ~BoundedPlaybackCapability() override;
 
     virtual qint64 startPosition() = 0;
     virtual qint64 endPosition() = 0;

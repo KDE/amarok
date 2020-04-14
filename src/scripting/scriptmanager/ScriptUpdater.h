@@ -30,7 +30,7 @@ class ScriptUpdater : public QObject
 
     public:
         explicit ScriptUpdater( QObject *parent );
-        virtual ~ScriptUpdater();
+        ~ScriptUpdater() override;
         void setScriptPath( const QString& scriptPath );
 
     public Q_SLOTS:

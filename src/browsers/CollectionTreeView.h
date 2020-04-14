@@ -48,7 +48,7 @@ class AMAROK_EXPORT CollectionTreeView : public Amarok::PrettyTreeView
 
     public:
         explicit CollectionTreeView( QWidget *parent = nullptr );
-        ~CollectionTreeView();
+        ~CollectionTreeView() override;
 
         QSortFilterProxyModel* filterModel() const;
 

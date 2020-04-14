@@ -34,7 +34,7 @@ namespace StatSyncing
 
         public:
             explicit MatchedTracksPage( QWidget *parent = nullptr, Qt::WindowFlags f = {} );
-            virtual ~MatchedTracksPage();
+            ~MatchedTracksPage() override;
 
             /**
              * Set provider, you must call this before showing the widget.

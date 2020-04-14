@@ -47,7 +47,7 @@ class AMAROK_EXPORT ServiceBookmarkThisCapability : public Capabilities::Bookmar
 public:
     explicit ServiceBookmarkThisCapability( BookmarkThisProvider * provider );
 
-    ~ServiceBookmarkThisCapability();
+    ~ServiceBookmarkThisCapability() override;
 
     bool isBookmarkable() override;
     QString browserName() override;
@@ -67,7 +67,7 @@ class AMAROK_EXPORT ServiceActionsCapability : public Capabilities::ActionsCapab
 
     public:
         explicit ServiceActionsCapability( ActionsProvider * actionsProvider  );
-        virtual ~ServiceActionsCapability();
+        ~ServiceActionsCapability() override;
         QList< QAction * > actions() const override;
 
     private:
@@ -81,7 +81,7 @@ class AMAROK_EXPORT ServiceSourceInfoCapability : public Capabilities::SourceInf
 public:
     explicit ServiceSourceInfoCapability( SourceInfoProvider * sourceInfoProvider );
 
-    ~ServiceSourceInfoCapability();
+    ~ServiceSourceInfoCapability() override;
 
     QString sourceName() override;
     QString sourceDescription() override;

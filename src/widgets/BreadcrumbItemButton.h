@@ -86,7 +86,7 @@ class BreadcrumbUrlMenuButton : public BreadcrumbItemButton
     Q_OBJECT
      public:
         BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent );
-        virtual ~BreadcrumbUrlMenuButton();
+        ~BreadcrumbUrlMenuButton() override;
 
     public Q_SLOTS:
         void generateMenu(  const QPoint &pos  );

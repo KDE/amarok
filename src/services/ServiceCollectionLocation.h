@@ -33,7 +33,7 @@ class AMAROK_EXPORT ServiceCollectionLocation : public CollectionLocation
     public:
         ServiceCollectionLocation();
         explicit ServiceCollectionLocation( ServiceCollection *parentCollection );
-        virtual ~ServiceCollectionLocation();
+        ~ServiceCollectionLocation() override;
 
         void getKIOCopyableUrls( const Meta::TrackList &tracks ) override;
 

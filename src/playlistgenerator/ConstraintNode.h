@@ -56,7 +56,7 @@ class ConstraintNode : public QObject {
     public:
         enum NodeType { ConstraintGroupType, ConstraintType };
 
-        virtual ~ConstraintNode();
+        ~ConstraintNode() override;
 
         // Functions used in ConstraintModel
         int row() const;

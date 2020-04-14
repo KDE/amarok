@@ -55,7 +55,7 @@ public Q_SLOTS:
 private:
     static ServicePluginManager* s_instance;
     ServicePluginManager();
-    ~ServicePluginManager();
+    ~ServicePluginManager() override;
 
     Q_DISABLE_COPY( ServicePluginManager )
 

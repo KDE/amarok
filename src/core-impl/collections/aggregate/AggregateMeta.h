@@ -192,7 +192,7 @@ namespace Meta {
     {
         public:
         AggregateGenre( Collections::AggregateCollection *coll, const Meta::GenrePtr &genre );
-        ~AggregateGenre();
+        ~AggregateGenre() override;
 
         QString name() const override;
         QString prettyName() const override;
@@ -277,7 +277,7 @@ namespace Meta {
     {
     public:
         AggregateLabel( Collections::AggregateCollection *coll, const Meta::LabelPtr &label );
-        virtual ~AggregateLabel();
+        ~AggregateLabel() override;
 
         QString name() const override;
         QString prettyName() const override;

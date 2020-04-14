@@ -40,7 +40,7 @@ class MySqlStorage: public SqlStorage
 {
     public:
         MySqlStorage();
-        virtual ~MySqlStorage();
+        ~MySqlStorage() override;
 
         QStringList query( const QString &query ) override;
         int insert( const QString &statement, const QString &table = QString() ) override;

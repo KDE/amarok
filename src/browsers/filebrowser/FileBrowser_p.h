@@ -104,7 +104,7 @@ public:
     {
     }
 
-    virtual ~DirBrowserModel() {}
+    ~DirBrowserModel() override {}
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override
     {
@@ -124,7 +124,7 @@ public:
     {
     }
 
-    virtual ~FilePlacesModel() {}
+    ~FilePlacesModel() override {}
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override
     {

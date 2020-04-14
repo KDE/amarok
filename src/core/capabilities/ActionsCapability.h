@@ -50,7 +50,7 @@ namespace Capabilities
             /**
              * Destructor
              */
-            virtual ~ActionsCapability();
+            ~ActionsCapability() override;
 
             /**
              * Get the custom actions for this capability

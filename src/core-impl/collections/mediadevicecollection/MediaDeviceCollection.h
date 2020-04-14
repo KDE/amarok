@@ -41,7 +41,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Col
     Q_OBJECT
 
     public:
-        virtual ~MediaDeviceCollectionFactoryBase();
+        ~MediaDeviceCollectionFactoryBase() override;
         void init() override;
 
     protected:
@@ -68,7 +68,7 @@ class MediaDeviceCollectionFactory : public MediaDeviceCollectionFactoryBase
             : MediaDeviceCollectionFactoryBase( assistant )
         {}
 
-        virtual ~MediaDeviceCollectionFactory() {}
+        ~MediaDeviceCollectionFactory() override {}
 
     private:
         MediaDeviceCollection* createCollection( MediaDeviceInfo* info ) override
@@ -85,7 +85,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
     public:
         /** Collection-related methods */
 
-        virtual ~MediaDeviceCollection();
+        ~MediaDeviceCollection() override;
 
         /**
          * url-based methods can be abstracted via use of Amarok URLs

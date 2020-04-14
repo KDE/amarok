@@ -56,7 +56,7 @@ namespace AmarokScript
     public:
         static void init( QScriptEngine *engine );
         QueryMakerPrototype( Collections::QueryMaker *collection );
-        ~QueryMakerPrototype();
+        ~QueryMakerPrototype() override;
         Collections::QueryMaker *data() const { return m_querymaker; }
 
         /**

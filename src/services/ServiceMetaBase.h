@@ -98,7 +98,7 @@ class AMAROK_EXPORT BookmarkThisProvider : public QObject
     public:
 
         BookmarkThisProvider() : QObject() {}
-        virtual ~BookmarkThisProvider() {}
+        ~BookmarkThisProvider() override {}
 
         virtual bool isBookmarkable() const { return false; }
         virtual QString browserName() const { return QStringLiteral("internet"); }
@@ -147,7 +147,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 
         //create track based on an sql query result
         explicit ServiceTrack( const QStringList & resultRow );
-        virtual ~ServiceTrack();
+        ~ServiceTrack() override;
 
         QString name() const override;
         virtual QUrl downloadableUrl() const;
@@ -272,7 +272,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
     public:
         explicit ServiceArtist( const QStringList & resultRow );
         explicit ServiceArtist( const QString & name );
-        virtual ~ServiceArtist();
+        ~ServiceArtist() override;
 
         QString name() const override;
 
@@ -340,7 +340,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
     public:
         explicit ServiceAlbum( const QStringList & resultRow );
         explicit ServiceAlbum( const QString & name  );
-        virtual ~ServiceAlbum();
+        ~ServiceAlbum() override;
 
         QString name() const override;
 
@@ -425,7 +425,7 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
     public:
         explicit ServiceGenre( const QString &name );
         explicit ServiceGenre( const QStringList &row );
-        virtual ~ServiceGenre();
+        ~ServiceGenre() override;
 
         QString name() const override;
 
@@ -522,7 +522,7 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
 {
     public:
         explicit ServiceYear( const QString &name );
-        virtual ~ServiceYear();
+        ~ServiceYear() override;
 
         QString name() const override;
 

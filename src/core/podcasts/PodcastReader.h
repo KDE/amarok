@@ -49,7 +49,7 @@ class AMAROKCORE_EXPORT PodcastReader : public QObject
                   must remain valid throughout the lifetime of this object.
         */
         explicit PodcastReader( PodcastProvider *podcastProvider, QObject *parent = nullptr );
-        ~PodcastReader();
+        ~PodcastReader() override;
 
         bool read( QIODevice *device );
         bool read( const QUrl &url );

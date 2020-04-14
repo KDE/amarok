@@ -34,7 +34,7 @@ class FormatSelectionDialog
 public:
     explicit FormatSelectionDialog( QWidget *parent = nullptr );
 
-    ~FormatSelectionDialog();
+    ~FormatSelectionDialog() override;
 
 public Q_SLOTS:
     void accept() override;

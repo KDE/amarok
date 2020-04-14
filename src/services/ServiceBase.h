@@ -56,7 +56,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
         /**
          * Destructor.
          */
-        virtual ~ServiceFactory();
+        ~ServiceFactory() override;
 
         /**
          * Get the name of this service type. Reimplemented by subclasses.
@@ -144,7 +144,7 @@ public:
     /**
      * Destructor.
      */
-    ~ServiceBase();
+    ~ServiceBase() override;
 
     /**
      * Set the SingleCollectionTreeItemModel that will be used to populate the tree view.

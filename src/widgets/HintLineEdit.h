@@ -32,7 +32,7 @@ public:
     explicit HintLineEdit( const QString &text, QWidget *parent = nullptr );
     explicit HintLineEdit( QWidget *parent = nullptr );
 
-    virtual ~HintLineEdit();
+    ~HintLineEdit() override;
     virtual QObject *parent();
     virtual void setHint( const QString &hint );
 

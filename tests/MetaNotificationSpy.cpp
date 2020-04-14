@@ -25,7 +25,7 @@ public:
     MetaNotificationSpyPrivate()
         : Meta::Observer() {}
 
-    virtual ~MetaNotificationSpyPrivate() {}
+    ~MetaNotificationSpyPrivate() override {}
 
     virtual void metadataChanged( Meta::TrackPtr track ) { trackNotifications << track; }
     virtual void metadataChanged( Meta::ArtistPtr artist ) { artistNotifications << artist; }

@@ -40,7 +40,7 @@ public:
 
     explicit UserPlaylistCategory( QWidget *parent );
 
-    ~UserPlaylistCategory();
+    ~UserPlaylistCategory() override;
 };
 
 }

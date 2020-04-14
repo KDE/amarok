@@ -30,7 +30,7 @@ namespace Handler
 
         public:
             explicit PlaylistCapability( QObject *parent ) : Capability( parent ) {}
-            virtual ~PlaylistCapability();
+            ~PlaylistCapability() override;
 
             /// Parsing of Tracks in Playlists on Device
             /// NOTE: not required by devices with no playlists, just reimplement empty functions

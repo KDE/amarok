@@ -26,7 +26,7 @@ namespace Handler
     class MEDIADEVICECOLLECTION_EXPORT PodcastCapability : public Handler::Capability
     {
         public:
-            virtual ~PodcastCapability();
+            ~PodcastCapability() override;
 
             /**
              * This method initializes iteration over some list of Podcast structs

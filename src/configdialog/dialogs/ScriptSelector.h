@@ -30,7 +30,7 @@ class ScriptSelector : public KPluginSelector
 
     public:
         explicit ScriptSelector( QWidget * parent );
-        ~ScriptSelector();
+        ~ScriptSelector() override;
 
         QString currentItem() const;
         void addScripts( QList<KPluginInfo> pluginInfoList,

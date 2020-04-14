@@ -82,7 +82,7 @@ namespace Dynamic
              */
             BiasSolver( int n, const BiasPtr &bias, const Meta::TrackList &context );
 
-            ~BiasSolver();
+            ~BiasSolver() override;
 
             /// Returns the playlist generated after the job has finished.
             Meta::TrackList solution();

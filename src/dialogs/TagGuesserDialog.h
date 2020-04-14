@@ -63,7 +63,7 @@ class AMAROK_EXPORT TagGuesserWidget : public FilenameLayoutWidget
 
     public:
         explicit TagGuesserWidget( QWidget *parent = nullptr );
-        virtual ~TagGuesserWidget() {}
+        ~TagGuesserWidget() override {}
 
     protected:
         Token* createToken(qint64 value) const override;

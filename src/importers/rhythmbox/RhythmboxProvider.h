@@ -35,7 +35,7 @@ class RhythmboxProvider : public ImporterProvider
 
 public:
     RhythmboxProvider( const QVariantMap &config, ImporterManager *importer );
-    ~RhythmboxProvider();
+    ~RhythmboxProvider() override;
 
     qint64 reliableTrackMetaData() const override;
     qint64 writableTrackStatsData() const override;

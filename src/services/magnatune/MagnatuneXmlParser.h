@@ -56,7 +56,7 @@ public:
      * Destructor
      * @return none
      */
-    ~MagnatuneXmlParser();
+    ~MagnatuneXmlParser() override;
 
     /**
      * Reads, and starts parsing, file. Should not be used directly.

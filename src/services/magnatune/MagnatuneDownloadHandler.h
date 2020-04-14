@@ -36,7 +36,7 @@ class MagnatuneDownloadHandler : public QObject
 Q_OBJECT
 public:
     MagnatuneDownloadHandler();
-    ~MagnatuneDownloadHandler();
+    ~MagnatuneDownloadHandler() override;
 
    void setParent( QWidget * parent );
    /**

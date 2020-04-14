@@ -32,7 +32,7 @@ class AmpacheServiceFactory: public ServiceFactory
 
     public:
         AmpacheServiceFactory();
-        virtual ~AmpacheServiceFactory() {}
+        ~AmpacheServiceFactory() override {}
 
         bool possiblyContainsTrack( const QUrl &url ) const override;
 
@@ -57,7 +57,7 @@ public:
                              const QUrl &url = QUrl(), const QString &username = QString(),
                              const QString &password = QString() );
 
-    ~AmpacheService();
+    ~AmpacheService() override;
 
     void polish() override;
     void reauthenticate();

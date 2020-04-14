@@ -211,7 +211,7 @@ private Q_SLOTS:
 private:
     Controller();
 
-    ~Controller();
+    ~Controller() override;
 
     static Controller *s_instance;       //!< Instance member.
 

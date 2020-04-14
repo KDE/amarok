@@ -32,7 +32,7 @@ class AmarokTrack : public SimpleWritableTrack
 public:
     AmarokTrack( const qint64 urlId, const ImporterSqlConnectionPtr &connection,
                  const Meta::FieldHash &metadata, const QSet<QString> &labels );
-    ~AmarokTrack();
+    ~AmarokTrack() override;
 
 protected:
     void doCommit( const qint64 fields ) override;

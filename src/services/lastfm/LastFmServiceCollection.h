@@ -34,7 +34,7 @@ class LastFmServiceCollection : public ServiceCollection
     Q_OBJECT
 public:
     explicit LastFmServiceCollection( const QString &userName );
-    virtual ~LastFmServiceCollection();
+    ~LastFmServiceCollection() override;
 
     bool possiblyContainsTrack( const QUrl &url ) const override;
     Meta::TrackPtr trackForUrl( const QUrl &url ) override;

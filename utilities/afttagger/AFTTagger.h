@@ -44,7 +44,7 @@ class AFTTagger : public QCoreApplication
 public:
     AFTTagger( int &argc, char **argv );
 
-    ~AFTTagger() {}
+    ~AFTTagger() override {}
 
     void processPath( const QString &path );
     bool handleMPEG( TagLib::MPEG::File *file );

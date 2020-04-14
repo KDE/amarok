@@ -54,7 +54,7 @@ namespace Handler
              * the handler is valid for Capability's lifetime.
              */
             explicit Capability( QObject *handler );
-            virtual ~Capability();
+            ~Capability() override;
 
         Q_SIGNALS:
             /**

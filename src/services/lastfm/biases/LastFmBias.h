@@ -40,7 +40,7 @@ namespace Dynamic
             };
 
             LastFmBias();
-            ~LastFmBias();
+            ~LastFmBias() override;
 
             void fromXml( QXmlStreamReader *reader ) override;
             void toXml( QXmlStreamWriter *writer ) const override;

@@ -109,7 +109,7 @@ class AMAROKCORE_EXPORT CollectionLocation : public QObject
     public:
         CollectionLocation();
         explicit CollectionLocation( Collections::Collection *parentCollection );
-        virtual  ~CollectionLocation();
+         ~CollectionLocation() override;
 
         /**
             Returns a pointer to the collection location's corresponding collection.

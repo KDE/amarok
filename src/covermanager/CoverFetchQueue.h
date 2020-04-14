@@ -44,7 +44,7 @@ class CoverFetchQueue : public QObject
 
 public:
     explicit CoverFetchQueue( QObject *parent = nullptr );
-    ~CoverFetchQueue();
+    ~CoverFetchQueue() override;
 
     /**
      * Add an album-associated work unit to the queue.

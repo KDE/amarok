@@ -43,7 +43,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~ProxyBase();
+    ~ProxyBase() override;
 
     //! Inherited from Playlist::AbstractModel
     QAbstractItemModel* qaim() const override { return const_cast<ProxyBase*>( this ); }

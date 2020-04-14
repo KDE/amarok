@@ -38,7 +38,7 @@ namespace StatSyncing
 
         public:
             explicit ProviderConfigWidget( QWidget *parent, Qt::WindowFlags f = {} );
-            virtual ~ProviderConfigWidget();
+            ~ProviderConfigWidget() override;
 
             /**
              * Return a QVariantMap holding configuration for the provider. Types stored
@@ -61,7 +61,7 @@ namespace StatSyncing
 
         public:
             Provider();
-            virtual ~Provider();
+            ~Provider() override;
 
             /**
              * Unique identifier for this collection; may be used as a key to store

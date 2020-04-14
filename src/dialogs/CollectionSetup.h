@@ -42,7 +42,7 @@ class CollectionSetup : public QWidget
         static CollectionSetup* instance() { return s_instance; }
 
         explicit CollectionSetup( QWidget* );
-        virtual ~CollectionSetup() {}
+        ~CollectionSetup() override {}
 
         void writeConfig();
         bool hasChanged() const;

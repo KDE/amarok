@@ -41,7 +41,7 @@ class AMAROK_EXPORT AggregateQueryMaker : public QueryMaker
 
     public:
         AggregateQueryMaker( Collections::AggregateCollection *collection, const QList<QueryMaker*> &queryMakers );
-        ~AggregateQueryMaker();
+        ~AggregateQueryMaker() override;
 
         void run() override;
         void abortQuery() override;

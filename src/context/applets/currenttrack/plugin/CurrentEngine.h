@@ -44,7 +44,7 @@ class CurrentEngine : public QObject
 
 public:
     explicit CurrentEngine( QObject* parent = nullptr );
-    virtual ~CurrentEngine();
+    ~CurrentEngine() override;
 
     QString artist() const;
     QString track() const;

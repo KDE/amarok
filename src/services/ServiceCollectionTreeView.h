@@ -32,7 +32,7 @@ class ServiceCollectionTreeView : public CollectionTreeView
 {
 public:
     explicit ServiceCollectionTreeView( QWidget *parent = nullptr );
-    ~ServiceCollectionTreeView();
+    ~ServiceCollectionTreeView() override;
 
     void setPlayableTracks( bool playable );
     bool playableTracks() const;

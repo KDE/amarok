@@ -39,7 +39,7 @@ class SourceSelectionPopup : public QDialog
 public:
     SourceSelectionPopup( QWidget * parent, Capabilities::MultiSourceCapability * msc );
 
-    ~SourceSelectionPopup();
+    ~SourceSelectionPopup() override;
 
 Q_SIGNALS:
     void sourceChanged( int source );

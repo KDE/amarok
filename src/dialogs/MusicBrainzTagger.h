@@ -47,7 +47,7 @@ class MusicBrainzTagger : public QDialog
          */
         explicit MusicBrainzTagger( const Meta::TrackList &tracks,
                                     QWidget *parent = nullptr );
-        virtual ~MusicBrainzTagger();
+        ~MusicBrainzTagger() override;
 
     Q_SIGNALS:
         void sendResult( const QMap<Meta::TrackPtr, QVariantMap> &result );

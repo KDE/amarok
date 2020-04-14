@@ -30,7 +30,7 @@ class LastfmInfoParser : public InfoParserBase
 
     public:
         LastfmInfoParser() : InfoParserBase() {}
-        ~LastfmInfoParser() {}
+        ~LastfmInfoParser() override {}
         void getInfo(const Meta::TrackPtr &track) override;
         void getInfo(const Meta::AlbumPtr &album) override;
         void getInfo(const Meta::ArtistPtr &artist) override;

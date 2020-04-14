@@ -49,7 +49,7 @@ class QueryJob : public QObject, public ThreadWeaver::Job
             //nothing to do
         }
 
-        ~QueryJob()
+        ~QueryJob() override
         {
             delete queryMakerInternal;
         }

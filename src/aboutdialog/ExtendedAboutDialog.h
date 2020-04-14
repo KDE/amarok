@@ -37,7 +37,7 @@ class AMAROK_EXPORT ExtendedAboutDialog : public QDialog
     Q_OBJECT
 public:
     explicit ExtendedAboutDialog( const KAboutData &aboutData, const OcsData *ocsData, QWidget *parent = nullptr );
-    virtual ~ExtendedAboutDialog();
+    ~ExtendedAboutDialog() override;
 
 private Q_SLOTS:
     void switchToOcsWidgets();

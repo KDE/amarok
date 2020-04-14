@@ -37,7 +37,7 @@ namespace Capabilities
         public:
 
             CollectionImportCapability();
-            virtual ~CollectionImportCapability();
+            ~CollectionImportCapability() override;
 
             /** Starts importing the given file into the collection.
                 @param input is an already opened input device. The importer will take ownership.

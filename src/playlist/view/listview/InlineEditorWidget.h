@@ -32,7 +32,7 @@ class InlineEditorWidget : public BoxWidget
 
 public:
     InlineEditorWidget(QWidget * parent, const QModelIndex &index, const Playlist::PlaylistLayout &layout, int height, int width );
-    ~InlineEditorWidget();
+    ~InlineEditorWidget() override;
 
     QMap<int, QString> changedValues();
 

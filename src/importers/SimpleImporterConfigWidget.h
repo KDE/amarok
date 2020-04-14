@@ -48,7 +48,7 @@ public:
     /**
       * Destructor.
       */
-    ~SimpleImporterConfigWidget();
+    ~SimpleImporterConfigWidget() override;
 
     /**
      * addField adds a new row to the widget. @param configName is the name of the config

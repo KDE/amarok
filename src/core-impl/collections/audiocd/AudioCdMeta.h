@@ -45,7 +45,7 @@ class AudioCdTrack : public Meta::Track
 {
     public:
         AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const QUrl &url );
-        virtual ~AudioCdTrack();
+        ~AudioCdTrack() override;
 
         QString name() const override;
 

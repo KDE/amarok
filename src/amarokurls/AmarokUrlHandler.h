@@ -88,7 +88,7 @@ Q_SIGNALS:
 private:
 
     AmarokUrlHandler();
-    ~AmarokUrlHandler();
+    ~AmarokUrlHandler() override;
 
     QMap<QString, AmarokUrlRunnerBase *> m_registeredRunners;
     QList<AmarokUrlGenerator *> m_registeredGenerators;

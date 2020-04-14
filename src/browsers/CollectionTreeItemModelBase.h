@@ -53,7 +53,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
     public:
         CollectionTreeItemModelBase();
-        virtual ~CollectionTreeItemModelBase();
+        ~CollectionTreeItemModelBase() override;
 
         Qt::ItemFlags flags(const QModelIndex &index) const override;
         QVariant headerData(int section, Qt::Orientation orientation,

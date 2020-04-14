@@ -70,7 +70,7 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
          * milliseconds for waiting on track to resolve. Ignored otherwise.
          */
         explicit TrackLoader( Flags flags = 0, int timeout = 2000 );
-        ~TrackLoader();
+        ~TrackLoader() override;
 
         /**
          * Convenience overload for init( const QList<QUrl> &urls )

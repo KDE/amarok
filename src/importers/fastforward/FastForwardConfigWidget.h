@@ -31,7 +31,7 @@ class FastForwardConfigWidget : public ProviderConfigWidget,
 public:
     explicit FastForwardConfigWidget( const QVariantMap &config, QWidget *parent = nullptr,
                                       Qt::WindowFlags f = {} );
-    ~FastForwardConfigWidget();
+    ~FastForwardConfigWidget() override;
 
     QVariantMap config() const override;
 

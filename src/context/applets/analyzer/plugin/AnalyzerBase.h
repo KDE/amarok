@@ -60,7 +60,7 @@ public:
 
     static const int DEMO_INTERVAL = 20; // ~50 fps
 
-    virtual ~Base();
+    ~Base() override;
 
     qreal maxFreq() const { return m_maxFreq; }
     void setMaxFreq( qreal maxFreq );

@@ -61,7 +61,7 @@ class GroupingProxy : public ProxyBase
 
 public:
     explicit GroupingProxy( AbstractModel *belowModel, QObject *parent = nullptr );
-    ~GroupingProxy();
+    ~GroupingProxy() override;
 
     static GroupingProxy* instance();
     static void destroy();

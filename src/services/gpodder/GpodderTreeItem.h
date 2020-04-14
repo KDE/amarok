@@ -32,7 +32,7 @@ class GpodderTreeItem : public QObject
     Q_OBJECT
 public:
     explicit GpodderTreeItem( GpodderTreeItem *parent = nullptr, const QString &name = QString() );
-    virtual ~GpodderTreeItem();
+    ~GpodderTreeItem() override;
 
     void appendChild( GpodderTreeItem *child );
 

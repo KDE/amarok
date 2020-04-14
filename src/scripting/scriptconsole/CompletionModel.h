@@ -31,7 +31,7 @@ namespace ScriptConsoleNS
     {
         public:
             explicit AmarokScriptCodeCompletionModel( QObject *parent );
-            virtual ~AmarokScriptCodeCompletionModel();
+            ~AmarokScriptCodeCompletionModel() override;
 
         private:
             QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;

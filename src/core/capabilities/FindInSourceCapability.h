@@ -44,7 +44,7 @@ public:
         Year     = 0x20
     };
 
-    virtual ~FindInSourceCapability();
+    ~FindInSourceCapability() override;
 
     virtual void findInSource( QFlags<TargetTag> tag = Album ) = 0;
 

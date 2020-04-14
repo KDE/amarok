@@ -36,7 +36,7 @@ namespace ScriptConsoleNS
         public:
             ScriptConsoleItem( QObject *parent, const QString &name, const QString &path
                             , const QString &category, ScriptEditorDocument *document );
-            virtual ~ScriptConsoleItem();
+            ~ScriptConsoleItem() override;
             ScriptEditorDocument* document() { return m_viewFactory; }
             bool start( bool silent = false ) override;
             KTextEditor::View *createEditorView( QWidget *parent );

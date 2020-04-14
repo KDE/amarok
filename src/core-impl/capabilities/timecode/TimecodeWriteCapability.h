@@ -33,7 +33,7 @@ class AMAROK_EXPORT TimecodeWriteCapability : public Capability
     Q_OBJECT
 public:
 
-    virtual ~TimecodeWriteCapability();
+    ~TimecodeWriteCapability() override;
 
     /**
      * Stores a timecode for the track

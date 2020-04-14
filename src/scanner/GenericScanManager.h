@@ -49,7 +49,7 @@ class AMAROK_EXPORT GenericScanManager : public QObject
     Q_OBJECT
     public:
         explicit GenericScanManager( QObject* parent = nullptr );
-        virtual ~GenericScanManager();
+        ~GenericScanManager() override;
 
         /** The scan mode.
             In general a full scan will consider the information read from the disk

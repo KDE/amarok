@@ -33,7 +33,7 @@ class MetaMock : public Meta::Track, Meta::Statistics
 {
 public:
     MetaMock( const QVariantMap &data ) : Meta::Track(), m_data( data ), m_labels( Meta::LabelList() ) {}
-    virtual ~MetaMock() {}
+    ~MetaMock() override {}
 
     Meta::AlbumPtr album() const override { return m_album; }
     Meta::YearPtr year() const override { return m_year; }
@@ -60,7 +60,7 @@ public:
 
     Meta::LabelList labels() const override { return m_labels; }
 
-    virtual Meta::StatisticsPtr statistics() override { return Meta::StatisticsPtr( this ); }
+    Meta::StatisticsPtr statistics() override { return Meta::StatisticsPtr( this ); }
 
     // Meta::Statistics getters
     double score() const override { return m_data.value( Meta::Field::SCORE ).toDouble(); }

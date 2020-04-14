@@ -53,7 +53,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
     public:
         explicit Model( QObject *parent = nullptr );
-        ~Model();
+        ~Model() override;
 
         // Inherited from QAbstractItemModel  (via QAbstractListModel)
         int columnCount( const QModelIndex& parent = QModelIndex() ) const override { Q_UNUSED( parent ); return NUM_COLUMNS; }

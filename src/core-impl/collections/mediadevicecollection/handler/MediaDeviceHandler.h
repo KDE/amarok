@@ -96,7 +96,7 @@ public:
     /**
     * Destructor
     */
-    virtual ~MediaDeviceHandler();
+    ~MediaDeviceHandler() override;
 
     // Declare thread as friend class
 
@@ -373,7 +373,7 @@ public:
     * The destructor.
     */
 
-    virtual ~ParseWorkerThread();
+    ~ParseWorkerThread() override;
 
     /**
     * Sees the success variable, which says whether or not the copy completed
@@ -438,7 +438,7 @@ public:
     * The destructor.
     */
 
-    virtual ~CopyWorkerThread();
+    ~CopyWorkerThread() override;
 
     /**
     * Sets the success variable, which says whether or not the copy completed successfully.

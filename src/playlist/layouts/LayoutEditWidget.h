@@ -46,7 +46,7 @@ class LayoutEditWidget : public QWidget
         /**
          * Destructor.
          */
-        ~LayoutEditWidget();
+        ~LayoutEditWidget() override;
 
         /**
          * Setup the edit widget to represent an existing LayoutItemConfig.

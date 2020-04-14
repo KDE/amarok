@@ -42,7 +42,7 @@ public:
     static const char *configSectionName() { return "Service_gpodder"; }
 
     GpodderServiceConfig();
-    ~GpodderServiceConfig();
+    ~GpodderServiceConfig() override;
 
     void load();
     void save();

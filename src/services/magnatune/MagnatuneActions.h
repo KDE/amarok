@@ -32,7 +32,7 @@ class MagnatuneDownloadAction : public QAction
 public:
     MagnatuneDownloadAction( const QString &text, Meta::MagnatuneAlbum * album );
 
-    ~MagnatuneDownloadAction();
+    ~MagnatuneDownloadAction() override;
 
 private Q_SLOTS:
     void slotTriggered();
@@ -53,7 +53,7 @@ class MagnatuneAddToFavoritesAction : public QAction
 public:
     MagnatuneAddToFavoritesAction( const QString &text, Meta::MagnatuneAlbum * album );
 
-    ~MagnatuneAddToFavoritesAction();
+    ~MagnatuneAddToFavoritesAction() override;
 
 private Q_SLOTS:
     void slotTriggered();

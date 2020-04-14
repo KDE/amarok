@@ -31,7 +31,7 @@ class AudioCdHandler : public MediaDeviceHandler
 public:
     explicit AudioCdHandler( QObject *parent );
 
-    ~AudioCdHandler();
+    ~AudioCdHandler() override;
 
     void init() override;
     bool isWritable() const override { return false; }

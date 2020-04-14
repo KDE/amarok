@@ -52,7 +52,7 @@ class PrettyListView : public QListView, public ViewCommon
 
 public:
     explicit PrettyListView( QWidget* parent = nullptr );
-    ~PrettyListView();
+    ~PrettyListView() override;
 
 protected:
     int verticalOffset() const override;

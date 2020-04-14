@@ -30,7 +30,7 @@ class DatabaseConfig : public ConfigDialogBase, public Ui_DatabaseConfig
 
     public:
         DatabaseConfig( Amarok2ConfigDialog* parent, KConfigSkeleton *config );
-        virtual ~DatabaseConfig();
+        ~DatabaseConfig() override;
 
         bool hasChanged() override;
         bool isDefault() override;

@@ -28,7 +28,7 @@ class CollectionConfig : public ConfigDialogBase
 
     public:
         explicit CollectionConfig( Amarok2ConfigDialog* parent );
-        virtual ~CollectionConfig();
+        ~CollectionConfig() override;
 
         bool hasChanged() override;
         bool isDefault() override;

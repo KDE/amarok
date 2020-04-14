@@ -37,7 +37,7 @@ public:
 private:
 
     ViewUrlGenerator();
-    virtual ~ViewUrlGenerator();
+    ~ViewUrlGenerator() override;
     
     static ViewUrlGenerator * s_instance;
 };

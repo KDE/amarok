@@ -30,7 +30,7 @@ namespace PlaylistBrowserNS {
 
         public:
             explicit APGCategory( QWidget* parent );
-            ~APGCategory();
+            ~APGCategory() override;
 
         Q_SIGNALS:
             void validIndexSelected( bool );

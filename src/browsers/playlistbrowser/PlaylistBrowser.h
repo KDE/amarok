@@ -33,7 +33,7 @@ class PlaylistBrowser : public BrowserCategoryList
     Q_OBJECT
     public:
         explicit PlaylistBrowser( const QString &name, QWidget *parent = nullptr );
-        ~PlaylistBrowser();
+        ~PlaylistBrowser() override;
 
     private:
         QMap<int, int> m_categoryIndexMap;

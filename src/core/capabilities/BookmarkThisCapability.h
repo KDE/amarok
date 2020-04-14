@@ -33,7 +33,7 @@ class AMAROKCORE_EXPORT BookmarkThisCapability : public Capability {
     Q_OBJECT
 public:
     explicit BookmarkThisCapability( QAction* action );
-    virtual ~BookmarkThisCapability();
+    ~BookmarkThisCapability() override;
 
     virtual bool isBookmarkable() { return true; }
     virtual QString browserName() { return QStringLiteral("collections"); }

@@ -46,7 +46,7 @@ namespace Collections {
         Q_OBJECT
         public:
         AggregateCollection();
-        ~AggregateCollection();
+        ~AggregateCollection() override;
 
         // Collections::Collection methods
 

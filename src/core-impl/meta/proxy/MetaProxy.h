@@ -60,7 +60,7 @@ namespace MetaProxy
              * @param lookupType lookup type
              */
             explicit Track( const QUrl &url, LookupType lookupType = AutomaticLookup );
-            virtual ~Track();
+            ~Track() override;
 
             /**
              * Tell MetaProxy::Track to start looking up the real track. Only valid if

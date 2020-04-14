@@ -24,7 +24,7 @@ class BookmarkCurrentButton : public QToolButton
     Q_OBJECT
 public:
     explicit BookmarkCurrentButton( QWidget *parent );
-    virtual ~BookmarkCurrentButton();
+    ~BookmarkCurrentButton() override;
 
     protected Q_SLOTS:
         void showMenu();

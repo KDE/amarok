@@ -47,7 +47,7 @@ class SqlWorkerThread : public QObject, public ThreadWeaver::Job
             //nothing to do
         }
 
-        virtual ~SqlWorkerThread()
+        ~SqlWorkerThread() override
         {
             delete m_queryMakerInternal;
         }

@@ -32,7 +32,7 @@ class AMAROKCORE_EXPORT MetaQueryMaker : public QueryMaker
     public:
         explicit MetaQueryMaker( const QList<Collections::Collection*> &collections );
         explicit MetaQueryMaker( const QList<QueryMaker*> &queryMakers );
-        ~MetaQueryMaker();
+        ~MetaQueryMaker() override;
 
         void run() override;
         void abortQuery() override;

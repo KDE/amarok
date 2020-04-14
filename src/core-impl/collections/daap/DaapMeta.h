@@ -44,7 +44,7 @@ class DaapTrack : public Meta::Track
 {
     public:
         DaapTrack( Collections::DaapCollection *collection, const QString &host, quint16 port, const QString &dbId, const QString &itemId, const QString &format);
-        virtual ~DaapTrack();
+        ~DaapTrack() override;
 
         QString name() const override;
 
@@ -119,7 +119,7 @@ class DaapArtist : public Meta::Artist
 {
     public:
         explicit DaapArtist( const QString &name );
-        virtual ~DaapArtist();
+        ~DaapArtist() override;
 
         QString name() const override;
 
@@ -139,7 +139,7 @@ class DaapAlbum : public Meta::Album
 {
     public:
         explicit DaapAlbum( const QString &name );
-        virtual ~DaapAlbum();
+        ~DaapAlbum() override;
 
         QString name() const override;
 
@@ -163,7 +163,7 @@ class DaapGenre : public Meta::Genre
 {
     public:
         explicit DaapGenre( const QString &name );
-        virtual ~DaapGenre();
+        ~DaapGenre() override;
 
         QString name() const override;
 
@@ -181,7 +181,7 @@ class DaapComposer : public Meta::Composer
 {
     public:
         explicit DaapComposer( const QString &name );
-        virtual ~DaapComposer();
+        ~DaapComposer() override;
 
         QString name() const override;
 
@@ -199,7 +199,7 @@ class DaapYear : public Meta::Year
 {
     public:
         explicit DaapYear( const QString &name );
-        virtual ~DaapYear();
+        ~DaapYear() override;
 
         QString name() const override;
 

@@ -33,7 +33,7 @@ class AMAROK_EXPORT FileCollectionLocation : public CollectionLocation
     Q_OBJECT
     public:
         FileCollectionLocation();
-        virtual ~FileCollectionLocation();
+        ~FileCollectionLocation() override;
 
         QString prettyLocation() const override;
         bool isWritable() const override;

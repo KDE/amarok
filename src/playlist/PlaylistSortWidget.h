@@ -42,7 +42,7 @@ public:
     /**
      * Destructor.
      */
-    ~SortWidget();
+    ~SortWidget() override;
 
     /**
      * Returns the list of levels that are currently defined in the breadcrumb path.

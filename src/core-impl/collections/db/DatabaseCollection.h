@@ -60,7 +60,7 @@ class DatabaseCollection : public Collections::Collection
         /** Creates a new DatabaseCollection.
          */
         DatabaseCollection();
-        virtual ~DatabaseCollection();
+        ~DatabaseCollection() override;
 
         QString collectionId() const override;
         QString prettyName() const override;
@@ -123,7 +123,7 @@ class DatabaseCollectionScanCapability : public Capabilities::CollectionScanCapa
     public:
 
         explicit DatabaseCollectionScanCapability( DatabaseCollection* collection );
-        virtual ~DatabaseCollectionScanCapability();
+        ~DatabaseCollectionScanCapability() override;
 
         void startFullScan() override;
         void startIncrementalScan( const QString &directory = QString() ) override;
@@ -139,7 +139,7 @@ class DatabaseCollectionImportCapability : public Capabilities::CollectionImport
     public:
 
         explicit DatabaseCollectionImportCapability( DatabaseCollection* collection );
-        virtual ~DatabaseCollectionImportCapability();
+        ~DatabaseCollectionImportCapability() override;
 
         void import( QIODevice *input, QObject *listener ) override;
 

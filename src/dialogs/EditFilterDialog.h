@@ -37,7 +37,7 @@ class EditFilterDialog : public QDialog
 
     public:
         explicit EditFilterDialog( QWidget* parent, const QString &text = QString() );
-        virtual ~EditFilterDialog();
+        ~EditFilterDialog() override;
 
         QString filter();
 

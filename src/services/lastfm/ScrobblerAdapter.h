@@ -36,7 +36,7 @@ class ScrobblerAdapter : public QObject, public StatSyncing::ScrobblingService
 
     public:
         ScrobblerAdapter( const QString &clientId, const LastFmServiceConfigPtr &config );
-        virtual ~ScrobblerAdapter();
+        ~ScrobblerAdapter() override;
 
     public:
         // ScrobblingService methods:

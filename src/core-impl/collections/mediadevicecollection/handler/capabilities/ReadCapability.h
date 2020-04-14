@@ -33,7 +33,7 @@ class MEDIADEVICECOLLECTION_EXPORT ReadCapability : public Handler::Capability
 
     public:
         explicit ReadCapability( QObject *parent ) : Capability( parent ) {}
-        virtual ~ReadCapability();
+        ~ReadCapability() override;
 
         static Type capabilityInterfaceType() { return Handler::Capability::Readable; }
 

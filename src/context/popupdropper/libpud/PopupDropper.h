@@ -61,7 +61,7 @@ public:
     Q_ENUM( Fading )
 
     explicit PopupDropper( QWidget *parent, bool standalone = false );
-    ~PopupDropper();
+    ~PopupDropper() override;
 
     int overlayLevel() const;
     void initOverlay( QWidget* parent, PopupDropperPrivate* priv = nullptr );

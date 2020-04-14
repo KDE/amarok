@@ -66,7 +66,7 @@ public:
      */
     explicit XSPFPlaylist( const QUrl &url, PlaylistProvider *provider = 0, OnLoadAction onLoad = NoAction );
 
-    ~XSPFPlaylist();
+    ~XSPFPlaylist() override;
 
     QString name() const override;
 

@@ -51,7 +51,7 @@ namespace Collections
 
         public:
             PlaydarCollectionFactory();
-            virtual ~PlaydarCollectionFactory();
+            ~PlaydarCollectionFactory() override;
             
             void init() override;
             
@@ -73,7 +73,7 @@ namespace Collections
         public:
             
             PlaydarCollection();
-            ~PlaydarCollection();
+            ~PlaydarCollection() override;
             
             QueryMaker* queryMaker() override;
             Playlists::UserPlaylistProvider* userPlaylistProvider();

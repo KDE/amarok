@@ -34,7 +34,7 @@ class ScriptableServiceQueryMaker : public DynamicServiceQueryMaker
 
 public:
     ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, const QString &name );
-    ~ScriptableServiceQueryMaker();
+    ~ScriptableServiceQueryMaker() override;
 
     void run() override;
     void abortQuery() override;

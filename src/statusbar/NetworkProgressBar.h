@@ -30,7 +30,7 @@ class NetworkProgressBar : public ProgressBar
 
     public:
         explicit NetworkProgressBar( QWidget *parent, QNetworkReply *reply );
-        ~NetworkProgressBar();
+        ~NetworkProgressBar() override;
 
     private Q_SLOTS:
         void progressChanged( qint64 bytesChanged, qint64 bytesTotal );

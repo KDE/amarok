@@ -37,7 +37,7 @@ namespace Amarok
 
         public:
             explicit MediaPlayer2AmarokExtensions( QObject* parent );
-            ~MediaPlayer2AmarokExtensions();
+            ~MediaPlayer2AmarokExtensions() override;
 
             bool Muted() const;
             void setMuted( bool muted );

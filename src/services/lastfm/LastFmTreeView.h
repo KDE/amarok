@@ -41,7 +41,7 @@ class LastFmTreeView : public Amarok::PrettyTreeView
 
 public:
     explicit LastFmTreeView ( QWidget* parent = nullptr );
-    ~LastFmTreeView();
+    ~LastFmTreeView() override;
 
 Q_SIGNALS:
     void statusMessage ( const QString& message );

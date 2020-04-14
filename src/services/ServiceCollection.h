@@ -47,7 +47,7 @@ class AMAROK_EXPORT ServiceCollection : public Collections::Collection
     public:
         explicit ServiceCollection( ServiceBase * service = 0 );
         ServiceCollection( ServiceBase * service, const QString &id, const QString &prettyName );
-        virtual ~ServiceCollection();
+        ~ServiceCollection() override;
 
         Collections::QueryMaker* queryMaker() override;
 

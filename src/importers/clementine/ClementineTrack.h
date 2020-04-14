@@ -32,7 +32,7 @@ class ClementineTrack : public SimpleWritableTrack
 public:
     ClementineTrack( const QVariant &filename, const ImporterSqlConnectionPtr &connection,
                      const Meta::FieldHash &metadata );
-    ~ClementineTrack();
+    ~ClementineTrack() override;
 
     int year() const override;
     int trackNumber() const override;

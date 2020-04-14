@@ -27,7 +27,7 @@ class CollectionBrowserTreeView : public CollectionTreeView
 {
     public:
         explicit CollectionBrowserTreeView( QWidget *parent = nullptr );
-        ~CollectionBrowserTreeView();
+        ~CollectionBrowserTreeView() override;
 };
 
 #endif

@@ -155,7 +155,7 @@ public:
                                       const CoverFetch::Source src = CoverFetch::LastFm,
                                       unsigned int page = 0,
                                       const Meta::AlbumPtr &album = Meta::AlbumPtr() );
-    ~CoverFetchSearchPayload();
+    ~CoverFetchSearchPayload() override;
 
     QString query() const;
 
@@ -182,7 +182,7 @@ public:
     explicit CoverFetchArtPayload( const CoverFetch::ImageSize size,
                                    const CoverFetch::Source src = CoverFetch::LastFm,
                                    bool wild = false );
-    ~CoverFetchArtPayload();
+    ~CoverFetchArtPayload() override;
 
     bool isWild() const;
 

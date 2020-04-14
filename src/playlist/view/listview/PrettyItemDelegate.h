@@ -41,7 +41,7 @@ public:
     static int rowsForItem( const QModelIndex &index );
 
     explicit PrettyItemDelegate( QObject* parent = nullptr );
-    ~PrettyItemDelegate();
+    ~PrettyItemDelegate() override;
 
     QSize sizeHint( const QStyleOptionViewItem&, const QModelIndex& ) const override;
     void paint( QPainter*, const QStyleOptionViewItem&, const QModelIndex& ) const override;

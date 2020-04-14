@@ -66,7 +66,7 @@ namespace ConstraintTypes {
 
             Checkpoint( QDomElement&, ConstraintNode* );
             explicit Checkpoint( ConstraintNode* );
-            ~Checkpoint();
+            ~Checkpoint() override;
 
             // constraint parameters
             qint64 m_position;
@@ -87,7 +87,7 @@ namespace ConstraintTypes {
         
         public:
             AbstractMatcher() {}
-            virtual ~AbstractMatcher() {}
+            ~AbstractMatcher() override {}
 
             virtual QList<int> find( const Meta::TrackList& ) const = 0;
             virtual bool match( const Meta::TrackPtr& ) const = 0;
@@ -97,7 +97,7 @@ namespace ConstraintTypes {
     class Checkpoint::TrackMatcher : public AbstractMatcher {
         public:
             TrackMatcher( const Meta::TrackPtr& );
-            virtual ~TrackMatcher();
+            ~TrackMatcher() override;
 
             QList<int> find( const Meta::TrackList& ) const override;
             bool match( const Meta::TrackPtr& ) const override;
@@ -110,7 +110,7 @@ namespace ConstraintTypes {
     class Checkpoint::AlbumMatcher : public AbstractMatcher {
         public:
             AlbumMatcher( const Meta::AlbumPtr& );
-            virtual ~AlbumMatcher();
+            ~AlbumMatcher() override;
 
             QList<int> find( const Meta::TrackList& ) const override;
             bool match( const Meta::TrackPtr& ) const override;
@@ -123,7 +123,7 @@ namespace ConstraintTypes {
     class Checkpoint::ArtistMatcher : public AbstractMatcher {
         public:
             ArtistMatcher( const Meta::ArtistPtr& );
-            virtual ~ArtistMatcher();
+            ~ArtistMatcher() override;
 
             QList<int> find( const Meta::TrackList& ) const override;
             bool match( const Meta::TrackPtr& ) const override;

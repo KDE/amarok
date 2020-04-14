@@ -55,7 +55,7 @@ class AMAROK_EXPORT PopupDropperFactory : public QObject
 
     private:
         explicit PopupDropperFactory( QObject* parent );
-        ~PopupDropperFactory();
+        ~PopupDropperFactory() override;
  };
 
 

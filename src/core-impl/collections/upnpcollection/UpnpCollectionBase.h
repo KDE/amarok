@@ -57,7 +57,7 @@ class UpnpCollectionBase : public Collections::Collection
   Q_OBJECT
   public:
     explicit UpnpCollectionBase( const DeviceInfo& dev );
-    virtual ~UpnpCollectionBase();
+    ~UpnpCollectionBase() override;
     void removeCollection() { Q_EMIT remove(); }
 
     QString collectionId() const override;

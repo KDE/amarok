@@ -52,7 +52,7 @@ public:
 
     OcsPersonItem( const KAboutPerson &person, const QString &ocsUsername, PersonStatus status, QWidget *parent = nullptr );
 
-    virtual ~OcsPersonItem();
+    ~OcsPersonItem() override;
 
     QString name() const;
 

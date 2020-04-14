@@ -27,7 +27,7 @@ class BansheeConfigWidget : public SimpleImporterConfigWidget
 public:
     explicit BansheeConfigWidget( const QVariantMap &config, QWidget *parent = nullptr,
                                   Qt::WindowFlags f = {} );
-    ~BansheeConfigWidget();
+    ~BansheeConfigWidget() override;
 };
 
 } // namespace StatSyncing
