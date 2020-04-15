@@ -29,7 +29,7 @@
 
 #include <algorithm>
 #include <climits>
-#include <math.h>
+#include <cmath>
 
 Constraint*
 ConstraintTypes::Checkpoint::createFromXml( QDomElement& xmlelem, ConstraintNode* p )

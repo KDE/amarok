@@ -24,7 +24,7 @@
 
 #include <QSet>
 
-#include <math.h>
+#include <cmath>
 
 Constraint*
 ConstraintTypes::PreventDuplicates::createFromXml( QDomElement& xmlelem, ConstraintNode* p )

@@ -30,7 +30,7 @@
 #include <QDateTime>
 #include <QtGlobal> // For 'qrand()'
 
-#include <math.h> // For 'round()'
+#include <cmath> // For 'round()'
 
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {

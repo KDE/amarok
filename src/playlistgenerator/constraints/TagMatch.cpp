@@ -26,8 +26,8 @@
 #include "core/meta/Statistics.h"
 #include "core/support/Debug.h"
 
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 
 Constraint*
 ConstraintTypes::TagMatch::createFromXml( QDomElement& xmlelem, ConstraintNode* p )
