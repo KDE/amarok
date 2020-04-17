@@ -29,7 +29,7 @@
   #include <winsock2.h>
 #endif
 
-#if !defined(MARIADB_VERSION_ID) && MYSQL_VERSION_ID >= 80000
+#if !defined(MARIADB_BASE_VERSION) && MYSQL_VERSION_ID >= 80000
 using my_bool = bool;
 #endif
 
