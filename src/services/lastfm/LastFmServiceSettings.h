@@ -36,7 +36,7 @@ class LastFmServiceSettings : public KCModule
 public:
     explicit LastFmServiceSettings( QWidget *parent = nullptr, const QVariantList &args = QVariantList() );
 
-    virtual ~LastFmServiceSettings();
+    ~LastFmServiceSettings() override;
 
     void save() override;
     void load() override;

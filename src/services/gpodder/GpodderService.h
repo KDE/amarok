@@ -58,7 +58,7 @@ class GpodderService : public ServiceBase
 
 public:
     GpodderService( GpodderServiceFactory *parent, const QString &name );
-    virtual ~GpodderService();
+    ~GpodderService() override;
 
 private Q_SLOTS:
     void subscribe();

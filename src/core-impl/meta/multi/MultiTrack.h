@@ -37,7 +37,7 @@ namespace Meta
 
         public:
             explicit MultiTrack( Playlists::PlaylistPtr playlist );
-            ~MultiTrack();
+            ~MultiTrack() override;
 
             QStringList sources() const;
             void setSource( int source );

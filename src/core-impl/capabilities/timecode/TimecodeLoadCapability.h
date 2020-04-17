@@ -39,7 +39,7 @@ class AMAROK_EXPORT TimecodeLoadCapability : public Capability
 {
     Q_OBJECT
 public:
-    virtual ~TimecodeLoadCapability();
+    ~TimecodeLoadCapability() override;
 
     /**
      * @return true if the track has timecodes, false if not

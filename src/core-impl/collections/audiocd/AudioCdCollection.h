@@ -42,7 +42,7 @@ class AudioCdCollectionFactory : public MediaDeviceCollectionFactory<AudioCdColl
 
 public:
     AudioCdCollectionFactory();
-    virtual ~AudioCdCollectionFactory() {}
+    ~AudioCdCollectionFactory() override {}
 
 /*    virtual void init();
 
@@ -72,7 +72,7 @@ public:
     enum { WAV, FLAC, OGG, MP3 } EncodingFormat;
 
     explicit AudioCdCollection( MediaDeviceInfo* info );
-    ~AudioCdCollection();
+    ~AudioCdCollection() override;
 
     QString encodingFormat() const;
     QString copyableFilePath( const QString &fileName ) const;

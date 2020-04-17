@@ -54,7 +54,7 @@ class CoverManager : public QDialog, public Meta::Observer
 
     public:
         explicit CoverManager( QWidget *parent = nullptr );
-       ~CoverManager();
+       ~CoverManager() override;
 
         static bool isConstructed() { return s_constructed; }
         static CoverManager *instance() { return s_instance; }
@@ -163,7 +163,7 @@ class CoverViewItem : public QListWidgetItem
 {
     public:
         CoverViewItem( QListWidget *parent, Meta::AlbumPtr album );
-        ~CoverViewItem();
+        ~CoverViewItem() override;
 
         void loadCover();
         bool hasCover() const;

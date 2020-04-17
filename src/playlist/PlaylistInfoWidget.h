@@ -28,7 +28,7 @@ class PlaylistInfoWidget : public QLabel
 
 public:
     explicit PlaylistInfoWidget( QWidget* parent = nullptr );
-    virtual ~PlaylistInfoWidget();
+    ~PlaylistInfoWidget() override;
 
 protected:
     bool event( QEvent *event ) override;

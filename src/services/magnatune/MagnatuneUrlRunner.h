@@ -32,7 +32,7 @@ class MagnatuneUrlRunner : public QObject, public AmarokUrlRunnerBase
 public:
     MagnatuneUrlRunner();
 
-    virtual ~MagnatuneUrlRunner();
+    ~MagnatuneUrlRunner() override;
 
     QString command() const override;
     QString prettyCommand() const override;

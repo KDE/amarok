@@ -35,7 +35,7 @@ class AmarokScriptXml : public QObject
 
 public:
     explicit AmarokScriptXml( QScriptEngine *engine );
-    ~AmarokScriptXml();
+    ~AmarokScriptXml() override;
 
     Q_INVOKABLE void setReaderData( const QString &data );
     Q_INVOKABLE bool setDomObjectData( const QString &data );

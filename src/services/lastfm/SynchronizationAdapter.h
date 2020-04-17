@@ -33,7 +33,7 @@ class SynchronizationAdapter : public StatSyncing::Provider
          * @param config a pointer to Last.fm config
          */
         explicit SynchronizationAdapter( const LastFmServiceConfigPtr &config );
-        virtual ~SynchronizationAdapter();
+        ~SynchronizationAdapter() override;
 
         QString id() const override;
         QString prettyName() const override;

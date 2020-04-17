@@ -41,7 +41,7 @@ class MEDIADEVICECOLLECTION_EXPORT ConnectionAssistant : public QObject
     
 public:
 
-    virtual ~ConnectionAssistant();
+    ~ConnectionAssistant() override;
 
     /**
 

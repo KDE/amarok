@@ -38,7 +38,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
          * confirmation dialogs when deleting or renaming playlists.
          */
         explicit SqlUserPlaylistProvider( bool debug = false );
-        ~SqlUserPlaylistProvider();
+        ~SqlUserPlaylistProvider() override;
 
         /* PlaylistProvider functions */
         QString prettyName() const override { return i18n( "Amarok Database" ); }

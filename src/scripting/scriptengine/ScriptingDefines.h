@@ -98,7 +98,7 @@ namespace AmarokScript
 
         public:
             explicit AmarokScriptEngine( QObject *parent );
-            virtual ~AmarokScriptEngine();
+            ~AmarokScriptEngine() override;
 
             void setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property );
             // exposing the metaobject directly also exposes >900 other values

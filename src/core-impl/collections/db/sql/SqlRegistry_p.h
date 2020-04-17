@@ -59,7 +59,7 @@ class AbstractTrackTableCommitter
 class TrackUrlsTableCommitter: public AbstractTrackTableCommitter
 {
     public:
-        virtual ~TrackUrlsTableCommitter() {}
+        ~TrackUrlsTableCommitter() override {}
 
     protected:
         QString tableName() override;
@@ -72,7 +72,7 @@ class TrackUrlsTableCommitter: public AbstractTrackTableCommitter
 class TrackTracksTableCommitter: public AbstractTrackTableCommitter
 {
     public:
-        virtual ~TrackTracksTableCommitter() {}
+        ~TrackTracksTableCommitter() override {}
 
     protected:
         QString tableName() override;
@@ -85,7 +85,7 @@ class TrackTracksTableCommitter: public AbstractTrackTableCommitter
 class TrackStatisticsTableCommitter: public AbstractTrackTableCommitter
 {
     public:
-        virtual ~TrackStatisticsTableCommitter() {}
+        ~TrackStatisticsTableCommitter() override {}
 
     protected:
         QString tableName() override;

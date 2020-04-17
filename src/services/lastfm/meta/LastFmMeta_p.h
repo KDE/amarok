@@ -84,7 +84,7 @@ class Track::Private : public QObject
             artist = QString ( "Last.fm" );
         }
 
-        ~Private()
+        ~Private() override
         {
         }
 

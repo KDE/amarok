@@ -40,7 +40,7 @@ class MtpCollectionFactory : public MediaDeviceCollectionFactory<MtpCollection>
 
     public:
         MtpCollectionFactory();
-        virtual ~MtpCollectionFactory();
+        ~MtpCollectionFactory() override;
 
 };
 
@@ -51,7 +51,7 @@ class MtpCollection : public MediaDeviceCollection
 	public:
 
     explicit MtpCollection( MediaDeviceInfo* );
-    virtual ~MtpCollection();
+    ~MtpCollection() override;
 
     QString collectionId() const override;
     QString prettyName() const override;

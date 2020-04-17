@@ -61,7 +61,7 @@ namespace Daap
 
         public:
             Reader( Collections::DaapCollection *mc, const QString& host, quint16 port, const QString& password, QObject* parent, const char* name );
-           ~Reader();
+           ~Reader() override;
 
             //QPtrList<MetaBundle> getSongList();
             enum Options { SESSION_ID = 1, SERVER_VERSION = 2  };
@@ -123,7 +123,7 @@ namespace Daap
         Q_OBJECT
         public:
             WorkerThread( const QByteArray &data, Reader* reader, Collections::DaapCollection *coll );
-            virtual ~WorkerThread();
+            ~WorkerThread() override;
 
             bool success() const override;
 

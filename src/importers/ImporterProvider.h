@@ -47,7 +47,7 @@ public:
      * @param manager as @see m_manager. If config["uid"] isn't set, it's generated here.
      */
     ImporterProvider( const QVariantMap &config, ImporterManager *manager );
-    virtual ~ImporterProvider();
+    ~ImporterProvider() override;
 
     /**
      * Provider's unique id which may be used as a key for configuration storage.

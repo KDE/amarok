@@ -26,7 +26,7 @@ class AudioCdConnectionAssistant : public ConnectionAssistant
     Q_OBJECT
     
 public:
-    virtual ~AudioCdConnectionAssistant();
+    ~AudioCdConnectionAssistant() override;
 
     bool identify( const QString& udi ) override;
     MediaDeviceInfo* deviceInfo( const QString& udi ) override;

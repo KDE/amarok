@@ -55,7 +55,7 @@ class ScriptListDockWidget;
 
         private:
             explicit ScriptConsole( QWidget *parent );
-            virtual ~ScriptConsole();
+            ~ScriptConsole() override;
 
             bool eventFilter( QObject *watched, QEvent *event ) override;
             QDockWidget *getWidget( const QString &title, QScriptEngineDebugger::DebuggerWidget widget );
@@ -77,7 +77,7 @@ class ScriptListDockWidget;
 
         public:
             explicit ScriptListDockWidget( QWidget *parent );
-            ~ScriptListDockWidget();
+            ~ScriptListDockWidget() override;
             void addScript( ScriptConsoleItem *script );
             void addItem( QListWidgetItem *item );
 

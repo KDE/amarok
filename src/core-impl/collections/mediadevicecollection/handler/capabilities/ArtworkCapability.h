@@ -28,7 +28,7 @@ namespace Handler
 
         public:
             explicit ArtworkCapability( QObject *parent ) : Capability( parent ) {}
-            virtual ~ArtworkCapability();
+            ~ArtworkCapability() override;
 
             virtual QImage getCover( const Meta::MediaDeviceTrackPtr &track ) = 0;
 

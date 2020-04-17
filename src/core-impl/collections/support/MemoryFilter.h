@@ -45,7 +45,7 @@ class AMAROK_EXPORT ContainerMemoryFilter : public MemoryFilter
 {
     public:
         ContainerMemoryFilter();
-        virtual ~ContainerMemoryFilter();
+        ~ContainerMemoryFilter() override;
         void addFilter( MemoryFilter *filter );
     protected:
         QList<MemoryFilter*> m_filters;
@@ -55,7 +55,7 @@ class AMAROK_EXPORT AndContainerMemoryFilter : public ContainerMemoryFilter
 {
     public:
         AndContainerMemoryFilter();
-        virtual ~AndContainerMemoryFilter();
+        ~AndContainerMemoryFilter() override;
         bool filterMatches( const Meta::TrackPtr &track ) const override;
 };
 
@@ -63,7 +63,7 @@ class AMAROK_EXPORT OrContainerMemoryFilter : public ContainerMemoryFilter
 {
     public:
         OrContainerMemoryFilter();
-        virtual ~OrContainerMemoryFilter();
+        ~OrContainerMemoryFilter() override;
         bool filterMatches( const Meta::TrackPtr &track ) const override;
 };
 
@@ -71,7 +71,7 @@ class AMAROK_EXPORT NegateMemoryFilter : public MemoryFilter
 {
     public:
         explicit NegateMemoryFilter( MemoryFilter *filter );
-        virtual ~NegateMemoryFilter();
+        ~NegateMemoryFilter() override;
         bool filterMatches( const Meta::TrackPtr &track ) const override;
     private:
         MemoryFilter *m_filter;
@@ -81,7 +81,7 @@ class AMAROK_EXPORT StringMemoryFilter : public MemoryFilter
 {
     public:
         StringMemoryFilter();
-        virtual ~StringMemoryFilter();
+        ~StringMemoryFilter() override;
         bool filterMatches( const Meta::TrackPtr &track ) const override;
 
         void setFilter( const QString &filter, bool matchBegin, bool matchEnd );

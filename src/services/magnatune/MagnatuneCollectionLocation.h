@@ -32,7 +32,7 @@ class MagnatuneCollectionLocation : public ServiceCollectionLocation
 public:
     explicit MagnatuneCollectionLocation( MagnatuneSqlCollection *parentCollection );
 
-    virtual ~MagnatuneCollectionLocation();
+    ~MagnatuneCollectionLocation() override;
 
     void showSourceDialog( const Meta::TrackList &tracks, bool removeSources ) override;
 

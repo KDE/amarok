@@ -36,7 +36,7 @@ class GpodderServiceSettings : public KCModule
 public:
     GpodderServiceSettings( QWidget *parent, const QVariantList &args );
 
-    virtual ~GpodderServiceSettings();
+    ~GpodderServiceSettings() override;
 
     void save() override;
     void load() override;

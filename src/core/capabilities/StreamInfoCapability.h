@@ -39,7 +39,7 @@ namespace Capabilities
         Q_OBJECT
         public:
             StreamInfoCapability() {}
-            virtual ~StreamInfoCapability() {}
+            ~StreamInfoCapability() override {}
 
             /**
              * The human readable name of this stream

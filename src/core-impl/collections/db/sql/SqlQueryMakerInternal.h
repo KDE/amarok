@@ -33,7 +33,7 @@ class SqlQueryMakerInternal : public QObject
 Q_OBJECT
 public:
     explicit SqlQueryMakerInternal( SqlCollection *collection );
-    virtual ~ SqlQueryMakerInternal();
+    ~ SqlQueryMakerInternal() override;
 
     void run();
     void setQuery( const QString &query );

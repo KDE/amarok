@@ -37,7 +37,7 @@ class BrowserDock : public AmarokDockWidget
 public:
     explicit BrowserDock( QWidget *parent );
 
-    ~BrowserDock();
+    ~BrowserDock() override;
 
     BrowserCategoryList *list() const;
     void navigate( const QString &target );

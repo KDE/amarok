@@ -49,7 +49,7 @@ class DaapCollectionFactory : public Collections::CollectionFactory
 
     public:
         DaapCollectionFactory();
-        virtual ~DaapCollectionFactory();
+        ~DaapCollectionFactory() override;
 
         void init() override;
 
@@ -80,7 +80,7 @@ class DaapCollection : public Collections::Collection
     Q_OBJECT
     public:
         DaapCollection( const QString &host, const QString &ip, quint16 port );
-        virtual ~DaapCollection();
+        ~DaapCollection() override;
 
         QueryMaker* queryMaker() override;
 

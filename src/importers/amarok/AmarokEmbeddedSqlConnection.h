@@ -34,7 +34,7 @@ class AmarokEmbeddedSqlConnection : public ImporterSqlConnection
 
 public:
     AmarokEmbeddedSqlConnection( const QFileInfo &mysqld, const QDir &datadir );
-    ~AmarokEmbeddedSqlConnection();
+    ~AmarokEmbeddedSqlConnection() override;
 
 protected:
     QSqlDatabase connection() override;

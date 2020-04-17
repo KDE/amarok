@@ -58,7 +58,7 @@ namespace Playdar
             /**
              * Controllers don't hold on to anything, so the deconstructor does nothing.
              */
-            ~Controller();
+            ~Controller() override;
             
             /** 
             * Asks Playdar for status information, which eventually results in

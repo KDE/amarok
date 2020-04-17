@@ -59,7 +59,7 @@ class LastFmService : public ServiceBase
 
 public:
     LastFmService( LastFmServiceFactory* parent, const QString &name );
-    virtual ~LastFmService();
+    ~LastFmService() override;
 
     void polish() override;
 

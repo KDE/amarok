@@ -28,7 +28,7 @@ class TimecodeTrackProvider : public Collections::TrackProvider{
 public:
     TimecodeTrackProvider();
 
-    ~TimecodeTrackProvider();
+    ~TimecodeTrackProvider() override;
 
     bool possiblyContainsTrack( const QUrl &url ) const override;
     Meta::TrackPtr trackForUrl( const QUrl &url ) override;

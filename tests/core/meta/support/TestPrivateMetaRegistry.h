@@ -27,7 +27,7 @@ class TestPrivateMetaRegistry : public QObject
     Q_OBJECT
 
     public:
-        ~TestPrivateMetaRegistry();
+        ~TestPrivateMetaRegistry() override;
 
     private Q_SLOTS:
         void initTestCase();

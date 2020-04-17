@@ -41,7 +41,7 @@ namespace ScriptConsoleNS
 
         public:
             ScriptEditorDocument( QObject *parent, KTextEditor::Document* document );
-            virtual ~ScriptEditorDocument();
+            ~ScriptEditorDocument() override;
             QString text() const;
             KTextEditor::View *createView( QWidget *editor = 0 );
             void setText( const QString &text );

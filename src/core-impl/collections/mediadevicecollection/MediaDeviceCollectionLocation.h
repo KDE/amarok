@@ -35,7 +35,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public Collec
     Q_OBJECT
     public:
         explicit MediaDeviceCollectionLocation( MediaDeviceCollection *collection );
-        virtual ~MediaDeviceCollectionLocation();
+        ~MediaDeviceCollectionLocation() override;
 
         QString prettyLocation() const override;
         bool isWritable() const override;

@@ -57,7 +57,7 @@ public:
                                   const QString &configGroup,
                                   PlaylistBrowserModel *model,
                                   QWidget *parent );
-    ~PlaylistBrowserCategory();
+    ~PlaylistBrowserCategory() override;
 
     QString filter() const override;
     void setFilter( const QString &filter ) override;

@@ -34,7 +34,7 @@ class AMAROK_SQLSTORAGE_MYSQLE_EXPORT MySqlEmbeddedStorage : public MySqlStorage
          *  The first caller wins.
          */
         MySqlEmbeddedStorage();
-        virtual ~MySqlEmbeddedStorage();
+        ~MySqlEmbeddedStorage() override;
 
         /** Initializes the storage.
          *  @param storageLocation The directory for storing the mysql database, will use the default defined by Amarok/KDE if not set.

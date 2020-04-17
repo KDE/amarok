@@ -31,7 +31,7 @@ class PowerManager : public QObject
 
     public:
         explicit PowerManager( EngineController *engine );
-        ~PowerManager();
+        ~PowerManager() override;
 
     private Q_SLOTS:
         void slotSettingsChanged();

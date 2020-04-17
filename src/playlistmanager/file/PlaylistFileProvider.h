@@ -36,7 +36,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
 
     public:
         PlaylistFileProvider();
-        virtual ~PlaylistFileProvider();
+        ~PlaylistFileProvider() override;
 
         QString prettyName() const override;
         QIcon icon() const override;

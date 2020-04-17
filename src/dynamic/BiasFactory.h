@@ -130,7 +130,7 @@ namespace Dynamic
 
     private:
         BiasFactory( QObject *parent = nullptr );
-        ~BiasFactory();
+        ~BiasFactory() override;
 
         void emitChanged();
 

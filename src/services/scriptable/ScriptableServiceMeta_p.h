@@ -68,7 +68,7 @@ class AMAROK_EXPORT ScriptableServiceInternalSourceInfoCapability : public Capab
         {
             m_sourceInfoProvider = sourceInfoProvider;
         }
-        ~ScriptableServiceInternalSourceInfoCapability() {}
+        ~ScriptableServiceInternalSourceInfoCapability() override {}
 
         QString sourceName() override { return m_sourceInfoProvider->serviceName(); }
         QString sourceDescription() override { return m_sourceInfoProvider->serviceDescription(); }

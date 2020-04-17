@@ -296,7 +296,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlArtist : public Meta::Artist
 {
     public:
         SqlArtist( Collections::SqlCollection* collection, int id, const QString &name );
-        ~SqlArtist();
+        ~SqlArtist() override;
 
         QString name() const override { return m_name; }
 
@@ -331,7 +331,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
 {
     public:
         SqlAlbum( Collections::SqlCollection* collection, int id, const QString &name, int artist );
-        ~SqlAlbum();
+        ~SqlAlbum() override;
 
         QString name() const override { return m_name; }
 

@@ -36,7 +36,7 @@ namespace Meta {
     {
         public:
             Base();
-            virtual ~Base();
+            ~Base() override;
 
             /**
              * The textual label for this object.

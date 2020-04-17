@@ -48,7 +48,7 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         /**
          * Destructor.
          */
-        ~PlaylistLayoutEditDialog();
+        ~PlaylistLayoutEditDialog() override;
 
     public Q_SLOTS:
 

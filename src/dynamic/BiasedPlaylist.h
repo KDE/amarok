@@ -51,7 +51,7 @@ namespace Dynamic
             /** Creates a new playlist from an xml stream */
             explicit BiasedPlaylist( QXmlStreamReader *reader, QObject *parent = nullptr );
 
-            ~BiasedPlaylist();
+            ~BiasedPlaylist() override;
 
             void toXml( QXmlStreamWriter *writer ) const override;
 

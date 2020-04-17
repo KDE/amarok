@@ -43,7 +43,7 @@ namespace Capabilities
         Q_OBJECT
 
         public:
-            virtual ~TranscodeCapability();
+            ~TranscodeCapability() override;
 
             /**
              * Return a list of file types (should be compatible with Meta::Track::type())

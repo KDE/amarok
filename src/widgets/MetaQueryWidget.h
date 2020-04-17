@@ -80,7 +80,7 @@ class MetaQueryWidget : public QWidget
          *  @param noCondition If set to true no condition can be selected.
          */
         explicit MetaQueryWidget( QWidget* parent = nullptr, bool onlyNumeric = false, bool noCondition = false );
-        ~MetaQueryWidget();
+        ~MetaQueryWidget() override;
 
         enum FilterCondition
         {

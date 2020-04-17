@@ -38,7 +38,7 @@ class LastFmMultiPlayableCapability : public Capabilities::MultiPlayableCapabili
 
     public:
         explicit LastFmMultiPlayableCapability( LastFm::Track *track );
-        virtual ~LastFmMultiPlayableCapability();
+        ~LastFmMultiPlayableCapability() override;
 
         // Capabilities::MultiPlayableCapability methods
         void fetchFirst() override;

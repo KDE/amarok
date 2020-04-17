@@ -40,7 +40,7 @@ class AMAROKCORE_EXPORT PluginFactory : public QObject
 
 public:
     PluginFactory();
-    virtual ~PluginFactory() = 0;
+    ~PluginFactory() override = 0;
 
     /** Initialize the service plugin of this type.
     *

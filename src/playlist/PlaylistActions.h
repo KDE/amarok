@@ -163,7 +163,7 @@ private Q_SLOTS:
 
 private:
     Actions();
-    ~Actions();
+    ~Actions() override;
 
     void init();
 

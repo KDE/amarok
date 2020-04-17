@@ -60,7 +60,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~ServiceAlbumWithCover();
+    ~ServiceAlbumWithCover() override;
 
     /**
      * Get the download prefix used for caching the cover.
@@ -135,7 +135,7 @@ class ServiceAlbumCoverDownloader : public QObject
         /**
          * Destructor.
          */
-        ~ServiceAlbumCoverDownloader();
+        ~ServiceAlbumCoverDownloader() override;
 
         /**
          * Start the download of the cover of a ServiceAlbumWithCover.

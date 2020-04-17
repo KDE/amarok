@@ -34,7 +34,7 @@ class AmpacheSettings : public KCModule
 public:
     explicit AmpacheSettings( QWidget *parent, const QVariantList &args );
 
-    virtual ~AmpacheSettings();
+    ~AmpacheSettings() override;
 
     void save() override;
     void load() override;

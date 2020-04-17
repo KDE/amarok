@@ -28,7 +28,7 @@ class AMAROK_EXPORT FileTrackProvider : public Collections::TrackProvider
 {
     public:
         FileTrackProvider();
-        virtual ~FileTrackProvider();
+        ~FileTrackProvider() override;
 
         bool possiblyContainsTrack( const QUrl &url ) const override;
         Meta::TrackPtr trackForUrl( const QUrl &url ) override;

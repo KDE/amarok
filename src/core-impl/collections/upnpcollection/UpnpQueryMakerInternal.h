@@ -42,7 +42,7 @@ class UpnpQueryMakerInternal : public QObject
     Q_OBJECT
     public:
         explicit UpnpQueryMakerInternal( UpnpSearchCollection *collection );
-        ~UpnpQueryMakerInternal();
+        ~UpnpQueryMakerInternal() override;
         void setQueryType( Collections::QueryMaker::QueryType type ) { m_queryType = type; }
         void reset();
         void runQuery( QUrl query, bool filter=true );

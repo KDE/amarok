@@ -39,7 +39,7 @@ class AMAROKCORE_EXPORT StorageFactory : public Plugins::PluginFactory
 
 public:
     StorageFactory();
-    virtual ~StorageFactory();
+    ~StorageFactory() override;
 
 Q_SIGNALS:
     /** Emitted whenever the factory produces a new storage.

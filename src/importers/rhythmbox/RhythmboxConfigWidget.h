@@ -27,7 +27,7 @@ class RhythmboxConfigWidget : public SimpleImporterConfigWidget
 public:
     explicit RhythmboxConfigWidget( const QVariantMap &config, QWidget *parent = nullptr,
                                     Qt::WindowFlags f = {} );
-    ~RhythmboxConfigWidget();
+    ~RhythmboxConfigWidget() override;
 };
 
 } // namespace StatSyncing

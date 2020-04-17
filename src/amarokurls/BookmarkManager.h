@@ -26,7 +26,7 @@ class BookmarkManager : public QDialog
 public:
 
     static BookmarkManager * instance();
-    ~BookmarkManager();
+    ~BookmarkManager() override;
 
      static void showOnce( QWidget* parent = nullptr );
 

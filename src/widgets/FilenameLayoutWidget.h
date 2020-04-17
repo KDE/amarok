@@ -70,7 +70,7 @@ class AMAROK_EXPORT FilenameLayoutWidget : public QWidget
         };
 
         explicit FilenameLayoutWidget( QWidget *parent = nullptr );
-        virtual ~FilenameLayoutWidget() {}
+        ~FilenameLayoutWidget() override {}
 
         QString getParsableScheme() const;
 

@@ -53,7 +53,7 @@ public:
         Happy,
         Normal
     };
-    ~MoodbarManager();
+    ~MoodbarManager() override;
 
     bool hasMoodbar( Meta::TrackPtr track );
     QPixmap getMoodbar( Meta::TrackPtr track, int width, int height, bool rtl = false );

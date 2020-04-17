@@ -50,7 +50,7 @@ public:
       * @param collection the MemoryCollection instance that the query should be run on.
       */
     explicit MemoryQueryMakerInternal( const QWeakPointer<Collections::MemoryCollection> &collection );
-    ~MemoryQueryMakerInternal();
+    ~MemoryQueryMakerInternal() override;
 
 
     void runQuery();

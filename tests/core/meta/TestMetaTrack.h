@@ -32,7 +32,7 @@ Q_OBJECT
 
 public:
     TestMetaTrack();
-    ~TestMetaTrack();
+    ~TestMetaTrack() override;
 
 private Q_SLOTS:
     void initTestCase();

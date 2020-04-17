@@ -38,7 +38,7 @@ class AMAROK_EXPORT BookmarkManagerWidget : public BoxWidget
     Q_OBJECT
 public:
     explicit BookmarkManagerWidget( QWidget *parent = nullptr );
-    ~BookmarkManagerWidget();
+    ~BookmarkManagerWidget() override;
 
     BookmarkTreeView * treeView();
 

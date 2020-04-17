@@ -35,7 +35,7 @@ class MagnatuneDatabaseWorker : public QObject, public ThreadWeaver::Job
 public:
     MagnatuneDatabaseWorker();
 
-    ~MagnatuneDatabaseWorker();
+    ~MagnatuneDatabaseWorker() override;
 
     void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
 

@@ -107,7 +107,7 @@ public:
     explicit MagnatuneAlbum( const QString &name );
     explicit MagnatuneAlbum( const QStringList &resultRow );
 
-    ~MagnatuneAlbum();
+    ~MagnatuneAlbum() override;
     
     QString downloadPrefix() const override { return QStringLiteral("magnatune"); }
 
@@ -157,7 +157,7 @@ class MagnatuneMetaFactory : public ServiceMetaFactory
         enum { OGG = 0, MP3 = 1, LOFI = 2 };
         
         MagnatuneMetaFactory( const QString &dbPrefix, MagnatuneStore * store );
-        virtual ~MagnatuneMetaFactory() {}
+        ~MagnatuneMetaFactory() override {}
 
         int getTrackSqlRowCount() override;
         QString getTrackSqlRows() override;

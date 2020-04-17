@@ -41,7 +41,7 @@ namespace Capabilities
             /**
              * Destructor
              */
-            virtual ~SourceInfoCapability();
+            ~SourceInfoCapability() override;
 
             /**
              * Get the human readable name of the source, for instance "Magnatune.com"

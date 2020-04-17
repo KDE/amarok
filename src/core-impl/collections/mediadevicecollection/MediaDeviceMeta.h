@@ -56,7 +56,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
 {
     public:
         explicit MediaDeviceTrack( Collections::MediaDeviceCollection *collection );
-        virtual ~MediaDeviceTrack();
+        ~MediaDeviceTrack() override;
 
         QString name() const override;
 
@@ -189,7 +189,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceArtist : public Meta::Artist
 {
     public:
         explicit MediaDeviceArtist( const QString &name );
-        virtual ~MediaDeviceArtist();
+        ~MediaDeviceArtist() override;
 
         QString name() const override;
 
@@ -208,7 +208,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
 {
     public:
         MediaDeviceAlbum( Collections::MediaDeviceCollection *collection, const QString &name );
-        virtual ~MediaDeviceAlbum();
+        ~MediaDeviceAlbum() override;
 
         QString name() const override;
 
@@ -251,7 +251,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceComposer : public Meta::Composer
 {
     public:
         explicit MediaDeviceComposer( const QString &name );
-        virtual ~MediaDeviceComposer();
+        ~MediaDeviceComposer() override;
 
         QString name() const override;
 
@@ -270,7 +270,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceGenre : public Meta::Genre
 {
     public:
         explicit MediaDeviceGenre( const QString &name );
-        virtual ~MediaDeviceGenre();
+        ~MediaDeviceGenre() override;
 
         QString name() const override;
 
@@ -290,7 +290,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceYear : public Meta::Year
 {
     public:
         explicit MediaDeviceYear( const QString &name );
-        virtual ~MediaDeviceYear();
+        ~MediaDeviceYear() override;
 
         QString name() const override;
 

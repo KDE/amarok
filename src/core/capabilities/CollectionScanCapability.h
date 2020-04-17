@@ -43,7 +43,7 @@ namespace Capabilities
             /**
              * Destructor
              */
-            virtual ~CollectionScanCapability();
+            ~CollectionScanCapability() override;
 
             /** Begin a full scan on the collection.
               */

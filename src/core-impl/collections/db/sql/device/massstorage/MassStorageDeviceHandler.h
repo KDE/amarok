@@ -25,7 +25,7 @@ class MassStorageDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
     explicit MassStorageDeviceHandlerFactory( QObject *parent ) : DeviceHandlerFactory( parent ) {}
-    virtual ~MassStorageDeviceHandlerFactory();
+    ~MassStorageDeviceHandlerFactory() override;
 
     bool canHandle( const Solid::Device &device ) const override;
 
@@ -52,7 +52,7 @@ public:
     MassStorageDeviceHandler();
     MassStorageDeviceHandler(int deviceId, const QString &mountPoint, const QString &uuid );
 
-    virtual ~MassStorageDeviceHandler();
+    ~MassStorageDeviceHandler() override;
 
     bool isAvailable() const override;
     QString type() const override;

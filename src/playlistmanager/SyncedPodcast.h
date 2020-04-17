@@ -24,7 +24,7 @@ class SyncedPodcast : public SyncedPlaylist, public Podcasts::PodcastChannel
 {
     public:
         explicit SyncedPodcast( Podcasts::PodcastChannelPtr podcast );
-        virtual ~SyncedPodcast() {}
+        ~SyncedPodcast() override {}
 
         //Playlist virtual methods
         QString name() const override { return title(); }

@@ -48,7 +48,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~BreadcrumbItemMenu();
+    ~BreadcrumbItemMenu() override;
 
 Q_SIGNALS:
     /**
@@ -89,7 +89,7 @@ public:
     /**
      * Destructor.
      */
-    ~BreadcrumbItem();
+    ~BreadcrumbItem() override;
 
     /**
      * Returns the internal name of this item.
@@ -159,7 +159,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~BreadcrumbAddMenuButton();
+    ~BreadcrumbAddMenuButton() override;
 
     /**
      * Menu accessor for the purpose of connecting to menu's signals.

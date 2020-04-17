@@ -40,7 +40,7 @@ public:
     /**
      * Destructor.
      */
-    ~SearchProxy();
+    ~SearchProxy() override;
 
     /**
      * Implementation of Playlist::AbstractModel: search/filter-related functions.

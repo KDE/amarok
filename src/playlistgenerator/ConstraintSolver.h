@@ -42,7 +42,7 @@ namespace APG {
             static const int QUALITY_RANGE; // allows used to adjust speed/quality tradeoff
 
             ConstraintSolver( ConstraintNode*, int );
-            ~ConstraintSolver();
+            ~ConstraintSolver() override;
 
             Meta::TrackList getSolution() const;
             bool satisfied() const;

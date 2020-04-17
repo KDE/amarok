@@ -39,7 +39,7 @@ class AMAROK_EXPORT MediaDeviceCache : public QObject
         * 
         */
         MediaDeviceCache();
-        ~MediaDeviceCache();
+        ~MediaDeviceCache() override;
 
         void refreshCache();
         const QStringList getAll() const { return m_type.keys(); }

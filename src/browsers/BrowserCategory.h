@@ -48,7 +48,7 @@ public:
     /**
      * Destructor.
      */
-    ~BrowserCategory();
+    ~BrowserCategory() override;
 
     /**
      * Get the internal name of this category.

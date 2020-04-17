@@ -67,7 +67,7 @@ namespace Capabilities
                       };
             Q_ENUM( Type )
 
-            virtual ~Capability();
+            ~Capability() override;
 
     };
 }

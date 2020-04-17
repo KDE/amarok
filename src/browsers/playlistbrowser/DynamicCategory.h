@@ -36,7 +36,7 @@ namespace PlaylistBrowserNS {
         Q_OBJECT
         public:
             explicit DynamicCategory( QWidget* parent );
-            ~DynamicCategory();
+            ~DynamicCategory() override;
 
             bool allowDuplicates() const;
 

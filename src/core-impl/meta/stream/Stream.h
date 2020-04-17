@@ -28,7 +28,7 @@ namespace MetaStream
             class Private;
 
             explicit Track( const QUrl &url );
-            virtual ~Track();
+            ~Track() override;
 
         // methods inherited from Meta::Base
             QString name() const override;

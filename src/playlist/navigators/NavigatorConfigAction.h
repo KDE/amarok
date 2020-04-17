@@ -34,7 +34,7 @@ public:
     /**
     * Destructor.
     */
-    ~NavigatorConfigAction();
+    ~NavigatorConfigAction() override;
 
 protected Q_SLOTS:
 

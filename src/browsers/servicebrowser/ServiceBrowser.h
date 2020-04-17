@@ -52,7 +52,7 @@ class ServiceBrowser : public BrowserCategoryList
         /**
          * Destructor.
          */
-        ~ServiceBrowser();
+        ~ServiceBrowser() override;
 
         /**
          * Reset a service and make it reload configuration. Not fully implemented..

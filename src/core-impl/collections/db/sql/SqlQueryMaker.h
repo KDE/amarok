@@ -33,7 +33,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlQueryMaker : public QueryMaker
 
     public:
         explicit SqlQueryMaker( SqlCollection* collection );
-        virtual ~SqlQueryMaker();
+        ~SqlQueryMaker() override;
 
         void abortQuery() override;
         void run() override;

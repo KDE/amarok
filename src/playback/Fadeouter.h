@@ -47,7 +47,7 @@ class AMAROK_EXPORT Fadeouter : public QObject
         /**
          * Destructor ensures that fader volume is set back to normal
          */
-        virtual ~Fadeouter();
+        ~Fadeouter() override;
 
     Q_SIGNALS:
         /**

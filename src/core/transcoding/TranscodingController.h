@@ -42,7 +42,7 @@ class AMAROKCORE_EXPORT Controller : public QObject
     Q_OBJECT
 public:
     explicit Controller( QObject *parent = nullptr );
-    ~Controller();
+    ~Controller() override;
 
     /**
      * Return set of all encoders, available or not.

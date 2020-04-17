@@ -29,7 +29,7 @@ class FastForwardProvider : public ImporterProvider
 {
 public:
     FastForwardProvider( const QVariantMap &config, ImporterManager *importer );
-    ~FastForwardProvider();
+    ~FastForwardProvider() override;
 
     qint64 reliableTrackMetaData() const override;
     qint64 writableTrackStatsData() const override;

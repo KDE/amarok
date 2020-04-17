@@ -49,7 +49,7 @@ class UpnpBrowseCollection : public UpnpCollectionBase
   Q_OBJECT
   public:
     explicit UpnpBrowseCollection( const DeviceInfo& );
-    virtual ~UpnpBrowseCollection();
+    ~UpnpBrowseCollection() override;
 
     QueryMaker* queryMaker() override;
 
@@ -103,7 +103,7 @@ class UpnpBrowseCollectionScanCapability : public Capabilities::CollectionScanCa
     Q_OBJECT
     public:
         explicit UpnpBrowseCollectionScanCapability( UpnpBrowseCollection* collection );
-        virtual ~UpnpBrowseCollectionScanCapability();
+        ~UpnpBrowseCollectionScanCapability() override;
 
         void startFullScan() override;
         void startIncrementalScan( const QString &directory = QString() ) override;

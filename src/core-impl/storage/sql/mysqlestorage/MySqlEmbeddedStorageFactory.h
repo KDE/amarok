@@ -27,7 +27,7 @@ class MySqleStorageFactory : public StorageFactory
 
     public:
         MySqleStorageFactory();
-        virtual ~MySqleStorageFactory();
+        ~MySqleStorageFactory() override;
 
         void init() override;
 };

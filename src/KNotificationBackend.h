@@ -61,7 +61,7 @@ public Q_SLOTS:
 
 private:
     KNotificationBackend();
-    ~KNotificationBackend();
+    ~KNotificationBackend() override;
 
     static KNotificationBackend *s_instance;
 

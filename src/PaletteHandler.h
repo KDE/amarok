@@ -41,7 +41,7 @@ class AMAROK_EXPORT PaletteHandler : public QObject
 friend PaletteHandler* The::paletteHandler();
 
 public:
-    ~PaletteHandler();
+    ~PaletteHandler() override;
 
     QPalette palette() const;
 

@@ -56,7 +56,7 @@ class CurriedZeroArityQMFunction : public CurriedQMFunction
         explicit CurriedZeroArityQMFunction( FunPtr function )
             : m_function( function )
         {}
-        virtual ~CurriedZeroArityQMFunction() {}
+        ~CurriedZeroArityQMFunction() override {}
         
         QueryMaker* operator()( QueryMaker *qm = 0 ) override
         {
@@ -82,7 +82,7 @@ class CurriedUnaryQMFunction : public CurriedQMFunction
             : m_function( function )
             , m_parameter( parameter )
         {}
-        virtual ~CurriedUnaryQMFunction() {}
+        ~CurriedUnaryQMFunction() override {}
         
         QueryMaker* operator()( QueryMaker *qm ) override
         {
@@ -110,7 +110,7 @@ class CurriedBinaryQMFunction : public CurriedQMFunction
             , m_parameterOne( parameterOne )
             , m_parameterTwo( parameterTwo )
         {}
-        virtual ~CurriedBinaryQMFunction() {}
+        ~CurriedBinaryQMFunction() override {}
         
         QueryMaker* operator()( QueryMaker *qm ) override
         {
@@ -140,7 +140,7 @@ class CurriedTrinaryQMFunction : public CurriedQMFunction
             , m_parameterTwo( parameterTwo )
             , m_parameterThree( parameterThree )
         {}
-        virtual ~CurriedTrinaryQMFunction() {}
+        ~CurriedTrinaryQMFunction() override {}
         
         QueryMaker* operator()( QueryMaker *qm ) override
         {
@@ -175,7 +175,7 @@ class CurriedQMStringFilterFunction : public CurriedQMFunction
             , m_matchBegin( matchBegin )
             , m_matchEnd( matchEnd )
         {}
-        virtual ~CurriedQMStringFilterFunction() {}
+        ~CurriedQMStringFilterFunction() override {}
 
         QueryMaker* operator()( QueryMaker *qm ) override
         {

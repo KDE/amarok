@@ -39,7 +39,7 @@ class EmptySqlStorage : public SqlStorage
 {
 public:
     EmptySqlStorage() {}
-    virtual ~EmptySqlStorage() {}
+    ~EmptySqlStorage() override {}
 
     virtual int sqlDatabasePriority() const
     { return 10; }

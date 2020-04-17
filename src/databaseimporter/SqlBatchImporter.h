@@ -33,7 +33,7 @@ class SqlBatchImporter : public QObject
 
     public:
         explicit SqlBatchImporter( QObject *parent );
-        ~SqlBatchImporter();
+        ~SqlBatchImporter() override;
 
         SqlBatchImporterConfig *configWidget( QWidget *parent );
 

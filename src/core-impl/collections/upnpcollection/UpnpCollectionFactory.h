@@ -47,7 +47,7 @@ class UpnpCollectionFactory : public Collections::CollectionFactory
 
   public:
     UpnpCollectionFactory();
-    virtual ~UpnpCollectionFactory();
+    ~UpnpCollectionFactory() override;
 
     void init() override;
 

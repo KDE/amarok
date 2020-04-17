@@ -48,7 +48,7 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         explicit SqlPodcastEpisode( PodcastEpisodePtr episode );
         SqlPodcastEpisode( const PodcastChannelPtr &channel, PodcastEpisodePtr episode );
 
-        ~SqlPodcastEpisode();
+        ~SqlPodcastEpisode() override;
 
         //PodcastEpisode methods
         PodcastChannelPtr channel() const override { return PodcastChannelPtr::dynamicCast( m_channel ); }

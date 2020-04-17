@@ -43,7 +43,7 @@ namespace Dynamic
             };
 
             WeeklyTopBias();
-            ~WeeklyTopBias();
+            ~WeeklyTopBias() override;
 
             void fromXml( QXmlStreamReader *reader ) override;
             void toXml( QXmlStreamWriter *writer ) const override;

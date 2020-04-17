@@ -38,7 +38,7 @@ class CollectionSortFilterProxyModel : public QSortFilterProxyModel
     public:
         explicit CollectionSortFilterProxyModel( QObject *parent = nullptr );
 
-        virtual ~CollectionSortFilterProxyModel();
+        ~CollectionSortFilterProxyModel() override;
 
         bool hasChildren(const QModelIndex &parent) const override;
 

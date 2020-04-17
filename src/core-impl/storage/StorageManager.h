@@ -107,7 +107,7 @@ class AMAROK_EXPORT StorageManager : public QObject
     private:
         static StorageManager* s_instance;
         StorageManager();
-        ~StorageManager();
+        ~StorageManager() override;
 
         void init();
 

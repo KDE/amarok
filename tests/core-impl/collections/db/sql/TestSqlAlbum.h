@@ -34,7 +34,7 @@ class TestSqlAlbum : public QObject
     Q_OBJECT
 public:
     TestSqlAlbum();
-    ~TestSqlAlbum();
+    ~TestSqlAlbum() override;
 
 private Q_SLOTS:
     void initTestCase();

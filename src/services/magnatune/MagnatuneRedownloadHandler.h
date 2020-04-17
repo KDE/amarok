@@ -36,7 +36,7 @@ Q_OBJECT
 public:
     explicit MagnatuneRedownloadHandler(QWidget * parent);
 
-    ~MagnatuneRedownloadHandler();
+    ~MagnatuneRedownloadHandler() override;
 
     /**
      * Calls forth the redownload dialog.

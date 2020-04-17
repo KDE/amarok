@@ -35,7 +35,7 @@ class TrashCollectionLocation : public CollectionLocation
 
 public:
     TrashCollectionLocation();
-    ~TrashCollectionLocation();
+    ~TrashCollectionLocation() override;
 
     QString prettyLocation() const override;
     bool isWritable() const override;

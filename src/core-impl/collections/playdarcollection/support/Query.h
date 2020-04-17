@@ -48,7 +48,7 @@ namespace Playdar
         public:
             //Constructor and Destructor
             Query( const QString &qid, Playdar::Controller* controller, bool waitForSolution );
-            ~Query();
+            ~Query() override;
             
             /** @return UID for this query given by Playdar */
             QString qid() const;

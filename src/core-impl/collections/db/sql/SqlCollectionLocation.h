@@ -75,7 +75,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionLocation : public CollectionLocat
 
     public:
         explicit SqlCollectionLocation( SqlCollection *collection );
-        virtual ~SqlCollectionLocation();
+        ~SqlCollectionLocation() override;
 
         QString prettyLocation() const override;
         QStringList actualLocation() const override;
@@ -137,7 +137,7 @@ class AMAROK_SQLCOLLECTION_EXPORT OrganizeCollectionDelegate : public QObject
     Q_OBJECT
 public:
     OrganizeCollectionDelegate() : QObject() {}
-    virtual ~ OrganizeCollectionDelegate() {}
+    ~ OrganizeCollectionDelegate() override {}
 
     virtual void setTracks( const Meta::TrackList &tracks ) = 0;
     virtual void setFolders( const QStringList &folders ) = 0;

@@ -35,7 +35,7 @@ class OpmlDirectoryServiceFactory: public ServiceFactory
 
     public:
         OpmlDirectoryServiceFactory();
-        virtual ~OpmlDirectoryServiceFactory();
+        ~OpmlDirectoryServiceFactory() override;
 
         void init() override;
         QString name() override;

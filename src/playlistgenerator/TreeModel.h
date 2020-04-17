@@ -32,7 +32,7 @@ namespace APG {
 
         public:
             explicit TreeModel( ConstraintNode*, QObject* parent = nullptr );
-            ~TreeModel();
+            ~TreeModel() override;
 
             QVariant data( const QModelIndex& index, int role ) const override;
             Qt::ItemFlags flags( const QModelIndex& index ) const override;

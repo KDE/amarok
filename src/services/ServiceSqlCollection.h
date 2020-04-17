@@ -30,7 +30,7 @@ class AMAROK_EXPORT ServiceSqlCollection : public ServiceCollection
     Q_OBJECT
     public:
         ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry );
-        virtual ~ServiceSqlCollection();
+        ~ServiceSqlCollection() override;
 
         virtual void startFullScan() {} //TODO
         QueryMaker* queryMaker() override;

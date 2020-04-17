@@ -26,7 +26,7 @@ namespace Capabilities
     {
         Q_OBJECT
         public:
-            virtual ~OrganiseCapability();
+            ~OrganiseCapability() override;
 
             static Type capabilityInterfaceType() { return Capabilities::Capability::Organisable; }
 

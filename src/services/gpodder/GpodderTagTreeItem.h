@@ -29,7 +29,7 @@ class GpodderTagTreeItem: public GpodderTreeItem
     Q_OBJECT
 public:
     explicit GpodderTagTreeItem( mygpo::TagPtr tag, GpodderTreeItem *parent = nullptr );
-    virtual ~GpodderTagTreeItem();
+    ~GpodderTagTreeItem() override;
     QVariant displayData() const override;
     mygpo::TagPtr tag() const;
 

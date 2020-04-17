@@ -45,7 +45,7 @@ class DeviceHandlerFactory : public QObject
 
 public:
     explicit DeviceHandlerFactory( QObject *parent ) : QObject( parent ) {}
-    virtual ~DeviceHandlerFactory() {}
+    ~DeviceHandlerFactory() override {}
 
     /**
      * checks whether a DeviceHandler subclass can handle a given Medium.
@@ -145,7 +145,7 @@ class AMAROK_SQLCOLLECTION_EXPORT MountPointManager : public QObject
 
 public:
     MountPointManager( QObject *parent, QSharedPointer<SqlStorage> storage );
-    ~MountPointManager();
+    ~MountPointManager() override;
 
     /**
      *

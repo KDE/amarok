@@ -45,7 +45,7 @@ public:
     
 private:
     GlobalCurrentTrackActions();
-    ~GlobalCurrentTrackActions();
+    ~GlobalCurrentTrackActions() override;
     
     QList<QAction*> m_actions;
 };

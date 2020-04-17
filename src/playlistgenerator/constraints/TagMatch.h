@@ -84,7 +84,7 @@ namespace ConstraintTypes {
         private:
             TagMatch( QDomElement&, ConstraintNode* );
             explicit TagMatch( ConstraintNode* );
-            ~TagMatch();
+            ~TagMatch() override;
 
             // constraint parameters
             int m_comparison;
@@ -135,7 +135,7 @@ namespace ConstraintTypes {
 
         public:
             TagMatchFieldsModel();
-            ~TagMatchFieldsModel();
+            ~TagMatchFieldsModel() override;
 
             // required by QAbstractListModel
             QVariant data( const QModelIndex&, int role = Qt::DisplayRole ) const override;

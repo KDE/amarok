@@ -111,7 +111,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionTranscodeCapability : public Capa
     Q_OBJECT
     public:
 
-        virtual ~SqlCollectionTranscodeCapability();
+        ~SqlCollectionTranscodeCapability() override;
 
         Transcoding::Configuration savedConfiguration() override;
         void setSavedConfiguration( const Transcoding::Configuration &configuration ) override;

@@ -31,7 +31,7 @@ class OpmlDirectoryMetaFactory : public ServiceMetaFactory
 {
     public:
         OpmlDirectoryMetaFactory( const QString &dbPrefix, OpmlDirectoryService *service );
-        virtual ~OpmlDirectoryMetaFactory() {}
+        ~OpmlDirectoryMetaFactory() override {}
 
         Meta::TrackPtr createTrack( const QStringList &rows ) override;
         Meta::AlbumPtr createAlbum( const QStringList &rows ) override;

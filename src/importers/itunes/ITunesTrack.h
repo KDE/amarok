@@ -30,7 +30,7 @@ class ITunesTrack : public QObject, public SimpleWritableTrack
 
 public:
     explicit ITunesTrack( const int trackId, const Meta::FieldHash &metadata );
-    ~ITunesTrack();
+    ~ITunesTrack() override;
 
     int rating() const override;
     void setRating( int rating ) override;

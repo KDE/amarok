@@ -54,7 +54,7 @@ class AMAROK_EXPORT AbstractScanResultProcessor : public QObject
 
     public:
         explicit AbstractScanResultProcessor( GenericScanManager* manager, QObject* parent = nullptr );
-        virtual ~AbstractScanResultProcessor();
+        ~AbstractScanResultProcessor() override;
 
     Q_SIGNALS:
         /** Those signals can be connected to a progress bar to get progress information

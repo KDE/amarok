@@ -45,7 +45,7 @@ class AMAROK_EXPORT ContextView : public QQuickWidget
 
 public:
      explicit ContextView( QWidget *parent = nullptr );
-    ~ContextView();
+    ~ContextView() override;
 
     /**
      * Singleton pattern accessor. May return 0 if the view was not yet constructed.

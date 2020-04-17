@@ -46,7 +46,7 @@ class AMAROK_EXPORT TrackCounter : public CustomReturnFunction
 {
     public:
         TrackCounter();
-        virtual ~TrackCounter();
+        ~TrackCounter() override;
 
         QString value( const Meta::TrackList &tracks ) const override;
 };
@@ -55,7 +55,7 @@ class AMAROK_EXPORT ArtistCounter : public CustomReturnFunction
 {
     public:
         ArtistCounter();
-        virtual ~ArtistCounter();
+        ~ArtistCounter() override;
 
         QString value( const Meta::TrackList &tracks ) const override;
 };
@@ -64,7 +64,7 @@ class AMAROK_EXPORT GenreCounter : public CustomReturnFunction
 {
     public:
         GenreCounter();
-        virtual ~GenreCounter();
+        ~GenreCounter() override;
 
         QString value( const Meta::TrackList &tracks ) const override;
 };
@@ -73,7 +73,7 @@ class AMAROK_EXPORT ComposerCounter : public CustomReturnFunction
 {
     public:
         ComposerCounter();
-        virtual ~ComposerCounter();
+        ~ComposerCounter() override;
 
         QString value( const Meta::TrackList &tracks ) const override;
 };
@@ -82,7 +82,7 @@ class AMAROK_EXPORT AlbumCounter : public CustomReturnFunction
 {
     public:
         AlbumCounter();
-        virtual ~AlbumCounter();
+        ~AlbumCounter() override;
 
         QString value( const Meta::TrackList &tracks ) const override;
 };
@@ -91,7 +91,7 @@ class AMAROK_EXPORT YearCounter : public CustomReturnFunction
 {
     public:
         YearCounter();
-        virtual ~YearCounter();
+        ~YearCounter() override;
 
         QString value( const Meta::TrackList &tracks ) const override;
 };
@@ -109,7 +109,7 @@ class AMAROK_EXPORT TitleReturnValue : public CustomReturnValue
 {
     public:
         TitleReturnValue();
-        virtual ~TitleReturnValue();
+        ~TitleReturnValue() override;
         QString value( const Meta::TrackPtr &track ) const override;
 };
 
@@ -117,7 +117,7 @@ class AMAROK_EXPORT UrlReturnValue : public CustomReturnValue
 {
     public:
         UrlReturnValue();
-        virtual ~UrlReturnValue();
+        ~UrlReturnValue() override;
         QString value( const Meta::TrackPtr &track ) const override;
 };
 

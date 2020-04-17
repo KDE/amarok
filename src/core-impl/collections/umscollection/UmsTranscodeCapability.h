@@ -26,7 +26,7 @@ class UmsTranscodeCapability : public Capabilities::TranscodeCapability
 
     public:
         UmsTranscodeCapability( const QString &configFilePath, const QString &groupName );
-        virtual ~UmsTranscodeCapability();
+        ~UmsTranscodeCapability() override;
 
         Transcoding::Configuration savedConfiguration() override;
         void setSavedConfiguration(const Transcoding::Configuration& configuration) override;

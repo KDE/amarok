@@ -50,7 +50,7 @@ namespace StatSyncing
 
         public:
             explicit Controller( QObject *parent = nullptr );
-            ~Controller();
+            ~Controller() override;
 
             /**
              * Return a list of Meta::val* fields that statistics synchronization can

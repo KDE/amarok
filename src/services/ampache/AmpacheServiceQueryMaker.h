@@ -40,7 +40,7 @@ class AmpacheServiceQueryMaker : public DynamicServiceQueryMaker
 
 public:
     AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QUrl &server, const QString &sessionId );
-    ~AmpacheServiceQueryMaker();
+    ~AmpacheServiceQueryMaker() override;
 
     void run() override;
     void abortQuery() override;

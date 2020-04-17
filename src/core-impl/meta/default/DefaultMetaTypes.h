@@ -34,7 +34,7 @@ class AMAROK_EXPORT DefaultArtist : public Meta::Artist
     public:
 
         DefaultArtist() {}
-        virtual ~DefaultArtist() {}
+        ~DefaultArtist() override {}
 
         QString name() const override { return i18nc( "The value is not known", "Unknown" ); }
 
@@ -48,7 +48,7 @@ class AMAROK_EXPORT DefaultAlbum : public Meta::Album
         DefaultAlbum()
             : Meta::Album()
             , m_albumArtist( new DefaultArtist() ) {}
-        virtual ~DefaultAlbum() {}
+        ~DefaultAlbum() override {}
 
         bool hasAlbumArtist() const override { return true; }
         ArtistPtr albumArtist() const override { return m_albumArtist; }
@@ -70,7 +70,7 @@ class AMAROK_EXPORT DefaultComposer : public Meta::Composer
     public:
 
         DefaultComposer() {}
-        virtual ~DefaultComposer() {}
+        ~DefaultComposer() override {}
 
         QString name() const override { return i18nc( "The value is not known", "Unknown" ); }
 
@@ -87,7 +87,7 @@ class AMAROK_EXPORT DefaultGenre : public Meta::Genre
     public:
 
         DefaultGenre() {}
-        virtual ~DefaultGenre() {}
+        ~DefaultGenre() override {}
 
         QString name() const override { return i18nc( "The value is not known", "Unknown" ); }
 
@@ -99,7 +99,7 @@ class AMAROK_EXPORT DefaultYear : public Meta::Year
     public:
 
         DefaultYear() {}
-        virtual ~DefaultYear() {}
+        ~DefaultYear() override {}
 
         QString name() const override { return QStringLiteral("0"); }
 

@@ -39,7 +39,7 @@ class PopupDropperPrivate : public QObject
 
 public:
     PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget* widget );
-    ~PopupDropperPrivate();
+    ~PopupDropperPrivate() override;
 
     void newSceneView( PopupDropper* pud );
     void setParent( QObject* parent );

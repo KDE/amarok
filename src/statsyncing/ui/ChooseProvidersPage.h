@@ -29,7 +29,7 @@ namespace StatSyncing
 
         public:
             explicit ChooseProvidersPage( QWidget *parent = nullptr, Qt::WindowFlags f = {} );
-            virtual ~ChooseProvidersPage();
+            ~ChooseProvidersPage() override;
 
             void setFields( const QList<qint64> &fields, qint64 checkedFields );
             qint64 checkedFields() const;

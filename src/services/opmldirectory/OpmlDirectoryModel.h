@@ -41,7 +41,7 @@ public:
     };
 
     explicit OpmlDirectoryModel( QUrl outlineUrl, QObject *parent = nullptr );
-    ~OpmlDirectoryModel();
+    ~OpmlDirectoryModel() override;
 
     // QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;

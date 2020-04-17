@@ -53,7 +53,7 @@ public:
     Q_ENUM( Status )
 
     explicit PhotosEngine( QObject* parent = nullptr );
-    virtual ~PhotosEngine();
+    ~PhotosEngine() override;
 
     int fetchSize() const;
     void setFetchSize( int size );

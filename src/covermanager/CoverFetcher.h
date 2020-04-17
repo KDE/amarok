@@ -74,7 +74,7 @@ private Q_SLOTS:
 private:
     static CoverFetcher* s_instance;
     CoverFetcher();
-    ~CoverFetcher();
+    ~CoverFetcher() override;
 
     /// Remove a fetch unit from the queue, and clean up any running jobs
     void abortFetch( const CoverFetchUnit::Ptr &unit );

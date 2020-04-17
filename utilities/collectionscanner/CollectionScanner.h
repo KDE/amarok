@@ -43,7 +43,7 @@ class Scanner : public QCoreApplication
 
 public:
     Scanner( int &argc, char **argv );
-    ~Scanner();
+    ~Scanner() override;
 
     /** Reads the batch file and adds the content to m_folders and m_Times */
     void readBatchFile( const QString &path );

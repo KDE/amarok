@@ -38,7 +38,7 @@ class AMAROK_EXPORT ServiceSqlRegistry : public QObject
 
     public:
         explicit ServiceSqlRegistry( ServiceMetaFactory * metaFactory );
-        virtual ~ServiceSqlRegistry();
+        ~ServiceSqlRegistry() override;
 
         void setMetaFactory( ServiceMetaFactory * metaFactory );
         ServiceMetaFactory * factory();

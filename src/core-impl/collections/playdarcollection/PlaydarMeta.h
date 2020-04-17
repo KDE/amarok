@@ -162,7 +162,7 @@ namespace Meta
     {
         public:
             explicit PlaydarArtist( const QString &name );
-            ~PlaydarArtist();
+            ~PlaydarArtist() override;
 
             QString name() const override;
 
@@ -182,7 +182,7 @@ namespace Meta
     {
         public:
             explicit PlaydarAlbum( const QString &name );
-            ~PlaydarAlbum();
+            ~PlaydarAlbum() override;
             bool isCompilation() const override;
             
             QString name() const override;
@@ -216,7 +216,7 @@ namespace Meta
     {
         public:
             explicit PlaydarComposer( const QString &name );
-            ~PlaydarComposer();
+            ~PlaydarComposer() override;
 
             QString name() const override;
 
@@ -233,7 +233,7 @@ namespace Meta
     {
         public:
             explicit PlaydarGenre( const QString &name );
-            ~PlaydarGenre();
+            ~PlaydarGenre() override;
 
             QString name() const override;
 
@@ -250,7 +250,7 @@ namespace Meta
     {
         public:
             explicit PlaydarYear( const QString &name );
-            ~PlaydarYear();
+            ~PlaydarYear() override;
 
             QString name() const override;
 
@@ -267,7 +267,7 @@ namespace Meta
     {
         public:
             explicit PlaydarLabel( const QString &name );
-            ~PlaydarLabel();
+            ~PlaydarLabel() override;
 
             QString name() const override;
 

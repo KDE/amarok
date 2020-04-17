@@ -37,7 +37,7 @@ namespace LastFm
 
             explicit Track( const QString &lastFmUri );
             explicit Track( lastfm::Track track ); //Convenience Constructor to allow constructing a Meta::LastFmTrack from a LastFmTrack (confusing?)
-            virtual ~Track();
+            ~Track() override;
 
         // methods inherited from Meta::Base
             QString name() const override;
@@ -113,7 +113,7 @@ namespace LastFm
     {
         public:
             LastFmProviderCapability();
-            ~LastFmProviderCapability();
+            ~LastFmProviderCapability() override;
     };
 
     typedef AmarokSharedPointer<Track> TrackPtr;

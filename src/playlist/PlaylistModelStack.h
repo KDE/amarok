@@ -84,7 +84,7 @@ private:
     /**
      * Destructor.
      */
-    ~ModelStack();
+    ~ModelStack() override;
 
     static ModelStack *s_instance;       //!< Instance member.
 

@@ -53,7 +53,7 @@ class BrowserCategoryList : public BrowserCategory
         /**
          * Destructor.
          */
-        ~BrowserCategoryList();
+        ~BrowserCategoryList() override;
 
         /**
          * Get a map of the categories.

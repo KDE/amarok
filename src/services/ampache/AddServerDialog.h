@@ -34,7 +34,7 @@ class AddServerDialog : public QDialog
     Q_OBJECT
     public:
         AddServerDialog();
-        ~AddServerDialog();
+        ~AddServerDialog() override;
         QString name();
         QString password();
         QString username();

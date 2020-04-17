@@ -62,7 +62,7 @@ namespace Dynamic
 
         public:
             AbstractBias();
-            virtual ~AbstractBias();
+            ~AbstractBias() override;
 
             /** Reads the contents of this object from an xml stream */
             virtual void fromXml( QXmlStreamReader *reader );
@@ -159,7 +159,7 @@ namespace Dynamic
 
         public:
             RandomBias();
-            virtual ~RandomBias();
+            ~RandomBias() override;
 
             static QString sName();
             QString name() const override;

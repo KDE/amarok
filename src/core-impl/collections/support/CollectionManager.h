@@ -163,7 +163,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
     private:
         static CollectionManager* s_instance;
         CollectionManager();
-        ~CollectionManager();
+        ~CollectionManager() override;
 
         void init();
 

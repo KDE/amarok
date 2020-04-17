@@ -51,7 +51,7 @@ public:
     explicit CoverFoundDialog( const CoverFetchUnit::Ptr &unit,
                                const CoverFetch::Metadata &data = CoverFetch::Metadata(),
                                QWidget *parent = nullptr );
-    ~CoverFoundDialog();
+    ~CoverFoundDialog() override;
 
     /**
      * @returns the currently selected cover image
@@ -131,7 +131,7 @@ class CoverFoundSideBar : public BoxWidget
 
 public:
     explicit CoverFoundSideBar( const Meta::AlbumPtr &album, QWidget *parent = nullptr );
-    ~CoverFoundSideBar();
+    ~CoverFoundSideBar() override;
 
 public Q_SLOTS:
     void clear();
@@ -161,7 +161,7 @@ public:
                              const CoverFetch::Metadata &data,
                              const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize,
                              QListWidget *parent = nullptr );
-    ~CoverFoundItem();
+    ~CoverFoundItem() override;
 
     const CoverFetch::Metadata metadata() const { return m_metadata; }
     const QImage bigPix() const { return m_bigPix; }

@@ -30,7 +30,7 @@ class AMAROK_EXPORT CollectionLocationDelegateImpl : public CollectionLocationDe
 {
 public:
     CollectionLocationDelegateImpl() {}
-    virtual ~ CollectionLocationDelegateImpl() {}
+    ~ CollectionLocationDelegateImpl() override {}
 
     bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const override;
     bool reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const override;

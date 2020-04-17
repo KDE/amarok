@@ -49,7 +49,7 @@ namespace Collections
 
         public:
             CollectionFactory();
-            virtual ~CollectionFactory();
+            ~CollectionFactory() override;
 
         Q_SIGNALS:
             void newCollection( Collections::Collection *newCollection );
@@ -88,7 +88,7 @@ namespace Collections
         Q_OBJECT
 
         public:
-            virtual ~Collection();
+            ~Collection() override;
 
             /**
              * The collection's querymaker

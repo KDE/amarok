@@ -26,7 +26,7 @@ class MagnatuneNeedUpdateWidget : public QWidget
     Q_OBJECT
 public:
     explicit MagnatuneNeedUpdateWidget(QWidget *parent = nullptr);
-    ~MagnatuneNeedUpdateWidget();
+    ~MagnatuneNeedUpdateWidget() override;
 
 protected:
     Ui::MagnatuneNeedUpdateWidget* ui;

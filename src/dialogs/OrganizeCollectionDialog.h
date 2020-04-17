@@ -71,7 +71,7 @@ class AMAROK_EXPORT OrganizeCollectionWidget : public FilenameLayoutWidget
 
     public:
         explicit OrganizeCollectionWidget( QWidget *parent = nullptr );
-        virtual ~OrganizeCollectionWidget() {}
+        ~OrganizeCollectionWidget() override {}
 
     protected:
         QString buildFormatTip() const;
@@ -93,7 +93,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public QDialog
                                            const QString &caption = QString(),
                                            QFlags<QDialogButtonBox::StandardButton> buttonMask = QDialogButtonBox::Ok|QDialogButtonBox::Cancel );
 
-        ~OrganizeCollectionDialog();
+        ~OrganizeCollectionDialog() override;
 
         QMap<Meta::TrackPtr, QString> getDestinations() const;
         bool overwriteDestinations() const;

@@ -49,7 +49,7 @@ public:
     SmbDeviceHandler(int deviceId, const QString &mountPoint, const QString &udi );
     SmbDeviceHandler(int deviceId, const QString &server, const QString &share, const QString &mountPoint, const QString &udi );
 
-    virtual ~SmbDeviceHandler();
+    ~SmbDeviceHandler() override;
 
     bool isAvailable() const override;
     QString type() const override;

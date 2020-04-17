@@ -30,7 +30,7 @@ class KJobProgressBar : public ProgressBar
 
     public:
         explicit KJobProgressBar( QWidget *parent, KJob * job );
-        ~KJobProgressBar();
+        ~KJobProgressBar() override;
 
     private Q_SLOTS:
         void updateJobStatus( KJob*, unsigned long );

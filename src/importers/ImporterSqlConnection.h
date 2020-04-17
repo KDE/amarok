@@ -63,7 +63,7 @@ public:
      * Destructor. Removes connection created in the constructor. If a transaction was
      * in progress it is rolled back.
      */
-    virtual ~ImporterSqlConnection();
+    ~ImporterSqlConnection() override;
 
     /**
      * Executes a query given in QString @p query, first using QSqlQuery::bindValue

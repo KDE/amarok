@@ -66,7 +66,7 @@ namespace APG {
 
         private:
             PresetModel();
-            ~PresetModel();
+            ~PresetModel() override;
             static PresetModel* s_instance;
 
             class ExportDialog;
@@ -83,7 +83,7 @@ namespace APG {
 
         public:
             ExportDialog( APG::PresetPtr );
-            ~ExportDialog();
+            ~ExportDialog() override;
 
         Q_SIGNALS:
             void pleaseExport( const QString&, const QList<APG::PresetPtr> ) const;

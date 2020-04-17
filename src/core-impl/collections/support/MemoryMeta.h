@@ -150,7 +150,7 @@ class AMAROK_EXPORT Track : public Meta::Track
 {
     public:
         explicit Track( const Meta::TrackPtr &originalTrack );
-        virtual ~Track();
+        ~Track() override;
 
         /* Meta::MetaCapability methods */
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override

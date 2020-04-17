@@ -63,7 +63,7 @@ class MtpHandler : public MediaDeviceHandler
 
     public:
         explicit MtpHandler( Collections::MtpCollection *mc );
-        virtual ~MtpHandler();
+        ~MtpHandler() override;
 
         friend class WorkerThread;
 
@@ -259,7 +259,7 @@ class WorkerThread : public QObject, public ThreadWeaver::Job
 
     public:
         WorkerThread( int numrawdevices, LIBMTP_raw_device_t* rawdevices, MtpHandler* handler );
-        virtual ~WorkerThread();
+        ~WorkerThread() override;
 
         bool success() const override;
 

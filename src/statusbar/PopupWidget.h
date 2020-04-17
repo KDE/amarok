@@ -23,7 +23,7 @@ class PopupWidget : public BoxWidget
 {
 public:
     explicit PopupWidget( const QString &name = QString() );
-    ~PopupWidget();
+    ~PopupWidget() override;
 
     void reposition();
 };

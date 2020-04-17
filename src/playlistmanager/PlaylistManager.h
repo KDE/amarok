@@ -193,7 +193,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
 
         static PlaylistManager *s_instance;
         PlaylistManager();
-        ~PlaylistManager();
+        ~PlaylistManager() override;
 
         SyncRelationStorage *m_syncRelStore;
         QList<SyncedPlaylistPtr> m_syncNeeded;

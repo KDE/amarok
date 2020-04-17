@@ -147,7 +147,7 @@ public:
     
 private:
     GlobalCollectionActions();
-    ~GlobalCollectionActions();
+    ~GlobalCollectionActions() override;
 
     QList<QAction *> actionsFor( const Meta::GenrePtr &genre );
     QList<QAction *> actionsFor( const Meta::ArtistPtr &artist );

@@ -42,7 +42,7 @@ class TimecodeTrack : public Track, public TrackEditor
 {
 public:
     TimecodeTrack( const QString &name, const QUrl &url, qint64 start, qint64 end );
-    virtual ~TimecodeTrack();
+    ~TimecodeTrack() override;
 
     QString name() const override;
 
@@ -142,7 +142,7 @@ class TimecodeArtist : public Meta::Artist
 {
 public:
     explicit TimecodeArtist( const QString &name );
-    virtual ~TimecodeArtist();
+    ~TimecodeArtist() override;
 
     QString name() const override;
 
@@ -168,7 +168,7 @@ class TimecodeAlbum : public QObject, public Meta::Album
 Q_OBJECT
 public:
     explicit TimecodeAlbum( const QString &name );
-    virtual ~TimecodeAlbum();
+    ~TimecodeAlbum() override;
 
     QString name() const override;
 
@@ -206,7 +206,7 @@ class TimecodeGenre : public Meta::Genre
 {
 public:
     explicit TimecodeGenre( const QString &name );
-    virtual ~TimecodeGenre();
+    ~TimecodeGenre() override;
 
     QString name() const override;
 
@@ -229,7 +229,7 @@ class TimecodeComposer : public Meta::Composer
 {
 public:
     explicit TimecodeComposer( const QString &name );
-    virtual ~TimecodeComposer();
+    ~TimecodeComposer() override;
 
     QString name() const override;
 
@@ -252,7 +252,7 @@ class TimecodeYear : public Meta::Year
 {
 public:
     explicit TimecodeYear( const QString &name );
-    virtual ~TimecodeYear();
+    ~TimecodeYear() override;
 
     QString name() const override;
 

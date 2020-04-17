@@ -44,7 +44,7 @@ namespace Playlist
 
         public:
             TrackNavigator();
-            virtual ~TrackNavigator() { }
+            ~TrackNavigator() override { }
 
             /**
              * what is the next track at this moment. It could change before the

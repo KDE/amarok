@@ -29,7 +29,7 @@ class AMAROK_SQLSTORAGE_MYSQLE_EXPORT MySqlServerStorage: public MySqlStorage
     public:
         /** Constructor for the server based mysql storage. */
         MySqlServerStorage();
-        virtual ~MySqlServerStorage();
+        ~MySqlServerStorage() override;
 
         /** Try to connect to the server indicated by the options.
          *

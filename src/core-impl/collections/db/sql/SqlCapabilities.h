@@ -48,7 +48,7 @@ class OrganiseCapabilityImpl : public Capabilities::OrganiseCapability
     public:
 
     explicit OrganiseCapabilityImpl( Meta::SqlTrack *track );
-    virtual ~OrganiseCapabilityImpl();
+    ~OrganiseCapabilityImpl() override;
 
     void deleteTrack() override;
 
@@ -63,7 +63,7 @@ class TimecodeWriteCapabilityImpl : public Capabilities::TimecodeWriteCapability
     public:
 
     explicit TimecodeWriteCapabilityImpl( Meta::SqlTrack *track );
-    virtual ~TimecodeWriteCapabilityImpl();
+    ~TimecodeWriteCapabilityImpl() override;
 
     bool writeTimecode( qint64 miliseconds ) override
     {
@@ -86,7 +86,7 @@ class TimecodeLoadCapabilityImpl : public Capabilities::TimecodeLoadCapability
     public:
 
     explicit TimecodeLoadCapabilityImpl( Meta::SqlTrack *track );
-    virtual ~TimecodeLoadCapabilityImpl();
+    ~TimecodeLoadCapabilityImpl() override;
 
     bool hasTimecodes() override;
     QList<AmarokSharedPointer<AmarokUrl> > loadTimecodes() override;

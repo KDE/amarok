@@ -138,7 +138,7 @@ public:
         , d( dptr )
     {}
 
-    ~StreamAlbum()
+    ~StreamAlbum() override
     {
         CoverCache::invalidateAlbum( this );
     }

@@ -55,7 +55,7 @@ public:
     BrowserBreadcrumbItem( const QString &name, const QString &callback,
                            const BreadcrumbSiblingList &childItems, FileBrowser *handler,
                            QWidget *parent = nullptr );
-    ~BrowserBreadcrumbItem();
+    ~BrowserBreadcrumbItem() override;
 
     void setActive( bool active );
 

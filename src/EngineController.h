@@ -62,7 +62,7 @@ public:
      * Construct EngineController. Must be called from the main thread.
      */
     EngineController();
-    ~EngineController();
+    ~EngineController() override;
 
     /**
      * Returns the global EngineController instance

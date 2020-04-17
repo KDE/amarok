@@ -46,7 +46,7 @@ class LayoutConfigAction : public QAction
         /**
          * Destructor.
          */
-        ~LayoutConfigAction();
+        ~LayoutConfigAction() override;
 
     protected Q_SLOTS:
 

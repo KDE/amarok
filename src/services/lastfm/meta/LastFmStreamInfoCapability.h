@@ -28,7 +28,7 @@ class LastFmStreamInfoCapability : public Capabilities::StreamInfoCapability
     Q_OBJECT
     public:
         explicit LastFmStreamInfoCapability( LastFm::Track *track );
-        ~LastFmStreamInfoCapability();
+        ~LastFmStreamInfoCapability() override;
 
         QString streamName() const override;
         QString streamSource() const override;

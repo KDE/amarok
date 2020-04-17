@@ -71,7 +71,7 @@ namespace StatSyncing
              */
             Process( const ProviderPtrList &providers, const ProviderPtrSet &preSelectedProviders,
                      qint64 checkedFields, Mode mode, QObject *parent = nullptr );
-            virtual ~Process();
+            ~Process() override;
 
         public Q_SLOTS:
             /**

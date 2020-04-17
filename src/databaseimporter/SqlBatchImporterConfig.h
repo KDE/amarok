@@ -30,7 +30,7 @@ class SqlBatchImporterConfig : public BoxWidget
 
     public:
         explicit SqlBatchImporterConfig( QWidget *parent = nullptr );
-        virtual ~SqlBatchImporterConfig() { }
+        ~SqlBatchImporterConfig() override { }
 
         QString inputFilePath() const;
 

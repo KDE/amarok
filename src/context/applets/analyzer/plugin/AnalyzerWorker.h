@@ -53,7 +53,7 @@ public:
     const static int DATA_BUFFER_SIZE = 8; // Higher values increase latency, lower values increase risk of missing frames
 
     Worker();
-    ~Worker();
+    ~Worker() override;
 
 protected:
     /**

@@ -39,7 +39,7 @@ class PodcastCategory : public PlaylistBrowserCategory
         static QString s_mergedViewKey;
 
         explicit PodcastCategory( QWidget *parent );
-        ~PodcastCategory();
+        ~PodcastCategory() override;
 
     private Q_SLOTS:
         void showInfo( const QModelIndex &index );

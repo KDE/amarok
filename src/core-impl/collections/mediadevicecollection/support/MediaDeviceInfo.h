@@ -31,7 +31,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceInfo : public QObject
 
     protected:
         MediaDeviceInfo();
-        virtual ~MediaDeviceInfo();
+        ~MediaDeviceInfo() override;
 
         QString m_udi;
 };

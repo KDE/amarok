@@ -40,7 +40,7 @@ namespace StatSyncing
 
         public:
             ProviderFactory();
-            virtual ~ProviderFactory();
+            ~ProviderFactory() override;
 
             /**
              * A string that is unique to this provider factory. It may be used as a key

@@ -28,7 +28,7 @@ class MySqlServerStorageFactory : public StorageFactory
 
 public:
     MySqlServerStorageFactory();
-    virtual ~MySqlServerStorageFactory();
+    ~MySqlServerStorageFactory() override;
 
     void init() override;
 

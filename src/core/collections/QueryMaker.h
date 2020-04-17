@@ -93,7 +93,7 @@ class AMAROKCORE_EXPORT QueryMaker : public QObject
             Label
         };
         QueryMaker();
-        virtual ~QueryMaker();
+        ~QueryMaker() override;
 
         /**
          *  starts the query. This method returns immediately. All processing is done in one or more

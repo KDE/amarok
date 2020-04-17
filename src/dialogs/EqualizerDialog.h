@@ -30,7 +30,7 @@ class EqualizerDialog : public QDialog, public Ui_EqualizerDialog
     Q_OBJECT
 
     public:
-        ~EqualizerDialog();
+        ~EqualizerDialog() override;
 
         static void showOnce( QWidget *parent = nullptr );
 

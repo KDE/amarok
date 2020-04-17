@@ -55,7 +55,7 @@ class SynchronizationBaseJob : public QObject
         Q_ENUM( InSet )
 
         SynchronizationBaseJob();
-        ~SynchronizationBaseJob();
+        ~SynchronizationBaseJob() override;
 
         void setFilter( const QString &filter );
 

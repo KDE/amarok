@@ -79,7 +79,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlRegistry : public QObject
 
     public:
         explicit SqlRegistry(Collections::SqlCollection *collection);
-        virtual ~SqlRegistry();
+        ~SqlRegistry() override;
 
         /** Searches a directory entry in the scanned directories
             This function searches an existing directory entry.

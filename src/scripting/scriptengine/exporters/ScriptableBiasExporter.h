@@ -103,7 +103,7 @@ namespace AmarokScript
             static QScriptValue groupBiasCtor( QScriptContext *context, QScriptEngine *engine );
             static QScriptValue biasCtor( QScriptContext *context, QScriptEngine *engine );
             ScriptableBiasFactory( QScriptEngine *engine = 0, bool groupBias = false );
-            ~ScriptableBiasFactory();
+            ~ScriptableBiasFactory() override;
 
             bool enabled() const;
             void setEnabled( bool enabled );

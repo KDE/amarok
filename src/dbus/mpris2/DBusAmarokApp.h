@@ -35,7 +35,7 @@ namespace Amarok
 
         public:
             explicit DBusAmarokApp( QObject* parent );
-            ~DBusAmarokApp();
+            ~DBusAmarokApp() override;
 
         public Q_SLOTS:
             void ShowOSD() const;

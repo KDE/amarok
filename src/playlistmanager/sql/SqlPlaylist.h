@@ -45,7 +45,7 @@ class SqlPlaylist : public Playlist
         SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr parent,
                      PlaylistProvider *provider );
 
-        ~SqlPlaylist();
+        ~SqlPlaylist() override;
 
         /* Playlist virtual functions */
         QUrl uidUrl() const override;

@@ -42,7 +42,7 @@ namespace Playlist
 
         public:
             DynamicTrackNavigator() ;
-            ~DynamicTrackNavigator();
+            ~DynamicTrackNavigator() override;
 
             void appendUpcoming();
 

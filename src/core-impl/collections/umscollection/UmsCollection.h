@@ -45,7 +45,7 @@ class UmsCollectionFactory : public CollectionFactory
 
     public:
         UmsCollectionFactory();
-        virtual ~UmsCollectionFactory();
+        ~UmsCollectionFactory() override;
 
         void init() override;
 
@@ -104,7 +104,7 @@ class UmsCollection : public Collection, public Meta::Observer
         // inherited methods
 
         explicit UmsCollection( const Solid::Device &device );
-        virtual ~UmsCollection();
+        ~UmsCollection() override;
 
         /* TrackProvider methods */
         bool possiblyContainsTrack( const QUrl &url ) const override;

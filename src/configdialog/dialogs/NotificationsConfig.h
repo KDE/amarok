@@ -30,7 +30,7 @@ class NotificationsConfig : public ConfigDialogBase, public Ui_NotificationsConf
 
     public:
         explicit NotificationsConfig( Amarok2ConfigDialog* parent );
-        virtual ~NotificationsConfig();
+        ~NotificationsConfig() override;
 
         bool hasChanged() override;
         bool isDefault() override;

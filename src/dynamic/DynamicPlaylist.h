@@ -43,7 +43,7 @@ class AMAROK_EXPORT DynamicPlaylist : public QObject
     public:
         explicit DynamicPlaylist( QObject *parent = nullptr );
         explicit DynamicPlaylist( QXmlStreamReader *reader, QObject *parent = nullptr );
-        virtual ~DynamicPlaylist();
+        ~DynamicPlaylist() override;
 
         virtual void toXml( QXmlStreamWriter *writer ) const = 0;
 

@@ -27,7 +27,7 @@ class ApplicationController : public QObject
     Q_OBJECT
 public:
     explicit ApplicationController( QObject *parent ) : QObject( parent ) {}
-    virtual ~ ApplicationController() {}
+    ~ ApplicationController() override {}
 
 public Q_SLOTS:
     virtual void start() = 0;

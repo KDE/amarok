@@ -30,7 +30,7 @@ class ViewUrlRunner : public AmarokUrlRunnerBase
 {
 public:
     ViewUrlRunner();
-    virtual ~ViewUrlRunner();
+    ~ViewUrlRunner() override;
 
     QString command() const override;
     QString prettyCommand() const override;

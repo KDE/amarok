@@ -31,7 +31,7 @@ namespace Amarok
 
         public:
             explicit Mpris2( QObject *parent = nullptr );
-            ~Mpris2();
+            ~Mpris2() override;
     };
 }
 

@@ -47,7 +47,7 @@ class StarManager : public QObject
 
     private:
         explicit StarManager( QObject* parent );
-        ~StarManager();
+        ~StarManager() override;
 
         static StarManager* s_instance;
 

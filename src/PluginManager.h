@@ -47,7 +47,7 @@ class AMAROK_EXPORT PluginManager : public QObject
         };
         Q_ENUM( Type )
 
-        ~PluginManager();
+        ~PluginManager() override;
 
         static PluginManager *instance();
 

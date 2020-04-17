@@ -47,7 +47,7 @@ class AMAROK_EXPORT PersistentStatisticsStore : public Meta::Statistics, private
          * constructor without AmarokSharedPointer deleting it right away.
          */
         explicit PersistentStatisticsStore( Meta::Track *track );
-        virtual ~PersistentStatisticsStore();
+        ~PersistentStatisticsStore() override;
 
         // Meta::Statistics methods
         double score() const override;
