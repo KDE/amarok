@@ -1,6 +1,9 @@
 FROM ubuntu:19.10
+USER root
+WORKDIR /root
 ENV container docker
-ENV DEBIAN_FRONTEND=noninteractive 
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DISPLAY=:0
 RUN apt-get update; apt-get upgrade -y;
 # amarok build dependencies
 RUN apt-get install -y cmake extra-cmake-modules g++ git libmariadb-dev libmariadbd-dev pkg-config  \
@@ -11,12 +14,12 @@ RUN apt-get install -y cmake extra-cmake-modules g++ git libmariadb-dev libmaria
     libkf5texteditor-dev libkf5threadweaver-dev libkf5widgetsaddons-dev libkf5windowsystem-dev libkf5wallet-dev kirigami2-dev \
     gettext libtag1-dev libtag-extras-dev libavcodec-dev libavformat-dev libavdevice-dev libavutil-dev libswscale-dev libpostproc-dev \
     libgpod-dev libgdk-pixbuf2.0-dev libmygpo-qt-dev libmtp-dev libcurl4-openssl-dev libxml2-dev libssl-dev libgcrypt20-dev \
-    libfftw3-dev libloudmouth1-dev libofa0-dev liblastfm5-dev libgmock-dev
+    libfftw3-dev libloudmouth1-dev libofa0-dev liblastfm5-dev libgmock-dev libkf5doctools-dev
 # fetch code
 RUN git clone https://github.com/pcgomes/amarok.git
 # configure build with cmake
-RUN cd /amarok; git checkout Kubuntu_19.10; mkdir build; cd build;
-RUN cmake -DCMAKE_BUILD_TYPE=Debug -DMYSQLCONFIG_EXECUTABLE=/usr/bin/mariadb_config -DMYSQL_INCLUDE_DIR=/usr/include/mariadb -S .. -B .
+RUN mkdir -p amarok/build
+RUN cmake -DCMAKE_BUILD_TYPE=Debug -DMYSQLCONFIG_EXECUTABLE=/usr/bin/mariadb_config -DMYSQL_INCLUDE_DIR=/usr/include/mariadb  -B amarok/build -S amarok
 # build it
-# RUN make
+RUN make install
 CMD ["/bin/bash"]
