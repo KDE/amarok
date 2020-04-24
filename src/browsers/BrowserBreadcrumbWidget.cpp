@@ -37,38 +37,29 @@
 BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
     : BoxWidget( false, parent)
     , m_rootList( nullptr )
-    , m_childMenuButton( nullptr )
 {
     setFixedHeight( 28 );
     setContentsMargins( 3, 0, 3, 0 );
 
     m_breadcrumbArea = new BoxWidget( false, this );
     m_breadcrumbArea->setContentsMargins( 0, 0, 0, 0 );
-    static_cast<QBoxLayout*>( layout() )->setStretchFactor( m_breadcrumbArea, 10 );
+    layout()->setStretchFactor( m_breadcrumbArea, 10 );
 
     new BreadcrumbUrlMenuButton( QStringLiteral("navigate"), this );
-
-    m_spacer = new QWidget( nullptr );
 }
 
 BrowserBreadcrumbWidget::~BrowserBreadcrumbWidget()
 {
-    clearCrumbs();
 }
 
 void
 BrowserBreadcrumbWidget::clearCrumbs()
 {
-    foreach( BrowserBreadcrumbItem *item, m_items )
+    const QList<QWidget *> childCrumbs = m_breadcrumbArea->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly);
+    for( auto item : childCrumbs)
     {
-        item->hide();
-        item->deleteLater();
+        delete item;
     }
-    m_items.clear();
-
-    //if we have a final menu button, also delete it.
-    delete m_childMenuButton;
-    m_childMenuButton = 0;
 }
 
 void
@@ -89,10 +80,11 @@ BrowserBreadcrumbWidget::updateBreadcrumbs()
         return;
 
     clearCrumbs();
-    m_spacer->setParent( this );
 
     addLevel( m_rootList );
-    m_breadcrumbArea->layout()->addWidget( m_spacer );
+
+    // spacer is the right-most widget
+    new QWidget(m_breadcrumbArea);
 
     showAsNeeded();
 }
@@ -102,7 +94,6 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList *list )
 {
     BrowserBreadcrumbItem *item = list->breadcrumb();
     addBreadCrumbItem( item );
-    m_items.append( item );
 
     BrowserCategory *childCategory = list->activeCategory();
 
@@ -120,11 +111,10 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList *list )
         {
             BrowserBreadcrumbItem *leaf = childCategory->breadcrumb();
             addBreadCrumbItem( leaf );
-            m_items.append( leaf );
 
             const QList<BrowserBreadcrumbItem*> additionalItems = childCategory->additionalItems();
             //no children, but check if there are additional breadcrumb levels (for internal navigation in the category) that should be added anyway.
-            foreach( BrowserBreadcrumbItem *addItem, additionalItems )
+            for( BrowserBreadcrumbItem *addItem : additionalItems )
             {
                 //hack to ensure that we have not already added it to the front of the breadcrumb...
                 addBreadCrumbItem( addItem );
@@ -142,16 +132,16 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList *list )
         BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( list );
         if( childList )
         {
-            m_childMenuButton = new BreadcrumbItemMenuButton( m_breadcrumbArea );
+            auto childMenuButton = new BreadcrumbItemMenuButton( m_breadcrumbArea );
 
-            QMenu *menu = new QMenu( item );
+            auto menu = new QMenu( item );
             menu->hide();
 
             QMap<QString,BrowserCategory *> childMap =  childList->categories();
 
-            QStringList childNames = childMap.keys();
+            const QStringList childNames = childMap.keys();
 
-            foreach( const QString &siblingName, childNames )
+            for( const QString &siblingName : childNames )
             {
                 //no point in adding ourselves to this menu
                 if ( siblingName == list->name() )
@@ -164,7 +154,7 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList *list )
 
             }
 
-            m_childMenuButton->setMenu( menu );
+            childMenuButton->setMenu( menu );
 
             //do a little magic to line up items in the menu with the current item
             int offset = 6;
@@ -178,15 +168,13 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList *list )
 void
 BrowserBreadcrumbWidget::addBreadCrumbItem( BrowserBreadcrumbItem *item )
 {
-    item->hide();
-    item->setParent( this ); // may be already shown, we want it to be last, so reparent
-    m_breadcrumbArea->layout()->addWidget( item );
+    item->setParent( m_breadcrumbArea );
 }
 
 void BrowserBreadcrumbWidget::resizeEvent( QResizeEvent *event )
 {
     Q_UNUSED( event )
-    // we need to postpone the call, because hideAsNeeded() itself may trigger resizeEvent
+    // we need to postpone the call, because showAsNeeded() itself may trigger resizeEvent
     QTimer::singleShot( 0 , this, &BrowserBreadcrumbWidget::showAsNeeded );
 }
 
@@ -201,17 +189,7 @@ void BrowserBreadcrumbWidget::showAsNeeded()
     //make a temp list that includes both regular items and add items
     QList<BrowserBreadcrumbItem *> allItems;
 
-    allItems.append( m_items );
-    if( m_rootList->activeCategory() )
-        allItems.append( m_rootList->activeCategory()->additionalItems() );
-
-    // filter-out leftover items not parented to m_breadcrumbArea (bug 285712):
-    QMutableListIterator<BrowserBreadcrumbItem *> it( allItems );
-    while( it.hasNext() )
-    {
-        if( it.next()->parent() != m_breadcrumbArea )
-            it.remove();
-    }
+    allItems.append( m_breadcrumbArea->findChildren<BrowserBreadcrumbItem *>(QString(), Qt::FindDirectChildrenOnly));
 
     if( allItems.isEmpty() )
         return;
