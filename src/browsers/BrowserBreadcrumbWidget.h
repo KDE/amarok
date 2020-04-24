@@ -103,11 +103,7 @@ private:
     //QStringList m_currentPath;
     BrowserCategoryList * m_rootList;
 
-    QList<BrowserBreadcrumbItem *> m_items;
-    QWidget *m_spacer;
     BoxWidget *m_breadcrumbArea;
-
-    BreadcrumbItemMenuButton *m_childMenuButton;
 
 };
 
