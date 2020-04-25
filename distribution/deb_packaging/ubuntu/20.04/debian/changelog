@@ -1,3 +1,9 @@
+amarok (2.9+1SNAPSHOT20200424193358+0200-0ubuntu1ppa1~ubuntu20.04.1) focal; urgency=medium
+
+  * Fix breadcrumb
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 24 Apr 2020 19:34:09 +0200
+
 amarok (2.9+1SNAPSHOT20200410173239+0200-0ubuntu1ppa1ubuntu1) eoan; urgency=medium
 
   * add missing libkf5doctools-dev to control file

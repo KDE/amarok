@@ -72,7 +72,7 @@ Homepage: https://github.com/pcgomes/amarok
 Package: amarok
 Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Amarok for KDE5/Kubuntu 19.10
- Since Kubuntu 19.10, applications that were not ported to QT5 are no longer supported.
- Amarok has not been completely ported, but is usable. So I create packages for KDE5
+Description: Amarok for KDE5
+ Since (K)ubuntu 19.10, applications that were not ported to QT5 are no longer supported.
+ Amarok has not been completely ported yet, but is usable. So I create packages for KDE5
  until the final port is concluded.
