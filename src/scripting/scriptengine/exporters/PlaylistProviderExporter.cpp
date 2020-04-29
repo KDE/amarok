@@ -23,8 +23,8 @@
 
 #include <QIcon>
 
-#include <QScriptEngine>
-#include <QScriptValue>
+#include <QJSEngine>
+#include <QJSValue>
 
 using namespace AmarokScript;
 
@@ -34,7 +34,7 @@ PlaylistProviderPrototype::PlaylistProviderPrototype( Playlists::PlaylistProvide
 {}
 
 void
-PlaylistProviderPrototype::init( QScriptEngine *engine )
+PlaylistProviderPrototype::init( QJSEngine *engine )
 {
     qScriptRegisterMetaType<Playlists::PlaylistProvider*>( engine, toScriptValue<Playlists::PlaylistProvider*,PlaylistProviderPrototype>,
                                                            fromScriptValue<Playlists::PlaylistProvider*,PlaylistProviderPrototype> );

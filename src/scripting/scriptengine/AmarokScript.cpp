@@ -24,14 +24,14 @@
 
 #include <KMessageBox>
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
-AmarokScript::AmarokScript::AmarokScript( const QString &name, QScriptEngine *engine )
+AmarokScript::AmarokScript::AmarokScript( const QString &name, QJSEngine *engine )
     : QObject( engine )
     , m_name( name )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership,
+                                                    QJSEngine::ExcludeSuperClassContents );
     engine->globalObject().setProperty( QStringLiteral("Amarok"), scriptObject );
     if( ScriptManager::instance()->m_scripts.contains( name ) )
         connect( ScriptManager::instance()->m_scripts[name], &ScriptItem::uninstalled, this, &AmarokScript::uninstalled );

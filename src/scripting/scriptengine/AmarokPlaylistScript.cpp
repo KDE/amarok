@@ -30,7 +30,7 @@
 #include "playlist/PlaylistDock.h"
 #include "ScriptingDefines.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 using namespace AmarokScript;
 
@@ -38,7 +38,7 @@ AmarokPlaylistScript::AmarokPlaylistScript( AmarokScriptEngine *engine )
     : QObject( engine )
     , m_scriptEngine( engine )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership, QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership, QScriptEngine::ExcludeSuperClassContents );
     engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Playlist"), scriptObject );
     connect( The::playlist()->qaim(), &QAbstractItemModel::rowsInserted, this, &AmarokPlaylistScript::slotTrackInserted );
     connect( The::playlist()->qaim(), &QAbstractItemModel::rowsRemoved, this, &AmarokPlaylistScript::slotTrackRemoved );

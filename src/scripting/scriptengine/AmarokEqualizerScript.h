@@ -19,7 +19,7 @@
 
 #include <QObject>
 
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -119,7 +119,7 @@ namespace AmarokScript
             void equalizerPresetApplied( int index );
 
         private:
-            AmarokEqualizerScript( QScriptEngine* scriptEngine );
+            AmarokEqualizerScript( QJSEngine* scriptEngine );
             bool enabled();
             void setEqualizerPreset( const QString &name ) const;
             QStringList bandFrequencies() const;

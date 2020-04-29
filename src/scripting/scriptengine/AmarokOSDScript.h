@@ -21,7 +21,7 @@
 
 class QColor;
 class QImage;
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -33,7 +33,7 @@ namespace AmarokScript
         Q_PROPERTY ( bool osdEnabled READ osdEnabled WRITE setOsdEnabled )
 
         public:
-            explicit AmarokOSDScript( QScriptEngine* scriptEngine );
+            explicit AmarokOSDScript( QJSEngine* scriptEngine );
 
             /**
              * Show an OSD for the currently playing track, even if the OSD

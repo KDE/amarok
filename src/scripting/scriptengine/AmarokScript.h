@@ -21,7 +21,7 @@
 #include <QStringList>
 #include <QObject>
 
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -31,7 +31,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokScript( const QString &name, QScriptEngine *engine );
+            AmarokScript( const QString &name, QJSEngine *engine );
 
             /** Shuts down Amarok completely. */
             Q_INVOKABLE void quitAmarok();

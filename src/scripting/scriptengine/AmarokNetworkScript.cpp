@@ -22,7 +22,7 @@
 #include "App.h"
 #include "core/support/Debug.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 #include <QTextCodec>
 
 #include <KLocalizedString>
@@ -31,26 +31,26 @@ using namespace AmarokScript;
 
 AmarokDownloadHelper *AmarokDownloadHelper::s_instance = nullptr;
 
-Downloader::Downloader( QScriptEngine* engine )
+Downloader::Downloader( QJSEngine* engine )
     : QObject( engine )
     , m_scriptEngine( engine )
 {
-    engine->setDefaultPrototype( qMetaTypeId<Downloader*>(), QScriptValue() );
-    const QScriptValue stringCtor = engine->newFunction( stringDownloader_prototype_ctor );
+    engine->setDefaultPrototype( qMetaTypeId<Downloader*>(), QJSValue() );
+    const QJSValue stringCtor = engine->newFunction( stringDownloader_prototype_ctor );
     engine->globalObject().setProperty( QStringLiteral("Downloader"), stringCtor ); //kept for compat
     engine->globalObject().setProperty( QStringLiteral("StringDownloader"), stringCtor ); //added for clarity
-    const QScriptValue dataCtor = engine->newFunction( dataDownloader_prototype_ctor );
+    const QJSValue dataCtor = engine->newFunction( dataDownloader_prototype_ctor );
     engine->globalObject().setProperty( QStringLiteral("DataDownloader"), dataCtor );
 }
 
-QScriptValue
-Downloader::stringDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine )
+QJSValue
+Downloader::stringDownloader_prototype_ctor( QScriptContext* context, QJSEngine* engine )
 {
     return init( context, engine, true );
 }
 
-QScriptValue
-Downloader::dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine )
+QJSValue
+Downloader::dataDownloader_prototype_ctor( QScriptContext* context, QJSEngine* engine )
 {
     if( engine->importedExtensions().contains( QStringLiteral("qt.core") ) )
         return init( context, engine, false );
@@ -61,12 +61,12 @@ Downloader::dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngin
     }
 }
 
-QScriptValue
-Downloader::init( QScriptContext* context, QScriptEngine *engine, bool stringResult )
+QJSValue
+Downloader::init( QScriptContext* context, QJSEngine *engine, bool stringResult )
 {
     // from QtScript API docs
     DEBUG_BLOCK
-    QScriptValue object;
+    QJSValue object;
 
     if( context->isCalledAsConstructor() )
         object = context->thisObject();
@@ -123,14 +123,14 @@ AmarokDownloadHelper::AmarokDownloadHelper()
 }
 
 void
-AmarokDownloadHelper::newStringDownload( const QUrl &url, QScriptEngine* engine, const QScriptValue &obj, const QString &encoding )
+AmarokDownloadHelper::newStringDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj, const QString &encoding )
 {
     m_encodings[ url ] = encoding;
     newDownload( url, engine, obj, &AmarokDownloadHelper::resultString );
 }
 
 void
-AmarokDownloadHelper::newDataDownload( const QUrl &url, QScriptEngine* engine, const QScriptValue &obj )
+AmarokDownloadHelper::newDataDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj )
 {
     newDownload( url, engine, obj, &AmarokDownloadHelper::resultData );
 }
@@ -141,8 +141,8 @@ AmarokDownloadHelper::requestRedirected( const QUrl &sourceUrl, const QUrl &targ
     DEBUG_BLOCK
 
     // Move all entries from "url" to "targetUrl".
-    updateUrl< QScriptEngine* >( m_engines, sourceUrl, targetUrl );
-    updateUrl< QScriptValue >( m_values, sourceUrl, targetUrl );
+    updateUrl< QJSEngine* >( m_engines, sourceUrl, targetUrl );
+    updateUrl< QJSValue >( m_values, sourceUrl, targetUrl );
     updateUrl< QString >( m_encodings, sourceUrl, targetUrl );
 }
 
@@ -155,8 +155,8 @@ AmarokDownloadHelper::resultData( const QUrl &url, const QByteArray &data, const
     if( e.code != QNetworkReply::NoError )
         warning() << "Error fetching data:" << e.description;
 
-    QScriptValue obj = m_values.value( url );
-    QScriptEngine* engine = m_engines.value( url );
+    QJSValue obj = m_values.value( url );
+    QJSEngine* engine = m_engines.value( url );
     cleanUp( url );
 
     // now send the data to the associated script object
@@ -172,7 +172,7 @@ AmarokDownloadHelper::resultData( const QUrl &url, const QByteArray &data, const
         return;
     }
 
-    QScriptValueList args;
+    QJSValueList args;
     args << engine->toScriptValue( data );
     obj.call( obj, args );
 }
@@ -187,8 +187,8 @@ AmarokDownloadHelper::resultString( const QUrl &url, const QByteArray &data, con
     if( e.code != QNetworkReply::NoError )
         warning() << "Error fetching string:" << e.description;
 
-    QScriptValue obj = m_values.value( url );
-    QScriptEngine* engine = m_engines.value( url );
+    QJSValue obj = m_values.value( url );
+    QJSEngine* engine = m_engines.value( url );
     QString encoding = m_encodings.value( url );
     cleanUp( url );
 
@@ -216,7 +216,7 @@ AmarokDownloadHelper::resultString( const QUrl &url, const QByteArray &data, con
         return;
     }
 
-    QScriptValueList args;
+    QJSValueList args;
     args << engine->toScriptValue( str );
     obj.call( obj, args );
 }

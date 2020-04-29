@@ -58,7 +58,7 @@
 #include <QFileInfo>
 #include <QLabel>
 #include <QPushButton>
-#include <QScriptEngine>
+#include <QJSValue>
 #include <QStandardPaths>
 #include <QToolTip>
 
@@ -195,11 +195,11 @@ ScriptItem::timerEvent( QTimerEvent* event )
 }
 
 QString
-ScriptItem::handleError( QScriptEngine *engine )
+ScriptItem::handleError( QJSValue *return )
 {
     QString errorString = QString( "Script Error: %1 (line: %2)" )
-                          .arg( engine->uncaughtException().toString() )
-                          .arg( engine->uncaughtExceptionLineNumber() );
+                          .arg( result.toString() )
+                          .arg( result.property("lineNumber").toInt() );
     error() << errorString;
     engine->clearExceptions();
     stop();
@@ -224,7 +224,8 @@ ScriptItem::start( bool silent )
 
     m_timerId = startTimer( 100 );
     Q_ASSERT( m_engine );
-    m_output << m_engine->evaluate( scriptFile.readAll() ).toString();
+    QJSValue result = m_engine->evaluate( scriptFile.readAll() );
+    m_output << result.toString();
     debug() << "After Evaluation "<< m_name;
     Q_EMIT evaluated( m_output.join( "\n" ) );
     scriptFile.close();
@@ -232,9 +233,9 @@ ScriptItem::start( bool silent )
     if ( m_evaluating )
     {
         m_evaluating = false;
-        if ( m_engine->hasUncaughtException() )
+        if ( result.isError() )
         {
-            m_log << handleError( m_engine.data() );
+            m_log << handleError( result );
             if( !silent )
             {
                 debug() << "The Log For the script that is the borked: " << m_log;
