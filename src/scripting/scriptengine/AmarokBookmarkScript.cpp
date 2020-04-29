@@ -26,17 +26,17 @@
 #include "playlist/PlaylistViewUrlGenerator.h"
 #include "scripting/scriptengine/ScriptingDefines.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 Q_DECLARE_METATYPE( StringMap )
 
 using namespace AmarokScript;
 
-AmarokBookmarkScript::AmarokBookmarkScript( QScriptEngine *engine )
+AmarokBookmarkScript::AmarokBookmarkScript( QJSEngine *engine )
     : QObject( engine )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership,
+                                                    QJSEngine::ExcludeSuperClassContents );
     engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Bookmark"), scriptObject );
     qScriptRegisterMetaType<BookmarkGroupPtr>( engine, toScriptValue<BookmarkGroupPtr, BookmarkGroupPrototype>, fromScriptValue<BookmarkGroupPtr, BookmarkGroupPrototype> );
     qScriptRegisterMetaType<AmarokUrlPtr>( engine, toScriptValue<AmarokUrlPtr, BookmarkPrototype>, fromScriptValue<AmarokUrlPtr, BookmarkPrototype> );
@@ -74,8 +74,8 @@ AmarokBookmarkScript::createCurrentTrackBookmark()
 // BookmarkGroupPrototype
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-QScriptValue
-BookmarkGroupPrototype::bookmarkGroupCtor( QScriptContext *context, QScriptEngine *engine )
+QJSValue
+BookmarkGroupPrototype::bookmarkGroupCtor( QScriptContext *context, QJSEngine *engine )
 {
     BookmarkGroup *group = 0;
     switch( context->argumentCount() )
@@ -101,7 +101,7 @@ BookmarkGroupPrototype::bookmarkGroupCtor( QScriptContext *context, QScriptEngin
     }
     if( !group )
         return context->throwError( QScriptContext::TypeError, QStringLiteral("Invalid arguments!") );
-    return engine->newQObject( new BookmarkGroupPrototype( BookmarkGroupPtr( group ) ), QScriptEngine::ScriptOwnership, QScriptEngine::ExcludeSuperClassContents );
+    return engine->newQObject( new BookmarkGroupPrototype( BookmarkGroupPtr( group ) ), QJSEngine::ScriptOwnership, QScriptEngine::ExcludeSuperClassContents );
 }
 
 BookmarkGroupPrototype::BookmarkGroupPrototype( const BookmarkGroupPtr &group )
@@ -210,8 +210,8 @@ BookmarkPrototype::save()
     return success;
 }
 
-QScriptValue
-BookmarkPrototype::bookmarkCtor( QScriptContext *context, QScriptEngine *engine )
+QJSValue
+BookmarkPrototype::bookmarkCtor( QScriptContext *context, QJSEngine *engine )
 {
     AmarokUrlPtr url;
     switch( context->argumentCount() )
@@ -243,8 +243,8 @@ BookmarkPrototype::bookmarkCtor( QScriptContext *context, QScriptEngine *engine 
         return context->throwError( QScriptContext::TypeError, QStringLiteral("Invalid arguments!") );
 
     return engine->newQObject( new BookmarkPrototype( url ),
-                               QScriptEngine::ScriptOwnership,
-                               QScriptEngine::ExcludeSuperClassContents );
+                               QJSEngine::ScriptOwnership,
+                               QJSEngine::ExcludeSuperClassContents );
 }
 
 BookmarkPrototype::BookmarkPrototype( const AmarokUrlPtr &bookmark )

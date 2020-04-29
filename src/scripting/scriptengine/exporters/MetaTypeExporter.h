@@ -23,12 +23,11 @@
 #include "core/meta/Observer.h"
 
 #include <QObject>
-#include <QScriptable>
 #include <QString>
 
 class QScriptContext;
-class QScriptEngine;
-class QScriptValue;
+class QJSEngine;
+class QJSValue;
 
 typedef QMap<QString,QString> StringMap;
 namespace Meta
@@ -103,18 +102,18 @@ namespace AmarokScript
         Q_PROPERTY( QImage embeddedCover READ embeddedCover WRITE setEmbeddedCover )
 
         public:
-            static void init( QScriptEngine *engine );
+            static void init( QJSEngine *engine );
             Meta::TrackPtr data() const { return m_track; }
             MetaTrackPrototype( const Meta::TrackPtr &track );
-            static QScriptValue trackCtor( QScriptContext *context, QScriptEngine *engine );
-            static QScriptValue toScriptTagMap( QScriptEngine *engine, const Meta::FieldHash &map );
-            static void fromScriptTagMap( const QScriptValue &value, Meta::FieldHash &map );
+            static QJSValue trackCtor( QScriptContext *context, QJSEngine *engine );
+            static QJSValue toScriptTagMap( QJSEngine *engine, const Meta::FieldHash &map );
+            static void fromScriptTagMap( const QJSValue &value, Meta::FieldHash &map );
 
             /**
              * Returns the image for the album, usually the cover image, if it has one,
              * or an undefined value otherwise.
              */
-            Q_INVOKABLE QScriptValue imagePixmap( int size = 1 ) const;
+            Q_INVOKABLE QJSValue imagePixmap( int size = 1 ) const;
 
             /**
              * Asynchronously write the passed tags to the track.
@@ -150,7 +149,7 @@ namespace AmarokScript
             void metadataChanged( const Meta::ComposerPtr &composer ) override {  Q_UNUSED( composer ) }
             void metadataChanged( const Meta::YearPtr &year ) override {  Q_UNUSED( year ) }
 
-            QScriptEngine *m_engine;
+            QJSEngine *m_engine;
 
             int sampleRate() const;
             int bitrate() const;

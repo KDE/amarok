@@ -37,8 +37,8 @@ ScriptImporter::ScriptImporter( AmarokScriptEngine *scriptEngine, const QUrl &ur
     , m_scriptUrl( url )
     , m_scriptEngine( scriptEngine )
 {
-    QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership
-                                                        , QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = scriptEngine->newQObject( this, QJSEngine::AutoOwnership
+                                                        , QJSEngine::ExcludeSuperClassContents );
     scriptEngine->globalObject().setProperty( QStringLiteral("Importer"), scriptObject );
 }
 

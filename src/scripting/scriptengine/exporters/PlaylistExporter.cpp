@@ -21,13 +21,13 @@
 #include "core/playlists/PlaylistProvider.h"
 #include "scripting/scriptengine/ScriptingDefines.h"
 
-#include <QScriptValue>
+#include <QJSValue>
 #include <core-impl/support/TrackLoader.h>
 
 using namespace AmarokScript;
 
 void
-PlaylistPrototype::init( QScriptEngine *engine )
+PlaylistPrototype::init( QJSEngine *engine )
 {
     qScriptRegisterMetaType<Playlists::PlaylistPtr>( engine,
                                                      toScriptValue<Playlists::PlaylistPtr,PlaylistPrototype>,

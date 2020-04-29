@@ -76,8 +76,8 @@ AmarokWindowScript::AmarokWindowScript( AmarokScriptEngine* scriptEngine )
     , m_settingsMenu( The::mainWindow()->SettingsMenu() )
     , m_scriptEngine( scriptEngine )
 {
-    QScriptValue windowObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                            QScriptEngine::ExcludeSuperClassContents );
+    QJSValue windowObject = scriptEngine->newQObject( this, QJSEngine::AutoOwnership,
+                                                            QJSEngine::ExcludeSuperClassContents );
     scriptEngine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Window"), windowObject );
 
     windowObject.setProperty( QStringLiteral("ToolsMenu"), scriptEngine->newObject() );
@@ -95,7 +95,7 @@ AmarokWindowScript::addToolsMenu( const QString &name )
     QMenu *menu = new QMenu( name );
     m_customMenus.insert( name, menu );
     m_toolsMenu->addMenu( menu );
-    QScriptValue scriptMenu = m_scriptEngine->newQObject( menu );
+    QJSValue scriptMenu = m_scriptEngine->newQObject( menu );
     m_scriptEngine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") ).setProperty( name, scriptMenu );
 }
 
@@ -108,7 +108,7 @@ AmarokWindowScript::addSettingsMenu( const QString &name )
     QMenu *menu = new QMenu( name );
     m_customMenus.insert( name, menu );
     m_settingsMenu->addMenu( menu );
-    QScriptValue scriptMenu = m_scriptEngine->newQObject( menu );
+    QJSValue scriptMenu = m_scriptEngine->newQObject( menu );
     m_scriptEngine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") ).setProperty( name, scriptMenu );
 }
 
@@ -162,7 +162,7 @@ AmarokWindowScript::addMenuAction( QMenu *menu, const QString &id, const QString
     // add the action to the given menu
     menu->addAction( ac->action( id ) );
 
-    QScriptValue newMenu = m_scriptEngine->newQObject( action );
+    QJSValue newMenu = m_scriptEngine->newQObject( action );
     m_scriptEngine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") ).property( menuProperty ).setProperty( id, newMenu );
     return true;
 }

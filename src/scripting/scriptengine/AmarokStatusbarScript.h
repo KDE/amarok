@@ -19,7 +19,7 @@
 
 #include <QObject>
 
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -29,7 +29,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            explicit AmarokStatusbarScript( QScriptEngine* scriptEngine );
+            explicit AmarokStatusbarScript( QJSEngine* scriptEngine );
 
             Q_INVOKABLE void longMessage( const QString &text );
             Q_INVOKABLE void shortMessage( const QString &text );

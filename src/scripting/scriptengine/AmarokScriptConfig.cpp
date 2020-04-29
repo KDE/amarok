@@ -21,16 +21,16 @@
 #include <KConfigGroup>
 #include <KSharedConfig>
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 using namespace AmarokScript;
 
-AmarokScriptConfig::AmarokScriptConfig( const QString &name, QScriptEngine *engine )
+AmarokScriptConfig::AmarokScriptConfig( const QString &name, QJSEngine *engine )
     : QObject( engine )
     , m_name( name )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership,
+                                                    QJSEngine::ExcludeSuperClassContents );
     //better name?
     engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Script"), scriptObject );
 }

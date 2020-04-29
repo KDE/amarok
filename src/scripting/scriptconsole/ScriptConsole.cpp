@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "ScriptEditorDocument.h"
+#include "ScriptConsoleDebugger.h"
 #include "ScriptConsoleItem.h"
 
 #include <QAction>
@@ -29,7 +30,7 @@
 #include <QListWidget>
 #include <QKeyEvent>
 #include <QMenuBar>
-#include <QScriptEngine>
+#include <QJSEngine>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTemporaryFile>
@@ -68,22 +69,22 @@ ScriptConsole::ScriptConsole( QWidget *parent )
         return;
     }
     m_scriptListDock = new ScriptListDockWidget( this );
-    m_debugger = new QScriptEngineDebugger( this );
+    m_debugger = new ScriptConsoleDebugger( this );
 
     setDockNestingEnabled( true );
     setWindowTitle( i18n( "Script Console" ) );
     setObjectName( QStringLiteral("scriptconsole") );
 
-    m_debugger->setAutoShowStandardWindow( false );
-    m_codeWidget = getWidget( QStringLiteral("Code"), QScriptEngineDebugger::CodeWidget );
+    m_codeWidget = getWidget( QStringLiteral("Code"), ScriptConsoleDebugger::CodeWidget );
     addDockWidget( Qt::BottomDockWidgetArea, m_codeWidget );
-    QList<QDockWidget*> debugWidgets = QList<QDockWidget*>() << getWidget( i18n( "Console" ), QScriptEngineDebugger::ConsoleWidget )
-                    << getWidget( i18n( "Error" ), QScriptEngineDebugger::ErrorLogWidget )
-                    << getWidget( i18n( "Debug Output" ), QScriptEngineDebugger::DebugOutputWidget )
-                    << getWidget( i18n( "Loaded Scripts" ), QScriptEngineDebugger::ScriptsWidget )
-                    << getWidget( i18n( "Breakpoints" ), QScriptEngineDebugger::BreakpointsWidget )
-                    << getWidget( i18n( "Stack" ), QScriptEngineDebugger::StackWidget )
-                    << getWidget( i18n( "Locals" ), QScriptEngineDebugger::LocalsWidget );
+    QList<QDockWidget*> debugWidgets = QList<QDockWidget*>()
+                    << getWidget( i18n( "Console" ), ScriptConsoleDebugger::ConsoleWidget )
+                    << getWidget( i18n( "Error" ), ScriptConsoleDebugger::ErrorLogWidget )
+                    << getWidget( i18n( "Debug Output" ), ScriptConsoleDebugger::DebugOutputWidget )
+                    << getWidget( i18n( "Loaded Scripts" ), ScriptConsoleDebugger::ScriptsWidget )
+                    << getWidget( i18n( "Breakpoints" ), ScriptConsoleDebugger::BreakpointsWidget )
+                    << getWidget( i18n( "Stack" ), ScriptConsoleDebugger::StackWidget )
+                    << getWidget( i18n( "Locals" ), ScriptConsoleDebugger::LocalsWidget );
     foreach( QDockWidget *widget, debugWidgets )
     {
       addDockWidget( Qt::BottomDockWidgetArea, widget );
@@ -161,8 +162,8 @@ ScriptConsole::ScriptConsole( QWidget *parent )
         m_savePath = Amarok::saveLocation(QStringLiteral("scriptconsole"));
 
     slotNewScript();
-    connect( m_debugger, &QScriptEngineDebugger::evaluationSuspended, this, &ScriptConsole::slotEvaluationSuspended );
-    connect( m_debugger, &QScriptEngineDebugger::evaluationResumed, this, &ScriptConsole::slotEvaluationResumed );
+    connect( m_debugger, &ScriptConsoleDebugger::evaluationSuspended, this, &ScriptConsole::slotEvaluationSuspended );
+    connect( m_debugger, &ScriptConsoleDebugger::evaluationResumed, this, &ScriptConsole::slotEvaluationResumed );
     show();
     raise();
 }
@@ -187,7 +188,7 @@ ScriptConsole::slotExecuteNewScript()
     }
 
     m_scriptItem->document()->save();
-    m_codeWidget->setWidget( m_debugger->widget( QScriptEngineDebugger::CodeWidget ) );
+    m_codeWidget->setWidget( m_debugger->widget( ScriptConsoleDebugger::CodeWidget ) );
     m_scriptItem->start( false );
 }
 
@@ -280,8 +281,9 @@ ScriptConsole::slotAbortEvaluation()
     m_scriptItem->pause();
 }
 
+
 QDockWidget*
-ScriptConsole::getWidget( const QString &title, QScriptEngineDebugger::DebuggerWidget widget )
+ScriptConsole::getWidget( const QString &title, ScriptConsoleDebugger::DebuggerWidget widget )
 {
     QDockWidget *debugWidget = new QDockWidget( title, this );
     debugWidget->setWidget( m_debugger->widget( widget ) );
@@ -298,7 +300,7 @@ ScriptConsole::setCurrentScriptItem( ScriptConsoleItem *item )
     m_scriptItem = item;
     if( item->engine() && item->engine()->isEvaluating() )
     {
-        m_codeWidget->setWidget( m_debugger->widget( QScriptEngineDebugger::CodeWidget ) );
+        m_codeWidget->setWidget( m_debugger->widget( ScriptConsoleDebugger::CodeWidget ) );
     }
     else
     {

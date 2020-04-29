@@ -25,7 +25,7 @@
 #include "core-impl/collections/db/sql/SqlCollectionLocation.h"
 #include "core/collections/QueryMaker.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 #define SCRIPTING_DEPRECATED( x ) \
                                     AmarokScriptEngine *amarokScriptEngine = dynamic_cast<AmarokScriptEngine*>(parent()); \
@@ -40,8 +40,8 @@ using Collections::QueryMaker;
 AmarokCollectionScript::AmarokCollectionScript( AmarokScriptEngine *engine )
     : QObject( engine )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership,
+                                                    QJSEngine::ExcludeSuperClassContents );
     //deprecate
     engine->setDeprecatedProperty( QStringLiteral("Amarok"), QStringLiteral("Collection"), scriptObject );
 

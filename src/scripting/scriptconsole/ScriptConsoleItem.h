@@ -22,7 +22,7 @@
 namespace KTextEditor{
     class View;
 }
-class QScriptEngine;
+class QJSValue;
 class QWidget;
 
 namespace ScriptConsoleNS
@@ -55,7 +55,7 @@ namespace ScriptConsoleNS
             void timerEvent(QTimerEvent* event) override;
             void initializeScriptEngine() override;
             static KPluginInfo createSpecFile( const QString &name, const QString &category, const QString &path );
-            QString handleError( QScriptEngine *engine ) override;
+            QString handleError( QJSValue *result ) override;
     };
 }
 

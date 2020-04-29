@@ -25,8 +25,8 @@
 #include <QMetaType>
 
 class QScriptContext;
-class QScriptEngine;
-class QScriptValue;
+class QJSEngine;
+class QJSValue;
 
 typedef QMap< QString, QString > StringMap;
 
@@ -38,7 +38,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            explicit AmarokBookmarkScript( QScriptEngine* scriptEngine );
+            explicit AmarokBookmarkScript( QJSEngine* scriptEngine );
 
             /**
              * @return bookmark for the current context view.
@@ -76,7 +76,7 @@ namespace AmarokScript
         Q_PROPERTY( QString url READ url )
 
         public:
-            static QScriptValue bookmarkCtor( QScriptContext *context, QScriptEngine *engine );
+            static QJSValue bookmarkCtor( QScriptContext *context, QJSEngine *engine );
             explicit BookmarkPrototype( const AmarokUrlPtr &bookmark );
             AmarokUrlPtr data() const { return m_url; }
 
@@ -132,7 +132,7 @@ namespace AmarokScript
 
         public:
             explicit BookmarkGroupPrototype( const BookmarkGroupPtr &group );
-            static QScriptValue bookmarkGroupCtor( QScriptContext *context, QScriptEngine *engine );
+            static QJSValue bookmarkGroupCtor( QScriptContext *context, QJSEngine *engine );
             BookmarkGroupPtr data() const { return m_group; }
 
             /**
