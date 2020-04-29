@@ -25,8 +25,8 @@
 #include "scripting/scriptengine/ScriptingDefines.h"
 
 #include <QIcon>
-#include <QScriptEngine>
-#include <QScriptValue>
+#include <QJSEngine>
+#include <QJSValue>
 
 using namespace AmarokScript;
 
@@ -36,7 +36,7 @@ using Collections::QueryMaker;
 #define GET_COLLECTION( returnVal ) Collection *collection = m_collection.data(); if( !collection ) return returnVal;
 
 void
-CollectionPrototype::init( QScriptEngine *engine )
+CollectionPrototype::init( QJSEngine *engine )
 {
     qScriptRegisterMetaType<Collection*>( engine, toScriptValue<Collection*,CollectionPrototype>, fromScriptValue<Collection*,CollectionPrototype> );
     qScriptRegisterMetaType<Collections::CollectionList>( engine, toScriptArray, fromScriptArray );

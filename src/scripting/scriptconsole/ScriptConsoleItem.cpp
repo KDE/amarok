@@ -27,11 +27,9 @@
 
 #include <QFile>
 #include <QFileInfo>
-#include <QScriptEngine>
+#include <QJSValue>
 #include <QTextStream>
 #include <QDir>
-#include <QScriptEngineDebugger>
-#include <QMainWindow>
 
 using namespace ScriptConsoleNS;
 
@@ -138,11 +136,11 @@ ScriptConsoleItem::setClearOnDeletion( bool clearOnDelete )
 }
 
 QString
-ScriptConsoleItem::handleError( QScriptEngine *engine )
+ScriptConsoleItem::handleError( QJSValue *return )
 {
     QString errorString = QStringLiteral( "Script Error: %1 (line: %2)" )
-                        .arg( engine->uncaughtException().toString(),
-                              QString::number( engine->uncaughtExceptionLineNumber() ) );
+                        .arg( result.toString() )
+                        .arg( result.property("lineNumber").toInt() );
     return errorString;
 }
 

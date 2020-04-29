@@ -32,7 +32,7 @@ namespace AmarokScript {
     class AmarokScript;
 }
 class QScriptEngine;
-class QScriptValue;
+class QJSValue;
 
 class AMAROK_EXPORT ScriptManager : public QObject
 {
@@ -105,7 +105,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
 
     private Q_SLOTS:
         bool slotRunScript( const QString &name, bool silent = false );
-        void handleException( const QScriptValue &value );
+        void handleException( const QJSValue &value );
 
         void updaterFinished( const QString &scriptPath );
         void slotConfigChanged();

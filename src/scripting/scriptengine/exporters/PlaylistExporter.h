@@ -24,7 +24,7 @@
 #include <QString>
 #include <QUrl>
 
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -59,7 +59,7 @@ namespace AmarokScript
         Q_PROPERTY( Playlists::PlaylistProvider* provider READ provider )
 
     public:
-        static void init( QScriptEngine *engine );
+        static void init( QJSEngine *engine );
         explicit PlaylistPrototype( Playlists::PlaylistPtr playlist );
         Playlists::PlaylistPtr data() const { return m_playlist; }
 
@@ -114,7 +114,7 @@ namespace AmarokScript
         int trackCount() const;
         Playlists::PlaylistProvider *provider() const;
 
-        QScriptEngine *m_engine;
+        QJSEngine *m_engine;
         Playlists::PlaylistPtr m_playlist;
 
     Q_SIGNALS:

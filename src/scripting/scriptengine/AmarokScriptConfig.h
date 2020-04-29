@@ -21,7 +21,7 @@
 
 #include <QVariant>
 
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -31,7 +31,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokScriptConfig( const QString& name, QScriptEngine *engine );
+            AmarokScriptConfig( const QString& name, QJSEngine *engine );
 
             Q_INVOKABLE QVariant readConfig( const QString &name, const QVariant &defaultValue ) const;
             Q_INVOKABLE void writeConfig( const QString &name, const QVariant &content );

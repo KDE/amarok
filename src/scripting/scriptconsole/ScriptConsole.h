@@ -19,8 +19,6 @@
 
 #include <QMainWindow>
 #include <QDockWidget>
-#include <QScriptEngineAgent>
-#include <QScriptEngineDebugger>
 #include <QPointer>
 
 namespace KTextEditor{
@@ -30,11 +28,12 @@ class QEvent;
 class QListWidget;
 class QListWidgetItem;
 class QModelIndex;
-class QScriptEngine;
+class QJSEngine;
 
 namespace ScriptConsoleNS
 {
 class ScriptConsoleItem;
+class ScriptConsoleDebugger;
 class ScriptListDockWidget;
 
     class ScriptConsole : public QMainWindow
@@ -58,11 +57,11 @@ class ScriptListDockWidget;
             ~ScriptConsole() override;
 
             bool eventFilter( QObject *watched, QEvent *event ) override;
-            QDockWidget *getWidget( const QString &title, QScriptEngineDebugger::DebuggerWidget widget );
+            QDockWidget *getWidget( const QString &title, ScriptConsoleDebugger::DebuggerWidget widget );
             void closeEvent( QCloseEvent *event ) override;
             ScriptConsoleItem* createScriptItem( const QString &script );
 
-            QScriptEngineDebugger *m_debugger;
+            ScriptConsoleDebugger *m_debugger;
             QPointer<ScriptConsoleItem> m_scriptItem;
             QDockWidget *m_codeWidget;
             QString m_savePath;

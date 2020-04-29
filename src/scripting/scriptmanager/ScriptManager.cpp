@@ -39,7 +39,7 @@
 #include <KPluginMetaData>
 
 #include <QFileInfo>
-#include <QScriptEngine>
+#include <QJSEngine>
 #include <QStandardPaths>
 #include <QTimer>
 
@@ -255,7 +255,7 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
 }
 
 void
-ScriptManager::handleException(const QScriptValue& value)
+ScriptManager::handleException(const QJSValue& value)
 {
     DEBUG_BLOCK
 

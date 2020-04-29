@@ -27,13 +27,12 @@
 #include <KPluginInfo>
 #include <QUrl>
 
-#include <QScriptValue>
+#include <QJSValue>
 
 namespace AmarokScript {
     class AmarokScript;
 }
 class ScriptItem;
-class QScriptEngine;
 class QTimerEvent;
 
 class ScriptTerminatorWidget : public PopupWidget
@@ -78,16 +77,16 @@ private Q_SLOTS:
     void timerEvent( QTimerEvent *event ) override;
 
 Q_SIGNALS:
-    void signalHandlerException(QScriptValue);
+    void signalHandlerException(QJSValue);
     void evaluated( QString output );
     void uninstalled();
 
 protected:
     /**
-     * Initialize QScriptEngine and load wrapper classes
+     * Initialize QJSEngine and load wrapper classes
      */
     virtual void initializeScriptEngine();
-    virtual QString handleError( QScriptEngine *engine );
+    virtual QString handleError( QJSValue *evalReturn );
 
 private:
     QString                                             m_name;

@@ -27,7 +27,7 @@
 #include <QMetaEnum>
 #include <QMetaType>
 #include <QModelIndexList>
-#include <QScriptValue>
+#include <QJSValue>
 
 class CollectionTreeItemModelBase;
 class CollectionWidget;
@@ -38,7 +38,7 @@ namespace Collections
     class QueryMaker;
 }
 class QMenu;
-class QScriptEngine;
+class QJSEngine;
 typedef QList<QAction*> QActionList;
 
 namespace AmarokScript
@@ -56,7 +56,7 @@ namespace AmarokScript
         Q_OBJECT
 
         Q_PROPERTY( QString filter READ filter WRITE setFilter )
-        Q_PROPERTY( QScriptValue selection READ selectionScriptValue )
+        Q_PROPERTY( QJSValue selection READ selectionScriptValue )
         Q_PROPERTY( bool showYears READ showYears WRITE setShowYears )
         Q_PROPERTY( bool showTrackNumbers READ showTrackNumbers WRITE setShowTrackNumbers )
         Q_PROPERTY( bool showCovers READ showCovers WRITE setShowCovers )
@@ -96,7 +96,7 @@ namespace AmarokScript
             /**
              * Set a function returning a QActionList here.
              */
-            void setAction( const QScriptValue &value );
+            void setAction( const QJSValue &value );
 
         Q_SIGNALS:
             void filterChanged( QString );
@@ -106,7 +106,7 @@ namespace AmarokScript
             void setFilter( const QString &filter );
             QList<int> levels() const;
             void setLevels( const QList<int> &levels );
-            QScriptValue selectionScriptValue();
+            QJSValue selectionScriptValue();
             void setShowYears( bool shown );
             void setShowTrackNumbers( bool shown );
             void setShowCovers( bool shown );
@@ -118,7 +118,7 @@ namespace AmarokScript
 
             static QMap<QString, AmarokCollectionViewScript*> s_instances;
             static QPointer<Selection> s_selection;
-            QScriptValue m_actionFunction;
+            QJSValue m_actionFunction;
             CollectionWidget *m_collectionWidget;
             AmarokScriptEngine *m_engine;
             QString m_scriptName;
@@ -155,7 +155,7 @@ namespace AmarokScript
         public:
             explicit CollectionViewItem( CollectionTreeItem *item, QObject *parent = nullptr );
             CollectionTreeItem* data() const;
-            static QScriptValue toScriptValue( QScriptEngine *engine, CollectionTreeItem* const &item );
+            static QJSValue toScriptValue( QJSEngine *engine, CollectionTreeItem* const &item );
 
             /**
              * @return QueryMaker representing this item's descendant tracks ( or just the item if a track )

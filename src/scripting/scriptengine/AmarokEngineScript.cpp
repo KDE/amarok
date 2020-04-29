@@ -24,15 +24,15 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 using namespace AmarokScript;
 
-AmarokEngineScript::AmarokEngineScript( QScriptEngine* scriptEngine )
+AmarokEngineScript::AmarokEngineScript( QJSEngine* scriptEngine )
     : QObject( scriptEngine )
 {
-    QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership
-                                                        , QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = scriptEngine->newQObject( this, QJSEngine::AutoOwnership
+                                                        , QJSEngine::ExcludeSuperClassContents );
     scriptEngine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Engine"), scriptObject );
 
     EngineController *engine = The::engineController();

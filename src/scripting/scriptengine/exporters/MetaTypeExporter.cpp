@@ -32,7 +32,7 @@
 #include <ThreadWeaver/Job>
 
 #include <QScriptContext>
-#include <QScriptEngine>
+#include <QJSEngine>
 
 Q_DECLARE_METATYPE( StringMap )
 
@@ -47,7 +47,7 @@ using namespace AmarokScript;
                           }
 
 void
-MetaTrackPrototype::init( QScriptEngine *engine )
+MetaTrackPrototype::init( QJSEngine *engine )
 {
     qScriptRegisterMetaType<Meta::TrackPtr>( engine, toScriptValue<Meta::TrackPtr, MetaTrackPrototype>, fromScriptValue<Meta::TrackPtr, MetaTrackPrototype> );
     qScriptRegisterMetaType<Meta::TrackList>( engine, toScriptArray, fromScriptArray );
@@ -56,8 +56,8 @@ MetaTrackPrototype::init( QScriptEngine *engine )
     engine->globalObject().setProperty( QStringLiteral("Track"), engine->newFunction( trackCtor ) );
 }
 
-QScriptValue
-MetaTrackPrototype::trackCtor( QScriptContext *context, QScriptEngine *engine )
+QJSValue
+MetaTrackPrototype::trackCtor( QScriptContext *context, QJSEngine *engine )
 {
     if( context->argumentCount() < 1 )
         return context->throwError( QScriptContext::SyntaxError, QStringLiteral("Not enough arguments! Pass the track url.") );
@@ -69,8 +69,8 @@ MetaTrackPrototype::trackCtor( QScriptContext *context, QScriptEngine *engine )
     MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
     proxyTrack->setTitle( url.fileName() ); // set temporary name
     return engine->newQObject( new MetaTrackPrototype( Meta::TrackPtr( proxyTrack.data() ) )
-                                                , QScriptEngine::ScriptOwnership
-                                                , QScriptEngine::ExcludeSuperClassContents );
+                                                , QJSEngine::ScriptOwnership
+                                                , QJSEngine::ExcludeSuperClassContents );
 }
 
 MetaTrackPrototype::MetaTrackPrototype( const Meta::TrackPtr &track )
@@ -261,11 +261,11 @@ MetaTrackPrototype::isLoaded() const
     return true;
 }
 
-QScriptValue
+QJSValue
 MetaTrackPrototype::imagePixmap( int size ) const
 {
-    CHECK_TRACK( QScriptValue() )
-    return m_track->album() ? m_engine->toScriptValue( m_track->album()->image( size ) ) : QScriptValue();
+    CHECK_TRACK( QJSValue() )
+    return m_track->album() ? m_engine->toScriptValue( m_track->album()->image( size ) ) : QJSValue();
 }
 
 bool
@@ -380,9 +380,9 @@ MetaTrackPrototype::metadataChanged(const Meta::TrackPtr &track )
 }
 
 void
-MetaTrackPrototype::fromScriptTagMap( const QScriptValue &value, Meta::FieldHash &map )
+MetaTrackPrototype::fromScriptTagMap( const QJSValue &value, Meta::FieldHash &map )
 {
-    QScriptValueIterator it( value );
+    QJSValueIterator it( value );
     while( it.hasNext() )
     {
         it.next();
@@ -390,10 +390,10 @@ MetaTrackPrototype::fromScriptTagMap( const QScriptValue &value, Meta::FieldHash
     }
 }
 
-QScriptValue
-MetaTrackPrototype::toScriptTagMap( QScriptEngine *engine, const Meta::FieldHash &map )
+QJSValue
+MetaTrackPrototype::toScriptTagMap( QJSEngine *engine, const Meta::FieldHash &map )
 {
-    QScriptValue scriptMap = engine->newObject();
+    QJSValue scriptMap = engine->newObject();
     for( typename Meta::FieldHash::const_iterator it( map.constBegin() ); it != map.constEnd(); ++it )
         scriptMap.setProperty( Meta::nameForField( it.key() ), engine->toScriptValue( it.value() ) );
     return scriptMap;

@@ -32,7 +32,7 @@
 
 #include <QMenu>
 #include <QMetaEnum>
-#include <QScriptEngine>
+#include <QJSEngine>
 #include <QSortFilterProxyModel>
 
 Q_DECLARE_METATYPE( QAction* )
@@ -50,9 +50,9 @@ AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engi
     , m_scriptName( scriptName )
     , m_categoryEnum( metaObject()->enumerator( metaObject()->indexOfEnumerator("Category") ) )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
-    QScriptValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
+    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership,
+                                                    QJSEngine::ExcludeSuperClassContents );
+    QJSValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
     Q_ASSERT( !windowObject.isUndefined() );
     windowObject.setProperty( QStringLiteral("CollectionView"), scriptObject );
     const QMetaEnum typeEnum = CollectionTreeItem::staticMetaObject.enumerator( CollectionTreeItem::staticMetaObject.indexOfEnumerator( "Type" ) );
@@ -89,14 +89,14 @@ AmarokCollectionViewScript::filter() const
 QActionList
 AmarokCollectionViewScript::actions()
 {
-    QScriptValue actions = m_actionFunction.call( QScriptValue(), QScriptValueList() << selectionScriptValue() );
+    QJSValue actions = m_actionFunction.call( QJSValue(), QJSValueList() << selectionScriptValue() );
     QActionList actionList = m_engine->fromScriptValue<QActionList>( actions );
     debug() << "Received " << actionList.size() << " actions";
     return actionList;
 }
 
 void
-AmarokCollectionViewScript::setAction( const QScriptValue &value )
+AmarokCollectionViewScript::setAction( const QJSValue &value )
 {
     m_actionFunction = value;
 }
@@ -131,11 +131,11 @@ AmarokCollectionViewScript::createScriptedActions( QMenu &menu, const QModelInde
     }
 }
 
-QScriptValue
+QJSValue
 AmarokCollectionViewScript::selectionScriptValue()
 {
-    return m_engine->newQObject( s_selection.data(), QScriptEngine::QtOwnership,
-                                QScriptEngine::ExcludeSuperClassContents );
+    return m_engine->newQObject( s_selection.data(), QJSEngine::QtOwnership,
+                                QJSEngine::ExcludeSuperClassContents );
 }
 
 Selection*
@@ -296,12 +296,12 @@ CollectionViewItem::data() const
     return m_item;
 }
 
-QScriptValue
-CollectionViewItem::toScriptValue( QScriptEngine *engine, CollectionTreeItem* const &item )
+QJSValue
+CollectionViewItem::toScriptValue( QJSEngine *engine, CollectionTreeItem* const &item )
 {
     CollectionViewItem *proto = new CollectionViewItem( item, AmarokCollectionViewScript::selection() );
-    QScriptValue val = engine->newQObject( proto, QScriptEngine::AutoOwnership,
-                                            QScriptEngine::ExcludeSuperClassContents );
+    QJSValue val = engine->newQObject( proto, QJSEngine::AutoOwnership,
+                                            QJSEngine::ExcludeSuperClassContents );
     return val;
 }
 

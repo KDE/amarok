@@ -20,18 +20,18 @@
 #include "App.h"
 #include "KNotificationBackend.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 #define kNotify Amarok::KNotificationBackend::instance()
 
 using namespace AmarokScript;
 
-AmarokKNotifyScript::AmarokKNotifyScript( QScriptEngine *engine )
+AmarokKNotifyScript::AmarokKNotifyScript( QJSEngine *engine )
     : QObject( engine )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
-    QScriptValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
+    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership,
+                                                    QJSEngine::ExcludeSuperClassContents );
+    QJSValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
     windowObject.setProperty( QStringLiteral("KNotify"), scriptObject );
 }
 
