@@ -420,9 +420,6 @@ set(libdynamic_SRCS
 # DBUS
 #####################################################################
 set(dbus_SRCS
-    dbus/mpris1/RootHandler.cpp
-    dbus/mpris1/PlayerHandler.cpp
-    dbus/mpris1/TrackListHandler.cpp
     dbus/mpris2/DBusAbstractAdaptor.cpp
     dbus/mpris2/Mpris2.cpp
     dbus/mpris2/MediaPlayer2.cpp
@@ -771,55 +768,12 @@ if( LIBOFA_FOUND AND AVCODEC_FOUND AND AVFORMAT_FOUND AND AVUTIL_FOUND )
 endif()
 
 qt5_add_dbus_adaptor(
-   AMAROK_MPRIS1_ADAPTOR_SRCS
-   dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
-   dbus/mpris1/RootHandler.h
-   Mpris1::RootHandler
-   Mpris1RootAdaptor
-   Mpris1RootAdaptor )
-qt5_add_dbus_adaptor(
-   AMAROK_MPRIS1_ADAPTOR_SRCS
-   dbus/mpris1/org.freedesktop.MediaPlayer.player.xml
-   dbus/mpris1/PlayerHandler.h
-   Mpris1::PlayerHandler
-   Mpris1PlayerAdaptor
-   Mpris1PlayerAdaptor )
-qt5_add_dbus_adaptor(
-   AMAROK_MPRIS1_ADAPTOR_SRCS
-   dbus/mpris1/org.freedesktop.MediaPlayer.tracklist.xml
-   dbus/mpris1/TrackListHandler.h
-   Mpris1::TrackListHandler
-   Mpris1TrackListAdaptor
-   Mpris1TrackListAdaptor )
-qt5_add_dbus_adaptor(
-   AMAROK_MPRIS1_ADAPTOR_SRCS
-   dbus/org.kde.amarok.App.xml
-   dbus/mpris1/RootHandler.h
-   Mpris1::RootHandler
-   Mpris1AmarokAppAdaptor
-   Mpris1AmarokAppAdaptor )
-qt5_add_dbus_adaptor(
-   AMAROK_MPRIS1_ADAPTOR_SRCS
-   dbus/mpris1/org.kde.amarok.Mpris1Extensions.Player.xml
-   dbus/mpris1/PlayerHandler.h
-   Mpris1::PlayerHandler
-   Mpris1AmarokPlayerAdaptor
-   Mpris1AmarokPlayerAdaptor )
-
-qt5_add_dbus_adaptor(
-   AMAROK_MPRIS1_ADAPTOR_SRCS
+   amaroklib_LIB_SRCS
    dbus/org.kde.amarok.Collection.xml
    dbus/CollectionDBusHandler.h
    CollectionDBusHandler
    CollectionAdaptor
    CollectionAdaptor )
-
-# suppress deprecated methods warnings
-if(NOT WIN32)
-    set_source_files_properties(${AMAROK_MPRIS1_ADAPTOR_SRCS}
-                                PROPERTIES
-                                COMPILE_FLAGS -Wno-deprecated-declarations)
-endif()
 
 set( amaroklib_DEPENDS "amarokpud" )
 set( amaroklib_DEPENDS "amarokcore" )
@@ -844,7 +798,7 @@ ki18n_wrap_ui(amaroklib_LIB_SRCS
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 
-add_library(amaroklib SHARED ${amaroklib_LIB_SRCS} ${AMAROK_MPRIS1_ADAPTOR_SRCS})
+add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 
 target_link_libraries(amaroklib
     Phonon::phonon4qt5
@@ -964,12 +918,8 @@ install(FILES amarokitpc.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 #install(FILES amarokpcast.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
 install(FILES amarokconfig.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR} )
-install(FILES dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
-              dbus/mpris1/org.freedesktop.MediaPlayer.player.xml
-              dbus/mpris1/org.freedesktop.MediaPlayer.tracklist.xml
-              dbus/org.kde.amarok.App.xml
+install(FILES dbus/org.kde.amarok.App.xml
               dbus/org.kde.amarok.Collection.xml
-              dbus/mpris1/org.kde.amarok.Mpris1Extensions.Player.xml
               dbus/mpris2/org.kde.amarok.Mpris2Extensions.Player.xml
               DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR})
 
