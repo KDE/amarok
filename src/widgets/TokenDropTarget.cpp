@@ -208,7 +208,7 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
     connect( token, &Token::gotFocus, this, &TokenDropTarget::tokenSelected );
     connect( token, &Token::changed, this, &TokenDropTarget::deleteEmptyRows );
 
-    Q_EMIT changed();
+    emit changed();
 }
 
 

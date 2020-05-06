@@ -1,0 +1,27 @@
+amarok (2.9.70+1SNAPSHOT20200504192042+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
+
+  * Fix error message at PlaylistDock
+  * add Dockerfile for Neon 18.04 and Ubuntu 20.04
+  * add debian packaging conf for Ubuntu 20.04 
+  * Reorganize dir structure for packaging configuration and Dockerfiles
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Sat, 25 Apr 2020 22:38:26 +0200
+
+
+amarok (2.9.70+1SNAPSHOT20200424193358+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
+
+  * Fix breadcrumb
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 24 Apr 2020 19:34:09 +0200
+
+amarok (2.9.70+1SNAPSHOT20200410173239+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
+
+  * add missing libkf5doctools-dev to control file
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 10 Apr 2020 17:32:23 +0200
+
+amarok (2.9.70+1SNAPSHOT20200407170839+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
+
+  * Initial release 
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 07 Apr 2020 17:16:20 +0200
