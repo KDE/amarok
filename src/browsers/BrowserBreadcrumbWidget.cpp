@@ -55,7 +55,8 @@ BrowserBreadcrumbWidget::~BrowserBreadcrumbWidget()
 void
 BrowserBreadcrumbWidget::clearCrumbs()
 {
-    foreach( QWidget *item, m_breadcrumbArea->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly) )
+    const QList<QWidget *> childCrumbs = m_breadcrumbArea->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly);
+    for( auto item : childCrumbs)
     {
         delete item;
     }
@@ -113,7 +114,7 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList *list )
 
             const QList<BrowserBreadcrumbItem*> additionalItems = childCategory->additionalItems();
             //no children, but check if there are additional breadcrumb levels (for internal navigation in the category) that should be added anyway.
-            foreach( BrowserBreadcrumbItem *addItem, additionalItems )
+            for( BrowserBreadcrumbItem *addItem : additionalItems )
             {
                 //hack to ensure that we have not already added it to the front of the breadcrumb...
                 addBreadCrumbItem( addItem );
@@ -131,16 +132,16 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList *list )
         BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( list );
         if( childList )
         {
-            BreadcrumbItemMenuButton *childMenuButton = new BreadcrumbItemMenuButton( m_breadcrumbArea );
+            auto childMenuButton = new BreadcrumbItemMenuButton( m_breadcrumbArea );
 
-            QMenu *menu = new QMenu( item );
+            auto menu = new QMenu( item );
             menu->hide();
 
             QMap<QString,BrowserCategory *> childMap =  childList->categories();
 
-            QStringList childNames = childMap.keys();
+            const QStringList childNames = childMap.keys();
 
-            foreach( const QString &siblingName, childNames )
+            for( const QString &siblingName : childNames )
             {
                 //no point in adding ourselves to this menu
                 if ( siblingName == list->name() )
