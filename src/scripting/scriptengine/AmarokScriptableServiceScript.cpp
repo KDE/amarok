@@ -36,39 +36,39 @@ ScriptableServiceScript::ScriptableServiceScript( QJSEngine* engine )
     DEBUG_BLOCK
     m_scriptEngine = engine;
     //engine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QJSValue() );
-    JSValue classObject = m_engine->newQMetaObject<ScriptableServiceScript>();
-    classObject.setPrototype(QJSValue());
+    QJSValue thisObject = m_engine->newQObject( this );
+    thisObject.setPrototype( QJSValue() );
     //const QJSValue ctor = engine->newFunction( &ScriptableServiceScript_prototype_ctor );
-    const QJSValue ctor = classObject.property("ScriptableServiceScript_prototype_ctor");
+    const QJSValue ctor = thisObject.property("ScriptableServiceScript_prototype_ctor");
     m_engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), ctor );
 }
 
 QJSValue
-ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( const QJSValueList argument, QJSEngine *engine )
+ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( const QJSValueList argument )
 {
     DEBUG_BLOCK
-    QString serviceName = argument[0].toString();
-    int levels = argument[1].toInt32();
-    QString shortDescription = argument[2].toString();
-    QString rootHtml = argument[3].toString();
-    bool showSearchBar = argument[4].toBoolean();
+    QString serviceName = argument.at(0).toString();
+    int levels = argument.at(1).toInt32();
+    QString shortDescription = argument.at(2).toString();
+    QString rootHtml = argument.at(3).toString();
+    bool showSearchBar = argument.at([4).toBoolean();
     if( !ScriptManager::instance()->m_scripts.contains( serviceName ) )
     {
         error() << "The name of the scriptable script should be the same with the one in the script.spec file!";
-        return engine->undefinedValue();
+        return QJSValue( QJSValue::UndefinedValue );
     }
     // TODO - Obj must be set to the "this" of the executing context
-    QJSValue obj = engine->newQObject( ScriptManager::instance()->m_scripts.value(serviceName)->service() );
-    engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), obj );
+    QJSValue obj = m_scriptEngine->newQObject( ScriptManager::instance()->m_scripts.value(serviceName)->service() );
+    m_scriptEngine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), obj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
-    return engine->undefinedValue();
+    return QJSValue( QJSValue::UndefinedValue );
 }
 
 QJSValue
 ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QJSEngine *engine )
 {
     debug() << "prototype populating here!";
-    return engine->undefinedValue();
+    return QJSValue( QJSValue::UndefinedValue );
 }
 
 int

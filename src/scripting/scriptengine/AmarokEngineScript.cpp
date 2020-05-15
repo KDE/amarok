@@ -31,8 +31,7 @@ using namespace AmarokScript;
 AmarokEngineScript::AmarokEngineScript( QJSEngine* scriptEngine )
     : QObject( scriptEngine )
 {
-    QJSValue scriptObject = scriptEngine->newQObject( this, QJSEngine::AutoOwnership
-                                                        , QJSEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = scriptEngine->newQObject( this );
     scriptEngine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Engine"), scriptObject );
 
     EngineController *engine = The::engineController();
