@@ -30,8 +30,7 @@ AmarokScript::AmarokScript::AmarokScript( const QString &name, QJSEngine *engine
     : QObject( engine )
     , m_name( name )
 {
-    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership,
-                                                    QJSEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this );
     engine->globalObject().setProperty( QStringLiteral("Amarok"), scriptObject );
     if( ScriptManager::instance()->m_scripts.contains( name ) )
         connect( ScriptManager::instance()->m_scripts[name], &ScriptItem::uninstalled, this, &AmarokScript::uninstalled );

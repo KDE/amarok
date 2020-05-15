@@ -458,7 +458,7 @@ TrackSetExporter::trackSetConstructor( QScriptContext *context, QJSEngine *engin
                 else if( arg0.toVariant().canConvert<Meta::TrackList>() )
                 {
                     debug() << "In Meta::Tracklist TrackSet ctor";
-                    trackList = qscriptvalue_cast<Meta::TrackList>( arg0 );
+                    trackList = qjsvalue_cast<Meta::TrackList>( arg0 );
                     foreach( const Meta::TrackPtr &track, trackList )
                     {
                         if( track )
@@ -479,7 +479,7 @@ TrackSetExporter::trackSetConstructor( QScriptContext *context, QJSEngine *engin
     if( invalid )
     {
         context->throwError( QScriptContext::SyntaxError, QStringLiteral("Invalid arguments for TrackSet!") );
-        return engine->undefinedValue();
+        return JSValue(QJSValue::UndefinedValue);
     }
 
     const QJSValue trackSetObject = engine->newQObject( new TrackSetExporter( trackSet )

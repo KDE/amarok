@@ -38,7 +38,6 @@ namespace Collections
     class QueryMaker;
 }
 class QMenu;
-class QJSEngine;
 typedef QList<QAction*> QActionList;
 
 namespace AmarokScript

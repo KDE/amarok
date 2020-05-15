@@ -40,8 +40,7 @@ using Collections::QueryMaker;
 AmarokCollectionScript::AmarokCollectionScript( AmarokScriptEngine *engine )
     : QObject( engine )
 {
-    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership,
-                                                    QJSEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this );
     //deprecate
     engine->setDeprecatedProperty( QStringLiteral("Amarok"), QStringLiteral("Collection"), scriptObject );
 

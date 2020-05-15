@@ -32,8 +32,7 @@ AmarokScriptXml::AmarokScriptXml( QJSEngine *engine )
     , m_reader( nullptr )
     , m_domDocument( new QDomDocument )
 {
-    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership,
-                                                    QJSEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this );
     engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Xml"), scriptObject );
 }
 

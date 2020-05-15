@@ -62,7 +62,7 @@ MetaTrackPrototype::trackCtor( QScriptContext *context, QJSEngine *engine )
     if( context->argumentCount() < 1 )
         return context->throwError( QScriptContext::SyntaxError, QStringLiteral("Not enough arguments! Pass the track url.") );
 
-    QUrl url( qscriptvalue_cast<QUrl>( context->argument( 0 ) ) );
+    QUrl url( qjsvalue_cast<QUrl>( context->argument( 0 ) ) );
     if( !url.isValid() )
         return context->throwError( QScriptContext::TypeError, QStringLiteral("Invalid QUrl") );
 

@@ -29,8 +29,7 @@ using namespace AmarokScript;
 AmarokKNotifyScript::AmarokKNotifyScript( QJSEngine *engine )
     : QObject( engine )
 {
-    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership,
-                                                    QJSEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this );
     QJSValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
     windowObject.setProperty( QStringLiteral("KNotify"), scriptObject );
 }

@@ -27,8 +27,7 @@ using namespace AmarokScript;
 AmarokEqualizerScript::AmarokEqualizerScript( QJSEngine *scriptEngine )
 : QObject( scriptEngine )
 {
-    QJSValue scriptObject = scriptEngine->newQObject( this, QJSEngine::AutoOwnership
-                                                        , QJSEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = scriptEngine->newQObject( this );
     scriptEngine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Engine") ).setProperty( QStringLiteral("Equalizer"), scriptObject );
 
     EqualizerController *equalizer  = The::engineController()->equalizerController();

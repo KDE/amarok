@@ -59,12 +59,12 @@ namespace AmarokScript
     template <class Container>
     void fromScriptArray( const QJSValue &value, Container &container )
     {
-        quint32 len = value.property( QStringLiteral("length") ).toUInt32();
+        quint32 len = value.property( QStringLiteral("length") ).toUInt();
         for( quint32 i = 0; i < len; ++i )
         {
             QJSValue item = value.property( i );
             typedef typename Container::value_type ContainerValue;
-            container.push_back( qscriptvalue_cast<ContainerValue>(item) );
+            container.push_back( qjsvalue_cast<ContainerValue>(item) );
         }
     }
 
@@ -84,7 +84,7 @@ namespace AmarokScript
         while( it.hasNext() )
         {
             it.next();
-            map[it.name()] = qscriptvalue_cast<typename Map::mapped_type>( it.value() );
+            map[it.name()] = qjsvalue_cast<typename Map::mapped_type>( it.value() );
         }
     }
 
@@ -106,12 +106,24 @@ namespace AmarokScript
             template <class T>
             void registerArrayType()
             {
-                qScriptRegisterMetaType<T>( this, toScriptArray, fromScriptArray );
+                qRegisterMetaType<T>();
+                QMetaType::registerConverter<QJSValue,T>( [] (QJSValue scriptObj) {
+                    T arrayObj;
+                    AmarokScript::fromScriptArray( scriptObj, arrayObj );
+                    return arrayObj;
+                });
+                QMetaType::registerConverter<T,QJSValue>( [this] (T arrayObj) { return AmarokScript::toScriptArray( this, arrayObj ); } );
             }
             template <class Map>
             void registerMapType()
             {
-                qScriptRegisterMetaType<Map>( this, toScriptMap, fromScriptMap );
+                qRegisterMetaType<Map>();
+                QMetaType::registerConverter<QJSValue,Map>( [] (QJSValue scriptObj) {
+                    Map mapObj;
+                    AmarokScript::fromScriptMap( scriptObj, mapObj );
+                    return mapObj;
+                });
+                QMetaType::registerConverter<Map,QJSValue>( [this] (Map mapObj) { return AmarokScript::toScriptMap( this, mapObj ); } );
             }
 
             // SCRIPTDOX exclude

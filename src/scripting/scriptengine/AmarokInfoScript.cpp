@@ -32,8 +32,7 @@ InfoScript::InfoScript( const QUrl &scriptUrl, AmarokScriptEngine *engine )
     : QObject( engine )
     , m_scriptUrl( scriptUrl )
 {
-    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership,
-                                                    QJSEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this );
     engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Info"), scriptObject );
 
     const QMetaEnum iconEnum = metaObject()->enumerator( metaObject()->indexOfEnumerator("IconSizes") );

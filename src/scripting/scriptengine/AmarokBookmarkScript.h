@@ -23,10 +23,11 @@
 #include <QObject>
 #include <QMap>
 #include <QMetaType>
+#include <QJSValue>
+#include <QJSValueList>
 
 class QScriptContext;
 class QJSEngine;
-class QJSValue;
 
 typedef QMap< QString, QString > StringMap;
 
@@ -59,6 +60,21 @@ namespace AmarokScript
              * Bookmark the current track at the current position.
              */
             Q_INVOKABLE AmarokUrlPtr createCurrentTrackBookmark();
+
+            /**
+             * Wraps the invocation to BookmarkPrototype::bookmarkCtor so it can bind to a QJSEngine
+             */
+            Q_INVOKABLE QJSValue bookmarkCtorWrapper( QJSValueList arguments );
+
+            /**
+             * Wraps the invocation to BookmarkGroupPrototype::bookmarkGroupCtor so it can bind to a QJSEngine
+             */
+            Q_INVOKABLE QJSValue bookmarkGroupCtorWrapper( QJSValueList arguments );
+
+        private:
+
+            QJSEngine *m_engine;
+
     };
 
     class BookmarkPrototype : public QObject
@@ -76,8 +92,8 @@ namespace AmarokScript
         Q_PROPERTY( QString url READ url )
 
         public:
-            static QJSValue bookmarkCtor( QScriptContext *context, QJSEngine *engine );
             explicit BookmarkPrototype( const AmarokUrlPtr &bookmark );
+            static QJSValue bookmarkCtor( QJSValueList arguments, QJSEngine *engine );
             AmarokUrlPtr data() const { return m_url; }
 
             /**
@@ -132,7 +148,7 @@ namespace AmarokScript
 
         public:
             explicit BookmarkGroupPrototype( const BookmarkGroupPtr &group );
-            static QJSValue bookmarkGroupCtor( QScriptContext *context, QJSEngine *engine );
+            static QJSValue bookmarkGroupCtor( QJSValueList arguments, QJSEngine *engine);
             BookmarkGroupPtr data() const { return m_group; }
 
             /**

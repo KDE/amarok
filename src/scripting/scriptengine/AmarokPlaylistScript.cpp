@@ -38,7 +38,7 @@ AmarokPlaylistScript::AmarokPlaylistScript( AmarokScriptEngine *engine )
     : QObject( engine )
     , m_scriptEngine( engine )
 {
-    QJSValue scriptObject = engine->newQObject( this, QJSEngine::AutoOwnership, QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this );
     engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Playlist"), scriptObject );
     connect( The::playlist()->qaim(), &QAbstractItemModel::rowsInserted, this, &AmarokPlaylistScript::slotTrackInserted );
     connect( The::playlist()->qaim(), &QAbstractItemModel::rowsRemoved, this, &AmarokPlaylistScript::slotTrackRemoved );
@@ -80,7 +80,7 @@ AmarokPlaylistScript::addTrack( const Meta::TrackPtr &track )
 void
 AmarokPlaylistScript::addMediaList( const QList<QUrl> &urls )
 {
-    QList<QUrl> list;
+    QList<QUrl> list;rra
     foreach( const QUrl &url, urls )
         list << url;
     The::playlistController()->insertOptioned( list );

@@ -20,6 +20,7 @@
 
 #include <QMetaType> // for Q_DECLARE_METATYPE
 #include <QObject>
+#include <QJSValue>
 
 class StreamItem;
 class QPixmap;
@@ -59,7 +60,7 @@ namespace AmarokScript
             QJSEngine* m_scriptEngine;
             int m_currentId;
             QString m_serviceName;
-            Q_INVOKABLE QJSValue ScriptableServiceScript_prototype_ctor( const QJSValueList argument, QJSEngine *engine );
+            Q_INVOKABLE QJSValue ScriptableServiceScript_prototype_ctor( const QJSValueList argument );
             static QJSValue ScriptableServiceScript_prototype_populate( QJSEngine *engine );
 
         Q_SIGNALS:
