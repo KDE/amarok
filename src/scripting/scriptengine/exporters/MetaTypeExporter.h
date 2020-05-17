@@ -24,10 +24,9 @@
 
 #include <QObject>
 #include <QString>
+#include <QJSValue>
 
-class QScriptContext;
 class QJSEngine;
-class QJSValue;
 
 typedef QMap<QString,QString> StringMap;
 namespace Meta
@@ -37,6 +36,21 @@ namespace Meta
 
 namespace AmarokScript
 {
+    /**
+     * Wraps MetaTrackPrototype Ctor
+     */
+    class MetaTrackPrototypeWrapper : public QObject
+    {
+        Q_OBJECT
+    public:
+        MetaTrackPrototypeWrapper(QJSEngine *engine);
+        Q_INVOKABLE QJSValue trackCtor( QJSValueList arguments );
+
+    private:
+        QJSEngine *m_engine;
+    };
+
+    // SCRIPTDOX BiasFactory
     // SCRIPTDOX PROTOTYPE Meta::TrackPtr Track
     /**
      * Represents track objects.
@@ -105,7 +119,6 @@ namespace AmarokScript
             static void init( QJSEngine *engine );
             Meta::TrackPtr data() const { return m_track; }
             MetaTrackPrototype( const Meta::TrackPtr &track );
-            static QJSValue trackCtor( QScriptContext *context, QJSEngine *engine );
             static QJSValue toScriptTagMap( QJSEngine *engine, const Meta::FieldHash &map );
             static void fromScriptTagMap( const QJSValue &value, Meta::FieldHash &map );
 
@@ -140,6 +153,7 @@ namespace AmarokScript
             void loaded( Meta::TrackPtr );
 
         private:
+            static MetaTrackPrototypeWrapper* s_wrapper;
             Meta::TrackPtr m_track;
 
             void metadataChanged( const Meta::TrackPtr &track ) override;

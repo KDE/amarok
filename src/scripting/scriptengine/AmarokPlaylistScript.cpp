@@ -80,7 +80,7 @@ AmarokPlaylistScript::addTrack( const Meta::TrackPtr &track )
 void
 AmarokPlaylistScript::addMediaList( const QList<QUrl> &urls )
 {
-    QList<QUrl> list;rra
+    QList<QUrl> list;
     foreach( const QUrl &url, urls )
         list << url;
     The::playlistController()->insertOptioned( list );

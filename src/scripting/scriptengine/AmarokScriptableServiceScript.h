@@ -24,7 +24,6 @@
 
 class StreamItem;
 class QPixmap;
-class QScriptContext;
 class QJSEngine;
 
 namespace AmarokScript

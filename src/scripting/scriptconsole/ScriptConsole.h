@@ -17,6 +17,8 @@
 #ifndef SCRIPTCONSOLE_H
 #define SCRIPTCONSOLE_H
 
+#include "ScriptConsoleDebugger.h"
+
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QPointer>

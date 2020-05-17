@@ -19,6 +19,7 @@
 #include "core/support/Debug.h"
 
 #include <QMetaEnum>
+#include <QQmlEngine>
 #include <QTimer>
 
 using namespace AmarokScript;
@@ -27,9 +28,9 @@ AmarokScriptEngine::AmarokScriptEngine( QObject *parent )
 : QJSEngine(parent)
 , internalObject( QStringLiteral("UndocumentedAmarokScriptingInternals") )
 {
-    QJSValue scriptObject = newQObject( this, QtOwnership,
-                                            ExcludeChildObjects | ExcludeSuperClassContents );
-    globalObject().setProperty( internalObject, scriptObject, QJSValue::ReadOnly );
+    QJSValue scriptObject = newQObject( this );
+    QQmlEngine::setObjectOwnership( this, QQmlEngine::CppOwnership);
+    globalObject().setProperty( internalObject, scriptObject );
     QJSValue setTimeoutObject = scriptObject.property( QStringLiteral("setTimeout") );
     Q_ASSERT( !setTimeoutObject.isUndefined() );
     Q_ASSERT( !globalObject().property( internalObject ).property( "invokableDeprecatedCall" ).isUndefined() );
@@ -40,7 +41,7 @@ void
 AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString &name, const QJSValue &property )
 {
     const QString objName = QStringLiteral( "%1%2" ).arg( name, QString::number( qrand() ) );
-    globalObject().property( internalObject ).setProperty( objName, property, QJSValue::ReadOnly | QJSValue::SkipInEnumeration );
+    globalObject().property( internalObject ).setProperty( objName, property );
     const QString command = QString( "Object.defineProperty( %1, \"%2\", {get : function(){ var iobj= %3; iobj.invokableDeprecatedCall(\""
                                                                             " %1.%2 \"); return iobj.%4; },\
                                                                             enumerable : true,\
@@ -57,7 +58,7 @@ AmarokScriptEngine::invokableDeprecatedCall( const QString &call )
 }
 
 void
-AmarokScriptEngine::setTimeout( const QJSValue &function, int time, const QJSValue &thisObject, const QScriptValue &args )
+AmarokScriptEngine::setTimeout( const QJSValue &function, int time, const QJSValue &thisObject, const QJSValue &args )
 {
     QTimer *timer = new QTimer( this );
     timer->setSingleShot( true );
@@ -80,10 +81,10 @@ AmarokScriptEngine::slotTimeout()
     {
         thisObject = m_callbacks[timer][1];
         if( m_callbacks[timer].size() == 3 )
-            for ( quint32 i = 0; i < m_callbacks[timer][2].property(QStringLiteral("length")).toUInt32(); ++i )
+            for ( quint32 i = 0; i < m_callbacks[timer][2].property(QStringLiteral("length")).toUInt(); ++i )
                 args << m_callbacks[timer][2].property( i );
     }
-    m_callbacks[timer][0].call( thisObject, args );
+    m_callbacks[timer][0].callWithInstance( thisObject, args );
     m_callbacks.remove( timer );
     timer->deleteLater();
 }

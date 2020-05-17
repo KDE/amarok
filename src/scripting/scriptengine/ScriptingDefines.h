@@ -109,10 +109,10 @@ namespace AmarokScript
                 qRegisterMetaType<T>();
                 QMetaType::registerConverter<QJSValue,T>( [] (QJSValue scriptObj) {
                     T arrayObj;
-                    AmarokScript::fromScriptArray( scriptObj, arrayObj );
+                    fromScriptArray( scriptObj, arrayObj );
                     return arrayObj;
                 });
-                QMetaType::registerConverter<T,QJSValue>( [this] (T arrayObj) { return AmarokScript::toScriptArray( this, arrayObj ); } );
+                QMetaType::registerConverter<T,QJSValue>( [this] (T arrayObj) { return toScriptArray( this, arrayObj ); } );
             }
             template <class Map>
             void registerMapType()
@@ -120,10 +120,10 @@ namespace AmarokScript
                 qRegisterMetaType<Map>();
                 QMetaType::registerConverter<QJSValue,Map>( [] (QJSValue scriptObj) {
                     Map mapObj;
-                    AmarokScript::fromScriptMap( scriptObj, mapObj );
+                    fromScriptMap( scriptObj, mapObj );
                     return mapObj;
                 });
-                QMetaType::registerConverter<Map,QJSValue>( [this] (Map mapObj) { return AmarokScript::toScriptMap( this, mapObj ); } );
+                QMetaType::registerConverter<Map,QJSValue>( [this] (Map mapObj) { return toScriptMap( this, mapObj ); } );
             }
 
             // SCRIPTDOX exclude

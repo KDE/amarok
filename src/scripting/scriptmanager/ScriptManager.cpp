@@ -259,11 +259,7 @@ ScriptManager::handleException(const QJSValue& value)
 {
     DEBUG_BLOCK
 
-    QScriptEngine *engine = value.engine();
-    if (!engine)
-        return;
-
-    Amarok::Logger::longMessage( i18n( "Script error reported by: %1\n%2", scriptNameForEngine( engine ), value.toString() ), Amarok::Logger::Error );
+    Amarok::Logger::longMessage( i18n( "Script error reported by: %1\n%2", value.property("name").toString(), value.property("message").toString() ), Amarok::Logger::Error );
 }
 
 void
@@ -402,7 +398,7 @@ ScriptManager::scripts( const QString &category ) const
 }
 
 QString
-ScriptManager::scriptNameForEngine( const QScriptEngine *engine ) const
+ScriptManager::scriptNameForEngine( const QJSEngine *engine ) const
 {
     foreach( const QString &name, m_scripts.keys() )
     {

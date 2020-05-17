@@ -173,7 +173,7 @@ ScriptConsole::slotExecuteNewScript()
 {
     if( m_scriptItem->document()->text().isEmpty() )
         return;
-
+    /* TODO - QJSEngine does not have syntax checker. Evaluate alternatives
     QScriptSyntaxCheckResult syntaxResult = m_scriptItem->engine()->checkSyntax( m_scriptItem->document()->text() );
     if( QScriptSyntaxCheckResult::Valid != syntaxResult.state() )
     {
@@ -186,6 +186,7 @@ ScriptConsole::slotExecuteNewScript()
         if( response == KMessageBox::Cancel )
             return;
     }
+    */
 
     m_scriptItem->document()->save();
     m_codeWidget->setWidget( m_debugger->widget( ScriptConsoleDebugger::CodeWidget ) );
@@ -251,9 +252,11 @@ ScriptConsole::slotEvaluationSuspended()
         slotNewScript();
         return;
     }
-    debug() << "Is Evaluating() " << m_scriptItem->engine()->isEvaluating();
-    debug() << "Exception isValid()" << m_scriptItem->engine()->uncaughtException().isValid();
-    if( m_scriptItem->engine() && m_scriptItem->engine()->uncaughtException().isValid() )
+    debug() << "Is Running() " << m_scriptItem->running();
+    debug() << "Engine isError()" << m_scriptItem->engineResult().isError();
+    // TODO - Inspect if translations work with real debugger signals
+    //if( m_scriptItem->engine() && m_scriptItem->engine()->uncaughtException().isValid() )
+    if( m_scriptItem->engine() && m_scriptItem->engineResult().isError() )
         return;
 
     KTextEditor::View *view = m_scriptItem->createEditorView( m_codeWidget );
@@ -265,9 +268,9 @@ ScriptConsole::slotEvaluationSuspended()
 void
 ScriptConsole::slotEvaluationResumed()
 {
-    debug() << "Is Evaluating() " << m_scriptItem->engine()->isEvaluating();
-    debug() << "Exception isValid()" << m_scriptItem->engine()->uncaughtException().isValid();
-    if( !m_scriptItem->engine() || !m_scriptItem->engine()->isEvaluating() )
+    debug() << "Is running() " << m_scriptItem->running();
+    debug() << "Engine isError()" << m_scriptItem->engineResult().isError();
+    if( !m_scriptItem->engine() || !m_scriptItem->running() )
         return;
 
     KTextEditor::View *view = m_scriptItem->createEditorView( m_codeWidget );
@@ -298,7 +301,7 @@ ScriptConsole::setCurrentScriptItem( ScriptConsoleItem *item )
     m_debugger->detach();
     m_debugger->attachTo( item->engine() );
     m_scriptItem = item;
-    if( item->engine() && item->engine()->isEvaluating() )
+    if( item->engine() && item->running() )
     {
         m_codeWidget->setWidget( m_debugger->widget( ScriptConsoleDebugger::CodeWidget ) );
     }

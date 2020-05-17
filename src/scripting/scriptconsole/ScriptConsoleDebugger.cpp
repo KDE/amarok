@@ -16,27 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "scriptconsoledebugger.h"
+#include "ScriptConsoleDebugger.h"
 
-ScriptConsoleDebugger::ScriptConsoleDebugger(QObject *parent) : QObject(parent)
+using namespace ScriptConsoleNS;
+
+ScriptConsoleDebugger::ScriptConsoleDebugger(QObject *parent)
+: QObject(parent)
 {
-    m_errorLogWidget = new QWidget( this );
-    m_debutOutputWidget = new QWidget( this );
-    m_breakpointsWidget = new QWidget( this );
-    m_codeFinderWidget = new QWidget( this );
-    m_codeWidget = new QWidget( this );
-    m_localsWidget = new QWidget( this );
-    m_scriptWidget = new QWidget( this );
-    m_stackWidget = new QWidget( this );
-    m_consoleWidget = new QWidget( this );
+    m_errorLogWidget = new QWidget();
+    m_debutOutputWidget = new QWidget();
+    m_breakpointsWidget = new QWidget();
+    m_codeFinderWidget = new QWidget();
+    m_codeWidget = new QWidget();
+    m_localsWidget = new QWidget();
+    m_scriptWidget = new QWidget();
+    m_stackWidget = new QWidget();
+    m_consoleWidget = new QWidget();
 }
 
 ScriptConsoleDebugger::~ScriptConsoleDebugger() {
+    delete  m_errorLogWidget;
+    delete  m_debutOutputWidget;
+    delete  m_breakpointsWidget;
+    delete  m_codeFinderWidget;
+    delete  m_codeWidget;
+    delete  m_localsWidget;
+    delete  m_scriptWidget;
+    delete  m_stackWidget;
+    delete  m_consoleWidget;
 }
 
 QAction *ScriptConsoleDebugger::action(ScriptConsoleDebugger::DebuggerAction action) const
 {
-    swtich (action)
+    switch (action)
     {
         case DebuggerAction::InterruptAction:
         case DebuggerAction::ContinueAction:
@@ -53,12 +65,14 @@ QAction *ScriptConsoleDebugger::action(ScriptConsoleDebugger::DebuggerAction act
         case DebuggerAction::FindNextInScriptAction:
         case DebuggerAction::FindPreviousInScriptAction:
         case DebuggerAction::GoToLineAction:
+            break;
     }
     return nullptr;
 }
 
 void ScriptConsoleDebugger::ScriptConsoleDebugger::attachTo(QJSEngine *engine)
 {
+    Q_UNUSED(engine);
 }
 
 bool ScriptConsoleDebugger::autoShowStandardWindow() const
@@ -66,12 +80,12 @@ bool ScriptConsoleDebugger::autoShowStandardWindow() const
     return false;
 }
 
-QMenu *ScriptConsoleDebugger::createStandardMenu(QWidget *parent = nullptr)
+QMenu *ScriptConsoleDebugger::createStandardMenu(QWidget *parent)
 {
-    return new QToolBar(parent);
+    return new QMenu(parent);
 }
 
-QToolBar *ScriptConsoleDebugger::createStandardToolBar(QWidget *parent = nullptr)
+QToolBar *ScriptConsoleDebugger::createStandardToolBar(QWidget *parent)
 {
     return new QToolBar(parent);
 }
@@ -82,6 +96,7 @@ void ScriptConsoleDebugger::detach()
 
 void ScriptConsoleDebugger::setAutoShowStandardWindow(bool autoShow)
 {
+    Q_UNUSED(autoShow);
 }
 
 QMainWindow *ScriptConsoleDebugger::standardWindow() const
@@ -91,38 +106,38 @@ QMainWindow *ScriptConsoleDebugger::standardWindow() const
 
 ScriptConsoleDebugger::DebuggerState ScriptConsoleDebugger::state() const
 {
-    return 0;
+    return ScriptConsoleDebugger::SuspendedState;
 }
 
 QWidget *ScriptConsoleDebugger::widget(ScriptConsoleDebugger::DebuggerWidget widget) const
 {
     switch (widget)
     {
-        DebuggerWidget::ConsoleWidget:
+        case DebuggerWidget::ConsoleWidget :
             return m_consoleWidget;
 
-        DebuggerWidget::StackWidget:
+        case DebuggerWidget::StackWidget:
             return m_stackWidget;
 
-        DebuggerWidget::ScriptsWidget:
+        case DebuggerWidget::ScriptsWidget:
             return m_scriptWidget;
 
-        DebuggerWidget::LocalsWidget:
+        case DebuggerWidget::LocalsWidget:
             return m_localsWidget;
 
-        DebuggerWidget::CodeWidget:
+        case DebuggerWidget::CodeWidget:
             return m_codeWidget;
 
-        DebuggerWidget::CodeFinderWidget:
+        case DebuggerWidget::CodeFinderWidget:
             return m_codeFinderWidget;
 
-        DebuggerWidget::BreakpointsWidget:
+        case DebuggerWidget::BreakpointsWidget:
             return m_breakpointsWidget;
 
-        DebuggerWidget::DebugOutputWidget:
+        case DebuggerWidget::DebugOutputWidget:
             return m_debutOutputWidget;
 
-        DebuggerWidget::ErrorLogWidget:
+        case DebuggerWidget::ErrorLogWidget:
             return m_errorLogWidget;
 
         default:

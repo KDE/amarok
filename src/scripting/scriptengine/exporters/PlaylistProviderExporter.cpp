@@ -36,9 +36,24 @@ PlaylistProviderPrototype::PlaylistProviderPrototype( Playlists::PlaylistProvide
 void
 PlaylistProviderPrototype::init( QJSEngine *engine )
 {
-    qScriptRegisterMetaType<Playlists::PlaylistProvider*>( engine, toScriptValue<Playlists::PlaylistProvider*,PlaylistProviderPrototype>,
-                                                           fromScriptValue<Playlists::PlaylistProvider*,PlaylistProviderPrototype> );
-    qScriptRegisterMetaType< PlaylistProviderList >( engine, toScriptArray, fromScriptArray );
+    qRegisterMetaType<Playlists::PlaylistProvider*>();
+    QMetaType::registerConverter<Playlists::PlaylistProvider*,QJSValue>( [=] (Playlists::PlaylistProvider* providerPtr) {
+        return toScriptValue<Playlists::PlaylistProvider*,PlaylistProviderPrototype>( engine, providerPtr);
+
+    } );
+    QMetaType::registerConverter<QJSValue,Playlists::PlaylistProvider*>( [] (QJSValue jsValue) {
+        Playlists::PlaylistProvider* providerPtr;
+        fromScriptValue<Playlists::PlaylistProvider*,PlaylistProviderPrototype>( jsValue, providerPtr );
+        return providerPtr;
+    } );
+
+    qRegisterMetaType<PlaylistProviderList>();
+    QMetaType::registerConverter<PlaylistProviderList,QJSValue>( [=] (PlaylistProviderList providerList) { return toScriptArray<PlaylistProviderList>( engine, providerList); } );
+    QMetaType::registerConverter<QJSValue,PlaylistProviderList>( [] (QJSValue jsValue) {
+        PlaylistProviderList providerList;
+        fromScriptArray<PlaylistProviderList>( jsValue, providerList );
+        return providerList;
+    } );
 }
 
 // script invokable

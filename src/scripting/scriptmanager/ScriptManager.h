@@ -31,7 +31,6 @@
 namespace AmarokScript {
     class AmarokScript;
 }
-class QScriptEngine;
 class QJSValue;
 
 class AMAROK_EXPORT ScriptManager : public QObject
@@ -70,7 +69,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
         /** Returns whether or not there is a lyrics script running */
         bool lyricsScriptRunning() const;
 
-        QString scriptNameForEngine( const QScriptEngine *engine ) const;
+        QString scriptNameForEngine( const QJSEngine *engine ) const;
 
         /** Notifies any running lyric scripts to fetch desired lyric from given URL */
         void notifyFetchLyrics( const QString& artist, const QString& title, const QString& url, const Meta::TrackPtr &track );

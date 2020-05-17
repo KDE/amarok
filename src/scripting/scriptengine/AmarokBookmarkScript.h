@@ -26,7 +26,6 @@
 #include <QJSValue>
 #include <QJSValueList>
 
-class QScriptContext;
 class QJSEngine;
 
 typedef QMap< QString, QString > StringMap;

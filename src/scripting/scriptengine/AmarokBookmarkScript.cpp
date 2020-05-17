@@ -122,11 +122,13 @@ QJSValue
 BookmarkGroupPrototype::bookmarkGroupCtor( QJSValueList arguments, QJSEngine *engine )
 {
     BookmarkGroup *group = 0;
+    QJSValue errorObj;
     switch( arguments.size() )
     {
         case 0:
-            engine->throwError( QJSValue::SyntaxError, QStringLiteral("Not enough arguments!!") );
-            return engine->newErrorObject( QJSValue::SyntaxError, QStringLiteral("Not enough arguments!!") );
+            errorObj = engine->newErrorObject( QJSValue::SyntaxError, QStringLiteral("Not enough arguments!!") );
+            engine->throwError( errorObj.errorType(), errorObj.toString() );
+            return errorObj;
 
         case 1:
             if( arguments.at( 0 ).isString() )
@@ -145,8 +147,9 @@ BookmarkGroupPrototype::bookmarkGroupCtor( QJSValueList arguments, QJSEngine *en
             break;
     }
     if( !group ) {
-        engine->throwError( QJSValue::TypeError, QStringLiteral("Invalid arguments!") );
-        return engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
+        errorObj = engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
+        engine->throwError( errorObj.errorType(), errorObj.toString() );
+        return errorObj;
     }
 
     return engine->newQObject( new BookmarkGroupPrototype( BookmarkGroupPtr( group ) ) );
@@ -262,12 +265,13 @@ QJSValue
 BookmarkPrototype::bookmarkCtor( QJSValueList arguments, QJSEngine *engine )
 {
     AmarokUrlPtr url;
+    QJSValue errorObj;
     switch( arguments.size() )
     {
         case 0:
-            engine->throwError( QJSValue::SyntaxError, QStringLiteral("Not enough arguments!!") );
-            return engine->newErrorObject( QJSValue::SyntaxError, QStringLiteral("Not enough arguments!!") );
-
+            errorObj = engine->newErrorObject( QJSValue::SyntaxError, QStringLiteral("Not enough arguments!!") );
+            engine->throwError( errorObj.errorType(), errorObj.toString() );
+            return errorObj;
         case 1:
             if( arguments.at( 0 ).isString() )
                 url = new AmarokUrl( arguments.at( 0 ).toString() );
@@ -289,8 +293,9 @@ BookmarkPrototype::bookmarkCtor( QJSValueList arguments, QJSEngine *engine )
             break;
     }
     if( !url ) {
-        engine->throwError( QJSValue::TypeError, QStringLiteral("Invalid arguments!") );
-        return engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
+        errorObj = engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
+        engine->throwError( errorObj.errorType(), errorObj.toString() );
+        return errorObj;
     }
 
     return engine->newQObject( new BookmarkPrototype( url ) );
