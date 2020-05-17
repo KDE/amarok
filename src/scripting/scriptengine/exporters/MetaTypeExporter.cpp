@@ -31,7 +31,6 @@
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Job>
 
-#include <QScriptContext>
 #include <QJSEngine>
 
 Q_DECLARE_METATYPE( StringMap )
@@ -46,31 +45,76 @@ using namespace AmarokScript;
                               X; \
                           }
 
-void
-MetaTrackPrototype::init( QJSEngine *engine )
+MetaTrackPrototypeWrapper::MetaTrackPrototypeWrapper( QJSEngine *engine )
+: QObject( engine )
+, m_engine( engine )
 {
-    qScriptRegisterMetaType<Meta::TrackPtr>( engine, toScriptValue<Meta::TrackPtr, MetaTrackPrototype>, fromScriptValue<Meta::TrackPtr, MetaTrackPrototype> );
-    qScriptRegisterMetaType<Meta::TrackList>( engine, toScriptArray, fromScriptArray );
-    qScriptRegisterMetaType<StringMap>( engine, toScriptMap, fromScriptMap );
-    qScriptRegisterMetaType<Meta::FieldHash>( engine, toScriptTagMap, fromScriptTagMap );
-    engine->globalObject().setProperty( QStringLiteral("Track"), engine->newFunction( trackCtor ) );
 }
 
 QJSValue
-MetaTrackPrototype::trackCtor( QScriptContext *context, QJSEngine *engine )
+MetaTrackPrototypeWrapper::trackCtor( QJSValueList arguments )
 {
-    if( context->argumentCount() < 1 )
-        return context->throwError( QScriptContext::SyntaxError, QStringLiteral("Not enough arguments! Pass the track url.") );
+    if( arguments.size() < 1 ) {
+        QJSValue errorObj = m_engine->newErrorObject(QJSValue::SyntaxError, QStringLiteral("Not enough arguments! Pass the track url.") );
+        m_engine->throwError( errorObj.errorType(), errorObj.toString() );
+        return errorObj;
+    }
 
-    QUrl url( qjsvalue_cast<QUrl>( context->argument( 0 ) ) );
-    if( !url.isValid() )
-        return context->throwError( QScriptContext::TypeError, QStringLiteral("Invalid QUrl") );
+    QUrl url( qjsvalue_cast<QUrl>( arguments.at( 0 ) ) );
+    if( !url.isValid() ) {
+        QJSValue errorObj = m_engine->newErrorObject( QJSValue::TypeError, QStringLiteral("Invalid QUrl") );
+        m_engine->throwError( errorObj.errorType(), errorObj.toString() );
+        return errorObj;
+    }
 
     MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
     proxyTrack->setTitle( url.fileName() ); // set temporary name
-    return engine->newQObject( new MetaTrackPrototype( Meta::TrackPtr( proxyTrack.data() ) )
-                                                , QJSEngine::ScriptOwnership
-                                                , QJSEngine::ExcludeSuperClassContents );
+    return m_engine->newQObject( new MetaTrackPrototype( Meta::TrackPtr( proxyTrack.data() ) ) );
+}
+
+MetaTrackPrototypeWrapper *MetaTrackPrototype::s_wrapper = nullptr;
+
+void
+MetaTrackPrototype::init( QJSEngine *engine )
+{
+    qRegisterMetaType<Meta::TrackPtr>();
+    QMetaType::registerConverter<Meta::TrackPtr, QJSValue>( [=] (Meta::TrackPtr trackPtr) { return toScriptValue<Meta::TrackPtr, MetaTrackPrototype>( engine, trackPtr ); } );
+    QMetaType::registerConverter<QJSValue, Meta::TrackPtr>( [] (QJSValue jsValue) {
+        Meta::TrackPtr trackPtr;
+        fromScriptValue<Meta::TrackPtr, MetaTrackPrototype>( jsValue, trackPtr );
+        return trackPtr;
+    } );
+
+    qRegisterMetaType<Meta::TrackList>();
+    QMetaType::registerConverter<Meta::TrackList,QJSValue>( [=] (Meta::TrackList trackList) { return toScriptArray<Meta::TrackList>( engine, trackList); } );
+    QMetaType::registerConverter<QJSValue,Meta::TrackList>( [] (QJSValue jsValue) {
+        Meta::TrackList trackList;
+        fromScriptArray<Meta::TrackList>( jsValue, trackList );
+        return trackList;
+    } );
+
+    qRegisterMetaType<StringMap>();
+    QMetaType::registerConverter<StringMap,QJSValue>( [=] (StringMap stringMap) { return toScriptMap<StringMap>( engine, stringMap); } );
+    QMetaType::registerConverter<QJSValue,StringMap>( [] (QJSValue jsValue) {
+        StringMap stringMap;
+        fromScriptMap<StringMap>( jsValue, stringMap );
+        return stringMap;
+    } );
+
+    qRegisterMetaType<Meta::FieldHash>();
+    QMetaType::registerConverter<Meta::FieldHash,QJSValue>( [=] (Meta::FieldHash fieldHash) { return toScriptTagMap( engine, fieldHash); } );
+    QMetaType::registerConverter<QJSValue,Meta::FieldHash>( [] (QJSValue jsValue) {
+        Meta::FieldHash fieldHash;
+        fromScriptTagMap( jsValue, fieldHash );
+        return fieldHash;
+    } );
+
+    if (s_wrapper == nullptr)
+        s_wrapper = new MetaTrackPrototypeWrapper( engine );
+    QJSValue scriptObj = engine->newQObject( s_wrapper );
+    QJSValue trackCtor = scriptObj.property("trackCtor");
+
+    engine->globalObject().setProperty( QStringLiteral("Track"),  scriptObj.property("trackCtor"));
 }
 
 MetaTrackPrototype::MetaTrackPrototype( const Meta::TrackPtr &track )

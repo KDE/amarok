@@ -31,6 +31,21 @@ class QJSEngine;
 
 namespace AmarokScript
 {
+    /**
+     * Wraps ScriptableBiasFactory Ctors
+     */
+    class ScriptableBiasFactoryWrapper : public QObject
+    {
+        Q_OBJECT
+    public:
+        ScriptableBiasFactoryWrapper(QJSEngine *engine);
+        Q_INVOKABLE QJSValue groupBiasCtor();
+        Q_INVOKABLE QJSValue biasCtor();
+
+    private:
+        QJSEngine *m_engine;
+    };
+
     // SCRIPTDOX BiasFactory
     class ScriptableBiasFactory : public QObject, public Dynamic::AbstractBiasFactory
     {
@@ -100,9 +115,9 @@ namespace AmarokScript
             Dynamic::BiasPtr createBias() override;
 
         private:
-            static QJSValue groupBiasCtor( QScriptContext *context, QJSEngine *engine );
-            static QJSValue biasCtor( QScriptContext *context, QJSEngine *engine );
-            ScriptableBiasFactory( QJSEngine *engine = 0, bool groupBias = false );
+            friend QJSValue ScriptableBiasFactoryWrapper::groupBiasCtor();
+            friend QJSValue ScriptableBiasFactoryWrapper::biasCtor();
+            ScriptableBiasFactory( QJSEngine *engine = nullptr, bool groupBias = false );
             ~ScriptableBiasFactory() override;
 
             bool enabled() const;
@@ -131,6 +146,7 @@ namespace AmarokScript
             bool m_groupBias;
             QJSEngine *m_engine;
             bool m_enabled;
+            static ScriptableBiasFactoryWrapper* s_wrapper;
     };
 
     class ScriptableBias : public Dynamic::AbstractBias
@@ -184,6 +200,20 @@ namespace AmarokScript
     };
 
     /**
+     * Wraps TrackSetExporter Ctors
+     */
+    class TrackSetExporterWrapper : public QObject
+    {
+        Q_OBJECT
+        public:
+            TrackSetExporterWrapper(QJSEngine *engine);
+            Q_INVOKABLE QJSValue trackSetConstructor( QJSValueList arguments );
+
+        private:
+            QJSEngine *m_engine;
+    };
+
+    /**
     * A representation of a set of tracks, relative to a given universe set.
     * Intersecting TrackSets from different universes is not a good idea.
     */
@@ -214,7 +244,6 @@ namespace AmarokScript
         public:
             static QJSValue toScriptValue( QJSEngine *engine, Dynamic::TrackSet const &trackSet );
             static void fromScriptValue( const QJSValue &obj, Dynamic::TrackSet &trackSet );
-            static QJSValue trackSetConstructor( QScriptContext* context, QJSEngine* engine );
 
             /**
              * Includes or excludes all tracks in the set.
@@ -281,6 +310,9 @@ namespace AmarokScript
         private:
             static void init( QJSEngine *engine );
             explicit TrackSetExporter( const Dynamic::TrackSet &trackSet );
+            friend QJSValue TrackSetExporterWrapper::trackSetConstructor( QJSValueList arguments );
+
+            static TrackSetExporterWrapper *s_wrapper;
 
             friend class ScriptableBiasFactory;
     };

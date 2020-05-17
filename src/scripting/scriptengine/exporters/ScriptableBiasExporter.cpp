@@ -25,41 +25,42 @@
 #include <QApplication>
 #include <QCoreApplication>
 #include <QJSEngine>
+#include <QQmlEngine>
 #include <QThread>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
 using namespace AmarokScript;
 
+ScriptableBiasFactoryWrapper::ScriptableBiasFactoryWrapper(QJSEngine *engine)
+: QObject( engine )
+, m_engine( engine )
+{
+}
+
+QJSValue
+ScriptableBiasFactoryWrapper::biasCtor()
+{
+    return m_engine->newQObject( new ScriptableBiasFactory( m_engine ) );
+}
+
+QJSValue
+ScriptableBiasFactoryWrapper::groupBiasCtor()
+{
+    return m_engine->newQObject( new ScriptableBiasFactory( m_engine, true ) );
+}
+
+ScriptableBiasFactoryWrapper* ScriptableBiasFactory::s_wrapper = nullptr;
+
 void
 ScriptableBiasFactory::init( QJSEngine *engine )
 {
     TrackSetExporter::init( engine );
-    engine->globalObject().setProperty( QStringLiteral("BiasFactory"), engine->newFunction( biasCtor ),
-                                        QJSValue:: Undeletable | QJSValue::ReadOnly );
-    engine->globalObject().setProperty( QStringLiteral("GroupBiasFactory"), engine->newFunction( groupBiasCtor ),
-                                        QJSValue:: Undeletable | QJSValue::ReadOnly );
-}
-
-QJSValue
-ScriptableBiasFactory::biasCtor( QScriptContext *context, QJSEngine *engine )
-{
-    Q_UNUSED( context )
-    const QJSValue biasFactoryObject = engine->newQObject( new ScriptableBiasFactory( engine )
-                                            , QJSEngine::ScriptOwnership
-                                            , QJSEngine::ExcludeSuperClassContents | QScriptEngine::ExcludeChildObjects );
-    return biasFactoryObject;
-}
-
-QJSValue
-ScriptableBiasFactory::groupBiasCtor( QScriptContext *context, QJSEngine *engine )
-{
-    Q_UNUSED( context )
-    ScriptableBiasFactory *factory = new ScriptableBiasFactory( engine, true );
-    QJSValue biasFactoryObject = engine->newQObject( factory
-                                            , QJSEngine::ScriptOwnership
-                                            , QJSEngine::ExcludeSuperClassContents | QScriptEngine::ExcludeChildObjects );
-    return biasFactoryObject;
+    if (s_wrapper == nullptr)
+        s_wrapper = new ScriptableBiasFactoryWrapper( engine );
+    QJSValue scriptObj = engine->newQObject( s_wrapper );
+    engine->globalObject().setProperty( QStringLiteral("BiasFactory"),  scriptObj.property("biasCtor") );
+    engine->globalObject().setProperty( QStringLiteral("GroupBiasFactory"), scriptObj.property("groupBiasCtor") );
 }
 
 ScriptableBiasFactory::ScriptableBiasFactory( QJSEngine *engine, bool groupBias )
@@ -84,13 +85,11 @@ ScriptableBiasFactory::createBias()
     bias = new ScriptableBias( this );
     Dynamic::BiasPtr biasPtr = Dynamic::BiasPtr( bias );
     QJSValue biasObject = bias->scriptObject();
-    if( m_initFunction.isFunction() )
-        m_initFunction.call( biasObject, QJSValueList() << biasObject );
+    if( m_initFunction.isCallable() )
+        m_initFunction.callWithInstance( biasObject, QJSValueList() << biasObject );
 
     return biasPtr;
 }
-
-// private
 
 QJSEngine*
 ScriptableBiasFactory::engine() const
@@ -245,8 +244,8 @@ ScriptableBiasFactory::toStringFunction() const
 void
 ScriptableBias::toXml( QXmlStreamWriter *writer ) const
 {
-    if( m_scriptBias->toXmlFunction().isFunction() )
-        m_scriptBias->fromXmlFunction().call( m_biasObject,
+    if( m_scriptBias->toXmlFunction().isCallable() )
+        m_scriptBias->fromXmlFunction().callWithInstance( m_biasObject,
                                               QJSValueList() << m_engine->toScriptValue<QXmlStreamWriter*>( writer ) );
     else
         Dynamic::AbstractBias::toXml( writer );
@@ -255,8 +254,8 @@ ScriptableBias::toXml( QXmlStreamWriter *writer ) const
 void
 ScriptableBias::fromXml( QXmlStreamReader *reader )
 {
-    if( m_scriptBias->fromXmlFunction().isFunction() )
-        m_scriptBias->fromXmlFunction().call( m_biasObject,
+    if( m_scriptBias->fromXmlFunction().isCallable() )
+        m_scriptBias->fromXmlFunction().callWithInstance( m_biasObject,
                                               QJSValueList() << m_engine->toScriptValue<QXmlStreamReader*>( reader ) );
     else
         Dynamic::AbstractBias::fromXml( reader );
@@ -265,8 +264,8 @@ ScriptableBias::fromXml( QXmlStreamReader *reader )
 QWidget*
 ScriptableBias::widget( QWidget *parent )
 {
-    QWidget *widget = dynamic_cast<QWidget*>( m_scriptBias->widgetFunction().call( m_biasObject,
-                                                                                   m_scriptBias->engine()->newQObject( parent ) ).toQObject() );
+    QWidget *widget = dynamic_cast<QWidget*>( m_scriptBias->widgetFunction().callWithInstance( m_biasObject,
+                                                                                  QJSValueList() << m_scriptBias->engine()->newQObject( parent ) ).toQObject() );
     if( widget )
         return widget;
     return Dynamic::AbstractBias::widget( parent );
@@ -301,9 +300,9 @@ Dynamic::TrackSet
 ScriptableBias::slotMatchingTracks( const Meta::TrackList &playlist, int contextCount, int finalCount, const Dynamic::TrackCollectionPtr &universe ) const
 {
     Q_ASSERT( QThread::currentThread() == QCoreApplication::instance()->thread() );
-    if( m_scriptBias->matchingTracksFunction().isFunction() )
+    if( m_scriptBias->matchingTracksFunction().isCallable() )
     {
-        QJSValue trackSetVal = m_scriptBias->matchingTracksFunction().call( m_biasObject,
+        QJSValue trackSetVal = m_scriptBias->matchingTracksFunction().callWithInstance( m_biasObject,
                                                                                 QJSValueList() << m_engine->toScriptValue<Meta::TrackList>( playlist )
                                                                                                    << contextCount
                                                                                                    << finalCount
@@ -347,14 +346,14 @@ ScriptableBias::replace(const Dynamic::BiasPtr &newBias )
 QString
 ScriptableBias::toString() const
 {
-    return m_scriptBias->toStringFunction().call( m_biasObject ).toString();
+    return m_scriptBias->toStringFunction().call( QJSValueList() << m_biasObject ).toString();
 }
 
 bool
 ScriptableBias::trackMatches( int position, const Meta::TrackList& playlist, int contextCount ) const
 {
-    if( m_scriptBias->trackMatchesFunction().isFunction() )
-        return m_scriptBias->trackMatchesFunction().call( m_biasObject,
+    if( m_scriptBias->trackMatchesFunction().isCallable() )
+        return m_scriptBias->trackMatchesFunction().callWithInstance( m_biasObject,
                                                           QJSValueList() << position
                                                                              << m_engine->toScriptValue<Meta::TrackList>( playlist )
                                                                              << contextCount
@@ -366,7 +365,8 @@ ScriptableBias::ScriptableBias( ScriptableBiasFactory *biasProto )
 : m_scriptBias( biasProto )
 , m_engine( biasProto->engine() )
 {
-    m_biasObject = m_engine->newQObject( this, QJSEngine::QtOwnership, QScriptEngine::ExcludeDeleteLater );
+    m_biasObject = m_engine->newQObject( this );
+    QQmlEngine::setObjectOwnership( this, QQmlEngine::CppOwnership );
     connect( m_engine, &QObject::destroyed, this, &ScriptableBias::removeBias );
 }
 
@@ -380,61 +380,31 @@ ScriptableBias::removeBias()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
-// TrackSetExporter
+// TrackSetExporterWrapper
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void
-TrackSetExporter::init( QJSEngine *engine )
+TrackSetExporterWrapper *TrackSetExporter::s_wrapper = nullptr;
+TrackSetExporterWrapper::TrackSetExporterWrapper( QJSEngine* engine )
+: QObject( engine )
+, m_engine (engine )
 {
-    qScriptRegisterMetaType<Dynamic::TrackSet>( engine, toScriptValue, fromScriptValue );
-    engine->globalObject().setProperty( QStringLiteral("TrackSet"), engine->newFunction( trackSetConstructor ),
-                                        QJSValue:: Undeletable | QJSValue::ReadOnly );
 }
-
-void
-TrackSetExporter::fromScriptValue( const QJSValue &obj, Dynamic::TrackSet &trackSet )
-{
-    DEBUG_BLOCK
-    TrackSetExporter *trackSetProto = dynamic_cast<TrackSetExporter*>( obj.toQObject() );
-    if( !trackSetProto )
-        trackSet = Dynamic::TrackSet( Dynamic::TrackCollectionPtr( new Dynamic::TrackCollection( QStringList() ) ), false );
-    else
-        trackSet = *trackSetProto;
-}
-
 QJSValue
-TrackSetExporter::toScriptValue( QJSEngine *engine, const Dynamic::TrackSet &trackSet )
-{
-    DEBUG_BLOCK
-    TrackSetExporter *trackProto = new TrackSetExporter( trackSet );
-    QJSValue val = engine->newQObject( trackProto, QJSEngine::ScriptOwnership,
-                                            QJSEngine::ExcludeSuperClassContents );
-    return val;
-}
-
-bool
-TrackSetExporter::containsUid( const QString &uid ) const
-{
-    return Dynamic::TrackSet::contains( uid );
-}
-
-
-QJSValue
-TrackSetExporter::trackSetConstructor( QScriptContext *context, QJSEngine *engine )
+TrackSetExporterWrapper::trackSetConstructor( QJSValueList arguments )
 {
     DEBUG_BLOCK
 
     // if( !context->isCalledAsConstructor() ) throw exception?
     Dynamic::TrackSet trackSet;
     bool invalid = false;
-    switch( context->argumentCount() )
+    switch( arguments.size() )
     {
         case 0:
             break;
 
         case 1:
         {
-            TrackSetExporter *trackSetPrototype = dynamic_cast<TrackSetExporter*>( context->argument( 0 ).toQObject() );
+            TrackSetExporter *trackSetPrototype = dynamic_cast<TrackSetExporter*>( arguments.at( 0 ).toQObject() );
             if( trackSetPrototype )
                 trackSet = Dynamic::TrackSet( *trackSetPrototype );
             else
@@ -443,10 +413,10 @@ TrackSetExporter::trackSetConstructor( QScriptContext *context, QJSEngine *engin
         }
 
         case 2:
-            if( context->argument( 1 ).isBool() )
+            if( arguments.at( 1 ).isBool() )
             {
-                bool isFull = context->argument( 1 ).toBool();
-                QJSValue arg0 = context->argument( 0 );
+                bool isFull = arguments.at( 1 ).toBool();
+                QJSValue arg0 = arguments.at( 0 );
                 QStringList uidList;
                 Meta::TrackList trackList;
                 if( arg0.toVariant().canConvert<QStringList>() )
@@ -478,15 +448,60 @@ TrackSetExporter::trackSetConstructor( QScriptContext *context, QJSEngine *engin
     }
     if( invalid )
     {
-        context->throwError( QScriptContext::SyntaxError, QStringLiteral("Invalid arguments for TrackSet!") );
-        return JSValue(QJSValue::UndefinedValue);
+        m_engine->throwError( QJSValue::SyntaxError, QStringLiteral("Invalid arguments for TrackSet!") );
+        return QJSValue(QJSValue::UndefinedValue);
     }
 
-    const QJSValue trackSetObject = engine->newQObject( new TrackSetExporter( trackSet )
-                                                , QJSEngine::ScriptOwnership
-                                                , QJSEngine::ExcludeSuperClassContents );
+    const QJSValue trackSetObject = m_engine->newQObject( new TrackSetExporter( trackSet ) );
     return trackSetObject;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// TrackSetExporter
+/////////////////////////////////////////////////////////////////////////////////////////
+
+void
+TrackSetExporter::init( QJSEngine *engine )
+{
+    qRegisterMetaType<Dynamic::TrackSet>();
+    QMetaType::registerConverter<Dynamic::TrackSet, QJSValue>( [=] (Dynamic::TrackSet trackSet) { return toScriptValue( engine, trackSet ); } );
+    QMetaType::registerConverter<QJSValue, Dynamic::TrackSet>( [] (QJSValue jsValue) {
+        Dynamic::TrackSet trackSet;
+        fromScriptValue( jsValue, trackSet );
+        return trackSet;
+    } );
+    if (s_wrapper == nullptr)
+        s_wrapper = new TrackSetExporterWrapper( engine );
+    engine->globalObject().setProperty( QStringLiteral("TrackSet"), engine->newQObject( s_wrapper ).property( "trackSetConstructor" ) );
+}
+
+void
+TrackSetExporter::fromScriptValue( const QJSValue &obj, Dynamic::TrackSet &trackSet )
+{
+    DEBUG_BLOCK
+    TrackSetExporter *trackSetProto = dynamic_cast<TrackSetExporter*>( obj.toQObject() );
+    if( !trackSetProto )
+        trackSet = Dynamic::TrackSet( Dynamic::TrackCollectionPtr( new Dynamic::TrackCollection( QStringList() ) ), false );
+    else
+        trackSet = *trackSetProto;
+}
+
+QJSValue
+TrackSetExporter::toScriptValue( QJSEngine *engine, const Dynamic::TrackSet &trackSet )
+{
+    DEBUG_BLOCK
+    TrackSetExporter *trackProto = new TrackSetExporter( trackSet );
+    QJSValue val = engine->newQObject( trackProto );
+    QQmlEngine::setObjectOwnership( trackProto, QQmlEngine::JavaScriptOwnership);
+    return val;
+}
+
+bool
+TrackSetExporter::containsUid( const QString &uid ) const
+{
+    return Dynamic::TrackSet::contains( uid );
+}
+
 
 void
 TrackSetExporter::reset( bool value )

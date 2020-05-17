@@ -40,9 +40,9 @@ namespace AmarokScript
             explicit Downloader( QJSEngine* scriptEngine );
 
         private:
-            static QJSValue dataDownloader_prototype_ctor( QScriptContext* context, QJSEngine* engine );
-            static QJSValue stringDownloader_prototype_ctor( QScriptContext* context, QJSEngine* engine );
-            static QJSValue init( QScriptContext* context, QJSEngine* engine, bool stringResult );
+            QJSValue dataDownloader_prototype_ctor( QJSValueList arguments );
+            QJSValue stringDownloader_prototype_ctor( QJSValueList arguments );
+            static QJSValue init( QJSValueList arguments, QJSEngine *engine, bool stringResult );
 
             QJSEngine* m_scriptEngine;
     };

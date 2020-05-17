@@ -45,7 +45,7 @@ void
 ScriptImporter::loadExtension( const QString& src )
 {
     DEBUG_BLOCK
-    m_scriptEngine->importExtension( "amarok/" + src );
+    m_scriptEngine->importModule( "amarok/" + src );
 }
 
 bool
@@ -69,8 +69,9 @@ ScriptImporter::include( const QString& relativeFilename )
         warning() << "cannot open the include file!";
         return false;
     }
-    m_scriptEngine->currentContext()->setActivationObject(
-                            m_scriptEngine->currentContext()->parentContext()->activationObject() );
+    // TODO - Analyze impact of not loading context
+    //m_scriptEngine->currentContext()->setActivationObject(
+    //                        m_scriptEngine->currentContext()->parentContext()->activationObject() );
     m_scriptEngine->evaluate( file.readAll(), relativeFilename );
     return true;
 }
@@ -78,7 +79,9 @@ ScriptImporter::include( const QString& relativeFilename )
 QStringList
 ScriptImporter::availableBindings() const
 {
-    return m_scriptEngine->availableExtensions();
+    // TODO - implement listing of imported modules at AmarokScriptEngine
+    //return m_scriptEngine->availableExtensions();
+    return QStringList();
 }
 
 bool

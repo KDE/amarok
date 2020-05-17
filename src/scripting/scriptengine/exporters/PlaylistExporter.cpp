@@ -29,10 +29,26 @@ using namespace AmarokScript;
 void
 PlaylistPrototype::init( QJSEngine *engine )
 {
-    qScriptRegisterMetaType<Playlists::PlaylistPtr>( engine,
-                                                     toScriptValue<Playlists::PlaylistPtr,PlaylistPrototype>,
-                                                     fromScriptValue<Playlists::PlaylistPtr,PlaylistPrototype> );
-    qScriptRegisterMetaType<Playlists::PlaylistList>( engine, toScriptArray, fromScriptArray );
+    qRegisterMetaType<Playlists::PlaylistPtr>();
+    QMetaType::registerConverter<Playlists::PlaylistPtr,QJSValue>( [=] (Playlists::PlaylistPtr playlistPtr) {
+        return toScriptValue<Playlists::PlaylistPtr,PlaylistPrototype>( engine, playlistPtr );
+    } );
+    QMetaType::registerConverter<QJSValue,Playlists::PlaylistPtr>( [] (QJSValue jsValue) {
+        Playlists::PlaylistPtr playlistPtr;
+        fromScriptValue<Playlists::PlaylistPtr,PlaylistPrototype>( jsValue, playlistPtr );
+        return playlistPtr;
+    } );
+
+    qRegisterMetaType<Playlists::PlaylistList>();
+    QMetaType::registerConverter<Playlists::PlaylistList,QJSValue>( [=] (Playlists::PlaylistList playlistList) {
+        return toScriptArray<Playlists::PlaylistList>( engine, playlistList );
+
+    } );
+    QMetaType::registerConverter<QJSValue,Playlists::PlaylistList>( [] (QJSValue jsValue) {
+        Playlists::PlaylistList playlistList;
+        fromScriptArray<Playlists::PlaylistList>( jsValue, playlistList );
+        return playlistList;
+    } );
 }
 
 // script invokable

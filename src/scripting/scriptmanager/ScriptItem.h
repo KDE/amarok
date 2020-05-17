@@ -60,6 +60,7 @@ public:
     bool running() const { return m_running; }
     QString specPath() const;
     QString output() const { return m_output.join(QStringLiteral("\n")); }
+    QJSValue engineResult() const { return m_engineResult; };
 
     virtual bool start( bool silent );
     virtual void pause();
@@ -92,16 +93,17 @@ private:
     QString                                             m_name;
     QUrl                                                m_url;
     KPluginInfo                                         m_info;
-    QPointer<AmarokScript::AmarokScriptEngine>      m_engine;
+    QPointer<AmarokScript::AmarokScriptEngine>          m_engine;
+    QJSValue                                            m_engineResult;
     /** Currently activated in the Script Manager */
     bool                                                m_running;
     bool                                                m_evaluating;
     QStringList                                         m_log;
-    QPointer<AmarokScript::ScriptableServiceScript> m_service;
+    QPointer<AmarokScript::ScriptableServiceScript>     m_service;
     QStringList                                         m_output;
     int                                                 m_runningTime;
     int                                                 m_timerId;
-    QPointer<ScriptTerminatorWidget>                m_popupWidget;
+    QPointer<ScriptTerminatorWidget>                    m_popupWidget;
 };
 
 #endif /* AMAROK_SCRIPTITEM_H */

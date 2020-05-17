@@ -34,13 +34,11 @@ ScriptableServiceScript::ScriptableServiceScript( QJSEngine* engine )
     , m_scriptEngine( engine )
 {
     DEBUG_BLOCK
-    m_scriptEngine = engine;
+    QJSValue scriptObj = engine->newQObject( this );
     //engine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QJSValue() );
-    QJSValue thisObject = m_engine->newQObject( this );
-    thisObject.setPrototype( QJSValue() );
-    //const QJSValue ctor = engine->newFunction( &ScriptableServiceScript_prototype_ctor );
-    const QJSValue ctor = thisObject.property("ScriptableServiceScript_prototype_ctor");
-    m_engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), ctor );
+    scriptObj.setPrototype( QJSValue() );
+    const QJSValue ctor = scriptObj.property("ScriptableServiceScript_prototype_ctor");
+    engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), ctor );
 }
 
 QJSValue
@@ -48,10 +46,10 @@ ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( const QJSValueL
 {
     DEBUG_BLOCK
     QString serviceName = argument.at(0).toString();
-    int levels = argument.at(1).toInt32();
+    int levels = argument.at(1).toInt();
     QString shortDescription = argument.at(2).toString();
     QString rootHtml = argument.at(3).toString();
-    bool showSearchBar = argument.at([4).toBoolean();
+    bool showSearchBar = argument.at(4).toBool();
     if( !ScriptManager::instance()->m_scripts.contains( serviceName ) )
     {
         error() << "The name of the scriptable script should be the same with the one in the script.spec file!";
@@ -67,6 +65,7 @@ ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( const QJSValueL
 QJSValue
 ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QJSEngine *engine )
 {
+    Q_UNUSED( engine );
     debug() << "prototype populating here!";
     return QJSValue( QJSValue::UndefinedValue );
 }

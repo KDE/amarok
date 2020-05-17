@@ -110,6 +110,7 @@ ScriptItem::ScriptItem( QObject *parent, const QString &name, const QString &pat
 , m_name( name )
 , m_url( QUrl::fromLocalFile( path ) )
 , m_info( info )
+, m_engineResult()
 , m_running( false )
 , m_evaluating( false )
 , m_runningTime( 0 )
@@ -133,12 +134,14 @@ ScriptItem::pause()
         m_popupWidget->deleteLater();
     }
     //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
-    if( m_engine->isEvaluating() )
+    /* TODO- interrupted methos is available only from 5.14. Check minimum QT version.
+    if( !m_engine->isInterrupted() )
     {
-        m_engine->abortEvaluation();
+        m_engine->setInterrupted(true);
         m_evaluating = false;
         return;
     }
+    */
     if( m_info.category() == "Scriptable Service" )
         The::scriptableServiceManager()->removeRunningScript( m_name );
 
@@ -166,7 +169,9 @@ void
 ScriptItem::timerEvent( QTimerEvent* event )
 {
     Q_UNUSED( event )
-    if( m_engine && m_engine->isEvaluating() )
+    // TODO - Check if can be replaced with isInterrupted()
+    //if( m_engine && m_engine->isEvaluating() )
+    if( m_engine )
     {
         m_runningTime += 100;
         if( m_runningTime >= 5000 )
@@ -195,13 +200,13 @@ ScriptItem::timerEvent( QTimerEvent* event )
 }
 
 QString
-ScriptItem::handleError( QJSValue *return )
+ScriptItem::handleError( QJSValue *result )
 {
     QString errorString = QString( "Script Error: %1 (line: %2)" )
-                          .arg( result.toString() )
-                          .arg( result.property("lineNumber").toInt() );
+                          .arg( result->toString() )
+                          .arg( result->property("lineNumber").toInt() );
     error() << errorString;
-    engine->clearExceptions();
+    //engine->clearExceptions();
     stop();
     return errorString;
 }
@@ -224,8 +229,8 @@ ScriptItem::start( bool silent )
 
     m_timerId = startTimer( 100 );
     Q_ASSERT( m_engine );
-    QJSValue result = m_engine->evaluate( scriptFile.readAll() );
-    m_output << result.toString();
+    m_engineResult = m_engine->evaluate( scriptFile.readAll() );
+    m_output << m_engineResult.toString();
     debug() << "After Evaluation "<< m_name;
     Q_EMIT evaluated( m_output.join( "\n" ) );
     scriptFile.close();
@@ -233,9 +238,9 @@ ScriptItem::start( bool silent )
     if ( m_evaluating )
     {
         m_evaluating = false;
-        if ( result.isError() )
+        if ( m_engineResult.isError() )
         {
-            m_log << handleError( result );
+            m_log << handleError( &m_engineResult );
             if( !silent )
             {
                 debug() << "The Log For the script that is the borked: " << m_log;
@@ -261,9 +266,10 @@ ScriptItem::initializeScriptEngine()
     m_engine = new AmarokScript::AmarokScriptEngine( this );
     connect( m_engine.data(), &AmarokScript::AmarokScriptEngine::deprecatedCall,
              this, &ScriptItem::slotDeprecatedCall );
-    connect( m_engine.data(), &AmarokScript::AmarokScriptEngine::signalHandlerException,
-             this, &ScriptItem::signalHandlerException );
-    m_engine.data()->setProcessEventsInterval( 50 );
+    // TODO - Inspect if possible to implement similar signal
+    //connect( m_engine.data(), &AmarokScript::AmarokScriptEngine::signalHandlerException,
+    //         this, &ScriptItem::signalHandlerException );
+    //m_engine.data()->setProcessEventsInterval( 50 );
     debug() << "starting script engine:" << m_name;
 
     // first create the Amarok global script object

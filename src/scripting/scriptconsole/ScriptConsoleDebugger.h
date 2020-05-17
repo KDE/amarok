@@ -19,7 +19,7 @@
 #ifndef SCRIPTCONSOLEDEBUGGER_H
 #define SCRIPTCONSOLEDEBUGGER_H
 
-#include <QActiont>
+#include <QAction>
 #include <QJSEngine>
 #include <QMainWindow>
 #include <QMenu>
@@ -50,11 +50,11 @@ namespace ScriptConsoleNS
         };
 
         enum DebuggerState {
-            RunningState=0
+            RunningState=0,
             SuspendedState=1
         };
 
-        enum DebuggerAction{
+        enum DebuggerAction {
             InterruptAction=0,
             ContinueAction=1,
             StepIntoAction=2,
@@ -96,19 +96,19 @@ namespace ScriptConsoleNS
 
     private:
 
-        QWidget m_errorLogWidget;
-        QWidget m_debutOutputWidget;
-        QWidget m_breakpointsWidget;
-        QWidget m_codeFinderWidget;
-        QWidget m_codeWidget;
-        QWidget m_localsWidget;
-        QWidget m_scriptWidget;
-        QWidget m_stackWidget;
-        QWidget m_consoleWidget;
+        QWidget *m_errorLogWidget;
+        QWidget *m_debutOutputWidget;
+        QWidget *m_breakpointsWidget;
+        QWidget *m_codeFinderWidget;
+        QWidget *m_codeWidget;
+        QWidget *m_localsWidget;
+        QWidget *m_scriptWidget;
+        QWidget *m_stackWidget;
+        QWidget *m_consoleWidget;
 
     };
 };
 
-Q_DECLARE_INTERFACE(ScriptConsoleDebugger, "ScriptConsoleDebugger")
+Q_DECLARE_INTERFACE(ScriptConsoleNS::ScriptConsoleDebugger, "ScriptConsoleDebugger")
 
 #endif // SCRIPTCONSOLEDEBUGGER_H

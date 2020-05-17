@@ -102,7 +102,7 @@ ScriptConsoleItem::start( bool silent )
     }
     m_viewFactory->save();
     Q_ASSERT( engine() );
-    engine()->pushContext();
+    //engine()->pushContext();
     return ScriptItem::start( silent );
 }
 
@@ -136,11 +136,11 @@ ScriptConsoleItem::setClearOnDeletion( bool clearOnDelete )
 }
 
 QString
-ScriptConsoleItem::handleError( QJSValue *return )
+ScriptConsoleItem::handleError( QJSValue *result )
 {
     QString errorString = QStringLiteral( "Script Error: %1 (line: %2)" )
-                        .arg( result.toString() )
-                        .arg( result.property("lineNumber").toInt() );
+                        .arg( result->toString() )
+                        .arg( result->property("lineNumber").toInt() );
     return errorString;
 }
 
@@ -149,6 +149,6 @@ ScriptConsoleItem::pause()
 {
     if( !running() )
         return;
-    engine()->popContext();
+    ///engine()->popContext();
     ScriptItem::pause();
 }
