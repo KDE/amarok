@@ -19,7 +19,7 @@
 #define AMAROK_STORAGE_MYSQLSTORAGE_H
 
 #include "core/storage/SqlStorage.h"
-#include <mysql/mysql.h>
+#include <mysql.h>
 
 
 #include <QMutex>
