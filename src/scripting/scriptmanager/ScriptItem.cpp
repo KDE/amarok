@@ -112,10 +112,11 @@ ScriptItem::ScriptItem( QObject *parent, const QString &name, const QString &pat
 , m_info( info )
 , m_engineResult()
 , m_running( false )
-, m_evaluating( false )
 , m_runningTime( 0 )
 , m_timerId( 0 )
-{}
+{
+    initializeScriptEngine();
+}
 
 void
 ScriptItem::pause()
@@ -123,7 +124,7 @@ ScriptItem::pause()
     DEBUG_BLOCK
     if( !m_engine )
     {
-        warning() << "Script has no script engine attached:" << m_name;
+        warning() << "Script has no engine attached:" << m_name;
         return;
     }
 
@@ -154,7 +155,6 @@ ScriptItem::pause()
 
     m_log << QString( "%1 Script ended" ).arg( QTime::currentTime().toString() );
     m_running = false;
-    m_evaluating = false;
 }
 
 QString
@@ -218,28 +218,27 @@ ScriptItem::start( bool silent )
     DEBUG_BLOCK
     //load the wrapper classes
     m_output.clear();
-    initializeScriptEngine();
 
     QFile scriptFile( m_url.path() );
     scriptFile.open( QIODevice::ReadOnly );
     m_running = true;
-    m_evaluating = true;
 
     m_log << QStringLiteral( "%1 Script started" ).arg( QTime::currentTime().toString() );
 
     m_timerId = startTimer( 100 );
     Q_ASSERT( m_engine );
-    m_engineResult = m_engine->evaluate( scriptFile.readAll() );
+    m_engineResult = m_engine->evaluate( scriptFile.readAll(), m_name );
     m_output << m_engineResult.toString();
     debug() << "After Evaluation "<< m_name;
     Q_EMIT evaluated( m_output.join( "\n" ) );
     scriptFile.close();
 
-    if ( m_evaluating )
+    if ( m_running )
     {
-        m_evaluating = false;
+        m_running = false;
         if ( m_engineResult.isError() )
         {
+            Q_EMIT signalHandlerException( m_engineResult );
             m_log << handleError( &m_engineResult );
             if( !silent )
             {
@@ -297,8 +296,7 @@ ScriptItem::initializeScriptEngine()
     AmarokScript::CollectionPrototype::init( m_engine.data() );
     AmarokScript::QueryMakerPrototype::init( m_engine.data() );
 
-    const QString &category = m_info.category();
-    if( category.contains( QLatin1String("Scriptable Service") ) )
+    if( m_info.category().contains( QLatin1String("Scriptable Service") ) )
     {
         new StreamItem( m_engine.data() );
         m_service = new AmarokScript::ScriptableServiceScript( m_engine.data() );

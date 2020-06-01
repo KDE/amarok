@@ -28,6 +28,7 @@ AmarokScriptEngine::AmarokScriptEngine( QObject *parent )
 : QJSEngine(parent)
 , internalObject( QStringLiteral("UndocumentedAmarokScriptingInternals") )
 {
+    installExtensions(QJSEngine::TranslationExtension | QJSEngine::ConsoleExtension);
     QJSValue scriptObject = newQObject( this );
     QQmlEngine::setObjectOwnership( this, QQmlEngine::CppOwnership);
     globalObject().setProperty( internalObject, scriptObject );
