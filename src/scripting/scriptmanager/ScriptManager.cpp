@@ -36,10 +36,12 @@
 #include "ScriptUpdater.h"
 
 #include <KMessageBox>
+#include <KPluginInfo>
 #include <KPluginMetaData>
 
 #include <QFileInfo>
 #include <QJSEngine>
+#include <QJsonDocument>
 #include <QStandardPaths>
 #include <QTimer>
 
@@ -331,8 +333,24 @@ ScriptManager::loadScript( const QString& path )
     const QString jsonPath = QString( "%1/script.json" ).arg( info.path() );
     if( !QFile::exists( jsonPath ) )
     {
-        error() << "script.json for "<< path << " is missing!";
-        return false;
+        // Try to locate legacy .spec files and convert
+        const QString specPath = QString( "%1/script.spec" ).arg( info.path() );
+        const QString desktopPath = QString( "%1/script.desktop" ).arg( info.path() );
+
+        // First rename it to .desktop, or KPluginInfo won't read it
+        if( QFile::exists( specPath ) &&  !QFile::exists( desktopPath )) {
+            QFile::rename( specPath, desktopPath );
+        }
+
+        if ( QFile::exists( desktopPath ) ) {
+            QJsonDocument jsonDocument( KPluginMetaData::fromDesktopFile( desktopPath ).rawData() );
+            QFile newJsonFile( jsonPath );
+            newJsonFile.open( QFile::WriteOnly);
+            newJsonFile.write( jsonDocument.toJson() );
+        } else {
+            error() << "script.json for "<< path << " is missing!";
+            return false;
+        }
     }
 
     KPluginMetaData pluginMetadata( jsonPath );

@@ -467,7 +467,6 @@ set(scriptengine_SRCS
 set(scriptconsole_SRCS
     scripting/scriptconsole/CompletionModel.cpp
     scripting/scriptconsole/ScriptConsole.cpp
-    scripting/scriptconsole/ScriptConsoleDebugger.cpp
     scripting/scriptconsole/ScriptEditorDocument.cpp
     scripting/scriptconsole/ScriptConsoleItem.cpp
 )

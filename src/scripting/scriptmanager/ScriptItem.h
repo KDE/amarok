@@ -78,7 +78,7 @@ private Q_SLOTS:
     void timerEvent( QTimerEvent *event ) override;
 
 Q_SIGNALS:
-    void signalHandlerException(QJSValue);
+    void signalHandlerException( QJSValue );
     void evaluated( QString output );
     void uninstalled();
 
@@ -97,7 +97,6 @@ private:
     QJSValue                                            m_engineResult;
     /** Currently activated in the Script Manager */
     bool                                                m_running;
-    bool                                                m_evaluating;
     QStringList                                         m_log;
     QPointer<AmarokScript::ScriptableServiceScript>     m_service;
     QStringList                                         m_output;

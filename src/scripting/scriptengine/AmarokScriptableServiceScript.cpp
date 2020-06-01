@@ -42,14 +42,9 @@ ScriptableServiceScript::ScriptableServiceScript( QJSEngine* engine )
 }
 
 QJSValue
-ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( const QJSValueList argument )
+ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QString serviceName, int levels, QString shortDescription, QString rootHtml, bool showSearchBar )
 {
     DEBUG_BLOCK
-    QString serviceName = argument.at(0).toString();
-    int levels = argument.at(1).toInt();
-    QString shortDescription = argument.at(2).toString();
-    QString rootHtml = argument.at(3).toString();
-    bool showSearchBar = argument.at(4).toBool();
     if( !ScriptManager::instance()->m_scripts.contains( serviceName ) )
     {
         error() << "The name of the scriptable script should be the same with the one in the script.spec file!";

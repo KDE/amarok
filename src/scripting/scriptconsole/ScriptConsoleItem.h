@@ -24,6 +24,7 @@ namespace KTextEditor{
 }
 class QJSValue;
 class QWidget;
+class QPlainTextEdit;
 
 namespace ScriptConsoleNS
 {
@@ -39,7 +40,11 @@ namespace ScriptConsoleNS
             ~ScriptConsoleItem() override;
             ScriptEditorDocument* document() { return m_viewFactory; }
             bool start( bool silent = false ) override;
-            KTextEditor::View *createEditorView( QWidget *parent );
+            KTextEditor::View *getEditorView( QWidget *parent );
+            void appendToConsoleWidget( const QString &msg);
+            QWidget *getConsoleWidget( QWidget *parent );
+            QWidget *getOutputWdiget( QWidget *parent );
+            QWidget *getErrorWidget( QWidget *parent );
 
             /**
              * Clear script files on disk upon object deletion
@@ -47,15 +52,24 @@ namespace ScriptConsoleNS
             void setClearOnDeletion( bool clearOnDelete );
             void pause() override;
 
+        public Q_SLOTS:
+            void updateOutputWidget( QString output );
+            void updateErrorWidget( QJSValue error );
+
+
         private:
             bool m_clearOnDelete;
             ScriptEditorDocument *m_viewFactory;
             QPointer<KTextEditor::View> m_view;
+            QPointer<QPlainTextEdit> m_console;
+            QPointer<QPlainTextEdit> m_output;
+            QPointer<QPlainTextEdit> m_error;
 
             void timerEvent(QTimerEvent* event) override;
             void initializeScriptEngine() override;
             static KPluginInfo createSpecFile( const QString &name, const QString &category, const QString &path );
             QString handleError( QJSValue *result ) override;
+
     };
 }
 

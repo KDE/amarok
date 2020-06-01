@@ -21,7 +21,6 @@
 #include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "ScriptEditorDocument.h"
-#include "ScriptConsoleDebugger.h"
 #include "ScriptConsoleItem.h"
 
 #include <QAction>
@@ -41,6 +40,7 @@
 #include <KTextEditor/View>
 #include <KLocalizedString>
 
+#include <iostream>
 
 using namespace AmarokScript;
 using namespace ScriptConsoleNS;
@@ -68,37 +68,34 @@ ScriptConsole::ScriptConsole( QWidget *parent )
         deleteLater();
         return;
     }
-    m_scriptListDock = new ScriptListDockWidget( this );
-    m_debugger = new ScriptConsoleDebugger( this );
 
     setDockNestingEnabled( true );
     setWindowTitle( i18n( "Script Console" ) );
     setObjectName( QStringLiteral("scriptconsole") );
 
-    m_codeWidget = getWidget( QStringLiteral("Code"), ScriptConsoleDebugger::CodeWidget );
-    addDockWidget( Qt::BottomDockWidgetArea, m_codeWidget );
+    m_scriptListDock = new ScriptListDockWidget( this );
+    m_codeWidget = getWidget( i18n("Code"), nullptr );
+    m_consoleWidget = getWidget( i18n("Console"), nullptr );
+    m_outputWidget = getWidget( i18n( "Output" ), nullptr );
+    m_errorWidget = getWidget( i18n( "Error" ), nullptr );
+
     QList<QDockWidget*> debugWidgets = QList<QDockWidget*>()
-                    << getWidget( i18n( "Console" ), ScriptConsoleDebugger::ConsoleWidget )
-                    << getWidget( i18n( "Error" ), ScriptConsoleDebugger::ErrorLogWidget )
-                    << getWidget( i18n( "Debug Output" ), ScriptConsoleDebugger::DebugOutputWidget )
-                    << getWidget( i18n( "Loaded Scripts" ), ScriptConsoleDebugger::ScriptsWidget )
-                    << getWidget( i18n( "Breakpoints" ), ScriptConsoleDebugger::BreakpointsWidget )
-                    << getWidget( i18n( "Stack" ), ScriptConsoleDebugger::StackWidget )
-                    << getWidget( i18n( "Locals" ), ScriptConsoleDebugger::LocalsWidget );
+                    << m_codeWidget
+                    << m_consoleWidget
+                    << m_outputWidget
+                    << m_errorWidget;
     foreach( QDockWidget *widget, debugWidgets )
     {
       addDockWidget( Qt::BottomDockWidgetArea, widget );
     }
-    addDockWidget( Qt::BottomDockWidgetArea, m_scriptListDock );
-    tabifyDockWidget( debugWidgets[0], debugWidgets[1] );
     tabifyDockWidget( debugWidgets[1], debugWidgets[2] );
-    tabifyDockWidget( debugWidgets[3], debugWidgets[4] );
-    tabifyDockWidget( debugWidgets[5], debugWidgets[6] );
+    tabifyDockWidget( debugWidgets[2], debugWidgets[3] );
+
+    addDockWidget( Qt::BottomDockWidgetArea, m_scriptListDock );
 
     QMenuBar *bar = new QMenuBar( this );
     setMenuBar( bar );
-    bar->addMenu( m_debugger->createStandardMenu( this ) );
-    QToolBar *toolBar = m_debugger->createStandardToolBar( this );
+    QToolBar *toolBar = new QToolBar( this );
     QAction *action = new QAction( i18n( "Stop" ), this );
     action->setIcon( QApplication::style()->standardIcon( QStyle::SP_MediaStop ) );
     connect( action, &QAction::toggled, this, &ScriptConsole::slotAbortEvaluation );
@@ -147,7 +144,6 @@ ScriptConsole::ScriptConsole( QWidget *parent )
                                                 "available at:\nhttp://community.kde.org/Amarok/Development#Scripting"
                                                 "\nExecute code: CTRL-Enter\nBack in code history: Page Up"
                                                 "\nForward in code history: Page Down"
-                                                "See the debugger manual at: <link here>"
                                                , 0 );
     item->setFlags( Qt::NoItemFlags );
     m_scriptListDock->addItem( item );
@@ -162,10 +158,35 @@ ScriptConsole::ScriptConsole( QWidget *parent )
         m_savePath = Amarok::saveLocation(QStringLiteral("scriptconsole"));
 
     slotNewScript();
-    connect( m_debugger, &ScriptConsoleDebugger::evaluationSuspended, this, &ScriptConsole::slotEvaluationSuspended );
-    connect( m_debugger, &ScriptConsoleDebugger::evaluationResumed, this, &ScriptConsole::slotEvaluationResumed );
     show();
     raise();
+
+    // Install interceptor for JS console logs and forward to appropriate widget
+    qInstallMessageHandler( [] ( QtMsgType type, const QMessageLogContext &context, const QString &msg )
+    {
+        Q_UNUSED( type );
+        QString category(context.category);
+        if ( category.compare( "js" ) == 0 ) {
+
+            QString scriptName( context.file );
+            // clean "file:" from file name
+            scriptName.remove( 0, 5);
+
+            // Search script by name
+            ScriptConsoleItem *searchResult = instance()->getScriptListDockWidget()->getScript( scriptName );
+            if (searchResult != nullptr ) {
+                // Found it - update its console widget
+                QString logEntry = QString("[%1: %2] %3")
+                .arg( scriptName )
+                .arg( context.line )
+                .arg( msg );
+                searchResult->appendToConsoleWidget( logEntry );
+            }
+        }
+
+        // Print all QT logging to STDERR as default
+        std::cerr << msg.toStdString() << std::endl;
+    });
 }
 
 void
@@ -173,23 +194,8 @@ ScriptConsole::slotExecuteNewScript()
 {
     if( m_scriptItem->document()->text().isEmpty() )
         return;
-    /* TODO - QJSEngine does not have syntax checker. Evaluate alternatives
-    QScriptSyntaxCheckResult syntaxResult = m_scriptItem->engine()->checkSyntax( m_scriptItem->document()->text() );
-    if( QScriptSyntaxCheckResult::Valid != syntaxResult.state() )
-    {
-        debug() << "Syntax error: " << syntaxResult.errorLineNumber() << syntaxResult.errorMessage();
-        KTextEditor::View *view = dynamic_cast<KTextEditor::View*>( m_codeWidget->widget() );
-        ScriptEditorDocument::highlight( view, syntaxResult.errorLineNumber(), QColor( 255, 0, 0 ) );
-        int response = KMessageBox::warningContinueCancel( this, i18n( "Syntax error at line %1, continue anyway?\nError: %2",
-                                                  syntaxResult.errorLineNumber(), syntaxResult.errorMessage() ),
-                                            i18n( "Syntax Error" ) );
-        if( response == KMessageBox::Cancel )
-            return;
-    }
-    */
 
     m_scriptItem->document()->save();
-    m_codeWidget->setWidget( m_debugger->widget( ScriptConsoleDebugger::CodeWidget ) );
     m_scriptItem->start( false );
 }
 
@@ -239,9 +245,15 @@ ScriptConsole::createScriptItem( const QString &script )
     return scriptItem;
 }
 
+ScriptListDockWidget*
+ScriptConsole::getScriptListDockWidget()
+{
+    return m_scriptListDock;
+}
+
 ScriptConsole::~ScriptConsole()
 {
-    m_debugger->detach();
+    //m_debugger->detach();
 }
 
 void
@@ -259,7 +271,7 @@ ScriptConsole::slotEvaluationSuspended()
     if( m_scriptItem->engine() && m_scriptItem->engineResult().isError() )
         return;
 
-    KTextEditor::View *view = m_scriptItem->createEditorView( m_codeWidget );
+    KTextEditor::View *view = m_scriptItem->getEditorView( m_codeWidget );
     view->installEventFilter( this );
     view->document()->installEventFilter( this );
     m_codeWidget->setWidget( view );
@@ -273,7 +285,7 @@ ScriptConsole::slotEvaluationResumed()
     if( !m_scriptItem->engine() || !m_scriptItem->running() )
         return;
 
-    KTextEditor::View *view = m_scriptItem->createEditorView( m_codeWidget );
+    KTextEditor::View *view = m_scriptItem->getEditorView( m_codeWidget );
     view->installEventFilter( this );
     m_codeWidget->setWidget( view );
 }
@@ -286,11 +298,11 @@ ScriptConsole::slotAbortEvaluation()
 
 
 QDockWidget*
-ScriptConsole::getWidget( const QString &title, ScriptConsoleDebugger::DebuggerWidget widget )
+ScriptConsole::getWidget( const QString &title, QWidget *widget )
 {
-    QDockWidget *debugWidget = new QDockWidget( title, this );
-    debugWidget->setWidget( m_debugger->widget( widget ) );
-    return debugWidget;
+    QDockWidget *dockWidget = new QDockWidget( title, this );
+    dockWidget->setWidget( widget );
+    return dockWidget;
 }
 
 void
@@ -298,19 +310,38 @@ ScriptConsole::setCurrentScriptItem( ScriptConsoleItem *item )
 {
     if( !item || m_scriptItem.data() == item )
         return;
-    m_debugger->detach();
-    m_debugger->attachTo( item->engine() );
+
+    // Set the active script widgets and update them
     m_scriptItem = item;
+
+    KTextEditor::View *view = item->getEditorView( m_codeWidget );
+    m_codeWidget->setWidget( view  );
+    view->installEventFilter( this );
+    view->show();
+
+    QWidget *console = item->getConsoleWidget( m_consoleWidget );
+    m_consoleWidget->setWidget( console );
+    console->show();
+
+    QWidget *output = item->getOutputWdiget( m_outputWidget  );
+    m_outputWidget->setWidget( output );
+    output->show();
+
+    QWidget *error  = item->getErrorWidget( m_errorWidget );
+    m_errorWidget->setWidget( error );
+    error->show();
+
+    /* TODO - install filters
     if( item->engine() && item->running() )
     {
-        m_codeWidget->setWidget( m_debugger->widget( ScriptConsoleDebugger::CodeWidget ) );
+        view->document()->setReadWrite( false );
     }
     else
     {
-        KTextEditor::View *view = item->createEditorView( m_codeWidget );
+        view->document()->setReadWrite( true );
         view->installEventFilter( this );
-        m_codeWidget->setWidget( view );
     }
+    */
 }
 
 void
@@ -355,6 +386,12 @@ ScriptListDockWidget::ScriptListDockWidget( QWidget *parent )
              this, &ScriptListDockWidget::slotCurrentItemChanged );
 }
 
+QListWidget*
+ScriptListDockWidget::listWidget()
+{
+    return m_scriptListWidget;
+}
+
 void
 ScriptListDockWidget::addScript( ScriptConsoleItem *script )
 {
@@ -365,6 +402,16 @@ ScriptListDockWidget::addScript( ScriptConsoleItem *script )
     item->setData( ScriptRole, QVariant::fromValue<ScriptConsoleItem*>( script ) );
     m_scriptListWidget->addItem( item );
     m_scriptListWidget->setCurrentItem( item );
+}
+
+ScriptConsoleItem*
+ScriptListDockWidget::getScript( const QString &scriptName)
+{
+    QList<QListWidgetItem *> searchResult = listWidget()->findItems( scriptName, Qt::MatchFixedString);
+    if (! searchResult.isEmpty() ) {
+        return searchResult.first()->data( ScriptRole ).value<ScriptConsoleItem*>();
+    }
+    return nullptr;
 }
 
 void
