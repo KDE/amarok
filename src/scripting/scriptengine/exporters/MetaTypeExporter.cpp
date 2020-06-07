@@ -52,15 +52,17 @@ MetaTrackPrototypeWrapper::MetaTrackPrototypeWrapper( QJSEngine *engine )
 }
 
 QJSValue
-MetaTrackPrototypeWrapper::trackCtor( QJSValueList arguments )
+MetaTrackPrototypeWrapper::trackCtor( QJSValue arg )
 {
+    /*
     if( arguments.size() < 1 ) {
         QJSValue errorObj = m_engine->newErrorObject(QJSValue::SyntaxError, QStringLiteral("Not enough arguments! Pass the track url.") );
         m_engine->throwError( errorObj.errorType(), errorObj.toString() );
         return errorObj;
     }
+    */
 
-    QUrl url( qjsvalue_cast<QUrl>( arguments.at( 0 ) ) );
+    QUrl url( qjsvalue_cast<QUrl>( arg ) );
     if( !url.isValid() ) {
         QJSValue errorObj = m_engine->newErrorObject( QJSValue::TypeError, QStringLiteral("Invalid QUrl") );
         m_engine->throwError( errorObj.errorType(), errorObj.toString() );
@@ -112,7 +114,6 @@ MetaTrackPrototype::init( QJSEngine *engine )
     if (s_wrapper == nullptr)
         s_wrapper = new MetaTrackPrototypeWrapper( engine );
     QJSValue scriptObj = engine->newQObject( s_wrapper );
-    QJSValue trackCtor = scriptObj.property("trackCtor");
 
     engine->globalObject().setProperty( QStringLiteral("Track"),  scriptObj.property("trackCtor"));
 }

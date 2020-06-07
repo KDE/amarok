@@ -169,9 +169,7 @@ void
 ScriptItem::timerEvent( QTimerEvent* event )
 {
     Q_UNUSED( event )
-    // TODO - Check if can be replaced with isInterrupted()
-    //if( m_engine && m_engine->isEvaluating() )
-    if( m_engine )
+    if( m_engine &&  running())
     {
         m_runningTime += 100;
         if( m_runningTime >= 5000 )

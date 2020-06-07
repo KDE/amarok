@@ -36,66 +36,39 @@ Downloader::Downloader( QJSEngine* engine )
     , m_scriptEngine( engine )
 {
     QJSValue scriptObj = engine->newQObject( this );
-    //engine->setDefaultPrototype( qMetaTypeId<Downloader*>(), QJSValue() );
     scriptObj.setPrototype( QJSValue() );
-    const QJSValue stringCtor = scriptObj.property( "stringDownloader_prototype_ctor" );
-    engine->globalObject().setProperty( QStringLiteral("Downloader"), stringCtor ); //kept for compat
-    engine->globalObject().setProperty( QStringLiteral("StringDownloader"), stringCtor ); //added for clarity
-    const QJSValue dataCtor = scriptObj.property( "dataDownloader_prototype_ctor" );
-    engine->globalObject().setProperty( QStringLiteral("DataDownloader"), dataCtor );
+    const QJSValue stringDownloadCtor = scriptObj.property( "downloader_prototype_ctor" );
+    engine->globalObject().setProperty( QStringLiteral("Downloader"), stringDownloadCtor); //kept for compat
+    engine->globalObject().setProperty( QStringLiteral("StringDownloader"), stringDownloadCtor ); //added for clarity
+    const QJSValue dataDownloadCtor = scriptObj.property( "dataDownloader_prototype_ctor(" );
+    engine->globalObject().setProperty( QStringLiteral("DataDownloader"), dataDownloadCtor );
 }
 
 QJSValue
-Downloader::stringDownloader_prototype_ctor( QJSValueList arguments )
+Downloader::stringDownloader_prototype_ctor( QString urlString, QJSValue callable, QString encoding )
 {
-    return init( arguments, m_scriptEngine, true );
+    return init( urlString, callable, true, encoding );
 }
 
 QJSValue
-Downloader::dataDownloader_prototype_ctor( QJSValueList arguments )
+Downloader::dataDownloader_prototype_ctor( QString urlString, QJSValue callable )
 {
-    //if( engine->importedExtensions().contains( QStringLiteral("qt.core") ) )
-        return init( arguments, m_scriptEngine, false );
-    /*
-    else
-    {
-        context->throwError( i18nc("do not translate 'DataDownloader' or 'qt.core'", "qt.core must be loaded to use DataDownloader" ) );
-        return engine->toScriptValue( false );
-    }
-    */
+    return init( urlString, callable, false );
 }
 
 QJSValue
-Downloader::init( QJSValueList arguments, QJSEngine *engine, bool stringResult )
+Downloader::init( const QString &urlString, const QJSValue &callable, bool stringResult, QString encoding )
 {
-    // from QtScript API docs
     DEBUG_BLOCK
-    QJSValue object;
+    QJSValue object = m_scriptEngine->newQObject( new QObject() );
 
-    /* TODO - Check if its possible to reflect if Constructor or not
-    if( context->isCalledAsConstructor() )
-        object = context->thisObject();
-    else
-    {
-        object = engine->newObject();
-        object.setPrototype( context->callee().property(QStringLiteral("prototype")) );
-    }
-    */
-    object = engine->newObject();
-
-    if( arguments.size() < 2 )
-    {
-        debug() << "ERROR! Constructor not called with enough arguments:" << arguments.size();
-        return object;
-    }
-
-    if( !arguments.at( 1 ).isCallable() ) //TODO: check QUrl
+    if( callable.isCallable() )
     {
         debug() << "ERROR! Constructor not called with a Url and function!";
         return object;
     }
 
-    QUrl url = QUrl::fromEncoded( arguments.at( 0 ).toString().toLatin1(), QUrl::StrictMode );
+    QUrl url = QUrl::fromEncoded( urlString.toLatin1(), QUrl::StrictMode );
 
     if( !url.isValid() )
     {
@@ -106,14 +79,14 @@ Downloader::init( QJSValueList arguments, QJSEngine *engine, bool stringResult )
     // start download, and connect to it
     if( stringResult )
     {
-        QString encoding = QStringLiteral("UTF-8");
-        if( arguments.size() == 3 ) // encoding specified
-            encoding = arguments.at( 2 ).toString();
-        AmarokDownloadHelper::instance()->newStringDownload( url, engine, arguments.at( 1 ), encoding );
+        AmarokDownloadHelper::instance()->newStringDownload( url, m_scriptEngine, callable, encoding );
     }
     else
-        AmarokDownloadHelper::instance()->newDataDownload( url, engine, arguments.at( 1 ) );
-    return object;
+        AmarokDownloadHelper::instance()->newDataDownload( url, m_scriptEngine, callable );
+    // connect to a local slot to extract the qstring
+    //qScriptConnect( job, SIGNAL(result(KJob*)), object, fetchResult( job ) );
+
+    return m_scriptEngine->newQObject( new QObject() );
 }
 
 ///////
