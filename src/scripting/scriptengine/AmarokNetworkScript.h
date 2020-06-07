@@ -23,11 +23,10 @@
 #include <QUrl>
 
 #include <QHash>
+#include <QJSValue>
 #include <QList>
 #include <QObject>
-#include <QJSValue>
 
-class QScriptContext;
 class QJSEngine;
 
 namespace AmarokScript
@@ -38,11 +37,11 @@ namespace AmarokScript
 
         public:
             explicit Downloader( QJSEngine* scriptEngine );
+            Q_INVOKABLE QJSValue stringDownloader_prototype_ctor( QString urlString, QJSValue callable, QString encoding = QStringLiteral("UTF-8") );
+            Q_INVOKABLE QJSValue dataDownloader_prototype_ctor( QString urlString, QJSValue callable);
 
         private:
-            QJSValue dataDownloader_prototype_ctor( QJSValueList arguments );
-            QJSValue stringDownloader_prototype_ctor( QJSValueList arguments );
-            static QJSValue init( QJSValueList arguments, QJSEngine *engine, bool stringResult );
+            QJSValue init( const QString &urlString, const QJSValue &callable, bool stringResult, QString encoding = QStringLiteral("UTF-8") );
 
             QJSEngine* m_scriptEngine;
     };

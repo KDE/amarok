@@ -44,7 +44,7 @@ namespace AmarokScript
         Q_OBJECT
     public:
         MetaTrackPrototypeWrapper(QJSEngine *engine);
-        Q_INVOKABLE QJSValue trackCtor( QJSValueList arguments );
+        Q_INVOKABLE QJSValue trackCtor( QJSValue arg );
 
     private:
         QJSEngine *m_engine;

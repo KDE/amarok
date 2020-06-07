@@ -27,8 +27,8 @@ StreamItem::StreamItem( QJSEngine *engine )
     : QObject( engine )
     , m_year( 0 )
 {
+    qRegisterMetaType<StreamItem*>();
     QJSValue scriptObj = engine->newQObject( this );
-    //engine->setDefaultPrototype( qMetaTypeId<StreamItem*>(), QJSValue() );
     scriptObj.setPrototype( QJSValue() );
     engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("StreamItem"), scriptObj );
 }

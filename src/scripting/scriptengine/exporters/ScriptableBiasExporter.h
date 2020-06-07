@@ -26,7 +26,6 @@
 #include <QString>
 #include <QXmlStreamReader>
 
-class QScriptContext;
 class QJSEngine;
 
 namespace AmarokScript
@@ -207,7 +206,7 @@ namespace AmarokScript
         Q_OBJECT
         public:
             TrackSetExporterWrapper(QJSEngine *engine);
-            Q_INVOKABLE QJSValue trackSetConstructor( QJSValueList arguments );
+            Q_INVOKABLE QJSValue trackSetConstructor( QJSValue arg0, QJSValue arg1 = QJSValue(QJSValue::UndefinedValue) );
 
         private:
             QJSEngine *m_engine;
@@ -310,7 +309,7 @@ namespace AmarokScript
         private:
             static void init( QJSEngine *engine );
             explicit TrackSetExporter( const Dynamic::TrackSet &trackSet );
-            friend QJSValue TrackSetExporterWrapper::trackSetConstructor( QJSValueList arguments );
+            friend QJSValue TrackSetExporterWrapper::trackSetConstructor( QJSValue arg0, QJSValue arg1 );
 
             static TrackSetExporterWrapper *s_wrapper;
 

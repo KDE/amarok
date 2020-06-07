@@ -55,7 +55,7 @@ namespace AmarokScript
             Q_INVOKABLE void setEmblem( const QPixmap &icon );
             Q_INVOKABLE void setScalableEmblem( const QString &emblemPath );
 
-            Q_INVOKABLE QJSValue ScriptableServiceScript_prototype_ctor( QString serviceName, int levels, QString shortDescription, QString rootHtml, bool showSearchBar );
+            Q_INVOKABLE QObject *ScriptableServiceScript_prototype_ctor( QString serviceName, int levels, QString shortDescription, QString rootHtml, bool showSearchBar );
 
 
         private:

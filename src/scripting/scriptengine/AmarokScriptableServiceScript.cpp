@@ -35,26 +35,29 @@ ScriptableServiceScript::ScriptableServiceScript( QJSEngine* engine )
 {
     DEBUG_BLOCK
     QJSValue scriptObj = engine->newQObject( this );
-    //engine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QJSValue() );
     scriptObj.setPrototype( QJSValue() );
     const QJSValue ctor = scriptObj.property("ScriptableServiceScript_prototype_ctor");
-    engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), ctor );
+    engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript_prototype_ctor"), ctor );
+    // Simulates creation of ScriptableServiceScript object of QTScript
+    engine->evaluate( QStringLiteral("function ScriptableServiceScript( serviceName, levels, shortDescription, rootHtml, showSearchBar) {"
+        "Object.assign( this, ScriptableServiceScript_prototype_ctor(serviceName, levels, shortDescription, rootHtml, showSearchBar) ); }")
+    );
 }
 
-QJSValue
+QObject*
 ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QString serviceName, int levels, QString shortDescription, QString rootHtml, bool showSearchBar )
 {
     DEBUG_BLOCK
     if( !ScriptManager::instance()->m_scripts.contains( serviceName ) )
     {
         error() << "The name of the scriptable script should be the same with the one in the script.spec file!";
-        return QJSValue( QJSValue::UndefinedValue );
+        return nullptr;
     }
-    // TODO - Obj must be set to the "this" of the executing context
-    QJSValue obj = m_scriptEngine->newQObject( ScriptManager::instance()->m_scripts.value(serviceName)->service() );
-    m_scriptEngine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), obj );
+    QObject* qObj = ScriptManager::instance()->m_scripts.value(serviceName)->service();
+    QJSValue scriptObj = m_scriptEngine->newQObject( qObj );
+    m_scriptEngine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), scriptObj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
-    return QJSValue( QJSValue::UndefinedValue );
+    return qObj;
 }
 
 QJSValue

@@ -20,11 +20,10 @@
 #include "amarokurls/BookmarkGroup.h"
 #include "core/meta/Meta.h"
 
+#include <QJSValue>
 #include <QObject>
 #include <QMap>
 #include <QMetaType>
-#include <QJSValue>
-#include <QJSValueList>
 
 class QJSEngine;
 
@@ -63,12 +62,12 @@ namespace AmarokScript
             /**
              * Wraps the invocation to BookmarkPrototype::bookmarkCtor so it can bind to a QJSEngine
              */
-            Q_INVOKABLE QJSValue bookmarkCtorWrapper( QJSValueList arguments );
+            Q_INVOKABLE QJSValue bookmarkCtorWrapper( QJSValue arg0, QJSValue arg1  = QJSValue(QJSValue::UndefinedValue ) );
 
             /**
              * Wraps the invocation to BookmarkGroupPrototype::bookmarkGroupCtor so it can bind to a QJSEngine
              */
-            Q_INVOKABLE QJSValue bookmarkGroupCtorWrapper( QJSValueList arguments );
+            Q_INVOKABLE QJSValue bookmarkGroupCtorWrapper( QJSValue arg0, QJSValue arg1 = QJSValue(QJSValue::UndefinedValue ) );
 
         private:
 
@@ -92,7 +91,7 @@ namespace AmarokScript
 
         public:
             explicit BookmarkPrototype( const AmarokUrlPtr &bookmark );
-            static QJSValue bookmarkCtor( QJSValueList arguments, QJSEngine *engine );
+            static QJSValue bookmarkCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engine );
             AmarokUrlPtr data() const { return m_url; }
 
             /**
@@ -147,7 +146,7 @@ namespace AmarokScript
 
         public:
             explicit BookmarkGroupPrototype( const BookmarkGroupPtr &group );
-            static QJSValue bookmarkGroupCtor( QJSValueList arguments, QJSEngine *engine);
+            static QJSValue bookmarkGroupCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engine);
             BookmarkGroupPtr data() const { return m_group; }
 
             /**

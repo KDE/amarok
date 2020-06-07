@@ -387,72 +387,51 @@ TrackSetExporterWrapper *TrackSetExporter::s_wrapper = nullptr;
 TrackSetExporterWrapper::TrackSetExporterWrapper( QJSEngine* engine )
 : QObject( engine )
 , m_engine (engine )
-{
+ {
 }
 QJSValue
-TrackSetExporterWrapper::trackSetConstructor( QJSValueList arguments )
+TrackSetExporterWrapper::trackSetConstructor( QJSValue arg0, QJSValue arg1 )
 {
     DEBUG_BLOCK
 
-    // if( !context->isCalledAsConstructor() ) throw exception?
-    Dynamic::TrackSet trackSet;
-    bool invalid = false;
-    switch( arguments.size() )
+    TrackSetExporter *trackSetExporter = nullptr;
+    // Called with 1 argument
+    if ( !arg0.isUndefined() && arg1.isUndefined() )
     {
-        case 0:
-            break;
-
-        case 1:
-        {
-            TrackSetExporter *trackSetPrototype = dynamic_cast<TrackSetExporter*>( arguments.at( 0 ).toQObject() );
-            if( trackSetPrototype )
-                trackSet = Dynamic::TrackSet( *trackSetPrototype );
-            else
-                invalid = true;
-            break;
+        TrackSetExporter *trackSetPrototype = dynamic_cast<TrackSetExporter*>( arg0.toQObject() );
+        if( trackSetPrototype ) {
+            trackSetExporter = new TrackSetExporter( Dynamic::TrackSet( *trackSetPrototype ) );
         }
-
-        case 2:
-            if( arguments.at( 1 ).isBool() )
+    // Called with 2 arguments
+    } else if ( !arg0.isUndefined() && arg1.isBool() ) {
+        bool isFull = arg1.toBool();
+        QStringList uidList;
+        Meta::TrackList trackList;
+        if( arg0.toVariant().canConvert<QStringList>() )
+        {
+            uidList = arg0.toVariant().toStringList();
+            Q_ASSERT( !arg0.toVariant().canConvert<Meta::TrackList>() );
+            trackSetExporter =  new TrackSetExporter( Dynamic::TrackSet( Dynamic::TrackCollectionPtr( new Dynamic::TrackCollection( uidList ) ), isFull ) );
+        }
+        else if( arg0.toVariant().canConvert<Meta::TrackList>() )
+        {
+            debug() << "In Meta::Tracklist TrackSet ctor";
+            trackList = qjsvalue_cast<Meta::TrackList>( arg0 );
+            foreach( const Meta::TrackPtr &track, trackList )
             {
-                bool isFull = arguments.at( 1 ).toBool();
-                QJSValue arg0 = arguments.at( 0 );
-                QStringList uidList;
-                Meta::TrackList trackList;
-                if( arg0.toVariant().canConvert<QStringList>() )
-                {
-                    uidList = arg0.toVariant().toStringList();
-                    Q_ASSERT( !arg0.toVariant().canConvert<Meta::TrackList>() );
-                    trackSet = Dynamic::TrackSet( Dynamic::TrackCollectionPtr( new Dynamic::TrackCollection( uidList ) ), isFull );
-                }
-                else if( arg0.toVariant().canConvert<Meta::TrackList>() )
-                {
-                    debug() << "In Meta::Tracklist TrackSet ctor";
-                    trackList = qjsvalue_cast<Meta::TrackList>( arg0 );
-                    foreach( const Meta::TrackPtr &track, trackList )
-                    {
-                        if( track )
-                            uidList << track->uidUrl();
-                    }
-                    trackSet = Dynamic::TrackSet( Dynamic::TrackCollectionPtr( new Dynamic::TrackCollection( uidList ) ), isFull  );
-                }
-                else
-                    invalid = true;
+                if( track )
+                    uidList << track->uidUrl();
             }
-            else
-                invalid = true;
-            break;
-
-        default:
-            invalid = true;
+            trackSetExporter = new TrackSetExporter( Dynamic::TrackSet( Dynamic::TrackCollectionPtr( new Dynamic::TrackCollection( uidList ) ), isFull  ) );
+        }
     }
-    if( invalid )
+    if( trackSetExporter == nullptr )
     {
         m_engine->throwError( QJSValue::SyntaxError, QStringLiteral("Invalid arguments for TrackSet!") );
         return QJSValue(QJSValue::UndefinedValue);
     }
 
-    const QJSValue trackSetObject = m_engine->newQObject( new TrackSetExporter( trackSet ) );
+    const QJSValue trackSetObject = m_engine->newQObject( trackSetExporter );
     return trackSetObject;
 }
 

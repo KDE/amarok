@@ -103,15 +103,15 @@ AmarokBookmarkScript::createCurrentTrackBookmark()
 }
 
 QJSValue
-AmarokBookmarkScript::bookmarkCtorWrapper( QJSValueList arguments )
+AmarokBookmarkScript::bookmarkCtorWrapper( QJSValue arg0, QJSValue arg1 )
 {
-    return BookmarkPrototype::bookmarkCtor( arguments, m_engine );
+    return BookmarkPrototype::bookmarkCtor( arg0, arg1, m_engine );
 }
 
 QJSValue
-AmarokBookmarkScript::bookmarkGroupCtorWrapper( QJSValueList arguments )
+AmarokBookmarkScript::bookmarkGroupCtorWrapper( QJSValue arg0, QJSValue arg1 )
 {
-    return BookmarkGroupPrototype::bookmarkGroupCtor( arguments, m_engine );
+    return BookmarkGroupPrototype::bookmarkGroupCtor( arg0, arg1, m_engine );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,32 +119,22 @@ AmarokBookmarkScript::bookmarkGroupCtorWrapper( QJSValueList arguments )
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 QJSValue
-BookmarkGroupPrototype::bookmarkGroupCtor( QJSValueList arguments, QJSEngine *engine )
+BookmarkGroupPrototype::bookmarkGroupCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engine )
 {
     BookmarkGroup *group = 0;
     QJSValue errorObj;
-    switch( arguments.size() )
-    {
-        case 0:
-            errorObj = engine->newErrorObject( QJSValue::SyntaxError, QStringLiteral("Not enough arguments!!") );
-            engine->throwError( errorObj.errorType(), errorObj.toString() );
-            return errorObj;
-
-        case 1:
-            if( arguments.at( 0 ).isString() )
-                group = new BookmarkGroup( arguments.at( 0 ).toString() );
-            break;
-
-        case 2:
-            if( arguments.at( 0 ).isString() )
-            {
-                QString name = arguments.at( 0 ).toString();
-                if( arguments.at( 1 ).isString() )
-                    group = new BookmarkGroup( name, arguments.at( 1 ).toString() );
-                else if( dynamic_cast<BookmarkGroupPrototype*>( arguments.at(1).toQObject() ) )
-                    group = new BookmarkGroup( name, dynamic_cast<BookmarkGroupPrototype*>( arguments.at(1).toQObject() )->data() );
-            }
-            break;
+    if ( arg1.isUndefined() ) {
+        if( arg0.isString() )
+            group = new BookmarkGroup( arg0.toString() );
+    } else {
+        if( arg0.isString() )
+        {
+            QString name = arg0.toString();
+            if( arg1.isString() )
+                group = new BookmarkGroup( name, arg1.toString() );
+            else if( dynamic_cast<BookmarkGroupPrototype*>( arg1.toQObject() ) )
+                group = new BookmarkGroup( name, dynamic_cast<BookmarkGroupPrototype*>( arg1.toQObject() )->data() );
+        }
     }
     if( !group ) {
         errorObj = engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
@@ -262,35 +252,26 @@ BookmarkPrototype::save()
 }
 
 QJSValue
-BookmarkPrototype::bookmarkCtor( QJSValueList arguments, QJSEngine *engine )
+BookmarkPrototype::bookmarkCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engine )
 {
     AmarokUrlPtr url;
     QJSValue errorObj;
-    switch( arguments.size() )
-    {
-        case 0:
-            errorObj = engine->newErrorObject( QJSValue::SyntaxError, QStringLiteral("Not enough arguments!!") );
-            engine->throwError( errorObj.errorType(), errorObj.toString() );
-            return errorObj;
-        case 1:
-            if( arguments.at( 0 ).isString() )
-                url = new AmarokUrl( arguments.at( 0 ).toString() );
-            break;
-
-        case 2:
-            if( arguments.at( 0 ).isString() )
+    if ( arg1.isUndefined() ) {
+            if( arg0.isString() )
+                url = new AmarokUrl( arg0.toString() );
+    } else {
+            if( arg0.isString() )
             {
-                BookmarkGroupPrototype *proto = dynamic_cast<BookmarkGroupPrototype*>( arguments.at(1).toQObject() );
+                BookmarkGroupPrototype *proto = dynamic_cast<BookmarkGroupPrototype*>( arg1.toQObject() );
                 if( proto )
-                    url = new AmarokUrl( arguments.at( 0 ).toString(), proto->data() );
+                    url = new AmarokUrl( arg0.toString(), proto->data() );
             }
             else
             {
-                Meta::TrackPtr track = engine->fromScriptValue<Meta::TrackPtr>( arguments.at( 0 ) );
-                if( track && arguments.at( 1 ).toVariant().canConvert( QVariant::LongLong ) )
-                    url = new AmarokUrl( PlayUrlGenerator::instance()->createTrackBookmark( track, arguments.at(1).toVariant().toLongLong() ) );
+                Meta::TrackPtr track = engine->fromScriptValue<Meta::TrackPtr>( arg0 );
+                if( track && arg1.toVariant().canConvert( QVariant::LongLong ) )
+                    url = new AmarokUrl( PlayUrlGenerator::instance()->createTrackBookmark( track, arg1.toVariant().toLongLong() ) );
             }
-            break;
     }
     if( !url ) {
         errorObj = engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
