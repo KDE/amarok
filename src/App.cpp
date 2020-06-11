@@ -49,9 +49,6 @@
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetcher.h"
 #include "dbus/CollectionDBusHandler.h"
-#include "dbus/mpris1/PlayerHandler.h"
-#include "dbus/mpris1/RootHandler.h"
-#include "dbus/mpris1/TrackListHandler.h"
 #include "dbus/mpris2/Mpris2.h"
 #include "network/NetworkAccessManagerProxy.h"
 #include "playlist/PlaylistActions.h"
@@ -469,9 +466,6 @@ App::continueInit()
         m_tray = new Amarok::TrayIcon( m_mainWindow );
 
     PERF_LOG( "Creating DBus handlers" )
-    new Mpris1::RootHandler();
-    new Mpris1::PlayerHandler();
-    new Mpris1::TrackListHandler();
     QDBusConnection::sessionBus().registerService("org.mpris.amarok");
     new CollectionDBusHandler( this );
     new Amarok::Mpris2( this );

@@ -38,8 +38,8 @@ if(MYSQLCONFIG_EXECUTABLE)
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
 
-    if(NOT MC_MYSQL_EMBEDDED_LIBRARIES)
-        # At least on OpenSUSE --libmysql-libs doesn't exist, so we just use
+    if(NOT MC_MYSQL_EMBEDDED_LIBRARIES OR NOT "${MC_return_embedded}" STREQUAL "0")
+        # At least on OpenSUSE and FreeBSD --libmysql-libs doesn't exist, so we just use
         # MYSQL_LIBRARIES for that. We'll see if that's enough when testing
         # below.
         set(MYSQL_EMBEDDED_LIBRARIES ${MYSQL_LIBRARIES})
