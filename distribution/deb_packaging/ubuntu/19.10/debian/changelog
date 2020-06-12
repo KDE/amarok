@@ -1,4 +1,4 @@
-amarok (2.9.70+1SNAPSHOT20200612103823+0200-0ubuntu1ppa1~ubuntu20.04.1) eoan; urgency=medium
+amarok (2.9.70+1SNAPSHOT20200612103823+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
 
   * Fix crash when closing Edit Filter dialog
 
