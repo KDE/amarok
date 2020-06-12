@@ -1,3 +1,7 @@
+amarok (2.9.70+1SNAPSHOT20200612103823+0200-0ubuntu1ppa1~ubuntu20.04.1) focal; urgency=medium
+
+  * Fix crash when closing Edit Filter dialog
+
 amarok (2.9.70+1SNAPSHOT20200504192042+0200-0ubuntu1ppa1~ubuntu20.04.1) focal; urgency=medium
 
   * Fix error message at PlaylistDock
