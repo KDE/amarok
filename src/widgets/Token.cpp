@@ -228,14 +228,12 @@ Token::performDrag()
     if( stacked )
         hide();
 
-    Token *token = this;
-
     QDrag *drag = new QDrag( this );
     drag->setMimeData( mimeData() );
 
     // icon for pointer
-    QPixmap pixmap( token->size() );
-    token->render( &pixmap );
+    QPixmap pixmap( size() );
+    render( &pixmap );
     drag->setPixmap( pixmap );
     drag->setHotSpot ( pixmap.rect().center() );
 
@@ -244,7 +242,8 @@ Token::performDrag()
     if( dropAction != Qt::MoveAction && dropAction != Qt::CopyAction ) // dragged out and not just dragged to another position.
     {
         // TODO: nice poof animation? ;-)
-        token->deleteLater();
+        Q_EMIT removed( this );
+        deleteLater();
     }
 
 }
