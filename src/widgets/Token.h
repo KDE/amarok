@@ -76,6 +76,7 @@ class Token : public QWidget
 
     Q_SIGNALS:
         void changed();
+        void removed( Token *token );
 
         /** Emitted when the token get's the focus */
         void gotFocus( Token* thisToken );

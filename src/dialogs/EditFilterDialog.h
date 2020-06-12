@@ -46,7 +46,7 @@ class EditFilterDialog : public QDialog
 
     private Q_SLOTS:
         void slotTokenSelected( Token *token );
-        void slotTokenDestroyed( QObject *token );
+        void slotTokenRemoved( Token *token );
         void slotAttributeChanged( const MetaQueryWidget::Filter &filter );
         void slotInvert( bool checked );
         void slotSeparatorChange();
