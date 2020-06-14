@@ -900,13 +900,13 @@ MainWindow::createActions()
     ac->addAction( "increaseVolume", action );
     KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_Plus ) );
     action->setShortcut( Qt::Key_Plus );
-    connect( action, &QAction::triggered, ec, &EngineController::increaseVolume );
+    connect( action, &QAction::triggered, ec, &EngineController::regularIncreaseVolume );
 
     action = new QAction( i18n( "Decrease Volume" ), this );
     ac->addAction( "decreaseVolume", action );
     KGlobalAccel::setGlobalShortcut(action, QKeySequence( Qt::META + Qt::Key_Minus ) );
     action->setShortcut( Qt::Key_Minus );
-    connect( action, &QAction::triggered, ec, &EngineController::decreaseVolume );
+    connect( action, &QAction::triggered, ec, &EngineController::regularDecreaseVolume );
 
     action = new QAction( i18n( "Toggle Main Window" ), this );
     ac->addAction( "toggleMainWindow", action );

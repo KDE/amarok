@@ -26,6 +26,7 @@
 
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 
 
 Playlist::NonlinearTrackNavigator::NonlinearTrackNavigator()
@@ -39,7 +40,7 @@ Playlist::NonlinearTrackNavigator::NonlinearTrackNavigator()
     connect( m_model->qaim(), &QAbstractItemModel::rowsAboutToBeRemoved, this, &NonlinearTrackNavigator::slotRowsAboutToBeRemoved );
 
     // Connect to the Playlist::AbstractModel signals of the source model.
-    connect( qobject_cast<Playlist::Model*>(m_model->qaim()), &Playlist::Model::activeTrackChanged,
+    connect( Playlist::ModelStack::instance()->bottom(), &Playlist::Model::activeTrackChanged,
              this, &NonlinearTrackNavigator::slotActiveTrackChanged );
 }
 

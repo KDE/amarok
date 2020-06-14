@@ -661,6 +661,18 @@ EngineController::decreaseVolume( int ticks ) //SLOT
 }
 
 int
+EngineController::regularIncreaseVolume() //SLOT
+{
+    return increaseVolume();
+}
+
+int
+EngineController::regularDecreaseVolume() //SLOT
+{
+    return decreaseVolume();
+}
+
+int
 EngineController::setVolume( int percent ) //SLOT
 {
     percent = qBound<qreal>( 0, percent, 100 );
