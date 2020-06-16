@@ -262,6 +262,16 @@ public Q_SLOTS:
     int decreaseVolume( int ticks = 100/25 );
 
     /**
+     * Increases the volume by default amount
+     */
+    int regularIncreaseVolume();
+
+    /**
+     * Decreases the volume by default amount
+     */
+    int regularDecreaseVolume();
+
+    /**
      * Sets the volume
      *
      * @param percent the new volume as a percentage of the maximum possible volume.

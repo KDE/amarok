@@ -26,12 +26,13 @@
 #include "dynamic/DynamicPlaylist.h"
 #include "dynamic/DynamicModel.h"
 #include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistController.h"
 
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator()
     : m_playlist( 0 )
 {
-    connect( qobject_cast<Playlist::Model*>(m_model->qaim()), &Playlist::Model::activeTrackChanged,
+    connect( Playlist::ModelStack::instance()->bottom(), &Playlist::Model::activeTrackChanged,
              this, &DynamicTrackNavigator::trackChanged );
     connect( m_model->qaim(), &QAbstractItemModel::modelReset,
              this, &DynamicTrackNavigator::repopulate );
