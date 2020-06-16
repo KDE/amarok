@@ -58,7 +58,7 @@ BrowserBreadcrumbWidget::clearCrumbs()
     const QList<QWidget *> childCrumbs = m_breadcrumbArea->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly);
     for( auto item : childCrumbs)
     {
-        delete item;
+        item->deleteLater();
     }
 }
 
