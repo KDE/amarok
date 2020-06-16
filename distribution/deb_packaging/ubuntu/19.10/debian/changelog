@@ -1,3 +1,9 @@
+amarok (2.9.70+1SNAPSHOT20200616130454+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
+
+  * Fix crash in breadcrumb when deleting the child menu of a category
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 16 Jun 2020 13:04:54 +0200
+
 amarok (2.9.70+1SNAPSHOT20200612103823+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
 
   * Fix crash when closing Edit Filter dialog
