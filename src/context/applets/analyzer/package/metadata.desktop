@@ -34,7 +34,6 @@ Name[sr@latin]=Analizator
 Name[sv]=Analysator
 Name[tr]=Çözümleyici
 Name[uk]=Аналізатор
-Name[x-test]=xxAnalyzerxx
 Name[zh_TW]=分析器
 
 Type=Service
@@ -58,7 +57,6 @@ Comment[pt_BR]=Miniaplicativo de análises para o Amarok
 Comment[sl]=Vstavek analizatorja za Amarok
 Comment[sv]=Analysatorminiprogram för Amarok
 Comment[uk]=Аплет аналізатора для Amarok
-Comment[x-test]=xxAnalyzer applet for Amarokxx
 Comment[zh_TW]=Amarok 的分析器小程式
 
 X-KDE-PluginInfo-Author=Mark Kretschmann

@@ -52,7 +52,6 @@ Name[tr]=Şarkı Sözleri
 Name[ug]=ناخشا سۆزى
 Name[uk]=Текст пісні
 Name[wa]=Paroles
-Name[x-test]=xxLyricsxx
 Name[zh_CN]=歌词
 Name[zh_TW]=歌詞
 
@@ -77,7 +76,6 @@ Comment[pt_BR]=Miniaplicativo de letras para o Amarok
 Comment[sl]=Vstavek besedila za Amarok
 Comment[sv]=Sångtextminiprogram för Amarok
 Comment[uk]=Аплет слів пісні для Amarok
-Comment[x-test]=xxLyrics applet for Amarokxx
 Comment[zh_TW]=Amarok 的歌詞小程式
 
 X-KDE-PluginInfo-Name=org.kde.amarok.lyrics

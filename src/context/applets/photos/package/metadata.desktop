@@ -51,7 +51,6 @@ Name[th]=ภาพถ่าย
 Name[tr]=Fotoğraflar
 Name[ug]=سۈرەتلەر
 Name[uk]=Фотографії
-Name[x-test]=xxPhotosxx
 Name[zh_CN]=张照片
 Name[zh_TW]=Photos
 
@@ -76,7 +75,6 @@ Comment[pt_BR]=Miniaplicativo de fotos para o Amarok
 Comment[sl]=Vstavek fotografij za Amarok
 Comment[sv]=Fotominiprogram för Amarok
 Comment[uk]=Аплет фотографій для Amarok
-Comment[x-test]=xxPhotos applet for Amarokxx
 Comment[zh_TW]=Amarok 的圖片小程式
 
 X-KDE-PluginInfo-Author=Simon Esneault
