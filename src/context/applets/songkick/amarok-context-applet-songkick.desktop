@@ -49,6 +49,7 @@ Name[th]=ซองคิก
 Name[tr]=Songkick
 Name[uk]=Songkick
 Name[wa]=Songkick
+Name[x-test]=xxSongkickxx
 Name[zh_TW]=Songkick
 Type=Service
 ServiceTypes=Plasma/Applet

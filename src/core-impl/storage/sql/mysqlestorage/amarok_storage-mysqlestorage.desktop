@@ -31,6 +31,7 @@ Name[sr@latin]=Skladište nad MySQLe‑om
 Name[sv]=MySQLe-lagring
 Name[tr]=MySQLe Depolaması
 Name[uk]=Сховище даних MySQLe
+Name[x-test]=xxMySQLe Storagexx
 Name[zh_TW]=MySQLe 儲存空間
 Comment=Storage plugin for Amarok
 Comment[bs]=Priključak za Amarok
@@ -62,6 +63,7 @@ Comment[sr@latin]=Skladišni priključak za Amarok
 Comment[sv]=Lagringsinsticksprogram för Amarok
 Comment[tr]=Amarok için depolama eklentisi
 Comment[uk]=Додаток сховища даних для Amarok
+Comment[x-test]=xxStorage plugin for Amarokxx
 Comment[zh_TW]=Amarok 的裝置外掛程式
 NoDisplay=true
 

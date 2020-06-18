@@ -58,6 +58,7 @@ Name[tr]=Albümler
 Name[ug]=ئالبوملار
 Name[uk]=Альбоми
 Name[wa]=Alboms
+Name[x-test]=xxAlbumsxx
 Name[zh_CN]=专辑
 Name[zh_TW]=專輯
 
@@ -82,6 +83,7 @@ Comment[pt_BR]=Gerenciador de capas de álbum para o Amarok
 Comment[sl]=Upravljalnik ovitkov za Amarok
 Comment[sv]=Albumomslagshanterare för Amarok
 Comment[uk]=Керування зображеннями обкладинок альбомів для Amarok
+Comment[x-test]=xxAlbum cover manager for Amarokxx
 Comment[zh_TW]=Amarok 的專輯封面管理員
 
 X-KDE-PluginInfo-Author=Seb Ruiz

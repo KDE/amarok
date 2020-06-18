@@ -44,6 +44,7 @@ Name[sr@latin]=gpodder.net
 Name[sv]=gpodder.net
 Name[tr]=gpodder.net
 Name[uk]=gpodder.net
+Name[x-test]=xxgpodder.netxx
 Name[zh_TW]=gpodder.net
 Comment=Podcast Service
 Comment[bg]=Услуга за подкастове
@@ -88,6 +89,7 @@ Comment[sr@latin]=Servis podemisija
 Comment[sv]=Podsändningstjänst
 Comment[tr]=Podcast Servisi
 Comment[uk]=Служба трансляцій
+Comment[x-test]=xxPodcast Servicexx
 Comment[zh_TW]=Podcast 服務
 
 ServiceTypes=Amarok/Plugin
