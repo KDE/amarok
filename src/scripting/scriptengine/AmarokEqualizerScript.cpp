@@ -20,15 +20,14 @@
 #include "EngineController.h"
 #include "equalizer/EqualizerPresets.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 using namespace AmarokScript;
 
-AmarokEqualizerScript::AmarokEqualizerScript( QScriptEngine *scriptEngine )
+AmarokEqualizerScript::AmarokEqualizerScript( QJSEngine *scriptEngine )
 : QObject( scriptEngine )
 {
-    QScriptValue scriptObject = scriptEngine->newQObject( this, QScriptEngine::AutoOwnership
-                                                        , QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = scriptEngine->newQObject( this );
     scriptEngine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Engine") ).setProperty( QStringLiteral("Equalizer"), scriptObject );
 
     EqualizerController *equalizer  = The::engineController()->equalizerController();

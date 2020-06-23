@@ -27,11 +27,13 @@
 
 #include <QFile>
 #include <QFileInfo>
-#include <QScriptEngine>
+#include <QJSValue>
 #include <QTextStream>
 #include <QDir>
-#include <QScriptEngineDebugger>
-#include <QMainWindow>
+#include <QPlainTextEdit>
+#include <QMessageLogContext>
+#include <QStringBuilder>
+
 
 using namespace ScriptConsoleNS;
 
@@ -44,6 +46,17 @@ ScriptConsoleItem::ScriptConsoleItem( QObject *parent, const QString &name, cons
     document->setParent( this );
     document->save( url() );
     initializeScriptEngine();
+
+    m_view = m_viewFactory->createView( nullptr );
+    m_console= new QPlainTextEdit( nullptr );
+    m_console->setReadOnly(true);
+    m_output = new QPlainTextEdit( nullptr );
+    m_output->setReadOnly(true);
+    m_error = new QPlainTextEdit( nullptr );
+    m_error->setReadOnly(true);
+
+    connect( this, &ScriptConsoleItem::evaluated, this, &ScriptConsoleItem::updateOutputWidget);
+    connect( this, &ScriptConsoleItem::signalHandlerException, this, &ScriptConsoleItem::updateErrorWidget);
 }
 
 ScriptConsoleItem::~ScriptConsoleItem()
@@ -63,6 +76,12 @@ ScriptConsoleItem::~ScriptConsoleItem()
     }
     if( m_view )
         m_view->deleteLater();
+    if (m_console)
+        m_console->deleteLater();
+    if (m_output)
+        m_output->deleteLater();
+    if (m_error)
+        m_error->deleteLater();
 }
 
 KPluginInfo
@@ -72,14 +91,15 @@ ScriptConsoleItem::createSpecFile( const QString &name, const QString &category,
                             "\nIcon=\"\""
                             "\nType=script"
                             "\nServiceTypes=KPluginInfo"
-                            "\nName= %1"
+                            "\nName=%1"
+                            "\nComment=Amarok console script"
                             "\nX-KDE-PluginInfo-Name=%1"
                             "\nX-KDE-PluginInfo-Version=1.0"
                             "\nX-KDE-PluginInfo-Category=%2"
                             "\nX-KDE-PluginInfo-Depends=Amarok2.0"
                             "\nX-KDE-PluginInfo-EnabledByDefault=false\n" ).arg( name, category );
-
-    QString specPath = QStringLiteral( "%1/script.spec" ).arg( path );
+    // TODO - Replace .desktop with new json format. Important: file extension matters
+    QString specPath = QStringLiteral( "%1/script.desktop" ).arg( path );
     QFile file( specPath );
     if( !file.open( QIODevice::WriteOnly ) )
     {
@@ -104,18 +124,45 @@ ScriptConsoleItem::start( bool silent )
     }
     m_viewFactory->save();
     Q_ASSERT( engine() );
-    engine()->pushContext();
-    return ScriptItem::start( silent );
+    //engine()->pushContext();
+    m_viewFactory->setReadWrite( false );
+    bool result = ScriptItem::start( silent );
+    m_viewFactory->setReadWrite( true );
+    return result;
 }
 
 KTextEditor::View*
-ScriptConsoleItem::createEditorView( QWidget *parent )
+ScriptConsoleItem::getEditorView( QWidget *parent )
 {
-    if( !m_view )
-        m_view = m_viewFactory->createView( parent );
-    else
-        m_view->setParent( parent );
+    m_view->setParent( parent );
     return m_view.data();
+}
+
+QWidget *
+ScriptConsoleItem::getConsoleWidget( QWidget *parent )
+{
+    m_console->setParent( parent );
+    return m_console.data();
+}
+
+void
+ScriptConsoleItem::appendToConsoleWidget( const QString &msg )
+{
+    m_console->appendPlainText( msg );
+}
+
+QWidget *
+ScriptConsoleItem::getOutputWdiget( QWidget *parent )
+{
+    m_output->setParent( parent );
+    return m_output.data();
+}
+
+QWidget *
+ScriptConsoleItem::getErrorWidget( QWidget *parent )
+{
+    m_error->setParent( parent );
+    return m_error.data();
 }
 
 void
@@ -138,11 +185,12 @@ ScriptConsoleItem::setClearOnDeletion( bool clearOnDelete )
 }
 
 QString
-ScriptConsoleItem::handleError( QScriptEngine *engine )
+ScriptConsoleItem::handleError( QJSValue *result )
 {
     QString errorString = QStringLiteral( "Script Error: %1 (line: %2)" )
-                        .arg( engine->uncaughtException().toString(),
-                              QString::number( engine->uncaughtExceptionLineNumber() ) );
+                        .arg( result->toString() )
+                        .arg( result->property("lineNumber").toInt() );
+
     return errorString;
 }
 
@@ -151,6 +199,18 @@ ScriptConsoleItem::pause()
 {
     if( !running() )
         return;
-    engine()->popContext();
+    ///engine()->popContext();
     ScriptItem::pause();
+}
+
+void
+ScriptConsoleItem::updateOutputWidget( QString output )
+{
+    m_output->appendPlainText( output );
+}
+
+void
+ScriptConsoleItem::updateErrorWidget( QJSValue error )
+{
+    m_error->appendPlainText( handleError( &error ) );
 }

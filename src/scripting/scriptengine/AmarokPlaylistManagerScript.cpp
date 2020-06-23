@@ -22,15 +22,14 @@
 #include "scripting/scriptengine/ScriptingDefines.h"
 
 #include <QMetaEnum>
-#include <QScriptEngine>
+#include <QJSEngine>
 
 using namespace AmarokScript;
 
 AmarokPlaylistManagerScript::AmarokPlaylistManagerScript( AmarokScriptEngine* engine )
     : QObject( engine )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this );
     engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("PlaylistManager"), scriptObject );
 
     const QMetaObject *metaObject = &PlaylistManager::staticMetaObject;

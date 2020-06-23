@@ -19,16 +19,16 @@
 
 #include <QHash>
 #include <QObject>
-#include <QScriptEngine>
-#include <QScriptValue>
-#include <QScriptValueIterator>
+#include <QJSEngine>
+#include <QJSValue>
+#include <QJSValueIterator>
 
 class QMetaEnum;
 
 namespace AmarokScript
 {
     template <class type, class WrapperType>
-    void fromScriptValue( const QScriptValue &obj, type &object )
+    void fromScriptValue( const QJSValue &obj, type &object )
     {
         const WrapperType *wrapper = dynamic_cast<WrapperType*>( obj.toQObject() );
         if( wrapper )
@@ -38,17 +38,16 @@ namespace AmarokScript
     }
 
     template <class type, class WrapperType>
-    QScriptValue toScriptValue( QScriptEngine *engine, type const &object )
+    QJSValue toScriptValue( QJSEngine *engine, type const &object )
     {
         WrapperType *wrapper = new WrapperType( object );
-        return engine->newQObject( wrapper, QScriptEngine::ScriptOwnership,
-                                                QScriptEngine::ExcludeSuperClassContents );
+        return engine->newQObject( wrapper );
     }
 
     template <class Container>
-    QScriptValue toScriptArray( QScriptEngine *engine, const Container &container )
+    QJSValue toScriptArray( QJSEngine *engine, const Container &container )
     {
-        QScriptValue scriptArray = engine->newArray();
+        QJSValue scriptArray = engine->newArray();
         typename Container::const_iterator begin = container.begin();
         typename Container::const_iterator end = container.end();
         typename Container::const_iterator it;
@@ -58,41 +57,41 @@ namespace AmarokScript
     }
 
     template <class Container>
-    void fromScriptArray( const QScriptValue &value, Container &container )
+    void fromScriptArray( const QJSValue &value, Container &container )
     {
-        quint32 len = value.property( QStringLiteral("length") ).toUInt32();
+        quint32 len = value.property( QStringLiteral("length") ).toUInt();
         for( quint32 i = 0; i < len; ++i )
         {
-            QScriptValue item = value.property( i );
+            QJSValue item = value.property( i );
             typedef typename Container::value_type ContainerValue;
-            container.push_back( qscriptvalue_cast<ContainerValue>(item) );
+            container.push_back( qjsvalue_cast<ContainerValue>(item) );
         }
     }
 
     template <class Map>
-    QScriptValue toScriptMap( QScriptEngine *engine, const Map &map )
+    QJSValue toScriptMap( QJSEngine *engine, const Map &map )
     {
-        QScriptValue scriptMap = engine->newObject();
+        QJSValue scriptMap = engine->newObject();
         for( typename Map::const_iterator it( map.begin() ); it != map.end(); ++it )
             scriptMap.setProperty( it.key(), engine->toScriptValue( it.value() ) );
         return scriptMap;
     }
 
     template <class Map>
-    void fromScriptMap( const QScriptValue &value, Map &map )
+    void fromScriptMap( const QJSValue &value, Map &map )
     {
-        QScriptValueIterator it( value );
+        QJSValueIterator it( value );
         while( it.hasNext() )
         {
             it.next();
-            map[it.name()] = qscriptvalue_cast<typename Map::mapped_type>( it.value() );
+            map[it.name()] = qjsvalue_cast<typename Map::mapped_type>( it.value() );
         }
     }
 
     /**
      * SCRIPTDOX _
      */
-    class AmarokScriptEngine : public QScriptEngine
+    class AmarokScriptEngine : public QJSEngine
     {
         Q_OBJECT
 
@@ -100,19 +99,31 @@ namespace AmarokScript
             explicit AmarokScriptEngine( QObject *parent );
             ~AmarokScriptEngine() override;
 
-            void setDeprecatedProperty( const QString &parent, const QString &name, const QScriptValue &property );
+            void setDeprecatedProperty( const QString &parent, const QString &name, const QJSValue &property );
             // exposing the metaobject directly also exposes >900 other values
-            QScriptValue enumObject( const QMetaEnum &metaEnum );
+            QJSValue enumObject( const QMetaEnum &metaEnum );
 
             template <class T>
             void registerArrayType()
             {
-                qScriptRegisterMetaType<T>( this, toScriptArray, fromScriptArray );
+                qRegisterMetaType<T>();
+                QMetaType::registerConverter<QJSValue,T>( [] (QJSValue scriptObj) {
+                    T arrayObj;
+                    fromScriptArray( scriptObj, arrayObj );
+                    return arrayObj;
+                });
+                QMetaType::registerConverter<T,QJSValue>( [this] (T arrayObj) { return toScriptArray( this, arrayObj ); } );
             }
             template <class Map>
             void registerMapType()
             {
-                qScriptRegisterMetaType<Map>( this, toScriptMap, fromScriptMap );
+                qRegisterMetaType<Map>();
+                QMetaType::registerConverter<QJSValue,Map>( [] (QJSValue scriptObj) {
+                    Map mapObj;
+                    fromScriptMap( scriptObj, mapObj );
+                    return mapObj;
+                });
+                QMetaType::registerConverter<Map,QJSValue>( [this] (Map mapObj) { return toScriptMap( this, mapObj ); } );
             }
 
             // SCRIPTDOX exclude
@@ -123,9 +134,9 @@ namespace AmarokScript
              * @param thisObject [Optional] The this object this function is invoked with.
              * @param args [Optional] An array containing arguments this function is to be invoked with.
              */
-            Q_INVOKABLE void setTimeout( const QScriptValue &function, int time,
-                             const QScriptValue &thisObject = QScriptValue(),
-                             const QScriptValue &args = QScriptValue() );
+            Q_INVOKABLE void setTimeout( const QJSValue &function, int time,
+                             const QJSValue &thisObject = QJSValue(),
+                             const QJSValue &args = QJSValue() );
 
         private Q_SLOTS:
             void slotTimeout();
@@ -135,7 +146,7 @@ namespace AmarokScript
 
         private:
             const QString internalObject;
-            QHash<QObject*, QScriptValueList> m_callbacks;
+            QHash<QObject*, QJSValueList> m_callbacks;
     };
 }
 

@@ -21,7 +21,7 @@
 #include <QStringList>
 
 
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -31,7 +31,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            explicit AmarokServicePluginManagerScript( QScriptEngine* scriptEngine );
+            explicit AmarokServicePluginManagerScript( QJSEngine* scriptEngine );
 
             Q_INVOKABLE QStringList loadedServices();
             Q_INVOKABLE QStringList loadedServiceNames();

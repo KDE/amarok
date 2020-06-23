@@ -23,7 +23,7 @@
 #include <QObject>
 
 class QDomDocument;
-class QScriptEngine;
+class QJSEngine;
 class QXmlStreamReader;
 
 namespace AmarokScript
@@ -34,7 +34,7 @@ class AmarokScriptXml : public QObject
     Q_OBJECT
 
 public:
-    explicit AmarokScriptXml( QScriptEngine *engine );
+    explicit AmarokScriptXml( QJSEngine *engine );
     ~AmarokScriptXml() override;
 
     Q_INVOKABLE void setReaderData( const QString &data );

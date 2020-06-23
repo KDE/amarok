@@ -22,15 +22,29 @@
 
 #include <QObject>
 #include <QPointer>
-#include <QScriptValue>
+#include <QJSValue>
 #include <QString>
 #include <QXmlStreamReader>
 
-class QScriptContext;
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
+    /**
+     * Wraps ScriptableBiasFactory Ctors
+     */
+    class ScriptableBiasFactoryWrapper : public QObject
+    {
+        Q_OBJECT
+    public:
+        ScriptableBiasFactoryWrapper(QJSEngine *engine);
+        Q_INVOKABLE QJSValue groupBiasCtor();
+        Q_INVOKABLE QJSValue biasCtor();
+
+    private:
+        QJSEngine *m_engine;
+    };
+
     // SCRIPTDOX BiasFactory
     class ScriptableBiasFactory : public QObject, public Dynamic::AbstractBiasFactory
     {
@@ -60,49 +74,49 @@ namespace AmarokScript
          * Set a function returning widget appropriate for editing the bias, if needed.
          * var obj = new ScriptableBias(); obj.widget = function( a ) { return new QLabel(\"dfdsf\"); }"
          */
-        Q_PROPERTY( QScriptValue widget READ widgetFunction WRITE setWidgetFunction )
+        Q_PROPERTY( QJSValue widget READ widgetFunction WRITE setWidgetFunction )
 
-        Q_PROPERTY( QScriptValue fromXml READ fromXmlFunction WRITE setFromXmlFunction )
+        Q_PROPERTY( QJSValue fromXml READ fromXmlFunction WRITE setFromXmlFunction )
 
-        Q_PROPERTY( QScriptValue toXml READ toXmlFunction WRITE setToXmlFunction )
+        Q_PROPERTY( QJSValue toXml READ toXmlFunction WRITE setToXmlFunction )
 
         /**
          * Set this to a function of signature:
          * TrackSet ( const Meta::TrackList &playlist, int contextCount, int finalCount, QStringList universeUids )
          */
-        Q_PROPERTY( QScriptValue matchingTracks READ matchingTracksFunction WRITE setMatchingTracksFunction )
+        Q_PROPERTY( QJSValue matchingTracks READ matchingTracksFunction WRITE setMatchingTracksFunction )
 
         /**
          * bool trackMatches( int position, TrackList playlist, int contextCount )
          */
-        Q_PROPERTY( QScriptValue trackMatches READ trackMatchesFunction WRITE setTrackMatchesFunction )
+        Q_PROPERTY( QJSValue trackMatches READ trackMatchesFunction WRITE setTrackMatchesFunction )
 
-        Q_PROPERTY( QScriptValue toStringFunction READ toStringFunction WRITE setToStringFunction )
+        Q_PROPERTY( QJSValue toStringFunction READ toStringFunction WRITE setToStringFunction )
 
-        Q_PROPERTY( QScriptValue init READ initFunction WRITE setInitFunction )
+        Q_PROPERTY( QJSValue init READ initFunction WRITE setInitFunction )
 
         public:
-            static void init( QScriptEngine *engine );
+            static void init( QJSEngine *engine );
 
             QString i18nName() const override;
             QString name() const override;
             QString i18nDescription() const override;
-            QScriptValue initFunction() const;
-            QScriptValue fromXmlFunction() const;
-            QScriptValue matchingTracksFunction() const;
-            QScriptValue toXmlFunction() const;
-            QScriptValue toStringFunction() const;
-            QScriptValue trackMatchesFunction() const;
-            QScriptValue widgetFunction() const;
-            QScriptEngine *engine() const;
+            QJSValue initFunction() const;
+            QJSValue fromXmlFunction() const;
+            QJSValue matchingTracksFunction() const;
+            QJSValue toXmlFunction() const;
+            QJSValue toStringFunction() const;
+            QJSValue trackMatchesFunction() const;
+            QJSValue widgetFunction() const;
+            QJSEngine *engine() const;
 
         public Q_SLOTS:
             Dynamic::BiasPtr createBias() override;
 
         private:
-            static QScriptValue groupBiasCtor( QScriptContext *context, QScriptEngine *engine );
-            static QScriptValue biasCtor( QScriptContext *context, QScriptEngine *engine );
-            ScriptableBiasFactory( QScriptEngine *engine = 0, bool groupBias = false );
+            friend QJSValue ScriptableBiasFactoryWrapper::groupBiasCtor();
+            friend QJSValue ScriptableBiasFactoryWrapper::biasCtor();
+            ScriptableBiasFactory( QJSEngine *engine = nullptr, bool groupBias = false );
             ~ScriptableBiasFactory() override;
 
             bool enabled() const;
@@ -110,27 +124,28 @@ namespace AmarokScript
             void setName( const QString &name );
             void setI18nName( const QString &i18nName );
             void setI18nDescription( const QString &description );
-            void setInitFunction( const QScriptValue &value );
-            void setWidgetFunction( const QScriptValue &value );
-            void setFromXmlFunction( const QScriptValue &value );
-            void setToXmlFunction( const QScriptValue &value );
-            void setTrackMatchesFunction( const QScriptValue &value );
-            void setMatchingTracksFunction( const QScriptValue &value );
-            void setToStringFunction( const QScriptValue &value );
+            void setInitFunction( const QJSValue &value );
+            void setWidgetFunction( const QJSValue &value );
+            void setFromXmlFunction( const QJSValue &value );
+            void setToXmlFunction( const QJSValue &value );
+            void setTrackMatchesFunction( const QJSValue &value );
+            void setMatchingTracksFunction( const QJSValue &value );
+            void setToStringFunction( const QJSValue &value );
 
-            QScriptValue m_initFunction;
+            QJSValue m_initFunction;
             QString m_name;
             QString m_i18nName;
             QString m_description;
-            QScriptValue m_widgetFunction;
-            QScriptValue m_fromXmlFunction;
-            QScriptValue m_toXmlFunction;
-            QScriptValue m_matchingTracksFunction;
-            QScriptValue m_trackMatchesFunction;
-            QScriptValue m_toStringFunction;
+            QJSValue m_widgetFunction;
+            QJSValue m_fromXmlFunction;
+            QJSValue m_toXmlFunction;
+            QJSValue m_matchingTracksFunction;
+            QJSValue m_trackMatchesFunction;
+            QJSValue m_toStringFunction;
             bool m_groupBias;
-            QScriptEngine *m_engine;
+            QJSEngine *m_engine;
             bool m_enabled;
+            static ScriptableBiasFactoryWrapper* s_wrapper;
     };
 
     class ScriptableBias : public Dynamic::AbstractBias
@@ -140,7 +155,7 @@ namespace AmarokScript
         public:
             explicit ScriptableBias( ScriptableBiasFactory *biasProto );
             ~ScriptableBias() override;
-            QScriptValue scriptObject() { return m_biasObject; }
+            QJSValue scriptObject() { return m_biasObject; }
 
         public:
             void fromXml( QXmlStreamReader *reader ) override;
@@ -179,8 +194,22 @@ namespace AmarokScript
 
         private:
             QPointer<ScriptableBiasFactory> m_scriptBias;
-            QScriptEngine *m_engine;
-            QScriptValue m_biasObject;
+            QJSEngine *m_engine;
+            QJSValue m_biasObject;
+    };
+
+    /**
+     * Wraps TrackSetExporter Ctors
+     */
+    class TrackSetExporterWrapper : public QObject
+    {
+        Q_OBJECT
+        public:
+            TrackSetExporterWrapper(QJSEngine *engine);
+            Q_INVOKABLE QJSValue trackSetConstructor( QJSValue arg0, QJSValue arg1 = QJSValue(QJSValue::UndefinedValue) );
+
+        private:
+            QJSEngine *m_engine;
     };
 
     /**
@@ -212,9 +241,8 @@ namespace AmarokScript
         Q_PROPERTY( bool isEmpty READ isEmpty )
 
         public:
-            static QScriptValue toScriptValue( QScriptEngine *engine, Dynamic::TrackSet const &trackSet );
-            static void fromScriptValue( const QScriptValue &obj, Dynamic::TrackSet &trackSet );
-            static QScriptValue trackSetConstructor( QScriptContext* context, QScriptEngine* engine );
+            static QJSValue toScriptValue( QJSEngine *engine, Dynamic::TrackSet const &trackSet );
+            static void fromScriptValue( const QJSValue &obj, Dynamic::TrackSet &trackSet );
 
             /**
              * Includes or excludes all tracks in the set.
@@ -279,8 +307,11 @@ namespace AmarokScript
             Q_INVOKABLE void subtractUids( const QStringList &uids );
 
         private:
-            static void init( QScriptEngine *engine );
+            static void init( QJSEngine *engine );
             explicit TrackSetExporter( const Dynamic::TrackSet &trackSet );
+            friend QJSValue TrackSetExporterWrapper::trackSetConstructor( QJSValue arg0, QJSValue arg1 );
+
+            static TrackSetExporterWrapper *s_wrapper;
 
             friend class ScriptableBiasFactory;
     };

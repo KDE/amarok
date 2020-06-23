@@ -32,7 +32,8 @@
 
 #include <QMenu>
 #include <QMetaEnum>
-#include <QScriptEngine>
+#include <QQmlEngine>
+#include <QJSEngine>
 #include <QSortFilterProxyModel>
 
 Q_DECLARE_METATYPE( QAction* )
@@ -50,9 +51,8 @@ AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engi
     , m_scriptName( scriptName )
     , m_categoryEnum( metaObject()->enumerator( metaObject()->indexOfEnumerator("Category") ) )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
-    QScriptValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
+    QJSValue scriptObject = engine->newQObject( this );
+    QJSValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
     Q_ASSERT( !windowObject.isUndefined() );
     windowObject.setProperty( QStringLiteral("CollectionView"), scriptObject );
     const QMetaEnum typeEnum = CollectionTreeItem::staticMetaObject.enumerator( CollectionTreeItem::staticMetaObject.indexOfEnumerator( "Type" ) );
@@ -60,7 +60,14 @@ AmarokCollectionViewScript::AmarokCollectionViewScript( AmarokScriptEngine *engi
     scriptObject.setProperty( QStringLiteral("Type"), engine->enumObject( typeEnum ) );
     Q_ASSERT( m_categoryEnum.isValid() );
     scriptObject.setProperty( QStringLiteral("Category"), engine->enumObject( m_categoryEnum ) );
-    qScriptRegisterMetaType<CollectionTreeItem*>( engine, CollectionViewItem::toScriptValue, fromScriptValue<CollectionTreeItem*, CollectionViewItem> );
+
+    qRegisterMetaType<CollectionTreeItem*>();
+    QMetaType::registerConverter<CollectionTreeItem*, QJSValue>( [=] (CollectionTreeItem* item) { return CollectionViewItem::toScriptValue( m_engine, item ); } );
+    QMetaType::registerConverter<QJSValue, CollectionTreeItem*>( [=] (QJSValue jsValue) {
+        CollectionTreeItem* item;
+        fromScriptValue<CollectionTreeItem*, CollectionViewItem>( jsValue, item );
+        return item;
+    } );
     engine->registerArrayType< QList<CollectionTreeItem*> >();
     engine->registerArrayType<QActionList>();
     s_instances[m_scriptName] = this;
@@ -89,14 +96,14 @@ AmarokCollectionViewScript::filter() const
 QActionList
 AmarokCollectionViewScript::actions()
 {
-    QScriptValue actions = m_actionFunction.call( QScriptValue(), QScriptValueList() << selectionScriptValue() );
+    QJSValue actions = m_actionFunction.call( QJSValueList() << selectionScriptValue() );
     QActionList actionList = m_engine->fromScriptValue<QActionList>( actions );
     debug() << "Received " << actionList.size() << " actions";
     return actionList;
 }
 
 void
-AmarokCollectionViewScript::setAction( const QScriptValue &value )
+AmarokCollectionViewScript::setAction( const QJSValue &value )
 {
     m_actionFunction = value;
 }
@@ -131,11 +138,12 @@ AmarokCollectionViewScript::createScriptedActions( QMenu &menu, const QModelInde
     }
 }
 
-QScriptValue
+QJSValue
 AmarokCollectionViewScript::selectionScriptValue()
 {
-    return m_engine->newQObject( s_selection.data(), QScriptEngine::QtOwnership,
-                                QScriptEngine::ExcludeSuperClassContents );
+    QQmlEngine::setObjectOwnership( s_selection.data(), QQmlEngine::CppOwnership);
+    return m_engine->newQObject( s_selection.data() );
+
 }
 
 Selection*
@@ -208,7 +216,7 @@ AmarokCollectionViewScript::setLevel( int level, int type )
         m_collectionWidget->currentView()->setLevel( level, CategoryId::CatMenuId( type ) );
         return;
     }
-    m_engine->currentContext()->throwError( QScriptContext::TypeError, QStringLiteral("Invalid category!") );
+    m_engine->throwError( QJSValue::TypeError, QStringLiteral("Invalid category!") );
 }
 
 void
@@ -219,7 +227,7 @@ AmarokCollectionViewScript::setLevels( const QList<int> &levels )
     {
         if( !m_categoryEnum.valueToKey( level ) )
         {
-            m_engine->currentContext()->throwError( QScriptContext::TypeError, QStringLiteral("Invalid category!") );
+            m_engine->throwError( QJSValue::TypeError, QStringLiteral("Invalid category!") );
             return;
         }
         catLevels << CategoryId::CatMenuId( level );
@@ -296,12 +304,11 @@ CollectionViewItem::data() const
     return m_item;
 }
 
-QScriptValue
-CollectionViewItem::toScriptValue( QScriptEngine *engine, CollectionTreeItem* const &item )
+QJSValue
+CollectionViewItem::toScriptValue( QJSEngine *engine, CollectionTreeItem* const &item )
 {
     CollectionViewItem *proto = new CollectionViewItem( item, AmarokCollectionViewScript::selection() );
-    QScriptValue val = engine->newQObject( proto, QScriptEngine::AutoOwnership,
-                                            QScriptEngine::ExcludeSuperClassContents );
+    QJSValue val = engine->newQObject( proto );
     return val;
 }
 

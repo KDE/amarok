@@ -36,12 +36,15 @@
 #include "ScriptUpdater.h"
 
 #include <KMessageBox>
+#include <KPluginInfo>
 #include <KPluginMetaData>
 
 #include <QFileInfo>
-#include <QScriptEngine>
+#include <QJSEngine>
+#include <QJsonDocument>
 #include <QStandardPaths>
 #include <QTimer>
+#include <QDir>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -125,6 +128,27 @@ ScriptManager::specForScript( const QString& name ) const
     if( !m_scripts.contains( name ) )
         return QString();
     return m_scripts[name]->specPath();
+}
+
+KPluginMetaData
+ScriptManager::createMetadaFromSpec( const QString &specPath )
+{
+    // KPluginMetaData and KPluginInfo require file suffix to be .desktop. Thus create temporary file with suffix
+    QFile specFile( specPath );
+    QTemporaryFile desktopFile( QDir::tempPath() + "/XXXXXX.desktop" );
+
+    if ( !specFile.open( QIODevice::ReadOnly ) ) {
+        warning() << "Could not read from spec file: " << specPath;
+        return KPluginMetaData();
+    } else if ( !desktopFile.open() ) {
+        warning() << "Could not create temporary .desktop file at " << QDir::tempPath();
+        return KPluginMetaData();
+    }
+
+    QTextStream( &desktopFile ) << QTextStream( &specFile ).readAll();
+    desktopFile.close();
+
+    return KPluginMetaData( desktopFile.fileName() );
 }
 
 bool
@@ -255,15 +279,11 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
 }
 
 void
-ScriptManager::handleException(const QScriptValue& value)
+ScriptManager::handleException(const QJSValue& value)
 {
     DEBUG_BLOCK
 
-    QScriptEngine *engine = value.engine();
-    if (!engine)
-        return;
-
-    Amarok::Logger::longMessage( i18n( "Script error reported by: %1\n%2", scriptNameForEngine( engine ), value.toString() ), Amarok::Logger::Error );
+    Amarok::Logger::longMessage( i18n( "Script error reported by: %1\n%2", value.property("name").toString(), value.property("message").toString() ), Amarok::Logger::Error );
 }
 
 void
@@ -333,13 +353,24 @@ ScriptManager::loadScript( const QString& path )
     QString ScriptVersion;
     QFileInfo info( path );
     const QString jsonPath = QString( "%1/script.json" ).arg( info.path() );
-    if( !QFile::exists( jsonPath ) )
+    const QString specPath = QString( "%1/script.spec" ).arg( info.path() );
+    KPluginMetaData pluginMetadata;
+
+    if( QFile::exists( jsonPath ) )
+    {
+        pluginMetadata = KPluginMetaData( jsonPath );
+    }
+    else if( QFile::exists( specPath ) )
+    {
+        warning() << "Reading legacy spec file: " << specPath;
+        pluginMetadata = createMetadaFromSpec( specPath );
+    }
+    else
     {
         error() << "script.json for "<< path << " is missing!";
         return false;
     }
 
-    KPluginMetaData pluginMetadata( jsonPath );
     if( !pluginMetadata.isValid() )
     {
         error() << "PluginMetaData invalid for" << jsonPath;
@@ -402,7 +433,7 @@ ScriptManager::scripts( const QString &category ) const
 }
 
 QString
-ScriptManager::scriptNameForEngine( const QScriptEngine *engine ) const
+ScriptManager::scriptNameForEngine( const QJSEngine *engine ) const
 {
     foreach( const QString &name, m_scripts.keys() )
     {

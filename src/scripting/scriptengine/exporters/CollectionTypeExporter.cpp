@@ -25,8 +25,8 @@
 #include "scripting/scriptengine/ScriptingDefines.h"
 
 #include <QIcon>
-#include <QScriptEngine>
-#include <QScriptValue>
+#include <QJSEngine>
+#include <QJSValue>
 
 using namespace AmarokScript;
 
@@ -36,10 +36,29 @@ using Collections::QueryMaker;
 #define GET_COLLECTION( returnVal ) Collection *collection = m_collection.data(); if( !collection ) return returnVal;
 
 void
-CollectionPrototype::init( QScriptEngine *engine )
+CollectionPrototype::init( QJSEngine *engine )
 {
-    qScriptRegisterMetaType<Collection*>( engine, toScriptValue<Collection*,CollectionPrototype>, fromScriptValue<Collection*,CollectionPrototype> );
-    qScriptRegisterMetaType<Collections::CollectionList>( engine, toScriptArray, fromScriptArray );
+    qRegisterMetaType<Collection*>();
+    QMetaType::registerConverter<Collection*, QJSValue>( [=] (Collection* collection) {
+        return toScriptValue<Collection*, CollectionPrototype>( engine, collection );
+    } );
+    QMetaType::registerConverter<QJSValue, Collection*>( [] (QJSValue jsValue) {
+        Collection* collection;
+        fromScriptValue<Collection*, CollectionPrototype>( jsValue, collection );
+        return collection;
+    } );
+
+    qRegisterMetaType<Collections::CollectionList>();
+    QMetaType::registerConverter<Collections::CollectionList,QJSValue>( [=] (Collections::CollectionList collectionList) {
+        return toScriptArray<Collections::CollectionList>( engine, collectionList);
+
+    } );
+    QMetaType::registerConverter<QJSValue,Collections::CollectionList>( [] (QJSValue jsValue) {
+        Collections::CollectionList collectionList;
+        fromScriptArray<Collections::CollectionList>( jsValue, collectionList );
+        return collectionList;
+    } );
+
 }
 
 //script invokable

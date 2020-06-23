@@ -25,48 +25,47 @@
 #include "scripting/scriptengine/AmarokStreamItemScript.h"
 #include "scripting/scriptmanager/ScriptManager.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 using namespace AmarokScript;
 
-ScriptableServiceScript::ScriptableServiceScript( QScriptEngine* engine )
+ScriptableServiceScript::ScriptableServiceScript( QJSEngine* engine )
     : QObject( engine )
     , m_scriptEngine( engine )
 {
     DEBUG_BLOCK
-    m_scriptEngine = engine;
-    engine->setDefaultPrototype( qMetaTypeId<ScriptableServiceScript*>(), QScriptValue() );
-    const QScriptValue ctor = engine->newFunction( ScriptableServiceScript_prototype_ctor );
-    engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), ctor );
+    QJSValue scriptObj = engine->newQObject( this );
+    scriptObj.setPrototype( QJSValue() );
+    const QJSValue ctor = scriptObj.property("ScriptableServiceScript_prototype_ctor");
+    engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript_prototype_ctor"), ctor );
+    // Simulates creation of ScriptableServiceScript object of QTScript
+    engine->evaluate( QStringLiteral("function ScriptableServiceScript( serviceName, levels, shortDescription, rootHtml, showSearchBar) {"
+        "Object.assign( this, ScriptableServiceScript_prototype_ctor(serviceName, levels, shortDescription, rootHtml, showSearchBar) ); }")
+    );
 }
 
-QScriptValue
-ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine )
+QObject*
+ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QString serviceName, int levels, QString shortDescription, QString rootHtml, bool showSearchBar )
 {
     DEBUG_BLOCK
-    QString serviceName = context->argument(0).toString();
-    int levels = context->argument(1).toInt32();
-    QString shortDescription = context->argument(2).toString();
-    QString rootHtml = context->argument(3).toString();
-    bool showSearchBar = context->argument(4).toBoolean();
     if( !ScriptManager::instance()->m_scripts.contains( serviceName ) )
     {
         error() << "The name of the scriptable script should be the same with the one in the script.spec file!";
-        return engine->undefinedValue();
+        return nullptr;
     }
-    QScriptValue obj = engine->newQObject( context->thisObject(), ScriptManager::instance()->m_scripts.value(serviceName)->service(),
-                                           QScriptEngine::AutoOwnership, QScriptEngine::ExcludeSuperClassContents );
-    engine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), obj );
+    QObject* qObj = ScriptManager::instance()->m_scripts.value(serviceName)->service();
+    QJSValue scriptObj = m_scriptEngine->newQObject( qObj );
+    m_scriptEngine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), scriptObj );
     The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
-    return engine->undefinedValue();
+    return qObj;
 }
 
-QScriptValue
-ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine )
+QJSValue
+ScriptableServiceScript::ScriptableServiceScript_prototype_populate( QJSEngine *engine )
 {
-    Q_UNUSED( context );
+    Q_UNUSED( engine );
     debug() << "prototype populating here!";
-    return engine->undefinedValue();
+    return QJSValue( QJSValue::UndefinedValue );
 }
 
 int

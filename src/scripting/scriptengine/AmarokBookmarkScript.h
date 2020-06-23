@@ -20,13 +20,12 @@
 #include "amarokurls/BookmarkGroup.h"
 #include "core/meta/Meta.h"
 
+#include <QJSValue>
 #include <QObject>
 #include <QMap>
 #include <QMetaType>
 
-class QScriptContext;
-class QScriptEngine;
-class QScriptValue;
+class QJSEngine;
 
 typedef QMap< QString, QString > StringMap;
 
@@ -38,7 +37,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            explicit AmarokBookmarkScript( QScriptEngine* scriptEngine );
+            explicit AmarokBookmarkScript( QJSEngine* scriptEngine );
 
             /**
              * @return bookmark for the current context view.
@@ -59,6 +58,21 @@ namespace AmarokScript
              * Bookmark the current track at the current position.
              */
             Q_INVOKABLE AmarokUrlPtr createCurrentTrackBookmark();
+
+            /**
+             * Wraps the invocation to BookmarkPrototype::bookmarkCtor so it can bind to a QJSEngine
+             */
+            Q_INVOKABLE QJSValue bookmarkCtorWrapper( QJSValue arg0, QJSValue arg1  = QJSValue(QJSValue::UndefinedValue ) );
+
+            /**
+             * Wraps the invocation to BookmarkGroupPrototype::bookmarkGroupCtor so it can bind to a QJSEngine
+             */
+            Q_INVOKABLE QJSValue bookmarkGroupCtorWrapper( QJSValue arg0, QJSValue arg1 = QJSValue(QJSValue::UndefinedValue ) );
+
+        private:
+
+            QJSEngine *m_engine;
+
     };
 
     class BookmarkPrototype : public QObject
@@ -76,8 +90,8 @@ namespace AmarokScript
         Q_PROPERTY( QString url READ url )
 
         public:
-            static QScriptValue bookmarkCtor( QScriptContext *context, QScriptEngine *engine );
             explicit BookmarkPrototype( const AmarokUrlPtr &bookmark );
+            static QJSValue bookmarkCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engine );
             AmarokUrlPtr data() const { return m_url; }
 
             /**
@@ -132,7 +146,7 @@ namespace AmarokScript
 
         public:
             explicit BookmarkGroupPrototype( const BookmarkGroupPtr &group );
-            static QScriptValue bookmarkGroupCtor( QScriptContext *context, QScriptEngine *engine );
+            static QJSValue bookmarkGroupCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engine);
             BookmarkGroupPtr data() const { return m_group; }
 
             /**
