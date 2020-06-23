@@ -24,6 +24,7 @@
 #include "ScriptItem.h"
 
 #include <KPluginInfo>
+#include <KPluginMetaData>
 #include <QUrl>
 
 #include <QSemaphore>
@@ -40,6 +41,8 @@ class AMAROK_EXPORT ScriptManager : public QObject
     public:
         static ScriptManager* instance();
         static void destroy();
+        /** Reads plugin info from legacy .desktop format */
+        static KPluginMetaData createMetadaFromSpec( const QString &specPath );
 
         /**
          * Runs the script with the given name.

@@ -44,6 +44,7 @@
 #include <QJsonDocument>
 #include <QStandardPaths>
 #include <QTimer>
+#include <QDir>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -127,6 +128,27 @@ ScriptManager::specForScript( const QString& name ) const
     if( !m_scripts.contains( name ) )
         return QString();
     return m_scripts[name]->specPath();
+}
+
+KPluginMetaData
+ScriptManager::createMetadaFromSpec( const QString &specPath )
+{
+    // KPluginMetaData and KPluginInfo require file suffix to be .desktop. Thus create temporary file with suffix
+    QFile specFile( specPath );
+    QTemporaryFile desktopFile( QDir::tempPath() + "/XXXXXX.desktop" );
+
+    if ( !specFile.open( QIODevice::ReadOnly ) ) {
+        warning() << "Could not read from spec file: " << specPath;
+        return KPluginMetaData();
+    } else if ( !desktopFile.open() ) {
+        warning() << "Could not create temporary .desktop file at " << QDir::tempPath();
+        return KPluginMetaData();
+    }
+
+    QTextStream( &desktopFile ) << QTextStream( &specFile ).readAll();
+    desktopFile.close();
+
+    return KPluginMetaData( desktopFile.fileName() );
 }
 
 bool
@@ -331,29 +353,24 @@ ScriptManager::loadScript( const QString& path )
     QString ScriptVersion;
     QFileInfo info( path );
     const QString jsonPath = QString( "%1/script.json" ).arg( info.path() );
-    if( !QFile::exists( jsonPath ) )
+    const QString specPath = QString( "%1/script.spec" ).arg( info.path() );
+    KPluginMetaData pluginMetadata;
+
+    if( QFile::exists( jsonPath ) )
     {
-        // Try to locate legacy .spec files and convert
-        const QString specPath = QString( "%1/script.spec" ).arg( info.path() );
-        const QString desktopPath = QString( "%1/script.desktop" ).arg( info.path() );
-
-        // First rename it to .desktop, or KPluginInfo won't read it
-        if( QFile::exists( specPath ) &&  !QFile::exists( desktopPath )) {
-            QFile::rename( specPath, desktopPath );
-        }
-
-        if ( QFile::exists( desktopPath ) ) {
-            QJsonDocument jsonDocument( KPluginMetaData::fromDesktopFile( desktopPath ).rawData() );
-            QFile newJsonFile( jsonPath );
-            newJsonFile.open( QFile::WriteOnly);
-            newJsonFile.write( jsonDocument.toJson() );
-        } else {
-            error() << "script.json for "<< path << " is missing!";
-            return false;
-        }
+        pluginMetadata = KPluginMetaData( jsonPath );
+    }
+    else if( QFile::exists( specPath ) )
+    {
+        warning() << "Reading legacy spec file: " << specPath;
+        pluginMetadata = createMetadaFromSpec( specPath );
+    }
+    else
+    {
+        error() << "script.json for "<< path << " is missing!";
+        return false;
     }
 
-    KPluginMetaData pluginMetadata( jsonPath );
     if( !pluginMetadata.isValid() )
     {
         error() << "PluginMetaData invalid for" << jsonPath;
