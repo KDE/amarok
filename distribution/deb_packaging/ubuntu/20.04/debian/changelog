@@ -1,3 +1,9 @@
+amarok (2.9.70+1SNAPSHOT20200623170346+0200-0ubuntu1ppa1~ubuntu20.04.1) focal; urgency=medium
+
+  * First release of script enine porting to QJSEngine
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 23 Jun 2020 17:03:46 +0200
+
 amarok (2.9.70+1SNAPSHOT20200616130454+0200-0ubuntu1ppa1~ubuntu20.04.1) focal; urgency=medium
 
   * Fix crash in breadcrumb when deleting the child menu of a category
