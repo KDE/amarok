@@ -21,7 +21,7 @@
 #include <QMetaType> // for Q_DECLARE_METATYPE
 #include <QObject>
 
-class QScriptEngine;
+class QJSEngine;
 
 //namespace AmarokScript{
 
@@ -44,7 +44,7 @@ class QScriptEngine;
         Q_PROPERTY( QString coverUrl WRITE setCoverUrl READ coverUrl )
 
         public:
-            explicit StreamItem( QScriptEngine *engine );
+            explicit StreamItem( QJSEngine *engine );
 
             QString itemName() const;
             QString infoHtml() const;

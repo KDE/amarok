@@ -825,10 +825,9 @@ target_link_libraries(amaroklib
     KF5::WindowSystem
     ${QT_QTSCRIPTTOOLS_LIBRARY}
     Qt5::Gui
+    Qt5::Qml
     Qt5::Quick
     Qt5::QuickWidgets
-    Qt5::Script
-    Qt5::ScriptTools
     Qt5::Sql
     Qt5::Svg
     ${CMAKE_DL_LIBS}

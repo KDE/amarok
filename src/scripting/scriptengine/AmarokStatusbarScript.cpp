@@ -19,16 +19,15 @@
 #include "core/logger/Logger.h"
 #include "core/support/Components.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 using namespace AmarokScript;
 
-AmarokStatusbarScript::AmarokStatusbarScript( QScriptEngine *engine )
+AmarokStatusbarScript::AmarokStatusbarScript( QJSEngine *engine )
     : QObject( engine )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
-    QScriptValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
+    QJSValue scriptObject = engine->newQObject( this );
+    QJSValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
     windowObject.setProperty( QStringLiteral("Statusbar"), scriptObject );
 }
 

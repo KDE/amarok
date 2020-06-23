@@ -24,7 +24,7 @@
 #include <KIconLoader>
 
 #include <QMetaEnum>
-#include <QScriptEngine>
+#include <QJSEngine>
 
 using namespace AmarokScript;
 
@@ -32,8 +32,7 @@ InfoScript::InfoScript( const QUrl &scriptUrl, AmarokScriptEngine *engine )
     : QObject( engine )
     , m_scriptUrl( scriptUrl )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this );
     engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Info"), scriptObject );
 
     const QMetaEnum iconEnum = metaObject()->enumerator( metaObject()->indexOfEnumerator("IconSizes") );

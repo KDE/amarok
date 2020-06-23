@@ -20,16 +20,15 @@
 #include "amarokconfig.h"
 #include "widgets/Osd.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 using namespace AmarokScript;
 
-AmarokOSDScript::AmarokOSDScript( QScriptEngine *engine )
+AmarokOSDScript::AmarokOSDScript( QJSEngine *engine )
     : QObject( engine )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
-    QScriptValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
+    QJSValue scriptObject = engine->newQObject( this) ;
+    QJSValue windowObject = engine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") );
     windowObject.setProperty( QStringLiteral("OSD"), scriptObject );
 }
 

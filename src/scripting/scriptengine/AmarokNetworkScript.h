@@ -23,12 +23,11 @@
 #include <QUrl>
 
 #include <QHash>
+#include <QJSValue>
 #include <QList>
 #include <QObject>
-#include <QScriptValue>
 
-class QScriptContext;
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -37,14 +36,14 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            explicit Downloader( QScriptEngine* scriptEngine );
+            explicit Downloader( QJSEngine* scriptEngine );
+            Q_INVOKABLE QJSValue stringDownloader_prototype_ctor( QString urlString, QJSValue callable, QString encoding = QStringLiteral("UTF-8") );
+            Q_INVOKABLE QJSValue dataDownloader_prototype_ctor( QString urlString, QJSValue callable);
 
         private:
-            static QScriptValue dataDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
-            static QScriptValue stringDownloader_prototype_ctor( QScriptContext* context, QScriptEngine* engine );
-            static QScriptValue init( QScriptContext* context, QScriptEngine* engine, bool stringResult );
+            QJSValue init( const QString &urlString, const QJSValue &callable, bool stringResult, QString encoding = QStringLiteral("UTF-8") );
 
-            QScriptEngine* m_scriptEngine;
+            QJSEngine* m_scriptEngine;
     };
 
     // this internal class manages multiple downloads from a script.
@@ -61,8 +60,8 @@ namespace AmarokScript
             static AmarokDownloadHelper *instance();
 
             // called by the wrapper class to register a new download
-            void newStringDownload( const QUrl &url, QScriptEngine* engine, const QScriptValue &obj, const QString &encoding = QStringLiteral("UTF-8") );
-            void newDataDownload( const QUrl &url, QScriptEngine* engine, const QScriptValue &obj );
+            void newStringDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj, const QString &encoding = QStringLiteral("UTF-8") );
+            void newDataDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj );
 
         private Q_SLOTS:
             void resultString( const QUrl &url, const QByteArray &data, const NetworkAccessManagerProxy::Error &e );
@@ -74,7 +73,7 @@ namespace AmarokScript
             void cleanUp( const QUrl &url );
 
             template<typename Function>
-            void newDownload( const QUrl &url, QScriptEngine* engine, const QScriptValue &obj, Function slot )
+            void newDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj, Function slot )
             {
                 m_values[ url ] = obj;
                 m_engines[ url ] = engine;
@@ -108,8 +107,8 @@ namespace AmarokScript
                 hash.remove( sourceUrl );
             };
 
-            QHash<QUrl, QScriptEngine *> m_engines;
-            QHash<QUrl, QScriptValue> m_values;
+            QHash<QUrl, QJSEngine *> m_engines;
+            QHash<QUrl, QJSValue> m_values;
             QHash<QUrl, QString> m_encodings;
     };
 }

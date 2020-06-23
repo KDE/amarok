@@ -19,18 +19,18 @@
 
 #include "core/support/Debug.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 //using namespace AmarokScript;
 
-StreamItem::StreamItem( QScriptEngine *engine )
+StreamItem::StreamItem( QJSEngine *engine )
     : QObject( engine )
     , m_year( 0 )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
-    engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("StreamItem"), scriptObject );
-    engine->setDefaultPrototype( qMetaTypeId<StreamItem*>(), QScriptValue() );
+    qRegisterMetaType<StreamItem*>();
+    QJSValue scriptObj = engine->newQObject( this );
+    scriptObj.setPrototype( QJSValue() );
+    engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("StreamItem"), scriptObj );
 }
 
 QString

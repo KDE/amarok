@@ -20,26 +20,25 @@
 
 #include <QMetaType> // for Q_DECLARE_METATYPE
 #include <QObject>
-#include <QScriptable>
+#include <QJSValue>
 
 class StreamItem;
 class QPixmap;
-class QScriptContext;
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
     // SCRIPTDOX: ScriptableServiceScript
     /**
-     * Usage: First create the sciprtable service using a call to
+     * Usage: First create the scriptable service using a call to
      * ScriptableServiceScript( string name, int levels, string shortDescription,  string rootHtml, bool showSearchBar )
      */
-    class ScriptableServiceScript : public QObject, public QScriptable
+    class ScriptableServiceScript : public QObject
     {
         Q_OBJECT
 
         public:
-            explicit ScriptableServiceScript( QScriptEngine* engine );
+            explicit ScriptableServiceScript( QJSEngine* engine );
 
             void slotPopulate(const QString &name, int level, int parent_id, const QString &callbackData, const QString &filter );
             void slotRequestInfo(const QString &name, int level, const QString &callbackData );
@@ -56,12 +55,14 @@ namespace AmarokScript
             Q_INVOKABLE void setEmblem( const QPixmap &icon );
             Q_INVOKABLE void setScalableEmblem( const QString &emblemPath );
 
+            Q_INVOKABLE QObject *ScriptableServiceScript_prototype_ctor( QString serviceName, int levels, QString shortDescription, QString rootHtml, bool showSearchBar );
+
+
         private:
-            QScriptEngine* m_scriptEngine;
+            QJSEngine* m_scriptEngine;
             int m_currentId;
             QString m_serviceName;
-            static QScriptValue ScriptableServiceScript_prototype_ctor( QScriptContext *context, QScriptEngine *engine );
-            static QScriptValue ScriptableServiceScript_prototype_populate( QScriptContext *context, QScriptEngine *engine );
+            static QJSValue ScriptableServiceScript_prototype_populate( QJSEngine *engine );
 
         Q_SIGNALS:
             void populate( int, const QString&, const QString& );

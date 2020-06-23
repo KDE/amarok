@@ -19,8 +19,8 @@
 #include "core-impl/collections/support/TextualQueryFilter.h"
 #include "scripting/scriptengine/ScriptingDefines.h"
 
-#include <QScriptEngine>
-#include <QScriptValue>
+#include <QJSEngine>
+#include <QJSValue>
 #include <QEventLoop>
 
 using namespace AmarokScript;
@@ -28,9 +28,15 @@ using namespace AmarokScript;
 using Collections::QueryMaker;
 
 void
-QueryMakerPrototype::init( QScriptEngine *engine )
+QueryMakerPrototype::init( QJSEngine *engine )
 {
-    qScriptRegisterMetaType<QueryMaker*>( engine, toScriptValue<QueryMaker*,QueryMakerPrototype>, fromScriptValue<QueryMaker*,QueryMakerPrototype> );
+    qRegisterMetaType<QueryMaker*>();
+    QMetaType::registerConverter<QueryMaker*,QJSValue>( [=] (QueryMaker* queryMaker) { return toScriptValue<QueryMaker*, QueryMakerPrototype>( engine, queryMaker ); } );
+    QMetaType::registerConverter<QJSValue,QueryMaker*>( [] (QJSValue jsValue) {
+            QueryMaker* queryMaker;
+            fromScriptValue<QueryMaker*, QueryMakerPrototype>( jsValue, queryMaker );
+            return queryMaker;
+    } );
 }
 
 // script invokable

@@ -2,10 +2,11 @@ Source: amarok
 Section: sound
 Priority: optional
 Maintainer: Pedro de Carvalho Gomes <pedrogomes81@gmail.com>
-Build-Depends: debhelper-compat (= 12),
+Build-Depends: debhelper-compat (= 11),
                cmake,
                extra-cmake-modules,
                kirigami2-dev,
+               libaio-dev,
                libavcodec-dev,
                libavdevice-dev,
                libavformat-dev,
@@ -45,7 +46,6 @@ Build-Depends: debhelper-compat (= 12),
                libloudmouth1-dev,
                libmariadbd-dev,
                libmariadb-dev,
-               libmariadb-dev-compat,
                libmtp-dev,
                libmygpo-qt-dev,
                libofa0-dev,

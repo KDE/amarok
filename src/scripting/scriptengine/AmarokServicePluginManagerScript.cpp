@@ -19,15 +19,14 @@
 #include "App.h"
 #include "services/ServicePluginManager.h"
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 using namespace AmarokScript;
 
-AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QScriptEngine *engine )
+AmarokServicePluginManagerScript::AmarokServicePluginManagerScript( QJSEngine *engine )
     : QObject( engine )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this );
     engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("ServicePluginManager"), scriptObject );
 }
 

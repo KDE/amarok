@@ -20,7 +20,7 @@
 #include <QObject>
 #include <QPixmap>
 
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -38,7 +38,7 @@ namespace AmarokScript
         Q_PROPERTY( bool kNotifyEnabled READ kNotifyEnabled WRITE setKNotifyEnabled )
 
         public:
-            explicit AmarokKNotifyScript( QScriptEngine* scriptEngine );
+            explicit AmarokKNotifyScript( QJSEngine* scriptEngine );
 
             /**
              * Show notifications for the currently playing track.
