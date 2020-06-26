@@ -1,8 +1,8 @@
-amarok (2.9.70+1SNAPSHOT20200626191036+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
+amarok (2.9.70+1SNAPSHOT20200626194036+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
 
   * Second release of script engine porting to QJSEngine
 
- -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 26 Jun 2020 19:10:36 +0200
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 26 Jun 2020 19:40:36 +0200
 
 amarok (2.9.70+1SNAPSHOT20200623170346+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
 
