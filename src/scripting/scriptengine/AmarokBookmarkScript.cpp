@@ -122,7 +122,6 @@ QJSValue
 BookmarkGroupPrototype::bookmarkGroupCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engine )
 {
     BookmarkGroup *group = 0;
-    QJSValue errorObj;
     if ( arg1.isUndefined() ) {
         if( arg0.isString() )
             group = new BookmarkGroup( arg0.toString() );
@@ -137,9 +136,12 @@ BookmarkGroupPrototype::bookmarkGroupCtor( QJSValue &arg0, QJSValue &arg1, QJSEn
         }
     }
     if( !group ) {
-        errorObj = engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
+        /* TODO - Use commented code once QT versions >= 5.12
+        QJSValue errorObj = engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
         engine->throwError( errorObj.errorType(), errorObj.toString() );
         return errorObj;
+        */
+        return engine->evaluate("throw new TypeError('Invalid arguments!')");
     }
 
     return engine->newQObject( new BookmarkGroupPrototype( BookmarkGroupPtr( group ) ) );
@@ -255,7 +257,6 @@ QJSValue
 BookmarkPrototype::bookmarkCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engine )
 {
     AmarokUrlPtr url;
-    QJSValue errorObj;
     if ( arg1.isUndefined() ) {
             if( arg0.isString() )
                 url = new AmarokUrl( arg0.toString() );
@@ -274,9 +275,12 @@ BookmarkPrototype::bookmarkCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engi
             }
     }
     if( !url ) {
-        errorObj = engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
+        /* TODO - Use commented code once QT versions >= 5.12
+        QJSValue errorObj = engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
         engine->throwError( errorObj.errorType(), errorObj.toString() );
         return errorObj;
+        */
+        return engine->evaluate("throw new TypeError('Invalid arguments!')");
     }
 
     return engine->newQObject( new BookmarkPrototype( url ) );
