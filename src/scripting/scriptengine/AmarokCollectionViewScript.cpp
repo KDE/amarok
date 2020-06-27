@@ -216,7 +216,10 @@ AmarokCollectionViewScript::setLevel( int level, int type )
         m_collectionWidget->currentView()->setLevel( level, CategoryId::CatMenuId( type ) );
         return;
     }
+    /* TODO - Use commented code once QT versions >= 5.12
     m_engine->throwError( QJSValue::TypeError, QStringLiteral("Invalid category!") );
+    */
+    return engine->evaluate("throw new TypeError('Invalid category!')");
 }
 
 void
@@ -227,7 +230,10 @@ AmarokCollectionViewScript::setLevels( const QList<int> &levels )
     {
         if( !m_categoryEnum.valueToKey( level ) )
         {
+            /* TODO - Use commented code once QT versions >= 5.12
             m_engine->throwError( QJSValue::TypeError, QStringLiteral("Invalid category!") );
+            */
+            engine->evaluate("throw new TypeError('Invalid category!')");
             return;
         }
         catLevels << CategoryId::CatMenuId( level );
