@@ -229,7 +229,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
             if (!aboutData->customAuthorTextEnabled())
             {
                 if (aboutData->bugAddress().isEmpty() || aboutData->bugAddress() == "submit@bugs.kde.org")
-                    bugsLabel->setText( i18n("Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report bugs.\n") );
+                    bugsLabel->setText( i18n("Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to report bugs.\n") );
                 else
                 {
                     if(aboutData->authors().count() == 1 && (aboutData->authors().first().emailAddress() == aboutData->bugAddress()))
