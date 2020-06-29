@@ -4,7 +4,7 @@ Amarok - the audio player for KDE
 This *personal* repository is a clone of the official Amarok repository (https://invent.kde.org/kde/amarok).
 Here I publish my ongoing improvements, which are also sent upstream once they are completed.
 You are welcome to use it. But the code might be unstable, and is supported by no one else but me.
-Fell free to contact me with suggestions and bug reports.
+Feel free to contact me with suggestions and bug reports.
 
 Packages for (k)Ubuntu 19.10 (or newer) are available at https://launchpad.net/~pgomes/+archive/ubuntu/amarok
 I rebase from the official repository before a new release.
