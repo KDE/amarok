@@ -7,5 +7,4 @@ You are welcome to use it. But the code might be unstable, and is supported by n
 Feel free to contact me with suggestions and bug reports.
 
 Packages for (k)Ubuntu 19.10 (or newer) are available at https://launchpad.net/~pgomes/+archive/ubuntu/amarok
-I rebase from the official repository before a new release.
-Thus, new packages incorporate other people's improvements, and the should be fully usable.
+I rebase from the official repository before a new release. Thus, new packages incorporate other people's improvements, and should be fully usable.
