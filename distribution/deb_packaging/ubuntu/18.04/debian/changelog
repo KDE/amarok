@@ -48,3 +48,9 @@ amarok (2.9.70+1SNAPSHOT20200407170839+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; 
   * Initial release 
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 07 Apr 2020 17:16:20 +0200
+amarok (2:2.9.70+1SNAPSHOT20200630174341+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+
+  * Change numbering to old Ubuntu scheme
+  * Fix compilation error for scripting code compatible with QT 5.8
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 30 Jun 2020 17:43:41 +0200
