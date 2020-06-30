@@ -1,3 +1,10 @@
+amarok (2:2.9.70+1SNAPSHOT20200630174341+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
+
+  * Change numbering to old Ubuntu scheme
+  * Fix compilation error for scripting code compatible with QT 5.8
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 30 Jun 2020 17:43:41 +0200
+
 amarok (2.9.70+1SNAPSHOT20200626194036+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
 
   * Second release of script engine porting to QJSEngine
