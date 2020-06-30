@@ -88,7 +88,7 @@ PlaybackConfig::configurePhonon() //SLOT
     KCMultiDialog KCM;
 
     KCM.setWindowTitle( i18n( "Sound System - Amarok" ) );
-    KCM.addModule( QStringLiteral("kcm_phonon") );
+    KCM.addModule( QStringLiteral("kcm_pulseaudio") );
     KCM.exec();
 }
 
