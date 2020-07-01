@@ -63,7 +63,7 @@ Build-Depends: debhelper-compat (= 11),
                qtscript5-dev,
                qtwebengine5-dev
 Depends:
-               libqt5qml5
+               libqt5qml5 | qtdeclarative-abi-5-9-5
 Standards-Version: 4.4.0
 Homepage: https://github.com/pcgomes/amarok
 #Vcs-Browser: https://salsa.debian.org/debian/amarok

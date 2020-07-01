@@ -1,3 +1,9 @@
+amarok (2:2.9.70+1SNAPSHOT20200701124447+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+
+  * Replace usage of QJSEngine:importModule to compile with QT5.8
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Wed, 01 Jul 2020 12:44:47 +0200
+
 amarok (2:2.9.70+1SNAPSHOT20200630174341+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
 
   * Change numbering to old Ubuntu scheme
