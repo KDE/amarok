@@ -27,8 +27,10 @@
 
 #include <KIO/Global>
 
+#include <QFile>
 #include <QSet>
 #include <QUrl>
+#include <QTextStream>
 
 using namespace AmarokScript;
 
@@ -45,7 +47,11 @@ void
 ScriptImporter::loadExtension( const QString& src )
 {
     DEBUG_BLOCK
+    /* TODO - Use commented code once QT versions >= 5.12
     m_scriptEngine->importModule( "amarok/" + src );
+    */
+    QFile extensionFile( "amarok/" + src );
+    m_scriptEngine->evaluate( QTextStream( &extensionFile ).readAll() );
 }
 
 bool
