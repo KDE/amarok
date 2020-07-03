@@ -1,3 +1,9 @@
+amarok (2:2.9.70+1SNAPSHOT20200703102146+0200-0ubuntu1ppa1~ubuntu20.04.1) focal; urgency=medium
+
+  * Remove dependency to metapackage qtdeclarative-abi that prevents installation to Neon
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 03 Jul 2020 10:21:46 +0200
+
 amarok (2:2.9.70+1SNAPSHOT20200701124447+0200-0ubuntu1ppa1~ubuntu20.04.1) focal; urgency=medium
 
   * Replace usage of QJSEngine:importModule to compile with QT5.8
