@@ -64,17 +64,15 @@ Build-Depends: debhelper-compat (= 12),
                qtquickcontrols2-5-dev,
                qtscript5-dev,
                qtwebengine5-dev
-Depends:
-               libqt5qml5
 Standards-Version: 4.4.0
-Homepage: https://github.com/pcgomes/amarok
-#Vcs-Browser: https://salsa.debian.org/debian/amarok
-#Vcs-Git: https://salsa.debian.org/debian/amarok.git
+Homepage: https://amarok.kde.org/
+Vcs-Browser: https://github.com/pcgomes/amarok
+Vcs-Git: https://github.com/pcgomes/amarok.git
 
 Package: amarok
 Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Amarok for KDE5
- Since (K)ubuntu 19.10, applications that were not ported to QT5 are no longer supported.
- Amarok has not been completely ported yet, but is usable. So I create packages for KDE5
- until the final port is concluded.
+ (K)ubuntu, starting from 19.10, does not support applications that were not ported to QT5.
+ Amarok has not concluded the ported yet, but is usable. So I create packages for KDE5
+ until the port is concluded, and (K)ubuntu releases Amarok packages again.

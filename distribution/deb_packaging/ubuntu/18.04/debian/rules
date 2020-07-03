@@ -25,3 +25,6 @@ override_dh_auto_configure:
 #	dh_auto_configure -- #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
 	dh_auto_configure -- -DCMAKE_BUILD_TYPE=RelWithDebInfo
 
+override_dh_shlibdeps:
+# Remove metapackage to be compatible with Neon
+	dh_shlibdeps -- -xqtdeclarative-abi-5-9-5
