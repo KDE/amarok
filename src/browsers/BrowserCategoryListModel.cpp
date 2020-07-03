@@ -60,7 +60,7 @@ BrowserCategoryListModel::data( const QModelIndex &index, int role ) const
             return QVariant( m_categories[index.row()]->longDescription() );
 
         case CustomCategoryRoles::CategoryRole:
-            return qVariantFromValue( m_categories[index.row()] );
+            return QVariant::fromValue( m_categories[index.row()] );
 
         default:
             return QVariant();

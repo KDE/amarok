@@ -157,7 +157,7 @@ UpcomingEventsEngine::artistEventsFetched( const QUrl &url, const QByteArray &da
     {
         LastFmEvent::List artistEvents = filterEvents( eventsParser.events() );
         engineData[ "artist" ] = m_currentArtist->name();
-        engineData[ "events" ] = qVariantFromValue( artistEvents );
+        engineData[ "events" ] = QVariant::fromValue( artistEvents );
     }
     setData( "artistevents", engineData );
 }
@@ -181,8 +181,8 @@ UpcomingEventsEngine::venueEventsFetched( const QUrl &url, const QByteArray data
         LastFmEvent::List venueEvents = filterEvents( eventsParser.events() );
         if( !venueEvents.isEmpty() )
         {
-            engineData[ "venue"  ] = qVariantFromValue( venueEvents.first()->venue() );
-            engineData[ "events" ] = qVariantFromValue( venueEvents );
+            engineData[ "venue"  ] = QVariant::fromValue( venueEvents.first()->venue() );
+            engineData[ "events" ] = QVariant::fromValue( venueEvents );
         }
     }
     setData( "venueevents", engineData );
