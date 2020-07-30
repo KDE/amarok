@@ -92,7 +92,7 @@ TokenDropTarget::clear()
 {
     QList< Token *> allTokens = tokensAtRow();
     foreach( Token* token, allTokens )
-        delete token;
+        token->deleteLater();;
 
     Q_EMIT changed();
 }
@@ -206,7 +206,7 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
 
     connect( token, &Token::changed, this, &TokenDropTarget::changed );
     connect( token, &Token::gotFocus, this, &TokenDropTarget::tokenSelected );
-    connect( token, &Token::changed, this, &TokenDropTarget::deleteEmptyRows );
+    connect( token, &Token::removed, this, &TokenDropTarget::deleteEmptyRows );
 
     Q_EMIT changed();
 }

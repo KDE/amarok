@@ -144,8 +144,8 @@ EditFilterDialog::filterForToken( Token *token )
         newFilter.inverted = false;
 
         m_filters.insert( token, newFilter );
-        connect( token, &Token::destroyed,
-                 this, &EditFilterDialog::slotTokenDestroyed );
+        connect( token, &Token::removed,
+                 this, &EditFilterDialog::slotTokenRemoved );
     }
 
     return m_filters[token];
@@ -168,11 +168,11 @@ EditFilterDialog::slotTokenSelected( Token *token )
 }
 
 void
-EditFilterDialog::slotTokenDestroyed( QObject *token )
+EditFilterDialog::slotTokenRemoved( Token *token )
 {
     DEBUG_BLOCK
 
-    m_filters.take( qobject_cast<Token*>(token) );
+    m_filters.take( token );
     if( m_curToken == token )
     {
         m_curToken = 0;
@@ -451,8 +451,8 @@ EditFilterDialog::updateDropTarget( const QString &text )
                             ? tokenForField( filter.filter.field() )
                             : SIMPLE_TEXT_CONSTRUCT;
             m_filters.insert( nToken, filter );
-            connect( nToken, &Token::destroyed,
-                     this, &EditFilterDialog::slotTokenDestroyed );
+            connect( nToken, &Token::removed,
+                     this, &EditFilterDialog::slotTokenRemoved);
 
             m_ui->dropTarget->appendToken( nToken );
 
