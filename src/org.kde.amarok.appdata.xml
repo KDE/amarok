@@ -366,7 +366,7 @@
   </description>
   <url type="homepage">https://amarok.kde.org</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=amarok</url>
-  <url type="help">https://docs.kde.org/index.php?application=amarok</url>
+  <url type="help">https://docs.kde.org/?application=amarok</url>
   <screenshots>
     <screenshot type="default">
       <caption>Playing music in Amarok</caption>
