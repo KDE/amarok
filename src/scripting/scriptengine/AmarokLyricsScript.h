@@ -1,4 +1,5 @@
 /****************************************************************************************
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
  * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -14,39 +15,41 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef SCRIPT_IMPORTER_H
-#define SCRIPT_IMPORTER_H
+#ifndef AMAROK_LYRICS_SCRIPT_H
+#define AMAROK_LYRICS_SCRIPT_H
 
+#include "core/meta/forward_declarations.h"
 
 #include <QObject>
-#include <QSet>
-#include <QStringList>
-#include <QUrl>
 
-class QStringList;
+class QJSEngine;
+class QByteArray;
 
 namespace AmarokScript
 {
-    class AmarokScriptEngine;
-
-    // SCRIPTDOX: Importer
-    class ScriptImporter : public QObject
+    // SCRIPTDOX Amarok.Lyrics
+    class AmarokLyricsScript : public QObject
     {
         Q_OBJECT
 
         public:
-            ScriptImporter( AmarokScriptEngine *scriptEngine, const QUrl &url );
+            explicit AmarokLyricsScript( QJSEngine* scriptEngine );
 
-            Q_INVOKABLE QStringList availableBindings() const;
-            Q_INVOKABLE bool loadAmarokBinding( const QString &name );
-            Q_INVOKABLE void loadExtension( const QString &src );
-            Q_INVOKABLE bool loadQtBinding( const QString &binding );
-            Q_INVOKABLE bool include( const QString &relativeFile );
+            Q_INVOKABLE void showLyrics( const QString& lyrics ) const;
 
-        private:
-            const QUrl m_scriptUrl;
-            AmarokScriptEngine *m_engine;
-            QSet<QString> m_importedBindings;
+            Q_INVOKABLE void showLyricsHtml( const QString& lyrics ) const;
+            Q_INVOKABLE void showLyricsError( const QString& error ) const;
+            Q_INVOKABLE void showLyricsNotFound( const QString& msg ) const;
+
+            Q_INVOKABLE QString escape( const QString& str );
+
+            Q_INVOKABLE void setLyricsForTrack( const QString& trackUrl , const QString& lyrics ) const;
+            Q_INVOKABLE QString toUtf8( const QByteArray& lyrics, const QString& encoding = "UTF-8" );
+            Q_INVOKABLE QString QStringtoUtf8( const QString& lyrics, const QString& encoding = "UTF-8" );
+            Q_INVOKABLE QByteArray fromUtf8( const QString& str, const QString& encoding );
+
+        Q_SIGNALS:
+            void fetchLyrics( const QString& artist, const QString& title, const QString&, Meta::TrackPtr );
     };
 }
 

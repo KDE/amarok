@@ -56,7 +56,6 @@ private Q_SLOTS:
 
 private:
     const KArchiveFile *findSpecFile( const KArchiveDirectory *dir ) const;
-    void removeDir( const QString &dirPath ) const;
 
     bool m_configChanged;
     ScriptSelector *m_selector;
