@@ -46,7 +46,7 @@ namespace QtBindings
             Q_INVOKABLE static TextCodec codecForLocale();
             Q_INVOKABLE static TextCodec codecForMib(int mib);
             Q_INVOKABLE static TextCodec codecForName(const ByteArray &name);
-            //Q_INVOKABLE static TextCodec codecForName(const char *name);
+            Q_INVOKABLE static TextCodec codecForName(const char *name);
             Q_INVOKABLE static TextCodec codecForUtfText(const ByteArray &ba, QTextCodec *defaultCodec);
             Q_INVOKABLE static TextCodec codecForUtfText(const ByteArray &ba);
             Q_INVOKABLE static void setCodecForLocale(QTextCodec *c);

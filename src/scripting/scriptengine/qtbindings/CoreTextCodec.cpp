@@ -20,8 +20,6 @@
 
 #include <QJSEngine>
 
-#include <iostream>
-
 using namespace QtBindings::Core;
 
 TextCodec::TextCodec() : TextCodec( nullptr )
@@ -141,15 +139,14 @@ TextCodec TextCodec::codecForMib(int mib)
 
 TextCodec TextCodec::codecForName(const ByteArray &name)
 {
-    std::cout << "CodecForName: " << name.toStdString() << std::endl;
     return QTextCodec::codecForName(name);
 }
-/*
+
 TextCodec TextCodec::codecForName(const char *name)
 {
     return QTextCodec::codecForName(name);
 }
-*/
+
 TextCodec TextCodec::codecForUtfText(const ByteArray &ba, QTextCodec *defaultCodec)
 {
     return QTextCodec::codecForUtfText(ba,defaultCodec);

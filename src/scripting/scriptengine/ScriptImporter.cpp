@@ -18,17 +18,10 @@
 
 #include "App.h"
 #include "AmarokBookmarkScript.h"
-#include "qtbindings/CoreByteArray.h"
-#include "qtbindings/CoreCoreApplication.h"
-#include "qtbindings/CoreDir.h"
-#include "qtbindings/CoreFileInfo.h"
-#include "qtbindings/CoreLocale.h"
-#include "qtbindings/CoreResource.h"
-#include "qtbindings/CoreTextCodec.h"
-#include "qtbindings/CoreTextStream.h"
-#include "qtbindings/CoreTranslator.h"
-#include "qtbindings/CoreUrl.h"
-#include "qtbindings/SqlSqlQuery.h"
+#include "qtbindings/Core.h"
+#include "qtbindings/Sql.h"
+#include "qtbindings/UiTools.h"
+#include "qtbindings/Gui.h"
 #include "AmarokCollectionViewScript.h"
 #include "config.h"
 #include "core/support/Debug.h"
@@ -45,7 +38,6 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QRegularExpression>
-#include <QTranslator>
 #ifdef WITH_QT_UITOOLS
 #include <QUiLoader>
 #endif
@@ -75,61 +67,52 @@ ScriptImporter::loadExtension( const QString& src )
 bool
 ScriptImporter::loadQtBinding( const QString& binding )
 {
-    QJSValue scriptObj;
+    if (m_qtScriptCompat) {
+        QJSValue scriptObj;
 
-    /* Export QT classes for script only if requested */
-    if (binding == "qt.core" ) {
-        debug() << __PRETTY_FUNCTION__ <<  "QT Bindings[qt.core] imported";
-        // Wrapped QObjects
-        QtBindings::Core::ByteArray::installJSType( m_engine );
-
-        QtBindings::Core::Dir::installJSType( m_engine );
-        QtBindings::Core::Locale::installJSType( m_engine );
-        QtBindings::Core::TextCodec::installJSType( m_engine );
-        QtBindings::Core::FileInfo::installJSType( m_engine );
-        QtBindings::Core::Resource::installJSType( m_engine );
-        QtBindings::Core::TextStream::installJSType( m_engine );
-        QtBindings::Core::Url::installJSType( m_engine );
-
-        /*
-        qRegisterMetaType<QtBindings::Core::ByteArray*>("ByteArray*");
-        qRegisterMetaType<QtBindings::Core::ByteArray*>("const ByteArray*");
-        qRegisterMetaType<QtBindings::Core::ByteArray>("ByteArray");
-        qRegisterMetaType<QByteArray>("QByteArray");
-        */
-
-        // Native QObjects
-        QtBindings::Core::CoreApplication::installJSType( m_engine );
-
-        m_engine->globalObject().setProperty("QFile", m_engine->newQMetaObject<QFile>());
-        m_engine->globalObject().setProperty("QIODevice", m_engine->newQMetaObject<QIODevice>());
-
-        QtBindings::Core::Translator::installJSType( m_engine );
-    } else if (binding == "qt.network" ) {
-        QString message( binding + " not available in Qt5 and no wrapper yet for this Amarok version" );
-        warning() << __PRETTY_FUNCTION__ <<  message;
-        m_engine->evaluate("console.warn(" + message + ")");
-    } else if (binding == "qt.xml" ) {
-        QString message( binding + " not available in Qt5 and no wrapper yet for this Amarok version" );
-        warning() << __PRETTY_FUNCTION__ <<  message;
-        m_engine->evaluate("console.warn(" + message + ")");
-    } else if (binding == "qt.gui" ) {
-        debug() << __PRETTY_FUNCTION__ <<  "QT Bindings[qt.gui] imported";
-        m_engine->globalObject().setProperty("QCheckBox", m_engine->newQMetaObject<QCheckBox>());
-        m_engine->globalObject().setProperty("QLabel", m_engine->newQMetaObject<QLabel>());
-    } else if (binding == "qt.sql" ) {
-        debug() << __PRETTY_FUNCTION__ <<  "QT Bindings[qt.sql] imported";
-        m_engine->globalObject().setProperty("QSqlQuery", m_engine->newQMetaObject<QtBindings::Sql::SqlQuery>());
+        /* Export QT classes for script only if requested */
+        if (binding == "qt.core") {
+            debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.core] imported";
+            QtBindings::Core::ByteArray::installJSType( m_engine );
+            QtBindings::Core::CoreApplication::installJSType( m_engine );
+            QtBindings::Core::Dir::installJSType( m_engine );
+            QtBindings::Core::FileInfo::installJSType( m_engine );
+            QtBindings::Core::File::installJSType( m_engine );
+            QtBindings::Core::Locale::installJSType( m_engine );
+            QtBindings::Core::Resource::installJSType( m_engine );
+            QtBindings::Core::TextCodec::installJSType( m_engine );
+            QtBindings::Core::TextStream::installJSType( m_engine );
+            QtBindings::Core::Translator::installJSType( m_engine );
+            QtBindings::Core::Url::installJSType( m_engine );
+        } else if (binding == "qt.network") {
+            QString message(binding +
+                            " not available in Qt5 and no wrapper yet for this Amarok version");
+            warning() << __PRETTY_FUNCTION__ << message;
+            m_engine->evaluate("console.warn(" + message + ")");
+        } else if (binding == "qt.xml") {
+            QString message(binding +
+                            " not available in Qt5 and no wrapper yet for this Amarok version");
+            warning() << __PRETTY_FUNCTION__ << message;
+            m_engine->evaluate("console.warn(" + message + ")");
+        } else if (binding == "qt.gui") {
+            debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.gui] imported";
+            QtBindings::Gui::CheckBox::installJSType( m_engine );
+            QtBindings::Gui::Label::installJSType( m_engine );
+        } else if (binding == "qt.sql") {
+            debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.sql] imported";
+            QtBindings::Sql::SqlQuery::installJSType( m_engine );
 #ifdef WITH_QT_UITOOLS
-    } else if (binding == "qt.uitools" ) {
-        debug() << __PRETTY_FUNCTION__ <<  "QT Bindings[qt.uitools] imported";
-        m_engine->globalObject().setProperty("QUiLoader", m_engine->newQMetaObject<QUiLoader>());
+        } else if (binding == "qt.uitools") {
+            debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.uitools] imported";
+            QtBindings::UiTools::UiLoader::installJSType( m_engine );
 #endif
-    } else {
-        error() << __PRETTY_FUNCTION__ << "Loading Qt bindings in scripts not available in Qt5!";
-        return false;
+        } else {
+            error() << __PRETTY_FUNCTION__ << "Requested QT binding not available: " << binding;
+            return false;
+        }
+        return true;
     }
-
+    error() << __PRETTY_FUNCTION__ << "Loading Qt bindings in scripts not enabled.!";
     return false;
 }
 
@@ -138,22 +121,22 @@ ScriptImporter::include( const QString& relativeFilename )
 {
     QUrl includeUrl = KIO::upUrl(m_scriptUrl);
     includeUrl = includeUrl.adjusted(QUrl::StripTrailingSlash);
-    includeUrl.setPath(includeUrl.path() + QLatin1Char('/') + ( relativeFilename ));
-    QFile file( includeUrl.toLocalFile() );
+    includeUrl.setPath(includeUrl.path() + QLatin1Char('/') + (relativeFilename));
+    QFile file(includeUrl.toLocalFile());
     warning() << "Include file: " << file.fileName();
-    if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         warning() << "cannot open the include file: " << file.fileName();
         return false;
     }
-    //QTBUG-69408 - const from imported is undefined. So remove qualifier
-    QString importScript(QString( file.readAll() ).remove( QRegularExpression("^const ", QRegularExpression::MultilineOption)) );
+    QString importScript(QString(file.readAll()));
+    if (m_qtScriptCompat) {
+        //QTBUG-69408 - const is not supported by ES5. Replace it with 'var'
+        QRegularExpression removeConst(
+                "const ([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*) *=",
+                QRegularExpression::DotMatchesEverythingOption );
+        importScript.replace( removeConst, "var \\1 =");
+    }
     QJSValue result = m_engine->evaluate(importScript, relativeFilename);
-    /*
-    QJSValue result = m_engine->evaluate( QString( file.readAll() )
-            .remove( QRegularExpression("^const ", QRegularExpression::MultilineOption) )
-            , relativeFilename );
-    */
     if (result.isError()) {
         error() << "Uncaught exception at " << result.property("name").toString() << ":";
         error() << result.property("filename").toString() << ":" << result.property("lineNumber").toInt();

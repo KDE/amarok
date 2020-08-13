@@ -463,8 +463,21 @@ set(scriptengine_SRCS
     scripting/scriptengine/exporters/PlaylistProviderExporter.cpp
     scripting/scriptengine/exporters/QueryMakerExporter.cpp
     scripting/scriptengine/exporters/ScriptableBiasExporter.cpp
+)
+
+set(qtbindings_SRCS
     scripting/scriptengine/qtbindings/CoreByteArray.cpp
-        scripting/scriptengine/qtbindings/CoreDir.cpp scripting/scriptengine/qtbindings/CoreDir.h scripting/scriptengine/qtbindings/CoreLocale.cpp scripting/scriptengine/qtbindings/CoreLocale.h scripting/scriptengine/qtbindings/CoreFileInfo.cpp scripting/scriptengine/qtbindings/CoreFileInfo.h scripting/scriptengine/qtbindings/CoreResource.cpp scripting/scriptengine/qtbindings/CoreResource.h scripting/scriptengine/qtbindings/CoreTextStream.cpp scripting/scriptengine/qtbindings/CoreTextStream.h scripting/scriptengine/qtbindings/CoreUrl.cpp scripting/scriptengine/qtbindings/CoreUrl.h scripting/scriptengine/qtbindings/SqlSqlQuery.cpp scripting/scriptengine/qtbindings/SqlSqlQuery.h scripting/scriptengine/qtbindings/CoreTranslator.cpp scripting/scriptengine/qtbindings/CoreTranslator.h scripting/scriptengine/qtbindings/CoreCoreApplication.cpp scripting/scriptengine/qtbindings/CoreCoreApplication.h scripting/scriptengine/qtbindings/CoreTextCodec.cpp scripting/scriptengine/qtbindings/CoreTextCodec.h)
+    scripting/scriptengine/qtbindings/CoreCoreApplication.cpp
+    scripting/scriptengine/qtbindings/CoreDir.cpp
+    scripting/scriptengine/qtbindings/CoreFileInfo.cpp
+    scripting/scriptengine/qtbindings/CoreLocale.cpp
+    scripting/scriptengine/qtbindings/CoreResource.cpp
+    scripting/scriptengine/qtbindings/CoreTextCodec.cpp
+    scripting/scriptengine/qtbindings/CoreTextStream.cpp
+    scripting/scriptengine/qtbindings/CoreTranslator.cpp
+    scripting/scriptengine/qtbindings/CoreUrl.cpp
+    scripting/scriptengine/qtbindings/SqlSqlQuery.cpp
+        scripting/scriptengine/qtbindings/CoreFile.cpp scripting/scriptengine/qtbindings/CoreFile.h scripting/scriptengine/qtbindings/UiToolsUiLoader.cpp scripting/scriptengine/qtbindings/UiToolsUiLoader.h scripting/scriptengine/qtbindings/GuiCheckBox.cpp scripting/scriptengine/qtbindings/GuiCheckBox.h scripting/scriptengine/qtbindings/GuiLabel.cpp scripting/scriptengine/qtbindings/GuiLabel.h)
 
 set(scriptconsole_SRCS
     scripting/scriptconsole/CompletionModel.cpp
@@ -607,6 +620,7 @@ set(amaroklib_LIB_SRCS
     ${libplaylistbrowser_SRCS}
     ${libplaylistmanager_SRCS}
     ${dbus_SRCS}
+    ${qtbindings_SRCS}
     ${scriptengine_SRCS}
     ${scriptconsole_SRCS}
     ${libstatusbar_SRCS}

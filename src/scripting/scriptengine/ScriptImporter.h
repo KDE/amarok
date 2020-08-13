@@ -47,6 +47,7 @@ namespace AmarokScript
             const QUrl m_scriptUrl;
             AmarokScriptEngine *m_engine;
             QSet<QString> m_importedBindings;
+            bool m_qtScriptCompat = true;
     };
 }
 

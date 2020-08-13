@@ -237,3 +237,11 @@ QVariant SqlQuery::value(int i) const
 {
     return QSqlQuery::value(i);
 }
+
+SqlQuery &SqlQuery::operator=(const SqlQuery &other)
+{
+    if (this != &other) {
+        this->QSqlQuery::operator=( other );
+    }
+    return *this;
+}
