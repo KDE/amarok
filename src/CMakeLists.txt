@@ -910,7 +910,11 @@ install(FILES amarok_codecinstall.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPE
 install(FILES amarok_append.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR}/ServiceMenus)
 install(FILES amarok-play-audiocd.desktop DESTINATION ${KDE_INSTALL_DATADIR}/solid/actions)
 
-install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_CONFDIR})
+if( ${ECM_VERSION} STRGREATER "5.58.0" )
+    install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_KNSRCDIR})
+else()
+    install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_CONFDIR})
+endif()
 
 # protocol handlers
 install(FILES amarokurls/amarok.protocol  DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
