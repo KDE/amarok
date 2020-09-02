@@ -53,6 +53,7 @@
   <summary xml:lang="fi">Äänisoitin</summary>
   <summary xml:lang="fr">Lecteur audio</summary>
   <summary xml:lang="gl">Reprodutor de son</summary>
+  <summary xml:lang="ia">Reproductor de audio</summary>
   <summary xml:lang="id">Pemutar Audio</summary>
   <summary xml:lang="it">Lettore audio</summary>
   <summary xml:lang="ko">오디오 재생기</summary>
@@ -85,6 +86,7 @@
     <p xml:lang="fi">Amarok on vapaa, monipuolinen ja tehokas monen alustan musiikkisoitin- ja -kokoelmanhallintasovellus.</p>
     <p xml:lang="fr">Amarok est un lecteur de musique et un gestionnaire de collections libre, multiplateforme, polyvalent, puissant et riche en fonctionnalités.</p>
     <p xml:lang="gl">Amarok é xestor de coleccións de música e reprodutor libre, compatíbel con múltiples plataformas, versátil, potente e cheo de funcionalidades.</p>
+    <p xml:lang="ia">Amarok es un libere, versatile e potente reproductor musical</p>
     <p xml:lang="id">Amarok adalah pemutar musik dan pengelola koleksi gratis, lintas platform, serbaguna, hebat, dan kaya fitur.</p>
     <p xml:lang="it">Amarok è un lettore musicale e gestore delle raccolte libero, versatile, potente e ricco di funzionalità</p>
     <p xml:lang="ko">Amarok은 강력한 크로스 플랫폼 자유 소프트웨어 음악 재생기 및 모음집 관리 도구입니다.</p>
@@ -314,6 +316,7 @@
       <li xml:lang="fi">Kansikuvien hallinta</li>
       <li xml:lang="fr">Gestionnaire de pochettes</li>
       <li xml:lang="gl">Xestor de portadas.</li>
+      <li xml:lang="ia">Gerente de copertura</li>
       <li xml:lang="id">Pengelola sampul</li>
       <li xml:lang="it">Gestore delle copertine</li>
       <li xml:lang="ko">커버 관리자</li>
@@ -412,6 +415,7 @@
       <caption xml:lang="fi">Amarok-ikkunat</caption>
       <caption xml:lang="fr">Fenêtres Amarok</caption>
       <caption xml:lang="gl">Xanelas de Amarok</caption>
+      <caption xml:lang="ia">Fenestras de Amarok</caption>
       <caption xml:lang="id">Window Amarok</caption>
       <caption xml:lang="it">Finestre di Amarok</caption>
       <caption xml:lang="ko">Amarok 창</caption>
