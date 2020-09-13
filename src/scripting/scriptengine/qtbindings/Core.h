@@ -25,6 +25,7 @@
 #include "CoreDir.h"
 #include "CoreFile.h"
 #include "CoreFileInfo.h"
+#include "CoreIODevice.h"
 #include "CoreLocale.h"
 #include "CoreResource.h"
 #include "CoreTextCodec.h"

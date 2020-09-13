@@ -21,6 +21,7 @@
 
 // Groups includes by namespace
 #include "GuiCheckBox.h"
+#include "GuiDialogButtonBox.h"
 #include "GuiLabel.h"
 
 #endif //GUI_H

@@ -20,8 +20,9 @@
 #define UITOOLSUILOADER_H
 
 #include "QtBinding.h"
-
+#include <QFile>
 #include <QUiLoader>
+#include <QDialogButtonBox>
 
 namespace QtBindings
 {
@@ -33,6 +34,7 @@ namespace QtBindings
         public:
             Q_INVOKABLE UiLoader(QObject *parent = Q_NULLPTR);
             Q_INVOKABLE UiLoader(const UiLoader &other);
+            Q_INVOKABLE UiLoader(const QJSValue &other);
             Q_INVOKABLE virtual ~UiLoader();
             UiLoader &operator=(const UiLoader &other);
         public slots:
@@ -46,7 +48,7 @@ namespace QtBindings
             virtual QWidget *createWidget(const QString &className, QWidget *parent = Q_NULLPTR, const QString &name = QString()) override;
             QString errorString() const;
             bool isLanguageChangeEnabled() const;
-            QWidget *load(QIODevice *device, QWidget *parentWidget = Q_NULLPTR);
+            QJSValue load(QFile *device, QJSValue parentWidget);
             QStringList pluginPaths() const;
             void setLanguageChangeEnabled(bool enabled);
             void setWorkingDirectory(const QDir &dir);

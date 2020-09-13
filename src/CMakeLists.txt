@@ -469,15 +469,21 @@ set(qtbindings_SRCS
     scripting/scriptengine/qtbindings/CoreByteArray.cpp
     scripting/scriptengine/qtbindings/CoreCoreApplication.cpp
     scripting/scriptengine/qtbindings/CoreDir.cpp
+    scripting/scriptengine/qtbindings/CoreFile.cpp
     scripting/scriptengine/qtbindings/CoreFileInfo.cpp
+    scripting/scriptengine/qtbindings/CoreIODevice.cpp
     scripting/scriptengine/qtbindings/CoreLocale.cpp
     scripting/scriptengine/qtbindings/CoreResource.cpp
     scripting/scriptengine/qtbindings/CoreTextCodec.cpp
     scripting/scriptengine/qtbindings/CoreTextStream.cpp
     scripting/scriptengine/qtbindings/CoreTranslator.cpp
     scripting/scriptengine/qtbindings/CoreUrl.cpp
+    scripting/scriptengine/qtbindings/GuiCheckBox.cpp
+    scripting/scriptengine/qtbindings/GuiDialogButtonBox.cpp
+    scripting/scriptengine/qtbindings/GuiLabel.cpp
     scripting/scriptengine/qtbindings/SqlSqlQuery.cpp
-        scripting/scriptengine/qtbindings/CoreFile.cpp scripting/scriptengine/qtbindings/CoreFile.h scripting/scriptengine/qtbindings/UiToolsUiLoader.cpp scripting/scriptengine/qtbindings/UiToolsUiLoader.h scripting/scriptengine/qtbindings/GuiCheckBox.cpp scripting/scriptengine/qtbindings/GuiCheckBox.h scripting/scriptengine/qtbindings/GuiLabel.cpp scripting/scriptengine/qtbindings/GuiLabel.h)
+    scripting/scriptengine/qtbindings/UiToolsUiLoader.cpp
+)
 
 set(scriptconsole_SRCS
     scripting/scriptconsole/CompletionModel.cpp

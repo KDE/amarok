@@ -16,35 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "CoreCoreApplication.h"
+#include "GuiDialogButtonBox.h"
 
-#include <QCoreApplication>
+using namespace QtBindings::Gui;
 
-using namespace QtBindings::Core;
-
-CoreApplication::CoreApplication()
+DialogButtonBox::DialogButtonBox(QWidget *parent) : QDialogButtonBox(parent)
 {
 }
 
-CoreApplication::CoreApplication(const CoreApplication &other) : QObject()
+DialogButtonBox::DialogButtonBox(const DialogButtonBox &other) : QDialogButtonBox(other.parentWidget())
 {
-    Q_UNUSED(other);
+    *this = other;
 }
 
-bool CoreApplication::installTranslator(Translator *messageFile)
+
+DialogButtonBox::~DialogButtonBox()
 {
-    return QCoreApplication::installTranslator(messageFile);
 }
 
-QString CoreApplication::translate(QString context, QString key)
+DialogButtonBox &
+DialogButtonBox::operator=(const DialogButtonBox &other)
 {
-    return QCoreApplication::translate(context.toLocal8Bit().constData(),
-            key.toLocal8Bit().constData());
-}
-
-CoreApplication &CoreApplication::operator=(const CoreApplication &other)
-{
-    Q_UNUSED(other);
-    /* Nothing to do here */
+    if (this != &other) {
+        this->setCenterButtons(other.centerButtons());
+        this->setOrientation(other.orientation());
+        this->setStandardButtons(other.standardButtons());;
+        for (auto &otherButton : other.buttons() )
+        {
+           this->addButton(otherButton,QDialogButtonBox::AcceptRole);
+        }
+    }
     return *this;
 }

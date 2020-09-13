@@ -20,7 +20,7 @@
 #define COREFILE_H
 
 #include "QtBinding.h"
-
+#include "CoreIODevice.h"
 #include <QFile>
 
 namespace QtBindings
@@ -50,14 +50,18 @@ namespace QtBindings
             Q_INVOKABLE static bool setPermissions(const QString &fileName, QFileDevice::Permissions permissions);
             Q_INVOKABLE static QString symLinkTarget(const QString &fileName);
             File &operator=(const File &other);
+            // Supress warnings about overloading virtual QFile::open
+            using QFile::open;
         public slots:
+            Q_INVOKABLE virtual void close() override;
             Q_INVOKABLE bool copy(const QString &newName);
             Q_INVOKABLE bool exists() const;
             Q_INVOKABLE virtual QString fileName() const override;
             Q_INVOKABLE bool link(const QString &linkName);
-            Q_INVOKABLE bool open(FILE *fh, QIODevice::OpenMode mode, QFileDevice::FileHandleFlags handleFlags = DontCloseHandle);
-            Q_INVOKABLE bool open(int fd, QIODevice::OpenMode mode, QFileDevice::FileHandleFlags handleFlags = DontCloseHandle);
-            Q_INVOKABLE virtual bool open(QIODevice::OpenMode mode) override;
+            //Q_INVOKABLE bool open(FILE *fh, QIODevice::OpenMode mode, QFileDevice::FileHandleFlags handleFlags = DontCloseHandle);
+            //Q_INVOKABLE bool open(int fd, QIODevice::OpenMode mode, QFileDevice::FileHandleFlags handleFlags = DontCloseHandle);
+            //Q_INVOKABLE virtual bool open(QIODevice::OpenMode mode) override;
+            Q_INVOKABLE virtual bool open(QtBindings::Core::IODevice::OpenModeFlag mode);
             Q_INVOKABLE virtual QFileDevice::Permissions permissions() const override;
             Q_INVOKABLE bool remove();
             Q_INVOKABLE bool rename(const QString &newName);

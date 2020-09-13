@@ -45,6 +45,11 @@ File::~File()
 {
 }
 
+void File::close()
+{
+    QFile::close();
+}
+
 bool File::copy(const QString &fileName, const QString &newName)
 {
     return QFile::copy(fileName,newName);
@@ -125,7 +130,7 @@ bool File::link(const QString &linkName)
 {
     return QFile::link(linkName);
 }
-
+/*
 bool File::open(FILE *fh, QIODevice::OpenMode mode,
                                   QFileDevice::FileHandleFlags handleFlags)
 {
@@ -141,6 +146,12 @@ bool File::open(int fd, QIODevice::OpenMode mode,
 bool File::open(QIODevice::OpenMode mode)
 {
     return QFile::open(mode);
+}
+*/
+
+bool File::open(QtBindings::Core::IODevice::OpenModeFlag mode)
+{
+    return QFile::open( QIODevice::OpenMode(mode) );
 }
 
 QFileDevice::Permissions File::permissions() const

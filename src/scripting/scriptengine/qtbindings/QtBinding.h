@@ -32,15 +32,14 @@ namespace QtBindings {
     template<class T> class Base
     {
     public:
+        /**
+         * Export type to the JS engine
+         * @param engine
+         * @param parentObject
+         */
         static void installJSType( QJSEngine *engine )
         {
             if (!engine) return;
-
-           const QByteArray typeName = QString( T::staticMetaObject.className() )
-                            .remove(  QRegularExpression( "^.*::" ) ).toLatin1();
-           const QByteArray typeNamePtr = typeName + "*";
-           const QByteArray typeNameRef = typeName + "&";
-           const QString qTypeName( "Q" + typeName );
 
             // Install type only once along program execution
             if ( !QMetaType::isRegistered( QMetaType::type( typeName ) ) ) {
@@ -59,15 +58,17 @@ namespace QtBindings {
                 Q_ASSERT(conv);
             }
 
-            // Export type to each JS engine only once
-            if ( engine->globalObject().property( qTypeName ).isUndefined() ) {
-                engine->globalObject().setProperty( qTypeName, engine->newQMetaObject<T>());
+            QJSValue scopeObj = engine->globalObject();
+
+            // Export type to each JS engine only once - Test if not defined yet
+            if ( scopeObj.property( qTypeName ).isUndefined() ) {
+                scopeObj.setProperty( qTypeName, engine->newQMetaObject<T>());
 
                 QJSValue classObj = engine->newQObject( new T() );
                 // Add static methods to the associated JS object
                 for ( const QString& methodName : getStaticMethods() ) {
-                    engine->globalObject().property( qTypeName ).setProperty( methodName,
-                            classObj.property( methodName ) );
+                    scopeObj.property( qTypeName )
+                        .setProperty( methodName, classObj.property( methodName ) );
                 }
             }
         }
@@ -84,7 +85,39 @@ namespace QtBindings {
             }
             return methodList;
         }
+
+    protected:
+        static const QByteArray typeName;
+        static const QByteArray typeNamePtr;
+        static const QByteArray typeNameRef;
+        static const QString qTypeName;
+
+        /**
+         *  Mirrors a QObject tree into a JS object
+         *
+         * @param rootObject top object in the tree
+         * @param  engine javascript engine object that the tree belongs to
+         * @return a Javascript object with the top QObject of the tree
+         */
+        QJSValue mirrorObjectTree( QObject* rootObject, QJSEngine* engine ) {
+
+            QJSValue rootJSValue = engine->newQObject( rootObject );
+
+            for (QObject* childObject : rootObject->findChildren<QObject*>( QString(), Qt::FindDirectChildrenOnly ) ) {
+                QJSValue childJSValue = mirrorObjectTree( childObject, engine ) ;
+                rootJSValue.setProperty( childObject->objectName(), childJSValue );
+            }
+            return rootJSValue;
+        }
     };
+
+    // Remove namespace
+    template<class T> const QByteArray Base<T>::typeName = QString( T::staticMetaObject.className() )
+        .remove(  QRegularExpression( "^.*::" ) ).toLatin1();
+    template<class T> const QByteArray Base<T>::typeNamePtr = typeName + "*";
+    template<class T> const QByteArray Base<T>::typeNameRef = typeName + "&";
+    template<class T> const QString Base<T>::qTypeName( "Q" + typeName );
 }
+
 
 #endif //QTBINDING_H

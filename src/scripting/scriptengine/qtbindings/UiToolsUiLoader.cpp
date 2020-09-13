@@ -19,6 +19,7 @@
 #include "UiToolsUiLoader.h"
 
 #include "CoreDir.h"
+#include <QWidget>
 
 using namespace QtBindings::UiTools;
 
@@ -29,6 +30,11 @@ UiLoader::UiLoader(QObject *parent) : QUiLoader(parent)
 UiLoader::UiLoader(const UiLoader &other) : QUiLoader(other.parent())
 {
     *this=other;
+}
+
+UiLoader::UiLoader(const QJSValue &other) : QUiLoader(nullptr)
+{
+    Q_UNUSED(other);
 }
 
 UiLoader::~UiLoader()
@@ -90,9 +96,13 @@ bool UiLoader::isLanguageChangeEnabled() const
     return QUiLoader::isLanguageChangeEnabled();
 }
 
-QWidget *UiLoader::load(QIODevice *device, QWidget *parentWidget)
+QJSValue UiLoader::load(QFile *device, QJSValue parentWidget)
 {
-    return QUiLoader::load(device, parentWidget);
+    QWidget *rootWidget = ( parentWidget.isQObject() ) ?
+        QUiLoader::load(device, qobject_cast<QWidget*>( parentWidget.toQObject()) ) :
+        QUiLoader::load(device);
+
+    return this->mirrorObjectTree( rootWidget, qjsEngine( this ) );
 }
 
 QStringList UiLoader::pluginPaths() const

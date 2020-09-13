@@ -61,6 +61,7 @@ bool Translator::load(const uchar *data, int len, const QString &directory)
 
 Translator &Translator::operator=(const Translator &other)
 {
+    Q_UNUSED(other);
     /* Nothing to do here */
     return *this;
 }

@@ -78,6 +78,7 @@ ScriptImporter::loadQtBinding( const QString& binding )
             QtBindings::Core::Dir::installJSType( m_engine );
             QtBindings::Core::FileInfo::installJSType( m_engine );
             QtBindings::Core::File::installJSType( m_engine );
+            QtBindings::Core::IODevice::installJSType( m_engine );
             QtBindings::Core::Locale::installJSType( m_engine );
             QtBindings::Core::Resource::installJSType( m_engine );
             QtBindings::Core::TextCodec::installJSType( m_engine );
@@ -98,6 +99,7 @@ ScriptImporter::loadQtBinding( const QString& binding )
             debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.gui] imported";
             QtBindings::Gui::CheckBox::installJSType( m_engine );
             QtBindings::Gui::Label::installJSType( m_engine );
+            QtBindings::Gui::DialogButtonBox::installJSType( m_engine );
         } else if (binding == "qt.sql") {
             debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.sql] imported";
             QtBindings::Sql::SqlQuery::installJSType( m_engine );
