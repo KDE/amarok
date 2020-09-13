@@ -86,45 +86,32 @@ AmarokWindowScript::AmarokWindowScript( AmarokScriptEngine* scriptEngine )
 }
 
 void
-AmarokWindowScript::addToolsMenu( const QString &name )
+AmarokWindowScript::addToolsMenu( QMenu *menu )
 {
-    if( m_customMenus.contains( name ) )
-        return;
-
-    QMenu *menu = new QMenu( name );
-    m_customMenus.insert( name, menu );
-    m_toolsMenu->addMenu( menu );
-    QJSValue scriptMenu = m_scriptEngine->newQObject( menu );
-    m_scriptEngine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") ).setProperty( name, scriptMenu );
+    m_toolsMenu.data()->addMenu( menu );
 }
 
 void
-AmarokWindowScript::addSettingsMenu( const QString &name )
+AmarokWindowScript::addSettingsMenu( QMenu *menu )
 {
-    if( m_customMenus.contains( name ) )
-        return;
+    m_settingsMenu.data()->addMenu( menu );
 
-    QMenu *menu = new QMenu( name );
-    m_customMenus.insert( name, menu );
-    m_settingsMenu->addMenu( menu );
-    QJSValue scriptMenu = m_scriptEngine->newQObject( menu );
-    m_scriptEngine->globalObject().property( QStringLiteral("Amarok") ).property( QStringLiteral("Window") ).setProperty( name, scriptMenu );
 }
 
 bool
-AmarokWindowScript::addToolsAction( const QString &id, const QString &actionName, const QString &icon )
+AmarokWindowScript::addToolsMenu( const QString &id, const QString &menuTitle, const QString &icon )
 {
-    return addMenuAction( m_toolsMenu, id, actionName, QStringLiteral("ToolsMenu"), icon );
+    return addMenuAction( m_toolsMenu, id, menuTitle, QStringLiteral("ToolsMenu"), icon );
 }
 
 void
 AmarokWindowScript::addToolsSeparator()
 {
-    m_toolsMenu->addSeparator();
+    m_toolsMenu.data()->addSeparator();
 }
 
 bool
-AmarokWindowScript::addSettingsAction( const QString &id, const QString &actionName, const QString &icon )
+AmarokWindowScript::addSettingsMenu( const QString &id, const QString &actionName, const QString &icon )
 {
     return addMenuAction( m_settingsMenu, id, actionName, QStringLiteral("SettingsMenu"), icon );
 }

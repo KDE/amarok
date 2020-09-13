@@ -18,6 +18,10 @@
 
 #include "App.h"
 #include "AmarokBookmarkScript.h"
+#include "qtbindings/Core.h"
+#include "qtbindings/Sql.h"
+#include "qtbindings/UiTools.h"
+#include "qtbindings/Gui.h"
 #include "AmarokCollectionViewScript.h"
 #include "config.h"
 #include "core/support/Debug.h"
@@ -31,13 +35,19 @@
 #include <QSet>
 #include <QUrl>
 #include <QTextStream>
+#include <QCheckBox>
+#include <QLabel>
+#include <QRegularExpression>
+#ifdef WITH_QT_UITOOLS
+#include <QUiLoader>
+#endif
 
 using namespace AmarokScript;
 
 ScriptImporter::ScriptImporter( AmarokScriptEngine *scriptEngine, const QUrl &url )
     : QObject( scriptEngine )
     , m_scriptUrl( url )
-    , m_scriptEngine( scriptEngine )
+    , m_engine(scriptEngine )
 {
     QJSValue scriptObject = scriptEngine->newQObject( this );
     scriptEngine->globalObject().setProperty( QStringLiteral("Importer"), scriptObject );
@@ -48,18 +58,63 @@ ScriptImporter::loadExtension( const QString& src )
 {
     DEBUG_BLOCK
     /* TODO - Use commented code once QT versions >= 5.12
-    m_scriptEngine->importModule( "amarok/" + src );
+    m_engine->importModule( "amarok/" + src );
     */
     QFile extensionFile( "amarok/" + src );
-    m_scriptEngine->evaluate( QTextStream( &extensionFile ).readAll() );
+    m_engine->evaluate( QTextStream(&extensionFile ).readAll() );
 }
 
 bool
 ScriptImporter::loadQtBinding( const QString& binding )
 {
-    Q_UNUSED( binding )
+    if (m_qtScriptCompat) {
+        QJSValue scriptObj;
 
-    error() << __PRETTY_FUNCTION__ << "Loading Qt bindings in scripts not available in Qt5!";
+        /* Export QT classes for script only if requested */
+        if (binding == "qt.core") {
+            debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.core] imported";
+            QtBindings::Core::ByteArray::installJSType( m_engine );
+            QtBindings::Core::CoreApplication::installJSType( m_engine );
+            QtBindings::Core::Dir::installJSType( m_engine );
+            QtBindings::Core::FileInfo::installJSType( m_engine );
+            QtBindings::Core::File::installJSType( m_engine );
+            QtBindings::Core::IODevice::installJSType( m_engine );
+            QtBindings::Core::Locale::installJSType( m_engine );
+            QtBindings::Core::Resource::installJSType( m_engine );
+            QtBindings::Core::TextCodec::installJSType( m_engine );
+            QtBindings::Core::TextStream::installJSType( m_engine );
+            QtBindings::Core::Translator::installJSType( m_engine );
+            QtBindings::Core::Url::installJSType( m_engine );
+        } else if (binding == "qt.network") {
+            QString message(binding +
+                            " not available in Qt5 and no wrapper yet for this Amarok version");
+            warning() << __PRETTY_FUNCTION__ << message;
+            m_engine->evaluate("console.warn(" + message + ")");
+        } else if (binding == "qt.xml") {
+            QString message(binding +
+                            " not available in Qt5 and no wrapper yet for this Amarok version");
+            warning() << __PRETTY_FUNCTION__ << message;
+            m_engine->evaluate("console.warn(" + message + ")");
+        } else if (binding == "qt.gui") {
+            debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.gui] imported";
+            QtBindings::Gui::CheckBox::installJSType( m_engine );
+            QtBindings::Gui::Label::installJSType( m_engine );
+            QtBindings::Gui::DialogButtonBox::installJSType( m_engine );
+        } else if (binding == "qt.sql") {
+            debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.sql] imported";
+            QtBindings::Sql::SqlQuery::installJSType( m_engine );
+#ifdef WITH_QT_UITOOLS
+        } else if (binding == "qt.uitools") {
+            debug() << __PRETTY_FUNCTION__ << "QT Bindings[qt.uitools] imported";
+            QtBindings::UiTools::UiLoader::installJSType( m_engine );
+#endif
+        } else {
+            error() << __PRETTY_FUNCTION__ << "Requested QT binding not available: " << binding;
+            return false;
+        }
+        return true;
+    }
+    error() << __PRETTY_FUNCTION__ << "Loading Qt bindings in scripts not enabled.!";
     return false;
 }
 
@@ -68,37 +123,56 @@ ScriptImporter::include( const QString& relativeFilename )
 {
     QUrl includeUrl = KIO::upUrl(m_scriptUrl);
     includeUrl = includeUrl.adjusted(QUrl::StripTrailingSlash);
-    includeUrl.setPath(includeUrl.path() + QLatin1Char('/') + ( relativeFilename ));
-    QFile file( includeUrl.toLocalFile() );
-    if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-        warning() << "cannot open the include file!";
+    includeUrl.setPath(includeUrl.path() + QLatin1Char('/') + (relativeFilename));
+    QFile file(includeUrl.toLocalFile());
+    warning() << "Include file: " << file.fileName();
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        warning() << "cannot open the include file: " << file.fileName();
         return false;
     }
-    // TODO - Analyze impact of not loading context
-    //m_scriptEngine->currentContext()->setActivationObject(
-    //                        m_scriptEngine->currentContext()->parentContext()->activationObject() );
-    m_scriptEngine->evaluate( file.readAll(), relativeFilename );
+    QString importScript(QString(file.readAll()));
+    if (m_qtScriptCompat) {
+        //QTBUG-69408 - const is not supported by ES5. Replace it with 'var'
+        QRegularExpression removeConst(
+                "const ([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*) *=",
+                QRegularExpression::DotMatchesEverythingOption );
+        importScript.replace( removeConst, "var \\1 =");
+    }
+    QJSValue result = m_engine->evaluate(importScript, relativeFilename);
+    if (result.isError()) {
+        error() << "Uncaught exception at " << result.property("name").toString() << ":";
+        error() << result.property("filename").toString() << ":" << result.property("lineNumber").toInt();
+        error() << result.property("message").toString();
+        error() << result.property("stack").toString();
+        return false;
+    }
     return true;
 }
 
 QStringList
 ScriptImporter::availableBindings() const
 {
-    // TODO - implement listing of imported modules at AmarokScriptEngine
-    //return m_scriptEngine->availableExtensions();
-    return QStringList();
+    return QStringList()
+    << "qt.core"
+    << "qt.network"
+    << "qt.xml"
+    << "qt.gui"
+    << "qt.sql"
+#ifdef WITH_QT_UITOOLS
+    << "qt.uitools"
+#endif
+    ;
 }
 
 bool
 ScriptImporter::loadAmarokBinding( const QString &name )
 {
     if( name == QLatin1String("bookmarks") )
-        new AmarokBookmarkScript( m_scriptEngine );
+        new AmarokBookmarkScript(m_engine );
     else if( name == QLatin1String("collectionview") )
-        new AmarokCollectionViewScript( m_scriptEngine, ScriptManager::instance()->scriptNameForEngine( m_scriptEngine ) );
+        new AmarokCollectionViewScript(m_engine, ScriptManager::instance()->scriptNameForEngine(m_engine ) );
     else if( name == QLatin1String("playlistmanager") )
-        new AmarokPlaylistManagerScript( m_scriptEngine );
+        new AmarokPlaylistManagerScript(m_engine );
     else
     {
         warning() << "\"" << name << "\" doesn't exist!";
@@ -106,3 +180,4 @@ ScriptImporter::loadAmarokBinding( const QString &name )
     }
     return true;
 }
+

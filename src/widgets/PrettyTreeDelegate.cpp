@@ -34,6 +34,8 @@
 #include <QPainter>
 #include <QTreeView>
 #include <QHeaderView>
+#include <scripting/scriptengine/qtbindings/CoreTextCodec.h>
+
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )

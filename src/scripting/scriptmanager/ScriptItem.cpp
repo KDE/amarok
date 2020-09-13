@@ -37,6 +37,7 @@
 #include "scripting/scriptengine/AmarokEngineScript.h"
 #include "scripting/scriptengine/AmarokInfoScript.h"
 #include "scripting/scriptengine/AmarokKNotifyScript.h"
+#include "scripting/scriptengine/AmarokLyricsScript.h"
 #include "scripting/scriptengine/AmarokNetworkScript.h"
 #include "scripting/scriptengine/AmarokOSDScript.h"
 #include "scripting/scriptengine/AmarokPlaylistScript.h"
@@ -225,7 +226,17 @@ ScriptItem::start( bool silent )
 
     m_timerId = startTimer( 100 );
     Q_ASSERT( m_engine );
-    m_engineResult = m_engine->evaluate( scriptFile.readAll(), m_name );
+    if (m_qtScriptCompat) {
+        //QTBUG-69408 - const is not supported by ES5. Replace it with 'var'
+        QRegularExpression removeConst(
+                "const ([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*) *=",
+                QRegularExpression::DotMatchesEverythingOption );
+        m_engineResult = m_engine->evaluate(
+               QString(scriptFile.readAll()).replace( removeConst, "var \\1 =" ),
+                m_name);
+    } else {
+        m_engineResult = m_engine->evaluate(scriptFile.readAll(), m_name);
+    }
     m_output << m_engineResult.toString();
     debug() << "After Evaluation "<< m_name;
     Q_EMIT evaluated( m_output.join( "\n" ) );
@@ -294,7 +305,11 @@ ScriptItem::initializeScriptEngine()
     AmarokScript::CollectionPrototype::init( m_engine.data() );
     AmarokScript::QueryMakerPrototype::init( m_engine.data() );
 
-    if( m_info.category().contains( QLatin1String("Scriptable Service") ) )
+    if ( m_info.category().contains( QLatin1String("Lyrics") ) )
+    {
+        new AmarokScript::AmarokLyricsScript( m_engine.data() );
+    }
+    if ( m_info.category().contains( QLatin1String("Scriptable Service") ) )
     {
         new StreamItem( m_engine.data() );
         m_service = new AmarokScript::ScriptableServiceScript( m_engine.data() );

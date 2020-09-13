@@ -442,6 +442,7 @@ set(scriptengine_SRCS
     scripting/scriptengine/AmarokEqualizerScript.cpp
     scripting/scriptengine/AmarokInfoScript.cpp
     scripting/scriptengine/AmarokKNotifyScript.cpp
+    scripting/scriptengine/AmarokLyricsScript.cpp
     scripting/scriptengine/AmarokNetworkScript.cpp
     scripting/scriptengine/AmarokOSDScript.cpp
     scripting/scriptengine/AmarokPlaylistManagerScript.cpp
@@ -462,6 +463,26 @@ set(scriptengine_SRCS
     scripting/scriptengine/exporters/PlaylistProviderExporter.cpp
     scripting/scriptengine/exporters/QueryMakerExporter.cpp
     scripting/scriptengine/exporters/ScriptableBiasExporter.cpp
+)
+
+set(qtbindings_SRCS
+    scripting/scriptengine/qtbindings/CoreByteArray.cpp
+    scripting/scriptengine/qtbindings/CoreCoreApplication.cpp
+    scripting/scriptengine/qtbindings/CoreDir.cpp
+    scripting/scriptengine/qtbindings/CoreFile.cpp
+    scripting/scriptengine/qtbindings/CoreFileInfo.cpp
+    scripting/scriptengine/qtbindings/CoreIODevice.cpp
+    scripting/scriptengine/qtbindings/CoreLocale.cpp
+    scripting/scriptengine/qtbindings/CoreResource.cpp
+    scripting/scriptengine/qtbindings/CoreTextCodec.cpp
+    scripting/scriptengine/qtbindings/CoreTextStream.cpp
+    scripting/scriptengine/qtbindings/CoreTranslator.cpp
+    scripting/scriptengine/qtbindings/CoreUrl.cpp
+    scripting/scriptengine/qtbindings/GuiCheckBox.cpp
+    scripting/scriptengine/qtbindings/GuiDialogButtonBox.cpp
+    scripting/scriptengine/qtbindings/GuiLabel.cpp
+    scripting/scriptengine/qtbindings/SqlSqlQuery.cpp
+    scripting/scriptengine/qtbindings/UiToolsUiLoader.cpp
 )
 
 set(scriptconsole_SRCS
@@ -605,6 +626,7 @@ set(amaroklib_LIB_SRCS
     ${libplaylistbrowser_SRCS}
     ${libplaylistmanager_SRCS}
     ${dbus_SRCS}
+    ${qtbindings_SRCS}
     ${scriptengine_SRCS}
     ${scriptconsole_SRCS}
     ${libstatusbar_SRCS}
@@ -764,7 +786,7 @@ if( LIBOFA_FOUND AND AVCODEC_FOUND AND AVFORMAT_FOUND AND AVUTIL_FOUND )
         musicbrainz/MusicDNSAudioDecoder.cpp
         musicbrainz/MusicDNSFinder.cpp
         musicbrainz/MusicDNSXmlParser.cpp
-    )
+            )
 endif()
 
 qt5_add_dbus_adaptor(
@@ -823,7 +845,6 @@ target_link_libraries(amaroklib
     KF5::ThreadWeaver
     KF5::WidgetsAddons
     KF5::WindowSystem
-    ${QT_QTSCRIPTTOOLS_LIBRARY}
     Qt5::Gui
     Qt5::Qml
     Qt5::Quick
@@ -842,6 +863,11 @@ target_link_libraries(amaroklib
 if( Qt5WebEngine_FOUND )
     target_link_libraries( amaroklib Qt5::WebEngine )
     add_definitions( -DWITH_QT_WEBENGINE )
+endif()
+
+if( Qt5UiTools_FOUND )
+    target_link_libraries( amaroklib Qt5::UiTools )
+    add_definitions( -DWITH_QT_UITOOLS )
 endif()
 
 include_directories(${TAGLIB_INCLUDES})

@@ -103,6 +103,7 @@ private:
     int                                                 m_runningTime;
     int                                                 m_timerId;
     QPointer<ScriptTerminatorWidget>                    m_popupWidget;
+    bool                                                m_qtScriptCompat = true;
 };
 
 #endif /* AMAROK_SCRIPTITEM_H */
