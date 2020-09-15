@@ -286,7 +286,7 @@ EngineController::restoreSession()
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
 
         // Only give a resume time for local files, because resuming remote protocols can have weird side effects.
-        // See: http://bugs.kde.org/show_bug.cgi?id=172897
+        // See: https://bugs.kde.org/show_bug.cgi?id=172897
         if( url.isLocalFile() )
             play( track, AmarokConfig::resumeTime(), AmarokConfig::resumePaused() );
         else

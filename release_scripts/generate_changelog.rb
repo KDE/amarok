@@ -25,7 +25,7 @@ $changelog.gsub!(/^\s+$/, '')
 $changelog.gsub!(/\n{2,}/, "\n")
 
 # Replace bug number with direct link to bugs.kde.org
-$changelog.gsub!(/BR (\d+)/, '<a href="http://bugs.kde.org/show_bug.cgi?id=\\1">\\0</a>')
+$changelog.gsub!(/BR (\d+)/, '<a href="https://bugs.kde.org/show_bug.cgi?id=\\1">\\0</a>')
 
 # Make bullets
 bullet_item_regexp =

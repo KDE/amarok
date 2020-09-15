@@ -1,3 +1,9 @@
+amarok (2:2.9.70+1SNAPSHOT20200915122323+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+
+  * Port scripting engine from QTScript to QJSEngine
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 15 Sep 2020 12:23:23 +0200
+
 amarok (2:2.9.70+1SNAPSHOT20200703102146+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
 
   * Remove dependency to metapackage qtdeclarative-abi that prevents installation to Neon
