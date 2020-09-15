@@ -146,7 +146,7 @@ SimilarArtistsEngine::parseSimilarArtists( const QUrl &url, consr QByteArray &da
     debug() << "Found" << saList.size() << "similar artists to" << m_artist;
     Plasma::DataEngine::Data eData;
     eData[ "artist"  ] = m_artist;
-    eData[ "similar" ] = qVariantFromValue( saList );
+    eData[ "similar" ] = QVariant::fromValue( saList );
     setData( "similarArtists", eData );
 }
 

@@ -1159,7 +1159,7 @@ PodcastReader::endItem()
         }
 
         //make sure that the episode is not a bogus match. The channel has to be correct.
-        // See http://bugs.kde.org/show_bug.cgi?id=227515
+        // See https://bugs.kde.org/show_bug.cgi?id=227515
         if( !episode.isNull() && episode->channel() == m_channel )
         {
             debug() << "updating episode: " << episode->title();
@@ -1611,7 +1611,7 @@ PodcastReader::parsePubDate( const QString &dateString )
         parseInput = rfcDateDayRegex.cap(1);
     }
     //Hack around a to strict RFCDate implementation in KDateTime.
-    //See http://bugs.kde.org/show_bug.cgi?id=231062
+    //See https://bugs.kde.org/show_bug.cgi?id=231062
     QRegExp rfcMonthLowercase( QStringLiteral("^\\d+\\s+\\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\b") );
     if( rfcMonthLowercase.indexIn( parseInput ) != -1 )
     {

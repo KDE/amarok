@@ -1150,7 +1150,7 @@ CollectionTreeView::createExtendedActions( const QModelIndexList &indices )
             QActionList gActions = The::globalCollectionActions()->actionsFor( item->data() );
             foreach( QAction *action, gActions )
             {
-                if( action ) // Can become 0-pointer, see http://bugs.kde.org/show_bug.cgi?id=183250
+                if( action ) // Can become 0-pointer, see https://bugs.kde.org/show_bug.cgi?id=183250
                 {
                     actions.append( action );
                     debug() << "Got global action: " << action->text();
