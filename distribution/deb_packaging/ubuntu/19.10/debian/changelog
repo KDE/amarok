@@ -1,3 +1,9 @@
+amarok (2:2.9.70+1SNAPSHOT20200916171021+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
+
+  * Fix compilation error when optional qttools5-dev is not present
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Wed, 16 Sep 2020 17:10:21 +0200
+
 amarok (2:2.9.70+1SNAPSHOT20200915122323+0200-0ubuntu1ppa1~ubuntu19.10.1) eoan; urgency=medium
 
   * Port scripting engine from QTScript to QJSEngine
