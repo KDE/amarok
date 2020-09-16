@@ -61,6 +61,7 @@ Build-Depends: debhelper-compat (= 11),
                qtdeclarative5-dev,
                qtquickcontrols2-5-dev,
                qtscript5-dev,
+               qttools5-dev,
                qtwebengine5-dev
 Standards-Version: 4.4.0
 Homepage: https://github.com/pcgomes/amarok

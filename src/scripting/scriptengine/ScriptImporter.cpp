@@ -20,7 +20,9 @@
 #include "AmarokBookmarkScript.h"
 #include "qtbindings/Core.h"
 #include "qtbindings/Sql.h"
-#include "qtbindings/UiTools.h"
+#ifdef WITH_QT_UITOOLS
+ #include "qtbindings/UiTools.h"
+#endif
 #include "qtbindings/Gui.h"
 #include "AmarokCollectionViewScript.h"
 #include "config.h"
@@ -38,9 +40,8 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QRegularExpression>
-#ifdef WITH_QT_UITOOLS
-#include <QUiLoader>
-#endif
+
+
 
 using namespace AmarokScript;
 
