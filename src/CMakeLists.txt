@@ -482,7 +482,6 @@ set(qtbindings_SRCS
     scripting/scriptengine/qtbindings/GuiDialogButtonBox.cpp
     scripting/scriptengine/qtbindings/GuiLabel.cpp
     scripting/scriptengine/qtbindings/SqlSqlQuery.cpp
-    scripting/scriptengine/qtbindings/UiToolsUiLoader.cpp
 )
 
 set(scriptconsole_SRCS
@@ -868,6 +867,8 @@ endif()
 if( Qt5UiTools_FOUND )
     target_link_libraries( amaroklib Qt5::UiTools )
     add_definitions( -DWITH_QT_UITOOLS )
+    # Append below all files from QtBindings::UiTools namespace
+    list(APPEND qtbindings_SRCS scripting/scriptengine/qtbindings/UiToolsUiLoader.cpp)
 endif()
 
 include_directories(${TAGLIB_INCLUDES})
