@@ -483,6 +483,10 @@ set(qtbindings_SRCS
     scripting/scriptengine/qtbindings/GuiLabel.cpp
     scripting/scriptengine/qtbindings/SqlSqlQuery.cpp
 )
+if( Qt5UiTools_FOUND )
+    # Append below all files from QtBindings::UiTools namespace
+    list(APPEND qtbindings_SRCS scripting/scriptengine/qtbindings/UiToolsUiLoader.cpp)
+endif()
 
 set(scriptconsole_SRCS
     scripting/scriptconsole/CompletionModel.cpp
@@ -867,8 +871,6 @@ endif()
 if( Qt5UiTools_FOUND )
     target_link_libraries( amaroklib Qt5::UiTools )
     add_definitions( -DWITH_QT_UITOOLS )
-    # Append below all files from QtBindings::UiTools namespace
-    list(APPEND qtbindings_SRCS scripting/scriptengine/qtbindings/UiToolsUiLoader.cpp)
 endif()
 
 include_directories(${TAGLIB_INCLUDES})
