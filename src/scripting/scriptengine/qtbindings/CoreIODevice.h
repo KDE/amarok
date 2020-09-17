@@ -40,8 +40,9 @@ namespace QtBindings
                 Truncate = QIODevice::Truncate,
                 Text = QIODevice::Text,
                 Unbuffered = QIODevice::Unbuffered,
-                NewOnly = QIODevice::NewOnly,
-                ExistingOnly = QIODevice::ExistingOnly
+                // The following are not presetn at QT5.8 - Add as value for backward compatibility
+                NewOnly = 0x0040,
+                ExistingOnly = 0x0080
             };
             Q_FLAG(OpenModeFlag);
             IODevice();
