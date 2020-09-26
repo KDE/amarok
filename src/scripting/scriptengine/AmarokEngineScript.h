@@ -22,7 +22,7 @@
 #include <QHash>
 #include <QObject>
 
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -38,7 +38,7 @@ namespace AmarokScript
         Q_PROPERTY( int fadeoutLength READ fadeoutLength WRITE setFadeoutLength )
 
         public:
-            explicit AmarokEngineScript( QScriptEngine* scriptEngine );
+            explicit AmarokEngineScript( QJSEngine* scriptEngine );
 
             enum PlayerStatus
             {

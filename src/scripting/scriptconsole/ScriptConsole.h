@@ -19,8 +19,6 @@
 
 #include <QMainWindow>
 #include <QDockWidget>
-#include <QScriptEngineAgent>
-#include <QScriptEngineDebugger>
 #include <QPointer>
 
 namespace KTextEditor{
@@ -30,7 +28,7 @@ class QEvent;
 class QListWidget;
 class QListWidgetItem;
 class QModelIndex;
-class QScriptEngine;
+class QJSEngine;
 
 namespace ScriptConsoleNS
 {
@@ -58,13 +56,16 @@ class ScriptListDockWidget;
             ~ScriptConsole() override;
 
             bool eventFilter( QObject *watched, QEvent *event ) override;
-            QDockWidget *getWidget( const QString &title, QScriptEngineDebugger::DebuggerWidget widget );
+            QDockWidget *getWidget( const QString &title, QWidget *widget );
             void closeEvent( QCloseEvent *event ) override;
             ScriptConsoleItem* createScriptItem( const QString &script );
+            ScriptListDockWidget *getScriptListDockWidget();
 
-            QScriptEngineDebugger *m_debugger;
             QPointer<ScriptConsoleItem> m_scriptItem;
+            QDockWidget *m_consoleWidget;
             QDockWidget *m_codeWidget;
+            QDockWidget *m_outputWidget;
+            QDockWidget *m_errorWidget;
             QString m_savePath;
             KTextEditor::Editor *m_editor;
             ScriptListDockWidget *m_scriptListDock;
@@ -78,7 +79,9 @@ class ScriptListDockWidget;
         public:
             explicit ScriptListDockWidget( QWidget *parent );
             ~ScriptListDockWidget() override;
+            QListWidget *listWidget();
             void addScript( ScriptConsoleItem *script );
+            ScriptConsoleItem *getScript( const QString &scriptName);
             void addItem( QListWidgetItem *item );
 
         public Q_SLOTS:

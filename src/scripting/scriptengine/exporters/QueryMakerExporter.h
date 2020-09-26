@@ -29,7 +29,7 @@ namespace Collections
 {
     class QueryMaker;
 }
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -54,7 +54,7 @@ namespace AmarokScript
         Q_PROPERTY( QString filter READ filter )
 
     public:
-        static void init( QScriptEngine *engine );
+        static void init( QJSEngine *engine );
         QueryMakerPrototype( Collections::QueryMaker *collection );
         ~QueryMakerPrototype() override;
         Collections::QueryMaker *data() const { return m_querymaker; }

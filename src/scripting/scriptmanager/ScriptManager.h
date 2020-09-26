@@ -24,6 +24,7 @@
 #include "ScriptItem.h"
 
 #include <KPluginInfo>
+#include <KPluginMetaData>
 #include <QUrl>
 
 #include <QSemaphore>
@@ -31,8 +32,7 @@
 namespace AmarokScript {
     class AmarokScript;
 }
-class QScriptEngine;
-class QScriptValue;
+class QJSValue;
 
 class AMAROK_EXPORT ScriptManager : public QObject
 {
@@ -41,6 +41,8 @@ class AMAROK_EXPORT ScriptManager : public QObject
     public:
         static ScriptManager* instance();
         static void destroy();
+        /** Reads plugin info from legacy .desktop format */
+        static KPluginMetaData createMetadaFromSpec( const QString &specPath );
 
         /**
          * Runs the script with the given name.
@@ -70,7 +72,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
         /** Returns whether or not there is a lyrics script running */
         bool lyricsScriptRunning() const;
 
-        QString scriptNameForEngine( const QScriptEngine *engine ) const;
+        QString scriptNameForEngine( const QJSEngine *engine ) const;
 
         /** Notifies any running lyric scripts to fetch desired lyric from given URL */
         void notifyFetchLyrics( const QString& artist, const QString& title, const QString& url, const Meta::TrackPtr &track );
@@ -105,7 +107,7 @@ class AMAROK_EXPORT ScriptManager : public QObject
 
     private Q_SLOTS:
         bool slotRunScript( const QString &name, bool silent = false );
-        void handleException( const QScriptValue &value );
+        void handleException( const QJSValue &value );
 
         void updaterFinished( const QString &scriptPath );
         void slotConfigChanged();

@@ -22,18 +22,17 @@
 #include "core/support/Debug.h"
 
 #include <QDomDocument>
-#include <QScriptEngine>
+#include <QJSEngine>
 #include <QXmlStreamReader>
 
 using namespace AmarokScript;
 
-AmarokScriptXml::AmarokScriptXml( QScriptEngine *engine )
+AmarokScriptXml::AmarokScriptXml( QJSEngine *engine )
     : QObject( engine )
     , m_reader( nullptr )
     , m_domDocument( new QDomDocument )
 {
-    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership,
-                                                    QScriptEngine::ExcludeSuperClassContents );
+    QJSValue scriptObject = engine->newQObject( this );
     engine->globalObject().property( QStringLiteral("Amarok") ).setProperty( QStringLiteral("Xml"), scriptObject );
 }
 

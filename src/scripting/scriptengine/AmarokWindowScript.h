@@ -51,11 +51,11 @@ namespace AmarokScript
         public:
             explicit AmarokWindowScript( AmarokScriptEngine* scriptEngine );
 
-            Q_INVOKABLE void addToolsMenu( const QString &name );
-            Q_INVOKABLE void addSettingsMenu( const QString &name );
-            Q_INVOKABLE bool addToolsAction( const QString &id, const QString &actionName, const QString &icon = QStringLiteral("amarok") );
+            Q_INVOKABLE void addToolsMenu( QMenu *menu );
+            Q_INVOKABLE void addSettingsMenu( QMenu *menu );
+            Q_INVOKABLE bool addToolsMenu( const QString &id, const QString &menuTitle, const QString &icon = QStringLiteral("amarok") );
             Q_INVOKABLE void addToolsSeparator();
-            Q_INVOKABLE bool addSettingsAction( const QString &id, const QString &actionName, const QString &icon = QStringLiteral("amarok") );
+            Q_INVOKABLE bool addSettingsMenu( const QString &id, const QString &actionName, const QString &icon = QStringLiteral("amarok") );
             Q_INVOKABLE bool addCustomAction( const QString &menuName, const QString &id, const QString &actionName, const QString &icon = QStringLiteral("amarok") );
             Q_INVOKABLE void addSettingsSeparator();
             Q_INVOKABLE void showTrayIcon( bool show );

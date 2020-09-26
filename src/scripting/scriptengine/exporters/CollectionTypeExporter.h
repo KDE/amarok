@@ -33,7 +33,7 @@ namespace Collections
     class Collection;
     class QueryMaker;
 }
-class QScriptEngine;
+class QJSEngine;
 
 namespace AmarokScript
 {
@@ -120,7 +120,7 @@ namespace AmarokScript
         Q_PROPERTY( QStringList actualLocation READ actualLocation )
 
         public:
-            static void init( QScriptEngine *engine );
+            static void init( QJSEngine *engine );
             CollectionPrototype( Collections::Collection *collection );
             Collections::Collection* data() const { return m_collection.data(); }
 

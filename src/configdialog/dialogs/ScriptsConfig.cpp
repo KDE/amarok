@@ -249,15 +249,16 @@ ScriptsConfig::slotUninstallScript()
         return;
 
     ScriptItem *item = ScriptManager::instance()->m_scripts.value( m_selector->currentItem() );
+    /*
     int response = KMessageBox::warningContinueCancel( this, i18n( "You are advised to only uninstall manually "
                                                                     "installed scripts using this button." ) );
     if( response == KMessageBox::Cancel )
         return;
+    */
 
-    QRegExp regex( "(.*apps/amarok/scripts/.+/).*script.spec" );
-    regex.indexIn( item->info().entryPath() );
-    qDebug() << "About to remove folder " << regex.cap( 1 );
-    removeDir( regex.cap( 1 ) );
+    QFileInfo specFile( item->specPath() );
+    qDebug() << "About to remove folder " << specFile.path();
+    QDir( specFile.path() ).removeRecursively();
     m_timer->start();
 }
 
@@ -288,21 +289,3 @@ ScriptsConfig::findSpecFile( const KArchiveDirectory *dir ) const
     }
     return nullptr;
 }
-
-void
-ScriptsConfig::removeDir( const QString &dirPath ) const
-{
-    QDir dir( dirPath );
-    if( dir.exists( dirPath ) )
-    {
-        foreach( const QFileInfo &info, dir.entryInfoList( QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files ) )
-        {
-            if( info.isDir() )
-                removeDir( info.absoluteFilePath() );
-            else
-                QFile::remove( info.absoluteFilePath() );
-        }
-        dir.rmdir( dirPath );
-    }
-}
-
