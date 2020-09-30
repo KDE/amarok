@@ -28,7 +28,7 @@ include(FindPkgConfig)
 include(CMakePushCheckState)
 include(GenerateExportHeader)
 
-find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Sql Svg Test Widgets Xml )
+find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Sql Svg Test Widgets Xml)
 
 find_package(Qt5QuickControls2 ${QT_REQUIRED_VERSION})
 set_package_properties(Qt5QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
@@ -76,7 +76,6 @@ option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
-option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recommended" ON)
 option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
 
 ############### Taglib
@@ -200,18 +199,21 @@ if( WITH_PLAYER )
     find_package(X11)
     find_package(Threads REQUIRED)
 
-    find_package(MySQL REQUIRED)
-    if( WITH_MYSQL_EMBEDDED )
+    find_package(MySQL)
+
+    if( NOT MySQL_FOUND )
+        find_package(MariaDB REQUIRED)
+    endif()
+
+    find_package(MySQLe)
+    if( MySQLe_FOUND )
         set( BUILD_MYSQLE_COLLECTION TRUE )
-        set_package_properties( MYSQLD PROPERTIES DESCRIPTION "Embedded MySQL Libraries" URL "http://www.mysql.com" TYPE REQUIRED )
+        # zlib is required for mysql embedded
+        find_package(ZLIB REQUIRED)
+        set_package_properties( ZLIB PROPERTIES DESCRIPTION "zlib" TYPE REQUIRED )
     else()
         add_definitions( "-DNO_MYSQL_EMBEDDED" )
     endif()
-    set_package_properties( MYSQL PROPERTIES DESCRIPTION "MySQL Server Libraries" URL "http://www.mysql.com" TYPE REQUIRED )
-
-    # zlib is required for mysql embedded
-    find_package(ZLIB REQUIRED)
-    set_package_properties( ZLIB PROPERTIES DESCRIPTION "zlib" TYPE REQUIRED )
 
     # We tell users that we need 1.0.3, but we really check just >= 1.0.0. This is because
     # upstream forgot to update version in lastfm/global.h, so it looks like 1.0.2. :-(

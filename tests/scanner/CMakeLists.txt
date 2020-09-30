@@ -31,7 +31,6 @@ macro(add_database_test test_target test_sources)
         Qt5::Test
         Qt5::Core
         ${CMAKE_DL_LIBS}
-        ${ZLIB_LIBRARIES}
         ${GOOGLEMOCK_LIBRARIES})
 
 endmacro(add_database_test)

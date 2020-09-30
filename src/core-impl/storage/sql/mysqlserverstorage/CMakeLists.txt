@@ -24,7 +24,6 @@ target_link_libraries(amarok_storage-mysqlserverstorage
     Qt5::Gui
     ${MYSQL_LIBRARIES}
     ${CMAKE_DL_LIBS}
-    ${ZLIB_LIBRARIES}
 )
 
 if(NOT WIN32 AND NOT APPLE)

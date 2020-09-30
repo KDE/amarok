@@ -1,6 +1,6 @@
 if( BUILD_MYSQLE_COLLECTION )
     add_subdirectory( mysqlestorage )
 endif()
-if( MySQL_FOUND )
+if( MySQL_FOUND OR MariaDB_FOUND )
     add_subdirectory( mysqlserverstorage )
 endif()
