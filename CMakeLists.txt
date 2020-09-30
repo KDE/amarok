@@ -28,13 +28,16 @@ include(FindPkgConfig)
 include(CMakePushCheckState)
 include(GenerateExportHeader)
 
-find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Script ScriptTools Sql Svg Test Widgets Xml)
+find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Sql Svg Test Widgets Xml)
 
 find_package(Qt5QuickControls2 ${QT_REQUIRED_VERSION})
 set_package_properties(Qt5QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
 
 find_package(Qt5WebEngine ${QT_REQUIRED_VERSION})
 set_package_properties(Qt5WebEngine PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet")
+
+find_package(Qt5UiTools ${QT_REQUIRED_VERSION})
+set_package_properties(Qt5UiTools PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the scripting engine")
 
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     Archive
