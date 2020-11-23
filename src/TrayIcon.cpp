@@ -142,9 +142,10 @@ Amarok::TrayIcon::updateToolTip()
 {
     if( m_track )
     {
-        setToolTipTitle( The::engineController()->prettyNowPlaying( false ) );
+        setToolTipTitle( i18n( "Now playing" ) );
 
         QStringList tooltip;
+        tooltip << The::engineController()->prettyNowPlaying( false );
 
         QString volume;
         if ( The::engineController()->isMuted() )
