@@ -1,0 +1,79 @@
+Source: amarok
+Section: sound
+Priority: optional
+Maintainer: Pedro de Carvalho Gomes <pedrogomes81@gmail.com>
+Build-Depends: debhelper-compat (= 12),
+               cmake,
+               extra-cmake-modules,
+               kirigami2-dev,
+               libavcodec-dev,
+               libavdevice-dev,
+               libavformat-dev,
+               libavutil-dev,
+               libcurl4-openssl-dev,
+               libfftw3-dev,
+               libgcrypt20-dev,
+               libgdk-pixbuf2.0-dev,
+               libgmock-dev,
+               libgpod-dev,
+               libkf5archive-dev,
+               libkf5attica-dev,
+               libkf5codecs-dev,
+               libkf5config-dev,
+               libkf5configwidgets-dev,
+               libkf5coreaddons-dev,
+               libkf5crash-dev,
+               libkf5dbusaddons-dev,
+               libkf5declarative-dev,
+               libkf5dnssd-dev,
+               libkf5doctools-dev,
+               libkf5globalaccel-dev,
+               libkf5guiaddons-dev,
+               libkf5i18n-dev,
+               libkf5iconthemes-dev,
+               libkf5kcmutils-dev,
+               libkf5kio-dev,
+               libkf5newstuff-dev,
+               libkf5notifications-dev,
+               libkf5notifyconfig-dev,
+               libkf5package-dev,
+               libkf5solid-dev,
+               libkf5texteditor-dev,
+               libkf5threadweaver-dev,
+               libkf5wallet-dev,
+               libkf5widgetsaddons-dev,
+               libkf5windowsystem-dev,
+               liblastfm5-dev,
+               libloudmouth1-dev,
+               libmariadbd-dev,
+               libmariadb-dev,
+               libmariadb-dev-compat,
+               libmtp-dev,
+               libmygpo-qt-dev,
+               libofa0-dev,
+               libphonon4qt5-dev,
+               libpostproc-dev,
+               libqt5svg5-dev,
+               libssl-dev,
+               libswscale-dev,
+               libtag1-dev,
+               libtag-extras-dev,
+               libxml2-dev,
+               pkg-config,
+               qtdeclarative5-dev,
+               qtquickcontrols2-5-dev,
+               qtscript5-dev,
+               qttools5-dev,
+               qtwebengine5-dev
+Standards-Version: 4.4.0
+Homepage: https://amarok.kde.org/
+Vcs-Browser: https://github.com/pcgomes/amarok
+Vcs-Git: https://github.com/pcgomes/amarok.git
+
+Package: amarok
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Amarok for KDE5
+ (K)ubuntu, starting from 19.10, does not support applications that were not ported to QT5.
+ Amarok has not concluded the ported yet, but is usable. So I create packages for KDE5
+ until the port is concluded, and (K)ubuntu releases Amarok packages again.
