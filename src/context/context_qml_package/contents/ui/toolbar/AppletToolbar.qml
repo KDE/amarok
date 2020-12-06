@@ -105,6 +105,7 @@ Rectangle {
                     "flickable": root.flickable,
                     "contextRoot": root.contextRoot
                 });
+                root.resizeApplets();
             }
             onStatusChanged: {
                 if (status == Loader.Error) {
