@@ -40,37 +40,6 @@
   <name xml:lang="zh-CN">Amarok</name>
   <name xml:lang="zh-TW">Amarok</name>
   <summary>A powerful music player that lets you rediscover your music</summary>
-  <summary xml:lang="ca">Reproductor d'àudio</summary>
-  <summary xml:lang="ca-valencia">Reproductor d'àudio</summary>
-  <summary xml:lang="cs">Zvukový přehrávač</summary>
-  <summary xml:lang="da">Lydafspiller</summary>
-  <summary xml:lang="de">Audio-Wiedergabeprogramm</summary>
-  <summary xml:lang="el">Αναπαραγωγέας ήχου</summary>
-  <summary xml:lang="en-GB">Audio Player</summary>
-  <summary xml:lang="es">Reproductor de sonido</summary>
-  <summary xml:lang="et">Helimängija</summary>
-  <summary xml:lang="eu">Audio jotzailea</summary>
-  <summary xml:lang="fi">Äänisoitin</summary>
-  <summary xml:lang="fr">Lecteur audio</summary>
-  <summary xml:lang="gl">Reprodutor de son</summary>
-  <summary xml:lang="ia">Reproductor de audio</summary>
-  <summary xml:lang="id">Pemutar Audio</summary>
-  <summary xml:lang="it">Lettore audio</summary>
-  <summary xml:lang="ko">오디오 재생기</summary>
-  <summary xml:lang="nl">Audiospeler</summary>
-  <summary xml:lang="pl">Odtwarzacz muzyki</summary>
-  <summary xml:lang="pt">Leitor de Áudio</summary>
-  <summary xml:lang="pt-BR">Reprodutor de áudio</summary>
-  <summary xml:lang="sk">Audio prehrávač</summary>
-  <summary xml:lang="sl">Predvajalnik glasbe</summary>
-  <summary xml:lang="sr">Аудио плејер</summary>
-  <summary xml:lang="sr-Latn">Audio plejer</summary>
-  <summary xml:lang="sr-ijekavian">Аудио плејер</summary>
-  <summary xml:lang="sr-ijekavianlatin">Audio plejer</summary>
-  <summary xml:lang="sv">Ljudspelare</summary>
-  <summary xml:lang="uk">Аудіопрогравач</summary>
-  <summary xml:lang="x-test">xxAudio Playerxx</summary>
-  <summary xml:lang="zh-TW">音樂播放器</summary>
   <description>
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
