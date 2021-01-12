@@ -42,6 +42,7 @@
   <summary>A powerful music player that lets you rediscover your music</summary>
   <summary xml:lang="ca">Un reproductor de música potent que permet redescobrir la vostra música</summary>
   <summary xml:lang="ca-valencia">Un reproductor de música potent que permet redescobrir la vostra música</summary>
+  <summary xml:lang="el">Ένα ισχυρό πρόγραμμα αναπαραγωγής για να ανακαλύψετε ξανά τη μουσική σας</summary>
   <summary xml:lang="en-GB">A powerful music player that lets you rediscover your music</summary>
   <summary xml:lang="es">Un potente reproductor para volver a descubrir su música</summary>
   <summary xml:lang="eu">Zure musika berriz aurkitzeko aukera ematen dizun musika jotzaile ahaltsua</summary>
@@ -62,7 +63,7 @@
     <p xml:lang="cs">Amarok je svobodný, multiplatformní, univerzální, mocný přehrávač hudby a správce sbírek se spoustou funkcí.</p>
     <p xml:lang="da">Amarok er en fri, multiplatforms, alsidig, kraftfuld og funktionsrig musikafspiller og samlingshåndtering.</p>
     <p xml:lang="de">Amarok ist eine freie, plattformübergreifende und vielfältige Anwendung zur Musikwiedergabe und Verwaltung Ihrer Musiksammlung mit vielen Funktionen.</p>
-    <p xml:lang="el">Το Amarok είναι ένας ελεύθερος, πολλαπλών πλατφορμών και χρήσεων, πανίσχυρος και πλούσιος σε χαρακτηριστικά αναπαραγωγέας μουσικής και διαχειριστής συλλογών.</p>
+    <p xml:lang="el">Το Amarok είναι ένας ελεύθερο, πολλαπλών πλατφορμών και χρήσεων, πανίσχυρο και πλούσιο σε χαρακτηριστικά πρόγραμμα αναπαραγωγής μουσικής και διαχειριστής συλλογών.</p>
     <p xml:lang="en-GB">Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
     <p xml:lang="es">Amarok es un potente, versátil, libre y multiplataforma reproductor de música y gestor de colecciones que dispone de gran cantidad de funciones.</p>
     <p xml:lang="et">Amarok on vaba platvormiülene töökindel, võimas ja võimalusterohke muusikamängija ja muusikakogu haldaja.</p>
