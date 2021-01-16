@@ -440,6 +440,7 @@ void SvgHandler::paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qre
     QRect knob = sliderKnobRect( slider->rect, percentage, inverse );
     QPoint pt = slider->rect.topLeft() + QPoint( 0, 2 );
 
+    p->setRenderHint( QPainter::SmoothPixmapTransform );
     //debug() << "rel: " << knobRelPos << ", width: " << width << ", height:" << height << ", %: " << percentage;
 
     //if we should paint moodbar, paint this as the bottom layer

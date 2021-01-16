@@ -73,6 +73,7 @@ void IconButton::mouseReleaseEvent( QMouseEvent *me )
 void IconButton::paintEvent( QPaintEvent * )
 {
     QPainter p(this);
+    p.setRenderHint( QPainter::SmoothPixmapTransform );
     p.drawPixmap( 0,0, m_buffer.pixmap );
     p.end();
 }

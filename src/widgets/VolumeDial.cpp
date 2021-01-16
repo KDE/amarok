@@ -169,6 +169,7 @@ void VolumeDial::paintEvent( QPaintEvent * )
     int icon = m_muted ? 0 : 3;
     if ( icon && value() < 66 )
         icon = value() < 33 ? 1 : 2;
+    p.setRenderHint( QPainter::SmoothPixmapTransform );
     p.drawPixmap( 0,0, m_icon[ icon ] );
     if ( !m_isClick )
     {

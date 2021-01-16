@@ -792,6 +792,7 @@ MainToolbar::paintEvent( QPaintEvent *ev )
         right = &m_prev;
     }
 
+    p.setRenderHint( QPainter::SmoothPixmapTransform );
     if( left->key )
         p.drawPixmap( left->rect.left() + skipMargin,
                       left->rect.y() + ( left->rect.height() - m_skip_left.height() ) /2,
