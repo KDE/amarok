@@ -74,7 +74,7 @@ void IconButton::paintEvent( QPaintEvent * )
 {
     QPainter p(this);
     p.setRenderHint( QPainter::SmoothPixmapTransform );
-    p.drawPixmap( 0,0, m_buffer.pixmap );
+    p.drawPixmap( 0, 0, width(), height(), m_buffer.pixmap );
     p.end();
 }
 
@@ -120,12 +120,19 @@ void IconButton::timerEvent( QTimerEvent *te )
 
 static QImage adjusted( QImage img, const QSize &sz )
 {
-    if ( img.size() == sz )
+    QSize doublesz( sz.width()*2, sz.height()*2 );
+    if ( img.size() == doublesz ) //double size render to have better looking high-dpi toolbar
         return img;
-    QImage ret( sz, QImage::Format_ARGB32_Premultiplied );
+    QImage ret( doublesz, QImage::Format_ARGB32_Premultiplied );
     ret.fill( Qt::transparent );
     QPainter p( &ret );
-    p.drawImage( (ret.width() - img.width()) /2, (ret.height() - img.height()) /2, img );
+    int xcentershift=(ret.width() - img.width()) /2;
+    int ycentershift=(ret.height() - img.height()) /2;
+    if(xcentershift<0)
+        xcentershift=0;
+    if(ycentershift<0)
+        ycentershift=0;
+    p.drawImage( xcentershift, ycentershift, img );
     p.end();
     return ret;
 }

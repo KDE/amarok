@@ -170,7 +170,7 @@ void VolumeDial::paintEvent( QPaintEvent * )
     if ( icon && value() < 66 )
         icon = value() < 33 ? 1 : 2;
     p.setRenderHint( QPainter::SmoothPixmapTransform );
-    p.drawPixmap( 0,0, m_icon[ icon ] );
+    p.drawPixmap( 0,0, m_icon[ icon ].width()/2,  m_icon[ icon ].height()/2,  m_icon[ icon ] );
     if ( !m_isClick )
     {
         p.setPen( QPen( m_sliderGradient, 3, Qt::SolidLine, Qt::RoundCap ) );
@@ -203,10 +203,11 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
 
 void VolumeDial::renderIcons()
 {
-    m_icon[0] = The::svgHandler()->renderSvg( "Muted",      width(), height(), "Muted",      true );
-    m_icon[1] = The::svgHandler()->renderSvg( "Volume_low", width(), height(), "Volume_low", true );
-    m_icon[2] = The::svgHandler()->renderSvg( "Volume_mid", width(), height(), "Volume_mid", true );
-    m_icon[3] = The::svgHandler()->renderSvg( "Volume",     width(), height(), "Volume",     true );
+    //double size svg render to have better looking high-dpi toolbar
+    m_icon[0] = The::svgHandler()->renderSvg( "Muted",      width()*2, height()*2, "Muted",      true );
+    m_icon[1] = The::svgHandler()->renderSvg( "Volume_low", width()*2, height()*2, "Volume_low", true );
+    m_icon[2] = The::svgHandler()->renderSvg( "Volume_mid", width()*2, height()*2, "Volume_mid", true );
+    m_icon[3] = The::svgHandler()->renderSvg( "Volume",     width()*2, height()*2, "Volume",     true );
     if( layoutDirection() == Qt::RightToLeft )
     {
         for ( int i = 0; i < 4; ++i )
