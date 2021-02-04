@@ -105,7 +105,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     QFont fnt = QApplication::font(); // don't use the toolbar font. Often small to support icons only.
     if( fnt.pointSize() > 0 )
         fnt.setPointSize( qRound(fnt.pointSize() * track_fontsize_factor) );
-    const int fntH = QFontMetrics( QApplication::font() ).height();
+    const int fntH = QFontMetrics( QApplication::font() ).height()*2; //double size svg render for scaled high dpi
 
     m_skip_left = The::svgHandler()->renderSvg( "tiny_skip_left", 80*fntH/128, fntH, "tiny_skip_left" );
     m_skip_right = The::svgHandler()->renderSvg( "tiny_skip_right", 80*fntH/128, fntH, "tiny_skip_right" );
@@ -114,9 +114,9 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_prev.label = new AnimatedLabelStack(QStringList(), info);
     m_prev.label->setFont( fnt );
     if( layoutDirection() == Qt::LeftToRight )
-        m_prev.label->setPadding( m_skip_right.width() + skipPadding + skipMargin, 0 );
+        m_prev.label->setPadding( m_skip_right.width()/2 + skipPadding + skipMargin, 0 );
     else
-        m_prev.label->setPadding( 0, m_skip_right.width() + skipPadding + skipMargin );
+        m_prev.label->setPadding( 0, m_skip_right.width()/2 + skipPadding + skipMargin );
     m_prev.label->setAlign( Qt::AlignLeft );
     m_prev.label->setAnimated( false );
     m_prev.label->setOpacity( prevOpacity );
@@ -137,9 +137,9 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_next.label = new AnimatedLabelStack(QStringList(), info);
     m_next.label->setFont( fnt );
     if( layoutDirection() == Qt::LeftToRight )
-        m_next.label->setPadding( 0, m_skip_left.width() + skipPadding + skipMargin );
+        m_next.label->setPadding( 0, m_skip_left.width()/2 + skipPadding + skipMargin );
     else
-        m_next.label->setPadding( m_skip_left.width() + skipPadding + skipMargin, 0 );
+        m_next.label->setPadding( m_skip_left.width()/2 + skipPadding + skipMargin, 0 );
     m_next.label->setAlign( Qt::AlignRight );
     m_next.label->setAnimated( false );
     m_next.label->setOpacity( nextOpacity );
@@ -792,13 +792,16 @@ MainToolbar::paintEvent( QPaintEvent *ev )
         right = &m_prev;
     }
 
+    p.setRenderHint( QPainter::SmoothPixmapTransform );
     if( left->key )
         p.drawPixmap( left->rect.left() + skipMargin,
-                      left->rect.y() + ( left->rect.height() - m_skip_left.height() ) /2,
+                      left->rect.y() + ( left->rect.height() - m_skip_left.height()/2 ) /2,
+                      m_skip_left.width()/2, m_skip_left.height()/2,
                       m_skip_left );
     if( right->key )
-        p.drawPixmap( right->rect.right() - ( m_skip_right.width() + skipMargin ),
-                      right->rect.y() + ( right->rect.height() - m_skip_right.height() ) /2,
+        p.drawPixmap( right->rect.right() - ( m_skip_right.width()/2 + skipMargin ),
+                      right->rect.y() + ( right->rect.height() - m_skip_right.height()/2 ) /2,
+                      m_skip_right.width()/2, m_skip_right.height()/2,
                       m_skip_right );
     p.end();
 }

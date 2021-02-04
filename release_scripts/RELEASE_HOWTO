@@ -15,20 +15,17 @@ SECTION 1: Preparation
  * Check the README file is still relevant
  * Run the "fixuifiles" script from kde-dev-scripts from the repository root
  * Run the "bump_plugin_version.rb" script from the repository root
+ * Set AMAROK_VERSION to the release version at shared/Version.h
  * Commit the source to git
 --------------------------------------------------------------------------------
 
 SECTION 2: Creating and Testing the Tarball
 
- * Run the amarok release script from releaseme.git (amarok2.rb). Like all
-   other release scripts for KDELibs4 based software it's deprecated and thus
-   lives in the kdelibs4 branch (Qt5/KF5 based releases should use tarme.rb
-   in the future).
-   example: ./amarok2.rb --src ~/Code/amarok -v 2.5.90
-   notice it updates version in shared/Version.h
+ * Run the amarok release script from (tarme.rb).
+   example: ./tarme.rb --version 2.5.90 --origin trunk amarok
  * Test the following:
 
-     $ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` -DCMAKE_BUILD_TYPE=RelWithDebInfo ./
+     $ cmake -DCMAKE_INSTALL_PREFIX=`kf5-config --prefix` -DCMAKE_BUILD_TYPE=RelWithDebInfo ./
      $ make
 
  * mkdir ~/.kde-test && export KDEHOME=$HOME/.kde-test

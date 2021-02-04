@@ -65,8 +65,8 @@ void TrackActionButton::reloadContent( const QSize &sz )
         return;
     int r,g,b;
     palette().color(foregroundRole()).getRgb(&r,&g,&b);
-    
-    m_icon.image[2] = m_icon.icon.pixmap( sz ).toImage();
+    //double size render to have better looking high-dpi toolbar
+    m_icon.image[2] = m_icon.icon.pixmap( QSize( sz.width()*2, sz.height()*2 ) ).toImage();
     QImage img = m_icon.image[2].convertToFormat(QImage::Format_ARGB32);
     int n = img.width() * img.height();
     
@@ -126,7 +126,7 @@ void TrackActionButton::setAction( const QAction *act )
 
 QSize TrackActionButton::sizeHint() const
 {
-    return QSize( 16, 16 );
+    return QSize( 24, 24 );
 }
 
 void TrackActionButton::updateAction()
