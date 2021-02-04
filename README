@@ -56,8 +56,8 @@ Required
       (Support for metadata reading of additional file types)
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
 
-    * MySQL 5.0 (or newer) Embedded: libmysqld compiled with fPIC
-      (In-process database support)
+    * MySQL 5.0 (or newer) / MariaDB (external database support) or MariaDB
+      Embedded (In-process
 
 Optional
     * Taglib 1.8 for support of MOD, IT, S3M and XM files
@@ -76,9 +76,6 @@ Optional
       (MTP device support)
       http://libmtp.sourceforge.net/
 
-    * Spectrum analyzer requires:
-      * QtOpenGL
-
     * Mp3tunes.com integration (including syncronization) requires:
       * OpenSSL https://www.openssl.org
       * libxml2 http://xmlsoft.org
@@ -91,8 +88,6 @@ Optional
       (For scrobbling, internet radio, and artist info)
       http://cdn.last.fm/client/liblastfm-1.0.3.tar.gz
       https://github.com/eartle/liblastfm
-
-    * MySQL 5.0 (or newer) Server (external database support)
 
     * MusicBrainz-based audio fingerprint tag lookup requires:
       * FFmpeg 0.7.0 (or newer) - https://ffmpeg.org/
