@@ -57,7 +57,7 @@ Required
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
 
     * MySQL 5.0 (or newer) / MariaDB (external database support) or MariaDB
-      Embedded (In-process
+      Embedded (In-process database support)
 
 Optional
     * Taglib 1.8 for support of MOD, IT, S3M and XM files
