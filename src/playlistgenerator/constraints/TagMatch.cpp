@@ -167,27 +167,30 @@ ConstraintTypes::TagMatch::toXml( QDomDocument& doc, QDomElement& elem ) const
 QString
 ConstraintTypes::TagMatch::getName() const
 {
-    QString v( i18nc( "%1 = empty string or \"not\"; "
-                      "%2 = a metadata field, like \"title\" or \"artist name\"; "
-                      "%3 = a predicate, can be equals, starts with, ends with or contains; "
-                      "%4 = a string to match; "
-                      "Example: Match tag: not title contains \"foo\"", "Match tag:%1 %2 %3 %4") );
-    v = v.arg( ( m_invert ? i18n(" not") : QLatin1String("") ), m_fieldsModel->pretty_name_of( m_field ), comparisonToString() );
+    KLocalizedString v( ki18nc( "%1 = empty string or \"not\"; "
+                                "%2 = a metadata field, like \"title\" or \"artist name\"; "
+                                "%3 = a predicate, can be equals, starts with, ends with or contains; "
+                                "%4 = a string to match; "
+                                "Example: Match tag: not title contains \"foo\"", "Match tag:%1 %2 %3 %4") );
+    v = v.subs( m_invert ? i18n(" not") : QLatin1String("") );
+    v = v.subs( m_fieldsModel->pretty_name_of( m_field ) );
+    v = v.subs( comparisonToString() );
     if ( m_field == QLatin1String("rating") ) {
         double r = m_value.toDouble() / 2.0;
-        return v.arg( i18ncp("number of stars in the rating of a track", "%1 star", "%1 stars", r) );
+        v = v.subs( i18ncp("number of stars in the rating of a track", "%1 star", "%1 stars", r) );
     } else if ( m_field == QLatin1String("length") ) {
-        return v.arg( QTime(0, 0, 0).addMSecs( m_value.toInt() ).toString( QStringLiteral("H:mm:ss") ) );
+        v = v.subs( QTime(0, 0, 0).addMSecs( m_value.toInt() ).toString( QStringLiteral("H:mm:ss") ) );
     } else {
         if ( m_fieldsModel->type_of( m_field ) == FieldTypeString ) {
             // put quotes around any strings (eg, track title or artist name) ...
             QString s = i18nc("an arbitrary string surrounded by quotes", "\"%1\"", valueToString() );
-            return v.arg( s );
+            v = v.subs( s );
         } else {
             // ... but don't quote put quotes around anything else
-            return v.arg( valueToString() );
+            v = v.subs( valueToString() );
         }
     }
+    return v.toString();
 }
 
 Collections::QueryMaker*

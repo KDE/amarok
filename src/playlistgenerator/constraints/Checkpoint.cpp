@@ -167,7 +167,7 @@ ConstraintTypes::Checkpoint::toXml( QDomDocument& doc, QDomElement& elem ) const
 QString
 ConstraintTypes::Checkpoint::getName() const
 {
-    QString name( i18n("Checkpoint: %1") );
+    KLocalizedString name( ki18n("Checkpoint: %1") );
     Meta::TrackPtr t;
     Meta::AlbumPtr l;
     Meta::ArtistPtr r;
@@ -175,34 +175,34 @@ ConstraintTypes::Checkpoint::getName() const
         case CheckpointTrack:
             t = Meta::TrackPtr::dynamicCast( m_checkpointObject );
             if ( t == Meta::TrackPtr() ) {
-                name = name.arg( i18n("unassigned") );
+                name = name.subs( i18n("unassigned") );
             } else {
-                name = name.arg( i18n("\"%1\" (track) by %2", t->prettyName(), t->artist()->prettyName() ) );
+                name = name.subs( i18n("\"%1\" (track) by %2", t->prettyName(), t->artist()->prettyName() ) );
             }
             break;
         case CheckpointAlbum:
             l = Meta::AlbumPtr::dynamicCast( m_checkpointObject );
             if ( l == Meta::AlbumPtr() ) {
-                name = name.arg( i18n("unassigned") );
+                name = name.subs( i18n("unassigned") );
             } else {
                 if ( l->hasAlbumArtist() ) {
-                    name = name.arg( i18n("\"%1\" (album) by %2", l->prettyName(), l->albumArtist()->prettyName() ) );
+                    name = name.subs( i18n("\"%1\" (album) by %2", l->prettyName(), l->albumArtist()->prettyName() ) );
                 } else {
-                    name = name.arg( i18n("\"%1\" (album)", l->prettyName() ) );
+                    name = name.subs( i18n("\"%1\" (album)", l->prettyName() ) );
                 }
             }
             break;
         case CheckpointArtist:
             r = Meta::ArtistPtr::dynamicCast( m_checkpointObject );
             if ( r == Meta::ArtistPtr() ) {
-                name = name.arg( i18n("unassigned") );
+                name = name.subs( i18n("unassigned") );
             } else {
-                name = name.arg( i18n("\"%1\" (artist)", r->prettyName() ) );
+                name = name.subs( i18n("\"%1\" (artist)", r->prettyName() ) );
             }
             break;
     }
 
-    return name;
+    return name.toString();
 }
 
 double
