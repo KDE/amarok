@@ -308,7 +308,7 @@ FilenameLayoutWidget::inferScheme( const QString &s ) //SLOT
 {
     DEBUG_BLOCK
 
-    debug() << "infering scheme: " << s;
+    debug() << "inferring scheme: " << s;
 
     m_dropTarget->clear();
     for( int i = 0; i < s.size(); )

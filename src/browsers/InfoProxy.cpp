@@ -44,7 +44,7 @@ InfoProxy::InfoProxy()
     QList<QVariant> strings;
     QList<QVariant> weights;
 
-    strings << "This" << "is" << "just" << "a" << "very" << "small" << "and" << "quite" << "silly" << "defalt" << "text"
+    strings << "This" << "is" << "just" << "a" << "very" << "small" << "and" << "quite" << "silly" << "default" << "text"
             << "as" << "I" << "currently" << "have" <<  "nothing" << "better" << "to" << "show";
 
     weights << 10 << 4 << 8 << 2 << 6 << 5 << 10 << 9 << 3 << 1 << 3 << 5 << 7 << 9 << 3 << 2 << 10 << 6 << 4;
