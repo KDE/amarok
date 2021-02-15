@@ -366,7 +366,7 @@ void Controller::synchronizeWithMode( int intMode )
             usedProviders = m_providers;
             break;
         case Process::NonInteractive:
-            usedProviders = checkedProviders.toList();
+            usedProviders = checkedProviders.values();
             break;
     }
     if( usedProviders.isEmpty() )

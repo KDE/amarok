@@ -142,7 +142,7 @@ Playlist::NonlinearTrackNavigator::doItemListsMaintenance()
     {
         QSet<quint64> unknownInsertedItems = tmpInsertedItems - allItemsSet();    // Filter out items removed+reinserted between calls to us.
 
-        m_allItemsList.append( unknownInsertedItems.toList() );
+        m_allItemsList.append( unknownInsertedItems.values() );
         m_plannedItems.clear();    // Could do this more subtly in each child class, but this is good enough.
 
         notifyItemsInserted( unknownInsertedItems );

@@ -389,7 +389,7 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
     int notPlayableCount = m_sourceTrackStatus.count( NotPlayable );
     if( notPlayableCount )
     {
-        QString formats = QStringList( m_notPlayableFormats.toList() ).join( ", " );
+        QString formats = QStringList( m_notPlayableFormats.values() ).join( ", " );
         details += i18np( "One track was not copied because it wouldn't be playable - its "
                           " %2 format is unsupported.<br>",
                           "%1 tracks were not copied because they wouldn't be playable - "
@@ -418,7 +418,7 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
     if( !m_copyErrors.isEmpty() )
     {
         details += i18nc( "%1 is a list of errors that occurred during copying of tracks",
-                          "Error causes: %1<br>", QStringList( m_copyErrors.toList() ).join( "<br>" ) );
+                          "Error causes: %1<br>", QStringList( m_copyErrors.values() ).join( "<br>" ) );
     }
     KMessageBox::detailedSorry( nullptr, text, details, caption );
 }

@@ -167,7 +167,7 @@ AbstractDirectoryWatcher::delayTimeout()
     if( m_scanDirsRequested.isEmpty() )
         return;
 
-    Q_EMIT requestScan( m_scanDirsRequested.toList(), GenericScanManager::PartialUpdateScan );
+    Q_EMIT requestScan( m_scanDirsRequested.values(), GenericScanManager::PartialUpdateScan );
     m_scanDirsRequested.clear();
 }
 

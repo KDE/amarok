@@ -687,7 +687,7 @@ CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
 
     // start the remove workflow
     setHidingRemoveConfirm( true );
-    prepareRemove( toRemove.toList() );
+    prepareRemove( toRemove.values() );
 }
 
 CollectionLocation*

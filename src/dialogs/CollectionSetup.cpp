@@ -336,7 +336,7 @@ namespace CollectionFolder {
     QStringList
     Model::directories() const
     {
-        QStringList dirs = m_checked.toList();
+        QStringList dirs = m_checked.values();
 
         qSort( dirs.begin(), dirs.end() );
 

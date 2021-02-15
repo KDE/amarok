@@ -173,7 +173,7 @@ CollectionScanner::Scanner::doJob() //SLOT
             addDir( dir, &entriesSet ); // checks m_recursively
         }
 
-        entries = entriesSet.toList();
+        entries = entriesSet.values();
         qSort( entries ); // the sort is crucial because of restarts and lastDirectory handling
     }
 
