@@ -454,7 +454,7 @@ FileView::addIndicesToPlaylist( QModelIndexList indices, Playlist::AddOptions op
         return;
 
     // let tracks & playlists appear in playlist as they are shown in the view:
-    qSort( indices );
+    std::sort( indices.begin(), indices.end() );
 
     QList<QUrl> urls;
     foreach( const QModelIndex &index, indices )

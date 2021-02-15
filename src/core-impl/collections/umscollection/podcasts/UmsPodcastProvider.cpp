@@ -394,7 +394,7 @@ UmsPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
 
         PodcastEpisodeList channelEpisodes = channel->episodes();
         QList<int> trackPositions = playlistTracks.values( playlist );
-        qSort( trackPositions );
+        std::sort( trackPositions.begin(), trackPositions.end() );
         foreach( int trackPosition, trackPositions )
         {
             if( trackPosition >= 0 && trackPosition < channelEpisodes.count() )

@@ -174,7 +174,7 @@ CollectionScanner::Scanner::doJob() //SLOT
         }
 
         entries = entriesSet.values();
-        qSort( entries ); // the sort is crucial because of restarts and lastDirectory handling
+        std::sort( entries.begin(), entries.end() ); // the sort is crucial because of restarts and lastDirectory handling
     }
 
     if( m_restart )
