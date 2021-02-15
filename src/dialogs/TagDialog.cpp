@@ -257,7 +257,7 @@ TagDialog::dataQueryDone()
     // we do this because if we insert items and the contents of the textbox
     // are not in the list, it clears the textbox. which is bad --lfranchi 2.22.09
     QString saveText( ui->kComboBox_artist->lineEdit()->text() );
-    QStringList artists = m_artists.toList();
+    QStringList artists = m_artists.values();
     artists.sort();
     ui->kComboBox_artist->clear();
     ui->kComboBox_artist->insertItems( 0, artists );
@@ -265,7 +265,7 @@ TagDialog::dataQueryDone()
     ui->kComboBox_artist->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_album->lineEdit()->text();
-    QStringList albums = m_albums.toList();
+    QStringList albums = m_albums.values();
     albums.sort();
     ui->kComboBox_album->clear();
     ui->kComboBox_album->insertItems( 0, albums );
@@ -273,7 +273,7 @@ TagDialog::dataQueryDone()
     ui->kComboBox_album->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_albumArtist->lineEdit()->text();
-    QStringList albumArtists = m_albumArtists.toList();
+    QStringList albumArtists = m_albumArtists.values();
     albumArtists.sort();
     ui->kComboBox_albumArtist->clear();
     ui->kComboBox_albumArtist->insertItems( 0, albumArtists );
@@ -281,7 +281,7 @@ TagDialog::dataQueryDone()
     ui->kComboBox_albumArtist->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_composer->lineEdit()->text();
-    QStringList composers = m_composers.toList();
+    QStringList composers = m_composers.values();
     composers.sort();
     ui->kComboBox_composer->clear();
     ui->kComboBox_composer->insertItems( 0, composers );
@@ -289,7 +289,7 @@ TagDialog::dataQueryDone()
     ui->kComboBox_composer->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_genre->lineEdit()->text();
-    QStringList genres = m_genres.toList();
+    QStringList genres = m_genres.values();
     genres.sort();
     ui->kComboBox_genre->clear();
     ui->kComboBox_genre->insertItems( 0, genres );
@@ -297,7 +297,7 @@ TagDialog::dataQueryDone()
     ui->kComboBox_genre->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_label->lineEdit()->text();
-    QStringList labels = m_allLabels.toList();
+    QStringList labels = m_allLabels.values();
     labels.sort();
     ui->kComboBox_label->clear();
     ui->kComboBox_label->insertItems( 0, labels );
@@ -900,7 +900,7 @@ TagDialog::getTagsFromUi( const QVariantMap &tags ) const
     QSet<QString> uiLabels = m_labelModel->labels().toSet();
     QSet<QString> oldLabels = tags.value( Meta::Field::LABELS ).toStringList().toSet();
     if( uiLabels != oldLabels )
-        map.insert( Meta::Field::LABELS, QVariant( uiLabels.toList() ) );
+        map.insert( Meta::Field::LABELS, QVariant( uiLabels.values() ) );
 
     return map;
 }
@@ -1171,7 +1171,7 @@ TagDialog::setTagsToTrack()
                     labelsSet += labelsToAdd;
                     labelsSet -= labelsToRemove;
 
-                    m_storedTags[ track ].insert( Meta::Field::LABELS, QVariant( labelsSet.toList() ) );
+                    m_storedTags[ track ].insert( Meta::Field::LABELS, QVariant( labelsSet.values() ) );
                 }
             }
         }

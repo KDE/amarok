@@ -95,7 +95,7 @@ GenericScanManager::requestScan( QList<QUrl> directories, ScanType type )
     if( scanDirsSet.isEmpty() && type == PartialUpdateScan )
         return; // nothing to do
 
-    auto scannerJob = QSharedPointer<GenericScannerJob>( new GenericScannerJob( this, scanDirsSet.toList(), type ) );
+    auto scannerJob = QSharedPointer<GenericScannerJob>( new GenericScannerJob( this, scanDirsSet.values(), type ) );
     m_scannerJob = scannerJob.toWeakRef();
     connectSignalsToJob();
     ThreadWeaver::Queue::instance()->enqueue( scannerJob );

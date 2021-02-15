@@ -104,7 +104,7 @@ AlbumsModel::mimeData( const QModelIndexList &indices ) const
     Meta::TrackList tracks;
     foreach( const QModelIndex &index, indices )
         tracks << tracksForIndex( index );
-    tracks = tracks.toSet().toList();
+    tracks = tracks.toSet().values();
 
     // http://doc.trolltech.com/4.4/qabstractitemmodel.html#mimeData
     // If the list of indexes is empty, or there are no supported MIME types,

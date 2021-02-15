@@ -21,7 +21,7 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 
-#include <math.h>
+#include <cmath>
 
 ConstraintTypes::TagMatchFieldsModel::TagMatchFieldsModel()
 {

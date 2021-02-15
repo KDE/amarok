@@ -21,8 +21,8 @@
 #include "playlistgenerator/Constraint.h"
 #include "playlistgenerator/ConstraintFactory.h"
 
-#include <stdlib.h>
-#include <math.h>
+#include <cmath>
+#include <cstdlib>
 
 Constraint*
 ConstraintTypes::PlaylistLength::createFromXml( QDomElement& xmlelem, ConstraintNode* p )

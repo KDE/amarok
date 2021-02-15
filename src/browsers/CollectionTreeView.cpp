@@ -834,7 +834,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem *> &items ) co
     if( !qm )
         return;
 
-    CollectionTreeItem *item = items.toList().first();
+    CollectionTreeItem *item = items.values().first();
     while( item->isDataItem() )
         item = item->parent();
 
@@ -920,7 +920,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem *> &items,
         return;
     }
 
-    CollectionTreeItem *item = items.toList().first();
+    CollectionTreeItem *item = items.values().first();
     while( item->isDataItem() )
     {
         item = item->parent();
@@ -964,7 +964,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem *> &items,
     if( !qm )
         return;
 
-    CollectionTreeItem *item = items.toList().first();
+    CollectionTreeItem *item = items.values().first();
     while( item->isDataItem() )
         item = item->parent();
     Collection *coll = item->parentCollection();

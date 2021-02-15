@@ -763,7 +763,7 @@ MetaQueryWidget::populateComboBox( const QStringList &results )
 
     // want the results unique and sorted
     const QSet<QString> dataSet = results.toSet();
-    QStringList dataList = dataSet.toList();
+    QStringList dataList = dataSet.values();
     dataList.sort();
     combo->addItems( dataList );
 

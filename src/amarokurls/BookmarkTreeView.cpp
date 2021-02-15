@@ -320,7 +320,7 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
 {
 
     //TODO: Factor into separate class
-    QList<BookmarkViewItemPtr> list = selectedItems().toList();
+    QList<BookmarkViewItemPtr> list = selectedItems().values();
     if ( list.count() != 2 )
         return;
 

@@ -23,8 +23,8 @@
 
 #include <QHash>
 
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 
 Constraint*
 ConstraintTypes::TrackSpreader::createNew( ConstraintNode* p )

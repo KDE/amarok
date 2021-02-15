@@ -808,12 +808,12 @@ SqlRegistry::commitDirtyTracks()
     if( m_blockDatabaseUpdateCount > 0 )
         return;
 
-    QList< Meta::SqlYearPtr > dirtyYears = m_dirtyYears.toList();
-    QList< Meta::SqlGenrePtr > dirtyGenres = m_dirtyGenres.toList();
-    QList< Meta::SqlAlbumPtr > dirtyAlbums = m_dirtyAlbums.toList();
-    QList< Meta::SqlTrackPtr > dirtyTracks = m_dirtyTracks.toList();
-    QList< Meta::SqlArtistPtr > dirtyArtists = m_dirtyArtists.toList();
-    QList< Meta::SqlComposerPtr > dirtyComposers = m_dirtyComposers.toList();
+    QList< Meta::SqlYearPtr > dirtyYears = m_dirtyYears.values();
+    QList< Meta::SqlGenrePtr > dirtyGenres = m_dirtyGenres.values();
+    QList< Meta::SqlAlbumPtr > dirtyAlbums = m_dirtyAlbums.values();
+    QList< Meta::SqlTrackPtr > dirtyTracks = m_dirtyTracks.values();
+    QList< Meta::SqlArtistPtr > dirtyArtists = m_dirtyArtists.values();
+    QList< Meta::SqlComposerPtr > dirtyComposers = m_dirtyComposers.values();
 
     m_dirtyYears.clear();
     m_dirtyGenres.clear();

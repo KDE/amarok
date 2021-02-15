@@ -92,7 +92,7 @@ class AMAROK_EXPORT ServiceFactory : public Plugins::PluginFactory, public Colle
          */
         void clearActiveServices();
 
-        QList<ServiceBase *> activeServices() { return m_activeServices.toList(); }
+        QList<ServiceBase *> activeServices() { return m_activeServices.values(); }
 
     public Q_SLOTS:
         /**

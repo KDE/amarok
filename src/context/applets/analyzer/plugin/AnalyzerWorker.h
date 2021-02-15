@@ -29,7 +29,7 @@
 #include <QObject>
 #include <QTime>
 
-#include <complex.h>
+#include <complex>
 #include <fftw3.h>
 
 

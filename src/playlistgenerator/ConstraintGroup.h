@@ -29,7 +29,7 @@
 #include <QObject>
 #include <QString>
 #include <QtGlobal>
-#include <math.h>
+#include <cmath>
 
 namespace Collections {
     class QueryMaker;
