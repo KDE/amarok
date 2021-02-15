@@ -1281,7 +1281,7 @@ PodcastReader::endKeywords()
             keywords.append( kwd );
     }
 
-    qSort( keywords );
+    std::sort( keywords.begin(), keywords.end() );
     m_current->setKeywords( keywords );
 
 }
