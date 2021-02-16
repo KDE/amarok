@@ -235,6 +235,6 @@ LastFmTreeView::playChildTracks ( const QModelIndexList &items, Playlist::AddOpt
         if ( track )
             list << track;
     }
-    qStableSort ( list.begin(), list.end(), Meta::Track::lessThan );
+    std::stable_sort ( list.begin(), list.end(), Meta::Track::lessThan );
     The::playlistController()->insertOptioned( list, insertMode );
 }

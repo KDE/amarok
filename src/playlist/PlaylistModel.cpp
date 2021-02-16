@@ -659,7 +659,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         {
 
             Meta::TrackList tracks = trackListDrag->tracks();
-            qStableSort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
+            std::stable_sort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
 
             The::playlistController()->insertTracks( beginRow, tracks );
         }
