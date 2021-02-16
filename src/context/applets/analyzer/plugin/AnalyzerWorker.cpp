@@ -33,10 +33,11 @@ Analyzer::Worker::Worker()
     , m_windowFunction( Base::Hann )
     , m_expectedDataTime( 20 )
     , m_demoT( 201 )
-    , m_lastUpdate( QTime::currentTime() )
+    , m_lastUpdate()
     , m_demoTimer( new QTimer( this ) )
     , m_processTimer( new QTimer( this ) )
 {
+    m_lastUpdate.start();
     m_in = (double*) fftw_malloc( m_size * sizeof( double ) );
     m_out = (std::complex<double>*) fftw_malloc( ( m_size / 2 + 1 ) * sizeof( std::complex<double> ) );
     m_plan = fftw_plan_dft_r2c_1d( m_size, m_in, reinterpret_cast<fftw_complex*>( m_out ), FFTW_ESTIMATE );
