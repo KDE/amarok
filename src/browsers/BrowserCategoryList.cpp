@@ -72,7 +72,7 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
     {
         m_proxyModel->setSortRole( Qt::DisplayRole );
         m_categoryListView->setSortingEnabled( true );
-        m_categoryListView->sortByColumn( 0 );
+        m_categoryListView->sortByColumn( 0 , Qt::AscendingOrder );
     }
 
     connect( m_categoryListView, &Amarok::PrettyTreeView::activated,
