@@ -41,6 +41,7 @@
 
 #include <QtDebug>
 #include <QCryptographicHash>
+#include <QDateTime>
 #include <QDir>
 #include <QFileInfo>
 #include <QString>

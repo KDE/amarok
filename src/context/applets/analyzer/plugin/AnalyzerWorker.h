@@ -27,7 +27,7 @@
 
 #include <QMutex>
 #include <QObject>
-#include <QTime>
+#include <QElapsedTimer>
 
 #include <complex>
 #include <fftw3.h>
@@ -114,7 +114,7 @@ private:
     Base::WindowFunction m_windowFunction;
     int m_expectedDataTime;
     int m_demoT;
-    QTime m_lastUpdate;
+    QElapsedTimer m_lastUpdate;
     QTimer *m_demoTimer;
     QTimer *m_processTimer;
 };
