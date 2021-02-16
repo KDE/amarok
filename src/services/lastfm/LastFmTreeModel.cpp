@@ -615,7 +615,7 @@ LastFmTreeModel::mimeData( const QModelIndexList &indices ) const
         if( track )
             list << track;
     }
-    qStableSort( list.begin(), list.end(), Meta::Track::lessThan );
+    std::stable_sort( list.begin(), list.end(), Meta::Track::lessThan );
 
     AmarokMimeData *mimeData = new AmarokMimeData();
     mimeData->setTracks( list );
