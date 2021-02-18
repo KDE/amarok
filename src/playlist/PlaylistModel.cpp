@@ -659,7 +659,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         {
 
             Meta::TrackList tracks = trackListDrag->tracks();
-            qStableSort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
+            std::stable_sort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
 
             The::playlistController()->insertTracks( beginRow, tracks );
         }
@@ -1030,7 +1030,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList &passedCmds )
 
     // sort tracks to remove by their row
     RemoveCmdList cmds( passedCmds );
-    qSort( cmds.begin(), cmds.end(), removeCmdLessThanByRow );
+    std::sort( cmds.begin(), cmds.end(), removeCmdLessThanByRow );
 
     // update the active row
     if( m_activeRow >= 0 )
