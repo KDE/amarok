@@ -1014,7 +1014,7 @@ CollectionTreeView::slotSetFilter( const QString &filter )
         // ways to determine what item should stay "fixed".
         QModelIndex scrollToIndex = m_filterModel->index( 0, 0 );
         while( isExpanded( scrollToIndex ) && m_filterModel->rowCount( scrollToIndex ) > 0 )
-            scrollToIndex = scrollToIndex.child( 0, 0 );
+            scrollToIndex = m_filterModel->index( 0, 0, scrollToIndex);
         int topOffset = visualRect( scrollToIndex ).top();
 
         QModelIndex bottomIndex = m_filterModel->mapToSource( scrollToIndex );

@@ -317,7 +317,7 @@ Meta::TrackList AlbumsEngine::getSelectedTracks( const QModelIndexList& indexes 
             {
                 for( int i = m_model->rowCount( srcIndex ) - 1; i >= 0; --i )
                 {
-                    const QStandardItem *trackItem = m_model->itemFromIndex( srcIndex.child(i, 0) );
+                    const QStandardItem *trackItem = m_model->itemFromIndex( m_model->index(i, 0, srcIndex) );
                     selected << static_cast<const TrackItem*>( trackItem )->track();
                 }
             }

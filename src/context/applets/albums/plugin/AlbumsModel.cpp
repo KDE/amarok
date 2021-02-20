@@ -127,7 +127,7 @@ AlbumsModel::tracksForIndex( const QModelIndex &index ) const
     if( hasChildren( index ) )
     {
         for( int i = 0, rows = rowCount( index ); i < rows; ++i )
-            tracks << tracksForIndex( index.child( i, 0 ) );
+            tracks << tracksForIndex( index.model()->index( i, 0, index ) );
     }
     else if( QStandardItem *item = itemFromIndex( index ) )
     {
@@ -203,7 +203,7 @@ AlbumsProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourcePare
     {
         for( int i = 0, count = model->rowCount( srcIndex ); i < count; ++i )
         {
-            const QModelIndex &kid = srcIndex.child( i, 0 );
+            const QModelIndex &kid = model->index( i, 0, srcIndex );
             if( kid.data( NameRole ).toString().contains( filterRegExp() ) )
                 return true;
         }
