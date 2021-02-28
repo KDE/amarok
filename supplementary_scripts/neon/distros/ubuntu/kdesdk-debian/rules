@@ -1,9 +1,0 @@
-#!/usr/bin/make -f
-
-export PATH := /opt/amarok-nightly/bin:$(PATH)
-export LD_LIBRARY_PATH := /opt/kde-nightly/lib:$(LD_LIBRARY_PATH)
-
--include /opt/amarok-nightly/cdbs/kde.mk
-
-clean::
-
