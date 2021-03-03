@@ -362,7 +362,7 @@ Controller::removeDeadAndDuplicates()
 
     foreach( Meta::TrackPtr unique, uniqueTracks )
     {
-        QList<int> trackRows = m_topModel->allRowsForTrack( unique ).toList();
+        QList<int> trackRows = m_topModel->allRowsForTrack( unique ).values();
 
         if( unique->playableUrl().isLocalFile() && !QFile::exists( unique->playableUrl().path() ) )
         {

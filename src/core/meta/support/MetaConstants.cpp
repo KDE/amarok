@@ -393,7 +393,7 @@ QVariant Meta::valueForField( qint64 field, Meta::TrackPtr track )
         if( track->genre() )
             allInfos += track->genre()->name();
 
-        return QVariant( allInfos.toList() );
+        return QVariant( allInfos.values() );
     }
     case Meta::valUrl:         return track->playableUrl().path();
     case Meta::valTitle:       return track->name();

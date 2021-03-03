@@ -322,7 +322,7 @@ PlaylistBrowserNS::PlaylistBrowserView::actionsFor( const QModelIndexList &index
     }
     // all actions taking provider have only sense with one provider
     if( writableProviders.count() == 1 )
-        m_writableActionProvider = writableProviders.toList().first();
+        m_writableActionProvider = writableProviders.values().first();
 
     // process per-provider actions
     foreach( PlaylistProvider *provider, providers )
