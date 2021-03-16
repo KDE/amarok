@@ -139,6 +139,9 @@ ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCoverPtr album )
     m_album = album;
 
     QUrl downloadUrl( album->coverUrl() );
+    // KIO::file_copy in KF5 needs scheme
+    if (downloadUrl.isRelative() && downloadUrl.host().isEmpty())
+        downloadUrl.setScheme("file");
 
     m_coverDownloadPath = m_tempDir->path() + QLatin1Char('/') + downloadUrl.fileName();
 
