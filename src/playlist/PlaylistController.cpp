@@ -429,7 +429,7 @@ Controller::moveRows( QList<int>& from, int to )
     if( from.size() <= 0 )
         return to;
 
-    qSort( from.begin(), from.end() );
+    std::sort( from.begin(), from.end() );
 
     if( ModelStack::instance()->sortProxy()->isSorted() )
         return from.first();

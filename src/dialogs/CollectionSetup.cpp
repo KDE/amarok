@@ -338,7 +338,7 @@ namespace CollectionFolder {
     {
         QStringList dirs = m_checked.values();
 
-        qSort( dirs.begin(), dirs.end() );
+        std::sort( dirs.begin(), dirs.end() );
 
         // we need to remove any children of selected items as
         // they are redundant when recursive mode is chosen

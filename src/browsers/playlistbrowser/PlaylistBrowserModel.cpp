@@ -590,7 +590,7 @@ PlaylistBrowserModel::loadPlaylists()
         subscribeTo( playlist );
     }
 
-    qSort( playlists.begin(), playlists.end(), lessThanPlaylistTitles );
+    std::sort( playlists.begin(), playlists.end(), lessThanPlaylistTitles );
 
     return playlists;
 }

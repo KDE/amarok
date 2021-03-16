@@ -327,7 +327,7 @@ Playlists::PlaylistList SyncedPlaylist::slaves() const
 
     Playlists::PlaylistList slaves;
 
-    qCopy( m_playlists.begin() + 1, m_playlists.end(), slaves.begin() );
+    std::copy( m_playlists.begin() + 1, m_playlists.end(), slaves.begin() );
 
     return slaves;
 }

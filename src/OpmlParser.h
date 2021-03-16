@@ -21,6 +21,7 @@
 #include "amarok_export.h"
 #include "OpmlOutline.h"
 
+#include <QHash>
 #include <QMap>
 #include <QStack>
 #include <QStringList>

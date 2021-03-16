@@ -1,8 +1,0 @@
-apachelogger:
-* [neon] <dirk> how about using the "green" build numbers from http://ktown.kde.org/~dirk/dashboard `
-* [neon] should mr clean mess with remote locations? ... i.e. published stuff
-* [ubuntu] fix menu icon
-
-#### KDE ####
-* [ubuntu] set binary paths on creation time (/opt/amarok-nightly vs.
-  /opt/kde-nightly)

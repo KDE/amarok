@@ -275,7 +275,7 @@ void CoverFoundDialog::addToView( CoverFoundItem *item )
         if( m_isSorted )
         {
             const int size = metadata.value( "width" ).toInt() * metadata.value( "height" ).toInt();
-            QList< int >::iterator i = qLowerBound( m_sortSizes.begin(), m_sortSizes.end(), size );
+            QList< int >::iterator i = std::lower_bound( m_sortSizes.begin(), m_sortSizes.end(), size );
             m_sortSizes.insert( i, size );
             const int index = m_sortSizes.count() - m_sortSizes.indexOf( size ) - 1;
             m_view->insertItem( index, item );
