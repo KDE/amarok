@@ -43,7 +43,11 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
 
     // we must handle remove downloading here as KIO is coupled with GUI as is not
     // designed to work from another thread
-    const QUrl url = playlist->uidUrl();
+    QUrl url( playlist->uidUrl() );
+    // KIO::file_copy in KF5 needs scheme
+    if (url.isRelative() && url.host().isEmpty()) {
+        url.setScheme("file");
+    }
     if( url.isLocalFile() )
     {
         m_actualPlaylistFile = url.toLocalFile();

@@ -512,6 +512,10 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration &conf
         QUrl dest = QUrl::fromLocalFile(m_destinations[ track ]);
         dest.setPath( QDir::cleanPath(dest.path()) );
         src.setPath( QDir::cleanPath(src.path()) );
+        // KIO::file_copy in KF5 needs scheme
+        if (src.isRelative() && src.host().isEmpty()) {
+            src.setScheme("file");
+        }
 
         bool hasMoodFile = QFile::exists( moodFile( src ).toLocalFile() );
         bool isJustCopy = configuration.isJustCopy( track );

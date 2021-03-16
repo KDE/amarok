@@ -315,9 +315,15 @@ IpodCopyTracksJob::slotDuplicateTrackSearchQueryDone()
 }
 
 void
-IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const QUrl &sourceUrl, const QUrl &destUrl,
+IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const QUrl &sourceUrlOrig, const QUrl &destUrl,
                                                 bool isJustCopy )
 {
+    QUrl sourceUrl( sourceUrlOrig );
+    // KIO::file_copy in KF5 needs scheme
+    if (sourceUrl.isRelative() && sourceUrl.host().isEmpty()) {
+        sourceUrl.setScheme("file");
+    }
+
     KJob *job = 0;
     if( isJustCopy )
     {
