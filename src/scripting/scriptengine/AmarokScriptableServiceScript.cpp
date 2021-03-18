@@ -54,9 +54,10 @@ ScriptableServiceScript::ScriptableServiceScript_prototype_ctor( QString service
         return nullptr;
     }
     QObject* qObj = ScriptManager::instance()->m_scripts.value(serviceName)->service();
-    QJSValue scriptObj = m_scriptEngine->newQObject( qObj );
-    m_scriptEngine->globalObject().setProperty( QStringLiteral("ScriptableServiceScript"), scriptObj );
-    The::scriptableServiceManager()->initService( serviceName, levels, shortDescription, rootHtml, showSearchBar );
+    if (The::scriptableServiceManager()->service(serviceName)) {
+        The::scriptableServiceManager()->removeRunningScript(serviceName);
+    }
+    The::scriptableServiceManager()->initService(serviceName, levels, shortDescription, rootHtml, showSearchBar);
     return qObj;
 }
 
