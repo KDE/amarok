@@ -20,7 +20,7 @@
 #include "AnalyzerWorker.h"
 
 #include <QMutex>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QVector>
 
 
@@ -70,7 +70,7 @@ private:
     int m_columns;
     int m_refreshTime;
     bool m_showFadebars;
-    QTime m_lastUpdate;
+    QElapsedTimer m_lastUpdate;
 };
 
 #endif //BLOCKWORKER_H

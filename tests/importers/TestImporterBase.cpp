@@ -603,7 +603,7 @@ saveData( const TrackPtr &track )
     data.insert( Meta::valLastPlayed, track->lastPlayed() );
     data.insert( Meta::valRating, track->rating() );
     data.insert( Meta::valPlaycount, track->playCount() );
-    data.insert( Meta::valLabel, QStringList( track->labels().toList() ) );
+    data.insert( Meta::valLabel, QStringList( track->labels().values() ) );
     return data;
 }
 

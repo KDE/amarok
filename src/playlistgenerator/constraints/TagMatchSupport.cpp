@@ -21,7 +21,7 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 
-#include <math.h>
+#include <cmath>
 
 ConstraintTypes::TagMatchFieldsModel::TagMatchFieldsModel()
 {
@@ -88,7 +88,7 @@ ConstraintTypes::TagMatchFieldsModel::TagMatchFieldsModel()
     m_fieldPrettyNames.insert( QStringLiteral("album name"), i18n("album name") );
     m_fieldPrettyNames.insert( QStringLiteral("genre"), i18n("genre") );
     m_fieldPrettyNames.insert( QStringLiteral("composer"), i18n("composer") );
-    m_fieldPrettyNames.insert( QStringLiteral("year"), i18n("year") );
+    m_fieldPrettyNames.insert( QStringLiteral("year"), i18nc("Field name", "year") );
     m_fieldPrettyNames.insert( QStringLiteral("comment"), i18n("comment") );
     m_fieldPrettyNames.insert( QStringLiteral("track number"), i18n("track number") );
     m_fieldPrettyNames.insert( QStringLiteral("disc number"), i18n("disc number") );

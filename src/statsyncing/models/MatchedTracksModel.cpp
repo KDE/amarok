@@ -341,7 +341,7 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
                 case Meta::valLabel:
                     if( tuple.fieldHasConflict( field, m_options, /* includeResolved */ false ) )
                         return -1; // display same icon as for rating conflict
-                    return QStringList( tuple.syncedLabels( m_options ).toList() ).join(
+                    return QStringList( tuple.syncedLabels( m_options ).values() ).join(
                         i18nc( "comma between list words", ", " ) );
                 default:
                     return QStringLiteral( "Unknown field!" );
@@ -353,7 +353,7 @@ MatchedTracksModel::tupleData( const TrackTuple &tuple, qint64 field, int role )
                 case Meta::valTitle:
                     return trackToolTipData( first ); // TODO way to specify which additional meta-data to display
                 case Meta::valLabel:
-                    return QStringList( tuple.syncedLabels( m_options ).toList() ).join(
+                    return QStringList( tuple.syncedLabels( m_options ).values() ).join(
                         i18nc( "comma between list words", ", " ) );
             }
             break;

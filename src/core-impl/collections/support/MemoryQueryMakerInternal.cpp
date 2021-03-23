@@ -471,7 +471,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             {
                 albumSet.insert( track->album() );
             }
-            Meta::AlbumList albumList = albumSet.toList();
+            Meta::AlbumList albumList = albumSet.values();
             albumList = MemoryQueryMakerHelper::orderListByName<Meta::AlbumPtr>( albumList, m_orderDescending );
             Q_EMIT newAlbumsReady( albumList );
             break;
@@ -483,7 +483,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             {
                 artistSet.insert( track->artist() );
             }
-            Meta::ArtistList list = artistSet.toList();
+            Meta::ArtistList list = artistSet.values();
             list = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( list, m_orderDescending );
             Q_EMIT newArtistsReady( list );
             break;
@@ -496,7 +496,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
                 if( !track->album().isNull() && track->album()->hasAlbumArtist() )
                     artistSet.insert( track->album()->albumArtist() );
             }
-            Meta::ArtistList list = artistSet.toList();
+            Meta::ArtistList list = artistSet.values();
             list = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( list, m_orderDescending );
             Q_EMIT newArtistsReady( list );
             break;
@@ -508,7 +508,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             {
                 genreSet.insert( track->genre() );
             }
-            Meta::GenreList list = genreSet.toList();
+            Meta::GenreList list = genreSet.values();
             list = MemoryQueryMakerHelper::orderListByName<Meta::GenrePtr>( list, m_orderDescending );
             Q_EMIT newGenresReady( list );
             break;
@@ -520,7 +520,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             {
                 composerSet.insert( track->composer() );
             }
-            Meta::ComposerList list = composerSet.toList();
+            Meta::ComposerList list = composerSet.values();
             list = MemoryQueryMakerHelper::orderListByName<Meta::ComposerPtr>( list, m_orderDescending );
             Q_EMIT newComposersReady( list );
             break;
@@ -532,7 +532,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             {
                 yearSet.insert( track->year() );
             }
-            Meta::YearList years = yearSet.toList();
+            Meta::YearList years = yearSet.values();
             if( m_orderByField == Meta::valYear )
             {
                 years = MemoryQueryMakerHelper::orderListByYear( years, m_orderDescending );
@@ -548,7 +548,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             {
                 labelSet.unite( track->labels().toSet() );
             }
-            Meta::LabelList labels = labelSet.toList();
+            Meta::LabelList labels = labelSet.values();
             if( m_orderByField == Meta::valLabel )
             {
                 labels = MemoryQueryMakerHelper::orderListByName<Meta::LabelPtr>( labels, m_orderDescending );

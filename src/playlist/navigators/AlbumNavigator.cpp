@@ -47,9 +47,9 @@ Playlist::AlbumNavigator::notifyItemsInserted( const QSet<quint64> &insertedItem
     }
 
     foreach( AlbumId album, modifiedAlbums )
-        qStableSort( m_itemsPerAlbum[album].begin(), m_itemsPerAlbum[album].end(), itemLessThan );
+        std::stable_sort( m_itemsPerAlbum[album].begin(), m_itemsPerAlbum[album].end(), itemLessThan );
 
-    notifyAlbumsInserted( ( modifiedAlbums - oldAlbums ).toList() );
+    notifyAlbumsInserted( ( modifiedAlbums - oldAlbums ).values() );
 }
 
 void

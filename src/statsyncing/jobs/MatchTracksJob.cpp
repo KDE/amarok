@@ -187,7 +187,7 @@ MatchTracksJob::matchTracksFromArtist( const QMultiMap<ProviderPtr, QString> &pr
         if( trackList.isEmpty() )
             continue;  // don't add empty lists to providerTracks
         // the sorting is important and makes our matching algorithm work
-        qSort( trackList.begin(), trackList.end(), trackDelegatePtrLessThan<MatchTracksJob> );
+        std::sort( trackList.begin(), trackList.end(), trackDelegatePtrLessThan<MatchTracksJob> );
 
         scanForScrobblableTracks( trackList );
         providerTracks[ provider ] = trackList;

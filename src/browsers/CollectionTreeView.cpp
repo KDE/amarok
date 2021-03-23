@@ -815,7 +815,7 @@ CollectionTreeView::playChildTracksSlot( Meta::TrackList list ) //slot
 
     Playlist::AddOptions insertMode = m_playChildTracksMode.take( mime );
 
-    qStableSort( list.begin(), list.end(), Meta::Track::lessThan );
+    std::stable_sort( list.begin(), list.end(), Meta::Track::lessThan );
     The::playlistController()->insertOptioned( list, insertMode );
 
     mime->deleteLater();
@@ -834,7 +834,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem *> &items ) co
     if( !qm )
         return;
 
-    CollectionTreeItem *item = items.toList().first();
+    CollectionTreeItem *item = items.values().first();
     while( item->isDataItem() )
         item = item->parent();
 
@@ -920,7 +920,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem *> &items,
         return;
     }
 
-    CollectionTreeItem *item = items.toList().first();
+    CollectionTreeItem *item = items.values().first();
     while( item->isDataItem() )
     {
         item = item->parent();
@@ -964,7 +964,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem *> &items,
     if( !qm )
         return;
 
-    CollectionTreeItem *item = items.toList().first();
+    CollectionTreeItem *item = items.values().first();
     while( item->isDataItem() )
         item = item->parent();
     Collection *coll = item->parentCollection();
@@ -1014,7 +1014,7 @@ CollectionTreeView::slotSetFilter( const QString &filter )
         // ways to determine what item should stay "fixed".
         QModelIndex scrollToIndex = m_filterModel->index( 0, 0 );
         while( isExpanded( scrollToIndex ) && m_filterModel->rowCount( scrollToIndex ) > 0 )
-            scrollToIndex = scrollToIndex.child( 0, 0 );
+            scrollToIndex = m_filterModel->index( 0, 0, scrollToIndex);
         int topOffset = visualRect( scrollToIndex ).top();
 
         QModelIndex bottomIndex = m_filterModel->mapToSource( scrollToIndex );

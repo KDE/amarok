@@ -330,7 +330,7 @@ Config::save()
     }
     group.writeEntry( "checkedFields", fieldNames );
 
-    group.writeEntry( "excludedLabels", m_excludedLabels.toList() );
+    group.writeEntry( "excludedLabels", m_excludedLabels.values() );
 
     group.sync();
     m_hasChanged = false;

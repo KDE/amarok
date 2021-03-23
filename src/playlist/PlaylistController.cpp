@@ -362,7 +362,7 @@ Controller::removeDeadAndDuplicates()
 
     foreach( Meta::TrackPtr unique, uniqueTracks )
     {
-        QList<int> trackRows = m_topModel->allRowsForTrack( unique ).toList();
+        QList<int> trackRows = m_topModel->allRowsForTrack( unique ).values();
 
         if( unique->playableUrl().isLocalFile() && !QFile::exists( unique->playableUrl().path() ) )
         {
@@ -429,7 +429,7 @@ Controller::moveRows( QList<int>& from, int to )
     if( from.size() <= 0 )
         return to;
 
-    qSort( from.begin(), from.end() );
+    std::sort( from.begin(), from.end() );
 
     if( ModelStack::instance()->sortProxy()->isSorted() )
         return from.first();

@@ -75,7 +75,7 @@ ScriptSelector::addScripts( QList<KPluginInfo> pluginInfoList,
 {
     DEBUG_BLOCK
 
-    qSort( pluginInfoList.begin(), pluginInfoList.end()
+    std::sort( pluginInfoList.begin(), pluginInfoList.end()
          , []( const KPluginInfo &left, const KPluginInfo &right ){ return left.name() < right.name(); } );
     addPlugins( pluginInfoList, pluginLoadMethod, categoryName, categoryKey, config );
     foreach( const KPluginInfo &plugin, pluginInfoList )

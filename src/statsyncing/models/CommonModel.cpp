@@ -162,7 +162,7 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                         "%1 (%2)", track->playCount(), recent ) ) : QVariant( track->playCount() );
                 }
                 case Meta::valLabel:
-                    return QStringList( ( track->labels() - m_options.excludedLabels() ).toList() ).join( i18nc(
+                    return QStringList( ( track->labels() - m_options.excludedLabels() ).values() ).join( i18nc(
                         "comma between list words", ", " ) );
                 default:
                     return QStringLiteral( "Unknown field!" );
@@ -183,10 +183,10 @@ CommonModel::trackData( const TrackPtr &track, qint64 field, int role ) const
                     QSet<QString> excludedLabels = track->labels() & m_options.excludedLabels();
                     QStringList texts;
                     if( !labels.isEmpty() )
-                        texts << i18n( "Labels: %1", QStringList( labels.toList() ).join( i18nc(
+                        texts << i18n( "Labels: %1", QStringList( labels.values() ).join( i18nc(
                         "comma between list words", ", " ) ) );
                     if( !excludedLabels.isEmpty() )
-                        texts << i18n( "Ignored labels: %1", QStringList( excludedLabels.toList() ).join( i18nc(
+                        texts << i18n( "Ignored labels: %1", QStringList( excludedLabels.values() ).join( i18nc(
                             "comma between list words", ", " ) ) );
                     return texts.isEmpty() ? QVariant() : texts.join( QStringLiteral("\n") );
                 }

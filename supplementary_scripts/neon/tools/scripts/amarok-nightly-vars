@@ -1,7 +1,0 @@
-#!/bin/bash
-
-source /opt/amarok-nightly/neon/data/varsrc
-
-echo "WARNING!!!!!!!: the current shell is configured for Project Neon (Amarok Nightly Builds), you really _DO NOT_ want to start any GUI application besides amarok-nightly!!!\nLeave with -> exit"
-
-bash

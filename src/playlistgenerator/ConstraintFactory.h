@@ -23,7 +23,7 @@
 #include <QString>
 #include <QStringList>
 
-#include <limits.h>
+#include <climits>
 
 class Constraint;
 class ConstraintNode;

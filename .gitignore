@@ -1,12 +1,14 @@
 .*
 *~
 /build*/
+debian/
 release-build
 Doxyfile
 *.patch
 *.rej
 *.orig
 !.arcconfig
+!.gitlab-ci.yml
 
 # CMake
 CMakeLists.txt.user

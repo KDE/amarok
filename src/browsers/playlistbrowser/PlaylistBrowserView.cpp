@@ -322,7 +322,7 @@ PlaylistBrowserNS::PlaylistBrowserView::actionsFor( const QModelIndexList &index
     }
     // all actions taking provider have only sense with one provider
     if( writableProviders.count() == 1 )
-        m_writableActionProvider = writableProviders.toList().first();
+        m_writableActionProvider = writableProviders.values().first();
 
     // process per-provider actions
     foreach( PlaylistProvider *provider, providers )
@@ -484,7 +484,7 @@ PlaylistBrowserView::slotRemoveTracks()
     foreach( Playlists::PlaylistPtr playlist, m_writableActionTracks.uniqueKeys() )
     {
         QList<int> trackIndices = m_writableActionTracks.values( playlist );
-        qSort( trackIndices );
+        std::sort( trackIndices.begin(), trackIndices.end() );
         int removed = 0;
         foreach( int trackIndex, trackIndices )
         {
@@ -568,7 +568,7 @@ PlaylistBrowserView::insertIntoPlaylist( Playlist::AddOptions options )
 
         Meta::TrackList playlistTracks = playlist->tracks();
         QList<int> positions = m_actionTracks.values( playlist );
-        qSort( positions );
+        std::sort( positions.begin(), positions.end() );
         foreach( int position, positions )
         {
             if( position >= 0 && position < playlistTracks.count() )

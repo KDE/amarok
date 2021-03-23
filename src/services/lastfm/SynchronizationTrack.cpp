@@ -131,7 +131,7 @@ SynchronizationTrack::commit()
     if( !toRemove.isEmpty() )
     {
         Q_ASSERT( m_semaphore.available() == 0 );
-        m_tagsToRemove = toRemove.toList();
+        m_tagsToRemove = toRemove.values();
         emit startTagRemoval();
         m_semaphore.acquire(); // wait for the job to complete
         m_tagsToRemove.clear();
@@ -139,7 +139,7 @@ SynchronizationTrack::commit()
     if( !toAdd.isEmpty() )
     {
         Q_ASSERT( m_semaphore.available() == 0 );
-        emit startTagAddition( toAdd.toList() );
+        emit startTagAddition( toAdd.values() );
         m_semaphore.acquire(); // wait for the job to complete
     }
 

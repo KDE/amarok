@@ -173,8 +173,8 @@ CollectionScanner::Scanner::doJob() //SLOT
             addDir( dir, &entriesSet ); // checks m_recursively
         }
 
-        entries = entriesSet.toList();
-        qSort( entries ); // the sort is crucial because of restarts and lastDirectory handling
+        entries = entriesSet.values();
+        std::sort( entries.begin(), entries.end() ); // the sort is crucial because of restarts and lastDirectory handling
     }
 
     if( m_restart )
