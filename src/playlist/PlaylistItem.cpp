@@ -24,7 +24,7 @@
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/meta/Meta.h"
 
-#include <KRandom>
+#include <QRandomGenerator>
 
 #include <QSet>
 
@@ -37,7 +37,7 @@ Playlist::Item::Item()
 Playlist::Item::Item( const Meta::TrackPtr &track )
         : m_track( track ), m_state( NewlyAdded )
 {
-    m_id = ( static_cast<quint64>( KRandom::random() ) << 32 ) | static_cast<quint64>( KRandom::random() );
+    m_id = ( static_cast<quint64>( QRandomGenerator::global()->generate() ) << 32 ) | static_cast<quint64>( QRandomGenerator::global()->generate() );
 }
 
 Playlist::Item::~Item()

@@ -30,7 +30,7 @@
 #include "playlist/PlaylistModel.h"
 
 #include <KLocalizedString>
-#include <KRandom>
+#include <QRandomGenerator>
 
 #include <QHash>
 #include <QMutexLocker>
@@ -59,7 +59,7 @@ APG::ConstraintSolver::ConstraintSolver( ConstraintNode* r, int qualityFactor )
 {
     Q_UNUSED( qualityFactor); // FIXME
 
-    m_serialNumber = KRandom::random();
+    m_serialNumber = QRandomGenerator::global()->generate();
 
     if ( !m_constraintTreeRoot ) {
         error() << "No constraint tree was passed to the solver.  Aborting.";
@@ -299,25 +299,25 @@ APG::ConstraintSolver::mutate_population( APG::ConstraintSolver::Population& pop
     QList<Meta::TrackList*> parents( population.keys() );
     int maxMutants = (int)( mutantPercentage * (double)(m_populationSize) );
     for ( int i = parents.size(); i < maxMutants; i++ ) {
-        int idx = KRandom::random() % parents.size();
+        int idx = QRandomGenerator::global()->generate() % parents.size();
         Meta::TrackList* child = new Meta::TrackList( *(parents.at( idx )) );
-        int op = KRandom::random() % 5;
+        int op = QRandomGenerator::global()->generate() % 5;
         int s = child->size();
         switch (op) {
             case 0:
-                child->removeAt( KRandom::random() % s );
+                child->removeAt( QRandomGenerator::global()->generate() % s );
                 break;
             case 1:
-                child->insert( KRandom::random() % ( s + 1 ), random_track_from_domain() );
+                child->insert( QRandomGenerator::global()->generate() % ( s + 1 ), random_track_from_domain() );
                 break;
             case 2:
-                child->replace( KRandom::random() % s, random_track_from_domain() );
+                child->replace( QRandomGenerator::global()->generate() % s, random_track_from_domain() );
                 break;
             case 3:
-                child->swap( KRandom::random() % s, KRandom::random() % s );
+                child->swap( QRandomGenerator::global()->generate() % s, QRandomGenerator::global()->generate() % s );
                 break;
             case 4:
-                child = crossover( child, parents.at( KRandom::random() % parents.size() ) );
+                child = crossover( child, parents.at( QRandomGenerator::global()->generate() % parents.size() ) );
                 break;
             default:
                 (void)0; // effectively a no-op. the default is here so that the compiler doesn't complain about missing default in switch
@@ -351,7 +351,7 @@ APG::ConstraintSolver::pop_comp( double a, double b )
 Meta::TrackPtr
 APG::ConstraintSolver::random_track_from_domain() const
 {
-    return m_domain.at( KRandom::random() % m_domain.size() );
+    return m_domain.at( QRandomGenerator::global()->generate() % m_domain.size() );
 }
 
 Meta::TrackList
@@ -370,7 +370,7 @@ APG::ConstraintSolver::playlist_size() const
 bool
 APG::ConstraintSolver::select( const double satisfaction ) const
 {
-    double x = (double)KRandom::random()/(double)RAND_MAX;
+    double x = (double)QRandomGenerator::global()->generate()/(double)RAND_MAX;
     const double scale = -30.0; // TODO: make adjustable
     return ( x < 1.0 / ( 1.0 + exp( scale * (satisfaction-0.8) ) ) );
 }
@@ -435,5 +435,5 @@ APG::ConstraintSolver::rng_poisson( const double mu ) const
 double
 APG::ConstraintSolver::rng_uniform() const
 {
-    return ( (double)KRandom::random() / (double)(RAND_MAX) );
+    return ( (double)QRandomGenerator::global()->generate() / (double)(RAND_MAX) );
 }

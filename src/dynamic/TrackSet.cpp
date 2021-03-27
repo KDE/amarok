@@ -22,7 +22,7 @@
 #include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 
-#include <KRandom>
+#include <QRandomGenerator>
 
 Dynamic::TrackCollection::TrackCollection( const QStringList& uids )
 {
@@ -128,7 +128,7 @@ Dynamic::TrackSet::getRandomTrack() const
         return QString();
 
     // stupid that I have to go through the set like this...
-    int trackNr = KRandom::random() % count;
+    int trackNr = QRandomGenerator::global()->generate() % count;
     for( int i = m_bits.size()-1; i>=0; i-- )
     {
         if( m_bits.at(i) )
