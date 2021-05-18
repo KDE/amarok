@@ -28,8 +28,8 @@ AmarokQml.Applet {
     Loader {
         id: cover
 
-        height: parent.height
-        width: height
+        width: parent.width/2
+        height: width
 
         sourceComponent: CurrentTrackEngine.hasValidCover ? coverComponent : emptyComponent
     }
@@ -55,15 +55,7 @@ AmarokQml.Applet {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignLeft
             }
-            AmarokQml.RatingItem {
-                id: ratingItem
 
-                Layout.preferredWidth: height * 6
-                Layout.preferredHeight: parent.height / 5
-                Layout.alignment: Qt.AlignTop | Qt.AlignRight
-                rating: CurrentTrackEngine.rating
-                onClicked: CurrentTrackEngine.rating = newRating
-            }
         }
         StatsItem {
             id: statsItem
@@ -72,6 +64,17 @@ AmarokQml.Applet {
             Layout.alignment: Qt.AlignBottom
             Layout.preferredHeight: parent.height / 5
         }
+
+        AmarokQml.RatingItem {
+            id: ratingItem
+
+            Layout.preferredWidth: height * 5
+            Layout.preferredHeight: parent.height / 8
+            Layout.alignment: Qt.AlignTop | Qt.AlignRight
+            rating: CurrentTrackEngine.rating
+            onClicked: CurrentTrackEngine.rating = newRating
+        }
+
     }
 
     Component {
