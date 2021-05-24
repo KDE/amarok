@@ -797,7 +797,7 @@ void
 AFTTagger::displayHelp()
 {
     m_textStream << tr( "Amarok AFT Tagger" ) << endl << endl;
-    m_textStream << tr( "IRC:\nserver: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org" ) << endl << endl;
+    m_textStream << tr( "IRC:\nserver: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-fr\n\nFeedback:\namarok@kde.org" ) << endl << endl;
     m_textStream << tr( "Usage: amarok_afttagger [options] +File/Folder(s)" ) << endl << endl;
     m_textStream << tr( "User-modifiable Options:" ) << endl;
     m_textStream << tr( "+File/Folder(s)       : Files or folders to tag" ) << endl;
