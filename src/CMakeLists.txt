@@ -842,7 +842,6 @@ target_link_libraries(amaroklib
     KF5::KIONTLM
     KF5::NewStuff
     KF5::Notifications
-    KF5::NotifyConfig
     KF5::Package
     KF5::TextEditor
     KF5::ThreadWeaver
