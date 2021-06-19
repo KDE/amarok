@@ -33,7 +33,7 @@ namespace Playlist
             StandardTrackNavigator();
 
             quint64 likelyNextTrack() override { return chooseNextTrack( m_repeatPlaylist ); }
-            quint64 likelyLastTrack() override;
+            quint64 likelyLastTrack() override { return chooseLastTrack( m_repeatPlaylist ); }
             quint64 requestNextTrack() override;
             quint64 requestUserNextTrack() override;
             quint64 requestLastTrack() override;
@@ -46,6 +46,14 @@ namespace Playlist
              * unexpected (e.g. child class 'RepeatTrackNavigator').
              */
             quint64 chooseNextTrack( bool repeatPlaylist );
+
+            /**
+             * This function does the same job as 'likelyLastTrack()'. It exists as a
+             * distinct function because 'requestLastTrack()' should not call
+             * 'likelyLastTrack()': a child class can override that to do something
+             * unexpected (e.g. child class 'RepeatTrackNavigator').
+             */
+            quint64 chooseLastTrack( bool repeatPlaylist );
 
             // repeat the entire playlist when we've reached the end
             bool m_repeatPlaylist;
