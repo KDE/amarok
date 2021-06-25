@@ -24,6 +24,7 @@
 
 #include "NonlinearTrackNavigator.h"
 
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistModelStack.h"
@@ -284,7 +285,15 @@ Playlist::NonlinearTrackNavigator::requestLastTrack()
 {
     doItemListsMaintenance();
 
-    quint64 lastItem = m_historyItems.isEmpty() ? 0 : m_historyItems.takeLast();
+    quint64 lastItem = 0;
+    while (!m_historyItems.isEmpty())
+    {
+        quint64 possibleLastItem = m_historyItems.takeLast();
+        if (m_model->trackForId(possibleLastItem)->isPlayable()) {
+            lastItem = possibleLastItem;
+            break;
+        }
+    }
 
     setCurrentItem( lastItem, true );
     return m_currentItem;
