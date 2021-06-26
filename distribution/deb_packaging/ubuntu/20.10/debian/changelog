@@ -1,3 +1,9 @@
+amarok (2:2.9.71+1SNAPSHOT20210626150430+0200-0ubuntu1ppa1~ubuntu20.10.1) groovy; urgency=medium
+
+  * Fix stall when file not at playlist
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Sat, 26 Jun 2021 15:04:30 +0200
+
 amarok (2:2.9.71+1SNAPSHOT20210610223622+0200-0ubuntu1ppa1~ubuntu20.10.1) groovy; urgency=medium
 
   * Support Ubuntu 21.04 hirsute
