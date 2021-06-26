@@ -133,6 +133,9 @@ TagDialog::~TagDialog()
     if( m_currentAlbum )
         unsubscribeFrom( m_currentAlbum );
 
+    // kRichTextEdit creates a signal during deletion which causes getTagsFromUi to access deleted objects BUG: 428769
+    ui->kRichTextEdit_lyrics->disconnect();
+
     delete ui;
 }
 
