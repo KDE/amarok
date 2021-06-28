@@ -249,10 +249,33 @@ Playlist::NonlinearTrackNavigator::nextItemChooseDonorList()
 quint64
 Playlist::NonlinearTrackNavigator::likelyNextTrack()
 {
+    // Reminder: if that function is modified, it's important to research if changes must also
+    // be applied to similar code in `Playlist::StandardTrackNavigator::requestNextTrack()`
+
     doItemListsMaintenance();
 
-    ItemList *donor = nextItemChooseDonorList();
-    return donor ? donor->first() : 0;
+    quint64 nextItem = 0;
+    bool trackHasBeenSet = false;
+    ItemList *donor;
+    while (!trackHasBeenSet)
+    {
+        donor = nextItemChooseDonorList();
+        if (!donor || donor->isEmpty()) {
+            nextItem = 0;
+            break;
+        }
+        while (!donor->isEmpty()) {
+            nextItem = donor->first();
+            if (m_model->trackForId(nextItem)->isPlayable()) {
+                trackHasBeenSet = true;
+                break;
+            } else {
+                donor->removeFirst();
+            }
+        }
+    }
+
+    return nextItem;
 }
 
 // We could just call 'likelyNextTrack()' and assume that we'll get a 'slotActiveTrackChanged'
@@ -260,10 +283,29 @@ Playlist::NonlinearTrackNavigator::likelyNextTrack()
 quint64
 Playlist::NonlinearTrackNavigator::requestNextTrack()
 {
+    // Reminder: if that function is modified, it's important to research if changes must also
+    // be applied to similar code in `Playlist::StandardTrackNavigator::likelyNextTrack()`
+
     doItemListsMaintenance();
 
-    ItemList *donor = nextItemChooseDonorList();
-    quint64 nextItem = donor ? donor->takeFirst() : 0;
+    quint64 nextItem = 0;
+    bool trackHasBeenSet = false;
+    ItemList *donor;
+    while (!trackHasBeenSet)
+    {
+        donor = nextItemChooseDonorList();
+        if (!donor || donor->isEmpty()) {
+            nextItem = 0;
+            break;
+        }
+        while (!donor->isEmpty()) {
+            nextItem = donor->takeFirst();
+            if (m_model->trackForId(nextItem)->isPlayable()) {
+                trackHasBeenSet = true;
+                break;
+            }
+        }
+    }
 
     setCurrentItem( nextItem );
     return m_currentItem;
