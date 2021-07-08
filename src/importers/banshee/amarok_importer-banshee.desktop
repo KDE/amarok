@@ -36,6 +36,7 @@ Name[sv]=Banshee-importverktyg
 Name[tr]=Banshee İçe Aktarıcı
 Name[uk]=Засіб імпортування даних Banshee
 Name[x-test]=xxBanshee Importerxx
+Name[zh_CN]=Banshee Importer
 Name[zh_TW]=Banshee 匯入器
 Comment=Import statistics from Banshee database
 Comment[bs]=Uvezite statistiku iz Banshee baze podataka
@@ -72,6 +73,7 @@ Comment[sv]=Importera statistik från Banshee-databas
 Comment[tr]=İstatistikleri Banshee veritabanından al
 Comment[uk]=Імпортування статистичних даних з бази даних Banshee
 Comment[x-test]=xxImport statistics from Banshee databasexx
+Comment[zh_CN]=从 Banshee 数据库导入统计
 Comment[zh_TW]=從 Banshee 資料庫中匯入統計資料
 
 ServiceTypes=Amarok/Plugin

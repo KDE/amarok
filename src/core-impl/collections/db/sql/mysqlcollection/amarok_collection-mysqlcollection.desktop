@@ -34,6 +34,7 @@ Name[sv]=MySQL-anslutning
 Name[tr]=MySQL Koleksiyonu
 Name[uk]=Збірка MySQL
 Name[x-test]=xxMySQL Collectionxx
+Name[zh_CN]=MySQL 收藏
 Name[zh_TW]=MySQL 收藏
 Comment=Collection plugin for Amarok
 Comment[be]=Утулка калекцыі для Amarok
@@ -90,6 +91,7 @@ Comment[tr]=Amarok için Koleksiyon eklentisi
 Comment[uk]=Додаток збірки для Amarok
 Comment[wa]=Tchôke-divins di ramexhnêye pos Amarok
 Comment[x-test]=xxCollection plugin for Amarokxx
+Comment[zh_CN]=Amarok 的收藏插件
 Comment[zh_TW]=Amarok 的收藏外掛程式
 NoDisplay=true
 
