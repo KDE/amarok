@@ -73,6 +73,7 @@ Comment[sv]=Importera statistik från Amarok 1.4-databas
 Comment[tr]=İstatistikleri Amarok 1.4 veritabanından al
 Comment[uk]=Імпортування статистичних даних з бази даних Amarok 1.4
 Comment[x-test]=xxImport statistics from Amarok 1.4 databasexx
+Comment[zh_CN]=从 Amarok 1.4 数据库导入统计数据
 Comment[zh_TW]=從 Amarok 1.4 資料庫中匯入統計資料
 
 ServiceTypes=Amarok/Plugin

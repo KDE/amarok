@@ -124,6 +124,7 @@ GenericName[ug]=ئۈن قويغۇچ
 GenericName[uk]=Аудіопрогравач
 GenericName[wa]=Djouweu d' son
 GenericName[x-test]=xxAudio Playerxx
+GenericName[zh_CN]=音频播放器
 GenericName[zh_TW]=音效播放器
 Exec=amarok %U
 StartupWMClass=amarok
@@ -184,6 +185,7 @@ Comment[ug]=Amarok - مۇزىكىلىرىڭىزنى قايتا بايقايسى�
 Comment[uk]=Amarok — відкрийте свою музику знову!
 Comment[wa]=Amarok - Ridiscovroz vosse muzike!
 Comment[x-test]=xxAmarok - Rediscover Your Music!xx
+Comment[zh_CN]=Amarok - 重新探索您的音乐！
 Comment[zh_TW]=Amarok - 重新探索您的音樂世界！
 Icon=amarok
 # Add pure audio formats here, for other formats see amarok_*.desktop files
