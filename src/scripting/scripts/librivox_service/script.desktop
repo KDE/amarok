@@ -72,6 +72,7 @@ Comment[sv]=En skriptbaserad tjänst som låter dig söka efter, strömma och la
 Comment[tr]=Librivox.org sitesinden ücretsiz, kamuya açık alan adından, ses kitapları aramanızı, göndermenizi veya indirmenizi sağlayan bir betik hizmeti.
 Comment[uk]=Керована скриптами служба, за допомогою якої ви можете шукати, слухати і отримувати вільні, доступні усім звукові книги з Librivox.org
 Comment[x-test]=xxA scripted service that lets you search, stream and download free, public domain, audio books from Librivox.orgxx
+Comment[zh_CN]=一个供您搜索、串流并下载 Librivox.org 上自由的、公有领域的有声书的脚本服务
 Comment[zh_TW]=一個文稿服務，讓您從 Librivox.org 搜尋、接收並下載自由、公共版權的有聲書
 
 X-KDE-PluginInfo-Author=Nikolaj Hald Nielsen

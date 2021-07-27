@@ -50,7 +50,7 @@ Name[tr]=AudioCd Koleksiyonu
 Name[uk]=Збірка звукових КД
 Name[wa]=Ramexhnêye di plakes lazer odio
 Name[x-test]=xxAudioCd Collectionxx
-Name[zh_CN]=音频 CD 收藏
+Name[zh_CN]=音频 CD 集
 Name[zh_TW]=音效 CD 收藏
 Comment=AudioCd collection plugin for Amarok
 Comment[bg]=Приставка за колекция с компактдискове (Amarok)
@@ -101,7 +101,7 @@ Comment[tr]=Amarok için AudioCd koleksiyon eklentisi
 Comment[uk]=Додаток збірки звукових КД для Amarok
 Comment[wa]=Tchôke-divins di ramexhnêye d' plakes lazer odio po Amarok
 Comment[x-test]=xxAudioCd collection plugin for Amarokxx
-Comment[zh_CN]=Amarok 的音频 CD 收藏插件
+Comment[zh_CN]=Amarok 的音频 CD 集插件
 Comment[zh_TW]=Amarok 的音效 CD 收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
