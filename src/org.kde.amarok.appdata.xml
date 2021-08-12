@@ -61,7 +61,7 @@
   <summary xml:lang="sv">En kraftfull musikspelare som låter dig upptäcka din musik igen</summary>
   <summary xml:lang="uk">Потужна програма для відтворення музики, яка надасть вам змогу побачити вашу фонотеку з іншого боку</summary>
   <summary xml:lang="x-test">xxA powerful music player that lets you rediscover your musicxx</summary>
-  <summary xml:lang="zh-CN">一个强大到让您重新发现音乐之美的播放器</summary>
+  <summary xml:lang="zh-CN">一款强大到让您重新感悟音乐之美的播放器</summary>
   <description>
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
@@ -89,7 +89,7 @@
     <p xml:lang="sv">Amarok är en fri, mångsidig, kraftfull och funktionsrik musikspelare och samlingshanterare för flera plattformar.</p>
     <p xml:lang="uk">Amarok — вільна, універсальна, різнобічна та потужна програма для відтворення звукових даних та керування фонотеками.</p>
     <p xml:lang="x-test">xxAmarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.xx</p>
-    <p xml:lang="zh-CN">Amarok 是一个自由、跨平台、多用途、强大且多功能的音乐播放器及音频集管理器。</p>
+    <p xml:lang="zh-CN">Amarok 是一个自由、跨平台、多用途、强大且多功能的音乐播放器及收藏集管理器。</p>
     <p xml:lang="zh-TW">Amarok 是款自由、跨平台、多功能且強大的音樂播放和收藏管理器。</p>
     <p>Features:</p>
     <p xml:lang="ar">الميزات:</p>
@@ -194,7 +194,7 @@
       <li xml:lang="sv">Samlingshantering med betygsstöd</li>
       <li xml:lang="uk">керування збіркою з підтримкою оцінок;</li>
       <li xml:lang="x-test">xxCollection managing with rating supportxx</li>
-      <li xml:lang="zh-CN">支持评分的音乐集管理器</li>
+      <li xml:lang="zh-CN">支持评分的收藏集管理器</li>
       <li xml:lang="zh-TW">支援評分的收藏管理工具</li>
       <li>Support for basic iPod, MTP and UMS music player devices</li>
       <li xml:lang="ar">دعم أجهة مشغّلات الوسائط iPod، وMTP وUMS الأساسيّة</li>
