@@ -39,14 +39,14 @@ not be entirely up to date. You can always look at CMakeLists.txt to discover
 the most recent dependencies.
 
 Required
-    * KDE Frameworks 5 (for an exact list look at CMakeLists.txt)
+    * KDE Frameworks 5.41 (or newer, for an exact list look at CMakeLists.txt)
       https://www.kde.org
 
-    * Phonon 4.6.60 (with support for Qt5) and one of the following backends:
+    * Phonon 4.6.60 (or newer with support for Qt5) and one of the following backends:
       * phonon-gstreamer 4.6.3 (or newer)
       * phonon-vlc 0.6.1 (or newer; as of 0.6.1 doesn't yet play Audio CDs, bug 313046)
 
-    * Qt 5.8 (or newer)
+    * Qt 5.10 (or newer)
       https://qt.io/
 
     * TagLib 1.7 (or newer)
@@ -95,11 +95,7 @@ Optional
       * LibOFA - http://code.google.com/p/musicip-libofa/
 
     * gpodder.net Podcast Provider & Service
-      * libmygpo-qt 1.0.9 (or newer)
-         Actually it needs the to-be-released 1.10. Or you use 1.0.9 and add the
-         patches from the following pull requests:
-         - https://github.com/gpodder/libmygpo-qt/pull/12
-         - https://github.com/gpodder/libmygpo-qt/pull/13
+      * libmygpo-qt 1.1.0 (or newer)
 
     * Transcoding requires (at runtime):
       * FFmpeg 0.7.0 (or newer) - https://ffmpeg.org/
