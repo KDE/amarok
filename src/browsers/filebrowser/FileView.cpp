@@ -50,6 +50,8 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 
+#include <algorithm>
+
 FileView::FileView( QWidget *parent )
     : Amarok::PrettyTreeView( parent )
     , m_appendAction( 0 )

@@ -58,6 +58,8 @@
 #include <QTimer>
 #include <QUrl>
 
+#include <algorithm>
+
 using namespace Podcasts;
 
 static const int PODCAST_DB_VERSION = 6;

@@ -55,6 +55,8 @@
 #include <QSortFilterProxyModel>
 #include <QScrollBar>
 
+#include <algorithm>
+
 using namespace Collections;
 
 /**

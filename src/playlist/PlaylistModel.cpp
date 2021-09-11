@@ -54,6 +54,8 @@
 #include <QStringList>
 #include <QUrl>
 
+#include <algorithm>
+
 
 #define TOOLTIP_STATIC_LINEBREAK 50
 

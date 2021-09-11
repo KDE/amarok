@@ -44,6 +44,8 @@
 
 #include <KConfigGroup>
 
+#include <algorithm>
+
 using namespace PlaylistBrowserNS;
 
 PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel *model,

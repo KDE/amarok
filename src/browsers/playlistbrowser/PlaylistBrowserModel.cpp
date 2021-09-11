@@ -29,6 +29,8 @@
 
 #include <QAction>
 
+#include <algorithm>
+
 using namespace PlaylistBrowserNS;
 
 // to be used with qSort.

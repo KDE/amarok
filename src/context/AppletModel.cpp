@@ -23,13 +23,13 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <algorithm>
-
 #include <QUrl>
 
 #include <KPackage/Package>
 #include <KPackage/PackageLoader>
 #include <KPluginInfo>
+
+#include <algorithm>
 
 
 using namespace Context;
