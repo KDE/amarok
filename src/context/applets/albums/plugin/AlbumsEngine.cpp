@@ -297,6 +297,17 @@ void AlbumsEngine::showContextMenu( const QModelIndexList &indexes, const QModel
     menu.exec( QCursor::pos() );
 }
 
+QString AlbumsEngine::getSelectedUrlList(const QModelIndexList &indexes) const
+{
+    const Meta::TrackList list=getSelectedTracks(indexes);
+    QString urlList;
+    for(const Meta::TrackPtr &t : list)
+    {
+        urlList+=t->playableUrl().toString()+"\n";
+    }
+    return urlList;
+}
+
 Meta::TrackList AlbumsEngine::getSelectedTracks( const QModelIndexList& indexes ) const
 {
     Meta::TrackList selected;

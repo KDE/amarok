@@ -43,6 +43,7 @@ public:
     void setFilterPattern( const QString &pattern );
 
     Q_INVOKABLE void showContextMenu( const QModelIndexList &indexes, const QModelIndex &mouseOverIndex ) const;
+    Q_INVOKABLE QString getSelectedUrlList(const QModelIndexList &indexes) const;
 
 Q_SIGNALS:
     void lengthAlignmentChanged();
