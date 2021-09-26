@@ -89,6 +89,10 @@ AmarokQml.Applet {
             }
         }
 
+        Component.onCompleted: {
+            __mouseArea.pressAndHoldInterval=200;
+        }
+
         Item {
             id: dragItem
             width: 1; height: 1
