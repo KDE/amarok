@@ -10,7 +10,7 @@ endif()
 ###############
 
 set(KF5_MIN_VERSION "5.57.0")
-set(QT_REQUIRED_VERSION "5.10.0")
+set(QT_REQUIRED_VERSION "5.15.0")
 find_package(PkgConfig REQUIRED)
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
