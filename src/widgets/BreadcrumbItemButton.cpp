@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QMimeData>
+#include <QMargins>
 #include <QPainter>
 #include <QStyle>
 #include <QStyleOptionFocusRect>
@@ -127,8 +128,7 @@ BreadcrumbItemButton::paintEvent( QPaintEvent* event )
     }
     drawHoverBackground(&painter);
 
-    int left, top, right, bottom;
-    getContentsMargins ( &left, &top, &right, &bottom );
+    QMargins margins = contentsMargins();
     const int padding = 2;
     int xoffset;
 
@@ -136,15 +136,15 @@ BreadcrumbItemButton::paintEvent( QPaintEvent* event )
     {
         const int iconWidth = iconSize().width();
         const int iconHeight = iconSize().height();
-        const int iconTop = ( (buttonHeight - top - bottom) - iconHeight ) / 2;
-        const QRect iconRect( left + padding, iconTop, iconWidth, iconHeight );
+        const int iconTop = ( (buttonHeight - margins.top() - margins.bottom()) - iconHeight ) / 2;
+        const QRect iconRect( margins.left() + padding, iconTop, iconWidth, iconHeight );
         painter.drawPixmap( iconRect, icon().pixmap( iconSize() ) );
-        xoffset = left + (padding * 2) + iconWidth;
+        xoffset = margins.left() + (padding * 2) + iconWidth;
     }
     else
-        xoffset = left + (padding * 2);
+        xoffset = margins.left() + (padding * 2);
 
-    const QRect textRect( xoffset, top, buttonWidth, buttonHeight);
+    const QRect textRect( xoffset, margins.top(), buttonWidth, buttonHeight);
     painter.drawText(textRect, Qt::AlignVCenter, text());
 }
 
@@ -191,7 +191,7 @@ BreadcrumbItemButton::sizeHint() const
     if( !text().isEmpty() )
     {
         QFontMetrics fm( font() );
-        width += fm.width( text() );
+        width += fm.horizontalAdvance( text() );
     }
     size.setWidth( width );
     return size;

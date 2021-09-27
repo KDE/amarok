@@ -198,13 +198,13 @@ TagHelper::splitDiscNr( const QString &value ) const
     int count = 0;
     if( value.indexOf( QLatin1Char('/') ) != -1 )
     {
-        QStringList list = value.split( QLatin1Char('/'), QString::SkipEmptyParts );
+        QStringList list = value.split( QLatin1Char('/'), Qt::SkipEmptyParts );
         disc = list.value( 0 ).toInt();
         count = list.value( 1 ).toInt();
     }
     else if( value.indexOf( QLatin1Char(':') ) != -1 )
     {
-        QStringList list = value.split( QLatin1Char(':'), QString::SkipEmptyParts );
+        QStringList list = value.split( QLatin1Char(':'), Qt::SkipEmptyParts );
         disc = list.value( 0 ).toInt();
         count = list.value( 1 ).toInt();
     }

@@ -103,7 +103,7 @@ void MagnatuneDownloadHandler::xmlDownloadComplete( KJob * downloadJob )
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downloadJob );
     QString resultXml = QString( storedJob->data() );
 
-    debug() << endl << endl << "result: " << resultXml;
+    debug() << Qt::endl << Qt::endl << "result: " << resultXml;
 
 
     if ( !m_albumDownloader )

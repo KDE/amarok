@@ -34,6 +34,7 @@
 
 #include <QHash>
 #include <QMutexLocker>
+#include <QRandomGenerator>
 #include <QStringList>
 #include <QTimer>
 #include <ThreadWeaver/ThreadWeaver>
@@ -314,7 +315,7 @@ APG::ConstraintSolver::mutate_population( APG::ConstraintSolver::Population& pop
                 child->replace( QRandomGenerator::global()->generate() % s, random_track_from_domain() );
                 break;
             case 3:
-                child->swap( QRandomGenerator::global()->generate() % s, QRandomGenerator::global()->generate() % s );
+                child->swapItemsAt( QRandomGenerator::global()->generate() % s, QRandomGenerator::global()->generate() % s );
                 break;
             case 4:
                 child = crossover( child, parents.at( QRandomGenerator::global()->generate() % parents.size() ) );

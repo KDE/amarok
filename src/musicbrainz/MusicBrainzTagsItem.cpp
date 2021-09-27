@@ -369,15 +369,17 @@ MusicBrainzTagsItem::chooseBestMatchFromRelease( const QStringList &releases )
 
     MusicBrainzTagsItem *bestMatch = nullptr;
     float maxScore = 0;
-    QSet<QString> idList = releases.toSet();
+    QSet<QString> idList(releases.begin(), releases.end());
     foreach( MusicBrainzTagsItem *item, m_childItems )
     {
         /*
          * Match any of the releases referenced by selected entry. This should guarantee
          * that best results are always chosen when available.
          */
+        QStringList list = item->dataValue( MusicBrainz::RELEASEID ).toStringList();
+        QSet<QString> set(list.begin(), list.end());
         if( item->score() > maxScore &&
-            !item->dataValue( MusicBrainz::RELEASEID ).toStringList().toSet().intersect( idList ).isEmpty() )
+            !set.intersect( idList ).isEmpty() )
         {
             bestMatch = item;
             maxScore = item->score();

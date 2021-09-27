@@ -293,7 +293,7 @@ PlaylistFileProvider::loadPlaylists()
         }
 
         if( !groups.isEmpty() && playlist->isWritable() )
-            playlist->setGroups( groups.split( QLatin1Char(','),  QString::SkipEmptyParts ) );
+            playlist->setGroups( groups.split( QLatin1Char(','),  Qt::SkipEmptyParts ) );
 
         m_playlists << playlist;
         Q_EMIT playlistAdded( PlaylistPtr( playlist.data() ) );

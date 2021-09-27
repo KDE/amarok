@@ -128,12 +128,13 @@ CollectionManager::setFactories( const QList<QSharedPointer<Plugins::PluginFacto
     using Collections::CollectionFactory;
 
 
-    QSet<QSharedPointer<Plugins::PluginFactory> > newFactories = factories.toSet();
+    QSet<QSharedPointer<Plugins::PluginFactory> > newFactories(factories.begin(), factories.end());
     QSet<QSharedPointer<Plugins::PluginFactory> > oldFactories;
 
     {
         QReadLocker locker( &d->lock );
-        oldFactories = d->factories.toSet();
+        QSet<QSharedPointer<Plugins::PluginFactory> > addFactoriesSet(d->factories.begin(), d->factories.end());
+        oldFactories += addFactoriesSet;
     }
 
     // remove old factories

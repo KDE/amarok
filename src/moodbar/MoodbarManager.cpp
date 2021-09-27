@@ -355,7 +355,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const QUrl &moodFileUrl )
 
         //debug() << "ReadMood: Applying filter t=" << threshold
         //        << ", rS=" << rangeStart << ", rD=" << rangeDelta
-        //        << ", s=" << sat << "%, v=" << val << "%" << endl;
+        //        << ", s=" << sat << "%, v=" << val << "%" << Qt::endl;
 
         // On average, huedist[i] = samples / 360.  This counts the
         // number of samples over the threshold, which is usually

@@ -803,7 +803,7 @@ CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem *> &items,
 
     //Store the type of playlist insert to be done and cause a slot to be invoked when the tracklist has been generated.
     AmarokMimeData *mime = dynamic_cast<AmarokMimeData*>(
-                m_treeModel->mimeData( QList<CollectionTreeItem *>::fromSet( parents ) ) );
+                m_treeModel->mimeData( QList<CollectionTreeItem *>( parents.begin(), parents.end() ) ) );
     m_playChildTracksMode.insert( mime, insertMode );
     connect( mime, &AmarokMimeData::trackListSignal,
              this, &CollectionTreeView::playChildTracksSlot );

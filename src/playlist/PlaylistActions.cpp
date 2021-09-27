@@ -47,6 +47,7 @@
 #include "playlist/PlaylistRestorer.h"
 #include "playlistmanager/PlaylistManager.h"
 
+#include <QRandomGenerator>
 #include <QStandardPaths>
 #include <typeinfo>
 
@@ -362,7 +363,7 @@ Playlist::Actions::shuffle()
         for( int row = 0; row < rowCount; ++row )
         {
             fromRows.append( row );
-            shuffleToRows.insert( qrand(), row );
+            shuffleToRows.insert( QRandomGenerator::global()->generate(), row );
         }
         toRows = shuffleToRows.values();
     }

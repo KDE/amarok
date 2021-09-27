@@ -735,7 +735,7 @@ Track::commitIfInNonBatchUpdate()
         return;
 
     if( AmarokConfig::writeBackStatistics() ||
-        !(QSet<qint64>::fromList( m_changedFields.keys() ) - statFields).isEmpty() )
+        !(QSet<qint64>( m_changedFields.keys().begin(), m_changedFields.keys().end() ) - statFields).isEmpty() )
     {
         setModifyDate( QDateTime::currentDateTime() );
     }

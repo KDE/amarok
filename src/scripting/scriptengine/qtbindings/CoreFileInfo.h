@@ -52,7 +52,8 @@ namespace QtBindings
             QString canonicalPath() const;
             QString completeBaseName() const;
             QString completeSuffix() const;
-            QDateTime created() const;
+            QDateTime birthTime() const;
+            QDateTime metadataChangeTime() const;
             QDir dir() const;
             bool exists() const;
             QString fileName() const;
@@ -79,7 +80,6 @@ namespace QtBindings
             QString path() const;
             bool permission(QFile::Permissions permissions) const;
             QFile::Permissions permissions() const;
-            QString readLink() const;
             void refresh();
             void setCaching(bool on);
             void setFile(const QDir &dir, const QString &file);

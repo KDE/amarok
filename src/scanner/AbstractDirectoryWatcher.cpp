@@ -88,7 +88,7 @@ AbstractDirectoryWatcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
 
 
             // -- update the KDirWatch with the current set of directories
-            QSet<QString> dirs = collectionFolders().toSet();
+            QSet<QString> dirs(collectionFolders().begin(), collectionFolders().end());
 
             // - add new
             QSet<QString> newDirs = dirs - oldWatchDirs;

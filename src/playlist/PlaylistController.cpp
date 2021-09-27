@@ -357,7 +357,8 @@ Controller::removeDeadAndDuplicates()
 {
     DEBUG_BLOCK
 
-    QSet<Meta::TrackPtr> uniqueTracks = m_topModel->tracks().toSet();
+    QList<Meta::TrackPtr> uniqueTrackList = m_topModel->tracks();
+    QSet<Meta::TrackPtr> uniqueTracks(uniqueTrackList.begin(), uniqueTrackList.end());
     QList<int> topModelRowsToRemove;
 
     foreach( Meta::TrackPtr unique, uniqueTracks )
@@ -484,8 +485,8 @@ Controller::reorderRows( const QList<int> &from, const QList<int> &to )
 
     // validity check: each item should appear exactly once in both lists
     {
-        QSet<int> fromItems( from.toSet() );
-        QSet<int> toItems( to.toSet() );
+        QSet<int> fromItems( from.begin(), from.end() );
+        QSet<int> toItems( to.begin(), to.end() );
 
         if( fromItems.size() != from.size() || toItems.size() != to.size() || fromItems != toItems )
         {

@@ -500,7 +500,7 @@ void PopupDropperItem::reposTextItem()
         QFontMetrics fm( d->textItem->font() );
         qreal desiredWidth = d->borderRectItem->sceneBoundingRect().width() - offsetPos;
         while( d->textItem->font().pointSize() > 1 &&
-                ( fm.width( d->textItem->toPlainText() ) > desiredWidth ||
+                ( fm.horizontalAdvance( d->textItem->toPlainText() ) > desiredWidth ||
                   fm.height() > d->textItem->boundingRect().height() ) ) 
         {
             QFont font = d->textItem->font();

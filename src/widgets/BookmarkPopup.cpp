@@ -79,8 +79,8 @@ void BookmarkPopup::adjustWidth()
     const int margin = 3;
     QFontMetrics fm ( font() );
     m_lineHeight = fm.height();
-    int line1Width = fm.width ( i18n ( "Bookmark" ) ) + 40; //padding and space for delete icon
-    int line2Width = fm.width ( m_label ) + 8 ;
+    int line1Width = fm.horizontalAdvance ( i18n ( "Bookmark" ) ) + 40; //padding and space for delete icon
+    int line2Width = fm.horizontalAdvance ( m_label ) + 8 ;
     m_height = 44;
     m_width = qMax ( line1Width, line2Width ) + 2 * margin;
     resize ( m_width, m_height );

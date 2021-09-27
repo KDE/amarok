@@ -275,7 +275,7 @@ void SelectAction::setCurrentItem( int n )
     m_function( n );
     KSelectAction::setCurrentItem( n );
     AmarokConfig::self()->save(); //So we don't lose the setting when crashing
-    if( announce ) Q_EMIT triggered( n );
+    if( announce ) Q_EMIT indexTriggered( n );
 }
 
 void SelectAction::actionTriggered( QAction *a )

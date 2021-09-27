@@ -321,17 +321,17 @@ EditFilterDialog::updateDropTarget( const QString &text )
                 // for relative time specifications numValue is a time difference in seconds 'pointing to the past'
                 if( date.isValid() )
                 {
-                    filter.filter.numValue = QDateTime( date ).toSecsSinceEpoch();
+                    filter.filter.numValue = date.startOfDay().toSecsSinceEpoch();
                     isDateAbsolute = true;
                 }
                 else if( strTime.contains(shortDateReg) )
                 {
-                    filter.filter.numValue = QDateTime( QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ) ).toSecsSinceEpoch();
+                    filter.filter.numValue = QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ).startOfDay().toSecsSinceEpoch();
                     isDateAbsolute = true;
                 }
                 else if( strTime.contains(longDateReg) )
                 {
-                    filter.filter.numValue = QDateTime( QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ) ).toSecsSinceEpoch();
+                    filter.filter.numValue =  QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ).startOfDay().toSecsSinceEpoch();
                     isDateAbsolute = true;
                 }
                 else

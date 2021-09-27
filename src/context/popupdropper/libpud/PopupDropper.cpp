@@ -461,7 +461,7 @@ void PopupDropper::show()
         //qDebug() << "Animating!";
         d->fadeShowTimer.setDuration( d->fadeInTime );
         d->fadeShowTimer.setCurrentTime( 0 );
-        d->fadeShowTimer.setCurveShape( QTimeLine::EaseOutCurve );
+        d->fadeShowTimer.setEasingCurve( QEasingCurve::OutCurve );
         QColor color = d->windowColor;
         color.setAlpha( 0 );
         setPalette( color );
@@ -520,7 +520,7 @@ void PopupDropper::hide()
     {
         //qDebug() << "Starting fade out";
         d->fadeHideTimer.setDuration( d->fadeOutTime );
-        d->fadeHideTimer.setCurveShape( QTimeLine::LinearCurve );
+        d->fadeHideTimer.setEasingCurve( QEasingCurve::Linear );
         d->fadeHideTimer.start();
         //qDebug() << "Timer started";
         return;

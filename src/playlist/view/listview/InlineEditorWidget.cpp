@@ -192,7 +192,7 @@ void InlineEditorWidget::createChildWidgets()
                 ratingWidget->setRating( rating );
                 ratingWidget->setAttribute( Qt::WA_NoMousePropagation, true );
 
-                connect( ratingWidget, QOverload<uint>::of(&KRatingWidget::ratingChanged),
+                connect( ratingWidget, QOverload<int>::of(&KRatingWidget::ratingChanged),
                          this, &InlineEditorWidget::ratingValueChanged );
 
                 m_editorRoleMap.insert( ratingWidget, value );

@@ -70,8 +70,8 @@ ServicePluginManager::~ServicePluginManager()
 void
 ServicePluginManager::setFactories( const QList<QSharedPointer<Plugins::PluginFactory> > &factories )
 {
-    QSet<QSharedPointer<Plugins::PluginFactory> > newFactories = factories.toSet();
-    QSet<QSharedPointer<Plugins::PluginFactory> > oldFactories = m_factories.toSet();
+    QSet<QSharedPointer<Plugins::PluginFactory> > newFactories(factories.begin(), factories.end());
+    QSet<QSharedPointer<Plugins::PluginFactory> > oldFactories(m_factories.begin(), m_factories.end());
 
     // remove old factories
     for( const auto &pFactory : oldFactories - newFactories )

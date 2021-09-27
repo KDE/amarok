@@ -371,7 +371,7 @@ qint64
 AudioCdCollection::trackLength( int i ) const
 {
     QUrl kioUrl = audiocdUrl( trackWavFileName( i ) );
-    KIO::StatJob *statJob = KIO::stat( kioUrl );
+    KIO::StatJob *statJob = KIO::statDetails( kioUrl, KIO::StatJob::SourceSide );
     if ( statJob->exec() )
     {
         KIO::UDSEntry uds = statJob->statResult();
@@ -506,7 +506,7 @@ AudioCdCollection::noInfoAvailable()
 
     // This will find also data tracks on mixed CDs:
     // a better way to discover the available audio tracks should be found
-    while( KIO::stat( audiocdUrl( trackWav ), KIO::StatJob::SourceSide, 0 )->exec() )
+    while( KIO::statDetails( audiocdUrl( trackWav ), KIO::StatJob::SourceSide )->exec() )
     {
         debug() << "got track url: " << audiocdUrl( trackWav );
 

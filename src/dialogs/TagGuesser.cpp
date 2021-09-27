@@ -106,7 +106,7 @@ TagGuesser::convertTagCaseType( const QString &tag, int type )
         case 2:
         {
             QString complete;
-            QStringList splitList = tag.toLower().split( ' ', QString::SkipEmptyParts );
+            QStringList splitList = tag.toLower().split( ' ', Qt::SkipEmptyParts );
 
             foreach( QString word, splitList )
             {

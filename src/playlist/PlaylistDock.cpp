@@ -44,6 +44,7 @@
 #include "widgets/BoxWidget.h"
 
 #include <QLabel>
+#include <QSharedPointer>
 #include <QStandardPaths>
 #include <QToolBar>
 
@@ -300,12 +301,15 @@ Playlist::Dock::slotSaveCurrentPlaylist()
     if( action == nullptr )
         return;
 
-    QWeakPointer<Playlists::UserPlaylistProvider> pointer =
+    QWeakPointer<Playlists::UserPlaylistProvider> weakPointer =
             action->data().value< QWeakPointer<Playlists::UserPlaylistProvider> >();
-    Playlists::UserPlaylistProvider* provider = pointer.data();
+    QSharedPointer<Playlists::UserPlaylistProvider> strongPointer = weakPointer.toStrongRef();
+    if ( strongPointer ) {
+        Playlists::UserPlaylistProvider* provider = strongPointer.data();
 
-    const Meta::TrackList tracks = The::playlist()->tracks();
-    The::playlistManager()->save( tracks, Amarok::generatePlaylistName( tracks ), provider );
+        const Meta::TrackList tracks = The::playlist()->tracks();
+        The::playlistManager()->save( tracks, Amarok::generatePlaylistName( tracks ), provider );
+    }
 }
 
 void

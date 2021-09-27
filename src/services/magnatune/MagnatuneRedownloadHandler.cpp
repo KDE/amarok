@@ -170,7 +170,7 @@ void MagnatuneRedownloadHandler::redownloadApiResult( KJob* job )
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     QString resultXml = QString( storedJob->data() );
 
-    debug() << endl << endl << "result: " << resultXml;
+    debug() << Qt::endl << Qt::endl << "result: " << resultXml;
 
 
     QList<MagnatuneDownloadInfo> previousPurchasesInfoList;

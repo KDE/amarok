@@ -623,7 +623,7 @@ QString MagnatuneStore::messages()
 
 QString MagnatuneStore::sendMessage( const QString & message )
 {
-    QStringList args = message.split( ' ', QString::SkipEmptyParts );
+    QStringList args = message.split( ' ', Qt::SkipEmptyParts );
 
     if ( args.size() < 1 ) {
         return i18n( "ERROR: No arguments supplied" );

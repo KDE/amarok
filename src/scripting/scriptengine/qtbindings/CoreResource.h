@@ -34,10 +34,8 @@ namespace QtBindings
         public:
             Q_INVOKABLE Resource(const QString &file=QString(), const QLocale &locale=QLocale());
             Q_INVOKABLE Resource(const Resource& resource);
-            Q_INVOKABLE static void addSearchPath(const QString &path);
             Q_INVOKABLE static bool registerResource(const QString &rccFilename, const QString &resourceRoot=QString());
             Q_INVOKABLE static bool registerResource(const uchar *rccData, const QString &resourceRoot=QString());
-            Q_INVOKABLE static QStringList searchPaths();
             Q_INVOKABLE static bool unregisterResource(const QString &rccFilename, const QString &resourceRoot=QString());
             Q_INVOKABLE static bool unregisterResource(const uchar *rccData, const QString &resourceRoot=QString());
             Resource &operator=(const Resource &other);
@@ -45,7 +43,7 @@ namespace QtBindings
             QString absoluteFilePath() const;
             const uchar *data() const;
             QString fileName() const;
-            bool isCompressed() const;
+            QResource::Compression compressionAlgorithm() const;
             bool isValid() const;
             QDateTime lastModified() const;
             QLocale locale() const;

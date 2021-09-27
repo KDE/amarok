@@ -449,7 +449,7 @@ void TestMetaFileTrack::testType()
 void TestMetaFileTrack::testCreateDate()
 {
     QFileInfo fi( m_tmpFileName );
-    QDateTime created = fi.created();
+    QDateTime created = fi.birthTime();
     // m_track->createDate() is rounded to full second because it is created from full seconds
     // created therefore also needs to be rounded
     QCOMPARE( m_track->createDate().toSecsSinceEpoch(), created.toSecsSinceEpoch() );

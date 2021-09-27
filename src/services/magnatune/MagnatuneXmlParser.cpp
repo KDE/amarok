@@ -195,7 +195,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
                 albumCode = childElement.text();
 
             else if ( sElementName == "magnatunegenres" )
-                magnatuneGenres = childElement.text().split(',', QString::SkipEmptyParts);
+                magnatuneGenres = childElement.text().split(',', Qt::SkipEmptyParts);
 
             else if ( sElementName == "launchdate" )
             {

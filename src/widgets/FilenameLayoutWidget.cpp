@@ -374,7 +374,7 @@ FilenameLayoutWidget::populateFormatList( const QString& custom )
     foreach( const QString &str, presets_raw )
     {
         QStringList items;
-        items = str.split( "#DELIM#", QString::SkipEmptyParts );
+        items = str.split( "#DELIM#", Qt::SkipEmptyParts );
         if( items.size() < 2 )
             continue;
         m_presetCombo->addItem( items.at( 0 ), items.at( 1 ) ); // Label, format string

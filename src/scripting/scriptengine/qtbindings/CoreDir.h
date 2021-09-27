@@ -56,7 +56,6 @@ namespace QtBindings
             Q_INVOKABLE static QString rootPath();
             Q_INVOKABLE static QString tempPath();
             Q_INVOKABLE static QString toNativeSeparators(const QString &pathName);
-            Q_INVOKABLE static void addResourceSearchPath(const QString &path);
             Q_INVOKABLE static void addSearchPath(const QString &prefix, const QString &path);
             Q_INVOKABLE static void setSearchPaths(const QString &prefix, const QStringList &searchPaths);
             Dir &operator=(const Dir &other);

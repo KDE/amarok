@@ -1372,7 +1372,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
 
         layoutmap.insert( QStringLiteral("pubdate"), sqlEpisode->pubDate().toString() );
 
-        sequenceNumber.sprintf( "%.6d", sqlEpisode->sequenceNumber() );
+        sequenceNumber.asprintf( "%.6d", sqlEpisode->sequenceNumber() );
         layoutmap.insert( QStringLiteral("number"), sequenceNumber );
 
         if( sqlEpisode->album() )

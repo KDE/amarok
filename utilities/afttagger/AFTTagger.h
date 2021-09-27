@@ -30,7 +30,7 @@
 
 #include <QCoreApplication>
 #include <QStringList>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QTextStream>
 
 /**
@@ -65,7 +65,7 @@ public:
     bool          m_recurse;
     bool          m_verbose;
     QStringList   m_fileFolderList;
-    QTime         m_time;
+    QElapsedTimer m_time;
     QTextStream   m_textStream;
 
 };

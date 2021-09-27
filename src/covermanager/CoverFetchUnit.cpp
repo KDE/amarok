@@ -602,7 +602,9 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
             foreach( const Meta::TrackPtr &track, tracks )
                 artistNames << ( track->artist() ? track->artist()->name()
                                                  : i18n( "Unknown Artist" ) );
-            artistSet = normalize( artistNames ).toSet();
+            QStringList artistNamesNormalized = normalize( artistNames );
+            QSet<QString> addArtistSet(artistNamesNormalized.begin(), artistNamesNormalized.end());
+            artistSet += addArtistSet;
         }
     }
     else return;

@@ -51,7 +51,7 @@ LongMessageWidget::LongMessageWidget( const QString &message )
 
     m_countdownFrame = new CountdownFrame( hbox );
     m_countdownFrame->setObjectName( QStringLiteral("counterVisual") );
-    m_countdownFrame->setFixedWidth( fontMetrics().width( QStringLiteral("X") ) );
+    m_countdownFrame->setFixedWidth( fontMetrics().horizontalAdvance( QStringLiteral("X") ) );
     m_countdownFrame->setFrameStyle( QFrame::Plain | QFrame::Box );
     QPalette pal;
     pal.setColor( m_countdownFrame->foregroundRole(), p.dark().color() );

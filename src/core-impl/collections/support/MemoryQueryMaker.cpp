@@ -29,8 +29,8 @@
 #include <QSet>
 #include <QStack>
 #include <QtAlgorithms>
+//#include <QRandomGenerator>
 
-#include <KRandomSequence>
 #include <KSortableList>
 
 using namespace Collections;
@@ -102,7 +102,7 @@ struct MemoryQueryMaker::Private {
     QList<CustomReturnFunction*> returnFunctions;
     QList<CustomReturnValue*> returnValues;
     bool usingFilters;
-    KRandomSequence sequence;   //do not reset
+    //QRandomGenerator sequence;   //do not reset. FIXME: neverused field
     qint64 orderByField;
     bool orderDescending;
     bool orderByNumberField;

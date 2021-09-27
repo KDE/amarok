@@ -19,7 +19,7 @@
 NetworkProgressBar::NetworkProgressBar( QWidget *parent, QNetworkReply *reply )
     : ProgressBar( parent )
 {
-    connect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+    connect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred),
              this, &NetworkProgressBar::infoMessage );
     connect( reply, &QNetworkReply::finished, this, &NetworkProgressBar::delayedDone );
     connect( reply, &QNetworkReply::destroyed, this, &NetworkProgressBar::delayedDone );

@@ -437,7 +437,7 @@ namespace Amarok
             QImage amarokIcon = QIcon::fromTheme( QStringLiteral("amarok") ).pixmap( dim, dim ).toImage();
             amarokIcon = amarokIcon.convertToFormat( QImage::Format_ARGB32 );
             QRgb *data = reinterpret_cast<QRgb*>( amarokIcon.bits() );
-            QRgb *end = data + amarokIcon.byteCount() / 4;
+            QRgb *end = data + amarokIcon.sizeInBytes() / 4;
             while(data != end)
             {
                 unsigned char gray = qGray(*data);

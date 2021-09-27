@@ -25,6 +25,7 @@
 
 #include <phonon/audiodataoutput.h>
 
+#include <QElapsedTimer>
 #include <QMutex>
 #include <QObject>
 #include <QTime>
@@ -114,7 +115,7 @@ private:
     Base::WindowFunction m_windowFunction;
     int m_expectedDataTime;
     int m_demoT;
-    QTime m_lastUpdate;
+    QElapsedTimer m_lastUpdate;
     QTimer *m_demoTimer;
     QTimer *m_processTimer;
 };

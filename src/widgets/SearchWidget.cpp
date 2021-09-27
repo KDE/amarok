@@ -53,9 +53,9 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     connect( m_sw, QOverload<int>::of(&QComboBox::activated),
              this, &SearchWidget::onComboItemActivated );
     connect( m_sw, &Amarok::ComboBox::editTextChanged, this, &SearchWidget::resetFilterTimeout );
-    connect( m_sw, QOverload<>::of(&KComboBox::returnPressed),
+    connect( m_sw, QOverload<const QString&>::of(&KComboBox::returnPressed),
              this, &SearchWidget::filterNow ); // filterNow() calls addCompletion()
-             connect( m_sw, QOverload<>::of(&KComboBox::returnPressed),
+    connect( m_sw, QOverload<const QString&>::of(&KComboBox::returnPressed),
             this, &SearchWidget::returnPressed );
     connect( m_sw, &Amarok::ComboBox::downPressed, this, &SearchWidget::advanceFocus );
 

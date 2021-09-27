@@ -26,7 +26,7 @@
 #include <KCMultiDialog>
 
 
-DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KConfigSkeleton *config )
+DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KCoreConfigSkeleton *config )
     : ConfigDialogBase( parent )
     , m_configManager( new KConfigDialogManager( this, config ) )
 {

@@ -33,7 +33,7 @@ Analyzer::Worker::Worker()
     , m_windowFunction( Base::Hann )
     , m_expectedDataTime( 20 )
     , m_demoT( 201 )
-    , m_lastUpdate( QTime::currentTime() )
+    , m_lastUpdate()
     , m_demoTimer( new QTimer( this ) )
     , m_processTimer( new QTimer( this ) )
 {
@@ -47,6 +47,7 @@ Analyzer::Worker::Worker()
         m_processTimer->start();
     else
         m_demoTimer->start();
+    m_lastUpdate.start();
 
     connect( m_demoTimer, &QTimer::timeout, this, &Worker::demo );
     connect( m_processTimer, &QTimer::timeout, this, &Worker::processData );

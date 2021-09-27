@@ -235,11 +235,6 @@ QString Url::toLocalFile() const
     return QUrl::toLocalFile();
 }
 
-QString Url::topLevelDomain(QUrl::ComponentFormattingOptions options) const
-{
-    return QUrl::topLevelDomain(options);
-}
-
 QString Url::toString(QUrl::FormattingOptions options) const
 {
     return QUrl::toString(options);

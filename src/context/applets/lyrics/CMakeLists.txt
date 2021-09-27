@@ -14,4 +14,4 @@ target_link_libraries(amarok_context_applet_lyrics
 install(TARGETS amarok_context_applet_lyrics DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/lyrics)
 install(FILES plugin/qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/lyrics)
 
-kpackage_install_bundled_package(package org.kde.amarok.lyrics amarok)
+kpackage_install_package(package org.kde.amarok.lyrics amarok)

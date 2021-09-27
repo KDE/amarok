@@ -38,7 +38,7 @@ private:
     KConfigGroup syncedPlaylistsConfig() const;
 
     QMap<QUrl,SyncedPlaylistPtr> m_syncMasterMap;
-    QMap<QUrl,QUrl> m_syncSlaveMap;
+    QMultiMap<QUrl,QUrl> m_syncSlaveMap;
 };
 
 #endif // KCONFIGSYNCRELSTORE_H

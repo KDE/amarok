@@ -581,7 +581,7 @@ Track::commitIfInNonBatchUpdate()
 
     // special case (shortcut) when writing statistics is disabled
     if( !AmarokConfig::writeBackStatistics() &&
-        (QSet<qint64>::fromList( d->changes.keys() ) - statFields).isEmpty() )
+        (QSet<qint64>( d->changes.keys().begin(), d->changes.keys().end() ) - statFields).isEmpty() )
     {
         d->changes.clear();
         return;

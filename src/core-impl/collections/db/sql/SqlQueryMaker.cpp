@@ -181,7 +181,7 @@ SqlQueryMaker::run()
 {
     if( d->queryType == QueryMaker::None || (d->blocking && d->used) )
     {
-        debug() << "sql querymaker used without reset or initialization" << endl;
+        debug() << "sql querymaker used without reset or initialization" << Qt::endl;
         return; //better error handling?
     }
     if( d->worker && !d->worker->isFinished() )

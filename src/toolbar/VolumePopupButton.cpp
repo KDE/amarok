@@ -146,12 +146,12 @@ VolumePopupButton::mouseReleaseEvent( QMouseEvent * event )
 void
 VolumePopupButton::wheelEvent( QWheelEvent * event )
 {
-    //debug() << "delta: " << event->delta();
+    //debug() << "angleDelta.x: " << event->angleDelta().x() << angleDelta.y: " << event->angleDelta().y();
     event->accept();
 
     EngineController* const ec = The::engineController();
 
-    const int volume = qBound( 0, ec->volume() + event->delta() / 40 , 100 );
+    const int volume = qBound( 0, ec->volume() + event->angleDelta().y() / 40 , 100 ); //FIXME: check if .x() must be used
     ec->setVolume( volume );
 }
 

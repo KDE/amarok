@@ -28,14 +28,14 @@
 #include "core/support/Debug.h"
 
 #include <QDateTime>
-#include <QtGlobal> // For 'qrand()'
+#include <QRandomGenerator> // For 'QRandomGenerator::global()->generate()'
 
 #include <cmath> // For 'round()'
 
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {
     loadFromSourceModel();
-    qsrand( QDateTime::currentDateTimeUtc().toSecsSinceEpoch() );
+    QRandomGenerator::global()->seed(QDateTime::currentDateTimeUtc().toSecsSinceEpoch());
 }
 
 void
@@ -89,7 +89,7 @@ Playlist::RandomTrackNavigator::chooseRandomItem( const QSet<quint64> &avoidSet 
     do
     {
         int maxPosition = allItemsList().size() - 1;
-        int randomPosition = round( ( qrand() / (float)RAND_MAX ) * maxPosition );
+        int randomPosition = round( ( QRandomGenerator::global()->generate() / (float)RAND_MAX ) * maxPosition );
         chosenItem = allItemsList().at( randomPosition );
     } while ( avoidSet.contains( chosenItem ) );
 

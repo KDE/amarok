@@ -438,7 +438,7 @@ static QStringList metadata( Meta::TrackPtr track )
         {
             // this will split "all-in-one" filename tags
             QRegExp rx("(\\s+-\\s+|\\s*;\\s*|\\s*:\\s*)");
-            list << title.split( rx, QString::SkipEmptyParts );
+            list << title.split( rx, Qt::SkipEmptyParts );
             QList<QString>::iterator i = list.begin();
             bool ok;
             while ( i != list.end() )
@@ -873,7 +873,7 @@ MainToolbar::setLabelTime( int ms )
         int tf = timeFrame( secs );
         if( m_lastTime < 0 || tf != timeFrame( m_lastTime ) )
         {
-            const int w = QFontMetrics( m_timeLabel->font() ).width( timeString[tf] );
+            const int w = QFontMetrics( m_timeLabel->font() ).horizontalAdvance( timeString[tf] );
             m_timeLabel->setFixedWidth( w );
             relayout = true;
         }
@@ -885,7 +885,7 @@ MainToolbar::setLabelTime( int ms )
             tf = timeFrame( remainingSecs );
             if( m_lastRemainingTime < 0 || tf != timeFrame( m_lastRemainingTime ) )
             {
-                const int w = QFontMetrics( m_remainingTimeLabel->font() ).width( QStringLiteral("-") + timeString[tf] );
+                const int w = QFontMetrics( m_remainingTimeLabel->font() ).horizontalAdvance( QStringLiteral("-") + timeString[tf] );
                 m_remainingTimeLabel->setFixedWidth( w );
                 relayout = true;
             }

@@ -322,7 +322,7 @@ LabelsApplet::updateLabels()
     // now make the label cloud nicer by determinating the quality of the web labels
     // a lot of different values (73,68,51) is good, equal values (66,66,33) look suspicious
     // 0.7 / 0.3 is a pretty moderate choice; 0.5 / 0.5 would be more extreme
-    const float qualityFactor = ( webCounts.count() > 0 ) ? 0.7 + 0.3 * webCounts.toSet().count()/webCounts.count() : 1.0;
+    const float qualityFactor = ( webCounts.count() > 0 ) ? 0.7 + 0.3 * (new QSet<int>(webCounts.begin(). webCounts.end())).count()/webCounts.count() : 1.0;
     // delete all unneeded label items
     for( int i=0; i<m_labelItems.count(); i++ )
     {

@@ -132,7 +132,7 @@ CoverManager::CoverManager( QWidget *parent )
 
     ArtistItem *item = nullptr;
     item = new ArtistItem( i18n( "All Artists" ) );
-    item->setIcon(0, SmallIcon( "media-optical-audio-amarok" ) );
+    item->setIcon(0, QIcon::fromTheme( "media-optical-audio-amarok" ) );
     m_items.append( item );
 
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
@@ -165,7 +165,7 @@ CoverManager::slotContinueConstruction() //SLOT
     foreach( Meta::ArtistPtr artist, m_artistList )
     {
         ArtistItem* item = new ArtistItem( m_artistView, artist );
-        item->setIcon( 0, SmallIcon( "view-media-artist-amarok" ) );
+        item->setIcon( 0, QIcon::fromTheme( "view-media-artist-amarok" ) );
         m_items.append( item );
     }
     m_artistView->insertTopLevelItems( 0, m_items );

@@ -417,8 +417,8 @@ TestMetaConstants::testValueForField()
     trackData[ Meta::Field::FILESIZE ] = 1;
     trackData[ Meta::Field::SCORE ] = double( 1 );
     trackData[ Meta::Field::RATING ] = 1;
-    trackData[ Meta::Field::FIRST_PLAYED ] = QDateTime( QDate( 2012, 1, 1) );
-    trackData[ Meta::Field::LAST_PLAYED ] = QDateTime( QDate( 2012, 1, 1) );
+    trackData[ Meta::Field::FIRST_PLAYED ] = QDate( 2012, 1, 1).startOfDay();
+    trackData[ Meta::Field::LAST_PLAYED ] = QDate( 2012, 1, 1).startOfDay();
     trackData[ Meta::Field::PLAYCOUNT ] = 1;
     trackData[ Meta::Field::UNIQUEID ] = "test uid";
 

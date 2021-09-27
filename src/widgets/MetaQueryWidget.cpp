@@ -526,7 +526,7 @@ MetaQueryWidget::numValueDateChanged()
     {
         QDate date;
         dateSelection->getDate( &date );
-        m_filter.numValue = QDateTime( date ).toSecsSinceEpoch();
+        m_filter.numValue = date.startOfDay().toSecsSinceEpoch();
 
         Q_EMIT changed(m_filter);
     }
@@ -540,7 +540,7 @@ MetaQueryWidget::numValue2DateChanged()
     {
         QDate date;
         dateSelection->getDate( &date );
-        m_filter.numValue2 = QDateTime( date ).toSecsSinceEpoch();
+        m_filter.numValue2 = date.startOfDay().toSecsSinceEpoch();
 
         Q_EMIT changed(m_filter);
     }
@@ -762,7 +762,7 @@ MetaQueryWidget::populateComboBox( const QStringList &results )
     disconnect( combo.data(), nullptr, this, nullptr );
 
     // want the results unique and sorted
-    const QSet<QString> dataSet = results.toSet();
+    const QSet<QString> dataSet(results.begin(), results.end());
     QStringList dataList = dataSet.values();
     dataList.sort();
     combo->addItems( dataList );

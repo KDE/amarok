@@ -102,7 +102,7 @@ FileBrowser::Private::readConfig()
     }
     else
     {
-        KIO::StatJob *statJob = KIO::stat( savedUrl, KIO::StatJob::DestinationSide, 0 );
+        KIO::StatJob *statJob = KIO::statDetails( savedUrl, KIO::StatJob::DestinationSide);
         statJob->exec();
         if( statJob->statResult().isDir() )
         {

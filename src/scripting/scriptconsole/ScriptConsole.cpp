@@ -30,6 +30,7 @@
 #include <QKeyEvent>
 #include <QMenuBar>
 #include <QJSEngine>
+#include <QRandomGenerator>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTemporaryFile>
@@ -234,7 +235,7 @@ ScriptConsole::createScriptItem( const QString &script )
     QString scriptName;
     do
     {
-        scriptName = QStringLiteral( "Script-%1" ).arg( qrand() );
+        scriptName = QStringLiteral( "Script-%1" ).arg( QRandomGenerator::global()->generate() );
         scriptPath =  QStringLiteral( "%1/%2" ).arg( m_savePath, scriptName );
     } while ( QDir( scriptPath ).exists() );
     QDir().mkdir( scriptPath );

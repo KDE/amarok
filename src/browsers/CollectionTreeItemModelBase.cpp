@@ -481,7 +481,7 @@ CollectionTreeItemModelBase::mimeData( const QModelIndexList &indices ) const
         return nullptr;
 
     // first, filter out duplicate entries that may arise when both parent and child are selected
-    QSet<QModelIndex> indexSet = QSet<QModelIndex>::fromList( indices );
+    QSet<QModelIndex> indexSet( indices.begin(), indices.end() );
     QMutableSetIterator<QModelIndex> it( indexSet );
     while( it.hasNext() )
     {
@@ -981,7 +981,7 @@ CollectionTreeItemModelBase::populateChildren( const DataList &dataList, Collect
     // figure out which children of parent have to be removed,
     // which new children have to be added, and preemptively Q_EMIT dataChanged for the rest
     // have to check how that influences performance...
-    const QSet<Meta::DataPtr> dataSet = dataList.toSet();
+    const QSet<Meta::DataPtr> dataSet(dataList.begin(), dataList.end());
     QSet<Meta::DataPtr> childrenSet;
     foreach( CollectionTreeItem *child, parent->children() )
     {

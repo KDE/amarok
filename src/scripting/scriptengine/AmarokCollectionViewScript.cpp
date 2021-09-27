@@ -432,5 +432,6 @@ Selection::Selection( const QModelIndexList &indices )
 Collections::QueryMaker*
 Selection::queryMaker()
 {
-    return The::mainWindow()->collectionBrowser()->currentView()->createMetaQueryFromItems( selectedItems().toSet(), true );
+    QSet<CollectionTreeItem*> items(selectedItems().begin(), selectedItems().end());
+    return The::mainWindow()->collectionBrowser()->currentView()->createMetaQueryFromItems( items, true );
 }

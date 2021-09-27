@@ -67,7 +67,7 @@ CollectionSortFilterProxyModel::filterAcceptsRow( int source_row, const QModelIn
         QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
         if( treeItem( index )->isAlbumItem() )
         {
-            bool yearLoaded = index.data( PrettyTreeRoles::YearRole ) >= 0;
+            bool yearLoaded = index.data( PrettyTreeRoles::YearRole ).toInt() >= 0;
             return yearLoaded && stringAccepted;
         }
     }

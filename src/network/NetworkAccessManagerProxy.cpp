@@ -84,7 +84,7 @@ int
 NetworkAccessManagerProxy::abortGet( const QList<QUrl> &urls )
 {
     int removed = 0;
-    const QSet<QUrl> &urlSet = urls.toSet();
+    const QSet<QUrl> urlSet(urls.begin(), urls.end());
     foreach( const QUrl &url, urlSet )
         removed += abortGet( url );
     return removed;

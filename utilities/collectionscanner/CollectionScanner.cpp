@@ -239,7 +239,7 @@ CollectionScanner::Scanner::addDir( const QString& dir, QSet<QString>* entries )
     if( !d.exists() )
     {
         QTextStream stream( stderr );
-        stream << "Directory \""<<dir<<"\" does not exist." << endl;
+        stream << "Directory \""<<dir<<"\" does not exist." << Qt::endl;
         return;
     }
 
@@ -382,7 +382,7 @@ void
 CollectionScanner::Scanner::error( const QString &str )
 {
     QTextStream stream( stderr );
-    stream << str << endl;
+    stream << str << Qt::endl;
     stream.flush();
 
     // Nothing else to do, so we exit directly
@@ -394,7 +394,7 @@ void
 CollectionScanner::Scanner::displayVersion()
 {
     QTextStream stream( stdout );
-    stream << AMAROK_VERSION << endl;
+    stream << AMAROK_VERSION << Qt::endl;
     stream.flush();
 
     // Nothing else to do, so we exit directly
@@ -431,7 +431,7 @@ CollectionScanner::Scanner::displayHelp( const QString &error )
         "   </scanner>\n"
         "                          You can also use a previous scan result for that.\n"
         )
-        << endl;
+        << Qt::endl;
     stream.flush();
 
     ::exit(0);

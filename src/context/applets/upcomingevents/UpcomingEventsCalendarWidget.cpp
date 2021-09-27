@@ -57,7 +57,7 @@ public:
 
     void addEvents( const LastFmEvent::List &e )
     {
-        QSet<LastFmEventPtr> newEvents = e.toSet().subtract( events );
+        QSet<LastFmEventPtr> newEvents(e.begin(), e.end()).subtract( events );
         foreach( const LastFmEventPtr &event, newEvents )
             addEvent( event );
     }

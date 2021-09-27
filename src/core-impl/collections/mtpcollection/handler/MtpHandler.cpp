@@ -882,12 +882,12 @@ MtpHandler::libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, 
 
     QString genericError = i18n( "Could not save playlist." );
 
-    debug() << "creating new playlist : " << metadata->name << endl;
+    debug() << "creating new playlist : " << metadata->name << Qt::endl;
     int ret = LIBMTP_Create_New_Playlist( m_device, metadata );
     if( ret == 0 )
     {
         m_mtpPlaylisthash[ playlist ] = metadata;
-        debug() << "playlist saved : " << metadata->playlist_id << endl;
+        debug() << "playlist saved : " << metadata->playlist_id << Qt::endl;
     }
     else
         debug () << "Could not create new playlist on device.";
@@ -930,7 +930,7 @@ MtpHandler::renamePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist )
 
     if( pl )
     {
-        debug() << "updating playlist : " << pl->name << endl;
+        debug() << "updating playlist : " << pl->name << Qt::endl;
         int ret = LIBMTP_Update_Playlist( m_device, pl );
         if( ret != 0 )
         {

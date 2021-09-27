@@ -480,7 +480,7 @@ Dynamic::WeeklyTopBias::saveDataToFile() const
     QTextStream out( &file );
     foreach( uint key, m_weeklyArtistMap.keys() )
     {
-        out << key << "#" << m_weeklyArtistMap[ key ].join( "^" ) << endl;
+        out << key << "#" << m_weeklyArtistMap[ key ].join( "^" ) << Qt::endl;
     }
     file.close();
 
