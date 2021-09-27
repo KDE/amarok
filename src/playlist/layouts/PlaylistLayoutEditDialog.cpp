@@ -123,7 +123,7 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     copyLayoutButton->setToolTip( i18n( "Copy playlist layout" ) );
     connect( copyLayoutButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::copyLayout );
 
-    const QIcon deleteIcon( QStringLiteral("edit-delete") );
+    const QIcon deleteIcon = QIcon::fromTheme( QStringLiteral("edit-delete") );
     deleteLayoutButton->setIcon( deleteIcon );
     deleteLayoutButton->setToolTip( i18n( "Delete playlist layout" ) );
     connect( deleteLayoutButton, &QAbstractButton::clicked, this, &PlaylistLayoutEditDialog::deleteLayout );
