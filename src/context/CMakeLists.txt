@@ -13,7 +13,6 @@ set( amarokpud_LIB_SRCS
 add_library( amarokpud SHARED ${amarokpud_LIB_SRCS} )
 
 target_include_directories( amarokpud PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/popupdropper/libpud
     ${CMAKE_CURRENT_SOURCE_DIR}/popupdropper/libpud
 )
 
