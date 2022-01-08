@@ -839,7 +839,6 @@ target_link_libraries(amaroklib
     KF5::KIOCore
     KF5::KIOFileWidgets
     KF5::KIOWidgets
-    KF5::KIONTLM
     KF5::NewStuff
     KF5::Notifications
     KF5::Package
