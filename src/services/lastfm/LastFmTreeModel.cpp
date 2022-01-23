@@ -26,11 +26,12 @@
 #include "AmarokMimeData.h"
 
 #include <QIcon>
-
 #include <QPainter>
 
 #include <Tag.h>
 #include <XmlQuery.h>
+
+#include <algorithm>
 
 using namespace LastFm;
 

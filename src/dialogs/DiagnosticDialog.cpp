@@ -35,6 +35,7 @@
 #include <KLocalizedString>
 #include <KPluginInfo>
 
+#include <algorithm>
 #include <phonon/pulsesupport.h>
 
 

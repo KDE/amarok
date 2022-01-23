@@ -21,6 +21,8 @@
 #include "MetaValues.h"
 #include "core/meta/Meta.h"
 
+#include <algorithm>
+
 using namespace StatSyncing;
 
 #undef VERBOSE_DEBUG

@@ -47,6 +47,7 @@
 #include <QTimeLine>
 #include <QTimer>
 
+#include <algorithm>
 #include <functional>
 
 

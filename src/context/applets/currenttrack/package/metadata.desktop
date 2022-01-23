@@ -50,7 +50,7 @@ Name[ug]=نۆۋەتتىكى نەغمە
 Name[uk]=Поточна композиція
 Name[wa]=Boket do moumint
 Name[x-test]=xxCurrent Trackxx
-Name[zh_CN]=当前音轨
+Name[zh_CN]=当前曲目
 Name[zh_TW]=現在的曲目
 
 Type=Service
@@ -82,6 +82,7 @@ Comment[sl]=Vstavek sledi za Amarok
 Comment[sv]=Miniprogram med aktuellt spår för Amarok
 Comment[uk]=Аплет поточної композиції для Amarok
 Comment[x-test]=xxCurrent track applet for Amarokxx
+Comment[zh_CN]=Amarok 的当前曲目部件
 Comment[zh_TW]=Amarok 的目前曲目小程式
 
 X-KDE-PluginInfo-Name=org.kde.amarok.currenttrack

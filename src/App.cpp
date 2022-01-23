@@ -524,7 +524,7 @@ App::continueInit()
         handleFirstRun();
     }
 
-    if( AmarokConfig::resumePlayback() && restoreSession && m_args->isSet( "stop" ) ) {
+    if( AmarokConfig::resumePlayback() && restoreSession && !m_args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
         //do this after applySettings() so OSD displays correctly
         The::engineController()->restoreSession();

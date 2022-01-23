@@ -45,6 +45,8 @@
 #include <QBuffer>
 #include <QDebug>
 
+#include <algorithm>
+
 #ifdef Q_OS_LINUX
 // for ioprio
 #include <unistd.h>

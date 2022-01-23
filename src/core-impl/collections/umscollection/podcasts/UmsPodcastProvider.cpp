@@ -33,6 +33,8 @@
 #include <QMimeDatabase>
 #include <QMimeType>
 
+#include <algorithm>
+
 using namespace Podcasts;
 
 UmsPodcastProvider::UmsPodcastProvider( const QUrl &scanDirectory )

@@ -34,6 +34,8 @@
 
 #include <KLocalizedString>
 
+#include <algorithm>
+
 AlbumsEngine::AlbumsEngine( QObject *parent )
     : QObject( parent )
     , m_lastQueryMaker( nullptr )

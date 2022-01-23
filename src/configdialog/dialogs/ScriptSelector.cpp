@@ -24,6 +24,8 @@
 #include <KPluginInfo>
 #include <QScrollBar>
 
+#include <algorithm>
+
 // uber-hacky, this whole thing, make our own script selector?
 ScriptSelector::ScriptSelector( QWidget * parent )
     : KPluginSelector( parent )

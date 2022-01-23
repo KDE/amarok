@@ -7,8 +7,8 @@ Doxyfile
 *.patch
 *.rej
 *.orig
-!.arcconfig
 !.gitlab-ci.yml
+!.kde-ci.yml
 
 # CMake
 CMakeLists.txt.user

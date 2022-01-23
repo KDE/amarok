@@ -25,7 +25,7 @@
 #include "widgets/SliderWidget.h"
 
 #include <KLocalizedString>
-#include <KRandom>
+#include <QRandomGenerator>
 
 #include <QtGlobal> // for qRound
 #include <QApplication>
@@ -481,7 +481,7 @@ Dynamic::PartBias::updateResults() const
     // if we have some biases under-represented
     if( missingCapacity > 0 )
     {
-        int random = KRandom::random() % missingCapacity;
+        int random = QRandomGenerator::global()->generate() % missingCapacity;
         for( int source = 0; source < state.m_sourceCount; source++ )
         {
             // debug() << "PartBias::matchingTracks: biase"<<m_biases[source]->toString()<<"matches"<<state.m_sourceFlow[source]<<"out of"<<state.m_sourceCapacity[source]<<"tracks.";

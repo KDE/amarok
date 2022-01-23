@@ -82,7 +82,7 @@ ByteArray &ByteArray::append(char ch)
 
 ByteArray &ByteArray::append(const QString &str)
 {
-    QByteArray::append(str);
+    QByteArray::append(str.toUtf8());
     return *this;
 }
 
@@ -243,7 +243,7 @@ int ByteArray::indexOf(char ch, int from) const
 
 int ByteArray::indexOf(const QString &str, int from) const
 {
-    return QByteArray::indexOf(str, from);
+    return QByteArray::indexOf(str.toUtf8(), from);
 }
 
 ByteArray &ByteArray::insert(int i, const QByteArray &ba)
@@ -278,7 +278,7 @@ ByteArray &ByteArray::insert(int i, char ch)
 
 ByteArray &ByteArray::insert(int i, const QString &str)
 {
-    QByteArray::insert(i, str);
+    QByteArray::insert(i, str.toUtf8());
     return *this;
 }
 
@@ -309,7 +309,7 @@ int ByteArray::lastIndexOf(char ch, int from) const
 
 int ByteArray::lastIndexOf(const QString &str, int from) const
 {
-    return QByteArray::lastIndexOf(str, from);
+    return QByteArray::lastIndexOf(str.toUtf8(), from);
 }
 
 QByteArray ByteArray::left(int len) const
@@ -479,17 +479,17 @@ QByteArray &ByteArray::replace(char before, char after)
 
 QByteArray &ByteArray::replace(const QString &before, const char *after)
 {
-    return QByteArray::replace(before, after);
+    return QByteArray::replace(before.toUtf8(), after);
 }
 
 QByteArray &ByteArray::replace(char before, const QString &after)
 {
-    return QByteArray::replace(before, after);
+    return QByteArray::replace(before, after.toUtf8());
 }
 
 QByteArray &ByteArray::replace(const QString &before, const QByteArray &after)
 {
-    return QByteArray::replace(before, after);
+    return QByteArray::replace(before.toUtf8(), after);
 }
 
 void ByteArray::reserve(int size)

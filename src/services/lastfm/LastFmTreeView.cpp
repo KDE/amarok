@@ -30,6 +30,8 @@
 
 #include <KLocalizedString>
 
+#include <algorithm>
+
 
 LastFmTreeView::LastFmTreeView ( QWidget* parent )
         : Amarok::PrettyTreeView ( parent )

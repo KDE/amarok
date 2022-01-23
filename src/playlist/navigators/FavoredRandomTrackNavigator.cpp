@@ -26,7 +26,7 @@
 #include "core/meta/Statistics.h"
 #include "core/support/Debug.h"
 
-#include <KRandom>
+#include <QRandomGenerator>
 
 
 Playlist::FavoredRandomTrackNavigator::FavoredRandomTrackNavigator()
@@ -59,7 +59,7 @@ Playlist::FavoredRandomTrackNavigator::planOne()
             foreach ( qreal weight, weights )
                 totalWeight += weight;
 
-            qreal randomCumulWeight = ( KRandom::random() / qreal( RAND_MAX ) ) * totalWeight;
+            qreal randomCumulWeight = ( QRandomGenerator::global()->generate() / qreal( RAND_MAX ) ) * totalWeight;
 
             int row = 0;
             qreal rowCumulWeight = weights[ row ];

@@ -1,7 +1,0 @@
-upnptypes.h belongs to kio-upnp-ms, but is copied here
-since we want a run time and not compile time check
-of the upnp slave being present.
-
-Once the slave is part of kdebase-runtime, this can be removed
-since we can be sure the file will exist when kdebase
-is installed.

@@ -28,6 +28,8 @@
 #include <QDate>
 #include <QSet>
 
+#include <algorithm>
+
 using namespace Podcasts;
 
 #define ITUNES_NS  "http://www.itunes.com/dtds/podcast-1.0.dtd"

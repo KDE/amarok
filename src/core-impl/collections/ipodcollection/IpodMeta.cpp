@@ -444,14 +444,14 @@ Track::createDate() const
     time_t time = m_track->time_added;
     if( time == 0 )
         return QDateTime();  // 0 means "no reasonable time", so return invalid QDateTime
-    return QDateTime::fromTime_t( time );
+    return QDateTime::fromSecsSinceEpoch( time );
 }
 
 void
 Track::setCreateDate( const QDateTime &newDate )
 {
     QWriteLocker locker( &m_trackLock );
-    m_track->time_added = newDate.isValid() ? newDate.toTime_t() : 0;
+    m_track->time_added = newDate.isValid() ? newDate.toSecsSinceEpoch() : 0;
     commitIfInNonBatchUpdate( Meta::valCreateDate, newDate );
 }
 
@@ -461,14 +461,14 @@ Track::modifyDate() const
     time_t time = m_track->time_modified;
     if( time == 0 )
         return QDateTime();  // 0 means "no reasonable time", so return invalid QDateTime
-    return QDateTime::fromTime_t( time );
+    return QDateTime::fromSecsSinceEpoch( time );
 }
 
 void
 Track::setModifyDate( const QDateTime &newDate )
 {
     // this method _cannot_ lock m_trackLock or deadlock will occur in commitChanges()
-    m_track->time_modified = newDate.isValid() ? newDate.toTime_t() : 0;
+    m_track->time_modified = newDate.isValid() ? newDate.toSecsSinceEpoch() : 0;
 }
 
 int
@@ -504,14 +504,14 @@ Track::setDiscNumber( int newDiscNumber )
 QDateTime
 Track::lastPlayed() const
 {
-    return m_track->time_played ? QDateTime::fromTime_t( m_track->time_played ) : QDateTime();
+    return m_track->time_played ? QDateTime::fromSecsSinceEpoch( m_track->time_played ) : QDateTime();
 }
 
 void
 Track::setLastPlayed( const QDateTime &time )
 {
     QWriteLocker locker( &m_trackLock );
-    m_track->time_played = time.isValid() ? time.toTime_t() : 0;
+    m_track->time_played = time.isValid() ? time.toSecsSinceEpoch() : 0;
     commitIfInNonBatchUpdate( Meta::valLastPlayed, time );
 }
 
@@ -520,14 +520,14 @@ Track::firstPlayed() const
 {
     // we abuse time_released for this, which should be okay for non-podcast tracks
     // TODO: return QDateTime for podcast tracks
-    return m_track->time_released ? QDateTime::fromTime_t( m_track->time_released ) : QDateTime();
+    return m_track->time_released ? QDateTime::fromSecsSinceEpoch( m_track->time_released ) : QDateTime();
 }
 
 void
 Track::setFirstPlayed( const QDateTime &time )
 {
     QWriteLocker locker( &m_trackLock );
-    m_track->time_released = time.isValid() ? time.toTime_t() : 0;
+    m_track->time_released = time.isValid() ? time.toSecsSinceEpoch() : 0;
     commitIfInNonBatchUpdate( Meta::valFirstPlayed, time );
 }
 

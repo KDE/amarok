@@ -95,7 +95,7 @@ public Q_SLOTS:
      * @param options the set of options to be applied to the operation.
      * @see enum AddOptions.
      */
-    void insertOptioned( Meta::TrackPtr track, AddOptions options = 0 );
+    void insertOptioned( Meta::TrackPtr track, AddOptions options = {} );
 
     /**
      * Handles the insertion of one or more tracks into the playlist, considering a set of
@@ -104,11 +104,11 @@ public Q_SLOTS:
      * @param options the set of options to be applied to the operation.
      * @see enum AddOptions.
      */
-    void insertOptioned( Meta::TrackList list, AddOptions options = 0 );
-    void insertOptioned( Playlists::PlaylistPtr playlist, AddOptions options = 0 );
-    void insertOptioned( Playlists::PlaylistList list, AddOptions options = 0 );
-    void insertOptioned( const QUrl &url, AddOptions options = 0 );
-    void insertOptioned( QList<QUrl> &urls, AddOptions options = 0 );
+    void insertOptioned( Meta::TrackList list, AddOptions options = {} );
+    void insertOptioned( Playlists::PlaylistPtr playlist, AddOptions options = {} );
+    void insertOptioned( Playlists::PlaylistList list, AddOptions options = {} );
+    void insertOptioned( const QUrl &url, AddOptions options = {} );
+    void insertOptioned( QList<QUrl> &urls, AddOptions options = {} );
 
     /**
      * Handles the insertion of one or more tracks into the playlist on a specific row.

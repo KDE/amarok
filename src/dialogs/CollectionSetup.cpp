@@ -39,6 +39,8 @@
 #include <QLabel>
 #include <QMenu>
 
+#include <algorithm>
+
 CollectionSetup* CollectionSetup::s_instance;
 
 
