@@ -133,8 +133,10 @@ MusicDNSAudioDecoder::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
     Q_UNUSED(thread);
     DecodedAudioData data;
 
+#if LIBAVCODEC_VERSION_MAJOR < 59
     avcodec_register_all();
     av_register_all();
+#endif
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -173,7 +175,130 @@ MusicDNSAudioDecoder::defaultEnd(const ThreadWeaver::JobPointer& self, ThreadWea
 // Function below has separate implementation for each ffmpeg API version
 int
 MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, const int length )
-#if LIBAVCODEC_VERSION_MAJOR >= 54  // ffmpeg 0.11
+#if LIBAVCODEC_VERSION_MAJOR >= 59 // ffmpeg 5.0
+{
+    AVFormatContext *pFormatCtx = NULL;
+    AVCodecContext *pCodecCtx = NULL;
+    const AVCodec *pCodec = NULL;
+    AVFrame *decodedFrame = NULL;
+    AVPacket *packet = NULL, *avpkt = NULL;
+    AVCodecParameters *codecpar = NULL;
+    AVRational streamTimeBase = { 1, 1000000 };
+    AVRational localTimeBase = { 1, 1000 };
+
+    int audioStream = 0;
+    int decoderRet = 0;
+    int planeSize = 0;
+
+    bool isOk = true;
+    av_log_set_level(AV_LOG_VERBOSE);
+
+    if( avformat_open_input( &pFormatCtx, fileName.toLocal8Bit(), NULL, NULL ) < 0 )
+    {
+        warning() << QLatin1String( "Unable to open input file: " ) + fileName;
+        return 0;
+    }
+
+    if( avformat_find_stream_info( pFormatCtx, NULL ) < 0 )
+    {
+        warning() << QLatin1String( "Unable to find stream info: " ) + fileName;
+        avformat_close_input( &pFormatCtx );
+        return 0;
+    }
+
+    audioStream = av_find_best_stream(pFormatCtx, AVMEDIA_TYPE_AUDIO, -1, -1, &pCodec, 0);
+    if( audioStream < 0 )
+    {
+        warning() << QLatin1String( "Unable to find stream: " ) + fileName;
+        avformat_close_input( &pFormatCtx );
+        return 0;
+    }
+
+    if( !pCodec )
+    {
+        warning() << QLatin1String( "Unable to find decoder: " ) + fileName;
+        avformat_close_input( &pFormatCtx );
+        return 0;
+    }
+
+    pCodecCtx = avcodec_alloc_context3(pCodec);
+
+    if( avcodec_open2( pCodecCtx, pCodec, NULL ) < 0 )
+    {
+        warning() << QLatin1String( "Unable to open codec " ) + fileName;
+        avformat_close_input( &pFormatCtx );
+        return 0;
+    }
+
+    streamTimeBase = pFormatCtx->streams[audioStream]->time_base;
+    codecpar = pFormatCtx->streams[audioStream]->codecpar;
+
+    data->setSampleRate( codecpar->sample_rate );
+    data->setChannels( ( codecpar->channels > 1 )? 1 : 0 );
+
+    avpkt = av_packet_alloc();
+    packet = av_packet_alloc();
+    while( !av_read_frame( pFormatCtx, packet ) && isOk )
+    {
+        if( packet->stream_index == audioStream )
+        {
+            avpkt->size = packet->size;
+            avpkt->data = packet->data;
+            if( !decodedFrame )
+            {
+                decodedFrame = av_frame_alloc();
+                if( !decodedFrame )
+                {
+                    warning() << "Unable to allocate enough memory to decode file.";
+                    isOk = false;
+                    break;
+                }
+                else
+                av_frame_unref( decodedFrame );
+            }
+
+            decoderRet = avcodec_send_packet( pCodecCtx, avpkt );
+            if( decoderRet < 0 )
+            {
+                warning() << "Error while sending avcodec packet.";
+                isOk = false;
+                break;
+            }
+            do {
+                decoderRet = avcodec_receive_frame( pCodecCtx, decodedFrame );
+                if( decoderRet == AVERROR(AVERROR_EOF) || decoderRet == AVERROR(EAGAIN) )
+                {
+                    break;
+                }
+                else if( decoderRet < 0 )
+                {
+                    warning() << "Error while decoding.";
+                    isOk = false;
+                    break;
+                }
+                av_samples_get_buffer_size( &planeSize, pCodecCtx->channels, decodedFrame->nb_samples, pCodecCtx->sample_fmt, 1);
+                for( int i = 0; i < qMin( pCodecCtx->channels, 2 ); i++ )
+                    data->appendData( const_cast<const quint8 *>( decodedFrame->extended_data[i] ), planeSize );
+            } while( decoderRet == 0 );
+
+            data->addTime( av_rescale_q( packet->duration, streamTimeBase, localTimeBase ) );
+        }
+
+        av_packet_unref( packet );
+
+        if( data->duration() >= length )
+            break;
+    }
+
+    av_packet_unref( avpkt );
+
+    avcodec_close( pCodecCtx );
+    avformat_close_input( &pFormatCtx );
+    av_free( decodedFrame );
+
+    return data->duration();
+}
+#elif LIBAVCODEC_VERSION_MAJOR >= 54  // ffmpeg 0.11
 {
     AVFormatContext *pFormatCtx = nullptr;
     AVCodecContext *pCodecCtx = nullptr;
