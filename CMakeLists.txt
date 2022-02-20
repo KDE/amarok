@@ -188,13 +188,8 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
     add_definitions(-Wall -Wextra)
 endif()
 
-# this needs to be here because also code in shared/ needs config.h. This is also the
-# reason why various checks are above why they belong under if( WITH_PLAYER )
-configure_file( shared/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config.h )
-
 add_subdirectory( data )
 add_subdirectory( images )
-add_subdirectory( shared )
 
 if( WITH_PLAYER )
     find_package(X11)
@@ -313,6 +308,12 @@ if( WITH_PLAYER )
     feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
 endif()
+
+# this needs to be here because also code in shared/ needs config.h. This is also the
+# reason why various checks are above why they belong under if( WITH_PLAYER )
+configure_file( shared/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config.h )
+
+add_subdirectory( shared )
 
 if( WITH_UTILITIES )
     add_subdirectory( utilities )
