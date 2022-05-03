@@ -36,6 +36,7 @@
   <name xml:lang="sr-ijekavian">Амарок</name>
   <name xml:lang="sr-ijekavianlatin">Amarok</name>
   <name xml:lang="sv">Amarok</name>
+  <name xml:lang="tr">Amarok</name>
   <name xml:lang="uk">Amarok</name>
   <name xml:lang="x-test">xxAmarokxx</name>
   <name xml:lang="zh-CN">Amarok</name>
@@ -62,6 +63,7 @@
   <summary xml:lang="pt-BR">Um reprodutor de músicas poderoso que permite a você redescobrir sua música</summary>
   <summary xml:lang="sl">Zmogljiv predvajalnik glasbe, ki vam omogoča ponovno odkrivanje glasbe</summary>
   <summary xml:lang="sv">En kraftfull musikspelare som låter dig upptäcka din musik igen</summary>
+  <summary xml:lang="tr">Müziği yeniden keşfetmenize olanak veren güçlü bir müzik çalar</summary>
   <summary xml:lang="uk">Потужна програма для відтворення музики, яка надасть вам змогу побачити вашу фонотеку з іншого боку</summary>
   <summary xml:lang="x-test">xxA powerful music player that lets you rediscover your musicxx</summary>
   <summary xml:lang="zh-CN">一款强大到让您重新感悟音乐之美的播放器</summary>
@@ -91,6 +93,7 @@
     <p xml:lang="pt-BR">Amarok é um reprodutor de músicas e gerenciador de coleção livre, multiplataforma, versátil, poderoso e rico em recursos.</p>
     <p xml:lang="sl">Amarok je prost program, dostopen na več platformah, vsestranski, močan in s funkcijami nabil predvajalnik glasbe in upravljalnik glasbene zbirke.</p>
     <p xml:lang="sv">Amarok är en fri, mångsidig, kraftfull och funktionsrik musikspelare och samlingshanterare för flera plattformar.</p>
+    <p xml:lang="tr">Amarok; ücretsiz, çapraz platformlu, çok amaçlı, güçlü ve çok özellikli bir müzik çalar ve koleksiyon yöneticisidir.</p>
     <p xml:lang="uk">Amarok — вільна, універсальна, різнобічна та потужна програма для відтворення звукових даних та керування фонотеками.</p>
     <p xml:lang="x-test">xxAmarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.xx</p>
     <p xml:lang="zh-CN">Amarok 是一个自由、跨平台、多用途、强大且多功能的音乐播放器及收藏集管理器。</p>
@@ -129,6 +132,7 @@
     <p xml:lang="sr-ijekavian">Могућности:</p>
     <p xml:lang="sr-ijekavianlatin">Mogućnosti:</p>
     <p xml:lang="sv">Funktioner:</p>
+    <p xml:lang="tr">Özellikler:</p>
     <p xml:lang="uk">Можливості:</p>
     <p xml:lang="x-test">xxFeatures:xx</p>
     <p xml:lang="zh-CN">功能：</p>
@@ -165,6 +169,7 @@
       <li xml:lang="sr-ijekavian">Динамичке листе нумера по различитим критеријумима.</li>
       <li xml:lang="sr-ijekavianlatin">Dinamičke liste numera po različitim kriterijumima.</li>
       <li xml:lang="sv">Dynamiska spellistor som motsvarar olika kriterier</li>
+      <li xml:lang="tr">Farklı kriterlerle eşleşen devingen çalma listeleri</li>
       <li xml:lang="uk">динамічні списки відтворення на основі різних критеріїв;</li>
       <li xml:lang="x-test">xxDynamic playlists matching different criteriaxx</li>
       <li xml:lang="zh-CN">可匹配不同条件的动态播放列表</li>
@@ -199,6 +204,7 @@
       <li xml:lang="sr-ijekavian">Управљање збирком и подршка за оцењивање.</li>
       <li xml:lang="sr-ijekavianlatin">Upravljanje zbirkom i podrška za ocenjivanje.</li>
       <li xml:lang="sv">Samlingshantering med betygsstöd</li>
+      <li xml:lang="tr">Derecelendirme desteği ile koleksiyon yönetimi</li>
       <li xml:lang="uk">керування збіркою з підтримкою оцінок;</li>
       <li xml:lang="x-test">xxCollection managing with rating supportxx</li>
       <li xml:lang="zh-CN">支持评分的收藏集管理器</li>
@@ -234,6 +240,7 @@
       <li xml:lang="sr-ijekavian">Подршка за основне МТП и УМС музичке плејере, и и‑под.</li>
       <li xml:lang="sr-ijekavianlatin">Podrška za osnovne MTP i UMS muzičke plejere, i iPod.</li>
       <li xml:lang="sv">Stöd för grundläggande iPod-, MTP- och UMS-musikspelare</li>
+      <li xml:lang="tr">Temel iPod, MTP ve UMS müzik çalar aygıtlar desteği</li>
       <li xml:lang="uk">підтримка базової роботи з пристроями відтворення, що працюють за протоколами iPod, MTP та UMS;</li>
       <li xml:lang="x-test">xxSupport for basic iPod, MTP and UMS music player devicesxx</li>
       <li xml:lang="zh-CN">支持基础款 iPod、MTP、UMP 的音乐播放器</li>
@@ -268,6 +275,7 @@
       <li xml:lang="sr-ijekavian">Уклопљени интернет сервиси: ЛастФМ, Магнатјун, Џамендо, Ампач, МП3‑тјунс, и други.</li>
       <li xml:lang="sr-ijekavianlatin">Uklopljeni internet servisi: last.fm, Magnatune, Jamendo, Ampache, MP3Tunes, i drugi.</li>
       <li xml:lang="sv">Integrerade Internet-tjänster: last.fm, Magnatune, Jamendo, Ampache, mp3tunes med flera.</li>
+      <li xml:lang="tr">Tümleştirilmiş İnternet hizmetleri: last.fm, Magnatune, Jamendo, Ampache, mp3tunes ve daha fazlası.</li>
       <li xml:lang="uk">інтеграція з інтернет-службами: last.fm, Magnatune, Jamendo, Ampache, mp3tunes тощо;</li>
       <li xml:lang="x-test">xxIntegrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.xx</li>
       <li xml:lang="zh-CN">集成互联网服务：last.fm、Magnatune、Jamendo、Ampache 和 mp3tunes 等。</li>
@@ -303,6 +311,7 @@
       <li xml:lang="sr-ijekavian">Подршка за скриптовање.</li>
       <li xml:lang="sr-ijekavianlatin">Podrška za skriptovanje.</li>
       <li xml:lang="sv">Stöd för skript</li>
+      <li xml:lang="tr">Betik yazımı desteği</li>
       <li xml:lang="uk">підтримка роботи зі скриптами;</li>
       <li xml:lang="x-test">xxScripting supportxx</li>
       <li xml:lang="zh-CN">支持脚本</li>
@@ -339,6 +348,7 @@
       <li xml:lang="sr-ijekavian">Менаџер омота.</li>
       <li xml:lang="sr-ijekavianlatin">Menadžer omota.</li>
       <li xml:lang="sv">Omslagshanterare</li>
+      <li xml:lang="tr">Kapak görseli yöneticisi</li>
       <li xml:lang="uk">засіб керування збіркою зображень обкладинок;</li>
       <li xml:lang="x-test">xxCover managerxx</li>
       <li xml:lang="zh-CN">专辑封面管理器</li>
@@ -373,6 +383,7 @@
       <li xml:lang="sr-ijekavian">Подршка за поновљиво појачање.</li>
       <li xml:lang="sr-ijekavianlatin">Podrška za ponovljivo pojačanje.</li>
       <li xml:lang="sv">Stöd för uppspelningsnivå</li>
+      <li xml:lang="tr">Yeniden çalma kazanım desteği</li>
       <li xml:lang="uk">підтримка вирівнювання гучності.</li>
       <li xml:lang="x-test">xxReplay gain supportxx</li>
       <li xml:lang="zh-CN">支持回放增益</li>
@@ -407,6 +418,7 @@
       <caption xml:lang="pt-BR">Reproduzindo músicas no Amarok</caption>
       <caption xml:lang="sl">Predvajanje glasbe v Amaroku</caption>
       <caption xml:lang="sv">Spela musik i Amarok</caption>
+      <caption xml:lang="tr">Amarok'ta müzik çalma</caption>
       <caption xml:lang="uk">Відтворення музики в Amarok</caption>
       <caption xml:lang="x-test">xxPlaying music in Amarokxx</caption>
       <caption xml:lang="zh-CN">Amarok 正在播放音乐</caption>
@@ -439,6 +451,7 @@
       <caption xml:lang="pt-BR">Janela do Amarok</caption>
       <caption xml:lang="sl">Amarokova okna</caption>
       <caption xml:lang="sv">Fönster i Amarok</caption>
+      <caption xml:lang="tr">Amarok pencereleri</caption>
       <caption xml:lang="uk">Вікна Amarok</caption>
       <caption xml:lang="x-test">xxAmarok windowsxx</caption>
       <caption xml:lang="zh-CN">Amarok 的窗口界面</caption>
