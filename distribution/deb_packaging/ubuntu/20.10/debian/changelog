@@ -1,3 +1,10 @@
+amarok (2:2.9.71+1SNAPSHOT20220507163311+0200-0ubuntu1ppa1~ubuntu20.10.1) groovy; urgency=medium
+
+  * Add support for 21.10 impish
+  * Add support for 22.04 jammy
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Sat, 07 May 2022 16:33:11 +0200
+
 amarok (2:2.9.71+1SNAPSHOT20210626150430+0200-0ubuntu1ppa1~ubuntu20.10.1) groovy; urgency=medium
 
   * Fix stall when file not at playlist

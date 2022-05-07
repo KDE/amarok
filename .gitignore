@@ -1,7 +1,6 @@
 .*
 *~
 /build*/
-debian/
 release-build
 Doxyfile
 *.patch
