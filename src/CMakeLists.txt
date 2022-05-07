@@ -952,6 +952,9 @@ install(FILES dbus/org.kde.amarok.App.xml
               dbus/org.kde.amarok.Collection.xml
               dbus/mpris2/org.kde.amarok.Mpris2Extensions.Player.xml
               DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR})
+configure_file(dbus/org.kde.amarok.service.in ${CMAKE_CURRENT_BINARY_DIR}/dbus/org.kde.amarok.service @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dbus/org.kde.amarok.service
+              DESTINATION ${KDE_INSTALL_DBUSSERVICEDIR})
 
 install(FILES services/InfoParserLoading.html
               browsers/hover_info_template.html
