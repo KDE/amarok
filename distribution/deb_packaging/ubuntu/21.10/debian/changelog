@@ -1,102 +1,102 @@
-amarok (2:2.9.71+1SNAPSHOT20220507163311+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.71+1SNAPSHOT20220507163311+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Add support for 21.10 impish
   * Add support for 22.04 jammy
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Sat, 07 May 2022 16:33:11 +0200
 
-amarok (2:2.9.71+1SNAPSHOT20210626150430+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.71+1SNAPSHOT20210626150430+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Fix stall when file not at playlist
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Sat, 26 Jun 2021 15:04:30 +0200
 
-amarok (2:2.9.71+1SNAPSHOT20210610223622+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.71+1SNAPSHOT20210610223622+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
-  * Support Ubuntu 21.04 hirsute
+  * Support Ubuntu 21.04 impish
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Thu, 10 Jun 2021 22:36:22 +0200
 
-amarok (2:2.9.71-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.71-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Release v2.9.71 (3.0 alpha1)
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Thu, 04 Feb 2021 23:16:38 +0100
 
-amarok (2:2.9.70+1SNAPSHOT20201206130525+0100-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.70+1SNAPSHOT20201206130525+0100-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Add support for 20.10
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Sun, 06 Dec 2020 13:05:25 +0100
 
-amarok (2:2.9.70+1SNAPSHOT20200917124900+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.70+1SNAPSHOT20200917124900+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Fix QIODevice::OpenMode values that are not present at QT 5.8 
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Thu, 17 Sep 2020 12:49:00 +0200
 
-amarok (2:2.9.70+1SNAPSHOT20200916214648+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.70+1SNAPSHOT20200916214648+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Fix compilation error when optional qttools5-dev is not present
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Wed, 16 Sep 2020 21:46:48 +0200
 
-amarok (2:2.9.70+1SNAPSHOT20200916171021+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.70+1SNAPSHOT20200916171021+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Fix compilation error when optional qttools5-dev is not present
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Wed, 16 Sep 2020 17:10:21 +0200
 
-amarok (2:2.9.70+1SNAPSHOT20200915122323+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.70+1SNAPSHOT20200915122323+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Port scripting engine from QTScript to QJSEngine
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 15 Sep 2020 12:23:23 +0200
 
-amarok (2:2.9.70+1SNAPSHOT20200703102146+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.70+1SNAPSHOT20200703102146+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Remove dependency to metapackage qtdeclarative-abi that prevents installation to Neon
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 03 Jul 2020 10:21:46 +0200
 
-amarok (2:2.9.70+1SNAPSHOT20200701124447+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.70+1SNAPSHOT20200701124447+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Replace usage of QJSEngine:importModule to compile with QT5.8
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Wed, 01 Jul 2020 12:44:47 +0200
 
-amarok (2:2.9.70+1SNAPSHOT20200630174341+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2:2.9.70+1SNAPSHOT20200630174341+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Change numbering to old Ubuntu scheme
   * Fix compilation error for scripting code compatible with QT 5.8
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 30 Jun 2020 17:43:41 +0200
 
-amarok (2.9.70+1SNAPSHOT20200626194036+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2.9.70+1SNAPSHOT20200626194036+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Second release of script engine porting to QJSEngine
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 26 Jun 2020 19:40:36 +0200
 
-amarok (2.9.70+1SNAPSHOT20200623170346+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2.9.70+1SNAPSHOT20200623170346+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * First release of script engine porting to QJSEngine
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 23 Jun 2020 17:03:46 +0200
 
-amarok (2.9.70+1SNAPSHOT20200616130454+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2.9.70+1SNAPSHOT20200616130454+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Fix crash in breadcrumb when deleting the child menu of a category
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Tue, 16 Jun 2020 13:04:54 +0200
 
-amarok (2.9.70+1SNAPSHOT20200612103823+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2.9.70+1SNAPSHOT20200612103823+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Fix crash when closing Edit Filter dialog
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 12 Jun 2020 10:38:23 +0200
 
-amarok (2.9.70+1SNAPSHOT20200504192042+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2.9.70+1SNAPSHOT20200504192042+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Fix error message at PlaylistDock
   * add Dockerfile for Neon 18.04 and Ubuntu 20.04
@@ -105,19 +105,19 @@ amarok (2.9.70+1SNAPSHOT20200504192042+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; 
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Sat, 25 Apr 2020 22:38:26 +0200
 
-amarok (2.9.70+1SNAPSHOT20200424193358+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2.9.70+1SNAPSHOT20200424193358+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Fix breadcrumb
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 24 Apr 2020 19:34:09 +0200
 
-amarok (2.9.70+1SNAPSHOT20200410173239+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2.9.70+1SNAPSHOT20200410173239+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * add missing libkf5doctools-dev to control file
 
  -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Fri, 10 Apr 2020 17:32:23 +0200
 
-amarok (2.9.70+1SNAPSHOT20200407170839+0200-0ubuntu1ppa1~ubuntu18.04.1) bionic; urgency=medium
+amarok (2.9.70+1SNAPSHOT20200407170839+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Initial release 
 
