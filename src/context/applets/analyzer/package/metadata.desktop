@@ -2,7 +2,7 @@
 Name=Analyzer
 Name[bs]=Analizator
 Name[ca]=Analitzador
-Name[ca@valencia]=Analitzador
+Name[ca@valencia]=Analisador
 Name[cs]=Analyzátor
 Name[da]=Analysator
 Name[de]=Analysator
@@ -45,7 +45,7 @@ ServiceTypes=Amarok/ContextApplet
 Icon=view-media-analyzer-amarok
 Comment=Analyzer applet for Amarok
 Comment[ca]=Miniaplicació analitzadora per a l'Amarok
-Comment[ca@valencia]=Miniaplicació analitzadora per a Amarok
+Comment[ca@valencia]=Miniaplicació analisadora per a Amarok
 Comment[cs]=Applet analyzeru pro AmaroK
 Comment[da]=Analyzer-applet til Amarok
 Comment[de]=Analysator-Modul für Amarok
