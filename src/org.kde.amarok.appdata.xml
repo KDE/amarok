@@ -70,7 +70,7 @@
   <description>
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
-    <p xml:lang="ca-valencia">Amarok és un reproductor de música i gestor de coleccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
+    <p xml:lang="ca-valencia">Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
     <p xml:lang="cs">Amarok je svobodný, multiplatformní, univerzální, mocný přehrávač hudby a správce sbírek se spoustou funkcí.</p>
     <p xml:lang="da">Amarok er en fri, multiplatforms, alsidig, kraftfuld og funktionsrig musikafspiller og samlingshåndtering.</p>
     <p xml:lang="de">Amarok ist eine freie, plattformübergreifende und vielfältige Anwendung zur Musikwiedergabe und Verwaltung Ihrer Musiksammlung mit vielen Funktionen.</p>
@@ -177,7 +177,7 @@
       <li xml:lang="ar">إدارة التّجميعات مع دعم التّقييم</li>
       <li xml:lang="bs">Kolekcija upravljanja sa podrškom procjene</li>
       <li xml:lang="ca">Gestió de les col·leccions permetent qualificacions</li>
-      <li xml:lang="ca-valencia">Gestió de les coleccions permetent qualificacions</li>
+      <li xml:lang="ca-valencia">Gestió de les col·leccions permetent qualificacions</li>
       <li xml:lang="cs">Správa sbírek s podporou hodnocení</li>
       <li xml:lang="da">Samlingshåndtering med understøttelse af vurderinger</li>
       <li xml:lang="de">Verwaltung von Sammlungen wit Unterstützung durch Bewertungen</li>
