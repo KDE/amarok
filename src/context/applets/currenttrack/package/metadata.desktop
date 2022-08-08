@@ -85,7 +85,7 @@ Comment[sv]=Miniprogram med aktuellt spår för Amarok
 Comment[tr]=Amarok için şimdi çalan parça uygulamacığı
 Comment[uk]=Аплет поточної композиції для Amarok
 Comment[x-test]=xxCurrent track applet for Amarokxx
-Comment[zh_CN]=Amarok 的当前曲目部件
+Comment[zh_CN]=Amarok 的当前曲目小程序
 Comment[zh_TW]=Amarok 的目前曲目小程式
 
 X-KDE-PluginInfo-Name=org.kde.amarok.currenttrack
