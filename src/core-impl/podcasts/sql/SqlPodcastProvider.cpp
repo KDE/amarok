@@ -511,8 +511,8 @@ SqlPodcastProvider::subscribe( const QUrl &url )
     PodcastReader *podcastReader = new PodcastReader( this );
     connect( podcastReader, &PodcastReader::finished,
              this, &SqlPodcastProvider::slotReadResult );
-    connect( podcastReader, &PodcastReader::statusBarSorryMessage,
-             this, &SqlPodcastProvider::slotStatusBarSorryMessage );
+    connect( podcastReader, &PodcastReader::statusBarErrorMessage,
+             this, &SqlPodcastProvider::slotStatusBarErrorMessage );
     connect( podcastReader, &PodcastReader::statusBarNewProgressOperation,
              this, &SqlPodcastProvider::slotStatusBarNewProgressOperation );
 
@@ -1036,8 +1036,8 @@ SqlPodcastProvider::updateSqlChannel( Podcasts::SqlPodcastChannelPtr channel )
 
     connect( podcastReader, &PodcastReader::finished,
              this, &SqlPodcastProvider::slotReadResult );
-    connect( podcastReader, &PodcastReader::statusBarSorryMessage,
-             this, &SqlPodcastProvider::slotStatusBarSorryMessage );
+    connect( podcastReader, &PodcastReader::statusBarErrorMessage,
+             this, &SqlPodcastProvider::slotStatusBarErrorMessage );
     connect( podcastReader, &PodcastReader::statusBarNewProgressOperation,
              this, &SqlPodcastProvider::slotStatusBarNewProgressOperation );
     
@@ -1310,7 +1310,7 @@ SqlPodcastProvider::deleteDownloadedEpisode( const Podcasts::PodcastEpisodePtr &
 }
 
 void
-SqlPodcastProvider::slotStatusBarSorryMessage( const QString &message )
+SqlPodcastProvider::slotStatusBarErrorMessage( const QString &message )
 {
     Amarok::Logger::longMessage( message, Amarok::Logger::Error );
 }

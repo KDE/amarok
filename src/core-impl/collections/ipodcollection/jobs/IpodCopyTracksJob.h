@@ -65,7 +65,7 @@ class IpodCopyTracksJob : public QObject, public ThreadWeaver::Job
         void startCopyOrTranscodeJob( const QUrl &src, const QUrl &dest, bool isJustCopy );
 
         // a hack to display KMessageBox in a gui thread:
-        void displaySorryDialog();
+        void displayErrorDialog();
 
         // signals for progress operation:
         void incrementProgress();
@@ -100,8 +100,8 @@ class IpodCopyTracksJob : public QObject, public ThreadWeaver::Job
                                           bool isJustCopy );
         void slotCopyOrTranscodeJobFinished( KJob *job );
 
-        /// @see displaySorryDialog()
-        void slotDisplaySorryDialog();
+        /// @see displayErrorDialog()
+        void slotDisplayErrorDialog();
 
     private:
         void trackProcessed( CopiedStatus status, const Meta::TrackPtr &srcTrack, const Meta::TrackPtr &destTrack = Meta::TrackPtr() );

@@ -57,11 +57,6 @@ AmarokScript::AmarokScript::alert( const QString& text, const QString& type ) co
         KMessageBox::error( nullptr, text );
         return -1;
     }
-    else if( type == QLatin1String("sorry") )
-    {
-        KMessageBox::sorry( nullptr, text );
-        return -1;
-    }
     else if( type == QLatin1String("information") )
     {
         KMessageBox::information( nullptr, text );

@@ -90,7 +90,7 @@ IpodCollection::IpodCollection( const QString &uuid )
     , m_consolidateAction( 0 )
 {
     DEBUG_BLOCK
-    // following constructor displays sorry message if it cannot mount iPhone:
+    // following constructor displays error message if it cannot mount iPhone:
     m_iphoneAutoMountpoint = new IphoneMountPoint( uuid );
     m_mountPoint = m_iphoneAutoMountpoint->mountPoint();
     if( m_uuid.isEmpty() )
@@ -100,7 +100,7 @@ IpodCollection::IpodCollection( const QString &uuid )
 bool IpodCollection::init()
 {
     if( m_mountPoint.isEmpty() )
-        return false;  // we have already displayed sorry message
+        return false;  // we have already displayed error message
 
     m_updateTimer.setSingleShot( true );
     connect( this, &IpodCollection::startUpdateTimer, this, &IpodCollection::slotStartUpdateTimer );

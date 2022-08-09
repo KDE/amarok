@@ -161,17 +161,17 @@ Playlist::PlaylistLayoutEditDialog::newLayout()      //SLOT
 	return;
     if( layoutName.isEmpty() )
     {
-        KMessageBox::sorry( this, i18n( "Cannot create a layout with no name." ), i18n( "Layout name error" ) );
+        KMessageBox::error( this, i18n( "Cannot create a layout with no name." ), i18n( "Layout name error" ) );
         return;
     }
     if( m_layoutsMap->keys().contains( layoutName ) )
     {
-        KMessageBox::sorry( this, i18n( "Cannot create a layout with the same name as an existing layout." ), i18n( "Layout name error" ) );
+        KMessageBox::error( this, i18n( "Cannot create a layout with the same name as an existing layout." ), i18n( "Layout name error" ) );
         return;
     }
     if( layoutName.contains( QLatin1Char('/') ) )
     {
-        KMessageBox::sorry( this, i18n( "Cannot create a layout containing '/'." ), i18n( "Layout name error" ) );
+        KMessageBox::error( this, i18n( "Cannot create a layout containing '/'." ), i18n( "Layout name error" ) );
         return;
     }
 
@@ -212,12 +212,12 @@ Playlist::PlaylistLayoutEditDialog::copyLayout()
         return;
     if( layoutName.isEmpty() )
     {
-        KMessageBox::sorry( this, i18n( "Cannot create a layout with no name." ), i18n( "Layout name error" ) );
+        KMessageBox::error( this, i18n( "Cannot create a layout with no name." ), i18n( "Layout name error" ) );
         return;
     }
     if( m_layoutsMap->keys().contains( layoutName ) )
     {
-        KMessageBox::sorry( this, i18n( "Cannot create a layout with the same name as an existing layout." ), i18n( "Layout name error" ) );
+        KMessageBox::error( this, i18n( "Cannot create a layout with the same name as an existing layout." ), i18n( "Layout name error" ) );
         return;
     }
     //layoutListWidget->addItem( layoutName );
@@ -272,9 +272,9 @@ Playlist::PlaylistLayoutEditDialog::renameLayout()
             return;
         }
         if( layoutName.isEmpty() )
-            KMessageBox::sorry( this, i18n( "Cannot rename a layout to have no name." ), i18n( "Layout name error" ) );
+            KMessageBox::error( this, i18n( "Cannot rename a layout to have no name." ), i18n( "Layout name error" ) );
         if( m_layoutsMap->keys().contains( layoutName ) )
-            KMessageBox::sorry( this, i18n( "Cannot rename a layout to have the same name as an existing layout." ), i18n( "Layout name error" ) );
+            KMessageBox::error( this, i18n( "Cannot rename a layout to have the same name as an existing layout." ), i18n( "Layout name error" ) );
     }
     m_layoutsMap->remove( layoutListWidget->currentItem()->text() );
     if( LayoutManager::instance()->layouts().contains( layoutListWidget->currentItem()->text() ) )  //if the layout is already saved in the LayoutManager
@@ -405,7 +405,7 @@ Playlist::PlaylistLayoutEditDialog::apply()  //SLOT
 
                 const QString msg = i18n( "The layout '%1' you modified is one of the default layouts and cannot be overwritten. "
                                           "Saved as new layout '%2'", layoutName, newLayoutName );
-                KMessageBox::sorry( this, msg, i18n( "Default Layout" ) );
+                KMessageBox::error( this, msg, i18n( "Default Layout" ) );
 
 
                 layout.setDirty( false );

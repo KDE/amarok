@@ -414,7 +414,7 @@ void LayoutManager::deleteLayout( const QString &layout )
             setActiveLayout( QStringLiteral("Default") );
     }
     else
-        KMessageBox::sorry( nullptr, i18n( "The layout '%1' is one of the default layouts and cannot be deleted.", layout ), i18n( "Cannot Delete Default Layouts" ) );
+        KMessageBox::error( nullptr, i18n( "The layout '%1' is one of the default layouts and cannot be deleted.", layout ), i18n( "Cannot Delete Default Layouts" ) );
 }
 
 bool LayoutManager::isDeleteable( const QString &layout ) const

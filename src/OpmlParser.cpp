@@ -127,7 +127,7 @@ OpmlParser::downloadResult( KJob *job )
             i18n( "Reading OPML podcast from %1 failed with error:\n", m_url.url() );
         errorMessage = errorMessage.append( job->errorString() );
 
-//        Q_EMIT statusBarSorryMessage( errorMessage );
+//        Q_EMIT statusBarErrorMessage( errorMessage );
     }
 
     m_transferJob = 0;

@@ -63,7 +63,7 @@ class AMAROKCORE_EXPORT PodcastReader : public QObject
 
     Q_SIGNALS:
         void finished( PodcastReader *podcastReader );
-        void statusBarSorryMessage( const QString &message );
+        void statusBarErrorMessage( const QString &message );
         void statusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* );
 
     public Q_SLOTS:

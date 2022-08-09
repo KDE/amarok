@@ -280,7 +280,7 @@ SqlUserPlaylistProvider::checkTables()
             case 3: // current version
                break;
             default:
-                KMessageBox::sorry(
+                KMessageBox::error(
                     0, // QWidget *parent
                     i18n( "Version %1 of playlist database schema encountered, however this "
                         "Amarok version only supports version %2 (and previous versions "

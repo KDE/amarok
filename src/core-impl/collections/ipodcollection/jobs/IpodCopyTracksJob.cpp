@@ -50,7 +50,7 @@ IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,QUrl> &sources,
              this, &IpodCopyTracksJob::slotStartDuplicateTrackSearch );
     connect( this, &IpodCopyTracksJob::startCopyOrTranscodeJob,
              this, &IpodCopyTracksJob::slotStartCopyOrTranscodeJob );
-    connect( this, &IpodCopyTracksJob::displaySorryDialog, this, &IpodCopyTracksJob::slotDisplaySorryDialog );
+    connect( this, &IpodCopyTracksJob::displayErrorDialog, this, &IpodCopyTracksJob::slotDisplayErrorDialog );
 }
 
 void
@@ -248,7 +248,7 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
     else
     {
         // something more severe failed, notify user using a dialog
-        Q_EMIT displaySorryDialog();
+        Q_EMIT displayErrorDialog();
     }
 }
 
@@ -355,7 +355,7 @@ IpodCopyTracksJob::slotCopyOrTranscodeJobFinished( KJob *job )
 }
 
 void
-IpodCopyTracksJob::slotDisplaySorryDialog()
+IpodCopyTracksJob::slotDisplayErrorDialog()
 {
     int sourceSize = m_sources.size();
     int successCount = m_sourceTrackStatus.count( Success );
@@ -420,7 +420,7 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
         details += i18nc( "%1 is a list of errors that occurred during copying of tracks",
                           "Error causes: %1<br>", QStringList( m_copyErrors.values() ).join( "<br>" ) );
     }
-    KMessageBox::detailedSorry( nullptr, text, details, caption );
+    KMessageBox::detailedError( nullptr, text, details, caption );
 }
 
 void

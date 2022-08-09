@@ -512,7 +512,7 @@ PodcastReader::downloadResult( KJob * job )
         }
         errorMessage = errorMessage.append( job->errorString() );
 
-        Q_EMIT statusBarSorryMessage( errorMessage );
+        Q_EMIT statusBarErrorMessage( errorMessage );
     }
     else if( job->error() )
     {
@@ -526,7 +526,7 @@ PodcastReader::downloadResult( KJob * job )
         }
         errorMessage = errorMessage.append( job->errorString() );
 
-        Q_EMIT statusBarSorryMessage( errorMessage );
+        Q_EMIT statusBarErrorMessage( errorMessage );
     }
 
     m_transferJob = nullptr;
