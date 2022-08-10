@@ -32,4 +32,4 @@ Dependencies:
     'frameworks/solid': '@stable'
     'frameworks/threadweaver': '@stable'
     'kdesupport/qca' : '@latest'
-    'kdesupport/phonon': '@latest'
+    'libraries/phonon': '@stable'
