@@ -51,4 +51,4 @@ target_link_libraries( amarokshared
 )
 
 set_target_properties( amarokshared PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-install( TARGETS amarokshared ${INSTALL_TARGETS_DEFAULT_ARGS} )
+install( TARGETS amarokshared ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )

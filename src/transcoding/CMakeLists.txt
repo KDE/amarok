@@ -37,5 +37,5 @@ if(APPLE)
 endif()
 
 set_target_properties(amarok-transcoding PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-install(TARGETS amarok-transcoding ${INSTALL_TARGETS_DEFAULT_ARGS} )
+install(TARGETS amarok-transcoding ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
 

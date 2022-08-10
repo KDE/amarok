@@ -28,7 +28,7 @@ target_link_libraries(ampache_account_login
     
     KF5::KIOCore
 )
-install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS ampache_account_login DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### next target ###############
 

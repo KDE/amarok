@@ -889,7 +889,7 @@ if(APPLE)
 endif()
 
 set_target_properties(amaroklib PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
+install(TARGETS amaroklib ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
 
 
 #####################################################################
@@ -922,7 +922,7 @@ target_link_libraries(amarok
     ${X11_LIBRARIES}
 )
 
-install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS amarok ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
