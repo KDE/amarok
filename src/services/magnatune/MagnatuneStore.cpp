@@ -86,15 +86,15 @@ KConfigGroup MagnatuneServiceFactory::config()
 
 MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *name )
         : ServiceBase( name, parent )
-        , m_downloadHandler( 0 )
-        , m_redownloadHandler( 0 )
-        , m_needUpdateWidget( 0 )
+        , m_downloadHandler( nullptr )
+        , m_redownloadHandler( nullptr )
+        , m_needUpdateWidget( nullptr )
         , m_downloadInProgress( 0 )
-        , m_currentAlbum( 0 )
+        , m_currentAlbum( nullptr )
         , m_streamType( MagnatuneMetaFactory::OGG )
         , m_magnatuneTimestamp( 0 )
-        , m_registry( 0 )
-        , m_signupInfoWidget( 0 )
+        , m_registry( nullptr )
+        , m_signupInfoWidget( nullptr )
 {
     DEBUG_BLOCK
     setObjectName(name);
@@ -171,7 +171,7 @@ void MagnatuneStore::download( )
                  this, &MagnatuneStore::downloadCompleted );
     }
 
-    if ( m_currentAlbum != 0 )
+    if ( m_currentAlbum != nullptr )
         m_downloadHandler->downloadAlbum( m_currentAlbum );
 }
 
@@ -288,7 +288,7 @@ void MagnatuneStore::initBottomPanel()
         connect( m_needUpdateWidget, &MagnatuneNeedUpdateWidget::wantUpdate,
                  this, &MagnatuneStore::updateButtonClicked );
 
-        m_downloadAlbumButton->setParent(0);
+        m_downloadAlbumButton->setParent(nullptr);
     }
 }
 
@@ -366,7 +366,7 @@ void MagnatuneStore::listDownloadCancelled( )
     DEBUG_BLOCK
 
     m_listDownloadJob->kill();
-    m_listDownloadJob = 0;
+    m_listDownloadJob = nullptr;
     debug() << "Aborted xml download";
 
     m_updateAction->setEnabled( true );
@@ -393,9 +393,9 @@ void MagnatuneStore::doneParsing()
 
     if ( m_needUpdateWidget )
     {
-        m_needUpdateWidget->setParent(0);
+        m_needUpdateWidget->setParent(nullptr);
         m_needUpdateWidget->deleteLater();
-        m_needUpdateWidget = 0;
+        m_needUpdateWidget = nullptr;
 
         m_downloadAlbumButton->setParent(m_bottomPanel);
     }
@@ -406,7 +406,7 @@ void MagnatuneStore::processRedownload( )
 {
     debug() << "Process redownload";
 
-    if ( m_redownloadHandler == 0 )
+    if ( m_redownloadHandler == nullptr )
     {
         m_redownloadHandler = new MagnatuneRedownloadHandler( this );
     }
@@ -417,7 +417,7 @@ void MagnatuneStore::processRedownload( )
 void MagnatuneStore::downloadCompleted( bool )
 {
     delete m_downloadHandler;
-    m_downloadHandler = 0;
+    m_downloadHandler = nullptr;
 
     m_downloadAlbumButton->setEnabled( true );
     m_downloadInProgress = false;
@@ -731,7 +731,7 @@ void
 MagnatuneStore::showSignupDialog()
 {
 
-    if ( m_signupInfoWidget== 0 )
+    if ( m_signupInfoWidget== nullptr )
     {
         m_signupInfoWidget = new QDialog;
         Ui::SignupDialog ui;

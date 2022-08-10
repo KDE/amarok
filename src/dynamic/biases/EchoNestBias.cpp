@@ -62,7 +62,7 @@ Dynamic::EchoNestBiasFactory::createBias()
 
 Dynamic::EchoNestBias::EchoNestBias()
     : SimpleMatchBias()
-    , m_artistSuggestedQuery( 0 )
+    , m_artistSuggestedQuery( nullptr )
     , m_match( PreviousTrack )
     , m_mutex( QMutex::Recursive )
 {

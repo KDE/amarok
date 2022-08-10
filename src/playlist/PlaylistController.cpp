@@ -347,7 +347,7 @@ Controller::removeRows( QList<int>& topModelRows )
     }
 
     if( bottomModelCmds.size() > 0 )
-        m_undoStack->push( new RemoveTracksCmd( 0, bottomModelCmds ) );
+        m_undoStack->push( new RemoveTracksCmd( nullptr, bottomModelCmds ) );
 
     Q_EMIT changed();
 }
@@ -506,7 +506,7 @@ Controller::reorderRows( const QList<int> &from, const QList<int> &to )
     }
 
     if( bottomModelCmds.size() > 0 )
-        m_undoStack->push( new MoveTracksCmd( 0, bottomModelCmds ) );
+        m_undoStack->push( new MoveTracksCmd( nullptr, bottomModelCmds ) );
 
     Q_EMIT changed();
 }
@@ -644,7 +644,7 @@ Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
         bottomModelCmds.append( InsertCmd( t, bottomModelRow++ ) );
 
     if( bottomModelCmds.size() > 0 )
-        m_undoStack->push( new InsertTracksCmd( 0, bottomModelCmds ) );
+        m_undoStack->push( new InsertTracksCmd( nullptr, bottomModelCmds ) );
 
     Q_EMIT changed();
 }

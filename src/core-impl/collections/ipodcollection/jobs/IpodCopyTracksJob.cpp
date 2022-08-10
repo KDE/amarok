@@ -117,13 +117,13 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
 
         /* determine destination filename; we cannot use ipodTrack because as it has no itdb
          * (and thus mountpoint) set */
-        GError *error = 0;
-        gchar *destFilename = itdb_cp_get_dest_filename( 0, mountPoint, fakeSrcName, &error );
+        GError *error = nullptr;
+        gchar *destFilename = itdb_cp_get_dest_filename( nullptr, mountPoint, fakeSrcName, &error );
         if( error )
         {
             warning() << "Cannot construct iPod track filename:" << error->message;
             g_error_free( error );
-            error = 0;
+            error = nullptr;
         }
         if( !destFilename )
         {
@@ -175,7 +175,7 @@ IpodCopyTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thre
         // tell the track it has been copied:
         bool accepted = ipodTrack->finalizeCopying( mountPoint, destFilename );
         g_free( destFilename );
-        destFilename = 0;
+        destFilename = nullptr;
         if( !accepted )
         {
             debug() << "ipodTrack->finalizeCopying( destFilename )  returned false!";
@@ -318,7 +318,7 @@ void
 IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const QUrl &sourceUrl, const QUrl &destUrl,
                                                 bool isJustCopy )
 {
-    KJob *job = 0;
+    KJob *job = nullptr;
     if( isJustCopy )
     {
         if( m_goingToRemoveSources && m_coll &&
@@ -340,7 +340,7 @@ IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const QUrl &sourceUrl, const QUr
         debug() << "Transcoding from" << sourceUrl << "to" << destUrl;
         job = new Transcoding::Job( sourceUrl, destUrl, m_transcodingConfig );
     }
-    job->setUiDelegate( 0 ); // be non-interactive
+    job->setUiDelegate( nullptr ); // be non-interactive
     connect( job, &Transcoding::Job::finished, // we must use this instead of result() to prevent deadlock
              this, &IpodCopyTracksJob::slotCopyOrTranscodeJobFinished );
     job->start();  // no-op for KIO job, but matters for transcoding job

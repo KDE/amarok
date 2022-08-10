@@ -238,10 +238,10 @@ MetaQueryWidget::MetaQueryWidget( QWidget* parent, bool onlyNumeric, bool noCond
     , m_onlyNumeric( onlyNumeric )
     , m_noCondition( noCondition )
     , m_settingFilter( false )
-    , m_andLabel(0)
-    , m_compareSelection(0)
-    , m_valueSelection1(0)
-    , m_valueSelection2(0)
+    , m_andLabel(nullptr)
+    , m_compareSelection(nullptr)
+    , m_valueSelection1(nullptr)
+    , m_valueSelection2(nullptr)
 {
     // note: we are using the strange layout structure because the KRatingWidget size depends on the height.
     m_layoutMain = new QVBoxLayout( this );
@@ -588,7 +588,7 @@ MetaQueryWidget::setValueSelection()
     else
     {
         delete m_andLabel;
-        m_andLabel = 0;
+        m_andLabel = nullptr;
     }
 
     if( m_valueSelection1 )
@@ -603,7 +603,7 @@ void
 MetaQueryWidget::makeCompareSelection()
 {
     delete m_compareSelection;
-    m_compareSelection = 0;
+    m_compareSelection = nullptr;
 
     qint64 field = m_filter.field();
 
@@ -653,16 +653,16 @@ void
 MetaQueryWidget::makeValueSelection()
 {
     delete m_valueSelection1;
-    m_valueSelection1 = 0;
+    m_valueSelection1 = nullptr;
     delete m_valueSelection2;
-    m_valueSelection2 = 0;
+    m_valueSelection2 = nullptr;
 
     qint64 field = m_filter.field();
     if( field == Meta::valUrl )
         makeFilenameSelection();
     else if( field == Meta::valTitle )
         // We,re not going to populate this. There tends to be too many titles.
-        makeGenericComboSelection( true, 0 );
+        makeGenericComboSelection( true, nullptr );
     else if( field == Meta::valArtist ||
         field == Meta::valAlbumArtist ||
         field == Meta::valAlbum ||
@@ -672,7 +672,7 @@ MetaQueryWidget::makeValueSelection()
     else if( field == Meta::valYear )
         makeGenericNumberSelection( field );
     else if( field == Meta::valComment )
-        makeGenericComboSelection( true, 0 );
+        makeGenericComboSelection( true, nullptr );
     else if( field == Meta::valTrackNr )
         makeGenericNumberSelection( field );
     else if( field == Meta::valDiscNr )
@@ -702,11 +702,11 @@ MetaQueryWidget::makeValueSelection()
     else if( field == Meta::valPlaycount )
         makeGenericNumberSelection( field );
     else if( field == Meta::valLabel )
-        makeGenericComboSelection( true, 0 );
+        makeGenericComboSelection( true, nullptr );
     else if( field == Meta::valModified )
         makeDateTimeSelection();
     else // e.g. the simple search
-        makeGenericComboSelection( true, 0 );
+        makeGenericComboSelection( true, nullptr );
 }
 
 void
@@ -715,7 +715,7 @@ MetaQueryWidget::makeGenericComboSelection( bool editable, Collections::QueryMak
     KComboBox* combo = new KComboBox( this );
     combo->setEditable( editable );
 
-    if( populateQuery != 0 )
+    if( populateQuery != nullptr )
     {
         m_runningQueries.insert(populateQuery, QPointer<KComboBox>(combo));
         connect( populateQuery, &Collections::QueryMaker::newResultReady,
@@ -759,7 +759,7 @@ MetaQueryWidget::populateComboBox( const QStringList &results )
 
     // note: adding items seems to reset the edit text, so we have
     //   to take care of that.
-    disconnect( combo.data(), 0, this, 0 );
+    disconnect( combo.data(), nullptr, this, nullptr );
 
     // want the results unique and sorted
     const QSet<QString> dataSet = results.toSet();
@@ -810,7 +810,7 @@ void
 MetaQueryWidget::makeFilenameSelection()
 {
     // Don't populate the combobox. Too many urls.
-    makeGenericComboSelection( true, 0 );
+    makeGenericComboSelection( true, nullptr );
 }
 
 

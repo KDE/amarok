@@ -95,7 +95,7 @@ PodcastReader::StaticData::StaticData()
 
         , docAction(
             docMap,
-            0,
+            nullptr,
             &PodcastReader::endDocument )
         , xmlAction(
             xmlMap,
@@ -106,7 +106,7 @@ PodcastReader::StaticData::StaticData()
         , noContentAction(
             noContentMap,
             &PodcastReader::beginNoElement,
-            0,
+            nullptr,
             &PodcastReader::readNoCharacters )
 
         , rdfAction(
@@ -238,12 +238,12 @@ PodcastReader::StaticData::StaticData()
         , atomFeedLinkAction(
             noContentMap,
             &PodcastReader::beginAtomFeedLink,
-            0,
+            nullptr,
             &PodcastReader::readNoCharacters )
         , atomEntryLinkAction(
             noContentMap,
             &PodcastReader::beginAtomEntryLink,
-            0,
+            nullptr,
             &PodcastReader::readNoCharacters )
         , atomIdAction(
             textMap,
@@ -1192,7 +1192,7 @@ PodcastReader::endItem()
     }
 
     m_current = m_channel.data();
-    m_item = 0;
+    m_item = nullptr;
 }
 
 void

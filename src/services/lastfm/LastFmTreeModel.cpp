@@ -391,7 +391,7 @@ Qt::ItemFlags
 LastFmTreeModel::flags( const QModelIndex &index ) const
 {
     if( !index.isValid() )
-        return 0;
+        return {};
 
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
     LastFmTreeItem *i = static_cast<LastFmTreeItem*>( index.internalPointer() );

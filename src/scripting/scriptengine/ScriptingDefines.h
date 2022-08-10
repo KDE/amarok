@@ -34,7 +34,7 @@ namespace AmarokScript
         if( wrapper )
             object = wrapper->data();
         else
-            object = 0;
+            object = nullptr;
     }
 
     template <class type, class WrapperType>

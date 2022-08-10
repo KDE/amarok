@@ -60,7 +60,7 @@ IndentPrivate::IndentPrivate(QObject* parent)
 IndentPrivate* IndentPrivate::instance()
 {
     QObject* qOApp = reinterpret_cast<QObject*>(qApp);
-    QObject* obj = qOApp ? qOApp->findChild<QObject*>( DEBUG_INDENT_OBJECTNAME ) : 0;
+    QObject* obj = qOApp ? qOApp->findChild<QObject*>( DEBUG_INDENT_OBJECTNAME ) : nullptr;
     return (obj ? static_cast<IndentPrivate*>( obj ) : new IndentPrivate( qApp ));
 }
 

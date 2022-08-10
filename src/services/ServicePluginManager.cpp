@@ -148,7 +148,7 @@ ServicePluginManager::serviceDescription( const QString & serviceName )
 
     ServiceBase * service = dynamic_cast<ServiceBase *>( ServiceBrowser::instance()->categories().value( serviceName ) );
 
-    if ( service == 0 )
+    if ( service == nullptr )
         return QString();
 
     return service->shortDescription();
@@ -165,7 +165,7 @@ ServicePluginManager::serviceMessages( const QString & serviceName )
 
     ServiceBase * service = dynamic_cast<ServiceBase *>( ServiceBrowser::instance()->categories().value( serviceName ) );
 
-    if ( service == 0 )
+    if ( service == nullptr )
         return QString();
 
     return service->messages();
@@ -182,7 +182,7 @@ ServicePluginManager::sendMessage( const QString & serviceName, const QString & 
 
     ServiceBase * service = dynamic_cast<ServiceBase *>( ServiceBrowser::instance()->categories().value( serviceName ) );
 
-    if ( service == 0 )
+    if ( service == nullptr )
         return QString();
 
     return service->sendMessage( message );

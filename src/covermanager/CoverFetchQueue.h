@@ -80,7 +80,7 @@ public:
     void addQuery( const QString &query,
                    const CoverFetch::Source src = CoverFetch::LastFm,
                    unsigned int page = 0,
-                   const Meta::AlbumPtr &album = Meta::AlbumPtr(0) );
+                   const Meta::AlbumPtr &album = Meta::AlbumPtr(nullptr) );
 
     void clear();
 

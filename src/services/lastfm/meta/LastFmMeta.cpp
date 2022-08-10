@@ -241,7 +241,7 @@ Track::inCollection() const
 Collections::Collection*
 Track::collection() const
 {
-    return 0;
+    return nullptr;
 }
 
 void
@@ -408,7 +408,7 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
         case Capabilities::Capability::StreamInfo:
             return new LastFmStreamInfoCapability( this );
         default:
-            return 0;
+            return nullptr;
     }
 }
 

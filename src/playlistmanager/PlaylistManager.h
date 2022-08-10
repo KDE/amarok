@@ -118,7 +118,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         *   @see defaultUserPlaylists
         */
         bool save( Meta::TrackList tracks, const QString &name = QString(),
-                   Playlists::PlaylistProvider *toProvider = 0, bool editName = true );
+                   Playlists::PlaylistProvider *toProvider = nullptr, bool editName = true );
 
         /**
          *  Saves a playlist from a file to the database.

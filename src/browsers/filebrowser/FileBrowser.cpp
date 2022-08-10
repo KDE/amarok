@@ -51,7 +51,7 @@ static const QString placesString( "places://" );
 static const QUrl placesUrl( placesString );
 
 FileBrowser::Private::Private( FileBrowser *parent )
-    : placesModel( 0 )
+    : placesModel( nullptr )
     , q( parent )
 {
     BoxWidget *topHBox = new BoxWidget( q );
@@ -627,7 +627,7 @@ DelayedActivator::slotRowsInserted( const QModelIndex &parent, int start )
     if( model )
     {
         // prevent duplicate calls, deleteLater() may fire REAL later
-        disconnect( model, 0, this, 0 );
+        disconnect( model, nullptr, this, nullptr );
         QModelIndex idx = model->index( start, 0, parent );
         m_view->selectionModel()->setCurrentIndex( idx, QItemSelectionModel::NoUpdate );
     }

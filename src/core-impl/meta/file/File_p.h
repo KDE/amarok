@@ -275,7 +275,7 @@ namespace MetaFile
                 case Capabilities::Capability::Actions:
                     return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
                 default:
-                    return 0;
+                    return nullptr;
             }
         }
 

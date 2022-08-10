@@ -118,7 +118,7 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider *provider, int categor
             newCategory = true;
 
     //disconnect all signals connected to this object to be sure.
-    provider->disconnect( this, 0 );
+    provider->disconnect( this, nullptr );
 
     m_providerMap.insert( category, provider );
     connect( provider, &Playlists::PlaylistProvider::updated,
@@ -304,7 +304,7 @@ PlaylistManager::playlistProvider(int category, QString name)
             return p;
     }
 
-    return 0;
+    return nullptr;
 }
 
 bool

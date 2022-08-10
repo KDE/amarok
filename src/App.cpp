@@ -398,7 +398,7 @@ void App::applySettings()
     else if( !AmarokConfig::showTrayIcon() && m_tray )
     {
         delete m_tray;
-        m_tray = 0;
+        m_tray = nullptr;
     }
 
     Amarok::OSD::instance()->applySettings();
@@ -423,7 +423,7 @@ void App::applySettingsFirstTime()
     else if( !AmarokConfig::showTrayIcon() && m_tray )
     {
         delete m_tray;
-        m_tray = 0;
+        m_tray = nullptr;
     }
 
     if( AmarokConfig::enableScriptConsole() && !m_scriptConsole )

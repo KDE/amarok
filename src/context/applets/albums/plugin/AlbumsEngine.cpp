@@ -179,7 +179,7 @@ void AlbumsEngine::resultReady( const Meta::AlbumList &albums )
             if( !items.isEmpty() )
             {
                 const TrackItem *item = items.first();
-                QStandardItem *discItem( 0 );
+                QStandardItem *discItem( nullptr );
                 if( numberOfDiscs > 1 )
                 {
                     discItem = new QStandardItem( i18n("Disc %1", item->track()->discNumber()) );

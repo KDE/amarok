@@ -58,7 +58,7 @@ MySqlServerStorage::init( const QString &host, const QString &user, const QStrin
         }
     }
 
-    m_db = mysql_init( NULL );
+    m_db = mysql_init( nullptr );
     if( !m_db )
     {
         reportError( "call to mysql_init" );
@@ -77,15 +77,15 @@ MySqlServerStorage::init( const QString &host, const QString &user, const QStrin
                 host.toUtf8(),
                 user.toUtf8(),
                 password.toUtf8(),
-                NULL,
+                nullptr,
                 port,
-                NULL,
+                nullptr,
                 CLIENT_COMPRESS )
         )
     {
         reportError( "call to mysql_real_connect" );
         mysql_close( m_db );
-        m_db = 0;
+        m_db = nullptr;
         return false;
     }
 
@@ -102,7 +102,7 @@ MySqlServerStorage::init( const QString &host, const QString &user, const QStrin
         // if sharedInit fails then we can usually not switch to the correct database
         // sharedInit already reports errors.
         mysql_close( m_db );
-        m_db = 0;
+        m_db = nullptr;
         return false;
     }
 

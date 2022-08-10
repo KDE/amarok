@@ -34,10 +34,10 @@
 
 PlaylistBrowserNS::BiasDialog::BiasDialog( const Dynamic::BiasPtr &bias, QWidget* parent )
     : QDialog( parent )
-    , m_mainLayout( 0 )
-    , m_biasLayout( 0 )
-    , m_descriptionLabel( 0 )
-    , m_biasWidget( 0 )
+    , m_mainLayout( nullptr )
+    , m_biasLayout( nullptr )
+    , m_descriptionLabel( nullptr )
+    , m_biasWidget( nullptr )
     , m_origBias( bias )
     , m_bias( bias->clone() ) // m_bias is a clone
 {

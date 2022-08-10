@@ -38,10 +38,10 @@ using namespace Collections;
 
 CollectionLocation::CollectionLocation()
     :QObject()
-    , m_destination( 0 )
-    , m_source( 0 )
+    , m_destination( nullptr )
+    , m_source( nullptr )
     , m_sourceTracks()
-    , m_parentCollection( 0 )
+    , m_parentCollection( nullptr )
     , m_removeSources( false )
     , m_isRemoveAction( false )
     , m_noRemoveConfirmation( false )
@@ -52,8 +52,8 @@ CollectionLocation::CollectionLocation()
 
 CollectionLocation::CollectionLocation( Collections::Collection *parentCollection)
     :QObject()
-    , m_destination( 0 )
-    , m_source( 0 )
+    , m_destination( nullptr )
+    , m_source( nullptr )
     , m_sourceTracks()
     , m_parentCollection( parentCollection )
     , m_removeSources( false )
@@ -301,7 +301,7 @@ Transcoding::Configuration
 CollectionLocation::getDestinationTranscodingConfig()
 {
     Transcoding::Configuration configuration( Transcoding::JUST_COPY );
-    Collection *destCollection = destination() ? destination()->collection() : 0;
+    Collection *destCollection = destination() ? destination()->collection() : nullptr;
     if( !destCollection )
         return configuration;
     if( !destCollection->has<Capabilities::TranscodeCapability>() )
@@ -514,7 +514,7 @@ CollectionLocation::slotFinishCopy()
 
         if( m_destination )
             m_destination->deleteLater();
-        m_destination = 0;
+        m_destination = nullptr;
         this->deleteLater();
     }
 }

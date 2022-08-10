@@ -110,7 +110,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_skip_left = The::svgHandler()->renderSvg( "tiny_skip_left", 80*fntH/128, fntH, "tiny_skip_left" );
     m_skip_right = The::svgHandler()->renderSvg( "tiny_skip_right", 80*fntH/128, fntH, "tiny_skip_right" );
 
-    m_prev.key = 0;
+    m_prev.key = nullptr;
     m_prev.label = new AnimatedLabelStack(QStringList(), info);
     m_prev.label->setFont( fnt );
     if( layoutDirection() == Qt::LeftToRight )
@@ -133,7 +133,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     connect( m_current.label, &AnimatedLabelStack::clicked,
              Amarok::actionCollection()->action("show_active_track"), &QAction::trigger );
 
-    m_next.key = 0;
+    m_next.key = nullptr;
     m_next.label = new AnimatedLabelStack(QStringList(), info);
     m_next.label->setFont( fnt );
     if( layoutDirection() == Qt::LeftToRight )
@@ -492,12 +492,12 @@ MainToolbar::updatePrevAndNext()
 {
     if( !The::engineController()->currentTrack() )
     {
-        m_prev.key = 0L;
+        m_prev.key = nullptr;
         m_prev.label->setForegroundRole( foregroundRole() );
         m_prev.label->setOpacity( 96 );
         m_prev.label->setData( QStringList() ); // << "[ " + i18n("Previous") + " ]" );
         m_prev.label->setCursor( Qt::ArrowCursor );
-        m_next.key = 0L;
+        m_next.key = nullptr;
         m_next.label->setForegroundRole( foregroundRole() );
         m_next.label->setOpacity( 96 );
         m_next.label->setData( QStringList() ); // << "[ " + i18n("Next") + " ]"  );
@@ -516,7 +516,7 @@ MainToolbar::updatePrevAndNext()
     bool needUpdate = false;
     bool hadKey = bool(m_next.key);
     Meta::TrackPtr track = The::playlistActions()->likelyNextTrack();
-    m_next.key = track ? track.data() : 0L;
+    m_next.key = track ? track.data() : nullptr;
     m_next.label->setForegroundRole( prev_next_role );
     m_next.label->setOpacity( nextOpacity );
     m_next.label->setData( metadata( track ) );
@@ -526,7 +526,7 @@ MainToolbar::updatePrevAndNext()
 
     hadKey = bool(m_prev.key);
     track = The::playlistActions()->likelyPrevTrack();
-    m_prev.key = track ? track.data() : 0L;
+    m_prev.key = track ? track.data() : nullptr;
     m_prev.label->setForegroundRole( prev_next_role );
     m_next.label->setOpacity( prevOpacity );
     m_prev.label->setData( metadata( track ) );
@@ -662,7 +662,7 @@ MainToolbar::trackChanged( Meta::TrackPtr track )
         // no track
         setLabelTime( -1 );
         m_slider->setValue( m_slider->minimum() );
-        m_current.key = 0L;
+        m_current.key = nullptr;
         m_current.uidUrl.clear();
         m_current.label->setData( QStringList( m_promoString ) );
         m_current.label->setCursor( Qt::ArrowCursor );
@@ -688,7 +688,7 @@ MainToolbar::trackLengthChanged( qint64 ms )
     if( Meta::TrackPtr track = The::engineController()->currentTrack() )
         m_current.uidUrl = track->uidUrl();
 
-    updateBookmarks( 0 );
+    updateBookmarks( nullptr );
 }
 
 void
@@ -758,7 +758,7 @@ MainToolbar::hideEvent( QHideEvent *ev )
 {
     QToolBar::hideEvent( ev );
 
-    disconnect( The::engineController(), 0, this, 0 );
+    disconnect( The::engineController(), nullptr, this, nullptr );
 
     disconnect( The::playlistController(), &Playlist::Controller::changed,
                 this, &MainToolbar::updatePrevAndNext );

@@ -46,7 +46,7 @@ namespace Playlists {
 PlaylistFileProvider::PlaylistFileProvider()
  : UserPlaylistProvider()
  , m_playlistsLoaded( false )
- , m_saveLaterTimer( 0 )
+ , m_saveLaterTimer( nullptr )
 {
     //playlists are lazy loaded but we can count how many we'll load already
     QStringList keys = loadedPlaylistsConfig().keyList();
@@ -155,7 +155,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
         return Playlists::PlaylistPtr();
     }
 
-    Playlists::PlaylistFile *playlistFile = 0;
+    Playlists::PlaylistFile *playlistFile = nullptr;
     switch( format )
     {
         case Playlists::ASX:

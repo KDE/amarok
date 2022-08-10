@@ -99,7 +99,7 @@ using namespace StatSyncing;
 
 MatchedTracksPage::MatchedTracksPage( QWidget *parent, Qt::WindowFlags f )
     : QWidget( parent, f )
-    , m_matchedTracksModel( 0 )
+    , m_matchedTracksModel( nullptr )
 {
     setupUi( this );
     // this group box is only shown upon setTracksToScrobble() call

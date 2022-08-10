@@ -38,7 +38,7 @@ MusicBrainzTagsModel::MusicBrainzTagsModel( QObject *parent )
     headerData.insert( Meta::Field::ALBUM, i18n( "Album" ) );
     headerData.insert( Meta::Field::ALBUMARTIST, i18n( "Album Artist" ) );
     headerData.insert( Meta::Field::YEAR, i18n( "Year" ) );
-    m_rootItem = new MusicBrainzTagsItem( 0, Meta::TrackPtr(), headerData );
+    m_rootItem = new MusicBrainzTagsItem( nullptr, Meta::TrackPtr(), headerData );
 }
 
 MusicBrainzTagsModel::~MusicBrainzTagsModel()

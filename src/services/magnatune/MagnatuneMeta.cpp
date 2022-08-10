@@ -303,7 +303,7 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
     , m_coverUrl()
     , m_launchYear( 0 )
     , m_albumCode()
-    , m_store( 0 )
+    , m_store( nullptr )
     , m_downloadMembership( false )
 
 {}
@@ -316,7 +316,7 @@ MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     m_launchYear = resultRow[5].toInt();
     m_albumCode = resultRow[6];
 
-    m_store = 0;
+    m_store = nullptr;
 }
 
 MagnatuneAlbum::~ MagnatuneAlbum()

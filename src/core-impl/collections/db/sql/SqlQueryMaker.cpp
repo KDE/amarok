@@ -63,7 +63,7 @@ class SqlWorkerThread : public QObject, public ThreadWeaver::Job
         }
 
     protected:
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override
         {
             Q_UNUSED(self);
             Q_UNUSED(thread);
@@ -139,7 +139,7 @@ SqlQueryMaker::SqlQueryMaker( SqlCollection* collection )
     , m_collection( collection )
     , d( new Private )
 {
-    d->worker = 0;
+    d->worker = nullptr;
     d->queryType = QueryMaker::None;
     d->linkedTables = 0;
     d->withoutDuplicates = false;
@@ -232,7 +232,7 @@ SqlQueryMaker::done( ThreadWeaver::JobPointer job )
 {
     Q_UNUSED( job )
 
-    d->worker = 0; // d->worker *is* the job, prevent stale pointer
+    d->worker = nullptr; // d->worker *is* the job, prevent stale pointer
     Q_EMIT queryDone();
 }
 

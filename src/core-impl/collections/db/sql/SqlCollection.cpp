@@ -147,7 +147,7 @@ class OrganizeCollectionDelegateImpl : public OrganizeCollectionDelegate
 public:
     OrganizeCollectionDelegateImpl()
         : OrganizeCollectionDelegate()
-        , m_dialog( 0 )
+        , m_dialog( nullptr )
         , m_organizing( false ) {}
     ~ OrganizeCollectionDelegateImpl() override { delete m_dialog; }
 

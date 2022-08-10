@@ -79,7 +79,7 @@ public:
      */
     QList<QVariantList> query( const QString &query,
                                const QVariantMap &bindValues = QVariantMap(),
-                               bool* const ok = 0 );
+                               bool* const ok = nullptr );
 
     /**
      * Starts a transaction. Transaction is not started if the underlying driver has no

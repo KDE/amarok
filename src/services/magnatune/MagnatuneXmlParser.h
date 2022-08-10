@@ -50,7 +50,7 @@ public:
      * The function that starts the actual work. Inherited from ThreadWeaver::Job
      * Note the work is performed in a separate thread
      */
-    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
 
     /**
      * Destructor

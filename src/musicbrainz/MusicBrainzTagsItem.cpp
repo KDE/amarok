@@ -330,7 +330,7 @@ MusicBrainzTagsItem::chosenItem() const
                 return item;
     }
 
-    return 0;
+    return nullptr;
 }
 
 bool
@@ -340,7 +340,7 @@ MusicBrainzTagsItem::chooseBestMatch()
         return false;
 
     QReadLocker lock( &m_childrenLock );
-    MusicBrainzTagsItem *bestMatch = 0;
+    MusicBrainzTagsItem *bestMatch = nullptr;
     float maxScore = 0;
     foreach( MusicBrainzTagsItem *item, m_childItems )
     {
@@ -367,7 +367,7 @@ MusicBrainzTagsItem::chooseBestMatchFromRelease( const QStringList &releases )
     if( !childCount() || isChosen() )
         return false;
 
-    MusicBrainzTagsItem *bestMatch = 0;
+    MusicBrainzTagsItem *bestMatch = nullptr;
     float maxScore = 0;
     QSet<QString> idList = releases.toSet();
     foreach( MusicBrainzTagsItem *item, m_childItems )

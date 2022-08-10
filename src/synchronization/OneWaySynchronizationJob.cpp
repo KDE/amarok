@@ -23,8 +23,8 @@
 
 OneWaySynchronizationJob::OneWaySynchronizationJob()
         : SynchronizationBaseJob()
-        , m_source( 0 )
-        , m_target( 0 )
+        , m_source( nullptr )
+        , m_target( nullptr )
 {
 }
 

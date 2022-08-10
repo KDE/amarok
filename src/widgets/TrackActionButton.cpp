@@ -108,7 +108,7 @@ void TrackActionButton::reloadContent( const QSize &sz )
 
 void TrackActionButton::setAction( const QAction *act )
 {
-    disconnect( this, &TrackActionButton::clicked, 0, 0 );
+    disconnect( this, &TrackActionButton::clicked, nullptr, nullptr );
     m_action = act;
     if ( act )
     {

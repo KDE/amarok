@@ -223,7 +223,7 @@ TokenDropTarget::tokenAt( const QPoint &pos ) const
                     if( kid->geometry().contains( pos ) )
                         return qobject_cast<Token*>(kid);
                 }
-    return 0;
+    return nullptr;
 }
 
 void
@@ -328,7 +328,7 @@ TokenDropTarget::row( Token *token ) const
 QBoxLayout *
 TokenDropTarget::rowBox( QWidget *w, QPoint *idx ) const
 {
-    QBoxLayout *box = 0;
+    QBoxLayout *box = nullptr;
     int col;
     for( uint row = 0; row < rows(); ++row )
     {
@@ -343,13 +343,13 @@ TokenDropTarget::rowBox( QWidget *w, QPoint *idx ) const
             return box;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 QBoxLayout *
 TokenDropTarget::rowBox( const QPoint &pt ) const
 {
-    QBoxLayout *box = 0;
+    QBoxLayout *box = nullptr;
     for( uint row = 0; row < rows(); ++row )
     {
         box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
@@ -366,7 +366,7 @@ TokenDropTarget::rowBox( const QPoint &pt ) const
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void

@@ -98,14 +98,14 @@ void
 ImporterMocks::cleanup()
 {
     delete m_mockProvider;
-    m_mockProvider = 0;
+    m_mockProvider = nullptr;
 
     delete m_mockManager;
-    m_mockManager = 0;
+    m_mockManager = nullptr;
 
-    Amarok::Components::setStatSyncingController( 0 );
+    Amarok::Components::setStatSyncingController( nullptr );
     delete m_mockController;
-    m_mockController = 0;
+    m_mockController = nullptr;
 
     Amarok::config( "Importers" ).deleteGroup();
 }
@@ -114,7 +114,7 @@ void
 ImporterMocks::cleanupTestCase()
 {
     Amarok::config( "StatSyncing" ).deleteGroup();
-    Amarok::Components::setEngineController( 0 );
+    Amarok::Components::setEngineController( nullptr );
     delete m_engineController;
 }
 

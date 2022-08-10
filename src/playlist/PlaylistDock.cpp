@@ -56,7 +56,7 @@ static const QString s_turnOff( QStringLiteral("turn_off") );
 
 Playlist::Dock::Dock( QWidget* parent )
     : AmarokDockWidget( i18n( "&Playlist" ), parent )
-    , m_barBox( 0 )
+    , m_barBox( nullptr )
 {
     setObjectName( QStringLiteral("Playlist dock") );
     setAllowedAreas( Qt::AllDockWidgetAreas );
@@ -264,7 +264,7 @@ Playlist::Dock::playlistProviderAdded( Playlists::PlaylistProvider *provider, in
     debug() << "Adding provider: " << provider->prettyName();
     Playlists::UserPlaylistProvider *userProvider =
             dynamic_cast<Playlists::UserPlaylistProvider *>(provider);
-    if( userProvider == 0 )
+    if( userProvider == nullptr )
         return;
     QAction *action = new QAction( userProvider->icon(),
                                    i18n("&Save playlist to \"%1\"", provider->prettyName() ),
@@ -297,7 +297,7 @@ Playlist::Dock::slotSaveCurrentPlaylist()
     DEBUG_BLOCK
 
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
 
     QWeakPointer<Playlists::UserPlaylistProvider> pointer =

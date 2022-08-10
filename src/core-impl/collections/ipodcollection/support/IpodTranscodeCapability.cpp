@@ -44,14 +44,14 @@ Transcoding::Configuration
 IpodTranscodeCapability::savedConfiguration()
 {
     KConfig config( m_configFilePath, KConfig::SimpleConfig );
-    return Transcoding::Configuration::fromConfigGroup( config.group( 0 ) );
+    return Transcoding::Configuration::fromConfigGroup( config.group( nullptr ) );
 }
 
 void
 IpodTranscodeCapability::setSavedConfiguration( const Transcoding::Configuration &configuration )
 {
     KConfig config( m_configFilePath, KConfig::SimpleConfig );
-    KConfigGroup group = config.group( 0 );
+    KConfigGroup group = config.group( nullptr );
     configuration.saveToConfigGroup( group );
     config.sync();
 }

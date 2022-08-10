@@ -42,7 +42,7 @@ class CurriedQMFunction
          * parameters, providing @param qm as the this pointer.
          * @return qm
          */
-        virtual QueryMaker* operator()( QueryMaker *qm = 0 ) = 0;
+        virtual QueryMaker* operator()( QueryMaker *qm = nullptr ) = 0;
 };
 
 /**
@@ -58,7 +58,7 @@ class CurriedZeroArityQMFunction : public CurriedQMFunction
         {}
         ~CurriedZeroArityQMFunction() override {}
         
-        QueryMaker* operator()( QueryMaker *qm = 0 ) override
+        QueryMaker* operator()( QueryMaker *qm = nullptr ) override
         {
             if( qm )
                 return ( qm->*m_function )();

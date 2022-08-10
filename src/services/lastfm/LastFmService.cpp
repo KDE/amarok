@@ -87,13 +87,13 @@ LastFmServiceFactory::possiblyContainsTrack( const QUrl &url ) const
 
 LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name )
     : ServiceBase( name, parent, false )
-    , m_collection( 0 )
+    , m_collection( nullptr )
     , m_polished( false )
-    , m_avatarLabel( 0 )
-    , m_profile( 0 )
-    , m_userinfo( 0 )
+    , m_avatarLabel( nullptr )
+    , m_profile( nullptr )
+    , m_userinfo( nullptr )
     , m_subscriber( false )
-    , m_authenticateReply( 0 )
+    , m_authenticateReply( nullptr )
     , m_config( LastFmServiceConfig::instance() )
 {
     DEBUG_BLOCK
@@ -153,7 +153,7 @@ LastFmService::~LastFmService()
     {
         CollectionManager::instance()->removeTrackProvider( m_collection );
         m_collection->deleteLater();
-        m_collection = 0;
+        m_collection = nullptr;
     }
 
     StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
@@ -201,7 +201,7 @@ LastFmService::slotReconfigure()
             disconnect( m_authenticateReply, &QNetworkReply::finished, this, &LastFmService::onAuthenticated );
             m_authenticateReply->abort();
             m_authenticateReply->deleteLater();
-            m_authenticateReply = 0;
+            m_authenticateReply = nullptr;
         }
 
         QMap<QString, QString> query;
@@ -245,7 +245,7 @@ LastFmService::continueReconfiguring()
     {
         debug() << __PRETTY_FUNCTION__ << "unregistering and destroying SynchronizationAdapter";
         controller->unregisterProvider( m_synchronizationAdapter );
-        m_synchronizationAdapter = 0;
+        m_synchronizationAdapter = nullptr;
     }
     else if( !m_synchronizationAdapter && authenticated )
     {
@@ -298,7 +298,7 @@ LastFmService::onAuthenticated()
                     "There was a problem communicating with the Last.fm services. Please try again later." ) );
             break;
     }
-    m_authenticateReply = 0;
+    m_authenticateReply = nullptr;
 
     // connect back to config updates
     connect( m_config.data(), &LastFmServiceConfig::updated, this, &LastFmService::slotReconfigure );

@@ -34,8 +34,8 @@
 
 SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     : QWidget( parent )
-    , m_sw( 0 )
-    , m_filterAction( 0 )
+    , m_sw( nullptr )
+    , m_filterAction( nullptr )
     , m_timeout( 500 )
     , m_runningSearches( 0 )
 {
@@ -162,7 +162,7 @@ SearchWidget::showAdvancedButton( bool show )
 {
     if( show )
     {
-        if( m_filterAction != 0 )
+        if( m_filterAction != nullptr )
         {
             m_filterAction = new QAction( QIcon::fromTheme( "document-properties" ), i18n( "Edit filter" ), this );
             m_filterAction->setObjectName( "filter" );
@@ -173,7 +173,7 @@ SearchWidget::showAdvancedButton( bool show )
     else
     {
         delete m_filterAction;
-        m_filterAction = 0;
+        m_filterAction = nullptr;
     }
 }
 

@@ -90,7 +90,7 @@ class AMAROK_EXPORT CollectionTreeItem : public QObject
         bool operator<( const CollectionTreeItem &other ) const;
 
         const Meta::DataPtr data() const;
-        Collections::Collection* parentCollection() const { return m_parentCollection ? m_parentCollection : (m_parent ? m_parent->parentCollection() : 0); }
+        Collections::Collection* parentCollection() const { return m_parentCollection ? m_parentCollection : (m_parent ? m_parent->parentCollection() : nullptr); }
 
         QList<QUrl> urls() const;
         Meta::TrackList descendentTracks();

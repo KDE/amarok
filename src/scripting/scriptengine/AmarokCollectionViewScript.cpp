@@ -372,13 +372,13 @@ CollectionViewItem::slotDataChanged( const QModelIndex &topLeft, const QModelInd
     if( static_cast<CollectionTreeItem*>( topLeft.internalPointer() ) != m_item )
         return;
     Q_EMIT loaded( m_item );
-    Q_ASSERT( disconnect( qobject_cast<QAbstractItemModel*>(sender()), &QAbstractItemModel::dataChanged, this, 0 ) );
+    Q_ASSERT( disconnect( qobject_cast<QAbstractItemModel*>(sender()), &QAbstractItemModel::dataChanged, this, nullptr ) );
 }
 
 Collections::QueryMaker*
 CollectionViewItem::queryMaker()
 {
-    Collections::QueryMaker *qm = 0;
+    Collections::QueryMaker *qm = nullptr;
     if( The::mainWindow()->collectionBrowser()->viewMode() == CollectionWidget::NormalCollections )
         qm = m_item->queryMaker();
     else
@@ -402,7 +402,7 @@ CollectionTreeItemModelBase*
 CollectionViewItem::getModel()
 {
     QSortFilterProxyModel *proxyModel = dynamic_cast<QSortFilterProxyModel*>( The::mainWindow()->collectionBrowser()->currentView()->model() );
-    return dynamic_cast<CollectionTreeItemModelBase*>( proxyModel ? proxyModel->sourceModel() : 0 );
+    return dynamic_cast<CollectionTreeItemModelBase*>( proxyModel ? proxyModel->sourceModel() : nullptr );
 }
 
 ///////////////////////////////////////////////////////////

@@ -45,7 +45,7 @@ even porting to qtscript so it could be run, as needed, by Amarok.
 
 namespace The
 {
-    static MoodbarManager* s_MoodbarManager_instance = 0;
+    static MoodbarManager* s_MoodbarManager_instance = nullptr;
 
     MoodbarManager* moodbarManager()
     {

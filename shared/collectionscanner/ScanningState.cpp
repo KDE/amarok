@@ -30,7 +30,7 @@
 using namespace CollectionScanner;
 
 ScanningState::ScanningState()
-        : m_sharedMemory( 0 )
+        : m_sharedMemory( nullptr )
         , m_lastFilePos( 0 )
 {
 }

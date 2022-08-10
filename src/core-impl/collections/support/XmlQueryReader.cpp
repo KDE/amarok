@@ -37,7 +37,7 @@ XmlQueryReader::getQueryMaker( const QString &xmlData, ReturnValueEnum flag )
     if( reader.read( xmlData ) )
         return qm;
     else
-        return 0;
+        return nullptr;
 }
 
 XmlQueryReader::XmlQueryReader( Collections::QueryMaker *qm, ReturnValueEnum flag )

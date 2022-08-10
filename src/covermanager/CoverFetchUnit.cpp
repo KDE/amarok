@@ -209,7 +209,7 @@ CoverFetchInfoPayload::CoverFetchInfoPayload( const Meta::AlbumPtr &album, const
 }
 
 CoverFetchInfoPayload::CoverFetchInfoPayload( const CoverFetch::Source src, const QByteArray &data )
-    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Info, src )
+    : CoverFetchPayload( Meta::AlbumPtr( nullptr ), CoverFetchPayload::Info, src )
 {
     switch( src )
     {
@@ -411,7 +411,7 @@ CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr &album,
 CoverFetchArtPayload::CoverFetchArtPayload( const CoverFetch::ImageSize size,
                                             const CoverFetch::Source src,
                                             bool wild )
-    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Art, src )
+    : CoverFetchPayload( Meta::AlbumPtr( nullptr ), CoverFetchPayload::Art, src )
     , m_size( size )
     , m_wild( wild )
 {

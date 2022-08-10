@@ -400,7 +400,7 @@ TestMetaConstants::testValueForField()
     Meta::TrackPtr trackPtr;
 
     // When track is null, an invalid QVariant is returned
-    trackPtr = 0;
+    trackPtr = nullptr;
     QVERIFY( !valueForField( 0, trackPtr ).isValid() );
 
     // Set up mock track details and create mock track
@@ -585,12 +585,12 @@ TestMetaConstants::testValueForField()
     QVERIFY( !trackValue.isValid() );
 
     // Cases with null artist, album, etc. where an invalid QVariant is returned
-    testAlbum->m_albumArtist = 0;
-    testTrack->m_album = 0;
-    testTrack->m_artist = 0;
-    testTrack->m_composer = 0;
-    testTrack->m_genre = 0;
-    testTrack->m_year = 0;
+    testAlbum->m_albumArtist = nullptr;
+    testTrack->m_album = nullptr;
+    testTrack->m_artist = nullptr;
+    testTrack->m_composer = nullptr;
+    testTrack->m_genre = nullptr;
+    testTrack->m_year = nullptr;
 
     // Case Meta::valArtist for null artist
     trackValue = valueForField( Meta::valArtist, trackPtr );

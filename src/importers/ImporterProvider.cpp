@@ -28,7 +28,7 @@ ImporterProvider::ImporterProvider( const QVariantMap &config, ImporterManager *
     if( !m_config.contains( QStringLiteral("uid") ) )
         m_config.insert( QStringLiteral("uid"), qrand() );
 
-    if( m_manager == 0 )
+    if( m_manager == nullptr )
         warning() << __PRETTY_FUNCTION__ << "manager pointer is not set";
 }
 
@@ -70,7 +70,7 @@ ProviderConfigWidget*
 ImporterProvider::configWidget()
 {
     Q_ASSERT( m_manager );
-    return m_manager ? m_manager->configWidget( m_config ) : 0;
+    return m_manager ? m_manager->configWidget( m_config ) : nullptr;
 }
 
 void

@@ -90,7 +90,7 @@ APG::ConstraintSolver::~ConstraintSolver()
     if ( m_qm ) {
         m_qm->abortQuery();
         m_qm->deleteLater();
-        m_qm = 0;
+        m_qm = nullptr;
     }
 }
 
@@ -125,7 +125,7 @@ APG::ConstraintSolver::requestAbort()
     if ( m_qm ) {
         m_qm->abortQuery();
         m_qm->deleteLater();
-        m_qm = 0;
+        m_qm = nullptr;
     }
     m_abortRequested = true;
 }
@@ -223,7 +223,7 @@ void
 APG::ConstraintSolver::receiveQueryMakerDone()
 {
     m_qm->deleteLater();
-    m_qm = 0;
+    m_qm = nullptr;
 
     if (( m_domain.size() > 0 ) || m_domainReductionFailed ) {
         if ( m_domain.size() <= 0 ) {

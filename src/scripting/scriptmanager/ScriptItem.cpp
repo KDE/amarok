@@ -70,7 +70,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 ScriptTerminatorWidget::ScriptTerminatorWidget( const QString &message )
-    : PopupWidget( 0 )
+    : PopupWidget( nullptr )
 {
     setFrameStyle( QFrame::StyledPanel | QFrame::Raised );
 
@@ -332,7 +332,7 @@ void
 ScriptItem::slotDeprecatedCall( const QString &call )
 {
     Q_UNUSED( call )
-    disconnect( sender(), SIGNAL(deprecatedCall(QString)), this, 0 );
+    disconnect( sender(), SIGNAL(deprecatedCall(QString)), this, nullptr );
     if( !AmarokConfig::enableDeprecationWarnings() )
         return;
 

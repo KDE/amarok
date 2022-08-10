@@ -105,7 +105,7 @@ CollectionLocationDelegateImpl::transcode( const QStringList &playableFileTypes,
                                            const QString &destCollectionName,
                                            const Transcoding::Configuration &prevConfiguration ) const
 {
-    Transcoding::AssistantDialog dialog( playableFileTypes, remember != 0, operation,
+    Transcoding::AssistantDialog dialog( playableFileTypes, remember != nullptr, operation,
                                          destCollectionName, prevConfiguration );
     if( dialog.exec() )
     {

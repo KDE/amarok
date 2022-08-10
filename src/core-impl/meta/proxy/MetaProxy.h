@@ -72,7 +72,7 @@ namespace MetaProxy
              * registered providers by employing CollectionManager. Otherwise lookup
              * only checks @param provider (still asynchronously).
              */
-            void lookupTrack( Collections::TrackProvider *provider = 0 );
+            void lookupTrack( Collections::TrackProvider *provider = nullptr );
 
         // methods inherited from Meta::MetaCapability
             bool hasCapabilityInterface( Capabilities::Capability::Type type ) const override;

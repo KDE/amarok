@@ -317,7 +317,7 @@ SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type typ
         case Capabilities::Capability::Actions:
         {
             QList< QAction * > actions;
-            actions << new BookmarkCurrentTrackPositionAction( 0 );
+            actions << new BookmarkCurrentTrackPositionAction( nullptr );
             return new Capabilities::ActionsCapability( actions );
         }
         case Capabilities::Capability::WriteTimecode:
@@ -325,7 +325,7 @@ SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type typ
         case Capabilities::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityPodcastImpl( this );
         default:
-            return 0;
+            return nullptr;
     }
 }
 

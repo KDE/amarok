@@ -67,7 +67,7 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     , m_perTrack( true )
     , m_currentTrackNum( 0 )
     , m_changed( false )
-    , m_queryMaker( 0 )
+    , m_queryMaker( nullptr )
     , ui( new Ui::TagDialogBase() )
 {
     DEBUG_BLOCK
@@ -86,7 +86,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     , m_perTrack( true )
     , m_currentTrackNum( 0 )
     , m_changed( false )
-    , m_queryMaker( 0 )
+    , m_queryMaker( nullptr )
     , ui( new Ui::TagDialogBase() )
 {
     DEBUG_BLOCK

@@ -213,7 +213,7 @@ SqlRegistry::getTrack( int deviceId, const QString &rpath, int directoryId, cons
     {
         QString query;
         QStringList result;
-        Meta::SqlTrack *sqlTrack = 0;
+        Meta::SqlTrack *sqlTrack = nullptr;
 
         // -- get it from the database
         query = "SELECT %1 FROM urls %2 "

@@ -598,7 +598,7 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
         if( rootFlags.testFlag( Qt::ItemIsDropEnabled ) )
             return Qt::ItemFlags( Qt::ItemIsDropEnabled );
 
-        return 0;
+        return {};
     }
     //only if the grouped column has the editable flag set allow the
     //actions leading to setData on the source (edit & drop)

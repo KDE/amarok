@@ -114,7 +114,7 @@ TestImporterManager::creatingConfigWidgetShouldDelegate()
 void
 TestImporterManager::createConfigWidgetShouldNotCrashOnNull()
 {
-    StatSyncing::ProviderConfigWidget *ptr = 0;
+    StatSyncing::ProviderConfigWidget *ptr = nullptr;
 
     EXPECT_CALL( *m_mockManager, configWidget(_) )
             .WillOnce( Return( ptr ) );

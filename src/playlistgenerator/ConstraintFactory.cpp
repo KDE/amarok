@@ -73,7 +73,7 @@ void ConstraintFactory::destroy()
 
 ConstraintFactory::ConstraintFactory()
 {
-    ConstraintFactoryEntry* r = 0;
+    ConstraintFactoryEntry* r = nullptr;
 
     r = ConstraintTypes::TagMatch::registerMe();
     m_registryIds[0] = r;
@@ -119,7 +119,7 @@ ConstraintNode* ConstraintFactory::createConstraint( QDomElement& xmlelem, Const
 {
     QString t = xmlelem.attributeNode( QStringLiteral("type") ).value();
     if ( !m_registryNames.contains( t ) || !parent )
-        return 0;
+        return nullptr;
 
     ConstraintNode* n = ( *( m_registryNames[t]->m_createFromXmlFunc ) )( xmlelem, parent );
     parent->addChild( n, row );
@@ -129,7 +129,7 @@ ConstraintNode* ConstraintFactory::createConstraint( QDomElement& xmlelem, Const
 ConstraintNode* ConstraintFactory::createConstraint( const QString& name, ConstraintNode* parent, int row ) const
 {
     if ( !m_registryNames.contains( name ) || !parent )
-        return 0;
+        return nullptr;
 
     ConstraintNode* n = ( *( m_registryNames[name]->m_createNewFunc ) )( parent );
     parent->addChild( n, row );
@@ -139,7 +139,7 @@ ConstraintNode* ConstraintFactory::createConstraint( const QString& name, Constr
 ConstraintNode* ConstraintFactory::createConstraint( const int idx, ConstraintNode* parent, int row ) const
 {
     if ( !m_registryIds.contains( idx ) || !parent )
-        return 0;
+        return nullptr;
 
     ConstraintNode* n = ( *( m_registryIds[idx]->m_createNewFunc ) )( parent );
     parent->addChild( n, row );

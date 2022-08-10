@@ -34,7 +34,7 @@ ConstraintTypes::PlaylistFileSize::createFromXml( QDomElement& xmlelem, Constrai
     if ( p ) {
         return new PlaylistFileSize( xmlelem, p );
     } else {
-        return 0;
+        return nullptr;
     }
 }
 
@@ -224,7 +224,7 @@ ConstraintTypes::PlaylistFileSize::setUnit( const int u )
 ConstraintTypes::PlaylistFileSizeEditWidget::PlaylistFileSizeEditWidget( const int size,
                                                                      const int unit,
                                                                      const int comparison,
-                                                                     const int strictness ) : QWidget( 0 )
+                                                                     const int strictness ) : QWidget( nullptr )
 {
     ui.setupUi( this );
 

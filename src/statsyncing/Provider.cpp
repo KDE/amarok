@@ -54,7 +54,7 @@ Provider::isConfigurable() const
 ProviderConfigWidget*
 Provider::configWidget()
 {
-    return 0;
+    return nullptr;
 }
 
 void

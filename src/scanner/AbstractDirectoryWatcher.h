@@ -57,7 +57,7 @@ class AMAROK_EXPORT AbstractDirectoryWatcher : public QObject, public ThreadWeav
     public:
         AbstractDirectoryWatcher();
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
         void requestAbort() override;
 
         /** Pauses the emitting of the scan signal */

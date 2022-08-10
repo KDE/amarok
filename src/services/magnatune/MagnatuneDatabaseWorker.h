@@ -37,7 +37,7 @@ public:
 
     ~MagnatuneDatabaseWorker() override;
 
-    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+    void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
 
     void fetchMoodMap();
     void fetchTrackswithMood( const QString &mood, int noOfTracks, ServiceSqlRegistry * registry );

@@ -1106,7 +1106,7 @@ TestSqlScanManager::importAndWait( QIODevice* input )
 {
     QScopedPointer<Capabilities::CollectionImportCapability> csc( m_collection->create<Capabilities::CollectionImportCapability>());
     if( csc )
-        csc->import( input, 0 );
+        csc->import( input, nullptr );
 
     waitScannerFinished();
 }

@@ -79,7 +79,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_firstScrollToActiveTrack( true )
         , m_rowsInsertedScrollItem( 0 )
         , m_showOnlyMatches( false )
-        , m_pd( 0 )
+        , m_pd( nullptr )
 {
     // QAbstractItemView basics
     setModel( The::playlist()->qaim() );

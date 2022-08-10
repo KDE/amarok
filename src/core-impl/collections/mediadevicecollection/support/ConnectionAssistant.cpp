@@ -40,7 +40,7 @@ MediaDeviceInfo*
 ConnectionAssistant::deviceInfo( const QString& udi )
 {
     Q_UNUSED( udi );
-    MediaDeviceInfo *info = 0;
+    MediaDeviceInfo *info = nullptr;
     return info;
 }
 

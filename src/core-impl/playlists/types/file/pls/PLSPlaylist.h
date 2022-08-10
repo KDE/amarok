@@ -26,7 +26,7 @@ namespace Playlists {
 class AMAROK_EXPORT PLSPlaylist : public PlaylistFile
 {
     public:
-        explicit PLSPlaylist( const QUrl &url, PlaylistProvider *provider = 0 );
+        explicit PLSPlaylist( const QUrl &url, PlaylistProvider *provider = nullptr );
 
         /* PlaylistFile methods */
         using PlaylistFile::load;

@@ -126,7 +126,7 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastChannelPtr &channel ) const
         return pixmap;
     }
     else
-        return ( QIcon(new KIconEngine( "podcast-amarok", 0, emblems )).pixmap( 32, 32 ) );
+        return ( QIcon(new KIconEngine( "podcast-amarok", nullptr, emblems )).pixmap( 32, 32 ) );
 }
 
 QVariant
@@ -137,9 +137,9 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastEpisodePtr &episode ) const
         emblems << QStringLiteral("go-down");
 
     if( episode->isNew() )
-        return ( QIcon( new KIconEngine( "rating", 0, emblems )).pixmap( 24, 24 ) );
+        return ( QIcon( new KIconEngine( "rating", nullptr, emblems )).pixmap( 24, 24 ) );
     else
-        return ( QIcon( new KIconEngine( "podcast-amarok", 0, emblems )).pixmap( 24, 24 ));
+        return ( QIcon( new KIconEngine( "podcast-amarok", nullptr, emblems )).pixmap( 24, 24 ));
 }
 
 QVariant
@@ -318,7 +318,7 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
     if( podcastProvider )
     {
         bool ok;
-        QString url = QInputDialog::getText( 0,
+        QString url = QInputDialog::getText( nullptr,
                             i18n("Add Podcast"),
                             i18n("Enter RSS 1.0/2.0 or Atom feed URL:"),
                             QLineEdit::Normal,

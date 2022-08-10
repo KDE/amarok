@@ -32,5 +32,5 @@ SemaphoreReleaser::~SemaphoreReleaser()
 void
 SemaphoreReleaser::dontRelease()
 {
-    m_semaphore = 0;
+    m_semaphore = nullptr;
 }

@@ -63,7 +63,7 @@ TokenPool::sizeHint() const
 {
     int h = iconSize().height();
     if (h <= 0) {
-        h = style()->pixelMetric(QStyle::PM_SmallIconSize, 0, this);
+        h = style()->pixelMetric(QStyle::PM_SmallIconSize, nullptr, this);
     }
 
     // we are planning the size for three columns of token text

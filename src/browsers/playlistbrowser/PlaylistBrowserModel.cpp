@@ -70,7 +70,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
     QList<QAction *> providerActions;
     QList<Playlists::PlaylistProvider *> providers =
         The::playlistManager()->getProvidersForPlaylist( playlist );
-    Playlists::PlaylistProvider *provider = providers.count() == 1 ? providers.first() : 0;
+    Playlists::PlaylistProvider *provider = providers.count() == 1 ? providers.first() : nullptr;
     Meta::TrackPtr track;
 
     switch( index.column() )
@@ -710,7 +710,7 @@ Playlists::PlaylistProvider *
 PlaylistBrowserModel::providerForIndex( const QModelIndex &idx ) const
 {
     if( !idx.isValid() )
-        return 0;
+        return nullptr;
 
     int playlistRow;
     if( IS_TRACK( idx ) )
@@ -719,7 +719,7 @@ PlaylistBrowserModel::providerForIndex( const QModelIndex &idx ) const
         playlistRow = idx.row();
 
     if( playlistRow >= m_playlists.count() )
-        return 0;
+        return nullptr;
 
     return m_playlists.at( playlistRow )->provider();
 }
@@ -734,5 +734,5 @@ PlaylistBrowserModel::getProviderByName( const QString &name )
         if( provider->prettyName() == name )
             return provider;
     }
-    return 0;
+    return nullptr;
 }

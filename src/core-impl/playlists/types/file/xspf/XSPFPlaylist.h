@@ -64,7 +64,7 @@ public:
      * @param onLoad Should this playlist automatically append itself to the playlist when loaded (useful when loading a remote url as it
      * allows the caller to do it in a "one shot" way and not have to worry about waiting until download and parsing is completed.
      */
-    explicit XSPFPlaylist( const QUrl &url, PlaylistProvider *provider = 0, OnLoadAction onLoad = NoAction );
+    explicit XSPFPlaylist( const QUrl &url, PlaylistProvider *provider = nullptr, OnLoadAction onLoad = NoAction );
 
     ~XSPFPlaylist() override;
 

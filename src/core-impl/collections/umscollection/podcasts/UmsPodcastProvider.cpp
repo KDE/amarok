@@ -39,8 +39,8 @@ using namespace Podcasts;
 
 UmsPodcastProvider::UmsPodcastProvider( const QUrl &scanDirectory )
         : m_scanDirectory( scanDirectory )
-        , m_deleteEpisodeAction( 0 )
-        , m_deleteChannelAction( 0 )
+        , m_deleteEpisodeAction( nullptr )
+        , m_deleteChannelAction( nullptr )
 {
 
 }
@@ -189,7 +189,7 @@ UmsPodcastProvider::episodeActions( const PodcastEpisodeList &episodes )
     if( episodes.isEmpty() )
         return actions;
 
-    if( m_deleteEpisodeAction == 0 )
+    if( m_deleteEpisodeAction == nullptr )
     {
         m_deleteEpisodeAction = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete Episode" ), this );
         m_deleteEpisodeAction->setProperty( "popupdropper_svg_id", "delete" );
@@ -207,7 +207,7 @@ UmsPodcastProvider::slotDeleteEpisodes()
 {
     DEBUG_BLOCK
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
 
     //get the list of episodes to apply to, then clear that data.
@@ -328,7 +328,7 @@ UmsPodcastProvider::channelActions( const PodcastChannelList &channels )
     if( channels.isEmpty() )
         return actions;
 
-    if( m_deleteChannelAction == 0 )
+    if( m_deleteChannelAction == nullptr )
     {
         m_deleteChannelAction = new QAction( QIcon::fromTheme( "edit-delete" ), i18n( "&Delete "
                 "Channel and Episodes" ), this );
@@ -347,7 +347,7 @@ UmsPodcastProvider::slotDeleteChannels()
 {
     DEBUG_BLOCK
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
 
     //get the list of episodes to apply to, then clear that data.

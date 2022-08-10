@@ -44,7 +44,7 @@ BookmarkPopup::BookmarkPopup (QWidget* parent, const QString &label, BookmarkTri
     m_deleteIcon = QIcon::fromTheme( "edit-delete" );
     adjustWidth();
 
-    m_edit = new QLineEdit ( m_label, 0 );
+    m_edit = new QLineEdit ( m_label, nullptr );
     m_edit->setVisible ( false );
     m_edit->setAlignment ( Qt::AlignHCenter );
     connect ( m_edit, &QLineEdit::returnPressed, this, &BookmarkPopup::editValueChanged );

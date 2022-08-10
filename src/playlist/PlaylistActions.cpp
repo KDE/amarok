@@ -73,7 +73,7 @@ Playlist::Actions::Actions()
         : QObject()
         , m_nextTrackCandidate( 0 )
         , m_stopAfterPlayingTrackId( 0 )
-        , m_navigator( 0 )
+        , m_navigator( nullptr )
         , m_waitingForNextTrack( false )
 {
     EngineController *engine = The::engineController();
@@ -251,7 +251,7 @@ Playlist::Actions::enableDynamicMode( bool enable )
     AmarokConfig::self()->save();
 
     Playlist::Dock *dock = The::mainWindow()->playlistDock();
-    Playlist::SortWidget *sorting = dock ? dock->sortWidget() : 0;
+    Playlist::SortWidget *sorting = dock ? dock->sortWidget() : nullptr;
     if( sorting )
         sorting->trimToLevel();
 
@@ -291,7 +291,7 @@ Playlist::Actions::playlistModeChanged()
         return;
     }
 
-    m_navigator = 0;
+    m_navigator = nullptr;
 
     switch( AmarokConfig::trackProgression() )
     {

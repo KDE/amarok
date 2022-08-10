@@ -70,16 +70,16 @@ SqlPodcastProvider::SqlPodcastProvider()
         : m_updateTimer( new QTimer( this ) )
         , m_updatingChannels( 0 )
         , m_completedDownloads( 0 )
-        , m_providerSettingsDialog( 0 )
-        , m_providerSettingsWidget( 0 )
-        , m_configureChannelAction( 0 )
-        , m_deleteAction( 0 )
-        , m_downloadAction( 0 )
-        , m_keepAction( 0 )
-        , m_removeAction( 0 )
-        , m_updateAction( 0 )
-        , m_writeTagsAction( 0 )
-        , m_podcastImageFetcher( 0 )
+        , m_providerSettingsDialog( nullptr )
+        , m_providerSettingsWidget( nullptr )
+        , m_configureChannelAction( nullptr )
+        , m_deleteAction( nullptr )
+        , m_downloadAction( nullptr )
+        , m_keepAction( nullptr )
+        , m_removeAction( nullptr )
+        , m_updateAction( nullptr )
+        , m_writeTagsAction( nullptr )
+        , m_podcastImageFetcher( nullptr )
 {
     connect( m_updateTimer, &QTimer::timeout, this, &SqlPodcastProvider::autoUpdate );
 
@@ -325,7 +325,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
         return actions;
 
     //TODO: add export OPML action for selected playlists only. Use the QAction::data() trick.
-    if( m_configureChannelAction == 0 )
+    if( m_configureChannelAction == nullptr )
     {
         m_configureChannelAction = new QAction( QIcon::fromTheme( QStringLiteral("configure") ), i18n( "&Configure" ), this );
         m_configureChannelAction->setProperty( "popupdropper_svg_id", "configure" );
@@ -338,7 +338,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
         actions << m_configureChannelAction;
     }
 
-    if( m_removeAction == 0 )
+    if( m_removeAction == nullptr )
     {
         m_removeAction = new QAction( QIcon::fromTheme( QStringLiteral("news-unsubscribe") ), i18n( "&Remove Subscription" ), this );
         m_removeAction->setProperty( "popupdropper_svg_id", "remove" );
@@ -347,7 +347,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
     m_removeAction->setData( QVariant::fromValue( sqlChannels ) );
     actions << m_removeAction;
 
-    if( m_updateAction == 0 )
+    if( m_updateAction == nullptr )
     {
         m_updateAction = new QAction( QIcon::fromTheme( QStringLiteral("view-refresh-amarok") ), i18n( "&Update Channel" ), this );
         m_updateAction->setProperty( "popupdropper_svg_id", "update" );
@@ -383,14 +383,14 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
     if( episodes.isEmpty() )
         return actions;
 
-    if( m_downloadAction == 0 )
+    if( m_downloadAction == nullptr )
     {
         m_downloadAction = new QAction( QIcon::fromTheme( QStringLiteral("go-down") ), i18n( "&Download Episode" ), this );
         m_downloadAction->setProperty( "popupdropper_svg_id", "download" );
         connect( m_downloadAction, &QAction::triggered, this, &SqlPodcastProvider::slotDownloadEpisodes );
     }
 
-    if( m_deleteAction == 0 )
+    if( m_deleteAction == nullptr )
     {
         m_deleteAction = new QAction( QIcon::fromTheme( QStringLiteral("edit-delete") ),
             i18n( "&Delete Downloaded Episode" ), this );
@@ -399,7 +399,7 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
         connect( m_deleteAction, &QAction::triggered, this, &SqlPodcastProvider::slotDeleteDownloadedEpisodes );
     }
 
-    if( m_writeTagsAction == 0 )
+    if( m_writeTagsAction == nullptr )
     {
         m_writeTagsAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ),
             i18n( "&Write Feed Information to File" ), this );
@@ -407,7 +407,7 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
         connect( m_writeTagsAction, &QAction::triggered, this, &SqlPodcastProvider::slotWriteTagsToFiles );
     }
 
-    if( m_keepAction == 0 )
+    if( m_keepAction == nullptr )
     {
         m_keepAction = new QAction( QIcon::fromTheme( QStringLiteral("podcast-amarok") ),
                 i18n( "&Keep downloaded file" ), this );
@@ -657,8 +657,8 @@ SqlPodcastProvider::configureProvider()
     }
 
     delete m_providerSettingsDialog;
-    m_providerSettingsDialog = 0;
-    m_providerSettingsWidget = 0;
+    m_providerSettingsDialog = nullptr;
+    m_providerSettingsWidget = nullptr;
 }
 
 void
@@ -812,7 +812,7 @@ void
 SqlPodcastProvider::slotDeleteDownloadedEpisodes()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
     Podcasts::SqlPodcastEpisodeList episodes = action->data().value<Podcasts::SqlPodcastEpisodeList>();
     deleteDownloadedEpisodes( episodes );
@@ -822,7 +822,7 @@ void
 SqlPodcastProvider::slotDownloadEpisodes()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
     Podcasts::SqlPodcastEpisodeList episodes = action->data().value<Podcasts::SqlPodcastEpisodeList>();
 
@@ -834,7 +834,7 @@ void
 SqlPodcastProvider::slotSetKeep()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
 
     Podcasts::SqlPodcastEpisodeList episodes = action->data().value<Podcasts::SqlPodcastEpisodeList>();
@@ -863,7 +863,7 @@ void
 SqlPodcastProvider::slotRemoveChannels()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
 
     Podcasts::SqlPodcastChannelList channels = action->data().value<Podcasts::SqlPodcastChannelList>();
@@ -889,7 +889,7 @@ void
 SqlPodcastProvider::slotUpdateChannels()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-        if( action == 0 )
+        if( action == nullptr )
             return;
     Podcasts::SqlPodcastChannelList channels = action->data().value<Podcasts::SqlPodcastChannelList>();
 
@@ -918,7 +918,7 @@ void
 SqlPodcastProvider::slotWriteTagsToFiles()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
 
     Podcasts::SqlPodcastEpisodeList episodes = action->data().value<Podcasts::SqlPodcastEpisodeList>();
@@ -930,7 +930,7 @@ void
 SqlPodcastProvider::slotConfigureChannel()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
 
     Podcasts::SqlPodcastChannelPtr podcastChannel = action->data().value<Podcasts::SqlPodcastChannelPtr>();
@@ -1213,14 +1213,14 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     if( sqlEpisode.isNull() )
     {
         error() << "sqlEpisodePtr is NULL after download";
-        return 0;
+        return nullptr;
     }
     Podcasts::SqlPodcastChannelPtr sqlChannel =
             Podcasts::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
     if( sqlChannel.isNull() )
     {
         error() << "sqlChannelPtr is NULL after download";
-        return 0;
+        return nullptr;
     }
 
     QDir dir( sqlChannel->saveLocation().toLocalFile() );
@@ -1582,7 +1582,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
 void
 SqlPodcastProvider::fetchImage( const SqlPodcastChannelPtr &channel )
 {
-    if( m_podcastImageFetcher == 0 )
+    if( m_podcastImageFetcher == nullptr )
     {
         m_podcastImageFetcher = new PodcastImageFetcher();
         connect( m_podcastImageFetcher, &PodcastImageFetcher::channelImageReady,
@@ -1607,7 +1607,7 @@ void
 SqlPodcastProvider::podcastImageFetcherDone( PodcastImageFetcher *fetcher )
 {
     fetcher->deleteLater();
-    m_podcastImageFetcher = 0;
+    m_podcastImageFetcher = nullptr;
 }
 
 void

@@ -41,7 +41,7 @@
 EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     : QDialog( parent )
     , m_ui( new Ui::EditFilterDialog )
-    , m_curToken( 0 )
+    , m_curToken( nullptr )
     , m_separator( " AND " )
     , m_isUpdating()
 {
@@ -162,7 +162,7 @@ EditFilterDialog::slotTokenSelected( Token *token )
     m_curToken = token;
 
     if( m_curToken && m_curToken->value() > Meta::valCustom )   // OR / AND tokens case
-        m_curToken = 0;
+        m_curToken = nullptr;
 
     updateAttributeEditor();
 }
@@ -175,7 +175,7 @@ EditFilterDialog::slotTokenRemoved( Token *token )
     m_filters.take( token );
     if( m_curToken == token )
     {
-        m_curToken = 0;
+        m_curToken = nullptr;
         updateAttributeEditor();
     }
 

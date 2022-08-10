@@ -39,7 +39,7 @@ TestAmarokImporter::getProvider()
     cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
                           "/importers_files/amarok2_mysqle" );
 
-    return ProviderPtr( new AmarokProvider( cfg, 0 ) );
+    return ProviderPtr( new AmarokProvider( cfg, nullptr ) );
 }
 
 ProviderPtr
@@ -69,7 +69,7 @@ TestAmarokImporter::getWritableProvider()
     cfg.insert( "embedded", true );
     cfg.insert( "dbPath", tmp.filePath( "amarok2_mysqle" ) );
 
-    return ProviderPtr( new AmarokProvider( cfg, 0 ) );
+    return ProviderPtr( new AmarokProvider( cfg, nullptr ) );
 }
 
 qint64
@@ -179,7 +179,7 @@ TestAmarokImporter::providerShouldIgnoreConfigsDbDriver()
     m_cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
                             "/importers_files/amarok2_mysqle" );
 
-    AmarokProvider provider( m_cfg, 0 );
+    AmarokProvider provider( m_cfg, nullptr );
 
     // The database isn't accessible by QPSQL driver, but it still should work
     QVERIFY( !provider.artists().empty() );
@@ -190,7 +190,7 @@ TestAmarokImporter::providerShouldHandleNonexistentDbDir()
 {
     m_cfg.insert( "dbPath", "/Im/sure/this/wont/exist" );
 
-    AmarokProvider provider( m_cfg, 0 );
+    AmarokProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -199,7 +199,7 @@ TestAmarokImporter::providerShouldHandleInvalidDbDir()
 {
     m_cfg.insert( "dbPath", QApplication::applicationDirPath() );
 
-    AmarokProvider provider( m_cfg, 0 );
+    AmarokProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -208,7 +208,7 @@ TestAmarokImporter::providerShouldHandleExternalConnectionError()
 {
     m_cfg.insert( "dbHost", "I hope this isn't a valid hostname" );
 
-    AmarokProvider provider( m_cfg, 0 );
+    AmarokProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -219,7 +219,7 @@ TestAmarokImporter::providerShouldHandleErroneousConfigValues()
     m_cfg.insert( "dbName", QColor( Qt::red ) );
     m_cfg.insert( "dbPort", "nonsensePort" );
 
-    AmarokProvider provider( m_cfg, 0 );
+    AmarokProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 

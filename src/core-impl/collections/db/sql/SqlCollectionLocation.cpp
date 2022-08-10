@@ -52,7 +52,7 @@ using namespace Collections;
 SqlCollectionLocation::SqlCollectionLocation( SqlCollection *collection )
     : CollectionLocation( collection )
     , m_collection( collection )
-    , m_delegateFactory( 0 )
+    , m_delegateFactory( nullptr )
     , m_overwriteFiles( false )
     , m_transferjob( )
 {
@@ -551,13 +551,13 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration &conf
             }
         }
 
-        KJob *job = 0;
-        KJob *moodJob = 0;
+        KJob *job = nullptr;
+        KJob *moodJob = nullptr;
 
         if( src.matches( dest, QUrl::StripTrailingSlash ) )
         {
             warning() << "move to itself found: " << destInfo.absoluteFilePath();
-            m_transferjob->slotJobFinished( 0 );
+            m_transferjob->slotJobFinished( nullptr );
             if( m_sources.isEmpty() )
                 return false;
             return true;
@@ -679,7 +679,7 @@ SqlCollectionLocation::moodFile( const QUrl &track ) const
 }
 
 TransferJob::TransferJob( SqlCollectionLocation * location, const Transcoding::Configuration & configuration )
-    : KCompositeJob( 0 )
+    : KCompositeJob( nullptr )
     , m_location( location )
     , m_killed( false )
     , m_transcodeFormat( configuration )
@@ -714,7 +714,7 @@ void TransferJob::slotResult( KJob *job )
 void TransferJob::start()
 {
     DEBUG_BLOCK
-    if( m_location == 0 )
+    if( m_location == nullptr )
     {
         setError( 1 );
         setErrorText( "Location is null!" );

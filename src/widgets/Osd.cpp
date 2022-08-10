@@ -625,7 +625,7 @@ Amarok::OSD::destroy()
 }
 
 Amarok::OSD::OSD()
-    : OSDWidget( 0 )
+    : OSDWidget( nullptr )
 {
     s_instance = this;
 

@@ -125,7 +125,7 @@ PlaylistsByProviderProxy::mimeData( const QModelIndexList &indexes ) const
     }
 
     if( sourceIndexes.isEmpty() )
-        return 0;
+        return nullptr;
     return sourceModel()->mimeData( sourceIndexes );
 }
 

@@ -75,7 +75,7 @@ public:
         {
             const QMetaObject *mo = receiver->metaObject();
             debug() << QStringLiteral( "Error: URL '%1' is invalid (from %2)" ).arg( url.url(), mo->className() );
-            return 0;
+            return nullptr;
         }
 
         QNetworkReply *r = get( QNetworkRequest(url) );
@@ -117,7 +117,7 @@ public Q_SLOTS:
 
 protected:
     QNetworkReply *createRequest(Operation op, const QNetworkRequest &req,
-                                         QIODevice *outgoingData = 0) override;
+                                         QIODevice *outgoingData = nullptr) override;
 
 private:
     NetworkAccessManagerProxy( QObject *parent = nullptr );

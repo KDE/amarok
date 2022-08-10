@@ -59,7 +59,7 @@ Qt::ItemFlags
 CollectionTreeItemModel::flags( const QModelIndex &idx ) const
 {
     if( !idx.isValid() )
-        return 0;
+        return {};
 
     Qt::ItemFlags flags = CollectionTreeItemModelBase::flags( idx );
     if( idx.parent().isValid() )

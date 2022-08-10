@@ -21,13 +21,13 @@ class ComponentsPrivate
 {
 public:
     ComponentsPrivate()
-        : collectionManager( 0 )
-        , engineController( 0 )
-        , sqlStorage( 0 )
-        , applicationController( 0 )
-        , collectionLocationDelegate( 0 )
-        , transcodingController( 0 )
-        , statSyncingController( 0 )
+        : collectionManager( nullptr )
+        , engineController( nullptr )
+        , sqlStorage( nullptr )
+        , applicationController( nullptr )
+        , collectionLocationDelegate( nullptr )
+        , transcodingController( nullptr )
+        , statSyncingController( nullptr )
     {}
 
     CollectionManager *collectionManager;

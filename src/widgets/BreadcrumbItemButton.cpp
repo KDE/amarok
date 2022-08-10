@@ -234,7 +234,7 @@ BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
 BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent )
     : BreadcrumbItemButton( QIcon::fromTheme( "bookmark-new-list" ), QString(), parent )
     , m_urlsCommand( urlsCommand )
-    , m_copyToClipboardAction( 0 )
+    , m_copyToClipboardAction( nullptr )
 {
     setToolTip( i18n( "List and run bookmarks, or create new ones" ) );
 

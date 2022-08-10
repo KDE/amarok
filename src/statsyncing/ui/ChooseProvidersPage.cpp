@@ -27,7 +27,7 @@ using namespace StatSyncing;
 
 ChooseProvidersPage::ChooseProvidersPage( QWidget *parent, Qt::WindowFlags f )
     : QWidget( parent, f )
-    , m_providersModel( 0 )
+    , m_providersModel( nullptr )
 {
     setupUi( this );
     QPushButton *configure = buttonBox->addButton( i18n( "Configure Synchronization..." ), QDialogButtonBox::ActionRole );
@@ -168,7 +168,7 @@ ChooseProvidersPage::updateEnabledFields()
         checkBox->setToolTip( enabled ? QString() : text );
     }
 
-    QAbstractButton *nextButton = 0;
+    QAbstractButton *nextButton = nullptr;
     foreach( QAbstractButton *button, buttonBox->buttons() )
     {
         if( buttonBox->buttonRole( button ) == QDialogButtonBox::AcceptRole )

@@ -61,7 +61,7 @@ Dynamic::BiasPtr
 Dynamic::AbstractBias::clone() const
 {
     QByteArray bytes;
-    QBuffer buffer( &bytes, 0 );
+    QBuffer buffer( &bytes, nullptr );
     buffer.open( QIODevice::ReadWrite );
 
     // write the bias
@@ -94,7 +94,7 @@ QWidget*
 Dynamic::AbstractBias::widget( QWidget* parent )
 {
     Q_UNUSED( parent );
-    return 0;
+    return nullptr;
 }
 
 void
@@ -145,7 +145,7 @@ QWidget*
 Dynamic::RandomBias::widget( QWidget* parent )
 {
     Q_UNUSED( parent );
-    return 0;
+    return nullptr;
 }
 
 Dynamic::TrackSet
@@ -238,7 +238,7 @@ QWidget*
 Dynamic::AndBias::widget( QWidget* parent )
 {
     Q_UNUSED( parent );
-    return 0;
+    return nullptr;
 }
 
 void
@@ -382,7 +382,7 @@ Dynamic::AndBias::biasReplaced( const Dynamic::BiasPtr &oldBias, const Dynamic::
     int index = m_biases.indexOf( oldBias );
     Q_ASSERT( index >= 0 );
 
-    disconnect( oldBias.data(), 0, this, 0 );
+    disconnect( oldBias.data(), nullptr, this, nullptr );
     bool inModel = DynamicModel::instance()->index( thisPtr ).isValid();
     if( inModel )
         DynamicModel::instance()->beginRemoveBias( thisPtr, index );

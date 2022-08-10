@@ -205,7 +205,7 @@ FilenameLayoutWidget::createToken(qint64 value) const
         { ".", "filename-dot-amarok", Dot },
         { " ", "filename-space-amarok", Space },
         { i18n( "Collection root" ), "drive-harddisk", CollectionRoot },
-        { QString(), 0, Space }
+        { QString(), nullptr, Space }
     };
 
     for( int i = 0; !tokenDefinitions[i].name.isNull(); ++i )
@@ -218,7 +218,7 @@ FilenameLayoutWidget::createToken(qint64 value) const
         }
     }
 
-    return 0;
+    return nullptr;
 }
 
 Token*

@@ -155,7 +155,7 @@ ImporterSqlConnection::slotQuery( const QString &query, const QVariantMap &bindV
 {
     Q_ASSERT( this->thread() == ThreadWeaver::Thread::currentThread() );
 
-    if( ok != 0 )
+    if( ok != nullptr )
         *ok = false;
 
     QSqlDatabase db = connection();
@@ -171,7 +171,7 @@ ImporterSqlConnection::slotQuery( const QString &query, const QVariantMap &bindV
 
     if( q.exec() )
     {
-        if( ok != 0 )
+        if( ok != nullptr )
             *ok = true;
 
         m_result.reserve( q.size() );

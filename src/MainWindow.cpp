@@ -250,7 +250,7 @@ MainWindow::init()
 
         //TODO: parent these browsers?
         PERF_LOG( "Creating CollectionWidget" )
-        m_collectionBrowser = new CollectionWidget( "collections", 0 );
+        m_collectionBrowser = new CollectionWidget( "collections", nullptr );
         //TODO: rename "Music Collections
         m_collectionBrowser->setPrettyName( i18n( "Local Music" ) );
         m_collectionBrowser->setIcon( QIcon::fromTheme( "drive-harddisk" ) );
@@ -260,7 +260,7 @@ MainWindow::init()
 
         PERF_LOG( "Creating ServiceBrowser" )
         ServiceBrowser *serviceBrowser = ServiceBrowser::instance();
-        serviceBrowser->setParent( 0 );
+        serviceBrowser->setParent( nullptr );
         serviceBrowser->setPrettyName( i18n( "Internet" ) );
         serviceBrowser->setIcon( QIcon::fromTheme( "internet-services" ) );
         serviceBrowser->setShortDescription( i18n( "Online sources of content" ) );
@@ -268,7 +268,7 @@ MainWindow::init()
         PERF_LOG( "Created ServiceBrowser" )
 
         PERF_LOG( "Creating PlaylistBrowser" )
-        m_playlistBrowser = new PlaylistBrowserNS::PlaylistBrowser( "playlists", 0 );
+        m_playlistBrowser = new PlaylistBrowserNS::PlaylistBrowser( "playlists", nullptr );
         m_playlistBrowser->setPrettyName( i18n("Playlists") );
         m_playlistBrowser->setIcon( QIcon::fromTheme( "view-media-playlist-amarok" ) );
         m_playlistBrowser->setShortDescription( i18n( "Various types of playlists" ) );
@@ -276,7 +276,7 @@ MainWindow::init()
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
         PERF_LOG( "Creating FileBrowser" )
-        FileBrowser *fileBrowser = new FileBrowser( "files", 0 );
+        FileBrowser *fileBrowser = new FileBrowser( "files", nullptr );
         fileBrowser->setPrettyName( i18n("Files") );
         fileBrowser->setIcon( QIcon::fromTheme( "folder-amarok" ) );
 
@@ -587,7 +587,7 @@ MainWindow::showNetworkRequestViewer() //SLOT
 void
 MainWindow::showHide() //SLOT
 {
-    const KWindowInfo info( winId(), 0, 0 );
+    const KWindowInfo info( winId(), {}, {} );
     const int currentDesktop = KWindowSystem::currentDesktop();
 
     if( !isVisible() )
@@ -1307,7 +1307,7 @@ MainWindow::setDefaultDockSizes() // SLOT
     int totalWidgetWidth = contentsRect().width();
 
     //get the width of the splitter handles, we need to subtract these...
-    const int splitterHandleWidth = style()->pixelMetric( QStyle::PM_DockWidgetSeparatorExtent, 0, 0 );
+    const int splitterHandleWidth = style()->pixelMetric( QStyle::PM_DockWidgetSeparatorExtent, nullptr, nullptr );
 
     totalWidgetWidth -= ( splitterHandleWidth * 2 );
 

@@ -74,7 +74,7 @@ class ArtistItem : public QTreeWidgetItem
 
         ArtistItem( const QString &text, QTreeWidget *parent = nullptr )
             : QTreeWidgetItem( parent )
-            , m_artist( 0 )
+            , m_artist( nullptr )
         {
             setText( 0, text );
         }
@@ -130,7 +130,7 @@ CoverManager::CoverManager( QWidget *parent )
     m_artistView->setUniformRowHeights( true );
     m_artistView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
-    ArtistItem *item = 0;
+    ArtistItem *item = nullptr;
     item = new ArtistItem( i18n( "All Artists" ) );
     item->setIcon(0, SmallIcon( "media-optical-audio-amarok" ) );
     m_items.append( item );
@@ -237,7 +237,7 @@ CoverManager::slotContinueConstruction() //SLOT
 
     m_fetcher = The::coverFetcher();
 
-    QTreeWidgetItem *item = 0;
+    QTreeWidgetItem *item = nullptr;
     int i = 0;
     if ( !artistToSelectInInitFunction.isEmpty() )
     {
@@ -260,7 +260,7 @@ CoverManager::slotContinueConstruction() //SLOT
     connect( m_searchEdit, &Amarok::LineEdit::textChanged,
              this, &CoverManager::slotSetFilterTimeout );
 
-    if( item == 0 )
+    if( item == nullptr )
         item = m_artistView->invisibleRootItem()->child( 0 );
 
     item->setSelected( true );
@@ -272,7 +272,7 @@ CoverManager::~CoverManager()
     Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );
     qDeleteAll( m_coverItems );
     delete m_coverView;
-    m_coverView = 0;
+    m_coverView = nullptr;
     s_instance = nullptr;
 }
 

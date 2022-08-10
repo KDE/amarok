@@ -31,9 +31,9 @@
 MagnatuneRedownloadHandler::MagnatuneRedownloadHandler(QWidget * parent)
 {
     m_parent = parent;
-    m_redownloadDialog = 0;
-    m_downloadDialog = 0;
-    m_albumDownloader = 0;
+    m_redownloadDialog = nullptr;
+    m_downloadDialog = nullptr;
+    m_albumDownloader = nullptr;
 }
 
 
@@ -188,7 +188,7 @@ void MagnatuneRedownloadHandler::redownloadApiResult( KJob* job )
     }
 
 
-    if (m_redownloadDialog == 0)
+    if (m_redownloadDialog == nullptr)
     {
         m_redownloadDialog = new MagnatuneRedownloadDialog( m_parent );
         connect( m_redownloadDialog, &MagnatuneRedownloadDialog::redownload, this, &MagnatuneRedownloadHandler::redownload );

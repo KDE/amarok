@@ -41,7 +41,7 @@ using namespace Collections;
 
 DaapCollectionFactory::DaapCollectionFactory()
     : Collections::CollectionFactory()
-    , m_browser( 0 )
+    , m_browser( nullptr )
 {
 }
 

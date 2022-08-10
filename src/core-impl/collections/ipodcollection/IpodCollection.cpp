@@ -58,18 +58,18 @@ const QStringList IpodCollection::s_audioVideoFileTypes = QStringList() << "mp4"
 
 IpodCollection::IpodCollection( const QDir &mountPoint, const QString &uuid )
     : Collections::Collection()
-    , m_configureDialog( 0 )
+    , m_configureDialog( nullptr )
     , m_mc( new Collections::MemoryCollection() )
-    , m_itdb( 0 )
+    , m_itdb( nullptr )
     , m_lastUpdated( 0 )
-    , m_preventUnmountTempFile( 0 )
+    , m_preventUnmountTempFile( nullptr )
     , m_mountPoint( mountPoint.absolutePath() )
     , m_uuid( uuid )
-    , m_iphoneAutoMountpoint( 0 )
-    , m_playlistProvider( 0 )
-    , m_configureAction( 0 )
-    , m_ejectAction( 0 )
-    , m_consolidateAction( 0 )
+    , m_iphoneAutoMountpoint( nullptr )
+    , m_playlistProvider( nullptr )
+    , m_configureAction( nullptr )
+    , m_ejectAction( nullptr )
+    , m_consolidateAction( nullptr )
 {
     DEBUG_BLOCK
     if( m_uuid.isEmpty() )
@@ -78,16 +78,16 @@ IpodCollection::IpodCollection( const QDir &mountPoint, const QString &uuid )
 
 IpodCollection::IpodCollection( const QString &uuid )
     : Collections::Collection()
-    , m_configureDialog( 0 )
+    , m_configureDialog( nullptr )
     , m_mc( new Collections::MemoryCollection() )
-    , m_itdb( 0 )
+    , m_itdb( nullptr )
     , m_lastUpdated( 0 )
-    , m_preventUnmountTempFile( 0 )
+    , m_preventUnmountTempFile( nullptr )
     , m_uuid( uuid )
-    , m_playlistProvider( 0 )
-    , m_configureAction( 0 )
-    , m_ejectAction( 0 )
-    , m_consolidateAction( 0 )
+    , m_playlistProvider( nullptr )
+    , m_configureAction( nullptr )
+    , m_ejectAction( nullptr )
+    , m_consolidateAction( nullptr )
 {
     DEBUG_BLOCK
     // following constructor displays error message if it cannot mount iPhone:
@@ -158,14 +158,14 @@ IpodCollection::~IpodCollection()
         writeDatabase();
     }
     delete m_preventUnmountTempFile; // this should have been certainly 0, but why not
-    m_preventUnmountTempFile = 0;
+    m_preventUnmountTempFile = nullptr;
 
     /* because m_itdb takes ownership of the tracks added to it, we need to remove the
      * tracks from itdb before we delete it because in Amarok, IpodMeta::Track is the owner
      * of the track */
     IpodDeviceHelper::unlinkPlaylistsTracksFromItdb( m_itdb );  // does nothing if m_itdb is null
     itdb_free( m_itdb );  // does nothing if m_itdb is null
-    m_itdb = 0;
+    m_itdb = nullptr;
 
     delete m_configureDialog;
     delete m_iphoneAutoMountpoint; // this can unmount iPhone and remove temporary dir
@@ -225,7 +225,7 @@ IpodCollection::createCapabilityInterface( Capabilities::Capability::Type type )
         default:
             break;
     }
-    return 0;
+    return nullptr;
 }
 
 Collections::QueryMaker*
@@ -621,7 +621,7 @@ IpodCollection::addTrack( IpodMeta::Track *track )
     {
         /* this new track was not added to MemoryCollection, it may vanish soon, prevent
          * dangling pointer in m_itdb */
-        itdb_playlist_remove_track( 0 /* = MPL */, itdbTrack );
+        itdb_playlist_remove_track( nullptr /* = MPL */, itdbTrack );
         itdb_track_unlink( itdbTrack );
     }
     m_itdbMutex.unlock();
@@ -680,13 +680,13 @@ bool IpodCollection::writeDatabase()
     {
         // we have to delete unmount-preventing file even in this case
         delete m_preventUnmountTempFile;
-        m_preventUnmountTempFile = 0;
+        m_preventUnmountTempFile = nullptr;
         warning() << "Refusing to write iTunes database to iPod becauase device is not safe to write";
         return false;
     }
 
     m_itdbMutex.lock();
-    GError *error = 0;
+    GError *error = nullptr;
     bool success = itdb_write( m_itdb, &error );
     m_itdbMutex.unlock();
     QString gpodError;
@@ -694,10 +694,10 @@ bool IpodCollection::writeDatabase()
     {
         gpodError = QString::fromUtf8( error->message );
         g_error_free( error );
-        error = 0;
+        error = nullptr;
     }
     delete m_preventUnmountTempFile;  // this deletes the file
-    m_preventUnmountTempFile = 0;
+    m_preventUnmountTempFile = nullptr;
 
     if( success )
     {

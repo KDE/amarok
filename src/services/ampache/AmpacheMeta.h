@@ -38,7 +38,7 @@ class AmpacheTrack  : public ServiceTrack
 {
 
 public:
-    explicit AmpacheTrack( const QString& title, ServiceBase * service = 0 )
+    explicit AmpacheTrack( const QString& title, ServiceBase * service = nullptr )
         : ServiceTrack( title )
         , m_service( service )
         , m_discNumber( 0 )

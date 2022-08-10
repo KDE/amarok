@@ -34,7 +34,7 @@
 QTEST_GUILESS_MAIN( TestMetaFileTrack )
 
 TestMetaFileTrack::TestMetaFileTrack()
-    : m_tmpDir( 0 )
+    : m_tmpDir( nullptr )
 {}
 
 void TestMetaFileTrack::initTestCase()
@@ -152,7 +152,7 @@ void TestMetaFileTrack::testIsEditable()
 
     QFile testFile( m_tmpFileName );
 
-    QVERIFY( testFile.setPermissions( 0x0000 ) );
+    QVERIFY( testFile.setPermissions( {} ) );
     /* When the tests are run as root under Linux, the file is accessible even when it
      * has no permission bits set. Just skip one verify in this case in order not to
      * break whole test. */

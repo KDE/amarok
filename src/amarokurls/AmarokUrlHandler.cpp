@@ -35,7 +35,7 @@
 #include <KLocalizedString>
 
 namespace The {
-    static AmarokUrlHandler* s_AmarokUrlHandler_instance = 0;
+    static AmarokUrlHandler* s_AmarokUrlHandler_instance = nullptr;
 
     AmarokUrlHandler* amarokUrlHandler()
     {
@@ -48,9 +48,9 @@ namespace The {
 
 AmarokUrlHandler::AmarokUrlHandler()
     : QObject()
-    , m_navigationRunner( 0 )
-    , m_playRunner ( 0 )
-    , m_timecodeObserver( 0 )
+    , m_navigationRunner( nullptr )
+    , m_playRunner ( nullptr )
+    , m_timecodeObserver( nullptr )
 {
     DEBUG_BLOCK
 

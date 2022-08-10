@@ -88,7 +88,7 @@ private:
             if( track->playableUrl() == url )
                 return track;
 
-        return Meta::TrackPtr( 0 );
+        return Meta::TrackPtr( nullptr );
     }
 
     class CollectionLocationTestImpl : public CollectionLocation

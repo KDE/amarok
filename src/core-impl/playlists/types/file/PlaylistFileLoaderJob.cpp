@@ -80,7 +80,7 @@ PlaylistFileLoaderJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *
 {
     Q_UNUSED(self);
     Q_UNUSED(thread);
-    SemaphoreReleaser releaser( m_playlist->isLoadingAsync() ? 0 : &m_playlist->m_loadingDone );
+    SemaphoreReleaser releaser( m_playlist->isLoadingAsync() ? nullptr : &m_playlist->m_loadingDone );
     m_downloadSemaphore.acquire(); // wait for possible download to finish
     if( m_actualPlaylistFile.isEmpty() )
         return; // previous error, already reported

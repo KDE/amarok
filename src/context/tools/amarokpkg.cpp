@@ -124,7 +124,7 @@ int main(int argc, char **argv)
     aboutData.processCommandLine(&parser);
 
     QString packageRoot = QStringLiteral("kpackage/amarok");
-    KPackage::Package *installer = 0;
+    KPackage::Package *installer = nullptr;
 
     if (parser.isSet(QStringLiteral("list"))) {
         listPackages();

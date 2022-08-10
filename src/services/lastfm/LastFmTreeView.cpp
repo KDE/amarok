@@ -35,10 +35,10 @@
 
 LastFmTreeView::LastFmTreeView ( QWidget* parent )
         : Amarok::PrettyTreeView ( parent )
-        , m_timer ( 0 )
-        , m_pd( 0 )
-        , m_appendAction ( 0 )
-        , m_loadAction ( 0 )
+        , m_timer ( nullptr )
+        , m_pd( nullptr )
+        , m_appendAction ( nullptr )
+        , m_loadAction ( nullptr )
         , m_dragMutex()
         , m_ongoingDrag( false )
 {
@@ -92,7 +92,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
         case LastFm::ArtistsChild:
         case LastFm::UserChildPersonal:
         {
-            if ( m_appendAction == 0 )
+            if ( m_appendAction == nullptr )
             {
                 m_appendAction = new QAction ( QIcon::fromTheme( "media-track-add-amarok" ), i18n ( "&Add to Playlist" ), this );
                 m_appendAction->setProperty( "popupdropper_svg_id", "append" );
@@ -101,7 +101,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
 
             actions.append ( m_appendAction );
 
-            if ( m_loadAction == 0 )
+            if ( m_loadAction == nullptr )
             {
                 m_loadAction = new QAction ( QIcon::fromTheme( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
                 m_appendAction->setProperty( "popupdropper_svg_id", "load" );
@@ -170,10 +170,10 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
 
         PopupDropperItem* subItem;
 
-        PopupDropper * morePud = 0;
+        PopupDropper * morePud = nullptr;
         if ( actions.count() > 1 )
         {
-            morePud = The::popupDropperFactory()->createPopupDropper( 0, true );
+            morePud = The::popupDropperFactory()->createPopupDropper( nullptr, true );
 
             foreach( QAction * action, actions )
                 morePud->addItem( The::popupDropperFactory()->createItem( action ) );

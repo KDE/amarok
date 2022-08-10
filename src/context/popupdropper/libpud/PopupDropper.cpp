@@ -35,8 +35,8 @@ PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget
     : QObject( parent )
     , standalone( sa )
     , widget( widget )
-    , scene( 0 )
-    , view( 0 )
+    , scene( nullptr )
+    , view( nullptr )
     , fade( PopupDropper::FadeInOut )
     , fadeHideTimer()
     , fadeShowTimer()
@@ -52,7 +52,7 @@ PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget
     , hoveredBorderPen()
     , hoveredFillBrush()
     , file()
-    , sharedRenderer( 0 )
+    , sharedRenderer( nullptr )
     , horizontalOffset( 30 )
     , pdiItems()
     , overlayLevel( 1 )
@@ -77,8 +77,8 @@ PopupDropperPrivate::PopupDropperPrivate( PopupDropper* parent, bool sa, QWidget
     hoveredFillColor.setAlpha( 32 );
     hoveredFillBrush.setColor( hoveredFillColor );
     hoveredFillBrush.setStyle( Qt::SolidPattern );
-    scene = new QGraphicsScene( ( sa ? 0 : parent ) );
-    view = new PopupDropperView( parent, scene, ( sa ? 0 : widget ) );
+    scene = new QGraphicsScene( ( sa ? nullptr : parent ) );
+    view = new PopupDropperView( parent, scene, ( sa ? nullptr : widget ) );
     //qDebug() << "on create, view size = " << view->size();
     deleteTimer.setSingleShot( true );
     fadeHideTimer.setDirection( QTimeLine::Backward );
@@ -204,7 +204,7 @@ void PopupDropperPrivate::reposItems()
         my_max = ( ( counter + 1 ) * partitionsize ) - verticalmargin;
         //qDebug() << "my_min = " << my_min << ", my_max = " << my_max;
         PopupDropperItem* pItem = dynamic_cast<PopupDropperItem*>( allItems.at( i ) );
-        QGraphicsLineItem* qglItem = 0;
+        QGraphicsLineItem* qglItem = nullptr;
         if( pItem )
         {
             pItem->setPopupDropper( q ); //safety
@@ -362,7 +362,7 @@ PopupDropperItem* PopupDropper::addSubmenu( PopupDropper** pd, const QString &te
     if( !(*pd) )
     {
         qWarning() << "Did not pass in a valid PUD!";
-        return 0;
+        return nullptr;
     }
     PopupDropperPrivate* newD = (*pd)->d;
     newD->submenu = true;
@@ -382,7 +382,7 @@ PopupDropperItem* PopupDropper::addSubmenu( PopupDropper** pd, const QString &te
     pdi->setHoverIndicatorShowStyle( PopupDropperItem::OnHover );
     d->submenuMap[action] = newD;
     delete (*pd);
-    (*pd) = 0;
+    (*pd) = nullptr;
     foreach( PopupDropperItem* item, newD->pdiItems )
         item->setPopupDropper( this );
     //qDebug() << "d->submenuMap[pda] = " << d->submenuMap[pda];

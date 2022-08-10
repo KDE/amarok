@@ -62,7 +62,7 @@ class MusicDNSAudioDecoder : public QObject, public ThreadWeaver::Job
         explicit MusicDNSAudioDecoder( const Meta::TrackList &tracks, const int sampleLength = DEFAULT_SAMPLE_LENGTH );
         ~MusicDNSAudioDecoder() override;
 
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
 
     Q_SIGNALS:
         void trackDecoded( const Meta::TrackPtr, const QString );

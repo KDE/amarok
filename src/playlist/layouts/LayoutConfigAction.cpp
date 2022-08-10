@@ -35,7 +35,7 @@ namespace Playlist
 
 LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     : QAction( parent )
-    , m_layoutDialog( 0 )
+    , m_layoutDialog( nullptr )
 {
     QIcon actionIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/playlist-layouts-22.png") ) );    //TEMPORARY ICON
     setIcon( actionIcon );

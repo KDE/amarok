@@ -51,7 +51,7 @@ Qt::ItemFlags
 APG::TreeModel::flags( const QModelIndex &index ) const
 {
     if ( !index.isValid() )
-        return 0;
+        return {};
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -144,8 +144,8 @@ QModelIndex
 APG::TreeModel::insertGroup( const QModelIndex& thisIdx )
 {
     int row = thisIdx.row();
-    ConstraintNode* p = 0;
-    ConstraintNode* n = 0;
+    ConstraintNode* p = nullptr;
+    ConstraintNode* n = nullptr;
 
     if ( thisIdx.isValid() )
         p = static_cast<ConstraintNode*>( thisIdx.internalPointer() );
@@ -156,7 +156,7 @@ APG::TreeModel::insertGroup( const QModelIndex& thisIdx )
         beginInsertRows( thisIdx, 0, 0 );
         n = ConstraintFactory::instance()->createGroup( p, 0 );
         endInsertRows();
-        if ( n != 0 ) {
+        if ( n != nullptr ) {
             connectDCSlotToNode( n );
             return createIndex( 0, 0, n );
         }
@@ -166,7 +166,7 @@ APG::TreeModel::insertGroup( const QModelIndex& thisIdx )
         beginInsertRows( parentIdx, row + 1, row + 1 );
         n = ConstraintFactory::instance()->createGroup( p, row + 1 );
         endInsertRows();
-        if ( n != 0 ) {
+        if ( n != nullptr ) {
             connectDCSlotToNode( n );
             return createIndex( row + 1, 0, n );
         }
@@ -180,13 +180,13 @@ APG::TreeModel::insertConstraint( const QModelIndex& thisIdx, const QString& con
     int row = thisIdx.row();
     if ( thisIdx.isValid() ) {
         ConstraintNode* p = static_cast<ConstraintNode*>( thisIdx.internalPointer() );
-        ConstraintNode* n = 0;
+        ConstraintNode* n = nullptr;
         if ( p->getNodeType() == Constraint::ConstraintGroupType ) {
             beginInsertRows( thisIdx, 0, 0 );
             QString constraintType = ConstraintFactory::instance()->untranslateName( constraintName );
             n = ConstraintFactory::instance()->createConstraint( constraintType, p, 0 );
             endInsertRows();
-            if ( n != 0 ) {
+            if ( n != nullptr ) {
                 connectDCSlotToNode( n );
                 return createIndex( 0, 0, n );
             }
@@ -197,7 +197,7 @@ APG::TreeModel::insertConstraint( const QModelIndex& thisIdx, const QString& con
             QString constraintType = ConstraintFactory::instance()->untranslateName( constraintName );
             n = ConstraintFactory::instance()->createConstraint( constraintType, p, row + 1 );
             endInsertRows();
-            if ( n != 0 ) {
+            if ( n != nullptr ) {
                 connectDCSlotToNode( n );
                 return createIndex( row + 1, 0, n );
             }

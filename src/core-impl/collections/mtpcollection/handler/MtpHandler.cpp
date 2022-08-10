@@ -43,10 +43,10 @@ using namespace Meta;
 
 MtpHandler::MtpHandler( Collections::MtpCollection *mc )
     : MediaDeviceHandler( mc )
-    , m_device( 0 )
+    , m_device( nullptr )
     , m_capacity( 0.0 )
     , m_default_parent_folder( 0 )
-    , m_folders( 0 )
+    , m_folders( nullptr )
     , m_folderStructure()
     , m_format()
     , m_name()
@@ -70,12 +70,12 @@ MtpHandler::~MtpHandler()
     DEBUG_BLOCK
     // clear folder structure
 
-    if ( m_folders != 0 )
+    if ( m_folders != nullptr )
     {
 
         LIBMTP_destroy_folder_t( m_folders );
 
-        m_folders = 0;
+        m_folders = nullptr;
         debug() << "Folders destroyed";
     }
 
@@ -85,7 +85,7 @@ MtpHandler::~MtpHandler()
 
     // release device
 
-    if ( m_device != 0 )
+    if ( m_device != nullptr )
     {
 
         LIBMTP_Release_Device( m_device );
@@ -216,7 +216,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
 
     bool success = false;
 
-    LIBMTP_mtpdevice_t *device = 0;
+    LIBMTP_mtpdevice_t *device = nullptr;
     // test raw device for connectability
     for ( int i = 0; i < numrawdevices; i++ )
     {
@@ -251,7 +251,7 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
 
     m_device = device;
 
-    if ( m_device == 0 )
+    if ( m_device == nullptr )
     {
         // TODO: error protection
         success = false;
@@ -346,15 +346,15 @@ MtpHandler::terminate()
 {
     DEBUG_BLOCK
     // clear folder structure
-    if ( m_folders != 0 )
+    if ( m_folders != nullptr )
     {
         LIBMTP_destroy_folder_t( m_folders );
 
-        m_folders = 0;
+        m_folders = nullptr;
     }
 
     // release device
-    if ( m_device != 0 )
+    if ( m_device != nullptr )
     {
         LIBMTP_Release_Device( m_device );
         /* possible race condition with statusbar destructor,
@@ -616,7 +616,7 @@ MtpHandler::privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 int
 MtpHandler::getTrackToFile( const uint32_t id, const QString & filename )
 {
-    return LIBMTP_Get_Track_To_File( m_device, id, filename.toUtf8(), 0, 0 );
+    return LIBMTP_Get_Track_To_File( m_device, id, filename.toUtf8(), nullptr, nullptr );
 }
 
 int
@@ -695,7 +695,7 @@ MtpHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrack
 
 
     int ret = LIBMTP_Send_Track_From_File( m_device, qstrdup( srcTrack->playableUrl().path().toUtf8() ), m_mtpTrackHash.value( destTrack ),
-                                           0, 0 );
+                                           nullptr, nullptr );
 
     debug() << "sent";
 //    Q_EMIT canCopyMoreTracks();
@@ -746,7 +746,7 @@ MtpHandler::prepareToParseTracks()
 {
     DEBUG_BLOCK
 
-    m_currentTrackList = LIBMTP_Get_Tracklisting_With_Callback( m_device, 0, this );
+    m_currentTrackList = LIBMTP_Get_Tracklisting_With_Callback( m_device, nullptr, this );
 }
 
 bool
@@ -779,7 +779,7 @@ MtpHandler::prepareToParsePlaylists()
 bool
 MtpHandler::isEndOfParsePlaylistsList()
 {
-    return (m_currentPlaylistList == 0);
+    return (m_currentPlaylistList == nullptr);
 }
 
 
@@ -1419,7 +1419,7 @@ MtpHandler::createCapabilityInterface( Handler::Capability::Type type )
             return new Handler::MtpWriteCapability( this );
 
         default:
-            return 0;
+            return nullptr;
     }
 }
 

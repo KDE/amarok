@@ -65,7 +65,7 @@ ConstraintTypes::Checkpoint::Checkpoint( QDomElement& xmlelem, ConstraintNode* p
         , m_position( 0 )
         , m_strictness( 1.0 )
         , m_checkpointType( CheckpointTrack )
-        , m_matcher( 0 )
+        , m_matcher( nullptr )
 {
     QDomAttr a;
 
@@ -105,7 +105,7 @@ ConstraintTypes::Checkpoint::Checkpoint( ConstraintNode* p )
         , m_position( 0 )
         , m_strictness( 1.0 )
         , m_checkpointType( CheckpointTrack )
-        , m_matcher( 0 )
+        , m_matcher( nullptr )
 {
 }
 
@@ -397,7 +397,7 @@ ConstraintTypes::Checkpoint::AlbumMatcher::match( const Meta::TrackPtr& t ) cons
 
 ConstraintTypes::CheckpointEditWidget::CheckpointEditWidget( const qint64 length,
                                                              const int strictness,
-                                                             const Meta::DataPtr& data ) : QWidget( 0 )
+                                                             const Meta::DataPtr& data ) : QWidget( nullptr )
 {
     ui.setupUi( this );
 

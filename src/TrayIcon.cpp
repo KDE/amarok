@@ -220,7 +220,7 @@ Amarok::TrayIcon::paused()
 void
 Amarok::TrayIcon::stopped()
 {
-    m_track = 0;
+    m_track = nullptr;
     updateMenu(); // remove custom track actions on stop
     updateToolTipIcon();
 }

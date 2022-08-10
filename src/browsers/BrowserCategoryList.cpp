@@ -93,7 +93,7 @@ void
 BrowserCategoryList::categoryActivated( const QModelIndex &index )
 {
     DEBUG_BLOCK
-    BrowserCategory * category = 0;
+    BrowserCategory * category = nullptr;
 
     if( index.data( CustomCategoryRoles::CategoryRole ).canConvert<BrowserCategory *>() )
         category = index.data( CustomCategoryRoles::CategoryRole ).value<BrowserCategory *>();
@@ -214,7 +214,7 @@ void BrowserCategoryList::back()
     BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( activeCategory() );
     if( childList )
     {
-        if( childList->activeCategory() != 0 )
+        if( childList->activeCategory() != nullptr )
         {
             childList->back();
             return;
