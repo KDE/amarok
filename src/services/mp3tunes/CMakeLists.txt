@@ -5,16 +5,18 @@ include_directories(
     ../../statusbar
     ./libmp3tunes
     ./harmonydaemon
+    ${CMAKE_CURRENT_BINARY_DIR}/../../..
+)
+include_directories(SYSTEM
     ${LIBXML2_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_BINARY_DIR}/../../..
-
-
 )
 ########### next target ###############
 
 include_directories(
     ./harmonydaemon
+)
+include_directories(SYSTEM
     ${GLIB2_INCLUDE_DIR}
     ${GOBJECT_INCLUDE_DIR}
     ${LOUDMOUTH_INCLUDE_DIRS}
@@ -23,7 +25,7 @@ include_directories(
 if(LIBGCRYPT_FOUND)
     add_definitions(-DHAVE_LIBGCRYPT)
 else()
-    include_directories(${OPENSSL_INCLUDE_DIR})
+    include_directories(SYSTEM ${OPENSSL_INCLUDE_DIR})
     add_definitions(-DHAVE_OPENSSL)
 endif()
 

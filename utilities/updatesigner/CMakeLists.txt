@@ -10,8 +10,10 @@ find_package(QCA2 REQUIRED)
 if( QCA2_FOUND )
     include_directories(
         ${CMAKE_CURRENT_BINARY_DIR}
-        ${QCA2_INCLUDE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/shared
+    )
+    include_directories(SYSTEM
+        ${QCA2_INCLUDE_DIR}
     )
 
     set(amarok-update-signer_SRCS signer.cpp amarok-update-signer.cpp)

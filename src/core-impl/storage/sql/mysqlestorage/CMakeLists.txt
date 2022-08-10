@@ -1,6 +1,6 @@
 ########### mysqle ###############
 
-include_directories(${MYSQL_INCLUDE_DIR})
+include_directories(SYSTEM ${MYSQL_INCLUDE_DIR})
 
 set( amarok_storage-mysqlestorage_PART_SRCS
      ../mysql-shared/MySqlStorage.cpp

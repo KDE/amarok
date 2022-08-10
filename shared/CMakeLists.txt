@@ -36,11 +36,11 @@ generate_export_header(amarokshared BASE_NAME amarokshared)
 
 target_include_directories( amarokshared PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
 
-include_directories( ${TAGLIB_INCLUDES} )
+include_directories(SYSTEM ${TAGLIB_INCLUDES} )
 add_definitions( ${TAGLIB_CFLAGS} )
 target_link_libraries( amarokshared ${TAGLIB_LIBRARIES} KF5::Codecs)
 if( TAGLIB-EXTRAS_FOUND )
-    include_directories( ${TAGLIB-EXTRAS_INCLUDES} )
+    include_directories(SYSTEM ${TAGLIB-EXTRAS_INCLUDES} )
     add_definitions( ${TAGLIB-EXTRAS_CFLAGS} )
     target_link_libraries( amarokshared ${TAGLIB-EXTRAS_LIBRARIES} )
 endif()

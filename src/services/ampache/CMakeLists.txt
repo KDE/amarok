@@ -8,7 +8,7 @@ include_directories(
 )
 
 if( LIBLASTFM_FOUND )
-    include_directories(
+    include_directories(SYSTEM
         ${LIBLASTFM_INCLUDE_DIR}
     )
 endif()

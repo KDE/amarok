@@ -42,6 +42,8 @@ include_directories(
     ${CMAKE_BINARY_DIR}/src
     ${CMAKE_BINARY_DIR}/tests
     ${AMAROK_COLLECTION_SUPPORT_DIR}
+)
+include_directories(SYSTEM
     ${MYSQL_INCLUDE_DIR}
 )
 

@@ -762,7 +762,7 @@ if( LIBLASTFM_FOUND )
         ${amaroklib_LIB_SRCS}
         LastfmReadLabelCapability.cpp
     )
-    include_directories( ${LIBLASTFM_INCLUDE_DIR}/..  ${LIBLASTFM_INCLUDE_DIR})
+    include_directories(SYSTEM ${LIBLASTFM_INCLUDE_DIR}/..  ${LIBLASTFM_INCLUDE_DIR})
     set( EXTRA_LIBS ${LIBLASTFM_LIBRARY} )
 endif()
 
@@ -772,7 +772,7 @@ if( LIBOFA_FOUND AND AVCODEC_FOUND AND AVFORMAT_FOUND AND AVUTIL_FOUND )
         ${AVFORMAT_DEFINITIONS}
         ${AVUTIL_DEFINITIONS}
     )
-    include_directories(
+    include_directories(SYSTEM
         ${AVCODEC_INCLUDE_DIRS}
         ${AVFORMAT_INCLUDE_DIRS}
         ${AVUTIL_INCLUDE_DIRS}
@@ -871,11 +871,11 @@ if( Qt5UiTools_FOUND )
     add_definitions( -DWITH_QT_UITOOLS )
 endif()
 
-include_directories(${TAGLIB_INCLUDES})
+include_directories(SYSTEM ${TAGLIB_INCLUDES})
 add_definitions(${TAGLIB_CFLAGS})
 target_link_libraries(amaroklib ${TAGLIB_LIBRARIES})
 if( TAGLIB-EXTRAS_FOUND )
-    include_directories(${TAGLIB-EXTRAS_INCLUDES})
+    include_directories(SYSTEM ${TAGLIB-EXTRAS_INCLUDES})
     add_definitions(${TAGLIB-EXTRAS_CFLAGS})
     target_link_libraries(amaroklib ${TAGLIB-EXTRAS_LIBRARIES})
 endif()
