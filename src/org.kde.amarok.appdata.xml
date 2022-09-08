@@ -459,8 +459,13 @@
       <image>https://amarok.kde.org/files/Amarok2.7screenie.png</image>
     </screenshot>
   </screenshots>
+  <content_rating type="oars-1.1"></content_rating>
   <project_group>KDE</project_group>
   <provides>
     <binary>amarok</binary>
   </provides>
+  <releases>
+    <release version="2.9.71" date="2021-01-31" type="development"/>
+    <release version="2.9.0" date="2018-03-07" type="stable"/>
+  </releases>
 </component>
