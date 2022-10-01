@@ -22,6 +22,7 @@
   <name xml:lang="ia">Amarok</name>
   <name xml:lang="id">Amarok</name>
   <name xml:lang="it">Amarok</name>
+  <name xml:lang="ka">Amarok</name>
   <name xml:lang="ko">Amarok</name>
   <name xml:lang="nl">Amarok</name>
   <name xml:lang="pa">ਅਮਰੋਕ</name>
@@ -118,6 +119,7 @@
     <p xml:lang="ia">Characteristicas:</p>
     <p xml:lang="id">Fitur:</p>
     <p xml:lang="it">Funzionalità:</p>
+    <p xml:lang="ka">თვისებები:</p>
     <p xml:lang="ko">기능:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
     <p xml:lang="pa">ਲੱਛਣ:</p>
@@ -299,6 +301,7 @@
       <li xml:lang="ia">Supporto de scripting</li>
       <li xml:lang="id">Dukungan skrip</li>
       <li xml:lang="it">Supporto per la creazione di script</li>
+      <li xml:lang="ka">სკრიპტების მხარდაჭერა</li>
       <li xml:lang="ko">스크립팅 지원</li>
       <li xml:lang="nl">Ondersteuning voor scripting</li>
       <li xml:lang="pl">Obsługa skryptów</li>
@@ -336,6 +339,7 @@
       <li xml:lang="ia">Gerente de copertura</li>
       <li xml:lang="id">Pengelola sampul</li>
       <li xml:lang="it">Gestore delle copertine</li>
+      <li xml:lang="ka">ყდის მმართველი</li>
       <li xml:lang="ko">커버 관리자</li>
       <li xml:lang="nl">Hoesbeheerder</li>
       <li xml:lang="pl">Zarządzanie okładkami</li>
@@ -371,6 +375,7 @@
       <li xml:lang="hu">Hangerőkiegyenlítés támogatása</li>
       <li xml:lang="id">Dukungan gain putar ulang</li>
       <li xml:lang="it">Supporto del guadagno di riproduzione</li>
+      <li xml:lang="ka">გაძლიერების მხარდაჭერა</li>
       <li xml:lang="ko">리플레이게인 지원</li>
       <li xml:lang="nl">Ondersteuning van Replay gain</li>
       <li xml:lang="pl">Obsługa trybu replay gain</li>
@@ -411,6 +416,7 @@
       <caption xml:lang="hu">Zenelejátszás Amarokkal</caption>
       <caption xml:lang="id">Memutar musik di Amarok</caption>
       <caption xml:lang="it">Riproduzione della musica con Amarok</caption>
+      <caption xml:lang="ka">მუსიკის დაკვრა Amarok-ში</caption>
       <caption xml:lang="ko">Amarok으로 음악 재생</caption>
       <caption xml:lang="nl">Muziek afspelen in Amarok</caption>
       <caption xml:lang="pl">Odtwarzanie muzyki w Amaroku</caption>
@@ -444,6 +450,7 @@
       <caption xml:lang="ia">Fenestras de Amarok</caption>
       <caption xml:lang="id">Jendela Amarok</caption>
       <caption xml:lang="it">Finestre di Amarok</caption>
+      <caption xml:lang="ka">Amarok Windows-ზე</caption>
       <caption xml:lang="ko">Amarok 창</caption>
       <caption xml:lang="nl">Vensters in Amarok</caption>
       <caption xml:lang="pl">Okna Amaroka</caption>
