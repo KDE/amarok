@@ -1,0 +1,135 @@
+# Galician translation for amarok
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the amarok package.
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# Marce Villarino <mvillarino@kde-espana.es>, 2012.
+# Adrian Chaves <adrian@chaves.io>, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: amarok\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-05-20 02:48+0200\n"
+"PO-Revision-Date: 2018-04-22 08:51+0100\n"
+"Last-Translator: Adrian Chaves <adrian@chaves.io>\n"
+"Language-Team: Galician <kde-i18n-doc@kde.org>\n"
+"Language: gl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Miguel Anxo Bouzada"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "mbouzada@gmail.com"
+
+#: amarokpkg.cpp:84 amarokpkg.cpp:97
+#, kde-format
+msgid "Amarok Applet Manager"
+msgstr "Xestor dos miniaplicativos de Amarok"
+
+#: amarokpkg.cpp:86
+#, kde-format
+msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+msgstr "© 2008, Aaron Seigo, © 2009, Leo Franchi"
+
+#: amarokpkg.cpp:87
+#, kde-format
+msgid "Aaron Seigo"
+msgstr "Aaron Seigo"
+
+#: amarokpkg.cpp:88
+#, kde-format
+msgid "Original author"
+msgstr "Autor orixinal"
+
+#: amarokpkg.cpp:90
+#, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: amarokpkg.cpp:91
+#, kde-format
+msgid "Developer"
+msgstr "Desenvolvedor"
+
+#: amarokpkg.cpp:108
+#, kde-format
+msgid "For install or remove, operates on applets installed for all users."
+msgstr ""
+"Para instalar ou retirar; actúa sobre os miniaplicativos instalados para "
+"todos os usuarios."
+
+#: amarokpkg.cpp:110
+#, kde-format
+msgctxt "Do not translate <path>"
+msgid "Install the applet at <path>"
+msgstr "Instalar o miniaplicativo en <path>"
+
+#: amarokpkg.cpp:112
+#, kde-format
+msgctxt "Do not translate <path>"
+msgid "Upgrade the applet at <path>"
+msgstr "Anovar o miniaplicativo en <path>"
+
+#: amarokpkg.cpp:114
+#, kde-format
+msgid "Most installed applets"
+msgstr "A maioría dos miniaplicativos instalados"
+
+#: amarokpkg.cpp:116
+#, kde-format
+msgctxt "Do not translate <name>"
+msgid "Remove the applet named <name>"
+msgstr "Retirar o miniaplicativo nomeado <name>"
+
+#: amarokpkg.cpp:118
+#, kde-format
+msgid ""
+"Absolute path to the package root. If not supplied, then the standard data "
+"directories for this KDE session will be searched instead."
+msgstr ""
+"A ruta absoluta á raíz do paquete. Se non se indica, entón buscarase nos "
+"directorios estándar para datos desta sesión de KDE."
+
+#: amarokpkg.cpp:176
+#, kde-format
+msgid "Successfully removed %1"
+msgstr "%1 foi retirado satisfactoriamente"
+
+#: amarokpkg.cpp:178
+#, kde-format
+msgid "Removal of %1 failed."
+msgstr "Fallou a retirada de %1."
+
+#: amarokpkg.cpp:183
+#, kde-format
+msgid "Plugin %1 is not installed."
+msgstr "O complemento %1 non está instalado."
+
+#: amarokpkg.cpp:188
+#, kde-format
+msgid "Successfully installed %1"
+msgstr "%1 foi instalado correctamente"
+
+#: amarokpkg.cpp:191
+#, kde-format
+msgid "Installation of %1 failed."
+msgstr "Fallou a instalación de %1."
+
+#: amarokpkg.cpp:199
+#, kde-format
+msgctxt ""
+"No option was given, this is the error message telling the user he needs at "
+"least one, do not translate install, remove, upgrade nor list"
+msgid "One of install, remove, upgrade or list is required."
+msgstr "Requírese unha de install, remove, upgrade ou list."
+
+#~ msgid "Install, list, remove Amarok applets"
+#~ msgstr "Instalar, listar ou retirar miniaplicativos de Amarok"

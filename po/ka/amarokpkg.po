@@ -1,0 +1,129 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This file is copyright:
+# This file is distributed under the same license as the amarok package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: amarok\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-05-20 02:48+0200\n"
+"PO-Revision-Date: 2022-09-30 16:38+0200\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.1.1\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Temuri Doghonadze"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "Temuri.doghonadze@gmail.com"
+
+#: amarokpkg.cpp:84 amarokpkg.cpp:97
+#, kde-format
+msgid "Amarok Applet Manager"
+msgstr "Amarok-ის აპლეტის მმართველი"
+
+#: amarokpkg.cpp:86
+#, kde-format
+msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+
+#: amarokpkg.cpp:87
+#, kde-format
+msgid "Aaron Seigo"
+msgstr "აარონ სეიგო"
+
+#: amarokpkg.cpp:88
+#, kde-format
+msgid "Original author"
+msgstr "საწყისი ავტორი"
+
+#: amarokpkg.cpp:90
+#, kde-format
+msgid "Leo Franchi"
+msgstr "ლეო ფრანჩი"
+
+#: amarokpkg.cpp:91
+#, kde-format
+msgid "Developer"
+msgstr "პროგრამისტი"
+
+#: amarokpkg.cpp:108
+#, kde-format
+msgid "For install or remove, operates on applets installed for all users."
+msgstr ""
+
+#: amarokpkg.cpp:110
+#, kde-format
+msgctxt "Do not translate <path>"
+msgid "Install the applet at <path>"
+msgstr ""
+
+#: amarokpkg.cpp:112
+#, kde-format
+msgctxt "Do not translate <path>"
+msgid "Upgrade the applet at <path>"
+msgstr ""
+
+#: amarokpkg.cpp:114
+#, kde-format
+msgid "Most installed applets"
+msgstr "ყველაზე ხშირად დაყენებული აპლეტები"
+
+#: amarokpkg.cpp:116
+#, kde-format
+msgctxt "Do not translate <name>"
+msgid "Remove the applet named <name>"
+msgstr ""
+
+#: amarokpkg.cpp:118
+#, kde-format
+msgid ""
+"Absolute path to the package root. If not supplied, then the standard data "
+"directories for this KDE session will be searched instead."
+msgstr ""
+
+#: amarokpkg.cpp:176
+#, kde-format
+msgid "Successfully removed %1"
+msgstr ""
+
+#: amarokpkg.cpp:178
+#, kde-format
+msgid "Removal of %1 failed."
+msgstr "%1-is წაშლის შეცდომა."
+
+#: amarokpkg.cpp:183
+#, kde-format
+msgid "Plugin %1 is not installed."
+msgstr "დამატება დაყენებული არაა: %1."
+
+#: amarokpkg.cpp:188
+#, kde-format
+msgid "Successfully installed %1"
+msgstr "დაყენება წარმატებულია: %1"
+
+#: amarokpkg.cpp:191
+#, kde-format
+msgid "Installation of %1 failed."
+msgstr "დაყენების შეცდომა: %1."
+
+#: amarokpkg.cpp:199
+#, kde-format
+msgctxt ""
+"No option was given, this is the error message telling the user he needs at "
+"least one, do not translate install, remove, upgrade nor list"
+msgid "One of install, remove, upgrade or list is required."
+msgstr ""
+"საჭიროა ერთერთი \"install\"(დაყენება), \"upgrade\"(განახლება), \"remove"
+"\"(წაშლა) ან \"list\"(ჩამონათვალი)."

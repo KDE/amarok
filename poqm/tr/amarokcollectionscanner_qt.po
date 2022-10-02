@@ -1,0 +1,107 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# H. İbrahim Güngör <ibrahim@pardus.org.tr>, 2011.
+# Ozan Çağlayan <ozan@pardus.org.tr>, 2010.
+# obsoleteman <tulliana@gmail.com>, 2009.
+# Volkan Gezer <volkangezer@gmail.com>, 2013-2014.
+# Emir SARI <emir_sari@icloud.com>, 2022.
+msgid ""
+msgstr ""
+"Project-Id-Version: extragear-multimedia-kde4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-12-14 01:25+0000\n"
+"PO-Revision-Date: 2022-05-02 13:48+0300\n"
+"Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
+"Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Qt-Contexts: true\n"
+"X-Generator: Lokalize 22.04.0\n"
+
+#: utilities/collectionscanner/CollectionScanner.cpp:118
+#: utilities/collectionscanner/CollectionScanner.cpp:141
+#, qt-format
+msgctxt "CollectionScanner::Scanner|"
+msgid "File \"%1\" not found."
+msgstr "\"%1\" dosyası bulunamadı."
+
+#: utilities/collectionscanner/CollectionScanner.cpp:121
+#, qt-format
+msgctxt "CollectionScanner::Scanner|"
+msgid "Could not open file \"%1\"."
+msgstr "\"%1\" dosyası açılamadı."
+
+#: utilities/collectionscanner/CollectionScanner.cpp:372
+#, qt-format
+msgctxt "CollectionScanner::Scanner|"
+msgid "Missing argument for option %1"
+msgstr "%1 seçeneği için eksik argüman"
+
+#: utilities/collectionscanner/CollectionScanner.cpp:409
+msgctxt "CollectionScanner::Scanner|"
+msgid ""
+"Amarok Collection Scanner\n"
+"Scans directories and outputs a xml file with the results.\n"
+"For more information see http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
+"\n"
+"Usage: amarokcollectionscanner [options] <Folder(s)>\n"
+"User-modifiable Options:\n"
+"<Folder(s)>             : list of folders to scan\n"
+"-h, --help              : This help text\n"
+"-v, --version           : Print the version of this tool\n"
+"-r, --recursive         : Scan folders recursively\n"
+"-i, --incremental       : Incremental scan (modified folders only)\n"
+"-s, --restart           : After a crash, restart the scanner in its last "
+"position\n"
+"    --idlepriority      : Run at idle priority\n"
+"    --sharedmemory <key> : A shared memory segment to be used for restarting "
+"a scan\n"
+"    --newer <path>      : Only scan directories if modification time is "
+"newer than <path>\n"
+"                          Only useful in incremental scan mode\n"
+"    --batch <path>      : Add the directories from the batch xml file\n"
+"                          batch file format should look like this:\n"
+"   <scanner>\n"
+"    <directory>\n"
+"     <path>/absolute/path/of/directory</path>\n"
+"     <mtime>1234</mtime>   (this is optional)\n"
+"    </directory>\n"
+"   </scanner>\n"
+"                          You can also use a previous scan result for that.\n"
+msgstr ""
+"Amarok Koleksiyon Tarayıcısı\n"
+"Dizinleri tarar ve sonuçlar ile bir xml dosyası yazar.\n"
+"Daha fazla bilgi için bakınız: http://community.kde.org/Amarok/Development/"
+"TopluİşKipi\n"
+"\n"
+"Kullanım: amarokcollectionscanner [seçenekler] <Klasör(ler)>\n"
+"Kullanıcı tarafından değiştirilebilir Seçenekler:\n"
+"<Klasör(ler)>             : taranacak klasör listesi\n"
+"-h, --help              : Bu yardım metni\n"
+"-v, --version           : Bu aracın sürümünü yazdır\n"
+"-r, --recursive         : Klasörleri içe doğru tara\n"
+"-i, --incremental       : Artan arama (sadece değiştirilmiş klasörler)\n"
+"-s, --restart           : Çökmeden sonra, tarayıcıyı son konumundan tekrar "
+"başlat\n"
+"    --idlepriority      : Boşta önceliği ile çalıştır\n"
+"    --sharedmemory <anahtar> : Bir taramayı yeniden başlatmak üzere "
+"kullanılacak paylaşımlı bellek parçası\n"
+"    --newer <yol>      : Sadece değiştirilme zamanı <yol>'dan daha yeni ise "
+"dizinleri tara\n"
+"                          Sadece artan tarama kipinde kullanışlıdır\n"
+"    --batch <yol>      : Toplu iş xml dosyasından dizinleri ekle\n"
+"                          toplu iş dosya biçimi şu şekle benzer olmalıdır:\n"
+"   <scanner>\n"
+"    <directory>\n"
+"     <path>/dizinin/asıl/yolu</path>\n"
+"     <mtime>1234</mtime>   (bu isteğe bağlı)\n"
+"    </directory>\n"
+"   </scanner>\n"
+"                          Ayrıca bunun için önceki bir tarama sonucunu da "
+"kullanabilirsiniz.\n"

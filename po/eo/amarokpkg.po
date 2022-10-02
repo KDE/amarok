@@ -1,0 +1,136 @@
+# Translation of amarokpkg into esperanto.
+# Axel Rousseau <axel@esperanto-jeunes.org>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: amarokpkg\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-05-20 02:48+0200\n"
+"PO-Revision-Date: 2009-11-15 12:06+0100\n"
+"Last-Translator: Axel Rousseau <axel@esperanto-jeunes.org>\n"
+"Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
+"Language: eo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: pology\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Axel Rousseau"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "axel@esperanto-jeunes.org"
+
+#: amarokpkg.cpp:84 amarokpkg.cpp:97
+#, fuzzy, kde-format
+#| msgid "Amarok is paused"
+msgid "Amarok Applet Manager"
+msgstr "Amarok estas paŭzata"
+
+#: amarokpkg.cpp:86
+#, fuzzy, kde-format
+#| msgid "(C) 2008, Aaron Seigo"
+msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+msgstr "(C) 2008, Aaron Seigo"
+
+#: amarokpkg.cpp:87
+#, kde-format
+msgid "Aaron Seigo"
+msgstr "Aaron Seigo"
+
+#: amarokpkg.cpp:88
+#, kde-format
+msgid "Original author"
+msgstr "Origina aŭtoro"
+
+#: amarokpkg.cpp:90
+#, kde-format
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: amarokpkg.cpp:91
+#, kde-format
+msgid "Developer"
+msgstr "Kreinto"
+
+#: amarokpkg.cpp:108
+#, kde-format
+msgid "For install or remove, operates on applets installed for all users."
+msgstr ""
+
+#: amarokpkg.cpp:110
+#, fuzzy, kde-format
+#| msgid "&Install Script"
+msgctxt "Do not translate <path>"
+msgid "Install the applet at <path>"
+msgstr "&Instali skripton"
+
+#: amarokpkg.cpp:112
+#, kde-format
+msgctxt "Do not translate <path>"
+msgid "Upgrade the applet at <path>"
+msgstr ""
+
+#: amarokpkg.cpp:114
+#, fuzzy, kde-format
+#| msgid "&Install Script"
+msgid "Most installed applets"
+msgstr "&Instali skripton"
+
+#: amarokpkg.cpp:116
+#, kde-format
+msgctxt "Do not translate <name>"
+msgid "Remove the applet named <name>"
+msgstr ""
+
+#: amarokpkg.cpp:118
+#, kde-format
+msgid ""
+"Absolute path to the package root. If not supplied, then the standard data "
+"directories for this KDE session will be searched instead."
+msgstr ""
+"Plena vojo al pakaĵradiko. Se ne donita, la standardaj datumdosierujoj por "
+"tiu ĉi KDE-seanco estos serĉata anstataŭe."
+
+#: amarokpkg.cpp:176
+#, kde-format
+msgid "Successfully removed %1"
+msgstr "Sukcese forigis pakaĵon %1"
+
+#: amarokpkg.cpp:178
+#, kde-format
+msgid "Removal of %1 failed."
+msgstr "Forigo de %1 malsukcesis."
+
+#: amarokpkg.cpp:183
+#, kde-format
+msgid "Plugin %1 is not installed."
+msgstr "Kromprogramo %1 ne estas instalita."
+
+#: amarokpkg.cpp:188
+#, kde-format
+msgid "Successfully installed %1"
+msgstr "Sukcese instalis pakaĵon %1"
+
+#: amarokpkg.cpp:191
+#, kde-format
+msgid "Installation of %1 failed."
+msgstr "Instalado de %1 malsukcesis."
+
+#: amarokpkg.cpp:199
+#, kde-format
+msgctxt ""
+"No option was given, this is the error message telling the user he needs at "
+"least one, do not translate install, remove, upgrade nor list"
+msgid "One of install, remove, upgrade or list is required."
+msgstr "Bezonas unu el: instali, forigi aŭ listi"
+
+#, fuzzy
+#~| msgid "&Install Script"
+#~ msgid "Install, list, remove Amarok applets"
+#~ msgstr "&Instali skripton"
