@@ -311,10 +311,6 @@ if( WITH_PLAYER )
 
     feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
-    #Do not remove or modify these.  The release script substitutes in for these
-    #comments with appropriate doc and translation directories.
-    #PO_SUBDIR
-
 endif()
 
 if( WITH_UTILITIES )
@@ -325,3 +321,6 @@ if( WITH_PLAYGROUND )
     add_subdirectory( playground )
     message(STATUS "Included playground subdirectory in configuration")
 endif()
+
+ki18n_install( po )
+ecm_install_po_files_as_qm(poqm)
