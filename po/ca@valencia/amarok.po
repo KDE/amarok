@@ -3184,7 +3184,7 @@ msgstr ""
 #: configdialog/dialogs/DatabaseConfig.ui:188
 #, kde-format
 msgid "Test database connection"
-msgstr "Prova de la connexió a la base de dades"
+msgstr "Prova de la connexió amb la base de dades"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Info)
 #: configdialog/dialogs/DatabaseConfig.ui:206
