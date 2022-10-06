@@ -2256,7 +2256,7 @@ msgstr "Més..."
 #: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
-msgstr "&Afig a la llista de reproducció"
+msgstr "Afi&g a la llista de reproducció"
 
 #: browsers/CollectionTreeView.cpp:1084 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
@@ -2536,12 +2536,12 @@ msgstr "Substituïx les properes peces amb altres de noves."
 #: browsers/playlistbrowser/DynamicView.cpp:223
 #, kde-format
 msgid "&Rename playlist"
-msgstr "&Canvia el nom la llista de reproducció"
+msgstr "Ca&nvia el nom de la llista de reproducció"
 
 #: browsers/playlistbrowser/DynamicView.cpp:227
 #, kde-format
 msgid "&Add new Bias"
-msgstr "&Afig una ponderació nova"
+msgstr "Afi&g una ponderació nova"
 
 #: browsers/playlistbrowser/DynamicView.cpp:231
 #, kde-format
@@ -2571,7 +2571,7 @@ msgstr "Sup&rimix la ponderació"
 #: browsers/playlistbrowser/DynamicView.cpp:270
 #, kde-format
 msgid "&Add new bias"
-msgstr "&Afig una ponderació nova"
+msgstr "Afi&g una ponderació nova"
 
 #: browsers/playlistbrowser/PlaylistBrowser.cpp:43
 #, kde-format
@@ -2648,7 +2648,7 @@ msgstr "&Nou"
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:87
 #, kde-format
 msgid "&Rename..."
-msgstr "&Canvia el nom..."
+msgstr "Ca&nvia el nom..."
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:94
 #, kde-format
@@ -2715,7 +2715,7 @@ msgstr "Anomena i guarda"
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:37
 #, kde-format
 msgid "&Rename Folder..."
-msgstr "&Canvia el nom de la carpeta..."
+msgstr "Ca&nvia el nom de la carpeta..."
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:42
 #, kde-format
@@ -2770,12 +2770,12 @@ msgstr ""
 #: browsers/playlistbrowser/PodcastCategory.cpp:96
 #, kde-format
 msgid "&Add Podcast"
-msgstr "&Afig un podcast"
+msgstr "Afi&g un podcast"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:103
 #, kde-format
 msgid "&Update All"
-msgstr "Act&ualisa'ls tots"
+msgstr "Act&ualitza'ls tots"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:111
 #: browsers/playlistbrowser/PodcastCategory.cpp:114
@@ -6129,7 +6129,7 @@ msgstr "Moveu els fitxers"
 #, kde-format
 msgctxt "rename files button"
 msgid "&Rename"
-msgstr "&Canvia el nom"
+msgstr "Ca&nvia el nom"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:77
 #, kde-format
@@ -6571,7 +6571,7 @@ msgstr "Podcast"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
 #, kde-format
 msgid "&Update All Channels"
-msgstr "Act&ualisa tots els canals"
+msgstr "Act&ualitza tots els canals"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
 #, kde-format
@@ -6596,7 +6596,7 @@ msgstr "&Elimina la subscripció"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
 #, kde-format
 msgid "&Update Channel"
-msgstr "Act&ualisa el canal"
+msgstr "Act&ualitza el canal"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
 #, kde-format
@@ -6616,7 +6616,7 @@ msgstr "&Escriu la informació del canal en el fitxer"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
 #, kde-format
 msgid "&Keep downloaded file"
-msgstr "&Mantín el fitxer descarregat"
+msgstr "Man&tín el fitxer descarregat"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, kde-format
@@ -9065,7 +9065,7 @@ msgstr "Actualitza les etiquetes de les peces comprovades i ix"
 #: dialogs/MusicBrainzTagger.ui:52
 #, kde-format
 msgid "&Update Tags"
-msgstr "Act&ualisa les etiquetes"
+msgstr "Act&ualitza les etiquetes"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, pushButton_cancel)
 #: dialogs/MusicBrainzTagger.ui:65
@@ -9079,7 +9079,7 @@ msgstr "Ix sense guardar"
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:36
 #, kde-format
 msgid "&Cancel"
-msgstr "&Cancel·la"
+msgstr "C&ancel·la"
 
 #: dialogs/OrganizeCollectionDialog.cpp:111
 #: dialogs/OrganizeCollectionDialog.cpp:114
@@ -9294,7 +9294,7 @@ msgstr ""
 #: dialogs/OrganizeCollectionOptions.ui:60
 #, kde-format
 msgid "&Append 'The' to artist names"
-msgstr "&Afig «The» als noms dels artistes"
+msgstr "Afi&g «The» als noms dels artistes"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:75
@@ -11590,7 +11590,7 @@ msgstr "Navega pel disc dur local buscant contingut"
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
-msgstr "&Visualitza"
+msgstr "Vi&sualitza"
 
 #: MainWindow.cpp:329
 #, kde-format
@@ -11641,7 +11641,7 @@ msgstr "Introduïu l'URL del flux de dades:"
 #: MainWindow.cpp:748
 #, kde-format
 msgid "&Add Media..."
-msgstr "&Afig suports..."
+msgstr "Afi&g suports..."
 
 #: MainWindow.cpp:753
 #, kde-format
@@ -11664,7 +11664,7 @@ msgstr "Eli&mina els duplicats"
 #: MainWindow.cpp:770
 #, kde-format
 msgid "&Add Stream..."
-msgstr "&Afig un flux de dades..."
+msgstr "Afi&g un flux de dades..."
 
 #: MainWindow.cpp:774
 #, kde-format
@@ -14261,7 +14261,7 @@ msgstr "Script següent"
 #: scripting/scriptconsole/ScriptConsole.cpp:129
 #, kde-format
 msgid "&View"
-msgstr "&Visualitza"
+msgstr "Vi&sualitza"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:217
 #, kde-format
@@ -14794,7 +14794,7 @@ msgstr "O&btín els artistes semblants"
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
 msgstr ""
-"&Utilitza les dades del compositor si estan disponibles a Last.fm com a "
+"Utilit&za les dades del compositor si estan disponibles a Last.fm com a "
 "artista"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
