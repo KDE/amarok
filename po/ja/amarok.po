@@ -17371,9 +17371,3 @@ msgstr "アーティスト: %1"
 #, kde-format
 msgid "empty"
 msgstr "空"
-
-#~ msgid "Scanning %1"
-#~ msgstr "%1 をスキャンしています"
-
-#~ msgid "UPnP Error: %1"
-#~ msgstr "UPnP エラー: %1"
