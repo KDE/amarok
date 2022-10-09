@@ -11891,7 +11891,8 @@ msgid ""
 msgstr ""
 "Heu triat ocultar la barra de menús.\n"
 "\n"
-"Recordeu que sempre podeu utilitzar la drecera «%1» per tornar a mostrar-la."
+"Recordeu que sempre podeu utilitzar la drecera «%1» per a tornar a mostrar-"
+"la."
 
 #: MainWindow.cpp:1171
 #, kde-format
