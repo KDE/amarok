@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-10-08 13:02+0300\n"
+"PO-Revision-Date: 2022-10-12 15:12+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -7561,7 +7561,7 @@ msgstr ""
 "bir bit hızıyla daha iyi çalışır.<br>VBR deneyseldir ve muhtemelen, CBR."
 "<br>Bu nedenle, bu kaydırıcıdaki bit hızı ölçümü, kodlanmış parçanın bit "
 "hızının oldukça doğru bir tahminidir.<br>Kodlayıcı, yalnızca aşırı "
-"durumlarda görünen yapay öğelerle test edilen çoğu örnek için 128 kbps'de "
+"durumlarda görünen yapay öğelerle sınanan çoğu örnek için 128 kbps'de "
 "saydamdır."
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:48
@@ -11339,7 +11339,7 @@ msgstr "Jarkko Lehti"
 #: main.cpp:292
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
-msgstr "Testçi, IRC kanalı yöneticisi, motivasyon"
+msgstr "Sınayıcı, IRC kanalı yöneticisi, motivasyon"
 
 #: main.cpp:294
 #, kde-format
