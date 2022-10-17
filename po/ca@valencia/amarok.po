@@ -518,8 +518,8 @@ msgstr "Comptador de properes peces."
 #, kde-format
 msgid "Number of tracks to load into the playlist after the active track."
 msgstr ""
-"Nombre de peces a carregar en la llista de reproducció després de la peça "
-"activa."
+"Nombre de peces que es carregaran en la llista de reproducció després de la "
+"peça activa."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:68
@@ -1897,7 +1897,7 @@ msgstr "Reproduïx"
 #: App.cpp:361
 #, kde-format
 msgid "Files/URLs to open"
-msgstr "Fitxers o URL que s'obriran"
+msgstr "Fitxers o URL que s'han d'obrir"
 
 #: App.cpp:362
 #, kde-format
@@ -3223,7 +3223,7 @@ msgstr "Afig esta etiqueta a la llista d'etiquetes excloses"
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:30
 #, kde-format
 msgid "Add Label to Exclude"
-msgstr "Afig l'etiqueta a excloure"
+msgstr "Afig l'etiqueta que s'ha d'excloure"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel)
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:44
@@ -6522,7 +6522,7 @@ msgstr "Conserva un màxim de:"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:194
 #, kde-format
 msgid "The maximum number of podcast items to store"
-msgstr "El nombre màxim d'elements de podcast a emmagatzemar"
+msgstr "El nombre màxim d'elements de podcast que s'han d'emmagatzemar"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_writeTagsCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:208
@@ -8266,7 +8266,7 @@ msgstr "Tots els artistes"
 #: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:66
 #, kde-format
 msgid "Enter search terms here"
-msgstr "Introduïu ací els termes a buscar"
+msgstr "Introduïu ací els termes que s'han de buscar"
 
 #: covermanager/CoverManager.cpp:193
 #, kde-format
@@ -8710,7 +8710,7 @@ msgid ""
 "%d is replaced by the device node, %m by the mount point.\n"
 "Empty commands are not executed."
 msgstr ""
-"Establiu ací una ordre que s'ha d'executar just abans de connectar-se amb el "
+"Establiu ací una ordre que s'executarà just abans de connectar-se amb el "
 "dispositiu (p. ex. una ordre «mount»).\n"
 "%d se substituirà pel node del dispositiu i %m pel punt de muntatge.\n"
 "Una ordre buida no s'executarà."
@@ -8733,8 +8733,8 @@ msgid ""
 "%d is replaced by the device node, %m by the mount point.\n"
 "Empty commands are not executed."
 msgstr ""
-"Establiu ací una ordre que s'ha d'executar just després de desconnectar-se "
-"del dispositiu (p. ex. una ordre «eject»).\n"
+"Establiu ací una ordre que s'executarà just després de desconnectar-se del "
+"dispositiu (p. ex. una ordre «eject»).\n"
 "%d se substituirà pel node del dispositiu i %m pel punt de muntatge.\n"
 "Una ordre buida no s'executarà."
 
@@ -13774,7 +13774,7 @@ msgstr ""
 msgid ""
 "How strict the APG should be about matching tracks to the specified date."
 msgstr ""
-"Grau de precisió de GALR quan a buscar les peces coincidents amb la data "
+"Grau de precisió de GALR quan es busquen les peces coincidents amb la data "
 "indicada."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonString)
@@ -13842,7 +13842,7 @@ msgstr "L'hora que GALR utilitzarà per a les coincidències."
 msgid ""
 "How strict the APG should be about matching tracks to the specified time."
 msgstr ""
-"Grau de precisió de GALR quan a buscar les peces coincidents amb l'hora "
+"Grau de precisió de GALR quan es busquen les peces coincidents amb l'hora "
 "indicada."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonRating)
@@ -13869,7 +13869,7 @@ msgstr "La valoració que GALR hauria d'intentar trobar."
 msgid ""
 "How strict the APG should be about matching tracks to the specified rating."
 msgstr ""
-"Grau de precisió de GALR quan a buscar les peces coincidents amb la "
+"Grau de precisió de GALR quan es busquen les peces coincidents amb la "
 "valoració indicada."
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:85
