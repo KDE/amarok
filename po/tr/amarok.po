@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-10-12 15:12+0300\n"
+"PO-Revision-Date: 2022-10-18 06:03+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -2323,7 +2323,7 @@ msgstr[1] ""
 #: browsers/InfoProxy.cpp:166
 #, kde-format
 msgid "Home"
-msgstr "Ev"
+msgstr "Ana Ekran"
 
 #: browsers/playlistbrowser/APGCategory.cpp:39
 #, kde-format
@@ -4412,7 +4412,7 @@ msgstr "Sanatçının Last.fm sayfasını aç"
 #: context/applets/similarartists/ArtistWidget.cpp:182
 #, kde-format
 msgid "Match: %1%"
-msgstr "Eşleşme: %1%"
+msgstr "Eşleşme: %​%1"
 
 #: context/applets/similarartists/ArtistWidget.cpp:278
 #, kde-format
@@ -11846,12 +11846,12 @@ msgstr "Yerleşim değişikliği uygulansın mı?"
 #: musicbrainz/MusicBrainzTagsModel.cpp:161
 #, kde-format
 msgid "MusicBrainz match ratio: %1%"
-msgstr "MusicBrainz eşleşme oranı: %1%"
+msgstr "MusicBrainz eşleşme oranı: %​%1"
 
 #: musicbrainz/MusicBrainzTagsModel.cpp:164
 #, kde-format
 msgid "MusicDNS match ratio: %1%"
-msgstr "MusicDNS eşleşme oranı: %1%"
+msgstr "MusicDNS eşleşme oranı: %​%1"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:80
 #, kde-format
@@ -16495,13 +16495,13 @@ msgstr "Araç Çubuğunu İncelt"
 #: widgets/Osd.cpp:202
 #, kde-format
 msgid "Volume: %1% (muted)"
-msgstr "Ses: %1% (sessiz)"
+msgstr "Ses: %​%1 (sessiz)"
 
 #: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:202
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
-msgstr "Ses: %1%"
+msgstr "Ses: %​%1"
 
 #: transcoding/TranscodingAssistantDialog.cpp:47
 #, kde-format
@@ -16672,7 +16672,7 @@ msgstr "Sessiz"
 #: TrayIcon.cpp:157
 #, kde-format
 msgid "%1%"
-msgstr "%1%"
+msgstr "%​%1"
 
 #: TrayIcon.cpp:159
 #, kde-format
