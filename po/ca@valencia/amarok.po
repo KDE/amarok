@@ -543,7 +543,7 @@ msgstr "Si cal ocultar la vista contextual."
 #: amarokconfig.kcfg:74
 #, kde-format
 msgid "Enable/Disable context view in Amarok."
-msgstr "Activa/Desactiva la vista contextual a Amarok."
+msgstr "Activa/Desactiva la vista contextual en Amarok."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:78
@@ -1686,7 +1686,7 @@ msgstr ""
 #: amarokconfig.kcfg:618
 #, kde-format
 msgid "The style to use when painting the moodbar"
-msgstr "L'estil a utilitzar quan es dibuixe la barra d'ànim"
+msgstr "L'estil que s'ha d'utilitzar quan es dibuixe la barra d'ànim"
 
 #. i18n: ectx: label, entry, group (PlaylistGenerator)
 #: amarokconfig.kcfg:625
@@ -15865,7 +15865,7 @@ msgstr "(C) 2008, Casey Link"
 #: services/mp3tunes/harmonydaemon/main.cpp:39
 #, kde-format
 msgid "Handles AutoSync for the MP3tunes service in Amarok."
-msgstr "Maneja la sincronització automàtica per al servei MP3tunes a Amarok."
+msgstr "Maneja la sincronització automàtica per al servei MP3tunes en Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
 #, kde-format
