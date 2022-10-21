@@ -181,7 +181,7 @@ msgstr "T&raducció"
 #: aboutdialog/ExtendedAboutDialog.cpp:390
 #, kde-format
 msgid "Internet connection not available"
-msgstr "La connexió a Internet no està disponible"
+msgstr "La connexió amb Internet no està disponible"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:390
 #, kde-format
@@ -505,7 +505,8 @@ msgstr "Comptador de peces anteriors."
 #, kde-format
 msgid "Number of tracks to leave in the playlist before the active track."
 msgstr ""
-"Nombre de peces a deixar en la llista de reproducció abans de la peça activa."
+"Nombre de peces que s'han de deixar en la llista de reproducció abans de la "
+"peça activa."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:63
@@ -1233,13 +1234,13 @@ msgstr ""
 #: amarokconfig.kcfg:380
 #, kde-format
 msgid "Track URL to resume upon startup"
-msgstr "Guarda l'URL de la peça a reprendre a l'inici"
+msgstr "Guarda l'URL de la peça que s'ha de reprendre a l'inici"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
 #: amarokconfig.kcfg:381
 #, kde-format
 msgid "Internal: URL of the track to resume on startup."
-msgstr "Intern: URL de la peça a reprendre a l'inici."
+msgstr "Intern: URL de la peça que es reprendrà a l'inici."
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:384
@@ -4549,7 +4550,7 @@ msgid ""
 "Songkick was not able to be downloaded. Please check your Internet "
 "connection: %1"
 msgstr ""
-"No s'han pogut baixar des de Songkick. Comproveu la connexió a Internet: %1"
+"No s'han pogut baixar des de Songkick. Comproveu la connexió amb Internet: %1"
 
 #: context/applets/songkick/SongkickApplet.cpp:202
 #, kde-format

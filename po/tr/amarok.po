@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-10-18 06:03+0300\n"
+"PO-Revision-Date: 2022-10-20 11:59+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -8660,8 +8660,8 @@ msgid ""
 msgstr ""
 "Aygıtı bağlamadan önce çalıştırılacak bir komut belirleyin (örneğin bir "
 "mount komutu).\n"
-"%d  sürücü düğümü tarafından, %m bağlama noktası tarafından değiştirildi.\n"
-"Boş komutlar çalıştırılmaz."
+"%d sürücü düğümü tarafından, %m bağlama noktası tarafından değiştirildi.\n"
+"Boş komutlar yürütülmez."
 
 #: dialogs/deviceconfiguredialog.cpp:92
 #, kde-format
@@ -8683,8 +8683,8 @@ msgid ""
 msgstr ""
 "Aygıt ayrıldıktan sonra çalıştırmak için bir komut belirleyin (örneğin bir "
 "eject (çıkart) komutu).\n"
-"%d  sürücü düğümü tarafından, %m bağlama noktası tarafından değiştirildi.\n"
-"Boş komutlar çalıştırılmaz."
+"%d sürücü düğümü tarafından, %m bağlama noktası tarafından değiştirildi.\n"
+"Boş komutlar yürütülmez."
 
 #: dialogs/deviceconfiguredialog.cpp:100
 #, kde-format
@@ -14143,7 +14143,7 @@ msgstr "Hata"
 #: scripting/scriptconsole/ScriptConsole.cpp:103
 #, kde-format
 msgid "Execute Script"
-msgstr "Betiği Çalıştır"
+msgstr "Betiği Yürüt"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:107
 #, kde-format
