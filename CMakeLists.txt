@@ -9,7 +9,7 @@ endif()
 
 ###############
 
-set(KF5_MIN_VERSION "5.41.0")
+set(KF5_MIN_VERSION "5.57.0")
 set(QT_REQUIRED_VERSION "5.10.0")
 find_package(PkgConfig REQUIRED)
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED CONFIG)
