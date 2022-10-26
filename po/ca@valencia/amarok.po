@@ -12200,7 +12200,7 @@ msgstr "Suprimix el format de la llista de reproducció"
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:133
 #, kde-format
 msgid "Rename playlist layout"
-msgstr "Canvia el nom el format de llista de reproducció"
+msgstr "Canvia el nom del format de llista de reproducció"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:157
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:207
