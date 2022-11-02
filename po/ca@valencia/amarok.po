@@ -3333,8 +3333,8 @@ msgid ""
 "tool."
 msgstr ""
 "La barra d'ànim fa possible navegar visualment per la música.\n"
-"Cal tindre en compte que esta funcionalitat requerix l'eina externa «Moodbar "
-"Generator»."
+"Cal tindre en compte que esta característica requerix l'eina externa "
+"«Moodbar Generator»."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
 #: configdialog/dialogs/GeneralConfig.ui:120
@@ -8768,7 +8768,7 @@ msgstr "Elimina els fitxers transcodificats després de transferir"
 #, kde-format
 msgid "For this feature, a script of type \"Transcode\" has to be running"
 msgstr ""
-"Per a esta funcionalitat, s'ha d'estar executant un script del tipus "
+"Per a esta característica, s'ha d'estar executant un script del tipus "
 "«transcodificar»"
 
 #: dialogs/DiagnosticDialog.cpp:84
@@ -15159,8 +15159,8 @@ msgid ""
 msgstr ""
 "Per a escoltar els fluxos o ràdios de Last.fm cal una subscripció de "
 "pagament a Last.fm i cal connectar-se des d'un <a href='http://www.last.fm/"
-"announcements/radio2013'>país acceptat</a>. Totes les altres funcionalitats "
-"de Last.fm funcionen correctament."
+"announcements/radio2013'>país acceptat</a>. Totes les altres "
+"característiques de Last.fm funcionen correctament."
 
 #: services/lastfm/meta/LastFmMultiPlayableCapability.cpp:106
 #, kde-format
@@ -15934,8 +15934,8 @@ msgid ""
 "AutoSync is a feature from MP3tunes which allows you to automatically move "
 "your music between computers and devices."
 msgstr ""
-"La sincronització automàtica és una funció de MP3tunes que permet moure "
-"automàticament la vostra música entre ordinadors i perifèrics."
+"La sincronització automàtica és una característica de MP3tunes que permet "
+"moure automàticament la vostra música entre ordinadors i perifèrics."
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_3)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:52
@@ -15945,8 +15945,8 @@ msgid ""
 "your music between computers and devices. You can upload music from one "
 "location and have it download instantly to other locations."
 msgstr ""
-"La sincronització automàtica és una funció de MP3tunes que permet moure "
-"automàticament la vostra música entre ordinadors i perifèrics. Podeu "
+"La sincronització automàtica és una característica de MP3tunes que permet "
+"moure automàticament la vostra música entre ordinadors i perifèrics. Podeu "
 "carregar música des d'un lloc i tindre-ho descarregat instantàniament a "
 "altres llocs."
 
