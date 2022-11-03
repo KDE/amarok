@@ -7561,7 +7561,7 @@ msgstr ""
 "bir bit hızıyla daha iyi çalışır.<br>VBR deneyseldir ve muhtemelen, CBR."
 "<br>Bu nedenle, bu kaydırıcıdaki bit hızı ölçümü, kodlanmış parçanın bit "
 "hızının oldukça doğru bir tahminidir.<br>Kodlayıcı, yalnızca aşırı "
-"durumlarda görünen yapay öğelerle sınanan çoğu örnek için 128 kbps'de "
+"durumlarda görünen yapay ögelerle sınanan çoğu örnek için 128 kbps'de "
 "saydamdır."
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:48
@@ -12053,7 +12053,7 @@ msgstr "Geçersiz çalma listesi düzeni."
 #: playlist/layouts/LayoutEditWidget.cpp:85
 #, kde-format
 msgid "Encountered an unknown element name while reading layout."
-msgstr "Düzeni okurken bilinmeyen bir öğe adı ile karşılaştı."
+msgstr "Düzeni okurken bilinmeyen bir öge adı ile karşılaştı."
 
 #: playlist/layouts/LayoutManager.cpp:107
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:395
