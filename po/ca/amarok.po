@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-09-07 19:52+0200\n"
+"PO-Revision-Date: 2022-11-06 11:33+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -4374,12 +4374,12 @@ msgstr "Commuta el desplaçament automàtic"
 #: context/applets/lyrics/package/contents/ui/main.qml:90
 #, kde-format
 msgid "Reload lyrics"
-msgstr "Recarrega les lletres"
+msgstr "Recarrega la lletra"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:98
 #, kde-format
 msgid "No lyrics found"
-msgstr "No s'han trobat les lletres"
+msgstr "No s'ha trobat cap lletra"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:113
 #, kde-format
@@ -7081,7 +7081,7 @@ msgstr "Última modificació"
 #, kde-format
 msgctxt "Track field name"
 msgid "Lyrics"
-msgstr "Lletres"
+msgstr "Lletra"
 
 #: core/meta/support/MetaConstants.cpp:224
 #, kde-format

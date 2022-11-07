@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-09-07 19:52+0200\n"
+"PO-Revision-Date: 2022-11-06 11:33+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -4379,12 +4379,12 @@ msgstr "Canvia el desplaçament automàtic"
 #: context/applets/lyrics/package/contents/ui/main.qml:90
 #, kde-format
 msgid "Reload lyrics"
-msgstr "Torna a carregar les lletres"
+msgstr "Torna a carregar la lletra"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:98
 #, kde-format
 msgid "No lyrics found"
-msgstr "No s'han trobat les lletres"
+msgstr "No s'ha trobat cap lletra"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:113
 #, kde-format
@@ -5262,7 +5262,7 @@ msgid ""
 "mobile players support the Ogg Vorbis format."
 msgstr ""
 "Ogg Vorbis és un format d'àudio comprimit totalment lliure i sense càrregues "
-"que és perfecte per a emmagatzemar música comprimida a l'ordinador. La "
+"que és perfecte per a emmagatzemar música comprimida en l'ordinador. La "
 "qualitat del so és millor que la de l'MP3 a igualtat de taxa de bits. Cal "
 "tindre en compte que no tots els reproductors mòbils accepten el format Ogg "
 "Vorbis."
@@ -7080,7 +7080,7 @@ msgstr "Última modificació"
 #, kde-format
 msgctxt "Track field name"
 msgid "Lyrics"
-msgstr "Lletres"
+msgstr "Lletra"
 
 #: core/meta/support/MetaConstants.cpp:224
 #, kde-format
@@ -12792,7 +12792,7 @@ msgstr "Afig ací algunes cançons arrossegant-les des d'altres llocs."
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
 msgid "The following sources are available for this track:"
-msgstr "Esta peça està disponible als orígens següents:"
+msgstr "Esta peça està disponible per als orígens següents:"
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:39
 #, kde-format
