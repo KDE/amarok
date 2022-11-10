@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-10-20 11:59+0300\n"
+"PO-Revision-Date: 2022-11-09 13:16+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.08.1\n"
+"X-Generator: Lokalize 22.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -602,8 +602,7 @@ msgstr "Tarayıcı panelinde arka plan görsellerinin gösterilip gösterilmeyec
 #, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing song visible"
-msgstr ""
-"Geçerli çalan şarkıyı görünür yapmak için çalma listesini otomatik kaydır"
+msgstr "Geçerli çalan şarkıyı görünür yapmak için çalma listesini otomatik sar"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:104
@@ -3272,14 +3271,14 @@ msgstr "Çalma Listesi Seçenekleri"
 msgid ""
 "Check to make the playlist scroll so the current track is always visible."
 msgstr ""
-"Çalma listesinin kaydırılıp, geçerli parçanın her zaman görünür olması için "
+"Çalma listesinin sarılıp geçerli parçanın her zaman görünür olması için "
 "tıklayın."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoScrollPlaylist)
 #: configdialog/dialogs/GeneralConfig.ui:87
 #, kde-format
 msgid "Automatically scroll playlist to current track"
-msgstr "Çalma listesini otomatik olarak çalan parçaya kaydır"
+msgstr "Çalma listesini otomatik olarak çalan parçaya sar"
 
 #. i18n: ectx: property (title), widget (QGroupBox, moodbarBox)
 #: configdialog/dialogs/GeneralConfig.ui:97
@@ -4347,7 +4346,7 @@ msgstr "Yazıtipi:"
 #: context/applets/lyrics/package/contents/ui/main.qml:83
 #, kde-format
 msgid "Toggle auto scroll"
-msgstr "Otomatik kaydırmayı aç/kapat"
+msgstr "Otomatik sarmayı aç/kapat"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:90
 #, kde-format
