@@ -7,20 +7,21 @@
 # Panagiotis Papadopoulos <pano_90@gmx.net>, 2009, 2010.
 # Markus Slopianka <markus.s@kdemail.net>, 2009, 2010.
 # Johannes Obermayr <johannesobermayr@gmx.de>, 2009, 2010, 2011.
+# Frank Steinmetzger <dev-kde@felsenfleischer.de>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-07-14 00:32+0200\n"
-"Last-Translator: Frederik Schwarzer <schwarzer@kde.org>\n"
+"PO-Revision-Date: 2022-11-10 21:11+0100\n"
+"Last-Translator: Frank Steinmetzger <dev-kde@felsenfleischer.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.07.70\n"
+"X-Generator: Lokalize 22.08.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -4069,7 +4070,7 @@ msgstr "%1 einrichten"
 #: context/applets/analyzer/package/contents/ui/main.qml:64
 #, kde-format
 msgid "Bar width:"
-msgstr ""
+msgstr "Balkenbreite:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:79
 #, kde-format
@@ -4079,15 +4080,14 @@ msgstr[0] "%1 Pixel"
 msgstr[1] "%1 Pixel"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:91
-#, fuzzy, kde-format
-#| msgid "Show Years"
+#, kde-format
 msgid "Show fadebars:"
-msgstr "Jahre anzeigen"
+msgstr "Ausblende Balken anzeigen:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:106
 #, kde-format
 msgid "Bars fall speed:"
-msgstr ""
+msgstr "Balkenfallgeschwindigkeit:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:124
 #, kde-format
@@ -4423,10 +4423,9 @@ msgid "Font:"
 msgstr "Schriftart:"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:83
-#, fuzzy, kde-format
-#| msgid "Toggle Full Screen"
+#, kde-format
 msgid "Toggle auto scroll"
-msgstr "Vollbildmodus umschalten"
+msgstr "Automatisches rollen umschalten"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:90
 #, kde-format
@@ -7679,6 +7678,14 @@ msgid ""
 "encoder is transparent at 128kbps for most samples tested with artifacts "
 "only appearing in extreme cases."
 msgstr ""
+"Die Bitrate ist ein Maß für die Datenmenge, die einer Sekunde einer "
+"Audiospur entspricht.<br>Der von Amarok verwendete Encoder funktioniert mit "
+"einer konstanten Bitrate besser.<br>VBR ist experimentell und produziert "
+"wahrscheinlich ein schlechteres Ergebnis als CBR.<br>Deshalb ist die "
+"Bitratenskala dieses Schiebers eine ziemlich genaue Schätzung der Bitrate "
+"der codierten Spur.<br>Bei den meisten getesteten Beispielen ist der Encoder "
+"bei 128 kbps transparent und nur in Extremfällen waren Artefakte "
+"wahrzunehmen."
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:48
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:59
@@ -14299,10 +14306,9 @@ msgstr ""
 "Bitte überprüfen Sie Ihre KDE-Installation. Konsole wird beendet."
 
 #: scripting/scriptconsole/ScriptConsole.cpp:77
-#, fuzzy, kde-format
-#| msgid "PIN Code:"
+#, kde-format
 msgid "Code"
-msgstr "PIN-Code:"
+msgstr "Quelltext"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:78
 #, kde-format
