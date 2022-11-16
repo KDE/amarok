@@ -1,13 +1,13 @@
 # translation of amarok.po to Italian
 # Copyright (C) 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
 # Carlo Maria Laorenza <carlo@relazioninet.it>, 2004, 2005.
-# Vincenzo Reale <smart2128vr@gmail.com>, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018, 2019, 2020, 2021.
+# Vincenzo Reale <smart2128vr@gmail.com>, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018, 2019, 2020, 2021, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2021-06-20 20:07+0200\n"
+"PO-Revision-Date: 2022-11-06 16:25+0100\n"
 "Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 21.04.2\n"
+"X-Generator: Lokalize 22.08.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -103,7 +103,7 @@ msgstr "Inform&azioni"
 #, kde-format
 msgid "Get data from openDesktop.org to learn more about the team"
 msgstr ""
-"Ottieni dati da Opendesktop.org per conoscere altre informazioni sulla "
+"Ottieni dati da openDesktop.org per conoscere altre informazioni sulla "
 "squadra"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:232
@@ -135,7 +135,7 @@ msgstr "A&utori"
 #, kde-format
 msgid "Get data from openDesktop.org to learn more about contributors"
 msgstr ""
-"Ottieni dati da Opendesktop.org per conoscere altre informazioni sulla "
+"Ottieni dati da openDesktop.org per conoscere altre informazioni sulla "
 "squadra "
 
 #: aboutdialog/ExtendedAboutDialog.cpp:294
@@ -147,7 +147,7 @@ msgstr "&Collaboratori"
 #, kde-format
 msgid "Get data from openDesktop.org to learn more about our generous donors"
 msgstr ""
-"Ottieni dati da Opendesktop.org per conoscere altre informazioni sui nostri "
+"Ottieni dati da openDesktop.org per conoscere altre informazioni sui nostri "
 "generosi donatori"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:326
