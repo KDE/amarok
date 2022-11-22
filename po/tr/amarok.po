@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-11-15 05:01+0300\n"
+"PO-Revision-Date: 2022-11-21 22:27+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -2259,7 +2259,7 @@ msgstr "Dosyaları Düzenle"
 #: browsers/CollectionTreeView.cpp:1166 browsers/filebrowser/FileView.cpp:426
 #, kde-format
 msgid "&Edit Track Details"
-msgstr "Parça Bilgilerini &Düzenle"
+msgstr "Parça Bilgilerini Dü&zenle"
 
 #: browsers/filebrowser/FileBrowser.cpp:70
 #: context/applets/wikipedia/package/contents/ui/main.qml:54
@@ -2539,7 +2539,7 @@ msgstr "Çalma listesini &sil"
 #: browsers/playlistbrowser/DynamicView.cpp:249
 #, kde-format
 msgid "&Edit bias..."
-msgstr "Eğilimi &düzenle..."
+msgstr "Eğilimi dü&zenle..."
 
 #: browsers/playlistbrowser/DynamicView.cpp:253
 #, kde-format
@@ -11804,12 +11804,12 @@ msgstr "&Çalma Listesi"
 #: MainWindow.cpp:1112
 #, kde-format
 msgid "&Tools"
-msgstr "Ara&çlar"
+msgstr "&Araçlar"
 
 #: MainWindow.cpp:1127
 #, kde-format
 msgid "&Settings"
-msgstr "A&yarlar"
+msgstr "Ayar&lar"
 
 #: MainWindow.cpp:1170
 #, kde-format
