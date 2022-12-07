@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2019-05-20 02:48+0200\n"
-"PO-Revision-Date: 2022-09-30 16:38+0200\n"
+"PO-Revision-Date: 2022-12-06 16:15+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -62,18 +62,19 @@ msgstr "პროგრამისტი"
 #, kde-format
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
+"დასაყენებლად ან საწაშლელად ყველა მომხმარებლის ნაცვლად აპლეტებზე ოპერირებს."
 
 #: amarokpkg.cpp:110
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
-msgstr ""
+msgstr "აპლეტის <path>-ზე დაყენება"
 
 #: amarokpkg.cpp:112
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
-msgstr ""
+msgstr "<path>-ზე აპლეტის განახლება"
 
 #: amarokpkg.cpp:114
 #, kde-format
@@ -84,7 +85,7 @@ msgstr "ყველაზე ხშირად დაყენებული 
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
-msgstr ""
+msgstr "აპლეტის (<name>) წაშლა"
 
 #: amarokpkg.cpp:118
 #, kde-format
@@ -92,11 +93,13 @@ msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "
 "directories for this KDE session will be searched instead."
 msgstr ""
+"აბსოლუტური ბილიკი პაკეტის ძირითად საქაღალდემდე. თუ მითითებული არაა, "
+"მოსაძებნად KDE-ის სესიის მონაცემების საქაღალდე იქნება გამოყენებული."
 
 #: amarokpkg.cpp:176
 #, kde-format
 msgid "Successfully removed %1"
-msgstr ""
+msgstr "%1 წარმატებით წაიშალა"
 
 #: amarokpkg.cpp:178
 #, kde-format
