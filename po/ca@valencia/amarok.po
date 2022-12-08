@@ -1540,7 +1540,7 @@ msgstr "Inclou el nom dels àlbums en la busca"
 #: amarokconfig.kcfg:521
 #, kde-format
 msgid "Include artist names in matching"
-msgstr "Inclou els noms dels artistes a la busca"
+msgstr "Inclou els noms dels artistes en la busca"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
 #: amarokconfig.kcfg:525
@@ -5185,7 +5185,7 @@ msgid ""
 "directories for this KDE session will be searched instead."
 msgstr ""
 "Camí absolut cap a l'arrel del paquet. Si no es proporciona, es buscaran en "
-"els directoris de dades estàndards d'esta sessió de KDE."
+"els directoris de dades estàndard per a esta sessió de KDE."
 
 #: context/tools/amarokpkg.cpp:176
 #, kde-format

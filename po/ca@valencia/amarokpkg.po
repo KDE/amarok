@@ -98,7 +98,7 @@ msgid ""
 "directories for this KDE session will be searched instead."
 msgstr ""
 "Camí absolut cap a l'arrel del paquet. Si no es proporciona, es buscaran en "
-"els directoris de dades estàndards d'esta sessió de KDE."
+"els directoris de dades estàndard per a esta sessió de KDE."
 
 #: amarokpkg.cpp:176
 #, kde-format
