@@ -31,5 +31,5 @@ Dependencies:
     'frameworks/kwindowsystem': '@stable'
     'frameworks/solid': '@stable'
     'frameworks/threadweaver': '@stable'
-    'kdesupport/qca' : '@latest'
+    'libraries/qca' : '@latest'
     'libraries/phonon': '@stable'
