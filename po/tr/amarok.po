@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-12-04 14:25+0300\n"
+"PO-Revision-Date: 2022-12-10 18:21+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -36,12 +36,14 @@ msgstr ""
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Serdar Soytetir, Işıl Poyraz, Kaan Özdinçer"
+msgstr "Serdar Soytetir, Işıl Poyraz, Kaan Özdinçer, Emir SARI"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "tulliana@gmail.com, isil@pardus.org.tr, kaanozdincer@gmail.com"
+msgstr ""
+"tulliana@gmail.com, isil@pardus.org.tr, kaanozdincer@gmail.com, "
+"emir_sari@icloud.com"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:3
@@ -940,7 +942,7 @@ msgid ""
 "Whether to adjust the volume of tracks to make them sound the same volume, "
 "and if so whether to make the adjustments per-track or per-album."
 msgstr ""
-"Parçaların ses düzeyini aynı ses seviyesinde olacak şekilde ayarlayıp "
+"Parçaların ses düzeyini aynı ses düzeyinde olacak biçimde ayarlayıp "
 "ayarlayamayacağınızı ve eğer öyleyse parça başına veya albüm başına "
 "düzenlemeler yapılıp yapılmayacağı."
 
@@ -2353,12 +2355,12 @@ msgstr "Seçili önayarı sil"
 #: browsers/playlistbrowser/APGCategory.cpp:76
 #, kde-format
 msgid "Import a new preset"
-msgstr "Yeni bir önayarı içe aktar"
+msgstr "Yeni bir önayar içe aktar"
 
 #: browsers/playlistbrowser/APGCategory.cpp:80
 #, kde-format
 msgid "Export the selected preset"
-msgstr "Seçili önayarı dışaaktar"
+msgstr "Seçili önayarı dışa aktar"
 
 #: browsers/playlistbrowser/APGCategory.cpp:87
 #, kde-format
@@ -2647,14 +2649,14 @@ msgstr "&Dışa farklı aktar..."
 msgctxt "First part of 'Remove %1 From %2'"
 msgid "a Track"
 msgid_plural "%1 Tracks"
-msgstr[0] "bir Parça"
+msgstr[0] "Parça"
 msgstr[1] "%1 Parça"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
 #, kde-format
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
-msgstr "%2 Ögesini %1 İçinden Kaldır"
+msgstr "%2 Konumundan %1 Ögesini Kaldır"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
 #, kde-format
@@ -2736,7 +2738,7 @@ msgstr "Podcast'ler"
 #: browsers/playlistbrowser/PodcastCategory.cpp:83
 #, kde-format
 msgid "List of podcast subscriptions and episodes"
-msgstr "Podcast üyelikleri ve bölümlerinin listesi"
+msgstr "Podcast abonelikleri ve bölümlerinin listesi"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:86
 #, kde-format
@@ -2745,9 +2747,9 @@ msgid ""
 "Downloading episodes to the disk is also done here, or you can tell Amarok "
 "to do this automatically."
 msgstr ""
-"Podcast üyeliklerinizi yönetin ve kişisel bölümleri tarayın. Bölümleri "
-"belleğe indirirme yine burada gerçeklelir ve Amarok uygulamasına bunu "
-"otomatik olarak yapmasını söyleyebilirsiniz."
+"Podcast aboneliklerinizi yönetin ve kişisel bölümleri tarayın. Bölümleri "
+"belleğe indirme yine burada gerçekleşir ve Amarok uygulamasına bunu otomatik "
+"olarak yapmasını söyleyebilirsiniz."
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:96
 #, kde-format
@@ -2763,7 +2765,7 @@ msgstr "&Tümünü Güncelle"
 #: browsers/playlistbrowser/PodcastCategory.cpp:114
 #, kde-format
 msgid "Import OPML File"
-msgstr "OPML Dosyasını İçe Aktar"
+msgstr "OPML Dosyası İçe Aktar"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:168
 #, kde-format
@@ -2784,7 +2786,7 @@ msgstr "Dosya Boyutu:"
 #: browsers/playlistbrowser/PodcastCategory.cpp:237
 #, kde-format
 msgid "Subscription Date:"
-msgstr "Üyelik Tarihi:"
+msgstr "Abonelik Tarihi:"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:245
 #, kde-format
@@ -3161,7 +3163,7 @@ msgstr "Veri tabanının adını girin. Önayarlanan amarokdb'dir.\n"
 #: configdialog/dialogs/DatabaseConfig.ui:188
 #, kde-format
 msgid "Test database connection"
-msgstr "Veritabanı bağlantısını test et"
+msgstr "Veritabanı bağlantısını sına"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Info)
 #: configdialog/dialogs/DatabaseConfig.ui:206
@@ -3819,7 +3821,7 @@ msgstr "İnternet Servisleri"
 #: configdialog/dialogs/PluginsConfig.cpp:50
 #, kde-format
 msgid "Statistics importers"
-msgstr "İstatistik içer aktarıcılar"
+msgstr "İstatistik içe aktarıcılar"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:132
 #, kde-format
@@ -5147,7 +5149,7 @@ msgstr "En çok kurulan uygulamacıklar"
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
-msgstr "<ad> uygulamacığını yeniden adlandır"
+msgstr "<ad> uygulamacığını kaldır"
 
 #: context/tools/amarokpkg.cpp:118
 #, kde-format
@@ -5378,7 +5380,7 @@ msgstr ""
 "aktarılmadığı anlamına gelir.<br>Yinelenen parçalar hakkında daha fazla "
 "bilgi için <a href='http://userbase.kde.org/Amarok/Manual/Various/"
 "TroubleshootingAndCommonProblems#Duplicate_Tracks'>Amarok Kılavuzu</a>'na "
-"gözatın."
+"göz atın."
 
 #: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:89
 #, kde-format
@@ -5860,11 +5862,11 @@ msgid ""
 "track and photo database</b>, however it should not delete any tracks. The "
 "tracks will become orphaned."
 msgstr ""
-"<b>%1</b><br><br>Yukarıdaki problem Amarok'un iPod'unuzu kullanmasına engel "
+"<b>%1</b><br><br>Yukarıdaki sorun, Amarok'un iPod'unuzu kullanmasına engel "
 "olur. Aşağıdaki <b>%2</ b> düğmesini kullanarak kritik iPod klasörleri ve "
 "dosyaları (iTunes veritabanı da dahil olmak üzere) yeniden oluşturmayı "
 "deneyebilirsiniz.<br><br>iPod Başlatma, <b>iPod parça ve fotoğraf "
-"veritabanını yok etti</b>, ancak herhangi bir parçayı silmemelidir. Parçalar "
+"veritabanını yok etti</b>; ancak herhangi bir parçayı silmemelidir. Parçalar "
 "ayrılacaktır."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:434
@@ -6099,7 +6101,7 @@ msgid_plural ""
 "There was a problem and %1 tracks could not be removed. Make sure the "
 "directory is writable."
 msgstr[0] ""
-"Bir problem oluştu ve bu parça kaldırılamadı. Dizinin yazılabilir olduğundan "
+"Bir sorun oluştu ve bu parça kaldırılamadı. Dizinin yazılabilir olduğundan "
 "emin olun."
 msgstr[1] ""
 "Bir problem oluştu ve %1 parça kaldırılamadı. Dizinin yazılabilir olduğundan "
@@ -6108,7 +6110,7 @@ msgstr[1] ""
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:80
 #, kde-format
 msgid "Unable to remove tracks"
-msgstr "Parçalar silinemiyor"
+msgstr "Parçalar kaldırılamıyor"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:88
 #, kde-format
@@ -6124,7 +6126,7 @@ msgstr "Boş klasörleri kaldırmak istiyor musunuz?"
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:96
 #, kde-format
 msgid "Remove empty folders?"
-msgstr "Boş klasörler silinsin mi?"
+msgstr "Boş klasörler kaldırılsın mi?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
@@ -6534,7 +6536,7 @@ msgstr "&Genel Ayarları Yapılandır"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
 #, kde-format
 msgid "&Export subscriptions to OPML file"
-msgstr "Abonelikleri, OPML dosyasına &aktar"
+msgstr "Abonelikleri, OPML dosyasına dışa &aktar"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
 #, kde-format
@@ -6544,7 +6546,7 @@ msgstr "&Yapılandır"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:343
 #, kde-format
 msgid "&Remove Subscription"
-msgstr "&Üyeliği Kaldır"
+msgstr "&Aboneliği Kaldır"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:352
 #, kde-format
@@ -7312,7 +7314,7 @@ msgstr[1] "%1 saniye"
 #: core/podcasts/PodcastReader.cpp:453
 #, kde-format
 msgid "Importing podcast channel from %1"
-msgstr "%1 konumundan podcast kanalı yükleniyor"
+msgstr "%1 konumundan podcast kanalı içe aktarılıyor"
 
 #: core/podcasts/PodcastReader.cpp:457
 #, kde-format
@@ -7327,7 +7329,7 @@ msgstr "\"%1\" güncelleniyor"
 #: core/podcasts/PodcastReader.cpp:506 core/podcasts/PodcastReader.cpp:520
 #, kde-format
 msgid "Importing podcast from %1 failed with error:\n"
-msgstr "%1 konumundan podcast içeriye aktarma işlemi başarısız oldu:\n"
+msgstr "%1 konumundan podcast içe aktarma işlemi başarısız oldu:\n"
 
 #: core/podcasts/PodcastReader.cpp:510 core/podcasts/PodcastReader.cpp:524
 #, kde-format
@@ -7557,8 +7559,8 @@ msgid ""
 msgstr ""
 "Bit hızı, ses parçasının bir saniyesini temsil etmek için kullanılan veri "
 "miktarının bir ölçüsüdür.<br>Amarok tarafından kullanılan kodlayıcı, sabit "
-"bir bit hızıyla daha iyi çalışır.<br>VBR deneyseldir ve muhtemelen, CBR."
-"<br>Bu nedenle, bu kaydırıcıdaki bit hızı ölçümü, kodlanmış parçanın bit "
+"bir bit hızıyla daha iyi çalışır.<br>VBR deneyseldir ve büyük olasılıkla, "
+"CBR.<br>Bu nedenle, bu kaydırıcıdaki bit hızı ölçümü, kodlanmış parçanın bit "
 "hızının oldukça doğru bir tahminidir.<br>Kodlayıcı, yalnızca aşırı "
 "durumlarda görünen yapay ögelerle sınanan çoğu örnek için 128 kbps'de "
 "saydamdır."
@@ -7647,21 +7649,21 @@ msgid ""
 "file, and are not recommended."
 msgstr ""
 "<a href=http://flac.sourceforge.net/documentation_tools_flac.html>Sıkıştırma "
-"seviyesi</a>, <b>FLAC</b> ile kodlanırken dosya boyutu ve sıkıştırma hızı "
+"düzeyi</a>, <b>FLAC</b> ile kodlanırken dosya boyutu ve sıkıştırma hızı "
 "arasındaki dengeyi temsil eden 0 ile 8 arasında bir tam sayı değeridir.<br/> "
-"Sıkıştırma seviyesini <b>0</b> olarak ayarlamak, en kısa sıkıştırma süresini "
-"verir, ancak karşılaştırılabilir büyük bir dosya oluşturur<br/>Öte yandan, "
-"<b>8</b> sıkıştırma seviyesi sıkıştırmayı oldukça yavaş yapar ancak en küçük "
+"Sıkıştırma düzeyini <b>0</b> olarak ayarlamak, en kısa sıkıştırma süresini "
+"verir; ancak karşılaştırılabilir büyük bir dosya oluşturur<br/>Öte yandan, "
+"<b>8</b> sıkıştırma düzeyi sıkıştırmayı oldukça yavaş yapar; ancak en küçük "
 "dosyayı üretecektir.<br/>FLAC tanımı gereği kayıpsız bir kodlayıcı bileşeni "
-"olduğundan çıkışın ses kalitesi sıkıştırma seviyesine bakılmaksızın tam "
-"olarak aynıdır.<br/>Ayrıca, <b>5</b> değerinin üstündeki düzeyler sıkıştırma "
+"olduğundan çıkışın ses kalitesi sıkıştırma düzeyine bakılmaksızın tam olarak "
+"aynıdır.<br/>Ayrıca, <b>5</b> değerinin üstündeki düzeyler sıkıştırma "
 "süresini önemli ölçüde artırır, ancak yalnızca biraz daha küçük bir dosya "
 "oluşturur ve önerilmez."
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:41
 #, kde-format
 msgid "Compression level"
-msgstr "Sıkıştırma seviyesi"
+msgstr "Sıkıştırma düzeyi"
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:42
 #, kde-format
@@ -7813,13 +7815,13 @@ msgstr ""
 "olanlardan daha yüksek bir bit hızı ile kodlanır; bu yaklaşım, parça "
 "genelinde sabit bir bit hızına sahip olmaktan daha genel olarak daha iyi "
 "kaliteyi ve daha küçük bir dosya üretir.<br>Vorbis kodlayıcısı, belirli bir "
-"ses kalitesi seviyesini tanımlamak için -1 ile 10 arasında bir kalite "
-"derecesi \"-q parametresi\" kullanır. Bu kaydırıcıdaki bit hızı ölçüsü, q "
-"değeri verilen kodlanmış parçanın ortalama bit hızının yalnızca kaba bir "
-"tahminidir (Vorbis tarafından sağlanır). Aslında, daha yeni ve daha verimli "
-"Vorbis sürümleri ile gerçek bit hızı daha da düşüktür.<br><b>-q5</b>, "
-"taşınabilir oynatıcılarda müzik dinlemek için iyi bir seçimdir.<br/><b>-q3</ "
-"b> altındaki herhangi bir şey müzik için yetersiz olabilir ve <b>-q8</b> "
+"ses kalitesi düzeyini tanımlamak için -1 ile 10 arasında bir kalite derecesi "
+"\"-q parametresi\" kullanır. Bu kaydırıcıdaki bit hızı ölçüsü, q değeri "
+"verilen kodlanmış parçanın ortalama bit hızının yalnızca kaba bir tahminidir "
+"(Vorbis tarafından sağlanır). Aslında, daha yeni ve daha verimli Vorbis "
+"sürümleri ile gerçek bit hızı daha da düşüktür.<br><b>-q5</b>, taşınabilir "
+"oynatıcılarda müzik dinlemek için iyi bir seçimdir.<br/><b>-q3</ b> "
+"altındaki herhangi bir şey müzik için yetersiz olabilir ve <b>-q8</b> "
 "değerinin üstündeki herhangi bir şey muhtemelen aşırı derecede gereksizdir."
 
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:59
@@ -7860,14 +7862,14 @@ msgid ""
 msgstr ""
 "Bit hızı, ses parçasının saniyesini temsil etmek için kullanılan veri "
 "miktarının bir ölçüsüdür.<br>Patentli <b>WMA</ b> biçiminin kısıtlamaları ve "
-"özel bir kodlayıcının tersine mühendisliğinin zor olması nedeniyle, Amarak "
+"özel bir kodlayıcının tersine mühendisliğinin zor olması nedeniyle, Amarok "
 "bir <a href=http://en.wikipedia.org/wiki/"
 "Windows_Media_Audio#Windows_Media_Audio>Sabit bit hızı (CBR)</a> ayarı "
 "ayarlamıştır.<br>Bu nedenle, bu kaydırıcıdaki bit hızı ölçüsü, kodlanmış "
 "parçanın bit hızının oldukça doğru bir tahminidir.<br><b>136 kb/s</b> "
 "taşınabilir bir oynatıcıda müzik dinlemek için iyi bir seçimdir.<br/><b> 112 "
-"kb/s</b> seviyesinin altındaki herhangi bir şey müzik için yetersiz "
-"kalabilir ve <b>182 kb/s</ b> ve üstü muhtemelen gereksiz olacaktır."
+"kb/s</b> düzeyinin altındaki herhangi bir şey müzik için yetersiz kalabilir "
+"ve <b>182 kb/s</ b> ve üstü büyük olasılıkla gereksiz olacaktır."
 
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:67
 #, kde-format
@@ -8426,7 +8428,7 @@ msgstr "'%1' Ögesini Yeniden Tara"
 #: dialogs/DatabaseImporterDialog.cpp:41
 #, kde-format
 msgid "Import Collection"
-msgstr "Koleksiyonu İçeriye Aktar"
+msgstr "Koleksiyon İçe Aktar"
 
 #: dialogs/DatabaseImporterDialog.cpp:49
 #, kde-format
@@ -8442,24 +8444,23 @@ msgstr "Taşınıyor"
 #, kde-format
 msgid "<b><font color='red'>Failed:</font></b> No tracks were imported"
 msgstr ""
-"<b><font color='red'>Başarısız oldu:</font></b> Hiçbir parça içeriye "
-"aktarılmadı"
+"<b><font color='red'>Başarısız oldu:</font></b> Hiçbir parça içe aktarılmadı"
 
 #: dialogs/DatabaseImporterDialog.cpp:103
 #, kde-format
 msgid "<b><font color='green'>Success:</font></b> Imported %1 track"
 msgid_plural "<b><font color='green'>Success:</font></b> Imported %1 tracks"
 msgstr[0] ""
-"<b><font color='green'>Başarılı oldu:</font></b> %1 parça içeriye aktarıldı"
+"<b><font color='green'>Başarılı oldu:</font></b> %1 parça içe aktarıldı"
 msgstr[1] ""
-"<b><font color='green'>Başarılı oldu:</font></b> %1 parça içeriye aktarıldı"
+"<b><font color='green'>Başarılı oldu:</font></b> %1 parça içe aktarıldı"
 
 #: dialogs/DatabaseImporterDialog.cpp:115
 #, kde-format
 msgid "<b><font color='red'>Failed:</font></b> Unable to import statistics"
 msgstr ""
-"<b><font color='red'>Başarısız oldu:</font></b> İstatistikler içeriye "
-"aktarılamadı"
+"<b><font color='red'>Başarısız oldu:</font></b> İstatistikler içe "
+"aktarılamıyor"
 
 #: dialogs/DatabaseImporterDialog.cpp:132
 #, kde-format
@@ -8470,19 +8471,19 @@ msgstr "<b><font color='red'>Hata:</font></b> %1"
 #, kde-format
 msgctxt "Track has been imported, format: Track"
 msgid "Imported <b>%1</b>"
-msgstr "<b>%1</b> içeriye aktarıldı"
+msgstr "<b>%1</b> içe aktarıldı"
 
 #: dialogs/DatabaseImporterDialog.cpp:150
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track"
 msgid "Imported <b>%1 - %2</b>"
-msgstr "<b>%1 - %2</b> içeriye aktarıldı"
+msgstr "<b>%1 - %2</b> içe aktarıldı"
 
 #: dialogs/DatabaseImporterDialog.cpp:153
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track (Album)"
 msgid "Imported <b>%1 - %2 (%3)</b>"
-msgstr "<b>%1 - %2 (%3)</b> içeriye aktarıldı"
+msgstr "<b>%1 - %2 (%3)</b> içe aktarıldı"
 
 #: dialogs/DatabaseImporterDialog.cpp:162
 #, kde-format
@@ -8708,7 +8709,7 @@ msgstr "Gerekli olduğunda"
 #: dialogs/deviceconfiguredialog.cpp:119
 #, kde-format
 msgid "Remove transcoded files after transfer"
-msgstr "Çapraz kodlanan dosyaları aktarma işlemi bitince sil"
+msgstr "Çapraz kodlanan dosyaları aktarma sonrası kaldır"
 
 #: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
 #, kde-format
@@ -9767,7 +9768,7 @@ msgstr "&Tümü küçük harf"
 #: dialogs/TagGuessOptions.ui:70
 #, kde-format
 msgid "Remove trailing &spaces in tags"
-msgstr "Etiketlerdeki çoklu &boşlukları sil"
+msgstr "Etiketlerin &sonundaki boşlukları kaldır"
 
 #. i18n: ectx: property (text), widget (QCheckBox, cbReplaceUnderscores)
 #: dialogs/TagGuessOptions.ui:80
@@ -10882,7 +10883,7 @@ msgstr "Alex Merry"
 #: main.cpp:190
 #, kde-format
 msgid "Developer, Replay Gain support"
-msgstr "Geliştirici, Tekrar Çalma beslemesi desteği"
+msgstr "Geliştirici, Yeniden Çalma Kazanımı desteği"
 
 #: main.cpp:192
 #, kde-format
@@ -11514,7 +11515,7 @@ msgstr "Çeşitli çalma listesi tipleri"
 #: MainWindow.cpp:283
 #, kde-format
 msgid "Browse local hard drive for content"
-msgstr "İçerik için yerel sabit diske gözat"
+msgstr "İçerik için yerel sabit diske göz at"
 
 #: MainWindow.cpp:326
 #, kde-format
@@ -11589,7 +11590,7 @@ msgstr "&Kuyruğu Düzenle"
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
-msgstr "Aynısı Olanları &Kaldır"
+msgstr "Yinelenmişleri &Kaldır"
 
 #: MainWindow.cpp:770
 #, kde-format
@@ -11664,7 +11665,7 @@ msgstr "Çalma Listesini Karıştır"
 #: MainWindow.cpp:884
 #, kde-format
 msgid "Repopulate Playlist"
-msgstr "Çalma Listesini Tekrar Doldur"
+msgstr "Çalma Listesini Yeniden Doldur"
 
 #: MainWindow.cpp:890
 #, kde-format
@@ -12275,17 +12276,17 @@ msgstr "Yalnızca Kuyruk"
 #: playlist/navigators/NavigatorConfigAction.cpp:51
 #, kde-format
 msgid "Repeat Track"
-msgstr "Parçayı Tekrarla"
+msgstr "Parçayı Yinele"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:55
 #, kde-format
 msgid "Repeat Album"
-msgstr "Albümü Tekrarla"
+msgstr "Albümü Yinele"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:59
 #, kde-format
 msgid "Repeat Playlist"
-msgstr "Çalma Listesini Tekrarla"
+msgstr "Çalma Listesini Yinele"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:67
 #, kde-format
@@ -13956,7 +13957,7 @@ msgstr "APG Önayar Adı"
 #: playlistgenerator/PresetModel.cpp:154
 #, kde-format
 msgid "Import preset"
-msgstr "Önayar Al"
+msgstr "Önayar İçe Aktar"
 
 #: playlistgenerator/PresetModel.cpp:156
 #, kde-format
@@ -13966,22 +13967,22 @@ msgstr "Önayar dosyaları"
 #: playlistgenerator/PresetModel.cpp:216
 #, kde-format
 msgid "Preset exported to %1"
-msgstr "Önayar %1 konumuna aktarıldı"
+msgstr "Önayar %1 konumuna dışa aktarıldı"
 
 #: playlistgenerator/PresetModel.cpp:223
 #, kde-format
 msgid "Preset could not be exported to %1"
-msgstr "Önayar %1 konumuna aktarılamadı"
+msgstr "Önayar %1 konumuna dışa aktarılamadı"
 
 #: playlistgenerator/PresetModel.cpp:241
 #, kde-format
 msgid "Presets could not be imported from %1"
-msgstr "Önayar %1 dosyasından alınamadı"
+msgstr "Önayarlar, %1 dosyasından içe aktarılamadı"
 
 #: playlistgenerator/PresetModel.cpp:248
 #, kde-format
 msgid "%1 could not be opened for preset import"
-msgstr "%1 önayar içe alımı için açılamadı"
+msgstr "%1, önayar içe aktarımı için açılamadı"
 
 #: playlistgenerator/PresetModel.cpp:253
 #, kde-format
@@ -14071,7 +14072,7 @@ msgstr "<Boş>"
 #, kde-format
 msgid ""
 "Amarok could not find any plugins. This indicates an installation problem."
-msgstr "Amarok eklentileri bulamadı. Bu bir kurulum sorununu gösterir."
+msgstr "Amarok eklentileri bulamadı. Bu bir kurulum sorununu belirtir."
 
 #: scanner/AbstractScanResultProcessor.cpp:66
 #, kde-format
@@ -14269,7 +14270,7 @@ msgstr "Sunucu Ekle"
 #: services/ampache/AmpacheConfigWidget.ui:30
 #, kde-format
 msgid "Remove Server"
-msgstr "Sunucu Kaldır"
+msgstr "Sunucuyu Kaldır"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelServerAddress)
@@ -14370,7 +14371,7 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:224
 #, kde-format
 msgid "&Test Login"
-msgstr "&Test Girişi"
+msgstr "&Sınama Girişi"
 
 #: services/gpodder/GpodderProvider.cpp:291
 #, kde-format
@@ -14385,7 +14386,7 @@ msgstr "Durumlar gpodder.net ile eşitlenmeye çalışılıyor"
 #: services/gpodder/GpodderProvider.cpp:528
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
-msgstr "Durumlar gpodder.net ile eşitlenmeye çalışılıyor"
+msgstr "Abonelikler gpodder.net ile eşitlenmeye çalışılıyor"
 
 #: services/gpodder/GpodderProvider.cpp:777
 #: services/gpodder/GpodderProvider.cpp:788
@@ -14394,7 +14395,8 @@ msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
 "seconds..."
 msgstr ""
-"GPodder Servisi, sunucudan veri alamadı. 10 saniye içinde tekrar deneyecek..."
+"GPodder Servisi, sunucudan veri alamadı. 10 saniye içinde yeniden "
+"deneyecek..."
 
 #: services/gpodder/GpodderService.cpp:113
 #, kde-format
@@ -14437,8 +14439,8 @@ msgstr "Sınanıyor..."
 msgid ""
 "Either the username or the password is empty, please correct and try again."
 msgstr ""
-"Kullanıcı adınız veya parolanız boş gibi görünüyor, lütfen bu hatayı "
-"düzeltip ve tekrar deneyin."
+"Kullanıcı adınız veya parolanız boş gibi görünüyor; lütfen bu hatayı "
+"düzeltin ve yeniden deneyin."
 
 #: services/gpodder/GpodderServiceSettings.cpp:113
 #: services/gpodder/GpodderServiceSettings.cpp:181
@@ -14464,8 +14466,8 @@ msgid ""
 "Either the username or the password is incorrect, please correct and try "
 "again"
 msgstr ""
-"Kullanıcı adınızda ya da parolanızda hata var gibi görünüyor, lütfen bu "
-"hatayı düzeltip ve tekrar deneyin"
+"Kullanıcı adınızda ya da parolanızda hata var gibi görünüyor; lütfen bu "
+"hatayı düzeltin ve yeniden deneyin"
 
 #: services/gpodder/GpodderServiceSettings.cpp:189
 #, kde-format
@@ -14807,7 +14809,7 @@ msgid ""
 "There was a problem communicating with the Last.fm services. Please try "
 "again later."
 msgstr ""
-"Last.fm servisleri ile iletişim hatası oluştu. Lütfen daha sonra tekrar "
+"Last.fm hizmetleri ile bir iletişim sorunu oluştu. Lütfen daha sonra yeniden "
 "deneyin."
 
 #: services/lastfm/LastFmService.cpp:383
@@ -14899,7 +14901,7 @@ msgstr "Başarısız oldu"
 #: services/lastfm/LastFmServiceSettings.cpp:174
 #, kde-format
 msgid "Test Login"
-msgstr "Test Girişi"
+msgstr "Sınama Girişi"
 
 #: services/lastfm/LastFmServiceSettings.cpp:173
 #, kde-format
@@ -15194,7 +15196,7 @@ msgid ""
 "Magnatune directly from within Amarok."
 msgstr ""
 "Magnatune'dan daha önce satın aldığınız herhangi bir ürünü doğrudan Amarok "
-"içinden tekrar indirebilmek için e-posta adresinizi buraya girin."
+"içinden yeniden indirebilmek için e-posta adresinizi buraya girin."
 
 #. i18n: ectx: property (text), widget (QLabel, label_6)
 #: services/magnatune/MagnatuneConfigWidget.ui:59
@@ -15320,7 +15322,7 @@ msgstr "İndirme seçenekleri"
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:25
 #, kde-format
 msgid "Select Format:"
-msgstr "Biçim Seçin:"
+msgstr "Biçim Seç:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:38
@@ -15361,8 +15363,8 @@ msgid ""
 "There seems to be an error in the supplied membership information. Please "
 "correct this and try again."
 msgstr ""
-"Üyelik bilgilerinde hata var gibi görünüyor. Lütfen bu hatayı düzeltip ve "
-"tekrar deneyin."
+"Üyelik bilgilerinde hata var gibi görünüyor. Lütfen bu hatayı düzeltin ve "
+"yeniden deneyin."
 
 #: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
@@ -16271,7 +16273,7 @@ msgid ""
 "synchronizing tracks with a file-based target always make sure that the "
 "database file is not currently in use!"
 msgstr ""
-"<span style=\"color:red; font-weight:bold;\">Önemli:</span> parçaları dosya "
+"<span style=\"color:red; font-weight:bold;\">Önemli:</span> Parçaları dosya "
 "tabanlı bir hedefle eşitlemeden önce daima veritabanı dosyasının "
 "kullanılmadığından emin olun!"
 
