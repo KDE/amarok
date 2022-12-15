@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-02-22 22:24+0100\n"
+"PO-Revision-Date: 2022-12-14 12:20+0100\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 21.12.2\n"
+"X-Generator: Lokalize 21.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -7729,7 +7729,7 @@ msgstr ""
 #: services/lastfm/SynchronizationAdapter.cpp:54
 #, kde-format
 msgid "Last.fm"
-msgstr ""
+msgstr "Last.fm"
 
 #: covermanager/CoverFoundDialog.cpp:138
 #, kde-format
@@ -11276,7 +11276,7 @@ msgstr ""
 #: MainWindow.cpp:940
 #, kde-format
 msgid "Mute Volume"
-msgstr ""
+msgstr "Silentia Volume"
 
 #: MainWindow.cpp:945
 #, kde-format
@@ -11296,7 +11296,7 @@ msgstr ""
 #: MainWindow.cpp:960 playlist/view/PlaylistViewCommon.cpp:117
 #, kde-format
 msgid "Queue Track"
-msgstr ""
+msgstr "Tracia de coda"
 
 #: MainWindow.cpp:965
 #, kde-format
