@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-12-10 18:21+0300\n"
+"PO-Revision-Date: 2022-12-17 19:03+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.08.3\n"
+"X-Generator: Lokalize 22.12.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -768,7 +768,7 @@ msgstr ""
 msgid ""
 "If set, Organize files will rename files according to a custom format string."
 msgstr ""
-"Ayarlandıysa düzenlenen dosyalar, özel biçimli dizgeye uyarak yeniden "
+"Ayarlandıysa düzenlenen dosyalar, özel biçimli diziye uyarak yeniden "
 "adlandırılacaktır."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -800,7 +800,7 @@ msgstr "Değiştirilecek düzenli ifade."
 msgid ""
 "Organize files will replace substrings matching this regular expression."
 msgstr ""
-"Düzenlenen dosyalarda, bu düzenli ifade ile eşleşen alt dizgeler "
+"Düzenlenen dosyalarda, bu düzenli ifade ile eşleşen alt diziler "
 "değiştirilecektir."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -814,7 +814,7 @@ msgstr "Sözcük değiştiriliyor."
 #, kde-format
 msgid "Organize files will replace matching substrings with this string."
 msgstr ""
-"Düzenlenen dosyalarda, bu dizge ile eşleşen alt dizgeler değiştirilecektir."
+"Düzenlenen dosyalarda, bu dizi ile eşleşen alt diziler değiştirilecektir."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:179
@@ -13704,8 +13704,8 @@ msgid ""
 "Whether the APG should match tracks that equal, start with, end with, or "
 "contain the specified string."
 msgstr ""
-"APG, belirtilen dizge ile eşleşme, başlamak, bitmek ya da içerdikleri "
-"parçaları eşleştirilip eşleştirilmeyeceği."
+"APG, belirtilen dizi ile eşleşme, başlama, bitme veya içerdikleri parçaları "
+"eşleştirilip eşleştirilmeyeceği."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonString)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:409
@@ -13735,7 +13735,7 @@ msgstr "kapsananlar"
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:432
 #, kde-format
 msgid "The string that the APG should use when matching tracks."
-msgstr "Parçalar eşleştirilirken, APG'nin kullanacağı dizge."
+msgstr "Parçalar eşleştirilirken APG'nin kullanacağı dizi."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonTime)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:460
