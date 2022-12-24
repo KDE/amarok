@@ -91,7 +91,7 @@ protected:
     }
 
 private:
-    QModelIndex m_index;
+    QPersistentModelIndex m_index;
     Meta::AlbumPtr m_album;
     QPointer<CollectionTreeItemModelBase> m_model;
     bool m_abortRequested;
