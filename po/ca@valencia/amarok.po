@@ -12727,7 +12727,8 @@ msgstr "Llista de reproducció"
 #, kde-format
 msgid "Start typing to progressively search through the playlist"
 msgstr ""
-"Comenceu a escriure per a buscar progressivament en la llista de reproducció"
+"Comenceu a escriure per a buscar progressivament a través de la llista de "
+"reproducció"
 
 #: playlist/ProgressiveSearchWidget.cpp:73
 #, kde-format
