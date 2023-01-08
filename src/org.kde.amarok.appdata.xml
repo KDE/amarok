@@ -4,6 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <name>Amarok</name>
   <name xml:lang="ar">أماروك</name>
+  <name xml:lang="bg">Amarok</name>
   <name xml:lang="bs">Amarok</name>
   <name xml:lang="ca">Amarok</name>
   <name xml:lang="ca-valencia">Amarok</name>
@@ -43,6 +44,7 @@
   <name xml:lang="zh-CN">Amarok</name>
   <name xml:lang="zh-TW">Amarok</name>
   <summary>A powerful music player that lets you rediscover your music</summary>
+  <summary xml:lang="bg">Мощен музикален плейър, който ви позволява да преоткриете музиката си</summary>
   <summary xml:lang="ca">Un reproductor de música potent que permet redescobrir la vostra música</summary>
   <summary xml:lang="ca-valencia">Un reproductor de música potent que permet redescobrir la vostra música</summary>
   <summary xml:lang="cs">Mocný přehrávač hudby, který vás nechá prohledávat skladby</summary>
@@ -71,6 +73,7 @@
   <summary xml:lang="zh-CN">一款强大到让您重新感悟音乐之美的播放器</summary>
   <description>
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
+    <p xml:lang="bg">Amarok е безплатен, междуплатформен, универсален, мощен и богат на функции музикален плейър и мениджър на колекции.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
     <p xml:lang="ca-valencia">Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
     <p xml:lang="cs">Amarok je svobodný, multiplatformní, univerzální, mocný přehrávač hudby a správce sbírek se spoustou funkcí.</p>
@@ -103,6 +106,7 @@
     <p xml:lang="zh-TW">Amarok 是款自由、跨平台、多功能且強大的音樂播放和收藏管理器。</p>
     <p>Features:</p>
     <p xml:lang="ar">الميزات:</p>
+    <p xml:lang="bg">Възможности:</p>
     <p xml:lang="bs">Svojstva:</p>
     <p xml:lang="ca">Característiques:</p>
     <p xml:lang="ca-valencia">Característiques:</p>
@@ -144,6 +148,7 @@
     <ul>
       <li>Dynamic playlists matching different criteria</li>
       <li xml:lang="ar">قوائم تشغيل حركيّة تطابق معايير مختلفة</li>
+      <li xml:lang="bg">Динамични списъци за възпроизвеждане, отговарящи на различни критерии</li>
       <li xml:lang="bs">Dinamičke muzičke liste odgovaraju različitim kriterijima</li>
       <li xml:lang="ca">Llistes de reproducció dinàmiques coincidint amb diferents criteris</li>
       <li xml:lang="ca-valencia">Llistes de reproducció dinàmiques coincidint amb diferents criteris</li>
@@ -180,6 +185,7 @@
       <li xml:lang="zh-CN">可匹配不同条件的动态播放列表</li>
       <li>Collection managing with rating support</li>
       <li xml:lang="ar">إدارة التّجميعات مع دعم التّقييم</li>
+      <li xml:lang="bg">Управление на колекции с поддръжка на рейтинги</li>
       <li xml:lang="bs">Kolekcija upravljanja sa podrškom procjene</li>
       <li xml:lang="ca">Gestió de les col·leccions permetent qualificacions</li>
       <li xml:lang="ca-valencia">Gestió de les col·leccions permetent qualificacions</li>
@@ -217,6 +223,7 @@
       <li xml:lang="zh-TW">支援評分的收藏管理工具</li>
       <li>Support for basic iPod, MTP and UMS music player devices</li>
       <li xml:lang="ar">دعم أجهة مشغّلات الوسائط iPod، وMTP وUMS الأساسيّة</li>
+      <li xml:lang="bg">Поддръжка на основни устройства за възпроизвеждане на музика iPod, MTP и UMS</li>
       <li xml:lang="bs">Podrška za osnovne iPod, MTP i UMS muzičke player uređaje</li>
       <li xml:lang="ca">Admet els dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
       <li xml:lang="ca-valencia">Admet els dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
@@ -253,6 +260,7 @@
       <li xml:lang="zh-CN">支持基础款 iPod、MTP、UMP 的音乐播放器</li>
       <li xml:lang="zh-TW">支援基本的 iPod、MTP 和 UMS 音樂播放裝置</li>
       <li>Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
+      <li xml:lang="bg">Интегрирани Интернет услуги: last.fm, Magnatune, Jamendo, Ampache, mp3tunes и др.</li>
       <li xml:lang="bs">Integrisane Internet usluge: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i još mnogo toga.</li>
       <li xml:lang="ca">Serveis integrats d'Internet: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i més.</li>
       <li xml:lang="ca-valencia">Serveis integrats d'Internet: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i més.</li>
@@ -289,6 +297,7 @@
       <li xml:lang="zh-CN">集成互联网服务：last.fm、Magnatune、Jamendo、Ampache 和 mp3tunes 等。</li>
       <li xml:lang="zh-TW">整合了這些網路服務：last.fm、Magnatune、Jamendo、Ampache、mp3tunes 等等。</li>
       <li>Scripting support</li>
+      <li xml:lang="bg">Поддръжка скриптове</li>
       <li xml:lang="bs">Podrška za skriptiranje</li>
       <li xml:lang="ca">Permet la creació de scripts</li>
       <li xml:lang="ca-valencia">Permet la creació de scripts</li>
@@ -327,6 +336,7 @@
       <li xml:lang="zh-TW">支援指令碼</li>
       <li>Cover manager</li>
       <li xml:lang="ar">إدارة الأغلفة</li>
+      <li xml:lang="bg">Управление на обложки</li>
       <li xml:lang="bs">Upravitelj naslovnicom</li>
       <li xml:lang="ca">Gestor de cobertes</li>
       <li xml:lang="ca-valencia">Gestor de cobertes</li>
@@ -364,6 +374,7 @@
       <li xml:lang="zh-CN">专辑封面管理器</li>
       <li xml:lang="zh-TW">專輯管理員</li>
       <li>Replay gain support</li>
+      <li xml:lang="bg">Поддръжка на нормализиране силата на звука</li>
       <li xml:lang="bs">Ponoviti dobijanje podrške</li>
       <li xml:lang="ca">Permet el guany de repetició</li>
       <li xml:lang="ca-valencia">Permet el guany de repetició</li>
@@ -406,6 +417,7 @@
   <screenshots>
     <screenshot type="default">
       <caption>Playing music in Amarok</caption>
+      <caption xml:lang="bg">Възпроизвеждане на музика в Amarok</caption>
       <caption xml:lang="ca">Reproduint música en l'Amarok</caption>
       <caption xml:lang="ca-valencia">Reproduint música en Amarok</caption>
       <caption xml:lang="cs">Přehrávání hudby v Amaroku</caption>
@@ -439,6 +451,7 @@
     </screenshot>
     <screenshot>
       <caption>Amarok windows</caption>
+      <caption xml:lang="bg">Прозорци на Amarok</caption>
       <caption xml:lang="ca">Finestres de l'Amarok</caption>
       <caption xml:lang="ca-valencia">Finestres d'Amarok</caption>
       <caption xml:lang="cs">Okna Amaroku</caption>
