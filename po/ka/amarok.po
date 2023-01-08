@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2023-01-06 05:17+0100\n"
+"PO-Revision-Date: 2023-01-07 10:20+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -310,7 +310,7 @@ msgstr "შესაცვლელად დააწკაპუნეთ"
 #: ActionClasses.cpp:333
 #, kde-format
 msgid "&Replay Gain Mode"
-msgstr ""
+msgstr "&ხმის გაძლიერების რეჟიმი"
 
 #: ActionClasses.cpp:335
 #, kde-format
@@ -382,7 +382,7 @@ msgstr "Amarok"
 #: amarokconfig.kcfg:13
 #, kde-format
 msgid "Whether to display a second, left time label."
-msgstr ""
+msgstr "ნაჩვენები იქნება მეორე, დარჩენილი დროის ჭდე, თუ არა."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:14
@@ -436,7 +436,7 @@ msgstr ""
 #: amarokconfig.kcfg:48
 #, kde-format
 msgid "The status of dynamic mode."
-msgstr ""
+msgstr "დინამიკური რეჟიმის სტატუსი."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:49
@@ -463,7 +463,7 @@ msgstr ""
 #: amarokconfig.kcfg:58
 #, kde-format
 msgid "Previous tracks count."
-msgstr ""
+msgstr "წინა ტრეკების რაოდენობა."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:59
@@ -475,7 +475,7 @@ msgstr ""
 #: amarokconfig.kcfg:63
 #, kde-format
 msgid "Upcoming tracks count."
-msgstr ""
+msgstr "მომავალი ტრეკების რაოდენობა."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:64
@@ -493,13 +493,13 @@ msgstr ""
 #: amarokconfig.kcfg:69
 #, kde-format
 msgid "Enable/Disable tray icon for Amarok."
-msgstr ""
+msgstr "სისტემის კუთხეში Amarok-ის ხატულის ჩართვა/გამორთვა."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:73
 #, kde-format
 msgid "Whether to hide the context view."
-msgstr ""
+msgstr "კონტექსტური ხედის დამალვა."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:74
@@ -1582,7 +1582,7 @@ msgstr "ჯგუფის დამატება"
 #: amarokurls/BookmarkManagerWidget.cpp:55
 #, kde-format
 msgid "Filter bookmarks"
-msgstr ""
+msgstr "სანიშნების გაფილტვრა"
 
 #: amarokurls/BookmarkManagerWidget.cpp:59
 #, kde-format
@@ -1866,12 +1866,12 @@ msgstr ""
 #: browsers/BrowserCategoryList.cpp:53
 #, kde-format
 msgid "Filter Music Sources"
-msgstr ""
+msgstr "&მუსიკის წყაროების გაფილტვრა"
 
 #: browsers/BrowserDock.cpp:34
 #, kde-format
 msgid "&Media Sources"
-msgstr ""
+msgstr "&მედიის წყაროები"
 
 #: browsers/BrowserDock.cpp:74
 #, kde-format
@@ -2231,7 +2231,7 @@ msgstr "APG პრესეტები"
 #: browsers/playlistbrowser/APGCategory.cpp:107
 #, kde-format
 msgid "Generator Optimization"
-msgstr ""
+msgstr "გენერატორის ოპტიმიაზცია"
 
 #: browsers/playlistbrowser/APGCategory.cpp:111
 #, kde-format
@@ -2736,7 +2736,7 @@ msgstr "ზოგადი"
 #: configdialog/ConfigDialog.cpp:59
 #, kde-format
 msgid "Configure General Options"
-msgstr ""
+msgstr "ზოგადი პარამეტრების მორგება"
 
 #: configdialog/ConfigDialog.cpp:60
 #: core-impl/collections/db/DatabaseCollection.cpp:54
@@ -3046,7 +3046,7 @@ msgstr ""
 #: configdialog/dialogs/GeneralConfig.ui:35
 #, kde-format
 msgid "Show tray &icon"
-msgstr ""
+msgstr "სისტემის კუთხეში ხატულის ჩვენება"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoGetCoverArt)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_AutoGetCoverArt)
@@ -3080,7 +3080,7 @@ msgstr ""
 #: configdialog/dialogs/GeneralConfig.ui:78
 #, kde-format
 msgid "Playlist Options"
-msgstr ""
+msgstr "დასაკრავი სიების მორგება"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoScrollPlaylist)
 #: configdialog/dialogs/GeneralConfig.ui:84
@@ -3528,7 +3528,7 @@ msgstr ""
 #: configdialog/dialogs/PlaybackConfig.ui:52
 #, kde-format
 msgid "Volume Fading"
-msgstr ""
+msgstr "ხმის მინავლება"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FadeoutOnStop)
 #: configdialog/dialogs/PlaybackConfig.ui:58
@@ -3648,7 +3648,7 @@ msgstr "ლირიკა"
 #: configdialog/dialogs/ScriptsConfig.cpp:215
 #, kde-format
 msgid "Scriptable Service"
-msgstr ""
+msgstr "სკრიპტვადი სერვისი"
 
 #. i18n: ectx: property (text), widget (QPushButton, uninstallButton)
 #: configdialog/dialogs/ScriptsConfig.ui:36
@@ -4407,13 +4407,13 @@ msgstr "მომავალი ღონისძიებები"
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:79
 #, kde-format
 msgid "View Events Calendar"
-msgstr ""
+msgstr "მოვლენების კალენდარის ჩვენება"
 
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:92
 #, kde-format
 msgctxt "@title:group"
 msgid "No track is currently playing"
-msgstr ""
+msgstr "ტრეკის დაკვრა არ მიმდინარეობს"
 
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:159
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:304
@@ -4573,13 +4573,13 @@ msgstr ""
 #: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:65
 #, kde-format
 msgid "Any Country"
-msgstr ""
+msgstr "ნებისმიერი ქვეყანა"
 
 #. i18n: ectx: property (text), widget (QLabel, searchResultsLabel)
 #: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:75
 #, kde-format
 msgid "Search Results:"
-msgstr ""
+msgstr "ძებნის შედეგები:"
 
 #. i18n: ectx: property (text), widget (QLabel, selectedVenuesLabel)
 #: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:104
@@ -5603,12 +5603,12 @@ msgstr ""
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:351
 #, kde-format
 msgid "Unsupported format: %1"
-msgstr ""
+msgstr "მხარდაუჭერელი ფორმატი: %1"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:394
 #, kde-format
 msgid "Already on device"
-msgstr ""
+msgstr "უკვე მოწყობილობაზეა"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:410
 #, kde-format
@@ -5666,7 +5666,7 @@ msgstr[1] ""
 #: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:241
 #, kde-format
 msgid "&Disconnect Device"
-msgstr ""
+msgstr "&მოწყობილობის გამოერთება"
 
 #: core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.h:41
 #, kde-format
@@ -5707,7 +5707,7 @@ msgstr "უცნობი ჟანრი"
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:910
 #, kde-format
 msgid "Could not delete item"
-msgstr ""
+msgstr "ჩანაწერის წაშლის შეცდომა"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:603
 #, kde-format
@@ -5717,7 +5717,7 @@ msgstr "წაშლის შეცდომა"
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:883
 #, kde-format
 msgid "Could not save playlist."
-msgstr ""
+msgstr "დასაკრავი სიის შენახვის შეცდომა."
 
 #: core-impl/collections/playdarcollection/PlaydarCollection.cpp:123
 #, kde-format
@@ -6260,7 +6260,7 @@ msgid "Already subscribed to %1."
 msgstr ""
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
-#, fuzzy, kde-format
+#, kde-format
 msgctxt "prefix to 'x minutes'"
 msgid "every "
 msgstr "ყოველ "
