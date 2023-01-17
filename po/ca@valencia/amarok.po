@@ -2978,7 +2978,7 @@ msgstr "Connectors"
 #: configdialog/ConfigDialog.cpp:65
 #, kde-format
 msgid "Configure Plugins"
-msgstr "Configuració dels connectors"
+msgstr "Configureu els connectors"
 
 #: configdialog/ConfigDialog.cpp:66
 #: scripting/scriptconsole/ScriptConsole.cpp:377
@@ -2989,13 +2989,13 @@ msgstr "Scripts"
 #: configdialog/ConfigDialog.cpp:66
 #, kde-format
 msgid "Configure Scripts"
-msgstr "Configuració dels scripts"
+msgstr "Configureu els scripts"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, CollectionConfig)
 #: configdialog/dialogs/CollectionConfig.ui:14
 #, kde-format
 msgid "Collection Setup"
-msgstr "Configuració de la col·lecció"
+msgstr "Configureu la col·lecció"
 
 #. i18n: ectx: property (title), widget (QGroupBox, collectionFoldersBox)
 #: configdialog/dialogs/CollectionConfig.ui:20
@@ -4161,7 +4161,7 @@ msgstr "Configuracions generals"
 #: context/applets/labels/LabelsApplet.cpp:758
 #, kde-format
 msgid "Blacklist Settings"
-msgstr "Configuració de la llista negra"
+msgstr "Configureu la llista negra"
 
 #: context/applets/labels/LabelsApplet.cpp:759
 #, kde-format
@@ -4202,7 +4202,7 @@ msgstr "Llista negra:"
 #: context/applets/labels/labelsGeneralSettings.ui:20
 #, kde-format
 msgid "Labels Settings"
-msgstr "Configuració de les etiquetes"
+msgstr "Configureu les etiquetes"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #. i18n: ectx: property (text), widget (QLabel, minAutoAddCountLabel)
@@ -4339,7 +4339,7 @@ msgstr "Elimina la selecció"
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
 #, kde-format
 msgid "Lyrics config"
-msgstr "Configuració de les lletres"
+msgstr "Configureu les lletres"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
 #, kde-format
@@ -4500,7 +4500,7 @@ msgstr "Mostra artistes semblants a la peça que s'està reproduint"
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:191
 #, kde-format
 msgid "Similar Artists Settings"
-msgstr "Configuració dels artistes semblants"
+msgstr "Configureu els artistes semblants"
 
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:215
 #, kde-format
@@ -4623,7 +4623,7 @@ msgstr "Tabulatures: %1 - %2"
 #, kde-format
 msgctxt "Guitar tablature settings"
 msgid "Tabs Settings"
-msgstr "Configuració de les tabulatures"
+msgstr "Configureu les tabulatures"
 
 #: context/applets/tabs/TabsApplet.cpp:323
 #, kde-format
@@ -4714,7 +4714,7 @@ msgstr[1] "%1: %2 esdeveniments"
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
 #, kde-format
 msgid "Upcoming Events Settings"
-msgstr "Configuració dels propers esdeveniments"
+msgstr "Configureu els propers esdeveniments"
 
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:354
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:363
@@ -5025,7 +5025,7 @@ msgstr "Configuració general de la Viquipèdia"
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:807
 #, kde-format
 msgid "Wikipedia Language Settings"
-msgstr "Configuració de l'idioma de la Viquipèdia"
+msgstr "Configureu l'idioma de la Viquipèdia"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:75
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:139
@@ -5306,7 +5306,7 @@ msgstr ""
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:114
 #, kde-format
 msgid "Audio CD settings - Amarok"
-msgstr "Configuració dels CD d'àudio - Amarok"
+msgstr "Configureu els CD d'àudio - Amarok"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
@@ -6285,7 +6285,7 @@ msgstr[1] "S'estan suprimint %1 peces de %2"
 #: core-impl/collections/umscollection/UmsConfiguration.ui:14
 #, kde-format
 msgid "USB Mass Storage device configuration"
-msgstr "Configuració del dispositiu d'emmagatzematge massiu USB"
+msgstr "Configureu el dispositiu d'emmagatzematge massiu USB"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoConnect)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:34
@@ -6401,13 +6401,13 @@ msgstr "Llista_de_reproducció_%1"
 #, kde-format
 msgctxt "Change filename layout"
 msgid "Podcast Episode Filename Configuration"
-msgstr "Configuració dels noms de fitxer dels episodis de podcast"
+msgstr "Configureu els noms de fitxer dels episodis de podcast"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PodcastFilenameLayoutConfigWidget)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:30
 #, kde-format
 msgid "Podcast Filename Layout Configuration"
-msgstr "Configuració del format de nom de fitxer del podcast"
+msgstr "Configureu el format de nom de fitxer del podcast"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
@@ -6548,7 +6548,7 @@ msgstr "Escriu la informació del canal a les etiquetes després de la baixada."
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:251
 #, kde-format
 msgid "Episode Filename Configuration"
-msgstr "Configuració del nom de fitxer dels episodis"
+msgstr "Configureu el nom de fitxer dels episodis"
 
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:39
 #, kde-format
@@ -7833,7 +7833,7 @@ msgid ""
 "<a href=http://en.wikipedia.org/wiki/Opus_(audio_format)>Opus</a> is a "
 "patent-free digital audio codec using a form of lossy data compression."
 msgstr ""
-"L'<a href=http://en.wikipedia.org/wiki/Opus_(audio_format)>Opus</a> és un "
+"<a href=http://en.wikipedia.org/wiki/Opus_(audio_format)>Opus</a> és un "
 "còdec d'àudio digital lliure de patents que utilitza una compressió de dades "
 "amb pèrdua."
 
@@ -7869,7 +7869,7 @@ msgstr ""
 "cert nivell de qualitat esperat. La mesura de la taxa de bits d'este control "
 "lliscant és només una estimació aproximada (proporcionada per Vorbis) de la "
 "mitjana de la taxa de bits de la peça codificada donat un valor q. De fet, "
-"amb versions del Vorbis més noves i eficients, la taxa de bits és fins i tot "
+"amb versions de Vorbis més noves i eficients, la taxa de bits és fins i tot "
 "més baixa.<br><b>-q5</b> és una bona opció per escoltar música en un "
 "reproductor portàtil.<br/>Valors per davall de <b>-q3</b> poden ser "
 "insatisfactoris per a la música i valors per damunt de <b>-q8</b> són "
@@ -11680,7 +11680,7 @@ msgstr "Equalitzador"
 #: MainWindow.cpp:790 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
-msgstr "Configuració dels punts de la llista de reproducció"
+msgstr "Configureu els punts de la llista de reproducció"
 
 #: MainWindow.cpp:794
 #, kde-format
@@ -13430,7 +13430,7 @@ msgstr ""
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:21
 #, kde-format
 msgid "Prevent Duplicates Constraint Settings"
-msgstr "Configuració de la restricció per a evitar duplicats"
+msgstr "Configureu la restricció per a evitar duplicats"
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Field)
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Field)
