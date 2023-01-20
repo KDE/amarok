@@ -17,13 +17,13 @@
 # Serdar Soytetir <tulliana@gmail.com>, 2006-2009,2012.
 # Volkan Gezer <volkangezer@gmail.com>, 2013, 2014, 2015, 2017.
 # Volkan Güney <volkan.guney@boun.edu.tr>, 2006.
-# Emir SARI <emir_sari@icloud.com>, 2022.
+# Emir SARI <emir_sari@icloud.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-12-17 19:03+0300\n"
+"PO-Revision-Date: 2023-01-19 22:40+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.12.0\n"
+"X-Generator: Lokalize 22.12.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -5271,7 +5271,7 @@ msgid ""
 "mobile players. It is however non free and generally not recommended."
 msgstr ""
 "MP3, hemen hemen tüm mobil oyuncularla uyumlu, sıkıştırılmış ses alanında "
-"fiili standarttır. Ancak özgür değildir ve genellikle tavsiye edilmez."
+"fiili standartır. Ancak özgür değildir ve genellikle tavsiye edilmez."
 
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:114
 #, kde-format
@@ -15962,7 +15962,7 @@ msgid ""
 "m4a, m4p, aac, wma, and ogg. "
 msgstr ""
 "MP3tunes'e yalnızca şu parça türleri  yüklenebilir: mp3, mp4, m4a, m4p, aac, "
-"wma, ve ogg. "
+"wma ve ogg. "
 
 #: services/mp3tunes/Mp3tunesWorkers.cpp:344
 #, kde-format
