@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2023-01-21 15:23+0300\n"
+"PO-Revision-Date: 2023-01-24 21:00+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -14371,7 +14371,7 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:224
 #, kde-format
 msgid "&Test Login"
-msgstr "&Sınama Girişi"
+msgstr "&Giriş Yapmayı Sına"
 
 #: services/gpodder/GpodderProvider.cpp:291
 #, kde-format
@@ -14901,7 +14901,7 @@ msgstr "Başarısız oldu"
 #: services/lastfm/LastFmServiceSettings.cpp:174
 #, kde-format
 msgid "Test Login"
-msgstr "Sınama Girişi"
+msgstr "Giriş Yapmayı Sına"
 
 #: services/lastfm/LastFmServiceSettings.cpp:173
 #, kde-format
@@ -15203,7 +15203,7 @@ msgstr ""
 #, kde-format
 msgctxt "Username for logins to Magnatune"
 msgid "E-mail:"
-msgstr "E-Posta:"
+msgstr "E-posta:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: services/magnatune/MagnatuneConfigWidget.ui:79
@@ -15814,7 +15814,7 @@ msgstr "Mp3tunes Girişi"
 #, kde-format
 msgctxt "The e-mail address for Mp3Tunes logins"
 msgid "E-Mail:"
-msgstr "E-Posta:"
+msgstr "E-posta:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:32
