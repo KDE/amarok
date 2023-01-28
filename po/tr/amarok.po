@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2023-01-24 21:00+0300\n"
+"PO-Revision-Date: 2023-01-27 20:00+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -987,7 +987,7 @@ msgstr "Uzun aramanın uzunluğu, saniye cinsinden."
 #, kde-format
 msgid "Whether Amarok should pause the currently playing track on suspend."
 msgstr ""
-"Amarok'un hazırda bekleme esnasında geçerli çalan parçayı bekletip "
+"Amarok'un hazırda bekleme sırasında geçerli çalan parçayı bekletip "
 "bekletmeyeceği."
 
 #. i18n: ectx: label, entry, group (Playback)
@@ -3800,7 +3800,7 @@ msgstr "Çalma varken, otomatik askıya almayı &engelle"
 #, kde-format
 msgid "If enabled, Amarok will pause the currently playing track on suspend"
 msgstr ""
-"Etkin ise Amarok hazırda bekleme esnasında geçerli çalan parçayı bekletecek"
+"Etkin ise Amarok hazırda bekleme sırasında geçerli çalan parçayı bekletecek"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_PauseOnSuspend)
 #: configdialog/dialogs/PlaybackConfig.ui:178
