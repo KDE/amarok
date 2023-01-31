@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2023-01-27 20:00+0300\n"
+"PO-Revision-Date: 2023-01-31 00:52+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -3899,7 +3899,7 @@ msgid ""
 "Amarok website if available"
 msgstr ""
 "Var olan betiklerin güncellemelerini, varsa Amarok web sitesinden otomatik "
-"olarak indirin ve yükleyin"
+"olarak indirin ve kurun"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoUpdateScripts)
 #: configdialog/dialogs/ScriptsConfig.ui:60
@@ -5191,7 +5191,7 @@ msgctxt ""
 "No option was given, this is the error message telling the user he needs at "
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
-msgstr "Bir listeleme, kaldırma ya da yükleme gerekiyor."
+msgstr "Listeleme, kaldırma veya kurma gerekiyor."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
