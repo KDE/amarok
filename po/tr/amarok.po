@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2023-01-31 00:52+0300\n"
+"PO-Revision-Date: 2023-02-01 19:48+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -1985,7 +1985,7 @@ msgstr ""
 #: App.cpp:582
 #, kde-format
 msgid "Moving files to trash"
-msgstr "Dosyalar çöpe taşınıyor"
+msgstr "Dosyalar çöp kutusuna taşınıyor"
 
 #: App.cpp:648
 #, kde-format
@@ -2223,7 +2223,7 @@ msgstr "Koleksiyona Taşı"
 #: browsers/CollectionTreeView.cpp:411
 #, kde-format
 msgid "Move Tracks to Trash"
-msgstr "Parçaları Çöpe Taşı"
+msgstr "Parçaları Çöp Kutusuna Taşı"
 
 #: browsers/CollectionTreeView.cpp:422
 #, kde-format
@@ -2310,7 +2310,7 @@ msgstr[1] "Bu %1 ögesini gerçekten silmek istediğinizden emin misiniz?"
 #, kde-format
 msgctxt "@title:window"
 msgid "Confirm Move to Trash"
-msgstr "Çöpe Taşımayı Onayla"
+msgstr "Çöp Kutusuna Taşımayı Onayla"
 
 #: browsers/filebrowser/FileView.cpp:579
 #, kde-format
@@ -6179,7 +6179,7 @@ msgstr "Çöp"
 #: core-impl/collections/support/TrashCollectionLocation.cpp:101
 #, kde-format
 msgid "Moving to trash: %1"
-msgstr "Çöpe taşınıyor: %1"
+msgstr "Çöp kutusuna taşınıyor: %1"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:194
 #, kde-format
@@ -8099,7 +8099,7 @@ msgstr "Ara"
 #: covermanager/CoverFoundDialog.cpp:702
 #, kde-format
 msgid "Search For More Results"
-msgstr "Daha Fazla Sonuç Bul"
+msgstr "Daha Fazla Sonuç Ara"
 
 #: covermanager/CoverFoundDialog.cpp:718
 #, kde-format
@@ -8603,7 +8603,7 @@ msgstr "Dosya adedi tutucusu, KGA'da yok"
 #: dialogs/deletedialogbase.ui:102
 #, kde-format
 msgid "&Delete files instead of moving them to the trash"
-msgstr "Dosyaları çöpe taşımak yerine &sil"
+msgstr "Dosyaları çöp kutusuna taşıma yerine &sil"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
 #: dialogs/deletedialogbase.ui:105
@@ -8612,7 +8612,8 @@ msgid ""
 "If checked, files will be permanently removed instead of being placed in the "
 "Trash Bin"
 msgstr ""
-"Bu seçilirse dosyalar Çöp'e taşınmak yerine geri dönüşü olmaksızın silinir"
+"Bu seçilirse dosyalar çöp kutusuna taşınma yerine geri dönüşü olmaksızın "
+"silinir"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
 #: dialogs/deletedialogbase.ui:110

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2023-01-07 10:20+0100\n"
+"PO-Revision-Date: 2023-02-01 02:13+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -487,7 +487,7 @@ msgstr ""
 #: amarokconfig.kcfg:68
 #, kde-format
 msgid "Whether to show icon in system tray"
-msgstr ""
+msgstr "სისტემის კუთხეში ხატულის ჩვენება"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:69
@@ -511,13 +511,13 @@ msgstr ""
 #: amarokconfig.kcfg:78
 #, kde-format
 msgid "Number of undo levels in playlist"
-msgstr ""
+msgstr "დასაკრავ სიაში დაბრუნებების დონე"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:79
 #, kde-format
 msgid "The number of undo levels in the playlist."
-msgstr ""
+msgstr "დასაკრავ სიაში დაბრუნებების დონე."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:83
@@ -568,7 +568,7 @@ msgstr ""
 #: amarokconfig.kcfg:108
 #, kde-format
 msgid "Show the Context View"
-msgstr ""
+msgstr "კონტექსტური ხედის ჩვენება"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:112
@@ -865,37 +865,37 @@ msgstr ""
 #: amarokconfig.kcfg:240
 #, kde-format
 msgid "Disable Replay Gain"
-msgstr ""
+msgstr "ხმის გაძლიერების გათიშვა"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:243
 #, kde-format
 msgid "Make each track the same volume"
-msgstr ""
+msgstr "ყველა ტრეკის იგივე სიმძლავრით დაკვრა"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:246
 #, kde-format
 msgid "Make each album the same volume"
-msgstr ""
+msgstr "ყველა ალბომის იგივე სიმძლავრით დაკვრა"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:252
 #, kde-format
 msgid "The length of a short seek, in seconds."
-msgstr ""
+msgstr "მოკლე გადახვევის ხანგრძლივობა, წამებში."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:257
 #, kde-format
 msgid "The length of a medium seek, in seconds."
-msgstr ""
+msgstr "საშუალო გადახვევის ხანგრძლივობა, წამებში."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:262
 #, kde-format
 msgid "The length of a long seek, in seconds."
-msgstr ""
+msgstr "გრძელი გადახვევის ხანგრძლივობა, წამებში."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:267
@@ -978,7 +978,7 @@ msgstr ""
 #: amarokconfig.kcfg:315
 #, kde-format
 msgid "Translucency Toggle"
-msgstr ""
+msgstr "ნახევრადგამჭვირვალობის გადართვა"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:316
@@ -1075,7 +1075,7 @@ msgstr ""
 #: amarokconfig.kcfg:355
 #, kde-format
 msgid "Align OSD to"
-msgstr ""
+msgstr "OSD-ის სწორება"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:356
@@ -1202,7 +1202,7 @@ msgstr ""
 #: amarokconfig.kcfg:429
 #, kde-format
 msgid "List of folders in the Collection"
-msgstr ""
+msgstr "საქაღალდეების სია კოლექციაში"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:432
@@ -1228,7 +1228,7 @@ msgstr ""
 #: amarokconfig.kcfg:447
 #, kde-format
 msgid "Submit played songs"
-msgstr ""
+msgstr "დაკრული სიმღერების გადაცემა"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:448
@@ -1357,7 +1357,7 @@ msgstr ""
 #: amarokconfig.kcfg:495
 #, kde-format
 msgid "Sync stats"
-msgstr ""
+msgstr "სტატისტიკის სინქრონიზაცია"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
 #: amarokconfig.kcfg:496
@@ -1389,7 +1389,7 @@ msgstr "სერვერის პაროლები"
 #: amarokconfig.kcfg:507
 #, kde-format
 msgid "Passwords stored by hostname."
-msgstr ""
+msgstr "დამახსოვრებული პაროლები ჰოსტის სახელის მიხედვით."
 
 #. i18n: ectx: label, entry, group (Playlist Search)
 #: amarokconfig.kcfg:513
@@ -1849,7 +1849,7 @@ msgstr ""
 #: App.cpp:582
 #, kde-format
 msgid "Moving files to trash"
-msgstr ""
+msgstr "ფაილების სანაგვე ყუთში გადატანა"
 
 #: App.cpp:648
 #, kde-format
@@ -2247,7 +2247,7 @@ msgstr "სიზუსტე"
 #, kde-format
 msgctxt "Bias dialog window title"
 msgid "Edit bias"
-msgstr ""
+msgstr "პირობის ჩასწორება"
 
 #: browsers/playlistbrowser/DynamicBiasDialog.cpp:49
 #, kde-format
@@ -2314,7 +2314,7 @@ msgstr "ჩართული"
 #: browsers/playlistbrowser/DynamicCategory.cpp:106
 #, kde-format
 msgid "Turn dynamic mode on."
-msgstr ""
+msgstr "დინამიკური რეჟიმის ჩართვა."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:110
 #, kde-format
@@ -2324,7 +2324,7 @@ msgstr "დუბლიკატები"
 #: browsers/playlistbrowser/DynamicCategory.cpp:114
 #, kde-format
 msgid "Allow duplicate songs in result"
-msgstr ""
+msgstr "შედეგში დუბლირებული სიმღერების დაშვება"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, kde-format
@@ -2376,7 +2376,7 @@ msgstr "&დასაკრავი სიის სახელი გად�
 #: browsers/playlistbrowser/DynamicView.cpp:227
 #, kde-format
 msgid "&Add new Bias"
-msgstr ""
+msgstr "&ახალი პირობის დამატება"
 
 #: browsers/playlistbrowser/DynamicView.cpp:231
 #, kde-format
@@ -2391,22 +2391,22 @@ msgstr "დასაკრავი სიის &წაშლა"
 #: browsers/playlistbrowser/DynamicView.cpp:249
 #, kde-format
 msgid "&Edit bias..."
-msgstr ""
+msgstr "&პირობის ჩასწორება..."
 
 #: browsers/playlistbrowser/DynamicView.cpp:253
 #, kde-format
 msgid "&Clone bias"
-msgstr ""
+msgstr "&პირობის დუბლირება"
 
 #: browsers/playlistbrowser/DynamicView.cpp:263
 #, kde-format
 msgid "&Delete bias"
-msgstr ""
+msgstr "&პირობის წაშლა"
 
 #: browsers/playlistbrowser/DynamicView.cpp:270
 #, kde-format
 msgid "&Add new bias"
-msgstr ""
+msgstr "&ახალი პირობის დამატება"
 
 #: browsers/playlistbrowser/PlaylistBrowser.cpp:43
 #, kde-format
@@ -2503,7 +2503,7 @@ msgstr[1] "%1 ტრეკი"
 #, kde-format
 msgctxt "%1: number of tracks. %2: number of playlists"
 msgid "Remove %1 From %2"
-msgstr ""
+msgstr "%1-ის წაშლა %2-დან"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:375
 #, kde-format
@@ -2518,19 +2518,19 @@ msgstr[1] "%1დასაკრავი სია"
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
 msgid_plural "Remove %1 Tracks From %2"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ტრეკის %2-დან წაშლა"
+msgstr[1] "%1 ტრეკის წაშლა %2-დან"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, kde-format
 msgid "Confirm Playlist Deletion"
-msgstr ""
+msgstr "დასაკრავი სიის წაშლის დადასტურება"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, kde-format
 msgctxt "%1 is playlist provider pretty name"
 msgid "Delete playlist from %1."
-msgstr ""
+msgstr "%1-დან დასაკრავი სიის წაშლა."
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:516 MainWindow.cpp:446
 #, kde-format
@@ -2562,7 +2562,7 @@ msgstr "ახალი სახელი"
 #, kde-format
 msgctxt "Enter a new name for a folder that already exists"
 msgid "Enter new folder name:"
-msgstr ""
+msgstr "შეიყვანეთ ახალი საქაღალდის სახელი:"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:258
@@ -2573,7 +2573,7 @@ msgstr "დაადასტურეთ წაშლა"
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:340
 #, kde-format
 msgid "Are you sure you want to delete this folder and its contents?"
-msgstr ""
+msgstr "მართლა გნებავთ, წაშალოთ ეს საქაღალდე და მისი შემცველობა?"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_podcastCheckBox)
 #: browsers/playlistbrowser/PodcastCategory.cpp:82
@@ -2883,7 +2883,7 @@ msgstr ""
 #: configdialog/dialogs/DatabaseConfig.cpp:137
 #, kde-format
 msgid "Database settings changed"
-msgstr ""
+msgstr "მონაცემთა ბაზის პარამეტრები შეიცვალა"
 
 #: configdialog/dialogs/DatabaseConfig.cpp:156
 #, kde-format
@@ -2907,7 +2907,7 @@ msgstr ""
 #: configdialog/dialogs/DatabaseConfig.ui:23
 #, kde-format
 msgid "Use &external MySQL database"
-msgstr ""
+msgstr "გარე &MySQL ბაზის გამოყენება"
 
 #. i18n: ectx: property (title), widget (QGroupBox, group_Connection)
 #: configdialog/dialogs/DatabaseConfig.ui:30
@@ -2925,7 +2925,7 @@ msgstr "&სერვერი:"
 #: configdialog/dialogs/DatabaseConfig.ui:55
 #, kde-format
 msgid "Enter the name of the existing MySQL server\n"
-msgstr ""
+msgstr "შეიყვანეთ არსებული MySQL სერვერის სახელი\n"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Port)
 #: configdialog/dialogs/DatabaseConfig.ui:71
@@ -2937,7 +2937,7 @@ msgstr "&პორტი:"
 #: configdialog/dialogs/DatabaseConfig.ui:91
 #, kde-format
 msgid "Enter the port number to access the server. Default is port 3306.\n"
-msgstr ""
+msgstr "შეიყვანეთ სერვერის პორტი. ნაგულისხმებია პორტი 3306.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #. i18n: ectx: property (text), widget (QLabel, label_User)
@@ -2952,7 +2952,7 @@ msgstr "&მომხმარებლის სახელი:"
 #: configdialog/dialogs/DatabaseConfig.ui:118
 #, kde-format
 msgid "Enter the password for the default user.\n"
-msgstr ""
+msgstr "შეიყვანეთ ნაგულისხმები მომხმარებლის პაროლი.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, labelPassword)
 #. i18n: ectx: property (text), widget (QLabel, label_Password)
@@ -2969,6 +2969,7 @@ msgstr "&პაროლი:"
 msgid ""
 "Enter the username to access the database with full access privileges.\n"
 msgstr ""
+"შეიყვანეთ ბაზაზე სრული წვდომის პრივილეგიების მქონე მომხმარებლის სახელი.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Database)
 #: configdialog/dialogs/DatabaseConfig.ui:161
@@ -2980,7 +2981,7 @@ msgstr "&მონაცემთა ბაზა:"
 #: configdialog/dialogs/DatabaseConfig.ui:178
 #, kde-format
 msgid "Enter the name of the database. Default preset is amarokdb.\n"
-msgstr ""
+msgstr "შეიყვანეთ ბაზის სახელი. ნაგულისხმები სახელია amarokdb.\n"
 
 #. i18n: ectx: property (text), widget (QPushButton, button_Test)
 #: configdialog/dialogs/DatabaseConfig.ui:188
@@ -3008,7 +3009,7 @@ msgstr ""
 #: configdialog/dialogs/ExcludedLabelsDialog.cpp:53
 #, kde-format
 msgid "Excluded Labels"
-msgstr ""
+msgstr "გამორიცხული ჭდეები"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, addButton)
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:17
@@ -3020,7 +3021,7 @@ msgstr ""
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:30
 #, kde-format
 msgid "Add Label to Exclude"
-msgstr ""
+msgstr "შეიყვანეთ გამოსარიცხი ჭდე"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel)
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:44
@@ -3258,7 +3259,7 @@ msgstr ""
 #: configdialog/dialogs/MetadataConfig.ui:29
 #, kde-format
 msgid "Write metadata to file"
-msgstr ""
+msgstr "მეტამონაცემების ფაილში ჩაწერა"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
@@ -3272,7 +3273,7 @@ msgstr ""
 #: configdialog/dialogs/MetadataConfig.ui:40
 #, kde-format
 msgid "Write statistics to file"
-msgstr ""
+msgstr "სტატისტიკის ფაილში ჩაწერა"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackCover)
 #: configdialog/dialogs/MetadataConfig.ui:50
@@ -3436,7 +3437,7 @@ msgstr "ფერების &ხელით მითითება"
 #: configdialog/dialogs/NotificationsConfig.ui:191
 #, kde-format
 msgid "The color of the OSD text."
-msgstr ""
+msgstr "OSD ტექსტს ფერი."
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
 #: configdialog/dialogs/NotificationsConfig.ui:166
@@ -3460,7 +3461,7 @@ msgstr ""
 #: configdialog/dialogs/NotificationsConfig.ui:214
 #, kde-format
 msgid "&Translucent"
-msgstr ""
+msgstr "&ნახევრადგამჭვირვალე"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: configdialog/dialogs/NotificationsConfig.ui:226
@@ -3478,13 +3479,13 @@ msgstr "%"
 #: configdialog/dialogs/NotificationsConfig.ui:274
 #, kde-format
 msgid "Check to use the system notification."
-msgstr ""
+msgstr "ჩართეთ სისტემური გაფრთხილებების გამოსაყენებლად."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_KNotifyEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:277
 #, kde-format
 msgid "Use &system notifications"
-msgstr ""
+msgstr "&სისტემური გაფრთხილებების გამოყენება"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:38
 #, kde-format
@@ -4372,7 +4373,7 @@ msgstr "ჩანართების თავიდან ჩატვირ�
 #: context/applets/tabs/TabsSettings.ui:26
 #, kde-format
 msgid "Current Track Settings"
-msgstr ""
+msgstr "მიმდინარე ტრეკის პარამეტრები"
 
 #. i18n: ectx: property (title), widget (QGroupBox, gbFetchTabs)
 #: context/applets/tabs/TabsSettings.ui:38
@@ -4851,7 +4852,7 @@ msgstr ""
 #: context/engines/songkick/SongkickEngine.cpp:48
 #, kde-format
 msgid "dates"
-msgstr ""
+msgstr "თარიღები"
 
 #: context/tools/amarokpkg.cpp:84 context/tools/amarokpkg.cpp:97
 #, kde-format
@@ -5279,7 +5280,7 @@ msgstr[1] ""
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:373
 #, kde-format
 msgid "Transfer of tracks failed."
-msgstr ""
+msgstr "ტრეკების გადაგზავნის შეცდომა."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:378
 #, kde-format
@@ -5355,13 +5356,13 @@ msgstr ""
 #, kde-format
 msgctxt "iPod playlist name"
 msgid "Stale tracks"
-msgstr ""
+msgstr "ტრეკები, რომლებიც მოწყობილობაზე არ არსებობს"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:127
 #, kde-format
 msgctxt "iPod playlist name"
 msgid "Orphaned tracks"
-msgstr ""
+msgstr "ტრეკები, რომლებიც ბაზაში არ არსებობს"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:147
 #, kde-format
@@ -5593,7 +5594,7 @@ msgstr ""
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:314
 #, kde-format
 msgid "Copying Tracks Failed"
-msgstr ""
+msgstr "ტრეკების კოპირების შეცდომა"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:318
 #, kde-format
@@ -5671,7 +5672,7 @@ msgstr "&მოწყობილობის გამოერთება"
 #: core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.h:41
 #, kde-format
 msgid "Media Device playlists"
-msgstr ""
+msgstr "მედია მოწყობილობის დასაკრავი სიები"
 
 #: core-impl/collections/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp:75
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:167
@@ -5727,7 +5728,7 @@ msgstr "Playdar კოლექცია"
 #: core-impl/collections/playdarcollection/PlaydarMeta.cpp:122
 #, kde-format
 msgid "Source collection removed"
-msgstr ""
+msgstr "საწყისი კოლექცია წაშლილია"
 
 #: core-impl/collections/support/ArtistHelper.cpp:31
 #, kde-format
@@ -6032,7 +6033,7 @@ msgstr "დასაკრავი სიის ფაილის უცნო
 #: core-impl/playlists/types/file/PlaylistFileSupport.cpp:148
 #, kde-format
 msgid "Playlist_%1"
-msgstr ""
+msgstr "დასაკრავისია_%1"
 
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:34
 #, kde-format
@@ -6065,6 +6066,8 @@ msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
 "%number%,%album%"
 msgstr ""
+"ხელმისაწვდომი ველები : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
+"%number%,%album%"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PodcastSettingsBase)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:30
@@ -6199,12 +6202,12 @@ msgstr "პოდკასტი"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
 #, kde-format
 msgid "&Update All Channels"
-msgstr ""
+msgstr "&ყველა არხის განახლება"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:298
 #, kde-format
 msgid "&Configure General Settings"
-msgstr ""
+msgstr "ზოგადი პარამეტრების &მორგება"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
 #, kde-format
@@ -6280,7 +6283,7 @@ msgstr ""
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:635
 #, kde-format
 msgid "Move Podcasts"
-msgstr ""
+msgstr "პოდკასტების გადატანა"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
 #, kde-format
@@ -6339,7 +6342,7 @@ msgstr ""
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:32
 #, kde-format
 msgid "Auto-update:"
-msgstr ""
+msgstr "ავტომატური განახლება:"
 
 #. i18n: ectx: property (specialValueText), widget (QSpinBox, m_autoUpdateInterval)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:57
@@ -6478,12 +6481,12 @@ msgstr "ფაილი არ არსებობს"
 #: core/meta/Meta.cpp:219
 #, kde-format
 msgid "Not a file"
-msgstr ""
+msgstr "ფაილი არაა"
 
 #: core/meta/Meta.cpp:221
 #, kde-format
 msgid "No read permissions"
-msgstr ""
+msgstr "წაკითხვის წვდომის გარეშე"
 
 #: core/meta/Meta.cpp:355
 #, kde-format
@@ -6640,25 +6643,25 @@ msgstr "უნიკალური ID"
 #, kde-format
 msgctxt "Track field name"
 msgid "Track Gain"
-msgstr ""
+msgstr "ტრეკის ხმის სიმაღლე"
 
 #: core/meta/support/MetaConstants.cpp:206
 #, kde-format
 msgctxt "Track field name"
 msgid "Track Gain Peak"
-msgstr ""
+msgstr "ტრეკის ხმის სიმაღლის პიკი"
 
 #: core/meta/support/MetaConstants.cpp:207
 #, kde-format
 msgctxt "Track field name"
 msgid "Album Gain"
-msgstr ""
+msgstr "ალბომის ხმის სიმაღლე"
 
 #: core/meta/support/MetaConstants.cpp:208
 #, kde-format
 msgctxt "Track field name"
 msgid "Album Gain Peak"
-msgstr ""
+msgstr "ალბომის ხმის სიმაღლის პიკი"
 
 #: core/meta/support/MetaConstants.cpp:210
 #, kde-format
@@ -7567,7 +7570,7 @@ msgstr[1] ""
 #: covermanager/CoverFetchingActions.cpp:167
 #, kde-format
 msgid "Select Cover Image File"
-msgstr ""
+msgstr "აირჩიეთ ყდის გამოსახულების ფაილი"
 
 #: covermanager/CoverFoundDialog.cpp:89
 #, kde-format
@@ -7595,7 +7598,7 @@ msgstr "Google"
 #: covermanager/CoverFoundDialog.cpp:139
 #, kde-format
 msgid "Discogs"
-msgstr ""
+msgstr "Discogs"
 
 #: covermanager/CoverFoundDialog.cpp:151
 #, kde-format
@@ -8086,7 +8089,7 @@ msgstr "&ნაგვის ყუთში გადატანა"
 #: dialogs/deletedialog.cpp:93
 #, kde-format
 msgid "About to delete selected files"
-msgstr ""
+msgstr "მონიშნული ფაილები წაიშლება"
 
 #: dialogs/deletedialog.cpp:154
 #, kde-format
@@ -8453,7 +8456,7 @@ msgstr ""
 #: dialogs/MusicBrainzTagger.cpp:95
 #, kde-format
 msgid "Clear Choices"
-msgstr ""
+msgstr "არჩევნების გასუფთავება"
 
 #: dialogs/MusicBrainzTagger.cpp:96
 #, kde-format
@@ -8521,22 +8524,22 @@ msgstr "%1 ან %2"
 #: dialogs/OrganizeCollectionDialog.cpp:112
 #, kde-format
 msgid "The Album Artist"
-msgstr ""
+msgstr "ალბომის შემსრულებელი"
 
 #: dialogs/OrganizeCollectionDialog.cpp:113
 #, kde-format
 msgid "The Artist"
-msgstr ""
+msgstr "შემსრულებელი"
 
 #: dialogs/OrganizeCollectionDialog.cpp:115
 #, kde-format
 msgid "Artist's Initial"
-msgstr ""
+msgstr "შემსრულებლის ინიციალები"
 
 #: dialogs/OrganizeCollectionDialog.cpp:116
 #, kde-format
 msgid "File Extension of Source"
-msgstr ""
+msgstr "წყაროს ფაილის გაფართოება"
 
 #: dialogs/OrganizeCollectionDialog.cpp:117
 #, kde-format
@@ -8558,12 +8561,12 @@ msgstr ""
 #: dialogs/OrganizeCollectionDialog.cpp:316
 #, kde-format
 msgid "Original: %1"
-msgstr ""
+msgstr "ორიგინალი: %1"
 
 #: dialogs/OrganizeCollectionDialog.cpp:317
 #, kde-format
 msgid "Preview: %1"
-msgstr ""
+msgstr "მინიატურა: %1"
 
 #: dialogs/OrganizeCollectionDialog.cpp:383
 #, kde-format
@@ -8591,7 +8594,7 @@ msgstr ""
 #: dialogs/OrganizeCollectionDialogBase.ui:32
 #, kde-format
 msgid "C&ollection Folder:"
-msgstr ""
+msgstr "&კოლექციის საქაღალდე:"
 
 #. i18n: ectx: property (toolTip), widget (KComboBox, folderCombo)
 #. i18n: ectx: property (whatsThis), widget (KComboBox, folderCombo)
@@ -8623,7 +8626,7 @@ msgstr "მორგება"
 #: dialogs/OrganizeCollectionDialogBase.ui:94
 #, kde-format
 msgid "Destination Preview"
-msgstr ""
+msgstr "სამიზნის მინიატურა"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, overwriteCheck)
 #: dialogs/OrganizeCollectionDialogBase.ui:159
@@ -8652,13 +8655,13 @@ msgstr ""
 #: dialogs/OrganizeCollectionDialogBase.ui:169
 #, kde-format
 msgid "Overwrite &Destination"
-msgstr ""
+msgstr "&სამიზნის თავზე გადაწერა"
 
 #. i18n: ectx: property (title), widget (QGroupBox, OrganizeCollectionsOptions)
 #: dialogs/OrganizeCollectionOptions.ui:20
 #, kde-format
 msgid "Character Replacement"
-msgstr ""
+msgstr "&სიმბოლოს ჩანაცვლება"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, spaceCheck)
 #: dialogs/OrganizeCollectionOptions.ui:35
@@ -8726,7 +8729,7 @@ msgstr ""
 #: dialogs/OrganizeCollectionOptions.ui:83
 #, kde-format
 msgid "&VFAT safe names"
-msgstr ""
+msgstr "&VFAT-ისთვის უსაფრთხო სახელები"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, asciiCheck)
 #: dialogs/OrganizeCollectionOptions.ui:104
@@ -8787,7 +8790,7 @@ msgstr ""
 #: dialogs/OrganizeCollectionOptions.ui:116
 #, kde-format
 msgid "Restrict to &ASCII"
-msgstr ""
+msgstr "&ASCII-ზე შეზღუდვა"
 
 #. i18n: ectx: property (text), widget (QLabel, replaceLabel1)
 #: dialogs/OrganizeCollectionOptions.ui:137
@@ -8834,7 +8837,7 @@ msgstr[1] "%1 ტრეკის დეტალი"
 #: dialogs/TagDialog.cpp:750 dialogs/TagDialog.cpp:760
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b>"
-msgstr ""
+msgstr "<b>%1</b> ავტორი <b>%2</b>"
 
 #: dialogs/TagDialog.cpp:752 dialogs/TagDialog.cpp:762
 #, kde-format
@@ -8850,8 +8853,8 @@ msgstr ""
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 ფაილის ჩასწორება"
+msgstr[1] "%1 ფაილის ჩასწორება"
 
 #: dialogs/TagDialog.cpp:806
 #, kde-format
@@ -8874,7 +8877,7 @@ msgstr "ტრეკის ინფორმაცია"
 #: dialogs/TagDialogBase.ui:38
 #, kde-format
 msgid "S&ummary"
-msgstr ""
+msgstr "&მიმოხილვა"
 
 #. i18n: ectx: property (text), widget (QLabel, leftHeaderLabel)
 #: dialogs/TagDialogBase.ui:135
@@ -9108,7 +9111,7 @@ msgstr ""
 #: dialogs/TagDialogBase.ui:1133
 #, kde-format
 msgid "Sa&ve && Close"
-msgstr ""
+msgstr "&შენახვა და დახურვა"
 
 #: dialogs/TagGuesserDialog.cpp:180
 #, no-c-format, kde-format
@@ -9136,19 +9139,19 @@ msgstr ""
 msgctxt ""
 "Text to represent an empty tag. Braces (<>) are only to clarify emptiness."
 msgid "&lt;empty&gt;"
-msgstr ""
+msgstr "&lt;ცარიელი&gt;"
 
 #. i18n: ectx: property (text), widget (QCheckBox, cbCase)
 #: dialogs/TagGuessOptions.ui:23
 #, kde-format
 msgid "Edit &case"
-msgstr ""
+msgstr "რეგისტრის &ჩასწორება"
 
 #. i18n: ectx: property (text), widget (QRadioButton, rbTitleCase)
 #: dialogs/TagGuessOptions.ui:36
 #, kde-format
 msgid "&Title case"
-msgstr ""
+msgstr "&როგორც სათაური"
 
 #. i18n: ectx: property (text), widget (QRadioButton, rbFirstLetter)
 #: dialogs/TagGuessOptions.ui:46
@@ -9308,7 +9311,7 @@ msgstr ""
 #: dialogs/transferdialog.cpp:86
 #, kde-format
 msgid "Groupings"
-msgstr ""
+msgstr "დაჯგუფებები"
 
 #: dialogs/transferdialog.cpp:89
 #, kde-format
@@ -9347,14 +9350,14 @@ msgstr ""
 msgctxt ""
 "Prefix for AndBias. Shown in front of a bias in the dynamic playlist view"
 msgid "and"
-msgstr ""
+msgstr "და"
 
 #: dynamic/Bias.cpp:452
 #, kde-format
 msgctxt ""
 "Prefix for OrBias. Shown in front of a bias in the dynamic playlist view"
 msgid "or"
-msgstr ""
+msgstr "ან"
 
 #: dynamic/Bias.cpp:460
 #, kde-format
@@ -9379,7 +9382,7 @@ msgstr ""
 #, kde-format
 msgctxt "Name of the \"AlbumPlay\" bias"
 msgid "Album play"
-msgstr ""
+msgstr "ალბომების დაკვრა"
 
 #: dynamic/biases/AlbumPlayBias.cpp:45
 #, kde-format
@@ -9693,7 +9696,7 @@ msgstr "პოპი"
 #: dynamic/DynamicModel.cpp:928
 #, kde-format
 msgid "Album play"
-msgstr ""
+msgstr "ალბომების დაკვრა"
 
 #: dynamic/DynamicModel.cpp:938
 #, kde-format
@@ -9716,7 +9719,7 @@ msgstr ""
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
-msgstr ""
+msgstr "<b>%1</b> ავტორი <b>%2</b>"
 
 #: EngineController.cpp:1304
 #, kde-format
@@ -9728,7 +9731,7 @@ msgstr ""
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
-msgstr ""
+msgstr "<b>%1</b>-დან"
 
 #: equalizer/EqualizerPresets.cpp:80
 #, kde-format
@@ -9753,12 +9756,12 @@ msgstr "საცეკვაო"
 #: equalizer/EqualizerPresets.cpp:84
 #, kde-format
 msgid "Full Bass"
-msgstr ""
+msgstr "ბასის გაძლიერება"
 
 #: equalizer/EqualizerPresets.cpp:85
 #, kde-format
 msgid "Full Treble"
-msgstr ""
+msgstr "მაღალი სიხშირეების გაძლიერება"
 
 #: equalizer/EqualizerPresets.cpp:86
 #, kde-format
@@ -10024,7 +10027,7 @@ msgstr ""
 #: main.cpp:111
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
-msgstr ""
+msgstr "Edward \"Hades\" Toroshchin"
 
 #: main.cpp:112
 #, kde-format
@@ -10034,7 +10037,7 @@ msgstr ""
 #: main.cpp:115
 #, kde-format
 msgid "Mark Kretschmann"
-msgstr ""
+msgstr "Mark Kretschmann"
 
 #: main.cpp:116
 #, kde-format
@@ -10044,7 +10047,7 @@ msgstr ""
 #: main.cpp:119
 #, kde-format
 msgid "Matěj Laitl"
-msgstr ""
+msgstr "Matěj Laitl"
 
 #: main.cpp:120
 #, kde-format
@@ -10054,7 +10057,7 @@ msgstr ""
 #: main.cpp:123
 #, kde-format
 msgid "Myriam Schweingruber"
-msgstr ""
+msgstr "Myriam Schweingruber"
 
 #: main.cpp:123
 #, kde-format
@@ -10064,7 +10067,7 @@ msgstr ""
 #: main.cpp:126
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
-msgstr ""
+msgstr "Ralf 'SalsaMaster' Engels"
 
 #: main.cpp:127
 #, kde-format
@@ -10074,7 +10077,7 @@ msgstr ""
 #: main.cpp:130
 #, kde-format
 msgid "Patrick von Reth"
-msgstr ""
+msgstr "Patrick von Reth"
 
 #: main.cpp:130
 #, kde-format
@@ -10084,7 +10087,7 @@ msgstr ""
 #: main.cpp:134
 #, kde-format
 msgid "Rick W. Chen"
-msgstr ""
+msgstr "Rick W. Chen"
 
 #: main.cpp:135
 #, kde-format
@@ -10094,7 +10097,7 @@ msgstr ""
 #: main.cpp:138
 #, kde-format
 msgid "Sam Lade"
-msgstr ""
+msgstr "Sam Lade"
 
 #: main.cpp:138
 #, kde-format
@@ -10104,7 +10107,7 @@ msgstr ""
 #: main.cpp:142
 #, kde-format
 msgid "Sven Krohlas"
-msgstr ""
+msgstr "Sven Krohlas"
 
 #: main.cpp:142
 #, kde-format
@@ -10114,7 +10117,7 @@ msgstr ""
 #: main.cpp:145
 #, kde-format
 msgid "Téo Mrnjavac"
-msgstr ""
+msgstr "Téo Mrnjavac"
 
 #: main.cpp:146
 #, kde-format
@@ -10124,12 +10127,12 @@ msgstr ""
 #: main.cpp:149
 #, kde-format
 msgid "Valorie Zimmerman"
-msgstr ""
+msgstr "Valorie Zimmerman"
 
 #: main.cpp:150
 #, kde-format
 msgid "Rokymoter, Handbook (valorie)"
-msgstr ""
+msgstr "Rokymoter, Handbook (valorie)"
 
 #: main.cpp:156
 #, kde-format
@@ -10146,7 +10149,7 @@ msgstr ""
 #: main.cpp:162
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
-msgstr ""
+msgstr "Ian 'The Beard' Monroe"
 
 #: main.cpp:162
 #, kde-format
@@ -10156,7 +10159,7 @@ msgstr ""
 #: main.cpp:165
 #, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
-msgstr ""
+msgstr "Jeff 'IROKSOHARD' Mitchell"
 
 #: main.cpp:165
 #, kde-format
@@ -10171,12 +10174,12 @@ msgstr ""
 #: main.cpp:171
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
-msgstr ""
+msgstr "Lydia 'is wrong(TM)' Pintscher"
 
 #: main.cpp:171
 #, kde-format
 msgid "Release Vixen (Nightrose)"
-msgstr ""
+msgstr "Release Vixen (Nightrose)"
 
 #: main.cpp:174
 #, kde-format
@@ -10191,7 +10194,7 @@ msgstr ""
 #: main.cpp:177
 #, kde-format
 msgid "Maximilian Kossick"
-msgstr ""
+msgstr "Maximilian Kossick"
 
 #: main.cpp:177
 #, kde-format
@@ -10201,7 +10204,7 @@ msgstr ""
 #: main.cpp:180
 #, kde-format
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
-msgstr ""
+msgstr "Nikolaj Hald 'Also very hot' Nielsen"
 
 #: main.cpp:180
 #, kde-format
@@ -10211,7 +10214,7 @@ msgstr ""
 #: main.cpp:183
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
-msgstr ""
+msgstr "Seb 'Surfin' down under' Ruiz"
 
 #: main.cpp:183
 #, kde-format
@@ -10221,7 +10224,7 @@ msgstr ""
 #: main.cpp:188
 #, kde-format
 msgid "Alejandro Wainzinger"
-msgstr ""
+msgstr "Alejandro Wainzinger"
 
 #: main.cpp:188
 #, kde-format
@@ -10251,12 +10254,12 @@ msgstr ""
 #: main.cpp:194
 #, kde-format
 msgid "Casper van Donderen"
-msgstr ""
+msgstr "Casper van Donderen"
 
 #: main.cpp:194
 #, kde-format
 msgid "Windows porting"
-msgstr ""
+msgstr "Windows-ზე გადატანა"
 
 #: main.cpp:196
 #, kde-format
@@ -10281,7 +10284,7 @@ msgstr ""
 #: main.cpp:200
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
-msgstr ""
+msgstr "Dan 'Hey, it compiled...' Meltzer"
 
 #: main.cpp:200
 #, kde-format
@@ -10291,7 +10294,7 @@ msgstr ""
 #: main.cpp:202
 #, kde-format
 msgid "Daniel Caleb Jones"
-msgstr ""
+msgstr "Daniel Caleb Jones"
 
 #: main.cpp:202
 #, kde-format
@@ -10301,7 +10304,7 @@ msgstr ""
 #: main.cpp:204
 #, kde-format
 msgid "Daniel Dewald"
-msgstr ""
+msgstr "Daniel Dewald"
 
 #: main.cpp:204
 #, kde-format
@@ -10311,7 +10314,7 @@ msgstr ""
 #: main.cpp:206
 #, kde-format
 msgid "Daniel Winter"
-msgstr ""
+msgstr "Daniel Winter"
 
 #: main.cpp:206
 #, kde-format
@@ -10321,7 +10324,7 @@ msgstr ""
 #: main.cpp:208
 #, kde-format
 msgid "Frank Meerkötter"
-msgstr ""
+msgstr "Frank Meerkötter"
 
 #: main.cpp:208 main.cpp:228
 #, kde-format
@@ -10331,7 +10334,7 @@ msgstr ""
 #: main.cpp:210
 #, kde-format
 msgid "Greg Meyer"
-msgstr ""
+msgstr "Greg Meyer"
 
 #: main.cpp:210
 #, kde-format
@@ -10351,7 +10354,7 @@ msgstr ""
 #: main.cpp:214
 #, kde-format
 msgid "John Atkinson"
-msgstr ""
+msgstr "John Atkinson"
 
 #: main.cpp:214
 #, kde-format
@@ -10361,7 +10364,7 @@ msgstr ""
 #: main.cpp:216
 #, kde-format
 msgid "Kenneth Wesley Wimer II"
-msgstr ""
+msgstr "Kenneth Wesley Wimer II"
 
 #: main.cpp:216
 #, kde-format
@@ -10381,12 +10384,12 @@ msgstr ""
 #: main.cpp:220
 #, kde-format
 msgid "Kuba Serafinowski"
-msgstr ""
+msgstr "Kuba Serafinowski"
 
 #: main.cpp:220
 #, kde-format
 msgid "Rokymoter"
-msgstr ""
+msgstr "Rokymoter"
 
 #: main.cpp:222
 #, kde-format
@@ -10401,17 +10404,17 @@ msgstr "ნამუშევრები"
 #: main.cpp:224
 #, kde-format
 msgid "Ljubomir Simin"
-msgstr ""
+msgstr "Ljubomir Simin"
 
 #: main.cpp:224
 #, kde-format
 msgid "Rokymoter (ljubomir)"
-msgstr ""
+msgstr "Rokymoter (ljubomir)"
 
 #: main.cpp:226
 #, kde-format
 msgid "Lucas Gomes"
-msgstr ""
+msgstr "Lucas Gomes"
 
 #: main.cpp:226
 #, kde-format
@@ -10421,12 +10424,12 @@ msgstr ""
 #: main.cpp:228
 #, kde-format
 msgid "Mathias Panzenböck"
-msgstr ""
+msgstr "Mathias Panzenböck"
 
 #: main.cpp:230
 #, kde-format
 msgid "Mikko Caldara"
-msgstr ""
+msgstr "Mikko Caldara"
 
 #: main.cpp:230
 #, kde-format
@@ -10436,7 +10439,7 @@ msgstr ""
 #: main.cpp:232
 #, kde-format
 msgid "Nikhil Marathe"
-msgstr ""
+msgstr "Nikhil Marathe"
 
 #: main.cpp:232
 #, kde-format
@@ -10461,27 +10464,27 @@ msgstr ""
 #: main.cpp:238
 #, kde-format
 msgid "Pasi Lalinaho"
-msgstr ""
+msgstr "Pasi Lalinaho"
 
 #: main.cpp:238
 #, kde-format
 msgid "Rokymoter (emunkki)"
-msgstr ""
+msgstr "Rokymoter (emunkki)"
 
 #: main.cpp:240
 #, kde-format
 msgid "Peter Zhou Lei"
-msgstr ""
+msgstr "Peter Zhou Lei"
 
 #: main.cpp:240
 #, kde-format
 msgid "Scripting interface"
-msgstr ""
+msgstr "სკრიპტების ინტერფეისი"
 
 #: main.cpp:242
 #, kde-format
 msgid "Phalgun Guduthur"
-msgstr ""
+msgstr "Phalgun Guduthur"
 
 #: main.cpp:242
 #, kde-format
@@ -10501,7 +10504,7 @@ msgstr ""
 #: main.cpp:246
 #, kde-format
 msgid "Shane King"
-msgstr ""
+msgstr "Shane King"
 
 #: main.cpp:246
 #, kde-format
@@ -10511,7 +10514,7 @@ msgstr ""
 #: main.cpp:248
 #, kde-format
 msgid "Simon Esneault"
-msgstr ""
+msgstr "Simon Esneault"
 
 #: main.cpp:248
 #, kde-format
@@ -10521,7 +10524,7 @@ msgstr ""
 #: main.cpp:250
 #, kde-format
 msgid "Soren Harward"
-msgstr ""
+msgstr "Soren Harward"
 
 #: main.cpp:250
 #, kde-format
@@ -10536,12 +10539,12 @@ msgstr "Thomas Lübking"
 #: main.cpp:254
 #, kde-format
 msgid "Valentin Rouet"
-msgstr ""
+msgstr "Valentin Rouet"
 
 #: main.cpp:256
 #, kde-format
 msgid "Wade Olson"
-msgstr ""
+msgstr "Wade Olson"
 
 #: main.cpp:256
 #, kde-format
@@ -10551,7 +10554,7 @@ msgstr ""
 #: main.cpp:258
 #, kde-format
 msgid "William Viana Soares"
-msgstr ""
+msgstr "William Viana Soares"
 
 #: main.cpp:258
 #, kde-format
@@ -10581,7 +10584,7 @@ msgstr ""
 #: main.cpp:266
 #, kde-format
 msgid "Adeodato Simó"
-msgstr ""
+msgstr "Adeodato Simó"
 
 #: main.cpp:266 main.cpp:274
 #, kde-format
@@ -10591,37 +10594,37 @@ msgstr "პაჩები"
 #: main.cpp:268
 #, kde-format
 msgid "Alexandre Oliveira"
-msgstr ""
+msgstr "Alexandre Oliveira"
 
 #: main.cpp:270
 #, kde-format
 msgid "Andreas Mair"
-msgstr ""
+msgstr "Andreas Mair"
 
 #: main.cpp:270
 #, kde-format
 msgid "MySQL support"
-msgstr ""
+msgstr "MySQL-ის მხარდაჭერა"
 
 #: main.cpp:272
 #, kde-format
 msgid "Andrew de Quincey"
-msgstr ""
+msgstr "Andrew de Quincey"
 
 #: main.cpp:272
 #, kde-format
 msgid "Postgresql support"
-msgstr ""
+msgstr "PostgreSQL-ის მხარდაჭერა"
 
 #: main.cpp:274
 #, kde-format
 msgid "Andrew Turner"
-msgstr ""
+msgstr "Andrew Turner"
 
 #: main.cpp:276
 #, kde-format
 msgid "Andy Kelk"
-msgstr ""
+msgstr "Andy Kelk"
 
 #: main.cpp:276
 #, kde-format
@@ -10636,7 +10639,7 @@ msgstr "Christian Muehlhaeuser"
 #: main.cpp:280
 #, kde-format
 msgid "Derek Nelson"
-msgstr ""
+msgstr "Derek Nelson"
 
 #: main.cpp:280
 #, kde-format
@@ -10656,7 +10659,7 @@ msgstr ""
 #: main.cpp:284
 #, kde-format
 msgid "Frederik Holljen"
-msgstr ""
+msgstr "Frederik Holljen"
 
 #: main.cpp:286
 #, kde-format
@@ -10666,7 +10669,7 @@ msgstr "Gábor Lehel"
 #: main.cpp:288
 #, kde-format
 msgid "Gérard Dürrmeyer"
-msgstr ""
+msgstr "Gérard Dürrmeyer"
 
 #: main.cpp:288
 #, kde-format
@@ -10686,7 +10689,7 @@ msgstr ""
 #: main.cpp:292
 #, kde-format
 msgid "Jarkko Lehti"
-msgstr ""
+msgstr "Jarkko Lehti"
 
 #: main.cpp:292
 #, kde-format
@@ -10696,7 +10699,7 @@ msgstr ""
 #: main.cpp:294
 #, kde-format
 msgid "Jocke Andersson"
-msgstr ""
+msgstr "Jocke Andersson"
 
 #: main.cpp:294
 #, kde-format
@@ -10706,7 +10709,7 @@ msgstr ""
 #: main.cpp:296
 #, kde-format
 msgid "Marco Gulino"
-msgstr ""
+msgstr "Marco Gulino"
 
 #: main.cpp:296
 #, kde-format
@@ -10716,7 +10719,7 @@ msgstr ""
 #: main.cpp:298
 #, kde-format
 msgid "Martin Aumueller"
-msgstr ""
+msgstr "Martin Aumueller"
 
 #: main.cpp:300
 #, kde-format
@@ -10746,12 +10749,12 @@ msgstr "Mike Diehl"
 #: main.cpp:306
 #, kde-format
 msgid "Paul Cifarelli"
-msgstr ""
+msgstr "Paul Cifarelli"
 
 #: main.cpp:308
 #, kde-format
 msgid "Peter C. Ndikuwera"
-msgstr ""
+msgstr "Peter C. Ndikuwera"
 
 #: main.cpp:308
 #, kde-format
@@ -10761,12 +10764,12 @@ msgstr ""
 #: main.cpp:310
 #, kde-format
 msgid "Pierpaolo Panfilo"
-msgstr ""
+msgstr "Pierpaolo Panfilo"
 
 #: main.cpp:312
 #, kde-format
 msgid "Reigo Reinmets"
-msgstr ""
+msgstr "Reigo Reinmets"
 
 #: main.cpp:312
 #, kde-format
@@ -10776,7 +10779,7 @@ msgstr ""
 #: main.cpp:314
 #, kde-format
 msgid "Roman Becker"
-msgstr ""
+msgstr "Roman Becker"
 
 #: main.cpp:314
 #, kde-format
@@ -10786,7 +10789,7 @@ msgstr ""
 #: main.cpp:316
 #, kde-format
 msgid "Sami Nieminen"
-msgstr ""
+msgstr "Sami Nieminen"
 
 #: main.cpp:316
 #, kde-format
@@ -10801,7 +10804,7 @@ msgstr "Stanislav Karchebny"
 #: main.cpp:320
 #, kde-format
 msgid "Stefan Bogner"
-msgstr ""
+msgstr "Stefan Bogner"
 
 #: main.cpp:320
 #, kde-format
@@ -10811,37 +10814,37 @@ msgstr ""
 #: main.cpp:322
 #, kde-format
 msgid "Tomasz Dudzik"
-msgstr ""
+msgstr "Tomasz Dudzik"
 
 #: main.cpp:322
 #, kde-format
 msgid "Splash screen"
-msgstr ""
+msgstr "მისასალმებელი ფანჯარა"
 
 #: main.cpp:327
 #, kde-format
 msgid "Andrew Browning"
-msgstr ""
+msgstr "Andrew Browning"
 
 #: main.cpp:328
 #, kde-format
 msgid "Chris Wales"
-msgstr ""
+msgstr "Chris Wales"
 
 #: main.cpp:329
 #, kde-format
 msgid "ZImin Stanislav"
-msgstr ""
+msgstr "ZImin Stanislav"
 
 #: MainWindow.cpp:255
 #, kde-format
 msgid "Local Music"
-msgstr ""
+msgstr "ლოკალური მუსიკა"
 
 #: MainWindow.cpp:257
 #, kde-format
 msgid "Local sources of content"
-msgstr ""
+msgstr "შემცველობის ლოკალური წყაროები"
 
 #: MainWindow.cpp:264
 #, kde-format
@@ -10851,7 +10854,7 @@ msgstr "ინტერნეტი"
 #: MainWindow.cpp:266
 #, kde-format
 msgid "Online sources of content"
-msgstr ""
+msgstr "შემცველობის ონლაინ-წყაროები"
 
 #: MainWindow.cpp:272
 #, kde-format
@@ -10861,7 +10864,7 @@ msgstr "დასაკრავი სიები"
 #: MainWindow.cpp:274
 #, kde-format
 msgid "Various types of playlists"
-msgstr ""
+msgstr "დასაკრავი სიის სხვადასხვა ტიპები"
 
 #: MainWindow.cpp:283
 #, kde-format
@@ -10877,12 +10880,12 @@ msgstr "&ნახვა"
 #: MainWindow.cpp:329
 #, kde-format
 msgid "Lock Layout"
-msgstr ""
+msgstr "განლაგების დაბლოკვა"
 
 #: MainWindow.cpp:366 MainWindow.cpp:1300
 #, kde-format
 msgid "Reset Layout"
-msgstr ""
+msgstr "განლაგების საწყის მდგომარეობაში დაბრუნება"
 
 #: MainWindow.cpp:423
 #, kde-format
@@ -10910,50 +10913,50 @@ msgstr ""
 #: MainWindow.cpp:545
 #, kde-format
 msgid "Add Stream"
-msgstr ""
+msgstr "ნაკადის დამატება"
 
 #: MainWindow.cpp:545
 #, kde-format
 msgid "Enter Stream URL:"
-msgstr ""
+msgstr "შეიყვანეთ ნაკადის URL:"
 
 #: MainWindow.cpp:748
 #, kde-format
 msgid "&Add Media..."
-msgstr ""
+msgstr "&მედიის დამატება..."
 
 #: MainWindow.cpp:753
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
-msgstr ""
+msgstr "&დასაკრავი სიის გასუფთავება"
 
 #: MainWindow.cpp:758
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
-msgstr ""
+msgstr "&რიგის ჩასწორება"
 
 #: MainWindow.cpp:763
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
-msgstr ""
+msgstr "&დუბლიკატების წაშლა"
 
 #: MainWindow.cpp:770
 #, kde-format
 msgid "&Add Stream..."
-msgstr ""
+msgstr "&ნაკადის დამატება..."
 
 #: MainWindow.cpp:774
 #, kde-format
 msgid "&Export Playlist As..."
-msgstr ""
+msgstr "&დასაკრავი სიის გატანა, როგორც..."
 
 #: MainWindow.cpp:786
 #, kde-format
 msgid "Equalizer"
-msgstr ""
+msgstr "ეკვალაიზერი"
 
 #: MainWindow.cpp:790 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
@@ -11123,7 +11126,7 @@ msgstr ""
 #: MainWindow.cpp:1014
 #, kde-format
 msgid "&About Amarok"
-msgstr ""
+msgstr "&Amarok-ის შესახებ"
 
 #: MainWindow.cpp:1018
 #, kde-format
@@ -11138,18 +11141,18 @@ msgstr "&შეცდომის ანგარიში..."
 #: MainWindow.cpp:1069
 #, kde-format
 msgid "&Music"
-msgstr ""
+msgstr "მუსიკა"
 
 #: MainWindow.cpp:1071
 #, kde-format
 msgid "&Amarok"
-msgstr ""
+msgstr "&Amarok"
 
 #: MainWindow.cpp:1095 playlist/PlaylistDock.cpp:58
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
-msgstr ""
+msgstr "&დასაკრავი სია"
 
 #: MainWindow.cpp:1112
 #, kde-format
@@ -11172,7 +11175,7 @@ msgstr ""
 #: MainWindow.cpp:1171
 #, kde-format
 msgid "Hide Menu"
-msgstr ""
+msgstr "მენიუს დამალვა"
 
 #: MainWindow.cpp:1213
 #, kde-format
@@ -11207,24 +11210,24 @@ msgstr ""
 #: musicbrainz/MusicBrainzTagsView.cpp:91
 #, kde-format
 msgid "Go to Artist Page"
-msgstr ""
+msgstr "შემსრულებლის გვერდზე გადასვლა"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:112
 #, kde-format
 msgid "Go to Album Page"
-msgstr ""
+msgstr "ალბომის გვერდზე გადასვლა"
 
 #: musicbrainz/MusicBrainzTagsView.cpp:119
 #, kde-format
 msgid "Go to Track Page"
-msgstr ""
+msgstr "ტრეკის გვერდზე გადასვლა"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, NetworkRequestsDialog)
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: network/NetworkRequests.ui:14 network/NetworkRequests.ui:20
 #, kde-format
 msgid "Network Requests"
-msgstr ""
+msgstr "ქსელის მოთხოვნები"
 
 #. i18n: ectx: property (text), widget (QPushButton, clearButton)
 #: network/NetworkRequests.ui:27
@@ -11266,13 +11269,13 @@ msgstr "ინფო"
 #: network/NetworkRequests.ui:74
 #, kde-format
 msgid "Request Details"
-msgstr ""
+msgstr "მოთხოვნის დეტალები"
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: network/NetworkRequests.ui:81
 #, kde-format
 msgid "Response Details"
-msgstr ""
+msgstr "პასუხის დეტალები"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, requestDetails)
 #. i18n: ectx: property (text), widget (QTreeWidget, responseDetails)
@@ -11307,7 +11310,7 @@ msgstr ""
 #: playlist/layouts/LayoutConfigAction.cpp:44
 #, kde-format
 msgid "Playlist Layouts"
-msgstr ""
+msgstr "დასაკრავი სიის განლაგებები"
 
 #: playlist/layouts/LayoutConfigAction.cpp:70
 #, kde-format
@@ -11317,7 +11320,7 @@ msgstr ""
 #: playlist/layouts/LayoutEditDialog.cpp:75
 #, kde-format
 msgid "Configuration for"
-msgstr ""
+msgstr "კონფიგურაცია"
 
 #: playlist/layouts/LayoutEditDialog.cpp:81
 #, kde-format
@@ -11350,12 +11353,12 @@ msgstr ""
 #: playlist/layouts/LayoutEditDialog.cpp:105
 #, kde-format
 msgid "Fit content"
-msgstr ""
+msgstr "შემცველობის ჩატევა"
 
 #: playlist/layouts/LayoutEditDialog.cpp:106
 #, kde-format
 msgid "Fit the element text"
-msgstr ""
+msgstr "ელემენტის ტექსტის ჩატევა"
 
 #: playlist/layouts/LayoutEditDialog.cpp:108
 #, kde-format
@@ -11373,27 +11376,27 @@ msgstr ""
 #: playlist/layouts/LayoutEditDialog.cpp:144
 #, kde-format
 msgid "Alignment: "
-msgstr ""
+msgstr "სწორება: "
 
 #: playlist/layouts/LayoutEditDialog.cpp:153
 #, kde-format
 msgid "Font: "
-msgstr ""
+msgstr "ფონტი: "
 
 #: playlist/layouts/LayoutEditDialog.cpp:239
 #, kde-format
 msgid "Configuration for '%1'"
-msgstr ""
+msgstr "'%1'-ის მორგება"
 
 #: playlist/layouts/LayoutEditWidget.cpp:44
 #, kde-format
 msgid "Show cover"
-msgstr ""
+msgstr "ყდის ჩვენება"
 
 #: playlist/layouts/LayoutEditWidget.cpp:84
 #, kde-format
 msgid "Invalid playlist layout."
-msgstr ""
+msgstr "დასაკრავი სიის არასწორი განლაგება."
 
 #: playlist/layouts/LayoutEditWidget.cpp:85
 #, kde-format
@@ -11404,7 +11407,7 @@ msgstr ""
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:395
 #, kde-format
 msgid "copy of %1"
-msgstr ""
+msgstr "%1-ის ასლი"
 
 #: playlist/layouts/LayoutManager.cpp:115
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:403
@@ -11498,7 +11501,7 @@ msgstr ""
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
 #, kde-format
 msgid "Layout name error"
-msgstr ""
+msgstr "განლაგების სახელის შეცდომა"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
@@ -11680,19 +11683,19 @@ msgstr ""
 #, kde-format
 msgctxt "name of the action in undo stack"
 msgid "Replace playlist"
-msgstr ""
+msgstr "დასაკრავი სიის ჩანაცვლება"
 
 #: playlist/PlaylistDefines.cpp:89
 #, kde-format
 msgctxt "Empty placeholder token used for spacing in playlist layouts"
 msgid "Placeholder"
-msgstr ""
+msgstr "შემავსებელი"
 
 #: playlist/PlaylistDefines.cpp:97
 #, kde-format
 msgctxt "'Cover image' playlist column name and token for playlist layouts"
 msgid "Cover image"
-msgstr ""
+msgstr "ყდის სურათი"
 
 #: playlist/PlaylistDefines.cpp:98
 #, kde-format
@@ -11705,7 +11708,7 @@ msgstr "საქაღალდე"
 msgctxt ""
 "'Divider' token for playlist layouts representing a small visual divider"
 msgid "Divider"
-msgstr ""
+msgstr "გამყოფი"
 
 #: playlist/PlaylistDefines.cpp:101
 #, kde-format
@@ -11739,7 +11742,7 @@ msgstr "ჭდეები"
 #, kde-format
 msgctxt "'Mood' playlist column name and token for playlist layouts"
 msgid "Mood"
-msgstr ""
+msgstr "ხასიათი"
 
 #: playlist/PlaylistDefines.cpp:111
 #, kde-format
@@ -11812,7 +11815,7 @@ msgstr[1] "%1 ტრეკი"
 #: playlist/PlaylistInfoWidget.cpp:67
 #, kde-format
 msgid "No tracks"
-msgstr ""
+msgstr "ტრეკების გარეშე"
 
 #: playlist/PlaylistInfoWidget.cpp:109 playlist/PlaylistInfoWidget.cpp:115
 #, kde-format
@@ -11907,7 +11910,7 @@ msgstr "ბოლოს დაკვრის დრო"
 #: playlist/PlaylistModel.cpp:947
 #, kde-format
 msgid "Mood"
-msgstr ""
+msgstr "ხასიათი"
 
 #: playlist/PlaylistModel.cpp:948
 #, kde-format
@@ -11918,7 +11921,7 @@ msgstr "ფაილის ზომა"
 #, kde-format
 msgctxt "Iten in queue, %1 is position, %2 artist, %3 track"
 msgid "%1: %2 - %3"
-msgstr ""
+msgstr "%1: %2 - %3"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PlaylistQueueEditor)
 #: playlist/PlaylistQueueEditor.ui:14
@@ -11963,12 +11966,12 @@ msgstr ""
 #: playlist/PlaylistViewUrlGenerator.cpp:83
 #, kde-format
 msgid "Filter %1"
-msgstr ""
+msgstr "%1-ის ფილტრი"
 
 #: playlist/PlaylistViewUrlGenerator.cpp:84
 #, kde-format
 msgid "Search %1"
-msgstr ""
+msgstr "%1-ის მოძებნა"
 
 #: playlist/PlaylistViewUrlGenerator.cpp:91
 #, kde-format
@@ -12026,17 +12029,17 @@ msgstr "ძებნის პარამეტრები"
 #: playlist/UndoCommands.cpp:31
 #, kde-format
 msgid "Tracks Added"
-msgstr ""
+msgstr "ტრეკები დაემატა"
 
 #: playlist/UndoCommands.cpp:54
 #, kde-format
 msgid "Tracks Removed"
-msgstr ""
+msgstr "ტრეკები წაიშალა"
 
 #: playlist/UndoCommands.cpp:76
 #, kde-format
 msgid "Tracks moved"
-msgstr ""
+msgstr "ტრეკები გადატანილია"
 
 #: playlist/view/listview/PrettyListView.cpp:689
 #, kde-format
@@ -12066,7 +12069,7 @@ msgstr ""
 #: playlist/view/PlaylistViewCommon.cpp:171
 #, kde-format
 msgid "Remove From Playlist"
-msgstr ""
+msgstr "დასაკრავი სიიდან წაშლა"
 
 #: playlist/view/PlaylistViewCommon.cpp:245
 #, kde-format
@@ -12349,7 +12352,7 @@ msgstr ""
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:39
 #, kde-format
 msgid "shorter than"
-msgstr ""
+msgstr "მოკლეა, ვიდრე"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonInt)
@@ -12363,13 +12366,13 @@ msgstr ""
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:609
 #, kde-format
 msgid "equal to"
-msgstr ""
+msgstr "უდრის"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:49
 #, kde-format
 msgid "longer than"
-msgstr ""
+msgstr "გრძელია, ვიდრე"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Duration)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:62
@@ -12463,14 +12466,14 @@ msgstr ""
 #: widgets/MetaQueryWidget.cpp:1017
 #, kde-format
 msgid "less than"
-msgstr ""
+msgstr "ნაკლები, ვიდრე"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:49
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:49
 #, kde-format
 msgid "more than"
-msgstr ""
+msgstr "მეტი, ვიდრე"
 
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, spinBox_Size)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:59
@@ -12521,7 +12524,7 @@ msgstr ""
 #: playlistgenerator/constraints/PlaylistLength.cpp:51
 #, kde-format
 msgid "Playlist Length"
-msgstr ""
+msgstr "დასაკრავი სიის ხანგრძლივობა"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:52
 #, kde-format
@@ -12654,19 +12657,19 @@ msgstr ""
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:51
 #, kde-format
 msgid "tracks"
-msgstr ""
+msgstr "ტრეკები"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Field)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:56
 #, kde-format
 msgid "albums"
-msgstr ""
+msgstr "ალბომები"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Field)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:61
 #, kde-format
 msgid "artists"
-msgstr ""
+msgstr "შემსრულებლები"
 
 #: playlistgenerator/constraints/TagMatch.cpp:54
 #, kde-format
@@ -12686,7 +12689,7 @@ msgctxt ""
 "contains; %4 = a string to match; Example: Match tag: not title contains "
 "\"foo\""
 msgid "Match tag:%1 %2 %3 %4"
-msgstr ""
+msgstr "ემთხვევა ჭდე:%1 %2 %3 %4"
 
 #: playlistgenerator/constraints/TagMatch.cpp:175
 #, kde-format
@@ -12724,7 +12727,7 @@ msgstr "უდრის"
 #: widgets/MetaQueryWidget.cpp:1021
 #, kde-format
 msgid "greater than"
-msgstr ""
+msgstr "მეტი ვიდრე"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatch.cpp:346
@@ -12788,7 +12791,7 @@ msgstr "რეგგამოს"
 #: widgets/MetaQueryWidget.cpp:1040
 #, kde-format
 msgid "unknown comparison"
-msgstr ""
+msgstr "უცნობი შედარება"
 
 #: playlistgenerator/constraints/TagMatch.cpp:380
 #, kde-format
@@ -13049,12 +13052,12 @@ msgstr "სათაური"
 #: playlistgenerator/constraints/TagMatchSupport.cpp:87
 #, kde-format
 msgid "artist name"
-msgstr ""
+msgstr "შემსრულებლის სახელი"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:88
 #, kde-format
 msgid "album name"
-msgstr ""
+msgstr "ალბომის სახელი"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:89
 #, kde-format
@@ -13095,7 +13098,7 @@ msgstr "ხანგრძლივობა"
 #: playlistgenerator/constraints/TagMatchSupport.cpp:96
 #, kde-format
 msgid "added to collection"
-msgstr ""
+msgstr "ჩამატებულია კოლექციაში"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:97
 #, kde-format
@@ -13110,7 +13113,7 @@ msgstr "შეფასება"
 #: playlistgenerator/constraints/TagMatchSupport.cpp:99
 #, kde-format
 msgid "first played"
-msgstr ""
+msgstr "პირველად დაკვრის დრო"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:100
 #, kde-format
@@ -13166,14 +13169,14 @@ msgstr ""
 #: playlistgenerator/PresetEditDialog.cpp:62
 #, kde-format
 msgid "Add new"
-msgstr ""
+msgstr "ახლის დამატება"
 
 #: playlistgenerator/PresetEditDialog.cpp:63
 #: playlistgenerator/PresetEditDialog.cpp:65
 #: playlistgenerator/PresetEditDialog.cpp:93
 #, kde-format
 msgid "Constraint Group"
-msgstr ""
+msgstr "პირობების ჯგუფი"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, PresetEditDialog)
 #: playlistgenerator/PresetEditDialog.ui:15
@@ -13289,7 +13292,7 @@ msgstr ""
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:44
 #, kde-format
 msgid "Amarok Database"
-msgstr ""
+msgstr "Amarok-ის ბაზა"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:45
 #, kde-format
@@ -13299,7 +13302,7 @@ msgstr ""
 #: playlistmanager/SyncedPlaylist.cpp:43 playlistmanager/SyncedPlaylist.cpp:51
 #, kde-format
 msgid "<Empty>"
-msgstr ""
+msgstr "<ცარიელი>"
 
 #: PluginManager.cpp:144
 #, kde-format
@@ -13371,22 +13374,22 @@ msgstr "შეცდომა"
 #: scripting/scriptconsole/ScriptConsole.cpp:103
 #, kde-format
 msgid "Execute Script"
-msgstr ""
+msgstr "სკრიპტის შესრულება"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:107
 #, kde-format
 msgid "&New Script"
-msgstr ""
+msgstr "&ახალი სკრიპტი"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:111
 #, kde-format
 msgid "&Delete Script"
-msgstr ""
+msgstr "&სკრიპტის წაშლა"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:114
 #, kde-format
 msgid "&Clear All Scripts"
-msgstr ""
+msgstr "&ყველა სკრიპტის გასუფთავება"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:117
 #, kde-format
@@ -13463,7 +13466,7 @@ msgstr ""
 #: services/ampache/AddServerDialog.cpp:83
 #, kde-format
 msgid "Successfully connected"
-msgstr ""
+msgstr "მიერთება წარმატებულია"
 
 #: services/ampache/AddServerDialog.cpp:88
 #, kde-format
@@ -13479,7 +13482,7 @@ msgstr "ავთენტიკაცია წარუმატებელ�
 #: services/ampache/AmpacheAccountLogin.cpp:234
 #, kde-format
 msgid "Authentication Error"
-msgstr ""
+msgstr "ავთენტიკაციის შეცდომა"
 
 #. i18n: ectx: property (text), widget (QPushButton, addButton)
 #: services/ampache/AmpacheConfigWidget.ui:23
@@ -13491,7 +13494,7 @@ msgstr "სერვერის დამატება"
 #: services/ampache/AmpacheConfigWidget.ui:30
 #, kde-format
 msgid "Remove Server"
-msgstr ""
+msgstr "სერვერის წაშლა"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelServerAddress)
@@ -13516,12 +13519,12 @@ msgstr ""
 #: services/ampache/AmpacheServiceCollection.cpp:61
 #, kde-format
 msgid "Ampache Server %1"
-msgstr ""
+msgstr "Ampache-ის სერვერი %1"
 
 #: services/ampache/LastfmInfoParser.cpp:66
 #, kde-format
 msgid "Updated: %1"
-msgstr ""
+msgstr "განახლდა: %1"
 
 #: services/ampache/LastfmInfoParser.cpp:68
 #, kde-format
@@ -13852,13 +13855,13 @@ msgstr "საიდან:"
 #, kde-format
 msgctxt "in WeeklyTopBias. Label for the date widget"
 msgid "to:"
-msgstr ""
+msgstr "ვის:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox3)
 #: services/lastfm/LastFmConfigWidget.ui:48
 #, kde-format
 msgid "Last.fm Profile"
-msgstr ""
+msgstr "Last.fm-ის პროფილი"
 
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: services/lastfm/LastFmConfigWidget.ui:96
@@ -13870,19 +13873,19 @@ msgstr ""
 #: services/lastfm/LastFmConfigWidget.ui:119
 #, kde-format
 msgid "Last.fm Services"
-msgstr ""
+msgstr "Last.fm-ის სერვისები"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_SubmitPlayedSongs)
 #: services/lastfm/LastFmConfigWidget.ui:128
 #, kde-format
 msgid "&Submit tracks"
-msgstr ""
+msgstr "&ტრეკების გადაცემა"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
 #: services/lastfm/LastFmConfigWidget.ui:138
 #, kde-format
 msgid "&Retrieve similar artists"
-msgstr ""
+msgstr "&მსგავსი შემსრულებლების მიღება"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
 #: services/lastfm/LastFmConfigWidget.ui:148
@@ -13960,7 +13963,7 @@ msgstr ""
 #: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
 msgid "Last.fm: Love"
-msgstr ""
+msgstr "Last.fm: სიყვარული"
 
 #: services/lastfm/LastFmService.cpp:131
 #, kde-format
@@ -13984,29 +13987,29 @@ msgstr ""
 #: services/lastfm/LastFmService.cpp:383
 #, kde-format
 msgid "Enter an artist name"
-msgstr ""
+msgstr "შეიყვანეთ შემსრულებლის სახელი"
 
 #: services/lastfm/LastFmService.cpp:386
 #, kde-format
 msgid "Enter a tag"
-msgstr ""
+msgstr "შეიყვანეთ ჭდე"
 
 #: services/lastfm/LastFmService.cpp:389
 #, kde-format
 msgid "Enter a Last.fm user name"
-msgstr ""
+msgstr "შეიყვანეთ Last.fm-ის მომხმარებლის სახელი"
 
 #: services/lastfm/LastFmService.cpp:402
 #, kde-format
 msgid "Username: %1"
-msgstr ""
+msgstr "მომხმარებლის სახელი: %1"
 
 #: services/lastfm/LastFmService.cpp:407
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "დაკვრების რაოდენობა: %1"
+msgstr[1] "დაკვრების რაოდენობა: %1"
 
 #: services/lastfm/LastFmService.cpp:453
 #, kde-format
@@ -14026,12 +14029,12 @@ msgstr "მომხმარებელი"
 #: services/lastfm/LastFmServiceCollection.cpp:32
 #, kde-format
 msgid "%1's Streams"
-msgstr ""
+msgstr "%1-ის ნაკადები"
 
 #: services/lastfm/LastFmServiceCollection.cpp:36
 #, kde-format
 msgid "Global Tags"
-msgstr ""
+msgstr "გლობალური ჭდეები"
 
 #: services/lastfm/LastFmServiceCollection.cpp:40
 #, kde-format
@@ -14430,7 +14433,7 @@ msgstr ""
 #: services/magnatune/MagnatuneConfigWidget.ui:197
 #, kde-format
 msgid "Ogg"
-msgstr ""
+msgstr "Ogg"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
 #: services/magnatune/MagnatuneConfigWidget.ui:202
@@ -15511,7 +15514,7 @@ msgstr ""
 #: widgets/Osd.cpp:202
 #, kde-format
 msgid "Volume: %1% (muted)"
-msgstr ""
+msgstr "ხმა: %1% (დადუმებული)"
 
 #: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:202
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
