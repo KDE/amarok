@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2023-02-01 02:13+0100\n"
+"PO-Revision-Date: 2023-02-02 08:01+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -3144,7 +3144,7 @@ msgstr ""
 #: configdialog/dialogs/GeneralConfig.ui:141
 #, kde-format
 msgid "Default (System colours)"
-msgstr ""
+msgstr "ნაგულისხმები (სისტემის ფერები)"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:146
@@ -5350,7 +5350,7 @@ msgstr[1] ""
 #, kde-format
 msgctxt "operation when iPod is connected"
 msgid "Reading iPod tracks"
-msgstr ""
+msgstr "ტრეკების წაკითხვა iPod-დან"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:118
 #, kde-format
@@ -5381,7 +5381,7 @@ msgstr ""
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:14
 #, kde-format
 msgid "iPod device configuration"
-msgstr ""
+msgstr "iPod მოწყობილობის მორგება"
 
 #. i18n: ectx: property (text), widget (QLabel, nameLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:26
@@ -5463,7 +5463,7 @@ msgstr ""
 #, kde-format
 msgctxt "iPod model that is not (yet) recognized"
 msgid "Unrecognized model"
-msgstr ""
+msgstr "გამოუცნობი მოდელი"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:60
 #, kde-format
@@ -5642,8 +5642,8 @@ msgstr ""
 #, kde-format
 msgid "Track not deleted:"
 msgid_plural "Tracks not deleted:"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ტრეკი არ წაშლილა:"
+msgstr[1] "ტრეკები არ წაშლილა:"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:572
 #, kde-format
@@ -5799,7 +5799,7 @@ msgstr[1] ""
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:80
 #, kde-format
 msgid "Unable to remove tracks"
-msgstr ""
+msgstr "ტრეკების წაშლა შეუძლებელია"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:88
 #, kde-format
@@ -5810,7 +5810,7 @@ msgstr ""
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:95
 #, kde-format
 msgid "Do you want to remove empty folders?"
-msgstr ""
+msgstr "გნებავთ ცარიელი საქაღალდეების წაშლა?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:96
 #, kde-format
@@ -5891,12 +5891,12 @@ msgstr "დიახ %1-დან წაშლა."
 #: services/gpodder/GpodderProvider.cpp:349
 #, kde-format
 msgid "&Delete Channel and Episodes"
-msgstr ""
+msgstr "&არხისა და ეპიზოდების წაშლა"
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:250
 #, kde-format
 msgid "&Activate This Collection"
-msgstr ""
+msgstr "&ამ კოლექციის აქტივაცია"
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:287
 #, kde-format
@@ -5959,7 +5959,7 @@ msgstr ""
 #: core-impl/collections/umscollection/UmsConfiguration.ui:176
 #, kde-format
 msgid "Podcast folder:"
-msgstr ""
+msgstr "პოდკასტის საქაღალდე:"
 
 #: core-impl/meta/default/DefaultMetaTypes.h:39
 #: core-impl/meta/default/DefaultMetaTypes.h:75
@@ -6073,7 +6073,7 @@ msgstr ""
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:30
 #, kde-format
 msgid "Podcast Configuration"
-msgstr ""
+msgstr "პოდკასტის მორგება"
 
 #. i18n: ectx: property (text), widget (QLabel, m_saveLocationlabel)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:68
@@ -6315,7 +6315,7 @@ msgstr[1] ""
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
 #, kde-format
 msgid "Cancel Download and Quit."
-msgstr ""
+msgstr "გადმოწერის გაუქმება და წაშლა."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1158
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
@@ -6336,7 +6336,7 @@ msgstr ""
 #: core-impl/podcasts/sql/SqlPodcastProvider.h:56
 #, kde-format
 msgid "Local Podcasts"
-msgstr ""
+msgstr "ლოკალური პოდკასტები"
 
 #. i18n: ectx: property (text), widget (QLabel, m_intervalLabel)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:32
@@ -6404,7 +6404,7 @@ msgstr "ტრეკების ორგანიზება"
 #: core/collections/CollectionLocation.cpp:383
 #, kde-format
 msgid "Transcode and organize tracks"
-msgstr ""
+msgstr "ტრეკების გადაყვანა და დალაგება"
 
 #: core/collections/CollectionLocation.cpp:388
 #, kde-format
@@ -6414,7 +6414,7 @@ msgstr "ტრეკების გადატანა"
 #: core/collections/CollectionLocation.cpp:390
 #, kde-format
 msgid "Transcode and move tracks"
-msgstr ""
+msgstr "ტრეკების გადაყვანა და გადატანა"
 
 #: core/collections/CollectionLocation.cpp:395
 #, kde-format
@@ -6424,14 +6424,14 @@ msgstr "ტრეკების კოპირება"
 #: core/collections/CollectionLocation.cpp:397
 #, kde-format
 msgid "Transcode and copy tracks"
-msgstr ""
+msgstr "ტრეკების გადაყვანა და კოპირება"
 
 #: core/collections/CollectionLocation.cpp:410
 #, kde-format
 msgid "Organizing one track"
 msgid_plural "Organizing %1 tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 ტრეკის დალაგება"
+msgstr[1] "%1 ტრეკის დალაგება"
 
 #: core/collections/CollectionLocation.cpp:413
 #, kde-format
@@ -6471,7 +6471,7 @@ msgstr[1] ""
 #: core/meta/Meta.cpp:207
 #, kde-format
 msgid "No network connection"
-msgstr ""
+msgstr "ქსელური შეერთებების გარეშე"
 
 #: core/meta/Meta.cpp:217
 #, kde-format
@@ -7217,7 +7217,7 @@ msgstr ""
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:60
 #, kde-format
 msgid "Smaller file"
-msgstr ""
+msgstr "უფრო პატარა ფაილი"
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:49
 #: core/transcoding/formats/TranscodingMp3Format.cpp:56
@@ -7226,7 +7226,7 @@ msgstr ""
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:60
 #, kde-format
 msgid "Better sound quality"
-msgstr ""
+msgstr "ხმის უკეთესი ხარისხი"
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:56
 #, kde-format
@@ -7248,7 +7248,7 @@ msgstr ""
 #: core/transcoding/formats/TranscodingAlacFormat.cpp:33
 #, kde-format
 msgid "Apple Lossless"
-msgstr ""
+msgstr "Apple Lossless"
 
 #: core/transcoding/formats/TranscodingAlacFormat.cpp:41
 #, kde-format
@@ -7286,7 +7286,7 @@ msgstr "შეკუმშვის დონე"
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:42
 #, kde-format
 msgid "Faster compression"
-msgstr ""
+msgstr "სწრაფი კოდირება"
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:57
 #, kde-format
@@ -7422,7 +7422,7 @@ msgstr ""
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:67
 #, kde-format
 msgid "Windows Media Audio"
-msgstr ""
+msgstr "Windows Media Audio"
 
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:75
 #, kde-format
@@ -7623,12 +7623,12 @@ msgstr ""
 #: covermanager/CoverFoundDialog.cpp:538
 #, kde-format
 msgid "Fetching Large Cover"
-msgstr ""
+msgstr "დიდი ყდის გადმოწერა"
 
 #: covermanager/CoverFoundDialog.cpp:539
 #, kde-format
 msgid "Download Progress"
-msgstr ""
+msgstr "გადმოწერის მიმდინარეობა"
 
 #: covermanager/CoverFoundDialog.cpp:541
 #, kde-format
@@ -7648,14 +7648,14 @@ msgstr ""
 #: covermanager/CoverFoundDialog.cpp:718
 #, kde-format
 msgid "No Images Found"
-msgstr ""
+msgstr "გამოსახულებები ვერ ვიპოვე"
 
 #: covermanager/CoverFoundDialog.cpp:719
 #, kde-format
 msgid "1 Image Found"
 msgid_plural "%1 Images Found"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ნაპოვნია 1 გამოსახულება"
+msgstr[1] "ნაპოვნია %1 გამოსახულება"
 
 #: covermanager/CoverFoundDialog.cpp:744
 #, kde-format
@@ -7959,17 +7959,17 @@ msgstr ""
 #: dialogs/CollectionSetup.cpp:189
 #, kde-format
 msgid "Rescan '%1'"
-msgstr ""
+msgstr "'%1'-ის თავიდან სკაპირება"
 
 #: dialogs/DatabaseImporterDialog.cpp:41
 #, kde-format
 msgid "Import Collection"
-msgstr ""
+msgstr "კოლექციის შემოტანა"
 
 #: dialogs/DatabaseImporterDialog.cpp:49
 #, kde-format
 msgid "Import configuration"
-msgstr ""
+msgstr "კონფიგურაციის შემოტანა"
 
 #: dialogs/DatabaseImporterDialog.cpp:69
 #, kde-format
@@ -7979,7 +7979,7 @@ msgstr "მიგრირება"
 #: dialogs/DatabaseImporterDialog.cpp:101
 #, kde-format
 msgid "<b><font color='red'>Failed:</font></b> No tracks were imported"
-msgstr ""
+msgstr "<b><font color='red'>შეცდომა:</font></b> ტრეკები შემოტანილი არაა"
 
 #: dialogs/DatabaseImporterDialog.cpp:103
 #, kde-format
@@ -7996,7 +7996,7 @@ msgstr ""
 #: dialogs/DatabaseImporterDialog.cpp:132
 #, kde-format
 msgid "<b><font color='red'>Error:</font></b> %1"
-msgstr ""
+msgstr "<b><font color='red'>შეცდომა:</font></b> %1"
 
 #: dialogs/DatabaseImporterDialog.cpp:147
 #, kde-format
