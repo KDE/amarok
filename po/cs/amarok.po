@@ -4,7 +4,7 @@
 # Lukáš Tinkl <ltinkl@redhat.com>, 2010, 2011.
 # Vít Pelčák <vit@pelcak.org>, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020.
 # Tomáš Chvátal <tomas.chvatal@gmail.com>, 2012, 2013.
-# Vit Pelcak <vit@pelcak.org>, 2021, 2022.
+# Vit Pelcak <vit@pelcak.org>, 2021, 2022, 2023.
 #
 # Hynek, 2010.
 msgid ""
@@ -12,15 +12,15 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2022-01-11 17:36+0100\n"
-"Last-Translator: Vit Pelcak <vpelcak@suse.cz>\n"
+"PO-Revision-Date: 2023-01-25 09:14+0100\n"
+"Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 21.12.0\n"
+"X-Generator: Lokalize 22.12.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1918,7 +1918,7 @@ msgstr "Zařadit URL do fronty za právě přehrávanou skladbu"
 #: App.cpp:373
 #, kde-format
 msgid "Load URLs, replacing current playlist"
-msgstr "Nahradit aktuální seznam skladeb nahranými URL"
+msgstr "Nahradit aktuální seznam skladeb načtenými URL"
 
 #: App.cpp:374
 #, kde-format
@@ -16008,18 +16008,18 @@ msgid ""
 "Only the following types of tracks can be uploaded to MP3tunes: mp3, mp4, "
 "m4a, m4p, aac, wma, and ogg. "
 msgstr ""
-"Na MP3tunes mohou být nahrávány pouze následující typy skladeb: mp3, mp4, "
+"Na MP3tunes mohou být odeslány pouze následující typy skladeb: mp3, mp4, "
 "m4a, m4p, aac, wma a ogg. "
 
 #: services/mp3tunes/Mp3tunesWorkers.cpp:344
 #, kde-format
 msgid "Upload to MP3tunes Initiated"
-msgstr "Nahrávání na MP3tunes zahájeno"
+msgstr "Odesílání na MP3tunes zahájeno"
 
 #: services/mp3tunes/Mp3tunesWorkers.cpp:370
 #, kde-format
 msgid "Uploading Track %1/%2"
-msgstr "Nahrává se skladba %1/%2"
+msgstr "Odesílá se skladba %1/%2"
 
 #. i18n: ectx: property (text), widget (QLabel, instructionsLabel)
 #: services/opmldirectory/AddOpmlWidget.ui:37
