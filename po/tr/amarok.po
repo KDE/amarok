@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-01-02 00:45+0000\n"
-"PO-Revision-Date: 2023-02-01 19:48+0300\n"
+"PO-Revision-Date: 2023-02-05 12:28+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.12.1\n"
+"X-Generator: Lokalize 22.12.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1482,9 +1482,9 @@ msgid ""
 "Whether Amarok statistics should be synchronized with play count/ratings on "
 "device and whether tracks played should be submitted to Last.fm."
 msgstr ""
-"Amarok istatistiklerinin aygıt üzerindeki çalma sayısı/beğenisi eşitlenip "
-"eşitlenmediği ve çalınan parçaların Last.fm'ye gönderilip gönderilmemesi "
-"gerektiği."
+"Amarok istatistiklerinin aygıt üzerindeki çalma sayısı/derecelendirmesinin "
+"eşzamanlanıp eşzamanlanmadığı ve çalınan parçaların Last.fm'ye gönderilip "
+"gönderilmemesi gerektiği."
 
 #. i18n: ectx: label, entry, group (Daap)
 #: amarokconfig.kcfg:502
@@ -3208,7 +3208,7 @@ msgstr "Etiketi İçerilmeyen Şekilde Ekle"
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:44
 #, kde-format
 msgid "Selected labels won't be touched by statistics synchronization"
-msgstr "Seçili etiketlere, istatistik eşitleme sırasında dokunulmayacaktır"
+msgstr "Seçili etiketlere, istatistik eşzamanlama sırasında dokunulmayacaktır"
 
 #. i18n: ectx: property (title), widget (QGroupBox, generalBox)
 #: configdialog/dialogs/GeneralConfig.ui:23
@@ -3390,38 +3390,38 @@ msgstr "Çok Büyük (1600 px)"
 #, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Ratings"
-msgstr "Beğenileri Eşitle"
+msgstr "Derecelendirmeleri Eşzamanla"
 
 #: configdialog/dialogs/MetadataConfig.cpp:106
 #, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize First Played Times"
-msgstr "İlk Çalınanları Eşitle"
+msgstr "İlk Çalınanları Eşzamanla"
 
 #: configdialog/dialogs/MetadataConfig.cpp:108
 #, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Last Played Times"
-msgstr "Son Çalınanları Eşitle"
+msgstr "Son Çalınanları Eşzamanla"
 
 #: configdialog/dialogs/MetadataConfig.cpp:110
 #, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Playcounts"
-msgstr "Çalma Sayılarını Eşitle"
+msgstr "Çalma Sayılarını Eşzamanla"
 
 #: configdialog/dialogs/MetadataConfig.cpp:112
 #, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Labels"
-msgstr "Etiketleri Eşitle"
+msgstr "Etiketleri Eşzamanla"
 
 #: configdialog/dialogs/MetadataConfig.cpp:120
 #, kde-format
 msgctxt ""
 "%1 is field name such as Play Count (this string is only used as a fallback)"
 msgid "Synchronize %1"
-msgstr "%1 Eşitle"
+msgstr "Eşzamanla: %1"
 
 #: configdialog/dialogs/MetadataConfig.cpp:231
 #, kde-format
@@ -3446,10 +3446,10 @@ msgid ""
 "This might be a good idea if you are currently\n"
 "sharing those files via the Internet."
 msgstr ""
-"Meta veri değişikliklerini ('yıldızlar' beğenisi dahil) özgün dosyaya geri "
-"yaz.\n"
+"Meta veri değişikliklerini ('yıldızlar' derecelendirmesi dahil) özgün "
+"dosyaya geri yazın.\n"
 "Ayrıca dosyayı yazarak yazarak geri yazmayı önleyebilirsiniz.\n"
-"Şu anda bu dosyaları Internet üzerinden paylaşıyorsanız\n"
+"Şu anda bu dosyaları İnternet üzerinden paylaşıyorsanız\n"
 "bu iyi bir fikir olabilir."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeBack)
@@ -3552,7 +3552,7 @@ msgstr "Ekle…"
 #: configdialog/dialogs/MetadataConfig.ui:155
 #, kde-format
 msgid "Synchronize…"
-msgstr "Eşitle…"
+msgstr "Eşzamanla…"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: configdialog/dialogs/NotificationsConfig.ui:17
@@ -6965,7 +6965,7 @@ msgstr "Puan"
 #, kde-format
 msgctxt "Track field name"
 msgid "Rating"
-msgstr "Beğeni"
+msgstr "Derecelendirme"
 
 #: core/meta/support/MetaConstants.cpp:200
 #, kde-format
@@ -7161,7 +7161,7 @@ msgstr "puan"
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "rating"
-msgstr "beğeni"
+msgstr "derecelendirme"
 
 #: core/meta/support/MetaConstants.cpp:244
 #, kde-format
@@ -9517,7 +9517,7 @@ msgstr "Koleksiyon:"
 #: dialogs/TagDialogBase.ui:323
 #, kde-format
 msgid "Rating:"
-msgstr "Beğeni:"
+msgstr "Derecelendirme:"
 
 #. i18n: ectx: property (text), widget (QLabel, playcountLabel)
 #: dialogs/TagDialogBase.ui:358
@@ -10335,7 +10335,7 @@ msgstr "Albüm çalma"
 #, kde-format
 msgctxt "Name of a dynamic playlist"
 msgid "Rating"
-msgstr "Beğeni"
+msgstr "Derecelendirme"
 
 #: EngineController.cpp:1099
 #, kde-format
@@ -11646,7 +11646,7 @@ msgstr "Koleksiyonu Güncelle"
 #: MainWindow.cpp:856
 #, kde-format
 msgid "Synchronize Statistics..."
-msgstr "İstatistikleri Eşitle..."
+msgstr "İstatistikleri Eşzamanla..."
 
 #: MainWindow.cpp:864
 #, kde-format
@@ -12312,7 +12312,7 @@ msgstr "Daha Yüksek Puanlar"
 #: playlist/navigators/NavigatorConfigAction.cpp:86
 #, kde-format
 msgid "Higher Ratings"
-msgstr "Daha Yüksek Beğeniler"
+msgstr "Daha Yüksek Derecelendirmeler"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:89
 #, kde-format
@@ -12563,7 +12563,7 @@ msgstr "Örnekleme Oranı"
 #: playlist/PlaylistModel.cpp:944 playlist/ProgressiveSearchWidget.cpp:108
 #, kde-format
 msgid "Rating"
-msgstr "Beğeni"
+msgstr "Derecelendirme"
 
 #: playlist/PlaylistModel.cpp:946
 #, kde-format
@@ -13779,7 +13779,7 @@ msgstr ""
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:624
 #, kde-format
 msgid "The rating that the APG should try to match."
-msgstr "APG' nin eşlemeyi denemesi için gereken beğeni."
+msgstr "APG' nin eşlemeyi denemesi için gereken derecelendirme."
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_StrictnessRating)
 #. i18n: ectx: property (whatsThis), widget (QSlider, slider_StrictnessRating)
@@ -13789,8 +13789,8 @@ msgstr "APG' nin eşlemeyi denemesi için gereken beğeni."
 msgid ""
 "How strict the APG should be about matching tracks to the specified rating."
 msgstr ""
-"Parçaları belirtilen beğeni ile eşleştirmek konusunda APG'nin ne kadar sıkı "
-"olması gerektiği."
+"Parçaları belirtilen derecelendirme ile eşleştirmek konusunda APG'nin ne "
+"kadar sıkı olması gerektiği."
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:85
 #, kde-format
@@ -13861,7 +13861,7 @@ msgstr "puan"
 #: playlistgenerator/constraints/TagMatchSupport.cpp:98
 #, kde-format
 msgid "rating"
-msgstr "beğeni"
+msgstr "derecelendirme"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:99
 #, kde-format
@@ -14382,12 +14382,12 @@ msgstr "Gpodder Podcast'leri"
 #: services/gpodder/GpodderProvider.cpp:468
 #, kde-format
 msgid "Trying to synchronize statuses with gpodder.net"
-msgstr "Durumlar gpodder.net ile eşitlenmeye çalışılıyor"
+msgstr "Durumlar gpodder.net ile eşzamanlanmaya çalışılıyor"
 
 #: services/gpodder/GpodderProvider.cpp:528
 #, kde-format
 msgid "Trying to synchronize subscriptions with gpodder.net"
-msgstr "Abonelikler gpodder.net ile eşitlenmeye çalışılıyor"
+msgstr "Abonelikler gpodder.net ile eşzamanlanmaya çalışılıyor"
 
 #: services/gpodder/GpodderProvider.cpp:777
 #: services/gpodder/GpodderProvider.cpp:788
@@ -14712,8 +14712,8 @@ msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
 "during statistics synchronization"
 msgstr ""
-"İstatistik eşitleme sırasında Amarok derecelendirmelerinizi temsil etmek "
-"için <b>7 yıldız, 10 yıldız</ b> gibi Last.fm etiketlerini kullanın"
+"İstatistik eşzamanlanma sırasında Amarok derecelendirmelerinizi temsil etmek "
+"için <b>7 yıldız, 10 yıldız</ b> gibi Last.fm etiketlerini kullan"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
 #: services/lastfm/LastFmConfigWidget.ui:161
@@ -16082,7 +16082,7 @@ msgid ""
 "You can always change the decision in Amarok configuration."
 msgstr ""
 "%1, parça sayımı veya diğer koleksiyonlarla derecelendirme gibi parça meta "
-"verilerini eşitleyebiliyor. %1 ögesini eşitlemek istiyor musunuz?\n"
+"verilerini eşzamanlayabiliyor. %1 ögesini eşzamanlamak istiyor musunuz?\n"
 "\n"
 "Amarok yapılandırmasında kararınızı değiştirebilirsiniz."
 
@@ -16092,8 +16092,8 @@ msgid ""
 "You only seem to have the Local Collection. Statistics synchronization only "
 "makes sense if there is more than one collection."
 msgstr ""
-"Yalnızca Yerel Koleksiyona sahip görünüyorsunuz. İstatistik eşitleme, birden "
-"fazla koleksiyon varsa mantıklı olmaktadır."
+"Yalnızca bir Yerel Koleksiyon'unuz var görünüyor. İstatistik eşzamanlama, "
+"birden çok koleksiyon varsa mantıklıdır."
 
 #: statsyncing/models/CommonModel.cpp:162
 #, kde-format
@@ -16144,17 +16144,17 @@ msgid ""
 "Can synchronize: %2"
 msgstr ""
 "Parçalar şu şekilde eşleşebilir: %1\n"
-"Eşitlenebilir: %2"
+"Eşzamanlanabilir: %2"
 
 #: statsyncing/Process.cpp:48
 #, kde-format
 msgid "Synchronize Statistics"
-msgstr "Eşitleme İstatistikleri"
+msgstr "Eşzamanlama İstatistikleri"
 
 #: statsyncing/Process.cpp:113
 #, kde-format
 msgid "Matching Tracks for Statistics Synchronization"
-msgstr "İstatistik Eşitleme için Eşleşen Parça"
+msgstr "İstatistik Eşzamanlama için Eşleşen Parça"
 
 #: statsyncing/Process.cpp:230
 #, kde-format
@@ -16166,8 +16166,8 @@ msgstr "Parça İstatistikleri Eşleme"
 msgctxt "%2 is a list of collection names"
 msgid "Synchronization of %2 done. <b>One</b> track was updated."
 msgid_plural "Synchronization of %2 done. <b>%1</b> tracks were updated."
-msgstr[0] "%2 eşitleme tamamlandı. <b>Bir</b> parça güncellendi."
-msgstr[1] "%2 eşitleme tamamlandı. <b>%1</b> parça güncellendi."
+msgstr[0] "%2 eşzamanlaması tamamlandı. <b>Bir</b> parça güncellendi."
+msgstr[1] "%2 eşzamanlaması tamamlandı. <b>%1</b> parça güncellendi."
 
 #: statsyncing/Process.cpp:273
 #, kde-format
@@ -16228,7 +16228,7 @@ msgstr[1] ""
 #: statsyncing/ui/MatchedTracksPage.cpp:135
 #, kde-format
 msgid "Configure Synchronization..."
-msgstr "Eşitlemeyi Yapılandır..."
+msgstr "Eşzamanlamayı Yapılandır..."
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:146
 #, kde-format
@@ -16242,30 +16242,30 @@ msgid ""
 "No selected collection supports writing %1 - it doesn't make sense to "
 "synchronize it."
 msgstr ""
-"%1 yazmayı destekleyen seçili bir koleksiyon yok - eşitleme mantıklı "
+"%1 yazmayı destekleyen seçili bir koleksiyon yok - eşzamanlamak mantıklı "
 "gözükmüyor."
 
 #. i18n: ectx: property (title), widget (QGroupBox, providersBox)
 #: statsyncing/ui/ChooseProvidersPage.ui:17
 #, kde-format
 msgid "Select Collections to Synchronize"
-msgstr "Eşitlenecek Koleksiyonu Seç"
+msgstr "Eşzamanlanacak Koleksiyonu Seç"
 
 #. i18n: ectx: property (title), widget (QGroupBox, fieldsBox)
 #: statsyncing/ui/ChooseProvidersPage.ui:49
 #, kde-format
 msgid "Select Fields to Synchronize"
-msgstr "Eşitlenecek Alanları Seç"
+msgstr "Eşzamanlanacak Alanları Seç"
 
 #: statsyncing/ui/ConfigureProviderDialog.cpp:39
 #, kde-format
 msgid "Configure Synchronization Target"
-msgstr "Eşitleme Hedefini Yapılandır"
+msgstr "Eşzamanlama Hedefini Yapılandır"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:38
 #, kde-format
 msgid "Add Synchronization Target"
-msgstr "Eşitleme Hedefi Ekle"
+msgstr "Eşzamanlama Hedefi Ekle"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:48
 #, kde-format
@@ -16275,7 +16275,7 @@ msgid ""
 "database file is not currently in use!"
 msgstr ""
 "<span style=\"color:red; font-weight:bold;\">Önemli:</span> Parçaları dosya "
-"tabanlı bir hedefle eşitlemeden önce daima veritabanı dosyasının "
+"tabanlı bir hedefle eşzamanlamadan önce daima veritabanı dosyasının "
 "kullanılmadığından emin olun!"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:61
@@ -16298,12 +16298,12 @@ msgstr "Eşzamanla"
 msgid ""
 "There are no tracks unique to one of the sources participating in the "
 "synchronization"
-msgstr "Eşitlemeye katılan kaynaklardan birine özgü herhangi bir parça yok"
+msgstr "Eşzamanlamaya katılan kaynaklardan birine özgü herhangi bir parça yok"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:151
 #, kde-format
 msgid "There are no tracks excluded from synchronization"
-msgstr "Eşitlemeden hariç tutulan parça yok"
+msgstr "Eşzamanlamadan hariç tutulan parça yok"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:155
 #, kde-format
@@ -16328,7 +16328,7 @@ msgstr "Güncellenmeyeni Daralt"
 #: statsyncing/ui/MatchedTracksPage.cpp:186
 #, kde-format
 msgid "Reset All Ratings to Undecided"
-msgstr "Tüm Beğenileri Kararsız Yap"
+msgstr "Tüm Derecelendirmeleri Kararsız Yap"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:194
 #, kde-format
@@ -16345,7 +16345,7 @@ msgstr "%1 Koleksiyonundan Etiketleri Harici Tut"
 #: statsyncing/ui/MatchedTracksPage.cpp:202
 #, kde-format
 msgid "Reset All Labels to Undecided (Don't Synchronize Them)"
-msgstr "Tüm Etiketleri Kararsız olarak Sıfırlar (Onları Eşitleme)"
+msgstr "Tüm Etiketleri Kararsız olarak Sıfırlar (Onları Eşzamanlama)"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:228
 #, kde-format
@@ -16380,7 +16380,7 @@ msgstr "Kaynaklarına özgü parçalar"
 #: statsyncing/ui/MatchedTracksPage.cpp:290
 #, kde-format
 msgid "Tracks that have been excluded from synchronization due to ambiguity"
-msgstr "Belirsizlikten dolayı eşitlemeden hariç tutulan parçalar"
+msgstr "Belirsizlikten dolayı eşzamanlamadan hariç tutulan parçalar"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:316
 #, kde-format
@@ -16431,7 +16431,7 @@ msgstr "Uygulanabilir tüm parçaları etkiler, yalnızca gösterilenleri değil
 #: statsyncing/ui/MatchedTracksPage.ui:68
 #, kde-format
 msgid "Take Ratings From"
-msgstr "Beğenileri Al"
+msgstr "Derecelendirmeleri Şuradan Al"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedExpandButton)
 #: statsyncing/ui/MatchedTracksPage.ui:110
@@ -16690,7 +16690,7 @@ msgstr "Puan: %1"
 #: TrayIcon.cpp:183
 #, kde-format
 msgid "Rating: %1"
-msgstr "Beğeni: %1"
+msgstr "Derecelendirme: %1"
 
 #: TrayIcon.cpp:189
 #, kde-format
@@ -16941,7 +16941,7 @@ msgstr "arasında"
 #: widgets/Osd.cpp:188
 #, kde-format
 msgid "Rating changed"
-msgstr "Beğeni puanları değişti"
+msgstr "Derecelendirme değişti"
 
 #: widgets/Osd.cpp:263
 #, kde-format
