@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-02 00:45+0000\n"
+"POT-Creation-Date: 2023-02-08 00:57+0000\n"
 "PO-Revision-Date: 2023-02-02 08:01+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -16049,7 +16049,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "Jump to: %1"
 
-#: widgets/TokenDropTarget.cpp:312
+#: widgets/TokenDropTarget.cpp:315
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr ""

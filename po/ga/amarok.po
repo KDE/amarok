@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia/amarok.po\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-01-02 00:45+0000\n"
+"POT-Creation-Date: 2023-02-08 00:57+0000\n"
 "PO-Revision-Date: 2007-04-15 19:39-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -17467,7 +17467,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "Léim go: %1"
 
-#: widgets/TokenDropTarget.cpp:312
+#: widgets/TokenDropTarget.cpp:315
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr "Tarraing míreanna anuas, isteach agus amach."
