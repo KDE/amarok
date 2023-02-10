@@ -1025,8 +1025,10 @@ TagDialog::getTagsFromMultipleTracks() const
         // -- figure out which tags do not match.
 
         // - occur not in every file
-        QSet<QString> mapKeysSet(map.keys().begin(), map.keys().end());
-        QSet<QString> tagsKeysSet(tags.keys().begin(), tags.keys().end());
+        QStringList mapkeys=map.keys();
+        QStringList tagskeys=tags.keys();
+        QSet<QString> mapKeysSet(mapkeys.begin(), mapkeys.end());
+        QSet<QString> tagsKeysSet(tagskeys.begin(), tagskeys.end());
         mismatchingTags |= mapKeysSet - tagsKeysSet;
         mismatchingTags |= tagsKeysSet - mapKeysSet;
 
@@ -1322,7 +1324,8 @@ TagDialog::saveTags()
                     labelMap.insert( label->name(), label );
 
                 // labels to remove
-                QSet<QString> labelMapKeysSet(labelMap.keys().begin(), labelMap.keys().end());
+                QStringList labelmapkeys=labelMap.keys();
+                QSet<QString> labelMapKeysSet(labelmapkeys.begin(), labelmapkeys.end());
                 QSet<QString> labelsSet(labels.begin(), labels.end());
                 for( const auto &label : labelMapKeysSet - labelsSet )
                     track->removeLabel( labelMap.value( label ) );

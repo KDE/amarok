@@ -546,7 +546,8 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             QSet<Meta::LabelPtr> labelSet;
             foreach( const Meta::TrackPtr &track, tracks )
             {
-                QSet<Meta::LabelPtr> addLabelsSet(track->labels().begin(), track->labels().end());
+                Meta::LabelList tracklabels=track->labels();
+                QSet<Meta::LabelPtr> addLabelsSet(tracklabels.begin(), tracklabels.end());
                 labelSet.unite( addLabelsSet );
             }
             Meta::LabelList labels = labelSet.values();

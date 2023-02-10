@@ -682,7 +682,8 @@ CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
     }
 
     QSet<Meta::TrackPtr> toRemove(tracks.begin(), tracks.end());
-    QSet<Meta::TrackPtr> errored(m_tracksWithError.keys().begin(), m_tracksWithError.keys().end());
+    QList<Meta::TrackPtr> trackswitherrorkeys=m_tracksWithError.keys();
+    QSet<Meta::TrackPtr> errored(trackswitherrorkeys.begin(), trackswitherrorkeys.end());
     toRemove.subtract( errored );
 
     // start the remove workflow

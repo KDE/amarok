@@ -47,7 +47,7 @@ public:
     /**
      * Return set of all encoders, available or not.
      */
-    QSet<Encoder> allEncoders() const { QSet<Encoder> encoderSet(m_formats.uniqueKeys().begin(), m_formats.uniqueKeys().end()); return encoderSet; }
+    QSet<Encoder> allEncoders() const { const QList<Transcoding::Encoder> uniqkeys = m_formats.uniqueKeys(); return QSet<Encoder>(uniqkeys.begin(), uniqkeys.end()); }
 
     /**
      * Return a set of all available encoders. You can use @see format() to get all

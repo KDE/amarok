@@ -733,9 +733,9 @@ Track::commitIfInNonBatchUpdate()
     // it would only be confusing to the user as the changes would get discarded.
     if( !m_coll || !m_coll->isWritable() )
         return;
-
+    QList<long long int> changedfieldkeys=m_changedFields.keys();
     if( AmarokConfig::writeBackStatistics() ||
-        !(QSet<qint64>( m_changedFields.keys().begin(), m_changedFields.keys().end() ) - statFields).isEmpty() )
+        !(QSet<qint64>( changedfieldkeys.begin(), changedfieldkeys.end() ) - statFields).isEmpty() )
     {
         setModifyDate( QDateTime::currentDateTime() );
     }
