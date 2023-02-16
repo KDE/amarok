@@ -5,7 +5,7 @@
 # Jozef Riha <jose1711@gmail.com>, 2006, 2007.
 # Vaclav Divok <vaclav.divok@gmail.com>, 2010.
 # Roman Paholík <wizzardsk@gmail.com>, 2012, 2013, 2014, 2015, 2016, 2017, 2022.
-# Ferdinand Galko <galko.ferdinand@gmail.com>, 2014, 2015.
+# Ferdinand Galko <galko.ferdinand@gmail.com>, 2014, 2015, 2023.
 # Matej Mrenica <matejm98mthw@gmail.com>, 2019, 2020.
 # Dušan Kazik <prescott66@gmail.com>, 2020.
 msgid ""
@@ -13,9 +13,9 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-08 00:57+0000\n"
-"PO-Revision-Date: 2022-04-07 17:50+0200\n"
-"Last-Translator: Roman Paholik <wizzardsk@gmail.com>\n"
-"Language-Team: Slovak <kde-sk@linux.sk>\n"
+"PO-Revision-Date: 2023-02-13 17:55+0100\n"
+"Last-Translator: Ferdinand Galko <galko.ferdinand@gmail.com>\n"
+"Language-Team: Slovak <opensuse-translation@opensuse.org>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -115,16 +115,13 @@ msgid "Get data from openDesktop.org to learn more about the team"
 msgstr "Viac informácií o tíme sa dozviete z openDesktop.org"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:232
-#, fuzzy, kde-format
-#| msgid ""
-#| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
-#| "report bugs.\n"
+#, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
 "report bugs.\n"
 msgstr ""
-"Pre hlásenie chýb prosím použite <a href=\"http://bugs.kde.org\">http://bugs."
-"kde.org</a>.\n"
+"Pre hlásenie chýb prosím použite <a href=\"https://bugs.kde.org\">https://"
+"bugs.kde.org</a>.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:237
 #: aboutdialog/ExtendedAboutDialog.cpp:243
@@ -3948,13 +3945,9 @@ msgid "Images"
 msgstr "Obrázky"
 
 #: context/applets/albums/package/contents/ui/main.qml:76
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "One word translation used in the collection filter. First played time / "
-#| "access date"
-#| msgid "firstplay"
+#, kde-format
 msgid "Display"
-msgstr "Obrazovka"
+msgstr "Zobraziť"
 
 #: context/applets/albums/plugin/AlbumItem.cpp:109
 #: statsyncing/ui/MatchedTracksPage.cpp:378
@@ -3982,39 +3975,38 @@ msgid "Edit Track Details"
 msgstr "Upraviť informácie o skladbe"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:38
-#, fuzzy, kde-format
+#, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
-msgstr "Konfigurácia"
+msgstr "Konfigurácia %1"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:64
 #, kde-format
 msgid "Bar width:"
-msgstr ""
+msgstr "Šírka zarážky:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:79
-#, fuzzy, kde-format
+#, kde-format
 msgid "%1 pixel"
 msgid_plural "%1 pixels"
-msgstr[0] " pixel"
-msgstr[1] " pixely"
-msgstr[2] " pixelov"
+msgstr[0] "%1 pixel"
+msgstr[1] "%1 pixely"
+msgstr[2] "%1 pixelov"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:91
-#, fuzzy, kde-format
-#| msgid "Show Years"
+#, kde-format
 msgid "Show fadebars:"
-msgstr "Zobraziť roky"
+msgstr "Zobraziť panely zoslabenia:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:106
 #, kde-format
 msgid "Bars fall speed:"
-msgstr ""
+msgstr "Rýchlosť poklesu zarážok:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:124
 #, kde-format
 msgid "Frequency range:"
-msgstr ""
+msgstr "Frekvenčný rozsah:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:142
 #: context/applets/analyzer/package/contents/ui/main.qml:147
@@ -4023,10 +4015,9 @@ msgid "%1 Hz"
 msgstr "%1 Hz"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:158
-#, fuzzy, kde-format
-#| msgid "Sample rate:"
+#, kde-format
 msgid "Sample size:"
-msgstr "Veľkosť vzorky"
+msgstr "Veľkosť vzorky:"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:32
 #: playlist/PlaylistModel.cpp:945
@@ -4303,10 +4294,9 @@ msgid "Remove selected"
 msgstr "Odstrániť vybrané"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
-#, fuzzy, kde-format
-#| msgid "Lyrics Settings"
+#, kde-format
 msgid "Lyrics config"
-msgstr "Nastavenie textov piesní"
+msgstr "Konfigurácia textov piesní"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
 #, kde-format
@@ -4339,14 +4329,12 @@ msgid "Font:"
 msgstr "Písmo:"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:83
-#, fuzzy, kde-format
-#| msgid "Toggle Full Screen"
+#, kde-format
 msgid "Toggle auto scroll"
-msgstr "Prepnúť na celú obrazovku"
+msgstr "Prepnúť automatické posúvanie"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:90
-#, fuzzy, kde-format
-#| msgid "Reload Lyrics"
+#, kde-format
 msgid "Reload lyrics"
 msgstr "Znovu načítať text piesne"
 
@@ -4356,9 +4344,9 @@ msgid "No lyrics found"
 msgstr "Nenašli sa žiadne texty"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:113
-#, fuzzy, kde-format
+#, kde-format
 msgid "Suggestions: "
-msgstr "Odporúčania"
+msgstr "Návrhy: "
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #. i18n: ectx: property (text), widget (QLabel, label_21)
@@ -4949,8 +4937,7 @@ msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>Umiestnenie:</strong><nl/>%1"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:38
-#, fuzzy, kde-format
-#| msgid "Previous:"
+#, kde-format
 msgid "Previous"
 msgstr "Predchádzajúci"
 
@@ -8812,18 +8799,7 @@ msgid "No"
 msgstr "Nie"
 
 #: dialogs/DiagnosticDialog.cpp:146
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7)\n"
-#| "   PulseAudio: %8\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -8843,8 +8819,8 @@ msgstr ""
 "   Verzia KDE Frameworks: %3\n"
 "   Verzia Qt: %4\n"
 "   Verzia Phonon: %5\n"
-"   Phonon Backend: %6 (%7)\n"
-"   PulseAudio: %8\n"
+"   Phonon Backend: %6 (%7, %8)\n"
+"   PulseAudio: %9\n"
 "\n"
 
 #: dialogs/DiagnosticDialog.cpp:163
@@ -10721,15 +10697,7 @@ msgstr ""
 "(C) 2003-2013, Skupina vývojárov aplikácie Amarok"
 
 #: main.cpp:101
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
@@ -10740,11 +10708,12 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"server: irc.freenode.net / kanály: #amarok #amarok.de #amarok.es\n"
+"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
 "\n"
 "Spätná väzba:\n"
 "amarok@kde.org\n"
-"(Deň zostavenia: %1)"
+"\n"
+"(Dátum zostavenia: %1)"
 
 #: main.cpp:107
 #, kde-format
@@ -13926,9 +13895,7 @@ msgid "composer"
 msgstr "skladateľ"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:91
-#, fuzzy, kde-format
-#| msgid "year"
-#| msgid_plural "years"
+#, kde-format
 msgctxt "Field name"
 msgid "year"
 msgstr "rok"
@@ -14883,14 +14850,7 @@ msgid "Last.fm: The social music revolution"
 msgstr "Last.fm: Sociálna hudobná revolúcia"
 
 #: services/lastfm/LastFmService.cpp:102
-#, fuzzy, kde-format
-#| msgid ""
-#| "Last.fm is a popular online service that provides personal radio stations "
-#| "and music recommendations. A personal listening station is tailored based "
-#| "on your listening habits and provides you with recommendations for new "
-#| "music. It is also possible to play stations with music that is similar to "
-#| "a particular artist as well as listen to streams from people you have "
-#| "added as friends or that Last.fm considers your musical \"neighbors\""
+#, kde-format
 msgid ""
 "Last.fm is a popular online service that provides personal radio stations "
 "and music recommendations. A personal listening station is tailored based on "
@@ -14904,8 +14864,7 @@ msgstr ""
 "vašich zvykov počúvania a poskytuje vám návrhy pri hľadaní novej hudby. Je "
 "tiež možné púšťať si stanice s hudbou, ktorá je podobná určitému umelcovi a "
 "rovnako tiež počúvať stream položky od ľudí, ktorých ste si pridali ako "
-"priateľov, alebo aby služba Last.fm zobrala do úvahy vašich hudobných "
-"\"susedov\""
+"priateľov."
 
 #: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
@@ -15895,14 +15854,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Riadi automatickú synchronizáciu služby MP3tunes v aplikácii Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, "
-#| "#amarok.fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
@@ -15912,7 +15864,8 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"server: irc.freenode.net / kanály: #amarok #amarok.de #amarok.es\n"
+"server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
+"fr\n"
 "\n"
 "Spätná väzba:\n"
 "amarok@kde.org"
