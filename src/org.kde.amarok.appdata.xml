@@ -65,6 +65,7 @@
   <summary xml:lang="pl">Rozbudowany odtwarzacz muzyki, który umożliwi ci jej odkrywanie</summary>
   <summary xml:lang="pt">Um leitor de música poderoso que lhe permite redescobrir a sua música</summary>
   <summary xml:lang="pt-BR">Um reprodutor de músicas poderoso que permite a você redescobrir sua música</summary>
+  <summary xml:lang="sk">Výkonný hudobný prehrávač, ktorý vám umožní znovu objaviť vašu hudbu</summary>
   <summary xml:lang="sl">Zmogljiv predvajalnik glasbe, ki vam omogoča ponovno odkrivanje glasbe</summary>
   <summary xml:lang="sv">En kraftfull musikspelare som låter dig upptäcka din musik igen</summary>
   <summary xml:lang="tr">Müziği yeniden keşfetmenize olanak veren güçlü bir müzik çalar</summary>
@@ -97,6 +98,7 @@
     <p xml:lang="pl">Amarok jest darmowym, wieloplatformowym, wszechstronnym i zaawansowanym odtwarzaczem muzyki i programem do zarządzania nią.</p>
     <p xml:lang="pt">O Amarok é um leitor multimédia e gestor de colecções gratuito, multi-plataforma, versátil, poderoso e rico em funcionalidades.</p>
     <p xml:lang="pt-BR">Amarok é um reprodutor de músicas e gerenciador de coleção livre, multiplataforma, versátil, poderoso e rico em recursos.</p>
+    <p xml:lang="sk">Amarok je bezplatný, multiplatformový, všestranný, výkonný a funkčne bohatý prehrávač hudby a správca hudobných zbierok.</p>
     <p xml:lang="sl">Amarok je prost program, dostopen na več platformah, vsestranski, močan in s funkcijami nabil predvajalnik glasbe in upravljalnik glasbene zbirke.</p>
     <p xml:lang="sv">Amarok är en fri, mångsidig, kraftfull och funktionsrik musikspelare och samlingshanterare för flera plattformar.</p>
     <p xml:lang="tr">Amarok; ücretsiz, çapraz platformlu, çok amaçlı, güçlü ve çok özellikli bir müzik çalar ve koleksiyon yöneticisidir.</p>
@@ -440,6 +442,7 @@
       <caption xml:lang="pl">Odtwarzanie muzyki w Amaroku</caption>
       <caption xml:lang="pt">A tocar música no Amarok</caption>
       <caption xml:lang="pt-BR">Reproduzindo músicas no Amarok</caption>
+      <caption xml:lang="sk">Prehrávanie hudby cez Amarok</caption>
       <caption xml:lang="sl">Predvajanje glasbe v Amaroku</caption>
       <caption xml:lang="sv">Spela musik i Amarok</caption>
       <caption xml:lang="tr">Amarok'ta müzik çalma</caption>
@@ -475,6 +478,7 @@
       <caption xml:lang="pl">Okna Amaroka</caption>
       <caption xml:lang="pt">Janelas do Amarok</caption>
       <caption xml:lang="pt-BR">Janela do Amarok</caption>
+      <caption xml:lang="sk">Okná Amarok</caption>
       <caption xml:lang="sl">Amarokova okna</caption>
       <caption xml:lang="sv">Fönster i Amarok</caption>
       <caption xml:lang="tr">Amarok pencereleri</caption>
