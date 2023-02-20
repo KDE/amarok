@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-08 00:57+0000\n"
-"PO-Revision-Date: 2023-02-08 13:39+0300\n"
+"PO-Revision-Date: 2023-02-20 00:44+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -1289,7 +1289,7 @@ msgstr "Değişiklik olduğunda koleksiyon klasörleri yeniden taransın"
 #: amarokconfig.kcfg:413
 #, kde-format
 msgid "Whether meta data changes are written back"
-msgstr "Meta verisi değişikliğinin geri yazılıp yazılmayacağı"
+msgstr "Üst veri değişikliğinin geri yazılıp yazılmayacağı"
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:417
@@ -2920,7 +2920,7 @@ msgstr "Üstveri"
 #: configdialog/ConfigDialog.cpp:61
 #, kde-format
 msgid "Configure Metadata Handling"
-msgstr "Meta Veri İşlemeyi Yapılandır"
+msgstr "Üst Veri İşlemeyi Yapılandır"
 
 #: configdialog/ConfigDialog.cpp:62
 #, kde-format
@@ -3446,8 +3446,8 @@ msgid ""
 "This might be a good idea if you are currently\n"
 "sharing those files via the Internet."
 msgstr ""
-"Meta veri değişikliklerini ('yıldızlar' derecelendirmesi dahil) özgün "
-"dosyaya geri yazın.\n"
+"Üst veri değişikliklerini ('yıldızlar' derecelendirmesi dahil) özgün dosyaya "
+"geri yazın.\n"
 "Ayrıca dosyayı yazarak yazarak geri yazmayı önleyebilirsiniz.\n"
 "Şu anda bu dosyaları İnternet üzerinden paylaşıyorsanız\n"
 "bu iyi bir fikir olabilir."
@@ -3456,7 +3456,7 @@ msgstr ""
 #: configdialog/dialogs/MetadataConfig.ui:29
 #, kde-format
 msgid "Write metadata to file"
-msgstr "Metaveriyi dosyaya yaz"
+msgstr "Üst veriyi dosyaya yaz"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_writeBackStatistics)
 #: configdialog/dialogs/MetadataConfig.ui:37
@@ -9126,7 +9126,7 @@ msgid ""
 "<html>Show/hide additional controls to specify destination track paths based "
 "on their metadata.</html>"
 msgstr ""
-"<html>Meta verilerine dayanarak hedef parça yollarını belirlemek için ek "
+"<html>Üst veriye dayanarak hedef parça yollarını belirlemek için ek "
 "denetimleri göster/gizle.</html>"
 
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
@@ -10229,7 +10229,7 @@ msgstr "Ara: %1"
 #, kde-format
 msgctxt "Name of the \"TagMatch\" bias"
 msgid "Match meta tag"
-msgstr "Meta etiket eşleşme"
+msgstr "Üst etiket eşleştir"
 
 #: dynamic/biases/TagMatchBias.cpp:51
 #, kde-format
@@ -14764,7 +14764,7 @@ msgid ""
 "will not be scrobbled</html>"
 msgstr ""
 "<html>Tercih edilen bir etiket seçin (veya yeni bir etiket yazın). Bu "
-"etikete sahip parçaların meta verileri sunucuya gönderilmez</html>"
+"etikete sahip parçaların üst verisini sunucuya gönderilmez</html>"
 
 #: services/lastfm/LastFmService.cpp:100
 #, kde-format
@@ -16081,8 +16081,8 @@ msgid ""
 "\n"
 "You can always change the decision in Amarok configuration."
 msgstr ""
-"%1, parça sayımı veya diğer koleksiyonlarla derecelendirme gibi parça meta "
-"verilerini eşzamanlayabiliyor. %1 ögesini eşzamanlamak istiyor musunuz?\n"
+"%1, parça sayımı veya diğer koleksiyonlarla derecelendirme gibi parça üst "
+"verisini eşzamanlayabiliyor. %1 ögesini eşzamanlamak istiyor musunuz?\n"
 "\n"
 "Amarok yapılandırmasında kararınızı değiştirebilirsiniz."
 
@@ -16191,8 +16191,7 @@ msgstr[1] ""
 #, kde-format
 msgid "<b>One</b> track had insufficient metadata to be scrobbled."
 msgid_plural "<b>%1</b> tracks had insufficient metadata to be scrobbled."
-msgstr[0] ""
-"<b>Bir</b> parçada, sunucuya gönderilecek olan meta veriler yetersiz."
+msgstr[0] "<b>Bir</b> parçada, sunucuya gönderilecek olan üst veri yetersiz."
 msgstr[1] ""
 "<b>%1</b> parçada, sunucuya gönderilecek olan meta veriler yetersiz."
 
@@ -16218,7 +16217,7 @@ msgid "Scrobbling of <b>one</b> track was skipped as configured by the user."
 msgid_plural ""
 "Scrobbling of <b>%1</b> tracks was skipped as configured by the user."
 msgstr[0] ""
-"<b>Bir</b> parçanın meta verisinin sunucuya gönderilmesi, kullanıcı "
+"<b>Bir</b> parçanın üst verisinin sunucuya gönderilmesi, kullanıcı "
 "tarafından yapılandırıldığı gibi atlandı."
 msgstr[1] ""
 "<b>%1</b> parçanın meta verisinin sunucuya gönderilmesi, kullanıcı "
