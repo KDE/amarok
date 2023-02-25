@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-08 00:57+0000\n"
-"PO-Revision-Date: 2023-02-15 11:03\n"
+"PO-Revision-Date: 2023-02-24 12:42\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -2193,7 +2193,7 @@ msgstr "移入回收站确认"
 #, kde-format
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
-msgstr[0] "您确定要将这 %1 条项目移至回收站吗？"
+msgstr[0] "您确定要将这 %1 条项目移动到回收站吗？"
 
 #: browsers/InfoProxy.cpp:166
 #, kde-format
@@ -8199,7 +8199,7 @@ msgstr[0] "已选择 <b>%1</b> 份文件。"
 #, kde-format
 msgid ""
 "<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>这些项目将从您的硬盘中<b>永久删除</b> 。</qt>"
+msgstr "<qt>这些项目将从您的硬盘中<b>彻底删除</b> 。</qt>"
 
 #: dialogs/deletedialog.cpp:75
 #, kde-format
@@ -8263,7 +8263,7 @@ msgstr "删除而不移入回收站(&D)"
 msgid ""
 "If checked, files will be permanently removed instead of being placed in the "
 "Trash Bin"
-msgstr "勾选后，文件将被永久删除而不移入回收站"
+msgstr "勾选后，文件将被彻底删除而不移入回收站"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
 #: dialogs/deletedialogbase.ui:110
@@ -8275,7 +8275,7 @@ msgid ""
 "<p><em>Use this option with caution</em>: Most filesystems are unable to "
 "reliably undelete deleted files.</p></qt>"
 msgstr ""
-"<qt><p>勾选后，文件将被<b>永久删除</b>而不移入回收站。</p>\n"
+"<qt><p>勾选后，文件将被<b>彻底删除</b>而不移动到回收站。</p>\n"
 "\n"
 "<p><em>请慎用此选项</em>：大多数文件系统无法可靠地恢复被删除的文件。</p></qt>"
 
