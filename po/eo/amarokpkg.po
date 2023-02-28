@@ -1,13 +1,16 @@
 # Translation of amarokpkg into esperanto.
+# Copyright (C) 2009 Free Software Foundation, Inc.
+# This file is distributed under the same license as the amarok package.
 # Axel Rousseau <axel@esperanto-jeunes.org>, 2009.
+# Oliver Kellogg <okellogg@users.sourceforge.net>, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2019-05-20 02:48+0200\n"
-"PO-Revision-Date: 2009-11-15 12:06+0100\n"
-"Last-Translator: Axel Rousseau <axel@esperanto-jeunes.org>\n"
+"PO-Revision-Date: 2023-02-27 21:12+0100\n"
+"Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
@@ -27,16 +30,14 @@ msgid "Your emails"
 msgstr "axel@esperanto-jeunes.org"
 
 #: amarokpkg.cpp:84 amarokpkg.cpp:97
-#, fuzzy, kde-format
-#| msgid "Amarok is paused"
+#, kde-format
 msgid "Amarok Applet Manager"
-msgstr "Amarok estas paŭzata"
+msgstr ""
 
 #: amarokpkg.cpp:86
-#, fuzzy, kde-format
-#| msgid "(C) 2008, Aaron Seigo"
+#, kde-format
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo"
+msgstr ""
 
 #: amarokpkg.cpp:87
 #, kde-format
@@ -64,11 +65,10 @@ msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
 
 #: amarokpkg.cpp:110
-#, fuzzy, kde-format
-#| msgid "&Install Script"
+#, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
-msgstr "&Instali skripton"
+msgstr ""
 
 #: amarokpkg.cpp:112
 #, kde-format
@@ -77,10 +77,9 @@ msgid "Upgrade the applet at <path>"
 msgstr ""
 
 #: amarokpkg.cpp:114
-#, fuzzy, kde-format
-#| msgid "&Install Script"
+#, kde-format
 msgid "Most installed applets"
-msgstr "&Instali skripton"
+msgstr ""
 
 #: amarokpkg.cpp:116
 #, kde-format
@@ -129,8 +128,3 @@ msgctxt ""
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
 msgstr "Bezonas unu el: instali, forigi aŭ listi"
-
-#, fuzzy
-#~| msgid "&Install Script"
-#~ msgid "Install, list, remove Amarok applets"
-#~ msgstr "&Instali skripton"
