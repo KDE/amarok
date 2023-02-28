@@ -152,7 +152,8 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/shared
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")  # Require C++11
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # WORKAROUND for Clang bug: http://llvm.org/bugs/show_bug.cgi?id=15651
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
