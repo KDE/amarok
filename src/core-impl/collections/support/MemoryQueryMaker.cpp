@@ -102,7 +102,6 @@ struct MemoryQueryMaker::Private {
     QList<CustomReturnFunction*> returnFunctions;
     QList<CustomReturnValue*> returnValues;
     bool usingFilters;
-    //QRandomGenerator sequence;   //do not reset. FIXME: neverused field
     qint64 orderByField;
     bool orderDescending;
     bool orderByNumberField;

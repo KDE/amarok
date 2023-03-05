@@ -117,7 +117,7 @@ AnimatedBarWidget::paintEvent( QPaintEvent* event )
 
     drawHoverBackground(&painter);
 
-    QMargins margins = contentsMargins();
+    const QMargins margins = contentsMargins();
     const int padding = 2;
     const int iconWidth = iconSize().width();
     const int iconHeight = iconSize().height();
