@@ -88,7 +88,7 @@ msgid ""
 "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
 "Frameworks %3</html>"
 msgstr ""
-"<html><font size=\"5\">%1</font><br /><b>الإصدار %2</b><br />يستخدم كدي %3</"
+"<html><font size=\"5\">%1</font><br /><b>الإصدار %2</b><br />يستخدم كِيدِي %3</"
 "html>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:189
@@ -3198,7 +3198,7 @@ msgid ""
 "\">related article on KDE UserBase</a>."
 msgstr ""
 "<b>ملاحظة</b>: يجب توليد ملفّات المزاج يدويًّا، زُر <a href=\"http://userbase."
-"kde.org/Amarok/Manual/Various/Moodbar\">المقالة في قاعدة مستخدمي كدي "
+"kde.org/Amarok/Manual/Various/Moodbar\">المقالة في قاعدة مستخدمي كِيدِي "
 "المتعلّقة</a>."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
@@ -8677,7 +8677,7 @@ msgstr ""
 "\n"
 "معلومات عامّة:\n"
 "   إصدار %1: ‏%2\n"
-"   إصدار كدي: %3\n"
+"   إصدار كِيدِي: %3\n"
 "   إصدار كيوت: %4\n"
 "   إصدار فنون: %5\n"
 "   سند فنون: %6 ‏(%7)\n"
@@ -10428,7 +10428,7 @@ msgstr "لا معلومات متوفّرة لهذه المقطوعة"
 #, fuzzy, kde-format
 #| msgid "The audio player for KDE"
 msgid "The audio player by KDE"
-msgstr "مشغّل أصوات كدي"
+msgstr "مشغّل أصوات كِيدِي"
 
 #: main.cpp:100
 #, kde-format
@@ -13857,8 +13857,8 @@ msgid ""
 "A KDE text-editor component could not be found.\n"
 "Please check your KDE installation.  Exiting the console!"
 msgstr ""
-"تعذّر العثور على مكوّن محرّر نصوص كدي.\n"
-"فضلًا تأكّد من تثبيت كدي. يخرج من المعراض!"
+"تعذّر العثور على مكوّن محرّر نصوص كِيدِي.\n"
+"فضلًا تأكّد من تثبيت كِيدِي. يخرج من المعراض!"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:77
 #, fuzzy, kde-format
@@ -17248,7 +17248,7 @@ msgstr "فارغ"
 #~ "information can be found in the README file. For further assistance join "
 #~ "us at #amarok on irc.freenode.net.</p>"
 #~ msgstr ""
-#~ "<p> أماروك ليس ابحث أي منها صوت محرك أماروك هو الآن كدي تشكيل قاعدة "
+#~ "<p> أماروك ليس ابحث أي منها صوت محرك أماروك هو الآن كِيدِي تشكيل قاعدة "
 #~ "بيانات رجاء أنتطر a من دقائق إعادة التّشغيل أماروك</p><p> إذا ليس مساعدة "
 #~ "الإيطالية هو أماروك هو مُثبّتة خطأ إصلاح تثبيت<pre> قرص مدمج المسار إلى "
 #~ "مصدر رمز<br> c make إزالة<br> أَعِّد c make تثبيت<br><br></pre> المزيد "
@@ -18535,7 +18535,7 @@ msgstr "فارغ"
 #~ msgid ""
 #~ "The title of the Dynamic Mode that was most recently loaded in the "
 #~ "playlist"
-#~ msgstr "الـ عنوان من ديناميكدينامي الوضع تمَ التحميل بوصة قائمة التشغيل"
+#~ msgstr "الـ عنوان من ديناميكِيدِينامي الوضع تمَ التحميل بوصة قائمة التشغيل"
 
 #, fuzzy
 #~| msgid "Select Format:"
@@ -20441,7 +20441,7 @@ msgstr "فارغ"
 #~ msgstr "المتصفح الافتراضي"
 
 #~ msgid "Default KDE Browser"
-#~ msgstr "متصفح كدي الافتراضي"
+#~ msgstr "متصفح كِيدِي الافتراضي"
 
 #, fuzzy
 #~| msgid "External web &browser:"
@@ -22536,7 +22536,7 @@ msgstr "فارغ"
 
 #, fuzzy
 #~ msgid "Dynamic playlist name:"
-#~ msgstr "ديناميكدينامي قائمة التشغيل الاسم:"
+#~ msgstr "ديناميكِيدِينامي قائمة التشغيل الاسم:"
 
 #~ msgid "Remove pla&yed tracks"
 #~ msgstr "احذف المقطوعات الم&شغلة"
@@ -24780,7 +24780,7 @@ msgstr "فارغ"
 #~ "     \"qdbus org.kde.kded /modules/mediamanager fullList\"\n"
 #~ "in a Konsole window."
 #~ msgstr ""
-#~ "لا جديد وسائط موجود إذا هو و رقباء جاري التنفيذ كدي مع دعم لـ أنت إختبار "
+#~ "لا جديد وسائط موجود إذا هو و رقباء جاري التنفيذ كِيدِي مع دعم لـ أنت إختبار "
 #~ "جاري التنفيذ\n"
 #~ " وحدات a Konsole نافذة."
 
