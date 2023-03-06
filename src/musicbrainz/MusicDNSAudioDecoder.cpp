@@ -177,12 +177,12 @@ int
 MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, const int length )
 #if LIBAVCODEC_VERSION_MAJOR >= 59 // ffmpeg 5.0
 {
-    AVFormatContext *pFormatCtx = NULL;
-    AVCodecContext *pCodecCtx = NULL;
-    const AVCodec *pCodec = NULL;
-    AVFrame *decodedFrame = NULL;
-    AVPacket *packet = NULL, *avpkt = NULL;
-    AVCodecParameters *codecpar = NULL;
+    AVFormatContext *pFormatCtx = nullptr;
+    AVCodecContext *pCodecCtx = nullptr;
+    const AVCodec *pCodec = nullptr;
+    AVFrame *decodedFrame = nullptr;
+    AVPacket *packet = nullptr, *avpkt = nullptr;
+    AVCodecParameters *codecpar = nullptr;
     AVRational streamTimeBase = { 1, 1000000 };
     AVRational localTimeBase = { 1, 1000 };
 
@@ -193,13 +193,13 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
     bool isOk = true;
     av_log_set_level(AV_LOG_VERBOSE);
 
-    if( avformat_open_input( &pFormatCtx, fileName.toLocal8Bit(), NULL, NULL ) < 0 )
+    if( avformat_open_input( &pFormatCtx, fileName.toLocal8Bit(), nullptr, nullptr ) < 0 )
     {
         warning() << QLatin1String( "Unable to open input file: " ) + fileName;
         return 0;
     }
 
-    if( avformat_find_stream_info( pFormatCtx, NULL ) < 0 )
+    if( avformat_find_stream_info( pFormatCtx, nullptr ) < 0 )
     {
         warning() << QLatin1String( "Unable to find stream info: " ) + fileName;
         avformat_close_input( &pFormatCtx );
@@ -223,7 +223,7 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
 
     pCodecCtx = avcodec_alloc_context3(pCodec);
 
-    if( avcodec_open2( pCodecCtx, pCodec, NULL ) < 0 )
+    if( avcodec_open2( pCodecCtx, pCodec, nullptr ) < 0 )
     {
         warning() << QLatin1String( "Unable to open codec " ) + fileName;
         avformat_close_input( &pFormatCtx );
