@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-02-08 00:57+0000\n"
+"POT-Creation-Date: 2023-03-07 00:45+0000\n"
 "PO-Revision-Date: 2010-01-30 14:30+0000\n"
 "Last-Translator: Emile Joubert <emile.joubert@gmail.com>\n"
 "Language-Team: AFRIKAANS <translate-discuss-af@lists.sourceforge.net>\n"
@@ -82,7 +82,7 @@ msgstr ""
 msgid "About %1"
 msgstr "Aangaande %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:150
+#: aboutdialog/ExtendedAboutDialog.cpp:147
 #, fuzzy, kde-format
 #| msgid ""
 #| "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE "
@@ -94,22 +94,22 @@ msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>Weergawe %2</b><br />Gebruik tans "
 "KDE %3</html>"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:189
+#: aboutdialog/ExtendedAboutDialog.cpp:186
 #, kde-format
 msgid "License: %1"
 msgstr "Lisensie: %1"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:203
+#: aboutdialog/ExtendedAboutDialog.cpp:200
 #, kde-format
 msgid "&About"
 msgstr "Aangaande"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:220
+#: aboutdialog/ExtendedAboutDialog.cpp:217
 #, kde-format
 msgid "Get data from openDesktop.org to learn more about the team"
 msgstr "Kry inligting van openDesktop.org om meer te wete te kom oor die span"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:232
+#: aboutdialog/ExtendedAboutDialog.cpp:229
 #, fuzzy, kde-format
 #| msgid ""
 #| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
@@ -121,40 +121,40 @@ msgstr ""
 "Maak asb. gebruik van <a href=\"http://bugs.kde.org\">http://bugs.kde.org</"
 "a> om foute te rapporteer.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:237
-#: aboutdialog/ExtendedAboutDialog.cpp:243
+#: aboutdialog/ExtendedAboutDialog.cpp:234
+#: aboutdialog/ExtendedAboutDialog.cpp:240
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr "Rapporteer asb. foute aan <a href=\"mailto:%1\">%2</a>.\n"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:264
+#: aboutdialog/ExtendedAboutDialog.cpp:261
 #, kde-format
 msgid "A&uthor"
 msgstr "&Outeur"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:264
+#: aboutdialog/ExtendedAboutDialog.cpp:261
 #, kde-format
 msgid "A&uthors"
 msgstr "O&uteurs"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:278
+#: aboutdialog/ExtendedAboutDialog.cpp:275
 #, kde-format
 msgid "Get data from openDesktop.org to learn more about contributors"
 msgstr "Kry inligting van openDesktop.org om meer te wete te kom oor bydraers"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:294
+#: aboutdialog/ExtendedAboutDialog.cpp:291
 #, fuzzy, kde-format
 #| msgid "Former contributors"
 msgid "&Contributors"
 msgstr "Voormalige bydraers"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:307
+#: aboutdialog/ExtendedAboutDialog.cpp:304
 #, fuzzy, kde-format
 #| msgid "Get data from openDesktop.org to learn more about contributors"
 msgid "Get data from openDesktop.org to learn more about our generous donors"
 msgstr "Kry inligting van openDesktop.org om meer te wete te kom oor bydraers"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:326
+#: aboutdialog/ExtendedAboutDialog.cpp:323
 #, kde-format
 msgid ""
 "<p>Each year in October the Amarok team organizes a funding drive called "
@@ -163,38 +163,38 @@ msgid ""
 "p>"
 msgstr ""
 
-#: aboutdialog/ExtendedAboutDialog.cpp:335
+#: aboutdialog/ExtendedAboutDialog.cpp:332
 #, fuzzy, kde-format
 #| msgid "&Download"
 msgid "&Donors"
 msgstr "Aflaai"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:365
+#: aboutdialog/ExtendedAboutDialog.cpp:362
 #, kde-format
 msgid "T&ranslation"
 msgstr "Vertaling"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:390
+#: aboutdialog/ExtendedAboutDialog.cpp:387
 #, kde-format
 msgid "Internet connection not available"
 msgstr "Internetverbinding onbeskikbaar"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:390
+#: aboutdialog/ExtendedAboutDialog.cpp:387
 #, kde-format
 msgid "Network error"
 msgstr "Netwerkfout"
 
-#: aboutdialog/OcsPersonItem.cpp:95
+#: aboutdialog/OcsPersonItem.cpp:96
 #, kde-format
 msgid "Email contributor"
 msgstr "Stuur E-pos aan bydraer"
 
-#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
+#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:277
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "Besoek bydraer se webtuiste"
 
-#: aboutdialog/OcsPersonItem.cpp:179
+#: aboutdialog/OcsPersonItem.cpp:182
 #, fuzzy, kde-format
 #| msgctxt "monthname year"
 #| msgid "%1 %2"
@@ -202,97 +202,97 @@ msgctxt "A person's location: City, Country"
 msgid "%1, %2"
 msgstr "%1 %2"
 
-#: aboutdialog/OcsPersonItem.cpp:199
+#: aboutdialog/OcsPersonItem.cpp:202
 #, kde-format
 msgid "IRC channels: "
 msgstr "IRC kanale: "
 
-#: aboutdialog/OcsPersonItem.cpp:212
+#: aboutdialog/OcsPersonItem.cpp:215
 #, kde-format
 msgid "Favorite music: "
 msgstr "Gunsteling musiek: "
 
-#: aboutdialog/OcsPersonItem.cpp:217
+#: aboutdialog/OcsPersonItem.cpp:220
 #, kde-format
 msgid "Visit %1's openDesktop.org profile"
 msgstr "Besoek %1 se openDesktop.org profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:219
+#: aboutdialog/OcsPersonItem.cpp:222
 #, kde-format
 msgid "Visit %1's profile on openDesktop.org"
 msgstr "Besoek %1 se profiel op openDesktop.org"
 
-#: aboutdialog/OcsPersonItem.cpp:253
+#: aboutdialog/OcsPersonItem.cpp:256
 #, kde-format
 msgid "Visit contributor's blog"
 msgstr "Besoek bydraer se blog"
 
-#: aboutdialog/OcsPersonItem.cpp:258
+#: aboutdialog/OcsPersonItem.cpp:261
 #, kde-format
 msgid "Visit contributor's del.icio.us profile"
 msgstr "Besoek bydraer se del.icio.us profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:263
+#: aboutdialog/OcsPersonItem.cpp:266
 #, kde-format
 msgid "Visit contributor's Digg profile"
 msgstr "Besoek bydraer se Digg profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:268
+#: aboutdialog/OcsPersonItem.cpp:271
 #, kde-format
 msgid "Visit contributor's Facebook profile"
 msgstr "Besoek bydraer se Facebook profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:284
+#: aboutdialog/OcsPersonItem.cpp:287
 #, kde-format
 msgid "Visit contributor's Last.fm profile"
 msgstr "Besoek bydraer se Last.fm profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:292
+#: aboutdialog/OcsPersonItem.cpp:295
 #, kde-format
 msgid "Visit contributor's LinkedIn profile"
 msgstr "Besoek bydraer se LinkedIn profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:297
+#: aboutdialog/OcsPersonItem.cpp:300
 #, kde-format
 msgid "Visit contributor's MySpace homepage"
 msgstr "Besoek bydraer se MySpace profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:302
+#: aboutdialog/OcsPersonItem.cpp:305
 #, kde-format
 msgid "Visit contributor's Reddit profile"
 msgstr "Besoek bydraer se Reddit profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:307
+#: aboutdialog/OcsPersonItem.cpp:310
 #, kde-format
 msgid "Visit contributor's YouTube profile"
 msgstr "Besoek bydraer se YouTube profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:312
+#: aboutdialog/OcsPersonItem.cpp:315
 #, kde-format
 msgid "Visit contributor's Twitter feed"
 msgstr "Besoek bydraer se Twittter voer"
 
-#: aboutdialog/OcsPersonItem.cpp:317
+#: aboutdialog/OcsPersonItem.cpp:320
 #, kde-format
 msgid "Visit contributor's Wikipedia profile"
 msgstr "Besoek bydraer se Wikipedia profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:322
+#: aboutdialog/OcsPersonItem.cpp:325
 #, kde-format
 msgid "Visit contributor's Xing profile"
 msgstr "Besoek bydraer se Xing profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:327
+#: aboutdialog/OcsPersonItem.cpp:330
 #, kde-format
 msgid "Visit contributor's identi.ca feed"
 msgstr "Besoek bydraer se identi.ca voer"
 
-#: aboutdialog/OcsPersonItem.cpp:332
+#: aboutdialog/OcsPersonItem.cpp:335
 #, kde-format
 msgid "Visit contributor's libre.fm profile"
 msgstr "Besoek bydraer se libre.fm profiel"
 
-#: aboutdialog/OcsPersonItem.cpp:337
+#: aboutdialog/OcsPersonItem.cpp:340
 #, kde-format
 msgid "Visit contributor's StackOverflow profile"
 msgstr "Besoek bydraer se StackOverflow profiel"
@@ -364,7 +364,7 @@ msgstr "Huidige Speellys"
 msgid "Selected Tracks"
 msgstr "Geselekteerde Snitte"
 
-#: ActionClasses.cpp:428 scripting/scriptconsole/ScriptConsole.cpp:99
+#: ActionClasses.cpp:428 scripting/scriptconsole/ScriptConsole.cpp:100
 #, kde-format
 msgid "Stop"
 msgstr "Stop"
@@ -2005,7 +2005,7 @@ msgstr ""
 msgid "Media Sources Home"
 msgstr "Media Bronne"
 
-#: browsers/BrowserCategoryList.cpp:53
+#: browsers/BrowserCategoryList.cpp:54
 #, kde-format
 msgid "Filter Music Sources"
 msgstr "Filter Musiek Bronne"
@@ -3039,7 +3039,7 @@ msgid "Configure Plugins"
 msgstr "Phonon Opstel"
 
 #: configdialog/ConfigDialog.cpp:66
-#: scripting/scriptconsole/ScriptConsole.cpp:377
+#: scripting/scriptconsole/ScriptConsole.cpp:378
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Scripts"
@@ -4014,7 +4014,7 @@ msgstr "Bestuur voorafinstellings"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
 #: configdialog/dialogs/ScriptsConfig.ui:107
-#: scripting/scriptconsole/ScriptConsole.cpp:73
+#: scripting/scriptconsole/ScriptConsole.cpp:74
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Script Console"
@@ -8675,14 +8675,14 @@ msgstr "Omslag grootte"
 msgid "Could not open file \"%1\"."
 msgstr "Kon nie gids skep nie: %1"
 
-#: databaseimporter/SqlBatchImporterConfig.cpp:38
+#: databaseimporter/SqlBatchImporterConfig.cpp:39
 #, kde-format
 msgid ""
 "Input file produced by amarokcollectionscanner.<br>See <a href=\"http://"
 "community.kde.org/Amarok/Development/BatchMode\">Batch Mode</a>."
 msgstr ""
 
-#: databaseimporter/SqlBatchImporterConfig.cpp:45
+#: databaseimporter/SqlBatchImporterConfig.cpp:46
 #, kde-format
 msgid "Input file"
 msgstr ""
@@ -9319,7 +9319,7 @@ msgid "Expand All"
 msgstr "Brei uit met"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, MusicBrainzTagger)
-#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1387
+#: dialogs/MusicBrainzTagger.ui:12 dialogs/TagDialog.cpp:1399
 #, kde-format
 msgid "MusicBrainz Tagger"
 msgstr ""
@@ -9826,7 +9826,7 @@ msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "Geen"
 
-#: dialogs/TagDialog.cpp:972
+#: dialogs/TagDialog.cpp:974
 #, kde-format
 msgid "The track is not playable. %1"
 msgstr ""
@@ -12257,7 +12257,7 @@ msgstr "&Musiek"
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1095 playlist/PlaylistDock.cpp:58
+#: MainWindow.cpp:1095 playlist/PlaylistDock.cpp:59
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
@@ -12921,19 +12921,19 @@ msgctxt ""
 msgid "Title (with track number)"
 msgstr "Titel (met snitnommer)"
 
-#: playlist/PlaylistDock.cpp:105
+#: playlist/PlaylistDock.cpp:106
 #, kde-format
 msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
 
-#: playlist/PlaylistDock.cpp:179
+#: playlist/PlaylistDock.cpp:180
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "&Stoor Huidige Speellys"
 
-#: playlist/PlaylistDock.cpp:270
+#: playlist/PlaylistDock.cpp:271
 #, kde-format
 msgid "&Save playlist to \"%1\""
 msgstr "&Stoor speellys na \"%1\""
@@ -13654,7 +13654,7 @@ msgstr "Aantal snitte om te laai in die speellys ná die werksame snit."
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonRating)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:39
-#: playlistgenerator/constraints/TagMatch.cpp:342
+#: playlistgenerator/constraints/TagMatch.cpp:344
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:113
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:467
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:604
@@ -13891,19 +13891,19 @@ msgstr "album"
 msgid "artists"
 msgstr "kunstenaar"
 
-#: playlistgenerator/constraints/TagMatch.cpp:54
+#: playlistgenerator/constraints/TagMatch.cpp:56
 #, fuzzy, kde-format
 #| msgid "My Tags"
 msgid "Match Tags"
 msgstr "My Merkers"
 
-#: playlistgenerator/constraints/TagMatch.cpp:55
+#: playlistgenerator/constraints/TagMatch.cpp:57
 #, fuzzy, kde-format
 #| msgid "Number of tracks to load into the playlist after the active track."
 msgid "Make all tracks in the playlist match the specified characteristic"
 msgstr "Aantal snitte om te laai in die speellys ná die werksame snit."
 
-#: playlistgenerator/constraints/TagMatch.cpp:174
+#: playlistgenerator/constraints/TagMatch.cpp:176
 #, kde-format
 msgctxt ""
 "%1 = empty string or \"not\"; %2 = a metadata field, like \"title\" or "
@@ -13913,13 +13913,13 @@ msgctxt ""
 msgid "Match tag:%1 %2 %3 %4"
 msgstr ""
 
-#: playlistgenerator/constraints/TagMatch.cpp:175
+#: playlistgenerator/constraints/TagMatch.cpp:177
 #, fuzzy, kde-format
 #| msgid "is not"
 msgid " not"
 msgstr "is nie"
 
-#: playlistgenerator/constraints/TagMatch.cpp:180
+#: playlistgenerator/constraints/TagMatch.cpp:182
 #, fuzzy, kde-format
 #| msgid "%1 track"
 #| msgid_plural "%1 tracks"
@@ -13929,13 +13929,13 @@ msgid_plural "%1 stars"
 msgstr[0] "%1 snit"
 msgstr[1] "%1 snit"
 
-#: playlistgenerator/constraints/TagMatch.cpp:186
+#: playlistgenerator/constraints/TagMatch.cpp:188
 #, kde-format
 msgctxt "an arbitrary string surrounded by quotes"
 msgid "\"%1\""
 msgstr ""
 
-#: playlistgenerator/constraints/TagMatch.cpp:338
+#: playlistgenerator/constraints/TagMatch.cpp:340
 #: widgets/MetaQueryWidget.cpp:1019
 #, fuzzy, kde-format
 #| msgid "equal to"
@@ -13946,7 +13946,7 @@ msgstr "gelyk aan"
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonInt)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonTime)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonRating)
-#: playlistgenerator/constraints/TagMatch.cpp:340
+#: playlistgenerator/constraints/TagMatch.cpp:342
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:123
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:477
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:614
@@ -13956,7 +13956,7 @@ msgid "greater than"
 msgstr "meer as"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:346
+#: playlistgenerator/constraints/TagMatch.cpp:348
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:233
 #, fuzzy, kde-format
 #| msgid "is before"
@@ -13964,7 +13964,7 @@ msgid "before"
 msgstr "is voor"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:348
+#: playlistgenerator/constraints/TagMatch.cpp:350
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:238
 #, fuzzy, kde-format
 #| msgid "none"
@@ -13972,20 +13972,20 @@ msgid "on"
 msgstr "geen"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:350
+#: playlistgenerator/constraints/TagMatch.cpp:352
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:243
 #, fuzzy, kde-format
 #| msgid "is after"
 msgid "after"
 msgstr "is na"
 
-#: playlistgenerator/constraints/TagMatch.cpp:352
+#: playlistgenerator/constraints/TagMatch.cpp:354
 #, fuzzy, kde-format
 #| msgid "with"
 msgid "within"
 msgstr "met"
 
-#: playlistgenerator/constraints/TagMatch.cpp:356
+#: playlistgenerator/constraints/TagMatch.cpp:358
 #: widgets/MetaQueryWidget.cpp:1033
 #, fuzzy, kde-format
 #| msgid "equal to"
@@ -13993,7 +13993,7 @@ msgctxt "an alphabetical tag (like title or artist name) equals some string"
 msgid "equals"
 msgstr "gelyk aan"
 
-#: playlistgenerator/constraints/TagMatch.cpp:358
+#: playlistgenerator/constraints/TagMatch.cpp:360
 #, fuzzy, kde-format
 #| msgid "starts with"
 msgctxt ""
@@ -14001,14 +14001,14 @@ msgctxt ""
 msgid "starts with"
 msgstr "begin met"
 
-#: playlistgenerator/constraints/TagMatch.cpp:360
+#: playlistgenerator/constraints/TagMatch.cpp:362
 #, fuzzy, kde-format
 #| msgid "ends with"
 msgctxt "an alphabetical tag (like title or artist name) ends with some string"
 msgid "ends with"
 msgstr "eindig met"
 
-#: playlistgenerator/constraints/TagMatch.cpp:362
+#: playlistgenerator/constraints/TagMatch.cpp:364
 #: widgets/MetaQueryWidget.cpp:1035
 #, fuzzy, kde-format
 #| msgid "contains"
@@ -14016,19 +14016,19 @@ msgctxt "an alphabetical tag (like title or artist name) contains some string"
 msgid "contains"
 msgstr "bevat"
 
-#: playlistgenerator/constraints/TagMatch.cpp:364
+#: playlistgenerator/constraints/TagMatch.cpp:366
 #, kde-format
 msgid "regexp"
 msgstr ""
 
-#: playlistgenerator/constraints/TagMatch.cpp:367
+#: playlistgenerator/constraints/TagMatch.cpp:369
 #: widgets/MetaQueryWidget.cpp:1040
 #, fuzzy, kde-format
 #| msgid "Unknown Artist"
 msgid "unknown comparison"
 msgstr "Onbekende Kunstenaar"
 
-#: playlistgenerator/constraints/TagMatch.cpp:380
+#: playlistgenerator/constraints/TagMatch.cpp:382
 #, fuzzy, kde-format
 #| msgid "%1 layout"
 msgid "%1 day"
@@ -14036,7 +14036,7 @@ msgid_plural "%1 days"
 msgstr[0] "%1 uitleg"
 msgstr[1] "%1 uitleg"
 
-#: playlistgenerator/constraints/TagMatch.cpp:383
+#: playlistgenerator/constraints/TagMatch.cpp:385
 #, fuzzy, kde-format
 #| msgid "Months"
 msgid "%1 month"
@@ -14044,7 +14044,7 @@ msgid_plural "%1 months"
 msgstr[0] "Maande"
 msgstr[1] "Maande"
 
-#: playlistgenerator/constraints/TagMatch.cpp:386
+#: playlistgenerator/constraints/TagMatch.cpp:388
 #, fuzzy, kde-format
 #| msgid "year"
 msgid "%1 year"
@@ -14052,8 +14052,8 @@ msgid_plural "%1 years"
 msgstr[0] "jaar"
 msgstr[1] "jaar"
 
-#: playlistgenerator/constraints/TagMatch.cpp:538
-#: playlistgenerator/constraints/TagMatch.cpp:755
+#: playlistgenerator/constraints/TagMatch.cpp:540
+#: playlistgenerator/constraints/TagMatch.cpp:757
 #, fuzzy, kde-format
 #| msgid "Days"
 msgctxt "within the last %1 days"
@@ -14062,8 +14062,8 @@ msgid_plural "days"
 msgstr[0] "Dae"
 msgstr[1] "Dae"
 
-#: playlistgenerator/constraints/TagMatch.cpp:539
-#: playlistgenerator/constraints/TagMatch.cpp:756
+#: playlistgenerator/constraints/TagMatch.cpp:541
+#: playlistgenerator/constraints/TagMatch.cpp:758
 #, fuzzy, kde-format
 #| msgid "Months"
 msgctxt "within the last %1 months"
@@ -14072,8 +14072,8 @@ msgid_plural "months"
 msgstr[0] "Maande"
 msgstr[1] "Maande"
 
-#: playlistgenerator/constraints/TagMatch.cpp:540
-#: playlistgenerator/constraints/TagMatch.cpp:757
+#: playlistgenerator/constraints/TagMatch.cpp:542
+#: playlistgenerator/constraints/TagMatch.cpp:759
 #, fuzzy, kde-format
 #| msgid "year"
 msgctxt "within the last %1 years"
@@ -14418,12 +14418,12 @@ msgstr "speeltelling"
 msgid "label"
 msgstr "Etiket"
 
-#: playlistgenerator/ConstraintSolver.cpp:230
+#: playlistgenerator/ConstraintSolver.cpp:231
 #, kde-format
 msgid "The playlist generator failed to load any tracks from the collection."
 msgstr ""
 
-#: playlistgenerator/ConstraintSolver.cpp:236
+#: playlistgenerator/ConstraintSolver.cpp:237
 #, kde-format
 msgid ""
 "There are no tracks that match all constraints. The playlist generator will "
@@ -14654,100 +14654,100 @@ msgstr ""
 "<p>Jammer, skandering van die versameling moes gestaak word.</p><p>Te veel "
 "foute het opgeduik gedurende skandering.</p>"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:66
+#: scripting/scriptconsole/ScriptConsole.cpp:67
 #, kde-format
 msgid ""
 "A KDE text-editor component could not be found.\n"
 "Please check your KDE installation.  Exiting the console!"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:77
+#: scripting/scriptconsole/ScriptConsole.cpp:78
 #, fuzzy, kde-format
 #| msgid " PIN Code:"
 msgid "Code"
 msgstr "PIN Kode:"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:78
+#: scripting/scriptconsole/ScriptConsole.cpp:79
 #, kde-format
 msgid "Console"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:79
+#: scripting/scriptconsole/ScriptConsole.cpp:80
 #, kde-format
 msgid "Output"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:80
+#: scripting/scriptconsole/ScriptConsole.cpp:81
 #, kde-format
 msgid "Error"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:103
+#: scripting/scriptconsole/ScriptConsole.cpp:104
 #, fuzzy, kde-format
 #| msgid "&Get More Scripts"
 msgid "Execute Script"
 msgstr "&Kry Nog Skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:107
+#: scripting/scriptconsole/ScriptConsole.cpp:108
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "&New Script"
 msgstr "Deursoek skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:111
+#: scripting/scriptconsole/ScriptConsole.cpp:112
 #, fuzzy, kde-format
 #| msgid "&Get More Scripts"
 msgid "&Delete Script"
 msgstr "&Kry Nog Skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:114
+#: scripting/scriptconsole/ScriptConsole.cpp:115
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "&Clear All Scripts"
 msgstr "Deursoek skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:117
+#: scripting/scriptconsole/ScriptConsole.cpp:118
 #, fuzzy, kde-format
 #| msgid "Previous Group"
 msgid "Previous Script"
 msgstr "Vorige Groep"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:121
+#: scripting/scriptconsole/ScriptConsole.cpp:122
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
 msgid "Next Script"
 msgstr "Deursoek skripte"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:129
+#: scripting/scriptconsole/ScriptConsole.cpp:130
 #, fuzzy, kde-format
 #| msgctxt "@item:inmenu"
 #| msgid "&View"
 msgid "&View"
 msgstr "Aansig"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:217
+#: scripting/scriptconsole/ScriptConsole.cpp:218
 #, kde-format
 msgid "This will stop this script! Continue?"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:229
+#: scripting/scriptconsole/ScriptConsole.cpp:230
 #, kde-format
 msgid "Choose where to save your scripts"
 msgstr ""
 
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:423
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove script file from disk?"
 msgstr "&Verwyder Inskrywing"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:422
+#: scripting/scriptconsole/ScriptConsole.cpp:423
 #, fuzzy, kde-format
 #| msgid "&Remove Subscription"
 msgid "Remove Script"
 msgstr "&Verwyder Inskrywing"
 
-#: scripting/scriptconsole/ScriptConsole.cpp:452
+#: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
 msgid "Are you absolutely certain?"
 msgstr ""
