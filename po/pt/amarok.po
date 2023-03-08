@@ -147,6 +147,7 @@ msgstr ""
 "X-POFile-IgnoreConsistency: Comment\n"
 "X-POFile-IgnoreConsistency: Name\n"
 "X-POFile-IgnoreConsistency: Head\n"
+"X-POFile-IgnoreConsistency: Patches\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"

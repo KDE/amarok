@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-07 00:45+0000\n"
-"PO-Revision-Date: 2023-02-20 17:30+0300\n"
+"PO-Revision-Date: 2023-03-07 20:09+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.12.2\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1227,7 +1227,7 @@ msgstr ""
 #: amarokconfig.kcfg:380
 #, kde-format
 msgid "Track URL to resume upon startup"
-msgstr "Başlangıçta sürdürülecek parçanın adresi"
+msgstr "Başlangıçta sürdürülecek parçanın URL'si"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
 #: amarokconfig.kcfg:381
@@ -1427,7 +1427,7 @@ msgstr "Bağlama noktası"
 #: amarokconfig.kcfg:480
 #, kde-format
 msgid "The mount point used for the media device connection."
-msgstr "Bağlanma noktası medya aygıtı bağlantılarında kullanılır."
+msgstr "Bağlama noktası, ortam aygıtı bağlantılarında kullanılır."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:483
@@ -1439,7 +1439,7 @@ msgstr "Bağlanma komutu"
 #: amarokconfig.kcfg:484
 #, kde-format
 msgid "The mount command used for the media device connection."
-msgstr "Mount komutu medya aygıtı bağlantılarında kullanılır."
+msgstr "Ortam aygıt bağlantısı için kullanılacak mount komutu."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:487
@@ -1451,7 +1451,7 @@ msgstr "Ayırma Komutu"
 #: amarokconfig.kcfg:488
 #, kde-format
 msgid "The umount command used for the media device connection."
-msgstr "Unmount komutu medya aygıtı bağlantılarında kullanılır."
+msgstr "Ortam aygıtı bağlantısında kullanılacak unmount komutu."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:491
@@ -1466,7 +1466,7 @@ msgid ""
 "Whether podcast shows already played are automatically deleted when media "
 "device is connected."
 msgstr ""
-"Medya aygıtı bağlandığında, önceden oynatılan podcast parçalarının otomatik "
+"Ortam aygıtı bağlandığında, önceden çalınan podcast parçalarının otomatik "
 "olarak silinip silinmeyeceği."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
@@ -1882,7 +1882,7 @@ msgstr "Çal"
 #: App.cpp:361
 #, kde-format
 msgid "Files/URLs to open"
-msgstr "Açılacak dosya/adres"
+msgstr "Açılacak dosya/URL"
 
 #: App.cpp:362
 #, kde-format
@@ -1927,12 +1927,12 @@ msgstr "Ek seçenekler:"
 #: App.cpp:371
 #, kde-format
 msgid "Append files/URLs to playlist"
-msgstr "Çalma listesine dosya/adres ekle"
+msgstr "Çalma listesine dosya/URL ekle"
 
 #: App.cpp:372
 #, kde-format
 msgid "Queue URLs after the currently playing track"
-msgstr "Şu anda çalan parçadan sonra adresi kuyruğa ekle"
+msgstr "Şu an çalan parçadan sonra URL'yi kuyruğa ekle"
 
 #: App.cpp:373
 #, kde-format
@@ -1962,7 +1962,7 @@ msgstr "Çoklu Amarok örneğinin çalışmasına izin ver"
 #: App.cpp:378
 #, kde-format
 msgid "Base for relative filenames/URLs"
-msgstr "Göreli dosya adı ve adresler için referans kaynağı"
+msgstr "Göreceli dosya adları/URL'ler için temel"
 
 #: App.cpp:514 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
@@ -2014,7 +2014,7 @@ msgstr "&Ortam Kaynakları"
 #: browsers/BrowserDock.cpp:74
 #, kde-format
 msgid "Go Up in Media Sources Pane"
-msgstr "Medya Kaynakları Bölmesine Git"
+msgstr "Ortam Kaynakları Paneline Git"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:147
 #, kde-format
@@ -2855,7 +2855,7 @@ msgstr "Podcast Ekle"
 #: browsers/playlistbrowser/PodcastModel.cpp:323
 #, kde-format
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"
-msgstr "RSS 1.0/2.0 ya da Atom besleme adresini adresini girin:"
+msgstr "RSS 1.0/2.0 veya Atom beslemesi URL'sini girin:"
 
 #: browsers/playlistbrowser/UserPlaylistCategory.cpp:36
 #, kde-format
@@ -2887,7 +2887,7 @@ msgid ""
 msgstr ""
 "Internet tarayıcısı, doğrudan Amarok ile bütünleşik olan çevrimiçi içerik "
 "kaynaklarına göz atmanızı sağlar. Amarok bu kaynaklardan bazılarıyla "
-"birlikte gönderilir, ancak betikler kullanarak çok daha fazlası eklenebilir."
+"birlikte gönderilir; ancak betikler kullanarak çok daha fazlası eklenebilir."
 
 #: configdialog/ConfigDialog.cpp:59
 #, kde-format
@@ -5540,10 +5540,10 @@ msgid ""
 msgid_plural ""
 "%1 tracks successfully transferred, but transfer of some other tracks failed."
 msgstr[0] ""
-"Bir parça başarıyla aktarıldı, ancak diğer bazı parçaları aktarma başarısız "
+"Bir parça başarıyla aktarıldı; ancak diğer bazı parçaları aktarma başarısız "
 "oldu."
 msgstr[1] ""
-"%1 parça başarıyla aktarıldı, ancak diğer bazı parçaları aktarma başarısız "
+"%1 parça başarıyla aktarıldı; ancak diğer bazı parçaları aktarma başarısız "
 "oldu."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:373
@@ -5785,9 +5785,9 @@ msgid ""
 "libgpod (as of version 0.8.2) doesn't know how to compute it, but tries to "
 "dynamically load external library libhashab.so to do it."
 msgstr ""
-"%1 ailesi, veritabanın doğru özetini oluşturmak için, muhtemelen hash-AB "
-"kullanıyor. libgpod (0.8.2 sürümü) nasıl hesaplayacağını bilmiyor, ancak "
-"bunu yapmak için harici kitaplık libhashab.so'yi dinamik olarak yüklemeye "
+"%1 ailesi, veritabanın doğru özetini oluşturmak için büyük olasılıkla hash-"
+"AB kullanıyor. libgpod (0.8.2 sürümü) nasıl hesaplayacağını bilmiyor; ancak "
+"bunu yapmak için harici kitaplık libhashab.so'yi devingen olarak yüklemeye "
 "çalışır."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:262
@@ -5967,7 +5967,7 @@ msgstr "Aygıtın Bağlantısını &Kes"
 #: core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.h:41
 #, kde-format
 msgid "Media Device playlists"
-msgstr "Medya Aygıtı parça Listeleri"
+msgstr "Ortam Aygıtı çalma listeleri"
 
 #: core-impl/collections/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp:75
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:167
@@ -6216,7 +6216,7 @@ msgid ""
 "device, but it doesn't exist. Falling back to <i>%3</i> instead"
 msgstr ""
 "<i>%1</i> dosyası, aygıtta müzik klasörü olarak <i>%2</i> kullanmamızı "
-"tavsiye ediyor, ancak bu mevcut değil. Yerine <i>%3</i> klasörüne geri "
+"tavsiye ediyor; ancak bu konum yok. Yerine <i>%3</i> klasörüne geri "
 "dönülüyor."
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:387
@@ -6314,7 +6314,7 @@ msgstr ""
 #: core-impl/meta/stream/Stream.cpp:52
 #, kde-format
 msgid "Stream (%1)"
-msgstr "Yayın (%1)"
+msgstr "Akış (%1)"
 
 #: core-impl/meta/timecode/TimecodeMeta.cpp:83
 #, kde-format
@@ -6426,7 +6426,7 @@ msgstr "Ortam İndir"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:124
 #, kde-format
 msgid "Download media as soon as it becomes available"
-msgstr "Uygun olduğu anda medyayı indir"
+msgstr "Kullanılabilir olur olmaz ortamı indir"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_downloadRadio)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:127
@@ -6443,14 +6443,14 @@ msgid ""
 "Media must be explicitly downloaded, otherwise the podcast will be played "
 "from the remote server."
 msgstr ""
-"Medya gerçekten indirilmiş olmalıdır, indirilmezse podcast uzak sunucudan "
-"çalınacak."
+"Ortam gerçekten indirilmiş olmalıdır, aksi takdirde podcast uzak sunucudan "
+"çalınır."
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_streamRadio)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:140
 #, kde-format
 msgid "Stream or download on re&quest"
-msgstr "İsteğime &göre yayın al ya da indir"
+msgstr "İsteğe &göre uzaktan çal veya indir"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_purgeCheck)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_purgeCheck)
@@ -6489,7 +6489,7 @@ msgid ""
 "playlist and on media devices will be the same as in the feed."
 msgstr ""
 "RSS beslemesi ve indirilen dosyadaki etiketler bazen aynı bilgiyi "
-"içermezler. Etiketlerin yazılması, oynatma listesindeki ve medya "
+"içermezler. Etiketlerin yazılması, oynatma listesindeki ve ortam "
 "aygıtlarındaki bilgilerin özet akışında olduğu gibi olmasını sağlar."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeTagsCheck)
@@ -7347,9 +7347,8 @@ msgid ""
 "While parsing %1, a feed was expected but an HTML page was received.\n"
 "Did you enter the correct URL?"
 msgstr ""
-"%1 ayrıştırılırken, bir besleme bekleniyordu, ancak bir HTML sayfası "
-"alındı.\n"
-"Doğru URL adresini girdiğinize emin misiniz?"
+"%1 ayrıştırılırken bir besleme bekleniyordu; ancak bir HTML sayfası alındı.\n"
+"Doğru URL'yi girdiğinize emin misiniz?"
 
 #: core/podcasts/PodcastReader.cpp:1002
 #, kde-format
@@ -7650,14 +7649,14 @@ msgid ""
 msgstr ""
 "<a href=http://flac.sourceforge.net/documentation_tools_flac.html>Sıkıştırma "
 "düzeyi</a>, <b>FLAC</b> ile kodlanırken dosya boyutu ve sıkıştırma hızı "
-"arasındaki dengeyi temsil eden 0 ile 8 arasında bir tam sayı değeridir.<br/> "
+"arasındaki dengeyi temsil eden 0 ile 8 arasında bir tamsayı değeridir.<br/> "
 "Sıkıştırma düzeyini <b>0</b> olarak ayarlamak, en kısa sıkıştırma süresini "
 "verir; ancak karşılaştırılabilir büyük bir dosya oluşturur<br/>Öte yandan, "
 "<b>8</b> sıkıştırma düzeyi sıkıştırmayı oldukça yavaş yapar; ancak en küçük "
 "dosyayı üretecektir.<br/>FLAC tanımı gereği kayıpsız bir kodlayıcı bileşeni "
 "olduğundan çıkışın ses kalitesi sıkıştırma düzeyine bakılmaksızın tam olarak "
 "aynıdır.<br/>Ayrıca, <b>5</b> değerinin üstündeki düzeyler sıkıştırma "
-"süresini önemli ölçüde artırır, ancak yalnızca biraz daha küçük bir dosya "
+"süresini önemli ölçüde artırır; ancak yalnızca biraz daha küçük bir dosya "
 "oluşturur ve önerilmez."
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:41
@@ -9264,7 +9263,7 @@ msgstr ""
 "alt çizgilerle değiştirir. Uyuşmayan karakterler arasında |?*<\":>+[] ve "
 "Unicode denetim karakterlerini içerir. \n"
 "\n"
-"Medya aygıtlarına kopyalamanın doğru şekilde çalışmasını sağlamak için çoğu "
+"Ortam aygıtlarına kopyalamanın doğru şekilde çalışmasını sağlamak için çoğu "
 "kişi bu seçeneği etkin bırakabilir."
 
 #. i18n: ectx: property (text), widget (QCheckBox, vfatCheck)
@@ -11553,22 +11552,22 @@ msgstr "Panele ekleniyor"
 #: MainWindow.cpp:525
 #, kde-format
 msgid "Play Media (Files or URLs)"
-msgstr "Medya Çal (Dosyalar ya da URL adresleri)"
+msgstr "Ortam Çal (Dosyalar veya URL'ler)"
 
 #: MainWindow.cpp:525
 #, kde-format
 msgid "Add Media (Files or URLs)"
-msgstr "Medya Ekle (Dosyalar ya da URL adresleri)"
+msgstr "Ortam Ekle (Dosyalar veya URL'ler)"
 
 #: MainWindow.cpp:545
 #, kde-format
 msgid "Add Stream"
-msgstr "Müzik Yayını Ekle"
+msgstr "Akış Ekle"
 
 #: MainWindow.cpp:545
 #, kde-format
 msgid "Enter Stream URL:"
-msgstr "Yayın Adresini Girin:"
+msgstr "Akış URL'sini gir:"
 
 #: MainWindow.cpp:748
 #, kde-format
@@ -11596,7 +11595,7 @@ msgstr "Yinelenmişleri &Kaldır"
 #: MainWindow.cpp:770
 #, kde-format
 msgid "&Add Stream..."
-msgstr "&Müzik Yayını Ekle..."
+msgstr "&Akış Ekle..."
 
 #: MainWindow.cpp:774
 #, kde-format
@@ -12789,7 +12788,7 @@ msgid ""
 "constraints within the group are satisfied.  This is analogous to a logical "
 "AND: \"the tracks should match properties A, B, and C\"."
 msgstr ""
-"APG, kısıtlama gruplarını, ancak grup içindeki tüm kısıtlamaların yerine "
+"APG, kısıtlama gruplarını; ancak grup içindeki tüm kısıtlamaların yerine "
 "getirilmesi durumunda memnun kalacağını düşünecektir. Bu mantıksal AND ile "
 "benzerdir: \"parçalar A, B ve C özellikleriyle eşleşmelidir\"."
 
@@ -13795,7 +13794,7 @@ msgstr ""
 #: playlistgenerator/constraints/TagMatchSupport.cpp:85
 #, kde-format
 msgid "url"
-msgstr "adres"
+msgstr "URL"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:86
 #, kde-format
@@ -13896,7 +13895,7 @@ msgid ""
 "constraints to find more tracks."
 msgstr ""
 "Tüm kısıtlamalarla eşleşen parça yok. Çalma listesi oluşturucu en iyi "
-"eşleşen şarkıları bulacaktır, ancak daha fazla şarkı bulmak için "
+"eşleşen şarkıları bulacaktır; ancak daha fazla şarkı bulmak için "
 "kısıtlamaları azaltmayı düşünebilirsiniz."
 
 #: playlistgenerator/Preset.cpp:45 playlistgenerator/Preset.cpp:58
@@ -14039,12 +14038,12 @@ msgid ""
 "operations with them may result in losing them. Perhaps you have started an "
 "older version of Amarok with a database written by newer version?"
 msgstr ""
-"Çalma listesi veritabanı şemasının %1 sürümüyle karşılaşıldı, ancak bu "
+"Çalma listesi veritabanı şemasının %1 sürümüyle karşılaşıldı; ancak bu "
 "Amarok sürümü yalnızca %2 sürümünü (ve %2 ile başlayan önceki sürümleri) "
-"destekliyor. Amarok Veritabanına kaydedilen çalma listeleri muhtemelen "
+"destekliyor. Amarok veritabanına kaydedilen çalma listeleri büyük olasılıkla "
 "çalışmayacak ve onlarla yapılacak herhangi bir yazma işlemi onları "
-"kaybetmeye neden olacaktır. Daha yeni bir sürümle yazılmış bir veritabanıyla "
-"Amarok'un eski bir sürümünü başlattınız mı?"
+"kaybetmeye neden olacaktır. Hiç daha yeni bir sürümle yazılmış bir "
+"veritabanıyla Amarok'un eski bir sürümünü başlattınız mı?"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:292
 #, kde-format
@@ -14858,7 +14857,7 @@ msgstr "Kullanıcı"
 #: services/lastfm/LastFmServiceCollection.cpp:32
 #, kde-format
 msgid "%1's Streams"
-msgstr "%1 Müzik Yayını"
+msgstr "%1 Akışları"
 
 #: services/lastfm/LastFmServiceCollection.cpp:36
 #, kde-format
@@ -15153,11 +15152,10 @@ msgid ""
 "Remember that when buying from Magnatune the artist gets 50%. Also if you "
 "buy using Amarok, you support the Amarok project with 10%."
 msgstr ""
-"Kopyalamak üzere olduğunuz parça Magnatune.com önizleme akışlarıdır. Daha "
-"iyi kalite ve ücretsiz akış reklamları için bir albüm indirme ve satın "
-"almayı düşünün. Unutmayın ki sanatçı, satışın % 50'si Magnatune'den alırken. "
-"Amarok'u kullanarak da satın alırsanız Amarok projesini % 10 oranında "
-"desteklersiniz."
+"Kopyalamak üzere olduğunuz parçalar, Magnatune.com önizleme akışlarıdır. "
+"Daha kaliteli ve reklamsız akışlar için bir albüm indirmesini satın almayı "
+"düşünün. Unutmayın, Magnatune'dan alırken sanatçı %​50 pay alır. Ayrıca "
+"Amarok kullanarak alırsanız Amarok projesine %​10 destek vermiş olursunuz."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
 #: services/magnatune/MagnatuneConfigWidget.ui:17
@@ -15228,7 +15226,7 @@ msgstr "Üyelik türü:"
 #: services/magnatune/MagnatuneConfigWidget.ui:116
 #, kde-format
 msgid "Stream"
-msgstr "Müzik Yayını "
+msgstr "Akış"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: services/magnatune/MagnatuneConfigWidget.ui:129
@@ -15281,13 +15279,13 @@ msgstr ""
 #: services/magnatune/MagnatuneConfigWidget.ui:183
 #, kde-format
 msgid "Stream Options"
-msgstr "Yayın Seçenekleri"
+msgstr "Akış Seçenekleri"
 
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #: services/magnatune/MagnatuneConfigWidget.ui:189
 #, kde-format
 msgid "Preview stream type:"
-msgstr "Önizleme akış tipi:"
+msgstr "Önizleme akış türü:"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
 #: services/magnatune/MagnatuneConfigWidget.ui:197
