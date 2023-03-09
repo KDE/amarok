@@ -97,6 +97,8 @@ AmarokLyricsScript::escape( const QString &str )
 void
 AmarokLyricsScript::setLyricsForTrack( const QString &trackUrl, const QString &lyrics ) const
 {
+    Q_UNUSED( trackUrl );
+    Q_UNUSED( lyrics );
     /* TODO - convert method invocation below
     LyricsManager::instance()->setLyricsForTrack( trackUrl, lyrics );
     */
