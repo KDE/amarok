@@ -20,7 +20,7 @@
 
 #include "dynamic/biases/TagMatchBias.h"
 
-#include <QMutex>
+#include <QRecursiveMutex>
 
 namespace Dynamic
 {
@@ -95,7 +95,7 @@ namespace Dynamic
 
             MatchType m_match;
 
-            mutable QMutex m_mutex; // mutex protecting all of the below structures
+            mutable QRecursiveMutex m_mutex; // mutex protecting all of the below structures
             mutable QMap< QString, QStringList> m_similarArtistMap;
             mutable QMap< TitleArtistPair, QList<TitleArtistPair> > m_similarTrackMap;
             mutable QMap< QString, TrackSet> m_tracksMap; // for artist AND album

@@ -21,7 +21,6 @@
 using namespace Playlists;
 
 PlaylistObserver::PlaylistObserver()
-    : m_playlistSubscriptionsMutex( QMutex::Recursive )  // prevent deadlocks
 {
 }
 
@@ -73,8 +72,7 @@ void PlaylistObserver::tracksLoaded( PlaylistPtr )
 }
 
 Playlist::Playlist()
-    : m_observersMutex( QMutex::Recursive ) // prevent deadlocks
-    , m_async( true )
+    : m_async( true )
 {
 }
 

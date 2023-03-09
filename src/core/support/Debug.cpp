@@ -24,7 +24,7 @@
 #include <KConfigCore/KConfigGroup>
 
 #include <QApplication>
-#include <QMutex>
+#include <QRecursiveMutex>
 #include <QObject>
 
 #include <iostream>
@@ -37,7 +37,7 @@
 
 #define DEBUG_INDENT_OBJECTNAME QLatin1String("Debug_Indent_object")
 
-AMAROKCORE_EXPORT QMutex Debug::mutex( QMutex::Recursive );
+AMAROKCORE_EXPORT QRecursiveMutex Debug::mutex;
 
 using namespace Debug;
 

@@ -26,7 +26,7 @@
 
 #include "core/amarokcore_export.h"
 #include <QDebug>
-#include <QMutex>
+#include <QRecursiveMutex>
 #include <QVariant>
 
 // BEGIN: DEBUG_ASSERT
@@ -116,7 +116,7 @@
  */
 namespace Debug
 {
-    extern AMAROKCORE_EXPORT QMutex mutex;
+    extern AMAROKCORE_EXPORT QRecursiveMutex mutex;
 
     // from kdebug.h
     enum DebugLevel {

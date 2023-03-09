@@ -35,7 +35,6 @@ ImporterSqlConnection::ImporterSqlConnection( const QString &driver,
                                               const QString &user,
                                               const QString &password )
     : m_connectionName( QUuid::createUuid().toString() )
-    , m_apiMutex( QMutex::Recursive )
     , m_openTransaction( false )
 {
     QSqlDatabase db = QSqlDatabase::addDatabase( driver, m_connectionName );
@@ -48,7 +47,6 @@ ImporterSqlConnection::ImporterSqlConnection( const QString &driver,
 
 ImporterSqlConnection::ImporterSqlConnection( const QString &dbPath )
     : m_connectionName( QUuid::createUuid().toString() )
-    , m_apiMutex( QMutex::Recursive )
     , m_openTransaction( false )
 {
     QSqlDatabase db = QSqlDatabase::addDatabase( QStringLiteral("QSQLITE"), m_connectionName );
@@ -57,7 +55,6 @@ ImporterSqlConnection::ImporterSqlConnection( const QString &dbPath )
 
 ImporterSqlConnection::ImporterSqlConnection()
     : m_connectionName( QUuid::createUuid().toString() )
-    , m_apiMutex( QMutex::Recursive )
     , m_openTransaction( false )
 {
 }

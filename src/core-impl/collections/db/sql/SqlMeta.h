@@ -28,7 +28,7 @@
 
 #include <QAtomicInt>
 #include <QByteArray>
-#include <QMutex>
+#include <QRecursiveMutex>
 #include <QReadWriteLock>
 #include <QString>
 #include <QStringList>
@@ -450,7 +450,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
         bool m_suppressAutoFetch;
         Meta::ArtistPtr m_artist;
         Meta::TrackList m_tracks;
-        mutable QMutex m_mutex;
+        mutable QRecursiveMutex m_mutex;
 
         //TODO: add album artist
 

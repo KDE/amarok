@@ -64,7 +64,6 @@ Dynamic::EchoNestBias::EchoNestBias()
     : SimpleMatchBias()
     , m_artistSuggestedQuery( nullptr )
     , m_match( PreviousTrack )
-    , m_mutex( QMutex::Recursive )
 {
     loadDataFromFile();
 }

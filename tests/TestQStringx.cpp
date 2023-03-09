@@ -28,7 +28,7 @@
 QTEST_GUILESS_MAIN( TestQStringx )
 
 //required for Debug.h
-QMutex Debug::mutex;
+QRecursiveMutex Debug::mutex;
 
 TestQStringx::TestQStringx()
 {

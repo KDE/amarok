@@ -22,7 +22,7 @@
 
 #include <QList>
 #include <QMetaType>
-#include <QMutex>
+#include <QRecursiveMutex>
 #include <QPixmap>
 #include <QSet>
 #include <QSharedData>
@@ -128,7 +128,7 @@ namespace Playlists
 
         private:
             QSet<PlaylistPtr> m_playlistSubscriptions;
-            QMutex m_playlistSubscriptionsMutex; // guards access to m_playlistSubscriptions
+            QRecursiveMutex m_playlistSubscriptionsMutex; // guards access to m_playlistSubscriptions
     };
 
     class AMAROKCORE_EXPORT Playlist : public virtual QSharedData
@@ -292,7 +292,7 @@ namespace Playlists
              * write, even if it is recursive. This can cause deadlocks, so it would be
              * never safe to lock it just for read.
              */
-            QMutex m_observersMutex;
+            QRecursiveMutex m_observersMutex;
             bool m_async;
     };
 }

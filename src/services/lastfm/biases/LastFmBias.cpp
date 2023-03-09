@@ -64,7 +64,6 @@ Dynamic::LastFmBiasFactory::createBias()
 Dynamic::LastFmBias::LastFmBias()
     : SimpleMatchBias()
     , m_match( SimilarArtist )
-    , m_mutex( QMutex::Recursive )
 {
     loadDataFromFile();
 }

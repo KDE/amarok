@@ -26,7 +26,6 @@
 
 CompoundProgressBar::CompoundProgressBar( QWidget *parent )
         : ProgressBar( parent )
-        , m_mutex( QMutex::Recursive )
 {
     m_progressDetailsWidget = new PopupWidget();
     m_progressDetailsWidget->hide();

@@ -27,7 +27,7 @@
 #include "playback/EqualizerController.h"
 #include "core/meta/Meta.h"
 
-#include <QMutex>
+#include <QRecursiveMutex>
 #include <QObject>
 #include <QPointer>
 #include <QSemaphore>
@@ -579,7 +579,7 @@ private:
     qint64 m_lastTickPosition;
     qint64 m_lastTickCount;
 
-    QMutex m_mutex;
+    QRecursiveMutex m_mutex;
 
     // FIXME: this variable should be updated when
     // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal is emitted

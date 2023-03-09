@@ -22,7 +22,7 @@
 #include "amarok_export.h"
 
 #include <QList>
-#include <QMutex>
+#include <QRecursiveMutex>
 #include <QPointer>
 #include <QSharedPointer>
 #include <QSqlDatabase>
@@ -130,7 +130,7 @@ private:
 
     Qt::ConnectionType blockingConnectionType() const;
 
-    QMutex m_apiMutex;
+    QRecursiveMutex m_apiMutex;
     bool m_openTransaction;
     QList<QVariantList> m_result;
 

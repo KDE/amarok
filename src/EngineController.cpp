@@ -84,7 +84,6 @@ EngineController::EngineController()
     , m_tickInterval( 0 )
     , m_lastTickPosition( -1 )
     , m_lastTickCount( 0 )
-    , m_mutex( QMutex::Recursive )
 {
     DEBUG_BLOCK
     // ensure this object is created in a main thread

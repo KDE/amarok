@@ -90,7 +90,6 @@ QThreadStorage< ThreadInitializer* > ThreadInitializer::storage;
 MySqlStorage::MySqlStorage()
     : SqlStorage()
     , m_db( nullptr )
-    , m_mutex( QMutex::Recursive )
     , m_debugIdent( "MySQL-none" )
 {
     //Relevant code must be implemented in subclasses

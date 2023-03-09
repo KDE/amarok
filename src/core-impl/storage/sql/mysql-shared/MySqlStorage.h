@@ -22,7 +22,7 @@
 #include <mysql.h>
 
 
-#include <QMutex>
+#include <QRecursiveMutex>
 #include <QString>
 
 #ifdef Q_WS_WIN
@@ -87,7 +87,7 @@ class MySqlStorage: public SqlStorage
         MYSQL* m_db;
 
         /** Mutex protecting the m_lastErrors list */
-        mutable QMutex m_mutex;
+        mutable QRecursiveMutex m_mutex;
 
         QString m_debugIdent;
         QStringList m_lastErrors;

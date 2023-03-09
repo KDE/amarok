@@ -23,7 +23,7 @@
 #include <QList>
 #include <QMap>
 #include <QMouseEvent>
-#include <QMutex>
+#include <QRecursiveMutex>
 
 /**
  * A progress bar that wraps a number of simple progress bars and displays their 
@@ -75,7 +75,7 @@ private:
 
     QMap< const QObject *, ProgressBar *> m_progressMap;
     PopupWidget *m_progressDetailsWidget;
-    QMutex m_mutex; // protecting m_progressMap consistency
+    QRecursiveMutex m_mutex; // protecting m_progressMap consistency
 };
 
 #endif

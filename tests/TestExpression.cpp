@@ -27,7 +27,7 @@
 QTEST_GUILESS_MAIN( TestExpression )
 
 //required for Debug.h
-QMutex Debug::mutex;
+QRecursiveMutex Debug::mutex;
 
 TestExpression::TestExpression()
 {

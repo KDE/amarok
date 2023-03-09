@@ -1471,7 +1471,6 @@ SqlAlbum::SqlAlbum( Collections::SqlCollection *collection, int id, const QStrin
     , m_unsetImageId( -1 )
     , m_tracksLoaded( NotLoaded )
     , m_suppressAutoFetch( false )
-    , m_mutex( QMutex::Recursive )
 {
     Q_ASSERT( m_collection );
     Q_ASSERT( m_id > 0 );
