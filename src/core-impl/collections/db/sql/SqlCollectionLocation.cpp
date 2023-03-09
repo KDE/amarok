@@ -38,8 +38,8 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QStorageInfo>
 
-#include <KDiskFreeSpaceInfo>
 #include <KFileItem>
 #include <KJob>
 #include <KIO/DeleteJob>
@@ -90,13 +90,9 @@ SqlCollectionLocation::isWritable() const
     QStringList folders = actualLocation();
     foreach( const QString &path, folders )
     {
-        float used = KDiskFreeSpaceInfo::freeSpaceInfo( path ).used();
-        float total = KDiskFreeSpaceInfo::freeSpaceInfo( path ).size();
-
-        if( total <= 0 ) // protect against div by zero
-            continue; //How did this happen?
-
-        float free_space = total - used;
+        float free_space = QStorageInfo( path ).bytesAvailable();
+        if( free_space <= 0 )
+            continue;
         if( free_space >= 500*1000*1000 ) // ~500 megabytes
             path_exists_with_space = true;
 
@@ -298,18 +294,18 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
         if( path.isEmpty() )
             continue;
         debug() << "Path" << path;
-        KDiskFreeSpaceInfo spaceInfo = KDiskFreeSpaceInfo::freeSpaceInfo( path );
+        QStorageInfo spaceInfo(path);
         if( !spaceInfo.isValid() )
             continue;
 
-        KIO::filesize_t totalCapacity = spaceInfo.size();
-        KIO::filesize_t used = spaceInfo.used();
+        KIO::filesize_t totalCapacity = spaceInfo.bytesTotal();
+        KIO::filesize_t used = totalCapacity - spaceInfo.bytesFree();
 
-        KIO::filesize_t freeSpace = totalCapacity - used;
+        KIO::filesize_t availableSpace = spaceInfo.bytesAvailable();
 
         debug() << "used:" << used;
         debug() << "total:" << totalCapacity;
-        debug() << "Free space" << freeSpace;
+        debug() << "Available space" << availableSpace;
         debug() << "transfersize" << transferSize;
 
         if( totalCapacity <= 0 ) // protect against div by zero
@@ -320,8 +316,8 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
         // since bad things happen when drives become totally full
 	// we make sure there is at least ~500MB left
         // finally, ensure the path is writable
-        debug() << ( freeSpace - transferSize );
-        if( ( freeSpace - transferSize ) > 1024*1024*500 && info.isWritable() )
+        debug() << ( availableSpace - transferSize );
+        if( ( availableSpace - transferSize ) > 1024*1024*500 && info.isWritable() )
             available_folders << path;
     }
 

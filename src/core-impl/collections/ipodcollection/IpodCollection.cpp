@@ -34,7 +34,6 @@
 #include "core-impl/collections/support/MemoryQueryMaker.h"
 #include "playlistmanager/PlaylistManager.h"
 
-#include <KDiskFreeSpaceInfo>
 #include <solid/device.h>
 #include <solid/predicate.h>
 #include <solid/storageaccess.h>
@@ -47,6 +46,7 @@
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QStorageInfo>
 #include <QVBoxLayout>
 
 
@@ -261,19 +261,19 @@ IpodCollection::icon() const
 bool
 IpodCollection::hasCapacity() const
 {
-    return KDiskFreeSpaceInfo::freeSpaceInfo( m_mountPoint ).isValid();
+    return QStorageInfo( m_mountPoint ).isValid();
 }
 
 float
 IpodCollection::usedCapacity() const
 {
-    return KDiskFreeSpaceInfo::freeSpaceInfo( m_mountPoint ).used();
+    return QStorageInfo( m_mountPoint ).bytesTotal() - QStorageInfo( m_mountPoint ).bytesFree();
 }
 
 float
 IpodCollection::totalCapacity() const
 {
-    return KDiskFreeSpaceInfo::freeSpaceInfo( m_mountPoint ).size();
+    return QStorageInfo( m_mountPoint ).bytesTotal();
 }
 
 Collections::CollectionLocation*

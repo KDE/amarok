@@ -44,12 +44,12 @@
 #include <Solid/StorageDrive>
 #include <Solid/StorageVolume>
 
+#include <QStorageInfo>
 #include <QThread>
 #include <QTimer>
 #include <QUrl>
 
 #include <KConfigGroup>
-#include <KDiskFreeSpaceInfo>
 
 
 UmsCollectionFactory::UmsCollectionFactory()
@@ -407,13 +407,13 @@ UmsCollection::hasCapacity() const
 float
 UmsCollection::usedCapacity() const
 {
-    return KDiskFreeSpaceInfo::freeSpaceInfo( m_mountPoint ).used();
+    return QStorageInfo( m_mountPoint ).bytesTotal()-QStorageInfo( m_mountPoint ).bytesFree();
 }
 
 float
 UmsCollection::totalCapacity() const
 {
-    return KDiskFreeSpaceInfo::freeSpaceInfo( m_mountPoint ).size();
+    return QStorageInfo( m_mountPoint ).bytesTotal();
 }
 
 CollectionLocation *

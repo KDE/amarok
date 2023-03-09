@@ -24,8 +24,6 @@
 #include "core-impl/collections/mediadevicecollection/support/MediaDeviceInfo.h"
 #include "core-impl/collections/support/MemoryQueryMaker.h"
 
-#include <KDiskFreeSpaceInfo>
-
 using namespace Collections;
 
 MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant )
