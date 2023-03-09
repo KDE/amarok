@@ -55,7 +55,7 @@ NotificationsConfig::NotificationsConfig( Amarok2ConfigDialog* parent )
 
     connect( m_osdPreview, &OSDPreviewWidget::positionChanged, this, &NotificationsConfig::slotPositionChanged );
 
-    const int numScreens = QApplication::desktop()->numScreens();
+    const int numScreens = QApplication::screens().size();
     for( int i = 0; i < numScreens; i++ )
         kcfg_OsdScreen->addItem( QString::number( i ) );
 

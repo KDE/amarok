@@ -463,7 +463,7 @@ OSDWidget::setTextColor(const QColor& color)
 void
 OSDWidget::setScreen( int screen )
 {
-    const int n = QApplication::desktop()->numScreens();
+    const int n = QApplication::screens().size();
     m_screen = ( screen >= n ) ? n - 1 : screen;
 }
 
