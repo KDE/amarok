@@ -52,7 +52,7 @@ APG::PresetEditDialog::PresetEditDialog( const PresetPtr &p )
     ui.constraintTreeView->expandAll();
 
     QSignalMapper* adderMapper = new QSignalMapper( this );
-    connect( adderMapper, QOverload<const QString&>::of(&QSignalMapper::mapped),
+    connect( adderMapper, QOverload<const QString&>::of(&QSignalMapper::mappedString),
              this, &PresetEditDialog::addNode );
 
     QMenuBar* menuBar_Actions = new QMenuBar( this );

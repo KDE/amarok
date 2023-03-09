@@ -33,7 +33,7 @@ NetworkAccessViewer::NetworkAccessViewer( QWidget *parent )
     networkRequestsDialog->setupUi(dialog);
 
     mapper = new QSignalMapper(this);
-    connect( mapper, QOverload<QObject*>::of(&QSignalMapper::mapped),
+    connect( mapper, QOverload<QObject*>::of(&QSignalMapper::mappedObject),
              this, &NetworkAccessViewer::requestFinished );
 
     connect( networkRequestsDialog->requestList, &QTreeWidget::currentItemChanged, this, &NetworkAccessViewer::showItemDetails );
