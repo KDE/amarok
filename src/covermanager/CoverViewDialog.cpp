@@ -25,7 +25,6 @@
 #include <KLocalizedString>
 #include <KWindowSystem>
 
-#include <QDesktopWidget>
 #include <QHBoxLayout>
 #include <KConfigGroup>
 
@@ -72,7 +71,7 @@ CoverViewDialog::zoomFactorChanged( qreal value )
 void
 CoverViewDialog::createViewer( const QImage &image, const QWidget *widget )
 {
-    int screenNumber = QApplication::desktop()->screenNumber( widget );
+    int screenNumber = QApplication::screens().indexOf( widget->screen() );
     PixmapViewer *pixmapViewer = new PixmapViewer( this, QPixmap::fromImage(image), screenNumber );
     QHBoxLayout *layout = new QHBoxLayout( this );
     layout->addWidget( pixmapViewer );

@@ -30,9 +30,9 @@
 #include "ui_OrganizeCollectionDialogBase.h"
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QDir>
 #include <QPushButton>
+#include <QScreen>
 #include <QTimer>
 
 #include <KColorScheme>
@@ -84,7 +84,7 @@ OrganizeCollectionWidget::OrganizeCollectionWidget( QWidget *parent )
 
     // show some non-editable tags before and after
     // but only if screen size is large enough (BR: 283361)
-    const QRect screenRect = QApplication::desktop()->screenGeometry();
+    const QRect screenRect = QApplication::primaryScreen()->geometry();
     if( screenRect.width() >= 1024 )
     {
         m_schemaLineLayout->insertWidget( 0,

@@ -45,6 +45,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QRegExp>
+#include <QScreen>
 #include <QTimeLine>
 #include <QTimer>
 
@@ -245,7 +246,7 @@ OSDWidget::determineMetrics( const int M )
     // determine a sensible maximum size, don't cover the whole desktop or cross the screen
     const QSize margin( ( M + MARGIN ) * 2, ( M + MARGIN ) * 2 ); //margins
     const QSize image = m_cover.isNull() ? QSize( 0, 0 ) : minImageSize;
-    const QSize max = QApplication::desktop()->screen( m_screen )->size() - margin;
+    const QSize max = QApplication::screens()[ screen() ]->size() - margin;
 
     // If we don't do that, the boundingRect() might not be suitable for drawText() (Qt issue N67674)
     m_text.replace( QRegExp( " +\n" ), "\n" );
@@ -311,7 +312,7 @@ OSDWidget::determineMetrics( const int M )
     rect.adjust( -M, -M, M, M );
 
     const QSize newSize = rect.size();
-    const QRect screen = QApplication::desktop()->screenGeometry( m_screen );
+    const QRect screenRect = QApplication::screens()[ screen() ]->geometry();
     QPoint newPos( MARGIN, m_yOffset );
 
     switch( m_alignment )
@@ -320,25 +321,25 @@ OSDWidget::determineMetrics( const int M )
             break;
 
         case Right:
-            newPos.rx() = screen.width() - MARGIN - newSize.width();
+            newPos.rx() = screenRect.width() - MARGIN - newSize.width();
             break;
 
         case Center:
-            newPos.ry() = ( screen.height() - newSize.height() ) / 2;
+            newPos.ry() = ( screenRect.height() - newSize.height() ) / 2;
 
             Q_FALLTHROUGH();
 
         case Middle:
-            newPos.rx() = ( screen.width() - newSize.width() ) / 2;
+            newPos.rx() = ( screenRect.width() - newSize.width() ) / 2;
             break;
     }
 
     //ensure we don't dip below the screen
-    if ( newPos.y() + newSize.height() > screen.height() - MARGIN )
-        newPos.ry() = screen.height() - MARGIN - newSize.height();
+    if ( newPos.y() + newSize.height() > screenRect.height() - MARGIN )
+        newPos.ry() = screenRect.height() - MARGIN - newSize.height();
 
     // correct for screen position
-    newPos += screen.topLeft();
+    newPos += screenRect.topLeft();
 
     return QRect( newPos, rect.size() );
 }
@@ -551,7 +552,7 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
     {
         // Here we implement a "snap-to-grid" like positioning system for the preview widget
 
-        const QRect screenRect  = QApplication::desktop()->screenGeometry( screen() );
+        const QRect screenRect  = QApplication::screens()[ screen() ]->geometry();
         const uint  hcenter     = screenRect.width() / 2;
         const uint  eGlobalPosX = e->globalPos().x() - screenRect.left();
         const uint  snapZone    = screenRect.width() / 24;
@@ -592,8 +593,7 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
         move( destination );
 
         // compute current Position && Y-offset
-        QDesktopWidget *desktop = QApplication::desktop();
-        const int currentScreen = desktop->screenNumber( pos() );
+        const int currentScreen = QGuiApplication::screens().indexOf( QGuiApplication::screenAt( pos() ) );
 
         // set new data
         OSDWidget::setScreen( currentScreen );

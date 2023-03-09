@@ -39,11 +39,11 @@
 
 #include <QAction>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QDialogButtonBox>
 #include <QMenu>    //showCoverMenu()
 #include <QProgressBar>
 #include <QPushButton>
+#include <QScreen>
 #include <QSplitter>
 #include <QStatusBar>
 #include <QStringList>
@@ -228,7 +228,7 @@ CoverManager::slotContinueConstruction() //SLOT
 
     connect( m_progress, &CompoundProgressBar::allDone, this, &CoverManager::progressAllDone );
 
-    QSize size = QApplication::desktop()->screenGeometry( this ).size() / 1.5;
+    QSize size = this->screen()->size() / 1.5;
     QSize sz = Amarok::config( "Cover Manager" ).readEntry( "Window Size", size );
     resize( sz.width(), sz.height() );
 

@@ -21,11 +21,11 @@
 
 #include <QApplication>
 
-#include <QDesktopWidget>
 #include <QMouseEvent>
 #include <QLabel>
 #include <QPixmap>
 #include <QPainter>
+#include <QScreen>
 #include <QWheelEvent>
 
 
@@ -35,8 +35,8 @@ PixmapViewer::PixmapViewer( QWidget *parent, const QPixmap &pix, int screenNumbe
 {
     m_zoomFactor = 1.0; // initial zoom
 
-    int screenWidth = QApplication::desktop()->availableGeometry( screenNumber ).width();
-    int screenHeight = QApplication::desktop()->availableGeometry( screenNumber ).height();
+    int screenWidth = QApplication::screens()[ screenNumber ]->availableGeometry().width();
+    int screenHeight = QApplication::screens()[ screenNumber ]->availableGeometry().height();
     if( screenWidth < m_pixmap.width() || screenHeight < m_pixmap.height() )
     {
         qreal zoomFactorX = qreal(screenWidth) / m_pixmap.width();
