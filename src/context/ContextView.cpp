@@ -60,7 +60,8 @@ ContextView::ContextView( QWidget *parent )
 
     KDeclarative::KDeclarative decl;
     decl.setDeclarativeEngine( engine() );
-    decl.setupBindings();
+    engine()->rootContext()->setContextObject( new KLocalizedContext( this ) );
+    decl.setupEngine( engine() );
 
     connect( this, &QQuickWidget::statusChanged, this, &ContextView::slotStatusChanged );
     connect( The::paletteHandler(), &PaletteHandler::newPalette, this, &ContextView::updatePalette );
