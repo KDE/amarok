@@ -39,14 +39,14 @@ not be entirely up to date. You can always look at CMakeLists.txt to discover
 the most recent dependencies.
 
 Required
-    * KDE Frameworks 5.41 (or newer, for an exact list look at CMakeLists.txt)
+    * KDE Frameworks 5.57 (or newer, for an exact list look at CMakeLists.txt)
       https://www.kde.org
 
     * Phonon 4.6.60 (or newer with support for Qt5) and one of the following backends:
       * phonon-gstreamer 4.6.3 (or newer)
       * phonon-vlc 0.6.1 (or newer; as of 0.6.1 doesn't yet play Audio CDs, bug 313046)
 
-    * Qt 5.10 (or newer)
+    * Qt 5.15
       https://qt.io/
 
     * TagLib 2.0 (or newer)
