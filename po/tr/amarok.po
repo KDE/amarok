@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-07 00:45+0000\n"
-"PO-Revision-Date: 2023-03-07 20:09+0300\n"
+"PO-Revision-Date: 2023-03-09 13:28+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -3309,7 +3309,7 @@ msgid ""
 "tool."
 msgstr ""
 "Duygu Durum çubuğu müziğiniz içerisinde görsel olarak gezinmenizi sağlar.\n"
-"Lütfen bu özelliğin harici \"Duygu Durumu Oluşturucu\" aracına ihtiyaç "
+"Lütfen bu özelliğin harici \"Duygu Durumu Oluşturucu\" aracına gereksinim "
 "duyduğunu göz önünde bulundurun."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
@@ -5775,7 +5775,7 @@ msgstr ""
 msgid "%1 family needs %2 file to generate correct database checksum."
 msgstr ""
 "%1 ailesi, veritabanının doğru özetini oluşturubilmesi için %2 dosyasına "
-"ihtiyaç duyuyor."
+"gereksinim duyuyor."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:248
 #, kde-format
