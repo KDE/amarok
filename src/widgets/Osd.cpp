@@ -87,10 +87,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
 
-    #ifdef Q_WS_X11
-    KWindowSystem::setType( winId(), NET::Notification );
-    #endif
-
     m_timer->setSingleShot( true );
     connect( m_timer, &QTimer::timeout, this, &OSDWidget::hide );
 
