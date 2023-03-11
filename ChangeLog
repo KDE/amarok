@@ -13,6 +13,7 @@ VERSION 2.9.76
    * Wide-ranging changes to remove usages of deprecated methods of Qt and
      KDE Frameworks, that should not affect functionality.
    * Removed upnpcollectionplugin.
+   * Non-functional OSD positioning settings disabled in UI on Wayland for now.
 
   BUGFIXES:
    * Fix playlist generator UI strings. (BR 423598)

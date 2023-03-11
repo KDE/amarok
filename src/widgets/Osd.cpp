@@ -509,7 +509,9 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
     setDuration( 0 );
     setImage( Amarok::icon() );
     setTranslucent( AmarokConfig::osdUseTranslucency() );
-    setText( i18n( "On-Screen-Display preview\nDrag to reposition" ) );
+    // Drag-positioning not available on Wayland, so let's hide any untrue ideas about dragging
+    // TODO maybe one day Wayland will be first-class OSD citizen
+    setText( KWindowSystem::isPlatformWayland() ? i18n ( "Preview" ) : i18n( "On-Screen-Display preview\nDrag to reposition" ) );
 }
 
 void
@@ -517,7 +519,9 @@ OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
     m_dragYOffset = event->pos();
 
-    if( event->button() == Qt::LeftButton && !m_dragging )
+    // As we can't position OSD on Wayland at the moment, and grabbing mouse doesn't quite work
+    // either, let's disable this for now.
+    if( !KWindowSystem::isPlatformWayland() && event->button() == Qt::LeftButton && !m_dragging )
     {
         grabMouse( Qt::SizeAllCursor );
         m_dragging = true;
