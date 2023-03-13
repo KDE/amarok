@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-03-07 00:45+0000\n"
+"POT-Creation-Date: 2023-03-13 00:47+0000\n"
 "PO-Revision-Date: 2013-08-12 13:09+0300\n"
 "Last-Translator: Maris Nartiss <maris.kde@gmail.com>\n"
 "Language-Team: Latvian\n"
@@ -5400,27 +5400,27 @@ msgstr ""
 msgid "Updating Amarok database schema"
 msgstr "Atjaunina Amarok datubāzes shēmu"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:528
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:532
 #, kde-format
 msgid "Source track does not exist: %1"
 msgstr "Izejas celiņš neeksistē: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:539
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:543
 #, kde-format
 msgid "Could not create directory: %1"
 msgstr "Neizdevās izveidot mapi: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:616
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Pārsūta: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "Pārkodē: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:662
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
 #: core-impl/collections/support/FileCollectionLocation.cpp:87
 #, kde-format
 msgid "Removing: %1"
@@ -5499,7 +5499,7 @@ msgid "Writing iTunes database to %1 failed: %2"
 msgstr "Neizdevās %1 ierakstīt iTunes datubāzi: %2"
 
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:54
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:364
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:370
 #, kde-format
 msgid "Disconnected iPod/iPad/iPhone"
 msgstr "iPod/iPad/iPhone tika atvienots"
@@ -5603,13 +5603,13 @@ msgstr[0] "%2 %1 celiņš jau tur bija."
 msgstr[1] "%2 %1 celiņi jau tur bija."
 msgstr[2] "%2 %1 celiņu jau tur bija."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:366
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
 #, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
 msgstr "Pārvietoja celiņus uz %1"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:369
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:375
 #, kde-format
 msgid ""
 "One track successfully transferred, but transfer of some other tracks failed."
@@ -5619,12 +5619,12 @@ msgstr[0] "%1 celiņš tika pārvietots, taču neizdevās pārvietot dažus celi
 msgstr[1] "%1 celiņi tika pārvietoti, taču neizdevās pārvietot dažus celiņus."
 msgstr[2] "%1 celiņu tika pārvietots, taču neizdevās pārvietot dažus celiņus."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:373
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:379
 #, kde-format
 msgid "Transfer of tracks failed."
 msgstr "Celiņu pārvietošana neizdevās."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:378
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:384
 #, kde-format
 msgid ""
 "One track was not transferred because it would exceed iPod capacity.<br>"
@@ -5634,14 +5634,14 @@ msgstr[0] "%1 celiņš netika pārvietots, jo tas pārsniegtu iPod kapacitāti.<
 msgstr[1] "%1 celiņi netika pārvietoti, jo tie pārsniegtu iPod kapacitāti.<br>"
 msgstr[2] "%1 celiņu netika pārvietots, jo tas pārsniegtu iPod kapacitāti.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:386
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
 msgstr ""
 "<i>Amarok rezervē %1 uz iPod priekš iTunes datubāzes rakstīšanas.</i><br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:393
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:399
 #, kde-format
 msgid ""
 "One track was not copied because it wouldn't be playable - its  %2 format is "
@@ -5659,7 +5659,7 @@ msgstr[2] ""
 "%1 celiņu netika nokopēts, jo tie nebūtu atskaņojami. Celiņi ir neatbalstītā "
 "formātā (%2).<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:402
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
 #, kde-format
 msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
@@ -5667,7 +5667,7 @@ msgstr[0] "%1 faila kopēšana/pārvietošana/pārkodēšana neizdevās.<br>"
 msgstr[1] "%1 failu kopēšana/pārvietošana/pārkodēšana neizdevās.<br>"
 msgstr[2] "%1 failu kopēšana/pārvietošana/pārkodēšana neizdevās.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:414
 #, kde-format
 msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
@@ -5676,18 +5676,18 @@ msgstr[0] "%1 celiņš netika pārnests iekšējas Amarok kļūdas dēļ.<br>"
 msgstr[1] "%1 celiņi netika pārnesti iekšējas Amarok kļūdas dēļ.<br>"
 msgstr[2] "%1 celiņu netika pārnesti dēļ iekšējas Amarok kļūdas dēļ.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:411
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:417
 #, kde-format
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
 msgstr ""
 "<i>Vairāk informācijas varat atrast Amarok atkļūdošanas izvadē.</i><br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:416
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:422
 #, kde-format
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
 msgstr "Pārējie netika pārsūtīti, jo iPod kolekcija pazuda.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:421
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:427
 #, kde-format
 msgctxt "%1 is a list of errors that occurred during copying of tracks"
 msgid "Error causes: %1<br>"
@@ -6423,17 +6423,17 @@ msgstr "Straume (%1)"
 msgid "Url is not a local file"
 msgstr ""
 
-#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:58
+#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:62
 #, kde-format
 msgid "Could not create a temporary file to download playlist."
 msgstr "Neizdevās izveidot pagaidu failu repertuāra ielādēšanai."
 
-#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:66
+#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:70
 #, kde-format
 msgid "Downloading remote playlist"
 msgstr "Ielādē attālinātu repertuāru"
 
-#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:92
+#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:96
 #, kde-format
 msgctxt "%1 is file path"
 msgid "Cannot read playlist from %1"

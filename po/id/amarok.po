@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: KDE 4 Applications\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-03-07 00:45+0000\n"
+"POT-Creation-Date: 2023-03-13 00:47+0000\n"
 "PO-Revision-Date: 2022-09-27 18:12+0700\n"
 "Last-Translator: Wantoyèk <wantoyek@gmail.com>\n"
 "Language-Team: Indonesian <kde-i18n-doc@kde.org>\n"
@@ -5322,27 +5322,27 @@ msgstr ""
 msgid "Updating Amarok database schema"
 msgstr "Memperbarui skema database Amarok"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:528
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:532
 #, kde-format
 msgid "Source track does not exist: %1"
 msgstr "Sumber trek yang tidak ada: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:539
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:543
 #, kde-format
 msgid "Could not create directory: %1"
 msgstr "Tidak bisa menciptakan direktori: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:616
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Mentransfer: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "Mentranskode: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:662
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
 #: core-impl/collections/support/FileCollectionLocation.cpp:87
 #, kde-format
 msgid "Removing: %1"
@@ -5419,7 +5419,7 @@ msgid "Writing iTunes database to %1 failed: %2"
 msgstr "Penulisan iTunes database ke %1 gagal: %2"
 
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:54
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:364
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:370
 #, kde-format
 msgid "Disconnected iPod/iPad/iPhone"
 msgstr "iPod/iPad/iPhone terdiskoneksi"
@@ -5506,13 +5506,13 @@ msgid_plural "%2 %1 tracks were already there."
 msgstr[0] "%2 Salah satu trek sudah ada di sana."
 msgstr[1] "%2 %1 trek sudah ada di sana."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:366
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
 #, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
 msgstr "Mentransfer Trek ke %1"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:369
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:375
 #, kde-format
 msgid ""
 "One track successfully transferred, but transfer of some other tracks failed."
@@ -5523,12 +5523,12 @@ msgstr[0] ""
 msgstr[1] ""
 "%1 trek dengan sukses tertransfer, tetapi transfer trek yang lain gagal."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:373
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:379
 #, kde-format
 msgid "Transfer of tracks failed."
 msgstr "Transfer pada trek gagal."
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:378
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:384
 #, kde-format
 msgid ""
 "One track was not transferred because it would exceed iPod capacity.<br>"
@@ -5539,14 +5539,14 @@ msgstr[0] ""
 msgstr[1] ""
 "%1 trek tidak tertransfer karena mungkin iPod melebihi kapasitas.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:386
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
 msgstr ""
 "<i>Cadangan Amarok %1 pada iPod untuk penulisan database iTunes.</i><br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:393
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:399
 #, kde-format
 msgid ""
 "One track was not copied because it wouldn't be playable - its  %2 format is "
@@ -5561,14 +5561,14 @@ msgstr[1] ""
 "%1 trek tidak tersalin karena mereka tidak dapat diputar - bisa juga format "
 "%2 tidak didukung.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:402
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
 #, kde-format
 msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
 msgstr[0] "Salin/pindah/transkode pada satu file, gagal.<br>"
 msgstr[1] "Salin/pindah/transkode pada %1 file, gagal.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:414
 #, kde-format
 msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
@@ -5578,17 +5578,17 @@ msgstr[0] ""
 msgstr[1] ""
 "%1 trek tidak tertransfer kemungkinan sesuatu internal Amarok, error.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:411
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:417
 #, kde-format
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
 msgstr "<i>kamu bisa mencari lebih rinci di output pendebugan Amarok.</i><br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:416
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:422
 #, kde-format
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
 msgstr "Beristirahat dan tidak mentransfer karena koleksi iPod menghilang.<br>"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:421
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:427
 #, kde-format
 msgctxt "%1 is a list of errors that occurred during copying of tracks"
 msgid "Error causes: %1<br>"
@@ -6305,17 +6305,17 @@ msgstr "Stream (%1)"
 msgid "Url is not a local file"
 msgstr "Url bukanlah sebuah file lokal"
 
-#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:58
+#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:62
 #, kde-format
 msgid "Could not create a temporary file to download playlist."
 msgstr "Tidak bisa menciptakan sebuah file temporer untuk mengunduh playlist."
 
-#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:66
+#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:70
 #, kde-format
 msgid "Downloading remote playlist"
 msgstr "Mengunduh playlist jarak jauh"
 
-#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:92
+#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:96
 #, kde-format
 msgctxt "%1 is file path"
 msgid "Cannot read playlist from %1"

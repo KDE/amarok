@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok trunk\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-03-07 00:45+0000\n"
+"POT-Creation-Date: 2023-03-13 00:47+0000\n"
 "PO-Revision-Date: 2009-01-22 14:21+0530\n"
 "Last-Translator: Abhishek Jacob <abhishekjacob123@gmail.com>\n"
 "Language-Team: SMC <smc.org.in>\n"
@@ -5355,30 +5355,30 @@ msgstr ""
 msgid "Updating Amarok database schema"
 msgstr "à´ªàµà´°à´¿à´²àµà´²à´¾à´¤àµà´¤à´¤àµ"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:528
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:532
 #, kde-format
 msgid "Source track does not exist: %1"
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:539
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:543
 #, fuzzy, kde-format
 #| msgid "Could not delete item"
 msgid "Could not create directory: %1"
 msgstr "à´à´¨à´ à´¨àµà´àµà´à´ à´àµà´¯àµà´¯àµà´µà´¾à´¨à´¾à´¯à´¿à´²àµà´²"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:616
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, fuzzy, kde-format
 #| msgid "Transferring Tracks"
 msgid "Transferring: %1"
 msgstr "à´ªà´¾à´àµà´àµà´à´³àµâ à´àµà´®à´¾à´±àµà´¨àµà´¨àµ"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
 #, fuzzy, kde-format
 #| msgid "Transferring Tracks"
 msgid "Transcoding: %1"
 msgstr "à´ªà´¾à´àµà´àµà´à´³àµâ à´àµà´®à´¾à´±àµà´¨àµà´¨àµ"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:662
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
 #: core-impl/collections/support/FileCollectionLocation.cpp:87
 #, fuzzy, kde-format
 #| msgid "Remove this %1"
@@ -5452,7 +5452,7 @@ msgid "Writing iTunes database to %1 failed: %2"
 msgstr ""
 
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:54
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:364
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:370
 #, fuzzy, kde-format
 #| msgid "&Disconnect the iPod"
 msgid "Disconnected iPod/iPad/iPhone"
@@ -5538,14 +5538,14 @@ msgid_plural "%2 %1 tracks were already there."
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:366
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
 #, fuzzy, kde-format
 #| msgid "Transferring Tracks to iPod"
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
 msgstr "à´à´ªàµà´¡à´¿à´²àµà´àµà´àµ à´ªà´¾à´àµà´àµà´à´³àµâ à´ªà´à´°àµà´¨àµà´¨àµ"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:369
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:375
 #, kde-format
 msgid ""
 "One track successfully transferred, but transfer of some other tracks failed."
@@ -5554,13 +5554,13 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:373
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:379
 #, fuzzy, kde-format
 #| msgid "Transferring Tracks to iPod"
 msgid "Transfer of tracks failed."
 msgstr "à´à´ªàµà´¡à´¿à´²àµà´àµà´àµ à´ªà´¾à´àµà´àµà´à´³àµâ à´ªà´à´°àµà´¨àµà´¨àµ"
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:378
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:384
 #, kde-format
 msgid ""
 "One track was not transferred because it would exceed iPod capacity.<br>"
@@ -5569,13 +5569,13 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:386
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:393
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:399
 #, kde-format
 msgid ""
 "One track was not copied because it wouldn't be playable - its  %2 format is "
@@ -5586,14 +5586,14 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:402
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
 #, kde-format
 msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:414
 #, kde-format
 msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
@@ -5601,17 +5601,17 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:411
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:417
 #, kde-format
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:416
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:422
 #, kde-format
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:421
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:427
 #, kde-format
 msgctxt "%1 is a list of errors that occurred during copying of tracks"
 msgid "Error causes: %1<br>"
@@ -6351,12 +6351,12 @@ msgstr ""
 msgid "Url is not a local file"
 msgstr ""
 
-#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:58
+#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:62
 #, kde-format
 msgid "Could not create a temporary file to download playlist."
 msgstr ""
 
-#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:66
+#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:70
 #, fuzzy, kde-format
 #| msgid "Cannot read playlist (%1)."
 msgid "Downloading remote playlist"
@@ -6364,7 +6364,7 @@ msgstr ""
 "à´ªàµà´²àµà´²à´¿à´¸àµà´±àµà´±àµ (%1) à´µà´¾à´¯à´¿à´àµà´àµà´µà´¾à´¨àµâ à´¸à´¾à"
 "´§à´¿à´àµà´à´¿à´²àµà´²"
 
-#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:92
+#: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:96
 #, fuzzy, kde-format
 #| msgid "Cannot read playlist (%1)."
 msgctxt "%1 is file path"
