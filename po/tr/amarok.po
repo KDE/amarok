@@ -14712,7 +14712,7 @@ msgid ""
 "during statistics synchronization"
 msgstr ""
 "İstatistik eşzamanlanma sırasında Amarok derecelendirmelerinizi temsil etmek "
-"için <b>7 yıldız, 10 yıldız</ b> gibi Last.fm etiketlerini kullan"
+"için <b>7 yıldız, 10 yıldız</b> gibi Last.fm etiketlerini kullan"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
 #: services/lastfm/LastFmConfigWidget.ui:161
@@ -15100,7 +15100,7 @@ msgstr "%1 - %2"
 #, kde-format
 msgid "Last.fm suggests that some tags of track <b>%1</b> should be corrected:"
 msgstr ""
-"Last.fm, <b>%1</ b> parçasının bazı etiketlerinin düzeltilmesi gerektiğini "
+"Last.fm, <b>%1</b> parçasının bazı etiketlerinin düzeltilmesi gerektiğini "
 "önermektedir:"
 
 #: services/lastfm/SimilarArtistsAction.cpp:27
@@ -16172,9 +16172,9 @@ msgstr[1] "%2 eşzamanlaması tamamlandı. <b>%1</b> parça güncellendi."
 msgid "<b>One</b> track was queued for scrobbling to %2."
 msgid_plural "<b>%1</b> tracks were queued for scrobbling to %2."
 msgstr[0] ""
-"<br>Bir</b> parçanın verisi %2 üzerine gönderilmek için kuyruğa eklendi."
+"<b>Bir</b> parçanın verisi %2 üzerine gönderilmek için kuyruğa eklendi."
 msgstr[1] ""
-"<br>%1</b> parçanın verisi %2 üzerine gönderilmek için kuyruğa eklendi."
+"<b>%1</b> parçanın verisi %2 üzerine gönderilmek için kuyruğa eklendi."
 
 #: statsyncing/Process.cpp:280
 #, kde-format
@@ -16198,8 +16198,8 @@ msgstr[1] ""
 msgid "<b>One</b> track was reported to have been played in the future."
 msgid_plural ""
 "<b>%1</b> tracks were reported to have been played in the future."
-msgstr[0] "<b>Bir</ b> parçanın gelecekte çalınacağı raporlandı."
-msgstr[1] "<b>%1</ b> parçanın gelecekte çalınacağı raporlandı."
+msgstr[0] "<b>Bir</b> parçanın gelecekte çalınacağı raporlandı."
+msgstr[1] "<b>%1</b> parçanın gelecekte çalınacağı raporlandı."
 
 #: statsyncing/Process.cpp:292
 #, kde-format
