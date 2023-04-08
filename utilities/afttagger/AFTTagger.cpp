@@ -102,7 +102,6 @@ AFTTagger::AFTTagger( int &argc, char **argv )
         }
     }
 
-    QRandomGenerator::global()->seed(QDateTime::currentDateTimeUtc().toSecsSinceEpoch());
     m_time.start();
 
     foreach( const QString &path, m_fileFolderList )

@@ -35,7 +35,6 @@
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {
     loadFromSourceModel();
-    QRandomGenerator::global()->seed(QDateTime::currentDateTimeUtc().toSecsSinceEpoch());
 }
 
 void
