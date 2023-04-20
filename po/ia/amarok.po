@@ -8712,7 +8712,7 @@ msgstr "Original %1"
 #: dialogs/OrganizeCollectionDialog.cpp:317
 #, kde-format
 msgid "Preview: %1"
-msgstr "Vista preliminari %1"
+msgstr "Vista preliminar %1"
 
 #: dialogs/OrganizeCollectionDialog.cpp:383
 #, kde-format
@@ -9393,7 +9393,7 @@ msgstr "Remplacia le tracto basse con &un spatio"
 #: dialogs/TagGuessOptions.ui:95
 #, kde-format
 msgid "Result Preview"
-msgstr "Vista preliminari del resultato"
+msgstr "Vista preliminar del resultato"
 
 #. i18n: ectx: property (text), widget (QLabel, Title_result)
 #. i18n: ectx: property (text), widget (QLabel, Artist_result)
@@ -11803,7 +11803,7 @@ msgstr "Monstra consilios"
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:291
 #, kde-format
 msgid "Preview"
-msgstr "Vista preliminari"
+msgstr "Vista preliminar"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:33
 #, kde-format
