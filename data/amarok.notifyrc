@@ -160,6 +160,7 @@ Urgency=Low
 
 [Event/message]
 Name=Message
+Name[bg]=Съобщение
 Name[bs]=Poruka
 Name[ca]=Missatge
 Name[ca@valencia]=Missatge
