@@ -3,19 +3,20 @@
 #
 # Zlatko Popov <zlatkopopov@fsa-bg.org>, 2009.
 # Yasen Pramatarov <yasen@lindeas.com>, 2009, 2010.
+# Mincho Kondarev <mkondarev@yahoo.de>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2019-05-20 02:48+0200\n"
-"PO-Revision-Date: 2010-06-23 22:00+0300\n"
-"Last-Translator: Yasen Pramatarov <yasen@lindeas.com>\n"
-"Language-Team: Bulgarian <dict@fsa-bg.org>\n"
+"PO-Revision-Date: 2023-04-21 23:16+0200\n"
+"Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
+"Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
 "Language: bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 22.12.3\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #, kde-format
@@ -77,9 +78,9 @@ msgid "Upgrade the applet at <path>"
 msgstr "Обновяване на аплета в <path>"
 
 #: amarokpkg.cpp:114
-#, fuzzy, kde-format
+#, kde-format
 msgid "Most installed applets"
-msgstr "Списък с инсталираните аплети"
+msgstr "Най-често инсталирани аплети"
 
 #: amarokpkg.cpp:116
 #, kde-format
