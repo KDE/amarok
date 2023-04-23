@@ -8,20 +8,20 @@
 # Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2006, 2009, 2011.
 # marcos <marcos@euskalgnu.org>, 2008.
 # Julen Landa Alustiza <julen@mundurat.net>, 2009.
-# Iñigo Salvador Azurmendi <xalba@ni.eus>, 2010, 2020, 2021, 2022.
+# Iñigo Salvador Azurmendi <xalba@ni.eus>, 2010, 2020, 2021, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2022-02-27 12:38+0100\n"
+"PO-Revision-Date: 2023-04-22 19:08+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 21.12.2\n"
+"X-Generator: Lokalize 23.04.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #, kde-format
@@ -11266,7 +11266,7 @@ msgstr "Wade Olson"
 #: main.cpp:256
 #, kde-format
 msgid "Splash screen artist"
-msgstr "Harrerako pantailaren artista"
+msgstr "Plasta pantailaren artista"
 
 #: main.cpp:258
 #, kde-format
@@ -11363,7 +11363,7 @@ msgstr "Derek Nelson"
 #: main.cpp:280
 #, kde-format
 msgid "Graphics, splash-screen"
-msgstr "Grafikoak, harrerako pantaila"
+msgstr "Grafikoak, plasta pantaila"
 
 #: main.cpp:282
 #, kde-format
@@ -11503,7 +11503,7 @@ msgstr "Roman Becker"
 #: main.cpp:314
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
-msgstr "Hasierako Amarok-en logotipoa, harrerako pantaila eta ikonoak"
+msgstr "Hasierako Amarok-en logotipoa, plasta pantaila eta ikonoak"
 
 #: main.cpp:316
 #, kde-format
@@ -11538,7 +11538,7 @@ msgstr "Tomasz Dudzik"
 #: main.cpp:322
 #, kde-format
 msgid "Splash screen"
-msgstr "Harrerako pantaila"
+msgstr "Plasta pantaila"
 
 #: main.cpp:327
 #, kde-format
