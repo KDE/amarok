@@ -9,14 +9,14 @@
 # Marce Villarino <mvillarino@kde-espana.es>, 2012, 2013.
 # Xosé <xosecalvo@gmail.com>, 2012.
 # Adrián Chaves Fernández <adriyetichaves@gmail.com>, 2012, 2013, 2015, 2017.
-# Adrián Chaves (Gallaecio) <adrian@chaves.io>, 2017, 2018, 2019, 2020.
+# Adrián Chaves (Gallaecio) <adrian@chaves.io>, 2017, 2018, 2019, 2020, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2020-01-12 12:01+0100\n"
+"PO-Revision-Date: 2023-05-02 21:48+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 19.08.3\n"
+"X-Generator: Lokalize 23.04.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -32,7 +32,7 @@ msgid "Your names"
 msgstr ""
 "Xabi G. Feal,\n"
 "mvillarino,\n"
-"Adrián Chaves Fernández,\n"
+"Adrián Chaves (Gallaecio),\n"
 "Alexander De Sousa Macedo,\n"
 "Antón Méixome,\n"
 "Enrique Núñez Pérez,\n"
@@ -47,13 +47,14 @@ msgstr ""
 "Xabi García,\n"
 "Xurxo,\n"
 "Xurxo Suárez,\n"
-"mvillarino, Xosé"
+"Xosé"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr ""
-"xabigf@gmx.net, mvillarino@users.sourceforge.net,\n"
+"xabigf@gmx.net,\n"
+"mvillarino@users.sourceforge.net,\n"
 "adrian@chaves.io,\n"
 "Sefhilion@Hotmail.com,\n"
 "meixome@gmail.com,\n"
@@ -69,7 +70,6 @@ msgstr ""
 ",\n"
 "jordigp@ya.com,\n"
 ",\n"
-"mvillarino@users.sourceforge.net,\n"
 "xosecalvo@gmail.com"
 
 #. i18n: tag layout attribute name
@@ -150,15 +150,12 @@ msgid "Get data from openDesktop.org to learn more about the team"
 msgstr "Obter información de openDesktop.org para aprender máis sobre o equipo"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:229
-#, fuzzy, kde-format
-#| msgid ""
-#| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
-#| "report bugs.\n"
+#, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
 "report bugs.\n"
 msgstr ""
-"Por favor, faga uso de <a href=\"http://bugs.kde.org\">http://bugs.kde.org</"
+"Por favor, faga uso de <a href=\"https://bugs.kde.org\">http://bugs.kde.org</"
 "a> para informar de fallos.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:234
@@ -4008,13 +4005,9 @@ msgid "Images"
 msgstr "Imaxes"
 
 #: context/applets/albums/package/contents/ui/main.qml:76
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "One word translation used in the collection filter. First played time / "
-#| "access date"
-#| msgid "firstplay"
+#, kde-format
 msgid "Display"
-msgstr "primeira reprodución"
+msgstr "Visualización"
 
 #: context/applets/albums/plugin/AlbumItem.cpp:109
 #: statsyncing/ui/MatchedTracksPage.cpp:378
@@ -4044,48 +4037,45 @@ msgstr "Editar os detalles da pista"
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
-msgstr ""
+msgstr "Configuración de %1"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:64
 #, kde-format
 msgid "Bar width:"
-msgstr ""
+msgstr "Anchura da barra:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:79
 #, kde-format
 msgid "%1 pixel"
 msgid_plural "%1 pixels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 píxel"
+msgstr[1] "%1 píxeles"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:91
-#, fuzzy, kde-format
-#| msgid "Show Years"
+#, kde-format
 msgid "Show fadebars:"
-msgstr "Mostrar os anos"
+msgstr "Mostrar as barras de esvaecemento:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:106
 #, kde-format
 msgid "Bars fall speed:"
-msgstr ""
+msgstr "Velocidade de caída das barras:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:124
-#, fuzzy, kde-format
-#| msgid "3D Frequency Waves"
+#, kde-format
 msgid "Frequency range:"
-msgstr "Ondas de frecuencia en 3D"
+msgstr "Intervalo de frecuencia:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:142
 #: context/applets/analyzer/package/contents/ui/main.qml:147
 #, kde-format
 msgid "%1 Hz"
-msgstr ""
+msgstr "%1 Hz"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:158
-#, fuzzy, kde-format
-#| msgid "Sample rate:"
+#, kde-format
 msgid "Sample size:"
-msgstr "Taxa de mostra:"
+msgstr "Tamaño da mostra:"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:32
 #: playlist/PlaylistModel.cpp:945
@@ -4100,11 +4090,7 @@ msgid "Score"
 msgstr "Puntuación"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:52
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "'Last played' (when was track last played) playlist column name and token "
-#| "for playlist layouts"
-#| msgid "Last played"
+#, kde-format
 msgid "Last played"
 msgstr "Última reprodución"
 
@@ -4367,69 +4353,59 @@ msgid "Remove selected"
 msgstr "Retirar seleccionados"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
-#, fuzzy, kde-format
-#| msgid "Lyrics Settings"
+#, kde-format
 msgid "Lyrics config"
-msgstr "Configuración de letras de cancións"
+msgstr "Configuración de letras"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
-#, fuzzy, kde-format
-#| msgid "Font scale:"
+#, kde-format
 msgid "Font size:"
-msgstr "Escala da letra:"
+msgstr "Tamaño da fonte:"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:73
-#, fuzzy, kde-format
-#| msgid "Alignment: "
+#, kde-format
 msgid "Text alignment:"
-msgstr "Aliñamento: "
+msgstr "Aliñamento do texto:"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
-#, fuzzy, kde-format
-#| msgid "Alignment"
+#, kde-format
 msgid "Align left"
-msgstr "Aliñamento"
+msgstr "Aliñar á esquerda"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
-#, fuzzy, kde-format
-#| msgid "Align OSD to"
+#, kde-format
 msgid "Align right"
-msgstr "Aliñar a OSD a"
+msgstr "Aliñar á dereita"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
-#, fuzzy, kde-format
-#| msgid "Alignment"
+#, kde-format
 msgid "Align center"
-msgstr "Aliñamento"
+msgstr "Aliñar ao centro"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:99
-#, fuzzy, kde-format
-#| msgid "Font: "
+#, kde-format
 msgid "Font:"
-msgstr "Tipo de letra: "
+msgstr "Fonte:"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:83
-#, fuzzy, kde-format
-#| msgid "Toggle Full Screen"
+#, kde-format
 msgid "Toggle auto scroll"
-msgstr "Cambiar a pantalla completa"
+msgstr "Conmutar o desprazamento automático"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:90
-#, fuzzy, kde-format
-#| msgid "Reload Lyrics"
+#, kde-format
 msgid "Reload lyrics"
-msgstr "Cargar de novo a letra da canción"
+msgstr "Cargar de novo a letra"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:98
-#, fuzzy, kde-format
-#| msgid "Lyrics: Not found"
+#, kde-format
 msgid "No lyrics found"
-msgstr "Letras: non atopada"
+msgstr "Non se atopou a letra"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:113
 #, kde-format
 msgid "Suggestions: "
-msgstr ""
+msgstr "Suxestións: "
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #. i18n: ectx: property (text), widget (QLabel, label_21)
@@ -5016,10 +4992,9 @@ msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>Lugar:</strong><nl/>%1"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:38
-#, fuzzy, kde-format
-#| msgid "Previous:"
+#, kde-format
 msgid "Previous"
-msgstr "Anterior:"
+msgstr "Anterior"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:46
 #: statsyncing/ui/ChooseProvidersPage.cpp:35
@@ -8819,18 +8794,7 @@ msgid "No"
 msgstr "Non"
 
 #: dialogs/DiagnosticDialog.cpp:146
-#, fuzzy, kde-format
-#| msgid ""
-#| "%1 Diagnostics\n"
-#| "\n"
-#| "General Information:\n"
-#| "   %1 Version: %2\n"
-#| "   KDE Frameworks Version: %3\n"
-#| "   Qt Version: %4\n"
-#| "   Phonon Version: %5\n"
-#| "   Phonon Backend: %6 (%7)\n"
-#| "   PulseAudio: %8\n"
-#| "\n"
+#, kde-format
 msgid ""
 "%1 Diagnostics\n"
 "\n"
@@ -8850,8 +8814,8 @@ msgstr ""
 "Versión das infraestruturas de KDE: %3\n"
 "Versión do Qt: %4\n"
 "Versión de Phonon: %5\n"
-"Infraestrutura de Phonon: %6 (%7)\n"
-"PulseAudio: %8\n"
+"Infraestrutura de Phonon: %6 (%7, %8)\n"
+"PulseAudio: %9\n"
 "\n"
 
 #: dialogs/DiagnosticDialog.cpp:163
@@ -10737,15 +10701,7 @@ msgstr ""
 "© 2003-2013, a brigada de desenvolvemento de Amarok"
 
 #: main.cpp:101
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
@@ -10756,7 +10712,7 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
+"irc.libera.chat- #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
 "\n"
 "Feedback:\n"
 "amarok@kde.org\n"
@@ -10766,7 +10722,7 @@ msgstr ""
 #: main.cpp:107
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
-msgstr "Bart Cerneels, o «Onde están os pauciños?»"
+msgstr "Bart Cerneels o busca-escarvadentes"
 
 #: main.cpp:108
 #, kde-format
@@ -13938,9 +13894,7 @@ msgid "composer"
 msgstr "compositor"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:91
-#, fuzzy, kde-format
-#| msgid "year"
-#| msgid_plural "years"
+#, kde-format
 msgctxt "Field name"
 msgid "year"
 msgstr "ano"
@@ -14245,10 +14199,9 @@ msgstr ""
 "Comprobe a instalación de KDE. Saíndo da consola…"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:78
-#, fuzzy, kde-format
-#| msgid "PIN Code:"
+#, kde-format
 msgid "Code"
-msgstr "Código PIN:"
+msgstr "Código"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:79
 #, kde-format
@@ -14256,10 +14209,9 @@ msgid "Console"
 msgstr "Consola"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:80
-#, fuzzy, kde-format
-#| msgid "Debug Output"
+#, kde-format
 msgid "Output"
-msgstr "Saída de depuración"
+msgstr "Saída"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:81
 #, kde-format
@@ -14901,14 +14853,7 @@ msgid "Last.fm: The social music revolution"
 msgstr "Last.fm: a revolución da música social"
 
 #: services/lastfm/LastFmService.cpp:102
-#, fuzzy, kde-format
-#| msgid ""
-#| "Last.fm is a popular online service that provides personal radio stations "
-#| "and music recommendations. A personal listening station is tailored based "
-#| "on your listening habits and provides you with recommendations for new "
-#| "music. It is also possible to play stations with music that is similar to "
-#| "a particular artist as well as listen to streams from people you have "
-#| "added as friends or that Last.fm considers your musical \"neighbors\""
+#, kde-format
 msgid ""
 "Last.fm is a popular online service that provides personal radio stations "
 "and music recommendations. A personal listening station is tailored based on "
@@ -14922,8 +14867,7 @@ msgstr ""
 "estabelécese sobre a base dos seus hábitos de escoita e ofrécelle "
 "recomendacións para nova música. Tamén é posíbel reproducir emisoras coa "
 "música que é similar á dun intérprete en particular, así como escoitar "
-"fluxos de persoas que ten engadidas como amigas ou que Last.fm considera "
-"como «veciños» musicais."
+"fluxos de persoas que ten engadidas como amigas"
 
 #: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
@@ -15906,14 +15850,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "Xestiona o AutoSync do servizo MP3tunes en Amarok."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, "
-#| "#amarok.fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
@@ -15923,7 +15860,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"servidor: irc.freenode.net / canles: #amarok #amarok.de, #amarok.es, #amarok."
+"servidor: irc.libera.chat / canles: #amarok #amarok-de, #amarok-es, #amarok-"
 "fr\n"
 "\n"
 "Correo electrónico:\n"
