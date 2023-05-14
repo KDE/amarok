@@ -2,13 +2,13 @@
 # محمد سعد  Mohamed SAAD <metehyi@free.fr>, 2006.
 # Ahmad Farghal <ahmad.farghal@gmail.com>, 2007.
 # Youssef Chahibi <chahibi@gmail.com>, 2007, 2008.
-# Safa Alfulaij <safa1996alfulaij@gmail.com>, 2015, ٢٠١٥.
+# Safa Alfulaij <safa1996alfulaij@gmail.com>, 2015, 2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: ٢٠١٥-٠٢-٠٤ ١٩:٠١+0000\n"
+"PO-Revision-Date: 2015-02-04 19:01+0000\n"
 "Last-Translator: Safa Alfulaij <safa1996alfulaij@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "Language: ar\n"
