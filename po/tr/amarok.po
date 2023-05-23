@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2023-05-15 22:07+0300\n"
+"PO-Revision-Date: 2023-05-22 13:57+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -1457,7 +1457,7 @@ msgstr "Ortam aygıtı bağlantısında kullanılacak unmount komutu."
 #: amarokconfig.kcfg:491
 #, kde-format
 msgid "Auto delete podcasts"
-msgstr "Podcastları otomatik olarak sil"
+msgstr "Pod yayınlarını otomatik olarak sil"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
 #: amarokconfig.kcfg:492
@@ -1466,8 +1466,8 @@ msgid ""
 "Whether podcast shows already played are automatically deleted when media "
 "device is connected."
 msgstr ""
-"Ortam aygıtı bağlandığında, önceden çalınan podcast parçalarının otomatik "
-"olarak silinip silinmeyeceği."
+"Ortam aygıtı bağlandığında, önceden çalınan pod yayınlarının otomatik olarak "
+"silinip silinmeyeceği."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:495
@@ -2567,7 +2567,8 @@ msgid ""
 msgstr ""
 "Çalma listesi penceresi sizin içe aktardığınız ve kaydettiğiniz çalma "
 "listesini içerir. Burası aynı zamanda güçlü değişken çalma listenizi "
-"belirleyeceğiniz ve de podcast abonelik ve bölümlerini yöneteceğiniz yerdir."
+"belirleyeceğiniz ve de pod yayını aboneliklerini ve bölümlerini "
+"yöneteceğiniz yerdir."
 
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:77
 #: services/opmldirectory/OpmlDirectoryModel.cpp:42
@@ -2733,12 +2734,12 @@ msgstr "Bu klasörü ve tüm içeriğini silmek istediğinizden emin misiniz?"
 #: core-impl/collections/umscollection/UmsConfiguration.ui:136
 #, kde-format
 msgid "Podcasts"
-msgstr "Podcast'ler"
+msgstr "Pod Yayınları"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:83
 #, kde-format
 msgid "List of podcast subscriptions and episodes"
-msgstr "Podcast abonelikleri ve bölümlerinin listesi"
+msgstr "Pod yayını abonelikleri ve bölümlerinin listesi"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:86
 #, kde-format
@@ -2747,14 +2748,14 @@ msgid ""
 "Downloading episodes to the disk is also done here, or you can tell Amarok "
 "to do this automatically."
 msgstr ""
-"Podcast aboneliklerinizi yönetin ve kişisel bölümleri tarayın. Bölümleri "
+"Pod yayını aboneliklerinizi yönetin ve kişisel bölümleri tarayın. Bölümleri "
 "belleğe indirme yine burada gerçekleşir ve Amarok uygulamasına bunu otomatik "
 "olarak yapmasını söyleyebilirsiniz."
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:96
 #, kde-format
 msgid "&Add Podcast"
-msgstr "Podc&ast Ekle"
+msgstr "Pod Yayını &Ekle"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:103
 #, kde-format
@@ -2770,13 +2771,13 @@ msgstr "OPML Dosyası İçe Aktar"
 #: browsers/playlistbrowser/PodcastCategory.cpp:168
 #, kde-format
 msgid "By"
-msgstr "Söyleyen"
+msgstr "Yayıncı"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:207
 #, kde-format
 msgctxt "Podcast published on date"
 msgid "On"
-msgstr "Açık"
+msgstr "Yayın Tarihi"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:225
 #, kde-format
@@ -2797,19 +2798,19 @@ msgstr "Anahtar Sözcükler:"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:24
 #, kde-format
 msgid "Add Podcast..."
-msgstr "Podcast Ekle..."
+msgstr "Pod Yayını Ekle..."
 
 #. i18n: ectx: property (text), widget (QToolButton, addPodcastButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:27
 #, kde-format
 msgid "add podcast..."
-msgstr "podcast ekle..."
+msgstr "pod yayını ekle..."
 
 #. i18n: ectx: property (text), widget (QToolButton, refreshPodcastsButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:50
 #, kde-format
 msgid "Refresh All Podcasts"
-msgstr "Tüm Podcastları Yenile"
+msgstr "Tüm Pod Yayınlarını Yenile"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, configurePodcastsButton)
 #. i18n: ectx: property (text), widget (QToolButton, configurePodcastsButton)
@@ -2817,7 +2818,7 @@ msgstr "Tüm Podcastları Yenile"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:76
 #, kde-format
 msgid "Configure Podcasts..."
-msgstr "Podcast'leri Yapılandır..."
+msgstr "Pod Yayınlarını Yapılandır..."
 
 #. i18n: ectx: property (text), widget (QToolButton, podcastsIntervalButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:99
@@ -2850,7 +2851,7 @@ msgstr "Özet"
 #: browsers/playlistbrowser/PodcastModel.cpp:322
 #, kde-format
 msgid "Add Podcast"
-msgstr "Podcast Ekle"
+msgstr "Pod Yayını Ekle"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:323
 #, kde-format
@@ -5974,7 +5975,7 @@ msgstr "Ortam Aygıtı çalma listeleri"
 #, kde-format
 msgctxt "Podcasts on a media device"
 msgid "Podcasts on %1"
-msgstr "%1 üzerindeki Podcast"
+msgstr "%1 Üzerindeki Pod Yayınları"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:152
 #, kde-format
@@ -6273,7 +6274,7 @@ msgstr "Parçaların dosya adı şeması, aygıta eklendi"
 #: core-impl/collections/umscollection/UmsConfiguration.ui:176
 #, kde-format
 msgid "Podcast folder:"
-msgstr "Podcast klasörü:"
+msgstr "Pod yayını klasörü:"
 
 #: core-impl/meta/default/DefaultMetaTypes.h:39
 #: core-impl/meta/default/DefaultMetaTypes.h:75
@@ -6356,19 +6357,19 @@ msgstr "Çalma Listesi_%1"
 #, kde-format
 msgctxt "Change filename layout"
 msgid "Podcast Episode Filename Configuration"
-msgstr "Podcast Bölümü Dosya Adı Yapılandırması"
+msgstr "Pod Yayını Bölümü Dosya Adı Yapılandırması"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PodcastFilenameLayoutConfigWidget)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:30
 #, kde-format
 msgid "Podcast Filename Layout Configuration"
-msgstr "Podcast Dosya Adı Düzeni Yapılandırması"
+msgstr "Pod Yayını Dosya Adı Düzeni Yapılandırması"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
 #, kde-format
 msgid "Specified by podcast channel"
-msgstr "Podcast kanalı tarafından belirtilmiş"
+msgstr "Pod yayını kanalı tarafından belirtilmiş"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
@@ -6390,7 +6391,7 @@ msgstr ""
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:30
 #, kde-format
 msgid "Podcast Configuration"
-msgstr "Podcast Ayarları"
+msgstr "Pod Yayını Ayarları"
 
 #. i18n: ectx: property (text), widget (QLabel, m_saveLocationlabel)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:68
@@ -6405,8 +6406,8 @@ msgstr "Kaydetme Konumu:"
 #, kde-format
 msgid "When checked, Amarok will automatically scan the podcast for updates"
 msgstr ""
-"Bunu işaretlediğinizde, Amarok güncellemeleri denetlemek için Podcast'leri "
-"otomatik olarak tarar"
+"Bunu işaretlediğinizde, Amarok güncellemeleri denetlemek için pod "
+"yayınlarını otomatik olarak tarar"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoFetchCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:105
@@ -6443,8 +6444,8 @@ msgid ""
 "Media must be explicitly downloaded, otherwise the podcast will be played "
 "from the remote server."
 msgstr ""
-"Ortam gerçekten indirilmiş olmalıdır, aksi takdirde podcast uzak sunucudan "
-"çalınır."
+"Ortam gerçekten indirilmiş olmalıdır, aksi takdirde pod yayını uzak "
+"sunucudan çalınır."
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_streamRadio)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:140
@@ -6458,7 +6459,7 @@ msgstr "İsteğe &göre uzaktan çal veya indir"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:155
 #, kde-format
 msgid "If checked, Amarok will throw away old podcast episodes"
-msgstr "Bunu işaretlediğinizde, Amarok eski podcast listelerini siler"
+msgstr "Bunu işaretlediğinizde, Amarok eski pod yayını listelerini siler"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_purgeCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:158
@@ -6478,7 +6479,7 @@ msgstr "Maksimumda Tut:"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:194
 #, kde-format
 msgid "The maximum number of podcast items to store"
-msgstr "Depolanacak podcast ögelerinin maksimum sayısı"
+msgstr "En çok depolanacak pod yayını sayısı"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_writeTagsCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:208
@@ -6521,7 +6522,7 @@ msgstr[1] " Öge"
 #: core/podcasts/PodcastMeta.h:385
 #, kde-format
 msgid "Podcast"
-msgstr "Podcast"
+msgstr "Pod Yayını"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
 #, kde-format
@@ -6580,8 +6581,9 @@ msgid ""
 "Downloaded files with this status wouldn't be deleted even if we apply a "
 "purge."
 msgstr ""
-"Bu podcast bölümünün indirilen dosya durumunu \"sakla\" durumuna getirin. Bu "
-"durumdaki indirilmiş dosyalar, tasfiye uygulamasına rağmen silinmeyecektir."
+"Bu pod yayını bölümünün indirilen dosya durumunu \"sakla\" durumuna getirin. "
+"Bu durumdaki indirilmiş dosyalar, tasfiye uygulamasına rağmen "
+"silinmeyecektir."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
 #, kde-format
@@ -6604,12 +6606,12 @@ msgstr[1] " dakika"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:614
 #, kde-format
 msgid "Configure Local Podcasts"
-msgstr "Yerel Podcast'leri Yapılandır"
+msgstr "Yerel Pod Yayınlarını Yapılandır"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:635
 #, kde-format
 msgid "Move Podcasts"
-msgstr "Podcastları Taşı"
+msgstr "Pod Yayınlarını Taşı"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
 #, kde-format
@@ -6635,8 +6637,8 @@ msgstr "İndirilen bölümleri sil"
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
-msgstr[0] "Podcast indirme hala sürüyor"
-msgstr[1] "%1 podcast indirme hala sürüyor"
+msgstr[0] "Pod yayını indirmesi hâlâ sürüyor"
+msgstr[1] "%1 pod yayını indirmesi hâlâ sürüyor"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
 #, kde-format
@@ -6647,22 +6649,22 @@ msgstr "İndirmeyi İptal Et ve Çık."
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
-msgstr "Podcast bölümü %1 dosyasına kaydedilemedi"
+msgstr "Pod yayını dosyası, %1 konumuna kaydedilemedi"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
 #, kde-format
 msgid "Downloading Podcast Media"
-msgstr "Podcast Ortamı İndiriliyor"
+msgstr "Pod Yayını Ortamı İndiriliyor"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1169
 #, kde-format
 msgid "Downloading Podcast \"%1\""
-msgstr "\"%1\" Podcastı İndiriliyor"
+msgstr "\"%1\" Pod Yayını İndiriliyor"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.h:56
 #, kde-format
 msgid "Local Podcasts"
-msgstr "Yerel Podcastlar"
+msgstr "Yerel Pod Yayınları"
 
 #. i18n: ectx: property (text), widget (QLabel, m_intervalLabel)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:32
@@ -6714,10 +6716,10 @@ msgstr ""
 "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Tüm yeni podcast kanalları "
-"için temel dizin.</p>\n"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Tüm yeni pod yayını "
+"kanalları için temel dizin.</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Podcast kanalı "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Pod yayını kanalı "
 "eklendiğinde <span style=\" font-style:italic;\">&lt;temel dizin&gt;</span>/"
 "<span style=\" font-style:italic;\">&lt;kanal adı&gt;</span> indirme dizini "
 "olarak kullanılacaktır.</p>\n"
@@ -6734,10 +6736,10 @@ msgid ""
 "the download directory.\n"
 "This can be changed for each channel individually."
 msgstr ""
-"Tüm yeni podcast kanalları için temel dizin.\n"
-"Bir podcast kanalı eklendiğinde <temel dizin>/<kanal adı> indirme dizini "
+"Tüm yeni pod yayını kanalları için temel dizin.\n"
+"Bir pod yayını kanalı eklendiğinde <temel dizin>/<kanal adı> indirme dizini "
 "olarak kullanılır.\n"
-"Bu, her bir kanal için ayrı ayrı değiştirilebilirdir."
+"Bu, her bir kanal için ayrı ayrı değiştirilebilir."
 
 #: core-impl/storage/StorageManager.cpp:162
 #, kde-format
@@ -7314,12 +7316,12 @@ msgstr[1] "%1 saniye"
 #: core/podcasts/PodcastReader.cpp:453
 #, kde-format
 msgid "Importing podcast channel from %1"
-msgstr "%1 konumundan podcast kanalı içe aktarılıyor"
+msgstr "%1 konumundan pod yayını kanalı içe aktarılıyor"
 
 #: core/podcasts/PodcastReader.cpp:457
 #, kde-format
 msgid "Updating podcast channel"
-msgstr "Podcast kanalı güncelleniyor"
+msgstr "Pod yayını kanalı güncelleniyor"
 
 #: core/podcasts/PodcastReader.cpp:458
 #, kde-format
@@ -7329,12 +7331,12 @@ msgstr "\"%1\" güncelleniyor"
 #: core/podcasts/PodcastReader.cpp:506 core/podcasts/PodcastReader.cpp:520
 #, kde-format
 msgid "Importing podcast from %1 failed with error:\n"
-msgstr "%1 konumundan podcast içe aktarma işlemi başarısız oldu:\n"
+msgstr "%1 konumundan pod yayını içe aktarma işlemi başarısız oldu:\n"
 
 #: core/podcasts/PodcastReader.cpp:510 core/podcasts/PodcastReader.cpp:524
 #, kde-format
 msgid "Updating podcast from %1 failed with error:\n"
-msgstr "%1 konumundan podcast güncelleme işlemi başarısız oldu:\n"
+msgstr "%1 konumundan pod yayını güncelleme işlemi başarısız oldu:\n"
 
 #: core/podcasts/PodcastReader.cpp:511 core/podcasts/PodcastReader.cpp:525
 #, kde-format
@@ -10973,7 +10975,7 @@ msgstr "Frank Meerkötter"
 #: main.cpp:208 main.cpp:228
 #, kde-format
 msgid "Podcast improvements"
-msgstr "Podcast iyileştirmeleri"
+msgstr "Pod yayını iyileştirmeleri"
 
 #: main.cpp:210
 #, kde-format
@@ -11939,7 +11941,7 @@ msgstr "Değer"
 #: OpmlParser.cpp:127
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
-msgstr "%1 üzerinden OPML podcast okuma işlemi başarısız oldu:\n"
+msgstr "%1 üzerinden OPML pod yayını okuma işlemi başarısız oldu:\n"
 
 #: playback/EqualizerController.cpp:133
 #, kde-format
@@ -14376,7 +14378,7 @@ msgstr "&Sınama Oturumu"
 #: services/gpodder/GpodderProvider.cpp:291
 #, kde-format
 msgid "Gpodder Podcasts"
-msgstr "Gpodder Podcast'leri"
+msgstr "Gpodder Pod Yayınları"
 
 #: services/gpodder/GpodderProvider.cpp:468
 #, kde-format
@@ -14401,12 +14403,13 @@ msgstr ""
 #: services/gpodder/GpodderService.cpp:113
 #, kde-format
 msgid "gpodder.net: Podcast Directory Service"
-msgstr "gpodder.net: Podcast Dizin Hizmeti"
+msgstr "gpodder.net: Pod Yayını Dizin Hizmeti"
 
 #: services/gpodder/GpodderService.cpp:116
 #, kde-format
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
-msgstr "gpodder.net, çevrimiçi bir Podcast Dizini ve Eşleştirme Servisidir."
+msgstr ""
+"gpodder.net, çevrimiçi bir pod yayını dizini ve eşzamanlama hizmetidir."
 
 #: services/gpodder/GpodderService.cpp:222
 #: services/opmldirectory/OpmlDirectoryService.cpp:127
@@ -15988,12 +15991,12 @@ msgstr "Boş bırakılırsa OPML başlığı kullanılacaktır."
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:56
 #, kde-format
 msgid "Loading Podcast Info..."
-msgstr "Podcast Bilgileri Yükleniyor..."
+msgstr "Pod Yayını Bilgisi Yükleniyor..."
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:66
 #, kde-format
 msgid "Fetching Podcast Info"
-msgstr "Podcast Bilgisi Alınıyor"
+msgstr "Pod Yayını Bilgisi Alınıyor"
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:39
 #: services/opmldirectory/OpmlDirectoryService.cpp:136
@@ -16015,12 +16018,12 @@ msgstr "Yeni Klasör"
 #: services/opmldirectory/OpmlDirectoryService.cpp:50
 #, kde-format
 msgid "Podcast Directory"
-msgstr "Podcast Dizini"
+msgstr "Pod Yayını Dizini"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:70
 #, kde-format
 msgid "A large listing of podcasts"
-msgstr "Podcast'ların geniş bir listesi"
+msgstr "Pod yayınlarının geniş bir listesi"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:73
 #, kde-format
@@ -16028,8 +16031,8 @@ msgid ""
 "A comprehensive list of searchable podcasts that you can subscribe to "
 "directly from within Amarok."
 msgstr ""
-"Doğrudan Amarok'dan abone olabileceğiniz aranabilir podcast'lerin kapsamlı "
-"bir listesi."
+"Doğrudan Amarok'dan abone olabileceğiniz aranabilir pod yayınlarının "
+"kapsamlı bir listesi."
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:160
 #, kde-format
