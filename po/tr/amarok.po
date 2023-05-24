@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2023-05-22 13:57+0300\n"
+"PO-Revision-Date: 2023-05-24 00:50+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 23.03.70\n"
+"X-Generator: Lokalize 23.07.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -3817,7 +3817,7 @@ msgstr "Koleksiyonlar"
 #: configdialog/dialogs/PluginsConfig.cpp:47
 #, kde-format
 msgid "Internet Services"
-msgstr "İnternet Servisleri"
+msgstr "İnternet Hizmetleri"
 
 #: configdialog/dialogs/PluginsConfig.cpp:50
 #, kde-format
@@ -3876,7 +3876,7 @@ msgstr "Şarkı Sözleri"
 #: configdialog/dialogs/ScriptsConfig.cpp:215
 #, kde-format
 msgid "Scriptable Service"
-msgstr "Betik Temelli Servis"
+msgstr "Betik Yazılabilir Hizmet"
 
 #. i18n: ectx: property (text), widget (QPushButton, uninstallButton)
 #: configdialog/dialogs/ScriptsConfig.ui:36
@@ -14397,7 +14397,7 @@ msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
 "seconds..."
 msgstr ""
-"GPodder Servisi, sunucudan veri alamadı. 10 saniye içinde yeniden "
+"GPodder Hizmeti, sunucudan veri alamadı. 10 saniye içinde yeniden "
 "deneyecek..."
 
 #: services/gpodder/GpodderService.cpp:113
@@ -14687,7 +14687,7 @@ msgstr "<a href=\"http://www.last.fm:80/signup.php\">Last.fm'e Kaydol</a>"
 #: services/lastfm/LastFmConfigWidget.ui:119
 #, kde-format
 msgid "Last.fm Services"
-msgstr "Last.fm Servisleri"
+msgstr "Last.fm Hizmetleri"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_SubmitPlayedSongs)
 #: services/lastfm/LastFmConfigWidget.ui:128
@@ -14909,7 +14909,7 @@ msgstr "Sınama Oturumu"
 #: services/lastfm/LastFmServiceSettings.cpp:173
 #, kde-format
 msgid "Unable to connect to Last.fm service."
-msgstr "Last.fm servisine bağlanılamadı."
+msgstr "Last.fm hizmetine bağlanılamadı."
 
 #: services/lastfm/LastFmTreeModel.cpp:129
 #, kde-format
@@ -15756,7 +15756,7 @@ msgstr[1] "%1 sanatçı."
 #: services/mp3tunes/harmonydaemon/main.cpp:36
 #, kde-format
 msgid "Amarok's MP3tunes Harmony Daemon"
-msgstr "Amarok MP3Tunes Harmony Servisi"
+msgstr "Amarok'un MP3Tunes Harmony Ardalan Süreci"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:38
 #, kde-format
@@ -15793,7 +15793,7 @@ msgstr "http://amarok.kde.org"
 #: services/mp3tunes/harmonydaemon/main.cpp:48
 #, kde-format
 msgid "The identifier the daemon should use."
-msgstr "Servisin kullanacağı tanımlayıcı."
+msgstr "Ardalan sürecinin kullanması gereken tanımlayıcı."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:49
 #, kde-format
@@ -16050,7 +16050,7 @@ msgstr "Bilgiler yükleniyor..."
 #: services/ServiceBase.cpp:337
 #, kde-format
 msgid "This service does not accept any messages"
-msgstr "Bu servis hiçbir iletiyi kabul etmez"
+msgstr "Bu hizmet, hiçbir iletiyi kabul etmiyor"
 
 #: services/ServiceBase.cpp:344
 #, kde-format
@@ -16066,7 +16066,7 @@ msgstr "Çalınabilir veya indirilebilir herhangi bir url belirtilmedi."
 #: services/ServicePluginManager.cpp:180
 #, kde-format
 msgid "No service named %1 is currently loaded"
-msgstr "%1 adlı yüklenmiş bir servis yok"
+msgstr "%1 adında şu anda yüklü bir hizmet yok"
 
 #: statsyncing/Config.cpp:100
 #, kde-format
