@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2023-05-24 00:50+0300\n"
+"PO-Revision-Date: 2023-05-29 12:29+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 23.07.70\n"
+"X-Generator: Lokalize 23.04.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -5558,8 +5558,8 @@ msgid ""
 "One track was not transferred because it would exceed iPod capacity.<br>"
 msgid_plural ""
 "%1 tracks were not transferred because it would exceed iPod capacity.<br>"
-msgstr[0] "İPod'un kapasitesi doldığundan, bir parça aktarılamadı.<br>"
-msgstr[1] "İPod'un kapasitesi doldığundan, %1 parça aktarılamadı.<br>"
+msgstr[0] "iPod'un kapasitesi dolduğundan bir parça aktarılamadı.<br>"
+msgstr[1] "iPod'un kapasitesi dolduğundan %1 parça aktarılamadı.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
 #, kde-format
@@ -5596,8 +5596,8 @@ msgstr[1] "%1 dosyanın kopyalama/taşıma/çapraz kodlama işlemi başarısız.
 msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
 "%1 tracks were not transferred due to an internal Amarok error.<br>"
-msgstr[0] "Bir parça, dahili Amarok hatası yüzünden aktarılamadı.<br>"
-msgstr[1] "%1 parça, dahili Amarok hatası yüzünden aktarılamadı.<br>"
+msgstr[0] "Bir parça, içsel Amarok hatası yüzünden aktarılamadı.<br>"
+msgstr[1] "%1 parça, içsel Amarok hatası yüzünden aktarılamadı.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:417
 #, kde-format
@@ -16638,15 +16638,15 @@ msgid ""
 msgstr ""
 "<b>Not:</b> Bir kodlayıcı mevcut değil. Parçaları aktarmak istiyorsanız "
 "lütfen <i>ffmpeg</i> veya <i>libav</i> paketini (<i>ffmpeg</i> ile birlikte) "
-"uygun kodlayıcılarla kurun. Aksi takdirde, gelecekteki transferler için bu "
-"diyalog penceresini atlamak için <i>bu seçimi bir sonraki sefer için "
-"hatırla</i> seçeneğini işaretleyebilirsiniz."
+"uygun kodlayıcılarla kurun. Aksi takdirde, gelecekteki aktarımlar için bu "
+"iletişim kutusunu atlamak için <i>Gelecekte bu seçimi anımsa</i> seçeneğini "
+"işaretleyebilirsiniz."
 
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: transcoding/TranscodingAssistantDialog.ui:275
 #, kde-format
 msgid "Remember this choice for the next time"
-msgstr "Gelecek defa bu seçimi hatırla"
+msgstr "Gelecekte bu seçimi anımsa"
 
 #: transcoding/TranscodingOptionsStackedWidget.cpp:56
 #, kde-format
