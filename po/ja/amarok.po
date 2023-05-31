@@ -19,7 +19,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -2102,8 +2102,7 @@ msgstr "カウント中..."
 #, kde-format
 msgid "1 track"
 msgid_plural "%1 tracks"
-msgstr[0] "1 トラック"
-msgstr[1] "%1 トラック"
+msgstr[0] "%1 トラック"
 
 #: browsers/CollectionTreeItemModelBase.cpp:279
 #: browsers/CollectionTreeItemModelBase.cpp:370
@@ -2284,8 +2283,7 @@ msgstr "削除を確認"
 #, kde-format
 msgid "Are you sure you want to delete this item?"
 msgid_plural "Are you sure you want to delete these %1 items?"
-msgstr[0] "本当にこのアイテムを削除しますか？"
-msgstr[1] "本当にこれらの %1 アイテムを削除しますか？"
+msgstr[0] "本当にこれらの %1 アイテムを削除しますか？"
 
 #: browsers/filebrowser/FileView.cpp:578
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
@@ -2298,8 +2296,7 @@ msgstr "ファイルをごみ箱に移動の確認"
 #, kde-format
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
-msgstr[0] "本当にこのアイテムを削除しますか？"
-msgstr[1] "本当にこれらの %1 アイテムを削除しますか？"
+msgstr[0] "本当にこれらの %1 アイテムを削除しますか？"
 
 #: browsers/InfoProxy.cpp:166
 #, kde-format
@@ -2576,8 +2573,7 @@ msgstr "新しいフォルダ"
 msgctxt "number of playlists from one source"
 msgid "One Playlist"
 msgid_plural "%1 playlists"
-msgstr[0] "1 個のプレイリスト"
-msgstr[1] "%1 個のプレイリスト"
+msgstr[0] "%1 個のプレイリスト"
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:126
 #, fuzzy, kde-format
@@ -2591,8 +2587,7 @@ msgstr "読み込み中"
 msgctxt "number of playlists from one source"
 msgid "One playlist"
 msgid_plural "%1 playlists"
-msgstr[0] "1 個のプレイリスト"
-msgstr[1] "%1 個のプレイリスト"
+msgstr[0] "%1 個のプレイリスト"
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:401
 #, kde-format
@@ -2637,8 +2632,7 @@ msgstr "プレイリストをエクスポート(&E)..."
 msgctxt "First part of 'Remove %1 From %2'"
 msgid "a Track"
 msgid_plural "%1 Tracks"
-msgstr[0] "1 トラック"
-msgstr[1] "%1 トラックの情報"
+msgstr[0] "%1 トラックの情報"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
 #, fuzzy, kde-format
@@ -2658,7 +2652,6 @@ msgctxt "Second part of 'Remove %1 From %2'"
 msgid "1 Playlist"
 msgid_plural "%1 Playlists"
 msgstr[0] "プレイリスト"
-msgstr[1] "プレイリスト"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:379
 #, fuzzy, kde-format
@@ -2667,8 +2660,7 @@ msgstr[1] "プレイリスト"
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
 msgid_plural "Remove %1 Tracks From %2"
-msgstr[0] "1 個のトラックを %2 から削除しています"
-msgstr[1] "%1 個のトラックを %2 から削除しています"
+msgstr[0] "%1 個のトラックを %2 から削除しています"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, fuzzy, kde-format
@@ -2829,8 +2821,7 @@ msgstr "スキャンの間隔..."
 msgctxt "number of podcasts from one source"
 msgid "One Channel"
 msgid_plural "%1 channels"
-msgstr[0] "1 個のチャンネル"
-msgstr[1] "%1 個のチャンネル"
+msgstr[0] "%1 個のチャンネル"
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #: browsers/playlistbrowser/PodcastModel.cpp:301
@@ -3433,7 +3424,6 @@ msgstr "同期: %1"
 msgid "(%2one exception%3)"
 msgid_plural "(%2%1 exceptions%3)"
 msgstr[0] ""
-msgstr[1] ""
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_tagsGroup)
 #: configdialog/dialogs/MetadataConfig.ui:17
@@ -3989,7 +3979,6 @@ msgstr "初回再生"
 msgid "%1 track"
 msgid_plural "%1 tracks"
 msgstr[0] "%1 個のトラック"
-msgstr[1] "%1 個のトラック"
 
 #: context/applets/albums/plugin/AlbumsEngine.cpp:185
 #, kde-format
@@ -4023,7 +4012,6 @@ msgstr ""
 msgid "%1 pixel"
 msgid_plural "%1 pixels"
 msgstr[0] ""
-msgstr[1] ""
 
 #: context/applets/analyzer/package/contents/ui/main.qml:91
 #, fuzzy, kde-format
@@ -4707,8 +4695,7 @@ msgstr "%1: 近日中のイベントはありません"
 msgctxt "@title:group Number of upcoming events"
 msgid "1 event"
 msgid_plural "%1 events"
-msgstr[0] "1 個のイベント"
-msgstr[1] "%1 個のイベント"
+msgstr[0] "%1 個のイベント"
 
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:231
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:641
@@ -4716,8 +4703,7 @@ msgstr[1] "%1 個のイベント"
 msgctxt "@title:group Number of upcoming events"
 msgid "%1: 1 event"
 msgid_plural "%1: %2 events"
-msgstr[0] "%1: 1 個のイベント"
-msgstr[1] "%1: %2 個のイベント"
+msgstr[0] "%1: %2 個のイベント"
 
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
 #, kde-format
@@ -4976,8 +4962,7 @@ msgstr "<strong>サポートするアーティスト:</strong><nl/>%1"
 msgctxt "@info:tooltip Number of days till an event"
 msgid "Tomorrow"
 msgid_plural "In <strong>%1</strong> days"
-msgstr[0] "明日"
-msgstr[1] "<strong>%1</strong> 日後"
+msgstr[0] "<strong>%1</strong> 日後"
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:269
 #, kde-format
@@ -5532,7 +5517,6 @@ msgid_plural ""
 "Failed to process %1 tracks. (more info about these is in the Amarok "
 "debugging log)"
 msgstr[0] ""
-msgstr[1] ""
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:318
 #, kde-format
@@ -5552,8 +5536,7 @@ msgstr ""
 msgctxt "%2 is collection name"
 msgid "Transferred one track to %2."
 msgid_plural "Transferred %1 tracks to %2."
-msgstr[0] "1 個のトラックを %2 に移動しています"
-msgstr[1] "%1 個のトラックを %2 に移動しています"
+msgstr[0] "%1 個のトラックを %2 に移動しています"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:227
 #, fuzzy, kde-format
@@ -5562,14 +5545,12 @@ msgctxt "%2 is collection name"
 msgid "Transcoded one track to %2."
 msgid_plural "Transcoded %1 tracks to %2."
 msgstr[0] "トラックのトランスコードと移動"
-msgstr[1] "トラックのトランスコードと移動"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:236
 #, kde-format
 msgid "Transfer aborted. Managed to transfer one track."
 msgid_plural "Transfer aborted. Managed to transfer %1 tracks."
 msgstr[0] ""
-msgstr[1] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:244
 #, kde-format
@@ -5577,7 +5558,6 @@ msgctxt "%2 is the 'Transferred 123 tracks to Some collection.' message"
 msgid "%2 One track was already there."
 msgid_plural "%2 %1 tracks were already there."
 msgstr[0] ""
-msgstr[1] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
 #, fuzzy, kde-format
@@ -5593,7 +5573,6 @@ msgid ""
 msgid_plural ""
 "%1 tracks successfully transferred, but transfer of some other tracks failed."
 msgstr[0] ""
-msgstr[1] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:379
 #, fuzzy, kde-format
@@ -5609,7 +5588,6 @@ msgid ""
 msgid_plural ""
 "%1 tracks were not transferred because it would exceed iPod capacity.<br>"
 msgstr[0] ""
-msgstr[1] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
 #, kde-format
@@ -5626,14 +5604,12 @@ msgid_plural ""
 "%1 tracks were not copied because they wouldn't be playable - they are in "
 "unsupported formats (%2).<br>"
 msgstr[0] ""
-msgstr[1] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
 #, kde-format
 msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
 msgstr[0] ""
-msgstr[1] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:414
 #, kde-format
@@ -5641,7 +5617,6 @@ msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
 "%1 tracks were not transferred due to an internal Amarok error.<br>"
 msgstr[0] ""
-msgstr[1] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:417
 #, kde-format
@@ -5665,8 +5640,7 @@ msgstr ""
 #| msgid_plural "Removing %1 tracks from %2"
 msgid "Removing one track from iPod"
 msgid_plural "Removing %1 tracks from iPod"
-msgstr[0] "1 個のトラックを %2 から削除しています"
-msgstr[1] "%1 個のトラックを %2 から削除しています"
+msgstr[0] "%1 個のトラックを %2 から削除しています"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:57
 #, fuzzy, kde-format
@@ -5983,8 +5957,7 @@ msgstr "デバイスにトラックを転送しています"
 #, kde-format
 msgid "%1 track failed to copy to the device"
 msgid_plural "%1 tracks failed to copy to the device"
-msgstr[0] "1 トラックをデバイスにコピーするのに失敗しました"
-msgstr[1] "%1 トラックをデバイスにコピーするのに失敗しました"
+msgstr[0] "%1 トラックをデバイスにコピーするのに失敗しました"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:561
 #, kde-format
@@ -5996,14 +5969,12 @@ msgstr "トラックをデバイスにコピーするのに失敗しました"
 msgid "Track not deleted:"
 msgid_plural "Tracks not deleted:"
 msgstr[0] "トラックは削除されませんでした:"
-msgstr[1] "トラックは削除されませんでした:"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:572
 #, kde-format
 msgid "Deleting Track Failed"
 msgid_plural "Deleting Tracks Failed"
 msgstr[0] "トラックの削除に失敗しました"
-msgstr[1] "トラックの削除に失敗しました"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:576
 #, kde-format
@@ -6015,7 +5986,6 @@ msgstr "%1 トラックは既にデバイスから削除されています。"
 msgid "Removing Track from Device"
 msgid_plural "Removing Tracks from Device"
 msgstr[0] "デバイスからトラックを削除"
-msgstr[1] "デバイスからトラックを削除"
 
 #: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:241
 #, kde-format
@@ -6100,9 +6070,6 @@ msgid_plural ""
 "Do you really want to delete these %1 tracks? They will be removed from %2 "
 "and from underlying storage medium."
 msgstr[0] ""
-"このトラックを削除しますか？このトラックは %2 からのほか、ストレージメディア"
-"からも削除されます。"
-msgstr[1] ""
 "これら %1 個のトラックを削除しますか？これらのトラックは %2 からのほか、スト"
 "レージメディアからも削除されます。"
 
@@ -6123,8 +6090,6 @@ msgid_plural ""
 "Do you really want to move these %1 tracks to the trash? They will be "
 "removed from %2."
 msgstr[0] ""
-"このトラックをごみ箱に移動しますか？このトラックは %1 から削除されます。"
-msgstr[1] ""
 "これら %2 個のトラックをごみ箱に移動しますか？これらのトラックは %1 から削除"
 "されます。"
 
@@ -6138,9 +6103,6 @@ msgid_plural ""
 "Do you really want to move these %1 tracks? They will be renamed and the "
 "originals deleted."
 msgstr[0] ""
-"このトラックを移動しますか？このトラックは名前が変更され、オリジナルは削除さ"
-"れます。"
-msgstr[1] ""
 "%1 個のトラックを移動しますか？これらのトラックは名前が変更され、オリジナルは"
 "削除されます。"
 
@@ -6166,9 +6128,6 @@ msgid_plural ""
 "There was a problem and %1 tracks could not be removed. Make sure the "
 "directory is writable."
 msgstr[0] ""
-"何らかの問題が発生したため、このトラックは削除できませんでした。ディレクトリ"
-"に対して書き込み権限があるかどうか、確認してください。"
-msgstr[1] ""
 "何らかの問題が発生したため、これら %1 個のトラックは削除できませんでした。"
 "ディレクトリに対して書き込み権限があるかどうか、確認してください。"
 
@@ -6255,8 +6214,7 @@ msgstr "エピソードを削除(&D)"
 #, kde-format
 msgid "Are you sure you want to delete this episode?"
 msgid_plural "Are you sure you want to delete these %1 episodes?"
-msgstr[0] "本当にこのエピソードを削除しますか？"
-msgstr[1] "本当にこれらの %1 エピソードを削除しますか？"
+msgstr[0] "本当にこれらの %1 エピソードを削除しますか？"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:278
 #, kde-format
@@ -6298,8 +6256,7 @@ msgstr "USB マスストレージデバイスを設定"
 #, kde-format
 msgid "Removing one track from %2"
 msgid_plural "Removing %1 tracks from %2"
-msgstr[0] "1 個のトラックを %2 から削除しています"
-msgstr[1] "%1 個のトラックを %2 から削除しています"
+msgstr[0] "%1 個のトラックを %2 から削除しています"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, UmsConfiguration)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:14
@@ -6577,7 +6534,6 @@ msgstr "%1 を設定"
 msgid " Item"
 msgid_plural " Items"
 msgstr[0] " 個の項目"
-msgstr[1] " 個の項目"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:429
 #: core/podcasts/PodcastMeta.h:385
@@ -6660,7 +6616,6 @@ msgstr "毎 "
 msgid " minute"
 msgid_plural " minutes"
 msgstr[0] " 分"
-msgstr[1] " 分"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:614
 #, kde-format
@@ -6696,8 +6651,7 @@ msgstr "ダウンロードしたエピソードを削除"
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
-msgstr[0] "進行中のポッドキャストダウンロードがあります"
-msgstr[1] "進行中のポッドキャストダウンロードが %1 あります"
+msgstr[0] "進行中のポッドキャストダウンロードが %1 あります"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
 #, kde-format
@@ -6843,8 +6797,7 @@ msgstr "トラックのトランスコードとコピー"
 #| msgid_plural "Moving %1 tracks to %2"
 msgid "Organizing one track"
 msgid_plural "Organizing %1 tracks"
-msgstr[0] "1 個のトラックを %2 に移動しています"
-msgstr[1] "%1 個のトラックを %2 に移動しています"
+msgstr[0] "%1 個のトラックを %2 に移動しています"
 
 #: core/collections/CollectionLocation.cpp:413
 #, fuzzy, kde-format
@@ -6852,14 +6805,12 @@ msgstr[1] "%1 個のトラックを %2 に移動しています"
 msgid "Transcoding and organizing one track"
 msgid_plural "Transcoding and organizing %1 tracks"
 msgstr[0] "トラックをトランスコード/整理しています"
-msgstr[1] "トラックをトランスコード/整理しています"
 
 #: core/collections/CollectionLocation.cpp:419
 #, kde-format
 msgid "Moving one track to %2"
 msgid_plural "Moving %1 tracks to %2"
-msgstr[0] "1 個のトラックを %2 に移動しています"
-msgstr[1] "%1 個のトラックを %2 に移動しています"
+msgstr[0] "%1 個のトラックを %2 に移動しています"
 
 #: core/collections/CollectionLocation.cpp:422
 #, fuzzy, kde-format
@@ -6867,14 +6818,12 @@ msgstr[1] "%1 個のトラックを %2 に移動しています"
 msgid "Transcoding and moving one track to %2"
 msgid_plural "Transcoding and moving %1 tracks to %2"
 msgstr[0] "トラックをトランスコード/移動しています"
-msgstr[1] "トラックをトランスコード/移動しています"
 
 #: core/collections/CollectionLocation.cpp:428
 #, kde-format
 msgid "Copying one track to %2"
 msgid_plural "Copying %1 tracks to %2"
-msgstr[0] "1 個のトラックを %2 にコピーしています"
-msgstr[1] "%1 個のトラックを %2 にコピーしています"
+msgstr[0] "%1 個のトラックを %2 にコピーしています"
 
 #: core/collections/CollectionLocation.cpp:431
 #, fuzzy, kde-format
@@ -6882,7 +6831,6 @@ msgstr[1] "%1 個のトラックを %2 にコピーしています"
 msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
 msgstr[0] "トラックをトランスコード/コピーしています"
-msgstr[1] "トラックをトランスコード/コピーしています"
 
 #: core/meta/Meta.cpp:207
 #, fuzzy, kde-format
@@ -7357,7 +7305,6 @@ msgctxt "number of days with spacing for the pretty time"
 msgid "%1 day, "
 msgid_plural "%1 days, "
 msgstr[0] "%1 日"
-msgstr[1] "%1 日"
 
 #: core/meta/support/MetaUtility.cpp:429
 #, kde-format
@@ -7373,7 +7320,6 @@ msgctxt "number of years for the pretty time"
 msgid "%1 year"
 msgid_plural "%1 years"
 msgstr[0] "%1 年"
-msgstr[1] "%1 年"
 
 # |,no-check-spell
 #: core/meta/support/MetaUtility.cpp:445
@@ -7382,7 +7328,6 @@ msgctxt "number of months for the pretty time"
 msgid "%1 month"
 msgid_plural "%1 months"
 msgstr[0] "%1 月"
-msgstr[1] "%1 月"
 
 #: core/meta/support/MetaUtility.cpp:447
 #, kde-format
@@ -7390,7 +7335,6 @@ msgctxt "number of days for the pretty time"
 msgid "%1 day"
 msgid_plural "%1 days"
 msgstr[0] "%1 日"
-msgstr[1] "%1 日"
 
 #: core/meta/support/MetaUtility.cpp:449
 #, kde-format
@@ -7398,7 +7342,6 @@ msgctxt "number of hours for the pretty time"
 msgid "%1 hour"
 msgid_plural "%1 hours"
 msgstr[0] "%1 時間"
-msgstr[1] "%1 時間"
 
 #: core/meta/support/MetaUtility.cpp:451
 #, kde-format
@@ -7406,7 +7349,6 @@ msgctxt "number of minutes for the pretty time"
 msgid "%1 minute"
 msgid_plural "%1 minutes"
 msgstr[0] "%1 分"
-msgstr[1] "%1 分"
 
 #: core/meta/support/MetaUtility.cpp:453
 #, kde-format
@@ -7414,7 +7356,6 @@ msgctxt "number of seconds for the pretty time"
 msgid "%1 second"
 msgid_plural "%1 seconds"
 msgstr[0] "%1 秒"
-msgstr[1] "%1 秒"
 
 #: core/podcasts/PodcastReader.cpp:453
 #, kde-format
@@ -7509,8 +7450,7 @@ msgstr "%1%"
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
-msgstr[0] "1 週間前"
-msgstr[1] "%1 週間前"
+msgstr[0] "%1 週間前"
 
 #: core/support/Amarok.cpp:70
 #, kde-format
@@ -7521,22 +7461,19 @@ msgstr "昨日"
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
-msgstr[0] "昨日"
-msgstr[1] "%1 日前"
+msgstr[0] "%1 日前"
 
 #: core/support/Amarok.cpp:74
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
-msgstr[0] "1 時間前"
-msgstr[1] "%1 時間前"
+msgstr[0] "%1 時間前"
 
 #: core/support/Amarok.cpp:80
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
-msgstr[0] "1 分前"
-msgstr[1] "%1 分前"
+msgstr[0] "%1 分前"
 
 #: core/support/Amarok.cpp:81
 #, kde-format
@@ -8132,14 +8069,12 @@ msgstr "%1 のカバーが見つかりませんでした。"
 msgid "Fetch Cover"
 msgid_plural "Fetch Covers"
 msgstr[0] "カバーを取得"
-msgstr[1] "カバーを取得"
 
 #: covermanager/CoverFetchingActions.cpp:49
 #, kde-format
 msgid "Fetch the artwork for this album"
 msgid_plural "Fetch artwork for %1 albums"
-msgstr[0] "このアルバムのアートワークを取得"
-msgstr[1] "%1 アルバムのアートワークを取得"
+msgstr[0] "%1 アルバムのアートワークを取得"
 
 #: covermanager/CoverFetchingActions.cpp:76
 #: covermanager/CoverFoundDialog.cpp:380
@@ -8157,22 +8092,19 @@ msgstr "このアルバムのアートワークを表示"
 msgid "Unset Cover"
 msgid_plural "Unset Covers"
 msgstr[0] "カバーの設定を解除"
-msgstr[1] "カバーの設定を解除"
 
 #: covermanager/CoverFetchingActions.cpp:98
 #, kde-format
 msgid "Remove artwork for this album"
 msgid_plural "Remove artwork for %1 albums"
-msgstr[0] "このアルバムのアートワークを削除"
-msgstr[1] "%1 アルバムのアートワークを削除"
+msgstr[0] "%1 アルバムのアートワークを削除"
 
 #: covermanager/CoverFetchingActions.cpp:111
 #, kde-format
 msgid "Are you sure you want to remove this cover from the Collection?"
 msgid_plural ""
 "Are you sure you want to delete these %1 covers from the Collection?"
-msgstr[0] "本当にこのカバーをコレクションから削除しますか？"
-msgstr[1] "本当にこれら %1 個のカバーをコレクションから削除しますか？"
+msgstr[0] "本当にこれら %1 個のカバーをコレクションから削除しますか？"
 
 #: covermanager/CoverFetchingActions.cpp:134
 #, kde-format
@@ -8183,8 +8115,7 @@ msgstr "カスタムカバーを設定"
 #, kde-format
 msgid "Set custom artwork for this album"
 msgid_plural "Set custom artwork for these %1 albums"
-msgstr[0] "このアルバムに別のアートワークを設定"
-msgstr[1] "これら %1 個のアルバムに別のアートワークを設定"
+msgstr[0] "これら %1 個のアルバムに別のアートワークを設定"
 
 #: covermanager/CoverFetchingActions.cpp:167
 #, kde-format
@@ -8274,8 +8205,7 @@ msgstr "画像が見つかりません。"
 #, kde-format
 msgid "1 Image Found"
 msgid_plural "%1 Images Found"
-msgstr[0] "1 個の画像が見つかりました"
-msgstr[1] "%1 個の画像が見つかりました"
+msgstr[0] "%1 個の画像が見つかりました"
 
 #: covermanager/CoverFoundDialog.cpp:744
 #, kde-format
@@ -8420,8 +8350,7 @@ msgstr "完了。"
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
-msgstr[0] "カバーが見つかりませんでした"
-msgstr[1] "%1 個のカバーが見つかりませんでした"
+msgstr[0] "%1 個のカバーが見つかりませんでした"
 
 #: covermanager/CoverManager.cpp:640
 #, kde-format
@@ -8438,15 +8367,13 @@ msgstr "%1 のカバーを取得中..."
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
-msgstr[0] "1 個のカバーを取得中... : "
-msgstr[1] "%1 個のカバーを取得中... : "
+msgstr[0] "%1 個のカバーを取得中... : "
 
 #: covermanager/CoverManager.cpp:654
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
-msgstr[0] "1 個取得しました"
-msgstr[1] "%1 個取得しました"
+msgstr[0] "%1 個取得しました"
 
 #: covermanager/CoverManager.cpp:658
 #, kde-format
@@ -8457,8 +8384,7 @@ msgstr " - "
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
-msgstr[0] "1 個見つかりませんでした"
-msgstr[1] "%1 個見つかりませんでした"
+msgstr[0] "%1 個見つかりませんでした"
 
 #: covermanager/CoverManager.cpp:662
 #, kde-format
@@ -8469,15 +8395,13 @@ msgstr "接続中..."
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
-msgstr[0] "1 個該当 (検索文字: %2)"
-msgstr[1] "%1 個該当 (検索文字: %2)"
+msgstr[0] "%1 個該当 (検索文字: %2)"
 
 #: covermanager/CoverManager.cpp:689
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
-msgstr[0] "1 アルバム"
-msgstr[1] "%1 アルバム"
+msgstr[0] "%1 アルバム"
 
 #: covermanager/CoverManager.cpp:701
 #, kde-format
@@ -8498,7 +8422,6 @@ msgstr "%1 (%2)"
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
 msgstr[0] " - ( カバー未取得: <b>%1</b> )"
-msgstr[1] " - ( カバー未取得: <b>%1</b> )"
 
 #: covermanager/CoverManager.cpp:765
 #, kde-format
@@ -8624,7 +8547,6 @@ msgstr "<font color='red'>失敗:</font>トラックをインポートできま�
 msgid "<b><font color='green'>Success:</font></b> Imported %1 track"
 msgid_plural "<b><font color='green'>Success:</font></b> Imported %1 tracks"
 msgstr[0] "<font color='green'>成功:</font> %1 トラックをインポートしました"
-msgstr[1] "<font color='green'>成功:</font> %1 トラックをインポートしました"
 
 #: dialogs/DatabaseImporterDialog.cpp:115
 #, kde-format
@@ -8711,8 +8633,7 @@ msgstr ""
 #, kde-format
 msgid "<b>1</b> file selected."
 msgid_plural "<b>%1</b> files selected."
-msgstr[0] "<b>1</b> 個のファイルが選択されています。"
-msgstr[1] "<b>%1</b> 個のファイルが選択されています。"
+msgstr[0] "<b>%1</b> 個のファイルが選択されています。"
 
 #: dialogs/deletedialog.cpp:69
 #, kde-format
@@ -9591,8 +9512,7 @@ msgstr "トラックの詳細: %1 by %2"
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
 msgid_plural "Information for %1 Tracks"
-msgstr[0] "1 トラック"
-msgstr[1] "%1 トラックの情報"
+msgstr[0] "%1 トラックの情報"
 
 #: dialogs/TagDialog.cpp:750 dialogs/TagDialog.cpp:760
 #, kde-format
@@ -9613,8 +9533,7 @@ msgstr "<b>%3</b> にある <b>%2</b> による <b>%1</b>"
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
-msgstr[0] "1  個のファイルを編集しています"
-msgstr[1] "%1 個のファイルを編集しています"
+msgstr[0] "%1 個のファイルを編集しています"
 
 #: dialogs/TagDialog.cpp:806
 #, kde-format
@@ -12684,7 +12603,6 @@ msgctxt "%1 is number of tracks, %2 is time"
 msgid "%1 track (%2)"
 msgid_plural "%1 tracks (%2)"
 msgstr[0] "%1 トラック (%2)"
-msgstr[1] "%1 トラック (%2)"
 
 #: playlist/PlaylistInfoWidget.cpp:63
 #, kde-format
@@ -12692,7 +12610,6 @@ msgctxt "%1 is number of tracks"
 msgid "%1 track"
 msgid_plural "%1 tracks"
 msgstr[0] "%1 個のトラック"
-msgstr[1] "%1 個のトラック"
 
 #: playlist/PlaylistInfoWidget.cpp:67
 #, kde-format
@@ -13482,7 +13399,6 @@ msgctxt "%1 is a number"
 msgid "Playlist length: 1 track"
 msgid_plural "Playlist length: %1 tracks"
 msgstr[0] "プレイリストの長さ: %2 %1"
-msgstr[1] "プレイリストの長さ: %2 %1"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:120
 #, fuzzy, kde-format
@@ -13493,7 +13409,6 @@ msgctxt "%1 is a number"
 msgid "Playlist length: more than 1 track"
 msgid_plural "Playlist length: more than %1 tracks"
 msgstr[0] "プレイリストの長さ: %2 %1"
-msgstr[1] "プレイリストの長さ: %2 %1"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:123
 #, fuzzy, kde-format
@@ -13504,7 +13419,6 @@ msgctxt "%1 is a number"
 msgid "Playlist length: less than 1 track"
 msgid_plural "Playlist length: less than %1 tracks"
 msgstr[0] "プレイリストの長さ: %2 %1"
-msgstr[1] "プレイリストの長さ: %2 %1"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:126
 #, fuzzy, kde-format
@@ -13663,7 +13577,6 @@ msgctxt "number of stars in the rating of a track"
 msgid "%1 star"
 msgid_plural "%1 stars"
 msgstr[0] "星 %1 つ"
-msgstr[1] "星 %1 つ"
 
 #: playlistgenerator/constraints/TagMatch.cpp:188
 #, kde-format
@@ -13759,7 +13672,6 @@ msgstr "不明な比較"
 msgid "%1 day"
 msgid_plural "%1 days"
 msgstr[0] "%1 日"
-msgstr[1] "%1 日"
 
 # |,no-check-spell
 #: playlistgenerator/constraints/TagMatch.cpp:385
@@ -13767,14 +13679,12 @@ msgstr[1] "%1 日"
 msgid "%1 month"
 msgid_plural "%1 months"
 msgstr[0] "%1 月"
-msgstr[1] "%1 月"
 
 #: playlistgenerator/constraints/TagMatch.cpp:388
 #, kde-format
 msgid "%1 year"
 msgid_plural "%1 years"
 msgstr[0] "%1 年"
-msgstr[1] "%1 年"
 
 #: playlistgenerator/constraints/TagMatch.cpp:540
 #: playlistgenerator/constraints/TagMatch.cpp:757
@@ -13783,7 +13693,6 @@ msgctxt "within the last %1 days"
 msgid "day"
 msgid_plural "days"
 msgstr[0] "日"
-msgstr[1] "日"
 
 # |,no-check-spell
 #: playlistgenerator/constraints/TagMatch.cpp:541
@@ -13793,7 +13702,6 @@ msgctxt "within the last %1 months"
 msgid "month"
 msgid_plural "months"
 msgstr[0] "か月"
-msgstr[1] "か月"
 
 #: playlistgenerator/constraints/TagMatch.cpp:542
 #: playlistgenerator/constraints/TagMatch.cpp:759
@@ -13802,7 +13710,6 @@ msgctxt "within the last %1 years"
 msgid "year"
 msgid_plural "years"
 msgstr[0] "年"
-msgstr[1] "年"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, TagMatchEditWidget)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:15
@@ -14814,8 +14721,6 @@ msgctxt ""
 msgid "Jamendo.com database update complete. Added 1 track on "
 msgid_plural "Jamendo.com database update complete. Added %1 tracks on "
 msgstr[0] ""
-"Jamendo.com データベースの更新が完了しました。以下に 1 トラック追加しました。"
-msgstr[1] ""
 "Jamendo.com データベースの更新が完了しました。以下に %1 トラック追加しまし"
 "た。"
 
@@ -14826,8 +14731,7 @@ msgctxt ""
 "albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] "1 アルバム"
-msgstr[1] "%1 アルバム"
+msgstr[0] "%1 アルバム"
 
 #: services/jamendo/JamendoXmlParser.cpp:173
 #, kde-format
@@ -14836,8 +14740,7 @@ msgctxt ""
 "albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] "1 アーティスト"
-msgstr[1] "%1 アーティスト"
+msgstr[0] "%1 アーティスト"
 
 #: services/lastfm/biases/LastFmBias.cpp:45
 #, kde-format
@@ -15081,7 +14984,6 @@ msgstr "ユーザ名: %1"
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
 msgstr[0] "再生回数: %1 回"
-msgstr[1] "再生回数: %1 回"
 
 #: services/lastfm/LastFmService.cpp:453
 #, kde-format
@@ -15169,7 +15071,6 @@ msgctxt "%2 is artist name, %1 is number of plays"
 msgid "%2 (%1 play)"
 msgid_plural "%2 (%1 plays)"
 msgstr[0] ""
-msgstr[1] ""
 
 #: services/lastfm/LastFmTreeModel.cpp:197
 #, kde-format
@@ -15979,9 +15880,6 @@ msgid "Magnatune.com database update complete. Database contains 1 track on "
 msgid_plural ""
 "Magnatune.com database update complete. Database contains %1 tracks on "
 msgstr[0] ""
-"Magnatune.com データベースの更新が完了しました。1 個のトラックを追加しまし"
-"た。"
-msgstr[1] ""
 "Magnatune.com データベースの更新が完了しました。%1 個のトラックを追加しまし"
 "た。"
 
@@ -15997,8 +15895,7 @@ msgctxt ""
 "tracks on 4 albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] "1 アルバム"
-msgstr[1] "%1 アルバム"
+msgstr[0] "%1 アルバム"
 
 #: services/magnatune/MagnatuneXmlParser.cpp:83
 #, fuzzy, kde-format
@@ -16012,8 +15909,7 @@ msgctxt ""
 "tracks on 4 albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] "1 アーティスト"
-msgstr[1] "%1 アーティスト"
+msgstr[0] "%1 アーティスト"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:36
 #, kde-format
@@ -16385,7 +16281,6 @@ msgid "Played %2 times of which one play is recent and unique to this source"
 msgid_plural ""
 "Played %2 times of which %1 plays are recent and unique to this source"
 msgstr[0] ""
-msgstr[1] ""
 
 #: statsyncing/models/CommonModel.cpp:189
 #, fuzzy, kde-format
@@ -16436,28 +16331,24 @@ msgctxt "%2 is a list of collection names"
 msgid "Synchronization of %2 done. <b>One</b> track was updated."
 msgid_plural "Synchronization of %2 done. <b>%1</b> tracks were updated."
 msgstr[0] ""
-msgstr[1] ""
 
 #: statsyncing/Process.cpp:273
 #, kde-format
 msgid "<b>One</b> track was queued for scrobbling to %2."
 msgid_plural "<b>%1</b> tracks were queued for scrobbling to %2."
 msgstr[0] ""
-msgstr[1] ""
 
 #: statsyncing/Process.cpp:280
 #, kde-format
 msgid "<b>One</b> track's played time was too short to be scrobbled."
 msgid_plural "<b>%1</b> tracks' played time was too short to be scrobbled."
 msgstr[0] ""
-msgstr[1] ""
 
 #: statsyncing/Process.cpp:284
 #, kde-format
 msgid "<b>One</b> track had insufficient metadata to be scrobbled."
 msgid_plural "<b>%1</b> tracks had insufficient metadata to be scrobbled."
 msgstr[0] ""
-msgstr[1] ""
 
 #: statsyncing/Process.cpp:288
 #, kde-format
@@ -16465,7 +16356,6 @@ msgid "<b>One</b> track was reported to have been played in the future."
 msgid_plural ""
 "<b>%1</b> tracks were reported to have been played in the future."
 msgstr[0] ""
-msgstr[1] ""
 
 #: statsyncing/Process.cpp:292
 #, kde-format
@@ -16473,7 +16363,6 @@ msgid "<b>One</b> track was last played in too distant past to be scrobbled."
 msgid_plural ""
 "<b>%1</b> tracks were last played in too distant past to be scrobbled."
 msgstr[0] ""
-msgstr[1] ""
 
 #: statsyncing/Process.cpp:296
 #, kde-format
@@ -16481,7 +16370,6 @@ msgid "Scrobbling of <b>one</b> track was skipped as configured by the user."
 msgid_plural ""
 "Scrobbling of <b>%1</b> tracks was skipped as configured by the user."
 msgstr[0] ""
-msgstr[1] ""
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:33
 #: statsyncing/ui/MatchedTracksPage.cpp:135
@@ -16653,7 +16541,6 @@ msgstr ""
 msgid "<b>One</b> play"
 msgid_plural "<b>%1</b> plays"
 msgstr[0] "<b>価格:</b>"
-msgstr[1] "<b>価格:</b>"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:318
 #, kde-format
@@ -16661,7 +16548,6 @@ msgctxt "%2 is the 'X plays message above'"
 msgid "%2 of <b>one</b> track will be scrobbled to %3."
 msgid_plural "%2 of <b>%1</b> tracks will be scrobbled to %3."
 msgstr[0] ""
-msgstr[1] ""
 
 #: statsyncing/ui/MatchedTracksPage.cpp:383
 #, kde-format
@@ -17099,35 +16985,30 @@ msgstr "プリセット名"
 msgid "second"
 msgid_plural "seconds"
 msgstr[0] "秒"
-msgstr[1] "秒"
 
 #: widgets/MetaQueryWidget.cpp:133
 #, kde-format
 msgid "minute"
 msgid_plural "minutes"
 msgstr[0] " 分"
-msgstr[1] " 分"
 
 #: widgets/MetaQueryWidget.cpp:134
 #, kde-format
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "時間"
-msgstr[1] "時間"
 
 #: widgets/MetaQueryWidget.cpp:135
 #, kde-format
 msgid "day"
 msgid_plural "days"
 msgstr[0] "日"
-msgstr[1] "日"
 
 #: widgets/MetaQueryWidget.cpp:136
 #, kde-format
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] "週"
-msgstr[1] "週"
 
 # |,no-check-spell
 #: widgets/MetaQueryWidget.cpp:137
@@ -17135,14 +17016,12 @@ msgstr[1] "週"
 msgid "month"
 msgid_plural "months"
 msgstr[0] "月"
-msgstr[1] "月"
 
 #: widgets/MetaQueryWidget.cpp:138
 #, kde-format
 msgid "year"
 msgid_plural "years"
 msgstr[0] "年"
-msgstr[1] "年"
 
 #: widgets/MetaQueryWidget.cpp:320
 #, kde-format
