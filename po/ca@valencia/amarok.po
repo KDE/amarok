@@ -12670,13 +12670,13 @@ msgstr "Editor de la cua"
 #: playlist/PlaylistQueueEditor.ui:32
 #, kde-format
 msgid "Move Up"
-msgstr "Mou amunt"
+msgstr "Mou cap amunt"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, downButton)
 #: playlist/PlaylistQueueEditor.ui:48
 #, kde-format
 msgid "Move Down"
-msgstr "Mou avall"
+msgstr "Mou cap avall"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, dequeueTrackButton)
 #: playlist/PlaylistQueueEditor.ui:61 playlist/view/PlaylistViewCommon.cpp:117
