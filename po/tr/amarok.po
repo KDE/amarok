@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2023-06-04 01:21+0300\n"
+"PO-Revision-Date: 2023-06-15 22:47+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -3792,7 +3792,7 @@ msgstr ""
 #: configdialog/dialogs/PlaybackConfig.ui:165
 #, kde-format
 msgid "&Inhibit automatic suspend if playing"
-msgstr "Çalma varken, otomatik askıya almayı &engelle"
+msgstr "Çalarken kendiliğinden askıya almayı &engelle"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_PauseOnSuspend)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_PauseOnSuspend)
