@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2023-05-02 21:48+0200\n"
+"PO-Revision-Date: 2023-06-17 15:01+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.04.0\n"
+"X-Generator: Lokalize 23.04.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -7729,10 +7729,10 @@ msgid ""
 "compression of digital music.<br>If you wish to store your music without "
 "compromising on audio quality, FLAC is an excellent choice."
 msgstr ""
-"<a href=http://en.wikipedia.org/wiki/Free_Lossless_Audio_Codec>Free Lossless "
-"Audio Codec</a> (FLAC) é un codec aberto e libre de regalías para a "
-"compresión sen perdas de música dixital.<br>Se desexa almacenar a súa música "
-"sen comprometer a calidade do son, FLAC é unha excelente escolla."
+"<a href=https://gl.wikipedia.org/wiki/FLAC>Free Lossless Audio Codec</a> "
+"(FLAC) é un codec aberto e libre de regalías para a compresión sen perdas de "
+"música dixital.<br>Se desexa almacenar a súa música sen comprometer a "
+"calidade do son, FLAC é unha excelente escolla."
 
 #: core/transcoding/formats/TranscodingMp3Format.cpp:28
 #, kde-format
@@ -9016,7 +9016,7 @@ msgstr ""
 "Empregue o resultado superior para cada pista sen decidir. Como alternativa, "
 "pode premer <b>Escoller as mellores coincidencias para este álbum</b> no "
 "menú de contexto dunha boa suxestión; pode mesmo dar mellores resultados "
-"porque evita mesturar distintas edicións dos álbums."
+"porque evita mesturar distintas versións dos álbums."
 
 #: dialogs/MusicBrainzTagger.cpp:95
 #, kde-format
@@ -10719,6 +10719,7 @@ msgstr ""
 "\n"
 "(Data de xeración: %1)"
 
+# skip-rule: PT-2010-dual_search
 #: main.cpp:107
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
@@ -10850,8 +10851,8 @@ msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
 "we want to keep respecting them by mentioning them here:"
 msgstr ""
-"Desenvolver Amarok non é un mero pasatempo, é unha forma de vida. Pero cando "
-"a xente deixa o equipo, gústanos respectalos mencionándoos aquí:"
+"O desenvolvemento de Amarok non é un mero pasatempo, é unha forma de vida. "
+"Pero cando a xente deixa o equipo, gústanos respectalos mencionándoos aquí:"
 
 #: main.cpp:162
 #, kde-format
@@ -10886,7 +10887,7 @@ msgstr "Lydia 'is wrong(TM)' Pintscher"
 #: main.cpp:171
 #, kde-format
 msgid "Release Vixen (Nightrose)"
-msgstr "Edición Vixen (Nightrose)"
+msgstr "Versión Vixen (Nightrose)"
 
 #: main.cpp:174
 #, kde-format
