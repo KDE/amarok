@@ -56,7 +56,7 @@
   <summary xml:lang="eu">Zure musika berriz aurkitzeko aukera ematen dizun musika jotzaile ahaltsua</summary>
   <summary xml:lang="fi">Tehokas musiikkisoitin, jolla löydät musiikin uudestaan</summary>
   <summary xml:lang="fr">Un puissant lecteur de musique vous permettant de redécouvrir votre musique.</summary>
-  <summary xml:lang="gl">Un potente reprodutor co que redescubrir a súa música</summary>
+  <summary xml:lang="gl">Un potente reprodutor co que redescubrir a súa música.</summary>
   <summary xml:lang="hu">Egy sokoldalú zenelejátszó, amely újra felfedezteti Önnel a zenéit</summary>
   <summary xml:lang="id">Sebuah pemutar musik yang afdal yang memungkinkanmu menemukan musik kesukaanmu</summary>
   <summary xml:lang="it">Un potente lettore musicale che ti permette di riscoprire la tua musica</summary>
@@ -314,7 +314,7 @@
       <li xml:lang="eu">Script-ekin lan egitea onartzen du</li>
       <li xml:lang="fi">Skriptaustuki</li>
       <li xml:lang="fr">Gestion de scripts</li>
-      <li xml:lang="gl">Permite automatización.</li>
+      <li xml:lang="gl">Permite guionización.</li>
       <li xml:lang="hu">Szkripttámogatás</li>
       <li xml:lang="ia">Supporto de scripting</li>
       <li xml:lang="id">Dukungan skrip</li>
@@ -433,7 +433,7 @@
       <caption xml:lang="eu">Amaroken musika jotzea</caption>
       <caption xml:lang="fi">Musiikin toistaminen Amarokissa</caption>
       <caption xml:lang="fr">Lecture de musique dans Amarok</caption>
-      <caption xml:lang="gl">Reproducindo música en Amarok</caption>
+      <caption xml:lang="gl">Reproducindo música en Amarok.</caption>
       <caption xml:lang="hu">Zenelejátszás Amarokkal</caption>
       <caption xml:lang="id">Memutar musik di Amarok</caption>
       <caption xml:lang="it">Riproduzione della musica con Amarok</caption>
@@ -468,7 +468,7 @@
       <caption xml:lang="eu">Amarokeko leihoak</caption>
       <caption xml:lang="fi">Amarok-ikkunat</caption>
       <caption xml:lang="fr">Fenêtres Amarok</caption>
-      <caption xml:lang="gl">Xanelas de Amarok</caption>
+      <caption xml:lang="gl">Xanelas de Amarok.</caption>
       <caption xml:lang="hu">Az Amarok ablaka</caption>
       <caption xml:lang="ia">Fenestras de Amarok</caption>
       <caption xml:lang="id">Jendela Amarok</caption>
