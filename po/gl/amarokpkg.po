@@ -1,23 +1,24 @@
 # Galician translation for amarok
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the amarok package.
-#
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 # Marce Villarino <mvillarino@kde-espana.es>, 2012.
-# Adrian Chaves <adrian@chaves.io>, 2018.
+# Adrian Chaves <adrian@chaves.io>, 2018, 2023.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2019-05-20 02:48+0200\n"
-"PO-Revision-Date: 2018-04-22 08:51+0100\n"
-"Last-Translator: Adrian Chaves <adrian@chaves.io>\n"
-"Language-Team: Galician <kde-i18n-doc@kde.org>\n"
+"PO-Revision-Date: 2023-06-19 12:49+0200\n"
+"Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
+"Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 23.04.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -32,7 +33,7 @@ msgstr "mbouzada@gmail.com"
 #: amarokpkg.cpp:84 amarokpkg.cpp:97
 #, kde-format
 msgid "Amarok Applet Manager"
-msgstr "Xestor dos miniaplicativos de Amarok"
+msgstr "Xestor das miniaplicacións de Amarok"
 
 #: amarokpkg.cpp:86
 #, kde-format
@@ -63,31 +64,31 @@ msgstr "Desenvolvedor"
 #, kde-format
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
-"Para instalar ou retirar; actúa sobre os miniaplicativos instalados para "
-"todos os usuarios."
+"Para instalar ou retirar; actúa sobre as miniaplicacións instaladas para "
+"todas as usuarias."
 
 #: amarokpkg.cpp:110
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
-msgstr "Instalar o miniaplicativo en <path>"
+msgstr "Instalar a miniaplicación en <path>"
 
 #: amarokpkg.cpp:112
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
-msgstr "Anovar o miniaplicativo en <path>"
+msgstr "Anovar a miniaplicación en <path>"
 
 #: amarokpkg.cpp:114
 #, kde-format
 msgid "Most installed applets"
-msgstr "A maioría dos miniaplicativos instalados"
+msgstr "A maioría das miniaplicacións instaladas"
 
 #: amarokpkg.cpp:116
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
-msgstr "Retirar o miniaplicativo nomeado <name>"
+msgstr "Retirar a miniaplicación nomeada <name>"
 
 #: amarokpkg.cpp:118
 #, kde-format

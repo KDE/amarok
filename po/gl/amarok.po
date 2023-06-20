@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2023-06-17 15:01+0200\n"
+"PO-Revision-Date: 2023-06-19 13:49+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -95,7 +95,7 @@ msgstr "Sen agrupamentos (liña simple)"
 #: ../data/DefaultPlaylistLayouts.xml:77
 #, kde-format
 msgid "Verbose"
-msgstr "Detallado"
+msgstr "Verboso"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:54
 #, kde-format
@@ -264,7 +264,7 @@ msgstr "Ver o perfil de %1 en openDesktop.org"
 #: aboutdialog/OcsPersonItem.cpp:256
 #, kde-format
 msgid "Visit contributor's blog"
-msgstr "Visite o blog dos colaboradores"
+msgstr "Visitar a bitácora do equipo"
 
 #: aboutdialog/OcsPersonItem.cpp:261
 #, kde-format
@@ -441,7 +441,7 @@ msgstr "Amarok"
 #: amarokconfig.kcfg:13
 #, kde-format
 msgid "Whether to display a second, left time label."
-msgstr "Se debe mostrar outra etiqueta de tempo restante."
+msgstr "Se debe amosar outra etiqueta de tempo restante."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:14
@@ -450,14 +450,14 @@ msgid ""
 "Set this to display a second time label to the left of the seek slider in "
 "the player window."
 msgstr ""
-"Seleccióneo para mostrar unha segunda etiqueta á esquerda do deslizador de "
+"Defina isto para amosar unha segunda etiqueta á esquerda do deslizador de "
 "busca da xanela do reprodutor."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:18
 #, kde-format
 msgid "Whether to display remaining track time in the left time label."
-msgstr "Se debe mostrar o tempo que queda da pista na etiqueta de tempo."
+msgstr "Se debe amosar o tempo que queda da pista na etiqueta de tempo."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:19
@@ -466,7 +466,7 @@ msgid ""
 "Set this to display remaining track time instead of past track time in the "
 "player window."
 msgstr ""
-"Seleccióneo para mostrar o tempo que resta da pista en vez do tempo "
+"Defina isto para amosar o tempo que resta da pista en vez do tempo "
 "transcorrido na xanela do reprodutor."
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -525,7 +525,7 @@ msgstr "Duplicar as pistas en modo dinámico."
 msgid ""
 "If set, tracks added in the dynamic mode are allowed to have duplicates."
 msgstr ""
-"Se se escolle, as pistas que se engadan no modo dinámico poden ter "
+"Se marca esta opción, as pistas que se engadan no modo dinámico poden ter "
 "duplicados."
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -558,7 +558,7 @@ msgstr ""
 #: amarokconfig.kcfg:68
 #, kde-format
 msgid "Whether to show icon in system tray"
-msgstr "Se debe mostrar a icona na área de notificación"
+msgstr "Se debe amosar a icona na área de notificación"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:69
@@ -603,8 +603,8 @@ msgid ""
 "If set, Amarok's manually saved playlists will contain a relative path to "
 "each track, not an absolute path."
 msgstr ""
-"Se o sinala, as listas de reprodución gardadas manualmente conterán unha "
-"ruta relativa ás pistas, non absoluta."
+"Se marca esta opción, as listas de reprodución gardadas manualmente conterán "
+"unha ruta relativa ás pistas, non absoluta."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:88
@@ -622,7 +622,7 @@ msgstr "Se debe intentar obter automaticamente a portada se é precisa"
 #: amarokconfig.kcfg:96
 #, kde-format
 msgid "Whether to show background images in the browser pane"
-msgstr "Se debe mostrar imaxes de fondo no panel do navegador"
+msgstr "Se debe amosar imaxes de fondo no panel do navegador"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
@@ -637,13 +637,13 @@ msgstr ""
 #: amarokconfig.kcfg:104
 #, kde-format
 msgid "Show Album art in the Collection Browser"
-msgstr "Mostrar a portada no navegador da colección"
+msgstr "Amosar a portada no navegador da colección"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:108
 #, kde-format
 msgid "Show the Context View"
-msgstr "Mostrar a vista de contexto"
+msgstr "Amosar a vista de contexto"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:112
@@ -656,14 +656,14 @@ msgstr "Tocar a musiquiña da primeira execución"
 #: amarokconfig.kcfg:116 configdialog/dialogs/GeneralConfig.ui:61
 #, kde-format
 msgid "Enable context applets collapse animations"
-msgstr "Activar as animacións de pregamento de miniaplicativos de contexto."
+msgstr "Activar as animacións de pregamento de miniaplicacións de contexto."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:117
 #, kde-format
 msgid "If set, context applets will collapse using animations."
 msgstr ""
-"Se está activado, os miniaplicativos de contexto pregaranse empregando "
+"Se marca esta opción, as miniaplicacións de contexto pregaranse usando "
 "animacións."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -677,8 +677,8 @@ msgstr "Se ao organizar os ficheiros sobrescribirá os ficheiros xa existentes."
 #, kde-format
 msgid "If set, Organize files will overwrite any existing destination."
 msgstr ""
-"Se o sinala, ao Organizar os ficheiros sobrescribirá calquera destino "
-"existente."
+"Se marca esta opción, ao Organizar os ficheiros sobrescribirá calquera "
+"destino existente."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -695,8 +695,8 @@ msgid ""
 "If set, Organize files will move The in artist names to the end as in "
 "\"Beatles, The\"."
 msgstr ""
-"Se o sinala, ao organizar os ficheiros o «The» dos nomes dos intérpretes vai "
-"ao final, como «Beatles, The»."
+"Se marca esta opción, ao organizar os ficheiros o «The» dos nomes dos "
+"intérpretes vai ao final, como «Beatles, The»."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:134
@@ -713,8 +713,8 @@ msgstr ""
 msgid ""
 "If set, Organize files will replace spaces in filenames with underscores."
 msgstr ""
-"Activado, ao organizar os ficheiros substitúense os espazos nos nomes dos "
-"ficheiros por un signo de subliñado."
+"Se marca esta opción, ao organizar os ficheiros substitúense os espazos nos "
+"nomes dos ficheiros por un signo de subliñado."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:139
@@ -727,8 +727,8 @@ msgstr "Se ao organizar os ficheiros usará a portada como icona do cartafol."
 #, kde-format
 msgid "If set, Organize files will use cover art as folder icons."
 msgstr ""
-"Se o sinala, ao organizar os ficheiros usará a portada como icona do "
-"cartafol."
+"Se marca esta opción, ao organizar os ficheiros usará a portada como icona "
+"do cartafol."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:144
@@ -759,8 +759,8 @@ msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "vfat filesystems (such as ':', '*' and '?')."
 msgstr ""
-"Se o sinala, ao organizar os ficheiros substituirá os caracteres non "
-"compatíbeis cos sistemas de ficheiro vfat (como «:», «*» e «?»)."
+"Se marca esta opción, ao organizar os ficheiros substituirá os caracteres "
+"non compatíbeis cos sistemas de ficheiro vfat (como «:», «*» e «?»)."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:154
@@ -1086,7 +1086,7 @@ msgstr "Activar/Desactivar a Visualización na Pantalla."
 #: amarokconfig.kcfg:310 configdialog/dialogs/NotificationsConfig.cpp:46
 #, kde-format
 msgid "Use Growl for notifications"
-msgstr "Empregar Growl para as notificacións"
+msgstr "Usar Growl para as notificacións"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:311
@@ -1116,7 +1116,7 @@ msgstr "Se se usaran cores personalizadas para a OSD"
 #: amarokconfig.kcfg:321
 #, kde-format
 msgid "You can use custom colors for the OSD if you set this true."
-msgstr "Pode usar cores personalizadas para a OSD se o selecciona."
+msgstr "Pode usar cores personalizadas para a OSD se activa isto."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:325
@@ -1131,8 +1131,8 @@ msgid ""
 "The color of the OSD text. The color is specified in RGB, a comma-separated "
 "list containing three integers between 0 and 255."
 msgstr ""
-"Cor do texto da OSD. A cor especifícase en RGB, unha lista separada por "
-"comas que contén tres enteiros entre 0 e 255."
+"Cor do texto da OSD. A cor indícase en RGB, unha lista separada por comas "
+"que contén tres enteiros entre 0 e 255."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:330
@@ -1154,7 +1154,7 @@ msgstr ""
 #: amarokconfig.kcfg:337
 #, kde-format
 msgid "How many milliseconds the text should be displayed for"
-msgstr "Durante cantos milisegundos se debería mostrar o texto"
+msgstr "Durante cantos milisegundos se debería amosar o texto"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:338
@@ -1163,8 +1163,8 @@ msgid ""
 "The time in milliseconds to show the OSD. A value of 0 means never hide. The "
 "default value is 5000 ms."
 msgstr ""
-"O tempo en milisegundos para mostrar a OSD. O valor de 0 significa que non "
-"se agocha. De maneira predeterminada son 5000 ms."
+"O tempo en milisegundos para amosar a OSD. O valor de 0 significa que non se "
+"agocha. De maneira predeterminada son 5000 ms."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:343
@@ -1201,8 +1201,8 @@ msgid ""
 "The screen that should display the OSD. For single-headed environments this "
 "setting should be 0."
 msgstr ""
-"A pantalla que debería mostrar a OSD. En ambientes cun só monitor debería "
-"ser 0."
+"A pantalla que debería amosar a OSD. En contornos cun só monitor debería ser "
+"0."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:355
@@ -1225,7 +1225,7 @@ msgstr ""
 #: amarokconfig.kcfg:366 configdialog/dialogs/NotificationsConfig.ui:264
 #, kde-format
 msgid "Don't show when a fullscreen application is active"
-msgstr "Non mostrar cando estea activa unha aplicación en pantalla completa"
+msgstr "Non amosar cando estea activa unha aplicación en pantalla completa"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
@@ -1235,7 +1235,7 @@ msgid ""
 "Do not show the On-Screen-Display if another application is focused and "
 "running in fullscreen mode."
 msgstr ""
-"Non mostrar a vista en pantalla se outra aplicación está enfocada e "
+"Non amosar a vista en pantalla se outra aplicación está enfocada e "
 "executándose en modo de pantalla completa."
 
 #. i18n: ectx: label, entry, group (Session)
@@ -1351,13 +1351,13 @@ msgstr "Lista de cartafoles na colección"
 #: amarokconfig.kcfg:432
 #, kde-format
 msgid "Whether track numbers are shown in the collection browser."
-msgstr "Se debe mostrarse o número da pista no navegador da colección."
+msgstr "Se debe amosarse o número da pista no navegador da colección."
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:436
 #, kde-format
 msgid "Whether years are shown in the collection browser."
-msgstr "Se deben mostrarse os anos no navegador da colección."
+msgstr "Se deben amosarse os anos no navegador da colección."
 
 #. i18n: ectx: label, entry, group (Collection)
 #: amarokconfig.kcfg:440
@@ -1639,25 +1639,25 @@ msgstr ""
 #: amarokconfig.kcfg:582
 #, kde-format
 msgid "Whether to enable Amarok's scripting module."
-msgstr "Indica se debe activarse o módulo de scripts de Amarok."
+msgstr "Indica se debe activarse o módulo de guionización de Amarok."
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: amarokconfig.kcfg:583
 #, kde-format
 msgid "Enable/Disable Amarok's scripting module."
-msgstr "Activar ou desactivar o módulo de scripts de Amarok."
+msgstr "Activar ou desactivar o módulo de guionización de Amarok."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #: amarokconfig.kcfg:587
 #, kde-format
 msgid "Whether to automatically update built-in scripts"
-msgstr "Se debe intentar actualizar automaticamente os scripts incrustados"
+msgstr "Se debe intentar actualizar automaticamente os guións de serie."
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: amarokconfig.kcfg:588
 #, kde-format
 msgid "Enable/Disable automatic update for built-in scripts."
-msgstr "Activar/desactivar a actualización automática dos scripts incrustados."
+msgstr "Activar/desactivar a actualización automática dos guións de serie."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
@@ -1672,8 +1672,8 @@ msgstr "Indica se debe activarse a consola de scripting de Amarok."
 #, kde-format
 msgid "Whether to display a warning about scripts accessing deprecated APIs."
 msgstr ""
-"Indica se debe mostrarse un aviso sobre scripts que accedan a membros "
-"obsoletos da API."
+"Indica se debe amosarse un aviso sobre guións que accedan a partes obsoletas "
+"da API."
 
 #. i18n: ectx: label, entry, group (ScriptConsole)
 #. i18n: ectx: whatsthis, entry, group (ScriptConsole)
@@ -1689,7 +1689,7 @@ msgid ""
 "Whether to show the moodbar of the current track, if available, in the "
 "progress slider"
 msgstr ""
-"Se debe mostrar a barra de ánimo da pista actual, se está dispoñíbel, no "
+"Se debe amosar a barra de ánimo da pista actual, se está dispoñíbel, no "
 "esvarador de progreso"
 
 #. i18n: ectx: whatsthis, entry, group (Moodbar)
@@ -1850,7 +1850,7 @@ msgstr "Contexto: %1"
 #: amarokurls/ContextUrlGenerator.cpp:63
 #, kde-format
 msgid "Bookmark Context View Applets"
-msgstr "Miniaplicativos de vista de contexto de marcadores"
+msgstr "Miniaplicacións de vista de contexto de marcadores"
 
 #: amarokurls/ContextUrlRunner.cpp:74
 #, kde-format
@@ -1974,13 +1974,12 @@ msgstr "Cargar os URLs, substituíndo a lista de reprodución actual"
 #: App.cpp:374
 #, kde-format
 msgid "Print verbose debugging information"
-msgstr "Mostrar información de depuración detallada"
+msgstr "Amosar información verbosa de depuración"
 
 #: App.cpp:375
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
-msgstr ""
-"Imprimir información detallada de depuración xerada polo sistema de son."
+msgstr "Imprimir información verbosa de depuración xerada polo sistema de son."
 
 #: App.cpp:376
 #, kde-format
@@ -2026,8 +2025,8 @@ msgid ""
 "A music path, %1, is set in System Settings.\n"
 "Would you like to use that as a collection folder?"
 msgstr ""
-"Hai unha ruta á música, %1, na Configuración do sistema.\n"
-"Desexa empregala como cartafol da colección?"
+"A ruta da música, %1, está definida na configuración do sistema.\n"
+"Quere usala como cartafol da colección?"
 
 #: browsers/BrowserBreadcrumbItem.cpp:70
 #, kde-format
@@ -2113,13 +2112,13 @@ msgstr "Terceiro nivel"
 #: browsers/collectionbrowser/CollectionWidget.cpp:247
 #, kde-format
 msgid "Show Years"
-msgstr "Mostrar os anos"
+msgstr "Amosar os anos"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:252
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Track Numbers"
-msgstr "Mostrar números de pista"
+msgstr "Amosar números de pista"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:257
 #, kde-format
@@ -2366,7 +2365,7 @@ msgstr "Xerador automático de listas de reprodución"
 #: browsers/playlistbrowser/APGCategory.cpp:47
 #, kde-format
 msgid "Create playlists by specifying criteria"
-msgstr "Crear listas de reprodución especificando un criterio"
+msgstr "Crear listas de reprodución indicando un criterio"
 
 #: browsers/playlistbrowser/APGCategory.cpp:63
 #, kde-format
@@ -2614,7 +2613,7 @@ msgstr "Orixes visíbeis"
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:187
 #, kde-format
 msgid "Folders are only shown in <b>merged view</b>."
-msgstr "Os cartafoles só se mostran en <b>Vista combinada</b>."
+msgstr "Os cartafoles só se amosan en <b>Vista combinada</b>."
 
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:283
 #, kde-format
@@ -2719,7 +2718,7 @@ msgstr "Eliminar a lista de reprodución de %1."
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:516 MainWindow.cpp:446
 #, kde-format
 msgid "Use relative path for &saving"
-msgstr "Empregar rutas relativas para &gardar"
+msgstr "Usar rutas relativas para &gardar"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:529
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:459
@@ -2908,7 +2907,7 @@ msgstr ""
 "Crear, editar, organizar e cargar listas de reprodución. Amarok engade "
 "automaticamente calquera lista de reprodución que atope ao examinar a súa "
 "colección, e calquera das listas de reprodución que vostede garde tamén será "
-"mostrada aquí."
+"amosada aquí."
 
 #: browsers/servicebrowser/ServiceBrowser.cpp:39
 #, kde-format
@@ -2917,9 +2916,9 @@ msgid ""
 "integrates directly into Amarok. Amarok ships with a number of these "
 "sources, but many more can be added using scripts."
 msgstr ""
-"O navegador en Internet permítelle navegar por orixes con conexión de "
-"contidos que se integran directamente en Amarok. Amarok subminístrase con "
-"algunhas desas orixes, pero pódense engadir moitas outras empregando scripts."
+"O navegador web permítelle navegar por orixes con conexión de contidos que "
+"se integran directamente en Amarok. Amarok subminístrase con algunhas desas "
+"orixes, pero pódense engadir moitas outras usando guións."
 
 #: configdialog/ConfigDialog.cpp:59
 #, kde-format
@@ -2998,12 +2997,12 @@ msgstr "Configurar os complementos"
 #: scripting/scriptconsole/ScriptConsole.cpp:378
 #, kde-format
 msgid "Scripts"
-msgstr "Scripts"
+msgstr "Guións"
 
 #: configdialog/ConfigDialog.cpp:66
 #, kde-format
 msgid "Configure Scripts"
-msgstr "Configurar os scripts"
+msgstr "Configurar os guións"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, CollectionConfig)
 #: configdialog/dialogs/CollectionConfig.ui:14
@@ -3220,8 +3219,8 @@ msgid ""
 "If your database is not already set up, you can use the following S&QL "
 "commands (after replacing the password with the correct one):"
 msgstr ""
-"Se a súa base de datos aínda non está configurada, pode empregar as "
-"seguintes ordes S&QL (despois de substituír o contrasinal polo correcto):"
+"Se a súa base de datos aínda non está configurada, pode usar as seguintes "
+"ordes S&QL (despois de substituír o contrasinal polo correcto):"
 
 #: configdialog/dialogs/ExcludedLabelsDialog.cpp:53
 #, kde-format
@@ -3266,7 +3265,7 @@ msgstr ""
 #: configdialog/dialogs/GeneralConfig.ui:35
 #, kde-format
 msgid "Show tray &icon"
-msgstr "Mostrar a icona da &bandexa"
+msgstr "Amosar a icona da &bandexa"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoGetCoverArt)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_AutoGetCoverArt)
@@ -3290,14 +3289,14 @@ msgstr "Obter automaticamente a portada"
 #, kde-format
 msgid "Check to enable animations when context applets collapse."
 msgstr ""
-"Marque para permitir que haxa animacións cando se preguen os miniaplicativos "
+"Marque para permitir que haxa animacións cando se preguen as miniaplicacións "
 "de contexto."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowBrowserBackgroundImage)
 #: configdialog/dialogs/GeneralConfig.ui:68
 #, kde-format
 msgid "Show background images in the browser panel"
-msgstr "Mostrar imaxes de fondo no panel do navegador"
+msgstr "Amosar imaxes de fondo no panel do navegador"
 
 #. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
 #: configdialog/dialogs/GeneralConfig.ui:78
@@ -3354,7 +3353,7 @@ msgstr ""
 #: configdialog/dialogs/GeneralConfig.ui:120
 #, kde-format
 msgid "Show Moodbar in Progress Slider"
-msgstr "Mostrar a barra de ánimo no esvarador de progreso"
+msgstr "Amosar a barra de ánimo no esvarador de progreso"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: configdialog/dialogs/GeneralConfig.ui:127
@@ -3543,9 +3542,9 @@ msgid ""
 "Character Set Detector to attempt to automatically guess the\n"
 "character sets used in ID3 tags."
 msgstr ""
-"Se se selecciona, Amarok empregará o Detector de conxuntos\n"
+"Se se selecciona, Amarok usará o Detector de conxuntos\n"
 "de caracteres de Mozilla para intentar descubrir de forma automática\n"
-"os xogos de caracteres empregados nas etiquetas ID3."
+"os xogos de caracteres usados nas etiquetas ID3."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_useCharsetDetector)
 #: configdialog/dialogs/MetadataConfig.ui:87
@@ -3610,7 +3609,7 @@ msgid ""
 "Check to enable the On-Screen-Display. The OSD briefly displays track data "
 "when a new track is played."
 msgstr ""
-"Marcar para permitir a Visualización na Pantalla. A OSD mostra brevemente os "
+"Marcar para permitir a Visualización na Pantalla. A OSD amosa brevemente os "
 "datos da pista ao reproducir unha pista nova."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdEnabled)
@@ -3636,7 +3635,7 @@ msgid ""
 "The time in milliseconds for which to show the OSD. The value must be "
 "between 500 ms and 10000 ms."
 msgstr ""
-"O tempo en milisegundos durante o que se mostrará o OSD. O valor debe estar "
+"O tempo en milisegundos durante o que se amosará o OSD. O valor debe estar "
 "entre 500ms e 10000ms."
 
 #. i18n: ectx: property (specialValueText), widget (QSpinBox, kcfg_OsdDuration)
@@ -3665,7 +3664,7 @@ msgstr "&Pantalla:"
 #: configdialog/dialogs/NotificationsConfig.ui:115
 #, kde-format
 msgid "The screen that should display the OSD."
-msgstr "A pantalla que debería mostrar a OSD."
+msgstr "A pantalla que debería amosar a OSD."
 
 #. i18n: ectx: property (toolTip), widget (QGroupBox, kcfg_OsdUseCustomColors)
 #. i18n: ectx: property (whatsThis), widget (QGroupBox, kcfg_OsdUseCustomColors)
@@ -3745,7 +3744,7 @@ msgstr "Utilizar notificacións do &sistema"
 #, kde-format
 msgid "Current Phonon backend does not support volume fading"
 msgstr ""
-"A infraestrutura de Phonon que está a empregar non permite esvaer o volume."
+"A infraestrutura de Phonon que está a usar non permite esvaer o volume."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -3776,8 +3775,8 @@ msgid ""
 "replaced. Does nothing if something is already playing.</html>"
 msgstr ""
 "<html>Activa esta opción para iniciar a reprodución en canto se engadan unha "
-"ou máis pistas á lista de reprodución empregando o rato, premendo Intro ou "
-"ao substituír a lista de reprodución. Non ten efecto se xa hai algo a "
+"ou máis pistas á lista de reprodución usando o rato, premendo Intro ou ao "
+"substituír a lista de reprodución. Non ten efecto se xa hai algo a "
 "reproducirse.</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_StartPlayingOnAdd)
@@ -3870,13 +3869,13 @@ msgstr "Importadores de estatísticas"
 #, kde-format
 msgid "Manually installed scripts cannot be automatically updated, continue?"
 msgstr ""
-"Os scripts instalados manualmente non poden actualizarse automaticamente, "
+"Os guións instalados manualmente non poden actualizarse automaticamente, "
 "quere continuar?"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:138
 #, kde-format
 msgid "Select Archived Script"
-msgstr "Seleccione un script arquivado"
+msgstr "Seleccione un guión arquivado"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:153
 #, kde-format
@@ -3887,7 +3886,7 @@ msgstr "O arquivo é incorrecto"
 #: configdialog/dialogs/ScriptsConfig.cpp:177
 #, kde-format
 msgid "Invalid Script File"
-msgstr "O ficheiro de script é incorrecto"
+msgstr "O ficheiro de guión é incorrecto"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:184
 #, kde-format
@@ -3896,14 +3895,14 @@ msgid ""
 "Existing Script's Version: %2\n"
 "Selected Script's Version: %3"
 msgstr ""
-"Xa existe un script co nome «%1».\n"
-"Versión do script existente: %2\n"
-"Versión do script seleccionado: %3"
+"Xa existe un guión co nome «%1».\n"
+"Versión do guión existente: %2\n"
+"Versión do guión seleccionado: %3"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:195
 #, kde-format
 msgid "The script %1 was successfully installed"
-msgstr "O script %1 instalouse correctamente."
+msgstr "O guión %1 instalouse correctamente."
 
 #: configdialog/dialogs/ScriptsConfig.cpp:207
 #, kde-format
@@ -3918,19 +3917,19 @@ msgstr "Letras"
 #: configdialog/dialogs/ScriptsConfig.cpp:215
 #, kde-format
 msgid "Scriptable Service"
-msgstr "Servizo mediante scripts"
+msgstr "Servizo guionizábel"
 
 #. i18n: ectx: property (text), widget (QPushButton, uninstallButton)
 #: configdialog/dialogs/ScriptsConfig.ui:36
 #, kde-format
 msgid "Uninstall Script"
-msgstr "Desinstalar o script"
+msgstr "Desinstalar o guión"
 
 #. i18n: ectx: property (text), widget (QPushButton, installButton)
 #: configdialog/dialogs/ScriptsConfig.ui:43
 #, kde-format
 msgid "Install Local Script"
-msgstr "Instalar un script local"
+msgstr "Instalar un guión local"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoUpdateScripts)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_AutoUpdateScripts)
@@ -3941,26 +3940,26 @@ msgid ""
 "Automatically download and install updates for the built-in scripts from the "
 "Amarok website if available"
 msgstr ""
-"Descargar e instalar automaticamente as actualizacións dos scripts "
-"incrustados desde a páxina web de Amarok cando estean dispoñíbeis"
+"Descargar e instalar automaticamente as actualizacións dos guións de serie "
+"desde a páxina web de Amarok cando estean dispoñíbeis."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoUpdateScripts)
 #: configdialog/dialogs/ScriptsConfig.ui:60
 #, kde-format
 msgid "Automatically update built-in scripts"
-msgstr "Actualizar automaticamente os scripts incrustados"
+msgstr "Actualizar automaticamente os guións de serie."
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, manageButton)
 #: configdialog/dialogs/ScriptsConfig.ui:80
 #, kde-format
 msgid "Browse, install, and uninstall scripts"
-msgstr "Navegar, instalar e desinstalar scripts"
+msgstr "Navegar, instalar e desinstalar guións"
 
 #. i18n: ectx: property (text), widget (QPushButton, manageButton)
 #: configdialog/dialogs/ScriptsConfig.ui:83
 #, kde-format
 msgid "Manage Scripts"
-msgstr "Xestionar os scripts"
+msgstr "Xestionar os guións"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
 #: configdialog/dialogs/ScriptsConfig.ui:107
@@ -3986,12 +3985,12 @@ msgstr "Activar a consola de scripting"
 #: configdialog/dialogs/ScriptSelector.cpp:37
 #, kde-format
 msgid "Search Scripts"
-msgstr "Scripts de busca"
+msgstr "Guións de busca"
 
 #: context/AmarokContextPackageStructure.cpp:26
 #, kde-format
 msgid "Main Script File"
-msgstr "Ficheiro de script principal"
+msgstr "Ficheiro de guión principal"
 
 #: context/AmarokContextPackageStructure.cpp:27
 #: context/AmarokContextPackageStructure.cpp:28
@@ -4054,7 +4053,7 @@ msgstr[1] "%1 píxeles"
 #: context/applets/analyzer/package/contents/ui/main.qml:91
 #, kde-format
 msgid "Show fadebars:"
-msgstr "Mostrar as barras de esvaecemento:"
+msgstr "Amosar as barras de esvaecemento:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:106
 #, kde-format
@@ -4116,7 +4115,7 @@ msgstr "Retirar a etiqueta"
 #: playlist/view/PlaylistViewCommon.cpp:202
 #, kde-format
 msgid "Show in Media Sources"
-msgstr "Mostrar nas orixes de contido multimedia"
+msgstr "Amosar nas orixes de contido multimedia"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:79
 #, kde-format
@@ -4188,7 +4187,7 @@ msgstr "Preferencias de substitución"
 #: context/applets/labels/labelsBlacklistSettings.ui:17
 #, kde-format
 msgid "Do not show the following labels:"
-msgstr "Non mostrar as seguintes etiquetas:"
+msgstr "Non amosar as seguintes etiquetas:"
 
 #. i18n: ectx: property (text), widget (QCheckBox, matchArtistCheckBox)
 #: context/applets/labels/labelsBlacklistSettings.ui:24
@@ -4232,13 +4231,13 @@ msgstr "Puntuación mínima de etiqueta:"
 #: context/applets/labels/labelsGeneralSettings.ui:56
 #, kde-format
 msgid "Show only labels that are rated at least that high."
-msgstr "Mostrar só as etiquetas que se puntuasen polo menos a ese nivel."
+msgstr "Amosar só as etiquetas que se puntuasen polo menos a ese nivel."
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: context/applets/labels/labelsGeneralSettings.ui:75
 #, kde-format
 msgid "Maximum labels to show:"
-msgstr "Máximo de etiquetas que mostrar:"
+msgstr "Máximo de etiquetas que amosar:"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, numLabelsSpinBox)
 #: context/applets/labels/labelsGeneralSettings.ui:95
@@ -4247,14 +4246,14 @@ msgid ""
 "Do not show more than this many labels.\n"
 "Note that personal labels will always be shown."
 msgstr ""
-"Non mostrar máis que estas etiquetas.\n"
-"Teña en conta que as etiquetas persoais móstranse sempre."
+"Non amosar máis que estas etiquetas.\n"
+"Teña en conta que as etiquetas persoais amósanse sempre."
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: context/applets/labels/labelsGeneralSettings.ui:108
 #, kde-format
 msgid "Show personal labels with score:"
-msgstr "Mostrar etiquetas persoais con puntuación:"
+msgstr "Amosar etiquetas persoais con puntuación:"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, personalCountSpinBox)
 #: context/applets/labels/labelsGeneralSettings.ui:127
@@ -4291,7 +4290,7 @@ msgstr "Cor para o fondo das etiquetas:"
 #: context/applets/labels/labelsGeneralSettings.ui:297
 #, kde-format
 msgid "Sets the label colors according to the current color scheme."
-msgstr "Configura as cores das etiquetas segundo o esquema de cores actual."
+msgstr "Define as cores das etiquetas segundo o esquema de cores actual."
 
 #. i18n: ectx: property (text), widget (QPushButton, resetColorsPushButton)
 #: context/applets/labels/labelsGeneralSettings.ui:300
@@ -4425,7 +4424,7 @@ msgstr "Artista:"
 #: context/applets/playlistinfo/PlaylistInfo.cpp:155
 #, kde-format
 msgid "Configure Playlist Info Applet"
-msgstr "Miniaplicativo de configuración da información da lista de reprodución"
+msgstr "Miniaplicación de configuración da información da lista de reprodución"
 
 #: context/applets/playlistinfo/PlaylistInfo.cpp:177
 #, kde-format
@@ -4445,7 +4444,7 @@ msgstr "Engadir a pista superior á lista de reprodución"
 #: context/applets/similarartists/ArtistWidget.cpp:150
 #, kde-format
 msgid "Show Similar Artists to %1"
-msgstr "Mostrar intérpretes similares a %1"
+msgstr "Amosar intérpretes similares a %1"
 
 #: context/applets/similarartists/ArtistWidget.cpp:165
 #, kde-format
@@ -4466,7 +4465,7 @@ msgstr "Non se pode obter a imaxe: %1"
 #, kde-format
 msgctxt "@info:tooltip Artist biography"
 msgid "Show Biography"
-msgstr "Mostrar a biografía"
+msgstr "Amosar a biografía."
 
 #: context/applets/similarartists/ArtistWidget.cpp:428
 #, kde-format
@@ -4511,7 +4510,7 @@ msgstr "Avanzar"
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:91
 #, kde-format
 msgid "Show Similar Artists for Currently Playing Track"
-msgstr "Mostrar intérpretes similares á pista que se está a reproducir"
+msgstr "Amosar intérpretes similares á pista que se está a reproducir"
 
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:191
 #, kde-format
@@ -4538,7 +4537,7 @@ msgstr "Publicado: %1"
 #: context/applets/similarartists/similarArtistsSettings.ui:19
 #, kde-format
 msgid "Maximum number of artists to show:"
-msgstr "Número máximo de intérpretes que se mostran:"
+msgstr "Número máximo de intérpretes que se amosan:"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
 #, kde-format
@@ -4786,7 +4785,7 @@ msgstr "Locais preferidos"
 #, kde-format
 msgctxt "@info:tooltip Calendar action"
 msgid "Jump to Today"
-msgstr "Ir a hoxe"
+msgstr "Ir a hoxe."
 
 #. i18n: ectx: property (text), widget (QLabel, filterLabel)
 #: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:20
@@ -4819,7 +4818,7 @@ msgstr "<s>%1</s> (Cancelado)"
 #: context/applets/upcomingevents/upcomingEventsSettings.ui:44
 #, kde-format
 msgid "Show places as links"
-msgstr "Mostrar lugares como ligazóns"
+msgstr "Amosar lugares como ligazóns"
 
 #: context/applets/upcomingevents/UpcomingEventsStackItem.cpp:288
 #, kde-format
@@ -4982,8 +4981,8 @@ msgstr "<strong>Artistas acompañantes:</strong><nl/>%1"
 msgctxt "@info:tooltip Number of days till an event"
 msgid "Tomorrow"
 msgid_plural "In <strong>%1</strong> days"
-msgstr[0] "Mañá"
-msgstr[1] "En <strong>%1</strong> días"
+msgstr[0] "Mañá."
+msgstr[1] "En <strong>%1</strong> días."
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:269
 #, kde-format
@@ -5095,7 +5094,7 @@ msgstr "Escoller idioma"
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:129
 #, kde-format
 msgid "Configure Applets..."
-msgstr "Configurar os miniaplicativos…"
+msgstr "Configurar as miniaplicacións…"
 
 #: context/ContextDock.cpp:27
 #, kde-format
@@ -5135,7 +5134,7 @@ msgstr "datas"
 #: context/tools/amarokpkg.cpp:84 context/tools/amarokpkg.cpp:97
 #, kde-format
 msgid "Amarok Applet Manager"
-msgstr "Xestor dos miniaplicativos de Amarok"
+msgstr "Xestor das miniaplicacións de Amarok"
 
 #: context/tools/amarokpkg.cpp:86
 #, kde-format
@@ -5168,31 +5167,31 @@ msgstr "Desenvolvedor"
 #, kde-format
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
-"Para instalar ou retirar; actúa sobre os miniaplicativos instalados para "
-"todos os usuarios."
+"Para instalar ou retirar; actúa sobre as miniaplicacións instaladas para "
+"todas as usuarias."
 
 #: context/tools/amarokpkg.cpp:110
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
-msgstr "Instalar o miniaplicativo en <path>"
+msgstr "Instalar a miniaplicación en <path>"
 
 #: context/tools/amarokpkg.cpp:112
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
-msgstr "Anovar o miniaplicativo en <path>"
+msgstr "Anovar a miniaplicación en <path>"
 
 #: context/tools/amarokpkg.cpp:114
 #, kde-format
 msgid "Most installed applets"
-msgstr "A maioría dos miniaplicativos instalados"
+msgstr "A maioría das miniaplicacións instaladas"
 
 #: context/tools/amarokpkg.cpp:116
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
-msgstr "Retirar o miniaplicativo nomeado <name>"
+msgstr "Retirar a miniaplicación nomeada <name>"
 
 #: context/tools/amarokpkg.cpp:118
 #, kde-format
@@ -5239,12 +5238,12 @@ msgstr "Requírese unha de install, remove, upgrade ou list."
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
 msgid "Do not show under Various Artists"
-msgstr "Non mostrar en Varios intérpretes"
+msgstr "Non amosar en Varios intérpretes"
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:43
 #, kde-format
 msgid "Show under Various Artists"
-msgstr "Mostrar en Varios intérpretes"
+msgstr "Amosar en Varios intérpretes"
 
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:103
 #, kde-format
@@ -5691,7 +5690,7 @@ msgid ""
 "the Saved Playlists tab."
 msgstr ""
 "Detectáronse pistas obsoletas ou orfas en %1. Pode resolver esta situación "
-"empregando a acción <b>%2</b> da colección. Tamén pode ver as pistas no "
+"usando a acción <b>%2</b> da colección. Tamén pode ver as pistas no "
 "separador «Listas de reprodución gardadas»."
 
 #: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
@@ -5832,7 +5831,7 @@ msgid ""
 "libgpod (as of version 0.8.2) doesn't know how to compute it, but tries to "
 "dynamically load external library libhashab.so to do it."
 msgstr ""
-"A familia %1 probabelmente emprega hash-AB para xerar a suma de comprobación "
+"A familia %1 probabelmente usa hash-AB para xerar a suma de comprobación "
 "correcta da base de datos. libqpod (cando menos na versión 0.8.2) non sabe "
 "como calculala, pero intenta cargar dinamicamente a biblioteca externa "
 "libhashab.so para facelo."
@@ -5895,7 +5894,7 @@ msgid ""
 "the device point of view)<br>See <a href='%2'>README.overview</a> file from "
 "libgpod source repository for more information."
 msgstr ""
-"<b>%1</b><br><br>Como medida de seguranza, Amarok vai <i>rexeitar escribir</"
+"<b>%1</b><br><br>Como medida de seguridade, Amarok vai <i>rexeitar escribir</"
 "i> no iPod (a modificación da base de datos do iTunes podería facer que "
 "desde o punto de vista do dispositivo parecese estar baleiro)<br>Vexa o "
 "ficheiro <a href='%2'>README.overview</a> nun repositorio de fontes do "
@@ -5910,9 +5909,9 @@ msgid ""
 "track and photo database</b>, however it should not delete any tracks. The "
 "tracks will become orphaned."
 msgstr ""
-"<b>%1</b><br><br>O problema mencionado impide que Amarok empregue este iPod. "
-"Pode intentar crear de novo os cartafoles e ficheiros críticos do iPod "
-"(incluída a base de datos do iTunes) empregando o botón <b>%2</b> de embaixo."
+"<b>%1</b><br><br>O problema mencionado impide que Amarok use este iPod. Pode "
+"intentar crear de novo os cartafoles e ficheiros críticos do iPod (incluída "
+"a base de datos do iTunes) usando o botón <b>%2</b> de embaixo."
 "<br><br>Inicializar o iPod <b>destrúe a base de datos de pistas e fotos do "
 "iPod</b>; porén, non debería eliminar ningunha pista. As pistas quedarán "
 "orfas."
@@ -6390,7 +6389,7 @@ msgstr "Non se pode ler a lista de reprodución de %1"
 #, kde-format
 msgid "The used file extension is not valid for playlists."
 msgstr ""
-"A extensión de ficheiro empregada non é correcta para listas de reprodución."
+"A extensión de ficheiro que se usa non é correcta para listas de reprodución."
 
 #: core-impl/playlists/types/file/PlaylistFileSupport.cpp:123
 #, kde-format
@@ -7785,8 +7784,8 @@ msgid ""
 "and is widely supported on portable music players."
 msgstr ""
 "<a href=http://en.wikipedia.org/wiki/MP3>MPEG Audio Layer 3</a> (MP3) é un "
-"codec patentado de son dixital que emprega unha forma de compresión con "
-"perda de datos.<br>A pesares dos seus defectos, é un formato común para o "
+"codec patentado de son dixital que usa unha forma de compresión con perda de "
+"datos.<br>A pesares dos seus defectos, é un formato común para o "
 "almacenamento de son de consumo, sendo admitido pola maioría dos "
 "reprodutores de música portátiles."
 
@@ -7836,8 +7835,8 @@ msgid ""
 "patent-free digital audio codec using a form of lossy data compression."
 msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Opus_(audio_format)>Opus</a> é un códec "
-"de son dixital libre de patentes que emprega unha forma de compresión de "
-"datos con perdas."
+"de son dixital libre de patentes que usa unha forma de compresión de datos "
+"con perdas."
 
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:28
 #, kde-format
@@ -7867,7 +7866,7 @@ msgstr ""
 "codifícanse cunha taxa de bits máis elevada que os menos complexos; esta "
 "aproximación fornece sobre todo unha mellor calidade e un ficheiro máis "
 "pequeno que unha taxa de bits constante ao longo da pista. <br>O codificador "
-"Vorbis emprega una puntuación de calidade «parámetro -q» entre -1 e 10 para "
+"Vorbis usa una puntuación de calidade «parámetro -q» entre -1 e 10 para "
 "definir a calidade de son esperada. A medida da taxa de bits neste esvarador "
 "é só unha estimación (fornecida por Vorbis) da taxa media de bits da pista "
 "codificada dado un valor q. De feito, coas versións máis modernas e "
@@ -7912,10 +7911,10 @@ msgid ""
 "s</b> might be unsatisfactory for music and anything above <b>182kb/s</b> is "
 "probably overkill."
 msgstr ""
-"A taxa de bits é unha medida da cantidade de datos empregados para "
+"A taxa de bits é unha medida da cantidade de datos que se usan para "
 "representar un segundo da pista de son. <br>Debido ás limitacións de formato "
 "propietario <b>WMA</b> e a dificultade de realizar enxeñaría inversa dun "
-"códec propietario, o codificador WMA usado por Amarok estabelece unha "
+"códec propietario, o codificador WMA usado por Amarok define unha "
 "configuración de <a href=http://en.wikipedia.org/wiki/"
 "Windows_Media_Audio#Windows_Media_Audio>taxa de bits constante (CBR)</a>. "
 "<br>Por este motivo, a medida da taxa de bits neste esvarador é unha "
@@ -8037,12 +8036,12 @@ msgstr[1] "Obter o deseño gráfico destes %1 álbums"
 #: covermanager/CoverFoundDialog.cpp:380
 #, kde-format
 msgid "Display Cover"
-msgstr "Mostrar a portada"
+msgstr "Amosar a portada"
 
 #: covermanager/CoverFetchingActions.cpp:78
 #, kde-format
 msgid "Display artwork for this album"
-msgstr "Mostra o deseño gráfico deste álbum"
+msgstr "Amosa o deseño gráfico deste álbum"
 
 #: covermanager/CoverFetchingActions.cpp:96
 #, kde-format
@@ -8069,14 +8068,14 @@ msgstr[1] "Seguro que quere eliminar estas %1 portadas da colección?"
 #: covermanager/CoverFetchingActions.cpp:134
 #, kde-format
 msgid "Set Custom Cover"
-msgstr "Escoller unha portada personalizada"
+msgstr "Definir unha portada personalizada"
 
 #: covermanager/CoverFetchingActions.cpp:136
 #, kde-format
 msgid "Set custom artwork for this album"
 msgid_plural "Set custom artwork for these %1 albums"
-msgstr[0] "Escoller unha portada personalizada para este álbum"
-msgstr[1] "Escoller portadas personalizadas para estes %1 álbums"
+msgstr[0] "Definir unha portada personalizada para este álbum"
+msgstr[1] "Definir portadas personalizadas para estes %1 álbums"
 
 #: covermanager/CoverFetchingActions.cpp:167
 #, kde-format
@@ -8632,7 +8631,7 @@ msgstr "Oco da icona, non na GUI"
 #: dialogs/deletedialogbase.ui:56
 #, kde-format
 msgid "Deletion method placeholder, never shown to user."
-msgstr "Rañura para o método de borrado, nunca se mostra ao usuario."
+msgstr "Rañura para o método de borrado, nunca se amosa á usuaria."
 
 #. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
 #: dialogs/deletedialogbase.ui:79
@@ -8711,8 +8710,8 @@ msgid ""
 "%d is replaced by the device node, %m by the mount point.\n"
 "Empty commands are not executed."
 msgstr ""
-"Poña aquí a orde que desexe executar antes de conectar co seu dispositivo (e."
-"g. a orde mount).\n"
+"Defina aquí a orde que desexe executar antes de conectar co seu dispositivo "
+"(e.g. a orde mount).\n"
 "%d é substituído co nodo do dispositivo, %m polo punto de montaxe.\n"
 "Non se executan as ordes baleiras."
 
@@ -8734,7 +8733,7 @@ msgid ""
 "%d is replaced by the device node, %m by the mount point.\n"
 "Empty commands are not executed."
 msgstr ""
-"Poña aquí unha orde que desexe executar despois de desconectar do "
+"Defina aquí unha orde que desexe executar despois de desconectar do "
 "dispositivo (e.g. a orde eject).\n"
 "%d é substituído polo nodo do dispositivo, %m polo punto de montaxe.\n"
 "As ordes baleiras non se executan."
@@ -8767,8 +8766,7 @@ msgstr "Retirar os ficheiros transcodificados tras transferilos"
 #: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
 #, kde-format
 msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr ""
-"Para esta funcionalidade, débese executar un script do tipo «Transcode»"
+msgstr "Para esta funcionalidade, débese executar un guión do tipo «Transcode»"
 
 #: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
@@ -8828,11 +8826,11 @@ msgid ""
 "Enabled Applets:\n"
 "%3\n"
 msgstr ""
-"Scripts activados:\n"
+"Guións activados:\n"
 "%1\n"
 "Complementos activados:\n"
 "%2\n"
-"Miniaplicativos activados:\n"
+"Miniaplicacións activadas:\n"
 "%3\n"
 
 #: dialogs/EditFilterDialog.cpp:37
@@ -8934,8 +8932,8 @@ msgstr "Gardar"
 #, kde-format
 msgid "Delete currently selected preset. Not available for built-in presets."
 msgstr ""
-"Elimina a predefinición escollida actualmente. Non dispoñíbel para "
-"predefinicións preestablecidas."
+"Elimina a predefinición seleccionada. Non dispoñíbel para predefinicións de "
+"serie."
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetResetBtn)
 #: dialogs/EqualizerDialog.ui:89
@@ -9013,10 +9011,10 @@ msgid ""
 "suggestion; it may give even better results because it prevents mixing "
 "different album releases together."
 msgstr ""
-"Empregue o resultado superior para cada pista sen decidir. Como alternativa, "
-"pode premer <b>Escoller as mellores coincidencias para este álbum</b> no "
-"menú de contexto dunha boa suxestión; pode mesmo dar mellores resultados "
-"porque evita mesturar distintas versións dos álbums."
+"Use o resultado superior para cada pista sen decidir. Como alternativa, pode "
+"premer <b>Escoller as mellores coincidencias para este álbum</b> no menú de "
+"contexto dunha boa suxestión; pode mesmo dar mellores resultados porque "
+"evita mesturar distintas versións dos álbums."
 
 #: dialogs/MusicBrainzTagger.cpp:95
 #, kde-format
@@ -9114,7 +9112,7 @@ msgstr "Número de pista"
 #: dialogs/OrganizeCollectionDialog.cpp:119
 #, kde-format
 msgid "You can use the following tokens:"
-msgstr "Pode empregar os seguintes símbolos:"
+msgstr "Pode usar os seguintes símbolos:"
 
 #: dialogs/OrganizeCollectionDialog.cpp:126
 #, kde-format
@@ -9184,8 +9182,8 @@ msgid ""
 "<html>Show/hide additional controls to specify destination track paths based "
 "on their metadata.</html>"
 msgstr ""
-"<html>Mostrar ou agochar os controis adicionais para indicar a ruta das "
-"pista de destino con base nos seus metadatos.</html>"
+"<html>Amosar ou agochar os controis adicionais para indicar a ruta das pista "
+"de destino con base nos seus metadatos.</html>"
 
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (title), widget (QGroupBox, optionsFrame)
@@ -9774,7 +9772,7 @@ msgid ""
 "%albumartist%</font>, <font color=\"%8\">%comment%</"
 "font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
 msgstr ""
-"Os seguintes símbolos poden empregarse para definir un esquema de nome de "
+"Os seguintes símbolos poden usarse para definir un esquema de nome de "
 "ficheiro:<br>                                      <font color=\"%1\">%track"
 "%</font>, <font color=\"%2\">%title%</font>,                           <font "
 "color=\"%3\">%artist%</font>, <font color=\"%4\">%composer%</"
@@ -10277,7 +10275,7 @@ msgid ""
 "query as the collection browser."
 msgstr ""
 "A tendencia «BuscaConsulta» engade pistas que se\n"
-"atopasen nunha consulta de busca. Emprega a mesma\n"
+"atopasen nunha consulta de busca. Usa a mesma\n"
 "consulta de busca que o navegador da colección."
 
 #: dynamic/biases/SearchQueryBias.cpp:118
@@ -11187,7 +11185,7 @@ msgstr "Peter Zhou Lei"
 #: main.cpp:240
 #, kde-format
 msgid "Scripting interface"
-msgstr "Interface de scripts"
+msgstr "Interface de guionización"
 
 #: main.cpp:242
 #, kde-format
@@ -11227,7 +11225,7 @@ msgstr "Simon Esneault"
 #: main.cpp:248
 #, kde-format
 msgid "Photos & Videos applets, Context View"
-msgstr "Miniaplicativos para as fotos e os vídeos; vista de contexto"
+msgstr "Miniaplicacións para as fotos e os vídeos; vista de contexto"
 
 #: main.cpp:250
 #, kde-format
@@ -11678,7 +11676,7 @@ msgstr "Axuste dos marcadores da lista de reprodución"
 #: MainWindow.cpp:794
 #, kde-format
 msgid "Bookmark Context Applets"
-msgstr "Miniaplicativos de contexto de marcadores"
+msgstr "Miniaplicacións de contexto de marcadores"
 
 #: MainWindow.cpp:802
 #, kde-format
@@ -11768,12 +11766,12 @@ msgstr "Buscar na lista de reprodución"
 #: MainWindow.cpp:931
 #, kde-format
 msgid "Show active track"
-msgstr "Mostrar a pista activa"
+msgstr "Amosar a pista activa"
 
 #: MainWindow.cpp:935
 #, kde-format
 msgid "Show Notification Popup"
-msgstr "Mostrar mensaxe emerxente de notificacións"
+msgstr "Amosar mensaxe emerxente de notificacións"
 
 #: MainWindow.cpp:940
 #, kde-format
@@ -11833,7 +11831,7 @@ msgstr "Cualificación da pista actual: 5"
 #: MainWindow.cpp:996
 #, kde-format
 msgid "Network Request Viewer"
-msgstr "Visor de peticións de rede"
+msgstr "Visor de solicitudes de rede"
 
 #: MainWindow.cpp:1014
 #, kde-format
@@ -11885,7 +11883,7 @@ msgid ""
 msgstr ""
 "Elixiu agochar a barra do menú.\n"
 "\n"
-"Lembre que sempre pode empregar o atallo «%1» para que volva a mostrarse."
+"Lembre que sempre pode usar o atallo «%1» para que volva a amosarse."
 
 #: MainWindow.cpp:1171
 #, kde-format
@@ -11942,7 +11940,7 @@ msgstr "Ir á páxina da pista"
 #: network/NetworkRequests.ui:14 network/NetworkRequests.ui:20
 #, kde-format
 msgid "Network Requests"
-msgstr "Peticións de rede"
+msgstr "Solicitudes de rede"
 
 #. i18n: ectx: property (text), widget (QPushButton, clearButton)
 #: network/NetworkRequests.ui:27
@@ -11984,7 +11982,7 @@ msgstr "Información"
 #: network/NetworkRequests.ui:74
 #, kde-format
 msgid "Request Details"
-msgstr "Detalles da petición"
+msgstr "Detalles da solicitude"
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: network/NetworkRequests.ui:81
@@ -12108,7 +12106,7 @@ msgstr "Configuración de «%1»"
 #: playlist/layouts/LayoutEditWidget.cpp:44
 #, kde-format
 msgid "Show cover"
-msgstr "Mostrar a portada"
+msgstr "Amosar a portada"
 
 #: playlist/layouts/LayoutEditWidget.cpp:84
 #, kde-format
@@ -12302,7 +12300,7 @@ msgstr "Deseño"
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:255
 #, kde-format
 msgid "Show inline playback controls"
-msgstr "Mostrar os controis de reprodución en liña"
+msgstr "Amosar os controis de reprodución en liña"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:267
@@ -12315,7 +12313,7 @@ msgstr "Agrupar por"
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:279
 #, kde-format
 msgid "Show tooltips"
-msgstr "Mostrar indicacións"
+msgstr "Amosar indicacións"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
 #: playlist/layouts/PlaylistLayoutEditDialog.ui:291
@@ -12747,7 +12745,7 @@ msgstr "Anos"
 #: playlist/ProgressiveSearchWidget.cpp:124
 #, kde-format
 msgid "Show only matches"
-msgstr "Mostrar só as correspondencias"
+msgstr "Amosar só as correspondencias"
 
 #: playlist/ProgressiveSearchWidget.cpp:136
 #, kde-format
@@ -12832,12 +12830,12 @@ msgid ""
 "group.  When the group type is set to \"match any\", the Generator will try "
 "to have the playlist match any of the constraints within the group."
 msgstr ""
-"Un editor para grupos de restricións. Vostede pode estabelecer o tipo de "
-"grupo a «emparellar con todo» ou a «emparellar con algún». Cando o tipo de "
-"grupo está fixado a «emparellar con todo», o xerador intentará facer "
-"coincidir a lista de reprodución con todas as restricións do grupo. Cando o "
-"tipo de grupo está axustado a «emparellar con algún», o xerador intentará "
-"facer coincidir a lista de reprodución con algunha das restricións do grupo."
+"Un editor para grupos de restricións. Vostede pode definir o tipo de grupo a "
+"«emparellar con todo» ou a «emparellar con algún». Cando o tipo de grupo "
+"está fixado a «emparellar con todo», o xerador intentará facer coincidir a "
+"lista de reprodución con todas as restricións do grupo. Cando o tipo de "
+"grupo está axustado a «emparellar con algún», o xerador intentará facer "
+"coincidir a lista de reprodución con algunha das restricións do grupo."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:21
@@ -12932,9 +12930,9 @@ msgid ""
 "An editor for a CheckPoint constraint.  The user can set the track, album, "
 "or artist to be placed at a certain position in the playlist."
 msgstr ""
-"Un editor para unha restrición de punto de control. O usuario pode "
-"estabelecer que a pista, álbum ou o intérprete se sitúen nunha certa "
-"posición da lista de reprodución."
+"Un editor para unha restrición de punto de control. Permite definir que a "
+"pista, álbum ou o intérprete se sitúen nunha certa posición da lista de "
+"reprodución."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:21
@@ -12964,7 +12962,7 @@ msgid ""
 msgstr ""
 "A posición desexada da canción na lista de reprodución, en horas, minutos e "
 "segundos. Nota: debido a limitacións de Qt, a máxima duración que pode "
-"especificar é 24 horas."
+"indicar é 24 horas."
 
 #. i18n: ectx: property (displayFormat), widget (QTimeEdit, timeEdit_Duration)
 #. i18n: ectx: property (displayFormat), widget (QTimeEdit, timeEdit_TimeValue)
@@ -12986,7 +12984,7 @@ msgid ""
 "specified time."
 msgstr ""
 "Como de estrito debería ser o APG sobre colocar a pista seleccionada no "
-"tempo especificado."
+"tempo indicado."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Strictness)
 #. i18n: ectx: property (text), widget (QLabel, label_StrictnessInt)
@@ -13049,7 +13047,7 @@ msgstr "Duración da lista de reprodución"
 #: playlistgenerator/constraints/PlaylistDuration.cpp:53
 #, kde-format
 msgid "Sets the preferred duration of the playlist"
-msgstr "Axusta la duración preferida da lista de reprodución"
+msgstr "Define a duración preferida da lista de reprodución."
 
 #: playlistgenerator/constraints/PlaylistDuration.cpp:119
 #, kde-format
@@ -13083,8 +13081,8 @@ msgid ""
 "than, equal to, or greater than that duration; and the strictness with which "
 "the APG should match that duration."
 msgstr ""
-"Un editor de restricións de duración da lista de reprodución. O usuario pode "
-"configurar o nome da restrición; o obxectivo de duración e se a lista de "
+"Un editor de restricións de duración da lista de reprodución. Permite "
+"definir o nome da restrición; o obxectivo de duración e se a lista de "
 "reprodución debería ser menor que, igual a ou maior que esa duración; e a "
 "rixidez coa que o APG debería facer coincidir esa duración."
 
@@ -13102,7 +13100,7 @@ msgid ""
 "to, or longer than the specified value."
 msgstr ""
 "Se a duración da lista de reprodución xerada debería ser menor que, igual a, "
-"ou maior que o valor especificado."
+"ou maior que o valor indicado."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:39
@@ -13140,7 +13138,7 @@ msgid ""
 msgstr ""
 "A duración desexada da lista de reprodución, en horas, minutos e segundos. "
 "Nota: debido a limitacións de Qt, a duración máxima da lista de reprodución "
-"que se pode especificar é de 24 horas."
+"que se pode indicar é de 24 horas."
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Strictness)
 #. i18n: ectx: property (whatsThis), widget (QSlider, slider_Strictness)
@@ -13154,7 +13152,7 @@ msgid ""
 "specified time."
 msgstr ""
 "Como de estrito debería ser o APG sobre emparellar a duración da pista de "
-"reprodución co tempo especificado."
+"reprodución co tempo indicado."
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:55
 #, kde-format
@@ -13165,7 +13163,7 @@ msgstr "Tamaño total dos ficheiros da lista de reprodución"
 #, kde-format
 msgid "Sets the preferred total file size of the playlist"
 msgstr ""
-"Axusta o tamaño total preferido para os ficheiros da lista de reprodución"
+"Define o tamaño total preferido para os ficheiros da lista de reprodución."
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:123
 #, kde-format
@@ -13303,7 +13301,7 @@ msgstr "Lonxitude da lista de reprodución"
 #: playlistgenerator/constraints/PlaylistLength.cpp:52
 #, kde-format
 msgid "Sets the preferred number of tracks in the playlist"
-msgstr "Estabelece el número de pistas preferido en la lista de reprodución"
+msgstr "Define o número de pistas preferido na lista de reprodución."
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:118
 #, kde-format
@@ -13348,7 +13346,7 @@ msgid ""
 "equal to, or more than the specified value."
 msgstr ""
 "Se o número de pistas da lista de reprodución xerada debería ser menor que, "
-"igual a, ou maior que o valor especificado."
+"igual a, ou maior que o valor indicado."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:39
@@ -13370,7 +13368,7 @@ msgid ""
 "specified number of tracks."
 msgstr ""
 "Como de estrito debería ser o APG sobre emparellar a lonxitude da lista de "
-"reprodución co número de pistas especificadas."
+"reprodución co número de pistas indicadas."
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:51
 #, kde-format
@@ -13468,7 +13466,7 @@ msgstr "Emparellar etiquetas"
 msgid "Make all tracks in the playlist match the specified characteristic"
 msgstr ""
 "Fai que todas as pistas na lista de reprodución coincidan coas "
-"características especificadas"
+"características indicadas."
 
 #: playlistgenerator/constraints/TagMatch.cpp:176
 #, kde-format
@@ -13639,8 +13637,8 @@ msgid ""
 "that characteristic.  This functions similarity to the matching attributes "
 "of the smart playlists in Amarok 1.4."
 msgstr ""
-"Un editor para restricións de emparellamento de etiquetas. O usuario pode "
-"especificar unha característica dunha pista e o APG completará a lista de "
+"Un editor para restricións de emparellamento de etiquetas. Vostede pode "
+"indicar unha característica dunha pista e o APG completará a lista de "
 "reprodución con pistas que coincidan coas características. Isto funciona dun "
 "xeito similar aos atributos de coincidencia das listas de reprodución "
 "intelixentes de Amarok 1.4."
@@ -13693,7 +13691,7 @@ msgstr ""
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">O APG elixirá todas as "
 "pistas que <span style=\" font-weight:600;\">no</span> coincidan coas "
-"características especificadas.</p></body></html>"
+"características indicadas.</p></body></html>"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Invert)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:87
@@ -13709,7 +13707,7 @@ msgid ""
 "greater than the specified value."
 msgstr ""
 "Se o APG debería elixir pistas que sexan menor que, igual a, ou maior que o "
-"valor especificado."
+"valor indicado."
 
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, spinBox_ValueInt)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:133
@@ -13726,7 +13724,7 @@ msgid ""
 "How strict the APG should be about matching tracks to the specified value."
 msgstr ""
 "Como de estrito debería ser o APG sobre como emparellar pistas co valor "
-"especificado."
+"indicado."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:226
@@ -13750,7 +13748,7 @@ msgstr "dentro do último"
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:266
 #, kde-format
 msgid "The specific date that the APG should use for matching."
-msgstr "A data específica que o APG debería empregar para emparellar."
+msgstr "A data específica que o APG debería usar para emparellar."
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, page_DateRange)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:300
@@ -13778,7 +13776,7 @@ msgid ""
 "contain the specified string."
 msgstr ""
 "Se o APG debería emparellar pistas que sexan igual, comecen con, rematen "
-"con, ou conteñan a cadea especificada."
+"con, ou conteñan a cadea indicada."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonString)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:409
@@ -13808,7 +13806,7 @@ msgstr "contén"
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:432
 #, kde-format
 msgid "The string that the APG should use when matching tracks."
-msgstr "A cadea que o APG debería empregar para emparellar pistas."
+msgstr "A cadea que o APG debería usar para emparellar pistas."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonTime)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:460
@@ -13818,7 +13816,7 @@ msgid ""
 "greater than the specified time."
 msgstr ""
 "Se o APG debería elixir pistas que sexan menor que, igual a, ou maior que o "
-"tempo especificado."
+"tempo indicado."
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_TimeValue)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:487
@@ -13835,7 +13833,7 @@ msgid ""
 "How strict the APG should be about matching tracks to the specified time."
 msgstr ""
 "Como de estrito debería ser o APG sobre como emparellar pistas ao tempo "
-"especificado."
+"indicado."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonRating)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:597
@@ -14227,27 +14225,27 @@ msgstr "Executar o guión"
 #: scripting/scriptconsole/ScriptConsole.cpp:108
 #, kde-format
 msgid "&New Script"
-msgstr "&Novo script"
+msgstr "&Novo guión"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:112
 #, kde-format
 msgid "&Delete Script"
-msgstr "&Eliminar o script"
+msgstr "&Eliminar o guión"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:115
 #, kde-format
 msgid "&Clear All Scripts"
-msgstr "Limpar todos os scripts"
+msgstr "&Limpar todos os guións"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:118
 #, kde-format
 msgid "Previous Script"
-msgstr "Script anterior"
+msgstr "Guión anterior"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:122
 #, kde-format
 msgid "Next Script"
-msgstr "Seguinte script"
+msgstr "Seguinte guión"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:130
 #, kde-format
@@ -14257,22 +14255,22 @@ msgstr "&Vista"
 #: scripting/scriptconsole/ScriptConsole.cpp:218
 #, kde-format
 msgid "This will stop this script! Continue?"
-msgstr "Isto deterá o script. Quere continuar?"
+msgstr "Isto deterá o guión. Quere continuar?"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:230
 #, kde-format
 msgid "Choose where to save your scripts"
-msgstr "Escolla onde gardar os scripts."
+msgstr "Escolla onde gardar os guións."
 
 #: scripting/scriptconsole/ScriptConsole.cpp:423
 #, kde-format
 msgid "Remove script file from disk?"
-msgstr "Quere retirar o ficheiro de script definitivamente?"
+msgstr "Quere retirar o ficheiro de guión definitivamente?"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:423
 #, kde-format
 msgid "Remove Script"
-msgstr "Retirar o script"
+msgstr "Retirar o guión"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:453
 #, kde-format
@@ -14287,7 +14285,7 @@ msgstr "Terminar"
 #: scripting/scriptmanager/ScriptItem.cpp:184
 #, kde-format
 msgid "Script %1 has been evaluating for over 5 seconds now, terminate?"
-msgstr "O script %1 leva avaliando máis de 5 segundos, quere terminalo?"
+msgstr "O guión %1 leva avaliando máis de 5 segundos, quere terminalo?"
 
 #: scripting/scriptmanager/ScriptItem.cpp:340
 #, kde-format
@@ -14298,8 +14296,9 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "author, %2 at %3, and ask him to upgrade it before the next Amarok release."
 msgstr ""
-"O script %1 usa chamadas obsoletas da API. Contacte co autor do script, %2 "
-"(%3), e pídalle que o anove antes da seguinte versión principal de Amarok."
+"O guión %1 usa chamadas obsoletas da API de guionización. Contacte co autor "
+"do guión, %2 (%3), e pídalle que o anove antes da seguinte versión principal "
+"de Amarok."
 
 #: scripting/scriptmanager/ScriptManager.cpp:286
 #, kde-format
@@ -14307,7 +14306,7 @@ msgid ""
 "Script error reported by: %1\n"
 "%2"
 msgstr ""
-"Erro de script comunicado por:%1\n"
+"Erro de guión comunicado por:%1\n"
 "%2"
 
 #: services/ampache/AddServerDialog.cpp:44
@@ -14793,15 +14792,15 @@ msgid ""
 "Use Last.fm tags like <b>7 of 10 stars</b> to represent your Amarok ratings "
 "during statistics synchronization"
 msgstr ""
-"Empregar etiquetas de Last.fm como <b>7 of 10 stars</b> (7 estrelas de 10) "
-"para representar as súas puntuacións en Amarok durante a sincronización das "
+"Usar etiquetas de Last.fm como <b>7 of 10 stars</b> (7 estrelas de 10) para "
+"representar as súas puntuacións en Amarok durante a sincronización das "
 "estatísticas."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseFancyRatingTags)
 #: services/lastfm/LastFmConfigWidget.ui:161
 #, kde-format
 msgid "Use fancy tags to represent ratings"
-msgstr "Empregar etiquetas especiais para representar as puntuacións."
+msgstr "Usar etiquetas especiais para representar as puntuacións."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AnnounceCorrections)
 #: services/lastfm/LastFmConfigWidget.ui:168
@@ -15764,7 +15763,7 @@ msgstr ""
 "O servizo Magnatune.com acepta as seguintes mensaxes: \n"
 "\n"
 "\taddMoodyTracks ánimo cantidade: Engade á lista de reprodución un número de "
-"pistas ao chou co ánimo especificado. O argumento ánimo debe ter os espazos "
+"pistas ao chou co ánimo indicado. O argumento ánimo debe ter os espazos "
 "protexidos cun %%20"
 
 #: services/magnatune/MagnatuneStore.cpp:629
@@ -15875,17 +15874,17 @@ msgstr "http://amarok.kde.org"
 #: services/mp3tunes/harmonydaemon/main.cpp:48
 #, kde-format
 msgid "The identifier the daemon should use."
-msgstr "O identificador que debe empregar o servizo."
+msgstr "O identificador que debe usar o servizo."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:49
 #, kde-format
 msgid "The email to be used for authentication."
-msgstr "O correo electrónico a empregar na autenticación."
+msgstr "O correo electrónico a usar na autenticación."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:50
 #, kde-format
 msgid "The pin to be used for authentication."
-msgstr "O PIN que empregar na autenticación."
+msgstr "O PIN que usar na autenticación."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:16
@@ -16491,7 +16490,7 @@ msgstr[1] "As escoitas de %2 de <b>%1</b> pistas enviaranse a %3."
 #, kde-format
 msgctxt "%2 is the above '%1 track(s)' message"
 msgid "Showing %1 out of %2"
-msgstr "Mostrando %1 de %2"
+msgstr "Amosando %1 de %2"
 
 #. i18n: ectx: attribute (title), widget (QWidget, matchedTab)
 #: statsyncing/ui/MatchedTracksPage.ui:21
@@ -16515,7 +16514,7 @@ msgstr "Filtrar as pistas…"
 #: statsyncing/ui/MatchedTracksPage.ui:84
 #, kde-format
 msgid "Affects all applicable tracks, not just shown ones"
-msgstr "Afecta a todas as pistas aplicábeis, non só as mostradas."
+msgstr "Afecta a todas as pistas aplicábeis, non só as amosadas."
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedRatingsButton)
 #: statsyncing/ui/MatchedTracksPage.ui:68
@@ -16562,7 +16561,7 @@ msgstr "Interromper"
 #: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
 #, kde-format
 msgid "Multiple background tasks running (click to show)"
-msgstr "Varias tarefas de fondo en funcionamento (prema para mostralas)"
+msgstr "Varias tarefas de fondo en funcionamento (prema para amosalas)"
 
 #: statusbar/CompoundProgressBar.cpp:72 statusbar/CompoundProgressBar.cpp:209
 #, kde-format
