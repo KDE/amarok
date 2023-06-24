@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2023-06-19 13:49+0200\n"
+"PO-Revision-Date: 2023-06-23 21:42+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -203,7 +203,7 @@ msgstr ""
 "<p>Todos os anos, no mes de outubro, o equipo de Amarok organiza unha "
 "campaña de recadación de fondos, <b>Roktober</b>.</p><p>Se quere que o seu "
 "nome apareza nesta lista, <a href=\"http://amarok.kde.org/donations\">faga "
-"unha doazón durante o Rocktober</a> e confirme que quere aparecer.</p>"
+"unha doazón durante o Roktober</a> e confirme que quere aparecer.</p>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:332
 #, kde-format
@@ -450,8 +450,8 @@ msgid ""
 "Set this to display a second time label to the left of the seek slider in "
 "the player window."
 msgstr ""
-"Defina isto para amosar unha segunda etiqueta á esquerda do deslizador de "
-"busca da xanela do reprodutor."
+"Defina isto para amosar unha segunda etiqueta á esquerda do control "
+"esvaradío de busca da xanela do reprodutor."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:18
@@ -649,7 +649,7 @@ msgstr "Amosar a vista de contexto"
 #: amarokconfig.kcfg:112
 #, kde-format
 msgid "Play the first run jingle"
-msgstr "Tocar a musiquiña da primeira execución"
+msgstr "Reproducir a melodía da primeira execución"
 
 #. i18n: ectx: label, entry, group (General Options)
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnimateAppletCollapse)
@@ -939,7 +939,7 @@ msgstr ""
 #, kde-format
 msgid "When enabled, an equalizer plugin filters the audio stream."
 msgstr ""
-"Cando está activa, un complemento de ecualización filtra a saída de son."
+"Cando está activa, un complemento de ecualizador filtra a saída de son."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:225
@@ -1528,7 +1528,7 @@ msgstr "Servidores engadidos manualmente"
 #: amarokconfig.kcfg:503
 #, kde-format
 msgid "Music Sharing servers added by the user."
-msgstr "Servidores de compartillamento de música engadidos polo usuario."
+msgstr "Servidores de compartición de música engadidos polo usuario."
 
 #. i18n: ectx: label, entry, group (Daap)
 #: amarokconfig.kcfg:506
@@ -1664,7 +1664,7 @@ msgstr "Activar/desactivar a actualización automática dos guións de serie."
 #: amarokconfig.kcfg:592 amarokconfig.kcfg:593
 #, kde-format
 msgid "Whether to enable the script console."
-msgstr "Indica se debe activarse a consola de scripting de Amarok."
+msgstr "Indica se debe activarse a consola de guións de Amarok."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
@@ -1690,15 +1690,15 @@ msgid ""
 "progress slider"
 msgstr ""
 "Se debe amosar a barra de ánimo da pista actual, se está dispoñíbel, no "
-"esvarador de progreso"
+"control esvaradío de progreso"
 
 #. i18n: ectx: whatsthis, entry, group (Moodbar)
 #: amarokconfig.kcfg:614
 #, kde-format
 msgid "Enable/Disable showing moodbar, if available, in the progress slider."
 msgstr ""
-"Activar/Desactivar a visualización da barra ánimo, se está dispoñíbel, na "
-"barra de progreso."
+"Activar/Desactivar a visualización da barra ánimo, se está dispoñíbel, no "
+"control esvaradío de progreso."
 
 #. i18n: ectx: label, entry, group (Moodbar)
 #: amarokconfig.kcfg:618
@@ -1914,7 +1914,7 @@ msgstr "Reproducir"
 #: App.cpp:361
 #, kde-format
 msgid "Files/URLs to open"
-msgstr "Ficheiros/URLs para abrir"
+msgstr "Ficheiros e enderezos URL para abrir."
 
 #: App.cpp:362
 #, kde-format
@@ -1959,7 +1959,7 @@ msgstr "Opcións adicionais:"
 #: App.cpp:371
 #, kde-format
 msgid "Append files/URLs to playlist"
-msgstr "Engadir ficheiros/URLs á lista de reprodución"
+msgstr "Engadir ficheiros e enderezos URL á lista de reprodución."
 
 #: App.cpp:372
 #, kde-format
@@ -1969,7 +1969,7 @@ msgstr "Pór os URL a continuación da pista que se está reproducindo"
 #: App.cpp:373
 #, kde-format
 msgid "Load URLs, replacing current playlist"
-msgstr "Cargar os URLs, substituíndo a lista de reprodución actual"
+msgstr "Cargar os enderezos URL, substituíndo a lista de reprodución actual."
 
 #: App.cpp:374
 #, kde-format
@@ -2313,7 +2313,7 @@ msgid ""
 "of whether these files are part of your local collection. You can then add "
 "these files to the playlist as well as perform basic file operations."
 msgstr ""
-"O navegador de ficheiros permitelle navegar polos ficheiros de calquerq "
+"O navegador de ficheiros permítelle navegar polos ficheiros de calquera "
 "parte do seu sistema, con independencia de se eses ficheiros son parte da "
 "súa colección local. Vostede pode engadir estes ficheiros á lista de "
 "reprodución así como facer operacións básicas de ficheiros."
@@ -3191,7 +3191,7 @@ msgstr "Base de &datos:"
 #, kde-format
 msgid "Enter the name of the database. Default preset is amarokdb.\n"
 msgstr ""
-"Insira o nome da base de datos. A preconfiguración predeterminada é "
+"Insira o nome da base de datos. A predefinición predeterminada é "
 "«amarokdb».\n"
 
 #. i18n: ectx: property (text), widget (QPushButton, button_Test)
@@ -3353,7 +3353,7 @@ msgstr ""
 #: configdialog/dialogs/GeneralConfig.ui:120
 #, kde-format
 msgid "Show Moodbar in Progress Slider"
-msgstr "Amosar a barra de ánimo no esvarador de progreso"
+msgstr "Amosar a barra de ánimo no control esvaradío de progreso"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: configdialog/dialogs/GeneralConfig.ui:127
@@ -3464,7 +3464,7 @@ msgstr "Sincronizar %1"
 #, kde-format
 msgid "(%2one exception%3)"
 msgid_plural "(%2%1 exceptions%3)"
-msgstr[0] "(%2unha expectión%3)"
+msgstr[0] "(%2unha excepción%3)"
 msgstr[1] "(%2%1 excepcións%3)"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_tagsGroup)
@@ -3743,8 +3743,7 @@ msgstr "Utilizar notificacións do &sistema"
 #: configdialog/dialogs/PlaybackConfig.cpp:38
 #, kde-format
 msgid "Current Phonon backend does not support volume fading"
-msgstr ""
-"A infraestrutura de Phonon que está a usar non permite esvaer o volume."
+msgstr "O seu motor de Phonon non permite esvaer o volume."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ResumePlayback)
@@ -3966,7 +3965,7 @@ msgstr "Xestionar os guións"
 #: scripting/scriptconsole/ScriptConsole.cpp:74
 #, kde-format
 msgid "Script Console"
-msgstr "Consola de scripting"
+msgstr "Consola de guións"
 
 #. i18n: ectx: property (statusTip), widget (QCheckBox, kcfg_EnableScriptConsole)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_EnableScriptConsole)
@@ -3974,13 +3973,13 @@ msgstr "Consola de scripting"
 #: configdialog/dialogs/ScriptsConfig.ui:119
 #, kde-format
 msgid "Enable the script console."
-msgstr "Activar a consola de scripting."
+msgstr "Activar a consola de guións."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_EnableScriptConsole)
 #: configdialog/dialogs/ScriptsConfig.ui:122
 #, kde-format
 msgid "Enable Script Console"
-msgstr "Activar a consola de scripting"
+msgstr "Activar a consola de guións"
 
 #: configdialog/dialogs/ScriptSelector.cpp:37
 #, kde-format
@@ -4932,7 +4931,7 @@ msgstr "Abrir a páxina de inicio de Last.fm para este evento"
 #, kde-format
 msgctxt "@label:textbox Supporting acts for an event"
 msgid "Supporting:"
-msgstr "Teloneiros:"
+msgstr "Abreconcertos:"
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:96
 #, kde-format
@@ -5200,7 +5199,7 @@ msgid ""
 "directories for this KDE session will be searched instead."
 msgstr ""
 "A ruta absoluta á raíz do paquete. Se non se indica, entón buscarase nos "
-"directorios estándar para datos desta sesión de KDE."
+"cartafoles estándar para datos desta sesión de KDE."
 
 #: context/tools/amarokpkg.cpp:176
 #, kde-format
@@ -5394,7 +5393,7 @@ msgstr "A pista orixinal non existe: %1"
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:543
 #, kde-format
 msgid "Could not create directory: %1"
-msgstr "Non se puido crear o directorio: %1"
+msgstr "Non se puido crear o cartafol: %1"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
@@ -5601,7 +5600,7 @@ msgid_plural ""
 msgstr[0] ""
 "Non se transferiu unha pista porque excedería a capacidade do iPod.<br>"
 msgstr[1] ""
-"Non se transferíron %1 pistas porque excederían a capacidade do iPod.<br>"
+"Non se transferiron %1 pistas porque excederían a capacidade do iPod.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
 #, kde-format
@@ -5779,7 +5778,7 @@ msgstr "Ficheiro SysInfoExtended:"
 #, kde-format
 msgid "Cannot parse iTunes database due to an unreported error."
 msgstr ""
-"Non se pode examinar a base de datas do iTunes por causa dun erro do que non "
+"Non se pode examinar a base de datos de iTunes por mor dun erro do que non "
 "se informou."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:57
@@ -5832,7 +5831,7 @@ msgid ""
 "dynamically load external library libhashab.so to do it."
 msgstr ""
 "A familia %1 probabelmente usa hash-AB para xerar a suma de comprobación "
-"correcta da base de datos. libqpod (cando menos na versión 0.8.2) non sabe "
+"correcta da base de datos. libgpod (cando menos na versión 0.8.2) non sabe "
 "como calculala, pero intenta cargar dinamicamente a biblioteca externa "
 "libhashab.so para facelo."
 
@@ -5898,7 +5897,7 @@ msgstr ""
 "i> no iPod (a modificación da base de datos do iTunes podería facer que "
 "desde o punto de vista do dispositivo parecese estar baleiro)<br>Vexa o "
 "ficheiro <a href='%2'>README.overview</a> nun repositorio de fontes do "
-"ligqpod para máis información."
+"libgpod para máis información."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:372
 #, kde-format
@@ -6148,10 +6147,10 @@ msgid_plural ""
 "directory is writable."
 msgstr[0] ""
 "Produciuse un problema e non se puido retirar esta pista. Asegúrese de que o "
-"directorio permite escritura."
+"cartafol permite escritura."
 msgstr[1] ""
 "Produciuse un problema e non se puido retirar %1 pistas. Asegúrese de que o "
-"directorio permite escritura."
+"cartafol permite escritura."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:80
 #, kde-format
@@ -6731,7 +6730,7 @@ msgstr "desactivado"
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:79
 #, kde-format
 msgid "Base directory:"
-msgstr "Directorio base:"
+msgstr "Cartafol base:"
 
 #. i18n: ectx: property (toolTip), widget (KUrlRequester, m_baseDirUrl)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:107
@@ -6764,13 +6763,13 @@ msgstr ""
 "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Directorio base para todas "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Cartafol base para todas "
 "as novas canles de podcasts.</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Cando se engada unha canle "
-"nova de podcast, usarase o <span style=\" font-style:italic;\">&lt;"
-"directorio base&gt;</span>/<span style=\" font-style:italic;\">&lt;nome da "
-"canle&gt;</span> como directorio de descarga.</p>\n"
+"nova de podcast, usarase o <span style=\" font-style:italic;\">&lt;cartafol "
+"base&gt;</span>/<span style=\" font-style:italic;\">&lt;nome da canle&gt;</"
+"span> como cartafol de descarga.</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Isto pode cambiarse para "
 "cada canle de forma individual.</p></body></html>"
@@ -6784,9 +6783,9 @@ msgid ""
 "the download directory.\n"
 "This can be changed for each channel individually."
 msgstr ""
-"O directorio base para todas as canles novas de podcast.\n"
-"Ao engadir unha canle nova de podcast, úsase <directorio base>/<nome da "
-"canle> como directorio de descarga.\n"
+"O cartafol base para todas as canles novas de podcast.\n"
+"Ao engadir unha canle nova de podcast, úsase <cartafol base>/<nome da canle> "
+"como cartafol de descarga.\n"
 "Isto pode cambiarse para cada canle de forma individual."
 
 #: core-impl/storage/StorageManager.cpp:162
@@ -7235,32 +7234,37 @@ msgstr "nº de reproducións"
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "uniqueid"
-msgstr "IDúnico"
+msgstr "identificador"
 
+# well-spelled: gananciapista
 #: core/meta/support/MetaConstants.cpp:249
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "trackgain"
 msgstr "gananciapista"
 
+# well-spelled: gananciamáximapista
 #: core/meta/support/MetaConstants.cpp:250
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "trackgainpeak"
 msgstr "gananciamáximapista"
 
+# well-spelled: gananciaálbum
 #: core/meta/support/MetaConstants.cpp:251
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "albumgain"
 msgstr "gananciaálbum"
 
+# well-spelled: gananciamáximaálbum
 #: core/meta/support/MetaConstants.cpp:252
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "albumgainpeak"
-msgstr "ganancia máximaálbum"
+msgstr "gananciamáximaálbum"
 
+# well-spelled: intérpreteálbum
 #: core/meta/support/MetaConstants.cpp:254
 #, kde-format
 msgctxt "One word translation used in the collection filter"
@@ -7393,7 +7397,7 @@ msgid ""
 "While parsing %1, a feed was expected but an HTML page was received.\n"
 "Did you enter the correct URL?"
 msgstr ""
-"Mentres se analizaba %1, agardabase unha fonte pero recibiuse unha páxina "
+"Mentres se analizaba %1, agardábase unha fonte pero recibiuse unha páxina "
 "HTML.\n"
 "Inseriu vostede un URL correcto?"
 
@@ -7607,8 +7611,8 @@ msgstr ""
 "representar un segundo da pista de son.<br> O codificador que Amarok usa "
 "opera mellor cunha taxa de bits constante.<br> VBR é experimental e "
 "probabelmente forneza peores resultados que CBR.<br> Por este motivo, a "
-"medida da taxa de bits deste control de desprazamento é unha estimación "
-"bastante precisa da taxa de bits da pista codificada.<br> O codificador é "
+"medida da taxa de bits deste control esvaradío é unha estimación bastante "
+"precisa da taxa de bits da pista codificada.<br> O codificador é "
 "transparente a 128 kbps para a meirande parte das mostras, con excepcións "
 "que só aparecen en casos extremos."
 
@@ -7730,7 +7734,7 @@ msgid ""
 msgstr ""
 "<a href=https://gl.wikipedia.org/wiki/FLAC>Free Lossless Audio Codec</a> "
 "(FLAC) é un codec aberto e libre de regalías para a compresión sen perdas de "
-"música dixital.<br>Se desexa almacenar a súa música sen comprometer a "
+"música dixital.<br>Se quere almacenar a súa música sen comprometer a "
 "calidade do son, FLAC é unha excelente escolla."
 
 #: core/transcoding/formats/TranscodingMp3Format.cpp:28
@@ -7758,7 +7762,7 @@ msgstr ""
 "de bits máis elevada que os menos complexos; esta aproximación fornece sobre "
 "todo unha mellor calidade e un ficheiro máis pequeno que unha taxa de bits "
 "constante ao longo da pista. <br>Por este motivo, a medida da taxa de bits "
-"neste esvarador é só unha estimación da taxa media de bits da pista "
+"neste control esvaradío é só unha estimación da taxa media de bits da pista "
 "codificada. <br><b>160kb/s</b> é unha boa elección para escoitar música nun "
 "reprodutor portátil. <br/>Calquera valor inferior a <b>120kb/s</b> podería "
 "non ser satisfactorio para música e calquera superior a <b>205kb/s</b> é "
@@ -7769,8 +7773,7 @@ msgstr ""
 #, kde-format
 msgid "Expected average bitrate for variable bitrate encoding"
 msgstr ""
-"Taxa promediada de bits agardada para a codificación con taxa de bits "
-"variábel"
+"Taxa media de bits agardada para a codificación con taxa de bits variábel"
 
 #: core/transcoding/formats/TranscodingMp3Format.cpp:71
 #, kde-format
@@ -7814,7 +7817,7 @@ msgstr ""
 "máis elevada que os menos complexos; esta aproximación fornece sobre todo "
 "unha mellor calidade e un ficheiro máis pequeno que unha taxa de bits "
 "constante ao longo da pista. <br>Por este motivo, a medida da taxa de bits "
-"neste esvarador é só unha estimación da taxa media de bits da pista "
+"neste control esvaradío é só unha estimación da taxa media de bits da pista "
 "codificada. <br><b>128kb/s</b> é unha boa elección para escoitar música nun "
 "reprodutor portátil. <br/>Calquera valor inferior a <b>100kb/s</b> podería "
 "non ser satisfactorio para música e calquera superior a <b>256kb/s</b> é "
@@ -7867,9 +7870,9 @@ msgstr ""
 "aproximación fornece sobre todo unha mellor calidade e un ficheiro máis "
 "pequeno que unha taxa de bits constante ao longo da pista. <br>O codificador "
 "Vorbis usa una puntuación de calidade «parámetro -q» entre -1 e 10 para "
-"definir a calidade de son esperada. A medida da taxa de bits neste esvarador "
-"é só unha estimación (fornecida por Vorbis) da taxa media de bits da pista "
-"codificada dado un valor q. De feito, coas versións máis modernas e "
+"definir a calidade de son esperada. A medida da taxa de bits neste control "
+"esvaradío é só unha estimación (fornecida por Vorbis) da taxa media de bits "
+"da pista codificada dado un valor q. De feito, coas versións máis modernas e "
 "eficientes de Vorbis a taxa de bits real é incluso menor. <br><b>-q5</b> é "
 "unha boa elección para escoitar música nun reprodutor portátil. <br/> "
 "Calquera valor inferior a <b>-q3</b> podería non ser satisfactorio para "
@@ -7917,7 +7920,7 @@ msgstr ""
 "códec propietario, o codificador WMA usado por Amarok define unha "
 "configuración de <a href=http://en.wikipedia.org/wiki/"
 "Windows_Media_Audio#Windows_Media_Audio>taxa de bits constante (CBR)</a>. "
-"<br>Por este motivo, a medida da taxa de bits neste esvarador é unha "
+"<br>Por este motivo, a medida da taxa de bits neste control esvaradío é unha "
 "estimación bastante precisa da taxa de bits da pista codificada. "
 "<br><b>136kb/s</b> é unha boa elección para escoitar música nun reprodutor "
 "portátil. <br/>Calquera valor inferior a <b>112kb/s</b> podería non ser "
@@ -8453,8 +8456,8 @@ msgstr ""
 #, kde-format
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
-"E&xaminar os cartafoles recursivamente (necesita volver examinar todo se ven "
-"de marcalo)"
+"E&xaminar os cartafoles recursivamente (necesita volver examinar todo se "
+"acaba de marcalo)."
 
 #: dialogs/CollectionSetup.cpp:81
 #, kde-format
@@ -8695,7 +8698,7 @@ msgstr "Configurar o dispositivo de medios"
 #: dialogs/deviceconfiguredialog.cpp:85
 #, kde-format
 msgid "Pre-&connect command:"
-msgstr "Orde de pre&conexión:"
+msgstr "Orde de &conexión previa:"
 
 #: dialogs/deviceconfiguredialog.cpp:87
 #, kde-format
@@ -8710,7 +8713,7 @@ msgid ""
 "%d is replaced by the device node, %m by the mount point.\n"
 "Empty commands are not executed."
 msgstr ""
-"Defina aquí a orde que desexe executar antes de conectar co seu dispositivo "
+"Defina aquí a orde que quere executar antes de conectar co seu dispositivo "
 "(e.g. a orde mount).\n"
 "%d é substituído co nodo do dispositivo, %m polo punto de montaxe.\n"
 "Non se executan as ordes baleiras."
@@ -8733,7 +8736,7 @@ msgid ""
 "%d is replaced by the device node, %m by the mount point.\n"
 "Empty commands are not executed."
 msgstr ""
-"Defina aquí unha orde que desexe executar despois de desconectar do "
+"Defina aquí unha orde que quere executar despois de desconectar do "
 "dispositivo (e.g. a orde eject).\n"
 "%d é substituído polo nodo do dispositivo, %m polo punto de montaxe.\n"
 "As ordes baleiras non se executan."
@@ -8808,11 +8811,11 @@ msgstr ""
 "Diagnóstico do %1\n"
 "\n"
 "Información xeral:\n"
-"Versión do: %2\n"
+"Versión de %1: %2\n"
 "Versión das infraestruturas de KDE: %3\n"
-"Versión do Qt: %4\n"
+"Versión de Qt: %4\n"
 "Versión de Phonon: %5\n"
-"Infraestrutura de Phonon: %6 (%7, %8)\n"
+"Motor de Phonon: %6 (%7, %8)\n"
 "PulseAudio: %9\n"
 "\n"
 
@@ -8977,7 +8980,7 @@ msgstr "-dB"
 #: dialogs/EqualizerDialog.ui:569
 #, kde-format
 msgid "Preamp"
-msgstr "Preamplificación"
+msgstr "Amplificación previa"
 
 #. i18n: ectx: property (text), widget (QLabel, eqBand0Label)
 #. i18n: ectx: property (text), widget (QLabel, eqBand1Label)
@@ -9137,7 +9140,7 @@ msgstr "Vista previa: %1"
 #, kde-format
 msgid "There is a filename conflict, existing files will be overwritten."
 msgstr ""
-"Hai un conflito de nome de ficheiro, sobrescribiránse os ficheiros "
+"Hai un conflito de nome de ficheiro, sobrescribiranse os ficheiros "
 "existentes."
 
 #: dialogs/OrganizeCollectionDialog.cpp:385
@@ -9157,7 +9160,7 @@ msgstr "Organizar os ficheiros"
 #: dialogs/OrganizeCollectionDialogBase.ui:29
 #, kde-format
 msgid "Base directory under which to put files"
-msgstr "Directorio base baixo o cal pór ficheiros"
+msgstr "Cartafol base baixo o cal pór ficheiros"
 
 #. i18n: ectx: property (text), widget (QLabel, folderLabel)
 #: dialogs/OrganizeCollectionDialogBase.ui:32
@@ -9427,7 +9430,7 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">A maioría das persoas pode "
-"deixar esta opción <span style=\" font-style:italic;\">sen marcarr.</span></"
+"deixar esta opción <span style=\" font-style:italic;\">sen marcar.</span></"
 "p></body></html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, asciiCheck)
@@ -9962,7 +9965,7 @@ msgid ""
 "directories based upon the specified criteria.\n"
 msgstr ""
 "Pode agrupar automaticamente a súa música de varios\n"
-"xeitos. Cada agrupamento creará directorios\n"
+"xeitos. Cada agrupamento creará cartafoles\n"
 "baseados no criterio indicado.\n"
 
 #: dialogs/transferdialog.cpp:86
@@ -10160,7 +10163,7 @@ msgstr "Coincidencia de todo secuencialmente"
 msgctxt ""
 "Prefix for IfElseBias. Shown in front of a bias in the dynamic playlist view"
 msgid "else"
-msgstr "noutrocaso"
+msgstr "senón"
 
 #: dynamic/biases/PartBias.cpp:43
 #, kde-format
@@ -11015,7 +11018,7 @@ msgstr "Daniel Dewald"
 #: main.cpp:204
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
-msgstr "Adiviñador de etiquetas, etiquetas, analizador de espectro"
+msgstr "Adiviño de etiquetas, etiquetas, analizador de espectro."
 
 #: main.cpp:206
 #, kde-format
@@ -11045,7 +11048,7 @@ msgstr "Greg Meyer"
 #: main.cpp:210
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
-msgstr "Live CD, solucionador de fallos (oggb4mp3)"
+msgstr "Live CD, solución de fallos (oggb4mp3)."
 
 #: main.cpp:212
 #, kde-format
@@ -11255,7 +11258,7 @@ msgstr "Wade Olson"
 #: main.cpp:256
 #, kde-format
 msgid "Splash screen artist"
-msgstr "Material gráfico de pantalla de presentación no arranque"
+msgstr "Autoría da pantalla de inicio"
 
 #: main.cpp:258
 #, kde-format
@@ -11270,7 +11273,7 @@ msgstr "Vista de contexto"
 #: main.cpp:262
 #, kde-format
 msgid "Former contributors"
-msgstr "Antigos contribuintes"
+msgstr "Colaboracións anteriores"
 
 #: main.cpp:262
 #, kde-format
@@ -11361,7 +11364,8 @@ msgstr "Enrico Ros"
 #, kde-format
 msgid "Analyzers, Context Browser and systray eye-candy"
 msgstr ""
-"Analizadores, Navegador de Contexto e florituras da área de notificación"
+"Analizadores, navegador de contexto e melloras visuais da área de "
+"notificación."
 
 #: main.cpp:284
 #, kde-format
@@ -11401,7 +11405,7 @@ msgstr "Jarkko Lehti"
 #: main.cpp:292
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
-msgstr "Probas, operador da canle de IRC, fustigador"
+msgstr "Probas, operador da canle de IRC, castigos."
 
 #: main.cpp:294
 #, kde-format
@@ -11436,7 +11440,7 @@ msgstr "Melchior Franz"
 #: main.cpp:300
 #, kde-format
 msgid "FHT routine, bugfixes"
-msgstr "Rotina FHT, erros"
+msgstr "Rutina de FHT, corrección de erros."
 
 #: main.cpp:302
 #, kde-format
@@ -11526,7 +11530,7 @@ msgstr "Tomasz Dudzik"
 #: main.cpp:322
 #, kde-format
 msgid "Splash screen"
-msgstr "Pantalla de benvida"
+msgstr "Pantalla de inicio"
 
 #: main.cpp:327
 #, kde-format
@@ -11618,7 +11622,7 @@ msgstr "Reproducir os medios (ficheiros ou URL)"
 #: MainWindow.cpp:525
 #, kde-format
 msgid "Add Media (Files or URLs)"
-msgstr "Engadir medios (ficheiros ou URLs)"
+msgstr "Engadir medios (ficheiros e enderezos URL)"
 
 #: MainWindow.cpp:545
 #, kde-format
@@ -11756,7 +11760,7 @@ msgstr "Conmutar a xanela principal"
 #: MainWindow.cpp:916
 #, kde-format
 msgid "Toggle Full Screen"
-msgstr "Cambiar a pantalla completa"
+msgstr "Conmutar a pantalla completa"
 
 #: MainWindow.cpp:921 playlist/ProgressiveSearchWidget.cpp:48
 #, kde-format
@@ -12425,7 +12429,7 @@ msgstr "Imaxe da portada"
 #, kde-format
 msgctxt "'Directory' playlist column name and token for playlist layouts"
 msgid "Directory"
-msgstr "Directorio"
+msgstr "Cartafol"
 
 #: playlist/PlaylistDefines.cpp:100
 #, kde-format
@@ -12610,7 +12614,7 @@ msgstr "Comentario"
 #, kde-format
 msgctxt "The location on disc of this track"
 msgid "Directory"
-msgstr "Directorio"
+msgstr "Cartafol"
 
 #: playlist/PlaylistModel.cpp:941
 #, kde-format
@@ -13200,7 +13204,7 @@ msgid ""
 "should match the target number of tracks."
 msgstr ""
 "Un editor de restricións de lonxitude de lista de reprodución. O usuario "
-"pode indicar o número de pistas desexado e se a lista de reprodución contén "
+"pode indicar o número de pistas que quere e se a lista de reprodución contén "
 "menos, tantas ou máis pistas que as indicadas. e a rixidez coa que o APG "
 "debería facer coincidir ese número de pistas."
 
@@ -14091,7 +14095,7 @@ msgstr "Exportar predefinición «%1»"
 #: playlistgenerator/PresetModel.cpp:299
 #, kde-format
 msgid "Preset files (*.xml)"
-msgstr "Predefinir ficheiros (*.xml)"
+msgstr "Ficheiros de predefinicións (*.xml)"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:98
 #, kde-format
@@ -14474,11 +14478,13 @@ msgstr ""
 "O servizo de GPodder non puido obter datos do servidor. Volverase intentar "
 "dentro de 10 segundos…"
 
+# skip-rule: gl-directorio
 #: services/gpodder/GpodderService.cpp:113
 #, kde-format
 msgid "gpodder.net: Podcast Directory Service"
 msgstr "gpodder.net: servizo de directorio de podcast"
 
+# skip-rule: gl-directorio
 #: services/gpodder/GpodderService.cpp:116
 #, kde-format
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
@@ -15194,7 +15200,7 @@ msgstr "Reproducir intérpretes similares desde Last.fm"
 #, kde-format
 msgctxt "description of the Last.fm statistics synchronization provider"
 msgid "slows down track matching"
-msgstr "Ralentiza a coincidencia de pistas."
+msgstr "Lentifica a coincidencia de pistas."
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:67
 #, kde-format
@@ -15970,7 +15976,7 @@ msgstr ""
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
 "mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
-"underline; color:#0057ae;\">Obter un casilleiro de MP3tunes</span></a></p></"
+"underline; color:#0057ae;\">Obter un armario de MP3tunes</span></a></p></"
 "body></html>"
 
 #: services/mp3tunes/Mp3tunesMeta.cpp:48
@@ -16096,6 +16102,7 @@ msgstr "Engadir OPML"
 msgid "New Folder"
 msgstr "Novo cartafol"
 
+# skip-rule: gl-directorio
 #: services/opmldirectory/OpmlDirectoryService.cpp:50
 #, kde-format
 msgid "Podcast Directory"
