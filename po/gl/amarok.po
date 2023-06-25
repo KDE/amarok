@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2023-06-23 21:42+0200\n"
+"PO-Revision-Date: 2023-06-24 10:40+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -656,14 +656,14 @@ msgstr "Reproducir a melodía da primeira execución"
 #: amarokconfig.kcfg:116 configdialog/dialogs/GeneralConfig.ui:61
 #, kde-format
 msgid "Enable context applets collapse animations"
-msgstr "Activar as animacións de pregamento de miniaplicacións de contexto."
+msgstr "Activar as animacións de recollemento de miniaplicacións de contexto."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:117
 #, kde-format
 msgid "If set, context applets will collapse using animations."
 msgstr ""
-"Se marca esta opción, as miniaplicacións de contexto pregaranse usando "
+"Se marca esta opción, as miniaplicacións de contexto recolleranse usando "
 "animacións."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -3131,7 +3131,7 @@ msgstr "&Servidor:"
 #: configdialog/dialogs/DatabaseConfig.ui:55
 #, kde-format
 msgid "Enter the name of the existing MySQL server\n"
-msgstr "Insira o nome dun servidor MySQL que xa exista\n"
+msgstr "Insira o nome dun servidor MySQL que xa exista.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Port)
 #: configdialog/dialogs/DatabaseConfig.ui:71
@@ -3231,7 +3231,7 @@ msgstr "Etiquetas excluídas"
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:17
 #, kde-format
 msgid "Add this label to the list of excluded labels"
-msgstr "Engadir esta etiqueta á lista de excluídas"
+msgstr "Engadir esta etiqueta á lista de excluídas."
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, addLabelLine)
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:30
@@ -3289,8 +3289,8 @@ msgstr "Obter automaticamente a portada"
 #, kde-format
 msgid "Check to enable animations when context applets collapse."
 msgstr ""
-"Marque para permitir que haxa animacións cando se preguen as miniaplicacións "
-"de contexto."
+"Marque para permitir que haxa animacións cando se recollan as "
+"miniaplicacións de contexto."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowBrowserBackgroundImage)
 #: configdialog/dialogs/GeneralConfig.ui:68
@@ -3841,7 +3841,8 @@ msgstr "&Inhibir automaticamente a suspensión cando estea a reproducir"
 #, kde-format
 msgid "If enabled, Amarok will pause the currently playing track on suspend"
 msgstr ""
-"Se está activado, Amarok detén a pista que se estea a reproducir ao suspender"
+"Se está activado, Amarok detén a pista que se estea a reproducir ao "
+"suspender."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_PauseOnSuspend)
 #: configdialog/dialogs/PlaybackConfig.ui:178
@@ -3952,7 +3953,7 @@ msgstr "Actualizar automaticamente os guións de serie."
 #: configdialog/dialogs/ScriptsConfig.ui:80
 #, kde-format
 msgid "Browse, install, and uninstall scripts"
-msgstr "Navegar, instalar e desinstalar guións"
+msgstr "Navegar, instalar e desinstalar guións."
 
 #. i18n: ectx: property (text), widget (QPushButton, manageButton)
 #: configdialog/dialogs/ScriptsConfig.ui:83
@@ -4329,7 +4330,7 @@ msgid ""
 msgstr ""
 "Isto axuda a manter a colección de etiquetas limpa substituíndo as etiquetas "
 "descargadas segundo as súas preferencias.\n"
-"P.ex. «hip hop» -> «hip-hop»"
+"P.ex. «hip hop» -> «hip-hop»."
 
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: context/applets/labels/labelsReplacementSettings.ui:98
@@ -4832,7 +4833,7 @@ msgstr "Expandir este trebello"
 #: context/applets/upcomingevents/UpcomingEventsStackItem.cpp:454
 #, kde-format
 msgid "Collapse this widget"
-msgstr "Pregar este trebello"
+msgstr "Recoller este trebello"
 
 #. i18n: ectx: property (clickMessage), widget (KLineEdit, searchLineEdit)
 #: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:45
@@ -4844,7 +4845,7 @@ msgstr "Buscar local"
 #: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:55
 #, kde-format
 msgid "Restrict venues to a specific country"
-msgstr "Restrinxir os locais a un país específico"
+msgstr "Restrinxir os locais a un país específico."
 
 #. i18n: ectx: property (text), item, widget (KComboBox, countryCombo)
 #: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:65
@@ -6432,7 +6433,7 @@ msgid ""
 "%number%,%album%"
 msgstr ""
 "Campos dispoñíbeis : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
-"%number%,%album%"
+"%number%,%album%."
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PodcastSettingsBase)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:30
@@ -6454,7 +6455,7 @@ msgstr "Lugar no que gardar:"
 msgid "When checked, Amarok will automatically scan the podcast for updates"
 msgstr ""
 "Se se marca, Amarok examina automaticamente o podcast á busca de "
-"actualizacións"
+"actualizacións."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoFetchCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:105
@@ -6474,7 +6475,7 @@ msgstr "Descarga de medios"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:124
 #, kde-format
 msgid "Download media as soon as it becomes available"
-msgstr "Descargar o medio así que estea dispoñíbel"
+msgstr "Descargar o medio así que estea dispoñíbel."
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_downloadRadio)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:127
@@ -6506,7 +6507,7 @@ msgstr "Fluxo ou descarga baixo de&manda"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:155
 #, kde-format
 msgid "If checked, Amarok will throw away old podcast episodes"
-msgstr "Se se marca, Amarok desfarase de todos os podcasts antigos"
+msgstr "Se se marca, Amarok desfarase de todos os podcasts antigos."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_purgeCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:158
@@ -6526,7 +6527,7 @@ msgstr "Manter un máximo de:"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:194
 #, kde-format
 msgid "The maximum number of podcast items to store"
-msgstr "Número máximo de elementos de podcast que almacenar"
+msgstr "Número máximo de elementos de podcast que almacenar."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_writeTagsCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:208
@@ -8667,7 +8668,8 @@ msgid ""
 "If checked, files will be permanently removed instead of being placed in the "
 "Trash Bin"
 msgstr ""
-"Se se marca, os ficheiros serán retirados no canto de ser movidos para o Lixo"
+"Se se marca, os ficheiros serán retirados no canto de ser movidos para o "
+"Lixo."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
 #: dialogs/deletedialogbase.ui:110
@@ -8922,7 +8924,7 @@ msgstr "Lista de predefinicións dispoñíbeis do ecualizador."
 #: dialogs/EqualizerDialog.ui:57
 #, kde-format
 msgid "Save changes of currently selected preset"
-msgstr "Garda os cambios das predefinicións escollidas actualmente"
+msgstr "Garda os cambios das predefinicións escollidas actualmente."
 
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetSaveBtn)
 #: dialogs/EqualizerDialog.ui:60
@@ -9032,12 +9034,12 @@ msgstr "Limpar todas as escollas, mesmo as feitas manualmente."
 #: dialogs/MusicBrainzTagger.cpp:101
 #, kde-format
 msgid "Collapse Chosen"
-msgstr "Pregar o escollido"
+msgstr "Recoller o escollido"
 
 #: dialogs/MusicBrainzTagger.cpp:105 statsyncing/ui/MatchedTracksPage.cpp:167
 #, kde-format
 msgid "Collapse All"
-msgstr "Pregar todo"
+msgstr "Recollelo todo"
 
 #: dialogs/MusicBrainzTagger.cpp:112
 #, kde-format
@@ -9059,7 +9061,7 @@ msgstr "Etiquetador MusicBrainz"
 #: dialogs/MusicBrainzTagger.ui:49
 #, kde-format
 msgid "Update tags for checked tracks and exit"
-msgstr "Actualizar etiquetas para as pistas marcadas e saír"
+msgstr "Actualizar etiquetas para as pistas marcadas e saír."
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_saveAndClose)
 #: dialogs/MusicBrainzTagger.ui:52
@@ -9071,7 +9073,7 @@ msgstr "Act&ualizar etiquetas"
 #: dialogs/MusicBrainzTagger.ui:65
 #, kde-format
 msgid "Exit without saving"
-msgstr "Saír sen gardar"
+msgstr "Saír sen gardar."
 
 #. i18n: ectx: property (text), widget (QPushButton, cancelButton)
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_cancel)
@@ -9160,7 +9162,7 @@ msgstr "Organizar os ficheiros"
 #: dialogs/OrganizeCollectionDialogBase.ui:29
 #, kde-format
 msgid "Base directory under which to put files"
-msgstr "Cartafol base baixo o cal pór ficheiros"
+msgstr "Cartafol base baixo o cal pór ficheiros."
 
 #. i18n: ectx: property (text), widget (QLabel, folderLabel)
 #: dialogs/OrganizeCollectionDialogBase.ui:32
@@ -9449,13 +9451,13 @@ msgstr "Substituír"
 #: dialogs/OrganizeCollectionOptions.ui:159
 #, kde-format
 msgid "Regular expression"
-msgstr "Expresión regular"
+msgstr "Expresión regular."
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, replaceEdit)
 #: dialogs/OrganizeCollectionOptions.ui:200
 #, kde-format
 msgid "Character string"
-msgstr "Cadea de caracteres"
+msgstr "Cadea de caracteres."
 
 #: dialogs/TagDialog.cpp:513
 #, kde-format
@@ -12663,25 +12665,25 @@ msgstr "Editor da cola"
 #: playlist/PlaylistQueueEditor.ui:32
 #, kde-format
 msgid "Move Up"
-msgstr "Subir"
+msgstr "Subir."
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, downButton)
 #: playlist/PlaylistQueueEditor.ui:48
 #, kde-format
 msgid "Move Down"
-msgstr "Baixar"
+msgstr "Baixar."
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, dequeueTrackButton)
 #: playlist/PlaylistQueueEditor.ui:61 playlist/view/PlaylistViewCommon.cpp:117
 #, kde-format
 msgid "Dequeue Track"
-msgstr "Quitar da fila a pista"
+msgstr "Quitar da fila a pista."
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, clearButton)
 #: playlist/PlaylistQueueEditor.ui:74
 #, kde-format
 msgid "Clear Queue"
-msgstr "Limpar a cola"
+msgstr "Borrar a cola."
 
 #: playlist/PlaylistSortWidget.cpp:44
 #, kde-format
@@ -14835,7 +14837,7 @@ msgid ""
 "updated to Last.fm now playing</html>"
 msgstr ""
 "<html>Comprobe se quere que determinadas pistas non se escoiten nin se "
-"actualicen en Last.fm</html>"
+"actualicen en Last.fm.</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
 #: services/lastfm/LastFmConfigWidget.ui:183
@@ -14851,7 +14853,7 @@ msgid ""
 "will not be scrobbled</html>"
 msgstr ""
 "<html>Escolla a etiqueta que prefira (ou escriba unha nova). As pistas con "
-"esta pista non serán escoitadas</html>"
+"esta pista non serán escoitadas.</html>"
 
 #: services/lastfm/LastFmService.cpp:100
 #, kde-format
@@ -16414,12 +16416,12 @@ msgstr "Expandir a actualización"
 #: statsyncing/ui/MatchedTracksPage.cpp:163
 #, kde-format
 msgid "Collapse Tracks Without Conflicts"
-msgstr "Pregar as pistas sen conflitos"
+msgstr "Recoller as pistas sen conflitos"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:165
 #, kde-format
 msgid "Collapse Not Updated"
-msgstr "Pregar o que non estea actualizado"
+msgstr "Recoller o que non estea actualizado"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:186
 #, kde-format
@@ -16539,7 +16541,7 @@ msgstr "Expandir"
 #: statsyncing/ui/MatchedTracksPage.ui:126
 #, kde-format
 msgid "Collapse"
-msgstr "Pregar"
+msgstr "Recoller"
 
 #. i18n: ectx: attribute (title), widget (QWidget, uniqueTab)
 #: statsyncing/ui/MatchedTracksPage.ui:152
@@ -16684,7 +16686,7 @@ msgstr "Transcodificar"
 #: transcoding/TranscodingAssistantDialog.ui:226
 #, kde-format
 msgid "Transcode all tracks to the selected format"
-msgstr "Transcodificar todas as pistas ao formato escollido"
+msgstr "Transcodificar todas as pistas ao formato escollido."
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeAllRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:229
@@ -16702,7 +16704,7 @@ msgid ""
 "collection"
 msgstr ""
 "Transcodificar as pistas só cando for preciso para que poidan ser "
-"reproducidas na colección de destino"
+"reproducidas na colección de destino."
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeOnlyIfNeededRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:242
@@ -16718,7 +16720,7 @@ msgstr "Transcodificar só cando for preciso para que poidan ser reproducidas"
 msgid "Transcode only when source and destination file formats different"
 msgstr ""
 "Transcodificar só cando os formatos de ficheiro do orixinal e o de destino "
-"foren distintos"
+"foren distintos."
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:255
