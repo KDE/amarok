@@ -101,9 +101,14 @@ QString FileInfo::completeSuffix() const
     return QFileInfo::completeSuffix();
 }
 
-QDateTime FileInfo::created() const
+QDateTime FileInfo::birthTime() const
 {
-    return QFileInfo::created();
+    return QFileInfo::birthTime();
+}
+
+QDateTime FileInfo::metadataChangeTime() const
+{
+    return QFileInfo::metadataChangeTime();
 }
 
 QDir FileInfo::dir() const
@@ -234,11 +239,6 @@ bool FileInfo::permission(QFile::Permissions permissions) const
 QFile::Permissions FileInfo::permissions() const
 {
     return QFileInfo::permissions();
-}
-
-QString FileInfo::readLink() const
-{
-    return QFileInfo::readLink();
 }
 
 void FileInfo::refresh()

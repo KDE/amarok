@@ -74,9 +74,9 @@ struct PixelSizes
 PrettyTreeDelegate::PrettyTreeDelegate( PrettyTreeView *view )
     : QStyledItemDelegate( view )
     , m_view( view )
-    , m_normalFm( 0 )
-    , m_bigFm( 0 )
-    , m_smallFm( 0 )
+    , m_normalFm( nullptr )
+    , m_bigFm( nullptr )
+    , m_smallFm( nullptr )
 {
     Q_ASSERT( m_view );
 }

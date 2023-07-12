@@ -33,8 +33,8 @@ namespace Collections {
 MemoryQueryMakerInternal::MemoryQueryMakerInternal( const QWeakPointer<MemoryCollection> &collection )
     : QObject()
     , m_collection( collection )
-    , m_matchers( 0 )
-    , m_filters( 0 )
+    , m_matchers( nullptr )
+    , m_filters( nullptr )
     , m_maxSize( 0 )
     , m_type( QueryMaker::None )
     , m_albumQueryMode( QueryMaker::AllAlbums )
@@ -546,7 +546,9 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             QSet<Meta::LabelPtr> labelSet;
             foreach( const Meta::TrackPtr &track, tracks )
             {
-                labelSet.unite( track->labels().toSet() );
+                Meta::LabelList tracklabels=track->labels();
+                QSet<Meta::LabelPtr> addLabelsSet(tracklabels.begin(), tracklabels.end());
+                labelSet.unite( addLabelsSet );
             }
             Meta::LabelList labels = labelSet.values();
             if( m_orderByField == Meta::valLabel )

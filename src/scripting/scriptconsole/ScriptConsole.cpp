@@ -30,6 +30,7 @@
 #include <QKeyEvent>
 #include <QMenuBar>
 #include <QJSEngine>
+#include <QRandomGenerator>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTemporaryFile>
@@ -144,7 +145,7 @@ ScriptConsole::ScriptConsole( QWidget *parent )
                                                 "available at:\nhttp://community.kde.org/Amarok/Development#Scripting"
                                                 "\nExecute code: CTRL-Enter\nBack in code history: Page Up"
                                                 "\nForward in code history: Page Down"
-                                               , 0 );
+                                               , nullptr );
     item->setFlags( Qt::NoItemFlags );
     m_scriptListDock->addItem( item );
 
@@ -228,18 +229,18 @@ ScriptConsole::createScriptItem( const QString &script )
     if( ( m_savePath.isEmpty() || !QDir( m_savePath ).exists() )
         && ( m_savePath = QFileDialog::getExistingDirectory(this, i18n( "Choose where to save your scripts" ), QStringLiteral("~"),
             QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks) ).isEmpty() )
-        return 0;
+        return nullptr;
 
     QString scriptPath;
     QString scriptName;
     do
     {
-        scriptName = QStringLiteral( "Script-%1" ).arg( qrand() );
+        scriptName = QStringLiteral( "Script-%1" ).arg( QRandomGenerator::global()->generate() );
         scriptPath =  QStringLiteral( "%1/%2" ).arg( m_savePath, scriptName );
     } while ( QDir( scriptPath ).exists() );
     QDir().mkdir( scriptPath );
 
-    ScriptEditorDocument *document = new ScriptEditorDocument( this, m_editor->createDocument( 0 ) );
+    ScriptEditorDocument *document = new ScriptEditorDocument( this, m_editor->createDocument( nullptr ) );
     document->setText( script );
     ScriptConsoleItem *scriptItem = new ScriptConsoleItem( this, scriptName, QStringLiteral("Generic"), scriptPath, document );
     return scriptItem;
@@ -398,7 +399,7 @@ ScriptListDockWidget::addScript( ScriptConsoleItem *script )
     if( !script )
         return;
 
-    QListWidgetItem *item = new QListWidgetItem( script->name(), 0 );
+    QListWidgetItem *item = new QListWidgetItem( script->name(), nullptr );
     item->setData( ScriptRole, QVariant::fromValue<ScriptConsoleItem*>( script ) );
     m_scriptListWidget->addItem( item );
     m_scriptListWidget->setCurrentItem( item );

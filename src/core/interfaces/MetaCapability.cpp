@@ -27,5 +27,5 @@ Capabilities::Capability*
 MetaCapability::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     Q_UNUSED( type );
-    return 0;
+    return nullptr;
 }

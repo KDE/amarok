@@ -762,7 +762,7 @@ if( LIBLASTFM_FOUND )
         ${amaroklib_LIB_SRCS}
         LastfmReadLabelCapability.cpp
     )
-    include_directories( ${LIBLASTFM_INCLUDE_DIR}/..  ${LIBLASTFM_INCLUDE_DIR})
+    include_directories(SYSTEM ${LIBLASTFM_INCLUDE_DIR}/..  ${LIBLASTFM_INCLUDE_DIR})
     set( EXTRA_LIBS ${LIBLASTFM_LIBRARY} )
 endif()
 
@@ -772,7 +772,7 @@ if( LIBOFA_FOUND AND AVCODEC_FOUND AND AVFORMAT_FOUND AND AVUTIL_FOUND )
         ${AVFORMAT_DEFINITIONS}
         ${AVUTIL_DEFINITIONS}
     )
-    include_directories(
+    include_directories(SYSTEM
         ${AVCODEC_INCLUDE_DIRS}
         ${AVFORMAT_INCLUDE_DIRS}
         ${AVUTIL_INCLUDE_DIRS}
@@ -871,11 +871,11 @@ if( Qt5UiTools_FOUND )
     add_definitions( -DWITH_QT_UITOOLS )
 endif()
 
-include_directories(${TAGLIB_INCLUDES})
+include_directories(SYSTEM ${TAGLIB_INCLUDES})
 add_definitions(${TAGLIB_CFLAGS})
 target_link_libraries(amaroklib ${TAGLIB_LIBRARIES})
 if( TAGLIB-EXTRAS_FOUND )
-    include_directories(${TAGLIB-EXTRAS_INCLUDES})
+    include_directories(SYSTEM ${TAGLIB-EXTRAS_INCLUDES})
     add_definitions(${TAGLIB-EXTRAS_CFLAGS})
     target_link_libraries(amaroklib ${TAGLIB-EXTRAS_LIBRARIES})
 endif()
@@ -889,7 +889,7 @@ if(APPLE)
 endif()
 
 set_target_properties(amaroklib PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
+install(TARGETS amaroklib ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
 
 
 #####################################################################
@@ -922,7 +922,7 @@ target_link_libraries(amarok
     ${X11_LIBRARIES}
 )
 
-install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS amarok ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
@@ -936,11 +936,7 @@ install(FILES amarok_codecinstall.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPE
 install(FILES amarok_append.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR}/ServiceMenus)
 install(FILES amarok-play-audiocd.desktop DESTINATION ${KDE_INSTALL_DATADIR}/solid/actions)
 
-if( ${ECM_VERSION} STRGREATER "5.58.0" )
-    install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_KNSRCDIR})
-else()
-    install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_CONFDIR})
-endif()
+install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_KNSRCDIR})
 
 # protocol handlers
 install(FILES amarokurls/amarok.protocol  DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})

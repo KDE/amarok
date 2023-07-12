@@ -123,6 +123,7 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
 {
     //d->includedBuilder = true;
     //d->collectionRestriction = false;
+    d->albumMode = AllAlbums;
 
     d->queryType = QueryMaker::None;
     d->linkedTables = 0;

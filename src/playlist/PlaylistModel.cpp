@@ -819,7 +819,7 @@ Playlist::Model::rowForId( const quint64 id ) const
 Meta::TrackPtr
 Playlist::Model::trackForId( const quint64 id ) const
 {
-    Item* item = m_itemIds.value( id, 0 );
+    Item* item = m_itemIds.value( id, nullptr );
     if ( item )
         return item->track();
     else
@@ -847,7 +847,7 @@ Playlist::Model::activeId() const
 Playlist::Item::State
 Playlist::Model::stateOfId( quint64 id ) const
 {
-    Item* item = m_itemIds.value( id, 0 );
+    Item* item = m_itemIds.value( id, nullptr );
     if ( item )
         return item->state();
     else

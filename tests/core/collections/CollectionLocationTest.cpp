@@ -81,7 +81,7 @@ void CollectionLocationTest::testSuccessfulCopy()
     QVERIFY2( cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection ), "Calling slot failed" );
     QCOMPARE( cl->count, 1 );
     QVERIFY( spy.wait( 5000 ) );
-    delete Amarok::Components::setCollectionLocationDelegate( 0 );
+    delete Amarok::Components::setCollectionLocationDelegate( nullptr );
 }
 
 void CollectionLocationTest::testFailedCopy()
@@ -104,7 +104,7 @@ void CollectionLocationTest::testFailedCopy()
     QVERIFY2( cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection ), "Calling slot failed"  );
     QCOMPARE( cl->count, 0 );
     QVERIFY( spy.wait( 5000 ) );
-    delete Amarok::Components::setCollectionLocationDelegate( 0 );
+    delete Amarok::Components::setCollectionLocationDelegate( nullptr );
 }
 
 void CollectionLocationTest::testCopyMultipleTracks()
@@ -134,7 +134,7 @@ void CollectionLocationTest::testCopyMultipleTracks()
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QCOMPARE( cl->count, 2 );
     QVERIFY( spy.wait( 5000 ) );
-    delete Amarok::Components::setCollectionLocationDelegate( 0 );
+    delete Amarok::Components::setCollectionLocationDelegate( nullptr );
 }
 
 void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
@@ -159,7 +159,7 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
     QVERIFY2( cl->count == 0, "Expected no call to remove");
 
     QVERIFY( spy1.wait( 5000 ) );
-    delete Amarok::Components::setCollectionLocationDelegate( 0 );
+    delete Amarok::Components::setCollectionLocationDelegate( nullptr );
 
     cld = new Collections::MockCollectionLocationDelegate();
     EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
@@ -178,7 +178,7 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QVERIFY2( cl->count == 0, "Expected no call to remove after reversed method call");
     QVERIFY( spy2.wait( 5000 ) );
-    delete Amarok::Components::setCollectionLocationDelegate( 0 );
+    delete Amarok::Components::setCollectionLocationDelegate( nullptr );
 }
 
 

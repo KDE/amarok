@@ -1,12 +1,13 @@
 
+include_directories(SYSTEM
+                     ${LIBLASTFM_INCLUDE_DIR}
+                     ${LIBLASTFM_INCLUDE_DIR}/..
+)
 include_directories( ${Amarok_SOURCE_DIR}/src
                      ${Amarok_SOURCE_DIR}/src/context
                      ${Amarok_SOURCE_DIR}/src/network
-                     ${LIBLASTFM_INCLUDE_DIR}
-                     ${LIBLASTFM_INCLUDE_DIR}/..
                      ${CMAKE_CURRENT_BINARY_DIR} # for amarok_config.h
 )
-
 set( similarArtists_engine_SRCS
     SimilarArtistsEngine.cpp
      ../../applets/similarartists/SimilarArtist.cpp

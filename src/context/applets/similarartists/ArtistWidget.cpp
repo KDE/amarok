@@ -481,7 +481,7 @@ ArtistWidget::resizeEvent( QGraphicsSceneResizeEvent *event )
     QGraphicsWidget::resizeEvent( event );
     layoutBio();
     QFontMetrics fm( m_match->font() );
-    m_match->setMaximumWidth( fm.width( m_match->text() ) );
+    m_match->setMaximumWidth( fm.horizontalAdvance( m_match->text() ) );
 }
 
 void

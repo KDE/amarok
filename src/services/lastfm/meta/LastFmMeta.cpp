@@ -241,7 +241,7 @@ Track::inCollection() const
 Collections::Collection*
 Track::collection() const
 {
-    return 0;
+    return nullptr;
 }
 
 void
@@ -256,7 +256,7 @@ Track::streamName() const
 {
     // parse the url to get a name if we don't have a track name (ie we're not playing the station)
     // do it as name rather than prettyname so it shows up nice in the playlist.
-    QStringList elements = d->lastFmUri.toString().split( '/', QString::SkipEmptyParts );
+    QStringList elements = d->lastFmUri.toString().split( '/', Qt::SkipEmptyParts );
     if( elements.size() >= 2 && elements[0] == "lastfm:" )
     {
         QString customPart = QUrl::fromPercentEncoding( elements[2].toUtf8() );
@@ -408,7 +408,7 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
         case Capabilities::Capability::StreamInfo:
             return new LastFmStreamInfoCapability( this );
         default:
-            return 0;
+            return nullptr;
     }
 }
 

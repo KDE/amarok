@@ -63,7 +63,7 @@ class AMAROKCORE_EXPORT PodcastReader : public QObject
 
     Q_SIGNALS:
         void finished( PodcastReader *podcastReader );
-        void statusBarSorryMessage( const QString &message );
+        void statusBarErrorMessage( const QString &message );
         void statusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* );
 
     public Q_SLOTS:
@@ -131,21 +131,21 @@ class AMAROKCORE_EXPORT PodcastReader : public QObject
             public:
                 explicit Action( ActionMap &actionMap )
                     : m_actionMap( actionMap )
-                    , m_begin( 0 )
-                    , m_end( 0 )
-                    , m_characters( 0 ) {}
+                    , m_begin( nullptr )
+                    , m_end( nullptr )
+                    , m_characters( nullptr ) {}
 
                 Action(ActionMap &actionMap, ActionCallback begin)
                     : m_actionMap( actionMap )
                     , m_begin( begin )
-                    , m_end( 0 )
-                    , m_characters( 0 ) {}
+                    , m_end( nullptr )
+                    , m_characters( nullptr ) {}
 
                 Action(ActionMap &actionMap, ActionCallback begin, ActionCallback end)
                     : m_actionMap( actionMap )
                     , m_begin( begin )
                     , m_end( end )
-                    , m_characters( 0 ) {}
+                    , m_characters( nullptr ) {}
 
                 Action(ActionMap &actionMap, ActionCallback begin,
                         ActionCallback end, ActionCallback characters)

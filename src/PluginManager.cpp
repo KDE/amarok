@@ -141,7 +141,7 @@ Plugins::PluginManager::checkPluginEnabledStates()
     {
         if( qobject_cast<QGuiApplication*>( qApp ) )
         {
-            KMessageBox::error( 0, i18n( "Amarok could not find any plugins. This indicates an installation problem." ) );
+            KMessageBox::error( nullptr, i18n( "Amarok could not find any plugins. This indicates an installation problem." ) );
         }
         else
         {

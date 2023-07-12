@@ -34,7 +34,7 @@ TestRhythmboxImporter::getProvider()
     cfg.insert( "dbPath", QApplication::applicationDirPath()
                           + "/importers_files/rhythmdb.xml" );
 
-    return ProviderPtr( new RhythmboxProvider( cfg, 0 ) );
+    return ProviderPtr( new RhythmboxProvider( cfg, nullptr ) );
 }
 
 ProviderPtr
@@ -50,7 +50,7 @@ TestRhythmboxImporter::getWritableProvider()
     QVariantMap cfg = RhythmboxConfigWidget( QVariantMap() ).config();
     cfg.insert( "dbPath", dst );
 
-    return ProviderPtr( new RhythmboxProvider( cfg, 0 ) );
+    return ProviderPtr( new RhythmboxProvider( cfg, nullptr ) );
 }
 
 qint64
@@ -76,7 +76,7 @@ TestRhythmboxImporter::providerShouldHandleNonexistentDbFile()
 {
     m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
 
-    RhythmboxProvider provider( m_cfg, 0 );
+    RhythmboxProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -85,7 +85,7 @@ TestRhythmboxImporter::providerShouldHandleInvalidDbFile()
 {
     m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
 
-    RhythmboxProvider provider( m_cfg, 0 );
+    RhythmboxProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -95,7 +95,7 @@ TestRhythmboxImporter::providerShouldHandleErroneousConfigValues()
     m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
     m_cfg.insert( "name", QColor( Qt::white ) );
 
-    RhythmboxProvider provider( m_cfg, 0 );
+    RhythmboxProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -105,6 +105,6 @@ TestRhythmboxImporter::providerShouldHandleIllFormedDbFile()
     m_cfg.insert( "dbPath", QApplication::applicationDirPath()
                   + "/importers_files/illFormedLibrary.xml" );
 
-    RhythmboxProvider provider( m_cfg, 0 );
+    RhythmboxProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artistTracks( "NonSuch" ).empty() );
 }

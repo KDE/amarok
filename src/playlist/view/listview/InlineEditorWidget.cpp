@@ -181,18 +181,18 @@ void InlineEditorWidget::createChildWidgets()
             QString text = textIndex.data( Qt::DisplayRole ).toString();
             m_orgValues.insert( value, text );
 
-            QWidget *widget = 0;
+            QWidget *widget = nullptr;
             //special case for painting the rating...
             if( value == Rating )
             {
                 int rating = textIndex.data( Qt::DisplayRole ).toInt();
 
-                KRatingWidget* ratingWidget = new KRatingWidget( 0 );
+                KRatingWidget* ratingWidget = new KRatingWidget( nullptr );
                 ratingWidget->setAlignment( element.alignment() );
                 ratingWidget->setRating( rating );
                 ratingWidget->setAttribute( Qt::WA_NoMousePropagation, true );
 
-                connect( ratingWidget, QOverload<uint>::of(&KRatingWidget::ratingChanged),
+                connect( ratingWidget, QOverload<int>::of(&KRatingWidget::ratingChanged),
                          this, &InlineEditorWidget::ratingValueChanged );
 
                 m_editorRoleMap.insert( ratingWidget, value );
@@ -215,7 +215,7 @@ void InlineEditorWidget::createChildWidgets()
                 painter.drawPixmap( 0, 0, left );
                 painter.drawPixmap( 1, 0, right );
 
-                QLabel* dividerLabel = new QLabel( 0 );
+                QLabel* dividerLabel = new QLabel( nullptr );
                 dividerLabel->setPixmap( dividerPixmap );
                 dividerLabel->setAlignment( element.alignment() );
 
@@ -228,7 +228,7 @@ void InlineEditorWidget::createChildWidgets()
                 //the model and ask the moodbar manager ourselves.
                 Meta::TrackPtr track = m_index.data( TrackRole ).value<Meta::TrackPtr>();
 
-                QLabel* moodbarLabel = new QLabel( 0 );
+                QLabel* moodbarLabel = new QLabel( nullptr );
                 moodbarLabel->setScaledContents( true );
                 if( The::moodbarManager()->hasMoodbar( track ) )
                 {
@@ -240,7 +240,7 @@ void InlineEditorWidget::createChildWidgets()
             //actual playlist item text is drawn here
             else
             {
-                QLineEdit * edit = new QLineEdit( text, 0 );
+                QLineEdit * edit = new QLineEdit( text, nullptr );
                 edit->setFrame( false );
                 edit->setAlignment( element.alignment() );
                 edit->installEventFilter(this);

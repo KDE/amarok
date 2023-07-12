@@ -249,7 +249,7 @@ Dynamic::PartBiasWidget::biasAppended( Dynamic::BiasPtr bias )
 {
     int index = m_bias->biases().indexOf( bias );
 
-    Amarok::Slider* slider = 0;
+    Amarok::Slider* slider = nullptr;
     slider = new Amarok::Slider( Qt::Horizontal, 100 );
     slider->setValue( m_bias->weights()[ m_bias->biases().indexOf( bias ) ] * 100.0 );
     slider->setToolTip( i18n( "This controls what portion of the playlist should match the criteria" ) );

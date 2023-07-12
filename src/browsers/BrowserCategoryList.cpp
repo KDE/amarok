@@ -26,6 +26,7 @@
 #include "widgets/PrettyTreeDelegate.h"
 #include "widgets/SearchWidget.h"
 
+#include <Qt>
 #include <QComboBox>
 #include <QFile>
 #include <QStackedWidget>
@@ -72,7 +73,7 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
     {
         m_proxyModel->setSortRole( Qt::DisplayRole );
         m_categoryListView->setSortingEnabled( true );
-        m_categoryListView->sortByColumn( 0 , Qt::AscendingOrder );
+        m_categoryListView->sortByColumn( 0, Qt::AscendingOrder );
     }
 
     connect( m_categoryListView, &Amarok::PrettyTreeView::activated,
@@ -93,7 +94,7 @@ void
 BrowserCategoryList::categoryActivated( const QModelIndex &index )
 {
     DEBUG_BLOCK
-    BrowserCategory * category = 0;
+    BrowserCategory * category = nullptr;
 
     if( index.data( CustomCategoryRoles::CategoryRole ).canConvert<BrowserCategory *>() )
         category = index.data( CustomCategoryRoles::CategoryRole ).value<BrowserCategory *>();
@@ -214,7 +215,7 @@ void BrowserCategoryList::back()
     BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( activeCategory() );
     if( childList )
     {
-        if( childList->activeCategory() != 0 )
+        if( childList->activeCategory() != nullptr )
         {
             childList->back();
             return;

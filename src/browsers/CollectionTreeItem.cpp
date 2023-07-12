@@ -32,10 +32,10 @@ Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
 
 CollectionTreeItem::CollectionTreeItem( CollectionTreeItemModelBase *model )
-: m_data( 0 )
-    , m_parent( 0 )
+: m_data( nullptr )
+    , m_parent( nullptr )
     , m_model( model )
-    , m_parentCollection( 0 )
+    , m_parentCollection( nullptr )
     , m_updateRequired( false )
     , m_trackCount( -1 )
     , m_type( Root )
@@ -48,7 +48,7 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataPtr &data, CollectionTre
     : m_data( data )
     , m_parent( parent )
     , m_model( model )
-    , m_parentCollection( 0 )
+    , m_parentCollection( nullptr )
     , m_updateRequired( true )
     , m_trackCount( -1 )
     , m_type( Data )
@@ -60,7 +60,7 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataPtr &data, CollectionTre
 }
 
 CollectionTreeItem::CollectionTreeItem( Collections::Collection *parentCollection, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
-    : m_data( 0 )
+    : m_data( nullptr )
     , m_parent( parent )
     , m_model( model )
     , m_parentCollection( parentCollection )
@@ -77,10 +77,10 @@ CollectionTreeItem::CollectionTreeItem( Collections::Collection *parentCollectio
 }
 
 CollectionTreeItem::CollectionTreeItem( Type type, const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
-    : m_data( 0 )
+    : m_data( nullptr )
     , m_parent( parent )
     , m_model( model )
-    , m_parentCollection( 0 )
+    , m_parentCollection( nullptr )
     , m_updateRequired( false )  //the node already has all children
     , m_trackCount( -1 )
     , m_type( type )
@@ -116,7 +116,7 @@ CollectionTreeItem::removeChild( int index )
 void
 CollectionTreeItem::prepareForRemoval()
 {
-    m_parent = 0;
+    m_parent = nullptr;
     m_model->itemAboutToBeDeleted( this );
     foreach( CollectionTreeItem *item, m_childItems )
     {
@@ -276,7 +276,7 @@ CollectionTreeItem::queryMaker() const
     Collections::Collection* coll = parentCollection();
     if( coll )
         return coll->queryMaker();
-    return 0;
+    return nullptr;
 }
 
 void

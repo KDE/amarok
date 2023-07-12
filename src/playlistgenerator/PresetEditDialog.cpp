@@ -31,7 +31,7 @@
 #include <QWhatsThis>
 
 APG::PresetEditDialog::PresetEditDialog( const PresetPtr &p )
-            : QDialog( 0 )
+            : QDialog( nullptr )
             , m_preset( p )
 {
     DEBUG_BLOCK

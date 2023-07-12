@@ -59,7 +59,7 @@ APG::PresetModel::destroy()
 
 APG::PresetModel::PresetModel()
         : QAbstractListModel()
-        , m_activePresetIndex( 0 )
+        , m_activePresetIndex( nullptr )
 {
     loadPresetsFromXml( Amarok::saveLocation() + "playlistgenerator.xml", true );
 }

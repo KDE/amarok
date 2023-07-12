@@ -20,6 +20,7 @@
 #include "core/support/Debug.h"
 
 #include <QFontMetrics>
+#include <QMargins>
 
 namespace Amarok {
 
@@ -54,7 +55,7 @@ void ElidingButton::init()
     if( !text().isEmpty() )
     {
         QFontMetrics fm( font() );
-        width += fm.width( QLatin1String( "XX" ) ) / 2;
+        width += fm.horizontalAdvance( QLatin1String( "XX" ) ) / 2;
     }
     setMinimumWidth( width );
 }
@@ -95,9 +96,8 @@ void ElidingButton::elideText( const QSize &widgetSize )
     const int width = widgetSize.width();
     const int iconWidth = icon().isNull() ? 0 : iconSize().width();
 
-    int left, top, right, bottom;
-    getContentsMargins( &left, &top, &right, &bottom );
-    int padding = left + right + 4;
+    QMargins margins = contentsMargins();
+    int padding = margins.left() + margins.right() + 4;
     int textWidth = width - ( iconWidth + padding );
 
     QFontMetrics fm( font() );

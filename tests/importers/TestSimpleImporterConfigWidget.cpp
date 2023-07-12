@@ -34,8 +34,8 @@ TestSimpleImporterConfigWidget::constructorShouldCreateTargetNameRow()
 {
     SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
 
-    const QLabel *label = 0;
-    const QLineEdit *field = 0;
+    const QLabel *label = nullptr;
+    const QLineEdit *field = nullptr;
 
     foreach( const QObject *obj, widget.children() )
     {
@@ -58,7 +58,7 @@ TestSimpleImporterConfigWidget::targetNameShouldBeSetToDefaultValue()
     const QString targetName = "testTargetName";
     SimpleImporterConfigWidget widget( targetName, QVariantMap() );
 
-    const QLineEdit *field = 0;
+    const QLineEdit *field = nullptr;
     foreach( const QObject *obj, widget.children() )
         if( qobject_cast<const QLineEdit*>( obj ) )
             field = qobject_cast<const QLineEdit*>( obj );
@@ -77,7 +77,7 @@ TestSimpleImporterConfigWidget::targetNameShouldBeSetToConfigValueIfExists()
 
     SimpleImporterConfigWidget widget( "testTargetName", cfg );
 
-    const QLineEdit *field = 0;
+    const QLineEdit *field = nullptr;
     foreach( const QObject *obj, widget.children() )
         if( qobject_cast<const QLineEdit*>( obj ) )
             field = qobject_cast<const QLineEdit*>( obj );
@@ -133,7 +133,7 @@ TestSimpleImporterConfigWidget::addFieldShouldAssociateLabelWithField()
     QWidget *field = new QLineEdit;
     widget.addField( "configVal", "testLabel", field, "text" );
 
-    const QLabel *label = 0;
+    const QLabel *label = nullptr;
     foreach( const QObject *obj, widget.children() )
         if( const QLabel *candidate = qobject_cast<const QLabel*>( obj ) )
             if( candidate->text() == "testLabel" )
@@ -147,7 +147,7 @@ void
 TestSimpleImporterConfigWidget::addFieldShouldNotBreakOnNullField()
 {
     SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
-    widget.addField( "configVal", "testLabel", 0, "text" );
+    widget.addField( "configVal", "testLabel", nullptr, "text" );
 }
 
 void
@@ -205,7 +205,7 @@ TestSimpleImporterConfigWidget::configShouldNotBreakOnNullField()
     const QString configName = "configVal";
 
     SimpleImporterConfigWidget widget( "testTargetName", QVariantMap() );
-    widget.addField( configName, "testLabel", 0, "text" );
+    widget.addField( configName, "testLabel", nullptr, "text" );
 
     QVERIFY( widget.config().value( configName ).toString().isEmpty() );
 }

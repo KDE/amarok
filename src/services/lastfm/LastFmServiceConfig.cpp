@@ -49,8 +49,8 @@ LastFmServiceConfig::instance()
 }
 
 LastFmServiceConfig::LastFmServiceConfig()
-    : m_askDiag( 0 )
-    , m_wallet( 0 )
+    : m_askDiag( nullptr )
+    , m_wallet( nullptr )
 {
     DEBUG_BLOCK
 
@@ -157,7 +157,7 @@ LastFmServiceConfig::openWalletToRead()
     }
 
     if( m_wallet )
-        disconnect( m_wallet, 0, this, 0 );
+        disconnect( m_wallet, nullptr, this, nullptr );
     else
     {
         openWalletAsync();
@@ -180,7 +180,7 @@ LastFmServiceConfig::openWalletToWrite()
     }
 
     if( m_wallet )
-        disconnect( m_wallet, 0, this, 0 );
+        disconnect( m_wallet, nullptr, this, nullptr );
     else
     {
         openWalletAsync();
@@ -219,7 +219,7 @@ LastFmServiceConfig::slotWalletOpenedToRead( bool success )
         Amarok::Logger::longMessage( message, Amarok::Logger::Warning );
         if( m_wallet )
             m_wallet->deleteLater(); // no point in having invalid wallet around
-        m_wallet = 0;
+        m_wallet = nullptr;
         return;
     }
 
@@ -244,7 +244,7 @@ LastFmServiceConfig::slotWalletOpenedToWrite( bool success )
         askAboutMissingKWallet();
         if( m_wallet )
             m_wallet->deleteLater(); // no point in having invalid wallet around
-        m_wallet = 0;
+        m_wallet = nullptr;
         return;
     }
 

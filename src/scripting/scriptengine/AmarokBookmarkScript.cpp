@@ -121,7 +121,7 @@ AmarokBookmarkScript::bookmarkGroupCtorWrapper( QJSValue arg0, QJSValue arg1 )
 QJSValue
 BookmarkGroupPrototype::bookmarkGroupCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engine )
 {
-    BookmarkGroup *group = 0;
+    BookmarkGroup *group = nullptr;
     if ( arg1.isUndefined() ) {
         if( arg0.isString() )
             group = new BookmarkGroup( arg0.toString() );

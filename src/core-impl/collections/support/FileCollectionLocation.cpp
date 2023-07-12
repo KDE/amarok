@@ -73,7 +73,7 @@ void FileCollectionLocation::startRemoveJobs()
         Meta::TrackPtr track = m_removetracks.takeFirst();
         QUrl src = track->playableUrl();
 
-        KIO::DeleteJob *job = 0;
+        KIO::DeleteJob *job = nullptr;
 
         src.setPath( QDir::cleanPath(src.path()) );
         debug() << "deleting  " << src;

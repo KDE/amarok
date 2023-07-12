@@ -27,7 +27,7 @@
 
 namespace The
 {
-    static PopupDropperFactory* s_PopupDropperFactory_instance = 0;
+    static PopupDropperFactory* s_PopupDropperFactory_instance = nullptr;
 
     PopupDropperFactory* popupDropperFactory()
     {
@@ -58,11 +58,11 @@ PopupDropper * PopupDropperFactory::createPopupDropper( QWidget * parent, bool i
     // if this happens, it pops up in its own window -- so detect this
     // ignoreEmptyParent is for creating submenus, where you set the initial parent to zero
     if( !parent && !ignoreEmptyParent )
-        return 0;
+        return nullptr;
 
     PopupDropper* pd = new PopupDropper( parent );
     if( !pd )
-        return 0;
+        return nullptr;
 
     pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
     pd->setQuitOnDragLeave( false );

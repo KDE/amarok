@@ -83,7 +83,7 @@ Album::createCapabilityInterface( Capabilities::Capability::Type type )
         case Capabilities::Capability::Actions:
             return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
         default:
-            return 0;
+            return nullptr;
     }
 }
 
@@ -164,11 +164,11 @@ Album::updateCachedValues()
 
 Track::Track(const Meta::TrackPtr& originalTrack)
     : m_track( originalTrack )
-    , m_album( 0 )
-    , m_artist( 0 )
-    , m_composer( 0 )
-    , m_genre( 0 )
-    , m_year( 0 )
+    , m_album( nullptr )
+    , m_artist( nullptr )
+    , m_composer( nullptr )
+    , m_genre( nullptr )
+    , m_year( nullptr )
 {
     Q_ASSERT( originalTrack );
 }

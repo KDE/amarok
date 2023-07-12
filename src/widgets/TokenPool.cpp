@@ -63,13 +63,13 @@ TokenPool::sizeHint() const
 {
     int h = iconSize().height();
     if (h <= 0) {
-        h = style()->pixelMetric(QStyle::PM_SmallIconSize, 0, this);
+        h = style()->pixelMetric(QStyle::PM_SmallIconSize, nullptr, this);
     }
 
     // we are planning the size for three columns of token text
     // with eight rows (note: we might get less than eight rows if because
     // of the space the border and the scroll bar uses).
-    return QSize(fontMetrics().width(QLatin1String("Artist's Initial")) * 3,
+    return QSize(fontMetrics().horizontalAdvance(QLatin1String("Artist's Initial")) * 3,
                  h * 8 );
 }
 

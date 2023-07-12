@@ -62,8 +62,8 @@ class CollectionWidget::Private
 {
 public:
     Private()
-        : treeView( 0 )
-        , singleTreeView( 0 )
+        : treeView( nullptr )
+        , singleTreeView( nullptr )
         , viewMode( CollectionWidget::NormalCollections ) {}
     ~Private() {}
 

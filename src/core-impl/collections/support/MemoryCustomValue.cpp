@@ -122,26 +122,26 @@ CustomValueFactory::returnFunction( Collections::QueryMaker::ReturnFunction func
                     return new YearCounter();
                 }
                 default:
-                    return 0;
+                    return nullptr;
             }
         }
         case Collections::QueryMaker::Sum:
         {
             CustomReturnValue *crv = CustomValueFactory::returnValue( value );
-            return crv ? new SumReturnFunction( crv ) : 0;
+            return crv ? new SumReturnFunction( crv ) : nullptr;
         }
         case Collections::QueryMaker::Min:
         {
             CustomReturnValue *crv = CustomValueFactory::returnValue( value );
-            return crv ? new MinimumReturnFunction( crv ) : 0;
+            return crv ? new MinimumReturnFunction( crv ) : nullptr;
         }
         case Collections::QueryMaker::Max:
         {
             CustomReturnValue *crv = CustomValueFactory::returnValue( value );
-            return crv ? new MaximumReturnFunction( crv ) : 0;
+            return crv ? new MaximumReturnFunction( crv ) : nullptr;
         }
         default:
-            return 0;
+            return nullptr;
     }
 }
 
@@ -500,6 +500,6 @@ CustomValueFactory::returnValue( qint64 value )
             return new SampleRateReturnValue();
         }
         default:
-            return 0;
+            return nullptr;
     }
 }

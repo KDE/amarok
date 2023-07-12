@@ -28,7 +28,7 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     : QAction( parent )
 {
 
-    QMenu * navigatorMenu = new QMenu( 0 );
+    QMenu * navigatorMenu = new QMenu( nullptr );
     setMenu( navigatorMenu );
     setText( i18n( "Track Progression" ) );
 

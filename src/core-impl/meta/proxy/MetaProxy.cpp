@@ -404,7 +404,7 @@ MetaProxy::Track::collection() const
     if( d->realTrack )
         return d->realTrack->collection();
     else
-        return 0;
+        return nullptr;
 }
 
 QString
@@ -473,7 +473,7 @@ MetaProxy::Track::createCapabilityInterface( Capabilities::Capability::Type type
     if( d->realTrack )
         return d->realTrack->createCapabilityInterface( type );
     else
-        return 0;
+        return nullptr;
 }
 
 bool

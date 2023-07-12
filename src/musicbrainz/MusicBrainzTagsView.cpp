@@ -45,7 +45,7 @@ MusicBrainzTagsView::sourceModel() const
 {
     QSortFilterProxyModel *model = qobject_cast<QSortFilterProxyModel *>( this->model() );
     if( !model )
-        return 0;
+        return nullptr;
 
     MusicBrainzTagsModel *sourceModel = qobject_cast<MusicBrainzTagsModel *>( model->sourceModel() );
     return sourceModel;

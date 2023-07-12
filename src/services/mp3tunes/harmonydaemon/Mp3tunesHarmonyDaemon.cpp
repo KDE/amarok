@@ -96,7 +96,7 @@ Mp3tunesHarmonyDaemon::allAboardTheDBus()
         ::exit(126);
         return false;
     }
-    QStringList parts = this->organizationDomain().split(QLatin1Char('.'), QString::SkipEmptyParts);
+    QStringList parts = this->organizationDomain().split(QLatin1Char('.'), Qt::SkipEmptyParts);
     QString reversedDomain;
     if (parts.isEmpty())
         reversedDomain = QLatin1String("local.");
@@ -109,7 +109,7 @@ Mp3tunesHarmonyDaemon::allAboardTheDBus()
     const QString pidSuffix = QString::number( applicationPid() ).prepend( QLatin1String("-") );
     const QString serviceName = reversedDomain + this->applicationName().remove( ' ' ) + pidSuffix;
     if ( bus->registerService(serviceName) == QDBusConnectionInterface::ServiceNotRegistered ) {
-        qDebug() << "FATAL: Couldn't register   name '" << serviceName << "' with DBUS - another process owns it already!" << endl;
+        qDebug() << "FATAL: Couldn't register   name '" << serviceName << "' with DBUS - another process owns it already!" << Qt::endl;
         ::exit(126);
         return false;
     }

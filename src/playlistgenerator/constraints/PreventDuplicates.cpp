@@ -32,7 +32,7 @@ ConstraintTypes::PreventDuplicates::createFromXml( QDomElement& xmlelem, Constra
     if ( p )
         return new PreventDuplicates( xmlelem, p );
     else
-        return 0;
+        return nullptr;
 }
 
 Constraint*
@@ -41,7 +41,7 @@ ConstraintTypes::PreventDuplicates::createNew( ConstraintNode* p )
     if ( p )
         return new PreventDuplicates( p );
     else
-        return 0;
+        return nullptr;
 }
 
 ConstraintFactoryEntry*
@@ -154,7 +154,7 @@ ConstraintTypes::PreventDuplicates::setField( const int c )
  ******************************/
 
 ConstraintTypes::PreventDuplicatesEditWidget::PreventDuplicatesEditWidget( const int field )
-    : QWidget( 0 )
+    : QWidget( nullptr )
 {
     ui.setupUi( this );
     ui.comboBox_Field->setCurrentIndex( field );

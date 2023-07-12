@@ -26,7 +26,7 @@ const qint64 TimecodeObserver::m_threshold = 600 * 1000; // 6000000ms = 10 minut
 TimecodeObserver::TimecodeObserver( QObject *parent )
     : QObject( parent )
     , m_trackTimecodeable ( false )
-    , m_currentTrack ( 0 )
+    , m_currentTrack ( nullptr )
     , m_currPos ( 0 )
 {
     EngineController *engine = The::engineController();

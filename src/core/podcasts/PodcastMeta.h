@@ -343,7 +343,7 @@ public:
 
     QString name() const override
     {
-        if( episode != 0 )
+        if( episode != nullptr )
         {
             const QString albumName = episode->channel()->title();
             return albumName;
@@ -409,7 +409,7 @@ public:
 
     QString name() const override
     {
-        if( episode != 0 )
+        if( episode != nullptr )
         {
             const QString composer = episode->channel()->author();
             return composer;
@@ -442,7 +442,7 @@ public:
 
     QString name() const override
     {
-        if( episode != 0 )
+        if( episode != nullptr )
         {
             const QString year = episode->pubDate().toString( QStringLiteral("yyyy") );
             return year;

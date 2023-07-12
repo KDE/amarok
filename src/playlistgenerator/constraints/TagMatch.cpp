@@ -26,6 +26,8 @@
 #include "core/meta/Statistics.h"
 #include "core/support/Debug.h"
 
+#include <QRandomGenerator>
+
 #include <cmath>
 #include <cstdlib>
 
@@ -469,7 +471,7 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
         if ( m_invert )
             v = 1.0 - v;
 
-        m_matchCache.insert( track, ( v > ( (double)qrand() / (double)RAND_MAX ) ) );
+        m_matchCache.insert( track, ( v > ( (double)QRandomGenerator::global()->generate() / (double)RAND_MAX ) ) );
     }
     return m_matchCache.value( track );
 }

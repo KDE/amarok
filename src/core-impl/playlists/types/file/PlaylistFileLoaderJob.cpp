@@ -43,7 +43,11 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
 
     // we must handle remove downloading here as KIO is coupled with GUI as is not
     // designed to work from another thread
-    const QUrl url = playlist->uidUrl();
+    QUrl url( playlist->uidUrl() );
+    // KIO::file_copy in KF5 needs scheme
+    if (url.isRelative() && url.host().isEmpty()) {
+        url.setScheme("file");
+    }
     if( url.isLocalFile() )
     {
         m_actualPlaylistFile = url.toLocalFile();
@@ -80,7 +84,7 @@ PlaylistFileLoaderJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *
 {
     Q_UNUSED(self);
     Q_UNUSED(thread);
-    SemaphoreReleaser releaser( m_playlist->isLoadingAsync() ? 0 : &m_playlist->m_loadingDone );
+    SemaphoreReleaser releaser( m_playlist->isLoadingAsync() ? nullptr : &m_playlist->m_loadingDone );
     m_downloadSemaphore.acquire(); // wait for possible download to finish
     if( m_actualPlaylistFile.isEmpty() )
         return; // previous error, already reported

@@ -180,7 +180,7 @@ UmsCollectionFactory::createCollectionForSolidDevice( const QString &udi )
     }
 
     // we are definitely interested in this device, listen for accessibility changes
-    disconnect( ssa, &Solid::StorageAccess::accessibilityChanged, this, 0 );
+    disconnect( ssa, &Solid::StorageAccess::accessibilityChanged, this, nullptr );
     connect( ssa, &Solid::StorageAccess::accessibilityChanged,
              this, &UmsCollectionFactory::slotAccessibilityChanged );
 
@@ -223,7 +223,7 @@ QString UmsCollection::s_transcodingGroup( "transcoding" );
 UmsCollection::UmsCollection( const Solid::Device &device )
     : Collection()
     , m_device( device )
-    , m_mc( 0 )
+    , m_mc( nullptr )
     , m_tracksParsed( false )
     , m_autoConnect( false )
     , m_musicFilenameScheme( "%artist%/%album%/%track% %title%" )
@@ -234,7 +234,7 @@ UmsCollection::UmsCollection( const Solid::Device &device )
     , m_regexText( QString() )
     , m_replaceText( QString() )
     , m_collectionName( QString() )
-    , m_scanManager( 0 )
+    , m_scanManager( nullptr )
     , m_lastUpdated( 0 )
 {
     debug() << "Creating UmsCollection for device with udi: " << m_device.udi();
@@ -537,7 +537,7 @@ UmsCollection::slotTrackRemoved( const Meta::TrackPtr &track )
     {
         unsubscribeFrom( removedTrack );
         // we only added MetaFile::Tracks, following static cast is safe
-        static_cast<MetaFile::Track*>( removedTrack.data() )->setCollection( 0 );
+        static_cast<MetaFile::Track*>( removedTrack.data() )->setCollection( nullptr );
         Q_EMIT startUpdateTimer();
     }
     else

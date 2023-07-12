@@ -36,11 +36,11 @@ using namespace Meta;
 MediaDeviceTrack::MediaDeviceTrack( Collections::MediaDeviceCollection *collection )
     : Meta::Track()
     , m_collection( collection )
-    , m_artist( 0 )
-    , m_album( 0 )
-    , m_genre( 0 )
-    , m_composer( 0 )
-    , m_year( 0 )
+    , m_artist( nullptr )
+    , m_album( nullptr )
+    , m_genre( nullptr )
+    , m_composer( nullptr )
+    , m_year( nullptr )
     , m_image()
     , m_comment()
     , m_name()
@@ -360,7 +360,7 @@ MediaDeviceTrack::collection() const
 TrackEditorPtr
 MediaDeviceTrack::editor()
 {
-    return TrackEditorPtr( isEditable() ? new MediaDeviceTrackEditor( this ) : 0 );
+    return TrackEditorPtr( isEditable() ? new MediaDeviceTrackEditor( this ) : nullptr );
 }
 
 StatisticsPtr
@@ -742,7 +742,7 @@ MediaDeviceAlbum::MediaDeviceAlbum( Collections::MediaDeviceCollection *collecti
     , m_hasImagePossibility( true ) // assume it has a cover until proven otherwise
     , m_hasImageChecked( false )
     , m_image( QImage() )
-    , m_albumArtist( 0 )
+    , m_albumArtist( nullptr )
 {
     MediaDeviceHandler *handler = m_collection->handler();
     if( handler && handler->hasCapabilityInterface( Handler::Capability::Artwork ) )
@@ -883,7 +883,7 @@ MediaDeviceAlbum::createCapabilityInterface( Capabilities::Capability::Type type
             return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
 
         default:
-            return 0;
+            return nullptr;
     }
 }
 

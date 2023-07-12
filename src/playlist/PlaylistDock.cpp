@@ -44,6 +44,7 @@
 #include "widgets/BoxWidget.h"
 
 #include <QLabel>
+#include <QSharedPointer>
 #include <QStandardPaths>
 #include <QToolBar>
 
@@ -56,7 +57,7 @@ static const QString s_turnOff( QStringLiteral("turn_off") );
 
 Playlist::Dock::Dock( QWidget* parent )
     : AmarokDockWidget( i18n( "&Playlist" ), parent )
-    , m_barBox( 0 )
+    , m_barBox( nullptr )
 {
     setObjectName( QStringLiteral("Playlist dock") );
     setAllowedAreas( Qt::AllDockWidgetAreas );
@@ -264,7 +265,7 @@ Playlist::Dock::playlistProviderAdded( Playlists::PlaylistProvider *provider, in
     debug() << "Adding provider: " << provider->prettyName();
     Playlists::UserPlaylistProvider *userProvider =
             dynamic_cast<Playlists::UserPlaylistProvider *>(provider);
-    if( userProvider == 0 )
+    if( userProvider == nullptr )
         return;
     QAction *action = new QAction( userProvider->icon(),
                                    i18n("&Save playlist to \"%1\"", provider->prettyName() ),
@@ -297,15 +298,18 @@ Playlist::Dock::slotSaveCurrentPlaylist()
     DEBUG_BLOCK
 
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
 
-    QWeakPointer<Playlists::UserPlaylistProvider> pointer =
+    QWeakPointer<Playlists::UserPlaylistProvider> weakPointer =
             action->data().value< QWeakPointer<Playlists::UserPlaylistProvider> >();
-    Playlists::UserPlaylistProvider* provider = pointer.data();
+    QSharedPointer<Playlists::UserPlaylistProvider> strongPointer = weakPointer.toStrongRef();
+    if ( strongPointer ) {
+        Playlists::UserPlaylistProvider* provider = strongPointer.data();
 
-    const Meta::TrackList tracks = The::playlist()->tracks();
-    The::playlistManager()->save( tracks, Amarok::generatePlaylistName( tracks ), provider );
+        const Meta::TrackList tracks = The::playlist()->tracks();
+        The::playlistManager()->save( tracks, Amarok::generatePlaylistName( tracks ), provider );
+    }
 }
 
 void

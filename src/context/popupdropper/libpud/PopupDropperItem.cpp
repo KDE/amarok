@@ -29,15 +29,15 @@
 ///////////////////////////////////////////////////////////
 
 PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
-    : action( 0 )
+    : action( nullptr )
     , text( QString() )
     , hoverTimer( 500, parent )
     , elementId( QString() )
-    , textItem( 0 )
-    , borderRectItem( 0 )
-    , svgItem( 0 )
-    , hoverIndicatorRectItem( 0 )
-    , hoverIndicatorRectFillItem( 0 )
+    , textItem( nullptr )
+    , borderRectItem( nullptr )
+    , svgItem( nullptr )
+    , hoverIndicatorRectItem( nullptr )
+    , hoverIndicatorRectFillItem( nullptr )
     , borderWidth( 2 )
     , hoverIndicatorRectWidth( 15 )
     , font()
@@ -55,7 +55,7 @@ PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
     , subitemOpacity( 0.0 )
     , file( QString() )
     , svgElementRect( 0, 0, 50, 50 )
-    , sharedRenderer( 0 )
+    , sharedRenderer( nullptr )
     , horizontalOffset( 30 )
     , textOffset( 30 )
     , separator( false )
@@ -65,7 +65,7 @@ PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
     , orientation( PopupDropperItem::Left )
     , textProtection( PopupDropperItem::ScaleFont )
     , separatorStyle( PopupDropperItem::TextSeparator )
-    , pd( 0 )
+    , pd( nullptr )
     , q( parent )
     {
         hoverTimer.setFrameRange( 0, 30 );
@@ -500,7 +500,7 @@ void PopupDropperItem::reposTextItem()
         QFontMetrics fm( d->textItem->font() );
         qreal desiredWidth = d->borderRectItem->sceneBoundingRect().width() - offsetPos;
         while( d->textItem->font().pointSize() > 1 &&
-                ( fm.width( d->textItem->toPlainText() ) > desiredWidth ||
+                ( fm.horizontalAdvance( d->textItem->toPlainText() ) > desiredWidth ||
                   fm.height() > d->textItem->boundingRect().height() ) ) 
         {
             QFont font = d->textItem->font();

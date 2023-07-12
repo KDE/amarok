@@ -19,10 +19,16 @@
 #cmakedefine QT_QTOPENGL_FOUND 1
 
 /* If liblastfm is found */
-#cmakedefine HAVE_LIBLASTFM 1
+#cmakedefine LIBLASTFM_FOUND 1
+#ifdef LIBLASTFM_FOUND
+#define HAVE_LIBLASTFM 1
+#endif
 
 /* If libofa is found */
-#cmakedefine HAVE_LIBOFA 1
+#cmakedefine LIBOFA_FOUND 1
+#ifdef LIBOFA_FOUND
+#define HAVE_LIBOFA 1
+#endif
 
 /* Whether cmake build type is debug */
 #cmakedefine DEBUG_BUILD_TYPE

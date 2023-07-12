@@ -35,7 +35,7 @@
 QTEST_GUILESS_MAIN( TestPlaylistObserver )
 
 TestPlaylistObserver::TestPlaylistObserver()
-    : m_observer( 0 )
+    : m_observer( nullptr )
 {
 }
 
@@ -61,7 +61,7 @@ TestPlaylistObserver::cleanupTestCase()
     // Wait for other jobs, like MetaProxys fetching meta data, to finish
     ThreadWeaver::Queue::instance()->finish();
 
-    delete Amarok::Components::setEngineController( 0 );
+    delete Amarok::Components::setEngineController( nullptr );
 }
 
 void
@@ -84,8 +84,8 @@ void
 TestPlaylistObserver::cleanup()
 {
     delete m_observer;
-    m_observer = 0;
-    m_testPlaylist = 0;
+    m_observer = nullptr;
+    m_testPlaylist = nullptr;
 }
 
 void

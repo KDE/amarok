@@ -54,7 +54,7 @@ Amarok::QStringx::~QStringx()
 QString
 Amarok::QStringx::args( const QStringList &args ) const
 {
-    const QStringList text = (*this).split( QRegExp( "%\\d+" ), QString::KeepEmptyParts );
+    const QStringList text = (*this).split( QRegExp( "%\\d+" ), Qt::KeepEmptyParts );
 
     QList<QString>::ConstIterator itrText = text.constBegin();
     QList<QString>::ConstIterator itrArgs = args.constBegin();

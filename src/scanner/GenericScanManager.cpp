@@ -131,18 +131,21 @@ GenericScanManager::abort()
 void
 GenericScanManager::connectSignalsToJob()
 {
-    auto scannerJob = m_scannerJob.data();
-    // we used to have direct connections here, but that caused too much work being done
-    // in the non-main thread, even in code that wasn't thread-safe, which lead to
-    // crashes (bug 319835) and other potential data races
-    connect( scannerJob, QOverload<ScanType>::of(&GenericScannerJob::started),
-             this, &GenericScanManager::started );
-    connect( scannerJob, &GenericScannerJob::directoryCount,
-             this, &GenericScanManager::directoryCount);
-    connect( scannerJob, &GenericScannerJob::directoryScanned,
-             this, &GenericScanManager::directoryScanned );
-    connect( scannerJob, &GenericScannerJob::succeeded,
-             this, &GenericScanManager::succeeded );
-    connect( scannerJob, QOverload<QString>::of(&GenericScannerJob::failed),
-             this, &GenericScanManager::failed );
+    auto scannerJobPointer = m_scannerJob.toStrongRef();
+    if( scannerJobPointer ) {
+        auto scannerJob = scannerJobPointer.data();
+        // we used to have direct connections here, but that caused too much work being done
+        // in the non-main thread, even in code that wasn't thread-safe, which lead to
+        // crashes (bug 319835) and other potential data races
+        connect( scannerJob, QOverload<ScanType>::of(&GenericScannerJob::started),
+                 this, &GenericScanManager::started );
+        connect( scannerJob, &GenericScannerJob::directoryCount,
+                 this, &GenericScanManager::directoryCount);
+        connect( scannerJob, &GenericScannerJob::directoryScanned,
+                 this, &GenericScanManager::directoryScanned );
+        connect( scannerJob, &GenericScannerJob::succeeded,
+                 this, &GenericScanManager::succeeded );
+        connect( scannerJob, QOverload<QString>::of(&GenericScannerJob::failed),
+                 this, &GenericScanManager::failed );
+    }
 }

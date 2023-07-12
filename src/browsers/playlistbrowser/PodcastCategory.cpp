@@ -59,7 +59,7 @@ PodcastCategory* PodcastCategory::s_instance = nullptr;
 PodcastCategory*
 PodcastCategory::instance()
 {
-    return s_instance ? s_instance : new PodcastCategory( 0 );
+    return s_instance ? s_instance : new PodcastCategory( nullptr );
 }
 
 void

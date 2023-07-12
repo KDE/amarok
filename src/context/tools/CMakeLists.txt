@@ -13,5 +13,5 @@ target_link_libraries(amarokpkg KF5::I18n
                                 Qt5::Widgets
                      )
 
-install(TARGETS amarokpkg ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS amarokpkg ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 

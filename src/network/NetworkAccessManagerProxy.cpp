@@ -52,7 +52,7 @@ NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
     , m_viewer( nullptr )
 #endif // DEBUG_BUILD_TYPE
 {
-    setCache(0);   // disable QtWebKit cache to just use KIO one..
+    setCache(nullptr);   // disable QtWebKit cache to just use KIO one..
     qRegisterMetaType<NetworkAccessManagerProxy::Error>();
 }
 
@@ -84,7 +84,7 @@ int
 NetworkAccessManagerProxy::abortGet( const QList<QUrl> &urls )
 {
     int removed = 0;
-    const QSet<QUrl> &urlSet = urls.toSet();
+    const QSet<QUrl> urlSet(urls.begin(), urls.end());
     foreach( const QUrl &url, urlSet )
         removed += abortGet( url );
     return removed;

@@ -50,7 +50,7 @@ void ScriptableServiceInfoParser::getInfo(const AlbumPtr &album)
 {
     DEBUG_BLOCK
     ScriptableServiceAlbum * serviceAlbum = dynamic_cast< ScriptableServiceAlbum * >( album.data() );
-    if (serviceAlbum == 0) return;
+    if (serviceAlbum == nullptr) return;
 
     Q_EMIT( info( serviceAlbum->description() ) );
 

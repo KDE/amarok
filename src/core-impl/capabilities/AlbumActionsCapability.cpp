@@ -62,19 +62,19 @@ using namespace Capabilities;
 AlbumActionsCapability::AlbumActionsCapability( const Meta::AlbumPtr &album, const QList<QAction *> &actions )
     : ActionsCapability()
 {
-    m_actions.append( new DisplayCoverAction( 0, album ) );
-    m_actions.append( new FetchCoverAction( 0, album ) );
-    m_actions.append( new SetCustomCoverAction( 0, album ) );
-    m_actions.append( new UnsetCoverAction( 0, album ) );
+    m_actions.append( new DisplayCoverAction( nullptr, album ) );
+    m_actions.append( new FetchCoverAction( nullptr, album ) );
+    m_actions.append( new SetCustomCoverAction( nullptr, album ) );
+    m_actions.append( new UnsetCoverAction( nullptr, album ) );
 
-    QAction *separator = new QAction( 0 );
+    QAction *separator = new QAction( nullptr );
     separator->setSeparator( true );
     m_actions.append( separator );
-    m_actions.append( new CompilationAction( 0, album ) );
+    m_actions.append( new CompilationAction( nullptr, album ) );
 
     if( actions.isEmpty() )
         return;
-    separator = new QAction( 0 );
+    separator = new QAction( nullptr );
     separator->setSeparator( true );
     m_actions.append( separator );
     m_actions.append( actions );

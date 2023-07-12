@@ -37,10 +37,10 @@ class ContentFetcher : public QObject
     Q_OBJECT
 
     public:
-        ContentFetcher( const QString & hostname, quint16 port, const QString& password, QObject * parent = nullptr, const char * name = 0 );
+        ContentFetcher( const QString & hostname, quint16 port, const QString& password, QObject * parent = nullptr, const char * name = nullptr );
         ~ContentFetcher() override;
 
-        void getDaap( const QString & command, QIODevice* musicFile = 0 );
+        void getDaap( const QString & command, QIODevice* musicFile = nullptr );
         QByteArray results();
 
     private Q_SLOTS:

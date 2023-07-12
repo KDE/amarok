@@ -31,7 +31,7 @@ ConstraintTypes::PlaylistDuration::createFromXml( QDomElement& xmlelem, Constrai
     if ( p ) {
         return new PlaylistDuration( xmlelem, p );
     } else {
-        return 0;
+        return nullptr;
     }
 }
 
@@ -41,7 +41,7 @@ ConstraintTypes::PlaylistDuration::createNew( ConstraintNode* p )
     if ( p ) {
         return new PlaylistDuration( p );
     } else {
-        return 0;
+        return nullptr;
     }
 }
 

@@ -27,6 +27,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QVBoxLayout>
+#include <QFileSystemModel>
 
 SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )
     : BoxWidget( true, parent )
@@ -45,7 +46,7 @@ SqlBatchImporterConfig::SqlBatchImporterConfig( QWidget *parent )
     QLabel *label = new QLabel( i18n( "Input file" ), gridHolder );
     m_inputFilePathInput = new QLineEdit( gridHolder );
     QCompleter *completer = new QCompleter( this );
-    completer->setModel( new QDirModel( completer ) );
+    completer->setModel( new QFileSystemModel( completer ) );
     m_inputFilePathInput->setCompleter( completer );
     m_inputFilePathInput->setText( QDir::homePath() + "/result.xml" );
     label->setBuddy( m_inputFilePathInput );

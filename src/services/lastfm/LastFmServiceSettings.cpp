@@ -54,7 +54,7 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
     connect( m_configDialog->kcfg_UseFancyRatingTags, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->kcfg_AnnounceCorrections, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->kcfg_FilterByLabel, &QCheckBox::stateChanged, this, &LastFmServiceSettings::settingsChanged );
-    connect( m_configDialog->kcfg_FilteredLabel, QOverload<const QString&>::of( &QComboBox::currentIndexChanged ), this, &LastFmServiceSettings::settingsChanged );
+    connect( m_configDialog->kcfg_FilteredLabel, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &LastFmServiceSettings::settingsChanged );
     connect( m_configDialog->testLogin, &QPushButton::clicked, this, &LastFmServiceSettings::testLogin );
 
     using namespace Collections;
@@ -117,7 +117,7 @@ LastFmServiceSettings::testLogin()
     m_authQuery = lastfm::ws::post( query );
 
     connect( m_authQuery, &QNetworkReply::finished, this, &LastFmServiceSettings::onAuthenticated );
-    connect( m_authQuery, QOverload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ),
+    connect( m_authQuery, QOverload<QNetworkReply::NetworkError>::of( &QNetworkReply::errorOccurred ),
              this, &LastFmServiceSettings::onError );
 }
 

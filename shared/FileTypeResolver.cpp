@@ -61,7 +61,7 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,
         TagLib::AudioProperties::ReadStyle propertiesStyle) const
 {
-    TagLib::File* result = 0;
+    TagLib::File* result = nullptr;
 
     QMimeDatabase db;
 

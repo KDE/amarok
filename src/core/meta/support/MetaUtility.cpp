@@ -230,7 +230,7 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr &track )
             map[QStringLiteral("xesam:composer")] = QStringList() << composer->name();
 
         if( year )
-            map[QStringLiteral("xesam:contentCreated")] = QDateTime(QDate(year->year(), 1, 1)).toString(Qt::ISODate);
+            map[QStringLiteral("xesam:contentCreated")] = QDate(year->year(), 1, 1).startOfDay().toString(Qt::ISODate);
 
         if( track->discNumber() )
             map[QStringLiteral("xesam:discNumber")] = track->discNumber();

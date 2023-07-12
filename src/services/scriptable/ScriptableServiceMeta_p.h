@@ -117,7 +117,7 @@ class ScriptableServiceInternalArtist : public Meta::Artist, public ScriptableSe
         {
             if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
-            return 0;
+            return nullptr;
         }
 
 private:
@@ -181,7 +181,7 @@ class ScriptableServiceInternalAlbum : public Meta::ServiceAlbumWithCover, publi
         {
             if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
-            return 0;
+            return nullptr;
         }
 
     private:
@@ -224,7 +224,7 @@ class ScriptableServiceInternalGenre : public Meta::Genre, public ScriptableServ
         {
             if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
-            return 0;
+            return nullptr;
         }
 
     private:
@@ -267,7 +267,7 @@ class ScriptableServiceInternalComposer : public Meta::Composer, public Scriptab
         {
             if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
-            return 0;
+            return nullptr;
         }
 
     private:
@@ -309,7 +309,7 @@ class ScriptableServiceInternalYear : public Meta::Year, public ScriptableServic
         {
             if ( type == Capabilities::Capability::SourceInfo )
                 return new ScriptableServiceInternalSourceInfoCapability( this );
-            return 0;
+            return nullptr;
         }
 
     private:

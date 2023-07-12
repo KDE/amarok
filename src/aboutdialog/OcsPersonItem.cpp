@@ -23,6 +23,7 @@
 #include <QStandardPaths>
 #include <Attica/Provider>
 #include <Attica/ItemJob>
+#include <KIO/OpenUrlJob>
 #include <KIO/StoredTransferJob>
 
 #include <QHBoxLayout>
@@ -124,7 +125,9 @@ void
 OcsPersonItem::launchUrl( QAction *action ) //SLOT
 {
     QUrl url = QUrl( action->data().toString() );
-    KRun::runUrl( url, QStringLiteral("text/html"), nullptr, KRun::RunExecutables, QString() );
+    KIO::OpenUrlJob *openUrlJob = new KIO::OpenUrlJob(url, QStringLiteral("text/html"), this );
+    openUrlJob->setRunExecutables( true );
+    openUrlJob->start();
 }
 
 void

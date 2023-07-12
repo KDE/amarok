@@ -208,7 +208,7 @@ IpodCollectionFactory::createCollectionForSolidDevice( const QString &udi )
             debug() << "device" << udi << "not accessible, ignoring for now";
             return;
         }
-        mountPoint = ssa->filePath();
+        mountPoint.setPath( ssa->filePath() );
         Solid::StorageVolume *volume = device.as<Solid::StorageVolume>();
         if( volume )
             uuid = volume->uuid();

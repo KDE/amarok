@@ -86,7 +86,7 @@ namespace AmarokScript
              *   @arg toProvider If 0 (default) will save to the default UserPlaylistProvider ( SQLPlaylistProvider )
              */
             Q_INVOKABLE bool save( Meta::TrackList tracks, const QString &name = QString(),
-                       Playlists::PlaylistProvider *toProvider = 0 );
+                       Playlists::PlaylistProvider *toProvider = nullptr );
 
             /**
              *  Saves a playlist from a file to the database.

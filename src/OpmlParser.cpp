@@ -127,10 +127,10 @@ OpmlParser::downloadResult( KJob *job )
             i18n( "Reading OPML podcast from %1 failed with error:\n", m_url.url() );
         errorMessage = errorMessage.append( job->errorString() );
 
-//        Q_EMIT statusBarSorryMessage( errorMessage );
+//        Q_EMIT statusBarErrorMessage( errorMessage );
     }
 
-    m_transferJob = 0;
+    m_transferJob = nullptr;
 }
 
 void
@@ -165,20 +165,20 @@ OpmlParser::StaticData::StaticData()
     : startAction( rootMap )
     , docAction(
         docMap,
-        0,
+        nullptr,
         &OpmlParser::endDocument )
     , skipAction( skipMap )
     , noContentAction(
             noContentMap,
             &OpmlParser::beginNoElement,
-            0,
+            nullptr,
             &OpmlParser::readNoCharacters )
     , opmlAction(
             opmlMap,
             &OpmlParser::beginOpml )
     , headAction(
             headMap,
-            0,
+            nullptr,
             &OpmlParser::endHead )
     , titleAction(
             textMap,
@@ -302,7 +302,7 @@ OpmlParser::continueRead()
         }
 
         const Action* action = m_actionStack.top();
-        const Action* subAction = 0;
+        const Action* subAction = nullptr;
 
         switch( token )
         {
@@ -366,7 +366,7 @@ OpmlParser::stopWithError( const QString &message )
     if( m_transferJob )
     {
         m_transferJob->kill( KJob::EmitResult );
-        m_transferJob = 0;
+        m_transferJob = nullptr;
     }
 
     Q_EMIT doneParsing();
@@ -387,7 +387,7 @@ OpmlParser::beginText()
 void
 OpmlParser::beginOutline()
 {
-    OpmlOutline *parent = m_outlineStack.empty() ? 0 : m_outlineStack.top();
+    OpmlOutline *parent = m_outlineStack.empty() ? nullptr : m_outlineStack.top();
     OpmlOutline *outline = new OpmlOutline( parent );
     //adding outline to stack
     m_outlineStack.push( outline );

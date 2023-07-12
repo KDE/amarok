@@ -46,9 +46,9 @@ QString Resource::fileName() const
     return QResource::fileName();
 }
 
-bool Resource::isCompressed() const
+QResource::Compression Resource::compressionAlgorithm() const
 {
-    return QResource::isCompressed();
+    return QResource::compressionAlgorithm();
 }
 
 bool Resource::isValid() const
@@ -81,11 +81,6 @@ qint64 Resource::size() const
     return QResource::size();
 }
 
-void Resource::addSearchPath(const QString &path)
-{
-    QResource::addSearchPath(path);
-}
-
 bool Resource::registerResource(const QString &rccFilename, const QString &resourceRoot)
 {
     return QResource::registerResource(rccFilename,resourceRoot);
@@ -94,11 +89,6 @@ bool Resource::registerResource(const QString &rccFilename, const QString &resou
 bool Resource::registerResource(const uchar *rccData, const QString &resourceRoot)
 {
     return QResource::registerResource(rccData,resourceRoot);
-}
-
-QStringList Resource::searchPaths()
-{
-    return QResource::searchPaths();
 }
 
 bool Resource::unregisterResource(const QString &rccFilename, const QString &resourceRoot)

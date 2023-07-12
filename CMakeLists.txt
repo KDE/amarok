@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.16)
 
 project(Amarok)
 
@@ -9,8 +9,8 @@ endif()
 
 ###############
 
-set(KF5_MIN_VERSION "5.41.0")
-set(QT_REQUIRED_VERSION "5.10.0")
+set(KF5_MIN_VERSION "5.57.0")
+set(QT_REQUIRED_VERSION "5.15.0")
 find_package(PkgConfig REQUIRED)
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
@@ -152,7 +152,8 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/shared
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")  # Require C++11
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # WORKAROUND for Clang bug: http://llvm.org/bugs/show_bug.cgi?id=15651
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
@@ -187,13 +188,8 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
     add_definitions(-Wall -Wextra)
 endif()
 
-# this needs to be here because also code in shared/ needs config.h. This is also the
-# reason why various checks are above why they belong under if( WITH_PLAYER )
-configure_file( shared/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config.h )
-
 add_subdirectory( data )
 add_subdirectory( images )
-add_subdirectory( shared )
 
 if( WITH_PLAYER )
     find_package(X11)
@@ -311,11 +307,13 @@ if( WITH_PLAYER )
 
     feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
-    #Do not remove or modify these.  The release script substitutes in for these
-    #comments with appropriate doc and translation directories.
-    #PO_SUBDIR
-
 endif()
+
+# this needs to be here because also code in shared/ needs config.h. This is also the
+# reason why various checks are above why they belong under if( WITH_PLAYER )
+configure_file( shared/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config.h )
+
+add_subdirectory( shared )
 
 if( WITH_UTILITIES )
     add_subdirectory( utilities )
@@ -326,4 +324,5 @@ if( WITH_PLAYGROUND )
     message(STATUS "Included playground subdirectory in configuration")
 endif()
 
-include(CTest)
+ki18n_install( po )
+ecm_install_po_files_as_qm(poqm)

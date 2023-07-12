@@ -29,7 +29,7 @@
 
 SqlBatchImporter::SqlBatchImporter( QObject *parent )
     : QObject( parent )
-    , m_config( 0 )
+    , m_config( nullptr )
     , m_count( 0 )
     , m_importing( false )
 {

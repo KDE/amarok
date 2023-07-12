@@ -33,7 +33,7 @@ class IpodWriteDatabaseJob : public QObject, public ThreadWeaver::Job
 
     public:
         explicit IpodWriteDatabaseJob( IpodCollection *collection );
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
 
     Q_SIGNALS:
         /** This signal is emitted when this job is being processed by a thread. */

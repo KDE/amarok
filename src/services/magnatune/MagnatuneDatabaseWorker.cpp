@@ -22,7 +22,7 @@
 MagnatuneDatabaseWorker::MagnatuneDatabaseWorker()
     : QObject()
     , ThreadWeaver::Job()
-    , m_registry( 0 )
+    , m_registry( nullptr )
 {
     connect( this, &MagnatuneDatabaseWorker::done, this, &MagnatuneDatabaseWorker::completeJob );
 }
@@ -213,7 +213,7 @@ void MagnatuneDatabaseWorker::doFetchAlbumBySku()
     }
     else
     {
-        m_album = 0;
+        m_album = nullptr;
     }
 }
 

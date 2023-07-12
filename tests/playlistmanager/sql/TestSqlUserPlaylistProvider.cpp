@@ -30,7 +30,7 @@
 #include <QDir>
 
 
-QTEST_KDEMAIN( TestSqlUserPlaylistProvider, GUI )
+QTEST_MAIN( TestSqlUserPlaylistProvider )
 
 TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider()
 {}

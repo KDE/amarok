@@ -22,8 +22,8 @@
 
 MasterSlaveSynchronizationJob::MasterSlaveSynchronizationJob()
         : SynchronizationBaseJob()
-        , m_master( 0 )
-        , m_slave( 0 )
+        , m_master( nullptr )
+        , m_slave( nullptr )
 {
 
 }

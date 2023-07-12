@@ -42,10 +42,10 @@
 
 BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     : QTreeView( parent )
-    , m_loadAction( 0 )
-    , m_deleteAction( 0 )
-    , m_createTimecodeTrackAction( 0 )
-    , m_addGroupAction( 0 )
+    , m_loadAction( nullptr )
+    , m_deleteAction( nullptr )
+    , m_createTimecodeTrackAction( nullptr )
+    , m_addGroupAction( nullptr )
 {
 
     setEditTriggers( QAbstractItemView::SelectedClicked );
@@ -104,19 +104,19 @@ BookmarkTreeView::createCommonActions( const QModelIndexList &indices )
     int selectedRowCount = indices.count() / 4;
 
     QList< QAction * > actions;
-    if ( m_loadAction == 0 )
+    if ( m_loadAction == nullptr )
     {
         m_loadAction = new QAction( QIcon::fromTheme( QStringLiteral("folder-open") ), i18nc( "Load the view represented by this bookmark", "&Load" ), this );
         connect( m_loadAction, &QAction::triggered, this, &BookmarkTreeView::slotLoad );
     }
 
-    if ( m_deleteAction == 0 )
+    if ( m_deleteAction == nullptr )
     {
         m_deleteAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-remove-amarok") ), i18n( "&Delete" ), this );
         connect( m_deleteAction, &QAction::triggered, this, &BookmarkTreeView::slotDelete );
     }
 
-    if ( m_createTimecodeTrackAction == 0 )
+    if ( m_createTimecodeTrackAction == nullptr )
     {
         debug() << "creating m_createTimecodeTrackAction";
         m_createTimecodeTrackAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ), i18n( "&Create timecode track" ), this );
@@ -326,14 +326,14 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
 
     const AmarokUrl * url1 = dynamic_cast<const AmarokUrl *>( list.at( 0 ).data() );
 
-    if ( url1 == 0 )
+    if ( url1 == nullptr )
         return;
     if ( url1->command() != QLatin1String("play") )
         return;
 
     const AmarokUrl * url2 = dynamic_cast<const AmarokUrl *>( list.at( 1 ).data() );
 
-    if ( url2 == 0 )
+    if ( url2 == nullptr )
         return;
     if ( url2->command() != QLatin1String("play") )
         return;
@@ -385,7 +385,7 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
 
     Meta::TrackList tl;
     tl.append( Meta::TrackPtr::staticCast( track ) );
-    TagDialog *dialog = new TagDialog( tl, 0 );
+    TagDialog *dialog = new TagDialog( tl, nullptr );
     dialog->show();
 
     //now add it to the playlist

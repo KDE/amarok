@@ -112,7 +112,7 @@ PixmapViewer::paintEvent( QPaintEvent *event )
 void
 PixmapViewer::wheelEvent( QWheelEvent *event )
 {
-    qreal f = m_zoomFactor + 0.001 * event->delta();
+    qreal f = m_zoomFactor + 0.001 * event->angleDelta().y(); //FIXME: check if .x() must be used
     qreal ratio = 32.0 / m_pixmap.width();
     if( f < ratio )
         f = ratio;

@@ -207,7 +207,7 @@ TestAggregateMeta::testHasCapabilityOnSingleTrack()
 
     Meta::TrackPtr ptr( mock );
 
-    Meta::AggregateTrack cut( 0, ptr );
+    Meta::AggregateTrack cut( nullptr, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -227,7 +227,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleTrack()
 
     Meta::TrackPtr ptr( mock );
 
-    Meta::AggregateTrack cut( 0, ptr );
+    Meta::AggregateTrack cut( nullptr, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -246,7 +246,7 @@ TestAggregateMeta::testHasCapabilityOnSingleAlbum()
 
     Meta::AlbumPtr ptr( mock );
 
-    Meta::AggregateAlbum album( 0, ptr );
+    Meta::AggregateAlbum album( nullptr, ptr );
 
     QVERIFY( album.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !album.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -266,7 +266,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleAlbum()
 
     Meta::AlbumPtr ptr( mock );
 
-    Meta::AggregateAlbum album( 0, ptr );
+    Meta::AggregateAlbum album( nullptr, ptr );
 
     QVERIFY( ! album.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( album.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -285,7 +285,7 @@ TestAggregateMeta::testHasCapabilityOnSingleArtist()
 
     Meta::ArtistPtr ptr( mock );
 
-    Meta::AggregateArtist artist( 0, ptr );
+    Meta::AggregateArtist artist( nullptr, ptr );
 
     QVERIFY( artist.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !artist.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -305,7 +305,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleArtist()
 
     Meta::ArtistPtr ptr( mock );
 
-    Meta::AggregateArtist artist( 0, ptr );
+    Meta::AggregateArtist artist( nullptr, ptr );
 
     QVERIFY( ! artist.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( artist.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -324,7 +324,7 @@ TestAggregateMeta::testHasCapabilityOnSingleComposer()
 
     Meta::ComposerPtr ptr( mock );
 
-    Meta::AggregateComposer cut( 0, ptr );
+    Meta::AggregateComposer cut( nullptr, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -344,7 +344,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleComposer()
 
     Meta::ComposerPtr ptr( mock );
 
-    Meta::AggregateComposer cut( 0, ptr );
+    Meta::AggregateComposer cut( nullptr, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -363,7 +363,7 @@ TestAggregateMeta::testHasCapabilityOnSingleGenre()
 
     Meta::GenrePtr ptr( mock );
 
-    Meta::AggregateGenre cut( 0, ptr );
+    Meta::AggregateGenre cut( nullptr, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -383,7 +383,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleGenre()
 
     Meta::GenrePtr ptr( mock );
 
-    Meta::AggregateGenre cut( 0, ptr );
+    Meta::AggregateGenre cut( nullptr, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -402,7 +402,7 @@ TestAggregateMeta::testHasCapabilityOnSingleYear()
 
     Meta::YearPtr ptr( mock );
 
-    Meta::AggreagateYear cut( 0, ptr );
+    Meta::AggreagateYear cut( nullptr, ptr );
 
     QVERIFY( cut.hasCapabilityInterface( Capabilities::Capability::BookmarkThis ) );
     QVERIFY( !cut.hasCapabilityInterface( Capabilities::Capability::Buyable ) );
@@ -422,7 +422,7 @@ TestAggregateMeta::testCreateCapabilityOnSingleYear()
 
     Meta::YearPtr ptr( mock );
 
-    Meta::AggreagateYear cut( 0, ptr );
+    Meta::AggreagateYear cut( nullptr, ptr );
 
     QVERIFY( ! cut.createCapabilityInterface( Capabilities::Capability::Buyable ) );
     QCOMPARE( cut.createCapabilityInterface( Capabilities::Capability::Organisable ), cap );
@@ -507,7 +507,7 @@ TestAggregateMeta::testPrettyUrl()
 
     Meta::TrackPtr trackPtr( mock );
 
-    Meta::AggregateTrack track( 0, trackPtr );
+    Meta::AggregateTrack track( nullptr, trackPtr );
 
     QCOMPARE( track.prettyUrl(), QString( "foo" ) );
 }

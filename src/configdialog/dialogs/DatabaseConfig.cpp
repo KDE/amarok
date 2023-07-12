@@ -26,7 +26,7 @@
 #include <KCMultiDialog>
 
 
-DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KConfigSkeleton *config )
+DatabaseConfig::DatabaseConfig( Amarok2ConfigDialog* parent, KCoreConfigSkeleton *config )
     : ConfigDialogBase( parent )
     , m_configManager( new KConfigDialogManager( this, config ) )
 {
@@ -99,7 +99,7 @@ DatabaseConfig::testDatabaseConnection() //SLOT
         if( callSucceeded )
         {
             if( connectionErrors.isEmpty() )
-                KMessageBox::messageBox( this, KMessageBox::Information,
+                KMessageBox::information(this,
                                          i18n( "Amarok was able to establish a successful connection to the database." ),
                                          i18n( "Success" ) );
             else
@@ -132,7 +132,7 @@ void
 DatabaseConfig::updateSettings()
 {
     if( m_configManager->hasChanged() )
-        KMessageBox::messageBox( nullptr, KMessageBox::Information,
+        KMessageBox::information( nullptr,
                  i18n( "Changes to database settings only take\neffect after Amarok is restarted." ),
                  i18n( "Database settings changed" ) );
 }

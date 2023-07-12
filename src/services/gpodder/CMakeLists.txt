@@ -27,7 +27,7 @@ target_link_libraries(gpodder_service_config
     KF5::Wallet
 )
 
-install(TARGETS gpodder_service_config DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS gpodder_service_config DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 set(amarok_service_gpodder_PART_SRCS
     GpodderService.cpp

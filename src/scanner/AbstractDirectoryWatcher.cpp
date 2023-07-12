@@ -33,8 +33,8 @@ static const int DELAYED_SCAN_INTERVAL = 2 * 1000; // = 2 seconds
 AbstractDirectoryWatcher::AbstractDirectoryWatcher()
     : QObject()
     , ThreadWeaver::Job()
-    , m_delayedScanTimer( 0 )
-    , m_watcher( 0 )
+    , m_delayedScanTimer( nullptr )
+    , m_watcher( nullptr )
     , m_aborted( false )
     , m_blocked( false )
 {
@@ -88,7 +88,8 @@ AbstractDirectoryWatcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
 
 
             // -- update the KDirWatch with the current set of directories
-            QSet<QString> dirs = collectionFolders().toSet();
+            const QStringList colFolders=collectionFolders();
+            QSet<QString> dirs(colFolders.begin(), colFolders.end());
 
             // - add new
             QSet<QString> newDirs = dirs - oldWatchDirs;

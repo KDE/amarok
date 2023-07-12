@@ -21,7 +21,7 @@ using namespace Podcasts;
 PodcastEpisode::PodcastEpisode()
     : PodcastMetaCommon()
     , Track()
-    , m_channel( 0 )
+    , m_channel( nullptr )
     , m_guid()
     , m_mimeType()
     , m_pubDate()

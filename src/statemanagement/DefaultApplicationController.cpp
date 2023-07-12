@@ -36,7 +36,7 @@ DefaultApplicationController::DefaultApplicationController( QObject *parent )
 
 DefaultApplicationController::~DefaultApplicationController()
 {
-    Components::setApplicationController( 0 );
+    Components::setApplicationController( nullptr );
 }
 
 void
@@ -56,8 +56,8 @@ DefaultApplicationController::shutdown()
     //destroy all central components instead of letting them be
     //destroyed in a random order as static objects
 
-    delete Components::setEngineController( 0 );
-    delete Components::setCollectionLocationDelegate( 0 );
+    delete Components::setEngineController( nullptr );
+    delete Components::setCollectionLocationDelegate( nullptr );
 }
 
 void

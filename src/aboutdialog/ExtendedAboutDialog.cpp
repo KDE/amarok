@@ -135,17 +135,14 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
     //Set up the title widget...
     KTitleWidget *titleWidget = new KTitleWidget(this);
 
-    QIcon windowIcon;
-    if (!aboutData->programIconName().isEmpty()) {
-        windowIcon = QIcon::fromTheme(aboutData->programIconName());
-    } else {
-        windowIcon = qApp->windowIcon();
-    }
-    titleWidget->setPixmap(windowIcon.pixmap(64, 64), KTitleWidget::ImageLeft);
-    if (aboutData->programLogo().canConvert<QPixmap>())
-        titleWidget->setPixmap(aboutData->programLogo().value<QPixmap>(), KTitleWidget::ImageLeft);
+    QIcon windowIcon = qApp->windowIcon();
+    titleWidget->setIcon(windowIcon, KTitleWidget::ImageLeft);
+    if (aboutData->programLogo().canConvert<QIcon>())
+        titleWidget->setIcon(aboutData->programLogo().value<QIcon>(), KTitleWidget::ImageLeft);
+    else if (aboutData->programLogo().canConvert<QPixmap>())
+        titleWidget->setIcon(QIcon(aboutData->programLogo().value<QPixmap>()), KTitleWidget::ImageLeft);
     else if (aboutData->programLogo().canConvert<QImage>())
-        titleWidget->setPixmap(QPixmap::fromImage(aboutData->programLogo().value<QImage>()), KTitleWidget::ImageLeft);
+        titleWidget->setIcon(QIcon(QPixmap::fromImage(aboutData->programLogo().value<QImage>())), KTitleWidget::ImageLeft);
 
     titleWidget->setText(i18n("<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE Frameworks %3</html>",
                          aboutData->displayName(), aboutData->version(), KCoreAddons::versionString()));

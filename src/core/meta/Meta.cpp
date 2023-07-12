@@ -52,7 +52,7 @@ Meta::Track::inCollection() const
 Collections::Collection*
 Meta::Track::collection() const
 {
-    return 0;
+    return nullptr;
 }
 
 Meta::LabelList

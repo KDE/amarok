@@ -44,7 +44,7 @@
 
 
 namespace The {
-    static SvgHandler* s_SvgHandler_instance = 0;
+    static SvgHandler* s_SvgHandler_instance = nullptr;
 
     SvgHandler* svgHandler()
     {
@@ -72,7 +72,7 @@ SvgHandler::~SvgHandler()
     qDeleteAll( m_renderers );
     m_renderers.clear();
 
-    The::s_SvgHandler_instance = 0;
+    The::s_SvgHandler_instance = nullptr;
 }
 
 

@@ -97,9 +97,9 @@ QTEST_GUILESS_MAIN( TestSqlCollectionLocation )
 
 TestSqlCollectionLocation::TestSqlCollectionLocation()
     : QObject()
-    , m_collection( 0 )
-    , m_storage( 0 )
-    , m_tmpDir( 0 )
+    , m_collection( nullptr )
+    , m_storage( nullptr )
+    , m_tmpDir( nullptr )
 {
     int argc = 1;
     char **argv = (char **) malloc(sizeof(char *));
@@ -176,7 +176,7 @@ TestSqlCollectionLocation::init()
 void
 TestSqlCollectionLocation::cleanup()
 {
-    delete Amarok::Components::setCollectionLocationDelegate( 0 );
+    delete Amarok::Components::setCollectionLocationDelegate( nullptr );
     m_storage->query( "TRUNCATE TABLE years;" );
     m_storage->query( "TRUNCATE TABLE genres;" );
     m_storage->query( "TRUNCATE TABLE composers;" );

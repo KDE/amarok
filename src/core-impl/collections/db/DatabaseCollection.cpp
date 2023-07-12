@@ -30,8 +30,8 @@ using namespace Collections;
 
 DatabaseCollection::DatabaseCollection()
     : Collection()
-    , m_mpm( 0 )
-    , m_scanManager( 0 )
+    , m_mpm( nullptr )
+    , m_scanManager( nullptr )
     , m_blockUpdatedSignalCount( 0 )
     , m_updatedSignalRequested( false )
 {

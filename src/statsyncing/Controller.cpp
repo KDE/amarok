@@ -138,7 +138,7 @@ Controller::registerProvider( const ProviderPtr &provider )
 void
 Controller::unregisterProvider( const ProviderPtr &provider )
 {
-    disconnect( provider.data(), 0, this, 0 );
+    disconnect( provider.data(), nullptr, this, nullptr );
     if( m_config->providerKnown( provider->id() ) )
     {
         m_config->updateProvider( provider->id(), provider->prettyName(),
@@ -182,7 +182,7 @@ Controller::providerConfigDialog( const QString &id ) const
 {
     ProviderPtr provider = findRegisteredProvider( id );
     if( !provider || !provider->isConfigurable() )
-        return 0;
+        return nullptr;
 
     ConfigureProviderDialog *dialog
             = new ConfigureProviderDialog( id, provider->configWidget(),

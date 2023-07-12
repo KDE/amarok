@@ -19,6 +19,7 @@
 
 #include "AnalyzerWorker.h"
 
+#include <QElapsedTimer>
 #include <QMutex>
 #include <QElapsedTimer>
 #include <QVector>

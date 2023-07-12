@@ -34,8 +34,8 @@
 
 DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     : KAssistantDialog( parent )
-    , m_importer( 0 )
-    , m_importerConfig( 0 )
+    , m_importer( nullptr )
+    , m_importerConfig( nullptr )
 {
     setAttribute( Qt::WA_DeleteOnClose );
     QWidget::setWindowTitle( i18n( "Import Collection" ) );

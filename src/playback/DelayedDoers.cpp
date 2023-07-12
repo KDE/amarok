@@ -39,7 +39,7 @@ DelayedDoer::slotStateChanged( Phonon::State newState )
     if( m_applicableStates.contains( newState ) )
     {
         // don't let be called twice, deleteLater() may fire really LATER
-        disconnect( m_mediaObject, 0, this, 0 );
+        disconnect( m_mediaObject, nullptr, this, nullptr );
         performAction();
         deleteLater();
     }

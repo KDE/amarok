@@ -37,7 +37,7 @@ CompoundProgressBar::CompoundProgressBar( QWidget *parent )
 CompoundProgressBar::~CompoundProgressBar()
 {
     delete m_progressDetailsWidget;
-    m_progressDetailsWidget = 0;
+    m_progressDetailsWidget = nullptr;
 }
 
 void CompoundProgressBar::addProgressBar( ProgressBar *childBar, QObject *owner )

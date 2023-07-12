@@ -197,7 +197,7 @@ PlaylistsInFoldersProxy::dropMimeData( const QMimeData *data, Qt::DropAction act
     {
         debug() << "has amarok mime data";
         const AmarokMimeData *amarokMime = dynamic_cast<const AmarokMimeData *>(data);
-        if( amarokMime == 0 )
+        if( amarokMime == nullptr )
         {
             error() << "could not cast to amarokMimeData";
             return false;
@@ -290,7 +290,7 @@ void
 PlaylistsInFoldersProxy::slotDeleteFolder()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
 
     QPersistentModelIndexList indexes = action->data().value<QPersistentModelIndexList>();
@@ -303,7 +303,7 @@ void
 PlaylistsInFoldersProxy::slotRenameFolder()
 {
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
+    if( action == nullptr )
         return;
 
     QPersistentModelIndexList indexes = action->data().value<QPersistentModelIndexList>();

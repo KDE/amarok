@@ -99,8 +99,8 @@
  *     {
  *        Debug::Block myBlock( __PRETTY_FUNCTION__ );
  *
- *        debug() << "output1" << endl;
- *        debug() << "output2" << endl;
+ *        debug() << "output1" << Qt::endl;
+ *        debug() << "output2" << Qt::endl;
  *     }
  *
  * Will output:
@@ -164,10 +164,10 @@ using Debug::fatal;
 #define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __PRETTY_FUNCTION__ );
 
 /// Use this to remind yourself to finish the implementation of a function
-#define AMAROK_NOTIMPLEMENTED warning() << "NOT-IMPLEMENTED:" << __PRETTY_FUNCTION__ << endl;
+#define AMAROK_NOTIMPLEMENTED warning() << "NOT-IMPLEMENTED:" << __PRETTY_FUNCTION__ << Qt::endl;
 
 /// Use this to alert other developers to stop using a function
-#define AMAROK_DEPRECATED warning() << "DEPRECATED:" << __PRETTY_FUNCTION__ << endl;
+#define AMAROK_DEPRECATED warning() << "DEPRECATED:" << __PRETTY_FUNCTION__ << Qt::endl;
 
 /// Performance logging
 #define PERF_LOG( msg ) { Debug::perfLog( msg, __PRETTY_FUNCTION__ ); }
@@ -186,8 +186,8 @@ namespace Debug
      *     {
      *         Debug::Block myBlock( "section" );
      *
-     *         debug() << "output1" << endl;
-     *         debug() << "output2" << endl;
+     *         debug() << "output1" << Qt::endl;
+     *         debug() << "output2" << Qt::endl;
      *     }
      *
      * Will output:
@@ -237,7 +237,7 @@ namespace Debug
      * @class Debug::List
      * @short You can pass anything to this and it will output it as a list
      *
-     *     debug() << (Debug::List() << anInt << aString << aQStringList << aDouble) << endl;
+     *     debug() << (Debug::List() << anInt << aString << aQStringList << aDouble) << Qt::endl;
      */
 
     typedef QList<QVariant> List;

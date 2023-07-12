@@ -427,7 +427,7 @@ Meta::PlaydarAlbum::PlaydarAlbum( const QString &name )
     : m_name( name )
     , m_tracks( )
     , m_isCompilation( false )
-    , m_albumArtist( 0 )
+    , m_albumArtist( nullptr )
     , m_suppressImageAutoFetch( false )
     , m_triedToFetchCover( false )
 {

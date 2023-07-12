@@ -76,7 +76,7 @@ private:
 
     struct Current
     {
-        Current() : label(0), key(0), actionsVisible(false) {}
+        Current() : label(nullptr), key(nullptr), actionsVisible(false) {}
         AnimatedLabelStack *label;
         void* key;
         QString uidUrl;
@@ -86,7 +86,7 @@ private:
 
     struct Skip
     {
-        Skip() : label(0), key(0) {}
+        Skip() : label(nullptr), key(nullptr) {}
         AnimatedLabelStack *label;
         void* key;
         QRect rect;
@@ -96,7 +96,7 @@ private:
 
     struct Dummy
     {
-        Dummy() : label(0), targetX(0) {}
+        Dummy() : label(nullptr), targetX(0) {}
         AnimatedLabelStack *label;
         int targetX;
     } m_dummy;

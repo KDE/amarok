@@ -158,7 +158,7 @@ namespace MetaFile
         void readMetaData()
         {
             QFileInfo fi( url.isLocalFile() ? url.toLocalFile() : url.path() );
-            m_data.created = fi.created().toSecsSinceEpoch();
+            m_data.created = fi.birthTime().toSecsSinceEpoch();
 
             Meta::FieldHash values = Meta::Tag::readTags( fi.absoluteFilePath() );
 
@@ -275,7 +275,7 @@ namespace MetaFile
                 case Capabilities::Capability::Actions:
                     return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
                 default:
-                    return 0;
+                    return nullptr;
             }
         }
 

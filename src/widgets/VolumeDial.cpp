@@ -84,7 +84,7 @@ bool VolumeDial::eventFilter( QObject *o, QEvent *e )
             if ( o != this )
             {
                 QPoint pos( 0, 0 ); // the event needs to be on us or nothing will happen
-                QWheelEvent nwev( pos, mapToGlobal( pos ), wev->delta(), wev->buttons(), wev->modifiers() );
+                QWheelEvent nwev( pos, mapToGlobal( pos ), wev->pixelDelta(), wev->angleDelta(), wev->buttons(), wev->modifiers(), wev->phase(), wev->inverted(), wev->source() );
                 wheelEvent( &nwev );
             }
             else

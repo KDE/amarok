@@ -34,7 +34,7 @@ TestClementineImporter::getProvider()
     cfg.insert( "dbPath", QApplication::applicationDirPath()
                           + "/importers_files/clementine.db" );
 
-    return ProviderPtr( new ClementineProvider( cfg, 0 ) );
+    return ProviderPtr( new ClementineProvider( cfg, nullptr ) );
 }
 
 ProviderPtr
@@ -50,7 +50,7 @@ TestClementineImporter::getWritableProvider()
     QVariantMap cfg = ClementineConfigWidget( QVariantMap() ).config();
     cfg.insert( "dbPath", dst );
 
-    return ProviderPtr( new ClementineProvider( cfg, 0 ) );
+    return ProviderPtr( new ClementineProvider( cfg, nullptr ) );
 }
 
 qint64
@@ -70,7 +70,7 @@ TestClementineImporter::providerShouldHandleNonexistentDbFile()
 {
     m_cfg.insert( "dbPath", "/wdawd\\wdadwgd/das4hutyf" );
 
-    ClementineProvider provider( m_cfg, 0 );
+    ClementineProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -79,7 +79,7 @@ TestClementineImporter::providerShouldHandleInvalidDbFile()
 {
     m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
 
-    ClementineProvider provider( m_cfg, 0 );
+    ClementineProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -89,6 +89,6 @@ TestClementineImporter::providerShouldHandleErroneousConfigValues()
     m_cfg.insert( "dbPath", "\\wd%aw@d/sdsd2'vodk0-=$$" );
     m_cfg.insert( "name", QColor( Qt::white ) );
 
-    ClementineProvider provider( m_cfg, 0 );
+    ClementineProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }

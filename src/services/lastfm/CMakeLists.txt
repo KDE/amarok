@@ -1,4 +1,4 @@
-include_directories(
+include_directories(SYSTEM
     ${LIBLASTFM_INCLUDE_DIR}
 )
 
@@ -19,7 +19,7 @@ target_link_libraries( amarok_service_lastfm_config
     KF5::Wallet
 )
 
-install( TARGETS amarok_service_lastfm_config ${INSTALL_TARGETS_DEFAULT_ARGS} )
+install( TARGETS amarok_service_lastfm_config ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
 
 ########### next target ###############
 

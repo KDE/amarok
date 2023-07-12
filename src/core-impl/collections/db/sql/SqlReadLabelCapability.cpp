@@ -41,7 +41,7 @@ SqlReadLabelCapability::fetch( const QString &uniqueURL )
 
     if( !m_storage )
     {
-        debug() << "Could not get SqlStorage, aborting" << endl;
+        debug() << "Could not get SqlStorage, aborting" << Qt::endl;
         return;
     }
 

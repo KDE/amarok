@@ -97,7 +97,7 @@ MultiTrack::createCapabilityInterface(Capabilities::Capability::Type type)
         case Capabilities::Capability::MultiSource:
             return new Capabilities::MultiSourceCapabilityImpl( this );
         default:
-            return 0;
+            return nullptr;
     }
 }
 

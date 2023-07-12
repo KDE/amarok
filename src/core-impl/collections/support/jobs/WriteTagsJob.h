@@ -39,7 +39,7 @@ class AMAROK_EXPORT WriteTagsJob :public QObject, public ThreadWeaver::Job
 
     public:
         WriteTagsJob( const QString &path, const Meta::FieldHash &changes, bool respectConfig = true );
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
 
     protected:
         void defaultBegin(const ThreadWeaver::JobPointer& job, ThreadWeaver::Thread *thread) override;

@@ -23,7 +23,7 @@
 
 
 namespace The {
-    static PaletteHandler* s_PaletteHandler_instance = 0;
+    static PaletteHandler* s_PaletteHandler_instance = nullptr;
 
     PaletteHandler* paletteHandler()
     {
@@ -42,7 +42,7 @@ PaletteHandler::PaletteHandler( QObject* parent )
 
 PaletteHandler::~PaletteHandler()
 {
-    The::s_PaletteHandler_instance = 0;
+    The::s_PaletteHandler_instance = nullptr;
 }
 
 void

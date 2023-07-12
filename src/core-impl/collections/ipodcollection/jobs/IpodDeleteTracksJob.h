@@ -30,7 +30,7 @@ class IpodDeleteTracksJob : public QObject, public ThreadWeaver::Job
     public:
         explicit IpodDeleteTracksJob( const Meta::TrackList &sources,
                                       const QPointer<IpodCollection> &collection );
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
 
     Q_SIGNALS:
         // signals for progress operation:

@@ -99,7 +99,7 @@ Dynamic::DynamicPlaylist*
 Dynamic::DynamicModel::activePlaylist() const
 {
     if( m_activePlaylistIndex < 0 || m_activePlaylistIndex >= m_playlists.count() )
-        return 0;
+        return nullptr;
 
     return m_playlists[m_activePlaylistIndex];
 }
@@ -1004,7 +1004,7 @@ Dynamic::BiasedPlaylist*
 Dynamic::DynamicModel::cloneList( Dynamic::BiasedPlaylist* list )
 {
     QByteArray bytes;
-    QBuffer buffer( &bytes, 0 );
+    QBuffer buffer( &bytes, nullptr );
     buffer.open( QIODevice::ReadWrite );
 
     // write the list

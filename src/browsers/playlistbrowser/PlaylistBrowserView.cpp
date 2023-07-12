@@ -51,7 +51,7 @@ using namespace PlaylistBrowserNS;
 PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel *model,
                                                              QWidget *parent )
     : Amarok::PrettyTreeView( parent )
-    , m_pd( 0 )
+    , m_pd( nullptr )
     , m_ongoingDrag( false )
 {
     DEBUG_BLOCK
@@ -116,7 +116,7 @@ void
 PlaylistBrowserNS::PlaylistBrowserView::setModel( QAbstractItemModel *model )
 {
     if( this->model() )
-        disconnect( this->model(), 0, this, 0 );
+        disconnect( this->model(), nullptr, this, nullptr );
     Amarok::PrettyTreeView::setModel( model );
 
     connect( this->model(), SIGNAL(renameIndex(QModelIndex)), SLOT(edit(QModelIndex)) );
@@ -129,7 +129,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
     {
         connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &QObject::deleteLater );
         m_pd->hide();
-        m_pd = 0;
+        m_pd = nullptr;
     }
 
     QModelIndex index = indexAt( event->pos() );
@@ -236,7 +236,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent *even
     // mind bug 279513
     bool isExpandable = model()->hasChildren( index );
     bool wouldExpand = !visualRect( index ).contains( event->pos() ) || // clicked outside item, perhaps on expander icon
-                       ( isExpandable && !style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) ); // we're in doubleClick
+                       ( isExpandable && !style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, nullptr, this ) ); // we're in doubleClick
     if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         !wouldExpand )
@@ -390,7 +390,7 @@ PlaylistBrowserNS::PlaylistBrowserView::actionsFor( const QModelIndexList &index
 void
 PlaylistBrowserView::resetActionTargets()
 {
-    m_writableActionProvider = 0;
+    m_writableActionProvider = nullptr;
     m_actionPlaylists.clear();
     m_writableActionPlaylists.clear();
     m_actionTracks.clear();

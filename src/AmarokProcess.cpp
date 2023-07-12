@@ -27,7 +27,7 @@
 AmarokProcess::AmarokProcess(QObject *parent) 
     : KProcess(parent), lowPriority(false) 
 {
-    connect( this, QOverload<int>::of(&QProcess::finished),
+    connect( this, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
              this, QOverload<>::of(&AmarokProcess::finished) );
     connect( this, &QProcess::readyReadStandardOutput, this, &AmarokProcess::readyReadStandardOutput );
     connect( this, &QProcess::readyReadStandardError, this, &AmarokProcess::readyReadStandardError );

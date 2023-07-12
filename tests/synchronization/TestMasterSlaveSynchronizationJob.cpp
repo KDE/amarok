@@ -338,7 +338,7 @@ TestMasterSlaveSynchronizationJob::testRemoveSingleTrack()
 
     delete master;
     delete slave;
-    delete Amarok::Components::setCollectionLocationDelegate( 0 );
+    delete Amarok::Components::setCollectionLocationDelegate( nullptr );
 }
 
 void
@@ -377,7 +377,7 @@ TestMasterSlaveSynchronizationJob::testRemoveAlbum()
 
     delete master;
     delete slave;
-    delete Amarok::Components::setCollectionLocationDelegate( 0 );
+    delete Amarok::Components::setCollectionLocationDelegate( nullptr );
 }
 
 void
@@ -416,7 +416,7 @@ TestMasterSlaveSynchronizationJob::testRemoveArtist()
 
     delete master;
     delete slave;
-    delete Amarok::Components::setCollectionLocationDelegate( 0 );
+    delete Amarok::Components::setCollectionLocationDelegate( nullptr );
 }
 
 void
@@ -449,5 +449,5 @@ TestMasterSlaveSynchronizationJob::testEmptyMaster()
     QCOMPARE( slave->mc->trackMap().count(), 0 );
     delete master;
     delete slave;
-    delete Amarok::Components::setCollectionLocationDelegate( 0 );
+    delete Amarok::Components::setCollectionLocationDelegate( nullptr );
 }

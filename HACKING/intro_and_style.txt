@@ -49,7 +49,7 @@ Example:
  |      * when you do not need it outside the loop. Let the compiler
  |      * optimise it. */
  |     foreach( const QString &string, list )
- |         debug() << "Current string is " << string << endl;
+ |         debug() << "Current string is " << string << Qt::endl;
  |
  |     switch( m_enumValue )
  |     {

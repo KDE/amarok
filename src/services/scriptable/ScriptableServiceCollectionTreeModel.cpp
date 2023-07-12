@@ -71,7 +71,7 @@ ScriptableServiceCollectionTreeModel::mimeData( const QList<CollectionTreeItem *
     }
 
     if( queries.isEmpty() && tracks.isEmpty() )
-        return 0;
+        return nullptr;
 
     AmarokMimeData *mimeData = new AmarokMimeData();
     mimeData->setTracks( tracks );

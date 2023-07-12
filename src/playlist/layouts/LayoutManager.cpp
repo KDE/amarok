@@ -414,7 +414,7 @@ void LayoutManager::deleteLayout( const QString &layout )
             setActiveLayout( QStringLiteral("Default") );
     }
     else
-        KMessageBox::sorry( nullptr, i18n( "The layout '%1' is one of the default layouts and cannot be deleted.", layout ), i18n( "Cannot Delete Default Layouts" ) );
+        KMessageBox::error( nullptr, i18n( "The layout '%1' is one of the default layouts and cannot be deleted.", layout ), i18n( "Cannot Delete Default Layouts" ) );
 }
 
 bool LayoutManager::isDeleteable( const QString &layout ) const
@@ -426,7 +426,7 @@ int LayoutManager::moveUp( const QString &layout )
 {
     int index = m_layoutNames.indexOf( layout );
     if ( index > 0 ) {
-        m_layoutNames.swap ( index, index - 1 );
+        m_layoutNames.swapItemsAt ( index, index - 1 );
         Q_EMIT( layoutListChanged() );
         storeLayoutOrdering();
         return index - 1;
@@ -439,7 +439,7 @@ int LayoutManager::moveDown( const QString &layout )
 {
     int index = m_layoutNames.indexOf( layout );
     if ( index < m_layoutNames.size() -1 ) {
-        m_layoutNames.swap ( index, index + 1 );
+        m_layoutNames.swapItemsAt ( index, index + 1 );
         Q_EMIT( layoutListChanged() );
         storeLayoutOrdering();
         return index + 1;
@@ -455,7 +455,7 @@ void LayoutManager::orderLayouts()
 
     QStringList knownLayouts = m_layouts.keys();
 
-    QStringList orderingList = orderString.split( QLatin1Char(';'), QString::SkipEmptyParts );
+    QStringList orderingList = orderString.split( QLatin1Char(';'), Qt::SkipEmptyParts );
 
     foreach( const QString &layout, orderingList )
     {

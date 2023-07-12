@@ -34,7 +34,7 @@
 QTEST_GUILESS_MAIN( TestMetaFileTrack )
 
 TestMetaFileTrack::TestMetaFileTrack()
-    : m_tmpDir( 0 )
+    : m_tmpDir( nullptr )
 {}
 
 void TestMetaFileTrack::initTestCase()
@@ -152,7 +152,7 @@ void TestMetaFileTrack::testIsEditable()
 
     QFile testFile( m_tmpFileName );
 
-    QVERIFY( testFile.setPermissions( 0x0000 ) );
+    QVERIFY( testFile.setPermissions( {} ) );
     /* When the tests are run as root under Linux, the file is accessible even when it
      * has no permission bits set. Just skip one verify in this case in order not to
      * break whole test. */
@@ -449,7 +449,7 @@ void TestMetaFileTrack::testType()
 void TestMetaFileTrack::testCreateDate()
 {
     QFileInfo fi( m_tmpFileName );
-    QDateTime created = fi.created();
+    QDateTime created = fi.birthTime();
     // m_track->createDate() is rounded to full second because it is created from full seconds
     // created therefore also needs to be rounded
     QCOMPARE( m_track->createDate().toSecsSinceEpoch(), created.toSecsSinceEpoch() );

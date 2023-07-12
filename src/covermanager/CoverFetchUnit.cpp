@@ -209,7 +209,7 @@ CoverFetchInfoPayload::CoverFetchInfoPayload( const Meta::AlbumPtr &album, const
 }
 
 CoverFetchInfoPayload::CoverFetchInfoPayload( const CoverFetch::Source src, const QByteArray &data )
-    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Info, src )
+    : CoverFetchPayload( Meta::AlbumPtr( nullptr ), CoverFetchPayload::Info, src )
 {
     switch( src )
     {
@@ -411,7 +411,7 @@ CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr &album,
 CoverFetchArtPayload::CoverFetchArtPayload( const CoverFetch::ImageSize size,
                                             const CoverFetch::Source src,
                                             bool wild )
-    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Art, src )
+    : CoverFetchPayload( Meta::AlbumPtr( nullptr ), CoverFetchPayload::Art, src )
     , m_size( size )
     , m_wild( wild )
 {
@@ -602,7 +602,9 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
             foreach( const Meta::TrackPtr &track, tracks )
                 artistNames << ( track->artist() ? track->artist()->name()
                                                  : i18n( "Unknown Artist" ) );
-            artistSet = normalize( artistNames ).toSet();
+            QStringList artistNamesNormalized = normalize( artistNames );
+            QSet<QString> addArtistSet(artistNamesNormalized.begin(), artistNamesNormalized.end());
+            artistSet += addArtistSet;
         }
     }
     else return;

@@ -246,7 +246,7 @@ void
 TestMemoryQueryMaker::testFilterRating()
 {
     Meta::TrackList tracks;
-    Collections::MemoryQueryMaker *qm = 0;
+    Collections::MemoryQueryMaker *qm = nullptr;
 
     // -- filter for Rating
     qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
@@ -266,7 +266,7 @@ void
 TestMemoryQueryMaker::testFilterAnd()
 {
     Meta::TrackList tracks;
-    Collections::MemoryQueryMaker *qm = 0;
+    Collections::MemoryQueryMaker *qm = nullptr;
 
     qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );
     qm->beginAnd();
@@ -282,7 +282,7 @@ void
 TestMemoryQueryMaker::testFilterFormat()
 {
     Meta::TrackList tracks;
-    Collections::MemoryQueryMaker *qm = 0;
+    Collections::MemoryQueryMaker *qm = nullptr;
 
     // -- filter for title
     qm = new Collections::MemoryQueryMaker( m_mc.toWeakRef(), "test" );

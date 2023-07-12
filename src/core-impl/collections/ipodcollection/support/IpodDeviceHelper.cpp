@@ -31,7 +31,7 @@ Itdb_iTunesDB*
 IpodDeviceHelper::parseItdb( const QString &mountPoint, QString &errorMsg )
 {
     Itdb_iTunesDB *itdb;
-    GError *error = 0;
+    GError *error = nullptr;
 
     errorMsg.clear();
     itdb = itdb_parse( QFile::encodeName( mountPoint ), &error );
@@ -39,10 +39,10 @@ IpodDeviceHelper::parseItdb( const QString &mountPoint, QString &errorMsg )
     {
         if( itdb )
             itdb_free( itdb );
-        itdb = 0;
+        itdb = nullptr;
         errorMsg = QString::fromUtf8( error->message );
         g_error_free( error );
-        error = 0;
+        error = nullptr;
     }
     if( !itdb && errorMsg.isEmpty() )
         errorMsg = i18n( "Cannot parse iTunes database due to an unreported error." );
@@ -52,7 +52,7 @@ IpodDeviceHelper::parseItdb( const QString &mountPoint, QString &errorMsg )
 QString
 IpodDeviceHelper::collectionName( Itdb_iTunesDB *itdb )
 {
-    const Itdb_IpodInfo *info = (itdb && itdb->device) ? itdb_device_get_ipod_info( itdb->device ) : 0;
+    const Itdb_IpodInfo *info = (itdb && itdb->device) ? itdb_device_get_ipod_info( itdb->device ) : nullptr;
     QString modelName = info ? QString::fromUtf8( itdb_info_get_ipod_model_name_string( info->ipod_model ) )
                              : i18nc( "iPod model that is not (yet) recognized", "Unrecognized model" );
 
@@ -63,7 +63,7 @@ IpodDeviceHelper::collectionName( Itdb_iTunesDB *itdb )
 QString
 IpodDeviceHelper::ipodName( Itdb_iTunesDB *itdb )
 {
-    Itdb_Playlist *mpl = itdb ? itdb_playlist_mpl( itdb ) : 0;
+    Itdb_Playlist *mpl = itdb ? itdb_playlist_mpl( itdb ) : nullptr;
     QString mplName = mpl ? QString::fromUtf8( mpl->name ) : QString();
     if( mplName.isEmpty() )
         mplName = i18nc( "default iPod name (when user-set name is empty)", "iPod" );
@@ -117,14 +117,14 @@ IpodDeviceHelper::unlinkPlaylistsTracksFromItdb( Itdb_iTunesDB *itdb )
 static const Itdb_IpodInfo *getIpodInfo( const Itdb_iTunesDB *itdb )
 {
     if( !itdb || !itdb->device )
-        return 0;
+        return nullptr;
     const Itdb_IpodInfo *info = itdb_device_get_ipod_info( itdb->device );
     if( !info )
-        return 0;
+        return nullptr;
     if( info->ipod_model == ITDB_IPOD_MODEL_INVALID
      || info->ipod_model == ITDB_IPOD_MODEL_UNKNOWN )
     {
-        return 0;
+        return nullptr;
     }
     return info;
 }
@@ -329,7 +329,7 @@ IpodDeviceHelper::fillInConfigureDialog( QDialog *configureDialog,
             warningText = QString( "<b>%1</b>" ).arg( errorMessage );
 
         const Itdb_Device *device = itdb->device;
-        const Itdb_IpodInfo *info = device ? itdb_device_get_ipod_info( device ) : 0;
+        const Itdb_IpodInfo *info = device ? itdb_device_get_ipod_info( device ) : nullptr;
         configureDialogUi->infoGroupBox->setEnabled( true );
         configureDialogUi->modelPlaceholer->setText( info ? QString::fromUtf8(
             itdb_info_get_ipod_model_name_string( info->ipod_model ) ) : unknown );
@@ -424,7 +424,7 @@ IpodDeviceHelper::initializeIpod( const QString &mountPoint,
         const char *field = "ModelNumStr";
         debug() << "Setting SysInfo field" << field << "to value" << modelNumberRaw;
         itdb_device_set_sysinfo( device, field, modelNumberRaw );
-        GError *error = 0;
+        GError *error = nullptr;
         success = itdb_device_write_sysinfo( device, &error );
         if( !success )
         {
@@ -445,17 +445,17 @@ IpodDeviceHelper::initializeIpod( const QString &mountPoint,
 
     QString name = configureDialogUi->nameLineEdit->text();
     if( name.isEmpty() )
-        name = ipodName( 0 ); // return fallback name
+        name = ipodName( nullptr ); // return fallback name
 
-    GError *error = 0;
-    success = itdb_init_ipod( QFile::encodeName( mountPoint ), 0 /* model number */,
+    GError *error = nullptr;
+    success = itdb_init_ipod( QFile::encodeName( mountPoint ), nullptr /* model number */,
                               name.toUtf8(), &error );
     errorMessage.clear();
     if( error )
     {
         errorMessage = QString::fromUtf8( error->message );
         g_error_free( error );
-        error = 0;
+        error = nullptr;
     }
     if( !success && errorMessage.isEmpty() )
         errorMessage = i18n( "Cannot initialize iPod due to an unreported error." );

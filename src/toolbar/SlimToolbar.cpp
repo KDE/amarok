@@ -34,8 +34,8 @@
 
 SlimToolbar::SlimToolbar( QWidget * parent )
     : QToolBar( i18n( "Slim Toolbar" ), parent )
-    , m_currentTrackToolbar( 0 )
-    , m_volumePopupButton( 0 )
+    , m_currentTrackToolbar( nullptr )
+    , m_volumePopupButton( nullptr )
 {
     setObjectName( "Slim Toolbar" );
 
@@ -48,11 +48,11 @@ SlimToolbar::SlimToolbar( QWidget * parent )
     addAction( Amarok::actionCollection()->action( "stop" ) );
     addAction( Amarok::actionCollection()->action( "next" ) );
 
-    m_currentTrackToolbar = new CurrentTrackToolbar( 0 );
+    m_currentTrackToolbar = new CurrentTrackToolbar( nullptr );
 
     addWidget( m_currentTrackToolbar );
 
-    ProgressWidget *progressWidget = new ProgressWidget( 0 );
+    ProgressWidget *progressWidget = new ProgressWidget( nullptr );
     addWidget( progressWidget );
 
 

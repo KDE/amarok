@@ -47,7 +47,7 @@ public:
     /**
      * Return set of all encoders, available or not.
      */
-    QSet<Encoder> allEncoders() const { return m_formats.uniqueKeys().toSet(); }
+    QSet<Encoder> allEncoders() const { const QList<Transcoding::Encoder> uniqkeys = m_formats.uniqueKeys(); return QSet<Encoder>(uniqkeys.begin(), uniqkeys.end()); }
 
     /**
      * Return a set of all available encoders. You can use @see format() to get all
@@ -66,7 +66,7 @@ private Q_SLOTS:
     void onAvailabilityVerified( int exitCode, QProcess::ExitStatus exitStatus );
 
 private:
-    QMap<Encoder, Format *> m_formats; // due to Format being polymorphic, we must store pointers
+    QMultiMap<Encoder, Format *> m_formats; // due to Format being polymorphic, we must store pointers
     QSet<Encoder> m_availableEncoders;
 };
 

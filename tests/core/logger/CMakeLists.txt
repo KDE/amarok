@@ -4,8 +4,9 @@ include_directories(
   ${AMAROK_UTILITY_TREE}
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
+)
 
-
+include_directories(SYSTEM
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 

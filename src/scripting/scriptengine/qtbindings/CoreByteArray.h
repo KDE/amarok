@@ -58,7 +58,6 @@ namespace QtBindings
             ByteArray &append(const char *str);
             ByteArray &append(const char *str, int len);
             ByteArray &append(char ch);
-            ByteArray &append(const QString &str);
             char at(int i) const;
             QByteArray::iterator begin();
             QByteArray::const_iterator begin() const;
@@ -90,19 +89,16 @@ namespace QtBindings
             int indexOf(const QByteArray &ba, int from = 0) const;
             int indexOf(const char *str, int from = 0) const;
             int indexOf(char ch, int from = 0) const;
-            int indexOf(const QString &str, int from = 0) const;
             ByteArray &insert(int i, const QByteArray &ba);
             ByteArray &insert(int i, int count, char ch);
             ByteArray &insert(int i, const char *str);
             ByteArray &insert(int i, const char *str, int len);
             ByteArray &insert(int i, char ch);
-            ByteArray &insert(int i, const QString &str);
             bool isEmpty() const;
             bool isNull() const;
             int lastIndexOf(const QByteArray &ba, int from = -1) const;
             int lastIndexOf(const char *str, int from = -1) const;
             int lastIndexOf(char ch, int from = -1) const;
-            int lastIndexOf(const QString &str, int from = -1) const;
             QByteArray left(int len) const;
             QByteArray leftJustified(int width, char fill = ' ', bool truncate = false) const;
             int length() const;
@@ -135,9 +131,6 @@ namespace QtBindings
             QByteArray &replace(const QByteArray &before, const char *after);
             QByteArray &replace(const char *before, const QByteArray &after);
             QByteArray &replace(char before, char after);
-            QByteArray &replace(const QString &before, const char *after);
-            QByteArray &replace(char before, const QString &after);
-            QByteArray &replace(const QString &before, const QByteArray &after);
             void reserve(int size);
             void resize(int size);
             QByteArray right(int len) const;

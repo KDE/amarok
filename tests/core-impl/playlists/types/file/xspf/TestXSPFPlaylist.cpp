@@ -92,7 +92,7 @@ void TestXSPFPlaylist::cleanupTestCase()
 
     delete m_testPlaylist1;
     delete m_tempDir;
-    delete Amarok::Components::setEngineController( 0 );
+    delete Amarok::Components::setEngineController( nullptr );
 }
 
 void TestXSPFPlaylist::testSetAndGetName()

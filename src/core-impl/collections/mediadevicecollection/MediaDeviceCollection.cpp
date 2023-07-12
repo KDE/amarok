@@ -57,7 +57,7 @@ MediaDeviceCollectionFactoryBase::init()
 
 void MediaDeviceCollectionFactoryBase::slotDeviceDetected(MediaDeviceInfo* info)
 {
-    MediaDeviceCollection* coll = 0;
+    MediaDeviceCollection* coll = nullptr;
     // If device not already connected to
     if( !m_collectionMap.contains( info->udi() ) )
     {
@@ -105,7 +105,7 @@ MediaDeviceCollectionFactoryBase::slotDeviceDisconnected( const QString &udi )
 
 MediaDeviceCollection::MediaDeviceCollection()
     : Collection()
-    , m_ejectAction( 0 )
+    , m_ejectAction( nullptr )
     , m_mc( new MemoryCollection() )
 {
     connect( this, &MediaDeviceCollection::attemptConnectionDone,
@@ -205,7 +205,7 @@ MediaDeviceCollection::createCapabilityInterface( Capabilities::Capability::Type
                 return new Capabilities::ActionsCapability( actions );
             }
         default:
-            return 0;
+            return nullptr;
     }
 }
 

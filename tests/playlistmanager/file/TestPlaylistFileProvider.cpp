@@ -30,8 +30,7 @@
 
 #include <KConfigGroup>
 
-
-QTEST_KDEMAIN( TestPlaylistFileProvider, GUI )
+QTEST_MAIN( TestPlaylistFileProvider )
 
 TestPlaylistFileProvider::TestPlaylistFileProvider()
 {}

@@ -34,8 +34,8 @@
 
 SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     : QWidget( parent )
-    , m_sw( 0 )
-    , m_filterAction( 0 )
+    , m_sw( nullptr )
+    , m_filterAction( nullptr )
     , m_timeout( 500 )
     , m_runningSearches( 0 )
 {
@@ -53,9 +53,9 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     connect( m_sw, QOverload<int>::of(&QComboBox::activated),
              this, &SearchWidget::onComboItemActivated );
     connect( m_sw, &Amarok::ComboBox::editTextChanged, this, &SearchWidget::resetFilterTimeout );
-    connect( m_sw, QOverload<>::of(&KComboBox::returnPressed),
+    connect( m_sw, QOverload<const QString&>::of(&KComboBox::returnPressed),
              this, &SearchWidget::filterNow ); // filterNow() calls addCompletion()
-             connect( m_sw, QOverload<>::of(&KComboBox::returnPressed),
+    connect( m_sw, QOverload<const QString&>::of(&KComboBox::returnPressed),
             this, &SearchWidget::returnPressed );
     connect( m_sw, &Amarok::ComboBox::downPressed, this, &SearchWidget::advanceFocus );
 
@@ -162,7 +162,7 @@ SearchWidget::showAdvancedButton( bool show )
 {
     if( show )
     {
-        if( m_filterAction != 0 )
+        if( m_filterAction != nullptr )
         {
             m_filterAction = new QAction( QIcon::fromTheme( "document-properties" ), i18n( "Edit filter" ), this );
             m_filterAction->setObjectName( "filter" );
@@ -173,7 +173,7 @@ SearchWidget::showAdvancedButton( bool show )
     else
     {
         delete m_filterAction;
-        m_filterAction = 0;
+        m_filterAction = nullptr;
     }
 }
 

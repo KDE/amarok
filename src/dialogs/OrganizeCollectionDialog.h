@@ -122,7 +122,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public QDialog
         bool m_conflict;
 
     private Q_SLOTS:
-        void slotEnableOk( const QString & currentCollectionRoot );
+        void slotEnableOk( int currentCollectionRootIndex );
 };
 
 #endif  //AMAROK_ORGANIZECOLLECTIONDIALOG_H

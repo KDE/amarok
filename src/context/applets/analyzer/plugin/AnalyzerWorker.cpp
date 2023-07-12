@@ -48,6 +48,7 @@ Analyzer::Worker::Worker()
         m_processTimer->start();
     else
         m_demoTimer->start();
+    m_lastUpdate.start();
 
     connect( m_demoTimer, &QTimer::timeout, this, &Worker::demo );
     connect( m_processTimer, &QTimer::timeout, this, &Worker::processData );

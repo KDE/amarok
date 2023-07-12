@@ -50,7 +50,7 @@ IpodCollectionLocation::prettyLocation() const
 {
     if( m_coll )
         return m_coll->prettyName();
-    // match string with IpodCopyTracksJob::slotDisplaySorryDialog()
+    // match string with IpodCopyTracksJob::slotDisplayErrorDialog()
     return i18n( "Disconnected iPod/iPad/iPhone" );
 }
 

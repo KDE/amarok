@@ -297,7 +297,9 @@ Config::read()
             m_checkedFields |= Meta::fieldForName( fieldName );
     }
 
-    m_excludedLabels = group.readEntry( "excludedLabels", QStringList() ).toSet();
+    QStringList list = group.readEntry( "excludedLabels", QStringList() );
+    QSet<QString> addEntrySet(list.begin(), list.end());
+    m_excludedLabels += addEntrySet;
 
     m_hasChanged = false;
 }

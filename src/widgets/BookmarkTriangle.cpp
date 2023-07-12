@@ -41,7 +41,7 @@ BookmarkTriangle::BookmarkTriangle (QWidget *parent, int milliseconds, const QSt
     m_name ( name ),
     m_sliderwidth ( sliderwidth ),
     m_showPopup ( showPopup ),
-    m_tooltip ( 0 )
+    m_tooltip ( nullptr )
 {
 }
 
