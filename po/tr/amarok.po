@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2023-06-16 12:10+0300\n"
+"PO-Revision-Date: 2023-07-13 23:51+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -11772,7 +11772,7 @@ msgstr "Çalan Parçaya Oy ver: 5"
 #: MainWindow.cpp:996
 #, kde-format
 msgid "Network Request Viewer"
-msgstr "Ağ İstemci İzleyicisi"
+msgstr "Ağ İsteği Görüntüleyicisi"
 
 #: MainWindow.cpp:1014
 #, kde-format
