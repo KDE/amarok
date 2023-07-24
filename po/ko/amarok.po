@@ -1,7 +1,7 @@
 # Copyright (C) YEAR This file is copyright:
 # This file is distributed under the same license as the amarok package.
 # Cho Sung Jae <cho.sungjae@gmail.com>, 2006, 2007.
-# Shinjo Park <kde@peremen.name>, 2007, 2008, 2009, 2015, 2019, 2020, 2021, 2022.
+# Shinjo Park <kde@peremen.name>, 2007, 2008, 2009, 2015, 2019, 2020, 2021, 2022, 2023.
 # Cho Sangjin <sangjin3901@chol.com>, 2007.
 # 이정희 <daemul72@gmail.com>, 2019, 2020.
 #
@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-03-13 00:47+0000\n"
-"PO-Revision-Date: 2022-05-15 22:12+0200\n"
+"PO-Revision-Date: 2023-07-23 20:22+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
 "Language: ko\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 21.12.3\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1139,7 +1139,7 @@ msgstr ""
 #: amarokconfig.kcfg:366 configdialog/dialogs/NotificationsConfig.ui:264
 #, kde-format
 msgid "Don't show when a fullscreen application is active"
-msgstr "전체 화면 프로그램이 실행 중일 때 표시하지 않음"
+msgstr "전체 화면 앱이 실행 중일 때 표시하지 않음"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
@@ -1149,8 +1149,8 @@ msgid ""
 "Do not show the On-Screen-Display if another application is focused and "
 "running in fullscreen mode."
 msgstr ""
-"현재 초점이 맞은 다른 프로그램이 전체 화면으로 실행 중일 때 OSD를 표시하지 않"
-"습니다."
+"현재 포커스가 맞은 다른 앱이 전체 화면으로 실행 중일 때 OSD를 표시하지 않습니"
+"다."
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:375
@@ -11281,9 +11281,8 @@ msgid ""
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
 "qt>"
 msgstr ""
-"<qt>주 창을 닫아도 시스템 트레이에서 Amarok이 실행됩니다. 프로그램을 끝내려"
-"면 파일 메뉴의 <B>끝내기</B> 항목 또는 시스템 트레이 아이콘을 사용하십시오.</"
-"qt>"
+"<qt>주 창을 닫아도 시스템 트레이에서 Amarok이 실행됩니다. 앱을 끝내려면 파일 "
+"메뉴의 <B>끝내기</B> 항목 또는 시스템 트레이 아이콘을 사용하십시오.</qt>"
 
 #: MainWindow.cpp:425
 #, kde-format
