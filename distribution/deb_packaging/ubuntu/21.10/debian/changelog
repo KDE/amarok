@@ -1,3 +1,9 @@
+amarok (2:2.9.71+1SNAPSHOT20230729222932+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
+
+  * New attempt to release for 22.04 jammy
+
+ -- Pedro de Carvalho Gomes <pedrogomes81@gmail.com>  Sat, 29 Jul 2023 22:29:32 +0200
+
 amarok (2:2.9.71+1SNAPSHOT20220507163311+0200-0ubuntu1ppa1~ubuntu21.10.1) impish; urgency=medium
 
   * Add support for 21.10 impish
