@@ -67,7 +67,7 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     , m_perTrack( true )
     , m_currentTrackNum( 0 )
     , m_changed( false )
-    , m_queryMaker( 0 )
+    , m_queryMaker( nullptr )
     , ui( new Ui::TagDialogBase() )
 {
     DEBUG_BLOCK
@@ -86,7 +86,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     , m_perTrack( true )
     , m_currentTrackNum( 0 )
     , m_changed( false )
-    , m_queryMaker( 0 )
+    , m_queryMaker( nullptr )
     , ui( new Ui::TagDialogBase() )
 {
     DEBUG_BLOCK
@@ -492,7 +492,7 @@ TagDialog::guessFromFilename() //SLOT
         }
         else
         {
-            debug() << "guessing tags from filename failed" << endl;
+            debug() << "guessing tags from filename failed" << Qt::endl;
         }
     }
 }
@@ -582,8 +582,8 @@ void TagDialog::initUi()
     connect( ui->removeButton,        &QAbstractButton::clicked, this, &TagDialog::removeLabelPressed );
     connect( ui->kComboBox_label,     QOverload<int>::of(&KComboBox::activated), this, &TagDialog::labelModified );
     connect( ui->kComboBox_label,     &QComboBox::editTextChanged, this, &TagDialog::labelModified );
-    connect( ui->kComboBox_label,     QOverload<>::of(&KComboBox::returnPressed), this, &TagDialog::addLabelPressed );
-    connect( ui->kComboBox_label,     QOverload<>::of(&KComboBox::returnPressed), this, &TagDialog::checkChanged );
+    connect( ui->kComboBox_label,     QOverload<const QString&>::of(&KComboBox::returnPressed), this, &TagDialog::addLabelPressed );
+    connect( ui->kComboBox_label,     QOverload<const QString&>::of(&KComboBox::returnPressed), this, &TagDialog::checkChanged );
     connect( ui->labelsList,          &QListView::pressed, this, &TagDialog::labelSelected );
 
     ui->pixmap_cover->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -900,8 +900,10 @@ TagDialog::getTagsFromUi( const QVariantMap &tags ) const
             map.insert( Meta::Field::LYRICS, ui->kRichTextEdit_lyrics->textOrHtml() );
     }
 
-    QSet<QString> uiLabels = m_labelModel->labels().toSet();
-    QSet<QString> oldLabels = tags.value( Meta::Field::LABELS ).toStringList().toSet();
+    QStringList uiLabelsList = m_labelModel->labels();
+    QSet<QString> uiLabels(uiLabelsList.begin(), uiLabelsList.end());
+    QStringList oldLabelsList = tags.value( Meta::Field::LABELS ).toStringList();
+    QSet<QString> oldLabels(oldLabelsList.begin(), oldLabelsList.end());
     if( uiLabels != oldLabels )
         map.insert( Meta::Field::LABELS, QVariant( uiLabels.values() ) );
 
@@ -1023,11 +1025,15 @@ TagDialog::getTagsFromMultipleTracks() const
         // -- figure out which tags do not match.
 
         // - occur not in every file
-        mismatchingTags |= map.keys().toSet() - tags.keys().toSet();
-        mismatchingTags |= tags.keys().toSet() - map.keys().toSet();
+        QStringList mapkeys=map.keys();
+        QStringList tagskeys=tags.keys();
+        QSet<QString> mapKeysSet(mapkeys.begin(), mapkeys.end());
+        QSet<QString> tagsKeysSet(tagskeys.begin(), tagskeys.end());
+        mismatchingTags |= mapKeysSet - tagsKeysSet;
+        mismatchingTags |= tagsKeysSet - mapKeysSet;
 
         // - not the same in every file
-        foreach( const QString &key, (map.keys().toSet() & tags.keys().toSet()) )
+        foreach( const QString &key, (mapKeysSet & tagsKeysSet) )
         {
             if( map.value( key ) != tags.value( key ) )
                 mismatchingTags.insert( key );
@@ -1161,8 +1167,10 @@ TagDialog::setTagsToTrack()
             if( newTags.contains( Meta::Field::LABELS ) )
             {
                 // determine the differences
-                QSet<QString> oldLabelsSet = oldTags.value( Meta::Field::LABELS ).toStringList().toSet();
-                QSet<QString> newLabelsSet = newTags.value( Meta::Field::LABELS ).toStringList().toSet();
+                QStringList oldTagsList = oldTags.value( Meta::Field::LABELS ).toStringList();
+                QSet<QString> oldLabelsSet(oldTagsList.begin(), oldTagsList.end());
+                QStringList newTagsList = newTags.value( Meta::Field::LABELS ).toStringList();
+                QSet<QString> newLabelsSet(newTagsList.begin(), newTagsList.end());
 
                 QSet<QString> labelsToRemove = oldLabelsSet - newLabelsSet;
                 QSet<QString> labelsToAdd = newLabelsSet - oldLabelsSet;
@@ -1170,7 +1178,8 @@ TagDialog::setTagsToTrack()
                 // apply the differences for each track
                 foreach( const Meta::TrackPtr &track, m_tracks )
                 {
-                    QSet<QString> labelsSet = m_storedTags[track].value( Meta::Field::LABELS ).toStringList().toSet();
+                    QStringList labelsList = m_storedTags[track].value( Meta::Field::LABELS ).toStringList();
+                    QSet<QString> labelsSet(labelsList.begin(), labelsList.end());
                     labelsSet += labelsToAdd;
                     labelsSet -= labelsToRemove;
 
@@ -1315,11 +1324,14 @@ TagDialog::saveTags()
                     labelMap.insert( label->name(), label );
 
                 // labels to remove
-                for( const auto &label : labelMap.keys().toSet() - labels.toSet() )
+                QStringList labelmapkeys=labelMap.keys();
+                QSet<QString> labelMapKeysSet(labelmapkeys.begin(), labelmapkeys.end());
+                QSet<QString> labelsSet(labels.begin(), labels.end());
+                for( const auto &label : labelMapKeysSet - labelsSet )
                     track->removeLabel( labelMap.value( label ) );
 
                 // labels to add
-                for( const auto &label : labels.toSet() - labelMap.keys().toSet() )
+                for( const auto &label : labelsSet - labelMapKeysSet )
                     track->addLabel( label );
 
                 Meta::TrackEditorPtr ec = track->editor();

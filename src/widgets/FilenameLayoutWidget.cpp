@@ -205,7 +205,7 @@ FilenameLayoutWidget::createToken(qint64 value) const
         { ".", "filename-dot-amarok", Dot },
         { " ", "filename-space-amarok", Space },
         { i18n( "Collection root" ), "drive-harddisk", CollectionRoot },
-        { QString(), 0, Space }
+        { QString(), nullptr, Space }
     };
 
     for( int i = 0; !tokenDefinitions[i].name.isNull(); ++i )
@@ -218,7 +218,7 @@ FilenameLayoutWidget::createToken(qint64 value) const
         }
     }
 
-    return 0;
+    return nullptr;
 }
 
 Token*
@@ -374,7 +374,7 @@ FilenameLayoutWidget::populateFormatList( const QString& custom )
     foreach( const QString &str, presets_raw )
     {
         QStringList items;
-        items = str.split( "#DELIM#", QString::SkipEmptyParts );
+        items = str.split( "#DELIM#", Qt::SkipEmptyParts );
         if( items.size() < 2 )
             continue;
         m_presetCombo->addItem( items.at( 0 ), items.at( 1 ) ); // Label, format string

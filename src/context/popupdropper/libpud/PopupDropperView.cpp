@@ -34,7 +34,7 @@ class PopupDropperViewPrivate
 public:
     PopupDropperViewPrivate( PopupDropper* pd )
         : pd( pd )
-        , lastItem( 0 )
+        , lastItem( nullptr )
         , entered( false )
         {}
 
@@ -71,7 +71,7 @@ void PopupDropperView::dragMoveEvent( QDragMoveEvent *event )
     {
         if( d->lastItem )
             d->lastItem->hoverLeft();
-        d->lastItem = 0;
+        d->lastItem = nullptr;
     }
     else if( svgitem(item) &&
             d->lastItem != dynamic_cast<PopupDropperItem*>( svgitem(item)->parentItem() ) )
@@ -123,7 +123,7 @@ void PopupDropperView::dragLeaveEvent( QDragLeaveEvent *event )
     if( d->lastItem )
     {
         d->lastItem->hoverLeft();
-        d->lastItem = 0;
+        d->lastItem = nullptr;
     }
     d->pd->d->dragLeft();
 }
@@ -164,7 +164,7 @@ void PopupDropperView::dropEvent( QDropEvent *event )
 
 void PopupDropperView::resetView()
 {
-    d->lastItem = 0;
+    d->lastItem = nullptr;
     d->entered = false;
     setAcceptDrops( true );
 }
@@ -173,7 +173,7 @@ void PopupDropperView::deactivateHover()
 {
     if( d->lastItem )
         d->lastItem->hoverLeft();
-    d->lastItem = 0;
+    d->lastItem = nullptr;
 }
 
 bool PopupDropperView::entered() const

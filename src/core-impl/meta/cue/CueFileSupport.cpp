@@ -262,7 +262,7 @@ QUrl CueFileSupport::locateCueSheet ( const QUrl &trackurl )
             QFile file ( dir.filePath ( *it ) );
             if ( file.open ( QIODevice::ReadOnly ) )
             {
-                debug() << "[CUEFILE]: " << *it << " - Opened, looking for the matching FILE stanza." << endl;
+                debug() << "[CUEFILE]: " << *it << " - Opened, looking for the matching FILE stanza." << Qt::endl;
                 QTextStream stream ( &file );
                 QString line;
 
@@ -280,7 +280,7 @@ QUrl CueFileSupport::locateCueSheet ( const QUrl &trackurl )
 
                             if ( validateCueSheet ( cueFile ) )
                             {
-                                debug() << "[CUEFILE]: " << cueFile << " - Looked inside cue files, found and loaded proper one" << endl;
+                                debug() << "[CUEFILE]: " << cueFile << " - Looked inside cue files, found and loaded proper one" << Qt::endl;
                                 foundCueFile = true;
                             }
                         }
@@ -293,7 +293,7 @@ QUrl CueFileSupport::locateCueSheet ( const QUrl &trackurl )
 
     if ( foundCueFile )
         return QUrl::fromLocalFile( cueFile );
-    debug() << "[CUEFILE]: - Didn't find any matching cue file." << endl;
+    debug() << "[CUEFILE]: - Didn't find any matching cue file." << Qt::endl;
     return QUrl();
 }
 

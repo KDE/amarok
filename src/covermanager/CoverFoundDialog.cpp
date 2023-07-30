@@ -829,7 +829,7 @@ void CoverFoundSideBar::updateMetaTable()
 
             if( !name.isEmpty() )
             {
-                QLabel *label = new QLabel( value, 0 );
+                QLabel *label = new QLabel( value, nullptr );
                 label->setToolTip( value );
                 layout->addRow( QStringLiteral("<b>%1:</b>").arg(name), label );
             }

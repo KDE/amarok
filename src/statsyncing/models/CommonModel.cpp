@@ -103,7 +103,7 @@ CommonModel::sizeHintData( qint64 field ) const
             opt.text = QLatin1String("88.88.8888 88:88");
 
             QStyle *style = QApplication::style();
-            size = style->sizeFromContents( QStyle::CT_ItemViewItem, &opt, QSize(), 0 );
+            size = style->sizeFromContents( QStyle::CT_ItemViewItem, &opt, QSize(), nullptr );
             return size;
         }
         case Meta::valPlaycount:
@@ -118,7 +118,7 @@ CommonModel::sizeHintData( qint64 field ) const
             opt.font.setBold( true );
 
             QStyle *style = QApplication::style();
-            size = style->sizeFromContents( QStyle::CT_ItemViewItem, &opt, QSize(), 0 );
+            size = style->sizeFromContents( QStyle::CT_ItemViewItem, &opt, QSize(), nullptr );
             return size;
         }
     }

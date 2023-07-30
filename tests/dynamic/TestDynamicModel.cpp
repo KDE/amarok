@@ -33,7 +33,7 @@
 
 Q_DECLARE_METATYPE(QModelIndex);
 
-QTemporaryDir *s_tmpDir = 0;   // Memory leak here now, but if it's deleted, we have a segfault
+QTemporaryDir *s_tmpDir = nullptr;   // Memory leak here now, but if it's deleted, we have a segfault
 
 // We return a special saveLocation.
 QString Amarok::saveLocation( const QString &directory )
@@ -352,6 +352,6 @@ TestDynamicModel::testRemoveActive()
     model->removeAt( model->index( model->activePlaylist() ) );
 
     QCOMPARE( model->rowCount(), 0 );
-    QCOMPARE( model->activePlaylist(), static_cast<Dynamic::DynamicPlaylist*>(0) );
+    QCOMPARE( model->activePlaylist(), static_cast<Dynamic::DynamicPlaylist*>(nullptr) );
 }
 

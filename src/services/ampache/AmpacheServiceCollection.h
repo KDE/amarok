@@ -29,7 +29,7 @@ class AmpacheTrackForUrlWorker : public Amarok::TrackForUrlWorker
                                   const QUrl &server, const QString &sessionId,
                                   ServiceBase *service);
         ~AmpacheTrackForUrlWorker() override;
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = 0) override;
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread = nullptr) override;
         void parseTrack( const QString &xml );
     Q_SIGNALS:
         void authenticationNeeded();

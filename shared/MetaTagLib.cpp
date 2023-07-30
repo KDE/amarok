@@ -39,6 +39,7 @@
 #include <QCryptographicHash>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QRandomGenerator>
 #include <QString>
 #include <QTime>
 
@@ -112,14 +113,13 @@ void
 Meta::Tag::addRandomness( QCryptographicHash *md5 )
 {
     //md5 has size of file already added for some little extra randomness for the hash
-    qsrand( QTime::currentTime().msec() );
-    md5->addData( QString::number( qrand() ).toLatin1() );
-    md5->addData( QString::number( qrand() ).toLatin1() );
-    md5->addData( QString::number( qrand() ).toLatin1() );
-    md5->addData( QString::number( qrand() ).toLatin1() );
-    md5->addData( QString::number( qrand() ).toLatin1() );
-    md5->addData( QString::number( qrand() ).toLatin1() );
-    md5->addData( QString::number( qrand() ).toLatin1() );
+    md5->addData( QString::number( QRandomGenerator::global()->generate() ).toLatin1() );
+    md5->addData( QString::number( QRandomGenerator::global()->generate() ).toLatin1() );
+    md5->addData( QString::number( QRandomGenerator::global()->generate() ).toLatin1() );
+    md5->addData( QString::number( QRandomGenerator::global()->generate() ).toLatin1() );
+    md5->addData( QString::number( QRandomGenerator::global()->generate() ).toLatin1() );
+    md5->addData( QString::number( QRandomGenerator::global()->generate() ).toLatin1() );
+    md5->addData( QString::number( QRandomGenerator::global()->generate() ).toLatin1() );
 }
 
 TagLib::ByteVector

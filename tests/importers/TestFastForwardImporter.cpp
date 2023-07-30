@@ -35,7 +35,7 @@ TestFastForwardImporter::getProvider()
     cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
                           "/importers_files/collection.db" );
 
-    return ProviderPtr( new FastForwardProvider( cfg, 0 ) );
+    return ProviderPtr( new FastForwardProvider( cfg, nullptr ) );
 }
 
 ProviderPtr
@@ -52,7 +52,7 @@ TestFastForwardImporter::getWritableProvider()
     cfg.insert( "dbDriver", "QSQLITE" );
     cfg.insert( "dbPath", dst );
 
-    return ProviderPtr( new FastForwardProvider( cfg, 0 ) );
+    return ProviderPtr( new FastForwardProvider( cfg, nullptr ) );
 }
 
 qint64
@@ -158,7 +158,7 @@ TestFastForwardImporter::providerShouldHandleNonexistentDbFile()
 {
     m_cfg.insert( "dbPath", "/Im/sure/this/wont/exist" );
 
-    FastForwardProvider provider( m_cfg, 0 );
+    FastForwardProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -167,7 +167,7 @@ TestFastForwardImporter::providerShouldHandleInvalidDbFile()
 {
     m_cfg.insert( "dbPath", QApplication::applicationFilePath() );
 
-    FastForwardProvider provider( m_cfg, 0 );
+    FastForwardProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -177,7 +177,7 @@ TestFastForwardImporter::providerShouldHandleExternalConnectionError()
     m_cfg.insert( "dbDriver", "QMYSQL" );
     m_cfg.insert( "dbHost", "I hope this isn't a valid hostname" );
 
-    FastForwardProvider provider( m_cfg, 0 );
+    FastForwardProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 
@@ -188,7 +188,7 @@ TestFastForwardImporter::providerShouldHandleErroneousConfigValues()
     m_cfg.insert( "dbName", QColor( Qt::red ) );
     m_cfg.insert( "dbPort", "nonsensePort" );
 
-    FastForwardProvider provider( m_cfg, 0 );
+    FastForwardProvider provider( m_cfg, nullptr );
     QVERIFY( provider.artists().isEmpty() );
 }
 

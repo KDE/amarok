@@ -586,7 +586,7 @@ trackForName( ProviderPtr &provider, const QString &name, const QString &artist 
         if( track->name() == name )
             return track;
 
-    return TrackPtr( 0 );
+    return TrackPtr( nullptr );
 }
 
 static Meta::FieldHash

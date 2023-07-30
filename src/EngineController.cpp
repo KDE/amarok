@@ -71,9 +71,9 @@ EngineController::instance()
 }
 
 EngineController::EngineController()
-    : m_boundedPlayback( 0 )
-    , m_multiPlayback( 0 )
-    , m_multiSource( 0 )
+    : m_boundedPlayback( nullptr )
+    , m_multiPlayback( nullptr )
+    , m_multiSource( nullptr )
     , m_playWhenFetched( true )
     , m_volume( 0 )
     , m_currentAudioCdTrack( 0 )
@@ -113,9 +113,9 @@ EngineController::~EngineController()
     }
 
     delete m_boundedPlayback;
-    m_boundedPlayback = 0;
+    m_boundedPlayback = nullptr;
     delete m_multiPlayback; // need to get a new instance of multi if played again
-    m_multiPlayback = 0;
+    m_multiPlayback = nullptr;
 
     delete m_media.data();
     delete m_audio.data();
@@ -304,7 +304,7 @@ EngineController::endSession()
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
-        Q_EMIT trackChanged( Meta::TrackPtr( 0 ) );
+        Q_EMIT trackChanged( Meta::TrackPtr( nullptr ) );
     }
     Q_EMIT sessionEnded( AmarokConfig::resumePlayback() && m_currentTrack );
 }
@@ -409,7 +409,7 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
     m_currentAudioCdTrack = 0;
     if( url.scheme() == "audiocd" )
     {
-        QStringList pathItems = url.path().split( QLatin1Char('/'), QString::KeepEmptyParts );
+        QStringList pathItems = url.path().split( QLatin1Char('/'), Qt::KeepEmptyParts );
         if( pathItems.count() != 3 )
         {
             error() << __PRETTY_FUNCTION__ << url.url() << "is not in expected format";
@@ -535,8 +535,8 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
         const qint64 length = trackLength();
         Q_EMIT trackFinishedPlaying( m_currentTrack, pos / qMax<double>( length, pos ) );
 
-        m_currentTrack = 0;
-        m_currentAlbum = 0;
+        m_currentTrack = nullptr;
+        m_currentAlbum = nullptr;
         if( !playingWillContinue )
         {
             Q_EMIT stopped( pos, length );
@@ -547,9 +547,9 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
     {
         QMutexLocker locker( &m_mutex );
         delete m_boundedPlayback;
-        m_boundedPlayback = 0;
+        m_boundedPlayback = nullptr;
         delete m_multiPlayback; // need to get a new instance of multi if played again
-        m_multiPlayback = 0;
+        m_multiPlayback = nullptr;
         m_multiSource.reset();
 
         m_nextTrack.clear();
@@ -930,8 +930,8 @@ EngineController::slotFinished()
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
-        m_currentTrack = 0;
-        m_currentAlbum = 0;
+        m_currentTrack = nullptr;
+        m_currentAlbum = nullptr;
         if( !m_nextTrack && m_nextUrl.isEmpty() ) // we will the trackChanged signal later
             Q_EMIT trackChanged( Meta::TrackPtr() );
         m_media->setCurrentSource( Phonon::MediaSource() );

@@ -127,7 +127,7 @@ MassStorageDeviceHandlerFactory::~MassStorageDeviceHandlerFactory( )
 
 DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const KSharedConfigPtr&, QSharedPointer<SqlStorage> ) const
 {
-    return 0;
+    return nullptr;
 }
 
 DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, QSharedPointer<SqlStorage> s ) const
@@ -136,19 +136,19 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
     if( !s )
     {
         debug() << "!s, returning 0";
-        return 0;
+        return nullptr;
     }
     const Solid::StorageVolume *volume = device.as<Solid::StorageVolume>();
     const Solid::StorageAccess *volumeAccess = device.as<Solid::StorageAccess>();
     if( !volume || !volumeAccess )
     {
         debug() << "Volume isn't valid, can't create a handler";
-        return 0;
+        return nullptr;
     }
     if( volumeAccess->filePath().isEmpty() )
     {
         debug() << "not mounted, can't do anything";
-        return 0; // It's not mounted, we can't do anything.
+        return nullptr; // It's not mounted, we can't do anything.
     }
     QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint "
                                          "FROM devices WHERE type = 'uuid' "
@@ -172,7 +172,7 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
         if ( id == 0 )
         {
             warning() << "Inserting into devices failed for type=uuid, uuid=" << volume->uuid();
-            return 0;
+            return nullptr;
         }
         debug() << "Created new UUID device with ID " << id << " , uuid " << volume->uuid();
         return new MassStorageDeviceHandler( id, volumeAccess->filePath(), udi );

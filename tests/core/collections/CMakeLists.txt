@@ -7,6 +7,8 @@ include_directories(
   ${AMAROK_SOURCE_TREE}/meta
   ${CMAKE_BINARY_DIR}/src
   ${AMAROK_COLLECTION_SUPPORT_DIR}
+)
+include_directories(SYSTEM
   ${GOOGLEMOCK_INCLUDE_DIR}
   )
 

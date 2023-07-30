@@ -40,7 +40,7 @@ namespace Collections
 {
     PlaydarCollectionFactory::PlaydarCollectionFactory()
         : CollectionFactory()
-        , m_controller( 0 )
+        , m_controller( nullptr )
         , m_collectionIsManaged( false )
     {
         DEBUG_BLOCK
@@ -249,7 +249,7 @@ namespace Collections
     {
         //TODO: Make this work once capabilities are set.
         Q_UNUSED( type );
-        return 0;
+        return nullptr;
     }
 
     void

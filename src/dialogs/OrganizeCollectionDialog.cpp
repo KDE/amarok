@@ -192,7 +192,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->organizeCollectionWidget->hide();
     ui->optionsWidget->hide();
 
-    connect( ui->folderCombo, QOverload<const QString&>::of(&QComboBox::currentIndexChanged),
+    connect( ui->folderCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
              this, &OrganizeCollectionDialog::slotUpdatePreview );
     connect( ui->organizeCollectionWidget, &OrganizeCollectionWidget::schemeChanged, this, &OrganizeCollectionDialog::slotUpdatePreview );
     connect( ui->optionsWidget, &OrganizeCollectionOptionWidget::optionsChanged, this, &OrganizeCollectionDialog::slotUpdatePreview);
@@ -201,10 +201,10 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     connect( this, &OrganizeCollectionDialog::accepted, ui->organizeCollectionWidget, &OrganizeCollectionWidget::onAccept );
     connect( this, &OrganizeCollectionDialog::accepted, this, &OrganizeCollectionDialog::slotDialogAccepted );
-    connect( ui->folderCombo, QOverload<const QString&>::of(&QComboBox::currentIndexChanged),
+    connect( ui->folderCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
              this, &OrganizeCollectionDialog::slotEnableOk );
 
-    slotEnableOk( ui->folderCombo->currentText() );
+    slotEnableOk( ui->folderCombo->currentIndex() );
     KWindowConfig::restoreWindowSize( windowHandle(), Amarok::config( "OrganizeCollectionDialog" ) );
 
     QTimer::singleShot( 0, this, &OrganizeCollectionDialog::slotUpdatePreview );
@@ -350,7 +350,7 @@ OrganizeCollectionDialog::previewNextBatch()
         QTableWidgetItem *item = new QTableWidgetItem( newPath );
         if( QFileInfo( m_previewPrefix + newPath ).exists() )
         {
-            item->setBackgroundColor( negativePalette.color( QPalette::Base ) );
+            item->setBackground( negativePalette.base() );
             m_conflict = true;
         }
         ui->previewTableWidget->setItem( newRow, 0, item );
@@ -403,8 +403,9 @@ OrganizeCollectionDialog::slotDialogAccepted()
 
 //The Ok button should be disabled when there's no collection root selected, and when there is no .%filetype in format string
 void
-OrganizeCollectionDialog::slotEnableOk( const QString & currentCollectionRoot )
+OrganizeCollectionDialog::slotEnableOk( int currentCollectionRootIndex )
 {
+    QString currentCollectionRoot = ui->folderCombo->itemText( currentCollectionRootIndex );
     auto okButton = findChild<QDialogButtonBox*>()->button( QDialogButtonBox::Ok );
     if( okButton )
         okButton->setEnabled( !currentCollectionRoot.isEmpty() );

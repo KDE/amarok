@@ -23,10 +23,10 @@
 #include <KLocalizedString>
 
 
-QStringList *Playlist::PlaylistColumnInfos::s_internalNames = 0;
-QStringList *Playlist::PlaylistColumnInfos::s_names = 0;
-QStringList *Playlist::PlaylistColumnInfos::s_icons = 0;
-QList<Playlist::Column> *Playlist::PlaylistColumnInfos::s_groups = 0;
+QStringList *Playlist::PlaylistColumnInfos::s_internalNames = nullptr;
+QStringList *Playlist::PlaylistColumnInfos::s_names = nullptr;
+QStringList *Playlist::PlaylistColumnInfos::s_icons = nullptr;
+QList<Playlist::Column> *Playlist::PlaylistColumnInfos::s_groups = nullptr;
 
 Playlist::PlaylistColumnInfos::PlaylistColumnInfos()
 {}

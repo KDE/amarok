@@ -70,7 +70,7 @@ private:
 
     void enableGpodderProvider( const QString &username );
 
-    Collections::Collection *collection() override { return 0; }
+    Collections::Collection *collection() override { return nullptr; }
 
     bool m_inited;
 

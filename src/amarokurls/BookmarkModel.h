@@ -84,7 +84,7 @@ public:
 
     QModelIndex createIndex( int row, int column, const BookmarkViewItemPtr &item ) const;
     //only use the above method
-    QModelIndex createIndex( int, int, void * ptr = 0 ) const
+    QModelIndex createIndex( int, int, void * ptr = nullptr ) const
     {
         Q_UNUSED( ptr );
         Q_ASSERT( 0 );

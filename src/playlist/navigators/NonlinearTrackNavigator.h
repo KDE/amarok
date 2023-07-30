@@ -79,7 +79,7 @@ namespace Playlist
              * The QSet variant currently has O(n) performance. (Nothing needs O(1).)
              */
             QList<quint64> allItemsList() { doItemListsMaintenance(); return m_allItemsList; }
-            QSet<quint64> allItemsSet() { doItemListsMaintenance(); return m_allItemsList.toSet(); }
+            QSet<quint64> allItemsSet() { doItemListsMaintenance(); QSet<quint64> r_allItemsSet(m_allItemsList.begin(), m_allItemsList.end()); return r_allItemsSet; }
 
             /**
              * Items that we've played.

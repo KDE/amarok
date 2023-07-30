@@ -72,7 +72,7 @@ void
 TestEngineController::init()
 {
     // the test depend on EngineController being used for the first time
-    QVERIFY( Amarok::Components::engineController() == 0 );
+    QVERIFY( Amarok::Components::engineController() == nullptr );
     Amarok::Components::setEngineController( new EngineController() );
 }
 
@@ -84,7 +84,7 @@ TestEngineController::cleanup()
     if( !ThreadWeaver::Queue::instance()->isIdle() )
         QVERIFY2( spy.wait( 5000 ), "threads did not finish in timeout" );
 
-    delete Amarok::Components::setEngineController( 0 );
+    delete Amarok::Components::setEngineController( nullptr );
 }
 
 void

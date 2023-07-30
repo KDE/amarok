@@ -54,12 +54,12 @@
 
 FileView::FileView( QWidget *parent )
     : Amarok::PrettyTreeView( parent )
-    , m_appendAction( 0 )
-    , m_loadAction( 0 )
-    , m_editAction( 0 )
-    , m_moveToTrashAction( 0 )
-    , m_deleteAction( 0 )
-    , m_pd( 0 )
+    , m_appendAction( nullptr )
+    , m_loadAction( nullptr )
+    , m_editAction( nullptr )
+    , m_moveToTrashAction( nullptr )
+    , m_deleteAction( nullptr )
+    , m_pd( nullptr )
     , m_ongoingDrag( false )
 {
     setFrameStyle( QFrame::NoFrame );
@@ -164,7 +164,7 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
     if( state() == QAbstractItemView::NoState &&
         event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
-        style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) &&
+        style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, nullptr, this ) &&
         ( file.isDir() || file.isNull() ) )
     {
         Q_EMIT navigateToDirectory( index );

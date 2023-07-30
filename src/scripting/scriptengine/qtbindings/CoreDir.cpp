@@ -327,11 +327,6 @@ QString Dir::toNativeSeparators(const QString &pathName)
     return QDir::toNativeSeparators(pathName);
 }
 
-void Dir::addResourceSearchPath(const QString &path)
-{
-    QDir::addResourceSearchPath(path);
-}
-
 void Dir::addSearchPath(const QString &prefix, const QString &path)
 {
     QDir::addSearchPath(prefix,path);

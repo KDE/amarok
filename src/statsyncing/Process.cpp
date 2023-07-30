@@ -42,7 +42,7 @@ Process::Process( const ProviderPtrList &providers, const ProviderPtrSet &preSel
     , m_mode( mode )
     , m_providersModel( new ProvidersModel( providers, preSelectedProviders, this ) )
     , m_checkedFields( checkedFields )
-    , m_matchedTracksModel( 0 )
+    , m_matchedTracksModel( nullptr )
     , m_dialog( new QDialog() )
 {
     m_dialog->setWindowTitle( i18n( "Synchronize Statistics" ) );

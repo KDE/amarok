@@ -61,7 +61,7 @@ APG::Preset::createNew()
 
 APG::Preset::Preset( const QString& title, QDomElement& xmlelem )
         : m_title( title )
-        , m_constraintTreeRoot( 0 )
+        , m_constraintTreeRoot( nullptr )
 {
 
     if ( xmlelem.hasAttribute( QStringLiteral("title") ) ) {
@@ -73,7 +73,7 @@ APG::Preset::Preset( const QString& title, QDomElement& xmlelem )
         QDomElement childXmlElem = xmlelem.childNodes().item( i ).toElement();
         if ( !childXmlElem.isNull() ) {
             if ( childXmlElem.tagName() == QLatin1String("constrainttree") ) {
-                m_constraintTreeRoot = ConstraintFactory::instance()->createGroup( childXmlElem, 0 );
+                m_constraintTreeRoot = ConstraintFactory::instance()->createGroup( childXmlElem, nullptr );
             } else {
                 error() << "unknown child: " << childXmlElem.nodeName();
             }
@@ -81,7 +81,7 @@ APG::Preset::Preset( const QString& title, QDomElement& xmlelem )
     }
 
     if ( !m_constraintTreeRoot ) {
-        m_constraintTreeRoot = ConstraintFactory::instance()->createGroup( 0 );
+        m_constraintTreeRoot = ConstraintFactory::instance()->createGroup( nullptr );
     }
 }
 
@@ -89,7 +89,7 @@ APG::Preset::Preset( const QString& title )
     : m_title( title )
 {
 
-    m_constraintTreeRoot = ConstraintFactory::instance()->createGroup( 0 );
+    m_constraintTreeRoot = ConstraintFactory::instance()->createGroup( nullptr );
 }
 
 APG::Preset::~Preset()

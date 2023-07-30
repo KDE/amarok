@@ -243,7 +243,7 @@ Playlist::NonlinearTrackNavigator::nextItemChooseDonorList()
             debug() << "planOne() didn't plan a next item.";
     }
 
-    return 0;
+    return nullptr;
 }
 
 quint64

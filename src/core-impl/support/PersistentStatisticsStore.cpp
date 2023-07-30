@@ -130,7 +130,7 @@ void
 PersistentStatisticsStore::entityDestroyed()
 {
     QWriteLocker locker( &m_lock );
-    m_track = 0; // prevent stale pointer
+    m_track = nullptr; // prevent stale pointer
 }
 
 void

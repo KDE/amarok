@@ -44,14 +44,14 @@ using namespace IpodMeta;
 gpointer AmarokItdbUserDataDuplicateFunc( gpointer userdata )
 {
     Q_UNUSED( userdata )
-    return 0; // we never copy our userdata
+    return nullptr; // we never copy our userdata
 }
 
 Track::Track( Itdb_Track *ipodTrack )
     : m_track( ipodTrack )
     , m_batch( 0 )
 {
-    Q_ASSERT( m_track != 0 );
+    Q_ASSERT( m_track != nullptr );
     m_track->usertype = m_gpodTrackUserTypeAmarokTrackPtr;
     m_track->userdata = this;
     m_track->userdata_duplicate = AmarokItdbUserDataDuplicateFunc;
@@ -61,7 +61,7 @@ Track::Track( const Meta::TrackPtr &origTrack )
     : m_track( itdb_track_new() )
     , m_batch( 0 )
 {
-    Q_ASSERT( m_track != 0 );
+    Q_ASSERT( m_track != nullptr );
     m_track->usertype = m_gpodTrackUserTypeAmarokTrackPtr;
     m_track->userdata = this;
     m_track->userdata_duplicate = AmarokItdbUserDataDuplicateFunc;
@@ -630,7 +630,7 @@ Track::collection() const
 Meta::TrackEditorPtr
 Track::editor()
 {
-    return Meta::TrackEditorPtr( isEditable() ? this : 0 );
+    return Meta::TrackEditorPtr( isEditable() ? this : nullptr );
 }
 
 Meta::StatisticsPtr
@@ -660,14 +660,14 @@ Track::itdbTrack() const
 bool
 Track::finalizeCopying( const gchar *mountPoint, const gchar *filePath )
 {
-    GError *error = 0;
+    GError *error = nullptr;
     // we cannot use m_mountPoint, we are not yet in collection
     Itdb_Track *res = itdb_cp_finalize( m_track, mountPoint, filePath, &error );
     if( error )
     {
         warning() << "Failed to finalize copying of iPod track:" << error->message;
         g_error_free( error );
-        error = 0;
+        error = nullptr;
     }
     return res == m_track;
 }
@@ -733,9 +733,9 @@ Track::commitIfInNonBatchUpdate()
     // it would only be confusing to the user as the changes would get discarded.
     if( !m_coll || !m_coll->isWritable() )
         return;
-
+    const QList<long long int> changedfieldkeys=m_changedFields.keys();
     if( AmarokConfig::writeBackStatistics() ||
-        !(QSet<qint64>::fromList( m_changedFields.keys() ) - statFields).isEmpty() )
+        !(QSet<qint64>( changedfieldkeys.begin(), changedfieldkeys.end() ) - statFields).isEmpty() )
     {
         setModifyDate( QDateTime::currentDateTime() );
     }

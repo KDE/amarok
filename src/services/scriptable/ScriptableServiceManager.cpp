@@ -154,7 +154,7 @@ ScriptableService * ScriptableServiceManager::service(const QString &name)
 {
     
     if ( !m_serviceMap.contains( name ) ) {
-        return 0;
+        return nullptr;
     }
 
     return m_serviceMap[name];

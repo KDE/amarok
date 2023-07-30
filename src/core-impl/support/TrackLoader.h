@@ -69,7 +69,7 @@ class AMAROK_EXPORT TrackLoader : public QObject, public Playlists::PlaylistObse
          * @param timeout if FullMetadataRequired is in flags, this is the timeout in
          * milliseconds for waiting on track to resolve. Ignored otherwise.
          */
-        explicit TrackLoader( Flags flags = 0, int timeout = 2000 );
+        explicit TrackLoader( Flags flags = {}, int timeout = 2000 );
         ~TrackLoader() override;
 
         /**

@@ -38,7 +38,7 @@ SqlWriteLabelCapability::setLabels( const QStringList &removedLabels, const QStr
 
     if( !m_storage )
     {
-        debug() << "Could not get SqlStorage, aborting" << endl;
+        debug() << "Could not get SqlStorage, aborting" << Qt::endl;
         return;
     }
 

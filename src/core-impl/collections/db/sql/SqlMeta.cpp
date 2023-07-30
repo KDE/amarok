@@ -981,7 +981,7 @@ SqlTrack::commitIfInNonBatchUpdate()
     }
 
     // --- add to the registry dirty list
-    SqlRegistry *registry = 0;
+    SqlRegistry *registry = nullptr;
     // prevent writing to the db when we don't know the directory, bug 322474. Note that
     // m_urlId is created by registry->commitDirtyTracks() if there is none.
     if( m_deviceId != 0 && m_directoryId > 0 )
@@ -1208,7 +1208,7 @@ SqlTrack::createCapabilityInterface( Capabilities::Capability::Type type )
     case Capabilities::Capability::Organisable:
         return new Capabilities::OrganiseCapabilityImpl( this );
     case Capabilities::Capability::BookmarkThis:
-        return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
+        return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( nullptr ) );
     case Capabilities::Capability::WriteTimecode:
         return new Capabilities::TimecodeWriteCapabilityImpl( this );
     case Capabilities::Capability::LoadTimecode:
@@ -1338,7 +1338,7 @@ SqlTrack::labels() const
 TrackEditorPtr
 SqlTrack::editor()
 {
-    return TrackEditorPtr( isEditable() ? this : 0 );
+    return TrackEditorPtr( isEditable() ? this : nullptr );
 }
 
 StatisticsPtr
@@ -1368,11 +1368,11 @@ SqlTrack::remove()
     INVALIDATE_AND_UPDATE(static_cast<Meta::SqlGenre*>(m_genre.data()));
     INVALIDATE_AND_UPDATE(static_cast<Meta::SqlYear*>(m_year.data()));
 #undef INVALIDATE_AND_UPDATE
-    m_artist = 0;
-    m_album = 0;
-    m_composer = 0;
-    m_genre = 0;
-    m_year = 0;
+    m_artist = nullptr;
+    m_album = nullptr;
+    m_composer = nullptr;
+    m_genre = nullptr;
+    m_year = nullptr;
 
     m_urlId = 0;
     m_trackId = 0;
@@ -1449,7 +1449,7 @@ SqlArtist::createCapabilityInterface( Capabilities::Capability::Type type )
     switch( type )
     {
     case Capabilities::Capability::BookmarkThis:
-        return new Capabilities::BookmarkThisCapability( new BookmarkArtistAction( 0, Meta::ArtistPtr( this ) ) );
+        return new Capabilities::BookmarkThisCapability( new BookmarkArtistAction( nullptr, Meta::ArtistPtr( this ) ) );
     default:
         return Artist::createCapabilityInterface( type );
     }
@@ -2072,14 +2072,14 @@ Capabilities::Capability*
 SqlAlbum::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( m_name.isEmpty() )
-        return 0;
+        return nullptr;
 
     switch( type )
     {
     case Capabilities::Capability::Actions:
         return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
     case Capabilities::Capability::BookmarkThis:
-        return new Capabilities::BookmarkThisCapability( new BookmarkAlbumAction( 0, Meta::AlbumPtr( this ) ) );
+        return new Capabilities::BookmarkThisCapability( new BookmarkAlbumAction( nullptr, Meta::AlbumPtr( this ) ) );
     default:
         return Album::createCapabilityInterface( type );
     }

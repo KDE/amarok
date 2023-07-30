@@ -104,7 +104,7 @@ CreateProviderDialog::buttonInsertPosition( const QString &prettyName )
         const QRadioButton * const button =
                 dynamic_cast<const QRadioButton*>( m_layout->itemAt( i )->widget() );
 
-        if( button != 0 && prettyName.localeAwareCompare( button->text() ) <= 0 )
+        if( button != nullptr && prettyName.localeAwareCompare( button->text() ) <= 0 )
             return i;
     }
 

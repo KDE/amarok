@@ -8,7 +8,7 @@ include_directories(
 )
 
 if( LIBLASTFM_FOUND )
-    include_directories(
+    include_directories(SYSTEM
         ${LIBLASTFM_INCLUDE_DIR}
     )
 endif()
@@ -28,7 +28,7 @@ target_link_libraries(ampache_account_login
     
     KF5::KIOCore
 )
-install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS ampache_account_login DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### next target ###############
 

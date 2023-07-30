@@ -249,12 +249,12 @@ ServiceBase::itemSelected( CollectionTreeItem * item )
 {
 
     Meta::DataPtr ptr = item->data();
-    if ( ( ptr.data() == 0 ) || ( m_infoParser == 0 )) return; 
+    if ( ( ptr.data() == nullptr ) || ( m_infoParser == nullptr )) return; 
 
     debug() << "selected item: " << ptr->name();
 
     ServiceDisplayInfoProvider * infoProvider = dynamic_cast<ServiceDisplayInfoProvider *>( ptr.data() );
-    if (infoProvider == 0 ) return; 
+    if (infoProvider == nullptr ) return; 
 
     infoProvider->processInfoOf( m_infoParser );
 }

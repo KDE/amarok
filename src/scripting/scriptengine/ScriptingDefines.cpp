@@ -20,6 +20,7 @@
 
 #include <QMetaEnum>
 #include <QQmlEngine>
+#include <QRandomGenerator>
 #include <QTimer>
 
 using namespace AmarokScript;
@@ -41,7 +42,7 @@ AmarokScriptEngine::AmarokScriptEngine( QObject *parent )
 void
 AmarokScriptEngine::setDeprecatedProperty( const QString &parent, const QString &name, const QJSValue &property )
 {
-    const QString objName = QStringLiteral( "%1%2" ).arg( name, QString::number( qrand() ) );
+    const QString objName = QStringLiteral( "%1%2" ).arg( name, QString::number( QRandomGenerator::global()->generate() ) );
     globalObject().property( internalObject ).setProperty( objName, property );
     const QString command = QString( "Object.defineProperty( %1, \"%2\", {get : function(){ var iobj= %3; iobj.invokableDeprecatedCall(\""
                                                                             " %1.%2 \"); return iobj.%4; },\

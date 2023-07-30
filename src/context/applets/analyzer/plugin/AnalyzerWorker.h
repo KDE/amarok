@@ -25,6 +25,7 @@
 
 #include <phonon/audiodataoutput.h>
 
+#include <QElapsedTimer>
 #include <QMutex>
 #include <QObject>
 #include <QElapsedTimer>

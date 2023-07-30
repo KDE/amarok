@@ -88,5 +88,28 @@ AmarokQml.Applet {
                 AlbumsEngine.showContextMenu(selectionModel.selectedIndexes, index);
             }
         }
+
+        Component.onCompleted: {
+            __mouseArea.pressAndHoldInterval=200;
+        }
+
+        Item {
+            id: dragItem
+            width: 1; height: 1
+            Drag.hotSpot.x: 1
+            Drag.hotSpot.y: 1
+            Drag.supportedActions: Qt.CopyAction
+            function updateMimedata() {
+                Drag.mimeData={"text/plain": AlbumsEngine.getSelectedUrlList(selectionModel.selectedIndexes),
+                               "text/uri-list": AlbumsEngine.getSelectedUrlList(selectionModel.selectedIndexes)}
+            }
+
+            Drag.dragType: Drag.Automatic
+        }
+
+        onPressAndHold: function() {
+            dragItem.updateMimedata();
+            dragItem.Drag.active=true;
+        }
     }
 }

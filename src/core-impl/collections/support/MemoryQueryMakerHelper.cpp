@@ -24,7 +24,7 @@
 #include <QStack>
 #include <QtAlgorithms>
 
-#include <KRandomSequence>
+//#include <QRandomGenerator>
 #include <KSortableList>
 
 using namespace Collections;

@@ -57,7 +57,7 @@ SimilarArtistsEngine::sourceRequestEvent( const QString &name )
         return false;
 
     bool force( false );
-    QStringList tokens = name.split( QLatin1Char(':'), QString::SkipEmptyParts );
+    QStringList tokens = name.split( QLatin1Char(':'), Qt::SkipEmptyParts );
     if( tokens.contains( QLatin1String("forceUpdate") ) )
         force = true;
 

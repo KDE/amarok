@@ -43,7 +43,7 @@ namespace Collections
         e.g. converts "today" to the current date.
 
     */
-    QDateTime semanticDateTimeParser( const QString &text, bool *absolute = 0 );
+    QDateTime semanticDateTimeParser( const QString &text, bool *absolute = nullptr );
 
 }
 

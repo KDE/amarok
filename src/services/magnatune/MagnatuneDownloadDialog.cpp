@@ -23,7 +23,7 @@
 #include <KIOWidgets/KUrlRequester>
 
 
-MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, Qt::WindowFlags fl )
+MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, Qt::WindowFlags fl  )
     : QDialog( parent, fl )
 {
     setupUi(this);

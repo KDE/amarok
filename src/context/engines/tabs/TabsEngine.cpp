@@ -126,7 +126,7 @@ TabsEngine::sourceRequestEvent( const QString &name )
     removeAllData( name );
     setData( name, QVariant() );
 
-    QStringList tokens = name.split( QLatin1Char(':'), QString::SkipEmptyParts );
+    QStringList tokens = name.split( QLatin1Char(':'), Qt::SkipEmptyParts );
     if( tokens.contains( QLatin1String( "forceUpdate" ) ) )
     {
         // data coming from the applet configuration dialog

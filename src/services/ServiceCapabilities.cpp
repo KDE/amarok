@@ -19,7 +19,7 @@
 
 
 ServiceBookmarkThisCapability::ServiceBookmarkThisCapability( BookmarkThisProvider * provider )
-    : Capabilities::BookmarkThisCapability(0)
+    : Capabilities::BookmarkThisCapability(nullptr)
     , m_provider( provider )
 {
 }

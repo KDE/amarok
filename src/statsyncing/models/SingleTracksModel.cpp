@@ -91,7 +91,7 @@ SingleTracksModel::mimeData( const QModelIndexList &indexes ) const
         }
     }
     if( tracks.isEmpty() )
-        return 0;
+        return nullptr;
 
     AmarokMimeData *mime = new AmarokMimeData();
     mime->setTracks( tracks );

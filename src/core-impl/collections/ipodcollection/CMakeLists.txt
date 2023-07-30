@@ -7,10 +7,11 @@ if(IPOD_FOUND AND WITH_IPOD)
 
   include_directories(
     ${CMAKE_BINARY_DIR}/src
-
+  )
     
     
 
+  include_directories(SYSTEM
     ${GLIB2_INCLUDE_DIR}
     ${GDKPIXBUF_INCLUDE_DIR}
     ${GOBJECT_INCLUDE_DIR}

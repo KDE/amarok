@@ -135,7 +135,7 @@ CollectionPrototype::queryAndRemoveTracks( QueryMaker* queryMaker )
 QueryMaker*
 CollectionPrototype::queryMaker()
 {
-    GET_COLLECTION( 0 );
+    GET_COLLECTION( nullptr );
     return collection->queryMaker();
 }
 

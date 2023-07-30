@@ -4,6 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <name>Amarok</name>
   <name xml:lang="ar">أماروك</name>
+  <name xml:lang="bg">Amarok</name>
   <name xml:lang="bs">Amarok</name>
   <name xml:lang="ca">Amarok</name>
   <name xml:lang="ca-valencia">Amarok</name>
@@ -12,6 +13,7 @@
   <name xml:lang="de">Amarok</name>
   <name xml:lang="el">Amarok</name>
   <name xml:lang="en-GB">Amarok</name>
+  <name xml:lang="eo">Amarok</name>
   <name xml:lang="es">Amarok</name>
   <name xml:lang="et">Amarok</name>
   <name xml:lang="eu">Amarok</name>
@@ -22,6 +24,7 @@
   <name xml:lang="ia">Amarok</name>
   <name xml:lang="id">Amarok</name>
   <name xml:lang="it">Amarok</name>
+  <name xml:lang="ka">Amarok</name>
   <name xml:lang="ko">Amarok</name>
   <name xml:lang="nl">Amarok</name>
   <name xml:lang="pa">ਅਮਰੋਕ</name>
@@ -42,6 +45,7 @@
   <name xml:lang="zh-CN">Amarok</name>
   <name xml:lang="zh-TW">Amarok</name>
   <summary>A powerful music player that lets you rediscover your music</summary>
+  <summary xml:lang="bg">Мощен музикален плейър, който ви позволява да преоткриете музиката си</summary>
   <summary xml:lang="ca">Un reproductor de música potent que permet redescobrir la vostra música</summary>
   <summary xml:lang="ca-valencia">Un reproductor de música potent que permet redescobrir la vostra música</summary>
   <summary xml:lang="cs">Mocný přehrávač hudby, který vás nechá prohledávat skladby</summary>
@@ -49,18 +53,22 @@
   <summary xml:lang="de">Ein leistungsstarke Anwendung zur Musikwiedergabe, mit der Sie Ihre Musik neu entdecken können</summary>
   <summary xml:lang="el">Ένα ισχυρό πρόγραμμα αναπαραγωγής για να ανακαλύψετε ξανά τη μουσική σας</summary>
   <summary xml:lang="en-GB">A powerful music player that lets you rediscover your music</summary>
+  <summary xml:lang="eo">Potenca muzikludilo, kiu ebligas vin retrovi vian muzikon</summary>
   <summary xml:lang="es">Un potente reproductor para volver a descubrir su música</summary>
   <summary xml:lang="eu">Zure musika berriz aurkitzeko aukera ematen dizun musika jotzaile ahaltsua</summary>
   <summary xml:lang="fi">Tehokas musiikkisoitin, jolla löydät musiikin uudestaan</summary>
   <summary xml:lang="fr">Un puissant lecteur de musique vous permettant de redécouvrir votre musique.</summary>
+  <summary xml:lang="gl">Un potente reprodutor co que redescubrir a súa música.</summary>
   <summary xml:lang="hu">Egy sokoldalú zenelejátszó, amely újra felfedezteti Önnel a zenéit</summary>
   <summary xml:lang="id">Sebuah pemutar musik yang afdal yang memungkinkanmu menemukan musik kesukaanmu</summary>
   <summary xml:lang="it">Un potente lettore musicale che ti permette di riscoprire la tua musica</summary>
+  <summary xml:lang="ka">მძლავრი მუსკის დამკვრელი, რომელიც თქვენს მუსიკას თავიდან აღმოგაჩენინებთ</summary>
   <summary xml:lang="ko">음악을 다시 발견할 수 있는 강력한 음악 재생기입니다</summary>
   <summary xml:lang="nl">Een krachtige muziekspeler die u uw muziek laat ontdekken</summary>
   <summary xml:lang="pl">Rozbudowany odtwarzacz muzyki, który umożliwi ci jej odkrywanie</summary>
   <summary xml:lang="pt">Um leitor de música poderoso que lhe permite redescobrir a sua música</summary>
   <summary xml:lang="pt-BR">Um reprodutor de músicas poderoso que permite a você redescobrir sua música</summary>
+  <summary xml:lang="sk">Výkonný hudobný prehrávač, ktorý vám umožní znovu objaviť vašu hudbu</summary>
   <summary xml:lang="sl">Zmogljiv predvajalnik glasbe, ki vam omogoča ponovno odkrivanje glasbe</summary>
   <summary xml:lang="sv">En kraftfull musikspelare som låter dig upptäcka din musik igen</summary>
   <summary xml:lang="tr">Müziği yeniden keşfetmenize olanak veren güçlü bir müzik çalar</summary>
@@ -69,6 +77,7 @@
   <summary xml:lang="zh-CN">一款强大到让您重新感悟音乐之美的播放器</summary>
   <description>
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
+    <p xml:lang="bg">Amarok е безплатен, междуплатформен, универсален, мощен и богат на функции музикален плейър и мениджър на колекции.</p>
     <p xml:lang="ca">L'Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
     <p xml:lang="ca-valencia">Amarok és un reproductor de música i gestor de col·leccions lliure, multiplataforma, versàtil, potent i ric en característiques.</p>
     <p xml:lang="cs">Amarok je svobodný, multiplatformní, univerzální, mocný přehrávač hudby a správce sbírek se spoustou funkcí.</p>
@@ -76,6 +85,7 @@
     <p xml:lang="de">Amarok ist eine freie, plattformübergreifende und vielfältige Anwendung zur Musikwiedergabe und Verwaltung Ihrer Musiksammlung mit vielen Funktionen.</p>
     <p xml:lang="el">Το Amarok είναι ένας ελεύθερο, πολλαπλών πλατφορμών και χρήσεων, πανίσχυρο και πλούσιο σε χαρακτηριστικά πρόγραμμα αναπαραγωγής μουσικής και διαχειριστής συλλογών.</p>
     <p xml:lang="en-GB">Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
+    <p xml:lang="eo">Amarok estas libera, plurplatforma, diverstalenta, potenca kaj riĉa muzikludanto kaj kolektomanaĝero.</p>
     <p xml:lang="es">Amarok es un potente, versátil, libre y multiplataforma reproductor de música y gestor de colecciones que dispone de gran cantidad de funciones.</p>
     <p xml:lang="et">Amarok on vaba platvormiülene töökindel, võimas ja võimalusterohke muusikamängija ja muusikakogu haldaja.</p>
     <p xml:lang="eu">Amarok musika jotzaile eta bilduma kudeatzaile askea, plataforma-anitza, erabilera askokoa, ahaltsua eta eginbidetan aberatsa da.</p>
@@ -86,11 +96,13 @@
     <p xml:lang="ia">Amarok es un libere, versatile e potente reproductor musical</p>
     <p xml:lang="id">Amarok adalah pemutar musik dan pengelola koleksi yang bebas, lintas platform, serbaguna, hebat, dan kaya fitur.</p>
     <p xml:lang="it">Amarok è un lettore musicale e gestore delle raccolte libero, versatile, potente e ricco di funzionalità</p>
+    <p xml:lang="ka">Amarok-ი უფასო, პლატფორმათაშორისი, მოქნილი, მძლავრი და მრავალი ფუნქციის მქონე მუსიკის დამკვრელი და კოლექციების მმართველია.</p>
     <p xml:lang="ko">Amarok은 강력한 크로스 플랫폼 자유 소프트웨어 음악 재생기 및 모음집 관리 도구입니다.</p>
     <p xml:lang="nl">Amarok is een vrije muziekspeler en beheerder van een verzameling, cross-platform, veelzijdig, krachtig en rijk aan functies.</p>
     <p xml:lang="pl">Amarok jest darmowym, wieloplatformowym, wszechstronnym i zaawansowanym odtwarzaczem muzyki i programem do zarządzania nią.</p>
     <p xml:lang="pt">O Amarok é um leitor multimédia e gestor de colecções gratuito, multi-plataforma, versátil, poderoso e rico em funcionalidades.</p>
     <p xml:lang="pt-BR">Amarok é um reprodutor de músicas e gerenciador de coleção livre, multiplataforma, versátil, poderoso e rico em recursos.</p>
+    <p xml:lang="sk">Amarok je bezplatný, multiplatformový, všestranný, výkonný a funkčne bohatý prehrávač hudby a správca hudobných zbierok.</p>
     <p xml:lang="sl">Amarok je prost program, dostopen na več platformah, vsestranski, močan in s funkcijami nabil predvajalnik glasbe in upravljalnik glasbene zbirke.</p>
     <p xml:lang="sv">Amarok är en fri, mångsidig, kraftfull och funktionsrik musikspelare och samlingshanterare för flera plattformar.</p>
     <p xml:lang="tr">Amarok; ücretsiz, çapraz platformlu, çok amaçlı, güçlü ve çok özellikli bir müzik çalar ve koleksiyon yöneticisidir.</p>
@@ -100,6 +112,7 @@
     <p xml:lang="zh-TW">Amarok 是款自由、跨平台、多功能且強大的音樂播放和收藏管理器。</p>
     <p>Features:</p>
     <p xml:lang="ar">الميزات:</p>
+    <p xml:lang="bg">Възможности:</p>
     <p xml:lang="bs">Svojstva:</p>
     <p xml:lang="ca">Característiques:</p>
     <p xml:lang="ca-valencia">Característiques:</p>
@@ -108,6 +121,7 @@
     <p xml:lang="de">Funktionen:</p>
     <p xml:lang="el">Χαρακτηριστικά:</p>
     <p xml:lang="en-GB">Features:</p>
+    <p xml:lang="eo">Trajtoj:</p>
     <p xml:lang="es">Funciones:</p>
     <p xml:lang="et">Omadused:</p>
     <p xml:lang="eu">Eginbideak:</p>
@@ -118,6 +132,7 @@
     <p xml:lang="ia">Characteristicas:</p>
     <p xml:lang="id">Fitur:</p>
     <p xml:lang="it">Funzionalità:</p>
+    <p xml:lang="ka">თვისებები:</p>
     <p xml:lang="ko">기능:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
     <p xml:lang="pa">ਲੱਛਣ:</p>
@@ -140,6 +155,7 @@
     <ul>
       <li>Dynamic playlists matching different criteria</li>
       <li xml:lang="ar">قوائم تشغيل حركيّة تطابق معايير مختلفة</li>
+      <li xml:lang="bg">Динамични списъци за възпроизвеждане, отговарящи на различни критерии</li>
       <li xml:lang="bs">Dinamičke muzičke liste odgovaraju različitim kriterijima</li>
       <li xml:lang="ca">Llistes de reproducció dinàmiques coincidint amb diferents criteris</li>
       <li xml:lang="ca-valencia">Llistes de reproducció dinàmiques coincidint amb diferents criteris</li>
@@ -148,6 +164,7 @@
       <li xml:lang="de">Dynamische Wiedergabelisten nach verschiedenen Kriterien</li>
       <li xml:lang="el">Δυναμικές λίστες αναπαραγωγής που ανταποκρίνονται σε διαφορετικά κριτήρια</li>
       <li xml:lang="en-GB">Dynamic playlists matching different criteria</li>
+      <li xml:lang="eo">Dinamikaj ludlistoj kongruaj kun malsamaj kriterioj</li>
       <li xml:lang="es">Listas de reproducción dinámicas según distintos criterios</li>
       <li xml:lang="et">Dünaamilised esitusloendid vastavalt mitmesugustele kriteeriumidele</li>
       <li xml:lang="eu">Irizpide ezberdinak uztartzen dituen jotze-zerrenda dinamikoa</li>
@@ -157,6 +174,7 @@
       <li xml:lang="hu">Különböző feltételeknek megfelelő dinamikus lejátszólisták</li>
       <li xml:lang="id">Playlist dinamis menyesuaikan kriteria yang berbeda</li>
       <li xml:lang="it">Scalette dinamiche che verificano diversi criteri</li>
+      <li xml:lang="ka">დინამიკური დასაკრავი სიები სხვადასხვა პირობებით</li>
       <li xml:lang="ko">조건에 따른 동적 재생 목록</li>
       <li xml:lang="nl">Dynamische afspeellijsten die voldoen aan verschillende criteria</li>
       <li xml:lang="pl">Dynamiczne listy odtwarzania spełniające różne warunki</li>
@@ -175,14 +193,16 @@
       <li xml:lang="zh-CN">可匹配不同条件的动态播放列表</li>
       <li>Collection managing with rating support</li>
       <li xml:lang="ar">إدارة التّجميعات مع دعم التّقييم</li>
+      <li xml:lang="bg">Управление на колекции с поддръжка на рейтинги</li>
       <li xml:lang="bs">Kolekcija upravljanja sa podrškom procjene</li>
       <li xml:lang="ca">Gestió de les col·leccions permetent qualificacions</li>
-      <li xml:lang="ca-valencia">Gestió de les col·leccions permetent qualificacions</li>
+      <li xml:lang="ca-valencia">Gestioneu les col·leccions permetent qualificacions</li>
       <li xml:lang="cs">Správa sbírek s podporou hodnocení</li>
       <li xml:lang="da">Samlingshåndtering med understøttelse af vurderinger</li>
       <li xml:lang="de">Verwaltung von Sammlungen wit Unterstützung durch Bewertungen</li>
       <li xml:lang="el">Διαχείριση συλλογών με υποστήριξη αξιολόγησης</li>
       <li xml:lang="en-GB">Collection managing with rating support</li>
+      <li xml:lang="eo">Kolekto-administrado kun taksa subteno</li>
       <li xml:lang="es">Gestión de colección con uso de puntuaciones</li>
       <li xml:lang="et">Kogude haldamine, mis pakub ka hindamise võimalust</li>
       <li xml:lang="eu">Bilduma kudeaketa balorazioak onartzen dituelarik</li>
@@ -192,6 +212,7 @@
       <li xml:lang="hu">Gyűjteménykezelés értékelésekkel</li>
       <li xml:lang="id">Mengelola koleksi dengan dukungan peringkat</li>
       <li xml:lang="it">Gestione della collezione con supporto per la valutazione</li>
+      <li xml:lang="ka">კოლექციის მართვა შეფასების მხარდაჭერით</li>
       <li xml:lang="ko">별점 기능이 있는 모음집 관리</li>
       <li xml:lang="nl">Beheer van verzamelingen met ondersteuning van waardering</li>
       <li xml:lang="pl">Zarządzanie zbiorem wraz z obsługą ocen</li>
@@ -211,6 +232,7 @@
       <li xml:lang="zh-TW">支援評分的收藏管理工具</li>
       <li>Support for basic iPod, MTP and UMS music player devices</li>
       <li xml:lang="ar">دعم أجهة مشغّلات الوسائط iPod، وMTP وUMS الأساسيّة</li>
+      <li xml:lang="bg">Поддръжка на основни устройства за възпроизвеждане на музика iPod, MTP и UMS</li>
       <li xml:lang="bs">Podrška za osnovne iPod, MTP i UMS muzičke player uređaje</li>
       <li xml:lang="ca">Admet els dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
       <li xml:lang="ca-valencia">Admet els dispositius de reproducció de música bàsics com iPod, MTP i UMS</li>
@@ -219,6 +241,7 @@
       <li xml:lang="de">Unterstützung für Wiedergabegeräte wie iPod, MTP und UMS</li>
       <li xml:lang="el">Υποστήριξη για τις βασικές συσκευές iPod, MTP και UMS αναπαραγωγής μουσικής</li>
       <li xml:lang="en-GB">Support for basic iPod, MTP and UMS music player devices</li>
+      <li xml:lang="eo">Subteno por bazaj iPod, MTP kaj UMS-muzikludilaj aparatoj</li>
       <li xml:lang="es">Implementación básica de dispositivos de reproducción de música como iPod y los que usan los protocolos MTP y UMS</li>
       <li xml:lang="et">Peamiste iPodi, MTP ja UMS muusikaesitamise seadmete toetus</li>
       <li xml:lang="eu">iPod, MTP eta UMS musika gailu jotzaileen oinarrizko euskarrirekin</li>
@@ -226,8 +249,9 @@
       <li xml:lang="fr">Prise en charge basique des iPod et des lecteurs de musique conformes à MTP et UMS</li>
       <li xml:lang="gl">Compatíbel con dispositivos de reprodución de música básicos: iPod, MTP e UMS.</li>
       <li xml:lang="hu">iPon, MTP és UMS zenelejátszó eszközök támogatása</li>
-      <li xml:lang="id">Terutama mendukung perangkat pemutar musik iPod, MTP dan UMS</li>
+      <li xml:lang="id">Terutama mendukung peranti pemutar musik iPod, MTP dan UMS</li>
       <li xml:lang="it">Supporto per i lettori musicali iPod, MTP e UMS</li>
+      <li xml:lang="ka">აქვს iPod, MTP და UMS მუსიკის დამკვრელი მოწყობილობების მხარდაჭერა</li>
       <li xml:lang="ko">iPod, MTP, UMS 음악 재생기 장치 지원</li>
       <li xml:lang="nl">Ondersteuning voor basis iPod, MTP en UMS muziekspelerapparaten</li>
       <li xml:lang="pl">Obsługa dla podstawowych urządzeń odtwarzających muzykę takich jak iPod, MTP oraz UMS</li>
@@ -246,6 +270,7 @@
       <li xml:lang="zh-CN">支持基础款 iPod、MTP、UMP 的音乐播放器</li>
       <li xml:lang="zh-TW">支援基本的 iPod、MTP 和 UMS 音樂播放裝置</li>
       <li>Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
+      <li xml:lang="bg">Интегрирани Интернет услуги: last.fm, Magnatune, Jamendo, Ampache, mp3tunes и др.</li>
       <li xml:lang="bs">Integrisane Internet usluge: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i još mnogo toga.</li>
       <li xml:lang="ca">Serveis integrats d'Internet: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i més.</li>
       <li xml:lang="ca-valencia">Serveis integrats d'Internet: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i més.</li>
@@ -254,6 +279,7 @@
       <li xml:lang="de">Integrierte Internet-Dienste: last.fm, Magnatune, Jamendo, Ampache, mp3tunes und weitere.</li>
       <li xml:lang="el">Ενσωματωμένες Διαδικτυακές υπηρεσίες: last.fm, Magnatune, Jamendo, Ampache, mp3tunes και άλλα.</li>
       <li xml:lang="en-GB">Integrated Internet services: last.fm, Magnatune, Jamendo, Ampache, mp3tunes and more.</li>
+      <li xml:lang="eo">Integritaj interretaj servoj: last.fm, Magnatune, Jamendo, Ampache, mp3tunes kaj pli.</li>
       <li xml:lang="es">Servicios de Internet integrados: last.fm, Magnatune, Jamendo, Ampache, mp3tunes y más.</li>
       <li xml:lang="et">Lõimimine internetiteenustega: last.fm, Magnatune, Jamendo, Ampache, mp3tunes jpm.</li>
       <li xml:lang="eu">Barneratutako Internet zerbitzuak: last.fm, Magnatune, Jamendo, Ampache, mp3tunes eta gehiago.</li>
@@ -263,6 +289,7 @@
       <li xml:lang="hu">Integrált internetes szolgáltatások: last.fm, Magnatune, Jamendo, Ampache, mp3tunes és sok más.</li>
       <li xml:lang="id">Layanan Internet terpadu: last.fm, Magnatune, Jamendo, Ampache, mp3tunes dan lebih banyak lagi.</li>
       <li xml:lang="it">Servizi Internet integrati: last.fm, Magnatune, Jamendo, Ampache, mp3tunes e altri.</li>
+      <li xml:lang="ka">ინტეგრირებული ინტერნეტ-სერვისები: last.fm, Magnatune, Jamendo, Amplache, mp3tunes და სხვა.</li>
       <li xml:lang="ko">last.fm, Magnatune, Jamendo, Ampache, mp3tunes 등 온라인 서비스 지원.</li>
       <li xml:lang="nl">Geïntegreerde internetservices: last.fm, Magnatune, Jamendo, Ampache, mp3tunes en meer.</li>
       <li xml:lang="pl">Zintegrowane usługi internetowe: last.fm, Magnatune, Jamendo, Ampache, mp3tunes i więcej.</li>
@@ -281,6 +308,7 @@
       <li xml:lang="zh-CN">集成互联网服务：last.fm、Magnatune、Jamendo、Ampache 和 mp3tunes 等。</li>
       <li xml:lang="zh-TW">整合了這些網路服務：last.fm、Magnatune、Jamendo、Ampache、mp3tunes 等等。</li>
       <li>Scripting support</li>
+      <li xml:lang="bg">Поддръжка скриптове</li>
       <li xml:lang="bs">Podrška za skriptiranje</li>
       <li xml:lang="ca">Permet la creació de scripts</li>
       <li xml:lang="ca-valencia">Permet la creació de scripts</li>
@@ -289,16 +317,18 @@
       <li xml:lang="de">Skript-Unterstützung</li>
       <li xml:lang="el">Υποστήριξη συγγραφής σεναρίων</li>
       <li xml:lang="en-GB">Scripting support</li>
+      <li xml:lang="eo">Skripto-subteno</li>
       <li xml:lang="es">Uso de guiones</li>
       <li xml:lang="et">Skriptimise toetus</li>
       <li xml:lang="eu">Script-ekin lan egitea onartzen du</li>
       <li xml:lang="fi">Skriptaustuki</li>
       <li xml:lang="fr">Gestion de scripts</li>
-      <li xml:lang="gl">Permite automatización.</li>
+      <li xml:lang="gl">Permite guionización.</li>
       <li xml:lang="hu">Szkripttámogatás</li>
       <li xml:lang="ia">Supporto de scripting</li>
       <li xml:lang="id">Dukungan skrip</li>
       <li xml:lang="it">Supporto per la creazione di script</li>
+      <li xml:lang="ka">სკრიპტების მხარდაჭერა</li>
       <li xml:lang="ko">스크립팅 지원</li>
       <li xml:lang="nl">Ondersteuning voor scripting</li>
       <li xml:lang="pl">Obsługa skryptów</li>
@@ -318,6 +348,7 @@
       <li xml:lang="zh-TW">支援指令碼</li>
       <li>Cover manager</li>
       <li xml:lang="ar">إدارة الأغلفة</li>
+      <li xml:lang="bg">Управление на обложки</li>
       <li xml:lang="bs">Upravitelj naslovnicom</li>
       <li xml:lang="ca">Gestor de cobertes</li>
       <li xml:lang="ca-valencia">Gestor de cobertes</li>
@@ -326,6 +357,7 @@
       <li xml:lang="de">Cover-Verwaltung</li>
       <li xml:lang="el">Διαχειριστής εξωφύλλων</li>
       <li xml:lang="en-GB">Cover manager</li>
+      <li xml:lang="eo">Kovromanaĝero</li>
       <li xml:lang="es">Gestor de carátulas</li>
       <li xml:lang="et">Kaanepiltide haldamine</li>
       <li xml:lang="eu">Azal kudeatzailea</li>
@@ -336,6 +368,7 @@
       <li xml:lang="ia">Gerente de copertura</li>
       <li xml:lang="id">Pengelola sampul</li>
       <li xml:lang="it">Gestore delle copertine</li>
+      <li xml:lang="ka">ყდის მმართველი</li>
       <li xml:lang="ko">커버 관리자</li>
       <li xml:lang="nl">Hoesbeheerder</li>
       <li xml:lang="pl">Zarządzanie okładkami</li>
@@ -354,6 +387,7 @@
       <li xml:lang="zh-CN">专辑封面管理器</li>
       <li xml:lang="zh-TW">專輯管理員</li>
       <li>Replay gain support</li>
+      <li xml:lang="bg">Поддръжка на нормализиране силата на звука</li>
       <li xml:lang="bs">Ponoviti dobijanje podrške</li>
       <li xml:lang="ca">Permet el guany de repetició</li>
       <li xml:lang="ca-valencia">Permet el guany de repetició</li>
@@ -362,6 +396,7 @@
       <li xml:lang="de">Unterstützung für Lautstärkeanpassung</li>
       <li xml:lang="el">Υποστήριξη κανονικοποίησης ακουστότητας</li>
       <li xml:lang="en-GB">Replay gain support</li>
+      <li xml:lang="eo">Reludi akiri subtenon</li>
       <li xml:lang="es">Implementación de normalización de audio</li>
       <li xml:lang="et">Helitugevuse parandamise toetus</li>
       <li xml:lang="eu">Berriz-jotze irabazi (rg) euskarria</li>
@@ -371,6 +406,7 @@
       <li xml:lang="hu">Hangerőkiegyenlítés támogatása</li>
       <li xml:lang="id">Dukungan gain putar ulang</li>
       <li xml:lang="it">Supporto del guadagno di riproduzione</li>
+      <li xml:lang="ka">გაძლიერების მხარდაჭერა</li>
       <li xml:lang="ko">리플레이게인 지원</li>
       <li xml:lang="nl">Ondersteuning van Replay gain</li>
       <li xml:lang="pl">Obsługa trybu replay gain</li>
@@ -395,6 +431,7 @@
   <screenshots>
     <screenshot type="default">
       <caption>Playing music in Amarok</caption>
+      <caption xml:lang="bg">Възпроизвеждане на музика в Amarok</caption>
       <caption xml:lang="ca">Reproduint música en l'Amarok</caption>
       <caption xml:lang="ca-valencia">Reproduint música en Amarok</caption>
       <caption xml:lang="cs">Přehrávání hudby v Amaroku</caption>
@@ -402,20 +439,23 @@
       <caption xml:lang="de">Musik-Wiedergabe in Amarok</caption>
       <caption xml:lang="el">Αναπαραγωγή μοθσικής στο Amarok</caption>
       <caption xml:lang="en-GB">Playing music in Amarok</caption>
+      <caption xml:lang="eo">Ludante muzikon en Amarok</caption>
       <caption xml:lang="es">Reproduciendo música en Amarok</caption>
       <caption xml:lang="et">Muusika esitamine Amarokis</caption>
       <caption xml:lang="eu">Amaroken musika jotzea</caption>
       <caption xml:lang="fi">Musiikin toistaminen Amarokissa</caption>
       <caption xml:lang="fr">Lecture de musique dans Amarok</caption>
-      <caption xml:lang="gl">Reproducindo música en Amarok</caption>
+      <caption xml:lang="gl">Reproducindo música en Amarok.</caption>
       <caption xml:lang="hu">Zenelejátszás Amarokkal</caption>
       <caption xml:lang="id">Memutar musik di Amarok</caption>
       <caption xml:lang="it">Riproduzione della musica con Amarok</caption>
+      <caption xml:lang="ka">მუსიკის დაკვრა Amarok-ში</caption>
       <caption xml:lang="ko">Amarok으로 음악 재생</caption>
       <caption xml:lang="nl">Muziek afspelen in Amarok</caption>
       <caption xml:lang="pl">Odtwarzanie muzyki w Amaroku</caption>
       <caption xml:lang="pt">A tocar música no Amarok</caption>
       <caption xml:lang="pt-BR">Reproduzindo músicas no Amarok</caption>
+      <caption xml:lang="sk">Prehrávanie hudby cez Amarok</caption>
       <caption xml:lang="sl">Predvajanje glasbe v Amaroku</caption>
       <caption xml:lang="sv">Spela musik i Amarok</caption>
       <caption xml:lang="tr">Amarok'ta müzik çalma</caption>
@@ -427,6 +467,7 @@
     </screenshot>
     <screenshot>
       <caption>Amarok windows</caption>
+      <caption xml:lang="bg">Прозорци на Amarok</caption>
       <caption xml:lang="ca">Finestres de l'Amarok</caption>
       <caption xml:lang="ca-valencia">Finestres d'Amarok</caption>
       <caption xml:lang="cs">Okna Amaroku</caption>
@@ -434,21 +475,24 @@
       <caption xml:lang="de">Amarok-Fenster</caption>
       <caption xml:lang="el">Amarok παράθυρα</caption>
       <caption xml:lang="en-GB">Amarok windows</caption>
+      <caption xml:lang="eo">Amarok-fenestroj</caption>
       <caption xml:lang="es">Ventanas de Amarok</caption>
       <caption xml:lang="et">Amaroki aknad</caption>
       <caption xml:lang="eu">Amarokeko leihoak</caption>
       <caption xml:lang="fi">Amarok-ikkunat</caption>
       <caption xml:lang="fr">Fenêtres Amarok</caption>
-      <caption xml:lang="gl">Xanelas de Amarok</caption>
+      <caption xml:lang="gl">Xanelas de Amarok.</caption>
       <caption xml:lang="hu">Az Amarok ablaka</caption>
       <caption xml:lang="ia">Fenestras de Amarok</caption>
-      <caption xml:lang="id">Window Amarok</caption>
+      <caption xml:lang="id">Jendela Amarok</caption>
       <caption xml:lang="it">Finestre di Amarok</caption>
+      <caption xml:lang="ka">Amarok Windows-ზე</caption>
       <caption xml:lang="ko">Amarok 창</caption>
       <caption xml:lang="nl">Vensters in Amarok</caption>
       <caption xml:lang="pl">Okna Amaroka</caption>
       <caption xml:lang="pt">Janelas do Amarok</caption>
       <caption xml:lang="pt-BR">Janela do Amarok</caption>
+      <caption xml:lang="sk">Okná Amarok</caption>
       <caption xml:lang="sl">Amarokova okna</caption>
       <caption xml:lang="sv">Fönster i Amarok</caption>
       <caption xml:lang="tr">Amarok pencereleri</caption>
@@ -459,8 +503,13 @@
       <image>https://amarok.kde.org/files/Amarok2.7screenie.png</image>
     </screenshot>
   </screenshots>
+  <content_rating type="oars-1.1"/>
   <project_group>KDE</project_group>
   <provides>
     <binary>amarok</binary>
   </provides>
+  <releases>
+    <release version="2.9.71" date="2021-01-31" type="development"/>
+    <release version="2.9.0" date="2018-03-07" type="stable"/>
+  </releases>
 </component>

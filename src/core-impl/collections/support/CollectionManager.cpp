@@ -86,9 +86,9 @@ CollectionManager::CollectionManager()
     Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
 
     setObjectName( QStringLiteral("CollectionManager") );
-    d->primaryCollection = 0;
-    d->timecodeTrackProvider = 0;
-    d->fileTrackProvider = 0;
+    d->primaryCollection = nullptr;
+    d->timecodeTrackProvider = nullptr;
+    d->fileTrackProvider = nullptr;
 }
 
 CollectionManager::~CollectionManager()
@@ -128,12 +128,13 @@ CollectionManager::setFactories( const QList<QSharedPointer<Plugins::PluginFacto
     using Collections::CollectionFactory;
 
 
-    QSet<QSharedPointer<Plugins::PluginFactory> > newFactories = factories.toSet();
+    QSet<QSharedPointer<Plugins::PluginFactory> > newFactories(factories.begin(), factories.end());
     QSet<QSharedPointer<Plugins::PluginFactory> > oldFactories;
 
     {
         QReadLocker locker( &d->lock );
-        oldFactories = d->factories.toSet();
+        QSet<QSharedPointer<Plugins::PluginFactory> > addFactoriesSet(d->factories.begin(), d->factories.end());
+        oldFactories += addFactoriesSet;
     }
 
     // remove old factories
@@ -353,7 +354,7 @@ CollectionManager::trackForUrl( const QUrl &url )
     // might be a podcast, in that case we'll have additional meta information
     // might be a lastfm track, another stream
     if( !url.isValid() )
-        return Meta::TrackPtr( 0 );
+        return Meta::TrackPtr( nullptr );
 
     foreach( Collections::TrackProvider *provider, d->trackProviders )
     {
@@ -371,7 +372,7 @@ CollectionManager::trackForUrl( const QUrl &url )
     if( remoteProtocols.contains( url.scheme() ) )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
-    return Meta::TrackPtr( 0 );
+    return Meta::TrackPtr( nullptr );
 }
 
 

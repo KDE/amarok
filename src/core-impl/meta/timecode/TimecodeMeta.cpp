@@ -383,7 +383,7 @@ TimecodeTrack::createCapabilityInterface( Capabilities::Capability::Type type )
     if ( type == Capabilities::Capability::BoundedPlayback )
         return new Capabilities::TimecodeBoundedPlaybackCapability( this );
     else
-        return 0;
+        return nullptr;
 }
 
 TrackEditorPtr
@@ -532,7 +532,7 @@ Capabilities::Capability* TimecodeAlbum::createCapabilityInterface( Capabilities
         case Capabilities::Capability::Actions:
             return new AlbumActionsCapability( Meta::AlbumPtr( this ) );
         default:
-            return 0;
+            return nullptr;
     }
 }
 

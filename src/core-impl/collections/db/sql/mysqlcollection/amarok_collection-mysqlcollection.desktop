@@ -2,6 +2,7 @@
 Type=Service
 Icon=server-database
 Name=MySQL Collection
+Name[bg]=Колекция MySQL
 Name[bs]=MySQLe Zbirka
 Name[ca]=Col·lecció MySQL
 Name[ca@valencia]=Col·lecció MySQL
@@ -56,7 +57,7 @@ Comment[eu]=Bildumen plugina Amarok-entzako
 Comment[fi]=Amarokin kokoelmaliitännäinen
 Comment[fr]=Module externe de collections pour Amarok
 Comment[ga]=Breiseán bailiúchán le haghaidh Amarok
-Comment[gl]=Complemento de colección para Amarok
+Comment[gl]=Complemento de colección para Amarok.
 Comment[he]=תוסף אוסף ל־Amarok
 Comment[hne]=अमाराक बर संग्रह प्लगइन
 Comment[hu]=Gyűjtemény-bővítőmodul az Amarokhoz

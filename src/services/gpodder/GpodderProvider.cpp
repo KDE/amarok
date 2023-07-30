@@ -343,7 +343,7 @@ GpodderProvider::channelActions( PodcastChannelList channels )
     if( channels.isEmpty() )
         return actions;
 
-    if( m_removeAction == 0 )
+    if( m_removeAction == nullptr )
     {
         m_removeAction = new QAction( QIcon::fromTheme( "edit-delete" ),
                 i18n( "&Delete Channel and Episodes" ), this );
@@ -378,7 +378,7 @@ GpodderProvider::slotRemoveChannels()
 
     QAction *action = qobject_cast<QAction *>( QObject::sender() );
 
-    if( action == 0 )
+    if( action == nullptr )
         return;
 
     PodcastChannelList channels = action->data().value<PodcastChannelList>();
@@ -555,7 +555,7 @@ GpodderProvider::slotTrackChanged( Meta::TrackPtr track )
 {
     m_trackToSyncStatus = nullptr;
 
-    if( track != Meta::TrackPtr( 0 ) )
+    if( track != Meta::TrackPtr( nullptr ) )
     {
         //If the episode is from one of the gpodder subscribed podcasts, then we must keep looking it
         if( ( this->possiblyContainsTrack( QUrl( track->uidUrl() ) ) ) )
@@ -1031,7 +1031,7 @@ GpodderProvider::urlResolveFinished( KJob * job )
     if( m_resolvedPodcasts.empty() )
         continueDeviceUpdatesFinished();
 
-    m_resolveUrlJob = 0;
+    m_resolveUrlJob = nullptr;
 }
 
 void GpodderProvider::slotEpisodeDownloaded( PodcastEpisodePtr episode )

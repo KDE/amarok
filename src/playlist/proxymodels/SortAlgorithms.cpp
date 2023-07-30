@@ -24,6 +24,7 @@
 #include "playlist/proxymodels/AbstractModel.h"
 
 #include <QDateTime>
+#include <QRandomGenerator>
 
 namespace Playlist
 {
@@ -32,7 +33,7 @@ void
 multilevelLessThan::setSortScheme( const SortScheme & scheme )
 {
     m_scheme = scheme;
-    m_randomSalt = qrand();    //! Do a different random sort order every time.
+    m_randomSalt = QRandomGenerator::global()->generate();    //! Do a different random sort order every time.
 }
 
 bool

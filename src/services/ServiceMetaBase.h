@@ -104,7 +104,7 @@ class AMAROK_EXPORT BookmarkThisProvider : public QObject
         virtual QString browserName() const { return QStringLiteral("internet"); }
         virtual QString collectionName() const { return QString(); }
         virtual bool simpleFiltering() const { return true; }
-        virtual QAction * bookmarkAction() { return 0; }
+        virtual QAction * bookmarkAction() { return nullptr; }
 
     protected:
         QPointer<QAction> m_bookmarkAction;
@@ -215,7 +215,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
                 return new ServiceBookmarkThisCapability( this );
             else if ( type == Capabilities::Capability::FindInSource && isBookmarkable() )
                 return new ServiceFindInSourceCapability( this );
-            return 0;
+            return nullptr;
         }
 
         StatisticsPtr statistics() override;
@@ -296,7 +296,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
                 return new ServiceSourceInfoCapability( this );
             else if ( type == Capabilities::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
-            return 0;
+            return nullptr;
         }
 
         QAction * bookmarkAction() override {
@@ -307,7 +307,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
                 return m_bookmarkAction.data();
             }
             else
-                return 0;
+                return nullptr;
         }
 
         //ServiceArtist specific methods
@@ -369,7 +369,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
                 return new ServiceSourceInfoCapability( this );
             else if ( type == Capabilities::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
-            return 0;
+            return nullptr;
         }
 
         QAction * bookmarkAction() override {
@@ -380,7 +380,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
                 return m_bookmarkAction.data();
             }
             else
-                return 0;
+                return nullptr;
         }
 
         //ServiceAlbum specific methods
@@ -448,7 +448,7 @@ class AMAROK_EXPORT ServiceGenre : public Meta::Genre,
                 return new ServiceSourceInfoCapability( this );
             else if ( type == Capabilities::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
-            return 0;
+            return nullptr;
         }
 
 
@@ -503,7 +503,7 @@ class AMAROK_EXPORT ServiceComposer : public Meta::Composer,
                 return new ServiceSourceInfoCapability( this );
             else if ( type == Capabilities::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
-            return 0;
+            return nullptr;
         }
 
         //ServiceComposer specific methods
@@ -545,7 +545,7 @@ class AMAROK_EXPORT ServiceYear : public Meta::Year,
                 return new ServiceSourceInfoCapability( this );
             else if ( type == Capabilities::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
-            return 0;
+            return nullptr;
         }
 
         //ServiceYear specific methods

@@ -60,12 +60,12 @@
     if (index >= 0 && index < itemList.size())
         return itemList.takeAt(index);
     else
-        return 0;
+        return nullptr;
 }
 
  Qt::Orientations FlowLayout::expandingDirections() const
 {
-    return 0;
+    return {};
 }
 
  bool FlowLayout::hasHeightForWidth() const

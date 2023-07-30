@@ -23,6 +23,7 @@
 #include <QEventLoop>
 #include <QFileSystemWatcher>
 #include <QMutexLocker>
+#include <QRandomGenerator>
 #include <QStringList>
 #include <QTemporaryFile>
 
@@ -66,7 +67,7 @@ AmarokEmbeddedSqlConnection::connection()
     socket.open();
 
     // Get random port in range 3307 - 65535
-    const int port = ( qrand() % ( 65536 - 3307 ) ) + 3307;
+    const int port = ( QRandomGenerator::global()->generate() % ( 65536 - 3307 ) ) + 3307;
 
     QSqlDatabase::removeDatabase( m_connectionName );
     QSqlDatabase db = QSqlDatabase::addDatabase( "QMYSQL", m_connectionName );

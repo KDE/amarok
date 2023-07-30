@@ -22,14 +22,14 @@
 #include "configdialog/ConfigDialogBase.h"
 
 class KConfigDialogManager;
-class KConfigSkeleton;
+class KCoreConfigSkeleton;
 
 class DatabaseConfig : public ConfigDialogBase, public Ui_DatabaseConfig
 {
     Q_OBJECT
 
     public:
-        DatabaseConfig( Amarok2ConfigDialog* parent, KConfigSkeleton *config );
+        DatabaseConfig( Amarok2ConfigDialog* parent, KCoreConfigSkeleton *config );
         ~DatabaseConfig() override;
 
         bool hasChanged() override;

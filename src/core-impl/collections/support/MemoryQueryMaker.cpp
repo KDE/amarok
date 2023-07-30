@@ -29,8 +29,8 @@
 #include <QSet>
 #include <QStack>
 #include <QtAlgorithms>
+//#include <QRandomGenerator>
 
-#include <KRandomSequence>
 #include <KSortableList>
 
 using namespace Collections;
@@ -69,7 +69,7 @@ class QueryJob : public QObject, public ThreadWeaver::Job
             }
             Q_EMIT done(self);
         }
-        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread=0) override
+        void run(ThreadWeaver::JobPointer self = QSharedPointer<ThreadWeaver::Job>(), ThreadWeaver::Thread *thread=nullptr) override
         {
             Q_UNUSED(self);
             Q_UNUSED(thread);
@@ -102,7 +102,6 @@ struct MemoryQueryMaker::Private {
     QList<CustomReturnFunction*> returnFunctions;
     QList<CustomReturnValue*> returnValues;
     bool usingFilters;
-    KRandomSequence sequence;   //do not reset
     qint64 orderByField;
     bool orderDescending;
     bool orderByNumberField;
@@ -117,12 +116,12 @@ MemoryQueryMaker::MemoryQueryMaker( const QWeakPointer<MemoryCollection> &mc, co
     , d( new Private )
 {
     d->collectionId = collectionId;
-    d->matcher = 0;
-    d->job = 0;
+    d->matcher = nullptr;
+    d->job = nullptr;
     d->type = QueryMaker::None;
     d->returnDataPtrs = false;
-    d->job = 0;
-    d->job = 0;
+    d->job = nullptr;
+    d->job = nullptr;
     d->maxsize = -1;
     d->containerFilters.push( new AndContainerMemoryFilter() );
     d->usingFilters = false;
@@ -162,7 +161,7 @@ MemoryQueryMaker::run()
             d->containerFilters.clear(); //will be deleted by MemoryQueryMakerInternal
         }
         qmi->setMatchers( d->matcher );
-        d->matcher = 0; //will be deleted by MemoryQueryMakerInternal
+        d->matcher = nullptr; //will be deleted by MemoryQueryMakerInternal
         qmi->setMaxSize( d->maxsize );
         qmi->setType( d->type );
         qmi->setCustomReturnFunctions( d->returnFunctions );
@@ -317,7 +316,7 @@ QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
     MemoryMatcher *trackMatcher = new TrackMatcher( track );
-    if ( d->matcher == 0 )
+    if ( d->matcher == nullptr )
         d->matcher = trackMatcher;
     else
     {
@@ -333,7 +332,7 @@ QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::ArtistPtr &artist, ArtistMatchBehaviour behaviour )
 {
     MemoryMatcher *artistMatcher = new ArtistMatcher( artist, behaviour );
-    if ( d->matcher == 0 )
+    if ( d->matcher == nullptr )
         d->matcher = artistMatcher;
     else
     {
@@ -349,7 +348,7 @@ QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::AlbumPtr &album )
 {
     MemoryMatcher *albumMatcher = new AlbumMatcher( album );
-    if ( d->matcher == 0 )
+    if ( d->matcher == nullptr )
         d->matcher = albumMatcher;
     else
     {
@@ -365,7 +364,7 @@ QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::GenrePtr &genre )
 {
     MemoryMatcher *genreMatcher = new GenreMatcher( genre );
-    if ( d->matcher == 0 )
+    if ( d->matcher == nullptr )
         d->matcher = genreMatcher;
     else
     {
@@ -381,7 +380,7 @@ QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 {
     MemoryMatcher *composerMatcher = new ComposerMatcher( composer );
-    if ( d->matcher == 0 )
+    if ( d->matcher == nullptr )
         d->matcher = composerMatcher;
     else
     {
@@ -397,7 +396,7 @@ QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::YearPtr &year )
 {
     MemoryMatcher *yearMatcher = new YearMatcher( year );
-    if ( d->matcher == 0 )
+    if ( d->matcher == nullptr )
         d->matcher = yearMatcher;
     else
     {
@@ -413,7 +412,7 @@ QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
     MemoryMatcher *labelMatcher = new LabelMatcher( label );
-    if( d->matcher == 0 )
+    if( d->matcher == nullptr )
     {
         d->matcher = labelMatcher;
     }
@@ -499,7 +498,7 @@ void
 MemoryQueryMaker::done( ThreadWeaver::JobPointer job )
 {
     ThreadWeaver::Queue::instance()->dequeue( job );
-    d->job = 0;
+    d->job = nullptr;
     Q_EMIT queryDone();
 }
 

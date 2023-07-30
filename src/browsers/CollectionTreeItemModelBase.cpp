@@ -91,7 +91,7 @@ protected:
     }
 
 private:
-    QModelIndex m_index;
+    QPersistentModelIndex m_index;
     Meta::AlbumPtr m_album;
     QPointer<CollectionTreeItemModelBase> m_model;
     bool m_abortRequested;
@@ -111,7 +111,7 @@ static const QSet<CategoryId::CatMenuId> variousArtistCategories =
 
 CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     : QAbstractItemModel()
-    , m_rootItem( 0 )
+    , m_rootItem( nullptr )
     , m_animFrame( 0 )
     , m_loading1( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/loading1.png") ) ) )
     , m_loading2( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral("amarok/images/loading2.png") ) ) )
@@ -138,7 +138,7 @@ CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 
 Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) const
 {
-    Qt::ItemFlags flags = 0;
+    Qt::ItemFlags flags = {};
     if( index.isValid() )
     {
         flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEditable;
@@ -478,10 +478,10 @@ QMimeData*
 CollectionTreeItemModelBase::mimeData( const QModelIndexList &indices ) const
 {
     if ( indices.isEmpty() )
-        return 0;
+        return nullptr;
 
     // first, filter out duplicate entries that may arise when both parent and child are selected
-    QSet<QModelIndex> indexSet = QSet<QModelIndex>::fromList( indices );
+    QSet<QModelIndex> indexSet( indices.begin(), indices.end() );
     QMutableSetIterator<QModelIndex> it( indexSet );
     while( it.hasNext() )
     {
@@ -513,7 +513,7 @@ QMimeData*
 CollectionTreeItemModelBase::mimeData( const QList<CollectionTreeItem*> &items ) const
 {
     if ( items.isEmpty() )
-        return 0;
+        return nullptr;
 
     Meta::TrackList tracks;
     QList<Collections::QueryMaker*> queries;
@@ -568,7 +568,7 @@ CollectionTreeItem *
 CollectionTreeItemModelBase::treeItem( const QModelIndex &index ) const
 {
     if( !index.isValid() || index.model() != this )
-        return 0;
+        return nullptr;
 
     return static_cast<CollectionTreeItem *>( index.internalPointer() );
 }
@@ -749,7 +749,7 @@ CollectionTreeItemModelBase::queryDone()
     if( !qm )
         return;
 
-    CollectionTreeItem* item = 0;
+    CollectionTreeItem* item = nullptr;
     if( m_childQueries.contains( qm ) )
         item = m_childQueries.take( qm );
     else if( m_compilationQueries.contains( qm ) )
@@ -877,7 +877,7 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
                 {
                     //found the special node
                     beginRemoveRows( parentIndex, cti->row(), cti->row() );
-                    cti = 0; //will be deleted;
+                    cti = nullptr; //will be deleted;
                     parent->removeChild( i );
                     endRemoveRows();
                     break;
@@ -887,7 +887,7 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
             return;
         }
 
-        CollectionTreeItem *specialNode = 0;
+        CollectionTreeItem *specialNode = nullptr;
         if( parent->childCount() == 0 )
         {
             //we only insert the special node
@@ -981,7 +981,7 @@ CollectionTreeItemModelBase::populateChildren( const DataList &dataList, Collect
     // figure out which children of parent have to be removed,
     // which new children have to be added, and preemptively Q_EMIT dataChanged for the rest
     // have to check how that influences performance...
-    const QSet<Meta::DataPtr> dataSet = dataList.toSet();
+    const QSet<Meta::DataPtr> dataSet(dataList.begin(), dataList.end());
     QSet<Meta::DataPtr> childrenSet;
     foreach( CollectionTreeItem *child, parent->children() )
     {

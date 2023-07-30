@@ -90,7 +90,6 @@ namespace QtBindings
             QString toDisplayString(FormattingOptions options = FormattingOptions(PrettyDecoded)) const;
             QByteArray toEncoded(FormattingOptions options = FullyEncoded) const;
             QString toLocalFile() const;
-            QString topLevelDomain(ComponentFormattingOptions options = FullyDecoded) const;
             QString toString(FormattingOptions options = FormattingOptions(PrettyDecoded)) const;
             QString url(FormattingOptions options = FormattingOptions(PrettyDecoded)) const;
             QString userInfo(ComponentFormattingOptions options = PrettyDecoded) const;

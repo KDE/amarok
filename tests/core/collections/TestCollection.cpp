@@ -40,7 +40,7 @@ class CollectionMock : public Collection
         QueryMaker *queryMaker() override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QString collectionId() const override

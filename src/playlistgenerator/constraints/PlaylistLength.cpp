@@ -30,7 +30,7 @@ ConstraintTypes::PlaylistLength::createFromXml( QDomElement& xmlelem, Constraint
     if ( p ) {
         return new PlaylistLength( xmlelem, p );
     } else {
-        return 0;
+        return nullptr;
     }
 }
 
@@ -40,7 +40,7 @@ ConstraintTypes::PlaylistLength::createNew( ConstraintNode* p )
     if ( p ) {
         return new PlaylistLength( p );
     } else {
-        return 0;
+        return nullptr;
     }
 }
 
@@ -187,7 +187,7 @@ ConstraintTypes::PlaylistLength::setStrictness( const int sv )
 
 ConstraintTypes::PlaylistLengthEditWidget::PlaylistLengthEditWidget( const int length,
                                                                      const int comparison,
-                                                                     const int strictness ) : QWidget( 0 )
+                                                                     const int strictness ) : QWidget( nullptr )
 {
     ui.setupUi( this );
 

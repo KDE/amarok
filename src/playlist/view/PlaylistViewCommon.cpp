@@ -38,10 +38,10 @@
 #include <QModelIndex>
 
 Playlist::ViewCommon::ViewCommon()
-    : m_stopAfterTrackAction( 0 )
-    , m_cueTrackAction( 0 )
-    , m_removeTracTrackAction( 0 )
-    , m_findInSourceAction( 0 )
+    : m_stopAfterTrackAction( nullptr )
+    , m_cueTrackAction( nullptr )
+    , m_removeTracTrackAction( nullptr )
+    , m_findInSourceAction( nullptr )
 {}
 
 Playlist::ViewCommon::~ViewCommon()
@@ -120,7 +120,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     if( track->isPlayable() )
     {
 
-        if( m_cueTrackAction == 0 )
+        if( m_cueTrackAction == nullptr )
         {
             m_cueTrackAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-queue-amarok") ), queueText, parent );
         }
@@ -151,7 +151,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     //display "Stop after this track" option only if track is playable. not sure if this check is really needed
     if( track->isPlayable() )
     {
-        if( m_stopAfterTrackAction == 0 )
+        if( m_stopAfterTrackAction == nullptr )
         {
             m_stopAfterTrackAction = new QAction( QIcon::fromTheme( QStringLiteral("media-playback-stop-amarok") ),
                                                   i18n( "Stop Playing After This Track" ), parent );
@@ -165,7 +165,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
 
     //actions << separator;
 
-    if( m_removeTracTrackAction == 0 )
+    if( m_removeTracTrackAction == nullptr )
     {
         m_removeTracTrackAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-remove-amarok") ),
                                                i18n( "Remove From Playlist" ), parent );
@@ -196,7 +196,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
 
     if( track->has<Capabilities::FindInSourceCapability>() )
     {
-        if( m_findInSourceAction == 0 )
+        if( m_findInSourceAction == nullptr )
         {
             m_findInSourceAction = new QAction( QIcon::fromTheme( QStringLiteral("edit-find") ),
                                                 i18n( "Show in Media Sources" ), parent );

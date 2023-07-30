@@ -89,7 +89,7 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
     // we only need to do this once
     if( !libraryInitRef.fetchAndAddOrdered( 1 ) )
     {
-        int ret = mysql_library_init( mysql_args.size(), const_cast<char**>(mysql_args.data()), 0 );
+        int ret = mysql_library_init( mysql_args.size(), const_cast<char**>(mysql_args.data()), nullptr );
         if( ret != 0 )
         {
             // mysql sources show that there is only 0 and 1 as return code
@@ -101,7 +101,7 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
         }
     }
 
-    m_db = mysql_init( NULL );
+    m_db = mysql_init( nullptr );
     if( !m_db )
     {
         reportError( "call to mysql_init" );
@@ -110,15 +110,15 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
 
     if( mysql_options( m_db, MYSQL_READ_DEFAULT_GROUP, "amarokclient" ) )
         reportError( "Error setting options for READ_DEFAULT_GROUP" );
-    if( mysql_options( m_db, MYSQL_OPT_USE_EMBEDDED_CONNECTION, NULL ) )
+    if( mysql_options( m_db, MYSQL_OPT_USE_EMBEDDED_CONNECTION, nullptr ) )
         reportError( "Error setting option to use embedded connection" );
 
-    if( !mysql_real_connect( m_db, NULL,NULL,NULL, 0, 0,NULL, 0 ) )
+    if( !mysql_real_connect( m_db, nullptr,nullptr,nullptr, nullptr, 0,nullptr, 0 ) )
     {
         error() << "Could not connect to mysql embedded!";
         reportError( "call to mysql_real_connect" );
         mysql_close( m_db );
-        m_db = 0;
+        m_db = nullptr;
         return false;
     }
 
@@ -127,7 +127,7 @@ MySqlEmbeddedStorage::init( const QString &storageLocation )
         // if sharedInit fails then we can usually not switch to the correct database
         // sharedInit already reports errors.
         mysql_close( m_db );
-        m_db = 0;
+        m_db = nullptr;
         return false;
     }
 

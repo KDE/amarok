@@ -40,7 +40,7 @@ QString Amarok2ConfigDialog::s_currentPage = QStringLiteral("GeneralConfig");
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
 
-Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config )
+Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCoreConfigSkeleton *config )
    : KConfigDialog( parent, name, config )
 {
     DEBUG_BLOCK

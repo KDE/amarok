@@ -32,13 +32,13 @@ ConstraintTypes::TrackSpreader::createNew( ConstraintNode* p )
     if ( p )
         return new TrackSpreader( p );
     else
-        return 0;
+        return nullptr;
 }
 
 ConstraintFactoryEntry*
 ConstraintTypes::TrackSpreader::registerMe()
 {
-    return 0;
+    return nullptr;
 }
 
 ConstraintTypes::TrackSpreader::TrackSpreader( ConstraintNode* p ) : Constraint( p ) {
@@ -47,7 +47,7 @@ ConstraintTypes::TrackSpreader::TrackSpreader( ConstraintNode* p ) : Constraint(
 QWidget*
 ConstraintTypes::TrackSpreader::editWidget() const
 {
-    return 0;
+    return nullptr;
 }
 
 void

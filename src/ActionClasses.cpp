@@ -64,7 +64,7 @@ namespace Amarok
 
 using namespace Amarok;
 
-KHelpMenu *Menu::s_helpMenu = 0;
+KHelpMenu *Menu::s_helpMenu = nullptr;
 
 static void
 safePlug( KActionCollection *ac, const char *name, QWidget *w )
@@ -153,7 +153,7 @@ Menu::instance()
 QMenu*
 Menu::helpMenu( QWidget *parent ) //STATIC
 {
-    if ( s_helpMenu == 0 )
+    if ( s_helpMenu == nullptr )
         s_helpMenu = new KHelpMenu( parent, KAboutData::applicationData(), Amarok::actionCollection() );
 
     QMenu* menu = s_helpMenu->menu();
@@ -275,7 +275,7 @@ void SelectAction::setCurrentItem( int n )
     m_function( n );
     KSelectAction::setCurrentItem( n );
     AmarokConfig::self()->save(); //So we don't lose the setting when crashing
-    if( announce ) Q_EMIT triggered( n );
+    if( announce ) Q_EMIT indexTriggered( n );
 }
 
 void SelectAction::actionTriggered( QAction *a )
@@ -379,10 +379,10 @@ BurnMenuAction::createWidget( QWidget *w )
         //button->setIcon( "k3b" );
 
         //return associatedWidgets().count() - 1;
-        return 0;
+        return nullptr;
     }
     //else return -1;
-    else return 0;
+    else return nullptr;
 }
 
 

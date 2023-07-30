@@ -182,13 +182,13 @@ class AutoExpander : public QObject
 
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : Amarok::PrettyTreeView( parent )
-    , m_filterModel( 0 )
-    , m_treeModel( 0 )
-    , m_pd( 0 )
-    , m_appendAction( 0 )
-    , m_loadAction( 0 )
-    , m_editAction( 0 )
-    , m_organizeAction( 0 )
+    , m_filterModel( nullptr )
+    , m_treeModel( nullptr )
+    , m_pd( nullptr )
+    , m_appendAction( nullptr )
+    , m_loadAction( nullptr )
+    , m_editAction( nullptr )
+    , m_organizeAction( nullptr )
     , m_ongoingDrag( false )
 {
     setSortingEnabled( true );
@@ -210,7 +210,7 @@ void
 CollectionTreeView::setModel( QAbstractItemModel *model )
 {
     if( m_treeModel )
-        disconnect( m_treeModel, 0, this, 0);
+        disconnect( m_treeModel, nullptr, this, nullptr);
 
     m_treeModel = qobject_cast<CollectionTreeItemModelBase *>( model );
     if( !m_treeModel )
@@ -461,7 +461,7 @@ CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
     // mind bug 279513
     bool isExpandable = model()->hasChildren( index );
     bool wouldExpand = !visualRect( index ).contains( event->pos() ) || // clicked outside item, perhaps on expander icon
-                       ( isExpandable && !style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) ); // we're in doubleClick
+                       ( isExpandable && !style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, nullptr, this ) ); // we're in doubleClick
     if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         !wouldExpand )
@@ -482,7 +482,7 @@ CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     {
         connect( m_pd, &PopupDropper::fadeHideFinished, m_pd, &PopupDropper::deleteLater );
         m_pd->hide();
-        m_pd = 0;
+        m_pd = nullptr;
     }
 
     QModelIndex index = indexAt( event->pos() );
@@ -514,7 +514,7 @@ CollectionTreeView::getItemFromIndex( QModelIndex &index )
 
     if( !filteredIndex.isValid() )
     {
-        return 0;
+        return nullptr;
     }
 
     return static_cast<CollectionTreeItem *>( filteredIndex.internalPointer() );
@@ -683,10 +683,10 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
 
         actions = createExtendedActions( indices );
 
-        PopupDropper *morePud = 0;
+        PopupDropper *morePud = nullptr;
         if( actions.count() > 1 )
         {
-            morePud = The::popupDropperFactory()->createPopupDropper( 0, true );
+            morePud = The::popupDropperFactory()->createPopupDropper( nullptr, true );
 
             foreach( QAction *action, actions )
                 morePud->addItem( The::popupDropperFactory()->createItem( action ) );
@@ -803,7 +803,7 @@ CollectionTreeView::playChildTracks( const QSet<CollectionTreeItem *> &items,
 
     //Store the type of playlist insert to be done and cause a slot to be invoked when the tracklist has been generated.
     AmarokMimeData *mime = dynamic_cast<AmarokMimeData*>(
-                m_treeModel->mimeData( QList<CollectionTreeItem *>::fromSet( parents ) ) );
+                m_treeModel->mimeData( QList<CollectionTreeItem *>( parents.begin(), parents.end() ) ) );
     m_playChildTracksMode.insert( mime, insertMode );
     connect( mime, &AmarokMimeData::trackListSignal,
              this, &CollectionTreeView::playChildTracksSlot );
@@ -859,7 +859,7 @@ CollectionTreeView::copySelectedToLocalCollection()
     DEBUG_BLOCK
 
     // Get the local collection
-    Collections::Collection *collection = 0;
+    Collections::Collection *collection = nullptr;
     const QList<Collections::Collection*> collections = CollectionManager::instance()->collections().keys();
 
     foreach( collection, collections )
@@ -1050,7 +1050,7 @@ CollectionTreeView::slotAddFilteredTracksToPlaylist()
         {
             QModelIndex idx = m_treeModel->index( row, 0 );
             CollectionTreeItem *item = idx.isValid()
-                    ? static_cast<CollectionTreeItem *>( idx.internalPointer() ) : 0;
+                    ? static_cast<CollectionTreeItem *>( idx.internalPointer() ) : nullptr;
             if( item )
                 items.insert( item );
         }
@@ -1067,7 +1067,7 @@ CollectionTreeView::createBasicActions( const QModelIndexList &indices )
 
     if( !indices.isEmpty() )
     {
-        if( m_appendAction == 0 )
+        if( m_appendAction == nullptr )
         {
             m_appendAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-add-amarok") ),
                                           i18n( "&Add to Playlist" ), this );
@@ -1077,7 +1077,7 @@ CollectionTreeView::createBasicActions( const QModelIndexList &indices )
 
         actions.append( m_appendAction );
 
-        if( m_loadAction == 0 )
+        if( m_loadAction == nullptr )
         {
             m_loadAction = new QAction(
                         i18nc( "Replace the currently loaded tracks with these",
@@ -1127,7 +1127,7 @@ CollectionTreeView::createExtendedActions( const QModelIndexList &indices )
 
                 if( onlyOneCollection )
                 {
-                    if( m_organizeAction == 0 )
+                    if( m_organizeAction == nullptr )
                     {
                         m_organizeAction = new QAction( QIcon::fromTheme(QStringLiteral("folder-open") ),
                                     i18nc( "Organize Files", "Organize Files" ), this );
@@ -1160,7 +1160,7 @@ CollectionTreeView::createExtendedActions( const QModelIndexList &indices )
             }
         }
 
-        if( m_editAction == 0 )
+        if( m_editAction == nullptr )
         {
             m_editAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ),
                                         i18n( "&Edit Track Details" ), this );
@@ -1263,7 +1263,7 @@ CollectionTreeView::getCopyActions( const QModelIndexList &indices )
         {
             foreach( Collection *coll, writableCollections )
             {
-                QAction *action = new QAction( coll->icon(), coll->prettyName(), 0 );
+                QAction *action = new QAction( coll->icon(), coll->prettyName(), nullptr );
                 action->setProperty( "popupdropper_svg_id", "collection" );
                 connect( action, &QAction::triggered, this, &CollectionTreeView::slotCopyTracks );
 
@@ -1300,7 +1300,7 @@ CollectionTreeView::getMoveActions( const QModelIndexList &indices )
             {
                 foreach( Collection *coll, writableCollections )
                 {
-                    QAction *action = new QAction( coll->icon(), coll->prettyName(), 0 );
+                    QAction *action = new QAction( coll->icon(), coll->prettyName(), nullptr );
                     action->setProperty( "popupdropper_svg_id", "collection" );
                     connect( action, &QAction::triggered, this, &CollectionTreeView::slotMoveTracks );
                     currentMoveDestination.insert( action, coll );
@@ -1330,7 +1330,7 @@ bool CollectionTreeView::onlyOneCollection( const QModelIndexList &indices )
 Collection *
 CollectionTreeView::getCollection( const QModelIndex &index )
 {
-    Collection *collection = 0;
+    Collection *collection = nullptr;
     if( index.isValid() )
     {
         CollectionTreeItem *item =
@@ -1436,7 +1436,7 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem *> &
                                               bool cleanItems ) const
 {
     if( !m_treeModel )
-        return 0;
+        return nullptr;
 
     QSet<CollectionTreeItem*> parents = cleanItems ? cleanItemSet( items ) : items;
 

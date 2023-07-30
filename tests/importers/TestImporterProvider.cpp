@@ -41,7 +41,7 @@ TestImporterProvider::constructorShouldSetConfigAndManager()
 void
 TestImporterProvider::constructorShouldSetUidIfNotSet()
 {
-    QVERIFY( !MockProvider( QVariantMap(), 0 ).id().isEmpty() );
+    QVERIFY( !MockProvider( QVariantMap(), nullptr ).id().isEmpty() );
 }
 
 void
@@ -50,7 +50,7 @@ TestImporterProvider::idShouldReturnConfiguredId()
     QVariantMap cfg;
     cfg["uid"] = QString( "Joker" );
 
-    QCOMPARE( MockProvider( cfg, 0 ).config(), cfg );
+    QCOMPARE( MockProvider( cfg, nullptr ).config(), cfg );
 }
 
 void
@@ -97,7 +97,7 @@ TestImporterProvider::isConfigurableShouldReturnTrue()
 void
 TestImporterProvider::configWidgetShouldDelegateToManager()
 {
-    StatSyncing::ProviderConfigWidget *widget = 0;
+    StatSyncing::ProviderConfigWidget *widget = nullptr;
     EXPECT_CALL( *m_mockManager, configWidget( Eq(m_mockProvider->config()) ) )
             .WillOnce( Return( widget ) );
     QCOMPARE( m_mockProvider->configWidget(), widget );

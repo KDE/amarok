@@ -22,7 +22,7 @@
 #include <QLabel>
 
 HintLineEdit::HintLineEdit( const QString &hint, const QString &text, QWidget *parent )
-   : QLineEdit( text, 0 )
+   : QLineEdit( text, nullptr )
    , m_vbox( new BoxWidget( true, parent ) )
 {
     init();
@@ -30,14 +30,14 @@ HintLineEdit::HintLineEdit( const QString &hint, const QString &text, QWidget *p
 }
 
 HintLineEdit::HintLineEdit( const QString &text, QWidget *parent )
-   : QLineEdit( text, 0 )
+   : QLineEdit( text, nullptr )
    , m_vbox( new BoxWidget( true, parent ) )
 {
     init();
 }
 
 HintLineEdit::HintLineEdit( QWidget *parent )
-   : QLineEdit( 0 )
+   : QLineEdit( nullptr )
    , m_vbox( new BoxWidget( true, parent ) )
 {
     init();
@@ -58,7 +58,7 @@ HintLineEdit::init()
 
 HintLineEdit::~HintLineEdit()
 {
-    setParent( 0 );
+    setParent( nullptr );
     delete m_vbox;
 }
 

@@ -120,7 +120,7 @@ class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
         void slotStatusBarNewProgressOperation( KIO::TransferJob * job,
                                                                const QString &description,
                                                                Podcasts::PodcastReader* reader );
-        void slotStatusBarSorryMessage( const QString &message );
+        void slotStatusBarErrorMessage( const QString &message );
         void slotOpmlWriterDone( int result );
 
     private:

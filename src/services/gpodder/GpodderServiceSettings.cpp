@@ -154,7 +154,7 @@ GpodderServiceSettings::finished()
 
         connect( m_createDevice, &QNetworkReply::finished,
                  this, &GpodderServiceSettings::deviceCreationFinished );
-        connect( m_createDevice, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+        connect( m_createDevice, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred),
                  this, &GpodderServiceSettings::deviceCreationError );
     }
     else

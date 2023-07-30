@@ -213,7 +213,7 @@ OSDWidget::setVisible( bool visible )
         if ( !isEnabled() || m_text.isEmpty() )
             return;
 
-        const uint margin = fontMetrics().width( 'x' );
+        const uint margin = fontMetrics().horizontalAdvance( 'x' );
 
         const QRect newGeometry = determineMetrics( margin );
 
@@ -625,7 +625,7 @@ Amarok::OSD::destroy()
 }
 
 Amarok::OSD::OSD()
-    : OSDWidget( 0 )
+    : OSDWidget( nullptr )
 {
     s_instance = this;
 

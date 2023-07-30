@@ -85,7 +85,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
     {
         warning() << ".pls playlist: Invalid \"NumberOfEntries\" value.  "
                 << "NumberOfEntries=" << numberOfEntries << "  counted="
-                << entryCnt << endl;
+                << entryCnt << Qt::endl;
         /* Corrupt file. The "NumberOfEntries" value is
         * not correct. Fix it by setting it to the manually
         * counted number and go on parsing.
@@ -163,10 +163,10 @@ PLSPlaylist::loadPls( QTextStream &textStream )
             tmp = (*i).section( QLatin1Char('='), 1 ).trimmed();
             // We only support Version=2
             if (tmp.toUInt( &ok ) != 2)
-                warning() << ".pls playlist: Unsupported version." << endl;
+                warning() << ".pls playlist: Unsupported version." << Qt::endl;
             continue;
         }
-        warning() << ".pls playlist: Unrecognized line: \"" << *i << "\"" << endl;
+        warning() << ".pls playlist: Unrecognized line: \"" << *i << "\"" << Qt::endl;
     }
     return true;
 }
@@ -211,6 +211,6 @@ PLSPlaylist::savePlaylist( QFile &file )
    }
 
    //footer
-   stream << "NumberOfEntries=" << m_tracks.count() << endl;
+   stream << "NumberOfEntries=" << m_tracks.count() << Qt::endl;
    stream << "Version=2\n";
 }

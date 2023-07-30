@@ -30,7 +30,7 @@
 #include "playlist/PlaylistController.h"
 
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator()
-    : m_playlist( 0 )
+    : m_playlist( nullptr )
 {
     connect( Playlist::ModelStack::instance()->bottom(), &Playlist::Model::activeTrackChanged,
              this, &DynamicTrackNavigator::trackChanged );

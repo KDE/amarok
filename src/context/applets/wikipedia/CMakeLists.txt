@@ -16,4 +16,4 @@ install(FILES plugin/qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/wik
 
 install(FILES WikipediaCustomStyle.css bullet.gif DESTINATION ${KDE_INSTALL_DATADIR}/amarok/data )
 
-kpackage_install_bundled_package(package org.kde.amarok.wikipedia amarok)
+kpackage_install_package(package org.kde.amarok.wikipedia amarok)

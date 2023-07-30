@@ -301,13 +301,13 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
     {
         m_playlists.removeOne( m_stalePlaylist );
         Q_EMIT playlistRemoved( m_stalePlaylist );
-        m_stalePlaylist = 0;
+        m_stalePlaylist = nullptr;
     }
     if( m_orphanedPlaylist && m_orphanedPlaylist->trackCount() == 0 )
     {
         m_playlists.removeOne( m_orphanedPlaylist );
         Q_EMIT playlistRemoved( m_orphanedPlaylist );
-        m_orphanedPlaylist = 0;
+        m_orphanedPlaylist = nullptr;
     }
 
     QString failedText = failed ? i18np("Failed to process one track. (more info about "

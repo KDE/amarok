@@ -43,18 +43,18 @@ Handler::Capability*
 MetaHandlerCapability::createCapabilityInterface( Handler::Capability::Type type )
 {
     Q_UNUSED( type );
-    return 0;
+    return nullptr;
 }
 
 MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     : QObject( parent )
     , m_memColl( qobject_cast<Collections::MediaDeviceCollection*>(parent) )
-    , m_provider( 0 )
+    , m_provider( nullptr )
     , m_isCopying( false )
     , m_isDeleting( false )
-    , m_pc( 0 )
-    , m_rc( 0 )
-    , m_wc( 0 )
+    , m_pc( nullptr )
+    , m_rc( nullptr )
+    , m_wc( nullptr )
 {
     DEBUG_BLOCK
 

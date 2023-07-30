@@ -18,6 +18,7 @@
 
 #include <QIcon>
 
+#include <QMargins>
 #include <QPainter>
 #include <QStyle>
 #include <QStyleOption>
@@ -68,12 +69,11 @@ BreadcrumbItemSortButton::paintEvent( QPaintEvent *event )
     const int preferredWidth = qMax( minimumWidth(), sizeHint().width() );
     const int buttonWidth = qMin( preferredWidth, width() );
 
-    int left, top, right, bottom;
-    getContentsMargins ( &left, &top, &right, &bottom );
+    QMargins margins = contentsMargins();
     const int padding = 2;
 
     const int arrowLeft = buttonWidth - m_arrowWidth - padding;
-    const int arrowTop = ( ( buttonHeight - top - bottom) - m_arrowHeight )/2;
+    const int arrowTop = ( ( buttonHeight - margins.top() - margins.bottom()) - m_arrowHeight )/2;
     m_arrowRect = QRect( arrowLeft, arrowTop, m_arrowWidth, m_arrowHeight );
 
     drawHoverBackground( &painter );

@@ -38,10 +38,10 @@ using namespace Collections;
 
 CollectionLocation::CollectionLocation()
     :QObject()
-    , m_destination( 0 )
-    , m_source( 0 )
+    , m_destination( nullptr )
+    , m_source( nullptr )
     , m_sourceTracks()
-    , m_parentCollection( 0 )
+    , m_parentCollection( nullptr )
     , m_removeSources( false )
     , m_isRemoveAction( false )
     , m_noRemoveConfirmation( false )
@@ -52,8 +52,8 @@ CollectionLocation::CollectionLocation()
 
 CollectionLocation::CollectionLocation( Collections::Collection *parentCollection)
     :QObject()
-    , m_destination( 0 )
-    , m_source( 0 )
+    , m_destination( nullptr )
+    , m_source( nullptr )
     , m_sourceTracks()
     , m_parentCollection( parentCollection )
     , m_removeSources( false )
@@ -301,7 +301,7 @@ Transcoding::Configuration
 CollectionLocation::getDestinationTranscodingConfig()
 {
     Transcoding::Configuration configuration( Transcoding::JUST_COPY );
-    Collection *destCollection = destination() ? destination()->collection() : 0;
+    Collection *destCollection = destination() ? destination()->collection() : nullptr;
     if( !destCollection )
         return configuration;
     if( !destCollection->has<Capabilities::TranscodeCapability>() )
@@ -514,7 +514,7 @@ CollectionLocation::slotFinishCopy()
 
         if( m_destination )
             m_destination->deleteLater();
-        m_destination = 0;
+        m_destination = nullptr;
         this->deleteLater();
     }
 }
@@ -681,8 +681,9 @@ CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
         debug() << "transfer error for track" << track->playableUrl();
     }
 
-    QSet<Meta::TrackPtr> toRemove = QSet<Meta::TrackPtr>::fromList( tracks );
-    QSet<Meta::TrackPtr> errored = QSet<Meta::TrackPtr>::fromList( m_tracksWithError.keys() );
+    QSet<Meta::TrackPtr> toRemove(tracks.begin(), tracks.end());
+    QList<Meta::TrackPtr> trackswitherrorkeys=m_tracksWithError.keys();
+    QSet<Meta::TrackPtr> errored(trackswitherrorkeys.begin(), trackswitherrorkeys.end());
     toRemove.subtract( errored );
 
     // start the remove workflow

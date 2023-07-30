@@ -57,109 +57,109 @@ class MockQueryMaker : public QueryMaker
         QueryMaker *setQueryType( QueryType ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *addReturnValue( qint64 ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *addReturnFunction( ReturnFunction, qint64 ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *orderBy( qint64, bool ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *addMatch( const Meta::TrackPtr& ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *addMatch( const Meta::ArtistPtr& , ArtistMatchBehaviour ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *addMatch( const Meta::AlbumPtr& ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *addMatch( const Meta::ComposerPtr& ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *addMatch( const Meta::GenrePtr& ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *addMatch( const Meta::YearPtr& ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *addFilter( qint64, const QString&, bool, bool ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *excludeFilter( qint64, const QString&, bool, bool ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *addNumberFilter( qint64, qint64, NumberComparison ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *excludeNumberFilter( qint64, qint64, NumberComparison ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *limitMaxResultSize( int ) override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *beginAnd() override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *beginOr() override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         QueryMaker *endAndOr() override
         {
             Q_ASSERT_X( false, __PRETTY_FUNCTION__, "should not be called");
-            return 0;
+            return nullptr;
         }
 
         /**

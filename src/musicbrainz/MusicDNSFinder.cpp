@@ -79,7 +79,7 @@ void MusicDNSFinder::sendNewRequest()
     QPair < Meta::TrackPtr, QNetworkRequest > req = m_requests.takeFirst();
     QNetworkReply *reply = net->get( req.second );
     m_replyes.insert( reply, req.first );
-    connect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+    connect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred),
              this, &MusicDNSFinder::replyError );
     debug() << "Request sent: " << req.second.url().toString();
 }
@@ -115,7 +115,7 @@ MusicDNSFinder::replyError( QNetworkReply::NetworkError code )
     if( !m_replyes.contains( reply ) || code == QNetworkReply::NoError )
         return;
 
-    disconnect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+    disconnect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred),
                 this, &MusicDNSFinder::replyError );
 
     debug() << "Error occurred during network request: " << reply->errorString();

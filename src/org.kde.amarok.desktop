@@ -135,7 +135,7 @@ Comment[be]=Amarok - адкрыйце для сябе сваю музыку!
 Comment[bg]=Amarok - преоткрийте музиката!
 Comment[bs]=Amarok — otkrijte svoju muziku!
 Comment[ca]=Amarok - Redescobreix la teva música!
-Comment[ca@valencia]=Amarok - Redescobrix la teva música!
+Comment[ca@valencia]=Amarok - Redescobrix la teua música!
 Comment[cs]=AmaroK - znovu objevte svou hudbu.
 Comment[csb]=Amarok - òdrëjë znowa swòją mùzykã
 Comment[da]=Amarok - Genopdag din musik!
@@ -191,7 +191,7 @@ Comment[x-test]=xxAmarok - Rediscover Your Music!xx
 Comment[zh_CN]=Amarok - 重新感悟音乐之美！
 Comment[zh_TW]=Amarok - 重新探索您的音樂世界！
 Icon=amarok
-SingleMainWindow=True
+SingleMainWindow=true
 # Add pure audio formats here, for other formats see amarok_*.desktop files
 # See bug 242292
 MimeType=audio/aac;audio/mp4;audio/mpeg;audio/mpegurl;audio/vnd.rn-realaudio;audio/vorbis;audio/x-flac;audio/x-mp3;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudio;audio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-wav;application/x-ogm-audio;audio/x-vorbis+ogg;audio/ogg;
@@ -235,7 +235,7 @@ X-KDE-Keywords[sr@ijekavian]=music,podcast,музика,подемисија
 X-KDE-Keywords[sr@ijekavianlatin]=music,podcast,muzika,podemisija
 X-KDE-Keywords[sr@latin]=music,podcast,muzika,podemisija
 X-KDE-Keywords[sv]=musik,podsändning
-X-KDE-Keywords[tr]=müzik,podcast
+X-KDE-Keywords[tr]=müzik,podcast,pod yayını
 X-KDE-Keywords[uk]=music,podcast,музика,трансляція,подкаст
 X-KDE-Keywords[x-test]=xxmusicxx,xxpodcastxx
 X-KDE-Keywords[zh_CN]=music,podcast,音乐,播客

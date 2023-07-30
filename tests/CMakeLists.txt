@@ -13,6 +13,8 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_BINARY_DIR}/src
+)
+include_directories(SYSTEM
     ${GOOGLEMOCK_INCLUDE_DIR} )
 
 add_subdirectory( amarokurls )

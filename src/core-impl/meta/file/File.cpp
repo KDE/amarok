@@ -480,7 +480,7 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
     switch( type )
     {
         case Capabilities::Capability::BookmarkThis:
-            return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
+            return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( nullptr ) );
 
         case Capabilities::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityImpl( this );
@@ -499,14 +499,14 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
 #endif
 
         default:
-            return 0;
+            return nullptr;
     }
 }
 
 Meta::TrackEditorPtr
 Track::editor()
 {
-    return Meta::TrackEditorPtr( isEditable() ? this : 0 );
+    return Meta::TrackEditorPtr( isEditable() ? this : nullptr );
 }
 
 Meta::StatisticsPtr
@@ -580,8 +580,9 @@ Track::commitIfInNonBatchUpdate()
         return;
 
     // special case (shortcut) when writing statistics is disabled
+    QList<long long int> changeskeys=d->changes.keys();
     if( !AmarokConfig::writeBackStatistics() &&
-        (QSet<qint64>::fromList( d->changes.keys() ) - statFields).isEmpty() )
+        (QSet<qint64>( changeskeys.begin(), changeskeys.end() ) - statFields).isEmpty() )
     {
         d->changes.clear();
         return;

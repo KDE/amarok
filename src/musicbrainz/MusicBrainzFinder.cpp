@@ -127,7 +127,7 @@ MusicBrainzFinder::sendNewRequest()
     QPair<Meta::TrackPtr, QNetworkRequest> req = m_requests.takeFirst();
     QNetworkReply *reply = net->get( req.second );
     m_replies.insert( reply, req.first );
-    connect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+    connect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred),
              this, &MusicBrainzFinder::gotReplyError );
 
     debug() << "Request sent:" << req.second.url().toString();
@@ -155,7 +155,7 @@ MusicBrainzFinder::gotReplyError( QNetworkReply::NetworkError code )
         return;
 
     debug() << "Error occurred during network request:" << reply->errorString();
-    disconnect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
+    disconnect( reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred),
                 this, &MusicBrainzFinder::gotReplyError );
 
     // Send an empty result to populate the tagger.

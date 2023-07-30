@@ -317,7 +317,7 @@ SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type typ
         case Capabilities::Capability::Actions:
         {
             QList< QAction * > actions;
-            actions << new BookmarkCurrentTrackPositionAction( 0 );
+            actions << new BookmarkCurrentTrackPositionAction( nullptr );
             return new Capabilities::ActionsCapability( actions );
         }
         case Capabilities::Capability::WriteTimecode:
@@ -325,7 +325,7 @@ SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type typ
         case Capabilities::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityPodcastImpl( this );
         default:
-            return 0;
+            return nullptr;
     }
 }
 
@@ -544,7 +544,7 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     m_description = *(iter++);
     m_copyright = *(iter++);
     m_directory = QUrl( *(iter++) );
-    m_labels = QStringList( QString( *(iter++) ).split( QLatin1Char(','), QString::SkipEmptyParts ) );
+    m_labels = QStringList( QString( *(iter++) ).split( QLatin1Char(','), Qt::SkipEmptyParts ) );
     m_subscribeDate = QDate::fromString( *(iter++) );
     m_autoScan = sqlStorage->boolTrue() == *(iter++);
     m_fetchType = (*(iter++)).toInt() == DownloadWhenAvailable ? DownloadWhenAvailable : StreamOrDownloadOnDemand;

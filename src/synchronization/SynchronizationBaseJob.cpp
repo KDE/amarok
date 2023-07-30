@@ -34,8 +34,8 @@ SynchronizationBaseJob::SynchronizationBaseJob()
         : QObject()
         , m_state( NotStarted )
         , m_currentResultCount( 0 )
-        , m_collectionA( 0 )
-        , m_collectionB( 0 )
+        , m_collectionA( nullptr )
+        , m_collectionB( nullptr )
 {
     connect( &m_timer, &QTimer::timeout, this, &SynchronizationBaseJob::timeout );
     //abort syncing if both queries have not returned within 30 seconds for a given state

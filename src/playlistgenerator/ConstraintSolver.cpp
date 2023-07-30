@@ -34,6 +34,7 @@
 
 #include <QHash>
 #include <QMutexLocker>
+#include <QRandomGenerator>
 #include <QStringList>
 #include <QTimer>
 #include <ThreadWeaver/ThreadWeaver>
@@ -90,7 +91,7 @@ APG::ConstraintSolver::~ConstraintSolver()
     if ( m_qm ) {
         m_qm->abortQuery();
         m_qm->deleteLater();
-        m_qm = 0;
+        m_qm = nullptr;
     }
 }
 
@@ -125,7 +126,7 @@ APG::ConstraintSolver::requestAbort()
     if ( m_qm ) {
         m_qm->abortQuery();
         m_qm->deleteLater();
-        m_qm = 0;
+        m_qm = nullptr;
     }
     m_abortRequested = true;
 }
@@ -223,7 +224,7 @@ void
 APG::ConstraintSolver::receiveQueryMakerDone()
 {
     m_qm->deleteLater();
-    m_qm = 0;
+    m_qm = nullptr;
 
     if (( m_domain.size() > 0 ) || m_domainReductionFailed ) {
         if ( m_domain.size() <= 0 ) {
@@ -314,7 +315,7 @@ APG::ConstraintSolver::mutate_population( APG::ConstraintSolver::Population& pop
                 child->replace( QRandomGenerator::global()->generate() % s, random_track_from_domain() );
                 break;
             case 3:
-                child->swap( QRandomGenerator::global()->generate() % s, QRandomGenerator::global()->generate() % s );
+                child->swapItemsAt( QRandomGenerator::global()->generate() % s, QRandomGenerator::global()->generate() % s );
                 break;
             case 4:
                 child = crossover( child, parents.at( QRandomGenerator::global()->generate() % parents.size() ) );

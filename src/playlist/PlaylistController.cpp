@@ -347,7 +347,7 @@ Controller::removeRows( QList<int>& topModelRows )
     }
 
     if( bottomModelCmds.size() > 0 )
-        m_undoStack->push( new RemoveTracksCmd( 0, bottomModelCmds ) );
+        m_undoStack->push( new RemoveTracksCmd( nullptr, bottomModelCmds ) );
 
     Q_EMIT changed();
 }
@@ -357,7 +357,8 @@ Controller::removeDeadAndDuplicates()
 {
     DEBUG_BLOCK
 
-    QSet<Meta::TrackPtr> uniqueTracks = m_topModel->tracks().toSet();
+    QList<Meta::TrackPtr> uniqueTrackList = m_topModel->tracks();
+    QSet<Meta::TrackPtr> uniqueTracks(uniqueTrackList.begin(), uniqueTrackList.end());
     QList<int> topModelRowsToRemove;
 
     foreach( Meta::TrackPtr unique, uniqueTracks )
@@ -484,8 +485,8 @@ Controller::reorderRows( const QList<int> &from, const QList<int> &to )
 
     // validity check: each item should appear exactly once in both lists
     {
-        QSet<int> fromItems( from.toSet() );
-        QSet<int> toItems( to.toSet() );
+        QSet<int> fromItems( from.begin(), from.end() );
+        QSet<int> toItems( to.begin(), to.end() );
 
         if( fromItems.size() != from.size() || toItems.size() != to.size() || fromItems != toItems )
         {
@@ -506,7 +507,7 @@ Controller::reorderRows( const QList<int> &from, const QList<int> &to )
     }
 
     if( bottomModelCmds.size() > 0 )
-        m_undoStack->push( new MoveTracksCmd( 0, bottomModelCmds ) );
+        m_undoStack->push( new MoveTracksCmd( nullptr, bottomModelCmds ) );
 
     Q_EMIT changed();
 }
@@ -644,7 +645,7 @@ Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
         bottomModelCmds.append( InsertCmd( t, bottomModelRow++ ) );
 
     if( bottomModelCmds.size() > 0 )
-        m_undoStack->push( new InsertTracksCmd( 0, bottomModelCmds ) );
+        m_undoStack->push( new InsertTracksCmd( nullptr, bottomModelCmds ) );
 
     Q_EMIT changed();
 }

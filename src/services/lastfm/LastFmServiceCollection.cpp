@@ -26,7 +26,7 @@
 using namespace Collections;
 
 LastFmServiceCollection::LastFmServiceCollection( const QString &userName )
-    : ServiceCollection( 0, "last.fm", "last.fm" )
+    : ServiceCollection( nullptr, "last.fm", "last.fm" )
 {
     DEBUG_BLOCK
     Meta::ServiceGenre * userStreams = new Meta::ServiceGenre( i18n( "%1's Streams", userName ) );

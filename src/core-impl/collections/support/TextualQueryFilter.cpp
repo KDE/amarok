@@ -292,13 +292,13 @@ Collections::semanticDateTimeParser( const QString &text, bool *absolute )
     }
     else if( text.contains(shortDateReg) )
     {
-        result = QDateTime( QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ) );
+        result = QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ).startOfDay();
         if( absolute )
             *absolute = true;
     }
     else if( text.contains(longDateReg) )
     {
-        result = QDateTime( QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ) );
+        result = QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ).startOfDay();
         if( absolute )
             *absolute = true;
     }

@@ -49,7 +49,7 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_toolBar->addAction( addBookmarkAction );
     connect( addBookmarkaction, &QAction::triggered, BookmarkModel::instance(), &BookmarkModel::createNewBookmark );*/
 
-    m_toolBar->addWidget( new BookmarkCurrentButton( 0 ) );
+    m_toolBar->addWidget( new BookmarkCurrentButton( nullptr ) );
 
     m_searchEdit = new Amarok::LineEdit( topLayout );
     m_searchEdit->setPlaceholderText( i18n( "Filter bookmarks" ) );

@@ -34,9 +34,9 @@ QTEST_MAIN( TestSqlAlbum )
 
 TestSqlAlbum::TestSqlAlbum()
     : QObject()
-    , m_collection( 0 )
-    , m_storage( 0 )
-    , m_tmpDir( 0 )
+    , m_collection( nullptr )
+    , m_storage( nullptr )
+    , m_tmpDir( nullptr )
 {
 }
 

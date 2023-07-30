@@ -27,7 +27,7 @@
 BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
     : BoxWidget( true, parent )
     , m_name( name )
-    , m_parentList( 0 )
+    , m_parentList( nullptr )
 {
     setObjectName( name );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );

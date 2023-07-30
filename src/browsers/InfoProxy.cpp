@@ -26,11 +26,11 @@
 
 #include <KLocalizedString>
 
-InfoProxy * InfoProxy::m_instance = 0;
+InfoProxy * InfoProxy::m_instance = nullptr;
 
 InfoProxy * InfoProxy::instance()
 {
-    if ( m_instance == 0 )
+    if ( m_instance == nullptr )
         m_instance = new InfoProxy();
 
     return m_instance;

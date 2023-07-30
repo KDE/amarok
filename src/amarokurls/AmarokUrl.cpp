@@ -27,7 +27,7 @@
 
 AmarokUrl::AmarokUrl()
     : m_id( -1 )
-    , m_parent( 0 )
+    , m_parent( nullptr )
 {}
 
 AmarokUrl::AmarokUrl( const QString & urlString, const BookmarkGroupPtr &parent )

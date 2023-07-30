@@ -46,7 +46,7 @@ ScriptsConfig::ScriptsConfig( Amarok2ConfigDialog *parent )
     : ConfigDialogBase( parent )
     , m_configChanged( false )
     , m_parent( parent )
-    , m_oldSelector( 0 )
+    , m_oldSelector( nullptr )
 {
     DEBUG_BLOCK
     Ui::ScriptsConfig gui;

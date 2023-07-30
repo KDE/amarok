@@ -20,6 +20,7 @@
 #include <QIcon>
 
 #include <QHBoxLayout>
+#include <QMargins>
 #include <QPainter>
 #include <QStyleOption>
 
@@ -116,23 +117,22 @@ AnimatedBarWidget::paintEvent( QPaintEvent* event )
 
     drawHoverBackground(&painter);
 
-    int left, top, right, bottom;
-    getContentsMargins ( &left, &top, &right, &bottom );
+    const QMargins margins = contentsMargins();
     const int padding = 2;
     const int iconWidth = iconSize().width();
     const int iconHeight = iconSize().height();
-    const int iconTop = ( (buttonHeight - top - bottom) - iconHeight ) / 2;
+    const int iconTop = ( (buttonHeight - margins.top() - margins.bottom()) - iconHeight ) / 2;
 
     if( !m_animating )
     {
-        const QRect iconRect( left + padding, iconTop, iconWidth, iconHeight );
+        const QRect iconRect( margins.left() + padding, iconTop, iconWidth, iconHeight );
         painter.drawPixmap( iconRect, icon().pixmap( iconSize() ) );
     }
     else
-        m_animatedWidget->move( left + padding, iconTop );
+        m_animatedWidget->move( margins.left() + padding, iconTop );
 
-    const QRect textRect( left + (padding * 3) + iconWidth, top,
-                          buttonWidth - (left + padding * 3 + iconWidth) - padding, buttonHeight);
+    const QRect textRect( margins.left() + (padding * 3) + iconWidth, margins.top(),
+                          buttonWidth - (margins.left() + padding * 3 + iconWidth) - padding, buttonHeight);
     QFontMetrics fm( font() );
     painter.drawText( textRect, Qt::AlignVCenter | Qt::TextWordWrap, text() );
 }

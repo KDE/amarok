@@ -172,7 +172,7 @@ public:
         if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->createCapabilityInterface( type );
         else
-            return 0;
+            return nullptr;
     }
 
     bool isCompilation() const override

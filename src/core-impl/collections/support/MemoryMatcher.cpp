@@ -20,7 +20,7 @@
 using namespace Meta;
 
 MemoryMatcher::MemoryMatcher()
-    : m_next( 0 )
+    : m_next( nullptr )
 {
 }
 

@@ -1,4 +1,7 @@
 if (MTP_FOUND)
+   include_directories(SYSTEM
+       ${GLIB2_INCLUDE_DIR}
+   )
    include_directories(
        ${Amarok_SOURCE_DIR}/src
        ${Amarok_SOURCE_DIR}/src/core-impl/collections
@@ -9,7 +12,6 @@ if (MTP_FOUND)
        ${Amarok_SOURCE_DIR}/src/core-impl/collections/mtpcollection/handler
        ${Amarok_SOURCE_DIR}/src/core-impl/collections/mtpcollection/handler/capabilities
        ${Amarok_SOURCE_DIR}/src/core-impl/collections/mtpcollection/support
-       ${GLIB2_INCLUDE_DIR}
        ${CMAKE_BINARY_DIR}/src
        ${AMAROK_COLLECTION_SUPPORT_DIR}
 )

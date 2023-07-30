@@ -281,7 +281,7 @@ GpodderServiceModel::canFetchMore( const QModelIndex &parent ) const
 
     // already fetched or just started?
     GpodderTreeItem *treeItem = static_cast<GpodderTreeItem *>( parent.internalPointer() );
-    if( treeItem == 0 || treeItem->hasChildren() /* || m_currentFetchingMap.values().contains( parent ) */ )
+    if( treeItem == nullptr || treeItem->hasChildren() /* || m_currentFetchingMap.values().contains( parent ) */ )
     {
         return false;
     }

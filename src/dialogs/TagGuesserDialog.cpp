@@ -335,7 +335,7 @@ TagGuesserDialog::updatePreview()                 //SLOT
         m_optionsWidget->Comment_result,
         m_optionsWidget->Track_result,
         m_optionsWidget->Year_result,
-        0};
+        nullptr};
 
     for( int i = 0; fields[i]; i++ )
     {

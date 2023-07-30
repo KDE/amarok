@@ -22,6 +22,7 @@
 #include <QCryptographicHash>
 #include <QFile>
 #include <QFileInfo>
+#include <QRandomGenerator>
 #include <QString>
 
 #ifdef Q_WS_WIN
@@ -68,7 +69,7 @@ SafeFileSaver::prepareToSave()
     int i = 0;
     while( length-- )
     {
-        int r = qrand() % 62;
+        int r = QRandomGenerator::global()->generate() % 62;
         r+=48;
         if( r > 57 ) r+=7;
         if( r > 90 ) r+=6;

@@ -40,8 +40,8 @@
 
 Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
     : DynamicPlaylist( parent )
-    , m_bias( 0 )
-    , m_solver( 0 )
+    , m_bias( nullptr )
+    , m_solver( nullptr )
 {
     m_title = i18nc( "Title for a default dynamic playlist. The default playlist only returns random tracks.", "Random" );
 
@@ -51,8 +51,8 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QObject *parent )
 
 Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *parent )
     : DynamicPlaylist( parent )
-    , m_bias( 0 )
-    , m_solver( 0 )
+    , m_bias( nullptr )
+    , m_solver( nullptr )
 {
     while (!reader->atEnd()) {
         reader->readNext();
@@ -104,7 +104,7 @@ Dynamic::BiasedPlaylist::requestAbort()
     if( m_solver ) {
         m_solver->setAutoDelete( true );
         m_solver->requestAbort();
-        m_solver = 0;
+        m_solver = nullptr;
     }
 }
 
@@ -150,11 +150,11 @@ Dynamic::BiasedPlaylist::biasReplaced( const Dynamic::BiasPtr &oldBias, const Dy
     bool inModel = DynamicModel::instance()->index( this ).isValid();
     if( m_bias )
     {
-        disconnect( m_bias.data(), 0, this, 0 );
+        disconnect( m_bias.data(), nullptr, this, nullptr );
 
         if( inModel )
             Dynamic::DynamicModel::instance()->beginRemoveBias( this );
-        m_bias = 0;
+        m_bias = nullptr;
         if( inModel )
             Dynamic::DynamicModel::instance()->endRemoveBias();
     }
@@ -205,7 +205,7 @@ Dynamic::BiasedPlaylist::solverFinished()
     }
 
     m_solver->deleteLater();
-    m_solver = 0;
+    m_solver = nullptr;
 }
 
 

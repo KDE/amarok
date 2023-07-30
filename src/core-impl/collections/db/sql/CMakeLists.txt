@@ -39,6 +39,6 @@ if(APPLE)
 endif()
 
 set_target_properties(amarok-sqlcollection PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-install(TARGETS amarok-sqlcollection ${INSTALL_TARGETS_DEFAULT_ARGS} )
+install(TARGETS amarok-sqlcollection ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
 
 add_subdirectory( mysqlcollection )

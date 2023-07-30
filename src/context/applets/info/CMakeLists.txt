@@ -14,4 +14,4 @@ target_link_libraries(amarok_context_applet_info
 install(TARGETS amarok_context_applet_info DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/info)
 install(FILES plugin/qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/info)
 
-kpackage_install_bundled_package(package org.kde.amarok.info amarok)
+kpackage_install_package(package org.kde.amarok.info amarok)

@@ -56,7 +56,7 @@ class MetaCapabilityMock : public MetaCapability
             default:
                 break;
             }
-            return 0;
+            return nullptr;
         }
 
     private:
@@ -64,7 +64,7 @@ class MetaCapabilityMock : public MetaCapability
         static QList<QAction*> actionsList;
 };
 
-QAction *MetaCapabilityMock::action = new QAction( 0 );
+QAction *MetaCapabilityMock::action = new QAction( nullptr );
 QList<QAction*> MetaCapabilityMock::actionsList;
 
 // Create the static instances to be returned for testing
@@ -104,6 +104,6 @@ TestMetaCapability::testCreate()
     QVERIFY( metaCapability->create<Capabilities::BookmarkThisCapability>() == MetaCapabilityMock::bookmarkThisCapability );
 
     // these should not
-    QVERIFY( metaCapability->create<Capabilities::CollectionScanCapability>() == 0 );
-    QVERIFY( metaCapability->create<Capabilities::MultiSourceCapability>() == 0 );
+    QVERIFY( metaCapability->create<Capabilities::CollectionScanCapability>() == nullptr );
+    QVERIFY( metaCapability->create<Capabilities::MultiSourceCapability>() == nullptr );
 }

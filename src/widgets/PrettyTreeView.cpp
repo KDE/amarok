@@ -34,7 +34,7 @@ using namespace Amarok;
 
 PrettyTreeView::PrettyTreeView( QWidget *parent )
     : QTreeView( parent )
-    , m_decoratorActionPressed( 0 )
+    , m_decoratorActionPressed( nullptr )
 {
     setAlternatingRowColors( true );
     setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
@@ -120,10 +120,10 @@ PrettyTreeView::mousePressEvent( QMouseEvent *event )
 
     // reset state variables on every mouse button press
     m_expandCollapsePressedAt.reset();
-    m_decoratorActionPressed = 0;
+    m_decoratorActionPressed = nullptr;
 
     // if root is decorated, it doesn't show any actions
-    QAction *action = rootIsDecorated() ? 0 : decoratorActionAt( index, event->pos() );
+    QAction *action = rootIsDecorated() ? nullptr : decoratorActionAt( index, event->pos() );
     if( action &&
         event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
@@ -163,10 +163,10 @@ PrettyTreeView::mouseReleaseEvent( QMouseEvent *event )
     QScopedPointer<QPoint> expandCollapsePressedAt( m_expandCollapsePressedAt.take() );
     // ditto for m_decoratorActionPressed
     QAction *decoratorActionPressed = m_decoratorActionPressed;
-    m_decoratorActionPressed = 0;
+    m_decoratorActionPressed = nullptr;
 
     // if root is decorated, it doesn't show any actions
-    QAction *action = rootIsDecorated() ? 0 : decoratorActionAt( index, event->pos() );
+    QAction *action = rootIsDecorated() ? nullptr : decoratorActionAt( index, event->pos() );
     if( action &&
         action == decoratorActionPressed &&
         event->button() == Qt::LeftButton &&
@@ -184,7 +184,7 @@ PrettyTreeView::mouseReleaseEvent( QMouseEvent *event )
         state() == QTreeView::NoState &&
         expandCollapsePressedAt &&
         ( *expandCollapsePressedAt - event->pos() ).manhattanLength() < QApplication::startDragDistance() &&
-        style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, 0, this ) &&
+        style()->styleHint( QStyle::SH_ItemView_ActivateItemOnSingleClick, nullptr, this ) &&
         model()->hasChildren( index ) )
     {
         setExpanded( index, !isExpanded( index ) );
@@ -203,7 +203,7 @@ PrettyTreeView::viewportEvent( QEvent *event )
         QHelpEvent *helpEvent = static_cast<QHelpEvent *>( event );
         const QModelIndex index = indexAt( helpEvent->pos() );
         // if root is decorated, it doesn't show any actions
-        QAction *action = rootIsDecorated() ? 0 : decoratorActionAt( index, helpEvent->pos() );
+        QAction *action = rootIsDecorated() ? nullptr : decoratorActionAt( index, helpEvent->pos() );
         if( action )
         {
             QToolTip::showText( helpEvent->globalPos(), action->toolTip() );

@@ -18,7 +18,7 @@
 #define AMAROK2CONFIGDIALOG_H
 
 #include <KConfigDialog>
-#include <KConfigSkeleton>
+#include <KCoreConfigSkeleton>
 #include <KWindowConfig>
 
 
@@ -32,7 +32,7 @@ class Amarok2ConfigDialog : public KConfigDialog
     Q_OBJECT
 
     public:
-        Amarok2ConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config );
+        Amarok2ConfigDialog( QWidget *parent, const char* name, KCoreConfigSkeleton *config );
         ~Amarok2ConfigDialog() override;
 
         void addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName,

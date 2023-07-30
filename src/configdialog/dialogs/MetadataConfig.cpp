@@ -64,7 +64,7 @@ MetadataConfig::MetadataConfig( Amarok2ConfigDialog *parent )
     connect( m_useCharsetDetector, &QCheckBox::toggled, this, &MetadataConfig::changed );
 
     StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
-    StatSyncing::Config *config = controller ? controller->config() : 0;
+    StatSyncing::Config *config = controller ? controller->config() : nullptr;
     m_statSyncingConfig = config;
     m_statSyncingProvidersView->setModel( config );
     m_synchronizeButton->setIcon( QIcon::fromTheme( QStringLiteral("amarok_playcount") ) );
@@ -151,7 +151,7 @@ MetadataConfig::~MetadataConfig()
 {
     if( m_statSyncingConfig )
     {
-        disconnect( this, &MetadataConfig::changed, 0, 0 );
+        disconnect( this, &MetadataConfig::changed, nullptr, nullptr );
         m_statSyncingConfig.data()->read(); // reset unsaved changes
     }
 }

@@ -208,7 +208,7 @@ void ProgressiveSearchWidget::noMatch()
     const KStatefulBrush backgroundBrush( KColorScheme::View, KColorScheme::NegativeBackground );
 
     QPalette p = m_searchEdit->palette();
-    p.setColor( QPalette::Base, backgroundBrush.brush( m_searchEdit ).color() );
+    p.setColor( QPalette::Base, backgroundBrush.brush( p ).color() );
     m_searchEdit->setPalette( p );
 }
 

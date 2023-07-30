@@ -41,7 +41,7 @@
 EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     : QDialog( parent )
     , m_ui( new Ui::EditFilterDialog )
-    , m_curToken( 0 )
+    , m_curToken( nullptr )
     , m_separator( " AND " )
     , m_isUpdating()
 {
@@ -162,7 +162,7 @@ EditFilterDialog::slotTokenSelected( Token *token )
     m_curToken = token;
 
     if( m_curToken && m_curToken->value() > Meta::valCustom )   // OR / AND tokens case
-        m_curToken = 0;
+        m_curToken = nullptr;
 
     updateAttributeEditor();
 }
@@ -175,7 +175,7 @@ EditFilterDialog::slotTokenRemoved( Token *token )
     m_filters.take( token );
     if( m_curToken == token )
     {
-        m_curToken = 0;
+        m_curToken = nullptr;
         updateAttributeEditor();
     }
 
@@ -321,17 +321,17 @@ EditFilterDialog::updateDropTarget( const QString &text )
                 // for relative time specifications numValue is a time difference in seconds 'pointing to the past'
                 if( date.isValid() )
                 {
-                    filter.filter.numValue = QDateTime( date ).toSecsSinceEpoch();
+                    filter.filter.numValue = date.startOfDay().toSecsSinceEpoch();
                     isDateAbsolute = true;
                 }
                 else if( strTime.contains(shortDateReg) )
                 {
-                    filter.filter.numValue = QDateTime( QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ) ).toSecsSinceEpoch();
+                    filter.filter.numValue = QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ).startOfDay().toSecsSinceEpoch();
                     isDateAbsolute = true;
                 }
                 else if( strTime.contains(longDateReg) )
                 {
-                    filter.filter.numValue = QDateTime( QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ) ).toSecsSinceEpoch();
+                    filter.filter.numValue =  QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ).startOfDay().toSecsSinceEpoch();
                     isDateAbsolute = true;
                 }
                 else

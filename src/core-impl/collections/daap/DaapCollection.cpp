@@ -41,7 +41,7 @@ using namespace Collections;
 
 DaapCollectionFactory::DaapCollectionFactory()
     : Collections::CollectionFactory()
-    , m_browser( 0 )
+    , m_browser( nullptr )
 {
 }
 
@@ -90,7 +90,7 @@ DaapCollectionFactory::connectToManualServers()
     foreach( const QString &server, sl )
     {
         debug() << "Adding server " << server;
-        QStringList current = server.split( QLatin1Char(':'), QString::KeepEmptyParts );
+        QStringList current = server.split( QLatin1Char(':'), Qt::KeepEmptyParts );
         //handle invalid urls gracefully
         if( current.count() < 2 )
             continue;

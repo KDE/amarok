@@ -44,7 +44,7 @@ void AmarokDockWidget::setMovable( bool movable )
     if( movable )
     {
         const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable;
-        setTitleBarWidget( 0 );
+        setTitleBarWidget( nullptr );
         setFeatures( features );
     }
     else
