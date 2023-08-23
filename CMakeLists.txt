@@ -292,8 +292,12 @@ if( WITH_PLAYER )
         set_package_properties( GLIB2 PROPERTIES DESCRIPTION "Required by libgpod and mp3tunes" URL "http://www.gtk.org" TYPE OPTIONAL )
     endif()
 
-    find_package(PythonInterp)
-    set_package_properties( PYTHON PROPERTIES DESCRIPTION "Required for generating the autocompletion file for the script console" URL "https://www.python.org" TYPE OPTIONAL )
+    find_package(Python3 COMPONENTS Interpreter)
+    set_package_properties(Python3 PROPERTIES
+        DESCRIPTION "Required for generating the autocompletion file for the script console"
+        URL "https://www.python.org"
+        TYPE OPTIONAL
+    )
 
     find_package(FFTW3 REQUIRED)
 
