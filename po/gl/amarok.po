@@ -11887,7 +11887,7 @@ msgid ""
 "\n"
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
-"Elixiu agochar a barra do menú.\n"
+"Elixiu agochar a barra de menú.\n"
 "\n"
 "Lembre que sempre pode usar o atallo «%1» para que volva a amosarse."
 
