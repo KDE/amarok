@@ -3490,7 +3490,7 @@ msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the file."
 msgstr ""
-"Escriu les estadístiques de reproducció canviants (p. ex. punts, última "
+"Escriu les estadístiques de reproducció canviants (p. ex., punts, última "
 "reproducció o recompte de reproduccions)\n"
 "com a etiquetes en el fitxer."
 
@@ -4315,7 +4315,7 @@ msgid ""
 msgstr ""
 "Açò vos ajudarà a mantindre ordenades les etiquetes de la col·lecció "
 "substituint les etiquetes descarregades segons les vostres preferències.\n"
-"P. ex. «hip hop» -> «hip-hop»"
+"P. ex., «hip hop» -> «hip-hop»"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: context/applets/labels/labelsReplacementSettings.ui:98
@@ -8712,7 +8712,7 @@ msgid ""
 "Empty commands are not executed."
 msgstr ""
 "Establiu ací una ordre que s'executarà just abans de connectar-se amb el "
-"dispositiu (p. ex. una ordre «mount»).\n"
+"dispositiu (p. ex., una ordre «mount»).\n"
 "%d se substituirà pel node del dispositiu i %m pel punt de muntatge.\n"
 "Una ordre buida no s'executarà."
 
@@ -8735,7 +8735,7 @@ msgid ""
 "Empty commands are not executed."
 msgstr ""
 "Establiu ací una ordre que s'executarà just després de desconnectar-se del "
-"dispositiu (p. ex. una ordre «eject»).\n"
+"dispositiu (p. ex., una ordre «eject»).\n"
 "%d se substituirà pel node del dispositiu i %m pel punt de muntatge.\n"
 "Una ordre buida no s'executarà."
 
@@ -12071,7 +12071,7 @@ msgstr "Personalitzada"
 #, kde-format
 msgid ""
 "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%)."
-msgstr "Un valor fix (absolut), o un valor relatiu (p. ex. 128px o 12%)."
+msgstr "Un valor fix (absolut), o un valor relatiu (p. ex., 128px o 12%)."
 
 #: playlist/layouts/LayoutEditDialog.cpp:105
 #, kde-format
