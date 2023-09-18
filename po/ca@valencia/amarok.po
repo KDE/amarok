@@ -3760,8 +3760,8 @@ msgid ""
 "replaced. Does nothing if something is already playing.</html>"
 msgstr ""
 "<html>Activeu esta opció per a iniciar la reproducció quan s'afigen una o "
-"més peces a la llista de reproducció utilitzant el ratolí, prement Retorn o "
-"quan la llista de reproducció se substituïsca. No farà res si ja hi ha "
+"més peces a la llista de reproducció utilitzant el ratolí, prement «Retorn» "
+"o quan la llista de reproducció se substituïsca. No farà res si ja hi ha "
 "alguna cosa en reproducció.</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_StartPlayingOnAdd)
