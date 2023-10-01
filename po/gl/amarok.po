@@ -1458,7 +1458,7 @@ msgstr "Punto de montaxe"
 #: amarokconfig.kcfg:480
 #, kde-format
 msgid "The mount point used for the media device connection."
-msgstr "O punto de montaxe utilizado para a conexión ao dispositivo de medios."
+msgstr "O punto de montaxe usado para a conexión ao dispositivo de medios."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:483
@@ -1470,7 +1470,7 @@ msgstr "Orde de montaxe"
 #: amarokconfig.kcfg:484
 #, kde-format
 msgid "The mount command used for the media device connection."
-msgstr "A orde de montaxe utilizada pola conexión ao dispositivo de medios."
+msgstr "A orde de montaxe usada pola conexión ao dispositivo de medios."
 
 # skip-rule: PT-2010-dual_command
 #. i18n: ectx: label, entry, group (MediaDevice)
@@ -1483,7 +1483,7 @@ msgstr "Orde de desmontaxe"
 #: amarokconfig.kcfg:488
 #, kde-format
 msgid "The umount command used for the media device connection."
-msgstr "A orde de desmontaxe utilizada pola conexión do dispositivo de medios."
+msgstr "A orde de desmontaxe usada pola conexión do dispositivo de medios."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:491
@@ -1591,7 +1591,7 @@ msgid ""
 "Whether Amarok uses its own internal database, as opposed to an external "
 "engine."
 msgstr ""
-"Se Amarok utiliza a súa propia base de datos interna, como oposto a un motor "
+"Se Amarok usa a súa propia base de datos interna, como oposto a un motor "
 "externo."
 
 #. i18n: ectx: label, entry, group (MySQL)
@@ -1620,7 +1620,7 @@ msgstr ""
 #: amarokconfig.kcfg:567
 #, kde-format
 msgid "Username used to access the external database."
-msgstr "Nome de usuario utilizado para acceder á base de datos externa."
+msgstr "Nome de usuario usado para acceder á base de datos externa."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:571
@@ -1704,7 +1704,7 @@ msgstr ""
 #: amarokconfig.kcfg:618
 #, kde-format
 msgid "The style to use when painting the moodbar"
-msgstr "O estilo a utilizar cando se debuxe a barra de ánimo"
+msgstr "O estilo a usar cando se debuxe a barra de ánimo"
 
 #. i18n: ectx: label, entry, group (PlaylistGenerator)
 #: amarokconfig.kcfg:625
@@ -3732,13 +3732,13 @@ msgstr "%"
 #: configdialog/dialogs/NotificationsConfig.ui:274
 #, kde-format
 msgid "Check to use the system notification."
-msgstr "Marque para utilizar as notificacións do sistema."
+msgstr "Marque para usar as notificacións do sistema."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_KNotifyEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:277
 #, kde-format
 msgid "Use &system notifications"
-msgstr "Utilizar notificacións do &sistema"
+msgstr "Usar notificacións do &sistema"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:38
 #, kde-format
@@ -4459,7 +4459,7 @@ msgstr "Coincide: %1%"
 #: context/applets/similarartists/ArtistWidget.cpp:278
 #, kde-format
 msgid "Unable to fetch the picture: %1"
-msgstr "Non se pode obter a imaxe: %1"
+msgstr "Non é posíbel obter a imaxe: %1"
 
 #: context/applets/similarartists/ArtistWidget.cpp:287
 #, kde-format
@@ -5047,7 +5047,7 @@ msgstr "Configuración de idioma de Wikipedia"
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:267
 #, kde-format
 msgid "Unable to retrieve Wikipedia information: %1"
-msgstr "Non se pode obter a información de Wikipedia: %1"
+msgstr "Non é posíbel obter a información de Wikipedia: %1"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:90
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:246
@@ -5114,7 +5114,7 @@ msgstr "Non se atoparon etiquetas en Last.fm"
 #: context/engines/labels/LabelsEngine.cpp:319
 #, kde-format
 msgid "Unable to retrieve from Last.fm"
-msgstr "Non se pode recuperar de Last.fm"
+msgstr "Non é posíbel recuperar de Last.fm"
 
 #: context/engines/labels/LabelsEngine.cpp:369
 #, kde-format
@@ -5378,13 +5378,13 @@ msgid ""
 "Updating Amarok database schema. Please don't terminate Amarok now as it may "
 "result in database corruption."
 msgstr ""
-"Estase a actualizar o esquema de bases de datos de Amarok. Non termine "
-"Amarok agora porque podería causar a corrupción da base de datos."
+"Actualizando o esquema de bases de datos de Amarok. Non termine Amarok agora "
+"porque podería causar a corrupción da base de datos."
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:245
 #, kde-format
 msgid "Updating Amarok database schema"
-msgstr "Estase a actualizar o esquema da base de datos de Amarok"
+msgstr "Actualizando o esquema da base de datos de Amarok"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:532
 #, kde-format
@@ -5394,7 +5394,7 @@ msgstr "A pista orixinal non existe: %1"
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:543
 #, kde-format
 msgid "Could not create directory: %1"
-msgstr "Non se puido crear o cartafol: %1"
+msgstr "Non foi posíbel crear o cartafol: %1"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
 #, kde-format
@@ -5520,10 +5520,10 @@ msgid_plural ""
 "Failed to process %1 tracks. (more info about these is in the Amarok "
 "debugging log)"
 msgstr[0] ""
-"Non se puido procesar unha pista (hai máis información sobre isto no "
+"Non foi posíbel procesar unha pista (hai máis información sobre isto no "
 "rexistro de depuración de Amarok)"
 msgstr[1] ""
-"Non se puideron procesar %1 pistas (hai máis información sobre isto no "
+"Non foi posíbel procesar %1 pistas (hai máis información sobre isto no "
 "rexistro de depuración de Amarok)"
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:318
@@ -5661,8 +5661,8 @@ msgstr "Causas do erro: %1<br>"
 #, kde-format
 msgid "Removing one track from iPod"
 msgid_plural "Removing %1 tracks from iPod"
-msgstr[0] "Estase a retirar unha pista do iPod"
-msgstr[1] "Estase a retirar %1 pistas do iPod"
+msgstr[0] "Retirando unha pista do iPod"
+msgstr[1] "Retirando %1 pistas do iPod"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:57
 #, kde-format
@@ -5779,7 +5779,7 @@ msgstr "Ficheiro SysInfoExtended:"
 #, kde-format
 msgid "Cannot parse iTunes database due to an unreported error."
 msgstr ""
-"Non se pode examinar a base de datos de iTunes por mor dun erro do que non "
+"Non é posíbel examinar a base de datos de iTunes por mor dun erro do que non "
 "se informou."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:57
@@ -5920,21 +5920,21 @@ msgstr ""
 #, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo: %1"
-msgstr "Non se puido escribir en SysInfo: %1"
+msgstr "Non foi posíbel escribir en SysInfo: %1"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:439
 #, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo file due to an unreported error"
 msgstr ""
-"Non se puido escribir no ficheiro SysInfo por causa dun erro do que non se "
-"informou"
+"Non foi posíbel escribir no ficheiro SysInfo por causa dun erro do que non "
+"se informou"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:461
 #, kde-format
 msgid "Cannot initialize iPod due to an unreported error."
 msgstr ""
-"Non se pode inicializar o iPod por causa dun erro do que non se informou."
+"Non é posíbel inicializar o iPod por causa dun erro do que non se informou."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:314
 #, kde-format
@@ -5975,8 +5975,8 @@ msgstr "Transferindo pistas ao dispositivo"
 #, kde-format
 msgid "%1 track failed to copy to the device"
 msgid_plural "%1 tracks failed to copy to the device"
-msgstr[0] "Non se puido copiar %1 pista no dispositivo"
-msgstr[1] "Non se puideron copiar %1 pistas no dispositivo"
+msgstr[0] "Non foi posíbel copiar %1 pista no dispositivo"
+msgstr[1] "Non foi posíbel copiar %1 pistas no dispositivo"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:561
 #, kde-format
@@ -6029,12 +6029,12 @@ msgstr "Podcasts en %1"
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:152
 #, kde-format
 msgid "Could not connect to MTP Device"
-msgstr "Non se puido conectar co dispositivo MTP"
+msgstr "Non foi posíbel conectar co dispositivo MTP"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:378
 #, kde-format
 msgid "Could not copy track from device."
-msgstr "Non se puido copiar a pista desde o dispositivo."
+msgstr "Non foi posíbel copiar a pista desde o dispositivo."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
 #: core/meta/Meta.cpp:300
@@ -6053,7 +6053,7 @@ msgstr "Xénero descoñecido"
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:910
 #, kde-format
 msgid "Could not delete item"
-msgstr "Non se puido eliminar o elemento"
+msgstr "Non foi posíbel eliminar o elemento"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:603
 #, kde-format
@@ -6063,7 +6063,7 @@ msgstr "A eliminación fallou"
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:883
 #, kde-format
 msgid "Could not save playlist."
-msgstr "Non se puido gardar a lista de reprodución."
+msgstr "Non foi posíbel gardar a lista de reprodución."
 
 #: core-impl/collections/playdarcollection/PlaydarCollection.cpp:123
 #, kde-format
@@ -6156,7 +6156,7 @@ msgstr[1] ""
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:80
 #, kde-format
 msgid "Unable to remove tracks"
-msgstr "Non se poden retirar as pistas"
+msgstr "Non é posíbel retirar as pistas"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:88
 #, kde-format
@@ -6371,7 +6371,7 @@ msgstr "O URL non corresponde a un ficheiro local."
 #, kde-format
 msgid "Could not create a temporary file to download playlist."
 msgstr ""
-"Non se puido crear un ficheiro temporal para descargar a lista de "
+"Non foi posíbel crear un ficheiro temporal para descargar a lista de "
 "reprodución."
 
 #: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:70
@@ -6383,7 +6383,7 @@ msgstr "Descargando a lista de reprodución remota"
 #, kde-format
 msgctxt "%1 is file path"
 msgid "Cannot read playlist from %1"
-msgstr "Non se pode ler a lista de reprodución de %1"
+msgstr "Non é posíbel ler a lista de reprodución de %1"
 
 #: core-impl/playlists/types/file/PlaylistFileSupport.cpp:122
 #, kde-format
@@ -6697,7 +6697,7 @@ msgstr "Cancelar a descarga e saír."
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
-msgstr "Non se pode gardar o ficheiro co episodio do podcast en %1"
+msgstr "Non é posíbel gardar o ficheiro co episodio do podcast en %1"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
 #, kde-format
@@ -6792,7 +6792,7 @@ msgstr ""
 #: core-impl/storage/StorageManager.cpp:162
 #, kde-format
 msgid "The configured database plugin could not be loaded."
-msgstr "Non se puido cargar o complemento de base de datos configurado."
+msgstr "Non foi posíbel cargar o complemento de base de datos configurado."
 
 #: core/collections/CollectionLocation.cpp:381
 #, kde-format
@@ -7755,7 +7755,7 @@ msgid ""
 "anything above <b>205kb/s</b> is probably overkill."
 msgstr ""
 "A taxa de bits é unha medida da cantidade de datos usados para representar "
-"un segundo da pista de son. <br>O codificador <b>MP3</b></b> utilizado por "
+"un segundo da pista de son. <br>O codificador <b>MP3</b></b> usado por "
 "Amarok admite unha configuración de <a href=http://en.wikipedia.org/wiki/"
 "Variable_bitrate#VBR>taxa de bits variábel (VBR)</a>, o que significa que o "
 "valor da taxa de bits varía ao longo da pista en función da complexidade do "
@@ -7810,7 +7810,7 @@ msgid ""
 "anything above <b>256kb/s</b> is probably overkill."
 msgstr ""
 "A taxa de bits é unha medida da cantidade de datos usados para representar "
-"un segundo da pista de son. <br>O codificador <b>Opus</b></b> utilizado por "
+"un segundo da pista de son. <br>O codificador <b>Opus</b></b> usado por "
 "Amarok admite unha configuración de <a href=http://gl.wikipedia.org/wiki/"
 "Taxa_de_bits>taxa de bits variábel (VBR)</a>, o que significa que o valor da "
 "taxa de bits varía ao longo da pista en función da complexidade do contido "
@@ -7862,8 +7862,8 @@ msgid ""
 "music and anything above <b>-q8</b> is probably overkill."
 msgstr ""
 "A taxa de bits é unha medida da cantidade de datos usados para representar "
-"un segundo da pista de son. <br>O codificador <b>Vorbis</b></b> utilizado "
-"por Amarok admite unha configuración de <a href=http://en.wikipedia.org/wiki/"
+"un segundo da pista de son. <br>O codificador <b>Vorbis</b></b> usado por "
+"Amarok admite unha configuración de <a href=http://en.wikipedia.org/wiki/"
 "Vorbis#Technical_details>taxa de bits variábel (VBR)</a>, o que significa "
 "que o valor da taxa de bits varía ao longo da pista en función da "
 "complexidade do contido do son. Os intervalos máis complexos de datos "
@@ -8020,7 +8020,7 @@ msgstr "Cancelouse a descarga da portada de «%1»."
 #: covermanager/CoverFetcher.cpp:447
 #, kde-format
 msgid "Unable to find a cover for '%1'."
-msgstr "Non se pode atopar unha portada para «%1»."
+msgstr "Non é posíbel atopar unha portada para «%1»."
 
 #: covermanager/CoverFetchingActions.cpp:47
 #, kde-format
@@ -8127,12 +8127,12 @@ msgstr "Sitio no que gardar a portada"
 #: covermanager/CoverFoundDialog.cpp:434 covermanager/CoverFoundDialog.cpp:453
 #, kde-format
 msgid "Sorry, the cover could not be saved."
-msgstr "Non se puido gardar a portada."
+msgstr "Non foi posíbel gardar a portada."
 
 #: covermanager/CoverFoundDialog.cpp:518
 #, kde-format
 msgid "Sorry, the cover image could not be retrieved."
-msgstr "Non se puido recuperar a portada."
+msgstr "Non foi posíbel recuperar a portada."
 
 #: covermanager/CoverFoundDialog.cpp:538
 #, kde-format
@@ -8413,7 +8413,7 @@ msgstr "Vista de portada"
 #: databaseimporter/SqlBatchImporter.cpp:83
 #, kde-format
 msgid "Could not open file \"%1\"."
-msgstr "Non se puido abrir o ficheiro «%1»."
+msgstr "Non foi posíbel abrir o ficheiro «%1»."
 
 #: databaseimporter/SqlBatchImporterConfig.cpp:39
 #, kde-format
@@ -10682,7 +10682,7 @@ msgstr "A letra obtida está baleira"
 #: lyrics/LyricsManager.cpp:110
 #, kde-format
 msgid "Lyrics data could not be parsed"
-msgstr "Non se puideron procesar os datos da letra"
+msgstr "Non foi posíbel procesar os datos da letra"
 
 #: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
 #, kde-format
@@ -12214,7 +12214,7 @@ msgstr ""
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
 #, kde-format
 msgid "Cannot create a layout with no name."
-msgstr "Non se pode crear un deseño sen nome."
+msgstr "Non é posíbel crear un deseño sen nome."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
@@ -12231,12 +12231,12 @@ msgstr "Hai un erro no nome do deseño"
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
 #, kde-format
 msgid "Cannot create a layout with the same name as an existing layout."
-msgstr "Non se pode crear o deseño, xa existe outro co mesmo nome."
+msgstr "Non é posíbel crear o deseño, xa existe outro co mesmo nome."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
 #, kde-format
 msgid "Cannot create a layout containing '/'."
-msgstr "Non se pode crear o deseño, o nome non pode conter «/»."
+msgstr "Non é posíbel crear o deseño, o nome non pode conter «/»."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:208
 #, kde-format
@@ -12268,7 +12268,7 @@ msgstr "Non pode renomear un deseño para que quede sen nome."
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
 #, kde-format
 msgid "Cannot rename a layout to have the same name as an existing layout."
-msgstr "Non se pode renomear o deseño, xa existe outro co mesmo nome."
+msgstr "Non é posíbel renomear o deseño, xa existe outro co mesmo nome."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:406
 #, kde-format
@@ -12950,7 +12950,7 @@ msgstr "Preferencias de restricións de puntos de control"
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:35
 #, kde-format
 msgid "Select the track that you want to use as the checkpoint."
-msgstr "Escolla a pista que quere utilizar como punto de control."
+msgstr "Escolla a pista que quere usar como punto de control."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:48
@@ -14052,17 +14052,17 @@ msgstr "Predefinición exportada a %1"
 #: playlistgenerator/PresetModel.cpp:223
 #, kde-format
 msgid "Preset could not be exported to %1"
-msgstr "Non se puido exportar a predefinición a %1"
+msgstr "Non foi posíbel exportar a predefinición a %1"
 
 #: playlistgenerator/PresetModel.cpp:241
 #, kde-format
 msgid "Presets could not be imported from %1"
-msgstr "Non se puideron importar as predefinicións desde %1"
+msgstr "Non foi posíbel importar as predefinicións desde %1"
 
 #: playlistgenerator/PresetModel.cpp:248
 #, kde-format
 msgid "%1 could not be opened for preset import"
-msgstr "Non se puido abrir %1 para importar as predefinicións"
+msgstr "Non foi posíbel abrir %1 para importar as predefinicións"
 
 #: playlistgenerator/PresetModel.cpp:253
 #, kde-format
@@ -14107,7 +14107,7 @@ msgstr "Ficheiros de listas de reprodución no disco"
 #: playlistmanager/file/PlaylistFileProvider.cpp:289
 #, kde-format
 msgid "The playlist file \"%1\" could not be loaded."
-msgstr "Non se puido cargar o ficheiro de lista de reprodución «%1»."
+msgstr "Non foi posíbel cargar o ficheiro de lista de reprodución «%1»."
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:285
 #, kde-format
@@ -14174,12 +14174,12 @@ msgstr "Interrompendo a exploración co erro: %1"
 #: scanner/GenericScannerJob.cpp:208
 #, kde-format
 msgid "Could not find amarokcollectionscanner!"
-msgstr "Non se puido atopar amarokcollectionscanner!"
+msgstr "Non foi posíbel atopar amarokcollectionscanner!"
 
 #: scanner/GenericScannerJob.cpp:269
 #, kde-format
 msgid "Unable to start Amarok collection scanner."
-msgstr "Non se pode iniciar o explorador de coleccións de Amarok."
+msgstr "Non é posíbel iniciar o explorador de coleccións de Amarok."
 
 #: scanner/GenericScannerJob.cpp:318
 #, kde-format
@@ -14200,7 +14200,7 @@ msgid ""
 "A KDE text-editor component could not be found.\n"
 "Please check your KDE installation.  Exiting the console!"
 msgstr ""
-"Non se puido atopar ningún compoñente de editor de textos de KDE.\n"
+"Non foi posíbel atopar ningún compoñente de editor de textos de KDE.\n"
 "Comprobe a instalación de KDE. Saíndo da consola…"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:78
@@ -14372,8 +14372,8 @@ msgid ""
 "Use Amarok as a seamless frontend to your Ampache server. This lets you "
 "browse and play all the Ampache contents from within Amarok."
 msgstr ""
-"Utilizar Amarok como interface transparente para o seu servidor Ampache. "
-"Isto permítelle navegar e reproducir os contidos de Ampache desde dentro de "
+"Usar Amarok como interface transparente para o seu servidor Ampache. Isto "
+"permítelle navegar e reproducir os contidos de Ampache desde dentro de "
 "Amarok."
 
 #: services/ampache/AmpacheServiceCollection.cpp:61
@@ -14557,7 +14557,8 @@ msgstr ""
 #: services/gpodder/GpodderServiceSettings.cpp:189
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
-msgstr "Non se pode conectar co servizo de gpodder.net ou produciuse un erro."
+msgstr ""
+"Non é posíbel conectar co servizo de gpodder.net ou produciuse un erro."
 
 #: services/gpodder/GpodderServiceSettings.cpp:205
 #, kde-format
@@ -14970,7 +14971,7 @@ msgstr "Radio persoal do amigo"
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
 msgstr ""
-"Non se puido abrir a carteira de KDE para ler as credenciais de Last.fm."
+"Non foi posíbel abrir a carteira de KDE para ler as credenciais de Last.fm."
 
 #: services/lastfm/LastFmServiceConfig.cpp:271
 #, kde-format
@@ -14997,7 +14998,7 @@ msgstr "Probar o acceso"
 #: services/lastfm/LastFmServiceSettings.cpp:173
 #, kde-format
 msgid "Unable to connect to Last.fm service."
-msgstr "Non se pode conectar co servizo Last.fm."
+msgstr "Non é posíbel conectar co servizo Last.fm."
 
 #: services/lastfm/LastFmTreeModel.cpp:129
 #, kde-format
@@ -15460,7 +15461,7 @@ msgstr ""
 #: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
 msgid "Could not process download"
-msgstr "Non se puido procesar a descarga"
+msgstr "Non foi posíbel procesar a descarga"
 
 #: services/magnatune/MagnatuneDownloadInfo.cpp:210
 #, kde-format

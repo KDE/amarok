@@ -32,7 +32,7 @@ msgstr "Non se atopa o ficheiro «%1»."
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
-msgstr "Non se puido abrir o ficheiro «%1»."
+msgstr "Non foi posíbel abrir o ficheiro «%1»."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:372
 #, qt-format
