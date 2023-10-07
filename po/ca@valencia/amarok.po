@@ -2447,7 +2447,7 @@ msgid ""
 "selecting tracks for you, based on a number of parameters that you select."
 msgstr ""
 "Amb una llista de reproducció dinàmica, Amarok esdevé el vostre PD personal, "
-"seleccionant automàticament les peces per a vós, a partir d'un nombre de "
+"seleccionant automàticament les peces per a tu, a partir d'un nombre de "
 "paràmetres que seleccioneu."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:65
