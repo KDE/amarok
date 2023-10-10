@@ -3860,7 +3860,7 @@ msgstr ""
 #: configdialog/dialogs/ScriptsConfig.cpp:138
 #, kde-format
 msgid "Select Archived Script"
-msgstr "Seleccioneu l'script arxivat"
+msgstr "Seleccioneu un script arxivat"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:153
 #, kde-format
@@ -14572,8 +14572,8 @@ msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
 "report a bug"
 msgstr ""
-"S'ha produït un error en analitzar la resposta. Verifiqueu que gpodder.net "
-"estiga funcionant correctament i informeu de l'error"
+"S'ha produït un error en l'anàlisi sintàctica de la resposta. Verifiqueu que "
+"gpodder.net estiga funcionant correctament i informeu de l'error"
 
 #: services/jamendo/JamendoInfoParser.cpp:46
 #: services/jamendo/JamendoInfoParser.cpp:77
