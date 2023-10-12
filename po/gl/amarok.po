@@ -1386,13 +1386,13 @@ msgstr "Se se lle envían as pistas reproducidas a Audioscrobbler"
 #, kde-format
 msgctxt "Username for audioscrobbler login"
 msgid "Username"
-msgstr "Nome de usuario"
+msgstr "Nome de usuaria"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
 #, kde-format
 msgid "The username to use for connecting to Audioscrobbler"
-msgstr "O nome de usuario para conectarse con Audioscrobbler"
+msgstr "O nome de usuaria para conectarse con Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
@@ -1620,7 +1620,7 @@ msgstr ""
 #: amarokconfig.kcfg:567
 #, kde-format
 msgid "Username used to access the external database."
-msgstr "Nome de usuario usado para acceder á base de datos externa."
+msgstr "Nome de usuaria usado para acceder á base de datos externa."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:571
@@ -3177,7 +3177,7 @@ msgstr "&Contrasinal:"
 msgid ""
 "Enter the username to access the database with full access privileges.\n"
 msgstr ""
-"Insira o nome de usuario que accederá á base de datos con permisos de acceso "
+"Insira o nome de usuaria que accederá á base de datos con permisos de acceso "
 "completos.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, label_Database)
@@ -10538,7 +10538,7 @@ msgstr "externo"
 #: services/ampache/NewServerWidget.ui:50
 #, kde-format
 msgid "Username"
-msgstr "Nome de usuario"
+msgstr "Nome de usuaria"
 
 #. i18n: ectx: property (text), widget (QLabel, m_connectionTypeLabel)
 #: importers/amarok/AmarokConfigWidget.ui:58
@@ -14524,7 +14524,7 @@ msgstr "Probando…"
 msgid ""
 "Either the username or the password is empty, please correct and try again."
 msgstr ""
-"Un dos datos fornecidos —o nome de usuario ou o contrasinal— estaba baleiro. "
+"Un dos datos fornecidos —o nome de usuaria ou o contrasinal— estaba baleiro. "
 "Corríxao e probe de novo."
 
 #: services/gpodder/GpodderServiceSettings.cpp:113
@@ -14551,7 +14551,7 @@ msgid ""
 "Either the username or the password is incorrect, please correct and try "
 "again"
 msgstr ""
-"Ou o nome de usuario ou o contrasinal non era correcto. Corríxao e probe de "
+"Ou o nome de usuaria ou o contrasinal non era correcto. Corríxao e probe de "
 "novo."
 
 #: services/gpodder/GpodderServiceSettings.cpp:189
@@ -14893,7 +14893,7 @@ msgstr "Ctrl+P"
 msgctxt "Last.fm: errorMessage"
 msgid "Either the username was not recognized, or the password was incorrect."
 msgstr ""
-"Ou ben o nome de usuario non foi recoñecido, ou o contrasinal é incorrecto."
+"Ou ben o nome de usuaria non foi recoñecido, ou o contrasinal é incorrecto."
 
 #: services/lastfm/LastFmService.cpp:298
 #, kde-format
@@ -14918,12 +14918,12 @@ msgstr "Insira unha etiqueta"
 #: services/lastfm/LastFmService.cpp:389
 #, kde-format
 msgid "Enter a Last.fm user name"
-msgstr "Insira un nome de usuario de Last.fm"
+msgstr "Insira un nome de usuaria de Last.fm"
 
 #: services/lastfm/LastFmService.cpp:402
 #, kde-format
 msgid "Username: %1"
-msgstr "Nome de usuario: %1"
+msgstr "Nome de usuaria: %1"
 
 #: services/lastfm/LastFmService.cpp:407
 #, kde-format
@@ -15326,7 +15326,7 @@ msgstr "Fluxo"
 #, kde-format
 msgctxt "Username for logins to Magnatune"
 msgid "Username:"
-msgstr "Nome de usuario:"
+msgstr "Nome de usuaria:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: services/magnatune/MagnatuneConfigWidget.ui:143
@@ -15475,7 +15475,7 @@ msgstr ""
 "Volver descargar un álbum comprado anteriormente en Magnatune.com «%1» por "
 "«%2».\n"
 "\n"
-"Nome de usuario: %3\n"
+"Nome de usuaria: %3\n"
 "Contrasinal: %4\n"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:31
