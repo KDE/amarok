@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Analyzer
+Name[bg]=Анализатор
 Name[bs]=Analizator
 Name[ca]=Analitzador
 Name[ca@valencia]=Analitzador
@@ -44,6 +45,7 @@ Type=Service
 ServiceTypes=Amarok/ContextApplet
 Icon=view-media-analyzer-amarok
 Comment=Analyzer applet for Amarok
+Comment[bg]=Приставка за анализатор за Amarok
 Comment[ca]=Miniaplicació analitzadora per a l'Amarok
 Comment[ca@valencia]=Miniaplicació analitzadora per a Amarok
 Comment[cs]=Applet analyzeru pro AmaroK

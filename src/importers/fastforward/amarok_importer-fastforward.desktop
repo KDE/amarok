@@ -2,6 +2,7 @@
 Type=Service
 Icon=amarok
 Name=Amarok 1.4 (FastForward) Importer
+Name[bg]=Импортиране от Amarok 1.4x
 Name[bs]=Amarok 1.4 (FastForward) uvoznik
 Name[ca]=Importador de l'Amarok 1.4 (FastForward)
 Name[ca@valencia]=Importador d'Amarok 1.4 (FastForward)
@@ -40,6 +41,7 @@ Name[x-test]=xxAmarok 1.4 (FastForward) Importerxx
 Name[zh_CN]=Amarok 1.4 (快进合并版) 导入工具
 Name[zh_TW]=Amarok 1.4 （快轉）匯入器
 Comment=Import statistics from Amarok 1.4 database
+Comment[bg]=Импортиране на статистика от базата данни на Amarok 1.4x
 Comment[bs]=Uvezite statistiku iz Amarok 1.4 baze podataka
 Comment[ca]=Importa estadístiques des de base de dades de l'Amarok 1.4
 Comment[ca@valencia]=Importa estadístiques des de base de dades d'Amarok 1.4

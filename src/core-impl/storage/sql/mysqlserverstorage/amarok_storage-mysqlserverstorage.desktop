@@ -2,6 +2,7 @@
 Type=Service
 Icon=network-server-database
 Name=MySQLServer Storage
+Name[bg]=MySQLServer Хранилище
 Name[bs]=Zbirka na serveru MySQL
 Name[ca]=Emmagatzematge MySQLServer
 Name[ca@valencia]=Emmagatzematge MySQLServer
@@ -38,6 +39,7 @@ Name[x-test]=xxMySQLServer Storagexx
 Name[zh_CN]=MySQLServer 存储
 Name[zh_TW]=MySQLServer 儲存空間
 Comment=Storage plugin for Amarok
+Comment[bg]=Приставка за хранилища за Amarok
 Comment[bs]=Priključak za Amarok
 Comment[ca]=Connector d'emmagatzematge per a l'Amarok
 Comment[ca@valencia]=Connector d'emmagatzematge per a Amarok

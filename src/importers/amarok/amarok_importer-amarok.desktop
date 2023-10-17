@@ -2,6 +2,7 @@
 Type=Service
 Icon=amarok
 Name=Amarok 2.x Importer
+Name[bg]=Импортиране от Amarok 2.x
 Name[bs]=Amarok 2.x uvoznik
 Name[ca]=Importador de l'Amarok 2.x
 Name[ca@valencia]=Importador d'Amarok 2.x
@@ -40,6 +41,7 @@ Name[x-test]=xxAmarok 2.x Importerxx
 Name[zh_CN]=Amarok 2.x 导入工具
 Name[zh_TW]=Amarok 2.x 匯入器
 Comment=Import statistics from Amarok 2.x database
+Comment[bg]=Импортиране на статистика от базата данни на Amarok 2.x
 Comment[bs]=Uvezite statistiku iz Amarok 2.x baze podataka
 Comment[ca]=Importa estadístiques des de base de dades de l'Amarok 2.x
 Comment[ca@valencia]=Importa estadístiques des de base de dades d'Amarok 2.x

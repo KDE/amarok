@@ -4,6 +4,7 @@ Type=script
 X-KDE-ServiceTypes=KPluginInfo
 
 Name=Librivox.org
+Name[bg]=Librivox.org
 Name[bs]=Librivox.org
 Name[ca]=Librivox.org
 Name[ca@valencia]=Librivox.org
@@ -42,6 +43,7 @@ Name[x-test]=xxLibrivox.orgxx
 Name[zh_CN]=Librivox.org
 Name[zh_TW]=Librivox.org
 Comment=A scripted service that lets you search, stream and download free, public domain, audio books from Librivox.org
+Comment[bg]=Услуга, която ви позволява да търсите, стриймвате и изтегляте безплатни, публични аудиокниги от Librivox.org
 Comment[bs]=Skriptovana usluga koja vam dopušta pretragu, slušanje i besplatno preuzimanje, javne domene, audio knjiga sa Librivox.org
 Comment[ca]=Un servei amb scripts que us permet cercar, escoltar i baixar àudio llibres lliures de domini públic des de Librivox.org
 Comment[ca@valencia]=Un servei amb scripts que us permet buscar, escoltar i baixar àudio llibres lliures de domini públic des de Librivox.org

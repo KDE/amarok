@@ -4,6 +4,7 @@ Type=script
 X-KDE-ServiceTypes=KPluginInfo
 
 Name=Cool Streams
+Name[bg]=Cool Streams
 Name[bs]=Odlični tokovi
 Name[ca]=Cool Streams
 Name[ca@valencia]=Cool Streams
@@ -41,6 +42,7 @@ Name[x-test]=xxCool Streamsxx
 Name[zh_CN]=Cool Streams
 Name[zh_TW]=Cool Streams
 Comment=A script that sets up a service with a few cool internet radio stations
+Comment[bg]=Скрипт, който създава услуга с няколко готини интернет радиостанции
 Comment[bs]=Skripta koja postavlja uslugu sa nekoliko odličnih radio stanica.
 Comment[ca]=Un script que configura un servei amb diverses estacions de ràdio interessants per Internet
 Comment[ca@valencia]=Un script que configura un servei amb diverses estacions de ràdio interessants per Internet

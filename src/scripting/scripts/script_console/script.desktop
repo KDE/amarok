@@ -4,6 +4,7 @@ Type=script
 X-KDE-ServiceTypes=KPluginInfo
 
 Name=Amarok Script Console
+Name[bg]=Amarok Script Console
 Name[bs]=Amarok skript konzola
 Name[ca]=Consola de scripts de l'Amarok
 Name[ca@valencia]=Consola de scripts d'Amarok
@@ -41,6 +42,7 @@ Name[x-test]=xxAmarok Script Consolexx
 Name[zh_CN]=Amarok 脚本控制台
 Name[zh_TW]=Amarok 文稿主控台
 Comment=Amarok Script Console
+Comment[bg]=Amarok Script Console
 Comment[bs]=Amarok skript konzola
 Comment[ca]=Consola de scripts de l'Amarok
 Comment[ca@valencia]=Consola de scripts d'Amarok

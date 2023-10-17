@@ -2,6 +2,7 @@
 Type=Service
 Icon=multimedia-player-apple-ipod
 Name=iPod, iPad & iPhone Collection
+Name[bg]=Колекция на iPod, iPad & iPhone
 Name[bs]=iPod, iPad & iPhone kolekcija
 Name[ca]=Col·lecció en iPod, iPad i iPhone
 Name[ca@valencia]=Col·lecció en iPod, iPad i iPhone
@@ -46,6 +47,7 @@ Name[x-test]=xxiPod, iPad & iPhone Collectionxx
 Name[zh_CN]=iPod, iPad 和 iPhone 收藏集
 Name[zh_TW]=iPod, iPad 與 iPhone 收藏
 Comment=Plugin to use iPod-like devices as collections in Amarok
+Comment[bg]=Приставка за колекцията на медийните устройства като iPod на Amarok
 Comment[bs]=Priključak za korištenje uređaja poput iPod-a kao kolekcija u Amaroku
 Comment[ca]=Connector per a usar dispositius de tipus iPod com a col·leccions en l'Amarok
 Comment[ca@valencia]=Connector per a utilitzar dispositius de tipus iPod com a col·leccions en Amarok

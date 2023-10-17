@@ -2,6 +2,7 @@
 Type=Service
 Icon=server-database
 Name=MySQLe Storage
+Name[bg]=MySQLe Хранилище
 Name[bs]=MySQLe Storage
 Name[ca]=Emmagatzematge MySQLe
 Name[ca@valencia]=Emmagatzematge MySQLe
@@ -38,6 +39,7 @@ Name[x-test]=xxMySQLe Storagexx
 Name[zh_CN]=MySQLe 存储
 Name[zh_TW]=MySQLe 儲存空間
 Comment=Storage plugin for Amarok
+Comment[bg]=Приставка за хранилища за Amarok
 Comment[bs]=Priključak za Amarok
 Comment[ca]=Connector d'emmagatzematge per a l'Amarok
 Comment[ca@valencia]=Connector d'emmagatzematge per a Amarok

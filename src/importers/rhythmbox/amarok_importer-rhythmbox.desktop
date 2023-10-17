@@ -2,6 +2,7 @@
 Type=Service
 Icon=view-importers-rhythmbox-amarok
 Name=Rhythmbox Importer
+Name[bg]=Импортиране от Rhythmbox
 Name[bs]=Rhythmbox uvoznik
 Name[ca]=Importador del Rhythmbox
 Name[ca@valencia]=Importador del Rhythmbox
@@ -40,6 +41,7 @@ Name[x-test]=xxRhythmbox Importerxx
 Name[zh_CN]=Rhythmbox 导入工具
 Name[zh_TW]=Rhythmbox 匯入器
 Comment=Import statistics from Rhythmbox database
+Comment[bg]=Импортиране на статистика от базата данни на Rhythmbox
 Comment[bs]=Uvezite statistiku iz Rhythmbox baze podataka
 Comment[ca]=Importa estadístiques des de base de dades del Rhythmbox
 Comment[ca@valencia]=Importa estadístiques des de base de dades del Rhythmbox

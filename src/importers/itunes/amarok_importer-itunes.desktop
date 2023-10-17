@@ -2,6 +2,7 @@
 Type=Service
 Icon=media-album-track
 Name=Apple iTunes Importer
+Name[bg]=Импортиране от Apple iTunes
 Name[bs]=Apple iTunes uvoznik
 Name[ca]=Importador de l'iTunes d'Apple
 Name[ca@valencia]=Importador d'iTunes d'Apple
@@ -40,6 +41,7 @@ Name[x-test]=xxApple iTunes Importerxx
 Name[zh_CN]=Apple iTunes 导入工具
 Name[zh_TW]=Apple iTunes 匯入器
 Comment=Import statistics from Apple iTunes database
+Comment[bg]=Импортиране на статистика от базата данни на Apple iTunes
 Comment[bs]=Uvezite statistiku iz Apple iTunes baze podataka
 Comment[ca]=Importa estadístiques des de base de dades de l'iTunes d'Apple
 Comment[ca@valencia]=Importa estadístiques des de base de dades d'iTunes d'Apple

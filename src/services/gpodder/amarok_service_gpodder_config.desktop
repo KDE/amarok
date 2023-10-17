@@ -9,6 +9,7 @@ X-KDE-ParentApp=amarok_service_gpodder
 X-KDE-ParentComponents=amarok_service_gpodder
 
 Name=gpodder.net Service Config
+Name[bg]=gpodder.net Service Config
 Name[bs]=gpodder.net Postavka usluga
 Name[ca]=Configuració del servei gpodder.net
 Name[ca@valencia]=Configureu el servei gpodder.net
@@ -53,6 +54,7 @@ Name[x-test]=xxgpodder.net Service Configxx
 Name[zh_CN]=gpodder.net 服务配置
 Name[zh_TW]=gpodder.net 服務設定
 Comment=Configure gpodder.net Credentials
+Comment[bg]=Настройване на  gpodder.net
 Comment[bs]=Postavi gpodder.net akreditiv
 Comment[ca]=Configura les credencials de gpodder.net
 Comment[ca@valencia]=Configura les credencials de gpodder.net

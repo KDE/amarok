@@ -68,6 +68,7 @@ Type=Service
 Icon=media-album-cover-manager-amarok
 ServiceTypes=Amarok/ContextApplet
 Comment=Album cover manager for Amarok
+Comment[bg]=Управление на обложки за албуми на Amarok
 Comment[ca]=Gestor per a les caràtules d'àlbum per a l'Amarok
 Comment[ca@valencia]=Gestor per a les caràtules d'àlbum per a Amarok
 Comment[cs]=Správce obalů alb pro Amarok

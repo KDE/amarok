@@ -194,6 +194,7 @@ Icon=amarok
 MimeType=video/x-ms-asf;application/ogg;
 NoDisplay=true
 X-KDE-Keywords=music,podcast
+X-KDE-Keywords[bg]=music,podcast
 X-KDE-Keywords[bs]=muzika,podemisija
 X-KDE-Keywords[ca]=música,podcast
 X-KDE-Keywords[ca@valencia]=música,podcast

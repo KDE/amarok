@@ -2,6 +2,7 @@
 Type=Service
 Icon=view-importers-banshee-amarok
 Name=Banshee Importer
+Name[bg]=Импортиране от Banshee
 Name[bs]=Banshee uvoznik
 Name[ca]=Importador del Banshee
 Name[ca@valencia]=Importador del Banshee
@@ -40,6 +41,7 @@ Name[x-test]=xxBanshee Importerxx
 Name[zh_CN]=Banshee 导入工具
 Name[zh_TW]=Banshee 匯入器
 Comment=Import statistics from Banshee database
+Comment[bg]=Импортиране на статистика от базата данни на Banshee
 Comment[bs]=Uvezite statistiku iz Banshee baze podataka
 Comment[ca]=Importa estadístiques des de base de dades del Banshee
 Comment[ca@valencia]=Importa estadístiques des de base de dades del Banshee

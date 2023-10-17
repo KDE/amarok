@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Amarok-Context-QML-Package
+Name[bg]=Amarok-Context-QML-Package
 Name[ca]=Amarok-Context-QML-Package
 Name[ca@valencia]=Amarok-Context-QML-Package
 Name[cs]=Balíček QML - Amarok Kontext
@@ -31,6 +32,7 @@ Name[x-test]=xxAmarok-Context-QML-Packagexx
 Name[zh_CN]=Amarok 信息视图的 QML 包
 Name[zh_TW]=Amarok-Context-QML-Package
 Comment=QML base package for amarok context area
+Comment[bg]=QML base package за amarok context area
 Comment[ca]=Paquet QML base per a l'àrea de context de l'Amarok
 Comment[ca@valencia]=Paquet QML base per a l'àrea de context d'Amarok
 Comment[cs]=Základní balíček QML pro kontextovou oblast Amaroku

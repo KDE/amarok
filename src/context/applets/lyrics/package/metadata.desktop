@@ -61,6 +61,7 @@ Type=Service
 Icon=amarok_lyrics
 ServiceTypes=Amarok/ContextApplet
 Comment=Lyrics applet for Amarok
+Comment[bg]=Приставка за текстове на песни за Amarok
 Comment[ca]=Miniaplicació de lletres per a l'Amarok
 Comment[ca@valencia]=Miniaplicació de lletres per a Amarok
 Comment[cs]=Applet pro texty písní pro Amarok

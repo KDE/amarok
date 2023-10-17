@@ -61,6 +61,7 @@ Type=Service
 Icon=photos-amarok
 ServiceTypes=Amarok/ContextApplet
 Comment=Photos applet for Amarok
+Comment[bg]=Приставка за снимки на Amarok
 Comment[ca]=Miniaplicació de fotos per a l'Amarok
 Comment[ca@valencia]=Miniaplicació de fotos per a Amarok
 Comment[cs]=Applet fotek pro Amarok

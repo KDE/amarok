@@ -208,6 +208,7 @@ Name[x-test]=xxMessagexx
 Name[zh_CN]=消息
 Name[zh_TW]=訊息
 Comment=Amarok issued an uncategorized text message
+Comment[bg]=Amarok издаде некатегоризирано текстово съобщение
 Comment[bs]=Amarok je izbacio nekategorizovanu tekstualnu poruku
 Comment[ca]=L'Amarok ha emès un missatge de text sense categoria
 Comment[ca@valencia]=Amarok ha emés un missatge de text sense categoria

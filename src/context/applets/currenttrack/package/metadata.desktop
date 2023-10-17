@@ -58,6 +58,7 @@ Type=Service
 Icon=current-track-amarok
 ServiceTypes=Amarok/ContextApplet
 Comment=Current track applet for Amarok
+Comment[bg]=Приставка за текущ запис на Amarok
 Comment[ca]=Miniaplicació de peça actual per a l'Amarok
 Comment[ca@valencia]=Miniaplicació de peça actual per a Amarok
 Comment[cs]=Applet pro současnou skladbu pro Amarok
