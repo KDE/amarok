@@ -5263,7 +5263,7 @@ msgid ""
 msgstr ""
 "Ogg Vorbis és un format d'àudio comprimit totalment lliure i sense càrregues "
 "que és perfecte per a emmagatzemar música comprimida en l'ordinador. La "
-"qualitat del so és millor que la de l'MP3 a igualtat de taxa de bits. Cal "
+"qualitat del so és millor que la d'MP3 a igualtat de taxa de bits. Cal "
 "tindre en compte que no tots els reproductors mòbils accepten el format Ogg "
 "Vorbis."
 
@@ -5278,7 +5278,7 @@ msgstr ""
 "FLAC és un format d'àudio comprimit sense pèrdua lliure de qualsevol dret de "
 "patent o llicència. Té una qualitat d'àudio CD perfecte i reduïx la mida del "
 "fitxer aproximadament en un 50%. Com que la mida del fitxer és molt més gran "
-"que Ogg Vorbis o l'MP3, no es recomana si voleu transferir la música a un "
+"que Ogg Vorbis o MP3, no es recomana si voleu transferir la música cap a un "
 "reproductor mòbil."
 
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:75
@@ -5299,7 +5299,7 @@ msgid ""
 "MP3 is the de facto standard in compressed audio compatible with almost all "
 "mobile players. It is however non free and generally not recommended."
 msgstr ""
-"L'MP3 és l'estàndard de fet en l'àudio comprimit, compatible amb quasi tots "
+"MP3 és l'estàndard de fet en l'àudio comprimit, compatible amb quasi tots "
 "els reproductors mòbils. Malgrat tot, no és lliure i generalment no és "
 "recomanat."
 
@@ -5534,8 +5534,8 @@ msgstr ""
 msgctxt "%2 is collection name"
 msgid "Transferred one track to %2."
 msgid_plural "Transferred %1 tracks to %2."
-msgstr[0] "S'ha transferit una peça a %2."
-msgstr[1] "S'han transferit %1 peces a %2."
+msgstr[0] "S'ha transferit una peça cap a %2."
+msgstr[1] "S'han transferit %1 peces cap a %2."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:227
 #, kde-format
@@ -5566,7 +5566,7 @@ msgstr[1] "%2 Ja hi havia %1 peces."
 #, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
-msgstr "S'han transferit les peces a %1"
+msgstr "S'han transferit les peces cap a %1"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:375
 #, kde-format
@@ -5576,10 +5576,10 @@ msgid_plural ""
 "%1 tracks successfully transferred, but transfer of some other tracks failed."
 msgstr[0] ""
 "S'ha transferit correctament una peça, però ha fallat la transferència "
-"d'altres peces."
+"d'altres."
 msgstr[1] ""
 "S'han transferit correctament %1 peces, però ha fallat la transferència "
-"d'altres peces."
+"d'altres."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:379
 #, kde-format
@@ -5963,7 +5963,7 @@ msgstr "No s'han copiat les peces: el dispositiu no té suficient espai lliure"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:441
 #, kde-format
 msgid "Transferring Tracks to Device"
-msgstr "S'estan transferint les peces al dispositiu"
+msgstr "S'estan transferint les peces cap al dispositiu"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:483
 #, kde-format
@@ -6661,7 +6661,7 @@ msgstr "Mou els podcast"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
 #, kde-format
 msgid "Do you want to move all downloaded episodes to the new location?"
-msgstr "Voleu moure tots els episodis descarregats a la nova ubicació?"
+msgstr "Voleu moure tots els episodis descarregats a la ubicació nova?"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:703
 #, kde-format
@@ -7602,11 +7602,11 @@ msgid ""
 msgstr ""
 "La taxa de bits és una mesura de la quantitat de dades utilitzades per a "
 "representar un segon de la peça d'àudio.<br>El codificador utilitzat per "
-"Amarok opera millor amb una taxa de bits constant.<br>El VBR és experimental "
-"i podria donar pitjors resultats que el CBR.<br>Per este motiu, la mesura de "
-"la taxa de bits en este control lliscant és una estimació força acurada de "
-"la taxa de bits de la peça codificada.<br>El codificador és transparent a "
-"128 kbps per a la majoria de mostres provades, amb distorsions que només "
+"Amarok opera millor amb una taxa de bits constant.<br>La VBR és experimental "
+"i podria donar pitjors resultats que CBR.<br>Per este motiu, la mesura de la "
+"taxa de bits en este control lliscant és una estimació força acurada de la "
+"taxa de bits de la peça codificada.<br>El codificador és transparent a 128 "
+"kbps per a la majoria de mostres provades, amb distorsions que només "
 "apareixen en casos extrems."
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:48
@@ -7652,10 +7652,10 @@ msgid ""
 "a reasonable choice for the iPod and some other portable music players."
 msgstr ""
 "L'<a href=http://ca.wikipedia.org/wiki/Advanced_Audio_Coding>Advanced Audio "
-"Coding</a> (AAC) és un còdec amb pèrdua patentat per a àudio digital."
-"<br>L'AAC generalment aconseguix millor qualitat de so que l'MP3 a taxes de "
-"bits similars. Una opció raonable per iPod i alguns altres reproductors de "
-"música portàtils."
+"Coding</a> (AAC) és un còdec amb pèrdua patentat per a àudio digital.<br>AAC "
+"generalment aconseguix millor qualitat de so que MP3 a taxes de bits "
+"similars. Una opció raonable per iPod i alguns altres reproductors de música "
+"portàtils."
 
 #: core/transcoding/formats/TranscodingAlacFormat.cpp:33
 #, kde-format
@@ -7675,8 +7675,8 @@ msgid ""
 msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Apple_Lossless>Apple sense pèrdues</a> "
 "(ALAC) és un codificador per a comprimir música digital sense pèrdues."
-"<br>Només recomanat per reproductors de música d'Apple i reproductors que no "
-"admeten FLAC."
+"<br>Només recomanat per a reproductors de música d'Apple i reproductors que "
+"no admeten FLAC."
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:30
 #, kde-format
@@ -7750,13 +7750,13 @@ msgid ""
 msgstr ""
 "La taxa de bits és una mesura de la quantitat de dades utilitzades per a "
 "representar un segon de la peça d'àudio.<br>El codificador d'<b>MP3</b> que "
-"utilitza Amarok permet alguns configuracions de <a href=http://en.wikipedia."
+"utilitza Amarok permet algunes configuracions de <a href=http://en.wikipedia."
 "org/wiki/MP3#VBR>taxa de bits variable (VBR)</a>, el qual vol dir que la "
 "taxa de bits fluctuarà durant la peça segons la complexitat del contingut de "
 "l'àudio. Els intervals de dades més complexos es codifiquen amb taxes de "
 "bits més altes que els menys complexos Esta aproximació dona una qualitat "
 "general millor i fitxers més petits que utilitzant una taxa de bits constant "
-"durant tota la peça.<br>Per açò, la mesura de taxa de bits d'este control "
+"durant tota la peça.<br>Per a açò, la mesura de taxa de bits d'este control "
 "lliscant és només una estimació de la mitjana de la taxa de bits de la peça "
 "codificada.<br><b>160 kb/s</b> és una bona opció per escoltar música en un "
 "reproductor portàtil.<br/>Valors per davall de <b>120 kb/s</b> poden ser "
@@ -7806,13 +7806,13 @@ msgid ""
 msgstr ""
 "La taxa de bits és una mesura de la quantitat de dades utilitzades per a "
 "representar un segon de la peça d'àudio.<br>El codificador d'<b>Opus</b></b> "
-"que utilitza Amarok permet alguns configuracions de <a href=http://en."
+"que utilitza Amarok permet algunes configuracions de <a href=http://en."
 "wikipedia.org/wiki/Variable_bitrate>taxa de bits variable (VBR)</a>, el qual "
 "vol dir que la taxa de bits fluctuarà durant la peça segons la complexitat "
 "del contingut de l'àudio. Els intervals de dades més complexos es codifiquen "
 "amb taxes de bits més altes que els menys complexos. Esta aproximació dona "
 "una qualitat general millor i fitxers més petits que utilitzant una taxa de "
-"bits constant durant tota la peça.<br>Per açò, la mesura de taxa de bits "
+"bits constant durant tota la peça.<br>Per a açò, la mesura de taxa de bits "
 "d'este control lliscant és només una estimació de la mitjana de la taxa de "
 "bits de la peça codificada.<br><b>128 kb/s</b> és una bona opció per "
 "escoltar música en un reproductor portàtil.<br/>Valors per davall de <b>100 "
@@ -7858,7 +7858,7 @@ msgid ""
 msgstr ""
 "La taxa de bits és una mesura de la quantitat de dades utilitzades per a "
 "representar un segon de la peça d'àudio.<br>El codificador <b>Vorbis</b> que "
-"utilitza Amarok permet alguns configuracions de <a href=http://en.wikipedia."
+"utilitza Amarok permet algunes configuracions de <a href=http://en.wikipedia."
 "org/wiki/Vorbis#Technical_details>taxa de bits variable (VBR)</a>, el qual "
 "vol dir que la taxa de bits fluctuarà durant la peça segons la complexitat "
 "del contingut de l'àudio. Els intervals de dades més complexos es codifiquen "
@@ -7894,9 +7894,9 @@ msgid ""
 msgstr ""
 "<a href=http://ca.wikipedia.org/wiki/Ogg_Vorbis>Ogg Vorbis</a> és un còdec "
 "obert i sense cànons per a comprimir música digital amb pèrdues.<br>Este "
-"produïx fitxers més petits que l'MP3 per qualitats equivalents o superiors. "
+"produïx fitxers més petits que MP3 per a qualitats equivalents o superiors. "
 "Ogg Vorbis és una opció excel·lent per a tots els contextos, especialment "
-"per reproductors de música portàtils compatibles."
+"per a reproductors de música portàtils compatibles."
 
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:28
 #, kde-format
@@ -7918,7 +7918,7 @@ msgstr ""
 "codificador privatiu, el codificador WMA que utilitza Amarok establix un "
 "configuració de <a href=http://en.wikipedia.org/wiki/"
 "Windows_Media_Audio#Windows_Media_Audio> taxa de bits constant (CBR)</a>."
-"<br>Per açò, la mesura de la taxa de bits d'este control lliscant és una "
+"<br>Per a açò, la mesura de la taxa de bits d'este control lliscant és una "
 "estimació força acurada de la taxa de bits de la peça codificada.<br><b>136 "
 "kb/s</b> és una bona opció per escoltar música en un reproductor portàtil."
 "<br/>Valors per davall de <b>112 kb/s</b> poden ser insatisfactoris per a la "
@@ -7942,8 +7942,8 @@ msgid ""
 msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Windows_Media_Audio>Windows Media "
 "Audio</a> (WMA) és un còdec privatiu desenvolupat per Microsoft, per a una "
-"compressió d'àudio amb pèrdues.<br>Només és recomanable per reproductors de "
-"música portàtils que no siguen compatibles amb Ogg Vorbis."
+"compressió d'àudio amb pèrdues.<br>Només és recomanable per a reproductors "
+"de música portàtils que no siguen compatibles amb Ogg Vorbis."
 
 #: core/transcoding/TranscodingConfiguration.cpp:109
 #, kde-format
@@ -8742,7 +8742,7 @@ msgstr ""
 #: dialogs/deviceconfiguredialog.cpp:100
 #, kde-format
 msgid "&Transcode before transferring to device"
-msgstr "&Transcodifica abans de transferir al dispositiu"
+msgstr "&Transcodifica abans de transferir cap al dispositiu"
 
 #: dialogs/deviceconfiguredialog.cpp:107
 #, kde-format
@@ -9173,7 +9173,7 @@ msgstr "&Carpeta de la col·lecció:"
 #: dialogs/OrganizeCollectionDialogBase.ui:51
 #, kde-format
 msgid "The collection folder to which the files will be transferred."
-msgstr "La carpeta de col·leccions a on es transferiran els fitxers."
+msgstr "La carpeta de col·leccions cap a on es transferiran els fitxers."
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, optionsButton)
 #. i18n: ectx: property (whatsThis), widget (QToolButton, optionsButton)
@@ -9945,7 +9945,7 @@ msgstr "Any desconegut"
 #: dialogs/transferdialog.cpp:61
 #, kde-format
 msgid "Transfer Queue to Device"
-msgstr "Transferix la cua al dispositiu"
+msgstr "Transferix la cua cap al dispositiu"
 
 #: dialogs/transferdialog.cpp:69
 #, kde-format
@@ -9958,7 +9958,7 @@ msgid ""
 "Your music will be transferred to:\n"
 "%1"
 msgstr ""
-"La seua música es transferirà a:\n"
+"La seua música es transferirà cap a:\n"
 "%1"
 
 #: dialogs/transferdialog.cpp:82
@@ -12229,7 +12229,7 @@ msgstr "No es pot crear un format sense cap nom."
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:277
 #, kde-format
 msgid "Layout name error"
-msgstr "Error al nom de format"
+msgstr "S'ha produït un error en el nom de format"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:169
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:220
@@ -15372,7 +15372,7 @@ msgstr ""
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-"
 "family:'Sans Serif';\">Per més informació sobre les diferents afiliacions de "
-"Magnatune.com, i per a registrar-vos, aneu a </span><a href=\"http://"
+"Magnatune.com, i per a registrar-vos, aneu fins a </span><a href=\"http://"
 "magnatune.com/compare_plans?referal_id=amarok\"><span style=\" font-"
 "family:'Sans Serif'; text-decoration: underline; color:#0000ff;\">http://"
 "magnatune.com/compare_plans</span></a></p></body></html>"
@@ -15703,8 +15703,9 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Després d'inscriure-vos, "
-"aneu a la configuració de Magnatune a «Configuració->Configura Amarok-"
-">Connectors» i introduïu la vostra informació de soci. </p></body></html>"
+"aneu fins a la configuració de Magnatune en «Configuració -> Configura "
+"Amarok... -> Connectors» i introduïu la vostra informació de soci. </p></"
+"body></html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, closeButton)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:45
@@ -16066,8 +16067,8 @@ msgid ""
 "Only the following types of tracks can be uploaded to MP3tunes: mp3, mp4, "
 "m4a, m4p, aac, wma, and ogg. "
 msgstr ""
-"A MP3tunes només es poden pujar els tipus de fitxers següents: mp3, mp4, "
-"m4a, m4p, aac, wma, i ogg. "
+"A MP3tunes només es poden pujar els tipus de fitxer següents: mp3, mp4, m4a, "
+"m4p, aac, wma, i ogg. "
 
 #: services/mp3tunes/Mp3tunesWorkers.cpp:344
 #, kde-format
