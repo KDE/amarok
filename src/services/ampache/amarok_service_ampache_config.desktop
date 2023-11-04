@@ -58,7 +58,6 @@ Name[th]=ปรับแต่งบริการ Ampache
 Name[tr]=Ampache Hizmet Yapılandırması
 Name[uk]=Налаштування служби Ampache
 Name[wa]=Apontiaedje siervice Ampache
-Name[x-test]=xxAmpache Service Configxx
 Name[zh_CN]=Ampache 服务配置
 Name[zh_TW]=Ampache 服務設定
 Comment=Sets up the ampache server(s) to connect to
@@ -110,7 +109,6 @@ Comment[th]=ตั้งค่าแม่ข่ายบริการ ampache
 Comment[tr]=Bağlanılacak ampache sunucularını ayarlar
 Comment[uk]=Встановлює сервер ampache, з яким слід з’єднуватися
 Comment[wa]=Aponteye li/les sierveu(s) ampache po s' raloyî a
-Comment[x-test]=xxSets up the ampache server(s) to connect toxx
 Comment[zh_CN]=设置要连接的 Ampache 服务器
 Comment[zh_TW]=設定要連結的 ampache 伺服器
 

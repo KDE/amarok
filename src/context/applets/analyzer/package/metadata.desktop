@@ -38,7 +38,6 @@ Name[sr@latin]=Analizator
 Name[sv]=Analysator
 Name[tr]=Çözümleyici
 Name[uk]=Аналізатор
-Name[x-test]=xxAnalyzerxx
 Name[zh_CN]=频谱
 Name[zh_TW]=分析器
 
@@ -75,7 +74,6 @@ Comment[sl]=Vstavek analizatorja za Amarok
 Comment[sv]=Analysatorminiprogram för Amarok
 Comment[tr]=Amarok için çözümleyici uygulamacığı
 Comment[uk]=Аплет аналізатора для Amarok
-Comment[x-test]=xxAnalyzer applet for Amarokxx
 Comment[zh_CN]=Amarok 的频谱分析器小程序
 Comment[zh_TW]=Amarok 的分析器小程式
 

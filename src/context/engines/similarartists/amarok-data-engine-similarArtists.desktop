@@ -45,7 +45,6 @@ Name[sr@latin]=Datomotor predstojećih događaja
 Name[sv]=Datagränssnitt för kommande händelser
 Name[tr]=Gelecek Etkinlikler Veri Motoru
 Name[uk]=Рушій розкладу найближчих подій
-Name[x-test]=xxUpcoming Events Data Enginexx
 Name[zh_CN]=“临近演出”功能的数据引擎
 Name[zh_TW]=即將來臨的事件資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine

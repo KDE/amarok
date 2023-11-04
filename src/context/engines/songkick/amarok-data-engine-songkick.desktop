@@ -53,7 +53,6 @@ Name[th]=กลไกข้อมูลของ Songkick
 Name[tr]=Songkick Veri Motoru
 Name[uk]=Рушій даних Songkick
 Name[wa]=Éndjin d' dinêyes Songkick
-Name[x-test]=xxSongkick Data Enginexx
 Name[zh_CN]=“Songkick”功能的数据引擎
 Name[zh_TW]=Songkick 資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine

@@ -38,7 +38,6 @@ Name[sr@latin]=Uvoznik iz Amaroka 2.x
 Name[sv]=Amarok 2.x-importverktyg
 Name[tr]=Amarok 2.x İçe Aktarıcı
 Name[uk]=Засіб імпортування даних Amarok 2.x
-Name[x-test]=xxAmarok 2.x Importerxx
 Name[zh_CN]=Amarok 2.x 导入工具
 Name[zh_TW]=Amarok 2.x 匯入器
 Comment=Import statistics from Amarok 2.x database
@@ -78,7 +77,6 @@ Comment[sr@latin]=Uvoz statistike iz baze Amaroka 2.x
 Comment[sv]=Importera statistik från Amarok 2.x-databas
 Comment[tr]=İstatistikleri Amarok 2.x veritabanından al
 Comment[uk]=Імпортування статистичних даних з бази даних Amarok 2.x
-Comment[x-test]=xxImport statistics from Amarok 2.x databasexx
 Comment[zh_CN]=从 Amarok 2.x 数据库中导入统计数据
 Comment[zh_TW]=從 Amarok 2.x 資料庫中匯入統計資料
 

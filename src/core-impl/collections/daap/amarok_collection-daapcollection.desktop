@@ -56,7 +56,6 @@ Name[th]=คลังสื่อของ DAAP
 Name[tr]=DAAP Koleksiyonu
 Name[uk]=Збірка DAAP
 Name[wa]=Ramexhnêye DAAP
-Name[x-test]=xxDAAP Collectionxx
 Name[zh_CN]=DAAP 收藏集
 Name[zh_TW]=DAAP 收藏
 Comment=DAAP collection plugin for Amarok
@@ -114,7 +113,6 @@ Comment[th]=ส่วนเสริมของแอมอะร็อก ส�
 Comment[tr]=Amarok için DAAP koleksiyon eklentisi
 Comment[uk]=Додаток збірки DAAP для Amarok
 Comment[wa]=Tchôke-divins di ramexhnêye DAAP po Amarok
-Comment[x-test]=xxDAAP collection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的 DAAP 收藏集插件
 Comment[zh_TW]=Amarok 的 DAAP 收藏外掛程式
 

@@ -44,7 +44,6 @@ Name[sr@latin]=Zbirka sa iPoda, iPada i iPhonea
 Name[sv]=Samling på iPod, iPad och iPhone
 Name[tr]=iPod, iPad & iPhone Koleksiyonu
 Name[uk]=Збірка на iPod, iPad і iPhone
-Name[x-test]=xxiPod, iPad & iPhone Collectionxx
 Name[zh_CN]=iPod, iPad 和 iPhone 收藏集
 Name[zh_TW]=iPod, iPad 與 iPhone 收藏
 Comment=Plugin to use iPod-like devices as collections in Amarok
@@ -89,7 +88,6 @@ Comment[sr@latin]=Priključak za upotrebu uređaja nalik na iPod kao zbirki u Am
 Comment[sv]=Insticksprogram för att använda iPod-liknande enheter som samlingar i Amarok
 Comment[tr]=Amarok için iPod benzeri aygıtları koleksiyon olarak kullanma eklentisi
 Comment[uk]=Додаток для використання iPod-подібних пристроїв як збірок у Amarok
-Comment[x-test]=xxPlugin to use iPod-like devices as collections in Amarokxx
 Comment[zh_CN]=在 Amarok 中将 iPod 类设备作为收藏集的插件
 Comment[zh_TW]=Amarok 的類 iPod 裝置收藏外掛程式
 

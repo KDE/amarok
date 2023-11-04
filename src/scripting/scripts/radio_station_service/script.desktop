@@ -39,7 +39,6 @@ Name[sr@latin]=Dobri tokovi
 Name[sv]=Cool Streams
 Name[tr]=Güzel Akışlar
 Name[uk]=Cool Streams
-Name[x-test]=xxCool Streamsxx
 Name[zh_CN]=Cool Streams
 Name[zh_TW]=Cool Streams
 Comment=A script that sets up a service with a few cool internet radio stations
@@ -77,7 +76,6 @@ Comment[sr@latin]=Skripta koja postavlja servis sa nekoliko dobrih internet radi
 Comment[sv]=Ett skript som ställer in en tjänst med ett antal häftiga Internet-radiostationer
 Comment[tr]=Birkaç güzel internet radyo istasyonu ile hizmet kuran bir betik
 Comment[uk]=Скрипт для налаштовування служби прослуховування декількох чудових інтернет-радіостанцій
-Comment[x-test]=xxA script that sets up a service with a few cool internet radio stationsxx
 Comment[zh_CN]=一个能让您收听一些很酷的互联网电台服务的脚本
 Comment[zh_TW]=設定一些很酷的網路電台服務的文稿
 
