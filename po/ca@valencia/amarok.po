@@ -6,20 +6,20 @@
 # Pau Tallada Crespí <pau_tallada@telefonica.net>, 2006, 2007.
 # Josep M. Ferrer <txemaq@gmail.com>, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023.
 # Joan Maspons <joanmaspons@gmail.com>, 2009, 2010, 2011.
-# Antoni Bella Pérez <antonibella5@yahoo.com>, 2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022.
+# SPDX-FileCopyrightText: 2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Antoni Bella Pérez <antonibella5@yahoo.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2023-08-07 17:37+0200\n"
-"Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
+"PO-Revision-Date: 2023-11-04 20:04+0100\n"
+"Last-Translator: Antoni Bella Pérez <antonibella5@yahoo.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 23.04.3\n"
+"X-Generator: Lokalize 23.08.2\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
 
@@ -491,7 +491,7 @@ msgstr "Duplica les peces en mode dinàmic."
 msgid ""
 "If set, tracks added in the dynamic mode are allowed to have duplicates."
 msgstr ""
-"Si està activada, les peces afegides en el mode dinàmic poden estar "
+"Si se selecciona, les peces afegides en el mode dinàmic podran estar "
 "duplicades."
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -571,8 +571,8 @@ msgid ""
 "If set, Amarok's manually saved playlists will contain a relative path to "
 "each track, not an absolute path."
 msgstr ""
-"Si està seleccionada, les llistes de reproducció guardades manualment amb "
-"Amarok contindran el camí relatiu de la peça, no l'absoluta."
+"Si se selecciona, les llistes de reproducció guardades manualment amb Amarok "
+"contindran el camí relatiu de la peça, no l'absolut."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:88
@@ -633,7 +633,7 @@ msgstr "Activa les animacions en reduir les miniaplicacions contextuals"
 #, kde-format
 msgid "If set, context applets will collapse using animations."
 msgstr ""
-"Si està activada, les miniaplicacions contextuals es reduiran utilitzant "
+"Si se selecciona, les miniaplicacions contextuals es reduiran utilitzant "
 "animacions."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -647,8 +647,8 @@ msgstr "Si en organitzar els fitxers se sobreescriuran els fitxers existents."
 #, kde-format
 msgid "If set, Organize files will overwrite any existing destination."
 msgstr ""
-"Si està seleccionada, en organitzar els fitxers se sobreescriuran els "
-"fitxers de destinació que ja existisquen."
+"Si se selecciona, en organitzar els fitxers se sobreescriuran els fitxers de "
+"destinació que ja existisquen."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -665,7 +665,7 @@ msgid ""
 "If set, Organize files will move The in artist names to the end as in "
 "\"Beatles, The\"."
 msgstr ""
-"Si està seleccionada, en organitzar els fitxers es mourà «The» del nom dels "
+"Si se selecciona, en organitzar els fitxers es mourà «The» del nom dels "
 "artistes al final com en «Beatles, The»."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -683,8 +683,8 @@ msgstr ""
 msgid ""
 "If set, Organize files will replace spaces in filenames with underscores."
 msgstr ""
-"Si està seleccionada, en organitzar els fitxers se substituiran els espais "
-"en els noms de fitxer per caràcters de subratllat."
+"Si se selecciona, en organitzar els fitxers se substituiran els espais en "
+"els noms de fitxer per caràcters de subratllat."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:139
@@ -699,8 +699,8 @@ msgstr ""
 #, kde-format
 msgid "If set, Organize files will use cover art as folder icons."
 msgstr ""
-"Si està seleccionada, en organitzar els fitxers s'utilitzarà la caràtula com "
-"a icona de la carpeta."
+"Si se selecciona, en organitzar els fitxers s'utilitzarà la caràtula com a "
+"icona de la carpeta."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:144
@@ -735,7 +735,7 @@ msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "vfat filesystems (such as ':', '*' and '?')."
 msgstr ""
-"Si està seleccionada, en organitzar els fitxers se substituiran tots aquells "
+"Si se selecciona, en organitzar els fitxers se substituiran tots aquells "
 "caràcters no compatibles amb els sistemes de fitxers vfat (tals com «:», «*» "
 "i «?»)."
 
@@ -756,7 +756,7 @@ msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "the 7-bit ASCII character set."
 msgstr ""
-"Si està seleccionada, en organitzar els fitxers se substituiran tots aquells "
+"Si se selecciona, en organitzar els fitxers se substituiran tots aquells "
 "caràcters no compatibles amb el joc de caràcters ASCII de 7 bits."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -772,8 +772,8 @@ msgstr ""
 msgid ""
 "If set, Organize files will rename files according to a custom format string."
 msgstr ""
-"Si està seleccionada, en organitzar els fitxers es canviaran de nom d'acord "
-"amb una cadena de format personalitzada."
+"Si se selecciona, en organitzar els fitxers es canviaran de nom d'acord amb "
+"una cadena de format personalitzada."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:164
@@ -790,7 +790,7 @@ msgid ""
 "If the custom filename scheme is enabled, then Organize files will rename "
 "files according to this format string."
 msgstr ""
-"Si està activada el patró d'anomenat de fitxers a mida, aleshores en "
+"Si se selecciona el patró d'anomenat de fitxers a mida, aleshores en "
 "organitzar els fitxers es canviaran de nom d'acord amb esta cadena de format."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -915,7 +915,7 @@ msgstr "Mode equalitzador - 0 = inactiu, 1 a n = núm. d'ambient"
 #: amarokconfig.kcfg:221
 #, kde-format
 msgid "When enabled, an equalizer plugin filters the audio stream."
-msgstr "Si està activada, un equalitzador filtrarà el flux d'àudio."
+msgstr "Si se selecciona, un equalitzador filtrarà el flux d'àudio."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:225
@@ -1227,8 +1227,8 @@ msgstr "Reprén la reproducció de l'última peça escoltada a l'inici"
 #, kde-format
 msgid "If set, Amarok resumes playback of the last played track on startup."
 msgstr ""
-"Si està seleccionada, Amarok reprén la reproducció de l'última peça "
-"escoltada a l'inici."
+"Si se selecciona, Amarok reprén la reproducció de l'última peça escoltada a "
+"l'inici."
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:380
@@ -3530,7 +3530,7 @@ msgid ""
 "Character Set Detector to attempt to automatically guess the\n"
 "character sets used in ID3 tags."
 msgstr ""
-"Si està seleccionada, Amarok utilitzarà el detector del joc de caràcters\n"
+"Si se selecciona, Amarok utilitzarà el detector del joc de caràcters\n"
 "de Mozilla per a intentar deduir automàticament el joc de caràcters\n"
 "utilitzat en les etiquetes ID3."
 
@@ -3740,7 +3740,7 @@ msgid ""
 "If checked, Amarok will<br>resume playback from where you left it the "
 "previous session -- just like a tape-player."
 msgstr ""
-"Si està activada, Amarok<br/>reprendrà la reproducció on la vàreu deixar en "
+"Si se selecciona, Amarok<br/>reprendrà la reproducció on la vàreu deixar en "
 "l'anterior sessió -- tal com passaria amb un reproductor de cintes."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ResumePlayback)
@@ -3759,7 +3759,7 @@ msgid ""
 "to the playlist using mouse, pressing Enter or when the playlist is "
 "replaced. Does nothing if something is already playing.</html>"
 msgstr ""
-"<html>Activeu esta opció per a iniciar la reproducció quan s'afigen una o "
+"<html>Marqueu esta opció per a iniciar la reproducció quan s'afigen una o "
 "més peces a la llista de reproducció utilitzant el ratolí, prement «Retorn» "
 "o quan la llista de reproducció se substituïsca. No farà res si ja hi ha "
 "alguna cosa en reproducció.</html>"
@@ -3812,7 +3812,7 @@ msgid ""
 "If enabled, Amarok will prevent the system from automatically suspending if "
 "it is playing a track"
 msgstr ""
-"Si està activada, Amarok evitarà que el sistema se suspenga automàticament "
+"Si se selecciona, Amarok evitarà que el sistema se suspenga automàticament "
 "si està reproduint una peça"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_InhibitSuspend)
@@ -6450,7 +6450,7 @@ msgstr "Ubicació de guardada:"
 #, kde-format
 msgid "When checked, Amarok will automatically scan the podcast for updates"
 msgstr ""
-"Si està activada, Amarok escanejarà automàticament el podcast per a "
+"Si se selecciona, Amarok escanejarà automàticament el podcast per a "
 "actualitzacions"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoFetchCheck)
@@ -6503,7 +6503,7 @@ msgstr "Flux de dades o descarrega davall &demanda"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:155
 #, kde-format
 msgid "If checked, Amarok will throw away old podcast episodes"
-msgstr "Si està activada, Amarok llençarà els episodis de podcast antics"
+msgstr "Si se selecciona, Amarok llençarà els episodis de podcast antics"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_purgeCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:158
@@ -7756,7 +7756,7 @@ msgstr ""
 "l'àudio. Els intervals de dades més complexos es codifiquen amb taxes de "
 "bits més altes que els menys complexos Esta aproximació dona una qualitat "
 "general millor i fitxers més petits que utilitzant una taxa de bits constant "
-"durant tota la peça.<br>Per a açò, la mesura de taxa de bits d'este control "
+"durant tota la peça.<br>Per açò, la mesura de taxa de bits d'este control "
 "lliscant és només una estimació de la mitjana de la taxa de bits de la peça "
 "codificada.<br><b>160 kb/s</b> és una bona opció per escoltar música en un "
 "reproductor portàtil.<br/>Valors per davall de <b>120 kb/s</b> poden ser "
@@ -7812,7 +7812,7 @@ msgstr ""
 "del contingut de l'àudio. Els intervals de dades més complexos es codifiquen "
 "amb taxes de bits més altes que els menys complexos. Esta aproximació dona "
 "una qualitat general millor i fitxers més petits que utilitzant una taxa de "
-"bits constant durant tota la peça.<br>Per a açò, la mesura de taxa de bits "
+"bits constant durant tota la peça.<br>Per açò, la mesura de taxa de bits "
 "d'este control lliscant és només una estimació de la mitjana de la taxa de "
 "bits de la peça codificada.<br><b>128 kb/s</b> és una bona opció per "
 "escoltar música en un reproductor portàtil.<br/>Valors per davall de <b>100 "
@@ -7918,7 +7918,7 @@ msgstr ""
 "codificador privatiu, el codificador WMA que utilitza Amarok establix un "
 "configuració de <a href=http://en.wikipedia.org/wiki/"
 "Windows_Media_Audio#Windows_Media_Audio> taxa de bits constant (CBR)</a>."
-"<br>Per a açò, la mesura de la taxa de bits d'este control lliscant és una "
+"<br>Per açò, la mesura de la taxa de bits d'este control lliscant és una "
 "estimació força acurada de la taxa de bits de la peça codificada.<br><b>136 "
 "kb/s</b> és una bona opció per escoltar música en un reproductor portàtil."
 "<br/>Valors per davall de <b>112 kb/s</b> poden ser insatisfactoris per a la "
@@ -8453,7 +8453,7 @@ msgstr ""
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
 "E&scaneja les carpetes recursivament (requerix una exploració completa si "
-"s'ha activat de nou)"
+"s'ha seleccionat de nou)"
 
 #: dialogs/CollectionSetup.cpp:81
 #, kde-format
@@ -8463,7 +8463,7 @@ msgstr "&Vigila els canvis en les carpetes"
 #: dialogs/CollectionSetup.cpp:90
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
-msgstr "Si està seleccionada, Amarok llegirà totes les subcarpetes."
+msgstr "Si se selecciona, Amarok llegirà totes les subcarpetes."
 
 #: dialogs/CollectionSetup.cpp:91
 #, kde-format
@@ -8471,8 +8471,7 @@ msgid ""
 "If selected, the collection folders will be watched for changes.\n"
 "The watcher will not notice changes behind symbolic links."
 msgstr ""
-"Si està seleccionada, es vigilaran els canvis en les carpetes de la "
-"col·lecció.\n"
+"Si se selecciona, es vigilaran els canvis en les carpetes de la col·lecció.\n"
 "El vigilant no s'adonarà dels canvis darrere els enllaços simbòlics."
 
 #: dialogs/CollectionSetup.cpp:189
@@ -8603,7 +8602,7 @@ msgstr ""
 #: dialogs/deletedialog.cpp:75
 #, kde-format
 msgid "<qt>These items will be moved to the Trash Bin.</qt>"
-msgstr "<qt>Estos elements es mouran a la Paperera.</qt>"
+msgstr "<qt>Estos elements es mouran cap a dins de la paperera.</qt>"
 
 #: dialogs/deletedialog.cpp:87
 #, kde-format
@@ -8664,7 +8663,7 @@ msgid ""
 "If checked, files will be permanently removed instead of being placed in the "
 "Trash Bin"
 msgstr ""
-"Si està activada, els fitxers s'eliminaran definitivament en comptes de "
+"Si se selecciona, els fitxers s'eliminaran definitivament en comptes de "
 "llençar-los a la paperera"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
@@ -9184,7 +9183,7 @@ msgid ""
 "<html>Show/hide additional controls to specify destination track paths based "
 "on their metadata.</html>"
 msgstr ""
-"<html>Mostra/oculta controls addicionals per a especificar els camins de "
+"<html>Mostra o oculta controls addicionals per a especificar els camins de "
 "destinació de les peces basats en les seues metadades.</html>"
 
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
@@ -9206,7 +9205,7 @@ msgstr "Vista prèvia de la destinació"
 #, kde-format
 msgid "If checked, overwrite files of the same name without asking."
 msgstr ""
-"Si està activada, se sobreescriuran els fitxers amb el mateix nom sense "
+"Si se selecciona, se sobreescriuran els fitxers amb el mateix nom sense "
 "demanar confirmació."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, overwriteCheck)
@@ -9254,7 +9253,8 @@ msgstr "Substitució de caràcters"
 #: dialogs/OrganizeCollectionOptions.ui:35
 #, kde-format
 msgid "If checked, convert spaces to underscores."
-msgstr "SI està activat, convertix els espais en caràcters de subratllat."
+msgstr ""
+"Si se selecciona, es convertiran els espais en caràcters de subratllat."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, spaceCheck)
 #: dialogs/OrganizeCollectionOptions.ui:38
@@ -9263,7 +9263,7 @@ msgid ""
 "If checked all spaces will be replaced with underscores in the file names. "
 "If not, spaces will be left as they are."
 msgstr ""
-"Si està activada, tots els espais se substituiran per caràcters de "
+"Si se selecciona, tots els espais se substituiran per caràcters de "
 "subratllat en els noms de fitxer. Si no, els espais es deixaran tal com "
 "estan."
 
@@ -9278,8 +9278,8 @@ msgstr "Substituïx els espais per g&uions baixos"
 #, kde-format
 msgid "If checked, append ', The' to the artists' names starting with 'The'."
 msgstr ""
-"Si està activada, afig els noms dels artistes que comencen per «The» amb «, "
-"The»."
+"Si se selecciona, s'afegirà «, The» als noms dels artistes que comencen per "
+"«The»."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:57
@@ -9288,8 +9288,8 @@ msgid ""
 "If checked all artists starting with \"The\" will have it moved to the end. "
 "Example, \"The Beatles\" would become \"Beatles, The\""
 msgstr ""
-"Si està activada, tots els artistes que comencen per «The», es mourà al "
-"final. Per exemple, «The Beatles» esdevindria «Beatles, The»"
+"Si se selecciona, tots els artistes que comencen per «The», este es mourà al "
+"final del nom. Per exemple, «The Beatles» esdevindria «Beatles, The»"
 
 #. i18n: ectx: property (text), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:60
