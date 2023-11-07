@@ -38,6 +38,7 @@ Name[sr@latin]=Uvoznik iz Appleovog iTunesa
 Name[sv]=Apple iTunes-importverktyg
 Name[tr]=Apple iTunes İçe Aktarıcı
 Name[uk]=Засіб імпортування даних Apple iTunes
+Name[x-test]=xxApple iTunes Importerxx
 Name[zh_CN]=Apple iTunes 导入工具
 Name[zh_TW]=Apple iTunes 匯入器
 Comment=Import statistics from Apple iTunes database
@@ -77,6 +78,7 @@ Comment[sr@latin]=Uvoznik statistike iz baze Appleovog iTunesa
 Comment[sv]=Importera statistik från Apple iTunes-databas
 Comment[tr]=İstatistikleri Apple iTunes veritabanından al
 Comment[uk]=Імпортування статистичних даних з бази даних Apple iTunes
+Comment[x-test]=xxImport statistics from Apple iTunes databasexx
 Comment[zh_CN]=从 Apple iTunes 数据库中导入统计数据
 Comment[zh_TW]=從 Apple iTunes 資料庫中匯入統計資料
 

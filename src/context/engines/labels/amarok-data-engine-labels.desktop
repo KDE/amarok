@@ -44,6 +44,7 @@ Name[sr@latin]=Datomotor etiketa
 Name[sv]=Datagränssnitt för etiketter
 Name[tr]=Etiket Veri Motoru
 Name[uk]=Рушій даних міток
+Name[x-test]=xxLabels Data Enginexx
 Name[zh_CN]=“标记”功能的数据引擎
 Name[zh_TW]=標籤資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine

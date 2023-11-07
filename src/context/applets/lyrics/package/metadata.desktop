@@ -54,6 +54,7 @@ Name[tr]=Şarkı Sözleri
 Name[ug]=ناخشا سۆزى
 Name[uk]=Текст пісні
 Name[wa]=Paroles
+Name[x-test]=xxLyricsxx
 Name[zh_CN]=歌词
 Name[zh_TW]=歌詞
 
@@ -90,6 +91,7 @@ Comment[sl]=Vstavek besedila za Amarok
 Comment[sv]=Sångtextminiprogram för Amarok
 Comment[tr]=Amarok için şarkı sözü uygulamacığı
 Comment[uk]=Аплет слів пісні для Amarok
+Comment[x-test]=xxLyrics applet for Amarokxx
 Comment[zh_CN]=Amarok 的歌词部件
 Comment[zh_TW]=Amarok 的歌詞小程式
 

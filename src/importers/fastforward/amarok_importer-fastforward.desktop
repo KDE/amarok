@@ -38,6 +38,7 @@ Name[sr@latin]=Uvoznik iz Amaroka 1.4 (FastForward)
 Name[sv]=Amarok 1.4 (FastForward)-importverktyg
 Name[tr]=Amarok 1.4 (FastForward) İçe Aktarıcı
 Name[uk]=Засіб імпортування даних Amarok 1.4 (FastForward)
+Name[x-test]=xxAmarok 1.4 (FastForward) Importerxx
 Name[zh_CN]=Amarok 1.4 (快进合并版) 导入工具
 Name[zh_TW]=Amarok 1.4 （快轉）匯入器
 Comment=Import statistics from Amarok 1.4 database
@@ -77,6 +78,7 @@ Comment[sr@latin]=Uvoznik statistike iz baze Amaroka 1.4
 Comment[sv]=Importera statistik från Amarok 1.4-databas
 Comment[tr]=İstatistikleri Amarok 1.4 veritabanından al
 Comment[uk]=Імпортування статистичних даних з бази даних Amarok 1.4
+Comment[x-test]=xxImport statistics from Amarok 1.4 databasexx
 Comment[zh_CN]=从 Amarok 1.4 数据库中导入统计数据
 Comment[zh_TW]=從 Amarok 1.4 資料庫中匯入統計資料
 

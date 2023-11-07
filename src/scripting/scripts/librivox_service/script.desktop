@@ -40,6 +40,7 @@ Name[sr@latin]=LibriVox
 Name[sv]=Librivox.org
 Name[tr]=Librivox.org
 Name[uk]=Librivox.org
+Name[x-test]=xxLibrivox.orgxx
 Name[zh_CN]=Librivox.org
 Name[zh_TW]=Librivox.org
 Comment=A scripted service that lets you search, stream and download free, public domain, audio books from Librivox.org
@@ -77,6 +78,7 @@ Comment[sr@latin]=Skriptovani servis koji omogućava traženje, strujanje i preu
 Comment[sv]=En skriptbaserad tjänst som låter dig söka efter, strömma och ladda ner fria, allmänt tillgängliga, ljudböcker från Librivox.org
 Comment[tr]=Librivox.org sitesinden ücretsiz, kamuya açık alan adından, ses kitapları aramanızı, göndermenizi veya indirmenizi sağlayan bir betik hizmeti.
 Comment[uk]=Керована скриптами служба, за допомогою якої ви можете шукати, слухати і отримувати вільні, доступні усім звукові книги з Librivox.org
+Comment[x-test]=xxA scripted service that lets you search, stream and download free, public domain, audio books from Librivox.orgxx
 Comment[zh_CN]=一个供您搜索、串流和下载 Librivox.org 上自由的、公有领域的有声书的脚本服务
 Comment[zh_TW]=一個文稿服務，讓您從 Librivox.org 搜尋、接收並下載自由、公共版權的有聲書
 

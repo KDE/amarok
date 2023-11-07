@@ -38,6 +38,7 @@ Name[sr@latin]=Uvoznik iz Clementine
 Name[sv]=Clementine-importverktyg
 Name[tr]=Clementine İçe Aktarıcı
 Name[uk]=Засіб імпортування даних Clementine
+Name[x-test]=xxClementine Importerxx
 Name[zh_CN]=Clementine 导入工具
 Name[zh_TW]=Clementine 匯入器
 Comment=Import statistics from Clementine database
@@ -77,6 +78,7 @@ Comment[sr@latin]=Uvoz statistike iz Clementinine baze
 Comment[sv]=Importera statistik från Clementine-databas
 Comment[tr]=İstatistikleri Clementine veritabanından al
 Comment[uk]=Імпортування статистичних даних з бази даних Clementine
+Comment[x-test]=xxImport statistics from Clementine databasexx
 Comment[zh_CN]=从 Clementine 数据库中导入统计数据
 Comment[zh_TW]=從 Clementine 資料庫中匯入統計資料
 

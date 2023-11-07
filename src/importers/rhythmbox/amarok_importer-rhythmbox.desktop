@@ -38,6 +38,7 @@ Name[sr@latin]=Uvoznik iz Ritam mašine
 Name[sv]=Rhythmbox-importverktyg
 Name[tr]=Rhythmbox İçe Aktarıcı
 Name[uk]=Засіб імпортування даних Rhythmbox
+Name[x-test]=xxRhythmbox Importerxx
 Name[zh_CN]=Rhythmbox 导入工具
 Name[zh_TW]=Rhythmbox 匯入器
 Comment=Import statistics from Rhythmbox database
@@ -77,6 +78,7 @@ Comment[sr@latin]=Uvoznik statistike iz Ritam mašinine baze
 Comment[sv]=Importera statistik från Rhythmbox-databas
 Comment[tr]=İstatistikleri Rhythmbox veritabanından al
 Comment[uk]=Імпортування статистичних даних з бази даних Rhythmbox
+Comment[x-test]=xxImport statistics from Rhythmbox databasexx
 Comment[zh_CN]=从 Rhythmbox 数据库中导入统计数据
 Comment[zh_TW]=從 Rhythmbox 資料庫中匯入統計資料
 
