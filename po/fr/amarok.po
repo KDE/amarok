@@ -23,21 +23,21 @@
 # Sébastien Renard <renard@kde.org>, 2012.
 # Myriam Schweingruber <myriam@kde.org>, 2015.
 # Simon Depiets <sdepiets@gmail.com>, 2018, 2019, 2020.
-# Xavier Besnard <xavier.besnard@neuf.fr>, 2020, 2021.
+# SPDX-FileCopyrightText: 2020, 2021, 2023 Xavier Besnard <xavier.besnard@neuf.fr>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2021-12-27 22:41+0100\n"
-"Last-Translator: Xavier Besnard <xavier.besnard@neuf.fr>\n"
-"Language-Team: French <kde-francophone@kde.org>\n"
+"PO-Revision-Date: 2023-11-05 16:39+0100\n"
+"Last-Translator: Xavier BESNARD <xavier.besnard@neuf.fr>\n"
+"Language-Team: fr\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 21.12.0\n"
+"X-Generator: Lokalize 23.08.2\n"
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
@@ -187,7 +187,7 @@ msgid ""
 "\"http://amarok.kde.org/donations\"> donate during Roktober</a> and opt-in.</"
 "p>"
 msgstr ""
-"<p>Chaque année en Octobre, l'équipe d'Amarok organise une campagne de dons "
+"<p>Chaque année en Octobre, l'équipe de Amarok organise une campagne de dons "
 "appelée <b>Roktober</b>.</p><p>Si vous souhaitez que votre nom soit "
 "mentionné sur cette liste <a href=\"http://amarok.kde.org/donations\"> "
 "faites un don lors de Roktober</a> et choisissez de figurer sur cette liste."
@@ -1632,7 +1632,9 @@ msgstr "Mot de passe de l'utilisateur de la base de données externe."
 #: amarokconfig.kcfg:575
 #, kde-format
 msgid "Keeps a running count to know when run a CHECK."
-msgstr "Compte le nombre de d'utilisation pour savoir quand lancer un CHECK."
+msgstr ""
+"Compte le nombre de d'utilisation pour savoir quand lancer une vérification "
+"« CHECK »."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #: amarokconfig.kcfg:582
@@ -3195,7 +3197,7 @@ msgstr "Base de &données : "
 msgid "Enter the name of the database. Default preset is amarokdb.\n"
 msgstr ""
 "Saisissez le nom de la base de données. La présélection par défaut est "
-"amarokdb.\n"
+"« amarokdb ».\n"
 
 #. i18n: ectx: property (text), widget (QPushButton, button_Test)
 #: configdialog/dialogs/DatabaseConfig.ui:188
@@ -4028,7 +4030,7 @@ msgstr[1] "%1 pistes"
 #: context/applets/albums/plugin/AlbumsEngine.cpp:185
 #, kde-format
 msgid "Disc %1"
-msgstr "Disc %1"
+msgstr "Disque %1"
 
 #: context/applets/albums/plugin/AlbumsEngine.cpp:260
 #, kde-format
@@ -5488,27 +5490,31 @@ msgstr "Initialisation réussie."
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
-msgstr "La base de données d'iTunes a été écrite dans %1 avec succès"
+msgstr ""
+"La base de données de l'application « iTunes » a été écrite dans %1 avec "
+"succès."
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:713
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
 msgstr ""
-"L'écriture de la base de données d'iTunes dans %1 a échoué sans indication "
-"d'erreurs"
+"L'écriture de la base de données de l'application « iTunes » dans %1 a "
+"échoué sans message d'erreur."
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:717
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
-msgstr "L'écriture de la base de données d'iTunes dans %1 a échoué : %2"
+msgstr ""
+"L'écriture de la base de données de l'application « iTunes » dans %1 a "
+"échoué : %2"
 
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:54
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:370
 #, kde-format
 msgid "Disconnected iPod/iPad/iPhone"
-msgstr "&Déconnecter l'iPod/iPad/iPhone"
+msgstr "&Déconnecter le périphérique iPod / iPad / iPhone"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:182
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
@@ -5731,19 +5737,19 @@ msgstr ""
 #: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
 #, kde-format
 msgid "Connecting to iPhone, iPad or iPod touch failed."
-msgstr "La connexion à l'iPhone, iPad, ou l'iPod Touch a échoué."
+msgstr "La connexion au périphérique iPhone, iPad ou iPod Touch a échoué."
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, IpodConfiguration)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:14
 #, kde-format
 msgid "iPod device configuration"
-msgstr "Configuration de l'iPod"
+msgstr "Configuration du périphérique iPod"
 
 #. i18n: ectx: property (text), widget (QLabel, nameLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:26
 #, kde-format
 msgid "iPod name:"
-msgstr "Nom de l'iPod :"
+msgstr "Nom du périphérique iPod :"
 
 #. i18n: ectx: property (text), widget (QLabel, m_transcodeLabel)
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
@@ -5765,7 +5771,7 @@ msgstr "Modèle :"
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:91
 #, kde-format
 msgid "&Initialize iPod"
-msgstr "&Initialiser l'iPod"
+msgstr "&Initialiser le périphérique iPod"
 
 #. i18n: ectx: property (title), widget (QGroupBox, infoGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:103
@@ -5814,8 +5820,8 @@ msgstr "fichier SysInfoExtended :"
 #, kde-format
 msgid "Cannot parse iTunes database due to an unreported error."
 msgstr ""
-"Impossible d'analyser la base de données d'iTunes à cause d'une erreur non "
-"signalée."
+"Impossible d'analyser la base de données de l'application « iTunes » à cause "
+"d'une erreur non signalée."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:57
 #, kde-format
@@ -5930,9 +5936,10 @@ msgid ""
 "libgpod source repository for more information."
 msgstr ""
 "<b>%1</b><br><br>Par mesure de sécurité, Amarok <i>refuse d'écrire</i> sur "
-"l'iPod. (Modifier la base de données d'iTunes peut la rendre vide du point "
-"de vue de l'iPod)<br>Reportez-vous au fichier <a href='%2'>README.overview</"
-"a> depuis le dépôt source de « libgpod » pour davantage d'informations."
+"le périphérique iPod. (Modifier la base de données de l'application "
+"« iTunes » peut la rendre vide du point de vue pour lui)<br>Reportez-vous au "
+"fichier <a href='%2'>README.overview</a> depuis le dépôt source de "
+"« libgpod » pour davantage d'informations."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:372
 #, kde-format
@@ -7701,9 +7708,9 @@ msgid ""
 "a reasonable choice for the iPod and some other portable music players."
 msgstr ""
 "<a href=http://fr.wikipedia.org/wiki/Advanced_Audio_Coding>Advanced Audio "
-"Coding</a> (AAC) est un codec audio sans perte, breveté.<br> AAC donne en "
-"général une meilleure qualité sonore que le MP3 pour un même débit. C'est un "
-"bon choix pour un iPod ou un autre baladeur."
+"Coding</a> (AAC) est un codec audio sans perte, breveté.<br> Ce codec donne "
+"en général une meilleure qualité sonore que le codec « MP3 » pour un même "
+"débit. C'est un bon choix pour un iPod ou un autre baladeur."
 
 #: core/transcoding/formats/TranscodingAlacFormat.cpp:33
 #, kde-format
@@ -8755,8 +8762,8 @@ msgid ""
 "Empty commands are not executed."
 msgstr ""
 "Définissez ici une commande à exécuter avant la connexion à votre "
-"périphérique (e.g. une commande de montage).\n"
-"%d sera remplacé par le noeud du périphérique, %m par le point de montage.\n"
+"périphérique (Par exemple, une commande de montage).\n"
+"%d sera remplacé par le nœud du périphérique, %m par le point de montage.\n"
 "Les commandes vides ne seront pas exécutées."
 
 #: dialogs/deviceconfiguredialog.cpp:92
@@ -8778,8 +8785,8 @@ msgid ""
 "Empty commands are not executed."
 msgstr ""
 "Définissez ici une commande à exécuter après avoir déconnecté votre "
-"périphérique (e.g. une commande d'éjection).\n"
-"%d sera remplacé par le noeud du périphérique, %m par le point de montage.\n"
+"périphérique (Par exemple, une commande d'éjection).\n"
+"%d sera remplacé par le nœud du périphérique, %m par le point de montage.\n"
 "Les commandes vides ne seront pas exécutées."
 
 #: dialogs/deviceconfiguredialog.cpp:100
@@ -8871,7 +8878,7 @@ msgid ""
 "Enabled Applets:\n"
 "%3\n"
 msgstr ""
-"Scritpts activés :\n"
+"Scripts activés :\n"
 "%1\n"
 "Modules externes activés :\n"
 "%2\n"
@@ -10141,7 +10148,7 @@ msgstr "Piste qui est dans le même album que la précédente"
 #, kde-format
 msgctxt "Name of the \"EchoNest\" bias"
 msgid "EchoNest similar artist"
-msgstr "Artistes similaires d'Echo Nest"
+msgstr "Artistes similaires selon EchoNest"
 
 #: dynamic/biases/EchoNestBias.cpp:54
 #, kde-format
@@ -10150,21 +10157,21 @@ msgid ""
 "The \"EchoNest\" bias looks up tracks on echo nest and only adds similar "
 "tracks."
 msgstr ""
-"La condition « EchoNest » recherche les pistes sur echo nest et n'ajoute que "
-"les pistes similaires."
+"La condition « EchoNest » recherche les pistes sur le site « EchoNest » et "
+"n'ajoute que les pistes similaires."
 
 #: dynamic/biases/EchoNestBias.cpp:126
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to the previous artist (as reported by EchoNest)"
-msgstr "Similaire à l'artiste précédent (selon Echo Nest)"
+msgstr "Similaire à l'artiste précédent (selon EchoNest)"
 
 #: dynamic/biases/EchoNestBias.cpp:129
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to any artist in the current playlist (as reported by EchoNest)"
 msgstr ""
-"Similaire à n'importe quel artiste de la liste de lecture (selon Echo Nest)"
+"Similaire à n'importe quel artiste de la liste de lecture (selon EchoNest)"
 
 #: dynamic/biases/EchoNestBias.cpp:142
 #, kde-format
@@ -10172,7 +10179,7 @@ msgid ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is "
 "similar to"
 msgstr ""
-"<a href=\"http://the.echonest.com/\">Echonest</a> pense que l'artiste est "
+"<a href=\"http://the.echonest.com/\">EchoNest</a> pense que l'artiste est "
 "similaire à "
 
 #: dynamic/biases/EchoNestBias.cpp:144
@@ -10250,7 +10257,7 @@ msgstr "Partie"
 #, kde-format
 msgctxt "Name of the \"QuizPlay\" bias"
 msgid "Quiz play"
-msgstr "Quiz play"
+msgstr "QuizPlay"
 
 #: dynamic/biases/QuizPlayBias.cpp:51
 #, kde-format
@@ -10259,7 +10266,7 @@ msgid ""
 "The \"QuizPlay\" bias adds tracks that start\n"
 "with a character the last track ended with."
 msgstr ""
-"La condition « QuizPlay » ajoute les pistes qui commencent par le dernier "
+"La condition « QuizPlay » ajoute les pistes commençant par le dernier "
 "caractère de la dernière piste."
 
 #: dynamic/biases/QuizPlayBias.cpp:116
@@ -10304,12 +10311,12 @@ msgstr ""
 #: dynamic/biases/QuizPlayBias.cpp:141
 #, kde-format
 msgid "of the track title (Title quiz)"
-msgstr "du titre de la piste (Title quiz)"
+msgstr "du titre de la piste (TitleQuiz)"
 
 #: dynamic/biases/QuizPlayBias.cpp:143
 #, kde-format
 msgid "of the artist (Artist quiz)"
-msgstr "du nom de l'artiste (Artist quiz)"
+msgstr "du nom de l'artiste (ArtistQuiz)"
 
 #: dynamic/biases/QuizPlayBias.cpp:145
 #, kde-format
@@ -10703,7 +10710,7 @@ msgstr "iTunes d'Apple"
 #: importers/itunes/ITunesManager.cpp:28
 #, kde-format
 msgid "iTunes Statistics Importer"
-msgstr "Importateur de statistiques d'iTunes"
+msgstr "Importateur de statistiques pour l'application « iTunes »"
 
 #: importers/rhythmbox/RhythmboxManager.cpp:27
 #, kde-format
@@ -10812,7 +10819,9 @@ msgstr "Matěj Laitl"
 #: main.cpp:120
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
-msgstr "Réécriture de la collection de l'iPod et plus encore (strohel)"
+msgstr ""
+"Ré-écriture de la collection pour le périphérique iPod et plus encore "
+"(strohel)"
 
 #: main.cpp:123
 #, kde-format
@@ -11012,7 +11021,7 @@ msgstr "Casey Link"
 #: main.cpp:192
 #, kde-format
 msgid "MP3tunes integration"
-msgstr "Intégration de Mp3tunes"
+msgstr "Intégration de « mp3tunes »"
 
 #: main.cpp:194
 #, kde-format
@@ -11207,7 +11216,7 @@ msgstr "Nikhil Marathe"
 #: main.cpp:232
 #, kde-format
 msgid "UPnP support and patches (nsm)"
-msgstr "Prise en charge de l'UPnP et patches (nsm)"
+msgstr "Prise en charge « UPnP » et patches (nsm)"
 
 #: main.cpp:234
 #, kde-format
@@ -11262,7 +11271,7 @@ msgstr "Scott Wheeler"
 #: main.cpp:244
 #, kde-format
 msgid "TagLib & ktrm code"
-msgstr "code de TagLib & ktrm"
+msgstr "Code pour les modules « TagLib » et « ktrm »"
 
 #: main.cpp:246
 #, kde-format
@@ -11600,7 +11609,7 @@ msgstr "Chris Wales"
 #: main.cpp:329
 #, kde-format
 msgid "ZImin Stanislav"
-msgstr "ZImin Stanislav"
+msgstr "Zimin Stanislav"
 
 #: MainWindow.cpp:255
 #, kde-format
@@ -13330,32 +13339,32 @@ msgid ""
 "The file size units used by the constraint.  Note that kB is 1,000 bytes; MB "
 "is 1,000,000 bytes; and so forth."
 msgstr ""
-"L'unité de taille de fichier utilisée par la condition. Remarquez que 1 kB = "
-"1 000 bytes ; 1 MB = 1 000 000 bytes ; et ainsi de suite."
+"L'unité de taille de fichier utilisée par la condition. Remarquez que 1 Ko = "
+"1 000 octets ; 1 Mo = 1 000 000 octets ; et ainsi de suite."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:82
 #, kde-format
 msgid "kB"
-msgstr "kB"
+msgstr "Ko"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:87
 #, kde-format
 msgid "MB"
-msgstr "MB"
+msgstr "Mo"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:92
 #, kde-format
 msgid "GB"
-msgstr "GB"
+msgstr "Go"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:97
 #, kde-format
 msgid "TB"
-msgstr "TB"
+msgstr "To"
 
 #. i18n: ectx: property (whatsThis), widget (QSlider, slider_Strictness)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:145
@@ -13364,7 +13373,7 @@ msgid ""
 "<html><head/><body><p>How strict the APG should be about matching the total "
 "size of all files in the playlist to the specified size.</p></body></html>"
 msgstr ""
-"<html><head/><body><p>Strict avec lequel l'APG doit faire correspondre la "
+"<html><head/><body><p>Strict avec lequel APG doit faire correspondre la "
 "taille totale de tous les fichiers de la liste de lecture à la taille donnée."
 "</p></body></html>"
 
@@ -13483,7 +13492,7 @@ msgid ""
 "more than one track from a given album or a given artist from ending up in "
 "the playlist."
 msgstr ""
-"Un éditeur pour la condition PreventDuplicates (Éviter les doublons). Si "
+"Un éditeur pour la condition « PreventDuplicates » (Éviter les doublons). Si "
 "défini à « piste », il essaiera d'éviter qu'apparaisse plus qu'une copie de "
 "la même piste dans liste. Si défini à « album » ou « artiste », il essaiera "
 "d'éviter qu'apparaisse plus qu'une piste d'un certain album ou d'un certain "
@@ -14195,12 +14204,12 @@ msgid ""
 "older version of Amarok with a database written by newer version?"
 msgstr ""
 "Détection de la version %1 du schéma de la base de données de liste de "
-"lecture, cependantcette version d'Amarok ne prend en charge que la version "
-"%2 (et les versions précédentes commençant par %2). Les listes de lecture "
-"enregistrées dans la base de données d'Amarok ne fonctionneront probablement "
-"pas. N'importe quelle action d'écriture dans ces listes peut conduire à "
-"leurs pertes. Peut-être avez-vous démarré une ancienne version d'Amarok avec "
-"une base de données écrite par une version plus récente ?"
+"lecture, cependant, cette version de Amarok ne prend en charge que la "
+"version %2 (et les versions précédentes commençant par %2). Les listes de "
+"lecture enregistrées dans la base de données de Amarok ne fonctionneront "
+"probablement pas. N'importe quelle action d'écriture dans ces listes peut "
+"conduire à leurs pertes. Peut-être avez-vous démarré une ancienne version de "
+"Amarok avec une base de données écrite par une version plus récente ?"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:292
 #, kde-format
@@ -14539,7 +14548,7 @@ msgstr "&Tester le login"
 #: services/gpodder/GpodderProvider.cpp:291
 #, kde-format
 msgid "Gpodder Podcasts"
-msgstr "Podcasts de Gpodder"
+msgstr "Podcasts de GPodder"
 
 #: services/gpodder/GpodderProvider.cpp:468
 #, kde-format
@@ -14558,8 +14567,8 @@ msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
 "seconds..."
 msgstr ""
-"Le service Gpodder n'a pas réussi à obtenir les données du serveur. Nouvelle "
-"tentative dans 10 secondes..."
+"Il a été impossible au service « GPodder » d'obtenir les données du serveur. "
+"Nouvelle tentative dans 10 secondes..."
 
 #: services/gpodder/GpodderService.cpp:113
 #, kde-format
@@ -15995,7 +16004,7 @@ msgstr "Le pin qui sera utilisé pour l'authentification."
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:16
 #, kde-format
 msgid "MP3tunes Login"
-msgstr "Connexion à Mp3tunes"
+msgstr "Connexion à au site « mp3tunes »"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:22
@@ -16076,8 +16085,8 @@ msgstr ""
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
 "mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
-"underline; color:#0057ae;\">Obtenez un compte Mp3tunes Locker</span></a></"
-"p></body></html>"
+"underline; color:#0057ae;\">Obtenez un compte « mp3tunes » </span></a></p></"
+"body></html>"
 
 #: services/mp3tunes/Mp3tunesMeta.cpp:48
 #, kde-format
@@ -16135,7 +16144,7 @@ msgid ""
 "MP3tunes Harmony Error\n"
 "%1"
 msgstr ""
-"Erreur de Mp3tunes Harmony\n"
+"Erreur de « mp3tunes Harmony » \n"
 "%1"
 
 #: services/mp3tunes/Mp3tunesServiceCollection.cpp:60
@@ -16150,8 +16159,8 @@ msgid ""
 "Only the following types of tracks can be uploaded to MP3tunes: mp3, mp4, "
 "m4a, m4p, aac, wma, and ogg. "
 msgstr ""
-"Seuls les types suivants de pistes peuvent être téléchargés vers MP3tunes : "
-"mp3, mp4, m4a, m4p, aac, wma and ogg. "
+"Seuls les types suivants de pistes peuvent être téléchargés vers le site "
+"« mp3tunes » : mp3, mp4, m4a, m4p, aac, wma et ogg. "
 
 #: services/mp3tunes/Mp3tunesWorkers.cpp:344
 #, kde-format
