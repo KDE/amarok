@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Lukáš Tinkl <ltinkl@redhat.com>, 2010, 2011.
-# Vít Pelčák <vit@pelcak.org>, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020.
+# SPDX-FileCopyrightText: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2023 Vít Pelčák <vit@pelcak.org>
 # Tomáš Chvátal <tomas.chvatal@gmail.com>, 2012, 2013.
 # Vit Pelcak <vit@pelcak.org>, 2021, 2022, 2023.
 #
@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2023-06-14 13:40+0200\n"
+"PO-Revision-Date: 2023-11-10 16:24+0100\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 23.04.2\n"
+"X-Generator: Lokalize 23.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -2091,7 +2091,7 @@ msgstr "Možnosti třídění"
 #, kde-format
 msgctxt "No labels are assigned to the given item are any of its subitems"
 msgid "No Labels"
-msgstr "Bez štítků"
+msgstr "Žádné popisky"
 
 #: browsers/CollectionTreeItem.cpp:149
 #, kde-format
@@ -2179,7 +2179,7 @@ msgstr "Rok"
 #: browsers/CollectionTreeItemModelBase.cpp:1112
 #, kde-format
 msgid "Label"
-msgstr "Štítek"
+msgstr "Popisek"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1114 dialogs/transferdialog.cpp:102
 #: playlist/navigators/NavigatorConfigAction.cpp:80
@@ -3177,25 +3177,25 @@ msgstr ""
 #: configdialog/dialogs/ExcludedLabelsDialog.cpp:53
 #, kde-format
 msgid "Excluded Labels"
-msgstr "Vyřazené štítky"
+msgstr "Vyřazené popisky"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, addButton)
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:17
 #, kde-format
 msgid "Add this label to the list of excluded labels"
-msgstr "Přidat tento štítek do seznamu ignorovaných štítků"
+msgstr "Přidat tento popisek do seznamu ignorovaných popisků"
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, addLabelLine)
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:30
 #, kde-format
 msgid "Add Label to Exclude"
-msgstr "Přidat štítek k ignorování"
+msgstr "Přidat popisek k ignorování"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel)
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:44
 #, kde-format
 msgid "Selected labels won't be touched by statistics synchronization"
-msgstr "Synchronizace statistik se nijak nedotkne vybraných štítků"
+msgstr "Synchronizace statistik se nijak nedotkne vybraných popisků"
 
 #. i18n: ectx: property (title), widget (QGroupBox, generalBox)
 #: configdialog/dialogs/GeneralConfig.ui:23
@@ -3397,7 +3397,7 @@ msgstr "Synchronizovat počty přehrání"
 #, kde-format
 msgctxt "Statistics sync checkbox label"
 msgid "Synchronize Labels"
-msgstr "Synchronizovat štítky"
+msgstr "Synchronizovat popisky"
 
 #: configdialog/dialogs/MetadataConfig.cpp:120
 #, kde-format
@@ -4050,12 +4050,12 @@ msgstr "Nikdy"
 #: context/applets/labels/LabelGraphicsItem.cpp:64
 #, kde-format
 msgid "Add label"
-msgstr "Přidat štítek"
+msgstr "Přidat popisek"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:69
 #, kde-format
 msgid "Remove label"
-msgstr "Odstranit štítek"
+msgstr "Odstranit popisek"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
 #: context/applets/similarartists/ArtistWidget.cpp:131
@@ -4076,7 +4076,7 @@ msgstr "Přidat do zakázaných (blacklist)"
 #: statsyncing/ui/MatchedTracksPage.ui:87
 #, kde-format
 msgid "Labels"
-msgstr "Štítky"
+msgstr "Popisky"
 
 #: context/applets/labels/LabelsApplet.cpp:104
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:617
@@ -4098,23 +4098,23 @@ msgstr "Nastavení"
 #: context/applets/labels/LabelsApplet.cpp:199
 #, kde-format
 msgid "Labels: No track playing"
-msgstr "Štítky: nepřehrává se žádná hudba"
+msgstr "Popisky: nepřehrává se žádná hudba"
 
 #: context/applets/labels/LabelsApplet.cpp:520
 #, kde-format
 msgid "Labels: Fetching..."
-msgstr "Štítky: stahuji..."
+msgstr "Popisky: Stahuji..."
 
 #: context/applets/labels/LabelsApplet.cpp:530
 #: statsyncing/models/CommonModel.cpp:186
 #, kde-format
 msgid "Labels: %1"
-msgstr "Štítky: %1"
+msgstr "Popisky: %1"
 
 #: context/applets/labels/LabelsApplet.cpp:578
 #, kde-format
 msgid "Labels for %1 by %2"
-msgstr "Štítky pro %1 od %2"
+msgstr "Popisky pro %1 od %2"
 
 #: context/applets/labels/LabelsApplet.cpp:757
 #, kde-format
@@ -4124,7 +4124,7 @@ msgstr "Obecná nastavení"
 #: context/applets/labels/LabelsApplet.cpp:758
 #, kde-format
 msgid "Blacklist Settings"
-msgstr "Nastavení vyloučených štítků"
+msgstr "Nastavení vyloučených popisků"
 
 #: context/applets/labels/LabelsApplet.cpp:759
 #, kde-format
@@ -4135,25 +4135,25 @@ msgstr "Nastavení nahrazování"
 #: context/applets/labels/labelsBlacklistSettings.ui:17
 #, kde-format
 msgid "Do not show the following labels:"
-msgstr "Nezobrazovat následující štítky:"
+msgstr "Nezobrazovat následující popisky:"
 
 #. i18n: ectx: property (text), widget (QCheckBox, matchArtistCheckBox)
 #: context/applets/labels/labelsBlacklistSettings.ui:24
 #, kde-format
 msgid "Labels matching the artist"
-msgstr "Štítky odpovídající umělci"
+msgstr "Popisky odpovídající umělci"
 
 #. i18n: ectx: property (text), widget (QCheckBox, matchTitleCheckBox)
 #: context/applets/labels/labelsBlacklistSettings.ui:31
 #, kde-format
 msgid "Labels matching the title"
-msgstr "Štítky odpovídající názvu"
+msgstr "Popisky odpovídající názvu"
 
 #. i18n: ectx: property (text), widget (QCheckBox, matchAlbumCheckBox)
 #: context/applets/labels/labelsBlacklistSettings.ui:38
 #, kde-format
 msgid "Labels matching the album"
-msgstr "Štítky odpovídající albu"
+msgstr "Popisky odpovídající albu"
 
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: context/applets/labels/labelsBlacklistSettings.ui:61
@@ -4185,7 +4185,7 @@ msgstr "Zobrazit pouze skladby, které byly hodnoceny minimálně takto vysoko."
 #: context/applets/labels/labelsGeneralSettings.ui:75
 #, kde-format
 msgid "Maximum labels to show:"
-msgstr "Maximální počet zobrazených štítků:"
+msgstr "Maximální počet zobrazených popisků:"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, numLabelsSpinBox)
 #: context/applets/labels/labelsGeneralSettings.ui:95
@@ -4194,50 +4194,50 @@ msgid ""
 "Do not show more than this many labels.\n"
 "Note that personal labels will always be shown."
 msgstr ""
-"Nezobrazovat více než zadaný počet štítků.\n"
-"Osobní štítky budou vždy zobrazeny"
+"Nezobrazovat více než zadaný počet popisků.\n"
+"Osobní popisky budou vždy zobrazeny"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: context/applets/labels/labelsGeneralSettings.ui:108
 #, kde-format
 msgid "Show personal labels with score:"
-msgstr "Osobní štítky zobrazit, jako kdyby měly skóre:"
+msgstr "Osobní popisky zobrazit, jako kdyby měly skóre:"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, personalCountSpinBox)
 #: context/applets/labels/labelsGeneralSettings.ui:127
 #, kde-format
 msgid "Affects the font size of the personal labels."
-msgstr "Ovlivňuje velikost písma osobních štítků."
+msgstr "Ovlivňuje velikost písma osobních popisků."
 
 #. i18n: ectx: property (text), widget (QCheckBox, autoAddCheckBox)
 #: context/applets/labels/labelsGeneralSettings.ui:145
 #, kde-format
 msgid "Automatically add downloaded labels if none are assigned"
-msgstr "Automaticky přiřadit stažené štítky, pokud skladba žádné nemá"
+msgstr "Automaticky přiřadit stažené popisky, pokud skladba žádné nemá"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, minAutoAddCountSpinBox)
 #: context/applets/labels/labelsGeneralSettings.ui:185
 #, kde-format
 msgid "Add only labels that are rated at least that high."
-msgstr "Přidat pouze ty štítky, které mají aspoň takto vysoké skóre."
+msgstr "Přidat pouze ty popisky, které mají aspoň takto vysoké skóre."
 
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #: context/applets/labels/labelsGeneralSettings.ui:227
 #, kde-format
 msgid "Color for assigned labels:"
-msgstr "Barva pro přiřazené štítky:"
+msgstr "Barva pro přiřazené popisky:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_6)
 #: context/applets/labels/labelsGeneralSettings.ui:257
 #, kde-format
 msgid "Color for labels background:"
-msgstr "Barva pro pozadí štítků:"
+msgstr "Barva pro pozadí popisků:"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, resetColorsPushButton)
 #: context/applets/labels/labelsGeneralSettings.ui:297
 #, kde-format
 msgid "Sets the label colors according to the current color scheme."
-msgstr "Nastavit barvu štítku podle aktuálního barevného schématu."
+msgstr "Nastavit barvu popisku podle aktuálního barevného schématu."
 
 #. i18n: ectx: property (text), widget (QPushButton, resetColorsPushButton)
 #: context/applets/labels/labelsGeneralSettings.ui:300
@@ -4249,7 +4249,7 @@ msgstr "Obnovit výchozí barvy"
 #: context/applets/labels/labelsReplacementSettings.ui:19
 #, kde-format
 msgid "Replace downloaded label"
-msgstr "Nahradit stažený štítek"
+msgstr "Nahradit stažený popisek"
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #. i18n: ectx: property (text), widget (QLabel, replaceLabel2)
@@ -4275,15 +4275,15 @@ msgid ""
 "labels according to your preferences.\n"
 "Eg. \"hip hop\" -> \"hip-hop\""
 msgstr ""
-"Pomáhá udržet vaši sbírku štítků organizovanou nahrazováním stažených štítků "
-"podle vašich představ.\n"
+"Pomáhá udržet vaši sbírku popisků organizovanou nahrazováním stažených "
+"popisků podle vašich představ.\n"
 "Např.: \"hip hop\" -> \"hip-hop\""
 
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: context/applets/labels/labelsReplacementSettings.ui:98
 #, kde-format
 msgid "Downloaded label"
-msgstr "Stažený štítek"
+msgstr "Stažený popisek"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: context/applets/labels/labelsReplacementSettings.ui:103
@@ -6511,14 +6511,14 @@ msgid ""
 "playlist and on media devices will be the same as in the feed."
 msgstr ""
 "Kanál RSS a značky ve stahovaném souboru někdy neobsahují stejné informace. "
-"Zapsání štítků zajistí, že informace v seznamu skladeb a v zařízení medií se "
-"budou shodovat s těmi v kanálu."
+"Zapsání popisků zajistí, že informace v seznamu skladeb a v zařízení medií "
+"se budou shodovat s těmi v kanálu."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeTagsCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:211
 #, kde-format
 msgid "Write feed information to tags after downloading."
-msgstr "Zapiš po stažení informace kanálu do štítků."
+msgstr "Zapiš po stažení informace kanálu do popisků."
 
 #. i18n: ectx: property (text), widget (QPushButton, m_filenameLayoutConfigWidgetButton)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:251
@@ -7052,7 +7052,7 @@ msgstr "Umělec alba"
 #, kde-format
 msgctxt "Track field name"
 msgid "Label"
-msgstr "Štítek"
+msgstr "Popisek"
 
 #: core/meta/support/MetaConstants.cpp:212
 #, kde-format
@@ -7252,7 +7252,7 @@ msgstr "umělec alba"
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "label"
-msgstr "štítek"
+msgstr "popisek"
 
 #: core/meta/support/MetaConstants.cpp:256
 #, kde-format
@@ -9684,25 +9684,25 @@ msgstr "&Slova písně"
 #: dialogs/TagDialogBase.ui:913
 #, kde-format
 msgid "La&bels"
-msgstr "Štít&ky"
+msgstr "Popis&ky"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: dialogs/TagDialogBase.ui:929
 #, kde-format
 msgid "Label:"
-msgstr "Štítek:"
+msgstr "Popisek:"
 
 #. i18n: ectx: property (toolTip), widget (KComboBox, kComboBox_label)
 #: dialogs/TagDialogBase.ui:945
 #, kde-format
 msgid "Insert your custom label here or select one from the list."
-msgstr "Zde zadejte vlastní štítek, anebo vyberte jeden ze seznamu."
+msgstr "Zde zadejte vlastní popisek, anebo vyberte jeden ze seznamu."
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: dialogs/TagDialogBase.ui:976
 #, kde-format
 msgid "Custom labels for this item:"
-msgstr "Vlastní štítek pro tuto položku:"
+msgstr "Vlastní popisek pro tuto položku:"
 
 #. i18n: ectx: property (text), widget (QPushButton, removeButton)
 #: dialogs/TagDialogBase.ui:1021
@@ -10990,7 +10990,7 @@ msgstr "Daniel Dewald"
 #: main.cpp:204
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
-msgstr "Odhadování značek, štítky, spektrální analyzátor"
+msgstr "Odhadování značek, popisky, spektrální analyzátor"
 
 #: main.cpp:206
 #, kde-format
@@ -12441,7 +12441,7 @@ msgstr "Seskupit skladby"
 #, kde-format
 msgctxt "'Labels' playlist column name and token for playlist layouts"
 msgid "Labels"
-msgstr "Štítky"
+msgstr "Popisky"
 
 #: playlist/PlaylistDefines.cpp:110
 #, kde-format
@@ -13924,7 +13924,7 @@ msgstr "počet přehrání"
 #: playlistgenerator/constraints/TagMatchSupport.cpp:102
 #, kde-format
 msgid "label"
-msgstr "štítek"
+msgstr "popisek"
 
 #: playlistgenerator/ConstraintSolver.cpp:231
 #, kde-format
@@ -14797,7 +14797,7 @@ msgstr ""
 #: services/lastfm/LastFmConfigWidget.ui:183
 #, kde-format
 msgid "Do not scrobble tracks with label:"
-msgstr "Nezasílat skladby se štítkem:"
+msgstr "Nezasílat skladby s popiskem:"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
 #: services/lastfm/LastFmConfigWidget.ui:190
@@ -14806,8 +14806,8 @@ msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
 "will not be scrobbled</html>"
 msgstr ""
-"<html>Vyberte preferovaný štítek (nebo napište nový). Skladby s tímto "
-"štítkem nebudou zaslány.</html>"
+"<html>Vyberte preferovaný popisek (nebo napište nový). Skladby s tímto "
+"popiskem nebudou zaslány.</html>"
 
 #: services/lastfm/LastFmService.cpp:100
 #, kde-format
@@ -16176,7 +16176,7 @@ msgstr[2] ""
 #: statsyncing/models/CommonModel.cpp:189
 #, kde-format
 msgid "Ignored labels: %1"
-msgstr "Ignorované štítky: %1"
+msgstr "Ignorované popisky: %1"
 
 #: statsyncing/models/CommonModel.cpp:208
 #, kde-format
@@ -16406,18 +16406,18 @@ msgstr "Obnovit všechny hodnocení na \"nerozhodnuto\""
 #, kde-format
 msgctxt "%1 is collection name"
 msgid "Include Labels from %1"
-msgstr "Zahrnout štítky z %1"
+msgstr "Zahrnout popisky z %1"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:198
 #, kde-format
 msgctxt "%1 is collection name"
 msgid "Exclude Labels from %1"
-msgstr "Nezahrnout štítky z %1"
+msgstr "Nezahrnout popisky z %1"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:202
 #, kde-format
 msgid "Reset All Labels to Undecided (Don't Synchronize Them)"
-msgstr "Obnovit všechny štítky na \"nerozhodnuto\" (nesynchronizovat je)"
+msgstr "Obnovit všechny popisky na \"nerozhodnuto\" (nesynchronizovat je)"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:228
 #, kde-format
