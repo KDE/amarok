@@ -476,8 +476,8 @@ msgid ""
 "If set, dynamic mode will be on, and tracks will be added according to the "
 "dynamic playlist specified."
 msgstr ""
-"Si s'activa, el mode dinàmic s'iniciarà, i les peces s'afegiran segons les "
-"especificacions de la llista de reproducció dinàmica."
+"Si se selecciona, s'iniciarà el mode dinàmic i les peces s'afegiran segons "
+"les especificacions de la llista de reproducció dinàmica."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:53
@@ -532,7 +532,7 @@ msgstr "Si s'ha de mostrar la icona en la safata del sistema"
 #: amarokconfig.kcfg:69
 #, kde-format
 msgid "Enable/Disable tray icon for Amarok."
-msgstr "Activa/Desactiva la icona de la safata per a Amarok."
+msgstr "Activa o desactiva la icona de la safata per a Amarok."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:73
@@ -544,7 +544,7 @@ msgstr "Si cal ocultar la vista contextual."
 #: amarokconfig.kcfg:74
 #, kde-format
 msgid "Enable/Disable context view in Amarok."
-msgstr "Activa/Desactiva la vista contextual en Amarok."
+msgstr "Activa o desactiva la vista contextual en Amarok."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:78
@@ -873,7 +873,7 @@ msgstr "Estat de silenci"
 #: amarokconfig.kcfg:200
 #, kde-format
 msgid "Mute/Unmute sound."
-msgstr "Silenci/Activa el so."
+msgstr "Silenci o activa el so."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:204
@@ -885,7 +885,7 @@ msgstr "Si s'ha de fer l'esvaïment de les peces en prémer Para."
 #: amarokconfig.kcfg:205 amarokconfig.kcfg:210
 #, kde-format
 msgid "Enable/Disable fadeout."
-msgstr "Activa/Desactiva l'esvaïment."
+msgstr "Activa o desactiva l'esvaïment."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:209
@@ -1059,7 +1059,7 @@ msgstr "Utilitza el visor en pantalla"
 #: amarokconfig.kcfg:306
 #, kde-format
 msgid "Enable/Disable the On-Screen Display."
-msgstr "Activa/desactiva el visor en pantalla."
+msgstr "Activa o desactiva el visor en pantalla."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:310 configdialog/dialogs/NotificationsConfig.cpp:46
@@ -1071,7 +1071,7 @@ msgstr "Utilitza Growl per a les notificacions"
 #: amarokconfig.kcfg:311
 #, kde-format
 msgid "Enable/Disable use of Growl for notifications."
-msgstr "Activa/Desactiva l'ús de Growl per a les notificacions."
+msgstr "Activa o desactiva l'ús de Growl per a les notificacions."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:315
@@ -1471,7 +1471,7 @@ msgstr ""
 #: amarokconfig.kcfg:491
 #, kde-format
 msgid "Auto delete podcasts"
-msgstr "Suprimix automàticament els podcast"
+msgstr "Suprimix automàticament els pòdcast"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
 #: amarokconfig.kcfg:492
@@ -1480,7 +1480,7 @@ msgid ""
 "Whether podcast shows already played are automatically deleted when media "
 "device is connected."
 msgstr ""
-"Si els episodis de podcast que ja han sigut reproduïts s'han de suprimir "
+"Si els episodis de pòdcast que ja han sigut reproduïts s'han de suprimir "
 "quan es connecte el dispositiu de suports."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
@@ -1522,7 +1522,7 @@ msgstr "Contrasenyes del servidor"
 #: amarokconfig.kcfg:507
 #, kde-format
 msgid "Passwords stored by hostname."
-msgstr "Les contrasenyes es guarden pel nom de la màquina."
+msgstr "Les contrasenyes es guarden pel nom de l'amfitrió."
 
 #. i18n: ectx: label, entry, group (Playlist Search)
 #: amarokconfig.kcfg:513
@@ -1628,7 +1628,7 @@ msgstr "Si s'ha d'activar el mòdul de scripts creats d'Amarok."
 #: amarokconfig.kcfg:583
 #, kde-format
 msgid "Enable/Disable Amarok's scripting module."
-msgstr "Activa/Inactiva el mòdul de scripts creats d'Amarok."
+msgstr "Activa o desactiva el mòdul de scripts creats d'Amarok."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #: amarokconfig.kcfg:587
@@ -1641,7 +1641,7 @@ msgstr "Si s'han d'actualitzar automàticament els scripts integrats"
 #, kde-format
 msgid "Enable/Disable automatic update for built-in scripts."
 msgstr ""
-"Activa/Desactiva les actualitzacions automàtiques dels scripts integrats."
+"Activa o desactiva les actualitzacions automàtiques dels scripts integrats."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
@@ -2239,7 +2239,7 @@ msgstr "Mou cap a la col·lecció"
 #: browsers/CollectionTreeView.cpp:411
 #, kde-format
 msgid "Move Tracks to Trash"
-msgstr "Mou peces a la paperera"
+msgstr "Mou peces cap a dins de la paperera"
 
 #: browsers/CollectionTreeView.cpp:422
 #, kde-format
@@ -2331,8 +2331,8 @@ msgstr "Confirmeu el moure cap a dins de la paperera"
 #, kde-format
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
-msgstr[0] "Segur que voleu moure este element a la paperera?"
-msgstr[1] "Segur que voleu moure estos %1 elements a la paperera?"
+msgstr[0] "Segur que voleu moure este element cap a dins de la paperera?"
+msgstr[1] "Segur que voleu moure estos %1 elements cap a dins de la paperera?"
 
 #: browsers/InfoProxy.cpp:166
 #, kde-format
@@ -2584,7 +2584,7 @@ msgstr ""
 "El navegador de llistes de reproducció conté la relació de les llistes de "
 "reproducció importades i guardades. També és a on podeu especificar les "
 "potents llistes de reproducció dinàmiques i gestionar les subscripcions a "
-"podcast i episodis."
+"pòdcast i episodis."
 
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:77
 #: services/opmldirectory/OpmlDirectoryModel.cpp:42
@@ -2750,12 +2750,12 @@ msgstr "Segur que voleu suprimir esta carpeta i el seu contingut?"
 #: core-impl/collections/umscollection/UmsConfiguration.ui:136
 #, kde-format
 msgid "Podcasts"
-msgstr "Podcast"
+msgstr "Pòdcast"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:83
 #, kde-format
 msgid "List of podcast subscriptions and episodes"
-msgstr "Llista de subscripcions a podcast i episodis"
+msgstr "Llista de subscripcions a pòdcast i episodis"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:86
 #, kde-format
@@ -2764,14 +2764,14 @@ msgid ""
 "Downloading episodes to the disk is also done here, or you can tell Amarok "
 "to do this automatically."
 msgstr ""
-"Gestioneu les subscripcions a podcast i visualitzeu els episodis "
+"Gestioneu les subscripcions a pòdcast i visualitzeu els episodis "
 "individuals. La baixada dels episodis al disc també es fa des d'ací, o li "
 "podeu dir a Amarok que ho faça automàticament."
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:96
 #, kde-format
 msgid "&Add Podcast"
-msgstr "Afi&g un podcast"
+msgstr "Afi&g un pòdcast"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:103
 #, kde-format
@@ -2814,19 +2814,19 @@ msgstr "Paraules clau:"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:24
 #, kde-format
 msgid "Add Podcast..."
-msgstr "Afig un podcast..."
+msgstr "Afig un pòdcast..."
 
 #. i18n: ectx: property (text), widget (QToolButton, addPodcastButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:27
 #, kde-format
 msgid "add podcast..."
-msgstr "afig un podcast..."
+msgstr "afig un pòdcast..."
 
 #. i18n: ectx: property (text), widget (QToolButton, refreshPodcastsButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:50
 #, kde-format
 msgid "Refresh All Podcasts"
-msgstr "Torna a carregar tots els podcast"
+msgstr "Torna a carregar tots els pòdcast"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, configurePodcastsButton)
 #. i18n: ectx: property (text), widget (QToolButton, configurePodcastsButton)
@@ -2834,7 +2834,7 @@ msgstr "Torna a carregar tots els podcast"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:76
 #, kde-format
 msgid "Configure Podcasts..."
-msgstr "Configura els podcast..."
+msgstr "Configura els pòdcast..."
 
 #. i18n: ectx: property (text), widget (QToolButton, podcastsIntervalButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:99
@@ -2867,7 +2867,7 @@ msgstr "Resum"
 #: browsers/playlistbrowser/PodcastModel.cpp:322
 #, kde-format
 msgid "Add Podcast"
-msgstr "Afig un podcast"
+msgstr "Afig un pòdcast"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:323
 #, kde-format
@@ -3093,7 +3093,7 @@ msgid ""
 "Check to enable the use of an external database. By default there is already "
 "an embedded MySQL database running."
 msgstr ""
-"Marqueu-la per a activar l'ús d'una base de dades externa. De manera "
+"Seleccioneu-la per a activar l'ús d'una base de dades externa. De manera "
 "predeterminada, ja hi ha una base de dades MySQL incrustada en execució."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseServer)
@@ -3245,7 +3245,8 @@ msgstr "Opcions generals"
 #: configdialog/dialogs/GeneralConfig.ui:32
 #, kde-format
 msgid "Check to enable the Amarok system tray icon."
-msgstr "Marqueu-la per a activar la icona d'Amarok a la safata del sistema."
+msgstr ""
+"Seleccioneu-la per a activar la icona d'Amarok a la safata del sistema."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowTrayIcon)
 #: configdialog/dialogs/GeneralConfig.ui:35
@@ -3260,7 +3261,7 @@ msgstr "Mostra la &icona en la safata del sistema"
 #, kde-format
 msgid "Check to enable the automatic retrieval of cover art from the Internet."
 msgstr ""
-"Marqueu-la per a activar la recuperació automàtica de les caràtules des "
+"Seleccioneu-la per a activar la recuperació automàtica de les caràtules des "
 "d'Internet."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoGetCoverArt)
@@ -3276,7 +3277,7 @@ msgstr "Recupera la caràtula automàticament"
 #, kde-format
 msgid "Check to enable animations when context applets collapse."
 msgstr ""
-"Marqueu-la per a activar les animacions en reduir les miniaplicacions "
+"Seleccioneu-la per a activar les animacions en reduir les miniaplicacions "
 "contextuals."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowBrowserBackgroundImage)
@@ -3297,8 +3298,8 @@ msgstr "Opcions de la llista de reproducció"
 msgid ""
 "Check to make the playlist scroll so the current track is always visible."
 msgstr ""
-"Marqueu-la per a desplaçar la llista de reproducció de manera que la peça "
-"actual siga sempre visible."
+"Seleccioneu-la per a desplaçar la llista de reproducció de manera que la "
+"peça actual siga sempre visible."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoScrollPlaylist)
 #: configdialog/dialogs/GeneralConfig.ui:87
@@ -3597,8 +3598,8 @@ msgid ""
 "Check to enable the On-Screen-Display. The OSD briefly displays track data "
 "when a new track is played."
 msgstr ""
-"Marqueu-la per a activar el visor en pantalla. Es visualitzarà breument la "
-"informació de la peça nova quan comence a reproduir-se."
+"Seleccioneu-la per a activar el visor en pantalla. Es visualitzarà breument "
+"la informació de la peça nova quan comence a reproduir-se."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:29
@@ -3660,7 +3661,7 @@ msgstr "La pantalla que hauria de mostrar OSD."
 #: configdialog/dialogs/NotificationsConfig.ui:136
 #, kde-format
 msgid "Check to enable custom colors for the On-Screen-Display."
-msgstr "Marqueu-la per a activar els colors a mida del visor en pantalla."
+msgstr "Seleccioneu-la per a activar els colors a mida del visor en pantalla."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdUseCustomColors)
 #: configdialog/dialogs/NotificationsConfig.ui:139
@@ -3693,7 +3694,7 @@ msgstr "Feu clic per a seleccionar el color del text d'OSD."
 #, kde-format
 msgid "If checked, enables translucency if supported by your desktop system."
 msgstr ""
-"Si està activada, habilita la translucidesa si està admesa pel sistema "
+"Si se selecciona, habilita la translucidesa si està admesa pel sistema "
 "d'escriptori."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdUseTranslucency)
@@ -3718,7 +3719,7 @@ msgstr "%"
 #: configdialog/dialogs/NotificationsConfig.ui:274
 #, kde-format
 msgid "Check to use the system notification."
-msgstr "Marqueu-la per a utilitzar les notificacions del sistema."
+msgstr "Seleccioneu-la per a utilitzar les notificacions del sistema."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_KNotifyEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:277
@@ -3759,10 +3760,10 @@ msgid ""
 "to the playlist using mouse, pressing Enter or when the playlist is "
 "replaced. Does nothing if something is already playing.</html>"
 msgstr ""
-"<html>Marqueu esta opció per a iniciar la reproducció quan s'afigen una o "
-"més peces a la llista de reproducció utilitzant el ratolí, prement «Retorn» "
-"o quan la llista de reproducció se substituïsca. No farà res si ja hi ha "
-"alguna cosa en reproducció.</html>"
+"<html>Seleccioneu esta opció per a iniciar la reproducció quan s'afigen una "
+"o més peces a la llista de reproducció utilitzant el ratolí, prement "
+"«Retorn» o quan la llista de reproducció se substituïsca. No farà res si ja "
+"hi ha alguna cosa en reproducció.</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_StartPlayingOnAdd)
 #: configdialog/dialogs/PlaybackConfig.ui:42
@@ -5351,7 +5352,7 @@ msgstr "Avançat"
 #: core-impl/collections/daap/DaapCollection.cpp:101
 #, kde-format
 msgid "Loading remote collection from host %1"
-msgstr "S'està carregant la col·lecció remota des de l'ordinador %1"
+msgstr "S'està carregant la col·lecció remota des de l'amfitrió %1"
 
 #: core-impl/collections/daap/DaapCollection.cpp:271
 #, kde-format
@@ -6018,7 +6019,7 @@ msgstr "Llistes de reproducció del dispositiu de suports"
 #, kde-format
 msgctxt "Podcasts on a media device"
 msgid "Podcasts on %1"
-msgstr "Podcast a %1"
+msgstr "Pòdcast a %1"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:152
 #, kde-format
@@ -6102,7 +6103,8 @@ msgid_plural ""
 "removed from %2."
 msgstr[0] "Segur que voleu moure esta peça a la paperera? S'eliminarà de %2."
 msgstr[1] ""
-"Segur que voleu moure estes %1 peces a la paperera? S'eliminaran de %2."
+"Segur que voleu moure estes %1 peces cap a dins de la paperera? S'eliminaran "
+"de %2."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:63
 #, kde-format
@@ -6221,7 +6223,7 @@ msgstr "Paperera"
 #: core-impl/collections/support/TrashCollectionLocation.cpp:101
 #, kde-format
 msgid "Moving to trash: %1"
-msgstr "S'està movent a la paperera: %1"
+msgstr "S'està movent cap a dins de la paperera: %1"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:194
 #, kde-format
@@ -6315,7 +6317,7 @@ msgstr "Esquema per als noms de fitxer de les peces que s'afigen al dispositiu"
 #: core-impl/collections/umscollection/UmsConfiguration.ui:176
 #, kde-format
 msgid "Podcast folder:"
-msgstr "Carpeta de podcast:"
+msgstr "Carpeta de pòdcast:"
 
 #: core-impl/meta/default/DefaultMetaTypes.h:39
 #: core-impl/meta/default/DefaultMetaTypes.h:75
@@ -6401,19 +6403,19 @@ msgstr "Llista_de_reproducció_%1"
 #, kde-format
 msgctxt "Change filename layout"
 msgid "Podcast Episode Filename Configuration"
-msgstr "Configureu els noms de fitxer dels episodis de podcast"
+msgstr "Configureu els noms de fitxer dels episodis de pòdcast"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PodcastFilenameLayoutConfigWidget)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:30
 #, kde-format
 msgid "Podcast Filename Layout Configuration"
-msgstr "Configureu el format de nom de fitxer del podcast"
+msgstr "Configureu el format de nom de fitxer del pòdcast"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
 #, kde-format
 msgid "Specified by podcast channel"
-msgstr "Especificat pel canal de podcast"
+msgstr "Especificat pel canal de pòdcast"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
@@ -6435,7 +6437,7 @@ msgstr ""
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:30
 #, kde-format
 msgid "Podcast Configuration"
-msgstr "Configuració de podcast"
+msgstr "Configuració de pòdcast"
 
 #. i18n: ectx: property (text), widget (QLabel, m_saveLocationlabel)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:68
@@ -6450,7 +6452,7 @@ msgstr "Ubicació de guardada:"
 #, kde-format
 msgid "When checked, Amarok will automatically scan the podcast for updates"
 msgstr ""
-"Si se selecciona, Amarok escanejarà automàticament el podcast per a "
+"Si se selecciona, Amarok escanejarà automàticament el pòdcast per a "
 "actualitzacions"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoFetchCheck)
@@ -6488,7 +6490,7 @@ msgid ""
 "Media must be explicitly downloaded, otherwise the podcast will be played "
 "from the remote server."
 msgstr ""
-"Els suports s'han de descarregar explícitament, altrament el podcast es "
+"Els suports s'han de descarregar explícitament, altrament el pòdcast es "
 "reproduirà des del servidor remot."
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_streamRadio)
@@ -6503,7 +6505,7 @@ msgstr "Flux de dades o descarrega davall &demanda"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:155
 #, kde-format
 msgid "If checked, Amarok will throw away old podcast episodes"
-msgstr "Si se selecciona, Amarok llençarà els episodis de podcast antics"
+msgstr "Si se selecciona, Amarok llençarà els episodis de pòdcast antics"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_purgeCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:158
@@ -6523,7 +6525,7 @@ msgstr "Conserva un màxim de:"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:194
 #, kde-format
 msgid "The maximum number of podcast items to store"
-msgstr "El nombre màxim d'elements de podcast que s'han d'emmagatzemar"
+msgstr "El nombre màxim d'elements de pòdcast que s'han d'emmagatzemar"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_writeTagsCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:208
@@ -6567,7 +6569,7 @@ msgstr[1] " Elements"
 #: core/podcasts/PodcastMeta.h:385
 #, kde-format
 msgid "Podcast"
-msgstr "Podcast"
+msgstr "Pòdcast"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:292
 #, kde-format
@@ -6626,7 +6628,7 @@ msgid ""
 "Downloaded files with this status wouldn't be deleted even if we apply a "
 "purge."
 msgstr ""
-"Canvia l'estat «mantindre» del fitxer baixat d'este episodi de podcast. Els "
+"Canvia l'estat «mantindre» del fitxer baixat d'este episodi de pòdcast. Els "
 "fitxers baixats amb este estat no se suprimiran encara que s'execute una "
 "purga."
 
@@ -6651,12 +6653,12 @@ msgstr[1] " minuts"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:614
 #, kde-format
 msgid "Configure Local Podcasts"
-msgstr "Configura els podcast locals"
+msgstr "Configura els pòdcast locals"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:635
 #, kde-format
 msgid "Move Podcasts"
-msgstr "Mou els podcast"
+msgstr "Mou els pòdcast"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:636
 #, kde-format
@@ -6682,8 +6684,8 @@ msgstr "Suprimix els episodis descarregats"
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
-msgstr[0] "Encara hi ha una baixada de podcast en curs"
-msgstr[1] "Encara hi ha %1 baixades de podcast en curs"
+msgstr[0] "Encara hi ha una baixada de pòdcast en curs"
+msgstr[1] "Encara hi ha %1 baixades de pòdcast en curs"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
 #, kde-format
@@ -6694,22 +6696,22 @@ msgstr "Cancel·la la baixada i ix."
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
-msgstr "No s'ha pogut guardar el fitxer d'episodi de podcast a %1"
+msgstr "No s'ha pogut guardar el fitxer d'episodi de pòdcast a %1"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
 #, kde-format
 msgid "Downloading Podcast Media"
-msgstr "S'estan baixant els suports del podcast"
+msgstr "S'estan baixant els suports de pòdcast"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1169
 #, kde-format
 msgid "Downloading Podcast \"%1\""
-msgstr "S'està baixant el podcast «%1»"
+msgstr "S'està baixant el pòdcast «%1»"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.h:56
 #, kde-format
 msgid "Local Podcasts"
-msgstr "Podcast locals"
+msgstr "Pòdcast locals"
 
 #. i18n: ectx: property (text), widget (QLabel, m_intervalLabel)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:32
@@ -6762,10 +6764,10 @@ msgstr ""
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Directori base per a tots "
-"els nous canals de podcast.</p>\n"
+"els nous canals de pòdcast.</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Quan s'afig un canal de "
-"podcast, s'utilitza <span style=\" font-style:italic;\">&lt;directori "
+"pòdcast, s'utilitza <span style=\" font-style:italic;\">&lt;directori "
 "base&gt;</span>/<span style=\" font-style:italic;\">&lt;nom de canal&gt;</"
 "span> com a directori de baixada.</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
@@ -6781,8 +6783,8 @@ msgid ""
 "the download directory.\n"
 "This can be changed for each channel individually."
 msgstr ""
-"Directori base per a tots els canals nous de podcast.\n"
-"Quan s'afig un canal de podcast, s'utilitza <directori base>/<nom de canal> "
+"Directori base per a tots els canals nous de pòdcast.\n"
+"Quan s'afig un canal de pòdcast, s'utilitza <directori base>/<nom de canal> "
 "com a directori de baixada.\n"
 "Açò es pot canviar individualment per a cada canal."
 
@@ -7357,12 +7359,12 @@ msgstr[1] "%1 segons"
 #: core/podcasts/PodcastReader.cpp:453
 #, kde-format
 msgid "Importing podcast channel from %1"
-msgstr "S'està important el canal de podcast des de %1"
+msgstr "S'està important el canal de pòdcast des de %1"
 
 #: core/podcasts/PodcastReader.cpp:457
 #, kde-format
 msgid "Updating podcast channel"
-msgstr "S'està actualitzant el canal de podcast"
+msgstr "S'està actualitzant el canal de pòdcast"
 
 #: core/podcasts/PodcastReader.cpp:458
 #, kde-format
@@ -7372,12 +7374,12 @@ msgstr "S'està actualitzant «%1»"
 #: core/podcasts/PodcastReader.cpp:506 core/podcasts/PodcastReader.cpp:520
 #, kde-format
 msgid "Importing podcast from %1 failed with error:\n"
-msgstr "La importació del podcast des de %1 ha acabat amb error:\n"
+msgstr "La importació del pòdcast des de %1 ha acabat amb error:\n"
 
 #: core/podcasts/PodcastReader.cpp:510 core/podcasts/PodcastReader.cpp:524
 #, kde-format
 msgid "Updating podcast from %1 failed with error:\n"
-msgstr "L'actualització del podcast des de %1 ha acabat amb error:\n"
+msgstr "L'actualització del pòdcast des de %1 ha acabat amb error:\n"
 
 #: core/podcasts/PodcastReader.cpp:511 core/podcasts/PodcastReader.cpp:525
 #, kde-format
@@ -8676,7 +8678,7 @@ msgid ""
 "<p><em>Use this option with caution</em>: Most filesystems are unable to "
 "reliably undelete deleted files.</p></qt>"
 msgstr ""
-"<qt><p>Si esta casella està activada, els fitxers s'<b>eliminaran "
+"<qt><p>Si se selecciona esta casella, els fitxers s'<b>eliminaran "
 "definitivament</b> en comptes de llençar-los a la paperera.</p>\n"
 "\n"
 "<p><em>Utilitzeu esta opció amb cautela</em>: La majoria dels sistemes de "
@@ -9232,7 +9234,7 @@ msgstr ""
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Activeu-la per a "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Seleccioneu-la per a "
 "sobreescriure automàticament els fitxers amb el mateix nom. <span style=\" "
 "font-style:italic;\">(Avís: La sobreescriptura no es pot desfer)</span></p></"
 "body></html>"
@@ -9309,7 +9311,7 @@ msgstr ""
 "Substituïx els caràcters incompatibles amb els sistemes de fitxers MS-DOS/"
 "VFAT per caràcters de subratllat.\n"
 "\n"
-"La majoria de la gent pot deixar esta opció activada."
+"La majoria de la gent pot deixar esta opció seleccionada."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:80
@@ -9322,7 +9324,7 @@ msgid ""
 "Most people can leave this option enabled as it ensures copying to media "
 "devices will function correctly."
 msgstr ""
-"Si està activada, els caràcters incompatibles amb els sistemes de fitxers MS-"
+"Si se selecciona, els caràcters incompatibles amb els sistemes de fitxers MS-"
 "DOS/VFAT se substituiran per caràcters de subratllat. Els caràcters "
 "incompatibles inclouen «|», «?», «*», «<», «\"», «:», «>», «+», «[», «]», i "
 "els caràcters de control Unicode.\n"
@@ -9373,7 +9375,7 @@ msgstr ""
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Si està activada, tots els "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Si se selecciona, tots els "
 "caràcters no ASCII se substituiran per subratllats.<span style=\" font-"
 "weight:600;\"> </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
@@ -9381,14 +9383,14 @@ msgstr ""
 "weight:600;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-"
-"weight:600;\">No activeu esta opció si teniu caràcters no anglesos en les "
-"vostres etiquetes. </span></p>\n"
+"weight:600;\">No seleccioneu esta opció si teniu caràcters no anglesos en "
+"les vostres etiquetes. </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">La majoria de la gent pot "
-"deixar esta opció desactivada.</p></body></html>"
+"deixar esta opció desseleccionada.</p></body></html>"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, asciiCheck)
 #: dialogs/OrganizeCollectionOptions.ui:113
@@ -9422,17 +9424,17 @@ msgstr ""
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Si està activada, tots els "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Si se selecciona, tots els "
 "caràcters no ASCII se substituiran per subratllats.<span style=\" font-"
-"weight:600;\"> No activeu esta opció si teniu caràcters no anglesos en les "
-"vostres etiquetes. </span></p>\n"
+"weight:600;\"> No seleccioneu esta opció si teniu caràcters no anglesos en "
+"les vostres etiquetes. </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">La majoria de la gent pot "
-"deixar esta opció <span style=\" font-style:italic;\">desactivada.</span></"
-"p> </body></html>"
+"deixar esta opció <span style=\" font-style:italic;\">desseleccionada.</"
+"span></p> </body></html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, asciiCheck)
 #: dialogs/OrganizeCollectionOptions.ui:116
@@ -10572,7 +10574,7 @@ msgstr "Nom de la destinació"
 #: importers/fastforward/FastForwardConfigWidget.ui:112
 #, kde-format
 msgid "Hostname"
-msgstr "Nom de l'ordinador"
+msgstr "Nom de l'amfitrió"
 
 #. i18n: ectx: property (text), widget (QLabel, m_portLabel)
 #: importers/amarok/AmarokConfigWidget.ui:117
@@ -11044,7 +11046,7 @@ msgstr "Frank Meerkötter"
 #: main.cpp:208 main.cpp:228
 #, kde-format
 msgid "Podcast improvements"
-msgstr "Millores en els podcast"
+msgstr "Millores en els pòdcast"
 
 #: main.cpp:210
 #, kde-format
@@ -12010,7 +12012,7 @@ msgstr "Valor"
 #: OpmlParser.cpp:127
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
-msgstr "La lectura de l'OPML del podcast des de %1 ha acabat amb error:\n"
+msgstr "La lectura de l'OPML del pòdcast des de %1 ha acabat amb error:\n"
 
 #: playback/EqualizerController.cpp:133
 #, kde-format
@@ -14465,7 +14467,7 @@ msgstr "Comprovació d'&identificació"
 #: services/gpodder/GpodderProvider.cpp:291
 #, kde-format
 msgid "Gpodder Podcasts"
-msgstr "Podcast de Gpodder"
+msgstr "Pòdcast de Gpodder"
 
 #: services/gpodder/GpodderProvider.cpp:468
 #, kde-format
@@ -14490,13 +14492,13 @@ msgstr ""
 #: services/gpodder/GpodderService.cpp:113
 #, kde-format
 msgid "gpodder.net: Podcast Directory Service"
-msgstr "gpodder.net: Servei de directori de podcast"
+msgstr "gpodder.net: Servei de directori de pòdcast"
 
 #: services/gpodder/GpodderService.cpp:116
 #, kde-format
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
 msgstr ""
-"gpodder.net és un servei en línia de directori de podcast i sincronització."
+"gpodder.net és un servei en línia de directori de pòdcast i sincronització."
 
 #: services/gpodder/GpodderService.cpp:222
 #: services/opmldirectory/OpmlDirectoryService.cpp:127
@@ -14828,7 +14830,7 @@ msgid ""
 msgstr ""
 "<html>En fer l'anàlisi musical de peces a Last.fm, es corregixen "
 "automàticament els errors comuns en les peces com l'artista, l'àlbum i el "
-"títol. Activeu-la per a rebre una notificació quan es faça la correcció "
+"títol. Seleccioneu-la per a rebre una notificació quan es faça la correcció "
 "automàtica i què ha sigut</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
@@ -14844,8 +14846,8 @@ msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
 "updated to Last.fm now playing</html>"
 msgstr ""
-"<html>Activeu-la si voleu que algunes peces no s'analitzen musicalment ni "
-"que s'actualitzen en «ara s'està reproduint» de Last.fm</html>"
+"<html>Seleccioneu-la si voleu que algunes peces no s'analitzen musicalment "
+"ni que s'actualitzen en «ara s'està reproduint» de Last.fm</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
 #: services/lastfm/LastFmConfigWidget.ui:183
@@ -15271,7 +15273,7 @@ msgid ""
 "If you check this box, Amarok will periodically check for Magnatune database "
 "updates and download them automatically."
 msgstr ""
-"Si activeu esta casella, Amarok comprovarà periòdicament si hi ha "
+"Si seleccioneu esta casella, Amarok comprovarà periòdicament si hi ha "
 "actualitzacions de la base de dades de Magnatune i les baixarà "
 "automàticament."
 
@@ -15571,9 +15573,9 @@ msgid ""
 "and download them automatically. You can always disable this option later in "
 "Magnatune service configuration."
 msgstr ""
-"Si activeu l'opció següent, Amarok comprovarà si hi ha actualitzacions de "
-"Magnatune i les baixarà automàticament. Sempre podreu desactivar esta opció "
-"més tard en el servei de configuració de Magnatune."
+"Si seleccioneu l'opció següent, Amarok comprovarà si hi ha actualitzacions "
+"de Magnatune i les baixarà automàticament. Sempre podreu desseleccionar esta "
+"opció més tard en el servei de configuració de Magnatune."
 
 #. i18n: ectx: property (text), widget (QPushButton, update)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:69
@@ -16095,12 +16097,12 @@ msgstr "Si es deixa en blanc, s'utilitzarà el títol de l'OPML."
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:56
 #, kde-format
 msgid "Loading Podcast Info..."
-msgstr "S'està carregant la informació dels podcast..."
+msgstr "S'està carregant la informació dels pòdcast..."
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:66
 #, kde-format
 msgid "Fetching Podcast Info"
-msgstr "S'està arreplegant la informació dels podcast"
+msgstr "S'està arreplegant la informació dels pòdcast"
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:39
 #: services/opmldirectory/OpmlDirectoryService.cpp:136
@@ -16122,12 +16124,12 @@ msgstr "Carpeta nova"
 #: services/opmldirectory/OpmlDirectoryService.cpp:50
 #, kde-format
 msgid "Podcast Directory"
-msgstr "Directori de podcast"
+msgstr "Directori de pòdcast"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:70
 #, kde-format
 msgid "A large listing of podcasts"
-msgstr "Una llista gran de podcast"
+msgstr "Una llista gran de pòdcast"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:73
 #, kde-format
@@ -16135,7 +16137,7 @@ msgid ""
 "A comprehensive list of searchable podcasts that you can subscribe to "
 "directly from within Amarok."
 msgstr ""
-"Una llista exhaustiva de podcast que es poden buscar i que vos hi podeu "
+"Una llista exhaustiva de pòdcast que es poden buscar i que vos hi podeu "
 "subscriure directament des d'Amarok."
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:160
@@ -16762,9 +16764,9 @@ msgid ""
 msgstr ""
 "<b>Nota:</b> No hi ha cap codificador disponible. Si voleu transcodificar "
 "peces, instal·leu els paquets <i>ffmpeg</i> o <i>libav</i> (amb un embolcall "
-"de <i>ffmpeg</i>) amb els codificadors apropiats. Altrament, podeu activar "
-"l'opció <i>Recorda esta elecció per a la propera vegada</i> per tal d'ometre "
-"este diàleg per les transferències futures."
+"de <i>ffmpeg</i>) amb els codificadors apropiats. Altrament, podeu "
+"seleccionar l'opció <i>Recorda esta elecció per a la propera vegada</i> per "
+"tal d'ometre este diàleg per a les transferències futures."
 
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: transcoding/TranscodingAssistantDialog.ui:275
