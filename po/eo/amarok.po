@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2023-11-22 21:35+0100\n"
+"PO-Revision-Date: 2023-11-23 20:18+0100\n"
 "Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -2076,8 +2076,8 @@ msgstr "Kalkulante..."
 #, kde-format
 msgid "1 track"
 msgid_plural "%1 tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 trako"
+msgstr[1] "%1 trakoj"
 
 #: browsers/CollectionTreeItemModelBase.cpp:279
 #: browsers/CollectionTreeItemModelBase.cpp:370
@@ -13122,24 +13122,24 @@ msgstr "Agordas la preferatan nombron da trakoj en la ludlisto"
 msgctxt "%1 is a number"
 msgid "Playlist length: 1 track"
 msgid_plural "Playlist length: %1 tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ludlista longeco: 1 trako"
+msgstr[1] "Ludlista longeco: %1 trakoj"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:120
 #, kde-format
 msgctxt "%1 is a number"
 msgid "Playlist length: more than 1 track"
 msgid_plural "Playlist length: more than %1 tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ludlista longeco: pli ol 1 trako"
+msgstr[1] "Ludlista longeco: pli ol %1 trakoj"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:123
 #, kde-format
 msgctxt "%1 is a number"
 msgid "Playlist length: less than 1 track"
 msgid_plural "Playlist length: less than %1 tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ludlista longeco: malpli ol 1 trako"
+msgstr[1] "Ludlista longeco: malpli ol %1 trakoj"
 
 #: playlistgenerator/constraints/PlaylistLength.cpp:126
 #, kde-format
@@ -16238,8 +16238,8 @@ msgstr "Trakoj kiuj estis ekskluditaj de sinkronigado pro ambigueco"
 #, kde-format
 msgid "<b>One</b> play"
 msgid_plural "<b>%1</b> plays"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<b>Unu</b> ludado"
+msgstr[1] "<b>%1</b> ludadoj"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:318
 #, kde-format
