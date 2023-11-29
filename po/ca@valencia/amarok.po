@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2023-11-24 19:41+0100\n"
+"PO-Revision-Date: 2023-11-27 22:36+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -2353,38 +2353,38 @@ msgstr "Crea llistes de reproducció especificant-ne els criteris"
 #: browsers/playlistbrowser/APGCategory.cpp:63
 #, kde-format
 msgid "Add new preset"
-msgstr "Afig un ambient nou"
+msgstr "Afig un predefinit nou"
 
 #: browsers/playlistbrowser/APGCategory.cpp:66
 #, kde-format
 msgid "Edit selected preset"
-msgstr "Edita l'ambient seleccionat"
+msgstr "Edita el predefinit seleccionat"
 
 #: browsers/playlistbrowser/APGCategory.cpp:71
 #, kde-format
 msgid "Delete selected preset"
-msgstr "Elimina l'ambient seleccionat"
+msgstr "Elimina el predefinit seleccionat"
 
 #: browsers/playlistbrowser/APGCategory.cpp:76
 #, kde-format
 msgid "Import a new preset"
-msgstr "Importa un ambient nou"
+msgstr "Importa un predefinit nou"
 
 #: browsers/playlistbrowser/APGCategory.cpp:80
 #, kde-format
 msgid "Export the selected preset"
-msgstr "Exporta l'ambient seleccionat"
+msgstr "Exporta el predefinit seleccionat"
 
 # APG -> Automated Playlist Generator
 #: browsers/playlistbrowser/APGCategory.cpp:87
 #, kde-format
 msgid "Run APG with selected preset"
-msgstr "Executa GALR amb l'ambient seleccionat"
+msgstr "Executa GALR amb el predefinit seleccionat"
 
 #: browsers/playlistbrowser/APGCategory.cpp:93
 #, kde-format
 msgid "APG Presets"
-msgstr "Ambients de GALR"
+msgstr "Predefinits de GALR"
 
 #: browsers/playlistbrowser/APGCategory.cpp:107
 #, kde-format
@@ -14029,7 +14029,7 @@ msgstr "Grup de restriccions"
 #: playlistgenerator/PresetEditDialog.ui:15
 #, kde-format
 msgid "APG Preset Editor"
-msgstr "Editor de predefinicions de GALR"
+msgstr "Editor de predefinits de GALR"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_Tree)
 #: playlistgenerator/PresetEditDialog.ui:23
@@ -14051,7 +14051,7 @@ msgstr "Importa una predefinició"
 #: playlistgenerator/PresetModel.cpp:156
 #, kde-format
 msgid "Preset files"
-msgstr "Fitxers d'ambient"
+msgstr "Fitxers de predefinits"
 
 #: playlistgenerator/PresetModel.cpp:216
 #, kde-format
@@ -14101,12 +14101,12 @@ msgstr "Exemple 5: un CD de 80 minuts de rock, metal, i industrial"
 #: playlistgenerator/PresetModel.cpp:297
 #, kde-format
 msgid "Export \"%1\" preset"
-msgstr "Exporta l'ambient «%1»"
+msgstr "Exporta el predefinit «%1»"
 
 #: playlistgenerator/PresetModel.cpp:299
 #, kde-format
 msgid "Preset files (*.xml)"
-msgstr "Fitxers d'ambient (*.xml)"
+msgstr "Fitxers de predefinits (*.xml)"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:98
 #, kde-format
