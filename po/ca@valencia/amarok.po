@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2023-11-27 22:36+0100\n"
+"PO-Revision-Date: 2023-11-29 20:10+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -5224,12 +5224,12 @@ msgstr "Es requerix un dels següents: «install», «remove», «upgrade» o «
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
 msgid "Do not show under Various Artists"
-msgstr "No mostres davall Artistes Diversos"
+msgstr "No mostres davall Artistes diversos"
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:43
 #, kde-format
 msgid "Show under Various Artists"
-msgstr "Mostra davall Artistes Diversos"
+msgstr "Mostra davall Artistes diversos"
 
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:103
 #, kde-format
