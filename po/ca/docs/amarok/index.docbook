@@ -11,7 +11,7 @@
 <author>
 <personname
 ><firstname
->Aquesta documentació es va convertir a partir de la pàgina <ulink url=" http://userbase.kde.org/Amarok/Manual"
+>Aquesta documentació s'ha convertit a partir de la pàgina <ulink url=" http://userbase.kde.org/Amarok/Manual"
 >Amarok/Manual</ulink
 > de KDE UserBase.</firstname
 > <surname
@@ -28,7 +28,7 @@
 >2.9.0</releaseinfo>
 <abstract>
 <para
->L'&amarok; és un reproductor de música lliure, versàtil i potent per al &Linux;. L'última sèrie de llançament 2.x, sovint coneguda com a «Amarok&nbsp;2», és multiplataforma (pot ser utilitzada en moltes plataformes, incloent &Linux;, &MacOS; i &Microsoft; &Windows;) i implementa una base de codi completament reelaborat que li permetrà incorporar noves característiques interessants a mesura que el llançament madura. El llançament estable actual és la versió 2.4.</para>
+>L'&amarok; és un reproductor de música lliure, versàtil i potent per al &Linux;. L'última sèrie de llançament 2.x, sovint coneguda com a «Amarok&nbsp;2», és multiplataforma (pot ser utilitzada en moltes plataformes, incloent-hi &Linux;, &MacOS; i &Microsoft; &Windows;) i implementa una base de codi completament reelaborada que li permetrà incorporar característiques noves interessants a mesura que el llançament madura. El llançament estable actual és la versió 2.4.</para>
       </abstract>
 <keywordset>
  <keyword
@@ -94,16 +94,16 @@
 </informaltable>
 </para>
 <para
->L'&amarok; és la principal aplicació de música lliure i de codi obert. Més que simplement un reproductor de música, l'&amarok; us ajuda a redescobrir la vostra música. La interfície innovadora proporciona un control sense precedents sobre la vostra col·lecció, i estén el vostre abast a la música a tot arreu. Useu la nostra <link linkend="quick-start-guide"
+>L'&amarok; és la principal aplicació de música lliure i de codi obert. Més que simplement un reproductor de música, l'&amarok; us ajuda a redescobrir la vostra música. La interfície innovadora proporciona un control sense precedents sobre la vostra col·lecció, i amplia el vostre accés a la música de tot arreu. Useu la nostra <link linkend="quick-start-guide"
 >Guia d'inici ràpid</link
-> per anar ràpidament, o cerqueu informació més en profunditat en aquest manual. </para>
+> per a anar ràpidament, o cerqueu informació més en profunditat en aquest manual. </para>
 </chapter>
 <chapter id="quick-start-guide"
 ><title
 >Guia d'inici ràpid</title
 > 
 <para
->Enhorabona per instal·lar l'&amarok;, el programari de descobriment de música més avançat disponible. L'&amarok; us ajudarà a explorar la vostra música i gaudir-la com mai abans. A més, es poden recórrer diferents orígens de música, emissores de ràdio i llibres d'àudio en línia. En aquesta guia, us mostrarem com deixar que l'&amarok; trobi la vostra col·lecció, reproduir-la per vosaltres, i també com utilitzar l'&amarok; per trobar coses en línia. Assumirem que no sabeu res de l'&amarok;, però sí que sabeu com utilitzar menús, un ratolí i el teclat. </para>
+>Enhorabona per instal·lar l'&amarok;, el programari de descobriment de música més avançat disponible. L'&amarok; us ajudarà a explorar la vostra música i gaudir-la com mai. A més, es poden recórrer diferents orígens de música, emissores de ràdio i llibres d'àudio en línia. En aquesta guia, us mostrarem com deixar que l'&amarok; trobi la vostra col·lecció, reproduir-la per a vosaltres, i també com utilitzar l'&amarok; per a trobar coses en línia. Assumirem que no sabeu res de l'&amarok;, però sí que sabeu com utilitzar menús, un ratolí i el teclat. </para>
 <orderedlist>
 <listitem
 ><para
@@ -113,7 +113,7 @@
 <listitem
 ><para
 ><link linkend="starting-amarok"
->Inici de l'Amarok</link
+>Iniciar l'Amarok</link
 >&nbsp;</para
 ></listitem>
 <listitem
@@ -139,7 +139,7 @@
 <listitem
 ><para
 ><link linkend="using-the-amarok-window-to-manage-and-play-your-music"
->Ús de la finestra de l'Amarok per gestionar i reproduir la vostra música</link
+>Ús de la finestra de l'Amarok per a gestionar i reproduir música</link
 >&nbsp;</para
 ></listitem>
 </orderedlist>
@@ -323,7 +323,7 @@
 <itemizedlist>
 <listitem
 ><para
->prement en el <ulink url="http://userbase.kde.org/Special:mylanguage/Kickoff"
+>prement el <ulink url="http://userbase.kde.org/Special:mylanguage/Kickoff"
 >Kickoff</ulink
 > i després <menuchoice
 ><guimenu
@@ -377,7 +377,7 @@
 </screenshot>
 </para>
 <para
->A continuació apareixerà un quadre de diàleg de Primera vegada que demanarà que especifiqueu on es troba la vostra música. Si ja teniu un directori de música <ulink url="help:/kcontrol/paths"
+>A continuació apareixerà un quadre de diàleg de Primera vegada que demanarà que especifiqueu on es troba la música. Si ja teniu un directori de música <ulink url="help:/kcontrol/paths"
 >configurat en el vostre sistema</ulink
 >, l'&amarok; l'hauria de detectar i demanar-vos que l'utilitzeu: </para>
 <para>
@@ -419,7 +419,7 @@
 >Configuració d'una col·lecció</link
 > </para>
 <para
->Una vegada hàgiu seleccionat la carpeta on està la vostra música, l'&amarok; explorarà la carpeta i les subcarpetes, creant la col·lecció. Això pot trigar una mica, depenent del nombre de peces i la velocitat de la ubicació. </para>
+>Una vegada hàgiu seleccionat la carpeta on està la música, l'&amarok; explorarà la carpeta i les subcarpetes, creant la col·lecció. Això pot trigar una mica, depenent del nombre de peces i la velocitat de la ubicació. </para>
 </sect2>
 <sect2 id="closing-amarok"
 ><title
@@ -494,13 +494,13 @@
 >La finestra de l'Amarok</title
 > 
 <para
->La finestra de l'&amarok; està dissenyada per permetre que redescobriu la vostra música. Així que dona tanta informació com sigui possible sobre la vostra música. Mentre que molts usuaris gaudiran del format predeterminat, és totalment personalitzable. </para>
+>La finestra de l'&amarok; està dissenyada per a permetre que redescobriu la vostra música. Així que dona tanta informació com sigui possible sobre la música. Mentre que molts usuaris gaudiran del format predeterminat, és totalment personalitzable. </para>
 <sect2 id="default-layout-of-the-amarok-window"
 ><title
 >Format predeterminat de la finestra de l'Amarok</title
 > 
 <para
->Després de la instal·lació, l'&amarok; s'assemblarà així: </para>
+>Després de la instal·lació, l'&amarok; es veurà així: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -551,7 +551,7 @@
 </sect2>
 <sect2 id="using-the-amarok-window-to-manage-and-play-your-music"
 ><title
->Ús de la finestra de l'Amarok per gestionar i reproduir la vostra música</title
+>Ús de la finestra de l'Amarok per a gestionar i reproduir música</title
 > 
 <para
 >La reproducció de la música usant l'&amarok; normalment té dos passos: </para>
@@ -560,7 +560,7 @@
 ><para
 >Creeu una llista de reproducció seleccionant algunes de les peces de la vostra col·lecció, que trobareu llistades a la subfinestra <guilabel
 >Orígens de suports</guilabel
->, i envieu la vostra música a la subfinestra <guilabel
+>, i envieu la música a la subfinestra <guilabel
 >Llista de reproducció</guilabel
 >.</para
 ></listitem>
@@ -572,7 +572,7 @@
 ></listitem>
 </orderedlist>
 <para
->A més, és possible que vulgueu transferir part de la vostra música a un reproductor de música mòbil, com un iPod. Les seccions següents explicaran com. </para>
+>A més, és possible que vulgueu transferir part de la música a un reproductor de música mòbil, com un iPod. Les seccions següents explicaran com. </para>
 </sect2>
 </sect1>
 <sect1 id="the-music-collection"
@@ -599,7 +599,7 @@
 >Ogg</emphasis
 > o <emphasis
 >FLAC</emphasis
-> al vostre ordinador? Comenceu dient a l'&amarok; on trobar aquests fitxers perquè pugui crear la col·lecció. En el menú de nivell superior: <menuchoice
+> al vostre ordinador? Comenceu indicant a l'&amarok; on trobar aquests fitxers perquè pugui crear la col·lecció. En el menú de nivell superior: <menuchoice
 ><guimenu
 >Arranjament</guimenu
 ><guisubmenu
@@ -628,7 +628,7 @@
 </screenshot>
 </para>
 <para
->A dalt es mostra una vista en arbre del vostre directori d'inici. Feu clic a la casella de selecció on s'emmagatzema la vostra música; normalment <menuchoice
+>A dalt es mostra una vista en arbre del vostre directori d'inici. Feu clic a la casella de selecció on s'emmagatzema la música; normalment <menuchoice
 ><guimenu
 >home</guimenu
 ><guimenuitem
@@ -640,7 +640,7 @@
 >&Ctrl;<keycap
 >Q</keycap
 ></keycombo
->, i després reiniciar-lo. La vostra música ha d'aparèixer en la secció <guilabel
+>, i després reiniciar-lo. La música ha d'aparèixer en la secció <guilabel
 >Col·lecció local</guilabel
 >. </para>
 <para
@@ -671,7 +671,7 @@
 >Orígens de suports</guilabel
 >. </para>
 <para
->A continuació es mostra una captura de pantalla que mostra tres orígens connectades amb la música: CD d'àudio, reproductor mp3 i la <guilabel
+>A continuació es mostra una captura de pantalla que mostra tres orígens connectats amb la música: CD d'àudio, reproductor mp3 i la <guilabel
 >Col·lecció local</guilabel
 >. </para>
 <para>
@@ -754,7 +754,7 @@
 ></listitem>
 </itemizedlist>
 <para
->La correcció de les etiquetes és important per ajudar a l'&amarok; a mostrar les vostres peces en els àlbums apropiats i en l'ordenació adequada. Apreneu més sobre <link linkend="tags"
+>La correcció de les etiquetes és important per a ajudar a l'&amarok; a mostrar les vostres peces en els àlbums apropiats i en l'ordenació adequada. Apreneu més sobre <link linkend="tags"
 >extracció i etiquetatge</link
 >. </para>
 </sect2>
@@ -796,7 +796,7 @@
 >Orígens de suports</guilabel
 > (imatge dreta a sota). En fer clic als símbols <guilabel
 >&gt;</guilabel
-> entre el fil d'Ariadna us permet veure les carpetes disponibles en aquest nivell de l'estructura de carpetes. El navegador de fitxers de l'&amarok; us permet accedir a tot el vostre sistema de fitxers, fins i tot fora de la vostra <guilabel
+> entre els fils d'Ariadna us permet veure les carpetes disponibles en aquest nivell de l'estructura de carpetes. El navegador de fitxers de l'&amarok; us permet accedir a tot el vostre sistema de fitxers, fins i tot fora de la vostra <guilabel
 >Col·lecció local</guilabel
 >. </para>
 <para>
@@ -1094,7 +1094,7 @@
 > <imageobject
 > <imagedata fileref="Icon-list-add.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> i afegiu-lo allà. Si teniu un fitxer OPML per importar, aquesta opció també està disponible. Utilitzeu els menús contextuals (clic dret) a <guilabel
+> i afegiu-lo allà. Si teniu un fitxer OPML per a importar, aquesta opció també està disponible. Utilitzeu els menús contextuals (clic dret) a <guilabel
 >Afegeix a la llista de reproducció</guilabel
 >, <guilabel
 >Configura</guilabel
@@ -1204,7 +1204,7 @@
 >Navegador de contingut</guilabel
 > es pot commutar temporalment entre l'ordre d'ordenació definit per l'usuari (descrit més amunt) i una <emphasis
 >Vista fusionada</emphasis
-> en la qual els artistes es llisten alfabèticament, independentment del mitjà que emmagatzema la música. Per commutar la <emphasis
+> en la qual els artistes es llisten alfabèticament, independentment del mitjà que emmagatzema la música. Per a commutar la <emphasis
 >Vista fusionada</emphasis
 >, feu clic a la icona <inlinemediaobject
 > <imageobject
@@ -1250,7 +1250,7 @@
 <para
 >Ara que l'&amarok; ha explorat la vostra col·lecció de música, voldreu escoltar-la. Així que utilitzeu la subfinestra <guilabel
 >Llista de reproducció</guilabel
-> per crear una llista de reproducció que contingui la selecció de les peces que vulgueu. Aquí és on reproduïu la música, fluxos o pòdcasts. </para>
+> per a crear una llista de reproducció que contingui la selecció de les peces que vulgueu. Aquí és on reproduïu la música, fluxos o pòdcasts. </para>
 <para
 >Podeu ordenar la llista de reproducció per títol, àlbum, artista, gènere i molts altres. Per exemple, primer podeu ordenar les peces per any, després per artista i així successivament. </para>
 <para
@@ -1312,7 +1312,7 @@
 >Context</guilabel
 > veureu el <emphasis
 >Comptagotes emergent</emphasis
->, també conegut com <emphasis
+>, també conegut com a <emphasis
 >PUD</emphasis
 >. La imatge de dalt mostra el PUD en acció. El PUD proporciona tres opcions: <guilabel
 >Afegeix a la llista de reproducció</guilabel
@@ -1324,7 +1324,7 @@
 >Afegeix a la llista de reproducció</guilabel
 > en aquesta imatge) és l'activa. Deixar-hi anar l'àlbum l'afegeix a la llista de reproducció a la subfinestra <guilabel
 >Llista de reproducció</guilabel
->. Trieu una de les altres opcions per fer una altra cosa amb la selecció. Arrossegant-la sobre <guilabel
+>. Trieu una de les altres opcions per a fer una altra cosa amb la selecció. Arrossegant-la sobre <guilabel
 >Més...</guilabel
 > apareix un menú nou d'opcions en el <emphasis
 >PUD</emphasis
@@ -1380,7 +1380,7 @@
 <para
 >La <guilabel
 >Barra d'eines</guilabel
-> a la part superior de la pantalla de l'&amarok; proporciona una interfície senzilla per controlar la reproducció de la música en la <guilabel
+> a la part superior de la pantalla de l'&amarok; proporciona una interfície senzilla per a controlar la reproducció de la música en la <guilabel
 >Llista de reproducció</guilabel
 >. </para>
 <para
@@ -1438,7 +1438,7 @@
 ><para
 >Arrossegueu l'element a suprimir sobre la subfinestra <guilabel
 >Context</guilabel
-> per activar el <emphasis
+> per a activar el <emphasis
 >PUD</emphasis
 >. Apareixeran diverses opcions sobre la subfinestra <guilabel
 >Context</guilabel
@@ -1685,7 +1685,7 @@
 <para
 >La icona del disc, a la finestra emergent que es pot cridar des de la part inferior de la subfinestra <guilabel
 >Llista de reproducció</guilabel
->, permet desar la llista de reproducció actual de l'&amarok;. Això us permet recordar una selecció particular de música de la vostra col·lecció en qualsevol moment. Les llistes de reproducció només contenen punters a la música que heu seleccionat, no la música en si. Així que si la vostra llista de reproducció apunta a la música en un dispositiu extern, ha d'estar connectat i muntat, en cas contrari la música no es pot reproduir. Hi ha tres llocs per emmagatzemar les llistes de reproducció: </para>
+>, permet desar la llista de reproducció actual de l'&amarok;. Això us permet recordar una selecció particular de música de la vostra col·lecció en qualsevol moment. Les llistes de reproducció només contenen punters a la música que heu seleccionat, no la música en si. Així que si la vostra llista de reproducció apunta a la música en un dispositiu extern, ha d'estar connectat i muntat, en cas contrari la música no es pot reproduir. Hi ha tres llocs per a emmagatzemar les llistes de reproducció: </para>
 <orderedlist>
 <listitem
 ><para
@@ -1807,7 +1807,7 @@
 > <imageobject
 > <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> que us permetrà eliminar aquestes miniaplicacions. Feu clic a les miniaplicacions per afegir-les a la subfinestra. Arrossegueu els botons etiquetats per a tornar a ordenar les miniaplicacions que teniu, i feu clic a <inlinemediaobject
+> que us permetrà eliminar aquestes miniaplicacions. Feu clic a les miniaplicacions per a afegir-les a la subfinestra. Arrossegueu els botons etiquetats per a tornar a ordenar les miniaplicacions que teniu, i feu clic a <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -1956,7 +1956,7 @@
 >Script</title
 > 
 <para
->Connector de l'&amarok; per ampliar la funcionalitat. Els scripts estan disponibles a <menuchoice
+>Connector de l'&amarok; per a ampliar la funcionalitat. Els scripts estan disponibles a <menuchoice
 ><guimenu
 >Arranjament</guimenu
 ><guisubmenu
@@ -2198,7 +2198,7 @@
 >&Ctrl;<keycap
 >M</keycap
 ></keycombo
-> per ocultar o tornar a mostrar. </para>
+> per a ocultar o tornar a mostrar. </para>
 <para
 >La barra d'eines es pot desacoblar i moure a qualsevol part de la pantalla, i fins i tot s'utilitza sense la resta de la finestra mostrada de l'&amarok;. Per a desacoblar la barra d'eines primer haureu d'assegurar-vos que l'element de menú <menuchoice
 ><guimenu
@@ -2206,7 +2206,7 @@
 ><guimenuitem
 >Bloqueja el format</guimenuitem
 ></menuchoice
-> no està seleccionat. Ara podeu agafar la barra d'eines per la seva vora esquerra i arrossegar-la a qualsevol lloc. Per tornar-ho a fer arrossegueu-lo a la seva posició antiga mentre el format encara està desbloquejat. </para>
+> no està seleccionat. Ara podeu agafar la barra d'eines per la seva vora esquerra i arrossegar-la a qualsevol lloc. Per a tornar-ho a fer arrossegueu-lo a la seva posició antiga mentre el format encara està desbloquejat. </para>
 </sect2>
 <sect2 id="main-toolbar"
 ><title
@@ -2312,7 +2312,7 @@
 <para
 >Hi ha una secció per a tots els <emphasis
 >Serveis d'Internet</emphasis
-> que heu activitat. Aquí, podeu navegar pels llistats d'emissores de ràdio i pòdcasts; escoltar-los i subscriure's, interaccionar amb el vostre compte de <ulink url="http://www.last.fm"
+> que heu activat. Aquí, podeu navegar pels llistats d'emissores de ràdio i pòdcasts; escoltar-los i subscriure's, interaccionar amb el vostre compte de <ulink url="http://www.last.fm"
 >Last.fm</ulink
 >, comprar música de botigues en línia com la nostra botiga nova de mp3 d'Amazon, <ulink url="http://www.magnatune.com/"
 >Magnatune</ulink
@@ -2362,7 +2362,7 @@
 >, el <emphasis
 >botó de les adreces d'interès</emphasis
 > i la <emphasis
->barra de navegació del fil d'Ariadna</emphasis
+>barra de navegació dels fils d'Ariadna</emphasis
 >. </para>
 <sect3 id="the-filter-bar"
 ><title
@@ -2393,7 +2393,7 @@
 >Adreces d'interès</title
 > 
 <para
->Per accedir a aquesta característica, feu clic a la icona <inlinemediaobject
+>Per a accedir a aquesta característica, feu clic a la icona <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-bookmark-new-list.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -2919,7 +2919,7 @@
 > <imageobject
 > <imagedata fileref="Icon-folder-remote.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> (llocs), molt similar al menú d'un navegador web; o feu clic a qualsevol lloc del <emphasis
+> (llocs), molt similar al menú d'un navegador web; o feu clic a qualsevol lloc dels <emphasis
 >fils d'Ariadna</emphasis
 > per a anar directament a aquest nivell. </para>
 <para>
@@ -3118,7 +3118,7 @@
 ><guimenuitem
 >Context</guimenuitem
 ></menuchoice
-> per mostrar-la. La subfinestra es divideix en dues parts: </para>
+> per a mostrar-la. La subfinestra es divideix en dues parts: </para>
 <itemizedlist>
 <listitem
 ><para
@@ -3165,7 +3165,7 @@
 > <imageobject
 > <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> que podeu fer clic per eliminar-la, i apareixerà una llista de miniaplicacions. Per a afegir una miniaplicació nova, simplement feu clic a la miniaplicació, i apareixerà a la subfinestra, llesta per ser utilitzada. Per a canviar l'ordre de visualització de la miniaplicació, feu clic a les pestanyes i arrossegueu-les al voltant de la barra. </para>
+> que podeu fer clic per a eliminar-la, i apareixerà una llista de miniaplicacions. Per a afegir una miniaplicació nova, simplement feu clic a la miniaplicació, i apareixerà a la subfinestra, llesta per a ser utilitzada. Per a canviar l'ordre de visualització de la miniaplicació, feu clic a les pestanyes i arrossegueu-les al voltant de la barra. </para>
 </sect3>
 </sect2>
 <sect2 id="applets"
@@ -3173,7 +3173,7 @@
 >Miniaplicacions</title
 > 
 <para
->Hi ha diverses miniaplicacions disponibles per acoblar a la subfinestra <emphasis
+>Hi ha diverses miniaplicacions disponibles per a acoblar a la subfinestra <emphasis
 >Context</emphasis
 >; a continuació hi ha una descripció de cadascuna. </para>
 <para>
@@ -3257,7 +3257,7 @@
     </entry>
     <entry>
     <para
->Recupera artistes similars al que s'està reproduint actualment, amb una descripció breu i opcions per trobar-los a la vostra col·lecció, o a <emphasis
+>Recupera artistes similars al que s'està reproduint actualment, amb una descripció breu i opcions per a trobar-los a la vostra col·lecció, o a <emphasis
 >Last.fm</emphasis
 >, i afegir a la vostra llista de reproducció actual.</para>
     </entry>
@@ -3266,7 +3266,7 @@
     <entry>
     <para
 ><guilabel
->Propers esdeveniments</guilabel
+>Esdeveniments pròxims</guilabel
 ></para>
     </entry>
     <entry>
@@ -3308,7 +3308,7 @@
 >Viquipèdia</emphasis
 > de la peça o l'artista. També navegueu per altres enllaços de la <emphasis
 >Viquipèdia</emphasis
->, i utilitzeu el botó enrere per tornar a la pàgina d'inici.</para>
+>, i utilitzeu el botó enrere per a tornar a la pàgina d'inici.</para>
     </entry>
   </row>
   <row>
@@ -3337,7 +3337,7 @@
     </entry>
     <entry>
     <para
->Veure, afegir i editar etiquetes per a la cançó actual. Per afegir una etiqueta simplement escriviu-la en el quadre de text i premeu &Intro;. Les etiquetes suggerides són les etiquetes introduïdes pels usuaris de <emphasis
+>Veure, afegir i editar etiquetes per a la cançó actual. Per a afegir una etiqueta simplement escriviu-la en el quadre de text i premeu &Intro;. Les etiquetes suggerides són les etiquetes introduïdes pels usuaris de <emphasis
 >Last.fm</emphasis
 >.</para>
     </entry>
@@ -3459,7 +3459,7 @@
     <para
 >Aquesta miniaplicació consulta a <emphasis
 >Flickr.com</emphasis
-> les imatges de la banda que esteu escoltant. Obriu la configuració per afegir més paraules clau a la vostra consulta (&pex;: directe a tokyo).&gt;</para>
+> les imatges de la banda que esteu escoltant. Obriu la configuració per a afegir més paraules clau a la vostra consulta (&pex;: directe a tokyo).&gt;</para>
     </entry>
   </row>
   <row>
@@ -3585,7 +3585,7 @@
 >Comptagotes emergent</emphasis
 >, o <emphasis
 >PUD</emphasis
->) en realitzar una operació d'arrossegar i deixar anar per afegir música a la vostra llista de reproducció actual. Podeu utilitzar <guilabel
+>) en realitzar una operació d'arrossegar i deixar anar per a afegir música a la vostra llista de reproducció actual. Podeu utilitzar <guilabel
 >Afegeix a la llista de reproducció</guilabel
 >, que afegirà les cançons que heu seleccionat, o <guilabel
 >Substitueix la llista de reproducció</guilabel
@@ -3901,7 +3901,7 @@
 <para
 ><guilabel
 >Copia les adreces d'interès de la vista actual al porta-retalls</guilabel
-> copia l'URL del format de la llista de reproducció de l'&amarok; al porta-retalls, que es pot utilitzar per fer una còpia de seguretat del format de la llista de reproducció. </para>
+> copia l'URL del format de la llista de reproducció de l'&amarok; al porta-retalls, que es pot utilitzar per a fer una còpia de seguretat del format de la llista de reproducció. </para>
 </sect3>
 </sect2>
 <sect2 id="playlist-functions"
@@ -4142,9 +4142,9 @@
 > <imageobject
 > <imagedata fileref="Icon-document-save.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> per fer aparèixer el menú <guilabel
+> per a fer aparèixer el menú <guilabel
 >Desa la llista de reproducció</guilabel
->, per desar el fitxer de la llista de reproducció al disc dur en lloc de la base de dades. </para>
+>, per a desar el fitxer de la llista de reproducció al disc dur en lloc de la base de dades. </para>
 </sect3>
 <sect3 id="track-progression"
 ><title
@@ -4199,7 +4199,7 @@
 </screenshot>
 </para>
 <para
->Afavoreix és un mètode innovador per determinar la peça següent a reproduir quan s'utilitza el mode de selecció aleatòria. La peça següent que es pot reproduir es pot determinar depenent de la seva puntuació (una mesura de la freqüència amb què es reprodueixen), la seva valoració d'usuari, o si no s'han reproduït recentment. </para>
+>Afavoreix és un mètode innovador per a determinar la peça següent a reproduir quan s'utilitza el mode de selecció aleatòria. La peça següent que es pot reproduir es pot determinar depenent de la seva puntuació (una mesura de la freqüència amb què es reprodueixen), la seva valoració d'usuari, o si no s'han reproduït recentment. </para>
 </sect4>
 </sect3>
 </sect2>
@@ -4214,7 +4214,7 @@
 >Guia ràpida d'inici: Com començar</link
 >. Però hi ha més sota el capó. </para>
 <para
->Per accedir al <emphasis
+>Per a accedir al <emphasis
 >menú de configuració</emphasis
 >, aneu a <menuchoice
 ><guimenu
@@ -4249,7 +4249,7 @@
 <para
 >A la captura de pantalla anterior, vegeu algunes <emphasis
 >Opcions generals</emphasis
-> que podeu establir. Depenent de la distribució, les opcions predeterminades poden variar. En passar per sobre de les opcions amb el punter del ratolí, es mostrarà un consell d'eina per explicar la configuració individual. </para>
+> que podeu establir. Depenent de la distribució, les opcions predeterminades poden variar. En passar per sobre de les opcions amb el punter del ratolí, es mostrarà un consell d'eina per a explicar la configuració individual. </para>
 <para
 >Opcions generals: </para>
 <para>
@@ -4479,7 +4479,7 @@
 ></listitem>
 <listitem
 ><para
->des de <guilabel
+>des d'<guilabel
 >iTunes</guilabel
 ></para
 ></listitem>
@@ -4534,7 +4534,7 @@
     </entry>
     <entry>
     <para
->Marqueu-ho per escriure les estadístiques de canvis de reproducció com a etiquetes als fitxers d'àudio.</para>
+>Marqueu-ho per a escriure les estadístiques de canvis de reproducció com a etiquetes als fitxers d'àudio.</para>
     </entry>
   </row>
   <row>
@@ -4546,7 +4546,7 @@
     </entry>
     <entry>
     <para
->Marqueu-ho per escriure les caràtules canviades als fitxers d'àudio. Això substituirà les caràtules incrustades existents. Seleccioneu un valor de la llista desplegable per establir la mida màxima de la caràtula.</para>
+>Marqueu-ho per a escriure les caràtules canviades als fitxers d'àudio. Això substituirà les caràtules incrustades existents. Seleccioneu un valor de la llista desplegable per a establir la mida màxima de la caràtula.</para>
     </entry>
   </row>
   <row>
@@ -4771,7 +4771,7 @@
 >Configuració del Phonon</title
 > 
 <para
->El &phonon; és l'entorn multimèdia utilitzat per l'&amarok;. Es va crear per permetre que el KDE 4 sigui independent de qualsevol entorn multimèdia únic com el <guilabel
+>El &phonon; és l'entorn multimèdia utilitzat per l'&amarok;. Es va crear per a permetre que el KDE 4 sigui independent de qualsevol entorn multimèdia únic com el <guilabel
 >GStreamer</guilabel
 > o el <guilabel
 >VLC</guilabel
@@ -4966,7 +4966,7 @@
     </entry>
     <entry>
     <para
->Marqueu-ho per activar la translucidesa si el vostre sistema d'escriptori ho permet.</para>
+>Marqueu-ho per a activar la translucidesa si el vostre sistema d'escriptori ho permet.</para>
     </entry>
   </row>
   <row>
@@ -5030,7 +5030,7 @@
     </entry>
     <entry>
     <para
->Marqueu-ho per utilitzar la notificació del sistema. Això pot variar depenent del vostre sistema d'escriptori o distribució.</para
+>Marqueu-ho per a utilitzar la notificació del sistema. Això pot variar depenent del vostre sistema d'escriptori o distribució.</para
 ></entry>
   </row>
   </tbody>
@@ -5062,7 +5062,7 @@
 </screenshot>
 </para>
 <para
->La base de dades predeterminada ja està establerta per utilitzar el <guilabel
+>La base de dades predeterminada ja està establerta per a utilitzar el <guilabel
 >MySQL</guilabel
 > incrustat. Per a la majoria d'usuaris no hi ha necessitat de configurar una base de dades externa, ja que no hi ha cap canvi en el rendiment. Si voleu compartir la base de dades o utilitzar-la remotament, podeu configurar una base de dades <guilabel
 >MySQL</guilabel
@@ -5070,7 +5070,7 @@
 <para
 >L'&amarok; espera que la base de dades externa i el compte d'usuari ja existeixin. L'usuari també necessita accés complet a la base de dades. Heu de reiniciar l'&amarok; després de canviar aquests paràmetres. </para>
 <para
->Si la base de dades encara no està configurada, podeu utilitzar les ordres SQL en el camp de la part inferior per fer-ho, després de substituir la contrasenya per la correcta. </para>
+>Si la base de dades encara no està configurada, podeu utilitzar les ordres SQL en el camp de la part inferior per a fer-ho, després de substituir la contrasenya per la correcta. </para>
 <para>
 <informaltable>
   <tgroup cols="2">
@@ -5092,7 +5092,7 @@
     </entry>
     <entry>
     <para
->Marqueu-ho per activar l'ús d'una base de dades externa.</para>
+>Marqueu-ho per a activar l'ús d'una base de dades externa.</para>
     </entry>
   </row>
   <row>
@@ -5118,7 +5118,7 @@
     </entry>
     <entry>
     <para
->Introduïu el número de port per accedir al servidor. El port predeterminat és 3306.</para>
+>Introduïu el número de port per a accedir al servidor. El port predeterminat és 3306.</para>
     </entry>
   </row>
   <row>
@@ -5130,7 +5130,7 @@
     </entry>
     <entry>
     <para
->Introduïu el nom d'usuari per accedir a la base de dades amb privilegis d'accés complet.</para>
+>Introduïu el nom d'usuari per a accedir a la base de dades amb privilegis d'accés complet.</para>
     </entry>
   </row>
   <row>
@@ -5399,7 +5399,7 @@
     </entry>
     <entry>
     <para
->Previsualitzeu i compreu música des d'una segell d'enregistrament de discs que no siguin malvats. Vegeu també <ulink url="http://magnatune.com/info/whynotevil"
+>Previsualitzeu i compreu música des d'un segell d'enregistrament de discs que no siguin malvats. Vegeu també <ulink url="http://magnatune.com/info/whynotevil"
 >Magnatunes.com</ulink
 ></para>
     </entry>
@@ -5451,7 +5451,7 @@
     </entry>
     <entry>
     <para
->Navegueu i subscriviu-se a una gran elecció de pòdcasts</para>
+>Navegueu i subscriviu-vos a una gran elecció de pòdcasts</para>
     </entry>
     <entry>
     <para
@@ -5565,7 +5565,7 @@
 > <imageobject
 > <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> per a afegir les vostres credencials de pertinença si sou membre i/o afegiu la vostra adreça de correu electrònic per tornar a descarregar la música que heu baixat anteriorment de Magnatune. </para>
+> per a afegir les vostres credencials de pertinença si sou membre i/o afegiu la vostra adreça de correu electrònic per a tornar a descarregar la música que heu baixat anteriorment de Magnatune. </para>
 <para
 >Per a descarregar, aneu a la subfinestra <emphasis
 >Orígens de suports</emphasis
@@ -5682,7 +5682,7 @@
 >Serveis d'Internet</emphasis
 > a la subfinestra <emphasis
 >Collections</emphasis
->. Moltes col·leccions de fluxos estan disponibles, en molts idiomes, i de moltes orígens. </para>
+>. Moltes col·leccions de fluxos estan disponibles, en molts idiomes, i de molts orígens. </para>
 </sect2>
 <sect2 id="manage-scripts"
 ><title
@@ -5738,7 +5738,7 @@
 <para
 >Usant l'<emphasis
 >Instal·lador de complements</emphasis
->, es poden instal·lar els últims scripts d'&amarok; contribuïts per l'usuari. També hi ha opcions per cercar, ordenar i valorar els scripts. </para>
+>, es poden instal·lar els últims scripts d'&amarok; contribuïts per l'usuari. També hi ha opcions per a cercar, ordenar i valorar els scripts. </para>
 <para
 >Els botons <guilabel
 >Instal·la scripts</guilabel
@@ -5946,7 +5946,7 @@
 </screenshot>
 </para>
 <para
->Per accedir a l'<guilabel
+>Per a accedir a l'<guilabel
 >Editor del format de la llista de reproducció</guilabel
 >, aneu a <menuchoice
 ><guimenu
@@ -5982,7 +5982,7 @@
 >Cos</emphasis
 > de l'àlbum (amb un cos especial d'àlbum per a diverses peces d'artistes) i la configuració de peces <emphasis
 >Senzilla</emphasis
->, seleccionable en les pestanyes al mig de l'editor. Per afegir un element, simplement arrossegueu-lo des del selector a la part superior i deixeu-lo anar a la pestanya de format triat a continuació. Per a mostrar la caràtula de l'àlbum, només cal marcar el camp <guilabel
+>, seleccionable en les pestanyes al mig de l'editor. Per a afegir un element, simplement arrossegueu-lo des del selector a la part superior i deixeu-lo anar a la pestanya de format triat a continuació. Per a mostrar la caràtula de l'àlbum, només cal marcar el camp <guilabel
 >Caràtula</guilabel
 >. </para>
 <para
@@ -6060,7 +6060,7 @@
 <para
 ><emphasis
 >Exemple</emphasis
->: per generar un format d'una sola línia sense agrupar només afegiu elements a l'element peça <guilabel
+>: per a generar un format d'una sola línia sense agrupar només afegiu elements a l'element peça <guilabel
 >Senzilla</guilabel
 >. </para>
 </sect4>
@@ -6471,7 +6471,7 @@
 <para
 >En prémer &Intro; després de cercar s'obrirà la llista de reproducció amb tots els elements de cerca trobats i es netejarà el quadre de cerca. És una gran manera d'afegir ràpidament centenars o milers de peces a una llista de reproducció instantàniament! </para>
 <para
->Per cercar en una etiqueta específica, escriviu <varname
+>Per a cercar en una etiqueta específica, escriviu <varname
 >tag:value</varname
 > a la barra de cerca. Es poden utilitzar els operadors com «&gt;» i «&lt;» per a crear condicions més generals. Diverses condicions es poden utilitzar juntes separant-les per un caràcter d'espai. Per a les condicions de temps, s'utilitzen les abreviatures següents: d=dia, w=setmana, m=mes, y=any. </para>
 </sect3>
@@ -6632,7 +6632,7 @@
 </screenshot>
 </para>
 <para
->Es poden utilitzar patrons més complexos per obtenir millors resultats: </para>
+>Es poden utilitzar patrons més complexos per a obtenir millors resultats: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -7257,7 +7257,7 @@
 </screenshot>
 </para>
 <para
->Per començar la sincronització no desitjada només cal fer clic a <guilabel
+>Per a començar la sincronització no desitjada només cal fer clic a <guilabel
 >Sí</guilabel
 > a la finestra emergent. L'&amarok; funcionarà en segon pla, de manera que les metadades del vostre dispositiu incloent-hi valoracions, hora de primera/última reproducció, nombre de reproduccions i etiquetes se sincronitzaran amb altres col·leccions <link linkend="metadata"
 >configurades per a participar en la sincronització</link
@@ -7438,7 +7438,7 @@
 > <imageobject
 > <imagedata fileref="Icon-view-list-tree.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> per assegurar-vos que no esteu a la vista fusionada. </para>
+> per a assegurar-vos que no esteu a la vista fusionada. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -7464,7 +7464,7 @@
 >Samba</guilabel
 > és una implementació lliure del protocol <emphasis
 >SMB/CIFS</emphasis
-> que s'utilitza per compartir fitxers i impressores en una xarxa. La majoria dels gestors de fitxers moderns com el &dolphin; i el <guilabel
+> que s'utilitza per a compartir fitxers i impressores en una xarxa. La majoria dels gestors de fitxers moderns com el &dolphin; i el <guilabel
 >Nautilus</guilabel
 > admeten aquest protocol. </para>
 </sect3>
@@ -7473,7 +7473,7 @@
 >Client</title
 > 
 <para
->Cal muntar la compartició per utilitzar-la a l'&amarok;. Per fer això, cal instal·lar el paquet <emphasis
+>Cal muntar la compartició per a utilitzar-la a l'&amarok;. Per a fer això, cal instal·lar el paquet <emphasis
 >smbfs</emphasis
 >. Utilitzeu l'ordre </para>
 <para
@@ -7487,7 +7487,7 @@
 ></userinput>
 </para>
 <para
->per muntar la compartició. Després d'això podeu utilitzar-la com una carpeta local i afegir-la a la vostra col·lecció local. </para>
+>per a muntar la compartició. Després d'això podeu utilitzar-la com una carpeta local i afegir-la a la vostra col·lecció local. </para>
 </sect3>
 <sect3 id="server"
 ><title
@@ -7521,7 +7521,7 @@
 </screenshot>
 </para>
 <para
->Per compartir la carpeta, només cal marcar el camp <guilabel
+>Per a compartir la carpeta, només cal marcar el camp <guilabel
 >Comparteix amb Samba (Microsoft Windows)</guilabel
 > i establir el nom de la compartició al camp <guilabel
 >Nom</guilabel
@@ -7559,7 +7559,7 @@
 >DLNA</ulink
 >. </para>
 <para
->L'&amarok; té un client de compartició multimèdia UPnP integrat de manera que pot reproduir peces compartides a la xarxa. Per activar-ho, utilitzeu <menuchoice
+>L'&amarok; té un client de compartició multimèdia UPnP integrat de manera que pot reproduir peces compartides a la xarxa. Per a activar-ho, utilitzeu <menuchoice
 ><guimenu
 >Arranjament</guimenu
 ><guisubmenu
@@ -7643,7 +7643,7 @@
 <para
 >per a instal·lar-lo. Se us demanarà que especifiqueu una contrasenya per al compte d'arrel de la base de dades. El paquet <emphasis
 >mysql-client</emphasis
-> és necessari per executar algunes de les ordres d'aquest document, però no és fonamental per a l'ús de l'&amarok;. </para>
+> és necessari per a executar algunes de les ordres d'aquest document, però no és fonamental per a l'ús de l'&amarok;. </para>
 </sect3>
 <sect3 id="configure-database"
 ><title
@@ -7704,13 +7704,13 @@
 <para
 >on <emphasis
 >%</emphasis
-> és un comodí per permetre que totes les màquines es connectin a la base de dades. Ara utilitzeu la sentència </para>
+> és un comodí per a permetre que totes les màquines es connectin a la base de dades. Ara utilitzeu la sentència </para>
 <para
 ><userinput
 >FLUSH PRIVILEGES;</userinput>
 </para>
 <para
->per recarregar diversos caus interns utilitzats pel <guilabel
+>per a recarregar diversos caus interns utilitzats pel <guilabel
 >MySQL</guilabel
 >. Finalment </para>
 <para
@@ -7775,7 +7775,7 @@
 >MySQL</guilabel
 > incrustada d'abans de l'&amarok; 2.2, podeu fer el següent: </para>
 <para
->En primer lloc, inicieu l'&amarok; 2.2+ almenys una vegada per donar a la base de dades l'oportunitat d'actualitzar l'última versió de l'esquema. </para>
+>En primer lloc, inicieu l'&amarok; 2.2+ almenys una vegada per a donar a la base de dades l'oportunitat d'actualitzar l'última versió de l'esquema. </para>
 <para
 >A continuació, mateu el servei del <guilabel
 >MySQL</guilabel
@@ -7795,7 +7795,7 @@
 >/usr/sbin/mysqld --defaults-file=`pwd`/my.cnf --default-storage-engine=MyISAM --datadir=`pwd`/mysqle --socket=`pwd`/sock --skip-grant-tables</userinput>
 </para>
 <para
->«skip-grant-tables» vol dir que podeu utilitzar qualsevol contrasenya o nom d'usuari per connectar-vos-hi. «localhost» no funcionarà, el client <guilabel
+>«skip-grant-tables» vol dir que podeu utilitzar qualsevol contrasenya o nom d'usuari per a connectar-vos-hi. «localhost» no funcionarà, el client <guilabel
 >MySQL</guilabel
 > intentarà utilitzar un sòcol <guilabel
 >&UNIX;</guilabel
@@ -7807,7 +7807,7 @@
 >sudo /etc/init.d/apparmor stop</userinput>
 </para>
 <para
->Ara, executeu «mysqldump», passant-hi l'opció -S per especificar el sòcol local. Això bolcarà la base de dades incrustada antiga a un fitxer SQL. </para>
+>Ara, executeu «mysqldump», passant-hi l'opció -S per a especificar el sòcol local. Això buidarà la base de dades incrustada antiga a un fitxer SQL. </para>
 <para
 ><userinput
 >mysqldump -S sock amarok &gt; amarok.mysql</userinput>
@@ -8124,7 +8124,7 @@
 <para
 >El <guilabel
 >Gestor de caràtules</guilabel
-> és una eina per gestionar les imatges de caràtula de la vostra col·lecció. Us permet canviar les caràtules fàcilment, recollir totes les caràtules que falten i navegar-hi. Podeu trobar el <guilabel
+> és una eina per a gestionar les imatges de caràtula de la vostra col·lecció. Us permet canviar les caràtules fàcilment, recollir totes les caràtules que falten i navegar-hi. Podeu trobar el <guilabel
 >Gestor de caràtules</guilabel
 > a <menuchoice
 ><guimenu
@@ -8161,7 +8161,7 @@
 >Gestor de caràtules</guilabel
 >, la navegació per les caràtules és fàcil. Podeu veure les caràtules de qualsevol artista seleccionant de la llista a l'esquerra, o utilitzar el quadre de cerca per trobar l'àlbum correcte. A la barra d'estat, es pot veure quantes caràtules s'enumeren actualment i quants àlbums falten caràtules. També podeu establir el <guilabel
 >Gestor de caràtules</guilabel
-> per a mostrar només àlbums amb o sense caràtules. En fer clic dret sobre la caràtula de portada i seleccionar <guilabel
+> per a mostrar només àlbums amb caràtules o sense. En fer clic dret sobre la caràtula de portada i seleccionar <guilabel
 >Mostra la caràtula</guilabel
 > podeu veure la imatge de la caràtula a la mida original. </para>
 </sect2>
@@ -8196,11 +8196,11 @@
 </screenshot>
 </para>
 <para
->Si hi ha un àlbum amb una caràtula incorrecta, es pot obtenir-ne una nova d'Internet. Feu clic amb el botó dret a la caràtula i seleccioneu <guilabel
+>Si hi ha un àlbum amb una caràtula incorrecta, se'n pot obtenir una de nova d'Internet. Feu clic amb el botó dret a la caràtula i seleccioneu <guilabel
 >Recupera la caràtula</guilabel
 >. S'obrirà una finestra de diàleg per a trobar una caràtula nova. L'&amarok; intenta cercar automàticament la caràtula de l'àlbum correcte cercant el nom de l'artista i el nom de l'àlbum. En general, funciona molt bé, com amb l'exemple, i és molt probable que es vegi una caràtula correcta en els resultats com a l'exemple. Si no es troba cap caràtula correcta, es pot intentar introduir una frase de cerca personalitzada o canviar l'origen de les imatges fent clic a <guilabel
 >Configura...</guilabel
->. Podeu seleccionar on cercar, incloent Last.fm, Google Images, Yahoo! Cerca d'imatges o Discogs. Després de trobar una caràtula per a l'àlbum, feu clic a <guilabel
+>. Podeu seleccionar on cercar, incloent-hi Last.fm, Google Images, Yahoo! Cerca d'imatges o Discogs. Després de trobar una caràtula per a l'àlbum, feu clic a <guilabel
 >D'acord</guilabel
 > i s'aplicaran els canvis. </para>
 <para
@@ -8545,7 +8545,7 @@
 >Opcions</title
 > 
 <para
->També hi ha diverses opcions per donar format el resultat. Aquestes són autoexplicatives. </para>
+>També hi ha diverses opcions per a donar format al resultat. Aquestes són autoexplicatives. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8567,7 +8567,7 @@
 >Bàsica</title
 > 
 <para
->A la vista bàsica obtindreu un menú d'arrossegar i deixar anar per crear el patró en el nom del fitxer. </para>
+>A la vista bàsica obtindreu un menú d'arrossegar i deixar anar per a crear el patró en el nom del fitxer. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8764,12 +8764,12 @@
     <entry>
     <para
 ><guilabel
->Transcodifica només quan siguin necessari per a reproduir</guilabel
+>Transcodifica només quan sigui necessari per a reproduir</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Només transcodifica les peces que s'han de transcodificar per reproduir en el sistema de destinació</para>
+>Només transcodifica les peces que s'han de transcodificar per a reproduir en el sistema de destinació</para>
     </entry>
   </row>
   <row>
@@ -8788,7 +8788,7 @@
     <entry>
     <para
 ><guilabel
->Recorda aquesta elecció per a la propera vegada</guilabel
+>Recorda aquesta elecció per a la pròxima vegada</guilabel
 ></para>
     </entry>
     <entry>
@@ -8895,7 +8895,7 @@
 > 
 <para
 >Com s'esmenta en la descripció de <guilabel
->Recorda aquesta elecció per a la propera vegada</guilabel
+>Recorda aquesta elecció per a la pròxima vegada</guilabel
 >, l'&amarok; pot recordar la preferència de transcodificació per a cadascuna de les vostres col·leccions. La preferència es pot canviar en qualsevol moment a <guilabel
 >Configura la col·lecció local</guilabel
 > <guilabel
@@ -9016,7 +9016,7 @@
 >Generador automàtic de llistes de reproducció</link
 > quan teniu menys necessitats específiques de peces i progressions. </para>
 <para
->Per navegar i gestionar les vostres llistes de reproducció desades, aneu a <menuchoice
+>Per a navegar i gestionar les vostres llistes de reproducció desades, aneu a <menuchoice
 ><guimenu
 >Llistes de reproducció</guimenu
 ><guimenuitem
@@ -9589,14 +9589,14 @@
 <para
 >Mantindrà un cert nombre de cançons davant de la cançó reproduïda actualment i netejarà la llista de reproducció eliminant cançons antigues. </para>
 <para
->Les cançons que s'afegiran a la part davantera de la llista de reproducció estan determinades per la llista de reproducció dinàmica seleccionada actualment. </para>
+>Les cançons que s'afegiran a la part davantera de la llista de reproducció són determinades per la llista de reproducció dinàmica seleccionada actualment. </para>
 </sect2>
 <sect2 id="using-a-dynamic-playlist"
 ><title
 >Ús d'una llista de reproducció dinàmica</title
 > 
 <para
->Per activar les llistes de reproducció dinàmiques, feu clic al botó <inlinemediaobject
+>Per a activar les llistes de reproducció dinàmiques, feu clic al botó <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-action-dynamic-amarok.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -9618,7 +9618,7 @@
 >Repobla</guilabel
 > us permet generar un conjunt nou de peces. Això es pot utilitzar juntament amb una configuració alta de <guilabel
 >Propera</guilabel
-> per generar llistes de reproducció fixes per a l'exportació. </para>
+> per a generar llistes de reproducció fixes per a l'exportació. </para>
 </sect2>
 <sect2 id="defining-dynamic-playlists"
 ><title
@@ -9827,7 +9827,7 @@
 >Fer servir la vostra llista de reproducció dinàmica</title
 > 
 <para
->Per activar la llista de reproducció dinàmica que heu creat simplement marqueu la casella <guilabel
+>Per a activar la llista de reproducció dinàmica que heu creat simplement marqueu la casella <guilabel
 >Actiu</guilabel
 > a la cantonada superior esquerra de la subfinestra. Per a tornar a generar tota la llista de reproducció en qualsevol moment, feu clic a <guilabel
 >Repobla</guilabel
@@ -9996,7 +9996,7 @@
 >GALR</guilabel
 > de l'&amarok; usarà en generar llistes de reproducció. Aquestes regles es coneixeran com a <emphasis
 >restriccions</emphasis
-> a partir d'ara; tots els valors predefinits estan determinats per les restriccions que els creen. Els grups de restriccions jeràrquica i lògicament organitzades s'anomenen arbres de restricció. </para>
+> a partir d'ara; tots els valors predefinits són determinats per les restriccions que els creen. Els grups de restriccions jeràrquicament i lògicament organitzades s'anomenen arbres de restricció. </para>
 <sect3 id="constraints"
 ><title
 >Restriccions</title
@@ -10004,7 +10004,7 @@
 <para
 >Les restriccions són els blocs de construcció d'arbres de restricció. Són declaracions simples que el <guilabel
 >GALR</guilabel
-> utilitzarà per a afegir cançons a la llista de reproducció que genera. Per afegir una restricció a l'arbre de restriccions preestablertes actualment seleccionat feu clic al botó <inlinemediaobject
+> utilitzarà per a afegir cançons a la llista de reproducció que genera. Per a afegir una restricció a l'arbre de restriccions preestablertes actualment seleccionat feu clic al botó <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-document-properties.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -10047,7 +10047,7 @@
     </entry>
     <entry>
     <para
->Les restriccions més importants, perquè es poden establir a pràcticament qualsevol informació sobre el fitxer, incloent: nom de l'artista, nom de l'àlbum, gènere, any, darrera reproducció i puntuació.</para>
+>Les restriccions més importants, perquè es poden establir a pràcticament qualsevol informació sobre el fitxer, incloent-hi: nom de l'artista, nom de l'àlbum, gènere, any, darrera reproducció i puntuació.</para>
     </entry>
   </row>
   <row>
@@ -10133,7 +10133,7 @@
 <para
 >Una altra manera de canviar el comportament de la restricció és marcar la casella de selecció <guilabel
 >inverteix</guilabel
->, això les fa comportar-se de la manera oposada, «Coincidència d'etiquetes: artista conté <replaceable
+>, això les fa comportar de la manera oposada, «Coincidència d'etiquetes: artista conté <replaceable
 >nom</replaceable
 >» esdevé «Coincidència d'etiquetes: artista no conté <replaceable
 >nom</replaceable
@@ -10150,7 +10150,7 @@
 >Editor de predefinits del GALR</guilabel
 >, les restriccions sota un grup estan lògicament enllaçades, el mateix s'aplica als grups sota de grups. </para>
 <para
->Actualment hi ha dues classes de grups de restriccions: «Coincidència amb tot» i «Coincidència amb quelcom». «Coincidència amb tot» requereixen que totes les restriccions sota elles es compleixin amb la cançó. «Concorda amb quelcom» requereixen que almenys una de les restriccions sota elles es compleixi amb la cançó. Per afegir una restricció sota un grup específic ressalteu-la a l'editor de valors predefinits i utilitzeu l'opció <guilabel
+>Actualment hi ha dues classes de grups de restriccions: «Coincidència amb tot» i «Coincidència amb quelcom». «Coincidència amb tot» requereixen que totes les restriccions sota elles es compleixin amb la cançó. «Concorda amb quelcom» requereixen que almenys una de les restriccions sota elles es compleixi amb la cançó. Per a afegir una restricció sota un grup específic ressalteu-la a l'editor de valors predefinits i utilitzeu l'opció <guilabel
 >Afegeix una nova</guilabel
 >. </para>
 </sect3>
@@ -10273,9 +10273,9 @@
 <para
 >La <emphasis
 >Barra d'ànim</emphasis
-> us mostra l'«estat d'ànim» d'una peça, que podeu utilitzar per esbrinar quan passa alguna cosa interessant a la cançó. </para>
+> us mostra l'«estat d'ànim» d'una peça, que podeu utilitzar per a esbrinar quan passa alguna cosa interessant a la cançó. </para>
 <para
->Per tal que l'&amarok; mostri barres d'ànim de la vostra música, necessitareu el programa <guilabel
+>Per tal que l'&amarok; mostri barres d'ànim de la música, necessitareu el programa <guilabel
 >Moodbar</guilabel
 > (vegeu més avall les <link linkend="source-downloads"
 >baixades</link
@@ -10301,7 +10301,7 @@
 >GStreamer</emphasis
 >. Sense el paquet <guilabel
 >Moodbar</guilabel
->, l'&amarok; no pot generar les barres d'ànim de la vostra música. </para>
+>, l'&amarok; no pot generar les barres d'ànim de la música. </para>
 <para
 >Com a alternativa, hi ha un script nou que crearà fitxers de barra d'ànim per a les peces en una llista de reproducció de l'&amarok; això és una excepció a l'anterior. L'script no necessita més que l'&amarok; per a funcionar, però només crea els fitxers «.mood» quan es reprodueixen a la <guilabel
 >Llista de reproducció</guilabel
@@ -10309,12 +10309,12 @@
 <para
 >La <guilabel
 >Barra d'ànim</guilabel
-> es gràcies al treball de Gavin Wood i Simon O'Keefe, que van dissenyar els algoritmes; el seu document original és <ulink url="http://cratoo.de/amarok/ismir-crc.pdf"
+> és gràcies al treball de Gavin Wood i Simon O'Keefe, que van dissenyar els algoritmes; el seu document original és <ulink url="http://cratoo.de/amarok/ismir-crc.pdf"
 >aquí</ulink
 >. </para>
 <sect2 id="summary-of-requirements"
 ><title
->Resum dels requeriments</title
+>Resum dels requisits</title
 > 
 <itemizedlist>
 <listitem
@@ -10370,7 +10370,7 @@
 <para
 >Actualment, els fitxers «.mood» <emphasis
 >cal</emphasis
-> que es generin manualment. L'&amarok; no pot fer-ho per vós. Per fer això per a tota la vostra col·lecció, utilitzeu l'script de generació de fitxers <link linkend="moodbar-file-generation-script"
+> que es generin manualment. L'&amarok; no pot fer-ho per vós. Per a fer això per a tota la vostra col·lecció, utilitzeu l'script de generació de fitxers <link linkend="moodbar-file-generation-script"
 >Script de generació de barra d'ànim</link
 > descrit a continuació. </para>
 <para
@@ -10386,7 +10386,7 @@
 ></menuchoice
 >. Les barres d'ànim haurien d'aparèixer ara als controls lliscants de la peça a la finestra del reproductor i la <guilabel
 >Llista de reproducció</guilabel
->; també hi haurà un camp d'ànim que podeu afegir a els formats de la llista de reproducció. </para>
+>; també hi haurà un camp d'ànim que podeu afegir als formats de la llista de reproducció. </para>
 </sect2>
 <sect2 id="installation"
 ><title
@@ -10407,7 +10407,7 @@
 >mateix prefix</emphasis
 > que el GStreamer. Seguiu les instruccions del <link linkend="summary-of-requirements"
 >resum del capítol de requisits</link
->. La 0.1.4 és una bifurcació del codi font original de la 0.1.2, actualitzada per utilitzar el GStreamer 1.0. El codi font antic de la 0.1.2 ja no està disponibles de manera fiable en línia, però els paquets podrien estar encara disponibles per a algunes distribucions. </para>
+>. La 0.1.4 és una bifurcació del codi font original de la 0.1.2, actualitzada per a utilitzar el GStreamer 1.0. El codi font antic de la 0.1.2 ja no està disponible de manera fiable en línia, però els paquets podrien estar encara disponibles en algunes distribucions. </para>
 <para
 >Si trobeu algun error, envieu un informe d'error a <ulink url="http://bugs.kde.org"
 >bugs.kde.org</ulink
@@ -10449,7 +10449,7 @@
 >Synaptic</guilabel
 >). És probable que també vulgueu instal·lar el gstreamer0.10-plugins-ugly, gstreamer0.10-plugins-good, i gstreamer0.10-plugins-bad per al suport de format. </para>
 <para
->O, per instal·lar, enganxeu això al <guilabel
+>O, per a instal·lar, enganxeu això al <guilabel
 >Firefox</guilabel
 > o el &konqueror; i premeu &Intro;. </para>
 <para
@@ -10593,7 +10593,7 @@
 >aquí</ulink
 >. </para>
 <para
->Per obtenir més informació sobre l'AUR i el funcionament amb els PKGBUILDs, vegeu les <ulink url="http://wiki.archlinux.org/index.php/AUR_User_Guidelines"
+>Per a obtenir més informació sobre l'AUR i el funcionament amb els PKGBUILD, vegeu les <ulink url="http://wiki.archlinux.org/index.php/AUR_User_Guidelines"
 >Directrius d'usuari d'AUR</ulink
 >. </para>
 </sect3>
@@ -10612,11 +10612,11 @@
 >audio/gstreamer-plugins-moodbar aquí</ulink
 >. </para>
 <para
->Per instal·lar l'adaptació: <userinput
+>Per a instal·lar l'adaptació: <userinput
 >cd /usr/ports/audio/gstreamer-plugins-moodbar/ &amp;&amp; make install clean</userinput
 > </para>
 <para
->Per afegir el paquet: <userinput
+>Per a afegir el paquet: <userinput
 >pkg_add -r gstreamer-plugins-moodbar</userinput
 > </para>
 </sect3>
@@ -10707,7 +10707,7 @@
 >bus</emphasis
 >, això gairebé sempre significa que no pot descodificar (o no pot trobar) el fitxer. Doneu un cop d'ull als tipus de fitxer <link linkend="supported-filetypes"
 >admesos</link
-> a continuació per a les idees sobre les quals s'han d'instal·lar els connectors del GStreamer. També podeu provar l'ordre següent per provar si el GStreamer pot descodificar el fitxer:<userinput
+> a continuació per a les idees sobre les quals s'han d'instal·lar els connectors del GStreamer. També podeu provar l'ordre següent per a provar si el GStreamer pot descodificar el fitxer:<userinput
 >gst-launch-1.0 filesrc location=[file] ! decodebin ! fakesink</userinput
 ></para
 ></listitem>
@@ -10735,7 +10735,7 @@
 >Barra d'ànim</guilabel
 > no funciona, o bé no funciona res o no funciona per a un fitxer en particular, executeu l'ordre de sota, on [fitxer] és un fitxer de música:<userinput
 >moodbar -o test.mood [fitxer]</userinput
->. Per generar una vista prèvia d'imatge de prova, es pot utilitzar l'ordre:<userinput
+>. Per a generar una vista prèvia d'imatge de prova, es pot utilitzar l'ordre:<userinput
 >gst-launch-1.0 filesrc location=[file] ! decodebin ! audioconvert ! fftwspectrum ! moodbar height=50 max-width=300 ! pngenc ! filesink location=mood.png</userinput
 ></para
 ></listitem>
@@ -10754,7 +10754,7 @@
 >Tipus de fitxers compatibles</title
 > 
 <para
->Necessitareu diversos connectors del GStreamer per habilitar la <guilabel
+>Necessitareu diversos connectors del GStreamer per a habilitar la <guilabel
 >Barra d'ànim</guilabel
 > per a analitzar els fitxers. Aquesta és una llista dels connectors que necessitareu; assegureu-vos d'instal·lar la <emphasis
 >versió 1.0.*</emphasis
@@ -10886,11 +10886,11 @@
 <para
 ><ulink url="https://en.wikipedia.org/wiki/ReplayGain"
 >Guany de repetició</ulink
-> ajustarà automàticament el volum de la cançó actualment reproduïda, en relació amb altres cançons, tal com determina la persona que ha codificat el fitxer d'àudio. Per activar el guany de repetició, vegeu el menú <link linkend="settings-menu"
+> ajustarà automàticament el volum de la cançó actualment reproduïda, en relació amb altres cançons, tal com determina la persona que ha codificat el fitxer d'àudio. Per a activar el guany de repetició, vegeu el menú <link linkend="settings-menu"
 >Arranjament</link
 >. </para>
 <para
->Per manejar això, l'&amarok; es basa en metadades incrustades en el fitxer d'àudio: </para>
+>Per a manejar això, l'&amarok; es basa en metadades incrustades en el fitxer d'àudio: </para>
 <orderedlist>
 <listitem
 ><para
@@ -11132,7 +11132,7 @@
 </screenshot>
 </para>
 <para
->Per configurar el servidor intermediari per a l'&amarok; a GNOME, modifiqueu i afegiu això a <filename
+>Per a configurar el servidor intermediari per a l'&amarok; a GNOME, modifiqueu i afegiu això a <filename
 >~/.kde/share/config/kioslaverc</filename
 > </para>
 <para
@@ -11409,7 +11409,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Instal·lació amb MacPorts</title
 > 
 <para
->Per instal·lar l'&amarok; al &MacOS; X, primer cal instal·lar el MacPorts des d'<ulink url="http://www.macports.org/install.php"
+>Per a instal·lar l'&amarok; al &MacOS; X, primer cal instal·lar el MacPorts des d'<ulink url="http://www.macports.org/install.php"
 >aquí</ulink
 >. Una vegada instal·lat el MacPorts cal executar l'ordre següent al terminal: </para>
 <para
@@ -11595,7 +11595,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >aquí</link
 >. </para>
 <para
->Per trobar el(s) fitxer(s) dolent, executeu <varname
+>Per a trobar el(s) fitxer(s) dolent, executeu <varname
 >amarokcollectionscanner</varname
 > a la consola. Els detalls <ulink url="http://community.kde.org/Amarok/Development/BatchMode"
 >aquí</ulink
@@ -11674,7 +11674,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Els fitxers tenen el mateix identificador únic AFT de l'Amarok<itemizedlist>
 <listitem
 ><para
->Això és sovint el resultat d'executar amarok_afttagger i després crear diverses còpies d'un fitxer etiquetat; un lector d'etiquetes com el Kid3 o el MP3Diags es pot utilitzar per verificar això, cerqueu la cadena <varname
+>Això és sovint el resultat d'executar amarok_afttagger i després crear diverses còpies d'un fitxer etiquetat; un lector d'etiquetes com el Kid3 o el MP3Diags es pot utilitzar per a verificar això, cerqueu la cadena <varname
 >Amarok 2 AFTv1</varname
 > en les etiquetes</para
 ></listitem>
@@ -11702,7 +11702,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >) Els fitxers tenen el mateix ID del MusicBrainz<itemizedlist>
 <listitem
 ><para
->Les versions publicades fins a l'&amarok; 2.7 tracten l'ID del MusizBrainz incrustat en les etiquetes (emplenat per un etiquetador activat del MusicBrainz com el Picard) com a identificadors únics de les peces. No obstant això, el MusicBrainz va canviar la semàntica de l'identificador per a significar «ID d'enregistrament» ja que es va implementar originalment a l'&amarok;, el que significa que es poden obtenir falsos duplicats, per exemple, amb les peces que apareixen a l'àlbum original i el millor d'un. Vegeu <emphasis role="strikethrough"
+>Les versions publicades fins a l'&amarok; 2.7 tracten l'ID del MusizBrainz incrustat en les etiquetes (emplenat per un etiquetador activat del MusicBrainz com el Picard) com a identificadors únics de les peces. No obstant això, el MusicBrainz va canviar la semàntica de l'identificador per a significar «ID d'enregistrament», ja que es va implementar originalment a l'&amarok;, el que significa que es poden obtenir falsos duplicats, per exemple, amb les peces que apareixen a l'àlbum original i el millor d'un. Vegeu <emphasis role="strikethrough"
 ><ulink url="https://bugs.kde.org/show_bug.cgi?id=315329"
 >error núm. 315329</ulink
 ></emphasis
@@ -11816,7 +11816,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><para
 >Informar dels errors: si s'activa, el <guilabel
 >Dr. Konqi</guilabel
-> proporcionarà una opció per informar d'un error i fer la major part de la feina per a vós. Si no, haureu d'enviar l'error manualment a <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok"
+> proporcionarà una opció per a informar d'un error i fer la major part de la feina per a vós. Si no, haureu d'enviar l'error manualment a <ulink url="http://bugs.kde.org/enter_bug.cgi?product=amarok"
 > bugs.kde.org</ulink
 >. Per a errors de fallades, enganxeu la traça inversa del <guilabel
 >gdb</guilabel
@@ -11889,7 +11889,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Context</guilabel
 >, que ocupa el lloc central de la finestra de l'&amarok;, substituint l'antic <emphasis
 >navegador de context</emphasis
-> de la sèrie 1.x. Mostra informació contextual sobre la música que toqueu, com la caràtula, la valoració de la peça, les etiquetes, la lletra, la informació de l'artista, les cançons i artistes relacionats, les tabulatures de guitarra i baix i altres. Gràcies a que usa la tecnologia del Plasma, la subfinestra <guilabel
+> de la sèrie 1.x. Mostra informació contextual sobre la música que toqueu, com la caràtula, la valoració de la peça, les etiquetes, la lletra, la informació de l'artista, les cançons i artistes relacionats, les tabulatures de guitarra i baix i altres. Gràcies al fet que usa la tecnologia del Plasma, la subfinestra <guilabel
 >Context</guilabel
 > pot proporcionar contingut molt ric, com AJAX, vídeo i animacions, tot de manera espectacular. Més sobre la <link linkend="the-context-pane"
 >subfinestra de context</link
@@ -11897,7 +11897,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->Per acompanyar la subfinestra <guilabel
+>Per a acompanyar la subfinestra <guilabel
 >Context</guilabel
 >, vam desenvolupar una llista de reproducció nova eficient amb l'espai. Per tal de conservar l'espai horitzontal, agrupa el nom de la peça, l'artista, el nom de l'àlbum i la caràtula junts, i permet agrupar-ho per noms d'àlbum. A més, podeu reorganitzar-ho a fons! Si preferiu la llista de reproducció antiga de la 1.4 també ho podreu tenir. Vegeu <link linkend="changing-the-playlist-layout"
 >Canviant el format de la llista de reproducció</link
@@ -11936,7 +11936,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Puc utilitzar l'Amarok sense el KDE?</title
 > 
 <para
->L'&amarok; requereix que s'instal·lin parts de KDE per executar-se, però s'executarà bé en el Gnome o en altres entorns d'escriptori, incloent Windows i OS X. Perquè l'&amarok; s'executi, cal instal·lar les «kdelibs» i el «kdebase-runtime». </para>
+>L'&amarok; requereix que s'instal·lin parts de KDE per a executar-se, però s'executarà bé en el Gnome o en altres entorns d'escriptori, incloent-hi Windows i OS X. Perquè l'&amarok; s'executi, cal instal·lar les «kdelibs» i el «kdebase-runtime». </para>
 <para
 >Perquè algunes característiques funcionin correctament, com ara la visualització en pantalla, el gestor de finestres ha d'estar configurat per a implementar els estàndards <emphasis
 >freedesktop.org</emphasis
@@ -11949,7 +11949,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Per què l'Amarok utilitza les KDElibs?</title
 > 
 <para
->Ens hem compromès a donar suport a l'&amarok; en totes les plataformes. Utilitzem les KDElibs i les Qt perquè proporcionen un entorn de desenvolupament excel·lent. A part del &Linux; i BSD, l'&amarok; funciona en el Windows i MacOS, i hi ha instal·ladors disponibles, però per desgràcia no tenim (encara) els recursos per oferir suport total a aquests sistemes operatius. Gairebé tots els nostres desenvolupadors utilitzen sistemes operatius lliures, i aquests tenen prioritat per a nosaltres. No obstant això, donem la benvinguda als desenvolupadors del Windows i OS X disposats a ajudar i millorar l'&amarok; en aquestes plataformes. </para>
+>Ens hem compromès a donar suport a l'&amarok; en totes les plataformes. Utilitzem les KDElibs i les Qt perquè proporcionen un entorn de desenvolupament excel·lent. A part del &Linux; i BSD, l'&amarok; funciona en el Windows i MacOS, i hi ha instal·ladors disponibles, però per desgràcia no tenim (encara) els recursos per a oferir suport total a aquests sistemes operatius. Gairebé tots els nostres desenvolupadors utilitzen sistemes operatius lliures, i aquests tenen prioritat per a nosaltres. No obstant això, donem la benvinguda als desenvolupadors del Windows i OS X disposats a ajudar i millorar l'&amarok; en aquestes plataformes. </para>
 </sect3>
 </sect2>
 <sect2 id="general-usage"
@@ -12001,7 +12001,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><guimenuitem
 >Quant a l'Amarok</guimenuitem
 ></menuchoice
->). No hauríeu d'informar d'errors de versions de l'&amarok; anteriors a la versió estable actual ja que no proporcionem correccions de retroadaptacions.</para
+>). No hauríeu d'informar d'errors de versions de l'&amarok; anteriors a la versió estable actual, ja que no proporcionem correccions de retroadaptacions.</para
 ></listitem>
 <listitem
 ><para
@@ -12033,7 +12033,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 </itemizedlist>
 <para
->Si manca alguna d'aquestes dades l'informe d'error no s'ha completat. També estigueu preparat per respondre preguntes dels desenvolupadors o del triatge d'errors i finalment provar altres opcions. </para>
+>Si manca alguna d'aquestes dades l'informe d'error no s'ha completat. També estigueu preparat per a respondre preguntes dels desenvolupadors o del triatge d'errors i finalment provar altres opcions. </para>
 </sect3>
 </sect2>
 <sect2 id="questions-about-the-playlist"
@@ -12057,7 +12057,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Llistes de reproducció dinàmiques</guilabel
 > o el <guilabel
 >Generador automàtic de llistes de reproducció</guilabel
-> per a omplir la llista de reproducció. També podeu arrossegar fitxers des de qualsevol gestor de fitxers, com el &dolphin;. També podeu fer doble clic a una peça, artista o gènere en les vostres <guilabel
+> per a omplir la llista de reproducció. També podeu arrossegar fitxers des de qualsevol gestor de fitxers, com el &dolphin;. També podeu fer doble clic a una peça, artista o gènere en els vostres <guilabel
 >Orígens de suports</guilabel
 > o sistema de fitxers, o fer clic dret i <guilabel
 >Afegeix a la llista de reproducció</guilabel
@@ -12096,7 +12096,7 @@ ftpProxy=http://username:password@proxyserver:port/
 > </inlinemediaobject
 > a la barra d'eines de la <guilabel
 >Llista de reproducció</guilabel
->. Feu clic a la icona del disc per triar desar al disc dur o a la base de dades. </para>
+>. Feu clic a la icona del disc per a triar desar al disc dur o a la base de dades. </para>
 </sect3>
 </sect2>
 <sect2 id="playback-questions"
@@ -12310,7 +12310,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >aquí</link
 >. </para>
 <para
->També tenim alguns serveis, com gpodder i Pòdcast Directory per ajudar-vos a trobar pòdcasts interessants. Activeu els serveis en el menú <guilabel
+>També tenim alguns serveis, com gpodder i Pòdcast Directory per a ajudar-vos a trobar pòdcasts interessants. Activeu els serveis en el menú <guilabel
 >Arranjament</guilabel
 >: <menuchoice
 ><guimenu
@@ -12339,7 +12339,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >La carpeta no s'ha triat correctament</title
 > 
 <para
->Si trobeu que la major part de la vostra música és reconeguda per l'&amarok;, però algunes carpetes no es recullen correctament, obriu una consola i escriviu </para>
+>Si trobeu que la major part de la música és reconeguda per l'&amarok;, però algunes carpetes no es recullen correctament, obriu una consola i escriviu </para>
 <para
 ><userinput
 >touch <replaceable
@@ -12434,7 +12434,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Puc utilitzar scripts de l'Amarok 1.4 a l'Amarok 2?</title
 > 
 <para
->No. S'ha creat una API nova i potent de creació de scripts, que proporciona millores enormes, però no permet utilitzar els scripts antics. El sistema nou de creació de scripts es basa en el QtScript i reduirà significativament les dependències de l'&amarok;, un problema gros per als usuaris no tècnics i multiplataforma, i reduirà en gran mesura la quantitat de processos externs llançats en temps d'execució. Un altre avantatge és que l'API nova permetrà una integració molt més profunda amb l'&amarok; que l'antic sistema de creació de scripts. <ulink url="http://community.kde.org/Amarok/Development/Script_API"
+>No. S'ha creat una API nova i potent de creació de scripts, que proporciona millores enormes, però no permet utilitzar els scripts antics. El sistema nou de creació de scripts es basa en el QtScript i reduirà significativament les dependències de l'&amarok;, un problema gros per als usuaris no tècnics i multiplataforma, i reduirà en gran manera la quantitat de processos externs llançats en temps d'execució. Un altre avantatge és que l'API nova permetrà una integració molt més profunda amb l'&amarok; que l'antic sistema de creació de scripts. <ulink url="http://community.kde.org/Amarok/Development/Script_API"
 >API de creació de scripts de l'Amarok</ulink
 >. </para>
 </sect3>
@@ -12644,7 +12644,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Accepteu pedaços?</title
 > 
 <para
->És clar! La millor manera d'actuar és fer-nos saber el que planegeu fer abans de treballat-hi perquè puguem debatre-ho, però no us preocupeu; encara no hem rebutjat cap pedaç! La discussió és principalment per ajudar-vos a apedaçar les parts correctes de l'&amarok;. Envieu els pedaços i les col·laboracions codi a git.reviewboard.kde.org. Vegeu també <ulink url="http://blogs.fsfe.org/myriam/2010/09/how-to-submit-patches-for-amarok/"
+>És clar! La millor manera d'actuar és fer-nos saber el que planegeu fer abans de treballar-hi perquè puguem debatre-ho, però no us preocupeu; encara no hem rebutjat cap pedaç! La discussió és principalment per a ajudar-vos a apedaçar les parts correctes de l'&amarok;. Envieu els pedaços i les col·laboracions codi a git.reviewboard.kde.org. Vegeu també <ulink url="http://blogs.fsfe.org/myriam/2010/09/how-to-submit-patches-for-amarok/"
 >Com enviar pedaços a l'&amarok;</ulink
 >. Si teniu una correcció d'errors llavors endavant; això és codi obert després de tot. <inlinemediaobject
 > <imageobject
@@ -13078,7 +13078,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Reprodueix</guilabel
 > / <guilabel
 >Pausa</guilabel
-> i un botó per controlar el volum. També mostra el nom del fitxer multimèdia actual i un control lliscant per a mostrar, a més de canviar, la posició de la reproducció. Més sobre <link linkend="toolbar"
+> i un botó per a controlar el volum. També mostra el nom del fitxer multimèdia actual i un control lliscant per a mostrar, a més de canviar, la posició de la reproducció. Més sobre <link linkend="toolbar"
 >la barra d'eines</link
 >. </para>
 <para>
@@ -13800,7 +13800,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Gestor d'adreces d'interès</title
 > 
 <para
->El gestor d'adreces d'interès permet marcar classes diferents de coses per a recordar-les més endavant. També podeu crear carpetes per organitzar la col·lecció d'adreces d'interès. El quadre de cerca proporciona una manera còmoda de trobar adreces d'interès. El menú contextual ofereix la possibilitat de <guilabel
+>El gestor d'adreces d'interès permet marcar classes diferents de coses per a recordar-les més endavant. També podeu crear carpetes per a organitzar la col·lecció d'adreces d'interès. El quadre de cerca proporciona una manera còmoda de trobar adreces d'interès. El menú contextual ofereix la possibilitat de <guilabel
 >Carregar</guilabel
 > i <guilabel
 >Suprimir</guilabel
