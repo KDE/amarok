@@ -75,6 +75,7 @@
   <summary xml:lang="uk">Потужна програма для відтворення музики, яка надасть вам змогу побачити вашу фонотеку з іншого боку</summary>
   <summary xml:lang="x-test">xxA powerful music player that lets you rediscover your musicxx</summary>
   <summary xml:lang="zh-CN">一款强大到让您重新感悟音乐之美的播放器</summary>
+  <summary xml:lang="zh-TW">讓您重新發現您的音樂的強大音樂播放器</summary>
   <description>
     <p>Amarok is a free, cross-platform, versatile, powerful and feature-rich music player and collection manager.</p>
     <p xml:lang="bg">Amarok е безплатен, междуплатформен, универсален, мощен и богат на функции музикален плейър и мениджър на колекции.</p>
@@ -191,6 +192,7 @@
       <li xml:lang="uk">динамічні списки відтворення на основі різних критеріїв;</li>
       <li xml:lang="x-test">xxDynamic playlists matching different criteriaxx</li>
       <li xml:lang="zh-CN">可匹配不同条件的动态播放列表</li>
+      <li xml:lang="zh-TW">依據不同條件動態產生的播放清單</li>
       <li>Collection managing with rating support</li>
       <li xml:lang="ar">إدارة التّجميعات مع دعم التّقييم</li>
       <li xml:lang="bg">Управление на колекции с поддръжка на рейтинги</li>
@@ -423,6 +425,7 @@
       <li xml:lang="uk">підтримка вирівнювання гучності.</li>
       <li xml:lang="x-test">xxReplay gain supportxx</li>
       <li xml:lang="zh-CN">支持回放增益</li>
+      <li xml:lang="zh-TW">ReplayGain 支援</li>
     </ul>
   </description>
   <url type="homepage">https://amarok.kde.org</url>
