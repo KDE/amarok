@@ -7,32 +7,34 @@
 # Franklin Weng <franklin at goodhorse dot idv dot tw>, 2010, 2011.
 # Franklin Weng <franklin at goodhorse dot idv dot tw>, 2012.
 # pan93412 <pan93412@gmail.com>, 2019, 2020.
+# SPDX-FileCopyrightText: 2023 Kisaragi Hiu <mail@kisaragi-hiu.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2020-04-12 00:45+0800\n"
-"Last-Translator: Yi-Jyun Pan <pan93412@gmail.com>\n"
-"Language-Team: Chinese <zh-l10n@lists.linux.org.tw>\n"
+"PO-Revision-Date: 2023-12-13 18:13+0900\n"
+"Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
+"Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 19.12.3\n"
+"X-Generator: Lokalize 23.08.4\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Kenduest Lee,Jouston Huang,Chao-Hsiung Liao, Franklin Weng"
+msgstr ""
+"Kenduest Lee,Jouston Huang,Chao-Hsiung Liao, Franklin Weng, Kisaragi Hiu"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr ""
 "Kenduest@i18n.linux.org.tw,jouston@housediy.com,pesder.liao@msa.hinet.net, "
-"franklin@goodhorse.idv.tw"
+"franklin@goodhorse.idv.tw, mail@kisaragi-hiu.com"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:3
@@ -51,7 +53,7 @@ msgstr "不分組"
 #: ../data/DefaultPlaylistLayouts.xml:60
 #, kde-format
 msgid "No Grouping (Single Line)"
-msgstr "沒有群組 (單一列)"
+msgstr "不分組 (單一列)"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:77
@@ -108,15 +110,12 @@ msgid "Get data from openDesktop.org to learn more about the team"
 msgstr "從 openDesktop.org 取得資料以瞭解更多有關於此團隊的資訊"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:229
-#, fuzzy, kde-format
-#| msgid ""
-#| "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to "
-#| "report bugs.\n"
+#, kde-format
 msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
 "report bugs.\n"
 msgstr ""
-"請用 <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> 來回報問題。\n"
+"請用 <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> 來回報問題。\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:234
 #: aboutdialog/ExtendedAboutDialog.cpp:240
@@ -3806,13 +3805,9 @@ msgid "Images"
 msgstr "影像"
 
 #: context/applets/albums/package/contents/ui/main.qml:76
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "One word translation used in the collection filter. First played time / "
-#| "access date"
-#| msgid "firstplay"
+#, kde-format
 msgid "Display"
-msgstr "第一次播放"
+msgstr "顯示"
 
 #: context/applets/albums/plugin/AlbumItem.cpp:109
 #: statsyncing/ui/MatchedTracksPage.cpp:378
@@ -3841,46 +3836,44 @@ msgstr "編輯曲目詳細資訊"
 #, kde-format
 msgctxt "The title of the analyzer config dialog"
 msgid "%1 config"
-msgstr ""
+msgstr "%1 設定"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:64
 #, kde-format
 msgid "Bar width:"
-msgstr ""
+msgstr "長條寬度："
 
 #: context/applets/analyzer/package/contents/ui/main.qml:79
 #, kde-format
 msgid "%1 pixel"
 msgid_plural "%1 pixels"
-msgstr[0] ""
+msgstr[0] "%1 像素"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:91
-#, fuzzy, kde-format
-#| msgid "Show Years"
+#, kde-format
 msgid "Show fadebars:"
-msgstr "顯示年份"
+msgstr "顯示淡出長條："
 
 #: context/applets/analyzer/package/contents/ui/main.qml:106
 #, kde-format
 msgid "Bars fall speed:"
-msgstr ""
+msgstr "長條落下速度："
 
 #: context/applets/analyzer/package/contents/ui/main.qml:124
 #, kde-format
 msgid "Frequency range:"
-msgstr ""
+msgstr "頻率範圍："
 
 #: context/applets/analyzer/package/contents/ui/main.qml:142
 #: context/applets/analyzer/package/contents/ui/main.qml:147
 #, kde-format
 msgid "%1 Hz"
-msgstr ""
+msgstr "%1 Hz"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:158
-#, fuzzy, kde-format
-#| msgid "Sample rate:"
+#, kde-format
 msgid "Sample size:"
-msgstr "取樣頻率："
+msgstr "取樣大小："
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:32
 #: playlist/PlaylistModel.cpp:945
@@ -3895,10 +3888,9 @@ msgid "Score"
 msgstr "評分"
 
 #: context/applets/currenttrack/package/contents/ui/StatsItem.qml:52
-#, fuzzy, kde-format
-#| msgid "Last played:"
+#, kde-format
 msgid "Last played"
-msgstr "上一次播放："
+msgstr "上次播放"
 
 #: context/applets/currenttrack/plugin/CurrentEngine.cpp:258
 #: transcoding/TranscodingSelectConfigWidget.cpp:35
@@ -4157,69 +4149,59 @@ msgid "Remove selected"
 msgstr "移除選取的項目"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:46
-#, fuzzy, kde-format
-#| msgid "Lyrics"
+#, kde-format
 msgid "Lyrics config"
-msgstr "歌詞"
+msgstr "歌詞設定"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:57
-#, fuzzy, kde-format
-#| msgid "Font scale:"
+#, kde-format
 msgid "Font size:"
 msgstr "字型大小："
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:73
-#, fuzzy, kde-format
-#| msgid "Alignment: "
+#, kde-format
 msgid "Text alignment:"
-msgstr "對齊："
+msgstr "文字對齊方式："
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
-#, fuzzy, kde-format
-#| msgid "Alignment: "
+#, kde-format
 msgid "Align left"
-msgstr "對齊："
+msgstr "向左對齊"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
-#, fuzzy, kde-format
-#| msgid "Align OSD to"
+#, kde-format
 msgid "Align right"
-msgstr "對齊 OSD 到"
+msgstr "向右對齊"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:80
-#, fuzzy, kde-format
-#| msgid "Alignment: "
+#, kde-format
 msgid "Align center"
-msgstr "對齊："
+msgstr "居中對齊"
 
 #: context/applets/lyrics/package/contents/ui/ConfigDialog.qml:99
-#, fuzzy, kde-format
-#| msgid "Font: "
+#, kde-format
 msgid "Font:"
 msgstr "字型："
 
 #: context/applets/lyrics/package/contents/ui/main.qml:83
-#, fuzzy, kde-format
-#| msgid "Toggle Full Screen"
+#, kde-format
 msgid "Toggle auto scroll"
-msgstr "切換全螢幕"
+msgstr "切換自動捲動"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:90
-#, fuzzy, kde-format
-#| msgid "Reload tabs"
+#, kde-format
 msgid "Reload lyrics"
-msgstr "重新載入樂譜"
+msgstr "重新載入歌詞"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:98
-#, fuzzy, kde-format
-#| msgid "No Images Found"
+#, kde-format
 msgid "No lyrics found"
-msgstr "找不到影像"
+msgstr "找不到歌詞"
 
 #: context/applets/lyrics/package/contents/ui/main.qml:113
 #, kde-format
 msgid "Suggestions: "
-msgstr ""
+msgstr "建議："
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #. i18n: ectx: property (text), widget (QLabel, label_21)
@@ -4802,10 +4784,9 @@ msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>位置：</strong><nl/>%1"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:38
-#, fuzzy, kde-format
-#| msgid "Previous:"
+#, kde-format
 msgid "Previous"
-msgstr "上一首："
+msgstr "上一個"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:46
 #: statsyncing/ui/ChooseProvidersPage.cpp:35
@@ -4904,10 +4885,9 @@ msgid "Choose Language"
 msgstr "選擇語言"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:129
-#, fuzzy, kde-format
-#| msgid "Configure Podcasts..."
+#, kde-format
 msgid "Configure Applets..."
-msgstr "設定 Podcast..."
+msgstr "設定小程式..."
 
 #: context/ContextDock.cpp:27
 #, kde-format
@@ -6891,7 +6871,7 @@ msgstr "長度"
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "bitrate"
-msgstr "位元速率"
+msgstr "位元率"
 
 #: core/meta/support/MetaConstants.cpp:238
 #, kde-format
@@ -7311,6 +7291,11 @@ msgid ""
 "encoder is transparent at 128kbps for most samples tested with artifacts "
 "only appearing in extreme cases."
 msgstr ""
+"位元率 (bitrate) 是指音軌中每秒的資料量。<br>Amarok 所使用的編碼器在固定位元"
+"率時比較能正常運作。<br>VBR（可變位元率）是實驗性的，很可能比 CBR（固定位元"
+"率）的結果還要糟。<br>因此，這個滑條的位元率是已編碼音軌的（蠻準的）估算。"
+"<br>編碼器在 128kbps 對於大部分樣本沒有任何影響，只有在極端情況時才會出現失真"
+"狀況。"
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:48
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:59
@@ -10279,15 +10264,7 @@ msgstr ""
 "(C) 2003-2013, Amarok 開發小組"
 
 #: main.cpp:101
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: %1)"
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
@@ -10298,7 +10275,7 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
+"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
 "\n"
 "問題回報:\n"
 "amarok@kde.org\n"
@@ -13400,9 +13377,7 @@ msgid "composer"
 msgstr "作者"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:91
-#, fuzzy, kde-format
-#| msgid "year"
-#| msgid_plural "years"
+#, kde-format
 msgctxt "Field name"
 msgid "year"
 msgstr "年份"
@@ -13696,10 +13671,9 @@ msgstr ""
 "請檢查您的 KDE 安裝。將離開主控台。"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:78
-#, fuzzy, kde-format
-#| msgid "PIN Code:"
+#, kde-format
 msgid "Code"
-msgstr "PIN 碼："
+msgstr "程式碼"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:79
 #, kde-format
@@ -13707,10 +13681,9 @@ msgid "Console"
 msgstr "主控台"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:80
-#, fuzzy, kde-format
-#| msgid "Debug Output"
+#, kde-format
 msgid "Output"
-msgstr "除錯輸出"
+msgstr "輸出"
 
 #: scripting/scriptconsole/ScriptConsole.cpp:81
 #, kde-format
@@ -14323,14 +14296,7 @@ msgid "Last.fm: The social music revolution"
 msgstr "Last.fm：社交性音樂革命"
 
 #: services/lastfm/LastFmService.cpp:102
-#, fuzzy, kde-format
-#| msgid ""
-#| "Last.fm is a popular online service that provides personal radio stations "
-#| "and music recommendations. A personal listening station is tailored based "
-#| "on your listening habits and provides you with recommendations for new "
-#| "music. It is also possible to play stations with music that is similar to "
-#| "a particular artist as well as listen to streams from people you have "
-#| "added as friends or that Last.fm considers your musical \"neighbors\""
+#, kde-format
 msgid ""
 "Last.fm is a popular online service that provides personal radio stations "
 "and music recommendations. A personal listening station is tailored based on "
@@ -14341,7 +14307,7 @@ msgid ""
 msgstr ""
 "Last.fm 是個受歡迎的線上電台服務，提供個人廣播站台與推薦音樂。個人收聽站會依"
 "您的收聽習慣量身打造，並提供您最新的音樂。它也可以播放與某特定演出者風格相似"
-"的音樂，以及您增為好友的網友提供的串流。"
+"的音樂，以及讓您聆聽您加為好友的人提供的串流。"
 
 #: services/lastfm/LastFmService.cpp:129 services/lastfm/LoveTrackAction.cpp:24
 #, kde-format
@@ -15292,14 +15258,7 @@ msgid "Handles AutoSync for the MP3tunes service in Amarok."
 msgstr "在 Amarok 中處理 MP3tunes 服務的自動同步。"
 
 #: services/mp3tunes/harmonydaemon/main.cpp:40
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "server: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, "
-#| "#amarok.fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org"
+#, kde-format
 msgid ""
 "IRC:\n"
 "server: irc.libera.chat / channels: #amarok, #amarok-de, #amarok-es, #amarok-"
@@ -15309,8 +15268,7 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"伺服器: irc.freenode.net / 頻道: #amarok, #amarok.de, #amarok.es, #amarok."
-"fr\n"
+"伺服器: irc.libera.chat / 頻道: #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
 "\n"
 "問題回報:\n"
 "amarok@kde.org"
