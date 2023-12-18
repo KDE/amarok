@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2023-12-09 09:26\n"
+"PO-Revision-Date: 2023-12-17 11:28\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -8062,7 +8062,7 @@ msgstr "从 amarokcollectionscanner 产生的文件中导入收藏集。"
 #: dialogs/CollectionSetup.cpp:80
 #, kde-format
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
-msgstr "递归扫描文件夹 (首次选中时需要重新执行完全扫描)(&S)"
+msgstr "递归扫描文件夹 (首次选中时需要重新执行完全扫描) (&S)"
 
 #: dialogs/CollectionSetup.cpp:81
 #, kde-format
