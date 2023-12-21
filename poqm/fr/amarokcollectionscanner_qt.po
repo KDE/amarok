@@ -3,7 +3,7 @@
 # Bruno Léon <bruno.leon@nividic.org>, 2009.
 # Sébastien Renard <Sebastien.Renard@NewArch.fr>, 2009.
 # Alain Portal <alain.portal@free.fr>, 2010.
-# xavier <ktranslator31@yahoo.fr>, 2012, 2013.
+# xavier Besnard <xavier.besnard@kde.org>, 2012, 2013.
 # Simon Depiets <sdepiets@gmail.com>, 2018.
 #
 msgid ""
