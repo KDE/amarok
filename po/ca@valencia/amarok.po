@@ -2001,7 +2001,7 @@ msgstr ""
 #: App.cpp:582
 #, kde-format
 msgid "Moving files to trash"
-msgstr "Llençant els fitxers a la paperera"
+msgstr "Llençant els fitxers a dins de la paperera"
 
 #: App.cpp:648
 #, kde-format
@@ -6101,7 +6101,8 @@ msgid ""
 msgid_plural ""
 "Do you really want to move these %1 tracks to the trash? They will be "
 "removed from %2."
-msgstr[0] "Segur que voleu moure esta peça a la paperera? S'eliminarà de %2."
+msgstr[0] ""
+"Segur que voleu moure esta peça cap a dins de la paperera? S'eliminarà de %2."
 msgstr[1] ""
 "Segur que voleu moure estes %1 peces cap a dins de la paperera? S'eliminaran "
 "de %2."
@@ -8609,7 +8610,7 @@ msgstr "<qt>Estos elements es mouran cap a dins de la paperera.</qt>"
 #: dialogs/deletedialog.cpp:87
 #, kde-format
 msgid "&Send to Trash"
-msgstr "&Llença a la paperera"
+msgstr "&Llença a dins de la paperera"
 
 #: dialogs/deletedialog.cpp:93
 #, kde-format
@@ -8656,7 +8657,7 @@ msgstr "Lloc de reserva per al nombre de fitxers, no es troba en la IGU"
 #: dialogs/deletedialogbase.ui:102
 #, kde-format
 msgid "&Delete files instead of moving them to the trash"
-msgstr "Sup&rimix els fitxers en lloc de llençar-los a la paperera"
+msgstr "Sup&rimix els fitxers en lloc de llençar-los a dins de la paperera"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
 #: dialogs/deletedialogbase.ui:105
@@ -8666,7 +8667,7 @@ msgid ""
 "Trash Bin"
 msgstr ""
 "Si se selecciona, els fitxers s'eliminaran definitivament en comptes de "
-"llençar-los a la paperera"
+"llençar-los a dins de la paperera"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
 #: dialogs/deletedialogbase.ui:110
@@ -8679,7 +8680,7 @@ msgid ""
 "reliably undelete deleted files.</p></qt>"
 msgstr ""
 "<qt><p>Si se selecciona esta casella, els fitxers s'<b>eliminaran "
-"definitivament</b> en comptes de llençar-los a la paperera.</p>\n"
+"definitivament</b> en comptes de llençar-los a dins de la paperera.</p>\n"
 "\n"
 "<p><em>Utilitzeu esta opció amb cautela</em>: La majoria dels sistemes de "
 "fitxers són incapaços de recuperar un fitxer suprimit.</p></qt>"
@@ -16856,7 +16857,8 @@ msgstr "Adreces d'interés d'Amarok"
 #: widgets/BreadcrumbItemButton.cpp:276
 #, kde-format
 msgid "Copy Current View Bookmark to Clipboard"
-msgstr "Copia les adreces d'interés de la vista actual al porta-retalls"
+msgstr ""
+"Copia les adreces d'interés de la vista actual a dins del porta-retalls"
 
 #: widgets/FilenameLayoutWidget.cpp:78
 #, kde-format
