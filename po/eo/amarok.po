@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2023-11-23 20:18+0100\n"
+"PO-Revision-Date: 2024-01-03 12:30+0100\n"
 "Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -1620,13 +1620,13 @@ msgstr ""
 #, kde-format
 msgid "Enable/Disable showing moodbar, if available, in the progress slider."
 msgstr ""
-"Ebligi/Malŝalti montri humorbaron, se disponebla, en la progresa glitilo."
+"Ebligi/Malŝalti montri humorbreton, se disponebla, en la progresa glitilo."
 
 #. i18n: ectx: label, entry, group (Moodbar)
 #: amarokconfig.kcfg:618
 #, kde-format
 msgid "The style to use when painting the moodbar"
-msgstr "La stilo por uzi dum pentrado de la humorbaro"
+msgstr "La stilo por uzi dum pentrado de la humorbreto"
 
 #. i18n: ectx: label, entry, group (PlaylistGenerator)
 #: amarokconfig.kcfg:625
@@ -2844,7 +2844,7 @@ msgstr ""
 #, kde-format
 msgctxt "Miscellaneous settings"
 msgid "General"
-msgstr "Ĝeneralo"
+msgstr "Ĝenerala"
 
 #: configdialog/ConfigDialog.cpp:59
 #, kde-format
@@ -3505,7 +3505,7 @@ msgstr "Sinkronigi…"
 #: configdialog/dialogs/PlaybackConfig.ui:17
 #, kde-format
 msgid "General"
-msgstr "Ĝeneralo"
+msgstr "Ĝenerala"
 
 #. i18n: ectx: property (toolTip), widget (QGroupBox, kcfg_OsdEnabled)
 #. i18n: ectx: property (whatsThis), widget (QGroupBox, kcfg_OsdEnabled)
@@ -8709,7 +8709,7 @@ msgstr "kaj"
 #: dialogs/EditFilterDialog.ui:109
 #, kde-format
 msgid "or"
-msgstr "aǔ"
+msgstr "aŭ"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: dialogs/EditFilterDialog.ui:132
@@ -16909,7 +16909,7 @@ msgstr "Trenu enen kaj eksteren erojn de supre."
 #: widgets/TokenWithLayout.cpp:223
 #, kde-format
 msgid "[prefix]"
-msgstr "[Prefikso]"
+msgstr "[prefikso]"
 
 #: widgets/TokenWithLayout.cpp:234
 #, kde-format
