@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2024-01-03 12:30+0100\n"
+"PO-Revision-Date: 2024-01-09 20:15+0100\n"
 "Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -2256,8 +2256,8 @@ msgstr "Konfirmi Forigi"
 #, kde-format
 msgid "Are you sure you want to delete this item?"
 msgid_plural "Are you sure you want to delete these %1 items?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ĉu vi certas, ke vi volas forigi ĉi tiun eron?"
+msgstr[1] "Ĉu vi certas, ke vi volas forigi ĉi tiujn %1 erojn?"
 
 #: browsers/filebrowser/FileView.cpp:578
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
@@ -2270,8 +2270,8 @@ msgstr "Konfirmi Movon al Rubujo"
 #, kde-format
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ĉu vi certas, ke vi volas movi ĉi tiun objekton al rubujo?"
+msgstr[1] "Ĉu vi certas, ke vi volas movi ĉi tiujn %1 erojn al rubujo?"
 
 #: browsers/InfoProxy.cpp:166
 #, kde-format
@@ -2600,8 +2600,8 @@ msgstr "&Eksporti kiel..."
 msgctxt "First part of 'Remove %1 From %2'"
 msgid "a Track"
 msgid_plural "%1 Tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Trako"
+msgstr[1] "%1 Trakoj"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
 #, kde-format
@@ -2614,16 +2614,16 @@ msgstr "Forigi %1 de %2"
 msgctxt "Second part of 'Remove %1 From %2'"
 msgid "1 Playlist"
 msgid_plural "%1 Playlists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 Ludlisto"
+msgstr[1] "%1 Ludlistoj"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:379
 #, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a Track From %2"
 msgid_plural "Remove %1 Tracks From %2"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Forigi Trakon de %2"
+msgstr[1] "Forigi %1 Spurojn de %2"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, kde-format
@@ -2782,8 +2782,8 @@ msgstr "Scan Intervalo..."
 msgctxt "number of podcasts from one source"
 msgid "One Channel"
 msgid_plural "%1 channels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Unu Kanalo"
+msgstr[1] "%1 kanaloj"
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #: browsers/playlistbrowser/PodcastModel.cpp:301
@@ -3372,8 +3372,8 @@ msgstr "Sinkronigi %1"
 #, kde-format
 msgid "(%2one exception%3)"
 msgid_plural "(%2%1 exceptions%3)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%2unu escepto%3)"
+msgstr[1] "(%2%1 esceptoj%3)"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_tagsGroup)
 #: configdialog/dialogs/MetadataConfig.ui:17
@@ -5416,7 +5416,11 @@ msgid_plural ""
 "Failed to process %1 tracks. (more info about these is in the Amarok "
 "debugging log)"
 msgstr[0] ""
+"Malsukcesis prilabori unu trakon. (Pliaj informoj pri ĝi estas en la "
+"protokolo de senararigado de Amarok)"
 msgstr[1] ""
+"Malsukcesis prilabori %1 trakojn. (Pliaj informoj pri ĉi tiuj estas en la "
+"protokolo de senararigo de Amarok)"
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:318
 #, kde-format
@@ -5437,31 +5441,31 @@ msgstr ""
 msgctxt "%2 is collection name"
 msgid "Transferred one track to %2."
 msgid_plural "Transferred %1 tracks to %2."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Transigis unu trakon al %2."
+msgstr[1] "Transigis %1 trakojn al %2."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:227
 #, kde-format
 msgctxt "%2 is collection name"
 msgid "Transcoded one track to %2."
 msgid_plural "Transcoded %1 tracks to %2."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Transkodis unu trakon al %2."
+msgstr[1] "Transkodis %1 trakojn al %2."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:236
 #, kde-format
 msgid "Transfer aborted. Managed to transfer one track."
 msgid_plural "Transfer aborted. Managed to transfer %1 tracks."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Transdono ĉesigita. Sukcesis transdoni unu trakon."
+msgstr[1] "Transdono ĉesigita. Sukcesis translokigi %1 trakojn."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:244
 #, kde-format
 msgctxt "%2 is the 'Transferred 123 tracks to Some collection.' message"
 msgid "%2 One track was already there."
 msgid_plural "%2 %1 tracks were already there."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%2 Unu trako jam estis tie."
+msgstr[1] "%2 %1 trakoj jam estis tie."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
 #, kde-format
@@ -5476,7 +5480,11 @@ msgid ""
 msgid_plural ""
 "%1 tracks successfully transferred, but transfer of some other tracks failed."
 msgstr[0] ""
+"Unu trako sukcese translokiĝis, sed translokigo de iuj aliaj trakoj "
+"malsukcesis."
 msgstr[1] ""
+"%1 trakoj sukcese translokiĝis, sed translokigo de iuj aliaj trakoj "
+"malsukcesis."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:379
 #, kde-format
@@ -5490,7 +5498,9 @@ msgid ""
 msgid_plural ""
 "%1 tracks were not transferred because it would exceed iPod capacity.<br>"
 msgstr[0] ""
+"Unu trako ne estis transdonita ĉar ĝi superus la kapablon de iPod.<br>"
 msgstr[1] ""
+"%1 trakoj ne estis transdonitaj ĉar ĝi superus la kapablon de iPod.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
 #, kde-format
@@ -5508,22 +5518,26 @@ msgid_plural ""
 "%1 tracks were not copied because they wouldn't be playable - they are in "
 "unsupported formats (%2).<br>"
 msgstr[0] ""
+"Unu trako ne estis kopiita ĉar ĝi ne estus ludebla - ĝia %2 formato estas "
+"nesubtenata.<br>"
 msgstr[1] ""
+"%1 trakoj ne estis kopiitaj ĉar ili ne estus ludeblaj - ili estas en "
+"nesubtenataj formatoj (%2).<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
 #, kde-format
 msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kopio/movo/transkodo de unu dosiero malsukcesis.<br>"
+msgstr[1] "Kopio/movo/transkodo de %1 dosieroj malsukcesis.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:414
 #, kde-format
 msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
 "%1 tracks were not transferred due to an internal Amarok error.<br>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Unu trako ne estis transdonita pro interna Amarok-eraro.<br>"
+msgstr[1] "%1 trakoj ne estis translokigitaj pro interna Amarok-eraro.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:417
 #, kde-format
@@ -5545,8 +5559,8 @@ msgstr "Erarkaŭzoj: %1<br>"
 #, kde-format
 msgid "Removing one track from iPod"
 msgid_plural "Removing %1 tracks from iPod"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Forigante unu trakon de iPod"
+msgstr[1] "Forigante %1 trakojn de iPod"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:57
 #, kde-format
@@ -5848,8 +5862,8 @@ msgstr "Transdono de Trakoj al Aparato"
 #, kde-format
 msgid "%1 track failed to copy to the device"
 msgid_plural "%1 tracks failed to copy to the device"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 trako malsukcesis kopii al la aparato"
+msgstr[1] "%1 trakoj ne sukcesis kopii al la aparato"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:561
 #, kde-format
@@ -5879,8 +5893,8 @@ msgstr "%1 trakoj jam estas forigitaj de la aparato."
 #, kde-format
 msgid "Removing Track from Device"
 msgid_plural "Removing Tracks from Device"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Forigante Trakon de Aparato"
+msgstr[1] "Forigante Spurojn de Aparato"
 
 #: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:241
 #, kde-format
@@ -5964,7 +5978,11 @@ msgid_plural ""
 "Do you really want to delete these %1 tracks? They will be removed from %2 "
 "and from underlying storage medium."
 msgstr[0] ""
+"Ĉu vi vere volas forigi ĉi tiun trakon? Ĝi estos forigita de %2 kaj de suba "
+"konserva medio."
 msgstr[1] ""
+"Ĉu vi vere volas forigi ĉi tiujn %1 trakojn? Ili estos forigitaj de %2 kaj "
+"de suba konserva medio."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:49
 #, kde-format
@@ -5976,7 +5994,10 @@ msgid_plural ""
 "Do you really want to move these %1 tracks to the trash? They will be "
 "removed from %2."
 msgstr[0] ""
+"Ĉu vi vere volas movi ĉi tiun trakon al la rubujo? Ĝi estos forigita de %2."
 msgstr[1] ""
+"Ĉu vi vere volas movi ĉi tiujn %1 spurojn al la rubujo? Ili estos forigitaj "
+"de %2."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:63
 #, kde-format
@@ -5988,7 +6009,11 @@ msgid_plural ""
 "Do you really want to move these %1 tracks? They will be renamed and the "
 "originals deleted."
 msgstr[0] ""
+"Ĉu vi vere volas movi ĉi tiun trakon? Ĝi estos renomita kaj la originalo "
+"forigita."
 msgstr[1] ""
+"Ĉu vi vere volas movi ĉi tiujn %1 spurojn? Ili estos renomitaj kaj la "
+"originaloj forigitaj."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:67
 #, kde-format
@@ -6012,7 +6037,11 @@ msgid_plural ""
 "There was a problem and %1 tracks could not be removed. Make sure the "
 "directory is writable."
 msgstr[0] ""
+"Estis problemo kaj ĉi tiu trako ne povis esti forigita. Certiĝu, ke la "
+"dosierujo estas skribebla."
 msgstr[1] ""
+"Estis problemo kaj %1 trakoj ne povis esti forigitaj. Certiĝu, ke la "
+"dosierujo estas skribebla."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:80
 #, kde-format
@@ -6098,8 +6127,8 @@ msgstr "&Forigi Epizodon"
 #, kde-format
 msgid "Are you sure you want to delete this episode?"
 msgid_plural "Are you sure you want to delete these %1 episodes?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ĉu vi certas, ke vi volas forigi ĉi tiun epizodon?"
+msgstr[1] "Ĉu vi certas, ke vi volas forigi ĉi tiujn %1 epizodojn?"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:278
 #, kde-format
@@ -6143,8 +6172,8 @@ msgstr "Agordu USB-Aparaton pri Amasa Konservado"
 #, kde-format
 msgid "Removing one track from %2"
 msgid_plural "Removing %1 tracks from %2"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Forigante unu trakon de %2"
+msgstr[1] "Forigante %1 trakojn de %2"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, UmsConfiguration)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:14
@@ -14445,8 +14474,8 @@ msgctxt ""
 "albums from 5 artists."
 msgid "Jamendo.com database update complete. Added 1 track on "
 msgid_plural "Jamendo.com database update complete. Added %1 tracks on "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Jamendo.com datumbaza ĝisdatigo finiĝis. Aldonita 1 trako plu"
+msgstr[1] "Jamendo.com datumbaza ĝisdatigo finiĝis. Aldonita %1 trakoj"
 
 #: services/jamendo/JamendoXmlParser.cpp:172
 #, kde-format
@@ -14455,8 +14484,8 @@ msgctxt ""
 "albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 albumo de"
+msgstr[1] "%1 albumoj de"
 
 #: services/jamendo/JamendoXmlParser.cpp:173
 #, kde-format
@@ -14465,8 +14494,8 @@ msgctxt ""
 "albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 artisto."
+msgstr[1] "%1 artistoj."
 
 #: services/lastfm/biases/LastFmBias.cpp:45
 #, kde-format
@@ -15591,7 +15620,11 @@ msgid "Magnatune.com database update complete. Database contains 1 track on "
 msgid_plural ""
 "Magnatune.com database update complete. Database contains %1 tracks on "
 msgstr[0] ""
+"Ĝisdatigo de la datumbazo de Magnatune.com finiĝis. Datumbazo enhavas 1 "
+"trakon"
 msgstr[1] ""
+"Ĝisdatigo de la datumbazo de Magnatune.com finiĝis. Datumaro enhavas %1 "
+"trakojn"
 
 #: services/magnatune/MagnatuneXmlParser.cpp:81
 #, kde-format
@@ -15600,8 +15633,8 @@ msgctxt ""
 "tracks on 4 albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 albumo de"
+msgstr[1] "%1 albumoj de"
 
 #: services/magnatune/MagnatuneXmlParser.cpp:83
 #, kde-format
@@ -15610,8 +15643,8 @@ msgctxt ""
 "tracks on 4 albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 artisto."
+msgstr[1] "%1 artistoj."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:36
 #, kde-format
@@ -15980,7 +16013,11 @@ msgid "Played %2 times of which one play is recent and unique to this source"
 msgid_plural ""
 "Played %2 times of which %1 plays are recent and unique to this source"
 msgstr[0] ""
+"Ludita %2 fojojn el kiuj unu teatraĵo estas lastatempa kaj unika al ĉi tiu "
+"fonto"
 msgstr[1] ""
+"Ludita %2 fojojn el kiuj %1 ludoj estas lastatempaj kaj unikaj al ĉi tiu "
+"fonto"
 
 #: statsyncing/models/CommonModel.cpp:189
 #, kde-format
@@ -16027,37 +16064,39 @@ msgstr "Sinkronigante Trakstatistikojn"
 msgctxt "%2 is a list of collection names"
 msgid "Synchronization of %2 done. <b>One</b> track was updated."
 msgid_plural "Synchronization of %2 done. <b>%1</b> tracks were updated."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sinkronigo de %2 farita. <b>Unu</b> trako estis ĝisdatigita."
+msgstr[1] "Sinkronigo de %2 farita. <b>%1</b> spuroj estis ĝisdatigitaj."
 
 #: statsyncing/Process.cpp:273
 #, kde-format
 msgid "<b>One</b> track was queued for scrobbling to %2."
 msgid_plural "<b>%1</b> tracks were queued for scrobbling to %2."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<b>Unu</b> trako estis vicigita por skrapi al %2."
+msgstr[1] "<b>%1</b> spuroj estis envicigitaj por skrapi al %2."
 
 #: statsyncing/Process.cpp:280
 #, kde-format
 msgid "<b>One</b> track's played time was too short to be scrobbled."
 msgid_plural "<b>%1</b> tracks' played time was too short to be scrobbled."
 msgstr[0] ""
+"La ludata tempo de <b>Unu</b> trako estis tro mallonga por esti skroblata."
 msgstr[1] ""
+"La ludata tempo de <b>%1</b> trakoj estis tro mallonga por esti scrobbled."
 
 #: statsyncing/Process.cpp:284
 #, kde-format
 msgid "<b>One</b> track had insufficient metadata to be scrobbled."
 msgid_plural "<b>%1</b> tracks had insufficient metadata to be scrobbled."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<b>Unu</b> trako havis nesufiĉajn metadatenojn por esti skroblata."
+msgstr[1] "<b>%1</b> trakoj havis nesufiĉajn metadatenojn por esti skroblataj."
 
 #: statsyncing/Process.cpp:288
 #, kde-format
 msgid "<b>One</b> track was reported to have been played in the future."
 msgid_plural ""
 "<b>%1</b> tracks were reported to have been played in the future."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<b>Unu</b> trako laŭdire estis ludita estonte."
+msgstr[1] "<b>%1</b> trakoj laŭdire estis luditaj estonte."
 
 #: statsyncing/Process.cpp:292
 #, kde-format
@@ -16065,7 +16104,11 @@ msgid "<b>One</b> track was last played in too distant past to be scrobbled."
 msgid_plural ""
 "<b>%1</b> tracks were last played in too distant past to be scrobbled."
 msgstr[0] ""
+"<b>Unu</b> trako laste estis ludita en tro malproksima pasinteco por esti "
+"skroblata."
 msgstr[1] ""
+"<b>%1</b> trakoj estis laste luditaj en tro malproksima pasinteco por esti "
+"scrobbled."
 
 #: statsyncing/Process.cpp:296
 #, kde-format
@@ -16073,7 +16116,9 @@ msgid "Scrobbling of <b>one</b> track was skipped as configured by the user."
 msgid_plural ""
 "Scrobbling of <b>%1</b> tracks was skipped as configured by the user."
 msgstr[0] ""
+"Scrobbling de <b>unu</b> trako estis preterlasita kiel agordita de la uzanto."
 msgstr[1] ""
+"Scrobbling de <b>%1</b> spuroj estis preterlasita kiel agordita de la uzanto."
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:33
 #: statsyncing/ui/MatchedTracksPage.cpp:135
@@ -16246,8 +16291,8 @@ msgstr[1] "<b>%1</b> ludadoj"
 msgctxt "%2 is the 'X plays message above'"
 msgid "%2 of <b>one</b> track will be scrobbled to %3."
 msgid_plural "%2 of <b>%1</b> tracks will be scrobbled to %3."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%2 el <b>unu</b> trako estos scrobbled al %3."
+msgstr[1] "%2 el <b>%1</b> trakoj estos scrobbled al %3."
 
 #: statsyncing/ui/MatchedTracksPage.cpp:383
 #, kde-format
