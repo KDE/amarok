@@ -10411,7 +10411,7 @@ msgstr "Valoració"
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
-"S'han trobat massa errors en la llista de reproducció. S'ha parat la "
+"S'han trobat massa errors en la llista de reproducció. Es para la "
 "reproducció."
 
 #: EngineController.cpp:1299
