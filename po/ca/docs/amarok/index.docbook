@@ -699,7 +699,7 @@
 >extreure</emphasis
 > (copiar les peces dels CD a la col·lecció). Simplement introduïu un CD, i feu clic amb el botó dret sobre el bàner del dispositiu CD en el <guilabel
 >Navegador de contingut</guilabel
-> per reproduir, o copiar a la col·lecció, que arrencarà i <emphasis
+> per a reproduir, o copiar a la col·lecció, que arrencarà i <emphasis
 >etiquetarà</emphasis
 > les peces (vegeu la imatge de sota). Si copieu música d'un CD d'àudio a la vostra <guilabel
 >Col·lecció local</guilabel
@@ -1926,7 +1926,7 @@
 <para
 >Aquesta és una manera de navegar en una estructura jeràrquica de fitxers; a l'&amarok; prop de la part superior de la subfinestra Orígens de suports. A partir del nivell de la carpeta d'inici, mostra com de profund s'ha navegat en el sistema de fitxers. Quan s'hagi anat a un lloc en particular en el sistema de fitxers, es veuran totes les carpetes a un nivell superior. A l'&amarok; els enllaços <guilabel
 >&gt;</guilabel
-> entre els nivells de carpeta us permeten esbrinar quines carpetes alternatives estan disponibles en un nivell particular. Els fils d'Ariadna són un mecanisme eficient per navegar per tot el sistema de fitxers de l'ordinador. </para>
+> entre els nivells de carpeta us permeten esbrinar quines carpetes alternatives estan disponibles en un nivell particular. Els fils d'Ariadna són un mecanisme eficient per a navegar per tot el sistema de fitxers de l'ordinador. </para>
 </sect2>
 <sect2 id="collection"
 ><title
@@ -6655,7 +6655,7 @@
 >Diàleg d'edició de filtre</title
 > 
 <para
->Si preferiu construir les vostres cerques de forma més programàtica, arrossegueu les icones pels termes de cerca que vulgueu, i arrossegueu per canviar l'ordre dels termes de cerca. Podeu cercar per: <guilabel
+>Si preferiu construir les vostres cerques de forma més programàtica, arrossegueu les icones pels termes de cerca que vulgueu, i arrossegueu per a canviar l'ordre dels termes de cerca. Podeu cercar per: <guilabel
 >Text simple</guilabel
 >, <guilabel
 >Títol</guilabel
@@ -7038,7 +7038,7 @@
 >Barra de testimoni</guilabel
 >, que permet codificar el format de nom dels fitxers multimèdia. Activeu-ho prement <guilabel
 >Avançat...</guilabel
-> al menú de la interfície. Per canviar feu clic a <guilabel
+> al menú de la interfície. Per a canviar feu clic a <guilabel
 >Bàsic...</guilabel
 >. </para>
 <para
@@ -8159,7 +8159,7 @@
 <para
 >Amb el <guilabel
 >Gestor de caràtules</guilabel
->, la navegació per les caràtules és fàcil. Podeu veure les caràtules de qualsevol artista seleccionant de la llista a l'esquerra, o utilitzar el quadre de cerca per trobar l'àlbum correcte. A la barra d'estat, es pot veure quantes caràtules s'enumeren actualment i quants àlbums falten caràtules. També podeu establir el <guilabel
+>, la navegació per les caràtules és fàcil. Podeu veure les caràtules de qualsevol artista seleccionant de la llista a l'esquerra, o utilitzar el quadre de cerca per a trobar l'àlbum correcte. A la barra d'estat, es pot veure quantes caràtules s'enumeren actualment i quants àlbums falten caràtules. També podeu establir el <guilabel
 >Gestor de caràtules</guilabel
 > per a mostrar només àlbums amb caràtules o sense. En fer clic dret sobre la caràtula de portada i seleccionar <guilabel
 >Mostra la caràtula</guilabel
@@ -8234,7 +8234,7 @@
 <para
 >L'<emphasis
 >Editor d'etiquetes</emphasis
-> integrat permet mostrar i canviar les metadades dels fitxers de música. Per obrir l'editor feu clic dret en una o més cançons, àlbums o gèneres seleccionats, tant en la vostra col·lecció com en la vostra llista de reproducció, feu clic a <guilabel
+> integrat permet mostrar i canviar les metadades dels fitxers de música. Per a obrir l'editor feu clic dret en una o més cançons, àlbums o gèneres seleccionats, tant en la vostra col·lecció com en la vostra llista de reproducció, feu clic a <guilabel
 >Edita els detalls de la peça</guilabel
 > i trieu la pestanya <guilabel
 >Etiquetes</guilabel
@@ -8929,7 +8929,7 @@
 <para
 >El <guilabel
 >Gestor de scripts</guilabel
-> conté les opcions necessàries per ampliar la funcionalitat de l'&amarok; a través de scripts personalitzats. S'arriba des del menú <guilabel
+> conté les opcions necessàries per a ampliar la funcionalitat de l'&amarok; a través de scripts personalitzats. S'arriba des del menú <guilabel
 >Arranjament</guilabel
 >, <menuchoice
 ><guimenu
@@ -9078,7 +9078,7 @@
 ><guimenuitem
 >Exporta la llista de reproducció com a...</guimenuitem
 ></menuchoice
-> des de la barra de menús superior. Des del diàleg d'obertura de desat, es pot canviar el nom, la ubicació i el tipus de la llista de reproducció. Després feu clic a <guilabel
+> des de la barra de menús superior. Des del diàleg d'obertura de desament, es pot canviar el nom, la ubicació i el tipus de la llista de reproducció. Després feu clic a <guilabel
 >Desa</guilabel
 >. Recordeu, els fitxers de llista de reproducció no contenen cap dada musical. Si voleu escoltar el contingut de la llista de reproducció d'un altre ordinador, cal portar la música a menys que aquest ordinador ja tingui les peces. </para>
 </sect3>
@@ -9748,7 +9748,7 @@
 >Peça que segueix immediatament a l'anterior a l'àlbum</guilabel
 > s'utilitza en l'exemple <guilabel
 >Reproducció d'àlbum</guilabel
-> per assegurar que els àlbums sencers es reprodueixin en ordre.</para>
+> per a assegurar que els àlbums sencers es reprodueixin en ordre.</para>
      </listitem>
   </varlistentry>
   <varlistentry
@@ -12025,7 +12025,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ></listitem>
 <listitem
 ><para
->Si l'error és reproduïble. No informeu d'errors que no podeu reproduir ja que són gairebé impossibles de corregir.</para
+>Si l'error és reproduïble. No informeu d'errors que no podeu reproduir, ja que són gairebé impossibles de corregir.</para
 ></listitem>
 <listitem
 ><para
@@ -12603,7 +12603,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Si això passa haureu de comprovar quins scripts heu instal·lat i quins serveis d'Internet s'estan executant, perquè alguns d'ells poden alentir l'inici. A més, si teniu seqüències a la llista de reproducció quan obriu l'&amarok;, l'inici pot trigar una mica més. El mateix passa si teniu un nombre gran de peces a la llista de reproducció (300 o més). </para>
 <para
->D'altra banda, si no utilitzeu KDE, sinó un entorn d'escriptori diferent, el temps d'inici es pot augmentar lleugerament perquè hi ha més biblioteques per carregar. </para>
+>D'altra banda, si no utilitzeu KDE, sinó un entorn d'escriptori diferent, el temps d'inici es pot augmentar lleugerament perquè hi ha més biblioteques a carregar. </para>
 </sect3>
 </sect2>
 <sect2 id="development-questions"
@@ -12873,7 +12873,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Menú de l'Amarok</title
 > 
 <para
->Algunes de les accions habituals a l'&amarok; són aquí, principalment per controlar la reproducció multimèdia. </para>
+>Algunes de les accions habituals a l'&amarok; són aquí, principalment per a controlar la reproducció multimèdia. </para>
 </sect2>
 <sect2 id="contents17"
 ><title
@@ -13066,7 +13066,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >Canviar la barra d'eines de l'Amarok</title
 > 
 <para
->També hi ha dos botons d'opció en aquest menú, que s'utilitzen per triar quina <emphasis
+>També hi ha dos botons d'opció en aquest menú, que s'utilitzen per a triar quina <emphasis
 >Barra d'eines</emphasis
 > farà servir l'&amarok;. La <emphasis
 >barra d'eines principal</emphasis
