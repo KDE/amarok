@@ -2314,7 +2314,7 @@
 >Serveis d'Internet</emphasis
 > que heu activat. Aquí, podeu navegar pels llistats d'emissores de ràdio i pòdcasts; escoltar-los i subscriure's, interaccionar amb el vostre compte de <ulink url="http://www.last.fm"
 >Last.fm</ulink
->, comprar música de botigues en línia com la nostra botiga nova de mp3 d'Amazon, <ulink url="http://www.magnatune.com/"
+>, comprar música de botigues en línia com la nostra botiga nova d'mp3 d'Amazon, <ulink url="http://www.magnatune.com/"
 >Magnatune</ulink
 > i descarregar música d'artistes independents de <ulink url="http://www.jamendo.com/"
 >Jamendo</ulink
@@ -5433,7 +5433,7 @@
     </entry>
     <entry>
     <para
->Un caseller personal de mp3. Vegeu també <ulink url="http://www.mp3tunes.com/cb/about/"
+>Un caseller personal d'mp3. Vegeu també <ulink url="http://www.mp3tunes.com/cb/about/"
 >mp3tunes.com</ulink
 ></para>
     </entry>
@@ -11737,7 +11737,7 @@ ftpProxy=http://username:password@proxyserver:port/
 >L'Amarok salta sobre les peces, o sembla que les reprodueix sense so</title
 > 
 <para
->Si els fitxers que intenteu reproduir estan en format mp3, consulteu les instruccions per a permetre el funcionament de mp3 a la vostra distribució, <link linkend="what-media-types-does-amarok-support"
+>Si els fitxers que intenteu reproduir estan en format mp3, consulteu les instruccions per a permetre el funcionament d'mp3 a la vostra distribució, <link linkend="what-media-types-does-amarok-support"
 >aquí</link
 >. Tingueu en compte que una peça de programari capaç de reproduir mp3 al vostre sistema no significa necessàriament que l'&amarok; hagi instal·lat els còdecs requerits. </para>
 </sect3>
