@@ -1,18 +1,18 @@
 # Translation of amarok.po to Catalan
-# Copyright (C) 2005-2023 This_file_is_part_of_KDE
+# Copyright (C) 2005-2024 This_file_is_part_of_KDE
 #
 # SPDX-FileCopyrightText: 2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Antoni Bella Pérez <antonibella5@yahoo.com>
 # Pau Capdevila Pujol <pau.capdevila@estudiant.upc.edu>, 2005.
 # Pau Rul·lan Ferragut <paurullan@bulma.net>, 2005.
 # Pau Tallada Crespí <pau_tallada@telefonica.net>, 2006, 2007.
-# Josep M. Ferrer <txemaq@gmail.com>, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023.
+# Josep M. Ferrer <txemaq@gmail.com>, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024.
 # Joan Maspons <joanmaspons@gmail.com>, 2009, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2023-12-18 12:17+0100\n"
+"PO-Revision-Date: 2024-01-28 18:26+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -7759,7 +7759,7 @@ msgstr ""
 "general millor i fitxers més petits que usant una taxa de bits constant "
 "durant tota la peça.<br>Per això la mesura de taxa de bits d'aquest control "
 "lliscant és només una estimació de la mitjana de la taxa de bits de la peça "
-"codificada.<br><b>160 kb/s</b> és una bona opció per escoltar música en un "
+"codificada.<br><b>160 kb/s</b> és una bona opció per a escoltar música en un "
 "reproductor portàtil.<br/>Valors per sota de <b>120 kb/s</b> poden ser "
 "insatisfactoris per a la música i valors per sobre de <b>205 kb/s</b> són "
 "probablement excessius."
@@ -7866,12 +7866,12 @@ msgstr ""
 "taxes de bits més altes que els menys complexos. Aquesta aproximació dona "
 "una qualitat general millor i fitxers més petits que usant una taxa de bits "
 "constant durant tota la peça.<br> El codificador Vorbis usa un «paràmetre -"
-"q» de valoració de la qualitat entre -1 i 10 per definir un cert nivell de "
+"q» de valoració de la qualitat entre -1 i 10 per a definir un cert nivell de "
 "qualitat esperat. La mesura de la taxa de bits d'aquest control lliscant és "
 "només una estimació aproximada (proporcionada per Vorbis) de la mitjana de "
 "la taxa de bits de la peça codificada donat un valor q. De fet, amb versions "
 "del Vorbis més noves i eficients, la taxa de bits és fins i tot més baixa."
-"<br><b>-q5</b> és una bona opció per escoltar música en un reproductor "
+"<br><b>-q5</b> és una bona opció per a escoltar música en un reproductor "
 "portàtil.<br/>Valors per sota de <b>-q3</b> poden ser insatisfactoris per a "
 "la música i valors per sobre de <b>-q8</b> són probablement excessius."
 
@@ -7920,7 +7920,7 @@ msgstr ""
 "Windows_Media_Audio#Windows_Media_Audio> taxa de bits constant (CBR)</a>."
 "<br>Per això la mesura de la taxa de bits d'aquest control lliscant és una "
 "estimació força acurada de la taxa de bits de la peça codificada.<br><b>136 "
-"kb/s</b> és una bona opció per escoltar música en un reproductor portàtil."
+"kb/s</b> és una bona opció per a escoltar música en un reproductor portàtil."
 "<br/>Valors per sota de <b>112 kb/s</b> poden ser insatisfactoris per a la "
 "música i valors per sobre de <b>182 kb/s</b> són probablement excessius."
 
