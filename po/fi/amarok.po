@@ -8,7 +8,7 @@
 # Ville-Pekka Vainio <vpivaini@cs.helsinki.fi>, 2007.
 # Mikko Piippo <piippo@cc.helsinki.fi>, 2007.
 # Mikael Lammentausta <mikael.lammentausta+kdetrans@gmail.com>, 2009.
-# Tommi Nieminen <translator@legisign.org>, 2009, 2010, 2011, 2012, 2013, 2014, 2019, 2020, 2021, 2022.
+# Tommi Nieminen <translator@legisign.org>, 2009, 2010, 2011, 2012, 2013, 2014, 2019, 2020, 2021, 2022, 2024.
 # Lasse Liehu <lasse.liehu@gmail.com>, 2011, 2012, 2013, 2014, 2015, 2016.
 # Jiri Grönroos <jiri.gronroos+kde@iki.fi>, 2012.
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2022-07-29 11:26+0300\n"
+"PO-Revision-Date: 2024-01-29 17:40+0200\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-POT-Import-Date: 2013-01-13 20:43:14+0000\n"
-"X-Generator: Lokalize 20.12.0\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1950,7 +1950,7 @@ msgstr "Älä väritä virheenpaikannustulostetta."
 #: App.cpp:377
 #, kde-format
 msgid "Allow running multiple Amarok instances"
-msgstr "Salli rinnakkaiset Amarok-instanssit"
+msgstr "Salli useampi käynnissä oleva Amarok-ilmentymä"
 
 #: App.cpp:378
 #, kde-format
