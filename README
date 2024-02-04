@@ -52,10 +52,6 @@ Required
     * TagLib 1.7 (or newer)
       (Metadata tagging library)
 
-    * TagLib Extras 1.0.1 (or newer)
-      (Support for metadata reading of additional file types)
-      svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
-
     * MySQL 5.0 (or newer) / MariaDB (external database support) or MariaDB
       Embedded (In-process database support)
 
@@ -64,6 +60,10 @@ Optional
     * Taglib 1.9 for support of Opus files
       http://taglib.org/
       https://github.com/taglib/taglib
+
+    * TagLib Extras 1.0.1 (or newer)
+      (Support for metadata reading of additional file types)
+      svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
 
     * iPod support requires:
       * libgpod 0.8.2 (or newer)
