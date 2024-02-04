@@ -467,7 +467,7 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
             }
         }
         for( TagLib::StringList::ConstIterator iter = toRemove.begin(); iter != toRemove.end(); ++iter )
-            comment->removeField( *iter );
+            comment->removeFields( *iter );
     }
     if( newUid || ( nothingfound && !m_delete ) )
     {
@@ -611,10 +611,10 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
     if( m_verbose )
         m_textStream << tr( "INFO: File is a MP4 file, opening..." ) << Qt::endl;
 
-    TagLib::MP4::ItemListMap &itemsMap = file->tag()->itemListMap();
+    TagLib::MP4::ItemMap itemsMap = file->tag()->itemMap();
     if( !itemsMap.isEmpty() )
     {
-        for( TagLib::MP4::ItemListMap::Iterator it = itemsMap.begin(); it != itemsMap.end(); ++it )
+        for( TagLib::MP4::ItemMap::Iterator it = itemsMap.begin(); it != itemsMap.end(); ++it )
         {
             TagLib::String key = it->first;
             const QString qkey = TStringToQString( key ).toUpper();

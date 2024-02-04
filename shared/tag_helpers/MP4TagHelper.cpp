@@ -53,8 +53,8 @@ MP4TagHelper::tags() const
 {
     Meta::FieldHash data = TagHelper::tags();
 
-    TagLib::MP4::ItemListMap map = m_tag->itemListMap();
-    for( TagLib::MP4::ItemListMap::ConstIterator it = map.begin(); it != map.end(); ++it )
+    TagLib::MP4::ItemMap map = m_tag->itemMap();
+    for( TagLib::MP4::ItemMap::ConstIterator it = map.begin(); it != map.end(); ++it )
     {
         qint64 field;
         QString value = TStringToQString( it->second.toStringList().toString( '\n' ) );
@@ -106,21 +106,21 @@ MP4TagHelper::setTags( const Meta::FieldHash &changes )
         QVariant value = changes.value( key );
         TagLib::String field = fieldName( key );
 
-        if( !field.isNull() && !field.isEmpty() )
+        if( !field.isEmpty() )
         {
             // http://gitorious.org/~jefferai/xdg-specs/jefferais-xdg-specs/blobs/mediaspecs/specifications/FMPSpecs/specification.txt sais that mp4 tags should be saved as strings
             if( key == Meta::valHasCover )
                 continue;
             else if( key == Meta::valRating )
-                m_tag->itemListMap()[field] = TagLib::StringList( Qt4QStringToTString( QString::number( value.toFloat() / 10.0 ) ) );
+                m_tag->setItem(field, TagLib::StringList( Qt4QStringToTString( QString::number( value.toFloat() / 10.0 ) ) ));
             else if( key == Meta::valScore )
-                m_tag->itemListMap()[field] = TagLib::StringList( Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) ) );
+                m_tag->setItem(field, TagLib::StringList( Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) ) ));
             else if( key == Meta::valBpm || key == Meta::valDiscNr )
-                m_tag->itemListMap()[field] = TagLib::MP4::Item( value.toInt(), 0 );
+                m_tag->setItem(field, TagLib::MP4::Item( value.toInt(), 0 ));
             else if( key == Meta::valCompilation )
-                m_tag->itemListMap()[field] = TagLib::MP4::Item( value.toBool() );
+                m_tag->setItem(field, TagLib::MP4::Item( value.toBool() ));
             else
-                m_tag->itemListMap()[field] = TagLib::StringList( Qt4QStringToTString( value.toString() ) );
+                m_tag->setItem(field, TagLib::StringList( Qt4QStringToTString( value.toString() ) ));
 
             modified = true;
         }
@@ -130,7 +130,7 @@ MP4TagHelper::setTags( const Meta::FieldHash &changes )
             if( uidPair.first == UIDInvalid )
                 continue;
 
-            m_tag->itemListMap()[uidFieldName( uidPair.first )] = TagLib::StringList( Qt4QStringToTString( uidPair.second ) );
+            m_tag->setItem(uidFieldName( uidPair.first ), TagLib::StringList( Qt4QStringToTString( uidPair.second ) ));
             modified = true;
         }
     }
@@ -141,9 +141,9 @@ MP4TagHelper::setTags( const Meta::FieldHash &changes )
 bool
 MP4TagHelper::hasEmbeddedCover() const
 {
-    TagLib::MP4::ItemListMap map = m_tag->itemListMap();
+    TagLib::MP4::ItemMap map = m_tag->itemMap();
     TagLib::String name = fieldName( Meta::valHasCover );
-    for( TagLib::MP4::ItemListMap::ConstIterator it = map.begin(); it != map.end(); ++it )
+    for( TagLib::MP4::ItemMap::ConstIterator it = map.begin(); it != map.end(); ++it )
     {
         if( it->first == name )
         {
@@ -162,9 +162,9 @@ MP4TagHelper::hasEmbeddedCover() const
 QImage
 MP4TagHelper::embeddedCover() const
 {
-    TagLib::MP4::ItemListMap map = m_tag->itemListMap();
+    TagLib::MP4::ItemMap map = m_tag->itemMap();
     TagLib::String name = fieldName( Meta::valHasCover );
-    for( TagLib::MP4::ItemListMap::ConstIterator it = map.begin(); it != map.end(); ++it )
+    for( TagLib::MP4::ItemMap::ConstIterator it = map.begin(); it != map.end(); ++it )
     {
         if( it->first == name )
         {
@@ -200,7 +200,7 @@ MP4TagHelper::setEmbeddedCover( const QImage &cover )
 
     covers.append( TagLib::MP4::CoverArt( TagLib::MP4::CoverArt::JPEG, TagLib::ByteVector( bytes.data(), bytes.count() ) ) );
 
-    m_tag->itemListMap()[fieldName( Meta::valHasCover )] = TagLib::MP4::Item( covers );
+    m_tag->setItem(fieldName( Meta::valHasCover ), TagLib::MP4::Item( covers ));
 
     return true;
 }

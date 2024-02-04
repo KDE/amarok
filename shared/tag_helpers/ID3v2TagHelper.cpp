@@ -187,7 +187,7 @@ ID3v2TagHelper::setTags( const Meta::FieldHash &changes )
         QVariant value = changes.value( key );
         TagLib::ByteVector field( fieldName( key ).toCString() );
 
-        if( !field.isNull() && !field.isEmpty() )
+        if( !field.isEmpty() )
         {
             if( key == Meta::valHasCover )
                 continue;

@@ -151,7 +151,7 @@ VorbisCommentTagHelper::setTags( const Meta::FieldHash &changes )
         QVariant value = changes.value( key );
         TagLib::String field = fieldName( key );
 
-        if( !field.isNull() && !field.isEmpty() )
+        if( !field.isEmpty() )
         {
             if( key == Meta::valHasCover )
                 continue;

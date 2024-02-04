@@ -331,7 +331,7 @@ Meta::Tag::selectHelper( const TagLib::FileRef &fileref, bool forceCreation )
     else if( TagLib::RIFF::WAV::File *file = dynamic_cast< TagLib::RIFF::WAV::File * >( fileref.file() ) )
     {
         if( file->tag() )
-            tagHelper = new ID3v2TagHelper( fileref.tag(), file->tag(), Amarok::Wav );
+            tagHelper = new ID3v2TagHelper( fileref.tag(), file->ID3v2Tag(), Amarok::Wav );
     }
     else if( TagLib::ASF::File *file = dynamic_cast< TagLib::ASF::File * >( fileref.file() ) )
     {
