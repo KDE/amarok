@@ -5,7 +5,7 @@
 # Freek de Kruijf <f.de.kruijf@hetnet.nl>, 2009.
 # Kristof Bal <kristof.bal@gmail.com>, 2009.
 # Freek de Kruijf <freekdekruijf@kde.nl>, 2009, 2010.
-# Freek de Kruijf <f.de.kruijf@gmail.com>, 2011, 2013, 2018.
+# Freek de Kruijf <freekdekruijf@kde.nl>, 2011, 2013, 2018.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
