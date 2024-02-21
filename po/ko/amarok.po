@@ -8717,9 +8717,9 @@ msgid ""
 "suggestion; it may give even better results because it prevents mixing "
 "different album releases together."
 msgstr ""
-"각 미정 곡에 대해 상위 결과를 사용합니다. 또는 좋은 제안의 콘텍스트 메뉴에서 "
-"<b>이 앨범에서 가장 일치하는 항목 선택</b>을 클릭할 수 있습니다. 다른 앨범 릴"
-"리스를 함께 혼합하는 것을 방지하므로 더 나은 결과를 얻을 수 있습니다."
+"각 미정 곡에 대해 상위 결과를 사용합니다. 또는 좋은 제안의 상황에 맞는 메뉴에"
+"서 <b>이 앨범에서 가장 일치하는 항목 선택</b>을 클릭할 수 있습니다. 다른 앨"
+"범 릴리스를 함께 혼합하는 것을 방지하므로 더 나은 결과를 얻을 수 있습니다."
 
 #: dialogs/MusicBrainzTagger.cpp:95
 #, kde-format
