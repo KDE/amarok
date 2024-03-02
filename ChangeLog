@@ -9,7 +9,7 @@ VERSION 2.9.76
    * Added support for TagLib 2.0.
 
   CHANGES:
-   * Amarok now depends on TagLib 1.12, Qt 5.15, and KDE Frameworks 5.57.
+   * Amarok now depends on TagLib 1.12, Qt 5.15, and KDE Frameworks 5.77.
    * Wide-ranging changes to remove usages of deprecated methods of Qt and
      KDE Frameworks, that should not affect functionality.
    * Removed upnpcollectionplugin.
