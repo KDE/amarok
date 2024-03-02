@@ -37,7 +37,7 @@ ToolBar::ToolBar( QWidget *parent ) :
 
     m_playlistOperationsMenu = new KActionMenu( QIcon::fromTheme( QStringLiteral("amarok_playlist") ),
                                                 i18n( "&Playlist" ), parent );
-    m_playlistOperationsMenu->setDelayed( false );
+    m_playlistOperationsMenu->setPopupMode( QToolButton::InstantPopup );
     m_playlistOperationsMenu->setVisible( false );
 
     addAction( m_playlistOperationsMenu );

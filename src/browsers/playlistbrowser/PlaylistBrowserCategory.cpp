@@ -80,7 +80,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     connect( m_addFolderAction, &QAction::triggered, this, &PlaylistBrowserCategory::createNewFolder );
 
     m_providerMenu = new KActionMenu( QIcon::fromTheme( QStringLiteral("checkbox") ), i18n( "Visible Sources"), this );
-    m_providerMenu->setDelayed( false );
+    m_providerMenu->setPopupMode( QToolButton::InstantPopup );
     m_providerMenu->setPriority( QAction::HighPriority );
     m_toolBar->addAction( m_providerMenu );
 
