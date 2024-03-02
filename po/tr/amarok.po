@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:29+0000\n"
-"PO-Revision-Date: 2024-02-09 20:03+0300\n"
+"PO-Revision-Date: 2024-03-01 15:20+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 24.01.95\n"
+"X-Generator: Lokalize 24.02.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -3191,19 +3191,19 @@ msgstr ""
 #: configdialog/dialogs/ExcludedLabelsDialog.cpp:53
 #, kde-format
 msgid "Excluded Labels"
-msgstr "İçerilmeyen Etiketler"
+msgstr "Dışlanan Etiketler"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, addButton)
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:17
 #, kde-format
 msgid "Add this label to the list of excluded labels"
-msgstr "Bu etiketi, içerilmeyen etiketler listesine ekle"
+msgstr "Bu etiketi, dışlanan etiketler listesine ekle"
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, addLabelLine)
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:30
 #, kde-format
 msgid "Add Label to Exclude"
-msgstr "Etiketi İçerilmeyen Şekilde Ekle"
+msgstr "Etiketi Dışlananlara Ekle"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel)
 #: configdialog/dialogs/ExcludedLabelsDialog.ui:44
@@ -16303,7 +16303,7 @@ msgstr "Eşzamanlamaya katılan kaynaklardan birine özgü herhangi bir parça y
 #: statsyncing/ui/MatchedTracksPage.cpp:151
 #, kde-format
 msgid "There are no tracks excluded from synchronization"
-msgstr "Eşzamanlamadan hariç tutulan parça yok"
+msgstr "Eşzamanlamadan dışlanan parça yok"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:155
 #, kde-format
@@ -16340,7 +16340,7 @@ msgstr "%1 Koleksiyonundan Etiketleri Dahil Et"
 #, kde-format
 msgctxt "%1 is collection name"
 msgid "Exclude Labels from %1"
-msgstr "%1 Koleksiyonundan Etiketleri Harici Tut"
+msgstr "%1 Koleksiyonundan Etiketleri Dışla"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:202
 #, kde-format
@@ -16380,7 +16380,7 @@ msgstr "Kaynaklarına özgü parçalar"
 #: statsyncing/ui/MatchedTracksPage.cpp:290
 #, kde-format
 msgid "Tracks that have been excluded from synchronization due to ambiguity"
-msgstr "Belirsizlikten dolayı eşzamanlamadan hariç tutulan parçalar"
+msgstr "Belirsizlikten dolayı eşzamanlamadan dışlanan parçalar"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:316
 #, kde-format
@@ -16455,7 +16455,7 @@ msgstr "Benzersiz Parçalar"
 #: statsyncing/ui/MatchedTracksPage.ui:208
 #, kde-format
 msgid "Excluded Tracks"
-msgstr "Hariç Tutulan Parçalar"
+msgstr "Dışlanan Parçalar"
 
 #. i18n: ectx: property (title), widget (QGroupBox, scrobblingGroupBox)
 #: statsyncing/ui/MatchedTracksPage.ui:267
