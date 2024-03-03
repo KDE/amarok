@@ -39,16 +39,13 @@ PodcastSettingsDialog::PodcastSettingsDialog( const Podcasts::SqlPodcastChannelP
     setWindowTitle( i18nc("change options", "Configure %1", m_channel->title() ) );
     setModal( true );
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel|QDialogButtonBox::Apply);
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(main);
+    setButtonBox(buttonBox);
 
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &PodcastSettingsDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &PodcastSettingsDialog::reject);
 
     okButton->setDefault(true);
-    mainLayout->addWidget(buttonBox);
+    addPage(main, i18n("Settings") );
 
     init();
 }
