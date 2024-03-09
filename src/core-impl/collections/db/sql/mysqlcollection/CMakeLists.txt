@@ -34,5 +34,3 @@ endif()
 install(TARGETS amarok_collection-mysqlcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
 install(FILES amarok_collection-mysqlcollection.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-
-kcoreaddons_desktop_to_json(amarok_collection-mysqlcollection amarok_collection-mysqlcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

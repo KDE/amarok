@@ -53,8 +53,6 @@ target_link_libraries(amarok_service_magnatunestore
 
 install(TARGETS amarok_service_magnatunestore DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
-kcoreaddons_desktop_to_json(amarok_service_magnatunestore amarok_service_magnatunestore.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
-
 ########### next target ###############
 
 set(kcm_amarok_service_magnatune_PART_SRCSS
@@ -77,9 +75,6 @@ target_link_libraries( kcm_amarok_service_magnatunestore
 )
 
 install(TARGETS kcm_amarok_service_magnatunestore DESTINATION ${KDE_INSTALL_PLUGINDIR})
-
-kcoreaddons_desktop_to_json(kcm_amarok_service_magnatunestore amarok_service_magnatunestore_config.desktop SERVICE_TYPES kcmodule.desktop)
-
 
 ########### install files ###############
 

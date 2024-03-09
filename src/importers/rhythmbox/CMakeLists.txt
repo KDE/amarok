@@ -14,5 +14,3 @@ target_link_libraries( amarok_importer-rhythmbox
 )
 
 install( TARGETS amarok_importer-rhythmbox DESTINATION ${KDE_INSTALL_PLUGINDIR} )
-
-kcoreaddons_desktop_to_json(amarok_importer-rhythmbox amarok_importer-rhythmbox.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

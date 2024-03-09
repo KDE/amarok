@@ -40,5 +40,3 @@ if(APPLE)
 endif()
 
 install(TARGETS amarok_collection-audiocdcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )
-
-kcoreaddons_desktop_to_json(amarok_collection-audiocdcollection amarok_collection-audiocdcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

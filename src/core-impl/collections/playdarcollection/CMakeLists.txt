@@ -16,6 +16,3 @@ target_link_libraries( amarok_collection-playdarcollection
                        KF5::KIOCore )
 
 install(TARGETS amarok_collection-playdarcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )
-
-kcoreaddons_desktop_to_json(amarok_collection-playdarcollection amarok_collection-playdarcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
-

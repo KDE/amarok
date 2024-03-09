@@ -60,8 +60,6 @@ target_link_libraries( amarok_service_lastfm
 
 install( TARGETS amarok_service_lastfm DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
-kcoreaddons_desktop_to_json( amarok_service_lastfm amarok_service_lastfm.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop )
-
 ########### next target ###############
 
 set(kcm_amarok_service_lastfm_PART_SRCS
@@ -83,8 +81,6 @@ target_link_libraries( kcm_amarok_service_lastfm
 )
 
 install( TARGETS kcm_amarok_service_lastfm DESTINATION ${KDE_INSTALL_PLUGINDIR} )
-
-kcoreaddons_desktop_to_json( kcm_amarok_service_lastfm amarok_service_lastfm_config.desktop SERVICE_TYPES kcmodule.desktop )
 
 ########### install files ###############
 

@@ -31,5 +31,3 @@ if(APPLE)
 endif()
 
 install(TARGETS amarok_collection-daapcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )
-
-kcoreaddons_desktop_to_json(amarok_collection-daapcollection amarok_collection-daapcollection.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

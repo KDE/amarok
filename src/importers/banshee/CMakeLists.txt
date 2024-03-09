@@ -15,5 +15,3 @@ target_link_libraries( amarok_importer-banshee
 )
 
 install( TARGETS amarok_importer-banshee DESTINATION ${KDE_INSTALL_PLUGINDIR} )
-
-kcoreaddons_desktop_to_json(amarok_importer-banshee amarok_importer-banshee.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

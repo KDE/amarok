@@ -66,9 +66,6 @@ endif()
 install(TARGETS amarok_service_ampache DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 install(FILES amarok_service_ampache.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
-kcoreaddons_desktop_to_json(amarok_service_ampache amarok_service_ampache.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
-
-
 ########### next target ###############
 
 set(kcm_amarok_service_ampache_PART_SRCSS AddServerDialog.cpp AmpacheSettings.cpp AmpacheConfig.cpp )
@@ -85,5 +82,3 @@ target_link_libraries( kcm_amarok_service_ampache
 
 install(TARGETS kcm_amarok_service_ampache DESTINATION ${KDE_INSTALL_PLUGINDIR})
 install(FILES amarok_service_ampache_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-
-kcoreaddons_desktop_to_json(kcm_amarok_service_ampache amarok_service_ampache_config.desktop SERVICE_TYPES kcmodule.desktop)

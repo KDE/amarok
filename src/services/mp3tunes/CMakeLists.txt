@@ -116,8 +116,6 @@ endif()
 
 install(TARGETS amarok_service_mp3tunes DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
-kcoreaddons_desktop_to_json(amarok_service_mp3tunes amarok_service_mp3tunes.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
-
 ########### next target ###############
 
 set(kcm_amarok_service_mp3tunes_PART_SRCSS
@@ -137,5 +135,3 @@ target_link_libraries( kcm_amarok_service_mp3tunes
 
 install(TARGETS kcm_amarok_service_mp3tunes DESTINATION ${KDE_INSTALL_PLUGINDIR})
 install( FILES amarok_service_mp3tunes_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-
-kcoreaddons_desktop_to_json(kcm_amarok_service_mp3tunes amarok_service_mp3tunes_config.desktop SERVICE_TYPES kcmodule.desktop)

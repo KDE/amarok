@@ -30,5 +30,3 @@ add_subdirectory( images )
 
 
         install(TARGETS amarok_service_jamendo DESTINATION ${KDE_INSTALL_PLUGINDIR} )
-
-        kcoreaddons_desktop_to_json(amarok_service_jamendo amarok_service_jamendo.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)

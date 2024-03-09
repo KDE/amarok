@@ -37,5 +37,3 @@ endif()
 install(TARGETS amarok_storage-mysqlserverstorage DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 
 install(FILES amarok_storage-mysqlserverstorage.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-
-kcoreaddons_desktop_to_json(amarok_storage-mysqlserverstorage amarok_storage-mysqlserverstorage.desktop SERVICE_TYPES ${CMAKE_SOURCE_DIR}/src/amarok-plugin.desktop)
