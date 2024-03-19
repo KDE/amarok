@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:29+0000\n"
+"POT-Creation-Date: 2024-03-19 01:41+0000\n"
 "PO-Revision-Date: 2009-02-21 06:51+0200\n"
 "Last-Translator: Omer Ensari <oensari@gmail.com>\n"
 "Language-Team: Kurdish <kde-i18n-doc@lists.kde.org>\n"
@@ -391,7 +391,7 @@ msgstr "Ji ve perçeyê hez bike"
 msgid "Stop after current track: On"
 msgstr "Ji ve perçeyê hez bike"
 
-#: ActionClasses.cpp:498 EngineController.cpp:1331 mac/GrowlInterface.cpp:43
+#: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
 #: widgets/Osd.cpp:669
 #, kde-format
 msgid "No track playing"
@@ -5481,29 +5481,29 @@ msgstr ""
 msgid "Updating Amarok database schema"
 msgstr "Kanala podcast tê rojane kirin"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:532
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:528
 #, kde-format
 msgid "Source track does not exist: %1"
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:543
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:539
 #, fuzzy, kde-format
 #| msgid "could not execute %1"
 msgid "Could not create directory: %1"
 msgstr "nekarî %1 bixebitîne"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:616
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Diguhezîne: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
 #, fuzzy, kde-format
 #| msgid "Transcoding"
 msgid "Transcoding: %1"
 msgstr "Wergera-kodê"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:662
 #: core-impl/collections/support/FileCollectionLocation.cpp:87
 #, fuzzy, kde-format
 #| msgid "Remove this %1"
@@ -5603,7 +5603,7 @@ msgstr "Hunermendê Nenas"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1309
+#: EngineController.cpp:1308
 #, kde-format
 msgid "Unknown track"
 msgstr "Strana nenas"
@@ -6094,7 +6094,7 @@ msgid_plural "Removing Tracks from Device"
 msgstr[0] "Stranan Jê iPod Dibe"
 msgstr[1] "Stranan Jê iPod Dibe"
 
-#: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:241
+#: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:239
 #, fuzzy, kde-format
 #| msgid "&Disconnect the MTP Device"
 msgid "&Disconnect Device"
@@ -10269,33 +10269,33 @@ msgid ""
 "tracks."
 msgstr ""
 
-#: dynamic/biases/EchoNestBias.cpp:126
+#: dynamic/biases/EchoNestBias.cpp:125
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to the previous artist (as reported by EchoNest)"
 msgstr ""
 
-#: dynamic/biases/EchoNestBias.cpp:129
+#: dynamic/biases/EchoNestBias.cpp:128
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to any artist in the current playlist (as reported by EchoNest)"
 msgstr ""
 
-#: dynamic/biases/EchoNestBias.cpp:142
+#: dynamic/biases/EchoNestBias.cpp:141
 #, kde-format
 msgid ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is "
 "similar to"
 msgstr ""
 
-#: dynamic/biases/EchoNestBias.cpp:144
-#: services/lastfm/biases/LastFmBias.cpp:145
+#: dynamic/biases/EchoNestBias.cpp:143
+#: services/lastfm/biases/LastFmBias.cpp:144
 #, fuzzy, kde-format
 #| msgid "Various Artists"
 msgid "the previous track's artist"
 msgstr "Hunermendên cur bi cur"
 
-#: dynamic/biases/EchoNestBias.cpp:145
+#: dynamic/biases/EchoNestBias.cpp:144
 #, fuzzy, kde-format
 #| msgid "The number of undo levels in the playlist."
 msgid "one of the artist in the current playlist"
@@ -10553,30 +10553,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Nirxandin"
 
-#: EngineController.cpp:1099
+#: EngineController.cpp:1098
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 
-#: EngineController.cpp:1299
+#: EngineController.cpp:1298
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> alî yê <b>%2</b> di <b>%3</b> de"
 
-#: EngineController.cpp:1301
+#: EngineController.cpp:1300
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> alî yê <b>%2</b>"
 
-#: EngineController.cpp:1304
+#: EngineController.cpp:1303
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> di <b>%2</b> de"
 
-#: EngineController.cpp:1316
+#: EngineController.cpp:1315
 #, fuzzy, kde-format
 #| msgid " on <b>%1</b>"
 msgctxt "track from source"
@@ -15061,25 +15061,25 @@ msgid ""
 "similar tracks."
 msgstr ""
 
-#: services/lastfm/biases/LastFmBias.cpp:126
+#: services/lastfm/biases/LastFmBias.cpp:125
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous track (as reported by Last.fm)"
 msgstr ""
 
-#: services/lastfm/biases/LastFmBias.cpp:129
+#: services/lastfm/biases/LastFmBias.cpp:128
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous artist (as reported by Last.fm)"
 msgstr ""
 
-#: services/lastfm/biases/LastFmBias.cpp:143
+#: services/lastfm/biases/LastFmBias.cpp:142
 #, kde-format
 msgid ""
 "<a href=\"http://www.last.fm/\">Last.fm</a> thinks the track is similar to"
 msgstr ""
 
-#: services/lastfm/biases/LastFmBias.cpp:146
+#: services/lastfm/biases/LastFmBias.cpp:145
 #, fuzzy, kde-format
 #| msgid "Previous Track"
 msgid "the previous track"
@@ -16922,18 +16922,18 @@ msgstr "Stranên Hilbijartî"
 msgid "Scrobbling"
 msgstr "Yekane"
 
-#: statusbar/CompoundProgressBar.cpp:67 statusbar/CompoundProgressBar.cpp:196
+#: statusbar/CompoundProgressBar.cpp:66 statusbar/CompoundProgressBar.cpp:195
 #: statusbar/ProgressBar.cpp:48
 #, kde-format
 msgid "Abort"
 msgstr "Betal"
 
-#: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
+#: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
 #, kde-format
 msgid "Multiple background tasks running (click to show)"
 msgstr ""
 
-#: statusbar/CompoundProgressBar.cpp:72 statusbar/CompoundProgressBar.cpp:209
+#: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
 #, fuzzy, kde-format
 #| msgid "Abort all background operations"
 msgid "Abort all background tasks"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:29+0000\n"
+"POT-Creation-Date: 2024-03-19 01:41+0000\n"
 "PO-Revision-Date: 2021-06-17 11:42+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
@@ -382,7 +382,7 @@ msgstr "Зупинка після поточної композиції: Вим�
 msgid "Stop after current track: On"
 msgstr "Зупинка після поточної композиції: Увімкнено"
 
-#: ActionClasses.cpp:498 EngineController.cpp:1331 mac/GrowlInterface.cpp:43
+#: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
 #: widgets/Osd.cpp:669
 #, kde-format
 msgid "No track playing"
@@ -5392,27 +5392,27 @@ msgstr ""
 msgid "Updating Amarok database schema"
 msgstr "Оновлення бази даних Amarok"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:532
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:528
 #, kde-format
 msgid "Source track does not exist: %1"
 msgstr "Початкової композиції не існує: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:543
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:539
 #, kde-format
 msgid "Could not create directory: %1"
 msgstr "Не вдалося створити каталог: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:616
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Перенесення: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "Перекодування: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:662
 #: core-impl/collections/support/FileCollectionLocation.cpp:87
 #, kde-format
 msgid "Removing: %1"
@@ -5513,7 +5513,7 @@ msgstr "Невідомий виконавець"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1309
+#: EngineController.cpp:1308
 #, kde-format
 msgid "Unknown track"
 msgstr "Невідома композиція"
@@ -6072,7 +6072,7 @@ msgstr[1] "Вилучення композицій з пристрою"
 msgstr[2] "Вилучення композицій з пристрою"
 msgstr[3] "Вилучення композицій з пристрою"
 
-#: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:241
+#: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:239
 #, kde-format
 msgid "&Disconnect Device"
 msgstr "&Роз'єднатися з пристроєм"
@@ -10272,13 +10272,13 @@ msgid ""
 "tracks."
 msgstr "Упередження «EchoNest» додає подібні композиції за даними Echo Nest."
 
-#: dynamic/biases/EchoNestBias.cpp:126
+#: dynamic/biases/EchoNestBias.cpp:125
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to the previous artist (as reported by EchoNest)"
 msgstr "Подібний до попереднього виконавець (за даними Echo Nest)"
 
-#: dynamic/biases/EchoNestBias.cpp:129
+#: dynamic/biases/EchoNestBias.cpp:128
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to any artist in the current playlist (as reported by EchoNest)"
@@ -10286,7 +10286,7 @@ msgstr ""
 "Виконавець, подібний до будь-якого виконавця у поточному списку композицій "
 "(за даними EchoNest)"
 
-#: dynamic/biases/EchoNestBias.cpp:142
+#: dynamic/biases/EchoNestBias.cpp:141
 #, kde-format
 msgid ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is "
@@ -10295,13 +10295,13 @@ msgstr ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> вважає виконавця "
 "подібним до"
 
-#: dynamic/biases/EchoNestBias.cpp:144
-#: services/lastfm/biases/LastFmBias.cpp:145
+#: dynamic/biases/EchoNestBias.cpp:143
+#: services/lastfm/biases/LastFmBias.cpp:144
 #, kde-format
 msgid "the previous track's artist"
 msgstr "виконавця попередньо композиції"
 
-#: dynamic/biases/EchoNestBias.cpp:145
+#: dynamic/biases/EchoNestBias.cpp:144
 #, kde-format
 msgid "one of the artist in the current playlist"
 msgstr "одного з виконавців у поточному списку композицій"
@@ -10571,30 +10571,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "За оцінкою"
 
-#: EngineController.cpp:1099
+#: EngineController.cpp:1098
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "У списку відтворення забагато помилок. Відтворення зупинено."
 
-#: EngineController.cpp:1299
+#: EngineController.cpp:1298
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> — <b>%2</b> на <b>%3</b>"
 
-#: EngineController.cpp:1301
+#: EngineController.cpp:1300
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> — <b>%2</b>"
 
-#: EngineController.cpp:1304
+#: EngineController.cpp:1303
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> на <b>%2</b>"
 
-#: EngineController.cpp:1316
+#: EngineController.cpp:1315
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -14896,26 +14896,26 @@ msgid ""
 msgstr ""
 "Упередження «Подібні Last.fm» додає подібні композиції за даними Last.fm."
 
-#: services/lastfm/biases/LastFmBias.cpp:126
+#: services/lastfm/biases/LastFmBias.cpp:125
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous track (as reported by Last.fm)"
 msgstr "Подібна до попередньої композиція (за даними Last.fm)"
 
-#: services/lastfm/biases/LastFmBias.cpp:129
+#: services/lastfm/biases/LastFmBias.cpp:128
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous artist (as reported by Last.fm)"
 msgstr "Подібний до попереднього виконавець (за даними Last.fm)"
 
-#: services/lastfm/biases/LastFmBias.cpp:143
+#: services/lastfm/biases/LastFmBias.cpp:142
 #, kde-format
 msgid ""
 "<a href=\"http://www.last.fm/\">Last.fm</a> thinks the track is similar to"
 msgstr ""
 "<a href=\"http://www.last.fm/\">Last.fm</a> вважає композицію подібною до"
 
-#: services/lastfm/biases/LastFmBias.cpp:146
+#: services/lastfm/biases/LastFmBias.cpp:145
 #, kde-format
 msgid "the previous track"
 msgstr "попередня композиція"
@@ -16824,18 +16824,18 @@ msgstr "Виключені композиції"
 msgid "Scrobbling"
 msgstr "Скроблінґ"
 
-#: statusbar/CompoundProgressBar.cpp:67 statusbar/CompoundProgressBar.cpp:196
+#: statusbar/CompoundProgressBar.cpp:66 statusbar/CompoundProgressBar.cpp:195
 #: statusbar/ProgressBar.cpp:48
 #, kde-format
 msgid "Abort"
 msgstr "Перервати"
 
-#: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
+#: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
 #, kde-format
 msgid "Multiple background tasks running (click to show)"
 msgstr "Виконується декілька фонових завдань (натисніть, щоб переглянути)"
 
-#: statusbar/CompoundProgressBar.cpp:72 statusbar/CompoundProgressBar.cpp:209
+#: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
 #, kde-format
 msgid "Abort all background tasks"
 msgstr "Перервати всі фонові завдання"

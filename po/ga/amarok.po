@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia/amarok.po\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:29+0000\n"
+"POT-Creation-Date: 2024-03-19 01:41+0000\n"
 "PO-Revision-Date: 2007-04-15 19:39-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -386,7 +386,7 @@ msgstr "Stop tar éis an Amhráin reatha: As"
 msgid "Stop after current track: On"
 msgstr "Stop tar éis an Amhráin reatha: Ann"
 
-#: ActionClasses.cpp:498 EngineController.cpp:1331 mac/GrowlInterface.cpp:43
+#: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
 #: widgets/Osd.cpp:669
 #, kde-format
 msgid "No track playing"
@@ -5440,28 +5440,28 @@ msgstr ""
 msgid "Updating Amarok database schema"
 msgstr "Scéimre bunachar sonraí Amarok á nuashonrú"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:532
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:528
 #, fuzzy, kde-format
 #| msgid "File does not exist: '%1'"
 msgid "Source track does not exist: %1"
 msgstr "Níl an comhad seo ann: '%1'"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:543
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:539
 #, kde-format
 msgid "Could not create directory: %1"
 msgstr "Níorbh fhéidir comhadlann a chruthú: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:616
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Á Aistriú: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "Traschódú: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:662
 #: core-impl/collections/support/FileCollectionLocation.cpp:87
 #, kde-format
 msgid "Removing: %1"
@@ -5553,7 +5553,7 @@ msgstr "Ealaíontóir Anaithnid"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1309
+#: EngineController.cpp:1308
 #, kde-format
 msgid "Unknown track"
 msgstr "Amhrán anaithnid"
@@ -6098,7 +6098,7 @@ msgstr[2] "Amhráin á Scriosadh ón Ghléas"
 msgstr[3] "Amhráin á Scriosadh ón Ghléas"
 msgstr[4] "Amhráin á Scriosadh ón Ghléas"
 
-#: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:241
+#: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:239
 #, kde-format
 msgid "&Disconnect Device"
 msgstr "&Dícheangail an Gléas"
@@ -10359,7 +10359,7 @@ msgid ""
 "tracks."
 msgstr ""
 
-#: dynamic/biases/EchoNestBias.cpp:126
+#: dynamic/biases/EchoNestBias.cpp:125
 #, fuzzy, kde-format
 #| msgctxt "EchoNest bias representation"
 #| msgid "Similar to the previous track (as reported by EchoNest)"
@@ -10367,7 +10367,7 @@ msgctxt "EchoNest bias representation"
 msgid "Similar to the previous artist (as reported by EchoNest)"
 msgstr "Cosúil leis an amhrán roimhe seo (de réir EchoNest)"
 
-#: dynamic/biases/EchoNestBias.cpp:129
+#: dynamic/biases/EchoNestBias.cpp:128
 #, fuzzy, kde-format
 #| msgctxt "EchoNest bias representation"
 #| msgid ""
@@ -10376,21 +10376,21 @@ msgctxt "EchoNest bias representation"
 msgid "Similar to any artist in the current playlist (as reported by EchoNest)"
 msgstr "Cosúil le haon amhrán sa seinmliosta seo (de réir EchoNest)"
 
-#: dynamic/biases/EchoNestBias.cpp:142
+#: dynamic/biases/EchoNestBias.cpp:141
 #, kde-format
 msgid ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is "
 "similar to"
 msgstr ""
 
-#: dynamic/biases/EchoNestBias.cpp:144
-#: services/lastfm/biases/LastFmBias.cpp:145
+#: dynamic/biases/EchoNestBias.cpp:143
+#: services/lastfm/biases/LastFmBias.cpp:144
 #, fuzzy, kde-format
 #| msgid "the previous artist"
 msgid "the previous track's artist"
 msgstr "leis an ealaíontóir roimhe seo"
 
-#: dynamic/biases/EchoNestBias.cpp:145
+#: dynamic/biases/EchoNestBias.cpp:144
 #, fuzzy, kde-format
 #| msgid "one of the tracks in the current playlist"
 msgid "one of the artist in the current playlist"
@@ -10635,30 +10635,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Rátáil"
 
-#: EngineController.cpp:1099
+#: EngineController.cpp:1098
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Casadh ar an iomarca earráidí sa seinmliosta. Stopadh an athsheinm."
 
-#: EngineController.cpp:1299
+#: EngineController.cpp:1298
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> le <b>%2</b> ar <b>%3</b>"
 
-#: EngineController.cpp:1301
+#: EngineController.cpp:1300
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> le <b>%2</b>"
 
-#: EngineController.cpp:1304
+#: EngineController.cpp:1303
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> ar <b>%2</b>"
 
-#: EngineController.cpp:1316
+#: EngineController.cpp:1315
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -15012,26 +15012,26 @@ msgid ""
 "similar tracks."
 msgstr ""
 
-#: services/lastfm/biases/LastFmBias.cpp:126
+#: services/lastfm/biases/LastFmBias.cpp:125
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous track (as reported by Last.fm)"
 msgstr "Cosúil leis an amhrán roimhe seo (de réir Last.fm)"
 
-#: services/lastfm/biases/LastFmBias.cpp:129
+#: services/lastfm/biases/LastFmBias.cpp:128
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous artist (as reported by Last.fm)"
 msgstr "Cosúil leis an ealaíontóir roimhe seo (de réir Last.fm)"
 
-#: services/lastfm/biases/LastFmBias.cpp:143
+#: services/lastfm/biases/LastFmBias.cpp:142
 #, fuzzy, kde-format
 #| msgid "Last.fm thinks the track is similar to"
 msgid ""
 "<a href=\"http://www.last.fm/\">Last.fm</a> thinks the track is similar to"
 msgstr "Ceapann Last.fm go bhfuil an t-amhrán cosúil"
 
-#: services/lastfm/biases/LastFmBias.cpp:146
+#: services/lastfm/biases/LastFmBias.cpp:145
 #, kde-format
 msgid "the previous track"
 msgstr "leis an amhrán roimhe seo"
@@ -16861,18 +16861,18 @@ msgstr "Amhráin Fágtha As"
 msgid "Scrobbling"
 msgstr "Scrobláil"
 
-#: statusbar/CompoundProgressBar.cpp:67 statusbar/CompoundProgressBar.cpp:196
+#: statusbar/CompoundProgressBar.cpp:66 statusbar/CompoundProgressBar.cpp:195
 #: statusbar/ProgressBar.cpp:48
 #, kde-format
 msgid "Abort"
 msgstr "Tobscoir"
 
-#: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
+#: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
 #, kde-format
 msgid "Multiple background tasks running (click to show)"
 msgstr "Tascanna éagsúla ag rith sa chúlra (cliceáil le taispeáint)"
 
-#: statusbar/CompoundProgressBar.cpp:72 statusbar/CompoundProgressBar.cpp:209
+#: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
 #, kde-format
 msgid "Abort all background tasks"
 msgstr "Tobscoir gach tasc sa chúlra"
