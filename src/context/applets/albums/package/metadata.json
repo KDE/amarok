@@ -3,17 +3,29 @@
         "Authors": [
             {
                 "Email": "ruiz@kde.org",
-                "Name": "Seb Ruiz"
+                "Name": "Seb Ruiz",
+                "Name[uk]": "Seb Ruiz",
+                "Name[x-test]": "xxSeb Ruizxx"
             }
         ],
         "Category": "Current",
         "Dependencies": [],
         "Description": "Album cover manager for Amarok",
+        "Description[uk]": "Керування зображеннями обкладинок альбомів для Amarok",
+        "Description[x-test]": "xxAlbum cover manager for Amarokxx",
         "EnabledByDefault": false,
         "Icon": "media-album-cover-manager-amarok",
         "Id": "org.kde.amarok.albums",
         "License": "GPL",
         "Name": "Albums",
+        "Name[nb]": "Album",
+        "Name[nn]": "Album",
+        "Name[sr@ijekavian]": "Албуми",
+        "Name[sr@ijekavianlatin]": "Albumi",
+        "Name[sr@latin]": "Albumi",
+        "Name[sr]": "Албуми",
+        "Name[uk]": "Альбоми",
+        "Name[x-test]": "xxAlbumsxx",
         "ServiceTypes": [
             "Amarok/ContextApplet"
         ],

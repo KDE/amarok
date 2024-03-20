@@ -3,17 +3,28 @@
         "Authors": [
             {
                 "Email": "kretschmann@kde.org",
-                "Name": "Mark Kretschmann"
+                "Name": "Mark Kretschmann",
+                "Name[uk]": "Mark Kretschmann",
+                "Name[x-test]": "xxMark Kretschmannxx"
             }
         ],
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Analyzer applet for Amarok",
+        "Description[uk]": "Аплет аналізатора для Amarok",
+        "Description[x-test]": "xxAnalyzer applet for Amarokxx",
         "EnabledByDefault": true,
         "Icon": "view-media-analyzer-amarok",
         "Id": "org.kde.amarok.analyzer",
         "License": "GPL",
         "Name": "Analyzer",
+        "Name[nb]": "Analysator",
+        "Name[sr@ijekavian]": "Анализатор",
+        "Name[sr@ijekavianlatin]": "Analizator",
+        "Name[sr@latin]": "Analizator",
+        "Name[sr]": "Анализатор",
+        "Name[uk]": "Аналізатор",
+        "Name[x-test]": "xxAnalyzerxx",
         "ServiceTypes": [
             "Amarok/ContextApplet"
         ],

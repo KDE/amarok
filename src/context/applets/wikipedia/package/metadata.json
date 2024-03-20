@@ -3,17 +3,29 @@
         "Authors": [
             {
                 "Email": "lfranchi@gmail.com",
-                "Name": "Leo Franchi"
+                "Name": "Leo Franchi",
+                "Name[uk]": "Leo Franchi",
+                "Name[x-test]": "xxLeo Franchixx"
             }
         ],
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Wikipedia applet for Amarok",
+        "Description[uk]": "Аплет Вікіпедії для Amarok",
+        "Description[x-test]": "xxWikipedia applet for Amarokxx",
         "EnabledByDefault": true,
         "Icon": "amarok-wikipedia",
         "Id": "org.kde.amarok.wikipedia",
         "License": "GPL",
         "Name": "Wikipedia",
+        "Name[nb]": "Wikipedia",
+        "Name[nn]": "Wikipedia",
+        "Name[sr@ijekavian]": "Википедија",
+        "Name[sr@ijekavianlatin]": "Wikipedia",
+        "Name[sr@latin]": "Wikipedia",
+        "Name[sr]": "Википедија",
+        "Name[uk]": "Вікіпедія",
+        "Name[x-test]": "xxWikipediaxx",
         "ServiceTypes": [
             "Amarok/ContextApplet"
         ],

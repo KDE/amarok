@@ -3,14 +3,20 @@
         "Authors": [
             {
                 "Email": "malte.veerman@gmail.com",
-                "Name": "Malte Veerman"
+                "Name": "Malte Veerman",
+                "Name[uk]": "Malte Veerman",
+                "Name[x-test]": "xxMalte Veermanxx"
             }
         ],
         "Description": "QML base package for amarok context area",
+        "Description[uk]": "Базовий пакунок QML для області контексту Amarok",
+        "Description[x-test]": "xxQML base package for amarok context areaxx",
         "Icon": "amarok",
         "Id": "org.kde.amarok.context",
         "License": "GPL",
         "Name": "Amarok-Context-QML-Package",
+        "Name[uk]": "Пакунок QML контексту для Amarok",
+        "Name[x-test]": "xxAmarok-Context-QML-Packagexx",
         "ServiceTypes": [
             "KPackage/Generic"
         ],

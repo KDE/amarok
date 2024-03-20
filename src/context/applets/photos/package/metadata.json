@@ -3,17 +3,29 @@
         "Authors": [
             {
                 "Email": "simon.esneault@gmail.com",
-                "Name": "Simon Esneault"
+                "Name": "Simon Esneault",
+                "Name[uk]": "Simon Esneault",
+                "Name[x-test]": "xxSimon Esneaultxx"
             }
         ],
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Photos applet for Amarok",
+        "Description[uk]": "Аплет фотографій для Amarok",
+        "Description[x-test]": "xxPhotos applet for Amarokxx",
         "EnabledByDefault": true,
         "Icon": "photos-amarok",
         "Id": "org.kde.amarok.photos",
         "License": "GPL",
         "Name": "Photos",
+        "Name[nb]": "Fotoer",
+        "Name[nn]": "Bilete",
+        "Name[sr@ijekavian]": "Фотографије",
+        "Name[sr@ijekavianlatin]": "Fotografije",
+        "Name[sr@latin]": "Fotografije",
+        "Name[sr]": "Фотографије",
+        "Name[uk]": "Фотографії",
+        "Name[x-test]": "xxPhotosxx",
         "ServiceTypes": [
             "Amarok/ContextApplet"
         ],

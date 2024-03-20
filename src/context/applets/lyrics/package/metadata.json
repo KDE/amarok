@@ -3,17 +3,29 @@
         "Authors": [
             {
                 "Email": "lfranchi@gmail.com",
-                "Name": "Leo Franchi"
+                "Name": "Leo Franchi",
+                "Name[uk]": "Leo Franchi",
+                "Name[x-test]": "xxLeo Franchixx"
             }
         ],
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Lyrics applet for Amarok",
+        "Description[uk]": "Аплет слів пісні для Amarok",
+        "Description[x-test]": "xxLyrics applet for Amarokxx",
         "EnabledByDefault": true,
         "Icon": "amarok_lyrics",
         "Id": "org.kde.amarok.lyrics",
         "License": "GPL",
         "Name": "Lyrics",
+        "Name[nb]": "Sangtekst",
+        "Name[nn]": "Songtekst",
+        "Name[sr@ijekavian]": "Стихови",
+        "Name[sr@ijekavianlatin]": "Stihovi",
+        "Name[sr@latin]": "Stihovi",
+        "Name[sr]": "Стихови",
+        "Name[uk]": "Текст пісні",
+        "Name[x-test]": "xxLyricsxx",
         "ServiceTypes": [
             "Amarok/ContextApplet"
         ],

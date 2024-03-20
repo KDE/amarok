@@ -3,17 +3,29 @@
         "Authors": [
             {
                 "Email": "lfranchi@gmail.com",
-                "Name": "Leo Franchi"
+                "Name": "Leo Franchi",
+                "Name[uk]": "Leo Franchi",
+                "Name[x-test]": "xxLeo Franchixx"
             }
         ],
         "Category": "Multimedia",
         "Dependencies": [],
         "Description": "Current track applet for Amarok",
+        "Description[uk]": "Аплет поточної композиції для Amarok",
+        "Description[x-test]": "xxCurrent track applet for Amarokxx",
         "EnabledByDefault": true,
         "Icon": "current-track-amarok",
         "Id": "org.kde.amarok.currenttrack",
         "License": "GPL",
         "Name": "Current Track",
+        "Name[nb]": "Gjeldende spor",
+        "Name[nn]": "Gjeldande spor",
+        "Name[sr@ijekavian]": "Текућа нумера",
+        "Name[sr@ijekavianlatin]": "Tekuća numera",
+        "Name[sr@latin]": "Tekuća numera",
+        "Name[sr]": "Текућа нумера",
+        "Name[uk]": "Поточна композиція",
+        "Name[x-test]": "xxCurrent Trackxx",
         "ServiceTypes": [
             "Amarok/ContextApplet"
         ],
