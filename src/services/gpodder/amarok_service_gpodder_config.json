@@ -1,8 +1,16 @@
 {
     "KPlugin": {
         "Description": "Configure gpodder.net Credentials",
+        "Description[bg]": "Настройване на профил в gpodder.net",
+        "Description[ca]": "Configura les credencials de gpodder.net",
+        "Description[eo]": "Agordi gpodder.net-Akreditaĵojn",
+        "Description[fr]": "Configurer les identifiants pour le site « gpodder.net »",
+        "Description[nl]": "gpodder.net-credentials instellen",
+        "Description[sl]": "Nastavi poverilnico za gpodder.net",
+        "Description[tr]": "gpodder.net üyelik ayarlarını yapılandır",
         "Description[uk]": "Налаштувати реєстраційні дані у gpodder.net",
         "Description[x-test]": "xxConfigure gpodder.net Credentialsxx",
+        "Description[zh_TW]": "設定 gpodder.net 的認證資訊",
         "Icon": "view-services-gpodder-amarok",
         "Name": "gpodder.net Service Config",
         "Name[bg]": "gpodder.net Service Config",

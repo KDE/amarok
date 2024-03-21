@@ -1,8 +1,16 @@
 {
     "KPlugin": {
         "Description": "Set up Last.fm username and password",
+        "Description[bg]": "Настройване на потребител и парола за Last.fm",
+        "Description[ca]": "Defineix el nom d'usuari i contrasenya del Last.fm",
+        "Description[eo]": "Agordu uzantnomon kaj pasvorton de Last.fm",
+        "Description[fr]": "Définir les nom d'utilisateur et mot de passe pour « Last.fm »",
+        "Description[nl]": "Stel de gebruikersnaam en het wachtwoord voor Last.fm in",
+        "Description[sl]": "Nastavi uporabniško ime in geslo za Last.fm",
+        "Description[tr]": "Last.fm kullanıcı adı ve parolasını ayarlar",
         "Description[uk]": "Встановіть назву користувача і пароль Last.fm",
         "Description[x-test]": "xxSet up Last.fm username and passwordxx",
+        "Description[zh_TW]": "設定 Last.fm 的使用者名稱與密碼",
         "Icon": "view-services-lastfm-amarok",
         "Name": "Last.fm Service Config",
         "Name[be]": "Настаўленне сервісу Last.fm",

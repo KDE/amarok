@@ -1,8 +1,16 @@
 {
     "KPlugin": {
         "Description": "Configure mp3tunes credentials",
+        "Description[bg]": "Настройване на профил в mp3tunes",
+        "Description[ca]": "Configura les credencials de mp3tunes",
+        "Description[eo]": "Agordi mp3tunes-akreditaĵojn.",
+        "Description[fr]": "Configurer les identifiants pour le site « MP3tunes »",
+        "Description[nl]": "Mp3tunes-gegevens instellen",
+        "Description[sl]": "Nastavi podatke o računu na MP3tunes",
+        "Description[tr]": "mp3tunes üyelik ayarlarını yapılandır",
         "Description[uk]": "Налаштувати реєстраційні дані у mp3tunes",
         "Description[x-test]": "xxConfigure mp3tunes credentialsxx",
+        "Description[zh_TW]": "設定 mp3tunes 的認證資訊",
         "Icon": "view-services-mp3tunes-amarok",
         "Name": "MP3tunes Service Config",
         "Name[bg]": "Настройки на услугата MP3tunes",

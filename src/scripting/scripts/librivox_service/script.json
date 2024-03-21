@@ -4,8 +4,16 @@
             {
                 "Email": "nhnFreespirit@gmail.com",
                 "Name": "Nikolaj Hald Nielsen",
+                "Name[bg]": "Nikolaj Hald Nielsen",
+                "Name[ca]": "Nikolaj Hald Nielsen",
+                "Name[eo]": "Nikolaj Hald Nielsen",
+                "Name[fr]": "Nikolaj Hald Nielsen",
+                "Name[nl]": "Nikolaj Hald Nielsen",
+                "Name[sl]": "Nikolaj Hald Nielsen",
+                "Name[tr]": "Nikolaj Hald Nielsen",
                 "Name[uk]": "Nikolaj Hald Nielsen",
-                "Name[x-test]": "xxNikolaj Hald Nielsenxx"
+                "Name[x-test]": "xxNikolaj Hald Nielsenxx",
+                "Name[zh_TW]": "Nikolaj Hald Nielsen"
             }
         ],
         "Category": "Scriptable Service",
@@ -13,8 +21,16 @@
             "Amarok2.0"
         ],
         "Description": "A scripted service that lets you search, stream and download free, public domain, audio books from Librivox.org",
+        "Description[bg]": "Услуга, която ви позволява да търсите, стриймвате и изтегляте безплатни, публични аудиокниги от Librivox.org",
+        "Description[ca]": "Un servei amb scripts que us permet cercar, escoltar i baixar àudio llibres lliures de domini públic des de Librivox.org",
+        "Description[eo]": "Skriptita servo, kiu ebligas al vi serĉi, flui kaj elŝuti senpagajn, publikajn, aŭdlibrojn de Librivox.org",
+        "Description[fr]": "Un service sous forme de script qui vous permet de rechercher, de lire et de télécharger des livres audio libres, du domaine public à partir du site librivox.org",
+        "Description[nl]": "Een \"scripted\" service die u vrije, zich in het publieke domein bevindende, gesproken boeken laat zoeken en streamen uit Librivox.org",
+        "Description[sl]": "Skriptna storitev, ki vam dovoljuje iskanje po, pretakanje in prejemanje brezplačnih zvočnih knjig iz Librivox.org",
+        "Description[tr]": "Librivox.org sitesinden ücretsiz, kamuya açık alandan, ses kitapları aramanızı, göndermenizi veya indirmenizi sağlayan bir betik hizmeti.",
         "Description[uk]": "Керована скриптами служба, за допомогою якої ви можете шукати, слухати і отримувати вільні, доступні усім звукові книги з Librivox.org",
         "Description[x-test]": "xxA scripted service that lets you search, stream and download free, public domain, audio books from Librivox.orgxx",
+        "Description[zh_TW]": "一個文稿服務，讓您從 Librivox.org 搜尋、接收並下載自由、公共版權的有聲書",
         "EnabledByDefault": true,
         "Icon": "view-services-librivox-amarok",
         "Id": "Librivox.org",

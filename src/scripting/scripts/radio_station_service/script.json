@@ -4,8 +4,16 @@
             {
                 "Email": "nhnFreespirit@gmail.com",
                 "Name": "Nikolaj Hald Nielsen",
+                "Name[bg]": "Nikolaj Hald Nielsen",
+                "Name[ca]": "Nikolaj Hald Nielsen",
+                "Name[eo]": "Nikolaj Hald Nielsen",
+                "Name[fr]": "Nikolaj Hald Nielsen",
+                "Name[nl]": "Nikolaj Hald Nielsen",
+                "Name[sl]": "Nikolaj Hald Nielsen",
+                "Name[tr]": "Nikolaj Hald Nielsen",
                 "Name[uk]": "Nikolaj Hald Nielsen",
-                "Name[x-test]": "xxNikolaj Hald Nielsenxx"
+                "Name[x-test]": "xxNikolaj Hald Nielsenxx",
+                "Name[zh_TW]": "Nikolaj Hald Nielsen"
             }
         ],
         "Category": "Scriptable Service",
@@ -13,8 +21,16 @@
             "Amarok2.0"
         ],
         "Description": "A script that sets up a service with a few cool internet radio stations",
+        "Description[bg]": "Скрипт, който създава услуга с няколко готини интернет радиостанции",
+        "Description[ca]": "Un script que configura un servei amb diverses estacions de ràdio interessants per Internet",
+        "Description[eo]": "Skripto kiu starigas servon kun kelkaj mojosaj interretaj radiostacioj",
+        "Description[fr]": "Un script qui paramètre un service doté de quelques stations de radio sympathiques",
+        "Description[nl]": "Een script dat een service met een paar coole internet-radio-stations instelt",
+        "Description[sl]": "Skript, ki nastavi storitev z nekaj všečnimi internetnimi radijskimi postajami",
+        "Description[tr]": "Birkaç güzel internet radyo istasyonu ile hizmet kuran bir betik",
         "Description[uk]": "Скрипт для налаштовування служби прослуховування декількох чудових інтернет-радіостанцій",
         "Description[x-test]": "xxA script that sets up a service with a few cool internet radio stationsxx",
+        "Description[zh_TW]": "設定一些很酷的網路電台服務的文稿",
         "EnabledByDefault": true,
         "Icon": "get-hot-new-stuff-amarok",
         "Id": "Cool Streams",

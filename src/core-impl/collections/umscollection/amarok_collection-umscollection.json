@@ -4,8 +4,16 @@
             {
                 "Email": "aikawarazuni@gmail.com",
                 "Name": "Alejandro Wainzinger",
+                "Name[bg]": "Alejandro Wainzinger",
+                "Name[ca]": "Alejandro Wainzinger",
+                "Name[eo]": "Alejandro Wainzinger",
+                "Name[fr]": "Alejandro Wainzinger",
+                "Name[nl]": "Alejandro Wainzinger",
+                "Name[sl]": "Alejandro Wainzinger",
+                "Name[tr]": "Alejandro Wainzinger",
                 "Name[uk]": "Alejandro Wainzinger",
-                "Name[x-test]": "xxAlejandro Wainzingerxx"
+                "Name[x-test]": "xxAlejandro Wainzingerxx",
+                "Name[zh_TW]": "Alejandro Wainzinger"
             }
         ],
         "Category": "Collection",
