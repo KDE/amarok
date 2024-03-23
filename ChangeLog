@@ -1,6 +1,41 @@
 Amarok ChangeLog
 ================
-(C) 2002-2017 the Amarok authors.
+(C) 2002-2024 the Amarok authors.
+
+VERSION 2.9.76
+  FEATURES:
+   * Enable dragging and dropping tracks from context view to playlist again. (BR 439736)
+   * Added support for FFmpeg 5.0. (BR 459933)
+   * Added support for TagLib 2.0.
+
+  CHANGES:
+   * Amarok now depends on TagLib 1.12, Qt 5.15, and KDE Frameworks 5.57.
+   * Wide-ranging changes to remove usages of deprecated methods of Qt and
+     KDE Frameworks, that should not affect functionality.
+   * Removed upnpcollectionplugin.
+
+  BUGFIXES:
+   * Fix playlist generator UI strings. (BR 423598)
+   * Fix potential corruption of Ogg files by requiring a recent-enough TagLib
+     version (BR 397184).
+   * Fix TagLib Extras to be treated as optional and not required for building Amarok.
+   * Various fixes for e.g. crashes (including BR 428769, BR 444408, BR 468303),
+     problems of playback stalling on missing files (including partial fix for
+     BR 438651), UI bugs in playlist layout editor, and .desktop files, AppStream
+     metadata and DBus service specifications.
+
+
+VERSION 2.9.71
+  FEATURES:
+   * Initial version of Qt 5 / KDE Frameworks 5 port.
+
+  CHANGES:
+   * Amarok now depends on Qt 5.8 and KDE Frameworks 5. The changes, which may include
+     functionalities temporarily or permanently removed due to porting, are too numerous
+     to be accurately represented here.
+
+  BUGFIXES:
+
 
 VERSION 2.9.0
   FEATURES:
