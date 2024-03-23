@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-03-19 01:41+0000\n"
-"PO-Revision-Date: 2024-03-18 19:46+0300\n"
+"PO-Revision-Date: 2024-03-22 16:18+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 24.02.0\n"
+"X-Generator: Lokalize 24.02.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -2317,9 +2317,9 @@ msgstr "Çöp Kutusuna Taşımayı Onayla"
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
 msgstr[0] ""
-"Bu %1 ögelerini gerçekten çöp kutusuna taşımak istediğinize emin misiniz?"
+"Bu %1 ögelerini gerçekten çöp kutusuna taşımak istediğinizden emin misiniz?"
 msgstr[1] ""
-"Bu %1 ögelerini gerçekten çöp kutusuna taşımak istediğinize emin misiniz?"
+"Bu %1 ögelerini gerçekten çöp kutusuna taşımak istediğinizden emin misiniz?"
 
 #: browsers/InfoProxy.cpp:166
 #, kde-format
@@ -6191,8 +6191,8 @@ msgstr "&Bölümü Sil"
 #, kde-format
 msgid "Are you sure you want to delete this episode?"
 msgid_plural "Are you sure you want to delete these %1 episodes?"
-msgstr[0] "Bu bölümü silmek istediğinize emin misiniz?"
-msgstr[1] "Bu %1 bölümü silmek istediğinize emin misiniz?"
+msgstr[0] "Bu bölümü silmek istediğinizden emin misiniz?"
+msgstr[1] "Bu %1 bölümü silmek istediğinizden emin misiniz?"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:278
 #, kde-format
