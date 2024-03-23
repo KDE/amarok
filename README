@@ -49,7 +49,7 @@ Required
     * Qt 5.15
       https://qt.io/
 
-    * TagLib 2.0 (or newer)
+    * TagLib 1.12 (or newer)
       (Metadata tagging library)
 
     * MySQL 5.0 (or newer) / MariaDB (external database support) or MariaDB

@@ -79,7 +79,7 @@ option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
 
 ############### Taglib
-set(TAGLIB_MIN_VERSION "2.0")
+set(TAGLIB_MIN_VERSION "1.12")
 find_package(Taglib REQUIRED)
 set_package_properties( Taglib PROPERTIES DESCRIPTION "Support for Audio metadata." URL "http://developer.kde.org/~wheeler/taglib.html" TYPE REQUIRED PURPOSE "Required for tag reading" )
 
