@@ -2,6 +2,7 @@
     "KPlugin": {
         "Description": "Configure gpodder.net Credentials",
         "Description[bg]": "Настройване на профил в gpodder.net",
+        "Description[ca@valencia]": "Configura les credencials de gpodder.net",
         "Description[ca]": "Configura les credencials de gpodder.net",
         "Description[eo]": "Agordi gpodder.net-Akreditaĵojn",
         "Description[fr]": "Configurer les identifiants pour le site « gpodder.net »",

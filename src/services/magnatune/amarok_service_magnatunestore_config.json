@@ -2,6 +2,7 @@
     "KPlugin": {
         "Description": "Configure Magnatune store settings and memberships credentials",
         "Description[bg]": "Настройване на членството в Magnatune",
+        "Description[ca@valencia]": "Configura els paràmetres de la botiga Magnatune i les credencials de soci",
         "Description[ca]": "Configura els paràmetres de la botiga Magnatune i les credencials de soci",
         "Description[eo]": "Agordas Magnatune vendejajn preferojn kaj membrecajn akreditaĵojn.",
         "Description[fr]": "Configurer les paramètres de la boutique « Magnatune » et les identifiants d'abonnements",
