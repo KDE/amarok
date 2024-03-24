@@ -72,6 +72,35 @@ AmarokQml.Applet {
             Layout.alignment: Qt.AlignBottom
             Layout.preferredHeight: parent.height / 5
         }
+        visible: CurrentTrackEngine.track != ""
+    }
+
+    RowLayout {
+        anchors {
+            left: cover.right
+            leftMargin: applet.spacing
+            right: parent.right
+            top: parent.top
+            bottom: parent.bottom
+        }
+        Rectangle {
+            width: parent.width/10
+        }
+        Text {
+            id: nothingPLaying
+            font.bold: true
+            text: i18n("No track playing")
+        }
+        AmarokQml.PixmapItem {
+            width: parent.width/4
+            height: parent.width/4
+            source: Svg.renderSvg(applet.imageUrl("amarok-currenttrack.svg"),
+                                  "CurrentTrack",
+                                  width,
+                                  height,
+                                  "amarok_logo");
+        }
+        visible: CurrentTrackEngine.track == ""
     }
 
     Component {
