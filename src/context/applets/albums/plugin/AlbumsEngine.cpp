@@ -57,6 +57,7 @@ AlbumsEngine::AlbumsEngine( QObject *parent )
     m_proxyModel->setDynamicSortFilter( true );
     m_proxyModel->setSourceModel( m_model );
     m_proxyModel->setFilterRole( NameRole );
+    updateRecentlyAddedAlbums();
 }
 
 void AlbumsEngine::slotTrackMetadataChanged( Meta::TrackPtr track )
@@ -86,19 +87,7 @@ void AlbumsEngine::stopped()
     m_currentTrack.clear();
     m_artist.clear();
 
-    // Collect data for the recently added albums
-    Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
-    qm->setAutoDelete( true );
-    qm->setQueryType( Collections::QueryMaker::Album );
-    qm->excludeFilter( Meta::valAlbum, QString(), true, true );
-    qm->orderBy( Meta::valCreateDate, true );
-    qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
-
-    connect( qm, &Collections::QueryMaker::newAlbumsReady,
-             this, &AlbumsEngine::resultReady, Qt::QueuedConnection );
-
-    m_lastQueryMaker = qm;
-    qm->run();
+    updateRecentlyAddedAlbums();
 }
 
 void AlbumsEngine::update()
@@ -111,6 +100,24 @@ void AlbumsEngine::update()
     qm->addFilter( Meta::valArtist, m_artist->name(), true, true );
     qm->setAlbumQueryMode( Collections::QueryMaker::AllAlbums );
     qm->setQueryType( Collections::QueryMaker::Album );
+
+    connect( qm, &Collections::QueryMaker::newAlbumsReady,
+             this, &AlbumsEngine::resultReady, Qt::QueuedConnection );
+
+    m_lastQueryMaker = qm;
+    qm->run();
+}
+
+
+void AlbumsEngine::updateRecentlyAddedAlbums()
+{
+    // Collect data for the recently added albums
+    Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
+    qm->setAutoDelete( true );
+    qm->setQueryType( Collections::QueryMaker::Album );
+    qm->excludeFilter( Meta::valAlbum, QString(), true, true );
+    qm->orderBy( Meta::valCreateDate, true );
+    qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
 
     connect( qm, &Collections::QueryMaker::newAlbumsReady,
              this, &AlbumsEngine::resultReady, Qt::QueuedConnection );

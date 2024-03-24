@@ -57,6 +57,7 @@ private Q_SLOTS:
 
 private:
     void update();
+    void updateRecentlyAddedAlbums();
     void clear();
     void appendSelected( const QModelIndexList &indexes ) const;
     void replaceWithSelected( const QModelIndexList &indexes ) const;
