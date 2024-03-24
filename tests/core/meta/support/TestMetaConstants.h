@@ -21,6 +21,8 @@
 class TestMetaConstants : public QObject
 {
     Q_OBJECT
+    public:
+        TestMetaConstants();
 
     private Q_SLOTS:
         // Data driven tests

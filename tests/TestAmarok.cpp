@@ -21,6 +21,8 @@
 #include "core/support/Amarok.h"
 #include "config-amarok-test.h"
 
+#include <KLocalizedString>
+
 #include <QTest>
 #include <QDir>
 #include <QDateTime>
@@ -29,7 +31,9 @@
 QTEST_MAIN( TestAmarok )
 
 TestAmarok::TestAmarok()
-{}
+{
+    KLocalizedString::setApplicationDomain("amarok-test");
+}
 
 QString
 TestAmarok::dataPath( const QString &relPath )

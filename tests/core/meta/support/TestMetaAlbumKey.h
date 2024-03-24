@@ -25,6 +25,7 @@ class TestMetaAlbumKey : public QObject
     Q_OBJECT
 
     public:
+        TestMetaAlbumKey();
         ~TestMetaAlbumKey() override;
 
     private Q_SLOTS:

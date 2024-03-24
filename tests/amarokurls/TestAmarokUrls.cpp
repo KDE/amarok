@@ -24,6 +24,8 @@
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
 
+#include <KLocalizedString>
+
 #include <QTest>
 
 QTEST_GUILESS_MAIN( TestAmarokUrls )
@@ -31,6 +33,7 @@ QTEST_GUILESS_MAIN( TestAmarokUrls )
 TestAmarokUrls::TestAmarokUrls()
   : QObject()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     //apparently the engine controller is needed somewhere, or we will get a crash...
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );

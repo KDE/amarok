@@ -18,6 +18,8 @@
 
 #include "importers/SimpleImporterConfigWidget.h"
 
+#include <KLocalizedString>
+
 #include <QComboBox>
 #include <QLabel>
 #include <QLineEdit>
@@ -28,6 +30,11 @@
 QTEST_MAIN( TestSimpleImporterConfigWidget )
 
 using namespace StatSyncing;
+
+TestSimpleImporterConfigWidget::TestSimpleImporterConfigWidget()
+{
+    KLocalizedString::setApplicationDomain("amarok-test");
+}
 
 void
 TestSimpleImporterConfigWidget::constructorShouldCreateTargetNameRow()

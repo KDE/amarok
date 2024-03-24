@@ -21,10 +21,17 @@
 #include "core/meta/support/PrivateMetaRegistry.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
+#include <KLocalizedString>
 
 using namespace Meta;
 
 QTEST_MAIN( TestPrivateMetaRegistry )
+
+
+TestPrivateMetaRegistry::TestPrivateMetaRegistry()
+{
+    KLocalizedString::setApplicationDomain("amarok-test");
+}
 
 TestPrivateMetaRegistry::~TestPrivateMetaRegistry()
 {

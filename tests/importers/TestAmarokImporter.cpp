@@ -21,6 +21,8 @@
 #include "importers/amarok/AmarokManager.h"
 #include "importers/amarok/AmarokProvider.h"
 
+#include <KLocalizedString>
+
 #include <QProcess>
 #include <QTest>
 
@@ -88,6 +90,7 @@ TestAmarokImporter::initTestCase()
 void
 TestAmarokImporter::init()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     m_cfg = AmarokConfigWidget( QVariantMap() ).config();
     m_cfg.insert( "embedded", true );
 }

@@ -22,6 +22,8 @@
 #include "config-amarok-test.h"
 #include "amarokconfig.h"
 
+#include <KLocalizedString>
+
 #include <QTemporaryDir>
 
 #include <QTest>
@@ -35,7 +37,9 @@ QTEST_GUILESS_MAIN( TestMetaFileTrack )
 
 TestMetaFileTrack::TestMetaFileTrack()
     : m_tmpDir( nullptr )
-{}
+{
+    KLocalizedString::setApplicationDomain("amarok-test");
+}
 
 void TestMetaFileTrack::initTestCase()
 {

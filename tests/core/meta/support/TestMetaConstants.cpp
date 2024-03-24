@@ -39,6 +39,11 @@ QTEST_MAIN( TestMetaConstants )
    In my case the test failed three times. Always a false positive.
 */
 
+TestMetaConstants::TestMetaConstants()
+{
+    KLocalizedString::setApplicationDomain("amarok-test");
+}
+
 void
 TestMetaConstants::dataNameField()
 {

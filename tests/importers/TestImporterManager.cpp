@@ -19,6 +19,8 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 
+#include <KLocalizedString>
+
 #include <QStringList>
 #include <QTest>
 
@@ -30,6 +32,7 @@ using namespace ::testing;
 void
 TestImporterManager::initShouldLoadSettings()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     QVariantMap config;
     config["uid"] = QString( "TestId" );
     config["custom"] = QString( "custom" );

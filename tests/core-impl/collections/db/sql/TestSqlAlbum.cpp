@@ -27,6 +27,8 @@
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "covermanager/CoverFetcher.h"
 
+#include <KLocalizedString>
+
 #include <QFile>
 #include <QImage>
 
@@ -38,6 +40,7 @@ TestSqlAlbum::TestSqlAlbum()
     , m_storage( nullptr )
     , m_tmpDir( nullptr )
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
 }
 
 TestSqlAlbum::~TestSqlAlbum()

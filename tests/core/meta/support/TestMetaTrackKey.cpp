@@ -21,8 +21,14 @@
 #include "core/meta/support/MetaKeys.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
+#include <KLocalizedString>
 
 QTEST_MAIN( TestMetaTrackKey )
+
+TestMetaTrackKey::TestMetaTrackKey()
+{
+    KLocalizedString::setApplicationDomain("amarok-test");
+}
 
 QString
 TestMetaTrackKey::dataPath( const QString &relPath )

@@ -30,6 +30,8 @@
 
 #include "config-amarok-test.h"
 
+#include <KLocalizedString>
+
 #include <QMetaObject>
 #include <QProcess>
 #include <QTimer>
@@ -101,6 +103,7 @@ TestSqlCollectionLocation::TestSqlCollectionLocation()
     , m_storage( nullptr )
     , m_tmpDir( nullptr )
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     int argc = 1;
     char **argv = (char **) malloc(sizeof(char *));
     argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );

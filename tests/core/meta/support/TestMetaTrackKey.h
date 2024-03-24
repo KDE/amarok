@@ -21,6 +21,8 @@
 class TestMetaTrackKey : public QObject
 {
     Q_OBJECT
+    public:
+        TestMetaTrackKey();
 
     private Q_SLOTS:
         /**

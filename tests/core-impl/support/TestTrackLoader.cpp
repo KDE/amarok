@@ -28,6 +28,8 @@
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core-impl/support/TrackLoader.h"
 
+#include <KLocalizedString>
+
 #include <QSignalSpy>
 #include <QTest>
 
@@ -38,6 +40,7 @@ QTEST_GUILESS_MAIN( TestTrackLoader )
 void
 TestTrackLoader::initTestCase()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     AmarokConfig::instance("amarokrc");
 
     qRegisterMetaType<Meta::TrackPtr>();

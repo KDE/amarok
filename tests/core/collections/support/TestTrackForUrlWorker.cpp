@@ -20,6 +20,8 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "mocks/MockTrackForUrlWorker.h"
 
+#include <KLocalizedString>
+
 #include <QMetaType>
 #include <QSignalSpy>
 #include <QUrl>
@@ -32,6 +34,7 @@ QTEST_GUILESS_MAIN( TestTrackForUrlWorker )
 void
 TestTrackForUrlWorker::initTestCase()
 {
+    KLocalizedString::setApplicationDomain("amarok");
     // To make queued signals/slots work with custom payload
     qRegisterMetaType<Meta::TrackPtr>( "Meta::TrackPtr" );
     qRegisterMetaType<ThreadWeaver::Job*>( "ThreadWeaver::Job*" );

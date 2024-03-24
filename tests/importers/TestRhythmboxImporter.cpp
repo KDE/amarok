@@ -20,8 +20,9 @@
 #include "importers/rhythmbox/RhythmboxConfigWidget.h"
 #include "importers/rhythmbox/RhythmboxProvider.h"
 
-#include <QTest>
+#include <KLocalizedString>
 
+#include <QTest>
 
 QTEST_MAIN( TestRhythmboxImporter )
 
@@ -68,6 +69,7 @@ TestRhythmboxImporter::hasOddRatings() const
 void
 TestRhythmboxImporter::init()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     m_cfg = RhythmboxConfigWidget( QVariantMap() ).config();
 }
 

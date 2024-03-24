@@ -20,6 +20,8 @@
 #include "importers/clementine/ClementineConfigWidget.h"
 #include "importers/clementine/ClementineProvider.h"
 
+#include <KLocalizedString>
+
 #include <QTest>
 
 
@@ -62,6 +64,7 @@ TestClementineImporter::reliableStatistics() const
 void
 TestClementineImporter::init()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     m_cfg = ClementineConfigWidget( QVariantMap() ).config();
 }
 

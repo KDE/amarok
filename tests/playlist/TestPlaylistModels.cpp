@@ -29,6 +29,8 @@
 #include "mocks/MetaMock.h"
 #include "mocks/MockTrack.h"
 
+#include <KLocalizedString>
+
 #include <QtDebug>
 #include <QTest>
 
@@ -41,6 +43,7 @@ QTEST_GUILESS_MAIN( TestPlaylistModels )
 TestPlaylistModels::TestPlaylistModels()
     : QObject()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
 }
 
 void TestPlaylistModels::initTestCase()

@@ -21,8 +21,14 @@
 #include "core/meta/support/MetaKeys.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
+#include <KLocalizedString>
 
 QTEST_MAIN( TestMetaAlbumKey )
+
+TestMetaAlbumKey::TestMetaAlbumKey()
+{
+    KLocalizedString::setApplicationDomain("amarok-test");
+}
 
 TestMetaAlbumKey::~TestMetaAlbumKey()
 {

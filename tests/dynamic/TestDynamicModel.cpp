@@ -24,6 +24,8 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
+#include <KLocalizedString>
+
 #include <QByteArray>
 #include <QDataStream>
 #include <QMimeData>
@@ -51,6 +53,7 @@ TestDynamicModel::TestDynamicModel()
 void
 TestDynamicModel::init()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     AmarokConfig::instance("amarokrc");
 
     s_tmpDir = new QTemporaryDir();

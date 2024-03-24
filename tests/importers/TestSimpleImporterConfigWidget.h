@@ -22,6 +22,8 @@
 class TestSimpleImporterConfigWidget : public QObject
 {
     Q_OBJECT
+public:
+    TestSimpleImporterConfigWidget();
 
 private Q_SLOTS:
     void constructorShouldCreateTargetNameRow();

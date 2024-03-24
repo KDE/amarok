@@ -20,6 +20,8 @@
 #include "importers/itunes/ITunesConfigWidget.h"
 #include "importers/itunes/ITunesProvider.h"
 
+#include <KLocalizedString>
+
 #include <QTest>
 
 
@@ -69,6 +71,7 @@ TestITunesImporter::hasOddRatings() const
 void
 TestITunesImporter::init()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     m_cfg = ITunesConfigWidget( QVariantMap() ).config();
 }
 

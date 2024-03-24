@@ -25,6 +25,8 @@
 #include "core/meta/Statistics.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
+#include <KLocalizedString>
+
 #include <QTest>
 
 
@@ -32,7 +34,9 @@ QTEST_GUILESS_MAIN( TestMetaTrack )
 
 TestMetaTrack::TestMetaTrack()
     : m_trackPath( dataPath( "/data/audio/Platz 01.mp3" ) )
-{}
+{
+    KLocalizedString::setApplicationDomain("amarok-test");
+}
 
 TestMetaTrack::~TestMetaTrack()
 {

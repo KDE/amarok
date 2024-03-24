@@ -22,6 +22,7 @@
 
 #include <QTest>
 
+#include <KLocalizedString>
 
 QTEST_MAIN( TestBansheeImporter )
 
@@ -68,6 +69,7 @@ TestBansheeImporter::hasOddRatings() const
 void
 TestBansheeImporter::init()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     m_cfg = BansheeConfigWidget( QVariantMap() ).config();
 }
 

@@ -65,6 +65,7 @@ TestFastForwardImporter::reliableStatistics() const
 void
 TestFastForwardImporter::init()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     m_cfg = FastForwardConfigWidget( QVariantMap() ).config();
 }
 

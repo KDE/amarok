@@ -26,6 +26,8 @@
 #include "mocks/MockAlbum.h"
 #include "mocks/MockArtist.h"
 
+#include <KLocalizedString>
+
 #include <QApplication>
 #include <QModelIndex>
 #include <QSet>
@@ -39,6 +41,11 @@ using ::testing::AnyNumber;
 using ::testing::_;
 
 QTEST_MAIN( TestSingleCollectionTreeItemModel )
+
+TestSingleCollectionTreeItemModel::TestSingleCollectionTreeItemModel()
+{
+    KLocalizedString::setApplicationDomain("amarok-test");
+}
 
 void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackName, const QString &artistName, const QString &albumName )
 {
