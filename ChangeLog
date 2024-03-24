@@ -5,6 +5,7 @@ Amarok ChangeLog
 VERSION 2.9.76
   FEATURES:
    * Enable dragging and dropping tracks from context view to playlist again. (BR 439736)
+   * Add menu entry for collapsing all expanded items in collection view. (BR 244509)
    * Added support for FFmpeg 5.0. (BR 459933)
    * Added support for TagLib 2.0.
 

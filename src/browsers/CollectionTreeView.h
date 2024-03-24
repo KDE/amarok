@@ -148,6 +148,7 @@ class AMAROK_EXPORT CollectionTreeView : public Amarok::PrettyTreeView
         QAction* m_loadAction;
         QAction* m_editAction;
         QAction* m_organizeAction;
+        QAction* m_collapseAction;
 
         QHash<QAction*, Collections::Collection*> m_currentCopyDestination;
         QHash<QAction*, Collections::Collection*> m_currentMoveDestination;
