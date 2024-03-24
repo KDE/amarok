@@ -569,15 +569,6 @@ CollectionTreeView::keyPressEvent( QKeyEvent *event )
             break;
         case Qt::Key_Down:
             break;
-        // L and R should magically work when we get a patched version of qt
-        case Qt::Key_Right:
-        case Qt::Key_Direction_R:
-            expand( current );
-            return;
-        case Qt::Key_Left:
-        case Qt::Key_Direction_L:
-            collapse( current );
-            return;
         default:
             break;
     }
