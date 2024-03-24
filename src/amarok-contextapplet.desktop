@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=ServiceType
-X-KDE-ServiceType=Amarok/Plugin
+X-KDE-ServiceType=Amarok/ContextApplet
 Comment=Plugin for Amarok
 Comment[be]=Утулка для Amarok
 Comment[bg]=Приставка за Amarok

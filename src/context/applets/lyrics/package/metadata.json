@@ -100,7 +100,7 @@
         "Name[zh_CN]": "歌词",
         "Name[zh_TW]": "歌詞",
         "ServiceTypes": [
-            "Amarok/ContextApplet"
+            "KPackage/Generic", "Amarok/ContextApplet"
         ],
         "Version": "1.0",
         "Website": ""

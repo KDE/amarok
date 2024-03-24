@@ -97,7 +97,7 @@
         "Name[zh_CN]": "当前曲目",
         "Name[zh_TW]": "現在的曲目",
         "ServiceTypes": [
-            "Amarok/ContextApplet"
+            "KPackage/Generic","Amarok/ContextApplet"
         ],
         "Version": "1.0",
         "Website": ""

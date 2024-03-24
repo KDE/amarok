@@ -100,7 +100,7 @@
         "Name[zh_CN]": "维基百科",
         "Name[zh_TW]": "維基百科",
         "ServiceTypes": [
-            "Amarok/ContextApplet"
+            "KPackage/Generic", "Amarok/ContextApplet"
         ],
         "Version": "1.0",
         "Website": ""
