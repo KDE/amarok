@@ -189,12 +189,12 @@ void TestMetaTrack::testDiscNumber()
 
 void TestMetaTrack::testLastPlayed()
 {
-    QCOMPARE( m_testTrack1->statistics()->lastPlayed().toSecsSinceEpoch(), 4294967295U ); // portability?
+    QCOMPARE( m_testTrack1->statistics()->lastPlayed().toString(), "" );
 }
 
 void TestMetaTrack::testFirstPlayed()
 {
-    QCOMPARE( m_testTrack1->statistics()->firstPlayed().toSecsSinceEpoch(), 4294967295U ); // portability?
+    QCOMPARE( m_testTrack1->statistics()->firstPlayed().toString(), "" );
 }
 
 void TestMetaTrack::testPlayCount()
