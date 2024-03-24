@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-19 01:41+0000\n"
+"POT-Creation-Date: 2024-03-24 01:39+0000\n"
 "PO-Revision-Date: 2012-11-20 23:54+0200\n"
 "Last-Translator: Diego Iastrubni <elcuco@kde.org>\n"
 "Language-Team: Hebrew <kde-i18n-doc@kde.org>\n"
@@ -4187,6 +4187,7 @@ msgstr "הורד מחדש"
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:85
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:647
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #, fuzzy, kde-format
 #| msgid "&Settings"
 msgid "Settings"
@@ -6723,7 +6724,7 @@ msgctxt "change options"
 msgid "Configure %1"
 msgstr "הגדר %1"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:80
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
 #, fuzzy, kde-format
 #| msgid " Items"
 msgid " Item"

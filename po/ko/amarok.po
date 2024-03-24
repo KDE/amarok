@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-19 01:41+0000\n"
+"POT-Creation-Date: 2024-03-24 01:39+0000\n"
 "PO-Revision-Date: 2023-07-23 20:22+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -4000,6 +4000,7 @@ msgstr "새로 고침"
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:85
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:647
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #, kde-format
 msgid "Settings"
 msgstr "설정"
@@ -6343,7 +6344,7 @@ msgctxt "change options"
 msgid "Configure %1"
 msgstr "%1 설정"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:80
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
 #, kde-format
 msgid " Item"
 msgid_plural " Items"

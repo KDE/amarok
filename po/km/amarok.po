@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-19 01:41+0000\n"
+"POT-Creation-Date: 2024-03-24 01:39+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -4036,6 +4036,7 @@ msgstr "ផ្ទុក​ឡើងវិញ"
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:85
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:647
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #, kde-format
 msgid "Settings"
 msgstr "ការ​កំណត់"
@@ -6437,7 +6438,7 @@ msgctxt "change options"
 msgid "Configure %1"
 msgstr "កំណត់​រចនាសម្ព័ន្ធ %1"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:80
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
 #, kde-format
 msgid " Item"
 msgid_plural " Items"
