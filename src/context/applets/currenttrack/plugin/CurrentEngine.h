@@ -23,11 +23,6 @@
 #include <QPixmap>
 #include <QVariant>
 
-
-namespace Collections {
-    class QueryMaker;
-}
-
 class CurrentEngine : public QObject
 {
     Q_OBJECT
@@ -74,16 +69,10 @@ private:
     void update( Meta::AlbumPtr album );
 
     QPixmap m_cover;
-    Meta::AlbumList m_albums;
     Meta::TrackPtr m_currentTrack;
 
-    /** The address of the query maker used for the albums query.
-        This is only used to check if the query results are from the latest started query maker.
-    */
-    Collections::QueryMaker *m_lastQueryMaker;
-
 private Q_SLOTS:
-    void resultReady( const Meta::AlbumList &albums );
+
 };
 
 

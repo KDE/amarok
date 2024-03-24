@@ -20,16 +20,11 @@
 
 #include "EngineController.h"
 #include "core/support/Debug.h"
-#include "core/capabilities/SourceInfoCapability.h"
-#include "core/collections/Collection.h"
-#include "core/collections/QueryMaker.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverCache.h"
 
-#include <QDateTime>
 
 #include <KFormat>
 #include <KLocalizedString>
@@ -37,7 +32,6 @@
 
 CurrentEngine::CurrentEngine( QObject* parent )
     : QObject( parent )
-    , m_lastQueryMaker( nullptr )
 {
     EngineController* engine = The::engineController();
 
@@ -107,70 +101,17 @@ CurrentEngine::stopped()
     Q_EMIT trackChanged();
 
     m_cover = QPixmap();
-
-    // Collect data for the recently added albums
-    m_albums.clear();
-    Q_EMIT albumChanged();
-
-    Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
-    qm->setAutoDelete( true );
-    qm->setQueryType( Collections::QueryMaker::Album );
-    qm->excludeFilter( Meta::valAlbum, QString(), true, true );
-    qm->orderBy( Meta::valCreateDate, true );
-    qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
-
-    connect( qm, &Collections::QueryMaker::newAlbumsReady,
-                this, &CurrentEngine::resultReady, Qt::QueuedConnection );
-
-    m_lastQueryMaker = qm;
-    qm->run();
 }
 
 void
 CurrentEngine::update( Meta::AlbumPtr album )
 {
-    m_lastQueryMaker = nullptr;
 
     if( !album )
         return;
 
     slotAlbumMetadataChanged( album );
 
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-
-    if( !track )
-        return;
-
-    Meta::ArtistPtr artist = track->artist();
-
-    // Prefer track artist to album artist BUG: 266682
-    if( !artist )
-        artist = album->albumArtist();
-    
-    if( artist && !artist->name().isEmpty() )
-    {
-        m_albums.clear();
-
-        // -- search the collection for albums with the same artist
-        Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
-        qm->setAutoDelete( true );
-        qm->addFilter( Meta::valArtist, artist->name(), true, true );
-        qm->setAlbumQueryMode( Collections::QueryMaker::AllAlbums );
-        qm->setQueryType( Collections::QueryMaker::Album );
-
-        connect( qm, &Collections::QueryMaker::newAlbumsReady,
-                 this, &CurrentEngine::resultReady, Qt::QueuedConnection );
-
-        m_lastQueryMaker = qm;
-        qm->run();
-    }
-}
-
-void
-CurrentEngine::resultReady( const Meta::AlbumList &albums )
-{
-    if( sender() == m_lastQueryMaker )
-        m_albums << albums;
 }
 
 QString
