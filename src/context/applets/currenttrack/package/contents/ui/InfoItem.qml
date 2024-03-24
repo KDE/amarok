@@ -15,7 +15,7 @@
  ****************************************************************************************/
 
 import QtQuick 2.4
-import QtQuick.Controls 2.0
+import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.0 as Kirigami
 import org.kde.amarok.currenttrack 1.0
@@ -44,6 +44,11 @@ ColumnLayout {
         font.pointSize: 32
         minimumPointSize: 12
         elide: Text.ElideRight
+
+        CopyArea {
+            copyMarker: copyMarker
+            targetText: titleLabel.text
+        }
     }
     Label {
         id: artistLabel
@@ -60,6 +65,11 @@ ColumnLayout {
         font.pointSize: 32
         minimumPointSize: 12
         elide: Text.ElideRight
+
+        CopyArea {
+            copyMarker: copyMarker
+            targetText: artistLabel.text
+        }
     }
     Label {
         id: albumLabel
@@ -76,5 +86,10 @@ ColumnLayout {
         font.pointSize: 32
         minimumPointSize: 12
         elide: Text.ElideRight
+
+        CopyArea {
+            copyMarker: copyMarker
+            targetText: albumLabel.text
+        }
     }
 }
