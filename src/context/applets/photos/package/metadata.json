@@ -103,7 +103,7 @@
             "KPackage/Generic", "Amarok/ContextApplet"
         ],
         "Version": "1",
-        "Website": ""
+        "Website": "https://amarok.kde.org/"
     },
     "X-KDE-ParentApp": "amarok"
 }
