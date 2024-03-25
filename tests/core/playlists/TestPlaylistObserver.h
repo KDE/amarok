@@ -28,7 +28,7 @@ class Observer : public QObject, public Playlists::PlaylistObserver
     Q_OBJECT
 
     public:
-        virtual void metadataChanged( Playlists::PlaylistPtr )
+        void metadataChanged( const Playlists::PlaylistPtr &) override
         {
             Q_EMIT metadataChangedSignal();
         }
@@ -36,11 +36,11 @@ class Observer : public QObject, public Playlists::PlaylistObserver
         {
             Q_EMIT tracksLoadedSignal();
         }
-        virtual void trackAdded( Playlists::PlaylistPtr, Meta::TrackPtr, int )
+        void trackAdded( const Playlists::PlaylistPtr &, const Meta::TrackPtr &, int ) override
         {
             Q_EMIT trackAddedSignal();
         }
-        virtual void trackRemoved( Playlists::PlaylistPtr, int )
+        void trackRemoved( const Playlists::PlaylistPtr &, int ) override
         {
             Q_EMIT trackRemovedSignal();
         }
