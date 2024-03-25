@@ -35,6 +35,7 @@
 #include <QPainter>
 
 #include <KIconEngine>
+#include <KIconLoader>
 
 using namespace Podcasts;
 
@@ -126,7 +127,7 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastChannelPtr &channel ) const
         return pixmap;
     }
     else
-        return ( QIcon(new KIconEngine( "podcast-amarok", nullptr, emblems )).pixmap( 32, 32 ) );
+        return ( QIcon(new KIconEngine( "podcast-amarok", KIconLoader::global(), emblems )).pixmap( 32, 32 ) );
 }
 
 QVariant
@@ -137,9 +138,9 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastEpisodePtr &episode ) const
         emblems << QStringLiteral("go-down");
 
     if( episode->isNew() )
-        return ( QIcon( new KIconEngine( "rating", nullptr, emblems )).pixmap( 24, 24 ) );
+        return ( QIcon( new KIconEngine( "rating", KIconLoader::global(), emblems )).pixmap( 24, 24 ) );
     else
-        return ( QIcon( new KIconEngine( "podcast-amarok", nullptr, emblems )).pixmap( 24, 24 ));
+        return ( QIcon( new KIconEngine( "podcast-amarok", KIconLoader::global(), emblems )).pixmap( 24, 24 ));
 }
 
 QVariant
