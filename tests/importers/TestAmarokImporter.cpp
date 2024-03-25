@@ -39,7 +39,7 @@ TestAmarokImporter::getProvider()
     cfg.insert( "name", "Amarok2Test" );
     cfg.insert( "embedded", true );
     cfg.insert( "dbPath", QCoreApplication::applicationDirPath() +
-                          "/importers_files/amarok2_mysqle" );
+                          "/../tests/importers_files/amarok2_mysqle" );
 
     return ProviderPtr( new AmarokProvider( cfg, nullptr ) );
 }
@@ -48,7 +48,7 @@ ProviderPtr
 TestAmarokImporter::getWritableProvider()
 {
     QDir base( QCoreApplication::applicationDirPath() );
-    QDir files( base.filePath( "importers_files" ) );
+    QDir files( base.filePath( "../tests/importers_files" ) );
     QDir tmp( base.filePath( "importers_tmp" ) );
 
     foreach( const QString &subdir,
