@@ -43,16 +43,21 @@ AmarokQml.Applet {
             bottom: parent.bottom
         }
 
-        RowLayout {
+        GridLayout {
+            id: artistRatingGrid
+            Layout.preferredWidth: parent.width
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.alignment: Qt.AlignTop
+            flow: parent.width < ( infoItem.Layout.minimumWidth + ratingItem.Layout.minimumWidth ) * 8 ? GridLayout.TopToBottom : GridLayout.LeftToRight
 
             InfoItem {
                 id: infoItem
 
+                width: ( artistRatingGrid.flow == GridLayout.TopToBottom ? parent.width : parent.width / 2 )
+                Layout.minimumWidth: 24
+                Layout.maximumWidth: parent.width
                 Layout.fillHeight: true
-                Layout.fillWidth: true
                 Layout.alignment: Qt.AlignLeft
             }
             AmarokQml.RatingItem {
@@ -60,6 +65,11 @@ AmarokQml.Applet {
 
                 Layout.preferredWidth: height * 6
                 Layout.preferredHeight: parent.height / 5
+                Layout.maximumHeight: parent.height / 5
+                Layout.minimumWidth: 24
+                Layout.maximumWidth: parent.width / ( artistRatingGrid.flow == GridLayout.TopToBottom ? 1 : 2 )
+                Layout.minimumHeight: 100
+
                 Layout.alignment: Qt.AlignTop | Qt.AlignRight
                 rating: CurrentTrackEngine.rating
                 onClicked: CurrentTrackEngine.rating = newRating
@@ -72,7 +82,7 @@ AmarokQml.Applet {
             Layout.alignment: Qt.AlignBottom
             Layout.preferredHeight: parent.height / 5
         }
-        visible: CurrentTrackEngine.track != ""
+        visible: CurrentTrackEngine.track !== ""
     }
 
     RowLayout {
@@ -83,24 +93,25 @@ AmarokQml.Applet {
             top: parent.top
             bottom: parent.bottom
         }
-        Rectangle {
-            width: parent.width/10
-        }
         Text {
             id: nothingPLaying
             font.bold: true
+            Layout.alignment: Qt.AlignCenter
+            Layout.minimumWidth: parent.height / 3
             text: i18n("No track playing")
         }
         AmarokQml.PixmapItem {
-            width: parent.width/4
-            height: parent.width/4
+            id: amarokLogo
+            width: parent.width / 4
+            height: width
+            Layout.minimumWidth: parent.height / 3
             source: Svg.renderSvg(applet.imageUrl("amarok-currenttrack.svg"),
                                   "CurrentTrack",
                                   width,
                                   height,
                                   "amarok_logo");
         }
-        visible: CurrentTrackEngine.track == ""
+        visible: CurrentTrackEngine.track === ""
     }
 
     Component {
