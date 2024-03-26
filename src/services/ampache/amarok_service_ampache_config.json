@@ -8,6 +8,7 @@
         "Description[es]": "Configurar los servidores ampache a los que conectarse",
         "Description[fr]": "Définit le ou les serveurs « Ampache » auxquels se connecter",
         "Description[gl]": "Configura o servidor ampache co que conectar.",
+        "Description[it]": "Configura server Ampache ai quali connetterti",
         "Description[nl]": "Stelt de ampache-server(s) in waarmee u verbinding wilt maken",
         "Description[sl]": "Nastavi strežnike Ampache, s katerimi se boste povezali",
         "Description[tr]": "Bağlanılacak ampache sunucularını ayarlar",
