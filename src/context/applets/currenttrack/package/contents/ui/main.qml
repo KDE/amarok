@@ -133,6 +133,11 @@ AmarokQml.Applet {
                 anchors.margins: parent.radius
                 source: CurrentTrackEngine.cover
             }
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: CurrentTrackEngine.displayCover()
+            }
         }
     }
     Component {

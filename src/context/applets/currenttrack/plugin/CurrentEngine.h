@@ -52,6 +52,7 @@ public:
     int timesPlayed() const;
     QVariant cover() const { return QVariant(m_cover); }
     bool hasValidCover() const { return !m_cover.isNull(); }
+    Q_INVOKABLE void displayCover();
 
 Q_SIGNALS:
     void trackChanged();

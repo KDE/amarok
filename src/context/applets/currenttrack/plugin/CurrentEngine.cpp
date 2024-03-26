@@ -24,6 +24,7 @@
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "covermanager/CoverCache.h"
+#include "covermanager/CoverFetchingActions.h"
 
 
 #include <KFormat>
@@ -208,4 +209,15 @@ CurrentEngine::timesPlayed() const
         return 0;
 
     return m_currentTrack->statistics()->playCount();
+}
+
+void
+CurrentEngine::displayCover()
+{
+    if( m_currentTrack && m_currentTrack->album() )
+    {
+        auto dc = new DisplayCoverAction( this,  m_currentTrack->album() );
+        dc->trigger();
+        delete dc;
+    }
 }
