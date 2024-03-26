@@ -67,6 +67,11 @@ MouseArea {
         icon.name: "edit-copy"
         flat: true
 
+        onClicked:
+        {
+            animationRunning = true
+            copy(parent.targetText);
+        }
         SequentialAnimation {
             id: clickAnimation
             OpacityAnimator { target: copyMarker; from: 0.3; to: 0.9; duration: 200; }
