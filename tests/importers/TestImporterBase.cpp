@@ -698,7 +698,7 @@ TestImporterBase::commitAfterSettingAllStatisticsShouldSaveThem()
     if( provider->writableTrackStatsData() & Meta::valLabel )
     {
         QFETCH( QStringList, newLabels );
-        track->setLabels( newLabels.toSet() );
+        track->setLabels( QSet<QString> ( newLabels.begin(), newLabels.end() ) );
     }
 
     track->commit();
@@ -732,7 +732,7 @@ TestImporterBase::commitAfterSettingAllStatisticsShouldSaveThem()
     if( provider->writableTrackStatsData() & Meta::valLabel )
     {
         QFETCH( QStringList, newLabels );
-        QCOMPARE( track->labels(), newLabels.toSet() );
+        QCOMPARE( track->labels(), QSet<QString> ( newLabels.begin(), newLabels.end() ) );
     }
 
     verifyEqualExcept( data, track, Meta::valFirstPlayed | Meta::valLastPlayed |
@@ -957,12 +957,12 @@ TestImporterBase::commitAfterSettingLabelsShouldSaveThem()
     QVERIFY( track );
 
     const Meta::FieldHash data = saveData( track );
-    track->setLabels( newLabels.toSet() );
+    track->setLabels( QSet<QString> ( newLabels.begin(), newLabels.end() ) );
     track->commit();
     provider->commitTracks();
 
     track = trackForName( provider, title, "testStatistics" );
     QVERIFY( track );
-    QCOMPARE( track->labels(), newLabels.toSet() );
+    QCOMPARE( track->labels(), QSet<QString> ( newLabels.begin(), newLabels.end() ) );
     verifyEqualExcept( data, track, Meta::valLabel );
 }
