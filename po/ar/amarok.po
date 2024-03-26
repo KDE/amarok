@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-24 01:39+0000\n"
+"POT-Creation-Date: 2024-03-26 02:00+0000\n"
 "PO-Revision-Date: 2015-02-04 19:01+0000\n"
 "Last-Translator: Safa Alfulaij <safa1996alfulaij@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
@@ -8278,7 +8278,7 @@ msgstr ""
 msgid "No Artist"
 msgstr "لا فنّان"
 
-#: covermanager/CoverViewDialog.cpp:34 covermanager/CoverViewDialog.cpp:45
+#: covermanager/CoverViewDialog.cpp:33 covermanager/CoverViewDialog.cpp:44
 #, kde-format
 msgid "Cover View"
 msgstr ""
@@ -12050,7 +12050,7 @@ msgid "Show tooltips"
 msgstr "أظهر التّلميحات"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
 #, kde-format
 msgid "Preview"
 msgstr "عاين"
@@ -16113,12 +16113,12 @@ msgid "Slim Toolbar"
 msgstr ""
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:202
+#: widgets/Osd.cpp:199
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "المستوى: %1% (مكتوم)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:202
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -16568,17 +16568,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "بين"
 
-#: widgets/Osd.cpp:188
+#: widgets/Osd.cpp:185
 #, kde-format
 msgid "Rating changed"
 msgstr "تغيّر التّقييم"
 
-#: widgets/Osd.cpp:263
+#: widgets/Osd.cpp:260
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "المستوى: 100% (مكتوم)"
 
-#: widgets/Osd.cpp:511
+#: widgets/Osd.cpp:510
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"

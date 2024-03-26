@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-24 01:39+0000\n"
+"POT-Creation-Date: 2024-03-26 02:00+0000\n"
 "PO-Revision-Date: 2014-07-03 09:31+0200\n"
 "Last-Translator: Sönke Dibbern <s_dibbern@web.de>\n"
 "Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
@@ -8430,7 +8430,7 @@ msgstr "%1 - %2"
 msgid "No Artist"
 msgstr "Keen Künstler"
 
-#: covermanager/CoverViewDialog.cpp:34 covermanager/CoverViewDialog.cpp:45
+#: covermanager/CoverViewDialog.cpp:33 covermanager/CoverViewDialog.cpp:44
 #, kde-format
 msgid "Cover View"
 msgstr "Titelbild-Ansicht"
@@ -12428,7 +12428,7 @@ msgid "Show tooltips"
 msgstr "Kortinformatschonen wiesen"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
 #, kde-format
 msgid "Preview"
 msgstr "Vöransicht"
@@ -16734,13 +16734,13 @@ msgid "Slim Toolbar"
 msgstr "Hööft-Warktüüchbalken"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:202
+#: widgets/Osd.cpp:199
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "Luutstärk: 100% (stillmaakt)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:202
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -17187,17 +17187,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "twischen"
 
-#: widgets/Osd.cpp:188
+#: widgets/Osd.cpp:185
 #, kde-format
 msgid "Rating changed"
 msgstr "Beweerten ännert"
 
-#: widgets/Osd.cpp:263
+#: widgets/Osd.cpp:260
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Luutstärk: 100% (stillmaakt)"
 
-#: widgets/Osd.cpp:511
+#: widgets/Osd.cpp:510
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"

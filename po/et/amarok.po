@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-24 01:39+0000\n"
+"POT-Creation-Date: 2024-03-26 02:00+0000\n"
 "PO-Revision-Date: 2020-06-05 19:27+0300\n"
 "Last-Translator: Marek Laane <qiilaq69@gmail.com>\n"
 "Language-Team: Estonian <kde-et@lists.linux.ee>\n"
@@ -8269,7 +8269,7 @@ msgstr "%1 - \"%2\""
 msgid "No Artist"
 msgstr "Esitaja puudub"
 
-#: covermanager/CoverViewDialog.cpp:34 covermanager/CoverViewDialog.cpp:45
+#: covermanager/CoverViewDialog.cpp:33 covermanager/CoverViewDialog.cpp:44
 #, kde-format
 msgid "Cover View"
 msgstr "Kaanepildi vaade"
@@ -12166,7 +12166,7 @@ msgid "Show tooltips"
 msgstr "Kohtspikrite näitamine"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
 #, kde-format
 msgid "Preview"
 msgstr "Eelvaatlus"
@@ -16414,12 +16414,12 @@ msgid "Slim Toolbar"
 msgstr "Väike tööriistariba"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:202
+#: widgets/Osd.cpp:199
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "Helitugevus: %1 (tumm)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:202
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -16855,17 +16855,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "vahemikus"
 
-#: widgets/Osd.cpp:188
+#: widgets/Osd.cpp:185
 #, kde-format
 msgid "Rating changed"
 msgstr "Hinnang muudetud"
 
-#: widgets/Osd.cpp:263
+#: widgets/Osd.cpp:260
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Helitugevus: 100% (tumm)"
 
-#: widgets/Osd.cpp:511
+#: widgets/Osd.cpp:510
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"

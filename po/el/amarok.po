@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-24 01:39+0000\n"
+"POT-Creation-Date: 2024-03-26 02:00+0000\n"
 "PO-Revision-Date: 2021-06-19 07:32+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -8436,7 +8436,7 @@ msgstr "%1 - %2"
 msgid "No Artist"
 msgstr "Κανένας καλλιτέχνης"
 
-#: covermanager/CoverViewDialog.cpp:34 covermanager/CoverViewDialog.cpp:45
+#: covermanager/CoverViewDialog.cpp:33 covermanager/CoverViewDialog.cpp:44
 #, kde-format
 msgid "Cover View"
 msgstr "Προβολή εξώφυλλου"
@@ -12364,7 +12364,7 @@ msgid "Show tooltips"
 msgstr "Εμφάνιση συμβουλών"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
 #, kde-format
 msgid "Preview"
 msgstr "Προεπισκόπηση"
@@ -16657,12 +16657,12 @@ msgid "Slim Toolbar"
 msgstr "Λεπτή γραμμή εργαλείων"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:202
+#: widgets/Osd.cpp:199
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "Ένταση: %1% (χωρίς ήχο)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:202
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -17105,17 +17105,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "ανάμεσα"
 
-#: widgets/Osd.cpp:188
+#: widgets/Osd.cpp:185
 #, kde-format
 msgid "Rating changed"
 msgstr "Η αξιολόγηση τροποποιήθηκε"
 
-#: widgets/Osd.cpp:263
+#: widgets/Osd.cpp:260
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Ένταση: 100% (χωρίς ήχο)"
 
-#: widgets/Osd.cpp:511
+#: widgets/Osd.cpp:510
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-24 01:39+0000\n"
+"POT-Creation-Date: 2024-03-26 02:00+0000\n"
 "PO-Revision-Date: 2020-04-04 13:51+0000\n"
 "Last-Translator: Sveinn í Felli <sv@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
@@ -8471,7 +8471,7 @@ msgstr "%1 - %2"
 msgid "No Artist"
 msgstr "Enginn flytjandi"
 
-#: covermanager/CoverViewDialog.cpp:34 covermanager/CoverViewDialog.cpp:45
+#: covermanager/CoverViewDialog.cpp:33 covermanager/CoverViewDialog.cpp:44
 #, fuzzy, kde-format
 #| msgid "Cover image"
 msgid "Cover View"
@@ -12481,7 +12481,7 @@ msgid "Show tooltips"
 msgstr "Sýna vísbendingar"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
 #, fuzzy, kde-format
 #| msgid "Preview Tracks"
 msgid "Preview"
@@ -16847,13 +16847,13 @@ msgid "Slim Toolbar"
 msgstr "Aðaltækjaslá"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:202
+#: widgets/Osd.cpp:199
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "Hljóðstyrkur: 100% (þaggað)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:202
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, fuzzy, kde-format
 #| msgid "Volume: %1% %2"
@@ -17305,17 +17305,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "á milli"
 
-#: widgets/Osd.cpp:188
+#: widgets/Osd.cpp:185
 #, kde-format
 msgid "Rating changed"
 msgstr "Stigagjöf breytt"
 
-#: widgets/Osd.cpp:263
+#: widgets/Osd.cpp:260
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Hljóðstyrkur: 100% (þaggað)"
 
-#: widgets/Osd.cpp:511
+#: widgets/Osd.cpp:510
 #, fuzzy, kde-format
 #| msgid "OSD Preview - drag to reposition"
 msgid ""

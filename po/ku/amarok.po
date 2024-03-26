@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-24 01:39+0000\n"
+"POT-Creation-Date: 2024-03-26 02:00+0000\n"
 "PO-Revision-Date: 2009-02-21 06:51+0200\n"
 "Last-Translator: Omer Ensari <oensari@gmail.com>\n"
 "Language-Team: Kurdish <kde-i18n-doc@lists.kde.org>\n"
@@ -8566,7 +8566,7 @@ msgstr "%1 - %2"
 msgid "No Artist"
 msgstr "Hunermend Tune ye "
 
-#: covermanager/CoverViewDialog.cpp:34 covermanager/CoverViewDialog.cpp:45
+#: covermanager/CoverViewDialog.cpp:33 covermanager/CoverViewDialog.cpp:44
 #, fuzzy, kde-format
 #| msgid "Cover image"
 msgid "Cover View"
@@ -12608,7 +12608,7 @@ msgid "Show tooltips"
 msgstr "Tenê hevgirtî yan nîşan bide"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
 #, kde-format
 msgid "Preview"
 msgstr "Pêşdîtin"
@@ -16958,13 +16958,13 @@ msgid "Slim Toolbar"
 msgstr ""
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:202
+#: widgets/Osd.cpp:199
 #, fuzzy, kde-format
 #| msgid "Volume: 100%"
 msgid "Volume: %1% (muted)"
 msgstr "Deng: 100%"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:202
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, fuzzy, kde-format
 #| msgid "Volume: %1%"
@@ -17429,18 +17429,18 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "Navbera"
 
-#: widgets/Osd.cpp:188
+#: widgets/Osd.cpp:185
 #, kde-format
 msgid "Rating changed"
 msgstr "Ecibandin guherî "
 
-#: widgets/Osd.cpp:263
+#: widgets/Osd.cpp:260
 #, fuzzy, kde-format
 #| msgid "Volume: 100%"
 msgid "Volume: 100% (muted)"
 msgstr "Deng: 100%"
 
-#: widgets/Osd.cpp:511
+#: widgets/Osd.cpp:510
 #, fuzzy, kde-format
 #| msgid "OSD Preview - drag to reposition"
 msgid ""

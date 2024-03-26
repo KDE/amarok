@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-24 01:39+0000\n"
+"POT-Creation-Date: 2024-03-26 02:00+0000\n"
 "PO-Revision-Date: 2009-06-14 00:43+0800\n"
 "Last-Translator: Sharuzzaman Ahmat Raslan <sharuzzaman@myrealbox.com>\n"
 "Language-Team: Malay <kedidiemas@yahoogroups.com>\n"
@@ -8062,7 +8062,7 @@ msgstr "%1 - %2"
 msgid "No Artist"
 msgstr ""
 
-#: covermanager/CoverViewDialog.cpp:34 covermanager/CoverViewDialog.cpp:45
+#: covermanager/CoverViewDialog.cpp:33 covermanager/CoverViewDialog.cpp:44
 #, fuzzy, kde-format
 msgid "Cover View"
 msgstr "Pengurus Kulit Album"
@@ -11821,7 +11821,7 @@ msgid "Show tooltips"
 msgstr "Papar Bar Alatan"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
 #, fuzzy, kde-format
 msgid "Preview"
 msgstr "&Sebelum"
@@ -15803,12 +15803,12 @@ msgid "Slim Toolbar"
 msgstr "Sembunyikan Bar Alat"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:202
+#: widgets/Osd.cpp:199
 #, fuzzy, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "Volum: %1%"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:202
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, fuzzy, kde-format
 msgid "Volume: %1%"
@@ -16242,17 +16242,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "antara"
 
-#: widgets/Osd.cpp:188
+#: widgets/Osd.cpp:185
 #, kde-format
 msgid "Rating changed"
 msgstr ""
 
-#: widgets/Osd.cpp:263
+#: widgets/Osd.cpp:260
 #, fuzzy, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Volum: %1%"
 
-#: widgets/Osd.cpp:511
+#: widgets/Osd.cpp:510
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
