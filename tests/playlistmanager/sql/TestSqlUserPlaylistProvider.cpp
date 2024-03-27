@@ -19,12 +19,15 @@
 
 #include "TestSqlUserPlaylistProvider.h"
 
+#include "amarokconfig.h"
 #include "EngineController.h"
 #include "config-amarok-test.h"
 #include "core/meta/Meta.h"
 #include "core/support/Components.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
+
+#include <KLocalizedString>
 
 #include <QTest>
 #include <QDir>
@@ -33,7 +36,9 @@
 QTEST_MAIN( TestSqlUserPlaylistProvider )
 
 TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider()
-{}
+{
+    KLocalizedString::setApplicationDomain("amarok-test");
+}
 
 QString
 TestSqlUserPlaylistProvider::dataPath( const QString &relPath )
@@ -43,6 +48,7 @@ TestSqlUserPlaylistProvider::dataPath( const QString &relPath )
 
 void TestSqlUserPlaylistProvider::initTestCase()
 {
+    AmarokConfig::instance("amarokrc");
     m_testSqlUserPlaylistProvider = new Playlists::SqlUserPlaylistProvider( true );
     m_testSqlUserPlaylistProvider->deletePlaylists( m_testSqlUserPlaylistProvider->playlists() );
 }

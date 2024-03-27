@@ -146,7 +146,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
         filename.append( QLatin1String( ".xspf" ) );
     }
 
-    QUrl path( Amarok::saveLocation( QStringLiteral("playlists") ) );
+    QUrl path = QUrl::fromLocalFile( Amarok::saveLocation( QStringLiteral("playlists") ) );
     path = path.adjusted(QUrl::StripTrailingSlash);
     path.setPath(path.path() + QLatin1Char('/') + ( Amarok::vfatPath( filename ) ));
     if( QFileInfo( path.toLocalFile() ).exists() )

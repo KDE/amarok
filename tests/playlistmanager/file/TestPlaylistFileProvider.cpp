@@ -19,6 +19,7 @@
 
 #include "TestPlaylistFileProvider.h"
 
+#include "amarokconfig.h"
 #include "config-amarok-test.h"
 #include "core/support/Amarok.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -29,14 +30,18 @@
 #include <QFile>
 
 #include <KConfigGroup>
+#include <KLocalizedString>
 
 QTEST_MAIN( TestPlaylistFileProvider )
 
 TestPlaylistFileProvider::TestPlaylistFileProvider()
-{}
+{
+    KLocalizedString::setApplicationDomain("amarok-test");
+}
 
 void TestPlaylistFileProvider::initTestCase()
 {
+    AmarokConfig::instance("amarokrc");
     m_testPlaylistFileProvider = new Playlists::PlaylistFileProvider();
     QVERIFY( m_testPlaylistFileProvider );
 

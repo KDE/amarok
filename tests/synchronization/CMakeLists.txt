@@ -30,7 +30,7 @@ target_link_libraries(testmasterslavesynchronizationjob
                         amarokcore
                         amaroklib
                         KF5::KIOCore
-                        ${KDE4_SOLID_LIBRARY}
+                        KF5::Solid
                         Qt5::Gui
                         KF5::ThreadWeaver
                         Qt5::Test
@@ -56,8 +56,7 @@ target_link_libraries(testunionjob
                         amarokcore
                         amaroklib
                         KF5::KIOCore
-
-                        ${KDE4_SOLID_LIBRARY}
+                        KF5::Solid
                         Qt5::Gui
                         KF5::ThreadWeaver
                         Qt5::Test
@@ -83,8 +82,7 @@ target_link_libraries(testonewaysynchronizationjob
                         amarokcore
                         amaroklib
                         KF5::KIOCore
-
-                        ${KDE4_SOLID_LIBRARY}
+                        KF5::Solid
                         Qt5::Gui
                         KF5::ThreadWeaver
                         Qt5::Test

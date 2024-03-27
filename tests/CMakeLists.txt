@@ -148,4 +148,4 @@ endif()
 add_dependencies( testtrackorganizer amarokcore )
 add_dependencies( testtrackorganizer amaroklib )
 
-target_link_libraries( testtrackorganizer amarokcore amaroklib ${KDE4_SOLID_LIBRARY} Qt5::Test Qt5::Core Qt5::Gui ${GOOGLEMOCK_LIBRARIES})
+target_link_libraries( testtrackorganizer amarokcore amaroklib KF5::Solid Qt5::Test Qt5::Core Qt5::Gui ${GOOGLEMOCK_LIBRARIES})

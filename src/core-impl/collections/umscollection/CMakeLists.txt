@@ -28,8 +28,7 @@ target_link_libraries(amarok_collection-umscollection
   amarokcore
   amarok-transcoding
   KF5::KIOCore
-  
-  ${KDE4_SOLID_LIBRARY}
+  KF5::Solid
   KF5::ThreadWeaver
   Qt5::Gui
   )
