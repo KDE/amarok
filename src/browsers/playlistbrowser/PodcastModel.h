@@ -82,6 +82,7 @@ class AMAROK_EXPORT PodcastModel : public PlaylistBrowserModel
 
     private:
         static PodcastModel *s_instance;
+        static QPixmap *m_shadedStar;
         PodcastModel();
 
         QVariant channelData( const Podcasts::PodcastChannelPtr &channel,

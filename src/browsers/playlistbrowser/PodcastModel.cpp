@@ -29,6 +29,7 @@
 #include "widgets/PrettyTreeRoles.h"
 
 #include <QAction>
+#include <QGuiApplication>
 #include <QIcon>
 #include <QInputDialog>
 #include <QListIterator>
@@ -48,6 +49,7 @@ namespace The
 }
 
 PlaylistBrowserNS::PodcastModel* PlaylistBrowserNS::PodcastModel::s_instance = nullptr;
+QPixmap *PlaylistBrowserNS::PodcastModel::m_shadedStar = nullptr;
 
 PlaylistBrowserNS::PodcastModel*
 PlaylistBrowserNS::PodcastModel::instance()
@@ -120,8 +122,25 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastChannelPtr &channel ) const
 
         // if it's a new episode draw the overlay:
         if( !emblems.isEmpty() )
-            // draw the overlay the same way KIconLoader does:
-            p.drawPixmap( 2, 32 - 16 - 2, QIcon::fromTheme( QStringLiteral("rating") ).pixmap( 16, 16 ) );
+        {
+            if( !m_shadedStar )
+            {
+                // Prepare a background-foreground pair of stars for better visibility, BR 219518
+                m_shadedStar = new QPixmap( 32, 32 );
+                m_shadedStar->fill(Qt::transparent);
+                QPainter iconp( m_shadedStar );
+
+                QPalette pal = QGuiApplication::palette();
+                pal.setColor( QPalette::WindowText , pal.color( QPalette::Window ) );
+                KIconLoader::global()->setCustomPalette(pal);
+                iconp.drawPixmap( 0, 0, KIconLoader::global()->loadScaledIcon( QStringLiteral("rating"), KIconLoader::NoGroup, 1, QSize( 32, 32 ) ) );
+
+                KIconLoader::global()->resetPalette();
+                iconp.drawPixmap( 4, 4, KIconLoader::global()->loadScaledIcon( QStringLiteral("rating"), KIconLoader::NoGroup, 1, QSize( 24, 24 ) ) );
+                iconp.end();
+            }
+            p.drawPixmap( 2, 32 - 16 - 2, 16, 16, *m_shadedStar );
+        }
         p.end();
 
         return pixmap;
