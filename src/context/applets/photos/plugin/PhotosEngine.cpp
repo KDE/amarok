@@ -218,12 +218,12 @@ PhotosEngine::photosListFromXml( QXmlStreamReader &xml )
             QStringRef title  = attr.value( QLatin1String("title") );
 
             QUrl photoUrl;
-            photoUrl.setScheme( "http" );
-            photoUrl.setHost( QStringLiteral("farm%1.static.flickr.com").arg( farm.toString() ) );
+            photoUrl.setScheme( "https" );
+            photoUrl.setHost( QStringLiteral("live.staticflickr.com") );
             photoUrl.setPath( QStringLiteral("/%1/%2_%3.jpg").arg( server.toString(), id.toString(), secret.toString() ) );
 
             QUrl pageUrl;
-            pageUrl.setScheme( "http" );
+            pageUrl.setScheme( "https" );
             pageUrl.setHost( QLatin1String("www.flickr.com") );
             pageUrl.setPath( QStringLiteral("/photos/%1/%2").arg( owner.toString(), id.toString() ) );
 
