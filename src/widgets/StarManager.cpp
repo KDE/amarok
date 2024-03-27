@@ -100,12 +100,7 @@ StarManager::reinitStars( int height, int margin )
         tempstar = QImage();
         temphalfstar = QImage();
     }
-    //TODO:PORT
-//     if( Playlist::instance() ) Playlist::instance()->qscrollview()->viewport()->update();
-/*PORT 2.0
-    if( CollectionView::instance() &&
-            CollectionView::instance()->viewMode() == CollectionView::modeFlatView )
-        CollectionView::instance()->triggerUpdate(); */
+
     Q_EMIT ratingsColorsChanged();
 }
 

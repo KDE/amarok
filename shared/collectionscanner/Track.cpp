@@ -168,7 +168,6 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader, CollectionScanner::Di
    , m_score( -1 )
    , m_playcount( -1 )
 {
-    // improve scanner with skipCurrentElement as soon as Amarok requires Qt 4.6
     while (!reader->atEnd()) {
         reader->readNext();
 

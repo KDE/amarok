@@ -275,7 +275,6 @@ App::handleCliArgs(const QString &cwd)
         for( int i = 0; i < m_args->positionalArguments().count() ; i++ )
         {
             QUrl url( QUrl::fromUserInput( m_args->positionalArguments().at( i ), QString(), QUrl::AssumeLocalFile ) );
-            //TODO:PORTME
             if( Podcasts::PodcastProvider::couldBeFeed( url.url() ) )
             {
                 QUrl feedUrl = Podcasts::PodcastProvider::toFeedUrl( url.url() );

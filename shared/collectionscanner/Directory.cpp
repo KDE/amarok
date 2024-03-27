@@ -125,7 +125,6 @@ CollectionScanner::Directory::Directory( QXmlStreamReader *reader )
     , m_skipped( false )
     , m_ignored( false )
 {
-    // improve scanner with skipCurrentElement as soon as Amarok requires Qt 4.6
     while (!reader->atEnd()) {
         reader->readNext();
 
