@@ -56,13 +56,8 @@ Required
       Embedded (In-process database support)
 
 Optional
-    * Taglib 1.8 for support of MOD, IT, S3M and XM files
-    * Taglib 1.9 for support of Opus files
-      http://taglib.org/
-      https://github.com/taglib/taglib
-
     * TagLib Extras 1.0.1 (or newer)
-      (Support for metadata reading of additional file types)
+      (Support for metadata reading of RealMedia and Audible file types)
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
 
     * iPod support requires:
@@ -86,8 +81,7 @@ Optional
 
     * Liblastfm 1.0.3 (or newer)
       (For scrobbling, internet radio, and artist info)
-      http://cdn.last.fm/client/liblastfm-1.0.3.tar.gz
-      https://github.com/eartle/liblastfm
+      https://github.com/lastfm/liblastfm
 
     * MusicBrainz-based audio fingerprint tag lookup requires:
       * FFmpeg 0.7.0 (or newer) - https://ffmpeg.org/
@@ -144,10 +138,7 @@ and stutter!" please visit:
 
 If you wish to contribute to Amarok, you should build it from Git and subscribe
 to the amarok AT kde.org mailing list. The IRC channel is also a place where
-it's nice to be. There you can talk to other developers easily, and you can see
-instant notifications of commits to the Git master repository. For instant email
-notification of commits, visit http://commitfilter.kde.org/ , and http://amarok.be/fisheye
-provides a slightly-less-instant overview.
+it's nice to be. There you can talk to other developers easily.
 
 More information at:
 https://community.kde.org/Amarok/Development/Join

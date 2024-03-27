@@ -22,8 +22,8 @@ VERSION 2.9.76
    * Fix TagLib Extras to be treated as optional and not required for building Amarok.
    * Various fixes for e.g. crashes (including BR 428769, BR 444408, BR 468303,
      BR 393080), problems of playback stalling on missing files (including partial fix
-     for BR 438651), UI bugs in playlist layout editor, and .desktop files, AppStream
-     metadata and DBus service specifications.
+     for BR 438651), UI bugs (e.g. podcasts BR 484395 and playlist layout editor),
+     and .desktop files, AppStream metadata and DBus service specifications.
 
 
 VERSION 2.9.71
