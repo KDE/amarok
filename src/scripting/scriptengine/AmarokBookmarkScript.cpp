@@ -136,12 +136,9 @@ BookmarkGroupPrototype::bookmarkGroupCtor( QJSValue &arg0, QJSValue &arg1, QJSEn
         }
     }
     if( !group ) {
-        /* TODO - Use commented code once QT versions >= 5.12
         QJSValue errorObj = engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
         engine->throwError( errorObj.errorType(), errorObj.toString() );
         return errorObj;
-        */
-        return engine->evaluate("throw new TypeError('Invalid arguments!')");
     }
 
     return engine->newQObject( new BookmarkGroupPrototype( BookmarkGroupPtr( group ) ) );
@@ -275,12 +272,9 @@ BookmarkPrototype::bookmarkCtor( QJSValue &arg0, QJSValue &arg1, QJSEngine *engi
             }
     }
     if( !url ) {
-        /* TODO - Use commented code once QT versions >= 5.12
         QJSValue errorObj = engine->newErrorObject( QJSValue::TypeError,  QStringLiteral("Invalid arguments!") );
         engine->throwError( errorObj.errorType(), errorObj.toString() );
         return errorObj;
-        */
-        return engine->evaluate("throw new TypeError('Invalid arguments!')");
     }
 
     return engine->newQObject( new BookmarkPrototype( url ) );

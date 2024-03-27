@@ -427,11 +427,8 @@ TrackSetExporterWrapper::trackSetConstructor( QJSValue arg0, QJSValue arg1 )
     }
     if( trackSetExporter == nullptr )
     {
-        /* TODO - Use commented code once QT versions >= 5.12
         m_engine->throwError( QJSValue::SyntaxError, QStringLiteral("Invalid arguments for TrackSet!") );
         return QJSValue(QJSValue::UndefinedValue);
-        */
-        return m_engine->evaluate("throw new TypeError('Invalid arguments for TrackSet!')");
     }
 
     const QJSValue trackSetObject = m_engine->newQObject( trackSetExporter );

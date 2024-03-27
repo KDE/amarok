@@ -58,11 +58,7 @@ void
 ScriptImporter::loadExtension( const QString& src )
 {
     DEBUG_BLOCK
-    /* TODO - Use commented code once QT versions >= 5.12
     m_engine->importModule( "amarok/" + src );
-    */
-    QFile extensionFile( "amarok/" + src );
-    m_engine->evaluate( QTextStream(&extensionFile ).readAll() );
 }
 
 bool
