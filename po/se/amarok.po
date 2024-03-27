@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:29+0000\n"
+"POT-Creation-Date: 2024-03-26 02:00+0000\n"
 "PO-Revision-Date: 2010-09-02 05:25+0200\n"
 "Last-Translator: Børre Gaup <boerre@skolelinux.no>\n"
 "Language-Team: Northern Sami <l10n-no@lister.huftis.org>\n"
@@ -366,7 +366,7 @@ msgstr "Heaitte čuojaheames maŋŋá dán bihttá: Ii alde"
 msgid "Stop after current track: On"
 msgstr "Heaitte čuojaheames maŋŋá dán bihttá: Alde"
 
-#: ActionClasses.cpp:498 EngineController.cpp:1331 mac/GrowlInterface.cpp:43
+#: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
 #: widgets/Osd.cpp:669
 #, kde-format
 msgid "No track playing"
@@ -3881,6 +3881,7 @@ msgstr ""
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:85
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:647
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #, kde-format
 msgid "Settings"
 msgstr "Heivehusat"
@@ -5095,27 +5096,27 @@ msgstr ""
 msgid "Updating Amarok database schema"
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:532
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:528
 #, kde-format
 msgid "Source track does not exist: %1"
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:543
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:539
 #, kde-format
 msgid "Could not create directory: %1"
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:620
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:616
 #, kde-format
 msgid "Transferring: %1"
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:622
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
 #, kde-format
 msgid "Transcoding: %1"
 msgstr ""
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:666
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:662
 #: core-impl/collections/support/FileCollectionLocation.cpp:87
 #, kde-format
 msgid "Removing: %1"
@@ -5207,7 +5208,7 @@ msgstr "Amas artista"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1309
+#: EngineController.cpp:1308
 #, kde-format
 msgid "Unknown track"
 msgstr "Amas bihttá"
@@ -5666,7 +5667,7 @@ msgid_plural "Removing Tracks from Device"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:241
+#: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:239
 #, kde-format
 msgid "&Disconnect Device"
 msgstr ""
@@ -6188,7 +6189,7 @@ msgctxt "change options"
 msgid "Configure %1"
 msgstr "Heivet %1"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:80
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
 #, kde-format
 msgid " Item"
 msgid_plural " Items"
@@ -7893,7 +7894,7 @@ msgstr "%1 – %2"
 msgid "No Artist"
 msgstr "Ii artista"
 
-#: covermanager/CoverViewDialog.cpp:34 covermanager/CoverViewDialog.cpp:45
+#: covermanager/CoverViewDialog.cpp:33 covermanager/CoverViewDialog.cpp:44
 #, kde-format
 msgid "Cover View"
 msgstr ""
@@ -9453,32 +9454,32 @@ msgid ""
 "tracks."
 msgstr ""
 
-#: dynamic/biases/EchoNestBias.cpp:126
+#: dynamic/biases/EchoNestBias.cpp:125
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to the previous artist (as reported by EchoNest)"
 msgstr ""
 
-#: dynamic/biases/EchoNestBias.cpp:129
+#: dynamic/biases/EchoNestBias.cpp:128
 #, kde-format
 msgctxt "EchoNest bias representation"
 msgid "Similar to any artist in the current playlist (as reported by EchoNest)"
 msgstr ""
 
-#: dynamic/biases/EchoNestBias.cpp:142
+#: dynamic/biases/EchoNestBias.cpp:141
 #, kde-format
 msgid ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is "
 "similar to"
 msgstr ""
 
-#: dynamic/biases/EchoNestBias.cpp:144
-#: services/lastfm/biases/LastFmBias.cpp:145
+#: dynamic/biases/EchoNestBias.cpp:143
+#: services/lastfm/biases/LastFmBias.cpp:144
 #, kde-format
 msgid "the previous track's artist"
 msgstr ""
 
-#: dynamic/biases/EchoNestBias.cpp:145
+#: dynamic/biases/EchoNestBias.cpp:144
 #, kde-format
 msgid "one of the artist in the current playlist"
 msgstr ""
@@ -9720,30 +9721,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr ""
 
-#: EngineController.cpp:1099
+#: EngineController.cpp:1098
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Menddo máŋga meattáhusa čuojahanlisttus. Čuojaheami bissehuvvui."
 
-#: EngineController.cpp:1299
+#: EngineController.cpp:1298
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b>, <b>%3</b> skearrus maid <b>%2</b> lea ráhkadan"
 
-#: EngineController.cpp:1301
+#: EngineController.cpp:1300
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> maid <b>%2</b> lea ráhkadan"
 
-#: EngineController.cpp:1304
+#: EngineController.cpp:1303
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr ""
 
-#: EngineController.cpp:1316
+#: EngineController.cpp:1315
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -11604,7 +11605,7 @@ msgid "Show tooltips"
 msgstr "Čá&jet reaidorávvagiid"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
 #, kde-format
 msgid "Preview"
 msgstr ""
@@ -13811,25 +13812,25 @@ msgid ""
 "similar tracks."
 msgstr ""
 
-#: services/lastfm/biases/LastFmBias.cpp:126
+#: services/lastfm/biases/LastFmBias.cpp:125
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous track (as reported by Last.fm)"
 msgstr ""
 
-#: services/lastfm/biases/LastFmBias.cpp:129
+#: services/lastfm/biases/LastFmBias.cpp:128
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous artist (as reported by Last.fm)"
 msgstr ""
 
-#: services/lastfm/biases/LastFmBias.cpp:143
+#: services/lastfm/biases/LastFmBias.cpp:142
 #, kde-format
 msgid ""
 "<a href=\"http://www.last.fm/\">Last.fm</a> thinks the track is similar to"
 msgstr ""
 
-#: services/lastfm/biases/LastFmBias.cpp:146
+#: services/lastfm/biases/LastFmBias.cpp:145
 #, kde-format
 msgid "the previous track"
 msgstr ""
@@ -15491,18 +15492,18 @@ msgstr ""
 msgid "Scrobbling"
 msgstr ""
 
-#: statusbar/CompoundProgressBar.cpp:67 statusbar/CompoundProgressBar.cpp:196
+#: statusbar/CompoundProgressBar.cpp:66 statusbar/CompoundProgressBar.cpp:195
 #: statusbar/ProgressBar.cpp:48
 #, kde-format
 msgid "Abort"
 msgstr "Gaskkalduhte"
 
-#: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
+#: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
 #, kde-format
 msgid "Multiple background tasks running (click to show)"
 msgstr ""
 
-#: statusbar/CompoundProgressBar.cpp:72 statusbar/CompoundProgressBar.cpp:209
+#: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
 #, kde-format
 msgid "Abort all background tasks"
 msgstr "Gaskkalduhte buot duogášbargguid"
@@ -15523,12 +15524,12 @@ msgid "Slim Toolbar"
 msgstr "Seakkes reaidoholga"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:202
+#: widgets/Osd.cpp:199
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr ""
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:202
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -15949,17 +15950,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr ""
 
-#: widgets/Osd.cpp:188
+#: widgets/Osd.cpp:185
 #, kde-format
 msgid "Rating changed"
 msgstr "Árvosátni rievdaduvvui"
 
-#: widgets/Osd.cpp:263
+#: widgets/Osd.cpp:260
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr ""
 
-#: widgets/Osd.cpp:511
+#: widgets/Osd.cpp:510
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"

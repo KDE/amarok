@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-19 01:41+0000\n"
+"POT-Creation-Date: 2024-03-26 02:00+0000\n"
 "PO-Revision-Date: 2020-12-13 13:52+0100\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
@@ -3937,6 +3937,7 @@ msgstr ""
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:85
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:647
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #, kde-format
 msgid "Settings"
 msgstr "Innstillingar"
@@ -6248,7 +6249,7 @@ msgctxt "change options"
 msgid "Configure %1"
 msgstr "Set opp %1"
 
-#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:80
+#: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
 #, kde-format
 msgid " Item"
 msgid_plural " Items"
@@ -7954,7 +7955,7 @@ msgstr "%1 – %2"
 msgid "No Artist"
 msgstr "Ingen artist"
 
-#: covermanager/CoverViewDialog.cpp:34 covermanager/CoverViewDialog.cpp:45
+#: covermanager/CoverViewDialog.cpp:33 covermanager/CoverViewDialog.cpp:44
 #, kde-format
 msgid "Cover View"
 msgstr ""
@@ -11675,7 +11676,7 @@ msgid "Show tooltips"
 msgstr "Vis hjelpebobler"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
 #, kde-format
 msgid "Preview"
 msgstr ""
@@ -15614,12 +15615,12 @@ msgid "Slim Toolbar"
 msgstr ""
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:202
+#: widgets/Osd.cpp:199
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr ""
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:202
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -16040,17 +16041,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr ""
 
-#: widgets/Osd.cpp:188
+#: widgets/Osd.cpp:185
 #, kde-format
 msgid "Rating changed"
 msgstr "Ikkje endra karakter"
 
-#: widgets/Osd.cpp:263
+#: widgets/Osd.cpp:260
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr ""
 
-#: widgets/Osd.cpp:511
+#: widgets/Osd.cpp:510
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
