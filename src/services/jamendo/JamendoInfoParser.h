@@ -34,9 +34,9 @@ public:
     ~JamendoInfoParser();
 
 
-    virtual void getInfo( Meta::ArtistPtr artist );
-    virtual void getInfo( Meta::AlbumPtr album );
-    virtual void getInfo( Meta::TrackPtr track );
+    virtual void getInfo( const Meta::ArtistPtr &artist );
+    virtual void getInfo( const Meta::AlbumPtr &album );
+    virtual void getInfo( const Meta::TrackPtr &track );
 };
 
 #endif

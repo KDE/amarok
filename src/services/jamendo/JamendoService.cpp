@@ -190,7 +190,7 @@ JamendoService::updateButtonClicked()
                 /* Deprecated */ QUrl("http://imgjam.com/data/dbdump_artistalbumtrack.xml.gz"),
                 QUrl::fromLocalFile( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
-    Amarok::Logger::newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com database..." ), this, SLOT(listDownloadCancelled()) );
+    Amarok::Logger::newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com database..." ), this, &JamendoService::listDownloadCancelled );
 
     connect( m_listDownloadJob, &KJob::result,
             this, &JamendoService::listDownloadComplete );

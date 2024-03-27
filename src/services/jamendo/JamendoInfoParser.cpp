@@ -33,7 +33,7 @@ JamendoInfoParser::~JamendoInfoParser()
 }
 
 void
-JamendoInfoParser::getInfo(ArtistPtr artist)
+JamendoInfoParser::getInfo(const ArtistPtr &artist)
 {
     DEBUG_BLOCK
     JamendoArtist * jamendoArtist = dynamic_cast<JamendoArtist *> ( artist.data() );
@@ -65,7 +65,7 @@ JamendoInfoParser::getInfo(ArtistPtr artist)
 }
 
 void
-JamendoInfoParser::getInfo(AlbumPtr album)
+JamendoInfoParser::getInfo(const AlbumPtr &album)
 {
     DEBUG_BLOCK
     JamendoAlbum * jamendoAlbum = dynamic_cast<JamendoAlbum *> ( album.data() );
@@ -97,7 +97,7 @@ JamendoInfoParser::getInfo(AlbumPtr album)
 }
 
 void
-JamendoInfoParser::getInfo(TrackPtr track)
+JamendoInfoParser::getInfo(const TrackPtr &track)
 {
     DEBUG_BLOCK
     JamendoTrack * jamendoTrack = dynamic_cast<JamendoTrack *> ( track.data() );
