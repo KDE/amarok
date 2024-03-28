@@ -84,7 +84,8 @@
         "Name[zh_CN]": "频谱",
         "Name[zh_TW]": "分析器",
         "ServiceTypes": [
-            "KPackage/Generic", "Amarok/ContextApplet"
+            "KPackage/Generic",
+            "Amarok/ContextApplet"
         ],
         "Version": "1.0",
         "Website": "https://amarok.kde.org/"

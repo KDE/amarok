@@ -106,7 +106,8 @@
         "Name[zh_CN]": "专辑",
         "Name[zh_TW]": "專輯",
         "ServiceTypes": [
-            "KPackage/Generic", "Amarok/ContextApplet"
+            "KPackage/Generic",
+            "Amarok/ContextApplet"
         ],
         "Version": "pre0.1",
         "Website": "https://amarok.kde.org/"

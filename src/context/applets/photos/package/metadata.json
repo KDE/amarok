@@ -100,7 +100,8 @@
         "Name[zh_CN]": "照片",
         "Name[zh_TW]": "Photos",
         "ServiceTypes": [
-            "KPackage/Generic", "Amarok/ContextApplet"
+            "KPackage/Generic",
+            "Amarok/ContextApplet"
         ],
         "Version": "1",
         "Website": "https://amarok.kde.org/"
