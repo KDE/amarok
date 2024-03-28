@@ -88,7 +88,8 @@ Rectangle {
         }
         orientation: ListView.Horizontal
         spacing: Kirigami.Units.smallSpacing
-        interactive: false
+        boundsBehavior: Flickable.StopAtBounds
+        interactive: true
         clip: true
 
         model: AppletProxyModel

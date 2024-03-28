@@ -41,8 +41,8 @@ MouseArea {
     cursorShape: configEnabled ? held ? Qt.ClosedHandCursor : Qt.PointingHandCursor : Qt.ArrowCursor
     pressAndHoldInterval: 200;
 
-    onPressAndHold: if (configEnabled) held = true
-    onReleased: held = false
+    onPressAndHold: if (configEnabled) { held = true; toolbarAppletRow.interactive = false; }
+    onReleased: { toolbarAppletRow.interactive = true; held = false; }
     onPressed: if (!configEnabled) flickable.scrollToApplet(appletId)
     onImplicitWidthChanged: toolbar.resizeApplets()
 
