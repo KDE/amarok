@@ -27,11 +27,13 @@
 #include "BlockAnalyzer.h"
 #include "BlockWorker.h"
 
+#include <QGuiApplication>
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLPaintDevice>
 #include <QPainter>
 #include <QPointer>
 #include <QQuickFramebufferObject>
+#include <QScreen>
 
 
 class BlockRenderer : public QQuickFramebufferObject::Renderer
@@ -63,6 +65,7 @@ protected:
         QOpenGLPaintDevice d;
         d.setSize(framebufferObject()->size());
         QPainter p(&d);
+        p.scale( QGuiApplication::primaryScreen()->devicePixelRatio(), QGuiApplication::primaryScreen()->devicePixelRatio() );
 
         // Draw the background
         p.drawPixmap(QRect(QPoint(0, 0), framebufferObject()->size()), m_backgroundPixmap);
