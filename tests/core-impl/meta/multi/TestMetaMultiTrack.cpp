@@ -170,7 +170,7 @@ NotifyObserversWaiter::slotFilterResolved()
 }
 
 void
-NotifyObserversWaiter::metadataChanged( Meta::TrackPtr track )
+NotifyObserversWaiter::metadataChanged( const Meta::TrackPtr &track )
 {
     QMutexLocker locker( &m_mutex );
     m_tracks.remove( track );

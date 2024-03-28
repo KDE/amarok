@@ -76,7 +76,7 @@ class NotifyObserversWaiter : public QObject, private Meta::Observer
 
     private:
         using Observer::metadataChanged; // silence gcc warning
-        virtual void metadataChanged( Meta::TrackPtr track );
+        virtual void metadataChanged( const Meta::TrackPtr &track ) override;
 
         QSet<Meta::TrackPtr> m_tracks;
         QMutex m_mutex;
