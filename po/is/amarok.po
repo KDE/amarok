@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-26 02:00+0000\n"
+"POT-Creation-Date: 2024-03-28 02:06+0000\n"
 "PO-Revision-Date: 2020-04-04 13:51+0000\n"
 "Last-Translator: Sveinn í Felli <sv@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
@@ -1721,7 +1721,7 @@ msgid "Group"
 msgstr "Hópur"
 
 #: amarokurls/BookmarkModel.cpp:259
-#: browsers/playlistbrowser/PodcastModel.cpp:300 playlist/PlaylistModel.cpp:939
+#: browsers/playlistbrowser/PodcastModel.cpp:301 playlist/PlaylistModel.cpp:939
 #, kde-format
 msgid "Type"
 msgstr "Tegund"
@@ -2225,12 +2225,12 @@ msgstr "Flyt skrár í ruslið"
 msgid "Delete Tracks"
 msgstr "&Eyða lögum"
 
-#: browsers/CollectionTreeView.cpp:700 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:691 services/lastfm/LastFmTreeView.cpp:187
 #, kde-format
 msgid "More..."
 msgstr "Meira..."
 
-#: browsers/CollectionTreeView.cpp:1073 browsers/filebrowser/FileView.cpp:383
+#: browsers/CollectionTreeView.cpp:1064 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
 #: context/applets/albums/plugin/AlbumsEngine.cpp:258
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2239,7 +2239,7 @@ msgstr "Meira..."
 msgid "&Add to Playlist"
 msgstr "&Bæta við lagalista"
 
-#: browsers/CollectionTreeView.cpp:1084 browsers/filebrowser/FileView.cpp:394
+#: browsers/CollectionTreeView.cpp:1075 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
 #: context/applets/albums/plugin/AlbumsEngine.cpp:259
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2249,13 +2249,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "Endurtaka lagalista"
 
-#: browsers/CollectionTreeView.cpp:1133
+#: browsers/CollectionTreeView.cpp:1124
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Skipuleggja skrár"
 
-#: browsers/CollectionTreeView.cpp:1166 browsers/filebrowser/FileView.cpp:426
+#: browsers/CollectionTreeView.cpp:1157 browsers/filebrowser/FileView.cpp:426
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "Sýsla m&eð lagaupplýsingar"
@@ -2845,8 +2845,8 @@ msgstr "Stilla Podcasta..."
 msgid "Scan Interval..."
 msgstr "Bil milli skönnunar..."
 
-#: browsers/playlistbrowser/PodcastModel.cpp:197
-#: browsers/playlistbrowser/PodcastModel.cpp:249
+#: browsers/playlistbrowser/PodcastModel.cpp:198
+#: browsers/playlistbrowser/PodcastModel.cpp:250
 #, fuzzy, kde-format
 #| msgid "&Update All"
 msgctxt "number of podcasts from one source"
@@ -2856,25 +2856,25 @@ msgstr[0] "&Uppfæra allt"
 msgstr[1] "&Uppfæra allt"
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
-#: browsers/playlistbrowser/PodcastModel.cpp:301
+#: browsers/playlistbrowser/PodcastModel.cpp:302
 #: context/applets/tabs/ReloadEditDialog.ui:86
 #: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:927
 #, kde-format
 msgid "Title"
 msgstr "Titill"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:302 dialogs/TagDialog.cpp:512
+#: browsers/playlistbrowser/PodcastModel.cpp:303 dialogs/TagDialog.cpp:512
 #, kde-format
 msgid "Summary"
 msgstr "Yfirlit"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:322
+#: browsers/playlistbrowser/PodcastModel.cpp:323
 #, fuzzy, kde-format
 #| msgid "&Add Podcast"
 msgid "Add Podcast"
 msgstr "&Bæta við hlaðvarpi (podcast)"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:323
+#: browsers/playlistbrowser/PodcastModel.cpp:324
 #, fuzzy, kde-format
 #| msgid "Enter Stream URL:"
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"

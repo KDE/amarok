@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-26 02:00+0000\n"
+"POT-Creation-Date: 2024-03-28 02:06+0000\n"
 "PO-Revision-Date: 2009-06-14 00:43+0800\n"
 "Last-Translator: Sharuzzaman Ahmat Raslan <sharuzzaman@myrealbox.com>\n"
 "Language-Team: Malay <kedidiemas@yahoogroups.com>\n"
@@ -1624,7 +1624,7 @@ msgid "Group"
 msgstr "Kumpulan Baru"
 
 #: amarokurls/BookmarkModel.cpp:259
-#: browsers/playlistbrowser/PodcastModel.cpp:300 playlist/PlaylistModel.cpp:939
+#: browsers/playlistbrowser/PodcastModel.cpp:301 playlist/PlaylistModel.cpp:939
 #, kde-format
 msgid "Type"
 msgstr "Jenis"
@@ -2116,12 +2116,12 @@ msgstr "Pindah tempat kemasukan kepada lokasi spesifik"
 msgid "Delete Tracks"
 msgstr "Trek Seterusnya"
 
-#: browsers/CollectionTreeView.cpp:700 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:691 services/lastfm/LastFmTreeView.cpp:187
 #, fuzzy, kde-format
 msgid "More..."
 msgstr "Lagi..."
 
-#: browsers/CollectionTreeView.cpp:1073 browsers/filebrowser/FileView.cpp:383
+#: browsers/CollectionTreeView.cpp:1064 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
 #: context/applets/albums/plugin/AlbumsEngine.cpp:258
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2129,7 +2129,7 @@ msgstr "Lagi..."
 msgid "&Add to Playlist"
 msgstr "Tambah kepada template"
 
-#: browsers/CollectionTreeView.cpp:1084 browsers/filebrowser/FileView.cpp:394
+#: browsers/CollectionTreeView.cpp:1075 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
 #: context/applets/albums/plugin/AlbumsEngine.cpp:259
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2138,13 +2138,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "Buang Footer"
 
-#: browsers/CollectionTreeView.cpp:1133
+#: browsers/CollectionTreeView.cpp:1124
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr ""
 
-#: browsers/CollectionTreeView.cpp:1166 browsers/filebrowser/FileView.cpp:426
+#: browsers/CollectionTreeView.cpp:1157 browsers/filebrowser/FileView.cpp:426
 #, kde-format
 msgid "&Edit Track Details"
 msgstr ""
@@ -2710,8 +2710,8 @@ msgstr "Konfigur Panel"
 msgid "Scan Interval..."
 msgstr "Program Imbas & OCR"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:197
-#: browsers/playlistbrowser/PodcastModel.cpp:249
+#: browsers/playlistbrowser/PodcastModel.cpp:198
+#: browsers/playlistbrowser/PodcastModel.cpp:250
 #, fuzzy, kde-format
 msgctxt "number of podcasts from one source"
 msgid "One Channel"
@@ -2720,24 +2720,24 @@ msgstr[0] "Saluran DMA"
 msgstr[1] "Saluran DMA"
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
-#: browsers/playlistbrowser/PodcastModel.cpp:301
+#: browsers/playlistbrowser/PodcastModel.cpp:302
 #: context/applets/tabs/ReloadEditDialog.ui:86
 #: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:927
 #, kde-format
 msgid "Title"
 msgstr "Tajuk"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:302 dialogs/TagDialog.cpp:512
+#: browsers/playlistbrowser/PodcastModel.cpp:303 dialogs/TagDialog.cpp:512
 #, fuzzy, kde-format
 msgid "Summary"
 msgstr "Ringkasan"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:322
+#: browsers/playlistbrowser/PodcastModel.cpp:323
 #, fuzzy, kde-format
 msgid "Add Podcast"
 msgstr "Pencekup podcast"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:323
+#: browsers/playlistbrowser/PodcastModel.cpp:324
 #, kde-format
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"
 msgstr ""

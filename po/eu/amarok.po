@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-26 02:00+0000\n"
+"POT-Creation-Date: 2024-03-28 02:06+0000\n"
 "PO-Revision-Date: 2023-04-22 19:08+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -1747,7 +1747,7 @@ msgid "Group"
 msgstr "Taldea"
 
 #: amarokurls/BookmarkModel.cpp:259
-#: browsers/playlistbrowser/PodcastModel.cpp:300 playlist/PlaylistModel.cpp:939
+#: browsers/playlistbrowser/PodcastModel.cpp:301 playlist/PlaylistModel.cpp:939
 #, kde-format
 msgid "Type"
 msgstr "Mota"
@@ -2234,12 +2234,12 @@ msgstr "Eraman pistak zakarrontzira"
 msgid "Delete Tracks"
 msgstr "Ezabatu pistak"
 
-#: browsers/CollectionTreeView.cpp:700 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:691 services/lastfm/LastFmTreeView.cpp:187
 #, kde-format
 msgid "More..."
 msgstr "Gehiago..."
 
-#: browsers/CollectionTreeView.cpp:1073 browsers/filebrowser/FileView.cpp:383
+#: browsers/CollectionTreeView.cpp:1064 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
 #: context/applets/albums/plugin/AlbumsEngine.cpp:258
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2247,7 +2247,7 @@ msgstr "Gehiago..."
 msgid "&Add to Playlist"
 msgstr "&Gehitu zerrendari"
 
-#: browsers/CollectionTreeView.cpp:1084 browsers/filebrowser/FileView.cpp:394
+#: browsers/CollectionTreeView.cpp:1075 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
 #: context/applets/albums/plugin/AlbumsEngine.cpp:259
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2256,13 +2256,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "&Ordeztu zerrenda"
 
-#: browsers/CollectionTreeView.cpp:1133
+#: browsers/CollectionTreeView.cpp:1124
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Antolatu fitxategiak"
 
-#: browsers/CollectionTreeView.cpp:1166 browsers/filebrowser/FileView.cpp:426
+#: browsers/CollectionTreeView.cpp:1157 browsers/filebrowser/FileView.cpp:426
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "&Editatu pistaren informazioa"
@@ -2827,8 +2827,8 @@ msgstr "Konfiguratu podcast-ak..."
 msgid "Scan Interval..."
 msgstr "Aztertzeko bitartea..."
 
-#: browsers/playlistbrowser/PodcastModel.cpp:197
-#: browsers/playlistbrowser/PodcastModel.cpp:249
+#: browsers/playlistbrowser/PodcastModel.cpp:198
+#: browsers/playlistbrowser/PodcastModel.cpp:250
 #, kde-format
 msgctxt "number of podcasts from one source"
 msgid "One Channel"
@@ -2837,24 +2837,24 @@ msgstr[0] "Kanal bat"
 msgstr[1] "%1 kanal"
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
-#: browsers/playlistbrowser/PodcastModel.cpp:301
+#: browsers/playlistbrowser/PodcastModel.cpp:302
 #: context/applets/tabs/ReloadEditDialog.ui:86
 #: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:927
 #, kde-format
 msgid "Title"
 msgstr "Titulua"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:302 dialogs/TagDialog.cpp:512
+#: browsers/playlistbrowser/PodcastModel.cpp:303 dialogs/TagDialog.cpp:512
 #, kde-format
 msgid "Summary"
 msgstr "Laburpena"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:322
+#: browsers/playlistbrowser/PodcastModel.cpp:323
 #, kde-format
 msgid "Add Podcast"
 msgstr "Gehitu podcast-a"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:323
+#: browsers/playlistbrowser/PodcastModel.cpp:324
 #, kde-format
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"
 msgstr "Sartu RSS 1.0/2.0 edo Atom jarioaren URLa:"
