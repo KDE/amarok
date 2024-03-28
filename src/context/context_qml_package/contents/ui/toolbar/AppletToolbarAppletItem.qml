@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-import QtQuick 2.6
+import QtQuick 2.9
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import org.kde.kirigami 2.0 as Kirigami
@@ -39,6 +39,7 @@ MouseArea {
     drag.target: held ? content : undefined
     drag.axis: Drag.XAxis
     cursorShape: configEnabled ? held ? Qt.ClosedHandCursor : Qt.PointingHandCursor : Qt.ArrowCursor
+    pressAndHoldInterval: 200;
 
     onPressAndHold: if (configEnabled) held = true
     onReleased: held = false
