@@ -85,9 +85,7 @@ AudioCdCollection::~AudioCdCollection()
 QUrl
 AudioCdCollection::audiocdUrl( const QString &path ) const
 {
-    QUrl url("audiocd:/");
-    url = url.adjusted(QUrl::StripTrailingSlash);
-    url.setPath(url.path() + QLatin1Char('/') + ( path ));
+    QUrl url("audiocd:/" + path);
 
     if( !m_device.isEmpty() )
     {
