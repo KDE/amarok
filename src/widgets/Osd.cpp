@@ -680,7 +680,12 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
         else
             text += '\n';
         if( track->length() > 0 )
+        {
+            int pos = The::engineController()->trackPositionMs();
+            if( pos > 5000 ) // Only show position if the track didn't just start playing
+                text += Meta::msToPrettyTime( pos ) + '/';
             text += Meta::msToPrettyTime( track->length() );
+        }
     }
 
     if( text.isEmpty() )
