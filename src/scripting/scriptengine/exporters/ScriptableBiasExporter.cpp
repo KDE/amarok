@@ -50,15 +50,11 @@ ScriptableBiasFactoryWrapper::groupBiasCtor()
     return m_engine->newQObject( new ScriptableBiasFactory( m_engine, true ) );
 }
 
-ScriptableBiasFactoryWrapper* ScriptableBiasFactory::s_wrapper = nullptr;
-
 void
 ScriptableBiasFactory::init( QJSEngine *engine )
 {
     TrackSetExporter::init( engine );
-    if (s_wrapper == nullptr)
-        s_wrapper = new ScriptableBiasFactoryWrapper( engine );
-    QJSValue scriptObj = engine->newQObject( s_wrapper );
+    QJSValue scriptObj = engine->newQObject( new ScriptableBiasFactoryWrapper( engine ) );
     engine->globalObject().setProperty( QStringLiteral("BiasFactory"),  scriptObj.property("biasCtor") );
     engine->globalObject().setProperty( QStringLiteral("GroupBiasFactory"), scriptObj.property("groupBiasCtor") );
 }
@@ -383,7 +379,6 @@ ScriptableBias::removeBias()
 // TrackSetExporterWrapper
 /////////////////////////////////////////////////////////////////////////////////////////
 
-TrackSetExporterWrapper *TrackSetExporter::s_wrapper = nullptr;
 TrackSetExporterWrapper::TrackSetExporterWrapper( QJSEngine* engine )
 : QObject( engine )
 , m_engine (engine )
@@ -449,9 +444,7 @@ TrackSetExporter::init( QJSEngine *engine )
         fromScriptValue( jsValue, trackSet );
         return trackSet;
     } );
-    if (s_wrapper == nullptr)
-        s_wrapper = new TrackSetExporterWrapper( engine );
-    engine->globalObject().setProperty( QStringLiteral("TrackSet"), engine->newQObject( s_wrapper ).property( "trackSetConstructor" ) );
+    engine->globalObject().setProperty( QStringLiteral("TrackSet"), engine->newQObject( new TrackSetExporterWrapper( engine ) ).property( "trackSetConstructor" ) );
 }
 
 void

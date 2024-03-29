@@ -145,7 +145,6 @@ namespace AmarokScript
             bool m_groupBias;
             QJSEngine *m_engine;
             bool m_enabled;
-            static ScriptableBiasFactoryWrapper* s_wrapper;
     };
 
     class ScriptableBias : public Dynamic::AbstractBias
@@ -310,8 +309,6 @@ namespace AmarokScript
             static void init( QJSEngine *engine );
             explicit TrackSetExporter( const Dynamic::TrackSet &trackSet );
             friend QJSValue TrackSetExporterWrapper::trackSetConstructor( QJSValue arg0, QJSValue arg1 );
-
-            static TrackSetExporterWrapper *s_wrapper;
 
             friend class ScriptableBiasFactory;
     };

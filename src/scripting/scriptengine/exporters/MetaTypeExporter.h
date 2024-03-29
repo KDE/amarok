@@ -153,7 +153,6 @@ namespace AmarokScript
             void loaded( Meta::TrackPtr );
 
         private:
-            static MetaTrackPrototypeWrapper* s_wrapper;
             Meta::TrackPtr m_track;
 
             void metadataChanged( const Meta::TrackPtr &track ) override;

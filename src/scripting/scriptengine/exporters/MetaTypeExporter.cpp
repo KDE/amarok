@@ -66,8 +66,6 @@ MetaTrackPrototypeWrapper::trackCtor( QJSValue arg )
     return m_engine->newQObject( new MetaTrackPrototype( Meta::TrackPtr( proxyTrack.data() ) ) );
 }
 
-MetaTrackPrototypeWrapper *MetaTrackPrototype::s_wrapper = nullptr;
-
 void
 MetaTrackPrototype::init( QJSEngine *engine )
 {
@@ -103,11 +101,9 @@ MetaTrackPrototype::init( QJSEngine *engine )
         return fieldHash;
     } );
 
-    if (s_wrapper == nullptr)
-        s_wrapper = new MetaTrackPrototypeWrapper( engine );
-    QJSValue scriptObj = engine->newQObject( s_wrapper );
+    QJSValue scriptObj = engine->newQObject( new MetaTrackPrototypeWrapper( engine ) );
 
-    engine->globalObject().setProperty( QStringLiteral("Track"),  scriptObj.property("trackCtor"));
+    engine->globalObject().setProperty( QStringLiteral("Track"), scriptObj.property("trackCtor"));
 }
 
 MetaTrackPrototype::MetaTrackPrototype( const Meta::TrackPtr &track )
