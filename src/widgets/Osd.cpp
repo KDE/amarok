@@ -391,6 +391,18 @@ OSDWidget::paintEvent( QPaintEvent *e )
     QPixmap pixmap( rect.size() );
     pixmap.fill( Qt::black );
 
+    QString osdtext = m_text;
+    int pos = The::engineController()->trackPositionMs();
+
+    // Only show position if the track didn't just start playing
+    if( pos > 3000 )
+    {
+        QTimer::singleShot( 1000, this, [=] () { update(); });
+        osdtext.replace("%{\eA%}", QString(Meta::msToPrettyTime( pos ) + '/') );
+    }
+    else
+        osdtext.replace("%{\eA%}", "" );
+
     QPainter p2( &pixmap );
     p2.setFont( font() );
     p2.setPen( Qt::white );
@@ -398,7 +410,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     p2.drawText( QRect( QPoint( SHADOW_SIZE, SHADOW_SIZE ),
                         QSize( rect.size().width() - SHADOW_SIZE * 2,
                                rect.size().height() - SHADOW_SIZE * 2 ) ),
-                 align, m_text );
+                 align, osdtext );
     p2.end();
 
     p.drawImage( rect.topLeft(), ShadowEngine::makeShadow( pixmap, shadowColor ) );
@@ -406,7 +418,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
 
     p.drawText( rect.adjusted( SHADOW_SIZE, SHADOW_SIZE,
-                               -SHADOW_SIZE, -SHADOW_SIZE ), align, m_text );
+                               -SHADOW_SIZE, -SHADOW_SIZE ), align, osdtext );
 }
 
 void
@@ -663,9 +675,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
             text += '\n';
         if( track->length() > 0 )
         {
-            int pos = The::engineController()->trackPositionMs();
-            if( pos > 5000 ) // Only show position if the track didn't just start playing
-                text += Meta::msToPrettyTime( pos ) + '/';
+            text += "%{\eA%}"; // Add a tag to be replaced later
             text += Meta::msToPrettyTime( track->length() );
         }
     }
