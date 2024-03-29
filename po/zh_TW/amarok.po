@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-28 02:06+0000\n"
+"POT-Creation-Date: 2024-03-29 01:59+0000\n"
 "PO-Revision-Date: 2024-03-07 19:55+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -1700,10 +1700,10 @@ msgstr "新增時間碼軌道"
 #: amarokurls/BookmarkTreeView.cpp:370 amarokurls/BookmarkTreeView.cpp:371
 #: amarokurls/BookmarkTreeView.cpp:372
 #: context/applets/albums/plugin/AlbumItem.cpp:99
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:484
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:485
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:486
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:487
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:488
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:489 MainWindow.cpp:1226
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:487 MainWindow.cpp:1226
 #, kde-format
 msgid "Unknown"
 msgstr "未知"
@@ -1777,97 +1777,97 @@ msgctxt ""
 msgid "Play"
 msgstr "播放"
 
-#: App.cpp:361
+#: App.cpp:360
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "要開啟的檔案/URL"
 
-#: App.cpp:362
+#: App.cpp:361
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "立刻開始播放音樂光碟"
 
-#: App.cpp:363
+#: App.cpp:362
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "在播放清單中往後略過"
 
-#: App.cpp:364
+#: App.cpp:363
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "開始播放目前的播放清單"
 
-#: App.cpp:365
+#: App.cpp:364
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "停止的話就開始播放，播放中的就暫停"
 
-#: App.cpp:366
+#: App.cpp:365
 #, kde-format
 msgid "Pause playback"
 msgstr "暫停播放"
 
-#: App.cpp:367
+#: App.cpp:366
 #, kde-format
 msgid "Stop playback"
 msgstr "停止播放"
 
-#: App.cpp:368
+#: App.cpp:367
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "在播放清單中往前略過"
 
-#: App.cpp:370
+#: App.cpp:369
 #, kde-format
 msgid "Additional options:"
 msgstr "額外設定："
 
-#: App.cpp:371
+#: App.cpp:370
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "要附加到播放清單的檔案/URL"
 
-#: App.cpp:372
+#: App.cpp:371
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "目前曲目播放完後，仍在佇列中的 URL"
 
-#: App.cpp:373
+#: App.cpp:372
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "載入 URL，會取代掉目前的播放清單"
 
-#: App.cpp:374
+#: App.cpp:373
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "印出詳細除錯資訊"
 
-#: App.cpp:375
+#: App.cpp:374
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
 msgstr "印出音效系統的詳細除錯資訊"
 
-#: App.cpp:376
+#: App.cpp:375
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "關閉除錯輸出的色彩。"
 
-#: App.cpp:377
+#: App.cpp:376
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "允許執行多個 Amarok 實體"
 
-#: App.cpp:378
+#: App.cpp:377
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "檔名/URL 為相對路徑時它們的基底目錄"
 
-#: App.cpp:514 configdialog/dialogs/DatabaseConfig.cpp:110
+#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
 msgid "Database Error"
 msgstr "資料庫錯誤"
 
-#: App.cpp:515
+#: App.cpp:514
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1879,12 +1879,12 @@ msgstr ""
 "%1\n"
 "大部份狀況下您需要解決這些錯誤，Amarok 才能正確執行。"
 
-#: App.cpp:582
+#: App.cpp:581
 #, kde-format
 msgid "Moving files to trash"
 msgstr "正在把檔案移至垃圾桶"
 
-#: App.cpp:648
+#: App.cpp:647
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -4798,7 +4798,7 @@ msgstr "下一個"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:85
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:641
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:366
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:364
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -5055,7 +5055,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "聚集收藏"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:393
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:391
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, kde-format
 msgid "Audio CD"

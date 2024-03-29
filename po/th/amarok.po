@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-28 02:06+0000\n"
+"POT-Creation-Date: 2024-03-29 01:59+0000\n"
 "PO-Revision-Date: 2010-03-21 16:32+0700\n"
 "Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
@@ -1778,10 +1778,10 @@ msgstr "แทร็กที่เลือกไว้"
 #: amarokurls/BookmarkTreeView.cpp:370 amarokurls/BookmarkTreeView.cpp:371
 #: amarokurls/BookmarkTreeView.cpp:372
 #: context/applets/albums/plugin/AlbumItem.cpp:99
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:484
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:485
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:486
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:487
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:488
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:489 MainWindow.cpp:1226
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:487 MainWindow.cpp:1226
 #, kde-format
 msgid "Unknown"
 msgstr "ไม่ทราบ"
@@ -1862,98 +1862,98 @@ msgctxt ""
 msgid "Play"
 msgstr "เล่น"
 
-#: App.cpp:361
+#: App.cpp:360
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "แฟ้ม/ตำแหน่ง URL ที่จะเปิด"
 
-#: App.cpp:362
+#: App.cpp:361
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr ""
 
-#: App.cpp:363
+#: App.cpp:362
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "ข้ามไปยังรายการก่อนหน้าในรายการเล่น"
 
-#: App.cpp:364
+#: App.cpp:363
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "เริ่มการเล่นรายการเล่นปัจจุบัน"
 
-#: App.cpp:365
+#: App.cpp:364
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "ทำการเล่นหากหยุดอยู่ พักการเล่นหากยังเล่นอยู่"
 
-#: App.cpp:366
+#: App.cpp:365
 #, kde-format
 msgid "Pause playback"
 msgstr "พักการเล่นกลับ"
 
-#: App.cpp:367
+#: App.cpp:366
 #, kde-format
 msgid "Stop playback"
 msgstr "หยุดการเล่นกลับ"
 
-#: App.cpp:368
+#: App.cpp:367
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "ข้ามไปยังรายการถัดไปในรายการเล่น"
 
-#: App.cpp:370
+#: App.cpp:369
 #, kde-format
 msgid "Additional options:"
 msgstr "ตัวเลือกเพิ่มเติม:"
 
-#: App.cpp:371
+#: App.cpp:370
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "เพิ่มแฟ้ม/ที่อยู่ URL ไปยังรายการเล่น"
 
-#: App.cpp:372
+#: App.cpp:371
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "เพิ่มที่อยู่ URL เข้าคิวรอเล่นต่อจากแทร็กที่กำลังเล่นอยู่ในตอนนี้"
 
-#: App.cpp:373
+#: App.cpp:372
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "โหลดที่อยู่ URL และแทนที่รายการเล่นปัจจุบัน"
 
-#: App.cpp:374
+#: App.cpp:373
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "พิมพ์ข้อมูลรายละเอียดการดีบั๊ก"
 
-#: App.cpp:375
+#: App.cpp:374
 #, fuzzy, kde-format
 #| msgid "Print verbose debugging information"
 msgid "Print verbose debugging information from the audio system"
 msgstr "พิมพ์ข้อมูลรายละเอียดการดีบั๊ก"
 
-#: App.cpp:376
+#: App.cpp:375
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr ""
 
-#: App.cpp:377
+#: App.cpp:376
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "อนุญาตให้แอมอะร็อกทำงานได้หลายตัว"
 
-#: App.cpp:378
+#: App.cpp:377
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "ฐานที่สัมพันธ์กันกับ ชื่อแฟ้ม/ที่อยู่ URL"
 
-#: App.cpp:514 configdialog/dialogs/DatabaseConfig.cpp:110
+#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
 msgid "Database Error"
 msgstr "มีข้อผิดพลาดกับฐานข้อมูล"
 
-#: App.cpp:515
+#: App.cpp:514
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1962,12 +1962,12 @@ msgid ""
 "properly."
 msgstr ""
 
-#: App.cpp:582
+#: App.cpp:581
 #, kde-format
 msgid "Moving files to trash"
 msgstr "ทิ้งแฟ้มลงถังขยะ"
 
-#: App.cpp:648
+#: App.cpp:647
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -5086,7 +5086,7 @@ msgstr "&ถัดไป"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:85
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:641
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:366
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:364
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -5352,7 +5352,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "ปรับปรุงคลังสื่อ"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:393
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:391
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, fuzzy, kde-format
 #| msgid "Play Audio CD"

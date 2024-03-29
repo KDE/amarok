@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-28 02:06+0000\n"
+"POT-Creation-Date: 2024-03-29 01:59+0000\n"
 "PO-Revision-Date: 2020-06-05 19:27+0300\n"
 "Last-Translator: Marek Laane <qiilaq69@gmail.com>\n"
 "Language-Team: Estonian <kde-et@lists.linux.ee>\n"
@@ -1757,10 +1757,10 @@ msgstr "Uus ajakoodirada"
 #: amarokurls/BookmarkTreeView.cpp:370 amarokurls/BookmarkTreeView.cpp:371
 #: amarokurls/BookmarkTreeView.cpp:372
 #: context/applets/albums/plugin/AlbumItem.cpp:99
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:484
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:485
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:486
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:487
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:488
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:489 MainWindow.cpp:1226
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:487 MainWindow.cpp:1226
 #, kde-format
 msgid "Unknown"
 msgstr "Tundmatu"
@@ -1834,97 +1834,97 @@ msgctxt ""
 msgid "Play"
 msgstr "Esitus"
 
-#: App.cpp:361
+#: App.cpp:360
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "Avatavad failid/URL-id"
 
-#: App.cpp:362
+#: App.cpp:361
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "Kohene audio CD taasesitamine"
 
-#: App.cpp:363
+#: App.cpp:362
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "Esitusnimekirjas tagasi"
 
-#: App.cpp:364
+#: App.cpp:363
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "Aktiivse esitusnimekirja mängimahakkamine"
 
-#: App.cpp:365
+#: App.cpp:364
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "Esitus, kui on peatatud, paus, kui mängitakse"
 
-#: App.cpp:366
+#: App.cpp:365
 #, kde-format
 msgid "Pause playback"
 msgstr "Taasesituse peatamine"
 
-#: App.cpp:367
+#: App.cpp:366
 #, kde-format
 msgid "Stop playback"
 msgstr "Taasesituse katkestamine"
 
-#: App.cpp:368
+#: App.cpp:367
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "Esitusnimekirjas edasi"
 
-#: App.cpp:370
+#: App.cpp:369
 #, kde-format
 msgid "Additional options:"
 msgstr "Lisavõtmed:"
 
-#: App.cpp:371
+#: App.cpp:370
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "Failide/URL-ide lisamine esitusnimekirja"
 
-#: App.cpp:372
+#: App.cpp:371
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "URL-id seatakse järjekorda aktiivse pala taha"
 
-#: App.cpp:373
+#: App.cpp:372
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "URL-ide laadimine, aktiivse esitusnimekirja asendamine"
 
-#: App.cpp:374
+#: App.cpp:373
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Üksikasjaliku silumisinfo näitamine"
 
-#: App.cpp:375
+#: App.cpp:374
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
 msgstr "Üksikasjaliku silumisinfo näitamine helisüsteemi kohta"
 
-#: App.cpp:376
+#: App.cpp:375
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "Silumisväljundi värviliseks muutmise keelamine."
 
-#: App.cpp:377
+#: App.cpp:376
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Mitme Amaroki protsessi töötamise lubamine"
 
-#: App.cpp:378
+#: App.cpp:377
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "Suhteliste failinimede/URL-ide baas"
 
-#: App.cpp:514 configdialog/dialogs/DatabaseConfig.cpp:110
+#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
 msgid "Database Error"
 msgstr "Andmebaasi viga"
 
-#: App.cpp:515
+#: App.cpp:514
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1937,12 +1937,12 @@ msgstr ""
 "Enamasti on need vaja lahendada, enne kui saab Amaroki korralikult tööle "
 "panna."
 
-#: App.cpp:582
+#: App.cpp:581
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Failide viskamine prügikasti"
 
-#: App.cpp:648
+#: App.cpp:647
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -4906,7 +4906,7 @@ msgstr "Edasi"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:85
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:641
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:366
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:364
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -5165,7 +5165,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "Koondmuusikakogu"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:393
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:391
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, kde-format
 msgid "Audio CD"

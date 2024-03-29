@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-28 02:06+0000\n"
+"POT-Creation-Date: 2024-03-29 01:59+0000\n"
 "PO-Revision-Date: 2021-06-17 11:42+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
@@ -1807,10 +1807,10 @@ msgstr "Створити доріжку часових кодів"
 #: amarokurls/BookmarkTreeView.cpp:370 amarokurls/BookmarkTreeView.cpp:371
 #: amarokurls/BookmarkTreeView.cpp:372
 #: context/applets/albums/plugin/AlbumItem.cpp:99
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:484
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:485
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:486
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:487
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:488
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:489 MainWindow.cpp:1226
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:487 MainWindow.cpp:1226
 #, kde-format
 msgid "Unknown"
 msgstr "Невідомо"
@@ -1884,97 +1884,97 @@ msgctxt ""
 msgid "Play"
 msgstr "Відтворити"
 
-#: App.cpp:361
+#: App.cpp:360
 #, kde-format
 msgid "Files/URLs to open"
 msgstr "Відкрити файли/URL"
 
-#: App.cpp:362
+#: App.cpp:361
 #, kde-format
 msgid "Immediately start playing an audio cd"
 msgstr "Негайно почати відтворення звукового КД"
 
-#: App.cpp:363
+#: App.cpp:362
 #, kde-format
 msgid "Skip backwards in playlist"
 msgstr "Перескочити назад в списку композицій"
 
-#: App.cpp:364
+#: App.cpp:363
 #, kde-format
 msgid "Start playing current playlist"
 msgstr "Почати відтворення поточного списку композицій"
 
-#: App.cpp:365
+#: App.cpp:364
 #, kde-format
 msgid "Play if stopped, pause if playing"
 msgstr "Грати, якщо зупинено; пауза, якщо грає"
 
-#: App.cpp:366
+#: App.cpp:365
 #, kde-format
 msgid "Pause playback"
 msgstr "Призупинити відтворення"
 
-#: App.cpp:367
+#: App.cpp:366
 #, kde-format
 msgid "Stop playback"
 msgstr "Зупинити відтворення"
 
-#: App.cpp:368
+#: App.cpp:367
 #, kde-format
 msgid "Skip forwards in playlist"
 msgstr "Перескочити вперед у списку композицій"
 
-#: App.cpp:370
+#: App.cpp:369
 #, kde-format
 msgid "Additional options:"
 msgstr "Додаткові параметри:"
 
-#: App.cpp:371
+#: App.cpp:370
 #, kde-format
 msgid "Append files/URLs to playlist"
 msgstr "Додати файли/URL до списку композицій"
 
-#: App.cpp:372
+#: App.cpp:371
 #, kde-format
 msgid "Queue URLs after the currently playing track"
 msgstr "Поставити адреси URL в чергу після поточної композиції"
 
-#: App.cpp:373
+#: App.cpp:372
 #, kde-format
 msgid "Load URLs, replacing current playlist"
 msgstr "Завантажити адреси URL, замінюючи поточний список композицій"
 
-#: App.cpp:374
+#: App.cpp:373
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Показати докладні діагностичні дані"
 
-#: App.cpp:375
+#: App.cpp:374
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
 msgstr "Показати докладні діагностичні дані щодо звукової підсистеми"
 
-#: App.cpp:376
+#: App.cpp:375
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "Вимкнути розфарбовування повідомлень для налагоджування."
 
-#: App.cpp:377
+#: App.cpp:376
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Увімкнути можливість запуску декількох копій Amarok"
 
-#: App.cpp:378
+#: App.cpp:377
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "База для відносних назв файлів / адрес URL"
 
-#: App.cpp:514 configdialog/dialogs/DatabaseConfig.cpp:110
+#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
 msgid "Database Error"
 msgstr "Помилка бази даних"
 
-#: App.cpp:515
+#: App.cpp:514
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1986,12 +1986,12 @@ msgstr ""
 "%1\n"
 "Вам варто виправити ці помилки до запуску Amarok."
 
-#: App.cpp:582
+#: App.cpp:581
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Пересування файлів у смітник"
 
-#: App.cpp:648
+#: App.cpp:647
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
@@ -5008,7 +5008,7 @@ msgstr "Далі"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:85
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:641
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:366
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:364
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
@@ -5267,7 +5267,7 @@ msgctxt ""
 msgid "Aggregate Collection"
 msgstr "Загальна збірка"
 
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:393
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:391
 #: core-impl/collections/audiocd/handler/AudioCdHandler.cpp:37
 #, kde-format
 msgid "Audio CD"
