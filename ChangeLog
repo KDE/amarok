@@ -23,8 +23,8 @@ VERSION 2.9.76
    * Various fixes for e.g. crashes (including BR 428769, BR 444408, BR 468303,
      BR 393080), problems of playback stalling on missing files (including partial fix
      for BR 438651), UI bugs (e.g. podcasts BR 484395 and playlist layout editor),
-     CD collections (BR 455371), and .desktop files, AppStream metadata and DBus
-     service specifications.
+     CD collections (BR 455371, BR 279188), and .desktop files, AppStream metadata and
+     DBus service specifications.
 
 
 VERSION 2.9.71

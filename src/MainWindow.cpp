@@ -46,6 +46,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "dialogs/DiagnosticDialog.h"
@@ -1347,23 +1348,26 @@ MainWindow::playAudioCd()
 
             debug() << "got audiocd collection";
 
-            Collections::MemoryCollection * cdColl = dynamic_cast<Collections::MemoryCollection *>( collection );
+            Collections::MediaDeviceCollection * cdColl = dynamic_cast<Collections::MediaDeviceCollection *>( collection );
 
-            if( !cdColl || cdColl->trackMap().isEmpty() )
+            if( !cdColl || cdColl->memoryCollection()->trackMap().isEmpty() )
             {
                 debug() << "cd collection not ready yet (track count = 0 )";
                 m_waitingForCd = true;
                 return false;
             }
 
-            The::playlistController()->insertOptioned( cdColl->trackMap().values(), Playlist::OnPlayMediaAction );
+            The::playlistController()->insertOptioned( cdColl->memoryCollection()->trackMap().values(), Playlist::OnPlayMediaAction );
             m_waitingForCd = false;
             return true;
         }
     }
 
     debug() << "waiting for cd...";
-    m_waitingForCd = true;
+    if( !The::mainWindow() )  // this is not yet created, touching member variables now will crash us
+        QTimer::singleShot(1000, []() { The::mainWindow()->playAudioCd(); });
+    else
+        m_waitingForCd = true;
     return false;
 }
 
