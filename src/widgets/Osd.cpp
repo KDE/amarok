@@ -32,13 +32,13 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "widgets/StarManager.h"
 
 #include <QApplication>
 #include <QIcon>
 #include <KLocalizedString>
 #include <KWindowSystem>
 #include <KIconLoader>
+#include <KRatingPainter>
 
 #include <QDesktopWidget>
 #include <QMouseEvent>
@@ -278,10 +278,9 @@ OSDWidget::determineMetrics( const int M )
     // Don't show both volume and rating
     else if( m_rating )
     {
-        QPixmap* star = StarManager::instance()->getStar( 1 );
-        if( rect.width() < star->width() * 5 )
-            rect.setWidth( star->width() * 5 ); //changes right edge position
-        rect.setHeight( rect.height() + star->height() + M ); //changes bottom edge pos
+        if( rect.width() < 36 * 5 ) // using 36 as star width
+            rect.setWidth( 36 * 5 ); //changes right edge position
+        rect.setHeight( rect.height() + 36 + M ); //changes bottom edge pos
     }
 
     if( !m_cover.isNull() )
@@ -379,28 +378,9 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
     if( !m_showVolume && m_rating > 0 && !m_paused )
     {
-        // TODO: Check if we couldn't use a KRatingPainter instead
-        QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
-        QRect r( rect );
-
-        //Align to center...
-        r.setLeft( ( rect.left() + rect.width() / 2 ) - star->width() * m_rating / 4 );
-        r.setTop( rect.bottom() - star->height() );
-        graphicsHeight += star->height() + m_margin;
-
-        const bool half = m_rating % 2;
-
-        if( half )
-        {
-            QPixmap* halfStar = StarManager::instance()->getHalfStar( m_rating / 2 + 1 );
-            p.drawPixmap( r.left() + star->width() * ( m_rating / 2 ), r.top(), *halfStar );
-            star = StarManager::instance()->getStar( m_rating / 2 + 1 );
-        }
-
-        for( int i = 0; i < m_rating / 2; i++ )
-        {
-            p.drawPixmap( r.left() + i * star->width(), r.top(), *star );
-        }
+        QRect r( rect.left(), rect.bottom() - 36, rect.width(), 36 ); // using 36 as star width
+        graphicsHeight += 36 + m_margin;
+        KRatingPainter::paintRating( &p, r, Qt::AlignHCenter, m_rating, 0 );
     }
 
     rect.setBottom( rect.bottom() - graphicsHeight );

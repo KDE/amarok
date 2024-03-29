@@ -15,6 +15,7 @@ VERSION 2.9.76
      KDE Frameworks, that should not affect functionality.
    * Removed upnpcollectionplugin.
    * Non-functional OSD positioning settings disabled in UI on Wayland for now.
+   * Unified OSD to use system-styled rating stars.
 
   BUGFIXES:
    * Fix playlist generator UI strings. (BR 423598)

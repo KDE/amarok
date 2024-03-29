@@ -742,7 +742,6 @@ set(amaroklib_LIB_SRCS
     widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
     widgets/SliderWidget.cpp
-    widgets/StarManager.cpp
     widgets/TokenPool.cpp
     widgets/Token.cpp
     widgets/TokenWithLayout.cpp
