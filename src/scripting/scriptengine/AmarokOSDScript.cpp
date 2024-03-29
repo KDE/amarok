@@ -63,7 +63,7 @@ AmarokOSDScript::setOffset( int y )
 }
 
 void
-AmarokOSDScript::setImage( const QImage &image )
+AmarokOSDScript::setImage( const QPixmap &image )
 {
     Amarok::OSD::instance()->setImage( image );
 }

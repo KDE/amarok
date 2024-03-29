@@ -67,7 +67,7 @@ namespace AmarokScript
             /**
              * Set the image to be shown in the OSD.
              */
-            Q_INVOKABLE void setImage( const QImage &image );
+            Q_INVOKABLE void setImage( const QPixmap &image );
 
             /**
              * Set the screen on which to show the OSD.

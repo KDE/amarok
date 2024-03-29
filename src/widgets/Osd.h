@@ -43,7 +43,7 @@ class OSDWidget : public QWidget
          
     public Q_SLOTS:
         /** calls setText() then show(), after setting image if needed */
-        void show( const QString &text, const QImage &newImage = QImage() );
+        void show( const QString &text, const QPixmap &newImage = QPixmap() );
 
         void ratingChanged( const short rating );
         void ratingChanged( const QString& path, int rating );
@@ -76,7 +76,7 @@ class OSDWidget : public QWidget
         void setScreen( int screen );
 
         void setPaused( bool paused ) { m_paused = paused; }
-        void setImage( const QImage &image ) { m_cover = image; }
+        void setImage( const QPixmap &image ) { m_cover = image; }
         void setText( const QString &text ) { m_text = text; }
         void setRating( const short rating ) { m_rating = rating; }
         void setTranslucent( bool enabled ) { m_translucent = enabled; setWindowOpacity( maxOpacity() ); }
@@ -127,7 +127,7 @@ class OSDWidget : public QWidget
         int         m_volume;
         bool        m_showVolume;
         QString     m_text;
-        QImage      m_cover;
+        QPixmap     m_cover;
         QPixmap     m_scaledCover;
         bool        m_paused;
         bool        m_hideWhenFullscreenWindowIsActive;

@@ -56,7 +56,7 @@ namespace ShadowEngine
 
 namespace Amarok
 {
-    inline QImage icon() { return QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ); }
+    inline QPixmap icon() { return KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ); }
 }
 
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
@@ -103,7 +103,7 @@ OSDWidget::~OSDWidget()
 }
 
 void
-OSDWidget::show( const QString &text, const QImage &newImage )
+OSDWidget::show( const QString &text, const QPixmap &newImage )
 {
     DEBUG_BLOCK
     m_showVolume = false;
@@ -112,7 +112,7 @@ OSDWidget::show( const QString &text, const QImage &newImage )
         m_cover = newImage;
         int w = m_scaledCover.width();
         int h = m_scaledCover.height();
-        m_scaledCover = QPixmap::fromImage( m_cover.scaled( w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
+        m_scaledCover = m_cover.scaled( w, h, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
     }
     else
         m_cover = Amarok::icon();
@@ -267,13 +267,13 @@ OSDWidget::determineMetrics( const int M )
         rect = tmpRect;
 
         if ( The::engineController()->isMuted() )
-            m_cover = The::svgHandler()->renderSvg( "Muted", 100, 100, "Muted" ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Muted", 200, 200, "Muted" );
         else if( m_volume > 66 )
-            m_cover = The::svgHandler()->renderSvg( "Volume", 100, 100, "Volume" ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Volume", 200, 200, "Volume" );
         else if ( m_volume > 33 )
-            m_cover = The::svgHandler()->renderSvg( "Volume_mid", 100, 100, "Volume_mid" ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Volume_mid", 200, 200, "Volume_mid" );
         else
-            m_cover = The::svgHandler()->renderSvg( "Volume_low", 100, 100, "Volume_low" ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Volume_low", 200, 200, "Volume_low" );
     }
     // Don't show both volume and rating
     else if( m_rating )
@@ -287,13 +287,11 @@ OSDWidget::determineMetrics( const int M )
     {
         const int availableWidth = max.width() - rect.width() - M; //WILL be >= (minImageSize.width() - M)
 
-        m_scaledCover = QPixmap::fromImage(
-                m_cover.scaled(
+        m_scaledCover = m_cover.scaled(
                     qMin( availableWidth, m_cover.width() ),
                     qMin( rect.height(), m_cover.height() ),
                     Qt::KeepAspectRatio, Qt::SmoothTransformation
-                              )
-                                          ); //this will force us to be with our bounds
+                              ); //this will force us to be with our bounds
 
 
         const int widthIncludingImage = rect.width()
@@ -677,9 +675,9 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
     if( text.isEmpty() ) //still
         text = i18n("No information available for this track");
 
-    QImage image;
+    QPixmap image;
     if( track && track->album() )
-        image = The::svgHandler()->imageWithBorder( track->album(), 100, 5 ).toImage();
+        image = The::svgHandler()->imageWithBorder( track->album(), 200, 5 );
 
     OSDWidget::show( text, image );
 }
@@ -739,7 +737,7 @@ Amarok::OSD::trackPlaying( const Meta::TrackPtr &track )
 void
 Amarok::OSD::stopped()
 {
-    setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+    setImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) );
     setRating( 0 ); // otherwise stars from last rating change are visible
     OSDWidget::show( i18n( "Stopped" ) );
     setPaused(false);
@@ -748,7 +746,7 @@ Amarok::OSD::stopped()
 void
 Amarok::OSD::paused()
 {
-    setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+    setImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) );
     setRating( 0 ); // otherwise stars from last rating change are visible
     OSDWidget::show( i18n( "Paused" ) );
     setPaused(true);
