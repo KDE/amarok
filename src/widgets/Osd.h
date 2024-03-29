@@ -25,7 +25,7 @@
 #include <QString>
 #include <QWidget> //baseclass
 
-#define OSD_WINDOW_OPACITY 0.74
+#define OSD_WINDOW_BACKGROUND_OPACITY 0.74
 
 class QTimeLine;
 
@@ -79,7 +79,7 @@ class OSDWidget : public QWidget
         void setImage( const QPixmap &image ) { m_cover = image; }
         void setText( const QString &text ) { m_text = text; }
         void setRating( const short rating ) { m_rating = rating; }
-        void setTranslucent( bool enabled ) { m_translucent = enabled; setWindowOpacity( maxOpacity() ); }
+        void setTranslucent( bool enabled ) { m_translucent = enabled; }
         void setFadeOpacity( qreal value );
         void setFontScale( int scale );
         void setHideWhenFullscreenWindowIsActive( bool hide );
@@ -91,7 +91,7 @@ class OSDWidget : public QWidget
         // work-around to get default point size on this platform, Qt API does not offer this directly
         inline qreal defaultPointSize() const { return QFont(font().family()).pointSizeF(); }
 
-        inline qreal maxOpacity() const { return m_translucent ? OSD_WINDOW_OPACITY : 1.0; }
+        inline qreal maxBackgroundOpacity() const { return m_translucent ? OSD_WINDOW_BACKGROUND_OPACITY : 1.0; }
 
         /** determine new size and position */
         QRect determineMetrics( const int marginMetric );

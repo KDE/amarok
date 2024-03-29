@@ -6,6 +6,7 @@ VERSION 2.9.76
   FEATURES:
    * Enable dragging and dropping tracks from context view to playlist again. (BR 439736)
    * Add menu entry for collapsing all expanded items in collection view. (BR 244509)
+   * Show song progress on OSD (BR 278445), make only background translucent (BR 187781)
    * Added support for FFmpeg 5.0. (BR 459933)
    * Added support for TagLib 2.0.
 
@@ -15,7 +16,7 @@ VERSION 2.9.76
      KDE Frameworks, that should not affect functionality.
    * Removed upnpcollectionplugin.
    * Non-functional OSD positioning settings disabled in UI on Wayland for now.
-   * Unified OSD to use system-styled rating stars.
+   * Unified OSD to use system-styled rating stars. Also use higher DPI for images.
 
   BUGFIXES:
    * Fix playlist generator UI strings. (BR 423598)

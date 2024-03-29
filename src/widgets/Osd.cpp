@@ -84,6 +84,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     flags |= Qt::Tool | Qt::X11BypassWindowManagerHint;
     #endif
     setWindowFlags( flags );
+    setAttribute( Qt::WA_TranslucentBackground );
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
 
@@ -137,7 +138,7 @@ OSDWidget::show()
         else
         {
             m_fadeTimeLine->stop();
-            setWindowOpacity( maxOpacity() );
+            setWindowOpacity( 1 );
         }
     }
 }
@@ -355,6 +356,9 @@ OSDWidget::paintEvent( QPaintEvent *e )
     p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
     p.setClipRect( e->rect() );
 
+    QColor windowBackground = QGuiApplication::palette().color( QPalette::Window );
+    windowBackground.setAlphaF( OSD_WINDOW_BACKGROUND_OPACITY );
+    p.fillRect( e->rect(), windowBackground );
     QPixmap background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width(), height(), "service_list_item" );
     p.drawPixmap( 0, 0, background );
 
@@ -445,7 +449,7 @@ OSDWidget::setScreen( int screen )
 void
 OSDWidget::setFadeOpacity( qreal value )
 {
-    setWindowOpacity( value * maxOpacity() );
+    setWindowOpacity( value );
 
     if( value == 0.0 )
     {
