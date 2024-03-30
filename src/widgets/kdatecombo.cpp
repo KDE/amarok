@@ -53,9 +53,7 @@ void KDateCombo::initObject(const QDate & date)
   datePicker = new KDatePicker(date, popupFrame);
   datePicker->setMinimumSize(datePicker->sizeHint());
   datePicker->installEventFilter(this);
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  popupFrame->setLayout(mainLayout);
-  mainLayout->addWidget(datePicker);
+  popupFrame->setMainWidget(datePicker);
   setDate(date);
 
   connect(datePicker, &KDatePicker::dateSelected, this, &KDateCombo::dateEnteredEvent);
