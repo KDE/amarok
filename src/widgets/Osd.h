@@ -91,7 +91,7 @@ class OSDWidget : public QWidget
         // work-around to get default point size on this platform, Qt API does not offer this directly
         inline qreal defaultPointSize() const { return QFont(font().family()).pointSizeF(); }
 
-        inline qreal maxBackgroundOpacity() const { return m_translucent ? OSD_WINDOW_BACKGROUND_OPACITY : 1.0; }
+        inline qreal backgroundOpacity() const { return m_translucent ? OSD_WINDOW_BACKGROUND_OPACITY : 1.0; }
 
         /** determine new size and position */
         QRect determineMetrics( const int marginMetric );

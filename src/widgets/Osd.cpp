@@ -357,7 +357,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     p.setClipRect( e->rect() );
 
     QColor windowBackground = QGuiApplication::palette().color( QPalette::Window );
-    windowBackground.setAlphaF( OSD_WINDOW_BACKGROUND_OPACITY );
+    windowBackground.setAlphaF( backgroundOpacity() );
     p.fillRect( e->rect(), windowBackground );
     QPixmap background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width(), height(), "service_list_item" );
     p.drawPixmap( 0, 0, background );
