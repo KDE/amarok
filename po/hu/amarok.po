@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-29 01:59+0000\n"
+"POT-Creation-Date: 2024-03-30 01:34+0000\n"
 "PO-Revision-Date: 2021-11-08 08:52+0100\n"
 "Last-Translator: Kristof Kiszel <kiszel.kristof@gmail.com>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
@@ -397,7 +397,7 @@ msgstr "Jelenleg nincs lejátszás"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:502
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:55
-#: main.cpp:96 MainWindow.cpp:112
+#: main.cpp:96 MainWindow.cpp:113
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1706,7 +1706,7 @@ msgstr "Ismeretlen"
 msgid "New Bookmark"
 msgstr "Új könyvjelző"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:782
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:783
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Könyvjelzőkezelő"
@@ -1748,7 +1748,7 @@ msgid "Group"
 msgstr "Csoport"
 
 #: amarokurls/BookmarkModel.cpp:259
-#: browsers/playlistbrowser/PodcastModel.cpp:301 playlist/PlaylistModel.cpp:939
+#: browsers/playlistbrowser/PodcastModel.cpp:320 playlist/PlaylistModel.cpp:939
 #, kde-format
 msgid "Type"
 msgstr "Típus"
@@ -1810,7 +1810,7 @@ msgstr "Új időkódos szám"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:484
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:485
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:486
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:487 MainWindow.cpp:1226
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:487 MainWindow.cpp:1227
 #, kde-format
 msgid "Unknown"
 msgstr "Ismeretlen"
@@ -1831,7 +1831,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "Környezet"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:280
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:281
 #, kde-format
 msgid "Files"
 msgstr "Fájlok"
@@ -1861,7 +1861,7 @@ msgstr "Előadó: „%1”, hely: %2"
 msgid "Artist \"%1\""
 msgstr "Előadó: „%1”"
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:778
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:779
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Médiaforrások nézet könyvjelzőzése"
@@ -2030,7 +2030,7 @@ msgstr ""
 "Itt találja a helyi zenéit, továbbá a hordozható zenelejátszókon és a CD-ken "
 "levő zenét."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:168 MainWindow.cpp:926
+#: browsers/collectionbrowser/CollectionWidget.cpp:168 MainWindow.cpp:927
 #, kde-format
 msgid "Search collection"
 msgstr "Keresés a gyűjteményben"
@@ -2150,7 +2150,7 @@ msgid "Various Artists"
 msgstr "Különböző előadók"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1100
-#: browsers/CollectionTreeView.cpp:344
+#: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:273
 #: context/applets/wikipedia/package/contents/ui/main.qml:78
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:635
@@ -2210,37 +2210,43 @@ msgstr "Felirat"
 msgid "None"
 msgstr "Nincs"
 
-#: browsers/CollectionTreeView.cpp:364
+#: browsers/CollectionTreeView.cpp:356 dialogs/MusicBrainzTagger.cpp:105
+#: statsyncing/ui/MatchedTracksPage.cpp:167
+#, kde-format
+msgid "Collapse All"
+msgstr "Összes összecsukása"
+
+#: browsers/CollectionTreeView.cpp:389
 #, kde-format
 msgid "Collection"
 msgstr "Gyűjtemény"
 
-#: browsers/CollectionTreeView.cpp:388
+#: browsers/CollectionTreeView.cpp:413
 #, kde-format
 msgid "Copy to Collection"
 msgstr "Másolás gyűjteménybe"
 
-#: browsers/CollectionTreeView.cpp:397 browsers/filebrowser/FileView.cpp:126
+#: browsers/CollectionTreeView.cpp:422 browsers/filebrowser/FileView.cpp:126
 #, kde-format
 msgid "Move to Collection"
 msgstr "Áthelyezés gyűjteménybe"
 
-#: browsers/CollectionTreeView.cpp:411
+#: browsers/CollectionTreeView.cpp:436
 #, kde-format
 msgid "Move Tracks to Trash"
 msgstr "Számok áthelyezése a Kukába"
 
-#: browsers/CollectionTreeView.cpp:422
+#: browsers/CollectionTreeView.cpp:447
 #, kde-format
 msgid "Delete Tracks"
 msgstr "Számok törlése"
 
-#: browsers/CollectionTreeView.cpp:691 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:716 services/lastfm/LastFmTreeView.cpp:187
 #, kde-format
 msgid "More..."
 msgstr "Továbbiak…"
 
-#: browsers/CollectionTreeView.cpp:1064 browsers/filebrowser/FileView.cpp:383
+#: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
 #: context/applets/albums/plugin/AlbumsEngine.cpp:258
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2248,7 +2254,7 @@ msgstr "Továbbiak…"
 msgid "&Add to Playlist"
 msgstr "&Hozzáadás a lejátszólistához"
 
-#: browsers/CollectionTreeView.cpp:1075 browsers/filebrowser/FileView.cpp:394
+#: browsers/CollectionTreeView.cpp:1100 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
 #: context/applets/albums/plugin/AlbumsEngine.cpp:259
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2257,13 +2263,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "A lejátszólista le&cserélése erre"
 
-#: browsers/CollectionTreeView.cpp:1124
+#: browsers/CollectionTreeView.cpp:1149
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Fájlok rendszerezése"
 
-#: browsers/CollectionTreeView.cpp:1157 browsers/filebrowser/FileView.cpp:426
+#: browsers/CollectionTreeView.cpp:1182 browsers/filebrowser/FileView.cpp:426
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "Számok &adatainak módosítása"
@@ -2689,13 +2695,13 @@ msgctxt "%1 is playlist provider pretty name"
 msgid "Delete playlist from %1."
 msgstr "A(z) %1 lejátszólista törlése."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:516 MainWindow.cpp:446
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:516 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "&Relatív útvonal használata a mentéshez"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:529
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:459
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
 msgstr "Mentés másként"
@@ -2829,8 +2835,8 @@ msgstr "Podcastok beállítása…"
 msgid "Scan Interval..."
 msgstr "Átvizsgálási időköz…"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:198
-#: browsers/playlistbrowser/PodcastModel.cpp:250
+#: browsers/playlistbrowser/PodcastModel.cpp:217
+#: browsers/playlistbrowser/PodcastModel.cpp:269
 #, kde-format
 msgctxt "number of podcasts from one source"
 msgid "One Channel"
@@ -2839,24 +2845,24 @@ msgstr[0] "1 csatorna"
 msgstr[1] "%1 csatorna"
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
-#: browsers/playlistbrowser/PodcastModel.cpp:302
+#: browsers/playlistbrowser/PodcastModel.cpp:321
 #: context/applets/tabs/ReloadEditDialog.ui:86
 #: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:927
 #, kde-format
 msgid "Title"
 msgstr "Cím"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:303 dialogs/TagDialog.cpp:512
+#: browsers/playlistbrowser/PodcastModel.cpp:322 dialogs/TagDialog.cpp:512
 #, kde-format
 msgid "Summary"
 msgstr "Összegzés"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:323
+#: browsers/playlistbrowser/PodcastModel.cpp:342
 #, kde-format
 msgid "Add Podcast"
 msgstr "Podcast hozzáadása"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:324
+#: browsers/playlistbrowser/PodcastModel.cpp:343
 #, kde-format
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"
 msgstr "Adja meg az RSS 1.0/2.0- vagy Atom-csatorna URL-jét:"
@@ -8205,7 +8211,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "URL"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:798
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:799
 #, kde-format
 msgid "Cover Manager"
 msgstr "Borítókezelő"
@@ -8990,11 +8996,6 @@ msgstr "Minden választás törlése, a kézzel hozzáadottakat is."
 #, kde-format
 msgid "Collapse Chosen"
 msgstr "Kiválasztott összecsukása"
-
-#: dialogs/MusicBrainzTagger.cpp:105 statsyncing/ui/MatchedTracksPage.cpp:167
-#, kde-format
-msgid "Collapse All"
-msgstr "Összes összecsukása"
 
 #: dialogs/MusicBrainzTagger.cpp:112
 #, kde-format
@@ -11504,58 +11505,58 @@ msgstr "Chris Wales"
 msgid "ZImin Stanislav"
 msgstr "Zimin Stanislav"
 
-#: MainWindow.cpp:255
+#: MainWindow.cpp:256
 #, kde-format
 msgid "Local Music"
 msgstr "Helyi zene"
 
-#: MainWindow.cpp:257
+#: MainWindow.cpp:258
 #, kde-format
 msgid "Local sources of content"
 msgstr "Helyi tartalomforrások"
 
-#: MainWindow.cpp:264
+#: MainWindow.cpp:265
 #, kde-format
 msgid "Internet"
 msgstr "Internet"
 
-#: MainWindow.cpp:266
+#: MainWindow.cpp:267
 #, kde-format
 msgid "Online sources of content"
 msgstr "Online tartalomforrások"
 
-#: MainWindow.cpp:272
+#: MainWindow.cpp:273
 #, kde-format
 msgid "Playlists"
 msgstr "Lejátszólisták"
 
-#: MainWindow.cpp:274
+#: MainWindow.cpp:275
 #, kde-format
 msgid "Various types of playlists"
 msgstr "Különféle lejátszólisták"
 
-#: MainWindow.cpp:283
+#: MainWindow.cpp:284
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "Tartalom böngészése a helyi merevlemezen"
 
-#: MainWindow.cpp:326
+#: MainWindow.cpp:327
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "&Nézet"
 
-#: MainWindow.cpp:329
+#: MainWindow.cpp:330
 #, kde-format
 msgid "Lock Layout"
 msgstr "Elrendezés zárolása"
 
-#: MainWindow.cpp:366 MainWindow.cpp:1300
+#: MainWindow.cpp:367 MainWindow.cpp:1301
 #, kde-format
 msgid "Reset Layout"
 msgstr "Elrendezés visszaállítása"
 
-#: MainWindow.cpp:423
+#: MainWindow.cpp:424
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -11566,276 +11567,276 @@ msgstr ""
 "rendszertálcán. Használja az Amarok-menü vagy az Amarok-tálcaikon "
 "<B>Kilépés</B> parancsát, ha ki szeretne lépni a programból.</qt>"
 
-#: MainWindow.cpp:425
+#: MainWindow.cpp:426
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Dokkolás a rendszertálcába"
 
-#: MainWindow.cpp:525
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Média lejátszása (fájlok vagy URL-ek)"
 
-#: MainWindow.cpp:525
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Média hozzáadása (fájlok vagy URL-ek)"
 
-#: MainWindow.cpp:545
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Add Stream"
 msgstr "Adatfolyam hozzáadása"
 
-#: MainWindow.cpp:545
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Adja meg az adatfolyam URL-jét:"
 
-#: MainWindow.cpp:748
+#: MainWindow.cpp:749
 #, kde-format
 msgid "&Add Media..."
 msgstr "Mé&dia hozzáadása…"
 
-#: MainWindow.cpp:753
+#: MainWindow.cpp:754
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "Lejátszólista &kiürítése"
 
-#: MainWindow.cpp:758
+#: MainWindow.cpp:759
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "S&or szerkesztése"
 
-#: MainWindow.cpp:763
+#: MainWindow.cpp:764
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "D&uplikátumok eltávolítása"
 
-#: MainWindow.cpp:770
+#: MainWindow.cpp:771
 #, kde-format
 msgid "&Add Stream..."
 msgstr "&Adatfolyam hozzáadása…"
 
-#: MainWindow.cpp:774
+#: MainWindow.cpp:775
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "Lejátszólista &exportálása másként…"
 
-#: MainWindow.cpp:786
+#: MainWindow.cpp:787
 #, kde-format
 msgid "Equalizer"
 msgstr "Hangszínszabályzó"
 
-#: MainWindow.cpp:790 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:791 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Lejátszólista-beállítás könyvjelzőzése"
 
-#: MainWindow.cpp:794
+#: MainWindow.cpp:795
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Környezeti kisalkalmazások könyvjelzőzése"
 
-#: MainWindow.cpp:802
+#: MainWindow.cpp:803
 #, kde-format
 msgid "Play Media..."
 msgstr "Média lejátszása…"
 
-#: MainWindow.cpp:807
+#: MainWindow.cpp:808
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "A kijelölt szám részleteinek szerkesztése"
 
-#: MainWindow.cpp:813 MainWindow.cpp:819 MainWindow.cpp:826
+#: MainWindow.cpp:814 MainWindow.cpp:820 MainWindow.cpp:827
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "Tekerés előre %1 másodperccel"
 
-#: MainWindow.cpp:833 MainWindow.cpp:839 MainWindow.cpp:846
+#: MainWindow.cpp:834 MainWindow.cpp:840 MainWindow.cpp:847
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "Tekerés visszafelé %1 másodperccel"
 
-#: MainWindow.cpp:852
+#: MainWindow.cpp:853
 #, kde-format
 msgid "Update Collection"
 msgstr "A gyűjtemény frissítése"
 
-#: MainWindow.cpp:856
+#: MainWindow.cpp:857
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Statisztikák szinkronizálása…"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:865
 #, kde-format
 msgid "Previous Track"
 msgstr "Előző szám"
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Restart current track"
 msgstr "Aktuális szám újrakezdése"
 
-#: MainWindow.cpp:878
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Lejátszólista keverése"
 
-#: MainWindow.cpp:884
+#: MainWindow.cpp:885
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "A lejátszólista újranépesítése"
 
-#: MainWindow.cpp:890
+#: MainWindow.cpp:891
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Dinamikus lejátszólista kikapcsolása"
 
-#: MainWindow.cpp:894
+#: MainWindow.cpp:895
 #, kde-format
 msgid "Next Track"
 msgstr "Következő szám"
 
-#: MainWindow.cpp:899
+#: MainWindow.cpp:900
 #, kde-format
 msgid "Increase Volume"
 msgstr "Hangerő növelése"
 
-#: MainWindow.cpp:905
+#: MainWindow.cpp:906
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Hangerő csökkentése"
 
-#: MainWindow.cpp:911
+#: MainWindow.cpp:912
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "A főablak megjelenítése/elrejtése"
 
-#: MainWindow.cpp:916
+#: MainWindow.cpp:917
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Teljes képernyős mód átkapcsolása"
 
-#: MainWindow.cpp:921 playlist/ProgressiveSearchWidget.cpp:48
+#: MainWindow.cpp:922 playlist/ProgressiveSearchWidget.cpp:48
 #, kde-format
 msgid "Search playlist"
 msgstr "Keresés a lejátszólistában"
 
-#: MainWindow.cpp:931
+#: MainWindow.cpp:932
 #, kde-format
 msgid "Show active track"
 msgstr "Aktív szám megjelenítése"
 
-#: MainWindow.cpp:935
+#: MainWindow.cpp:936
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Felbukkanó értesítés megjelenítése"
 
-#: MainWindow.cpp:940
+#: MainWindow.cpp:941
 #, kde-format
 msgid "Mute Volume"
 msgstr "Hangerő elnémítása"
 
-#: MainWindow.cpp:945
+#: MainWindow.cpp:946
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: a jelenlegi szám kedveltnek jelölése"
 
-#: MainWindow.cpp:950
+#: MainWindow.cpp:951
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: a jelenlegi szám tiltása"
 
-#: MainWindow.cpp:955
+#: MainWindow.cpp:956
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: a jelenlegi szám kihagyása"
 
-#: MainWindow.cpp:960 playlist/view/PlaylistViewCommon.cpp:117
+#: MainWindow.cpp:961 playlist/view/PlaylistViewCommon.cpp:117
 #, kde-format
 msgid "Queue Track"
 msgstr "A szám hozzáadása a sorhoz"
 
-#: MainWindow.cpp:965
+#: MainWindow.cpp:966
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Az aktuális szám „Előadó - Cím” párásának vágólapra másolása"
 
-#: MainWindow.cpp:970
+#: MainWindow.cpp:971
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Az aktuális szám besorolása: 1"
 
-#: MainWindow.cpp:975
+#: MainWindow.cpp:976
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Az aktuális szám besorolása: 2"
 
-#: MainWindow.cpp:980
+#: MainWindow.cpp:981
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Az aktuális szám besorolása: 3"
 
-#: MainWindow.cpp:985
+#: MainWindow.cpp:986
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Az aktuális szám besorolása: 4"
 
-#: MainWindow.cpp:990
+#: MainWindow.cpp:991
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Az aktuális szám besorolása: 5"
 
-#: MainWindow.cpp:996
+#: MainWindow.cpp:997
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Hálózatikérés-megjelenítő"
 
-#: MainWindow.cpp:1014
+#: MainWindow.cpp:1015
 #, kde-format
 msgid "&About Amarok"
 msgstr "Névjegy: &Amarok"
 
-#: MainWindow.cpp:1018
+#: MainWindow.cpp:1019
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Diagnosztika"
 
-#: MainWindow.cpp:1022
+#: MainWindow.cpp:1023
 #, kde-format
 msgid "&Report Bug..."
 msgstr "Hibabe&jelentés…"
 
-#: MainWindow.cpp:1069
+#: MainWindow.cpp:1070
 #, kde-format
 msgid "&Music"
 msgstr "&Zene"
 
-#: MainWindow.cpp:1071
+#: MainWindow.cpp:1072
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1095 playlist/PlaylistDock.cpp:59
+#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:59
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Lejátszólista"
 
-#: MainWindow.cpp:1112
+#: MainWindow.cpp:1113
 #, kde-format
 msgid "&Tools"
 msgstr "&Eszközök"
 
-#: MainWindow.cpp:1127
+#: MainWindow.cpp:1128
 #, kde-format
 msgid "&Settings"
 msgstr "&Beállítások"
 
-#: MainWindow.cpp:1170
+#: MainWindow.cpp:1171
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11847,22 +11848,22 @@ msgstr ""
 "Jegyezze meg, hogy mindig használhatja a „%1” gyorsbillentyűt a "
 "visszaállításához."
 
-#: MainWindow.cpp:1171
+#: MainWindow.cpp:1172
 #, kde-format
 msgid "Hide Menu"
 msgstr "Menü elrejtése"
 
-#: MainWindow.cpp:1213
+#: MainWindow.cpp:1214
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Szünet  ::  %1"
 
-#: MainWindow.cpp:1226
+#: MainWindow.cpp:1227
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1300
+#: MainWindow.cpp:1301
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Alkalmazza az elrendezés módosítását?"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-29 01:59+0000\n"
+"POT-Creation-Date: 2024-03-30 01:34+0000\n"
 "PO-Revision-Date: 2024-01-09 20:15+0100\n"
 "Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
@@ -388,7 +388,7 @@ msgstr "Neniu trako legata"
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:502
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:55
-#: main.cpp:96 MainWindow.cpp:112
+#: main.cpp:96 MainWindow.cpp:113
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1655,7 +1655,7 @@ msgstr "Nekonata"
 msgid "New Bookmark"
 msgstr "Nova Legosigno"
 
-#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:782
+#: amarokurls/BookmarkManager.cpp:35 MainWindow.cpp:783
 #, kde-format
 msgid "Bookmark Manager"
 msgstr "Legosignmanaĝero"
@@ -1697,7 +1697,7 @@ msgid "Group"
 msgstr "Grupo"
 
 #: amarokurls/BookmarkModel.cpp:259
-#: browsers/playlistbrowser/PodcastModel.cpp:301 playlist/PlaylistModel.cpp:939
+#: browsers/playlistbrowser/PodcastModel.cpp:320 playlist/PlaylistModel.cpp:939
 #, kde-format
 msgid "Type"
 msgstr "Tipo"
@@ -1759,7 +1759,7 @@ msgstr "Nova Timecode Track"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:484
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:485
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:486
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:487 MainWindow.cpp:1226
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:487 MainWindow.cpp:1227
 #, kde-format
 msgid "Unknown"
 msgstr "Nekonata"
@@ -1780,7 +1780,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "Kunteksto"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:280
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:281
 #, kde-format
 msgid "Files"
 msgstr "Dosieroj"
@@ -1810,7 +1810,7 @@ msgstr "Artisto \"%1\" de %2"
 msgid "Artist \"%1\""
 msgstr "Artisto \"%1\""
 
-#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:778
+#: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:779
 #, kde-format
 msgid "Bookmark Media Sources View"
 msgstr "Legomarki Vidon de Aŭdvidaĵaj Fontoj"
@@ -1979,7 +1979,7 @@ msgstr ""
 "Ĉi tie vi trovos vian lokan muzikon, same kiel muzikon de porteblaj "
 "sonludiloj kaj KD-oj."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:168 MainWindow.cpp:926
+#: browsers/collectionbrowser/CollectionWidget.cpp:168 MainWindow.cpp:927
 #, kde-format
 msgid "Search collection"
 msgstr "Serĉu kolekton"
@@ -2099,7 +2099,7 @@ msgid "Various Artists"
 msgstr "Diversaj artistoj"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1100
-#: browsers/CollectionTreeView.cpp:344
+#: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:273
 #: context/applets/wikipedia/package/contents/ui/main.qml:78
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:635
@@ -2159,37 +2159,43 @@ msgstr "Etikedo"
 msgid "None"
 msgstr "Neniu"
 
-#: browsers/CollectionTreeView.cpp:364
+#: browsers/CollectionTreeView.cpp:356 dialogs/MusicBrainzTagger.cpp:105
+#: statsyncing/ui/MatchedTracksPage.cpp:167
+#, kde-format
+msgid "Collapse All"
+msgstr "Maletendi ĉiujn"
+
+#: browsers/CollectionTreeView.cpp:389
 #, kde-format
 msgid "Collection"
 msgstr "Kolekto"
 
-#: browsers/CollectionTreeView.cpp:388
+#: browsers/CollectionTreeView.cpp:413
 #, kde-format
 msgid "Copy to Collection"
 msgstr "Kopii al Kolekto"
 
-#: browsers/CollectionTreeView.cpp:397 browsers/filebrowser/FileView.cpp:126
+#: browsers/CollectionTreeView.cpp:422 browsers/filebrowser/FileView.cpp:126
 #, kde-format
 msgid "Move to Collection"
 msgstr "Movi al Kolekto"
 
-#: browsers/CollectionTreeView.cpp:411
+#: browsers/CollectionTreeView.cpp:436
 #, kde-format
 msgid "Move Tracks to Trash"
 msgstr "Movi Trakojn al Rubujo"
 
-#: browsers/CollectionTreeView.cpp:422
+#: browsers/CollectionTreeView.cpp:447
 #, kde-format
 msgid "Delete Tracks"
 msgstr "Forigi Trakojn"
 
-#: browsers/CollectionTreeView.cpp:691 services/lastfm/LastFmTreeView.cpp:187
+#: browsers/CollectionTreeView.cpp:716 services/lastfm/LastFmTreeView.cpp:187
 #, kde-format
 msgid "More..."
 msgstr "Pli..."
 
-#: browsers/CollectionTreeView.cpp:1064 browsers/filebrowser/FileView.cpp:383
+#: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
 #: context/applets/albums/plugin/AlbumsEngine.cpp:258
 #: services/lastfm/LastFmTreeView.cpp:97
@@ -2197,7 +2203,7 @@ msgstr "Pli..."
 msgid "&Add to Playlist"
 msgstr "Aldoni al Ludlisto"
 
-#: browsers/CollectionTreeView.cpp:1075 browsers/filebrowser/FileView.cpp:394
+#: browsers/CollectionTreeView.cpp:1100 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
 #: context/applets/albums/plugin/AlbumsEngine.cpp:259
 #: services/lastfm/LastFmTreeView.cpp:106
@@ -2206,13 +2212,13 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "&Anstataŭigi Ludliston"
 
-#: browsers/CollectionTreeView.cpp:1124
+#: browsers/CollectionTreeView.cpp:1149
 #, kde-format
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Organizi dosierojn"
 
-#: browsers/CollectionTreeView.cpp:1157 browsers/filebrowser/FileView.cpp:426
+#: browsers/CollectionTreeView.cpp:1182 browsers/filebrowser/FileView.cpp:426
 #, kde-format
 msgid "&Edit Track Details"
 msgstr "&Redakti Trakdetalojn"
@@ -2636,13 +2642,13 @@ msgctxt "%1 is playlist provider pretty name"
 msgid "Delete playlist from %1."
 msgstr "Forigi ludliston de %1."
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:516 MainWindow.cpp:446
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:516 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Uzi relativan vojon por &konservi"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:529
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:459
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
 msgstr "Konservi kiel"
@@ -2776,8 +2782,8 @@ msgstr "Agordi podkastojn..."
 msgid "Scan Interval..."
 msgstr "Scan Intervalo..."
 
-#: browsers/playlistbrowser/PodcastModel.cpp:198
-#: browsers/playlistbrowser/PodcastModel.cpp:250
+#: browsers/playlistbrowser/PodcastModel.cpp:217
+#: browsers/playlistbrowser/PodcastModel.cpp:269
 #, kde-format
 msgctxt "number of podcasts from one source"
 msgid "One Channel"
@@ -2786,24 +2792,24 @@ msgstr[0] "Unu Kanalo"
 msgstr[1] "%1 kanaloj"
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
-#: browsers/playlistbrowser/PodcastModel.cpp:302
+#: browsers/playlistbrowser/PodcastModel.cpp:321
 #: context/applets/tabs/ReloadEditDialog.ui:86
 #: musicbrainz/MusicBrainzTagsModel.cpp:36 playlist/PlaylistModel.cpp:927
 #, kde-format
 msgid "Title"
 msgstr "Titolo"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:303 dialogs/TagDialog.cpp:512
+#: browsers/playlistbrowser/PodcastModel.cpp:322 dialogs/TagDialog.cpp:512
 #, kde-format
 msgid "Summary"
 msgstr "Resumo"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:323
+#: browsers/playlistbrowser/PodcastModel.cpp:342
 #, kde-format
 msgid "Add Podcast"
 msgstr "Aldoni Podkaston"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:324
+#: browsers/playlistbrowser/PodcastModel.cpp:343
 #, kde-format
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"
 msgstr "Enigu RSS 1.0/2.0 aŭ Atom-flua URL:"
@@ -8120,7 +8126,7 @@ msgctxt "@item::intable"
 msgid "URL"
 msgstr "Retadreso"
 
-#: covermanager/CoverManager.cpp:111 MainWindow.cpp:798
+#: covermanager/CoverManager.cpp:111 MainWindow.cpp:799
 #, kde-format
 msgid "Cover Manager"
 msgstr "Jaketa administrilo"
@@ -8894,11 +8900,6 @@ msgstr "Forigi ĉiujn elektojn, eĉ permane faritajn."
 #, kde-format
 msgid "Collapse Chosen"
 msgstr "Malvastigi Elektitan"
-
-#: dialogs/MusicBrainzTagger.cpp:105 statsyncing/ui/MatchedTracksPage.cpp:167
-#, kde-format
-msgid "Collapse All"
-msgstr "Maletendi ĉiujn"
 
 #: dialogs/MusicBrainzTagger.cpp:112
 #, kde-format
@@ -11393,58 +11394,58 @@ msgstr "Chris Wales"
 msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
 
-#: MainWindow.cpp:255
+#: MainWindow.cpp:256
 #, kde-format
 msgid "Local Music"
 msgstr "Loka Muziko"
 
-#: MainWindow.cpp:257
+#: MainWindow.cpp:258
 #, kde-format
 msgid "Local sources of content"
 msgstr "Lokaj fontoj de enhavo"
 
-#: MainWindow.cpp:264
+#: MainWindow.cpp:265
 #, kde-format
 msgid "Internet"
 msgstr "Interreto"
 
-#: MainWindow.cpp:266
+#: MainWindow.cpp:267
 #, kde-format
 msgid "Online sources of content"
 msgstr "Enretaj fontoj de enhavo"
 
-#: MainWindow.cpp:272
+#: MainWindow.cpp:273
 #, kde-format
 msgid "Playlists"
 msgstr "Ludlistoj"
 
-#: MainWindow.cpp:274
+#: MainWindow.cpp:275
 #, kde-format
 msgid "Various types of playlists"
 msgstr "Diversaj specoj de ludlistoj"
 
-#: MainWindow.cpp:283
+#: MainWindow.cpp:284
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "Foliumi lokan malmolan diskon por enhavo"
 
-#: MainWindow.cpp:326
+#: MainWindow.cpp:327
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "&Vidi"
 
-#: MainWindow.cpp:329
+#: MainWindow.cpp:330
 #, kde-format
 msgid "Lock Layout"
 msgstr "Ŝlosi Aranĝon"
 
-#: MainWindow.cpp:366 MainWindow.cpp:1300
+#: MainWindow.cpp:367 MainWindow.cpp:1301
 #, kde-format
 msgid "Reset Layout"
 msgstr "Restarigi Aranĝon"
 
-#: MainWindow.cpp:423
+#: MainWindow.cpp:424
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -11455,276 +11456,276 @@ msgstr ""
 "<B>Eliri</B> de la menuo, aŭ la piktogramon de Amarok por eliri la aplikaĵon."
 "</qt>"
 
-#: MainWindow.cpp:425
+#: MainWindow.cpp:426
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Fiksigu en sistemfako"
 
-#: MainWindow.cpp:525
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Ludi medion (dosierojn aŭ URLojn)"
 
-#: MainWindow.cpp:525
+#: MainWindow.cpp:526
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Aldoni medion (dosierojn aŭ URLojn)"
 
-#: MainWindow.cpp:545
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Add Stream"
 msgstr "Aldoni fluon"
 
-#: MainWindow.cpp:545
+#: MainWindow.cpp:546
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Enmetu la fluan URLon:"
 
-#: MainWindow.cpp:748
+#: MainWindow.cpp:749
 #, kde-format
 msgid "&Add Media..."
 msgstr "&Aldoni medion..."
 
-#: MainWindow.cpp:753
+#: MainWindow.cpp:754
 #, kde-format
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Forigi Ludliston"
 
-#: MainWindow.cpp:758
+#: MainWindow.cpp:759
 #, kde-format
 msgctxt "edit play queue of playlist"
 msgid "Edit &Queue"
 msgstr "Redakti &Vuovicon"
 
-#: MainWindow.cpp:763
+#: MainWindow.cpp:764
 #, kde-format
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "For&igi Duplikatojn"
 
-#: MainWindow.cpp:770
+#: MainWindow.cpp:771
 #, kde-format
 msgid "&Add Stream..."
 msgstr "&Aldoni fluon..."
 
-#: MainWindow.cpp:774
+#: MainWindow.cpp:775
 #, kde-format
 msgid "&Export Playlist As..."
 msgstr "&Eksporti Ludliston kiel..."
 
-#: MainWindow.cpp:786
+#: MainWindow.cpp:787
 #, kde-format
 msgid "Equalizer"
 msgstr "Egalizilo"
 
-#: MainWindow.cpp:790 playlist/PlaylistViewUrlGenerator.cpp:102
+#: MainWindow.cpp:791 playlist/PlaylistViewUrlGenerator.cpp:102
 #, kde-format
 msgid "Bookmark Playlist Setup"
 msgstr "Legomarki Ludlist-Agordon"
 
-#: MainWindow.cpp:794
+#: MainWindow.cpp:795
 #, kde-format
 msgid "Bookmark Context Applets"
 msgstr "Legomarki Kuntekst-Apletojn"
 
-#: MainWindow.cpp:802
+#: MainWindow.cpp:803
 #, kde-format
 msgid "Play Media..."
 msgstr "Ludi medion..."
 
-#: MainWindow.cpp:807
+#: MainWindow.cpp:808
 #, kde-format
 msgid "Edit Details of Currently Selected Track"
 msgstr "Redakti Detalojn de Nuntempe Elektita Trako"
 
-#: MainWindow.cpp:813 MainWindow.cpp:819 MainWindow.cpp:826
+#: MainWindow.cpp:814 MainWindow.cpp:820 MainWindow.cpp:827
 #, kde-format
 msgid "Seek Forward by %1 seconds"
 msgstr "Serĉi Antaŭen je %1 sekundoj"
 
-#: MainWindow.cpp:833 MainWindow.cpp:839 MainWindow.cpp:846
+#: MainWindow.cpp:834 MainWindow.cpp:840 MainWindow.cpp:847
 #, kde-format
 msgid "Seek Backward by %1 seconds"
 msgstr "Serĉi Malantaŭen je %1 sekundoj"
 
-#: MainWindow.cpp:852
+#: MainWindow.cpp:853
 #, kde-format
 msgid "Update Collection"
 msgstr "Aktualigi la kolekton"
 
-#: MainWindow.cpp:856
+#: MainWindow.cpp:857
 #, kde-format
 msgid "Synchronize Statistics..."
 msgstr "Sinkronigi Statistiko..."
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:865
 #, kde-format
 msgid "Previous Track"
 msgstr "Antaŭa trako"
 
-#: MainWindow.cpp:871
+#: MainWindow.cpp:872
 #, kde-format
 msgid "Restart current track"
 msgstr "Rekomenci nunan trakon"
 
-#: MainWindow.cpp:878
+#: MainWindow.cpp:879
 #, kde-format
 msgid "Shuffle Playlist"
 msgstr "Miksi Ludliston"
 
-#: MainWindow.cpp:884
+#: MainWindow.cpp:885
 #, kde-format
 msgid "Repopulate Playlist"
 msgstr "Replenigi Ludliston"
 
-#: MainWindow.cpp:890
+#: MainWindow.cpp:891
 #, kde-format
 msgid "Disable Dynamic Playlist"
 msgstr "Malebligi Dinamikan Ludliston"
 
-#: MainWindow.cpp:894
+#: MainWindow.cpp:895
 #, kde-format
 msgid "Next Track"
 msgstr "Sekva trako"
 
-#: MainWindow.cpp:899
+#: MainWindow.cpp:900
 #, kde-format
 msgid "Increase Volume"
 msgstr "Pliigi la laŭtecon"
 
-#: MainWindow.cpp:905
+#: MainWindow.cpp:906
 #, kde-format
 msgid "Decrease Volume"
 msgstr "Malpliigi la laŭtecon"
 
-#: MainWindow.cpp:911
+#: MainWindow.cpp:912
 #, kde-format
 msgid "Toggle Main Window"
 msgstr "Baskuligi Ĉeffenestron"
 
-#: MainWindow.cpp:916
+#: MainWindow.cpp:917
 #, kde-format
 msgid "Toggle Full Screen"
 msgstr "Baskuligi Plenan Ekranon"
 
-#: MainWindow.cpp:921 playlist/ProgressiveSearchWidget.cpp:48
+#: MainWindow.cpp:922 playlist/ProgressiveSearchWidget.cpp:48
 #, kde-format
 msgid "Search playlist"
 msgstr "Serĉi ludliston"
 
-#: MainWindow.cpp:931
+#: MainWindow.cpp:932
 #, kde-format
 msgid "Show active track"
 msgstr "Montri aktivan trakon"
 
-#: MainWindow.cpp:935
+#: MainWindow.cpp:936
 #, kde-format
 msgid "Show Notification Popup"
 msgstr "Montri Sciigan Ŝprucfenestron"
 
-#: MainWindow.cpp:940
+#: MainWindow.cpp:941
 #, kde-format
 msgid "Mute Volume"
 msgstr "Mutigi la laŭtecon"
 
-#: MainWindow.cpp:945
+#: MainWindow.cpp:946
 #, kde-format
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Ami Nunan Trakon"
 
-#: MainWindow.cpp:950
+#: MainWindow.cpp:951
 #, kde-format
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Malpermesi Nunan Trakon"
 
-#: MainWindow.cpp:955
+#: MainWindow.cpp:956
 #, kde-format
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Salti Nunan Trakon"
 
-#: MainWindow.cpp:960 playlist/view/PlaylistViewCommon.cpp:117
+#: MainWindow.cpp:961 playlist/view/PlaylistViewCommon.cpp:117
 #, kde-format
 msgid "Queue Track"
 msgstr "Envicigi trakon"
 
-#: MainWindow.cpp:965
+#: MainWindow.cpp:966
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
 msgstr "Meti Artiston - Titolon de la aktuala trako al la tondujo"
 
-#: MainWindow.cpp:970
+#: MainWindow.cpp:971
 #, kde-format
 msgid "Rate Current Track: 1"
 msgstr "Noti la aktualan trakon: 1"
 
-#: MainWindow.cpp:975
+#: MainWindow.cpp:976
 #, kde-format
 msgid "Rate Current Track: 2"
 msgstr "Noti la aktualan trakon: 2"
 
-#: MainWindow.cpp:980
+#: MainWindow.cpp:981
 #, kde-format
 msgid "Rate Current Track: 3"
 msgstr "Noti la aktualan trakon: 3"
 
-#: MainWindow.cpp:985
+#: MainWindow.cpp:986
 #, kde-format
 msgid "Rate Current Track: 4"
 msgstr "Noti la aktualan trakon: 4"
 
-#: MainWindow.cpp:990
+#: MainWindow.cpp:991
 #, kde-format
 msgid "Rate Current Track: 5"
 msgstr "Noti la aktualan trakon: 5"
 
-#: MainWindow.cpp:996
+#: MainWindow.cpp:997
 #, kde-format
 msgid "Network Request Viewer"
 msgstr "Retpeta Vidilo"
 
-#: MainWindow.cpp:1014
+#: MainWindow.cpp:1015
 #, kde-format
 msgid "&About Amarok"
 msgstr "Pri &Amarok"
 
-#: MainWindow.cpp:1018
+#: MainWindow.cpp:1019
 #, kde-format
 msgid "&Diagnostics"
 msgstr "&Diagnozo"
 
-#: MainWindow.cpp:1022
+#: MainWindow.cpp:1023
 #, kde-format
 msgid "&Report Bug..."
 msgstr "&Raporti cimon..."
 
-#: MainWindow.cpp:1069
+#: MainWindow.cpp:1070
 #, kde-format
 msgid "&Music"
 msgstr "&Muziko"
 
-#: MainWindow.cpp:1071
+#: MainWindow.cpp:1072
 #, kde-format
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:1095 playlist/PlaylistDock.cpp:59
+#: MainWindow.cpp:1096 playlist/PlaylistDock.cpp:59
 #: playlist/PlaylistToolBar.cpp:39
 #, kde-format
 msgid "&Playlist"
 msgstr "&Ludlisto"
 
-#: MainWindow.cpp:1112
+#: MainWindow.cpp:1113
 #, kde-format
 msgid "&Tools"
 msgstr "&Iloj"
 
-#: MainWindow.cpp:1127
+#: MainWindow.cpp:1128
 #, kde-format
 msgid "&Settings"
 msgstr "A&gordo"
 
-#: MainWindow.cpp:1170
+#: MainWindow.cpp:1171
 #, kde-format
 msgid ""
 "You have chosen to hide the menu bar.\n"
@@ -11735,22 +11736,22 @@ msgstr ""
 "\n"
 "Bonvolu memori, ke vi ĉiam povas uzi la ŝparvojon \"%1\" por revenigi ĝin."
 
-#: MainWindow.cpp:1171
+#: MainWindow.cpp:1172
 #, kde-format
 msgid "Hide Menu"
 msgstr "Kaŝi Menuon"
 
-#: MainWindow.cpp:1213
+#: MainWindow.cpp:1214
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Paŭzita :: %1"
 
-#: MainWindow.cpp:1226
+#: MainWindow.cpp:1227
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
 
-#: MainWindow.cpp:1300
+#: MainWindow.cpp:1301
 #, kde-format
 msgid "Apply this layout change?"
 msgstr "Ĉu apliki ĉi tiun aranĝan ŝanĝon?"
