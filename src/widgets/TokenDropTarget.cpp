@@ -32,7 +32,6 @@ TokenDropTarget::TokenDropTarget( QWidget *parent )
     : QWidget( parent )
     , m_rowLimit( 0 )
     , m_rows( 0 )
-    , m_horizontalStretch( false ) // DANGER: m_horizontalStretch is used as int in the following code, assuming that true == 1
     , m_verticalStretch( true )
     , m_tokenFactory( new TokenFactory() )
 {
@@ -80,8 +79,6 @@ TokenDropTarget::appendRow()
 {
     QHBoxLayout *box = new QHBoxLayout;
     box->setSpacing( 0 );
-    if( m_horizontalStretch )
-        box->addStretch();
     static_cast<QVBoxLayout*>(layout())->insertLayout( rows(), box );
     m_rows++;
     return box;
@@ -106,7 +103,7 @@ TokenDropTarget::count() const
     int c = 0;
     for( int row = rows() - 1; row >= 0; --row )
         if( QBoxLayout *box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() ) )
-            c += box->count() - m_horizontalStretch;
+            c += box->count();
 
     return c;
 }
@@ -132,7 +129,7 @@ TokenDropTarget::deleteEmptyRows()
     for( int row = rows() - 1; row >= 0; --row )
     {
         QBoxLayout *box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
-        if( box && box->count() < ( 1 + m_horizontalStretch ) ) // sic! last is spacer
+        if( box && box->count() < 1 )
         {
             delete layout()->takeAt( row );
             m_rows--;
@@ -160,7 +157,7 @@ TokenDropTarget::tokensAtRow( int row )
     for( row = lower; row < upper; ++row )
         if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
         {
-            for( int col = 0; col < rowBox->count() - m_horizontalStretch; ++col )
+            for( int col = 0; col < rowBox->count(); ++col )
                 if ( ( token = qobject_cast<Token*>( rowBox->itemAt( col )->widget() ) ) )
                     list << token;
         }
@@ -194,8 +191,8 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
         box = qobject_cast<QBoxLayout*>( layout()->itemAt( row )->layout() );
 
     // - validate col
-    if( col < 0 || col > box->count() - ( 1 + m_horizontalStretch ) )
-        col = box->count() - m_horizontalStretch;
+    if( col < 0 || col > box->count() - 1 )
+        col = box->count();
 
     // - copy the token if it belongs to a token pool (fix BR 296136)
     if( qobject_cast<TokenPool*>(token->parent() ) ) {
@@ -223,7 +220,7 @@ TokenDropTarget::removeToken( Token *token )
     {
         if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( r )->layout() ) )
         {
-            for( int col = 0; col < rowBox->count() - m_horizontalStretch; ++col )
+            for( int col = 0; col < rowBox->count(); ++col )
             {
                 if ( ( token == qobject_cast<Token*>( rowBox->itemAt( col )->widget() ) ) )
                 {

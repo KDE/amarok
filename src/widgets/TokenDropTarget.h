@@ -123,9 +123,6 @@ private:
         adds at least one empty entry by itself if it's empty) */
     uint m_rows;
 
-    /** True if stretch are inserted at the ends of every row. */
-    bool m_horizontalStretch;
-
     /** True if a stretch is inserted as a last row.
         For now we always have a vertical stretch if the m_rowLimit > 1 */
     bool m_verticalStretch;
