@@ -17,6 +17,9 @@ VERSION 2.9.76
    * Removed upnpcollectionplugin.
    * Non-functional OSD positioning settings disabled in UI on Wayland for now.
    * Unified OSD to use system-styled rating stars. Also use higher DPI for images.
+   * The scripting engine has been ported from QtScript to QJSEngine. This is a work in
+     progress, and previous scripts are often not compatible. The script API documented
+     at https://community.kde.org/Amarok/Development/Script_API is partially out of date.
 
   BUGFIXES:
    * Fix playlist generator UI strings. (BR 423598)
