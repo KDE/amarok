@@ -290,15 +290,15 @@ Collections::semanticDateTimeParser( const QString &text, bool *absolute )
         if( absolute )
             *absolute = true;
     }
-    else if( text.contains(shortDateReg) )
-    {
-        result = QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ).startOfDay();
-        if( absolute )
-            *absolute = true;
-    }
     else if( text.contains(longDateReg) )
     {
         result = QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ).startOfDay();
+        if( absolute )
+            *absolute = true;
+    }
+    else if( text.contains(shortDateReg) )
+    {
+        result = QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ).startOfDay();
         if( absolute )
             *absolute = true;
     }

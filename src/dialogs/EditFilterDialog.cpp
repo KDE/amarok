@@ -324,14 +324,14 @@ EditFilterDialog::updateDropTarget( const QString &text )
                     filter.filter.numValue = date.startOfDay().toSecsSinceEpoch();
                     isDateAbsolute = true;
                 }
-                else if( strTime.contains(shortDateReg) )
-                {
-                    filter.filter.numValue = QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ).startOfDay().toSecsSinceEpoch();
-                    isDateAbsolute = true;
-                }
                 else if( strTime.contains(longDateReg) )
                 {
                     filter.filter.numValue =  QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ).startOfDay().toSecsSinceEpoch();
+                    isDateAbsolute = true;
+                }
+                else if( strTime.contains(shortDateReg) )
+                {
+                    filter.filter.numValue = QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ).startOfDay().toSecsSinceEpoch();
                     isDateAbsolute = true;
                 }
                 else
