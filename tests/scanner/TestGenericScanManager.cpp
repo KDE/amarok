@@ -132,6 +132,9 @@ TestGenericScanManager::testRestartScanner()
     values.insert( Meta::valUrl, QVariant("Thriller/crash_amarok_here.ogg") );
     createTrack( values );
 
+    // Tends to fail often (always?) on FreeBSD, at least on freebsd14_qt515 pipeline on invent.kde.org,
+    // due to QSharedMemory::UnknownError ("QSharedMemoryPrivate::initKey: unable to set key on lock")
+    // in GenericScannerJob::createScannerProcess when trying to create QSharedMemory
     fullScanAndWait();
 
     // -- check the commit
