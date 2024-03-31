@@ -108,7 +108,7 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent )
     l4->addWidget( m_automaticWidth = new QRadioButton( i18nc( "automatic width", "Automatic" ), this ) );
     m_automaticWidth->setToolTip( i18n( "Take homogeneous part of the space available to all elements with automatic width" ) );
     l4->addStretch();
-    boxWidget->connect( m_fixedWidth, &QRadioButton::toggled, this, &LayoutEditDialog::setEnabled );
+    connect( m_fixedWidth, &QRadioButton::toggled, boxWidget, &QWidget::setEnabled );
     connect( m_automaticWidth, &QRadioButton::toggled, this, &LayoutEditDialog::setAutomaticWidth );
     l1->addLayout( l4 );
 
