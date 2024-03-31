@@ -83,6 +83,7 @@ public Q_SLOTS:
     */
     void insertToken( Token*, int row, int col );
     void appendToken( Token *token ) { insertToken( token, -1, -1 ); } // -1 -> append to last row
+    void removeToken( Token* );
 
     void deleteEmptyRows();
 Q_SIGNALS:

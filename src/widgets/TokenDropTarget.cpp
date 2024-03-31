@@ -136,6 +136,7 @@ TokenDropTarget::deleteEmptyRows()
         {
             delete layout()->takeAt( row );
             m_rows--;
+            Q_EMIT changed();
         }
     }
     update(); // this removes empty layouts somehow for deleted tokens. don't remove
@@ -209,9 +210,30 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
 
     connect( token, &Token::changed, this, &TokenDropTarget::changed );
     connect( token, &Token::gotFocus, this, &TokenDropTarget::tokenSelected );
+    connect( token, &Token::removed, this, &TokenDropTarget::removeToken );
     connect( token, &Token::removed, this, &TokenDropTarget::deleteEmptyRows );
 
     Q_EMIT changed();
+}
+
+void
+TokenDropTarget::removeToken( Token *token )
+{
+    for( uint r = 0; r < rows(); r++ )
+    {
+        if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( r )->layout() ) )
+        {
+            for( int col = 0; col < rowBox->count() - m_horizontalStretch; ++col )
+            {
+                if ( ( token == qobject_cast<Token*>( rowBox->itemAt( col )->widget() ) ) )
+                {
+                    rowBox->removeWidget( token );
+                    Q_EMIT changed();
+                    break;
+                }
+            }
+        }
+    }
 }
 
 
