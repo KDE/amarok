@@ -51,3 +51,35 @@ target_link_libraries( testplaylistmodels
     ${GOOGLEMOCK_LIBRARIES}
     ${CMAKE_DL_LIBS}
 )
+
+#------------------------ Test PlaylistLayout -----------------------------
+
+set( testplaylistlayout_SRCS
+        TestPlaylistLayout.cpp
+        ${AMAROK_SOURCE_TREE}/playlist/layouts/LayoutManager.cpp
+        ${AMAROK_SOURCE_TREE}/playlist/layouts/LayoutItemConfig.cpp
+        ${AMAROK_SOURCE_TREE}/playlist/proxymodels/ProxyBase.cpp
+        ${AMAROK_SOURCE_TREE}/playlist/proxymodels/GroupingProxy.cpp
+        ${AMAROK_SOURCE_TREE}/playlist/PlaylistDefines.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/playlists/types/file/PlaylistFileSupport.cpp
+        ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
+        ${GOOGLEMOCK_SRCS}
+)
+
+add_executable( testplaylistlayout ${testplaylistlayout_SRCS} )
+add_test(NAME testplaylistlayout COMMAND $<TARGET_FILE:testplaylistlayout>)
+ecm_mark_as_test(testplaylistlayout)
+
+add_dependencies( testplaylistlayout amaroklib )
+
+target_link_libraries( testplaylistlayout
+    amarokcore
+    amaroklib
+    KF5::KIOCore
+    Phonon::phonon4qt5
+
+    Qt5::Test
+    Qt5::Core
+    ${GOOGLEMOCK_LIBRARIES}
+    ${CMAKE_DL_LIBS}
+)
