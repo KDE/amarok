@@ -234,7 +234,11 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
     codecpar = pFormatCtx->streams[audioStream]->codecpar;
 
     data->setSampleRate( codecpar->sample_rate );
+#if LIBAVCODEC_VERSION_MAJOR >= 60 || LIBAVCODEC_VERSION_MINOR >= 37 // ffmpeg >= 5.1
+    data->setChannels( ( codecpar->ch_layout.nb_channels > 1 )? 1 : 0 );
+#else
     data->setChannels( ( codecpar->channels > 1 )? 1 : 0 );
+#endif
 
     avpkt = av_packet_alloc();
     packet = av_packet_alloc();
@@ -276,8 +280,13 @@ MusicDNSAudioDecoder::decode( const QString &fileName, DecodedAudioData *data, c
                     isOk = false;
                     break;
                 }
+#if LIBAVCODEC_VERSION_MAJOR >= 60 || LIBAVCODEC_VERSION_MINOR >= 37 // ffmpeg >= 5.1
+                av_samples_get_buffer_size( &planeSize, pCodecCtx->ch_layout.nb_channels, decodedFrame->nb_samples, pCodecCtx->sample_fmt, 1);
+                for( int i = 0; i < qMin( pCodecCtx->ch_layout.nb_channels, 2 ); i++ )
+#else
                 av_samples_get_buffer_size( &planeSize, pCodecCtx->channels, decodedFrame->nb_samples, pCodecCtx->sample_fmt, 1);
                 for( int i = 0; i < qMin( pCodecCtx->channels, 2 ); i++ )
+#endif
                     data->appendData( const_cast<const quint8 *>( decodedFrame->extended_data[i] ), planeSize );
             } while( decoderRet == 0 );
 
