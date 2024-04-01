@@ -81,6 +81,9 @@ void listPackages()
 
 int main(int argc, char **argv)
 {
+    QApplication app(argc, argv);
+    KLocalizedString::setApplicationDomain("amarok");
+
     KAboutData aboutData(QStringLiteral("amarokpkg"), i18n("Amarok Applet Manager"),
                          version, i18n(description), KAboutLicense::GPL,
                          i18n("(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"));
@@ -91,7 +94,6 @@ int main(int argc, char **argv)
                          i18n( "Developer" ) ,
                          QStringLiteral("lfranchi@kde.org")  );
 
-    QApplication app(argc, argv);
     app.setApplicationName(QStringLiteral("amarokpkg"));
     app.setOrganizationDomain(QStringLiteral("kde.org"));
     app.setApplicationDisplayName(i18n("Amarok Applet Manager"));
@@ -106,19 +108,17 @@ int main(int argc, char **argv)
 
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("g") << QStringLiteral("global"),
                                         i18n("For install or remove, operates on applets installed for all users.")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("s") << QStringLiteral("i") << QStringLiteral("install <path>"),
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("s") << QStringLiteral("i") << QStringLiteral("install"),
                                         i18nc("Do not translate <path>", "Install the applet at <path>")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("u") << QStringLiteral("upgrade <path>"),
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("u") << QStringLiteral("upgrade"),
                                         i18nc("Do not translate <path>", "Upgrade the applet at <path>")));
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("l") << QStringLiteral("list"),
                                         i18n("Most installed applets")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("r") << QStringLiteral("remove <name>"),
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("r") << QStringLiteral("remove"),
                                         i18nc("Do not translate <name>", "Remove the applet named <name>")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("p") << QStringLiteral("packageroot <path>"),
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("p") << QStringLiteral("packageroot"),
                                         i18n("Absolute path to the package root. If not supplied, then the standard data directories for this KDE session will be searched instead.")));
 
-    parser.addVersionOption();
-    parser.addHelpOption();
     aboutData.setupCommandLine(&parser);
     parser.process(app);
     aboutData.processCommandLine(&parser);
