@@ -36,10 +36,10 @@ public:
     QVariantMap config() const;
     StatSyncing::ImporterManager *manager() const;
 
-    MOCK_CONST_METHOD0( reliableTrackMetaData, qint64() );
-    MOCK_CONST_METHOD0( writableTrackStatsData, qint64() );
-    MOCK_METHOD0( artists, QSet<QString>() );
-    MOCK_METHOD1( artistTracks, StatSyncing::TrackList(const QString&) );
+    MOCK_METHOD( qint64, reliableTrackMetaData, (), (const, override) );
+    MOCK_METHOD( qint64, writableTrackStatsData, (), (const, override) );
+    MOCK_METHOD(  QSet<QString>, artists, (), (override) );
+    MOCK_METHOD( StatSyncing::TrackList, artistTracks, (const QString&), (override) );
 };
 
 class MockManager : public StatSyncing::ImporterManager
@@ -54,13 +54,13 @@ public:
     using StatSyncing::ImporterManager::managerConfig;
     using StatSyncing::ImporterManager::providerConfig;
 
-    MOCK_CONST_METHOD0( type, QString() );
-    MOCK_CONST_METHOD0( description, QString() );
-    MOCK_CONST_METHOD0( prettyName, QString() );
-    MOCK_CONST_METHOD0( icon, QIcon() );
-    MOCK_METHOD1( configWidget, StatSyncing::ProviderConfigWidget*(const QVariantMap&) );
+    MOCK_METHOD( QString, type, (), (const, override) );
+    MOCK_METHOD( QString, description, (), (const, override) );
+    MOCK_METHOD( QString, prettyName, (), (const, override) );
+    MOCK_METHOD( QIcon, icon, (), (const, override) );
+    MOCK_METHOD( StatSyncing::ProviderConfigWidget*, configWidget, (const QVariantMap&), (override) );
     MOCK_CONST_METHOD0( pluginInfo, KPluginInfo() );
-    MOCK_METHOD1( newInstance, StatSyncing::ImporterProviderPtr(const QVariantMap&) );
+    MOCK_METHOD( StatSyncing::ImporterProviderPtr, newInstance, (const QVariantMap&), (override) );
 };
 
 class MockController : public StatSyncing::Controller
@@ -68,8 +68,8 @@ class MockController : public StatSyncing::Controller
 public:
     MockController( QObject *parent = nullptr );
 
-    MOCK_METHOD1( registerProvider, void(const StatSyncing::ProviderPtr&) );
-    MOCK_METHOD1( unregisterProvider, void(const StatSyncing::ProviderPtr&) );
+    MOCK_METHOD( void, registerProvider, (const StatSyncing::ProviderPtr&), (override) );
+    MOCK_METHOD( void, unregisterProvider, (const StatSyncing::ProviderPtr&), (override) );
 };
 
 class ImporterMocks : public QObject

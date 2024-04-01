@@ -39,14 +39,14 @@ namespace Amarok
             ON_CALL( *this, newProgressOperationImpl( An<QObject *>(), _, _, _, _, _, _, _ ) ).WillByDefault( Return() );
         }
 
-        MOCK_METHOD1( shortMessageImpl, void( const QString& ) );
-        MOCK_METHOD2( longMessageImpl, void( const QString&, Amarok::Logger::MessageType ) );
-        MOCK_METHOD5( newProgressOperationImpl, void( KJob*, const QString&, QObject*, const std::function<void ()>&,
-                                                      Qt::ConnectionType ) );
-        MOCK_METHOD5( newProgressOperationImpl, void( QNetworkReply*, const QString&, QObject*,
-                                                      const std::function<void ()>&, Qt::ConnectionType ) );
-        MOCK_METHOD8( newProgressOperationImpl, void( QObject *, const QMetaMethod &, const QMetaMethod &, const QString&,
-                                                      int, QObject*, const std::function<void ()>&, Qt::ConnectionType ) );
+        MOCK_METHOD( void, shortMessageImpl, ( const QString& ), (override) );
+        MOCK_METHOD( void, longMessageImpl, ( const QString&, Amarok::Logger::MessageType ), (override) );
+        MOCK_METHOD( void, newProgressOperationImpl, ( KJob*, const QString&, QObject*, const std::function<void ()>&,
+                                                      Qt::ConnectionType ), (override) );
+        MOCK_METHOD( void, newProgressOperationImpl, ( QNetworkReply*, const QString&, QObject*,
+                                                      const std::function<void ()>&, Qt::ConnectionType ), (override) );
+        MOCK_METHOD( void, newProgressOperationImpl, ( QObject *, const QMetaMethod &, const QMetaMethod &, const QString&,
+                                                      int, QObject*, const std::function<void ()>&, Qt::ConnectionType ), (override) );
     };
 }
 

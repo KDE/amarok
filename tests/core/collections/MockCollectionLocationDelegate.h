@@ -31,15 +31,15 @@ namespace Collections {
 class MockCollectionLocationDelegate : public CollectionLocationDelegate
 {
 public:
-    MOCK_CONST_METHOD2( reallyDelete, bool( CollectionLocation *loc, const Meta::TrackList &tracks ) );
-    MOCK_CONST_METHOD2( reallyMove, bool( CollectionLocation *loc, const Meta::TrackList &tracks ) );
-    MOCK_CONST_METHOD2( reallyTrash, bool( CollectionLocation *loc, const Meta::TrackList &tracks ) );
-    MOCK_CONST_METHOD2( errorDeleting, void( CollectionLocation *loc, const Meta::TrackList &tracks ) );
-    MOCK_CONST_METHOD1( notWriteable, void( CollectionLocation *loc ) );
-    MOCK_CONST_METHOD1( deleteEmptyDirs, bool( CollectionLocation *loc ) );
-    MOCK_CONST_METHOD5( transcode, Transcoding::Configuration(
+    MOCK_METHOD( bool, reallyDelete, ( CollectionLocation *loc, const Meta::TrackList &tracks ), (const, override));
+    MOCK_METHOD( bool, reallyMove, ( CollectionLocation *loc, const Meta::TrackList &tracks ), (const, override) );
+    MOCK_METHOD( bool, reallyTrash, ( CollectionLocation *loc, const Meta::TrackList &tracks ), (const, override) );
+    MOCK_METHOD( void, errorDeleting, ( CollectionLocation *loc, const Meta::TrackList &tracks ), (const, override) );
+    MOCK_METHOD( void, notWriteable, ( CollectionLocation *loc ), (const, override) );
+    MOCK_METHOD( bool, deleteEmptyDirs, ( CollectionLocation *loc ), (const, override) );
+    MOCK_METHOD( Transcoding::Configuration, transcode, (
         const QStringList &playableFileTypes, bool *remember, OperationType operation,
-        const QString &destCollectionName, const Transcoding::Configuration &prevConfiguration ) );
+        const QString &destCollectionName, const Transcoding::Configuration &prevConfiguration ), (const, override) );
 };
 
 } //namespace Collections

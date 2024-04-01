@@ -27,12 +27,12 @@ namespace Meta
 class MockAlbum : public Meta::Album
 {
     public:
-    MOCK_CONST_METHOD0( name, QString() );
-    MOCK_CONST_METHOD0( prettyName, QString() );
-    MOCK_METHOD0( tracks, Meta::TrackList() );
-    MOCK_CONST_METHOD0( isCompilation, bool() );
-    MOCK_CONST_METHOD0( hasAlbumArtist, bool() );
-    MOCK_CONST_METHOD0( albumArtist, Meta::ArtistPtr() );
+    MOCK_METHOD( QString, name, (), (const, override) );
+    MOCK_METHOD( QString, prettyName, (), (const, override) );
+    MOCK_METHOD( Meta::TrackList, tracks, (), (override) );
+    MOCK_METHOD( bool, isCompilation, (), (const, override) );
+    MOCK_METHOD( bool, hasAlbumArtist, (), (const, override) );
+    MOCK_METHOD( Meta::ArtistPtr, albumArtist, (), (const, override) );
 };
 }
 
