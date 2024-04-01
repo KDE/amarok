@@ -56,7 +56,7 @@ ConstraintTypes::TrackSpreader::toXml( QDomDocument&, QDomElement& ) const {}
 double
 ConstraintTypes::TrackSpreader::satisfaction( const Meta::TrackList& tl ) const
 {
-    QHash<Meta::TrackPtr, int> locations;
+    QMultiHash<Meta::TrackPtr, int> locations;
     double dist = 0.0;
     for ( int i = 0; i < tl.size(); i++ ) {
         Meta::TrackPtr t = tl.value( i );
@@ -65,7 +65,7 @@ ConstraintTypes::TrackSpreader::satisfaction( const Meta::TrackList& tl ) const
                 dist += distance( i, j );
             }
         }
-        locations.insertMulti( tl.value( i ), i );
+        locations.insert( tl.value( i ), i );
     }
 
     return 1.0 / exp( 0.1 * dist );

@@ -167,7 +167,7 @@ ConstraintGroup::satisfaction( const Meta::TrackList& l ) const
         return 1.0;
     }
 
-    QHash<int,int> constraintMatchTypes;
+    QMultiHash<int,int> constraintMatchTypes;
 
     // TODO: there's got to be a more efficient way of handling interdependent constraints
     for ( int i = 0; i < m_children.size(); i++ ) {
@@ -182,7 +182,7 @@ ConstraintGroup::satisfaction( const Meta::TrackList& l ) const
         // prepare for proper handling of non-independent constraints
         ConstraintTypes::MatchingConstraint* cge = dynamic_cast<ConstraintTypes::MatchingConstraint*>( child );
         if ( cge ) {
-            constraintMatchTypes.insertMulti( cge->constraintMatchType(), i );
+            constraintMatchTypes.insert( cge->constraintMatchType(), i );
         }
     }
 
@@ -217,7 +217,7 @@ ConstraintGroup::suggestPlaylistSize() const
 }
 
 double
-ConstraintGroup::combineInterdependentConstraints( const Meta::TrackList& l, const double s, const QHash<int,int>& cmt ) const
+ConstraintGroup::combineInterdependentConstraints( const Meta::TrackList& l, const double s, const QMultiHash<int,int>& cmt ) const
 {
     /* Handle interdependent constraints properly.
      * See constraints/Matching.h for a description of why this is necessary. */

@@ -75,8 +75,9 @@ namespace AmarokScript
             template<typename Function>
             void newDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj, Function slot )
             {
-                m_values[ url ] = obj;
-                m_engines[ url ] = engine;
+                // Port note: Were previously [url] = obj/engine, apparently multikey behaviour is desired here
+                m_values.insert( url, obj );
+                m_engines.insert( url, engine );
 
                 The::networkAccessManager()->getData( url, this, slot );
             }
@@ -90,7 +91,7 @@ namespace AmarokScript
             * @param sourceUrl The old URL (= the old key).
             * @param targetUrl The new URL (= the new key).
             */
-            template<typename T> void updateUrl( QHash< QUrl, T > &hash, const QUrl &sourceUrl, const QUrl &targetUrl )
+            template<typename T> void updateUrl( QMultiHash< QUrl, T > &hash, const QUrl &sourceUrl, const QUrl &targetUrl )
             {
                 // Get all entries with the source URL as key.
                 QList< T > data = hash.values( sourceUrl );
@@ -99,7 +100,8 @@ namespace AmarokScript
                 {
                     // Copy each entry to a new one with the
                     // new URL as key.
-                    hash[ targetUrl ] = entry;
+                    // Port note: Was previously [targetUrl] = entry, apparently multikey behaviour is desired here
+                    hash.insert(targetUrl, entry);
                 }
 
                 // Remove all entries which are still pointing
@@ -107,9 +109,9 @@ namespace AmarokScript
                 hash.remove( sourceUrl );
             };
 
-            QHash<QUrl, QJSEngine *> m_engines;
-            QHash<QUrl, QJSValue> m_values;
-            QHash<QUrl, QString> m_encodings;
+            QMultiHash<QUrl, QJSEngine *> m_engines;
+            QMultiHash<QUrl, QJSValue> m_values;
+            QMultiHash<QUrl, QString> m_encodings;
     };
 }
 

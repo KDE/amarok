@@ -163,8 +163,8 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
         return;
     }
 
-    const QList<QUrl> uniqueUrls = urls.uniqueKeys();
-    foreach( const QUrl &url, uniqueUrls )
+    // Was with uniqueKeys, however the payload urls are ever operated only with insert, so there can't be duplicates
+    foreach( const QUrl &url, urls.keys() )
     {
         if( !url.isValid() )
             continue;

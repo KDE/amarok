@@ -64,7 +64,7 @@ class ConstraintGroup : public ConstraintNode {
         MatchType m_matchtype;
 
         // internal mathematical functions
-        double combineInterdependentConstraints( const Meta::TrackList&, const double, const QHash<int,int>& ) const;
+        double combineInterdependentConstraints( const Meta::TrackList&, const double, const QMultiHash<int,int>& ) const;
 };
 
 class ConstraintGroupEditWidget : public QWidget {

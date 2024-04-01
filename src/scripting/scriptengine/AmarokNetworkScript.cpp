@@ -103,7 +103,7 @@ AmarokDownloadHelper::AmarokDownloadHelper()
 void
 AmarokDownloadHelper::newStringDownload( const QUrl &url, QJSEngine* engine, const QJSValue &obj, const QString &encoding )
 {
-    m_encodings[ url ] = encoding;
+    m_encodings.insert(url, encoding);
     newDownload( url, engine, obj, &AmarokDownloadHelper::resultString );
 }
 

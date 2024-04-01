@@ -258,7 +258,7 @@ MusicBrainzXmlParser::parseRelease( const QDomElement &e )
                 release.insert( Meta::Field::TITLE, dElement.text() );
             else if( elementName == "medium-list" )
             {
-                QVariantMap info = parseMediumList( dElement );
+                QMultiMap<QString, QVariant> info = parseMediumList( dElement );
                 QVariantList trackCountList = info.values( MusicBrainz::TRACKCOUNT );
                 int trackCount = 0;
                 foreach( const QVariant &count, trackCountList )
@@ -288,13 +288,13 @@ MusicBrainzXmlParser::parseRelease( const QDomElement &e )
     return id;
 }
 
-QVariantMap
+QMultiMap<QString, QVariant>
 MusicBrainzXmlParser::parseMediumList( const QDomElement &e )
 {
     QDomNode dNode = e.firstChild();
     QDomElement dElement;
     QString elementName;
-    QVariantMap info;
+    QMultiMap<QString, QVariant> info;
 
     while( !dNode.isNull() )
     {
@@ -313,13 +313,13 @@ MusicBrainzXmlParser::parseMediumList( const QDomElement &e )
     return info;
 }
 
-QVariantMap
+QMultiMap<QString, QVariant>
 MusicBrainzXmlParser::parseMedium( const QDomElement &e )
 {
     QDomNode dNode = e.firstChild();
     QDomElement dElement;
     QString elementName;
-    QVariantMap info;
+    QMultiMap<QString, QVariant> info;
 
     while( !dNode.isNull() )
     {
