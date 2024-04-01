@@ -27,12 +27,12 @@ public:
 
     ~MetaNotificationSpyPrivate() override {}
 
-    virtual void metadataChanged( Meta::TrackPtr track ) { trackNotifications << track; }
-    virtual void metadataChanged( Meta::ArtistPtr artist ) { artistNotifications << artist; }
-    virtual void metadataChanged( Meta::AlbumPtr album ) { albumNotifications << album; }
-    virtual void metadataChanged( Meta::GenrePtr genre ) { genreNotifications << genre; }
-    virtual void metadataChanged( Meta::ComposerPtr composer ) { composerNotifications << composer; }
-    virtual void metadataChanged( Meta::YearPtr year ) { yearNotifications << year; }
+    virtual void metadataChanged( const Meta::TrackPtr &track ) override { trackNotifications << track; }
+    virtual void metadataChanged( const Meta::ArtistPtr &artist ) override { artistNotifications << artist; }
+    virtual void metadataChanged( const Meta::AlbumPtr &album ) override { albumNotifications << album; }
+    virtual void metadataChanged( const Meta::GenrePtr &genre ) override { genreNotifications << genre; }
+    virtual void metadataChanged( const Meta::ComposerPtr &composer ) override { composerNotifications << composer; }
+    virtual void metadataChanged( const Meta::YearPtr &year ) override { yearNotifications << year; }
 
     Meta::TrackList trackNotifications;
     Meta::AlbumList albumNotifications;
