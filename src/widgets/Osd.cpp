@@ -668,7 +668,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
         setRating( track->statistics()->rating() );
         text = track->prettyName();
         if( track->artist() && !track->artist()->prettyName().isEmpty() )
-            text = track->artist()->prettyName() + " - " + text;
+            text = track->artist()->prettyName() + " – " + text;
         if( track->album() && !track->album()->prettyName().isEmpty() )
             text += "\n (" + track->album()->prettyName() + ") ";
         else
