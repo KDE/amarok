@@ -242,8 +242,8 @@ Meta::Tag::readTags( const QString &path, bool /*useCharsetDetector*/ )
     {
         if( !result.contains( Meta::valBitrate ) && properties->bitrate() )
             result.insert( Meta::valBitrate, properties->bitrate() );
-        if( !result.contains( Meta::valLength ) && properties->length() )
-            result.insert( Meta::valLength, properties->length() * 1000 );
+        if( !result.contains( Meta::valLength ) && properties->lengthInMilliseconds() )
+            result.insert( Meta::valLength, properties->lengthInMilliseconds() );
         if( !result.contains( Meta::valSamplerate ) && properties->sampleRate() )
             result.insert( Meta::valSamplerate, properties->sampleRate() );
     }
