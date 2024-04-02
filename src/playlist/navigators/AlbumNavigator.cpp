@@ -36,7 +36,7 @@ Playlist::AlbumNavigator::notifyItemsInserted( const QSet<quint64> &insertedItem
 {
     DEBUG_BLOCK
 
-    QList<AlbumId> oldAlbumList = m_itemsPerAlbum.uniqueKeys();
+    QList<AlbumId> oldAlbumList = m_itemsPerAlbum.keys();
     QSet<AlbumId> oldAlbums(oldAlbumList.begin(), oldAlbumList.end());
     QSet<AlbumId> modifiedAlbums;
 

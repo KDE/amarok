@@ -66,7 +66,7 @@ Playlist::RandomAlbumNavigator::planOne()
     if ( m_plannedItems.isEmpty() )
     {
         if ( m_plannedAlbums.isEmpty() )    // Handle end of planned album list
-            notifyAlbumsInserted( m_itemsPerAlbum.uniqueKeys() );
+            notifyAlbumsInserted( m_itemsPerAlbum.keys() );
 
         if ( !m_plannedAlbums.isEmpty() )
         {

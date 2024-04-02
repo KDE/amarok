@@ -118,7 +118,7 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
     foreach( Meta::TrackPtr track, tracks )
     {
         Collections::Collection *sourceCollection = track->collection();
-        collectionTrackMap.insertMulti( sourceCollection, track );
+        collectionTrackMap.insert( sourceCollection, track );
     }
 
     foreach( Collections::Collection *sourceCollection, collectionTrackMap.uniqueKeys() )
