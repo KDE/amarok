@@ -35,14 +35,6 @@ Meta::AlbumKey::AlbumKey( const Meta::AlbumPtr &album )
         m_artistName = album->albumArtist()->name();
 }
 
-Meta::AlbumKey&
-Meta::AlbumKey::operator=( const Meta::AlbumKey &o )
-{
-    m_albumName = o.m_albumName;
-    m_artistName = o.m_artistName;
-    return *this;
-}
-
 bool
 Meta::AlbumKey::operator<( const Meta::AlbumKey &other ) const
 {
@@ -69,14 +61,3 @@ Meta::TrackKey::TrackKey( const Meta::TrackPtr &track )
     if( track->album() )
         m_albumName = track->album()->name();
 }
-
-Meta::TrackKey& Meta::TrackKey::operator=( const Meta::TrackKey &o )
-{
-    m_discNumber = o.m_discNumber;
-    m_trackNumber = o.m_trackNumber;
-    m_trackName = o.m_trackName;
-    m_albumName = o.m_albumName;
-    m_artistName = o.m_artistName;
-    return *this;
-}
-

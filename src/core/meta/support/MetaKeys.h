@@ -37,7 +37,6 @@ namespace Meta
             explicit AlbumKey( const QString &name, const QString &artistName );
             explicit AlbumKey( const AlbumPtr &album );
 
-            AlbumKey& operator=( const AlbumKey &o );
             bool operator<( const AlbumKey &other ) const;
 
             QString albumName() const
@@ -63,8 +62,6 @@ namespace Meta
         public:
             TrackKey();
             explicit TrackKey( const TrackPtr &track );
-
-            TrackKey& operator=( const TrackKey &o );
 
         private:
             QString m_trackName;
