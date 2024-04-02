@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -388,7 +388,7 @@ msgid "Stop after current track: On"
 msgstr "हालको ट्रयाक पछि प्ले गर्न रोक्नुहोस्"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "कुनै ट्रयाक प्ले भएको छैन"
@@ -10915,7 +10915,7 @@ msgstr "एकैखालको कलाकार पुन: प्रया�
 msgid "Lyrics data could not be parsed"
 msgstr "रियो कर्म खोल्न सकेन"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "यो ट्रयाकका लागि कुनै सूचना उपलब्ध छैन"
@@ -12690,7 +12690,7 @@ msgid "Show tooltips"
 msgstr "उपकरणपट्टी देखाउनुहोस्"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, fuzzy, kde-format
 #| msgid "Previous Track"
 msgid "Preview"
@@ -17003,13 +17003,13 @@ msgid "Slim Toolbar"
 msgstr "उपकरणपट्टी लुकाउनुहोस्"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, fuzzy, kde-format
 #| msgid "Volume: 100%"
 msgid "Volume: %1% (muted)"
 msgstr "भोल्युम: १००%"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, fuzzy, kde-format
 #| msgid "Volume: %1%"
@@ -17477,18 +17477,18 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "बीच"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "मूल्याङ्कन वजन गरियो"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, fuzzy, kde-format
 #| msgid "Volume: 100%"
 msgid "Volume: 100% (muted)"
 msgstr "भोल्युम: १००%"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, fuzzy, kde-format
 #| msgid "OSD Preview - drag to reposition"
 msgid ""
@@ -17496,13 +17496,13 @@ msgid ""
 "Drag to reposition"
 msgstr "ओएसडी पूर्वावलोकन - पुन: स्थिति गर्न तान्नुहोस्"
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "रोक्नुहोस्"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "पज गरियो"
@@ -17599,7 +17599,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "अनुकूल स्टेसन: %1"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr ""

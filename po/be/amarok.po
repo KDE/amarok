@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2008-09-26 17:12+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -383,7 +383,7 @@ msgid "Stop after current track: On"
 msgstr "Дадаць у чаргу"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr ""
@@ -10721,7 +10721,7 @@ msgstr ""
 msgid "Lyrics data could not be parsed"
 msgstr "Гэты аб'ект не можа быць створаны"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr ""
@@ -12417,7 +12417,7 @@ msgid "Show tooltips"
 msgstr "Паказаць панель начыння"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, fuzzy, kde-format
 #| msgid "Previous Track"
 msgid "Preview"
@@ -16642,12 +16642,12 @@ msgid "Slim Toolbar"
 msgstr "Схаваць панель начыння"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, fuzzy, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "Гучнасць"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, fuzzy, kde-format
 #| msgid "Volume: %1%"
@@ -17112,30 +17112,30 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "між"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr ""
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, fuzzy, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Гучнасць"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr ""
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "Спыніць"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "Прыпынена"
@@ -17227,7 +17227,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr ""
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr ""

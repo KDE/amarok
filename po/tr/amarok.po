@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2024-03-22 16:18+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -400,7 +400,7 @@ msgid "Stop after current track: On"
 msgstr "Şimdiki parçadan sonra dur: Açık"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Hiçbir parça çalmıyor"
@@ -10621,7 +10621,7 @@ msgstr "Alınan şarkı sözleri boş"
 msgid "Lyrics data could not be parsed"
 msgstr "Şarkı sözleri verisi ayrıştırılamadı"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "Bu parça için bilgi mevcut değil"
@@ -12257,7 +12257,7 @@ msgid "Show tooltips"
 msgstr "İpuçlarını göster"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, kde-format
 msgid "Preview"
 msgstr "Önizle"
@@ -16497,12 +16497,12 @@ msgid "Slim Toolbar"
 msgstr "Araç Çubuğunu İncelt"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "Ses: %​%1 (sessiz)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -16940,17 +16940,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "arasında"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "Derecelendirme değişti"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Ses: %​100 (sessize alınmış)"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16959,12 +16959,12 @@ msgstr ""
 "Ekran Bilgilendirme Penceresi önizlemesi\n"
 "Konumlandırmak için sürükleyin"
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, kde-format
 msgid "Stopped"
 msgstr "Durdu"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "Durakladı"
@@ -17054,7 +17054,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "Buraya atla: %1"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr "Yukardaki ögeleri içe veya dışa sürükleyin."

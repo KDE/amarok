@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2024-03-07 19:55+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -380,7 +380,7 @@ msgid "Stop after current track: On"
 msgstr "在目前曲目後停止：開啟"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "沒有播放任何曲目"
@@ -10247,7 +10247,7 @@ msgstr "已取得歌詞是空的"
 msgid "Lyrics data could not be parsed"
 msgstr "無法剖析歌詞資料。"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "這首曲目沒有可用的資訊。"
@@ -11871,7 +11871,7 @@ msgid "Show tooltips"
 msgstr "顯示工具提示"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, kde-format
 msgid "Preview"
 msgstr "預覽"
@@ -15956,12 +15956,12 @@ msgid "Slim Toolbar"
 msgstr "薄型工具列"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "音量：%1% (已靜音)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -16383,17 +16383,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "介於"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "評等已變更"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "音量：100% (已靜音)"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16402,12 +16402,12 @@ msgstr ""
 "OSD 預覽\n"
 "您可以拖曳到適合的位置"
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, kde-format
 msgid "Stopped"
 msgstr "已停止"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "已暫停"
@@ -16497,7 +16497,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "跳至：%1"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr "從上方將項目拖曳進出。"

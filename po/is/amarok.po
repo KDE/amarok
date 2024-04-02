@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2020-04-04 13:51+0000\n"
 "Last-Translator: Sveinn í Felli <sv@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
@@ -384,7 +384,7 @@ msgid "Stop after current track: On"
 msgstr "Líkar við núverandi lag"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Ekkert lag í spilun"
@@ -10752,7 +10752,7 @@ msgstr "Ná í svipaða flytjendur"
 msgid "Lyrics data could not be parsed"
 msgstr "Ekki var hægt að búa til þennan hlut."
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "Það eru engar upplýsingar fáanlegar yfir þetta lag"
@@ -12482,7 +12482,7 @@ msgid "Show tooltips"
 msgstr "Sýna vísbendingar"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, fuzzy, kde-format
 #| msgid "Preview Tracks"
 msgid "Preview"
@@ -16848,13 +16848,13 @@ msgid "Slim Toolbar"
 msgstr "Aðaltækjaslá"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "Hljóðstyrkur: 100% (þaggað)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, fuzzy, kde-format
 #| msgid "Volume: %1% %2"
@@ -17306,17 +17306,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "á milli"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "Stigagjöf breytt"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Hljóðstyrkur: 100% (þaggað)"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, fuzzy, kde-format
 #| msgid "OSD Preview - drag to reposition"
 msgid ""
@@ -17324,12 +17324,12 @@ msgid ""
 "Drag to reposition"
 msgstr "Dragðu boxið þangað sem þú vilt að það birtist"
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, kde-format
 msgid "Stopped"
 msgstr "Stöðvað"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "Í bið"
@@ -17421,7 +17421,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "Hoppa í: %1"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr ""

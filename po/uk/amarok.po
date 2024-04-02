@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2021-06-17 11:42+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
@@ -383,7 +383,7 @@ msgid "Stop after current track: On"
 msgstr "Зупинка після поточної композиції: Увімкнено"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Жодна композиція не відтворюється"
@@ -10854,7 +10854,7 @@ msgstr "Отримано порожній запис слів пісні"
 msgid "Lyrics data could not be parsed"
 msgstr "Не вдалося обробити дані тексту пісні"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "Немає інформації для цієї композиції"
@@ -12501,7 +12501,7 @@ msgid "Show tooltips"
 msgstr "Показувати підказки"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, kde-format
 msgid "Preview"
 msgstr "Перегляд"
@@ -16858,12 +16858,12 @@ msgid "Slim Toolbar"
 msgstr "Вузька панель"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "Гучність: %1% (звук вимкнено)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -17323,17 +17323,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "між"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "Оцінка змінилася"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Гучність: 100% (звук вимкнено)"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -17342,12 +17342,12 @@ msgstr ""
 "Попередній перегляд індикатора\n"
 "Перетягніть, щоб змінити позицію"
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, kde-format
 msgid "Stopped"
 msgstr "Зупинено"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "Пауза"
@@ -17437,7 +17437,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "Перейти до %1"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr "Перетягніть сюди або звідси елементи списку, розташованого згори."

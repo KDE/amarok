@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia/amarok.po\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2007-04-15 19:39-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -387,7 +387,7 @@ msgid "Stop after current track: On"
 msgstr "Stop tar éis an Amhráin reatha: Ann"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Níl aon amhrán ag seinm"
@@ -10928,7 +10928,7 @@ msgstr "Bhí na liricí faighte folamh"
 msgid "Lyrics data could not be parsed"
 msgstr "Níorbh fhéidir na liricí a pharsáil"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "Níl aon fhaisnéis faoin amhrán seo ar fáil"
@@ -12586,7 +12586,7 @@ msgid "Show tooltips"
 msgstr "Taispeáin leideanna uirlisí"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, kde-format
 msgid "Preview"
 msgstr "Réamhamharc"
@@ -16895,13 +16895,13 @@ msgid "Slim Toolbar"
 msgstr "Barra Uirlisí Caol"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "Airde: 100% (gan fuaim)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -17353,17 +17353,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "idir"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "Athraíodh an rátáil"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Airde: 100% (gan fuaim)"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -17372,12 +17372,12 @@ msgstr ""
 "Réamhamharc ar an Taispeáint ar Scáileán\n"
 "Tarraing chun suíomh nua más mian leat"
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, kde-format
 msgid "Stopped"
 msgstr "Stadtha"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "Moillithe"
@@ -17469,7 +17469,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "Léim go: %1"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr "Tarraing míreanna anuas, isteach agus amach."

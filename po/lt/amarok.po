@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2013-09-13 11:28+0300\n"
 "Last-Translator: Liudas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -389,7 +389,7 @@ msgid "Stop after current track: On"
 msgstr "Sustoti po dabartinės dainos: įjungta"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Negroja jokia daina"
@@ -10897,7 +10897,7 @@ msgstr "Atsiųsti tušti dainos žodžiai"
 msgid "Lyrics data could not be parsed"
 msgstr "Nepavyko išnagrinėti dainos žodžių duomenų"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "Informacijos apie šią dainą nėra"
@@ -12565,7 +12565,7 @@ msgid "Show tooltips"
 msgstr "Rodyti paaiškinimus"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, kde-format
 msgid "Preview"
 msgstr "Peržiūra"
@@ -16901,13 +16901,13 @@ msgid "Slim Toolbar"
 msgstr "Plona įrankinė"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "Garsumas: 100% (nutildyta)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -17378,17 +17378,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "tarp"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "Įvertinimas pakeistas"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Garsumas: 100% (nutildyta)"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -17397,12 +17397,12 @@ msgstr ""
 "Pranešimų peržiūra\n"
 "Norėdami pakeisti vietą tiesiog tempkite"
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, kde-format
 msgid "Stopped"
 msgstr "Sustabdyta"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "Pristabdyta"
@@ -17494,7 +17494,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "Peršokti į: %1"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr ""

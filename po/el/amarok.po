@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2021-06-19 07:32+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -391,7 +391,7 @@ msgid "Stop after current track: On"
 msgstr "Σταμάτημα μετά το τρέχον κομμάτι: ενεργό"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Δεν εκτελείται κομμάτι"
@@ -10723,7 +10723,7 @@ msgstr "Οι ανακτημένοι στίχοι είναι κενοί"
 msgid "Lyrics data could not be parsed"
 msgstr "Τα δεδομένα στίχων δεν μπορούν να αναλυθούν"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "Δεν υπάρχουν πληροφορίες διαθέσιμες για αυτό το κομμάτι"
@@ -12365,7 +12365,7 @@ msgid "Show tooltips"
 msgstr "Εμφάνιση συμβουλών"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, kde-format
 msgid "Preview"
 msgstr "Προεπισκόπηση"
@@ -16658,12 +16658,12 @@ msgid "Slim Toolbar"
 msgstr "Λεπτή γραμμή εργαλείων"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, kde-format
 msgid "Volume: %1% (muted)"
 msgstr "Ένταση: %1% (χωρίς ήχο)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -17106,17 +17106,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "ανάμεσα"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "Η αξιολόγηση τροποποιήθηκε"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "Ένταση: 100% (χωρίς ήχο)"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -17125,12 +17125,12 @@ msgstr ""
 "Προεπισκόπηση OSD\n"
 "Σύρετε για επανατοποθέτηση"
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, kde-format
 msgid "Stopped"
 msgstr "Διεκόπη"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "Παύση"
@@ -17220,7 +17220,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "Μεταπήδηση στο: %1"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr "Προσθήκη και αφαίρεση στοιχείων που υπάρχουν παραπάνω"

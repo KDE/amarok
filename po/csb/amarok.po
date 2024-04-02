@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2009-12-21 00:36+0100\n"
 "Last-Translator: Mark Kwidzińśczi <mark@linuxcsb.org>\n"
 "Language-Team: Kaszëbsczi <i18n-csb@linuxcsb.org>\n"
@@ -389,7 +389,7 @@ msgid "Stop after current track: On"
 msgstr "Achtnij biéżny sztëczk"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Nick nie je gróné"
@@ -10950,7 +10950,7 @@ msgstr ""
 msgid "Lyrics data could not be parsed"
 msgstr "Pòdôwczi tekstu ni mòga òstac òdczëtóné"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "Felënk wëdowiédzé dlô tegò titla"
@@ -12659,7 +12659,7 @@ msgid "Show tooltips"
 msgstr "Pòkażë le dopasowóné"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, kde-format
 msgid "Preview"
 msgstr "Pòdzérk"
@@ -17048,13 +17048,13 @@ msgid "Slim Toolbar"
 msgstr "Przédnô lëstwa nôrzãdzów"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, fuzzy, kde-format
 #| msgid "Volume: %1% %2"
 msgid "Volume: %1% (muted)"
 msgstr "Głosnosc: %1% %2"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, fuzzy, kde-format
 #| msgid "Volume: %1% %2"
@@ -17522,30 +17522,30 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "Midze"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "Notowanié zmienioné"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr ""
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr ""
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "Zatrzëmôj"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "Paùza"
@@ -17641,7 +17641,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "Grëpòwi radio: %1"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr ""

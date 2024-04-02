@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2013-07-07 09:24-0500\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -379,7 +379,7 @@ msgid "Stop after current track: On"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਦੇ ਬਾਅਦ ਰੋਕੋ: ਚਾਲੂ"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "ਕੋਈ ਗਾਣਾ ਨਹੀਂ ਚੱਲਦਾ"
@@ -10353,7 +10353,7 @@ msgstr "ਪ੍ਰਾਪਤ ਕੀਤੇ ਬੋਲ ਖਾਲੀ ਹਨ"
 msgid "Lyrics data could not be parsed"
 msgstr "ਬੋਲ ਡਾਟਾ ਪਾਰਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "ਇਸ ਟਰੈਕ ਲਈ ਕੋਈ ਜਾਣਕਾਰੀ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ।"
@@ -12007,7 +12007,7 @@ msgid "Show tooltips"
 msgstr "ਟੂਲ-ਟਿੱਪ ਵੇਖੋ"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, kde-format
 msgid "Preview"
 msgstr "ਝਲਕ"
@@ -16139,13 +16139,13 @@ msgid "Slim Toolbar"
 msgstr "ਹਲਕੀ ਟੂਲਬਾਰ"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "ਵਾਲੀਅਮ: ੧੦੦% (ਚੁੱਪ)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -16570,17 +16570,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "ਵਿਚਕਾਰ"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "ਰੇਟਿੰਗ ਬਦਲੀ"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "ਵਾਲੀਅਮ: ੧੦੦% (ਚੁੱਪ)"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -16589,12 +16589,12 @@ msgstr ""
 "ਆਨ-ਸਕਰੀਨ-ਡਿਸਪਲੇਅ ਝਲਕ\n"
 "ਸਥਿਤੀ ਬਦਲਣ ਲਈ ਹਿਲਾਉ"
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, kde-format
 msgid "Stopped"
 msgstr "ਰੋਕੋ"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "ਵਿਰਾਮ"
@@ -16686,7 +16686,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "ਜਾਓ: %1"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2012-11-20 23:54+0200\n"
 "Last-Translator: Diego Iastrubni <elcuco@kde.org>\n"
 "Language-Team: Hebrew <kde-i18n-doc@kde.org>\n"
@@ -385,7 +385,7 @@ msgid "Stop after current track: On"
 msgstr "אוהב את הרצועה הנוכחית"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "שום רצועה מושמעת"
@@ -10931,7 +10931,7 @@ msgstr "אחזר אמנים דומים"
 msgid "Lyrics data could not be parsed"
 msgstr ""
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "אין מידע זמין עבור רצועה זאת"
@@ -12639,7 +12639,7 @@ msgid "Show tooltips"
 msgstr "הראה רק התאומות"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, fuzzy, kde-format
 #| msgid "Preview Tracks"
 msgid "Preview"
@@ -16947,13 +16947,13 @@ msgid "Slim Toolbar"
 msgstr "סרגל־כלים רזה"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "עצמת קול: 100% (מושתק)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Volume: %1%"
@@ -17416,17 +17416,17 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "בין"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "דירוג השתנה"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "עצמת קול: 100% (מושתק)"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, kde-format
 msgid ""
 "On-Screen-Display preview\n"
@@ -17435,14 +17435,14 @@ msgstr ""
 "תצוגה מקדימה של תצוגה־על־המסך\n"
 "גרור כדי לשנות את המיקום"
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "עצור"
 
 # kde-il: don't translatep:67
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "מושהה"
@@ -17537,7 +17537,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "קפוץ אל: %1"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr ""

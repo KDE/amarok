@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-03-30 01:34+0000\n"
+"POT-Creation-Date: 2024-04-02 01:34+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -381,7 +381,7 @@ msgid "Stop after current track: On"
 msgstr "បញ្ឈប់​ក្រោយ​ពេល​បទ​បច្ចុប្បន្ន ៖ បើក​"
 
 #: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:669
+#: widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "មិន​កំពុង​ចាក់​បទ​អ្វី​ទាំងអស់​​​"
@@ -10526,7 +10526,7 @@ msgstr "អត្ថបទ​ចម្រៀង​ដែល​បាន​ទទ
 msgid "Lyrics data could not be parsed"
 msgstr "មិនអាច​ញែក​ទិន្នន័យ​អត្ថបទ​ចម្រៀង​បាន​ទេ"
 
-#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:693
+#: mac/GrowlInterface.cpp:64 widgets/Osd.cpp:690
 #, kde-format
 msgid "No information available for this track"
 msgstr "មិន​មាន​ព័ត៌មាន សម្រាប់​បទ​នេះ​ឡើយ"
@@ -12181,7 +12181,7 @@ msgid "Show tooltips"
 msgstr "បង្ហាញ​ព័ត៌មាន​ជំនួយ"
 
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:510
+#: playlist/layouts/PlaylistLayoutEditDialog.ui:291 widgets/Osd.cpp:504
 #, kde-format
 msgid "Preview"
 msgstr "មើល​​ជា​មុន"
@@ -16398,13 +16398,13 @@ msgid "Slim Toolbar"
 msgstr "របារ​ឧបករណ៍​មេ"
 
 #: toolbar/VolumePopupButton.cpp:104 toolbar/VolumePopupButton.cpp:115
-#: widgets/Osd.cpp:199
+#: widgets/Osd.cpp:200
 #, fuzzy, kde-format
 #| msgid "Volume: 100% (muted)"
 msgid "Volume: %1% (muted)"
 msgstr "កម្រិត​សំឡេង ៖ 100% (ស្ងាត់)"
 
-#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:199
+#: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, fuzzy, kde-format
 msgid "Volume: %1%"
@@ -16842,30 +16842,30 @@ msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "ចន្លោះ"
 
-#: widgets/Osd.cpp:185
+#: widgets/Osd.cpp:186
 #, kde-format
 msgid "Rating changed"
 msgstr "បាន​ផ្លាស់ប្ដូរ​ការវាយ​តម្លៃ"
 
-#: widgets/Osd.cpp:260
+#: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
 msgstr "កម្រិត​សំឡេង ៖ 100% (ស្ងាត់)"
 
-#: widgets/Osd.cpp:510
+#: widgets/Osd.cpp:504
 #, fuzzy, kde-format
 msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr "ទិដ្ឋភាព OSD - អូស​ដើម្បី​ប្ដូរ​ទីតាំង"
 
-#: widgets/Osd.cpp:759
+#: widgets/Osd.cpp:756
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgid "Stopped"
 msgstr "បញ្ឈប់"
 
-#: widgets/Osd.cpp:768
+#: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
 msgstr "បាន​ផ្អាក"
@@ -16957,7 +16957,7 @@ msgctxt ""
 msgid "Jump to: %1"
 msgstr "លោត​ទៅ"
 
-#: widgets/TokenDropTarget.cpp:315
+#: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
 msgstr "អូស​​ក្នុង​និង​ក្រៅ​ធាតុ​ពី​ខាង​លើ ។"
