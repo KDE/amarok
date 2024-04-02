@@ -51,9 +51,9 @@ namespace Dynamic
 
             QWidget* widget( QWidget* parent = nullptr ) override;
 
-            virtual Dynamic::TrackSet matchingTracks( const Meta::TrackList& playlist,
-                                                      int contextCount, int finalCount,
-                                                      Dynamic::TrackCollectionPtr universe ) const;
+            Dynamic::TrackSet matchingTracks( const Meta::TrackList& playlist,
+                                              int contextCount, int finalCount,
+                                              const Dynamic::TrackCollectionPtr& universe ) const override;
 
             bool trackMatches( int position,
                                const Meta::TrackList& playlist,

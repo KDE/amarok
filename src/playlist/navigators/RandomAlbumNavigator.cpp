@@ -31,7 +31,10 @@
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 
-#include <algorithm> // For std::random_shuffle
+#include <QRandomGenerator>
+
+#include <algorithm> // For std::shuffle
+#include <cmath>
 
 
 Playlist::RandomAlbumNavigator::RandomAlbumNavigator()
@@ -80,7 +83,7 @@ Playlist::RandomAlbumNavigator::notifyAlbumsInserted( const QList<AlbumId> &inse
     DEBUG_BLOCK
 
     m_plannedAlbums.append( insertedAlbums );
-    std::random_shuffle( m_plannedAlbums.begin(), m_plannedAlbums.end() );
+    std::shuffle( m_plannedAlbums.begin(), m_plannedAlbums.end(), std::default_random_engine( QDateTime::currentMSecsSinceEpoch() ) );
     if ( !m_plannedAlbums.isEmpty() )
         if ( m_plannedAlbums.first() == currentAlbum() )
             m_plannedAlbums.append( m_plannedAlbums.takeFirst() );    // Try to avoid playing same album twice.

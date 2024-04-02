@@ -358,7 +358,7 @@ APG::ConstraintSolver::random_track_from_domain() const
 Meta::TrackList
 APG::ConstraintSolver::sample( Meta::TrackList domain, const int sampleSize ) const
 {
-    std::random_shuffle( domain.begin(), domain.end() );
+    std::shuffle( domain.begin(), domain.end(), std::default_random_engine( QDateTime::currentMSecsSinceEpoch() ) );
     return domain.mid( 0, sampleSize );
 }
 
