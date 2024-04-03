@@ -30,7 +30,6 @@
 #include "playlist/PlaylistModel.h"
 
 #include <KLocalizedString>
-#include <QRandomGenerator>
 
 #include <QHash>
 #include <QMutexLocker>
@@ -371,7 +370,7 @@ APG::ConstraintSolver::playlist_size() const
 bool
 APG::ConstraintSolver::select( const double satisfaction ) const
 {
-    double x = (double)QRandomGenerator::global()->generate()/(double)RAND_MAX;
+    double x = (double)QRandomGenerator::global()->generate()/(double)std::numeric_limits<quint32>::max();
     const double scale = -30.0; // TODO: make adjustable
     return ( x < 1.0 / ( 1.0 + exp( scale * (satisfaction-0.8) ) ) );
 }
@@ -436,5 +435,5 @@ APG::ConstraintSolver::rng_poisson( const double mu ) const
 double
 APG::ConstraintSolver::rng_uniform() const
 {
-    return ( (double)QRandomGenerator::global()->generate() / (double)(RAND_MAX) );
+    return ( (double)QRandomGenerator::global()->generate() / (double)std::numeric_limits<quint32>::max() );
 }

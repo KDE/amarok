@@ -59,7 +59,7 @@ Playlist::FavoredRandomTrackNavigator::planOne()
             foreach ( qreal weight, weights )
                 totalWeight += weight;
 
-            qreal randomCumulWeight = ( QRandomGenerator::global()->generate() / qreal( RAND_MAX ) ) * totalWeight;
+            qreal randomCumulWeight = ( QRandomGenerator::global()->generate() / (double)std::numeric_limits<quint32>::max() ) * totalWeight;
 
             int row = 0;
             qreal rowCumulWeight = weights[ row ];

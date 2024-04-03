@@ -471,7 +471,7 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
         if ( m_invert )
             v = 1.0 - v;
 
-        m_matchCache.insert( track, ( v > ( (double)QRandomGenerator::global()->generate() / (double)RAND_MAX ) ) );
+        m_matchCache.insert( track, ( v > ( (double)QRandomGenerator::global()->generate() / (double)std::numeric_limits<quint32>::max() ) ) );
     }
     return m_matchCache.value( track );
 }

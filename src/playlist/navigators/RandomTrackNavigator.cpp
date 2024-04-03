@@ -88,7 +88,7 @@ Playlist::RandomTrackNavigator::chooseRandomItem( const QSet<quint64> &avoidSet 
     do
     {
         int maxPosition = allItemsList().size() - 1;
-        int randomPosition = round( ( QRandomGenerator::global()->generate() / (float)RAND_MAX ) * maxPosition );
+        int randomPosition = QRandomGenerator::global()->generate() % maxPosition;
         chosenItem = allItemsList().at( randomPosition );
     } while ( avoidSet.contains( chosenItem ) );
 
