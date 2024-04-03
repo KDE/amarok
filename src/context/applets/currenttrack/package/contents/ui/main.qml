@@ -17,7 +17,7 @@
 import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
-import org.kde.kirigami 2.0 as Kirigami
+import org.kde.kirigami 2.14 as Kirigami
 import org.kde.amarok.qml 1.0 as AmarokQml
 import org.kde.amarok.currenttrack 1.0
 
@@ -122,9 +122,8 @@ AmarokQml.Applet {
 
             color: "white"
             radius: Kirigami.Units.smallSpacing / 2
-            border.width: 1
-            border.color: applet.palette.light
-
+            border.width: albumCoverMouse.containsMouse ? 3 : 1
+            border.color: albumCoverMouse.containsMouse ? Kirigami.Theme.highlightColor : applet.palette.light
 
             AmarokQml.PixmapItem {
                 id: iconItem
@@ -134,8 +133,9 @@ AmarokQml.Applet {
                 source: CurrentTrackEngine.cover
             }
             MouseArea {
+                id: albumCoverMouse
                 anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
+                hoverEnabled: true
                 onClicked: CurrentTrackEngine.displayCover()
             }
         }

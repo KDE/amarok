@@ -18,14 +18,24 @@ import QtQuick 2.4
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import org.kde.amarok.currenttrack 1.0
+import org.kde.kirigami 2.14 as Kirigami
 
 MouseArea {
     property Button copyMarker
     property string targetText
 
     anchors.fill: parent
-    cursorShape: Qt.PointingHandCursor
     hoverEnabled: true
+
+
+    Rectangle {
+        height: parent.height
+        y: 0
+        anchors.left: parent.left
+        width: copyMarker.x + 20
+        color: Kirigami.Theme.highlightColor
+        opacity: parent.pressed ? 0.2 : parent.containsMouse ? 0.1 : 0.0
+    }
 
     function copy( str ) {
         copyEdit.text=str
@@ -44,7 +54,7 @@ MouseArea {
     }
     onEntered:
     {
-        copyMarker.x = Math.min( parent.implicitWidth - 20, parent.width - 30 )
+        copyMarker.x = Math.min( parent.implicitWidth - copyMarker.width, parent.width - copyMarker.width )
         copyMarker.opacity = 0.3
     }
 
@@ -59,8 +69,8 @@ MouseArea {
         property alias animationRunning: clickAnimation.running
 
         anchors.top: parent.top
-        width: 20
-        height: 20
+        width: Kirigami.Units.iconSizes.small
+        height: Kirigami.Units.iconSizes.small
         z: -1
         opacity: 0
 
@@ -74,8 +84,8 @@ MouseArea {
         }
         SequentialAnimation {
             id: clickAnimation
-            OpacityAnimator { target: copyMarker; from: 0.3; to: 0.9; duration: 200; }
-            OpacityAnimator { target: copyMarker; from: 0.9; to: 0.3; duration: 200; }
+            OpacityAnimator { target: copyMarker; from: 0.3; to: 0.9; duration: 50; }
+            OpacityAnimator { target: copyMarker; from: 0.9; to: 0.3; duration: 250; }
         }
         Behavior on opacity { PropertyAnimation {} }
     }

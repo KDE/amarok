@@ -78,6 +78,7 @@ Item {
                 fontSizeMode: Text.Fit
                 font.pointSize: 32
                 minimumPointSize: 9
+                font.bold: true
                 text: CurrentTrackEngine.timesPlayed
                 elide: Text.ElideRight
             }
@@ -91,6 +92,7 @@ Item {
                 fontSizeMode: Text.Fit
                 font.pointSize: 32
                 minimumPointSize: 9
+                font.bold: true
                 text: CurrentTrackEngine.score
                 elide: Text.ElideRight
             }
@@ -104,6 +106,7 @@ Item {
                 fontSizeMode: Text.Fit
                 font.pointSize: 32
                 minimumPointSize: 9
+                font.bold: true
                 text: CurrentTrackEngine.lastPlayed
                 elide: Text.ElideRight
             }

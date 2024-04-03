@@ -65,6 +65,7 @@ ColumnLayout {
         maximumLineCount: 1
         fontSizeMode: Text.Fit
         font.pointSize: 32
+        font.italic: true
         minimumPointSize: 12
         elide: Text.ElideRight
 
