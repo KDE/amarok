@@ -47,61 +47,6 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QCheckBox" name="kcfg_AutoUpdateScripts">
-       <property name="toolTip">
-        <string>Automatically download and install updates for the built-in scripts from the Amarok website if available</string>
-       </property>
-       <property name="whatsThis">
-        <string>Automatically download and install updates for the built-in scripts from the Amarok website if available</string>
-       </property>
-       <property name="text">
-        <string>Automatically update built-in scripts</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="manageButton">
-       <property name="toolTip">
-        <string>Browse, install, and uninstall scripts</string>
-       </property>
-       <property name="text">
-        <string>Manage Scripts</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="reloadButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="icon">
-        <iconset theme="view-refresh">
-         <normaloff/>
-        </iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
     <widget class="QGroupBox" name="m_scriptConsoleGroup">
      <property name="title">
       <string>Script Console</string>

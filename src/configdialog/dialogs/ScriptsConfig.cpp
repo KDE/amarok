@@ -57,11 +57,11 @@ ScriptsConfig::ScriptsConfig( Amarok2ConfigDialog *parent )
     connect( m_timer, &QTimer::timeout, this, &ScriptsConfig::slotUpdateScripts );
     m_timer->setInterval( 200 );
 
-    // Load config
-    gui.kcfg_AutoUpdateScripts->setChecked( AmarokConfig::autoUpdateScripts() );
+    // Load config // Disable script updating and KNewStuff for now. TODO review situation post 3.0
+    /*gui.kcfg_AutoUpdateScripts->setChecked( AmarokConfig::autoUpdateScripts() );
     gui.manageButton->setIcon( QIcon::fromTheme( QStringLiteral("get-hot-new-stuff-amarok") ) );
     connect( gui.manageButton, &QAbstractButton::clicked,
-             this, &ScriptsConfig::slotManageScripts );
+             this, &ScriptsConfig::slotManageScripts );*/
     connect( gui.installButton, &QAbstractButton::clicked,
              this, &ScriptsConfig::installLocalScript );
 
@@ -69,7 +69,7 @@ ScriptsConfig::ScriptsConfig( Amarok2ConfigDialog *parent )
     m_verticalLayout = gui.verticalLayout;
     slotReloadScriptSelector();
 
-    connect( gui.reloadButton, &QAbstractButton::clicked, m_timer, QOverload<>::of(&QTimer::start) );
+    //connect( gui.reloadButton, &QAbstractButton::clicked, m_timer, QOverload<>::of(&QTimer::start) ); //TODO post-3.0
     connect( gui.uninstallButton, &QAbstractButton::clicked, this, &ScriptsConfig::slotUninstallScript );
 
     connect( ScriptManager::instance(), &ScriptManager::scriptsChanged,

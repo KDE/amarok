@@ -172,6 +172,10 @@ void
 ScriptManager::updateAllScripts() // SLOT
 {
     DEBUG_BLOCK
+    // Disable script updating for now. TODO review situation post 3.0
+    debug() << "Script updating hard disabled, not doing an update";
+    return;
+
     // find all scripts (both in $KDEHOME and /usr)
     QStringList foundScripts;
     QStringList locations = QStandardPaths::standardLocations( QStandardPaths::GenericDataLocation );
