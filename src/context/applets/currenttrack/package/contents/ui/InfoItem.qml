@@ -33,6 +33,7 @@ ColumnLayout {
         id: titleLabel
 
         text: CurrentTrackEngine.track
+        textFormat: Text.PlainText
 
         Layout.fillHeight: true
         Layout.fillWidth: true
@@ -54,6 +55,7 @@ ColumnLayout {
         id: artistLabel
 
         text: CurrentTrackEngine.artist
+        textFormat: Text.PlainText
 
         Layout.fillHeight: true
         Layout.fillWidth: true
@@ -75,6 +77,7 @@ ColumnLayout {
         id: albumLabel
 
         text: CurrentTrackEngine.album
+        textFormat: Text.PlainText
 
         Layout.fillHeight: true
         Layout.fillWidth: true

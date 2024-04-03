@@ -53,6 +53,7 @@ AmarokQml.Applet {
                 color: styleData.selected ? applet.palette.highlightedText : applet.palette.text
                 elide: styleData.elideMode
                 text: styleData.value
+                textFormat: Text.StyledText
             }
         }
 

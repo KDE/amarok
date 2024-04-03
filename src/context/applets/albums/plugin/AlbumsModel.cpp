@@ -65,10 +65,10 @@ AlbumsModel::data( const QModelIndex &index, int role ) const
             int year     = album->data( AlbumYearRole ).toInt();
 
             QStringList texts;
-            texts << ((year > 0) ? QString( "%1 (%2)" ).arg( name, QString::number(year) ) : name);
-            texts << album->data( AlbumLengthRole ).toString();
+            texts << ((year > 0) ? QString( "%1 (%2)" ).arg( name, QString::number(year) ) : name).toHtmlEscaped();
+            texts << album->data( AlbumLengthRole ).toString().toHtmlEscaped();
 
-            return texts.join('\n');
+            return texts.join("<br>");
         }
 
         if( const auto track = dynamic_cast<const TrackItem *>( item ) )
@@ -80,7 +80,13 @@ AlbumsModel::data( const QModelIndex &index, int role ) const
             QString number = track->data( TrackNumberRole ).toString() + ". ";
             QString middle = isCompilation ? QString( "%1 - %2" ).arg( artist, name ) : name;
 
-            return QStringList( { number, middle, length } ).join( ' ' );
+            QString ret = QStringList( { number, middle, length } ).join( ' ' ).toHtmlEscaped();
+            // Styling to indicate current track and artist in listings
+            if( track->bold() )
+                ret = "<b>" + ret + "</b>";
+            if( track->italic() )
+                ret = "<i>" + ret + "</i>";
+            return ret;
         }
     }
 

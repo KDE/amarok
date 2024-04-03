@@ -45,12 +45,14 @@ class TrackItem : public QStandardItem, public Meta::Observer
          * playing track
          */
         void italicise();
+        bool italic() const { return m_italic; }
 	
         /**
          * Applies a bold style if the track is owned by the currently
          * playing artist
          */
-        void bold();
+        void bolden();
+        bool bold() const { return m_bold; }
 
         // overloaded from Meta::Observer
         using Observer::metadataChanged;
@@ -62,6 +64,8 @@ class TrackItem : public QStandardItem, public Meta::Observer
 
     private:
         Meta::TrackPtr m_track;
+        bool m_bold;
+        bool m_italic;
         QMutex m_mutex;
 };
 

@@ -26,6 +26,8 @@
 
 TrackItem::TrackItem()
     : QStandardItem()
+    , m_bold( false )
+    , m_italic( false )
 {
     setEditable( false );
 }
@@ -82,17 +84,13 @@ TrackItem::metadataChanged(const Meta::TrackPtr &track )
 void
 TrackItem::italicise()
 {
-    QFont f = font();
-    f.setItalic( true );
-    setFont( f );
+    m_italic = true;
 }
 
 void
-TrackItem::bold()
+TrackItem::bolden()
 {
-    QFont f = font();
-    f.setBold( true );
-    setFont( f );
+    m_bold = true;
 }
 
 int

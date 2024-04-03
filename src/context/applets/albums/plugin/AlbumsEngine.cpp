@@ -184,15 +184,15 @@ void AlbumsEngine::resultReady( const Meta::AlbumList &albums )
             trackItem->setTrack( track );
 
             // bold the current track to make it more visible
-            if( m_currentTrack && m_currentTrack == track )
+            if( m_currentTrack && *m_currentTrack == *track )
             {
-                trackItem->bold();
+                trackItem->bolden();
             }
 
             // If compilation and same artist, then highlight, but only if there's a current track
             if( m_currentTrack
                 && m_currentTrack->artist() && track->artist()
-                && album->isCompilation() )
+                && *m_currentTrack->artist() == *track->artist() && album->isCompilation() )
             {
                 trackItem->italicise();
             }
