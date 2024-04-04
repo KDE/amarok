@@ -49,25 +49,35 @@ Playlist::FavoredRandomTrackNavigator::planOne()
         avoidRecentlyPlayedSize = qMin( avoidRecentlyPlayedSize, allItemsList().size() / 2 );
 
         QSet<quint64> avoidSet = getRecentHistory( avoidRecentlyPlayedSize );
+        QList<qreal> weights;
 
-        QList<qreal> weights = rowWeights( avoidSet );
-
-        // Choose a weighed random row.
-        if( !weights.isEmpty() )
+        quint64 chosenItem = std::numeric_limits<quint64>::max();
+        do
         {
-            qreal totalWeight = 0.0;
-            foreach ( qreal weight, weights )
-                totalWeight += weight;
+            weights = rowWeights( avoidSet );
 
-            qreal randomCumulWeight = ( QRandomGenerator::global()->generate() / (double)std::numeric_limits<quint32>::max() ) * totalWeight;
+            // Choose a weighed random row.
+            if( !weights.isEmpty() )
+            {
+                qreal totalWeight = 0.0;
+                foreach ( qreal weight, weights )
+                    totalWeight += weight;
 
-            int row = 0;
-            qreal rowCumulWeight = weights[ row ];
-            while ( randomCumulWeight > rowCumulWeight + 0.0000000001 )
-                rowCumulWeight += weights[ ++row ];
+                qreal randomCumulWeight = ( QRandomGenerator::global()->generate() /
+                                (double)std::numeric_limits<quint32>::max() ) * totalWeight;
 
-            m_plannedItems.append( m_model->idAt( row ) );
-        }
+                int row = 0;
+                qreal rowCumulWeight = weights[ row ];
+                while ( randomCumulWeight > rowCumulWeight + 0.0000000001 )
+                    rowCumulWeight += weights[ ++row ];
+
+                chosenItem = m_model->idAt( row );
+                avoidSet.insert( chosenItem );
+            } // Avoid deadlock by verifying we are giving playable tracks to nextItemChooseDonorList()
+        } while ( !weights.isEmpty() && !m_model->trackForId( chosenItem )->isPlayable()
+                                     && avoidSet.size() < allItemsList().size() );
+        if( chosenItem != std::numeric_limits<quint64>::max() && m_model->trackForId( chosenItem )->isPlayable() )
+            m_plannedItems.append( chosenItem );
     }
 }
 
