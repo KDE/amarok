@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-02 01:34+0000\n"
+"POT-Creation-Date: 2024-04-04 01:45+0000\n"
 "PO-Revision-Date: 2022-12-14 12:20+0100\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
@@ -376,8 +376,9 @@ msgstr "Cessa postea tracia actual: De-Activo"
 msgid "Stop after current track: On"
 msgstr "Cessa postea tracia actual: Activo"
 
-#: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:663
+#: ActionClasses.cpp:498
+#: context/applets/currenttrack/package/contents/ui/main.qml:101
+#: EngineController.cpp:1330 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Necun tracia sonante"
@@ -2103,7 +2104,7 @@ msgstr "Artistas Varie"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1100
 #: browsers/CollectionTreeView.cpp:369
-#: context/applets/albums/plugin/AlbumsEngine.cpp:273
+#: context/applets/albums/plugin/AlbumsEngine.cpp:299
 #: context/applets/wikipedia/package/contents/ui/main.qml:78
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:635
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
@@ -2200,7 +2201,7 @@ msgstr "Altere..."
 
 #: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
-#: context/applets/albums/plugin/AlbumsEngine.cpp:258
+#: context/applets/albums/plugin/AlbumsEngine.cpp:284
 #: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
@@ -2208,7 +2209,7 @@ msgstr "&Adde al lista de reproduction"
 
 #: browsers/CollectionTreeView.cpp:1100 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
-#: context/applets/albums/plugin/AlbumsEngine.cpp:259
+#: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:106
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
@@ -3855,7 +3856,7 @@ msgstr ""
 msgid "Images"
 msgstr "Images"
 
-#: context/applets/albums/package/contents/ui/main.qml:76
+#: context/applets/albums/package/contents/ui/main.qml:77
 #, kde-format
 msgid "Display"
 msgstr "Monstrator"
@@ -3868,17 +3869,17 @@ msgid_plural "%1 tracks"
 msgstr[0] "%1 tracia:"
 msgstr[1] "%1 tracias"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:185
+#: context/applets/albums/plugin/AlbumsEngine.cpp:211
 #, kde-format
 msgid "Disc %1"
 msgstr "Disco %1"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:260
+#: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #, kde-format
 msgid "&Queue"
 msgstr "Ca&uda"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:261
+#: context/applets/albums/plugin/AlbumsEngine.cpp:287
 #: playlist/view/PlaylistViewCommon.cpp:265
 #, kde-format
 msgid "Edit Track Details"
@@ -3945,7 +3946,7 @@ msgstr "Punctos"
 msgid "Last played"
 msgstr "Ultime sonata"
 
-#: context/applets/currenttrack/plugin/CurrentEngine.cpp:258
+#: context/applets/currenttrack/plugin/CurrentEngine.cpp:200
 #: transcoding/TranscodingSelectConfigWidget.cpp:35
 #, kde-format
 msgid "Never"
@@ -4942,7 +4943,7 @@ msgstr ""
 msgid "Choose Language"
 msgstr ""
 
-#: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:129
+#: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
 msgid "Configure Applets..."
 msgstr "Configura Applets..."
@@ -4982,68 +4983,68 @@ msgstr ""
 msgid "dates"
 msgstr "Datas"
 
-#: context/tools/amarokpkg.cpp:84 context/tools/amarokpkg.cpp:97
+#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
 #, kde-format
 msgid "Amarok Applet Manager"
 msgstr "Gerente de applet de Amarok"
 
-#: context/tools/amarokpkg.cpp:86
+#: context/tools/amarokpkg.cpp:89
 #, kde-format
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 
-#: context/tools/amarokpkg.cpp:87
+#: context/tools/amarokpkg.cpp:90
 #, kde-format
 msgid "Aaron Seigo"
 msgstr "Aaron Seigo"
 
-#: context/tools/amarokpkg.cpp:88
+#: context/tools/amarokpkg.cpp:91
 #, kde-format
 msgid "Original author"
 msgstr "Autor original"
 
-#: context/tools/amarokpkg.cpp:90 main.cpp:168
+#: context/tools/amarokpkg.cpp:93 main.cpp:168
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: context/tools/amarokpkg.cpp:91 main.cpp:252 main.cpp:254 main.cpp:268
+#: context/tools/amarokpkg.cpp:94 main.cpp:252 main.cpp:254 main.cpp:268
 #: main.cpp:278 main.cpp:284 main.cpp:286 main.cpp:298 main.cpp:304
 #: main.cpp:306 main.cpp:310 main.cpp:318
 #, kde-format
 msgid "Developer"
 msgstr "Developpator"
 
-#: context/tools/amarokpkg.cpp:108
+#: context/tools/amarokpkg.cpp:110
 #, kde-format
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
 "Pro installar o remover, il opera sur applets installate pro omne usatores."
 
-#: context/tools/amarokpkg.cpp:110
+#: context/tools/amarokpkg.cpp:112
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
 msgstr "Installar le applet a <path>"
 
-#: context/tools/amarokpkg.cpp:112
+#: context/tools/amarokpkg.cpp:114
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
 msgstr "Actualisar le applet a <path>"
 
-#: context/tools/amarokpkg.cpp:114
+#: context/tools/amarokpkg.cpp:116
 #, kde-format
 msgid "Most installed applets"
 msgstr "Applets plus installate"
 
-#: context/tools/amarokpkg.cpp:116
+#: context/tools/amarokpkg.cpp:118
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
 msgstr "Remover le applet appellate <name>"
 
-#: context/tools/amarokpkg.cpp:118
+#: context/tools/amarokpkg.cpp:120
 #, kde-format
 msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "

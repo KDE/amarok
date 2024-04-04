@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:29+0000\n"
+"POT-Creation-Date: 2024-04-04 01:45+0000\n"
 "PO-Revision-Date: 2019-12-10 17:56+0200\n"
 "Last-Translator: Marek Laane <qiilaq69@gmail.com>\n"
 "Language-Team: Estonian <kde-et@lists.linux.ee>\n"
@@ -28,67 +28,67 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "qiilaq69@gmail.com"
 
-#: amarokpkg.cpp:84 amarokpkg.cpp:97
+#: amarokpkg.cpp:87 amarokpkg.cpp:99
 #, kde-format
 msgid "Amarok Applet Manager"
 msgstr "Amaroki apletihaldur"
 
-#: amarokpkg.cpp:86
+#: amarokpkg.cpp:89
 #, kde-format
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "(C) 2008: Aaron Seigo, (C) 2009: Leo Franchi"
 
-#: amarokpkg.cpp:87
+#: amarokpkg.cpp:90
 #, kde-format
 msgid "Aaron Seigo"
 msgstr "Aaron Seigo"
 
-#: amarokpkg.cpp:88
+#: amarokpkg.cpp:91
 #, kde-format
 msgid "Original author"
 msgstr "Algne autor"
 
-#: amarokpkg.cpp:90
+#: amarokpkg.cpp:93
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: amarokpkg.cpp:91
+#: amarokpkg.cpp:94
 #, kde-format
 msgid "Developer"
 msgstr "Arendaja"
 
-#: amarokpkg.cpp:108
+#: amarokpkg.cpp:110
 #, kde-format
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
 "Paigaldamise või eemaldamise korral käsitleb aplette, mis on paigaldatud "
 "kõigi kasutajate jaoks."
 
-#: amarokpkg.cpp:110
+#: amarokpkg.cpp:112
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
 msgstr "Apleti paigaldamine asukohas <path>"
 
-#: amarokpkg.cpp:112
+#: amarokpkg.cpp:114
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
 msgstr "Apleti uuendamine asukohas <path>"
 
-#: amarokpkg.cpp:114
+#: amarokpkg.cpp:116
 #, kde-format
 msgid "Most installed applets"
 msgstr "Kõige enam paigaldatud apletid"
 
-#: amarokpkg.cpp:116
+#: amarokpkg.cpp:118
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
 msgstr "Apleti <name> eemaldamine"
 
-#: amarokpkg.cpp:118
+#: amarokpkg.cpp:120
 #, kde-format
 msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:29+0000\n"
+"POT-Creation-Date: 2024-04-04 01:45+0000\n"
 "PO-Revision-Date: 2019-04-19 17:57+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -27,65 +27,65 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "kde@peremen.name"
 
-#: amarokpkg.cpp:84 amarokpkg.cpp:97
+#: amarokpkg.cpp:87 amarokpkg.cpp:99
 #, kde-format
 msgid "Amarok Applet Manager"
 msgstr "Amarok 애플릿 관리자"
 
-#: amarokpkg.cpp:86
+#: amarokpkg.cpp:89
 #, kde-format
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 
-#: amarokpkg.cpp:87
+#: amarokpkg.cpp:90
 #, kde-format
 msgid "Aaron Seigo"
 msgstr "Aaron Seigo"
 
-#: amarokpkg.cpp:88
+#: amarokpkg.cpp:91
 #, kde-format
 msgid "Original author"
 msgstr "원 작성자"
 
-#: amarokpkg.cpp:90
+#: amarokpkg.cpp:93
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: amarokpkg.cpp:91
+#: amarokpkg.cpp:94
 #, kde-format
 msgid "Developer"
 msgstr "개발자"
 
-#: amarokpkg.cpp:108
+#: amarokpkg.cpp:110
 #, kde-format
 msgid "For install or remove, operates on applets installed for all users."
 msgstr "모든 사용자의 애플릿을 설치, 삭제합니다."
 
-#: amarokpkg.cpp:110
+#: amarokpkg.cpp:112
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
 msgstr "애플릿을 <path>에 설치하기"
 
-#: amarokpkg.cpp:112
+#: amarokpkg.cpp:114
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
 msgstr "<path>의 애플릿 업그레이드하기"
 
-#: amarokpkg.cpp:114
+#: amarokpkg.cpp:116
 #, kde-format
 msgid "Most installed applets"
 msgstr "가장 많이 설치된 애플릿"
 
-#: amarokpkg.cpp:116
+#: amarokpkg.cpp:118
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
 msgstr "<name> 애플릿 삭제하기"
 
-#: amarokpkg.cpp:118
+#: amarokpkg.cpp:120
 #, kde-format
 msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "

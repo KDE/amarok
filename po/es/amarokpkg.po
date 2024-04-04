@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:29+0000\n"
+"POT-Creation-Date: 2024-04-04 01:45+0000\n"
 "PO-Revision-Date: 2018-03-20 21:51+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
@@ -34,67 +34,67 @@ msgstr ""
 "carlos.mayo@hispalinux.es,salgiza@ono.com,yo@miguelrevilla.com,jserrano@cutb."
 "edu.co,carluti@users.sourceforge.net,fjvinal@gmail.com"
 
-#: amarokpkg.cpp:84 amarokpkg.cpp:97
+#: amarokpkg.cpp:87 amarokpkg.cpp:99
 #, kde-format
 msgid "Amarok Applet Manager"
 msgstr "Gestor de miniaplicaciones de Amarok"
 
-#: amarokpkg.cpp:86
+#: amarokpkg.cpp:89
 #, kde-format
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "© 2008, Aaron Seigo, © 2009, Leo Franchi"
 
-#: amarokpkg.cpp:87
+#: amarokpkg.cpp:90
 #, kde-format
 msgid "Aaron Seigo"
 msgstr "Aaron Seigo"
 
-#: amarokpkg.cpp:88
+#: amarokpkg.cpp:91
 #, kde-format
 msgid "Original author"
 msgstr "Autor original"
 
-#: amarokpkg.cpp:90
+#: amarokpkg.cpp:93
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: amarokpkg.cpp:91
+#: amarokpkg.cpp:94
 #, kde-format
 msgid "Developer"
 msgstr "Desarrollador"
 
-#: amarokpkg.cpp:108
+#: amarokpkg.cpp:110
 #, kde-format
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
 "Para instalar o eliminar, funciona en miniaplicaciones instaladas para todos "
 "los usuarios."
 
-#: amarokpkg.cpp:110
+#: amarokpkg.cpp:112
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
 msgstr "Instalar la miniaplicación en <path>"
 
-#: amarokpkg.cpp:112
+#: amarokpkg.cpp:114
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
 msgstr "Actualizar la miniaplicación en <path>"
 
-#: amarokpkg.cpp:114
+#: amarokpkg.cpp:116
 #, kde-format
 msgid "Most installed applets"
 msgstr "Miniaplicaciones más instaladas"
 
-#: amarokpkg.cpp:116
+#: amarokpkg.cpp:118
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
 msgstr "Eliminar la miniaplicación denominada <name>"
 
-#: amarokpkg.cpp:118
+#: amarokpkg.cpp:120
 #, kde-format
 msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "

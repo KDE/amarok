@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-02 01:34+0000\n"
+"POT-Creation-Date: 2024-04-04 01:45+0000\n"
 "PO-Revision-Date: 2015-02-04 19:01+0000\n"
 "Last-Translator: Safa Alfulaij <safa1996alfulaij@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
@@ -376,8 +376,9 @@ msgstr "أوقف بعد المقطوعة الحاليّة: لا يعمل"
 msgid "Stop after current track: On"
 msgstr "أوقف بعد المقطوعة الحاليّة: يعمل"
 
-#: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:663
+#: ActionClasses.cpp:498
+#: context/applets/currenttrack/package/contents/ui/main.qml:101
+#: EngineController.cpp:1330 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "لا مقطوعات تعمل"
@@ -2037,7 +2038,7 @@ msgstr ""
 
 #: browsers/CollectionTreeItemModelBase.cpp:1100
 #: browsers/CollectionTreeView.cpp:369
-#: context/applets/albums/plugin/AlbumsEngine.cpp:273
+#: context/applets/albums/plugin/AlbumsEngine.cpp:299
 #: context/applets/wikipedia/package/contents/ui/main.qml:78
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:635
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
@@ -2134,7 +2135,7 @@ msgstr "أكثر..."
 
 #: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
-#: context/applets/albums/plugin/AlbumsEngine.cpp:258
+#: context/applets/albums/plugin/AlbumsEngine.cpp:284
 #: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
@@ -2142,7 +2143,7 @@ msgstr "أ&ضف إلى قائمة التّشغيل"
 
 #: browsers/CollectionTreeView.cpp:1100 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
-#: context/applets/albums/plugin/AlbumsEngine.cpp:259
+#: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:106
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
@@ -3842,7 +3843,7 @@ msgstr ""
 msgid "Images"
 msgstr "صور"
 
-#: context/applets/albums/package/contents/ui/main.qml:76
+#: context/applets/albums/package/contents/ui/main.qml:77
 #, fuzzy, kde-format
 #| msgid "Display Cover"
 msgid "Display"
@@ -3860,17 +3861,17 @@ msgstr[3] "%1 مقطوعات"
 msgstr[4] "%1 مقطوعةً"
 msgstr[5] "%1 مقطوعة"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:185
+#: context/applets/albums/plugin/AlbumsEngine.cpp:211
 #, kde-format
 msgid "Disc %1"
 msgstr "القرص %1"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:260
+#: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #, kde-format
 msgid "&Queue"
 msgstr "&صفّ"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:261
+#: context/applets/albums/plugin/AlbumsEngine.cpp:287
 #: playlist/view/PlaylistViewCommon.cpp:265
 #, kde-format
 msgid "Edit Track Details"
@@ -3948,7 +3949,7 @@ msgstr "النّقاط"
 msgid "Last played"
 msgstr "المُشغّلة مؤخراً"
 
-#: context/applets/currenttrack/plugin/CurrentEngine.cpp:258
+#: context/applets/currenttrack/plugin/CurrentEngine.cpp:200
 #: transcoding/TranscodingSelectConfigWidget.cpp:35
 #, kde-format
 msgid "Never"
@@ -4967,7 +4968,7 @@ msgstr "%1 مطلوب للبحث في ويكيبيديا."
 msgid "Choose Language"
 msgstr "اختر لغةً"
 
-#: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:129
+#: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
 msgid "Configure Applets..."
 msgstr "اضبط البريمجات..."
@@ -5007,68 +5008,68 @@ msgstr ""
 msgid "dates"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:84 context/tools/amarokpkg.cpp:97
+#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
 #, kde-format
 msgid "Amarok Applet Manager"
 msgstr "مدير بريمجات أماروك"
 
-#: context/tools/amarokpkg.cpp:86
+#: context/tools/amarokpkg.cpp:89
 #, kde-format
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:87
+#: context/tools/amarokpkg.cpp:90
 #, kde-format
 msgid "Aaron Seigo"
 msgstr "آرون سيغو"
 
-#: context/tools/amarokpkg.cpp:88
+#: context/tools/amarokpkg.cpp:91
 #, kde-format
 msgid "Original author"
 msgstr "المؤلّف الأصليّ"
 
-#: context/tools/amarokpkg.cpp:90 main.cpp:168
+#: context/tools/amarokpkg.cpp:93 main.cpp:168
 #, kde-format
 msgid "Leo Franchi"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:91 main.cpp:252 main.cpp:254 main.cpp:268
+#: context/tools/amarokpkg.cpp:94 main.cpp:252 main.cpp:254 main.cpp:268
 #: main.cpp:278 main.cpp:284 main.cpp:286 main.cpp:298 main.cpp:304
 #: main.cpp:306 main.cpp:310 main.cpp:318
 #, kde-format
 msgid "Developer"
 msgstr "مطوّر"
 
-#: context/tools/amarokpkg.cpp:108
+#: context/tools/amarokpkg.cpp:110
 #, kde-format
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:110
+#: context/tools/amarokpkg.cpp:112
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
 msgstr "ثبّت البريمج في <path>"
 
-#: context/tools/amarokpkg.cpp:112
+#: context/tools/amarokpkg.cpp:114
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
 msgstr "رقِّ البريمج في <path>"
 
-#: context/tools/amarokpkg.cpp:114
+#: context/tools/amarokpkg.cpp:116
 #, fuzzy, kde-format
 #| msgid "List installed applets"
 msgid "Most installed applets"
 msgstr "اسرد البريمجات المثبّتة"
 
-#: context/tools/amarokpkg.cpp:116
+#: context/tools/amarokpkg.cpp:118
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
 msgstr "أزل البريمج المسمّى <name>"
 
-#: context/tools/amarokpkg.cpp:118
+#: context/tools/amarokpkg.cpp:120
 #, kde-format
 msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "

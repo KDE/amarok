@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:29+0000\n"
+"POT-Creation-Date: 2024-04-04 01:45+0000\n"
 "PO-Revision-Date: 2010-03-22 07:49+0100\n"
 "Last-Translator: Manfred Wiese <m.j.wiese@web.de>\n"
 "Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
@@ -28,68 +28,68 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "m.j.wiese@web.de"
 
-#: amarokpkg.cpp:84 amarokpkg.cpp:97
+#: amarokpkg.cpp:87 amarokpkg.cpp:99
 #, kde-format
 msgid "Amarok Applet Manager"
 msgstr "Lüttprogrammpleger för Amarok"
 
-#: amarokpkg.cpp:86
+#: amarokpkg.cpp:89
 #, kde-format
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "© 2008: Aaron Seigo, © 2009: Leo Franchi"
 
-#: amarokpkg.cpp:87
+#: amarokpkg.cpp:90
 #, kde-format
 msgid "Aaron Seigo"
 msgstr "Aaron Seigo"
 
-#: amarokpkg.cpp:88
+#: amarokpkg.cpp:91
 #, kde-format
 msgid "Original author"
 msgstr "Orginaal-Programmschriever"
 
-#: amarokpkg.cpp:90
+#: amarokpkg.cpp:93
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: amarokpkg.cpp:91
+#: amarokpkg.cpp:94
 #, kde-format
 msgid "Developer"
 msgstr "Programmschriever"
 
-#: amarokpkg.cpp:108
+#: amarokpkg.cpp:110
 #, kde-format
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
 "Bi't Installeren un Wegmaken gellt dat för Lüttprogrammen, de för all "
 "Brukers installeert sünd."
 
-#: amarokpkg.cpp:110
+#: amarokpkg.cpp:112
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
 msgstr "Dat Lüttprogramm ünner den Padd <path> installeren"
 
-#: amarokpkg.cpp:112
+#: amarokpkg.cpp:114
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
 msgstr "Dat Lüttprogramm ünner den Padd <path> opfrischen"
 
-#: amarokpkg.cpp:114
+#: amarokpkg.cpp:116
 #, fuzzy, kde-format
 #| msgid "List installed applets"
 msgid "Most installed applets"
 msgstr "Installeert Lüttprogrammen oplisten"
 
-#: amarokpkg.cpp:116
+#: amarokpkg.cpp:118
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
 msgstr "Dat Lüttprogramm mit den Naam <name> wegmaken"
 
-#: amarokpkg.cpp:118
+#: amarokpkg.cpp:120
 #, kde-format
 msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "

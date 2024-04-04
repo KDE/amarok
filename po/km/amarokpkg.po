@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:29+0000\n"
+"POT-Creation-Date: 2024-04-04 01:45+0000\n"
 "PO-Revision-Date: 2010-05-19 08:41+0700\n"
 "Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
 "Language-Team: Khmer <support@khmeros.info>\n"
@@ -30,66 +30,66 @@ msgstr ""
 "khoemsokhem@khmeros.info,​​mornmet@khmeros.info,sutha@khmeros.info, \n"
 "evannak@khmeros.info,piseth_dv@khmeros.info"
 
-#: amarokpkg.cpp:84 amarokpkg.cpp:97
+#: amarokpkg.cpp:87 amarokpkg.cpp:99
 #, kde-format
 msgid "Amarok Applet Manager"
 msgstr "កម្មវិធី​គ្រប់​គ្រង​អាប់ភ្លេត​របស់​ Amarok"
 
-#: amarokpkg.cpp:86
+#: amarokpkg.cpp:89
 #, kde-format
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "រក្សាសិទ្ធិ​ឆ្នាំ ២​០​០​៨ ដោយ Aaron Seigo រក្សាសិទ្ធិ​ឆ្នាំ ២​០​០​៩ ដោយ Leo Franchi"
 
-#: amarokpkg.cpp:87
+#: amarokpkg.cpp:90
 #, kde-format
 msgid "Aaron Seigo"
 msgstr "Aaron Seigo"
 
-#: amarokpkg.cpp:88
+#: amarokpkg.cpp:91
 #, kde-format
 msgid "Original author"
 msgstr "អ្នក​និពន្ធ​ដើម"
 
-#: amarokpkg.cpp:90
+#: amarokpkg.cpp:93
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: amarokpkg.cpp:91
+#: amarokpkg.cpp:94
 #, kde-format
 msgid "Developer"
 msgstr "អ្នក​អភិវឌ្ឍន៍"
 
-#: amarokpkg.cpp:108
+#: amarokpkg.cpp:110
 #, kde-format
 msgid "For install or remove, operates on applets installed for all users."
 msgstr "ចំពោះ​ការ​ដំឡើង ឬ​យកចេញ ប្រតិបត្តិ​លើ​អាប់ភ្លេត​ដែល​បាន​ដំឡើង​សម្រាប់​អ្នកប្រើ​ទាំង​អស់ ។"
 
-#: amarokpkg.cpp:110
+#: amarokpkg.cpp:112
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
 msgstr "ដំឡើង​អាប់ភ្លេត​នៅ <path>"
 
-#: amarokpkg.cpp:112
+#: amarokpkg.cpp:114
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
 msgstr "ធ្វើ​ឲ្យ​អាប់ភ្លេត​ប្រសើរ​ឡើង​នៅ <path>"
 
-#: amarokpkg.cpp:114
+#: amarokpkg.cpp:116
 #, fuzzy, kde-format
 #| msgid "List installed applets"
 msgid "Most installed applets"
 msgstr "រាយអាប់ភ្លេត​ដែល​បាន​ដំឡើង"
 
-#: amarokpkg.cpp:116
+#: amarokpkg.cpp:118
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
 msgstr "យក​អាប់ភ្លេត​ដែល​មាន​ឈ្មោះ <name>"
 
-#: amarokpkg.cpp:118
+#: amarokpkg.cpp:120
 #, kde-format
 msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "

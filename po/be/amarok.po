@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-02 01:34+0000\n"
+"POT-Creation-Date: 2024-04-04 01:45+0000\n"
 "PO-Revision-Date: 2008-09-26 17:12+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -382,8 +382,9 @@ msgstr "Дадаць у чаргу"
 msgid "Stop after current track: On"
 msgstr "Дадаць у чаргу"
 
-#: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:663
+#: ActionClasses.cpp:498
+#: context/applets/currenttrack/package/contents/ui/main.qml:101
+#: EngineController.cpp:1330 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr ""
@@ -2084,7 +2085,7 @@ msgstr "Розныя выканаўцы"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1100
 #: browsers/CollectionTreeView.cpp:369
-#: context/applets/albums/plugin/AlbumsEngine.cpp:273
+#: context/applets/albums/plugin/AlbumsEngine.cpp:299
 #: context/applets/wikipedia/package/contents/ui/main.qml:78
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:635
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
@@ -2188,7 +2189,7 @@ msgstr "Больш..."
 
 #: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
-#: context/applets/albums/plugin/AlbumsEngine.cpp:258
+#: context/applets/albums/plugin/AlbumsEngine.cpp:284
 #: services/lastfm/LastFmTreeView.cpp:97
 #, fuzzy, kde-format
 msgid "&Add to Playlist"
@@ -2196,7 +2197,7 @@ msgstr "Дадаць у спіс прайгравання"
 
 #: browsers/CollectionTreeView.cpp:1100 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
-#: context/applets/albums/plugin/AlbumsEngine.cpp:259
+#: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:106
 #, fuzzy, kde-format
 #| msgid "Smart Playlist"
@@ -3949,7 +3950,7 @@ msgstr ""
 msgid "Images"
 msgstr "Малюнкі"
 
-#: context/applets/albums/package/contents/ui/main.qml:76
+#: context/applets/albums/package/contents/ui/main.qml:77
 #, fuzzy, kde-format
 #| msgid "First Played:"
 msgid "Display"
@@ -3964,19 +3965,19 @@ msgstr[0] "%1 запіс"
 msgstr[1] "%1 запісы"
 msgstr[2] "%1 запісаў"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:185
+#: context/applets/albums/plugin/AlbumsEngine.cpp:211
 #, fuzzy, kde-format
 #| msgid "Disconnect"
 msgid "Disc %1"
 msgstr "Адлучыцца"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:260
+#: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #, fuzzy, kde-format
 #| msgid "&Queue Track"
 msgid "&Queue"
 msgstr "&Дадаць у чаргу"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:261
+#: context/applets/albums/plugin/AlbumsEngine.cpp:287
 #: playlist/view/PlaylistViewCommon.cpp:265
 #, fuzzy, kde-format
 #| msgid "Plugin Information"
@@ -4048,7 +4049,7 @@ msgstr "Балы"
 msgid "Last played"
 msgstr "Апошняе прайграванне"
 
-#: context/applets/currenttrack/plugin/CurrentEngine.cpp:258
+#: context/applets/currenttrack/plugin/CurrentEngine.cpp:200
 #: transcoding/TranscodingSelectConfigWidget.cpp:35
 #, fuzzy, kde-format
 #| msgid "Never"
@@ -5140,7 +5141,7 @@ msgstr ""
 msgid "Choose Language"
 msgstr "Адзнака"
 
-#: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:129
+#: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, fuzzy, kde-format
 #| msgid "Configure..."
 msgid "Configure Applets..."
@@ -5187,32 +5188,32 @@ msgstr "Лепш"
 msgid "dates"
 msgstr "Абнавіць"
 
-#: context/tools/amarokpkg.cpp:84 context/tools/amarokpkg.cpp:97
+#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
 #, fuzzy, kde-format
 msgid "Amarok Applet Manager"
 msgstr "Amarok"
 
-#: context/tools/amarokpkg.cpp:86
+#: context/tools/amarokpkg.cpp:89
 #, fuzzy, kde-format
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "(c) 2006, Aaron Seigo"
 
-#: context/tools/amarokpkg.cpp:87
+#: context/tools/amarokpkg.cpp:90
 #, kde-format
 msgid "Aaron Seigo"
 msgstr "Аарон Дж. Сейга"
 
-#: context/tools/amarokpkg.cpp:88
+#: context/tools/amarokpkg.cpp:91
 #, kde-format
 msgid "Original author"
 msgstr "Аўтар праграмы"
 
-#: context/tools/amarokpkg.cpp:90 main.cpp:168
+#: context/tools/amarokpkg.cpp:93 main.cpp:168
 #, kde-format
 msgid "Leo Franchi"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:91 main.cpp:252 main.cpp:254 main.cpp:268
+#: context/tools/amarokpkg.cpp:94 main.cpp:252 main.cpp:254 main.cpp:268
 #: main.cpp:278 main.cpp:284 main.cpp:286 main.cpp:298 main.cpp:304
 #: main.cpp:306 main.cpp:310 main.cpp:318
 #, fuzzy, kde-format
@@ -5220,37 +5221,37 @@ msgstr ""
 msgid "Developer"
 msgstr "Прылада"
 
-#: context/tools/amarokpkg.cpp:108
+#: context/tools/amarokpkg.cpp:110
 #, kde-format
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:110
+#: context/tools/amarokpkg.cpp:112
 #, fuzzy, kde-format
 #| msgid "Get New Widgets"
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
 msgstr "Атрымаць новыя віджэты"
 
-#: context/tools/amarokpkg.cpp:112
+#: context/tools/amarokpkg.cpp:114
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:114
+#: context/tools/amarokpkg.cpp:116
 #, fuzzy, kde-format
 #| msgid "Get New Widgets"
 msgid "Most installed applets"
 msgstr "Атрымаць новыя віджэты"
 
-#: context/tools/amarokpkg.cpp:116
+#: context/tools/amarokpkg.cpp:118
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:118
+#: context/tools/amarokpkg.cpp:120
 #, kde-format
 msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-02 01:34+0000\n"
+"POT-Creation-Date: 2024-04-04 01:45+0000\n"
 "PO-Revision-Date: 2009-02-20 12:07+0530\n"
 "Last-Translator: Danishka Navin <danishka@gmail.com>\n"
 "Language-Team: Sinhalese <danishka@gmail.com>\n"
@@ -371,8 +371,9 @@ msgstr ""
 msgid "Stop after current track: On"
 msgstr ""
 
-#: ActionClasses.cpp:498 EngineController.cpp:1330 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:663
+#: ActionClasses.cpp:498
+#: context/applets/currenttrack/package/contents/ui/main.qml:101
+#: EngineController.cpp:1330 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr ""
@@ -2044,7 +2045,7 @@ msgstr ""
 
 #: browsers/CollectionTreeItemModelBase.cpp:1100
 #: browsers/CollectionTreeView.cpp:369
-#: context/applets/albums/plugin/AlbumsEngine.cpp:273
+#: context/applets/albums/plugin/AlbumsEngine.cpp:299
 #: context/applets/wikipedia/package/contents/ui/main.qml:78
 #: context/applets/wikipedia/plugin/WikipediaApplet.cpp:635
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
@@ -2142,7 +2143,7 @@ msgstr "බොහෝ..."
 
 #: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
-#: context/applets/albums/plugin/AlbumsEngine.cpp:258
+#: context/applets/albums/plugin/AlbumsEngine.cpp:284
 #: services/lastfm/LastFmTreeView.cpp:97
 #, fuzzy, kde-format
 #| msgid "Search playlist"
@@ -2151,7 +2152,7 @@ msgstr "වාදන ලැයිස්තුව සෙවුම"
 
 #: browsers/CollectionTreeView.cpp:1100 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
-#: context/applets/albums/plugin/AlbumsEngine.cpp:259
+#: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:106
 #, fuzzy, kde-format
 #| msgid "&Playlist"
@@ -3876,7 +3877,7 @@ msgstr ""
 msgid "Images"
 msgstr ""
 
-#: context/applets/albums/package/contents/ui/main.qml:76
+#: context/applets/albums/package/contents/ui/main.qml:77
 #, fuzzy, kde-format
 #| msgid "Playlist"
 msgid "Display"
@@ -3890,17 +3891,17 @@ msgid_plural "%1 tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:185
+#: context/applets/albums/plugin/AlbumsEngine.cpp:211
 #, kde-format
 msgid "Disc %1"
 msgstr ""
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:260
+#: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #, kde-format
 msgid "&Queue"
 msgstr ""
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:261
+#: context/applets/albums/plugin/AlbumsEngine.cpp:287
 #: playlist/view/PlaylistViewCommon.cpp:265
 #, kde-format
 msgid "Edit Track Details"
@@ -3969,7 +3970,7 @@ msgstr ""
 msgid "Last played"
 msgstr "වාදන ලැයිස්තුව"
 
-#: context/applets/currenttrack/plugin/CurrentEngine.cpp:258
+#: context/applets/currenttrack/plugin/CurrentEngine.cpp:200
 #: transcoding/TranscodingSelectConfigWidget.cpp:35
 #, fuzzy, kde-format
 #| msgid "Server:"
@@ -5038,7 +5039,7 @@ msgstr ""
 msgid "Choose Language"
 msgstr "කවර කළමණාකරු"
 
-#: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:129
+#: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, fuzzy, kde-format
 #| msgid "Local Podcasts"
 msgid "Configure Applets..."
@@ -5081,67 +5082,67 @@ msgstr ""
 msgid "dates"
 msgstr "පොඩ්කාස්ට්"
 
-#: context/tools/amarokpkg.cpp:84 context/tools/amarokpkg.cpp:97
+#: context/tools/amarokpkg.cpp:87 context/tools/amarokpkg.cpp:99
 #, kde-format
 msgid "Amarok Applet Manager"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:86
+#: context/tools/amarokpkg.cpp:89
 #, kde-format
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:87
+#: context/tools/amarokpkg.cpp:90
 #, kde-format
 msgid "Aaron Seigo"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:88
+#: context/tools/amarokpkg.cpp:91
 #, kde-format
 msgid "Original author"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:90 main.cpp:168
+#: context/tools/amarokpkg.cpp:93 main.cpp:168
 #, kde-format
 msgid "Leo Franchi"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:91 main.cpp:252 main.cpp:254 main.cpp:268
+#: context/tools/amarokpkg.cpp:94 main.cpp:252 main.cpp:254 main.cpp:268
 #: main.cpp:278 main.cpp:284 main.cpp:286 main.cpp:298 main.cpp:304
 #: main.cpp:306 main.cpp:310 main.cpp:318
 #, kde-format
 msgid "Developer"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:108
-#, kde-format
-msgid "For install or remove, operates on applets installed for all users."
-msgstr ""
-
 #: context/tools/amarokpkg.cpp:110
 #, kde-format
-msgctxt "Do not translate <path>"
-msgid "Install the applet at <path>"
+msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
 
 #: context/tools/amarokpkg.cpp:112
 #, kde-format
 msgctxt "Do not translate <path>"
-msgid "Upgrade the applet at <path>"
+msgid "Install the applet at <path>"
 msgstr ""
 
 #: context/tools/amarokpkg.cpp:114
 #, kde-format
-msgid "Most installed applets"
+msgctxt "Do not translate <path>"
+msgid "Upgrade the applet at <path>"
 msgstr ""
 
 #: context/tools/amarokpkg.cpp:116
+#, kde-format
+msgid "Most installed applets"
+msgstr ""
+
+#: context/tools/amarokpkg.cpp:118
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:118
+#: context/tools/amarokpkg.cpp:120
 #, kde-format
 msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "
