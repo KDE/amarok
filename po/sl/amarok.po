@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-04 01:45+0000\n"
+"POT-Creation-Date: 2024-04-05 01:40+0000\n"
 "PO-Revision-Date: 2022-01-09 23:55+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -14025,13 +14025,13 @@ msgstr "število predvajanj"
 msgid "label"
 msgstr "oznaka"
 
-#: playlistgenerator/ConstraintSolver.cpp:231
+#: playlistgenerator/ConstraintSolver.cpp:230
 #, kde-format
 msgid "The playlist generator failed to load any tracks from the collection."
 msgstr ""
 "Ustvarjalnik seznamov predvajanj ni uspel naložiti nobene skladbe iz zbirke."
 
-#: playlistgenerator/ConstraintSolver.cpp:237
+#: playlistgenerator/ConstraintSolver.cpp:236
 #, kde-format
 msgid ""
 "There are no tracks that match all constraints. The playlist generator will "

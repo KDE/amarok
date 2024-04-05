@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok trunk\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-04 01:45+0000\n"
+"POT-Creation-Date: 2024-04-05 01:40+0000\n"
 "PO-Revision-Date: 2009-01-22 14:21+0530\n"
 "Last-Translator: Abhishek Jacob <abhishekjacob123@gmail.com>\n"
 "Language-Team: SMC <smc.org.in>\n"
@@ -13858,12 +13858,12 @@ msgstr "à´àµà´°à´®àµà´à´°à´£à´àµà´à´³
 msgid "label"
 msgstr ""
 
-#: playlistgenerator/ConstraintSolver.cpp:231
+#: playlistgenerator/ConstraintSolver.cpp:230
 #, kde-format
 msgid "The playlist generator failed to load any tracks from the collection."
 msgstr ""
 
-#: playlistgenerator/ConstraintSolver.cpp:237
+#: playlistgenerator/ConstraintSolver.cpp:236
 #, kde-format
 msgid ""
 "There are no tracks that match all constraints. The playlist generator will "

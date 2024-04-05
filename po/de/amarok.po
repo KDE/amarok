@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-04 01:45+0000\n"
+"POT-Creation-Date: 2024-04-05 01:40+0000\n"
 "PO-Revision-Date: 2023-03-24 19:36+0100\n"
 "Last-Translator: Frederik Schwarzer <schwarzer@kde.org>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
@@ -14061,13 +14061,13 @@ msgstr "Wiedergabezähler"
 msgid "label"
 msgstr "Stichwort"
 
-#: playlistgenerator/ConstraintSolver.cpp:231
+#: playlistgenerator/ConstraintSolver.cpp:230
 #, kde-format
 msgid "The playlist generator failed to load any tracks from the collection."
 msgstr ""
 "Der Wiedergabelisten-Generator kann keine Stücke aus der Sammlung laden."
 
-#: playlistgenerator/ConstraintSolver.cpp:237
+#: playlistgenerator/ConstraintSolver.cpp:236
 #, kde-format
 msgid ""
 "There are no tracks that match all constraints. The playlist generator will "

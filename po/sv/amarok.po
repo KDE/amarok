@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-04 01:45+0000\n"
+"POT-Creation-Date: 2024-04-05 01:40+0000\n"
 "PO-Revision-Date: 2021-06-26 20:45+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@bredband.net>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
@@ -13838,12 +13838,12 @@ msgstr "antal spelningar"
 msgid "label"
 msgstr "beteckning"
 
-#: playlistgenerator/ConstraintSolver.cpp:231
+#: playlistgenerator/ConstraintSolver.cpp:230
 #, kde-format
 msgid "The playlist generator failed to load any tracks from the collection."
 msgstr "Generering av spellista misslyckades ladda några spår från samlingen."
 
-#: playlistgenerator/ConstraintSolver.cpp:237
+#: playlistgenerator/ConstraintSolver.cpp:236
 #, kde-format
 msgid ""
 "There are no tracks that match all constraints. The playlist generator will "
