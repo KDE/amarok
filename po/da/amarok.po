@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-05 01:40+0000\n"
+"POT-Creation-Date: 2024-04-08 01:44+0000\n"
 "PO-Revision-Date: 2021-09-27 21:22+0200\n"
 "Last-Translator: Martin Schlander <mschlander@opensuse.org>\n"
 "Language-Team: Danish <kde-i18n-doc@kde.org>\n"
@@ -3849,38 +3849,8 @@ msgstr "Afinstallér script"
 msgid "Install Local Script"
 msgstr "Installér lokalt script"
 
-#. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#: configdialog/dialogs/ScriptsConfig.ui:54
-#: configdialog/dialogs/ScriptsConfig.ui:57
-#, kde-format
-msgid ""
-"Automatically download and install updates for the built-in scripts from the "
-"Amarok website if available"
-msgstr ""
-"Dowload og installér automatisk opdateringer af indbyggede scripts fra "
-"Amaroks webside hvis de er tilgængelige"
-
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#: configdialog/dialogs/ScriptsConfig.ui:60
-#, kde-format
-msgid "Automatically update built-in scripts"
-msgstr "Opdatér automatisk indbyggede scripts"
-
-#. i18n: ectx: property (toolTip), widget (QPushButton, manageButton)
-#: configdialog/dialogs/ScriptsConfig.ui:80
-#, kde-format
-msgid "Browse, install, and uninstall scripts"
-msgstr "Gennemsøg, installér og afinstallér scripts"
-
-#. i18n: ectx: property (text), widget (QPushButton, manageButton)
-#: configdialog/dialogs/ScriptsConfig.ui:83
-#, kde-format
-msgid "Manage Scripts"
-msgstr "Håndtér scripts"
-
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
-#: configdialog/dialogs/ScriptsConfig.ui:107
+#: configdialog/dialogs/ScriptsConfig.ui:52
 #: scripting/scriptconsole/ScriptConsole.cpp:74
 #, kde-format
 msgid "Script Console"
@@ -3888,14 +3858,14 @@ msgstr "Script-konsol"
 
 #. i18n: ectx: property (statusTip), widget (QCheckBox, kcfg_EnableScriptConsole)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_EnableScriptConsole)
-#: configdialog/dialogs/ScriptsConfig.ui:116
-#: configdialog/dialogs/ScriptsConfig.ui:119
+#: configdialog/dialogs/ScriptsConfig.ui:61
+#: configdialog/dialogs/ScriptsConfig.ui:64
 #, kde-format
 msgid "Enable the script console."
 msgstr "Aktivér script-konsollen."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_EnableScriptConsole)
-#: configdialog/dialogs/ScriptsConfig.ui:122
+#: configdialog/dialogs/ScriptsConfig.ui:67
 #, kde-format
 msgid "Enable Script Console"
 msgstr "Aktivér script-konsollen"
@@ -14149,7 +14119,7 @@ msgstr ""
 "Scriptet %1 bruger forældede API-kald. Kontakt script-udvikleren, %2 på %3, "
 "og bed ham om at opgradere det før næste udgivelse af Amarok."
 
-#: scripting/scriptmanager/ScriptManager.cpp:286
+#: scripting/scriptmanager/ScriptManager.cpp:290
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -16993,6 +16963,22 @@ msgstr "Kunstner: %1"
 #, kde-format
 msgid "empty"
 msgstr "tom"
+
+#~ msgid ""
+#~ "Automatically download and install updates for the built-in scripts from "
+#~ "the Amarok website if available"
+#~ msgstr ""
+#~ "Dowload og installér automatisk opdateringer af indbyggede scripts fra "
+#~ "Amaroks webside hvis de er tilgængelige"
+
+#~ msgid "Automatically update built-in scripts"
+#~ msgstr "Opdatér automatisk indbyggede scripts"
+
+#~ msgid "Browse, install, and uninstall scripts"
+#~ msgstr "Gennemsøg, installér og afinstallér scripts"
+
+#~ msgid "Manage Scripts"
+#~ msgstr "Håndtér scripts"
 
 #~ msgid "Scanning %1"
 #~ msgstr "Scanner %1"

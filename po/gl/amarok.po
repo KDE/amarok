@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-05 01:40+0000\n"
+"POT-Creation-Date: 2024-04-08 01:44+0000\n"
 "PO-Revision-Date: 2023-08-05 13:00+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
@@ -3938,38 +3938,8 @@ msgstr "Desinstalar o guión"
 msgid "Install Local Script"
 msgstr "Instalar un guión local"
 
-#. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#: configdialog/dialogs/ScriptsConfig.ui:54
-#: configdialog/dialogs/ScriptsConfig.ui:57
-#, kde-format
-msgid ""
-"Automatically download and install updates for the built-in scripts from the "
-"Amarok website if available"
-msgstr ""
-"Descargar e instalar automaticamente as actualizacións dos guións de serie "
-"desde a páxina web de Amarok cando estean dispoñíbeis."
-
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#: configdialog/dialogs/ScriptsConfig.ui:60
-#, kde-format
-msgid "Automatically update built-in scripts"
-msgstr "Actualizar automaticamente os guións de serie."
-
-#. i18n: ectx: property (toolTip), widget (QPushButton, manageButton)
-#: configdialog/dialogs/ScriptsConfig.ui:80
-#, kde-format
-msgid "Browse, install, and uninstall scripts"
-msgstr "Navegar, instalar e desinstalar guións."
-
-#. i18n: ectx: property (text), widget (QPushButton, manageButton)
-#: configdialog/dialogs/ScriptsConfig.ui:83
-#, kde-format
-msgid "Manage Scripts"
-msgstr "Xestionar os guións"
-
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
-#: configdialog/dialogs/ScriptsConfig.ui:107
+#: configdialog/dialogs/ScriptsConfig.ui:52
 #: scripting/scriptconsole/ScriptConsole.cpp:74
 #, kde-format
 msgid "Script Console"
@@ -3977,14 +3947,14 @@ msgstr "Consola de guións"
 
 #. i18n: ectx: property (statusTip), widget (QCheckBox, kcfg_EnableScriptConsole)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_EnableScriptConsole)
-#: configdialog/dialogs/ScriptsConfig.ui:116
-#: configdialog/dialogs/ScriptsConfig.ui:119
+#: configdialog/dialogs/ScriptsConfig.ui:61
+#: configdialog/dialogs/ScriptsConfig.ui:64
 #, kde-format
 msgid "Enable the script console."
 msgstr "Activar a consola de guións."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_EnableScriptConsole)
-#: configdialog/dialogs/ScriptsConfig.ui:122
+#: configdialog/dialogs/ScriptsConfig.ui:67
 #, kde-format
 msgid "Enable Script Console"
 msgstr "Activar a consola de guións"
@@ -14309,7 +14279,7 @@ msgstr ""
 "do guión, %2 (%3), e pídalle que o anove antes da seguinte versión principal "
 "de Amarok."
 
-#: scripting/scriptmanager/ScriptManager.cpp:286
+#: scripting/scriptmanager/ScriptManager.cpp:290
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -17199,6 +17169,22 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "baleiro"
+
+#~ msgid ""
+#~ "Automatically download and install updates for the built-in scripts from "
+#~ "the Amarok website if available"
+#~ msgstr ""
+#~ "Descargar e instalar automaticamente as actualizacións dos guións de "
+#~ "serie desde a páxina web de Amarok cando estean dispoñíbeis."
+
+#~ msgid "Automatically update built-in scripts"
+#~ msgstr "Actualizar automaticamente os guións de serie."
+
+#~ msgid "Browse, install, and uninstall scripts"
+#~ msgstr "Navegar, instalar e desinstalar guións."
+
+#~ msgid "Manage Scripts"
+#~ msgstr "Xestionar os guións"
 
 #~ msgid "Scanning %1"
 #~ msgstr "Explorando %1"

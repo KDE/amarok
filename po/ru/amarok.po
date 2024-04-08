@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-05 01:40+0000\n"
+"POT-Creation-Date: 2024-04-08 01:44+0000\n"
 "PO-Revision-Date: 2020-04-24 16:21+0300\n"
 "Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
@@ -3932,38 +3932,8 @@ msgstr "Удалить сценарий"
 msgid "Install Local Script"
 msgstr "У&становить сценарий"
 
-#. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#: configdialog/dialogs/ScriptsConfig.ui:54
-#: configdialog/dialogs/ScriptsConfig.ui:57
-#, kde-format
-msgid ""
-"Automatically download and install updates for the built-in scripts from the "
-"Amarok website if available"
-msgstr ""
-"Автоматически загружать и устанавливать обновления для встроенных сценариев "
-"с веб-сайта Amarok"
-
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#: configdialog/dialogs/ScriptsConfig.ui:60
-#, kde-format
-msgid "Automatically update built-in scripts"
-msgstr "Автоматически обновлять встроенные сценарии"
-
-#. i18n: ectx: property (toolTip), widget (QPushButton, manageButton)
-#: configdialog/dialogs/ScriptsConfig.ui:80
-#, kde-format
-msgid "Browse, install, and uninstall scripts"
-msgstr "Загрузить, обновить или удалить сценарии"
-
-#. i18n: ectx: property (text), widget (QPushButton, manageButton)
-#: configdialog/dialogs/ScriptsConfig.ui:83
-#, kde-format
-msgid "Manage Scripts"
-msgstr "Загрузить новые сценарии"
-
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
-#: configdialog/dialogs/ScriptsConfig.ui:107
+#: configdialog/dialogs/ScriptsConfig.ui:52
 #: scripting/scriptconsole/ScriptConsole.cpp:74
 #, fuzzy, kde-format
 #| msgid "Scripts"
@@ -3972,14 +3942,14 @@ msgstr "Сценарии"
 
 #. i18n: ectx: property (statusTip), widget (QCheckBox, kcfg_EnableScriptConsole)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_EnableScriptConsole)
-#: configdialog/dialogs/ScriptsConfig.ui:116
-#: configdialog/dialogs/ScriptsConfig.ui:119
+#: configdialog/dialogs/ScriptsConfig.ui:61
+#: configdialog/dialogs/ScriptsConfig.ui:64
 #, kde-format
 msgid "Enable the script console."
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_EnableScriptConsole)
-#: configdialog/dialogs/ScriptsConfig.ui:122
+#: configdialog/dialogs/ScriptsConfig.ui:67
 #, fuzzy, kde-format
 #| msgid "Executable Scripts"
 msgid "Enable Script Console"
@@ -14626,7 +14596,7 @@ msgid ""
 "author, %2 at %3, and ask him to upgrade it before the next Amarok release."
 msgstr ""
 
-#: scripting/scriptmanager/ScriptManager.cpp:286
+#: scripting/scriptmanager/ScriptManager.cpp:290
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -17573,6 +17543,22 @@ msgstr "Исполнитель: %1"
 #, kde-format
 msgid "empty"
 msgstr "пусто"
+
+#~ msgid ""
+#~ "Automatically download and install updates for the built-in scripts from "
+#~ "the Amarok website if available"
+#~ msgstr ""
+#~ "Автоматически загружать и устанавливать обновления для встроенных "
+#~ "сценариев с веб-сайта Amarok"
+
+#~ msgid "Automatically update built-in scripts"
+#~ msgstr "Автоматически обновлять встроенные сценарии"
+
+#~ msgid "Browse, install, and uninstall scripts"
+#~ msgstr "Загрузить, обновить или удалить сценарии"
+
+#~ msgid "Manage Scripts"
+#~ msgstr "Загрузить новые сценарии"
 
 #~ msgid "Scanning %1"
 #~ msgstr "Сканирование %1"

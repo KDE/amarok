@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-05 01:40+0000\n"
+"POT-Creation-Date: 2024-04-08 01:44+0000\n"
 "PO-Revision-Date: 2010-03-21 16:32+0700\n"
 "Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
@@ -3928,38 +3928,8 @@ msgstr "ถอนการติดตั้งสคริปต์"
 msgid "Install Local Script"
 msgstr "&ติดตั้งสคริปต์"
 
-#. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#: configdialog/dialogs/ScriptsConfig.ui:54
-#: configdialog/dialogs/ScriptsConfig.ui:57
-#, kde-format
-msgid ""
-"Automatically download and install updates for the built-in scripts from the "
-"Amarok website if available"
-msgstr ""
-
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#: configdialog/dialogs/ScriptsConfig.ui:60
-#, fuzzy, kde-format
-#| msgid "&Automatically delete podcasts"
-msgid "Automatically update built-in scripts"
-msgstr "&ลบพ็อดแคสท์อัตโนมัติ"
-
-#. i18n: ectx: property (toolTip), widget (QPushButton, manageButton)
-#: configdialog/dialogs/ScriptsConfig.ui:80
-#, kde-format
-msgid "Browse, install, and uninstall scripts"
-msgstr ""
-
-#. i18n: ectx: property (text), widget (QPushButton, manageButton)
-#: configdialog/dialogs/ScriptsConfig.ui:83
-#, fuzzy, kde-format
-#| msgid "Manage presets"
-msgid "Manage Scripts"
-msgstr "จัดการชุดสำเร็จ"
-
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
-#: configdialog/dialogs/ScriptsConfig.ui:107
+#: configdialog/dialogs/ScriptsConfig.ui:52
 #: scripting/scriptconsole/ScriptConsole.cpp:74
 #, fuzzy, kde-format
 #| msgid "Search Scripts"
@@ -3968,14 +3938,14 @@ msgstr "ค้นหาสคริปต์ต่าง ๆ"
 
 #. i18n: ectx: property (statusTip), widget (QCheckBox, kcfg_EnableScriptConsole)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_EnableScriptConsole)
-#: configdialog/dialogs/ScriptsConfig.ui:116
-#: configdialog/dialogs/ScriptsConfig.ui:119
+#: configdialog/dialogs/ScriptsConfig.ui:61
+#: configdialog/dialogs/ScriptsConfig.ui:64
 #, kde-format
 msgid "Enable the script console."
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_EnableScriptConsole)
-#: configdialog/dialogs/ScriptsConfig.ui:122
+#: configdialog/dialogs/ScriptsConfig.ui:67
 #, fuzzy, kde-format
 #| msgid "Executable Scripts"
 msgid "Enable Script Console"
@@ -14473,7 +14443,7 @@ msgid ""
 "author, %2 at %3, and ask him to upgrade it before the next Amarok release."
 msgstr ""
 
-#: scripting/scriptmanager/ScriptManager.cpp:286
+#: scripting/scriptmanager/ScriptManager.cpp:290
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -17286,6 +17256,16 @@ msgstr "ศิลปิน \"%1\""
 #| msgid "<empty>"
 msgid "empty"
 msgstr "<empty>"
+
+#, fuzzy
+#~| msgid "&Automatically delete podcasts"
+#~ msgid "Automatically update built-in scripts"
+#~ msgstr "&ลบพ็อดแคสท์อัตโนมัติ"
+
+#, fuzzy
+#~| msgid "Manage presets"
+#~ msgid "Manage Scripts"
+#~ msgstr "จัดการชุดสำเร็จ"
 
 #, fuzzy
 #~| msgid "Scanning music"

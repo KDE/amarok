@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-05 01:40+0000\n"
+"POT-Creation-Date: 2024-04-08 01:44+0000\n"
 "PO-Revision-Date: 2023-07-23 20:22+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -3797,38 +3797,8 @@ msgstr "스크립트 삭제"
 msgid "Install Local Script"
 msgstr "로컬 스크립트 설치"
 
-#. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#: configdialog/dialogs/ScriptsConfig.ui:54
-#: configdialog/dialogs/ScriptsConfig.ui:57
-#, kde-format
-msgid ""
-"Automatically download and install updates for the built-in scripts from the "
-"Amarok website if available"
-msgstr ""
-"사용 가능한 경우 Amarok 내장 스크립트를 자동으로 웹사이트에서 다운로드하고 업"
-"데이트 설치"
-
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoUpdateScripts)
-#: configdialog/dialogs/ScriptsConfig.ui:60
-#, kde-format
-msgid "Automatically update built-in scripts"
-msgstr "기본 제공 스크립트 자동 업데이트"
-
-#. i18n: ectx: property (toolTip), widget (QPushButton, manageButton)
-#: configdialog/dialogs/ScriptsConfig.ui:80
-#, kde-format
-msgid "Browse, install, and uninstall scripts"
-msgstr "스크립트 찾아보기, 설치 및 삭제"
-
-#. i18n: ectx: property (text), widget (QPushButton, manageButton)
-#: configdialog/dialogs/ScriptsConfig.ui:83
-#, kde-format
-msgid "Manage Scripts"
-msgstr "스크립트 관리"
-
 #. i18n: ectx: property (title), widget (QGroupBox, m_scriptConsoleGroup)
-#: configdialog/dialogs/ScriptsConfig.ui:107
+#: configdialog/dialogs/ScriptsConfig.ui:52
 #: scripting/scriptconsole/ScriptConsole.cpp:74
 #, kde-format
 msgid "Script Console"
@@ -3836,14 +3806,14 @@ msgstr "스크립트 콘솔"
 
 #. i18n: ectx: property (statusTip), widget (QCheckBox, kcfg_EnableScriptConsole)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_EnableScriptConsole)
-#: configdialog/dialogs/ScriptsConfig.ui:116
-#: configdialog/dialogs/ScriptsConfig.ui:119
+#: configdialog/dialogs/ScriptsConfig.ui:61
+#: configdialog/dialogs/ScriptsConfig.ui:64
 #, kde-format
 msgid "Enable the script console."
 msgstr "스크립트 콘솔을 사용하도록 설정합니다."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_EnableScriptConsole)
-#: configdialog/dialogs/ScriptsConfig.ui:122
+#: configdialog/dialogs/ScriptsConfig.ui:67
 #, kde-format
 msgid "Enable Script Console"
 msgstr "스크립트 콘솔 사용"
@@ -13924,7 +13894,7 @@ msgstr ""
 "트 작성자 %2 (%3)에게 문의하여 다음 Amarok 릴리스 전에 업그레이드하도록 요청"
 "하십시오."
 
-#: scripting/scriptmanager/ScriptManager.cpp:286
+#: scripting/scriptmanager/ScriptManager.cpp:290
 #, kde-format
 msgid ""
 "Script error reported by: %1\n"
@@ -16724,6 +16694,22 @@ msgstr "아티스트: %1"
 #, kde-format
 msgid "empty"
 msgstr "비어 있음"
+
+#~ msgid ""
+#~ "Automatically download and install updates for the built-in scripts from "
+#~ "the Amarok website if available"
+#~ msgstr ""
+#~ "사용 가능한 경우 Amarok 내장 스크립트를 자동으로 웹사이트에서 다운로드하"
+#~ "고 업데이트 설치"
+
+#~ msgid "Automatically update built-in scripts"
+#~ msgstr "기본 제공 스크립트 자동 업데이트"
+
+#~ msgid "Browse, install, and uninstall scripts"
+#~ msgstr "스크립트 찾아보기, 설치 및 삭제"
+
+#~ msgid "Manage Scripts"
+#~ msgstr "스크립트 관리"
 
 #~ msgid "Scanning %1"
 #~ msgstr "%1 검색 중"
