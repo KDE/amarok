@@ -401,6 +401,15 @@ Playlist::Actions::queueMoveDown( quint64 id )
     return ret;
 }
 
+bool
+Playlist::Actions::queueMoveTo( quint64 id, const int pos )
+{
+    const bool ret = m_navigator->queueMoveTo( id, pos );
+    if ( ret )
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
+    return ret;
+}
+
 void
 Playlist::Actions::dequeue( quint64 id )
 {

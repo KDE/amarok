@@ -107,6 +107,7 @@ public:
 
     bool queueMoveUp( quint64 id );
     bool queueMoveDown( quint64 id );
+    bool queueMoveTo( quint64 id, const int pos );
     void dequeue( quint64 id );
 
 public Q_SLOTS:

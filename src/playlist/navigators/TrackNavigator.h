@@ -109,6 +109,11 @@ namespace Playlist
              */
             bool queueMoveDown( const quint64 id );
 
+            /**
+             * Move the track in specific queue position.
+             */
+            bool queueMoveTo( const quint64 id, const int pos );
+
         private Q_SLOTS:
             void slotModelReset();
             void slotRowsAboutToBeRemoved( const QModelIndex &parent, int start, int end );
