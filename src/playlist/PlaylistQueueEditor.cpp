@@ -39,12 +39,17 @@ PlaylistQueueEditor::PlaylistQueueEditor()
     m_ui.downButton->setIcon( QIcon::fromTheme( QStringLiteral("go-down") ) );
     m_ui.dequeueTrackButton->setIcon( QIcon::fromTheme( QStringLiteral("list-remove") ) );
     m_ui.clearButton->setIcon( QIcon::fromTheme( QStringLiteral("edit-clear-list") ) );
+    m_ui.listWidget->setDragEnabled( true );
+    m_ui.listWidget->setDragDropMode( QAbstractItemView::InternalMove );
     connect( m_ui.upButton, &QAbstractButton::clicked, this, &PlaylistQueueEditor::moveUp );
     connect( m_ui.downButton, &QAbstractButton::clicked, this, &PlaylistQueueEditor::moveDown );
     connect( m_ui.clearButton, &QAbstractButton::clicked, this, &PlaylistQueueEditor::clear );
     connect( m_ui.dequeueTrackButton, &QAbstractButton::clicked, this, &PlaylistQueueEditor::dequeueTrack );
     connect( m_ui.buttonBox->buttons().first(), &QAbstractButton::clicked, this, &PlaylistQueueEditor::accept );
+    connect( m_ui.listWidget->model(), &QAbstractItemModel::rowsMoved, this, &PlaylistQueueEditor::updateQueueFromList );
 }
+
+
 
 void
 PlaylistQueueEditor::updateView()
@@ -140,6 +145,21 @@ PlaylistQueueEditor::clear()
             rowsToDequeue += row;
     }
     The::playlistActions()->dequeue( rowsToDequeue );
+    m_blockViewUpdates = false;
+    updateView();
+}
+
+void
+PlaylistQueueEditor::updateQueueFromList()
+{
+    m_blockViewUpdates = true;
+    for( int i = 0; i < m_ui.listWidget->count(); i++ )
+    {
+        bool ok;
+        quint64 id = m_ui.listWidget->item(i)->data( s_idRole ).toULongLong( &ok );
+        if( ok )
+            The::playlistActions()->queueMoveTo( id, i );
+    }
     m_blockViewUpdates = false;
     updateView();
 }

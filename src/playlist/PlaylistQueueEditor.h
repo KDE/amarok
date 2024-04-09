@@ -35,6 +35,7 @@ private Q_SLOTS:
     void moveDown();
     void dequeueTrack();
     void clear();
+    void updateQueueFromList();
 
 private:
     void updateView();
