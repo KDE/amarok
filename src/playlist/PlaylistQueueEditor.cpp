@@ -34,7 +34,7 @@ PlaylistQueueEditor::PlaylistQueueEditor()
 {
     m_ui.setupUi( this );
     updateView();
-    connect( qobject_cast<Playlist::Model*>(The::playlist()->qaim()), &Playlist::Model::queueChanged, this, &PlaylistQueueEditor::queueChanged );
+    connect( qobject_cast<Playlist::ProxyBase*>(The::playlist()->qaim()), &Playlist::ProxyBase::queueChanged, this, &PlaylistQueueEditor::queueChanged );
     m_ui.upButton->setIcon( QIcon::fromTheme( QStringLiteral("go-up") ) );
     m_ui.downButton->setIcon( QIcon::fromTheme( QStringLiteral("go-down") ) );
     m_ui.dequeueTrackButton->setIcon( QIcon::fromTheme( QStringLiteral("list-remove") ) );

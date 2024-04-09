@@ -34,10 +34,20 @@ ProxyBase::ProxyBase( AbstractModel *belowModel, QObject *parent )
     // Proxy the Playlist::AbstractModel signals.
     //   If you need to do something special in a subclass, disconnect() this signal and
     //   do your own connect() call.
-    connect( qobject_cast<Playlist::Model*>( sourceModel() ), &Playlist::Model::activeTrackChanged,
-             this, &ProxyBase::activeTrackChanged );
-    connect( qobject_cast<Playlist::Model*>( sourceModel() ), &Playlist::Model::queueChanged,
-             this, &ProxyBase::queueChanged );
+    if( qobject_cast<Playlist::Model*>( sourceModel() ) )
+    { // As Model and ProxyBase don't have a common ancestor, new slot syntax apparently requires separate paths
+        connect( qobject_cast<Playlist::Model*>( sourceModel() ), &Playlist::Model::activeTrackChanged,
+                this, &ProxyBase::activeTrackChanged );
+        connect( qobject_cast<Playlist::Model*>( sourceModel() ), &Playlist::Model::queueChanged,
+                this, &ProxyBase::queueChanged );
+    }
+    else
+    {
+        connect( qobject_cast<Playlist::ProxyBase*>( sourceModel() ), &Playlist::ProxyBase::activeTrackChanged,
+                this, &ProxyBase::activeTrackChanged );
+        connect( qobject_cast<Playlist::ProxyBase*>( sourceModel() ), &Playlist::ProxyBase::queueChanged,
+                this, &ProxyBase::queueChanged );
+    }
 }
 
 ProxyBase::~ProxyBase()
