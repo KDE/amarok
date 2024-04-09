@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-04-08 01:44+0000\n"
-"PO-Revision-Date: 2024-04-07 14:32\n"
+"PO-Revision-Date: 2024-04-08 19:15\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -16467,17 +16467,3 @@ msgstr "艺人：%1"
 #, kde-format
 msgid "empty"
 msgstr "空"
-
-#~ msgid ""
-#~ "Automatically download and install updates for the built-in scripts from "
-#~ "the Amarok website if available"
-#~ msgstr "从 Amarok 网站上自动下载并更新可用的内置脚本"
-
-#~ msgid "Automatically update built-in scripts"
-#~ msgstr "自动更新内置脚本"
-
-#~ msgid "Browse, install, and uninstall scripts"
-#~ msgstr "浏览、安装或卸载脚本"
-
-#~ msgid "Manage Scripts"
-#~ msgstr "管理脚本"
