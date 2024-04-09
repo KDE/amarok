@@ -129,6 +129,9 @@ BlockAnalyzer::paletteChange( const QPalette& palette ) //virtual
     const double db = fade.blue() - abg.blue();
     const int r = abg.red(), g = abg.green(), b = abg.blue();
 
+    if( m_rows == 0 )
+        return; // Nothing to draw yet, avoid some QPainter warnings from empty surfaces
+
     // Precalculate all fade-bar pixmaps
     for( int y = 0; y < FADE_SIZE; ++y )
     {
