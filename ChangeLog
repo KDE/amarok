@@ -22,6 +22,8 @@ VERSION 2.9.76
    * The scripting engine has been ported from QtScript to QJSEngine. This is a work in
      progress, and previous scripts are often not compatible. The script API documented
      at https://community.kde.org/Amarok/Development/Script_API is partially out of date.
+     Additionally, due to incompatibilities and other issues, KNewStuff downloading of
+     scripts is disabled for the time being.
 
   BUGFIXES:
    * Fix playlist generator UI strings. (BR 423598)

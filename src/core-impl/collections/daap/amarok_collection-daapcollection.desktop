@@ -122,7 +122,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com
-X-KDE-Amarok-framework-version=74
+X-KDE-Amarok-framework-version=75
 X-KDE-Amarok-name=daap-collection
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
