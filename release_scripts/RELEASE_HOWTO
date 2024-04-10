@@ -2,7 +2,7 @@ Amarok Release process
 ----------------------
 
 SECTION -1: Before you even start
- * Review https://community.kde.org/ReleasingSoftware, https://invent.kde.org/sdk/releaseme
+ * Review https://community.kde.org/ReleasingSoftware , https://invent.kde.org/sdk/releaseme
    or other up-to-date KDE release instructions and compare with this HOWTO to find out if
    this document contains outdated information. Update this document where appropriate.
 --------------------------------------------------------------------------------
@@ -45,10 +45,10 @@ SECTION 2: Creating and Testing the Tarball
 SECTION 3: Once Happy with the Tarball
 
  * Maybe generate a html changelog file using releaseme's script (logme.rb).
- * Tag the commit using releaseme's tag script: "./tagme 2.9.90"
+ * Tag the commit using releaseme's tag script: "./tagme --version 2.9.90"
  * Follow the releaseme scripts' instructions for transferring the tarball to
    ftp://upload.kde.org/incoming and file a sysadmin request to have it
-   transfered to stable/amarok/$version/src/ or unstable/amarok/$beta-version/src
+   transfered to stable/amarok/$version/ or unstable/amarok/$beta-version/
    Note that releaseme scripts provide a link to pre-filled template, which also
    includes a request to create a Bugzilla target for the new version.
    More instructions at ftp://upload.kde.org/README

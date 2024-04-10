@@ -2,7 +2,15 @@ Amarok ChangeLog
 ================
 (C) 2002-2024 the Amarok authors.
 
-VERSION 2.9.76
+
+VERSION 2.9.90
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+
+VERSION 2.9.82
   FEATURES:
    * Enable dragging and dropping tracks from context view to playlist again. (BR 439736)
    * Add menu entry for collapsing all expanded items in collection view. (BR 244509)
