@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-08 01:44+0000\n"
+"POT-Creation-Date: 2024-04-10 01:44+0000\n"
 "PO-Revision-Date: 2014-03-28 22:28+0100\n"
 "Last-Translator: Jean Cayron <jean.cayron@gmail.com>\n"
 "Language-Team: Walloon <linux-wa@walon.org>\n"
@@ -5504,7 +5504,7 @@ msgstr "Ramexhnêye nén cnoxhowe"
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:421
 #: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:594
-#: covermanager/CoverFetchUnit.cpp:604 playlist/PlaylistQueueEditor.cpp:64
+#: covermanager/CoverFetchUnit.cpp:604 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
 msgstr "Årtisse nén cnoxhou"
@@ -12745,7 +12745,7 @@ msgstr "Umeur"
 msgid "File Size"
 msgstr "Grandeu do fitchî"
 
-#: playlist/PlaylistQueueEditor.cpp:64
+#: playlist/PlaylistQueueEditor.cpp:69
 #, fuzzy, kde-format
 #| msgid "%1 - %2 (%3)"
 msgctxt "Iten in queue, %1 is position, %2 artist, %3 track"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-08 01:44+0000\n"
+"POT-Creation-Date: 2024-04-10 01:44+0000\n"
 "PO-Revision-Date: 2010-09-24 12:22+0530\n"
 "Last-Translator: Rajesh Ranjan <rajesh672@gmail.com>\n"
 "Language-Team: Maithili <bhashaghar@googlegroups.com>\n"
@@ -5362,7 +5362,7 @@ msgstr "कनेक्शन"
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:421
 #: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:594
-#: covermanager/CoverFetchUnit.cpp:604 playlist/PlaylistQueueEditor.cpp:64
+#: covermanager/CoverFetchUnit.cpp:604 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
 msgstr "अज्ञात कलाकार"
@@ -12296,7 +12296,7 @@ msgstr "स्वभाव"
 msgid "File Size"
 msgstr ""
 
-#: playlist/PlaylistQueueEditor.cpp:64
+#: playlist/PlaylistQueueEditor.cpp:69
 #, fuzzy, kde-format
 #| msgctxt "monthname year"
 #| msgid "%1 %2"

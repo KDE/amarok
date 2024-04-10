@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-08 01:44+0000\n"
+"POT-Creation-Date: 2024-04-10 01:44+0000\n"
 "PO-Revision-Date: 2021-06-20 14:10-0300\n"
 "Last-Translator: Thiago Masato Costa Sueto <herzenschein@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
@@ -5451,7 +5451,7 @@ msgstr "Coleção desconhecida"
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:421
 #: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:594
-#: covermanager/CoverFetchUnit.cpp:604 playlist/PlaylistQueueEditor.cpp:64
+#: covermanager/CoverFetchUnit.cpp:604 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
 msgstr "Artista desconhecido"
@@ -12603,7 +12603,7 @@ msgstr "Atmosfera"
 msgid "File Size"
 msgstr "Tamanho do arquivo"
 
-#: playlist/PlaylistQueueEditor.cpp:64
+#: playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgctxt "Iten in queue, %1 is position, %2 artist, %3 track"
 msgid "%1: %2 - %3"
