@@ -1,6 +1,12 @@
 Amarok Release process
 ----------------------
 
+SECTION -1: Before you even start
+ * Review https://community.kde.org/ReleasingSoftware, https://invent.kde.org/sdk/releaseme
+   or other up-to-date KDE release instructions and compare with this HOWTO to find out if
+   this document contains outdated information. Update this document where appropriate.
+--------------------------------------------------------------------------------
+
 Dependencies:
 - The Ultimate KDE Extragear Release Script from git@git.kde.org:releaseme.git
 
@@ -21,11 +27,12 @@ SECTION 1: Preparation
 
 SECTION 2: Creating and Testing the Tarball
 
- * Run the amarok release script from (tarme.rb).
-   example: ./tarme.rb --version 2.5.90 --origin trunk amarok
+ * Run the releaseme's tarball script (tarme.rb).
+   example: ./tarme.rb --version 2.9.90 --origin trunk amarok
  * Test the following:
 
-     $ cmake -DCMAKE_INSTALL_PREFIX=`kf5-config --prefix` -DCMAKE_BUILD_TYPE=RelWithDebInfo ./
+     $ mkdir amarok-build-test && cd amarok-build-test
+     $ cmake -DCMAKE_INSTALL_PREFIX=`kf5-config --prefix` -DCMAKE_BUILD_TYPE=RelWithDebInfo ../amarok-2.9.90
      $ make
 
  * mkdir ~/.kde-test && export KDEHOME=$HOME/.kde-test
@@ -37,46 +44,48 @@ SECTION 2: Creating and Testing the Tarball
 
 SECTION 3: Once Happy with the Tarball
 
- * Tag the commit: "git tag -s v2.5.90"
- * ftp the tarball to ftp://upload.kde.org/incoming and file a sysadmin request to have it
+ * Maybe generate a html changelog file using releaseme's script (logme.rb).
+ * Tag the commit using releaseme's tag script: "./tagme 2.9.90"
+ * Follow the releaseme scripts' instructions for transferring the tarball to
+   ftp://upload.kde.org/incoming and file a sysadmin request to have it
    transfered to stable/amarok/$version/src/ or unstable/amarok/$beta-version/src
-   Instructions at ftp://upload.kde.org/README
+   Note that releaseme scripts provide a link to pre-filled template, which also
+   includes a request to create a Bugzilla target for the new version.
+   More instructions at ftp://upload.kde.org/README
  * Notify packagers:
-To: kde-distro-packagers@kde.org, Patrick von Reth (TheOneRing, Windows) <vonreth@kde.org>
+To: kde-distro-packagers@kde.org, Hannah von Reth (TheOneRing, Windows) <vonreth@kde.org>
 "
 Dear packagers
 
 Here you can find the beta tarball for the upcoming $version release:
-http://download.kde.org/download.php?url=unstable/amarok/$beta-version/src/amarok-$beta-version.tar.bz2
+https://download.kde.org/download.php?url=unstable/amarok/$beta-version/src/amarok-$beta-version.tar.bz2
 
 sha256sum: $(sha256sum tarball.tar.bz2)
 
 We plan to release the final about 3 weeks from now but please make
 this available to users via a specialized beta archive for packaging
-is possible. We hope to get as much testers for this beta.
+if possible. We hope to get as much testers for this beta.
 
 Thanks for packaging.
 The Amarok Team
 "
 
  * Write release notes and dot story (and notify KDE-press list if necessary)
- * Add new version to Bugzilla
 --------------------------------------------------------------------------------
 
 SECTION 4: The Release Day
 
  * Make tarball public
+ * Use releaseme scripts similarly to beta release, also ask to disable unstable
+   version bug reporting
  * Update download page on the wiki
  * Update the amarok.kde.org front-page
  * Send a witty, intelligent and diligently crafted email to the following lists:
      To:  kde-announce-apps@kde.org, amarok@kde.org
-     CC:  amarok-promo@kde.org
      BCC: kde-multimedia@kde.org, kde-distro-packagers@kde.org,
           (kde-press-announce@kde.org)
  * Update IRC channel topics
  * Update social networks
- * Update kde-apps.org
- * Add new version to bugzilla, disable unstable version reporting
  * Write blog post
  * Publish dot story (for major versions)
 --------------------------------------------------------------------------------
@@ -86,10 +95,12 @@ SECTION 5: After the Release
  * Update shared/Version.h to 2.6-git (if the release was 2.6.0)
  * `git grep -ipn 'string freeze'` - now is the time to add/change strings
 
- If you must change anything about the tarball you need to email sysadmin@kde.org
+ If you must change anything about the tarball you shouldn't, but tag a new version.
+ Previously this section stated that one should "email sysadmin@kde.org
  because otherwise they gets annoyed that the md5 has changed.
  Generally it is not wise to change the tarball, it could annoy the entire
- open-source world!
+ open-source world!" but this is probably not ok at all any more.
+
 --------------------------------------------------------------------------------
 
 APPENDIX
