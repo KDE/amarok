@@ -28,6 +28,22 @@ def bump_desktop_files
     end
 end
 
+def bump_json_files
+    files = Dir["**/*.json"]
+
+    files.each do |path|
+        file = File.new(path, File::RDWR)
+        str = file.read
+        unless str[/X-KDE-Amarok-framework-version": [0-9]*/].nil?
+            puts path
+            str.sub!( /X-KDE-Amarok-framework-version": [0-9]*/, "X-KDE-Amarok-framework-version\": #{@version}" )
+            file.rewind
+            file.truncate(0)
+            file << str
+        end
+        file.close
+    end
+end
 
 # Make sure the current working directory is amarok
 if not Dir::getwd().split( "/" ).last() == "amarok"
@@ -56,6 +72,7 @@ file.close()
 puts
 puts
 bump_desktop_files
+bump_json_files
 
 
 puts
