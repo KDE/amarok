@@ -347,7 +347,7 @@ int main( int argc, char *argv[] )
                      &app, &App::activateRequested);
 
     const bool debugColorsEnabled = !parser.isSet( "coloroff" );
-    const bool debugEnabled = parser.isSet( "debug" );
+    const bool debugEnabled = parser.isSet( "debug" ) || parser.isSet( "debug-with-lastfm" ); // HACK see App::initCliArgs
 
     Debug::setDebugEnabled( debugEnabled );
     Debug::setColoredDebug( debugColorsEnabled );

@@ -371,6 +371,8 @@ App::initCliArgs(QCommandLineParser *parser)
     options.append(QCommandLineOption("queue", i18n("Queue URLs after the currently playing track")));
     options.append(QCommandLineOption(QStringList() << "l" << "load", i18n("Load URLs, replacing current playlist")));
     options.append(QCommandLineOption(QStringList() << "d" << "debug", i18n("Print verbose debugging information")));
+    // HACK should https://github.com/lastfm/liblastfm/pull/37 ever get merged, this option can be removed
+    options.append(QCommandLineOption("debug-with-lastfm", i18n("Print verbose debugging information")));
     options.append(QCommandLineOption("debug-audio", i18n("Print verbose debugging information from the audio system")));
     options.append(QCommandLineOption(QStringList() << "c" << "coloroff", i18n("Disable colorization for debug output.")));
     options.append(QCommandLineOption(QStringList() << "m" << "multipleinstances", i18n("Allow running multiple Amarok instances")));
