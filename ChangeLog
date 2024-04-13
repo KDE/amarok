@@ -7,7 +7,7 @@ VERSION 2.9.90
   FEATURES:
 
   CHANGES:
-
+   * Replace defunct lyricwiki with lyrics.ovh as lyrics provider for now. (BR 455937)
   BUGFIXES:
    * Fix loading of some Flickr photos in the photos context view applet.
 

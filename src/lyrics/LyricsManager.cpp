@@ -24,14 +24,15 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <QDomDocument>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QTextEdit>
 #include <QXmlStreamReader>
 
 #include <KLocalizedString>
 
 
-#define APIURL "https://lyrics.fandom.com/api.php?action=query&prop=revisions&rvprop=content&format=xml&titles="
+#define APIURL "https://api.lyrics.ovh/v1/"
 
 
 LyricsManager* LyricsManager::s_self = nullptr;
@@ -134,7 +135,7 @@ void LyricsManager::loadLyrics( Meta::TrackPtr track, bool overwrite )
         return;
     }
 
-    QUrl url( APIURL + artist + QLatin1Char(':') + title );
+    QUrl url( APIURL + artist + QLatin1Char('/') + title );
     m_trackMap.insert( url, track );
 
     connect( NetworkAccessManagerProxy::instance(), &NetworkAccessManagerProxy::requestRedirectedUrl,
@@ -160,10 +161,9 @@ void LyricsManager::lyricsLoaded( const QUrl& url, const QByteArray& data, const
         return;
     }
 
-    QDomDocument document;
-    document.setContent( data );
-    auto list = document.elementsByTagName( QStringLiteral( "rev" ) );
-    if( list.isEmpty() )
+    QJsonDocument document = QJsonDocument::fromJson( data );
+
+    if( document.isNull() || !document.object().contains( "lyrics" ) )
     {
         if( track->album() && track->album()->albumArtist() )
         {
@@ -175,11 +175,11 @@ void LyricsManager::lyricsLoaded( const QUrl& url, const QByteArray& data, const
             sanitizeArtist( albumArtist );
 
             //Try with album artist
-            if( url == QUrl( APIURL + artist + QLatin1Char(':') + title ) && albumArtist != artist )
+            if( url == QUrl( APIURL + artist + QLatin1Char('/') + title ) && albumArtist != artist )
             {
                 debug() << "Try again with album artist.";
 
-                QUrl newUrl( APIURL + albumArtist + QLatin1Char(':') + title );
+                QUrl newUrl( APIURL + albumArtist + QLatin1Char('/') + title );
                 m_trackMap.insert( newUrl, track );
                 NetworkAccessManagerProxy::instance()->getData( newUrl, this, &LyricsManager::lyricsLoaded );
                 return;
@@ -190,34 +190,11 @@ void LyricsManager::lyricsLoaded( const QUrl& url, const QByteArray& data, const
         return;
     }
 
-    QString rev = list.at( 0 ).toElement().text();
-    if( rev.contains( QStringLiteral( "lyrics" ) ) )
+    QString lyricString = document.object().value( "lyrics" ).toString();
+    if( lyricString.contains( QStringLiteral( "\r\n" ) ) )
     {
-        int lindex = rev.indexOf( QStringLiteral( "<lyrics>" ) );
-        int rindex = rev.indexOf( QStringLiteral( "</lyrics>" ) );
-        lyricsResult( (rev.mid( lindex, rindex - lindex ) + "</lyrics>" ).toUtf8(), track );
-    }
-    else if( rev.contains( QStringLiteral( "lyric" ) ) )
-    {
-        int lindex = rev.indexOf( QStringLiteral( "<lyric>" ) );
-        int rindex = rev.indexOf( QStringLiteral( "</lyric>" ) );
-        lyricsResult( (rev.mid( lindex, rindex - lindex ) + "</lyric>" ).toUtf8(), track );
-    }
-    else if( rev.contains( QStringLiteral( "#REDIRECT" ) ) )
-    {
-        debug() << "Redirect:" << data;
-
-        int lindex = rev.indexOf( QStringLiteral( "#REDIRECT [[" ) ) + 12;
-        int rindex = rev.indexOf( QStringLiteral( "]]" ) );
-        QStringList list = rev.mid( lindex, rindex - lindex ).split( QLatin1Char(':') );
-        if( list.size() == 2 )
-        {
-            list[0] = list[0].replace( '&', QStringLiteral( "%26" ) );
-            list[1] = list[1].replace( '&', QStringLiteral( "%26" ) );
-            QUrl newUrl( APIURL + list.join( QLatin1Char(':') ) );
-            m_trackMap.insert( newUrl, track );
-            NetworkAccessManagerProxy::instance()->getData( newUrl, this, &LyricsManager::lyricsLoaded );
-        }
+        int lindex = lyricString.indexOf( QStringLiteral( "\r\n" ) ); // lyrics.ovh lyrics start from second row
+        lyricsResult( ( QStringLiteral( "<lyric>" ) + lyricString.mid( lindex+2 ) + QStringLiteral( "</lyric>" ) ).toUtf8(), track );
     }
     else
         warning() << "No lyrics found in data:" << data;
