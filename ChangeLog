@@ -9,6 +9,7 @@ VERSION 2.9.90
   CHANGES:
 
   BUGFIXES:
+   * Fix loading of some Flickr photos in the photos context view applet.
 
 VERSION 2.9.82
   FEATURES:
