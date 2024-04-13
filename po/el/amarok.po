@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-10 01:44+0000\n"
+"POT-Creation-Date: 2024-04-13 01:44+0000\n"
 "PO-Revision-Date: 2021-06-19 07:32+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
@@ -1968,37 +1968,37 @@ msgstr "Τοποθέτηση των URLs σε αναμονή μετά το τρ�
 msgid "Load URLs, replacing current playlist"
 msgstr "Φόρτωση URL και αντικατάσταση της τρέχουσας λίστας"
 
-#: App.cpp:373
+#: App.cpp:373 App.cpp:375
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Εμφάνιση αναλυτικών πληροφοριών αποσφαλμάτωσης"
 
-#: App.cpp:374
+#: App.cpp:376
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
 msgstr "Εμφάνιση αναλυτικών πληροφοριών αποσφαλμάτωσης από το σύστημα ήχου"
 
-#: App.cpp:375
+#: App.cpp:377
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "Απενεργοποίηση χρωματισμού για εμφάνιση σφαλμάτων κώδικα στην έξοδο"
 
-#: App.cpp:376
+#: App.cpp:378
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Επίτρεψε πολλαπλές εκτελέσεις του Amarok"
 
-#: App.cpp:377
+#: App.cpp:379
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "Βάση για σχετικά ονόματα αρχείων/URLs"
 
-#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:110
+#: App.cpp:515 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
 msgid "Database Error"
 msgstr "Σφάλμα της βάσης δεδομένων"
 
-#: App.cpp:514
+#: App.cpp:516
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -2011,12 +2011,12 @@ msgstr ""
 "Στις περισσότερες περιπτώσεις θα χρειαστεί να επιλύσετε αυτά τα σφάλματα για "
 "να εκτελεστεί σωστά το Amarok."
 
-#: App.cpp:581
+#: App.cpp:583
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Μετακίνηση των αρχείων στα απορρίμματα"
 
-#: App.cpp:647
+#: App.cpp:649
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"

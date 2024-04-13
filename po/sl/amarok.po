@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-10 01:44+0000\n"
+"POT-Creation-Date: 2024-04-13 01:44+0000\n"
 "PO-Revision-Date: 2022-01-09 23:55+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -1919,37 +1919,37 @@ msgstr "Dodaj naslove URL v vrsto po trenutno predvajani skladbi"
 msgid "Load URLs, replacing current playlist"
 msgstr "Naloži naslove URL in zamenjaj trenutni seznam predvajanja"
 
-#: App.cpp:373
+#: App.cpp:373 App.cpp:375
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Pokaži podrobni izpis razhroščevanja"
 
-#: App.cpp:374
+#: App.cpp:376
 #, kde-format
 msgid "Print verbose debugging information from the audio system"
 msgstr "Pokaži podrobni izpis razhroščevanja za zvočni sistem"
 
-#: App.cpp:375
+#: App.cpp:377
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "Onemogoči barvanje v razhroščevalnem izhodu."
 
-#: App.cpp:376
+#: App.cpp:378
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Omogoči zaganjanje večih primerkov Amarok-a"
 
-#: App.cpp:377
+#: App.cpp:379
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "Osnova za relativna imena datotek/naslove URL"
 
-#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:110
+#: App.cpp:515 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
 msgid "Database Error"
 msgstr "Napaka podatkovne zbirke"
 
-#: App.cpp:514
+#: App.cpp:516
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1962,12 +1962,12 @@ msgstr ""
 "V večini primerov boste morali te napake razrešiti, preden bo Amarok začel "
 "pravilno delovati."
 
-#: App.cpp:581
+#: App.cpp:583
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Premikanje datotek v Smeti"
 
-#: App.cpp:647
+#: App.cpp:649
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"

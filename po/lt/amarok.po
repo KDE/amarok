@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-10 01:44+0000\n"
+"POT-Creation-Date: 2024-04-13 01:44+0000\n"
 "PO-Revision-Date: 2013-09-13 11:28+0300\n"
 "Last-Translator: Liudas <liudas@aksioma.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -1926,38 +1926,38 @@ msgstr "Įtraukti URL į eilę po dabar grojančios dainos"
 msgid "Load URLs, replacing current playlist"
 msgstr "Įkelti URL pakeičiant dabartinį grojaraštį"
 
-#: App.cpp:373
+#: App.cpp:373 App.cpp:375
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "Spausdinti išsamią klaidų derinimo informaciją"
 
-#: App.cpp:374
+#: App.cpp:376
 #, fuzzy, kde-format
 #| msgid "Print verbose debugging information"
 msgid "Print verbose debugging information from the audio system"
 msgstr "Spausdinti išsamią klaidų derinimo informaciją"
 
-#: App.cpp:375
+#: App.cpp:377
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr "Išjungti spalvinimą derinimo išvestyje."
 
-#: App.cpp:376
+#: App.cpp:378
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "Galima vienu metu paleisti daugiau nei vieną Amaroką"
 
-#: App.cpp:377
+#: App.cpp:379
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "Santykinių failų pavadinimų ar URL pradžia"
 
-#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:110
+#: App.cpp:515 configdialog/dialogs/DatabaseConfig.cpp:110
 #, kde-format
 msgid "Database Error"
 msgstr "Duombazės klaida"
 
-#: App.cpp:514
+#: App.cpp:516
 #, fuzzy, kde-format
 #| msgid ""
 #| "The amarok database reported the following errors:\n"
@@ -1975,12 +1975,12 @@ msgstr ""
 "Dažniausiai jums teks pataisyti šias klaidas jei norėsite, kad Amarok "
 "tvarkingai dirbtų."
 
-#: App.cpp:581
+#: App.cpp:583
 #, kde-format
 msgid "Moving files to trash"
 msgstr "Failai perkeliami į šiukšliadėžę"
 
-#: App.cpp:647
+#: App.cpp:649
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"

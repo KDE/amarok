@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-10 01:44+0000\n"
+"POT-Creation-Date: 2024-04-13 01:44+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -1874,38 +1874,38 @@ msgstr "រៀប URL ជា​ជួរ​បន្ទាប់​ពី​ច�
 msgid "Load URLs, replacing current playlist"
 msgstr "ផ្ទុក URL ដោយ​ជំនួស​បញ្ជី​ចាក់​បច្ចុប្បន្ន"
 
-#: App.cpp:373
+#: App.cpp:373 App.cpp:375
 #, kde-format
 msgid "Print verbose debugging information"
 msgstr "បោះពុម្ព​ព័ត៌មាន​បំបាត់​កំហុស​ការ​បរិយាយ"
 
-#: App.cpp:374
+#: App.cpp:376
 #, fuzzy, kde-format
 #| msgid "Print verbose debugging information"
 msgid "Print verbose debugging information from the audio system"
 msgstr "បោះពុម្ព​ព័ត៌មាន​បំបាត់​កំហុស​ការ​បរិយាយ"
 
-#: App.cpp:375
+#: App.cpp:377
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr ""
 
-#: App.cpp:376
+#: App.cpp:378
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr "អនុញ្ញាត​ឲ្យ​រត់​ធាតុ Amarok ជា​ច្រើន"
 
-#: App.cpp:377
+#: App.cpp:379
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr "គោល​សម្រាប់​ឈ្មោះ​ឯកសារ​/​URL ប្រែប្រួល"
 
-#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:110
+#: App.cpp:515 configdialog/dialogs/DatabaseConfig.cpp:110
 #, fuzzy, kde-format
 msgid "Database Error"
 msgstr "កំហុស​មូលដ្ឋាន​ទិន្នន័យ"
 
-#: App.cpp:514
+#: App.cpp:516
 #, fuzzy, kde-format
 #| msgid ""
 #| "The amarok database reported the following errors:\n"
@@ -1922,12 +1922,12 @@ msgstr ""
 "%1\n"
 "ជាទូទៅ​អ្នក​ត្រូវតែ​ដោះស្រាយ​កំហុស​នេះ​ជាមុន​ទើប​ Amarok ដំណើរការ​ត្រឹមត្រូវ ។"
 
-#: App.cpp:581
+#: App.cpp:583
 #, fuzzy, kde-format
 msgid "Moving files to trash"
 msgstr "កំពុង​ផ្លាស់ទី​ឯកសារ​ទៅ​ធុងសំរាម"
 
-#: App.cpp:647
+#: App.cpp:649
 #, fuzzy, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"

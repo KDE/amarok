@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-10 01:44+0000\n"
+"POT-Creation-Date: 2024-04-13 01:44+0000\n"
 "PO-Revision-Date: 2008-09-26 17:12+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -1865,40 +1865,40 @@ msgstr ""
 msgid "Load URLs, replacing current playlist"
 msgstr ""
 
-#: App.cpp:373
+#: App.cpp:373 App.cpp:375
 #, fuzzy, kde-format
 #| msgid "Plugin Information"
 msgid "Print verbose debugging information"
 msgstr "Інфармацыя ўтулкі"
 
-#: App.cpp:374
+#: App.cpp:376
 #, fuzzy, kde-format
 #| msgid "Plugin Information"
 msgid "Print verbose debugging information from the audio system"
 msgstr "Інфармацыя ўтулкі"
 
-#: App.cpp:375
+#: App.cpp:377
 #, kde-format
 msgid "Disable colorization for debug output."
 msgstr ""
 
-#: App.cpp:376
+#: App.cpp:378
 #, kde-format
 msgid "Allow running multiple Amarok instances"
 msgstr ""
 
-#: App.cpp:377
+#: App.cpp:379
 #, kde-format
 msgid "Base for relative filenames/URLs"
 msgstr ""
 
-#: App.cpp:513 configdialog/dialogs/DatabaseConfig.cpp:110
+#: App.cpp:515 configdialog/dialogs/DatabaseConfig.cpp:110
 #, fuzzy, kde-format
 #| msgid "Database:"
 msgid "Database Error"
 msgstr "База данняў:"
 
-#: App.cpp:514
+#: App.cpp:516
 #, kde-format
 msgid ""
 "The Amarok database reported the following errors:\n"
@@ -1907,12 +1907,12 @@ msgid ""
 "properly."
 msgstr ""
 
-#: App.cpp:581
+#: App.cpp:583
 #, kde-format
 msgid "Moving files to trash"
 msgstr ""
 
-#: App.cpp:647
+#: App.cpp:649
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"
