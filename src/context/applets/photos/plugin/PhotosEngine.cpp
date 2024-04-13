@@ -141,6 +141,7 @@ PhotosEngine::update( bool force )
 
         QStringList tags = m_keywords;
         tags << m_artist;
+        tags << "music";
         tags.removeDuplicates();
 
         // Query flickr, order by relevance, 10 max
@@ -153,7 +154,7 @@ PhotosEngine::update( bool force )
         query.addQueryItem( "method", "flickr.photos.search" );
         query.addQueryItem( "api_key", Amarok::flickrApiKey() );
         query.addQueryItem( "per_page", QString::number( m_nbPhotos ) );
-        query.addQueryItem( "sort", "date-posted-desc" );
+        query.addQueryItem( "sort", "relevance" );
         query.addQueryItem( "media", "photos" );
         query.addQueryItem( "content_type", QString::number(1) );
         query.addQueryItem( "text", tags.join(" ") );
