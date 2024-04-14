@@ -93,7 +93,7 @@ AmarokQml.Applet {
             top: parent.top
             bottom: parent.bottom
         }
-        Text {
+        Label {
             id: nothingPLaying
             font.bold: true
             Layout.alignment: Qt.AlignCenter
