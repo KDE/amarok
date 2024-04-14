@@ -311,6 +311,8 @@ if( WITH_PLAYER )
 
     feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
+    ki18n_install( po )
+    kdoctools_install( po )
 endif()
 
 # this needs to be here because also code in shared/ needs config.h. This is also the
@@ -321,12 +323,10 @@ add_subdirectory( shared )
 
 if( WITH_UTILITIES )
     add_subdirectory( utilities )
+    ecm_install_po_files_as_qm( poqm )
 endif()
 
 if( WITH_PLAYGROUND )
     add_subdirectory( playground )
     message(STATUS "Included playground subdirectory in configuration")
 endif()
-
-ki18n_install( po )
-ecm_install_po_files_as_qm(poqm)
