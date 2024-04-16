@@ -31,7 +31,7 @@ class WikipediaEngine : public QObject
     Q_OBJECT
     Q_PROPERTY(QString page READ page NOTIFY pageChanged)
     Q_PROPERTY(QUrl url READ url WRITE setUrl NOTIFY urlChanged)
-    Q_PROPERTY(QString message READ message NOTIFY messageChanged)
+    Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
     Q_PROPERTY(bool busy READ busy NOTIFY busyChanged)
     Q_PROPERTY(SelectionType selection READ selection WRITE setSelection NOTIFY selectionChanged)
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
@@ -54,6 +54,7 @@ public:
     QUrl url() const { return wikiCurrentUrl; }
     void setUrl( const QUrl &url );
     QString message() const { return m_message; }
+    void setMessage( const QString &message );
     bool busy() const { return m_busy; }
     SelectionType selection() const;
     bool setSelection( SelectionType type ); // returns true if selection is changed
@@ -80,7 +81,6 @@ private:
     void wikiParse( QString &page );
     QString createLanguageComboBox( const QMap<QString, QString> &languageMap );
     void setPage( const QString &page );
-    void setMessage( const QString &message );
     void setBusy( bool busy );
     void setTitle( const QString &title );
     void clear();

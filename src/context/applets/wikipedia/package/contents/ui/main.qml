@@ -20,6 +20,7 @@ import QtQuick.Layouts 1.3
 import QtWebEngine 1.10
 import org.kde.amarok.qml 1.0 as AmarokQml
 import org.kde.amarok.wikipedia 1.0
+import org.kde.kirigami 2.14 as Kirigami
 
 AmarokQml.Applet {
     id: applet
@@ -40,7 +41,7 @@ AmarokQml.Applet {
                 ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
                 hoverEnabled: true
 
-                onClicked: content.goBack()
+                onClicked: {WikipediaEngine.message = ""; content.goBack() }
             }
             Button {
                 icon.name: "go-next"
@@ -51,7 +52,7 @@ AmarokQml.Applet {
                 ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
                 hoverEnabled: true
 
-                onClicked: content.goForward()
+                onClicked: {WikipediaEngine.message = ""; content.goForward() }
             }
             Button {
                 icon.name: "view-refresh"
@@ -62,7 +63,7 @@ AmarokQml.Applet {
                 ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
                 hoverEnabled: true
 
-                onClicked: WikipediaEngine.reloadWikipedia()
+                onClicked: {WikipediaEngine.message = ""; WikipediaEngine.reloadWikipedia() }
             }
             Slider {
                 from: 0
@@ -113,8 +114,18 @@ AmarokQml.Applet {
             }
         }
 
+        Kirigami.InlineMessage {
+            visible: WikipediaEngine.message.length > 0
+            text: WikipediaEngine.message
+            type: Kirigami.MessageType.Warning
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            anchors.margins: Kirigami.Units.smallSpacing
+            Layout.fillWidth: true
+        }
+
         WebEngineView {
             id: content
+            visible: WikipediaEngine.message.length === 0
 
             Menu {
                 id: wikipediaContextMenu

@@ -771,6 +771,7 @@ EngineController::isStream()
         // type is determined purely from the MediaSource constructor used in
         // setCurrentSource(). For streams we use the QUrl one, see playUrl()
         type = m_media->currentSource().type();
+    // NOTE Broken; local files can be Urls, too. This is used only by WikipediaEngine at the moment
     return type == Phonon::MediaSource::Url || type == Phonon::MediaSource::Stream;
 }
 

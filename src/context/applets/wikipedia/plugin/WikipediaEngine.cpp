@@ -455,6 +455,7 @@ WikipediaEngine::fetchWikiUrl( const QString &title, const QString &urlPrefix )
     pageUrl.setQuery( query );
     wikiCurrentUrl = pageUrl;
     urls << pageUrl;
+    setMessage( QString() );
     Q_EMIT urlChanged();
     The::networkAccessManager()->getData( pageUrl, this, &WikipediaEngine::_wikiResult );
 }
@@ -557,6 +558,8 @@ WikipediaEngine::updateEngine()
                 ( currentTrack->playableUrl().scheme() == QLatin1String("daap") ) ||
                 !The::engineController()->isStream() )
                 tmpWikiStr = currentTrack->composer()->name();
+            else
+                tmpWikiStr = currentTrack->composer()->prettyName();
         }
         break;
     case Album:
@@ -572,7 +575,8 @@ WikipediaEngine::updateEngine()
                 ( currentTrack->playableUrl().scheme() == QLatin1String("daap") ) ||
                 !The::engineController()->isStream() )
                 tmpWikiStr = currentTrack->album()->name();
-
+            else
+                tmpWikiStr = currentTrack->album()->prettyName();
         }
         break;
 
@@ -876,6 +880,7 @@ WikipediaEngine::setUrl(const QUrl& url)
 
     wikiCurrentUrl = monobookUrl;
     urls << monobookUrl;
+    setMessage( QString() );
     Q_EMIT urlChanged();
 
     The::networkAccessManager()->getData( monobookUrl, this, &WikipediaEngine::_wikiResult );
