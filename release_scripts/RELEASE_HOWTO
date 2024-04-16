@@ -22,6 +22,7 @@ SECTION 1: Preparation
  * Run the "fixuifiles" script from kde-dev-scripts from the repository root
  * Run the "bump_plugin_version.rb" script from the repository root
  * Set AMAROK_VERSION to the release version at shared/Version.h
+ * Add new version to <releases> in src/org.kde.amarok.appdata.xml
  * Commit the source to git
 --------------------------------------------------------------------------------
 
@@ -53,7 +54,7 @@ SECTION 3: Once Happy with the Tarball
    includes a request to create a Bugzilla target for the new version.
    More instructions at ftp://upload.kde.org/README
  * Notify packagers:
-To: kde-distro-packagers@kde.org, Hannah von Reth (TheOneRing, Windows) <vonreth@kde.org>
+To: kde-announce-apps@kde.org, Hannah von Reth (TheOneRing, Windows) <vonreth@kde.org>
 "
 Dear packagers
 
