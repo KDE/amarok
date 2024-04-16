@@ -97,13 +97,23 @@ int main( int argc, char *argv[] )
                           AMAROK_VERSION,
                           i18n( "The audio player by KDE" ),
                           KAboutLicense::GPL,
-                          i18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2013, The Amarok Development Squad" ),
+                          i18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2024, The Amarok Development Squad" ),
                           ki18n( "IRC:\nirc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ).toString(),
                           ( "http://amarok.kde.org" ) );
 
     //------------ About data ----------------------
     //Currently active Authors
     extern OcsData ocsData;
+
+    //Inactive authors
+    /* This list should contain people who still hold major copyright on the current code
+     * For instance: does not include authors of 1.4 who have not contributed to 2.x */
+    aboutData.addAuthor( i18n("<i>Inactive authors</i>"),
+                         i18n("Amarok authorship is not a hobby, it's a lifestyle. "
+                               "But when people move on we want to keep respecting "
+                               "them by mentioning them here:"), "" );
+    // NOTE 2024: Moved Inactive author header up here to reflect the fact that this list hasn't been updated lately
+
     aboutData.addAuthor( i18n("Bart 'Where are my toothpicks' Cerneels"),
                          i18n("Developer (Stecchino)"), "bart.cerneels@kde.org", "http://commonideas.blogspot.com" );
     ocsData.addAuthor( "Stecchino", aboutData.authors().last() );
@@ -150,13 +160,6 @@ int main( int argc, char *argv[] )
                          i18n("Rokymoter, Handbook (valorie)"), "valorie@kde.org" );
     ocsData.addAuthor( "valorie", aboutData.authors().last() );
 
-    //Inactive authors
-    /* This list should contain people who still hold major copyright on the current code
-     * For instance: does not include authors of 1.4 who have not contributed to 2.x */
-    aboutData.addAuthor( i18n("<i>Inactive authors</i>"),
-                         i18n("Amarok authorship is not a hobby, it's a lifestyle. "
-                               "But when people move on we want to keep respecting "
-                               "them by mentioning them here:"), "" );
     ocsData.addAuthor( "%%category%%", aboutData.authors().last() );
 
     aboutData.addAuthor( i18n("Ian 'The Beard' Monroe"), i18n("Developer (eean)"), "ian@monroe.nu" );
