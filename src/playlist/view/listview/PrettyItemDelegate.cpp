@@ -657,11 +657,14 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
     long trackPos = The::engineController()->trackPositionMs();
     qreal trackPercentage = 0.0;
 
+    QStyleOptionSlider opt;
     if ( trackLength > 0 )
+    {
+        opt.state = QStyle::State_Enabled;
         trackPercentage = ( (qreal) trackPos / (qreal) trackLength );
+    }
 
     int sliderWidth = width - ( offset + frameHMargin );
-    QStyleOptionSlider opt;
     opt.rect.setRect( offset, y, sliderWidth, height );
     The::svgHandler()->paintCustomSlider( painter, &opt, trackPercentage, false );
 }

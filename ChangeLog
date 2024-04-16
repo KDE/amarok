@@ -11,6 +11,7 @@ VERSION 2.9.90
   BUGFIXES:
    * Fix loading of some Flickr photos in the photos context view applet and show
      more relevant photos. (BR 317108)
+   * Fix playlist inline play control slider & draw icons with higher DPI.
 
 VERSION 2.9.82
   FEATURES:
