@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-13 01:44+0000\n"
+"POT-Creation-Date: 2024-04-16 01:48+0000\n"
 "PO-Revision-Date: 2009-12-21 00:36+0100\n"
 "Last-Translator: Mark Kwidzińśczi <mark@linuxcsb.org>\n"
 "Language-Team: Kaszëbsczi <i18n-csb@linuxcsb.org>\n"
@@ -10912,12 +10912,12 @@ msgstr "Miono lëstë òdegraniô"
 msgid "Now playing"
 msgstr "Nick nie je gróné"
 
-#: lyrics/LyricsManager.cpp:74
+#: lyrics/LyricsManager.cpp:75
 #, kde-format
 msgid "Retrieved lyrics is empty"
 msgstr ""
 
-#: lyrics/LyricsManager.cpp:110
+#: lyrics/LyricsManager.cpp:111
 #, kde-format
 msgid "Lyrics data could not be parsed"
 msgstr "Pòdôwczi tekstu ni mòga òstac òdczëtóné"

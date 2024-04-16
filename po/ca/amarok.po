@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-13 01:44+0000\n"
+"POT-Creation-Date: 2024-04-16 01:48+0000\n"
 "PO-Revision-Date: 2024-03-14 21:34+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -10650,12 +10650,12 @@ msgstr "Nom de la destinació"
 msgid "Now playing"
 msgstr "Ara s'està reproduint"
 
-#: lyrics/LyricsManager.cpp:74
+#: lyrics/LyricsManager.cpp:75
 #, kde-format
 msgid "Retrieved lyrics is empty"
 msgstr "La lletra recuperada està buida"
 
-#: lyrics/LyricsManager.cpp:110
+#: lyrics/LyricsManager.cpp:111
 #, kde-format
 msgid "Lyrics data could not be parsed"
 msgstr "No s'ha pogut analitzar la informació de la lletra"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-13 01:44+0000\n"
+"POT-Creation-Date: 2024-04-16 01:48+0000\n"
 "PO-Revision-Date: 2024-04-14 19:07\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -10180,12 +10180,12 @@ msgstr "目标名称"
 msgid "Now playing"
 msgstr "正在播放"
 
-#: lyrics/LyricsManager.cpp:74
+#: lyrics/LyricsManager.cpp:75
 #, kde-format
 msgid "Retrieved lyrics is empty"
 msgstr "获取的歌词为空"
 
-#: lyrics/LyricsManager.cpp:110
+#: lyrics/LyricsManager.cpp:111
 #, kde-format
 msgid "Lyrics data could not be parsed"
 msgstr "无法解析歌词数据"

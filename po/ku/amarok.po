@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-13 01:44+0000\n"
+"POT-Creation-Date: 2024-04-16 01:48+0000\n"
 "PO-Revision-Date: 2009-02-21 06:51+0200\n"
 "Last-Translator: Omer Ensari <oensari@gmail.com>\n"
 "Language-Team: Kurdish <kde-i18n-doc@lists.kde.org>\n"
@@ -10817,13 +10817,13 @@ msgstr "Navê Lîsteya Lêdanê:"
 msgid "Now playing"
 msgstr "Tu Stran Nayê Lêdan"
 
-#: lyrics/LyricsManager.cpp:74
+#: lyrics/LyricsManager.cpp:75
 #, fuzzy, kde-format
 #| msgid "Retrieve similar artists"
 msgid "Retrieved lyrics is empty"
 msgstr "Hunermendên wekî vê bîne"
 
-#: lyrics/LyricsManager.cpp:110
+#: lyrics/LyricsManager.cpp:111
 #, kde-format
 msgid "Lyrics data could not be parsed"
 msgstr "Daneya gotinê stranê nayê hev qetandin"

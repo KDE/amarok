@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok trunk\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-13 01:44+0000\n"
+"POT-Creation-Date: 2024-04-16 01:48+0000\n"
 "PO-Revision-Date: 2009-01-22 14:21+0530\n"
 "Last-Translator: Abhishek Jacob <abhishekjacob123@gmail.com>\n"
 "Language-Team: SMC <smc.org.in>\n"
@@ -10517,12 +10517,12 @@ msgstr "à´ªàµà´°à´¿à´²àµà´²à´¾à´¤àµà´¤à´¤
 msgid "Now playing"
 msgstr "à´àµà´°à´®àµà´à´°à´£à´àµà´à´³àµâ"
 
-#: lyrics/LyricsManager.cpp:74
+#: lyrics/LyricsManager.cpp:75
 #, kde-format
 msgid "Retrieved lyrics is empty"
 msgstr ""
 
-#: lyrics/LyricsManager.cpp:110
+#: lyrics/LyricsManager.cpp:111
 #, fuzzy, kde-format
 #| msgid "This object could not be created."
 msgid "Lyrics data could not be parsed"

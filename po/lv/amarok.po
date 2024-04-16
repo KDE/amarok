@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-13 01:44+0000\n"
+"POT-Creation-Date: 2024-04-16 01:48+0000\n"
 "PO-Revision-Date: 2013-08-12 13:09+0300\n"
 "Last-Translator: Maris Nartiss <maris.kde@gmail.com>\n"
 "Language-Team: Latvian\n"
@@ -10751,12 +10751,12 @@ msgstr "izpildītāja vārds"
 msgid "Now playing"
 msgstr "Šobrīd atskaņo"
 
-#: lyrics/LyricsManager.cpp:74
+#: lyrics/LyricsManager.cpp:75
 #, kde-format
 msgid "Retrieved lyrics is empty"
 msgstr "Ielādētie teksti ir tukši"
 
-#: lyrics/LyricsManager.cpp:110
+#: lyrics/LyricsManager.cpp:111
 #, kde-format
 msgid "Lyrics data could not be parsed"
 msgstr "Neizdevās analizēt dziesmu vārdu datus"

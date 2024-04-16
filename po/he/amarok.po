@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-13 01:44+0000\n"
+"POT-Creation-Date: 2024-04-16 01:48+0000\n"
 "PO-Revision-Date: 2012-11-20 23:54+0200\n"
 "Last-Translator: Diego Iastrubni <elcuco@kde.org>\n"
 "Language-Team: Hebrew <kde-i18n-doc@kde.org>\n"
@@ -10891,13 +10891,13 @@ msgstr "שם רשימת־ההשמעה:"
 msgid "Now playing"
 msgstr "מושמע כעת"
 
-#: lyrics/LyricsManager.cpp:74
+#: lyrics/LyricsManager.cpp:75
 #, fuzzy, kde-format
 #| msgid "Retrieve similar artists"
 msgid "Retrieved lyrics is empty"
 msgstr "אחזר אמנים דומים"
 
-#: lyrics/LyricsManager.cpp:110
+#: lyrics/LyricsManager.cpp:111
 #, kde-format
 msgid "Lyrics data could not be parsed"
 msgstr ""

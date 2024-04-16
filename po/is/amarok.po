@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-13 01:44+0000\n"
+"POT-Creation-Date: 2024-04-16 01:48+0000\n"
 "PO-Revision-Date: 2020-04-04 13:51+0000\n"
 "Last-Translator: Sveinn í Felli <sv@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
@@ -10711,13 +10711,13 @@ msgstr "Heiti lagalista:"
 msgid "Now playing"
 msgstr "Ekkert lag í spilun"
 
-#: lyrics/LyricsManager.cpp:74
+#: lyrics/LyricsManager.cpp:75
 #, fuzzy, kde-format
 #| msgid "Retrieve similar artists"
 msgid "Retrieved lyrics is empty"
 msgstr "Ná í svipaða flytjendur"
 
-#: lyrics/LyricsManager.cpp:110
+#: lyrics/LyricsManager.cpp:111
 #, fuzzy, kde-format
 #| msgid "This object could not be created."
 msgid "Lyrics data could not be parsed"

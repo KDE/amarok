@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-13 01:44+0000\n"
+"POT-Creation-Date: 2024-04-16 01:48+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -10874,13 +10874,13 @@ msgstr "प्लेसूची नाम:"
 msgid "Now playing"
 msgstr "कुनै ट्रयाक प्ले भएको छैन"
 
-#: lyrics/LyricsManager.cpp:74
+#: lyrics/LyricsManager.cpp:75
 #, fuzzy, kde-format
 #| msgid "Retrieve similar artists"
 msgid "Retrieved lyrics is empty"
 msgstr "एकैखालको कलाकार पुन: प्रयास गर्नुहोस्"
 
-#: lyrics/LyricsManager.cpp:110
+#: lyrics/LyricsManager.cpp:111
 #, fuzzy, kde-format
 #| msgid "Rio Karma could not be opened"
 msgid "Lyrics data could not be parsed"
