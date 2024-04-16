@@ -616,39 +616,39 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
     //just paint some "buttons for now
 
     int offset = x + frameHMargin;
-    painter->drawPixmap( offset, y + 2,
+    painter->drawPixmap( offset, y + 2, buttonSize, buttonSize,
                          The::svgHandler()->renderSvg( QStringLiteral("back_button"),
-                                                       buttonSize, buttonSize,
+                                                       buttonSize * 2, buttonSize * 2,
                                                        QStringLiteral("back_button") ) );
 
     if( The::engineController()->isPlaying() )
     {
         offset += ( buttonSize + iconSpacing );
-        painter->drawPixmap( offset, y + 2,
+        painter->drawPixmap( offset, y + 2, buttonSize, buttonSize,
                              The::svgHandler()->renderSvg( QStringLiteral("pause_button"),
-                                                           buttonSize, buttonSize,
+                                                       buttonSize * 2, buttonSize * 2,
                                                            QStringLiteral("pause_button") ) );
 
     }
     else
     {
         offset += ( buttonSize + iconSpacing );
-        painter->drawPixmap( offset, y + 2,
+        painter->drawPixmap( offset, y + 2, buttonSize, buttonSize,
                              The::svgHandler()->renderSvg( QStringLiteral("play_button"),
-                                                           buttonSize, buttonSize,
+                                                       buttonSize * 2, buttonSize * 2,
                                                            QStringLiteral("play_button") ) );
     }
 
     offset += ( buttonSize + iconSpacing );
-    painter->drawPixmap( offset, y + 2,
+    painter->drawPixmap( offset, y + 2, buttonSize, buttonSize,
                          The::svgHandler()->renderSvg( QStringLiteral("stop_button"),
-                                                       buttonSize, buttonSize,
+                                                       buttonSize * 2, buttonSize * 2,
                                                        QStringLiteral("stop_button") ) );
 
     offset += ( buttonSize + iconSpacing );
-    painter->drawPixmap( offset, y + 2,
+    painter->drawPixmap( offset, y + 2, buttonSize, buttonSize,
                          The::svgHandler()->renderSvg( QStringLiteral("next_button"),
-                                                       buttonSize, buttonSize,
+                                                       buttonSize * 2, buttonSize * 2,
                                                        QStringLiteral("next_button") ) );
 
     offset += ( buttonSize + iconSpacing );
