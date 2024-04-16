@@ -56,6 +56,8 @@ WikipediaEngine::WikipediaEngine( QObject* parent )
              this, &WikipediaEngine::_stopped );
     connect( The::paletteHandler(), &PaletteHandler::newPalette,
              this, &WikipediaEngine::_paletteChanged );
+    connect( The::networkAccessManager(), &NetworkAccessManagerProxy::requestRedirectedUrl,
+             [=](auto url, auto redirurl) { if( urls.contains( url ) ) { urls << redirurl; } } );
 }
 
 WikipediaEngine::~WikipediaEngine()
