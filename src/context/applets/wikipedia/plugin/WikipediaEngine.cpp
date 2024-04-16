@@ -858,13 +858,25 @@ WikipediaEngine::setLanguage(const QString& language)
 void
 WikipediaEngine::setUrl(const QUrl& url)
 {
-    if( wikiCurrentUrl == url )
+    if( !url.host().endsWith( ".wikipedia.org" ) )
+        return;
+    QUrl monobookUrl = url;
+    monobookUrl.setPath( QLatin1String("/w/index.php") );
+
+    QUrlQuery query;
+    query.addQueryItem( QLatin1String("title"), url.path().mid( url.path().lastIndexOf("/") + 1 ) );
+    query.addQueryItem( QLatin1String("redirects"), QString::number(1) );
+    query.addQueryItem( QLatin1String("useskin"), QLatin1String("monobook") );
+    monobookUrl.setQuery( query );
+
+    if( wikiCurrentUrl == monobookUrl )
         return;
 
-    wikiCurrentUrl = url;
-    urls << url;
+    wikiCurrentUrl = monobookUrl;
+    urls << monobookUrl;
     Q_EMIT urlChanged();
 
-    The::networkAccessManager()->getData( url, this, &WikipediaEngine::_wikiResult );
+    The::networkAccessManager()->getData( monobookUrl, this, &WikipediaEngine::_wikiResult );
+    setBusy( true );
 }
 
