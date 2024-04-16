@@ -5,7 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.9.90
   FEATURES:
-
+   * Added a visual hint that context view applets can be resized in edit mode.
   CHANGES:
    * Replace defunct lyricwiki with lyrics.ovh as lyrics provider for now. (BR 455937)
   BUGFIXES:

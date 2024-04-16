@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-import QtQuick 2.4
+import QtQuick 2.15
 import QtQuick.Dialogs 1.2
-import org.kde.kirigami 2.0 as Kirigami
+import org.kde.kirigami 2.14 as Kirigami
 
 
 Rectangle {
@@ -87,6 +87,12 @@ Rectangle {
             right: parent.right
         }
         height: root.padding
+        Rectangle {
+            visible: parent.enabled
+            anchors.fill: parent
+            color: Kirigami.Theme.highlightColor
+            radius: Kirigami.Units.smallSpacing
+        }
         enabled: root.configEnabled
         cursorShape: enabled ? Qt.SizeVerCursor : Qt.ArrowCursor
         acceptedButtons: Qt.LeftButton
