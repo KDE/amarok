@@ -32,6 +32,7 @@ class BoxWidget;
 class QLabel;
 class QWidget;
 class PlaylistQueueEditor;
+class NavigatorConfigAction;
 
 namespace Playlists {
     class PlaylistProvider;
@@ -84,6 +85,7 @@ private:
     ProgressiveSearchWidget *m_searchWidget;
     SortWidget *m_sortWidget;
     QLabel *m_dynamicHintWidget;
+    NavigatorConfigAction *m_navigatorConfig;
 
     BoxWidget *m_mainWidget;
     BoxWidget *m_barBox;

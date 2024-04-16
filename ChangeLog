@@ -10,6 +10,7 @@ VERSION 2.9.90
    * Replace defunct lyricwiki with lyrics.ovh as lyrics provider for now. (BR 455937)
    * Show only relevant items in wikipedia applet right click menu (BR 323941), use
      monobook skin for opened links and silently ignore non-wikipedia links.
+   * Don't show non-functional play mode controls in dynamic mode (BR 287055)
   BUGFIXES:
    * Fix loading of some Flickr photos in the photos context view applet and show
      more relevant photos. (BR 317108)

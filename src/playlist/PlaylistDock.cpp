@@ -115,7 +115,6 @@ Playlist::Dock::polish()
     dynamicHintWidgetFont.setPointSize( dynamicHintWidgetFont.pointSize() + 1 );
     m_dynamicHintWidget->setFont( dynamicHintWidgetFont );
 
-    showDynamicHint();
 
     paletteChanged( pApp->palette() );
     connect( The::paletteHandler(), &PaletteHandler::newPalette,
@@ -204,11 +203,11 @@ Playlist::Dock::polish()
 
         plBar->addCollapsibleActions( playlistActions );
 
-        NavigatorConfigAction *navigatorConfig = new NavigatorConfigAction( m_mainWidget );
-        plBar->addAction( navigatorConfig );
+        m_navigatorConfig = new NavigatorConfigAction( m_mainWidget );
+        plBar->addAction( m_navigatorConfig );
 
         QToolButton *toolButton =
-                qobject_cast<QToolButton *>(plBar->widgetForAction( navigatorConfig ) );
+                qobject_cast<QToolButton *>(plBar->widgetForAction( m_navigatorConfig ) );
         if( toolButton )
             toolButton->setPopupMode( QToolButton::InstantPopup );
 
@@ -217,6 +216,7 @@ Playlist::Dock::polish()
         // label widget
         new PlaylistInfoWidget( m_barBox );
     } // END Playlist Toolbar
+    showDynamicHint();
 
     //set correct colors
     paletteChanged( QApplication::palette() );
@@ -343,9 +343,15 @@ Playlist::Dock::showDynamicHint() // slot
     DEBUG_BLOCK
 
     if( AmarokConfig::dynamicMode() )
+    {
         m_dynamicHintWidget->show();
+        m_navigatorConfig->setVisible( false );
+    }
     else
+    {
         m_dynamicHintWidget->hide();
+        m_navigatorConfig->setVisible( true );
+    }
 }
 
 void
