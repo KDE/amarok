@@ -14,10 +14,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-import QtQuick 2.4
-import QtQuick.Controls 1.4
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.3
-import QtWebEngine 1.3
+import QtWebEngine 1.10
 import org.kde.amarok.qml 1.0 as AmarokQml
 import org.kde.amarok.wikipedia 1.0
 
@@ -32,26 +32,35 @@ AmarokQml.Applet {
             Layout.alignment: Qt.AlignTop
 
             Button {
-                iconName: "go-previous"
+                icon.name: "go-previous"
                 enabled: content.canGoBack
                 Layout.alignment: Qt.AlignLeft
-                tooltip: i18n("Previous")
+                ToolTip.text: i18n("Previous")
+                ToolTip.visible: hovered
+                ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+                hoverEnabled: true
 
                 onClicked: content.goBack()
             }
             Button {
-                iconName: "go-next"
+                icon.name: "go-next"
                 enabled: content.canGoForward
                 Layout.alignment: Qt.AlignLeft
-                tooltip: i18n("Next")
+                ToolTip.text: i18n("Next")
+                ToolTip.visible: hovered
+                ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+                hoverEnabled: true
 
                 onClicked: content.goForward()
             }
             Button {
-                iconName: "view-refresh"
+                icon.name: "view-refresh"
                 enabled: !content.loading
                 Layout.alignment: Qt.AlignLeft
-                tooltip: i18n("Refresh")
+                ToolTip.text: i18n("Refresh")
+                ToolTip.visible: hovered
+                ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+                hoverEnabled: true
 
                 onClicked: WikipediaEngine.reloadWikipedia()
             }
@@ -59,30 +68,42 @@ AmarokQml.Applet {
                 Layout.fillWidth: true
             }
             Button {
-                iconName: "filename-artist-amarok"
+                icon.name: "filename-artist-amarok"
                 Layout.alignment: Qt.AlignRight
-                tooltip: i18n("Artist")
+                ToolTip.text: i18n("Artist")
+                ToolTip.visible: hovered
+                ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+                hoverEnabled: true
 
                 onClicked: WikipediaEngine.selection = WikipediaEngine.Artist
             }
             Button {
-                iconName: "filename-composer-amarok"
+                icon.name: "filename-composer-amarok"
                 Layout.alignment: Qt.AlignRight
-                tooltip: i18n("Composer")
+                ToolTip.text: i18n("Composer")
+                ToolTip.visible: hovered
+                ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+                hoverEnabled: true
 
                 onClicked: WikipediaEngine.selection = WikipediaEngine.Composer
             }
             Button {
-                iconName: "filename-album-amarok"
+                icon.name: "filename-album-amarok"
                 Layout.alignment: Qt.AlignRight
-                tooltip: i18n("Album")
+                ToolTip.text: i18n("Album")
+                ToolTip.visible: hovered
+                ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+                hoverEnabled: true
 
                 onClicked: WikipediaEngine.selection = WikipediaEngine.Album
             }
             Button {
-                iconName: "filename-title-amarok"
+                icon.name: "filename-title-amarok"
                 Layout.alignment: Qt.AlignRight
-                tooltip: i18n("Track")
+                ToolTip.text: i18n("Track")
+                ToolTip.visible: hovered
+                ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+                hoverEnabled: true
 
                 onClicked: WikipediaEngine.selection = WikipediaEngine.Track
             }
@@ -90,6 +111,36 @@ AmarokQml.Applet {
 
         WebEngineView {
             id: content
+
+            Menu {
+                id: wikipediaContextMenu
+                MenuItem {
+                    text: i18n("Previous")
+                    icon.name: "go-previous"
+                    enabled: content.canGoBack
+                    onTriggered: content.triggerWebAction(WebEngineView.Backward)
+                }
+                MenuItem {
+                    text: i18n("Next")
+                    icon.name: "go-next"
+                    enabled: content.canGoForward
+                    onTriggered: content.triggerWebAction(WebEngineView.Forward)
+                }
+                MenuItem {
+                    text: i18n("Refresh")
+                    icon.name: "view-refresh"
+                    enabled: !content.loading
+                    onTriggered: content.triggerWebAction(WebEngineView.Reload)
+                }
+                MenuItem {
+                    id: copyLink
+                    text: i18n("Copy to Clipboard") // TODO: make "Copy Link to Clipboard" when not string freeze
+                    icon.name: "edit-copy"
+                    visible: false
+                    onTriggered: content.triggerWebAction(WebEngineView.CopyLinkToClipboard)
+                }
+                // TODO: Possibly add Copy Image to Clipboard post-3.0
+            }
 
             backgroundColor: "transparent"
 
@@ -113,6 +164,12 @@ AmarokQml.Applet {
             BusyIndicator {
                 anchors.centerIn: parent
                 running: WikipediaEngine.busy
+            }
+
+            onContextMenuRequested: function(request) {
+                request.accepted = true;
+                copyLink.visible = request.linkUrl.toString().length > 0
+                wikipediaContextMenu.popup();
             }
         }
     }
