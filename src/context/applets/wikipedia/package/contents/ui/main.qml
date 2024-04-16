@@ -64,8 +64,12 @@ AmarokQml.Applet {
 
                 onClicked: WikipediaEngine.reloadWikipedia()
             }
-            Item {
+            Slider {
+                from: 0
+                value: content.scrollPosition.y
+                to: content.contentsSize.height - content.height
                 Layout.fillWidth: true
+                onMoved: content.runJavaScript( "window.scrollTo(0, " + value + ");")
             }
             Button {
                 icon.name: "filename-artist-amarok"
@@ -143,6 +147,7 @@ AmarokQml.Applet {
             }
 
             backgroundColor: "transparent"
+            settings.showScrollBars: false
 
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -163,6 +168,7 @@ AmarokQml.Applet {
 
             BusyIndicator {
                 anchors.centerIn: parent
+                z: 1
                 running: WikipediaEngine.busy
             }
 
