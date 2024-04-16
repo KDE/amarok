@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component type="desktop">
   <id>org.kde.amarok.desktop</id>
+  <launchable type="desktop-id">org.kde.amarok.desktop</launchable>
   <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0+</project_license>
+  <developer_name>The Amarok Development Squad</developer_name>
   <name>Amarok</name>
   <name xml:lang="ar">أماروك</name>
   <name xml:lang="bg">Amarok</name>
