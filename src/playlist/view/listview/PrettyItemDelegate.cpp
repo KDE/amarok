@@ -415,7 +415,8 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
         {
             const int x = markerOffsetX;
             const int y = nominalImageRect.y() + ( coverHeight - smallIconSize );
-            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( QStringLiteral("multi_marker"), smallIconSize, smallIconSize, QStringLiteral("multi_marker") ) );
+            painter->drawPixmap( x, y, smallIconSize, smallIconSize, The::svgHandler()->renderSvg(
+                QStringLiteral("multi_marker"),smallIconSize * 2, smallIconSize * 2, QStringLiteral("multi_marker") ) );
 
             markerOffsetX += ( smallIconSize + iconSpacing );
 
@@ -427,7 +428,8 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
         {
             const int x = markerOffsetX;
             const int y = nominalImageRect.y() + ( coverHeight - smallIconSize );
-            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( QStringLiteral("stop_button"), smallIconSize, smallIconSize, QStringLiteral("stop_button") ) );
+            painter->drawPixmap( x, y, smallIconSize, smallIconSize, The::svgHandler()->renderSvg(
+                QStringLiteral("stop_button"), smallIconSize * 2, smallIconSize * 2, QStringLiteral("stop_button") ) );
 
             markerOffsetX += ( smallIconSize + iconSpacing );
 
@@ -626,7 +628,7 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
         offset += ( buttonSize + iconSpacing );
         painter->drawPixmap( offset, y + 2, buttonSize, buttonSize,
                              The::svgHandler()->renderSvg( QStringLiteral("pause_button"),
-                                                       buttonSize * 2, buttonSize * 2,
+                                                           buttonSize * 2, buttonSize * 2,
                                                            QStringLiteral("pause_button") ) );
 
     }
@@ -635,7 +637,7 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
         offset += ( buttonSize + iconSpacing );
         painter->drawPixmap( offset, y + 2, buttonSize, buttonSize,
                              The::svgHandler()->renderSvg( QStringLiteral("play_button"),
-                                                       buttonSize * 2, buttonSize * 2,
+                                                           buttonSize * 2, buttonSize * 2,
                                                            QStringLiteral("play_button") ) );
     }
 
