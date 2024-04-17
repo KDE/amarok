@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-16 01:48+0000\n"
+"POT-Creation-Date: 2024-04-17 01:45+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -5337,14 +5337,14 @@ msgstr "अमारोक संस्करण"
 msgid "Original author"
 msgstr ""
 
-#: context/tools/amarokpkg.cpp:93 main.cpp:168
+#: context/tools/amarokpkg.cpp:93 main.cpp:171
 #, kde-format
 msgid "Leo Franchi"
 msgstr "लिओ फ्रेन्चि"
 
-#: context/tools/amarokpkg.cpp:94 main.cpp:252 main.cpp:254 main.cpp:268
-#: main.cpp:278 main.cpp:284 main.cpp:286 main.cpp:298 main.cpp:304
-#: main.cpp:306 main.cpp:310 main.cpp:318
+#: context/tools/amarokpkg.cpp:94 main.cpp:255 main.cpp:257 main.cpp:271
+#: main.cpp:281 main.cpp:287 main.cpp:289 main.cpp:301 main.cpp:307
+#: main.cpp:309 main.cpp:313 main.cpp:321
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer"
@@ -10904,7 +10904,7 @@ msgstr "केडीईका लागि अडियो प्लेयर"
 #| "(C) 2003-2007, The Amarok Development Squad"
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2013, The Amarok Development Squad"
+"(C) 2003-2024, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2007, अमारोक विकास स्क्वाड"
@@ -10935,869 +10935,869 @@ msgstr ""
 "amarok@kde.org \n"
 "(निर्माण मिती: "
 
-#: main.cpp:107
-#, kde-format
-msgid "Bart 'Where are my toothpicks' Cerneels"
-msgstr ""
-
-#: main.cpp:108
-#, fuzzy, kde-format
-#| msgid "Device type"
-msgid "Developer (Stecchino)"
-msgstr "यन्त्र प्रकार"
-
 #: main.cpp:111
-#, kde-format
-msgid "Edward \"Hades\" Toroshchin"
-msgstr ""
-
-#: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "Device type"
-msgid "Developer (dr_lepper)"
-msgstr "यन्त्र प्रकार"
-
-#: main.cpp:115
-#, kde-format
-msgid "Mark Kretschmann"
-msgstr ""
-
-#: main.cpp:116
-#, kde-format
-msgid "Project founder (markey)"
-msgstr ""
-
-#: main.cpp:119
-#, kde-format
-msgid "Matěj Laitl"
-msgstr ""
-
-#: main.cpp:120
-#, kde-format
-msgid "iPod collection rewrite & more (strohel)"
-msgstr ""
-
-#: main.cpp:123
-#, kde-format
-msgid "Myriam Schweingruber"
-msgstr ""
-
-#: main.cpp:123
-#, kde-format
-msgid "Rokymoter, Bug triaging (Mamarok)"
-msgstr ""
-
-#: main.cpp:126
-#, kde-format
-msgid "Ralf 'SalsaMaster' Engels"
-msgstr ""
-
-#: main.cpp:127
-#, fuzzy, kde-format
-#| msgid "Device type"
-msgid "Developer (rengels)"
-msgstr "यन्त्र प्रकार"
-
-#: main.cpp:130
-#, kde-format
-msgid "Patrick von Reth"
-msgstr ""
-
-#: main.cpp:130
-#, kde-format
-msgid "Windows build (TheOneRing)"
-msgstr ""
-
-#: main.cpp:134
-#, kde-format
-msgid "Rick W. Chen"
-msgstr ""
-
-#: main.cpp:135
-#, fuzzy, kde-format
-#| msgid "Device type"
-msgid "Developer (stuffcorpse)"
-msgstr "यन्त्र प्रकार"
-
-#: main.cpp:138
-#, fuzzy, kde-format
-#| msgid "Sample Rate"
-msgid "Sam Lade"
-msgstr "नमूना दर"
-
-#: main.cpp:138
-#, fuzzy, kde-format
-#| msgid "Device type"
-msgid "Developer (Sentynel)"
-msgstr "यन्त्र प्रकार"
-
-#: main.cpp:142
-#, kde-format
-msgid "Sven Krohlas"
-msgstr "स्वेन क्रोह्‌लास"
-
-#: main.cpp:142
-#, fuzzy, kde-format
-#| msgid "Device type"
-msgid "Rokymoter, Developer (sven423)"
-msgstr "यन्त्र प्रकार"
-
-#: main.cpp:145
-#, kde-format
-msgid "Téo Mrnjavac"
-msgstr ""
-
-#: main.cpp:146
-#, fuzzy, kde-format
-#| msgid "Device type"
-msgid "Developer (Teo`)"
-msgstr "यन्त्र प्रकार"
-
-#: main.cpp:149
-#, kde-format
-msgid "Valorie Zimmerman"
-msgstr ""
-
-#: main.cpp:150
-#, kde-format
-msgid "Rokymoter, Handbook (valorie)"
-msgstr ""
-
-#: main.cpp:156
 #, kde-format
 msgid "<i>Inactive authors</i>"
 msgstr ""
 
-#: main.cpp:157
+#: main.cpp:112
 #, kde-format
 msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
 "we want to keep respecting them by mentioning them here:"
 msgstr ""
 
-#: main.cpp:162
+#: main.cpp:117
+#, kde-format
+msgid "Bart 'Where are my toothpicks' Cerneels"
+msgstr ""
+
+#: main.cpp:118
+#, fuzzy, kde-format
+#| msgid "Device type"
+msgid "Developer (Stecchino)"
+msgstr "यन्त्र प्रकार"
+
+#: main.cpp:121
+#, kde-format
+msgid "Edward \"Hades\" Toroshchin"
+msgstr ""
+
+#: main.cpp:122
+#, fuzzy, kde-format
+#| msgid "Device type"
+msgid "Developer (dr_lepper)"
+msgstr "यन्त्र प्रकार"
+
+#: main.cpp:125
+#, kde-format
+msgid "Mark Kretschmann"
+msgstr ""
+
+#: main.cpp:126
+#, kde-format
+msgid "Project founder (markey)"
+msgstr ""
+
+#: main.cpp:129
+#, kde-format
+msgid "Matěj Laitl"
+msgstr ""
+
+#: main.cpp:130
+#, kde-format
+msgid "iPod collection rewrite & more (strohel)"
+msgstr ""
+
+#: main.cpp:133
+#, kde-format
+msgid "Myriam Schweingruber"
+msgstr ""
+
+#: main.cpp:133
+#, kde-format
+msgid "Rokymoter, Bug triaging (Mamarok)"
+msgstr ""
+
+#: main.cpp:136
+#, kde-format
+msgid "Ralf 'SalsaMaster' Engels"
+msgstr ""
+
+#: main.cpp:137
+#, fuzzy, kde-format
+#| msgid "Device type"
+msgid "Developer (rengels)"
+msgstr "यन्त्र प्रकार"
+
+#: main.cpp:140
+#, kde-format
+msgid "Patrick von Reth"
+msgstr ""
+
+#: main.cpp:140
+#, kde-format
+msgid "Windows build (TheOneRing)"
+msgstr ""
+
+#: main.cpp:144
+#, kde-format
+msgid "Rick W. Chen"
+msgstr ""
+
+#: main.cpp:145
+#, fuzzy, kde-format
+#| msgid "Device type"
+msgid "Developer (stuffcorpse)"
+msgstr "यन्त्र प्रकार"
+
+#: main.cpp:148
+#, fuzzy, kde-format
+#| msgid "Sample Rate"
+msgid "Sam Lade"
+msgstr "नमूना दर"
+
+#: main.cpp:148
+#, fuzzy, kde-format
+#| msgid "Device type"
+msgid "Developer (Sentynel)"
+msgstr "यन्त्र प्रकार"
+
+#: main.cpp:152
+#, kde-format
+msgid "Sven Krohlas"
+msgstr "स्वेन क्रोह्‌लास"
+
+#: main.cpp:152
+#, fuzzy, kde-format
+#| msgid "Device type"
+msgid "Rokymoter, Developer (sven423)"
+msgstr "यन्त्र प्रकार"
+
+#: main.cpp:155
+#, kde-format
+msgid "Téo Mrnjavac"
+msgstr ""
+
+#: main.cpp:156
+#, fuzzy, kde-format
+#| msgid "Device type"
+msgid "Developer (Teo`)"
+msgstr "यन्त्र प्रकार"
+
+#: main.cpp:159
+#, kde-format
+msgid "Valorie Zimmerman"
+msgstr ""
+
+#: main.cpp:160
+#, kde-format
+msgid "Rokymoter, Handbook (valorie)"
+msgstr ""
+
+#: main.cpp:165
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
 msgstr "इयन'द बिर्ड' मनरोइ"
 
-#: main.cpp:162
+#: main.cpp:165
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer (eean)"
 msgstr "यन्त्र प्रकार"
 
-#: main.cpp:165
+#: main.cpp:168
 #, fuzzy, kde-format
 #| msgid "Jeff 'IROCKSOHARD' Mitchell"
 msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr "जेफ 'IROCKSOHARD' मिट्चेल"
 
-#: main.cpp:165
+#: main.cpp:168
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer (jefferai)"
 msgstr "यन्त्र प्रकार"
 
-#: main.cpp:168
+#: main.cpp:171
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer (lfranchi)"
 msgstr "यन्त्र प्रकार"
 
-#: main.cpp:171
+#: main.cpp:174
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
 msgstr ""
 
-#: main.cpp:171
+#: main.cpp:174
 #, kde-format
 msgid "Release Vixen (Nightrose)"
 msgstr ""
 
-#: main.cpp:174
+#: main.cpp:177
 #, kde-format
 msgid "Max Howell"
 msgstr ""
 
-#: main.cpp:174
+#: main.cpp:177
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer, Vision"
 msgstr "यन्त्र प्रकार"
 
-#: main.cpp:177
+#: main.cpp:180
 #, kde-format
 msgid "Maximilian Kossick"
 msgstr "म्याक्सिमिलियन कोसिक"
 
-#: main.cpp:177
+#: main.cpp:180
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer (maxx_k)"
 msgstr "यन्त्र प्रकार"
 
-#: main.cpp:180
+#: main.cpp:183
 #, fuzzy, kde-format
 #| msgid "Nikolaj Hald Nielsen"
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "निकोलाज ह्याल्ड नाइलसेन"
 
-#: main.cpp:180
+#: main.cpp:183
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer (nhn)"
 msgstr "यन्त्र प्रकार"
 
-#: main.cpp:183
+#: main.cpp:186
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr " सेब 'सर्फन' तल मुनि' रूइज"
 
-#: main.cpp:183
+#: main.cpp:186
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer (sebr)"
 msgstr "यन्त्र प्रकार"
 
-#: main.cpp:188
+#: main.cpp:191
 #, kde-format
 msgid "Alejandro Wainzinger"
 msgstr ""
 
-#: main.cpp:188
+#: main.cpp:191
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer (xevix)"
 msgstr "यन्त्र प्रकार"
 
-#: main.cpp:190
+#: main.cpp:193
 #, kde-format
 msgid "Alex Merry"
 msgstr ""
 
-#: main.cpp:190
+#: main.cpp:193
 #, kde-format
 msgid "Developer, Replay Gain support"
 msgstr ""
 
-#: main.cpp:192
+#: main.cpp:195
 #, kde-format
 msgid "Casey Link"
 msgstr ""
 
-#: main.cpp:192
+#: main.cpp:195
 #, kde-format
 msgid "MP3tunes integration"
 msgstr ""
 
-#: main.cpp:194
+#: main.cpp:197
 #, kde-format
 msgid "Casper van Donderen"
 msgstr ""
 
-#: main.cpp:194
+#: main.cpp:197
 #, fuzzy, kde-format
 #| msgid "Windraw Exception"
 msgid "Windows porting"
 msgstr "विन्ड्र अपवाद"
 
-#: main.cpp:196
+#: main.cpp:199
 #, kde-format
 msgid "Christie Harris"
 msgstr "क्रिस्टि ह्यारिस"
 
-#: main.cpp:196
+#: main.cpp:199
 #, kde-format
 msgid "Rokymoter (dangle)"
 msgstr ""
 
-#: main.cpp:198
+#: main.cpp:201
 #, kde-format
 msgid "Dan Leinir Turthra Jensen"
 msgstr "डन लेइनिर ट्रुथरा जेन्सेन"
 
-#: main.cpp:198
+#: main.cpp:201
 #, kde-format
 msgid "Usability"
 msgstr ""
 
-#: main.cpp:200
+#: main.cpp:203
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr ""
 
-#: main.cpp:200
+#: main.cpp:203
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer (hydrogen)"
 msgstr "यन्त्र प्रकार"
 
-#: main.cpp:202
+#: main.cpp:205
 #, kde-format
 msgid "Daniel Caleb Jones"
 msgstr ""
 
-#: main.cpp:202
+#: main.cpp:205
 #, fuzzy, kde-format
 #| msgid "Save Playlist"
 msgid "Biased playlists"
 msgstr "प्लेसूची बचत गर्नुहोस्"
 
-#: main.cpp:204
+#: main.cpp:207
 #, fuzzy, kde-format
 #| msgid "Dan Meltzer"
 msgid "Daniel Dewald"
 msgstr "डन मेल्टजेर"
 
-#: main.cpp:204
+#: main.cpp:207
 #, fuzzy, kde-format
 #| msgid "User Label:"
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
 msgstr "प्रयोगकर्ता लेबुल:"
 
-#: main.cpp:206
+#: main.cpp:209
 #, fuzzy, kde-format
 #| msgid "Dan Meltzer"
 msgid "Daniel Winter"
 msgstr "डन मेल्टजेर"
 
-#: main.cpp:206
+#: main.cpp:209
 #, fuzzy, kde-format
 #| msgid "&Copy Files to Collection..."
 msgid "Nepomuk integration"
 msgstr "सङ्कलनमा फाइलहरू प्रतिलिपि गर्नुहोस्..."
 
-#: main.cpp:208
+#: main.cpp:211
 #, kde-format
 msgid "Frank Meerkötter"
 msgstr ""
 
-#: main.cpp:208 main.cpp:228
+#: main.cpp:211 main.cpp:231
 #, fuzzy, kde-format
 #| msgid "Directory"
 msgid "Podcast improvements"
 msgstr "डाइरेक्टरी"
 
-#: main.cpp:210
+#: main.cpp:213
 #, kde-format
 msgid "Greg Meyer"
 msgstr "ग्रेग मेयेर"
 
-#: main.cpp:210
+#: main.cpp:213
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
 msgstr ""
 
-#: main.cpp:212
+#: main.cpp:215
 #, kde-format
 msgid "Harald Sitter"
 msgstr "हाराल्ड सिटर"
 
-#: main.cpp:212
+#: main.cpp:215
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
 msgstr ""
 
-#: main.cpp:214
+#: main.cpp:217
 #, kde-format
 msgid "John Atkinson"
 msgstr ""
 
-#: main.cpp:214
+#: main.cpp:217
 #, kde-format
 msgid "Assorted patches"
 msgstr ""
 
-#: main.cpp:216
+#: main.cpp:219
 #, kde-format
 msgid "Kenneth Wesley Wimer II"
 msgstr "केनेथ वेस्ली विमर II"
 
-#: main.cpp:216
+#: main.cpp:219
 #, fuzzy, kde-format
 #| msgid "Icons"
 msgid "Icons"
 msgstr "प्रतिमा"
 
-#: main.cpp:218
+#: main.cpp:221
 #, kde-format
 msgid "Kevin Funk"
 msgstr ""
 
-#: main.cpp:218
+#: main.cpp:221
 #, kde-format
 msgid "Developer, Website theme (KRF)"
 msgstr ""
 
-#: main.cpp:220
+#: main.cpp:223
 #, kde-format
 msgid "Kuba Serafinowski"
 msgstr ""
 
-#: main.cpp:220
+#: main.cpp:223
 #, kde-format
 msgid "Rokymoter"
 msgstr ""
 
-#: main.cpp:222
+#: main.cpp:225
 #, fuzzy, kde-format
 #| msgid "Derek Nelson"
 msgid "Lee Olson"
 msgstr "डेरेक नेल्सन"
 
-#: main.cpp:222 main.cpp:234
+#: main.cpp:225 main.cpp:237
 #, fuzzy, kde-format
 #| msgid "Update Artwork"
 msgid "Artwork"
 msgstr "चित्रकला अद्यावधिक गर्नुहोस्"
 
-#: main.cpp:224
+#: main.cpp:227
 #, kde-format
 msgid "Ljubomir Simin"
 msgstr ""
 
-#: main.cpp:224
+#: main.cpp:227
 #, kde-format
 msgid "Rokymoter (ljubomir)"
 msgstr ""
 
-#: main.cpp:226
+#: main.cpp:229
 #, kde-format
 msgid "Lucas Gomes"
 msgstr ""
 
-#: main.cpp:226
+#: main.cpp:229
 #, fuzzy, kde-format
 #| msgid "Device type"
 msgid "Developer (MaskMaster)"
 msgstr "यन्त्र प्रकार"
 
-#: main.cpp:228
+#: main.cpp:231
 #, kde-format
 msgid "Mathias Panzenböck"
 msgstr ""
 
-#: main.cpp:230
+#: main.cpp:233
 #, kde-format
 msgid "Mikko Caldara"
 msgstr ""
 
-#: main.cpp:230
+#: main.cpp:233
 #, kde-format
 msgid "Bug triaging and sanitizing"
 msgstr ""
 
-#: main.cpp:232
+#: main.cpp:235
 #, kde-format
 msgid "Nikhil Marathe"
 msgstr ""
 
-#: main.cpp:232
+#: main.cpp:235
 #, kde-format
 msgid "UPnP support and patches (nsm)"
 msgstr ""
 
-#: main.cpp:234
+#: main.cpp:237
 #, kde-format
 msgid "Nuno Pinheiro"
 msgstr ""
 
-#: main.cpp:236
+#: main.cpp:239
 #, kde-format
 msgid "Olivier Bédard"
 msgstr "Olivier Bédard"
 
-#: main.cpp:236
+#: main.cpp:239
 #, fuzzy, kde-format
 #| msgid "Website"
 msgid "Website hosting"
 msgstr "वेबसाइट"
 
-#: main.cpp:238
+#: main.cpp:241
 #, kde-format
 msgid "Pasi Lalinaho"
 msgstr ""
 
-#: main.cpp:238
+#: main.cpp:241
 #, kde-format
 msgid "Rokymoter (emunkki)"
 msgstr ""
 
-#: main.cpp:240
+#: main.cpp:243
 #, kde-format
 msgid "Peter Zhou Lei"
 msgstr ""
 
-#: main.cpp:240
+#: main.cpp:243
 #, fuzzy, kde-format
 #| msgid "Configure Media Device"
 msgid "Scripting interface"
 msgstr "मिडिया यन्त्र कन्फिगर गर्नुहोस्"
 
-#: main.cpp:242
+#: main.cpp:245
 #, kde-format
 msgid "Phalgun Guduthur"
 msgstr ""
 
-#: main.cpp:242
+#: main.cpp:245
 #, fuzzy, kde-format
 #| msgid "&Copy Files to Collection..."
 msgid "Nepomuk Collection (phalgun)"
 msgstr "सङ्कलनमा फाइलहरू प्रतिलिपि गर्नुहोस्..."
 
-#: main.cpp:244
+#: main.cpp:247
 #, kde-format
 msgid "Scott Wheeler"
 msgstr "स्कोट ह्विलर"
 
-#: main.cpp:244
+#: main.cpp:247
 #, kde-format
 msgid "TagLib & ktrm code"
 msgstr ""
 
-#: main.cpp:246
+#: main.cpp:249
 #, kde-format
 msgid "Shane King"
 msgstr "सेन किङ्"
 
-#: main.cpp:246
+#: main.cpp:249
 #, kde-format
 msgid "Patches & Windows porting (shakes)"
 msgstr ""
 
-#: main.cpp:248
+#: main.cpp:251
 #, kde-format
 msgid "Simon Esneault"
 msgstr ""
 
-#: main.cpp:248
+#: main.cpp:251
 #, kde-format
 msgid "Photos & Videos applets, Context View"
 msgstr ""
 
-#: main.cpp:250
+#: main.cpp:253
 #, fuzzy, kde-format
 #| msgid "Seek Forward"
 msgid "Soren Harward"
 msgstr "अघिल्तिर खोजी गर्नुहोस्"
 
-#: main.cpp:250
+#: main.cpp:253
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
 msgstr ""
 
-#: main.cpp:252
+#: main.cpp:255
 #, kde-format
 msgid "Thomas Lübking"
 msgstr ""
 
-#: main.cpp:254
+#: main.cpp:257
 #, kde-format
 msgid "Valentin Rouet"
 msgstr ""
 
-#: main.cpp:256
+#: main.cpp:259
 #, fuzzy, kde-format
 #| msgid "Derek Nelson"
 msgid "Wade Olson"
 msgstr "डेरेक नेल्सन"
 
-#: main.cpp:256
+#: main.cpp:259
 #, fuzzy, kde-format
 #| msgid "Sho&w splash-screen on startup"
 msgid "Splash screen artist"
 msgstr "सुरुआतमा स्प्ल्यास-पर्दा देखाउनुहोस्"
 
-#: main.cpp:258
+#: main.cpp:261
 #, kde-format
 msgid "William Viana Soares"
 msgstr ""
 
-#: main.cpp:258
+#: main.cpp:261
 #, fuzzy, kde-format
 #| msgid "Move Context Item down"
 msgid "Context view"
 msgstr "प्रसंग वस्तु तल सार्नुहोस्"
 
-#: main.cpp:262
+#: main.cpp:265
 #, kde-format
 msgid "Former contributors"
 msgstr ""
 
-#: main.cpp:262
+#: main.cpp:265
 #, kde-format
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr ""
 
-#: main.cpp:264
+#: main.cpp:267
 #, kde-format
 msgid "Adam Pigg"
 msgstr "अडाम पिग"
 
-#: main.cpp:264
+#: main.cpp:267
 #, kde-format
 msgid "Analyzers, patches, shoutcast"
 msgstr ""
 
-#: main.cpp:266
+#: main.cpp:269
 #, kde-format
 msgid "Adeodato Simó"
 msgstr " आदेओदातो सिमो"
 
-#: main.cpp:266 main.cpp:274
+#: main.cpp:269 main.cpp:277
 #, fuzzy, kde-format
 #| msgid "Update"
 msgid "Patches"
 msgstr "अद्यावधिक गर्नुहोस्"
 
-#: main.cpp:268
+#: main.cpp:271
 #, kde-format
 msgid "Alexandre Oliveira"
 msgstr ""
 
-#: main.cpp:270
+#: main.cpp:273
 #, kde-format
 msgid "Andreas Mair"
 msgstr "अन्ड्रियस मेर"
 
-#: main.cpp:270
+#: main.cpp:273
 #, kde-format
 msgid "MySQL support"
 msgstr ""
 
-#: main.cpp:272
+#: main.cpp:275
 #, kde-format
 msgid "Andrew de Quincey"
 msgstr "एन्ड्रिउ डे क्वेन्सि"
 
-#: main.cpp:272
+#: main.cpp:275
 #, kde-format
 msgid "Postgresql support"
 msgstr ""
 
-#: main.cpp:274
+#: main.cpp:277
 #, kde-format
 msgid "Andrew Turner"
 msgstr "एन्ड्रिउ टर्नर"
 
-#: main.cpp:276
+#: main.cpp:279
 #, kde-format
 msgid "Andy Kelk"
 msgstr "एन्डि केल्क"
 
-#: main.cpp:276
+#: main.cpp:279
 #, kde-format
 msgid "MTP and Rio Karma media devices, patches"
 msgstr ""
 
-#: main.cpp:278
+#: main.cpp:281
 #, fuzzy, kde-format
 #| msgid "Christian 'Babe-Magnet' Muehlhaeuser"
 msgid "Christian Muehlhaeuser"
 msgstr "क्रिश्चियन 'बेब-चुम्बक' म्युहलेयुजर"
 
-#: main.cpp:280
+#: main.cpp:283
 #, kde-format
 msgid "Derek Nelson"
 msgstr "डेरेक नेल्सन"
 
-#: main.cpp:280
+#: main.cpp:283
 #, kde-format
 msgid "Graphics, splash-screen"
 msgstr ""
 
-#: main.cpp:282
+#: main.cpp:285
 #, kde-format
 msgid "Enrico Ros"
 msgstr "एन्‌रिको रोस"
 
-#: main.cpp:282
+#: main.cpp:285
 #, kde-format
 msgid "Analyzers, Context Browser and systray eye-candy"
 msgstr ""
 
-#: main.cpp:284
+#: main.cpp:287
 #, kde-format
 msgid "Frederik Holljen"
 msgstr ""
 
-#: main.cpp:286
+#: main.cpp:289
 #, kde-format
 msgid "Gábor Lehel"
 msgstr ""
 
-#: main.cpp:288
+#: main.cpp:291
 #, kde-format
 msgid "Gérard Dürrmeyer"
 msgstr "Gérard Dürrmeyer"
 
-#: main.cpp:288
+#: main.cpp:291
 #, kde-format
 msgid "Icons and image work"
 msgstr ""
 
-#: main.cpp:290
+#: main.cpp:293
 #, kde-format
 msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
-#: main.cpp:290
+#: main.cpp:293
 #, fuzzy, kde-format
 #| msgid "List of folders in the Collection"
 msgid "Dialog to filter the collection titles"
 msgstr "सङ्कलनमा फोल्डरहरूको सूची"
 
-#: main.cpp:292
+#: main.cpp:295
 #, kde-format
 msgid "Jarkko Lehti"
 msgstr "जारक्को लेह्थि"
 
-#: main.cpp:292
+#: main.cpp:295
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
 msgstr ""
 
-#: main.cpp:294
+#: main.cpp:297
 #, kde-format
 msgid "Jocke Andersson"
 msgstr "जोक एन्डरसन"
 
-#: main.cpp:294
+#: main.cpp:297
 #, kde-format
 msgid "Rokymoter, bug fixer (Firetech)"
 msgstr ""
 
-#: main.cpp:296
+#: main.cpp:299
 #, kde-format
 msgid "Marco Gulino"
 msgstr "मार्को गूलिनो"
 
-#: main.cpp:296
+#: main.cpp:299
 #, kde-format
 msgid "Konqueror Sidebar, some DCOP methods"
 msgstr ""
 
-#: main.cpp:298
+#: main.cpp:301
 #, kde-format
 msgid "Martin Aumueller"
 msgstr ""
 
-#: main.cpp:300
+#: main.cpp:303
 #, kde-format
 msgid "Melchior Franz"
 msgstr "मेल्चिओर फ्रेन्ज"
 
-#: main.cpp:300
+#: main.cpp:303
 #, kde-format
 msgid "FHT routine, bugfixes"
 msgstr ""
 
-#: main.cpp:302
+#: main.cpp:305
 #, kde-format
 msgid "Michael Pyne"
 msgstr "माइकेल पेनी"
 
-#: main.cpp:302
+#: main.cpp:305
 #, kde-format
 msgid "K3b export code"
 msgstr ""
 
-#: main.cpp:304
+#: main.cpp:307
 #, kde-format
 msgid "Mike Diehl"
 msgstr ""
 
-#: main.cpp:306
+#: main.cpp:309
 #, kde-format
 msgid "Paul Cifarelli"
 msgstr ""
 
-#: main.cpp:308
+#: main.cpp:311
 #, kde-format
 msgid "Peter C. Ndikuwera"
 msgstr "Peter C. Ndikuwera"
 
-#: main.cpp:308
+#: main.cpp:311
 #, kde-format
 msgid "Bugfixes, PostgreSQL support"
 msgstr ""
 
-#: main.cpp:310
+#: main.cpp:313
 #, fuzzy, kde-format
 #| msgid "Pierpaolo 'Spaghetti Coder' Di Panfilo"
 msgid "Pierpaolo Panfilo"
 msgstr "Pierpaolo 'Spaghetti Coder' Di Panfilo"
 
-#: main.cpp:312
+#: main.cpp:315
 #, kde-format
 msgid "Reigo Reinmets"
 msgstr "रेइगो रेइनमेट्स"
 
-#: main.cpp:312
+#: main.cpp:315
 #, kde-format
 msgid "Wikipedia support, patches"
 msgstr ""
 
-#: main.cpp:314
+#: main.cpp:317
 #, kde-format
 msgid "Roman Becker"
 msgstr ""
 
-#: main.cpp:314
+#: main.cpp:317
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr ""
 
-#: main.cpp:316
+#: main.cpp:319
 #, kde-format
 msgid "Sami Nieminen"
 msgstr "सामि नाइमिनेन"
 
-#: main.cpp:316
+#: main.cpp:319
 #, kde-format
 msgid "Audioscrobbler support"
 msgstr ""
 
-#: main.cpp:318
+#: main.cpp:321
 #, fuzzy, kde-format
 #| msgid "Stanislav 'All you need is DCOP' Karchebny"
 msgid "Stanislav Karchebny"
 msgstr "स्टेन्स्ल्याव 'सबै तपाईँले चाहेको डीसीओपी हो' कर्चेब्नी"
 
-#: main.cpp:320
+#: main.cpp:323
 #, kde-format
 msgid "Stefan Bogner"
 msgstr "स्टेफेन बोग्नर"
 
-#: main.cpp:320
+#: main.cpp:323
 #, kde-format
 msgid "Loads of stuff"
 msgstr ""
 
-#: main.cpp:322
+#: main.cpp:325
 #, kde-format
 msgid "Tomasz Dudzik"
 msgstr ""
 
-#: main.cpp:322
+#: main.cpp:325
 #, fuzzy, kde-format
 #| msgid "Sho&w splash-screen on startup"
 msgid "Splash screen"
 msgstr "सुरुआतमा स्प्ल्यास-पर्दा देखाउनुहोस्"
 
-#: main.cpp:327
+#: main.cpp:330
 #, fuzzy, kde-format
 #| msgid "Andrew Turner"
 msgid "Andrew Browning"
 msgstr "एन्ड्रिउ टर्नर"
 
-#: main.cpp:328
+#: main.cpp:331
 #, fuzzy, kde-format
 #| msgid "Christie Harris"
 msgid "Chris Wales"
 msgstr "क्रिस्टि ह्यारिस"
 
-#: main.cpp:329
+#: main.cpp:332
 #, kde-format
 msgid "ZImin Stanislav"
 msgstr ""
