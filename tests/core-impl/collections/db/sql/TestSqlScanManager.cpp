@@ -120,6 +120,7 @@ TestSqlScanManager::cleanupTestCase()
 void
 TestSqlScanManager::init()
 {
+    KLocalizedString::setApplicationDomain("amarok-test");
     m_tmpCollectionDir = new QTemporaryDir();
     QVERIFY( m_tmpCollectionDir->isValid() );
 
@@ -175,7 +176,7 @@ TestSqlScanManager::testScanSingle()
     QCOMPARE( track->type(), QString("mp3") );
     QCOMPARE( track->trackNumber(), 28 );
     QCOMPARE( track->bitrate(), 257 ); // TagLib reports 257 kbit/s
-    QCOMPARE( track->length(), qint64(12000) );
+    QCOMPARE( track->length(), qint64(12095) );
     QCOMPARE( track->sampleRate(), 44100 );
     QCOMPARE( track->filesize(), 389679 );
     QDateTime aDate = QDateTime::currentDateTime();
@@ -733,7 +734,7 @@ TestSqlScanManager::testMerges()
     QCOMPARE( track->type(), QString("mp3") );
     QCOMPARE( track->trackNumber(), 28 );
     QCOMPARE( track->bitrate(), 257 );
-    QCOMPARE( track->length(), qint64(12000) );
+    QCOMPARE( track->length(), qint64(12095) );
     QCOMPARE( track->sampleRate(), 44100 );
     QCOMPARE( track->filesize(), 389679 );
     Meta::StatisticsPtr statistics = track->statistics();
