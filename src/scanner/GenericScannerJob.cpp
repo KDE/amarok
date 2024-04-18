@@ -198,8 +198,8 @@ GenericScannerJob::scannerPath()
     }
     else
     {
-        // Running a test, use the path + append collectionscanner
-        path = overridePath + "/collectionscanner/amarokcollectionscanner";
+        // Running a test, use the path
+        path = overridePath + "/amarokcollectionscanner";
     }
 
     if( !QFile::exists( path ) )
