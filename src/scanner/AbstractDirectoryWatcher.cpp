@@ -69,7 +69,10 @@ AbstractDirectoryWatcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
         m_waitCondition.wait( &m_mutex, WATCH_INTERVAL );
 
         if( m_aborted )
+        {
+            m_mutex.unlock();
             break;
+        }
 
         // -- start scan
         if( AmarokConfig::monitorChanges() )
