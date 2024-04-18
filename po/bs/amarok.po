@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-17 01:45+0000\n"
+"POT-Creation-Date: 2024-04-18 01:36+0000\n"
 "PO-Revision-Date: 2015-02-25 23:38+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: bosanski <bs@li.org>\n"
@@ -392,7 +392,7 @@ msgstr "Zaustavi nakon tekuće numere: uključeno"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:101
-#: EngineController.cpp:1330 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1331 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Ništa nije pušteno"
@@ -2149,8 +2149,7 @@ msgstr "Razni Izvođači"
 #: browsers/CollectionTreeItemModelBase.cpp:1100
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:299
-#: context/applets/wikipedia/package/contents/ui/main.qml:78
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:635
+#: context/applets/wikipedia/package/contents/ui/main.qml:98
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
 #: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
@@ -2178,8 +2177,7 @@ msgstr "Izvođač albuma"
 
 # >! Contexts.
 #: browsers/CollectionTreeItemModelBase.cpp:1106
-#: context/applets/wikipedia/package/contents/ui/main.qml:71
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:629
+#: context/applets/wikipedia/package/contents/ui/main.qml:88
 #: playlist/PlaylistModel.cpp:930
 #, kde-format
 msgid "Composer"
@@ -2275,7 +2273,8 @@ msgid "&Edit Track Details"
 msgstr "&Izmijeni podatke numere"
 
 #: browsers/filebrowser/FileBrowser.cpp:70
-#: context/applets/wikipedia/package/contents/ui/main.qml:54
+#: context/applets/wikipedia/package/contents/ui/main.qml:61
+#: context/applets/wikipedia/package/contents/ui/main.qml:145
 #, kde-format
 msgid "Refresh"
 msgstr "Osvježi"
@@ -4097,7 +4096,6 @@ msgid "Labels"
 msgstr "Etikete"
 
 #: context/applets/labels/LabelsApplet.cpp:104
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:617
 #, kde-format
 msgid "Reload"
 msgstr "Učitaj ponovo"
@@ -4107,7 +4105,6 @@ msgstr "Učitaj ponovo"
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:85
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:647
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #, kde-format
@@ -4471,14 +4468,12 @@ msgid "Similar Artists"
 msgstr "Slični izvođači"
 
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:604
 #: statsyncing/ui/MatchedTracksPage.cpp:138
 #, kde-format
 msgid "Back"
 msgstr "Nazad"
 
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:611
 #, kde-format
 msgid "Forward"
 msgstr "Naprijed"
@@ -4562,8 +4557,7 @@ msgstr "Ponovo učitaj tablature sa sljedećim naslovom i izvođačem"
 # >! Contexts.
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
-#: context/applets/wikipedia/package/contents/ui/main.qml:64
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:623
+#: context/applets/wikipedia/package/contents/ui/main.qml:78
 #: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
 #: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
@@ -4972,104 +4966,78 @@ msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>Mjesto:</strong><nl/>%1"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:38
+#: context/applets/wikipedia/package/contents/ui/main.qml:39
+#: context/applets/wikipedia/package/contents/ui/main.qml:133
 #, fuzzy, kde-format
 #| msgid "Previous:"
 msgid "Previous"
 msgstr "Prethodnih:"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:46
+#: context/applets/wikipedia/package/contents/ui/main.qml:50
+#: context/applets/wikipedia/package/contents/ui/main.qml:139
 #: statsyncing/ui/ChooseProvidersPage.cpp:35
 #, kde-format
 msgid "Next"
 msgstr "Slijedeće"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:85
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:641
+#: context/applets/wikipedia/package/contents/ui/main.qml:108
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
 msgstr "Numera"
 
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:368
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:444
+#: context/applets/wikipedia/package/contents/ui/main.qml:152
+#: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
-msgid "Update Supported Languages"
-msgstr "Ažuriraj podržane jezike"
+msgid "Copy to Clipboard"
+msgstr "Kopiraj u clipboard"
 
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:369
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:445
-#, kde-format
-msgid "Get Supported Languages"
-msgstr "Preuzmi podržane jezike"
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:594
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:763
-#, kde-format
-msgid "Wikipedia"
-msgstr "Vikipedija"
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:737
-#, kde-format
-msgid "Wikipedia: %1"
-msgstr "Wikipedia: %1"
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:806
-#, kde-format
-msgid "Wikipedia General Settings"
-msgstr "Opšte postavke Wikipedia"
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:807
-#, kde-format
-msgid "Wikipedia Language Settings"
-msgstr "Jezičke postavke Wikipedia"
-
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:75
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:139
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:267
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:269
 #, kde-format
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "Ne mogu da dobavim podatke sa Vikipedije: %1"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:90
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:246
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:304
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:92
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:248
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:306
 #, kde-format
 msgid "No information found..."
 msgstr "Podaci nisu nađeni..."
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:314
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
 #, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\))"
 msgstr ".*\\(.*(izvođač|bend).*\\))"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
 #, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\))"
 msgstr ".*\\(.*(kompozitor|muzičar).*\\))"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
 msgctxt "Search pattern for an album"
 msgid ".*\\(.*(album|score|soundtrack).*\\)"
 msgstr ".*\\(.*(album|ocjena|muzička ploča).*\\)"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:324
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:326
 #, kde-format
 msgctxt "Search pattern for a song"
 msgid ".*\\(.*(song|track).*\\)"
 msgstr ".*\\(.*(pjesma|numera).*\\)"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:523
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:526
 #, kde-format
 msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr "%1 je potreban za pretraživanje Wikipedia."
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:746
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:752
 #, kde-format
 msgid "Choose Language"
 msgstr "Odaberi jezik"
@@ -5487,7 +5455,7 @@ msgstr "Nepoznat izvođač"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1308
+#: EngineController.cpp:1309
 #, kde-format
 msgid "Unknown track"
 msgstr "Nepoznata numera"
@@ -8823,11 +8791,6 @@ msgstr "Ukloni transkodirane datoteke po prijenosu"
 msgid "For this feature, a script of type \"Transcode\" has to be running"
 msgstr "Za ovu mogućnost mora se izvršavati skripta tipa „Transkodiranje“"
 
-#: dialogs/DiagnosticDialog.cpp:84
-#, kde-format
-msgid "Copy to Clipboard"
-msgstr "Kopiraj u clipboard"
-
 #: dialogs/DiagnosticDialog.cpp:88
 #, kde-format
 msgctxt "%1 is the program name"
@@ -10403,30 +10366,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Rejting"
 
-#: EngineController.cpp:1098
+#: EngineController.cpp:1099
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Suviše grešaka u listi numera. Puštanje zaustavljeno."
 
-#: EngineController.cpp:1298
+#: EngineController.cpp:1299
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> izvodi <b>%2</b> sa <b>%3</b>"
 
-#: EngineController.cpp:1300
+#: EngineController.cpp:1301
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> izvodi <b>%2</b>"
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1304
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> sa <b>%2</b>"
 
-#: EngineController.cpp:1315
+#: EngineController.cpp:1316
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -12547,7 +12510,7 @@ msgstr ""
 "<a href='%1'>Dinamički režim</a> Uključen. <a href='%2'>Popuni</a> | <a "
 "href='%3'>Isključi</a>"
 
-#: playlist/PlaylistDock.cpp:180
+#: playlist/PlaylistDock.cpp:179
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "&Snimi trenutnu listu numera"
@@ -17232,6 +17195,24 @@ msgstr "Izvođač: %1"
 #, kde-format
 msgid "empty"
 msgstr "prazno"
+
+#~ msgid "Update Supported Languages"
+#~ msgstr "Ažuriraj podržane jezike"
+
+#~ msgid "Get Supported Languages"
+#~ msgstr "Preuzmi podržane jezike"
+
+#~ msgid "Wikipedia"
+#~ msgstr "Vikipedija"
+
+#~ msgid "Wikipedia: %1"
+#~ msgstr "Wikipedia: %1"
+
+#~ msgid "Wikipedia General Settings"
+#~ msgstr "Opšte postavke Wikipedia"
+
+#~ msgid "Wikipedia Language Settings"
+#~ msgstr "Jezičke postavke Wikipedia"
 
 #~ msgid ""
 #~ "Automatically download and install updates for the built-in scripts from "

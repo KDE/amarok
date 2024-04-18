@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-17 01:45+0000\n"
+"POT-Creation-Date: 2024-04-18 01:36+0000\n"
 "PO-Revision-Date: 2010-03-21 16:32+0700\n"
 "Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
@@ -379,7 +379,7 @@ msgstr "หยุดหลังจบแทร็กปัจจุบัน: �
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:101
-#: EngineController.cpp:1330 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1331 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "ยังไม่มีการเล่นแทร็กเสียงใด ๆ"
@@ -2136,8 +2136,7 @@ msgstr "หลากหลายศิลปิน"
 #: browsers/CollectionTreeItemModelBase.cpp:1100
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:299
-#: context/applets/wikipedia/package/contents/ui/main.qml:78
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:635
+#: context/applets/wikipedia/package/contents/ui/main.qml:98
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
 #: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
@@ -2165,8 +2164,7 @@ msgid "Album Artist"
 msgstr "อัลบั้มของศิลปินนี้"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1106
-#: context/applets/wikipedia/package/contents/ui/main.qml:71
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:629
+#: context/applets/wikipedia/package/contents/ui/main.qml:88
 #: playlist/PlaylistModel.cpp:930
 #, kde-format
 msgid "Composer"
@@ -2261,7 +2259,8 @@ msgid "&Edit Track Details"
 msgstr "แ&ก้ไขรายละเอียดของแทร็กเสียง"
 
 #: browsers/filebrowser/FileBrowser.cpp:70
-#: context/applets/wikipedia/package/contents/ui/main.qml:54
+#: context/applets/wikipedia/package/contents/ui/main.qml:61
+#: context/applets/wikipedia/package/contents/ui/main.qml:145
 #, fuzzy, kde-format
 #| msgid "&Refresh"
 msgid "Refresh"
@@ -4109,7 +4108,6 @@ msgid "Labels"
 msgstr "ป้าย"
 
 #: context/applets/labels/LabelsApplet.cpp:104
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:617
 #, kde-format
 msgid "Reload"
 msgstr "โหลดใหม่อีกครั้ง"
@@ -4119,7 +4117,6 @@ msgstr "โหลดใหม่อีกครั้ง"
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:85
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:647
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #, kde-format
@@ -4509,14 +4506,12 @@ msgid "Similar Artists"
 msgstr "ศิลปินที่คล้ายกัน"
 
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:604
 #: statsyncing/ui/MatchedTracksPage.cpp:138
 #, kde-format
 msgid "Back"
 msgstr "ย้อนกลับ"
 
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:611
 #, kde-format
 msgid "Forward"
 msgstr "ถัดไป"
@@ -4606,8 +4601,7 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
-#: context/applets/wikipedia/package/contents/ui/main.qml:64
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:623
+#: context/applets/wikipedia/package/contents/ui/main.qml:78
 #: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
 #: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
@@ -5049,107 +5043,79 @@ msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr ""
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:38
+#: context/applets/wikipedia/package/contents/ui/main.qml:39
+#: context/applets/wikipedia/package/contents/ui/main.qml:133
 #, kde-format
 msgid "Previous"
 msgstr "ก่อนหน้า"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:46
+#: context/applets/wikipedia/package/contents/ui/main.qml:50
+#: context/applets/wikipedia/package/contents/ui/main.qml:139
 #: statsyncing/ui/ChooseProvidersPage.cpp:35
 #, fuzzy, kde-format
 #| msgid "&Next"
 msgid "Next"
 msgstr "&ถัดไป"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:85
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:641
+#: context/applets/wikipedia/package/contents/ui/main.qml:108
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
 msgstr "แทร็กที่"
 
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:368
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:444
-#, kde-format
-msgid "Update Supported Languages"
-msgstr ""
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:369
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:445
-#, kde-format
-msgid "Get Supported Languages"
-msgstr ""
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:594
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:763
-#, kde-format
-msgid "Wikipedia"
-msgstr "วิกิพีเดีย"
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:737
+#: context/applets/wikipedia/package/contents/ui/main.qml:152
+#: dialogs/DiagnosticDialog.cpp:84
 #, fuzzy, kde-format
-#| msgid "Wikipedia"
-msgid "Wikipedia: %1"
-msgstr "วิกิพีเดีย"
+#| msgid "Copy to Collection"
+msgid "Copy to Clipboard"
+msgstr "คัดลอกไปยังคลังสื่อ"
 
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:806
-#, fuzzy, kde-format
-#| msgid "Wikipedia Settings"
-msgid "Wikipedia General Settings"
-msgstr "ตั้งค่าวิกิพีเดีย"
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:807
-#, fuzzy, kde-format
-#| msgid "Wikipedia Settings"
-msgid "Wikipedia Language Settings"
-msgstr "ตั้งค่าวิกิพีเดีย"
-
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:75
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:139
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:267
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:269
 #, kde-format
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "ไม่สามารถรับข้อมูลรายละเอียดจากวิกิพีเดียได้: %1"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:90
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:246
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:304
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:92
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:248
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:306
 #, kde-format
 msgid "No information found..."
 msgstr "ไม่พบข้อมูลรายละเอียดใด ๆ ..."
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:314
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
 #, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\))"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
 #, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\))"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
 msgctxt "Search pattern for an album"
 msgid ".*\\(.*(album|score|soundtrack).*\\)"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:324
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:326
 #, kde-format
 msgctxt "Search pattern for a song"
 msgid ".*\\(.*(song|track).*\\)"
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:523
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:526
 #, kde-format
 msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:746
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:752
 #, fuzzy, kde-format
 #| msgid "Language"
 msgid "Choose Language"
@@ -5593,7 +5559,7 @@ msgstr "ศิลปินที่ไม่รู้จัก"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1308
+#: EngineController.cpp:1309
 #, kde-format
 msgid "Unknown track"
 msgstr "แทร็กที่ไม่รู้จัก"
@@ -8830,12 +8796,6 @@ msgstr "ลบแฟ้มที่ทำการแปลงแล้วหล
 msgid "For this feature, a script of type \"Transcode\" has to be running"
 msgstr "สำหรับคุณสมบัตินี้ ต้องมีสคริปต์ชนิด \"การแปลงรหัส\" ทำงานอยู่ด้วย"
 
-#: dialogs/DiagnosticDialog.cpp:84
-#, fuzzy, kde-format
-#| msgid "Copy to Collection"
-msgid "Copy to Clipboard"
-msgstr "คัดลอกไปยังคลังสื่อ"
-
 #: dialogs/DiagnosticDialog.cpp:88
 #, fuzzy, kde-format
 #| msgid "St&atistics"
@@ -10419,30 +10379,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "การจัดอันดับ"
 
-#: EngineController.cpp:1098
+#: EngineController.cpp:1099
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "มีข้อผิดพลาดต่าง ๆ เกิดขึ้นจำนวนมากในรายการเล่น หยุดทำการเล่นกลับแล้ว"
 
-#: EngineController.cpp:1298
+#: EngineController.cpp:1299
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> โดย <b>%2</b> ในอัลบั้ม <b>%3</b>"
 
-#: EngineController.cpp:1300
+#: EngineController.cpp:1301
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> โดย <b>%2</b>"
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1304
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> ในอัลบั้ม <b>%2</b>"
 
-#: EngineController.cpp:1315
+#: EngineController.cpp:1316
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -12641,7 +12601,7 @@ msgid ""
 "href='%3'>Turn off</a>"
 msgstr ""
 
-#: playlist/PlaylistDock.cpp:180
+#: playlist/PlaylistDock.cpp:179
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "&บันทึกรายการเล่นปัจจุบัน"
@@ -17256,6 +17216,24 @@ msgstr "ศิลปิน \"%1\""
 #| msgid "<empty>"
 msgid "empty"
 msgstr "<empty>"
+
+#~ msgid "Wikipedia"
+#~ msgstr "วิกิพีเดีย"
+
+#, fuzzy
+#~| msgid "Wikipedia"
+#~ msgid "Wikipedia: %1"
+#~ msgstr "วิกิพีเดีย"
+
+#, fuzzy
+#~| msgid "Wikipedia Settings"
+#~ msgid "Wikipedia General Settings"
+#~ msgstr "ตั้งค่าวิกิพีเดีย"
+
+#, fuzzy
+#~| msgid "Wikipedia Settings"
+#~ msgid "Wikipedia Language Settings"
+#~ msgstr "ตั้งค่าวิกิพีเดีย"
 
 #, fuzzy
 #~| msgid "&Automatically delete podcasts"

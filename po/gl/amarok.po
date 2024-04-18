@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-17 01:45+0000\n"
+"POT-Creation-Date: 2024-04-18 01:36+0000\n"
 "PO-Revision-Date: 2023-08-05 13:00+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
@@ -425,7 +425,7 @@ msgstr "Deter despois da pista actual: activado"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:101
-#: EngineController.cpp:1330 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1331 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Non se está a reproducir ningunha pista"
@@ -2180,8 +2180,7 @@ msgstr "Varios intérpretes"
 #: browsers/CollectionTreeItemModelBase.cpp:1100
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:299
-#: context/applets/wikipedia/package/contents/ui/main.qml:78
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:635
+#: context/applets/wikipedia/package/contents/ui/main.qml:98
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
 #: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
@@ -2208,8 +2207,7 @@ msgid "Album Artist"
 msgstr "Artista do álbum"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1106
-#: context/applets/wikipedia/package/contents/ui/main.qml:71
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:629
+#: context/applets/wikipedia/package/contents/ui/main.qml:88
 #: playlist/PlaylistModel.cpp:930
 #, kde-format
 msgid "Composer"
@@ -2303,7 +2301,8 @@ msgid "&Edit Track Details"
 msgstr "Editar os &detalles da pista"
 
 #: browsers/filebrowser/FileBrowser.cpp:70
-#: context/applets/wikipedia/package/contents/ui/main.qml:54
+#: context/applets/wikipedia/package/contents/ui/main.qml:61
+#: context/applets/wikipedia/package/contents/ui/main.qml:145
 #, kde-format
 msgid "Refresh"
 msgstr "Actualizar"
@@ -4108,7 +4107,6 @@ msgid "Labels"
 msgstr "Etiquetas"
 
 #: context/applets/labels/LabelsApplet.cpp:104
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:617
 #, kde-format
 msgid "Reload"
 msgstr "Cargar de novo"
@@ -4118,7 +4116,6 @@ msgstr "Cargar de novo"
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:85
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:647
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #, kde-format
@@ -4473,14 +4470,12 @@ msgid "Similar Artists"
 msgstr "Artistas similares"
 
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:77
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:604
 #: statsyncing/ui/MatchedTracksPage.cpp:138
 #, kde-format
 msgid "Back"
 msgstr "Retroceder"
 
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:84
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:611
 #, kde-format
 msgid "Forward"
 msgstr "Avanzar"
@@ -4564,8 +4559,7 @@ msgstr "Recargar as tabulaturas co seguinte título e intérprete"
 
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
-#: context/applets/wikipedia/package/contents/ui/main.qml:64
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:623
+#: context/applets/wikipedia/package/contents/ui/main.qml:78
 #: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
 #: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
@@ -4968,103 +4962,77 @@ msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>Lugar:</strong><nl/>%1"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:38
+#: context/applets/wikipedia/package/contents/ui/main.qml:39
+#: context/applets/wikipedia/package/contents/ui/main.qml:133
 #, kde-format
 msgid "Previous"
 msgstr "Anterior"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:46
+#: context/applets/wikipedia/package/contents/ui/main.qml:50
+#: context/applets/wikipedia/package/contents/ui/main.qml:139
 #: statsyncing/ui/ChooseProvidersPage.cpp:35
 #, kde-format
 msgid "Next"
 msgstr "Seguinte"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:85
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:641
+#: context/applets/wikipedia/package/contents/ui/main.qml:108
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
 msgstr "Pista"
 
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:368
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:444
+#: context/applets/wikipedia/package/contents/ui/main.qml:152
+#: dialogs/DiagnosticDialog.cpp:84
 #, kde-format
-msgid "Update Supported Languages"
-msgstr "Actualizar os idiomas admitidos"
+msgid "Copy to Clipboard"
+msgstr "Copiar no portapapeis"
 
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:369
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:445
-#, kde-format
-msgid "Get Supported Languages"
-msgstr "Obter os idiomas admitidos"
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:594
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:763
-#, kde-format
-msgid "Wikipedia"
-msgstr "Wikipedia"
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:737
-#, kde-format
-msgid "Wikipedia: %1"
-msgstr "Wikipedia: %1"
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:806
-#, kde-format
-msgid "Wikipedia General Settings"
-msgstr "Configuración xeral de Wikipedia"
-
-#: context/applets/wikipedia/plugin/WikipediaApplet.cpp:807
-#, kde-format
-msgid "Wikipedia Language Settings"
-msgstr "Configuración de idioma de Wikipedia"
-
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:75
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:139
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:267
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:77
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:141
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:269
 #, kde-format
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "Non é posíbel obter a información de Wikipedia: %1"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:90
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:246
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:304
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:92
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:248
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:306
 #, kde-format
 msgid "No information found..."
 msgstr "Non se atopou información…"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:314
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:316
 #, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\))"
 msgstr ".*\\(.*(intérprete|grupo).*\\))"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:319
 #, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\))"
 msgstr ".*\\(.*(compositor|músico).*\\))"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:322
 #, kde-format
 msgctxt "Search pattern for an album"
 msgid ".*\\(.*(album|score|soundtrack).*\\)"
 msgstr ".*\\(.*(álbum|partitura|banda sonora).*\\)"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:324
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:326
 #, kde-format
 msgctxt "Search pattern for a song"
 msgid ".*\\(.*(song|track).*\\)"
 msgstr ".*\\(.*(canción|pista).*\\)"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:523
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:526
 #, kde-format
 msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr "Para buscar en Wikipedia necesita %1."
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:746
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:752
 #, kde-format
 msgid "Choose Language"
 msgstr "Escoller idioma"
@@ -5484,7 +5452,7 @@ msgstr "Artista descoñecido"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1308
+#: EngineController.cpp:1309
 #, kde-format
 msgid "Unknown track"
 msgstr "Pista descoñecida"
@@ -8751,11 +8719,6 @@ msgstr "Retirar os ficheiros transcodificados tras transferilos"
 msgid "For this feature, a script of type \"Transcode\" has to be running"
 msgstr "Para esta funcionalidade, débese executar un guión do tipo «Transcode»"
 
-#: dialogs/DiagnosticDialog.cpp:84
-#, kde-format
-msgid "Copy to Clipboard"
-msgstr "Copiar no portapapeis"
-
 #: dialogs/DiagnosticDialog.cpp:88
 #, kde-format
 msgctxt "%1 is the program name"
@@ -10374,32 +10337,32 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Cualificación"
 
-#: EngineController.cpp:1098
+#: EngineController.cpp:1099
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "Atopáronse demasiados erros na lista de reprodución. Suspéndese a "
 "reprodución."
 
-#: EngineController.cpp:1298
+#: EngineController.cpp:1299
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> de <b>%2</b> en <b>%3</b>"
 
-#: EngineController.cpp:1300
+#: EngineController.cpp:1301
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> de <b>%2</b>"
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1304
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> en <b>%2</b>"
 
-#: EngineController.cpp:1315
+#: EngineController.cpp:1316
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -12494,7 +12457,7 @@ msgstr ""
 "<a href='%1'>Modo dinámico</a> activado. <a href='%2'>Repoboar</a> | <a "
 "href='%3'>Apagar</a>"
 
-#: playlist/PlaylistDock.cpp:180
+#: playlist/PlaylistDock.cpp:179
 #, kde-format
 msgid "&Save Current Playlist"
 msgstr "&Gardar a lista de reprodución actual"
@@ -17172,6 +17135,24 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "baleiro"
+
+#~ msgid "Update Supported Languages"
+#~ msgstr "Actualizar os idiomas admitidos"
+
+#~ msgid "Get Supported Languages"
+#~ msgstr "Obter os idiomas admitidos"
+
+#~ msgid "Wikipedia"
+#~ msgstr "Wikipedia"
+
+#~ msgid "Wikipedia: %1"
+#~ msgstr "Wikipedia: %1"
+
+#~ msgid "Wikipedia General Settings"
+#~ msgstr "Configuración xeral de Wikipedia"
+
+#~ msgid "Wikipedia Language Settings"
+#~ msgstr "Configuración de idioma de Wikipedia"
 
 #~ msgid ""
 #~ "Automatically download and install updates for the built-in scripts from "
