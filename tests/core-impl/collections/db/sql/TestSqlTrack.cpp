@@ -34,11 +34,12 @@
 
 QTEST_GUILESS_MAIN( TestSqlTrack )
 
+QTemporaryDir *TestSqlTrack::s_tmpDir = nullptr;
+
 TestSqlTrack::TestSqlTrack()
     : QObject()
     , m_collection( nullptr )
     , m_storage( nullptr )
-    , m_tmpDir( nullptr )
 {
 }
 
@@ -47,9 +48,9 @@ TestSqlTrack::initTestCase()
 {
     AmarokConfig::instance("amarokrc");
 
-    m_tmpDir = new QTemporaryDir();
+    s_tmpDir = new QTemporaryDir();
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDir->path() ) );
+    QVERIFY( m_storage->init( s_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
 
@@ -72,7 +73,6 @@ TestSqlTrack::cleanupTestCase()
 {
     delete m_collection;
     //m_storage is deleted by SqlCollection
-    delete m_tmpDir;
 }
 
 void

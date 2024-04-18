@@ -171,7 +171,7 @@ private:
     int m_collectionUpdatedCount;
 
     QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    QTemporaryDir *m_tmpDatabaseDir;
+    static QTemporaryDir *s_tmpDatabaseDir;
     QTemporaryDir *m_tmpCollectionDir;
     QString m_sourcePath; // the path to the template .mp3 file
     bool m_autoGetCoverArt;

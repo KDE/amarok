@@ -34,13 +34,15 @@
 
 QTEST_MAIN( TestSqlAlbum )
 
+QTemporaryDir *TestSqlAlbum::s_tmpDir = nullptr;
+
 TestSqlAlbum::TestSqlAlbum()
     : QObject()
     , m_collection( nullptr )
     , m_storage( nullptr )
-    , m_tmpDir( nullptr )
 {
     KLocalizedString::setApplicationDomain("amarok-test");
+    std::atexit([]() { delete TestSqlAlbum::s_tmpDir; } );
 }
 
 TestSqlAlbum::~TestSqlAlbum()
@@ -50,11 +52,11 @@ void
 TestSqlAlbum::initTestCase()
 {
     AmarokConfig::instance("amarokrc");
-
-    m_tmpDir = new QTemporaryDir();
-    QVERIFY( m_tmpDir->isValid() );
+    if( !s_tmpDir )
+        s_tmpDir = new QTemporaryDir();
+    QVERIFY( s_tmpDir->isValid() );
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDir->path() ) );
+    QVERIFY( m_storage->init( s_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
 }
@@ -63,7 +65,6 @@ void
 TestSqlAlbum::cleanupTestCase()
 {
     delete m_collection;
-    delete m_tmpDir;
 }
 
 void

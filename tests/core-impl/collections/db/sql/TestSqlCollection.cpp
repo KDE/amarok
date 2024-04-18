@@ -28,16 +28,20 @@
 
 QTEST_GUILESS_MAIN( TestSqlCollection )
 
+QTemporaryDir *TestSqlCollection::s_tmpDir = nullptr;
+
 TestSqlCollection::TestSqlCollection()
 {
+    std::atexit([]() { delete TestSqlCollection::s_tmpDir; } );
 }
 
 void
 TestSqlCollection::initTestCase()
 {
-    m_tmpDir = new QTemporaryDir();
+    if( !s_tmpDir )
+        s_tmpDir = new QTemporaryDir();
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDir->path() ) );
+    QVERIFY( m_storage->init( s_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_mpmMock = new SqlMountPointManagerMock( this, m_storage );
     m_collection->setMountPointManager( m_mpmMock );
@@ -53,7 +57,6 @@ TestSqlCollection::cleanupTestCase()
 {
     delete m_collection;
     //m_mpMock is deleted by SqlCollection
-    delete m_tmpDir;
 
 }
 

@@ -33,6 +33,8 @@ using namespace Collections;
 
 QTEST_GUILESS_MAIN( TestSqlQueryMaker )
 
+QTemporaryDir *TestSqlQueryMaker::s_tmpDir = nullptr;
+
 //required for QTest, this is not done in Querymaker.h
 Q_DECLARE_METATYPE( Collections::QueryMaker::QueryType )
 Q_DECLARE_METATYPE( Collections::QueryMaker::NumberComparison )
@@ -42,6 +44,7 @@ Q_DECLARE_METATYPE( Collections::QueryMaker::LabelQueryMode )
 
 TestSqlQueryMaker::TestSqlQueryMaker()
 {
+    std::atexit([]() { delete TestSqlQueryMaker::s_tmpDir; } );
     qRegisterMetaType<Meta::TrackPtr>();
     qRegisterMetaType<Meta::TrackList>();
     qRegisterMetaType<Meta::AlbumPtr>();
@@ -66,9 +69,10 @@ TestSqlQueryMaker::TestSqlQueryMaker()
 void
 TestSqlQueryMaker::initTestCase()
 {
-    m_tmpDir = new QTemporaryDir();
+    if( !s_tmpDir )
+        s_tmpDir = new QTemporaryDir();
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDir->path() ) );
+    QVERIFY( m_storage->init( s_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
 
     QMap<int,QString> mountPoints;
@@ -142,7 +146,6 @@ TestSqlQueryMaker::cleanupTestCase()
 {
     delete m_collection;
     //m_storage is deleted by SqlCollection
-    delete m_tmpDir;
 
 }
 

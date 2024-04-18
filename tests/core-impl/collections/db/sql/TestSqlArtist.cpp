@@ -25,20 +25,23 @@
 
 QTEST_GUILESS_MAIN( TestSqlArtist )
 
+QTemporaryDir *TestSqlArtist::s_tmpDir = nullptr;
+
 TestSqlArtist::TestSqlArtist()
     : QObject()
     , m_collection( nullptr )
     , m_storage( nullptr )
-    , m_tmpDir( nullptr )
 {
+    std::atexit([]() { delete TestSqlArtist::s_tmpDir; } );
 }
 
 void
 TestSqlArtist::initTestCase()
 {
-    m_tmpDir = new QTemporaryDir();
+    if( !s_tmpDir )
+        s_tmpDir = new QTemporaryDir();
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDir->path() ) );
+    QVERIFY( m_storage->init( s_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     m_collection->setMountPointManager( new SqlMountPointManagerMock( this, m_storage ) );
 }
@@ -47,7 +50,6 @@ void
 TestSqlArtist::cleanupTestCase()
 {
     delete m_collection;
-    delete m_tmpDir;
 }
 
 void

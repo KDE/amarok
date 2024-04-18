@@ -39,10 +39,13 @@
 
 QTEST_GUILESS_MAIN( TestSqlScanManager )
 
+QTemporaryDir *TestSqlScanManager::s_tmpDatabaseDir = nullptr;
+
 TestSqlScanManager::TestSqlScanManager()
     : QObject()
 {
     QString help = i18n("Amarok"); // prevent a bug when the scanner is the first thread creating a translator
+    std::atexit([]() { delete TestSqlScanManager::s_tmpDatabaseDir; } );
 }
 
 void
@@ -64,10 +67,11 @@ TestSqlScanManager::initTestCase()
     m_sourcePath = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/audio/Platz 01.mp3" );
     QVERIFY( QFile::exists( m_sourcePath ) );
 
-    m_tmpDatabaseDir = new QTemporaryDir();
-    QVERIFY( m_tmpDatabaseDir->isValid() );
+    if( !s_tmpDatabaseDir )
+        s_tmpDatabaseDir = new QTemporaryDir();
+    QVERIFY( s_tmpDatabaseDir->isValid() );
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDatabaseDir->path() ) );
+    QVERIFY( m_storage->init( s_tmpDatabaseDir->path() ) );
 
     m_collection = new Collections::SqlCollection( m_storage );
     connect( m_collection, &Collections::SqlCollection::updated, this, &TestSqlScanManager::slotCollectionUpdated );
@@ -111,8 +115,6 @@ TestSqlScanManager::cleanupTestCase()
 //     QSignalSpy spy( ThreadWeaver::Queue::instance(), &ThreadWeaver::Queue::finished );
 //     if( !ThreadWeaver::Queue::instance()->isIdle() )
 //         QVERIFY2( spy.wait( 5000 ), "threads did not finish in timeout" );
-
-    delete m_tmpDatabaseDir;
 
     AmarokConfig::setAutoGetCoverArt( m_autoGetCoverArt );
 }

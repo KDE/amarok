@@ -51,7 +51,7 @@ private:
 private:
     Collections::SqlCollection *m_collection;
     QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    QTemporaryDir *m_tmpDir;
+    static QTemporaryDir *s_tmpDir;
 };
 
 #endif // TESTSQLCOLLECTIONLOCATION_H

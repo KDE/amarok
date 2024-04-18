@@ -97,13 +97,15 @@ public:
 
 QTEST_GUILESS_MAIN( TestSqlCollectionLocation )
 
+QTemporaryDir *TestSqlCollectionLocation::s_tmpDir = nullptr;
+
 TestSqlCollectionLocation::TestSqlCollectionLocation()
     : QObject()
     , m_collection( nullptr )
     , m_storage( nullptr )
-    , m_tmpDir( nullptr )
 {
     KLocalizedString::setApplicationDomain("amarok-test");
+    std::atexit([]() { delete TestSqlCollectionLocation::s_tmpDir; } );
     int argc = 1;
     char **argv = (char **) malloc(sizeof(char *));
     argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
@@ -113,12 +115,13 @@ TestSqlCollectionLocation::TestSqlCollectionLocation()
 void
 TestSqlCollectionLocation::initTestCase()
 {
-    m_tmpDir = new QTemporaryDir();
+    if( !s_tmpDir )
+        s_tmpDir = new QTemporaryDir();
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDir->path() ) );
+    QVERIFY( m_storage->init( s_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
     SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
-    mock->setCollectionFolders( QStringList() << m_tmpDir->path() ); // the target folder needs to have enough space and be writable
+    mock->setCollectionFolders( QStringList() << s_tmpDir->path() ); // the target folder needs to have enough space and be writable
     m_collection->setMountPointManager( mock );
 
     // I just need the table and not the whole playlist manager
@@ -139,7 +142,6 @@ TestSqlCollectionLocation::cleanupTestCase()
 {
     delete m_collection;
     //m_storage is deleted by SqlCollection
-    delete m_tmpDir;
 }
 
 void
@@ -158,9 +160,9 @@ TestSqlCollectionLocation::init()
     m_storage->query( "INSERT INTO genres(id, name) VALUES (1, 'genre1');" );
     m_storage->query( "INSERT INTO years(id, name) VALUES (1, '1');" );
 
-    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (1, -1, '." + m_tmpDir->path() + "/ab/')");
-    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (2, -1, '." + m_tmpDir->path() + "/b/')");
-    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (3, -1, '." + m_tmpDir->path() + "/c/')");
+    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (1, -1, '." + s_tmpDir->path() + "/ab/')");
+    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (2, -1, '." + s_tmpDir->path() + "/b/')");
+    m_storage->query( "INSERT INTO directories(id,deviceid,dir) VALUES (3, -1, '." + s_tmpDir->path() + "/c/')");
 
     m_storage->query( QString( "INSERT INTO urls(id, deviceid, rpath, uniqueid, directory ) VALUES (1, -1, '%1', 'uid://1', 1);" ).arg( setupFileInTempDir( "ab/IDoNotExist.mp3" ) ) );
     m_storage->query( QString( "INSERT INTO urls(id, deviceid, rpath, uniqueid, directory ) VALUES (2, -1, '%1', 'uid://2', 2);" ).arg( setupFileInTempDir( "b/IDoNotExistAsWell.mp3") ) );
@@ -220,7 +222,7 @@ TestSqlCollectionLocation::testOrganizingCopiesLabels()
             MyOrganizeCollectionDelegate *delegate = new MyOrganizeCollectionDelegate();
             delegate->overwrite = true;
             delegate->migrate = true;
-            delegate->dests.insert( track, m_tmpDir->path() + "b/IDoNotExist.mp3" );
+            delegate->dests.insert( track, s_tmpDir->path() + "b/IDoNotExist.mp3" );
             dest->setOrganizeCollectionDelegateFactory( new MyOrganizeCollectionDelegateFactory( delegate ) );
         }
 
@@ -260,7 +262,7 @@ TestSqlCollectionLocation::testCopyTrackToDirectoryWithExistingTracks()
 QString
 TestSqlCollectionLocation::setupFileInTempDir( const QString &relativeName )
 {
-    QString absoluteName = m_tmpDir->path() + '/' + relativeName;
+    QString absoluteName = s_tmpDir->path() + '/' + relativeName;
 
     //TODO: unix specific
     //create directory where necessary
@@ -272,7 +274,7 @@ TestSqlCollectionLocation::setupFileInTempDir( const QString &relativeName )
     }
     else
     {
-        qDebug() << "huh? index was " << index << " relative name was " << relativeName << " tmpDir " << m_tmpDir->path();
+        qDebug() << "huh? index was " << index << " relative name was " << relativeName << " tmpDir " << s_tmpDir->path();
     }
 
     QProcess::execute( "touch", QStringList() << absoluteName );

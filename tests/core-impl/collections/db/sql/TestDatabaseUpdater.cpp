@@ -27,19 +27,22 @@
 
 QTEST_MAIN( DatabaseUpdaterTest )
 
+QTemporaryDir *DatabaseUpdaterTest::s_tmpDir = nullptr;
 
 DatabaseUpdaterTest::DatabaseUpdaterTest()
     : QObject()
 {
+    std::atexit([]() { delete DatabaseUpdaterTest::s_tmpDir; } );
 }
 
 void
 DatabaseUpdaterTest::initTestCase()
 {
-    m_tmpDir = new QTemporaryDir();
-    QVERIFY( m_tmpDir->isValid() );
+    if( !s_tmpDir )
+        s_tmpDir = new QTemporaryDir();
+    QVERIFY( s_tmpDir->isValid() );
     m_storage = QSharedPointer<MySqlEmbeddedStorage>( new MySqlEmbeddedStorage() );
-    QVERIFY( m_storage->init( m_tmpDir->path() ) );
+    QVERIFY( m_storage->init( s_tmpDir->path() ) );
     m_collection = new Collections::SqlCollection( m_storage );
 }
 
@@ -47,7 +50,6 @@ void
 DatabaseUpdaterTest::cleanupTestCase()
 {
     delete m_collection;
-    delete m_tmpDir;
 }
 
 void

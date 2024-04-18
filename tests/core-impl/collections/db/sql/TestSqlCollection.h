@@ -49,7 +49,7 @@ private:
     Collections::SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpmMock;
     QSharedPointer<MySqlEmbeddedStorage> m_storage;
-    QTemporaryDir *m_tmpDir;
+    static QTemporaryDir *s_tmpDir;
 };
 
 #endif // TESTSQLCOLLECTION_H
