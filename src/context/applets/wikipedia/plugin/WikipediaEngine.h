@@ -36,6 +36,7 @@ class WikipediaEngine : public QObject
     Q_PROPERTY(SelectionType selection READ selection WRITE setSelection NOTIFY selectionChanged)
     Q_PROPERTY(QString title READ title NOTIFY titleChanged)
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
+    Q_PROPERTY(bool pauseState READ pauseState WRITE setPauseState)
 
 public:
     enum SelectionType
@@ -58,6 +59,8 @@ public:
     bool busy() const { return m_busy; }
     SelectionType selection() const;
     bool setSelection( SelectionType type ); // returns true if selection is changed
+    bool pauseState() const;
+    void setPauseState( const bool state );
     QString title() const { return m_title; }
     QString language() const { return preferredLangs.first(); }
     void setLanguage( const QString &language );
@@ -108,6 +111,7 @@ private:
     QString m_page;
     QString m_message;
     bool m_busy;
+    bool m_pauseState;
     QString m_title;
     QString m_css;
 

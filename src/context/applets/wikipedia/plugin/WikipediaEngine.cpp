@@ -40,6 +40,7 @@ WikipediaEngine::WikipediaEngine( QObject* parent )
     : QObject( parent )
     , currentSelection( Artist )
     , useMobileVersion( false )
+    , m_pauseState( false )
 {
     preferredLangs = Amarok::config("Wikipedia Applet").readEntry( "PreferredLang", QStringList() << "en" );
 
@@ -336,6 +337,8 @@ WikipediaEngine::_parseListingResult( const QUrl &url,
 void
 WikipediaEngine::_checkRequireUpdate( Meta::TrackPtr track )
 {
+    if( m_pauseState )
+        return;
     if( !track )
         return;
 
@@ -381,6 +384,9 @@ void
 WikipediaEngine::_stopped()
 {
     DEBUG_BLOCK
+
+    if( m_pauseState )
+        return;
 
     clear();
 //     dataContainer->setData( "stopped", 1 );
@@ -828,6 +834,20 @@ WikipediaEngine::setBusy(bool busy)
 
     m_busy = busy;
     Q_EMIT busyChanged();
+}
+
+bool
+WikipediaEngine::pauseState() const
+{
+    return m_pauseState;
+}
+
+void
+WikipediaEngine::setPauseState( const bool state )
+{
+    m_pauseState = state;
+    if( !m_pauseState )
+        _checkRequireUpdate(  The::engineController()->currentTrack() );
 }
 
 void

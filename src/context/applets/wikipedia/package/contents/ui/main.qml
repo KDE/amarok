@@ -65,6 +65,18 @@ AmarokQml.Applet {
 
                 onClicked: {WikipediaEngine.message = ""; WikipediaEngine.reloadWikipedia() }
             }
+            Button {
+                icon.name: "media-playback-pause"
+                enabled: !content.loading
+                Layout.alignment: Qt.AlignLeft
+                ToolTip.text: i18n("Pause") //TODO better string when not freeze
+                ToolTip.visible: hovered
+                ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+                hoverEnabled: true
+                checkable: true
+
+                onToggled: WikipediaEngine.pauseState = checked
+            }
             Slider {
                 from: 0
                 value: content.scrollPosition.y
