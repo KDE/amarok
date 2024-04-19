@@ -139,11 +139,16 @@ private Q_SLOTS:
      */
     void testCrossRenaming();
 
+    /** Test the partial update scan functionality to ensure e.g. correct handling
+     *  of paths (BR: 475528)
+     */
+    void testPartialUpdate();
+
     void slotCollectionUpdated();
 
 private:
     void fullScanAndWait();
-    void incrementalScanAndWait();
+    void incrementalScanAndWait( const QList<QUrl> &paths = QList<QUrl>() );
     void importAndWait( QIODevice* import );
 
     void waitScannerFinished();

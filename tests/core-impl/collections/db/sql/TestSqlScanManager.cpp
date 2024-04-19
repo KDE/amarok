@@ -1071,6 +1071,64 @@ TestSqlScanManager::testCrossRenaming()
     QCOMPARE( track->playableUrl().path(), path1 );
 }
 
+void
+TestSqlScanManager::testPartialUpdate()
+{
+    Meta::FieldHash values;
+    Meta::AlbumPtr album;
+    // Create two files with similar paths and check that they don't get mixed, BR: 475528
+
+    values.insert( Meta::valUniqueId, QVariant("1dc7022c52a3e4c51b46577da9b3c8fd") ); //fake uid
+    values.insert( Meta::valUrl, QVariant("Pop/Thriller Special Edition/Thriller - 11 - Michael Jackson - Track11.mp3") );
+    values.insert( Meta::valTitle, QVariant("Someone In The Dark") );
+    values.insert( Meta::valArtist, QVariant("M. Jackson") );
+    values.insert( Meta::valAlbum, QVariant("Thriller (Special Edition)") );
+    values.insert( Meta::valYear, QVariant(1982) );
+    values.insert( Meta::valTrackNr, QVariant(11) );
+
+    createTrack( values );
+
+    values.clear();
+    values.insert( Meta::valUniqueId, QVariant("1dc7022c52a3e4c51b46577da9b3c8ff") );
+    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 01 - Michael Jackson - Track01.mp3") );
+    values.insert( Meta::valTitle, QVariant("Wanna Be Startin' Somethin'") );
+    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
+    values.insert( Meta::valAlbum, QVariant("Thriller") );
+    values.insert( Meta::valYear, QVariant(1982) );
+    values.insert( Meta::valTrackNr, QVariant(1) );
+    values.insert( Meta::valPlaycount, QVariant(1) );
+    createTrack( values );
+
+    // Do some partial scanning and statistic generating for the tracks
+    QList<QUrl> directoryWatcherSimulator;
+    directoryWatcherSimulator << QUrl::fromUserInput( m_tmpCollectionDir->path() + "/Pop" );
+    incrementalScanAndWait( directoryWatcherSimulator );
+    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
+    QCOMPARE( album->tracks().count(), 1 );
+
+    album = m_collection->registry()->getAlbum( "Thriller (Special Edition)", "M. Jackson" );
+    QVERIFY( album );
+    QCOMPARE( album->tracks().count(), 1 );
+    album->tracks().first()->finishedPlaying( 1.0 );
+    QCOMPARE( album->tracks().first()->statistics()->playCount(), 1 );
+
+    // Updating mtime for the directory triggered the bug this test was made for; do it here by creating a file within
+    QFile f(m_tmpCollectionDir->path() + "/Pop/Thriller/touch");
+    f.open(QIODevice::WriteOnly);
+    f.close();
+    directoryWatcherSimulator.clear();
+    directoryWatcherSimulator << QUrl::fromUserInput( m_tmpCollectionDir->path() + "/Pop/Thriller" );
+    incrementalScanAndWait( directoryWatcherSimulator );
+
+    // Both should still be there
+    album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
+    QCOMPARE( album->tracks().count(), 1 );
+    album = m_collection->registry()->getAlbum( "Thriller (Special Edition)", "M. Jackson" );
+    QVERIFY( album );
+    QCOMPARE( album->tracks().count(), 1 );
+}
 
 void
 TestSqlScanManager::slotCollectionUpdated()
@@ -1090,7 +1148,7 @@ TestSqlScanManager::fullScanAndWait()
 }
 
 void
-TestSqlScanManager::incrementalScanAndWait()
+TestSqlScanManager::incrementalScanAndWait( const QList<QUrl> &paths )
 {
     // incremental scans use the modification time of the file system.
     // this time is only in seconds, so to be sure that the incremental scan
@@ -1099,7 +1157,17 @@ TestSqlScanManager::incrementalScanAndWait()
 
     QScopedPointer<Capabilities::CollectionScanCapability> csc( m_collection->create<Capabilities::CollectionScanCapability>());
     if( csc )
-        csc->startIncrementalScan();
+    {
+        if( paths.length() != 0 )
+        {
+        //qDebug() << paths;
+
+        m_collection->scanManager()->requestScan( paths,
+                                                  GenericScanManager::PartialUpdateScan );
+        }
+        else
+            csc->startIncrementalScan(); // if path provided, a PartialUpdateScan on the path is run instead of full UpdateScan
+    }
 
     waitScannerFinished();
 }
