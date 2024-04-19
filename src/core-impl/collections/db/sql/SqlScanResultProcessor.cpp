@@ -592,7 +592,7 @@ SqlScanResultProcessor::deletedDirectories() const
         QString dir = res.at( 1 );
         // select all child directories
         query = QString( "SELECT id, deviceid, dir FROM directories WHERE deviceid = %1 "
-                "AND dir LIKE '%2_%'" ).arg( deviceId ).arg( storage->escape( dir ) );
+                "AND dir LIKE '%2/%'" ).arg( deviceId ).arg( storage->escape( dir ) );
         res = storage->query( query );
         for( int i = 0; i < res.count(); )
         {
