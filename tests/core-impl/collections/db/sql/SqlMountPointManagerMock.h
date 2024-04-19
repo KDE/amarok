@@ -50,10 +50,19 @@ public:
 
     QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const override
     {
+        // This and getRelativePath include some really mystic string operations that try to replicate real
+        // MountPointManager and keep those tests working that should
         if( deviceId == -1 )
+        {
+            //replicate MountPointManager behaviour, which always adds trailing separator to directory absolute paths
+            if( QFileInfo( relativePath ).isDir() )
+                return relativePath + QLatin1Char('/');
             return relativePath.right( relativePath.length() -1 );
+        }
         else
         {
+            if( QFileInfo( relativePath.right( relativePath.length() ) ).isDir() )
+                return m_mountPoints.value( deviceId ) + relativePath.right( relativePath.length() ) + QLatin1Char('/');
             return m_mountPoints.value( deviceId ) + relativePath.right( relativePath.length() -1 );
         }
     }
@@ -61,10 +70,17 @@ public:
     QString getRelativePath( const int deviceId, const QString& absolutePath ) const override
     {
         if( deviceId == -1 )
+        {
+            //replicate MountPointManager behaviour, which uses QDir::relativeFilePath, which strips trailing separator
+            if (absolutePath.length() > 1 && absolutePath.endsWith(QLatin1Char('/')))
+                return absolutePath.chopped( 1 );
             return '.' + absolutePath;
+        }
         else
         {
             QString mp = m_mountPoints.value( deviceId );
+            if (absolutePath.length() > 1 && absolutePath.endsWith(QLatin1Char('/')))
+                return '.' + absolutePath.right( mp.length() ).chopped( 1 );
             return '.' + absolutePath.right( mp.length() );
         }
     }
