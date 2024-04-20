@@ -20,6 +20,8 @@ VERSION 2.9.90
    * Fix playlist inline play control slider knob & draw playlist delegate icons with
      higher DPI.
    * Fix searching for composer and album info for local files in Wikipedia applet.
+   * Don't remove wrong songs from collection when contents of a folder, whose name is
+     a substring of another collection folder, are changed (BR 475528)
 
 VERSION 2.9.82
   FEATURES:
