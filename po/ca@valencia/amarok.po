@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-04-18 01:36+0000\n"
-"PO-Revision-Date: 2024-03-14 21:34+0100\n"
+"PO-Revision-Date: 2024-04-17 09:44+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -322,7 +322,7 @@ msgstr "Menú d'Amarok"
 #: ActionClasses.cpp:179
 #, kde-format
 msgid "Play/Pause"
-msgstr "Reproducció/Pausa"
+msgstr "Reproduïu o pausa"
 
 #: ActionClasses.cpp:316
 #, kde-format
@@ -477,8 +477,8 @@ msgid ""
 "If set, dynamic mode will be on, and tracks will be added according to the "
 "dynamic playlist specified."
 msgstr ""
-"Si se selecciona, s'iniciarà el mode dinàmic i les peces s'afegiran segons "
-"les especificacions de la llista de reproducció dinàmica."
+"Si s'activa, el mode dinàmic s'iniciarà, i les peces s'afegiran segons les "
+"especificacions de la llista de reproducció dinàmica."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:53
@@ -492,7 +492,7 @@ msgstr "Duplica les peces en mode dinàmic."
 msgid ""
 "If set, tracks added in the dynamic mode are allowed to have duplicates."
 msgstr ""
-"Si se selecciona, les peces afegides en el mode dinàmic podran estar "
+"Si està marcada, les peces afegides en el mode dinàmic podran estar "
 "duplicades."
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -572,7 +572,7 @@ msgid ""
 "If set, Amarok's manually saved playlists will contain a relative path to "
 "each track, not an absolute path."
 msgstr ""
-"Si se selecciona, les llistes de reproducció guardades manualment amb Amarok "
+"Si està marcada, les llistes de reproducció guardades manualment amb Amarok "
 "contindran el camí relatiu de la peça, no l'absolut."
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -634,7 +634,7 @@ msgstr "Activa les animacions en reduir les miniaplicacions contextuals"
 #, kde-format
 msgid "If set, context applets will collapse using animations."
 msgstr ""
-"Si se selecciona, les miniaplicacions contextuals es reduiran utilitzant "
+"Si està marcada, les miniaplicacions contextuals es reduiran utilitzant "
 "animacions."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -648,7 +648,7 @@ msgstr "Si en organitzar els fitxers se sobreescriuran els fitxers existents."
 #, kde-format
 msgid "If set, Organize files will overwrite any existing destination."
 msgstr ""
-"Si se selecciona, en organitzar els fitxers se sobreescriuran els fitxers de "
+"Si està marcada, en organitzar els fitxers se sobreescriuran els fitxers de "
 "destinació que ja existisquen."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -666,7 +666,7 @@ msgid ""
 "If set, Organize files will move The in artist names to the end as in "
 "\"Beatles, The\"."
 msgstr ""
-"Si se selecciona, en organitzar els fitxers es mourà «The» del nom dels "
+"Si està marcada, en organitzar els fitxers es mourà «The» del nom dels "
 "artistes al final com en «Beatles, The»."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -684,8 +684,8 @@ msgstr ""
 msgid ""
 "If set, Organize files will replace spaces in filenames with underscores."
 msgstr ""
-"Si se selecciona, en organitzar els fitxers se substituiran els espais en "
-"els noms de fitxer per caràcters de subratllat."
+"Si està marcada, en organitzar els fitxers se substituiran els espais en els "
+"noms de fitxer per caràcters de subratllat."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:139
@@ -700,7 +700,7 @@ msgstr ""
 #, kde-format
 msgid "If set, Organize files will use cover art as folder icons."
 msgstr ""
-"Si se selecciona, en organitzar els fitxers s'utilitzarà la caràtula com a "
+"Si està marcada, en organitzar els fitxers s'utilitzarà la caràtula com a "
 "icona de la carpeta."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -736,7 +736,7 @@ msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "vfat filesystems (such as ':', '*' and '?')."
 msgstr ""
-"Si se selecciona, en organitzar els fitxers se substituiran tots aquells "
+"Si està marcada, en organitzar els fitxers se substituiran tots aquells "
 "caràcters no compatibles amb els sistemes de fitxers vfat (com ara «:», «*» "
 "i «?»)."
 
@@ -757,7 +757,7 @@ msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "the 7-bit ASCII character set."
 msgstr ""
-"Si se selecciona, en organitzar els fitxers se substituiran tots aquells "
+"Si està marcada, en organitzar els fitxers se substituiran tots aquells "
 "caràcters no compatibles amb el joc de caràcters ASCII de 7 bits."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -773,7 +773,7 @@ msgstr ""
 msgid ""
 "If set, Organize files will rename files according to a custom format string."
 msgstr ""
-"Si se selecciona, en organitzar els fitxers es canviaran de nom d'acord amb "
+"Si està marcada, en organitzar els fitxers es canviaran de nom d'acord amb "
 "una cadena de format personalitzada."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -791,8 +791,8 @@ msgid ""
 "If the custom filename scheme is enabled, then Organize files will rename "
 "files according to this format string."
 msgstr ""
-"Si se selecciona el patró d'anomenat de fitxers a mida, aleshores en "
-"organitzar els fitxers es canviaran de nom d'acord amb esta cadena de format."
+"Si es marca el patró d'anomenat de fitxers a mida, aleshores en organitzar "
+"els fitxers es canviaran de nom d'acord amb esta cadena de format."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:169
@@ -916,7 +916,7 @@ msgstr "Mode equalitzador - 0 = inactiu, 1 a n = núm. d'ambient"
 #: amarokconfig.kcfg:221
 #, kde-format
 msgid "When enabled, an equalizer plugin filters the audio stream."
-msgstr "Si se selecciona, un equalitzador filtrarà el flux d'àudio."
+msgstr "Si està marcada, un equalitzador filtrarà el flux d'àudio."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:225
@@ -1228,7 +1228,7 @@ msgstr "Reprén la reproducció de l'última peça escoltada a l'inici"
 #, kde-format
 msgid "If set, Amarok resumes playback of the last played track on startup."
 msgstr ""
-"Si se selecciona, Amarok reprén la reproducció de l'última peça escoltada a "
+"Si està marcada, Amarok reprén la reproducció de l'última peça escoltada a "
 "l'inici."
 
 #. i18n: ectx: label, entry, group (Session)
@@ -2949,7 +2949,7 @@ msgstr "Configura la gestió de metadades"
 #: configdialog/ConfigDialog.cpp:62
 #, kde-format
 msgid "Playback"
-msgstr "Reproducció"
+msgstr "Reproduïu"
 
 #: configdialog/ConfigDialog.cpp:62
 #, kde-format
@@ -3099,7 +3099,7 @@ msgid ""
 "Check to enable the use of an external database. By default there is already "
 "an embedded MySQL database running."
 msgstr ""
-"Seleccioneu-la per a activar l'ús d'una base de dades externa. De manera "
+"Marqueu-la per a activar l'ús d'una base de dades externa. De manera "
 "predeterminada, ja hi ha una base de dades MySQL incrustada en execució."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseServer)
@@ -3251,8 +3251,7 @@ msgstr "Opcions generals"
 #: configdialog/dialogs/GeneralConfig.ui:32
 #, kde-format
 msgid "Check to enable the Amarok system tray icon."
-msgstr ""
-"Seleccioneu-la per a activar la icona d'Amarok a la safata del sistema."
+msgstr "Marqueu-la per a activar la icona d'Amarok a la safata del sistema."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowTrayIcon)
 #: configdialog/dialogs/GeneralConfig.ui:35
@@ -3267,7 +3266,7 @@ msgstr "Mostra la &icona en la safata del sistema"
 #, kde-format
 msgid "Check to enable the automatic retrieval of cover art from the Internet."
 msgstr ""
-"Seleccioneu-la per a activar la recuperació automàtica de les caràtules des "
+"Marqueu-la per a activar la recuperació automàtica de les caràtules des "
 "d'Internet."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoGetCoverArt)
@@ -3283,7 +3282,7 @@ msgstr "Recupera la caràtula automàticament"
 #, kde-format
 msgid "Check to enable animations when context applets collapse."
 msgstr ""
-"Seleccioneu-la per a activar les animacions en reduir les miniaplicacions "
+"Marqueu-la per a activar les animacions en reduir les miniaplicacions "
 "contextuals."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowBrowserBackgroundImage)
@@ -3304,8 +3303,8 @@ msgstr "Opcions de la llista de reproducció"
 msgid ""
 "Check to make the playlist scroll so the current track is always visible."
 msgstr ""
-"Seleccioneu-la per a desplaçar la llista de reproducció de manera que la "
-"peça actual siga sempre visible."
+"Marqueu-la per a desplaçar la llista de reproducció de manera que la peça "
+"actual siga sempre visible."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoScrollPlaylist)
 #: configdialog/dialogs/GeneralConfig.ui:87
@@ -3537,7 +3536,7 @@ msgid ""
 "Character Set Detector to attempt to automatically guess the\n"
 "character sets used in ID3 tags."
 msgstr ""
-"Si se selecciona, Amarok utilitzarà el detector del joc de caràcters\n"
+"Si està marcada, Amarok utilitzarà el detector del joc de caràcters\n"
 "de Mozilla per a intentar deduir automàticament el joc de caràcters\n"
 "utilitzat en les etiquetes ID3."
 
@@ -3551,7 +3550,7 @@ msgstr "&Activa la detecció del joc de caràcters en les etiquetes ID3"
 #: configdialog/dialogs/MetadataConfig.ui:97
 #, kde-format
 msgid "Statistics Synchronization"
-msgstr "Sincronització d'estadístiques"
+msgstr "Sincronitzeu les estadístiques"
 
 #. i18n: ectx: property (text), widget (QLabel, m_syncedCollectionsLabel)
 #: configdialog/dialogs/MetadataConfig.ui:103
@@ -3604,8 +3603,8 @@ msgid ""
 "Check to enable the On-Screen-Display. The OSD briefly displays track data "
 "when a new track is played."
 msgstr ""
-"Seleccioneu-la per a activar el visor en pantalla. Es visualitzarà breument "
-"la informació de la peça nova quan comence a reproduir-se."
+"Marqueu-la per a activar el visor en pantalla. Es visualitzarà breument la "
+"informació de la peça nova quan comence a reproduir-se."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:29
@@ -3667,7 +3666,7 @@ msgstr "La pantalla que hauria de mostrar OSD."
 #: configdialog/dialogs/NotificationsConfig.ui:136
 #, kde-format
 msgid "Check to enable custom colors for the On-Screen-Display."
-msgstr "Seleccioneu-la per a activar els colors a mida del visor en pantalla."
+msgstr "Marqueu-la per a activar els colors a mida del visor en pantalla."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdUseCustomColors)
 #: configdialog/dialogs/NotificationsConfig.ui:139
@@ -3700,7 +3699,7 @@ msgstr "Feu clic per a seleccionar el color del text d'OSD."
 #, kde-format
 msgid "If checked, enables translucency if supported by your desktop system."
 msgstr ""
-"Si se selecciona, habilita la translucidesa si està admesa pel sistema "
+"Si està marcada, s'habilitarà la translucidesa si està admesa pel sistema "
 "d'escriptori."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdUseTranslucency)
@@ -3725,7 +3724,7 @@ msgstr "%"
 #: configdialog/dialogs/NotificationsConfig.ui:274
 #, kde-format
 msgid "Check to use the system notification."
-msgstr "Seleccioneu-la per a utilitzar les notificacions del sistema."
+msgstr "Marqueu-la per a utilitzar les notificacions del sistema."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_KNotifyEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:277
@@ -3747,7 +3746,7 @@ msgid ""
 "If checked, Amarok will<br>resume playback from where you left it the "
 "previous session -- just like a tape-player."
 msgstr ""
-"Si se selecciona, Amarok<br/>reprendrà la reproducció on la vàreu deixar en "
+"Si està marcada, Amarok<br/>reprendrà la reproducció on la vàreu deixar en "
 "l'anterior sessió -- tal com passaria amb un reproductor de cintes."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ResumePlayback)
@@ -3766,10 +3765,10 @@ msgid ""
 "to the playlist using mouse, pressing Enter or when the playlist is "
 "replaced. Does nothing if something is already playing.</html>"
 msgstr ""
-"<html>Seleccioneu esta opció per a iniciar la reproducció quan s'afigen una "
-"o més peces a la llista de reproducció utilitzant el ratolí, prement "
-"«Retorn» o quan la llista de reproducció se substituïsca. No farà res si ja "
-"hi ha alguna cosa en reproducció.</html>"
+"<html>Marqueu esta opció per a iniciar la reproducció quan s'afigen una o "
+"més peces a la llista de reproducció utilitzant el ratolí, prement «Retorn» "
+"o quan la llista de reproducció se substituïsca. No farà res si ja hi ha "
+"alguna cosa en reproducció.</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_StartPlayingOnAdd)
 #: configdialog/dialogs/PlaybackConfig.ui:42
@@ -3819,8 +3818,8 @@ msgid ""
 "If enabled, Amarok will prevent the system from automatically suspending if "
 "it is playing a track"
 msgstr ""
-"Si se selecciona, Amarok evitarà que el sistema se suspenga automàticament "
-"si està reproduint una peça"
+"Si està marcada, Amarok evitarà que el sistema se suspenga automàticament si "
+"està reproduint una peça"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_InhibitSuspend)
 #: configdialog/dialogs/PlaybackConfig.ui:165
@@ -5303,7 +5302,7 @@ msgstr "S'està carregant la col·lecció remota des de l'amfitrió %1"
 #: core-impl/collections/daap/DaapCollection.cpp:271
 #, kde-format
 msgid "Music share at %1"
-msgstr "Compartició de música a %1"
+msgstr "Compartiu la música a %1"
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:243
 #, kde-format
@@ -6399,7 +6398,7 @@ msgstr "Ubicació de guardada:"
 #, kde-format
 msgid "When checked, Amarok will automatically scan the podcast for updates"
 msgstr ""
-"Si se selecciona, Amarok explorarà automàticament el pòdcast per a "
+"Si està marcada, Amarok explorarà automàticament el pòdcast per a "
 "actualitzacions"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoFetchCheck)
@@ -6452,7 +6451,7 @@ msgstr "Flux de dades o descarrega davall &demanda"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:155
 #, kde-format
 msgid "If checked, Amarok will throw away old podcast episodes"
-msgstr "Si se selecciona, Amarok llençarà els episodis de pòdcast antics"
+msgstr "Si està marcada, Amarok llençarà els episodis de pòdcast antics"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_purgeCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:158
@@ -8402,7 +8401,7 @@ msgstr ""
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
 msgstr ""
 "E&xplora les carpetes recursivament (requerix una exploració completa si "
-"s'ha seleccionat de nou)"
+"s'ha marcat de nou)"
 
 #: dialogs/CollectionSetup.cpp:81
 #, kde-format
@@ -8412,7 +8411,7 @@ msgstr "&Vigila els canvis en les carpetes"
 #: dialogs/CollectionSetup.cpp:90
 #, kde-format
 msgid "If selected, Amarok will read all subfolders."
-msgstr "Si se selecciona, Amarok llegirà totes les subcarpetes."
+msgstr "Si està marcada, Amarok llegirà totes les subcarpetes."
 
 #: dialogs/CollectionSetup.cpp:91
 #, kde-format
@@ -8420,7 +8419,7 @@ msgid ""
 "If selected, the collection folders will be watched for changes.\n"
 "The watcher will not notice changes behind symbolic links."
 msgstr ""
-"Si se selecciona, es vigilaran els canvis en les carpetes de la col·lecció.\n"
+"Si està marcada, es vigilaran els canvis en les carpetes de la col·lecció.\n"
 "El vigilant no s'adonarà dels canvis darrere els enllaços simbòlics."
 
 #: dialogs/CollectionSetup.cpp:189
@@ -8612,7 +8611,7 @@ msgid ""
 "If checked, files will be permanently removed instead of being placed in the "
 "Trash Bin"
 msgstr ""
-"Si se selecciona, els fitxers s'eliminaran definitivament en comptes de "
+"Si està marcada, els fitxers s'eliminaran definitivament en comptes de "
 "llençar-los a dins de la paperera"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
@@ -8625,8 +8624,8 @@ msgid ""
 "<p><em>Use this option with caution</em>: Most filesystems are unable to "
 "reliably undelete deleted files.</p></qt>"
 msgstr ""
-"<qt><p>Si se selecciona esta casella, els fitxers s'<b>eliminaran "
-"definitivament</b> en comptes de llençar-los a dins de la paperera.</p>\n"
+"<qt><p>Si està marcada, els fitxers s'<b>eliminaran definitivament</b> en "
+"comptes de llençar-los a dins de la paperera.</p>\n"
 "\n"
 "<p><em>Utilitzeu esta opció amb cautela</em>: La majoria dels sistemes de "
 "fitxers són incapaços de recuperar un fitxer suprimit.</p></qt>"
@@ -9144,7 +9143,7 @@ msgstr "Vista prèvia de la destinació"
 #, kde-format
 msgid "If checked, overwrite files of the same name without asking."
 msgstr ""
-"Si se selecciona, se sobreescriuran els fitxers amb el mateix nom sense "
+"Si està marcada, se sobreescriuran els fitxers amb el mateix nom sense "
 "demanar confirmació."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, overwriteCheck)
@@ -9171,7 +9170,7 @@ msgstr ""
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Seleccioneu-la per a "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Marqueu-la per a "
 "sobreescriure automàticament els fitxers amb el mateix nom. <span style=\" "
 "font-style:italic;\">(Avís: La sobreescriptura no es pot desfer)</span></p></"
 "body></html>"
@@ -9192,8 +9191,7 @@ msgstr "Substitució de caràcters"
 #: dialogs/OrganizeCollectionOptions.ui:35
 #, kde-format
 msgid "If checked, convert spaces to underscores."
-msgstr ""
-"Si se selecciona, es convertiran els espais en caràcters de subratllat."
+msgstr "Si està marcada, es convertiran els espais en caràcters de subratllat."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, spaceCheck)
 #: dialogs/OrganizeCollectionOptions.ui:38
@@ -9202,9 +9200,8 @@ msgid ""
 "If checked all spaces will be replaced with underscores in the file names. "
 "If not, spaces will be left as they are."
 msgstr ""
-"Si se selecciona, tots els espais se substituiran per caràcters de "
-"subratllat en els noms de fitxer. Si no, els espais es deixaran tal com "
-"estan."
+"Si està marcada, tots els espais se substituiran per caràcters de subratllat "
+"en els noms de fitxer. Si no, els espais es deixaran tal com estan."
 
 #. i18n: ectx: property (text), widget (QCheckBox, spaceCheck)
 #: dialogs/OrganizeCollectionOptions.ui:41
@@ -9217,7 +9214,7 @@ msgstr "Substituïx els espais per g&uions baixos"
 #, kde-format
 msgid "If checked, append ', The' to the artists' names starting with 'The'."
 msgstr ""
-"Si se selecciona, s'afegirà «, The» als noms dels artistes que comencen per "
+"Si està marcada, s'afegirà «, The» als noms dels artistes que comencen per "
 "«The»."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ignoreTheCheck)
@@ -9227,7 +9224,7 @@ msgid ""
 "If checked all artists starting with \"The\" will have it moved to the end. "
 "Example, \"The Beatles\" would become \"Beatles, The\""
 msgstr ""
-"Si se selecciona, tots els artistes que comencen per «The», este es mourà al "
+"Si està marcada, tots els artistes que comencen per «The», este es mourà al "
 "final del nom. Per exemple, «The Beatles» esdevindria «Beatles, The»"
 
 #. i18n: ectx: property (text), widget (QCheckBox, ignoreTheCheck)
@@ -9248,7 +9245,7 @@ msgstr ""
 "Substituïx els caràcters incompatibles amb els sistemes de fitxers MS-DOS/"
 "VFAT per caràcters de subratllat.\n"
 "\n"
-"La majoria de la gent pot deixar esta opció seleccionada."
+"La majoria de la gent pot deixar esta opció marcada."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:80
@@ -9261,7 +9258,7 @@ msgid ""
 "Most people can leave this option enabled as it ensures copying to media "
 "devices will function correctly."
 msgstr ""
-"Si se selecciona, els caràcters incompatibles amb els sistemes de fitxers MS-"
+"Si està marcada, els caràcters incompatibles amb els sistemes de fitxers MS-"
 "DOS/VFAT se substituiran per caràcters de subratllat. Els caràcters "
 "incompatibles inclouen «|», «?», «*», «<», «\"», «:», «>», «+», «[», «]», i "
 "els caràcters de control Unicode.\n"
@@ -9312,7 +9309,7 @@ msgstr ""
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Si se selecciona, tots els "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Si està marcada, tots els "
 "caràcters no ASCII se substituiran per subratllats.<span style=\" font-"
 "weight:600;\"> </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
@@ -9320,14 +9317,14 @@ msgstr ""
 "weight:600;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-"
-"weight:600;\">No seleccioneu esta opció si teniu caràcters no anglesos en "
-"les vostres etiquetes. </span></p>\n"
+"weight:600;\">No marqueu esta opció si teniu caràcters no anglesos en les "
+"vostres etiquetes. </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">La majoria de la gent pot "
-"deixar esta opció desseleccionada.</p></body></html>"
+"deixar esta opció desmarcada.</p></body></html>"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, asciiCheck)
 #: dialogs/OrganizeCollectionOptions.ui:113
@@ -9361,17 +9358,17 @@ msgstr ""
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Si se selecciona, tots els "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Si està marcada, tots els "
 "caràcters no ASCII se substituiran per subratllats.<span style=\" font-"
-"weight:600;\"> No seleccioneu esta opció si teniu caràcters no anglesos en "
-"les vostres etiquetes. </span></p>\n"
+"weight:600;\"> No marqueu esta opció si teniu caràcters no anglesos en les "
+"vostres etiquetes. </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">La majoria de la gent pot "
-"deixar esta opció <span style=\" font-style:italic;\">desseleccionada.</"
-"span></p> </body></html>"
+"deixar esta opció <span style=\" font-style:italic;\">desmarcada.</span></p> "
+"</body></html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, asciiCheck)
 #: dialogs/OrganizeCollectionOptions.ui:116
@@ -9985,14 +9982,13 @@ msgstr "S'està generant la llista de reproducció..."
 #, kde-format
 msgctxt "Name of the \"AlbumPlay\" bias"
 msgid "Album play"
-msgstr "Reproducció d'àlbum"
+msgstr "Reproduïu l'àlbum"
 
 #: dynamic/biases/AlbumPlayBias.cpp:45
 #, kde-format
 msgctxt "Description of the \"AlbumPlay\" bias"
 msgid "The \"AlbumPlay\" bias adds tracks that belong to one album."
-msgstr ""
-"La ponderació «Reproducció d'àlbum» afig peces que pertanyen a un àlbum."
+msgstr "La ponderació «Reproduïu l'àlbum» afig peces que pertanyen a un àlbum."
 
 #: dynamic/biases/AlbumPlayBias.cpp:107
 #, kde-format
@@ -10335,7 +10331,7 @@ msgstr "Pop"
 #: dynamic/DynamicModel.cpp:928
 #, kde-format
 msgid "Album play"
-msgstr "Reproducció d'àlbum"
+msgstr "Reproduïu l'àlbum"
 
 #: dynamic/DynamicModel.cpp:938
 #, kde-format
@@ -10637,16 +10633,13 @@ msgid "The audio player by KDE"
 msgstr "El reproductor d'àudio creat per la comunitat KDE"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2013, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2024, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2013, l'escamot de desenvolupament d'Amarok"
+"(C) 2003-2024, l'escamot de desenvolupament d'Amarok"
 
 #: main.cpp:101
 #, kde-format
@@ -14770,7 +14763,7 @@ msgid ""
 msgstr ""
 "<html>En fer l'anàlisi musical de peces a Last.fm, es corregixen "
 "automàticament els errors comuns en les peces com l'artista, l'àlbum i el "
-"títol. Seleccioneu-la per a rebre una notificació quan es faça la correcció "
+"títol. Marqueu-la per a rebre una notificació quan es faça la correcció "
 "automàtica i què ha sigut</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
@@ -14786,8 +14779,8 @@ msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
 "updated to Last.fm now playing</html>"
 msgstr ""
-"<html>Seleccioneu-la si voleu que algunes peces no s'analitzen musicalment "
-"ni que s'actualitzen en «ara s'està reproduint» de Last.fm</html>"
+"<html>Activeu-la si voleu que algunes peces no s'analitzen musicalment ni "
+"que s'actualitzen en «ara s'està reproduint» de Last.fm</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
 #: services/lastfm/LastFmConfigWidget.ui:183
@@ -15213,7 +15206,7 @@ msgid ""
 "If you check this box, Amarok will periodically check for Magnatune database "
 "updates and download them automatically."
 msgstr ""
-"Si seleccioneu esta casella, Amarok comprovarà periòdicament si hi ha "
+"Si marqueu esta casella, Amarok comprovarà periòdicament si hi ha "
 "actualitzacions de la base de dades de Magnatune i les baixarà "
 "automàticament."
 
@@ -15513,9 +15506,9 @@ msgid ""
 "and download them automatically. You can always disable this option later in "
 "Magnatune service configuration."
 msgstr ""
-"Si seleccioneu l'opció següent, Amarok comprovarà si hi ha actualitzacions "
-"de Magnatune i les baixarà automàticament. Sempre podreu desseleccionar esta "
-"opció més tard en el servei de configuració de Magnatune."
+"Si marqueu l'opció següent, Amarok comprovarà si hi ha actualitzacions de "
+"Magnatune i les baixarà automàticament. Sempre podreu desmarcar esta opció "
+"més tard en el servei de configuració de Magnatune."
 
 #. i18n: ectx: property (text), widget (QPushButton, update)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:69
@@ -16704,9 +16697,9 @@ msgid ""
 msgstr ""
 "<b>Nota:</b> No hi ha cap codificador disponible. Si voleu transcodificar "
 "peces, instal·leu els paquets <i>ffmpeg</i> o <i>libav</i> (amb un embolcall "
-"de <i>ffmpeg</i>) amb els codificadors apropiats. Altrament, podeu "
-"seleccionar l'opció <i>Recorda esta elecció per a la propera vegada</i> per "
-"tal d'ometre este diàleg per a les transferències futures."
+"de <i>ffmpeg</i>) amb els codificadors apropiats. Altrament, podeu marcar "
+"l'opció <i>Recorda esta elecció per a la propera vegada</i> per tal d'ometre "
+"este diàleg per a les transferències futures."
 
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: transcoding/TranscodingAssistantDialog.ui:275
@@ -17160,37 +17153,3 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "buit"
-
-#~ msgid "Update Supported Languages"
-#~ msgstr "Actualitza els idiomes acceptats"
-
-#~ msgid "Get Supported Languages"
-#~ msgstr "Aconseguix idiomes acceptats"
-
-#~ msgid "Wikipedia"
-#~ msgstr "Viquipèdia"
-
-#~ msgid "Wikipedia: %1"
-#~ msgstr "Viquipèdia: %1"
-
-#~ msgid "Wikipedia General Settings"
-#~ msgstr "Configuració general de la Viquipèdia"
-
-#~ msgid "Wikipedia Language Settings"
-#~ msgstr "Configureu l'idioma de la Viquipèdia"
-
-#~ msgid ""
-#~ "Automatically download and install updates for the built-in scripts from "
-#~ "the Amarok website if available"
-#~ msgstr ""
-#~ "Descarrega i instal·la automàticament les actualitzacions dels scripts "
-#~ "integrats des del lloc web d'Amarok, si estan disponibles"
-
-#~ msgid "Automatically update built-in scripts"
-#~ msgstr "Actualitza automàticament els scripts integrats"
-
-#~ msgid "Browse, install, and uninstall scripts"
-#~ msgstr "Explora, instal·la, i desinstal·la scripts"
-
-#~ msgid "Manage Scripts"
-#~ msgstr "Gestiona scripts"

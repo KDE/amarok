@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-04-18 01:36+0000\n"
-"PO-Revision-Date: 2024-04-16 14:04\n"
+"PO-Revision-Date: 2024-04-19 15:22\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -10164,16 +10164,11 @@ msgid "The audio player by KDE"
 msgstr "由 KDE 打造的音频播放器"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2013, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2024, The Amarok Development Squad"
 msgstr ""
-"(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2013, The Amarok Development Squad"
 
 #: main.cpp:101
 #, kde-format
@@ -16433,21 +16428,3 @@ msgstr "艺人：%1"
 #, kde-format
 msgid "empty"
 msgstr "空"
-
-#~ msgid "Update Supported Languages"
-#~ msgstr "更新语言支持列表"
-
-#~ msgid "Get Supported Languages"
-#~ msgstr "获取语言支持列表"
-
-#~ msgid "Wikipedia"
-#~ msgstr "维基百科"
-
-#~ msgid "Wikipedia: %1"
-#~ msgstr "维基百科：%1"
-
-#~ msgid "Wikipedia General Settings"
-#~ msgstr "维基百科常规设置"
-
-#~ msgid "Wikipedia Language Settings"
-#~ msgstr "维基百科语言设置"
