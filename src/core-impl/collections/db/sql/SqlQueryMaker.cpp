@@ -52,9 +52,21 @@ class SqlWorkerThread : public QObject, public ThreadWeaver::Job
             delete m_queryMakerInternal;
         }
 
+        void deleteWhenReady()
+        {
+            // If the thread is deleted before completion, some flaky segfaults are encountered e.g. when defaultEnd of
+            // an already deleted thread is called. This fixes at least TestSqlQueryMaker::testDeleteQueryMakerWithRunningQuery,
+            // and might actually fix real-world crashes, too.
+            if( status() == Status_Queued || status() == Status_Running )
+                connect(this, &SqlWorkerThread::done, this, &SqlWorkerThread::deleteLater);
+            else
+                deleteLater();
+        }
+
         void requestAbort() override
         {
             m_aborted = true;
+            m_queryMakerInternal->requestAbort();
         }
 
         SqlQueryMakerInternal* queryMakerInternal() const
@@ -159,7 +171,8 @@ SqlQueryMaker::~SqlQueryMaker()
     abortQuery();
     if( d->worker )
     {
-        d->worker->deleteLater();
+        d->worker->deleteWhenReady();
+        d->worker = nullptr;
     }
     delete d;
 }

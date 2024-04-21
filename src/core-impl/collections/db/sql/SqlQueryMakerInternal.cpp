@@ -30,6 +30,7 @@ SqlQueryMakerInternal::SqlQueryMakerInternal( SqlCollection *collection )
     : QObject()
     , m_collection( collection )
     , m_queryType( QueryMaker::None )
+    , m_aborted( false )
 {
 }
 
@@ -44,14 +45,24 @@ SqlQueryMakerInternal::run()
     Q_ASSERT( !m_query.isEmpty() );
     if( !m_collection.isNull() )
     {
-        QStringList result = m_collection->sqlStorage()->query( m_query );
-        handleResult( result );
+        if( !m_aborted )
+        {
+            QStringList result = m_collection->sqlStorage()->query( m_query );
+            if( !m_aborted ) // Abort might be called while waiting for query to finish
+                handleResult( result );
+        }
     }
     else
     {
         deleteLater();
     }
 
+}
+
+void
+SqlQueryMakerInternal::requestAbort()
+{
+    m_aborted = true;
 }
 
 void

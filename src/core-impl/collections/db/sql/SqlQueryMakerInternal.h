@@ -36,6 +36,7 @@ public:
     ~ SqlQueryMakerInternal() override;
 
     void run();
+    void requestAbort();
     void setQuery( const QString &query );
     void setQueryType( QueryMaker::QueryType type );
     void setResultAsDataPtrs( bool value );
@@ -64,6 +65,7 @@ private:
     QPointer<SqlCollection> m_collection;
     QueryMaker::QueryType m_queryType;
     QString m_query;
+    bool m_aborted;
 
 };
 
