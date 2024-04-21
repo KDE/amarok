@@ -23,6 +23,8 @@ VERSION 2.9.90
    * Fix searching for composer and album info for local files in Wikipedia applet.
    * Don't remove wrong songs from collection when contents of a folder, whose name is
      a substring of another collection folder, are changed (BR 475528)
+   * Prefer symbolic systray icon to fix colours in Plasma6 systray (BR 485748)
+
 
 VERSION 2.9.82
   FEATURES:

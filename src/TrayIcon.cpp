@@ -80,7 +80,7 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
 
     PERF_LOG( "Initializing system tray icon" );
 
-    setIconByName( "amarok" );
+    setIconByName( "amarok-symbolic" );
     updateOverlayIcon();
     updateToolTipIcon();
     updateMenu();
