@@ -96,12 +96,12 @@ CoverCache::getCover( const Meta::AlbumPtr &album, int size ) const
     QImage image = album->image( size );
 
     // -- get the null cover if someone really wants to have a pixmap
-    // in this case the album hasCover should have already returned false
+    // might be no cover, since there doesn't seem to be hasCover for album any more
     if( image.isNull() )
     {
         const QDir &cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
         if( size <= 1 )
-            size = 100;
+            size = 500;
         const QString &noCoverKey = QString::number( size ) + "@nocover.png";
 
         QPixmap pixmap;
