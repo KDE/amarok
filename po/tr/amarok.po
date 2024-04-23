@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-04-22 01:54+0000\n"
-"PO-Revision-Date: 2024-04-17 13:54+0300\n"
+"PO-Revision-Date: 2024-04-23 01:09+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 24.04.70\n"
+"X-Generator: Lokalize 24.07.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -418,7 +418,7 @@ msgstr "Amarok"
 #: amarokconfig.kcfg:13
 #, kde-format
 msgid "Whether to display a second, left time label."
-msgstr "Parçanın kalan, zamanının gösterileceği yer."
+msgstr "Solda ikinci bir kalan zaman etiketinin gösterilip gösterilmeyeceği."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:14
@@ -427,8 +427,8 @@ msgid ""
 "Set this to display a second time label to the left of the seek slider in "
 "the player window."
 msgstr ""
-"Parça penceresinde ilerleme çubuğunun solunda kalan zamanı görmek "
-"istiyorsanız işaretleyin."
+"Çalar penceresinde konum sürgüsünün solunda ikinci bir zaman etiketi "
+"görüntülemek için bunu ayarlayın."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:18
@@ -1658,22 +1658,21 @@ msgid ""
 "Whether to show the moodbar of the current track, if available, in the "
 "progress slider"
 msgstr ""
-"Geçerli parçanın duygusal durum çubuğunun (eğer kullanılabiliyorsa), "
-"ilerleme çubuğunda gösterilip gösterilemeyeceği"
+"Varsa konum sürgüsünde geçerli parçanın ruh hali çubuğunun gösterilip "
+"gösterilmeyeceği"
 
 #. i18n: ectx: whatsthis, entry, group (Moodbar)
 #: amarokconfig.kcfg:614
 #, kde-format
 msgid "Enable/Disable showing moodbar, if available, in the progress slider."
 msgstr ""
-"Geçerli parçanın duygusal durum çubuğunu (eğer kullanılabiliyorsa) ilerleme "
-"çubuğunda göster/gizle."
+"Varsa konum sürgüsünde ruh hali çubuğunu etkinleştirin/devre dışı bırakın."
 
 #. i18n: ectx: label, entry, group (Moodbar)
 #: amarokconfig.kcfg:618
 #, kde-format
 msgid "The style to use when painting the moodbar"
-msgstr "Duygu Durum çubuğu renklendirilirken kullanılacak tarz"
+msgstr "Ruh hali çubuğunu boyarken kullanılacak biçem"
 
 #. i18n: ectx: label, entry, group (PlaylistGenerator)
 #: amarokconfig.kcfg:625
@@ -3293,7 +3292,7 @@ msgstr "Çalma listesini otomatik olarak çalan parçaya sar"
 #: configdialog/dialogs/GeneralConfig.ui:97
 #, kde-format
 msgid "Moodbar Options"
-msgstr "Duygu Çubuğu Seçenekleri"
+msgstr "Ruh Hali Çubuğu Seçenekleri"
 
 #. i18n: ectx: property (text), widget (QLabel, moodbarNote)
 #: configdialog/dialogs/GeneralConfig.ui:103
@@ -3303,9 +3302,9 @@ msgid ""
 "visit <a href=\"http://userbase.kde.org/Amarok/Manual/Various/Moodbar"
 "\">related article on KDE UserBase</a>."
 msgstr ""
-"<b>Not</b>: Duygu durumu dosyaları el ile oluşturulmalıdır. Daha fazla bilgi "
-"için <a href=\"http://userbase.kde.org/Amarok/Manual/Various/Moodbar\">KDE "
-"KullanıcıEvi’ndeki ilgili makaleyi</a> okuyun."
+"<b>Not</b>: Ruh hali durumu dosyaları elle oluşturulmalıdır. Daha fazla "
+"bilgi için <a href=\"http://userbase.kde.org/Amarok/Manual/Various/Moodbar"
+"\">KDE UserBase'deki ilgili makaleyi</a> okuyun."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
 #: configdialog/dialogs/GeneralConfig.ui:117
@@ -3315,21 +3314,21 @@ msgid ""
 "Please note that this feature requires the external \"Moodbar Generator\" "
 "tool."
 msgstr ""
-"Duygu Durum çubuğu müziğiniz içerisinde görsel olarak gezinmenizi sağlar.\n"
-"Lütfen bu özelliğin harici \"Duygu Durumu Oluşturucu\" aracına gereksinim "
-"duyduğunu göz önünde bulundurun."
+"Ruh hali çubuğu, müziğinizde görsel olarak gezinmenizi olanaklı kılar.\n"
+"Bu özelliğin dış \"Ruh Hali Çubuğu Üreteci\" aracını gerektirdiğini lütfen "
+"unutmayın."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
 #: configdialog/dialogs/GeneralConfig.ui:120
 #, kde-format
 msgid "Show Moodbar in Progress Slider"
-msgstr "İlerleme Çubuğunda Duygu Durumu Çubuğunu Göster"
+msgstr "Konum Sürgüsünde Ruh Hali Çubuğunu Göster"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: configdialog/dialogs/GeneralConfig.ui:127
 #, kde-format
 msgid "Moodbar style"
-msgstr "Duygu Durumu biçemi"
+msgstr "Ruh hali çubuğu biçemi"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_MoodbarPaintStyle)
 #. i18n: ectx: property (whatsThis), widget (QComboBox, kcfg_MoodbarPaintStyle)
@@ -3337,7 +3336,7 @@ msgstr "Duygu Durumu biçemi"
 #: configdialog/dialogs/GeneralConfig.ui:137
 #, kde-format
 msgid "Choose the mood display style"
-msgstr "Duygu durum gösterim biçemini seçin"
+msgstr "Ruh hali görüntüleme biçemini seç"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:141
@@ -7513,7 +7512,7 @@ msgstr ""
 "Bit hızı, ses parçasının bir saniyesini temsil etmek için kullanılan veri "
 "miktarının bir ölçüsüdür.<br>Amarok tarafından kullanılan kodlayıcı, sabit "
 "bir bit hızıyla daha iyi çalışır.<br>VBR deneyseldir ve büyük olasılıkla, "
-"CBR.<br>Bu nedenle, bu kaydırıcıdaki bit hızı ölçümü, kodlanmış parçanın bit "
+"CBR.<br>Bu nedenle, bu sürgüdeki bit hızı ölçümü, kodlanmış parçanın bit "
 "hızının oldukça doğru bir tahminidir.<br>Kodlayıcı, yalnızca aşırı "
 "durumlarda görünen yapay ögelerle sınanan çoğu örnek için 128 kbps’de "
 "saydamdır."
@@ -7663,12 +7662,11 @@ msgstr ""
 "karmaşık veri aralıkları, daha karmaşık olanlardan daha yüksek bir bit hızı "
 "ile kodlanır; bu yaklaşım, parça genelinde sabit bir bit hızına sahip "
 "olmaktan daha genel olarak daha iyi kaliteyi ve daha küçük bir dosya üretir."
-"<br>Bu nedenle, bu kaydırıcıdaki bit hızı ölçüsü, kodlanmış parçanın "
-"ortalama bit hızının bir tahminidir.<br><b>160kb/s</b>, taşınabilir bir "
-"oynatıcıda müzik dinlemek için iyi bir seçimdir.<br/><b>120kb/s</ b> "
-"değerinin altındaki herhangi bir şey müzik için yetersiz olabilir ve "
-"<b>205kb/s</b> üzerindeki herhangi bir şey muhtemelen gereğinden fazla büyük "
-"olacaktır."
+"<br>Bu nedenle, bu sürgüdeki bit hızı ölçüsü, kodlanmış parçanın ortalama "
+"bit hızının bir tahminidir.<br><b>160kb/s</b>, taşınabilir bir oynatıcıda "
+"müzik dinlemek için iyi bir seçimdir.<br/><b>120kb/s</ b> değerinin "
+"altındaki herhangi bir şey müzik için yetersiz olabilir ve <b>205kb/s</b> "
+"üzerindeki herhangi bir şey muhtemelen gereğinden fazla büyük olacaktır."
 
 #: core/transcoding/formats/TranscodingMp3Format.cpp:55
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:64
@@ -7716,7 +7714,7 @@ msgstr ""
 "aralıkları, daha karmaşık olanlardan daha yüksek bir bit hızı ile kodlanır; "
 "bu yaklaşım, parça genelinde sabit bir bit hızına sahip olmaktan daha genel "
 "olarak daha iyi kaliteyi ve daha küçük bir dosya üretir.<br>Bu nedenle, bu "
-"kaydırıcıdaki bit hızı ölçüsü, kodlanmış parçanın ortalama bit hızının bir "
+"sürgüdeki bit hızı ölçüsü, kodlanmış parçanın ortalama bit hızının bir "
 "tahminidir.<b>128kb/sn</ b> taşınabilir bir oynatıcıdaki müzik dinlemek için "
 "iyi bir seçimdir.<br/><b>100 kb/sn</b>'den az olan her şey müzik için "
 "yetersiz olabilir ve <b>256kb/s</ b> değerinin üstündeki herhangi bir şey "
@@ -7769,10 +7767,10 @@ msgstr ""
 "genelinde sabit bir bit hızına sahip olmaktan daha genel olarak daha iyi "
 "kaliteyi ve daha küçük bir dosya üretir.<br>Vorbis kodlayıcısı, belirli bir "
 "ses kalitesi düzeyini tanımlamak için -1 ile 10 arasında bir kalite derecesi "
-"\"-q parametresi\" kullanır. Bu kaydırıcıdaki bit hızı ölçüsü, q değeri "
-"verilen kodlanmış parçanın ortalama bit hızının yalnızca kaba bir tahminidir "
-"(Vorbis tarafından sağlanır). Aslında, daha yeni ve daha verimli Vorbis "
-"sürümleri ile gerçek bit hızı daha da düşüktür.<br><b>-q5</b>, taşınabilir "
+"\"-q parametresi\" kullanır. Bu sürgüdeki bit hızı ölçüsü, q değeri verilen "
+"kodlanmış parçanın ortalama bit hızının yalnızca kaba bir tahminidir (Vorbis "
+"tarafından sağlanır). Aslında, daha yeni ve daha verimli Vorbis sürümleri "
+"ile gerçek bit hızı daha da düşüktür.<br><b>-q5</b>, taşınabilir "
 "oynatıcılarda müzik dinlemek için iyi bir seçimdir.<br/><b>-q3</ b> "
 "altındaki herhangi bir şey müzik için yetersiz olabilir ve <b>-q8</b> "
 "değerinin üstündeki herhangi bir şey muhtemelen aşırı derecede gereksizdir."
@@ -7818,7 +7816,7 @@ msgstr ""
 "özel bir kodlayıcının tersine mühendisliğinin zor olması nedeniyle, Amarok "
 "bir <a href=http://en.wikipedia.org/wiki/"
 "Windows_Media_Audio#Windows_Media_Audio>Sabit bit hızı (CBR)</a> ayarı "
-"ayarlamıştır.<br>Bu nedenle, bu kaydırıcıdaki bit hızı ölçüsü, kodlanmış "
+"ayarlamıştır.<br>Bu nedenle, bu sürgüdeki bit hızı ölçüsü, kodlanmış "
 "parçanın bit hızının oldukça doğru bir tahminidir.<br><b>136 kb/s</b> "
 "taşınabilir bir oynatıcıda müzik dinlemek için iyi bir seçimdir.<br/><b> 112 "
 "kb/s</b> düzeyinin altındaki herhangi bir şey müzik için yetersiz kalabilir "
@@ -12347,13 +12345,13 @@ msgstr "Etiketler"
 #, kde-format
 msgctxt "'Mood' playlist column name and token for playlist layouts"
 msgid "Mood"
-msgstr "Duygu Durumu"
+msgstr "Ruh Hali"
 
 #: playlist/PlaylistDefines.cpp:111
 #, kde-format
 msgctxt "'Moodbar' playlist column name and token for playlist layouts"
 msgid "Moodbar"
-msgstr "Duygu Durumu çubuğu"
+msgstr "Ruh Hali Çubuğu"
 
 #: playlist/PlaylistDefines.cpp:116
 #, kde-format
@@ -12517,7 +12515,7 @@ msgstr "Son Çalınma"
 #: playlist/PlaylistModel.cpp:947
 #, kde-format
 msgid "Mood"
-msgstr "Duygu Durumu"
+msgstr "Ruh Hali"
 
 #: playlist/PlaylistModel.cpp:948
 #, kde-format
@@ -15623,11 +15621,11 @@ msgid ""
 "specified mood to the playlist. The mood argument must have spaces escaped "
 "with %%20"
 msgstr ""
-"Magnatune.com hizmeti aşağıdaki iletileri kabul ediyor: \n"
+"Magnatune.com hizmeti aşağıdaki iletileri kabul eder: \n"
 "\n"
-"\taddMoodyTracks duygu durum sayacı: Çalma listesine belirtilen duygu "
-"durumuna bağlı rastgele parçalar ekler. Duygu durumu argümanları %%20 ile "
-"belirtilmiş boşluklara sahip olmalıdır"
+"\taddMoodyTracks ruh hali sayacı: Çalma listesine belirtilen ruh haline "
+"bağlı rastgele parçalar ekler. Ruh hali argümanları %%20 ile kaçırılmış "
+"boşluklara sahip olmalıdır"
 
 #: services/magnatune/MagnatuneStore.cpp:629
 #, kde-format
@@ -15637,7 +15635,7 @@ msgstr "HATA: Hiç argüman verilmedi"
 #: services/magnatune/MagnatuneStore.cpp:634
 #, kde-format
 msgid "ERROR: Wrong number of arguments for addMoodyTracks"
-msgstr "HATA: addMoodyTracks için yanlış sayıda argüman"
+msgstr "HATA: addMoodyTracks için yanlış argüman sayısı"
 
 #: services/magnatune/MagnatuneStore.cpp:644
 #, kde-format
