@@ -100,16 +100,22 @@ AmarokQml.Applet {
             Layout.minimumWidth: parent.height / 3
             text: i18n("No track playing")
         }
-        AmarokQml.PixmapItem {
-            id: amarokLogo
-            width: parent.width / 4
-            height: width
+        Item {
+            id: logoComponent
             Layout.minimumWidth: parent.height / 3
-            source: Svg.renderSvg(applet.imageUrl("amarok-currenttrack.svg"),
-                                  "CurrentTrack",
-                                  width,
-                                  height,
-                                  "amarok_logo");
+            Layout.maximumWidth: parent.height
+            Layout.fillHeight: true
+            AmarokQml.PixmapItem {
+                id: amarokLogo
+                source: Svg.renderSvg(applet.imageUrl("amarok-currenttrack.svg"),
+                                    "CurrentTrackLogo",
+                                    512,
+                                    512,
+                                    "amarok_logo");
+                width: parent.width
+                height: width
+                anchors.centerIn: parent
+            }
         }
         visible: CurrentTrackEngine.track === ""
     }
@@ -145,10 +151,12 @@ AmarokQml.Applet {
 
         AmarokQml.PixmapItem {
             source: Svg.renderSvg(applet.imageUrl("amarok-currenttrack.svg"),
-                                  "CurrentTrack",
-                                  width,
-                                  height,
+                                  "CurrentTrackAlbum",
+                                  512,
+                                  512,
                                   "album_old");
+            width: parent.width
+            height: parent.height
         }
     }
 }
