@@ -14,9 +14,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-import QtQuick 2.4
-import QtQuick.Controls 1.4
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.3
+import org.kde.kirigami 2.14 as Kirigami
 
 
 RowLayout {
@@ -39,9 +40,11 @@ RowLayout {
 
         height: collapseButton.height
         width: height
-        sourceSize.width: width
-        sourceSize.height: height
+        sourceSize.width: width * 2
+        sourceSize.height: height * 2
         fillMode: Image.PreserveAspectFit
+        Layout.maximumHeight: collapseButton.height
+        Layout.maximumWidth: collapseButton.height
         Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
     }
 
@@ -49,6 +52,7 @@ RowLayout {
         id: label
 
         text: root.title
+        color: Kirigami.Theme.textColor
         fontSizeMode: Text.VerticalFit
         horizontalAlignment: Text.AlignHCenter
         Layout.fillWidth: true
@@ -59,7 +63,7 @@ RowLayout {
         id: configButton
 
         visible: applet.configEnabled && !!applet.configDialog
-        iconName: "preferences-other"
+        icon.name: "preferences-other"
         Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
 
         onClicked: applet.configDialog.open()
@@ -68,7 +72,7 @@ RowLayout {
         id: collapseButton
 
         //TODO: Icons are not part of official standard. Maybe provide our own icons?
-        iconName: !applet.collapsed ? "window-minimize" : "window-restore"
+        icon.name: !applet.collapsed ? "window-minimize" : "window-restore"
         Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
 
         onClicked: applet.collapsed = applet.collapsed ? false : true
