@@ -550,7 +550,7 @@ void Playlist::PrettyItemDelegate::paintItem( const LayoutItemConfig &config,
                 //we cannot ask the model for the moodbar directly as we have no
                 //way of asking for a specific size. Instead just get the track from
                 //the model and ask the moodbar manager ourselves.
-                Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
+                Meta::TrackPtr track = textIndex.data( TrackRole ).value<Meta::TrackPtr>();
 
                 if( The::moodbarManager()->hasMoodbar( track ) )
                 {
