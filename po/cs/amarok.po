@@ -10608,16 +10608,11 @@ msgid "The audio player by KDE"
 msgstr "Přehrávač zvuků od KDE"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2013, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2024, The Amarok Development Squad"
 msgstr ""
-"(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2013, skupina vývojářů Amaroku"
 
 #: main.cpp:101
 #, kde-format
@@ -17110,21 +17105,3 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
-
-#~ msgid "Update Supported Languages"
-#~ msgstr "Aktualizovat podporované jazyky"
-
-#~ msgid "Get Supported Languages"
-#~ msgstr "Získat podporované jazyky"
-
-#~ msgid "Wikipedia"
-#~ msgstr "Wikipedie"
-
-#~ msgid "Wikipedia: %1"
-#~ msgstr "Wikipedie: %1"
-
-#~ msgid "Wikipedia General Settings"
-#~ msgstr "Obecná nastavení Wikipedie"
-
-#~ msgid "Wikipedia Language Settings"
-#~ msgstr "Nastavení jazyka Wikipedie"

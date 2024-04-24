@@ -16946,7 +16946,7 @@ msgstr "Süzgeci düzenle"
 #: widgets/SliderWidget.cpp:243
 #, kde-format
 msgid "Volume"
-msgstr "Ses"
+msgstr "Ses Düzeyi"
 
 #: widgets/SliderWidget.cpp:244
 #, kde-format
@@ -16985,7 +16985,7 @@ msgctxt ""
 "position in the currently playing track that Amarok will seek to if you "
 "click the mouse. Keep it concise."
 msgid "Jump to: %1"
-msgstr "Buraya atla: %1"
+msgstr "Şuraya atla: %1"
 
 #: widgets/TokenDropTarget.cpp:334
 #, kde-format
@@ -17026,37 +17026,3 @@ msgstr "Sanatçı: %1"
 #, kde-format
 msgid "empty"
 msgstr "boş"
-
-#~ msgid "Update Supported Languages"
-#~ msgstr "Desteklenen Dilleri Güncelle"
-
-#~ msgid "Get Supported Languages"
-#~ msgstr "Desteklenen Dilleri Al"
-
-#~ msgid "Wikipedia"
-#~ msgstr "Vikipedi"
-
-#~ msgid "Wikipedia: %1"
-#~ msgstr "Vikipedi: %1"
-
-#~ msgid "Wikipedia General Settings"
-#~ msgstr "Vikipedi Genel Ayarları"
-
-#~ msgid "Wikipedia Language Settings"
-#~ msgstr "Vikipedi Dil Ayarları"
-
-#~ msgid ""
-#~ "Automatically download and install updates for the built-in scripts from "
-#~ "the Amarok website if available"
-#~ msgstr ""
-#~ "Var olan betiklerin güncellemelerini, varsa Amarok web sitesinden "
-#~ "otomatik olarak indirin ve kurun"
-
-#~ msgid "Automatically update built-in scripts"
-#~ msgstr "Bütünleşik betikleri otomatik olarak güncelle"
-
-#~ msgid "Browse, install, and uninstall scripts"
-#~ msgstr "Betiklere göz at, kur ve kaldır"
-
-#~ msgid "Manage Scripts"
-#~ msgstr "Betikleri Yönet"
