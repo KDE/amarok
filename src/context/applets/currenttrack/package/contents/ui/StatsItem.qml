@@ -14,9 +14,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-import QtQuick 2.4
-import QtQuick.Controls 2.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 import org.kde.amarok.currenttrack 1.0
+import org.kde.kirigami 2.14 as Kirigami
 
 Item {
     id: root
@@ -34,6 +35,7 @@ Item {
             height: parent.height
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 1
+            color: Kirigami.Theme.textColor
             fontSizeMode: Text.Fit
             font.pointSize: 32
             minimumPointSize: 9
@@ -44,6 +46,7 @@ Item {
             height: parent.height
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 1
+            color: Kirigami.Theme.textColor
             fontSizeMode: Text.Fit
             font.pointSize: 32
             minimumPointSize: 9
@@ -54,6 +57,7 @@ Item {
             height: parent.height
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 1
+            color: Kirigami.Theme.textColor
             fontSizeMode: Text.Fit
             font.pointSize: 32
             minimumPointSize: 9
@@ -75,6 +79,7 @@ Item {
                 height: parent.height
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 1
+                color: Kirigami.Theme.textColor
                 fontSizeMode: Text.Fit
                 font.pointSize: 32
                 minimumPointSize: 9
@@ -89,6 +94,7 @@ Item {
                 height: parent.height
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 1
+                color: Kirigami.Theme.textColor
                 fontSizeMode: Text.Fit
                 font.pointSize: 32
                 minimumPointSize: 9
@@ -103,6 +109,7 @@ Item {
                 height: parent.height
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 1
+                color: Kirigami.Theme.textColor
                 fontSizeMode: Text.Fit
                 font.pointSize: 32
                 minimumPointSize: 9
