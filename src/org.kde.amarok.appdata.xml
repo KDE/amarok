@@ -76,7 +76,7 @@
   <summary xml:lang="sk">Výkonný hudobný prehrávač, ktorý vám umožní znovu objaviť vašu hudbu</summary>
   <summary xml:lang="sl">Zmogljiv predvajalnik glasbe, ki vam omogoča ponovno odkrivanje glasbe</summary>
   <summary xml:lang="sv">En kraftfull musikspelare som låter dig upptäcka din musik igen</summary>
-  <summary xml:lang="tr">Müziği yeniden keşfetmenize olanak veren güçlü bir müzik çalar</summary>
+  <summary xml:lang="tr">Müziği yeniden keşfetmenize olanak tanıyan güçlü bir müzik çalar</summary>
   <summary xml:lang="uk">Потужна програма для відтворення музики, яка надасть вам змогу побачити вашу фонотеку з іншого боку</summary>
   <summary xml:lang="x-test">xxA powerful music player that lets you rediscover your musicxx</summary>
   <summary xml:lang="zh-CN">一款强大到让您重新感悟音乐之美的播放器</summary>
@@ -426,7 +426,7 @@
       <li xml:lang="sr-ijekavian">Подршка за поновљиво појачање.</li>
       <li xml:lang="sr-ijekavianlatin">Podrška za ponovljivo pojačanje.</li>
       <li xml:lang="sv">Stöd för uppspelningsnivå</li>
-      <li xml:lang="tr">Yeniden çalma kazanım desteği</li>
+      <li xml:lang="tr">Yeniden çalma kazancı desteği</li>
       <li xml:lang="uk">підтримка вирівнювання гучності.</li>
       <li xml:lang="x-test">xxReplay gain supportxx</li>
       <li xml:lang="zh-CN">支持回放增益</li>
