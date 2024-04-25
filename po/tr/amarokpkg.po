@@ -4,13 +4,13 @@
 # Translators:
 # Ozan Çağlayan <ozan@pardus.org.tr>, 2010.
 # obsoleteman <tulliana@gmail.com>, 2009.
-# Emir SARI <emir_sari@icloud.com>, 2022, 2023.
+# SPDX-FileCopyrightText: 2022, 2023, 2024 Emir SARI <emir_sari@icloud.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-04-04 01:45+0000\n"
-"PO-Revision-Date: 2023-01-31 00:52+0300\n"
+"PO-Revision-Date: 2024-04-24 19:23+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.12.1\n"
+"X-Generator: Lokalize 23.08.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -70,13 +70,13 @@ msgstr ""
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
-msgstr "Uygulamacığı <path> yoluna kur"
+msgstr "Uygulamacığı <yol> konumuna kur"
 
 #: amarokpkg.cpp:114
 #, kde-format
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
-msgstr "<path> yolundaki uygulamacığı düzenle"
+msgstr "<path> konumundaki uygulamacığı yükselt"
 
 #: amarokpkg.cpp:116
 #, kde-format
@@ -87,7 +87,7 @@ msgstr "En çok kurulan uygulamacıklar"
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
-msgstr "<name> adlı uygulamacığı kaldır"
+msgstr "<ad> uygulamacığını kaldır"
 
 #: amarokpkg.cpp:120
 #, kde-format
@@ -95,13 +95,13 @@ msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "
 "directories for this KDE session will be searched instead."
 msgstr ""
-"Paket kök dizini için mutlak dosya yolu. Verilmemişse KDE oturumundaki "
-"standart veri dizinleri aranacak."
+"Paket kök dizini için mutlak dosya yolu. Verilmemişse bunun yerine KDE "
+"oturumundaki standart veri dizinleri aranır."
 
 #: amarokpkg.cpp:176
 #, kde-format
 msgid "Successfully removed %1"
-msgstr "%1 başarılı bir şekilde kaldırıldı"
+msgstr "%1 başarıyla kaldırıldı."
 
 #: amarokpkg.cpp:178
 #, kde-format
@@ -116,7 +116,7 @@ msgstr "%1 eklentisi kurulu değil."
 #: amarokpkg.cpp:188
 #, kde-format
 msgid "Successfully installed %1"
-msgstr "%1 başarılı bir şekilde kuruldu"
+msgstr "%1 başarıyla kuruldu."
 
 #: amarokpkg.cpp:191
 #, kde-format
@@ -129,7 +129,7 @@ msgctxt ""
 "No option was given, this is the error message telling the user he needs at "
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
-msgstr "Listeleme, kaldırma veya kurma gerekiyor."
+msgstr "Listeleme, kaldırma veya kurulum gerekiyor."
 
 #~ msgid "Install, list, remove Amarok applets"
 #~ msgstr "Amarok programcıklarını yükle, kaldır, listele"

@@ -6,13 +6,13 @@
 # Ozan Çağlayan <ozan@pardus.org.tr>, 2010.
 # obsoleteman <tulliana@gmail.com>, 2009.
 # Volkan Gezer <volkangezer@gmail.com>, 2013-2014.
-# Emir SARI <emir_sari@icloud.com>, 2022, 2023.
+# SPDX-FileCopyrightText: 2022, 2023, 2024 Emir SARI <emir_sari@icloud.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-14 01:25+0000\n"
-"PO-Revision-Date: 2023-01-18 22:31+0300\n"
+"PO-Revision-Date: 2024-04-24 19:41+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -21,26 +21,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Lokalize 22.12.1\n"
+"X-Generator: Lokalize 23.08.3\n"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:118
 #: utilities/collectionscanner/CollectionScanner.cpp:141
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "File \"%1\" not found."
-msgstr "\"%1\" dosyası bulunamadı."
+msgstr "“%1” dosyası bulunamadı."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:121
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Could not open file \"%1\"."
-msgstr "\"%1\" dosyası açılamadı."
+msgstr "“%1” dosyası açılamadı."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:372
 #, qt-format
 msgctxt "CollectionScanner::Scanner|"
 msgid "Missing argument for option %1"
-msgstr "%1 seçeneği için eksik argüman"
+msgstr "“%1” seçeneği için argüman eksik"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:409
 msgctxt "CollectionScanner::Scanner|"
@@ -76,27 +76,26 @@ msgid ""
 "                          You can also use a previous scan result for that.\n"
 msgstr ""
 "Amarok Koleksiyon Tarayıcısı\n"
-"Dizinleri tarar ve sonuçlar ile bir xml dosyası yazar.\n"
-"Daha fazla bilgi için bakınız: http://community.kde.org/Amarok/Development/"
-"TopluİşKipi\n"
+"Dizinleri tarar ve sonuçlar ile bir XML dosyası yazar.\n"
+"Ek bilgi için: http://community.kde.org/Amarok/Development/BatchMode\n"
 "\n"
-"Kullanım: amarokcollectionscanner [seçenekler] <Klasör(ler)>\n"
-"Kullanıcı tarafından değiştirilebilir Seçenekler:\n"
-"<Klasör(ler)>             : taranacak klasör listesi\n"
+"Kullanım: amarokcollectionscanner [seçenekler] <klasör(ler)>\n"
+"Kullanıcı tarafından değiştirilebilir seçenekler:\n"
+"<klasör(ler)>           : Taranacak klasör listesi\n"
 "-h, --help              : Bu yardım metni\n"
 "-v, --version           : Bu aracın sürümünü yazdır\n"
-"-r, --recursive         : Klasörleri içe doğru tara\n"
-"-i, --incremental       : Artan arama (yalnızca değiştirilmiş klasörler)\n"
-"-s, --restart           : Çökmeden sonra, tarayıcıyı son konumundan tekrar "
+"-r, --recursive         : Klasörleri özyineli tara\n"
+"-i, --incremental       : Artımlı arama (yalnızca değiştirilmiş klasörler)\n"
+"-s, --restart           : Çökmeden sonrası tarayıcıyı son konumundan yeniden "
 "başlat\n"
 "    --idlepriority      : Boşta önceliği ile çalıştır\n"
 "    --sharedmemory <anahtar> : Bir taramayı yeniden başlatmak üzere "
 "kullanılacak paylaşımlı bellek parçası\n"
-"    --newer <yol>      : Yalnızca değiştirilme zamanı <yol>'dan daha yeni "
+"    --newer <yol>       : Yalnızca değiştirilme zamanı <yol>’dan daha yeni "
 "ise dizinleri tara\n"
-"                          Yalnızca artan tarama kipinde kullanışlıdır\n"
-"    --batch <yol>      : Toplu iş xml dosyasından dizinleri ekle\n"
-"                          toplu iş dosya biçimi şu şekle benzer olmalıdır:\n"
+"                          Yalnızca artımlı tarama kipinde kullanışlıdır\n"
+"    --batch <yol>       : Toplu iş XML dosyasından dizinleri ekle\n"
+"                          toplu iş dosya biçimi şuna benzer olmalıdır:\n"
 "   <scanner>\n"
 "    <directory>\n"
 "     <path>/dizinin/asıl/yolu</path>\n"

@@ -81,8 +81,8 @@ msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
 "exist.</qt>"
 msgstr ""
-"<qt>Üzgünüm, kullanılabilir bilgi yok.<br />Beklenen KAboutData nesnesi yok."
-"</qt>"
+"<qt>Üzgünüm, kullanılabilir bilgi yok.<br />Sağlanan KAboutData nesnesi "
+"bulunmuyor.</qt>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:110
 #, kde-format
@@ -90,8 +90,8 @@ msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
 "exist.</qt>"
 msgstr ""
-"<qt>Erişilebilir bir bilgi yok.<br /> Verilen OcsData nesnesi mevcut "
-"değildir.</qt>"
+"<qt>Üzgünüm, kullanılabilir bilgi yok.<br />Sağlanan OcsData nesnesi "
+"bulunmuyor.</qt>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:121
 #, kde-format
@@ -105,7 +105,7 @@ msgid ""
 "Frameworks %3</html>"
 msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>Sürüm %2</b><br />KDE Frameworks %3 "
-"Kullanma</html>"
+"kullanılıyor</html>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:186
 #, kde-format
@@ -121,7 +121,7 @@ msgstr "&Hakkında"
 #, kde-format
 msgid "Get data from openDesktop.org to learn more about the team"
 msgstr ""
-"Takım hakkında daha fazla bilgi edinmek için openDesktop.org sayfasını "
+"Takım hakkında daha fazla bilgi edinmek için openDesktop.org adresini "
 "ziyaret edin"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:229
@@ -137,7 +137,7 @@ msgstr ""
 #: aboutdialog/ExtendedAboutDialog.cpp:240
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr "Lütfen hataları <a href=\"mailto:%1\">%2</a> adresine bildirin.\n"
+msgstr "Hataları lütfen <a href=\"mailto:%1\">%2</a> adresine bildirin.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:261
 #, kde-format
@@ -153,20 +153,20 @@ msgstr "Y&azarlar"
 #, kde-format
 msgid "Get data from openDesktop.org to learn more about contributors"
 msgstr ""
-"Katkıcılar hakkında daha fazla bilgi edinmek için openDesktop.org sayfasını "
+"Katkıcılar hakkında daha fazla bilgi edinmek için openDesktop.org adresini "
 "ziyaret edin"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:291
 #, kde-format
 msgid "&Contributors"
-msgstr "&Katkıda Bulunanlar"
+msgstr "&Katkıcılar"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:304
 #, kde-format
 msgid "Get data from openDesktop.org to learn more about our generous donors"
 msgstr ""
-"Bağışlar hakkında daha fazla bilgi edinmek için openDesktop.org sayfasını "
-"ziyaret edin"
+"Cömert bağışçılarımız hakkında daha fazla bilgi edinmek için openDesktop.org "
+"adresini ziyaret edin"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:323
 #, kde-format
@@ -176,10 +176,10 @@ msgid ""
 "\"http://amarok.kde.org/donations\"> donate during Roktober</a> and opt-in.</"
 "p>"
 msgstr ""
-"<p>Amarok ekibi, her yılın Ekim ayında, <b>Roktober</b> adında bir yatırım "
-"etkinliği düzenler.</p><p>Eğer adınızın listede geçmesini isterseniz <a href="
-"\"http://amarok.kde.org/donations\">Roktober sırasında bağış yapabilir</a> "
-"ve dahil olabilirsiniz.</p>"
+"<p>Amarok takımı her yıl Ekim ayında <b>Roktober</b> adında bir fon "
+"kampanyası düzenler.</p><p>Bu listede adınızın geçmesini istiyorsanız <a "
+"href=\"http://amarok.kde.org/donations\">Roktober sırasında bağış yapın</a> "
+"ve adınızı yazdırın.</p>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:332
 #, kde-format
@@ -194,7 +194,7 @@ msgstr "Ç&eviri"
 #: aboutdialog/ExtendedAboutDialog.cpp:387
 #, kde-format
 msgid "Internet connection not available"
-msgstr "İnternety bağantısı yok"
+msgstr "İnternet bağlantısı kullanılamıyor"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:387
 #, kde-format
@@ -204,12 +204,12 @@ msgstr "Ağ hatası"
 #: aboutdialog/OcsPersonItem.cpp:96
 #, kde-format
 msgid "Email contributor"
-msgstr "E-Posta katılımcısı"
+msgstr "Katkıcıya e-posta gönder"
 
 #: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:277
 #, kde-format
 msgid "Visit contributor's homepage"
-msgstr "Katkıcı anasayfasını ziyaret et"
+msgstr "Katkıcının ana sayfasını ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:182
 #, kde-format
@@ -225,37 +225,37 @@ msgstr "IRC kanalları: "
 #: aboutdialog/OcsPersonItem.cpp:215
 #, kde-format
 msgid "Favorite music: "
-msgstr "Beğenilen müzik: "
+msgstr "Favori müzik: "
 
 #: aboutdialog/OcsPersonItem.cpp:220
 #, kde-format
 msgid "Visit %1's openDesktop.org profile"
-msgstr "%1 ögesinin openDesktop.org profilini ziyaret et"
+msgstr "%1 kişisinin openDesktop.org profilini ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:222
 #, kde-format
 msgid "Visit %1's profile on openDesktop.org"
-msgstr "openDesktop.org üzerindeki %1 profilini ziyaret et"
+msgstr "openDesktop.org üzerinde %1 kişisinin profilini ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:256
 #, kde-format
 msgid "Visit contributor's blog"
-msgstr "Katılımcının günlüğünü ziyaret et"
+msgstr "Katkıcının blog'unu ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:261
 #, kde-format
 msgid "Visit contributor's del.icio.us profile"
-msgstr "Katkıcı del.icio.us profilini ziyaret et"
+msgstr "Katkıcının del.icio.us profilini ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:266
 #, kde-format
 msgid "Visit contributor's Digg profile"
-msgstr "Katkıcı Digg profilini ziyaret et"
+msgstr "Katkıcının Digg profilini ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:271
 #, kde-format
 msgid "Visit contributor's Facebook profile"
-msgstr "Katkıcı Facebook profilini ziyaret et"
+msgstr "Katkıcının Facebook profilini ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:287
 #, kde-format
@@ -270,7 +270,7 @@ msgstr "Katkıcının LinkedIn profilini ziyaret et"
 #: aboutdialog/OcsPersonItem.cpp:300
 #, kde-format
 msgid "Visit contributor's MySpace homepage"
-msgstr "Katkıcı MySpace profilini ziyaret et"
+msgstr "Katkıcının MySpace profilini ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:305
 #, kde-format
@@ -280,12 +280,12 @@ msgstr "Katkıcının Reddit profilini ziyaret et"
 #: aboutdialog/OcsPersonItem.cpp:310
 #, kde-format
 msgid "Visit contributor's YouTube profile"
-msgstr "Katkıcı Youtube profilini ziyaret et"
+msgstr "Katkıcının YouTube profilini ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:315
 #, kde-format
 msgid "Visit contributor's Twitter feed"
-msgstr "Katkıcı Twitter profilini ziyaret et"
+msgstr "Katkıcının X profilini ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:320
 #, kde-format
@@ -300,17 +300,17 @@ msgstr "Katkıcının Xing profilini ziyaret et"
 #: aboutdialog/OcsPersonItem.cpp:330
 #, kde-format
 msgid "Visit contributor's identi.ca feed"
-msgstr "Katkıcı identi.ca beslemesini ziyaret et"
+msgstr "Katkıcının identi.ca beslemesini ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:335
 #, kde-format
 msgid "Visit contributor's libre.fm profile"
-msgstr "Katkıcı libre.fm profilini ziyaret et"
+msgstr "Katkıcının libre.fm profilini ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:340
 #, kde-format
 msgid "Visit contributor's StackOverflow profile"
-msgstr "Katkıcı StackOverflow profilini ziyaret et"
+msgstr "Katkıcının StackOverflow profilini ziyaret et"
 
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelName)
@@ -340,12 +340,12 @@ msgstr "Çal/Duraklat"
 #: ActionClasses.cpp:316
 #, kde-format
 msgid "Click to change"
-msgstr "Değiştirmek için tıklayın"
+msgstr "Değiştirmek için tıkla"
 
 #: ActionClasses.cpp:333
 #, kde-format
 msgid "&Replay Gain Mode"
-msgstr "&Yeniden Çalma Kazanım Kipi"
+msgstr "&Yeniden Çalma Kazancı Kipi"
 
 #: ActionClasses.cpp:335
 #, kde-format
@@ -367,7 +367,7 @@ msgstr "&Albüm"
 #: ActionClasses.cpp:357
 #, kde-format
 msgid "Burn"
-msgstr "Yazdır"
+msgstr "Diske Yaz"
 
 #: ActionClasses.cpp:396
 #, kde-format
@@ -382,29 +382,29 @@ msgstr "Seçili Parçalar"
 #: ActionClasses.cpp:428 scripting/scriptconsole/ScriptConsole.cpp:100
 #, kde-format
 msgid "Stop"
-msgstr "Dur"
+msgstr "Durdur"
 
 #: ActionClasses.cpp:472
 #, kde-format
 msgid "Stop after current Track"
-msgstr "Şimdiki parçadan sonra dur"
+msgstr "Geçerli parçadan sonra durdur"
 
 #: ActionClasses.cpp:489
 #, kde-format
 msgid "Stop after current track: Off"
-msgstr "Şimdiki parçadan sonra dur: Kapalı"
+msgstr "Geçerli parçadan sonra durdur: Kapalı"
 
 #: ActionClasses.cpp:494
 #, kde-format
 msgid "Stop after current track: On"
-msgstr "Şimdiki parçadan sonra dur: Açık"
+msgstr "Geçerli parçadan sonra durdur: Açık"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:101
 #: EngineController.cpp:1331 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
-msgstr "Hiçbir parça çalmıyor"
+msgstr "Çalan parça yok"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:502
@@ -434,7 +434,8 @@ msgstr ""
 #: amarokconfig.kcfg:18
 #, kde-format
 msgid "Whether to display remaining track time in the left time label."
-msgstr "Parçanın kalan zamanının gösterileceği yer."
+msgstr ""
+"Kalan zaman etiketinde kalan parça zamanının gösterilip gösterilmeyeceği."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:19
@@ -443,14 +444,14 @@ msgid ""
 "Set this to display remaining track time instead of past track time in the "
 "player window."
 msgstr ""
-"Parça penceresinde, geçen zaman yerine kalan zamanı görmek istiyorsanız "
-"işaretleyin."
+"Çalar penceresinde geçmiş parça zamanı yerine kalan parça zamanın "
+"görüntülemek için bunu ayarlayın."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:23
 #, kde-format
 msgid "Which tracks or albums to favor in Random Mode"
-msgstr "Hangi parçalar ya da albümler rastgele kipina eklensin"
+msgstr "Rastgele kipte hangi parçalara veya albümlere daha sık yer verileceği"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:24
@@ -459,27 +460,27 @@ msgid ""
 "Tracks or albums with the chosen property will be more likely to be chosen "
 "in Random Mode."
 msgstr ""
-"Bu özelliklerle seçilmiş şarkı ya da albüm rastgele seçilmiş olsa da olurdu."
+"Seçili özelliklere sahip parçalara veya albümlere rastgele kipte daha sık "
+"yer verilmesi olasıdır."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:34
 #, kde-format
 msgid "How to progress through tracks in the playlist"
-msgstr "Oynatma listesinde parçalar arasında nasıl geçiş yapılacağı"
+msgstr "Çalma listesindeki parçalar arasında nasıl ilerleneceği"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:35
 #, kde-format
 msgid "Determines how amarok will progress through the tracks in the playlist"
 msgstr ""
-"Amarok’un çalma listesindeki parçalar arasında nasıl ilerleyeceğine karar "
-"verir"
+"Amarok'un çalma listesindeki parçalar arasında nasıl ilerleyeceğini belirler"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:48
 #, kde-format
 msgid "The status of dynamic mode."
-msgstr "Değişken kip durumu."
+msgstr "Devingen kipin durumu."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:49
@@ -488,14 +489,14 @@ msgid ""
 "If set, dynamic mode will be on, and tracks will be added according to the "
 "dynamic playlist specified."
 msgstr ""
-"Ayarlanırsa dinamik kip açılacak ve şarkılar dinamik çalma listesine "
-"belirtildiği gibi eklenecek."
+"Ayarlanırsa devingen kip açık olacak ve parçalar, belirtilen devingen çalma "
+"listesine göre eklenecektir."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:53
 #, kde-format
 msgid "Duplicate tracks in dynamic mode."
-msgstr "Hareketli kipte parçaları kopyala."
+msgstr "Devingen kipte parçaları yineleyin."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:54
@@ -503,43 +504,43 @@ msgstr "Hareketli kipte parçaları kopyala."
 msgid ""
 "If set, tracks added in the dynamic mode are allowed to have duplicates."
 msgstr ""
-"Eğer ayarlanmışsa hareketli kipte eklenen parçalar yeniden eklenebilirler."
+"Ayarlanırsa devingen kipte eklenen parçaların kopyalarına izin verilir."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:58
 #, kde-format
 msgid "Previous tracks count."
-msgstr "Önceki parça sayısı."
+msgstr "Önceki parçalar sayısı."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:59
 #, kde-format
 msgid "Number of tracks to leave in the playlist before the active track."
-msgstr "Etkin parçadan önce çalma listesinde kalacak parçaların sayısı."
+msgstr "Etkin parçadan önce çalma listesinde bırakılacak parça sayısı."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:63
 #, kde-format
 msgid "Upcoming tracks count."
-msgstr "Sıradaki parça sayısı."
+msgstr "Sonraki parçalar sayısı."
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:64
 #, kde-format
 msgid "Number of tracks to load into the playlist after the active track."
-msgstr "Etkin parçadan sonra çalma listesine eklenecek parçaların sayısı."
+msgstr "Etkin parçadan sonra çalma listesine yüklenecek parça sayısı."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:68
 #, kde-format
 msgid "Whether to show icon in system tray"
-msgstr "Sistem panelinde simge göster"
+msgstr "Sistem tepsisinde simge gösterilip gösterilmeyeceği"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:69
 #, kde-format
 msgid "Enable/Disable tray icon for Amarok."
-msgstr "Amarok’un paneldeki simgesini göster/gösterme."
+msgstr "Amarok için tepsi simgesini etkinleştirin/devre dışı bırakın."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:73
@@ -551,25 +552,25 @@ msgstr "Bağlam görünümünün gizlenip gizlenmeyeceği."
 #: amarokconfig.kcfg:74
 #, kde-format
 msgid "Enable/Disable context view in Amarok."
-msgstr "Amarok içerisinde bağlam görünümünü göster/gizle."
+msgstr "Amarok'ta bağlam görünümünü etkinleştirin/devre dışı bırakın."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:78
 #, kde-format
 msgid "Number of undo levels in playlist"
-msgstr "Çalma listesindeki geri alma sayısı"
+msgstr "Çalma listesindeki geri alma düzeyi sayısı"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:79
 #, kde-format
 msgid "The number of undo levels in the playlist."
-msgstr "Çalma listesindeki geri alma sayısı."
+msgstr "Çalma listesindeki geri alma düzeyinin sayısı."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:83
 #, kde-format
 msgid "Whether playlists store relative path"
-msgstr "Parça listeleri göreceli yollar içersin"
+msgstr "Çalma listelerinin göreceli yolları depolayıp depolamayacağı"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:84
@@ -578,87 +579,90 @@ msgid ""
 "If set, Amarok's manually saved playlists will contain a relative path to "
 "each track, not an absolute path."
 msgstr ""
-"Eğer seçilirse kaydedilen parça listeleri, gerçek değil de göreceli yol "
-"içerir."
+"Ayarlanırsa Amarok'un elle kaydedilen çalma listeleri her parçaya giden "
+"mutlak bir yol değil, göreceli bir yol içerecektir."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:88
 #, kde-format
 msgid "Filename of the external web browser to be invoked by Amarok."
-msgstr "Amarok tarafından çağrılacak harici internet tarayıcısının dosya adı."
+msgstr "Amarok tarafından çağrılacak dış web tarayıcısının dosya adı."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:92
 #, kde-format
 msgid "Whether to automatically attempt to fetch cover art as needed"
-msgstr ""
-"Gerektiğinde kapak resmini alma denemesinin otomatik yapılıp yapılmayacağı"
+msgstr "Gerektiğinde kapak görselinin kendiliğinden getirilip getirilmeyeceği"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:96
 #, kde-format
 msgid "Whether to show background images in the browser pane"
-msgstr "Tarayıcı panelinde arka plan görsellerinin gösterilip gösterilmeyeceği"
+msgstr ""
+"Tarayıcı bölmesinde arka plan görsellerinin gösterilip gösterilmeyeceği"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
 #, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing song visible"
-msgstr "Geçerli çalan şarkıyı görünür yapmak için çalma listesini otomatik sar"
+msgstr ""
+"Çalmakta olan şarkıyı görünür kılmak için çalma listesini kendiliğinden sar"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:104
 #, kde-format
 msgid "Show Album art in the Collection Browser"
-msgstr "Koleksiyon Tarayıcıda Albüm Kapaklarını Göster"
+msgstr "Koleksiyon tarayıcısında albüm kapağını göster"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:108
 #, kde-format
 msgid "Show the Context View"
-msgstr "Bağlam Görünümünü Göster"
+msgstr "Bağlam görünümünü göster"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:112
 #, kde-format
 msgid "Play the first run jingle"
-msgstr "İlk başlatma müziğini çal"
+msgstr "İlk çalıştırmada cıngılı çal"
 
 #. i18n: ectx: label, entry, group (General Options)
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnimateAppletCollapse)
 #: amarokconfig.kcfg:116 configdialog/dialogs/GeneralConfig.ui:61
 #, kde-format
 msgid "Enable context applets collapse animations"
-msgstr "Bağlam uygulamacıklarının kapanma animasyonlarını etkinleştir"
+msgstr "Bağlam uygulamacıklarının daraltma canlandırmalarını etkinleştir"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:117
 #, kde-format
 msgid "If set, context applets will collapse using animations."
-msgstr "Etkin ise bağlam uygulamacıkları kapanırken animasyon kullanacaktır."
+msgstr "Ayarlanırsa bağlam uygulamacıkları canlandırma ile daraltılır."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:124
 #, kde-format
 msgid "Whether organize files will overwrite existing files."
-msgstr "Düzenlenen dosyanın var olan dosyanın üzerine yazılıp yazılmayacağı."
+msgstr ""
+"Dosyalar organize edilirken var olan dosyaların üzerine yazılıp "
+"yazılmayacağı."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:125
 #, kde-format
 msgid "If set, Organize files will overwrite any existing destination."
 msgstr ""
-"Ayarlandıysa düzenlenen dosyalar mevcut herhangi bir hedefin üzerine "
-"yazacaktır."
+"Ayarlanırsa dosyalar organize edilirken, var olan herhangi bir hedef konumun "
+"üzerine yazılır."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
 #, kde-format
 msgid "Whether organize files will move The in artist names to the end."
 msgstr ""
-"Adda geçen The için, sanatçıların adının sonuna eklenip eklenmeyeceğini "
-"düzenler."
+"Dosyalar organize edilirken sanatçı adlarındaki \"The\"nın sona taşınıp "
+"taşınmayacağı."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:130
@@ -667,8 +671,8 @@ msgid ""
 "If set, Organize files will move The in artist names to the end as in "
 "\"Beatles, The\"."
 msgstr ""
-"Ayarlanırsa The için \"Beatles, The\" gibi sanatçıların adlarının sonuna "
-"taşıyarak dosyaları düzenler."
+"Ayarlanırsa dosyalar organize edilirken, sanatçı adlarındaki \"The\", "
+"\"Beatles, The\"da olduğu gibi sona taşınır."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:134
@@ -676,8 +680,8 @@ msgstr ""
 msgid ""
 "Whether organize files will replace spaces in filenames with underscores."
 msgstr ""
-"Dosya adlarındaki boşluk karakterlerinin yerine alt çizgi karakterinin gelip "
-"gelmeyeceği."
+"Dosyaları organize ederken dosya adlarındaki boşlukların alt tire ile "
+"değiştirilip değiştirilmeyeceği."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:135
@@ -685,36 +689,38 @@ msgstr ""
 msgid ""
 "If set, Organize files will replace spaces in filenames with underscores."
 msgstr ""
-"Ayarlandıysa düzenlenen dosyalardaki boşluk karakterlerini alt çizgi ile "
-"değiştirilecektir."
+"Ayarlanırsa dosyaları organize edilirken, dosya adlarındaki boşluklar alt "
+"tireler ile değiştirilir."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:139
 #, kde-format
 msgid "Whether organize files will use cover art as folder icons."
 msgstr ""
-"Düzenlenen dosyaların, klasör simgesi olarak albüm kapağının kullanıp "
-"kullanılmayacağı."
+"Dosyalar organize edilirken kapak görselinin klasör simgeleri olarak "
+"kullanılıp kullanılmayacağı."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:140
 #, kde-format
 msgid "If set, Organize files will use cover art as folder icons."
 msgstr ""
-"Ayarlandıysa Düzenlenen dosyaların klasör simgelerinde albüm kapağı "
-"kullanılacaktır."
+"Ayarlanırsa dosyalar organize edilirken, klasör simgeleri olarak kapak "
+"görselleri kullanılır."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:144
 #, kde-format
 msgid "Collection folder path destination for Organize files."
-msgstr "Düzenlenen dosyalar için koleksiyon klasör yolu hedefi."
+msgstr ""
+"Dosyaları organize ederken kullanılacak koleksiyon klasörü yolu konumu."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:145
 #, kde-format
 msgid "The path of the collection folder destination for Organize files."
-msgstr "Düzenlenen dosyalar için koleksiyon klasör yolunun hedefi."
+msgstr ""
+"Dosyaları organize ederken kullanılacak koleksiyon klasör hedef konumu yolu."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:149
@@ -723,8 +729,8 @@ msgid ""
 "Whether organize files will rename files in a manner compatible with vfat "
 "filesystems."
 msgstr ""
-"Dosya düzenlemenin vfat dosya sistemi uyumu için yeniden adlandırılıp "
-"adlandırılmayacağı."
+"Dosyalar organize edilirken dosyaların VFAT dosya sistemleri ile uyumlu bir "
+"biçimde yeniden adlandırılıp adlandırılmayacağı."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:150
@@ -733,8 +739,8 @@ msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "vfat filesystems (such as ':', '*' and '?')."
 msgstr ""
-"Ayarlandıysa düzenlenen dosyalar, vfat dosya sistemi ile uyumlu olmayan "
-"karakterler değiştirilecektir (':', '*' ve '?' gibi)."
+"Ayarlanırsa dosyalar organize edilirken VFAT dosya sistemleri ile uyumlu "
+"olmayan karakterler başkalarıyla değiştirilir (örneğin ':', '*' ve '?')."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:154
@@ -743,8 +749,8 @@ msgid ""
 "Whether organize files will rename files such that they only contain 7-bit "
 "ASCII characters."
 msgstr ""
-"Dosya düzenlemenin dosyaları yalnızca 7 bit ASCII karakter içerecek şekilde "
-"adlandırıp adlandırmayacağı."
+"Dosyalar organize edilirken dosyaların yalnızca 7 bit ASCII karakterler "
+"kullanılarak yeniden adlandırılıp adlandırılmayacağı."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:155
@@ -753,15 +759,16 @@ msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "the 7-bit ASCII character set."
 msgstr ""
-"Ayarlandıysa 7-bit ASCII karakter kümesiyle uyumlu olmayan karakterler "
-"değiştirilecektir."
+"Ayarlanırsa dosyalar organize edilirken 7 bit ASCII karakter kümesi ile "
+"uyumlu olmayan karakterler başkalarıyla değiştirilir."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:159
 #, kde-format
 msgid "Whether organize files will use a custom file naming scheme."
 msgstr ""
-"Dosya düzenlemenin özel dosya adlandırma şeması kullanıp kullanmayacağı."
+"Dosyaları organize edilirken özel bir dosya adlandırma şemasının kullanılıp "
+"kullanılmayacağı."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:160
@@ -769,15 +776,16 @@ msgstr ""
 msgid ""
 "If set, Organize files will rename files according to a custom format string."
 msgstr ""
-"Ayarlandıysa düzenlenen dosyalar, özel biçimli diziye uyarak yeniden "
-"adlandırılacaktır."
+"Ayarlanırsa dosyalar organize edilirken özel bir biçim dizisine göre yeniden "
+"adlandırılırlar."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:164
 #, kde-format
 msgid "Format string for Organize files, if a custom naming scheme is used."
 msgstr ""
-"Özel adlandırma şeması kullanılıyorsa Organize dosyaları için biçim dizisi."
+"Özel bir adlandırma şeması kullanılıyorsa dosyalar organize edilirken "
+"kullanılacak biçim dizisi."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:165
@@ -786,8 +794,8 @@ msgid ""
 "If the custom filename scheme is enabled, then Organize files will rename "
 "files according to this format string."
 msgstr ""
-"Özel dosya adı şeması etkinse Organize dosyaları buna uygun olarak yeniden "
-"adlandıracaktı."
+"Özel dosya adı şeması etkinleştirilmişse dosyalar organize edilirken bu "
+"biçim dizisine göre yeniden adlandırılırlar."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:169
@@ -801,27 +809,27 @@ msgstr "Değiştirilecek düzenli ifade."
 msgid ""
 "Organize files will replace substrings matching this regular expression."
 msgstr ""
-"Düzenlenen dosyalarda, bu düzenli ifade ile eşleşen alt diziler "
-"değiştirilecektir."
+"Dosyalar organize edilirken bu düzenli ifade ile eşleşen alt diziler "
+"değiştirilir."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:174
 #, kde-format
 msgid "Replacing string."
-msgstr "Sözcük değiştiriliyor."
+msgstr "Değiştiren dizi."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:175
 #, kde-format
 msgid "Organize files will replace matching substrings with this string."
 msgstr ""
-"Düzenlenen dosyalarda, bu dizi ile eşleşen alt diziler değiştirilecektir."
+"Dosyalar organize edilirken bu dizi ile eşleşen alt diziler değiştirilir."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:179
 #, kde-format
 msgid "Basic or Advanced Mode"
-msgstr "Temel ya da Gelişmiş Görünüm"
+msgstr "Temel veya Gelişmiş Kip"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:180
@@ -830,33 +838,32 @@ msgid ""
 "In basic mode graphical drag/droppable tokens are used to create a filename "
 "scheme, in advanced mode the images are replaced with text."
 msgstr ""
-"Temel kipte grafiksel sürükleme/bırakma göstergeleri bir dosya adı şeması "
-"oluşturmak için kullanılır, gelişmiş kipte ise görüntüler metin ile "
-"değiştirilir."
+"Temel kipte grafiksel sürükle/bırakılabilir jetonlar bir dosya adı şeması "
+"oluşturmak için kullanılır, gelişmiş kipte ise görsellerin yerini metin alır."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:184
 #, kde-format
 msgid "Format Presets"
-msgstr "Biçimlendirme Önayarları"
+msgstr "Biçim Önayarları"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:185
 #, kde-format
 msgid "A list of preset formats (token schemas)."
-msgstr "Önayar biçimlerinin bir listesi (gösterge şemaları)."
+msgstr "Önayar biçimlerinin bir listesi (jeton şemaları)."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:192
 #, kde-format
 msgid "Master volume"
-msgstr "Ana ses"
+msgstr "Ana ses düzeyi"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:193
 #, kde-format
 msgid "The Amarok master volume, a value between 0 and 100."
-msgstr "Ana Amarok sesi, 0 ile 100 arasında bir değer."
+msgstr "Amarok'un ana ses düzeyi, 0-100 arasındaki bir değerdir."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:199
@@ -868,37 +875,41 @@ msgstr "Sessiz durumu"
 #: amarokconfig.kcfg:200
 #, kde-format
 msgid "Mute/Unmute sound."
-msgstr "Sesi Kapat/Aç."
+msgstr "Sesi kapatın/açın."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:204
 #, kde-format
 msgid "Whether to fade out tracks when pressing stop."
-msgstr "Parça durdurulduğunda yumuşak geçiş yap."
+msgstr ""
+"Durdur'a basıldığında parçaların ses düzeyinin azaltılarak kapatılıp "
+"kapatılmayacağı."
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:205 amarokconfig.kcfg:210
 #, kde-format
 msgid "Enable/Disable fadeout."
-msgstr "Yumuşak Geçişi  aç/kapat."
+msgstr "Sesi azaltıp geçiş yapmayı etkinleştirin/devre dışı bırakın."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:209
 #, kde-format
 msgid "Whether to fade out tracks when pressing pause."
-msgstr "Parça duraklatıldığında yumuşak geçiş yapılıp yapılmayacağı."
+msgstr ""
+"Duraklat'a basıldığında parçaların ses düzeyinin azaltılarak kapatılıp "
+"kapatılmayacağı."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:214
 #, kde-format
 msgid "Length of fadeout, in milliseconds"
-msgstr "Yumuşak geçiş süresi, milisaniye olarak"
+msgstr "Milisaniye türünden azaltma geçiş süresi"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:215
 #, kde-format
 msgid "The length of the fadeout in milliseconds."
-msgstr "Yumuşak geçişin uzunluğu, milisaniye cinsinden."
+msgstr "Milisaniye türünden ses azaltarak geçişin uzunluğu."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:220
@@ -910,31 +921,32 @@ msgstr "Ekolayzır kipi - 0 = kapalı, 1 ile n arası = önayar numarası"
 #: amarokconfig.kcfg:221
 #, kde-format
 msgid "When enabled, an equalizer plugin filters the audio stream."
-msgstr "Etkin olduğunda, bir ekolayzır eklentisi, ses akışını süzer."
+msgstr "Etkinleştirildiğinde, bir ekolayzır eklentisi ses akışını süzer."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:225
 #, kde-format
 msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
-msgstr "Pre-amp, aralık -100...100 içeren 11 ekolayzer kazanımı; 0 normal."
+msgstr ""
+"11 ekolayzır kazançları ön amfiyi içerir; erim: -100..100, 0 olağan değerdir."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:229
 #, kde-format
 msgid "List with user equalizer preset names"
-msgstr "Kullanıcı denkleştirici önayar adları ile listele"
+msgstr "Kullanıcı tanımlı ekolayzır önayarı adları listesi"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:232
 #, kde-format
 msgid "List with user presets values"
-msgstr "Kullanıcı önayar değerleri ile listele"
+msgstr "Kullanıcı tanımlı kullanıcı önayarları değerleri"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:236
 #, kde-format
 msgid "The mode for adjusting playback volume."
-msgstr "Yeniden çalma ses yüksekliğini ayarlama kipi."
+msgstr "Çalma ses düzeyini ayarlama kipi."
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:237
@@ -7663,9 +7675,9 @@ msgstr ""
 "ile kodlanır; bu yaklaşım, parça genelinde sabit bir bit hızına sahip "
 "olmaktan daha genel olarak daha iyi kaliteyi ve daha küçük bir dosya üretir."
 "<br>Bu nedenle, bu sürgüdeki bit hızı ölçüsü, kodlanmış parçanın ortalama "
-"bit hızının bir tahminidir.<br><b>160kb/s</b>, taşınabilir bir oynatıcıda "
-"müzik dinlemek için iyi bir seçimdir.<br/><b>120kb/s</ b> değerinin "
-"altındaki herhangi bir şey müzik için yetersiz olabilir ve <b>205kb/s</b> "
+"bit hızının bir tahminidir.<br><b>160kb/sn</b>, taşınabilir bir oynatıcıda "
+"müzik dinlemek için iyi bir seçimdir.<br/><b>120kb/sn</ b> değerinin "
+"altındaki herhangi bir şey müzik için yetersiz olabilir ve <b>205kb/sn</b> "
 "üzerindeki herhangi bir şey muhtemelen gereğinden fazla büyük olacaktır."
 
 #: core/transcoding/formats/TranscodingMp3Format.cpp:55
@@ -7717,7 +7729,7 @@ msgstr ""
 "sürgüdeki bit hızı ölçüsü, kodlanmış parçanın ortalama bit hızının bir "
 "tahminidir.<b>128kb/sn</ b> taşınabilir bir oynatıcıdaki müzik dinlemek için "
 "iyi bir seçimdir.<br/><b>100 kb/sn</b>'den az olan her şey müzik için "
-"yetersiz olabilir ve <b>256kb/s</ b> değerinin üstündeki herhangi bir şey "
+"yetersiz olabilir ve <b>256kb/sn</ b> değerinin üstündeki herhangi bir şey "
 "muhtemelen çok gereksiz olacaktır."
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:72
@@ -7817,10 +7829,10 @@ msgstr ""
 "bir <a href=http://en.wikipedia.org/wiki/"
 "Windows_Media_Audio#Windows_Media_Audio>Sabit bit hızı (CBR)</a> ayarı "
 "ayarlamıştır.<br>Bu nedenle, bu sürgüdeki bit hızı ölçüsü, kodlanmış "
-"parçanın bit hızının oldukça doğru bir tahminidir.<br><b>136 kb/s</b> "
+"parçanın bit hızının oldukça doğru bir tahminidir.<br><b>136 kb/sn</b> "
 "taşınabilir bir oynatıcıda müzik dinlemek için iyi bir seçimdir.<br/><b> 112 "
-"kb/s</b> düzeyinin altındaki herhangi bir şey müzik için yetersiz kalabilir "
-"ve <b>182 kb/s</ b> ve üstü büyük olasılıkla gereksiz olacaktır."
+"kb/sn</b> düzeyinin altındaki herhangi bir şey müzik için yetersiz kalabilir "
+"ve <b>182 kb/sn</ b> ve üstü büyük olasılıkla gereksiz olacaktır."
 
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:67
 #, kde-format
