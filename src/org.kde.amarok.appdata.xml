@@ -438,6 +438,10 @@
   <url type="help">https://docs.kde.org/?application=amarok</url>
   <screenshots>
     <screenshot type="default">
+      <caption>Playing music in Amarok 3.0</caption>
+      <image>https://cdn.kde.org/screenshots/amarok/amarok30.png</image>
+    </screenshot>
+    <screenshot>
       <caption>Playing music in Amarok</caption>
       <caption xml:lang="bg">Възпроизвеждане на музика в Amarok</caption>
       <caption xml:lang="ca">Reproduint música en l'Amarok</caption>
