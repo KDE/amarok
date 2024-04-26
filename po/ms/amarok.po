@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-22 01:54+0000\n"
+"POT-Creation-Date: 2024-04-26 01:37+0000\n"
 "PO-Revision-Date: 2009-06-14 00:43+0800\n"
 "Last-Translator: Sharuzzaman Ahmat Raslan <sharuzzaman@myrealbox.com>\n"
 "Language-Team: Malay <kedidiemas@yahoogroups.com>\n"
@@ -371,7 +371,7 @@ msgid "Stop after current track: On"
 msgstr "Terap kepada Senarai Semasa"
 
 #: ActionClasses.cpp:498
-#: context/applets/currenttrack/package/contents/ui/main.qml:101
+#: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1331 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
@@ -3841,19 +3841,19 @@ msgstr ""
 msgid "Sample size:"
 msgstr "%1 kHz"
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:32
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
 #: playlist/PlaylistModel.cpp:945
 #, kde-format
 msgid "Play Count"
 msgstr ""
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:42
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:44
 #: playlist/PlaylistModel.cpp:943
 #, fuzzy, kde-format
 msgid "Score"
 msgstr "Skor"
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:52
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:55
 #, fuzzy, kde-format
 msgid "Last played"
 msgstr "Disimpan terakhir:"

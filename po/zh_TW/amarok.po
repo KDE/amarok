@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-22 01:54+0000\n"
+"POT-Creation-Date: 2024-04-26 01:37+0000\n"
 "PO-Revision-Date: 2024-04-17 03:41+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -380,7 +380,7 @@ msgid "Stop after current track: On"
 msgstr "在目前曲目後停止：開啟"
 
 #: ActionClasses.cpp:498
-#: context/applets/currenttrack/package/contents/ui/main.qml:101
+#: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1331 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
@@ -3854,19 +3854,19 @@ msgstr "%1 Hz"
 msgid "Sample size:"
 msgstr "取樣大小："
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:32
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
 #: playlist/PlaylistModel.cpp:945
 #, kde-format
 msgid "Play Count"
 msgstr "播放次數"
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:42
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:44
 #: playlist/PlaylistModel.cpp:943
 #, kde-format
 msgid "Score"
 msgstr "評分"
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:52
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:55
 #, kde-format
 msgid "Last played"
 msgstr "上次播放"

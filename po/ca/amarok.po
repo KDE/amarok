@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-22 01:54+0000\n"
+"POT-Creation-Date: 2024-04-26 01:37+0000\n"
 "PO-Revision-Date: 2024-04-17 09:44+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -387,7 +387,7 @@ msgid "Stop after current track: On"
 msgstr "Atura després de la peça actual: actiu"
 
 #: ActionClasses.cpp:498
-#: context/applets/currenttrack/package/contents/ui/main.qml:101
+#: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1331 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
@@ -4032,19 +4032,19 @@ msgstr "%1 Hz"
 msgid "Sample size:"
 msgstr "Mida de la mostra:"
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:32
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
 #: playlist/PlaylistModel.cpp:945
 #, kde-format
 msgid "Play Count"
 msgstr "Nombre de reproduccions"
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:42
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:44
 #: playlist/PlaylistModel.cpp:943
 #, kde-format
 msgid "Score"
 msgstr "Puntuació"
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:52
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:55
 #, kde-format
 msgid "Last played"
 msgstr "Escoltada per darrera vegada"
