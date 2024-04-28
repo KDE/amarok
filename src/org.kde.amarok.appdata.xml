@@ -500,6 +500,7 @@
     <binary>amarok</binary>
   </provides>
   <releases>
+    <release version="3.0.0" date="2024-04-29" type="stable"/>
     <release version="2.9.82" date="2024-04-12" type="development"/>
     <release version="2.9.71" date="2021-01-31" type="development"/>
     <release version="2.9.0" date="2018-03-07" type="stable"/>
