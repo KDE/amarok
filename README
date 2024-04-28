@@ -26,8 +26,8 @@ that really makes playlist handling easy.
     * iPod support, as well as other media players
     * Powerful scripting interface
     * Integration with Plasma and KDE Applications
-    * Integration with multiple web sources including Magnatune, Jamendo,
-      Ampache, MP3tunes, and others.
+    * Integration with multiple web sources including Magnatune,
+      Ampache, and others.
 --------------------------------------------------------------------------------
 
 
@@ -107,7 +107,7 @@ Optional
       * audiocd-kio - https://www.kde.org/ (part of KDE multimedia)
 
     * Building tests require:
-      * gmock 1.4 (or newer) - https://github.com/google/googletest
+      * gmock 1.10 (or newer) - https://github.com/google/googletest
 
 Please note that if compiling from source you also need to install -dev/-devel
 versions of these packages, depending on your distribution.
