@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-04-26 01:37+0000\n"
-"PO-Revision-Date: 2024-04-25 23:37+0300\n"
+"PO-Revision-Date: 2024-04-27 23:12+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -2875,7 +2875,7 @@ msgstr "RSS 1.0/2.0 veya Atom beslemesi URL’sini gir:"
 #: browsers/playlistbrowser/UserPlaylistCategory.cpp:36
 #, kde-format
 msgid "Saved Playlists"
-msgstr "Kaydedilmış Çalma Listeleri"
+msgstr "Kaydedilen Çalma Listeleri"
 
 #: browsers/playlistbrowser/UserPlaylistCategory.cpp:37
 #, kde-format
@@ -5112,7 +5112,7 @@ msgstr "En çok kurulan uygulamacıklar"
 #, kde-format
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
-msgstr "<ad> uygulamacığını kaldır"
+msgstr "<name> uygulamacığını kaldır"
 
 #: context/tools/amarokpkg.cpp:120
 #, kde-format
@@ -5120,18 +5120,18 @@ msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "
 "directories for this KDE session will be searched instead."
 msgstr ""
-"Paket kök dizini için tam yol. Bu yol bildirilmezse KDE oturumundaki "
-"standart yollar kullanılacak."
+"Paket köküne giden mutlak yol. Sağlanmazsa bunun yerine bu KDE oturumu için "
+"olan standart veri dizinleri aranacaktır."
 
 #: context/tools/amarokpkg.cpp:176
 #, kde-format
 msgid "Successfully removed %1"
-msgstr "%1 başarılı bir şekilde kaldırıldı"
+msgstr "%1 başarıyla kaldırıldı."
 
 #: context/tools/amarokpkg.cpp:178
 #, kde-format
 msgid "Removal of %1 failed."
-msgstr "%1 ögesini kaldırma işlemi başarısız oldu."
+msgstr "%1 kaldırılamadı."
 
 #: context/tools/amarokpkg.cpp:183
 #, kde-format
@@ -5141,12 +5141,12 @@ msgstr "%1 eklentisi kurulu değil."
 #: context/tools/amarokpkg.cpp:188
 #, kde-format
 msgid "Successfully installed %1"
-msgstr "%1 başarılı bir şekilde kuruldu"
+msgstr "%1 başarıyla kuruldu."
 
 #: context/tools/amarokpkg.cpp:191
 #, kde-format
 msgid "Installation of %1 failed."
-msgstr "%1 ögesinin kurulum işlemi başarısız oldu."
+msgstr "%1 kurulamadı."
 
 #: context/tools/amarokpkg.cpp:199
 #, kde-format
@@ -5154,27 +5154,27 @@ msgctxt ""
 "No option was given, this is the error message telling the user he needs at "
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
-msgstr "Listeleme, kaldırma veya kurma gerekiyor."
+msgstr "Listeleme, kaldırma veya kurma eylemlerinden biri gerekiyor."
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
 msgid "Do not show under Various Artists"
-msgstr "Çeşitli sanatçılar altında Gösterme"
+msgstr "Çeşitli Sanatçılar Altında Gösterme"
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:43
 #, kde-format
 msgid "Show under Various Artists"
-msgstr "Çeşitli sanatçılar altında Göster"
+msgstr "Çeşitli Sanatçılar Altında Göster"
 
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:103
 #, kde-format
 msgid "%1 - Stopped %2"
-msgstr "%1 - Durdu %2"
+msgstr "%1 - %2 tarihinde durduruldu"
 
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:108
 #, kde-format
 msgid "Playback Ended Markers"
-msgstr "Çalma Sonlanma İşaretçileri"
+msgstr "Çalma Sonlandı İmleyicileri"
 
 #: core-impl/collections/aggregate/AggregateCollection.cpp:51
 #, kde-format
@@ -5200,7 +5200,7 @@ msgstr ""
 "Ogg Vorbis, sıkıştırılmış müziğinizi bilgisayarınıza depolamak için mükemmel "
 "bir şekilde tümüyle ücretsiz olan ve serbest sıkıştırılmış ses biçimidir. "
 "Ses kalitesi, aynı bit hızında MP3’den biraz daha iyidir. Tüm taşınabilir "
-"oynatıcıların Ogg Vorbis biçimini desteklemediğini unutmayın."
+"çalarların Ogg Vorbis biçimini desteklemediğini unutmayın."
 
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:69
 #, kde-format
@@ -5233,19 +5233,20 @@ msgid ""
 "MP3 is the de facto standard in compressed audio compatible with almost all "
 "mobile players. It is however non free and generally not recommended."
 msgstr ""
-"MP3, hemen hemen tüm mobil oyuncularla uyumlu, sıkıştırılmış ses alanında "
-"fiili standartır. Ancak özgür değildir ve genellikle tavsiye edilmez."
+"MP3, hemen hemen tüm taşınabilir çalarlarla uyumlu, sıkıştırılmış ses "
+"alanında fiili standartır. Ancak özgür bir standart değildir ve genellikle "
+"tavsiye edilmez."
 
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:114
 #, kde-format
 msgid "Audio CD settings - Amarok"
-msgstr "Ses CD’si ayarları - Amarok"
+msgstr "Ses CD’si Ayarları - Amarok"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
 #, kde-format
 msgid "Available formats"
-msgstr "Kullanılabilir biçimler"
+msgstr "Kullanılabilir Biçimler"
 
 #. i18n: ectx: property (text), widget (QRadioButton, oggButton)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:32
@@ -5265,7 +5266,7 @@ msgstr "FLAC"
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:46
 #, kde-format
 msgid "Wav"
-msgstr "Wav"
+msgstr "WAV"
 
 #. i18n: ectx: property (text), widget (QRadioButton, mp3Button)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:53
@@ -5284,7 +5285,7 @@ msgstr "Gelişmiş"
 #: core-impl/collections/daap/DaapCollection.cpp:101
 #, kde-format
 msgid "Loading remote collection from host %1"
-msgstr "Uzak koleksiyon %1 makinesinden yükleniyor"
+msgstr "%1 makinesinden uzak koleksiyon yükleniyor"
 
 #: core-impl/collections/daap/DaapCollection.cpp:271
 #, kde-format
@@ -5297,18 +5298,18 @@ msgid ""
 "Updating Amarok database schema. Please don't terminate Amarok now as it may "
 "result in database corruption."
 msgstr ""
-"Amarok veritabanı şeması güncelleniyor. Veritabanı bozulmasını önlemek için "
-"Amarok’tan çıkış yapmayın."
+"Amarok veritabanı şeması güncelleniyor. Veritabanı bozulmasını önlemek üzere "
+"şu an için Amarok’tan çıkmayın."
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:245
 #, kde-format
 msgid "Updating Amarok database schema"
-msgstr "Amarok veritabanı şeması güncelleniyor"
+msgstr "Amarok Veritabanı Şeması Güncellemesi"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:528
 #, kde-format
 msgid "Source track does not exist: %1"
-msgstr "Kaynak parça mevcut değil: %1"
+msgstr "Kaynak parça yok: %1"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:539
 #, kde-format
@@ -5323,7 +5324,7 @@ msgstr "Aktarılıyor: %1"
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
 #, kde-format
 msgid "Transcoding: %1"
-msgstr "Kodlama dönüştürme: %1"
+msgstr "Arakodlanıyor: %1"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:662
 #: core-impl/collections/support/FileCollectionLocation.cpp:87
@@ -5348,7 +5349,7 @@ msgstr ""
 #: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:89
 #, kde-format
 msgid "Errors During Collection Scan"
-msgstr "Koleksiyon Tarama Sırasında Hata Oluştu"
+msgstr "Koleksiyon Taraması Sırasında Hata"
 
 #: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:212
 #, kde-format
@@ -5376,31 +5377,32 @@ msgstr "Aygıtı &Çıkar"
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:126
 #, kde-format
 msgid "Re-add orphaned and forget stale tracks"
-msgstr "Terk edilen ve eskimiş parçaları yeniden ekle"
+msgstr "Artık parçaları yeniden ekle ve eski parçaları unut"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:484
 #, kde-format
 msgctxt "iPod was successfully initialized"
 msgid "Initialization successful."
-msgstr "Başlatma işlemi başarılı oldu."
+msgstr "İlklendirme başarılı."
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:705
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
-msgstr "iTunes veritabanı %1 içine başarıyla yazıldı"
+msgstr "iTunes veritabanı %1 içine başarıyla yazıldı."
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:713
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
-msgstr "iTunes veritabanını %1 üzerine yazma, hata vermeden başarısız oldu"
+msgstr ""
+"iTunes veritabanını %1 içine yazma, bir hata vermediği halde başarısız oldu."
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:717
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
-msgstr "iTunes veritabanının %1 üzerine yazma başarısız oldu: %2"
+msgstr "iTunes veritabanının %1 içine yazılamadı: %2"
 
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:54
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:370
@@ -5428,7 +5430,7 @@ msgstr "Bilinmeyen Sanatçı"
 #: EngineController.cpp:1309
 #, kde-format
 msgid "Unknown track"
-msgstr "Bilinmeyen parça"
+msgstr "Bilinmeyen Parça"
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:313
 #, kde-format
@@ -5439,11 +5441,11 @@ msgid_plural ""
 "Failed to process %1 tracks. (more info about these is in the Amarok "
 "debugging log)"
 msgstr[0] ""
-"Bir parçayı işleme başarısız oldu. (Amarok hata ayıklama günlüğünde bununla "
-"ilgili daha fazla bilgi var)"
+"1 parça işlenemedi. (bununla ilgili daha fazla bilgi Amarok hata ayıklama "
+"günlüğündedir)"
 msgstr[1] ""
-"%1 parçayı işleme başarısız oldu. (Amarok hata ayıklama günlüğünde bununla "
-"ilgili daha fazla bilgi var)"
+"%1 parça işlenemedi. (bununla ilgili daha fazla bilgi Amarok hata ayıklama "
+"günlüğündedir)"
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:318
 #, kde-format
@@ -5455,31 +5457,31 @@ msgid ""
 "database entries, %2 stale database entries removed, %3 orphaned tracks "
 "added back to the iTunes database. %4"
 msgstr ""
-"iPod dosyalarını birleştirme tamamlandı. Eski iTunes veritabanı girdileri "
-"ile eşleşen %1 parça, %2 eski veritabanı girişi kaldırıldı, %3 kalan "
-"parçaları iTunes veritabanına geri eklendi. %4"
+"iPod dosyalarının birleştirilmesi tamamlandı. %1 artık parça eski iTunes "
+"veritabanı girdileriyle eşleştirildi, %2 eski veritabanı girdisi kaldırıldı, "
+"%3 artık parça iTunes veritabanına geri eklendi. %4"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:224
 #, kde-format
 msgctxt "%2 is collection name"
 msgid "Transferred one track to %2."
 msgid_plural "Transferred %1 tracks to %2."
-msgstr[0] "Bir parça şıraya aktarıldı, %2."
-msgstr[1] "%1 parça şıraya aktarıldı, %2."
+msgstr[0] "1 parça %2 koleksiyonuna aktarıldı."
+msgstr[1] "%1 parça %2 koleksiyonuna aktarıldı."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:227
 #, kde-format
 msgctxt "%2 is collection name"
 msgid "Transcoded one track to %2."
 msgid_plural "Transcoded %1 tracks to %2."
-msgstr[0] "%1 parça %2 olarak çapraz kodlandı."
-msgstr[1] "%1 parça %2 olarak çapraz kodlandı."
+msgstr[0] "1 parça %2 koleksiyonuna arakodlandı."
+msgstr[1] "%1 parça %2 koleksiyonuna arakodlandı."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:236
 #, kde-format
 msgid "Transfer aborted. Managed to transfer one track."
 msgid_plural "Transfer aborted. Managed to transfer %1 tracks."
-msgstr[0] "Aktarım iptal edildi. %1 parça aktarılabildi."
+msgstr[0] "Aktarım iptal edildi. 1 parça aktarılabildi."
 msgstr[1] "Aktarım iptal edildi. %1 parça aktarılabildi."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:244
@@ -5487,14 +5489,14 @@ msgstr[1] "Aktarım iptal edildi. %1 parça aktarılabildi."
 msgctxt "%2 is the 'Transferred 123 tracks to Some collection.' message"
 msgid "%2 One track was already there."
 msgid_plural "%2 %1 tracks were already there."
-msgstr[0] "%2 Bir parça zaten orada."
-msgstr[1] "%2 %1 parça zaten orada."
+msgstr[0] "%2 1 parça halihazırda oradaydı."
+msgstr[1] "%2 %1 parça halihazırda oradaydı."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:372
 #, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
-msgstr "Parçalar şuraya Aktarıldı, %1"
+msgstr "Parçalar, %1 koleksiyonuna aktarıldı."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:375
 #, kde-format
@@ -5503,10 +5505,10 @@ msgid ""
 msgid_plural ""
 "%1 tracks successfully transferred, but transfer of some other tracks failed."
 msgstr[0] ""
-"Bir parça başarıyla aktarıldı; ancak diğer bazı parçaları aktarma başarısız "
+"1 parça başarıyla aktarıldı; ancak diğer bazı parçaların aktarımı başarısız "
 "oldu."
 msgstr[1] ""
-"%1 parça başarıyla aktarıldı; ancak diğer bazı parçaları aktarma başarısız "
+"%1 parça başarıyla aktarıldı; ancak diğer bazı parçaların aktarımı başarısız "
 "oldu."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:379
@@ -5520,16 +5522,14 @@ msgid ""
 "One track was not transferred because it would exceed iPod capacity.<br>"
 msgid_plural ""
 "%1 tracks were not transferred because it would exceed iPod capacity.<br>"
-msgstr[0] "iPod’un kapasitesi dolduğundan bir parça aktarılamadı.<br>"
-msgstr[1] "iPod’un kapasitesi dolduğundan %1 parça aktarılamadı.<br>"
+msgstr[0] "iPod kapasitesini aşacağı için 1 parça aktarılmadı.<br>"
+msgstr[1] "iPod kapasitesini aşacağı için %1 parça aktarılmadı.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:392
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
-msgstr ""
-"<i>Amarok iTunes veritabanı yazım için iPod üzerinde %1 kadar alan kullanır."
-"</i><br>"
+msgstr "<i>Amarok, iTunes veritabanına yazmak için iPod'da %1 ayırdı.</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:399
 #, kde-format
@@ -5540,36 +5540,36 @@ msgid_plural ""
 "%1 tracks were not copied because they wouldn't be playable - they are in "
 "unsupported formats (%2).<br>"
 msgstr[0] ""
-"Bir parça çalınabilir olmadığından kopyalanamadı - %2 biçimi desteklenmiyor."
-"<b>"
+"1 parça çalınamayacağı için kopyalanmadı; %2 biçimi desteklenmiyor.<br>"
 msgstr[1] ""
-"%1 parça çalınabilir olmadığından kopyalanamadı - parçalar desteklenmeyen "
-"biçimdeler (%2).<b>"
+"%1 parça çalınamayacağı için kopyalanmadı; bu parçalar desteklenmeyen bir "
+"biçimdeler (%2).<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:408
 #, kde-format
 msgid "Copy/move/transcode of one file failed.<br>"
 msgid_plural "Copy/move/transcode of %1 files failed.<br>"
-msgstr[0] "%1 dosyanın kopyalama/taşıma/çapraz kodlama işlemi başarısız.<br>"
-msgstr[1] "%1 dosyanın kopyalama/taşıma/çapraz kodlama işlemi başarısız.<br>"
+msgstr[0] "1 dosyanın kopyalanması/taşınması/arakodlanması başarısız oldu.<br>"
+msgstr[1] ""
+"%1 dosyanın kopyalanması/taşınması/arakodlanması başarısız oldu.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:414
 #, kde-format
 msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
 "%1 tracks were not transferred due to an internal Amarok error.<br>"
-msgstr[0] "Bir parça, içsel Amarok hatası yüzünden aktarılamadı.<br>"
-msgstr[1] "%1 parça, içsel Amarok hatası yüzünden aktarılamadı.<br>"
+msgstr[0] "İçsel bir Amarok hatası nedeniyle 1 parça aktarılamadı.<br>"
+msgstr[1] "İçsel bir Amarok hatası nedeniyle %1 parça aktarılamadı.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:417
 #, kde-format
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
-msgstr "<i>Ayrıntıyı, Amarok hata ayıklama çıktısında bulabilirsiniz.</i><br>"
+msgstr "<i>Ayrıntıları Amarok hata ayıklama çıktısında bulabilirsiniz.</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:422
 #, kde-format
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
-msgstr "Geri kalan aktarılmadı; çünkü iPod koleksiyonu kayboldu.<br>"
+msgstr "iPod koleksiyonu kaybolduğu için geri kalanı aktarılmadı.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:427
 #, kde-format
@@ -5581,8 +5581,8 @@ msgstr "Hata nedeni: %1<br>"
 #, kde-format
 msgid "Removing one track from iPod"
 msgid_plural "Removing %1 tracks from iPod"
-msgstr[0] "İPod üzerinden bir parça siliniyor"
-msgstr[1] "İPod üzerinden %1 parça siliniyor"
+msgstr[0] "iPod'dan 1 parça kaldırılıyor"
+msgstr[1] "iPod'dan %1 parça kaldırılıyor"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:57
 #, kde-format
@@ -5600,7 +5600,7 @@ msgstr "Eskimiş parçalar"
 #, kde-format
 msgctxt "iPod playlist name"
 msgid "Orphaned tracks"
-msgstr "Terkedilmiş parçalar"
+msgstr "Artık parçalar"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:147
 #, kde-format
@@ -5609,20 +5609,20 @@ msgid ""
 "using the <b>%2</b> collection action. You can also view the tracks under "
 "the Saved Playlists tab."
 msgstr ""
-"%1 üzerinde eskimiş ve/veya terk edilmiş parçalar algılandı. <b>%2</b> "
-"koleksiyon eylemini kullanarak durumu çözebilirsiniz. Ayrıca, parçaları "
-"Kaydedilmiş Çalma Listeleri sekmesinde de görüntüleyebilirsiniz."
+"%1 üzerinde eski ve/veya artık parçalar algılandı. <b>%2</b> koleksiyon "
+"eylemini kullanarak durumu çözebilirsiniz. Parçaları, Kaydedilen Çalma "
+"Listeleri sekmesi altında da görüntüleyebilirsiniz."
 
 #: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
 #, kde-format
 msgid "Connecting to iPhone, iPad or iPod touch failed."
-msgstr "iPhone, iPad veya iPod’a bağlanılamadı."
+msgstr "iPhone/iPad/iPod bağlantısı yapılamadı."
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, IpodConfiguration)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:14
 #, kde-format
 msgid "iPod device configuration"
-msgstr "iPod aygıt yapılandırması"
+msgstr "iPod Aygıtı Yapılandırması"
 
 #. i18n: ectx: property (text), widget (QLabel, nameLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:26
@@ -5636,7 +5636,7 @@ msgstr "iPod adı:"
 #: core-impl/collections/umscollection/UmsConfiguration.ui:111
 #, kde-format
 msgid "Transcode:"
-msgstr "Çapraz Kodla:"
+msgstr "Arakodlama:"
 
 #. i18n: ectx: property (text), widget (QLabel, modelComboLabel)
 #. i18n: ectx: property (text), widget (QLabel, modelLabel)
@@ -5650,20 +5650,20 @@ msgstr "Model:"
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:91
 #, kde-format
 msgid "&Initialize iPod"
-msgstr "&iPod’u Başlat"
+msgstr "&iPod’u İlklendir"
 
 #. i18n: ectx: property (title), widget (QGroupBox, infoGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:103
 #: covermanager/CoverFoundDialog.cpp:743
 #, kde-format
 msgid "Information"
-msgstr "Bilgiler"
+msgstr "Bilgi"
 
 #. i18n: ectx: property (text), widget (QLabel, generationLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:123
 #, kde-format
 msgid "Generation:"
-msgstr "Oluşturulma:"
+msgstr "Nesil:"
 
 #. i18n: ectx: property (text), widget (QLabel, videoLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:137
@@ -5675,25 +5675,25 @@ msgstr "Video:"
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:151
 #, kde-format
 msgid "Album artwork:"
-msgstr "Albüm çizimi:"
+msgstr "Albüm sanatı:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, troubleshootingGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:168
 #, kde-format
 msgid "Troubleshooting"
-msgstr "Sorun giderme"
+msgstr "Sorun Giderme"
 
 #. i18n: ectx: property (text), widget (QLabel, sysInfoLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:174
 #, kde-format
 msgid "SysInfo file:"
-msgstr "SysInfı dosyası:"
+msgstr "SysInfo dosyası:"
 
 #. i18n: ectx: property (text), widget (QLabel, sysInfoExtendedLabel)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:188
 #, kde-format
 msgid "SysInfoExtended file:"
-msgstr "SysInfoExtenden dosyası:"
+msgstr "SysInfoExtended dosyası:"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:48
 #, kde-format
@@ -5723,22 +5723,23 @@ msgstr "iPod"
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:214
 #, kde-format
 msgid "iPod model was not recognized."
-msgstr "iPod modeli bilinmiyor."
+msgstr "iPod modeli tanınamadı."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:226
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:238
 #, kde-format
 msgid "%1 family uses %2 file to generate correct database checksum."
 msgstr ""
-"%1 ailesi, veritabanının doğru özetini oluşturmak için %2 dosyasını kullanır."
+"%1 ailesi, doğru veritabanı sağlama toplamını üretmek için %2 dosyasını "
+"kullanıyor."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:228
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:240
 #, kde-format
 msgid "%1 family needs %2 file to generate correct database checksum."
 msgstr ""
-"%1 ailesi, veritabanının doğru özetini oluşturubilmesi için %2 dosyasına "
-"gereksinim duyuyor."
+"Doğru veritabanı sağlama toplamını üretmek için %1 ailesinin %2 dosyasına "
+"gereksinimi var."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:248
 #, kde-format
@@ -5748,15 +5749,15 @@ msgid ""
 "libgpod (as of version 0.8.2) doesn't know how to compute it, but tries to "
 "dynamically load external library libhashab.so to do it."
 msgstr ""
-"%1 ailesi, veritabanın doğru özetini oluşturmak için büyük olasılıkla hash-"
-"AB kullanıyor. libgpod (0.8.2 sürümü) nasıl hesaplayacağını bilmiyor; ancak "
-"bunu yapmak için harici kitaplık libhashab.so’yi devingen olarak yüklemeye "
-"çalışır."
+"%1 ailesi, doğru veritabanı sağlama toplamını üretmek için büyük olasılıkla "
+"hash-AB kullanıyor. libgpod (sürüm 0.8.2 itibarıyla) bunu nasıl "
+"hesaplayacağını bilmiyor; ancak bunu yapmak için libhashab.so dış "
+"kitaplığını devingen biçimde yüklemeye çalışıyor."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:262
 #, kde-format
 msgid "Autodetect (%1 file(s) present)"
-msgstr "Otomatik Bul (%1 dosya var)"
+msgstr "Kendiliğinden algıla (%1 dosya var)"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:286
 #, kde-format
@@ -5776,7 +5777,7 @@ msgstr "Bilinmeyen"
 #, kde-format
 msgctxt "In a dialog: Video: Supported"
 msgid "Supported"
-msgstr "Desteklenen"
+msgstr "Destekleniyor"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:304
 #, kde-format
@@ -5788,7 +5789,7 @@ msgstr "Desteklenmiyor"
 #, kde-format
 msgctxt "In a dialog: Some file: Present"
 msgid "Present"
-msgstr "Mevcut"
+msgstr "Var"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:306
 #, kde-format
@@ -5811,10 +5812,11 @@ msgid ""
 "the device point of view)<br>See <a href='%2'>README.overview</a> file from "
 "libgpod source repository for more information."
 msgstr ""
-"<b>%1</b><br><br>Bir güvenlik önlemi olarak, Amarok, iPod’a <i>bir yazımı "
-"reddedecektir</i> (iTunes veritabanının değiştirmek, aygıtın bakış açısından "
-"onu boşmuş gibi gösterebilir).<br>Daha fazla bilgi için, libgpod kaynak "
-"deposunda <a href='%2'>README.overview</a> dosyasına bakın."
+"<b>%1</b><br><br>Güvenlik önlemi olarak Amarok, iPod'a <i>herhangi bir yazma "
+"işlemi gerçekleştirmeyi reddedecektir</i>. (iTunes veritabanını değiştirmek, "
+"aygıtın bakış açısından boş görünmesine neden olabilir).<br>Daha fazla bilgi "
+"için libgpod kaynak deposundaki <a href='%2'>README.overview</a> dosyasına "
+"bakın."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:372
 #, kde-format
@@ -5825,39 +5827,39 @@ msgid ""
 "track and photo database</b>, however it should not delete any tracks. The "
 "tracks will become orphaned."
 msgstr ""
-"<b>%1</b><br><br>Yukarıdaki sorun, Amarok’un iPod’unuzu kullanmasına engel "
-"olur. Aşağıdaki <b>%2</ b> düğmesini kullanarak kritik iPod klasörleri ve "
-"dosyaları (iTunes veritabanı da dahil olmak üzere) yeniden oluşturmayı "
-"deneyebilirsiniz.<br><br>iPod Başlatma, <b>iPod parça ve fotoğraf "
-"veritabanını yok etti</b>; ancak herhangi bir parçayı silmemelidir. Parçalar "
-"ayrılacaktır."
+"<b>%1</b><br><br>Yukarıdaki sorun, Amarok'un iPod'unuzu kullanmasını "
+"engelliyor. Aşağıdaki <b>%2</b> düğmesini kullanarak kritik iPod "
+"klasörlerini ve dosyalarını (iTunes veritabanı dahil) yeniden oluşturmayı "
+"deneyebilirsiniz.<br><br>iPod'un ilklendirilmesi <b>iPod parçalarını ve "
+"fotoğraf veritabanını yok eder</b>; ancak hiçbir parçayı silmemelidir. "
+"Parçalar ayrık olarak imlenir."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:434
 #, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo: %1"
-msgstr "SysInfo yazma başarısız oldu: %1"
+msgstr "SysInfo yazılamadı: %1"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:439
 #, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo file due to an unreported error"
-msgstr "Raporlanmamış bir hata yüzünden, SysInfo dosyası yazılamadı"
+msgstr "Rapor edilmemiş bir hata nedeniyle SysInfo dosyası yazılamadı."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:461
 #, kde-format
 msgid "Cannot initialize iPod due to an unreported error."
-msgstr "Raporlanmamış bir hata yüzünden, iPod başlatılamıyor."
+msgstr "Rapor edilmemiş bir hata nedeniyle iPod ilklendirilemiyor."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:314
 #, kde-format
 msgid "Copying Tracks Failed"
-msgstr "Parçaları Kopyalama İşlemi Başarısız Oldu"
+msgstr "Parçalar Kopyalanamadı"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:318
 #, kde-format
 msgid "Tracks not copied: the device is already being copied to"
-msgstr "Parçalar kopyalanmadı: Aygıta zaten kopyalama yapılıyor"
+msgstr "Parçalar kopyalanmadı: Aygıta halihazırda kopyalama yapılıyor."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:351
 #, kde-format
@@ -5867,17 +5869,17 @@ msgstr "Desteklenmeyen biçim: %1"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:394
 #, kde-format
 msgid "Already on device"
-msgstr "Zaten aygıt üzerinde var"
+msgstr "Halihazırda Aygıtta"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:410
 #, kde-format
 msgid "Tracks not copied: the device already has these tracks"
-msgstr "Parçalar kopyalanmadı: Bu parçalar aygıtta zaten var"
+msgstr "Parçalar kopyalanmadı: Bu parçalar aygıtta halihazırda var."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:431
 #, kde-format
 msgid "Tracks not copied: the device has insufficient space"
-msgstr "Parçalar kopyalanmadı: Aygıtta yeterli alan yok"
+msgstr "Parçalar kopyalanmadı: Aygıtta yeterli alan yok."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:441
 #, kde-format
@@ -5907,20 +5909,20 @@ msgstr[1] "Parçalar silinmedi:"
 #, kde-format
 msgid "Deleting Track Failed"
 msgid_plural "Deleting Tracks Failed"
-msgstr[0] "Parça Silme İşlemi Başarısız Oldu"
-msgstr[1] "Parçaları Silme İşlemi Başarısız Oldu"
+msgstr[0] "Parça Silinemedi"
+msgstr[1] "Parçalar Silinemedi"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:576
 #, kde-format
 msgid "%1 tracks are already being deleted from the device."
-msgstr "%1 parça aygıttan zaten siliniyor."
+msgstr "%1 parça halihazırda aygıttan siliniyor."
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:590
 #, kde-format
 msgid "Removing Track from Device"
 msgid_plural "Removing Tracks from Device"
-msgstr[0] "Parça Aygıt üzerinden Siliniyor"
-msgstr[1] "Parçalar Aygıt üzerinden Siliniyor"
+msgstr[0] "Parça Aygıttan Kaldırılıyor"
+msgstr[1] "Parçalar Aygıttan Kaldırılıyor"
 
 #: core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp:239
 #, kde-format
@@ -5930,7 +5932,7 @@ msgstr "Aygıtın Bağlantısını &Kes"
 #: core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.h:41
 #, kde-format
 msgid "Media Device playlists"
-msgstr "Ortam Aygıtı çalma listeleri"
+msgstr "Ortam Aygıtı Çalma Listeleri"
 
 #: core-impl/collections/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp:75
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:167
@@ -5942,7 +5944,7 @@ msgstr "%1 Üzerindeki Pod Yayınları"
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:152
 #, kde-format
 msgid "Could not connect to MTP Device"
-msgstr "MTP Aygıtına bağlanılamadı"
+msgstr "MTP aygıtına bağlanılamadı"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:378
 #, kde-format
@@ -5966,12 +5968,12 @@ msgstr "Bilinmeyen Tarz"
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:910
 #, kde-format
 msgid "Could not delete item"
-msgstr "Öge silinemedi"
+msgstr "Öge silinemedi."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:603
 #, kde-format
 msgid "Delete failed"
-msgstr "Silme işlemi başarısız oldu"
+msgstr "Silme işlemi başarısız oldu."
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:883
 #, kde-format
@@ -5986,7 +5988,7 @@ msgstr "Playdar Koleksiyonu"
 #: core-impl/collections/playdarcollection/PlaydarMeta.cpp:122
 #, kde-format
 msgid "Source collection removed"
-msgstr "Kaynak koleksiyonu kaldırıldı"
+msgstr "Kaynak koleksiyon kaldırıldı"
 
 #: core-impl/collections/support/ArtistHelper.cpp:31
 #, kde-format
@@ -6004,10 +6006,10 @@ msgid_plural ""
 "Do you really want to delete these %1 tracks? They will be removed from %2 "
 "and from underlying storage medium."
 msgstr[0] ""
-"Bu parçayı gerçekten silmek istiyor musunuz? %2 üzerinden ve alttaki "
+"Bu parçayı silmeyi gerçekten istiyor musunuz? %2 üzerinden ve alttaki "
 "depolama ortamından kaldırılacaktır."
 msgstr[1] ""
-"%1 parçasını gerçekten silmek istiyor musunuz? %2 üzerinden ve alttaki "
+"Bu %1 parçayı silmeyi gerçekten istiyor musunuz? %2 üzerinden ve alttaki "
 "depolama ortamından kaldırılacaktır."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:49
@@ -6020,10 +6022,10 @@ msgid_plural ""
 "Do you really want to move these %1 tracks to the trash? They will be "
 "removed from %2."
 msgstr[0] ""
-"Bu parçayı gerçekten çöp kutusuna taşımak istiyor musunuz? %2 üzerinden "
+"Bu parçayı çöp kutusuna taşımayı gerçekten istiyor musunuz? %2 üzerinden "
 "kaldırılacaktır."
 msgstr[1] ""
-"%1 parçasını gerçekten çöp kutusuna taşımak istiyor musunuz? %2 üzerinden "
+"Bu %1 parçayı çöp kutusuna taşımayı gerçekten istiyor musunuz? %2 üzerinden "
 "kaldırılacaktır."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:63
@@ -6036,11 +6038,11 @@ msgid_plural ""
 "Do you really want to move these %1 tracks? They will be renamed and the "
 "originals deleted."
 msgstr[0] ""
-"Bu parçayı gerçekten taşımak istiyor musun? Yeniden adlandırılacak ve özgün "
-"hali silinmiş olacaktır."
+"Bu parçayı taşımayı gerçekten istiyor musunuz? Yeniden adlandırılacak ve "
+"özgün parça silinecektir."
 msgstr[1] ""
-"%1 parçasını gerçekten taşımak istiyor musun? Yeniden adlandırılacak ve "
-"özgün hali silinmiş olacaktır."
+"Bu %1 parçayı taşımayı gerçekten istiyor musunuz? Yeniden adlandırılacaklar "
+"ve özgün parçalar silinecektir."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:67
 #, kde-format
@@ -6067,8 +6069,8 @@ msgstr[0] ""
 "Bir sorun oluştu ve bu parça kaldırılamadı. Dizinin yazılabilir olduğundan "
 "emin olun."
 msgstr[1] ""
-"Bir problem oluştu ve %1 parça kaldırılamadı. Dizinin yazılabilir olduğundan "
-"emin olun."
+"Bir sorun oluştu ve bu %1 parça kaldırılamadı. Dizinin yazılabilir "
+"olduğundan emin olun."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:80
 #, kde-format
@@ -6079,7 +6081,7 @@ msgstr "Parçalar kaldırılamıyor"
 #, kde-format
 msgid ""
 "The collection does not have enough free space available or is not writable."
-msgstr "Koleksiyon yeterli boş alana sahip değil veya yazılabilir değil."
+msgstr "Koleksiyonda yeterli boş alan yok veya yazılabilir değil."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:95
 #, kde-format
@@ -6089,13 +6091,13 @@ msgstr "Boş klasörleri kaldırmak istiyor musunuz?"
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:96
 #, kde-format
 msgid "Remove empty folders?"
-msgstr "Boş klasörler kaldırılsın mi?"
+msgstr "Boş klasörler kaldırılsın mı?"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:134
 #, kde-format
 msgctxt "%1 is track url, %2 track title, %3 track artist"
 msgid "%1 (%2 by %3)"
-msgstr "%1 (%2, %3 tarafından)"
+msgstr "%1 (%2, %3)"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:136
 #, kde-format
@@ -6107,7 +6109,7 @@ msgstr "%1 (%2)"
 #, kde-format
 msgctxt "%1 is track url, %2 artist name"
 msgid "%1 (by %2)"
-msgstr "%1 (%2 tarafından)"
+msgstr "%1 (%2)"
 
 #: core-impl/collections/support/TextualQueryFilter.cpp:277
 #, kde-format
@@ -6137,7 +6139,7 @@ msgstr "üç ay önce"
 #: core-impl/collections/support/TrashCollectionLocation.cpp:47
 #, kde-format
 msgid "Trash"
-msgstr "Çöp"
+msgstr "Çöp Kutusu"
 
 #: core-impl/collections/support/TrashCollectionLocation.cpp:101
 #, kde-format
@@ -6179,8 +6181,8 @@ msgid ""
 "device, but it doesn't exist. Falling back to <i>%3</i> instead"
 msgstr ""
 "<i>%1</i> dosyası, aygıtta müzik klasörü olarak <i>%2</i> kullanmamızı "
-"tavsiye ediyor; ancak bu konum yok. Yerine <i>%3</i> klasörüne geri "
-"dönülüyor."
+"öneriyor; ancak böyle bir klasör yok. Bunun yerine, <i>%3</i> kullanımına "
+"geri dönülüyor."
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:387
 #, kde-format
@@ -6199,20 +6201,20 @@ msgstr "USB Yığın Depolama Aygıtını Yapılandır"
 #, kde-format
 msgid "Removing one track from %2"
 msgid_plural "Removing %1 tracks from %2"
-msgstr[0] "Bir parça %2  üzerinden kaldırılıyor"
-msgstr[1] "%1 parça %2  üzerinden kaldırılıyor"
+msgstr[0] "%2 üzerinden 1 parça kaldırılıyor"
+msgstr[1] "%2 üzerinden %1 parça kaldırılıyor"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, UmsConfiguration)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:14
 #, kde-format
 msgid "USB Mass Storage device configuration"
-msgstr "USB Depolama aygıtı yapılandırması"
+msgstr "USB Yığın Depolama Aygıtı Yapılandırması"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoConnect)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:34
 #, kde-format
 msgid "Use automatically when connected"
-msgstr "Bağlanıldığında otomatik olarak kullan"
+msgstr "Bağlanıldığında kendiliğinden kullan"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_musicCheckBox)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:51
@@ -6230,7 +6232,7 @@ msgstr "Müzik klasörü:"
 #: core-impl/collections/umscollection/UmsConfiguration.ui:104
 #, kde-format
 msgid "Filename scheme of tracks that are added to the device"
-msgstr "Parçaların dosya adı şeması, aygıta eklendi"
+msgstr "Aygıta eklenen dosyaların dosya adı şeması"
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:176
@@ -6261,7 +6263,7 @@ msgstr "Bilinmeyen"
 #, kde-format
 msgctxt "Reason why a track is not playable"
 msgid "Underlying playlist is empty"
-msgstr "Oynatma listesi boş"
+msgstr "Temelindeki çalma listesi boş"
 
 #: core-impl/meta/proxy/MetaProxy.cpp:157
 #, kde-format
@@ -6270,9 +6272,9 @@ msgid ""
 "this track on the filesystem or in any of your collections anymore. You may "
 "try plugging in the device this track might be on."
 msgstr ""
-"Amarok son kapandığında %1 parçasındaydı; ancak Amarok bu parçayı dosya "
-"sisteminde veya koleksiyonlarınızdan birinde bulamadı. Bu parçanın açık "
-"olabileceği aygıtı takmayı deneyebilirsiniz."
+"Amarok en son kapatıldığında bu parça %1 konumundaydı; ancak Amarok artık bu "
+"parçayı dosya sisteminde veya koleksiyonlarınızın hiçbirinde bulamıyor. Bu "
+"parçanın bulunabileceği aygıtı takmayı deneyebilirsiniz."
 
 #: core-impl/meta/stream/Stream.cpp:52
 #, kde-format
@@ -6287,7 +6289,7 @@ msgstr "URL, yerel bir dosya değil"
 #: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:62
 #, kde-format
 msgid "Could not create a temporary file to download playlist."
-msgstr "Çalma listesini indirmek için bir geçici dosya oluşturulamadı."
+msgstr "Çalma listesini indirmek için geçici bir dosya oluşturulamadı."
 
 #: core-impl/playlists/types/file/PlaylistFileLoaderJob.cpp:70
 #, kde-format
@@ -6298,12 +6300,12 @@ msgstr "Uzak çalma listesi indiriliyor"
 #, kde-format
 msgctxt "%1 is file path"
 msgid "Cannot read playlist from %1"
-msgstr "%1 çalma listesinden okunamıyor"
+msgstr "%1 yolundaki çalma listesi okunamıyor"
 
 #: core-impl/playlists/types/file/PlaylistFileSupport.cpp:122
 #, kde-format
 msgid "The used file extension is not valid for playlists."
-msgstr "Kullanılan dosya uzantısı çalma listesi için geçerli değil."
+msgstr "Kullanılan dosya uzantısı çalma listeleri için geçerli değil."
 
 #: core-impl/playlists/types/file/PlaylistFileSupport.cpp:123
 #, kde-format
@@ -6313,7 +6315,7 @@ msgstr "Bilinmeyen çalma listesi biçimi"
 #: core-impl/playlists/types/file/PlaylistFileSupport.cpp:148
 #, kde-format
 msgid "Playlist_%1"
-msgstr "Çalma Listesi_%1"
+msgstr "ÇalmaListesi_%1"
 
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:34
 #, kde-format
@@ -6325,13 +6327,13 @@ msgstr "Pod Yayını Bölümü Dosya Adı Yapılandırması"
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:30
 #, kde-format
 msgid "Podcast Filename Layout Configuration"
-msgstr "Pod Yayını Dosya Adı Düzeni Yapılandırması"
+msgstr "Pod Yayını Dosya Adı Yerleşimi Yapılandırması"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutDefault)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:54
 #, kde-format
 msgid "Specified by podcast channel"
-msgstr "Pod yayını kanalı tarafından belirtilmiş"
+msgstr "Pod yayını kanalı tarafından belirtilen"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_filenameLayoutCustom)
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:79
@@ -6359,7 +6361,7 @@ msgstr "Pod Yayını Ayarları"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:68
 #, kde-format
 msgid "Save Location:"
-msgstr "Kaydetme Konumu:"
+msgstr "Kaydetme konumu:"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_autoFetchCheck)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_autoFetchCheck)
@@ -6368,14 +6370,13 @@ msgstr "Kaydetme Konumu:"
 #, kde-format
 msgid "When checked, Amarok will automatically scan the podcast for updates"
 msgstr ""
-"Bunu işaretlediğinizde, Amarok güncellemeleri denetlemek için pod "
-"yayınlarını otomatik olarak tarar"
+"İşaretlendiğinde Amarok, pod yayınını güncellemeler için kendiliğinden tarar"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoFetchCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:105
 #, kde-format
 msgid "Automatically scan for updates"
-msgstr "Güncellemeleri otomatik olarak tara"
+msgstr "Güncellemeleri kendiliğinden tara"
 
 #. i18n: ectx: property (title), widget (QGroupBox, qgroupbox)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:112
@@ -6389,13 +6390,13 @@ msgstr "Ortam İndir"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:124
 #, kde-format
 msgid "Download media as soon as it becomes available"
-msgstr "Kullanılabilir olur olmaz ortamı indir"
+msgstr "Çıkar çıkmaz ortamı indir"
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_downloadRadio)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:127
 #, kde-format
 msgid "Download when a&vailable"
-msgstr "&Uygun olduğunda indir"
+msgstr "&Kullanılabilir olduğunda indir"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, m_streamRadio)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, m_streamRadio)
@@ -6406,14 +6407,14 @@ msgid ""
 "Media must be explicitly downloaded, otherwise the podcast will be played "
 "from the remote server."
 msgstr ""
-"Ortam gerçekten indirilmiş olmalıdır, aksi takdirde pod yayını uzak "
-"sunucudan çalınır."
+"Ortamın açıkça indirilmesi gerekir, aksi takdirde pod yayını uzak sunucudan "
+"oynatılacaktır."
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_streamRadio)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:140
 #, kde-format
 msgid "Stream or download on re&quest"
-msgstr "İsteğe &göre uzaktan çal veya indir"
+msgstr "Uzaktan aktar veya açıkça istendiğinde ind&ir"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_purgeCheck)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_purgeCheck)
@@ -6421,19 +6422,19 @@ msgstr "İsteğe &göre uzaktan çal veya indir"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:155
 #, kde-format
 msgid "If checked, Amarok will throw away old podcast episodes"
-msgstr "Bunu işaretlediğinizde, Amarok eski pod yayını listelerini siler"
+msgstr "İşaretlenirse Amarok eski pod yayını bölümlerini çöpe atar"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_purgeCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:158
 #, kde-format
 msgid "Limit &number of episodes"
-msgstr "Çalma listesi sayısının sını&rı"
+msgstr "Bölüm &sayısını sınırla"
 
 #. i18n: ectx: property (text), widget (QLabel, m_purgeCountLabel)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:181
 #, kde-format
 msgid "Keep maximum of:"
-msgstr "Maksimumda Tut:"
+msgstr "En çok bu kadar tut:"
 
 #. i18n: ectx: property (toolTip), widget (QSpinBox, m_purgeCountSpinBox)
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, m_purgeCountSpinBox)
@@ -6441,7 +6442,7 @@ msgstr "Maksimumda Tut:"
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:194
 #, kde-format
 msgid "The maximum number of podcast items to store"
-msgstr "En çok depolanacak pod yayını sayısı"
+msgstr "Depolanacak en çok pod yayını öğesi sayısı"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_writeTagsCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:208
@@ -6451,15 +6452,15 @@ msgid ""
 "the same information. Writing the tags ensures the information in the "
 "playlist and on media devices will be the same as in the feed."
 msgstr ""
-"RSS beslemesi ve indirilen dosyadaki künyeler bazen aynı bilgileri "
-"içermeyebilir. Künyelerin yazılması, çalma listesindeki ve ortam "
-"aygıtlarındaki bilgilerin akıştakiyle aynı olmasını sağlar."
+"RSS beslemeleri ve indirilen dosyadaki künyeler bazen aynı bilgileri "
+"içermeyebilir. Künyeleri yazmak, çalma listesindeki ve ortam aygıtlarındaki "
+"bilgilerin akıştakiyle aynı olmasını sağlar."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeTagsCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:211
 #, kde-format
 msgid "Write feed information to tags after downloading."
-msgstr "İndirdikten sonra künyelere besleme bilgisini yazın."
+msgstr "İndirdikten sonra künyelere besleme bilgilerini yazın."
 
 #. i18n: ectx: property (text), widget (QPushButton, m_filenameLayoutConfigWidgetButton)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:251
@@ -6471,7 +6472,7 @@ msgstr "Bölüm Dosya Adı Yapılandırması"
 #, kde-format
 msgctxt "change options"
 msgid "Configure %1"
-msgstr "%1 Ögesini Yapılandır"
+msgstr "Yapılandır: %1"
 
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:77
 #, kde-format
@@ -6499,7 +6500,7 @@ msgstr "&Genel Ayarları Yapılandır"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
 #, kde-format
 msgid "&Export subscriptions to OPML file"
-msgstr "Abonelikleri, OPML dosyasına dışa &aktar"
+msgstr "Abonelikleri OPML dosyasına dışa &aktar"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:330
 #, kde-format
@@ -6519,7 +6520,7 @@ msgstr "&Kanalı Güncelle"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:388
 #, kde-format
 msgid "&Download Episode"
-msgstr "Bölüm &İndir"
+msgstr "Bölümü &İndir"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:396
 #, kde-format
@@ -6534,7 +6535,7 @@ msgstr "&Dosyaya Besleme Bilgisi Yaz"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:413
 #, kde-format
 msgid "&Keep downloaded file"
-msgstr "İndirilmiş dosyaları &sakla"
+msgstr "İndirilen dosyayı &tut"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:414
 #, kde-format
@@ -6543,14 +6544,14 @@ msgid ""
 "Downloaded files with this status wouldn't be deleted even if we apply a "
 "purge."
 msgstr ""
-"Bu pod yayını bölümünün indirilen dosya durumunu \"sakla\" durumuna getirin. "
-"Bu durumdaki indirilmiş dosyalar, tasfiye uygulamasına rağmen "
-"silinmeyecektir."
+"Bu pod yayını bölümünün indirilen dosya durumunu \"tut\" seçeneğini "
+"değiştirin. Bu durumdaki indirilen dosyalar, temizleme işlemini uygulasak "
+"bile silinmez."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:480
 #, kde-format
 msgid "Already subscribed to %1."
-msgstr "Zaten %1 üyesi."
+msgstr "%1 aboneliği halihazırda var."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:605
 #, kde-format
@@ -6583,12 +6584,12 @@ msgstr "Tüm indirilen bölümleri yeni konuma taşımak istiyor musunuz?"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:703
 #, kde-format
 msgid "Select file for OPML export"
-msgstr "OPML Dışa aktarımı için dosya seçin"
+msgstr "OPML Dışa Aktarımı için Dosya Seç"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:850
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
-msgstr "\"%1\" üyeliğinden çıkmak istediğinizden emin misiniz?"
+msgstr "\"%1\" aboneliğinden çıkmayı gerçekten istiyor musunuz?"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:853
 #, kde-format
@@ -6599,19 +6600,19 @@ msgstr "İndirilen bölümleri sil"
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
-msgstr[0] "Pod yayını indirmesi hâlâ sürüyor"
-msgstr[1] "%1 pod yayını indirmesi hâlâ sürüyor"
+msgstr[0] "Hâlâ süren 1 pod yayını indirme işlemi var"
+msgstr[1] "Hâlâ süren %1 pod yayını indirme işlemi var"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:979
 #, kde-format
 msgid "Cancel Download and Quit."
-msgstr "İndirmeyi İptal Et ve Çık."
+msgstr "İndirmeyi İptal Et ve Çık"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1158
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1408
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
-msgstr "Pod yayını dosyası, %1 konumuna kaydedilemedi"
+msgstr "Pod yayını dosyası, %1 konumuna kaydedilemiyor"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1168
 #, kde-format
@@ -6632,14 +6633,14 @@ msgstr "Yerel Pod Yayınları"
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:32
 #, kde-format
 msgid "Auto-update:"
-msgstr "Otomatik güncelle:"
+msgstr "Kendiliğinden güncelle:"
 
 #. i18n: ectx: property (specialValueText), widget (QSpinBox, m_autoUpdateInterval)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:57
 #, kde-format
 msgctxt "automatic updates turned off"
 msgid "disabled"
-msgstr "devre dışı"
+msgstr "Devre dışı"
 
 #. i18n: ectx: property (text), widget (QLabel, m_baseDirLabel)
 #: core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui:79
@@ -6701,7 +6702,7 @@ msgstr ""
 "Tüm yeni pod yayını kanalları için temel dizin.\n"
 "Bir pod yayını kanalı eklendiğinde <temel dizin>/<kanal adı> indirme dizini "
 "olarak kullanılır.\n"
-"Bu, her bir kanal için ayrı ayrı değiştirilebilir."
+"Bu, her bir kanal için ayrı ayrı değiştirilebilirdir."
 
 #: core-impl/storage/StorageManager.cpp:162
 #, kde-format
@@ -6711,78 +6712,74 @@ msgstr "Yapılandırılmış veritabanı eklentisi yüklenemedi."
 #: core/collections/CollectionLocation.cpp:381
 #, kde-format
 msgid "Organize tracks"
-msgstr "Parçaları düzenle"
+msgstr "Parçaları Organize Et"
 
 #: core/collections/CollectionLocation.cpp:383
 #, kde-format
 msgid "Transcode and organize tracks"
-msgstr "Parçaların çapraz kodla ve düzenle"
+msgstr "Parçaları Arakodla ve Organize Et"
 
 #: core/collections/CollectionLocation.cpp:388
 #, kde-format
 msgid "Move tracks"
-msgstr "Parçaları taşı"
+msgstr "Parçaları Taşı"
 
 #: core/collections/CollectionLocation.cpp:390
 #, kde-format
 msgid "Transcode and move tracks"
-msgstr "Parçaların çapraz kodla ve taşı"
+msgstr "Parçaları arakodla ve taşı"
 
 #: core/collections/CollectionLocation.cpp:395
 #, kde-format
 msgid "Copy tracks"
-msgstr "Parçaları kopyala"
+msgstr "Parçaları Kopyala"
 
 #: core/collections/CollectionLocation.cpp:397
 #, kde-format
 msgid "Transcode and copy tracks"
-msgstr "Parçaları çapraz kodla ve kopyala"
+msgstr "Parçaları Arakodla ve Kopyala"
 
 #: core/collections/CollectionLocation.cpp:410
 #, kde-format
 msgid "Organizing one track"
 msgid_plural "Organizing %1 tracks"
-msgstr[0] "%1 parça düzenleniyor"
-msgstr[1] "%1 parça düzenleniyor"
+msgstr[0] "1 parça organize ediliyor"
+msgstr[1] "%1 parça organize ediliyor"
 
 #: core/collections/CollectionLocation.cpp:413
 #, kde-format
 msgid "Transcoding and organizing one track"
 msgid_plural "Transcoding and organizing %1 tracks"
-msgstr[0] "%1 parçanın kodlaması değiştiriliyor ve bu parçalar düzenleniyor"
-msgstr[1] "%1 parçanın kodlaması değiştiriliyor ve bu parçalar düzenleniyor"
+msgstr[0] "1 parça arakodlanıyor ve organize ediliyor"
+msgstr[1] "%1 parça arakodlanıyor ve organize ediliyor"
 
 #: core/collections/CollectionLocation.cpp:419
 #, kde-format
 msgid "Moving one track to %2"
 msgid_plural "Moving %1 tracks to %2"
-msgstr[0] "%1 parça %2 konumuna taşınıyor"
+msgstr[0] "1 parça %2 konumuna taşınıyor"
 msgstr[1] "%1 parça %2 konumuna taşınıyor"
 
 #: core/collections/CollectionLocation.cpp:422
 #, kde-format
 msgid "Transcoding and moving one track to %2"
 msgid_plural "Transcoding and moving %1 tracks to %2"
-msgstr[0] ""
-"%1 parçanın kodlaması değiştiriliyor ve bu parçalar %2 konumuna taşınıyor"
-msgstr[1] ""
-"%1 parçanın kodlaması değiştiriliyor ve bu parçalar %2 konumuna taşınıyor"
+msgstr[0] "1 parça arakodlanıyor ve %2 konumuna taşınıyor"
+msgstr[1] "%1 parça arakodlanıyor ve %2 konumuna taşınıyor"
 
 #: core/collections/CollectionLocation.cpp:428
 #, kde-format
 msgid "Copying one track to %2"
 msgid_plural "Copying %1 tracks to %2"
-msgstr[0] "%1 parça %2 konumuna kopyalanıyor"
+msgstr[0] "1 parça %2 konumuna kopyalanıyor"
 msgstr[1] "%1 parça %2 konumuna kopyalanıyor"
 
 #: core/collections/CollectionLocation.cpp:431
 #, kde-format
 msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
-msgstr[0] ""
-"%1 parçanın kodlaması değiştiriliyor ve bu parçalar %2 konumuna kopyalanıyor"
-msgstr[1] ""
-"%1 parçanın kodlaması değiştiriliyor ve bu parçalar %2 konumuna kopyalanıyor"
+msgstr[0] "1 parça arakodlanıyor ve %2 konumuna kopyalanıyor"
+msgstr[1] "%1 parça arakodlanıyor ve %2 konumuna kopyalanıyor"
 
 #: core/meta/Meta.cpp:207
 #, kde-format
@@ -6792,7 +6789,7 @@ msgstr "Ağ bağlantısı yok"
 #: core/meta/Meta.cpp:217
 #, kde-format
 msgid "File does not exist"
-msgstr "Dosya mevcut değil"
+msgstr "Dosya yok"
 
 #: core/meta/Meta.cpp:219
 #, kde-format
@@ -6815,7 +6812,7 @@ msgctxt ""
 "Track field name (when nothing specific is selected e.g. in the automatic "
 "playlist generator)"
 msgid "anything"
-msgstr "herhangi"
+msgstr "herhangi bir parça"
 
 #: core/meta/support/MetaConstants.cpp:181
 #, kde-format
@@ -6845,7 +6842,7 @@ msgstr "Albüm"
 #, kde-format
 msgctxt "Track field name"
 msgid "Genre"
-msgstr "Tarz"
+msgstr "Tür"
 
 #: core/meta/support/MetaConstants.cpp:186
 #, kde-format
@@ -6881,7 +6878,7 @@ msgstr "Disk Numarası"
 #, kde-format
 msgctxt "Track field name"
 msgid "Bpm"
-msgstr "Bpm"
+msgstr "BPM"
 
 #: core/meta/support/MetaConstants.cpp:192
 #, kde-format
@@ -6899,7 +6896,7 @@ msgstr "Bit Hızı"
 #, kde-format
 msgctxt "Track field name"
 msgid "Sample Rate"
-msgstr "Örnekleme Hızı"
+msgstr "Örneklem Hızı"
 
 #: core/meta/support/MetaConstants.cpp:195
 #, kde-format
@@ -6917,7 +6914,7 @@ msgstr "Biçim"
 #, kde-format
 msgctxt "Track field name"
 msgid "Added to Collection"
-msgstr "Koleksiyona Eklendi"
+msgstr "Koleksiyona Eklenme"
 
 #: core/meta/support/MetaConstants.cpp:198
 #, kde-format
@@ -6935,55 +6932,55 @@ msgstr "Derecelendirme"
 #, kde-format
 msgctxt "Track field name"
 msgid "First Played"
-msgstr "İlk Çalınan"
+msgstr "İlk Çalma"
 
 #: core/meta/support/MetaConstants.cpp:201
 #, kde-format
 msgctxt "Track field name"
 msgid "Last Played"
-msgstr "Son Çalınma"
+msgstr "Son Çalma"
 
 #: core/meta/support/MetaConstants.cpp:202
 #, kde-format
 msgctxt "Track field name"
 msgid "Playcount"
-msgstr "Çalınma sayısı"
+msgstr "Çalma Sayısı"
 
 #: core/meta/support/MetaConstants.cpp:203
 #, kde-format
 msgctxt "Track field name"
 msgid "Unique Id"
-msgstr "Tekil Kimlik"
+msgstr "Benzersiz Kimlik"
 
 #: core/meta/support/MetaConstants.cpp:205
 #, kde-format
 msgctxt "Track field name"
 msgid "Track Gain"
-msgstr "Parça Kazanımı"
+msgstr "Parça Kazancı"
 
 #: core/meta/support/MetaConstants.cpp:206
 #, kde-format
 msgctxt "Track field name"
 msgid "Track Gain Peak"
-msgstr "Parça Kazanımı Tavanı"
+msgstr "Parça Kazancı Tavanı"
 
 #: core/meta/support/MetaConstants.cpp:207
 #, kde-format
 msgctxt "Track field name"
 msgid "Album Gain"
-msgstr "Albüm Kazanımı"
+msgstr "Albüm Kazancı"
 
 #: core/meta/support/MetaConstants.cpp:208
 #, kde-format
 msgctxt "Track field name"
 msgid "Album Gain Peak"
-msgstr "Albüm Kazanımı Tavanı"
+msgstr "Albüm Kazancı Tavanı"
 
 #: core/meta/support/MetaConstants.cpp:210
 #, kde-format
 msgctxt "Track field name"
 msgid "Album Artist"
-msgstr "Album Sanatçı"
+msgstr "Albüm Sanatçısı"
 
 #: core/meta/support/MetaConstants.cpp:211
 #, kde-format
@@ -7009,7 +7006,7 @@ msgctxt ""
 "The field name in case nothing specific is selected e.g. in the automatic "
 "playlist generator. Use a one word translation."
 msgid "anything"
-msgstr "herhangi bir şey"
+msgstr "herhangi"
 
 #: core/meta/support/MetaConstants.cpp:225
 #, kde-format
@@ -7095,7 +7092,7 @@ msgstr "bit hızı"
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "samplerate"
-msgstr "örnekleme hızı"
+msgstr "örneklem hızı"
 
 #: core/meta/support/MetaConstants.cpp:239
 #, kde-format
@@ -7133,7 +7130,7 @@ msgctxt ""
 "One word translation used in the collection filter. First played time / "
 "access date"
 msgid "firstplay"
-msgstr "ilk çalınma tarihi"
+msgstr "ilk çalma"
 
 #: core/meta/support/MetaConstants.cpp:245
 #, kde-format
@@ -7141,43 +7138,43 @@ msgctxt ""
 "One word translation used in the collection filter. Last played time / "
 "access date"
 msgid "lastplay"
-msgstr "son çalınma tarihi"
+msgstr "son çalma"
 
 #: core/meta/support/MetaConstants.cpp:246
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "playcount"
-msgstr "çalınma sayısı"
+msgstr "çalma sayısı"
 
 #: core/meta/support/MetaConstants.cpp:247
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "uniqueid"
-msgstr "biricik kimlik"
+msgstr "benzersiz kimlik"
 
 #: core/meta/support/MetaConstants.cpp:249
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "trackgain"
-msgstr "parça kazanımı"
+msgstr "parça kazancı"
 
 #: core/meta/support/MetaConstants.cpp:250
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "trackgainpeak"
-msgstr "parça kazanımı tavanı"
+msgstr "parça kazancı tavanı"
 
 #: core/meta/support/MetaConstants.cpp:251
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "albumgain"
-msgstr "albüm kazanımı"
+msgstr "albüm kazancı"
 
 #: core/meta/support/MetaConstants.cpp:252
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "albumgainpeak"
-msgstr "albüm kazanımı tavanı"
+msgstr "albüm kazancı tavanı"
 
 #: core/meta/support/MetaConstants.cpp:254
 #, kde-format
@@ -7195,7 +7192,7 @@ msgstr "etiket"
 #, kde-format
 msgctxt "One word translation used in the collection filter"
 msgid "modified"
-msgstr "değiştirildi"
+msgstr "değiştirilme"
 
 #: core/meta/support/MetaConstants.cpp:257
 #, kde-format
@@ -7209,7 +7206,7 @@ msgctxt ""
 "the time format for a time length when the time is below 1 hour see QTime "
 "documentation."
 msgid "m:ss"
-msgstr "m:ss"
+msgstr "d:ss"
 
 #: core/meta/support/MetaUtility.cpp:428
 #, kde-format
@@ -7225,7 +7222,7 @@ msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
-msgstr "h:mm:ss"
+msgstr "sa:mm:ss"
 
 #: core/meta/support/MetaUtility.cpp:443
 #, kde-format
@@ -7293,17 +7290,18 @@ msgstr "\"%1\" güncelleniyor"
 #: core/podcasts/PodcastReader.cpp:506 core/podcasts/PodcastReader.cpp:520
 #, kde-format
 msgid "Importing podcast from %1 failed with error:\n"
-msgstr "%1 konumundan pod yayını içe aktarma işlemi başarısız oldu:\n"
+msgstr "%1 konumundan pod yayını içe aktarılamadı:\n"
 
 #: core/podcasts/PodcastReader.cpp:510 core/podcasts/PodcastReader.cpp:524
 #, kde-format
 msgid "Updating podcast from %1 failed with error:\n"
-msgstr "%1 konumundan pod yayını güncelleme işlemi başarısız oldu:\n"
+msgstr ""
+"%1 konumundan pod yayını güncelleme işlemi hata vererek başarısız oldu:\n"
 
 #: core/podcasts/PodcastReader.cpp:511 core/podcasts/PodcastReader.cpp:525
 #, kde-format
 msgid "Updating \"%1\" failed with error:\n"
-msgstr "Güncelleme \"%1\" hata ile başarısız:\n"
+msgstr "\"%1\" güncellemesi hata vererek başarısız oldu:\n"
 
 #: core/podcasts/PodcastReader.cpp:995
 #, kde-format
@@ -7312,12 +7310,12 @@ msgid ""
 "Did you enter the correct URL?"
 msgstr ""
 "%1 ayrıştırılırken bir besleme bekleniyordu; ancak bir HTML sayfası alındı.\n"
-"Doğru URL’yi girdiğinize emin misiniz?"
+"Doğru URL'yi girdiniz mi?"
 
 #: core/podcasts/PodcastReader.cpp:1002
 #, kde-format
 msgid "Feed has an unknown type: %1"
-msgstr "Besleme bilinmeyen bir türe sahip: %1"
+msgstr "Beslemenin türü bilinmiyor: %1"
 
 #: core/podcasts/PodcastReader.cpp:1011
 #, kde-format
@@ -7337,7 +7335,7 @@ msgstr "%1 geçerli bir Atom beslemesi değil."
 #: core/podcasts/PodcastReader.cpp:1132
 #, kde-format
 msgid "Alternative Enclosures:"
-msgstr "Diğer Korumalar:"
+msgstr "Alternatif koruncalar:"
 
 #: core/podcasts/PodcastReader.cpp:1142
 #, kde-format
@@ -7349,13 +7347,13 @@ msgstr "bilinmeyen tür"
 #, kde-format
 msgctxt "The amount of time since last played"
 msgid "Never"
-msgstr "Asla"
+msgstr "Hiçbir zaman"
 
 #: core/support/Amarok.cpp:54 playlist/PlaylistModel.cpp:503
 #, kde-format
 msgctxt "When this track was last played"
 msgid "Unknown"
-msgstr "Bilinmeyen"
+msgstr "Bilinmiyor"
 
 #: core/support/Amarok.cpp:58
 #, kde-format
@@ -7367,7 +7365,7 @@ msgstr "%1"
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
-msgstr[0] "Bir hafta önce"
+msgstr[0] "1 hafta önce"
 msgstr[1] "%1 hafta önce"
 
 #: core/support/Amarok.cpp:70
@@ -7379,32 +7377,32 @@ msgstr "Dün"
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
-msgstr[0] "Bir gün önce"
+msgstr[0] "1 gün önce"
 msgstr[1] "%1 gün önce"
 
 #: core/support/Amarok.cpp:74
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
-msgstr[0] "Bir saat önce"
+msgstr[0] "1 saat önce"
 msgstr[1] "%1 saat önce"
 
 #: core/support/Amarok.cpp:80
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
-msgstr[0] "Bir dakika önce"
+msgstr[0] "1 dakika önce"
 msgstr[1] "%1 dakika önce"
 
 #: core/support/Amarok.cpp:81
 #, kde-format
 msgid "Within the last minute"
-msgstr "Bir dakika önce"
+msgstr "Son 1 dakika içinde"
 
 #: core/support/Amarok.cpp:83
 #, kde-format
 msgid "The future"
-msgstr "Gelecek"
+msgstr "Gelecekte"
 
 #: core/support/Amarok.cpp:99
 #, kde-format
@@ -7416,13 +7414,13 @@ msgstr "0"
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
-msgstr "%1A"
+msgstr "%1 a"
 
 #: core/support/Amarok.cpp:112
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
-msgstr "%1w"
+msgstr "%1 h"
 
 #: core/support/Amarok.cpp:115
 #, kde-format
@@ -7434,13 +7432,13 @@ msgstr "Yarın"
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
-msgstr "%1d"
+msgstr "%1 g"
 
 #: core/support/Amarok.cpp:124
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
-msgstr "%1h"
+msgstr "%1 sa"
 
 #. i18n: ectx: property (text), widget (QLabel, qLabel_collection)
 #. i18n: ectx: property (text), widget (QLabel, qLabel_length)
@@ -7522,11 +7520,11 @@ msgid ""
 msgstr ""
 "Bit hızı, ses parçasının bir saniyesini temsil etmek için kullanılan veri "
 "miktarının bir ölçüsüdür.<br>Amarok tarafından kullanılan kodlayıcı, sabit "
-"bir bit hızıyla daha iyi çalışır.<br>VBR deneyseldir ve büyük olasılıkla, "
-"CBR.<br>Bu nedenle, bu sürgüdeki bit hızı ölçümü, kodlanmış parçanın bit "
-"hızının oldukça doğru bir tahminidir.<br>Kodlayıcı, yalnızca aşırı "
-"durumlarda görünen yapay ögelerle sınanan çoğu örnek için 128 kbps’de "
-"saydamdır."
+"bir bit hızıyla daha iyi çalışır.<br>VBR deneyseldir ve büyük olasılıkla "
+"CBR'den daha kötü çalışır.<br>Bu nedenle, bu sürgüdeki bit hızı ölçümü, "
+"kodlanmış parçanın bit hızının oldukça doğru bir tahminidir.<br>Kodlayıcı, "
+"sınanan örneklemlerin çoğu için 128 kbps'de saydamdır ve yalnızca olağanüstü "
+"durumlarda ortaya çıkan yapaylıklar bulunur."
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:48
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:59
@@ -7571,8 +7569,8 @@ msgid ""
 msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Advanced_Audio_Coding>Gelişmiş Ses "
 "Kodlama</a> (AAC), sayısal ses için patentli bir kayıplı kodlayıcı "
-"bileşenidir.<br> AAC genellikle benzer bit hızlarında MP3’den daha iyi bir "
-"ses kalitesi elde eder. iPod ve diğer taşınabilir müzik çalarlar için makul "
+"bileşenidir.<br> AAC, genellikle benzer bit hızlarında MP3’den daha iyi bir "
+"ses kalitesine ulaşır. iPod ve diğer taşınabilir müzik çalarlar için makul "
 "bir seçimdir."
 
 #: core/transcoding/formats/TranscodingAlacFormat.cpp:33
@@ -7612,9 +7610,9 @@ msgid ""
 "file, and are not recommended."
 msgstr ""
 "<a href=http://flac.sourceforge.net/documentation_tools_flac.html>Sıkıştırma "
-"düzeyi</a>, <b>FLAC</b> ile kodlanırken dosya boyutu ve sıkıştırma hızı "
-"arasındaki dengeyi temsil eden 0 ile 8 arasında bir tamsayı değeridir.<br/> "
-"Sıkıştırma düzeyini <b>0</b> olarak ayarlamak, en kısa sıkıştırma süresini "
+"düzeyi</a>, <b>FLAC</b> ile kodlarken dosya boyutu ve sıkıştırma hızı "
+"arasındaki dengeyi temsil eden 0 ile 8 arasındaki bir tamsayı değeridir.<br/"
+"> Sıkıştırma düzeyini <b>0</b> olarak ayarlamak, en kısa sıkıştırma süresini "
 "verir; ancak karşılaştırılabilir büyük bir dosya oluşturur<br/>Öte yandan, "
 "<b>8</b> sıkıştırma düzeyi sıkıştırmayı oldukça yavaş yapar; ancak en küçük "
 "dosyayı üretecektir.<br/>FLAC tanımı gereği kayıpsız bir kodlayıcı bileşeni "
@@ -7631,7 +7629,7 @@ msgstr "Sıkıştırma düzeyi"
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:42
 #, kde-format
 msgid "Faster compression"
-msgstr "Hızlı sıkıştırma"
+msgstr "Daha hızlı sıkıştırma"
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:57
 #, kde-format
@@ -7646,8 +7644,8 @@ msgid ""
 msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Free_Lossless_Audio_Codec>Özgür "
 "Kayıpsız Ses Kodlayıcısı</a> (FLAC), sayısal müzikte kayıpsız sıkıştırma "
-"için açık ve telif ücretsiz bir kod çözümüdür. Müziğinizi ses kalitesinden "
-"ödün vermeksizin depolamak istiyorsanız FLAC mükemmel bir seçimdir."
+"için açık ve telifsiz bir kod çözücüsüdür. Müziğinizi ses kalitesinden ödün "
+"vermeksizin depolamak istiyorsanız FLAC mükemmel bir seçimdir."
 
 #: core/transcoding/formats/TranscodingMp3Format.cpp:28
 #, kde-format
@@ -7667,8 +7665,8 @@ msgid ""
 msgstr ""
 "Bit hızı, ses parçasının saniyesini temsil etmek için kullanılan veri "
 "miktarının bir ölçüsüdür.<br>Amarok tarafından kullanılan <b>MP3</b> "
-"kodlayıcı, <a href=http://en.wikipedia.org/wiki/MP3#VBR>değişken bir bit "
-"hızı</a> (VBR) ayarını desteklemektedir, ses içeriğinin karmaşıklığına "
+"kodlayıcısı, <a href=http://en.wikipedia.org/wiki/MP3#VBR>değişken bir bit "
+"hızı</a> (VBR) ayarını desteklemektedir, bu, ses içeriğinin karmaşıklığına "
 "dayanarak bit hızı değerinin parça boyunca dalgalanması anlamına gelir. Daha "
 "karmaşık veri aralıkları, daha karmaşık olanlardan daha yüksek bir bit hızı "
 "ile kodlanır; bu yaklaşım, parça genelinde sabit bir bit hızına sahip "
@@ -7677,7 +7675,7 @@ msgstr ""
 "bit hızının bir tahminidir.<br><b>160kb/sn</b>, taşınabilir bir oynatıcıda "
 "müzik dinlemek için iyi bir seçimdir.<br/><b>120kb/sn</ b> değerinin "
 "altındaki herhangi bir şey müzik için yetersiz olabilir ve <b>205kb/sn</b> "
-"üzerindeki herhangi bir şey muhtemelen gereğinden fazla büyük olacaktır."
+"üzerindeki herhangi bir şey büyük olasılıka gereksizdir."
 
 #: core/transcoding/formats/TranscodingMp3Format.cpp:55
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:64
@@ -7698,8 +7696,9 @@ msgid ""
 msgstr ""
 "<a href=http://en.wikipedia.org/wiki/MP3>MPEG Ses Katmanı 3</a> (MP3), "
 "kayıplı bir veri sıkıştırma biçimini kullanan patentli bir sayısal ses "
-"kodlayıcı bileşenidir.<br>Eksikliğine rağmen, tüketici ses depolama için "
-"ortak bir biçimdir ve taşınabilir müzik çalarlarda yaygın olarak desteklenir."
+"kodlayıcısı bileşenidir.<br>Eksiklerine rağmen, tüketicilerin ses depolaması "
+"için ortak bir biçimdir ve taşınabilir müzik çalarlarda yaygın olarak "
+"desteklenir."
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:28
 #, kde-format
@@ -7720,16 +7719,16 @@ msgstr ""
 "Bit hızı, ses parçasının saniyesini temsil etmek için kullanılan veri "
 "miktarının bir ölçüsüdür.<br><b>Opus</b> kodlayıcısı, Amarok tarafından "
 "kullanılan <a href=http://en.wikipedia.org/wiki/Variable_bitrate>değişken "
-"bit hızı</a> ayarını destekler, ses içeriğinin karmaşıklığına dayanarak bit "
-"hızı değerinin parça boyunca dalgalanması anlamına gelir. Daha karmaşık veri "
-"aralıkları, daha karmaşık olanlardan daha yüksek bir bit hızı ile kodlanır; "
-"bu yaklaşım, parça genelinde sabit bir bit hızına sahip olmaktan daha genel "
-"olarak daha iyi kaliteyi ve daha küçük bir dosya üretir.<br>Bu nedenle, bu "
-"sürgüdeki bit hızı ölçüsü, kodlanmış parçanın ortalama bit hızının bir "
-"tahminidir.<b>128kb/sn</ b> taşınabilir bir oynatıcıdaki müzik dinlemek için "
-"iyi bir seçimdir.<br/><b>100 kb/sn</b>'den az olan her şey müzik için "
-"yetersiz olabilir ve <b>256kb/sn</ b> değerinin üstündeki herhangi bir şey "
-"muhtemelen çok gereksiz olacaktır."
+"bit hızı</a> ayarını destekler, bu, ses içeriğinin karmaşıklığına dayanarak "
+"bit hızı değerinin parça boyunca dalgalanması anlamına gelir. Daha karmaşık "
+"veri aralıkları, daha karmaşık olanlardan daha yüksek bir bit hızı ile "
+"kodlanır; bu yaklaşım, parça genelinde sabit bir bit hızına sahip olmaktan "
+"daha genel olarak daha iyi kaliteyi ve daha küçük bir dosya üretir.<br>Bu "
+"nedenle, bu sürgüdeki bit hızı ölçüsü, kodlanmış parçanın ortalama bit "
+"hızının bir tahminidir.<b>128kb/sn</ b> taşınabilir bir oynatıcıdaki müzik "
+"dinlemek için iyi bir seçimdir.<br/><b>100 kb/sn</b>'den az olan her şey "
+"müzik için yetersiz olabilir ve <b>256kb/sn</ b> değerinin üstündeki "
+"herhangi bir şey büyük olasılıkla gereksizdir."
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:72
 #, kde-format
@@ -7746,7 +7745,7 @@ msgid ""
 "patent-free digital audio codec using a form of lossy data compression."
 msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Opus_(audio_format)>Opus</a>, kayıplı "
-"veri sıkıştırma biçimini kullanan patentsiz bir sayısal ses kodlayıcı "
+"veri sıkıştırma biçimini kullanan patentsiz bir sayısal ses kodlayıcısı "
 "bileşenidir."
 
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:28
@@ -7769,10 +7768,10 @@ msgid ""
 "music and anything above <b>-q8</b> is probably overkill."
 msgstr ""
 "Bit hızı, ses parçasının saniyesini temsil etmek için kullanılan veri "
-"miktarının bir ölçüsüdür.<br><b>Vorbis</b> kodlayıcısı Amarok tarafından "
-"kullanılır ve <a href=http://en.wikipedia.org/wiki/"
-"Vorbis#Technical_details>değişken bit hızı (VBR)</a> ayarını destekler, ses "
-"içeriğinin karmaşıklığına dayanarak bit hızı değerinin parça boyunca "
+"miktarının bir ölçüsüdür.<br>Amarok tarafından kullanılan <b>Vorbis</b> "
+"kodlayıcısı <a href=http://en.wikipedia.org/wiki/"
+"Vorbis#Technical_details>değişken bit hızı (VBR)</a> ayarını destekler, bu, "
+"ses içeriğinin karmaşıklığına dayanarak bit hızı değerinin parça boyunca "
 "dalgalanması anlamına gelir. Daha karmaşık veri aralıkları, daha karmaşık "
 "olanlardan daha yüksek bir bit hızı ile kodlanır; bu yaklaşım, parça "
 "genelinde sabit bir bit hızına sahip olmaktan daha genel olarak daha iyi "
@@ -7784,7 +7783,8 @@ msgstr ""
 "ile gerçek bit hızı daha da düşüktür.<br><b>-q5</b>, taşınabilir "
 "oynatıcılarda müzik dinlemek için iyi bir seçimdir.<br/><b>-q3</ b> "
 "altındaki herhangi bir şey müzik için yetersiz olabilir ve <b>-q8</b> "
-"değerinin üstündeki herhangi bir şey muhtemelen aşırı derecede gereksizdir."
+"değerinin üstündeki herhangi bir şey büyük olasılıkla aşırı derecede "
+"gereksizdir."
 
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:59
 #, kde-format
@@ -7803,8 +7803,8 @@ msgid ""
 "excellent choice, especially for portable music players that support it."
 msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Vorbis>Ogg Vorbis</a>, kayıplı ses "
-"sıkıştırması için açık ve özgür bir ses kodlayıcıdır.<br> Eşdeğerinde "
-"MP3’den daha küçük dosyalar veya daha yüksek kalite dosyalar üretir. Ogg "
+"sıkıştırması için açık ve özgür bir ses kodlayıcısıdır.<br> Eşdeğerinde "
+"MP3’den daha küçük dosyalar veya daha yüksek kaliteli dosyalar üretir. Ogg "
 "Vorbis, özellikle onu destekleyen taşınabilir müzik çalarlar için mükemmel "
 "bir seçimdir."
 
@@ -7852,7 +7852,7 @@ msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Windows_Media_Audio>Windows Media "
 "Audio</a> (WMA), Microsoft tarafından kayıplı ses sıkıştırması için "
 "geliştirilen özel bir kodlayıcı bileşenidir. Yalnızca Ogg Vorbis’i "
-"desteklemez taşınabilir müzik çalarlar için önerilir."
+"desteklemeyen taşınabilir müzik çalarlar için önerilir."
 
 #: core/transcoding/TranscodingConfiguration.cpp:109
 #, kde-format
@@ -7882,19 +7882,19 @@ msgstr "%1, %2"
 #, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "All Tracks to %1"
-msgstr "Tüm Parçalar, %1"
+msgstr "Tüm Parçalar %1 Olarak"
 
 #: core/transcoding/TranscodingConfiguration.cpp:214
 #, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "Non-%1 Tracks to %1"
-msgstr "Tüm %1 olmayan parçalar, %1"
+msgstr "%1 Olmayan Parçalar %1 Olarak"
 
 #: core/transcoding/TranscodingConfiguration.cpp:218
 #, kde-format
 msgctxt "Displayed next to the \"Transcode:\" label. %1 example: 'MP3'"
 msgid "When Needed to %1"
-msgstr "%1 için Gerekli Olduğunda"
+msgstr "%1 Gerekli Olduğunda"
 
 #: covermanager/CoverFetcher.cpp:178 covermanager/CoverFetcher.cpp:341
 #, kde-format
@@ -7904,27 +7904,27 @@ msgstr "Kapak Getiriliyor"
 #: covermanager/CoverFetcher.cpp:202
 #, kde-format
 msgid "There was an error communicating with cover provider: %1"
-msgstr "Sağlayıcı ile iletişim kurulurken bir hata oluştu: %1"
+msgstr "Kapak sağlayıcısıyla iletişimde bir hata oluştu: %1"
 
 #: covermanager/CoverFetcher.cpp:412
 #, kde-format
 msgid "Retrieved cover successfully for '%1'."
-msgstr "'%1' için kapak başarılı bir şekilde getirildi."
+msgstr "'%1' için olan kapak başarıyla getirildi."
 
 #: covermanager/CoverFetcher.cpp:425
 #, kde-format
 msgid "Fetching cover for '%1' failed."
-msgstr "'%1' için kapak getirilemedi."
+msgstr "'%1' için olan kapak getirilemedi."
 
 #: covermanager/CoverFetcher.cpp:438
 #, kde-format
 msgid "Canceled fetching cover for '%1'."
-msgstr "'%1' için kapak getirme işlemi iptal edildi."
+msgstr "'%1' için olan kapağı getirme işlemi iptal edildi."
 
 #: covermanager/CoverFetcher.cpp:447
 #, kde-format
 msgid "Unable to find a cover for '%1'."
-msgstr "'%1' için kapak bulunamadı."
+msgstr "'%1' için bir kapak bulunamadı."
 
 #: covermanager/CoverFetchingActions.cpp:47
 #, kde-format
@@ -7937,40 +7937,40 @@ msgstr[1] "Kapakları Getir"
 #, kde-format
 msgid "Fetch the artwork for this album"
 msgid_plural "Fetch artwork for %1 albums"
-msgstr[0] "%1 albüm için sanatsal çalışmaları getir"
-msgstr[1] "%1 albüm için sanatsal çalışmaları getir"
+msgstr[0] "Bu albüm için olan kapak görselini getir"
+msgstr[1] "Bu %1 albüm için olan kapak görsellerini getir"
 
 #: covermanager/CoverFetchingActions.cpp:76
 #: covermanager/CoverFoundDialog.cpp:380
 #, kde-format
 msgid "Display Cover"
-msgstr "Kapağı Göster"
+msgstr "Kapağı Görüntüle"
 
 #: covermanager/CoverFetchingActions.cpp:78
 #, kde-format
 msgid "Display artwork for this album"
-msgstr "Bu albüm için sanatsal çalışmaları göster"
+msgstr "Bu albüm için olan kapak görselini görüntüle"
 
 #: covermanager/CoverFetchingActions.cpp:96
 #, kde-format
 msgid "Unset Cover"
 msgid_plural "Unset Covers"
-msgstr[0] "Kapakları Ayarlama"
-msgstr[1] "Kapakları Ayarlama"
+msgstr[0] "Kapağı Kaldır"
+msgstr[1] "Kapakları Kaldır"
 
 #: covermanager/CoverFetchingActions.cpp:98
 #, kde-format
 msgid "Remove artwork for this album"
 msgid_plural "Remove artwork for %1 albums"
-msgstr[0] "Bu %1 albümün sanatsal çalışmalarını sil"
-msgstr[1] "Bu %1 albümün sanatsal çalışmalarını sil"
+msgstr[0] "Bu albümün kapak görselini kaldır"
+msgstr[1] "Bu %1 albümün kapak görsellerini kaldır"
 
 #: covermanager/CoverFetchingActions.cpp:111
 #, kde-format
 msgid "Are you sure you want to remove this cover from the Collection?"
 msgid_plural ""
 "Are you sure you want to delete these %1 covers from the Collection?"
-msgstr[0] "Bu %1 kapağı koleksiyondan silmek istediğinizden emin misiniz?"
+msgstr[0] "Bu kapağı koleksiyondan silmek istediğinizden emin misiniz?"
 msgstr[1] "Bu %1 kapağı koleksiyondan silmek istediğinizden emin misiniz?"
 
 #: covermanager/CoverFetchingActions.cpp:134
@@ -7982,18 +7982,18 @@ msgstr "Özel Kapak Ayarla"
 #, kde-format
 msgid "Set custom artwork for this album"
 msgid_plural "Set custom artwork for these %1 albums"
-msgstr[0] "%1 albüm için sanatsal çalışmaları belirle"
-msgstr[1] "%1 albüm için sanatsal çalışmaları belirle"
+msgstr[0] "Bu albüm için özel kapak ayarla"
+msgstr[1] "Bu %1 albüm için özel kapak ayarla"
 
 #: covermanager/CoverFetchingActions.cpp:167
 #, kde-format
 msgid "Select Cover Image File"
-msgstr "Kapak Görseli Dosyasını Seç"
+msgstr "Kapak Görseli Dosyası Seç"
 
 #: covermanager/CoverFoundDialog.cpp:89
 #, kde-format
 msgid "Finding cover for"
-msgstr "Bunun için kapak aranıyor"
+msgstr "Şunun için kapak aranıyor:"
 
 #: covermanager/CoverFoundDialog.cpp:120
 #, kde-format
@@ -8021,7 +8021,7 @@ msgstr "Discogs"
 #: covermanager/CoverFoundDialog.cpp:151
 #, kde-format
 msgid "Sort by size"
-msgstr "Boyuta göre sırala"
+msgstr "Boyuta Göre Sırala"
 
 #: covermanager/CoverFoundDialog.cpp:405
 #, kde-format
@@ -8031,7 +8031,7 @@ msgstr "Kapak Görseli Kayıt Konumu"
 #: covermanager/CoverFoundDialog.cpp:434 covermanager/CoverFoundDialog.cpp:453
 #, kde-format
 msgid "Sorry, the cover could not be saved."
-msgstr "Üzgünüm, kapak kaydeilemedi."
+msgstr "Üzgünüm, kapak kaydedilemedi."
 
 #: covermanager/CoverFoundDialog.cpp:518
 #, kde-format
@@ -8046,7 +8046,7 @@ msgstr "Büyük Kapak Getiriliyor"
 #: covermanager/CoverFoundDialog.cpp:539
 #, kde-format
 msgid "Download Progress"
-msgstr "İndirme Süreci"
+msgstr "İndirme İlerlemesi"
 
 #: covermanager/CoverFoundDialog.cpp:541
 #, kde-format
@@ -8066,13 +8066,13 @@ msgstr "Daha Fazla Sonuç Ara"
 #: covermanager/CoverFoundDialog.cpp:718
 #, kde-format
 msgid "No Images Found"
-msgstr "Hiç Görsel Bulunamadı"
+msgstr "Bulunan Görsel Yok"
 
 #: covermanager/CoverFoundDialog.cpp:719
 #, kde-format
 msgid "1 Image Found"
 msgid_plural "%1 Images Found"
-msgstr[0] "%1 Görsel Bulundu"
+msgstr[0] "1 Görsel Bulundu"
 msgstr[1] "%1 Görsel Bulundu"
 
 #: covermanager/CoverFoundDialog.cpp:744
@@ -8126,7 +8126,7 @@ msgstr "Tür"
 #, kde-format
 msgctxt "@item::intable Release Date"
 msgid "Released"
-msgstr "Yayınlanma Tarihi"
+msgstr "Yayım Tarihi"
 
 #: covermanager/CoverFoundDialog.cpp:824
 #, kde-format
@@ -8150,7 +8150,7 @@ msgstr "Genişlik"
 #, kde-format
 msgctxt "@item::intable URL"
 msgid "link"
-msgstr "bağlantı"
+msgstr "Bağlantı"
 
 #: covermanager/CoverFoundDialog.cpp:867
 #, kde-format
@@ -8176,12 +8176,12 @@ msgstr "Tüm Sanatçılar"
 #: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:66
 #, kde-format
 msgid "Enter search terms here"
-msgstr "Aranacak ifadeyi girin"
+msgstr "Aranacak ifadeyi gir"
 
 #: covermanager/CoverManager.cpp:193
 #, kde-format
 msgid "All Albums"
-msgstr "Bütün Albümler"
+msgstr "Tüm Albümler"
 
 #: covermanager/CoverManager.cpp:194
 #, kde-format
@@ -8196,17 +8196,17 @@ msgstr "Kapaksız Albümler"
 #: covermanager/CoverManager.cpp:208
 #, kde-format
 msgid "Fetch Missing Covers"
-msgstr "Olmayan Kapakları Getir"
+msgstr "Eksik Kapakları Getir"
 
 #: covermanager/CoverManager.cpp:314
 #, kde-format
 msgid "Fetching"
-msgstr "Getiriliyor"
+msgstr "Getiriliyor..."
 
 #: covermanager/CoverManager.cpp:409
 #, kde-format
 msgid "Loading"
-msgstr "Yükleniyor"
+msgstr "Yükleniyor..."
 
 #: covermanager/CoverManager.cpp:620
 #, kde-format
@@ -8218,31 +8218,31 @@ msgstr "Tamamlandı."
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
-msgstr[0] " Kapak bulunamadı"
-msgstr[1] " <b>%1</b> kapak bulunamadı"
+msgstr[0] " Kapak bulunamadı."
+msgstr[1] " <b>%1</b> kapak bulunamadı."
 
 #: covermanager/CoverManager.cpp:640
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
-msgstr "Kapağı aranan albüm %1 - %2..."
+msgstr "%1 - %2 için kapak getiriliyor..."
 
 #: covermanager/CoverManager.cpp:646
 #, kde-format
 msgid "Fetching cover for %1..."
-msgstr "Kapağı aranan albüm %1..."
+msgstr "%1 için kapak getiriliyor..."
 
 #: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
-msgstr[0] "<b>%1</b> kapak getiriliyor... : "
-msgstr[1] "<b>%1</b> kapak getiriliyor... : "
+msgstr[0] "1 kapak getiriliyor: "
+msgstr[1] "<b>%1</b> kapak getiriliyor: "
 
 #: covermanager/CoverManager.cpp:654
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
-msgstr[0] "%1 getirildi"
+msgstr[0] "1 getirildi"
 msgstr[1] "%1 getirildi"
 
 #: covermanager/CoverManager.cpp:658
@@ -8254,7 +8254,7 @@ msgstr " - "
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
-msgstr[0] "%1 bulunamadı"
+msgstr[0] "1 bulunamadı"
 msgstr[1] "%1 bulunamadı"
 
 #: covermanager/CoverManager.cpp:662
@@ -8266,7 +8266,7 @@ msgstr "Bağlanıyor..."
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
-msgstr[0] "\"%2\" için %1 sonuç"
+msgstr[0] "\"%2\" için 1 sonuç"
 msgstr[1] "\"%2\" için %1 sonuç"
 
 #: covermanager/CoverManager.cpp:689
@@ -8285,14 +8285,14 @@ msgstr ", "
 #: covermanager/CoverManager.cpp:701
 #, kde-format
 msgid "%1 by %2"
-msgstr "%1 (Sanatçı: %2)"
+msgstr "%1, %2"
 
 #: covermanager/CoverManager.cpp:706
 #, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
-msgstr[0] "%2 - ( <b>1</b> kapaksız )"
-msgstr[1] "%2 - ( <b>%1</b> kapaksız )"
+msgstr[0] "%2 - (<b>1</b> kapaksız)"
+msgstr[1] "%2 - (<b>%1</b> kapaksız)"
 
 #: covermanager/CoverManager.cpp:765
 #, kde-format

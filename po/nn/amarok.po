@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-22 01:54+0000\n"
+"POT-Creation-Date: 2024-04-26 01:37+0000\n"
 "PO-Revision-Date: 2020-12-13 13:52+0100\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
@@ -371,7 +371,7 @@ msgid "Stop after current track: On"
 msgstr "Stopp etter dette sporet: på"
 
 #: ActionClasses.cpp:498
-#: context/applets/currenttrack/package/contents/ui/main.qml:101
+#: context/applets/currenttrack/package/contents/ui/main.qml:102
 #: EngineController.cpp:1331 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
@@ -3848,19 +3848,19 @@ msgstr ""
 msgid "Sample size:"
 msgstr ""
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:32
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:33
 #: playlist/PlaylistModel.cpp:945
 #, kde-format
 msgid "Play Count"
 msgstr "Avspelingsteljar"
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:42
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:44
 #: playlist/PlaylistModel.cpp:943
 #, kde-format
 msgid "Score"
 msgstr "Poeng"
 
-#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:52
+#: context/applets/currenttrack/package/contents/ui/StatsItem.qml:55
 #, kde-format
 msgid "Last played"
 msgstr ""
