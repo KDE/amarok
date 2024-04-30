@@ -22,6 +22,7 @@ SECTION 1: Preparation
  * Run the "fixuifiles" script from kde-dev-scripts from the repository root
  * Run the "bump_plugin_version.rb" script from the repository root
  * Set AMAROK_VERSION to the release version at shared/Version.h
+ * Verify that ChangeLog is up to date and latest version number corresponds to current one
  * Add new version to <releases> in src/org.kde.amarok.appdata.xml
  * Commit the source to git
 --------------------------------------------------------------------------------

@@ -3,7 +3,7 @@ Amarok ChangeLog
 (C) 2002-2024 the Amarok authors.
 
 
-VERSION 2.9.90
+VERSION 3.0.0
   FEATURES:
    * Added a visual hint that context view applets can be resized in edit mode.
    * Display missing metadata errors in Wikipedia applet UI.
