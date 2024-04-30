@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-04-26 01:37+0000\n"
-"PO-Revision-Date: 2024-04-28 22:16+0300\n"
+"PO-Revision-Date: 2024-04-30 00:24+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 23.08.3\n"
+"X-Generator: Lokalize 24.07.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -15073,7 +15073,7 @@ msgstr "parça eşleştirmeyi yavaşlatır"
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:67
 #, kde-format
 msgid "Downloading '%1' by %2 from Magnatune.com"
-msgstr "%2 tarafından ‘%1’ Magnatune.com’dan indiriliyor"
+msgstr "%2 tarafından “%1” Magnatune.com’dan indiriliyor"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:71
 #, kde-format
