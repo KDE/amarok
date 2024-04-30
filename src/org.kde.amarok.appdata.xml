@@ -286,6 +286,7 @@
       <li xml:lang="tr">Tümleştirilmiş İnternet hizmetleri: last.fm, Magnatune, Ampache ve daha fazlası.</li>
       <li xml:lang="uk">інтеграція з інтернет-службами: last.fm, Magnatune, Ampache тощо;</li>
       <li xml:lang="x-test">xxIntegrated Internet services: last.fm, Magnatune, Ampache and more.xx</li>
+      <li xml:lang="zh-TW">整合了這些網路服務：last.fm、Magnatune、Ampache 等等。</li>
       <li>Scripting support</li>
       <li xml:lang="bg">Поддръжка скриптове</li>
       <li xml:lang="bs">Podrška za skriptiranje</li>
@@ -420,6 +421,7 @@
       <caption xml:lang="tr">Amarok 3.0’da müzik çalma</caption>
       <caption xml:lang="uk">Відтворення музики в Amarok 3.0</caption>
       <caption xml:lang="x-test">xxPlaying music in Amarok 3.0xx</caption>
+      <caption xml:lang="zh-TW">Amarok 3.0 播放音樂時的畫面</caption>
       <image>https://cdn.kde.org/screenshots/amarok/amarok30.png</image>
     </screenshot>
     <screenshot>
