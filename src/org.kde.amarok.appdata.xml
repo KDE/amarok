@@ -281,6 +281,7 @@
       <li xml:lang="ca-valencia">Serveis integrats d'Internet: last.fm, Magnatune, Ampache i més.</li>
       <li xml:lang="eo">Integritaj interretaj servoj: last.fm, Magnatune, Ampache kaj pli.</li>
       <li xml:lang="es">Servicios de Internet integrados: last.fm, Magnatune, Ampache y otros.</li>
+      <li xml:lang="it">Servizi Internet integrati: last.fm, Magnatune, Ampache e altri.</li>
       <li xml:lang="nl">Geïntegreerde internetservices: last.fm, Magnatune, Ampache en meer.</li>
       <li xml:lang="sl">Vgrajene internetne storitve: last.fm, Magnatune, Ampache in druge.</li>
       <li xml:lang="tr">Tümleştirilmiş İnternet hizmetleri: last.fm, Magnatune, Ampache ve daha fazlası.</li>
@@ -416,6 +417,7 @@
       <caption xml:lang="ca-valencia">Reproduint música en Amarok 3.0</caption>
       <caption xml:lang="eo">Ludante muzikon en Amarok 3.0</caption>
       <caption xml:lang="es">Reproduciendo música en Amarok 3.0</caption>
+      <caption xml:lang="it">Riproduzione della musica con Amarok 3.0</caption>
       <caption xml:lang="nl">Muziek afspelen in Amarok 3.0</caption>
       <caption xml:lang="sl">Predvajanje glasbe v Amaroku 3.0</caption>
       <caption xml:lang="tr">Amarok 3.0’da müzik çalma</caption>
