@@ -23,7 +23,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-04-26 01:37+0000\n"
-"PO-Revision-Date: 2024-04-30 00:24+0300\n"
+"PO-Revision-Date: 2024-05-01 00:57+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -240,7 +240,7 @@ msgstr "openDesktop.org üzerinde %1 kişisinin profilini ziyaret et"
 #: aboutdialog/OcsPersonItem.cpp:256
 #, kde-format
 msgid "Visit contributor's blog"
-msgstr "Katkıcının blog'unu ziyaret et"
+msgstr "Katkıcının blog’unu ziyaret et"
 
 #: aboutdialog/OcsPersonItem.cpp:261
 #, kde-format
@@ -474,7 +474,7 @@ msgstr "Çalma listesindeki parçalar arasında nasıl ilerleneceği"
 #, kde-format
 msgid "Determines how amarok will progress through the tracks in the playlist"
 msgstr ""
-"Amarok'un çalma listesindeki parçalar arasında nasıl ilerleyeceğini belirler"
+"Amarok’un çalma listesindeki parçalar arasında nasıl ilerleyeceğini belirler"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:48
@@ -552,7 +552,7 @@ msgstr "Bağlam görünümünün gizlenip gizlenmeyeceği"
 #: amarokconfig.kcfg:74
 #, kde-format
 msgid "Enable/Disable context view in Amarok."
-msgstr "Amarok'ta bağlam görünümünü etkinleştirin/devre dışı bırakın."
+msgstr "Amarok’ta bağlam görünümünü etkinleştirin/devre dışı bırakın."
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:78
@@ -579,7 +579,7 @@ msgid ""
 "If set, Amarok's manually saved playlists will contain a relative path to "
 "each track, not an absolute path."
 msgstr ""
-"Ayarlanırsa Amarok'un elle kaydedilen çalma listeleri her parçaya giden "
+"Ayarlanırsa Amarok’un elle kaydedilen çalma listeleri her parçaya giden "
 "mutlak bir yol değil, göreceli bir yol içerecektir."
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -659,7 +659,7 @@ msgstr ""
 #, kde-format
 msgid "Whether organize files will move The in artist names to the end."
 msgstr ""
-"Dosyalar organize edilirken sanatçı adlarındaki \"The\"nın sona taşınıp "
+"Dosyalar organize edilirken sanatçı adlarındaki “The”nın sona taşınıp "
 "taşınmayacağı"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
@@ -669,8 +669,8 @@ msgid ""
 "If set, Organize files will move The in artist names to the end as in "
 "\"Beatles, The\"."
 msgstr ""
-"Ayarlanırsa dosyalar organize edilirken, sanatçı adlarındaki \"The\", "
-"\"Beatles, The\"da olduğu gibi sona taşınır."
+"Ayarlanırsa dosyalar organize edilirken, sanatçı adlarındaki “The”, "
+"“Beatles, The”da olduğu gibi sona taşınır."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:134
@@ -738,7 +738,7 @@ msgid ""
 "vfat filesystems (such as ':', '*' and '?')."
 msgstr ""
 "Ayarlanırsa dosyalar organize edilirken VFAT dosya sistemleri ile uyumlu "
-"olmayan karakterler başkalarıyla değiştirilir (örneğin ':', '*' ve '?')."
+"olmayan karakterler başkalarıyla değiştirilir (örneğin ‘:’, ‘*’ ve ‘?’)."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:154
@@ -861,7 +861,7 @@ msgstr "Ana ses düzeyi"
 #: amarokconfig.kcfg:193
 #, kde-format
 msgid "The Amarok master volume, a value between 0 and 100."
-msgstr "Amarok'un ana ses düzeyi, 0-100 arasındaki bir değerdir."
+msgstr "Amarok’un ana ses düzeyi, 0–100 arasındaki bir değerdir."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:199
@@ -880,7 +880,7 @@ msgstr "Sesi kapatın/açın."
 #, kde-format
 msgid "Whether to fade out tracks when pressing stop."
 msgstr ""
-"Durdur'a basıldığında parçalara yumuşak geçiş uygulanıp uygulanmayacağı"
+"Durdur’a basıldığında parçalara yumuşak geçiş uygulanıp uygulanmayacağı"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:205 amarokconfig.kcfg:210
@@ -893,7 +893,7 @@ msgstr "Yumuşak geçişi etkinleştirin/devre dışı bırakın."
 #, kde-format
 msgid "Whether to fade out tracks when pressing pause."
 msgstr ""
-"Duraklat'a basıldığında parçalara yumuşak geçiş uygulanıp uygulanmayacağı"
+"Duraklat’a basıldığında parçalara yumuşak geçiş uygulanıp uygulanmayacağı"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:214
@@ -911,7 +911,7 @@ msgstr "Milisaniye türünden yumuşak geçişin süresi."
 #: amarokconfig.kcfg:220
 #, kde-format
 msgid "Equalizer mode - 0 = off, 1 to n = preset no"
-msgstr "Ekolayzır kipi - 0 = kapalı, 1 ile n arası = önayar numarası"
+msgstr "Ekolayzır kipi — 0 = kapalı, 1 ile n arası = önayar numarası"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: amarokconfig.kcfg:221
@@ -996,7 +996,7 @@ msgstr "Saniye türünden uzun aramanın uzunluğu."
 #, kde-format
 msgid "Whether Amarok should pause the currently playing track on suspend."
 msgstr ""
-"Amarok'un şu anda çalan parçayı askıya alma durumunda duraklatıp "
+"Amarok’un şu anda çalan parçayı askıya alma durumunda duraklatıp "
 "duraklatmayacağı"
 
 #. i18n: ectx: label, entry, group (Playback)
@@ -1006,7 +1006,7 @@ msgid ""
 "Whether Amarok should prevent the system from sleeping if it is playing a "
 "track."
 msgstr ""
-"Amarok'un bir parça çalıyorsa sistemin uyku kipine geçmesini engellemesi "
+"Amarok’un bir parça çalıyorsa sistemin uyku kipine geçmesini engellemesi "
 "gerekip gerekmediği"
 
 #. i18n: ectx: label, entry, group (Playback)
@@ -1017,7 +1017,7 @@ msgid ""
 "nothing else is playing)."
 msgstr ""
 "Çalma listesine bir parça eklendiğinde (ve başka hiçbir şey çalınmadığında) "
-"Amarok'un çalmaya başlayıp başlamayacağı"
+"Amarok’un çalmaya başlayıp başlamayacağı"
 
 #. i18n: ectx: label, entry, group (Cover Manager)
 #: amarokconfig.kcfg:282
@@ -1043,7 +1043,7 @@ msgstr "Bilgi almak için Vikipedi yerel ayarı"
 #, kde-format
 msgid ""
 "Determines in which language the information is retrieved from Wikipedia."
-msgstr "Bilginin Vikipedi'den hangi dilde alınacağını belirler."
+msgstr "Bilginin Vikipedi’den hangi dilde alınacağını belirler."
 
 #. i18n: ectx: label, entry, group (KNotify)
 #: amarokconfig.kcfg:298
@@ -1055,13 +1055,13 @@ msgstr "KNotify desteğini kullan"
 #: amarokconfig.kcfg:305
 #, kde-format
 msgid "Use On-Screen Display"
-msgstr "Ekran Üzeri Görüntü'yü kullan"
+msgstr "Ekran Üzeri Görüntü’yü kullan"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:306
 #, kde-format
 msgid "Enable/Disable the On-Screen Display."
-msgstr "Ekran Üzeri Görüntü'yü açın/kapatın."
+msgstr "Ekran Üzeri Görüntü’yü açın/kapatın."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:310 configdialog/dialogs/NotificationsConfig.cpp:46
@@ -1085,7 +1085,7 @@ msgstr "Yarısaydamlığı Aç/Kapat"
 #: amarokconfig.kcfg:316
 #, kde-format
 msgid "Make the background of the OSD translucent."
-msgstr "Ekran Üzeri Görüntü'nün arka planını yarı saydam yapın."
+msgstr "Ekran Üzeri Görüntü’nün arka planını yarı saydam yapın."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:320
@@ -1114,7 +1114,7 @@ msgid ""
 "list containing three integers between 0 and 255."
 msgstr ""
 "Ekran Üzeri Görüntü metninin rengi. Renk, 0 ile 255 arasında üç tam sayı "
-"içeren, virgülle ayrılmış bir liste olan RGB'de belirtilir."
+"içeren, virgülle ayrılmış bir liste olan RGB’de belirtilir."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:330
@@ -1130,7 +1130,7 @@ msgid ""
 "normal size&#8221;."
 msgstr ""
 "Ekran Üzeri Görüntü yazıtipi için normalin yüzdesi türünden ölçeklendirme "
-"çarpanı. 100, \"normal boyuttur\"."
+"çarpanı. 100, “normal” boyuttur."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:337
@@ -1145,8 +1145,8 @@ msgid ""
 "The time in milliseconds to show the OSD. A value of 0 means never hide. The "
 "default value is 5000 ms."
 msgstr ""
-"Ekran Üzeri Görüntü'nün görüntüleneceği milisaniye türünden süre. 0 değeri "
-"asla gizlenmeyeceği anlamına gelir. Öntanımlı değer 5000 ms'dir."
+"Ekran Üzeri Görüntü’nün görüntüleneceği milisaniye türünden süre. 0 değeri "
+"asla gizlenmeyeceği anlamına gelir. Öntanımlı değer 5000 ms’dir."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:343
@@ -1165,9 +1165,9 @@ msgid ""
 "screen."
 msgstr ""
 "Seçili ekrana ve Ekran Üzeri Görüntü hizalamasına göre Ekran Üzeri "
-"Görüntü'nün Y konumu. Üst hizalama seçilirse Y ofseti, Ekran Üzeri "
-"Görüntü'nün üst kısmı ile ekranın üst kısmı arasındaki boşluktur. Alt "
-"hizalama seçilirse Y ofseti, Ekran Üzeri Görüntü'nün alt kısmı ile ekranın "
+"Görüntü’nün Y konumu. Üst hizalama seçilirse Y ofseti, Ekran Üzeri "
+"Görüntü’nün üst kısmı ile ekranın üst kısmı arasındaki boşluktur. Alt "
+"hizalama seçilirse Y ofseti, Ekran Üzeri Görüntü’nün alt kısmı ile ekranın "
 "alt kısmı arasındaki boşluktur."
 
 #. i18n: ectx: label, entry, group (OSD)
@@ -1183,14 +1183,14 @@ msgid ""
 "The screen that should display the OSD. For single-headed environments this "
 "setting should be 0."
 msgstr ""
-"Ekran Üzeri Görüntü'yü görüntülemesi gereken ekran. Tek başlı ortamlar için "
+"Ekran Üzeri Görüntü’yü görüntülemesi gereken ekran. Tek başlı ortamlar için "
 "bu ayar 0 olmalıdır."
 
 #. i18n: ectx: label, entry, group (OSD)
 #: amarokconfig.kcfg:355
 #, kde-format
 msgid "Align OSD to"
-msgstr "Ekran Üzeri Görüntü'yü şuna hizala:"
+msgstr "Ekran Üzeri Görüntü’yü şuna hizala:"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: amarokconfig.kcfg:356
@@ -1199,8 +1199,8 @@ msgid ""
 "The relative position of the OSD. Possible choices are Left, Middle, Right "
 "and Center."
 msgstr ""
-"Ekran Üzeri Görüntü'nün göreceli konumu. Olası seçenekler; Sol, Orta, Sağ ve "
-"Merkez'dir."
+"Ekran Üzeri Görüntü’nün göreceli konumu. Olası seçenekler; Sol, Orta, Sağ ve "
+"Merkez’dir."
 
 #. i18n: ectx: label, entry, group (OSD)
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
@@ -1218,7 +1218,7 @@ msgid ""
 "running in fullscreen mode."
 msgstr ""
 "Başka bir uygulamaya odaklanılmışsa ve tam ekran kipinde çalışıyorsa Ekran "
-"Üzeri Görüntü'yü göstermeyin."
+"Üzeri Görüntü’yü göstermeyin."
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:375
@@ -1237,7 +1237,7 @@ msgstr ""
 #: amarokconfig.kcfg:380
 #, kde-format
 msgid "Track URL to resume upon startup"
-msgstr "Başlangıçta sürdürülecek parça URL'si"
+msgstr "Başlangıçta sürdürülecek parça URL’si"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
 #: amarokconfig.kcfg:381
@@ -1276,7 +1276,7 @@ msgstr ""
 #: amarokconfig.kcfg:395
 #, kde-format
 msgid "Track playing on last exit. Value is -1 if no track was playing."
-msgstr "Son çıkışta çalan parça. Hiçbir parça çalınmıyorsa değer -1'dir."
+msgstr "Son çıkışta çalan parça. Hiçbir parça çalınmıyorsa değer -1’dir."
 
 #. i18n: ectx: label, entry, group (Session)
 #: amarokconfig.kcfg:399
@@ -1347,8 +1347,8 @@ msgid ""
 "Whether to use Mozilla's Character Set Detector to try to guess ID3 tag "
 "encodings."
 msgstr ""
-"ID3 künyesi kodlamalarını tahmin etmeye çalışmak için Mozilla'nın Karakter "
-"Kümesi Algılayıcısı'nın kullanılıp kullanılmayacağı"
+"ID3 künyesi kodlamalarını tahmin etmeye çalışmak için Mozilla’nın Karakter "
+"Kümesi Algılayıcısı’nın kullanılıp kullanılmayacağı"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:447
@@ -1403,7 +1403,7 @@ msgstr "Besteci verisini gönder"
 #: amarokconfig.kcfg:463
 #, kde-format
 msgid "Use composer data in Last.fm as artist"
-msgstr "Last.fm'deki besteci verisini sanatçı olarak kullan"
+msgstr "Last.fm’deki besteci verisini sanatçı olarak kullan"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:467
@@ -1478,7 +1478,7 @@ msgid ""
 "Whether podcast shows already played are automatically deleted when media "
 "device is connected."
 msgstr ""
-"Ortam aygıtı bağlandığında, halihazırda oynatılan pod yayını şovlarının "
+"Ortam aygıtı bağlandığında, halihazırda çalınan pod yayını şovlarının "
 "kendiliğinden silinip silinmeyeceği"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
@@ -1495,7 +1495,7 @@ msgid ""
 "device and whether tracks played should be submitted to Last.fm."
 msgstr ""
 "Amarok istatistiklerinin aygıttaki çalma sayısı/derecelendirmelerle "
-"eşzamanlanıp eşzamanlanmayacağı ve çalınan parçaların Last.fm'e gönderilip "
+"eşzamanlanıp eşzamanlanmayacağı ve çalınan parçaların Last.fm’e gönderilip "
 "gönderilmeyeceği"
 
 #. i18n: ectx: label, entry, group (Daap)
@@ -1571,7 +1571,7 @@ msgid ""
 "Whether Amarok uses its own internal database, as opposed to an external "
 "engine."
 msgstr ""
-"Amarok'un dış bir işletke yerine kendi iç veritabanını kullanıp kullanmadığı"
+"Amarok’un dış bir işletke yerine kendi iç veritabanını kullanıp kullanmadığı"
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:555
@@ -1592,7 +1592,7 @@ msgid ""
 "The name of the database Amarok will use. The user should have sufficient "
 "access permissions."
 msgstr ""
-"Amarok'un kullanacağı veritabanının adı. Kullanıcının yeterli erişim "
+"Amarok’un kullanacağı veritabanının adı. Kullanıcının yeterli erişim "
 "izinlerine sahip olması gerekir."
 
 #. i18n: ectx: label, entry, group (MySQL)
@@ -1618,13 +1618,13 @@ msgstr ""
 #: amarokconfig.kcfg:582
 #, kde-format
 msgid "Whether to enable Amarok's scripting module."
-msgstr "Amarok'un betik yazım kipinin etkinleştirilip etkinleştirilmeyeceği"
+msgstr "Amarok’un betik yazım kipinin etkinleştirilip etkinleştirilmeyeceği"
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: amarokconfig.kcfg:583
 #, kde-format
 msgid "Enable/Disable Amarok's scripting module."
-msgstr "Amarok'un betik yazım kipini etkinleştirin/devre dışı bırakın."
+msgstr "Amarok’un betik yazım kipini etkinleştirin/devre dışı bırakın."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #: amarokconfig.kcfg:587
@@ -1653,7 +1653,7 @@ msgstr "Betik konsolunun etkinleştirilip etkinleştirilmeyeceği"
 #, kde-format
 msgid "Whether to display a warning about scripts accessing deprecated APIs."
 msgstr ""
-"Kullanımdan kaldırılan API'lere erişen betikler hakkında bir uyarı "
+"Kullanımdan kaldırılan API’lere erişen betikler hakkında bir uyarı "
 "görüntülenip görüntülenmeyeceği"
 
 #. i18n: ectx: label, entry, group (ScriptConsole)
@@ -1690,7 +1690,7 @@ msgstr "Ruh hali çubuğunu boyarken kullanılacak biçem"
 #: amarokconfig.kcfg:625
 #, kde-format
 msgid "Quality factor for Automated Playlist Generator"
-msgstr "Otomatikleştirilmiş Çalma Listesi Üreteci'nin kalite çarpanı"
+msgstr "Otomatikleştirilmiş Çalma Listesi Üreteci’nin kalite çarpanı"
 
 #. i18n: ectx: whatsthis, entry, group (PlaylistGenerator)
 #: amarokconfig.kcfg:626
@@ -1700,7 +1700,7 @@ msgid ""
 "Generator tries to optimize for speed (0) or accuracy (10)."
 msgstr ""
 "Geçerli oturumun çıkışta kaydedilip kaydedilmeyeceği 0 ile 10 arasında bir "
-"değer olup Otomatikleştirilmiş Çalma Listesi Üreteci'nin hız (0) veya "
+"değer olup Otomatikleştirilmiş Çalma Listesi Üreteci’nin hız (0) veya "
 "doğruluk (10) açısından eniyilenmeye çalışılıp çalışılmadığını denetler."
 
 #: amarokurls/AmarokUrlHandler.cpp:224
@@ -1727,7 +1727,7 @@ msgstr "Grup Ekle"
 #: amarokurls/BookmarkManagerWidget.cpp:55
 #, kde-format
 msgid "Filter bookmarks"
-msgstr "Yer imlerini süz"
+msgstr "Yer imlerini süz…"
 
 #: amarokurls/BookmarkManagerWidget.cpp:59
 #, kde-format
@@ -1852,22 +1852,22 @@ msgstr "Dosyalar (%1)"
 #: amarokurls/NavigationUrlGenerator.cpp:191
 #, kde-format
 msgid "Album \"%1\" from %2"
-msgstr "%2 koleksiyonundan \"%1\" albümü"
+msgstr "%2 koleksiyonundan “%1” albümü"
 
 #: amarokurls/NavigationUrlGenerator.cpp:193
 #, kde-format
 msgid "Album \"%1\""
-msgstr "\"%1\" albümü"
+msgstr "“%1” albümü"
 
 #: amarokurls/NavigationUrlGenerator.cpp:238
 #, kde-format
 msgid "Artist \"%1\" from %2"
-msgstr "%2 koleksiyonundan \"%1\" sanatçısı"
+msgstr "%2 koleksiyonundan “%1” sanatçısı"
 
 #: amarokurls/NavigationUrlGenerator.cpp:240
 #, kde-format
 msgid "Artist \"%1\""
-msgstr "\"%1\" sanatçısı"
+msgstr "“%1” sanatçısı"
 
 #: amarokurls/NavigationUrlGenerator.cpp:252 MainWindow.cpp:779
 #, kde-format
@@ -1895,7 +1895,7 @@ msgstr "Çal"
 #: App.cpp:360
 #, kde-format
 msgid "Files/URLs to open"
-msgstr "Açılacak dosyalar/URL'ler"
+msgstr "Açılacak dosyalar/URL’ler"
 
 #: App.cpp:361
 #, kde-format
@@ -1940,17 +1940,17 @@ msgstr "Ek seçenekler:"
 #: App.cpp:370
 #, kde-format
 msgid "Append files/URLs to playlist"
-msgstr "Çalma listesine dosyalar/URL'ler ekle"
+msgstr "Çalma listesine dosyalar/URL’ler ekle"
 
 #: App.cpp:371
 #, kde-format
 msgid "Queue URLs after the currently playing track"
-msgstr "URL'leri şu anda çalan parçadan sonra kuyruğa ekle"
+msgstr "URL’leri şu anda çalan parçadan sonra kuyruğa ekle"
 
 #: App.cpp:372
 #, kde-format
 msgid "Load URLs, replacing current playlist"
-msgstr "Geçerli çalma listesini değiştirerek URL'ler yükle"
+msgstr "Geçerli çalma listesini değiştirerek URL’ler yükle"
 
 #: App.cpp:373 App.cpp:375
 #, kde-format
@@ -1992,7 +1992,7 @@ msgid ""
 msgstr ""
 "Amarok veritabanı aşağıdaki hataları bildirdi:\n"
 "%1\n"
-"Çoğu durumda Amarok'un düzgün çalışması için bu hataları çözmeniz "
+"Çoğu durumda Amarok’un düzgün çalışması için bu hataları çözmeniz "
 "gerekecektir."
 
 #: App.cpp:583
@@ -2006,18 +2006,18 @@ msgid ""
 "A music path, %1, is set in System Settings.\n"
 "Would you like to use that as a collection folder?"
 msgstr ""
-"Sistem Ayarları'nda müzik yolu olarak %1 ayarlı.\n"
+"Sistem Ayarları’nda müzik yolu olarak %1 ayarlı.\n"
 "Bunu koleksiyon klasörü olarak kullanmak ister misiniz?"
 
 #: browsers/BrowserBreadcrumbItem.cpp:70
 #, kde-format
 msgid "Media Sources Home"
-msgstr "Ortam Kaynakları Ana Sayfası"
+msgstr "Ortam kaynakları ana sayfası"
 
 #: browsers/BrowserCategoryList.cpp:54
 #, kde-format
 msgid "Filter Music Sources"
-msgstr "Müzik Kaynaklarını Süz"
+msgstr "Müzik kaynaklarını süz…"
 
 #: browsers/BrowserDock.cpp:34
 #, kde-format
@@ -2035,7 +2035,7 @@ msgid ""
 "This is where you will find your local music, as well as music from mobile "
 "audio players and CDs."
 msgstr ""
-"Yerel müziğinizin yanı sıra taşınabilir müzik çalarlardan ve CD'lerden gelen "
+"Yerel müziğinizin yanı sıra taşınabilir müzik çalarlardan ve CD’lerden gelen "
 "müziği de burada bulacaksınız."
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:168 MainWindow.cpp:927
@@ -2110,14 +2110,14 @@ msgstr "Kapak Resmini Göster"
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:87
 #, kde-format
 msgid "Merged View"
-msgstr "Birleştirilmiş Görünüm"
+msgstr "Birleştirilmiş görünüm"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:271
 #: services/jamendo/JamendoService.cpp:161
 #: services/magnatune/MagnatuneStore.cpp:229
 #, kde-format
 msgid "Sort Options"
-msgstr "Sıralama Seçenekleri"
+msgstr "Sıralama seçenekleri"
 
 #: browsers/CollectionTreeItem.cpp:141
 #, kde-format
@@ -2128,7 +2128,7 @@ msgstr "Etiket Yok"
 #: browsers/CollectionTreeItem.cpp:149
 #, kde-format
 msgid "Counting..."
-msgstr "Sayılıyor..."
+msgstr "Sayılıyor…"
 
 #: browsers/CollectionTreeItem.cpp:176
 #: playlist/proxymodels/GroupingProxy.cpp:188
@@ -2172,7 +2172,7 @@ msgstr "Albüm"
 #: browsers/CollectionTreeItemModelBase.cpp:1100
 #, kde-format
 msgid "Year - Album"
-msgstr "Yıl - Albüm"
+msgstr "Yıl — Albüm"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1102
 #, kde-format
@@ -2184,7 +2184,7 @@ msgstr "Parça Sanatçısı"
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:929
 #, kde-format
 msgid "Album Artist"
-msgstr "Album Sanatçısı"
+msgstr "Albüm Sanatçısı"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1106
 #: context/applets/wikipedia/package/contents/ui/main.qml:100
@@ -2250,7 +2250,7 @@ msgstr "Parçaları Sil"
 #: browsers/CollectionTreeView.cpp:716 services/lastfm/LastFmTreeView.cpp:187
 #, kde-format
 msgid "More..."
-msgstr "Daha Fazla..."
+msgstr "Daha Fazla…"
 
 #: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
@@ -2448,7 +2448,7 @@ msgid ""
 "selecting tracks for you, based on a number of parameters that you select."
 msgstr ""
 "Devignen çalma listeleriyle Amarok, seçtiğiniz birçok parametreye göre "
-"parçaları sizin için kendiliğinden seçen, kişisel bir DJ'iniz haline gelir."
+"parçaları sizin için kendiliğinden seçen, kişisel bir DJ’iniz haline gelir."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:65
 #, kde-format
@@ -2556,7 +2556,7 @@ msgstr "Çalma Listesini &Sil"
 #: browsers/playlistbrowser/DynamicView.cpp:249
 #, kde-format
 msgid "&Edit bias..."
-msgstr "Eğilimi Dü&zenle..."
+msgstr "Eğilimi Dü&zenle…"
 
 #: browsers/playlistbrowser/DynamicView.cpp:253
 #, kde-format
@@ -2618,7 +2618,7 @@ msgstr[1] "%1 çalma listesi"
 #, kde-format
 msgctxt "normally number of playlists, but they are still loading"
 msgid "Loading..."
-msgstr "Yükleniyor..."
+msgstr "Yükleniyor…"
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:173
 #, kde-format
@@ -2647,17 +2647,17 @@ msgstr "&Yeni"
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:87
 #, kde-format
 msgid "&Rename..."
-msgstr "Yeniden Adlandı&r..."
+msgstr "Yeniden Adlandı&r…"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:94
 #, kde-format
 msgid "&Delete..."
-msgstr "&Sil..."
+msgstr "&Sil…"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:108
 #, kde-format
 msgid "&Export As..."
-msgstr "&Farklı Dışa Aktar..."
+msgstr "&Farklı Dışa Aktar…"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
 #, kde-format
@@ -2714,7 +2714,7 @@ msgstr "Farklı Kaydet"
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:37
 #, kde-format
 msgid "&Rename Folder..."
-msgstr "Klasörü &Yeniden Adlandır..."
+msgstr "Klasörü &Yeniden Adlandır…"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:42
 #, kde-format
@@ -2763,7 +2763,7 @@ msgid ""
 "to do this automatically."
 msgstr ""
 "Pod yayını aboneliklerinizi yönetin ve bölümlere ayrı ayrı göz atın. "
-"Bölümlerin diske indirilmesi de burada yapılır veya Amarok'a bunu "
+"Bölümlerin diske indirilmesi de burada yapılır veya Amarok’a bunu "
 "kendiliğinden yapmasını söyleyebilirsiniz."
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:96
@@ -2812,13 +2812,13 @@ msgstr "Anahtar sözcükler:"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:24
 #, kde-format
 msgid "Add Podcast..."
-msgstr "Pod yayını ekle..."
+msgstr "Pod yayını ekle…"
 
 #. i18n: ectx: property (text), widget (QToolButton, addPodcastButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:27
 #, kde-format
 msgid "add podcast..."
-msgstr "Pod Yayını Ekle..."
+msgstr "Pod Yayını Ekle…"
 
 #. i18n: ectx: property (text), widget (QToolButton, refreshPodcastsButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:50
@@ -2832,13 +2832,13 @@ msgstr "Tüm Pod Yayınlarını Yenile"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:76
 #, kde-format
 msgid "Configure Podcasts..."
-msgstr "Pod Yayınlarını Yapılandır..."
+msgstr "Pod Yayınlarını Yapılandır…"
 
 #. i18n: ectx: property (text), widget (QToolButton, podcastsIntervalButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:99
 #, kde-format
 msgid "Scan Interval..."
-msgstr "Tarama Sıklığı..."
+msgstr "Tarama Sıklığı…"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:217
 #: browsers/playlistbrowser/PodcastModel.cpp:269
@@ -2900,7 +2900,7 @@ msgid ""
 "integrates directly into Amarok. Amarok ships with a number of these "
 "sources, but many more can be added using scripts."
 msgstr ""
-"İnternet tarayıcısı, doğrudan Amarok'a tümleşen çevrimiçi içerik "
+"İnternet tarayıcısı, doğrudan Amarok’a tümleşen çevrimiçi içerik "
 "kaynaklarına göz atmanızı sağlar. Amarok bu kaynakların bir kısmıyla "
 "birlikte gelir; ancak betikler kullanılarak çok daha fazlası eklenebilir."
 
@@ -3027,7 +3027,7 @@ msgid ""
 "Whether Amarok should transcode tracks when they are copied or moved to "
 "Local Collection."
 msgstr ""
-"Parçalar kopyalandığında veya yerel koleksiyona taşındığında Amarok'un "
+"Parçalar kopyalandığında veya yerel koleksiyona taşındığında Amarok’un "
 "kodunu dönüştürmesi gerekip gerekmediği."
 
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
@@ -3056,7 +3056,7 @@ msgid ""
 msgstr ""
 "Amarok veritabanı aşağıdaki hataları bildirdi:\n"
 "%1\n"
-"Çoğu durumda Amarok'un düzgün çalışması için bu hataları çözmeniz "
+"Çoğu durumda Amarok’un düzgün çalışması için bu hataları çözmeniz "
 "gerekecektir."
 
 #: configdialog/dialogs/DatabaseConfig.cpp:136
@@ -3129,7 +3129,7 @@ msgstr "K&apı:"
 msgid "Enter the port number to access the server. Default is port 3306.\n"
 msgstr ""
 "Sunucuya erişmek için kapı numarasını girin. Öntanımlı bağlantı noktası "
-"3306'dır.\n"
+"3306’dır.\n"
 
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
 #. i18n: ectx: property (text), widget (QLabel, label_User)
@@ -3174,7 +3174,7 @@ msgstr "&Veritabanı:"
 #: configdialog/dialogs/DatabaseConfig.ui:178
 #, kde-format
 msgid "Enter the name of the database. Default preset is amarokdb.\n"
-msgstr "Veritabanının adını girin. Öntanımlı önayar amarokdb'dir.\n"
+msgstr "Veritabanının adını girin. Öntanımlı önayar amarokdb’dir.\n"
 
 #. i18n: ectx: property (text), widget (QPushButton, button_Test)
 #: configdialog/dialogs/DatabaseConfig.ui:188
@@ -3317,7 +3317,7 @@ msgid ""
 msgstr ""
 "<b>Not</b>: Ruh hali durumu dosyaları elle oluşturulmalıdır. Daha fazla "
 "bilgi için <a href=\"http://userbase.kde.org/Amarok/Manual/Various/Moodbar"
-"\">KDE UserBase'deki ilgili makaleyi</a> okuyun."
+"\">KDE UserBase’deki ilgili makaleyi</a> okuyun."
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
 #: configdialog/dialogs/GeneralConfig.ui:117
@@ -3328,7 +3328,7 @@ msgid ""
 "tool."
 msgstr ""
 "Ruh hali çubuğu, müziğinizde görsel olarak gezinmenizi olanaklı kılar.\n"
-"Bu özelliğin dış \"Ruh Hali Çubuğu Üreteci\" aracını gerektirdiğini lütfen "
+"Bu özelliğin dış “Ruh Hali Çubuğu Üreteci” aracını gerektirdiğini lütfen "
 "unutmayın."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
@@ -3465,8 +3465,8 @@ msgid ""
 "This might be a good idea if you are currently\n"
 "sharing those files via the Internet."
 msgstr ""
-"Üst veri değişikliklerini (\"yıldız\" derecelendirmeleri dahil) özgün "
-"dosyaya geri yazın.\n"
+"Üst veri değişikliklerini (“yıldız” derecelendirmeleri dahil) özgün dosyaya "
+"geri yazın.\n"
 "Dosyayı yazmaya karşı koruyarak da geri yazmayı önleyebilirsiniz.\n"
 "\n"
 "Bu dosyaları şu anda İnternet üzerinden paylaşıyorsanız bu iyi bir fikir "
@@ -3526,7 +3526,7 @@ msgid ""
 msgstr ""
 "Seçiliyse Amarok, ID3 künyelerinde kullanılan karakter\n"
 "kümelerinin kendiliğinden belirlenmesi için Mozilla’nın\n"
-"Karakter Kümesi Algılayıcısı'nı kullanacaktır."
+"Karakter Kümesi Algılayıcısı’nı kullanacaktır."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_useCharsetDetector)
 #: configdialog/dialogs/MetadataConfig.ui:87
@@ -3548,7 +3548,7 @@ msgid ""
 "of tracks played on iPods if you have Last.fm plugin configured"
 msgstr ""
 "<b>Koleksiyonları eşzamanlı tutmak için işaretleyin.</b> Last.fm eklentisini "
-"yapılandırdıysanız iPod'larda çalınan parçaların skroblanması da bunda "
+"yapılandırdıysanız iPod’larda çalınan parçaların skroblanması da bunda "
 "içerilir."
 
 #. i18n: ectx: property (text), widget (QPushButton, m_forgetTargetsButton)
@@ -3591,14 +3591,14 @@ msgid ""
 "Check to enable the On-Screen-Display. The OSD briefly displays track data "
 "when a new track is played."
 msgstr ""
-"Ekran Üzeri Görüntü'yü etkinleştirmek için işaretleyin. Yeni bir parça "
+"Ekran Üzeri Görüntü’yü etkinleştirmek için işaretleyin. Yeni bir parça "
 "çalındığında Ekran Üzeri Görüntü, kısa süreliğine parça bilgisini görüntüler."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:29
 #, kde-format
 msgid "Use &On-Screen-Display"
-msgstr "&Ekran Üzeri Görüntü'yü Kullan"
+msgstr "&Ekran Üzeri Görüntü’yü Kullan"
 
 #. i18n: ectx: property (text), widget (QLabel, fadeoutLengthLabel)
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
@@ -3617,7 +3617,7 @@ msgid ""
 "The time in milliseconds for which to show the OSD. The value must be "
 "between 500 ms and 10000 ms."
 msgstr ""
-"Ekran Üzeri Görüntü'nün gösterileceği milisaniye türünden süre. Değer 500 ms "
+"Ekran Üzeri Görüntü’nün gösterileceği milisaniye türünden süre. Değer 500 ms "
 "ile 10000 ms arasında olmalıdır."
 
 #. i18n: ectx: property (specialValueText), widget (QSpinBox, kcfg_OsdDuration)
@@ -3646,7 +3646,7 @@ msgstr "&Ekran:"
 #: configdialog/dialogs/NotificationsConfig.ui:115
 #, kde-format
 msgid "The screen that should display the OSD."
-msgstr "Ekran Üzeri Görüntü'yü göstermesi gereken ekran."
+msgstr "Ekran Üzeri Görüntü’yü göstermesi gereken ekran."
 
 #. i18n: ectx: property (toolTip), widget (QGroupBox, kcfg_OsdUseCustomColors)
 #. i18n: ectx: property (whatsThis), widget (QGroupBox, kcfg_OsdUseCustomColors)
@@ -3654,7 +3654,7 @@ msgstr "Ekran Üzeri Görüntü'yü göstermesi gereken ekran."
 #: configdialog/dialogs/NotificationsConfig.ui:136
 #, kde-format
 msgid "Check to enable custom colors for the On-Screen-Display."
-msgstr "Ekran Üzeri Görüntü'de özel renkleri etkinleştirmek için işaretleyin."
+msgstr "Ekran Üzeri Görüntü’de özel renkleri etkinleştirmek için işaretleyin."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdUseCustomColors)
 #: configdialog/dialogs/NotificationsConfig.ui:139
@@ -3927,12 +3927,12 @@ msgstr "Betik konsolunu etkinleştirin."
 #: configdialog/dialogs/ScriptsConfig.ui:67
 #, kde-format
 msgid "Enable Script Console"
-msgstr "Betik Konsolunu Etkinleştir"
+msgstr "Betik konsolunu etkinleştir"
 
 #: configdialog/dialogs/ScriptSelector.cpp:37
 #, kde-format
 msgid "Search Scripts"
-msgstr "Betik Ara"
+msgstr "Betik ara…"
 
 #: context/AmarokContextPackageStructure.cpp:26
 #, kde-format
@@ -4101,7 +4101,7 @@ msgstr "Etiketler: Çalınan parça yok"
 #: context/applets/labels/LabelsApplet.cpp:520
 #, kde-format
 msgid "Labels: Fetching..."
-msgstr "Etiketler: Getiriliyor..."
+msgstr "Etiketler: Getiriliyor…"
 
 #: context/applets/labels/LabelsApplet.cpp:530
 #: statsyncing/models/CommonModel.cpp:186
@@ -4275,7 +4275,7 @@ msgid ""
 msgstr ""
 "Bu, indirilen etiketleri tercihlerinize göre değiştirerek etiket "
 "koleksiyonunuzu temiz tutmanıza yardımcı olacaktır.\n"
-"Örneğin: \"hip hop\" -> \"hip hop\""
+"Örneğin: “hip hop” → “hip hop”"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: context/applets/labels/labelsReplacementSettings.ui:98
@@ -4389,7 +4389,7 @@ msgstr "Çalma listesine üst parçayı ekle"
 #: context/applets/similarartists/ArtistWidget.cpp:150
 #, kde-format
 msgid "Show Similar Artists to %1"
-msgstr "\"%1\" sanatçısına benzer sanatçıları göster"
+msgstr "“%1” sanatçısına benzer sanatçıları göster"
 
 #: context/applets/similarartists/ArtistWidget.cpp:165
 #, kde-format
@@ -4463,7 +4463,7 @@ msgstr "Benzer Sanatçı Ayarları"
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:215
 #, kde-format
 msgid "Similar Artists to %1"
-msgstr "\"%1\" Sanatçısına Benzeyen"
+msgstr "“%1” Sanatçısına Benzeyen"
 
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:222
 #, kde-format
@@ -4500,7 +4500,7 @@ msgstr "Songkick’i Yeniden Yükle"
 #: context/applets/songkick/SongkickApplet.cpp:152
 #, kde-format
 msgid "Concert information is being fetched."
-msgstr "Konser bilgileri getiriliyor..."
+msgstr "Konser bilgileri getiriliyor…"
 
 #: context/applets/songkick/SongkickApplet.cpp:157
 #, kde-format
@@ -4555,7 +4555,7 @@ msgstr "Akorları Yeniden Yükle"
 #, kde-format
 msgctxt "Guitar tablature"
 msgid "Tabs: Fetching..."
-msgstr "Akorlar: Getiriliyor..."
+msgstr "Akorlar: Getiriliyor…"
 
 #: context/applets/tabs/TabsApplet.cpp:174
 #, kde-format
@@ -4573,7 +4573,7 @@ msgstr "Akorlar: Getirme hatası"
 #, kde-format
 msgctxt "Guitar tablature"
 msgid "Tabs: %1 - %2"
-msgstr "Akorlar: %1 - %2"
+msgstr "Akorlar: %1 — %2"
 
 #: context/applets/tabs/TabsApplet.cpp:280
 #, kde-format
@@ -4857,7 +4857,7 @@ msgstr "Cadde:"
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:53
 #, kde-format
 msgid "Loading picture..."
-msgstr "Resim yükleniyor..."
+msgstr "Resim yükleniyor…"
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:78
 #, kde-format
@@ -4975,7 +4975,7 @@ msgstr "Vikipedi bilgileri alınamadı: %1"
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:307
 #, kde-format
 msgid "No information found..."
-msgstr "Bulunan bilgi yok..."
+msgstr "Bulunan bilgi yok…"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
 #, kde-format
@@ -5015,7 +5015,7 @@ msgstr "Dili Seç"
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
 msgid "Configure Applets..."
-msgstr "Uygulamacıkları Yapılandır..."
+msgstr "Uygulamacıkları Yapılandır…"
 
 #: context/ContextDock.cpp:27
 #, kde-format
@@ -5169,7 +5169,7 @@ msgstr "Çeşitli Sanatçılar Altında Göster"
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:103
 #, kde-format
 msgid "%1 - Stopped %2"
-msgstr "%1 - %2 tarihinde durduruldu"
+msgstr "%1 — %2 tarihinde durduruldu"
 
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:108
 #, kde-format
@@ -5240,7 +5240,7 @@ msgstr ""
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:114
 #, kde-format
 msgid "Audio CD settings - Amarok"
-msgstr "Ses CD’si Ayarları - Amarok"
+msgstr "Ses CD’si Ayarları — Amarok"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
@@ -5343,7 +5343,7 @@ msgstr ""
 "<ul><li>%1</li></ul>Çoğu durumda bu, parçalarınızın tümünün içe "
 "aktarılmadığı anlamına gelir.<br>Yinelenen parçalar hakkında daha fazla "
 "bilgi için <a href='http://userbase.kde.org/Amarok/Manual/Various/"
-"TroubleshootingAndCommonProblems#Duplicate_Tracks'>Amarok Kılavuzu</a>'na "
+"TroubleshootingAndCommonProblems#Duplicate_Tracks'>Amarok Kılavuzu</a>’na "
 "göz atın."
 
 #: core-impl/collections/db/sql/SqlScanResultProcessor.cpp:89
@@ -5529,7 +5529,7 @@ msgstr[1] "iPod kapasitesini aşacağı için %1 parça aktarılmadı.<br>"
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
-msgstr "<i>Amarok, iTunes veritabanına yazmak için iPod'da %1 ayırdı.</i><br>"
+msgstr "<i>Amarok, iTunes veritabanına yazmak için iPod’da %1 ayırdı.</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:399
 #, kde-format
@@ -5581,8 +5581,8 @@ msgstr "Hata nedeni: %1<br>"
 #, kde-format
 msgid "Removing one track from iPod"
 msgid_plural "Removing %1 tracks from iPod"
-msgstr[0] "iPod'dan 1 parça kaldırılıyor"
-msgstr[1] "iPod'dan %1 parça kaldırılıyor"
+msgstr[0] "iPod’dan 1 parça kaldırılıyor"
+msgstr[1] "iPod’dan %1 parça kaldırılıyor"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:57
 #, kde-format
@@ -5812,10 +5812,10 @@ msgid ""
 "the device point of view)<br>See <a href='%2'>README.overview</a> file from "
 "libgpod source repository for more information."
 msgstr ""
-"<b>%1</b><br><br>Güvenlik önlemi olarak Amarok, iPod'a <i>herhangi bir yazma "
+"<b>%1</b><br><br>Güvenlik önlemi olarak Amarok, iPod’a <i>herhangi bir yazma "
 "işlemi gerçekleştirmeyi reddedecektir</i>. (iTunes veritabanını değiştirmek, "
 "aygıtın bakış açısından boş görünmesine neden olabilir).<br>Daha fazla bilgi "
-"için libgpod kaynak deposundaki <a href='%2'>README.overview</a> dosyasına "
+"için libgpod kaynak deposundaki <a href=“%2”>README.overview</a> dosyasına "
 "bakın."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:372
@@ -5827,10 +5827,10 @@ msgid ""
 "track and photo database</b>, however it should not delete any tracks. The "
 "tracks will become orphaned."
 msgstr ""
-"<b>%1</b><br><br>Yukarıdaki sorun, Amarok'un iPod'unuzu kullanmasını "
+"<b>%1</b><br><br>Yukarıdaki sorun, Amarok’un iPod’unuzu kullanmasını "
 "engelliyor. Aşağıdaki <b>%2</b> düğmesini kullanarak kritik iPod "
 "klasörlerini ve dosyalarını (iTunes veritabanı dahil) yeniden oluşturmayı "
-"deneyebilirsiniz.<br><br>iPod'un ilklendirilmesi <b>iPod parçalarını ve "
+"deneyebilirsiniz.<br><br>iPod’un ilklendirilmesi <b>iPod parçalarını ve "
 "fotoğraf veritabanını yok eder</b>; ancak hiçbir parçayı silmemelidir. "
 "Parçalar ayrık olarak imlenir."
 
@@ -6408,7 +6408,7 @@ msgid ""
 "from the remote server."
 msgstr ""
 "Ortamın açıkça indirilmesi gerekir, aksi takdirde pod yayını uzak sunucudan "
-"oynatılacaktır."
+"çalınacaktır."
 
 #. i18n: ectx: property (text), widget (QRadioButton, m_streamRadio)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:140
@@ -6544,7 +6544,7 @@ msgid ""
 "Downloaded files with this status wouldn't be deleted even if we apply a "
 "purge."
 msgstr ""
-"Bu pod yayını bölümünün indirilen dosya durumunu \"tut\" seçeneğini "
+"Bu pod yayını bölümünün indirilen dosya durumunu “tut” seçeneğini "
 "değiştirin. Bu durumdaki indirilen dosyalar, temizleme işlemini uygulasak "
 "bile silinmez."
 
@@ -6589,7 +6589,7 @@ msgstr "OPML Dışa Aktarımı için Dosya Seç"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:850
 #, kde-format
 msgid "Do you really want to unsubscribe from \"%1\"?"
-msgstr "\"%1\" aboneliğinden çıkmayı gerçekten istiyor musunuz?"
+msgstr "“%1” aboneliğinden çıkmayı gerçekten istiyor musunuz?"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:853
 #, kde-format
@@ -6622,7 +6622,7 @@ msgstr "Pod Yayını Ortamı İndiriliyor"
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1169
 #, kde-format
 msgid "Downloading Podcast \"%1\""
-msgstr "\"%1\" Pod Yayını İndiriliyor"
+msgstr "“%1” Pod Yayını İndiriliyor"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.h:56
 #, kde-format
@@ -7206,7 +7206,7 @@ msgctxt ""
 "the time format for a time length when the time is below 1 hour see QTime "
 "documentation."
 msgid "m:ss"
-msgstr "d:ss"
+msgstr "m:ss"
 
 #: core/meta/support/MetaUtility.cpp:428
 #, kde-format
@@ -7285,7 +7285,7 @@ msgstr "Pod yayını kanalı güncelleniyor"
 #: core/podcasts/PodcastReader.cpp:458
 #, kde-format
 msgid "Updating \"%1\""
-msgstr "\"%1\" güncelleniyor"
+msgstr "“%1” güncelleniyor"
 
 #: core/podcasts/PodcastReader.cpp:506 core/podcasts/PodcastReader.cpp:520
 #, kde-format
@@ -7301,7 +7301,7 @@ msgstr ""
 #: core/podcasts/PodcastReader.cpp:511 core/podcasts/PodcastReader.cpp:525
 #, kde-format
 msgid "Updating \"%1\" failed with error:\n"
-msgstr "\"%1\" güncellemesi hata vererek başarısız oldu:\n"
+msgstr "“%1” güncellemesi hata vererek başarısız oldu:\n"
 
 #: core/podcasts/PodcastReader.cpp:995
 #, kde-format
@@ -7310,7 +7310,7 @@ msgid ""
 "Did you enter the correct URL?"
 msgstr ""
 "%1 ayrıştırılırken bir besleme bekleniyordu; ancak bir HTML sayfası alındı.\n"
-"Doğru URL'yi girdiniz mi?"
+"Doğru URL’yi girdiniz mi?"
 
 #: core/podcasts/PodcastReader.cpp:1002
 #, kde-format
@@ -7505,7 +7505,7 @@ msgstr "Çeşitli Albümler"
 #, kde-format
 msgctxt "A saved playlist titled <artist> - <album>"
 msgid "%1 - %2"
-msgstr "%1 - %2"
+msgstr "%1 — %2"
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:30
 #, kde-format
@@ -7521,9 +7521,9 @@ msgstr ""
 "Bit hızı, ses parçasının bir saniyesini temsil etmek için kullanılan veri "
 "miktarının bir ölçüsüdür.<br>Amarok tarafından kullanılan kodlayıcı, sabit "
 "bir bit hızıyla daha iyi çalışır.<br>VBR deneyseldir ve büyük olasılıkla "
-"CBR'den daha kötü çalışır.<br>Bu nedenle, bu sürgüdeki bit hızı ölçümü, "
+"CBR’den daha kötü çalışır.<br>Bu nedenle, bu sürgüdeki bit hızı ölçümü, "
 "kodlanmış parçanın bit hızının oldukça doğru bir tahminidir.<br>Kodlayıcı, "
-"sınanan örneklemlerin çoğu için 128 kbps'de saydamdır ve yalnızca olağanüstü "
+"sınanan örneklemlerin çoğu için 128 kbps’de saydamdır ve yalnızca olağanüstü "
 "durumlarda ortaya çıkan yapaylıklar bulunur."
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:48
@@ -7592,7 +7592,7 @@ msgstr ""
 "<a href=http://en.wikipedia.org/wiki/Apple_Lossless>Apple Kayıpsız</a> "
 "(ALAC), sayısal müzikte kayıpsız sıkıştırma için kullanılan bir ses "
 "kodlayıcısıdır.<br>Yalnızca Apple müzik çalarlar ve FLAC’i desteklemeyen "
-"oynatıcılar için önerilir."
+"çalarlar için önerilir."
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:30
 #, kde-format
@@ -7672,7 +7672,7 @@ msgstr ""
 "ile kodlanır; bu yaklaşım, parça genelinde sabit bir bit hızına sahip "
 "olmaktan daha genel olarak daha iyi kaliteyi ve daha küçük bir dosya üretir."
 "<br>Bu nedenle, bu sürgüdeki bit hızı ölçüsü, kodlanmış parçanın ortalama "
-"bit hızının bir tahminidir.<br><b>160kb/sn</b>, taşınabilir bir oynatıcıda "
+"bit hızının bir tahminidir.<br><b>160kb/sn</b>, taşınabilir bir çalarda "
 "müzik dinlemek için iyi bir seçimdir.<br/><b>120kb/sn</ b> değerinin "
 "altındaki herhangi bir şey müzik için yetersiz olabilir ve <b>205kb/sn</b> "
 "üzerindeki herhangi bir şey büyük olasılıka gereksizdir."
@@ -7725,10 +7725,10 @@ msgstr ""
 "kodlanır; bu yaklaşım, parça genelinde sabit bir bit hızına sahip olmaktan "
 "daha genel olarak daha iyi kaliteyi ve daha küçük bir dosya üretir.<br>Bu "
 "nedenle, bu sürgüdeki bit hızı ölçüsü, kodlanmış parçanın ortalama bit "
-"hızının bir tahminidir.<b>128kb/sn</ b> taşınabilir bir oynatıcıdaki müzik "
-"dinlemek için iyi bir seçimdir.<br/><b>100 kb/sn</b>'den az olan her şey "
-"müzik için yetersiz olabilir ve <b>256kb/sn</ b> değerinin üstündeki "
-"herhangi bir şey büyük olasılıkla gereksizdir."
+"hızının bir tahminidir.<b>128kb/sn</ b> taşınabilir bir çalarda müzik "
+"dinlemek için iyi bir seçimdir.<br/><b>100 kb/sn</b>’den az olan her şey "
+"müzik için yetersiz olabilir ve <b>256kb/sn</b> değerinin üstündeki herhangi "
+"bir şey büyük olasılıkla gereksizdir."
 
 #: core/transcoding/formats/TranscodingOpusFormat.cpp:72
 #, kde-format
@@ -7777,14 +7777,13 @@ msgstr ""
 "genelinde sabit bir bit hızına sahip olmaktan daha genel olarak daha iyi "
 "kaliteyi ve daha küçük bir dosya üretir.<br>Vorbis kodlayıcısı, belirli bir "
 "ses kalitesi düzeyini tanımlamak için -1 ile 10 arasında bir kalite derecesi "
-"\"-q parametresi\" kullanır. Bu sürgüdeki bit hızı ölçüsü, q değeri verilen "
+"“-q parametresi” kullanır. Bu sürgüdeki bit hızı ölçüsü, q değeri verilen "
 "kodlanmış parçanın ortalama bit hızının yalnızca kaba bir tahminidir (Vorbis "
 "tarafından sağlanır). Aslında, daha yeni ve daha verimli Vorbis sürümleri "
-"ile gerçek bit hızı daha da düşüktür.<br><b>-q5</b>, taşınabilir "
-"oynatıcılarda müzik dinlemek için iyi bir seçimdir.<br/><b>-q3</ b> "
-"altındaki herhangi bir şey müzik için yetersiz olabilir ve <b>-q8</b> "
-"değerinin üstündeki herhangi bir şey büyük olasılıkla aşırı derecede "
-"gereksizdir."
+"ile gerçek bit hızı daha da düşüktür.<br><b>-q5</b>, taşınabilir bir çalarda "
+"müzik dinlemek için iyi bir seçimdir.<br/><b>-q3</ b> altındaki herhangi bir "
+"şey müzik için yetersiz olabilir ve <b>-q8</b> değerinin üstündeki herhangi "
+"bir şey büyük olasılıkla aşırı derecede gereksizdir."
 
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:59
 #, kde-format
@@ -7829,9 +7828,9 @@ msgstr ""
 "Windows_Media_Audio#Windows_Media_Audio>Sabit bit hızı (CBR)</a> ayarı "
 "ayarlamıştır.<br>Bu nedenle, bu sürgüdeki bit hızı ölçüsü, kodlanmış "
 "parçanın bit hızının oldukça doğru bir tahminidir.<br><b>136 kb/sn</b> "
-"taşınabilir bir oynatıcıda müzik dinlemek için iyi bir seçimdir.<br/><b> 112 "
-"kb/sn</b> düzeyinin altındaki herhangi bir şey müzik için yetersiz kalabilir "
-"ve <b>182 kb/sn</ b> ve üstü büyük olasılıkla gereksiz olacaktır."
+"taşınabilir bir çalarda müzik dinlemek için iyi bir seçimdir.<br/><b> 112 kb/"
+"sn</b> düzeyinin altındaki herhangi bir şey müzik için yetersiz kalabilir ve "
+"<b>182 kb/sn</ b> ve üstü büyük olasılıkla gereksiz olacaktır."
 
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:67
 #, kde-format
@@ -7909,22 +7908,22 @@ msgstr "Kapak sağlayıcısıyla iletişimde bir hata oluştu: %1"
 #: covermanager/CoverFetcher.cpp:412
 #, kde-format
 msgid "Retrieved cover successfully for '%1'."
-msgstr "'%1' için olan kapak başarıyla getirildi."
+msgstr "“%1” için olan kapak başarıyla getirildi."
 
 #: covermanager/CoverFetcher.cpp:425
 #, kde-format
 msgid "Fetching cover for '%1' failed."
-msgstr "'%1' için olan kapak getirilemedi."
+msgstr "“%1” için olan kapak getirilemedi."
 
 #: covermanager/CoverFetcher.cpp:438
 #, kde-format
 msgid "Canceled fetching cover for '%1'."
-msgstr "'%1' için olan kapağı getirme işlemi iptal edildi."
+msgstr "“%1” için olan kapağı getirme işlemi iptal edildi."
 
 #: covermanager/CoverFetcher.cpp:447
 #, kde-format
 msgid "Unable to find a cover for '%1'."
-msgstr "'%1' için bir kapak bulunamadı."
+msgstr "“%1” için bir kapak bulunamadı."
 
 #: covermanager/CoverFetchingActions.cpp:47
 #, kde-format
@@ -8176,7 +8175,7 @@ msgstr "Tüm Sanatçılar"
 #: covermanager/CoverManager.cpp:180 widgets/SearchWidget.cpp:66
 #, kde-format
 msgid "Enter search terms here"
-msgstr "Aranacak ifadeyi gir"
+msgstr "Aranacak ifadeyi gir…"
 
 #: covermanager/CoverManager.cpp:193
 #, kde-format
@@ -8201,12 +8200,12 @@ msgstr "Eksik Kapakları Getir"
 #: covermanager/CoverManager.cpp:314
 #, kde-format
 msgid "Fetching"
-msgstr "Getiriliyor..."
+msgstr "Getiriliyor…"
 
 #: covermanager/CoverManager.cpp:409
 #, kde-format
 msgid "Loading"
-msgstr "Yükleniyor..."
+msgstr "Yükleniyor…"
 
 #: covermanager/CoverManager.cpp:620
 #, kde-format
@@ -8224,12 +8223,12 @@ msgstr[1] " <b>%1</b> kapak bulunamadı."
 #: covermanager/CoverManager.cpp:640
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
-msgstr "%1 - %2 için kapak getiriliyor..."
+msgstr "%1 — %2 için kapak getiriliyor…"
 
 #: covermanager/CoverManager.cpp:646
 #, kde-format
 msgid "Fetching cover for %1..."
-msgstr "%1 için kapak getiriliyor..."
+msgstr "%1 için kapak getiriliyor…"
 
 #: covermanager/CoverManager.cpp:652
 #, kde-format
@@ -8248,7 +8247,7 @@ msgstr[1] "%1 getirildi"
 #: covermanager/CoverManager.cpp:658
 #, kde-format
 msgid " - "
-msgstr " - "
+msgstr " — "
 
 #: covermanager/CoverManager.cpp:659
 #, kde-format
@@ -8260,14 +8259,14 @@ msgstr[1] "%1 bulunamadı"
 #: covermanager/CoverManager.cpp:662
 #, kde-format
 msgid "Connecting..."
-msgstr "Bağlanıyor..."
+msgstr "Bağlanıyor…"
 
 #: covermanager/CoverManager.cpp:685
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
-msgstr[0] "\"%2\" için 1 sonuç"
-msgstr[1] "\"%2\" için %1 sonuç"
+msgstr[0] "“%2” için 1 sonuç"
+msgstr[1] "“%2” için %1 sonuç"
 
 #: covermanager/CoverManager.cpp:689
 #, kde-format
@@ -8291,8 +8290,8 @@ msgstr "%1, %2"
 #, kde-format
 msgid "%2 - ( <b>1</b> without cover )"
 msgid_plural "%2 - ( <b>%1</b> without cover )"
-msgstr[0] "%2 - (<b>1</b> kapaksız)"
-msgstr[1] "%2 - (<b>%1</b> kapaksız)"
+msgstr[0] "%2 — (<b>1</b> kapaksız)"
+msgstr[1] "%2 — (<b>%1</b> kapaksız)"
 
 #: covermanager/CoverManager.cpp:765
 #, kde-format
@@ -8302,7 +8301,7 @@ msgstr "Kapak Görseli"
 #: covermanager/CoverManager.cpp:840
 #, kde-format
 msgid "%1 - %2"
-msgstr "%1 - %2"
+msgstr "%1 — %2"
 
 #: covermanager/CoverManager.cpp:857
 #, kde-format
@@ -8317,7 +8316,7 @@ msgstr "Kapak Görünümü"
 #: databaseimporter/SqlBatchImporter.cpp:83
 #, kde-format
 msgid "Could not open file \"%1\"."
-msgstr "\"%1\" dosyası açılamadı."
+msgstr "“%1” dosyası açılamadı."
 
 #: databaseimporter/SqlBatchImporterConfig.cpp:39
 #, kde-format
@@ -8326,7 +8325,7 @@ msgid ""
 "community.kde.org/Amarok/Development/BatchMode\">Batch Mode</a>."
 msgstr ""
 "amarokcollectionscanner tarafından sağlanan girdi dosyası.<br><a href="
-"\"http://community.kde.org/Amarok/Development/BatchMode\">Çoklu Kip</a>'e "
+"\"http://community.kde.org/Amarok/Development/BatchMode\">Çoklu Kip</a>’e "
 "göz atın."
 
 #: databaseimporter/SqlBatchImporterConfig.cpp:46
@@ -8350,7 +8349,7 @@ msgstr ""
 #: dialogs/CollectionSetup.cpp:71
 #, kde-format
 msgid "Import batch file..."
-msgstr "Toplu İş Dosyası İçe Aktar..."
+msgstr "Toplu İş Dosyası İçe Aktar…"
 
 #: dialogs/CollectionSetup.cpp:72
 #, kde-format
@@ -8389,7 +8388,7 @@ msgstr ""
 #: dialogs/CollectionSetup.cpp:189
 #, kde-format
 msgid "Rescan '%1'"
-msgstr "Yeniden Tara: \"%1\""
+msgstr "Yeniden Tara: “%1”"
 
 #: dialogs/DatabaseImporterDialog.cpp:41
 #, kde-format
@@ -8439,13 +8438,13 @@ msgstr "<b>%1</b> içe aktarıldı"
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track"
 msgid "Imported <b>%1 - %2</b>"
-msgstr "<b>%1 - %2</b> içe aktarıldı"
+msgstr "<b>%1 — %2</b> içe aktarıldı"
 
 #: dialogs/DatabaseImporterDialog.cpp:153
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track (Album)"
 msgid "Imported <b>%1 - %2 (%3)</b>"
-msgstr "<b>%1 - %2 (%3)</b> içe aktarıldı"
+msgstr "<b>%1 — %2 (%3)</b> içe aktarıldı"
 
 #: dialogs/DatabaseImporterDialog.cpp:162
 #, kde-format
@@ -8471,7 +8470,7 @@ msgid ""
 "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from "
 "%3<br/>&nbsp;&nbsp;to %4"
 msgstr ""
-"<b><font color='green'>%1 - %2</font>,</b><br/>&nbsp;&nbsp;%3 konumundan<br/"
+"<b><font color='green'>%1 — %2</font>,</b><br/>&nbsp;&nbsp;%3 konumundan<br/"
 ">&nbsp;&nbsp;%4 konumuna içe aktarıldı"
 
 #: dialogs/DatabaseImporterDialog.cpp:183
@@ -8483,7 +8482,7 @@ msgid ""
 "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;from "
 "%4<br/>&nbsp;&nbsp;to %5"
 msgstr ""
-"<b><font color='green'>%1 - %2 (%3)</font>,</b><br/>&nbsp;&nbsp;%4 "
+"<b><font color='green'>%1 — %2 (%3)</font>,</b><br/>&nbsp;&nbsp;%4 "
 "konumundan<br/>&nbsp;&nbsp;%5 konumuna içe aktarıldı"
 
 #: dialogs/DatabaseImporterDialog.cpp:195
@@ -8572,7 +8571,7 @@ msgid ""
 "If checked, files will be permanently removed instead of being placed in the "
 "Trash Bin"
 msgstr ""
-"İşaretlenirse dosyalar Çöp Kutusu'na atılmak yerine kalıcı olarak kaldırılır"
+"İşaretlenirse dosyalar Çöp Kutusu’na atılmak yerine kalıcı olarak kaldırılır"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
 #: dialogs/deletedialogbase.ui:110
@@ -8584,7 +8583,7 @@ msgid ""
 "<p><em>Use this option with caution</em>: Most filesystems are unable to "
 "reliably undelete deleted files.</p></qt>"
 msgstr ""
-"<qt><p>Bu kutu işaretlenirse dosyalar Çöp Kutusu'na atılmak yerine <b>kalıcı "
+"<qt><p>Bu kutu işaretlenirse dosyalar Çöp Kutusu’na atılmak yerine <b>kalıcı "
 "olarak kaldırılır</b>.</p>\n"
 "\n"
 "<p><em>Bu seçeneği dikkatli kullanın</em>: Çoğu dosya sistemi, silinen "
@@ -8674,7 +8673,7 @@ msgstr "Arakodlanan dosyaları aktarma sonrası kaldır"
 #: dialogs/deviceconfiguredialog.cpp:127 dialogs/deviceconfiguredialog.cpp:128
 #, kde-format
 msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr "Bu özellik için \"Transcode\" gibi bir betik çalışıyor olmalıdır"
+msgstr "Bu özellik için “Transcode” gibi bir betik çalışıyor olmalıdır"
 
 #: dialogs/DiagnosticDialog.cpp:88
 #, kde-format
@@ -8749,7 +8748,7 @@ msgstr "VEYA"
 #: dialogs/EditFilterDialog.cpp:39
 #, kde-format
 msgid "Simple text"
-msgstr "Basit metin"
+msgstr "Temel Metin"
 
 #: dialogs/EditFilterDialog.cpp:48
 #, kde-format
@@ -8913,7 +8912,7 @@ msgid ""
 msgstr ""
 "Karar verilmeyen her bir parça için en üstteki sonucu kullanın. Alternatif "
 "olarak, iyi bir önerinin bağlam menüsündeki <b>Bu Albümden En İyi "
-"Eşleşmeleri Seç</b>'e tıklayabilirsiniz; farklı albümlerin bir arada "
+"Eşleşmeleri Seç</b>’e tıklayabilirsiniz; farklı albümlerin bir arada "
 "karıştırılmasını önlediği için daha da iyi sonuçlar verebilir."
 
 #: dialogs/MusicBrainzTagger.cpp:95
@@ -9164,7 +9163,7 @@ msgstr "Boşlukları &alt çizgilerle değiştir"
 #, kde-format
 msgid "If checked, append ', The' to the artists' names starting with 'The'."
 msgstr ""
-"İşaretliyse 'The' ile başlayan sanatçı adlarının sonuna ', The' eklenir."
+"İşaretliyse “The” ile başlayan sanatçı adlarının sonuna “, The” eklenir."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:57
@@ -9173,14 +9172,14 @@ msgid ""
 "If checked all artists starting with \"The\" will have it moved to the end. "
 "Example, \"The Beatles\" would become \"Beatles, The\""
 msgstr ""
-"İşaretlenirse \"The\" ile başlayan tüm sanatçılarda sona taşınacaktır. "
-"Örnek: \"The Beatles\", \"Beatles, The\" olur"
+"İşaretlenirse “The” ile başlayan tüm sanatçılarda sona taşınacaktır. Örnek: "
+"“The Beatles”, “Beatles, The” olur"
 
 #. i18n: ectx: property (text), widget (QCheckBox, ignoreTheCheck)
 #: dialogs/OrganizeCollectionOptions.ui:60
 #, kde-format
 msgid "&Append 'The' to artist names"
-msgstr "Sanatçı adlarına 'The' &iliştir"
+msgstr "Sanatçı adlarına “The” &iliştir"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:75
@@ -9571,7 +9570,7 @@ msgstr "&Açıklama:"
 #: dialogs/TagDialogBase.ui:875
 #, kde-format
 msgid "Get Tags from MusicBrain&z"
-msgstr "MusicBrain&z'den Künyeleri Al"
+msgstr "MusicBrain&z’den Künyeleri Al"
 
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_guessTags)
 #: dialogs/TagDialogBase.ui:888
@@ -9661,13 +9660,13 @@ msgid ""
 "font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
 msgstr ""
 "Bir dosya adı şemasını tanımlamak için aşağıdaki jetonlar kullanılabilir:"
-"<br>                           <font color=\"%1\">%track%</font>, <font "
-"color=\"%2\">%title%</font>,                           <font color=\"%3\">"
-"%artist%</font>, <font color=\"%4\">%composer%</"
-"font>,                           <font color=\"%5\">%year%</font>, <font "
-"color=\"%6\">%album%</font>,                           <font color=\"%7\">"
-"%albumartist%</font>, <font color=\"%8\">%comment%</"
-"font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
+"<br>                           <font color=“%1”>%track%</font>, <font "
+"color=“%2”>%title%</font>,                           <font color=“%3”>%artist"
+"%</font>, <font color=“%4”>%composer%</font>,                           "
+"<font color=“%5”>%year%</font>, <font color=\"%6\">%album%</"
+"font>,                           <font color=\"%7\">%albumartist%</font>, "
+"<font color=\"%8\">%comment%</font>,                           <font color="
+"\"%9\">%genre%</font>, %ignore%."
 
 #: dialogs/TagGuesserDialog.cpp:223
 #, kde-format
@@ -9921,7 +9920,7 @@ msgstr "Rastgele"
 #: dynamic/BiasedPlaylist.cpp:124
 #, kde-format
 msgid "Generating playlist..."
-msgstr "Çalma listesi oluşturuluyor..."
+msgstr "Çalma listesi oluşturuluyor…"
 
 #: dynamic/biases/AlbumPlayBias.cpp:36
 #, kde-format
@@ -9933,7 +9932,7 @@ msgstr "AlbumPlay"
 #, kde-format
 msgctxt "Description of the \"AlbumPlay\" bias"
 msgid "The \"AlbumPlay\" bias adds tracks that belong to one album."
-msgstr "\"AlbumPlay\" eğilimi, bir albüme ait parçaları ekler."
+msgstr "“AlbumPlay” eğilimi, bir albüme ait parçaları ekler."
 
 #: dynamic/biases/AlbumPlayBias.cpp:107
 #, kde-format
@@ -9980,8 +9979,7 @@ msgctxt "Description of the \"EchoNest\" bias"
 msgid ""
 "The \"EchoNest\" bias looks up tracks on echo nest and only adds similar "
 "tracks."
-msgstr ""
-"\"EchoNest\" eğilimi parçalara bakar ve yalnızca benzer parçaları ekler."
+msgstr "“EchoNest” eğilimi parçalara bakar ve yalnızca benzer parçaları ekler."
 
 #: dynamic/biases/EchoNestBias.cpp:125
 #, kde-format
@@ -10003,20 +10001,19 @@ msgstr ""
 msgid ""
 "<a href=\"http://the.echonest.com/\">the echonest</a> thinks the artist is "
 "similar to"
-msgstr ""
-"<a href=\"http://the.echonest.com/\">Echonest</a>, sanatçının şuna benzer "
-"olduğunu düşünüyor"
+msgstr "<a href=\"http://the.echonest.com/\">Echonest</a>, sanatçının"
 
 #: dynamic/biases/EchoNestBias.cpp:143
 #: services/lastfm/biases/LastFmBias.cpp:144
 #, kde-format
 msgid "the previous track's artist"
-msgstr "önceki parçanın sanatçısı"
+msgstr "önceki parçanın sanatçısına benzer olduğunu düşünüyor"
 
 #: dynamic/biases/EchoNestBias.cpp:144
 #, kde-format
 msgid "one of the artist in the current playlist"
-msgstr "geçerli çalma listesindeki sanatçılardan biri"
+msgstr ""
+"geçerli çalma listesindeki sanatçılardan birine benzer olduğunu düşünüyor"
 
 #: dynamic/biases/IfElseBias.cpp:35
 #, kde-format
@@ -10032,7 +10029,7 @@ msgid ""
 "It will only check the second sub-bias if the first doesn't return any "
 "results."
 msgstr ""
-"\"IfElse\" eğilimi, alt eğilimlerden en az biriyle eşleşen parçaları ekler.\n"
+"“IfElse” eğilimi, alt eğilimlerden en az biriyle eşleşen parçaları ekler.\n"
 "Yalnızca birincisi herhangi bir sonuç getirmezse ikinci alt eğilimi "
 "denetleyecektir."
 
@@ -10061,8 +10058,7 @@ msgctxt "Description of the \"Part\" bias"
 msgid ""
 "The \"Part\" bias fills parts of the playlist from different sub-biases."
 msgstr ""
-"\"Part\" eğilimi , çalma listesinin bölümlerini farklı eğilimler ile "
-"doldurur."
+"“Part” eğilimi , çalma listesinin bölümlerini farklı eğilimler ile doldurur."
 
 #: dynamic/biases/PartBias.cpp:255
 #, kde-format
@@ -10089,7 +10085,7 @@ msgid ""
 "The \"QuizPlay\" bias adds tracks that start\n"
 "with a character the last track ended with."
 msgstr ""
-"\"QuizPlay\" eğilimi, son parçanın bittiği\n"
+"“QuizPlay” eğilimi, son parçanın bittiği\n"
 "bir karakterle başlayan parçaları ekler."
 
 #: dynamic/biases/QuizPlayBias.cpp:116
@@ -10134,17 +10130,17 @@ msgstr ""
 #: dynamic/biases/QuizPlayBias.cpp:141
 #, kde-format
 msgid "of the track title (Title quiz)"
-msgstr "(parça başlığının - başlık testi)"
+msgstr "(parça başlığının — başlık testi)"
 
 #: dynamic/biases/QuizPlayBias.cpp:143
 #, kde-format
 msgid "of the artist (Artist quiz)"
-msgstr "(sanatçının - sanatçı testi)"
+msgstr "(sanatçının — sanatçı testi)"
 
 #: dynamic/biases/QuizPlayBias.cpp:145
 #, kde-format
 msgid "of the album name (Album quiz)"
-msgstr "(albüm adının - albüm adı testi)"
+msgstr "(albüm adının — albüm adı testi)"
 
 #: dynamic/biases/SearchQueryBias.cpp:42
 #, kde-format
@@ -10160,7 +10156,7 @@ msgid ""
 "found by a search query. It uses the same search\n"
 "query as the collection browser."
 msgstr ""
-"\"SearchQuery\" eğilimi, bir arama sorgusu tarafından\n"
+"“SearchQuery” eğilimi, bir arama sorgusu tarafından\n"
 "bulunan parçaları ekler. Koleksiyon tarayıcısıyla\n"
 "aynı arama sorgusunu kullanır."
 
@@ -10183,7 +10179,7 @@ msgid ""
 "The \"TagMatch\" bias adds tracks that\n"
 "fulfill a specific condition."
 msgstr ""
-"\"TagMatch\" eğilimi, belirli bir koşulu\n"
+"“TagMatch” eğilimi, belirli bir koşulu\n"
 "karşılayan parçaları ekler."
 
 #: dynamic/biases/TagMatchBias.cpp:176
@@ -10226,7 +10222,7 @@ msgid ""
 "The \"And\" bias adds tracks that match all\n"
 "of the sub biases."
 msgstr ""
-"\"And\" eğilimi, tüm alt eğilimlerle\n"
+"“And” eğilimi, tüm alt eğilimlerle\n"
 "eşleşen parçaları ekler."
 
 #: dynamic/BiasFactory.cpp:86
@@ -10242,7 +10238,7 @@ msgid ""
 "The \"Or\" bias adds tracks that match at\n"
 "least one of the sub biases."
 msgstr ""
-"\"Or\" eğilimi, alt eğilimlerden en az\n"
+"“Or” eğilimi, alt eğilimlerden en az\n"
 "biriyle eşleşen parçaları ekler."
 
 #: dynamic/BiasFactory.cpp:182 dynamic/BiasFactory.cpp:188
@@ -10579,8 +10575,8 @@ msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2024, The Amarok Development Squad"
 msgstr ""
-"(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2024, Amarok Geliştirme Takımı"
+"(C) 2002–2003, Mark Kretschmann\n"
+"(C) 2003–2024, Amarok Geliştirme Takımı"
 
 #: main.cpp:101
 #, kde-format
@@ -10594,7 +10590,7 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.libera.chat - #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
+"irc.libera.chat — #amarok, #amarok-de, #amarok-es, #amarok-fr\n"
 "\n"
 "Geri bildirim:\n"
 "amarok@kde.org\n"
@@ -10619,7 +10615,7 @@ msgstr ""
 #: main.cpp:117
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
-msgstr "Bart \"Kürdanlarım Nerede\" Cerneels"
+msgstr "Bart “Kürdanlarım Nerede” Cerneels"
 
 #: main.cpp:118
 #, kde-format
@@ -10629,7 +10625,7 @@ msgstr "Geliştirici (Stecchino)"
 #: main.cpp:121
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
-msgstr "Edward \"Hades\" Toroshchin"
+msgstr "Edward “Hades” Toroshchin"
 
 #: main.cpp:122
 #, kde-format
@@ -10669,7 +10665,7 @@ msgstr "Rokymoter, hata triyajı (Mamarok)"
 #: main.cpp:136
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
-msgstr "Ralf \"Salsa Ustası\" Engels"
+msgstr "Ralf “Salsa Ustası” Engels"
 
 #: main.cpp:137
 #, kde-format
@@ -10739,7 +10735,7 @@ msgstr "Rokymoter, el kitabı (valorie)"
 #: main.cpp:165
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
-msgstr "Ian \"Sakal\" Monroe"
+msgstr "Ian “Sakal” Monroe"
 
 #: main.cpp:165
 #, kde-format
@@ -10749,7 +10745,7 @@ msgstr "Geliştirici (eean)"
 #: main.cpp:168
 #, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
-msgstr "Jeff \"IROKSOHARD\" Mitchell"
+msgstr "Jeff “IROKSOHARD” Mitchell"
 
 #: main.cpp:168
 #, kde-format
@@ -10764,7 +10760,7 @@ msgstr "Geliştirici (lfranchi)"
 #: main.cpp:174
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
-msgstr "Lydia \"bu yanlış™\" Pintscher"
+msgstr "Lydia “bu yanlış™” Pintscher"
 
 #: main.cpp:174
 #, kde-format
@@ -10794,7 +10790,7 @@ msgstr "Geliştirici (maxx_k)"
 #: main.cpp:183
 #, kde-format
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
-msgstr "Nikolaj Hald \"Çok Sıcak Abi\" Nielsen"
+msgstr "Nikolaj Hald “Çok Sıcak Abi” Nielsen"
 
 #: main.cpp:183
 #, kde-format
@@ -10804,7 +10800,7 @@ msgstr "Geliştirici (nhn)"
 #: main.cpp:186
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
-msgstr "Seb \"Surfin' down under\" Ruiz"
+msgstr "Seb “Surfin’ down under” Ruiz"
 
 #: main.cpp:186
 #, kde-format
@@ -10874,7 +10870,7 @@ msgstr "Kullanılabilirlik"
 #: main.cpp:203
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
-msgstr "Dan \"Hey, Sonunda Derlendi...\" Meltzer"
+msgstr "Dan “Hey, Sonunda Derlendi…” Meltzer"
 
 #: main.cpp:203
 #, kde-format
@@ -10939,7 +10935,7 @@ msgstr "Harald Sitter"
 #: main.cpp:215
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
-msgstr "Phonon, KDE Çoklu Ortam'ının Reisi (apachelogger)"
+msgstr "Phonon, KDE Çoklu Ortam’ının Reisi (apachelogger)"
 
 #: main.cpp:217
 #, kde-format
@@ -11160,7 +11156,7 @@ msgstr "Önceki katkıcılar"
 #, kde-format
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr ""
-"Aşağıda listelenen kişiler geçmişte Amarok'a katkıda bulunmuştur. "
+"Aşağıda listelenen kişiler geçmişte Amarok’a katkıda bulunmuştur. "
 "Teşekkürler!"
 
 #: main.cpp:267
@@ -11487,7 +11483,7 @@ msgid ""
 "qt>"
 msgstr ""
 "<qt>Ana pencereyi kapatsanız da Amarok sistem tepsisini kullanarak çalışmayı "
-"sürdürür. Sistem tepsisi simgesine sağ tıklayarak veya Menüden <B>Çık</B>'ı "
+"sürdürür. Sistem tepsisi simgesine sağ tıklayarak veya Menüden <b>Çık</b>’ı "
 "seçerek uygulamayı kapatabilirsiniz.</qt>"
 
 #: MainWindow.cpp:426
@@ -11518,7 +11514,7 @@ msgstr "Akış URL’sini gir:"
 #: MainWindow.cpp:749
 #, kde-format
 msgid "&Add Media..."
-msgstr "&Ortam Ekle..."
+msgstr "&Ortam Ekle…"
 
 #: MainWindow.cpp:754
 #, kde-format
@@ -11541,12 +11537,12 @@ msgstr "Yinelenenleri &Kaldır"
 #: MainWindow.cpp:771
 #, kde-format
 msgid "&Add Stream..."
-msgstr "&Akış Ekle..."
+msgstr "&Akış Ekle…"
 
 #: MainWindow.cpp:775
 #, kde-format
 msgid "&Export Playlist As..."
-msgstr "Çalma Listesini Farklı Dışa &Aktar..."
+msgstr "Çalma Listesini Farklı Dışa &Aktar…"
 
 #: MainWindow.cpp:787
 #, kde-format
@@ -11566,7 +11562,7 @@ msgstr "Bağlam Uygulamacıklarını Yer İmlerine Ekle"
 #: MainWindow.cpp:803
 #, kde-format
 msgid "Play Media..."
-msgstr "Ortam Çal..."
+msgstr "Ortam Çal…"
 
 #: MainWindow.cpp:808
 #, kde-format
@@ -11591,7 +11587,7 @@ msgstr "Koleksiyonu Güncelle"
 #: MainWindow.cpp:857
 #, kde-format
 msgid "Synchronize Statistics..."
-msgstr "İstatistikleri Eşzamanla..."
+msgstr "İstatistikleri Eşzamanla…"
 
 #: MainWindow.cpp:865
 #, kde-format
@@ -11646,7 +11642,7 @@ msgstr "Tam Ekranı Aç/Kapat"
 #: MainWindow.cpp:922 playlist/ProgressiveSearchWidget.cpp:48
 #, kde-format
 msgid "Search playlist"
-msgstr "Çalma Listesinde Ara"
+msgstr "Çalma listesinde ara…"
 
 #: MainWindow.cpp:932
 #, kde-format
@@ -11686,7 +11682,7 @@ msgstr "Parçayı Kuyruğa Ekle"
 #: MainWindow.cpp:966
 #, kde-format
 msgid "Put Artist - Title of the current track to the clipboard"
-msgstr "Geçerli Parçanın \"Sanatçı - Başlık\"ını Panoya Kopyala"
+msgstr "Geçerli Parçanın “Sanatçı — Başlık”ını Panoya Kopyala"
 
 #: MainWindow.cpp:971
 #, kde-format
@@ -11731,7 +11727,7 @@ msgstr "&Hata Tanılama"
 #: MainWindow.cpp:1023
 #, kde-format
 msgid "&Report Bug..."
-msgstr "&Hata Bildir..."
+msgstr "&Hata Bildir…"
 
 #: MainWindow.cpp:1070
 #, kde-format
@@ -11768,8 +11764,8 @@ msgid ""
 msgstr ""
 "Menü çubuğunu gizlemeyi seçtiniz.\n"
 "\n"
-"Lütfen onu geri getirmek için her zaman \"%1\" kısayolunu "
-"kullanabileceğinizi unutmayın."
+"Lütfen onu geri getirmek için her zaman “%1” kısayolunu kullanabileceğinizi "
+"unutmayın."
 
 #: MainWindow.cpp:1172
 #, kde-format
@@ -11784,7 +11780,7 @@ msgstr "Duraklatıldı  ::  %1"
 #: MainWindow.cpp:1227
 #, kde-format
 msgid "%1 - %2  ::  %3"
-msgstr "%1 - %2  ::  %3"
+msgstr "%1 — %2  ::  %3"
 
 #: MainWindow.cpp:1301
 #, kde-format
@@ -11914,7 +11910,7 @@ msgstr "Çalma Listesi Yerleşimleri"
 #: playlist/layouts/LayoutConfigAction.cpp:70
 #, kde-format
 msgid "Configure Playlist Layouts..."
-msgstr "Çalma Listesi Yerleşimlerini Yapılandır..."
+msgstr "Çalma Listesi Yerleşimlerini Yapılandır…"
 
 #: playlist/layouts/LayoutEditDialog.cpp:75
 #, kde-format
@@ -11989,7 +11985,7 @@ msgstr "Yazıtipi: "
 #: playlist/layouts/LayoutEditDialog.cpp:239
 #, kde-format
 msgid "Configuration for '%1'"
-msgstr "\"%1\" Yapılandırması"
+msgstr "“%1” Yapılandırması"
 
 #: playlist/layouts/LayoutEditWidget.cpp:44
 #, kde-format
@@ -12027,13 +12023,13 @@ msgid ""
 "Current layout '%1' is read only. Creating a new layout '%2' with your "
 "changes and setting this as active"
 msgstr ""
-"Geçerli yerleşim '%1' saltokunur. Değişikliklerinizle yeni bir '%2' "
+"Geçerli yerleşim “%1” saltokunur. Değişikliklerinizle yeni bir “%2” "
 "yerleşimi oluşturup bunu etkin olarak ayarlıyoruz."
 
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
 msgid "The layout '%1' is one of the default layouts and cannot be deleted."
-msgstr "'%1' yerleşimi öntanımlı yerleşimlerden biridir ve silinemez."
+msgstr "“%1” yerleşimi öntanımlı yerleşimlerden biridir ve silinemez."
 
 #: playlist/layouts/LayoutManager.cpp:417
 #, kde-format
@@ -12118,7 +12114,7 @@ msgstr "Var olan bir yerleşimle aynı ada sahip bir yerleşim oluşturulamaz."
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:174
 #, kde-format
 msgid "Cannot create a layout containing '/'."
-msgstr "'/' içeren bir yerleşim oluşturulamaz."
+msgstr "‘/’ içeren bir yerleşim oluşturulamaz."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:208
 #, kde-format
@@ -12126,7 +12122,7 @@ msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
 "of the layout '%1':"
 msgstr ""
-"Lütfen '%1' yerleşiminin kopyası olarak tanımlamak üzere olduğunuz çalma "
+"Lütfen “%1” yerleşiminin kopyası olarak tanımlamak üzere olduğunuz çalma "
 "listesi yerleşimi için bir ad girin:"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
@@ -12158,8 +12154,8 @@ msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
 "overwritten. Saved as new layout '%2'"
 msgstr ""
-"Değiştirdiğiniz '%1' yerleşimi, öntanımlı yerleşimlerden biridir ve üzerine "
-"yazılamaz. Yeni yerleşim '%2' olarak kaydedildi."
+"Değiştirdiğiniz “%1” yerleşimi, öntanımlı yerleşimlerden biridir ve üzerine "
+"yazılamaz. Yeni yerleşim “%2” olarak kaydedildi."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:408
 #, kde-format
@@ -12397,8 +12393,8 @@ msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
-"<a href='%1'>Devingen Kip</a> etkin. <a href='%2'>Yeniden Doldur</a> | <a "
-"href='%3'>Kapat</a>"
+"<a href=“%1”>Devingen Kip</a> etkin. <a href=“%2”>Yeniden Doldur</a> | <a "
+"href=“%3”>Kapat</a>"
 
 #: playlist/PlaylistDock.cpp:179
 #, kde-format
@@ -12408,7 +12404,7 @@ msgstr "Geçerli Çalma Listesini &Kaydet"
 #: playlist/PlaylistDock.cpp:271
 #, kde-format
 msgid "&Save playlist to \"%1\""
-msgstr "&Çalma Listesini \"%1\" Konumuna Kaydet"
+msgstr "&Çalma Listesini “%1” Konumuna Kaydet"
 
 #: playlist/PlaylistInfoWidget.cpp:58
 #, kde-format
@@ -12454,7 +12450,7 @@ msgstr "<b>Not:</b> Bu parça çalınabilir değil.<br>%1"
 #: playlist/PlaylistModel.cpp:306
 #, kde-format
 msgid "(...)"
-msgstr "(...)"
+msgstr "(…)"
 
 #: playlist/PlaylistModel.cpp:335
 #, kde-format
@@ -12535,7 +12531,7 @@ msgstr "Dosya Boyutu"
 #, kde-format
 msgctxt "Iten in queue, %1 is position, %2 artist, %3 track"
 msgid "%1: %2 - %3"
-msgstr "%1: %2 - %3"
+msgstr "%1: %2 — %3"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, PlaylistQueueEditor)
 #: playlist/PlaylistQueueEditor.ui:14
@@ -12547,35 +12543,35 @@ msgstr "Kuyruk Düzenleyicisi"
 #: playlist/PlaylistQueueEditor.ui:32
 #, kde-format
 msgid "Move Up"
-msgstr "Yukarı Taşı"
+msgstr "Yukarı taşı"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, downButton)
 #: playlist/PlaylistQueueEditor.ui:48
 #, kde-format
 msgid "Move Down"
-msgstr "Aşağı Taşı"
+msgstr "Aşağı taşı"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, dequeueTrackButton)
 #: playlist/PlaylistQueueEditor.ui:61 playlist/view/PlaylistViewCommon.cpp:117
 #, kde-format
 msgid "Dequeue Track"
-msgstr "Parçayı Kuyruktan Kaldır"
+msgstr "Parçayı kuyruktan kaldır"
 
 #. i18n: ectx: property (toolTip), widget (QPushButton, clearButton)
 #: playlist/PlaylistQueueEditor.ui:74
 #, kde-format
 msgid "Clear Queue"
-msgstr "Kuyruğu Temizle"
+msgstr "Kuyruğu temizle"
 
 #: playlist/PlaylistSortWidget.cpp:44
 #, kde-format
 msgid "Clear the playlist sorting configuration."
-msgstr "Çalma listesi sıralama yapılandırmasını temizleyin."
+msgstr "Çalma listesi sıralama yapılandırmasını temizle"
 
 #: playlist/PlaylistSortWidget.cpp:54
 #, kde-format
 msgid "Add a playlist sorting level."
-msgstr "Bir çalma listesi sıralama düzeyi ekleyin."
+msgstr "Bir çalma listesi sıralama düzeyi ekle"
 
 #: playlist/PlaylistViewUrlGenerator.cpp:83
 #, kde-format
@@ -12638,7 +12634,7 @@ msgstr "Yalnızca Eşleşenleri Göster"
 #: playlist/ProgressiveSearchWidget.cpp:136
 #, kde-format
 msgid "Search Preferences"
-msgstr "Arama Tercihleri"
+msgstr "Arama tercihleri"
 
 #: playlist/UndoCommands.cpp:31
 #, kde-format
@@ -12694,13 +12690,13 @@ msgstr "Kaynağı Seç"
 #, kde-format
 msgctxt "name of a type of constraint group"
 msgid "\"Match Any\" group"
-msgstr "\"Herhangi Birini Eşleştir\" grubu"
+msgstr "“Herhangi Birini Eşleştir” grubu"
 
 #: playlistgenerator/ConstraintGroup.cpp:89
 #, kde-format
 msgctxt "name of a type of constraint group"
 msgid "\"Match All\" group"
-msgstr "\"Tümünü Eşleştir\" grubu"
+msgstr "“Tümünü Eşleştir” grubu"
 
 #: playlistgenerator/ConstraintGroup.cpp:91
 #, kde-format
@@ -12718,13 +12714,12 @@ msgid ""
 "group.  When the group type is set to \"match any\", the Generator will try "
 "to have the playlist match any of the constraints within the group."
 msgstr ""
-"Kısıtlama Grupları için bir düzenleyici. Grup türünü \"tümünü eşleştir\" "
-"veya \"herhangi birini eşleştir\" olarak ayarlayabilirsiniz. Grup türü "
-"\"tümünü eşleştir\" olarak ayarlandığında Üreteç, çalma listesinin grup "
-"içindeki tüm kısıtlamalarla eşleşmesini sağlamaya çalışacaktır. Grup türü "
-"\"herhangi birini eşleştir\" olarak ayarlandığında Üreteç, çalma listesinin "
-"grup içindeki kısıtlamalardan herhangi biriyle eşleşmesini sağlamaya "
-"çalışacaktır."
+"Kısıtlama Grupları için bir düzenleyici. Grup türünü “tümünü eşleştir” veya "
+"“herhangi birini eşleştir” olarak ayarlayabilirsiniz. Grup türü “tümünü "
+"eşleştir” olarak ayarlandığında Üreteç, çalma listesinin grup içindeki tüm "
+"kısıtlamalarla eşleşmesini sağlamaya çalışacaktır. Grup türü “herhangi "
+"birini eşleştir” olarak ayarlandığında Üreteç, çalma listesinin grup "
+"içindeki kısıtlamalardan herhangi biriyle eşleşmesini sağlamaya çalışacaktır."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:21
@@ -12740,9 +12735,9 @@ msgid ""
 "constraints within the group are satisfied.  This is analogous to a logical "
 "AND: \"the tracks should match properties A, B, and C\"."
 msgstr ""
-"APG, yalnızca grup içindeki tüm kısıtlamaların karşılanması durumunda "
-"kısıtlama grubunun karşılandığını dikkate alacaktır. Bu mantıksal VE'ye "
-"benzer: \"Parçalar A, B ve C özellikleriyle eşleşmelidir\"."
+"OÇLÜ, yalnızca grup içindeki tüm kısıtlamaların karşılanması durumunda "
+"kısıtlama grubunun karşılandığını dikkate alacaktır. Bu mantıksal VE’ye "
+"benzer: “Parçalar A, B ve C özellikleriyle eşleşmelidir”."
 
 #. i18n: ectx: property (text), widget (QRadioButton, radioButton_MatchAll)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:32
@@ -12758,9 +12753,9 @@ msgid ""
 "constraints within it is satisfied.  This is analogous to a logical OR: "
 "\"the tracks should match properties A, B, or C\"."
 msgstr ""
-"APG, içindeki kısıtlamalardan herhangi birinin karşılanması durumunda "
-"kısıtlama grubunun karşılandığını dikkate alacaktır. Bu mantıksal VEYA'ya "
-"benzer: \"Parçalar A, B veya C özellikleriyle eşleşmelidir\"."
+"OÇLÜ, içindeki kısıtlamalardan herhangi birinin karşılanması durumunda "
+"kısıtlama grubunun karşılandığını dikkate alacaktır. Bu mantıksal VEYA’ya "
+"benzer: “Parçalar A, B veya C özellikleriyle eşleşmelidir”."
 
 #. i18n: ectx: property (text), widget (QRadioButton, radioButton_MatchAny)
 #: playlistgenerator/ConstraintGroupEditWidget.ui:42
@@ -12795,22 +12790,22 @@ msgstr "atanmamış"
 #: playlistgenerator/constraints/Checkpoint.cpp:180
 #, kde-format
 msgid "\"%1\" (track) by %2"
-msgstr "\"%1\" (parça), %2"
+msgstr "“%1” (parça), %2"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:189
 #, kde-format
 msgid "\"%1\" (album) by %2"
-msgstr "\"%1\" (albüm), %2"
+msgstr "“%1” (albüm), %2"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:191
 #, kde-format
 msgid "\"%1\" (album)"
-msgstr "\"%1\" (albüm)"
+msgstr "“%1” (albüm)"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:200
 #, kde-format
 msgid "\"%1\" (artist)"
-msgstr "\"%1\" (sanatçı)"
+msgstr "“%1” (sanatçı)"
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, CheckpointEditWidget)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:15
@@ -12860,7 +12855,7 @@ msgstr ""
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:507
 #, kde-format
 msgid "h:mm:ss"
-msgstr "s:dd:ss"
+msgstr "h:mm:ss"
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Strictness)
 #. i18n: ectx: property (whatsThis), widget (QSlider, slider_Strictness)
@@ -12871,8 +12866,8 @@ msgid ""
 "How strict the APG should be about placing the selected track at the "
 "specified time."
 msgstr ""
-"Seçili parçanın belirtilen zamana yerleştirilmesi konusunda APG'nin ne kadar "
-"katı olması gerektiği."
+"Seçili parçanın belirtilen zamana yerleştirilmesi konusunda OÇLÜ’nün ne "
+"kadar katı olması gerektiği."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Strictness)
 #. i18n: ectx: property (text), widget (QLabel, label_StrictnessInt)
@@ -12970,8 +12965,8 @@ msgid ""
 "the APG should match that duration."
 msgstr ""
 "Çalma Listesi Süresi kısıtlaması için bir düzenleyici. Kullanıcı "
-"kısıtlamanın adını, hedef süre ve oynatma listesinin bu süreden az mı yoksa "
-"ona eşit mi yoksa ondan büyük mü olması gerektiğini ve APG'nin bu süreye "
+"kısıtlamanın adını, hedef süre ve çalma listesinin bu süreden az mı yoksa "
+"ona eşit mi yoksa ondan büyük mü olması gerektiğini ve OÇLÜ’nün bu süreye "
 "uyması gereken katılığı ayarlayabilir."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -13039,7 +13034,7 @@ msgid ""
 "How strict the APG should be about matching the playlist duration to the "
 "specified time."
 msgstr ""
-"APG'nin, çalma listesi süresini belirtilen zamanla eşleştirme konusunda ne "
+"OÇLÜ’nün, çalma listesi süresini belirtilen zamanla eşleştirme konusunda ne "
 "kadar katı olması gerektiği."
 
 #: playlistgenerator/constraints/PlaylistFileSize.cpp:55
@@ -13088,7 +13083,7 @@ msgid ""
 msgstr ""
 "Çalma Listesi Uzunluğu sınırlaması için bir düzenleyici. Kullanıcı, hedef "
 "parça sayısını ve çalma listesinin bu sayıdan daha az, bu sayıya eşit veya "
-"daha fazla parça içerip içermediğini ve APG'nin hedef parça sayısıyla "
+"daha fazla parça içerip içermediğini ve OÇLÜ’nün hedef parça sayısıyla "
 "eşleşmesi gereken katılığı belirleyebilir."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -13141,8 +13136,8 @@ msgid ""
 "The file size units used by the constraint.  Note that kB is 1,000 bytes; MB "
 "is 1,000,000 bytes; and so forth."
 msgstr ""
-"Kısıtlama tarafından kullanılan dosya boyutu birimleri. KB'nin 1.000 bayt, "
-"MB'nin 1.000.000 bayt vb. olduğunu unutmayın."
+"Kısıtlama tarafından kullanılan dosya boyutu birimleri. KB’nin 1.000 bayt, "
+"MB’nin 1.000.000 bayt vb. olduğunu unutmayın."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Unit)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:82
@@ -13175,7 +13170,7 @@ msgid ""
 "<html><head/><body><p>How strict the APG should be about matching the total "
 "size of all files in the playlist to the specified size.</p></body></html>"
 msgstr ""
-"<html><head/><body><p>APG'nin, çalma listesindeki tüm dosyaların toplam "
+"<html><head/><body><p>OÇLÜ’nün, çalma listesindeki tüm dosyaların toplam "
 "boyutunu belirtilen boyutla eşleştirme konusunda ne kadar katı olması "
 "gerektiği.</p></body></html>"
 
@@ -13253,7 +13248,7 @@ msgid ""
 "How strict the APG should be about matching the playlist length to the "
 "specified number of tracks."
 msgstr ""
-"APG'nin, çalma listesi uzunluğunu belirtilen parça sayısıyla eşleştirme "
+"OÇLÜ’nün, çalma listesi uzunluğunu belirtilen parça sayısıyla eşleştirme "
 "konusunda ne kadar katı olması gerektiği."
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:51
@@ -13294,9 +13289,9 @@ msgid ""
 "more than one track from a given album or a given artist from ending up in "
 "the playlist."
 msgstr ""
-"Yinelemeleri Engelle kısıtlamasına yönelik bir düzenleyici. \"Parça\" olarak "
+"Yinelemeleri Engelle kısıtlamasına yönelik bir düzenleyici. “Parça” olarak "
 "ayarlandığında, aynı parçanın birden fazla kopyasının çalma listesinde yer "
-"almasını engellemeye çalışacaktır. \"Albüm\" veya \"Sanatçı\" olarak "
+"almasını engellemeye çalışacaktır. “Albüm” veya “Sanatçı” olarak "
 "ayarlandığında, belirli bir albümden veya belirli bir sanatçıdan birden "
 "fazla parçanın çalma listesine eklenmesini engellemeye çalışacaktır."
 
@@ -13315,8 +13310,8 @@ msgid ""
 "Control which duplicates to prevent.  \"Prevent duplicate tracks\" is the "
 "least restrictive, and \"prevent duplicate artists\" is the most restrictive."
 msgstr ""
-"Hangi yinelenenlerin engelleneceğini denetleyin. \"Yinelenen parçaları "
-"engelle\" en az ve \"yinelenen sanatçıları engelle\" en çok kısıtlayıcıdır."
+"Hangi yinelenenlerin engelleneceğini denetleyin. “Yinelenen parçaları "
+"engelle” en az ve “yinelenen sanatçıları engelle” en çok kısıtlayıcıdır."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Field)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:32
@@ -13380,7 +13375,7 @@ msgstr[1] "%1 yıldız"
 #, kde-format
 msgctxt "an arbitrary string surrounded by quotes"
 msgid "\"%1\""
-msgstr "\"%1\""
+msgstr "“%1”"
 
 #: playlistgenerator/constraints/TagMatch.cpp:340
 #: widgets/MetaQueryWidget.cpp:1019
@@ -13523,8 +13518,8 @@ msgid ""
 "of the smart playlists in Amarok 1.4."
 msgstr ""
 "TagMatch kısıtlaması için bir düzenleyici. Kullanıcı bir parça özelliği "
-"belirleyebilir ve APG, çalma listesini bu özelliğe uyan parçalarla "
-"dolduracaktır. Bu, Amarok 1.4'teki akıllı çalma listelerinin eşleşen "
+"belirleyebilir ve OÇLÜ, çalma listesini bu özelliğe uyan parçalarla "
+"dolduracaktır. Bu, Amarok 1.4’teki akıllı çalma listelerinin eşleşen "
 "niteliklerine benzerlik gösterir."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -13573,7 +13568,7 @@ msgstr ""
 "</style></head><body style=\" font-family:'Calibri'; font-size:10pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">APG, belirtilen "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">OÇLÜ, belirtilen "
 "karakteristiklerle <span style=\" font-weight:600;\">eşleşmeyen</span> tüm "
 "parçaları seçecektir.</p></body></html>"
 
@@ -13590,7 +13585,7 @@ msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified value."
 msgstr ""
-"APG'nin belirtilen değerden küçük, bu değere eşit veya daha büyük parçaları "
+"OÇLÜ’nün belirtilen değerden küçük, bu değere eşit veya daha büyük parçaları "
 "seçmesi gerekip gerekmediği."
 
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, spinBox_ValueInt)
@@ -13607,8 +13602,8 @@ msgstr "Parça karakteristiğinin eşleşmesi gereken sayısal değer."
 msgid ""
 "How strict the APG should be about matching tracks to the specified value."
 msgstr ""
-"Parçaların belirtilen değerle eşleştirilmesi konusunda APG'nin ne kadar katı "
-"olması gerektiği."
+"Parçaların belirtilen değerle eşleştirilmesi konusunda OÇLÜ’nün ne kadar "
+"katı olması gerektiği."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonDate)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:226
@@ -13618,7 +13613,7 @@ msgid ""
 "specific date; or whether it should choose tracks that are within a certain "
 "time range."
 msgstr ""
-"APG'nin belirli bir tarihten önce, o tarihte veya sonra olan parçaları veya "
+"OÇLÜ’nün belirli bir tarihten önce, o tarihte veya sonra olan parçaları veya "
 "belirli bir zaman aralığındaki parçaları seçip seçmemesi gerektiği."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
@@ -13631,13 +13626,13 @@ msgstr "en son"
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:266
 #, kde-format
 msgid "The specific date that the APG should use for matching."
-msgstr "APG’nin eşleştirme için kullanacağı belirli tarih."
+msgstr "OÇLÜ’nün eşleştirme için kullanacağı belirli tarih."
 
 #. i18n: ectx: property (whatsThis), widget (QWidget, page_DateRange)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:300
 #, kde-format
 msgid "The relative time period that the APG should try to match."
-msgstr "APG’nin eşleştirmeyi denemesi için geçecek süre."
+msgstr "OÇLÜ’nün eşleştirmeyi denemesi için geçecek süre."
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_strictnessDate)
 #. i18n: ectx: property (whatsThis), widget (QSlider, slider_StrictnessDate)
@@ -13647,8 +13642,8 @@ msgstr "APG’nin eşleştirmeyi denemesi için geçecek süre."
 msgid ""
 "How strict the APG should be about matching tracks to the specified date."
 msgstr ""
-"Parçaların belirtilen tarihle eşleştirilmesi konusunda APG’nin ne kadar katı "
-"olması gerektiği."
+"Parçaların belirtilen tarihle eşleştirilmesi konusunda OÇLÜ’nün ne kadar "
+"katı olması gerektiği."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonString)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:405
@@ -13657,7 +13652,7 @@ msgid ""
 "Whether the APG should match tracks that equal, start with, end with, or "
 "contain the specified string."
 msgstr ""
-"APG'nin belirtilen diziye eşit olan, onunla başlayan, biten veya bu diziyi "
+"OÇLÜ’nün belirtilen diziye eşit olan, onunla başlayan, biten veya bu diziyi "
 "içeren parçalarla eşleşmesi gerekip gerekmediği."
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonString)
@@ -13688,7 +13683,7 @@ msgstr "içerir"
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:432
 #, kde-format
 msgid "The string that the APG should use when matching tracks."
-msgstr "Parçaları eşleştirirken APG'nin kullanması gereken dizi."
+msgstr "Parçaları eşleştirirken OÇLÜ’nün kullanması gereken dizi."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonTime)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:460
@@ -13697,14 +13692,14 @@ msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified time."
 msgstr ""
-"APG'nin belirtilen süreden daha az, bu süreye eşit veya daha büyük olan "
+"OÇLÜ’nün belirtilen süreden daha az, bu süreye eşit veya daha büyük olan "
 "parçaları seçmesi gerekip gerekmediği."
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_TimeValue)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:487
 #, kde-format
 msgid "The time that the APG should try to match."
-msgstr "APG'nin eşleşmeye çalışması gereken zaman."
+msgstr "OÇLÜ’nün eşleşmeye çalışması gereken zaman."
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_StrictnessTime)
 #. i18n: ectx: property (whatsThis), widget (QSlider, slider_StrictnessTime)
@@ -13714,7 +13709,7 @@ msgstr "APG'nin eşleşmeye çalışması gereken zaman."
 msgid ""
 "How strict the APG should be about matching tracks to the specified time."
 msgstr ""
-"APG'nin parçaları belirtilen zamanla eşleştirme konusunda ne kadar katı "
+"OÇLÜ’nün parçaları belirtilen zamanla eşleştirme konusunda ne kadar katı "
 "olması gerektiği."
 
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonRating)
@@ -13724,14 +13719,14 @@ msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified rating."
 msgstr ""
-"APG'nin belirtilen derecelendirmeden küçük, eşit veya daha büyük parçaları "
+"OÇLÜ’nün belirtilen derecelendirmeden küçük, eşit veya daha büyük parçaları "
 "seçmesi gerekip gerekmediği."
 
 #. i18n: ectx: property (whatsThis), widget (KRatingWidget, rating_RatingValue)
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:624
 #, kde-format
 msgid "The rating that the APG should try to match."
-msgstr "APG'nin eşleştirmeye çalışması gereken derecelendirme."
+msgstr "OÇLÜ’nün eşleştirmeye çalışması gereken derecelendirme."
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_StrictnessRating)
 #. i18n: ectx: property (whatsThis), widget (QSlider, slider_StrictnessRating)
@@ -13741,8 +13736,8 @@ msgstr "APG'nin eşleştirmeye çalışması gereken derecelendirme."
 msgid ""
 "How strict the APG should be about matching tracks to the specified rating."
 msgstr ""
-"APG'nin parçaları belirtilen derecelendirmeyle eşleştirme konusunda ne kadar "
-"katı olması gerektiği."
+"OÇLÜ’nün parçaları belirtilen derecelendirmeyle eşleştirme konusunda ne "
+"kadar katı olması gerektiği."
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:85
 #, kde-format
@@ -13893,7 +13888,7 @@ msgstr "Kısıtlama Grubu"
 #: playlistgenerator/PresetEditDialog.ui:15
 #, kde-format
 msgid "APG Preset Editor"
-msgstr "APG Önayarı Düzenleyicisi"
+msgstr "OÇLÜ Önayarı Düzenleyicisi"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_Tree)
 #: playlistgenerator/PresetEditDialog.ui:23
@@ -13905,7 +13900,7 @@ msgstr "Kısıtlama Ağacı"
 #: playlistgenerator/PresetEditDialog.ui:41
 #, kde-format
 msgid "APG Preset Name"
-msgstr "APG Önayarı Adı"
+msgstr "OÇLÜ Önayarı Adı"
 
 #: playlistgenerator/PresetModel.cpp:154
 #, kde-format
@@ -13965,7 +13960,7 @@ msgstr "Örnek 5: Rock, metal veya endüstriyel türden 80 dakikalık bir CD"
 #: playlistgenerator/PresetModel.cpp:297
 #, kde-format
 msgid "Export \"%1\" preset"
-msgstr "\"%1\" Önayarını Dışa Aktar"
+msgstr "“%1” Önayarını Dışa Aktar"
 
 #: playlistgenerator/PresetModel.cpp:299
 #, kde-format
@@ -13980,7 +13975,7 @@ msgstr "Diskteki Çalma Listesi Dosyaları"
 #: playlistmanager/file/PlaylistFileProvider.cpp:289
 #, kde-format
 msgid "The playlist file \"%1\" could not be loaded."
-msgstr "\"%1\" çalma listesi dosyası yüklenemedi."
+msgstr "“%1” çalma listesi dosyası yüklenemedi."
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:285
 #, kde-format
@@ -13995,7 +13990,7 @@ msgstr ""
 "Amarok sürümü yalnızca %2 sürümünü (ve %2 ile başlayan önceki sürümleri) "
 "destekliyor. Amarok veritabanına kaydedilen çalma listeleri büyük olasılıkla "
 "çalışmayacaktır ve bunlarla yapılacak herhangi bir yazma işlemi, bunların "
-"kaybolmasına neden olabilir. Belki de Amarok'un eski bir sürümünü, yeni "
+"kaybolmasına neden olabilir. Belki de Amarok’un eski bir sürümünü, yeni "
 "sürüm tarafından yazılan bir veritabanıyla başlattınız?"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:292
@@ -14247,7 +14242,8 @@ msgid ""
 "browse and play all the Ampache contents from within Amarok."
 msgstr ""
 "Amarok’u Ampache sunucunuza kusursuz bir ön uç olarak kullanın. Bu size, tüm "
-"Ampache içeriğini Amarok içerisinden çalmanızı ve göz atmanıza olanak tanır."
+"Ampache içeriğini Amarok içerisinden çalmanıza ve ona göz atmanıza olanak "
+"tanır."
 
 #: services/ampache/AmpacheServiceCollection.cpp:61
 #, kde-format
@@ -14349,13 +14345,12 @@ msgid ""
 "GPodder Service failed to get data from the server. Will retry in 10 "
 "seconds..."
 msgstr ""
-"GPodder Hizmeti, sunucudan veri alamadı. 10 saniye içinde yeniden "
-"deneyecek..."
+"gpodder hizmeti sunucudan veri alamadı. 10 saniye sonra yeniden denenecek…"
 
 #: services/gpodder/GpodderService.cpp:113
 #, kde-format
 msgid "gpodder.net: Podcast Directory Service"
-msgstr "gpodder.net: Pod Yayını Dizin Hizmeti"
+msgstr "gpodder.net: Pod Yayını Dizini Hizmeti"
 
 #: services/gpodder/GpodderService.cpp:116
 #, kde-format
@@ -14367,7 +14362,7 @@ msgstr ""
 #: services/opmldirectory/OpmlDirectoryService.cpp:127
 #, kde-format
 msgid "Subscribe"
-msgstr "Üye Ol"
+msgstr "Abone Ol"
 
 #: services/gpodder/GpodderServiceConfig.cpp:157
 #, kde-format
@@ -14387,7 +14382,7 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:102
 #, kde-format
 msgid "Testing..."
-msgstr "Sınanıyor..."
+msgstr "Sınanıyor…"
 
 #: services/gpodder/GpodderServiceSettings.cpp:112
 #, kde-format
@@ -14421,13 +14416,13 @@ msgid ""
 "Either the username or the password is incorrect, please correct and try "
 "again"
 msgstr ""
-"Kullanıcı adınızda ya da parolanızda hata var gibi görünüyor; lütfen bu "
-"hatayı düzeltin ve yeniden deneyin"
+"Kullanıcı adınızda veya parolanızda hata var gibi görünüyor; lütfen bu "
+"hatayı düzeltin ve yeniden deneyin."
 
 #: services/gpodder/GpodderServiceSettings.cpp:189
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
-msgstr "Gpodder.net hizmetine bağlanılamadı veya başka bir hata oluştu."
+msgstr "gpodder.net hizmetine bağlanılamadı veya başka bir hata oluştu."
 
 #: services/gpodder/GpodderServiceSettings.cpp:205
 #, kde-format
@@ -14435,14 +14430,14 @@ msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
 "report a bug"
 msgstr ""
-"Yanıtlama bölümünde hata oluştu, gpodder.net’in düzgün çalışıp çalışmadığını "
-"denetleyin ve bir hata bildirin"
+"Yanıt ayrıştırılırken bir hata oluştu; gpodder.net’in düzgünce çalıştığından "
+"emin olun ve bir hata bildirin."
 
 #: services/jamendo/JamendoInfoParser.cpp:46
 #: services/jamendo/JamendoInfoParser.cpp:77
 #, kde-format
 msgid "No description available..."
-msgstr "Tanımlama yok..."
+msgstr "Kullanılabilir açıklama yok…"
 
 #: services/jamendo/JamendoInfoParser.cpp:61
 #: services/jamendo/JamendoInfoParser.cpp:93
@@ -14454,12 +14449,12 @@ msgstr "Jamendo.com’dan"
 #: services/jamendo/JamendoMeta.cpp:132
 #, kde-format
 msgid "A site where artists can freely share their music"
-msgstr "Şarkıcıların kendi müziklerini özgürce paylaştığı bir yer"
+msgstr "Sanatçıların kendi müziklerini özgürce paylaştığı bir web sitesi"
 
 #: services/jamendo/JamendoService.cpp:76
 #, kde-format
 msgid "An archive of free, Creative Commons licensed music"
-msgstr "Ücretsiz, Creative Commons lisanslı müzik arşivi"
+msgstr "Ücretsiz, Creative Commons lisanslı bir müzik arşivi"
 
 #: services/jamendo/JamendoService.cpp:79
 #, kde-format
@@ -14469,10 +14464,10 @@ msgid ""
 "users to download all of them for free. Listen to and download all Jamendo."
 "com contents from within Amarok."
 msgstr ""
-"Jamendo.com, sanatçıları ve müzik severleri birbirleriyle etkileşime "
-"sokuyor. Site, sanatçıların dünya ile paylaşmak için kendi albümlerini "
-"yüklemelerine ve kullanıcıların hepsini ücretsiz indirmelerine izin veriyor. "
-"Amarok’taki tüm Jamendo.com içeriğini dinleyin ve indirin."
+"Jamendo.com sanatçıları ve müzik severleri buluşturuyor. Site, sanatçıların "
+"kendi albümlerini yükleyerek dünyayla paylaşmalarına ve kullanıcıların "
+"tümünü ücretsiz olarak indirmelerine olanak tanıyor. Tüm Jamendo.com "
+"içeriğini Amarok üzerinden dinleyin ve indirin."
 
 #: services/jamendo/JamendoService.cpp:120
 #, kde-format
@@ -14499,23 +14494,23 @@ msgstr "İndir"
 #: services/magnatune/MagnatuneStore.cpp:223
 #, kde-format
 msgid "Genre / Artist"
-msgstr "Tarz / Sanatçı"
+msgstr "Tür/Sanatçı"
 
 #: services/jamendo/JamendoService.cpp:158
 #: services/magnatune/MagnatuneStore.cpp:226
 #, kde-format
 msgid "Genre / Artist / Album"
-msgstr "Tarz / Sanatçı / Albüm"
+msgstr "Tür/Sanatçı/Albüm"
 
 #: services/jamendo/JamendoService.cpp:193
 #, kde-format
 msgid "Downloading Jamendo.com database..."
-msgstr "Jamendo.com veri tabanı indiriliyor..."
+msgstr "Jamendo.com veritabanı indiriliyor…"
 
 #: services/jamendo/JamendoService.cpp:215
 #, kde-format
 msgid "Updating the local Jamendo database."
-msgstr "Yerel Jamendo veritabanı güncelleniyor."
+msgstr "Yerel Jamendo veritabanı güncelleniyor…"
 
 #: services/jamendo/JamendoXmlParser.cpp:171
 #, kde-format
@@ -14524,10 +14519,8 @@ msgctxt ""
 "albums from 5 artists."
 msgid "Jamendo.com database update complete. Added 1 track on "
 msgid_plural "Jamendo.com database update complete. Added %1 tracks on "
-msgstr[0] ""
-"Jamendo.com veritabanı güncellemesi tamamlandı. %1 parça buraya eklendi "
-msgstr[1] ""
-"Jamendo.com veritabanı güncellemesi tamamlandı. %1 parça buraya eklendi "
+msgstr[0] "Jamendo.com veritabanı güncellemesi tamamlandı. 1 parça "
+msgstr[1] "Jamendo.com veritabanı güncellemesi tamamlandı. %1 parça "
 
 #: services/jamendo/JamendoXmlParser.cpp:172
 #, kde-format
@@ -14536,8 +14529,8 @@ msgctxt ""
 "albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] "%1 albüm "
-msgstr[1] "%1 albüm "
+msgstr[0] "(1 albüm, "
+msgstr[1] "(%1 albüm, "
 
 #: services/jamendo/JamendoXmlParser.cpp:173
 #, kde-format
@@ -14546,8 +14539,8 @@ msgctxt ""
 "albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] "%1 sanatçı."
-msgstr[1] "%1 sanatçı."
+msgstr[0] "1 sanatçı) eklendi."
+msgstr[1] "%1 sanatçı) eklendi."
 
 #: services/lastfm/biases/LastFmBias.cpp:45
 #, kde-format
@@ -14562,33 +14555,31 @@ msgid ""
 "The \"Last.fm\" similar bias looks up tracks on Last.fm and only adds "
 "similar tracks."
 msgstr ""
-"\"Last.fm\" eğilimi Last.fm’de parçaları arar ve yalnızca benzer parçaları "
+"“Last.fm” eğilimi, Last.fm’de parçaları arar ve yalnızca benzer parçaları "
 "ekler."
 
 #: services/lastfm/biases/LastFmBias.cpp:125
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous track (as reported by Last.fm)"
-msgstr "Önceki parçaya (Last.fm tarafından bildirildiği gibi) benzer şekilde"
+msgstr "Önceki parçaya (Last.fm tarafından bildirildiği gibi) benzer"
 
 #: services/lastfm/biases/LastFmBias.cpp:128
 #, kde-format
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous artist (as reported by Last.fm)"
-msgstr "Önceki sanatçıya benzer şekilde (Last.fm tarafından bildirildiği gibi)"
+msgstr "Önceki sanatçıya (Last.fm tarafından bildirildiği gibi) benzer"
 
 #: services/lastfm/biases/LastFmBias.cpp:142
 #, kde-format
 msgid ""
 "<a href=\"http://www.last.fm/\">Last.fm</a> thinks the track is similar to"
-msgstr ""
-"<a href=\"http://www.last.fm/\">Last.fm</a> parçanın şuna benzer olduğunu "
-"düşünüyor:"
+msgstr "<a href=\"http://www.last.fm/\">Last.fm</a>, parçanın"
 
 #: services/lastfm/biases/LastFmBias.cpp:145
 #, kde-format
 msgid "the previous track"
-msgstr "önceki parça"
+msgstr "önceki parçaya benzer olduğunu düşünüyor"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:40
 #, kde-format
@@ -14603,25 +14594,25 @@ msgid ""
 "The \"WeeklyTop\" bias adds tracks that are in the weekly top chart of Last."
 "fm."
 msgstr ""
-"\"WeeklyTop\" eğilimi Last.fm haftalık en iyi grafikte parçaları ekler."
+"“WeeklyTop” eğilimi Last.fm’in haftalık en iyi grafiğindeki parçaları ekler."
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:123
 #, kde-format
 msgctxt "WeeklyTopBias bias representation"
 msgid "Tracks from the Last.fm top lists from %1 to %2"
-msgstr "Last.fm topundaki parçalar %1 üzerinden%2 üzerine listeleniyor"
+msgstr "%1–%2 arasındaki Last.fm en popüler parçalar listelerindeki parçalar"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:132
 #, kde-format
 msgctxt "in WeeklyTopBias. Label for the date widget"
 msgid "from:"
-msgstr "Kimden:"
+msgstr "şu tarihten:"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:145
 #, kde-format
 msgctxt "in WeeklyTopBias. Label for the date widget"
 msgid "to:"
-msgstr "şuraya kadar:"
+msgstr "şu tarihe:"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox3)
 #: services/lastfm/LastFmConfigWidget.ui:48
@@ -14651,13 +14642,13 @@ msgstr "&Parçaları gönder"
 #: services/lastfm/LastFmConfigWidget.ui:138
 #, kde-format
 msgid "&Retrieve similar artists"
-msgstr "&Benzer sanatçı adlarını al"
+msgstr "&Benzer sanatçıları al"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
 #: services/lastfm/LastFmConfigWidget.ui:148
 #, kde-format
 msgid "&Use composer data if available in Last.fm as artist"
-msgstr "&Last.fm’de sanatçı olarak besteci verileri varsa kullanın"
+msgstr "&Last.fm’de sanatçı olarak besteci verisi varsa kullan"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_UseFancyRatingTags)
 #: services/lastfm/LastFmConfigWidget.ui:158
@@ -14684,7 +14675,7 @@ msgid ""
 "track tags like artist, album and title. Check this to be notified when this "
 "happens and what the autocorrection was</html>"
 msgstr ""
-"<html>Parçaları Last.fm'e skroplarken sanatçı, albüm ve başlık gibi parça "
+"<html>Parçaları Last.fm’e skroplarken sanatçı, albüm ve başlık gibi parça "
 "künyelerindeki yaygın hataları kendiliğinden düzeltir. Bu gerçekleştiğinde "
 "ve kendiliğinden düzeltmenin ne olduğu konusunda bilgilendirilmek için bunu "
 "işaretleyin.</html>"
@@ -14702,14 +14693,14 @@ msgid ""
 "<html>Check if you want certain tracks neither to be scrobbled nor to be "
 "updated to Last.fm now playing</html>"
 msgstr ""
-"<html>Belirli parçaların hiçbirinin taranamayacağını veya Last.fm Şimdi "
-"Çalınıyor’da güncellenmeyeceğini denetleyin</html>"
+"<html>Belirli parçaların skroplanmasını veya Last.fm’de şimdi çalınıyor "
+"olarak gösterilip gösterilmeyeceğini denetle</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FilterByLabel)
 #: services/lastfm/LastFmConfigWidget.ui:183
 #, kde-format
 msgid "Do not scrobble tracks with label:"
-msgstr "Şu etiketli parçaları Skroplama:"
+msgstr "Şu etiketli parçaları skroplama:"
 
 #. i18n: ectx: property (toolTip), widget (QComboBox, kcfg_FilteredLabel)
 #: services/lastfm/LastFmConfigWidget.ui:190
@@ -14718,8 +14709,8 @@ msgid ""
 "<html>Select a preferred label (or write a new one). Tracks with this label "
 "will not be scrobbled</html>"
 msgstr ""
-"<html>Tercih edilen bir etiket seçin (veya yeni bir etiket yazın). Bu "
-"etikete sahip parçaların üst verisini sunucuya gönderilmez</html>"
+"<html>Tercih edilen etiketi seçin (veya yeni bir etiket yaz). Bu etikete "
+"sahip parçalar skroplanmayacak</html>"
 
 #: services/lastfm/LastFmService.cpp:100
 #, kde-format
@@ -14738,7 +14729,7 @@ msgid ""
 msgstr ""
 "Last.fm, kişisel radyo istasyonları ve müzik önerileri sunan popüler bir "
 "çevrimiçi hizmettir. Kişisel bir dinleme istasyonu, dinleme alışkanlıklarına "
-"göre uyarlanır ve size yeni müzik önerileri sunar. Belli bir sanatçıya "
+"göre uyarlanır ve size yeni müzik önerileri sunar. Belirli bir sanatçıya "
 "benzer müzik içeren istasyonları çalmanın yanı sıra, arkadaş olarak "
 "eklediğiniz akışları dinlemeniz de olanaklıdır"
 
@@ -14756,7 +14747,7 @@ msgstr "Kontrol+I"
 #, kde-format
 msgctxt "Last.fm: errorMessage"
 msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "Kullanıcı adınız tanınamadı ya da parolanızda hata var gibi görünüyor."
+msgstr "Ya kullanıcı adınız tanınamadı ya da parolanız yanlış."
 
 #: services/lastfm/LastFmService.cpp:298
 #, kde-format
@@ -14765,18 +14756,18 @@ msgid ""
 "There was a problem communicating with the Last.fm services. Please try "
 "again later."
 msgstr ""
-"Last.fm hizmetleri ile bir iletişim sorunu oluştu. Lütfen daha sonra yeniden "
-"deneyin."
+"Last.fm hizmetleri ile iletişimde bir sorun oluştu. Lütfen daha sonra "
+"yeniden deneyin."
 
 #: services/lastfm/LastFmService.cpp:383
 #, kde-format
 msgid "Enter an artist name"
-msgstr "Bir sanatçı adını girin"
+msgstr "Bir sanatçı adı girin"
 
 #: services/lastfm/LastFmService.cpp:386
 #, kde-format
 msgid "Enter a tag"
-msgstr "Bir künye gir"
+msgstr "Bir künye girin"
 
 #: services/lastfm/LastFmService.cpp:389
 #, kde-format
@@ -14792,13 +14783,13 @@ msgstr "Kullanıcı adı: %1"
 #, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
-msgstr[0] "Çalınma Sayısı: %1 çalınma"
-msgstr[1] "Çalınma Sayısı: %1 çalınma"
+msgstr[0] "Çalma sayısı: %1 çalma"
+msgstr[1] "Çalma sayısı: %1 çalma"
 
 #: services/lastfm/LastFmService.cpp:453
 #, kde-format
 msgid "Create a Custom Last.fm Station"
-msgstr "Özel bir Last.fm İstasyonu Oluştur"
+msgstr "Özel Bir Last.fm İstasyonu Oluştur"
 
 #: services/lastfm/LastFmService.cpp:456
 #, kde-format
@@ -14833,7 +14824,7 @@ msgstr "Arkadaşının Kişisel Radyosu"
 #: services/lastfm/LastFmServiceConfig.cpp:218
 #, kde-format
 msgid "Failed to open KDE Wallet to read Last.fm credentials"
-msgstr "Last.fm kimlik bilgilerini okumak için KDE Cüzdan’ı açılamadı"
+msgstr "Last.fm kimlik bilgilerini okumak üzere KDE Cüzdan açılamadı"
 
 #: services/lastfm/LastFmServiceConfig.cpp:271
 #, kde-format
@@ -14851,7 +14842,7 @@ msgstr ""
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
-msgstr "Başarısız oldu"
+msgstr "Başarısız"
 
 #: services/lastfm/LastFmServiceSettings.cpp:151
 #: services/lastfm/LastFmServiceSettings.cpp:174
@@ -14862,7 +14853,7 @@ msgstr "Sınama Oturumu"
 #: services/lastfm/LastFmServiceSettings.cpp:173
 #, kde-format
 msgid "Unable to connect to Last.fm service."
-msgstr "Last.fm hizmetine bağlanılamadı."
+msgstr "Last.fm hizmetine bağlanılamıyor."
 
 #: services/lastfm/LastFmTreeModel.cpp:129
 #, kde-format
@@ -14881,22 +14872,22 @@ msgstr[1] "%2 (%1 çalma)"
 #: services/lastfm/LastFmTreeModel.cpp:197
 #, kde-format
 msgid "Personal Radio"
-msgstr "Kişisel Radyolar"
+msgstr "Kişisel Radyo"
 
 #: services/lastfm/LastFmTreeModel.cpp:310
 #, kde-format
 msgid "My Recommendations"
-msgstr "Önerdiklerim"
+msgstr "Önerilerim"
 
 #: services/lastfm/LastFmTreeModel.cpp:312
 #, kde-format
 msgid "My Radio Station"
-msgstr "Radyom"
+msgstr "Radyo İstasyonum"
 
 #: services/lastfm/LastFmTreeModel.cpp:314
 #, kde-format
 msgid "My Mix Radio"
-msgstr "Karışık Radyom"
+msgstr "Radyo Miksim"
 
 #: services/lastfm/LastFmTreeModel.cpp:316
 #, kde-format
@@ -14946,52 +14937,52 @@ msgstr "Bu parçayı atla"
 #: services/lastfm/meta/LastFmMeta.cpp:268
 #, kde-format
 msgid "Global Tag Radio: \"%1\""
-msgstr "Global künye radyosu:\"%1\""
+msgstr "Global künye radyosu:“%1”"
 
 #: services/lastfm/meta/LastFmMeta.cpp:274
 #, kde-format
 msgid "User Tag Radio: \"%1\""
-msgstr "Kullanıcı künyesi radyosu: \"%1\""
+msgstr "Kullanıcı künyesi radyosu: “%1”"
 
 #: services/lastfm/meta/LastFmMeta.cpp:282
 #, kde-format
 msgid "Similar Artists to \"%1\""
-msgstr "\"%1\" Sanatçısına Benzeyen"
+msgstr "“%1” Sanatçısına Benzeyen"
 
 #: services/lastfm/meta/LastFmMeta.cpp:286
 #, kde-format
 msgid "Artist Fan Radio: \"%1\""
-msgstr "Sanatçı Hayranlarının Radyosu: \" %1\""
+msgstr "Sanatçı hayranlarının radyosu: “%1”"
 
 #: services/lastfm/meta/LastFmMeta.cpp:295
 #, kde-format
 msgid "%1's Neighbor Radio"
-msgstr "%1 için Komşu Radyo"
+msgstr "%1 Kişisinin Komşu Radyosu"
 
 #: services/lastfm/meta/LastFmMeta.cpp:299
 #, kde-format
 msgid "%1's Personal Radio"
-msgstr "%1 için Kişisel Radyo"
+msgstr "%1 Kişisinin Kişisel Radyosu"
 
 #: services/lastfm/meta/LastFmMeta.cpp:303
 #, kde-format
 msgid "%1's Mix Radio"
-msgstr "%1 Kişisinin Karışık Radyosu"
+msgstr "%1 Kişisinin Radyo Miksi"
 
 #: services/lastfm/meta/LastFmMeta.cpp:307
 #, kde-format
 msgid "%1's Recommended Radio"
-msgstr "%1 Tarafından Önerilen Radyo"
+msgstr "%1 Kişisinin Önerdiği Radyo"
 
 #: services/lastfm/meta/LastFmMeta.cpp:311
 #, kde-format
 msgid "%1's Recommended Radio (Popularity %2)"
-msgstr "%1 Tarafından Önerilen Radyo (Beğeni %2)"
+msgstr "%1 Kişisinin Önerdiği Radyo (%2 Popülerlik)"
 
 #: services/lastfm/meta/LastFmMeta.cpp:318
 #, kde-format
 msgid "Group Radio: %1"
-msgstr "Grup Radyosu: %1"
+msgstr "Grup radyosu: %1"
 
 #: services/lastfm/meta/LastFmMeta.cpp:326
 #, kde-format
@@ -15006,7 +14997,7 @@ msgstr "Sanatçı Radyosu"
 #: services/lastfm/meta/LastFmMeta.cpp:430
 #, kde-format
 msgid "Last.fm is cool..."
-msgstr "Last.fm güzeldir..."
+msgstr "Last.fm güzeldir…"
 
 #: services/lastfm/meta/LastFmMultiPlayableCapability.cpp:98
 #, kde-format
@@ -15016,27 +15007,27 @@ msgid ""
 "announcements/radio2013'>supported country</a>. All other Last.fm features "
 "work fine."
 msgstr ""
-"Last.fm akışlarını ve radyo dinlemek için bir Last.fm abonesi olmalı ve bir "
-"<a href='http://www.last.fm/announcements/radio2013'> desteklenen ülkeden "
-"giriş yapmanız gerekiyor </a>. Diğer tüm Last.fm özellikleri iyi "
-"çalışmaktadır."
+"Last.fm akışlarını ve radyolarını dinlemek için bir Last.fm abonesi olmalı "
+"ve bir <a href='http://www.last.fm/announcements/radio2013'>desteklenen "
+"ülkeden giriş yapmanız gerekir</a>. Diğer tüm Last.fm özellikleri düzgün "
+"çalışır."
 
 #: services/lastfm/meta/LastFmMultiPlayableCapability.cpp:106
 #, kde-format
 msgid "Error starting track from Last.fm radio"
-msgstr "Hata: Last.fm radyosundan parça başlatılamadı"
+msgstr "Last.fm radyosundan parça başlatırken hata"
 
 #: services/lastfm/ScrobblerAdapter.cpp:158
 #, kde-format
 msgctxt "As in Last.fm"
 msgid "Loved Track: %1"
-msgstr "Sevilen Parçalar: %1"
+msgstr "Sevilen parça: %1"
 
 #: services/lastfm/ScrobblerAdapter.cpp:170
 #, kde-format
 msgctxt "As in Last.fm"
 msgid "Banned Track: %1"
-msgstr "Yasaklanan Parçalar: %1"
+msgstr "Yasaklanan parça: %1"
 
 #: services/lastfm/ScrobblerAdapter.cpp:251
 #, kde-format
@@ -15044,20 +15035,19 @@ msgctxt ""
 "%1 is field name such as Album Name; %2 is the original value; %3 is the "
 "corrected value"
 msgid "%1 <b>%2</b> should be corrected to <b>%3</b>"
-msgstr "%1 <b>%2</b> aslında <b>%3</b> olarak düzeltilmeli"
+msgstr "%1 <b>%2</b>, <b>%3</b> olarak düzeltilmeli"
 
 #: services/lastfm/ScrobblerAdapter.cpp:267
 #, kde-format
 msgctxt "%1 is artist, %2 is title"
 msgid "%1 - %2"
-msgstr "%1 - %2"
+msgstr "%1 — %2"
 
 #: services/lastfm/ScrobblerAdapter.cpp:270
 #, kde-format
 msgid "Last.fm suggests that some tags of track <b>%1</b> should be corrected:"
 msgstr ""
-"Last.fm, <b>%1</b> parçasının bazı künyelerinin düzeltilmesi gerektiğini "
-"öneriyor:"
+"Last.fm, <b>%1</b> parçasının bazı künyelerinin düzeltilmesini öneriyor:"
 
 #: services/lastfm/SimilarArtistsAction.cpp:27
 #, kde-format
@@ -15073,7 +15063,7 @@ msgstr "parça eşleştirmeyi yavaşlatır"
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:67
 #, kde-format
 msgid "Downloading '%1' by %2 from Magnatune.com"
-msgstr "%2 tarafından “%1” Magnatune.com’dan indiriliyor"
+msgstr "“%1”, %2; Magnatune.com’dan indiriliyor"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:71
 #, kde-format
@@ -15083,17 +15073,17 @@ msgstr "Magnatune.com’dan albüm indiriliyor"
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:100
 #, kde-format
 msgid "Magnatune download seems to have failed. Cannot read zip file"
-msgstr "Magnatune indirme işlemi başarısız oldu. Zip dosyası okunamıyor"
+msgstr "Magnatune indirmesi başarısız oldu. ZIP dosyası okunamıyor"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:109
 #, kde-format
 msgid "Uncompressing Magnatune.com download..."
-msgstr "Magnatune.com indirmesi açılıyor..."
+msgstr "Magnatune.com indirmesi açılıyor…"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:133
 #, kde-format
 msgid "Adding album cover to collection"
-msgstr "Albüm kapağını koleksiyona ekliyor"
+msgstr "Albüm kapağı koleksiyona ekleniyor"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:42
 #, kde-format
@@ -15110,14 +15100,14 @@ msgid ""
 msgstr ""
 "Kopyalamak üzere olduğunuz parçalar, Magnatune.com önizleme akışlarıdır. "
 "Daha kaliteli ve reklamsız akışlar için bir albüm indirmesini satın almayı "
-"düşünün. Unutmayın, Magnatune’dan alırken sanatçı %​50 pay alır. Ayrıca "
-"Amarok kullanarak alırsanız Amarok projesine %​10 destek vermiş olursunuz."
+"düşünün. Unutmayın, Magnatune’dan alırken sanatçı %​50 pay alır. Ayrıca  "
+"Amarok kullanarak alırsanız Amarok projesine %​10 katkıda bulunmuş olursunuz."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_4)
 #: services/magnatune/MagnatuneConfigWidget.ui:17
 #, kde-format
 msgid "Updates"
-msgstr "Güncelleştirmeler"
+msgstr "Güncellemeler"
 
 #. i18n: ectx: property (text), widget (QLabel, label_8)
 #: services/magnatune/MagnatuneConfigWidget.ui:23
@@ -15126,8 +15116,8 @@ msgid ""
 "If you check this box, Amarok will periodically check for Magnatune database "
 "updates and download them automatically."
 msgstr ""
-"Bu kutuyu işaretlerseniz Amarok düzenli olarak Magnatune veritabanı "
-"güncellemelerini denetler ve otomatik olarak indirir."
+"Bu kutuyu işaretlerseniz Amarok, Magnatune veritabanı güncellemelerini "
+"periyodik olarak denetleyecek ve bunları kendiliğinden indirecektir."
 
 #. i18n: ectx: property (text), widget (QCheckBox, autoUpdate)
 #. i18n: ectx: property (text), widget (QCheckBox, autoUpdateDatabase)
@@ -15135,13 +15125,13 @@ msgstr ""
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:32
 #, kde-format
 msgid "Update Magnatune database automatically"
-msgstr "Magnatune veritabanını otomatik güncelle"
+msgstr "Magnatune veritabanını kendiliğinden güncelle"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
 #: services/magnatune/MagnatuneConfigWidget.ui:43
 #, kde-format
 msgid "Redownloads"
-msgstr "Yeniden indirmeler"
+msgstr "Yeniden İndirmeler"
 
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #: services/magnatune/MagnatuneConfigWidget.ui:49
@@ -15151,7 +15141,7 @@ msgid ""
 "Magnatune directly from within Amarok."
 msgstr ""
 "Magnatune’dan daha önce satın aldığınız herhangi bir ürünü doğrudan Amarok "
-"içinden yeniden indirebilmek için e-posta adresinizi buraya girin."
+"içinden yeniden indirebilmek için buraya e-posta adresinizi girin."
 
 #. i18n: ectx: property (text), widget (QLabel, label_6)
 #: services/magnatune/MagnatuneConfigWidget.ui:59
@@ -15189,7 +15179,7 @@ msgstr "Akış"
 #, kde-format
 msgctxt "Username for logins to Magnatune"
 msgid "Username:"
-msgstr "Kullanıcı Adı:"
+msgstr "Kullanıcı adı:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: services/magnatune/MagnatuneConfigWidget.ui:143
@@ -15253,13 +15243,13 @@ msgstr "Ogg"
 #: services/magnatune/MagnatuneConfigWidget.ui:202
 #, kde-format
 msgid "High Quality Mp3"
-msgstr "Yüksek Kaliteli Mp3"
+msgstr "Yüksek Kaliteli MP3"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
 #: services/magnatune/MagnatuneConfigWidget.ui:207
 #, kde-format
 msgid "Low Quality Mp3"
-msgstr "Düşük Kaliteli Mp3"
+msgstr "Düşük Kaliteli MP3"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, magnatuneDownloadDialogBase)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:13
@@ -15271,19 +15261,19 @@ msgstr "Magnatune.com Albüm İndirmesi"
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:19
 #, kde-format
 msgid "Download options"
-msgstr "İndirme seçenekleri"
+msgstr "İndirme Seçenekleri"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:25
 #, kde-format
 msgid "Select Format:"
-msgstr "Biçim Seç:"
+msgstr "Biçim seç:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:38
 #, kde-format
 msgid "Download to:"
-msgstr "Buraya indir:"
+msgstr "Şuraya indir:"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:51
@@ -15292,14 +15282,14 @@ msgid ""
 "If you download to a location that is already being monitored by Amarok, the "
 "album will automatically be added to your collection."
 msgstr ""
-"Eğer zaten Amarok tarafından izlenmekte olan bir yere indirirseniz album "
-"otomatik olarak koleksiyonunuza eklenecektir."
+"Amarok tarafından halihazırda izlenen bir konuma indirirseniz albüm "
+"kendiliğinden koleksiyonunuza eklenecektir."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:67
 #, kde-format
 msgid "Magnatune info"
-msgstr "Magnatune bilgisi"
+msgstr "Magnatune Bilgisi"
 
 #. i18n: ectx: property (text), widget (QPushButton, downloadButton)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:83
@@ -15310,7 +15300,7 @@ msgstr "&İndir"
 #: services/magnatune/MagnatuneDownloadHandler.cpp:83
 #, kde-format
 msgid "Processing download"
-msgstr "İndirme işlemi yapılıyor"
+msgstr "İndirme gerçekleştiriliyor"
 
 #: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
@@ -15318,13 +15308,13 @@ msgid ""
 "There seems to be an error in the supplied membership information. Please "
 "correct this and try again."
 msgstr ""
-"Üyelik bilgilerinde hata var gibi görünüyor. Lütfen bu hatayı düzeltin ve "
-"yeniden deneyin."
+"Verilen üyelik bilgilerinde bir hata var gibi görünüyor. Lütfen bunu "
+"düzeltip yeniden deneyin."
 
 #: services/magnatune/MagnatuneDownloadHandler.cpp:148
 #, kde-format
 msgid "Could not process download"
-msgstr "İndirme işlemi yapılamadı"
+msgstr "İndirme gerçekleştirilemedi"
 
 #: services/magnatune/MagnatuneDownloadInfo.cpp:210
 #, kde-format
@@ -15335,8 +15325,8 @@ msgid ""
 "Username: %3\n"
 "Password: %4\n"
 msgstr ""
-"Magnatune.com’dan \"%2\" tarafından önceden satın alınan \"%1\" albümünü "
-"yeniden indir.\n"
+"Magnatune.com’dan daha önceden satın alınan “%1”, “%2” albümünü yeniden "
+"indirin.\n"
 "\n"
 "Kullanıcı adı: %3\n"
 "Parola: %4\n"
@@ -15344,23 +15334,23 @@ msgstr ""
 #: services/magnatune/MagnatuneInfoParser.cpp:31
 #, kde-format
 msgid "Loading artist info..."
-msgstr "Sanatçı bilgileri yükleniyor..."
+msgstr "Sanatçı bilgisi yükleniyor…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:41
 #, kde-format
 msgid "Fetching %1 Artist Info"
-msgstr "%1 Sanatçı Bilgisi Alınıyor"
+msgstr "%1 sanatçısının bilgileri getiriliyor"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:50
 #, kde-format
 msgid "Loading album info..."
-msgstr "Albüm bilgileri yükleniyor..."
+msgstr "Albüm bilgisi yükleniyor…"
 
 #. i18n( "Genre: ");// + magnatuneAlbum->
 #: services/magnatune/MagnatuneInfoParser.cpp:72
 #, kde-format
 msgid "Release Year: %1"
-msgstr "Yayınlanma Yılı: %1"
+msgstr "Yayım yılı: %1"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:77
 #, kde-format
@@ -15375,37 +15365,37 @@ msgstr "Magnatune.com’dan"
 #: services/magnatune/MagnatuneInfoParser.cpp:163
 #, kde-format
 msgid "Loading Magnatune.com frontpage..."
-msgstr "Magnatune.com ana sayfası yükleniyor..."
+msgstr "Magnatune.com ana sayfası yükleniyor…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:166
 #, kde-format
 msgid "Fetching Magnatune.com front page"
-msgstr "Magnatune.com ana sayfası getiriliyor"
+msgstr "Magnatune.com ana sayfası getiriliyor…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:177
 #: services/magnatune/MagnatuneInfoParser.cpp:191
 #, kde-format
 msgid "Loading your Magnatune.com favorites page..."
-msgstr "Magnatune.com’dan sevdiğiniz ögeler sayfası yükleniyor..."
+msgstr "Magnatune.com favorileri sayfası yükleniyor…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:202
 #: services/magnatune/MagnatuneInfoParser.cpp:216
 #, kde-format
 msgid "Loading your personal Magnatune.com recommendations page..."
-msgstr "Magnatune.com’dan kişisel öneriler  sayfası yükleniyor..."
+msgstr "Magnatune.com kişisel önerileriniz sayfası yükleniyor…"
 
 #: services/magnatune/MagnatuneMeta.cpp:215
 #, kde-format
 msgid "The non evil record label that is fair to artists and customers alike"
 msgstr ""
-"Kötü olmayan kayıt etiketleri şarkıcılar ve dinleyenler için aynı şekilde "
-"güzeldir"
+"Hem sanatçılar hem de müşteriler için adil olan ve şeytani olmayan plak "
+"şirketi"
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:39
 #, kde-format
 msgid "Click this button to download Magnatune database now."
-msgstr "Magnatune veritabanını şimdi güncellemek için bu düğmeye tıklayın."
+msgstr "Magnatune veritabanını hemen indirmek için bu düğmeye tıklayın."
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:49
@@ -15414,8 +15404,8 @@ msgid ""
 "Amarok needs to download Magnatune database in order to enable Magnatune "
 "store."
 msgstr ""
-"Amarok, Magnatune mağazasını etkinleştirmek için Magnatune veritabanını "
-"indirmesi gerekiyor."
+"Amarok’un Magnatune mağazasını etkinleştirebilmesi için Magnatune "
+"veritabanını indirmesi gerekiyor."
 
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:59
@@ -15425,9 +15415,10 @@ msgid ""
 "and download them automatically. You can always disable this option later in "
 "Magnatune service configuration."
 msgstr ""
-"Aşağıdaki seçeneği etkinleştirirseniz Amarok Magnatune güncellemelerini "
-"denetleyecek ve otomatik olarak indirecektir. Bu seçeneği daha sonra "
-"Magnatune hizmet yapılandırmasında devre dışı bırakabilirsiniz."
+"Aşağıdaki seçeneği etkinleştirirseniz Amarok, Magnatune güncellemelerini "
+"denetleyecek ve kendiliğinden indirecektir. Bu seçeneği daha sonra "
+"istediğiniz zaman Magnatune hizmet yapılandırmasından devre dışı "
+"bırakabilirsiniz."
 
 #. i18n: ectx: property (text), widget (QPushButton, update)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:69
@@ -15439,36 +15430,36 @@ msgstr "Güncelle"
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:13
 #, kde-format
 msgid "Redownload manager"
-msgstr "Yeniden indirme yöneticisi"
+msgstr "Yeniden İndirme Yöneticisi"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:19
 #, kde-format
 msgid "These are the albums that you have previously downloaded:"
-msgstr "Bunlar daha önceden indirdiğiniz albümler:"
+msgstr "Bunlar daha önceden indirdiğiniz albümlerdir:"
 
 #. i18n: ectx: property (text), widget (QPushButton, redownloadButton)
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:29
 #, kde-format
 msgid "Re&download"
-msgstr "&Yeniden indir"
+msgstr "&Yeniden İndir"
 
 #. i18n: ectx: property (text), widget (QTreeWidget, redownloadListView)
 #: services/magnatune/MagnatuneRedownloadDialogBase.ui:60
 #, kde-format
 msgid "Artist - Album"
-msgstr "Sanatçı - Albüm"
+msgstr "Sanatçı — Albüm"
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:149
 #, kde-format
 msgid "Getting list of previous Magnatune.com purchases"
-msgstr "Önceki Magnatune.com alımlarının listesini alınıyor"
+msgstr "Önceki Magnatune.com satın alımlarının listesini alınıyor…"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, SignupDialog)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:14
 #, kde-format
 msgid "Magnatune.com member signup"
-msgstr "Magnatune.com üye kaydı"
+msgstr "Magnatune.com Üye Kaydı"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:32
@@ -15533,15 +15524,15 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">İlk üyelik ödemenizde "
-"Amarok takımı ödemenizin % 10’unu alacağından, katılarak Amarok’un "
-"gelişimine de katkıda bulunursunuz.</p>\n"
+"Amarok takımı ödemenizin %​10’unu alacağından, katılarak Amarok’un gelişimine "
+"de katkıda bulunursunuz.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Her zamanki gibi, "
 "indirdiğiniz veya akışta bulunduğunuz sanatçıya bağlı olarak sizin üyelik "
-"ödeme(leri)nizin % 50’sini almaktadırlar.</p>\n"
+"ödeme(leri)nizin %​50’sini almaktadırlar.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
@@ -15554,9 +15545,10 @@ msgstr ""
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Kaydolduktan sora "
-"\"Ayarlar->Amarok Uygulamasını Yapılandır->Eklentiler\" içerisindeki "
-"Magnatune yapılandırmasına girin ve üyelik bilginizi girin.</p></body></html>"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Kaydolduktan sonra "
+"\"Ayarlar → Amarok Uygulamasını Yapılandır → Eklentiler\" sayfasındaki "
+"Magnatune yapılandırmasına gidin ve üyelik bilgilerinizi girin.</p></body></"
+"html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, closeButton)
 #: services/magnatune/MagnatuneSignupDialogBase.ui:45
@@ -15567,7 +15559,7 @@ msgstr "Kapat"
 #: services/magnatune/MagnatuneStore.cpp:103
 #, kde-format
 msgid "\"Fair trade\" online music store"
-msgstr "\"Fair trade\" çevrimiçi müzik marketi"
+msgstr "“Adil Ticaret” çevrimiçi müzik marketi"
 
 #: services/magnatune/MagnatuneStore.cpp:107
 #, no-c-format, kde-format
@@ -15578,22 +15570,21 @@ msgid ""
 "commission. Magnatune.com also offers \"all you can eat\" memberships that "
 "lets you download as much of their music as you like."
 msgstr ""
-"Magnatune.com, \"Biz kötülük yapmıyoruz\" sloganıyla farklı bir kayıt "
-"şirketidir. Her bir satın alımın % 50’si doğrudan sanatçıya gidiyor ve "
-"Amarok aracılığı ile bir albüm satın alırsanız Amarok projesi % 10’luk bir "
-"komisyon alır. Magnatune.com aynı zamanda, istedikleri gibi kendi "
-"müziklerini indirmenize izin veren \"yiyebileceğiniz herşey\" üyeliklerini "
-"de sunmaktadır."
+"Magnatune.com, “Biz kötü değiliz!” sloganıyla farklı türde bir plak "
+"şirketidir. Her satın almanın %​50’si doğrudan sanatçıya gider ve Amarok "
+"üzerinden bir albüm satın alırsanız Amarok projesi %​10 komisyon alır. "
+"Magnatune.com ayrıca, müziklerinin istediğiniz kadarını indirmenize olanak "
+"tanıyan “yiyebildiğiniz kadar” üyeliklerini de sunuyor."
 
 #: services/magnatune/MagnatuneStore.cpp:217
 #, kde-format
 msgid "Artist / Album"
-msgstr "Sanatçı / Albüm"
+msgstr "Sanatçı/Albüm"
 
 #: services/magnatune/MagnatuneStore.cpp:241
 #, kde-format
 msgid "Re-download"
-msgstr "Yeniden indir"
+msgstr "Yeniden İndir"
 
 #: services/magnatune/MagnatuneStore.cpp:244
 #, kde-format
@@ -15608,7 +15599,7 @@ msgstr "Araçlar"
 #: services/magnatune/MagnatuneStore.cpp:268
 #, kde-format
 msgid "Download Album"
-msgstr "Albümü İndir"
+msgstr "Albüm İndir"
 
 #: services/magnatune/MagnatuneStore.cpp:275
 #, kde-format
@@ -15618,12 +15609,12 @@ msgstr "Kaydol"
 #: services/magnatune/MagnatuneStore.cpp:326
 #, kde-format
 msgid "Downloading Magnatune.com database..."
-msgstr "Magnatune.com veritabanı indiriliyor..."
+msgstr "Magnatune.com veritabanı indiriliyor…"
 
 #: services/magnatune/MagnatuneStore.cpp:355
 #, kde-format
 msgid "Updating the local Magnatune database."
-msgstr "Magnatune veritabanı güncelleniyor."
+msgstr "Magnatune veritabanı güncelleniyor…"
 
 #: services/magnatune/MagnatuneStore.cpp:618
 #, c-format
@@ -15636,14 +15627,14 @@ msgid ""
 msgstr ""
 "Magnatune.com hizmeti aşağıdaki iletileri kabul eder: \n"
 "\n"
-"\taddMoodyTracks ruh hali sayacı: Çalma listesine belirtilen ruh haline "
-"bağlı rastgele parçalar ekler. Ruh hali argümanları %%20 ile kaçırılmış "
-"boşluklara sahip olmalıdır"
+"\taddMoodyTracks ruh hali sayısı: Belirtilen ruh haline sahip bir dizi "
+"rastgele parçayı çalma listesine ekler. Ruh hali argümanında %%20 ile "
+"kaçırılan boşluklar bulunmalıdır"
 
 #: services/magnatune/MagnatuneStore.cpp:629
 #, kde-format
 msgid "ERROR: No arguments supplied"
-msgstr "HATA: Hiç argüman verilmedi"
+msgstr "HATA: Verilen argüman yok"
 
 #: services/magnatune/MagnatuneStore.cpp:634
 #, kde-format
@@ -15653,12 +15644,12 @@ msgstr "HATA: addMoodyTracks için yanlış argüman sayısı"
 #: services/magnatune/MagnatuneStore.cpp:644
 #, kde-format
 msgid "ERROR: Parse error for argument 2 ( count )"
-msgstr "HATA: Argman 2 (sayı) için ayrıştırma hatası"
+msgstr "HATA: 2. argüman için ayrıştırma hatası (sayı)"
 
 #: services/magnatune/MagnatuneStore.cpp:648
 #, kde-format
 msgid "ok"
-msgstr "tamam"
+msgstr "Tamam"
 
 #: services/magnatune/MagnatuneStore.cpp:651
 #, kde-format
@@ -15681,10 +15672,8 @@ msgctxt ""
 msgid "Magnatune.com database update complete. Database contains 1 track on "
 msgid_plural ""
 "Magnatune.com database update complete. Database contains %1 tracks on "
-msgstr[0] ""
-"Magnatune.com veritabanı güncellemesi tamamlandı. Veritabanı %1 parçayı "
-msgstr[1] ""
-"Magnatune.com veritabanı güncellemesi tamamlandı. Veritabanı %1 parçayı "
+msgstr[0] "Magnatune.com veritabanı güncellemesi tamamlandı. 1 parça "
+msgstr[1] "Magnatune.com veritabanı güncellemesi tamamlandı. %1 parça "
 
 #: services/magnatune/MagnatuneXmlParser.cpp:81
 #, kde-format
@@ -15693,8 +15682,8 @@ msgctxt ""
 "tracks on 4 albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] "%1 albümde"
-msgstr[1] "%1 albümde"
+msgstr[0] "(1 albüm, "
+msgstr[1] "(%1 albüm, "
 
 #: services/magnatune/MagnatuneXmlParser.cpp:83
 #, kde-format
@@ -15703,8 +15692,8 @@ msgctxt ""
 "tracks on 4 albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] "%1 sanatçı."
-msgstr[1] "%1 sanatçı."
+msgstr[0] "1 sanatçı) eklendi."
+msgstr[1] "%1 sanatçı) eklendi."
 
 #: services/mp3tunes/harmonydaemon/main.cpp:36
 #, kde-format
@@ -15762,7 +15751,7 @@ msgstr "Kimlik doğrulama için kullanılacak pin kodu."
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:16
 #, kde-format
 msgid "MP3tunes Login"
-msgstr "Mp3tunes Oturumu"
+msgstr "MP3tunes Oturumunu Aç"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:22
@@ -15787,8 +15776,8 @@ msgid ""
 "AutoSync is a feature from MP3tunes which allows you to automatically move "
 "your music between computers and devices."
 msgstr ""
-"AutoSync, müziğinizi otomatik olarak bilgisayarlar ve aygıtlar arasında "
-"taşımanıza izin veren bir MP3tunes özelliğidir."
+"AutoSync, müziğinizi bilgisayarlar ve aygıtlar arasında kendiliğinden "
+"taşımanıza olanak tanıyan bir MP3tunes özelliğidir."
 
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_3)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:52
@@ -15798,9 +15787,9 @@ msgid ""
 "your music between computers and devices. You can upload music from one "
 "location and have it download instantly to other locations."
 msgstr ""
-"AutoSync, müziklerin bilgisayarlar ve aygıtlar arasında otomatik olarak "
-"taşınmasını sağlayan MP3tunes’ten gelen bir özelliktir. Bir konumdan müzik "
-"yükleyebilir ve anında diğer konumlara indirebilirsiniz."
+"AutoSync, müziğinizi bilgisayarlar ve aygıtlar arasında kendiliğinden "
+"taşımanıza olanak tanıyan bir MP3tunes özelliğidir. Müziği bir konumdan "
+"yükleyebilir ve anında diğer konumlara indirilmesini sağlayabilirsiniz."
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:55
@@ -15813,7 +15802,7 @@ msgstr "AutoSync’i Etkinleştir"
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:62
 #, kde-format
 msgid "PIN Code:"
-msgstr "PIN Kodu:"
+msgstr "PIN kodu:"
 
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #: services/mp3tunes/Mp3tunesConfigWidget.ui:89
@@ -15842,7 +15831,7 @@ msgstr ""
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
 "mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
-"underline; color:#0057ae;\">Bir MP3tunes kilidi al</span></a></p></body></"
+"underline; color:#0057ae;\">Bir MP3tunes dolabı al</span></a></p></body></"
 "html>"
 
 #: services/mp3tunes/Mp3tunesMeta.cpp:48
@@ -15851,28 +15840,28 @@ msgid ""
 "Online music locker where you can safely store and access your music: http://"
 "mp3tunes.com"
 msgstr ""
-"Müziğinize bağlanabileceğiniz ve güvenle depolayabileceğiniz çevrimiçi müzik "
-"deposu: http://mp3tunes.com"
+"Müziğinizi güvenle saklayabileceğiniz ve erişebileceğiniz çevrimiçi müzik "
+"dolabı: http://mp3tunes.com"
 
 #: services/mp3tunes/Mp3tunesService.cpp:104
 #, kde-format
 msgid "The MP3tunes Locker: Your Music Everywhere!"
-msgstr "MP3tunes Deposu: Müziğiniz Her Yerde!"
+msgstr "MP3tunes Dolabı: Müziğiniz Her Yerde!"
 
 #: services/mp3tunes/Mp3tunesService.cpp:217
 #, kde-format
 msgid "MP3tunes AutoSync Enabled"
-msgstr "MP3Tunes Otomatik Eşzamanlaması Etkinleştirildi"
+msgstr "MP3Tunes Kendiliğinden Eşzamanlaması Etkinleştirildi"
 
 #: services/mp3tunes/Mp3tunesService.cpp:233
 #, kde-format
 msgid "MP3tunes AutoSync Disabled"
-msgstr "MP3Tunes Otomatik Eşzamanlaması Pasifleştirildi"
+msgstr "MP3Tunes Kendiliğinden Eşzamanlaması Devre Dışı Bırakıldı"
 
 #: services/mp3tunes/Mp3tunesService.cpp:253
 #, kde-format
 msgid "Authenticating"
-msgstr "Kimlik doğrulaması yapılıyor"
+msgstr "Kimlik doğrulaması yapılıyor…"
 
 #: services/mp3tunes/Mp3tunesService.cpp:265
 #, kde-format
@@ -15888,12 +15877,12 @@ msgstr "MP3Tunes Harmony: Bağlantı kesildi"
 #: services/mp3tunes/Mp3tunesService.cpp:315
 #, kde-format
 msgid "MP3tunes Harmony: Waiting for PIN Input"
-msgstr "MP3Tunes Harmony: PIN Kodunun Girilmesi Bekleniyor"
+msgstr "MP3Tunes Harmony: PIN kodunun girilmesi bekleniyor…"
 
 #: services/mp3tunes/Mp3tunesService.cpp:327
 #, kde-format
 msgid "MP3tunes Harmony: Successfully Connected"
-msgstr "MP3Tunes Harmony: Başarılı bir şekilde Bağlanıldı"
+msgstr "MP3Tunes Harmony: Başarıyla bağlanıldı"
 
 #: services/mp3tunes/Mp3tunesService.cpp:342
 #, kde-format
@@ -15901,14 +15890,14 @@ msgid ""
 "MP3tunes Harmony Error\n"
 "%1"
 msgstr ""
-"MP3tunes Uyum Hatası\n"
+"MP3tunes Harmony Hatası\n"
 "%1"
 
 #: services/mp3tunes/Mp3tunesServiceCollection.cpp:60
 #: services/mp3tunes/Mp3tunesServiceCollectionLocation.cpp:44
 #, kde-format
 msgid "MP3tunes Locker"
-msgstr "MP3tunes Kilitleyici"
+msgstr "MP3tunes Dolabı"
 
 #: services/mp3tunes/Mp3tunesServiceCollectionLocation.cpp:78
 #, kde-format
@@ -15916,40 +15905,40 @@ msgid ""
 "Only the following types of tracks can be uploaded to MP3tunes: mp3, mp4, "
 "m4a, m4p, aac, wma, and ogg. "
 msgstr ""
-"MP3tunes’e yalnızca şu parça türleri  yüklenebilir: mp3, mp4, m4a, m4p, aac, "
-"wma ve ogg. "
+"MP3tunes’e yalnızca şu parça türleri yüklenebilir: mp3, mp4, m4a, m4p, aac, "
+"wma, and ogg."
 
 #: services/mp3tunes/Mp3tunesWorkers.cpp:344
 #, kde-format
 msgid "Upload to MP3tunes Initiated"
-msgstr "MP3tunes’e yükleme Başlatıldı"
+msgstr "MP3tunes’e Yükleme Başlatıldı"
 
 #: services/mp3tunes/Mp3tunesWorkers.cpp:370
 #, kde-format
 msgid "Uploading Track %1/%2"
-msgstr "%1/%2 Parça Gönderiliyor"
+msgstr "%1/%2 parça yükleniyor…"
 
 #. i18n: ectx: property (text), widget (QLabel, instructionsLabel)
 #: services/opmldirectory/AddOpmlWidget.ui:37
 #, kde-format
 msgid "Add a local or remote OPML file to be included in the list."
-msgstr "Listeye dahil edilecek bir yerel veya uzak bir OPML dosyası ekle."
+msgstr "Listede içerilecek yerel veya uzak bir OPML dosyası ekleyin."
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, titleEdit)
 #: services/opmldirectory/AddOpmlWidget.ui:88
 #, kde-format
 msgid "If left blank the title from the OPML will be used."
-msgstr "Boş bırakılırsa OPML başlığı kullanılacaktır."
+msgstr "Boş bırakılırsa OPML’deki başlık kullanılacaktır."
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:56
 #, kde-format
 msgid "Loading Podcast Info..."
-msgstr "Pod Yayını Bilgisi Yükleniyor..."
+msgstr "Pod yayını bilgisi yükleniyor…"
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:66
 #, kde-format
 msgid "Fetching Podcast Info"
-msgstr "Pod Yayını Bilgisi Alınıyor"
+msgstr "Pod yayını bilgisi alınıyor…"
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:39
 #: services/opmldirectory/OpmlDirectoryService.cpp:136
@@ -15984,13 +15973,13 @@ msgid ""
 "A comprehensive list of searchable podcasts that you can subscribe to "
 "directly from within Amarok."
 msgstr ""
-"Doğrudan Amarok’dan abone olabileceğiniz aranabilir pod yayınlarının "
+"Doğrudan Amarok’tan abone olabileceğiniz aranabilir pod yayınlarının "
 "kapsamlı bir listesi."
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:160
 #, kde-format
 msgid "Add an OPML file to the list."
-msgstr "Listeye bir OPML dosyası ekle."
+msgstr "Listeye bir OPML dosyası ekleyin."
 
 #: services/scriptable/ScriptableServiceInfoParser.cpp:44
 #: services/scriptable/ScriptableServiceInfoParser.cpp:59
@@ -15998,7 +15987,7 @@ msgstr "Listeye bir OPML dosyası ekle."
 #: services/scriptable/ScriptableServiceInfoParser.cpp:88
 #, kde-format
 msgid "Loading info..."
-msgstr "Bilgiler yükleniyor..."
+msgstr "Bilgi yükleniyor…"
 
 #: services/ServiceBase.cpp:337
 #, kde-format
@@ -16008,18 +15997,18 @@ msgstr "Bu hizmet, hiçbir iletiyi kabul etmiyor"
 #: services/ServiceBase.cpp:344
 #, kde-format
 msgid "ERROR: unknown message"
-msgstr "HATA: bilinmeyen ileti"
+msgstr "HATA: Bilinmeyen ileti"
 
 #: services/ServiceMetaBase.cpp:249
 #, kde-format
 msgid "Neither playable nor downloadable url specified."
-msgstr "Çalınabilir veya indirilebilir herhangi bir url belirtilmedi."
+msgstr "Çalınabilir veya indirilebilir bir URL belirtilmedi."
 
 #: services/ServicePluginManager.cpp:146 services/ServicePluginManager.cpp:163
 #: services/ServicePluginManager.cpp:180
 #, kde-format
 msgid "No service named %1 is currently loaded"
-msgstr "%1 adında şu anda yüklü bir hizmet yok"
+msgstr "Şu anda %1 adlı bir hizmet yüklü değil"
 
 #: statsyncing/Config.cpp:100
 #, kde-format
@@ -16035,10 +16024,11 @@ msgid ""
 "\n"
 "You can always change the decision in Amarok configuration."
 msgstr ""
-"%1, parça sayımı veya diğer koleksiyonlarla derecelendirme gibi parça üst "
-"verisini eşzamanlayabiliyor. %1 ögesini eşzamanlamak istiyor musunuz?\n"
+"%1, çalma sayısı veya derecelendirme gibi parça üst verilerini diğer "
+"koleksiyonlarla eşzamanlama yeteneğine sahiptir. %1 ögesini eşzamanlı tutmak "
+"istiyor musunuz?\n"
 "\n"
-"Amarok yapılandırmasında kararınızı değiştirebilirsiniz."
+"Kararınızı Amarok yapılandırmasından her zaman değiştirebilirsiniz."
 
 #: statsyncing/Controller.cpp:378
 #, kde-format
@@ -16046,8 +16036,8 @@ msgid ""
 "You only seem to have the Local Collection. Statistics synchronization only "
 "makes sense if there is more than one collection."
 msgstr ""
-"Yalnızca bir Yerel Koleksiyon’unuz var görünüyor. İstatistik eşzamanlama, "
-"birden çok koleksiyon varsa mantıklıdır."
+"Yalnızca yerel bir koleksiyona sahip görünüyorsunuz. İstatistik "
+"eşzamanlaması, yalnızca birden fazla koleksiyon varsa anlamlıdır."
 
 #: statsyncing/models/CommonModel.cpp:162
 #, kde-format
@@ -16072,8 +16062,8 @@ msgstr ", "
 msgid "Played %2 times of which one play is recent and unique to this source"
 msgid_plural ""
 "Played %2 times of which %1 plays are recent and unique to this source"
-msgstr[0] "%2 kere çalındı, bir çalma yeni ve bu kaynağa özgü"
-msgstr[1] "%2 kere çalındı, %1 çalma yeni ve bu kaynağa özgü"
+msgstr[0] "%2 kez çalındı, bunlardan biri yeni ve bu kaynağa özgü"
+msgstr[1] "%2 kez çalındı, %1 tanesi yeni ve bu kaynağa özgü"
 
 #: statsyncing/models/CommonModel.cpp:189
 #, kde-format
@@ -16083,7 +16073,7 @@ msgstr "Yok sayılan etiketler: %1"
 #: statsyncing/models/CommonModel.cpp:208
 #, kde-format
 msgid "%1 - %2 - %3"
-msgstr "%1 - %2 - %3"
+msgstr "%1 — %2 — %3"
 
 #: statsyncing/models/ProvidersModel.cpp:67
 #, kde-format
@@ -16097,8 +16087,8 @@ msgid ""
 "Can match tracks by: %1\n"
 "Can synchronize: %2"
 msgstr ""
-"Parçalar şu şekilde eşleşebilir: %1\n"
-"Eşzamanlanabilir: %2"
+"Parçaları şununla eşleştirebilir: %1\n"
+"Eşzamanlayabilir: %2"
 
 #: statsyncing/Process.cpp:48
 #, kde-format
@@ -16108,62 +16098,59 @@ msgstr "Eşzamanlama İstatistikleri"
 #: statsyncing/Process.cpp:113
 #, kde-format
 msgid "Matching Tracks for Statistics Synchronization"
-msgstr "İstatistik Eşzamanlama için Eşleşen Parça"
+msgstr "İstatistik eşzamanlaması için parçalar eşleştiriliyor…"
 
 #: statsyncing/Process.cpp:230
 #, kde-format
 msgid "Synchronizing Track Statistics"
-msgstr "Parça İstatistikleri Eşleme"
+msgstr "Parça istatistikleri eşzamanlanıyor…"
 
 #: statsyncing/Process.cpp:258
 #, kde-format
 msgctxt "%2 is a list of collection names"
 msgid "Synchronization of %2 done. <b>One</b> track was updated."
 msgid_plural "Synchronization of %2 done. <b>%1</b> tracks were updated."
-msgstr[0] "%2 eşzamanlaması tamamlandı. <b>Bir</b> parça güncellendi."
+msgstr[0] "%2 eşzamanlaması tamamlandı. <b>1</b> parça güncellendi."
 msgstr[1] "%2 eşzamanlaması tamamlandı. <b>%1</b> parça güncellendi."
 
 #: statsyncing/Process.cpp:273
 #, kde-format
 msgid "<b>One</b> track was queued for scrobbling to %2."
 msgid_plural "<b>%1</b> tracks were queued for scrobbling to %2."
-msgstr[0] ""
-"<b>Bir</b> parçanın verisi %2 üzerine gönderilmek için kuyruğa eklendi."
-msgstr[1] ""
-"<b>%1</b> parçanın verisi %2 üzerine gönderilmek için kuyruğa eklendi."
+msgstr[0] "<b>1</b> parçanın verisi %2 skroplaması için kuyruğa eklendi."
+msgstr[1] "<b>%1</b> parçanın verisi %2 skroplaması için kuyruğa eklendi."
 
 #: statsyncing/Process.cpp:280
 #, kde-format
 msgid "<b>One</b> track's played time was too short to be scrobbled."
 msgid_plural "<b>%1</b> tracks' played time was too short to be scrobbled."
 msgstr[0] ""
-"<b>Bir</b> parçanın çalma süresi verisi sunuya gönderilmek için çok kısa."
+"<b>1</b> parçanın çalma süresi verisi sunuya gönderilmek için pek kısa."
 msgstr[1] ""
-"<b>%1</b> parçanın çalma süresi verisi sunuya gönderilmek için çok kısa."
+"<b>%1</b> parçanın çalma süresi verisi sunuya gönderilmek için pek kısa."
 
 #: statsyncing/Process.cpp:284
 #, kde-format
 msgid "<b>One</b> track had insufficient metadata to be scrobbled."
 msgid_plural "<b>%1</b> tracks had insufficient metadata to be scrobbled."
-msgstr[0] "<b>Bir</b> parçada, sunucuya gönderilecek olan üst veri yetersiz."
-msgstr[1] ""
-"<b>%1</b> parçada, sunucuya gönderilecek olan meta veriler yetersiz."
+msgstr[0] "<b>1</b> parçada skroplanacak olan üst veri yetersiz."
+msgstr[1] "<b>%1</b> parçada skroplanacak olan üst veri yetersiz."
 
 #: statsyncing/Process.cpp:288
 #, kde-format
 msgid "<b>One</b> track was reported to have been played in the future."
 msgid_plural ""
 "<b>%1</b> tracks were reported to have been played in the future."
-msgstr[0] "<b>Bir</b> parçanın gelecekte çalınacağı raporlandı."
-msgstr[1] "<b>%1</b> parçanın gelecekte çalınacağı raporlandı."
+msgstr[0] "<b>1</b> parçanın gelecekte çalınacağı bildirildi."
+msgstr[1] "<b>%1</b> parçanın gelecekte çalınacağı bildirildi."
 
 #: statsyncing/Process.cpp:292
 #, kde-format
 msgid "<b>One</b> track was last played in too distant past to be scrobbled."
 msgid_plural ""
 "<b>%1</b> tracks were last played in too distant past to be scrobbled."
-msgstr[0] "<b>Bir</b> parça o kadar zaman önce çalındı ki taranamıyor."
-msgstr[1] "<b>%1</b> parça o kadar zaman önce çalındı ki taranamıyor."
+msgstr[0] "<b>1</b> parça o kadar zaman önce çalındı ki skroplanamıyor."
+msgstr[1] "<b>%1</b> parça o kadar zaman önce çalındı ki skroplanamıyor."
 
 #: statsyncing/Process.cpp:296
 #, kde-format
@@ -16171,17 +16158,15 @@ msgid "Scrobbling of <b>one</b> track was skipped as configured by the user."
 msgid_plural ""
 "Scrobbling of <b>%1</b> tracks was skipped as configured by the user."
 msgstr[0] ""
-"<b>Bir</b> parçanın üst verisinin sunucuya gönderilmesi, kullanıcı "
-"tarafından yapılandırıldığı gibi atlandı."
+"<b>1</b> parçanın skroplanması, kullanıcı yapılandırması uyarınca atlandı."
 msgstr[1] ""
-"<b>%1</b> parçanın meta verisinin sunucuya gönderilmesi, kullanıcı "
-"tarafından yapılandırıldığı gibi atlandı."
+"<b>%1</b> parçanın skroplanması, kullanıcı yapılandırması uyarınca atlandı."
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:33
 #: statsyncing/ui/MatchedTracksPage.cpp:135
 #, kde-format
 msgid "Configure Synchronization..."
-msgstr "Eşzamanlamayı Yapılandır..."
+msgstr "Eşzamanlamayı Yapılandır…"
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:146
 #, kde-format
@@ -16195,14 +16180,14 @@ msgid ""
 "No selected collection supports writing %1 - it doesn't make sense to "
 "synchronize it."
 msgstr ""
-"%1 yazmayı destekleyen seçili bir koleksiyon yok - eşzamanlamak mantıklı "
-"gözükmüyor."
+"Seçili koleksiyonlardan hiçbiri %1 yazmayı desteklemiyor; eşzamanlanması "
+"mantıklı değil."
 
 #. i18n: ectx: property (title), widget (QGroupBox, providersBox)
 #: statsyncing/ui/ChooseProvidersPage.ui:17
 #, kde-format
 msgid "Select Collections to Synchronize"
-msgstr "Eşzamanlanacak Koleksiyonu Seç"
+msgstr "Eşzamanlanacak Koleksiyonları Seç"
 
 #. i18n: ectx: property (title), widget (QGroupBox, fieldsBox)
 #: statsyncing/ui/ChooseProvidersPage.ui:49
@@ -16228,8 +16213,8 @@ msgid ""
 "database file is not currently in use!"
 msgstr ""
 "<span style=\"color:red; font-weight:bold;\">Önemli:</span> Parçaları dosya "
-"tabanlı bir hedefle eşzamanlamadan önce daima veritabanı dosyasının "
-"kullanılmadığından emin olun!"
+"tabanlı bir hedefle eşzamanlamadan önce daima veritabanı dosyasının o anda "
+"kullanımda olmadığından emin olun!"
 
 #: statsyncing/ui/CreateProviderDialog.cpp:61
 #, kde-format
@@ -16251,7 +16236,7 @@ msgstr "Eşzamanla"
 msgid ""
 "There are no tracks unique to one of the sources participating in the "
 "synchronization"
-msgstr "Eşzamanlamaya katılan kaynaklardan birine özgü herhangi bir parça yok"
+msgstr "Eşzamanlamaya katılan kaynaklardan birine özgü hiçbir parça yok"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:151
 #, kde-format
@@ -16281,13 +16266,13 @@ msgstr "Güncellenmeyeni Daralt"
 #: statsyncing/ui/MatchedTracksPage.cpp:186
 #, kde-format
 msgid "Reset All Ratings to Undecided"
-msgstr "Tüm Derecelendirmeleri Kararsız Yap"
+msgstr "Tüm Derecelendirmeleri Karar Verilmemiş Olarak Değiştir"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:194
 #, kde-format
 msgctxt "%1 is collection name"
 msgid "Include Labels from %1"
-msgstr "%1 Koleksiyonundan Etiketleri Dahil Et"
+msgstr "%1 Koleksiyonundan Etiketleri İçer"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:198
 #, kde-format
@@ -16298,7 +16283,7 @@ msgstr "%1 Koleksiyonundan Etiketleri Dışla"
 #: statsyncing/ui/MatchedTracksPage.cpp:202
 #, kde-format
 msgid "Reset All Labels to Undecided (Don't Synchronize Them)"
-msgstr "Tüm Etiketleri Kararsız olarak Sıfırlar (Onları Eşzamanlama)"
+msgstr "Tüm Etiketleri Kararsız olarak Sıfırla (Onları Eşzamanlama)"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:228
 #, kde-format
@@ -16318,12 +16303,12 @@ msgstr "Çakışan Parçalar"
 #: statsyncing/ui/MatchedTracksPage.cpp:239
 #, kde-format
 msgid "There are no tracks with conflicts"
-msgstr "Çakışan bir parça yok"
+msgstr "Çakışan parça yok"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:245
 #, kde-format
 msgid "There are no tracks going to be updated"
-msgstr "Güncellenecek olan parça yok"
+msgstr "Güncellenecek parça yok"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:272
 #, kde-format
@@ -16339,16 +16324,16 @@ msgstr "Belirsizlikten dolayı eşzamanlamadan dışlanan parçalar"
 #, kde-format
 msgid "<b>One</b> play"
 msgid_plural "<b>%1</b> plays"
-msgstr[0] "<b>Bir</b> oynatma"
-msgstr[1] "<b>%1</b> oynatma"
+msgstr[0] "<b>1</b> çalımı"
+msgstr[1] "<b>%1</b> çalımı"
 
 #: statsyncing/ui/MatchedTracksPage.cpp:318
 #, kde-format
 msgctxt "%2 is the 'X plays message above'"
 msgid "%2 of <b>one</b> track will be scrobbled to %3."
 msgid_plural "%2 of <b>%1</b> tracks will be scrobbled to %3."
-msgstr[0] "%2/<b>1</b> parça %3 konumuna taranacak."
-msgstr[1] "%2/<b>%1</b> parça %3 konumuna taranacak."
+msgstr[0] "<b>1</b> parçanın %2 %3 konumuna skroplanacak."
+msgstr[1] "<b>%1</b> parçanın %2 %3 konumuna skroplanacak."
 
 #: statsyncing/ui/MatchedTracksPage.cpp:383
 #, kde-format
@@ -16370,7 +16355,7 @@ msgstr "Eşleşen Parçalar"
 #: statsyncing/ui/MatchedTracksPage.ui:216
 #, kde-format
 msgid "Filter Tracks..."
-msgstr "Parçaları Süz..."
+msgstr "Parçaları Süz…"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, matchedRatingsButton)
 #. i18n: ectx: property (toolTip), widget (QToolButton, matchedLabelsButton)
@@ -16378,7 +16363,7 @@ msgstr "Parçaları Süz..."
 #: statsyncing/ui/MatchedTracksPage.ui:84
 #, kde-format
 msgid "Affects all applicable tracks, not just shown ones"
-msgstr "Uygulanabilir tüm parçaları etkiler, yalnızca gösterilenleri değil"
+msgstr "Yalnızca gösterilenleri değil, uygulanabilir tüm parçaları etkiler"
 
 #. i18n: ectx: property (text), widget (QToolButton, matchedRatingsButton)
 #: statsyncing/ui/MatchedTracksPage.ui:68
@@ -16420,17 +16405,17 @@ msgstr "Skroplama"
 #: statusbar/ProgressBar.cpp:48
 #, kde-format
 msgid "Abort"
-msgstr "İptal"
+msgstr "İptal Et"
 
 #: statusbar/CompoundProgressBar.cpp:70 statusbar/CompoundProgressBar.cpp:207
 #, kde-format
 msgid "Multiple background tasks running (click to show)"
-msgstr "Birden fazla arka plan işlemi çalışıyor (göstermek için tıklayın)"
+msgstr "Birden fazla arka plan görevi çalışıyor (göstermek için tıkla)"
 
 #: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:208
 #, kde-format
 msgid "Abort all background tasks"
-msgstr "Arka planda çalışan tüm görevleri durdur"
+msgstr "Tüm arka plan görevlerini iptal et"
 
 #: toolbar/MainToolbar.cpp:76
 #, kde-format
@@ -16451,7 +16436,7 @@ msgstr "Araç Çubuğunu İncelt"
 #: widgets/Osd.cpp:200
 #, kde-format
 msgid "Volume: %1% (muted)"
-msgstr "Ses: %​%1 (sessiz)"
+msgstr "Ses: %​%1 (Sessiz)"
 
 #: toolbar/VolumePopupButton.cpp:104 widgets/Osd.cpp:200
 #: widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
@@ -16462,12 +16447,12 @@ msgstr "Ses: %​%1"
 #: transcoding/TranscodingAssistantDialog.cpp:47
 #, kde-format
 msgid "Transcode Tracks"
-msgstr "Parçaları Çapraz Kodla"
+msgstr "Parçaları Arakodla"
 
 #: transcoding/TranscodingAssistantDialog.cpp:57
 #, kde-format
 msgid "Transc&ode"
-msgstr "&Çapraz Kodlama Yap"
+msgstr "&Arakodla"
 
 #: transcoding/TranscodingAssistantDialog.cpp:68
 #, kde-format
@@ -16477,10 +16462,10 @@ msgid ""
 "your files readable by a portable music player or a particular software "
 "program."
 msgstr ""
-"Kopyalarken müzik dosyalarınızı bir kodlayıcı ile farklı bir kodlamaya "
-"dönüştürebilirsiniz. Bu işlem alan kazanmak, parçalarınızı taşınabilir bir "
-"müzik çalar veya özel bir yazılım programı ile okunabilir olması için "
-"yapılabilir."
+"Kopyalama sırasında müzik dosyalarınızı bir kodlayıcı (kodek) kullanarak "
+"başka bir biçime dönüştürmeyi seçebilirsiniz. Bu, yerden tasarruf etmek veya "
+"dosyalarınızı taşınabilir bir müzik çalar veya belirli bir yazılım programı "
+"tarafından okunabilir hale getirmek için yapılabilir."
 
 #: transcoding/TranscodingAssistantDialog.cpp:73
 #, kde-format
@@ -16490,7 +16475,7 @@ msgstr "Ko&pyala"
 #: transcoding/TranscodingAssistantDialog.cpp:74
 #, kde-format
 msgid "Just copy the tracks without transcoding them."
-msgstr "Parçaları kod çevrimi yapmadan yalnızca kopyala."
+msgstr "Parçaları arakodlamadan yalnızca kopyalayın."
 
 #: transcoding/TranscodingAssistantDialog.cpp:78
 #, kde-format
@@ -16501,11 +16486,11 @@ msgid ""
 "program. Only successfully transcoded files will be removed from their "
 "original location."
 msgstr ""
-"Taşırken müzik dosyalarınızı bir kodlayıcı ile farklı bir kodlamaya "
-"dönüştürebilirsiniz. Bu işlem alan kazanmak, parçalarınızı taşınabilir bir "
-"müzik çalar veya özel bir yazılım programı ile okunabilir olması için "
-"yapılabilir. Yalnızca başarılı bir şekilde çapraz kodlaması yapılan dosyalar "
-"özgün konumlarından kaldırılacaklardır."
+"Taşıma yaparken müzik dosyalarınızı bir kodlayıcı (kodek) kullanarak başka "
+"bir biçime dönüştürmeyi seçebilirsiniz. Bu, yerden tasarruf etmek veya "
+"dosyalarınızı taşınabilir bir müzik çalar veya belirli bir yazılım programı "
+"tarafından okunabilir hale getirmek için yapılabilir. Başarıyla arakodlanan "
+"dosyalar özgün konumlarından kaldırılacaktır."
 
 #: transcoding/TranscodingAssistantDialog.cpp:84
 #, kde-format
@@ -16515,24 +16500,24 @@ msgstr "&Taşı"
 #: transcoding/TranscodingAssistantDialog.cpp:85
 #, kde-format
 msgid "Just move the tracks without transcoding them."
-msgstr "Parçaları kod çevrimi yalnızca taşı."
+msgstr "Parçaları arakodlamadan yalnızca taşıyın."
 
 #: transcoding/TranscodingAssistantDialog.cpp:152
 #, kde-format
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
-msgstr "Şu durumda sistemizinde kullanılabilir değil."
+msgstr "Şu anda sisteminizde kullanılamıyor."
 
 #: transcoding/TranscodingAssistantDialog.cpp:159
 #, kde-format
 msgid "Target collection indicates this format would not be playable."
-msgstr "Hedef koleksiyon, bu biçimin oynatılamayacağını gösterir."
+msgstr "Hedef koleksiyon, bu biçimin çalınamayacağını gösteriyor."
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: transcoding/TranscodingAssistantDialog.ui:89
 #, kde-format
 msgid "Transcode"
-msgstr "Çapraz Kodla"
+msgstr "Arakodla"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeAllRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeAllRadioButton)
@@ -16540,13 +16525,13 @@ msgstr "Çapraz Kodla"
 #: transcoding/TranscodingAssistantDialog.ui:226
 #, kde-format
 msgid "Transcode all tracks to the selected format"
-msgstr "Tüm parçaları seçilen biçimde çapraz kodla"
+msgstr "Tüm parçaları seçili biçime arakodla"
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeAllRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:229
 #, kde-format
 msgid "Transcode all tracks"
-msgstr "Tüm parçaları çapraz kodla"
+msgstr "Tüm parçaları arakodla"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeOnlyIfNeededRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeOnlyIfNeededRadioButton)
@@ -16556,14 +16541,13 @@ msgstr "Tüm parçaları çapraz kodla"
 msgid ""
 "Transcode tracks only when needed for playability in the destination "
 "collection"
-msgstr ""
-"Yalnızca hedef koleksiyonda oynatılabilirlik için gerekli ise çapraz kodla"
+msgstr "Yalnızca hedef koleksiyonda çalınabilirlik için gerekliyse arakodla"
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeOnlyIfNeededRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:242
 #, kde-format
 msgid "Transcode only when needed for playability"
-msgstr "Yalnızca oynatılabilirlik için gerekli ise çapraz kodla"
+msgstr "Yalnızca çalınabilirlik için gerekliyse arakodla"
 
 #. i18n: ectx: property (toolTip), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
@@ -16571,13 +16555,13 @@ msgstr "Yalnızca oynatılabilirlik için gerekli ise çapraz kodla"
 #: transcoding/TranscodingAssistantDialog.ui:252
 #, kde-format
 msgid "Transcode only when source and destination file formats different"
-msgstr "Yalnızca kaynak ve hedef dosya biçimleri farklı ise çapraz kodla"
+msgstr "Yalnızca kaynak ve hedef dosya biçimleri farklıysa arakodla"
 
 #. i18n: ectx: property (text), widget (QRadioButton, transcodeUnlessSameTypeRadioButton)
 #: transcoding/TranscodingAssistantDialog.ui:255
 #, kde-format
 msgid "Transcode only when source and destination formats are different"
-msgstr "Yalnızca kaynak ve hedef biçimleri farklı ise çapraz kodlama yap"
+msgstr "Yalnızca kaynak ve hedef biçimleri farklıysa arakodla"
 
 #. i18n: ectx: property (text), widget (QLabel, encoderNotFoundLabel)
 #: transcoding/TranscodingAssistantDialog.ui:265
@@ -16589,11 +16573,11 @@ msgid ""
 "for the next time</i> option in order to skip this dialog for future "
 "transfers."
 msgstr ""
-"<b>Not:</b> Bir kodlayıcı mevcut değil. Parçaları aktarmak istiyorsanız "
-"lütfen <i>ffmpeg</i> veya <i>libav</i> paketini (<i>ffmpeg</i> ile birlikte) "
-"uygun kodlayıcılarla kurun. Aksi takdirde, gelecekteki aktarımlar için bu "
-"iletişim kutusunu atlamak için <i>Gelecekte bu seçimi anımsa</i> seçeneğini "
-"işaretleyebilirsiniz."
+"<b>Not:</b> Kullanılabilir kodlayıcı yok. Parçaların kodunu dönüştürmek "
+"istiyorsanız lütfen <i>ffmpeg</i> veya <i>libav</i> paketini (<i>ffmpeg</i> "
+"sarmalayıcılı) uygun kodlayıcılarla kurun. Aksi takdirde, gelecekteki "
+"aktarımlarda bu iletişim kutusunu atlamak için <i>Gelecekte bu seçimi "
+"anımsa</i> seçeneğini işaretleyebilirsiniz."
 
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: transcoding/TranscodingAssistantDialog.ui:275
@@ -16607,7 +16591,7 @@ msgid ""
 "In order to configure the parameters of the transcoding operation, please "
 "pick an encoder from the list."
 msgstr ""
-"Dönüştürme işleminin parametrelerini yapılandırmak için, lütfen listeden bir "
+"Arakodlama işleminin parametrelerini yapılandırmak için lütfen listeden bir "
 "kodlayıcı seçin."
 
 #: transcoding/TranscodingPropertySliderWidget.cpp:99
@@ -16648,22 +16632,22 @@ msgstr "Derecelendirme: %1"
 #: TrayIcon.cpp:189
 #, kde-format
 msgid "Play count: %1"
-msgstr "Çalınma sayısı: %1"
+msgstr "Çalma sayısı: %1"
 
 #: TrayIcon.cpp:193
 #, kde-format
 msgid "Last played: %1"
-msgstr "son çalınma tarihi: %1"
+msgstr "Son çalma tarihi: %1"
 
 #: widgets/AnalyzerWidget.cpp:35
 #, kde-format
 msgid "Click for more analyzers"
-msgstr "Daha çok analizci için tıklayın"
+msgstr "Daha fazla çözümleyici için tıkla"
 
 #: widgets/AnalyzerWidget.cpp:69
 #, kde-format
 msgid "&Visualizations"
-msgstr "&Görsel Eklentiler"
+msgstr "&Görselleştirmeler"
 
 #: widgets/BookmarkPopup.cpp:82 widgets/BookmarkPopup.cpp:110
 #, kde-format
@@ -16673,7 +16657,7 @@ msgstr "Yer İmi"
 #: widgets/BreadcrumbItemButton.cpp:239
 #, kde-format
 msgid "List and run bookmarks, or create new ones"
-msgstr "Yer imlerini listele ve çalıştır veya yenilerini oluştur"
+msgstr "Yer imlerini listele, çalıştır veya yenilerini oluştur"
 
 #: widgets/BreadcrumbItemButton.cpp:257
 #, kde-format
@@ -16698,12 +16682,12 @@ msgstr "Önayar:"
 #: widgets/FilenameLayoutWidget.cpp:88
 #, kde-format
 msgid "A list of selectable filename scheme/format presets."
-msgstr "Seçilebilir dosya adı şema/biçim önayarlarının bir listesi."
+msgstr "Seçilebilir dosya adı şeması/biçimi önayarlarının listesi."
 
 #: widgets/FilenameLayoutWidget.cpp:92
 #, kde-format
 msgid "Add preset"
-msgstr "Önayar ekle"
+msgstr "Önayar Ekle"
 
 #: widgets/FilenameLayoutWidget.cpp:93
 #, kde-format
@@ -16713,17 +16697,17 @@ msgstr "Geçerli şemayı/biçimi bir önayar olarak kaydeder."
 #: widgets/FilenameLayoutWidget.cpp:96
 #, kde-format
 msgid "Update preset"
-msgstr "Ayarı güncelle"
+msgstr "Önayarı Güncelle"
 
 #: widgets/FilenameLayoutWidget.cpp:97
 #, kde-format
 msgid "Updates the preset with the current scheme/format."
-msgstr "Ayarı geçerli şema/biçim ile günceller."
+msgstr "Önayarı geçerli şema/biçim ile günceller."
 
 #: widgets/FilenameLayoutWidget.cpp:100
 #, kde-format
 msgid "Remove preset"
-msgstr "Önayarı kaldır"
+msgstr "Önayarı Kaldır"
 
 #: widgets/FilenameLayoutWidget.cpp:101
 #, kde-format
@@ -16754,12 +16738,12 @@ msgstr "Koleksiyon ana dizini"
 #: widgets/FilenameLayoutWidget.cpp:277
 #, kde-format
 msgid "&Basic..."
-msgstr "&Temel..."
+msgstr "&Temel…"
 
 #: widgets/FilenameLayoutWidget.cpp:282
 #, kde-format
 msgid "&Advanced..."
-msgstr "Geliş&miş..."
+msgstr "Geliş&miş…"
 
 #: widgets/FilenameLayoutWidget.cpp:434
 #, kde-format
@@ -16769,7 +16753,7 @@ msgstr "Yeni Ayar"
 #: widgets/FilenameLayoutWidget.cpp:434
 #, kde-format
 msgid "Preset Name"
-msgstr "Ayar Adı"
+msgstr "Önayar Adı"
 
 #: widgets/MetaQueryWidget.cpp:132
 #, kde-format
@@ -16847,7 +16831,7 @@ msgstr "MB"
 #, kde-format
 msgctxt "time format for specifying track length - hours, minutes, seconds"
 msgid "h:m:ss"
-msgstr "sa:dk:sn"
+msgstr "h:m:ss"
 
 #: widgets/MetaQueryWidget.cpp:997
 #, kde-format
@@ -16899,7 +16883,7 @@ msgstr "Derecelendirme değişti"
 #: widgets/Osd.cpp:261
 #, kde-format
 msgid "Volume: 100% (muted)"
-msgstr "Ses: %​100 (sessize alınmış)"
+msgstr "Ses: %​100 (Sessiz)"
 
 #: widgets/Osd.cpp:504
 #, kde-format
@@ -16907,18 +16891,18 @@ msgid ""
 "On-Screen-Display preview\n"
 "Drag to reposition"
 msgstr ""
-"Ekran Bilgilendirme Penceresi önizlemesi\n"
+"Ekran Üzeri Görüntü önizlemesi\n"
 "Konumlandırmak için sürükleyin"
 
 #: widgets/Osd.cpp:756
 #, kde-format
 msgid "Stopped"
-msgstr "Durdu"
+msgstr "Durduruldu"
 
 #: widgets/Osd.cpp:765
 #, kde-format
 msgid "Paused"
-msgstr "Durakladı"
+msgstr "Duraklatıldı"
 
 #: widgets/PlayPauseButton.cpp:31 widgets/PlayPauseButton.cpp:81
 #, kde-format
@@ -16939,22 +16923,22 @@ msgstr "Parça İlerlemesi"
 #: widgets/ProgressWidget.cpp:120
 #, kde-format
 msgid "The amount of time elapsed in current track"
-msgstr "Yürütülen parçanın geçen zamanı"
+msgstr "Geçerli parçada geçen süre"
 
 #: widgets/ProgressWidget.cpp:121
 #, kde-format
 msgid "The amount of time remaining in current track"
-msgstr "Yürütülen parçanın kalan zamanı"
+msgstr "Geçerli parçada kalan süre"
 
 #: widgets/SearchWidget.cpp:51
 #, kde-format
 msgid "Enter space-separated terms to search."
-msgstr "Arama yapmak için boşluk ile ayrılmış sözcükler girin."
+msgstr "Aramak için boşlukla ayrılmış terimleri girin."
 
 #: widgets/SearchWidget.cpp:73 widgets/SearchWidget.cpp:167
 #, kde-format
 msgid "Edit filter"
-msgstr "Süzgeci düzenle"
+msgstr "Süzgeci Düzenle"
 
 #: widgets/SliderWidget.cpp:243
 #, kde-format
@@ -17003,7 +16987,7 @@ msgstr "Şuraya atla: %1"
 #: widgets/TokenDropTarget.cpp:334
 #, kde-format
 msgid "Drag in and out items from above."
-msgstr "Yukardaki ögeleri içe veya dışa sürükleyin."
+msgstr "Ögeleri yukarıdan içeri ve dışarı sürükleyin."
 
 #: widgets/TokenWithLayout.cpp:223
 #, kde-format
