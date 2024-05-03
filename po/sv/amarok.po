@@ -2,7 +2,7 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Stefan Asserhäll <stefan.asserhall@bredband.net>, 2007, 2008, 2009, 2010.
+# SPDX-FileCopyrightText: 2007, 2008, 2009, 2010, 2024 Stefan Asserhäll <stefan.asserhall@bredband.net>
 # Stefan Asserhall <stefan.asserhall@bredband.net>, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021.
 # Arve Eriksson <031299870@telia.com>, 2011.
 msgid ""
@@ -10,14 +10,14 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-04-26 01:37+0000\n"
-"PO-Revision-Date: 2021-06-26 20:45+0200\n"
+"PO-Revision-Date: 2024-05-02 15:05+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@bredband.net>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 20.08.1\n"
+"X-Generator: Lokalize 23.08.3\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #, kde-format
@@ -10518,16 +10518,13 @@ msgid "The audio player by KDE"
 msgstr "Ljudspelaren av KDE"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2013, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2024, The Amarok Development Squad"
 msgstr ""
 "© 2002-2003, Mark Kretschmann\n"
-"© 2003-2013, Amarok-utvecklingspatrullen"
+"© 2003-2024, Amarok-utvecklingspatrullen"
 
 #: main.cpp:101
 #, kde-format
