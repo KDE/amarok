@@ -29,8 +29,10 @@ AmarokQml.Applet {
         anchors.fill: parent
 
         RowLayout {
+            id: controlButtonRow
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignTop
+            property Button selectedMode: artistMode
 
             Button {
                 icon.name: "go-previous"
@@ -85,14 +87,16 @@ AmarokQml.Applet {
                 onMoved: content.runJavaScript( "window.scrollTo(0, " + value + ");")
             }
             Button {
+                id: artistMode
                 icon.name: "filename-artist-amarok"
                 Layout.alignment: Qt.AlignRight
                 ToolTip.text: i18n("Artist")
                 ToolTip.visible: hovered
                 ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
                 hoverEnabled: true
+                checked: controlButtonRow.selectedMode === this
 
-                onClicked: WikipediaEngine.selection = WikipediaEngine.Artist
+                onClicked: { WikipediaEngine.selection = WikipediaEngine.Artist; controlButtonRow.selectedMode = this; }
             }
             Button {
                 icon.name: "filename-composer-amarok"
@@ -101,8 +105,9 @@ AmarokQml.Applet {
                 ToolTip.visible: hovered
                 ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
                 hoverEnabled: true
+                checked: controlButtonRow.selectedMode === this
 
-                onClicked: WikipediaEngine.selection = WikipediaEngine.Composer
+                onClicked: { WikipediaEngine.selection = WikipediaEngine.Composer; controlButtonRow.selectedMode = this; }
             }
             Button {
                 icon.name: "filename-album-amarok"
@@ -111,8 +116,9 @@ AmarokQml.Applet {
                 ToolTip.visible: hovered
                 ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
                 hoverEnabled: true
+                checked: controlButtonRow.selectedMode === this
 
-                onClicked: WikipediaEngine.selection = WikipediaEngine.Album
+                onClicked: { WikipediaEngine.selection = WikipediaEngine.Album; controlButtonRow.selectedMode = this; }
             }
             Button {
                 icon.name: "filename-title-amarok"
@@ -121,8 +127,9 @@ AmarokQml.Applet {
                 ToolTip.visible: hovered
                 ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
                 hoverEnabled: true
+                checked: controlButtonRow.selectedMode === this
 
-                onClicked: WikipediaEngine.selection = WikipediaEngine.Track
+                onClicked: { WikipediaEngine.selection = WikipediaEngine.Track; controlButtonRow.selectedMode = this; }
             }
         }
 
