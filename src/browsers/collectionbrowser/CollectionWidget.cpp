@@ -178,6 +178,8 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
                     QString(Meta::shortI18nForField( Meta::valCreateDate ) + ":<1w") );
     combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Added This Month"),
                     QString(Meta::shortI18nForField( Meta::valCreateDate ) + ":<1m") );
+    combo->addItem( icon, i18nc("@item:inlistbox Collection widget filter preset", "Never Played"),
+                    QString(Meta::shortI18nForField( Meta::valPlaycount ) + ":0") );
     combo->insertSeparator( combo->count() );
 
     QMenu *filterMenu = new QMenu( nullptr );
