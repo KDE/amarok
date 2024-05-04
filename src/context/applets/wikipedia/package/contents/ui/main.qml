@@ -133,6 +133,7 @@ AmarokQml.Applet {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             anchors.margins: Kirigami.Units.smallSpacing
             Layout.fillWidth: true
+            onLinkActivated: Qt.openUrlExternally(link)
         }
 
         WebEngineView {
@@ -166,7 +167,13 @@ AmarokQml.Applet {
                     visible: false
                     onTriggered: content.triggerWebAction(WebEngineView.CopyLinkToClipboard)
                 }
-                // TODO: Possibly add Copy Image to Clipboard post-3.0
+                MenuItem {
+                    id: copyImage
+                    text: i18nc("Right-click menu option for images in Wikipedia applet", "Copy Image to Clipboard")
+                    icon.name: "edit-copy"
+                    visible: false
+                    onTriggered: content.triggerWebAction(WebEngineView.CopyImageToClipboard)
+                }
             }
 
             backgroundColor: "transparent"
@@ -198,6 +205,7 @@ AmarokQml.Applet {
             onContextMenuRequested: function(request) {
                 request.accepted = true;
                 copyLink.visible = request.linkUrl.toString().length > 0
+                copyImage.visible = request.mediaUrl.toString().length > 0 && request.mediaType === ContextMenuRequest.MediaTypeImage
                 wikipediaContextMenu.popup();
             }
         }

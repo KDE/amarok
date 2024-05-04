@@ -3,6 +3,17 @@ Amarok ChangeLog
 (C) 2002-2024 the Amarok authors.
 
 
+VERSION 3.0.1
+  FEATURES:
+   * Added an option to copy image to clipboard in Wikipedia applet, and a clickable
+     notification if a non-Wikipedia link was clicked.
+
+  CHANGES:
+   * Improve strings in user interface (incl. BR 343896)
+
+  BUGFIXES:
+
+
 VERSION 3.0.0
   FEATURES:
    * Added a visual hint that context view applets can be resized in edit mode.

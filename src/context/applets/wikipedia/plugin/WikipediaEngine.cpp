@@ -885,7 +885,12 @@ void
 WikipediaEngine::setUrl(const QUrl& url)
 {
     if( !url.host().endsWith( ".wikipedia.org" ) )
+    {
+        setMessage( QString( "<a href=\"%1\">").arg( url.toString() ) +
+            i18nc( "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. %1 is the url of the link",
+                   "Click to open %1 in a web browser", url.toString() ) + "</a>" );
         return;
+    }
     QUrl monobookUrl = url;
     monobookUrl.setPath( QLatin1String("/w/index.php") );
 
