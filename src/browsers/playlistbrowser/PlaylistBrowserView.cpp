@@ -466,10 +466,15 @@ PlaylistBrowserView::slotDelete()
     foreach( const PlaylistProvider *provider, providerPlaylists.keys() )
         providerNames << provider->prettyName();
 
+    QString deletionString = ( m_writableActionPlaylists.count() == 1 ?
+        i18nc( "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist provider pretty name", "Delete playlist <i>%1</i> from %2?",
+               m_writableActionPlaylists.first()->prettyName(), providerNames.join( QStringLiteral(", ") ) ) :
+        i18nc( "Playlist deletion confirmation dialog. %1 is the playlist count (always more than 1), %2 is playlist provider pretty name", "Delete %1 playlists from %2?",
+               m_writableActionPlaylists.count(), providerNames.join( QStringLiteral(", ") ) ) );
+
     auto button = QMessageBox::question( The::mainWindow(),
                                          i18n( "Confirm Playlist Deletion" ),
-                                         i18nc( "%1 is playlist provider pretty name",
-                                                "Delete playlist from %1.", providerNames.join( QStringLiteral(", ") ) ),
+                                         deletionString,
                                          QMessageBox::Yes | QMessageBox::No,
                                          QMessageBox::Yes );
 
