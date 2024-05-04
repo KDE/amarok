@@ -284,6 +284,7 @@
       <li xml:lang="it">Servizi Internet integrati: last.fm, Magnatune, Ampache e altri.</li>
       <li xml:lang="nl">Geïntegreerde internetservices: last.fm, Magnatune, Ampache en meer.</li>
       <li xml:lang="sl">Vgrajene internetne storitve: last.fm, Magnatune, Ampache in druge.</li>
+      <li xml:lang="sv">Integrerade Internet-tjänster: last.fm, Magnatune, Ampache med flera.</li>
       <li xml:lang="tr">Tümleştirilmiş İnternet hizmetleri: last.fm, Magnatune, Ampache ve daha fazlası.</li>
       <li xml:lang="uk">інтеграція з інтернет-службами: last.fm, Magnatune, Ampache тощо;</li>
       <li xml:lang="x-test">xxIntegrated Internet services: last.fm, Magnatune, Ampache and more.xx</li>
@@ -420,6 +421,7 @@
       <caption xml:lang="it">Riproduzione della musica con Amarok 3.0</caption>
       <caption xml:lang="nl">Muziek afspelen in Amarok 3.0</caption>
       <caption xml:lang="sl">Predvajanje glasbe v Amaroku 3.0</caption>
+      <caption xml:lang="sv">Spela musik i Amarok 3.0</caption>
       <caption xml:lang="tr">Amarok 3.0’da müzik çalma</caption>
       <caption xml:lang="uk">Відтворення музики в Amarok 3.0</caption>
       <caption xml:lang="x-test">xxPlaying music in Amarok 3.0xx</caption>
