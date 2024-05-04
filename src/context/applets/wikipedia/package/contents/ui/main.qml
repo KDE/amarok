@@ -69,7 +69,7 @@ AmarokQml.Applet {
                 icon.name: "media-playback-pause"
                 enabled: !content.loading
                 Layout.alignment: Qt.AlignLeft
-                ToolTip.text: i18n("Pause") //TODO better string when not freeze
+                ToolTip.text: i18nc("Disable automatic page changes when track changes in Wikipedia applet", "Don't change page automatically")
                 ToolTip.visible: hovered
                 ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
                 hoverEnabled: true
@@ -161,7 +161,7 @@ AmarokQml.Applet {
                 }
                 MenuItem {
                     id: copyLink
-                    text: i18n("Copy to Clipboard") // TODO: make "Copy Link to Clipboard" when not string freeze
+                    text: i18nc("Right-click menu option for links in Wikipedia applet", "Copy Link to Clipboard")
                     icon.name: "edit-copy"
                     visible: false
                     onTriggered: content.triggerWebAction(WebEngineView.CopyLinkToClipboard)
