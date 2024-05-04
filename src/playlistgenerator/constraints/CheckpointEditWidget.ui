@@ -66,7 +66,7 @@
              <string/>
             </property>
             <property name="whatsThis">
-             <string>The desired position of the song in the playlist, in hours, minutes, and seconds.  Note: because of Qt limitations, the maximum position that you can specify is 24 hours.</string>
+             <string>The desired position of the track in the playlist, in hours, minutes, and seconds.  Note: because of Qt limitations, the maximum position that you can specify is 24 hours.</string>
             </property>
             <property name="displayFormat">
              <string>h:mm:ss</string>

@@ -111,7 +111,7 @@ PlaylistBrowserNS::DynamicCategory::DynamicCategory( QWidget* parent )
     m_duplicateButton->setCheckable( true );
     m_duplicateButton->setChecked( allowDuplicates() );
     m_duplicateButton->setIcon( QIcon::fromTheme( QStringLiteral("edit-copy") ) );
-    m_duplicateButton->setToolTip( i18n( "Allow duplicate songs in result" ) );
+    m_duplicateButton->setToolTip( i18nc( "Tooltip for dynamic playlist setting button", "Allow duplicate tracks in result" ) );
     presetToolbar->addWidget( m_duplicateButton );
 
     m_addButton = new QToolButton( presetToolbar );

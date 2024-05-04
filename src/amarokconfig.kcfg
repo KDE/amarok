@@ -97,7 +97,7 @@
         <default>true</default>
     </entry>
     <entry key="AutoScrollPlaylist" type="Bool">
-        <label>Automatically scroll the playlist to make the currently playing song visible</label>
+        <label>Automatically scroll the playlist to make the currently playing track visible</label>
         <default>true</default>
     </entry>
     <entry key="Show Album Art" type="Bool">
@@ -444,8 +444,8 @@
 
 <group name="Scrobbler">
     <entry key="SubmitPlayedSongs" type="Bool">
-        <label>Submit played songs</label>
-        <whatsthis>Whether played songs are submitted to Audioscrobbler</whatsthis>
+        <label>Submit played tracks</label>
+        <whatsthis>Whether played tracks are submitted to Audioscrobbler</whatsthis>
         <default>true</default>
     </entry>
     <entry key="ScrobblerUsername" type="String">
@@ -465,7 +465,7 @@
     </entry>
     <entry key="RetrieveSimilarArtists" type="Bool">
         <label>Retrieve similar artists</label>
-        <whatsthis>Whether similar songs are retrieved from Audioscrobbler</whatsthis>
+        <whatsthis>Whether similar tracks are retrieved from Audioscrobbler</whatsthis>
         <default>false</default>
     </entry>
 </group>

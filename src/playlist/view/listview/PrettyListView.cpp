@@ -688,7 +688,7 @@ Playlist::PrettyListView::paintEvent( QPaintEvent *event )
             if( m_showOnlyMatches && Playlist::ModelStack::instance()->bottom()->rowCount() > 0 )
                 emptyText = i18n( "Tracks have been hidden due to the active search." );
             else
-                emptyText = i18n( "Add some songs here by dragging them from all around." );
+                emptyText = i18nc( "Placeholder message in empty playlist view", "Add some tracks here by dragging them from all around." );
 
             QColor c = QApplication::palette().color( foregroundRole() );
             c.setAlpha( c.alpha() / 2 );
