@@ -117,6 +117,11 @@
         <whatsthis>If set, context applets will collapse using animations.</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="ShowArtistForVarious" type="Bool">
+        <label>Show track's artist in Collection Browser if different from album artist</label>
+        <whatsthis>Explicitly show artist in Collection Browser for Various Artists albums and tracks where artist differs from album artist.</whatsthis>
+        <default>true</default>
+    </entry>
 </group>
 
 <group name="OrganizeCollectionDialog">

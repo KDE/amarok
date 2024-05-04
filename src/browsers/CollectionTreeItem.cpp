@@ -265,6 +265,12 @@ CollectionTreeItem::isAlbumItem() const
 }
 
 bool
+CollectionTreeItem::isArtistItem() const
+{
+    return m_type == Data && !Meta::ArtistPtr::dynamicCast( m_data ).isNull();
+}
+
+bool
 CollectionTreeItem::isTrackItem() const
 {
     return m_type == Data && !Meta::TrackPtr::dynamicCast( m_data ).isNull();

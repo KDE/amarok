@@ -70,6 +70,7 @@ class AMAROK_EXPORT CollectionTreeItem : public QObject
 
         bool isDataItem() const;
         bool isAlbumItem() const;
+        bool isArtistItem() const;
         bool isTrackItem() const;
         bool isVariousArtistItem() const;
         bool isNoLabelItem() const;

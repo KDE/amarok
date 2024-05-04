@@ -256,6 +256,11 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     showTrackNumbers->setChecked( AmarokConfig::showTrackNumbers() );
     connect( showTrackNumbers, &QAction::toggled, this, &CollectionWidget::slotShowTrackNumbers );
 
+    QAction *showArtistForVarious = filterMenu->addAction( i18nc("@action:inmenu", "Show Artist for Various Artists") );
+    showArtistForVarious->setCheckable( true );
+    showArtistForVarious->setChecked( AmarokConfig::showArtistForVarious() );
+    connect( showArtistForVarious, &QAction::toggled, this, &CollectionWidget::slotShowArtistForVarious );
+
     QAction *showCovers = filterMenu->addAction( i18n( "Show Cover Art" ) );
     showCovers->setCheckable( true );
     showCovers->setChecked( AmarokConfig::showAlbumArt() );
@@ -331,6 +336,13 @@ void
 CollectionWidget::slotShowTrackNumbers( bool checked )
 {
     AmarokConfig::setShowTrackNumbers( checked );
+    setLevels( levels() );
+}
+
+void
+CollectionWidget::slotShowArtistForVarious( bool checked )
+{
+    AmarokConfig::setShowArtistForVarious( checked );
     setLevels( levels() );
 }
 

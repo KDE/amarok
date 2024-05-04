@@ -264,7 +264,9 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
                 Meta::AlbumPtr album = track->album();
                 Meta::ArtistPtr artist = track->artist();
 
-                if( album && artist && album->isCompilation() )
+                if( album && artist &&
+                    ( AmarokConfig::showArtistForVarious() && ( !item->parent() || !item->parent()->isArtistItem() ) &&
+                    ( album->isCompilation() || ( album->albumArtist() != artist ) ) ) )
                     name.prepend( QStringLiteral("%1 - ").arg(artist->prettyName()) );
 
                 if( AmarokConfig::showTrackNumbers() )

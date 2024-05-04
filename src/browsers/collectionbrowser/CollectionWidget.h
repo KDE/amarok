@@ -66,6 +66,7 @@ class CollectionWidget : public BrowserCategory
         void sortByActionPayload( QAction * );
         void slotShowYears( bool checked );
         void slotShowTrackNumbers( bool checked );
+        void slotShowArtistForVarious( bool checked );
         void slotShowCovers( bool checked );
 
         void toggleView( bool merged );
