@@ -7,6 +7,8 @@ VERSION 3.0.1
   FEATURES:
    * Added an option to copy image to clipboard in Wikipedia applet, and a clickable
      notification if a non-Wikipedia link was clicked.
+   * Added an option to select if track's artist is shown for entries under various
+     artists / different album artist in context browser (BR 276039, BR 248101)
 
   CHANGES:
    * Improve strings in user interface (incl. BR 343896, BR 234854)
