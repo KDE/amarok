@@ -388,7 +388,11 @@ EditFilterDialog::updateDropTarget( const QString &text )
             }
             else if( filter.filter.isNumeric() )
             {
-                filter.filter.numValue = elem.text.toInt();
+                // Format is a numeric field, but operated as text representation, so needs some extra hoops. BUG 435810
+                if( filter.filter.field() == Meta::valFormat )
+                    filter.filter.value = elem.text;
+                else
+                    filter.filter.numValue = elem.text.toInt();
             }
 
             if( filter.filter.isDate() )

@@ -15,7 +15,8 @@ VERSION 3.0.1
    * Improve strings in user interface (incl. BR 343896, BR 234854)
 
   BUGFIXES:
-   * Fix TagMatchBias to interpret length as seconds (BR 375565)
+   * Various small tag match bias and collection filtering related fixes (BR 375565,
+     BR 406751, BR 435810)
 
 
 VERSION 3.0.0

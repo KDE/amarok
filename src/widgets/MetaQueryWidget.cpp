@@ -787,7 +787,7 @@ MetaQueryWidget::makeFormatComboSelection()
         combo->addItem(filetypes.at(listpos),listpos);
     }
 
-    int index = m_fieldSelection->findData( (int)m_filter.numValue );
+    int index = combo->findText( m_filter.value );
     combo->setCurrentIndex( index == -1 ? 0 : index );
 
     connect( combo, QOverload<int>::of(&QComboBox::currentIndexChanged),
