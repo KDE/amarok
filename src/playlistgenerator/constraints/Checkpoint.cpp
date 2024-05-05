@@ -208,6 +208,8 @@ ConstraintTypes::Checkpoint::getName() const
 double
 ConstraintTypes::Checkpoint::satisfaction( const Meta::TrackList& tl ) const
 {
+    if( !m_matcher ) // Incomplete condition, skip and avoid a crash
+        return 0.0;
     // What are the ending time boundaries of each track in this playlist?
     qint64 start = 0;
     QList< qint64 > boundaries;
