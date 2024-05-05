@@ -357,19 +357,28 @@ Dynamic::TagMatchBias::newQuery()
     }
     else if( m_filter.isNumeric() )
     {
+        qint64 nval1 = m_filter.numValue;
+        qint64 nval2 = m_filter.numValue2;
+        if( m_filter.field() == Meta::valLength )
+        {
+            // Length is msecs in database, corresponding conversion done in TextualQueryFilter.cpp:157
+            // BUG 375565
+            nval1 = nval1 * 1000;
+            nval2 = nval2 * 1000;
+        }
         switch( m_filter.condition )
         {
         case MetaQueryWidget::LessThan:
         case MetaQueryWidget::Equals:
         case MetaQueryWidget::GreaterThan:
-            m_qm->addNumberFilter( m_filter.field(), m_filter.numValue,
+            m_qm->addNumberFilter( m_filter.field(), nval1,
                                 (Collections::QueryMaker::NumberComparison)m_filter.condition );
             break;
         case MetaQueryWidget::Between:
             m_qm->beginAnd();
-            m_qm->addNumberFilter( m_filter.field(), qMin(m_filter.numValue, m_filter.numValue2)-1,
+            m_qm->addNumberFilter( m_filter.field(), qMin(nval1, nval2)-1,
                                 Collections::QueryMaker::GreaterThan );
-            m_qm->addNumberFilter( m_filter.field(), qMax(m_filter.numValue, m_filter.numValue2)+1,
+            m_qm->addNumberFilter( m_filter.field(), qMax(nval1, nval2)+1,
                                 Collections::QueryMaker::LessThan );
             m_qm->endAndOr();
             break;
