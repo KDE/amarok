@@ -907,6 +907,7 @@ MetaQueryWidget::makeDateTimeSelection()
     {
         TimeDistanceWidget* distanceSelection = new TimeDistanceWidget();
         distanceSelection->setTimeDistance( m_filter.numValue );
+        m_filter.numValue = distanceSelection->timeDistance();
 
         distanceSelection->connectChanged( this, &MetaQueryWidget::numValueTimeDistanceChanged);
 
