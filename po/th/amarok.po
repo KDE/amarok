@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-26 01:37+0000\n"
+"POT-Creation-Date: 2024-05-05 01:43+0000\n"
 "PO-Revision-Date: 2010-03-21 16:32+0700\n"
 "Last-Translator: Thanomsub Noppaburana <donga.nb@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
@@ -586,9 +586,12 @@ msgstr "จะให้แสดงไอคอนในถาดระบบห
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "Automatically scroll the playlist to make the currently playing song "
+#| "visible"
 msgid ""
-"Automatically scroll the playlist to make the currently playing song visible"
+"Automatically scroll the playlist to make the currently playing track visible"
 msgstr "เลื่อนรายการเล่นมายังแทร็กที่กำลังเล่นอยู่ให้โดยอัตโนมัติ"
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -624,27 +627,42 @@ msgstr ""
 msgid "If set, context applets will collapse using animations."
 msgstr ""
 
+#. i18n: ectx: label, entry, group (General Options)
+#: amarokconfig.kcfg:121
+#, kde-format
+msgid ""
+"Show track's artist in Collection Browser if different from album artist"
+msgstr ""
+
+#. i18n: ectx: whatsthis, entry, group (General Options)
+#: amarokconfig.kcfg:122
+#, kde-format
+msgid ""
+"Explicitly show artist in Collection Browser for Various Artists albums and "
+"tracks where artist differs from album artist."
+msgstr ""
+
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:124
+#: amarokconfig.kcfg:129
 #, kde-format
 msgid "Whether organize files will overwrite existing files."
 msgstr "จะให้การจัดเรียงแฟ้มทำการเขียนทับแฟ้มที่มีอยู่หรือไม่"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:125
+#: amarokconfig.kcfg:130
 #, kde-format
 msgid "If set, Organize files will overwrite any existing destination."
 msgstr "หากตั้งไว้, การจัดเรียงแฟ้มจะเขียนทับแฟ้มที่มีอยู่แล้วที่ที่หมาย"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:129
+#: amarokconfig.kcfg:134
 #, fuzzy, kde-format
 #| msgid "Whether organize files will ignore The in artist names."
 msgid "Whether organize files will move The in artist names to the end."
 msgstr "จะให้การจัดเรียงแฟ้มเพิกเฉยต่อคำ 'The' ในชื่อศิลปินหรือไม่"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:130
+#: amarokconfig.kcfg:135
 #, fuzzy, kde-format
 #| msgid "If set, Organize files will ignore The in artist names."
 msgid ""
@@ -653,7 +671,7 @@ msgid ""
 msgstr "หากตั้งไว้ การจัดเรียงแฟ้มจะไม่สนใจคำ 'The' ในชื่อศิลปิน"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:134
+#: amarokconfig.kcfg:139
 #, fuzzy, kde-format
 #| msgid ""
 #| "Whether organize files will replace spaces in filenames by an underscore."
@@ -663,7 +681,7 @@ msgstr ""
 "จะให้การจัดเรียงแฟ้มทำการแทนที่ช่องว่างในชื่อแฟ้มด้วยเครื่องหมาย underscore (_) หรือไม่"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:135
+#: amarokconfig.kcfg:140
 #, fuzzy, kde-format
 #| msgid ""
 #| "If set, Organize files will replace spaces in filenames by an underscore."
@@ -672,33 +690,33 @@ msgid ""
 msgstr "หากตั้งไว้, การจัดเรียงแฟ้มจะทำการแทนที่ช่องว่างในชื่อแฟ้มด้วยเครื่องหมาย _ "
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:139
+#: amarokconfig.kcfg:144
 #, kde-format
 msgid "Whether organize files will use cover art as folder icons."
 msgstr "จะให้การจัดเรียงแฟ้มใช้รูปหน้าปกเป็นไอคอนของโฟลเดอร์หรือไม่"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:140
+#: amarokconfig.kcfg:145
 #, kde-format
 msgid "If set, Organize files will use cover art as folder icons."
 msgstr "หากตั้งไว้, การจัดเรียงแฟ้มจะใช้รูปหน้าปกเป็นไอคอนของโฟลเดอร์"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:144
+#: amarokconfig.kcfg:149
 #, fuzzy, kde-format
 #| msgid "Index of collection folder destination for Organize files."
 msgid "Collection folder path destination for Organize files."
 msgstr "ดัชนีของที่หมายโฟลเดอร์คลังสื่อสำหรับการจัดเรียงแฟ้ม"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:145
+#: amarokconfig.kcfg:150
 #, fuzzy, kde-format
 #| msgid "The ID of the collection folder destination for Organize files."
 msgid "The path of the collection folder destination for Organize files."
 msgstr "หมายเลขระบุตัวของที่หมายโฟลเดอร์คลังสื่อสำหรับจัดเรียงแฟ้ม"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:149
+#: amarokconfig.kcfg:154
 #, kde-format
 msgid ""
 "Whether organize files will rename files in a manner compatible with vfat "
@@ -706,7 +724,7 @@ msgid ""
 msgstr "จะให้การจัดเรียงแฟ้มทำการเปลี่ยนชื่อแฟ้มในรูปแบบที่เข้ากันได้กับระบบแฟ้ม vfat หรือไม่"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:150
+#: amarokconfig.kcfg:155
 #, kde-format
 msgid ""
 "If set, Organize files will replace characters that are not compatible with "
@@ -716,7 +734,7 @@ msgstr ""
 "':', '*' และ '?')"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:154
+#: amarokconfig.kcfg:159
 #, kde-format
 msgid ""
 "Whether organize files will rename files such that they only contain 7-bit "
@@ -724,7 +742,7 @@ msgid ""
 msgstr "จะให้การจัดเรียงแฟ้มเปลี่ยนชื่อแฟ้มให้มีการใช้ตัวอักษร ASCII แบบ 7 บิต เท่านั้น หรือไม่"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:155
+#: amarokconfig.kcfg:160
 #, kde-format
 msgid ""
 "If set, Organize files will replace characters that are not compatible with "
@@ -734,26 +752,26 @@ msgstr ""
 "7 บิต"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:159
+#: amarokconfig.kcfg:164
 #, kde-format
 msgid "Whether organize files will use a custom file naming scheme."
 msgstr "จะให้การจัดเรียงแฟ้มใช้งานรูปแบบชื่อแฟ้มตั้งเองหรือไม่"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:160
+#: amarokconfig.kcfg:165
 #, kde-format
 msgid ""
 "If set, Organize files will rename files according to a custom format string."
 msgstr "หากตั้งไว้ การจัดเรียงแฟ้มจะทำการเปลี่ยนชื่อแฟ้มโดยอิงกับรูปแบบข้อความที่ตั้งเอง"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:164
+#: amarokconfig.kcfg:169
 #, kde-format
 msgid "Format string for Organize files, if a custom naming scheme is used."
 msgstr "รูปแบบข้อความสำหรับการจัดเรียงแฟ้ม, หากมีการใช้งานรูปแบบการตั้งชื่อแบบตั้งเอง"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:165
+#: amarokconfig.kcfg:170
 #, kde-format
 msgid ""
 "If the custom filename scheme is enabled, then Organize files will rename "
@@ -762,38 +780,38 @@ msgstr ""
 "หากมีการใช้งานรูปแบบชื่อแฟ้มตั้งเอง การจัดเรียงแฟ้มจะทำการเปลี่ยนชื่อแฟ้ม โดยอิงกับรูปแบบข้อความนี้"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:169
+#: amarokconfig.kcfg:174
 #, kde-format
 msgid "Regular expression that is to be replaced."
 msgstr "Regular expression ที่จะถูกแทนที่"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:170
+#: amarokconfig.kcfg:175
 #, kde-format
 msgid ""
 "Organize files will replace substrings matching this regular expression."
 msgstr "การจัดเรียงแฟ้มจะทำการแทนที่ข้อความที่เข้าคู่กับรูปแบบ regular expression นี้"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:174
+#: amarokconfig.kcfg:179
 #, kde-format
 msgid "Replacing string."
 msgstr "ข้อความสำหรับแทนที่"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:175
+#: amarokconfig.kcfg:180
 #, kde-format
 msgid "Organize files will replace matching substrings with this string."
 msgstr "การจัดเรียงแฟ้มจะทำการแทนที่ข้อความที่เข้ากันกับรูปแบบด้วยสตริงนี้"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:179
+#: amarokconfig.kcfg:184
 #, kde-format
 msgid "Basic or Advanced Mode"
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:180
+#: amarokconfig.kcfg:185
 #, kde-format
 msgid ""
 "In basic mode graphical drag/droppable tokens are used to create a filename "
@@ -801,115 +819,115 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:184
+#: amarokconfig.kcfg:189
 #, fuzzy, kde-format
 #| msgid "Import Collection"
 msgid "Format Presets"
 msgstr "นำเข้าคลังสื่อ"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:185
+#: amarokconfig.kcfg:190
 #, kde-format
 msgid "A list of preset formats (token schemas)."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:192
+#: amarokconfig.kcfg:197
 #, kde-format
 msgid "Master volume"
 msgstr "ระดับเสียงหลัก"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:193
+#: amarokconfig.kcfg:198
 #, fuzzy, kde-format
 #| msgid "The Amarok master volume, a value between 0 (muted) and 100."
 msgid "The Amarok master volume, a value between 0 and 100."
 msgstr "ตัวปรับระดับเสียงหลักของแอมอะร็อก, ใช้ค่าระหว่าง 0 (ตัดเสียง) ถึง 100"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:199
+#: amarokconfig.kcfg:204
 #, kde-format
 msgid "Mute state"
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:200
+#: amarokconfig.kcfg:205
 #, kde-format
 msgid "Mute/Unmute sound."
 msgstr "เปิดเสียง/ตัดเสียง"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:204
+#: amarokconfig.kcfg:209
 #, kde-format
 msgid "Whether to fade out tracks when pressing stop."
 msgstr "จะให้ทำการค่อย ๆ หรี่เสียงจนเงียบเมื่อกดปุ่มหยุดเล่นหรือไม่"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:205 amarokconfig.kcfg:210
+#: amarokconfig.kcfg:210 amarokconfig.kcfg:215
 #, kde-format
 msgid "Enable/Disable fadeout."
 msgstr "เปิด/ปิด การหรี่เสียงจนเงียบ"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:209
+#: amarokconfig.kcfg:214
 #, fuzzy, kde-format
 #| msgid "Whether to fade out tracks when pressing stop."
 msgid "Whether to fade out tracks when pressing pause."
 msgstr "จะให้ทำการค่อย ๆ หรี่เสียงจนเงียบเมื่อกดปุ่มหยุดเล่นหรือไม่"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:214
+#: amarokconfig.kcfg:219
 #, kde-format
 msgid "Length of fadeout, in milliseconds"
 msgstr "เวลาที่ใช้ในการหรี่เสียง, ในหน่วยมิลลิวินาที"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:215
+#: amarokconfig.kcfg:220
 #, kde-format
 msgid "The length of the fadeout in milliseconds."
 msgstr "เวลาที่ใช้ในการค่อย ๆ หรี่เสียง/เพิ่มเสียงระหว่างเปลี่ยนเพลง ในหน่วยมิลลิวินาที"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:220
+#: amarokconfig.kcfg:225
 #, kde-format
 msgid "Equalizer mode - 0 = off, 1 to n = preset no"
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:221
+#: amarokconfig.kcfg:226
 #, kde-format
 msgid "When enabled, an equalizer plugin filters the audio stream."
 msgstr "หากเปิดใช้ ตัวปลั๊กอินอิควอไลเซอร์จะเข้าควบคุมเสียง"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:225
+#: amarokconfig.kcfg:230
 #, fuzzy, kde-format
 #| msgid "Equalizer pre-amplification value, range -100..100, 0 is normal."
 msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
 msgstr "ค่าปรีแอมป์อิควอไลเซอร์, ช่วงระหว่าง -100..100, ค่า 0 คือค่าปกติ"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:229
+#: amarokconfig.kcfg:234
 #, fuzzy, kde-format
 #| msgid "Equalizer preset name."
 msgid "List with user equalizer preset names"
 msgstr "ชื่อชุดสำเร็จของอิควอไลเซอร์"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:232
+#: amarokconfig.kcfg:237
 #, fuzzy, kde-format
 #| msgid "Equalizer preset name."
 msgid "List with user presets values"
 msgstr "ชื่อชุดสำเร็จของอิควอไลเซอร์"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:236
+#: amarokconfig.kcfg:241
 #, kde-format
 msgid "The mode for adjusting playback volume."
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:237
+#: amarokconfig.kcfg:242
 #, kde-format
 msgid ""
 "Whether to adjust the volume of tracks to make them sound the same volume, "
@@ -917,54 +935,54 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:240
+#: amarokconfig.kcfg:245
 #, fuzzy, kde-format
 #| msgid "Developer, Replay Gain support"
 msgid "Disable Replay Gain"
 msgstr "ผู้พัฒนา รองรับส่วนการวนเล่น"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:243
+#: amarokconfig.kcfg:248
 #, kde-format
 msgid "Make each track the same volume"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:246
+#: amarokconfig.kcfg:251
 #, kde-format
 msgid "Make each album the same volume"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:252
+#: amarokconfig.kcfg:257
 #, fuzzy, kde-format
 #| msgid "The length of the fadeout, in milliseconds."
 msgid "The length of a short seek, in seconds."
 msgstr "ความยาวของการหรี่เสียงระหว่างเพลง ในหน่วยมิลลิวินาที"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:257
+#: amarokconfig.kcfg:262
 #, fuzzy, kde-format
 #| msgid "The length of the fadeout, in milliseconds."
 msgid "The length of a medium seek, in seconds."
 msgstr "ความยาวของการหรี่เสียงระหว่างเพลง ในหน่วยมิลลิวินาที"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:262
+#: amarokconfig.kcfg:267
 #, fuzzy, kde-format
 #| msgid "The length of the fadeout, in milliseconds."
 msgid "The length of a long seek, in seconds."
 msgstr "ความยาวของการหรี่เสียงระหว่างเพลง ในหน่วยมิลลิวินาที"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:267
+#: amarokconfig.kcfg:272
 #, fuzzy, kde-format
 #| msgid "Queue URLs after the currently playing track"
 msgid "Whether Amarok should pause the currently playing track on suspend."
 msgstr "เพิ่มที่อยู่ URL เข้าคิวรอเล่นต่อจากแทร็กที่กำลังเล่นอยู่ในตอนนี้"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:271
+#: amarokconfig.kcfg:276
 #, kde-format
 msgid ""
 "Whether Amarok should prevent the system from sleeping if it is playing a "
@@ -972,7 +990,7 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:275
+#: amarokconfig.kcfg:280
 #, kde-format
 msgid ""
 "Whether Amarok should start playing if a track is added to playlist (and "
@@ -980,93 +998,93 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Cover Manager)
-#: amarokconfig.kcfg:282
+#: amarokconfig.kcfg:287
 #, kde-format
 msgid "Amazon locale for cover retrieval"
 msgstr "ค่าท้องถิ่นของ Amazon สำหรับดึงข้อมูลหน้าปก"
 
 #. i18n: ectx: whatsthis, entry, group (Cover Manager)
-#: amarokconfig.kcfg:283
+#: amarokconfig.kcfg:288
 #, kde-format
 msgid "Determines which Amazon server cover images should be retrieved from."
 msgstr "ระบุว่าให้ใช้เซิร์ฟเวอร์ไหนของ Amazon ในการดึงข้อมูลหน้าปก"
 
 #. i18n: ectx: label, entry, group (Wikipedia)
-#: amarokconfig.kcfg:290
+#: amarokconfig.kcfg:295
 #, kde-format
 msgid "Wikipedia locale for information retrieval"
 msgstr "ค่าท้องถิ่นของวิกิพีเดียสำหรับดึงข้อมูล"
 
 #. i18n: ectx: whatsthis, entry, group (Wikipedia)
-#: amarokconfig.kcfg:291
+#: amarokconfig.kcfg:296
 #, kde-format
 msgid ""
 "Determines in which language the information is retrieved from Wikipedia."
 msgstr "ระบุว่าให้ดึงข้อมูลมาจากวิกิพีเดียในภาษาใด"
 
 #. i18n: ectx: label, entry, group (KNotify)
-#: amarokconfig.kcfg:298
+#: amarokconfig.kcfg:303
 #, kde-format
 msgid "Use KNotify support"
 msgstr "ใช้การรองรับ KNotify"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:305
+#: amarokconfig.kcfg:310
 #, kde-format
 msgid "Use On-Screen Display"
 msgstr "ใช้การแสดงข้อความบนหน้าจอ"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:306
+#: amarokconfig.kcfg:311
 #, kde-format
 msgid "Enable/Disable the On-Screen Display."
 msgstr "เปิด/ปิด ระบบแสดงข้อความบนหน้าจอ"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:310 configdialog/dialogs/NotificationsConfig.cpp:46
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:46
 #, kde-format
 msgid "Use Growl for notifications"
 msgstr "ใช้ Growl สำหรับใช้กับการแจ้งให้ทราบ"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:311
+#: amarokconfig.kcfg:316
 #, kde-format
 msgid "Enable/Disable use of Growl for notifications."
 msgstr "เปิด/ปิด การใช้ Growl สำหรับใช้กับการแจ้งให้ทราบ"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315
+#: amarokconfig.kcfg:320
 #, kde-format
 msgid "Translucency Toggle"
 msgstr "สลับการเปิด/ปิดการใช้ความโปร่งแสง(เทียม)"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:316
+#: amarokconfig.kcfg:321
 #, kde-format
 msgid "Make the background of the OSD translucent."
 msgstr "สร้างพื้นหลังของ OSD โดยใช้ความโปร่งแสงเทียม"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:320
+#: amarokconfig.kcfg:325
 #, kde-format
 msgid "Whether to use custom colors for the OSD"
 msgstr "จะให้ใช้สีที่ตั้งเองสำหรับ OSD หรือไม่"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:321
+#: amarokconfig.kcfg:326
 #, kde-format
 msgid "You can use custom colors for the OSD if you set this true."
 msgstr "คุณสามารถใช้สีที่ตั้งขึ้นมาเองสำหรับ OSD ได้ หากคุณตั้งค่านี้ให้เป็นจริง"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:325
+#: amarokconfig.kcfg:330
 #, fuzzy, kde-format
 #| msgid "Font Color for On-Screen Display"
 msgid "Font color for OSD"
 msgstr "สีของอักษรสำหรับข้อความแสดงบนหน้าจอ (OSD)"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:326
+#: amarokconfig.kcfg:331
 #, kde-format
 msgid ""
 "The color of the OSD text. The color is specified in RGB, a comma-separated "
@@ -1076,14 +1094,14 @@ msgstr ""
 "ถึง 255 คั่นด้วยเครื่องหมายจุลภาค"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:330
+#: amarokconfig.kcfg:335
 #, fuzzy, kde-format
 #| msgid "Font Color for On-Screen Display"
 msgid "Font scaling for OSD"
 msgstr "สีของอักษรสำหรับข้อความแสดงบนหน้าจอ (OSD)"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:331
+#: amarokconfig.kcfg:336
 #, kde-format
 msgid ""
 "The scaling multiplier for the OSD font, in percent-of-normal. 100 is &#8220;"
@@ -1091,14 +1109,14 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:337
+#: amarokconfig.kcfg:342
 #, fuzzy, kde-format
 #| msgid "How many milliseconds the text should be displayed"
 msgid "How many milliseconds the text should be displayed for"
 msgstr "ระบุว่าให้ข้อความแสดงอยู่นานกี่มิลลิวินาที"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:338
+#: amarokconfig.kcfg:343
 #, kde-format
 msgid ""
 "The time in milliseconds to show the OSD. A value of 0 means never hide. The "
@@ -1108,13 +1126,13 @@ msgstr ""
 "5000 มิลลิวินาที"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:343
+#: amarokconfig.kcfg:348
 #, kde-format
 msgid "Y position offset"
 msgstr "พิกัดตำแหน่งแกน Y"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:344
+#: amarokconfig.kcfg:349
 #, kde-format
 msgid ""
 "The Y position of the OSD relative to the chosen screen and OSD alignment. "
@@ -1129,13 +1147,13 @@ msgstr ""
 "OSD และส่วนล่างสุดของหน้าจอ"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:350
+#: amarokconfig.kcfg:355
 #, kde-format
 msgid "OSD screen"
 msgstr "หน้าจอที่แสดง OSD"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:351
+#: amarokconfig.kcfg:356
 #, kde-format
 msgid ""
 "The screen that should display the OSD. For single-headed environments this "
@@ -1143,13 +1161,13 @@ msgid ""
 msgstr "หน้าจอที่ควรจะแสดง OSD สำหรับสภาพแวดล้อมที่ใช้จอเดี่ยว ค่านี้ควรจะเป็น 0"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:355
+#: amarokconfig.kcfg:360
 #, kde-format
 msgid "Align OSD to"
 msgstr "จัดวาง OSD กับ"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:356
+#: amarokconfig.kcfg:361
 #, kde-format
 msgid ""
 "The relative position of the OSD. Possible choices are Left, Middle, Right "
@@ -1158,14 +1176,14 @@ msgstr "ตำแหน่งสัมพัทธ์ของ OSD ตัวเ�
 
 #. i18n: ectx: label, entry, group (OSD)
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
-#: amarokconfig.kcfg:366 configdialog/dialogs/NotificationsConfig.ui:264
+#: amarokconfig.kcfg:371 configdialog/dialogs/NotificationsConfig.ui:264
 #, kde-format
 msgid "Don't show when a fullscreen application is active"
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
-#: amarokconfig.kcfg:367 configdialog/dialogs/NotificationsConfig.ui:261
+#: amarokconfig.kcfg:372 configdialog/dialogs/NotificationsConfig.ui:261
 #, kde-format
 msgid ""
 "Do not show the On-Screen-Display if another application is focused and "
@@ -1173,128 +1191,128 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:375
+#: amarokconfig.kcfg:380
 #, kde-format
 msgid "Resume playback of last played track on startup"
 msgstr "เล่นเพลงที่เล่นค้างไว้ครั้งล่าสุด เมื่อเริ่มโปรแกรม"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: amarokconfig.kcfg:376
+#: amarokconfig.kcfg:381
 #, kde-format
 msgid "If set, Amarok resumes playback of the last played track on startup."
 msgstr "หากตั้งไว้ แอมอะร็อกจะทำการเล่นเพลงที่เล่นค้างไว้ล่าสุดต่อไป เมื่อเริ่มโปรแกรม"
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:380
+#: amarokconfig.kcfg:385
 #, kde-format
 msgid "Track URL to resume upon startup"
 msgstr "ที่อยู่ URL ของเพลงที่จะให้เล่นต่อเมื่อเริ่มโปรแกรม"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: amarokconfig.kcfg:381
+#: amarokconfig.kcfg:386
 #, kde-format
 msgid "Internal: URL of the track to resume on startup."
 msgstr "ภายใน: URL ของเพลงที่จะเล่นต่อเมื่อเริ่มโปรแกรม"
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:384
+#: amarokconfig.kcfg:389
 #, fuzzy, kde-format
 #| msgid "&Resume playback on start"
 msgid "Internal: Resume playback in paused state"
 msgstr "เล่นเ&พลงที่ค้างไว้เมื่อเริ่มโปรแกรม"
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:388
+#: amarokconfig.kcfg:393
 #, kde-format
 msgid "Time to resume at, in milliseconds"
 msgstr "เวลาที่จะให้เล่นต่อไป, ในหน่วยมิลลิวินาที"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: amarokconfig.kcfg:389
+#: amarokconfig.kcfg:394
 #, kde-format
 msgid "Internal: Playback position in the track to resume on startup."
 msgstr "ภายใน: ตำแหน่งภายในเพลงที่จะทำการเล่นต่อเมื่อเริ่มโปรแกรม"
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:392
+#: amarokconfig.kcfg:397
 #, kde-format
 msgid ""
 "List of bools describing which browsers are visible, from top to bottom."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:395
+#: amarokconfig.kcfg:400
 #, kde-format
 msgid "Track playing on last exit. Value is -1 if no track was playing."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:399
+#: amarokconfig.kcfg:404
 #, kde-format
 msgid "Number (from the top) of the last active browser."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:405
+#: amarokconfig.kcfg:410
 #, kde-format
 msgid "Whether Collections folders are scanned recursively"
 msgstr "จะให้โฟลเดอร์คลังสื่อถูกตรวจค้นแบบละเอียดหรือไม่"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:409
+#: amarokconfig.kcfg:414
 #, kde-format
 msgid "Whether Collection folders are rescanned on change"
 msgstr "จะให้โฟลเดอร์คลังสื่อถูกตรวจค้นซ้ำเมื่อมีการเปลี่ยนแปลงหรือไม่"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:413
+#: amarokconfig.kcfg:418
 #, fuzzy, kde-format
 #| msgid "Whether the album cover should be shown"
 msgid "Whether meta data changes are written back"
 msgstr "ควรให้มีการแสดงหน้าปกอัลบั้มหรือไม่"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:417
+#: amarokconfig.kcfg:422
 #, fuzzy, kde-format
 #| msgid "Whether the album cover should be shown"
 msgid "Whether changes to the track statistics are written back"
 msgstr "ควรให้มีการแสดงหน้าปกอัลบั้มหรือไม่"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:421
+#: amarokconfig.kcfg:426
 #, fuzzy, kde-format
 #| msgid "Whether the album cover should be shown"
 msgid "Whether changes to the album cover are written back"
 msgstr "ควรให้มีการแสดงหน้าปกอัลบั้มหรือไม่"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:425
+#: amarokconfig.kcfg:430
 #, kde-format
 msgid "Maximum embedded cover dimensions"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:429
+#: amarokconfig.kcfg:434
 #, kde-format
 msgid "List of folders in the Collection"
 msgstr "รายการของโฟลเดอร์ต่าง ๆ ในคลังสื่อ"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:432
+#: amarokconfig.kcfg:437
 #, fuzzy, kde-format
 #| msgid "The font to use in the context browser."
 msgid "Whether track numbers are shown in the collection browser."
 msgstr "แบบอักษรที่จะใช้ในตัวเรียกดูรายละเอียด"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:436
+#: amarokconfig.kcfg:441
 #, fuzzy, kde-format
 #| msgid "The font to use in the context browser."
 msgid "Whether years are shown in the collection browser."
 msgstr "แบบอักษรที่จะใช้ในตัวเรียกดูรายละเอียด"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:440
+#: amarokconfig.kcfg:445
 #, fuzzy, kde-format
 #| msgid ""
 #| "If selected, Amarok will use Mozilla's Character Set Detector to attempt "
@@ -1307,26 +1325,28 @@ msgstr ""
 "เพื่อพยายามเดาว่าข้อมูลกำกับ ID3 นั้นใช้ชุดรหัสอักขระแบบใด"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:447
-#, kde-format
-msgid "Submit played songs"
+#: amarokconfig.kcfg:452
+#, fuzzy, kde-format
+#| msgid "Submit played songs"
+msgid "Submit played tracks"
 msgstr "ส่งชื่อเพลงที่เล่น"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:448
-#, kde-format
-msgid "Whether played songs are submitted to Audioscrobbler"
+#: amarokconfig.kcfg:453
+#, fuzzy, kde-format
+#| msgid "Whether played songs are submitted to Audioscrobbler"
+msgid "Whether played tracks are submitted to Audioscrobbler"
 msgstr "จะให้ส่งชื่อเพลงที่เล่นไปยัง Audioscrobbler หรือไม่"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:452
+#: amarokconfig.kcfg:457
 #, kde-format
 msgctxt "Username for audioscrobbler login"
 msgid "Username"
 msgstr "ชื่อผู้ใช้"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:453
+#: amarokconfig.kcfg:458
 #, kde-format
 msgid "The username to use for connecting to Audioscrobbler"
 msgstr "ชื่อผู้ใช้ที่ใช้สำหรับการเชื่อมต่อกับ Audioscrobbler"
@@ -1335,7 +1355,7 @@ msgstr "ชื่อผู้ใช้ที่ใช้สำหรับกา
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelPassword)
 #. i18n: ectx: property (text), widget (QLabel, m_passwordLabel)
-#: amarokconfig.kcfg:457 importers/amarok/AmarokConfigWidget.ui:38
+#: amarokconfig.kcfg:462 importers/amarok/AmarokConfigWidget.ui:38
 #: importers/fastforward/FastForwardConfigWidget.ui:46
 #: services/ampache/AmpacheConfigWidget.ui:68
 #: services/ampache/NewServerWidget.ui:60
@@ -1344,92 +1364,93 @@ msgid "Password"
 msgstr "รหัสผ่าน"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:458
+#: amarokconfig.kcfg:463
 #, kde-format
 msgid "The password to use for connecting to Audioscrobbler"
 msgstr "รหัสผ่านที่ใช้สำหรับเชื่อมต่อกับ Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:462
+#: amarokconfig.kcfg:467
 #, fuzzy, kde-format
 #| msgid "composer"
 msgid "Send composer data"
 msgstr "ผู้ประพันธ์"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:463
+#: amarokconfig.kcfg:468
 #, kde-format
 msgid "Use composer data in Last.fm as artist"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:467
+#: amarokconfig.kcfg:472
 #, kde-format
 msgid "Retrieve similar artists"
 msgstr "ดึงข้อมูลศิลปินเดียวกัน"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:468
-#, kde-format
-msgid "Whether similar songs are retrieved from Audioscrobbler"
+#: amarokconfig.kcfg:473
+#, fuzzy, kde-format
+#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+msgid "Whether similar tracks are retrieved from Audioscrobbler"
 msgstr "จะให้มีการดึงเพลงที่เหมือน ๆ กันจาก Audioscrobbler หรือไม่"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:475
+#: amarokconfig.kcfg:480
 #, kde-format
 msgid "Device type"
 msgstr "ชนิดอุปกรณ์"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:476
+#: amarokconfig.kcfg:481
 #, kde-format
 msgid "The type of media device."
 msgstr "ชนิดของอุปกรณ์เล่นสื่อ"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:479
+#: amarokconfig.kcfg:484
 #, kde-format
 msgid "Mount point"
 msgstr "จุดเมานท์"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:480
+#: amarokconfig.kcfg:485
 #, kde-format
 msgid "The mount point used for the media device connection."
 msgstr "จุดเมานท์ที่ใช้สำหรับการเชื่อมต่อกับอุปกรณ์เล่นสื่อ"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:483
+#: amarokconfig.kcfg:488
 #, kde-format
 msgid "Mount command"
 msgstr "คำสั่งเมานท์"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:484
+#: amarokconfig.kcfg:489
 #, kde-format
 msgid "The mount command used for the media device connection."
 msgstr "คำสั่งเมานท์ที่ใช้สำหรับการเชื่อมต่อกับอุปกรณ์เล่นสื่อ"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:487
+#: amarokconfig.kcfg:492
 #, kde-format
 msgid "UmountCommand"
 msgstr "คำสั่งยกเลิกการเมานท์"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:488
+#: amarokconfig.kcfg:493
 #, kde-format
 msgid "The umount command used for the media device connection."
 msgstr "คำสั่งยกเลิกการเมานท์ที่ใช้สำหรับการเชื่อมต่ออุปกรณ์เล่นสื่อ"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:491
+#: amarokconfig.kcfg:496
 #, kde-format
 msgid "Auto delete podcasts"
 msgstr "ลบพ็อดแคสท์อัตโนมัติ"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:492
+#: amarokconfig.kcfg:497
 #, fuzzy, kde-format
 #| msgid ""
 #| "Whether podcasts shows already played are automatically deleted when "
@@ -1442,13 +1463,13 @@ msgstr ""
 "เมื่อมีการเชื่อมต่ออุปกรณ์เล่นสื่อหรือไม่"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:495
+#: amarokconfig.kcfg:500
 #, kde-format
 msgid "Sync stats"
 msgstr "ปรับเทียบสถิติ"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:496
+#: amarokconfig.kcfg:501
 #, fuzzy, kde-format
 #| msgid ""
 #| "Whether Amarok statistics should be synchronized with play count/ratings "
@@ -1461,74 +1482,74 @@ msgstr ""
 "และจะให้ข้อมูลเพลงที่เล่นถูกส่งไปที่ last.fm หรือไม่"
 
 #. i18n: ectx: label, entry, group (Daap)
-#: amarokconfig.kcfg:502
+#: amarokconfig.kcfg:507
 #, kde-format
 msgid "Manually added servers"
 msgstr "เพิ่มแม่ข่ายเอง"
 
 #. i18n: ectx: whatsthis, entry, group (Daap)
-#: amarokconfig.kcfg:503
+#: amarokconfig.kcfg:508
 #, kde-format
 msgid "Music Sharing servers added by the user."
 msgstr "แม่ข่ายของการแบ่งปันดนตรีที่เพิ่มมาโดยผู้ใช้"
 
 #. i18n: ectx: label, entry, group (Daap)
-#: amarokconfig.kcfg:506
+#: amarokconfig.kcfg:511
 #, kde-format
 msgid "Server passwords"
 msgstr "รหัสผ่านของแม่ข่าย"
 
 #. i18n: ectx: whatsthis, entry, group (Daap)
-#: amarokconfig.kcfg:507
+#: amarokconfig.kcfg:512
 #, kde-format
 msgid "Passwords stored by hostname."
 msgstr "รหัสผ่านที่จัดเก็บโดยใช้ชื่อเครื่อง"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:513
+#: amarokconfig.kcfg:518
 #, fuzzy, kde-format
 #| msgid "No track playing"
 msgid "Include track names in matching"
 msgstr "ยังไม่มีการเล่นแทร็กเสียงใด ๆ"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:517
+#: amarokconfig.kcfg:522
 #, kde-format
 msgid "Include album names in matching"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:521
+#: amarokconfig.kcfg:526
 #, kde-format
 msgid "Include artist names in matching"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:525
+#: amarokconfig.kcfg:530
 #, kde-format
 msgid "Include genre names in matching"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:529
+#: amarokconfig.kcfg:534
 #, kde-format
 msgid "Include composer names in matching"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:533 amarokconfig.kcfg:537
+#: amarokconfig.kcfg:538 amarokconfig.kcfg:542
 #, kde-format
 msgid "Include years in matching"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playlist Layout)
-#: amarokconfig.kcfg:544
+#: amarokconfig.kcfg:549
 #, kde-format
 msgid "The name of the layout that will be loaded on startup"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:551
+#: amarokconfig.kcfg:556
 #, kde-format
 msgid ""
 "Whether Amarok uses its own internal database, as opposed to an external "
@@ -1536,19 +1557,19 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:555
+#: amarokconfig.kcfg:560
 #, kde-format
 msgid "The hostname of the external server to connect to."
 msgstr "ชื่อเครื่องของแม่ข่ายภายนอกที่จะทำการเชื่อมต่อไป"
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:559
+#: amarokconfig.kcfg:564
 #, kde-format
 msgid "Which server port to connect to the database engine."
 msgstr "พอร์ตใดของแม่ข่ายที่ใช้สำหรับเชื่อมต่อระบบฐานข้อมูล"
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:563
+#: amarokconfig.kcfg:568
 #, kde-format
 msgid ""
 "The name of the database Amarok will use. The user should have sufficient "
@@ -1556,45 +1577,45 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:567
+#: amarokconfig.kcfg:572
 #, kde-format
 msgid "Username used to access the external database."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:571
+#: amarokconfig.kcfg:576
 #, kde-format
 msgid "Password for the external database user."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:575
+#: amarokconfig.kcfg:580
 #, kde-format
 msgid "Keeps a running count to know when run a CHECK."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (ScriptManager)
-#: amarokconfig.kcfg:582
+#: amarokconfig.kcfg:587
 #, kde-format
 msgid "Whether to enable Amarok's scripting module."
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:583
+#: amarokconfig.kcfg:588
 #, fuzzy, kde-format
 #| msgid "Enable/Disable splashscreen during Amarok startup."
 msgid "Enable/Disable Amarok's scripting module."
 msgstr "เลือกเพื่อเปิดใช้งานหน้าจอโลโกระหว่างเริ่มงานแอมอะร็อก"
 
 #. i18n: ectx: label, entry, group (ScriptManager)
-#: amarokconfig.kcfg:587
+#: amarokconfig.kcfg:592
 #, fuzzy, kde-format
 #| msgid "Whether to automatically attempt to fetch cover art as needed"
 msgid "Whether to automatically update built-in scripts"
 msgstr "จะพยายามรับภาพหน้าปกโดยอัตโนมัติเมื่อมีความต้องการภาพหน้าปก"
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:588
+#: amarokconfig.kcfg:593
 #, fuzzy, kde-format
 #| msgid "Whether to automatically attempt to fetch cover art as needed"
 msgid "Enable/Disable automatic update for built-in scripts."
@@ -1602,7 +1623,7 @@ msgstr "จะพยายามรับภาพหน้าปกโดยอ
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:592 amarokconfig.kcfg:593
+#: amarokconfig.kcfg:597 amarokconfig.kcfg:598
 #, fuzzy, kde-format
 #| msgid "Whether to animate the systray icon"
 msgid "Whether to enable the script console."
@@ -1610,21 +1631,21 @@ msgstr "จะให้แสดงภาพเคลื่อนไหวขอ
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:597 amarokconfig.kcfg:598
+#: amarokconfig.kcfg:602 amarokconfig.kcfg:603
 #, kde-format
 msgid "Whether to display a warning about scripts accessing deprecated APIs."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (ScriptConsole)
 #. i18n: ectx: whatsthis, entry, group (ScriptConsole)
-#: amarokconfig.kcfg:605 amarokconfig.kcfg:606
+#: amarokconfig.kcfg:610 amarokconfig.kcfg:611
 #, fuzzy, kde-format
 #| msgid "Whether to show the toolbar in the playlist window."
 msgid "Whether to save the current session on exit."
 msgstr "จะให้แสดงแถบเครื่องมือในหน้าต่างรายการเล่นหรือไม่"
 
 #. i18n: ectx: label, entry, group (Moodbar)
-#: amarokconfig.kcfg:613
+#: amarokconfig.kcfg:618
 #, fuzzy, kde-format
 #| msgid ""
 #| "Whether to show moodbars in track sliders and in a column in the playlist "
@@ -1635,7 +1656,7 @@ msgid ""
 msgstr "จะให้แสดงแถบแสดงอารมณ์ในแถบสไลเดอร์และในคอลัมน์ของหน้าต่างรายการเล่นหรือไม่"
 
 #. i18n: ectx: whatsthis, entry, group (Moodbar)
-#: amarokconfig.kcfg:614
+#: amarokconfig.kcfg:619
 #, fuzzy, kde-format
 #| msgid ""
 #| "Whether to show moodbars in track sliders and in a column in the playlist "
@@ -1644,20 +1665,20 @@ msgid "Enable/Disable showing moodbar, if available, in the progress slider."
 msgstr "จะให้แสดงแถบแสดงอารมณ์ในแถบสไลเดอร์และในคอลัมน์ของหน้าต่างรายการเล่นหรือไม่"
 
 #. i18n: ectx: label, entry, group (Moodbar)
-#: amarokconfig.kcfg:618
+#: amarokconfig.kcfg:623
 #, fuzzy, kde-format
 #| msgid "Whether to fade out when exiting the program."
 msgid "The style to use when painting the moodbar"
 msgstr "จะให้ค่อย ๆ หรี่เสียงจนเงียบเมื่อออกจากโปรแกรมหรือไม่"
 
 #. i18n: ectx: label, entry, group (PlaylistGenerator)
-#: amarokconfig.kcfg:625
+#: amarokconfig.kcfg:630
 #, kde-format
 msgid "Quality factor for Automated Playlist Generator"
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (PlaylistGenerator)
-#: amarokconfig.kcfg:626
+#: amarokconfig.kcfg:631
 #, kde-format
 msgid ""
 "A value between 0 and 10 that controls whether the Automated Playlist "
@@ -2040,7 +2061,14 @@ msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Month"
 msgstr "เดือนนี้"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:198
+#: browsers/collectionbrowser/CollectionWidget.cpp:181
+#, fuzzy, kde-format
+#| msgid "First Played"
+msgctxt "@item:inlistbox Collection widget filter preset"
+msgid "Never Played"
+msgstr "เล่นครั้งแรก"
+
+#: browsers/collectionbrowser/CollectionWidget.cpp:200
 #, fuzzy, kde-format
 #| msgid " - "
 msgctxt ""
@@ -2049,45 +2077,52 @@ msgctxt ""
 msgid " / "
 msgstr " - "
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:211
+#: browsers/collectionbrowser/CollectionWidget.cpp:213
 #, kde-format
 msgid "First Level"
 msgstr "ระดับแรก"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:212
+#: browsers/collectionbrowser/CollectionWidget.cpp:214
 #, kde-format
 msgid "Second Level"
 msgstr "ระดับที่สอง"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:213
+#: browsers/collectionbrowser/CollectionWidget.cpp:215
 #, kde-format
 msgid "Third Level"
 msgstr "ระดับที่สาม"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:247
+#: browsers/collectionbrowser/CollectionWidget.cpp:249
 #, kde-format
 msgid "Show Years"
 msgstr "แสดงปี"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:252
+#: browsers/collectionbrowser/CollectionWidget.cpp:254
 #, fuzzy, kde-format
 #| msgid "Track Number"
 msgctxt "@action:inmenu"
 msgid "Show Track Numbers"
 msgstr "หมายเลขแทร็ก"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:257
+#: browsers/collectionbrowser/CollectionWidget.cpp:259
+#, fuzzy, kde-format
+#| msgid "Show under Various Artists"
+msgctxt "@action:inmenu"
+msgid "Show Artist for Various Artists"
+msgstr "แสดงภายใต้ศิลปินหลากหลาย"
+
+#: browsers/collectionbrowser/CollectionWidget.cpp:264
 #, kde-format
 msgid "Show Cover Art"
 msgstr "แสดงภาพหน้าปก"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:264
+#: browsers/collectionbrowser/CollectionWidget.cpp:271
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:87
 #, kde-format
 msgid "Merged View"
 msgstr "ผนวกมุมมอง"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:271
+#: browsers/collectionbrowser/CollectionWidget.cpp:278
 #: services/jamendo/JamendoService.cpp:161
 #: services/magnatune/MagnatuneStore.cpp:229
 #, kde-format
@@ -2114,14 +2149,14 @@ msgid "1 track"
 msgid_plural "%1 tracks"
 msgstr[0] "%1 แทร็ก"
 
-#: browsers/CollectionTreeItemModelBase.cpp:279
-#: browsers/CollectionTreeItemModelBase.cpp:370
+#: browsers/CollectionTreeItemModelBase.cpp:281
+#: browsers/CollectionTreeItemModelBase.cpp:372
 #, kde-format
 msgctxt "The Name is not known"
 msgid "Unknown"
 msgstr "ไม่ทราบ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:395
+#: browsers/CollectionTreeItemModelBase.cpp:397
 #: core-impl/collections/db/sql/SqlMeta.cpp:409
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:98
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
@@ -2133,10 +2168,10 @@ msgstr "ไม่ทราบ"
 msgid "Various Artists"
 msgstr "หลากหลายศิลปิน"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1100
+#: browsers/CollectionTreeItemModelBase.cpp:1102
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:299
-#: context/applets/wikipedia/package/contents/ui/main.qml:110
+#: context/applets/wikipedia/package/contents/ui/main.qml:115
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
 #: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
@@ -2145,49 +2180,49 @@ msgstr "หลากหลายศิลปิน"
 msgid "Album"
 msgstr "อัลบั้ม"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1100
+#: browsers/CollectionTreeItemModelBase.cpp:1102
 #, kde-format
 msgid "Year - Album"
 msgstr "ปี - อัลบั้ม"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1102
+#: browsers/CollectionTreeItemModelBase.cpp:1104
 #, fuzzy, kde-format
 #| msgid "Tracks by this Artist"
 msgid "Track Artist"
 msgstr "จำนวนแทร็กต่าง ๆ ของศิลปินนี้"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1104 dialogs/TagGuessOptions.ui:253
+#: browsers/CollectionTreeItemModelBase.cpp:1106 dialogs/TagGuessOptions.ui:253
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:929
 #, kde-format
 msgid "Album Artist"
 msgstr "อัลบั้มของศิลปินนี้"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1106
-#: context/applets/wikipedia/package/contents/ui/main.qml:100
+#: browsers/CollectionTreeItemModelBase.cpp:1108
+#: context/applets/wikipedia/package/contents/ui/main.qml:104
 #: playlist/PlaylistModel.cpp:930
 #, kde-format
 msgid "Composer"
 msgstr "ผู้ประพันธ์"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1108 dialogs/transferdialog.cpp:105
+#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
 #: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:94
 #, kde-format
 msgid "Genre"
 msgstr "ประเภท"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110
+#: browsers/CollectionTreeItemModelBase.cpp:1112
 #: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:931
 #, kde-format
 msgid "Year"
 msgstr "ปี"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1112
+#: browsers/CollectionTreeItemModelBase.cpp:1114
 #, kde-format
 msgid "Label"
 msgstr "ป้าย"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1114 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
 #: playlist/navigators/NavigatorConfigAction.cpp:80
 #, kde-format
 msgid "None"
@@ -2259,8 +2294,8 @@ msgid "&Edit Track Details"
 msgstr "แ&ก้ไขรายละเอียดของแทร็กเสียง"
 
 #: browsers/filebrowser/FileBrowser.cpp:70
-#: context/applets/wikipedia/package/contents/ui/main.qml:61
-#: context/applets/wikipedia/package/contents/ui/main.qml:157
+#: context/applets/wikipedia/package/contents/ui/main.qml:63
+#: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, fuzzy, kde-format
 #| msgid "&Refresh"
 msgid "Refresh"
@@ -2474,9 +2509,11 @@ msgid "Duplicates"
 msgstr "เ&อารายการที่ซ้ำกันออก"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:114
-#, kde-format
-msgid "Allow duplicate songs in result"
-msgstr ""
+#, fuzzy, kde-format
+#| msgid "The status of dynamic mode."
+msgctxt "Tooltip for dynamic playlist setting button"
+msgid "Allow duplicate tracks in result"
+msgstr "สถานะของโหมดปรับอัตโนมัติ"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, fuzzy, kde-format
@@ -2700,23 +2737,34 @@ msgstr[0] "กำลังลบแทร็กเสียงต่าง ๆ �
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, fuzzy, kde-format
-#| msgid "Configure Playlist Info Applet"
-msgid "Confirm Playlist Deletion"
-msgstr "ปรับแต่งแอพเพล็ตข้อมูลรายการเล่น"
+#| msgid "Delete playlist layout"
+msgctxt ""
+"Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
+"provider pretty name"
+msgid "Delete playlist <i>%1</i> from %2?"
+msgstr "ลบการจัดวางรายการเล่น"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, fuzzy, kde-format
 #| msgid "Delete playlist layout"
-msgctxt "%1 is playlist provider pretty name"
-msgid "Delete playlist from %1."
+msgctxt ""
+"Playlist deletion confirmation dialog. %1 is the playlist count (always more "
+"than 1), %2 is playlist provider pretty name"
+msgid "Delete %1 playlists from %2?"
 msgstr "ลบการจัดวางรายการเล่น"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:516 MainWindow.cpp:447
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
+#, fuzzy, kde-format
+#| msgid "Configure Playlist Info Applet"
+msgid "Confirm Playlist Deletion"
+msgstr "ปรับแต่งแอพเพล็ตข้อมูลรายการเล่น"
+
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "ใช้พาธแบบสัมพัทธ์สำหรับใช้กับการ&บันทึก"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:529
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
@@ -4601,7 +4649,7 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
-#: context/applets/wikipedia/package/contents/ui/main.qml:90
+#: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
 #: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
@@ -5043,39 +5091,46 @@ msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr ""
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:39
-#: context/applets/wikipedia/package/contents/ui/main.qml:145
+#: context/applets/wikipedia/package/contents/ui/main.qml:41
+#: context/applets/wikipedia/package/contents/ui/main.qml:153
 #, kde-format
 msgid "Previous"
 msgstr "ก่อนหน้า"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:50
-#: context/applets/wikipedia/package/contents/ui/main.qml:151
+#: context/applets/wikipedia/package/contents/ui/main.qml:52
+#: context/applets/wikipedia/package/contents/ui/main.qml:159
 #: statsyncing/ui/ChooseProvidersPage.cpp:35
 #, fuzzy, kde-format
 #| msgid "&Next"
 msgid "Next"
 msgstr "&ถัดไป"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:72
-#: widgets/PlayPauseButton.cpp:81
+#: context/applets/wikipedia/package/contents/ui/main.qml:74
 #, fuzzy, kde-format
-#| msgid "Paused"
-msgid "Pause"
-msgstr "หยุดชั่วคราว"
+#| msgid "Updating the local Magnatune database."
+msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
+msgid "Don't change page automatically"
+msgstr "กำลังปรับปรุงฐานข้อมูล Magnatune ภายในระบบ"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:120
+#: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
 msgstr "แทร็กที่"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:164
-#: dialogs/DiagnosticDialog.cpp:84
+#: context/applets/wikipedia/package/contents/ui/main.qml:172
 #, fuzzy, kde-format
 #| msgid "Copy to Collection"
-msgid "Copy to Clipboard"
+msgctxt "Right-click menu option for links in Wikipedia applet"
+msgid "Copy Link to Clipboard"
+msgstr "คัดลอกไปยังคลังสื่อ"
+
+#: context/applets/wikipedia/package/contents/ui/main.qml:179
+#, fuzzy, kde-format
+#| msgid "Copy to Collection"
+msgctxt "Right-click menu option for images in Wikipedia applet"
+msgid "Copy Image to Clipboard"
 msgstr "คัดลอกไปยังคลังสื่อ"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
@@ -5127,6 +5182,14 @@ msgstr ""
 #| msgid "Language"
 msgid "Choose Language"
 msgstr "ภาษา"
+
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:891
+#, kde-format
+msgctxt ""
+"A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
+"%1 is the url of the link"
+msgid "Click to open %1 in a web browser"
+msgstr ""
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -8802,6 +8865,12 @@ msgstr "ลบแฟ้มที่ทำการแปลงแล้วหล
 #, kde-format
 msgid "For this feature, a script of type \"Transcode\" has to be running"
 msgstr "สำหรับคุณสมบัตินี้ ต้องมีสคริปต์ชนิด \"การแปลงรหัส\" ทำงานอยู่ด้วย"
+
+#: dialogs/DiagnosticDialog.cpp:84
+#, fuzzy, kde-format
+#| msgid "Copy to Collection"
+msgid "Copy to Clipboard"
+msgstr "คัดลอกไปยังคลังสื่อ"
 
 #: dialogs/DiagnosticDialog.cpp:88
 #, fuzzy, kde-format
@@ -12883,7 +12952,8 @@ msgstr "แจ้งเตือน: แทร็กต่าง ๆ ได้�
 
 #: playlist/view/listview/PrettyListView.cpp:691
 #, kde-format
-msgid "Add some songs here by dragging them from all around."
+msgctxt "Placeholder message in empty playlist view"
+msgid "Add some tracks here by dragging them from all around."
 msgstr ""
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
@@ -13072,7 +13142,7 @@ msgstr "ความสัมพันธ์:"
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
 #, kde-format
 msgid ""
-"The desired position of the song in the playlist, in hours, minutes, and "
+"The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
@@ -17094,6 +17164,12 @@ msgstr "หยุดชั่วคราว"
 #| msgid "Play"
 msgid "Play"
 msgstr "เล่น"
+
+#: widgets/PlayPauseButton.cpp:81
+#, fuzzy, kde-format
+#| msgid "Paused"
+msgid "Pause"
+msgstr "หยุดชั่วคราว"
 
 #: widgets/PrettyTreeDelegate.cpp:219
 #, kde-format

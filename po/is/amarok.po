@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-26 01:37+0000\n"
+"POT-Creation-Date: 2024-05-05 01:43+0000\n"
 "PO-Revision-Date: 2020-04-04 13:51+0000\n"
 "Last-Translator: Sveinn í Felli <sv@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
@@ -596,7 +596,7 @@ msgstr "Hvort eigi að sýna táknmynd í kerfisbakkanum"
 #: amarokconfig.kcfg:100
 #, kde-format
 msgid ""
-"Automatically scroll the playlist to make the currently playing song visible"
+"Automatically scroll the playlist to make the currently playing track visible"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -632,14 +632,29 @@ msgstr ""
 msgid "If set, context applets will collapse using animations."
 msgstr ""
 
+#. i18n: ectx: label, entry, group (General Options)
+#: amarokconfig.kcfg:121
+#, kde-format
+msgid ""
+"Show track's artist in Collection Browser if different from album artist"
+msgstr ""
+
+#. i18n: ectx: whatsthis, entry, group (General Options)
+#: amarokconfig.kcfg:122
+#, kde-format
+msgid ""
+"Explicitly show artist in Collection Browser for Various Artists albums and "
+"tracks where artist differs from album artist."
+msgstr ""
+
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:124
+#: amarokconfig.kcfg:129
 #, fuzzy, kde-format
 msgid "Whether organize files will overwrite existing files."
 msgstr "Hvort leyfa eigi yfirskrifun núverandi skráa við endurskipulagningu."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:125
+#: amarokconfig.kcfg:130
 #, fuzzy, kde-format
 msgid "If set, Organize files will overwrite any existing destination."
 msgstr ""
@@ -647,13 +662,13 @@ msgstr ""
 "úttaksmöppum."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:129
+#: amarokconfig.kcfg:134
 #, fuzzy, kde-format
 msgid "Whether organize files will move The in artist names to the end."
 msgstr "Hvort endurskipulagning eigi að hunsa \"The\" í nöfnum flytjanda."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:130
+#: amarokconfig.kcfg:135
 #, fuzzy, kde-format
 msgid ""
 "If set, Organize files will move The in artist names to the end as in "
@@ -662,14 +677,14 @@ msgstr ""
 "Ef þetta er virkt, mun endurskipulagning hunsa \"The\" í nöfnum flytjanda."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:134
+#: amarokconfig.kcfg:139
 #, fuzzy, kde-format
 msgid ""
 "Whether organize files will replace spaces in filenames with underscores."
 msgstr "Hvort endurskipulagning eigi að nota sérsniðið endurnefningarskema."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:135
+#: amarokconfig.kcfg:140
 #, fuzzy, kde-format
 msgid ""
 "If set, Organize files will replace spaces in filenames with underscores."
@@ -678,14 +693,14 @@ msgstr ""
 "möppur."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:139
+#: amarokconfig.kcfg:144
 #, fuzzy, kde-format
 msgid "Whether organize files will use cover art as folder icons."
 msgstr ""
 "Hvort endurskipulagning eigi að nota albúmamyndir sem tákn fyrir möppur."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:140
+#: amarokconfig.kcfg:145
 #, fuzzy, kde-format
 msgid "If set, Organize files will use cover art as folder icons."
 msgstr ""
@@ -693,19 +708,19 @@ msgstr ""
 "möppur."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:144
+#: amarokconfig.kcfg:149
 #, fuzzy, kde-format
 msgid "Collection folder path destination for Organize files."
 msgstr "Yfirlit safnmöppu fyrir endurskipulagðar skrár."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:145
+#: amarokconfig.kcfg:150
 #, fuzzy, kde-format
 msgid "The path of the collection folder destination for Organize files."
 msgstr "Auðkenni (ID) safnmöppu fyrir endurskipulagðar skrár."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:149
+#: amarokconfig.kcfg:154
 #, fuzzy, kde-format
 msgid ""
 "Whether organize files will rename files in a manner compatible with vfat "
@@ -715,7 +730,7 @@ msgstr ""
 "samræmanleg vfat skráakerfum."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:150
+#: amarokconfig.kcfg:155
 #, fuzzy, kde-format
 msgid ""
 "If set, Organize files will replace characters that are not compatible with "
@@ -725,7 +740,7 @@ msgstr ""
 "ekki eru samræmanleg vfat skráakerfum (eins og '.', '*' og '?')."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:154
+#: amarokconfig.kcfg:159
 #, fuzzy, kde-format
 msgid ""
 "Whether organize files will rename files such that they only contain 7-bit "
@@ -735,7 +750,7 @@ msgstr ""
 "bita ASCII stafasettinu."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:155
+#: amarokconfig.kcfg:160
 #, fuzzy, kde-format
 msgid ""
 "If set, Organize files will replace characters that are not compatible with "
@@ -745,13 +760,13 @@ msgstr ""
 "ekki eru samræmanleg 7-bita ASCII stafasettinu."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:159
+#: amarokconfig.kcfg:164
 #, fuzzy, kde-format
 msgid "Whether organize files will use a custom file naming scheme."
 msgstr "Hvort endurskipulagning eigi að nota sérsniðið endurnefningarskema."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:160
+#: amarokconfig.kcfg:165
 #, fuzzy, kde-format
 msgid ""
 "If set, Organize files will rename files according to a custom format string."
@@ -760,13 +775,13 @@ msgstr ""
 "sérsniðinn streng."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:164
+#: amarokconfig.kcfg:169
 #, fuzzy, kde-format
 msgid "Format string for Organize files, if a custom naming scheme is used."
 msgstr "Sérsniðinn sniðstrengur til endurnefningar, sé það notað."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:165
+#: amarokconfig.kcfg:170
 #, fuzzy, kde-format
 msgid ""
 "If the custom filename scheme is enabled, then Organize files will rename "
@@ -776,13 +791,13 @@ msgstr ""
 "streng."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:169
+#: amarokconfig.kcfg:174
 #, fuzzy, kde-format
 msgid "Regular expression that is to be replaced."
 msgstr "Regluleg segð sem á að skipta út."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:170
+#: amarokconfig.kcfg:175
 #, fuzzy, kde-format
 msgid ""
 "Organize files will replace substrings matching this regular expression."
@@ -791,26 +806,26 @@ msgstr ""
 "reglulegu segð."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:174
+#: amarokconfig.kcfg:179
 #, fuzzy, kde-format
 msgid "Replacing string."
 msgstr "Útskipti strengur."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:175
+#: amarokconfig.kcfg:180
 #, fuzzy, kde-format
 msgid "Organize files will replace matching substrings with this string."
 msgstr ""
 "Endurskipulagning mun skipta út samsvarandi undirstrengjum með þessum streng."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:179
+#: amarokconfig.kcfg:184
 #, kde-format
 msgid "Basic or Advanced Mode"
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:180
+#: amarokconfig.kcfg:185
 #, kde-format
 msgid ""
 "In basic mode graphical drag/droppable tokens are used to create a filename "
@@ -818,110 +833,110 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:184
+#: amarokconfig.kcfg:189
 #, fuzzy, kde-format
 #| msgid "Import Collection"
 msgid "Format Presets"
 msgstr "Flytja inn safn"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:185
+#: amarokconfig.kcfg:190
 #, kde-format
 msgid "A list of preset formats (token schemas)."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:192
+#: amarokconfig.kcfg:197
 #, fuzzy, kde-format
 msgid "Master volume"
 msgstr "Aðalhljóðstyrkur"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:193
+#: amarokconfig.kcfg:198
 #, fuzzy, kde-format
 msgid "The Amarok master volume, a value between 0 and 100."
 msgstr "Aðalhljóðstyrkur Amarok, gildi milli 0 (þaggað niður) og 100."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:199
+#: amarokconfig.kcfg:204
 #, kde-format
 msgid "Mute state"
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:200
+#: amarokconfig.kcfg:205
 #, kde-format
 msgid "Mute/Unmute sound."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:204
+#: amarokconfig.kcfg:209
 #, fuzzy, kde-format
 msgid "Whether to fade out tracks when pressing stop."
 msgstr "Hvort eigi að deyfa út lög þegar ýtt er á stopp."
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:205 amarokconfig.kcfg:210
+#: amarokconfig.kcfg:210 amarokconfig.kcfg:215
 #, fuzzy, kde-format
 msgid "Enable/Disable fadeout."
 msgstr "Virkja/slökkva á dofnun."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:209
+#: amarokconfig.kcfg:214
 #, fuzzy, kde-format
 msgid "Whether to fade out tracks when pressing pause."
 msgstr "Hvort eigi að deyfa út lög þegar ýtt er á stopp."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:214
+#: amarokconfig.kcfg:219
 #, fuzzy, kde-format
 msgid "Length of fadeout, in milliseconds"
 msgstr "Lengd á dofnun, í millisekúndum"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:215
+#: amarokconfig.kcfg:220
 #, fuzzy, kde-format
 msgid "The length of the fadeout in milliseconds."
 msgstr "Lengd í millisekúndum á dofnun."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:220
+#: amarokconfig.kcfg:225
 #, kde-format
 msgid "Equalizer mode - 0 = off, 1 to n = preset no"
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:221
+#: amarokconfig.kcfg:226
 #, fuzzy, kde-format
 msgid "When enabled, an equalizer plugin filters the audio stream."
 msgstr "Þegar virkjað, síar hljóðblandaraíforrit hljóðstrauminn."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:225
+#: amarokconfig.kcfg:230
 #, fuzzy, kde-format
 msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
 msgstr "Formögnun hljóðblandara, gildi -100..100, 0 er venjulegt."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:229
+#: amarokconfig.kcfg:234
 #, fuzzy, kde-format
 msgid "List with user equalizer preset names"
 msgstr "Nafn á forstillingunni."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:232
+#: amarokconfig.kcfg:237
 #, fuzzy, kde-format
 msgid "List with user presets values"
 msgstr "Nafn á forstillingunni."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:236
+#: amarokconfig.kcfg:241
 #, kde-format
 msgid "The mode for adjusting playback volume."
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:237
+#: amarokconfig.kcfg:242
 #, kde-format
 msgid ""
 "Whether to adjust the volume of tracks to make them sound the same volume, "
@@ -929,54 +944,54 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:240
+#: amarokconfig.kcfg:245
 #, fuzzy, kde-format
 #| msgid "Developer, Replay Gain support"
 msgid "Disable Replay Gain"
 msgstr "Forritari, Replay Gain stuðningur"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:243
+#: amarokconfig.kcfg:248
 #, kde-format
 msgid "Make each track the same volume"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:246
+#: amarokconfig.kcfg:251
 #, kde-format
 msgid "Make each album the same volume"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:252
+#: amarokconfig.kcfg:257
 #, fuzzy, kde-format
 #| msgid "The length of the fadeout, in milliseconds."
 msgid "The length of a short seek, in seconds."
 msgstr "Lengd í millisekúndum á mótdofnun milli laga."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:257
+#: amarokconfig.kcfg:262
 #, fuzzy, kde-format
 #| msgid "The length of the fadeout, in milliseconds."
 msgid "The length of a medium seek, in seconds."
 msgstr "Lengd í millisekúndum á mótdofnun milli laga."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:262
+#: amarokconfig.kcfg:267
 #, fuzzy, kde-format
 #| msgid "The length of the fadeout, in milliseconds."
 msgid "The length of a long seek, in seconds."
 msgstr "Lengd í millisekúndum á mótdofnun milli laga."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:267
+#: amarokconfig.kcfg:272
 #, fuzzy, kde-format
 #| msgid "Queue URLs after the currently playing track"
 msgid "Whether Amarok should pause the currently playing track on suspend."
 msgstr "Setja slóðir í biðröð eftir núverandi lagi"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:271
+#: amarokconfig.kcfg:276
 #, kde-format
 msgid ""
 "Whether Amarok should prevent the system from sleeping if it is playing a "
@@ -984,7 +999,7 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:275
+#: amarokconfig.kcfg:280
 #, kde-format
 msgid ""
 "Whether Amarok should start playing if a track is added to playlist (and "
@@ -992,95 +1007,95 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Cover Manager)
-#: amarokconfig.kcfg:282
+#: amarokconfig.kcfg:287
 #, fuzzy, kde-format
 msgid "Amazon locale for cover retrieval"
 msgstr "Amazon staðfærsla fyrir umslagsheimtun"
 
 #. i18n: ectx: whatsthis, entry, group (Cover Manager)
-#: amarokconfig.kcfg:283
+#: amarokconfig.kcfg:288
 #, fuzzy, kde-format
 msgid "Determines which Amazon server cover images should be retrieved from."
 msgstr "Ákveður frá hvaða Amazon þjóni eigi að ná í umslagsmyndir frá."
 
 #. i18n: ectx: label, entry, group (Wikipedia)
-#: amarokconfig.kcfg:290
+#: amarokconfig.kcfg:295
 #, fuzzy, kde-format
 msgid "Wikipedia locale for information retrieval"
 msgstr "Wikipedia staðfærsla fyrir upplýsingaheimtun"
 
 #. i18n: ectx: whatsthis, entry, group (Wikipedia)
-#: amarokconfig.kcfg:291
+#: amarokconfig.kcfg:296
 #, fuzzy, kde-format
 msgid ""
 "Determines in which language the information is retrieved from Wikipedia."
 msgstr "Ákveður á hvaða tungumáli upplýsingar frá Wikipedia eru á."
 
 #. i18n: ectx: label, entry, group (KNotify)
-#: amarokconfig.kcfg:298
+#: amarokconfig.kcfg:303
 #, fuzzy, kde-format
 #| msgid "No MP3 Support"
 msgid "Use KNotify support"
 msgstr "Engin MP3 stuðningur"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:305
+#: amarokconfig.kcfg:310
 #, fuzzy, kde-format
 msgid "Use On-Screen Display"
 msgstr "Nota skjábirtingu"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:306
+#: amarokconfig.kcfg:311
 #, fuzzy, kde-format
 msgid "Enable/Disable the On-Screen Display."
 msgstr "Virkja/slökkva á skjábirtingu."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:310 configdialog/dialogs/NotificationsConfig.cpp:46
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:46
 #, fuzzy, kde-format
 msgid "Use Growl for notifications"
 msgstr "Nota Growl fyrir tilkynningar"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:311
+#: amarokconfig.kcfg:316
 #, fuzzy, kde-format
 #| msgid "Enable/Disable tray icon animation."
 msgid "Enable/Disable use of Growl for notifications."
 msgstr "Virkja/slökkva á hreyfanlegri táknmynd."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315
+#: amarokconfig.kcfg:320
 #, kde-format
 msgid "Translucency Toggle"
 msgstr "Víxla hálfgegnsæi"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:316
+#: amarokconfig.kcfg:321
 #, kde-format
 msgid "Make the background of the OSD translucent."
 msgstr "Gerir bakgrunn skjátextans hálfgegnsæan."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:320
+#: amarokconfig.kcfg:325
 #, fuzzy, kde-format
 msgid "Whether to use custom colors for the OSD"
 msgstr "Hvort eigi að nota sérsniðna liti fyrir skjábirtingu"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:321
+#: amarokconfig.kcfg:326
 #, fuzzy, kde-format
 msgid "You can use custom colors for the OSD if you set this true."
 msgstr ""
 "Þú getur valið sérsniðna liti fyrir skjábirtinguna ef þú virkjar þetta."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:325
+#: amarokconfig.kcfg:330
 #, fuzzy, kde-format
 msgid "Font color for OSD"
 msgstr "Leturlitur fyrir skjábirtingu"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:326
+#: amarokconfig.kcfg:331
 #, fuzzy, kde-format
 msgid ""
 "The color of the OSD text. The color is specified in RGB, a comma-separated "
@@ -1090,13 +1105,13 @@ msgstr ""
 "kommaskiptum lista sem inniheldur þrjár heiltölur á milli 0 og 255."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:330
+#: amarokconfig.kcfg:335
 #, fuzzy, kde-format
 msgid "Font scaling for OSD"
 msgstr "Leturlitur fyrir skjábirtingu"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:331
+#: amarokconfig.kcfg:336
 #, kde-format
 msgid ""
 "The scaling multiplier for the OSD font, in percent-of-normal. 100 is &#8220;"
@@ -1104,13 +1119,13 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:337
+#: amarokconfig.kcfg:342
 #, fuzzy, kde-format
 msgid "How many milliseconds the text should be displayed for"
 msgstr "Í hve margar millisekúndur á að sýna textann"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:338
+#: amarokconfig.kcfg:343
 #, fuzzy, kde-format
 msgid ""
 "The time in milliseconds to show the OSD. A value of 0 means never hide. The "
@@ -1120,13 +1135,13 @@ msgstr ""
 "aldrei að fela hana. Sjálfgefið er 5000 ms."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:343
+#: amarokconfig.kcfg:348
 #, kde-format
 msgid "Y position offset"
 msgstr "Y staða"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:344
+#: amarokconfig.kcfg:349
 #, fuzzy, kde-format
 msgid ""
 "The Y position of the OSD relative to the chosen screen and OSD alignment. "
@@ -1142,13 +1157,13 @@ msgstr ""
 "skjábirtingartexta miðað við neðri brún skjásins."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:350
+#: amarokconfig.kcfg:355
 #, kde-format
 msgid "OSD screen"
 msgstr "Skjábirting"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:351
+#: amarokconfig.kcfg:356
 #, kde-format
 msgid ""
 "The screen that should display the OSD. For single-headed environments this "
@@ -1158,13 +1173,13 @@ msgstr ""
 "gildið 0."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:355
+#: amarokconfig.kcfg:360
 #, kde-format
 msgid "Align OSD to"
 msgstr "Jafna skjábirtingu að"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:356
+#: amarokconfig.kcfg:361
 #, kde-format
 msgid ""
 "The relative position of the OSD. Possible choices are Left, Middle, Right "
@@ -1175,14 +1190,14 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (OSD)
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
-#: amarokconfig.kcfg:366 configdialog/dialogs/NotificationsConfig.ui:264
+#: amarokconfig.kcfg:371 configdialog/dialogs/NotificationsConfig.ui:264
 #, kde-format
 msgid "Don't show when a fullscreen application is active"
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
-#: amarokconfig.kcfg:367 configdialog/dialogs/NotificationsConfig.ui:261
+#: amarokconfig.kcfg:372 configdialog/dialogs/NotificationsConfig.ui:261
 #, kde-format
 msgid ""
 "Do not show the On-Screen-Display if another application is focused and "
@@ -1190,51 +1205,51 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:375
+#: amarokconfig.kcfg:380
 #, kde-format
 msgid "Resume playback of last played track on startup"
 msgstr "Halda áfram með spilun á seinasta lagi við ræsingu"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: amarokconfig.kcfg:376
+#: amarokconfig.kcfg:381
 #, kde-format
 msgid "If set, Amarok resumes playback of the last played track on startup."
 msgstr ""
 "Ef valið, heldur Amarok áfram með spilun á seinast spilaða lagi við ræsingu."
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:380
+#: amarokconfig.kcfg:385
 #, kde-format
 msgid "Track URL to resume upon startup"
 msgstr "Fylgjast með slóð til að halda áfram við ræsingu"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: amarokconfig.kcfg:381
+#: amarokconfig.kcfg:386
 #, kde-format
 msgid "Internal: URL of the track to resume on startup."
 msgstr "Slóð lags sem á að halda áfram með við ræsingu."
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:384
+#: amarokconfig.kcfg:389
 #, fuzzy, kde-format
 #| msgid "&Resume playback on start"
 msgid "Internal: Resume playback in paused state"
 msgstr "Halda afspilun áfram við &ræsingu"
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:388
+#: amarokconfig.kcfg:393
 #, kde-format
 msgid "Time to resume at, in milliseconds"
 msgstr "Tími þar sem á að halda áfram, í millisekúndum"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: amarokconfig.kcfg:389
+#: amarokconfig.kcfg:394
 #, kde-format
 msgid "Internal: Playback position in the track to resume on startup."
 msgstr "Staðsetning afspilunar í lagi sem á að halda áfram með við ræsingu."
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:392
+#: amarokconfig.kcfg:397
 #, fuzzy, kde-format
 msgid ""
 "List of bools describing which browsers are visible, from top to bottom."
@@ -1242,7 +1257,7 @@ msgstr ""
 "Listi af breytum (bools) sem lýsa hvaða vafrar eru sjáanlegir, ofan frá."
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:395
+#: amarokconfig.kcfg:400
 #, fuzzy, kde-format
 msgid "Track playing on last exit. Value is -1 if no track was playing."
 msgstr ""
@@ -1250,70 +1265,70 @@ msgstr ""
 "lag var í spilun."
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:399
+#: amarokconfig.kcfg:404
 #, fuzzy, kde-format
 msgid "Number (from the top) of the last active browser."
 msgstr "Númer (að ofan) síðasta virka vafrans."
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:405
+#: amarokconfig.kcfg:410
 #, kde-format
 msgid "Whether Collections folders are scanned recursively"
 msgstr "Hvort eigi að leita í undirmöppum safnmappa"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:409
+#: amarokconfig.kcfg:414
 #, kde-format
 msgid "Whether Collection folders are rescanned on change"
 msgstr "Hvort eigi að endurleita í safnmöppum við breytingar"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:413
+#: amarokconfig.kcfg:418
 #, fuzzy, kde-format
 #| msgid "Whether the album cover should be shown"
 msgid "Whether meta data changes are written back"
 msgstr "Hvort eigi að sýna umslagsmyndina"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:417
+#: amarokconfig.kcfg:422
 #, fuzzy, kde-format
 #| msgid "Whether the album cover should be shown"
 msgid "Whether changes to the track statistics are written back"
 msgstr "Hvort eigi að sýna umslagsmyndina"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:421
+#: amarokconfig.kcfg:426
 #, fuzzy, kde-format
 #| msgid "Whether the album cover should be shown"
 msgid "Whether changes to the album cover are written back"
 msgstr "Hvort eigi að sýna umslagsmyndina"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:425
+#: amarokconfig.kcfg:430
 #, kde-format
 msgid "Maximum embedded cover dimensions"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:429
+#: amarokconfig.kcfg:434
 #, kde-format
 msgid "List of folders in the Collection"
 msgstr "Listi yfir möppur í safninu"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:432
+#: amarokconfig.kcfg:437
 #, fuzzy, kde-format
 msgid "Whether track numbers are shown in the collection browser."
 msgstr "Hvort sýna eigi laganúmer í safnskoðara."
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:436
+#: amarokconfig.kcfg:441
 #, fuzzy, kde-format
 msgid "Whether years are shown in the collection browser."
 msgstr "Hvort sýna eigi ártöl í safnskoðara."
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:440
+#: amarokconfig.kcfg:445
 #, kde-format
 msgid ""
 "Whether to use Mozilla's Character Set Detector to try to guess ID3 tag "
@@ -1321,26 +1336,28 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:447
-#, kde-format
-msgid "Submit played songs"
+#: amarokconfig.kcfg:452
+#, fuzzy, kde-format
+#| msgid "Submit played songs"
+msgid "Submit played tracks"
 msgstr "Senda spiluð lög"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:448
-#, kde-format
-msgid "Whether played songs are submitted to Audioscrobbler"
+#: amarokconfig.kcfg:453
+#, fuzzy, kde-format
+#| msgid "Whether played songs are submitted to Audioscrobbler"
+msgid "Whether played tracks are submitted to Audioscrobbler"
 msgstr "Hvort eigi að senda upplýsingar um spiluð lög til Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:452
+#: amarokconfig.kcfg:457
 #, kde-format
 msgctxt "Username for audioscrobbler login"
 msgid "Username"
 msgstr "Notandanafn"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:453
+#: amarokconfig.kcfg:458
 #, kde-format
 msgid "The username to use for connecting to Audioscrobbler"
 msgstr "Notandanafnið sem á að nota í Audioscrobbler tengingunni"
@@ -1349,7 +1366,7 @@ msgstr "Notandanafnið sem á að nota í Audioscrobbler tengingunni"
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelPassword)
 #. i18n: ectx: property (text), widget (QLabel, m_passwordLabel)
-#: amarokconfig.kcfg:457 importers/amarok/AmarokConfigWidget.ui:38
+#: amarokconfig.kcfg:462 importers/amarok/AmarokConfigWidget.ui:38
 #: importers/fastforward/FastForwardConfigWidget.ui:46
 #: services/ampache/AmpacheConfigWidget.ui:68
 #: services/ampache/NewServerWidget.ui:60
@@ -1358,92 +1375,93 @@ msgid "Password"
 msgstr "Lykilorð"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:458
+#: amarokconfig.kcfg:463
 #, kde-format
 msgid "The password to use for connecting to Audioscrobbler"
 msgstr "Lykilorðið sem á að nota í Audioscrobbler tengingunni"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:462
+#: amarokconfig.kcfg:467
 #, fuzzy, kde-format
 #| msgid "composer"
 msgid "Send composer data"
 msgstr "tónskáld"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:463
+#: amarokconfig.kcfg:468
 #, kde-format
 msgid "Use composer data in Last.fm as artist"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:467
+#: amarokconfig.kcfg:472
 #, kde-format
 msgid "Retrieve similar artists"
 msgstr "Ná í svipaða flytjendur"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:468
-#, kde-format
-msgid "Whether similar songs are retrieved from Audioscrobbler"
+#: amarokconfig.kcfg:473
+#, fuzzy, kde-format
+#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+msgid "Whether similar tracks are retrieved from Audioscrobbler"
 msgstr "Hvort eigi að ná í svipuð lög frá Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:475
+#: amarokconfig.kcfg:480
 #, kde-format
 msgid "Device type"
 msgstr "Tækjategund"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:476
+#: amarokconfig.kcfg:481
 #, kde-format
 msgid "The type of media device."
 msgstr "Tegund ferðatækis."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:479
+#: amarokconfig.kcfg:484
 #, kde-format
 msgid "Mount point"
 msgstr "Tengipunktur"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:480
+#: amarokconfig.kcfg:485
 #, kde-format
 msgid "The mount point used for the media device connection."
 msgstr "Tengipunktur sem er notaður fyrir ferðatæki."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:483
+#: amarokconfig.kcfg:488
 #, kde-format
 msgid "Mount command"
 msgstr "Tengiskipun"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:484
+#: amarokconfig.kcfg:489
 #, kde-format
 msgid "The mount command used for the media device connection."
 msgstr "Skipunin sem er notuð til að tengja ferðatækið í skráakerfið."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:487
+#: amarokconfig.kcfg:492
 #, kde-format
 msgid "UmountCommand"
 msgstr "Aftengiskipun"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:488
+#: amarokconfig.kcfg:493
 #, kde-format
 msgid "The umount command used for the media device connection."
 msgstr "Skipunin sem er notuð til að aftengja ferðatækið."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:491
+#: amarokconfig.kcfg:496
 #, kde-format
 msgid "Auto delete podcasts"
 msgstr "Eyða sjálfkrafa podcast skrám"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:492
+#: amarokconfig.kcfg:497
 #, fuzzy, kde-format
 #| msgid ""
 #| "Whether podcasts shows already played are automatically deleted when "
@@ -1455,13 +1473,13 @@ msgstr ""
 "Hvort eigi sjálfkrafa að eyða spiluðum podcast skrám þegar tæki er tengt við."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:495
+#: amarokconfig.kcfg:500
 #, kde-format
 msgid "Sync stats"
 msgstr "Samræma tölfræði"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:496
+#: amarokconfig.kcfg:501
 #, fuzzy, kde-format
 #| msgid ""
 #| "Whether Amarok statistics should be synchronized with play count/ratings "
@@ -1474,73 +1492,73 @@ msgstr ""
 "einkunnarupplýsingum á tæki og hvort spiluð lög eigi að senda á last.fm."
 
 #. i18n: ectx: label, entry, group (Daap)
-#: amarokconfig.kcfg:502
+#: amarokconfig.kcfg:507
 #, kde-format
 msgid "Manually added servers"
 msgstr "Þjónum bætt handvirkt við"
 
 #. i18n: ectx: whatsthis, entry, group (Daap)
-#: amarokconfig.kcfg:503
+#: amarokconfig.kcfg:508
 #, kde-format
 msgid "Music Sharing servers added by the user."
 msgstr "Tónlistarmiðlarar sem bætt er við af notanda."
 
 #. i18n: ectx: label, entry, group (Daap)
-#: amarokconfig.kcfg:506
+#: amarokconfig.kcfg:511
 #, kde-format
 msgid "Server passwords"
 msgstr "Lykilorð þjóns"
 
 #. i18n: ectx: whatsthis, entry, group (Daap)
-#: amarokconfig.kcfg:507
+#: amarokconfig.kcfg:512
 #, kde-format
 msgid "Passwords stored by hostname."
 msgstr "Lykilorð vistuð með heiti miðlara."
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:513
+#: amarokconfig.kcfg:518
 #, fuzzy, kde-format
 msgid "Include track names in matching"
 msgstr "Nota lagaheiti í samsvörun"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:517
+#: amarokconfig.kcfg:522
 #, fuzzy, kde-format
 msgid "Include album names in matching"
 msgstr "Nota plötuheiti í samsvörun"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:521
+#: amarokconfig.kcfg:526
 #, fuzzy, kde-format
 msgid "Include artist names in matching"
 msgstr "Nota nöfn flytjenda í samsvörun"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:525
+#: amarokconfig.kcfg:530
 #, fuzzy, kde-format
 msgid "Include genre names in matching"
 msgstr "Nota tónlistarstefnuheiti í samsvörun"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:529
+#: amarokconfig.kcfg:534
 #, fuzzy, kde-format
 msgid "Include composer names in matching"
 msgstr "Nota nöfn lagahöfunda í samsvörun"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:533 amarokconfig.kcfg:537
+#: amarokconfig.kcfg:538 amarokconfig.kcfg:542
 #, fuzzy, kde-format
 msgid "Include years in matching"
 msgstr "Nota ártöl í samsvörun"
 
 #. i18n: ectx: label, entry, group (Playlist Layout)
-#: amarokconfig.kcfg:544
+#: amarokconfig.kcfg:549
 #, kde-format
 msgid "The name of the layout that will be loaded on startup"
 msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:551
+#: amarokconfig.kcfg:556
 #, kde-format
 msgid ""
 "Whether Amarok uses its own internal database, as opposed to an external "
@@ -1548,19 +1566,19 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:555
+#: amarokconfig.kcfg:560
 #, fuzzy, kde-format
 msgid "The hostname of the external server to connect to."
 msgstr "Skráarheiti ytri vafra sem Amarok á að kalla á."
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:559
+#: amarokconfig.kcfg:564
 #, kde-format
 msgid "Which server port to connect to the database engine."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:563
+#: amarokconfig.kcfg:568
 #, kde-format
 msgid ""
 "The name of the database Amarok will use. The user should have sufficient "
@@ -1568,50 +1586,50 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:567
+#: amarokconfig.kcfg:572
 #, kde-format
 msgid "Username used to access the external database."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:571
+#: amarokconfig.kcfg:576
 #, kde-format
 msgid "Password for the external database user."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:575
+#: amarokconfig.kcfg:580
 #, kde-format
 msgid "Keeps a running count to know when run a CHECK."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (ScriptManager)
-#: amarokconfig.kcfg:582
+#: amarokconfig.kcfg:587
 #, kde-format
 msgid "Whether to enable Amarok's scripting module."
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:583
+#: amarokconfig.kcfg:588
 #, fuzzy, kde-format
 msgid "Enable/Disable Amarok's scripting module."
 msgstr "Virkja/slökkva á upphafsskjá þegar Amarok er ræst."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
-#: amarokconfig.kcfg:587
+#: amarokconfig.kcfg:592
 #, fuzzy, kde-format
 msgid "Whether to automatically update built-in scripts"
 msgstr "Hvort reyna eigi sjálfvirkt að sækja umslagsmyndir, sé þess þörf"
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:588
+#: amarokconfig.kcfg:593
 #, fuzzy, kde-format
 msgid "Enable/Disable automatic update for built-in scripts."
 msgstr "Hvort reyna eigi sjálfvirkt að sækja umslagsmyndir, sé þess þörf"
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:592 amarokconfig.kcfg:593
+#: amarokconfig.kcfg:597 amarokconfig.kcfg:598
 #, fuzzy, kde-format
 #| msgid "Whether to animate the systray icon"
 msgid "Whether to enable the script console."
@@ -1619,21 +1637,21 @@ msgstr "Hvort eigi að hreyfa táknmyndina"
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:597 amarokconfig.kcfg:598
+#: amarokconfig.kcfg:602 amarokconfig.kcfg:603
 #, kde-format
 msgid "Whether to display a warning about scripts accessing deprecated APIs."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (ScriptConsole)
 #. i18n: ectx: whatsthis, entry, group (ScriptConsole)
-#: amarokconfig.kcfg:605 amarokconfig.kcfg:606
+#: amarokconfig.kcfg:610 amarokconfig.kcfg:611
 #, fuzzy, kde-format
 #| msgid "Whether to animate the systray icon"
 msgid "Whether to save the current session on exit."
 msgstr "Hvort eigi að hreyfa táknmyndina"
 
 #. i18n: ectx: label, entry, group (Moodbar)
-#: amarokconfig.kcfg:613
+#: amarokconfig.kcfg:618
 #, kde-format
 msgid ""
 "Whether to show the moodbar of the current track, if available, in the "
@@ -1641,25 +1659,25 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (Moodbar)
-#: amarokconfig.kcfg:614
+#: amarokconfig.kcfg:619
 #, kde-format
 msgid "Enable/Disable showing moodbar, if available, in the progress slider."
 msgstr ""
 
 #. i18n: ectx: label, entry, group (Moodbar)
-#: amarokconfig.kcfg:618
+#: amarokconfig.kcfg:623
 #, fuzzy, kde-format
 msgid "The style to use when painting the moodbar"
 msgstr "Hvort eigi að dofna út þegar hætt er í forritinu."
 
 #. i18n: ectx: label, entry, group (PlaylistGenerator)
-#: amarokconfig.kcfg:625
+#: amarokconfig.kcfg:630
 #, kde-format
 msgid "Quality factor for Automated Playlist Generator"
 msgstr ""
 
 #. i18n: ectx: whatsthis, entry, group (PlaylistGenerator)
-#: amarokconfig.kcfg:626
+#: amarokconfig.kcfg:631
 #, kde-format
 msgid ""
 "A value between 0 and 10 that controls whether the Automated Playlist "
@@ -2041,7 +2059,14 @@ msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Month"
 msgstr "Afspilunartalning"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:198
+#: browsers/collectionbrowser/CollectionWidget.cpp:181
+#, fuzzy, kde-format
+#| msgid "First Played"
+msgctxt "@item:inlistbox Collection widget filter preset"
+msgid "Never Played"
+msgstr "Fyrsta spilun"
+
+#: browsers/collectionbrowser/CollectionWidget.cpp:200
 #, kde-format
 msgctxt ""
 "separator between collection browser level categories, i.e. the ' / ' in "
@@ -2049,45 +2074,52 @@ msgctxt ""
 msgid " / "
 msgstr " / "
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:211
+#: browsers/collectionbrowser/CollectionWidget.cpp:213
 #, fuzzy, kde-format
 #| msgid "First Play"
 msgid "First Level"
 msgstr "Fyrsta spilun"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:212
+#: browsers/collectionbrowser/CollectionWidget.cpp:214
 #, kde-format
 msgid "Second Level"
 msgstr "Annað stig"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:213
+#: browsers/collectionbrowser/CollectionWidget.cpp:215
 #, kde-format
 msgid "Third Level"
 msgstr "Þriðja stig"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:247
+#: browsers/collectionbrowser/CollectionWidget.cpp:249
 #, kde-format
 msgid "Show Years"
 msgstr "Sýna ár"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:252
+#: browsers/collectionbrowser/CollectionWidget.cpp:254
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Track Numbers"
 msgstr "Sýna númer laga"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:257
+#: browsers/collectionbrowser/CollectionWidget.cpp:259
+#, fuzzy, kde-format
+#| msgid "Show under Various Artists"
+msgctxt "@action:inmenu"
+msgid "Show Artist for Various Artists"
+msgstr "Sýna undir ýmsir flytjendur"
+
+#: browsers/collectionbrowser/CollectionWidget.cpp:264
 #, kde-format
 msgid "Show Cover Art"
 msgstr "Sýna umslagsmyndir"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:264
+#: browsers/collectionbrowser/CollectionWidget.cpp:271
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:87
 #, kde-format
 msgid "Merged View"
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:271
+#: browsers/collectionbrowser/CollectionWidget.cpp:278
 #: services/jamendo/JamendoService.cpp:161
 #: services/magnatune/MagnatuneStore.cpp:229
 #, fuzzy, kde-format
@@ -2118,14 +2150,14 @@ msgid_plural "%1 tracks"
 msgstr[0] "Slóð"
 msgstr[1] "%1 hljóðbútar [%2]"
 
-#: browsers/CollectionTreeItemModelBase.cpp:279
-#: browsers/CollectionTreeItemModelBase.cpp:370
+#: browsers/CollectionTreeItemModelBase.cpp:281
+#: browsers/CollectionTreeItemModelBase.cpp:372
 #, kde-format
 msgctxt "The Name is not known"
 msgid "Unknown"
 msgstr "Óþekkt"
 
-#: browsers/CollectionTreeItemModelBase.cpp:395
+#: browsers/CollectionTreeItemModelBase.cpp:397
 #: core-impl/collections/db/sql/SqlMeta.cpp:409
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:98
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
@@ -2137,10 +2169,10 @@ msgstr "Óþekkt"
 msgid "Various Artists"
 msgstr "Ýmsir flytjendur"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1100
+#: browsers/CollectionTreeItemModelBase.cpp:1102
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:299
-#: context/applets/wikipedia/package/contents/ui/main.qml:110
+#: context/applets/wikipedia/package/contents/ui/main.qml:115
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
 #: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
@@ -2149,49 +2181,49 @@ msgstr "Ýmsir flytjendur"
 msgid "Album"
 msgstr "Plata"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1100
+#: browsers/CollectionTreeItemModelBase.cpp:1102
 #, kde-format
 msgid "Year - Album"
 msgstr "Ár - Plata"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1102
+#: browsers/CollectionTreeItemModelBase.cpp:1104
 #, fuzzy, kde-format
 #| msgid "Track by Artist on Album"
 msgid "Track Artist"
 msgstr "Lög eftir flytjanda á plötu"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1104 dialogs/TagGuessOptions.ui:253
+#: browsers/CollectionTreeItemModelBase.cpp:1106 dialogs/TagGuessOptions.ui:253
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:929
 #, kde-format
 msgid "Album Artist"
 msgstr "Flytjandi"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1106
-#: context/applets/wikipedia/package/contents/ui/main.qml:100
+#: browsers/CollectionTreeItemModelBase.cpp:1108
+#: context/applets/wikipedia/package/contents/ui/main.qml:104
 #: playlist/PlaylistModel.cpp:930
 #, kde-format
 msgid "Composer"
 msgstr "Tónskáld"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1108 dialogs/transferdialog.cpp:105
+#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
 #: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:94
 #, kde-format
 msgid "Genre"
 msgstr "Tegund"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110
+#: browsers/CollectionTreeItemModelBase.cpp:1112
 #: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:931
 #, kde-format
 msgid "Year"
 msgstr "Ár"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1112
+#: browsers/CollectionTreeItemModelBase.cpp:1114
 #, kde-format
 msgid "Label"
 msgstr "Merki"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1114 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
 #: playlist/navigators/NavigatorConfigAction.cpp:80
 #, kde-format
 msgid "None"
@@ -2266,8 +2298,8 @@ msgid "&Edit Track Details"
 msgstr "Sýsla m&eð lagaupplýsingar"
 
 #: browsers/filebrowser/FileBrowser.cpp:70
-#: context/applets/wikipedia/package/contents/ui/main.qml:61
-#: context/applets/wikipedia/package/contents/ui/main.qml:157
+#: context/applets/wikipedia/package/contents/ui/main.qml:63
+#: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, fuzzy, kde-format
 msgid "Refresh"
 msgstr "Endurnýja"
@@ -2476,9 +2508,10 @@ msgid "Duplicates"
 msgstr "Tvítekningar"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:114
-#, kde-format
-msgid "Allow duplicate songs in result"
-msgstr ""
+#, fuzzy, kde-format
+msgctxt "Tooltip for dynamic playlist setting button"
+msgid "Allow duplicate tracks in result"
+msgstr "Staða breytilegs hams."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, kde-format
@@ -2695,23 +2728,34 @@ msgstr[1] "Fjarlægi lög af iPod"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
 #, fuzzy, kde-format
-#| msgid "Configure Playlist Info Applet"
-msgid "Confirm Playlist Deletion"
-msgstr "Stilla spilunarlistaforritlinginn"
+#| msgid "Playlist name:"
+msgctxt ""
+"Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
+"provider pretty name"
+msgid "Delete playlist <i>%1</i> from %2?"
+msgstr "Heiti lagalista:"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
 #, fuzzy, kde-format
 #| msgid "Playlist name:"
-msgctxt "%1 is playlist provider pretty name"
-msgid "Delete playlist from %1."
+msgctxt ""
+"Playlist deletion confirmation dialog. %1 is the playlist count (always more "
+"than 1), %2 is playlist provider pretty name"
+msgid "Delete %1 playlists from %2?"
 msgstr "Heiti lagalista:"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:516 MainWindow.cpp:447
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
+#, fuzzy, kde-format
+#| msgid "Configure Playlist Info Applet"
+msgid "Confirm Playlist Deletion"
+msgstr "Stilla spilunarlistaforritlinginn"
+
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Nota afstæða &slóð við vistun"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:529
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
@@ -4573,7 +4617,7 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
-#: context/applets/wikipedia/package/contents/ui/main.qml:90
+#: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
 #: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
@@ -5013,38 +5057,47 @@ msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr "Staðsetning"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:39
-#: context/applets/wikipedia/package/contents/ui/main.qml:145
+#: context/applets/wikipedia/package/contents/ui/main.qml:41
+#: context/applets/wikipedia/package/contents/ui/main.qml:153
 #, fuzzy, kde-format
 #| msgid "Previous:"
 msgid "Previous"
 msgstr "Fyrra:"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:50
-#: context/applets/wikipedia/package/contents/ui/main.qml:151
+#: context/applets/wikipedia/package/contents/ui/main.qml:52
+#: context/applets/wikipedia/package/contents/ui/main.qml:159
 #: statsyncing/ui/ChooseProvidersPage.cpp:35
 #, fuzzy, kde-format
 #| msgid "&Next"
 msgid "Next"
 msgstr "Næsta"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:72
-#: widgets/PlayPauseButton.cpp:81
-#, kde-format
-msgid "Pause"
-msgstr "Í bið"
+#: context/applets/wikipedia/package/contents/ui/main.qml:74
+#, fuzzy, kde-format
+#| msgid "Updating the local Magnatune database."
+msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
+msgid "Don't change page automatically"
+msgstr "Uppfæri Magnatune.com gagnagrunn"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:120
+#: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
 msgstr "Lag"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:164
-#: dialogs/DiagnosticDialog.cpp:84
-#, kde-format
-msgid "Copy to Clipboard"
+#: context/applets/wikipedia/package/contents/ui/main.qml:172
+#, fuzzy, kde-format
+#| msgid "Copy to Clipboard"
+msgctxt "Right-click menu option for links in Wikipedia applet"
+msgid "Copy Link to Clipboard"
+msgstr "Afrita á klippispjald"
+
+#: context/applets/wikipedia/package/contents/ui/main.qml:179
+#, fuzzy, kde-format
+#| msgid "Copy to Clipboard"
+msgctxt "Right-click menu option for images in Wikipedia applet"
+msgid "Copy Image to Clipboard"
 msgstr "Afrita á klippispjald"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
@@ -5096,6 +5149,14 @@ msgstr ""
 #, fuzzy, kde-format
 msgid "Choose Language"
 msgstr "Tungumál"
+
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:891
+#, kde-format
+msgctxt ""
+"A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
+"%1 is the url of the link"
+msgid "Click to open %1 in a web browser"
+msgstr ""
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, fuzzy, kde-format
@@ -8784,6 +8845,11 @@ msgstr "Fjarlægja umkóðaðar skrár eftir flutning"
 #, kde-format
 msgid "For this feature, a script of type \"Transcode\" has to be running"
 msgstr "Til að þetta virki verður \"Transcode\" skriftan að vera keyrandi"
+
+#: dialogs/DiagnosticDialog.cpp:84
+#, kde-format
+msgid "Copy to Clipboard"
+msgstr "Afrita á klippispjald"
 
 #: dialogs/DiagnosticDialog.cpp:88
 #, fuzzy, kde-format
@@ -12909,7 +12975,8 @@ msgstr "Aðvörun: einhver lög hafa verið falin í lagalistanum"
 
 #: playlist/view/listview/PrettyListView.cpp:691
 #, kde-format
-msgid "Add some songs here by dragging them from all around."
+msgctxt "Placeholder message in empty playlist view"
+msgid "Add some tracks here by dragging them from all around."
 msgstr ""
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
@@ -13094,7 +13161,7 @@ msgstr "Staðsetning:"
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
 #, kde-format
 msgid ""
-"The desired position of the song in the playlist, in hours, minutes, and "
+"The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
@@ -17275,6 +17342,11 @@ msgstr "Í bið"
 #, kde-format
 msgid "Play"
 msgstr "Spila"
+
+#: widgets/PlayPauseButton.cpp:81
+#, kde-format
+msgid "Pause"
+msgstr "Í bið"
 
 #: widgets/PrettyTreeDelegate.cpp:219
 #, kde-format

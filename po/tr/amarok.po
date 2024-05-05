@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-04-26 01:37+0000\n"
+"POT-Creation-Date: 2024-05-05 01:43+0000\n"
 "PO-Revision-Date: 2024-05-01 00:57+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -603,9 +603,12 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "Automatically scroll the playlist to make the currently playing song "
+#| "visible"
 msgid ""
-"Automatically scroll the playlist to make the currently playing song visible"
+"Automatically scroll the playlist to make the currently playing track visible"
 msgstr "Çalan şarkıyı görünür kılmak için çalma listesini kendiliğinden sar"
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -639,15 +642,30 @@ msgstr "Bağlam uygulamacıklarının daraltma canlandırmalarını etkinleştir
 msgid "If set, context applets will collapse using animations."
 msgstr "Ayarlanırsa bağlam uygulamacıkları canlandırma ile daraltılır."
 
+#. i18n: ectx: label, entry, group (General Options)
+#: amarokconfig.kcfg:121
+#, kde-format
+msgid ""
+"Show track's artist in Collection Browser if different from album artist"
+msgstr ""
+
+#. i18n: ectx: whatsthis, entry, group (General Options)
+#: amarokconfig.kcfg:122
+#, kde-format
+msgid ""
+"Explicitly show artist in Collection Browser for Various Artists albums and "
+"tracks where artist differs from album artist."
+msgstr ""
+
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:124
+#: amarokconfig.kcfg:129
 #, kde-format
 msgid "Whether organize files will overwrite existing files."
 msgstr ""
 "Dosyalar organize edilirken var olan dosyaların üzerine yazılıp yazılmayacağı"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:125
+#: amarokconfig.kcfg:130
 #, kde-format
 msgid "If set, Organize files will overwrite any existing destination."
 msgstr ""
@@ -655,7 +673,7 @@ msgstr ""
 "üzerine yazılır."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:129
+#: amarokconfig.kcfg:134
 #, kde-format
 msgid "Whether organize files will move The in artist names to the end."
 msgstr ""
@@ -663,7 +681,7 @@ msgstr ""
 "taşınmayacağı"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:130
+#: amarokconfig.kcfg:135
 #, kde-format
 msgid ""
 "If set, Organize files will move The in artist names to the end as in "
@@ -673,7 +691,7 @@ msgstr ""
 "“Beatles, The”da olduğu gibi sona taşınır."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:134
+#: amarokconfig.kcfg:139
 #, kde-format
 msgid ""
 "Whether organize files will replace spaces in filenames with underscores."
@@ -682,7 +700,7 @@ msgstr ""
 "değiştirilip değiştirilmeyeceği"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:135
+#: amarokconfig.kcfg:140
 #, kde-format
 msgid ""
 "If set, Organize files will replace spaces in filenames with underscores."
@@ -691,7 +709,7 @@ msgstr ""
 "tireler ile değiştirilir."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:139
+#: amarokconfig.kcfg:144
 #, kde-format
 msgid "Whether organize files will use cover art as folder icons."
 msgstr ""
@@ -699,7 +717,7 @@ msgstr ""
 "kullanılıp kullanılmayacağı"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:140
+#: amarokconfig.kcfg:145
 #, kde-format
 msgid "If set, Organize files will use cover art as folder icons."
 msgstr ""
@@ -707,21 +725,21 @@ msgstr ""
 "görselleri kullanılır."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:144
+#: amarokconfig.kcfg:149
 #, kde-format
 msgid "Collection folder path destination for Organize files."
 msgstr ""
 "Dosyaları organize ederken kullanılacak koleksiyon klasörü yolu konumu."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:145
+#: amarokconfig.kcfg:150
 #, kde-format
 msgid "The path of the collection folder destination for Organize files."
 msgstr ""
 "Dosyaları organize ederken kullanılacak koleksiyon klasör hedef konumu yolu."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:149
+#: amarokconfig.kcfg:154
 #, kde-format
 msgid ""
 "Whether organize files will rename files in a manner compatible with vfat "
@@ -731,7 +749,7 @@ msgstr ""
 "biçimde yeniden adlandırılıp adlandırılmayacağı"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:150
+#: amarokconfig.kcfg:155
 #, kde-format
 msgid ""
 "If set, Organize files will replace characters that are not compatible with "
@@ -741,7 +759,7 @@ msgstr ""
 "olmayan karakterler başkalarıyla değiştirilir (örneğin ‘:’, ‘*’ ve ‘?’)."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:154
+#: amarokconfig.kcfg:159
 #, kde-format
 msgid ""
 "Whether organize files will rename files such that they only contain 7-bit "
@@ -751,7 +769,7 @@ msgstr ""
 "kullanılarak yeniden adlandırılıp adlandırılmayacağı"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:155
+#: amarokconfig.kcfg:160
 #, kde-format
 msgid ""
 "If set, Organize files will replace characters that are not compatible with "
@@ -761,7 +779,7 @@ msgstr ""
 "uyumlu olmayan karakterler başkalarıyla değiştirilir."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:159
+#: amarokconfig.kcfg:164
 #, kde-format
 msgid "Whether organize files will use a custom file naming scheme."
 msgstr ""
@@ -769,7 +787,7 @@ msgstr ""
 "kullanılmayacağı"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:160
+#: amarokconfig.kcfg:165
 #, kde-format
 msgid ""
 "If set, Organize files will rename files according to a custom format string."
@@ -778,7 +796,7 @@ msgstr ""
 "adlandırılırlar."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:164
+#: amarokconfig.kcfg:169
 #, kde-format
 msgid "Format string for Organize files, if a custom naming scheme is used."
 msgstr ""
@@ -786,7 +804,7 @@ msgstr ""
 "kullanılacak biçim dizisi."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:165
+#: amarokconfig.kcfg:170
 #, kde-format
 msgid ""
 "If the custom filename scheme is enabled, then Organize files will rename "
@@ -796,13 +814,13 @@ msgstr ""
 "biçim dizisine göre yeniden adlandırılırlar."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:169
+#: amarokconfig.kcfg:174
 #, kde-format
 msgid "Regular expression that is to be replaced."
 msgstr "Değiştirilecek düzenli ifade."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:170
+#: amarokconfig.kcfg:175
 #, kde-format
 msgid ""
 "Organize files will replace substrings matching this regular expression."
@@ -811,26 +829,26 @@ msgstr ""
 "değiştirilir."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:174
+#: amarokconfig.kcfg:179
 #, kde-format
 msgid "Replacing string."
 msgstr "Değiştiren dizi."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:175
+#: amarokconfig.kcfg:180
 #, kde-format
 msgid "Organize files will replace matching substrings with this string."
 msgstr ""
 "Dosyalar organize edilirken bu dizi ile eşleşen alt diziler değiştirilir."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:179
+#: amarokconfig.kcfg:184
 #, kde-format
 msgid "Basic or Advanced Mode"
 msgstr "Temel veya Gelişmiş Kip"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:180
+#: amarokconfig.kcfg:185
 #, kde-format
 msgid ""
 "In basic mode graphical drag/droppable tokens are used to create a filename "
@@ -840,112 +858,112 @@ msgstr ""
 "oluşturmak için kullanılır, gelişmiş kipte ise görsellerin yerini metin alır."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:184
+#: amarokconfig.kcfg:189
 #, kde-format
 msgid "Format Presets"
 msgstr "Biçim Önayarları"
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
-#: amarokconfig.kcfg:185
+#: amarokconfig.kcfg:190
 #, kde-format
 msgid "A list of preset formats (token schemas)."
 msgstr "Önayar biçimlerinin bir listesi (jeton şemaları)."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:192
+#: amarokconfig.kcfg:197
 #, kde-format
 msgid "Master volume"
 msgstr "Ana ses düzeyi"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:193
+#: amarokconfig.kcfg:198
 #, kde-format
 msgid "The Amarok master volume, a value between 0 and 100."
 msgstr "Amarok’un ana ses düzeyi, 0–100 arasındaki bir değerdir."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:199
+#: amarokconfig.kcfg:204
 #, kde-format
 msgid "Mute state"
 msgstr "Sessiz durumu"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:200
+#: amarokconfig.kcfg:205
 #, kde-format
 msgid "Mute/Unmute sound."
 msgstr "Sesi kapatın/açın."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:204
+#: amarokconfig.kcfg:209
 #, kde-format
 msgid "Whether to fade out tracks when pressing stop."
 msgstr ""
 "Durdur’a basıldığında parçalara yumuşak geçiş uygulanıp uygulanmayacağı"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:205 amarokconfig.kcfg:210
+#: amarokconfig.kcfg:210 amarokconfig.kcfg:215
 #, kde-format
 msgid "Enable/Disable fadeout."
 msgstr "Yumuşak geçişi etkinleştirin/devre dışı bırakın."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:209
+#: amarokconfig.kcfg:214
 #, kde-format
 msgid "Whether to fade out tracks when pressing pause."
 msgstr ""
 "Duraklat’a basıldığında parçalara yumuşak geçiş uygulanıp uygulanmayacağı"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:214
+#: amarokconfig.kcfg:219
 #, kde-format
 msgid "Length of fadeout, in milliseconds"
 msgstr "Milisaniye türünden yumuşak geçiş süresi"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:215
+#: amarokconfig.kcfg:220
 #, kde-format
 msgid "The length of the fadeout in milliseconds."
 msgstr "Milisaniye türünden yumuşak geçişin süresi."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:220
+#: amarokconfig.kcfg:225
 #, kde-format
 msgid "Equalizer mode - 0 = off, 1 to n = preset no"
 msgstr "Ekolayzır kipi — 0 = kapalı, 1 ile n arası = önayar numarası"
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:221
+#: amarokconfig.kcfg:226
 #, kde-format
 msgid "When enabled, an equalizer plugin filters the audio stream."
 msgstr "Etkinleştirildiğinde, bir ekolayzır eklentisi ses akışını süzer."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:225
+#: amarokconfig.kcfg:230
 #, kde-format
 msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
 msgstr ""
 "11 ekolayzır kazançları ön amfiyi içerir; erim: -100..100, 0 olağan değerdir."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:229
+#: amarokconfig.kcfg:234
 #, kde-format
 msgid "List with user equalizer preset names"
 msgstr "Kullanıcı tanımlı ekolayzır önayarı adları listesi"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:232
+#: amarokconfig.kcfg:237
 #, kde-format
 msgid "List with user presets values"
 msgstr "Kullanıcı tanımlı kullanıcı önayarları değerleri"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:236
+#: amarokconfig.kcfg:241
 #, kde-format
 msgid "The mode for adjusting playback volume."
 msgstr "Çalma ses düzeyini ayarlama kipi."
 
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: amarokconfig.kcfg:237
+#: amarokconfig.kcfg:242
 #, kde-format
 msgid ""
 "Whether to adjust the volume of tracks to make them sound the same volume, "
@@ -956,43 +974,43 @@ msgstr ""
 "yoksa albüm başına mı yapılacağı"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:240
+#: amarokconfig.kcfg:245
 #, kde-format
 msgid "Disable Replay Gain"
 msgstr "Yeniden Çalma Kazancını Devre Dışı Bırak"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:243
+#: amarokconfig.kcfg:248
 #, kde-format
 msgid "Make each track the same volume"
 msgstr "Her parçayı aynı ses düzeyine getir"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:246
+#: amarokconfig.kcfg:251
 #, kde-format
 msgid "Make each album the same volume"
 msgstr "Her albümü aynı ses düzeyine getir"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:252
+#: amarokconfig.kcfg:257
 #, kde-format
 msgid "The length of a short seek, in seconds."
 msgstr "Saniye türünden kısa aramanın uzunluğu."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:257
+#: amarokconfig.kcfg:262
 #, kde-format
 msgid "The length of a medium seek, in seconds."
 msgstr "Saniye türünden orta aramanın uzunluğu."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:262
+#: amarokconfig.kcfg:267
 #, kde-format
 msgid "The length of a long seek, in seconds."
 msgstr "Saniye türünden uzun aramanın uzunluğu."
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:267
+#: amarokconfig.kcfg:272
 #, kde-format
 msgid "Whether Amarok should pause the currently playing track on suspend."
 msgstr ""
@@ -1000,7 +1018,7 @@ msgstr ""
 "duraklatmayacağı"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:271
+#: amarokconfig.kcfg:276
 #, kde-format
 msgid ""
 "Whether Amarok should prevent the system from sleeping if it is playing a "
@@ -1010,7 +1028,7 @@ msgstr ""
 "gerekip gerekmediği"
 
 #. i18n: ectx: label, entry, group (Playback)
-#: amarokconfig.kcfg:275
+#: amarokconfig.kcfg:280
 #, kde-format
 msgid ""
 "Whether Amarok should start playing if a track is added to playlist (and "
@@ -1020,94 +1038,94 @@ msgstr ""
 "Amarok’un çalmaya başlayıp başlamayacağı"
 
 #. i18n: ectx: label, entry, group (Cover Manager)
-#: amarokconfig.kcfg:282
+#: amarokconfig.kcfg:287
 #, kde-format
 msgid "Amazon locale for cover retrieval"
 msgstr "Kapak erişimi için Amazon yerel ayarı"
 
 #. i18n: ectx: whatsthis, entry, group (Cover Manager)
-#: amarokconfig.kcfg:283
+#: amarokconfig.kcfg:288
 #, kde-format
 msgid "Determines which Amazon server cover images should be retrieved from."
 msgstr ""
 "Hangi Amazon sunucusundan kapak görsellerinin alınması gerektiğini belirler."
 
 #. i18n: ectx: label, entry, group (Wikipedia)
-#: amarokconfig.kcfg:290
+#: amarokconfig.kcfg:295
 #, kde-format
 msgid "Wikipedia locale for information retrieval"
 msgstr "Bilgi almak için Vikipedi yerel ayarı"
 
 #. i18n: ectx: whatsthis, entry, group (Wikipedia)
-#: amarokconfig.kcfg:291
+#: amarokconfig.kcfg:296
 #, kde-format
 msgid ""
 "Determines in which language the information is retrieved from Wikipedia."
 msgstr "Bilginin Vikipedi’den hangi dilde alınacağını belirler."
 
 #. i18n: ectx: label, entry, group (KNotify)
-#: amarokconfig.kcfg:298
+#: amarokconfig.kcfg:303
 #, kde-format
 msgid "Use KNotify support"
 msgstr "KNotify desteğini kullan"
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:305
+#: amarokconfig.kcfg:310
 #, kde-format
 msgid "Use On-Screen Display"
 msgstr "Ekran Üzeri Görüntü’yü kullan"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:306
+#: amarokconfig.kcfg:311
 #, kde-format
 msgid "Enable/Disable the On-Screen Display."
 msgstr "Ekran Üzeri Görüntü’yü açın/kapatın."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:310 configdialog/dialogs/NotificationsConfig.cpp:46
+#: amarokconfig.kcfg:315 configdialog/dialogs/NotificationsConfig.cpp:46
 #, kde-format
 msgid "Use Growl for notifications"
 msgstr "Bildirimler için Growl kullan"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:311
+#: amarokconfig.kcfg:316
 #, kde-format
 msgid "Enable/Disable use of Growl for notifications."
 msgstr "Bildirimler için Growl kullanımını etkinleştirin/devre dışı bırakın."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:315
+#: amarokconfig.kcfg:320
 #, kde-format
 msgid "Translucency Toggle"
 msgstr "Yarısaydamlığı Aç/Kapat"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:316
+#: amarokconfig.kcfg:321
 #, kde-format
 msgid "Make the background of the OSD translucent."
 msgstr "Ekran Üzeri Görüntü’nün arka planını yarı saydam yapın."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:320
+#: amarokconfig.kcfg:325
 #, kde-format
 msgid "Whether to use custom colors for the OSD"
 msgstr "Ekran Üzeri Görüntü için özel renkler kullanılıp kullanılmayacağı"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:321
+#: amarokconfig.kcfg:326
 #, kde-format
 msgid "You can use custom colors for the OSD if you set this true."
 msgstr ""
 "Bunu ayarlarsanız Ekran Üzeri Görüntü için özel renkler kullanabilirsiniz."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:325
+#: amarokconfig.kcfg:330
 #, kde-format
 msgid "Font color for OSD"
 msgstr "Ekran Üzeri Görüntü yazıtipi rengi"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:326
+#: amarokconfig.kcfg:331
 #, kde-format
 msgid ""
 "The color of the OSD text. The color is specified in RGB, a comma-separated "
@@ -1117,13 +1135,13 @@ msgstr ""
 "içeren, virgülle ayrılmış bir liste olan RGB’de belirtilir."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:330
+#: amarokconfig.kcfg:335
 #, kde-format
 msgid "Font scaling for OSD"
 msgstr "Ekran Üzeri Görüntü için yazıtipi ölçeklendirmesi"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:331
+#: amarokconfig.kcfg:336
 #, kde-format
 msgid ""
 "The scaling multiplier for the OSD font, in percent-of-normal. 100 is &#8220;"
@@ -1133,13 +1151,13 @@ msgstr ""
 "çarpanı. 100, “normal” boyuttur."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:337
+#: amarokconfig.kcfg:342
 #, kde-format
 msgid "How many milliseconds the text should be displayed for"
 msgstr "Metnin kaç milisaniye görüntüleneceği"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:338
+#: amarokconfig.kcfg:343
 #, kde-format
 msgid ""
 "The time in milliseconds to show the OSD. A value of 0 means never hide. The "
@@ -1149,13 +1167,13 @@ msgstr ""
 "asla gizlenmeyeceği anlamına gelir. Öntanımlı değer 5000 ms’dir."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:343
+#: amarokconfig.kcfg:348
 #, kde-format
 msgid "Y position offset"
 msgstr "Y konumu ofseti"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:344
+#: amarokconfig.kcfg:349
 #, kde-format
 msgid ""
 "The Y position of the OSD relative to the chosen screen and OSD alignment. "
@@ -1171,13 +1189,13 @@ msgstr ""
 "alt kısmı arasındaki boşluktur."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:350
+#: amarokconfig.kcfg:355
 #, kde-format
 msgid "OSD screen"
 msgstr "Ekran Üzeri Görüntü"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:351
+#: amarokconfig.kcfg:356
 #, kde-format
 msgid ""
 "The screen that should display the OSD. For single-headed environments this "
@@ -1187,13 +1205,13 @@ msgstr ""
 "bu ayar 0 olmalıdır."
 
 #. i18n: ectx: label, entry, group (OSD)
-#: amarokconfig.kcfg:355
+#: amarokconfig.kcfg:360
 #, kde-format
 msgid "Align OSD to"
 msgstr "Ekran Üzeri Görüntü’yü şuna hizala:"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: amarokconfig.kcfg:356
+#: amarokconfig.kcfg:361
 #, kde-format
 msgid ""
 "The relative position of the OSD. Possible choices are Left, Middle, Right "
@@ -1204,14 +1222,14 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (OSD)
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
-#: amarokconfig.kcfg:366 configdialog/dialogs/NotificationsConfig.ui:264
+#: amarokconfig.kcfg:371 configdialog/dialogs/NotificationsConfig.ui:264
 #, kde-format
 msgid "Don't show when a fullscreen application is active"
 msgstr "Bir tam ekran uygulama etkinse gösterme"
 
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
-#: amarokconfig.kcfg:367 configdialog/dialogs/NotificationsConfig.ui:261
+#: amarokconfig.kcfg:372 configdialog/dialogs/NotificationsConfig.ui:261
 #, kde-format
 msgid ""
 "Do not show the On-Screen-Display if another application is focused and "
@@ -1221,50 +1239,50 @@ msgstr ""
 "Üzeri Görüntü’yü göstermeyin."
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:375
+#: amarokconfig.kcfg:380
 #, kde-format
 msgid "Resume playback of last played track on startup"
 msgstr "Başlangıçta, son çalınan parçanın çalınmasını sürdür"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: amarokconfig.kcfg:376
+#: amarokconfig.kcfg:381
 #, kde-format
 msgid "If set, Amarok resumes playback of the last played track on startup."
 msgstr ""
 "Ayarlanırsa Amarok başlangıçta, çalınan son parçanın çalınmasını sürdürür."
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:380
+#: amarokconfig.kcfg:385
 #, kde-format
 msgid "Track URL to resume upon startup"
 msgstr "Başlangıçta sürdürülecek parça URL’si"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: amarokconfig.kcfg:381
+#: amarokconfig.kcfg:386
 #, kde-format
 msgid "Internal: URL of the track to resume on startup."
 msgstr "İçsel: Başlangıçta sürdürülecek parçanın URL’si."
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:384
+#: amarokconfig.kcfg:389
 #, kde-format
 msgid "Internal: Resume playback in paused state"
 msgstr "İçsel: Duraklatılmış durumda çalmayı sürdür"
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:388
+#: amarokconfig.kcfg:393
 #, kde-format
 msgid "Time to resume at, in milliseconds"
 msgstr "Milisaniye türünden sürdürülecek zaman"
 
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: amarokconfig.kcfg:389
+#: amarokconfig.kcfg:394
 #, kde-format
 msgid "Internal: Playback position in the track to resume on startup."
 msgstr "İçsel: Başlangıçta sürdürülecek parçadaki çalma konumu."
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:392
+#: amarokconfig.kcfg:397
 #, kde-format
 msgid ""
 "List of bools describing which browsers are visible, from top to bottom."
@@ -1273,75 +1291,75 @@ msgstr ""
 "listesi."
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:395
+#: amarokconfig.kcfg:400
 #, kde-format
 msgid "Track playing on last exit. Value is -1 if no track was playing."
 msgstr "Son çıkışta çalan parça. Hiçbir parça çalınmıyorsa değer -1’dir."
 
 #. i18n: ectx: label, entry, group (Session)
-#: amarokconfig.kcfg:399
+#: amarokconfig.kcfg:404
 #, kde-format
 msgid "Number (from the top) of the last active browser."
 msgstr "Son etkin tarayıcının numarası (üstten)."
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:405
+#: amarokconfig.kcfg:410
 #, kde-format
 msgid "Whether Collections folders are scanned recursively"
 msgstr "Koleksiyon klasörlerinin özyineli olarak taranıp taranmayacağı"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:409
+#: amarokconfig.kcfg:414
 #, kde-format
 msgid "Whether Collection folders are rescanned on change"
 msgstr ""
 "Değişiklik olduğunda koleksiyon klasörlerinin yeniden taranıp taranmayacağı"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:413
+#: amarokconfig.kcfg:418
 #, kde-format
 msgid "Whether meta data changes are written back"
 msgstr "Üst veri değişikliklerinin geri yazılıp yazılmayacağı"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:417
+#: amarokconfig.kcfg:422
 #, kde-format
 msgid "Whether changes to the track statistics are written back"
 msgstr "Parça istatistiklerindeki değişikliklerin geri yazılıp yazılmayacağı"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:421
+#: amarokconfig.kcfg:426
 #, kde-format
 msgid "Whether changes to the album cover are written back"
 msgstr "Albüm kapağı değişikliklerinin geri yazılıp yazılmayacağı"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:425
+#: amarokconfig.kcfg:430
 #, kde-format
 msgid "Maximum embedded cover dimensions"
 msgstr "En çok gömülü kapak boyutu"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:429
+#: amarokconfig.kcfg:434
 #, kde-format
 msgid "List of folders in the Collection"
 msgstr "Koleksiyondaki klasörlerin listesi"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:432
+#: amarokconfig.kcfg:437
 #, kde-format
 msgid "Whether track numbers are shown in the collection browser."
 msgstr ""
 "Koleksiyon tarayıcısında parça numaralarının gösterilip gösterilmeyeceği"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:436
+#: amarokconfig.kcfg:441
 #, kde-format
 msgid "Whether years are shown in the collection browser."
 msgstr "Koleksiyon tarayıcısında yılların gösterilip gösterilmeyeceği"
 
 #. i18n: ectx: label, entry, group (Collection)
-#: amarokconfig.kcfg:440
+#: amarokconfig.kcfg:445
 #, kde-format
 msgid ""
 "Whether to use Mozilla's Character Set Detector to try to guess ID3 tag "
@@ -1351,26 +1369,28 @@ msgstr ""
 "Kümesi Algılayıcısı’nın kullanılıp kullanılmayacağı"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:447
-#, kde-format
-msgid "Submit played songs"
+#: amarokconfig.kcfg:452
+#, fuzzy, kde-format
+#| msgid "Submit played songs"
+msgid "Submit played tracks"
 msgstr "Çalınan şarkıları gönder"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:448
-#, kde-format
-msgid "Whether played songs are submitted to Audioscrobbler"
+#: amarokconfig.kcfg:453
+#, fuzzy, kde-format
+#| msgid "Whether played songs are submitted to Audioscrobbler"
+msgid "Whether played tracks are submitted to Audioscrobbler"
 msgstr "Çalınan şarkıların Audioscrobbler’a gönderilip gönderilmeyeceği"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:452
+#: amarokconfig.kcfg:457
 #, kde-format
 msgctxt "Username for audioscrobbler login"
 msgid "Username"
 msgstr "Kullanıcı Adı"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:453
+#: amarokconfig.kcfg:458
 #, kde-format
 msgid "The username to use for connecting to Audioscrobbler"
 msgstr "Audioscrobbler’a bağlanılırken kullanılacak kullanıcı adı"
@@ -1379,7 +1399,7 @@ msgstr "Audioscrobbler’a bağlanılırken kullanılacak kullanıcı adı"
 #. i18n: ectx: property (text), widget (QTableWidget, serverList)
 #. i18n: ectx: property (text), widget (QLabel, labelPassword)
 #. i18n: ectx: property (text), widget (QLabel, m_passwordLabel)
-#: amarokconfig.kcfg:457 importers/amarok/AmarokConfigWidget.ui:38
+#: amarokconfig.kcfg:462 importers/amarok/AmarokConfigWidget.ui:38
 #: importers/fastforward/FastForwardConfigWidget.ui:46
 #: services/ampache/AmpacheConfigWidget.ui:68
 #: services/ampache/NewServerWidget.ui:60
@@ -1388,91 +1408,92 @@ msgid "Password"
 msgstr "Parola"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:458
+#: amarokconfig.kcfg:463
 #, kde-format
 msgid "The password to use for connecting to Audioscrobbler"
 msgstr "Audioscrobbler’a bağlanılırken kullanılacak parola"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:462
+#: amarokconfig.kcfg:467
 #, kde-format
 msgid "Send composer data"
 msgstr "Besteci verisini gönder"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:463
+#: amarokconfig.kcfg:468
 #, kde-format
 msgid "Use composer data in Last.fm as artist"
 msgstr "Last.fm’deki besteci verisini sanatçı olarak kullan"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: amarokconfig.kcfg:467
+#: amarokconfig.kcfg:472
 #, kde-format
 msgid "Retrieve similar artists"
 msgstr "Benzer sanatçıları al"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: amarokconfig.kcfg:468
-#, kde-format
-msgid "Whether similar songs are retrieved from Audioscrobbler"
+#: amarokconfig.kcfg:473
+#, fuzzy, kde-format
+#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+msgid "Whether similar tracks are retrieved from Audioscrobbler"
 msgstr "Benzer şarkıların Audioscrobbler’dan alınıp alınmayacağı"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:475
+#: amarokconfig.kcfg:480
 #, kde-format
 msgid "Device type"
 msgstr "Aygıt türü"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:476
+#: amarokconfig.kcfg:481
 #, kde-format
 msgid "The type of media device."
 msgstr "Ortam aygıtının türü."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:479
+#: amarokconfig.kcfg:484
 #, kde-format
 msgid "Mount point"
 msgstr "Bağlama noktası"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:480
+#: amarokconfig.kcfg:485
 #, kde-format
 msgid "The mount point used for the media device connection."
 msgstr "Ortam aygıtı bağlantısı için kullanılacak bağlama noktası."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:483
+#: amarokconfig.kcfg:488
 #, kde-format
 msgid "Mount command"
 msgstr "Bağlama komutu"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:484
+#: amarokconfig.kcfg:489
 #, kde-format
 msgid "The mount command used for the media device connection."
 msgstr "Ortam aygıt bağlantısı için kullanılan bağlama komutu."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:487
+#: amarokconfig.kcfg:492
 #, kde-format
 msgid "UmountCommand"
 msgstr "Bağlantıyı kesme komutu"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:488
+#: amarokconfig.kcfg:493
 #, kde-format
 msgid "The umount command used for the media device connection."
 msgstr "Ortam aygıtı bağlantısı için kullanılan bağlantıyı kesme komutu."
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:491
+#: amarokconfig.kcfg:496
 #, kde-format
 msgid "Auto delete podcasts"
 msgstr "Pod yayınlarını kendiliğinden sil"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:492
+#: amarokconfig.kcfg:497
 #, kde-format
 msgid ""
 "Whether podcast shows already played are automatically deleted when media "
@@ -1482,13 +1503,13 @@ msgstr ""
 "kendiliğinden silinip silinmeyeceği"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: amarokconfig.kcfg:495
+#: amarokconfig.kcfg:500
 #, kde-format
 msgid "Sync stats"
 msgstr "Eşzamanlama istatistikleri"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: amarokconfig.kcfg:496
+#: amarokconfig.kcfg:501
 #, kde-format
 msgid ""
 "Whether Amarok statistics should be synchronized with play count/ratings on "
@@ -1499,73 +1520,73 @@ msgstr ""
 "gönderilmeyeceği"
 
 #. i18n: ectx: label, entry, group (Daap)
-#: amarokconfig.kcfg:502
+#: amarokconfig.kcfg:507
 #, kde-format
 msgid "Manually added servers"
 msgstr "Elle eklenen sunucular"
 
 #. i18n: ectx: whatsthis, entry, group (Daap)
-#: amarokconfig.kcfg:503
+#: amarokconfig.kcfg:508
 #, kde-format
 msgid "Music Sharing servers added by the user."
 msgstr "Kullanıcı tarafından eklenen müzik paylaşımı sunucuları."
 
 #. i18n: ectx: label, entry, group (Daap)
-#: amarokconfig.kcfg:506
+#: amarokconfig.kcfg:511
 #, kde-format
 msgid "Server passwords"
 msgstr "Sunucu parolaları"
 
 #. i18n: ectx: whatsthis, entry, group (Daap)
-#: amarokconfig.kcfg:507
+#: amarokconfig.kcfg:512
 #, kde-format
 msgid "Passwords stored by hostname."
 msgstr "Makinede saklanan parolalar."
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:513
+#: amarokconfig.kcfg:518
 #, kde-format
 msgid "Include track names in matching"
 msgstr "Eşleştirmede parça adlarını içer"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:517
+#: amarokconfig.kcfg:522
 #, kde-format
 msgid "Include album names in matching"
 msgstr "Eşleştirmede albüm adlarını içer"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:521
+#: amarokconfig.kcfg:526
 #, kde-format
 msgid "Include artist names in matching"
 msgstr "Eşleştirmede sanatçı adlarını içer"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:525
+#: amarokconfig.kcfg:530
 #, kde-format
 msgid "Include genre names in matching"
 msgstr "Eşleştirmede tür adlarını içer"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:529
+#: amarokconfig.kcfg:534
 #, kde-format
 msgid "Include composer names in matching"
 msgstr "Eşleştirmede besteci adlarını içer"
 
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: amarokconfig.kcfg:533 amarokconfig.kcfg:537
+#: amarokconfig.kcfg:538 amarokconfig.kcfg:542
 #, kde-format
 msgid "Include years in matching"
 msgstr "Eşleştirmede yılları içer"
 
 #. i18n: ectx: label, entry, group (Playlist Layout)
-#: amarokconfig.kcfg:544
+#: amarokconfig.kcfg:549
 #, kde-format
 msgid "The name of the layout that will be loaded on startup"
 msgstr "Başlangıçta yüklenecek yerleşimin adı"
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:551
+#: amarokconfig.kcfg:556
 #, kde-format
 msgid ""
 "Whether Amarok uses its own internal database, as opposed to an external "
@@ -1574,19 +1595,19 @@ msgstr ""
 "Amarok’un dış bir işletke yerine kendi iç veritabanını kullanıp kullanmadığı"
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:555
+#: amarokconfig.kcfg:560
 #, kde-format
 msgid "The hostname of the external server to connect to."
 msgstr "Bağlanılacak dış sunucunun makine adı."
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:559
+#: amarokconfig.kcfg:564
 #, kde-format
 msgid "Which server port to connect to the database engine."
 msgstr "Veritabanı işletkesine bağlanılırken kullanılacak sunucu kapısı."
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:563
+#: amarokconfig.kcfg:568
 #, kde-format
 msgid ""
 "The name of the database Amarok will use. The user should have sufficient "
@@ -1596,44 +1617,44 @@ msgstr ""
 "izinlerine sahip olması gerekir."
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:567
+#: amarokconfig.kcfg:572
 #, kde-format
 msgid "Username used to access the external database."
 msgstr "Dış veritabanına erişmek için kullanılan kullanıcı adı."
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:571
+#: amarokconfig.kcfg:576
 #, kde-format
 msgid "Password for the external database user."
 msgstr "Dış veritabanı kullanıcısının parolası."
 
 #. i18n: ectx: label, entry, group (MySQL)
-#: amarokconfig.kcfg:575
+#: amarokconfig.kcfg:580
 #, kde-format
 msgid "Keeps a running count to know when run a CHECK."
 msgstr ""
 "Bir DENETİM çalıştırıldığında bilinmesi gereken bir çalışma sayımı tutar."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
-#: amarokconfig.kcfg:582
+#: amarokconfig.kcfg:587
 #, kde-format
 msgid "Whether to enable Amarok's scripting module."
 msgstr "Amarok’un betik yazım kipinin etkinleştirilip etkinleştirilmeyeceği"
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:583
+#: amarokconfig.kcfg:588
 #, kde-format
 msgid "Enable/Disable Amarok's scripting module."
 msgstr "Amarok’un betik yazım kipini etkinleştirin/devre dışı bırakın."
 
 #. i18n: ectx: label, entry, group (ScriptManager)
-#: amarokconfig.kcfg:587
+#: amarokconfig.kcfg:592
 #, kde-format
 msgid "Whether to automatically update built-in scripts"
 msgstr "Yerleşik betiklerin kendiliğinden güncellenip güncellenmeyeceği"
 
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:588
+#: amarokconfig.kcfg:593
 #, kde-format
 msgid "Enable/Disable automatic update for built-in scripts."
 msgstr ""
@@ -1642,14 +1663,14 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:592 amarokconfig.kcfg:593
+#: amarokconfig.kcfg:597 amarokconfig.kcfg:598
 #, kde-format
 msgid "Whether to enable the script console."
 msgstr "Betik konsolunun etkinleştirilip etkinleştirilmeyeceği"
 
 #. i18n: ectx: label, entry, group (ScriptManager)
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
-#: amarokconfig.kcfg:597 amarokconfig.kcfg:598
+#: amarokconfig.kcfg:602 amarokconfig.kcfg:603
 #, kde-format
 msgid "Whether to display a warning about scripts accessing deprecated APIs."
 msgstr ""
@@ -1658,13 +1679,13 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (ScriptConsole)
 #. i18n: ectx: whatsthis, entry, group (ScriptConsole)
-#: amarokconfig.kcfg:605 amarokconfig.kcfg:606
+#: amarokconfig.kcfg:610 amarokconfig.kcfg:611
 #, kde-format
 msgid "Whether to save the current session on exit."
 msgstr "Çıkışta geçerli oturumun kaydedilip kaydedilmeyeceği"
 
 #. i18n: ectx: label, entry, group (Moodbar)
-#: amarokconfig.kcfg:613
+#: amarokconfig.kcfg:618
 #, kde-format
 msgid ""
 "Whether to show the moodbar of the current track, if available, in the "
@@ -1674,26 +1695,26 @@ msgstr ""
 "gösterilmeyeceği"
 
 #. i18n: ectx: whatsthis, entry, group (Moodbar)
-#: amarokconfig.kcfg:614
+#: amarokconfig.kcfg:619
 #, kde-format
 msgid "Enable/Disable showing moodbar, if available, in the progress slider."
 msgstr ""
 "Varsa konum sürgüsünde ruh hali çubuğunu etkinleştirin/devre dışı bırakın."
 
 #. i18n: ectx: label, entry, group (Moodbar)
-#: amarokconfig.kcfg:618
+#: amarokconfig.kcfg:623
 #, kde-format
 msgid "The style to use when painting the moodbar"
 msgstr "Ruh hali çubuğunu boyarken kullanılacak biçem"
 
 #. i18n: ectx: label, entry, group (PlaylistGenerator)
-#: amarokconfig.kcfg:625
+#: amarokconfig.kcfg:630
 #, kde-format
 msgid "Quality factor for Automated Playlist Generator"
 msgstr "Otomatikleştirilmiş Çalma Listesi Üreteci’nin kalite çarpanı"
 
 #. i18n: ectx: whatsthis, entry, group (PlaylistGenerator)
-#: amarokconfig.kcfg:626
+#: amarokconfig.kcfg:631
 #, kde-format
 msgid ""
 "A value between 0 and 10 that controls whether the Automated Playlist "
@@ -2067,7 +2088,15 @@ msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Month"
 msgstr "Bu ay eklenmiş"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:198
+#: browsers/collectionbrowser/CollectionWidget.cpp:181
+#, fuzzy, kde-format
+#| msgctxt "Track field name"
+#| msgid "First Played"
+msgctxt "@item:inlistbox Collection widget filter preset"
+msgid "Never Played"
+msgstr "İlk Çalma"
+
+#: browsers/collectionbrowser/CollectionWidget.cpp:200
 #, kde-format
 msgctxt ""
 "separator between collection browser level categories, i.e. the ' / ' in "
@@ -2075,44 +2104,51 @@ msgctxt ""
 msgid " / "
 msgstr " / "
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:211
+#: browsers/collectionbrowser/CollectionWidget.cpp:213
 #, kde-format
 msgid "First Level"
 msgstr "Birinci Düzey"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:212
+#: browsers/collectionbrowser/CollectionWidget.cpp:214
 #, kde-format
 msgid "Second Level"
 msgstr "İkinci Düzey"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:213
+#: browsers/collectionbrowser/CollectionWidget.cpp:215
 #, kde-format
 msgid "Third Level"
 msgstr "Üçüncü Düzey"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:247
+#: browsers/collectionbrowser/CollectionWidget.cpp:249
 #, kde-format
 msgid "Show Years"
 msgstr "Yılları Göster"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:252
+#: browsers/collectionbrowser/CollectionWidget.cpp:254
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Track Numbers"
 msgstr "Parça Numaralarını Göster"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:257
+#: browsers/collectionbrowser/CollectionWidget.cpp:259
+#, fuzzy, kde-format
+#| msgid "Show under Various Artists"
+msgctxt "@action:inmenu"
+msgid "Show Artist for Various Artists"
+msgstr "Çeşitli Sanatçılar Altında Göster"
+
+#: browsers/collectionbrowser/CollectionWidget.cpp:264
 #, kde-format
 msgid "Show Cover Art"
 msgstr "Kapak Resmini Göster"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:264
+#: browsers/collectionbrowser/CollectionWidget.cpp:271
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:87
 #, kde-format
 msgid "Merged View"
 msgstr "Birleştirilmiş görünüm"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:271
+#: browsers/collectionbrowser/CollectionWidget.cpp:278
 #: services/jamendo/JamendoService.cpp:161
 #: services/magnatune/MagnatuneStore.cpp:229
 #, kde-format
@@ -2138,14 +2174,14 @@ msgid_plural "%1 tracks"
 msgstr[0] "%1 parça"
 msgstr[1] "%1 parça"
 
-#: browsers/CollectionTreeItemModelBase.cpp:279
-#: browsers/CollectionTreeItemModelBase.cpp:370
+#: browsers/CollectionTreeItemModelBase.cpp:281
+#: browsers/CollectionTreeItemModelBase.cpp:372
 #, kde-format
 msgctxt "The Name is not known"
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
-#: browsers/CollectionTreeItemModelBase.cpp:395
+#: browsers/CollectionTreeItemModelBase.cpp:397
 #: core-impl/collections/db/sql/SqlMeta.cpp:409
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:98
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:154
@@ -2157,10 +2193,10 @@ msgstr "Bilinmeyen"
 msgid "Various Artists"
 msgstr "Çeşitli Sanatçılar"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1100
+#: browsers/CollectionTreeItemModelBase.cpp:1102
 #: browsers/CollectionTreeView.cpp:369
 #: context/applets/albums/plugin/AlbumsEngine.cpp:299
-#: context/applets/wikipedia/package/contents/ui/main.qml:110
+#: context/applets/wikipedia/package/contents/ui/main.qml:115
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
 #: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
 #: services/jamendo/JamendoInfoParser.cpp:83
@@ -2169,48 +2205,48 @@ msgstr "Çeşitli Sanatçılar"
 msgid "Album"
 msgstr "Albüm"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1100
+#: browsers/CollectionTreeItemModelBase.cpp:1102
 #, kde-format
 msgid "Year - Album"
 msgstr "Yıl — Albüm"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1102
+#: browsers/CollectionTreeItemModelBase.cpp:1104
 #, kde-format
 msgid "Track Artist"
 msgstr "Parça Sanatçısı"
 
 #. i18n: ectx: property (text), widget (QLabel, label_29)
-#: browsers/CollectionTreeItemModelBase.cpp:1104 dialogs/TagGuessOptions.ui:253
+#: browsers/CollectionTreeItemModelBase.cpp:1106 dialogs/TagGuessOptions.ui:253
 #: musicbrainz/MusicBrainzTagsModel.cpp:39 playlist/PlaylistModel.cpp:929
 #, kde-format
 msgid "Album Artist"
 msgstr "Albüm Sanatçısı"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1106
-#: context/applets/wikipedia/package/contents/ui/main.qml:100
+#: browsers/CollectionTreeItemModelBase.cpp:1108
+#: context/applets/wikipedia/package/contents/ui/main.qml:104
 #: playlist/PlaylistModel.cpp:930
 #, kde-format
 msgid "Composer"
 msgstr "Besteci"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1108 dialogs/transferdialog.cpp:105
+#: browsers/CollectionTreeItemModelBase.cpp:1110 dialogs/transferdialog.cpp:105
 #: playlist/PlaylistModel.cpp:936 playlist/ProgressiveSearchWidget.cpp:94
 #, kde-format
 msgid "Genre"
 msgstr "Tarz"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1110
+#: browsers/CollectionTreeItemModelBase.cpp:1112
 #: musicbrainz/MusicBrainzTagsModel.cpp:40 playlist/PlaylistModel.cpp:931
 #, kde-format
 msgid "Year"
 msgstr "Yıl"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1112
+#: browsers/CollectionTreeItemModelBase.cpp:1114
 #, kde-format
 msgid "Label"
 msgstr "Etiket"
 
-#: browsers/CollectionTreeItemModelBase.cpp:1114 dialogs/transferdialog.cpp:102
+#: browsers/CollectionTreeItemModelBase.cpp:1116 dialogs/transferdialog.cpp:102
 #: playlist/navigators/NavigatorConfigAction.cpp:80
 #, kde-format
 msgid "None"
@@ -2281,8 +2317,8 @@ msgid "&Edit Track Details"
 msgstr "Parça Ayrıntılarını Dü&zenle"
 
 #: browsers/filebrowser/FileBrowser.cpp:70
-#: context/applets/wikipedia/package/contents/ui/main.qml:61
-#: context/applets/wikipedia/package/contents/ui/main.qml:157
+#: context/applets/wikipedia/package/contents/ui/main.qml:63
+#: context/applets/wikipedia/package/contents/ui/main.qml:165
 #, kde-format
 msgid "Refresh"
 msgstr "Yenile"
@@ -2487,8 +2523,10 @@ msgid "Duplicates"
 msgstr "Yinelenmişler"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:114
-#, kde-format
-msgid "Allow duplicate songs in result"
+#, fuzzy, kde-format
+#| msgid "Allow duplicate songs in result"
+msgctxt "Tooltip for dynamic playlist setting button"
+msgid "Allow duplicate tracks in result"
 msgstr "Sonuçlarda yinelenmiş parçalara izin ver"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
@@ -2690,22 +2728,36 @@ msgstr[0] "%2 Çalma Listesinden 1 Parçayı Kaldır"
 msgstr[1] "%2 Çalma Listesinden %1 Parçayı Kaldır"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
+#, fuzzy, kde-format
+#| msgctxt "%1 is playlist provider pretty name"
+#| msgid "Delete playlist from %1."
+msgctxt ""
+"Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
+"provider pretty name"
+msgid "Delete playlist <i>%1</i> from %2?"
+msgstr "%1 konumundan çalma listesini silin."
+
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
+#, fuzzy, kde-format
+#| msgctxt "%1 is playlist provider pretty name"
+#| msgid "Delete playlist from %1."
+msgctxt ""
+"Playlist deletion confirmation dialog. %1 is the playlist count (always more "
+"than 1), %2 is playlist provider pretty name"
+msgid "Delete %1 playlists from %2?"
+msgstr "%1 konumundan çalma listesini silin."
+
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
 #, kde-format
 msgid "Confirm Playlist Deletion"
 msgstr "Çalma Listesini Silmeyi Onayla"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
-#, kde-format
-msgctxt "%1 is playlist provider pretty name"
-msgid "Delete playlist from %1."
-msgstr "%1 konumundan çalma listesini silin."
-
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:516 MainWindow.cpp:447
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:447
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "&Kayıt için göreceli yol kullan"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:529
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
 #: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
 #, kde-format
 msgid "Save As"
@@ -4528,7 +4580,7 @@ msgstr "Aşağıdaki başlığa ve sanatçıya sahip sekmeleri yeniden yükle"
 
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
 #: context/applets/tabs/ReloadEditDialog.ui:73
-#: context/applets/wikipedia/package/contents/ui/main.qml:90
+#: context/applets/wikipedia/package/contents/ui/main.qml:93
 #: dialogs/transferdialog.cpp:103 musicbrainz/MusicBrainzTagsModel.cpp:37
 #: playlist/PlaylistModel.cpp:928 services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:456
@@ -4931,36 +4983,45 @@ msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>Konum:</strong><nl/>%1"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:39
-#: context/applets/wikipedia/package/contents/ui/main.qml:145
+#: context/applets/wikipedia/package/contents/ui/main.qml:41
+#: context/applets/wikipedia/package/contents/ui/main.qml:153
 #, kde-format
 msgid "Previous"
 msgstr "Önceki"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:50
-#: context/applets/wikipedia/package/contents/ui/main.qml:151
+#: context/applets/wikipedia/package/contents/ui/main.qml:52
+#: context/applets/wikipedia/package/contents/ui/main.qml:159
 #: statsyncing/ui/ChooseProvidersPage.cpp:35
 #, kde-format
 msgid "Next"
 msgstr "Sonraki"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:72
-#: widgets/PlayPauseButton.cpp:81
-#, kde-format
-msgid "Pause"
-msgstr "Duraklat"
+#: context/applets/wikipedia/package/contents/ui/main.qml:74
+#, fuzzy, kde-format
+#| msgid "Update Magnatune database automatically"
+msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
+msgid "Don't change page automatically"
+msgstr "Magnatune veritabanını kendiliğinden güncelle"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:120
+#: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
 #: services/jamendo/JamendoInfoParser.cpp:109
 #, kde-format
 msgid "Track"
 msgstr "Parça"
 
-#: context/applets/wikipedia/package/contents/ui/main.qml:164
-#: dialogs/DiagnosticDialog.cpp:84
-#, kde-format
-msgid "Copy to Clipboard"
+#: context/applets/wikipedia/package/contents/ui/main.qml:172
+#, fuzzy, kde-format
+#| msgid "Copy to Clipboard"
+msgctxt "Right-click menu option for links in Wikipedia applet"
+msgid "Copy Link to Clipboard"
+msgstr "Panoya Kopyala"
+
+#: context/applets/wikipedia/package/contents/ui/main.qml:179
+#, fuzzy, kde-format
+#| msgid "Copy to Clipboard"
+msgctxt "Right-click menu option for images in Wikipedia applet"
+msgid "Copy Image to Clipboard"
 msgstr "Panoya Kopyala"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
@@ -5011,6 +5072,14 @@ msgstr "Vikipedi’de aramak için %1 gerekli."
 #, kde-format
 msgid "Choose Language"
 msgstr "Dili Seç"
+
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:891
+#, kde-format
+msgctxt ""
+"A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
+"%1 is the url of the link"
+msgid "Click to open %1 in a web browser"
+msgstr ""
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -8674,6 +8743,11 @@ msgstr "Arakodlanan dosyaları aktarma sonrası kaldır"
 #, kde-format
 msgid "For this feature, a script of type \"Transcode\" has to be running"
 msgstr "Bu özellik için “Transcode” gibi bir betik çalışıyor olmalıdır"
+
+#: dialogs/DiagnosticDialog.cpp:84
+#, kde-format
+msgid "Copy to Clipboard"
+msgstr "Panoya Kopyala"
 
 #: dialogs/DiagnosticDialog.cpp:88
 #, kde-format
@@ -12657,8 +12731,10 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "Etkin arama nedeniyle parçalar gizlendi."
 
 #: playlist/view/listview/PrettyListView.cpp:691
-#, kde-format
-msgid "Add some songs here by dragging them from all around."
+#, fuzzy, kde-format
+#| msgid "Add some songs here by dragging them from all around."
+msgctxt "Placeholder message in empty playlist view"
+msgid "Add some tracks here by dragging them from all around."
 msgstr "Her yerden sürükleyerek buraya şarkılar ekleyin ekleyin."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
@@ -12838,9 +12914,13 @@ msgstr "Konum:"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
-#, kde-format
+#, fuzzy, kde-format
+#| msgid ""
+#| "The desired position of the song in the playlist, in hours, minutes, and "
+#| "seconds.  Note: because of Qt limitations, the maximum position that you "
+#| "can specify is 24 hours."
 msgid ""
-"The desired position of the song in the playlist, in hours, minutes, and "
+"The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
@@ -16908,6 +16988,11 @@ msgstr "Duraklatıldı"
 #, kde-format
 msgid "Play"
 msgstr "Çal"
+
+#: widgets/PlayPauseButton.cpp:81
+#, kde-format
+msgid "Pause"
+msgstr "Duraklat"
 
 #: widgets/PrettyTreeDelegate.cpp:219
 #, kde-format
