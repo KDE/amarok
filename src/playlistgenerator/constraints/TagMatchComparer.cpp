@@ -64,6 +64,10 @@ ConstraintTypes::TagMatch::Comparer::compareNum( const double test,
         target += QDateTime::currentDateTime().toTime_t();
         return ( test < target ) ? 1.0 : fuzzyProb( test, target, strictness, weight );
 
+    } else if ( condition == MetaQueryWidget::NewerThan ) {
+        target += QDateTime::currentDateTime().toTime_t();
+        return ( test > target ) ? 1.0 : fuzzyProb( test, target, strictness, weight );
+
     } else {
         return 0.0;
     }

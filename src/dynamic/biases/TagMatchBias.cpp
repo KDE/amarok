@@ -351,6 +351,10 @@ Dynamic::TagMatchBias::newQuery()
             m_qm->addNumberFilter( m_filter.field(), QDateTime::currentDateTimeUtc().toSecsSinceEpoch() - m_filter.numValue,
                                 Collections::QueryMaker::LessThan );
             break;
+        case MetaQueryWidget::NewerThan:
+            m_qm->addNumberFilter( m_filter.field(), QDateTime::currentDateTimeUtc().toSecsSinceEpoch() - m_filter.numValue,
+                                Collections::QueryMaker::GreaterThan );
+            break;
         default:
             ;
         }
@@ -438,6 +442,7 @@ Dynamic::TagMatchBias::nameForCondition( MetaQueryWidget::FilterCondition cond )
     case MetaQueryWidget::LessThan:    return QStringLiteral("less");
     case MetaQueryWidget::Between:     return QStringLiteral("between");
     case MetaQueryWidget::OlderThan:   return QStringLiteral("older");
+    case MetaQueryWidget::NewerThan:   return QStringLiteral("newer");
     case MetaQueryWidget::Contains:    return QStringLiteral("contains");
     default:
         ;// the other conditions are only for the advanced playlist generator
@@ -453,6 +458,7 @@ Dynamic::TagMatchBias::conditionForName( const QString &name )
     else if( name == QLatin1String("less") )     return MetaQueryWidget::LessThan;
     else if( name == QLatin1String("between") )  return MetaQueryWidget::Between;
     else if( name == QLatin1String("older") )    return MetaQueryWidget::OlderThan;
+    else if( name == QLatin1String("newer") )    return MetaQueryWidget::NewerThan;
     else if( name == QLatin1String("contains") ) return MetaQueryWidget::Contains;
     else return MetaQueryWidget::Equals;
 }
@@ -482,6 +488,9 @@ Dynamic::TagMatchBias::matches( const Meta::TrackPtr &track ) const
             break;
         case MetaQueryWidget::OlderThan:
             result = value.toLongLong() < m_filter.numValue + QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
+            break;
+        case MetaQueryWidget::NewerThan:
+            result = value.toLongLong() > m_filter.numValue + QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
             break;
         default:
             ;
