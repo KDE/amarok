@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-05-05 01:43+0000\n"
-"PO-Revision-Date: 2024-04-17 09:44+0200\n"
+"PO-Revision-Date: 2024-05-05 11:00+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -593,10 +593,7 @@ msgstr "Si s'han de mostrar les imatges de fons a la subfinestra del navegador"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
 msgstr ""
@@ -642,6 +639,8 @@ msgstr ""
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"Mostra l'artista de la peça al navegador de col·leccions si és diferent de "
+"l'artista de l'àlbum"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -650,6 +649,8 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"Mostra explícitament l'artista al navegador de col·leccions per a àlbums i "
+"peces de diversos artistes on l'artista difereix de l'artista de l'àlbum."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -1036,19 +1037,19 @@ msgstr ""
 #: amarokconfig.kcfg:287
 #, kde-format
 msgid "Amazon locale for cover retrieval"
-msgstr "Configuració regional de l'Amazon per a la baixada de caràtules"
+msgstr "Configuració regional de l'Amazon per a la recuperació de caràtules"
 
 #. i18n: ectx: whatsthis, entry, group (Cover Manager)
 #: amarokconfig.kcfg:288
 #, kde-format
 msgid "Determines which Amazon server cover images should be retrieved from."
-msgstr "Determina de quin servidor d'Amazon s'han d'obtenir les caràtules."
+msgstr "Determina de quin servidor d'Amazon s'han de recuperar les caràtules."
 
 #. i18n: ectx: label, entry, group (Wikipedia)
 #: amarokconfig.kcfg:295
 #, kde-format
 msgid "Wikipedia locale for information retrieval"
-msgstr "Configuració regional de la Viquipèdia d'on s'extraurà la informació"
+msgstr "Configuració regional de la Viquipèdia per a recuperar la informació"
 
 #. i18n: ectx: whatsthis, entry, group (Wikipedia)
 #: amarokconfig.kcfg:296
@@ -1056,7 +1057,7 @@ msgstr "Configuració regional de la Viquipèdia d'on s'extraurà la informació
 msgid ""
 "Determines in which language the information is retrieved from Wikipedia."
 msgstr ""
-"Determina la llengua en la qual s'obtindrà la informació de la Viquipèdia."
+"Determina la llengua en la qual es recuperarà la informació de la Viquipèdia."
 
 #. i18n: ectx: label, entry, group (KNotify)
 #: amarokconfig.kcfg:303
@@ -1365,17 +1366,15 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "Envia les cançons escoltades"
+msgstr "Envia les peces reproduïdes"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "Si s'han d'enviar les cançons escoltades a l'Audioscrobbler"
+msgstr "Si s'han d'enviar les peces reproduïdes a l'Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1424,14 +1423,13 @@ msgstr "Utilitza les dades del compositor a Last.fm com a artista"
 #: amarokconfig.kcfg:472
 #, kde-format
 msgid "Retrieve similar artists"
-msgstr "Obtén els artistes semblants"
+msgstr "Recupera els artistes semblants"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr "Si s'han d'obtenir les cançons semblants de l'Audioscrobbler"
+msgstr "Si s'han de recuperar les peces semblants de l'Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
@@ -2086,12 +2084,10 @@ msgid "Added This Month"
 msgstr "S'ha afegit aquest mes"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:181
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "Primera reproducció"
+msgstr "Mai reproduïdes"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:200
 #, kde-format
@@ -2128,11 +2124,10 @@ msgid "Show Track Numbers"
 msgstr "Mostra el nombre de la peça"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:259
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "Mostra sota Artistes diversos"
+msgstr "Mostra l'artista als Artistes diversos"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:264
 #, kde-format
@@ -2523,11 +2518,10 @@ msgid "Duplicates"
 msgstr "Duplicats"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:114
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr "Permet cançons duplicades en el resultat"
+msgstr "Permet peces duplicades en el resultat"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, kde-format
@@ -2729,24 +2723,20 @@ msgstr[0] "Elimina una peça de %2"
 msgstr[1] "Elimina %1 peces de %2"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "Suprimeix la llista de reproducció de %1."
+msgstr "Suprimeix la llista de reproducció <i>%1</i> de %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "Suprimeix la llista de reproducció de %1."
+msgstr "Suprimeixo %1 llistes de reproducció de %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
 #, kde-format
@@ -5008,11 +4998,10 @@ msgid "Next"
 msgstr "Següent"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Update Magnatune database automatically"
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "Actualitza automàticament la base de dades de Magnatune"
+msgstr "No canviïs automàticament la pàgina"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
@@ -5022,18 +5011,16 @@ msgid "Track"
 msgstr "Peça"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "Copia al porta-retalls"
+msgstr "Copia l'enllaç al porta-retalls"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "Copia al porta-retalls"
+msgstr "Copia la imatge al porta-retalls"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:142
@@ -5090,7 +5077,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "Feu clic per a obrir %1 en un navegador web"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -8149,7 +8136,7 @@ msgstr "No s'ha pogut desar la caràtula."
 #: covermanager/CoverFoundDialog.cpp:518
 #, kde-format
 msgid "Sorry, the cover image could not be retrieved."
-msgstr "No s'ha pogut obtenir la imatge de la caràtula."
+msgstr "No s'ha pogut recuperar la imatge de la caràtula."
 
 #: covermanager/CoverFoundDialog.cpp:538
 #, kde-format
@@ -12801,11 +12788,10 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "S'han ocultat algunes peces a causa de la cerca activa."
 
 #: playlist/view/listview/PrettyListView.cpp:691
-#, fuzzy, kde-format
-#| msgid "Add some songs here by dragging them from all around."
+#, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr "Afegeix aquí algunes cançons arrossegant-les des d'altres llocs."
+msgstr "Afegeix aquí algunes peces arrossegant-les des d'altres llocs."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -12985,17 +12971,13 @@ msgstr "Posició:"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
-#, fuzzy, kde-format
-#| msgid ""
-#| "The desired position of the song in the playlist, in hours, minutes, and "
-#| "seconds.  Note: because of Qt limitations, the maximum position that you "
-#| "can specify is 24 hours."
+#, kde-format
 msgid ""
 "The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
-"La posició desitjada de la cançó en la llista de reproducció, en hores, "
+"La posició desitjada de la peça en la llista de reproducció, en hores, "
 "minuts, i segons. Nota: per limitacions de les Qt, la posició màxima de la "
 "llista de reproducció que podeu indicar és de 24 hores."
 
@@ -14811,7 +14793,7 @@ msgstr "&Envia les peces"
 #: services/lastfm/LastFmConfigWidget.ui:138
 #, kde-format
 msgid "&Retrieve similar artists"
-msgstr "&Obtén els artistes semblants"
+msgstr "&Recupera els artistes semblants"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
 #: services/lastfm/LastFmConfigWidget.ui:148
@@ -15691,7 +15673,7 @@ msgstr ""
 "right:0px; -qt-block-indent:0; text-indent:0px;\">En donar-se d'alta com a "
 "membre a Magnatune.com, obtindreu un accés de baixada sense límit i podreu "
 "baixar qualsevol àlbum des de l'Amarok amb un únic clic de ratolí. "
-"Inscrivint-vos, també podreu escoltar totes les cançons des de Magnatune.com "
+"Inscrivint-vos, també podreu escoltar totes les peces des de Magnatune.com "
 "sense publicitat.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"

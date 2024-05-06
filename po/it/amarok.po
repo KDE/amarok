@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-05-05 01:43+0000\n"
-"PO-Revision-Date: 2024-04-17 14:55+0200\n"
+"PO-Revision-Date: 2024-05-05 20:46+0200\n"
 "Last-Translator: Vincenzo Reale <smart2128vr@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -586,15 +586,12 @@ msgstr "Decidi se mostrare le immagini di sfondo nel pannello del navigatore"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
 msgstr ""
-"Scorri automaticamente la scaletta per rendere visibile il brano attualmente "
-"in riproduzione"
+"Scorri automaticamente la scaletta per rendere visibile la traccia "
+"attualmente in riproduzione"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:104
@@ -635,6 +632,8 @@ msgstr ""
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"Mostra l'artista della traccia nel navigatore della collezione se diverso "
+"dall'artista dell'album"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -643,6 +642,9 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"Mostra esplicitamente l'artista nel navigatore della collezione per gli "
+"album e le tracce di vari artisti in cui l'artista differisce dall'artista "
+"dell'album."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -1358,17 +1360,15 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
 msgstr "Invia le tracce riprodotte"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "Decidi se le tracce riprodotte vanno inviate a Audioscrobbler"
+msgstr "Decidi se le tracce riprodotte sono inviate a Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1421,8 +1421,7 @@ msgstr "Ricerca artisti simili"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
 msgstr "Decidi se tracce simili devono essere recuperate da Audioscrobbler"
 
@@ -2079,12 +2078,10 @@ msgid "Added This Month"
 msgstr "Aggiunti questo mese"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:181
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "Prima riproduzione"
+msgstr "Mai giocato"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:200
 #, kde-format
@@ -2121,11 +2118,10 @@ msgid "Show Track Numbers"
 msgstr "Mostra numeri delle tracce"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:259
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "Mostra sotto Artisti vari"
+msgstr "Mostra Artista per Artisti vari"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:264
 #, kde-format
@@ -2515,11 +2511,10 @@ msgid "Duplicates"
 msgstr "Duplicati"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:114
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr "Consenti i brani duplicati nel risultato"
+msgstr "Consenti le tracce duplicate nel risultato"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, kde-format
@@ -2720,24 +2715,20 @@ msgstr[0] "Rimuovi una traccia da %2"
 msgstr[1] "Rimuovi %1 tracce da %2"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "Elimina la scaletta da %1."
+msgstr "Vuoi eliminare la scaletta <i>%1</i> da %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "Elimina la scaletta da %1."
+msgstr "Vuoi eliminare %1 scalette da %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
 #, kde-format
@@ -4997,11 +4988,10 @@ msgid "Next"
 msgstr "Prossimo"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Update Magnatune database automatically"
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "Aggiorna automaticamente la banca dati di Magnatune"
+msgstr "Non cambiare pagina automaticamente"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
@@ -5011,18 +5001,16 @@ msgid "Track"
 msgstr "Traccia"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "Copia negli appunti"
+msgstr "Copia il collegamento negli appunti"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "Copia negli appunti"
+msgstr "Copia l'immagine negli appunti"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:142
@@ -5079,7 +5067,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "Fai clic per aprire %1 in un browser web"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -12785,11 +12773,10 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "Alcune tracce sono state nascoste a causa della ricerca attiva."
 
 #: playlist/view/listview/PrettyListView.cpp:691
-#, fuzzy, kde-format
-#| msgid "Add some songs here by dragging them from all around."
+#, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr "Aggiungi qui alcuni brani trascinandoli da una posizione qualsiasi."
+msgstr "Aggiungi alcune tracce qui trascinandole da ogni parte."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -12968,18 +12955,14 @@ msgstr "Posizione:"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
-#, fuzzy, kde-format
-#| msgid ""
-#| "The desired position of the song in the playlist, in hours, minutes, and "
-#| "seconds.  Note: because of Qt limitations, the maximum position that you "
-#| "can specify is 24 hours."
+#, kde-format
 msgid ""
 "The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
-"La posizione desiderata del brano nella scaletta, in ore, minuti e secondi. "
-"Nota: a causa di limitazioni imposte dalle Qt, puoi specificare una "
+"La posizione desiderata della traccia nella scaletta, in ore, minuti e "
+"secondi. Nota: a causa di limitazioni imposte dalle Qt, puoi specificare una "
 "posizione massima di 24 ore."
 
 #. i18n: ectx: property (displayFormat), widget (QTimeEdit, timeEdit_Duration)

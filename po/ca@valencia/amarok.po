@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-05-05 01:43+0000\n"
-"PO-Revision-Date: 2024-04-17 09:44+0200\n"
+"PO-Revision-Date: 2024-05-05 11:00+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -597,10 +597,7 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
 msgstr ""
@@ -646,6 +643,8 @@ msgstr ""
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"Mostra l'artista de la peça al navegador de col·leccions si és diferent de "
+"l'artista de l'àlbum"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -654,6 +653,8 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"Mostra explícitament l'artista al navegador de col·leccions per a àlbums i "
+"peces de diversos artistes on l'artista diferix de l'artista de l'àlbum."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -1040,19 +1041,19 @@ msgstr ""
 #: amarokconfig.kcfg:287
 #, kde-format
 msgid "Amazon locale for cover retrieval"
-msgstr "Configuració regional d'Amazon per a la baixada de caràtules"
+msgstr "Configuració regional d'Amazon per a la recuperació de caràtules"
 
 #. i18n: ectx: whatsthis, entry, group (Cover Manager)
 #: amarokconfig.kcfg:288
 #, kde-format
 msgid "Determines which Amazon server cover images should be retrieved from."
-msgstr "Determina de quin servidor d'Amazon s'han d'obtindre les caràtules."
+msgstr "Determina de quin servidor d'Amazon s'han de recuperar les caràtules."
 
 #. i18n: ectx: label, entry, group (Wikipedia)
 #: amarokconfig.kcfg:295
 #, kde-format
 msgid "Wikipedia locale for information retrieval"
-msgstr "Configuració regional de la Viquipèdia d'on s'extraurà la informació"
+msgstr "Configuració regional de la Viquipèdia per a recuperar la informació"
 
 #. i18n: ectx: whatsthis, entry, group (Wikipedia)
 #: amarokconfig.kcfg:296
@@ -1060,7 +1061,7 @@ msgstr "Configuració regional de la Viquipèdia d'on s'extraurà la informació
 msgid ""
 "Determines in which language the information is retrieved from Wikipedia."
 msgstr ""
-"Determina la llengua en la qual s'obtindrà la informació de la Viquipèdia."
+"Determina la llengua en la qual es recuperarà la informació de la Viquipèdia."
 
 #. i18n: ectx: label, entry, group (KNotify)
 #: amarokconfig.kcfg:303
@@ -1369,17 +1370,15 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "Envia les cançons escoltades"
+msgstr "Envia les peces reproduïdes"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "Si s'han d'enviar les cançons escoltades a Audioscrobbler"
+msgstr "Si s'han d'enviar les peces reproduïdes a Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1428,14 +1427,13 @@ msgstr "Utilitza les dades del compositor a Last.fm com a artista"
 #: amarokconfig.kcfg:472
 #, kde-format
 msgid "Retrieve similar artists"
-msgstr "Obtín els artistes semblants"
+msgstr "Recupera els artistes semblants"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr "Si s'han d'obtindre les cançons semblants d'Audioscrobbler"
+msgstr "Si s'han de recuperar les peces semblants d'Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
@@ -2093,12 +2091,10 @@ msgid "Added This Month"
 msgstr "S'ha afegit este mes"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:181
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "Primera reproducció"
+msgstr "Mai reproduïdes"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:200
 #, kde-format
@@ -2135,11 +2131,10 @@ msgid "Show Track Numbers"
 msgstr "Mostra el nombre de la peça"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:259
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "Mostra davall Artistes diversos"
+msgstr "Mostra l'artista als Artistes diversos"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:264
 #, kde-format
@@ -2168,7 +2163,7 @@ msgstr "Sense etiquetes"
 #: browsers/CollectionTreeItem.cpp:149
 #, kde-format
 msgid "Counting..."
-msgstr "S'està comptant..."
+msgstr "S'està comptant…"
 
 #: browsers/CollectionTreeItem.cpp:176
 #: playlist/proxymodels/GroupingProxy.cpp:188
@@ -2290,7 +2285,7 @@ msgstr "Suprimix peces"
 #: browsers/CollectionTreeView.cpp:716 services/lastfm/LastFmTreeView.cpp:187
 #, kde-format
 msgid "More..."
-msgstr "Més..."
+msgstr "Més…"
 
 #: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
@@ -2530,11 +2525,10 @@ msgid "Duplicates"
 msgstr "Duplicats"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:114
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr "Permet cançons duplicades en el resultat"
+msgstr "Permet peces duplicades en el resultat"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, kde-format
@@ -2601,7 +2595,7 @@ msgstr "Sup&rimix la llista de reproducció"
 #: browsers/playlistbrowser/DynamicView.cpp:249
 #, kde-format
 msgid "&Edit bias..."
-msgstr "&Edita la ponderació..."
+msgstr "&Edita la ponderació…"
 
 #: browsers/playlistbrowser/DynamicView.cpp:253
 #, kde-format
@@ -2664,7 +2658,7 @@ msgstr[1] "%1 llistes de reproducció"
 #, kde-format
 msgctxt "normally number of playlists, but they are still loading"
 msgid "Loading..."
-msgstr "S'està carregant..."
+msgstr "S'està carregant…"
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:173
 #, kde-format
@@ -2693,17 +2687,17 @@ msgstr "&Nou"
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:87
 #, kde-format
 msgid "&Rename..."
-msgstr "Ca&nvia el nom..."
+msgstr "Ca&nvia el nom…"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:94
 #, kde-format
 msgid "&Delete..."
-msgstr "Sup&rimix..."
+msgstr "Sup&rimix…"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:108
 #, kde-format
 msgid "&Export As..."
-msgstr "&Exporta com a..."
+msgstr "&Exporta com a…"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:374
 #, kde-format
@@ -2736,24 +2730,20 @@ msgstr[0] "Elimina una peça de %2"
 msgstr[1] "Elimina %1 peces de %2"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "Suprimix la llista de reproducció de %1."
+msgstr "Suprimix la llista de reproducció <i>%1</i> de %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "Suprimix la llista de reproducció de %1."
+msgstr "Voleu suprimir %1 llistes de reproducció de %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
 #, kde-format
@@ -2774,7 +2764,7 @@ msgstr "Anomena i guarda"
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:37
 #, kde-format
 msgid "&Rename Folder..."
-msgstr "Ca&nvia el nom de la carpeta..."
+msgstr "Ca&nvia el nom de la carpeta…"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:42
 #, kde-format
@@ -2872,13 +2862,13 @@ msgstr "Paraules clau:"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:24
 #, kde-format
 msgid "Add Podcast..."
-msgstr "Afig un pòdcast..."
+msgstr "Afig un pòdcast…"
 
 #. i18n: ectx: property (text), widget (QToolButton, addPodcastButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:27
 #, kde-format
 msgid "add podcast..."
-msgstr "afig un pòdcast..."
+msgstr "afig un pòdcast…"
 
 #. i18n: ectx: property (text), widget (QToolButton, refreshPodcastsButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:50
@@ -2892,13 +2882,13 @@ msgstr "Torna a carregar tots els pòdcast"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:76
 #, kde-format
 msgid "Configure Podcasts..."
-msgstr "Configura els pòdcast..."
+msgstr "Configura els pòdcast…"
 
 #. i18n: ectx: property (text), widget (QToolButton, podcastsIntervalButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:99
 #, kde-format
 msgid "Scan Interval..."
-msgstr "Interval d'exploració..."
+msgstr "Interval d'exploració…"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:217
 #: browsers/playlistbrowser/PodcastModel.cpp:269
@@ -4167,7 +4157,7 @@ msgstr "Etiquetes: No s'està reproduint cap peça"
 #: context/applets/labels/LabelsApplet.cpp:520
 #, kde-format
 msgid "Labels: Fetching..."
-msgstr "Etiquetes: S'està recuperant..."
+msgstr "Etiquetes: S'està recuperant…"
 
 #: context/applets/labels/LabelsApplet.cpp:530
 #: statsyncing/models/CommonModel.cpp:186
@@ -4623,7 +4613,7 @@ msgstr "Torna a carregar les tabulatures"
 #, kde-format
 msgctxt "Guitar tablature"
 msgid "Tabs: Fetching..."
-msgstr "Tabulatures: S'està recuperant..."
+msgstr "Tabulatures: S'està recuperant…"
 
 #: context/applets/tabs/TabsApplet.cpp:174
 #, kde-format
@@ -4925,7 +4915,7 @@ msgstr "Carrer:"
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:53
 #, kde-format
 msgid "Loading picture..."
-msgstr "S'està carregant la imatge..."
+msgstr "S'està carregant la imatge…"
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:78
 #, kde-format
@@ -5013,11 +5003,10 @@ msgid "Next"
 msgstr "Següent"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Update Magnatune database automatically"
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "Actualitza automàticament la base de dades de Magnatune"
+msgstr "No canvies automàticament la pàgina"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
@@ -5027,18 +5016,16 @@ msgid "Track"
 msgstr "Peça"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "Copia a dins del porta-retalls"
+msgstr "Copia l'enllaç a dins del porta-retalls"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "Copia a dins del porta-retalls"
+msgstr "Copia la imatge a dins del porta-retalls"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:142
@@ -5052,7 +5039,7 @@ msgstr "No es pot recuperar la informació de la Viquipèdia: %1"
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:307
 #, kde-format
 msgid "No information found..."
-msgstr "No s'ha trobat informació..."
+msgstr "No s'ha trobat informació…"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
 #, kde-format
@@ -5095,12 +5082,12 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "Feu clic per a obrir %1 en un navegador web"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
 msgid "Configure Applets..."
-msgstr "Configura les miniaplicacions..."
+msgstr "Configura les miniaplicacions…"
 
 #: context/ContextDock.cpp:27
 #, kde-format
@@ -8150,7 +8137,7 @@ msgstr "No s'ha pogut guardar la caràtula."
 #: covermanager/CoverFoundDialog.cpp:518
 #, kde-format
 msgid "Sorry, the cover image could not be retrieved."
-msgstr "No s'ha pogut obtindre la imatge de la caràtula."
+msgstr "No s'ha pogut recuperar la imatge de la caràtula."
 
 #: covermanager/CoverFoundDialog.cpp:538
 #, kde-format
@@ -8338,19 +8325,19 @@ msgstr[1] " <b>%1</b> caràtules no trobades"
 #: covermanager/CoverManager.cpp:640
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
-msgstr "S'està descarregant la caràtula per a %1 - %2..."
+msgstr "S'està descarregant la caràtula per a %1 - %2…"
 
 #: covermanager/CoverManager.cpp:646
 #, kde-format
 msgid "Fetching cover for %1..."
-msgstr "S'està descarregant la caràtula per a %1..."
+msgstr "S'està descarregant la caràtula per a %1…"
 
 #: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "S'està descarregant 1 caràtula: "
-msgstr[1] "S'estan descarregant <b>%1</b> caràtules...: "
+msgstr[1] "S'estan descarregant <b>%1</b> caràtules…: "
 
 #: covermanager/CoverManager.cpp:654
 #, kde-format
@@ -8374,7 +8361,7 @@ msgstr[1] "%1 no trobades"
 #: covermanager/CoverManager.cpp:662
 #, kde-format
 msgid "Connecting..."
-msgstr "S'està connectant..."
+msgstr "S'està connectant…"
 
 #: covermanager/CoverManager.cpp:685
 #, kde-format
@@ -8463,7 +8450,7 @@ msgstr ""
 #: dialogs/CollectionSetup.cpp:71
 #, kde-format
 msgid "Import batch file..."
-msgstr "Importa un fitxer per lots..."
+msgstr "Importa un fitxer per lots…"
 
 #: dialogs/CollectionSetup.cpp:72
 #, kde-format
@@ -10056,7 +10043,7 @@ msgstr "Aleatori"
 #: dynamic/BiasedPlaylist.cpp:124
 #, kde-format
 msgid "Generating playlist..."
-msgstr "S'està generant la llista de reproducció..."
+msgstr "S'està generant la llista de reproducció…"
 
 #: dynamic/biases/AlbumPlayBias.cpp:36
 #, kde-format
@@ -11014,7 +11001,7 @@ msgstr "Usabilitat"
 #: main.cpp:203
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
-msgstr "Dan «Hey, it compiled...» Meltzer"
+msgstr "Dan «Hey, it compiled…» Meltzer"
 
 #: main.cpp:203
 #, kde-format
@@ -11657,7 +11644,7 @@ msgstr "Introduïu l'URL del flux de dades:"
 #: MainWindow.cpp:749
 #, kde-format
 msgid "&Add Media..."
-msgstr "Afi&g suports..."
+msgstr "Afi&g suports…"
 
 #: MainWindow.cpp:754
 #, kde-format
@@ -11680,12 +11667,12 @@ msgstr "Eli&mina els duplicats"
 #: MainWindow.cpp:771
 #, kde-format
 msgid "&Add Stream..."
-msgstr "Afi&g un flux de dades..."
+msgstr "Afi&g un flux de dades…"
 
 #: MainWindow.cpp:775
 #, kde-format
 msgid "&Export Playlist As..."
-msgstr "&Exporta la llista de reproducció com a..."
+msgstr "&Exporta la llista de reproducció com a…"
 
 #: MainWindow.cpp:787
 #, kde-format
@@ -11705,7 +11692,7 @@ msgstr "Anota les miniaplicacions de context a les adreces d'interés"
 #: MainWindow.cpp:803
 #, kde-format
 msgid "Play Media..."
-msgstr "Reproduïx suports..."
+msgstr "Reproduïx suports…"
 
 #: MainWindow.cpp:808
 #, kde-format
@@ -11730,7 +11717,7 @@ msgstr "Actualitza la col·lecció"
 #: MainWindow.cpp:857
 #, kde-format
 msgid "Synchronize Statistics..."
-msgstr "Sincronitza les estadístiques..."
+msgstr "Sincronitza les estadístiques…"
 
 #: MainWindow.cpp:865
 #, kde-format
@@ -11870,7 +11857,7 @@ msgstr "&Diagnòstics"
 #: MainWindow.cpp:1023
 #, kde-format
 msgid "&Report Bug..."
-msgstr "&Informe d'error..."
+msgstr "&Informe d'error…"
 
 #: MainWindow.cpp:1070
 #, kde-format
@@ -12053,7 +12040,7 @@ msgstr "Formats de llista de reproducció"
 #: playlist/layouts/LayoutConfigAction.cpp:70
 #, kde-format
 msgid "Configure Playlist Layouts..."
-msgstr "Configura els formats de la llista de reproducció..."
+msgstr "Configura els formats de la llista de reproducció…"
 
 #: playlist/layouts/LayoutEditDialog.cpp:75
 #, kde-format
@@ -12592,7 +12579,7 @@ msgstr "<b>Nota:</b> Esta peça no es pot reproduir.<br>%1"
 #: playlist/PlaylistModel.cpp:306
 #, kde-format
 msgid "(...)"
-msgstr "(...)"
+msgstr "(…)"
 
 #: playlist/PlaylistModel.cpp:335
 #, kde-format
@@ -12801,11 +12788,10 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "S'han ocultat algunes peces a causa de la busca activa."
 
 #: playlist/view/listview/PrettyListView.cpp:691
-#, fuzzy, kde-format
-#| msgid "Add some songs here by dragging them from all around."
+#, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr "Afig ací algunes cançons arrossegant-les des d'altres llocs."
+msgstr "Afig ací algunes peces arrossegant-les des d'altres llocs."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -12985,17 +12971,13 @@ msgstr "Posició:"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
-#, fuzzy, kde-format
-#| msgid ""
-#| "The desired position of the song in the playlist, in hours, minutes, and "
-#| "seconds.  Note: because of Qt limitations, the maximum position that you "
-#| "can specify is 24 hours."
+#, kde-format
 msgid ""
 "The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
-"La posició desitjada de la cançó en la llista de reproducció, en hores, "
+"La posició desitjada de la peça en la llista de reproducció, en hores, "
 "minuts, i segons. Nota: per limitacions de les Qt, la posició màxima de la "
 "llista de reproducció que podeu indicar és de 24 hores."
 
@@ -14506,7 +14488,7 @@ msgid ""
 "seconds..."
 msgstr ""
 "El servei GPodder ha fallat en obtindre les dades del servidor. Es "
-"reintentarà en 10 segons..."
+"reintentarà en 10 segons…"
 
 #: services/gpodder/GpodderService.cpp:113
 #, kde-format
@@ -14543,7 +14525,7 @@ msgstr ""
 #: services/lastfm/LastFmServiceSettings.cpp:102
 #, kde-format
 msgid "Testing..."
-msgstr "Provant..."
+msgstr "Provant…"
 
 #: services/gpodder/GpodderServiceSettings.cpp:112
 #, kde-format
@@ -14600,7 +14582,7 @@ msgstr ""
 #: services/jamendo/JamendoInfoParser.cpp:77
 #, kde-format
 msgid "No description available..."
-msgstr "No hi ha disponible cap descripció..."
+msgstr "No hi ha disponible cap descripció…"
 
 #: services/jamendo/JamendoInfoParser.cpp:61
 #: services/jamendo/JamendoInfoParser.cpp:93
@@ -14668,7 +14650,7 @@ msgstr "Gènere / Artista / Àlbum"
 #: services/jamendo/JamendoService.cpp:193
 #, kde-format
 msgid "Downloading Jamendo.com database..."
-msgstr "S'està baixant la base de dades de Jamendo.com..."
+msgstr "S'està baixant la base de dades de Jamendo.com…"
 
 #: services/jamendo/JamendoService.cpp:215
 #, kde-format
@@ -14812,7 +14794,7 @@ msgstr "&Envia les peces"
 #: services/lastfm/LastFmConfigWidget.ui:138
 #, kde-format
 msgid "&Retrieve similar artists"
-msgstr "O&btín els artistes semblants"
+msgstr "&Recupera els artistes semblants"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
 #: services/lastfm/LastFmConfigWidget.ui:148
@@ -15170,7 +15152,7 @@ msgstr "Ràdio d'artista"
 #: services/lastfm/meta/LastFmMeta.cpp:430
 #, kde-format
 msgid "Last.fm is cool..."
-msgstr "Last.fm és atractiu..."
+msgstr "Last.fm és atractiu…"
 
 #: services/lastfm/meta/LastFmMultiPlayableCapability.cpp:98
 #, kde-format
@@ -15253,7 +15235,7 @@ msgstr ""
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:109
 #, kde-format
 msgid "Uncompressing Magnatune.com download..."
-msgstr "S'està descomprimint la baixada de Magnatune.com..."
+msgstr "S'està descomprimint la baixada de Magnatune.com…"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:133
 #, kde-format
@@ -15511,7 +15493,7 @@ msgstr ""
 #: services/magnatune/MagnatuneInfoParser.cpp:31
 #, kde-format
 msgid "Loading artist info..."
-msgstr "S'està carregant la informació de l'artista..."
+msgstr "S'està carregant la informació de l'artista…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:41
 #, kde-format
@@ -15521,7 +15503,7 @@ msgstr "S'està recuperant la informació de l'artista %1"
 #: services/magnatune/MagnatuneInfoParser.cpp:50
 #, kde-format
 msgid "Loading album info..."
-msgstr "S'estan carregant la informació de l'àlbum..."
+msgstr "S'estan carregant la informació de l'àlbum…"
 
 #. i18n( "Genre: ");// + magnatuneAlbum->
 #: services/magnatune/MagnatuneInfoParser.cpp:72
@@ -15542,7 +15524,7 @@ msgstr "Des de Magnatune.com"
 #: services/magnatune/MagnatuneInfoParser.cpp:163
 #, kde-format
 msgid "Loading Magnatune.com frontpage..."
-msgstr "S'està carregant la portada de Magnatune.com..."
+msgstr "S'està carregant la portada de Magnatune.com…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:166
 #, kde-format
@@ -15553,15 +15535,14 @@ msgstr "S'està recuperant la caràtula de Magnatune.com"
 #: services/magnatune/MagnatuneInfoParser.cpp:191
 #, kde-format
 msgid "Loading your Magnatune.com favorites page..."
-msgstr "S'està carregant la vostra pàgina preferida de Magnatune.com..."
+msgstr "S'està carregant la vostra pàgina preferida de Magnatune.com…"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:202
 #: services/magnatune/MagnatuneInfoParser.cpp:216
 #, kde-format
 msgid "Loading your personal Magnatune.com recommendations page..."
 msgstr ""
-"S'està carregant la vostra pàgina personal de recomanacions de Magnatune."
-"com..."
+"S'està carregant la vostra pàgina personal de recomanacions de Magnatune.com…"
 
 #: services/magnatune/MagnatuneMeta.cpp:215
 #, kde-format
@@ -15694,7 +15675,7 @@ msgstr ""
 "right:0px; -qt-block-indent:0; text-indent:0px;\">En donar-se d'alta com a "
 "membre a Magnatune.com, obtindreu un accés de baixada sense límit i podreu "
 "baixar qualsevol àlbum des d'Amarok amb un únic clic de ratolí. Inscrivint-"
-"vos, també podreu escoltar totes les cançons des de Magnatune.com sense "
+"vos, també podreu escoltar totes les peces des de Magnatune.com sense "
 "publicitat.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
@@ -15725,7 +15706,7 @@ msgstr ""
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Després d'inscriure-vos, "
 "aneu fins a la configuració de Magnatune en «Configuració -> Configura "
-"Amarok... -> Connectors» i introduïu la vostra informació de soci. </p></"
+"Amarok… -> Connectors» i introduïu la vostra informació de soci. </p></"
 "body></html>"
 
 #. i18n: ectx: property (text), widget (QPushButton, closeButton)
@@ -15787,7 +15768,7 @@ msgstr "Registre"
 #: services/magnatune/MagnatuneStore.cpp:326
 #, kde-format
 msgid "Downloading Magnatune.com database..."
-msgstr "S'està baixant la base de dades de Magnatune.com..."
+msgstr "S'està baixant la base de dades de Magnatune.com…"
 
 #: services/magnatune/MagnatuneStore.cpp:355
 #, kde-format
@@ -16116,7 +16097,7 @@ msgstr "Si es deixa en blanc, s'utilitzarà el títol de l'OPML."
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:56
 #, kde-format
 msgid "Loading Podcast Info..."
-msgstr "S'està carregant la informació dels pòdcast..."
+msgstr "S'està carregant la informació dels pòdcast…"
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:66
 #, kde-format
@@ -16170,7 +16151,7 @@ msgstr "Afig un fitxer OPML a la llista."
 #: services/scriptable/ScriptableServiceInfoParser.cpp:88
 #, kde-format
 msgid "Loading info..."
-msgstr "S'està carregant la informació..."
+msgstr "S'està carregant la informació…"
 
 #: services/ServiceBase.cpp:337
 #, kde-format
@@ -16365,7 +16346,7 @@ msgstr[1] ""
 #: statsyncing/ui/MatchedTracksPage.cpp:135
 #, kde-format
 msgid "Configure Synchronization..."
-msgstr "Configura la sincronització..."
+msgstr "Configura la sincronització…"
 
 #: statsyncing/ui/ChooseProvidersPage.cpp:146
 #, kde-format
@@ -16556,7 +16537,7 @@ msgstr "Peces coincidents"
 #: statsyncing/ui/MatchedTracksPage.ui:216
 #, kde-format
 msgid "Filter Tracks..."
-msgstr "Filtra les peces..."
+msgstr "Filtra les peces…"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, matchedRatingsButton)
 #. i18n: ectx: property (toolTip), widget (QToolButton, matchedLabelsButton)
@@ -16949,12 +16930,12 @@ msgstr "Arrel de col·lecció"
 #: widgets/FilenameLayoutWidget.cpp:277
 #, kde-format
 msgid "&Basic..."
-msgstr "&Bàsic..."
+msgstr "&Bàsic…"
 
 #: widgets/FilenameLayoutWidget.cpp:282
 #, kde-format
 msgid "&Advanced..."
-msgstr "&Avançat..."
+msgstr "&Avançat…"
 
 #: widgets/FilenameLayoutWidget.cpp:434
 #, kde-format
