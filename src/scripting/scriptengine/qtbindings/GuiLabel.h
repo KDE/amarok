@@ -22,6 +22,7 @@
 #include "QtBinding.h"
 
 #include <QLabel>
+#include <QPicture>
 
 namespace QtBindings {
     namespace  Gui
@@ -45,8 +46,8 @@ namespace QtBindings {
             int margin() const;
             QMovie *movie() const;
             bool openExternalLinks() const;
-            const QPicture *picture() const;
-            const QPixmap *pixmap() const;
+            QPicture picture() const;
+            QPixmap pixmap() const;
             QString selectedText() const;
             int selectionStart() const;
             void setAlignment(Qt::Alignment);

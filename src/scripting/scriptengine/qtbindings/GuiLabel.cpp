@@ -83,14 +83,14 @@ bool Label::openExternalLinks() const
     return QLabel::openExternalLinks();
 }
 
-const QPicture *Label::picture() const
+QPicture Label::picture() const
 {
-    return QLabel::picture();
+    return QLabel::picture( Qt::ReturnByValue );
 }
 
-const QPixmap *Label::pixmap() const
+QPixmap Label::pixmap() const
 {
-    return QLabel::pixmap();
+    return QLabel::pixmap( Qt::ReturnByValue );
 }
 
 QString Label::selectedText() const
@@ -307,8 +307,8 @@ Label &Label::operator=(const Label &other)
         this->setMargin( other.margin() );
         this->setMovie( other.movie() );
         this->setOpenExternalLinks( other.openExternalLinks() );
-        this->setPicture( *other.picture() ) ;
-        this->setPixmap( *other.pixmap() );
+        this->setPicture( other.picture() ) ;
+        this->setPixmap( other.pixmap() );
         this->setScaledContents( other.hasScaledContents() );
         this->setSelection( other.selectionStart(), other.selectedText().length() );
         this->setText( other.text() );

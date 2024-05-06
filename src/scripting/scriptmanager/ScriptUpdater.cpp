@@ -22,7 +22,6 @@
 #include "ScriptManager.h"
 
 #include <KIO/Job>
-#include <KPluginInfo>
 #include <QStandardPaths>
 #include <KTar>
 
@@ -62,7 +61,7 @@ ScriptUpdater::updateScript()
         Q_EMIT finished( m_scriptPath );
         return;
     }
-    KPluginInfo pInfo = KPluginInfo::fromMetaData( ScriptManager::createMetadaFromSpec( specPath ) );
+    KPluginMetaData pInfo = ScriptManager::createMetadaFromSpec( specPath );
     if ( !pInfo.isValid() || pInfo.name().isEmpty() || pInfo.version().isEmpty() )
     {
         // invalid or unusable .spec file, can't continue
