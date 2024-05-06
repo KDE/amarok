@@ -353,7 +353,7 @@ ScriptManager::loadScript( const QString& path )
         return false;
 
     QStringList SupportAPIVersion;
-    SupportAPIVersion << QLatin1String("API V1.0.0") << QLatin1String("API V1.0.1");
+    //SupportAPIVersion << QLatin1String("API V1.0.0") << QLatin1String("API V1.0.1");
     QString ScriptVersion;
     QFileInfo info( path );
     const QString jsonPath = QString( "%1/script.json" ).arg( info.path() );
@@ -409,18 +409,18 @@ ScriptManager::loadScript( const QString& path )
         item = m_scripts.value( pluginName );
 
     //assume it is API V1.0.0 if there is no "API V" prefix found
-    if( !item->info().dependencies().at(0).startsWith("API V") )
+    /*if( !item->info().dependencies().at(0).startsWith("API V") )
         ScriptVersion = QLatin1String("API V1.0.0");
     else
         ScriptVersion = item->info().dependencies().at(0);
 
     if( !SupportAPIVersion.contains( ScriptVersion ) )
-    {
+    {*/
         warning() << "script API version not compatible with Amarok.";
-        return false;
-    }
+    /*  return false;
+    }*/
 
-    debug() << "found script:" << category << pluginName << version << item->info().dependencies();
+    debug() << "found script:" << category << pluginName << version; // << item->info().dependencies();
     return true;
 }
 
