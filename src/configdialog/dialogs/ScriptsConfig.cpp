@@ -27,7 +27,7 @@
 #include "ui_ScriptsConfig.h"
 
 #include <KMessageBox>
-#include <KNS3/DownloadDialog>
+#include <KNS3/QtQuickDialogWrapper>
 #include <KPluginInfo>
 #include <KPluginSelector>
 #include <QStandardPaths>
@@ -85,11 +85,11 @@ void
 ScriptsConfig::slotManageScripts()
 {
     QStringList updateScriptsList;
-    KNS3::DownloadDialog dialog(QStringLiteral("amarok.knsrc"), this);
-    dialog.exec();
+    KNS3::QtQuickDialogWrapper dialog(QStringLiteral("amarok.knsrc"), this);
+    //dialog.exec();
 
-    if( !dialog.installedEntries().isEmpty() || !dialog.changedEntries().isEmpty() )
-        m_timer->start();
+    //if( !dialog.installedEntries().isEmpty() || !dialog.changedEntries().isEmpty() )
+    //    m_timer->start();
 }
 
 void

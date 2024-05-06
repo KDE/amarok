@@ -39,7 +39,7 @@ not be entirely up to date. You can always look at CMakeLists.txt to discover
 the most recent dependencies.
 
 Required
-    * KDE Frameworks 5.77 (or newer, for an exact list look at CMakeLists.txt)
+    * KDE Frameworks 5.78 (or newer, for an exact list look at CMakeLists.txt)
       https://www.kde.org
 
     * Phonon 4.6.60 (or newer with support for Qt5) and one of the following backends:
