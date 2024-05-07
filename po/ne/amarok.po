@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-05 01:43+0000\n"
+"POT-Creation-Date: 2024-05-07 01:43+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -13664,7 +13664,7 @@ msgstr ""
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:113
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:467
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:604
-#: widgets/MetaQueryWidget.cpp:1017
+#: widgets/MetaQueryWidget.cpp:1018
 #, fuzzy, kde-format
 #| msgid "larger than"
 msgid "less than"
@@ -13935,7 +13935,7 @@ msgid "\"%1\""
 msgstr ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:340
-#: widgets/MetaQueryWidget.cpp:1019
+#: widgets/MetaQueryWidget.cpp:1020
 #, fuzzy, kde-format
 #| msgid "equal to"
 msgctxt "a numerical tag (like year or track number) equals a value"
@@ -13949,7 +13949,7 @@ msgstr "यससँग बराबर छ"
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:123
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:477
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:614
-#: widgets/MetaQueryWidget.cpp:1021
+#: widgets/MetaQueryWidget.cpp:1022
 #, fuzzy, kde-format
 #| msgid "is greater than"
 msgid "greater than"
@@ -13986,7 +13986,7 @@ msgid "within"
 msgstr "सँग"
 
 #: playlistgenerator/constraints/TagMatch.cpp:358
-#: widgets/MetaQueryWidget.cpp:1033
+#: widgets/MetaQueryWidget.cpp:1034
 #, fuzzy, kde-format
 #| msgid "equal to"
 msgctxt "an alphabetical tag (like title or artist name) equals some string"
@@ -14009,7 +14009,7 @@ msgid "ends with"
 msgstr "यससँग अन्त्य हुन्छ"
 
 #: playlistgenerator/constraints/TagMatch.cpp:364
-#: widgets/MetaQueryWidget.cpp:1035
+#: widgets/MetaQueryWidget.cpp:1036
 #, fuzzy, kde-format
 #| msgid "contains"
 msgctxt "an alphabetical tag (like title or artist name) contains some string"
@@ -14022,7 +14022,7 @@ msgid "regexp"
 msgstr ""
 
 #: playlistgenerator/constraints/TagMatch.cpp:369
-#: widgets/MetaQueryWidget.cpp:1040
+#: widgets/MetaQueryWidget.cpp:1041
 #, fuzzy, kde-format
 #| msgid "Unknown Genre"
 msgid "unknown comparison"
@@ -17433,49 +17433,49 @@ msgctxt "time format for specifying track length - hours, minutes, seconds"
 msgid "h:m:ss"
 msgstr ""
 
-#: widgets/MetaQueryWidget.cpp:997
+#: widgets/MetaQueryWidget.cpp:998
 #, fuzzy, kde-format
 #| msgid "is before"
 msgctxt "The date lies before the given fixed date"
 msgid "before"
 msgstr "अगाडि छ"
 
-#: widgets/MetaQueryWidget.cpp:999
+#: widgets/MetaQueryWidget.cpp:1000
 #, fuzzy, kde-format
 #| msgid "(none)"
 msgctxt "The date is the same as the given fixed date"
 msgid "on"
 msgstr "(कुनै पनि होइन)"
 
-#: widgets/MetaQueryWidget.cpp:1001
+#: widgets/MetaQueryWidget.cpp:1002
 #, fuzzy, kde-format
 #| msgid "is after"
 msgctxt "The date is after the given fixed date"
 msgid "after"
 msgstr "यसपछि छ"
 
-#: widgets/MetaQueryWidget.cpp:1003
+#: widgets/MetaQueryWidget.cpp:1004
 #, fuzzy, kde-format
 #| msgid "between"
 msgctxt "The date is between the given fixed dates"
 msgid "between"
 msgstr "बीच"
 
-#: widgets/MetaQueryWidget.cpp:1005
+#: widgets/MetaQueryWidget.cpp:1006
 #, fuzzy, kde-format
 #| msgid "smaller than"
 msgctxt "The date lies before the given time interval"
 msgid "older than"
 msgstr "यसभन्दा सानो"
 
-#: widgets/MetaQueryWidget.cpp:1007
+#: widgets/MetaQueryWidget.cpp:1008
 #, fuzzy, kde-format
 #| msgid "is greater than"
 msgctxt "The date lies after the given time interval"
 msgid "newer than"
 msgstr "यसभन्दा ठूलो"
 
-#: widgets/MetaQueryWidget.cpp:1023
+#: widgets/MetaQueryWidget.cpp:1024
 #, fuzzy, kde-format
 #| msgid "between"
 msgctxt "a numerical tag (like year or track number) is between two values"

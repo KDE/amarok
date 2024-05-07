@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-05 01:43+0000\n"
-"PO-Revision-Date: 2024-04-18 12:52+0200\n"
+"POT-Creation-Date: 2024-05-07 01:43+0000\n"
+"PO-Revision-Date: 2024-05-06 10:15+0200\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
 "Language: bg\n"
@@ -583,14 +583,11 @@ msgstr "Дали да се показват фонови изображения 
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
 msgstr ""
-"Автоматично превъртане на списъка за възпроизвеждане докато текущата песен "
+"Автоматично превъртане на списъка за възпроизвеждане докато текущият запис "
 "се появи на екрана"
 
 #. i18n: ectx: label, entry, group (General Options)
@@ -631,6 +628,8 @@ msgstr ""
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"Показване на изпълнителя на записа в браузъра на колекцията, ако е различен "
+"от изпълнителя на албума"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -639,6 +638,9 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"Изрично показване на изпълнителя в браузъра на колекцията за албуми и песни "
+"на Различни формации, при които изпълнителят се различава от изпълнителя на "
+"албума."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -1350,17 +1352,15 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "Изпращане на слушаните песни"
+msgstr "Изпращане на слушаните записи"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "Дали да бъде изпращана информация за слушаните песни на last.fm"
+msgstr "Дали да бъде изпращана информация за слушаните записи на last.fm"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1413,10 +1413,9 @@ msgstr "Търсене на подобни изпълнители"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr "Дали да бъдат търсени подобни песни в Audioscrobbler"
+msgstr "Дали да бъдат търсени подобни записи в Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
@@ -2070,12 +2069,10 @@ msgid "Added This Month"
 msgstr "Добавено този месец"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:181
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "Първо изпълнение"
+msgstr "Неизпълнявани досега"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:200
 #, kde-format
@@ -2112,11 +2109,10 @@ msgid "Show Track Numbers"
 msgstr "Показване номерата на песните"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:259
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "Показване в \"Сборни формации\""
+msgstr "Показване на изпълнители в \"Сборни формации\""
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:264
 #, kde-format
@@ -2507,11 +2503,10 @@ msgid "Duplicates"
 msgstr "Дубликати"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:114
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr "Разрешаване на дублиращи се песни в резултата"
+msgstr "Разрешаване на дублиращи се записи в резултата"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, kde-format
@@ -2712,24 +2707,20 @@ msgstr[0] "Премахване на песен от %2"
 msgstr[1] "Премахване на %1 песни от %2"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "Изтриване на списъка за възпроизвеждане от %1."
+msgstr "Да се изтрие ли списъкът за възпроизвеждане <i>%1</i> от %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "Изтриване на списъка за възпроизвеждане от %1."
+msgstr "Да се изтрие ли списъкът за възпроизвеждане %1 от %2."
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
 #, kde-format
@@ -4992,11 +4983,10 @@ msgid "Next"
 msgstr "Следващ"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Update Magnatune database automatically"
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "Автоматично обновяване на базата данни на Magnatune"
+msgstr "Страницата да не се обновява автоматично"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
@@ -5006,18 +4996,16 @@ msgid "Track"
 msgstr "Запис"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "Копиране в клипборда"
+msgstr "Копиране на препратката в клипборда"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "Копиране в клипборда"
+msgstr "Копиране на изображението в клипборда"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:142
@@ -5074,7 +5062,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "Кликнете за отваряне на %1 в браузър"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -12744,11 +12732,10 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "Песните са били скрити поради активното търсене.."
 
 #: playlist/view/listview/PrettyListView.cpp:691
-#, fuzzy, kde-format
-#| msgid "Add some songs here by dragging them from all around."
+#, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr "Добавете тук няколко песни, като ги плъзнете."
+msgstr "Добавете тук няколко записи, като ги плъзнете."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -12927,17 +12914,13 @@ msgstr "Позиция:"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
-#, fuzzy, kde-format
-#| msgid ""
-#| "The desired position of the song in the playlist, in hours, minutes, and "
-#| "seconds.  Note: because of Qt limitations, the maximum position that you "
-#| "can specify is 24 hours."
+#, kde-format
 msgid ""
 "The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
-"Желаната позиция на песента в списъка за възпроизвеждане в часове, минути и "
+"Желаната позиция на записа в списъка за възпроизвеждане в часове, минути и "
 "секунди.  Забележка: поради ограниченията на Qt максималната позиция, която "
 "можете да зададете, е 24 часа."
 
@@ -13206,7 +13189,7 @@ msgstr ""
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:113
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:467
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:604
-#: widgets/MetaQueryWidget.cpp:1017
+#: widgets/MetaQueryWidget.cpp:1018
 #, kde-format
 msgid "less than"
 msgstr "по-голяма от"
@@ -13476,7 +13459,7 @@ msgid "\"%1\""
 msgstr "\"%1\""
 
 #: playlistgenerator/constraints/TagMatch.cpp:340
-#: widgets/MetaQueryWidget.cpp:1019
+#: widgets/MetaQueryWidget.cpp:1020
 #, kde-format
 msgctxt "a numerical tag (like year or track number) equals a value"
 msgid "equals"
@@ -13489,7 +13472,7 @@ msgstr "равна на"
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:123
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:477
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:614
-#: widgets/MetaQueryWidget.cpp:1021
+#: widgets/MetaQueryWidget.cpp:1022
 #, kde-format
 msgid "greater than"
 msgstr "е по-голямо от"
@@ -13521,7 +13504,7 @@ msgid "within"
 msgstr "с"
 
 #: playlistgenerator/constraints/TagMatch.cpp:358
-#: widgets/MetaQueryWidget.cpp:1033
+#: widgets/MetaQueryWidget.cpp:1034
 #, kde-format
 msgctxt "an alphabetical tag (like title or artist name) equals some string"
 msgid "equals"
@@ -13541,7 +13524,7 @@ msgid "ends with"
 msgstr "завършва с"
 
 #: playlistgenerator/constraints/TagMatch.cpp:364
-#: widgets/MetaQueryWidget.cpp:1035
+#: widgets/MetaQueryWidget.cpp:1036
 #, kde-format
 msgctxt "an alphabetical tag (like title or artist name) contains some string"
 msgid "contains"
@@ -13553,7 +13536,7 @@ msgid "regexp"
 msgstr "regexp"
 
 #: playlistgenerator/constraints/TagMatch.cpp:369
-#: widgets/MetaQueryWidget.cpp:1040
+#: widgets/MetaQueryWidget.cpp:1041
 #, kde-format
 msgid "unknown comparison"
 msgstr "неизвестно сравнение"
@@ -16972,43 +16955,43 @@ msgctxt "time format for specifying track length - hours, minutes, seconds"
 msgid "h:m:ss"
 msgstr "h:m:ss"
 
-#: widgets/MetaQueryWidget.cpp:997
+#: widgets/MetaQueryWidget.cpp:998
 #, kde-format
 msgctxt "The date lies before the given fixed date"
 msgid "before"
 msgstr "е преди"
 
-#: widgets/MetaQueryWidget.cpp:999
+#: widgets/MetaQueryWidget.cpp:1000
 #, kde-format
 msgctxt "The date is the same as the given fixed date"
 msgid "on"
 msgstr "е на"
 
-#: widgets/MetaQueryWidget.cpp:1001
+#: widgets/MetaQueryWidget.cpp:1002
 #, kde-format
 msgctxt "The date is after the given fixed date"
 msgid "after"
 msgstr "е след"
 
-#: widgets/MetaQueryWidget.cpp:1003
+#: widgets/MetaQueryWidget.cpp:1004
 #, kde-format
 msgctxt "The date is between the given fixed dates"
 msgid "between"
 msgstr "между"
 
-#: widgets/MetaQueryWidget.cpp:1005
+#: widgets/MetaQueryWidget.cpp:1006
 #, kde-format
 msgctxt "The date lies before the given time interval"
 msgid "older than"
 msgstr "е по-малка от"
 
-#: widgets/MetaQueryWidget.cpp:1007
+#: widgets/MetaQueryWidget.cpp:1008
 #, kde-format
 msgctxt "The date lies after the given time interval"
 msgid "newer than"
 msgstr "е по-голяма от"
 
-#: widgets/MetaQueryWidget.cpp:1023
+#: widgets/MetaQueryWidget.cpp:1024
 #, kde-format
 msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
