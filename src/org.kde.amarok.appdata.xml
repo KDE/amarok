@@ -277,6 +277,7 @@
       <li xml:lang="zh-CN">支持基础款 iPod、MTP、UMP 的音乐播放器</li>
       <li xml:lang="zh-TW">支援基本的 iPod、MTP 和 UMS 音樂播放裝置</li>
       <li>Integrated Internet services: last.fm, Magnatune, Ampache and more.</li>
+      <li xml:lang="bg">Интегрирани Интернет услуги: last.fm, Magnatune,, Ampache и др.</li>
       <li xml:lang="ca">Serveis integrats d'Internet: last.fm, Magnatune, Ampache i més.</li>
       <li xml:lang="ca-valencia">Serveis integrats d'Internet: last.fm, Magnatune, Ampache i més.</li>
       <li xml:lang="eo">Integritaj interretaj servoj: last.fm, Magnatune, Ampache kaj pli.</li>
@@ -414,6 +415,7 @@
   <screenshots>
     <screenshot type="default">
       <caption>Playing music in Amarok 3.0</caption>
+      <caption xml:lang="bg">Възпроизвеждане на музика в Amarok 3.0</caption>
       <caption xml:lang="ca">Reproduint música en l'Amarok 3.0</caption>
       <caption xml:lang="ca-valencia">Reproduint música en Amarok 3.0</caption>
       <caption xml:lang="eo">Ludante muzikon en Amarok 3.0</caption>
