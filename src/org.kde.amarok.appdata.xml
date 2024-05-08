@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component type="desktop">
   <id>org.kde.amarok</id>
+  <provides>
+    <id>org.kde.amarok.desktop</id>
+    <binary>amarok</binary>
+  </provides>
+  <replaces>
+    <id>org.kde.amarok.desktop</id>
+  </replaces>
   <launchable type="desktop-id">org.kde.amarok.desktop</launchable>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
@@ -510,9 +517,6 @@
   </screenshots>
   <content_rating type="oars-1.1"/>
   <project_group>KDE</project_group>
-  <provides>
-    <binary>amarok</binary>
-  </provides>
   <releases>
     <release version="3.0.0" date="2024-04-29" type="stable"/>
     <release version="2.9.82" date="2024-04-12" type="development"/>
