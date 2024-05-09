@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-05-07 01:43+0000\n"
-"PO-Revision-Date: 2024-04-29 19:50+0900\n"
+"PO-Revision-Date: 2024-05-09 06:23+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -5266,7 +5266,7 @@ msgstr "退出裝置(&E)"
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:126
 #, kde-format
 msgid "Re-add orphaned and forget stale tracks"
-msgstr "將孤立曲目重新加回去，並丟棄陳舊的曲目"
+msgstr "將孤立曲目重新加回去，並捨棄陳舊的曲目"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:484
 #, kde-format
@@ -8192,7 +8192,7 @@ msgstr "已匯入 <b>%1 ─ %2 (%3)</b>"
 #, kde-format
 msgctxt "Track has been discarded, format: Url"
 msgid "Discarded <b><font color='gray'>%1</font></b>"
-msgstr "已丟棄 <b><font color='gray'>%1</font></b>"
+msgstr "已捨棄 <b><font color='gray'>%1</font></b>"
 
 #: dialogs/DatabaseImporterDialog.cpp:177
 #, kde-format
@@ -8229,7 +8229,7 @@ msgid ""
 "Multiple ambiguous matches found for <b><font color='red'>%1</font></b>, has "
 "been discarded."
 msgstr ""
-"所找到的多筆不明確符合 <b><font color='red'>%1</font></b> 的資料已被丟棄。"
+"所找到的多筆不明確符合 <b><font color='red'>%1</font></b> 的資料已被捨棄。"
 
 #: dialogs/deletedialog.cpp:63
 #, kde-format
