@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-05-07 01:43+0000\n"
-"PO-Revision-Date: 2024-05-09 06:23+0900\n"
+"PO-Revision-Date: 2024-05-09 16:35+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -569,13 +569,10 @@ msgstr "是否要在瀏覽器面板中顯示背景影像"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
-msgstr "自動化捲動播放清單，使您可以看到清單內正在播放的曲目"
+msgstr "自動捲動播放清單以維持正在播放的曲目可見"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:104
@@ -613,7 +610,7 @@ msgstr "如果設定的話，情境小程式會以動畫方式折疊。"
 #, kde-format
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
-msgstr ""
+msgstr "在收藏瀏覽器中與專輯演出者不同時顯示曲目演出者"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -622,6 +619,8 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"在收藏瀏覽器中為演出者與專輯演出者不同的「多名演出者」專輯與曲目明確顯示演出"
+"者。"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -1271,17 +1270,15 @@ msgstr "是否要使用 Mozilla 的字元集偵測器來猜測 ID3 標籤中的�
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "提交播過的歌"
+msgstr "提交播過的曲目"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "要不要傳送播放過的樂曲至 Audioscrobbler"
+msgstr "要不要傳送播放過的曲目至 Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1334,10 +1331,9 @@ msgstr "收集風格相近的演出者(&R)"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr "要不要從 Audioscrobbler 接收風格相近的樂曲"
+msgstr "要不要從 Audioscrobbler 接收風格相近的曲目"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
@@ -1972,12 +1968,10 @@ msgid "Added This Month"
 msgstr "本月已新增"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:181
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "第一次播放"
+msgstr "從未播放"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:200
 #, kde-format
@@ -2014,11 +2008,10 @@ msgid "Show Track Numbers"
 msgstr "顯示曲目號碼"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:259
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "在「各個演出者」之下顯示"
+msgstr "在「多名演出者」之下顯示"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:264
 #, kde-format
@@ -2400,11 +2393,10 @@ msgid "Duplicates"
 msgstr "重複"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:114
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr "結果中允許重複的歌曲"
+msgstr "結果中允許重複的曲目"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, kde-format
@@ -2599,24 +2591,20 @@ msgid_plural "Remove %1 Tracks From %2"
 msgstr[0] "從 %2 移除 %1 首曲目"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "自 %1 刪除播放清單。"
+msgstr "要從 %2 刪除播放清單 <i>%1</i> 嗎？"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "自 %1 刪除播放清單。"
+msgstr "要從 %2 刪除 %1 個播放清單嗎？"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
 #, kde-format
@@ -4824,11 +4812,10 @@ msgid "Next"
 msgstr "下一個"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Update Magnatune database automatically"
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "自動更新 Magnatune 資料庫"
+msgstr "不要自動變更頁面"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
@@ -4838,18 +4825,16 @@ msgid "Track"
 msgstr "曲目"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "複製到剪貼簿"
+msgstr "複製連結至剪貼簿"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "複製到剪貼簿"
+msgstr "複製圖片到剪貼簿"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:142
@@ -4906,7 +4891,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "點擊來在瀏覽器中開啟 %1"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -5053,12 +5038,12 @@ msgstr "至少需要指定 install、remove、upgrade 或 list 其中一個動�
 #: core-impl/capabilities/AlbumActionsCapability.cpp:38
 #, kde-format
 msgid "Do not show under Various Artists"
-msgstr "不要在「各個演出者」之下顯示"
+msgstr "不要在「多名演出者」之下顯示"
 
 #: core-impl/capabilities/AlbumActionsCapability.cpp:43
 #, kde-format
 msgid "Show under Various Artists"
-msgstr "在「各個演出者」之下顯示"
+msgstr "在「多名演出者」之下顯示"
 
 #: core-impl/capabilities/timecode/TimecodeWriteCapability.cpp:103
 #, kde-format
@@ -11742,7 +11727,7 @@ msgstr "本體"
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:83
 #, kde-format
 msgid "Body (Various artists)"
-msgstr "本體 (多位演出者)"
+msgstr "本體（多名演出者）"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:84
 #, kde-format
@@ -12342,11 +12327,10 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "曲目已隱藏，因為正在進行搜尋。"
 
 #: playlist/view/listview/PrettyListView.cpp:691
-#, fuzzy, kde-format
-#| msgid "Add some songs here by dragging them from all around."
+#, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr "將一些歌曲拖曳到這裡以新增。"
+msgstr "將曲目從各處拖曳到這裡以新增至此。"
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -12517,11 +12501,7 @@ msgstr "位置："
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
-#, fuzzy, kde-format
-#| msgid ""
-#| "The desired position of the song in the playlist, in hours, minutes, and "
-#| "seconds.  Note: because of Qt limitations, the maximum position that you "
-#| "can specify is 24 hours."
+#, kde-format
 msgid ""
 "The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
