@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-05-07 01:43+0000\n"
-"PO-Revision-Date: 2024-04-23 21:12+0100\n"
+"PO-Revision-Date: 2024-05-12 23:22+0100\n"
 "Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -580,13 +580,10 @@ msgstr "Ĉu montri fonbildojn en la retumila panelo"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
-msgstr "Aŭtomate rulumi la ludliston por vidigi la nun ludantan kanton"
+msgstr "Aŭtomate rulumi la ludliston por vidigi la nun ludantan trakon"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:104
@@ -625,6 +622,8 @@ msgstr "Se agordita, kuntekstaj apletoj malvastiĝos per animacioj."
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"Montri la artiston de la trako en Kolekta Foliumilo se malsama de "
+"albumartisto"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -633,6 +632,8 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"Eksplicite montri la artiston en Kolekta Foliumilo por albumoj kaj trakoj de "
+"Variaj Artistoj kie artisto malsamas de albumartisto"
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -1319,17 +1320,15 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "Sendi luditajn kantojn"
+msgstr "Sendi reproduktitajn trakojn"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "Ĉu luditaj kantoj estas senditaj al Audioscrobbler"
+msgstr "Ĉu reproduktitaj trakoj estas senditaj al Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1382,16 +1381,15 @@ msgstr "Ekpreni similajn artistojn"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr "Ĉu similaj kantoj estas prenitaj de Audioscrobbler"
+msgstr "Ĉu similaj trakoj estas prenitaj de Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
 #, kde-format
 msgid "Device type"
-msgstr "Aparato tipo"
+msgstr "Aparatotipo"
 
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
 #: amarokconfig.kcfg:481
@@ -1663,7 +1661,7 @@ msgid ""
 "A value between 0 and 10 that controls whether the Automated Playlist "
 "Generator tries to optimize for speed (0) or accuracy (10)."
 msgstr ""
-"Valoro inter 0 kaj 10, kiu kontrolas ĉu la Aŭtomatigita Ludlisto-Generatoro "
+"Valoro inter 0 kaj 10, kiu mastrumas ĉu la Aŭtomatigita Ludlisto-Generatoro "
 "provas optimumigi por rapideco (0) aŭ precizeco (10)."
 
 #: amarokurls/AmarokUrlHandler.cpp:224
@@ -1898,7 +1896,7 @@ msgstr "Pasigi antaŭe la ludliston"
 #: App.cpp:369
 #, kde-format
 msgid "Additional options:"
-msgstr "Kromaj opcioj:"
+msgstr "Kromaj elektebloj:"
 
 #: App.cpp:370
 #, kde-format
@@ -2031,12 +2029,10 @@ msgid "Added This Month"
 msgstr "Aldonita Ĉi-monate"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:181
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "Unue ludita"
+msgstr "Neniam Reproduktita"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:200
 #, kde-format
@@ -2073,11 +2069,10 @@ msgid "Show Track Numbers"
 msgstr "Montri Trakajn Nombrojn"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:259
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "Klasigi kiel diversajn artistojn"
+msgstr "Montri Artiston por Diversaj Artistoj"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:264
 #, kde-format
@@ -2095,7 +2090,7 @@ msgstr "Kunfandita Vido"
 #: services/magnatune/MagnatuneStore.cpp:229
 #, kde-format
 msgid "Sort Options"
-msgstr "Ordigaj Opcioj"
+msgstr "Ordigaj Elektebloj"
 
 #: browsers/CollectionTreeItem.cpp:141
 #, kde-format
@@ -2359,7 +2354,7 @@ msgstr "Eksporti la elektitan antaŭdifinilon"
 #: browsers/playlistbrowser/APGCategory.cpp:87
 #, kde-format
 msgid "Run APG with selected preset"
-msgstr "Ruli APG kun elektita antaŭdiro"
+msgstr "Ruli APG kun elektita antaŭmeto"
 
 #: browsers/playlistbrowser/APGCategory.cpp:93
 #, kde-format
@@ -2465,11 +2460,10 @@ msgid "Duplicates"
 msgstr "Duplikatoj"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:114
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr "Permesi duplikatajn kantojn en rezulto"
+msgstr "Permesi duplikatajn trakojn en rezulto"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, kde-format
@@ -2670,24 +2664,20 @@ msgstr[0] "Forigi Trakon de %2"
 msgstr[1] "Forigi %1 Spurojn de %2"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "Forigi ludliston de %1."
+msgstr "Ĉu forigi ludliston <i>%1</i> de %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "Forigi ludliston de %1."
+msgstr "Ĉu forigi %1 ludlistojn de %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
 #, kde-format
@@ -2763,7 +2753,7 @@ msgstr ""
 #: browsers/playlistbrowser/PodcastCategory.cpp:96
 #, kde-format
 msgid "&Add Podcast"
-msgstr "&Aldoni podkaston..."
+msgstr "&Aldoni Podkaston"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:103
 #, kde-format
@@ -2806,7 +2796,7 @@ msgstr "Ŝlosilvortoj:"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:24
 #, kde-format
 msgid "Add Podcast..."
-msgstr "Aldoni podkaston..."
+msgstr "Aldoni Podkaston..."
 
 #. i18n: ectx: property (text), widget (QToolButton, addPodcastButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:27
@@ -2826,13 +2816,13 @@ msgstr "Refreŝigi ĉiujn podkastojn"
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:76
 #, kde-format
 msgid "Configure Podcasts..."
-msgstr "Agordi podkastojn..."
+msgstr "Agordi Podkastojn..."
 
 #. i18n: ectx: property (text), widget (QToolButton, podcastsIntervalButton)
 #: browsers/playlistbrowser/PodcastCategoryBase.ui:99
 #, kde-format
 msgid "Scan Interval..."
-msgstr "Scan Intervalo..."
+msgstr "Skan-Intervalo..."
 
 #: browsers/playlistbrowser/PodcastModel.cpp:217
 #: browsers/playlistbrowser/PodcastModel.cpp:269
@@ -2907,7 +2897,7 @@ msgstr "Ĝenerala"
 #: configdialog/ConfigDialog.cpp:59
 #, kde-format
 msgid "Configure General Options"
-msgstr "Agordi la ĝeneralajn opciojn"
+msgstr "Agordi la ĝeneralajn elekteblojn"
 
 #: configdialog/ConfigDialog.cpp:60
 #: core-impl/collections/db/DatabaseCollection.cpp:54
@@ -3083,8 +3073,8 @@ msgid ""
 "Check to enable the use of an external database. By default there is already "
 "an embedded MySQL database running."
 msgstr ""
-"Kontrolu por ebligi la uzon de ekstera datumbazo. Defaŭlte jam funkcias "
-"enigita MySQL-datumbazo."
+"Marku por ebligi la uzon de ekstera datumbazo. Defaŭlte jam funkcias enigita "
+"MySQL-datumbazo."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseServer)
 #: configdialog/dialogs/DatabaseConfig.ui:23
@@ -3165,7 +3155,7 @@ msgstr "&Datumbazo:"
 #: configdialog/dialogs/DatabaseConfig.ui:178
 #, kde-format
 msgid "Enter the name of the database. Default preset is amarokdb.\n"
-msgstr "Enigu la nomon de la datumbazo. Defaŭlta antaŭdiro estas amarokdb.\n"
+msgstr "Enigu la nomon de la datumbazo. Defaŭlta antaŭmeto estas amarokdb.\n"
 
 #. i18n: ectx: property (text), widget (QPushButton, button_Test)
 #: configdialog/dialogs/DatabaseConfig.ui:188
@@ -3222,7 +3212,7 @@ msgstr "Elektitaj etikedoj ne estos tuŝitaj de statistika sinkronigo"
 #: configdialog/dialogs/GeneralConfig.ui:23
 #, kde-format
 msgid "General Options"
-msgstr "Ĝeneralaj opcioj"
+msgstr "Ĝeneralaj Elektebloj"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ShowTrayIcon)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ShowTrayIcon)
@@ -3270,7 +3260,7 @@ msgstr "Montri fonbildojn en la retumila panelo"
 #: configdialog/dialogs/GeneralConfig.ui:78
 #, kde-format
 msgid "Playlist Options"
-msgstr "Ludlisto Opcioj"
+msgstr "Ludlistaj Elektebloj"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_AutoScrollPlaylist)
 #: configdialog/dialogs/GeneralConfig.ui:84
@@ -3289,7 +3279,7 @@ msgstr "Aŭtomate rulumi ludliston al aktuala trako"
 #: configdialog/dialogs/GeneralConfig.ui:97
 #, kde-format
 msgid "Moodbar Options"
-msgstr "Moodbar Opcioj"
+msgstr "Moodbar-Elektebloj"
 
 #. i18n: ectx: property (text), widget (QLabel, moodbarNote)
 #: configdialog/dialogs/GeneralConfig.ui:103
@@ -3574,8 +3564,8 @@ msgid ""
 "Check to enable the On-Screen-Display. The OSD briefly displays track data "
 "when a new track is played."
 msgstr ""
-"Kontrolu por ebligi la On-Screen-Ekranon. La OSD mallonge montras "
-"trakdatenojn kiam nova trako estas ludata."
+"Marku por ebligi la On-Screen-Ekranon. La OSD mallonge montras trakdatenojn "
+"kiam nova trako estas ludata."
 
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdEnabled)
 #: configdialog/dialogs/NotificationsConfig.ui:29
@@ -3735,7 +3725,7 @@ msgid ""
 "to the playlist using mouse, pressing Enter or when the playlist is "
 "replaced. Does nothing if something is already playing.</html>"
 msgstr ""
-"<html>Ebligu ĉi tiun opcion por komenci ludi kiam ajn trako aŭ pli estas "
+"<html>Ebligu ĉi tiun elekteblon por komenci ludi kiam ajn trako aŭ pli estas "
 "aldonitaj al la ludlisto per muso, premante Enigu aŭ kiam la ludlisto estas "
 "anstataŭigita. Faras nenion se io jam ludas.</html>"
 
@@ -3775,7 +3765,7 @@ msgstr "La longeco de la fadeout, en milisekundoj."
 #: configdialog/dialogs/PlaybackConfig.ui:153
 #, kde-format
 msgid "System Suspend Options"
-msgstr "Sistemo Suspenda Opcioj"
+msgstr "Sistemsuspendaj Elektebloj"
 
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_InhibitSuspend)
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_InhibitSuspend)
@@ -4928,11 +4918,10 @@ msgid "Next"
 msgstr "Poste"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Update Magnatune database automatically"
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "Ĝisdatigi la datumbazon de Magnatune aŭtomate"
+msgstr "Ne ŝanĝi la paĝon aŭtomate"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
@@ -4942,18 +4931,16 @@ msgid "Track"
 msgstr "Trako"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "Kopii al la poŝo"
+msgstr "Kopii Ligilon al Tondujo"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "Kopii al la poŝo"
+msgstr "Kopii Bildon al Tondujo"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:142
@@ -5010,7 +4997,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "Klaku por malfermi %1 en retumilo"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -6362,7 +6349,7 @@ msgstr "Konserva Loko:"
 #, kde-format
 msgid "When checked, Amarok will automatically scan the podcast for updates"
 msgstr ""
-"Kiam ĝi estas kontrolita, Amarok aŭtomate skanos la podkaston por ĝisdatigoj"
+"Kiam ĝi estas markita, Amarok aŭtomate skanos la podkaston por ĝisdatigoj"
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoFetchCheck)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:105
@@ -6675,9 +6662,9 @@ msgstr ""
 "novaj podkastaj kanaloj.</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Kiam podkasta kanalo estas "
-"aldonita <span style=\" font-style:italic;\"><base directory></span>/<span "
-"style=\" font-style:italic ;\"><channel name></span> estas uzata kiel la "
-"elŝuta dosierujo.</p>\n"
+"aldonita <span style=\" font-style:italic;\">&lt;base directory&gt;</span>/"
+"<span style=\" font-style:italic ;\">&lt;channel name&gt;</span> estas uzata "
+"kiel la elŝuta dosierujo.</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin -"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Ĉi tio povas esti ŝanĝita "
 "por ĉiu kanalo individue.</p></body></html>"
@@ -8330,7 +8317,7 @@ msgstr ""
 #: dialogs/CollectionSetup.cpp:71
 #, kde-format
 msgid "Import batch file..."
-msgstr "Staplodosiero por importado..."
+msgstr "Staplodosiero por enportado..."
 
 #: dialogs/CollectionSetup.cpp:72
 #, kde-format
@@ -8411,25 +8398,25 @@ msgstr "<b><font color='red'>Eraro:</font></b> %1"
 #, kde-format
 msgctxt "Track has been imported, format: Track"
 msgid "Imported <b>%1</b>"
-msgstr "Importita <b>%1</b>"
+msgstr "Enportis <b>%1</b>"
 
 #: dialogs/DatabaseImporterDialog.cpp:150
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track"
 msgid "Imported <b>%1 - %2</b>"
-msgstr "Importis <b>%1 - %2</b>"
+msgstr "Enportis <b>%1 - %2</b>"
 
 #: dialogs/DatabaseImporterDialog.cpp:153
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track (Album)"
 msgid "Imported <b>%1 - %2 (%3)</b>"
-msgstr "Importis <b>%1 - %2 (%3)</b>"
+msgstr "Enportis <b>%1 - %2 (%3)</b>"
 
 #: dialogs/DatabaseImporterDialog.cpp:162
 #, kde-format
 msgctxt "Track has been discarded, format: Url"
 msgid "Discarded <b><font color='gray'>%1</font></b>"
-msgstr "Forĵetita <b><font color='gray'>%1</font></b>"
+msgstr "Forĵetis <b><font color='gray'>%1</font></b>"
 
 #: dialogs/DatabaseImporterDialog.cpp:177
 #, kde-format
@@ -8437,7 +8424,9 @@ msgctxt "Track has been imported by tags, format: Track, from Url, to Url"
 msgid ""
 "Imported <b><font color='green'>%1</font></b><br/>&nbsp;&nbsp;from %2<br/"
 ">&nbsp;&nbsp;to %3"
-msgstr "Importita <b><font color='green'>%1</font></b><br/>  de %2<br/>  al %3"
+msgstr ""
+"Enportis <b><font color='green'>%1</font></b><br/>&nbsp;&nbsp;de %2<br/"
+">&nbsp;&nbsp;al %3"
 
 #: dialogs/DatabaseImporterDialog.cpp:180
 #, kde-format
@@ -8447,7 +8436,8 @@ msgid ""
 "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from "
 "%3<br/>&nbsp;&nbsp;to %4"
 msgstr ""
-"Importita <b><font color='green'>%1 - %2</font></b><br/>  de %3<br/>  al %4"
+"Enportis <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp; de %3<br/"
+">&nbsp;&nbsp;al %4"
 
 #: dialogs/DatabaseImporterDialog.cpp:183
 #, kde-format
@@ -8458,8 +8448,8 @@ msgid ""
 "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;from "
 "%4<br/>&nbsp;&nbsp;to %5"
 msgstr ""
-"Importita <b><font color='green'>%1 - %2 (%3)</font></b><br/>  de %4<br/"
-">  al %5"
+"Enportis <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;de "
+"%4<br/>&nbsp;&nbsp;al %5"
 
 #: dialogs/DatabaseImporterDialog.cpp:195
 #, kde-format
@@ -8563,8 +8553,8 @@ msgstr ""
 "<qt><p>Se ĉi tiu skatolo estas markita, dosieroj estos <b>konstante "
 "forigitaj</b> anstataŭ esti metitaj en la Rubujon.</p>\n"
 "\n"
-"<p><em>Uzu ĉi tiun opcion kun singardo</em>: Plej multaj dosiersistemoj ne "
-"kapablas fidinde malforviŝi dosierojn.</p></qt>"
+"<p><em>Uzu ĉi tiun elekteblon kun singardo</em>: Plej multaj dosiersistemoj "
+"ne kapablas fidinde malforviŝi dosierojn.</p></qt>"
 
 #: dialogs/deviceconfiguredialog.cpp:44
 #, kde-format
@@ -9057,7 +9047,7 @@ msgid ""
 "<html>Show/hide additional controls to specify destination track paths based "
 "on their metadata.</html>"
 msgstr ""
-"<html>Montri/kaŝi pliajn kontrolojn por specifi celajn trakvojojn surbaze de "
+"<html>Montri/kaŝi pliajn regilojn por specifi celajn trakvojojn surbaze de "
 "iliaj metadatenoj.</html>"
 
 #. i18n: ectx: property (text), widget (QToolButton, optionsButton)
@@ -9066,7 +9056,7 @@ msgstr ""
 #: dialogs/transferdialog.cpp:126
 #, kde-format
 msgid "Options"
-msgstr "Opcioj"
+msgstr "Elektebloj"
 
 #. i18n: ectx: property (title), widget (QGroupBox, previewBox)
 #: dialogs/OrganizeCollectionDialogBase.ui:94
@@ -9177,7 +9167,7 @@ msgstr ""
 "Anstataŭigi signojn kiuj estas malkongruaj kun MS-DOS/VFAT dosiersistemoj "
 "per substrekoj. \n"
 "\n"
-"Plej multaj homoj povas lasi ĉi tiun opcion ebligita."
+"Plej multaj homoj povas lasi ĉi tiun elekteblon ebligita."
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:80
@@ -9192,9 +9182,9 @@ msgid ""
 msgstr ""
 "Se markite, anstataŭigi signojn kiuj estas malkongruaj kun MS-DOS/VFAT "
 "dosiersistemoj per substrekoj. Nekongruaj signoj inkluzivas |?*<\":>+[] kaj "
-"unikodaj kontrolsignoj. \n"
+"unikodaj stirsignoj. \n"
 "\n"
-"Plej multaj homoj povas lasi ĉi tiun opcion ebligita ĉar ĝi certigas ke "
+"Plej multaj homoj povas lasi ĉi tiun elekteblon ebligita ĉar ĝi certigas ke "
 "kopiado al aŭdvidaĵaj aparatoj funkcios ĝuste."
 
 #. i18n: ectx: property (text), widget (QCheckBox, vfatCheck)
@@ -9248,14 +9238,14 @@ msgstr ""
 "weight:600;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px; \"><span style=\" font-"
-"weight:600;\">Ne marku ĉi tiun opcion se vi havas neanglajn signojn en viaj "
-"etikedoj. </span></p>\n"
+"weight:600;\">Ne marku ĉi tiun elekteblon se vi havas neanglajn signojn en "
+"viaj etikedoj. </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Plej multaj homoj povas "
-"lasi ĉi tiun opcion nemarkita.</p></body></html>"
+"lasi ĉi tiun elekteblon nemarkita.</p></body></html>"
 
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, asciiCheck)
 #: dialogs/OrganizeCollectionOptions.ui:113
@@ -9291,15 +9281,15 @@ msgstr ""
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Se markite, ĉiuj ne-ASCII-"
 "signoj estos anstataŭigitaj per substrekoj.<span style=\" font-weight:600;"
-"\"> Ne marku ĉi tiun opcion se vi havas ne-anglajn signojn en viaj etikedoj. "
-"</span></p>\n"
+"\"> Ne marku ĉi tiun elekteblon se vi havas ne-anglajn signojn en viaj "
+"etikedoj. </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Plej multaj homoj povas "
-"lasi ĉi tiun opcion <span style=\" font-style:italic;\">nemarkita.</span></"
-"p></body></html>"
+"lasi ĉi tiun elekteblon <span style=\" font-style:italic;\">nemarkita.</"
+"span></p></body></html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, asciiCheck)
 #: dialogs/OrganizeCollectionOptions.ui:116
@@ -10050,7 +10040,7 @@ msgstr ""
 #, kde-format
 msgid "This controls what portion of the playlist should match the criteria"
 msgstr ""
-"Ĉi tio kontrolas, kia parto de la ludlisto devus kongrui kun la kriterioj"
+"Ĉi tio mastrumas, kia parto de la ludlisto devus kongrui kun la kriterioj"
 
 #: dynamic/biases/PartBias.cpp:396
 #, kde-format
@@ -11521,7 +11511,7 @@ msgstr "For&igi Duplikatojn"
 #: MainWindow.cpp:771
 #, kde-format
 msgid "&Add Stream..."
-msgstr "&Aldoni fluon..."
+msgstr "&Aldoni Fluon..."
 
 #: MainWindow.cpp:775
 #, kde-format
@@ -11546,7 +11536,7 @@ msgstr "Legomarki Kuntekst-Apletojn"
 #: MainWindow.cpp:803
 #, kde-format
 msgid "Play Media..."
-msgstr "Ludi medion..."
+msgstr "Ludi Aŭdvidaĵon..."
 
 #: MainWindow.cpp:808
 #, kde-format
@@ -11571,12 +11561,12 @@ msgstr "Aktualigi la kolekton"
 #: MainWindow.cpp:857
 #, kde-format
 msgid "Synchronize Statistics..."
-msgstr "Sinkronigi Statistiko..."
+msgstr "Sinkronigi Statistikon..."
 
 #: MainWindow.cpp:865
 #, kde-format
 msgid "Previous Track"
-msgstr "Antaŭa trako"
+msgstr "Antaŭa Trako"
 
 #: MainWindow.cpp:872
 #, kde-format
@@ -11711,7 +11701,7 @@ msgstr "&Diagnozo"
 #: MainWindow.cpp:1023
 #, kde-format
 msgid "&Report Bug..."
-msgstr "&Raporti cimon..."
+msgstr "&Raporti Cimon..."
 
 #: MainWindow.cpp:1070
 #, kde-format
@@ -12637,11 +12627,10 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "Trakoj estis kaŝitaj pro la aktiva serĉo."
 
 #: playlist/view/listview/PrettyListView.cpp:691
-#, fuzzy, kde-format
-#| msgid "Add some songs here by dragging them from all around."
+#, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr "Aldonu kelkajn kantojn ĉi tie trenante ilin ĉirkaŭe."
+msgstr "Aldonu kelkajn trakojn ĉi tie trenante ilin ĉirkaŭe."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -12817,17 +12806,13 @@ msgstr "Pozicio:"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
-#, fuzzy, kde-format
-#| msgid ""
-#| "The desired position of the song in the playlist, in hours, minutes, and "
-#| "seconds.  Note: because of Qt limitations, the maximum position that you "
-#| "can specify is 24 hours."
+#, kde-format
 msgid ""
 "The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
-"La dezirata pozicio de la kanto en la ludlisto, en horoj, minutoj kaj "
+"La dezirata pozicio de la trako en la ludlisto, en horoj, minutoj kaj "
 "sekundoj. Noto: pro Qt-limigoj, la maksimuma pozicio, kiun vi povas specifi, "
 "estas 24 horoj."
 
@@ -13293,9 +13278,8 @@ msgid ""
 "Control which duplicates to prevent.  \"Prevent duplicate tracks\" is the "
 "least restrictive, and \"prevent duplicate artists\" is the most restrictive."
 msgstr ""
-"Kontrolu, kiuj duobliĝas por malhelpi. \"Malhelpi duplikatajn trakojn\" "
-"estas la malplej limiga, kaj \"malhelpi duplikatajn artistojn\" estas la "
-"plej limiga."
+"Regas, kiujn duobligojn eviti. \"Malhelpi duplikatajn trakojn\" estas la "
+"malplej limiga, kaj \"malhelpi duplikatajn artistojn\" estas la plej limiga."
 
 #. i18n: ectx: property (text), widget (QLabel, label_Field)
 #: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:32
@@ -13901,7 +13885,7 @@ msgstr "Antaŭagordo eksportita al %1"
 #: playlistgenerator/PresetModel.cpp:223
 #, kde-format
 msgid "Preset could not be exported to %1"
-msgstr "Antaŭdiro ne povis esti eksportita al %1"
+msgstr "Antaŭmeto ne povis esti eksportita al %1"
 
 #: playlistgenerator/PresetModel.cpp:241
 #, kde-format
@@ -14655,8 +14639,8 @@ msgid ""
 "happens and what the autocorrection was</html>"
 msgstr ""
 "<html>Kiam ŝprucas trakojn al Last.fm, ĝi aŭtomate korektas oftajn erarojn "
-"en trakaj etikedoj kiel artisto, albumo kaj titolo. Kontrolu tion por esti "
-"sciigita kiam tio okazas kaj kio estis la aŭtomata korekto</html>"
+"en trakaj etikedoj kiel artisto, albumo kaj titolo. Marku tion por ekhavi "
+"sciigon kiam tio okazas kaj kio estis la aŭtomata korekto</html>"
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AnnounceCorrections)
 #: services/lastfm/LastFmConfigWidget.ui:171
@@ -15128,7 +15112,7 @@ msgstr "Retadreso:"
 #: services/magnatune/MagnatuneConfigWidget.ui:79
 #, kde-format
 msgid "Membership Options"
-msgstr "Opcioj de Membreco"
+msgstr "Elektebloj de Membreco"
 
 #. i18n: ectx: property (text), widget (QCheckBox, isMemberCheckbox)
 #: services/magnatune/MagnatuneConfigWidget.ui:85
@@ -15199,7 +15183,7 @@ msgstr ""
 #: services/magnatune/MagnatuneConfigWidget.ui:183
 #, kde-format
 msgid "Stream Options"
-msgstr "Fluaj Opcioj"
+msgstr "Fluaj Elektebloj"
 
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #: services/magnatune/MagnatuneConfigWidget.ui:189
@@ -15235,7 +15219,7 @@ msgstr "Magnatune.com Album Elŝuto"
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:19
 #, kde-format
 msgid "Download options"
-msgstr "Elŝutaj opcioj"
+msgstr "Elŝutaj elektebloj"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
 #: services/magnatune/MagnatuneDownloadDialogBase.ui:25
@@ -15386,9 +15370,9 @@ msgid ""
 "and download them automatically. You can always disable this option later in "
 "Magnatune service configuration."
 msgstr ""
-"Se vi ebligas la sekvan opcion, Amarok kontrolos por Magnatune-ĝisdatigoj "
-"kaj elŝutos ilin aŭtomate. Vi ĉiam povas malŝalti ĉi tiun opcion poste en "
-"Magnatune-serva agordo."
+"Se vi ebligas la sekvan elekteblon, Amarok kontrolos por Magnatune-"
+"ĝisdatigoj kaj elŝutos ilin aŭtomate. Vi ĉiam povas malŝalti ĉi tiun "
+"elekteblon poste en Magnatune-serva agordo."
 
 #. i18n: ectx: property (text), widget (QPushButton, update)
 #: services/magnatune/MagnatuneNeedUpdateWidget.ui:69
@@ -16554,7 +16538,7 @@ msgid ""
 msgstr ""
 "<b>Noto:</b> Neniu kodilo disponeblas. Se vi volas transkodi trakojn bonvolu "
 "instali pakaĵon <i>ffmpeg</i> aŭ <i>libav</i> (kun <i>ffmpeg</i> envolvaĵo) "
-"per taŭgaj kodiloj. Alie vi povas kontroli la opcion <i>Memoru ĉi tiun "
+"per taŭgaj kodiloj. Alie vi povas marki la elekteblon <i>Memoru ĉi tiun "
 "elekton por la venonta fojo</i> por preterlasi ĉi tiun dialogon por estontaj "
 "translokigoj."
 
@@ -16671,7 +16655,7 @@ msgstr "Aldoni antaŭfiksitan"
 #: widgets/FilenameLayoutWidget.cpp:93
 #, kde-format
 msgid "Saves the current scheme/format as new preset."
-msgstr "Konservas la nunan skemon/formaton kiel nova antaŭdiro."
+msgstr "Konservas la nunan skemon/formaton kiel nova antaŭmeto."
 
 #: widgets/FilenameLayoutWidget.cpp:96
 #, kde-format
