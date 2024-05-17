@@ -21,6 +21,7 @@
 
 #include <QString>
 #include <cmath>
+#include <limits>
 
 // Taglib
 #pragma GCC diagnostic push
@@ -107,16 +108,15 @@ static void maybeAddPeak( const TagLib::String &scaleVal, Meta::ReplayGainTag ke
     QString value = TStringToQString( scaleVal );
     bool ok = false;
     qreal peak = value.toFloat( &ok );
-    if ( ok && peak >= 0 )
+    if ( ok && peak >= 0 && peak != std::numeric_limits<double>::infinity() )
         (*map)[key] = peakToDecibels( peak );
 }
-
 static void maybeAddGain( const TagLib::String &input, Meta::ReplayGainTag key, Meta::ReplayGainTagMap *map )
 {
     QString value = TStringToQString( input ).remove( QStringLiteral(" dB") );
     bool ok = false;
     qreal gain = value.toFloat( &ok );
-    if (ok)
+    if (ok && gain != std::numeric_limits<double>::infinity() )
         (*map)[key] = gain;
 }
 

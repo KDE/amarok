@@ -18,6 +18,7 @@ VERSION 3.0.1
   BUGFIXES:
    * Various tag match bias, APG and collection filtering related fixes (BR 375565,
      BR 406751, BR 435810, BR 382456)
+   * Ignore any infinite values when reading replaygain tags (BR 486084)
 
 
 VERSION 3.0.0

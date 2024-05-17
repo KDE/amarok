@@ -208,6 +208,11 @@ void TestMetaTrack::testReplayGain()
     QCOMPARE( int(m_testTrack1->replayGain( Meta::ReplayGain_Album_Gain ) * 1000), -6655 );
     QCOMPARE( int(m_testTrack1->replayGain( Meta::ReplayGain_Track_Peak ) * 10000), 41263 );
     QCOMPARE( int(m_testTrack1->replayGain( Meta::ReplayGain_Album_Peak ) * 10000), 41263 );
+
+    // Track03 contains gain value of inf; make sure it is ignored. BUG 486084
+    Meta::TrackPtr albumTrack3;
+    albumTrack3 = CollectionManager::instance()->trackForUrl( QUrl::fromLocalFile(dataPath( "data/audio/album/Track03.ogg" )) );
+    QCOMPARE( int(albumTrack3->replayGain( Meta::ReplayGain_Track_Gain ) ), 0 );
 }
 
 void TestMetaTrack::testType()
