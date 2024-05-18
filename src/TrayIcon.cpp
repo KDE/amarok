@@ -43,7 +43,7 @@
 #include <QStandardPaths>
 #include <QToolTip>
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_APPLE
     extern void qt_mac_set_dock_menu(QMenu *);
 #endif
 
@@ -62,7 +62,7 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
 
     PERF_LOG( "Before adding actions" );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_APPLE
     // Add these functions to the dock icon menu in OS X
     qt_mac_set_dock_menu( contextMenu() );
     contextMenu()->addAction( ac->action( "playlist_playmedia" ) );

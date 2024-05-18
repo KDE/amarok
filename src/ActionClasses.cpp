@@ -122,7 +122,7 @@ Menu::Menu( QWidget* parent )
     safePlug( ac, "update_collection", this );
     safePlug( ac, "rescan_collection", this );
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_APPLE
     addSeparator();
 
     safePlug( ac, KStandardAction::name(KStandardAction::ShowMenubar), this );

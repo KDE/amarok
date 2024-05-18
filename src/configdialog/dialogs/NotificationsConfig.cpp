@@ -42,7 +42,7 @@ NotificationsConfig::NotificationsConfig( Amarok2ConfigDialog* parent )
     m_osdPreview->setFontScale( AmarokConfig::osdFontScaling() );
     m_osdPreview->setTranslucent( AmarokConfig::osdUseTranslucency() );
 
-    #ifdef Q_WS_MAC
+    #ifdef Q_OS_APPLE
         QCheckBox* growl = new QCheckBox( i18n( "Use Growl for notifications" ), this );
         growl->setChecked( AmarokConfig::growlEnabled() );
         gridLayout_5->addWidget( growl, 2, 0, 1, 1 );

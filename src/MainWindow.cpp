@@ -103,7 +103,7 @@
 #include <KConfigGroup>
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_APPLE
 #include "mac/GrowlInterface.h"
 #ifdef HAVE_NOTIFICATION_CENTER
 #include "mac/MacSystemNotify.h"
@@ -128,7 +128,7 @@ MainWindow::MainWindow()
 
     setObjectName( "MainWindow" );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_APPLE
     (void)new GrowlInterface( qApp->applicationName() );
 #ifdef HAVE_NOTIFICATION_CENTER
     (void)new OSXNotify( qApp->applicationName() );
@@ -411,7 +411,7 @@ MainWindow::showDock( AmarokDockId dockId )
 void
 MainWindow::closeEvent( QCloseEvent *e )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_APPLE
     Q_UNUSED( e );
     hide();
 #else
@@ -1062,7 +1062,7 @@ MainWindow::createMenus()
 
     //BEGIN Actions menu
     QMenu *actionsMenu = new QMenu( m_menubar );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_APPLE
     // Add these functions to the dock icon menu in OS X
     //extern void qt_mac_set_dock_menu(QMenu *);
     //qt_mac_set_dock_menu(actionsMenu);
@@ -1080,7 +1080,7 @@ MainWindow::createMenus()
     actionsMenu->addAction( Amarok::actionCollection()->action("next") );
 
 
-#ifndef Q_WS_MAC    // Avoid duplicate "Quit" in OS X dock menu
+#ifndef Q_OS_APPLE    // Avoid duplicate "Quit" in OS X dock menu
     actionsMenu->addSeparator();
     actionsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::Quit ) ) );
 #endif
@@ -1136,7 +1136,7 @@ MainWindow::createMenus()
     // stops at about 5:40. while we get this resolved upstream, don't make playing amarok such on osx.
     // so we disable replaygain on osx
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_APPLE
     m_settingsMenu->addAction( Amarok::actionCollection()->action("replay_gain_mode") );
     m_settingsMenu->addSeparator();
 #endif

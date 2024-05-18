@@ -89,7 +89,7 @@ SvgTinter::init()
         m_tintMap.insert( "#565755", blendColors( pApp->palette().window().color(), "#000000", 90 ).name() );
 
         //list background:
-    #ifdef Q_WS_MAC 
+    #ifdef Q_OS_APPLE
         m_tintMap.insert( "#f0f0f0", blendColors( pApp->palette().window().color(), "#000000", 90 ).name() );
         m_tintMap.insert( "#ffffff", blendColors( pApp->palette().window().color(), "#000000", 98 ).name() );
     #else

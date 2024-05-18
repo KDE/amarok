@@ -157,7 +157,7 @@ EngineController::initializePhonon()
 
     // HACK we turn off replaygain manually on OSX, until the phonon coreaudio backend is fixed.
     // as the default is specified in the .cfg file, we can't just tell it to be a different default on OSX
-#ifdef Q_WS_MAC
+#ifdef Q_OS_APPLE
     AmarokConfig::setReplayGainMode( AmarokConfig::EnumReplayGainMode::Off );
     AmarokConfig::setFadeoutOnStop( false );
 #endif

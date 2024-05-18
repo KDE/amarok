@@ -82,7 +82,7 @@
 #include <QStringList>
 #include <QTimer>                       //showHyperThreadingWarning()
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_APPLE
 #include <CoreFoundation/CoreFoundation.h>
 extern void setupEventHandler_mac(SRefCon);
 #endif
@@ -121,7 +121,7 @@ App::App(int &argc, char **argv)
     qRegisterMetaType<Playlists::PlaylistPtr>();
     qRegisterMetaType<Playlists::PlaylistList>();
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_APPLE
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp
 
     // Start with the Bundle PlugIns directory.
@@ -202,7 +202,7 @@ App::~App()
 
     The::engineController()->endSession(); //records final statistics
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_APPLE
     // do even if trayicon is not shown, it is safe
     Amarok::config().writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
     AmarokConfig::self()->save();
