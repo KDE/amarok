@@ -25,7 +25,7 @@
 #include <QRecursiveMutex>
 #include <QString>
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WINDOWS
   #include <winsock2.h>
 #endif
 

@@ -22,7 +22,7 @@
 
 #include <QtGlobal>
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WINDOWS
 # if defined(MAKE_POPUPDROPPER_LIB)
 #  define POPUPDROPPER_EXPORT Q_DECL_EXPORT
 # else

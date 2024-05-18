@@ -25,7 +25,7 @@
 #include <QRandomGenerator>
 #include <QString>
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WINDOWS
 #include <process.h>
 #else
 #include <unistd.h>
@@ -57,7 +57,7 @@ SafeFileSaver::prepareToSave()
     QCryptographicHash md5sum( QCryptographicHash::Md5 ); 
 
     QString pid;
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WINDOWS
     pid.setNum( _getpid() );
 #else
     pid.setNum( getpid() );

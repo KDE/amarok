@@ -187,7 +187,7 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
     }
 #endif
 
-#ifndef Q_WS_WIN
+#ifndef Q_OS_WINDOWS
      if( !result )
          qDebug() << QStringLiteral( "FileTypeResolver: file %1 (mimetype %2) not recognized as "
                 "Amarok-compatible" ).arg( QString::fromLatin1(fileName), mimetype.name() );
