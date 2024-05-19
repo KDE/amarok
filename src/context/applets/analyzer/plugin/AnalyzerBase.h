@@ -107,10 +107,13 @@ protected:
      */
     void setScopeSize( int size );
 
+    /**
+     * Use this function to pause audio data processing and analyzer updating
+     */
+    void drawNeedChanged( const bool );
 private:
     void connectSignals();
     void disconnectSignals();
-    void drawNeedChanged( const bool );
     void refreshSampleRate();
 
     double m_minFreq, m_maxFreq;

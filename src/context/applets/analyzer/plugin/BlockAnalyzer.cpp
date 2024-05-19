@@ -73,6 +73,10 @@ void
 BlockAnalyzer::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickFramebufferObject::geometryChanged( newGeometry, oldGeometry );
+    if( ( oldGeometry.height() == 0 || newGeometry.height() == 0 ) && oldGeometry.height() != newGeometry.height() )
+    {
+        drawNeedChanged( newGeometry.height() != 0 ); // Stop data processing if applet is minimized
+    }
 
     if( !newGeometry.isValid() )
         return;

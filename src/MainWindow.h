@@ -86,6 +86,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         QPointer<QMenu> ToolsMenu() const { return m_toolsMenu; }
         QPointer<QMenu> SettingsMenu() const { return m_settingsMenu; }
         QPointer<Playlist::Dock> playlistDock() const { return m_playlistDock; }
+        QPointer<ContextDock> contextDock() const { return m_contextDock; }
         void deleteBrowsers();
 
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */

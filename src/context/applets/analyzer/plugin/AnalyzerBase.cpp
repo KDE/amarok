@@ -23,6 +23,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
+#include "ContextDock.h"
 #include "MainWindow.h"
 
 #include <cmath>
@@ -56,6 +57,12 @@ Analyzer::Base::Base( QQuickItem *parent )
     connect( The::engineController(), &EngineController::trackMetadataChanged, this, &Base::refreshSampleRate );
 
     QTimer::singleShot( 0, this, &Base::connectSignals );
+
+    // Possibly wait for The::mainWindow to finish initialization first
+    QTimer::singleShot( The::mainWindow() ? 0 : 200, [this](){
+        connect( The::mainWindow(), &MainWindow::drawNeedChanged, this, &Base::drawNeedChanged );
+        connect( The::mainWindow()->contextDock(), &ContextDock::visibilityChanged, this, &Base::drawNeedChanged );
+    } );
 }
 
 Analyzer::Base::~Base()
@@ -91,7 +98,6 @@ Analyzer::Base::connectSignals()
         connect( this, &Base::sampleSizeChanged, m_worker, &Worker::setSampleSize );
         connect( this, &Base::scopeSizeChanged, m_worker, &Worker::setScopeSize );
         connect( The::engineController(), &EngineController::playbackStateChanged, m_worker, &Worker::playbackStateChanged );
-        connect( The::mainWindow(), &MainWindow::drawNeedChanged, this, &Base::drawNeedChanged );
 
         setSampleSize( config().readEntry( "sampleSize", 4096 ) );
         setWindowFunction( (WindowFunction) config().readEntry( "windowFunction", (int)Hann ) );

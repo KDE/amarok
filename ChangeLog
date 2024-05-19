@@ -14,6 +14,7 @@ VERSION 3.0.1
   CHANGES:
    * Amarok now depends on KDE Frameworks 5.78.
    * Improve strings in user interface (incl. BR 343896, BR 234854)
+   * Reduce CPU usage by minimized/hidden analyzer (BR 390063) and other components.
 
   BUGFIXES:
    * Various tag match bias, APG and collection filtering related fixes (BR 375565,
