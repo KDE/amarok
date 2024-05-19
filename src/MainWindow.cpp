@@ -94,6 +94,7 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KStandardAction>
+#include <KWindowInfo>
 #include <KWindowSystem>
 
 #include <iostream>
@@ -118,6 +119,7 @@ MainWindow::MainWindow()
     , m_showMenuBar( nullptr )
     , m_lastBrowser( 0 )
     , m_waitingForCd( false )
+    , m_expensiveDrawingPaused( false )
 {
     DEBUG_BLOCK
 
@@ -166,6 +168,13 @@ MainWindow::MainWindow()
     connect( engine, &EngineController::paused, this, &MainWindow::slotPaused );
     connect( engine, &EngineController::trackPlaying, this, &MainWindow::slotNewTrackPlaying );
     connect( engine, &EngineController::trackMetadataChanged, this, &MainWindow::slotMetadataChanged );
+
+    connect( KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, &MainWindow::checkIfExpensivesShouldBeDrawn );
+    connect( KWindowSystem::self(), qOverload<WId, NET::Properties, NET::Properties2>(&KWindowSystem::windowChanged),
+             [this](WId id, NET::Properties prop, NET::Properties2 ) {
+                 if ( id == winId() && ( prop & NET::WMDesktop || prop & NET::WMState || prop & NET::XAWMState ) )
+                     checkIfExpensivesShouldBeDrawn();
+            } );
 }
 
 MainWindow::~MainWindow()
@@ -709,7 +718,7 @@ void MainWindow::slotPutCurrentTrackToClipboard()
 void
 MainWindow::activate()
 {
-    const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
+    const KWindowInfo info( winId(), NET::WMState | NET::XAWMState | NET::WMDesktop );
 
     if( KWindowSystem::activeWindow() != winId() )
         setVisible( true );
@@ -1370,10 +1379,22 @@ MainWindow::isWaitingForCd() const
     return m_waitingForCd;
 }
 
-bool
-MainWindow::isOnCurrentDesktop() const
+void
+MainWindow::checkIfExpensivesShouldBeDrawn()
 {
-    return KWindowSystem::windowInfo( winId(), NET::WMDesktop ).isOnCurrentDesktop();
+    const KWindowInfo info( winId(), NET::WMState | NET::XAWMState | NET::WMDesktop );
+
+    bool newNeed = true;
+    if( !info.isOnCurrentDesktop() )
+        newNeed = false;
+    else if( info.isMinimized() )
+        newNeed = false;
+    if ( newNeed != m_expensiveDrawingPaused )
+    {
+        debug() << "need to draw expensive elements changed, new state"<< newNeed;
+        m_expensiveDrawingPaused = newNeed;
+        Q_EMIT drawNeedChanged( newNeed );
+    }
 }
 
 

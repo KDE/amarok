@@ -64,9 +64,9 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
 
     m_animationTimeLine = new QTimeLine( 900, this );
     m_animationTimeLine->setFrameRange( 1000, 600 );
+    connect( The::mainWindow(), &MainWindow::drawNeedChanged, this, &PrettyItemDelegate::drawNeedChanged );
     connect( m_animationTimeLine, &QTimeLine::frameChanged, this, &PrettyItemDelegate::redrawRequested );
 
-    connect( KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, &PrettyItemDelegate::currentDesktopChanged );
     connect( EngineController::instance(), &EngineController::playbackStateChanged, this, &PrettyItemDelegate::redrawRequested );
 }
 
@@ -890,12 +890,13 @@ Playlist::PrettyItemDelegate::editorDone( InlineEditorWidget * editor )
 }
 
 void
-Playlist::PrettyItemDelegate::currentDesktopChanged()
+Playlist::PrettyItemDelegate::drawNeedChanged( const bool drawingNeeded )
 {
-    // Optimization for X11/Linux desktops:
-    // Don't update the animation if Amarok is not on the active virtual desktop.
+    // Optimization for at least X11/Linux desktops:
+    // Don't update the animation if Amarok is not on the active virtual desktop or otherwise not visible.
 
-    m_animationTimeLine->setPaused( !The::mainWindow()->isOnCurrentDesktop() );
+    if( ( m_animationTimeLine->state() == QTimeLine::Paused ) == drawingNeeded )
+        m_animationTimeLine->setPaused( !drawingNeeded );
 }
 
 QMap<QString, QString>

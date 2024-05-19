@@ -110,7 +110,7 @@ protected:
 private:
     void connectSignals();
     void disconnectSignals();
-    void currentDesktopChanged();
+    void drawNeedChanged( const bool );
     void refreshSampleRate();
 
     double m_minFreq, m_maxFreq;

@@ -108,16 +108,22 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         bool isWaitingForCd() const;
 
         /**
-         * @return Whether the application is on the currently active virtual desktop. On non-X11 systems
-           this is always true.
+         * @return Whether the application is on the currently active virtual desktop and visible.
+           Behaviour might depend on windowing system.
          */
-        bool isOnCurrentDesktop() const;
+        void checkIfExpensivesShouldBeDrawn();
 
     Q_SIGNALS:
         void loveTrack( Meta::TrackPtr track );
         void banTrack( Meta::TrackPtr track );
         void skipTrack();
         void switchQueueStateShortcut();
+
+        /**
+        * Called when something happens with window that might affect the need to draw expensive elements
+        * The parameter tells if drawing should continue
+        */
+        void drawNeedChanged( bool ) const;
 
     public Q_SLOTS:
         void showHide();
@@ -206,6 +212,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         int m_searchField;
 
         bool m_waitingForCd;
+        bool m_expensiveDrawingPaused;
 };
 
 

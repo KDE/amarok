@@ -93,7 +93,7 @@ Q_SIGNALS:
     void redrawRequested();
 
 private Q_SLOTS:
-    void currentDesktopChanged();
+    void drawNeedChanged( const bool );
 
 private:
     void paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const;

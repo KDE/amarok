@@ -55,8 +55,6 @@ Analyzer::Base::Base( QQuickItem *parent )
     connect( The::engineController(), &EngineController::trackChanged, this, &Base::refreshSampleRate );
     connect( The::engineController(), &EngineController::trackMetadataChanged, this, &Base::refreshSampleRate );
 
-    connect( KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, &Base::currentDesktopChanged );
-
     QTimer::singleShot( 0, this, &Base::connectSignals );
 }
 
@@ -93,13 +91,15 @@ Analyzer::Base::connectSignals()
         connect( this, &Base::sampleSizeChanged, m_worker, &Worker::setSampleSize );
         connect( this, &Base::scopeSizeChanged, m_worker, &Worker::setScopeSize );
         connect( The::engineController(), &EngineController::playbackStateChanged, m_worker, &Worker::playbackStateChanged );
+        connect( The::mainWindow(), &MainWindow::drawNeedChanged, this, &Base::drawNeedChanged );
 
         setSampleSize( config().readEntry( "sampleSize", 4096 ) );
         setWindowFunction( (WindowFunction) config().readEntry( "windowFunction", (int)Hann ) );
         Q_EMIT calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate);
     }
     if( m_worker )
-        connect( The::engineController(), &EngineController::audioDataReady, m_worker, &Worker::receiveData, Qt::DirectConnection );
+        connect( The::engineController(), &EngineController::audioDataReady, m_worker, &Worker::receiveData,
+                 static_cast<Qt::ConnectionType>( Qt::DirectConnection | Qt::UniqueConnection ) );
 }
 
 void
@@ -112,12 +112,12 @@ Analyzer::Base::disconnectSignals()
 }
 
 void
-Analyzer::Base::currentDesktopChanged()
+Analyzer::Base::drawNeedChanged( const bool drawingNeeded )
 {
-    // Optimization for X11/Linux desktops:
-    // Don't update the analyzer if Amarok is not on the active virtual desktop.
+    // Optimization for at least X11/Linux desktops:
+    // Don't update the analyzer if Amarok is not on the active virtual desktop or otherwise not visible.
 
-    if( The::mainWindow()->isOnCurrentDesktop() )
+    if( drawingNeeded )
         connectSignals();
     else
         disconnectSignals();
