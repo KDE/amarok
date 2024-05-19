@@ -5,7 +5,7 @@ set(amarokcollectionscanner_SRCS
     CollectionScanner.cpp
 )
 
-add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
+add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS})
 
 target_link_libraries(amarokcollectionscanner
     Qt5::Core
