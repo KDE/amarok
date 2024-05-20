@@ -27,9 +27,7 @@
 
 #include <cmath>
 
-#ifdef Q_WS_X11
 #include <KWindowSystem>
-#endif
 
 #include <QQuickWindow>
 #include <QTimer>
@@ -57,9 +55,7 @@ Analyzer::Base::Base( QQuickItem *parent )
     connect( The::engineController(), &EngineController::trackChanged, this, &Base::refreshSampleRate );
     connect( The::engineController(), &EngineController::trackMetadataChanged, this, &Base::refreshSampleRate );
 
-#ifdef Q_WS_X11
     connect( KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, &Base::currentDesktopChanged );
-#endif
 
     QTimer::singleShot( 0, this, &Base::connectSignals );
 }
@@ -97,12 +93,13 @@ Analyzer::Base::connectSignals()
         connect( this, &Base::sampleSizeChanged, m_worker, &Worker::setSampleSize );
         connect( this, &Base::scopeSizeChanged, m_worker, &Worker::setScopeSize );
         connect( The::engineController(), &EngineController::playbackStateChanged, m_worker, &Worker::playbackStateChanged );
-        connect( The::engineController(), &EngineController::audioDataReady, m_worker, &Worker::receiveData, Qt::DirectConnection );
 
         setSampleSize( config().readEntry( "sampleSize", 4096 ) );
         setWindowFunction( (WindowFunction) config().readEntry( "windowFunction", (int)Hann ) );
         Q_EMIT calculateExpFactorNeeded( m_minFreq, m_maxFreq, m_sampleRate);
     }
+    if( m_worker )
+        connect( The::engineController(), &EngineController::audioDataReady, m_worker, &Worker::receiveData, Qt::DirectConnection );
 }
 
 void

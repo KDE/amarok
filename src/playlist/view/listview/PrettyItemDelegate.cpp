@@ -66,9 +66,7 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
     m_animationTimeLine->setFrameRange( 1000, 600 );
     connect( m_animationTimeLine, &QTimeLine::frameChanged, this, &PrettyItemDelegate::redrawRequested );
 
-#ifdef Q_WS_X11
     connect( KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, &PrettyItemDelegate::currentDesktopChanged );
-#endif
     connect( EngineController::instance(), &EngineController::playbackStateChanged, this, &PrettyItemDelegate::redrawRequested );
 }
 

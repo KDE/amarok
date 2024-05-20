@@ -98,11 +98,6 @@
 
 #include <iostream>
 
-#ifdef Q_WS_X11
-#include <fixx11h.h>
-#include <KConfigGroup>
-#endif
-
 #ifdef Q_OS_APPLE
 #include "mac/GrowlInterface.h"
 #ifdef HAVE_NOTIFICATION_CENTER
@@ -714,7 +709,6 @@ void MainWindow::slotPutCurrentTrackToClipboard()
 void
 MainWindow::activate()
 {
-#ifdef Q_WS_X11
     const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
 
     if( KWindowSystem::activeWindow() != winId() )
@@ -723,9 +717,6 @@ MainWindow::activate()
         setVisible( true );
     if( !isHidden() )
         KWindowSystem::activateWindow( winId() );
-#else
-    setVisible( true );
-#endif
 }
 
 void
@@ -1382,11 +1373,7 @@ MainWindow::isWaitingForCd() const
 bool
 MainWindow::isOnCurrentDesktop() const
 {
-#ifdef Q_WS_X11
-    return KWindowSystem::windowInfo( winId(), NET::WMDesktop ).desktop() == KWindowSystem::currentDesktop();
-#else
-    return true;
-#endif
+    return KWindowSystem::windowInfo( winId(), NET::WMDesktop ).isOnCurrentDesktop();
 }
 
 
