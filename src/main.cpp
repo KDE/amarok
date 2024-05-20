@@ -35,10 +35,6 @@
 #include <QtWebEngine>
 #endif
 
-#ifdef Q_WS_X11
-#include <X11/Xlib.h>
-#endif
-
 #include <csignal>
 
 #ifdef Q_OS_WIN
@@ -382,11 +378,6 @@ int main( int argc, char *argv[] )
     // application termination (logout, Ctr+C in console etc.)
     signal( SIGINT, &QCoreApplication::exit );
     signal( SIGTERM, &QCoreApplication::exit );
-
-    // This call is needed to prevent a crash on exit with Phonon-VLC and LibPulse
-#ifdef Q_WS_X11
-    XInitThreads();
-#endif
 
     app.continueInit();
     return app.exec();
