@@ -728,7 +728,6 @@ set(amaroklib_LIB_SRCS
     widgets/EditDeleteDelegate.cpp
     widgets/ElidingButton.cpp
     widgets/FilenameLayoutWidget.cpp
-    widgets/FlowLayout.cpp
     widgets/HorizontalDivider.cpp
     widgets/IconButton.cpp
     widgets/ComboBox.cpp
