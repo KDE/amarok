@@ -104,7 +104,6 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
         m_menuButton = new BreadcrumbItemMenuButton( this );
         QMenu *menu = new QMenu( this );
 
-        int i = 0;
         foreach( const BreadcrumbSibling &sibling, childItems )
         {
             QString visibleName = sibling.name;
@@ -120,7 +119,6 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
                 action->setFont( font );
             }
             connect( action, &QAction::triggered, this, &BrowserBreadcrumbItem::activateSibling );
-            i++;
         }
         m_menuButton->setMenu( menu );
     }
