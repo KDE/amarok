@@ -260,7 +260,6 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
 
         m_authorPageTitle = ( authorCount == 1 ) ? i18n("A&uthor") : i18n("A&uthors");
         tabWidget->addTab(m_authorWidget.data(), m_authorPageTitle);
-        m_isOfflineAuthorWidget = true; //is this still used?
     }
 
     //Then the Credits page:
@@ -289,7 +288,6 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
         m_creditWidget->setLayout( creditLayout );
 
         tabWidget->addTab( m_creditWidget.data(), i18n("&Contributors"));
-        m_isOfflineCreditWidget = true; //is this still used?
     }
 
     //Finally, the Donors page:
@@ -319,18 +317,9 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
         donorLayout->addWidget( m_donorListWidget.data() );
         donorLayout->setMargin( 0 );
         donorLayout->setSpacing( 2 );
-        QLabel *roktoberLabel =
-            new QLabel(i18n("<p>Each year in October the Amarok team organizes a funding "
-                            "drive called <b>Roktober</b>.</p>"
-                            "<p>If you want your name mentioned on this list "
-                            "<a href=\"http://amarok.kde.org/donations\"> donate "
-                            "during Roktober</a> and opt-in.</p>"));
-        roktoberLabel->setOpenExternalLinks(true);
-        donorLayout->addWidget(roktoberLabel);
         m_donorWidget->setLayout( donorLayout );
 
         tabWidget->addTab( m_donorWidget.data(), i18n("&Donors"));
-        m_isOfflineDonorWidget = true;
     }
 
 

@@ -58,19 +58,16 @@ private:
     QPointer<AnimatedBarWidget> m_showOcsAuthorButton;
     QPointer<QWidget> m_authorWidget;
     QPointer<OcsPersonListWidget> m_authorListWidget;
-    bool m_isOfflineAuthorWidget;
 
 //Contributors:
     QPointer<AnimatedBarWidget> m_showOcsCreditButton;
     QPointer<QWidget> m_creditWidget;
     QPointer<OcsPersonListWidget> m_creditListWidget;
-    bool m_isOfflineCreditWidget;
 
 //Donors:
     QPointer<AnimatedBarWidget> m_showOcsDonorButton;
     QPointer<QWidget> m_donorWidget;
     QPointer<OcsPersonListWidget> m_donorListWidget;
-    bool m_isOfflineDonorWidget;
 
 };
 
