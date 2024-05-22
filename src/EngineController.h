@@ -538,6 +538,11 @@ private:
      */
     void updateStreamLength( qint64 length );
 
+    /**
+     * Read and update gain if applicable and available
+     */
+    void updateReplayGainSetting( bool next );
+
     Q_DISABLE_COPY( EngineController )
 
     EqualizerController                     *m_equalizerController;

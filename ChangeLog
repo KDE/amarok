@@ -11,6 +11,9 @@ VERSION 3.0.2
      but shouldn't affect functionality.
    * Remove old derelict openDesktop.org integrations from about dialog. This also
      removes the dependency to Attica framework.
+   * Disable gapless playback if ReplayGain is active and the following track is
+     not from same album, to avoid volume spikes due to delay in the applying of
+     ReplayGain (BR 299461)
 
   BUGFIXES:
    * Fix saving and restoring playlist queue on quit / restart (BR 338741)

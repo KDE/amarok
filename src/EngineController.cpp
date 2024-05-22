@@ -466,6 +466,7 @@ EngineController::playUrl( const QUrl &url, uint offset, bool startPaused )
             m_pauseTimer->stop();
             if( supportsFadeout() )
                 m_fader->setVolume( 1.0 );
+            updateReplayGainSetting( (bool) m_nextTrack ); // read gain from next track if available
             m_media->play();
         }
     }
@@ -764,8 +765,15 @@ EngineController::setNextTrack( Meta::TrackPtr track )
     {
         m_media->clearQueue();
         // keep in sync with playUrl(), slotPlayableUrlFetched()
-        if( url.scheme() != QStringLiteral("audiocd") ) // we don't support gapless for CD, bug 305708
+        // we don't support gapless for CD, bug 305708.
+        // also try to avoid volume spikes: only do gapless if replaygain is not
+        // active or tracks are from the same album, bug 299461
+        if( url.scheme() != QStringLiteral("audiocd") && ( !m_preamp
+            || AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Off
+            || ( track->album() && track->album() == m_currentTrack->album() ) ) )
+        {
             m_media->enqueue( url );
+        }
         m_nextTrack = track;
         m_nextUrl = url;
     }
@@ -1018,42 +1026,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         }
     }
 
-    if( m_currentTrack
-        && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
-    {
-        Meta::ReplayGainTag mode;
-        // gain is usually negative (but may be positive)
-        mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
-            ? Meta::ReplayGain_Track_Gain
-            : Meta::ReplayGain_Album_Gain;
-        qreal gain = m_currentTrack->replayGain( mode );
-
-        // peak is usually positive and smaller than gain (but may be negative)
-        mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
-            ? Meta::ReplayGain_Track_Peak
-            : Meta::ReplayGain_Album_Peak;
-        qreal peak = m_currentTrack->replayGain( mode );
-        if( gain + peak > 0.0 )
-        {
-            debug() << "Gain of" << gain << "would clip at absolute peak of" << gain + peak;
-            gain -= gain + peak;
-        }
-
-        if( m_preamp )
-        {
-            debug() << "Using gain of" << gain << "with relative peak of" << peak;
-            // we calculate the volume change ourselves, because m_preamp->setVolumeDecibel is
-            // a little confused about minus signs
-            m_preamp->setVolume( qExp( gain * log10over20 ) );
-        }
-        else
-            warning() << "Would use gain of" << gain << ", but current Phonon backend"
-                      << "doesn't seem to support pre-amplifier (VolumeFaderEffect)";
-    }
-    else if( m_preamp )
-    {
-        m_preamp->setVolume( 1.0 );
-    }
+    updateReplayGainSetting( false );
 
     bool useTrackWithinStreamDetection = false;
     if( m_currentTrack )
@@ -1396,3 +1369,44 @@ EngineController::updateStreamLength( qint64 length )
     Q_EMIT currentMetadataChanged( lengthMetaData );
 }
 
+void
+EngineController::updateReplayGainSetting( bool next )
+{
+    Meta::TrackPtr track = ( next ? m_nextTrack : m_currentTrack );
+    if( track
+        && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
+    {
+        Meta::ReplayGainTag mode;
+        // gain is usually negative (but may be positive)
+        mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
+            ? Meta::ReplayGain_Track_Gain
+            : Meta::ReplayGain_Album_Gain;
+        qreal gain = track->replayGain( mode );
+
+        // peak is usually positive and smaller than gain (but may be negative)
+        mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
+            ? Meta::ReplayGain_Track_Peak
+            : Meta::ReplayGain_Album_Peak;
+        qreal peak = track->replayGain( mode );
+        if( gain + peak > 0.0 )
+        {
+            debug() << "Gain of" << gain << "would clip at absolute peak of" << gain + peak;
+            gain -= gain + peak;
+        }
+
+        if( m_preamp )
+        {
+            debug() << "Using gain of" << gain << "with relative peak of" << peak;
+            // we calculate the volume change ourselves, because m_preamp->setVolumeDecibel is
+            // a little confused about minus signs
+            m_preamp->setVolume( qExp( gain * log10over20 ) );
+        }
+        else
+            warning() << "Would use gain of" << gain << ", but current Phonon backend"
+                      << "doesn't seem to support pre-amplifier (VolumeFaderEffect)";
+    }
+    else if( m_preamp )
+    {
+        m_preamp->setVolume( 1.0 );
+    }
+}
