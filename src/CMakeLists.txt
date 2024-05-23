@@ -917,7 +917,6 @@ target_link_libraries(amarok
 
     amarokcore
     amaroklib
-    ${X11_LIBRARIES}
 )
 
 install(TARGETS amarok ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})

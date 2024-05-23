@@ -192,7 +192,6 @@ add_subdirectory( data )
 add_subdirectory( images )
 
 if( WITH_PLAYER )
-    find_package(X11)
     find_package(Threads REQUIRED)
 
     find_package(MySQL)
