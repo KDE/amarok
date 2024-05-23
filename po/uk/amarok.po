@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-07 01:43+0000\n"
+"POT-Creation-Date: 2024-05-23 01:44+0000\n"
 "PO-Revision-Date: 2024-05-05 09:00+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian\n"
@@ -133,53 +133,40 @@ msgstr "А&втор"
 msgid "A&uthors"
 msgstr "А&втори"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:275
+#: aboutdialog/ExtendedAboutDialog.cpp:274
 #, kde-format
 msgid "Get data from openDesktop.org to learn more about contributors"
 msgstr ""
 "Отримати дані з openDesktop.org, щоб дізнатися більше про учасників розробки"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:291
+#: aboutdialog/ExtendedAboutDialog.cpp:290
 #, kde-format
 msgid "&Contributors"
 msgstr "&Учасники розробки"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:304
+#: aboutdialog/ExtendedAboutDialog.cpp:302
 #, kde-format
 msgid "Get data from openDesktop.org to learn more about our generous donors"
 msgstr ""
 "Отримати дані з openDesktop.org, щоб дізнатися більше про наших щедрих "
 "спонсорів"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:323
-#, kde-format
-msgid ""
-"<p>Each year in October the Amarok team organizes a funding drive called "
-"<b>Roktober</b>.</p><p>If you want your name mentioned on this list <a href="
-"\"http://amarok.kde.org/donations\"> donate during Roktober</a> and opt-in.</"
-"p>"
-msgstr ""
-"<p>Кожного року у жовтні команда Amarok організує кампанію зі збирання "
-"коштів під назвою <b>Roktober</b>.</p><p>Якщо вам хочеться, щоб ваше ім’я "
-"було згадано у цьому списку <a href=\"http://amarok.kde.org/donations"
-"\">надішліть пожертву під час Roktober</a> і приєднуйтеся до команди.</p>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:332
+#: aboutdialog/ExtendedAboutDialog.cpp:322
 #, kde-format
 msgid "&Donors"
 msgstr "С&понсори"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:362
+#: aboutdialog/ExtendedAboutDialog.cpp:351
 #, kde-format
 msgid "T&ranslation"
 msgstr "Пе&реклад"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:387
+#: aboutdialog/ExtendedAboutDialog.cpp:376
 #, kde-format
 msgid "Internet connection not available"
 msgstr "З’єднання з інтернетом недоступне"
 
-#: aboutdialog/ExtendedAboutDialog.cpp:387
+#: aboutdialog/ExtendedAboutDialog.cpp:376
 #, kde-format
 msgid "Network error"
 msgstr "Помилка мережі"
@@ -391,8 +378,8 @@ msgstr "Жодна композиція не відтворюється"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
 #: ActionClasses.cpp:502
-#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:55
-#: main.cpp:96 MainWindow.cpp:113
+#: core-impl/collections/audiocd/FormatSelectionDialog.ui:14 main.cpp:51
+#: main.cpp:92 MainWindow.cpp:109
 #, kde-format
 msgid "Amarok"
 msgstr "Amarok"
@@ -1850,7 +1837,7 @@ msgctxt "A type of command that affects the context view"
 msgid "Context"
 msgstr "Контекст"
 
-#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:281
+#: amarokurls/NavigationUrlGenerator.cpp:137 MainWindow.cpp:285
 #, kde-format
 msgid "Files"
 msgstr "Файли"
@@ -2752,13 +2739,13 @@ msgstr "Вилучити %1 списків композицій з %2?"
 msgid "Confirm Playlist Deletion"
 msgstr "Підтвердження вилучення списку композицій"
 
-#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:447
+#: browsers/playlistbrowser/PlaylistBrowserView.cpp:521 MainWindow.cpp:451
 #, kde-format
 msgid "Use relative path for &saving"
 msgstr "Використовувати відносну адресу для &збереження"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:460
+#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:464
 #, kde-format
 msgid "Save As"
 msgstr "Зберегти як"
@@ -5162,14 +5149,14 @@ msgstr "Aaron Seigo"
 msgid "Original author"
 msgstr "Автор програми"
 
-#: context/tools/amarokpkg.cpp:93 main.cpp:171
+#: context/tools/amarokpkg.cpp:93 main.cpp:167
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: context/tools/amarokpkg.cpp:94 main.cpp:255 main.cpp:257 main.cpp:271
-#: main.cpp:281 main.cpp:287 main.cpp:289 main.cpp:301 main.cpp:307
-#: main.cpp:309 main.cpp:313 main.cpp:321
+#: context/tools/amarokpkg.cpp:94 main.cpp:251 main.cpp:253 main.cpp:267
+#: main.cpp:277 main.cpp:283 main.cpp:285 main.cpp:297 main.cpp:303
+#: main.cpp:305 main.cpp:309 main.cpp:317
 #, kde-format
 msgid "Developer"
 msgstr "Розробник"
@@ -10859,12 +10846,12 @@ msgstr "Не вдалося обробити дані тексту пісні"
 msgid "No information available for this track"
 msgstr "Немає інформації для цієї композиції"
 
-#: main.cpp:98
+#: main.cpp:94
 #, kde-format
 msgid "The audio player by KDE"
 msgstr "Аудіопрогравач від KDE"
 
-#: main.cpp:100
+#: main.cpp:96
 #, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
@@ -10873,7 +10860,7 @@ msgstr ""
 "© Mark Kretschmann, 2002-2003,\n"
 "© Команда розробників Amarok, 2003-2024."
 
-#: main.cpp:101
+#: main.cpp:97
 #, kde-format
 msgid ""
 "IRC:\n"
@@ -10892,12 +10879,12 @@ msgstr ""
 "\n"
 "(Дата збирання: %1)"
 
-#: main.cpp:111
+#: main.cpp:107
 #, kde-format
 msgid "<i>Inactive authors</i>"
 msgstr "<i>Неактивні автори</i>"
 
-#: main.cpp:112
+#: main.cpp:108
 #, kde-format
 msgid ""
 "Amarok authorship is not a hobby, it's a lifestyle. But when people move on "
@@ -10906,871 +10893,871 @@ msgstr ""
 "Робота над Amarok — це не захоплення, це стиль життя. Втім, якщо хтось "
 "полишає проєкт, згадка про них має залишатися. Згадаймо тих, хто нам допоміг:"
 
-#: main.cpp:117
+#: main.cpp:113
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr "Bart 'Where are my toothpicks' Cerneels"
 
-#: main.cpp:118
+#: main.cpp:114
 #, kde-format
 msgid "Developer (Stecchino)"
 msgstr "Розробник (Stecchino)"
 
-#: main.cpp:121
+#: main.cpp:117
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
 msgstr "Edward \"Hades\" Toroshchin"
 
-#: main.cpp:122
+#: main.cpp:118
 #, kde-format
 msgid "Developer (dr_lepper)"
 msgstr "Розробник (dr_lepper)"
 
-#: main.cpp:125
+#: main.cpp:121
 #, kde-format
 msgid "Mark Kretschmann"
 msgstr "Mark Kretschmann"
 
-#: main.cpp:126
+#: main.cpp:122
 #, kde-format
 msgid "Project founder (markey)"
 msgstr "Засновник проєкту (markey)"
 
-#: main.cpp:129
+#: main.cpp:125
 #, kde-format
 msgid "Matěj Laitl"
 msgstr "Matěj Laitl"
 
-#: main.cpp:130
+#: main.cpp:126
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
 msgstr "Переписування коду збірок iPod та інші удосконалення (strohel)"
 
-#: main.cpp:133
+#: main.cpp:129
 #, kde-format
 msgid "Myriam Schweingruber"
 msgstr "Myriam Schweingruber"
 
-#: main.cpp:133
+#: main.cpp:129
 #, kde-format
 msgid "Rokymoter, Bug triaging (Mamarok)"
 msgstr "Підтримка програми, пошук вад (Mamarok)"
 
-#: main.cpp:136
+#: main.cpp:132
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
 msgstr "Ralf 'SalsaMaster' Engels"
 
-#: main.cpp:137
+#: main.cpp:133
 #, kde-format
 msgid "Developer (rengels)"
 msgstr "Розробник (rengels)"
 
-#: main.cpp:140
+#: main.cpp:136
 #, kde-format
 msgid "Patrick von Reth"
 msgstr "Patrick von Reth"
 
-#: main.cpp:140
+#: main.cpp:136
 #, kde-format
 msgid "Windows build (TheOneRing)"
 msgstr "Пакунок для Windows (TheOneRing)"
 
-#: main.cpp:144
+#: main.cpp:140
 #, kde-format
 msgid "Rick W. Chen"
 msgstr "Rick W. Chen"
 
-#: main.cpp:145
+#: main.cpp:141
 #, kde-format
 msgid "Developer (stuffcorpse)"
 msgstr "Розробник (stuffcorpse)"
 
-#: main.cpp:148
+#: main.cpp:144
 #, kde-format
 msgid "Sam Lade"
 msgstr "Sam Lade"
 
-#: main.cpp:148
+#: main.cpp:144
 #, kde-format
 msgid "Developer (Sentynel)"
 msgstr "Розробник (Sentynel)"
 
-#: main.cpp:152
+#: main.cpp:148
 #, kde-format
 msgid "Sven Krohlas"
 msgstr "Sven Krohlas"
 
-#: main.cpp:152
+#: main.cpp:148
 #, kde-format
 msgid "Rokymoter, Developer (sven423)"
 msgstr "Підтримка проєкту, розробник (sven423)"
 
-#: main.cpp:155
+#: main.cpp:151
 #, kde-format
 msgid "Téo Mrnjavac"
 msgstr "Téo Mrnjavac"
 
-#: main.cpp:156
+#: main.cpp:152
 #, kde-format
 msgid "Developer (Teo`)"
 msgstr "Розробник (Teo`)"
 
-#: main.cpp:159
+#: main.cpp:155
 #, kde-format
 msgid "Valorie Zimmerman"
 msgstr "Valorie Zimmerman"
 
-#: main.cpp:160
+#: main.cpp:156
 #, kde-format
 msgid "Rokymoter, Handbook (valorie)"
 msgstr "Підтримка проєкту, підручник (valorie)"
 
-#: main.cpp:165
+#: main.cpp:161
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ian 'The Beard' Monroe"
 
-#: main.cpp:165
+#: main.cpp:161
 #, kde-format
 msgid "Developer (eean)"
 msgstr "Розробник (eean)"
 
-#: main.cpp:168
+#: main.cpp:164
 #, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr "Jeff 'IROKSOHARD' Mitchell"
 
-#: main.cpp:168
+#: main.cpp:164
 #, kde-format
 msgid "Developer (jefferai)"
 msgstr "Розробник (jefferai)"
 
-#: main.cpp:171
+#: main.cpp:167
 #, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Розробник (lfranchi)"
 
-#: main.cpp:174
+#: main.cpp:170
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
 msgstr "Lydia 'is wrong(TM)' Pintscher"
 
-#: main.cpp:174
+#: main.cpp:170
 #, kde-format
 msgid "Release Vixen (Nightrose)"
 msgstr "Руда, що відповідає за випуски (Nightrose)"
 
-#: main.cpp:177
+#: main.cpp:173
 #, kde-format
 msgid "Max Howell"
 msgstr "Max Howell"
 
-#: main.cpp:177
+#: main.cpp:173
 #, kde-format
 msgid "Developer, Vision"
 msgstr "Розробник, загальне бачення"
 
-#: main.cpp:180
+#: main.cpp:176
 #, kde-format
 msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
-#: main.cpp:180
+#: main.cpp:176
 #, kde-format
 msgid "Developer (maxx_k)"
 msgstr "Розробник (maxx_k)"
 
-#: main.cpp:183
+#: main.cpp:179
 #, kde-format
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald 'Also very hot' Nielsen"
 
-#: main.cpp:183
+#: main.cpp:179
 #, kde-format
 msgid "Developer (nhn)"
 msgstr "Розробник (nhn)"
 
-#: main.cpp:186
+#: main.cpp:182
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb Ruiz"
 
-#: main.cpp:186
+#: main.cpp:182
 #, kde-format
 msgid "Developer (sebr)"
 msgstr "Розробник (sebr)"
 
-#: main.cpp:191
+#: main.cpp:187
 #, kde-format
 msgid "Alejandro Wainzinger"
 msgstr "Alejandro Wainzinger"
 
-#: main.cpp:191
+#: main.cpp:187
 #, kde-format
 msgid "Developer (xevix)"
 msgstr "Розробник (xevix)"
 
-#: main.cpp:193
+#: main.cpp:189
 #, kde-format
 msgid "Alex Merry"
 msgstr "Alex Merry"
 
-#: main.cpp:193
+#: main.cpp:189
 #, kde-format
 msgid "Developer, Replay Gain support"
 msgstr "Розробник, підтримка вирівнювання гучності"
 
-#: main.cpp:195
+#: main.cpp:191
 #, kde-format
 msgid "Casey Link"
 msgstr "Casey Link"
 
-#: main.cpp:195
+#: main.cpp:191
 #, kde-format
 msgid "MP3tunes integration"
 msgstr "Інтеграція з MP3tunes"
 
-#: main.cpp:197
+#: main.cpp:193
 #, kde-format
 msgid "Casper van Donderen"
 msgstr "Casper van Donderen"
 
-#: main.cpp:197
+#: main.cpp:193
 #, kde-format
 msgid "Windows porting"
 msgstr "Портування на Windows"
 
-#: main.cpp:199
+#: main.cpp:195
 #, kde-format
 msgid "Christie Harris"
 msgstr "Christie Harris"
 
-#: main.cpp:199
+#: main.cpp:195
 #, kde-format
 msgid "Rokymoter (dangle)"
 msgstr "Підтримка проєкту (dangle)"
 
-#: main.cpp:201
+#: main.cpp:197
 #, kde-format
 msgid "Dan Leinir Turthra Jensen"
 msgstr "Dan Leinir Turthra Jensen"
 
-#: main.cpp:201
+#: main.cpp:197
 #, kde-format
 msgid "Usability"
 msgstr "Зручність у використанні"
 
-#: main.cpp:203
+#: main.cpp:199
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Dan 'Hey, it compiled…' Meltzer"
 
-#: main.cpp:203
+#: main.cpp:199
 #, kde-format
 msgid "Developer (hydrogen)"
 msgstr "Розробник (hydrogen)"
 
-#: main.cpp:205
+#: main.cpp:201
 #, kde-format
 msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
-#: main.cpp:205
+#: main.cpp:201
 #, kde-format
 msgid "Biased playlists"
 msgstr "Списки композицій з упередженням"
 
-#: main.cpp:207
+#: main.cpp:203
 #, kde-format
 msgid "Daniel Dewald"
 msgstr "Daniel Dewald"
 
-#: main.cpp:207
+#: main.cpp:203
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
 msgstr "Визначення міток, надписи, аналізатор спектра"
 
-#: main.cpp:209
+#: main.cpp:205
 #, kde-format
 msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
-#: main.cpp:209
+#: main.cpp:205
 #, kde-format
 msgid "Nepomuk integration"
 msgstr "Інтеграція з Nepomuk"
 
-#: main.cpp:211
+#: main.cpp:207
 #, kde-format
 msgid "Frank Meerkötter"
 msgstr "Frank Meerkötter"
 
-#: main.cpp:211 main.cpp:231
+#: main.cpp:207 main.cpp:227
 #, kde-format
 msgid "Podcast improvements"
 msgstr "Покращення роботи з трансляціями"
 
-#: main.cpp:213
+#: main.cpp:209
 #, kde-format
 msgid "Greg Meyer"
 msgstr "Greg Meyer"
 
-#: main.cpp:213
+#: main.cpp:209
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
 msgstr "Диск з програмою, пошук вад (oggb4mp3)"
 
-#: main.cpp:215
+#: main.cpp:211
 #, kde-format
 msgid "Harald Sitter"
 msgstr "Harald Sitter"
 
-#: main.cpp:215
+#: main.cpp:211
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
 msgstr "Phonon, керівник проєкту KDE Multimedia (apachelogger)"
 
-#: main.cpp:217
+#: main.cpp:213
 #, kde-format
 msgid "John Atkinson"
 msgstr "John Atkinson"
 
-#: main.cpp:217
+#: main.cpp:213
 #, kde-format
 msgid "Assorted patches"
 msgstr "Усілякі латки"
 
-#: main.cpp:219
+#: main.cpp:215
 #, kde-format
 msgid "Kenneth Wesley Wimer II"
 msgstr "Kenneth Wesley Wimer II"
 
-#: main.cpp:219
+#: main.cpp:215
 #, kde-format
 msgid "Icons"
 msgstr "Піктограми"
 
-#: main.cpp:221
+#: main.cpp:217
 #, kde-format
 msgid "Kevin Funk"
 msgstr "Kevin Funk"
 
-#: main.cpp:221
+#: main.cpp:217
 #, kde-format
 msgid "Developer, Website theme (KRF)"
 msgstr "Розробник, тема вебсайта (KRF)"
 
-#: main.cpp:223
+#: main.cpp:219
 #, kde-format
 msgid "Kuba Serafinowski"
 msgstr "Kuba Serafinowski"
 
-#: main.cpp:223
+#: main.cpp:219
 #, kde-format
 msgid "Rokymoter"
 msgstr "Підтримка проєкту"
 
-#: main.cpp:225
+#: main.cpp:221
 #, kde-format
 msgid "Lee Olson"
 msgstr "Lee Olson"
 
-#: main.cpp:225 main.cpp:237
+#: main.cpp:221 main.cpp:233
 #, kde-format
 msgid "Artwork"
 msgstr "Графіка"
 
-#: main.cpp:227
+#: main.cpp:223
 #, kde-format
 msgid "Ljubomir Simin"
 msgstr "Ljubomir Simin"
 
-#: main.cpp:227
+#: main.cpp:223
 #, kde-format
 msgid "Rokymoter (ljubomir)"
 msgstr "Підтримка проєкту (ljubomir)"
 
-#: main.cpp:229
+#: main.cpp:225
 #, kde-format
 msgid "Lucas Gomes"
 msgstr "Lucas Gomes"
 
-#: main.cpp:229
+#: main.cpp:225
 #, kde-format
 msgid "Developer (MaskMaster)"
 msgstr "Розробник (MaskMaster)"
 
-#: main.cpp:231
+#: main.cpp:227
 #, kde-format
 msgid "Mathias Panzenböck"
 msgstr "Mathias Panzenböck"
 
-#: main.cpp:233
+#: main.cpp:229
 #, kde-format
 msgid "Mikko Caldara"
 msgstr "Mikko Caldara"
 
-#: main.cpp:233
+#: main.cpp:229
 #, kde-format
 msgid "Bug triaging and sanitizing"
 msgstr "Визначення вад і виправлення недоліків"
 
-#: main.cpp:235
+#: main.cpp:231
 #, kde-format
 msgid "Nikhil Marathe"
 msgstr "Nikhil Marathe"
 
-#: main.cpp:235
+#: main.cpp:231
 #, kde-format
 msgid "UPnP support and patches (nsm)"
 msgstr "Підтримка UPnP та латки (nsm)"
 
-#: main.cpp:237
+#: main.cpp:233
 #, kde-format
 msgid "Nuno Pinheiro"
 msgstr "Nuno Pinheiro"
 
-#: main.cpp:239
+#: main.cpp:235
 #, kde-format
 msgid "Olivier Bédard"
 msgstr "Olivier Bédard"
 
-#: main.cpp:239
+#: main.cpp:235
 #, kde-format
 msgid "Website hosting"
 msgstr "Утримувач вебсайта"
 
-#: main.cpp:241
+#: main.cpp:237
 #, kde-format
 msgid "Pasi Lalinaho"
 msgstr "Pasi Lalinaho"
 
-#: main.cpp:241
+#: main.cpp:237
 #, kde-format
 msgid "Rokymoter (emunkki)"
 msgstr "Підтримка проєкту (emunkki)"
 
-#: main.cpp:243
+#: main.cpp:239
 #, kde-format
 msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
-#: main.cpp:243
+#: main.cpp:239
 #, kde-format
 msgid "Scripting interface"
 msgstr "Інтерфейс роботи зі скриптами"
 
-#: main.cpp:245
+#: main.cpp:241
 #, kde-format
 msgid "Phalgun Guduthur"
 msgstr "Phalgun Guduthur"
 
-#: main.cpp:245
+#: main.cpp:241
 #, kde-format
 msgid "Nepomuk Collection (phalgun)"
 msgstr "Збірка Nepomuk (phalgun)"
 
-#: main.cpp:247
+#: main.cpp:243
 #, kde-format
 msgid "Scott Wheeler"
 msgstr "Scott Wheeler"
 
-#: main.cpp:247
+#: main.cpp:243
 #, kde-format
 msgid "TagLib & ktrm code"
 msgstr "Код підтримки TagLib і ktrm"
 
-#: main.cpp:249
+#: main.cpp:245
 #, kde-format
 msgid "Shane King"
 msgstr "Shane King"
 
-#: main.cpp:249
+#: main.cpp:245
 #, kde-format
 msgid "Patches & Windows porting (shakes)"
 msgstr "Латки і портування на Windows (shakes)"
 
-#: main.cpp:251
+#: main.cpp:247
 #, kde-format
 msgid "Simon Esneault"
 msgstr "Simon Esneault"
 
-#: main.cpp:251
+#: main.cpp:247
 #, kde-format
 msgid "Photos & Videos applets, Context View"
 msgstr "Аплети фотографій і відео, перегляд контексту"
 
-#: main.cpp:253
+#: main.cpp:249
 #, kde-format
 msgid "Soren Harward"
 msgstr "Soren Harward"
 
-#: main.cpp:253
+#: main.cpp:249
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
 msgstr "Розробник, автоматичний породжувач списків відтворення"
 
-#: main.cpp:255
+#: main.cpp:251
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
 
-#: main.cpp:257
+#: main.cpp:253
 #, kde-format
 msgid "Valentin Rouet"
 msgstr "Valentin Rouet"
 
-#: main.cpp:259
+#: main.cpp:255
 #, kde-format
 msgid "Wade Olson"
 msgstr "Wade Olson"
 
-#: main.cpp:259
+#: main.cpp:255
 #, kde-format
 msgid "Splash screen artist"
 msgstr "Автор вітального вікна"
 
-#: main.cpp:261
+#: main.cpp:257
 #, kde-format
 msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
-#: main.cpp:261
+#: main.cpp:257
 #, kde-format
 msgid "Context view"
 msgstr "Перегляд контексту"
 
-#: main.cpp:265
+#: main.cpp:261
 #, kde-format
 msgid "Former contributors"
 msgstr "Колишні учасники розробки"
 
-#: main.cpp:265
+#: main.cpp:261
 #, kde-format
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr ""
 "Люди з наведеного нижче списку робили внесок у попередні версії Amarok. "
 "Дякуємо їм!"
 
-#: main.cpp:267
+#: main.cpp:263
 #, kde-format
 msgid "Adam Pigg"
 msgstr "Adam Pigg"
 
-#: main.cpp:267
+#: main.cpp:263
 #, kde-format
 msgid "Analyzers, patches, shoutcast"
 msgstr "Аналізатори, латки, shoutcast"
 
-#: main.cpp:269
+#: main.cpp:265
 #, kde-format
 msgid "Adeodato Simó"
 msgstr "Adeodato Simó"
 
-#: main.cpp:269 main.cpp:277
+#: main.cpp:265 main.cpp:273
 #, kde-format
 msgid "Patches"
 msgstr "Латки"
 
-#: main.cpp:271
+#: main.cpp:267
 #, kde-format
 msgid "Alexandre Oliveira"
 msgstr "Alexandre Oliveira"
 
-#: main.cpp:273
+#: main.cpp:269
 #, kde-format
 msgid "Andreas Mair"
 msgstr "Andreas Mair"
 
-#: main.cpp:273
+#: main.cpp:269
 #, kde-format
 msgid "MySQL support"
 msgstr "Підтримка MySQL"
 
-#: main.cpp:275
+#: main.cpp:271
 #, kde-format
 msgid "Andrew de Quincey"
 msgstr "Andrew de Quincey"
 
-#: main.cpp:275
+#: main.cpp:271
 #, kde-format
 msgid "Postgresql support"
 msgstr "Підтримка Postgresql"
 
-#: main.cpp:277
+#: main.cpp:273
 #, kde-format
 msgid "Andrew Turner"
 msgstr "Andrew Turner"
 
-#: main.cpp:279
+#: main.cpp:275
 #, kde-format
 msgid "Andy Kelk"
 msgstr "Andy Kelk"
 
-#: main.cpp:279
+#: main.cpp:275
 #, kde-format
 msgid "MTP and Rio Karma media devices, patches"
 msgstr "Мультимедійні пристрої MTP і Rio Karma, латки"
 
-#: main.cpp:281
+#: main.cpp:277
 #, kde-format
 msgid "Christian Muehlhaeuser"
 msgstr "Christian Muehlhaeuser"
 
-#: main.cpp:283
+#: main.cpp:279
 #, kde-format
 msgid "Derek Nelson"
 msgstr "Derek Nelson"
 
-#: main.cpp:283
+#: main.cpp:279
 #, kde-format
 msgid "Graphics, splash-screen"
 msgstr "Графіка, вікно вітання"
 
-#: main.cpp:285
+#: main.cpp:281
 #, kde-format
 msgid "Enrico Ros"
 msgstr "Enrico Ros"
 
-#: main.cpp:285
+#: main.cpp:281
 #, kde-format
 msgid "Analyzers, Context Browser and systray eye-candy"
 msgstr "Аналізатори, переглядач контексту і зображення системного лотка"
 
-#: main.cpp:287
+#: main.cpp:283
 #, kde-format
 msgid "Frederik Holljen"
 msgstr "Frederik Holljen"
 
-#: main.cpp:289
+#: main.cpp:285
 #, kde-format
 msgid "Gábor Lehel"
 msgstr "Gábor Lehel"
 
-#: main.cpp:291
+#: main.cpp:287
 #, kde-format
 msgid "Gérard Dürrmeyer"
 msgstr "Gérard Dürrmeyer"
 
-#: main.cpp:291
+#: main.cpp:287
 #, kde-format
 msgid "Icons and image work"
 msgstr "Робота над піктограмами і зображеннями"
 
-#: main.cpp:293
+#: main.cpp:289
 #, kde-format
 msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
-#: main.cpp:293
+#: main.cpp:289
 #, kde-format
 msgid "Dialog to filter the collection titles"
 msgstr "Діалогове вікно фільтрування назв збірки"
 
-#: main.cpp:295
+#: main.cpp:291
 #, kde-format
 msgid "Jarkko Lehti"
 msgstr "Jarkko Lehti"
 
-#: main.cpp:295
+#: main.cpp:291
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
 msgstr "Тестер, оператор каналу IRC, організація роботи"
 
-#: main.cpp:297
+#: main.cpp:293
 #, kde-format
 msgid "Jocke Andersson"
 msgstr "Jocke Andersson"
 
-#: main.cpp:297
+#: main.cpp:293
 #, kde-format
 msgid "Rokymoter, bug fixer (Firetech)"
 msgstr "Підтримка програми, виправлення вад (Firetech)"
 
-#: main.cpp:299
+#: main.cpp:295
 #, kde-format
 msgid "Marco Gulino"
 msgstr "Marco Gulino"
 
-#: main.cpp:299
+#: main.cpp:295
 #, kde-format
 msgid "Konqueror Sidebar, some DCOP methods"
 msgstr "Бічна панель Konqueror, деякі з методів DCOP"
 
-#: main.cpp:301
+#: main.cpp:297
 #, kde-format
 msgid "Martin Aumueller"
 msgstr "Martin Aumueller"
 
-#: main.cpp:303
+#: main.cpp:299
 #, kde-format
 msgid "Melchior Franz"
 msgstr "Melchior Franz"
 
-#: main.cpp:303
+#: main.cpp:299
 #, kde-format
 msgid "FHT routine, bugfixes"
 msgstr "Процедура ШПХ, виправлення вад"
 
-#: main.cpp:305
+#: main.cpp:301
 #, kde-format
 msgid "Michael Pyne"
 msgstr "Michael Pyne"
 
-#: main.cpp:305
+#: main.cpp:301
 #, kde-format
 msgid "K3b export code"
 msgstr "Код для експорту до K3b"
 
-#: main.cpp:307
+#: main.cpp:303
 #, kde-format
 msgid "Mike Diehl"
 msgstr "Mike Diehl"
 
-#: main.cpp:309
+#: main.cpp:305
 #, kde-format
 msgid "Paul Cifarelli"
 msgstr "Paul Cifarelli"
 
-#: main.cpp:311
+#: main.cpp:307
 #, kde-format
 msgid "Peter C. Ndikuwera"
 msgstr "Peter C. Ndikuwera"
 
-#: main.cpp:311
+#: main.cpp:307
 #, kde-format
 msgid "Bugfixes, PostgreSQL support"
 msgstr "Виправлення вад, підтримка PostgreSQL"
 
-#: main.cpp:313
+#: main.cpp:309
 #, kde-format
 msgid "Pierpaolo Panfilo"
 msgstr "Pierpaolo Panfilo"
 
-#: main.cpp:315
+#: main.cpp:311
 #, kde-format
 msgid "Reigo Reinmets"
 msgstr "Reigo Reinmets"
 
-#: main.cpp:315
+#: main.cpp:311
 #, kde-format
 msgid "Wikipedia support, patches"
 msgstr "Підтримка Вікіпедії, латки"
 
-#: main.cpp:317
+#: main.cpp:313
 #, kde-format
 msgid "Roman Becker"
 msgstr "Roman Becker"
 
-#: main.cpp:317
+#: main.cpp:313
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr ""
 "Попередній логотип Amarok, попереднє вікно вітання, попередні піктограми"
 
-#: main.cpp:319
+#: main.cpp:315
 #, kde-format
 msgid "Sami Nieminen"
 msgstr "Sami Nieminen"
 
-#: main.cpp:319
+#: main.cpp:315
 #, kde-format
 msgid "Audioscrobbler support"
 msgstr "Підтримка audioscrobbler"
 
-#: main.cpp:321
+#: main.cpp:317
 #, kde-format
 msgid "Stanislav Karchebny"
 msgstr "Stanislav Karchebny"
 
-#: main.cpp:323
+#: main.cpp:319
 #, kde-format
 msgid "Stefan Bogner"
 msgstr "Stefan Bogner"
 
-#: main.cpp:323
+#: main.cpp:319
 #, kde-format
 msgid "Loads of stuff"
 msgstr "Завантаження компонентів"
 
-#: main.cpp:325
+#: main.cpp:321
 #, kde-format
 msgid "Tomasz Dudzik"
 msgstr "Tomasz Dudzik"
 
-#: main.cpp:325
+#: main.cpp:321
 #, kde-format
 msgid "Splash screen"
 msgstr "Вікно вітання"
 
-#: main.cpp:330
+#: main.cpp:326
 #, kde-format
 msgid "Andrew Browning"
 msgstr "Andrew Browning"
 
-#: main.cpp:331
+#: main.cpp:327
 #, kde-format
 msgid "Chris Wales"
 msgstr "Chris Wales"
 
-#: main.cpp:332
+#: main.cpp:328
 #, kde-format
 msgid "ZImin Stanislav"
 msgstr "Stanislav Zimin"
 
-#: MainWindow.cpp:256
+#: MainWindow.cpp:260
 #, kde-format
 msgid "Local Music"
 msgstr "Локальна музика"
 
-#: MainWindow.cpp:258
+#: MainWindow.cpp:262
 #, kde-format
 msgid "Local sources of content"
 msgstr "Локальні джерела даних"
 
-#: MainWindow.cpp:265
+#: MainWindow.cpp:269
 #, kde-format
 msgid "Internet"
 msgstr "Інтернет"
 
-#: MainWindow.cpp:267
+#: MainWindow.cpp:271
 #, kde-format
 msgid "Online sources of content"
 msgstr "Мережеві джерела даних"
 
-#: MainWindow.cpp:273
+#: MainWindow.cpp:277
 #, kde-format
 msgid "Playlists"
 msgstr "Списки композицій"
 
-#: MainWindow.cpp:275
+#: MainWindow.cpp:279
 #, kde-format
 msgid "Various types of playlists"
 msgstr "Різноманітні типи списків композицій"
 
-#: MainWindow.cpp:284
+#: MainWindow.cpp:288
 #, kde-format
 msgid "Browse local hard drive for content"
 msgstr "Перегляд локального жорсткого диска у пошуках композицій"
 
-#: MainWindow.cpp:327
+#: MainWindow.cpp:331
 #, kde-format
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "П&ерегляд"
 
-#: MainWindow.cpp:330
+#: MainWindow.cpp:334
 #, kde-format
 msgid "Lock Layout"
 msgstr "Заблокувати компонування"
 
-#: MainWindow.cpp:367 MainWindow.cpp:1301
+#: MainWindow.cpp:371 MainWindow.cpp:1301
 #, kde-format
 msgid "Reset Layout"
 msgstr "Відновити типове компонування"
 
-#: MainWindow.cpp:424
+#: MainWindow.cpp:428
 #, kde-format
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -11781,27 +11768,27 @@ msgstr ""
 "системному лотку. Щоб вийти з програми, скористайтесь дією <B>Вийти</B> в "
 "меню або піктограмою Amarok в системному лотку.</qt>"
 
-#: MainWindow.cpp:426
+#: MainWindow.cpp:430
 #, kde-format
 msgid "Docking in System Tray"
 msgstr "Швартування в системному лотку"
 
-#: MainWindow.cpp:526
+#: MainWindow.cpp:530
 #, kde-format
 msgid "Play Media (Files or URLs)"
 msgstr "Відтворити мультимедійні дані (файли або адреси URL)"
 
-#: MainWindow.cpp:526
+#: MainWindow.cpp:530
 #, kde-format
 msgid "Add Media (Files or URLs)"
 msgstr "Додати мультимедійні дані (файли або адреси URL)"
 
-#: MainWindow.cpp:546
+#: MainWindow.cpp:550
 #, kde-format
 msgid "Add Stream"
 msgstr "Додати потік"
 
-#: MainWindow.cpp:546
+#: MainWindow.cpp:550
 #, kde-format
 msgid "Enter Stream URL:"
 msgstr "Введіть адресу URL потоку:"
@@ -17477,6 +17464,17 @@ msgstr "Виконавець: %1"
 #, kde-format
 msgid "empty"
 msgstr "порожньо"
+
+#~ msgid ""
+#~ "<p>Each year in October the Amarok team organizes a funding drive called "
+#~ "<b>Roktober</b>.</p><p>If you want your name mentioned on this list <a "
+#~ "href=\"http://amarok.kde.org/donations\"> donate during Roktober</a> and "
+#~ "opt-in.</p>"
+#~ msgstr ""
+#~ "<p>Кожного року у жовтні команда Amarok організує кампанію зі збирання "
+#~ "коштів під назвою <b>Roktober</b>.</p><p>Якщо вам хочеться, щоб ваше ім’я "
+#~ "було згадано у цьому списку <a href=\"http://amarok.kde.org/donations"
+#~ "\">надішліть пожертву під час Roktober</a> і приєднуйтеся до команди.</p>"
 
 #~ msgid "Update Supported Languages"
 #~ msgstr "Оновити список підтримуваних мов"
