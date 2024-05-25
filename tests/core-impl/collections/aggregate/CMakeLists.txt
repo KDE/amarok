@@ -31,7 +31,7 @@ endif()
 target_link_libraries( testaggregatemeta
     amarokcore
     amaroklib
-    Qt5::Test
-    Qt5::Core
+    Qt::Test
+    Qt::Core
     ${GOOGLEMOCK_LIBRARIES}
 )

@@ -13,7 +13,7 @@ target_link_libraries( amarok_importer-fastforward
     amarokcore
     amaroklib
     KF5::KIOCore
-    Qt5::Sql
+    Qt::Sql
 )
 
 install( TARGETS amarok_importer-fastforward DESTINATION ${KDE_INSTALL_PLUGINDIR} )

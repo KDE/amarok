@@ -12,8 +12,8 @@ macro(link_database_test test_target)
         amaroklib
         KF5::KIOCore
         KF5::ThreadWeaver
-        Qt5::Test
-        Qt5::Core
+        Qt::Test
+        Qt::Core
         ${MYSQL_LIBRARIES}
         ${CMAKE_DL_LIBS}
 #        ${TAGLIB-EXTRAS_LIBRARIES}

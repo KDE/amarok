@@ -8,7 +8,7 @@ set(amarokcollectionscanner_SRCS
 add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS})
 
 target_link_libraries(amarokcollectionscanner
-    Qt5::Core
+    Qt::Core
     amarokshared
 )
 

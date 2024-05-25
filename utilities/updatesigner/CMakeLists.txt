@@ -19,7 +19,7 @@ if( QCA2_FOUND )
     set(amarok-update-signer_SRCS signer.cpp amarok-update-signer.cpp)
     qt4_automoc(${amarok-update-signer_SRCS})
     add_executable(amarok-update-signer ${amarok-update-signer_SRCS})
-    target_link_libraries(amarok-update-signer Qt5::Core ${QCA2_LIBRARIES})
+    target_link_libraries(amarok-update-signer Qt::Core ${QCA2_LIBRARIES})
 
     if(APPLE)
         set_target_properties(amarok-update-signer PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")

@@ -41,7 +41,7 @@ target_link_libraries( testmetamultitrack
     Phonon::phonon4qt5
 
     KF5::ThreadWeaver
-    Qt5::Test
-    Qt5::Core
+    Qt::Test
+    Qt::Core
     ${GOOGLEMOCK_LIBRARIES}
     ${CMAKE_DL_LIBS})

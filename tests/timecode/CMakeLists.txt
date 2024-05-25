@@ -17,4 +17,4 @@ add_executable( testtimecodetrackprovider ${testtimecodetrackprovider_SRCS} )
 add_test(NAME testtimecodetrackprovider COMMAND $<TARGET_FILE:testtimecodetrackprovider>)
 ecm_mark_as_test(testtimecodetrackprovider)
 
-target_link_libraries(testtimecodetrackprovider Qt5::Test Qt5::Core Qt5::Gui amarokcore amaroklib )
+target_link_libraries(testtimecodetrackprovider Qt::Test Qt::Core Qt::Gui amarokcore amaroklib )

@@ -112,8 +112,8 @@ target_link_libraries(amarokcore
     amarokshared
     ${CMAKE_DL_LIBS}
     Threads::Threads
-    Qt5::Core
-    Qt5::Network
+    Qt::Core
+    Qt::Network
     KF5::KIOCore
     KF5::ConfigCore
     KF5::ThreadWeaver

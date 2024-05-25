@@ -46,8 +46,8 @@ target_link_libraries( testplaylistmodels
     KF5::KIOCore
     Phonon::phonon4qt5
 
-    Qt5::Test
-    Qt5::Core
+    Qt::Test
+    Qt::Core
     ${GOOGLEMOCK_LIBRARIES}
     ${CMAKE_DL_LIBS}
 )
@@ -78,8 +78,8 @@ target_link_libraries( testplaylistlayout
     KF5::KIOCore
     Phonon::phonon4qt5
 
-    Qt5::Test
-    Qt5::Core
+    Qt::Test
+    Qt::Core
     ${GOOGLEMOCK_LIBRARIES}
     ${CMAKE_DL_LIBS}
 )

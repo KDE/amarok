@@ -46,8 +46,8 @@ if( TAGLIB-EXTRAS_FOUND )
 endif()
 
 target_link_libraries( amarokshared
-    Qt5::Core
-    Qt5::Gui # for QImage, ...
+    Qt::Core
+    Qt::Gui # for QImage, ...
 )
 
 set_target_properties( amarokshared PROPERTIES VERSION 1.0.0 SOVERSION 1 )

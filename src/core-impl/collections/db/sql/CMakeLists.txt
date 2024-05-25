@@ -25,8 +25,8 @@ generate_export_header(amarok-sqlcollection BASE_NAME amarok_sqlcollection)
 target_link_libraries(amarok-sqlcollection
     KF5::KIOCore
     KF5::ThreadWeaver
-    Qt5::Core
-    Qt5::Gui
+    Qt::Core
+    Qt::Gui
     Threads::Threads
     amarokcore
     amaroklib

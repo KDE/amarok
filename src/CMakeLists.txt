@@ -844,12 +844,12 @@ target_link_libraries(amaroklib
     KF5::ThreadWeaver
     KF5::WidgetsAddons
     KF5::WindowSystem
-    Qt5::Gui
-    Qt5::Qml
-    Qt5::Quick
-    Qt5::QuickWidgets
-    Qt5::Sql
-    Qt5::Svg
+    Qt::Gui
+    Qt::Qml
+    Qt::Quick
+    Qt::QuickWidgets
+    Qt::Sql
+    Qt::Svg
     ${CMAKE_DL_LIBS}
     Threads::Threads
     ${EXTRA_LIBS}
@@ -860,12 +860,12 @@ target_link_libraries(amaroklib
 )
 
 if( Qt5WebEngine_FOUND )
-    target_link_libraries( amaroklib Qt5::WebEngine )
+    target_link_libraries( amaroklib Qt::WebEngine )
     add_definitions( -DWITH_QT_WEBENGINE )
 endif()
 
 if( Qt5UiTools_FOUND )
-    target_link_libraries( amaroklib Qt5::UiTools )
+    target_link_libraries( amaroklib Qt::UiTools )
     add_definitions( -DWITH_QT_UITOOLS )
 endif()
 
@@ -879,7 +879,7 @@ if( TAGLIB-EXTRAS_FOUND )
 endif()
 
 if(WIN32)
-    target_link_libraries(amaroklib Qt5::WebKitWidgets)
+    target_link_libraries(amaroklib Qt::WebKitWidgets)
 endif()
 if(APPLE)
     target_link_libraries(amaroklib "/System/Library/Frameworks/Foundation.framework")

@@ -32,8 +32,8 @@ target_link_libraries(amarok_context_applet_upcomingEvents
     KF5::Plasma
     
     ${KDE4_KDEWEBKIT_LIBS}
-    Qt5::Network
-    Qt5::WebKitWidgets
+    Qt::Network
+    Qt::WebKitWidgets
 )
 
 install(TARGETS amarok_context_applet_upcomingEvents DESTINATION ${KDE_INSTALL_PLUGINDIR})

@@ -24,4 +24,4 @@ set( testplaylistfileprovider_SRCS
 add_executable( testplaylistfileprovider ${testplaylistfileprovider_SRCS} )
 add_test(NAME testplaylistfileprovider COMMAND $<TARGET_FILE:testplaylistfileprovider>)
 ecm_mark_as_test(testplaylistfileprovider)
-target_link_libraries( testplaylistfileprovider  KF5::KIOCore Qt5::Test Qt5::Core amarokcore amaroklib )
+target_link_libraries( testplaylistfileprovider  KF5::KIOCore Qt::Test Qt::Core amarokcore amaroklib )

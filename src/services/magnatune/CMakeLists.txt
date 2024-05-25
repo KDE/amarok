@@ -47,8 +47,8 @@ target_link_libraries(amarok_service_magnatunestore
     KF5::ConfigWidgets
     KF5::KIOCore
     KF5::ThreadWeaver
-    Qt5::Core
-    Qt5::Widgets
+    Qt::Core
+    Qt::Widgets
 )
 
 install(TARGETS amarok_service_magnatunestore DESTINATION ${KDE_INSTALL_PLUGINDIR} )
@@ -70,8 +70,8 @@ target_link_libraries( kcm_amarok_service_magnatunestore
     amarokcore
     KF5::ConfigWidgets
     KF5::ThreadWeaver
-    Qt5::Core
-    Qt5::Gui
+    Qt::Core
+    Qt::Gui
 )
 
 install(TARGETS kcm_amarok_service_magnatunestore DESTINATION ${KDE_INSTALL_PLUGINDIR})

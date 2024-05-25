@@ -31,10 +31,10 @@ target_link_libraries(testmasterslavesynchronizationjob
                         amaroklib
                         KF5::KIOCore
                         KF5::Solid
-                        Qt5::Gui
+                        Qt::Gui
                         KF5::ThreadWeaver
-                        Qt5::Test
-                        Qt5::Core
+                        Qt::Test
+                        Qt::Core
                         ${GOOGLEMOCK_LIBRARIES})
 
 #------------------------ TestUnionJob -----------------------------
@@ -57,10 +57,10 @@ target_link_libraries(testunionjob
                         amaroklib
                         KF5::KIOCore
                         KF5::Solid
-                        Qt5::Gui
+                        Qt::Gui
                         KF5::ThreadWeaver
-                        Qt5::Test
-                        Qt5::Core
+                        Qt::Test
+                        Qt::Core
                         ${GOOGLEMOCK_LIBRARIES})
 
 #------------------------ TestOneWaySynchronizationJob -----------------------------
@@ -83,8 +83,8 @@ target_link_libraries(testonewaysynchronizationjob
                         amaroklib
                         KF5::KIOCore
                         KF5::Solid
-                        Qt5::Gui
+                        Qt::Gui
                         KF5::ThreadWeaver
-                        Qt5::Test
-                        Qt5::Core
+                        Qt::Test
+                        Qt::Core
                         ${GOOGLEMOCK_LIBRARIES})

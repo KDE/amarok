@@ -20,7 +20,7 @@ if( TAGLIB-EXTRAS_FOUND )
 endif()
 
 target_link_libraries(amarok_afttagger
-                        Qt5::Core
+                        Qt::Core
                         ${TAGLIB_LIBRARIES}
                      )
 

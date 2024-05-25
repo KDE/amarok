@@ -54,7 +54,7 @@ target_link_libraries(amarok_service_ampache
 
     KF5::KIOCore
     KF5::ThreadWeaver
-    Qt5::Xml
+    Qt::Xml
 )
 if( LIBLASTFM_FOUND )
     target_link_libraries(amarok_service_ampache

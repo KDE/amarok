@@ -32,8 +32,8 @@ add_dependencies( testcuefilesupport amaroklib)
 target_link_libraries( testcuefilesupport
     amarokcore
     amaroklib
-    Qt5::Test
-    Qt5::Core
+    Qt::Test
+    Qt::Core
     ${GOOGLEMOCK_LIBRARIES}
     ${CMAKE_DL_LIBS})
 

@@ -18,8 +18,8 @@ target_link_libraries(amarok_collection-mysqlcollection
     amarok-sqlcollection
     amarokcore
     amaroklib
-    Qt5::Core
-    Qt5::Gui
+    Qt::Core
+    Qt::Gui
     ${CMAKE_DL_LIBS}
 )
 

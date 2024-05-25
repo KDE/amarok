@@ -27,8 +27,8 @@ target_link_libraries(testsinglecollectiontreeitemmodel
                         amarokcore
                         amaroklib
 
-                        Qt5::Gui
+                        Qt::Gui
                         KF5::ThreadWeaver
-                        Qt5::Test
-                        Qt5::Core
+                        Qt::Test
+                        Qt::Core
                         ${GOOGLEMOCK_LIBRARIES})

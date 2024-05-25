@@ -23,7 +23,7 @@ target_link_libraries(amarok_collection-daapcollection
     amaroklib
     KF5::ThreadWeaver
     KF5::DNSSD
-    Qt5::Network
+    Qt::Network
 )
 
 if(APPLE)

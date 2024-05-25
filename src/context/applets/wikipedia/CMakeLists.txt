@@ -8,7 +8,7 @@ add_library(amarok_context_applet_wikipedia SHARED ${wikipedia_SRCS})
 target_link_libraries(amarok_context_applet_wikipedia
     amarokcore
     amaroklib
-    Qt5::Qml
+    Qt::Qml
 )
 
 install(TARGETS amarok_context_applet_wikipedia DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/wikipedia)

@@ -9,7 +9,7 @@ set( testplaylistformat_SRCS TestPlaylistFormat.cpp )
 add_executable( testplaylistformat ${testplaylistformat_SRCS} )
 add_test(NAME testplaylistformat COMMAND $<TARGET_FILE:testplaylistformat>)
 ecm_mark_as_test(testplaylistformat)
-target_link_libraries( testplaylistformat Qt5::Test amarokcore amaroklib )
+target_link_libraries( testplaylistformat Qt::Test amarokcore amaroklib )
 
 #------------------------ Test PlaylistObserver -----------------------------
 
@@ -20,4 +20,4 @@ set( testplaylistobserver_SRCS
 add_executable( testplaylistobserver ${testplaylistobserver_SRCS} )
 add_test(NAME testplaylistobserver COMMAND $<TARGET_FILE:testplaylistobserver>)
 ecm_mark_as_test(testplaylistobserver)
-target_link_libraries( testplaylistobserver KF5::ThreadWeaver Qt5::Test Qt5::Core amarokcore amaroklib )
+target_link_libraries( testplaylistobserver KF5::ThreadWeaver Qt::Test Qt::Core amarokcore amaroklib )

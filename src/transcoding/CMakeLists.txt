@@ -26,8 +26,8 @@ generate_export_header(amarok-transcoding BASE_NAME amarok_transcoding)
 target_link_libraries(amarok-transcoding
     KF5::KIOCore
     KF5::ThreadWeaver
-    Qt5::Core
-    Qt5::Gui
+    Qt::Core
+    Qt::Gui
     Threads::Threads
     amarokcore
 )

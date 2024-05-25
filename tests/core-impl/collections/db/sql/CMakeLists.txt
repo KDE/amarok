@@ -22,8 +22,8 @@ macro(add_database_test test_target test_sources)
         amarok-sqlcollection
         KF5::KIOCore
         KF5::ThreadWeaver
-        Qt5::Test
-        Qt5::Core
+        Qt::Test
+        Qt::Core
         ${MYSQLE_LIBRARIES}
         ${CMAKE_DL_LIBS}
         ${GOOGLEMOCK_LIBRARIES}

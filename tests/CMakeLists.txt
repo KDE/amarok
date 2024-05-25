@@ -45,7 +45,7 @@ ecm_mark_as_test(testamarok)
 
 target_link_libraries( testamarok
     KF5::KIOCore
-    Qt5::Test
+    Qt::Test
     amarokcore
     amaroklib
     )
@@ -61,7 +61,7 @@ add_executable( testcaseconverter  ${testcaseconverter_SRCS} )
 add_test(NAME testcaseconverter COMMAND $<TARGET_FILE:testcaseconverter>)
 ecm_mark_as_test(testcaseconverter)
 
-target_link_libraries(testcaseconverter Qt5::Test amarokcore)
+target_link_libraries(testcaseconverter Qt::Test amarokcore)
 
 #------------------------ Test Debug -----------------------------
 
@@ -74,7 +74,7 @@ set( testdebug_SRCS
 add_executable( testdebug ${testdebug_SRCS} )
 add_test(NAME testdebug COMMAND $<TARGET_FILE:testdebug>)
 ecm_mark_as_test(testdebug)
-target_link_libraries(testdebug Qt5::Test amarokcore )
+target_link_libraries(testdebug Qt::Test amarokcore )
 
 #------------------------ Test EngineController -----------------------------
 
@@ -82,7 +82,7 @@ set( testenginecontroller_SRCS TestEngineController.cpp )
 add_executable( testenginecontroller ${testenginecontroller_SRCS} )
 add_test(NAME testenginecontroller COMMAND $<TARGET_FILE:testenginecontroller>)
 ecm_mark_as_test(testenginecontroller)
-target_link_libraries( testenginecontroller KF5::ThreadWeaver Qt5::Test amaroklib amarokcore )
+target_link_libraries( testenginecontroller KF5::ThreadWeaver Qt::Test amaroklib amarokcore )
 
 #------------------------ Test Expression -----------------------------
 
@@ -95,7 +95,7 @@ add_executable( testexpression  ${testexpression_SRCS} )
 add_test(NAME testexpression COMMAND $<TARGET_FILE:testexpression>)
 ecm_mark_as_test(testexpression)
 
-target_link_libraries(testexpression Qt5::Test)
+target_link_libraries(testexpression Qt::Test)
 
 #------------------------ Test QStringx -----------------------------
 
@@ -108,7 +108,7 @@ add_executable( testqstringx  ${testqstringx_SRCS} )
 add_test(NAME testqstringx COMMAND $<TARGET_FILE:testqstringx>)
 ecm_mark_as_test(testqstringx)
 
-target_link_libraries(testqstringx Qt5::Test)
+target_link_libraries(testqstringx Qt::Test)
 
 #------------------------ Test TagGuesser -----------------------------
 
@@ -122,7 +122,7 @@ add_executable( testtagguesser  ${testtagguesser_SRCS} )
 add_test(NAME testtagguesser COMMAND $<TARGET_FILE:testtagguesser>)
 ecm_mark_as_test(testtagguesser)
 
-target_link_libraries(testtagguesser Qt5::Test amarokcore)
+target_link_libraries(testtagguesser Qt::Test amarokcore)
 
 #------------------------ Test TrackOrganizer -----------------------------
 
@@ -148,4 +148,4 @@ endif()
 add_dependencies( testtrackorganizer amarokcore )
 add_dependencies( testtrackorganizer amaroklib )
 
-target_link_libraries( testtrackorganizer amarokcore amaroklib KF5::Solid Qt5::Test Qt5::Core Qt5::Gui ${GOOGLEMOCK_LIBRARIES})
+target_link_libraries( testtrackorganizer amarokcore amaroklib KF5::Solid Qt::Test Qt::Core Qt::Gui ${GOOGLEMOCK_LIBRARIES})

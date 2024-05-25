@@ -30,7 +30,7 @@ target_link_libraries(amarok_collection-umscollection
   KF5::KIOCore
   KF5::Solid
   KF5::ThreadWeaver
-  Qt5::Gui
+  Qt::Gui
   )
 
 install(TARGETS 

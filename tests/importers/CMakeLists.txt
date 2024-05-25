@@ -9,8 +9,8 @@ set( testimporterscommon_LIBS
     
     KF5::KIOCore
     KF5::ThreadWeaver
-    Qt5::Sql
-    Qt5::Test
+    Qt::Sql
+    Qt::Test
     ${GOOGLEMOCK_LIBRARIES}
 )
 

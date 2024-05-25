@@ -103,7 +103,7 @@ target_link_libraries(amarok_service_mp3tunes
     KF5::ThreadWeaver
     ${LIBXML2_LIBRARIES}
     ${CURL_LIBRARIES}
-    Qt5::Network
+    Qt::Network
 )
 
 if(LIBGCRYPT_FOUND)
@@ -129,7 +129,7 @@ add_library(kcm_amarok_service_mp3tunes MODULE ${kcm_amarok_service_mp3tunes_PAR
 
 target_link_libraries( kcm_amarok_service_mp3tunes
     amarokcore
-    Qt5::Network
+    Qt::Network
     KF5::ConfigWidgets
 )
 

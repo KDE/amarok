@@ -8,7 +8,7 @@ add_library(amarok_context_applet_currenttrack SHARED ${current_SRCS})
 target_link_libraries(amarok_context_applet_currenttrack
     amarokcore
     amaroklib
-    Qt5::Qml
+    Qt::Qml
     KF5::CoreAddons
 )
 

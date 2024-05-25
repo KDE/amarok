@@ -20,8 +20,8 @@ target_link_libraries(amarok_storage-mysqlestorage
     # amarok-sqlstorage
     amarokcore
     amaroklib
-    Qt5::Core
-    Qt5::Gui
+    Qt::Core
+    Qt::Gui
     ${MYSQLE_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES}

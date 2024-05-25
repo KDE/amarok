@@ -7,7 +7,7 @@ ecm_mark_as_test(testtrackloader)
 target_link_libraries( testtrackloader
     amarokcore
     amaroklib
-    Qt5::Test
-    Qt5::Core
+    Qt::Test
+    Qt::Core
     KF5::ThreadWeaver
 )

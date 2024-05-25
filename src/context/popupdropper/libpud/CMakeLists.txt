@@ -16,7 +16,7 @@ set(pud_LIB_SRCS
 
 add_library(pud SHARED ${pud_LIB_SRCS})
 
-target_link_libraries(pud Qt5::Core Qt5::Gui Qt5::Svg)
+target_link_libraries(pud Qt::Core Qt::Gui Qt::Svg)
 
 set_target_properties(pud PROPERTIES
         VERSION

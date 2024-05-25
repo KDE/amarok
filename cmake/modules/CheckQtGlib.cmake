@@ -1,4 +1,4 @@
-set(CMAKE_REQUIRED_LIBRARIES Qt5::Core)
+set(CMAKE_REQUIRED_LIBRARIES Qt::Core)
 check_cxx_source_compiles("
 #include <QtGlobal>
 int main()

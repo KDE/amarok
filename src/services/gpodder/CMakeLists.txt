@@ -52,7 +52,7 @@ target_link_libraries(amarok_service_gpodder
     mygpo-qt5
     KF5::KIOCore
     KF5::ThreadWeaver
-    Qt5::Network
+    Qt::Network
 )
 
 install( TARGETS amarok_service_gpodder DESTINATION ${KDE_INSTALL_PLUGINDIR} )
@@ -72,7 +72,7 @@ target_link_libraries( kcm_amarok_service_gpodder
     mygpo-qt5
     KF5::ConfigWidgets
     KF5::KIOCore
-    Qt5::Network
+    Qt::Network
 )
 
 install(TARGETS kcm_amarok_service_gpodder DESTINATION ${KDE_INSTALL_PLUGINDIR})

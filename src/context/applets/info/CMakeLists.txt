@@ -8,7 +8,7 @@ add_library(amarok_context_applet_info SHARED ${info_SRCS})
 target_link_libraries(amarok_context_applet_info
     amarokcore
     amaroklib
-    Qt5::Qml
+    Qt::Qml
 )
 
 install(TARGETS amarok_context_applet_info DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/info)

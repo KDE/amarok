@@ -17,10 +17,10 @@ target_include_directories( amarokpud PUBLIC
 )
 
 target_link_libraries( amarokpud
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::Svg
+    Qt::Core
+    Qt::Gui
+    Qt::Widgets
+    Qt::Svg
 )
 
 install( TARGETS amarokpud ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
@@ -42,7 +42,7 @@ add_library(qml_plugin SHARED ${qml_plugin_SRCS})
 
 target_link_libraries(qml_plugin
     amarokcore
-    Qt5::Quick
+    Qt::Quick
     KF5::QuickAddons
     KF5::WidgetsAddons
 )

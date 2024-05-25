@@ -8,7 +8,7 @@ add_library(amarok_context_applet_photos SHARED ${photos_SRCS})
 target_link_libraries(amarok_context_applet_photos
     amarokcore
     amaroklib
-    Qt5::Qml
+    Qt::Qml
 )
 
 install(TARGETS amarok_context_applet_photos DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/photos)

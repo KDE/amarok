@@ -55,7 +55,7 @@ target_link_libraries( amarok_service_lastfm
     KF5::KIOCore
     KF5::ThreadWeaver
     KF5::Wallet
-    Qt5::Network
+    Qt::Network
 )
 
 install( TARGETS amarok_service_lastfm DESTINATION ${KDE_INSTALL_PLUGINDIR} )
@@ -77,7 +77,7 @@ target_link_libraries( kcm_amarok_service_lastfm
     ${LIBLASTFM_LIBRARY}
     
     KF5::KIOCore
-    Qt5::Network
+    Qt::Network
 )
 
 install( TARGETS kcm_amarok_service_lastfm DESTINATION ${KDE_INSTALL_PLUGINDIR} )

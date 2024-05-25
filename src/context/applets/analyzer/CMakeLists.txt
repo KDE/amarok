@@ -18,8 +18,8 @@ endif()
 target_link_libraries(amarok_context_applet_analyzer
     amarokcore
     amaroklib
-    Qt5::Qml
-    Qt5::Quick
+    Qt::Qml
+    Qt::Quick
     ${FFTW3_LIBRARIES}
 )
 

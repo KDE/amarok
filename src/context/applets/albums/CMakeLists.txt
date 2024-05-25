@@ -12,8 +12,8 @@ add_library(amarok_context_applet_albums SHARED ${albums_SRCS})
 target_link_libraries(amarok_context_applet_albums
     amarokcore
     amaroklib
-    Qt5::Qml
-    Qt5::Quick
+    Qt::Qml
+    Qt::Quick
 )
 
 install(TARGETS amarok_context_applet_albums DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/albums)

@@ -56,7 +56,7 @@ if(IPOD_FOUND AND WITH_IPOD)
     amarok-transcoding
     KF5::KIOCore
     KF5::ThreadWeaver
-    Qt5::Gui
+    Qt::Gui
     ${GLIB2_LIBRARIES}
     ${GDKPIXBUF_LIBRARY}
     ${GOBJECT_LIBRARIES}

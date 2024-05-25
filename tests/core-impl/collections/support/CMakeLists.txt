@@ -31,10 +31,10 @@ add_dependencies( testmemoryquerymaker amaroklib )
 target_link_libraries(testmemoryquerymaker
     amarokcore
     amaroklib
-    Qt5::Gui
+    Qt::Gui
     KF5::ThreadWeaver
-    Qt5::Test
-    Qt5::Core
+    Qt::Test
+    Qt::Core
     ${GOOGLEMOCK_LIBRARIES}
 )
 
@@ -55,8 +55,8 @@ ecm_mark_as_test(testartisthelper)
     endif()
 
 target_link_libraries( testartisthelper
-    Qt5::Test
-    Qt5::Core
+    Qt::Test
+    Qt::Core
     KF5::I18n
 )
 

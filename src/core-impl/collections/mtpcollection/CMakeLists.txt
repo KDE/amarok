@@ -35,7 +35,7 @@ target_link_libraries(amarok_collection-mtpcollection
     amaroklib
     KF5::KIOCore
     KF5::ThreadWeaver
-    Qt5::Gui
+    Qt::Gui
     Mtp::Mtp
 )
 
