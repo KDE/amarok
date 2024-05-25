@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Andrew Coles <andrew_coles@yahoo.co.uk>, 2009, 2010, 2011.
-# Steve Allewell <steve.allewell@gmail.com>, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2023.
+# SPDX-FileCopyrightText: 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2023, 2024 Steve Allewell <steve.allewell@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-05-23 01:44+0000\n"
-"PO-Revision-Date: 2023-05-02 19:28+0100\n"
+"PO-Revision-Date: 2024-05-24 19:38+0100\n"
 "Last-Translator: Steve Allewell <steve.allewell@gmail.com>\n"
 "Language-Team: British English\n"
 "Language: en_GB\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.03.70\n"
+"X-Generator: Lokalize 24.02.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -564,14 +564,11 @@ msgstr "Whether to show background images in the browser pane"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:100
-#, fuzzy, kde-format
-#| msgid ""
-#| "Automatically scroll the playlist to make the currently playing song "
-#| "visible"
+#, kde-format
 msgid ""
 "Automatically scroll the playlist to make the currently playing track visible"
 msgstr ""
-"Automatically scroll the playlist to make the currently playing song visible"
+"Automatically scroll the playlist to make the currently playing track visible"
 
 #. i18n: ectx: label, entry, group (General Options)
 #: amarokconfig.kcfg:104
@@ -610,6 +607,7 @@ msgstr "If set, context applets will collapse using animations."
 msgid ""
 "Show track's artist in Collection Browser if different from album artist"
 msgstr ""
+"Show track's artist in Collection Browser if different from album artist"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:122
@@ -618,6 +616,8 @@ msgid ""
 "Explicitly show artist in Collection Browser for Various Artists albums and "
 "tracks where artist differs from album artist."
 msgstr ""
+"Explicitly show artist in Collection Browser for Various Artists albums and "
+"tracks where artist differs from album artist."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
 #: amarokconfig.kcfg:129
@@ -1301,17 +1301,15 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:452
-#, fuzzy, kde-format
-#| msgid "Submit played songs"
+#, kde-format
 msgid "Submit played tracks"
-msgstr "Submit played songs"
+msgstr "Submit played tracks"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:453
-#, fuzzy, kde-format
-#| msgid "Whether played songs are submitted to Audioscrobbler"
+#, kde-format
 msgid "Whether played tracks are submitted to Audioscrobbler"
-msgstr "Whether played songs are submitted to Audioscrobbler"
+msgstr "Whether played tracks are submitted to Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (Scrobbler)
 #: amarokconfig.kcfg:457
@@ -1364,10 +1362,9 @@ msgstr "Retrieve similar artists"
 
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: amarokconfig.kcfg:473
-#, fuzzy, kde-format
-#| msgid "Whether similar songs are retrieved from Audioscrobbler"
+#, kde-format
 msgid "Whether similar tracks are retrieved from Audioscrobbler"
-msgstr "Whether similar songs are retrieved from Audioscrobbler"
+msgstr "Whether similar tracks are retrieved from Audioscrobbler"
 
 #. i18n: ectx: label, entry, group (MediaDevice)
 #: amarokconfig.kcfg:480
@@ -2013,12 +2010,10 @@ msgid "Added This Month"
 msgstr "Added This Month"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:181
-#, fuzzy, kde-format
-#| msgctxt "Track field name"
-#| msgid "First Played"
+#, kde-format
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Never Played"
-msgstr "First Played"
+msgstr "Never Played"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:200
 #, kde-format
@@ -2055,11 +2050,10 @@ msgid "Show Track Numbers"
 msgstr "Show Track Numbers"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:259
-#, fuzzy, kde-format
-#| msgid "Show under Various Artists"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Show Artist for Various Artists"
-msgstr "Show under Various Artists"
+msgstr "Show Artist for Various Artists"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:264
 #, kde-format
@@ -2446,11 +2440,10 @@ msgid "Duplicates"
 msgstr "Duplicates"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:114
-#, fuzzy, kde-format
-#| msgid "Allow duplicate songs in result"
+#, kde-format
 msgctxt "Tooltip for dynamic playlist setting button"
 msgid "Allow duplicate tracks in result"
-msgstr "Allow duplicate songs in result"
+msgstr "Allow duplicate tracks in result"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:118
 #, kde-format
@@ -2651,24 +2644,20 @@ msgstr[0] "Remove a Track From %2"
 msgstr[1] "Remove %1 Tracks From %2"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:470
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is playlist name, %2 is playlist "
 "provider pretty name"
 msgid "Delete playlist <i>%1</i> from %2?"
-msgstr "Delete playlist from %1."
+msgstr "Delete playlist <i>%1</i> from %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:472
-#, fuzzy, kde-format
-#| msgctxt "%1 is playlist provider pretty name"
-#| msgid "Delete playlist from %1."
+#, kde-format
 msgctxt ""
 "Playlist deletion confirmation dialog. %1 is the playlist count (always more "
 "than 1), %2 is playlist provider pretty name"
 msgid "Delete %1 playlists from %2?"
-msgstr "Delete playlist from %1."
+msgstr "Delete %1 playlists from %2?"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:476
 #, kde-format
@@ -4907,11 +4896,10 @@ msgid "Next"
 msgstr "Next"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:74
-#, fuzzy, kde-format
-#| msgid "Update Magnatune database automatically"
+#, kde-format
 msgctxt "Disable automatic page changes when track changes in Wikipedia applet"
 msgid "Don't change page automatically"
-msgstr "Update Magnatune database automatically"
+msgstr "Don't change page automatically"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:126
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:364
@@ -4921,18 +4909,16 @@ msgid "Track"
 msgstr "Track"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:172
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for links in Wikipedia applet"
 msgid "Copy Link to Clipboard"
-msgstr "Copy to Clipboard"
+msgstr "Copy Link to Clipboard"
 
 #: context/applets/wikipedia/package/contents/ui/main.qml:179
-#, fuzzy, kde-format
-#| msgid "Copy to Clipboard"
+#, kde-format
 msgctxt "Right-click menu option for images in Wikipedia applet"
 msgid "Copy Image to Clipboard"
-msgstr "Copy to Clipboard"
+msgstr "Copy Image to Clipboard"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:78
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:142
@@ -4989,7 +4975,7 @@ msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
 "%1 is the url of the link"
 msgid "Click to open %1 in a web browser"
-msgstr ""
+msgstr "Click to open %1 in a web browser"
 
 #: context/context_qml_package/contents/ui/toolbar/AppletToolbar.qml:130
 #, kde-format
@@ -10522,16 +10508,13 @@ msgid "The audio player by KDE"
 msgstr "The audio player by KDE"
 
 #: main.cpp:96
-#, fuzzy, kde-format
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2013, The Amarok Development Squad"
+#, kde-format
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2024, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2013, The Amarok Development Squad"
+"(C) 2003-2024, The Amarok Development Squad"
 
 #: main.cpp:97
 #, kde-format
@@ -12605,11 +12588,10 @@ msgid "Tracks have been hidden due to the active search."
 msgstr "Tracks have been hidden due to the active search."
 
 #: playlist/view/listview/PrettyListView.cpp:691
-#, fuzzy, kde-format
-#| msgid "Add some songs here by dragging them from all around."
+#, kde-format
 msgctxt "Placeholder message in empty playlist view"
 msgid "Add some tracks here by dragging them from all around."
-msgstr "Add some songs here by dragging them from all around."
+msgstr "Add some tracks here by dragging them from all around."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:34
 #, kde-format
@@ -12784,17 +12766,13 @@ msgstr "Position:"
 
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_Position)
 #: playlistgenerator/constraints/CheckpointEditWidget.ui:69
-#, fuzzy, kde-format
-#| msgid ""
-#| "The desired position of the song in the playlist, in hours, minutes, and "
-#| "seconds.  Note: because of Qt limitations, the maximum position that you "
-#| "can specify is 24 hours."
+#, kde-format
 msgid ""
 "The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
-"The desired position of the song in the playlist, in hours, minutes, and "
+"The desired position of the track in the playlist, in hours, minutes, and "
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 
