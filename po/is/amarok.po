@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Arnar Leosson <leosson@frisurf.no>, 2005.
 # Arnar Leósson <leosson@frisurf.no>, 2006.
-# Sveinn í Felli <sveinki@nett.is>, 2008, 2009, 2010, 2011, 2015, 2017, 2020.
+# Sveinn í Felli <sveinki@nett.is>, 2008, 2009, 2010, 2011, 2015, 2017, 2020, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-05-23 01:44+0000\n"
-"PO-Revision-Date: 2020-04-04 13:51+0000\n"
-"Last-Translator: Sveinn í Felli <sv@fellsnet.is>\n"
-"Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
+"PO-Revision-Date: 2024-05-25 10:53+0000\n"
+"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
+"Language-Team: Icelandic\n"
 "Language: is\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +21,7 @@ msgstr ""
 "\n"
 "\n"
 "\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 22.04.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -164,7 +164,7 @@ msgstr "Þýðin&g"
 #: aboutdialog/ExtendedAboutDialog.cpp:376
 #, kde-format
 msgid "Internet connection not available"
-msgstr ""
+msgstr "Internettenging ekki tiltæk"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:376
 #, kde-format
@@ -180,7 +180,7 @@ msgstr "Fyrri þáttakendur"
 #: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:277
 #, kde-format
 msgid "Visit contributor's homepage"
-msgstr ""
+msgstr "Fara á heimasíðu þátttakandans"
 
 #: aboutdialog/OcsPersonItem.cpp:182
 #, kde-format
@@ -191,7 +191,7 @@ msgstr "%1, %2"
 #: aboutdialog/OcsPersonItem.cpp:202
 #, kde-format
 msgid "IRC channels: "
-msgstr ""
+msgstr "IRC-rásir: "
 
 #: aboutdialog/OcsPersonItem.cpp:215
 #, kde-format
@@ -318,7 +318,7 @@ msgstr "Smelltu til að breyta"
 #: ActionClasses.cpp:333
 #, kde-format
 msgid "&Replay Gain Mode"
-msgstr ""
+msgstr "&Mögnun endurspilunar"
 
 #: ActionClasses.cpp:335
 #, kde-format
@@ -335,7 +335,7 @@ msgstr "&Lag"
 #: ActionClasses.cpp:337
 #, kde-format
 msgid "&Album"
-msgstr "&Plata"
+msgstr "&Hljómplata"
 
 #: ActionClasses.cpp:357
 #, kde-format
@@ -2108,7 +2108,7 @@ msgstr "Sýna umslagsmyndir"
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:87
 #, kde-format
 msgid "Merged View"
-msgstr ""
+msgstr "Sameinuð sýn"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:278
 #: services/jamendo/JamendoService.cpp:161
@@ -2475,7 +2475,7 @@ msgstr "Fjöldinn af mögulegum afturköllunum í lagalista."
 #: browsers/playlistbrowser/DynamicCategory.cpp:75
 #, kde-format
 msgid "Upcoming:"
-msgstr ""
+msgstr "Á næstunni:"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:81
 #, fuzzy, kde-format
@@ -3379,13 +3379,13 @@ msgstr "Sérsníða skjábirtingatextann."
 #: configdialog/dialogs/GeneralConfig.ui:141
 #, kde-format
 msgid "Default (System colours)"
-msgstr ""
+msgstr "Sjálfgefið (litir kerfisins)"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:146
 #, kde-format
 msgid "Angry"
-msgstr ""
+msgstr "Reiði"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:151
@@ -3397,7 +3397,7 @@ msgstr "Frosið"
 #: configdialog/dialogs/GeneralConfig.ui:156
 #, kde-format
 msgid "Happy"
-msgstr ""
+msgstr "Gleði"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: configdialog/dialogs/GeneralConfig.ui:161
@@ -3410,25 +3410,25 @@ msgstr "Venjulegt"
 #, kde-format
 msgctxt "Maximum cover size option"
 msgid "Small (200 px)"
-msgstr ""
+msgstr "Lítið (200 px)"
 
 #: configdialog/dialogs/MetadataConfig.cpp:41
 #, kde-format
 msgctxt "Maximum cover size option"
 msgid "Medium (400 px)"
-msgstr ""
+msgstr "Miðlungs (400 px)"
 
 #: configdialog/dialogs/MetadataConfig.cpp:43
 #, kde-format
 msgctxt "Maximum cover size option"
 msgid "Large (800 px)"
-msgstr ""
+msgstr "Stórt (800 px)"
 
 #: configdialog/dialogs/MetadataConfig.cpp:45
 #, kde-format
 msgctxt "Maximum cover size option"
 msgid "Huge (1600 px)"
-msgstr ""
+msgstr "Flennistórt (1600 px)"
 
 #: configdialog/dialogs/MetadataConfig.cpp:104
 #, fuzzy, kde-format
@@ -3477,8 +3477,8 @@ msgstr "Samstilla"
 #, kde-format
 msgid "(%2one exception%3)"
 msgid_plural "(%2%1 exceptions%3)"
-msgstr[0] ""
-msgstr[1] "Undantekningar"
+msgstr[0] "(%2ein undantekning%3)"
+msgstr[1] "(%2%1 undantekningar%3)"
 
 #. i18n: ectx: property (title), widget (QGroupBox, m_tagsGroup)
 #: configdialog/dialogs/MetadataConfig.ui:17
@@ -4025,8 +4025,8 @@ msgstr ""
 #, kde-format
 msgid "%1 pixel"
 msgid_plural "%1 pixels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1 mynddíll"
+msgstr[1] "%1 mynddílar"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:91
 #, fuzzy, kde-format
@@ -4042,13 +4042,13 @@ msgstr ""
 #: context/applets/analyzer/package/contents/ui/main.qml:124
 #, kde-format
 msgid "Frequency range:"
-msgstr ""
+msgstr "Tíðnisvið:"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:142
 #: context/applets/analyzer/package/contents/ui/main.qml:147
 #, kde-format
 msgid "%1 Hz"
-msgstr ""
+msgstr "%1 Hz"
 
 #: context/applets/analyzer/package/contents/ui/main.qml:158
 #, fuzzy, kde-format
@@ -4411,7 +4411,7 @@ msgstr "1 fannst ekki"
 #: context/applets/lyrics/package/contents/ui/main.qml:113
 #, kde-format
 msgid "Suggestions: "
-msgstr ""
+msgstr "Tillögur: "
 
 #. i18n: ectx: property (text), widget (QLabel, titleLabel)
 #. i18n: ectx: property (text), widget (QLabel, label_21)
@@ -4473,7 +4473,7 @@ msgstr "Gat ekki fundið neinar upplýsingar á Wikipediu: %1"
 #, kde-format
 msgctxt "@info:tooltip Artist biography"
 msgid "Show Biography"
-msgstr ""
+msgstr "Sýna æviágrip"
 
 #: context/applets/similarartists/ArtistWidget.cpp:428
 #, fuzzy, kde-format
@@ -4693,7 +4693,7 @@ msgstr "Ná í umslag"
 #: context/applets/tabs/TabsSettings.ui:47
 #, kde-format
 msgid "Guitar"
-msgstr ""
+msgstr "Gítar"
 
 #. i18n: ectx: property (text), widget (QCheckBox, cbFetchBass)
 #: context/applets/tabs/TabsSettings.ui:60
@@ -4749,8 +4749,8 @@ msgstr "Væntanlegir atburðir"
 msgctxt "@title:group Number of upcoming events"
 msgid "1 event"
 msgid_plural "%1 events"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 atburður"
+msgstr[1] "%1 atburðir"
 
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:231
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:641
@@ -4758,8 +4758,8 @@ msgstr[1] ""
 msgctxt "@title:group Number of upcoming events"
 msgid "%1: 1 event"
 msgid_plural "%1: %2 events"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%1: 1 atburður"
+msgstr[1] "%1: %2 atburðir"
 
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
 #, fuzzy, kde-format
@@ -4784,7 +4784,7 @@ msgstr "&Næsta"
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:533
 #, kde-format
 msgid "Events Calendar"
-msgstr ""
+msgstr "Atburðadagatal"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
 #. i18n: ectx: property (text), item, widget (QComboBox, filterComboBox)
@@ -4842,7 +4842,7 @@ msgstr ""
 #: context/applets/upcomingevents/upcomingEventsSettings.ui:21
 #, kde-format
 msgid "All events"
-msgstr ""
+msgstr "Allir atburðir"
 
 #. i18n: ectx: property (text), widget (QCheckBox, groupVenueCheckBox)
 #: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:51
