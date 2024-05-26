@@ -566,8 +566,11 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
     }
     else
     {
+        // empty MediaSource() seems to cause Phonon-VLC to emit a volume of 0, BR 442319, so ignore it
+        m_ignoreVolumeChangeObserve = true;
         m_media->stop();
         m_media->setCurrentSource( Phonon::MediaSource() );
+        QTimer::singleShot( 0, [this]() { m_ignoreVolumeChangeObserve = false; } );
     }
 }
 

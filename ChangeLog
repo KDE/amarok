@@ -20,6 +20,7 @@ VERSION 3.0.1
    * Various tag match bias, APG and collection filtering related fixes (BR 375565,
      BR 406751, BR 435810, BR 382456)
    * Ignore any infinite values when reading replaygain tags (BR 486084)
+   * Avoid volume getting set to 0 when phonon-vlc playback is stopped (BR 442319)
 
 
 VERSION 3.0.0
