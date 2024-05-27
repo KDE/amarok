@@ -16478,13 +16478,3 @@ msgstr "艺人：%1"
 #, kde-format
 msgid "empty"
 msgstr "空"
-
-#~ msgid ""
-#~ "<p>Each year in October the Amarok team organizes a funding drive called "
-#~ "<b>Roktober</b>.</p><p>If you want your name mentioned on this list <a "
-#~ "href=\"http://amarok.kde.org/donations\"> donate during Roktober</a> and "
-#~ "opt-in.</p>"
-#~ msgstr ""
-#~ "<p>每年十月，Amarok 团队都会组织一次名为 <b>Roktober</b> 的筹款活动。</"
-#~ "p><p>如果您想在此列表上留下芳名，请参与 <a href=\"http://amarok.kde.org/"
-#~ "donations\">Roktober 捐赠活动</a>。</p>"
