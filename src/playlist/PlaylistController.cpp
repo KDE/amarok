@@ -357,11 +357,9 @@ Controller::removeDeadAndDuplicates()
 {
     DEBUG_BLOCK
 
-    QList<Meta::TrackPtr> uniqueTrackList = m_topModel->tracks();
-    QSet<Meta::TrackPtr> uniqueTracks(uniqueTrackList.begin(), uniqueTrackList.end());
     QList<int> topModelRowsToRemove;
 
-    foreach( Meta::TrackPtr unique, uniqueTracks )
+    foreach( Meta::TrackPtr unique, m_topModel->tracks() )
     {
         QList<int> trackRows = m_topModel->allRowsForTrack( unique ).values();
 
@@ -369,12 +367,13 @@ Controller::removeDeadAndDuplicates()
         {
             // Track is Dead
             // TODO: Check remote files as well
-            topModelRowsToRemove <<  trackRows;
+            topModelRowsToRemove << trackRows;
         }
         else if( trackRows.size() > 1 )
         {
             // Track is Duplicated
             // Remove all rows except the first
+            std::sort( trackRows.begin(), trackRows.end() );
             for( QList<int>::const_iterator it = ++trackRows.constBegin(); it != trackRows.constEnd(); ++it )
                 topModelRowsToRemove.push_back( *it );
         }
@@ -382,8 +381,9 @@ Controller::removeDeadAndDuplicates()
 
     if( !topModelRowsToRemove.empty() )
     {
+        QList<int> uniqueModelRowsToRemove = QSet<int>(topModelRowsToRemove.begin(), topModelRowsToRemove.end()).values();
         m_undoStack->beginMacro( QStringLiteral("Remove dead and duplicate entries") );     // TODO: Internationalize?
-        removeRows( topModelRowsToRemove );
+        removeRows( uniqueModelRowsToRemove );
         m_undoStack->endMacro();
     }
 }
