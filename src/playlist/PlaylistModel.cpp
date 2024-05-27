@@ -758,7 +758,7 @@ Playlist::Model::containsTrack( const Meta::TrackPtr& track ) const
 {
     foreach( Item* i, m_items )
     {
-        if ( i->track() == track )
+        if ( *i->track() == *track )
             return true;
     }
     return false;
@@ -770,7 +770,7 @@ Playlist::Model::firstRowForTrack( const Meta::TrackPtr& track ) const
     int row = 0;
     foreach( Item* i, m_items )
     {
-        if ( i->track() == track )
+        if ( *i->track() == *track )
             return row;
         row++;
     }
@@ -785,7 +785,7 @@ Playlist::Model::allRowsForTrack( const Meta::TrackPtr& track ) const
     int row = 0;
     foreach( Item* i, m_items )
     {
-        if ( i->track() == track )
+        if ( *i->track() == *track )
             trackRows.insert( row );
         row++;
     }
