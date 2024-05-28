@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-23 01:44+0000\n"
+"POT-Creation-Date: 2024-05-28 01:43+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -373,7 +373,7 @@ msgstr "បញ្ឈប់​ក្រោយ​ពេល​បទ​បច្ច
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1331 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1334 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "មិន​កំពុង​ចាក់​បទ​អ្វី​ទាំងអស់​​​"
@@ -5436,7 +5436,7 @@ msgstr "មិន​ស្គាល់​សិល្បករ"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1309
+#: EngineController.cpp:1312
 #, kde-format
 msgid "Unknown track"
 msgstr "មិន​ស្គាល់​បទ"
@@ -10238,30 +10238,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "កម្រិត​គុណភាព​"
 
-#: EngineController.cpp:1099
+#: EngineController.cpp:1102
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "បាន​ជួប​ប្រទះ​កំហុស​​ច្រើន​ពេក​នៅ​ក្នុង​បញ្ជី​ចាក់ ។ បាន​បញ្ឈប់​ការ​ចាក់​ឡើង​វិញ ។"
 
-#: EngineController.cpp:1299
+#: EngineController.cpp:1302
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> ច្រៀង​ដោយ <b>%2</b> នៅ <b>%3</b>"
 
-#: EngineController.cpp:1301
+#: EngineController.cpp:1304
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> ច្រៀង​ដោយ <b>%2</b>"
 
-#: EngineController.cpp:1304
+#: EngineController.cpp:1307
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> នៅ <b>%2</b>"
 
-#: EngineController.cpp:1316
+#: EngineController.cpp:1319
 #, fuzzy, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"

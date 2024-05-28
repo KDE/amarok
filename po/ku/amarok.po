@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-23 01:44+0000\n"
+"POT-Creation-Date: 2024-05-28 01:43+0000\n"
 "PO-Revision-Date: 2009-02-21 06:51+0200\n"
 "Last-Translator: Omer Ensari <oensari@gmail.com>\n"
 "Language-Team: Kurdish <kde-i18n-doc@lists.kde.org>\n"
@@ -384,7 +384,7 @@ msgstr "Ji ve perçeyê hez bike"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1331 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1334 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Tu Stran Nayê Lêdan"
@@ -5602,7 +5602,7 @@ msgstr "Hunermendê Nenas"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1309
+#: EngineController.cpp:1312
 #, kde-format
 msgid "Unknown track"
 msgstr "Strana nenas"
@@ -10547,30 +10547,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Nirxandin"
 
-#: EngineController.cpp:1099
+#: EngineController.cpp:1102
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 
-#: EngineController.cpp:1299
+#: EngineController.cpp:1302
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> alî yê <b>%2</b> di <b>%3</b> de"
 
-#: EngineController.cpp:1301
+#: EngineController.cpp:1304
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> alî yê <b>%2</b>"
 
-#: EngineController.cpp:1304
+#: EngineController.cpp:1307
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> di <b>%2</b> de"
 
-#: EngineController.cpp:1316
+#: EngineController.cpp:1319
 #, fuzzy, kde-format
 #| msgid " on <b>%1</b>"
 msgctxt "track from source"
