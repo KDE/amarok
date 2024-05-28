@@ -483,7 +483,7 @@ set(qtbindings_SRCS
     scripting/scriptengine/qtbindings/GuiLabel.cpp
     scripting/scriptengine/qtbindings/SqlSqlQuery.cpp
 )
-if( Qt5UiTools_FOUND )
+if( Qt${QT_MAJOR_VERSION}UiTools_FOUND )
     # Append below all files from QtBindings::UiTools namespace
     list(APPEND qtbindings_SRCS scripting/scriptengine/qtbindings/UiToolsUiLoader.cpp)
 endif()
@@ -790,7 +790,7 @@ if( LIBOFA_FOUND AND AVCODEC_FOUND AND AVFORMAT_FOUND AND AVUTIL_FOUND )
             )
 endif()
 
-qt5_add_dbus_adaptor(
+qt_add_dbus_adaptor(
    amaroklib_LIB_SRCS
    dbus/org.kde.amarok.Collection.xml
    dbus/CollectionDBusHandler.h
@@ -927,17 +927,22 @@ install(PROGRAMS org.kde.amarok.desktop DESTINATION ${KDE_INSTALL_APPDIR} )
 install(PROGRAMS org.kde.amarok_containers.desktop DESTINATION ${KDE_INSTALL_APPDIR} )
 install(FILES org.kde.amarok.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
-install(FILES amarok-plugin.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
-install(FILES amarok-contextapplet.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
-install(FILES amarok_codecinstall.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
+if(!BUILD_WITH_QT6)
+  install(FILES amarok-plugin.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
+  install(FILES amarok-contextapplet.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
+  install(FILES amarok_codecinstall.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
+endif()
 install(FILES amarok_append.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR}/ServiceMenus)
 install(FILES amarok-play-audiocd.desktop DESTINATION ${KDE_INSTALL_DATADIR}/solid/actions)
 
 install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_KNSRCDIR})
 
 # protocol handlers
-install(FILES amarokurls/amarok.protocol  DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
-install(FILES amarokitpc.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+
+if(!BUILD_WITH_QT6)
+  install(FILES amarokurls/amarok.protocol  DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
+  install(FILES amarokitpc.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+endif()
 #install(FILES amarokpcast.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
 install(FILES amarokconfig.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR} )

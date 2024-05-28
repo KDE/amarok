@@ -78,5 +78,7 @@ install(TARGETS kcm_amarok_service_magnatunestore DESTINATION ${KDE_INSTALL_PLUG
 
 ########### install files ###############
 
-install( FILES amarok_service_magnatunestore.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
-install( FILES amarok_service_magnatunestore_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+if(!BUILD_WITH_QT6)
+  install( FILES amarok_service_magnatunestore.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+  install( FILES amarok_service_magnatunestore_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+endif()

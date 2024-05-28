@@ -2,17 +2,23 @@ cmake_minimum_required(VERSION 3.16)
 
 project(Amarok)
 
-# Remove all warnings, ease the porting to cmake 3.x
-if (POLICY CMP0028)
-    cmake_policy(SET CMP0028 NEW)
-endif()
-
 ###############
 
-set(KF5_MIN_VERSION "5.78.0")
-set(QT_REQUIRED_VERSION "5.15.0")
+if(BUILD_WITH_QT6)
+  message(STATUS "Trying to build Qt6 version")
+  set(KF_MIN_VERSION "6.0.0")
+  set(KF_MAJOR_VERSION "6")
+  set(QT_MIN_VERSION "6.1.0")
+  set(QT_MAJOR_VERSION "6")
+else()
+  message(STATUS "Building good old Qt5 version")
+  set(KF_MIN_VERSION "5.78.0")
+  set(KF_MAJOR_VERSION "5")
+  set(QT_MIN_VERSION "5.15.0")
+  set(QT_MAJOR_VERSION "5")
+endif()
 find_package(PkgConfig REQUIRED)
-find_package(ECM ${KF5_MIN_VERSION} REQUIRED CONFIG)
+find_package(ECM ${KF_MIN_VERSION} REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
 include(KDEInstallDirs)
@@ -29,18 +35,25 @@ include(FindPkgConfig)
 include(CMakePushCheckState)
 include(GenerateExportHeader)
 
-find_package(Qt5 ${QT_REQUIRED_VERSION} REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Sql Svg Test Widgets Xml)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED COMPONENTS Core DBus Gui QuickWidgets Qml Sql Svg Test Widgets Xml)
 
-find_package(Qt5QuickControls2 ${QT_REQUIRED_VERSION})
-set_package_properties(Qt5QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
+find_package(Qt${QT_MAJOR_VERSION}QuickControls2 ${QT_MIN_VERSION})
+set_package_properties(Qt${QT_MAJOR_VERSION}QuickControls2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
 
-find_package(Qt5WebEngine ${QT_REQUIRED_VERSION})
-set_package_properties(Qt5WebEngine PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet")
 
-find_package(Qt5UiTools ${QT_REQUIRED_VERSION})
-set_package_properties(Qt5UiTools PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the scripting engine")
+if(BUILD_WITH_QT6)
+  find_package(Qt${QT_MAJOR_VERSION}Core5Compat ${QT_MIN_VERSION} REQUIRED)
+  find_package(Qt${QT_MAJOR_VERSION}WebEngineWidgets ${QT_MIN_VERSION})
+  set_package_properties(Qt${QT_MAJOR_VERSION}WebEngineWidgets PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet")
+else()
+  find_package(Qt${QT_MAJOR_VERSION}WebEngine ${QT_MIN_VERSION})
+  set_package_properties(Qt${QT_MAJOR_VERSION}WebEngine PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the wikipedia applet")
+endif()
 
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
+find_package(Qt${QT_MAJOR_VERSION}UiTools ${QT_MIN_VERSION})
+set_package_properties(Qt${QT_MAJOR_VERSION}UiTools PROPERTIES TYPE OPTIONAL PURPOSE "Needed by the scripting engine")
+
+find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Archive
     Attica
     Codecs
@@ -68,8 +81,14 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     WindowSystem
 )
 
-find_package(KF5Kirigami2 ${KF5_MIN_VERSION})
-set_package_properties(KF5Kirigami2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
+if(BUILD_WITH_QT6)
+  find_package(KF${KF_MAJOR_VERSION}Kirigami ${KF_MIN_VERSION})
+  set_package_properties(KF${KF_MAJOR_VERSION}Kirigami PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
+else()
+  find_package(KF${KF_MAJOR_VERSION}Kirigami2 ${KF_MIN_VERSION})
+  set_package_properties(KF${KF_MAJOR_VERSION}Kirigami2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by the player's context area")
+endif()
+
 
 ###############
 option(WITH_UTILITIES "Enable building of utilities" ON)
