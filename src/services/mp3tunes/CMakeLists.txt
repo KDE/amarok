@@ -99,8 +99,8 @@ add_library(amarok_service_mp3tunes MODULE ${amarok_service_mp3tunes_PART_SRCS})
 target_link_libraries(amarok_service_mp3tunes
     amarokcore
     amaroklib
-    KF5::ConfigCore
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::ConfigCore
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
     ${LIBXML2_LIBRARIES}
     ${CURL_LIBRARIES}
     Qt::Network
@@ -130,7 +130,7 @@ add_library(kcm_amarok_service_mp3tunes MODULE ${kcm_amarok_service_mp3tunes_PAR
 target_link_libraries( kcm_amarok_service_mp3tunes
     amarokcore
     Qt::Network
-    KF5::ConfigWidgets
+    KF${KF_MAJOR_VERSION}::ConfigWidgets
 )
 
 install(TARGETS kcm_amarok_service_mp3tunes DESTINATION ${KDE_INSTALL_PLUGINDIR})

@@ -33,8 +33,8 @@ add_library(amarok_collection-mtpcollection MODULE ${amarok_collection-mtpcollec
 target_link_libraries(amarok_collection-mtpcollection
     amarokcore
     amaroklib
-    KF5::KIOCore
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Gui
     Mtp::Mtp
 )

@@ -7,8 +7,8 @@ set( testimporterscommon_LIBS
     amaroklib
     amarokcore
     
-    KF5::KIOCore
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Sql
     Qt::Test
     ${GOOGLEMOCK_LIBRARIES}

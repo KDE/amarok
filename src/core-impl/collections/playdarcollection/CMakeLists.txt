@@ -12,7 +12,7 @@ add_library(amarok_collection-playdarcollection MODULE ${amarok_collection-playd
 target_link_libraries( amarok_collection-playdarcollection
                        amarokcore
                        amaroklib
-                       KF5::ThreadWeaver
-                       KF5::KIOCore )
+                       KF${KF_MAJOR_VERSION}::ThreadWeaver
+                       KF${KF_MAJOR_VERSION}::KIOCore )
 
 install(TARGETS amarok_collection-playdarcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )

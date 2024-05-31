@@ -9,5 +9,5 @@ target_link_libraries( testtrackloader
     amaroklib
     Qt::Test
     Qt::Core
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
 )

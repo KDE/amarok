@@ -24,4 +24,4 @@ ecm_mark_as_test(testsimilarartistsengine)
 
 add_dependencies( testsimilarartistsengine amaroklib)
 
-target_link_libraries( testsimilarartistsengine amarokcore amaroklib KF5::KIOCore KF5::Plasma ${LIBLASTFM_LIBRARY} Qt::Test)
+target_link_libraries( testsimilarartistsengine amarokcore amaroklib KF${KF_MAJOR_VERSION}::KIOCore KF${KF_MAJOR_VERSION}::Plasma ${LIBLASTFM_LIBRARY} Qt::Test)

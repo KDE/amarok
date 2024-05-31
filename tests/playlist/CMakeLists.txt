@@ -43,8 +43,8 @@ add_dependencies( testplaylistmodels amaroklib )
 target_link_libraries( testplaylistmodels
     amarokcore
     amaroklib
-    KF5::KIOCore
-    Phonon::phonon4qt5
+    KF${KF_MAJOR_VERSION}::KIOCore
+    Phonon::phonon4qt${QT_MAJOR_VERSION}
 
     Qt::Test
     Qt::Core
@@ -75,8 +75,8 @@ add_dependencies( testplaylistlayout amaroklib )
 target_link_libraries( testplaylistlayout
     amarokcore
     amaroklib
-    KF5::KIOCore
-    Phonon::phonon4qt5
+    KF${KF_MAJOR_VERSION}::KIOCore
+    Phonon::phonon4qt${QT_MAJOR_VERSION}
 
     Qt::Test
     Qt::Core

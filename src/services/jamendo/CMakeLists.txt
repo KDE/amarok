@@ -24,8 +24,8 @@ add_subdirectory( images )
             amarokcore
             amaroklib
             amarokpud
-            KF5::KIOCore
-            KF5::ThreadWeaver
+            KF${KF_MAJOR_VERSION}::KIOCore
+            KF${KF_MAJOR_VERSION}::ThreadWeaver
         )
 
 

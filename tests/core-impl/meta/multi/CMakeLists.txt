@@ -37,10 +37,10 @@ add_dependencies( testmetamultitrack amaroklib )
 target_link_libraries( testmetamultitrack
     amarokcore
     amaroklib
-    KF5::KIOCore
-    Phonon::phonon4qt5
+    KF${KF_MAJOR_VERSION}::KIOCore
+    Phonon::phonon4qt${QT_MAJOR_VERSION}
 
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Test
     Qt::Core
     ${GOOGLEMOCK_LIBRARIES}

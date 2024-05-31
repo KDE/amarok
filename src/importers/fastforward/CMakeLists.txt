@@ -12,7 +12,7 @@ add_library(amarok_importer-fastforward MODULE ${amarok_importer-fastforward_PAR
 target_link_libraries( amarok_importer-fastforward
     amarokcore
     amaroklib
-    KF5::KIOCore
+    KF${KF_MAJOR_VERSION}::KIOCore
     Qt::Sql
 )
 

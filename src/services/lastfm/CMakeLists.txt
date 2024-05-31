@@ -6,7 +6,7 @@ add_subdirectory( images )
 
 ########### next target ###############
 
-find_package( KF5 COMPONENTS Wallet REQUIRED )
+find_package( KF${KF_MAJOR_VERSION} COMPONENTS Wallet REQUIRED )
 
 set( amarok_service_lastfm_config_SRCS
     LastFmServiceConfig.cpp
@@ -16,7 +16,7 @@ add_library( amarok_service_lastfm_config SHARED ${amarok_service_lastfm_config_
 generate_export_header(amarok_service_lastfm_config BASE_NAME amarok_service_lastfm_config)
 target_link_libraries( amarok_service_lastfm_config
     amarokcore
-    KF5::Wallet
+    KF${KF_MAJOR_VERSION}::Wallet
 )
 
 install( TARGETS amarok_service_lastfm_config ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
@@ -52,9 +52,9 @@ target_link_libraries( amarok_service_lastfm
     amaroklib
     amarokpud
     ${LIBLASTFM_LIBRARY}
-    KF5::KIOCore
-    KF5::ThreadWeaver
-    KF5::Wallet
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::Wallet
     Qt::Network
 )
 
@@ -76,7 +76,7 @@ target_link_libraries( kcm_amarok_service_lastfm
     amaroklib
     ${LIBLASTFM_LIBRARY}
     
-    KF5::KIOCore
+    KF${KF_MAJOR_VERSION}::KIOCore
     Qt::Network
 )
 

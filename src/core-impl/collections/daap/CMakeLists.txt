@@ -21,8 +21,8 @@ add_library(amarok_collection-daapcollection MODULE ${amarok_collection-daapcoll
 target_link_libraries(amarok_collection-daapcollection
     amarokcore
     amaroklib
-    KF5::ThreadWeaver
-    KF5::DNSSD
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::DNSSD
     Qt::Network
 )
 

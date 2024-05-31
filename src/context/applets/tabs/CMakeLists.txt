@@ -8,8 +8,8 @@ add_library(amarok_context_applet_tabs MODULE ${tabs_applet_SRCS} )
 target_link_libraries( amarok_context_applet_tabs
     amarokcore
     amaroklib
-    KF5::Plasma
-    KF5::KIOCore
+    KF${KF_MAJOR_VERSION}::Plasma
+    KF${KF_MAJOR_VERSION}::KIOCore
 )
 
 install( TARGETS amarok_context_applet_tabs DESTINATION ${KDE_INSTALL_PLUGINDIR} )

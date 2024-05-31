@@ -10,7 +10,7 @@ add_library(amarok_importer-rhythmbox MODULE ${amarok_importer-rhythmbox_PART_SR
 target_link_libraries( amarok_importer-rhythmbox
     amarokcore
     amaroklib
-    KF5::KIOCore
+    KF${KF_MAJOR_VERSION}::KIOCore
 )
 
 install( TARGETS amarok_importer-rhythmbox DESTINATION ${KDE_INSTALL_PLUGINDIR} )

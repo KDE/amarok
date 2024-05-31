@@ -14,7 +14,7 @@ set( similarArtists_engine_SRCS
 )
 
 add_library(amarok_data_engine_similarArtists MODULE ${similarArtists_engine_SRCS})
-target_link_libraries( amarok_data_engine_similarArtists amarokcore amaroklib KF5::Plasma KF5::KIOCore ${LIBLASTFM_LIBRARY} )
+target_link_libraries( amarok_data_engine_similarArtists amarokcore amaroklib KF${KF_MAJOR_VERSION}::Plasma KF${KF_MAJOR_VERSION}::KIOCore ${LIBLASTFM_LIBRARY} )
 
 install( TARGETS amarok_data_engine_similarArtists DESTINATION ${KDE_INSTALL_PLUGINDIR} )
 install( FILES amarok-data-engine-similarArtists.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )

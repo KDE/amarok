@@ -27,9 +27,9 @@ target_link_libraries(amarok_collection-umscollection
   amaroklib
   amarokcore
   amarok-transcoding
-  KF5::KIOCore
-  KF5::Solid
-  KF5::ThreadWeaver
+  KF${KF_MAJOR_VERSION}::KIOCore
+  KF${KF_MAJOR_VERSION}::Solid
+  KF${KF_MAJOR_VERSION}::ThreadWeaver
   Qt::Gui
   )
 

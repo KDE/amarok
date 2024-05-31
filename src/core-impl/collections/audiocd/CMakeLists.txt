@@ -31,8 +31,8 @@ target_link_libraries(
     amarok_collection-audiocdcollection
     amarokcore
     amaroklib
-    KF5::ThreadWeaver
-    KF5::KIOCore
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::KIOCore
 )
 
 if(APPLE)

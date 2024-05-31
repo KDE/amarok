@@ -13,7 +13,7 @@ endif()
 target_link_libraries(amarok_context_applet_labels
     amarokcore
     amaroklib
-    KF5::Plasma
+    KF${KF_MAJOR_VERSION}::Plasma
 )
 
 install(TARGETS amarok_context_applet_labels DESTINATION ${KDE_INSTALL_PLUGINDIR})

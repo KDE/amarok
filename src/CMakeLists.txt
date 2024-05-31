@@ -824,26 +824,26 @@ ki18n_wrap_ui(amaroklib_LIB_SRCS
 add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 
 target_link_libraries(amaroklib
-    Phonon::phonon4qt5
-    KF5::Archive
-    KF5::Attica
-    KF5::CoreAddons
-    KF5::Declarative
-    KF5::GlobalAccel
-    KF5::GuiAddons
-    KF5::I18n
-    KF5::IconThemes
-    KF5::KCMUtils
-    KF5::KIOCore
-    KF5::KIOFileWidgets
-    KF5::KIOWidgets
-    KF5::NewStuff
-    KF5::Notifications
-    KF5::Package
-    KF5::TextEditor
-    KF5::ThreadWeaver
-    KF5::WidgetsAddons
-    KF5::WindowSystem
+    Phonon::phonon4qt${QT_MAJOR_VERSION}
+    KF${KF_MAJOR_VERSION}::Archive
+    KF${KF_MAJOR_VERSION}::Attica
+    KF${KF_MAJOR_VERSION}::CoreAddons
+    KF${KF_MAJOR_VERSION}::Declarative
+    KF${KF_MAJOR_VERSION}::GlobalAccel
+    KF${KF_MAJOR_VERSION}::GuiAddons
+    KF${KF_MAJOR_VERSION}::I18n
+    KF${KF_MAJOR_VERSION}::IconThemes
+    KF${KF_MAJOR_VERSION}::KCMUtils
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::KIOFileWidgets
+    KF${KF_MAJOR_VERSION}::KIOWidgets
+    KF${KF_MAJOR_VERSION}::NewStuff
+    KF${KF_MAJOR_VERSION}::Notifications
+    KF${KF_MAJOR_VERSION}::Package
+    KF${KF_MAJOR_VERSION}::TextEditor
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::WidgetsAddons
+    KF${KF_MAJOR_VERSION}::WindowSystem
     Qt::Gui
     Qt::Qml
     Qt::Quick
@@ -859,12 +859,12 @@ target_link_libraries(amaroklib
     amarokshared
 )
 
-if( Qt5WebEngine_FOUND )
+if( Qt5WebEngine_FOUND OR Qt6WebEngineWidgets_FOUND)
     target_link_libraries( amaroklib Qt::WebEngine )
     add_definitions( -DWITH_QT_WEBENGINE )
 endif()
 
-if( Qt5UiTools_FOUND )
+if( Qt${QT_MAJOR_VERSION}UiTools_FOUND )
     target_link_libraries( amaroklib Qt::UiTools )
     add_definitions( -DWITH_QT_UITOOLS )
 endif()
@@ -910,10 +910,10 @@ if(APPLE)
 endif()
 
 target_link_libraries(amarok
-    KF5::CoreAddons
-    KF5::Crash
-    KF5::DBusAddons
-    KF5::I18n
+    KF${KF_MAJOR_VERSION}::CoreAddons
+    KF${KF_MAJOR_VERSION}::Crash
+    KF${KF_MAJOR_VERSION}::DBusAddons
+    KF${KF_MAJOR_VERSION}::I18n
 
     amarokcore
     amaroklib

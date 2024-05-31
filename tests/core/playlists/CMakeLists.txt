@@ -20,4 +20,4 @@ set( testplaylistobserver_SRCS
 add_executable( testplaylistobserver ${testplaylistobserver_SRCS} )
 add_test(NAME testplaylistobserver COMMAND $<TARGET_FILE:testplaylistobserver>)
 ecm_mark_as_test(testplaylistobserver)
-target_link_libraries( testplaylistobserver KF5::ThreadWeaver Qt::Test Qt::Core amarokcore amaroklib )
+target_link_libraries( testplaylistobserver KF${KF_MAJOR_VERSION}::ThreadWeaver Qt::Test Qt::Core amarokcore amaroklib )

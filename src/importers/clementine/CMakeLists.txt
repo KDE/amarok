@@ -10,7 +10,7 @@ add_library(amarok_importer-clementine MODULE ${amarok_importer-clementine_PART_
 target_link_libraries( amarok_importer-clementine
     amarokcore
     amaroklib
-    KF5::KIOCore
+    KF${KF_MAJOR_VERSION}::KIOCore
     Qt::Sql
 )
 

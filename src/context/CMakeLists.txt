@@ -43,8 +43,8 @@ add_library(qml_plugin SHARED ${qml_plugin_SRCS})
 target_link_libraries(qml_plugin
     amarokcore
     Qt::Quick
-    KF5::QuickAddons
-    KF5::WidgetsAddons
+    KF${KF_MAJOR_VERSION}::QuickAddons
+    KF${KF_MAJOR_VERSION}::WidgetsAddons
 )
 
 install( TARGETS qml_plugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/qml )

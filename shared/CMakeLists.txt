@@ -38,7 +38,7 @@ target_include_directories( amarokshared PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CM
 
 include_directories(SYSTEM ${TAGLIB_INCLUDES} )
 add_definitions( ${TAGLIB_CFLAGS} )
-target_link_libraries( amarokshared ${TAGLIB_LIBRARIES} KF5::Codecs)
+target_link_libraries( amarokshared ${TAGLIB_LIBRARIES} KF${KF_MAJOR_VERSION}::Codecs)
 if( TAGLIB-EXTRAS_FOUND )
     include_directories(SYSTEM ${TAGLIB-EXTRAS_INCLUDES} )
     add_definitions( ${TAGLIB-EXTRAS_CFLAGS} )

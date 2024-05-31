@@ -26,8 +26,8 @@ macro(add_database_test test_target test_sources)
         amarokcore
         amaroklib
         amarokshared
-        KF5::KIOCore
-        KF5::ThreadWeaver
+        KF${KF_MAJOR_VERSION}::KIOCore
+        KF${KF_MAJOR_VERSION}::ThreadWeaver
         Qt::Test
         Qt::Core
         ${CMAKE_DL_LIBS}

@@ -114,11 +114,11 @@ target_link_libraries(amarokcore
     Threads::Threads
     Qt::Core
     Qt::Network
-    KF5::KIOCore
-    KF5::ConfigCore
-    KF5::ThreadWeaver
-    KF5::I18n
-    KF5::XmlGui
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::ConfigCore
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::I18n
+    KF${KF_MAJOR_VERSION}::XmlGui
 )
 
 if(APPLE)

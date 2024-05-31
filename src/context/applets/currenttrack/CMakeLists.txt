@@ -9,7 +9,7 @@ target_link_libraries(amarok_context_applet_currenttrack
     amarokcore
     amaroklib
     Qt::Qml
-    KF5::CoreAddons
+    KF${KF_MAJOR_VERSION}::CoreAddons
 )
 
 install(TARGETS amarok_context_applet_currenttrack DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/currenttrack)

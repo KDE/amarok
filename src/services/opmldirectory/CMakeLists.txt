@@ -23,9 +23,9 @@
         target_link_libraries(amarok_service_opmldirectory
             amarokcore
             amaroklib
-            KF5::IconThemes
-            KF5::KIOCore
-            KF5::ThreadWeaver
+            KF${KF_MAJOR_VERSION}::IconThemes
+            KF${KF_MAJOR_VERSION}::KIOCore
+            KF${KF_MAJOR_VERSION}::ThreadWeaver
         )
 
         install(TARGETS amarok_service_opmldirectory DESTINATION ${KDE_INSTALL_PLUGINDIR} )

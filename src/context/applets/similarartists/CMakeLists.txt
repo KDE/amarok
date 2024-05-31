@@ -16,7 +16,7 @@ endif()
 target_link_libraries(amarok_context_applet_similarArtists
     amarokcore
     amaroklib
-    KF5::Plasma
+    KF${KF_MAJOR_VERSION}::Plasma
     
 )
 

@@ -13,7 +13,7 @@ add_library(amarok_importer-amarok MODULE ${amarok_importer-amarok_PART_SRCS} )
 target_link_libraries( amarok_importer-amarok
     amarokcore
     amaroklib
-    KF5::KIOCore
+    KF${KF_MAJOR_VERSION}::KIOCore
     Qt::Sql
 )
 

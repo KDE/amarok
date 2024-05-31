@@ -27,4 +27,4 @@ ecm_mark_as_test(testupcomingeventsengine)
 
 add_dependencies( testupcomingeventsengine amaroklib)
 
-target_link_libraries( testupcomingeventsengine amarokcore amaroklib KF5::Plasma  KF5::KIOCore Qt::Test)
+target_link_libraries( testupcomingeventsengine amarokcore amaroklib KF${KF_MAJOR_VERSION}::Plasma  KF${KF_MAJOR_VERSION}::KIOCore Qt::Test)

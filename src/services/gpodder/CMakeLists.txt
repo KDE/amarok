@@ -13,7 +13,7 @@ include_directories(
 
 add_subdirectory( images )
 
-find_package( KF5 COMPONENTS Wallet REQUIRED )
+find_package( KF${KF_MAJOR_VERSION} COMPONENTS Wallet REQUIRED )
 
 set(libgpodder_service_config_SRCS
     GpodderServiceConfig.cpp
@@ -24,7 +24,7 @@ add_library(gpodder_service_config SHARED ${libgpodder_service_config_SRCS})
 target_link_libraries(gpodder_service_config
     amaroklib
     amarokcore
-    KF5::Wallet
+    KF${KF_MAJOR_VERSION}::Wallet
 )
 
 install(TARGETS gpodder_service_config DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
@@ -50,8 +50,8 @@ target_link_libraries(amarok_service_gpodder
     amarokpud
     gpodder_service_config
     mygpo-qt5
-    KF5::KIOCore
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Network
 )
 
@@ -70,8 +70,8 @@ target_link_libraries( kcm_amarok_service_gpodder
     amaroklib
     gpodder_service_config
     mygpo-qt5
-    KF5::ConfigWidgets
-    KF5::KIOCore
+    KF${KF_MAJOR_VERSION}::ConfigWidgets
+    KF${KF_MAJOR_VERSION}::KIOCore
     Qt::Network
 )
 

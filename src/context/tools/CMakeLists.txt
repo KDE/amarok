@@ -5,9 +5,9 @@ set(amarokpkg_SRCS
 
 add_executable(amarokpkg ${amarokpkg_SRCS})
 
-target_link_libraries(amarokpkg KF5::I18n
-                                KF5::ConfigWidgets
-                                KF5::Package
+target_link_libraries(amarokpkg KF${KF_MAJOR_VERSION}::I18n
+                                KF${KF_MAJOR_VERSION}::ConfigWidgets
+                                KF${KF_MAJOR_VERSION}::Package
                                 Qt::DBus
                                 Qt::Core
                                 Qt::Widgets

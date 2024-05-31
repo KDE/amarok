@@ -23,8 +23,8 @@ add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
 generate_export_header(amarok-sqlcollection BASE_NAME amarok_sqlcollection)
 
 target_link_libraries(amarok-sqlcollection
-    KF5::KIOCore
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Core
     Qt::Gui
     Threads::Threads

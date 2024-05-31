@@ -29,10 +29,10 @@ add_dependencies( testmasterslavesynchronizationjob amaroklib )
 target_link_libraries(testmasterslavesynchronizationjob
                         amarokcore
                         amaroklib
-                        KF5::KIOCore
-                        KF5::Solid
+                        KF${KF_MAJOR_VERSION}::KIOCore
+                        KF${KF_MAJOR_VERSION}::Solid
                         Qt::Gui
-                        KF5::ThreadWeaver
+                        KF${KF_MAJOR_VERSION}::ThreadWeaver
                         Qt::Test
                         Qt::Core
                         ${GOOGLEMOCK_LIBRARIES})
@@ -55,10 +55,10 @@ add_dependencies( testunionjob amaroklib )
 target_link_libraries(testunionjob
                         amarokcore
                         amaroklib
-                        KF5::KIOCore
-                        KF5::Solid
+                        KF${KF_MAJOR_VERSION}::KIOCore
+                        KF${KF_MAJOR_VERSION}::Solid
                         Qt::Gui
-                        KF5::ThreadWeaver
+                        KF${KF_MAJOR_VERSION}::ThreadWeaver
                         Qt::Test
                         Qt::Core
                         ${GOOGLEMOCK_LIBRARIES})
@@ -81,10 +81,10 @@ add_dependencies( testonewaysynchronizationjob amaroklib )
 target_link_libraries(testonewaysynchronizationjob
                         amarokcore
                         amaroklib
-                        KF5::KIOCore
-                        KF5::Solid
+                        KF${KF_MAJOR_VERSION}::KIOCore
+                        KF${KF_MAJOR_VERSION}::Solid
                         Qt::Gui
-                        KF5::ThreadWeaver
+                        KF${KF_MAJOR_VERSION}::ThreadWeaver
                         Qt::Test
                         Qt::Core
                         ${GOOGLEMOCK_LIBRARIES})

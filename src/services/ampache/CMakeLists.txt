@@ -26,7 +26,7 @@ target_link_libraries(ampache_account_login
     amaroklib
     amarokcore
     
-    KF5::KIOCore
+    KF${KF_MAJOR_VERSION}::KIOCore
 )
 install(TARGETS ampache_account_login DESTINATION ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
@@ -52,8 +52,8 @@ target_link_libraries(amarok_service_ampache
     amarokcore
     amaroklib
 
-    KF5::KIOCore
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Xml
 )
 if( LIBLASTFM_FOUND )
@@ -79,7 +79,7 @@ add_library(kcm_amarok_service_ampache MODULE ${kcm_amarok_service_ampache_PART_
 
 target_link_libraries( kcm_amarok_service_ampache
     ampache_account_login
-    KF5::ConfigWidgets
+    KF${KF_MAJOR_VERSION}::ConfigWidgets
 )
 
 install(TARGETS kcm_amarok_service_ampache DESTINATION ${KDE_INSTALL_PLUGINDIR})

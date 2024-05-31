@@ -32,7 +32,7 @@ target_link_libraries(testmemoryquerymaker
     amarokcore
     amaroklib
     Qt::Gui
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Test
     Qt::Core
     ${GOOGLEMOCK_LIBRARIES}
@@ -57,6 +57,6 @@ ecm_mark_as_test(testartisthelper)
 target_link_libraries( testartisthelper
     Qt::Test
     Qt::Core
-    KF5::I18n
+    KF${KF_MAJOR_VERSION}::I18n
 )
 

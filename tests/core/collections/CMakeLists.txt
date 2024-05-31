@@ -34,7 +34,7 @@ endif()
 target_link_libraries(testcollectionlocation
                         amarokcore
                         amaroklib
-                        KF5::KIOCore
+                        KF${KF_MAJOR_VERSION}::KIOCore
                         Qt::Test
                         ${GOOGLEMOCK_LIBRARIES})
 

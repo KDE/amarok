@@ -29,7 +29,7 @@ endif()
 target_link_libraries(amarok_context_applet_upcomingEvents
     amarokcore
     amaroklib
-    KF5::Plasma
+    KF${KF_MAJOR_VERSION}::Plasma
     
     ${KDE4_KDEWEBKIT_LIBS}
     Qt::Network

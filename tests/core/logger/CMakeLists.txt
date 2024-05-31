@@ -29,7 +29,7 @@ target_link_libraries( testlogger
     Qt::Test
     Qt::Core
     Qt::Network
-    KF5::CoreAddons
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::CoreAddons
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
     ${GOOGLEMOCK_LIBRARIES}
     ${CMAKE_DL_LIBS})

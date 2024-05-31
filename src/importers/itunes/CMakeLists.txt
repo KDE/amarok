@@ -10,7 +10,7 @@ add_library(amarok_importer-itunes MODULE ${amarok_importer-itunes_PART_SRCS} )
 target_link_libraries( amarok_importer-itunes
     amarokcore
     amaroklib
-    KF5::KIOCore
+    KF${KF_MAJOR_VERSION}::KIOCore
 )
 
 install( TARGETS amarok_importer-itunes DESTINATION ${KDE_INSTALL_PLUGINDIR} )

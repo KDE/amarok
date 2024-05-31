@@ -44,7 +44,7 @@ add_test(NAME testamarok COMMAND $<TARGET_FILE:testamarok>)
 ecm_mark_as_test(testamarok)
 
 target_link_libraries( testamarok
-    KF5::KIOCore
+    KF${KF_MAJOR_VERSION}::KIOCore
     Qt::Test
     amarokcore
     amaroklib
@@ -82,7 +82,7 @@ set( testenginecontroller_SRCS TestEngineController.cpp )
 add_executable( testenginecontroller ${testenginecontroller_SRCS} )
 add_test(NAME testenginecontroller COMMAND $<TARGET_FILE:testenginecontroller>)
 ecm_mark_as_test(testenginecontroller)
-target_link_libraries( testenginecontroller KF5::ThreadWeaver Qt::Test amaroklib amarokcore )
+target_link_libraries( testenginecontroller KF${KF_MAJOR_VERSION}::ThreadWeaver Qt::Test amaroklib amarokcore )
 
 #------------------------ Test Expression -----------------------------
 
@@ -148,4 +148,4 @@ endif()
 add_dependencies( testtrackorganizer amarokcore )
 add_dependencies( testtrackorganizer amaroklib )
 
-target_link_libraries( testtrackorganizer amarokcore amaroklib KF5::Solid Qt::Test Qt::Core Qt::Gui ${GOOGLEMOCK_LIBRARIES})
+target_link_libraries( testtrackorganizer amarokcore amaroklib KF${KF_MAJOR_VERSION}::Solid Qt::Test Qt::Core Qt::Gui ${GOOGLEMOCK_LIBRARIES})

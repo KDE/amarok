@@ -20,4 +20,4 @@ set( testsqluserplaylistprovider_SRCS
 add_executable( testsqluserplaylistprovider ${testsqluserplaylistprovider_SRCS} )
 add_test(NAME testsqluserplaylistprovider COMMAND $<TARGET_FILE:testsqluserplaylistprovider>)
 ecm_mark_as_test(testsqluserplaylistprovider)
-target_link_libraries( testsqluserplaylistprovider  KF5::KIOCore Qt::Test Qt::Core amarokcore amaroklib )
+target_link_libraries( testsqluserplaylistprovider  KF${KF_MAJOR_VERSION}::KIOCore Qt::Test Qt::Core amarokcore amaroklib )

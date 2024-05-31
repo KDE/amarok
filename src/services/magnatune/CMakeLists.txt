@@ -44,9 +44,9 @@ add_library(amarok_service_magnatunestore MODULE ${amarok_service_magnatune_PART
 target_link_libraries(amarok_service_magnatunestore
     amarokcore
     amaroklib
-    KF5::ConfigWidgets
-    KF5::KIOCore
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::ConfigWidgets
+    KF${KF_MAJOR_VERSION}::KIOCore
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Core
     Qt::Widgets
 )
@@ -68,8 +68,8 @@ add_library(kcm_amarok_service_magnatunestore MODULE ${kcm_amarok_service_magnat
 
 target_link_libraries( kcm_amarok_service_magnatunestore
     amarokcore
-    KF5::ConfigWidgets
-    KF5::ThreadWeaver
+    KF${KF_MAJOR_VERSION}::ConfigWidgets
+    KF${KF_MAJOR_VERSION}::ThreadWeaver
     Qt::Core
     Qt::Gui
 )
