@@ -12,6 +12,7 @@
         "Description[gl]": "Configura o servidor ampache co que conectar.",
         "Description[it]": "Configura server Ampache ai quali connetterti",
         "Description[nl]": "Stelt de ampache-server(s) in waarmee u verbinding wilt maken",
+        "Description[pl]": "Ustawia serwer(y) ampache, do których ma się podłączyć",
         "Description[sl]": "Nastavi strežnike Ampache, s katerimi se boste povezali",
         "Description[sv]": "Ställer in Ampache-server att ansluta till",
         "Description[tr]": "Bağlanılacak ampache sunucularını ayarlar",
