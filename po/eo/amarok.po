@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the Amarok package.
 # Stéphane Fillod <f8cfe@free.fr>, 2007.
 # Pierre-Marie Pédrot <pedrotpmx@wanadoo.fr>, 2007, 2008.
-# Oliver Kellogg <okellogg@users.sourceforge.net>, 2023.
+# Oliver Kellogg <olivermkellogg@gmail.com>, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-05-28 01:43+0000\n"
-"PO-Revision-Date: 2024-05-12 23:22+0100\n"
-"Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
+"PO-Revision-Date: 2024-05-30 22:41+0200\n"
+"Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "Pierre-Marie Pédrot,Stéphane Fillod,Oliver Kellogg"
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "pedrotpmx@wanadoo.fr,f8cfe@free.fr,okellogg@users.sourceforge.net"
+msgstr "pedrotpmx@wanadoo.fr,f8cfe@free.fr,olivermkellogg@gmail.com"
 
 #. i18n: tag layout attribute name
 #: ../data/DefaultPlaylistLayouts.xml:3
@@ -2218,7 +2218,7 @@ msgstr "Pli..."
 #: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
-msgstr "Aldoni al Ludlisto"
+msgstr "&Aldoni al Ludlisto"
 
 #: browsers/CollectionTreeView.cpp:1100 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
@@ -2267,7 +2267,7 @@ msgstr ""
 #: browsers/filebrowser/FileView.cpp:403
 #, kde-format
 msgid "&Move to Trash"
-msgstr "Movi al Rubujo"
+msgstr "&Movi al Rubujo"
 
 #: browsers/filebrowser/FileView.cpp:571
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
@@ -3079,7 +3079,7 @@ msgstr "Konekto-Agordoj"
 #: configdialog/dialogs/DatabaseConfig.ui:38
 #, kde-format
 msgid "&Server:"
-msgstr "Servilo:"
+msgstr "&Servilo:"
 
 #. i18n: ectx: property (toolTip), widget (QLineEdit, kcfg_Host)
 #: configdialog/dialogs/DatabaseConfig.ui:55
@@ -3485,7 +3485,7 @@ msgid ""
 "character sets used in ID3 tags."
 msgstr ""
 "Se elektata, Amarok uzos la\n"
-"Signoraran Detektilon de Mozilo por provi aŭtomate diveni la\n"
+"Signaran Detektilon de Mozilo por provi aŭtomate diveni la\n"
 "signajn arojn uzatajn en ID3-etikedoj."
 
 #. i18n: ectx: property (text), widget (QCheckBox, m_useCharsetDetector)
@@ -9369,7 +9369,7 @@ msgstr "Traka informo"
 #: dialogs/TagDialogBase.ui:38
 #, kde-format
 msgid "S&ummary"
-msgstr "Resumo"
+msgstr "Res&umo"
 
 #. i18n: ectx: property (text), widget (QLabel, leftHeaderLabel)
 #: dialogs/TagDialogBase.ui:135
