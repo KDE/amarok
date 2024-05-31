@@ -823,44 +823,86 @@ ki18n_wrap_ui(amaroklib_LIB_SRCS
 
 add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 
-target_link_libraries(amaroklib
-    Phonon::phonon4qt${QT_MAJOR_VERSION}
-    KF${KF_MAJOR_VERSION}::Archive
-    KF${KF_MAJOR_VERSION}::Attica
-    KF${KF_MAJOR_VERSION}::CoreAddons
-    KF${KF_MAJOR_VERSION}::Declarative
-    KF${KF_MAJOR_VERSION}::GlobalAccel
-    KF${KF_MAJOR_VERSION}::GuiAddons
-    KF${KF_MAJOR_VERSION}::I18n
-    KF${KF_MAJOR_VERSION}::IconThemes
-    KF${KF_MAJOR_VERSION}::KCMUtils
-    KF${KF_MAJOR_VERSION}::KIOCore
-    KF${KF_MAJOR_VERSION}::KIOFileWidgets
-    KF${KF_MAJOR_VERSION}::KIOWidgets
-    KF${KF_MAJOR_VERSION}::NewStuff
-    KF${KF_MAJOR_VERSION}::Notifications
-    KF${KF_MAJOR_VERSION}::Package
-    KF${KF_MAJOR_VERSION}::TextEditor
-    KF${KF_MAJOR_VERSION}::ThreadWeaver
-    KF${KF_MAJOR_VERSION}::WidgetsAddons
-    KF${KF_MAJOR_VERSION}::WindowSystem
-    Qt::Gui
-    Qt::Qml
-    Qt::Quick
-    Qt::QuickWidgets
-    Qt::Sql
-    Qt::Svg
-    ${CMAKE_DL_LIBS}
-    Threads::Threads
-    ${EXTRA_LIBS}
-    amarokpud
-    amarokcore
-    amarok-transcoding
-    amarokshared
-)
+if(BUILD_WITH_QT6)
+    target_link_libraries(amaroklib
+        Phonon::phonon4qt${QT_MAJOR_VERSION}
+        KF${KF_MAJOR_VERSION}::Archive
+        KF${KF_MAJOR_VERSION}::Attica
+        KF${KF_MAJOR_VERSION}::CoreAddons
+        KF${KF_MAJOR_VERSION}::GlobalAccel
+        KF${KF_MAJOR_VERSION}::GuiAddons
+        KF${KF_MAJOR_VERSION}::I18n
+        KF${KF_MAJOR_VERSION}::IconThemes
+        KF${KF_MAJOR_VERSION}::KCMUtils
+        KF${KF_MAJOR_VERSION}::KIOCore
+        KF${KF_MAJOR_VERSION}::KIOFileWidgets
+        KF${KF_MAJOR_VERSION}::KIOWidgets
+        KF${KF_MAJOR_VERSION}::NewStuffCore
+        KF${KF_MAJOR_VERSION}::Notifications
+        KF${KF_MAJOR_VERSION}::Package
+        KF${KF_MAJOR_VERSION}::TextEditor
+        KF${KF_MAJOR_VERSION}::ThreadWeaver
+        KF${KF_MAJOR_VERSION}::WidgetsAddons
+        KF${KF_MAJOR_VERSION}::WindowSystem
+        Qt::Gui
+        Qt::Qml
+        Qt::Quick
+        Qt::QuickWidgets
+        Qt::Sql
+        Qt::Svg
+        ${CMAKE_DL_LIBS}
+        Threads::Threads
+        ${EXTRA_LIBS}
+        amarokpud
+        amarokcore
+        amarok-transcoding
+        amarokshared
+    )
+else()
+    target_link_libraries(amaroklib
+        Phonon::phonon4qt${QT_MAJOR_VERSION}
+        KF${KF_MAJOR_VERSION}::Archive
+        KF${KF_MAJOR_VERSION}::Attica
+        KF${KF_MAJOR_VERSION}::CoreAddons
+        KF${KF_MAJOR_VERSION}::Declarative
+        KF${KF_MAJOR_VERSION}::GlobalAccel
+        KF${KF_MAJOR_VERSION}::GuiAddons
+        KF${KF_MAJOR_VERSION}::I18n
+        KF${KF_MAJOR_VERSION}::IconThemes
+        KF${KF_MAJOR_VERSION}::KCMUtils
+        KF${KF_MAJOR_VERSION}::KIOCore
+        KF${KF_MAJOR_VERSION}::KIOFileWidgets
+        KF${KF_MAJOR_VERSION}::KIOWidgets
+        KF${KF_MAJOR_VERSION}::NewStuff
+        KF${KF_MAJOR_VERSION}::Notifications
+        KF${KF_MAJOR_VERSION}::Package
+        KF${KF_MAJOR_VERSION}::TextEditor
+        KF${KF_MAJOR_VERSION}::ThreadWeaver
+        KF${KF_MAJOR_VERSION}::WidgetsAddons
+        KF${KF_MAJOR_VERSION}::WindowSystem
+        Qt::Gui
+        Qt::Qml
+        Qt::Quick
+        Qt::QuickWidgets
+        Qt::Sql
+        Qt::Svg
+        ${CMAKE_DL_LIBS}
+        Threads::Threads
+        ${EXTRA_LIBS}
+        amarokpud
+        amarokcore
+        amarok-transcoding
+        amarokshared
+    )
+endif()
 
-if( Qt5WebEngine_FOUND OR Qt6WebEngineWidgets_FOUND)
+if( Qt5WebEngine_FOUND )
     target_link_libraries( amaroklib Qt::WebEngine )
+    add_definitions( -DWITH_QT_WEBENGINE )
+endif()
+
+if( Qt6WebEngineWidgets_FOUND )
+    target_link_libraries( amaroklib Qt::WebEngineWidgets )
     add_definitions( -DWITH_QT_WEBENGINE )
 endif()
 

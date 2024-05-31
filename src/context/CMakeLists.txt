@@ -40,12 +40,20 @@ set(qml_plugin_SRCS
 
 add_library(qml_plugin SHARED ${qml_plugin_SRCS})
 
-target_link_libraries(qml_plugin
-    amarokcore
-    Qt::Quick
-    KF${KF_MAJOR_VERSION}::QuickAddons
-    KF${KF_MAJOR_VERSION}::WidgetsAddons
-)
+if(BUILD_WITH_QT6)
+    target_link_libraries(qml_plugin
+        amarokcore
+        Qt::Quick
+        KF${KF_MAJOR_VERSION}::WidgetsAddons
+    )
+else()
+    target_link_libraries(qml_plugin
+        amarokcore
+        Qt::Quick
+        KF${KF_MAJOR_VERSION}::QuickAddons
+        KF${KF_MAJOR_VERSION}::WidgetsAddons
+    )
+endif()
 
 install( TARGETS qml_plugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/amarok/qml )
 
