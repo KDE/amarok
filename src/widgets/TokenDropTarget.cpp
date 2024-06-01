@@ -222,7 +222,7 @@ TokenDropTarget::removeToken( Token *token )
         {
             for( int col = 0; col < rowBox->count(); ++col )
             {
-                if ( ( token == qobject_cast<Token*>( rowBox->itemAt( col )->widget() ) ) )
+                if ( token == qobject_cast<Token*>( rowBox->itemAt( col )->widget() ) )
                 {
                     rowBox->removeWidget( token );
                     Q_EMIT changed();
