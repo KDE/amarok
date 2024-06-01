@@ -657,7 +657,6 @@ set(amaroklib_LIB_SRCS
     QStringx.cpp
     scripting/scriptmanager/ScriptManager.cpp
     scripting/scriptmanager/ScriptItem.cpp
-    scripting/scriptmanager/ScriptUpdater.cpp
     SvgHandler.cpp
     SvgTinter.cpp
     TrayIcon.cpp

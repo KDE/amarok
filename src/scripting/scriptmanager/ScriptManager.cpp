@@ -33,7 +33,6 @@
 #include <config.h> // for the compile flags
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "ScriptItem.h"
-#include "ScriptUpdater.h"
 
 #include <KMessageBox>
 #include <KPluginInfo>
@@ -45,6 +44,7 @@
 #include <QStandardPaths>
 #include <QTimer>
 #include <QDir>
+#include <QTemporaryFile>
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -224,14 +224,14 @@ ScriptManager::updateAllScripts() // SLOT
         debug() << "ScriptUpdater: Performing script update check now!";
         for( int i = 0; i < m_nScripts; ++i )
         {
-            ScriptUpdater *updater = new ScriptUpdater( this );
+            /*ScriptUpdater *updater = new ScriptUpdater( this );
             // all the ScriptUpdaters are now started in parallel.
             // tell them which script to work on
             updater->setScriptPath( foundScripts.at( i ) );
             // tell them whom to signal when they're finished
             connect( updater, &ScriptUpdater::finished, this, &ScriptManager::updaterFinished );
             // and finally tell them to get to work
-            QTimer::singleShot( 0, updater, &ScriptUpdater::updateScript );
+            QTimer::singleShot( 0, updater, &ScriptUpdater::updateScript );*/
         }
         // store current timestamp
         config.writeEntry( "LastUpdateCheck", QVariant( now ) );
