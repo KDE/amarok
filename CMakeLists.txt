@@ -74,7 +74,7 @@ set_package_properties(KF5Kirigami2 PROPERTIES TYPE RUNTIME PURPOSE "Needed by t
 ###############
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
-option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
+# option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON) #build is disabled for now, no need to show option
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
 

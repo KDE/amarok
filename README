@@ -71,14 +71,6 @@ Optional
       (MTP device support)
       http://libmtp.sourceforge.net/
 
-    * Mp3tunes.com integration (including syncronization) requires:
-      * OpenSSL https://www.openssl.org
-      * libxml2 http://xmlsoft.org
-      * libcurl https://curl.haxx.se
-      * Glib2 https://www.gtk.org
-      * Loudmouth, the Jabber library, http://www.loudmouth-project.org/
-      * Qt must be compiled with Glib enabled
-
     * Liblastfm 1.0.3 (or newer)
       (For scrobbling, internet radio, and artist info)
       https://github.com/lastfm/liblastfm
