@@ -841,12 +841,14 @@ if(BUILD_WITH_QT6)
         KF${KF_MAJOR_VERSION}::ThreadWeaver
         KF${KF_MAJOR_VERSION}::WidgetsAddons
         KF${KF_MAJOR_VERSION}::WindowSystem
+        Qt::Core5Compat
         Qt::Gui
         Qt::Qml
         Qt::Quick
         Qt::QuickWidgets
         Qt::Sql
         Qt::Svg
+        Qt::SvgWidgets
         ${CMAKE_DL_LIBS}
         Threads::Threads
         ${EXTRA_LIBS}

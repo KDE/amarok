@@ -18,6 +18,7 @@
 
 #include <config.h>
 
+#include <QIODevice>
 #include <QImage>
 #include <QRegularExpression>
 #include <QStringList>

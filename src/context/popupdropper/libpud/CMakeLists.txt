@@ -16,7 +16,12 @@ set(pud_LIB_SRCS
 
 add_library(pud SHARED ${pud_LIB_SRCS})
 
-target_link_libraries(pud Qt::Core Qt::Gui Qt::Svg)
+if(BUILD_WITH_QT6)
+  target_link_libraries(pud Qt::Core Qt::Gui Qt::Svg Qt::SvgWidgets)
+else()
+  target_link_libraries(pud Qt::Core Qt::Gui Qt::Svg)
+endif()
+
 
 set_target_properties(pud PROPERTIES
         VERSION

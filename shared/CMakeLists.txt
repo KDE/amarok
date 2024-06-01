@@ -45,10 +45,19 @@ if( TAGLIB-EXTRAS_FOUND )
     target_link_libraries( amarokshared ${TAGLIB-EXTRAS_LIBRARIES} )
 endif()
 
-target_link_libraries( amarokshared
+if(BUILD_WITH_QT6)
+  target_link_libraries( amarokshared
     Qt::Core
     Qt::Gui # for QImage, ...
-)
+    Qt::Core5Compat
+  )
+else()
+  target_link_libraries( amarokshared
+    Qt::Core
+    Qt::Gui # for QImage, ...
+  )
+endif()
+
 
 set_target_properties( amarokshared PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install( TARGETS amarokshared ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )

@@ -23,12 +23,12 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QStack>
+#include <QSvgRenderer>
+#include <QTimeLine>
 
 #include "PopupDropper_Export.h"
 
 class QMenu;
-class QSvgRenderer;
-class QTimeLine;
 class QWidget;
 class PopupDropper;
 class PopupDropperItem;

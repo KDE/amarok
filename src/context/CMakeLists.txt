@@ -16,12 +16,11 @@ target_include_directories( amarokpud PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/popupdropper/libpud
 )
 
-target_link_libraries( amarokpud
-    Qt::Core
-    Qt::Gui
-    Qt::Widgets
-    Qt::Svg
-)
+if(BUILD_WITH_QT6)
+  target_link_libraries(amarokpud Qt::Core Qt::Gui Qt::Svg Qt::SvgWidgets Qt::Widgets)
+else()
+  target_link_libraries(amarokpud Qt::Core Qt::Gui Qt::Svg Qt::Widgets)
+endif()
 
 install( TARGETS amarokpud ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )
 

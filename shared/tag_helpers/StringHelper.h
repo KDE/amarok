@@ -19,6 +19,7 @@
 
 #include <QString>
 #include <tstring.h>
+class QTextCodec;
 
 #ifdef Qt4QStringToTString
     #undef Qt4QStringToTString
