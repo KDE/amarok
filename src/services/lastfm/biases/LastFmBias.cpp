@@ -469,7 +469,7 @@ Dynamic::LastFmBias::queryFailed( const char *message )
     debug() << message;
 
     m_tracks.reset( false );
-    emit resultReady( m_tracks );
+    Q_EMIT resultReady( m_tracks );
     return;
 }
 
@@ -658,7 +658,7 @@ Dynamic::LastFmBias::setMatch( Dynamic::LastFmBias::MatchType value )
 {
     m_match = value;
     invalidate();
-    emit changed( BiasPtr(this) );
+    Q_EMIT changed( BiasPtr(this) );
 }
 
 void

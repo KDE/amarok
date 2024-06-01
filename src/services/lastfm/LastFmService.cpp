@@ -63,7 +63,7 @@ LastFmServiceFactory::init()
 {
     ServiceBase *service = new LastFmService( this, "Last.fm" );
     m_initialized = true;
-    emit newService( service );
+    Q_EMIT newService( service );
 }
 
 QString

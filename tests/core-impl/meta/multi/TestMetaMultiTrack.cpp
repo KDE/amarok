@@ -44,7 +44,7 @@ TestMetaMultiTrack::TestMetaMultiTrack()
 void
 TestMetaMultiTrack::tracksLoaded( Playlists::PlaylistPtr playlist )
 {
-    emit tracksLoadedSignal( playlist );
+    Q_EMIT tracksLoadedSignal( playlist );
 }
 
 void TestMetaMultiTrack::initTestCase()
@@ -166,7 +166,7 @@ NotifyObserversWaiter::slotFilterResolved()
             subscribeTo( track );
     }
     if( m_tracks.isEmpty() )
-        emit done();
+        Q_EMIT done();
 }
 
 void
@@ -175,5 +175,5 @@ NotifyObserversWaiter::metadataChanged( const Meta::TrackPtr &track )
     QMutexLocker locker( &m_mutex );
     m_tracks.remove( track );
     if( m_tracks.isEmpty() )
-        emit done();
+        Q_EMIT done();
 }

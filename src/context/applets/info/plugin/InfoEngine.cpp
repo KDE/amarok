@@ -69,6 +69,6 @@ QString InfoEngine::mainInfo() const
 void InfoEngine::infoChanged( QVariantMap infoMap )
 {
     m_storedInfo = infoMap;
-    emit serviceChanged();
+    Q_EMIT serviceChanged();
 }
 

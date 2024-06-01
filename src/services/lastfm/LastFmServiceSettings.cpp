@@ -223,7 +223,7 @@ LastFmServiceSettings::settingsChanged()
     m_configDialog->testLogin->setText( i18n( "&Test Login" ) );
     m_configDialog->testLogin->setEnabled( true );
 
-    emit changed( true );
+    Q_EMIT changed( true );
 }
 
 void

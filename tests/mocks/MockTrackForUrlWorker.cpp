@@ -32,10 +32,10 @@ MockTrackForUrlWorker::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *
 {
     Q_UNUSED(thread);
     
-    emit started(self);
+    Q_EMIT started(self);
     
     QFETCH( Meta::TrackPtr, track );
     m_track = track;
     
-    emit done(self);
+    Q_EMIT done(self);
 }

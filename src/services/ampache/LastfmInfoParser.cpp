@@ -66,7 +66,7 @@ void LastfmInfoParser::onGetTrackInfo()
                 html = QStringLiteral("<p><font size=3><i>%2<i></font></p> <p align='right'><font size=1>%1</font></p>").arg( i18n("Updated: %1", publishedDate), contentText );
             else
                 html = i18n( "<p>No information found for this track.</p>" );
-            emit info( html );
+            Q_EMIT info( html );
             break;
         }
         default:
@@ -118,7 +118,7 @@ void LastfmInfoParser::onGetAlbumInfo()
                 html = QString("<div align='center'><img src=%1></div><div align='center'><p><font size=3><i>%2<i></font></p> <p align='right'><font size=1>Updated: %3</font></p></div>").arg( albumUrl, contentText, publishedDate );
             else
                 html = i18n( "<p>No information found for this album.</p>" );
-            emit info( html );
+            Q_EMIT info( html );
             break;
         }
         default:
@@ -172,7 +172,7 @@ void LastfmInfoParser::onGetArtistInfo()
                 html = QString("<div align='left'><img src=%1></div><div align='center'><p><font size=3><i>%2<i></font></p> <p align='right'><font size=1>Updated: %3</font></p></div>").arg( imageUrl, contentText, publishedDate );
             else
                 html = i18n( "<p>No information found for this artist.</p>" );
-            emit info( html );
+            Q_EMIT info( html );
 
             break;
         }

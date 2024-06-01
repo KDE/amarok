@@ -146,7 +146,7 @@ MusicDNSAudioDecoder::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
             QString fingerprint( ofa_create_print( ( unsigned char * ) data.data(),
                                                    OFA_LITTLE_ENDIAN, ( data.length() >> 1 ),
                                                    data.sRate(), data.channels() ) );
-            emit trackDecoded( track, fingerprint );
+            Q_EMIT trackDecoded( track, fingerprint );
         }
         else
             warning() << QLatin1String( "Some error occurred during fingerprint generation, probably track is too short: " ) +

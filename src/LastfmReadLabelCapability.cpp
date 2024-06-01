@@ -78,7 +78,7 @@ LastfmReadLabelCapability::onTagsFetched()
             foreach( const lastfm::XmlQuery &child, tags )
                 ret.append( child["name"].text() );
             m_labels = ret;
-            emit labelsFetched( ret );
+            Q_EMIT labelsFetched( ret );
             break;
         }
         default:

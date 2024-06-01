@@ -233,7 +233,7 @@ GpodderServiceModel::insertPodcastList( mygpo::PodcastListPtr podcasts,
 {
     DEBUG_BLOCK
 
-    emit layoutAboutToBeChanged();
+    Q_EMIT layoutAboutToBeChanged();
     beginInsertRows( parentItem, 0, podcasts->list().count() - 1 );
     GpodderTreeItem *item = static_cast<GpodderTreeItem*>( parentItem.internalPointer() );
     if( item != nullptr )
@@ -243,7 +243,7 @@ GpodderServiceModel::insertPodcastList( mygpo::PodcastListPtr podcasts,
     }
     endInsertRows();
 
-    emit layoutChanged();
+    Q_EMIT layoutChanged();
 }
 
 bool

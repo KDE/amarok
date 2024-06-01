@@ -93,7 +93,7 @@ LastFmTreeModel::slotAddFriends()
         }
 
         endInsertRows();
-        emit dataChanged( parent, parent );
+        Q_EMIT dataChanged( parent, parent );
     }
     else
     {
@@ -134,7 +134,7 @@ LastFmTreeModel::slotAddTags()
     }
 
     endInsertRows();
-    emit dataChanged( parent, parent );
+    Q_EMIT dataChanged( parent, parent );
 }
 
 void
@@ -185,7 +185,7 @@ LastFmTreeModel::slotAddTopArtists()
     }
 
     endInsertRows();
-    emit dataChanged( parent, parent );
+    Q_EMIT dataChanged( parent, parent );
 }
 
 void
@@ -256,7 +256,7 @@ LastFmTreeModel::onAvatarDownloaded( const QString &username, QPixmap avatar )
             if( item->data() == username )
             {
                 QModelIndex idx = index( i, 0, parentIdx );
-                emit dataChanged( idx, idx );
+                Q_EMIT dataChanged( idx, idx );
                 break; // no user is twice in a single category
             }
         }

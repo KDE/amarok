@@ -68,7 +68,7 @@ public:
     { Q_UNUSED( configuration ) }
     void setCaption( const QString& ) override {}
 
-    void show() override { emit accepted(); }
+    void show() override { Q_EMIT accepted(); }
 
     bool overwriteDestinations() const override { return overwrite; }
     QMap<Meta::TrackPtr, QString> destinations() const override { return dests; }

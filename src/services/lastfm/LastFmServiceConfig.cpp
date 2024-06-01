@@ -144,7 +144,7 @@ void LastFmServiceConfig::save()
     }
 
     config.sync();
-    emit updated();
+    Q_EMIT updated();
 }
 
 void
@@ -233,7 +233,7 @@ LastFmServiceConfig::slotWalletOpenedToRead( bool success )
         warning() << "Failed to read last.fm username from kwallet";
     else
         m_username = QString::fromUtf8( rawUsername );
-    emit updated();
+    Q_EMIT updated();
 }
 
 void

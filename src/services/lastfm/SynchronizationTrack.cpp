@@ -133,14 +133,14 @@ SynchronizationTrack::commit()
     {
         Q_ASSERT( m_semaphore.available() == 0 );
         m_tagsToRemove = toRemove.values();
-        emit startTagRemoval();
+        Q_EMIT startTagRemoval();
         m_semaphore.acquire(); // wait for the job to complete
         m_tagsToRemove.clear();
     }
     if( !toAdd.isEmpty() )
     {
         Q_ASSERT( m_semaphore.available() == 0 );
-        emit startTagAddition( toAdd.values() );
+        Q_EMIT startTagAddition( toAdd.values() );
         m_semaphore.acquire(); // wait for the job to complete
     }
 
@@ -252,6 +252,6 @@ SynchronizationTrack::slotTagRemoved()
     if( !m_tagsToRemove.isEmpty() )
     {
         releaser.dontRelease();
-        emit startTagRemoval();
+        Q_EMIT startTagRemoval();
     }
 }

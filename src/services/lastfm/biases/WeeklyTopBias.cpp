@@ -441,7 +441,7 @@ Dynamic::WeeklyTopBias::fromDateChanged( const QDateTime& d ) // SLOT
 
     m_range.from = d;
     invalidate();
-    emit changed( BiasPtr( this ) );
+    Q_EMIT changed( BiasPtr( this ) );
 }
 
 
@@ -453,7 +453,7 @@ Dynamic::WeeklyTopBias::toDateChanged( const QDateTime& d ) // SLOT
 
     m_range.to = d;
     invalidate();
-    emit changed( BiasPtr( this ) );
+    Q_EMIT changed( BiasPtr( this ) );
 }
 
 

@@ -343,7 +343,7 @@ Track::ban()
     d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).ban();
     connect( d->wsReply, &QNetworkReply::finished, this, &Track::slotWsReply );
     if( The::engineController()->currentTrack().data() == this )
-        emit skipTrack();
+        Q_EMIT skipTrack();
 }
 
 void Track::slotResultReady()

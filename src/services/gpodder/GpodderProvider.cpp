@@ -251,7 +251,7 @@ GpodderProvider::addChannel( const PodcastChannelPtr &channel )
 
     m_channels << PodcastChannelPtr::dynamicCast( gpodderChannel );
 
-    emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( gpodderChannel ) );
+    Q_EMIT playlistAdded( Playlists::PlaylistPtr::dynamicCast( gpodderChannel ) );
 
     return PodcastChannelPtr::dynamicCast( gpodderChannel );
 }
@@ -328,7 +328,7 @@ GpodderProvider::removeChannel( const QUrl &url )
             m_uploadEpisodeStatusMap.remove( url );
             m_addList.removeAll( url );
 
-            emit playlistRemoved(
+            Q_EMIT playlistRemoved(
                         Playlists::PlaylistPtr::dynamicCast( channel ) );
 
             return;

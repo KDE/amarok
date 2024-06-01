@@ -139,12 +139,12 @@ MusicDNSFinder::parsingDone( ThreadWeaver::JobPointer _parser )
             if( PUID != "00000000-0000-0000-0000-000000000000" )
             {
                 found = true;
-                emit trackFound( m_parsers.value( parser ), PUID );
+                Q_EMIT trackFound( m_parsers.value( parser ), PUID );
                 break;
             }
 
         if( !found )
-            emit progressStep();
+            Q_EMIT progressStep();
 
         m_parsers.remove( parser );
     }
@@ -183,7 +183,7 @@ MusicDNSFinder::checkDone()
     {
         debug() << "There is no any queued requests. Stopping timer.";
         _timer->stop();
-        emit done();
+        Q_EMIT done();
     }
 }
 

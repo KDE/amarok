@@ -53,7 +53,7 @@ AvatarDownloader::downloaded( const QUrl &url, QByteArray data, NetworkAccessMan
     {
         QPixmap avatar;
         if( avatar.loadFromData( data ) )
-            emit avatarDownloaded( username, avatar );
+            Q_EMIT avatarDownloaded( username, avatar );
     }
     else
         debug() << QString( "Error: failed to download %1'savatar: %2" ).arg( username, e.description );

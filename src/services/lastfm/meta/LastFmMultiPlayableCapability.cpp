@@ -56,7 +56,7 @@ LastFmMultiPlayableCapability::fetchNext()
 {
     DEBUG_BLOCK
     m_currentTrack = m_tuner->takeNextTrack();
-    emit playableUrlFetched( m_currentTrack.url() );
+    Q_EMIT playableUrlFetched( m_currentTrack.url() );
 }
 
 void

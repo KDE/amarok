@@ -249,7 +249,7 @@ GpodderServiceSettings::settingsChanged()
     m_configDialog->testLogin->setEnabled( true );
 
     m_enableProvider = true;
-    emit changed( true );
+    Q_EMIT changed( true );
 }
 
 #include "GpodderServiceSettings.moc"

@@ -91,7 +91,7 @@ SynchronizationAdapter::artists()
 {
     DEBUG_BLOCK
     Q_ASSERT( m_semaphore.available() == 0 );
-    emit startArtistSearch( 1 ); // Last.fm indexes from 1
+    Q_EMIT startArtistSearch( 1 ); // Last.fm indexes from 1
 
     m_semaphore.acquire();
     QSet<QString> ret = m_artists;
@@ -107,7 +107,7 @@ SynchronizationAdapter::artistTracks( const QString &artistName )
      * Last.fm webservice returns only the preferred capitalisation in artists(), so no
      * duplicates threat us. */
     Q_ASSERT( m_semaphore.available() == 0 );
-    emit startTrackSearch( artistName, 1 ); // Last.fm indexes from 1
+    Q_EMIT startTrackSearch( artistName, 1 ); // Last.fm indexes from 1
 
     m_semaphore.acquire();
     debug() << __PRETTY_FUNCTION__ << m_tracks.count() << "tracks from" << artistName
@@ -118,7 +118,7 @@ SynchronizationAdapter::artistTracks( const QString &artistName )
     while( it.hasNext() )
     {
         StatSyncing::TrackPtr track = it.next();
-        emit startTagSearch( track->artist(), track->name() );
+        Q_EMIT startTagSearch( track->artist(), track->name() );
         m_semaphore.acquire();
         it.remove();
     }
@@ -201,7 +201,7 @@ SynchronizationAdapter::slotArtistsReceived()
     if( page < totalPages )
     {
         releaser.dontRelease(); // don't release the semaphore yet
-        emit startArtistSearch( page + 1 );
+        Q_EMIT startArtistSearch( page + 1 );
     }
 }
 
@@ -265,7 +265,7 @@ SynchronizationAdapter::slotTracksReceived()
     if( page < totalPages )
     {
         releaser.dontRelease(); // don't release the semaphore yet
-        emit startTrackSearch( searchedArtist, page + 1 );
+        Q_EMIT startTrackSearch( searchedArtist, page + 1 );
     }
 }
 

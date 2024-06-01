@@ -51,7 +51,7 @@ GpodderServiceFactory::init()
     if( service )
     {
         m_initialized = true;
-        emit newService( service );
+        Q_EMIT newService( service );
     }
 }
 
@@ -77,7 +77,7 @@ GpodderServiceFactory::slotCreateGpodderService()
         if( service )
         {
             m_initialized = true;
-            emit newService( service );
+            Q_EMIT newService( service );
         }
     }
 }
@@ -89,7 +89,7 @@ GpodderServiceFactory::slotRemoveGpodderService()
         return;
 
     m_initialized = false;
-    emit removeService( activeServices().first() );
+    Q_EMIT removeService( activeServices().first() );
 }
 
 ServiceBase *
