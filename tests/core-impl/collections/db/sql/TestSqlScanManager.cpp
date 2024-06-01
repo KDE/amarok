@@ -431,7 +431,7 @@ TestSqlScanManager::testRemoveDir()
 
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );
     QVERIFY( album );
-    foreach( Meta::TrackPtr t, album->tracks() )
+    for( auto const &t : album->tracks() )
         QVERIFY( QFile::remove( t->playableUrl().path() ) );
     QVERIFY( QDir( m_tmpCollectionDir->path() ).rmdir( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
 
@@ -453,7 +453,7 @@ TestSqlScanManager::testRemoveDir()
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
     QVERIFY( album );
     QCOMPARE( album->tracks().count(), 9 );
-    foreach( Meta::TrackPtr t, album->tracks() )
+    for( auto const &t : album->tracks() )
         QVERIFY( QFile::remove( t->playableUrl().path() ) );
 
     QVERIFY( QDir( m_tmpCollectionDir->path() ).rmdir( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
@@ -489,7 +489,7 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
 
     // change all the track uids in a silly way
     QHash<int, QString> uidChanges; // uid hashed with track number
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( auto const &track : tracks )
     {
         Meta::FieldHash uidChange;
         QString uid = track->uidUrl().remove( QString("amarok-sqltrackuid://") );
@@ -519,7 +519,7 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
     QCOMPARE( tracks.count(), 9 );
 
     // check changed uids
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( auto const &track : tracks )
     {
         QString uid = track->uidUrl().remove( QString("amarok-sqltrackuid://") );
         QCOMPARE( uid, uidChanges.value( track->trackNumber() ) );
@@ -1201,7 +1201,7 @@ TestSqlScanManager::waitScannerFinished()
     if( failSpy.count() > 0 )
     {
         QStringList errors;
-        foreach( const QList<QVariant> &arguments, static_cast<QList<QList<QVariant> > >( failSpy ) )
+        for( auto const &arguments : static_cast<QList<QList<QVariant> > >( failSpy ) )
             errors << arguments.value( 0 ).toString();
         // this will fire each time:
         qWarning() << "ScanManager failed with an error:" << errors.join( ", " );

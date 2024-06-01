@@ -44,7 +44,7 @@ TestSimpleImporterConfigWidget::constructorShouldCreateTargetNameRow()
     const QLabel *label = nullptr;
     const QLineEdit *field = nullptr;
 
-    foreach( const QObject *obj, widget.children() )
+    for( auto const &obj : widget.children() )
     {
         if( qobject_cast<const QLabel*>( obj ) )
             label = qobject_cast<const QLabel*>( obj );
@@ -66,7 +66,7 @@ TestSimpleImporterConfigWidget::targetNameShouldBeSetToDefaultValue()
     SimpleImporterConfigWidget widget( targetName, QVariantMap() );
 
     const QLineEdit *field = nullptr;
-    foreach( const QObject *obj, widget.children() )
+    for( auto const &obj : widget.children() )
         if( qobject_cast<const QLineEdit*>( obj ) )
             field = qobject_cast<const QLineEdit*>( obj );
 
@@ -85,7 +85,7 @@ TestSimpleImporterConfigWidget::targetNameShouldBeSetToConfigValueIfExists()
     SimpleImporterConfigWidget widget( "testTargetName", cfg );
 
     const QLineEdit *field = nullptr;
-    foreach( const QObject *obj, widget.children() )
+    for( auto const &obj : widget.children() )
         if( qobject_cast<const QLineEdit*>( obj ) )
             field = qobject_cast<const QLineEdit*>( obj );
 
@@ -119,7 +119,7 @@ TestSimpleImporterConfigWidget::addFieldShouldAddNewRow()
     bool foundField = false;
     bool foundLabel = false;
 
-    foreach( const QObject *obj, widget.children() )
+    for( auto const &obj : widget.children() )
     {
         if( obj == field )
             foundField = true;
@@ -141,7 +141,7 @@ TestSimpleImporterConfigWidget::addFieldShouldAssociateLabelWithField()
     widget.addField( "configVal", "testLabel", field, "text" );
 
     const QLabel *label = nullptr;
-    foreach( const QObject *obj, widget.children() )
+    for( auto const &obj : widget.children() )
         if( const QLabel *candidate = qobject_cast<const QLabel*>( obj ) )
             if( candidate->text() == "testLabel" )
                  label = candidate;

@@ -37,7 +37,7 @@ public:
     int getIdForUrl( const QUrl &url ) override
     {
         QString path = url.path();
-        foreach( int id, m_mountPoints.keys() )
+        for( auto id : m_mountPoints.keys() )
         {
             if( path.startsWith( m_mountPoints.value( id ) ) )
             {

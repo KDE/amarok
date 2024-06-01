@@ -242,7 +242,7 @@ TestImporterManager::managerShouldHandleMultipleProviders()
     for( int i = 0; i < 10; ++i )
         providerPtrs << m_mockManager->createProvider( QVariantMap() );
 
-    foreach( const StatSyncing::ProviderPtr &providerPtr, providerPtrs )
+    for( auto const &providerPtr : providerPtrs )
         QVERIFY( m_mockManager->providers().contains( providerPtr->id() ) );
 }
 

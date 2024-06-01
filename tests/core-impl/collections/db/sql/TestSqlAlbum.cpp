@@ -213,7 +213,7 @@ TestSqlAlbum::testCapabilities()
 
     // need to delete the actions. They hold pointers that prevent the registry from cleaning
     // it's state.
-    foreach( QAction *action, ac->actions() )
+    for( auto action : ac->actions() )
         delete action;
     delete btc->bookmarkAction();
     delete ac;

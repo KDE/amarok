@@ -60,7 +60,7 @@ public:
     {
         Q_UNUSED( conf )
         trackCopyCount << sources.count();
-        foreach( const Meta::TrackPtr &track, sources.keys() )
+        for( auto const &track : sources.keys() )
         {
             coll->mc->addTrack( track );
         }

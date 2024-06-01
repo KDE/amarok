@@ -57,7 +57,7 @@ public:
         trackRemoveCount += sources.count();
         coll->mc->acquireWriteLock();
         TrackMap map = coll->mc->trackMap();
-        foreach( const Meta::TrackPtr &track, sources )
+        for( auto const &track : sources )
             map.remove( track->uidUrl() );
         coll->mc->setTrackMap( map );
         coll->mc->releaseLock();
@@ -68,7 +68,7 @@ public:
     {
         Q_UNUSED( conf )
         trackCopyCount = sources.count();
-        foreach( const Meta::TrackPtr &track, sources.keys() )
+        for( auto const &track : sources.keys() )
         {
             coll->mc->addTrack( track );
         }

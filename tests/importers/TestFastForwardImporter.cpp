@@ -80,17 +80,17 @@ TestFastForwardImporter::configWidgetShouldOnlyShowFieldsRelevantToConnection()
 
     widget.m_connectionType->setCurrentIndex( FastForwardConfigWidget::QSQLITE );
     QVERIFY( !widget.m_databaseLocation->isHidden() );
-    foreach( QWidget *w, remoteConfigWidgets )
+    for( auto w : remoteConfigWidgets )
         QVERIFY( w->isHidden() );
 
     widget.m_connectionType->setCurrentIndex( FastForwardConfigWidget::QMYSQL );
     QVERIFY( widget.m_databaseLocation->isHidden() );
-    foreach( QWidget *w, remoteConfigWidgets )
+    for( auto w : remoteConfigWidgets )
         QVERIFY( !w->isHidden() );
 
     widget.m_connectionType->setCurrentIndex( FastForwardConfigWidget::QPSQL );
     QVERIFY( widget.m_databaseLocation->isHidden() );
-    foreach( QWidget *w, remoteConfigWidgets )
+    for( auto w : remoteConfigWidgets )
         QVERIFY( !w->isHidden() );
 }
 

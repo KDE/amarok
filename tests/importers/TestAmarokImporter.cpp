@@ -51,15 +51,15 @@ TestAmarokImporter::getWritableProvider()
     QDir files( base.filePath( "../tests/importers_files" ) );
     QDir tmp( base.filePath( "importers_tmp" ) );
 
-    foreach( const QString &subdir,
-             QList<QString>() << "amarok2_mysqle" << "amarok2_mysqle/amarok" )
+    QList<QString> dirs = QList<QString>() << "amarok2_mysqle" << "amarok2_mysqle/amarok";
+    for( auto const &subdir : dirs )
     {
         tmp.mkpath( subdir );
 
         QDir src( files.filePath( subdir ) );
         QDir dst( tmp.filePath( subdir ) );
 
-        foreach( const QString &filename, src.entryList( QStringList(), QDir::Files ) )
+        for( auto const &filename : src.entryList( QStringList(), QDir::Files ) )
         {
             QFile( dst.filePath( filename ) ).remove();
             QFile( src.filePath( filename ) ).copy( dst.filePath( filename ) );
@@ -106,12 +106,12 @@ TestAmarokImporter::configWidgetShouldOnlyShowFieldsRelevantToConnection()
 
     widget.m_connectionType->setCurrentIndex( AmarokConfigWidget::Embedded );
     QVERIFY( !widget.m_databaseLocation->isHidden() );
-    foreach( QWidget *w, remoteConfigWidgets )
+    for( auto w : remoteConfigWidgets )
         QVERIFY( w->isHidden() );
 
     widget.m_connectionType->setCurrentIndex( AmarokConfigWidget::External );
     QVERIFY( widget.m_databaseLocation->isHidden() );
-    foreach( QWidget *w, remoteConfigWidgets )
+    for( auto w : remoteConfigWidgets )
         QVERIFY( !w->isHidden() );
 }
 

@@ -84,7 +84,7 @@ private:
     {
         QReadLocker( mc->mapLock() );
 
-        foreach( const Meta::TrackPtr track, mc->trackMap().values() )
+        for( auto const &track : mc->trackMap().values() )
             if( track->playableUrl() == url )
                 return track;
 
@@ -118,7 +118,7 @@ private:
 
             QWriteLocker( m_mc->mapLock() );
 
-            foreach( Meta::TrackPtr track, sources.keys() )
+            for( auto const &track : sources.keys() )
             {
                 m_mc->addTrack( track );
                 transferSuccessful( track );

@@ -77,7 +77,7 @@ void TestTrackOrganizer::testBasic()
   QMap <Meta::TrackPtr, QString > dests = mTrackOrganizer->getDestinations();
   QVERIFY( dests.size() == 10 );
 
-  foreach( Meta::TrackPtr track, mTracks )
+  for( auto const &track : mTracks )
   {
     QVERIFY( dests.contains( track ) );
     QString format = "%1/%2/%3/%4-%5.%6";

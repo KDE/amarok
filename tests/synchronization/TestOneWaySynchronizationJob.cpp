@@ -51,7 +51,7 @@ public:
         Q_UNUSED( conf )
         // qDebug() << "adding " << sources.count() << " tracks to " << coll->collectionId();
         trackCopyCount = sources.count();
-        foreach( const Meta::TrackPtr &track, sources.keys() )
+        for( Meta::TrackPtr &track : sources.keys() )
         {
             coll->mc->addTrack( track );
         }

@@ -68,7 +68,7 @@ TestImporterBase::titleShouldBeCaseSensitive()
     QVERIFY( provider->artists().contains( artist ) );
 
     QSet<QString> trackNames;
-    foreach( const TrackPtr &track, provider->artistTracks( artist ) )
+    for( auto const &track : provider->artistTracks( artist ) )
         trackNames.insert( track->name() );
 
     QCOMPARE( trackNames.size(), 3 );
@@ -86,7 +86,7 @@ TestImporterBase::artistShouldBeCaseSensitive()
     const QVector<QString> artists = QVector<QString>()
             << "caseSensitiveArtist" << "casesensitiveartist" << "caseSensitiveartist";
 
-    foreach( const QString &artist, artists )
+    for( auto const &artist : artists )
     {
         const TrackList tracks = provider->artistTracks( artist );
         QCOMPARE( tracks.size(), 1 );
@@ -104,7 +104,7 @@ TestImporterBase::albumShouldBeCaseSensitive()
     QVERIFY( provider->artists().contains( artist ) );
 
     QSet<QString> trackAlbums;
-    foreach( const TrackPtr &track, provider->artistTracks( artist ) )
+    for( auto const &track : provider->artistTracks( artist ) )
         trackAlbums.insert( track->album() );
 
     QCOMPARE( trackAlbums.size(), 3 );
@@ -124,7 +124,7 @@ TestImporterBase::composerShouldBeCaseSensitive()
     QVERIFY( provider->artists().contains( artist ) );
 
     QSet<QString> trackComposers;
-    foreach( const TrackPtr &track, provider->artistTracks( artist ) )
+    for( auto const &track : provider->artistTracks( artist ) )
         trackComposers.insert( track->composer() );
 
     QCOMPARE( trackComposers.size(), 3 );
@@ -258,7 +258,7 @@ TestImporterBase::titleShouldBeWhitespaceTrimmed()
     QVERIFY( provider->artists().contains( artist ) );
 
     QSet<QString> trackNames;
-    foreach( const TrackPtr &track, provider->artistTracks( artist ) )
+    for( auto const &track : provider->artistTracks( artist ) )
         trackNames.insert( track->name() );
 
     QCOMPARE( trackNames.size(), 3 );
@@ -279,7 +279,7 @@ TestImporterBase::artistShouldBeWhitespaceTrimmed()
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 3 );
 
-    foreach( const TrackPtr &track, tracks )
+    for( auto const &track : tracks )
         QCOMPARE( track->artist(), artist );
 }
 
@@ -295,7 +295,7 @@ TestImporterBase::albumShouldBeWhitespaceTrimmed()
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 3 );
 
-    foreach( const TrackPtr &track, tracks )
+    for( auto const &track : tracks )
         QCOMPARE( track->album(), QString( "album" ) );
 }
 
@@ -312,7 +312,7 @@ TestImporterBase::composerShouldBeWhitespaceTrimmed()
     const TrackList tracks = provider->artistTracks( artist );
     QCOMPARE( tracks.size(), 3 );
 
-    foreach( const TrackPtr &track, tracks )
+    for( auto const &track : tracks )
         QCOMPARE( track->composer(), QString( "composer" ) );
 }
 
@@ -398,7 +398,7 @@ TestImporterBase::checkStatistics( const QString &artist )
     QVERIFY( provider->artists().contains( artist ) );
 
     QMap<QString, TrackPtr> trackForName;
-    foreach( const TrackPtr &track, provider->artistTracks( artist ) )
+    for( auto const &track : provider->artistTracks( artist ) )
         trackForName.insert( track->name(), track );
 
     const QString testName( QTest::currentDataTag() );
@@ -493,7 +493,7 @@ void TestImporterBase::labels( const ProviderPtr &provider, const QString &track
     QVERIFY( provider->artists().contains( artist ) );
 
     QMap<QString, TrackPtr> trackForName;
-    foreach( const TrackPtr &track, provider->artistTracks( artist ) )
+    for( auto track : provider->artistTracks( artist ) )
     {
         QVERIFY( !trackForName.contains( track->name() ) );
         trackForName.insert( track->name(), track );
@@ -582,7 +582,7 @@ TestImporterBase::providerShouldNotBreakOnLittleBobbyTables()
 static TrackPtr
 trackForName( ProviderPtr &provider, const QString &name, const QString &artist )
 {
-    foreach( const TrackPtr &track, provider->artistTracks( artist ) )
+    for( auto const &track : provider->artistTracks( artist ) )
         if( track->name() == name )
             return track;
 
@@ -618,7 +618,7 @@ verifyEqualExcept( const Meta::FieldHash &lhs, const TrackPtr &track,
                               << Meta::valPlaycount << Meta::valLabel;
 
     const Meta::FieldHash rhs = saveData( track );
-    foreach( const qint64 field, fields )
+    for( auto field : fields )
         if( !( except & field ) )
             QCOMPARE( lhs.value( field ), rhs.value( field ) );
 }

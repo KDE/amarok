@@ -58,7 +58,7 @@ RandomSqlStorageMock::RandomSqlStorageMock( const QVariantMap &queries )
     : SqlStorage()
     , m_queries()
 {
-    foreach( QString key, queries.keys() )
+    for( auto key : queries.keys() )
     {
         m_queries.insert( key.toLower(), queries.value( key ) );
     }
