@@ -8,12 +8,12 @@ SECTION -1: Before you even start
 --------------------------------------------------------------------------------
 
 Dependencies:
-- The Ultimate KDE Extragear Release Script from git@git.kde.org:releaseme.git
+- The Ultimate KDE Extragear Release Script from https://invent.kde.org/sdk/releaseme
 
-SECTION 0: A week in advance
+SECTION 0: Some weeks in advance
 
- * Check that release date doesn't clash with KDE's schedule
- * Notify translators and update http://techbase.kde.org/Schedules/Extragear
+ * Check that release date doesn't clash with KDE's schedule, https://community.kde.org/Schedules
+ * Notify translators
 --------------------------------------------------------------------------------
 
 SECTION 1: Preparation
@@ -55,7 +55,7 @@ SECTION 3: Once Happy with the Tarball
    includes a request to create a Bugzilla target for the new version.
    More instructions at ftp://upload.kde.org/README
  * Notify packagers:
-To: kde-announce-apps@kde.org, Hannah von Reth (TheOneRing, Windows) <vonreth@kde.org>
+To: kde-announce-apps@kde.org
 "
 Dear packagers
 
