@@ -8,6 +8,7 @@
         "Description[en_GB]": "Sets up the ampache server(s) to connect to",
         "Description[eo]": "Difinas la ampache-servilo(j)n konektenda(j)n",
         "Description[es]": "Configurar los servidores ampache a los que conectarse",
+        "Description[fi]": "Asettaa Ampache-palvelimet, joihin yhdistetään",
         "Description[fr]": "Définit le ou les serveurs « Ampache » auxquels se connecter",
         "Description[gl]": "Configura o servidor ampache co que conectar.",
         "Description[it]": "Configura server Ampache ai quali connetterti",
