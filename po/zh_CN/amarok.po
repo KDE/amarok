@@ -4251,7 +4251,7 @@ msgstr "显示艺人简介"
 #: context/applets/similarartists/ArtistWidget.cpp:428
 #, kde-format
 msgid "No description available."
-msgstr "无相关描述。"
+msgstr "没有可用的描述。"
 
 #: context/applets/similarartists/ArtistWidget.cpp:444
 #, kde-format
@@ -13979,7 +13979,7 @@ msgstr "解析响应时出错，请检查 gpodder.net 是否工作正常，并�
 #: services/jamendo/JamendoInfoParser.cpp:77
 #, kde-format
 msgid "No description available..."
-msgstr "无相关描述..."
+msgstr "没有可用的描述..."
 
 #: services/jamendo/JamendoInfoParser.cpp:61
 #: services/jamendo/JamendoInfoParser.cpp:93
