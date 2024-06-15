@@ -12,7 +12,6 @@ if( Qt5WebEngine_FOUND )
 endif()
 
 if( LIBLASTFM_FOUND )
-#    add_subdirectory( upcomingevents )
 #    add_subdirectory( similarartists )
 endif()
 
