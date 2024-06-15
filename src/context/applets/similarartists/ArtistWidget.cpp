@@ -338,7 +338,7 @@ ArtistWidget::parseInfo( const QUrl &url, QByteArray data, NetworkAccessManagerP
                 else if( xml.name() == QLatin1String("summary") )
                     summary = xml.readElementText().simplified();
                 else if( xml.name() == QLatin1String("content") )
-                    m_fullBio.second = xml.readElementText().replace( QRegExp("\n+"), QLatin1String("<br>") );
+                    m_fullBio.second = xml.readElementText().replace( QRegularExpression(QLatin1String("\n+")), QLatin1String("<br>") );
                 else
                     xml.skipCurrentElement();
             }

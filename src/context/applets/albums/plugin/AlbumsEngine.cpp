@@ -31,6 +31,7 @@
 #include <playlist/PlaylistController.h>
 
 #include <QMenu>
+#include <QRegularExpression>
 
 #include <KLocalizedString>
 
@@ -229,15 +230,15 @@ void AlbumsEngine::resultReady( const Meta::AlbumList &albums )
 
 QString AlbumsEngine::filterPattern() const
 {
-    return m_proxyModel->filterRegExp().pattern();
+    return m_proxyModel->filterRegularExpression().pattern();
 }
 
 void AlbumsEngine::setFilterPattern( const QString &pattern )
 {
-    if( m_proxyModel->filterRegExp().pattern() == pattern )
+    if( m_proxyModel->filterRegularExpression().pattern() == pattern )
         return;
 
-    m_proxyModel->setFilterRegExp( QRegExp(pattern, Qt::CaseInsensitive) );
+    m_proxyModel->setFilterRegularExpression( QRegularExpression(pattern, QRegularExpression::CaseInsensitiveOption) );
     Q_EMIT filterPatternChanged();
 }
 

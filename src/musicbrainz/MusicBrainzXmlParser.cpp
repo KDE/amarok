@@ -23,6 +23,7 @@
 #include "core/support/Debug.h"
 #include "MusicBrainzMeta.h"
 
+#include <QRegularExpression>
 #include <QStringList>
 #include <QVariantList>
 
@@ -470,9 +471,10 @@ MusicBrainzXmlParser::parseReleaseGroup( const QDomElement &e )
             else if( elementName == "first-release-date" )
             {
                 int year = 0;
-                QRegExp yearMatcher( "^(\\d{4}).*$" );
-                if( yearMatcher.exactMatch( dElement.text() ) )
-                    year = yearMatcher.cap( 1 ).toInt();
+                QRegularExpression yearMatcher( QRegularExpression::anchoredPattern( "^(\\d{4}).*$" ) );
+                QRegularExpressionMatch rmatch = yearMatcher.match( dElement.text() );
+                if( rmatch.hasMatch() )
+                    year = rmatch.captured( 1 ).toInt();
                 if( year > 0 )
                     releaseGroup.insert( Meta::Field::YEAR, year );
             }

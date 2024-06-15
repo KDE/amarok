@@ -49,8 +49,8 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const QUrl &url)
         pristineUrl.replace( ".ogg", ".mp3" );
         pristineUrl.replace( "-lofi.mp3", ".mp3" );
 
-        pristineUrl.replace( QRegExp( "http://download" ), "http://he3" );
-        pristineUrl.replace( QRegExp( "http://stream" ), "http://he3" );
+        pristineUrl.replace( QRegularExpression( "http://download" ), "http://he3" );
+        pristineUrl.replace( QRegularExpression( "http://stream" ), "http://he3" );
 
         //debug() << "after a quick makeover: " << pristineUrl;
 
@@ -72,8 +72,8 @@ Meta::TrackPtr MagnatuneSqlCollection::trackForUrl(const QUrl &url)
         pristineUrl.replace( ".ogg", ".mp3" );
         pristineUrl.replace( "-lofi.mp3", ".mp3" );
 
-        pristineUrl.replace( QRegExp( ".*:.*@download" ), "http://he3" );
-        pristineUrl.replace( QRegExp( ".*:.*@stream" ), "http://he3" );
+        pristineUrl.replace( QRegularExpression( ".*:.*@download" ), "http://he3" );
+        pristineUrl.replace( QRegularExpression( ".*:.*@stream" ), "http://he3" );
 
         return ServiceSqlCollection::trackForUrl( QUrl( pristineUrl ) );
 

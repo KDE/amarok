@@ -86,9 +86,9 @@ PodcastReader::Action::characters( PodcastReader *podcastReader ) const
 
 // initialization of the feed parser automata:
 PodcastReader::StaticData::StaticData()
-        : removeScripts( QStringLiteral("<script[^<]*</script>|<script[^>]*>"), Qt::CaseInsensitive )
+        : removeScripts( QStringLiteral("<script[^<]*</script>|<script[^>]*>"), QRegularExpression::CaseInsensitiveOption )
         , mightBeHtml( "<\\?xml[^>]*\\?>|<br[^>]*>|<p[^>]*>|&lt;|&gt;|&amp;|&quot;|"
-                       "<([-:\\w\\d]+)[^>]*(/>|>.*</\\1>)|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;", Qt::CaseInsensitive )
+                       "<([-:\\w\\d]+)[^>]*(/>|>.*</\\1>)|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;", QRegularExpression::CaseInsensitiveOption )
         , linkify( "\\b(" RE_URL ")|\\b(" RE_MAIL ")|(\n)" )
 
         , startAction( rootMap )
@@ -418,7 +418,7 @@ PodcastReader::~PodcastReader()
 bool
 PodcastReader::mightBeHtml( const QString& text ) //Static
 {
-    return sd.mightBeHtml.indexIn( text ) != -1;
+    return text.indexOf( sd.mightBeHtml ) != -1;
 }
 
 bool PodcastReader::read( QIODevice *device )
@@ -916,12 +916,12 @@ QString
 PodcastReader::textToHtml( const QString &text )
 {
     QString buf;
-    QRegExp re( sd.linkify );
+    QRegularExpression re( sd.linkify );
     int index = 0;
 
     for(;;)
     {
-        int next = re.indexIn( text, index );
+        int next = text.indexOf( re, index );
 
         if( next == -1 )
             break;
@@ -932,8 +932,9 @@ PodcastReader::textToHtml( const QString &text )
         }
 
         QString s;
+        QRegularExpressionMatch rmatch = re.match( text, index );
 
-        if( !(s = re.cap( 1 )).isEmpty() )
+        if( !(s = rmatch.captured( 1 )).isEmpty() )
         {
             if( s.startsWith( QLatin1String( "javascript:" ), Qt::CaseInsensitive ) ||
                 s.startsWith( QLatin1String( "exec:" ), Qt::CaseInsensitive ) )
@@ -946,17 +947,17 @@ PodcastReader::textToHtml( const QString &text )
                     .arg( s.toHtmlEscaped() );
             }
         }
-        else if( !(s = re.cap( 2 )).isEmpty() )
+        else if( !(s = rmatch.captured( 2 )).isEmpty() )
         {
             buf += QStringLiteral( "<a href=\"mailto:%1\">%1</a>" )
                 .arg( s.toHtmlEscaped() );
         }
-        else if( !re.cap( 3 ).isEmpty() )
+        else if( !rmatch.captured( 3 ).isEmpty() )
         {
             buf += QLatin1String("<br/>\n");
         }
 
-        index = re.pos() + re.matchedLength();
+        index = text.indexOf( re, index ) + rmatch.capturedLength();
     }
 
     buf += text.mid( index ).toHtmlEscaped();
@@ -1607,17 +1608,19 @@ PodcastReader::parsePubDate( const QString &dateString )
     QString parseInput = dateString;
     debug() << "Parsing pubdate: " << parseInput;
 
-    QRegExp rfcDateDayRegex( QStringLiteral("^[A-Z]{1}[a-z]{2}\\s*,\\s*(.*)") );
-    if( rfcDateDayRegex.indexIn( parseInput ) != -1 )
+    QRegularExpression rfcDateDayRegex( QStringLiteral("^[A-Z]{1}[a-z]{2}\\s*,\\s*(.*)") );
+    QRegularExpressionMatch dateMatch = rfcDateDayRegex.match( parseInput );
+    if( dateMatch.hasMatch() )
     {
-        parseInput = rfcDateDayRegex.cap(1);
+        parseInput = dateMatch.captured(1);
     }
     //Hack around a to strict RFCDate implementation in KDateTime.
     //See https://bugs.kde.org/show_bug.cgi?id=231062
-    QRegExp rfcMonthLowercase( QStringLiteral("^\\d+\\s+\\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\b") );
-    if( rfcMonthLowercase.indexIn( parseInput ) != -1 )
+    QRegularExpression rfcMonthLowercase( QStringLiteral("^\\d+\\s+\\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\b") );
+    QRegularExpressionMatch monthMatch = rfcDateDayRegex.match( parseInput );
+    if( monthMatch.hasMatch() )
     {
-        QString lowerMonth = rfcMonthLowercase.cap( 1 );
+        QString lowerMonth = monthMatch.captured( 1 );
         QString upperMonth = lowerMonth;
         upperMonth.replace( 0, 1, lowerMonth.at( 0 ).toUpper() );
         parseInput.replace( lowerMonth, upperMonth );

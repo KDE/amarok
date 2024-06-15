@@ -16,6 +16,7 @@
 
 #include "TagsFromFileNameGuesser.h"
 
+#include <QRegularExpression>
 #include <QStringList>
 
 const QStringList m_schemes( QStringList()
@@ -35,8 +36,8 @@ const QStringList m_schemes( QStringList()
     << QStringLiteral("^%title%\\.+(?:\\w{2,5})$")
 );
 
-const QRegExp m_digitalFields( QStringLiteral("(%(?:discnumber|track|year)%)") );
-const QRegExp m_literalFields( QStringLiteral("(%(?:album|albumartist|artist|comment|composer|genre|title)%)") );
+const QRegularExpression m_digitalFields( QStringLiteral("(%(?:discnumber|track|year)%)") );
+const QRegularExpression m_literalFields( QStringLiteral("(%(?:album|albumartist|artist|comment|composer|genre|title)%)") );
 
 quint64
 fieldName( const QString &field )
@@ -68,17 +69,18 @@ fieldName( const QString &field )
 QList< qint64 >
 parseTokens( const QString &scheme )
 {
-    QRegExp rxm( QStringLiteral("%(\\w+)%") );
+    QRegularExpression rxm( QStringLiteral("%(\\w+)%") );
     QList< qint64 > tokens;
 
     int pos = 0;
     qint64 field;
-    while( ( pos = rxm.indexIn( scheme, pos ) ) != -1 )
+    while( ( pos = scheme.indexOf( rxm, pos ) ) != -1 )
     {
-        field = fieldName( rxm.cap( 1 ) );
+        QRegularExpressionMatch rmatch = rxm.match( scheme, pos );
+        field = fieldName( rmatch.captured( 1 ) );
         if( field )
             tokens << field;
-        pos += rxm.matchedLength();
+        pos += rmatch.capturedLength();
     }
 
     return tokens;
@@ -91,7 +93,7 @@ Meta::Tag::TagGuesser::guessTagsByScheme( const QString &fileName, const QString
 {
     Meta::FieldHash metadata;
 
-    QRegExp rx;
+    QRegularExpression rx;
 
     QString m_fileName = fileName;
     QString m_scheme = scheme;
@@ -100,21 +102,22 @@ Meta::Tag::TagGuesser::guessTagsByScheme( const QString &fileName, const QString
     
     // Screen all special symbols
     if( !isRegExp )
-        m_scheme = m_scheme.replace( QRegExp( QStringLiteral("([~!\\^&*()\\-+\\[\\]{}\\\\:\"?\\.])" )), QStringLiteral("\\\\1") );
+        m_scheme = m_scheme.replace( QRegularExpression( QStringLiteral("([~!\\^&*()\\-+\\[\\]{}\\\\:\"?\\.])" )), QStringLiteral("\\\\1") );
     
-    QRegExp spaces( QStringLiteral("(\\s+)") );
+    QRegularExpression spaces( QStringLiteral("(\\s+)") );
     rx.setPattern( m_scheme.replace( spaces, QStringLiteral("\\s+") )
                            .replace( m_digitalFields, QStringLiteral("(\\d+)") )
                            .replace( m_literalFields, QStringLiteral("(.+)") )
                            .replace( QLatin1String("%ignore%"), QLatin1String("(?:.+)") ) );
 
-    if( !rx.exactMatch( m_fileName ) )
+    QRegularExpressionMatch rmatch = QRegularExpression(QRegularExpression::anchoredPattern(rx.pattern())).match( m_fileName );
+    if( !rmatch.hasMatch() )
         return metadata;
 
     QString value;
     for( int i = 0; i < tokens.count(); i++ )
     {
-        value = rx.cap( i + 1 );
+        value = rmatch.captured( i + 1 );
         if( convertUnderscores )
             value.replace( QLatin1Char('_'), QLatin1Char(' ') );
         if( cutTrailingSpaces )

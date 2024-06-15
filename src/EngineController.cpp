@@ -48,6 +48,7 @@
 #include <phonon/VolumeFaderEffect>
 
 #include <QCoreApplication>
+#include <QRegularExpression>
 #include <QUrlQuery>
 #include <QTimer>
 #include <QtMath>
@@ -249,7 +250,7 @@ EngineController::slotFillInSupportedMimeTypes()
         return;
     }
 
-    QRegExp avFilter( "^(audio|video)/", Qt::CaseInsensitive );
+    QRegularExpression avFilter( "^(audio|video)/", QRegularExpression::CaseInsensitiveOption);
     m_supportedMimeTypes = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
 
     // Add whitelist hacks

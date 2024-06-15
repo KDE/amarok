@@ -27,7 +27,7 @@
 #include "Mp3tunesConfig.h"
 
 #include <QMenuBar>
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include <KMessageBox>
 #include <ThreadWeaver/ThreadWeaver>
@@ -73,7 +73,7 @@ KConfigGroup Mp3tunesServiceFactory::config()
 bool
 Mp3tunesServiceFactory::possiblyContainsTrack(const QUrl &url) const
 {
-    QRegExp rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
+    QRegularExpression rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
     int matches = rx.indexIn( url.url() );
     if( matches == -1 ) {
         return false; // not a mp3tunes url

@@ -269,8 +269,8 @@ Collections::semanticDateTimeParser( const QString &text, bool *absolute )
     QDateTime result = QLocale().toDate( text, QLocale::ShortFormat ).startOfDay();
 
     // parse date using a backup standard independent from local settings
-    QRegExp shortDateReg("(\\d{1,2})[-.](\\d{1,2})");
-    QRegExp longDateReg("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})");
+    QRegularExpression shortDateReg("(\\d{1,2})[-.](\\d{1,2})");
+    QRegularExpression longDateReg("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})");
 
     if( text.at(0).isLetter() )
     {
@@ -292,13 +292,15 @@ Collections::semanticDateTimeParser( const QString &text, bool *absolute )
     }
     else if( text.contains(longDateReg) )
     {
-        result = QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ).startOfDay();
+        QRegularExpressionMatch rmatch = longDateReg.match( text );
+        result = QDate( rmatch.captured(3).toInt(), rmatch.captured(2).toInt(), rmatch.captured(1).toInt() ).startOfDay();
         if( absolute )
             *absolute = true;
     }
     else if( text.contains(shortDateReg) )
     {
-        result = QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ).startOfDay();
+        QRegularExpressionMatch rmatch = shortDateReg.match( text );
+        result = QDate( QDate::currentDate().year(), rmatch.captured(2).toInt(), rmatch.captured(1).toInt() ).startOfDay();
         if( absolute )
             *absolute = true;
     }

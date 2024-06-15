@@ -21,7 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QSet>
 #include <QUrlQuery>
 #include <QXmlStreamReader>
@@ -541,7 +541,9 @@ void
 CoverFetchArtPayload::prepareGoogleUrls()
 {
     // code based on Audex CDDA Extractor
-    QRegExp rx( "<a\\shref=\"(\\/imgres\\?imgurl=[^\"]+)\">[\\s\\n]*<img[^>]+src=\"([^\"]+)\"" );
+    /* Google backend 'temporarily' disabled in CoverFoundDialog.cpp, so comment out for now.
+    // If this ever gets updated, needs to be ported to QRegularExpression
+    QRegularExpression rx( "<a\\shref=\"(\\/imgres\\?imgurl=[^\"]+)\">[\\s\\n]*<img[^>]+src=\"([^\"]+)\"" );
     rx.setCaseSensitivity( Qt::CaseInsensitive );
     rx.setMinimal( true );
 
@@ -580,7 +582,7 @@ CoverFetchArtPayload::prepareGoogleUrls()
             m_urls.insert( url, metadata );
 
         pos += rx.matchedLength();
-    }
+    } */
 }
 
 void
@@ -678,7 +680,7 @@ CoverFetchArtPayload::firstAvailableValue( const QStringList &keys, const QHash<
 QString
 CoverFetchArtPayload::normalize( const QString &raw )
 {
-    const QRegExp spaceRegExp  = QRegExp( "\\s" );
+    const QRegularExpression spaceRegExp  = QRegularExpression( "\\s" );
     return raw.toLower().remove( spaceRegExp ).normalized( QString::NormalizationForm_KC );
 }
 

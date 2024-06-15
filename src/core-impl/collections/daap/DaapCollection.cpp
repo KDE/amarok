@@ -267,7 +267,7 @@ DaapCollection::prettyName() const
     QString host = m_host;
     // No need to be overly verbose
     if( host.endsWith( ".local" ) )
-        host = host.remove( QRegExp(".local$") );
+        host = host.remove( QRegularExpression(".local$") );
     return i18n("Music share at %1", host);
 }
 

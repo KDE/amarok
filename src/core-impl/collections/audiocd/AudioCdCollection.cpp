@@ -565,15 +565,16 @@ AudioCdCollection::trackForUrl( const QUrl &url )
     if( memoryCollection()->trackMap().contains( url.url() ) )
         return memoryCollection()->trackMap().value( url.url() );
 
-    QRegExp trackUrlScheme( "^audiocd:/([a-zA-Z0-9]*)/([0-9]{1,})" );
-    if( trackUrlScheme.indexIn( url.url() ) != 0 )
+    QRegularExpression trackUrlScheme( "^audiocd:/([a-zA-Z0-9]*)/([0-9]{1,})" );
+    if( url.url().indexOf( trackUrlScheme ) != 0 )
     {
         warning() << __PRETTY_FUNCTION__ << url.url() << "doesn't have correct scheme" << trackUrlScheme;
         return Meta::TrackPtr();
     }
+    QRegularExpressionMatch rmatch = trackUrlScheme.match( url.url() );
 
-    const QString trackCddbId = trackUrlScheme.capturedTexts().value( 1 );
-    const int trackNumber = trackUrlScheme.capturedTexts().value( 2 ).toInt();
+    const QString trackCddbId = rmatch.capturedTexts().value( 1 );
+    const int trackNumber = rmatch.capturedTexts().value( 2 ).toInt();
     if( !trackCddbId.isEmpty() && trackCddbId != unknownCddbId &&
         !m_discCddbId.isEmpty() && m_discCddbId != unknownCddbId &&
         trackCddbId != m_discCddbId )

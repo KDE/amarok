@@ -35,6 +35,7 @@
 #include <QUrl>
 
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
@@ -446,9 +447,9 @@ MtpHandler::checkFolderStructure( const Meta::TrackPtr track, bool create )
         if (( *it ).isEmpty() )
             continue;
         // substitute %a , %b , %g
-        ( *it ).replace( QRegExp( "%a" ), artistName )
-        .replace( QRegExp( "%b" ), albumName )
-        .replace( QRegExp( "%g" ), genreName );
+        ( *it ).replace( QRegularExpression( "%a" ), artistName )
+        .replace( QRegularExpression( "%b" ), albumName )
+        .replace( QRegularExpression( "%g" ), genreName );
         // check if it exists
         uint32_t check_folder = subfolderNameToID(( *it ).toUtf8(), m_folders, parent_id );
         // create if not exists (if requested)

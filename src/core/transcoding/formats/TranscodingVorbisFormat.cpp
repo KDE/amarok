@@ -110,5 +110,5 @@ VorbisFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 VorbisFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( QStringLiteral("^ .EA... vorbis +.*libvorbis") ) );
+    return ffmpegOutput.contains( QRegularExpression( QStringLiteral("^ .EA... vorbis +.*libvorbis") ) );
 }

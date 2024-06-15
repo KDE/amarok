@@ -22,7 +22,7 @@
 #include "core/collections/QueryMaker.h"
 
 #include <QList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QString>
 
 class MemoryFilter;
@@ -118,7 +118,7 @@ public:
     bool filterMatches( const Meta::TrackPtr &track ) const override;
 
 private:
-    QRegExp m_expression;
+    QRegularExpression m_expression;
 };
 
 #endif

@@ -51,6 +51,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QResizeEvent>
+#include <QRegularExpression>
 #include <QSlider>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -437,7 +438,7 @@ static QStringList metadata( Meta::TrackPtr track )
              (HAS_TAG(album) && title.CONTAINS_TAG(album)) )
         {
             // this will split "all-in-one" filename tags
-            QRegExp rx("(\\s+-\\s+|\\s*;\\s*|\\s*:\\s*)");
+            QRegularExpression rx("(\\s+-\\s+|\\s*;\\s*|\\s*:\\s*)");
             list << title.split( rx, Qt::SkipEmptyParts );
             QList<QString>::iterator i = list.begin();
             bool ok;

@@ -448,9 +448,9 @@ FileBrowser::setupAddItems()
     }
     else
     {
-        QRegExp threeSlashes( "^[^/]*/[^/]*/[^/]*/" );
+        QRegularExpression threeSlashes( "^[^/]*/[^/]*/[^/]*/" );
         if( workingUrl.indexOf( threeSlashes ) == 0 )
-            currentPosition = threeSlashes.matchedLength();
+            currentPosition = threeSlashes.match( workingUrl ).capturedLength();
         else
             currentPosition = workingUrl.length();
 
@@ -459,7 +459,7 @@ FileBrowser::setupAddItems()
         if( name == "file:///" )
             name = '/'; // just niceness
         else
-            name.remove( QRegExp( "/$" ) );
+            name.remove( QRegularExpression( "/$" ) );
     }
     /* always provide siblings for places, regardless of what first item is; this also
      * work-arounds bug 312639, where creating QUrl with accented chars crashes */
@@ -474,7 +474,7 @@ FileBrowser::setupAddItems()
             nextPosition = workingUrl.length();
 
         name = workingUrl.mid( currentPosition, nextPosition - currentPosition );
-        name.remove( QRegExp( "/$" ) );
+        name.remove( QRegularExpression( "/$" ) );
         callback = workingUrl.left( nextPosition );
 
         siblings = d->siblingsForDir( QUrl::fromLocalFile( callback ) );

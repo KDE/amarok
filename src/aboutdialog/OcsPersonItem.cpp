@@ -190,13 +190,12 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
         {
             QString channelsString = ocsPerson.extendedAttribute( QStringLiteral("ircchannels") );
             //We extract the channel names from the string provided by OCS:
-            QRegExp channelrx = QRegExp( "#+[\\w\\.\\-\\/!()+]+([\\w\\-\\/!()+]?)", Qt::CaseInsensitive );
+            QRegularExpression channelrx = QRegularExpression( QLatin1String( "#+[\\w\\.\\-\\/!()+]+([\\w\\-\\/!()+]?)" ), QRegularExpression::CaseInsensitiveOption );
             QStringList channels;
-            int pos = 0;
-            while( ( pos = channelrx.indexIn( channelsString, pos ) ) != -1 )
+            QRegularExpressionMatch rmatch = channelrx.match( channelsString );
+            for (int i = 0; i <= rmatch.lastCapturedIndex(); ++i)
             {
-                channels << channelrx.cap( 0 );
-                pos += channelrx.matchedLength();
+                channels << rmatch.captured(i);
             }
 
             m_aboutText.append( "<br/>" + i18n("IRC channels: ") );

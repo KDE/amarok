@@ -30,6 +30,7 @@
 #include "equalizer/EqualizerPresets.h"
 
 #include <KLocalizedString>
+#include <QRegularExpression>
 
 #include <phonon/BackendCapabilities>
 #include <phonon/EffectParameter>
@@ -56,9 +57,9 @@ EqualizerController::initialize( const Phonon::Path &path )
 
     // Add an equalizer effect if available
     const QList<EffectDescription> effects = BackendCapabilities::availableAudioEffects();
-    QRegExp equalizerRegExp( QStringLiteral( "equalizer.*%1.*bands" ).arg( s_equalizerBandsNum ),
-                             Qt::CaseInsensitive );
-    foreach( const EffectDescription &description, effects )
+    QRegularExpression equalizerRegExp( QStringLiteral( "equalizer.*%1.*bands" ).arg( s_equalizerBandsNum ),
+                             QRegularExpression::CaseInsensitiveOption );
+    for( auto const &description : effects )
     {
         if( !description.name().contains( equalizerRegExp ) )
             continue;
@@ -124,15 +125,16 @@ EqualizerController::eqBandsFreq() const
     QList<Phonon::EffectParameter> equalizerParameters = m_equalizer->parameters();
     if( equalizerParameters.isEmpty() )
         return bandFrequencies;
-    QRegExp rx( "\\d+(?=Hz)" );
+    QRegularExpression rx( "\\d+(?=Hz)" );
     foreach( const Phonon::EffectParameter &mParam, equalizerParameters )
     {
         if( mParam.name().contains( rx ) )
         {
-            if( rx.cap( 0 ).toInt() < 1000 )
-                bandFrequencies << i18n( "%0\nHz" ).arg( rx.cap( 0 ) );
+            QRegularExpressionMatch rmatch = rx.match( mParam.name() );
+            if( rmatch.captured( 0 ).toInt() < 1000 )
+                bandFrequencies << i18n( "%0\nHz" ).arg( rmatch.captured( 0 ) );
             else
-                bandFrequencies << i18n( "%0\nkHz" ).arg( QString::number( rx.cap( 0 ).toInt()/1000 ) );
+                bandFrequencies << i18n( "%0\nkHz" ).arg( QString::number( rmatch.captured( 0 ).toInt()/1000 ) );
         }
         else
             bandFrequencies << mParam.name();

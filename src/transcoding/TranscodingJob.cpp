@@ -150,15 +150,16 @@ inline qint64
 Job::computeDuration( const QString &output )
 {
     //We match something like "Duration: 00:04:33.60"
-    QRegExp matchDuration( "Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})" );
+    QRegularExpression matchDuration( "Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})" );
+    QRegularExpressionMatch rmatch = matchDuration.match( output );
 
-    if( output.contains( matchDuration ) )
+    if( rmatch.hasMatch() )
     {
         //duration is in csec
-        qint64 duration = matchDuration.cap( 1 ).toLong() * 60 * 60 * 100 +
-                          matchDuration.cap( 2 ).toInt()  * 60 * 100 +
-                          matchDuration.cap( 3 ).toInt()  * 100 +
-                          matchDuration.cap( 4 ).toInt();
+        qint64 duration = rmatch.captured( 1 ).toLong() * 60 * 60 * 100 +
+                          rmatch.captured( 2 ).toInt()  * 60 * 100 +
+                          rmatch.captured( 3 ).toInt()  * 100 +
+                          rmatch.captured( 4 ).toInt();
         return duration;
     }
     else
@@ -170,12 +171,13 @@ Job::computeProgress( const QString &output )
 {
     //Output is like size=     323kB time=18.10 bitrate= 146.0kbits/s
     //We're going to use the "time" column, which counts the elapsed time in seconds.
-    QRegExp matchTime( "time=(\\d+)\\.(\\d{2})" );
+    QRegularExpression matchTime( "time=(\\d+)\\.(\\d{2})" );
+    QRegularExpressionMatch rmatch = matchTime.match( output );
 
-    if( output.contains( matchTime ) )
+    if( rmatch.hasMatch() )
     {
-        qint64 time = matchTime.cap( 1 ).toLong() * 100 +
-                      matchTime.cap( 2 ).toInt();
+        qint64 time = rmatch.captured( 1 ).toLong() * 100 +
+                      rmatch.captured( 2 ).toInt();
         return time;
     }
     else

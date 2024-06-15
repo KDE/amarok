@@ -34,7 +34,6 @@
 #include <QHostInfo>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QRegExpValidator>
 
 
 K_PLUGIN_FACTORY_WITH_JSON( GpodderServiceSettingsFactory, "amarok_service_gpodder_config.json", registerPlugin<GpodderServiceSettings>(); )

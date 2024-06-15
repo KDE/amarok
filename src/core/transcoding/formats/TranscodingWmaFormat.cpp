@@ -115,5 +115,5 @@ WmaFormat::toFfmpegBitrate( int setting ) const
 bool
 WmaFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( QStringLiteral("^ .EA... wmav2 +") ) );
+    return ffmpegOutput.contains( QRegularExpression( QStringLiteral("^ .EA... wmav2 +") ) );
 }

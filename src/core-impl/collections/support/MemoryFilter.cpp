@@ -257,7 +257,7 @@ LabelFilter::LabelFilter( const QString &filter, bool matchBegin, bool matchEnd 
     if( matchEnd )
         pattern += '$';
 
-    m_expression = QRegExp( pattern, Qt::CaseInsensitive );
+    m_expression = QRegularExpression( pattern, QRegularExpression::CaseInsensitiveOption );
 }
 
 LabelFilter::~LabelFilter()
@@ -268,9 +268,9 @@ LabelFilter::~LabelFilter()
 bool
 LabelFilter::filterMatches(const Meta::TrackPtr &track ) const
 {
-    foreach( const Meta::LabelPtr &label, track->labels() )
+    for( const auto &label : track->labels() )
     {
-        if( m_expression.indexIn( label->name() ) != -1 )
+        if( label->name().indexOf( m_expression ) != -1 )
             return true;
     }
     return false;

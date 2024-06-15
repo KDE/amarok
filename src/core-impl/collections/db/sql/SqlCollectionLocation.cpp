@@ -38,6 +38,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <QStorageInfo>
 
 #include <KFileItem>
@@ -674,7 +675,7 @@ SqlCollectionLocation::moodFile( const QUrl &track ) const
     QUrl moodPath = track;
     QString fileName = moodPath.fileName();
     moodPath = moodPath.adjusted(QUrl::RemoveFilename);
-    moodPath.setPath(moodPath.path() +  '.' + fileName.replace( QRegExp( "(\\.\\w{2,5})$" ), ".mood" ) );
+    moodPath.setPath(moodPath.path() +  '.' + fileName.replace( QRegularExpression( "(\\.\\w{2,5})$" ), ".mood" ) );
     return moodPath;
 }
 

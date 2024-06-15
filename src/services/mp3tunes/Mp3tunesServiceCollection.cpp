@@ -28,7 +28,7 @@
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Job>
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 using namespace Collections;
 
@@ -63,7 +63,7 @@ QString Mp3tunesServiceCollection::prettyName() const
 bool
 Mp3tunesServiceCollection::possiblyContainsTrack(const QUrl &url) const
 {
-    QRegExp rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
+    QRegularExpression rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
     int matches = rx.indexIn( url.url() );
     if( matches == -1 ) {
         return false; // not a mp3tunes url
@@ -77,7 +77,7 @@ Mp3tunesServiceCollection::trackForUrl( const QUrl &url )
     DEBUG_BLOCK
     if( !m_locker->authenticated() )
         m_locker->login();
-    QRegExp rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
+    QRegularExpression rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
     rx.indexIn( url.url() );
     QStringList list = rx.capturedTexts();
     QString filekey = list[1]; // Because list[0] is the url itself.

@@ -44,7 +44,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QScreen>
 #include <QTimeLine>
 #include <QTimer>
@@ -246,9 +246,9 @@ OSDWidget::determineMetrics( const int M )
     const QSize max = QApplication::screens()[ screen() ]->size() - margin;
 
     // If we don't do that, the boundingRect() might not be suitable for drawText() (Qt issue N67674)
-    m_text.replace( QRegExp( " +\n" ), "\n" );
+    m_text.replace( QRegularExpression( " +\n" ), "\n" );
     // remove consecutive line breaks
-    m_text.replace( QRegExp( "\n+" ), "\n" );
+    m_text.replace( QRegularExpression( "\n+" ), "\n" );
 
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0, max.width() - image.width(), max.height(),

@@ -25,6 +25,7 @@
 #include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 
+#include <QRegularExpression>
 #include <KLocalizedString>
 
 TrackOrganizer::TrackOrganizer( const Meta::TrackList &tracks, QObject* parent )
@@ -131,11 +132,11 @@ QString TrackOrganizer::cleanPath( const QString& path ) const
     }
 
     if( !m_regexPattern.isEmpty() )
-        result.replace( QRegExp( m_regexPattern ), m_replaceString );
+        result.replace( QRegularExpression( m_regexPattern ), m_replaceString );
 
     result = result.simplified();
     if( m_UnderscoresNotSpaces )
-        result.replace( QRegExp( "\\s" ), "_" );
+        result.replace( QRegularExpression( QLatin1String("\\s") ), QLatin1String("_") );
 
     if( m_vfatSafe )
         // we use UnixBehaviour even on windows, because even there we use / as directory

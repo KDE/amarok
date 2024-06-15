@@ -21,6 +21,8 @@
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 
+#include <QRegularExpression>
+
 #include <cmath>
 
 ConstraintTypes::TagMatchFieldsModel::TagMatchFieldsModel()
@@ -230,8 +232,8 @@ ConstraintTypes::TagMatch::Comparer::compareStr( const QString& test,
         if ( test.contains( target, Qt::CaseInsensitive ) )
             return 1.0;
     } else if ( comparison == CompareStrRegExp ) {
-        QRegExp rx( target );
-        if ( rx.indexIn( test ) >= 0 )
+        QRegularExpression rx( target );
+        if ( test.indexOf( rx ) >= 0 )
             return 1.0;
     } else {
         return 0.0;

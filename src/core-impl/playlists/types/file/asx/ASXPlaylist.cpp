@@ -54,26 +54,28 @@ ASXPlaylist::processContent( QTextStream &stream )
     // ASX looks a lot like xml, but doesn't require tags to be case sensitive,
     // meaning we have to accept things like: <Abstract>...</abstract>
     // We use a dirty way to achieve this: we make all tags lower case
-    QRegExp tagPattern( "(<[/]?[^>]*[A-Z]+[^>]*>)", Qt::CaseInsensitive );
-    QRegExp urlPattern( "(href\\s*=\\s*\")([^\"]+)\"", Qt::CaseInsensitive );
+    QRegularExpression tagPattern( QLatin1String("(<[/]?[^>]*[A-Z]+[^>]*>)"), QRegularExpression::CaseInsensitiveOption );
+    QRegularExpression urlPattern( QLatin1String("(href\\s*=\\s*\")([^\"]+)\""), QRegularExpression::CaseInsensitiveOption );
 
     int index = 0;
-    while ( ( index = tagPattern.indexIn( data, index ) ) != -1 )
+    while ( ( index = data.indexOf( tagPattern, index ) ) != -1 )
     {
-        QString original = tagPattern.cap( 1 ).toLocal8Bit();
-        QString tagReplacement = tagPattern.cap( 1 ).toLower().toLocal8Bit();
-        if ( urlPattern.indexIn( original, 0 ) != -1  )
+        QRegularExpressionMatch tagMatch = tagPattern.match( data, index );
+        QString original = tagMatch.captured( 1 ).toLocal8Bit();
+        QString tagReplacement = tagMatch.captured( 1 ).toLower().toLocal8Bit();
+        if ( original.indexOf( urlPattern, 0 ) != -1  )
         {
+            QRegularExpressionMatch urlMatch = urlPattern.match( original, 0 );
             // Some playlists have unescaped & characters in URLs
-            QString url = urlPattern.cap( 2 );
-            url.replace( QRegExp( "&(?!amp;|quot;|apos;|lt;|gt;)" ), QStringLiteral("&amp;") );
+            QString url = urlMatch.captured( 2 );
+            url.replace( QRegularExpression( QLatin1String("&(?!amp;|quot;|apos;|lt;|gt;)") ), QStringLiteral("&amp;") );
 
-            QString urlReplacement = urlPattern.cap( 1 ) % url % "\"";
-            tagReplacement.replace( urlPattern.cap(0).toLocal8Bit().toLower(),
+            QString urlReplacement = urlMatch.captured( 1 ) % url % "\"";
+            tagReplacement.replace( urlMatch.captured(0).toLocal8Bit().toLower(),
                                     urlReplacement.toLocal8Bit() );
         }
         data.replace( original, tagReplacement );
-        index += tagPattern.matchedLength();
+        index += tagMatch.capturedLength();
     }
     if( !setContent( data, &errorMsg, &errorLine, &errorColumn ) )
     {

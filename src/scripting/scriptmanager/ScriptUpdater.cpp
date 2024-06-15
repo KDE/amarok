@@ -73,9 +73,9 @@ ScriptUpdater::updateScript()
     // 1b. detect script name
     QFile file( m_scriptPath );
     m_fileName = file.fileName();
-    QRegExp rxname( "amarok/scripts/(.+)/main.js" );
-    rxname.indexIn( m_fileName );
-    m_scriptname = rxname.cap( 1 );
+    QRegularExpression rxname( "amarok/scripts/(.+)/main.js" );
+    QRegularExpressionMatch rmatch = rxname.match( m_fileName );
+    m_scriptname = rmatch.captured( 1 );
 
     // 2. check if there are updates: get 'version' file from server
     QUrl versionUrl( updateBaseUrl );

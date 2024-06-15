@@ -31,7 +31,6 @@
 #include <KPluginFactory>
 
 #include <QCryptographicHash>
-#include <QRegExpValidator>
 
 #include <XmlQuery.h>
 

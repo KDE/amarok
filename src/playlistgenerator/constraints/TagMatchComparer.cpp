@@ -93,7 +93,7 @@ ConstraintTypes::TagMatch::Comparer::compareStr( const QString& test,
             return 1.0;
     /*
     } else if ( comparison == CompareStrRegExp ) {
-        QRegExp rx( target );
+        QRegularExpression rx( target );
         if ( rx.indexIn( test ) >= 0 )
             return 1.0;
             */

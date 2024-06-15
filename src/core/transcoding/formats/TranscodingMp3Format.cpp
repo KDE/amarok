@@ -104,5 +104,5 @@ Mp3Format::ffmpegParameters( const Configuration &configuration ) const
 bool
 Mp3Format::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( QStringLiteral("^ .EA... mp3 +.*libmp3lame") ) );
+    return ffmpegOutput.contains( QRegularExpression( QStringLiteral("^ .EA... mp3 +.*libmp3lame") ) );
 }

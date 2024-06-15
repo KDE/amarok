@@ -18,6 +18,7 @@
 
 #include "core/support/Debug.h"
 
+#include <QRegularExpression>
 #include <QUrl>
 
 using namespace Podcasts;
@@ -33,8 +34,8 @@ PodcastProvider::couldBeFeed( const QString &urlString )
     feedProtocols << QStringLiteral("feed");
 
     QString matchString = QStringLiteral( "^(%1)" ).arg( feedProtocols.join( QStringLiteral("|") ) );
-    QRegExp rx( matchString );
-    int pos = rx.indexIn( urlString.trimmed() );
+    QRegularExpression rx( matchString );
+    int pos = urlString.trimmed().indexOf( rx );
 
     return pos != -1;
 }

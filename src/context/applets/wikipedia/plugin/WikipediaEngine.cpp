@@ -231,7 +231,7 @@ WikipediaEngine::_parseLangLinksResult( const QUrl &url, const QByteArray &data,
     }
     else
     {
-        QRegExp regex( QLatin1Char('^') + hostLang + QLatin1String(".*$") );
+        QRegularExpression regex( QLatin1Char('^') + hostLang + QLatin1String(".*$") );
         int index = preferredLangs.indexOf( regex );
         if( (index != -1) && (index < preferredLangs.count() - 1) )
         {
@@ -242,7 +242,7 @@ WikipediaEngine::_parseLangLinksResult( const QUrl &url, const QByteArray &data,
         }
         else
         {
-            QStringList refinePossibleLangs = preferredLangs.filter( QRegExp("^(en|fr|de|pl).*$") );
+            QStringList refinePossibleLangs = preferredLangs.filter( QRegularExpression("^(en|fr|de|pl).*$") );
             if( refinePossibleLangs.isEmpty() )
             {
                 clear();
@@ -297,7 +297,7 @@ WikipediaEngine::_parseListingResult( const QUrl &url,
 
     if( titles.isEmpty() )
     {
-        QStringList refinePossibleLangs = preferredLangs.filter( QRegExp("^(en|fr|de|pl).*$") );
+        QStringList refinePossibleLangs = preferredLangs.filter( QRegularExpression("^(en|fr|de|pl).*$") );
         int index = refinePossibleLangs.indexOf( hostLang );
         if( (index != -1) && (index < refinePossibleLangs.count() - 1) )
             fetchListing( title, refinePossibleLangs.value( index + 1 ).split( QLatin1Char(':') ).back() );
@@ -314,10 +314,10 @@ WikipediaEngine::_parseListingResult( const QUrl &url,
     {
     default:
     case Artist:
-        pattern = i18nc("Search pattern for an artist or band", ".*\\(.*(artist|band).*\\))").toLatin1();
+        pattern = i18nc("Search pattern for an artist or band", ".*\\(.*(artist|band).*\\)").toLatin1();
         break;
     case Composer:
-            pattern = i18nc("Search pattern for a composer", ".*\\(.*(composer|musician).*\\))").toLatin1();
+            pattern = i18nc("Search pattern for a composer", ".*\\(.*(composer|musician).*\\)").toLatin1();
         break;
     case Album:
             pattern = i18nc("Search pattern for an album", ".*\\(.*(album|score|soundtrack).*\\)").toLatin1();
@@ -329,7 +329,7 @@ WikipediaEngine::_parseListingResult( const QUrl &url,
     }
 
     pattern.prepend( title );
-    int patternIndex = titles.indexOf( QRegExp(pattern, Qt::CaseInsensitive) );
+    int patternIndex = titles.indexOf( QRegularExpression(pattern, QRegularExpression::CaseInsensitiveOption) );
     const QString result = ( patternIndex != -1 ) ? titles.at( patternIndex ) : titles.first();
     fetchWikiUrl( result, hostLang ); // end of the line
 }
@@ -661,7 +661,7 @@ WikipediaEngine::wikiParse( QString &wiki )
         copyright.prepend( QLatin1String("<br />") );
     }
 
-    const int titleIndex = wiki.indexOf( QRegExp( QLatin1String("<title>[^<]*</title>") ) ) + 7;
+    const int titleIndex = wiki.indexOf( QRegularExpression( QLatin1String("<title>[^<]*</title>") ) ) + 7;
     const int bsTitleIndex = wiki.indexOf( QLatin1String("</title>"), titleIndex ) - titleIndex;
     const QString title = wiki.mid( titleIndex, bsTitleIndex );
 
@@ -709,32 +709,32 @@ WikipediaEngine::wikiParse( QString &wiki )
     wiki = QLatin1String("<div id=\"bodyContent\"") + wiki;
     wiki += copyright;
     wiki.append( QLatin1String("</div>") );
-    wiki.remove( QRegExp( QLatin1String("<h3 id=\"siteSub\">[^<]*</h3>") ) );
+    wiki.remove( QRegularExpression( QLatin1String("<h3 id=\"siteSub\">[^<]*</h3>") ) );
 
-    wiki.remove( QRegExp( QLatin1String("<span class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</span>") ) );
-    wiki.remove( QRegExp( QLatin1String("<p><span[^>]*><[^\"]*\"#_skip_noteTA\">[^<]*<[^<]*</span></p>") ) );
+    wiki.remove( QRegularExpression( QLatin1String("<span class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</span>") ) );
+    wiki.remove( QRegularExpression( QLatin1String("<p><span[^>]*><[^\"]*\"#_skip_noteTA\">[^<]*<[^<]*</span></p>") ) );
 
-    wiki.replace( QRegExp( QLatin1String("<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>") ), QLatin1String("\\1") );
+    wiki.replace( QRegularExpression( QLatin1String("<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>") ), QLatin1String("\\1") );
 
     // Remove anything inside of a class called urlexpansion, as it's pointless for us
-    wiki.remove( QRegExp( QLatin1String("<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>") ) );
+    wiki.remove( QRegularExpression( QLatin1String("<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>") ) );
 
-    // Remove hidden table rows as well
-    QRegExp hidden( QLatin1String("<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>"), Qt::CaseInsensitive );
-    hidden.setMinimal( true ); //greedy behaviour wouldn't be any good!
+    // Remove hidden table rows as well, greedy behaviour wouldn't be any good!
+    QRegularExpression hidden( QLatin1String("<tr *class= *[\"\']hiddenStructure[\"\']>.*</tr>"), QRegularExpression::CaseInsensitiveOption | QRegularExpression::InvertedGreedinessOption );
+
     wiki.remove( hidden );
 
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
-    wiki.remove( QRegExp( QLatin1String("style= *\"[^\"]*\"") ) );
+    wiki.remove( QRegularExpression( QLatin1String("style= *\"[^\"]*\"") ) );
     // We need to leave the classes behind, otherwise styling it ourselves gets really nasty and tedious and roughly impossible to do in a sane manner
-    //wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString() );
+    //wiki.replace( QRegularExpression( "class= *\"[^\"]*\"" ), QString() );
     // let's remove the form elements, we don't want them.
-    wiki.remove( QRegExp( QLatin1String("<input[^>]*>") ) );
-    wiki.remove( QRegExp( QLatin1String("<select[^>]*>") ) );
+    wiki.remove( QRegularExpression( QLatin1String("<input[^>]*>") ) );
+    wiki.remove( QRegularExpression( QLatin1String("<select[^>]*>") ) );
     wiki.remove( QLatin1String("</select>\n")  );
-    wiki.remove( QRegExp( QLatin1String("<option[^>]*>") ) );
+    wiki.remove( QRegularExpression( QLatin1String("<option[^>]*>") ) );
     wiki.remove( QLatin1String("</option>\n")  );
-    wiki.remove( QRegExp( QLatin1String("<textarea[^>]*>") ) );
+    wiki.remove( QRegularExpression( QLatin1String("<textarea[^>]*>") ) );
     wiki.remove( QLatin1String("</textarea>") );
 
     // wiki.append( createLanguageComboBox(langMap) ); // BUG:259075

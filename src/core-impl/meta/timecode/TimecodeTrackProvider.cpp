@@ -18,7 +18,7 @@
 
 #include "TimecodeMeta.h"
 
-#include "QRegExp"
+#include "QRegularExpression"
 
 TimecodeTrackProvider::TimecodeTrackProvider()
 {
@@ -31,20 +31,21 @@ TimecodeTrackProvider::~TimecodeTrackProvider()
 
 bool TimecodeTrackProvider::possiblyContainsTrack( const QUrl &url ) const
 {
-    return url.url().contains( QRegExp(":\\d+-\\d+$") );
+    return url.url().contains( QRegularExpression(":\\d+-\\d+$") );
 }
 
 Meta::TrackPtr TimecodeTrackProvider::trackForUrl( const QUrl &url )
 {
     QString urlString = url.url();
 
-    QRegExp rx;
+    QRegularExpression rx;
     rx.setPattern( "^(.+):(\\d+)-(\\d+)$" );
-    if( rx.indexIn( urlString ) != -1 )
+    QRegularExpressionMatch rmatch = rx.match( urlString );
+    if( rmatch.hasMatch() )
     {
-        QString baseUrlString = rx.cap(1);
-        int start = rx.cap(2).toInt();
-        int end = rx.cap(3).toInt();
+        QString baseUrlString = rmatch.captured(1);
+        int start = rmatch.captured(2).toInt();
+        int end = rmatch.captured(3).toInt();
 
         Meta::TimecodeTrack * track = new Meta::TimecodeTrack( "TimecodeTrack", QUrl( baseUrlString ), start, end );
         return Meta::TrackPtr( track );

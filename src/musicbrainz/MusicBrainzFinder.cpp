@@ -31,6 +31,7 @@
 
 #include <QAuthenticator>
 #include <QNetworkAccessManager>
+#include <QRegularExpression>
 #include <QTimer>
 #include <QUrlQuery>
 
@@ -581,12 +582,12 @@ MusicBrainzFinder::compileTrackRequest( const Meta::TrackPtr &track )
     QVariantMap metadata = guessMetadata( track );
 
     // These characters are not considered in the query, and some of them can break it.
-    QRegExp unsafe( "[.,:;!?()\\[\\]{}\"]" );
+    QRegularExpression unsafe( "[.,:;!?()\\[\\]{}\"]" );
     // http://lucene.apache.org/core/old_versioned_docs/versions/3_4_0/queryparsersyntax.html#Escaping Special Characters
-    QRegExp special( "([+\\-!(){}\\[\\]\\^\"~*?:\\\\]|&&|\\|\\|)" );
+    QRegularExpression special( "([+\\-!(){}\\[\\]\\^\"~*?:\\\\]|&&|\\|\\|)" );
     QString escape( "\\\\1" );
     // We use fuzzy search to bypass typos and small mistakes.
-    QRegExp endOfWord( "([a-zA-Z0-9])(\\s|$)" );
+    QRegularExpression endOfWord( "([a-zA-Z0-9])(\\s|$)" );
     QString fuzzy( "\\1~\\2" );
     /*
      * The query results in:

@@ -203,7 +203,7 @@ AlbumsProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourcePare
     const QModelIndex &srcIndex     = sourceModel()->index( sourceRow, 0, sourceParent );
     const QStandardItem *item       = model->itemFromIndex( srcIndex );
 
-    if( item->data( NameRole ).toString().contains( filterRegExp() ) )
+    if( item->data( NameRole ).toString().contains( filterRegularExpression() ) )
         return true;
 
     if( item->type() == AlbumType )
@@ -211,7 +211,7 @@ AlbumsProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourcePare
         for( int i = 0, count = model->rowCount( srcIndex ); i < count; ++i )
         {
             const QModelIndex &kid = model->index( i, 0, srcIndex );
-            if( kid.data( NameRole ).toString().contains( filterRegExp() ) )
+            if( kid.data( NameRole ).toString().contains( filterRegularExpression() ) )
                 return true;
         }
     }

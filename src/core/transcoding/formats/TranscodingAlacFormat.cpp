@@ -63,5 +63,5 @@ AlacFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 AlacFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( QStringLiteral("^ .EA... alac +") ) );
+    return ffmpegOutput.contains( QRegularExpression( QStringLiteral("^ .EA... alac +") ) );
 }

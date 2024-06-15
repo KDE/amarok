@@ -20,6 +20,7 @@
 #include "core/support/SemaphoreReleaser.h"
 
 #include <QCoreApplication>
+#include <QRegularExpression>
 #include <QNetworkReply>
 
 #include <Track.h>
@@ -155,13 +156,14 @@ SynchronizationTrack::parseAndSaveLastFmTags( const QSet<QString> &tags )
     m_rating = 0;
 
     // we still match and explicitly ignore rating tags even in m_useFancyRatingTags is false
-    QRegExp rx( "([0-9]{1,3}) of ([0-9]{1,3}) stars", Qt::CaseInsensitive );
+    QRegularExpression rx( QRegularExpression::anchoredPattern( "([0-9]{1,3}) of ([0-9]{1,3}) stars" ), QRegularExpression::CaseInsensitiveOption );
     foreach( const QString &tag, tags )
     {
-        if( rx.exactMatch( tag ) )
+        QRegularExpressionMatch rmatch = rx.match( tag );
+        if( rmatch.hasMatch() )
         {
             m_ratingLabels.insert( tag );
-            QStringList texts = rx.capturedTexts();
+            QStringList texts = rmatch.capturedTexts();
             if( texts.count() != 3 )
                 continue;
             qreal numerator = texts.at( 1 ).toDouble();

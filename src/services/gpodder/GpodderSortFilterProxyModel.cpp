@@ -37,5 +37,5 @@ bool GpodderSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelI
 
     // Podcast Items
     QModelIndex index = sourceModel()->index( sourceRow, 0, sourceParent );
-    return sourceModel()->data( index ).toString().contains( filterRegExp() );
+    return sourceModel()->data( index ).toString().contains( filterRegularExpression() );
 }

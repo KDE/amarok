@@ -117,5 +117,5 @@ OpusFormat::toFfmpegBitrate( int setting ) const
 bool
 OpusFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( QStringLiteral("^ .EA... opus +.*libopus") ) );
+    return ffmpegOutput.contains( QRegularExpression( QStringLiteral("^ .EA... opus +.*libopus") ) );
 }

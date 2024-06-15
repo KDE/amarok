@@ -34,6 +34,7 @@
 #include <KActionMenu>
 #include <KConfigGroup>
 #include <QIcon>
+#include <QRegularExpression>
 #include <QStandardPaths>
 #include <KToolBar>
 
@@ -144,14 +145,14 @@ PlaylistBrowserCategory::~PlaylistBrowserCategory()
 QString
 PlaylistBrowserCategory::filter() const
 {
-    return QUrl::toPercentEncoding( m_filterProxy->filterRegExp().pattern() );
+    return QUrl::toPercentEncoding( m_filterProxy->filterRegularExpression().pattern() );
 }
 
 void
 PlaylistBrowserCategory::setFilter( const QString &filter )
 {
     debug() << "Setting filter " << filter;
-    m_filterProxy->setFilterRegExp( QRegExp( QUrl::fromPercentEncoding( filter.toUtf8() ) ) );
+    m_filterProxy->setFilterRegularExpression( QRegularExpression( QUrl::fromPercentEncoding( filter.toUtf8() ) ) );
     //disable all other provider-buttons
     foreach( QAction * const providerAction, m_providerActions )
     {
@@ -159,7 +160,8 @@ PlaylistBrowserCategory::setFilter( const QString &filter )
                 providerAction->data().value<const Playlists::PlaylistProvider *>();
         if( provider )
             providerAction->setChecked(
-                    m_filterProxy->filterRegExp().exactMatch( provider->prettyName() ) );
+                    QRegularExpression(QRegularExpression::anchoredPattern(m_filterProxy->filterRegularExpression().pattern()))
+                    .match( provider->prettyName() ).hasMatch());
     }
 }
 
@@ -260,7 +262,7 @@ PlaylistBrowserCategory::slotToggleProviderButton()
         QAction *action = m_providerActions.value( p );
         if( action->isChecked() )
         {
-            QString escapedName = QRegExp::escape( p->prettyName() ).replace( ' ', QLatin1String("\\ ") );
+            QString escapedName = QRegularExpression::escape( p->prettyName() ).replace( QLatin1Char(' '), QLatin1String("\\ ") );
             filter += QString( filter.isEmpty() ? "%1" : "|%1" ).arg( escapedName );
             checkedActions << action;
             action->setEnabled( true );
@@ -270,7 +272,7 @@ PlaylistBrowserCategory::slotToggleProviderButton()
     if( checkedActions.count() == m_providerActions.count() )
         filter.clear();
 
-    m_filterProxy->setFilterRegExp( filter );
+    m_filterProxy->setFilterRegularExpression( filter );
 
     //don't allow the last visible provider to be hidden
     if( checkedActions.count() == 1 )
@@ -289,11 +291,11 @@ PlaylistBrowserCategory::createNewFolder()
         int folderCount( 0 );
         foreach( const QModelIndex &folder, folderIndices )
         {
-            QRegExp regex( name + " \\((\\d+)\\)" );
-            int matchIndex = regex.indexIn( folder.data( Qt::DisplayRole ).toString() );
-            if (matchIndex != -1)
+            QRegularExpression regex( name + " \\((\\d+)\\)" );
+            QRegularExpressionMatch rmatch = regex.match( folder.data( Qt::DisplayRole ).toString() );
+            if ( rmatch.hasMatch() )
             {
-                int newNumber = regex.cap( 1 ).toInt();
+                int newNumber = rmatch.captured( 1 ).toInt();
                 if (newNumber > folderCount)
                     folderCount = newNumber;
             }

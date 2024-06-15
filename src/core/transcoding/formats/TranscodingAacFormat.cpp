@@ -97,5 +97,5 @@ AacFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 AacFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegExp( "^ .EA... aac +" ) );
+    return ffmpegOutput.contains( QRegularExpression( "^ .EA... aac +" ) );
 }

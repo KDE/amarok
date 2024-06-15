@@ -19,7 +19,7 @@
 #include <config.h>
 
 #include <QImage>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QStringList>
 
 #pragma GCC diagnostic push
@@ -183,7 +183,7 @@ TagHelper::splitUID( const QString &uidUrl ) const
     QString uid = uidUrl;
 
     if( uid.startsWith( QLatin1String("amarok-") ) )
-        uid = uid.remove( QRegExp( QStringLiteral("^(amarok-\\w+://).+$") ) );
+        uid = uid.remove( QRegularExpression( QStringLiteral("^(amarok-\\w+://).+$") ) );
 
     if( isValidUID( uid, UIDAFT ) )
         type = UIDAFT;
@@ -220,12 +220,12 @@ TagHelper::isValidUID( const QString &uid, const TagHelper::UIDType type ) const
     if( uid.length() >= 127 ) // the database can't handle longer uids
         return false;
 
-    QRegExp regexp( QStringLiteral("^$") );
+    QRegularExpression regexp( QStringLiteral("^$") );
 
     if( type == UIDAFT )
         regexp.setPattern( QStringLiteral("^[0-9a-fA-F]{32}$") );
 
-    return regexp.exactMatch( uid );
+    return QRegularExpression(QRegularExpression::anchoredPattern(regexp.pattern())).match( uid ).hasMatch();
 }
 
 TagLib::String

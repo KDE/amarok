@@ -18,6 +18,8 @@
 
 #include "QStringx.h"
 
+#include <QRegularExpression>
+
 Amarok::QStringx::QStringx()
 {
 }
@@ -54,7 +56,7 @@ Amarok::QStringx::~QStringx()
 QString
 Amarok::QStringx::args( const QStringList &args ) const
 {
-    const QStringList text = (*this).split( QRegExp( "%\\d+" ), Qt::KeepEmptyParts );
+    const QStringList text = (*this).split( QRegularExpression( "%\\d+" ), Qt::KeepEmptyParts );
 
     QList<QString>::ConstIterator itrText = text.constBegin();
     QList<QString>::ConstIterator itrArgs = args.constBegin();
@@ -79,7 +81,7 @@ Amarok::QStringx::namedArgs( const QMap<QString, QString> &args, bool opt ) cons
 {
     // Screen all kinds of brackets and format string with namedOptArgs.
     QString formatString = *this;
-    formatString.replace( QRegExp( "([\\[\\]{}])" ),"\\\\1" );
+    formatString.replace( QRegularExpression( "([\\[\\]{}])" ),"\\\\1" );
 
     // Legacy code returned empty string if any token was empty, so do the same
     if( opt )

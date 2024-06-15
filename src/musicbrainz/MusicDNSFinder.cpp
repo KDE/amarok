@@ -24,6 +24,7 @@
 #include <ThreadWeaver/Queue>
 
 #include <QNetworkAccessManager>
+#include <QRegularExpression>
 #include <QUrlQuery>
 
 MusicDNSFinder::MusicDNSFinder( QObject *parent,
@@ -205,7 +206,7 @@ MusicDNSFinder::compileRequest( const QString &fingerprint, const Meta::TrackPtr
     query.addQueryItem( "cvr", mdns_clientVersion );
     query.addQueryItem( "fpt", fingerprint );
     query.addQueryItem( "ttl", track->name().isNull()?track->playableUrl().fileName().remove(
-                             QRegExp( "^.*(\\.+(?:\\w{2,5}))$" ) ):track->name() );
+                             QRegularExpression( "^.*(\\.+(?:\\w{2,5}))$" ) ):track->name() );
     query.addQueryItem( "tnm", "" );
     query.addQueryItem( "lkt", "" );
     query.addQueryItem( "dur", QString::number( track->length() ) );

@@ -43,12 +43,12 @@ PLSPlaylist::loadPls( QTextStream &textStream )
     QString tmp;
     QStringList lines;
 
-    QRegExp regExp_NumberOfEntries("^NumberOfEntries\\s*=\\s*\\d+$");
-    regExp_NumberOfEntries.setCaseSensitivity( Qt::CaseInsensitive ); // It seems many playlists use numberofentries
-    const QRegExp regExp_File("^File\\d+\\s*=");
-    const QRegExp regExp_Title("^Title\\d+\\s*=");
-    const QRegExp regExp_Length("^Length\\d+\\s*=\\s*-?\\d+$"); // Length Can be -1
-    const QRegExp regExp_Version("^Version\\s*=\\s*\\d+$");
+    // Case insensitive, as it seems many playlists use numberofentries
+    QRegularExpression regExp_NumberOfEntries( QLatin1String("^NumberOfEntries\\s*=\\s*\\d+$"), QRegularExpression::CaseInsensitiveOption );
+    const QRegularExpression regExp_File("^File\\d+\\s*=");
+    const QRegularExpression regExp_Title("^Title\\d+\\s*=");
+    const QRegularExpression regExp_Length("^Length\\d+\\s*=\\s*-?\\d+$"); // Length Can be -1
+    const QRegularExpression regExp_Version("^Version\\s*=\\s*\\d+$");
     const QString section_playlist(QStringLiteral("[playlist]"));
 
 
@@ -180,7 +180,7 @@ PLSPlaylist::loadPls_extractIndex( const QString &str ) const
     bool ok = false;
     unsigned int ret;
     QString tmp( str.section( QLatin1Char('='), 0, 0 ) );
-    tmp.remove( QRegExp( "^\\D*" ) );
+    tmp.remove( QRegularExpression( QLatin1String("^\\D*") ) );
     ret = tmp.trimmed().toUInt( &ok );
     Q_ASSERT(ok);
     return ret;

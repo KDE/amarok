@@ -23,7 +23,7 @@
 #include "core/transcoding/TranscodingConfiguration.h"
 
 #include <QIcon>
-
+#include <QRegularExpression>
 #include <QStringList>
 
 namespace Transcoding

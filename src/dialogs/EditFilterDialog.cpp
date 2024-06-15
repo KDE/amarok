@@ -315,8 +315,8 @@ EditFilterDialog::updateDropTarget( const QString &text )
                 auto date = QLocale().toDate( strTime, QLocale::ShortFormat );
 
                 // parse date using a backup standard independent from local settings
-                QRegExp shortDateReg("(\\d{1,2})[-.](\\d{1,2})");
-                QRegExp longDateReg("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})");
+                QRegularExpression shortDateReg("(\\d{1,2})[-.](\\d{1,2})");
+                QRegularExpression longDateReg("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})");
                 // NOTE for absolute time specifications numValue is a unix timestamp,
                 // for relative time specifications numValue is a time difference in seconds 'pointing to the past'
                 if( date.isValid() )
@@ -326,12 +326,14 @@ EditFilterDialog::updateDropTarget( const QString &text )
                 }
                 else if( strTime.contains(longDateReg) )
                 {
-                    filter.filter.numValue =  QDate( longDateReg.cap(3).toInt(), longDateReg.cap(2).toInt(), longDateReg.cap(1).toInt() ).startOfDay().toSecsSinceEpoch();
+                    QRegularExpressionMatch rmatch = longDateReg.match( strTime );
+                    filter.filter.numValue =  QDate( rmatch.captured(3).toInt(), rmatch.captured(2).toInt(), rmatch.captured(1).toInt() ).startOfDay().toSecsSinceEpoch();
                     isDateAbsolute = true;
                 }
                 else if( strTime.contains(shortDateReg) )
                 {
-                    filter.filter.numValue = QDate( QDate::currentDate().year(), shortDateReg.cap(2).toInt(), shortDateReg.cap(1).toInt() ).startOfDay().toSecsSinceEpoch();
+                    QRegularExpressionMatch rmatch = shortDateReg.match( strTime );
+                    filter.filter.numValue = QDate( QDate::currentDate().year(), rmatch.captured(2).toInt(), rmatch.captured(1).toInt() ).startOfDay().toSecsSinceEpoch();
                     isDateAbsolute = true;
                 }
                 else

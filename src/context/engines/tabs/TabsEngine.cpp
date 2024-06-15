@@ -325,7 +325,7 @@ TabsEngine::resultUltimateGuitarTab( const QUrl &url, QByteArray data, NetworkAc
     // extract tab title and data
     const QString title = subStringBetween( result, "<strong>", "</strong>" );
     result.remove( subStringBetween( result, "<div class=\"dn\">", "</div>" ) );
-    QRegExp regex = QRegExp( "<pre>.*</pre>", Qt::CaseInsensitive );
+    QRegularExpression regex = QRegularExpression( "<pre>.*</pre>", Qt::CaseInsensitive );
     if( regex.indexIn( result ) == -1 )
         return;
     QString tabs = regex.cap();
@@ -474,12 +474,12 @@ TabsEngine::defineTitleSearchCriteria( const QString &title )
         titles << searchTitle.remove( "The ", Qt::CaseInsensitive );
 
     // remove anything like (live), (demo-tape), ...
-    QRegExp regex = QRegExp( "\\s*\\(.*\\)", Qt::CaseInsensitive );
+    QRegularExpression regex = QRegularExpression( "\\s*\\(.*\\)", Qt::CaseInsensitive );
     if( regex.indexIn( searchTitle ) > 0 )
         titles << searchTitle.remove( regex );
 
     // remove anything like [xxxx].
-    regex = QRegExp( "\\s*\\[.*\\]", Qt::CaseInsensitive );
+    regex = QRegularExpression( "\\s*\\[.*\\]", Qt::CaseInsensitive );
     if( regex.indexIn( searchTitle ) > 0 )
         titles << searchTitle.remove( regex );
 

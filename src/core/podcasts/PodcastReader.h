@@ -26,7 +26,7 @@
 #include <QXmlStreamReader>
 #include <QObject>
 #include <QStack>
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include <KIO/TransferJob>
 
@@ -284,9 +284,9 @@ class AMAROKCORE_EXPORT PodcastReader : public QObject
                 // feeds without the need for threads.
 
                 QHash<QString, ElementType> knownElements;
-                QRegExp removeScripts;
-                QRegExp mightBeHtml;
-                QRegExp linkify;
+                QRegularExpression removeScripts;
+                QRegularExpression mightBeHtml;
+                QRegularExpression linkify;
                 
                 // Actions
                 Action startAction;
