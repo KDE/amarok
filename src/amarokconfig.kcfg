@@ -227,7 +227,7 @@
         <default>false</default>
     </entry>
     <entry key="EqualizerGains" type="IntList">
-        <label>11 Equalizer gains include pre-amp, range -100..100, 0 is normal.</label>
+        <label>11 Equalizer gains including pre-amp, range -100..100, 0 is normal.</label>
         <default>0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0</default>
     </entry>
     <entry key="EqualizerPresetsNames" type="StringList">
