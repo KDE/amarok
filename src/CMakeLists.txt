@@ -648,7 +648,6 @@ set(amaroklib_LIB_SRCS
     AmarokMimeData.cpp
     AmarokProcess.cpp
     App.cpp
-    CaseConverter.cpp
     EngineController.cpp
     KNotificationBackend.cpp
     MainWindow.cpp

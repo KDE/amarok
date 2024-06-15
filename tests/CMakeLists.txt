@@ -50,19 +50,6 @@ target_link_libraries( testamarok
     amaroklib
     )
 
-#------------------------ Test CaseConverter -----------------------------
-
-set( testcaseconverter_SRCS
-        TestCaseConverter.cpp
-        ${AMAROK_SOURCE_TREE}/CaseConverter.cpp
-    )
-
-add_executable( testcaseconverter  ${testcaseconverter_SRCS} )
-add_test(NAME testcaseconverter COMMAND $<TARGET_FILE:testcaseconverter>)
-ecm_mark_as_test(testcaseconverter)
-
-target_link_libraries(testcaseconverter Qt::Test amarokcore)
-
 #------------------------ Test Debug -----------------------------
 
 add_definitions(-DDEBUG_OVERRIDE_ELAPSED_TIME=4.9)
