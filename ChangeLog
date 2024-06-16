@@ -8,6 +8,7 @@ VERSION 3.0.2
   CHANGES:
 
   BUGFIXES:
+   * Fix saving and restoring playlist queue on quit / restart (BR 338741)
 
 
 VERSION 3.0.1

@@ -643,6 +643,8 @@ XSPFPlaylist::setQueue( const QList<int> &queue )
     extension.setAttribute( QStringLiteral("application"), QStringLiteral("http://amarok.kde.org") );
     extension.appendChild( q );
 
+    if( firstChild().isNull() )
+        save( m_relativePaths );
     QDomNode root = firstChild();
     root.appendChild( extension );
 }
