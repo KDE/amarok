@@ -879,7 +879,7 @@ SqlQueryMaker::buildQuery()
         if( !list.isEmpty() )
         {
             QString commaSeparatedIds;
-            foreach( int id, list )
+            for( int id : list )
             {
                 if( !commaSeparatedIds.isEmpty() )
                     commaSeparatedIds += ',';

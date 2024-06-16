@@ -72,7 +72,7 @@ GenericScanManager::requestScan( QList<QUrl> directories, ScanType type )
     }
 
     QSet<QString> scanDirsSet;
-    foreach( const QUrl &url, directories )
+    for( const QUrl &url : directories )
     {
         if( !url.isLocalFile() )
         {

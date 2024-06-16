@@ -467,10 +467,10 @@ OpmlDirectoryModel::subscribe( const QModelIndexList &indexes ) const
 {
     QList<OpmlOutline *> outlines;
 
-    foreach( const QModelIndex &idx, indexes )
+    for( const QModelIndex &idx : indexes )
         outlines << static_cast<OpmlOutline *>( idx.internalPointer() );
 
-    foreach( const OpmlOutline *outline, outlines )
+    for( const OpmlOutline *outline : outlines )
     {
         if( !outline )
             continue;

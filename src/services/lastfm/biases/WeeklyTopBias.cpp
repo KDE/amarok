@@ -181,7 +181,7 @@ Dynamic::WeeklyTopBias::trackMatches( int position,
     uint fromTime = m_range.from.toSecsSinceEpoch();
     uint toTime   = m_range.to.toSecsSinceEpoch();
     uint lastWeekTime = 0;
-    foreach( uint weekTime, m_weeklyFromTimes )
+    for( uint weekTime : m_weeklyFromTimes )
     {
         if( weekTime > fromTime && weekTime < toTime && lastWeekTime )
         {
@@ -224,7 +224,7 @@ Dynamic::WeeklyTopBias::newQuery()
     uint fromTime = m_range.from.toSecsSinceEpoch();
     uint toTime   = m_range.to.toSecsSinceEpoch();
     uint lastWeekTime = 0;
-    foreach( uint weekTime, m_weeklyFromTimes )
+    for( uint weekTime : m_weeklyFromTimes )
     {
         if( weekTime > fromTime && weekTime < toTime && lastWeekTime )
         {
@@ -253,7 +253,7 @@ Dynamic::WeeklyTopBias::newQuery()
 
     // - construct the query
     m_qm->beginOr();
-    foreach( const QString &artist, artists )
+    for( const QString &artist : artists )
     {
         // debug() << "adding artist to query:" << artist;
         m_qm->addFilter( Meta::valArtist, artist, true, true );
@@ -308,7 +308,7 @@ void Dynamic::WeeklyTopBias::newWeeklyArtistQuery()
     uint fromTime = m_range.from.toSecsSinceEpoch();
     uint toTime   = m_range.to.toSecsSinceEpoch();
     uint lastWeekTime = 0;
-    foreach( uint weekTime, m_weeklyFromTimes )
+    for( uint weekTime : m_weeklyFromTimes )
     {
         if( weekTime > fromTime && weekTime < toTime && lastWeekTime )
         {
@@ -478,7 +478,7 @@ Dynamic::WeeklyTopBias::saveDataToFile() const
     QFile file( Amarok::saveLocation() + "dynamic_lastfm_topweeklyartists.xml" );
     file.open( QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text );
     QTextStream out( &file );
-    foreach( uint key, m_weeklyArtistMap.keys() )
+    for( uint key : m_weeklyArtistMap.keys() )
     {
         out << key << "#" << m_weeklyArtistMap[ key ].join( "^" ) << Qt::endl;
     }

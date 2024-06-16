@@ -75,7 +75,7 @@ LastfmReadLabelCapability::onTagsFetched()
             lfm.parse(m_job->readAll());
             QList<lastfm::XmlQuery> tags = lfm.children( "tag" );
             QStringList ret;
-            foreach( const lastfm::XmlQuery &child, tags )
+            for( const lastfm::XmlQuery &child : tags )
                 ret.append( child["name"].text() );
             m_labels = ret;
             Q_EMIT labelsFetched( ret );

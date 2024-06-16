@@ -155,7 +155,7 @@ SqlScanResultProcessor::commitAlbum( CollectionScanner::Album *album )
     m_albumIds.insert( album, metaAlbum->id() );
 
     // --- add all tracks
-    foreach( CollectionScanner::Track *track, album->tracks() )
+    for( CollectionScanner::Track *track : album->tracks() )
         commitTrack( track, album );
 
     // --- set the cover if we have one
@@ -384,7 +384,7 @@ SqlScanResultProcessor::deleteDeletedDirectories()
     }
 
     // -- check if the have been found during the scan
-    foreach( const DirectoryEntry &e, toCheck )
+    for( const DirectoryEntry &e : toCheck )
     {
         /* we need to match directories by their (absolute) path, otherwise following
          * scenario triggers statistics loss (bug 298275):
@@ -439,7 +439,7 @@ SqlScanResultProcessor::deleteDeletedTracks( int directoryId )
     QList<int> urlIds = m_directoryCache.values( directoryId );
 
     // -- check if the tracks have been found during the scan
-    foreach( int urlId, urlIds )
+    for( int urlId : urlIds )
     {
         Q_ASSERT( m_urlsCache.contains( urlId ) );
         const UrlEntry &entry = m_urlsCache[ urlId ];
@@ -462,7 +462,7 @@ SqlScanResultProcessor::findBestUrlId( const QString &uid, const QString &path )
     if( urlIds.size() == 1 )
         return urlIds.at( 0 ); // normal operation
 
-    foreach( int testedUrlId, urlIds )
+    for( int testedUrlId : urlIds )
     {
         Q_ASSERT( m_urlsCache.contains( testedUrlId ) );
         if( m_urlsCache[ testedUrlId ].path == path )
@@ -498,7 +498,7 @@ SqlScanResultProcessor::relocateTracksToNewDirectory( int oldDirId, int newDirId
     }
     int newDirDeviceId = res.at( 0 ).toInt();
 
-    foreach( int urlId, urlIds )
+    for( int urlId : urlIds )
     {
         Q_ASSERT( m_urlsCache.contains( urlId ) );
         UrlEntry entry = m_urlsCache.value( urlId );
@@ -546,7 +546,7 @@ SqlScanResultProcessor::mountedDirectories() const
     // -- get a list of all mounted device ids
     QList<int> idList = m_collection->mountPointManager()->getMountedDeviceIds();
     QString deviceIds;
-    foreach( int id, idList )
+    for( int id : idList )
     {
         if ( !deviceIds.isEmpty() )
             deviceIds += ',';
@@ -577,7 +577,7 @@ SqlScanResultProcessor::deletedDirectories() const
     auto storage = m_collection->sqlStorage();
 
     QHash<int, DirectoryEntry> idToDirEntryMap; // for faster processing during filtering
-    foreach( int directoryId, m_scannedDirectoryIds )
+    for( int directoryId : m_scannedDirectoryIds )
     {
         QString query = QString( "SELECT deviceid, dir FROM directories WHERE id = %1" )
                 .arg( directoryId );
@@ -607,7 +607,7 @@ SqlScanResultProcessor::deletedDirectories() const
     // now we must filter out all found directories *and their children*, because the
     // children are *not* in m_foundDirectories and deleteDeletedDirectories() would
     // remove them erroneously
-    foreach( int foundDirectoryId, m_foundDirectories )
+    for( int foundDirectoryId : m_foundDirectories )
     {
         if( idToDirEntryMap.contains( foundDirectoryId ) )
         {

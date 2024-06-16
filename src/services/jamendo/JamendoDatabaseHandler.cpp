@@ -161,7 +161,7 @@ JamendoDatabaseHandler::insertTrack( ServiceTrack *track )
 
    /* QStringList moods = track->getMoods();
 
-    foreach( QString mood, moods ) {
+    for( QString mood : moods ) {
         queryString = "INSERT INTO jamendo_moods ( track_id, mood ) VALUES ( "
                       + QString::number( trackId ) + ", '"
                       + db->escape( mood ) +  "' );";

@@ -601,7 +601,7 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
         {
             const Meta::TrackList tracks = album()->tracks();
             QStringList artistNames( "Various Artists" );
-            foreach( const Meta::TrackPtr &track, tracks )
+            for( const Meta::TrackPtr &track : tracks )
                 artistNames << ( track->artist() ? track->artist()->name()
                                                  : i18n( "Unknown Artist" ) );
             QStringList artistNamesNormalized = normalize( artistNames );
@@ -688,7 +688,7 @@ QStringList
 CoverFetchArtPayload::normalize( const QStringList &rawList )
 {
     QStringList cooked;
-    foreach( const QString &raw, rawList )
+    for( const QString &raw : rawList )
     {
         cooked << normalize( raw );
     }

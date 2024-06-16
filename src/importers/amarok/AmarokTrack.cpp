@@ -81,7 +81,7 @@ AmarokTrack::doCommit( const qint64 fields )
     {
         // Try to insert all labels. Since the 'label' field's unique, nothing will happen
         // if the label already exists
-        foreach( const QString &label, m_labels )
+        for( const QString &label : m_labels )
         {
             QVariantMap bindValues;
             bindValues.insert( ":label", label );
@@ -108,7 +108,7 @@ AmarokTrack::doCommit( const qint64 fields )
         }
 
         // Add labels
-        foreach( const QString &label, m_labels )
+        for( const QString &label : m_labels )
         {
             const QString query = "INSERT INTO urls_labels (url, label) VALUES ( :url, "
                                   "(SELECT id FROM labels WHERE label = :label ))";

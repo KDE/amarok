@@ -121,7 +121,7 @@ PodcastChannel::PodcastChannel( const PodcastChannelPtr &channel )
     m_url = channel->url();
     m_webLink = channel->webLink();
 
-    foreach( PodcastEpisodePtr episode, channel->episodes() )
+    for( PodcastEpisodePtr episode : channel->episodes() )
     {
         m_episodes << PodcastEpisodePtr(
                 new PodcastEpisode( episode, PodcastChannelPtr( this ) ) );
@@ -132,7 +132,7 @@ Meta::TrackList
 PodcastChannel::tracks()
 {
     Meta::TrackList tracks;
-    foreach( Podcasts::PodcastEpisodePtr episode, episodes() )
+    for( Podcasts::PodcastEpisodePtr episode : episodes() )
         tracks << Meta::TrackPtr::dynamicCast( episode );
     return tracks;
 }

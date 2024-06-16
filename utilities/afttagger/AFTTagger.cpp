@@ -104,7 +104,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
 
     m_time.start();
 
-    foreach( const QString &path, m_fileFolderList )
+    for( const auto &path : m_fileFolderList )
         processPath( path );
 
     m_textStream << tr( "INFO: All done, exiting..." ) << Qt::endl;
@@ -133,7 +133,7 @@ AFTTagger::processPath( const QString &path )
         {
             if( m_verbose )
                 m_textStream << tr( "INFO: Processing directory %1" ).arg( path ) << Qt::endl;
-            foreach( const QString &pathEntry, QDir( path ).entryList() )
+            for( const QString &pathEntry : QDir( path ).entryList() )
             {
                 if( pathEntry != QLatin1String(".") && pathEntry != QLatin1String("..") )
                     processPath( QDir( path ).canonicalPath() + QLatin1Char('/') +  pathEntry );
@@ -739,7 +739,7 @@ AFTTagger::readArgs()
         displayHelp();
     bool nomore = false;
     int argnum = 0;
-    foreach( const QString &arg, argslist )
+    for( const auto &arg : argslist )
     {
         ++argnum;
         if( arg.isEmpty() || argnum == 1 )

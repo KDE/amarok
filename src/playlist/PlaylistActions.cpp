@@ -422,7 +422,7 @@ void
 Playlist::Actions::queue( const QList<int> &rows )
 {
     QList<quint64> ids;
-    foreach( int row, rows )
+    for( int row : rows )
         ids << The::playlist()->idAt( row );
     queue( ids );
 }
@@ -440,7 +440,7 @@ Playlist::Actions::dequeue( const QList<int> &rows )
 {
     DEBUG_BLOCK
 
-    foreach( int row, rows )
+    for( int row : rows )
     {
         quint64 id = The::playlist()->idAt( row );
         m_navigator->dequeueId( id );

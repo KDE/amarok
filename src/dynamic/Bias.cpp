@@ -207,7 +207,7 @@ Dynamic::AndBias::fromXml( QXmlStreamReader *reader )
 void
 Dynamic::AndBias::toXml( QXmlStreamWriter *writer ) const
 {
-    foreach( Dynamic::BiasPtr bias, m_biases )
+    for( Dynamic::BiasPtr bias : m_biases )
     {
         writer->writeStartElement( bias->name() );
         bias->toXml( writer );
@@ -263,7 +263,7 @@ debug() << "universe:" << universe.data();
     m_tracks = Dynamic::TrackSet( universe, true );
     m_outstandingMatches = 0;
 
-    foreach( Dynamic::BiasPtr bias, m_biases )
+    for( Dynamic::BiasPtr bias : m_biases )
     {
         Dynamic::TrackSet tracks = bias->matchingTracks( playlist, contextCount, finalCount, universe );
         if( tracks.isOutstanding() )
@@ -290,7 +290,7 @@ Dynamic::AndBias::trackMatches( int position,
                                 const Meta::TrackList& playlist,
                                 int contextCount ) const
 {
-    foreach( Dynamic::BiasPtr bias, m_biases )
+    for( Dynamic::BiasPtr bias : m_biases )
     {
         if( !bias->trackMatches( position, playlist, contextCount ) )
             return false;
@@ -301,7 +301,7 @@ Dynamic::AndBias::trackMatches( int position,
 void
 Dynamic::AndBias::invalidate()
 {
-    foreach( Dynamic::BiasPtr bias, m_biases )
+    for( Dynamic::BiasPtr bias : m_biases )
     {
         bias->invalidate();
     }
@@ -468,7 +468,7 @@ Dynamic::OrBias::matchingTracks( const Meta::TrackList& playlist,
     m_tracks = Dynamic::TrackSet( universe, false );
     m_outstandingMatches = 0;
 
-    foreach( Dynamic::BiasPtr bias, m_biases )
+    for( Dynamic::BiasPtr bias : m_biases )
     {
         Dynamic::TrackSet tracks = bias->matchingTracks( playlist, contextCount, finalCount, universe );
         if( tracks.isOutstanding() )
@@ -491,7 +491,7 @@ Dynamic::OrBias::trackMatches( int position,
                                const Meta::TrackList& playlist,
                                int contextCount ) const
 {
-    foreach( Dynamic::BiasPtr bias, m_biases )
+    for( Dynamic::BiasPtr bias : m_biases )
     {
         if( bias->trackMatches( position, playlist, contextCount ) )
             return true;

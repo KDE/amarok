@@ -26,7 +26,7 @@ SimpleWritableTrack::SimpleWritableTrack( const Meta::FieldHash &metadata,
     : SimpleTrack( metadata, labels )
 {
     // Move statistics to separate container, so we don't have to lock for other metadata
-    foreach( const qint64 metaValue, metadata.keys() )
+    for( const qint64 metaValue : metadata.keys() )
     {
         switch( metaValue )
         {

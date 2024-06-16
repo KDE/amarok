@@ -80,7 +80,7 @@ ScriptSelector::addScripts( QList<KPluginInfo> pluginInfoList,
     std::sort( pluginInfoList.begin(), pluginInfoList.end()
          , []( const KPluginInfo &left, const KPluginInfo &right ){ return left.name() < right.name(); } );
     addPlugins( pluginInfoList, pluginLoadMethod, categoryName, categoryKey, config );
-    foreach( const KPluginInfo &plugin, pluginInfoList )
+    for( const KPluginInfo &plugin : pluginInfoList )
     {
         m_scriptCount++;
         m_scripts[m_scriptCount] = plugin.pluginName();

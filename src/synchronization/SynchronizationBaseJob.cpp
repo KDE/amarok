@@ -179,7 +179,7 @@ SynchronizationBaseJob::slotArtistsReady( const Meta::ArtistList &artists )
     DEBUG_BLOCK;
     Collections::Collection *senderColl = m_queryMakers.value( qobject_cast<Collections::QueryMaker*>(sender()) );
     QSet<QString> artistSet;
-    foreach( const Meta::ArtistPtr &artist, artists )
+    for( const Meta::ArtistPtr &artist : artists )
     {
         if( artist )
             artistSet.insert( artist->name() );
@@ -204,7 +204,7 @@ SynchronizationBaseJob::slotAlbumsReady( const Meta::AlbumList &albums )
     DEBUG_BLOCK
     Collections::Collection *senderColl = m_queryMakers.value( qobject_cast<Collections::QueryMaker*>(sender()) );
     QSet<Meta::AlbumKey> albumSet;
-    foreach( const Meta::AlbumPtr &albumPtr, albums )
+    for( const Meta::AlbumPtr &albumPtr : albums )
     {
         albumSet.insert( Meta::AlbumKey( albumPtr ) );
     }
@@ -230,7 +230,7 @@ SynchronizationBaseJob::slotTracksReady( const Meta::TrackList &tracks )
     if( senderColl == m_collectionA )
     {
 
-        foreach( const Meta::TrackPtr &track, tracks )
+        for( const Meta::TrackPtr &track : tracks )
         {
             Meta::TrackKey key( track );
             m_tracksA.insert( key );
@@ -239,7 +239,7 @@ SynchronizationBaseJob::slotTracksReady( const Meta::TrackList &tracks )
     }
     else if( senderColl == m_collectionB )
     {
-        foreach( const Meta::TrackPtr &track, tracks )
+        for( const Meta::TrackPtr &track : tracks )
         {
             Meta::TrackKey key( track );
             m_tracksB.insert( key );
@@ -259,15 +259,15 @@ SynchronizationBaseJob::handleArtistResult()
     QSet<QString> artistsOnlyInA = m_artistsA - m_artistsB;
     QSet<QString> artistsOnlyInB = m_artistsB - m_artistsA;
     QSet<QString> artistsInBoth = m_artistsA & m_artistsB;
-    foreach( const QString &artist, artistsOnlyInA )
+    for( const QString &artist : artistsOnlyInA )
     {
         m_artistResult.insert( artist, OnlyInA );
     }
-    foreach( const QString &artist, artistsOnlyInB )
+    for( const QString &artist : artistsOnlyInB )
     {
         m_artistResult.insert( artist, OnlyInB );
     }
-    foreach( const QString &artist, artistsInBoth )
+    for( const QString &artist : artistsInBoth )
     {
         m_artistResult.insert( artist, InBoth );
     }
@@ -306,15 +306,15 @@ SynchronizationBaseJob::handleAlbumResult()
     QSet<Meta::AlbumKey> albumsOnlyInB = m_albumsB - m_albumsA;
     QSet<Meta::AlbumKey> albumsInBoth = m_albumsA & m_albumsB;
 
-    foreach( const Meta::AlbumKey &album, albumsOnlyInA )
+    for( const Meta::AlbumKey &album : albumsOnlyInA )
     {
         m_albumResult.insert( album, OnlyInA );
     }
-    foreach( const Meta::AlbumKey &album, albumsOnlyInB )
+    for( const Meta::AlbumKey &album : albumsOnlyInB )
     {
         m_albumResult.insert( album, OnlyInB );
     }
-    foreach( const Meta::AlbumKey &album, albumsInBoth )
+    for( const Meta::AlbumKey &album : albumsInBoth )
     {
         m_albumResult.insert( album, InBoth );
     }
@@ -376,11 +376,11 @@ SynchronizationBaseJob::handleTrackResult()
     QSet<Meta::TrackKey> tracksOnlyInA = m_tracksA - m_tracksB;
     QSet<Meta::TrackKey> tracksOnlyInB = m_tracksB - m_tracksA;
 
-    foreach( const Meta::TrackKey &key, tracksOnlyInA )
+    for( const Meta::TrackKey &key : tracksOnlyInA )
     {
         m_trackResultOnlyInA << m_keyToTrackA.value( key );
     }
-    foreach( const Meta::TrackKey &key, tracksOnlyInB )
+    for( const Meta::TrackKey &key : tracksOnlyInB )
     {
         m_trackResultOnlyInB << m_keyToTrackB.value( key );
     }

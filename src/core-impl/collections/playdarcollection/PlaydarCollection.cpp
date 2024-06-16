@@ -345,7 +345,7 @@ namespace Collections
 
             m_memoryCollection->addTrack( Meta::TrackPtr::staticCast( track ) );
 
-            foreach( Meta::PlaydarLabelPtr label, track->playdarLabels() )
+            for( Meta::PlaydarLabelPtr label : track->playdarLabels() )
             {
                 m_memoryCollection->addLabelToTrack( Meta::LabelPtr::staticCast( label ),
                                                      Meta::TrackPtr::staticCast( track ) );

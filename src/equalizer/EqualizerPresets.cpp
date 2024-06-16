@@ -125,7 +125,7 @@ EqualizerPresets::eqUserList()
     const QStringList defaultList = eqDefaultPresetsList();
 
     QStringList userList;
-    foreach( const QString &mUsrName, AmarokConfig::equalizerPresetsNames() )
+    for( const QString &mUsrName : AmarokConfig::equalizerPresetsNames() )
     {
         if( !defaultList.contains( mUsrName ) )
             userList.append( mUsrName );

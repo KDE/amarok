@@ -123,7 +123,7 @@ AndContainerMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
     if( m_filters.isEmpty() )
         return false;
 
-    foreach( MemoryFilter *filter, m_filters )
+    for( MemoryFilter *filter : m_filters )
     {
         if( filter && !filter->filterMatches( track ) )
             return false;
@@ -146,7 +146,7 @@ OrContainerMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
     if( m_filters.isEmpty() )
         return false;
 
-    foreach( MemoryFilter *filter, m_filters )
+    for( const MemoryFilter *filter : m_filters )
     {
         if( filter && filter->filterMatches( track ) )
             return true;

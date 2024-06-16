@@ -71,7 +71,7 @@ UmsCollectionFactory::init()
     // detect UMS devices that were already connected on startup
     QString query( "IS StorageAccess" );
     QList<Solid::Device> devices = Solid::Device::listFromQuery( query );
-    foreach( const Solid::Device &device, devices )
+    for( const Solid::Device &device : devices )
     {
         if( identifySolidDevice( device.udi() ) )
             createCollectionForSolidDevice( device.udi() );
@@ -719,7 +719,7 @@ UmsCollection::slotDirectoryScanned( QSharedPointer<CollectionScanner::Directory
         return;
     }
 
-    foreach( const CollectionScanner::Track *scannerTrack, dir->tracks() )
+    for( const CollectionScanner::Track *scannerTrack : dir->tracks() )
     {
         //TODO: use proxy tracks so no real file read is required
         // following method calls startUpdateTimer(), no need to Q_EMIT updated()

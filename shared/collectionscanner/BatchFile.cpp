@@ -129,14 +129,14 @@ CollectionScanner::BatchFile::write( const QString &batchPath )
     writer.writeStartElement( QStringLiteral("scanner") );
     writer.writeComment(QStringLiteral("Batch file for amarokcollectionscanner ") + QLatin1String(AMAROK_VERSION) + QStringLiteral(" created on ") + QDateTime::currentDateTime().toString());
 
-    foreach( const QString &dir, m_directories )
+    for( const auto &dir : m_directories )
     {
         writer.writeStartElement( QStringLiteral("directory") );
         writer.writeTextElement( QStringLiteral("path"), dir );
         writer.writeEndElement();
     }
 
-    foreach( const TimeDefinition &pair, m_timeDefinitions )
+    for( const auto &pair : m_timeDefinitions )
     {
         QString path( pair.first );
         uint mtime = pair.second;

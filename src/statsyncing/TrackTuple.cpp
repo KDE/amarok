@@ -90,7 +90,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
             if( provider )
                 return track( provider )->rating() != rating;
 
-            foreach( const ProviderPtr &prov, m_map.keys() )
+            for( const ProviderPtr &prov : m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -106,7 +106,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
             if( provider )
                 return track( provider )->firstPlayed() != firstPlayed;
 
-            foreach( const ProviderPtr &prov, m_map.keys() )
+            for( const ProviderPtr &prov : m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -122,7 +122,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
             if( provider )
                 return track( provider )->lastPlayed() != lastPlayed;
 
-            foreach( const ProviderPtr &prov, m_map.keys() )
+            for( const ProviderPtr &prov : m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -138,7 +138,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
             if( provider )
                 return track( provider )->playCount() != playcount;
 
-            foreach( const ProviderPtr &prov, m_map.keys() )
+            for( const ProviderPtr &prov : m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -157,7 +157,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
             if( provider )
                 return track( provider )->labels() - options.excludedLabels() != labels;
 
-            foreach( const ProviderPtr &prov, m_map.keys() )
+            for( const ProviderPtr &prov : m_map.keys() )
             {
                 if( !(prov->writableTrackStatsData() & field ) )
                     continue; // this provider doesn't even know how to write this field
@@ -173,7 +173,7 @@ TrackTuple::fieldUpdated( qint64 field, const Options &options, ProviderPtr prov
 bool
 TrackTuple::hasUpdate( const Options &options ) const
 {
-    foreach( qint64 field, s_fields )
+    for( qint64 field : s_fields )
     {
         if( fieldUpdated( field, options ) )
             return true;
@@ -285,7 +285,7 @@ TrackTuple::syncedFirstPlayed( const Options &options ) const
     QDateTime first;
     if( isEmpty() || !(options.syncedFields() & Meta::valFirstPlayed) )
         return first;
-    foreach( TrackPtr track, m_map )
+    for( TrackPtr track : m_map )
     {
         QDateTime trackFirstPlayed = track->firstPlayed();
         if( !trackFirstPlayed.isValid() )
@@ -302,7 +302,7 @@ TrackTuple::syncedLastPlayed( const Options &options ) const
     QDateTime last;
     if( isEmpty() || !(options.syncedFields() & Meta::valLastPlayed) )
         return last;
-    foreach( TrackPtr track, m_map )
+    for( TrackPtr track : m_map )
     {
         QDateTime trackLastPlayed = track->lastPlayed();
         if( !trackLastPlayed.isValid() )
@@ -320,7 +320,7 @@ TrackTuple::syncedPlaycount( const Options &options ) const
         return 0;
     int max = 0;
     int sumRecent = 0;
-    foreach( TrackPtr track, m_map )
+    for( TrackPtr track : m_map )
     {
         int recent = track->recentPlayCount();
         sumRecent += recent;
@@ -449,7 +449,7 @@ TrackTuple::synchronize( const Options &options ) const
         }
     }
 
-    foreach( const ProviderPtr &provider, updatedProviders )
+    for( const ProviderPtr &provider : updatedProviders )
         track( provider )->commit();
     return updatedProviders;
 }

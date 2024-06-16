@@ -160,7 +160,7 @@ CollectionProvider::slotStartTrackSearch( const QString &artistName )
 void
 CollectionProvider::slotNewArtistsReady( Meta::ArtistList list )
 {
-    foreach( const Meta::ArtistPtr &artist, list )
+    for( const Meta::ArtistPtr &artist : list )
     {
         m_foundArtists.insert( artist->name() );
     }
@@ -169,7 +169,7 @@ CollectionProvider::slotNewArtistsReady( Meta::ArtistList list )
 void
 CollectionProvider::slotNewTracksReady( Meta::TrackList list )
 {
-    foreach( Meta::TrackPtr track, list )
+    for( Meta::TrackPtr track : list )
     {
         Meta::ArtistPtr artistPtr = track->artist();
         QString artist = artistPtr ? artistPtr->name() : QString();

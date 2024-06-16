@@ -378,7 +378,7 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
 
     QString genericError = i18n( "Could not copy track from device." );
 
-    foreach( Meta::TrackPtr trackptr,  tracks )
+    for( Meta::TrackPtr trackptr :  tracks )
     {
         Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::dynamicCast( trackptr );
         if( !track )
@@ -865,7 +865,7 @@ MtpHandler::libSavePlaylist( const Playlists::MediaDevicePlaylistPtr &playlist, 
     {
         uint32_t *tracks = ( uint32_t* )malloc( sizeof( uint32_t ) * trackCount );
         uint32_t i = 0;
-        foreach( Meta::TrackPtr trk, tracklist )
+        for( Meta::TrackPtr trk : tracklist )
         {
             if( !trk ) // playlists might contain invalid tracks. see BUG: 297816
                 continue;

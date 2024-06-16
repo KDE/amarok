@@ -67,7 +67,7 @@ bool Capabilities::TimecodeWriteCapability::writeAutoTimecode( qint64 milisecond
     {
         QScopedPointer<TimecodeLoadCapability> tcl( track->create<TimecodeLoadCapability>() );
         BookmarkList list = tcl->loadTimecodes();
-        foreach( AmarokUrlPtr oldUrl, list )
+        for( AmarokUrlPtr oldUrl : list )
         {
             if( oldUrl->command() == QLatin1String("play")  ) {
                 if( oldUrl->customValue() == QLatin1String("auto timecode") ) {

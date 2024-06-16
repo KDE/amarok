@@ -79,7 +79,7 @@ Amarok2ConfigDialog::~Amarok2ConfigDialog()
 
     KPageWidgetItem* pageItem = currentPage();
 
-    foreach( ConfigDialogBase *configPage, m_pageList )
+    for( ConfigDialogBase *configPage : m_pageList )
     {
         if( m_pageMap[configPage] == pageItem )
         {
@@ -118,7 +118,7 @@ void Amarok2ConfigDialog::show( QString page )
         page = s_currentPage;
     }
 
-    foreach( ConfigDialogBase *configPage, m_pageList )
+    for( ConfigDialogBase *configPage : m_pageList )
     {
         if( configPage->metaObject()->className() == page )
         {
@@ -144,7 +144,7 @@ void Amarok2ConfigDialog::show( QString page )
  */
 void Amarok2ConfigDialog::updateSettings()
 {
-    foreach( ConfigDialogBase* page, m_pageList )
+    for( ConfigDialogBase* page : m_pageList )
         page->updateSettings();
 }
 
@@ -156,7 +156,7 @@ void Amarok2ConfigDialog::updateSettings()
  */
 void Amarok2ConfigDialog::updateWidgets()
 {
-    foreach( ConfigDialogBase* page, m_pageList )
+    for( ConfigDialogBase* page : m_pageList )
         page->updateWidgets();
 }
 
@@ -167,7 +167,7 @@ void Amarok2ConfigDialog::updateWidgets()
  */
 void Amarok2ConfigDialog::updateWidgetsDefault()
 {
-    foreach( ConfigDialogBase* page, m_pageList )
+    for( ConfigDialogBase* page : m_pageList )
         page->updateWidgetsDefault();
 }
 
@@ -187,7 +187,7 @@ bool Amarok2ConfigDialog::hasChanged()
 
     bool changed = false;
 
-    foreach( ConfigDialogBase* page, m_pageList )
+    for( ConfigDialogBase* page : m_pageList )
         if( page->hasChanged() ) {
             changed = true;
             debug() << "Changed: " << page->metaObject()->className();
@@ -201,7 +201,7 @@ bool Amarok2ConfigDialog::isDefault()
 {
     bool def = false;
 
-    foreach( ConfigDialogBase* page, m_pageList )
+    for( ConfigDialogBase* page : m_pageList )
         if( page->isDefault() )
             def = true;
 

@@ -531,7 +531,7 @@ App::continueInit()
         The::engineController()->restoreSession();
     }
     //and now we can run any amarokurls provided on startup, as all components should be initialized by now!
-    foreach( const QString& urlString, s_delayedAmarokUrls )
+    for( const QString& urlString : s_delayedAmarokUrls )
     {
         AmarokUrl aUrl( urlString );
         aUrl.run();

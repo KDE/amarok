@@ -135,7 +135,7 @@ MusicDNSFinder::parsingDone( ThreadWeaver::JobPointer _parser )
     if( m_parsers.contains( parser ) )
     {
         bool found = false;
-        foreach( QString PUID, parser->puid() )
+        for( QString PUID : parser->puid() )
             if( PUID != "00000000-0000-0000-0000-000000000000" )
             {
                 found = true;

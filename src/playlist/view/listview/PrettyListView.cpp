@@ -163,7 +163,7 @@ void
 Playlist::PrettyListView::editTrackInformation()
 {
     Meta::TrackList tl;
-    foreach( const QModelIndex &index, selectedIndexes() )
+    for( const QModelIndex &index : selectedIndexes() )
     {
         tl.append( index.data( TrackRole ).value<Meta::TrackPtr>() );
     }
@@ -195,7 +195,7 @@ Playlist::PrettyListView::removeSelection()
 
         // Next, we look for the first row.
         int firstRow = sr.first();
-        foreach( int i, sr )
+        for( int i : sr )
         {
             if( i < firstRow )
                 firstRow = i;
@@ -505,7 +505,7 @@ Playlist::PrettyListView::dropEvent( QDropEvent* event )
         QList<int> sr = selectedRows();
         int realtarget = The::playlistController()->moveRows( sr, targetRow );
         QItemSelection selItems;
-        foreach( int row, sr )
+        for( int row : sr )
         {
             Q_UNUSED( row )
             selItems.select( plModel->index( realtarget, 0 ), plModel->index( realtarget, 0 ) );
@@ -728,7 +728,7 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( QStringLiteral("amarok/images/pud_items.svg") )->elementExists( QStringLiteral("load") ) );
 
         QList<QAction*> actions =  actionsFor( this, &indices.first() );
-        foreach( QAction * action, actions )
+        for( QAction * action : actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
 
         m_pd->show();
@@ -793,7 +793,7 @@ QList<int>
 Playlist::PrettyListView::selectedRows() const
 {
     QList<int> rows;
-    foreach( const QModelIndex &idx, selectedIndexes() )
+    for( const QModelIndex &idx : selectedIndexes() )
         rows.append( idx.row() );
     return rows;
 }

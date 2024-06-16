@@ -238,7 +238,7 @@ Dynamic::PartBiasWidget::PartBiasWidget( Dynamic::PartBias* bias, QWidget* paren
     m_layout = new QGridLayout( this );
 
     // -- add all sub-bias widgets
-    foreach( Dynamic::BiasPtr bias, m_bias->biases() )
+    for( Dynamic::BiasPtr bias : m_bias->biases() )
     {
         biasAppended( bias );
     }
@@ -455,7 +455,7 @@ Dynamic::PartBias::updateResults() const
     DEBUG_BLOCK;
 
     // -- first check if we have valid tracks from all sub-biases
-    foreach( const Dynamic::TrackSet &tracks, m_matchingTracks )
+    for( const Dynamic::TrackSet &tracks : m_matchingTracks )
         if( tracks.isOutstanding() )
             return;
 
@@ -570,7 +570,7 @@ Dynamic::PartBias::changeBiasWeight( int biasNum, qreal value )
 
     // - sum up all the weights
     qreal sum = 0.0;
-    foreach( qreal v, m_weights )
+    for( qreal v : m_weights )
         sum += v;
 
     // -- we are always using the first value to balance it out if possible

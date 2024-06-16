@@ -59,7 +59,7 @@ NavigationUrlRunner::run(const AmarokUrl &url )
 
         QStringList levelsStringList = levelsString.split( QLatin1Char('-') );
 
-        foreach( const QString &levelString, levelsStringList ) {
+        for( const QString &levelString : levelsStringList ) {
             if( levelString == QLatin1String("genre") )
                 levels.append( CategoryId::Genre );
             else if( levelString == QLatin1String("artist") )

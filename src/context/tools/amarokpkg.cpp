@@ -74,7 +74,7 @@ void listPackages()
 {
     QStringList list = packages();
     list.sort();
-    foreach(const QString& package, list) {
+    for(const QString& package : list) {
         output(package);
     }
 }

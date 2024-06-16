@@ -112,9 +112,9 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
     args["default_title"]           = i18n( "Unknown title" );
     args["default_year"]            = i18n( "Unknown year" );
 
-    foreach( const QString &key, args.keys() )
+    for( const QString &key : args.keys() )
         if( key != "collectionroot" && key != "folder" )
-            args[key] = args[key].replace( QLatin1Char('/'), '-' );
+            args[key] = args[key].replace( QLatin1Char('/'), QLatin1Char('-') );
 
     Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );

@@ -90,7 +90,7 @@ protected:
 
         // -- query all known directories
         QString deviceIds;
-        foreach( int id, idList )
+        for( int id : idList )
         {
             if( !deviceIds.isEmpty() )
                 deviceIds += ',';
@@ -330,7 +330,7 @@ SqlCollection::possiblyContainsTrack( const QUrl &url ) const
 {
     if( url.isLocalFile() )
     {
-        foreach( const QString &folder, collectionFolders() )
+        for( const QString &folder : collectionFolders() )
         {
             QUrl q = QUrl::fromLocalFile( folder );
             if( q.isParentOf( url ) || q.matches( url , QUrl::StripTrailingSlash) )
@@ -446,7 +446,7 @@ SqlCollection::dumpDatabaseContent()
     DatabaseUpdater updater( this );
 
     QStringList tables = m_sqlStorage->query( "select table_name from INFORMATION_SCHEMA.tables WHERE table_schema='amarok'" );
-    foreach( const QString &table, tables )
+    for( const QString &table : tables )
     {
         QString filePath =
             QDir::home().absoluteFilePath( table + '-' + QDateTime::currentDateTime().toString( Qt::ISODate ) + ".csv" );

@@ -45,7 +45,7 @@ DBusQueryHelper::DBusQueryHelper( QObject *parent, Collections::QueryMaker *qm, 
 void
 DBusQueryHelper::slotResultReady( const Meta::TrackList &tracks )
 {
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
         if( m_mprisCompatibleResult )
             m_result.append( Meta::Field::mprisMapFromTrack( track ) );

@@ -65,7 +65,7 @@ MediaDeviceCache::refreshCache()
     m_type.clear();
     m_name.clear();
     QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::PortableMediaPlayer );
-    foreach( const Solid::Device &device, deviceList )
+    for( const Solid::Device &device : deviceList )
     {
         if( device.as<Solid::StorageDrive>() )
         {
@@ -78,7 +78,7 @@ MediaDeviceCache::refreshCache()
         m_name[device.udi()] = device.vendor() + " - " + device.product();
     }
     deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageAccess );
-    foreach( const Solid::Device &device, deviceList )
+    for( const Solid::Device &device : deviceList )
     {
         debug() << "Found Solid::DeviceInterface::StorageAccess with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
@@ -107,7 +107,7 @@ MediaDeviceCache::refreshCache()
         }
     }
     deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageDrive );
-    foreach( const Solid::Device &device, deviceList )
+    for( const Solid::Device &device : deviceList )
     {
         debug() << "Found Solid::DeviceInterface::StorageDrive with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
@@ -119,7 +119,7 @@ MediaDeviceCache::refreshCache()
         }
     }
     deviceList = Solid::Device::listFromType( Solid::DeviceInterface::OpticalDisc );
-    foreach( const Solid::Device &device, deviceList )
+    for( const Solid::Device &device : deviceList )
     {
         debug() << "Found Solid::DeviceInterface::OpticalDisc with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
@@ -135,7 +135,7 @@ MediaDeviceCache::refreshCache()
     }
     KConfigGroup config = Amarok::config( "PortableDevices" );
     const QStringList manualDeviceKeys = config.entryMap().keys();
-    foreach( const QString &udi, manualDeviceKeys )
+    for( const QString &udi : manualDeviceKeys )
     {
         if( udi.startsWith( "manual" ) )
         {

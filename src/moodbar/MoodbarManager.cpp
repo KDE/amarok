@@ -378,7 +378,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const QUrl &moodFileUrl )
 
             // Now huedist is a hue mapper: huedist[h] is the new hue value
             // for a bar with hue h
-            foreach( QColor color, data )
+            for( QColor color : data )
             {
                 color.getHsv( &h, &s, &v );
                 h = h < 0 ? 0 : h % 360;

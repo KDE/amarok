@@ -624,7 +624,7 @@ ArtistsListWidget::addArtist( const SimilarArtistPtr &artist )
 void
 ArtistsListWidget::addArtists( const SimilarArtist::List &artists )
 {
-    foreach( const SimilarArtistPtr &artist, artists )
+    for( const SimilarArtistPtr &artist : artists )
         addArtist( artist );
     updateGeometry();
 }
@@ -686,7 +686,7 @@ ArtistsListWidget::setName( const QString &name )
 ArtistWidget *
 ArtistsListWidget::widget( const QString &artistName )
 {
-    foreach( ArtistWidget *widget, m_widgets )
+    for( ArtistWidget *widget : m_widgets )
     {
         if( widget->artist()->name() == artistName )
             return widget;

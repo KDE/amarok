@@ -60,7 +60,7 @@ AggregateCollection::icon() const
 bool
 AggregateCollection::possiblyContainsTrack( const QUrl &url ) const
 {
-    foreach( Collections::Collection *collection, m_idCollectionMap )
+    for( Collections::Collection *collection : m_idCollectionMap )
     {
         if( collection->possiblyContainsTrack( url ) )
             return true;
@@ -71,7 +71,7 @@ AggregateCollection::possiblyContainsTrack( const QUrl &url ) const
 Meta::TrackPtr
 AggregateCollection::trackForUrl( const QUrl &url )
 {
-    foreach( Collections::Collection *collection, m_idCollectionMap )
+    for( Collections::Collection *collection : m_idCollectionMap )
     {
         Meta::TrackPtr track = collection->trackForUrl( url );
         if( track )
@@ -88,7 +88,7 @@ QueryMaker*
 AggregateCollection::queryMaker()
 {
     QList<QueryMaker*> list;
-    foreach( Collections::Collection *collection, m_idCollectionMap )
+    for( Collections::Collection *collection : m_idCollectionMap )
     {
         list.append( collection->queryMaker() );
     }

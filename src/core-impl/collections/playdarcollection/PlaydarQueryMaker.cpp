@@ -583,7 +583,7 @@ namespace Collections
                  this, &PlaydarQueryMaker::memoryQueryDone );
         m_memoryQueryMaker->setAutoDelete( true );
 
-        foreach( CurriedQMFunction *funPtr, m_queryMakerFunctions )
+        for( CurriedQMFunction *funPtr : m_queryMakerFunctions )
             (*funPtr)( m_memoryQueryMaker.data() );
         
         m_activeQueryCount++;

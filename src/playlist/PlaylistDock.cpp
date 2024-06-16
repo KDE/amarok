@@ -183,7 +183,7 @@ Playlist::Dock::polish()
 
         connect( m_savePlaylistMenu, &KActionMenu::triggered,
                  this, &Dock::slotSaveCurrentPlaylist );
-        foreach( Playlists::PlaylistProvider *provider, The::playlistManager()->providersForCategory(
+        for( Playlists::PlaylistProvider *provider : The::playlistManager()->providersForCategory(
                             PlaylistManager::UserPlaylist ) )
         {
             playlistProviderAdded( provider, PlaylistManager::UserPlaylist );

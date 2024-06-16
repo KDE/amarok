@@ -76,7 +76,7 @@ TagGuesser::guess()
         Meta::FieldHash tags = Meta::Tag::TagGuesser::guessTagsByScheme( m_fileName, m_schema,
                                                                          m_cutTrailingSpaces,
                                                                          m_convertUnderscores );
-        foreach( qint64 key, tags.keys() )
+        for( qint64 key : tags.keys() )
         {
             if( !key )
                 continue;
@@ -108,7 +108,7 @@ TagGuesser::convertTagCaseType( const QString &tag, int type )
             QString complete;
             QStringList splitList = tag.toLower().split( ' ', Qt::SkipEmptyParts );
 
-            foreach( QString word, splitList )
+            for( QString word : splitList )
             {
                 if( word.length() > 1 )
                     word.replace( 0, 1, word.left( 1 ).toUpper() );

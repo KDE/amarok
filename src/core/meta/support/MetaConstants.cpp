@@ -437,7 +437,7 @@ QVariant Meta::valueForField( qint64 field, Meta::TrackPtr track )
       {
           Meta::LabelList labels = track->labels();
           QStringList strLabels;
-          foreach( Meta::LabelPtr label, labels )
+          for( Meta::LabelPtr label : labels )
               strLabels.append( label->name() );
           return QVariant( strLabels );
       }

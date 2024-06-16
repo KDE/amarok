@@ -244,7 +244,7 @@ Meta::TrackList
 CollectionPrototype::removeInvalidTracks(const Meta::TrackList& tracks)
 {
     Meta::TrackList cleaned;
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
         if( track )
             cleaned << track;

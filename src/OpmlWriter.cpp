@@ -49,7 +49,7 @@ OpmlWriter::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
     }
     _x->writeEndElement(); // head
     _x->writeStartElement( "body" );
-    foreach( const OpmlOutline *childOutline, m_rootOutlines )
+    for( const OpmlOutline *childOutline : m_rootOutlines )
         writeOutline( childOutline );
     _x->writeEndDocument(); //implicitly closes all open tags (opml & body)
     Q_EMIT result( 0 );
@@ -90,7 +90,7 @@ OpmlWriter::writeOutline( const OpmlOutline *outline )
     // children of expanded include nodes should not be saved.
     if( hasChildren && ( outline->opmlNodeType() != IncludeNode ) )
     {
-        foreach( const OpmlOutline *childOutline, outline->children() )
+        for( const OpmlOutline *childOutline : outline->children() )
             writeOutline( childOutline );
         _x->writeEndElement(); // outline
     }

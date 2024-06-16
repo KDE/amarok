@@ -49,7 +49,7 @@ void FetchCoverAction::init()
     setToolTip( i18np("Fetch the artwork for this album", "Fetch artwork for %1 albums", m_albums.count()) );
 
     bool enabled = !m_albums.isEmpty();
-    foreach( Meta::AlbumPtr album, m_albums )
+    for( Meta::AlbumPtr album : m_albums )
     {
         enabled &= album->canUpdateImage();
     }
@@ -99,7 +99,7 @@ void UnsetCoverAction::init()
 
     // this action is enabled if any one of the albums has an image and can be updated
     bool enabled = false;
-    foreach( Meta::AlbumPtr album, m_albums )
+    for( Meta::AlbumPtr album : m_albums )
         enabled |= ( album->hasImage() && album->canUpdateImage() );
     setEnabled( enabled );
 }
@@ -116,7 +116,7 @@ UnsetCoverAction::slotTriggered()
 
     if ( button == KMessageBox::Continue )
     {
-        foreach( Meta::AlbumPtr album, m_albums )
+        for( Meta::AlbumPtr album : m_albums )
         {
             if( album && album->canUpdateImage() )
                 album->removeImage();
@@ -138,7 +138,7 @@ void SetCustomCoverAction::init()
     // this action is enabled if any one of the albums can be updated
     bool enabled = false;
 
-    foreach( Meta::AlbumPtr album, m_albums )
+    for( Meta::AlbumPtr album : m_albums )
         if( album )
             enabled |= album->canUpdateImage();
 
@@ -195,7 +195,7 @@ SetCustomCoverAction::slotTriggered()
 
         if( !image.isNull() )
         {
-            foreach( Meta::AlbumPtr album, m_albums )
+            for( Meta::AlbumPtr album : m_albums )
             {
                 if( album && album->canUpdateImage() )
                     album->setImage( image );

@@ -445,7 +445,7 @@ CueFileSupport::generateTimeCodeTracks( Meta::TrackPtr baseTrack, CueFileItemMap
 {
     Meta::TrackList trackList;
 
-    foreach( const CueFileItem &item, itemMap )
+    for( const CueFileItem &item : itemMap )
     {
         Meta::TimecodeTrack *track = new Meta::TimecodeTrack( item.title(),
                 baseTrack->playableUrl(), item.index(), item.index() + item.length() );

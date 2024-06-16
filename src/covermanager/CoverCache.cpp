@@ -70,7 +70,7 @@ CoverCache::invalidateAlbum( const Meta::Album* album )
         return;
 
     CoverKeys allKeys = s_instance->m_keys.take( album );
-    foreach( const QPixmapCache::Key &key, allKeys.values() )
+    for( const QPixmapCache::Key &key : allKeys.values() )
     {
         QPixmapCache::remove( key );
     }

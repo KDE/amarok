@@ -111,7 +111,7 @@ Reader::contentCodesReceived()
     if( root.isEmpty() )
         return; //error
     root = root[0].toMap().value( "mdcl" ).toList();
-    foreach( const QVariant &v, root )
+    for( const QVariant &v : root )
     {
         Map entry = v.toMap();
         QString code = entry.value( "mcnm" ).toList().value( 0 ).toString();

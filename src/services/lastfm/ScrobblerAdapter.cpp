@@ -43,7 +43,7 @@ ScrobblerAdapter::ScrobblerAdapter( const QString &clientId, const LastFmService
     // tries to write the track cache, it fails silently. Last check: liblastfm 1.0.!
     QList<QDir> dirs;
     dirs << lastfm::dir::runtimeData() << lastfm::dir::cache() << lastfm::dir::logs();
-    foreach( const QDir &dir, dirs )
+    for( const QDir &dir : dirs )
     {
         if( !dir.exists() )
         {
@@ -173,7 +173,7 @@ ScrobblerAdapter::banTrack( const Meta::TrackPtr &track ) // slot
 void
 ScrobblerAdapter::slotScrobblesSubmitted( const QList<lastfm::Track> &tracks )
 {
-    foreach( const lastfm::Track &track, tracks )
+    for( const lastfm::Track &track : tracks )
     {
         switch( track.scrobbleStatus() )
         {
@@ -291,7 +291,7 @@ ScrobblerAdapter::isToBeSkipped( const Meta::TrackPtr &track ) const
     Q_ASSERT( track );
     if( !m_config->filterByLabel() )
         return false;
-    foreach( const Meta::LabelPtr &label, track->labels() )
+    for( const Meta::LabelPtr &label : track->labels() )
         if( label->name() == m_config->filteredLabel() )
             return true;
     return false;

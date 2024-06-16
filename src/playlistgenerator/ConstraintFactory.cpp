@@ -110,9 +110,7 @@ ConstraintFactory::ConstraintFactory()
 
 ConstraintFactory::~ConstraintFactory()
 {
-    foreach( ConstraintFactoryEntry* e, m_registryIds ) {
-        delete e;
-    }
+    qDeleteAll( m_registryIds );
 }
 
 ConstraintNode* ConstraintFactory::createConstraint( QDomElement& xmlelem, ConstraintNode* parent, int row ) const

@@ -51,7 +51,7 @@ Playlist::Item::track() const
 }
 
 // Does the same thing as:
-//     foreach( quint64 val, set )
+//     for( quint64 val : set )
 //         target.removeAll( val )
 // but with O(n * log n) performance instead of O(n^2) if 'target' and 'set' are similar-sized.
 void

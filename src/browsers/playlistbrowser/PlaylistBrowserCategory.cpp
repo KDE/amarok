@@ -123,7 +123,7 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_playlistView->setAcceptDrops( true );
     m_playlistView->setDropIndicatorShown( true );
 
-    foreach( const Playlists::PlaylistProvider *provider,
+    for( const Playlists::PlaylistProvider *provider :
              The::playlistManager()->providersForCategory( m_playlistCategory ) )
     {
         createProviderButton( provider );
@@ -154,7 +154,7 @@ PlaylistBrowserCategory::setFilter( const QString &filter )
     debug() << "Setting filter " << filter;
     m_filterProxy->setFilterRegularExpression( QRegularExpression( QUrl::fromPercentEncoding( filter.toUtf8() ) ) );
     //disable all other provider-buttons
-    foreach( QAction * const providerAction, m_providerActions )
+    for( QAction * const providerAction : m_providerActions )
     {
         const Playlists::PlaylistProvider *provider =
                 providerAction->data().value<const Playlists::PlaylistProvider *>();
@@ -257,7 +257,7 @@ PlaylistBrowserCategory::slotToggleProviderButton()
 {
     QString filter;
     QActionList checkedActions;
-    foreach( const Playlists::PlaylistProvider *p, m_providerActions.keys() )
+    for( const Playlists::PlaylistProvider *p : m_providerActions.keys() )
     {
         QAction *action = m_providerActions.value( p );
         if( action->isChecked() )
@@ -289,7 +289,7 @@ PlaylistBrowserCategory::createNewFolder()
     if( !folderIndices.isEmpty() )
     {
         int folderCount( 0 );
-        foreach( const QModelIndex &folder, folderIndices )
+        for( const QModelIndex &folder : folderIndices )
         {
             QRegularExpression regex( name + " \\((\\d+)\\)" );
             QRegularExpressionMatch rmatch = regex.match( folder.data( Qt::DisplayRole ).toString() );

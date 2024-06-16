@@ -138,7 +138,7 @@ MusicDNSAudioDecoder::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
     av_register_all();
 #endif
 
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( Meta::TrackPtr track : m_tracks )
     {
         decode( track->playableUrl().toLocalFile(), &data, m_sampleLength );
         if( data.duration() > MIN_SAMPLE_LENGTH )

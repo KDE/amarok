@@ -53,7 +53,7 @@ ServiceFactory::trackForUrl( const QUrl &url )
         init();
     }
 
-    foreach( ServiceBase *service, m_activeServices )
+    for( ServiceBase *service : m_activeServices )
     {
         if( !service->serviceReady() )
         {

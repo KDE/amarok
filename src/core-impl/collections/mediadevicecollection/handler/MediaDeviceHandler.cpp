@@ -298,7 +298,7 @@ void
 MediaDeviceHandler::getCopyableUrls(const Meta::TrackList &tracks)
 {
     QMap<Meta::TrackPtr, QUrl> urls;
-    foreach( Meta::TrackPtr track, tracks )
+    for( Meta::TrackPtr track : tracks )
     {
         if( track->isPlayable() )
             urls.insert( track, track->playableUrl() );
@@ -341,7 +341,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     // Check for same tags, don't copy if same tags
     // Also check for compatible format
-    foreach( Meta::TrackPtr track, tracklist )
+    for( Meta::TrackPtr track : tracklist )
     {
         // Check for compatible formats
         format = track->type();
@@ -368,7 +368,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         /* Songs with same title present, check other tags */
         isDupe = false;
 
-        foreach( Meta::TrackPtr tempTrack, tempTrackList )
+        for( Meta::TrackPtr tempTrack : tempTrackList )
         {
             if( ( tempTrack->artist()->name() != track->artist()->name() )
                 || ( tempTrack->album()->name() != track->album()->name() )
@@ -417,7 +417,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     int transfersize = 0;
 
-    foreach( Meta::TrackPtr track, m_tracksToCopy )
+    for( Meta::TrackPtr track : m_tracksToCopy )
         transfersize += track->filesize();
 
     // NOTE: if the device will not have more than 5 MB to spare, abort the copy
@@ -1077,7 +1077,7 @@ MediaDeviceHandler::deletePlaylists( const Playlists::MediaDevicePlaylistList &p
     if( m_pc )
     {
         debug() << "Deleting playlists";
-        foreach( Playlists::MediaDevicePlaylistPtr playlist, playlistlist )
+        for( Playlists::MediaDevicePlaylistPtr playlist : playlistlist )
         {
             m_pc->deletePlaylist( playlist );
         }

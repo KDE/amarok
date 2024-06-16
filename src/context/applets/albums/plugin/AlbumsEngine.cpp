@@ -212,12 +212,12 @@ void AlbumsEngine::resultReady( const Meta::AlbumList &albums )
                     discItem = new QStandardItem( i18n("Disc %1", item->track()->discNumber()) );
                     albumItem->setChild( childRow++, discItem );
                     int discChildRow = 0;
-                    foreach( TrackItem *trackItem, items )
+                    for( TrackItem *trackItem : items )
                         discItem->setChild( discChildRow++, trackItem );
                 }
                 else
                 {
-                    foreach( TrackItem *trackItem, items )
+                    for( TrackItem *trackItem : items )
                         albumItem->setChild( childRow++, trackItem );
                 }
             }
@@ -309,7 +309,7 @@ void AlbumsEngine::showContextMenu( const QModelIndexList &indexes, const QModel
             if( !actions.isEmpty() )
             {
                 // ensure that the actions are cleaned up afterwards
-                foreach( QAction *action, actions )
+                for( QAction *action : actions )
                 {
                     if( !action->parent() )
                         action->setParent( &menuCover );

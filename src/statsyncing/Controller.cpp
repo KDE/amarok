@@ -414,7 +414,7 @@ Controller::slotUpdateNowPlayingWithCurrentTrack()
         debug() << __PRETTY_FUNCTION__ << "this track already recently submitted, ignoring";
         return;
     }
-    foreach( ScrobblingServicePtr service, m_scrobblingServices )
+    for( ScrobblingServicePtr service : m_scrobblingServices )
     {
         service->updateNowPlaying( track );
     }
@@ -425,7 +425,7 @@ Controller::slotUpdateNowPlayingWithCurrentTrack()
 ProviderPtr
 Controller::findRegisteredProvider( const QString &id ) const
 {
-    foreach( const ProviderPtr &provider, m_providers )
+    for( const ProviderPtr &provider : m_providers )
         if( provider->id() == id )
             return provider;
 

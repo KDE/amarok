@@ -85,7 +85,7 @@ ScriptConsole::ScriptConsole( QWidget *parent )
                     << m_consoleWidget
                     << m_outputWidget
                     << m_errorWidget;
-    foreach( QDockWidget *widget, debugWidgets )
+    for( QDockWidget *widget : debugWidgets )
     {
       addDockWidget( Qt::BottomDockWidgetArea, widget );
     }

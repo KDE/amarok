@@ -65,7 +65,7 @@ SqlBatchImporter::import()
 
     int numStarted = 0;
     // search for a collection with the CollectionImportCapability
-    foreach( Collections::Collection *coll, CollectionManager::instance()->collections().keys() )
+    for( Collections::Collection *coll : CollectionManager::instance()->collections().keys() )
     {
         debug() << "Collection: "<<coll->prettyName() << "id:"<<coll->collectionId();
         QScopedPointer<Capabilities::CollectionImportCapability> cic( coll->create<Capabilities::CollectionImportCapability>());

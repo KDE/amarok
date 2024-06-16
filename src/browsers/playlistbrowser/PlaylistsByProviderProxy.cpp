@@ -115,7 +115,7 @@ PlaylistsByProviderProxy::mimeData( const QModelIndexList &indexes ) const
 {
     DEBUG_BLOCK
     QModelIndexList sourceIndexes;
-    foreach( const QModelIndex &idx, indexes )
+    for( const QModelIndex &idx : indexes )
     {
         if( isGroup( idx ) )
             continue; // drags not enabled for playlist providers
@@ -163,7 +163,7 @@ PlaylistsByProviderProxy::dropMimeData( const QMimeData *data, Qt::DropAction ac
     if( amarokData->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
         debug() << "Dropped playlists to provider" << provider->prettyName();
-        foreach( Playlists::PlaylistPtr pl, amarokData->playlists() )
+        for( Playlists::PlaylistPtr pl : amarokData->playlists() )
         {
             // few PlaylistProviders implement addPlaylist(), use save() instead:
             The::playlistManager()->save( pl->tracks(), pl->name(), provider, false /* editName */ );
@@ -218,7 +218,7 @@ PlaylistsByProviderProxy::buildTree()
     PlaylistProviderList providerList =
             The::playlistManager()->providersForCategory( m_playlistCategory );
 
-    foreach( Playlists::PlaylistProvider *provider, providerList )
+    for( Playlists::PlaylistProvider *provider : providerList )
     {
         slotProviderAdded( provider, provider->category() );
     }

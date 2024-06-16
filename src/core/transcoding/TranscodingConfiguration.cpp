@@ -62,7 +62,7 @@ Configuration::fromConfigGroup( const KConfigGroup &serialized )
     Format *format = controller ? controller->format( ret.encoder() ) : nullptr;
 
     PropertyList emptyList;
-    foreach( const Property &property, format ? format->propertyList() : emptyList )
+    for( const Property &property : ( format ? format->propertyList() : emptyList ) )
     {
         Configuration invalid( INVALID );
         QString key = QStringLiteral( "Parameter ").append( property.name() );

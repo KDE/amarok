@@ -101,7 +101,7 @@ MusicBrainzFinder::isRunning() const
 void
 MusicBrainzFinder::run( const Meta::TrackList &tracks )
 {
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
         m_requests.append( qMakePair( track, compileTrackRequest( track ) ) );
 
     m_timer->start();
@@ -435,7 +435,7 @@ MusicBrainzFinder::parsingDone( ThreadWeaver::JobPointer _parser )
         QString releaseGroupID = parser->releaseGroups.keys().first();
         mb_releaseGroups.insert( releaseGroupID,
                                  parser->releaseGroups.value( releaseGroupID ) );
-        foreach( const TrackInfo &trackInfo, mb_queuedTracks.value( releaseGroupID ) )
+        for( const TrackInfo &trackInfo : mb_queuedTracks.value( releaseGroupID ) )
             sendTrack( trackInfo.first, trackInfo.second );
         mb_queuedTracks.remove( releaseGroupID );
     }
@@ -509,9 +509,9 @@ MusicBrainzFinder::checkDone()
          * Sending an empty result makes the user aware of the fact that the track will
          * not be tagged.
          */
-        foreach( const QList<TrackInfo> &trackInfoList,
+        for( const QList<TrackInfo> &trackInfoList :
                  mb_queuedTracks.values() )
-            foreach( const TrackInfo &trackInfo, trackInfoList )
+            for( const TrackInfo &trackInfo : trackInfoList )
                 sendTrack( trackInfo.first, QVariantMap() );
 
         debug() << "There is no queued request. Stopping timer.";
@@ -569,7 +569,7 @@ MusicBrainzFinder::guessMetadata( const Meta::TrackPtr &track ) const
         metadata.insert( Meta::Field::TRACKNUMBER, track->trackNumber() );
 
     debug() << "Guessed track info:";
-    foreach( const QString &tag, metadata.keys() )
+    for( const QString &tag : metadata.keys() )
         debug() << '\t' << tag << ":\t" << metadata.value( tag ).toString();
 
     return metadata;

@@ -142,7 +142,7 @@ AmarokShellProcess::operator<<(const QString& arg)
 AmarokShellProcess &
 AmarokShellProcess::operator<<(const QStringList& args)
 {
-    foreach( const QString &arg, args )
+    for( const QString &arg : args )
         *this << arg;
     return *this;
 }

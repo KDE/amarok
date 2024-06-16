@@ -254,7 +254,7 @@ Dynamic::EchoNestBias::newQuery()
 
     // - construct the query
     m_qm->beginOr();
-    foreach( const QString &artistName, similar )
+    for( const QString &artistName : similar )
     {
         m_qm->addFilter( Meta::valArtist, artistName, true, true );
 
@@ -413,11 +413,11 @@ Dynamic::EchoNestBias::saveDataToFile() const
     writer.writeStartElement( QStringLiteral("echonestSimilar") );
 
     // -- write the similar artists
-    foreach( const QString& key, m_similarArtistMap.keys() )
+    for( const QString& key : m_similarArtistMap.keys() )
     {
         writer.writeStartElement( QStringLiteral("similarArtist") );
         writer.writeTextElement( QStringLiteral("artist"), key );
-        foreach( const QString& name, m_similarArtistMap.value( key ) )
+        for( const QString& name : m_similarArtistMap.value( key ) )
         {
             writer.writeTextElement( QStringLiteral("similar"), name );
         }

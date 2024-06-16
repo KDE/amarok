@@ -191,7 +191,7 @@ Config::forgetProvider( const QString &id )
 bool
 Config::providerKnown( const QString &id ) const
 {
-    foreach( const ProviderData &data, m_providerData )
+    for( const ProviderData &data : m_providerData )
     {
         if( data.id == id )
             return true;
@@ -202,7 +202,7 @@ Config::providerKnown( const QString &id ) const
 bool
 Config::providerEnabled( const QString &id, bool aDefault ) const
 {
-    foreach( const ProviderData &data, m_providerData )
+    for( const ProviderData &data : m_providerData )
     {
         if( data.id == id )
             return data.enabled;
@@ -213,7 +213,7 @@ Config::providerEnabled( const QString &id, bool aDefault ) const
 bool
 Config::providerOnline( const QString &id, bool aDefault ) const
 {
-    foreach( const ProviderData &data, m_providerData )
+    for( const ProviderData &data : m_providerData )
     {
         if( data.id == id )
             return data.online;
@@ -224,7 +224,7 @@ Config::providerOnline( const QString &id, bool aDefault ) const
 QIcon
 Config::providerIcon( const QString &id ) const
 {
-    foreach( const ProviderData &data, m_providerData )
+    for( const ProviderData &data : m_providerData )
     {
         if( data.id == id )
             return data.icon;
@@ -293,7 +293,7 @@ Config::read()
                           Meta::valPlaycount | Meta::valLabel;
     else
     {
-        foreach( const QString &fieldName, fieldNames )
+        for( const QString &fieldName : fieldNames )
             m_checkedFields |= Meta::fieldForName( fieldName );
     }
 
@@ -310,7 +310,7 @@ Config::save()
     QStringList providerIds;
     QStringList providerNames;
     QList<bool> providerEnabledStatuses;
-    foreach( const ProviderData &data, m_providerData )
+    for( const ProviderData &data : m_providerData )
     {
         providerIds << data.id;
         providerNames << data.name;

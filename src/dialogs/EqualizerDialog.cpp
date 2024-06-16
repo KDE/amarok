@@ -101,7 +101,7 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     }
     else if( i.hasNext() ) // If preamp is present then skip its label as it is hard-coded in UI
         i.next();
-    foreach( QLabel* mLabel, m_bandLabels )
+    for( QLabel* mLabel : m_bandLabels )
         if( mLabel->objectName() != "eqPreampLabel" )
             mLabel->setText( i.hasNext() ?  i.next() : "N/A" );
 
@@ -121,7 +121,7 @@ EqualizerDialog::EqualizerDialog( QWidget* parent )
     connect( eqPresets, QOverload<int>::of(&QComboBox::currentIndexChanged),
              equalizer, &EqualizerController::applyEqualizerPresetByIndex );
     connect( eqPresets, &QComboBox::editTextChanged, this, &EqualizerDialog::updateUi );
-    foreach( QSlider* mSlider, m_bands )
+    for( QSlider* mSlider : m_bands )
         connect( mSlider, &QSlider::valueChanged, this, &EqualizerDialog::bandsChanged );
 
     eqPresetSaveBtn->setIcon( QIcon::fromTheme( QStringLiteral("document-save") ) );
@@ -154,7 +154,7 @@ QList<int>
 EqualizerDialog::gains() const
 {
     QList<int> result;
-    foreach( QSlider* mSlider, m_bands )
+    for( QSlider* mSlider : m_bands )
         result << mSlider->value();
     return result;
 }
@@ -303,7 +303,7 @@ EqualizerDialog::restorePreset() //SLOT
 void
 EqualizerDialog::updateToolTips()
 {
-    foreach( QSlider* mSlider, m_bands )
+    for( QSlider* mSlider : m_bands )
         mSlider->setToolTip( QString::number( mSlider->value()*mValueScale/100.0, 'f', 1 ) );
 }
 

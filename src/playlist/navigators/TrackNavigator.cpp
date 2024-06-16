@@ -44,7 +44,7 @@ Playlist::TrackNavigator::TrackNavigator()
 void
 Playlist::TrackNavigator::queueIds( const QList<quint64> &ids )
 {
-    foreach( quint64 id, ids )
+    for( quint64 id : ids )
     {
         if( !m_queue.contains( id ) )
             m_queue.enqueue( id );

@@ -31,7 +31,7 @@
 namespace Meta
 {
 
-#define FORWARD( call ) { foreach( TrackEditorPtr e, m_editors ) { e->call; } \
+#define FORWARD( call ) { for( TrackEditorPtr e : m_editors ) { e->call; } \
                             if( !m_batchMode ) QTimer::singleShot( 0, m_collection, &Collections::AggregateCollection::slotUpdated ); }
 
 class AggregateTrackEditor : public TrackEditor
@@ -47,11 +47,11 @@ public:
     void beginUpdate() override
     {
         m_batchMode = true;
-        foreach( TrackEditorPtr ec, m_editors ) ec->beginUpdate();
+        for( TrackEditorPtr ec : m_editors ) ec->beginUpdate();
     }
     void endUpdate() override
     {
-        foreach( TrackEditorPtr ec, m_editors ) ec->endUpdate();
+        for( TrackEditorPtr ec : m_editors ) ec->endUpdate();
         m_batchMode = false;
         QTimer::singleShot( 0, m_collection, &Collections::AggregateCollection::slotUpdated );
     }
@@ -129,7 +129,7 @@ QUrl
 AggregateTrack::playableUrl() const
 {
     Meta::TrackPtr bestPlayableTrack;
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( track->isPlayable() )
         {
@@ -180,7 +180,7 @@ QString
 AggregateTrack::notPlayableReason() const
 {
     QStringList reasons;
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( !track->isPlayable() )
             reasons.append( track->notPlayableReason() );
@@ -229,7 +229,7 @@ AggregateTrack::comment() const
     if( !m_tracks.isEmpty() )
         comment = m_tracks.first()->comment();
 
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( track->comment() != comment )
         {
@@ -249,7 +249,7 @@ AggregateTrack::bpm() const
     if( !m_tracks.isEmpty() )
         bpm = m_tracks.first()->bpm();
 
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( track->bpm() != bpm )
         {
@@ -272,7 +272,7 @@ AggregateTrack::score() const
     //implementing the weighted average here...
     double weightedSum = 0.0;
     int totalCount = 0;
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         ConstStatisticsPtr statistics = track->statistics();
         totalCount += statistics->playCount();
@@ -287,7 +287,7 @@ AggregateTrack::score() const
 void
 AggregateTrack::setScore( double newScore )
 {
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( Meta::TrackPtr track : m_tracks )
     {
         track->statistics()->setScore( newScore );
     }
@@ -299,7 +299,7 @@ AggregateTrack::rating() const
     //yay, multiple options again. As this has to be defined by the user, let's take
     //the maximum here.
     int result = 0;
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( track->statistics()->rating() > result )
             result = track->statistics()->rating();
@@ -310,7 +310,7 @@ AggregateTrack::rating() const
 void
 AggregateTrack::setRating( int newRating )
 {
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( Meta::TrackPtr track : m_tracks )
     {
         track->statistics()->setRating( newRating );
     }
@@ -320,7 +320,7 @@ QDateTime
 AggregateTrack::firstPlayed() const
 {
     QDateTime result;
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         ConstStatisticsPtr statistics = track->statistics();
         //use the track's firstPlayed value if it represents an earlier timestamp than
@@ -339,7 +339,7 @@ AggregateTrack::firstPlayed() const
 void
 AggregateTrack::setFirstPlayed( const QDateTime &date )
 {
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( Meta::TrackPtr track : m_tracks )
     {
         // only "lower" the first played
         Meta::StatisticsPtr trackStats = track->statistics();
@@ -358,7 +358,7 @@ AggregateTrack::lastPlayed() const
     //return the latest timestamp. Easier than firstPlayed because we do not have to
     //care about 0.
     //when are we going to perform the refactoring as discussed in Berlin?
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( track->statistics()->lastPlayed() > result )
         {
@@ -371,7 +371,7 @@ AggregateTrack::lastPlayed() const
 void
 AggregateTrack::setLastPlayed(const QDateTime& date)
 {
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( Meta::TrackPtr track : m_tracks )
     {
         // only "raise" the last played
         Meta::StatisticsPtr trackStats = track->statistics();
@@ -388,7 +388,7 @@ AggregateTrack::playCount() const
 {
     // show the maximum of all play counts.
     int result = 0;
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( track->statistics()->playCount() > result )
         {
@@ -408,7 +408,7 @@ AggregateTrack::setPlayCount( int newPlayCount )
 void
 AggregateTrack::finishedPlaying( double playedFraction )
 {
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( Meta::TrackPtr track : m_tracks )
     {
         track->finishedPlaying( playedFraction );
     }
@@ -417,7 +417,7 @@ AggregateTrack::finishedPlaying( double playedFraction )
 qint64
 AggregateTrack::length() const
 {
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( track->length() )
             return track->length();
@@ -428,7 +428,7 @@ AggregateTrack::length() const
 int
 AggregateTrack::filesize() const
 {
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( track->filesize() )
         {
@@ -441,7 +441,7 @@ AggregateTrack::filesize() const
 int
 AggregateTrack::sampleRate() const
 {
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( track->sampleRate() )
             return track->sampleRate();
@@ -452,7 +452,7 @@ AggregateTrack::sampleRate() const
 int
 AggregateTrack::bitrate() const
 {
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( track->bitrate() )
             return track->bitrate();
@@ -464,7 +464,7 @@ QDateTime
 AggregateTrack::createDate() const
 {
     QDateTime result;
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         //use the track's firstPlayed value if it represents an earlier timestamp than
         //the current result, or use it directly if result has not been set yet
@@ -483,7 +483,7 @@ int
 AggregateTrack::trackNumber() const
 {
     int result = 0;
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( ( !result && track->trackNumber() ) || ( result && result == track->trackNumber() ) )
         {
@@ -502,7 +502,7 @@ int
 AggregateTrack::discNumber() const
 {
     int result = 0;
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( ( !result && track->discNumber() ) || ( result && result == track->discNumber() ) )
         {
@@ -563,7 +563,7 @@ AggregateTrack::editor()
         return m_tracks.first()->editor();
 
     QList<Meta::TrackEditorPtr> editors;
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( Meta::TrackPtr track : m_tracks )
     {
         Meta::TrackEditorPtr ec = track->editor();
         if( ec )
@@ -577,7 +577,7 @@ AggregateTrack::editor()
 void
 AggregateTrack::addLabel( const QString &label )
 {
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( Meta::TrackPtr track : m_tracks )
     {
         track->addLabel( label );
     }
@@ -586,7 +586,7 @@ AggregateTrack::addLabel( const QString &label )
 void
 AggregateTrack::addLabel( const Meta::LabelPtr &label )
 {
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( Meta::TrackPtr track : m_tracks )
     {
         track->addLabel( label );
     }
@@ -595,7 +595,7 @@ AggregateTrack::addLabel( const Meta::LabelPtr &label )
 void
 AggregateTrack::removeLabel( const Meta::LabelPtr &label )
 {
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( Meta::TrackPtr track : m_tracks )
     {
         track->removeLabel( label );
     }
@@ -605,15 +605,15 @@ Meta::LabelList
 AggregateTrack::labels() const
 {
     QSet<AggregateLabel *> aggregateLabels;
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
-        foreach( Meta::LabelPtr label, track->labels() )
+        for( Meta::LabelPtr label : track->labels() )
         {
             aggregateLabels.insert( m_collection->getLabel( label ) );
         }
     }
     Meta::LabelList result;
-    foreach( AggregateLabel *label, aggregateLabels )
+    for( AggregateLabel *label : aggregateLabels )
     {
         result << Meta::LabelPtr( label );
     }
@@ -739,17 +739,17 @@ Meta::TrackList
 AggregateAlbum::tracks()
 {
     QSet<AggregateTrack*> tracks;
-    foreach( Meta::AlbumPtr album, m_albums )
+    for( Meta::AlbumPtr album : m_albums )
     {
         Meta::TrackList tmp = album->tracks();
-        foreach( const Meta::TrackPtr &track, tmp )
+        for( const Meta::TrackPtr &track : tmp )
         {
             tracks.insert( m_collection->getTrack( track ) );
         }
     }
 
     Meta::TrackList result;
-    foreach( AggregateTrack *track, tracks )
+    for( AggregateTrack *track : tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -816,7 +816,7 @@ AggregateAlbum::add( const Meta::AlbumPtr &album )
 bool
 AggregateAlbum::hasImage( int size ) const
 {
-    foreach( const Meta::AlbumPtr &album, m_albums )
+    for( const Meta::AlbumPtr &album : m_albums )
     {
         if( album->hasImage( size ) )
             return true;
@@ -827,7 +827,7 @@ AggregateAlbum::hasImage( int size ) const
 QImage
 AggregateAlbum::image( int size ) const
 {
-    foreach( Meta::AlbumPtr album, m_albums )
+    for( Meta::AlbumPtr album : m_albums )
     {
         if( album->hasImage( size ) )
         {
@@ -840,7 +840,7 @@ AggregateAlbum::image( int size ) const
 QUrl
 AggregateAlbum::imageLocation( int size )
 {
-    foreach( Meta::AlbumPtr album, m_albums )
+    for( Meta::AlbumPtr album : m_albums )
     {
         if( album->hasImage( size ) )
         {
@@ -857,7 +857,7 @@ AggregateAlbum::imageLocation( int size )
 QPixmap
 AggregateAlbum::imageWithBorder( int size, int borderWidth )
 {
-    foreach( Meta::AlbumPtr album, m_albums )
+    for( Meta::AlbumPtr album : m_albums )
     {
         if( album->hasImage( size ) )
         {
@@ -873,7 +873,7 @@ AggregateAlbum::canUpdateImage() const
     if( m_albums.isEmpty() )
         return false;
 
-    foreach( const Meta::AlbumPtr &album, m_albums )
+    for( const Meta::AlbumPtr &album : m_albums )
     {
         //we can only update the image for all albums at the same time
         if( !album->canUpdateImage() )
@@ -885,7 +885,7 @@ AggregateAlbum::canUpdateImage() const
 void
 AggregateAlbum::setImage( const QImage &image )
 {
-    foreach( Meta::AlbumPtr album, m_albums )
+    for( Meta::AlbumPtr album : m_albums )
     {
         album->setImage( image );
     }
@@ -894,7 +894,7 @@ AggregateAlbum::setImage( const QImage &image )
 void
 AggregateAlbum::removeImage()
 {
-    foreach( Meta::AlbumPtr album, m_albums )
+    for( Meta::AlbumPtr album : m_albums )
     {
         album->removeImage();
     }
@@ -903,7 +903,7 @@ AggregateAlbum::removeImage()
 void
 AggregateAlbum::setSuppressImageAutoFetch( bool suppress )
 {
-    foreach( Meta::AlbumPtr album, m_albums )
+    for( Meta::AlbumPtr album : m_albums )
     {
         album->setSuppressImageAutoFetch( suppress );
     }
@@ -912,7 +912,7 @@ AggregateAlbum::setSuppressImageAutoFetch( bool suppress )
 bool
 AggregateAlbum::suppressImageAutoFetch() const
 {
-    foreach( const Meta::AlbumPtr &album, m_albums )
+    for( const Meta::AlbumPtr &album : m_albums )
     {
         if( !album->suppressImageAutoFetch() )
             return false;
@@ -992,17 +992,17 @@ Meta::TrackList
 AggregateArtist::tracks()
 {
     QSet<AggregateTrack*> tracks;
-    foreach( Meta::ArtistPtr artist, m_artists )
+    for( Meta::ArtistPtr artist : m_artists )
     {
         Meta::TrackList tmp = artist->tracks();
-        foreach( const Meta::TrackPtr &track, tmp )
+        for( const Meta::TrackPtr &track : tmp )
         {
             tracks.insert( m_collection->getTrack( track ) );
         }
     }
 
     Meta::TrackList result;
-    foreach( AggregateTrack *track, tracks )
+    for( AggregateTrack *track : tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -1118,17 +1118,17 @@ Meta::TrackList
 AggregateGenre::tracks()
 {
     QSet<AggregateTrack*> tracks;
-    foreach( Meta::GenrePtr genre, m_genres )
+    for( Meta::GenrePtr genre : m_genres )
     {
         Meta::TrackList tmp = genre->tracks();
-        foreach( const Meta::TrackPtr &track, tmp )
+        for( const Meta::TrackPtr &track : tmp )
         {
             tracks.insert( m_collection->getTrack( track ) );
         }
     }
 
     Meta::TrackList result;
-    foreach( AggregateTrack *track, tracks )
+    for( AggregateTrack *track : tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -1238,17 +1238,17 @@ Meta::TrackList
 AggregateComposer::tracks()
 {
     QSet<AggregateTrack*> tracks;
-    foreach( Meta::ComposerPtr composer, m_composers )
+    for( Meta::ComposerPtr composer : m_composers )
     {
         Meta::TrackList tmp = composer->tracks();
-        foreach( const Meta::TrackPtr &track, tmp )
+        for( const Meta::TrackPtr &track : tmp )
         {
             tracks.insert( m_collection->getTrack( track ) );
         }
     }
 
     Meta::TrackList result;
-    foreach( AggregateTrack *track, tracks )
+    for( AggregateTrack *track : tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }
@@ -1359,17 +1359,17 @@ Meta::TrackList
 AggreagateYear::tracks()
 {
     QSet<AggregateTrack*> tracks;
-    foreach( Meta::YearPtr year, m_years )
+    for( Meta::YearPtr year : m_years )
     {
         Meta::TrackList tmp = year->tracks();
-        foreach( const Meta::TrackPtr &track, tmp )
+        for( const Meta::TrackPtr &track : tmp )
         {
             tracks.insert( m_collection->getTrack( track ) );
         }
     }
 
     Meta::TrackList result;
-    foreach( AggregateTrack *track, tracks )
+    for( AggregateTrack *track : tracks )
     {
         result.append( Meta::TrackPtr( track ) );
     }

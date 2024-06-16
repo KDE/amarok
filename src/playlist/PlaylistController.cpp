@@ -188,7 +188,7 @@ Controller::insertOptioned( Meta::TrackList list, AddOptions options )
         if( options.testFlag( PrependToQueue ) ) // PrependToQueue implies Queue
         {
             // append current queue to new queue and remove it
-            foreach( const quint64 id, Actions::instance()->queue() )
+            for( const quint64 id : Actions::instance()->queue() )
             {
                 Actions::instance()->dequeue( id );
                 ids << id;

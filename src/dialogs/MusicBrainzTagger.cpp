@@ -45,7 +45,7 @@ MusicBrainzTagger::MusicBrainzTagger( const Meta::TrackList &tracks,
     , ui( new Ui::MusicBrainzTagger() )
 {
     DEBUG_BLOCK
-    foreach( Meta::TrackPtr track, tracks )
+    for( Meta::TrackPtr track : tracks )
     {
         if( !track->playableUrl().toLocalFile().isEmpty() )
             m_tracks << track;

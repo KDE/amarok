@@ -64,7 +64,7 @@ Controller::onAvailabilityVerified( int exitCode, QProcess::ExitStatus exitStatu
     if( output.simplified().isEmpty() )
         return;
     const QStringList lines = output.split( QRegularExpression( QStringLiteral("\r|\n") ), Qt::SkipEmptyParts );
-    foreach( Format *format, m_formats )
+    for( Format *format : m_formats )
     {
         bool formatAvailable = false;
         for( const QString &line : lines )

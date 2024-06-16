@@ -69,7 +69,7 @@ ExcludedLabelsDialog::ExcludedLabelsDialog( StatSyncing::Config *config, QWidget
 void
 ExcludedLabelsDialog::slowNewResultReady( const Meta::LabelList &labels )
 {
-    foreach( const Meta::LabelPtr &label, labels )
+    for( const Meta::LabelPtr &label : labels )
         addLabel( label->name() );
 }
 
@@ -84,7 +84,7 @@ void
 ExcludedLabelsDialog::slotSaveToConfig()
 {
     QSet<QString> excluded;
-    foreach( const QListWidgetItem *item, listWidget->selectedItems() )
+    for( const QListWidgetItem *item : listWidget->selectedItems() )
     {
         excluded.insert( item->text() );
     }
@@ -127,7 +127,7 @@ ExcludedLabelsDialog::addLabel( const QString &label, bool selected )
 void
 ExcludedLabelsDialog::addLabels( const QSet<QString> &labels, bool selected )
 {
-    foreach( const QString &label, labels )
+    for( const QString &label : labels )
     {
         addLabel( label, selected );
     }

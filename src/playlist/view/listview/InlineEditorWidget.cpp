@@ -346,13 +346,13 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
     QList<int> sizes = splitter->sizes();
 
     int total = 0;
-    foreach( int size, sizes )
+    for( int size : sizes )
         total += size;
 
     //resize all items as the splitters take up some space, so we need to normalize the combined size to 1.
     QList<qreal> newSizes;
 
-    foreach( int size, sizes )
+    for( int size : sizes )
     {
         qreal newSize = (qreal) size / (qreal) total;
         newSizes << newSize;

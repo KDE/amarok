@@ -79,7 +79,7 @@ APETagHelper::setTags( const Meta::FieldHash &changes )
 {
     bool modified = TagHelper::setTags( changes );
 
-    foreach( const qint64 key, changes.keys() )
+    for( const qint64 key : changes.keys() )
     {
         QVariant value = changes.value( key );
         TagLib::String field = fieldName( key );

@@ -88,7 +88,7 @@ void
 TokenDropTarget::clear()
 {
     QList< Token *> allTokens = tokensAtRow();
-    foreach( Token* token, allTokens )
+    for( Token* token : allTokens )
     {
         token->setParent(nullptr);
         token->deleteLater();

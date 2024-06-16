@@ -49,7 +49,7 @@ LastFmServiceCollection::LastFmServiceCollection( const QString &userName )
     QStringList lastfmPersonal;
     lastfmPersonal << "personal" << "recommended" <<  "loved";
 
-    foreach( const QString &station, lastfmPersonal )
+    for( const QString &station : lastfmPersonal )
     {
         LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + station );
         Meta::TrackPtr trackPtr( track );
@@ -64,7 +64,7 @@ LastFmServiceCollection::LastFmServiceCollection( const QString &userName )
             << "Rap" << "Rock" << "Soundtrack" << "Techno" << "Trance";
 
 
-    foreach( const QString &genre, lastfmGenres )
+    for( const QString &genre : lastfmGenres )
     {
         LastFm::Track * track = new LastFm::Track( "lastfm://globaltags/" + genre );
         Meta::TrackPtr trackPtr( track );
@@ -130,7 +130,7 @@ void LastFmServiceCollection::slotAddFriendsLoved()
             lastfm::XmlQuery lfm;
             if( lfm.parse( m_jobs[ "user.getFriends" ]->readAll() ) )
             {
-                foreach( const lastfm::XmlQuery &e, lfm[ "friends" ].children( "user" ) )
+                for( const lastfm::XmlQuery &e : lfm[ "friends" ].children( "user" ) )
                 {
                     const QString name = e[ "name" ].text();
                     LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
@@ -175,7 +175,7 @@ void LastFmServiceCollection::slotAddFriendsPersonal()
             lastfm::XmlQuery lfm;
             if( lfm.parse( m_jobs[ "user.getFriends" ]->readAll() ) )
             {
-                foreach( const lastfm::XmlQuery &e, lfm[ "friends" ].children( "user" ) )
+                for( const lastfm::XmlQuery &e : lfm[ "friends" ].children( "user" ) )
                 {
                     const QString name = e[ "name" ].text();
                     LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );

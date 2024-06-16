@@ -48,7 +48,7 @@ namespace Playlist {
     setLayout( layout );
 
     int i = 0;
-    foreach( const QString &source, m_msc->sources() )
+    for( const QString &source : m_msc->sources() )
     {
         if ( i == m_msc->current() )
             new QListWidgetItem( QIcon::fromTheme( QStringLiteral("arrow-right") ), source, m_listWidget ) ;
@@ -76,7 +76,7 @@ void SourceSelectionPopup::sourceSelected( QListWidgetItem * item )
     m_listWidget->clear();
     
     int i = 0;
-    foreach( const QString &source, m_msc->sources() )
+    for( const QString &source : m_msc->sources() )
     {
         if ( i == m_msc->current() )
             new QListWidgetItem( QIcon::fromTheme( QStringLiteral("arrow-right") ), source, m_listWidget ) ;

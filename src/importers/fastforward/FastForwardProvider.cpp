@@ -67,7 +67,7 @@ QSet<QString>
 FastForwardProvider::artists()
 {
     QSet<QString> result;
-    foreach( const QVariantList &row, m_connection->query( "SELECT name FROM artist" ) )
+    for( const QVariantList &row : m_connection->query( "SELECT name FROM artist" ) )
         result.insert( row[0].toString() );
 
     return result;
@@ -95,7 +95,7 @@ FastForwardProvider::artistTracks( const QString &artistName )
                 << Meta::valFirstPlayed << Meta::valLastPlayed << Meta::valPlaycount;
 
     TrackList result;
-    foreach( const QVariantList &row, m_connection->query( query, bindValues ) )
+    for( const QVariantList &row : m_connection->query( query, bindValues ) )
     {
         const QString trackUrl = row[0].toString();
 
@@ -111,7 +111,7 @@ FastForwardProvider::artistTracks( const QString &artistName )
         lblBindValues.insert( ":url", trackUrl );
 
         QSet<QString> labels;
-        foreach( const QVariantList &row, m_connection->query( lblQuery, lblBindValues ) )
+        for( const QVariantList &row : m_connection->query( lblQuery, lblBindValues ) )
             labels.insert( row[0].toString() );
 
         result << TrackPtr( new FastForwardTrack( trackUrl, m_connection, metadata,

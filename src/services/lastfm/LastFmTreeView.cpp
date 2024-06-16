@@ -157,12 +157,12 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
         font.setPointSize( 16 );
         font.setBold( true );
 
-        foreach( QAction * action, actions )
+        for( QAction * action : actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
 
 
         m_currentItems.clear();
-        foreach( const QModelIndex &index, indices )
+        for( const QModelIndex &index : indices )
         {
             if( index.isValid() && index.internalPointer() )
                 m_currentItems << index;
@@ -175,7 +175,7 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
         {
             morePud = The::popupDropperFactory()->createPopupDropper( nullptr, true );
 
-            foreach( QAction * action, actions )
+            for( QAction * action : actions )
                 morePud->addItem( The::popupDropperFactory()->createItem( action ) );
         }
         else

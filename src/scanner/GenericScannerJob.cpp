@@ -311,7 +311,7 @@ GenericScannerJob::restartScannerProcess()
     if( m_restartCount >= MAX_RESTARTS )
     {
         debug() << __PRETTY_FUNCTION__ << "Following files made amarokcollectionscanner (or TagLib) crash:";
-        foreach( const QString &file, badFiles )
+        for( const QString &file : badFiles )
             debug() << __PRETTY_FUNCTION__ << file;
 
         // TODO: this message doesn't seem to be propagated to the UI

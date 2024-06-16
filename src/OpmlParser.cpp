@@ -397,7 +397,7 @@ OpmlParser::beginOutline()
         parent->addChild( outline );
     }
 
-    foreach( const QXmlStreamAttribute &attribute, attributes() )
+    for( const QXmlStreamAttribute &attribute : attributes() )
         outline->addAttribute( attribute.name().toString(), attribute.value().toString() );
 
     Q_EMIT outlineParsed( outline );

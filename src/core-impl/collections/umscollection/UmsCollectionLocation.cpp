@@ -116,7 +116,7 @@ void
 UmsCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &sources )
 {
     QList<QUrl> sourceUrls;
-    foreach( const Meta::TrackPtr track, sources )
+    for( const Meta::TrackPtr &track : sources )
     {
         QUrl trackUrl = track->playableUrl();
         m_sourceUrlToTrackMap.insert( trackUrl, track );
@@ -145,7 +145,7 @@ UmsCollectionLocation::slotTrackTransferred( const QUrl &sourceTrackUrl )
 
 void UmsCollectionLocation::slotRemoveOperationFinished()
 {
-    foreach( Meta::TrackPtr track, m_sourceUrlToTrackMap )
+    for( Meta::TrackPtr track : m_sourceUrlToTrackMap )
     {
         QUrl trackUrl = track->playableUrl();
         if( !trackUrl.isLocalFile() // just pretend it was deleted

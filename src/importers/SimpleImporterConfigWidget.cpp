@@ -86,7 +86,7 @@ SimpleImporterConfigWidget::config() const
 {
     QVariantMap cfg( m_config );
 
-    foreach( const QString &key, m_fieldForName.keys() )
+    for( const QString &key : m_fieldForName.keys() )
     {
         const QPair<QWidget*, QString> val = m_fieldForName.value( key );
         const QByteArray propertyName = val.second.toLocal8Bit();

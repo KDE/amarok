@@ -101,7 +101,7 @@ Meta::TrackList
 SqlPodcastEpisode::toTrackList( Podcasts::SqlPodcastEpisodeList episodes )
 {
     Meta::TrackList tracks;
-    foreach( SqlPodcastEpisodePtr sqlEpisode, episodes )
+    for( SqlPodcastEpisodePtr sqlEpisode : episodes )
         tracks << Meta::TrackPtr::dynamicCast( sqlEpisode );
 
     return tracks;
@@ -111,7 +111,7 @@ Podcasts::PodcastEpisodeList
 SqlPodcastEpisode::toPodcastEpisodeList( SqlPodcastEpisodeList episodes )
 {
     Podcasts::PodcastEpisodeList sqlEpisodes;
-    foreach( SqlPodcastEpisodePtr sqlEpisode, episodes )
+    for( SqlPodcastEpisodePtr sqlEpisode : episodes )
         sqlEpisodes << Podcasts::PodcastEpisodePtr::dynamicCast( sqlEpisode );
 
     return sqlEpisodes;
@@ -595,7 +595,7 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
 
     updateInDb();
 
-    foreach( Podcasts::PodcastEpisodePtr episode, channel->episodes() )
+    for( Podcasts::PodcastEpisodePtr episode : channel->episodes() )
     {
         episode->setChannel( PodcastChannelPtr( this ) );
         SqlPodcastEpisode *sqlEpisode = new SqlPodcastEpisode( episode );

@@ -108,7 +108,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
                 QVariantList iconData;
                 QVariantList playlistCountData;
                 QVariantList providerActionsData;
-                foreach( Playlists::PlaylistProvider *provider, providers )
+                for( Playlists::PlaylistProvider *provider : providers )
                 {
                     name = provider->prettyName();
                     nameData << name;
@@ -218,7 +218,7 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
                     if( !playlist || ( playlist->provider() == provider ) )
                         return false;
 
-                    foreach( Playlists::PlaylistPtr tempPlaylist , provider->playlists() )
+                    for( Playlists::PlaylistPtr tempPlaylist : provider->playlists() )
                     {
                         if ( tempPlaylist->name() == playlist->name() )
                             return false;
@@ -423,7 +423,7 @@ PlaylistBrowserModel::mimeData( const QModelIndexList &indices ) const
     Playlists::PlaylistList playlists;
     Meta::TrackList tracks;
 
-    foreach( const QModelIndex &index, indices )
+    for( const QModelIndex &index : indices )
     {
         if( IS_TRACK(index) )
             tracks << trackFromIndex( index );
@@ -459,7 +459,7 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
         // TODO: is this ever called????
         Playlists::PlaylistList playlists = amarokMime->playlists();
 
-        foreach( Playlists::PlaylistPtr playlist, playlists )
+        for( Playlists::PlaylistPtr playlist : playlists )
         {
             if( !m_playlists.contains( playlist ) )
                 debug() << "Unknown playlist dragged in: " << playlist->prettyName();
@@ -489,7 +489,7 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
             if( !playlist )
                 return false;
 
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
                 playlist->addTrack( track, ( row >= 0 ) ? row++ : -1 ); // increment only if positive
 
             return true;
@@ -549,7 +549,7 @@ PlaylistBrowserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
         return;
 
     int row = 0;
-    foreach( Playlists::PlaylistPtr p, m_playlists )
+    for( Playlists::PlaylistPtr p : m_playlists )
     {
         if( p == playlist )
         {
@@ -568,7 +568,7 @@ PlaylistBrowserModel::slotUpdate( int category )
 
     beginResetModel();
 
-    foreach( Playlists::PlaylistPtr playlist, m_playlists )
+    for( Playlists::PlaylistPtr playlist : m_playlists )
         unsubscribeFrom( playlist );
 
     m_playlists.clear();
@@ -665,7 +665,7 @@ Meta::TrackList
 PlaylistBrowserModel::tracksFromIndexes( const QModelIndexList &list ) const
 {
     Meta::TrackList tracks;
-    foreach( const QModelIndex &index, list )
+    for( const QModelIndex &index : list )
     {
         if( IS_TRACK(index) )
             tracks << trackFromIndex( index );
@@ -729,7 +729,7 @@ PlaylistBrowserModel::getProviderByName( const QString &name )
 {
     QList<Playlists::PlaylistProvider *> providers =
             The::playlistManager()->providersForCategory( m_playlistCategory );
-    foreach( Playlists::PlaylistProvider *provider, providers )
+    for( Playlists::PlaylistProvider *provider : providers )
     {
         if( provider->prettyName() == name )
             return provider;

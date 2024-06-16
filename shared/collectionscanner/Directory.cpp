@@ -84,7 +84,7 @@ CollectionScanner::Directory::Directory( const QString &path,
     dir.setFilter( QDir::NoDotAndDotDot | QDir::Files );
     QFileInfoList fileInfos = dir.entryInfoList();
 
-    foreach( const QFileInfo &fi, fileInfos )
+    for( const auto &fi : fileInfos )
     {
         if( !fi.exists() )
             continue;
@@ -169,8 +169,7 @@ CollectionScanner::Directory::Directory( QXmlStreamReader *reader )
 
 CollectionScanner::Directory::~Directory()
 {
-    foreach( CollectionScanner::Track *track, m_tracks )
-        delete track;
+    qDeleteAll( m_tracks );
 }
 
 QString
@@ -226,18 +225,18 @@ CollectionScanner::Directory::toXml( QXmlStreamWriter *writer ) const
     if( m_ignored )
         writer->writeEmptyElement( QStringLiteral("ignored") );
 
-    foreach( const QString &cover, m_covers )
+    for( const auto &cover : m_covers )
     {
         writer->writeTextElement( QStringLiteral("cover"), escapeXml10(cover) );
     }
-    foreach( CollectionScanner::Track *track, m_tracks )
+    for( const auto &track : m_tracks )
     {
         writer->writeStartElement( QStringLiteral("track") );
         track->toXml( writer );
         writer->writeEndElement();
     }
 
-    foreach( const CollectionScanner::Playlist &playlist, m_playlists )
+    for( const auto &playlist : m_playlists )
     {
         writer->writeStartElement( QStringLiteral("playlist") );
         playlist.toXml( writer );

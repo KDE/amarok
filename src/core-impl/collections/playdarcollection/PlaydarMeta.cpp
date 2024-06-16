@@ -157,7 +157,7 @@ Meta::LabelList
 Meta::PlaydarTrack::labels() const
 {
     Meta::LabelList labelList;
-    foreach( const PlaydarLabelPtr &label, m_labelList )
+    for( const PlaydarLabelPtr &label : m_labelList )
     {
         labelList.append( LabelPtr::staticCast( label ) );
     }
@@ -281,7 +281,7 @@ Meta::PlaydarTrack::addLabel( const LabelPtr &label )
 void
 Meta::PlaydarTrack::removeLabel( const LabelPtr &label )
 {
-    foreach( const PlaydarLabelPtr &labelPtr, m_labelList )
+    for( const PlaydarLabelPtr &labelPtr : m_labelList )
     {
         if( labelPtr->name() == label->name() )
         {

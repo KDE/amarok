@@ -71,7 +71,7 @@ bool
 AmpacheServiceFactory::possiblyContainsTrack(const QUrl &url) const
 {
     AmpacheConfig config;
-    foreach( const AmpacheServerEntry &server, config.servers() )
+    for( const AmpacheServerEntry &server : config.servers() )
     {
         if ( server.url.isParentOf( url ) )
             return true;

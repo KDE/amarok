@@ -86,7 +86,7 @@ XSPFPlaylist::load()
 {
     XSPFTrackList xspfTracks = trackList();
 
-    foreach( const XSPFTrack &track, xspfTracks )
+    for( const XSPFTrack &track : xspfTracks )
     {
        MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( track.location ) );
        //Fill in values from xspf..
@@ -531,8 +531,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
 
     QDomNode node = createElement( QStringLiteral("trackList") );
 
-    Meta::TrackPtr track;
-    foreach( track, trackList ) // krazy:exclude=foreach
+    for( auto track : trackList )
     {
         QDomNode subNode = createElement( QStringLiteral("track") );
 
@@ -632,7 +631,7 @@ XSPFPlaylist::setQueue( const QList<int> &queue )
 {
     QDomElement q = createElement( QStringLiteral("queue") );
 
-    foreach( int row, queue )
+    for( int row : queue )
     {
         QDomElement qTrack = createElement( QStringLiteral("track") );
         qTrack.appendChild( createTextNode( QString::number( row ) ) );

@@ -121,7 +121,7 @@ CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 void
 CoverFetcher::queueAlbums( Meta::AlbumList albums )
 {
-    foreach( Meta::AlbumPtr album, albums )
+    for( Meta::AlbumPtr album : albums )
     {
         QTimer::singleShot( 0, m_queue, [=] () { m_queue->add( album, CoverFetch::Automatic ); } );
     }
@@ -164,7 +164,7 @@ CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
     }
 
     // Was with uniqueKeys, however the payload urls are ever operated only with insert, so there can't be duplicates
-    foreach( const QUrl &url, urls.keys() )
+    for( const QUrl &url : urls.keys() )
     {
         if( !url.isValid() )
             continue;
@@ -306,7 +306,7 @@ CoverFetcher::slotDialogFinished()
      * if there are still covers yet to be retrieved.
      */
     QList< CoverFetchUnit::Ptr > units = m_urls.values();
-    foreach( const CoverFetchUnit::Ptr &unit, units )
+    for( const CoverFetchUnit::Ptr &unit : units )
     {
         if( unit->isInteractive() )
             abortFetch( unit );
@@ -390,7 +390,7 @@ CoverFetcher::abortFetch( const CoverFetchUnit::Ptr &unit )
     QTimer::singleShot( 0, m_queue, [=] () {  m_queue->remove( unit ); } );
     m_selectedImages.remove( unit );
     QList<QUrl> urls = m_urls.keys( unit );
-    foreach( const QUrl &url, urls )
+    for( const QUrl &url : urls )
         m_urls.remove( url );
     The::networkAccessManager()->abortGet( urls );
 }

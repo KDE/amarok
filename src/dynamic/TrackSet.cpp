@@ -175,7 +175,7 @@ Dynamic::TrackSet::unite( const QStringList& B )
     if( !m_collection )
         return;
 
-    foreach( const QString &str, B )
+    for( const QString &str : B )
     {
         if( !m_collection->m_ids.contains( str ) )
             continue;
@@ -198,7 +198,7 @@ Dynamic::TrackSet::intersect( const QStringList& B )
         return;
 
     QBitArray bBits( m_bits.count() );
-    foreach( const QString &str, B )
+    for( const QString &str : B )
     {
         if( !m_collection->m_ids.contains( str ) )
             continue;
@@ -246,7 +246,7 @@ Dynamic::TrackSet::subtract( const QStringList& B )
     if( !m_collection )
         return;
 
-    foreach( const QString &str, B )
+    for( const QString &str : B )
     {
         if( !m_collection->m_ids.contains( str ) )
             continue;

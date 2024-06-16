@@ -104,7 +104,7 @@ QActionList
 IpodPlaylistProvider::playlistActions( const Playlists::PlaylistList &playlists )
 {
     QActionList actions;
-    foreach( const Playlists::PlaylistPtr &playlist, playlists )
+    for( const Playlists::PlaylistPtr &playlist : playlists )
     {
         if( !m_playlists.contains( playlist ) )  // make following static cast safe
             continue;
@@ -151,7 +151,7 @@ IpodPlaylistProvider::deletePlaylists( const Playlists::PlaylistList &playlistli
     if( !isWritable() )
         return false;
 
-    foreach( Playlists::PlaylistPtr playlist, playlistlist )
+    for( const Playlists::PlaylistPtr &playlist : playlistlist )
     {
         if( !m_playlists.contains( playlist ) )
             continue;
@@ -197,7 +197,7 @@ IpodPlaylistProvider::scheduleCopyAndInsertToPlaylist( AmarokSharedPointer<IpodP
 void
 IpodPlaylistProvider::removeTrackFromPlaylists( Meta::TrackPtr track )
 {
-    foreach( Playlists::PlaylistPtr playlist, m_playlists )
+    for( Playlists::PlaylistPtr playlist : m_playlists )
     {
         int trackIndex;
         // track may be multiple times in a playlist:
@@ -223,10 +223,10 @@ IpodPlaylistProvider::slotConsolidateStaleOrphaned()
     if( m_stalePlaylist && m_orphanedPlaylist )
     {
         QMap<Meta::TrackPtr, Meta::TrackPtr> orphanedToStale;
-        foreach( Meta::TrackPtr orphanedTrack, m_orphanedPlaylist->tracks() )
+        for( Meta::TrackPtr orphanedTrack : m_orphanedPlaylist->tracks() )
         {
             Meta::TrackPtr matchingStaleTrack;
-            foreach( Meta::TrackPtr staleTrack, m_stalePlaylist->tracks() )
+            for( Meta::TrackPtr staleTrack : m_stalePlaylist->tracks() )
             {
                 if( orphanedAndStaleTracksMatch( orphanedTrack, staleTrack ) )
                 {
@@ -338,7 +338,7 @@ IpodPlaylistProvider::slotCopyAndInsertToPlaylists()
 void IpodPlaylistProvider::copyAndInsertToPlaylist( const TrackPositionList &tracks, Playlists::PlaylistPtr destPlaylist )
 {
     QMap<Collections::Collection*, TrackPositionList> sourceCollections;
-    foreach( const TrackPosition &pair, tracks )
+    for( const TrackPosition &pair : tracks )
     {
         Collections::Collection *coll = pair.first->collection();
         if( coll == m_coll )
@@ -350,11 +350,11 @@ void IpodPlaylistProvider::copyAndInsertToPlaylist( const TrackPositionList &tra
             sourceCollections.insert( coll, TrackPositionList() << pair );
     }
 
-    foreach( Collections::Collection *coll, sourceCollections.keys() )
+    for( Collections::Collection *coll : sourceCollections.keys() )
     {
         Meta::TrackList sourceTracks;
         QMap<Meta::TrackPtr, int> trackPlaylistPositions;
-        foreach( const TrackPosition &pair, sourceCollections.value( coll ) )
+        for( const TrackPosition &pair : sourceCollections.value( coll ) )
         {
             sourceTracks << pair.first;
             trackPlaylistPositions.insert( pair.first, pair.second );

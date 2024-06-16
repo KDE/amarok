@@ -177,7 +177,7 @@ Playlists::PlaylistList
 UmsPodcastProvider::playlists()
 {
     Playlists::PlaylistList playlists;
-    foreach( UmsPodcastChannelPtr channel, m_umsChannels )
+    for( UmsPodcastChannelPtr channel : m_umsChannels )
         playlists << Playlists::PlaylistPtr::dynamicCast( channel );
     return playlists;
 }
@@ -216,7 +216,7 @@ UmsPodcastProvider::slotDeleteEpisodes()
     action->setData( QVariant() );
 
     UmsPodcastEpisodeList umsEpisodes;
-    foreach( PodcastEpisodePtr episode, episodes )
+    for( PodcastEpisodePtr episode : episodes )
     {
         UmsPodcastEpisodePtr umsEpisode =
                 UmsPodcastEpisode::fromPodcastEpisodePtr( episode );
@@ -251,7 +251,7 @@ void
 UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
 {
     QList<QUrl> urlsToDelete;
-    foreach( UmsPodcastEpisodePtr umsEpisode, umsEpisodes )
+    for( UmsPodcastEpisodePtr umsEpisode : umsEpisodes )
         urlsToDelete << umsEpisode->playableUrl();
 
     QDialog dialog;
@@ -263,7 +263,7 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
                                 &dialog );
     QListWidget *listWidget = new QListWidget( &dialog );
     listWidget->setSelectionMode( QAbstractItemView::NoSelection );
-    foreach( const QUrl &url, urlsToDelete )
+    for( const QUrl &url : urlsToDelete )
     {
         new QListWidgetItem( url.toLocalFile(), listWidget );
     }
@@ -300,7 +300,7 @@ UmsPodcastProvider::deleteJobComplete( KJob *job )
     }
 
     UmsPodcastEpisodeList deletedEpisodes = m_deleteJobMap.take( job );
-    foreach( UmsPodcastEpisodePtr deletedEpisode, deletedEpisodes )
+    for( UmsPodcastEpisodePtr deletedEpisode : deletedEpisodes )
     {
         PodcastChannelPtr channel = deletedEpisode->channel();
         UmsPodcastChannelPtr umsChannel =
@@ -355,7 +355,7 @@ UmsPodcastProvider::slotDeleteChannels()
             action->data().value<PodcastChannelList>();
     action->setData( QVariant() );
 
-    foreach( PodcastChannelPtr channel, channels )
+    for( PodcastChannelPtr channel : channels )
     {
         UmsPodcastChannelPtr umsChannel =
                 UmsPodcastChannel::fromPodcastChannelPtr( channel );
@@ -374,7 +374,7 @@ QActionList
 UmsPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
 {
     PodcastChannelList channels;
-    foreach( const Playlists::PlaylistPtr &playlist, playlists )
+    for( const Playlists::PlaylistPtr &playlist : playlists )
     {
         PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
         if( channel )
@@ -388,7 +388,7 @@ QActionList
 UmsPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks )
 {
     PodcastEpisodeList episodes;
-    foreach( const Playlists::PlaylistPtr &playlist, playlistTracks.uniqueKeys() )
+    for( const Playlists::PlaylistPtr &playlist : playlistTracks.uniqueKeys() )
     {
         PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
         if( !channel )
@@ -397,7 +397,7 @@ UmsPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
         PodcastEpisodeList channelEpisodes = channel->episodes();
         QList<int> trackPositions = playlistTracks.values( playlist );
         std::sort( trackPositions.begin(), trackPositions.end() );
-        foreach( int trackPosition, trackPositions )
+        for( int trackPosition : trackPositions )
         {
             if( trackPosition >= 0 && trackPosition < channelEpisodes.count() )
                 episodes << channelEpisodes.at( trackPosition );
@@ -482,7 +482,7 @@ UmsPodcastProvider::addPath( const QString &path )
     }
     else if( info.isFile() )
     {
-//        foreach( const QString &mimetype, m_handler->mimetypes() )
+//        for( const QString &mimetype : m_handler->mimetypes() )
 //        {
 //            if( mime.inherits( mimetype ) )
 //            {
@@ -519,7 +519,7 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
     UmsPodcastChannelPtr channel;
     UmsPodcastEpisodePtr episode;
 
-    foreach( UmsPodcastChannelPtr c, m_umsChannels )
+    for( UmsPodcastChannelPtr c : m_umsChannels )
     {
         if( c->name() == metafileTrack->album()->name() )
         {
@@ -530,7 +530,7 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
 
     if( channel )
     {
-        foreach( UmsPodcastEpisodePtr e, channel->umsEpisodes() )
+        for( UmsPodcastEpisodePtr e : channel->umsEpisodes() )
         {
             if( e->title() == metafileTrack->name() )
             {

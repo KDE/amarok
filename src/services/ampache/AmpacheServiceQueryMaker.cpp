@@ -242,7 +242,7 @@ AmpacheServiceQueryMaker::fetchAlbums()
     // first try the cache
     if( !d->parentArtistIds.isEmpty() )
     {
-        foreach( int artistId, d->parentArtistIds )
+        for( int artistId : d->parentArtistIds )
             albums << matchAlbums( d->collection, d->collection->artistById( artistId ) );
     }
     if( !albums.isEmpty() )
@@ -255,7 +255,7 @@ AmpacheServiceQueryMaker::fetchAlbums()
 
     if( !d->parentArtistIds.isEmpty() )
     {
-        foreach( int id, d->parentArtistIds )
+        for( int id : d->parentArtistIds )
         {
             QUrl request = getRequestUrl( "artist_albums" );
             QUrlQuery query( request );
@@ -297,14 +297,14 @@ AmpacheServiceQueryMaker::fetchTracks()
     //       we should cache database query results instead
     if( !d->parentTrackIds.isEmpty() )
     {
-        foreach( int trackId, d->parentTrackIds )
+        for( int trackId : d->parentTrackIds )
         {
             tracks << d->collection->trackById( trackId );
         }
     }
     else if( !d->parentAlbumIds.isEmpty() )
     {
-        foreach( int albumId, d->parentAlbumIds )
+        for( int albumId : d->parentAlbumIds )
         {
             AlbumMatcher albumMatcher( d->collection->albumById( albumId ) );
             tracks << albumMatcher.match( d->collection->trackMap().values() );
@@ -312,7 +312,7 @@ AmpacheServiceQueryMaker::fetchTracks()
     }
     else if( d->parentArtistIds.isEmpty() )
     {
-        foreach( int artistId, d->parentArtistIds )
+        for( int artistId : d->parentArtistIds )
         {
             ArtistMatcher artistMatcher( d->collection->artistById( artistId ) );
             tracks << artistMatcher.match( d->collection->trackMap().values() );
@@ -332,7 +332,7 @@ AmpacheServiceQueryMaker::fetchTracks()
 
     if( !d->parentAlbumIds.isEmpty() )
     {
-        foreach( int id, d->parentAlbumIds )
+        for( int id : d->parentAlbumIds )
         {
             QUrl request = getRequestUrl( "album_songs" );
             QUrlQuery query( request );
@@ -345,7 +345,7 @@ AmpacheServiceQueryMaker::fetchTracks()
     }
     else if( !d->parentArtistIds.isEmpty() )
     {
-        foreach( int id, d->parentArtistIds )
+        for( int id : d->parentArtistIds )
         {
             QUrl request = getRequestUrl( "artist_songs" );
             QUrlQuery query( request );

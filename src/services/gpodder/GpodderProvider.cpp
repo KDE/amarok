@@ -137,9 +137,9 @@ GpodderProvider::possiblyContainsTrack( const QUrl &url ) const
 {
     DEBUG_BLOCK
 
-    foreach( PodcastChannelPtr ptr, m_channels )
+    for( PodcastChannelPtr ptr : m_channels )
     {
-        foreach( PodcastEpisodePtr episode, ptr->episodes() )
+        for( PodcastEpisodePtr episode : ptr->episodes() )
         {
             if( episode->uidUrl() == url.url() )
                 return true;
@@ -157,9 +157,9 @@ GpodderProvider::trackForUrl( const QUrl &url )
     if( url.isEmpty() )
         return Meta::TrackPtr();
 
-    foreach( PodcastChannelPtr podcast, m_channels )
+    for( PodcastChannelPtr podcast : m_channels )
     {
-        foreach( PodcastEpisodePtr episode, podcast->episodes() )
+        for( PodcastEpisodePtr episode : podcast->episodes() )
         {
             if( episode->uidUrl() == url.url() )
             {
@@ -174,9 +174,9 @@ GpodderProvider::trackForUrl( const QUrl &url )
 PodcastEpisodePtr
 GpodderProvider::episodeForGuid( const QString &guid )
 {
-    foreach( PodcastChannelPtr ptr, m_channels )
+    for( PodcastChannelPtr ptr : m_channels )
     {
-        foreach( PodcastEpisodePtr episode, ptr->episodes() )
+        for( PodcastEpisodePtr episode : ptr->episodes() )
         {
             if( episode->guid() == guid )
                 return episode;
@@ -205,12 +205,12 @@ GpodderProvider::addPlaylist( Playlists::PlaylistPtr playlist )
     PodcastChannelPtr master;
     PodcastChannelPtr slave;
 
-    foreach( PodcastChannelPtr tempChannel,
+    for( PodcastChannelPtr tempChannel :
              The::playlistManager()->defaultPodcasts()->channels() )
         if( tempChannel->url() == channel->url() )
             master = tempChannel;
 
-    foreach( PodcastChannelPtr tempChannel, this->channels() )
+    for( PodcastChannelPtr tempChannel : this->channels() )
         if( tempChannel->url() == channel->url() )
             slave = tempChannel;
 
@@ -279,7 +279,7 @@ GpodderProvider::channels()
 
     PodcastChannelList list;
 
-    foreach( PodcastChannelPtr channel, m_channels )
+    for( PodcastChannelPtr channel : m_channels )
         list << PodcastChannelPtr::dynamicCast( channel );
 
     return list;
@@ -302,7 +302,7 @@ GpodderProvider::playlists()
 {
     Playlists::PlaylistList playlists;
 
-    foreach( PodcastChannelPtr channel, m_channels )
+    for( PodcastChannelPtr channel : m_channels )
         playlists << Playlists::PlaylistPtr::staticCast( channel );
 
     return playlists;
@@ -361,7 +361,7 @@ QActionList
 GpodderProvider::playlistActions( const Playlists::PlaylistList &playlists )
 {
     PodcastChannelList channels;
-    foreach( const Playlists::PlaylistPtr &playlist, playlists )
+    for( const Playlists::PlaylistPtr &playlist : playlists )
     {
         PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
         if( channel )
@@ -384,7 +384,7 @@ GpodderProvider::slotRemoveChannels()
     PodcastChannelList channels = action->data().value<PodcastChannelList>();
     action->setData( QVariant() );      //Clear data
 
-    foreach( PodcastChannelPtr channel, channels )
+    for( PodcastChannelPtr channel : channels )
     {
         removeChannel( channel->url() );
 
@@ -400,7 +400,7 @@ GpodderProvider::slotSyncPlaylistAdded( Playlists::PlaylistPtr playlist )
     PodcastChannelPtr channel = Podcasts::PodcastChannelPtr::dynamicCast( playlist );
     //If the new channel already exist in gpodder channels, then
     //we don't have to add it to gpodder.net again
-    foreach( PodcastChannelPtr tempChannel, m_channels )
+    for( PodcastChannelPtr tempChannel : m_channels )
         if( channel->url() == tempChannel->url() )
             return;
 
@@ -414,7 +414,7 @@ GpodderProvider::slotSyncPlaylistRemoved( Playlists::PlaylistPtr playlist )
     Podcasts::PodcastChannelPtr channel = Podcasts::PodcastChannelPtr::dynamicCast( playlist );
     //If gpodder channels doesn't contains the removed channel from default
     //podcast provider, then we don't have to remove it from gpodder.net
-    foreach( PodcastChannelPtr tempChannel, m_channels )
+    for( PodcastChannelPtr tempChannel : m_channels )
         if( channel->url() == tempChannel->url() )
         {
             removeChannel( tempChannel->url() );
@@ -718,7 +718,7 @@ GpodderProvider::deviceUpdatesFinished()
     debug() << "DeviceUpdate timestamp: " << m_deviceUpdatesResult->timestamp();
 
     //Channels to subscribe locally
-    foreach( mygpo::PodcastPtr podcast, m_deviceUpdatesResult->addList() )
+    for( mygpo::PodcastPtr podcast : m_deviceUpdatesResult->addList() )
     {
         debug() << "Subscribing GPO channel: " << podcast->title() << ": " << podcast->url();
 
@@ -741,7 +741,7 @@ GpodderProvider::deviceUpdatesFinished()
 void
 GpodderProvider::continueDeviceUpdatesFinished()
 {
-    foreach( GpodderPodcastChannelPtr channel, m_resolvedChannelsToBeAdded )
+    for( GpodderPodcastChannelPtr channel : m_resolvedChannelsToBeAdded )
     {
         m_channelsToRequestActions.enqueue( channel->url() );
 
@@ -750,7 +750,7 @@ GpodderProvider::continueDeviceUpdatesFinished()
 
         slave = this->addChannel( PodcastChannelPtr::dynamicCast( channel ) );
 
-        foreach( PodcastChannelPtr tempChannel, The::playlistManager()->defaultPodcasts()->channels() )
+        for( PodcastChannelPtr tempChannel : The::playlistManager()->defaultPodcasts()->channels() )
             if( tempChannel->url() == channel->url() )
                 master = tempChannel;
 
@@ -828,7 +828,7 @@ GpodderProvider::episodeActionsInCascadeFinished()
 
     m_timestampStatus = m_episodeActionListResult->timestamp();
 
-    foreach( EpisodeActionPtr tempEpisodeAction, m_episodeActionListResult->list() )
+    for( EpisodeActionPtr tempEpisodeAction : m_episodeActionListResult->list() )
     {
         if( tempEpisodeAction->action() == EpisodeAction::Play )
         {
@@ -846,12 +846,12 @@ GpodderProvider::episodeActionsInCascadeFinished()
             PodcastChannelPtr channel;
             PodcastEpisodePtr episode;
 
-            foreach( PodcastChannelPtr tempChannel, m_channels )
+            for( PodcastChannelPtr tempChannel : m_channels )
                 if( tempChannel->url() == tempEpisodeAction->podcastUrl() )
                 {
                     channel = tempChannel;
 
-                    foreach( PodcastEpisodePtr tempEpisode, channel->episodes() )
+                    for( PodcastEpisodePtr tempEpisode : channel->episodes() )
                         if( tempEpisode->uidUrl() == tempEpisodeAction->episodeUrl().toString() )
                             episode = tempEpisode;
                 }
@@ -944,13 +944,13 @@ GpodderProvider::updateLocalPodcasts( const QList<QPair<QUrl,QUrl> > updatedUrls
 
     for(; tempUpdatedUrl != updatedUrls.end(); ++tempUpdatedUrl )
     {
-        foreach( PodcastChannelPtr tempChannel, The::playlistManager()->defaultPodcasts()->channels() )
+        for( PodcastChannelPtr tempChannel : The::playlistManager()->defaultPodcasts()->channels() )
         {
             if( tempChannel->url() == (*tempUpdatedUrl).first )
                 tempChannel->setUrl( (*tempUpdatedUrl).second );
         }
 
-        foreach( PodcastChannelPtr tempGpodderChannel, m_channels )
+        for( PodcastChannelPtr tempGpodderChannel : m_channels )
         {
             if( tempGpodderChannel->url() == (*tempUpdatedUrl).first )
                 tempGpodderChannel->setUrl( (*tempUpdatedUrl).second );
@@ -1241,14 +1241,14 @@ void GpodderProvider::loadCachedPodcastsChanges()
     podcastsUrlsToAdd = gpodderPodcastsConfig().readEntry( "addList" ).split( ',' );
     podcastsUrlsToRemove = gpodderPodcastsConfig().readEntry( "removeList" ).split( ',' );
 
-    foreach( QString podcastUrl, podcastsUrlsToAdd )
+    for( QString podcastUrl : podcastsUrlsToAdd )
     {
         debug() << QString( "New channel to subscribe: %1" ).arg( podcastUrl );
 
         m_addList.append( QUrl( podcastUrl ) );
     }
 
-    foreach( QString podcastUrl, podcastsUrlsToRemove )
+    for( QString podcastUrl : podcastsUrlsToRemove )
     {
         debug() << QString( "New channel to unsubscribe: %1 action." ).arg( podcastUrl );
 
@@ -1269,7 +1269,7 @@ void GpodderProvider::saveCachedPodcastsChanges()
     {
         QStringList podcastUrlsToAdd;
 
-        foreach( QUrl podcastUrl, m_addList )
+        for( QUrl podcastUrl : m_addList )
             podcastUrlsToAdd.append( podcastUrl.toString() );
 
         gpodderPodcastsConfig().writeEntry( "addList", podcastUrlsToAdd );
@@ -1279,7 +1279,7 @@ void GpodderProvider::saveCachedPodcastsChanges()
     {
         QStringList podcastsUrlsToRemove;
 
-        foreach( QUrl podcastUrl, m_removeList )
+        for( QUrl podcastUrl : m_removeList )
             podcastsUrlsToRemove.append( podcastUrl.toString() );
 
         gpodderPodcastsConfig().writeEntry( "removeList", podcastsUrlsToRemove );

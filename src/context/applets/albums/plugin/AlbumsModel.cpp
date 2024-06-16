@@ -108,7 +108,7 @@ AlbumsModel::mimeData( const QModelIndexList &indices ) const
         return nullptr;
 
     Meta::TrackList tracks;
-    foreach( const QModelIndex &index, indices )
+    for( const QModelIndex &index : indices )
         tracks << tracksForIndex( index );
     QSet< AmarokSharedPointer<Meta::Track> > tracksSet(tracks.begin(), tracks.end());
     tracks = tracksSet.values();
@@ -180,10 +180,10 @@ AlbumsProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) 
         const AlbumItem *leftAlbum = static_cast<const AlbumItem *>( leftItem );
         const AlbumItem *rightAlbum = static_cast<const AlbumItem *>( model->itemFromIndex( right ) );
         QDateTime leftMaxCreateDate, rightMaxCreateDate;
-        foreach( Meta::TrackPtr track, leftAlbum->album()->tracks() )
+        for( Meta::TrackPtr track : leftAlbum->album()->tracks() )
             if( track->createDate() > leftMaxCreateDate )
                 leftMaxCreateDate = track->createDate();
-        foreach( Meta::TrackPtr track, rightAlbum->album()->tracks() )
+        for( Meta::TrackPtr track : rightAlbum->album()->tracks() )
             if( track->createDate() > rightMaxCreateDate )
                 rightMaxCreateDate = track->createDate();
         return leftMaxCreateDate > rightMaxCreateDate;

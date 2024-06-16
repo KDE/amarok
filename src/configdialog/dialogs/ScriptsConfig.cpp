@@ -265,7 +265,7 @@ ScriptsConfig::slotUninstallScript()
 const KArchiveFile*
 ScriptsConfig::findSpecFile( const KArchiveDirectory *dir ) const
 {
-    foreach( const QString &entry, dir->entries() )
+    for( const QString &entry : dir->entries() )
     {
         if( dir->entry( entry )->isFile() )
         {

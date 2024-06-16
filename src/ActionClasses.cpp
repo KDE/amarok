@@ -297,7 +297,7 @@ void SelectAction::setEnabled( bool b )
 void SelectAction::setIcons( QStringList icons )
 {
     m_icons = icons;
-    foreach( QAction *a, selectableActionGroup()->actions() )
+    for( QAction *a : selectableActionGroup()->actions() )
     {
         a->setIcon( QIcon::fromTheme(icons.takeFirst()) );
     }

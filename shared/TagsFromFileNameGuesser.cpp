@@ -135,7 +135,7 @@ Meta::Tag::TagGuesser::guessTags( const QString &fileName )
     if( ( pos = fileName.lastIndexOf( QLatin1Char('/') ) ) != -1 )
             tmpStr = fileName.mid( pos + 1 );
 
-    foreach( const QString &scheme, m_schemes )
+    for( const auto &scheme : m_schemes )
     {
         Meta::FieldHash metadata = guessTagsByScheme( tmpStr, scheme, true, true, true );
         if( !metadata.isEmpty() )

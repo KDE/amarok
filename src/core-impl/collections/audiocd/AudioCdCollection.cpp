@@ -584,7 +584,7 @@ AudioCdCollection::trackForUrl( const QUrl &url )
         return Meta::TrackPtr();
     }
 
-    foreach( const Meta::TrackPtr &track, memoryCollection()->trackMap() )
+    for( const Meta::TrackPtr &track : memoryCollection()->trackMap() )
     {
         if( track->trackNumber() == trackNumber )
             return track;
@@ -597,7 +597,7 @@ AudioCdCollection::trackForUrl( const QUrl &url )
 void
 AudioCdCollection::updateProxyTracks()
 {
-    foreach( const QUrl &url, m_proxyMap.keys() )
+    for( const QUrl &url : m_proxyMap.keys() )
     {
 
         QString urlString = url.url().remove( "audiocd:/" );
@@ -613,7 +613,7 @@ AudioCdCollection::updateProxyTracks()
 
         const int trackNumber = parts.at( 1 ).toInt();
 
-        foreach( const Meta::TrackPtr &track, memoryCollection()->trackMap().values() )
+        for( const Meta::TrackPtr &track : memoryCollection()->trackMap().values() )
         {
             if( track->trackNumber() == trackNumber )
             {

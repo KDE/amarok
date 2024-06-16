@@ -48,7 +48,7 @@ IpodCollectionFactory::init()
     // detect iPods that were already connected on startup
     QString query( "[IS StorageAccess OR IS PortableMediaPlayer]" );
     QList<Solid::Device> ipodDevices = Solid::Device::listFromQuery( query );
-    foreach( const Solid::Device &device, ipodDevices )
+    for( const Solid::Device &device : ipodDevices )
     {
         if( identifySolidDevice( device.udi() ) )
             createCollectionForSolidDevice( device.udi() );

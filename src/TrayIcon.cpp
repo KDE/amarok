@@ -266,7 +266,7 @@ Amarok::TrayIcon::action( const QString& name, const QMap<QString, QAction*> &ac
 void
 Amarok::TrayIcon::updateMenu()
 {
-    foreach( QAction* action, m_extraActions )
+    for( QAction* action : m_extraActions )
     {
         contextMenu()->removeAction( action );
         // -- delete actions without parent (e.g. the ones from the capabilities)
@@ -284,7 +284,7 @@ Amarok::TrayIcon::updateMenu()
 
     if( m_track )
     {
-        foreach( QAction *action, The::globalCurrentTrackActions()->actions() )
+        for( QAction *action : The::globalCurrentTrackActions()->actions() )
         {
             m_extraActions.append( action );
             connect( action, &QObject::destroyed, this, [this, action]() { m_extraActions.removeAll( action ); } );
@@ -294,7 +294,7 @@ Amarok::TrayIcon::updateMenu()
         if( ac )
         {
             QList<QAction*> actions = ac->actions();
-            foreach( QAction *action, actions )
+            for( QAction *action : actions )
             {
                 m_extraActions.append( action );
                 connect( action, &QObject::destroyed, this, [this, action]() { m_extraActions.removeAll( action ); } );

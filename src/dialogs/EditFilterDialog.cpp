@@ -292,9 +292,9 @@ EditFilterDialog::updateDropTarget( const QString &text )
     bool AND = false; // need an AND token
     bool OR = false; // need an OR token
     bool isDateAbsolute = false;
-    foreach( const or_list &orList, parsed )
+    for( const or_list &orList : parsed )
     {
-        foreach( const expression_element &elem, orList )
+        for( const expression_element &elem : orList )
         {
             if( AND )
                 m_ui->dropTarget->appendToken( AND_TOKEN_CONSTRUCT );
@@ -479,7 +479,7 @@ EditFilterDialog::filter()
 
     QList < Token *> tokens = m_ui->dropTarget->tokensAtRow();
     bool join = false;
-    foreach( Token *token, tokens )
+    for( Token *token : tokens )
     {
         if( token->value() == OR_TOKEN )
         {

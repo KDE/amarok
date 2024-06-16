@@ -119,7 +119,7 @@ CollectionWidget::Private::view( CollectionWidget::ViewMode mode )
                      aggregateColl, &Collections::AggregateCollection::addCollection );
             connect( CollectionManager::instance(), &CollectionManager::collectionRemoved,
                      aggregateColl, &Collections::AggregateCollection::removeCollectionById );
-            foreach( Collections::Collection* coll, CollectionManager::instance()->viewableCollections() )
+            for( Collections::Collection* coll : CollectionManager::instance()->viewableCollections() )
             {
                 aggregateColl->addCollection( coll, CollectionManager::CollectionViewable );
             }
@@ -190,10 +190,10 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
         << ( QList<CatMenuId>() << CategoryId::Album << CategoryId::Artist ) // album artist has no sense here
         << ( QList<CatMenuId>() << CategoryId::Genre << CategoryId::AlbumArtist )
         << ( QList<CatMenuId>() << CategoryId::Genre << CategoryId::AlbumArtist << CategoryId::Album );
-    foreach( const QList<CatMenuId> &levels, levelPresets )
+    for( const QList<CatMenuId> &levels : levelPresets )
     {
         QStringList categoryLabels;
-        foreach( CatMenuId category, levels )
+        for( CatMenuId category : levels )
             categoryLabels << CollectionTreeItemModelBase::nameForCategory( category );
         QAction *action = filterMenu->addAction( categoryLabels.join( i18nc(
                 "separator between collection browser level categories, i.e. the ' / ' "
@@ -230,7 +230,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
             usedLevelChoices.prepend( CategoryId::None );
 
         QMenu *menuLevel = d->menuLevel[i];
-        foreach( CatMenuId level, usedLevelChoices )
+        for( CatMenuId level : usedLevelChoices )
         {
             QAction *action = menuLevel->addAction( CollectionTreeItemModelBase::nameForCategory( level ) );
             action->setData( QVariant::fromValue<CatMenuId>( level ) );
@@ -383,7 +383,7 @@ void CollectionWidget::setLevels( const QList<CategoryId::CatMenuId> &levels )
         else
             category = CategoryId::None;
 
-        foreach( QAction *action, d->levelGroups[i]->actions() )
+        for( QAction *action : d->levelGroups[i]->actions() )
         {
             CategoryId::CatMenuId actionCategory = action->data().value<CategoryId::CatMenuId>();
             if( actionCategory == category )
@@ -450,7 +450,7 @@ CollectionWidget::readLevelsFromConfig() const
     // config mentioning Track Artist to Album Artist where it makes sense:
     static const int OldArtistValue = 2;
     bool albumOrAlbumArtistEncountered = false;
-    foreach( int levelNumber, levelNumbers )
+    for( int levelNumber : levelNumbers )
     {
         CategoryId::CatMenuId category;
         if( levelNumber == OldArtistValue )

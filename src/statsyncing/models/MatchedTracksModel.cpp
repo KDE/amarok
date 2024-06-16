@@ -208,7 +208,7 @@ MatchedTracksModel::matchedTuples()
 bool
 MatchedTracksModel::hasUpdate() const
 {
-    foreach( const TrackTuple &tuple, m_matchedTuples )
+    for( const TrackTuple &tuple : m_matchedTuples )
     {
         if( tuple.hasUpdate( m_options ) )
             return true;
@@ -221,7 +221,7 @@ MatchedTracksModel::hasConflict( int i ) const
 {
     if( i >= 0 )
         return m_matchedTuples.value( i ).hasConflict( m_options );
-    foreach( const TrackTuple &tuple, m_matchedTuples )
+    for( const TrackTuple &tuple : m_matchedTuples )
     {
         if( tuple.hasConflict( m_options ) )
             return true;

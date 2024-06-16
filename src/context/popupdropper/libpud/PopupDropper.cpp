@@ -117,7 +117,7 @@ void PopupDropperPrivate::fadeHideTimerFrameChanged( int frame ) //SLOT
         int alpha = (int)( color.alpha() * val );
         color.setAlpha( alpha );
         q->setPalette( color );
-        foreach( PopupDropperItem* pdi, pdiItems )
+        for( PopupDropperItem* pdi : pdiItems )
             pdi->setSubitemOpacity( val );
     }
 }
@@ -131,7 +131,7 @@ void PopupDropperPrivate::fadeShowTimerFrameChanged( int frame ) //SLOT
         int alpha = (int)( color.alpha() * val );
         color.setAlpha( alpha );
         q->setPalette( color );
-        foreach( PopupDropperItem* pdi, pdiItems )
+        for( PopupDropperItem* pdi : pdiItems )
             pdi->setSubitemOpacity( val );
     }
 }
@@ -147,7 +147,7 @@ void PopupDropperPrivate::fadeShowTimerFinished() //SLOT
 {
     q->setPalette( windowColor ); 
     queuedHide = false;
-    foreach( PopupDropperItem* pdi, pdiItems )
+    for( PopupDropperItem* pdi : pdiItems )
         pdi->setSubitemOpacity( 1.0 );
 }
 
@@ -346,7 +346,7 @@ bool PopupDropper::subtractOverlay()
     }
     else
     {
-        foreach( QGraphicsItem* item, old_d->pdiItems )
+        for( QGraphicsItem* item : old_d->pdiItems )
             old_d->scene->removeItem( item );
         //qDebug() << "not deleting, submenu";
         old_d->fade = currFadeValue;
@@ -368,7 +368,7 @@ PopupDropperItem* PopupDropper::addSubmenu( PopupDropper** pd, const QString &te
     newD->submenu = true;
     newD->widget = d->widget;
     newD->setParent( this );
-    foreach( PopupDropperItem* item, newD->pdiItems )
+    for( PopupDropperItem* item : newD->pdiItems )
         newD->scene->removeItem( item );
     newD->newSceneView( this );
     initOverlay( d->widget, newD );
@@ -383,7 +383,7 @@ PopupDropperItem* PopupDropper::addSubmenu( PopupDropper** pd, const QString &te
     d->submenuMap[action] = newD;
     delete (*pd);
     (*pd) = nullptr;
-    foreach( PopupDropperItem* item, newD->pdiItems )
+    for( PopupDropperItem* item : newD->pdiItems )
         item->setPopupDropper( this );
     //qDebug() << "d->submenuMap[pda] = " << d->submenuMap[pda];
     addItem( pdi );
@@ -398,7 +398,7 @@ void PopupDropper::activateSubmenu()
     PopupDropperPrivate* oldd = d;
     addOverlay( d->submenuMap[static_cast<QAction*>(QObject::sender())] );
     //qDebug() << "d->pdiItems.size() = " << d->pdiItems.size() << " for " << d;
-    foreach( PopupDropperItem* item, d->pdiItems )
+    for( PopupDropperItem* item : d->pdiItems )
         addItem( item, false, false );
     oldd->view->deactivateHover();
     show();
@@ -414,7 +414,7 @@ bool PopupDropper::addMenu( const QMenu *menu )
         return true;
 
     PopupDropperItem *pdi = nullptr;
-    foreach( QAction *action, menu->actions() )
+    for( QAction *action : menu->actions() )
     {
         if( !action->menu() )
         {
@@ -465,7 +465,7 @@ void PopupDropper::show()
         QColor color = d->windowColor;
         color.setAlpha( 0 );
         setPalette( color );
-        foreach( PopupDropperItem* pdi, d->pdiItems )
+        for( PopupDropperItem* pdi : d->pdiItems )
             pdi->setSubitemOpacity( 0.0 );
         d->fadeShowTimer.start();
         //qDebug() << "Timer started";
@@ -588,7 +588,7 @@ void PopupDropper::clear()
 //     disconnect( this, 0, this, &PopupDropper::clear ); Unused at this point.
     do
     {
-        foreach( QGraphicsItem* item, d->allItems )
+        for( QGraphicsItem* item : d->allItems )
         {
             if( dynamic_cast<PopupDropperItem*>(item) )
             {
@@ -709,7 +709,7 @@ QColor PopupDropper::baseTextColor() const
 void PopupDropper::setBaseTextColor( const QColor &text )
 {
     d->baseTextColor = text;
-    foreach( PopupDropperItem *item, d->pdiItems )
+    for( PopupDropperItem* item : d->pdiItems )
         item->setBaseTextColor( text );
 }
 
@@ -721,7 +721,7 @@ QColor PopupDropper::hoveredTextColor() const
 void PopupDropper::setHoveredTextColor( const QColor &text )
 {
     d->hoveredTextColor = text;
-    foreach( PopupDropperItem *item, d->pdiItems )
+    for( PopupDropperItem* item : d->pdiItems )
         item->setHoveredTextColor( text );
 }
 
@@ -733,7 +733,7 @@ QPen PopupDropper::hoveredBorderPen() const
 void PopupDropper::setHoveredBorderPen( const QPen &border )
 {
     d->hoveredBorderPen = border;
-    foreach( PopupDropperItem *item, d->pdiItems )
+    for( PopupDropperItem* item : d->pdiItems )
         item->setHoveredBorderPen( border );
 }
 
@@ -745,7 +745,7 @@ QBrush PopupDropper::hoveredFillBrush() const
 void PopupDropper::setHoveredFillBrush( const QBrush &fill )
 {
     d->hoveredFillBrush = fill;
-    foreach( PopupDropperItem *item, d->pdiItems )
+    for( PopupDropperItem* item : d->pdiItems )
         item->setHoveredFillBrush( fill );
 }
 
@@ -774,7 +774,7 @@ void PopupDropper::setPalette( const QColor &window, const QColor &baseText, con
     d->view->setPalette( p );
     QPen pen;
     QBrush brush;
-    foreach( PopupDropperItem *item, d->pdiItems )
+    for( PopupDropperItem* item : d->pdiItems )
     {
         item->setBaseTextColor( baseText );
         item->setHoveredTextColor( hoveredText );
@@ -905,7 +905,7 @@ void PopupDropper::addItem( PopupDropperItem *item, bool useSharedRenderer, bool
 QList<PopupDropperItem*> PopupDropper::items() const
 {
     QList<PopupDropperItem*> list;
-    foreach( PopupDropperItem *item, d->pdiItems )
+    for( PopupDropperItem* item : d->pdiItems )
         list.append( item );
 
     return list;
@@ -921,7 +921,7 @@ QList<PopupDropperItem*> PopupDropper::submenuItems( const PopupDropperItem *ite
 
     PopupDropperPrivate *pdp = d->submenuMap[item->action()];
     list.reserve(pdp->pdiItems.count());
-    foreach( PopupDropperItem *pdi, pdp->pdiItems )
+    for( PopupDropperItem* pdi : d->pdiItems )
         list.append( pdi );
 
     return list;
@@ -936,9 +936,9 @@ void PopupDropper::forEachItem( void callback(void*) )
 
 void PopupDropper::forEachItemPrivate( PopupDropperPrivate *pdp, void callback(void* item) )
 {
-    foreach( PopupDropperItem *item, pdp->pdiItems )
+    for( PopupDropperItem* item : d->pdiItems )
         callback( item );
-    foreach( QAction *action, pdp->submenuMap.keys() )
+    for( QAction *action : pdp->submenuMap.keys() )
         forEachItemPrivate( pdp->submenuMap[action], callback );
 }
 

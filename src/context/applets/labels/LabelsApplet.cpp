@@ -150,7 +150,7 @@ LabelsApplet::init()
     m_blacklist = config.readEntry( "Blacklist", QStringList() );
 
     const QStringList replacementList = config.readEntry( "ReplacementList", QStringList() );
-    foreach( const QString &replacement, replacementList )
+    for( const QString &replacement : replacementList )
     {
         const QStringList parts = replacement.split( '|' );
         QString label = parts.at(0);
@@ -657,7 +657,7 @@ LabelsApplet::toggleLabel( const QString &label )
 
     Meta::LabelPtr labelPtr;
 
-    foreach( const Meta::LabelPtr &labelIt, track->labels() )
+    for( const Meta::LabelPtr &labelIt : track->labels() )
     {
         if( label == labelIt->name() )
         {

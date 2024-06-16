@@ -89,7 +89,7 @@ SqlCollectionLocation::isWritable() const
     bool path_exists_with_space = false;
     bool path_exists_writable = false;
     QStringList folders = actualLocation();
-    foreach( const QString &path, folders )
+    for( const QString &path : folders )
     {
         float free_space = QStorageInfo( path ).bytesAvailable();
         if( free_space <= 0 )
@@ -246,7 +246,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &path 
             metaTrack->setReplayGain( modes[i], track->replayGain( modes[i] ) );
 
     Meta::LabelList labels = track->labels();
-    foreach( Meta::LabelPtr label, labels )
+    for( Meta::LabelPtr label : labels )
         metaTrack->addLabel( label );
 
     if( fileTags.value( Meta::valFormat, int(Amarok::Unknown) ).toInt() != int(Amarok::Unknown) )
@@ -285,12 +285,12 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
     setGoingToRemoveSources( removeSources );
 
     KIO::filesize_t transferSize = 0;
-    foreach( Meta::TrackPtr track, tracks )
+    for( Meta::TrackPtr track : tracks )
         transferSize += track->filesize();
 
     const QStringList actual_folders = actualLocation(); // the folders in the collection
     QStringList available_folders; // the folders which have freespace available
-    foreach(const QString &path, actual_folders)
+    for(const QString &path : actual_folders)
     {
         if( path.isEmpty() )
             continue;
@@ -437,7 +437,7 @@ void SqlCollectionLocation::slotTransferJobFinished( KJob* job )
     }
     // filter the list of destinations to only include tracks
     // that were successfully copied
-    foreach( const Meta::TrackPtr &track, m_destinations.keys() )
+    for( const Meta::TrackPtr &track : m_destinations.keys() )
     {
         if( QFile::exists( m_destinations[ track ] ) )
             insert( track, m_destinations[ track ] );
@@ -455,7 +455,7 @@ void SqlCollectionLocation::slotTransferJobAborted()
     m_transferjob->kill();
     // filter the list of destinations to only include tracks
     // that were successfully copied
-    foreach( const Meta::TrackPtr &track, m_destinations.keys() )
+    for( const Meta::TrackPtr &track : m_destinations.keys() )
     {
         if( QFile::exists( m_destinations[ track ] ) )
             insert( track, m_destinations[ track ] ); // was already copied, so have to insert it in the db
@@ -766,7 +766,7 @@ bool TransferJob::doKill()
 {
     DEBUG_BLOCK
     m_killed = true;
-    foreach( KJob* job, subjobs() )
+    for( KJob* job : subjobs() )
     {
         job->kill();
     }

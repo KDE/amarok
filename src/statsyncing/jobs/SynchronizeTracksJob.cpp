@@ -72,7 +72,7 @@ SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
 
     // first, queue tracks for scrobbling, because after syncing their recent playcount is
     // reset
-    foreach( const TrackPtr &track, m_tracksToScrobble )
+    for( const TrackPtr &track : m_tracksToScrobble )
     {
         Meta::TrackPtr metaTrack = track->metaTrack();
         int playcount = track->recentPlayCount();
@@ -85,7 +85,7 @@ SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
 
     ProviderPtrSet updatedProviders;
     int i = 0;
-    foreach( const TrackTuple &tuple, m_tuples )
+    for( const TrackTuple &tuple : m_tuples )
     {
         if( m_abort )
             break;
@@ -99,12 +99,12 @@ SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
         i++;
     }
 
-    foreach( ProviderPtr provider, updatedProviders )
+    for( ProviderPtr provider : updatedProviders )
         provider->commitTracks();
 
 
     // we need to reset playCount of scrobbled tracks to reset their recent play count
-    foreach( Meta::TrackPtr track, m_scrobbledTracks )
+    for( Meta::TrackPtr track : m_scrobbledTracks )
     {
         Meta::StatisticsPtr statistics = track->statistics();
         statistics->setPlayCount( statistics->playCount() );

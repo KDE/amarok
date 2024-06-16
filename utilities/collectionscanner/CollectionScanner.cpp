@@ -121,12 +121,12 @@ CollectionScanner::Scanner::readBatchFile( const QString &path )
         error( tr( "Could not open file \"%1\"." ).arg( path ) );
 
     BatchFile batch( path );
-    foreach( const QString &str, batch.directories() )
+    for( const QString &str : batch.directories() )
     {
         m_folders.append( str );
     }
 
-    foreach( const CollectionScanner::BatchFile::TimeDefinition &def, batch.timeDefinitions() )
+    for( const CollectionScanner::BatchFile::TimeDefinition &def : batch.timeDefinitions() )
     {
         m_mTimes.insert( def.first, def.second );
     }
@@ -158,7 +158,7 @@ CollectionScanner::Scanner::doJob() //SLOT
     {
         QSet<QString> entriesSet;
 
-        foreach( QString dir, m_folders ) // krazy:exclude=foreach
+        for( QString dir : m_folders )
         {
             if( dir.isEmpty() )
                 //apparently somewhere empty strings get into the mix
@@ -208,7 +208,7 @@ CollectionScanner::Scanner::doJob() //SLOT
     }
 
     // --- now do the scanning
-    foreach( const QString &path, entries )
+    for( const QString &path : entries )
     {
         CollectionScanner::Directory dir( path, &m_scanningState,
                                           m_incremental && !isModified( path ) );

@@ -70,7 +70,7 @@ TrashCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, QUrl> 
     if( m_trashConfirmed )
     {
         QList<QUrl> files = sources.values();
-        foreach( const QUrl &file, files )
+        for( const QUrl &file : files )
         {
             if( !QFile::exists( file.toLocalFile() ) )
             {
@@ -120,12 +120,12 @@ TrashCollectionLocation::slotTrashJobFinished( KJob *job )
     if( job->error() )
     {
         warning() << "An error occurred when moving a file to trash: " << job->errorString();
-        foreach( Meta::TrackPtr track, m_trashJobs.value( job ) )
+        for( Meta::TrackPtr track : m_trashJobs.value( job ) )
             source()->transferError( track, KIO::buildErrorString( job->error(), job->errorString() ) );
     }
     else
     {
-        foreach( Meta::TrackPtr track, m_trashJobs.value( job ) )
+        for( Meta::TrackPtr track : m_trashJobs.value( job ) )
             source()->transferSuccessful( track );
     }
 

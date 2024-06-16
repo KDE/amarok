@@ -108,7 +108,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_model->setDirectories( dirs );
 
     // make sure that the tree is expanded to show all selected items
-    foreach( const QString &dir, dirs )
+    for( const QString &dir : dirs )
     {
         QModelIndex index = m_model->index( dir );
         m_ui.view->scrollTo( index, QAbstractItemView::EnsureVisible );
@@ -210,7 +210,7 @@ CollectionSetup::isDirInCollection( const QString& path ) const
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
 
-    foreach( const QString &dir, collectionFolders )
+    for( const QString &dir : collectionFolders )
     {
         debug() << "Collection Location: " << dir;
         debug() << "path: " << path;
@@ -329,7 +329,7 @@ namespace CollectionFolder {
     Model::setDirectories( const QStringList &dirs )
     {
         m_checked.clear();
-        foreach( const QString &dir, dirs )
+        for( const QString &dir : dirs )
         {
             m_checked.insert( dir );
         }
@@ -346,7 +346,7 @@ namespace CollectionFolder {
         // they are redundant when recursive mode is chosen
         if( recursive() )
         {
-            foreach( const QString &dir, dirs )
+            for( const QString &dir : dirs )
             {
                 if( ancestorChecked( dir ) )
                     dirs.removeAll( dir );
@@ -370,7 +370,7 @@ namespace CollectionFolder {
         // we need the trailing slash otherwise sibling folders with one as the prefix of the other are seen as parent/child
         const QString _path = normalPath( path );
 
-        foreach( const QString &element, m_checked )
+        for( const QString &element : m_checked )
         {
             const QString _element = normalPath( element );
             if( _path.startsWith( _element ) && _element != _path )
@@ -388,7 +388,7 @@ namespace CollectionFolder {
     {
         const QString _path = normalPath( path );
         QStringList rtn;
-        foreach( const QString &element, m_checked )
+        for( const QString &element : m_checked )
         {
             const QString _element = normalPath( element );
             if ( _path.startsWith( _element ) && _element != _path )
@@ -403,7 +403,7 @@ namespace CollectionFolder {
         // we need the trailing slash otherwise sibling folders with one as the prefix of the other are seen as parent/child
         const QString _path = normalPath( path );
 
-        foreach( const QString& element, m_checked )
+        for( const QString &element : m_checked )
         {
             const QString _element = normalPath( element );
             if( _element.startsWith( _path ) && _element != _path )

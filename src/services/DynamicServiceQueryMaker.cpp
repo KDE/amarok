@@ -153,7 +153,7 @@ DynamicServiceQueryMaker::matchAlbums( ServiceCollection *coll, const Meta::Arti
         Meta::AlbumList matchingAlbums;
         Meta::AlbumList albums = coll->albumMap().values();
 
-        foreach( Meta::AlbumPtr albumPtr, albums ) {
+        for( Meta::AlbumPtr albumPtr : albums ) {
 
             if ( albumPtr->albumArtist() == artist2 )
                 matchingAlbums.push_back( albumPtr );

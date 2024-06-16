@@ -38,7 +38,7 @@ void AudioCdCollectionLocation::getKIOCopyableUrls( const Meta::TrackList & trac
     DEBUG_BLOCK
 
     QMap<Meta::TrackPtr, QUrl> resultMap;
-    foreach( Meta::TrackPtr trackPtr, tracks )
+    for( Meta::TrackPtr trackPtr : tracks )
     {
         Meta::AudioCdTrackPtr cdTrack = Meta::AudioCdTrackPtr::staticCast( trackPtr );
 

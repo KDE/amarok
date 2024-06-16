@@ -107,7 +107,7 @@ DiagnosticDialog::generateReport( const KAboutData *aboutData )
 
     // Format the data to be readable
     QString aScriptString;
-    foreach( KPluginInfo aInfo, aScripts )
+    for( KPluginInfo aInfo : aScripts )
     {
         if( aInfo.isPluginEnabled() )
             aScriptString += "   " + aInfo.name() + " (" + aInfo.version() + ")\n";

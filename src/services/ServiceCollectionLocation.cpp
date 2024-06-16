@@ -55,7 +55,7 @@ void
 ServiceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
     QMap<Meta::TrackPtr, QUrl> urls;
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
         Meta::ServiceTrack *servtrack = static_cast<Meta::ServiceTrack *>( track.data() );
         if( servtrack->isPlayable() )

@@ -253,7 +253,7 @@ void BallsAnalyzer::analyze( const QVector<float> &s )
             m_show.gridEnergyK = -m_frame.dEnergy * 2.0;
     }
 
-    foreach( Ball * ball, m_balls )
+    for( Ball * ball : m_balls )
     {
         ball->updatePhysics( m_show.dT );
         if( ball->x < 0 )
@@ -305,7 +305,7 @@ void BallsAnalyzer::paintGL()
 
     glEnable( GL_BLEND );
 
-    foreach( Ball * ball, m_balls )
+    for( Ball * ball : m_balls )
     {
         float color[3],
               angle = m_show.colorK;

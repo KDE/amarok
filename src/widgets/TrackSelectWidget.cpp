@@ -51,7 +51,7 @@ TrackSelectWidget::TrackSelectWidget( QWidget* parent )
 
     QList<int> levelNumbers = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
     QList<CategoryId::CatMenuId> levels;
-    foreach( int levelNumber, levelNumbers )
+    for( int levelNumber : levelNumbers )
         levels << CategoryId::CatMenuId( levelNumber );
     if ( levels.isEmpty() )
         levels << CategoryId::Artist << CategoryId::Album;

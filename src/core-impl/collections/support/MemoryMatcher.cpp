@@ -70,7 +70,7 @@ TrackList TrackMatcher::match( const TrackList &tracks )
         return TrackList();
     TrackList result;
     QString url = m_track->uidUrl();
-    foreach( TrackPtr track, tracks )
+    for( TrackPtr track : tracks )
         if ( track->uidUrl() == url )
         {
             result.append( track );
@@ -102,7 +102,7 @@ TrackList ArtistMatcher::match( Collections::MemoryCollection *memColl )
     {
         case Collections::QueryMaker::AlbumOrTrackArtists:
         case Collections::QueryMaker::AlbumArtists:
-            foreach( AlbumPtr album, memColl->albumMap() )
+            for( AlbumPtr album : memColl->albumMap() )
                 if( album->albumArtist() == artist )
                     matchingTracks.append( album->tracks() );
             if( m_queryMode != Collections::QueryMaker::AlbumOrTrackArtists )
@@ -125,7 +125,7 @@ TrackList ArtistMatcher::match( const TrackList &tracks )
         return TrackList();
     TrackList matchingTracks;
     QString name = m_artist->name();
-    foreach( TrackPtr track, tracks )
+    for( TrackPtr track : tracks )
         switch( m_queryMode )
         {
             case Collections::QueryMaker::AlbumOrTrackArtists:
@@ -178,7 +178,7 @@ TrackList AlbumMatcher::match( const TrackList &tracks )
         return TrackList();
     TrackList matchingTracks;
     QString name = m_album->name();
-    foreach( TrackPtr track, tracks )
+    for( TrackPtr track : tracks )
         if ( track->album()->name() == name )
             matchingTracks.append( track );
     if ( isLast() || matchingTracks.isEmpty())
@@ -218,7 +218,7 @@ TrackList GenreMatcher::match( const TrackList &tracks )
         return TrackList();
     TrackList matchingTracks;
     QString name = m_genre->name();
-    foreach( TrackPtr track, tracks )
+    for( TrackPtr track : tracks )
         if ( track->genre()->name() == name )
             matchingTracks.append( track );
     if ( isLast() || matchingTracks.isEmpty())
@@ -258,7 +258,7 @@ TrackList ComposerMatcher::match( const TrackList &tracks )
         return TrackList();
     TrackList matchingTracks;
     QString name = m_composer->name();
-    foreach( TrackPtr track, tracks )
+    for( TrackPtr track : tracks )
         if ( track->composer()->name() == name )
             matchingTracks.append( track );
     if ( isLast() || matchingTracks.isEmpty())
@@ -298,7 +298,7 @@ TrackList YearMatcher::match( const TrackList &tracks )
         return TrackList();
     TrackList matchingTracks;
     int year = m_year->year();
-    foreach( TrackPtr track, tracks )
+    for( TrackPtr track : tracks )
         if ( track->year()->year() == year )
             matchingTracks.append( track );
     if ( isLast() || matchingTracks.isEmpty())
@@ -323,9 +323,9 @@ LabelMatcher::match( const Meta::TrackList &tracks )
     Meta::TrackList matchingTracks;
     QString name = m_label->name();
     //not really efficient...
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
-        foreach( const Meta::LabelPtr &label, track->labels() )
+        for( const Meta::LabelPtr &label : track->labels() )
         {
             if( name == label->name() )
             {

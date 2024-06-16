@@ -342,7 +342,7 @@ MainWindow::addViewMenuItems(QMenu* menu)
     // Dock widgets:
     QList<QDockWidget *> dockwidgets = findChildren<QDockWidget *>();
 
-    foreach( QDockWidget* dockWidget, dockwidgets )
+    for( QDockWidget* dockWidget : dockwidgets )
     {
         if( dockWidget->parentWidget() == this )
             menu->addAction( dockWidget->toggleViewAction() );
@@ -355,7 +355,7 @@ MainWindow::addViewMenuItems(QMenu* menu)
     QActionGroup* toolBarGroup = new QActionGroup( this );
     toolBarGroup->setExclusive( true );
 
-    foreach( QToolBar* toolBar, toolbars )
+    for( QToolBar* toolBar : toolbars )
     {
         if( toolBar->parentWidget() == this )
         {
@@ -399,7 +399,7 @@ MainWindow::showDock( AmarokDockId dockId )
 
     QList < QTabBar * > tabList = findChildren < QTabBar * > ();
 
-    foreach( QTabBar *bar, tabList )
+    for( QTabBar *bar : tabList )
     {
         for( int i = 0; i < bar->count(); i++ )
         {
@@ -1032,7 +1032,7 @@ MainWindow::createActions()
     new Amarok::ReplayGainModeAction( ac, this );
 
     ac->addAssociatedWidget( this );
-    foreach( QAction* action, ac->actions() )
+    for( QAction* action : ac->actions() )
         action->setShortcutContext( Qt::WindowShortcut );
 }
 
@@ -1341,7 +1341,7 @@ MainWindow::playAudioCd()
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
 
     // Search a non-empty MemoryCollection with the id: AudioCd
-    foreach( Collections::Collection *collection, collections )
+    for( Collections::Collection *collection : collections )
     {
         if( collection->collectionId() == "AudioCd" )
         {

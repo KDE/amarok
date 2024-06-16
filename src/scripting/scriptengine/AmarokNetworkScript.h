@@ -96,7 +96,7 @@ namespace AmarokScript
                 // Get all entries with the source URL as key.
                 QList< T > data = hash.values( sourceUrl );
 
-                foreach( T entry, data )
+                for( T entry : data )
                 {
                     // Copy each entry to a new one with the
                     // new URL as key.

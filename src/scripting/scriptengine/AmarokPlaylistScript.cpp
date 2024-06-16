@@ -81,7 +81,7 @@ void
 AmarokPlaylistScript::addMediaList( const QList<QUrl> &urls )
 {
     QList<QUrl> list;
-    foreach( const QUrl &url, urls )
+    for( const QUrl &url : urls )
         list << url;
     The::playlistController()->insertOptioned( list );
 }
@@ -120,7 +120,7 @@ void
 AmarokPlaylistScript::playMediaList( const QList<QUrl> &urls )
 {
     QList<QUrl> list;
-    foreach( const QUrl &url, urls )
+    for( const QUrl &url : urls )
         list << url;
     The::playlistController()->insertOptioned( list, Playlist::OnPlayMediaAction );
 }

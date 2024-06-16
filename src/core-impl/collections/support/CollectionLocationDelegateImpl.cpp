@@ -120,7 +120,7 @@ QStringList
 CollectionLocationDelegateImpl::trackList( const Meta::TrackList &tracks ) const
 {
     QStringList trackList;
-    foreach( Meta::TrackPtr track, tracks )
+    for( Meta::TrackPtr track : tracks )
     {
         QString url = track->prettyUrl();
         Meta::ArtistPtr artist = track->artist();

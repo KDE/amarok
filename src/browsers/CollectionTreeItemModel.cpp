@@ -46,7 +46,7 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<CategoryId::CatMen
     connect( collMgr, &CollectionManager::collectionRemoved, this, &CollectionTreeItemModel::collectionRemoved );
 
     QList<Collections::Collection *> collections = CollectionManager::instance()->viewableCollections();
-    foreach( Collections::Collection *coll, collections )
+    for( Collections::Collection *coll : collections )
     {
         connect( coll, &Collections::Collection::updated, this, &CollectionTreeItemModel::slotFilterWithoutAutoExpand );
         m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
@@ -115,13 +115,13 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
     Meta::TrackList tracks = mimeData->tracks();
     QMultiMap<Collections::Collection *, Meta::TrackPtr> collectionTrackMap;
 
-    foreach( Meta::TrackPtr track, tracks )
+    for( Meta::TrackPtr track : tracks )
     {
         Collections::Collection *sourceCollection = track->collection();
         collectionTrackMap.insert( sourceCollection, track );
     }
 
-    foreach( Collections::Collection *sourceCollection, collectionTrackMap.uniqueKeys() )
+    for( Collections::Collection *sourceCollection : collectionTrackMap.uniqueKeys() )
     {
         if( sourceCollection == targetCollection )
             continue; // should be already caught by ...Model::flags(), but hey

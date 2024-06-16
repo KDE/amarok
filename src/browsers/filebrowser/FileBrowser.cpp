@@ -141,7 +141,7 @@ FileBrowser::Private::siblingsForDir( const QUrl &path )
     {
         QDir dir( path.toLocalFile() );
         dir.cdUp();
-        foreach( const QString &item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+        for( const QString &item : dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
         {
             siblings << BreadcrumbSibling( QIcon::fromTheme( "folder-amarok" ), item,
                                            dir.absoluteFilePath( item ) );

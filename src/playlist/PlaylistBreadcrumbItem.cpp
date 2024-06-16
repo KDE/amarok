@@ -72,7 +72,7 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
 
     // Disable used levels
     QStringList usedBreadcrumbLevels = qobject_cast< SortWidget * >( parent )->levels();
-    foreach( QAction *action, m_menu->actions() )
+    for( QAction *action : m_menu->actions() )
         if( usedBreadcrumbLevels.contains( action->data().toString() ) )
             action->setEnabled( false );
 
@@ -148,7 +148,7 @@ void
 BreadcrumbAddMenuButton::updateMenu( const QStringList &usedBreadcrumbLevels )
 {
     // Enable unused, disable used levels
-    foreach( QAction *action, m_menu->actions() )
+    for( QAction *action : m_menu->actions() )
         action->setEnabled( !usedBreadcrumbLevels.contains( action->data().toString() ) );
 }
 

@@ -300,7 +300,7 @@ MusicBrainzTagsItem::isChosen() const
     QReadLocker lock( &m_dataLock );
     if( m_data.isEmpty() )
     {
-        foreach( MusicBrainzTagsItem *item, m_childItems )
+        for( const MusicBrainzTagsItem *item : m_childItems )
             if( item->isChosen() )
                 return true;
         return false;
@@ -325,7 +325,7 @@ MusicBrainzTagsItem::chosenItem() const
     if( m_data.isEmpty() )
     {
         QReadLocker lock( &m_childrenLock );
-        foreach( MusicBrainzTagsItem *item, m_childItems )
+        for( MusicBrainzTagsItem *item : m_childItems )
             if( item->isChosen() )
                 return item;
     }
@@ -342,7 +342,7 @@ MusicBrainzTagsItem::chooseBestMatch()
     QReadLocker lock( &m_childrenLock );
     MusicBrainzTagsItem *bestMatch = nullptr;
     float maxScore = 0;
-    foreach( MusicBrainzTagsItem *item, m_childItems )
+    for( MusicBrainzTagsItem *item : m_childItems )
     {
         if( item->score() > maxScore )
         {
@@ -370,7 +370,7 @@ MusicBrainzTagsItem::chooseBestMatchFromRelease( const QStringList &releases )
     MusicBrainzTagsItem *bestMatch = nullptr;
     float maxScore = 0;
     QSet<QString> idList(releases.begin(), releases.end());
-    foreach( MusicBrainzTagsItem *item, m_childItems )
+    for( MusicBrainzTagsItem *item : m_childItems )
     {
         /*
          * Match any of the releases referenced by selected entry. This should guarantee
@@ -400,10 +400,10 @@ MusicBrainzTagsItem::clearChoices()
 {
     QReadLocker lock( &m_childrenLock );
     if( !parent() )
-        foreach( MusicBrainzTagsItem *item, m_childItems )
+        for( MusicBrainzTagsItem *item : m_childItems )
             item->clearChoices();
     else if( m_data.isEmpty() )
-        foreach( MusicBrainzTagsItem *item, m_childItems )
+        for( MusicBrainzTagsItem *item : m_childItems )
             item->setChosen( false );
 }
 

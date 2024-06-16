@@ -25,7 +25,7 @@ using namespace Meta;
 Observer::~Observer()
 {
     // Unsubscribe all stray Meta subscriptions:
-    foreach( Base *ptr, m_subscriptions )
+    for( Base *ptr : m_subscriptions )
     {
         if( ptr )
             ptr->unsubscribe( this );

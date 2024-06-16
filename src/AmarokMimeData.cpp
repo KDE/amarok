@@ -129,7 +129,7 @@ AmarokMimeData::tracks() const
         QCoreApplication::instance()->processEvents( QEventLoop::ExcludeUserInputEvents );
     }
     Meta::TrackList result = d->tracks;
-    foreach( Collections::QueryMaker *qm, d->queryMakers )
+    for( Collections::QueryMaker *qm : d->queryMakers )
     {
         if( d->trackMap.contains( qm ) )
             result << d->trackMap.value( qm );
@@ -160,7 +160,7 @@ AmarokMimeData::getTrackListSignal() const
     else
     {
         Meta::TrackList result = d->tracks;
-        foreach( Collections::QueryMaker *qm, d->queryMakers )
+        for( Collections::QueryMaker *qm : d->queryMakers )
         {
             if( d->trackMap.contains( qm ) )
                 result << d->trackMap.value( qm );
@@ -307,19 +307,19 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
         if( mimeType == QLatin1String("text/uri-list") && (type == QVariant::List || type == QVariant::ByteArray) )
         {
             QList<QVariant> list;
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 list.append( QVariant( QUrl( track->playableUrl() ) ) );
             }
-            foreach( Podcasts::PodcastEpisodePtr episode, episodes )
+            for( Podcasts::PodcastEpisodePtr episode : episodes )
             {
                 list.append( QVariant( QUrl( episode->playableUrl() ) ) );
             }
-            foreach( Playlists::PlaylistPtr playlist, playlists )
+            for( Playlists::PlaylistPtr playlist : playlists )
             {
                 list.append( QVariant( QUrl( playlist->uidUrl() ) ) );
             }
-            foreach( Podcasts::PodcastChannelPtr channel, channels )
+            for( Podcasts::PodcastChannelPtr channel : channels )
             {
                 list.append( QVariant( QUrl( channel->url() ) ) );
             }
@@ -328,7 +328,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
         if( mimeType == QLatin1String("text/plain") && (type == QVariant::String || type == QVariant::ByteArray) )
         {
             QString result;
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 if( !result.isEmpty() )
                     result += '\n';
@@ -336,7 +336,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
                 result += QLatin1String(" - ");
                 result += track->prettyName();
             }
-            foreach( Podcasts::PodcastEpisodePtr episode, episodes )
+            for( Podcasts::PodcastEpisodePtr episode : episodes )
             {
                 if( !result.isEmpty() )
                     result += '\n';
@@ -344,13 +344,13 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
                 result += QLatin1String(" - ");
                 result += episode->channel()->prettyName();
             }
-            foreach( Playlists::PlaylistPtr playlist, playlists )
+            for( Playlists::PlaylistPtr playlist : playlists )
             {
                 if( !result.isEmpty() )
                     result += '\n';
                 result += playlist->prettyName();
             }
-            foreach( Podcasts::PodcastChannelPtr channel, channels )
+            for( Podcasts::PodcastChannelPtr channel : channels )
             {
                 if( !result.isEmpty() )
                     result += '\n';
@@ -365,7 +365,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
 void
 AmarokMimeData::startQueries()
 {
-    foreach( Collections::QueryMaker *qm, d->queryMakers )
+    for( Collections::QueryMaker *qm : d->queryMakers )
     {
         qm->setQueryType( Collections::QueryMaker::Track );
         connect( qm, &Collections::QueryMaker::newTracksReady,

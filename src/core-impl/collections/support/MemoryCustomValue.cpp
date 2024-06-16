@@ -33,7 +33,7 @@ class SumReturnFunction : public CustomReturnFunction
                 return QString::number( 0 );
 
             double sum = 0.0;
-            foreach( const Meta::TrackPtr &track, tracks )
+            for( const Meta::TrackPtr &track : tracks )
                 sum += returnValue->value( track ).toDouble();
 
             return QString::number( sum );
@@ -55,7 +55,7 @@ class MinimumReturnFunction : public CustomReturnFunction
                 return QString::number( 0 );
 
             double min = returnValue->value( tracks.first() ).toDouble();
-            foreach( const Meta::TrackPtr &track, tracks )
+            for( const Meta::TrackPtr &track : tracks )
                 min = qMin( min, returnValue->value( track ).toDouble() );
 
             return QString::number( min );
@@ -77,7 +77,7 @@ class MaximumReturnFunction : public CustomReturnFunction
                 return QString::number( 0 );
 
             double max = returnValue->value( tracks.first() ).toDouble();
-            foreach( const Meta::TrackPtr &track, tracks )
+            for( const Meta::TrackPtr &track : tracks )
                 max = qMax( max, returnValue->value( track ).toDouble() );
 
             return QString::number( max );
@@ -187,7 +187,7 @@ QString
 ArtistCounter::value( const Meta::TrackList &tracks ) const
 {
     QSet<Meta::ArtistPtr> artists;
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
         if( track->artist() )
             artists.insert( track->artist() );
@@ -207,7 +207,7 @@ QString
 GenreCounter::value( const Meta::TrackList &tracks ) const
 {
     QSet<Meta::GenrePtr> genres;
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
         if( track->genre() )
             genres.insert( track->genre() );
@@ -227,7 +227,7 @@ QString
 AlbumCounter::value( const Meta::TrackList &tracks ) const
 {
     QSet<Meta::AlbumPtr> albums;
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
         if( track->album() )
             albums.insert( track->album() );
@@ -247,7 +247,7 @@ QString
 ComposerCounter::value( const Meta::TrackList &tracks ) const
 {
     QSet<Meta::ComposerPtr> composers;
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
         if( track->composer() )
             composers.insert( track->composer() );
@@ -267,7 +267,7 @@ QString
 YearCounter::value( const Meta::TrackList &tracks ) const
 {
     QSet<Meta::YearPtr> years;
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
         if( track->year() )
             years.insert( track->year() );

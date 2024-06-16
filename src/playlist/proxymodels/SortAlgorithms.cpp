@@ -48,7 +48,7 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel,
     specialCases << Playlist::LastPlayed << Playlist::Title << Playlist::Album
                  << Playlist::Artist << Playlist::AlbumArtist;
 
-    foreach( const SortLevel &level, m_scheme )
+    for( const SortLevel &level : m_scheme )
     {
         const bool inverted = ( level.order() == Qt::DescendingOrder );
         const Playlist::Column currentCategory = level.category();

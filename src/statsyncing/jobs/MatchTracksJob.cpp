@@ -31,13 +31,13 @@ using namespace StatSyncing;
 static void printPerProviderTrackList( const PerProviderTrackList &providerTracks,
                                        const QString *fromArtist = 0L )
 {
-    foreach( ProviderPtr provider, providerTracks.keys() )
+    for( ProviderPtr provider : providerTracks.keys() )
     {
         if( fromArtist )
             debug() << provider->prettyName() << "tracks from" << *fromArtist;
         else
             debug() << provider->prettyName() << "tracks";
-        foreach( TrackPtr track, providerTracks.value( provider ) )
+        for( TrackPtr track : providerTracks.value( provider ) )
         {
             debug() << "  " << track->artist() << "-" << track->album() << "-" << track->name();
         }
@@ -260,7 +260,7 @@ TrackPtr
 MatchTracksJob::findSmallestTrack( const PerProviderTrackList &providerTracks )
 {
     TrackPtr smallest;
-    foreach( const TrackList &list, providerTracks )
+    for( const TrackList &list : providerTracks )
     {
         if( !smallest || list.first()->lessThan( *smallest, s_comparisonFields ) )
             smallest = list.first();
@@ -291,7 +291,7 @@ void
 MatchTracksJob::addMatchedTuple( const TrackTuple &tuple )
 {
     m_matchedTuples.append( tuple );
-    foreach( ProviderPtr provider, tuple.providers() )
+    for( ProviderPtr provider : tuple.providers() )
     {
         m_matchedTrackCounts[ provider ]++;
     }
@@ -300,7 +300,7 @@ MatchTracksJob::addMatchedTuple( const TrackTuple &tuple )
 void
 MatchTracksJob::scanForScrobblableTracks( const TrackList &trackList )
 {
-    foreach( const TrackPtr &track, trackList )
+    for( const TrackPtr &track : trackList )
     {
         // ScrobblingServices take Meta::Track, ensure there is an underlying one
         if( track->recentPlayCount() > 0 && track->metaTrack() )

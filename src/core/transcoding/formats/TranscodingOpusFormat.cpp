@@ -92,7 +92,7 @@ OpusFormat::ffmpegParameters( const Configuration &configuration ) const
 {
     QStringList parameters;
     parameters << QStringLiteral("-acodec") << QStringLiteral("libopus");
-    foreach( const Property &property, m_propertyList )
+    for( const Property &property : m_propertyList )
     {
         if( !configuration.property( property.name() ).isNull()
             && configuration.property( property.name() ).type() == property.variantType() )

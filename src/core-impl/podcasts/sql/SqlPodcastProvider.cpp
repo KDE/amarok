@@ -137,7 +137,7 @@ SqlPodcastProvider::startTimer()
         return; //already started with correct interval
 
     //and only start if at least one channel has autoscan enabled
-    foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
+    for( Podcasts::SqlPodcastChannelPtr channel : m_channels )
     {
         if( channel->autoScan() )
         {
@@ -149,10 +149,10 @@ SqlPodcastProvider::startTimer()
 
 SqlPodcastProvider::~SqlPodcastProvider()
 {
-    foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
+    for( Podcasts::SqlPodcastChannelPtr channel : m_channels )
     {
         channel->updateInDb();
-        foreach( Podcasts::SqlPodcastEpisodePtr episode, channel->sqlEpisodes() )
+        for( Podcasts::SqlPodcastEpisodePtr episode : channel->sqlEpisodes() )
             episode->updateInDb();
     }
     m_channels.clear();
@@ -314,7 +314,7 @@ SqlPodcastProvider::playlistActions( const Playlists::PlaylistList &playlists )
 {
     QActionList actions;
     SqlPodcastChannelList sqlChannels;
-    foreach( const Playlists::PlaylistPtr &playlist, playlists )
+    for( const Playlists::PlaylistPtr &playlist : playlists )
     {
         SqlPodcastChannelPtr sqlChannel = SqlPodcastChannel::fromPlaylistPtr( playlist );
         if( sqlChannel )
@@ -363,7 +363,7 @@ QActionList
 SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> &playlistTracks )
 {
     SqlPodcastEpisodeList episodes;
-    foreach( const Playlists::PlaylistPtr &playlist, playlistTracks.uniqueKeys() )
+    for( const Playlists::PlaylistPtr &playlist : playlistTracks.uniqueKeys() )
     {
         SqlPodcastChannelPtr sqlChannel = SqlPodcastChannel::fromPlaylistPtr( playlist );
         if( !sqlChannel )
@@ -372,7 +372,7 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
         SqlPodcastEpisodeList channelEpisodes = sqlChannel->sqlEpisodes();
         QList<int> trackPositions = playlistTracks.values( playlist );
         std::sort( trackPositions.begin(), trackPositions.end() );
-        foreach( int trackPosition, trackPositions )
+        for( int trackPosition : trackPositions )
         {
             if( trackPosition >= 0 && trackPosition < channelEpisodes.count() )
                 episodes << channelEpisodes.at( trackPosition );
@@ -421,7 +421,7 @@ SqlPodcastProvider::trackActions( const QMultiHash<Playlists::PlaylistPtr, int> 
 
     SqlPodcastEpisodeList remoteEpisodes;
     SqlPodcastEpisodeList keptDownloadedEpisodes, unkeptDownloadedEpisodes;
-    foreach( const SqlPodcastEpisodePtr &episode, episodes )
+    for( const SqlPodcastEpisodePtr &episode : episodes )
     {
         if( episode->localUrl().isEmpty() )
             remoteEpisodes << episode;
@@ -488,7 +488,7 @@ SqlPodcastProvider::addPodcast( const QUrl &url )
 void
 SqlPodcastProvider::updateAll()
 {
-    foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
+    for( Podcasts::SqlPodcastChannelPtr channel : m_channels )
         updateSqlChannel( channel );
 }
 
@@ -637,7 +637,7 @@ SqlPodcastProvider::configureProvider()
 
                 if( button == QMessageBox::Yes )
                 {
-                    foreach( SqlPodcastChannelPtr sqlChannel, m_channels )
+                    for( SqlPodcastChannelPtr sqlChannel : m_channels )
                     {
                         QUrl oldSaveLocation = sqlChannel->saveLocation();
                         QUrl newSaveLocation = m_baseDownloadDir;
@@ -683,7 +683,7 @@ SqlPodcastProvider::slotExportOpml()
     //TODO: set header data such as date
 
     //TODO: folder outline support
-    foreach( SqlPodcastChannelPtr channel, m_channels )
+    for( SqlPodcastChannelPtr channel : m_channels )
     {
         OpmlOutline *channelOutline = new OpmlOutline();
         #define addAttr( k, v ) channelOutline->addAttribute( k, v )
@@ -777,7 +777,7 @@ SqlPodcastProvider::configureChannel( Podcasts::SqlPodcastChannelPtr sqlChannel 
 void
 SqlPodcastProvider::deleteDownloadedEpisodes( Podcasts::SqlPodcastEpisodeList &episodes )
 {
-    foreach( Podcasts::SqlPodcastEpisodePtr episode, episodes )
+    for( Podcasts::SqlPodcastEpisodePtr episode : episodes )
         deleteDownloadedEpisode( episode );
 }
 
@@ -788,7 +788,7 @@ SqlPodcastProvider::moveDownloadedEpisodes( Podcasts::SqlPodcastChannelPtr sqlCh
             .arg( sqlChannel->title(),
                   sqlChannel->saveLocation().toDisplayString() );
 
-    foreach( Podcasts::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
+    for( Podcasts::SqlPodcastEpisodePtr episode : sqlChannel->sqlEpisodes() )
     {
         if( !episode->localUrl().isEmpty() )
         {
@@ -826,7 +826,7 @@ SqlPodcastProvider::slotDownloadEpisodes()
         return;
     Podcasts::SqlPodcastEpisodeList episodes = action->data().value<Podcasts::SqlPodcastEpisodeList>();
 
-    foreach( Podcasts::SqlPodcastEpisodePtr episode, episodes )
+    for( Podcasts::SqlPodcastEpisodePtr episode : episodes )
         downloadEpisode( episode );
 }
 
@@ -839,7 +839,7 @@ SqlPodcastProvider::slotSetKeep()
 
     Podcasts::SqlPodcastEpisodeList episodes = action->data().value<Podcasts::SqlPodcastEpisodeList>();
 
-    foreach( Podcasts::SqlPodcastEpisodePtr episode, episodes )
+    for( Podcasts::SqlPodcastEpisodePtr episode : episodes )
         episode->setKeep( action->isChecked() );
 }
 
@@ -868,7 +868,7 @@ SqlPodcastProvider::slotRemoveChannels()
 
     Podcasts::SqlPodcastChannelList channels = action->data().value<Podcasts::SqlPodcastChannelList>();
 
-    foreach( Podcasts::SqlPodcastChannelPtr channel, channels )
+    for( Podcasts::SqlPodcastChannelPtr channel : channels )
     {
         QPair<bool, bool> result = confirmUnsubscribe( channel );        
         if( result.first )
@@ -893,7 +893,7 @@ SqlPodcastProvider::slotUpdateChannels()
             return;
     Podcasts::SqlPodcastChannelList channels = action->data().value<Podcasts::SqlPodcastChannelList>();
 
-    foreach( Podcasts::SqlPodcastChannelPtr channel, channels )
+    for( Podcasts::SqlPodcastChannelPtr channel : channels )
             updateSqlChannel( channel );
 }
 
@@ -904,7 +904,7 @@ SqlPodcastProvider::slotDownloadProgress( KJob *job, unsigned long percent )
     Q_UNUSED( percent );
 
     unsigned int totalDownloadPercentage = 0;
-    foreach( const KJob *jobKey, m_downloadJobMap.keys() )
+    for( const KJob *jobKey : m_downloadJobMap.keys() )
         totalDownloadPercentage += jobKey->percent();
 
     //keep the completed jobs in mind as well.
@@ -922,7 +922,7 @@ SqlPodcastProvider::slotWriteTagsToFiles()
         return;
 
     Podcasts::SqlPodcastEpisodeList episodes = action->data().value<Podcasts::SqlPodcastEpisodeList>();
-    foreach( Podcasts::SqlPodcastEpisodePtr episode, episodes )
+    for( Podcasts::SqlPodcastEpisodePtr episode : episodes )
         episode->writeTagsToFile();
 }
 
@@ -981,7 +981,7 @@ SqlPodcastProvider::completePodcastDownloads()
                                       );
         progressDialog.setValue( 0 );
         m_completedDownloads = 0;
-        foreach( KJob *job, m_downloadJobMap.keys() )
+        for( KJob *job : m_downloadJobMap.keys() )
         {
             connect( job, SIGNAL(percent(KJob*,ulong)),
                      this, SLOT(slotDownloadProgress(KJob*,ulong))
@@ -992,7 +992,7 @@ SqlPodcastProvider::completePodcastDownloads()
         int result = progressDialog.exec();
         if( result == QDialog::Rejected )
         {
-            foreach( KJob *job, m_downloadJobMap.keys() )
+            for( KJob *job : m_downloadJobMap.keys() )
             {
                 job->kill();
             }
@@ -1010,7 +1010,7 @@ SqlPodcastProvider::autoUpdate()
         return;
     }
 
-    foreach( Podcasts::SqlPodcastChannelPtr channel, m_channels )
+    for( Podcasts::SqlPodcastChannelPtr channel : m_channels )
     {
         if( channel->autoScan() )
             updateSqlChannel( channel );
@@ -1110,7 +1110,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
         return;
     }
 
-    foreach( struct PodcastEpisodeDownload download, m_downloadJobMap )
+    for( struct PodcastEpisodeDownload download : m_downloadJobMap )
     {
         if( download.episode == sqlEpisode )
         {

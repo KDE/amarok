@@ -71,7 +71,7 @@ void AmarokUrl::initFromString( const QString & urlString )
     {
         parts = argumentsString.split( '&' );
         
-        foreach( const QString &argument, parts )
+        for( const QString &argument : parts )
         {
             
             QStringList argParts = argument.split( '=' );
@@ -130,7 +130,7 @@ QString AmarokUrl::url() const
     url.setPath( '/' + m_path ); // the path must begin by /
     QUrlQuery query;
 
-    foreach( const QString &argName, m_arguments.keys() )
+    for( const QString &argName : m_arguments.keys() )
         query.addQueryItem( argName, m_arguments[argName] );
 
     url.setQuery( query );

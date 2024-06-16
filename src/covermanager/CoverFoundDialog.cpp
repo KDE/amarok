@@ -667,7 +667,7 @@ void CoverFoundDialog::sortCoversBySize()
     QMultiMap<int, CoverFoundItem*> sortItems;
 
     // get a list of cover items sorted (automatically by qmap) by size
-    foreach( QListWidgetItem *viewItem, viewItems  )
+    for( QListWidgetItem *viewItem : viewItems  )
     {
         CoverFoundItem *coverItem = dynamic_cast<CoverFoundItem*>( viewItem );
         const CoverFetch::Metadata &meta = coverItem->metadata();
@@ -689,7 +689,7 @@ void CoverFoundDialog::sortCoversBySize()
     }
 
     // add the items back to the view in descending order
-    foreach( CoverFoundItem* item, tempItems )
+    for( CoverFoundItem* item : tempItems )
         m_view->insertItem( 0, item );
 
     m_isSorted = true;

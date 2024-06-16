@@ -89,7 +89,7 @@ WmaFormat::ffmpegParameters( const Configuration &configuration ) const
 {
     QStringList parameters;
     parameters << QStringLiteral("-acodec") << QStringLiteral("wmav2");
-    foreach( const Property &property, m_propertyList )
+    for( const Property &property : m_propertyList )
     {
         if( !configuration.property( property.name() ).isNull()
             && configuration.property( property.name() ).type() == property.variantType() )

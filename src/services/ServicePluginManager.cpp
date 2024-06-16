@@ -80,7 +80,7 @@ ServicePluginManager::setFactories( const QList<QSharedPointer<Plugins::PluginFa
         if( !factory )
             continue;
 
-        foreach( ServiceBase * service, factory->activeServices() )
+        for( ServiceBase * service : factory->activeServices() )
             ServiceBrowser::instance()->removeCategory( service );
         factory->clearActiveServices();
     }
@@ -125,7 +125,7 @@ ServicePluginManager::loadedServices() const
         if( !factory )
             continue;
 
-        foreach( ServiceBase *service, factory->activeServices() )
+        for( ServiceBase *service : factory->activeServices() )
             names << service->name();
     }
     return names;

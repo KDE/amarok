@@ -163,7 +163,7 @@ void SongkickApplet::dataUpdated( const QString& name, const Plasma::DataEngine:
         // build simple HTML to show
         // a list
         QString html = QString( "<br><br>" );
-        foreach( const QVariant &suggestion, suggested )
+        for( const QVariant &suggestion : suggested )
         {
                 QString sug = suggestion.toString();
                 //debug() << "parsing suggestion:" << sug;

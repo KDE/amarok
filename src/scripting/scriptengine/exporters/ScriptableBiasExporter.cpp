@@ -412,7 +412,7 @@ TrackSetExporterWrapper::trackSetConstructor( QJSValue arg0, QJSValue arg1 )
         {
             debug() << "In Meta::Tracklist TrackSet ctor";
             trackList = qjsvalue_cast<Meta::TrackList>( arg0 );
-            foreach( const Meta::TrackPtr &track, trackList )
+            for( const Meta::TrackPtr &track : trackList )
             {
                 if( track )
                     uidList << track->uidUrl();

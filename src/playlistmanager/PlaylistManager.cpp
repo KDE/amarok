@@ -140,7 +140,7 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider *provider, int categor
 void
 PlaylistManager::loadPlaylists( Playlists::PlaylistProvider *provider, int category )
 {
-    foreach( Playlists::PlaylistPtr playlist, provider->playlists() )
+    for( Playlists::PlaylistPtr playlist : provider->playlists() )
         addPlaylist( playlist, category );
 }
 
@@ -368,7 +368,7 @@ PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
 {
     // Map the playlists to their respective providers
     QHash<Playlists::UserPlaylistProvider*, Playlists::PlaylistList> provLists;
-    foreach( Playlists::PlaylistPtr playlist, playlistlist )
+    for( Playlists::PlaylistPtr playlist : playlistlist )
     {
         // Get the providers of the respective playlists
         Playlists::UserPlaylistProvider *prov = qobject_cast<Playlists::UserPlaylistProvider *>(
@@ -393,7 +393,7 @@ PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
     // Pass each list of playlists to the respective provider for deletion
 
     bool removedSuccess = true;
-    foreach( Playlists::UserPlaylistProvider* prov, provLists.keys() )
+    for( Playlists::UserPlaylistProvider* prov : provLists.keys() )
     {
         removedSuccess = prov->deletePlaylists( provLists.value( prov ) ) && removedSuccess;
     }
@@ -412,7 +412,7 @@ PlaylistManager::getProvidersForPlaylist( const Playlists::PlaylistPtr playlist 
     SyncedPlaylistPtr syncedPlaylist = SyncedPlaylistPtr::dynamicCast( playlist );
     if( syncedPlaylist && m_syncedPlaylistMap.keys().contains( syncedPlaylist ) )
     {
-        foreach( Playlists::PlaylistPtr playlist, m_syncedPlaylistMap.values( syncedPlaylist ) )
+        for( Playlists::PlaylistPtr playlist : m_syncedPlaylistMap.values( syncedPlaylist ) )
             if( !providers.contains( playlist->provider() ) )
                 providers << playlist->provider();
 
@@ -425,7 +425,7 @@ PlaylistManager::getProvidersForPlaylist( const Playlists::PlaylistPtr playlist 
 
     //Iteratively check all providers' playlists for ownership
     QList< Playlists::PlaylistProvider* > userPlaylists = m_providerMap.values( UserPlaylist );
-    foreach( Playlists::PlaylistProvider* provider, userPlaylists )
+    for( Playlists::PlaylistProvider* provider : userPlaylists )
     {
         if( provider->playlists().contains( playlist ) )
                 return providers << provider;
@@ -450,7 +450,7 @@ PlaylistManager::isWritable( const Playlists::PlaylistPtr &playlist )
 void
 PlaylistManager::completePodcastDownloads()
 {
-    foreach( Playlists::PlaylistProvider *prov, providersForCategory( PodcastChannel ) )
+    for( Playlists::PlaylistProvider *prov : providersForCategory( PodcastChannel ) )
     {
         Podcasts::PodcastProvider *podcastProvider = dynamic_cast<Podcasts::PodcastProvider *>( prov );
         if( !podcastProvider )
@@ -522,7 +522,7 @@ PlaylistManager::setupSync( const Playlists::PlaylistPtr master, const Playlists
 
 void PlaylistManager::slotSyncNeeded()
 {
-    foreach( SyncedPlaylistPtr syncedPlaylist, m_syncNeeded )
+    for( SyncedPlaylistPtr syncedPlaylist : m_syncNeeded )
         if ( syncedPlaylist->syncNeeded() )
             syncedPlaylist->doSync();
 

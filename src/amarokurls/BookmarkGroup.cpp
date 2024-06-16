@@ -225,9 +225,9 @@ void BookmarkGroup::removeFromDb()
 {
     DEBUG_BLOCK
 
-    foreach( BookmarkGroupPtr group, m_childGroups )
+    for( BookmarkGroupPtr group : m_childGroups )
         group->removeFromDb();
-    foreach( AmarokUrlPtr bookmark, m_childBookmarks )
+    for( AmarokUrlPtr bookmark : m_childBookmarks )
         bookmark->removeFromDb();
 
     QString query = QStringLiteral( "DELETE FROM bookmark_groups where id=%1;").arg( QString::number( m_dbId ) );

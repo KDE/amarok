@@ -103,7 +103,7 @@ AlbumItem::update()
     setData( name, NameRole );
 
     qint64 totalTime = 0;
-    foreach( Meta::TrackPtr item, tracks )
+    for( Meta::TrackPtr item : tracks )
         totalTime += item->length();
 
     QString trackCount = i18np( "%1 track", "%1 tracks", tracks.size() );

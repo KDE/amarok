@@ -316,14 +316,14 @@ Dynamic::LastFmBias::newQuery()
     m_qm->beginOr();
     if( m_match == SimilarArtist )
     {
-        foreach( const QString &name, similarArtists )
+        for( const QString &name : similarArtists )
         {
             m_qm->addFilter( Meta::valArtist, name, true, true );
         }
     }
     else if( m_match == SimilarTrack )
     {
-        foreach( const TitleArtistPair &name, similarTracks )
+        for( const TitleArtistPair &name : similarTracks )
         {
             m_qm->beginAnd();
             m_qm->addFilter( Meta::valTitle, name.first, true, true );
@@ -488,11 +488,11 @@ Dynamic::LastFmBias::saveDataToFile() const
     writer.writeStartElement( QLatin1String("lastfmSimilar") );
 
     // -- write the similar artists
-    foreach( const QString& key, m_similarArtistMap.keys() )
+    for( const QString& key : m_similarArtistMap.keys() )
     {
         writer.writeStartElement( QLatin1String("similarArtist") );
         writer.writeTextElement( QLatin1String("artist"), key );
-        foreach( const QString& name, m_similarArtistMap.value( key ) )
+        for( const QString& name : m_similarArtistMap.value( key ) )
         {
             writer.writeTextElement( QLatin1String("similar"), name );
         }
@@ -500,7 +500,7 @@ Dynamic::LastFmBias::saveDataToFile() const
     }
 
     // -- write the similar tracks
-    foreach( const TitleArtistPair& key, m_similarTrackMap.keys() )
+    for( const TitleArtistPair& key : m_similarTrackMap.keys() )
     {
         writer.writeStartElement( QLatin1String("similarTrack") );
         writer.writeStartElement( QLatin1String("track") );
@@ -508,7 +508,7 @@ Dynamic::LastFmBias::saveDataToFile() const
         writer.writeTextElement( QLatin1String("artist"), key.second );
         writer.writeEndElement();
 
-        foreach( const TitleArtistPair& name, m_similarTrackMap.value( key ) )
+        for( const TitleArtistPair& name : m_similarTrackMap.value( key ) )
         {
             writer.writeStartElement( QLatin1String("similar") );
             writer.writeTextElement( QLatin1String("title"), name.first );

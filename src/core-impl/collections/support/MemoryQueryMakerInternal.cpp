@@ -66,7 +66,7 @@ MemoryQueryMakerInternal::runQuery()
         if ( m_filters )
         {
             Meta::TrackList filtered;
-            foreach( Meta::TrackPtr track, result )
+            for( const Meta::TrackPtr &track : result )
             {
                 if( m_filters->filterMatches( track ) )
                     filtered.append( track );
@@ -80,7 +80,7 @@ MemoryQueryMakerInternal::runQuery()
     {
         Meta::TrackList tracks = coll ? coll->trackMap().values() : Meta::TrackList();
         Meta::TrackList filtered;
-        foreach( const Meta::TrackPtr &track, tracks )
+        for( const Meta::TrackPtr &track : tracks )
         {
             if ( m_filters->filterMatches( track ) )
                 filtered.append( track );
@@ -114,7 +114,7 @@ MemoryQueryMakerInternal::handleResult()
             QStringList result;
             Meta::TrackList tmpTracks = coll ? coll->trackMap().values() : Meta::TrackList();
             Meta::TrackList tracks;
-            foreach( const Meta::TrackPtr &track, tmpTracks )
+            for( const Meta::TrackPtr &track : tmpTracks )
             {
                 if( ( m_albumQueryMode == QueryMaker::AllAlbums
                     || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
@@ -130,7 +130,7 @@ MemoryQueryMakerInternal::handleResult()
             if( !m_returnFunctions.empty() )
             {
                 //no sorting necessary
-                foreach( CustomReturnFunction *function, m_returnFunctions )
+                for( CustomReturnFunction *function : m_returnFunctions )
                 {
                     result.append( function->value( tracks ) );
                 }
@@ -146,12 +146,12 @@ MemoryQueryMakerInternal::handleResult()
                 }
 
                 int count = 0;
-                foreach( const Meta::TrackPtr &track, tracks )
+                for( const Meta::TrackPtr &track : tracks )
                 {
                     if ( m_maxSize >= 0 && count == m_maxSize )
                         break;
 
-                    foreach( CustomReturnValue *value, m_returnValues )
+                    for( CustomReturnValue *value : m_returnValues )
                     {
                         result.append( value->value( track ) );
                     }
@@ -166,7 +166,7 @@ MemoryQueryMakerInternal::handleResult()
             Meta::TrackList tracks;
 
             Meta::TrackList tmpTracks = coll ? coll->trackMap().values() : Meta::TrackList();
-            foreach( Meta::TrackPtr track, tmpTracks )
+            for( Meta::TrackPtr track : tmpTracks )
             {
                 Meta::AlbumPtr album = track->album();
                 if( ( m_albumQueryMode == QueryMaker::AllAlbums
@@ -195,10 +195,10 @@ MemoryQueryMakerInternal::handleResult()
         {
             Meta::AlbumList albums;
             Meta::AlbumList tmp = coll ? coll->albumMap().values() : Meta::AlbumList();
-            foreach( Meta::AlbumPtr album, tmp )
+            for( Meta::AlbumPtr album : tmp )
             {
                 Meta::TrackList tracks = album->tracks();
-                foreach( Meta::TrackPtr track, tracks )
+                for( Meta::TrackPtr track : tracks )
                 {
                     Meta::AlbumPtr album = track->album();
                     if( ( m_albumQueryMode == QueryMaker::AllAlbums
@@ -223,10 +223,10 @@ MemoryQueryMakerInternal::handleResult()
         {
             Meta::ArtistList artists;
             Meta::ArtistList tmp = coll ? coll->artistMap().values() : Meta::ArtistList();
-            foreach( Meta::ArtistPtr artist, tmp )
+            for( Meta::ArtistPtr artist : tmp )
             {
                 Meta::TrackList tracks = artist->tracks();
-                foreach( Meta::TrackPtr track, tracks )
+                for( Meta::TrackPtr track : tracks )
                 {
                     if( ( m_albumQueryMode == QueryMaker::AllAlbums
                         || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
@@ -248,13 +248,13 @@ MemoryQueryMakerInternal::handleResult()
         {
             Meta::ArtistList artists;
             Meta::AlbumList tmp = coll ? coll->albumMap().values() : Meta::AlbumList();
-            foreach( Meta::AlbumPtr album, tmp )
+            for( Meta::AlbumPtr album : tmp )
             {
                 if( !album->hasAlbumArtist() )
                     continue;
 
                 Meta::TrackList tracks = album->tracks();
-                foreach( Meta::TrackPtr track, tracks )
+                for( Meta::TrackPtr track : tracks )
                 {
                     if( ( m_albumQueryMode == QueryMaker::AllAlbums
                         || ( m_albumQueryMode == QueryMaker::OnlyCompilations && album->isCompilation() )
@@ -276,10 +276,10 @@ MemoryQueryMakerInternal::handleResult()
         {
             Meta::ComposerList composers;
             Meta::ComposerList tmp = coll ? coll->composerMap().values() : Meta::ComposerList();
-            foreach( Meta::ComposerPtr composer, tmp )
+            for( Meta::ComposerPtr composer : tmp )
             {
                 Meta::TrackList tracks = composer->tracks();
-                foreach( Meta::TrackPtr track, tracks )
+                for( Meta::TrackPtr track : tracks )
                 {
                     if( ( m_albumQueryMode == QueryMaker::AllAlbums
                         || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
@@ -302,10 +302,10 @@ MemoryQueryMakerInternal::handleResult()
         {
             Meta::GenreList genres;
             Meta::GenreList tmp = coll ? coll->genreMap().values() : Meta::GenreList();
-            foreach( Meta::GenrePtr genre, tmp )
+            for( Meta::GenrePtr genre : tmp )
             {
                 Meta::TrackList tracks = genre->tracks();
-                foreach( Meta::TrackPtr track, tracks )
+                for( Meta::TrackPtr track : tracks )
                 {
                     if( ( m_albumQueryMode == QueryMaker::AllAlbums
                         || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
@@ -329,10 +329,10 @@ MemoryQueryMakerInternal::handleResult()
         {
             Meta::YearList years;
             Meta::YearList tmp = coll ? coll->yearMap().values() : Meta::YearList();
-            foreach( Meta::YearPtr year, tmp )
+            for( Meta::YearPtr year : tmp )
             {
                 Meta::TrackList tracks = year->tracks();
-                foreach( Meta::TrackPtr track, tracks )
+                for( Meta::TrackPtr track : tracks )
                 {
                     if( ( m_albumQueryMode == QueryMaker::AllAlbums
                         || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
@@ -361,10 +361,10 @@ MemoryQueryMakerInternal::handleResult()
         {
             Meta::LabelList labels;
             Meta::LabelList tmp = coll ? coll->labelMap().values() : Meta::LabelList();
-            foreach( const Meta::LabelPtr &label, tmp )
+            for( const Meta::LabelPtr &label : tmp )
             {
                 Meta::TrackList tracks = coll ? coll->labelToTrackMap().value( label ) : Meta::TrackList();
-                foreach( const Meta::TrackPtr &track, tracks )
+                for( const Meta::TrackPtr &track : tracks )
                 {
                     if( ( m_albumQueryMode == QueryMaker::AllAlbums
                         || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
@@ -394,7 +394,7 @@ void
 MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
 {
     Meta::TrackList tracks;
-    foreach( const Meta::TrackPtr &track, tmpTracks )
+    for( const Meta::TrackPtr &track : tmpTracks )
     {
         if( ( m_albumQueryMode == QueryMaker::AllAlbums
             || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
@@ -415,7 +415,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             if( !m_returnFunctions.empty() )
             {
                 //no sorting necessary
-                foreach( CustomReturnFunction *function, m_returnFunctions )
+                for( const CustomReturnFunction *function : m_returnFunctions )
                 {
                     result.append( function->value( tracks ) );
                 }
@@ -432,12 +432,12 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
                 }
 
                 int count = 0;
-                foreach( const Meta::TrackPtr &track, resultTracks )
+                for( const Meta::TrackPtr &track : resultTracks )
                 {
                     if ( m_maxSize >= 0 && count == m_maxSize )
                         break;
 
-                    foreach( CustomReturnValue *value, m_returnValues )
+                    for( const CustomReturnValue *value : m_returnValues )
                     {
                         result.append( value->value( track ) );
                     }
@@ -467,7 +467,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
         case QueryMaker::Album :
         {
             QSet<Meta::AlbumPtr> albumSet;
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 albumSet.insert( track->album() );
             }
@@ -479,7 +479,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
         case QueryMaker::Artist :
         {
             QSet<Meta::ArtistPtr> artistSet;
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 artistSet.insert( track->artist() );
             }
@@ -491,7 +491,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
         case QueryMaker::AlbumArtist :
         {
             QSet<Meta::ArtistPtr> artistSet;
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 if( !track->album().isNull() && track->album()->hasAlbumArtist() )
                     artistSet.insert( track->album()->albumArtist() );
@@ -504,7 +504,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
         case QueryMaker::Genre :
         {
             QSet<Meta::GenrePtr> genreSet;
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 genreSet.insert( track->genre() );
             }
@@ -516,7 +516,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
         case QueryMaker::Composer :
         {
             QSet<Meta::ComposerPtr> composerSet;
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 composerSet.insert( track->composer() );
             }
@@ -528,7 +528,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
         case QueryMaker::Year :
         {
             QSet<Meta::YearPtr> yearSet;
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 yearSet.insert( track->year() );
             }
@@ -544,7 +544,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
         case QueryMaker::Label:
         {
             QSet<Meta::LabelPtr> labelSet;
-            foreach( const Meta::TrackPtr &track, tracks )
+            for( const Meta::TrackPtr &track : tracks )
             {
                 Meta::LabelList tracklabels=track->labels();
                 QSet<Meta::LabelPtr> addLabelsSet(tracklabels.begin(), tracklabels.end());

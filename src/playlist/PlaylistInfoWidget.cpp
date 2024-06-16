@@ -89,7 +89,7 @@ PlaylistInfoWidget::event( QEvent *event )
             int queuedCount( 0 );
 
             QQueue<quint64> queue = The::playlistActions()->queue();
-            foreach( quint64 id, queue )
+            for( quint64 id : queue )
             {
                 Meta::TrackPtr track = The::playlist()->trackForId( id );
                 queuedTotalLength += track->length();

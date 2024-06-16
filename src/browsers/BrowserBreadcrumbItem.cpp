@@ -47,7 +47,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget
 
         const QStringList siblingNames = siblingMap.keys();
 
-        foreach( const QString &siblingName, siblingNames )
+        for( const QString &siblingName : siblingNames )
         {
             //no point in adding ourselves to this menu
             if ( siblingName == category->name() )
@@ -104,7 +104,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
         m_menuButton = new BreadcrumbItemMenuButton( this );
         QMenu *menu = new QMenu( this );
 
-        foreach( const BreadcrumbSibling &sibling, childItems )
+        for( const BreadcrumbSibling &sibling : childItems )
         {
             QString visibleName = sibling.name;
             visibleName.replace( '&', QLatin1String("&&") ); // prevent bug 244817

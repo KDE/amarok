@@ -157,7 +157,7 @@ PlaylistsInFoldersProxy::mimeData( const QModelIndexList &indexes ) const
     DEBUG_BLOCK
     AmarokMimeData* mime = new AmarokMimeData();
     QModelIndexList sourceIndexes;
-    foreach( const QModelIndex &idx, indexes )
+    for( const QModelIndex &idx : indexes )
     {
         debug() << idx;
         if( isGroup( idx ) )
@@ -207,7 +207,7 @@ PlaylistsInFoldersProxy::dropMimeData( const QMimeData *data, Qt::DropAction act
         {
             debug() << "dropped on the root";
             Playlists::PlaylistList playlists = amarokMime->playlists();
-            foreach( Playlists::PlaylistPtr playlist, playlists )
+            for( Playlists::PlaylistPtr playlist : playlists )
                 playlist->setGroups( QStringList() );
             buildTree();
             return true;
@@ -228,7 +228,7 @@ PlaylistsInFoldersProxy::dropMimeData( const QMimeData *data, Qt::DropAction act
                 QString groupName = parent.data( Qt::DisplayRole ).toString();
                 //TODO: apply the new groupname to the source index
                 Playlists::PlaylistList playlists = amarokMime->playlists();
-                foreach( Playlists::PlaylistPtr playlist, playlists )
+                for( Playlists::PlaylistPtr playlist : playlists )
                     playlist->setGroups( QStringList( groupName ) );
                 buildTree();
                 return true;
@@ -295,7 +295,7 @@ PlaylistsInFoldersProxy::slotDeleteFolder()
 
     QPersistentModelIndexList indexes = action->data().value<QPersistentModelIndexList>();
 
-    foreach( const QModelIndex &groupIdx, indexes )
+    for( const QModelIndex &groupIdx : indexes )
         deleteFolder( groupIdx );
 }
 

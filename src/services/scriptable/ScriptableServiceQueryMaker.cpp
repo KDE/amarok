@@ -222,7 +222,7 @@ void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList &tracks )
     Meta::TrackList ret;
     if( m_convertToMultiTracks )
     {
-        foreach( const Meta::TrackPtr &track, tracks )
+        for( const Meta::TrackPtr &track : tracks )
         {
             using namespace Meta;
             const ScriptableServiceTrack *serviceTrack =

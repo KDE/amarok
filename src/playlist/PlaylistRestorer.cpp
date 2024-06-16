@@ -76,7 +76,7 @@ Restorer::tracksLoaded(Playlists::PlaylistPtr playlist )
     {
         // process child playlists
         Meta::TrackList newtracks = playlist->tracks();
-        foreach( Meta::TrackPtr t, newtracks )
+        for( Meta::TrackPtr t : newtracks )
             if( t )
                 m_position.insert( t );
         processTracks();

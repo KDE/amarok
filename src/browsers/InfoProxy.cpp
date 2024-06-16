@@ -93,14 +93,14 @@ InfoProxy::unsubscribe( InfoObserver * observer )
 void
 InfoProxy::notifyObservers( const QVariantMap &infoMap ) const
 {
-    foreach( InfoObserver *observer, m_observers )
+    for( InfoObserver *observer : m_observers )
         observer->infoChanged( infoMap );
 }
 
 void
 InfoProxy::notifyCloudObservers( const QVariantMap &cloudMap ) const
 {
-    foreach( InfoObserver *observer, m_cloudObservers )
+    for( InfoObserver *observer : m_cloudObservers )
         observer->infoChanged( cloudMap );
 }
 

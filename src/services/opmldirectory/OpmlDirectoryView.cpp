@@ -50,7 +50,7 @@ OpmlDirectoryView::contextMenuEvent( QContextMenuEvent *event )
     }
 
     QMenu menu;
-    foreach( QAction *action, actions )
+    for( QAction *action : actions )
     {
         if( action )
             menu.addAction( action );
@@ -60,7 +60,7 @@ OpmlDirectoryView::contextMenuEvent( QContextMenuEvent *event )
 
     //We keep the items that the actions need to be applied to in the actions private data.
     //Clear the data from all actions now that the context menu has executed.
-    foreach( QAction *action, actions )
+    for( QAction *action : actions )
         action->setData( QVariant() );
 }
 

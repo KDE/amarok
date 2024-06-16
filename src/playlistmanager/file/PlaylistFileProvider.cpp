@@ -328,7 +328,7 @@ PlaylistFileProvider::saveLater( Playlists::PlaylistFilePtr playlist )
 void
 PlaylistFileProvider::slotSaveLater() //SLOT
 {
-    foreach( Playlists::PlaylistFilePtr playlist, m_saveLaterPlaylists )
+    for( Playlists::PlaylistFilePtr playlist : m_saveLaterPlaylists )
     {
         playlist->save( true ); //TODO: read relative type when loading
     }

@@ -344,7 +344,7 @@ SqlRegistry::removeTrack( int urlId, const QString &uid )
 {
     // delete all entries linked to the url, including track
     QStringList tables = QStringList() << "tracks" << "lyrics" << "statistics" << "urls_labels";
-    foreach( const QString &table, tables )
+    for( const QString &table : tables )
     {
         QString query = QString( "DELETE FROM %1 WHERE url=%2" ).arg( table ).arg( urlId );
         m_collection->sqlStorage()->query( query );
@@ -829,7 +829,7 @@ SqlRegistry::commitDirtyTracks()
     TrackStatisticsTableCommitter().commit( dirtyTracks );
 
     // -- notify all observers
-    foreach( Meta::SqlYearPtr year, dirtyYears )
+    for( Meta::SqlYearPtr year : dirtyYears )
     {
         // this means that a new year was added to track or an old removed (or both),
         // Collection docs says we need to Q_EMIT updated() in this case. Ditto below.
@@ -837,30 +837,30 @@ SqlRegistry::commitDirtyTracks()
         year->invalidateCache();
         year->notifyObservers();
     }
-    foreach( Meta::SqlGenrePtr genre, dirtyGenres )
+    for( Meta::SqlGenrePtr genre : dirtyGenres )
     {
         m_collectionChanged = true;
         genre->invalidateCache();
         genre->notifyObservers();
     }
-    foreach( Meta::SqlAlbumPtr album, dirtyAlbums )
+    for( Meta::SqlAlbumPtr album : dirtyAlbums )
     {
         m_collectionChanged = true;
         album->invalidateCache();
         album->notifyObservers();
     }
-    foreach( Meta::SqlTrackPtr track, dirtyTracks )
+    for( Meta::SqlTrackPtr track : dirtyTracks )
     {
         // if only track changes, no need to Q_EMIT updated() from here
         track->notifyObservers();
     }
-    foreach( Meta::SqlArtistPtr artist, dirtyArtists )
+    for( Meta::SqlArtistPtr artist : dirtyArtists )
     {
         m_collectionChanged = true;
         artist->invalidateCache();
         artist->notifyObservers();
     }
-    foreach( Meta::SqlComposerPtr composer, dirtyComposers )
+    for( Meta::SqlComposerPtr composer : dirtyComposers )
     {
         m_collectionChanged = true;
         composer->invalidateCache();

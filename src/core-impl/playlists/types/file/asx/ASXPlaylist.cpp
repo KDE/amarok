@@ -144,7 +144,7 @@ ASXPlaylist::writeTrackList( )
         appendChild( root );
     }
 
-    foreach( Meta::TrackPtr track, trackList )
+    for( Meta::TrackPtr track : trackList )
     {
         QDomNode subNode = createElement( QStringLiteral("entry") );
 

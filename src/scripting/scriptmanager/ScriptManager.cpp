@@ -114,7 +114,7 @@ QStringList
 ScriptManager::listRunningScripts() const
 {
     QStringList runningScripts;
-    foreach( const ScriptItem *item, m_scripts )
+    for( const ScriptItem *item : m_scripts )
     {
         if( item->running() )
             runningScripts << item->info().pluginName();
@@ -195,7 +195,7 @@ ScriptManager::updateAllScripts() // SLOT
     }
 
     // remove deleted scripts
-    foreach( ScriptItem *item, m_scripts )
+    for( ScriptItem *item : m_scripts )
     {
         const QString specPath = QString( "%1/script.spec" ).arg( QFileInfo( item->url().path() ).path() );
         if( !QFile::exists( specPath ) )
@@ -329,7 +329,7 @@ ScriptManager::configChanged( bool changed )
 void
 ScriptManager::slotConfigChanged()
 {
-    foreach( ScriptItem *item, m_scripts )
+    for( ScriptItem *item : m_scripts )
     {
         const QString name = item->info().pluginName();
         bool enabledByDefault = item->info().isPluginEnabledByDefault();
@@ -428,7 +428,7 @@ KPluginInfo::List
 ScriptManager::scripts( const QString &category ) const
 {
     KPluginInfo::List scripts;
-    foreach( const ScriptItem *script, m_scripts )
+    for( const ScriptItem *script : m_scripts )
     {
         if( script->info().category() == category )
             scripts << script->info();
@@ -439,7 +439,7 @@ ScriptManager::scripts( const QString &category ) const
 QString
 ScriptManager::scriptNameForEngine( const QJSEngine *engine ) const
 {
-    foreach( const QString &name, m_scripts.keys() )
+    for( const QString &name : m_scripts.keys() )
     {
         ScriptItem *script = m_scripts[name];
         if( script->engine() == engine )

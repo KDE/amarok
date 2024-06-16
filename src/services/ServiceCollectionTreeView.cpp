@@ -54,7 +54,7 @@ ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
         if( filterModel() )
         {
             QModelIndexList tmp;
-            foreach( const QModelIndex &idx, indices )
+            for( const QModelIndex &idx : indices )
             {
                 tmp.append( filterModel()->mapToSource( idx ) );
             }
@@ -77,7 +77,7 @@ ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
                             QList<QAction*> actions = ac->actions();
                             if( !actions.isEmpty() )
                                 menu.addSeparator();
-                            foreach( QAction *action, actions )
+                            for( QAction *action : actions )
                             {
                                 if( !action->parent() )
                                     action->setParent( &menu );
@@ -92,7 +92,7 @@ ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
             {
                 (void)menu.exec( event->globalPos() );
                 QSet<CollectionTreeItem*> items;
-                foreach( const QModelIndex &index, indices )
+                for( const QModelIndex &index : indices )
                 {
                     if( index.isValid() && index.internalPointer() )
                         items.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );

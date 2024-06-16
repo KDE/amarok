@@ -252,7 +252,7 @@ CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
     QMap<Meta::TrackPtr, QUrl> urls;
-    foreach( Meta::TrackPtr track, tracks )
+    for( Meta::TrackPtr track : tracks )
     {
         if( track->isPlayable() )
         {
@@ -540,7 +540,7 @@ CollectionLocation::slotFinishRemove()
 
     QStringList dirsToRemove;
     debug() << "remove finished updating";
-    foreach( Meta::TrackPtr track, m_tracksSuccessfullyTransferred )
+    for( Meta::TrackPtr track : m_tracksSuccessfullyTransferred )
     {
         if(!track)
             continue;
@@ -676,7 +676,7 @@ CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
     DEBUG_BLOCK
     debug() << "Transfer errors:" << m_tracksWithError.count() << "of" << tracks.count();
 
-    foreach( Meta::TrackPtr track, m_tracksWithError.keys() )
+    for( Meta::TrackPtr track : m_tracksWithError.keys() )
     {
         debug() << "transfer error for track" << track->playableUrl();
     }

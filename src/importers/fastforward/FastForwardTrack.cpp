@@ -136,7 +136,7 @@ StatSyncing::FastForwardTrack::doCommit( const qint64 fields )
             return;
         }
 
-        foreach( const QString &label, m_labels )
+        for( const QString &label : m_labels )
         {
             {
                 // Check if the label exists

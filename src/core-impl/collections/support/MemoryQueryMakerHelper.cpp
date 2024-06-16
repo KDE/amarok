@@ -35,14 +35,14 @@ MemoryQueryMakerHelper::orderListByName( const QList<PointerType> &list, bool de
 {
     QList<PointerType> resultList = list;
     KSortableList<PointerType, QString> sortList;
-    foreach( const PointerType &pointer, list )
+    for( const PointerType &pointer : list )
     {
         sortList.insert( pointer->name(), pointer );
     }
     sortList.sort();
     QList<PointerType> tmpList;
     typedef KSortableItem<PointerType,QString> SortItem;
-    foreach( const SortItem &item, sortList )
+    for( const SortItem &item : sortList )
     {
        tmpList.append( item.second );
     }
@@ -62,14 +62,14 @@ Meta::YearList
 MemoryQueryMakerHelper::orderListByYear( const Meta::YearList &list, bool descendingOrder )
 {
     KSortableList<Meta::YearPtr, double> sortList;
-    foreach( Meta::YearPtr pointer, list )
+    for( Meta::YearPtr pointer : list )
     {
         sortList.insert( pointer->name().toDouble(), pointer );
     }
     sortList.sort();
     QList<Meta::YearPtr> tmpList;
     typedef KSortableItem<Meta::YearPtr,double> SortItem;
-    foreach( const SortItem &item, sortList )
+    for( const SortItem &item : sortList )
     {
         tmpList.append( item.second );
     }
@@ -102,14 +102,14 @@ MemoryQueryMakerHelper::orderListByString( const Meta::TrackList &tracks, qint64
     if( crv )
     {
         KSortableList<Meta::TrackPtr, QString> sortList;
-        foreach( const Meta::TrackPtr &pointer, tracks )
+        for( const Meta::TrackPtr &pointer : tracks )
         {
             sortList.insert( crv->value( pointer ), pointer );
         }
         sortList.sort();
         Meta::TrackList tmpList;
         typedef KSortableItem<Meta::TrackPtr,QString> SortItem;
-        foreach( const SortItem &item, sortList )
+        for( const SortItem &item : sortList )
         {
            tmpList.append( item.second );
         }
@@ -135,14 +135,14 @@ MemoryQueryMakerHelper::orderListByNumber( const Meta::TrackList &tracks, qint64
     if( crv )
     {
         KSortableList<Meta::TrackPtr, double> sortList;
-        foreach( const Meta::TrackPtr &pointer, tracks )
+        for( const Meta::TrackPtr &pointer : tracks )
         {
             sortList.insert( crv->value( pointer ).toDouble(), pointer );
         }
         sortList.sort();
         Meta::TrackList tmpList;
         typedef KSortableItem<Meta::TrackPtr,double> SortItem;
-        foreach( const SortItem &item, sortList )
+        for( const SortItem &item : sortList )
         {
            tmpList.append( item.second );
         }

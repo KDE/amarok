@@ -106,7 +106,7 @@ TagGuessOptionWidget::TagGuessOptionWidget( QWidget *parent )
 void
 TagGuessOptionWidget::editStateEnable( bool checked )      //SLOT
 {
-    foreach( QRadioButton *rb, m_caseEditRadioButtons )
+    for( QRadioButton *rb : m_caseEditRadioButtons )
         rb->setEnabled( checked );
 }
 
@@ -384,7 +384,7 @@ TagGuesserDialog::coloredFileName( const QMap<qint64,QString> &tags )
 {
     QString coloredFileName = m_fileName;
 
-    foreach( qint64 key, tags.keys() )
+    for( qint64 key : tags.keys() )
     {
         QString value = tags[key];
         // TODO: replace is not the right way to do this.

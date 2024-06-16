@@ -175,7 +175,7 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
 
     if( data->hasUrls() )
     {
-        foreach( const QUrl &url, data->urls() )
+        for( const QUrl &url : data->urls() )
             The::playlistManager()->import( url );
     }
 

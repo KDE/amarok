@@ -46,7 +46,7 @@ VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
 
 void VolumeDial::addWheelProxies(const QList<QWidget *> &proxies )
 {
-    foreach ( QWidget *proxy, proxies )
+    for ( QWidget *proxy : proxies )
     {
         if ( !m_wheelProxies.contains( proxy ) )
         {

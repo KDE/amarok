@@ -162,7 +162,7 @@ void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supporte
     if( m_pd && m_pd->isHidden() )
     {
         QActionList actions = actionsFor( selectedIndexes() );
-        foreach( QAction *action, actions )
+        for( QAction *action : actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
 
         m_pd->show();
@@ -267,7 +267,7 @@ void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent
     }
 
     QMenu menu;
-    foreach( QAction *action, actions )
+    for( QAction *action : actions )
         menu.addAction( action );
     menu.exec( mapToGlobal( event->pos() ) );
 
@@ -287,7 +287,7 @@ PlaylistBrowserNS::PlaylistBrowserView::actionsFor( const QModelIndexList &index
     QSet<PlaylistProvider *> providers, writableProviders;
     QActionList actions;
     QModelIndexList newPodcastEpisodes, oldPodcastEpisodes;
-    foreach( const QModelIndex &idx, indexes )
+    for( const QModelIndex &idx : indexes )
     {
         // direct provider actions:
         actions << idx.data( PrettyTreeRoles::DecoratorRole ).value<QActionList>();
@@ -327,11 +327,11 @@ PlaylistBrowserNS::PlaylistBrowserView::actionsFor( const QModelIndexList &index
         m_writableActionProvider = writableProviders.values().first();
 
     // process per-provider actions
-    foreach( PlaylistProvider *provider, providers )
+    for( PlaylistProvider *provider : providers )
     {
         // prepare arguments and get relevant actions
         PlaylistList providerPlaylists;
-        foreach( const PlaylistPtr &playlist, m_actionPlaylists )
+        for( const PlaylistPtr &playlist : m_actionPlaylists )
         {
             if( playlist->provider() == provider )
                 providerPlaylists << playlist;
@@ -430,7 +430,7 @@ void
 PlaylistBrowserView::slotSetNew( bool newState )
 {
     QModelIndexList indices = m_setNewAction->data().value<QModelIndexList>();
-    foreach( const QModelIndex &idx, indices )
+    for( const QModelIndex &idx : indices )
         model()->setData( idx, newState, PlaylistBrowserModel::EpisodeIsNewRole );
 }
 
@@ -457,13 +457,13 @@ PlaylistBrowserView::slotDelete()
 
     using namespace Playlists;
     QHash<PlaylistProvider *, PlaylistList> providerPlaylists;
-    foreach( const PlaylistPtr &playlist, m_writableActionPlaylists )
+    for( const PlaylistPtr &playlist : m_writableActionPlaylists )
     {
         if( playlist->provider() )
             providerPlaylists[ playlist->provider() ] << playlist;
     }
     QStringList providerNames;
-    foreach( const PlaylistProvider *provider, providerPlaylists.keys() )
+    for( const PlaylistProvider *provider : providerPlaylists.keys() )
         providerNames << provider->prettyName();
 
     QString deletionString = ( m_writableActionPlaylists.count() == 1 ?
@@ -480,7 +480,7 @@ PlaylistBrowserView::slotDelete()
 
     if( button == QMessageBox::Yes )
     {
-        foreach( PlaylistProvider *provider, providerPlaylists.keys() )
+        for( PlaylistProvider *provider : providerPlaylists.keys() )
             provider->deletePlaylists( providerPlaylists.value( provider ) );
     }
 }
@@ -488,12 +488,12 @@ PlaylistBrowserView::slotDelete()
 void
 PlaylistBrowserView::slotRemoveTracks()
 {
-    foreach( Playlists::PlaylistPtr playlist, m_writableActionTracks.uniqueKeys() )
+    for( Playlists::PlaylistPtr playlist : m_writableActionTracks.uniqueKeys() )
     {
         QList<int> trackIndices = m_writableActionTracks.values( playlist );
         std::sort( trackIndices.begin(), trackIndices.end() );
         int removed = 0;
-        foreach( int trackIndex, trackIndices )
+        for( int trackIndex : trackIndices )
         {
             playlist->removeTrack( trackIndex - removed /* account for already removed */ );
             removed++;
@@ -562,13 +562,13 @@ PlaylistBrowserView::insertIntoPlaylist( Playlist::AddOptions options )
     Meta::TrackList tracks;
 
     // add tracks for fully-selected playlists:
-    foreach( Playlists::PlaylistPtr playlist, m_actionPlaylists )
+    for( Playlists::PlaylistPtr playlist : m_actionPlaylists )
     {
         tracks << playlist->tracks();
     }
 
     // filter-out tracks from playlists that are selected, add lone tracks:
-    foreach( Playlists::PlaylistPtr playlist, m_actionTracks.uniqueKeys() )
+    for( Playlists::PlaylistPtr playlist : m_actionTracks.uniqueKeys() )
     {
         if( m_actionPlaylists.contains( playlist ) )
             continue;
@@ -576,7 +576,7 @@ PlaylistBrowserView::insertIntoPlaylist( Playlist::AddOptions options )
         Meta::TrackList playlistTracks = playlist->tracks();
         QList<int> positions = m_actionTracks.values( playlist );
         std::sort( positions.begin(), positions.end() );
-        foreach( int position, positions )
+        for( int position : positions )
         {
             if( position >= 0 && position < playlistTracks.count() )
                 tracks << playlistTracks.at( position );

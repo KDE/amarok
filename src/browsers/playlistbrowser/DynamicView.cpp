@@ -277,7 +277,7 @@ PlaylistBrowserNS::DynamicView::contextMenuEvent( QContextMenuEvent *event )
         return;
 
     QMenu menu;
-    foreach( QAction *action, actions )
+    for( QAction *action : actions )
     {
         if( action )
             menu.addAction( action );

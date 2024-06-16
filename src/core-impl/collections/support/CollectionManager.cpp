@@ -175,7 +175,7 @@ CollectionManager::startFullScan()
 {
     QReadLocker locker( &d->lock );
 
-    foreach( const CollectionPair &pair, d->collections )
+    for( const CollectionPair &pair : d->collections )
     {
         QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>() );
         if( csc )
@@ -188,7 +188,7 @@ CollectionManager::startIncrementalScan( const QString &directory )
 {
     QReadLocker locker( &d->lock );
 
-    foreach( const CollectionPair &pair, d->collections )
+    for( const CollectionPair &pair : d->collections )
     {
         QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>() );
         if( csc )
@@ -201,7 +201,7 @@ CollectionManager::stopScan()
 {
     QReadLocker locker( &d->lock );
 
-    foreach( const CollectionPair &pair, d->collections )
+    for( const CollectionPair &pair : d->collections )
     {
         QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>() );
         if( csc )
@@ -221,7 +221,7 @@ CollectionManager::queryMaker() const
     QReadLocker locker( &d->lock );
 
     QList<Collections::Collection*> colls;
-    foreach( const CollectionPair &pair, d->collections )
+    for( const CollectionPair &pair : d->collections )
     {
         if( pair.second & CollectionQueryable )
         {
@@ -243,7 +243,7 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
     }
     {
         QWriteLocker locker( &d->lock );
-        foreach( const CollectionPair &p, d->collections )
+        for( const CollectionPair &p : d->collections )
         {
             if( p.first == newCollection )
             {
@@ -327,7 +327,7 @@ CollectionManager::viewableCollections() const
     QReadLocker locker( &d->lock );
 
     QList<Collections::Collection*> result;
-    foreach( const CollectionPair &pair, d->collections )
+    for( const CollectionPair &pair : d->collections )
     {
         if( pair.second & CollectionViewable )
         {
@@ -356,7 +356,7 @@ CollectionManager::trackForUrl( const QUrl &url )
     if( !url.isValid() )
         return Meta::TrackPtr( nullptr );
 
-    foreach( Collections::TrackProvider *provider, d->trackProviders )
+    for( Collections::TrackProvider *provider : d->trackProviders )
     {
         if( provider->possiblyContainsTrack( url ) )
         {
@@ -381,7 +381,7 @@ CollectionManager::collectionStatus( const QString &collectionId ) const
 {
     QReadLocker locker( &d->lock );
 
-    foreach( const CollectionPair &pair, d->collections )
+    for( const CollectionPair &pair : d->collections )
     {
         if( pair.first->collectionId() == collectionId )
         {
@@ -397,7 +397,7 @@ CollectionManager::collections() const
     QReadLocker locker( &d->lock );
 
     QHash<Collections::Collection*, CollectionManager::CollectionStatus> result;
-    foreach( const CollectionPair &pair, d->collections )
+    for( const CollectionPair &pair : d->collections )
     {
         result.insert( pair.first, pair.second );
     }

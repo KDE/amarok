@@ -174,7 +174,7 @@ SortWidget::readSortPath( const QString &sortPath )
     trimToLevel();
 
     QStringList levels = sortPath.split( QLatin1Char('-') );
-    foreach( const QString &level, levels )
+    for( const QString &level : levels )
     {
         QStringList levelParts = level.split( '_' );
     /*

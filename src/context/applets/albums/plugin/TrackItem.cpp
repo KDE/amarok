@@ -71,7 +71,7 @@ TrackItem::metadataChanged(const Meta::TrackPtr &track )
     {
         setData( album->isCompilation(), AlbumCompilationRole );
         int num = 0;
-        foreach( const Meta::TrackPtr &track, album->tracks() )
+        for( const Meta::TrackPtr &track : album->tracks() )
         {
             if( num < track->trackNumber() )
                 num = track->trackNumber();

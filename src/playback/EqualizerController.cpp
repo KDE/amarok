@@ -77,7 +77,7 @@ EqualizerController::initialize( const Phonon::Path &path )
         else
         {
             QStringList paramNames;
-            foreach( const EffectParameter &param, equalizer->parameters() )
+            for( const EffectParameter &param : equalizer->parameters() )
                 paramNames << param.name();
             warning() << "Phonon equalizer effect" << description.name() << "with description"
                       << description.description() << "has" << parameterCount << "parameters ("
@@ -126,7 +126,7 @@ EqualizerController::eqBandsFreq() const
     if( equalizerParameters.isEmpty() )
         return bandFrequencies;
     QRegularExpression rx( "\\d+(?=Hz)" );
-    foreach( const Phonon::EffectParameter &mParam, equalizerParameters )
+    for( const Phonon::EffectParameter &mParam : equalizerParameters )
     {
         if( mParam.name().contains( rx ) )
         {
@@ -172,7 +172,7 @@ EqualizerController::eqUpdate()
             if( equalizerParametersIt.hasNext() )
                 equalizerParametersIt.next();
         }
-        foreach( const Phonon::EffectParameter &mParam, equalizerParameters )
+        for( const Phonon::EffectParameter &mParam : equalizerParameters )
         {
             scaledVal = equalizerParametersIt.hasNext() ? equalizerParametersIt.next() : 0;
             scaledVal *= qAbs(mParam.maximumValue().toDouble() )

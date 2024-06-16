@@ -93,7 +93,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
         return;
 
     QMenu menu;
-    foreach( QAction *action, actionsForIndices( indices, PlaylistAction ) )
+    for( QAction *action : actionsForIndices( indices, PlaylistAction ) )
         menu.addAction( action );
     menu.addSeparator();
 
@@ -115,7 +115,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     {
         QMenu *copyMenu = new QMenu( i18n( ("Copy to Collection") ), &menu );
         copyMenu->setIcon( QIcon::fromTheme( QStringLiteral("edit-copy") ) );
-        foreach( Collections::Collection *coll, writableCollections )
+        for( Collections::Collection *coll : writableCollections )
         {
             CollectionAction *copyAction = new CollectionAction( coll, &menu );
             connect( copyAction, &QAction::triggered, this, &FileView::slotPrepareCopyTracks );
@@ -125,7 +125,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
 
         QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), &menu );
         moveMenu->setIcon( QIcon::fromTheme( QStringLiteral("go-jump") ) );
-        foreach( Collections::Collection *coll, writableCollections )
+        for( Collections::Collection *coll : writableCollections )
         {
             CollectionAction *moveAction = new CollectionAction( coll, &menu );
             connect( moveAction, &QAction::triggered, this, &FileView::slotPrepareMoveTracks );
@@ -133,11 +133,11 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
         }
         menu.addMenu( moveMenu );
     }
-    foreach( QAction *action, actionsForIndices( indices, OrganizeAction ) )
+    for( QAction *action : actionsForIndices( indices, OrganizeAction ) )
         menu.addAction( action );
     menu.addSeparator();
 
-    foreach( QAction *action, actionsForIndices( indices, EditAction ) )
+    for( QAction *action : actionsForIndices( indices, EditAction ) )
         menu.addAction( action );
 
     menu.exec( e->globalPos() );
@@ -317,7 +317,7 @@ FileView::slotCopyTracks( const Meta::TrackList& tracks )
         return;
 
     QSet<Collections::Collection *> collections;
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
         collections.insert( track->collection() );
     }
@@ -347,7 +347,7 @@ FileView::slotMoveTracks( const Meta::TrackList& tracks )
         return;
 
     QSet<Collections::Collection *> collections;
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
         collections.insert( track->collection() );
     }
@@ -459,7 +459,7 @@ FileView::addIndicesToPlaylist( QModelIndexList indices, Playlist::AddOptions op
     std::sort( indices.begin(), indices.end() );
 
     QList<QUrl> urls;
-    foreach( const QModelIndex &index, indices )
+    for( const QModelIndex &index : indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         QUrl url = file.url();
@@ -499,7 +499,7 @@ FileView::startDrag( Qt::DropActions supportedActions )
         font.setPointSize( 16 );
         font.setBold( true );
 
-        foreach( QAction *action, actions )
+        for( QAction *action : actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
 
         m_pd->show();
@@ -526,7 +526,7 @@ FileView::selectedItems() const
     if( indices.isEmpty() )
         return items;
 
-    foreach( const QModelIndex& index, indices )
+    for( const QModelIndex &index : indices )
     {
         KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         items << item;
@@ -543,7 +543,7 @@ FileView::tracksForEdit() const
     if( indices.isEmpty() )
         return tracks;
 
-    foreach( const QModelIndex &index, indices )
+    for( const QModelIndex &index : indices )
     {
         KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
@@ -583,7 +583,7 @@ FileView::slotMoveToTrash( Qt::MouseButtons buttons, Qt::KeyboardModifiers modif
 
     QList<QUrl> urls;
     QStringList filepaths;
-    foreach( const QModelIndex& index, indices )
+    for( const QModelIndex &index : indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         filepaths << file.localPath();

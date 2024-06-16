@@ -122,7 +122,8 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
 
         QList<Token *> tokens = m_dragstack->tokensAtRow( i );
 
-        foreach( Token * token, tokens ) {
+        for( Token * token : tokens )
+        {
             if ( TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token ) )
             {
                 currentRowConfig.addElement( LayoutItemConfigRowElement( twl->value(), twl->width(),

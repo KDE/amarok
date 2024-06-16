@@ -291,7 +291,7 @@ Dynamic::DynamicModel::data( const QModelIndex& i, int role ) const
             {
                 // find the factory for the bias
                 QList<Dynamic::AbstractBiasFactory*> factories = Dynamic::BiasFactory::factories();
-                foreach( Dynamic::AbstractBiasFactory* factory, factories )
+                for( const Dynamic::AbstractBiasFactory* factory : factories )
                 {
                     if( factory->name() == indexBias->name() )
                         return factory->i18nDescription();
@@ -801,7 +801,7 @@ Dynamic::DynamicModel::savePlaylists( const QString &filename )
     xmlWriter.writeAttribute(QStringLiteral("version"), QStringLiteral("2") );
     xmlWriter.writeAttribute(QStringLiteral("current"), QString::number( m_activePlaylistIndex ) );
 
-    foreach( Dynamic::DynamicPlaylist *playlist, m_playlists )
+    for( const Dynamic::DynamicPlaylist *playlist : m_playlists )
     {
         xmlWriter.writeStartElement(QStringLiteral("playlist"));
         playlist->toXml( &xmlWriter );
@@ -819,8 +819,7 @@ Dynamic::DynamicModel::loadPlaylists( const QString &filename )
 {
     // -- clear all the old playlists
     beginResetModel();
-    foreach( Dynamic::DynamicPlaylist* playlist, m_playlists )
-        delete playlist;
+    qDeleteAll( m_playlists );
     m_playlists.clear();
 
     // -- open the file
@@ -900,8 +899,7 @@ Dynamic::DynamicModel::initPlaylists()
 {
     // -- clear all the old playlists
     beginResetModel();
-    foreach( Dynamic::DynamicPlaylist* playlist, m_playlists )
-        delete playlist;
+    qDeleteAll( m_playlists );
     m_playlists.clear();
 
     Dynamic::BiasedPlaylist *playlist;
@@ -980,7 +978,7 @@ Dynamic::DynamicModel::serializeIndex( QDataStream *stream, const QModelIndex& i
         current = current.parent();
     }
 
-    foreach( int row, rows )
+    for( int row : rows )
         *stream << row;
     *stream << -1;
 }
@@ -1106,7 +1104,7 @@ biasToString( Dynamic::BiasPtr bias, int level )
     result += QStringLiteral(" ").repeated(level) + bias->toString() + ' ' + QString::number(quintptr(bias.data()), 16) + '\n';
     if( Dynamic::AndBias* aBias = qobject_cast<Dynamic::AndBias*>(bias.data()) )
     {
-        foreach( Dynamic::BiasPtr bias2, aBias->biases() )
+        for( Dynamic::BiasPtr bias2 : aBias->biases() )
             result += biasToString( bias2, level + 1 );
     }
     return result;
@@ -1117,7 +1115,7 @@ Dynamic::DynamicModel::toString()
 {
     QString result;
 
-    foreach( Dynamic::DynamicPlaylist* playlist, m_playlists )
+    for( Dynamic::DynamicPlaylist *playlist : m_playlists )
     {
         result += playlist->title() + ' ' + QString::number(quintptr(playlist), 16) + '\n';
         if( Dynamic::BiasedPlaylist* bPlaylist = qobject_cast<Dynamic::BiasedPlaylist*>(playlist ) )

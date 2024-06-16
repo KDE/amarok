@@ -87,7 +87,7 @@ M3UPlaylist::savePlaylist( QFile &file )
     QStringList titles;
     QList<int> lengths;
 
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         if( !track ) // see BUG: 303056
             continue;

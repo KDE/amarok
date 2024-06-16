@@ -65,7 +65,7 @@ CollectionScanner::Album::cover() const
 {
     // we prefer covers included in tracks.
     // At least we know exactly that they really belong to the album
-    foreach( Track *track, m_tracks )
+    for( const auto &track : m_tracks )
     {
         // IMPROVEMENT: skip covers that have a strange aspect ratio or are
         // unrealistically small, or do not resolve to a valid image
@@ -79,7 +79,7 @@ CollectionScanner::Album::cover() const
     int     bestRating = -1;
     qint64  bestSize = 0;
 
-    foreach( const QString &cover, m_covers )
+    for( const auto &cover : m_covers )
     {
         int rating = 0;
 
@@ -132,7 +132,7 @@ CollectionScanner::Album::tracks() const
 bool
 CollectionScanner::Album::isNoCompilation() const
 {
-    foreach( CollectionScanner::Track *track, m_tracks )
+    for( const auto &track : m_tracks )
     {
         if( track->isNoCompilation() )
             return true;

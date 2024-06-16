@@ -154,7 +154,7 @@ void
 CoverManager::slotArtistQueryResult( Meta::ArtistList artists ) //SLOT
 {
     DEBUG_BLOCK
-    foreach( Meta::ArtistPtr artist, artists )
+    for( Meta::ArtistPtr artist : artists )
         m_artistList << artist;
 }
 
@@ -162,7 +162,7 @@ void
 CoverManager::slotContinueConstruction() //SLOT
 {
     DEBUG_BLOCK
-    foreach( Meta::ArtistPtr artist, m_artistList )
+    for( Meta::ArtistPtr artist : m_artistList )
     {
         ArtistItem* item = new ArtistItem( m_artistView, artist );
         item->setIcon( 0, QIcon::fromTheme( "view-media-artist-amarok" ) );
@@ -288,7 +288,7 @@ void
 CoverManager::metadataChanged(const Meta::AlbumPtr &album )
 {
     const QString albumName = album->name();
-    foreach( CoverViewItem *item, m_coverItems )
+    for( CoverViewItem *item : m_coverItems )
     {
         if( albumName == item->albumPtr()->name() )
             item->loadCover();
@@ -361,7 +361,7 @@ CoverManager::slotArtistSelected() //SLOT
 
     qm->beginOr();
     const QList< QTreeWidgetItem* > items = m_artistView->selectedItems();
-    foreach( const QTreeWidgetItem *item, items )
+    for( const QTreeWidgetItem *item : items )
     {
         const ArtistItem *artistItem = static_cast< const ArtistItem* >( item );
         if( artistItem != m_artistView->invisibleRootItem()->child( 0 ) )
@@ -422,7 +422,7 @@ CoverManager::slotArtistQueryDone() //SLOT
     //also provides quite a massive speed improvement when loading covers.
     m_coverView->hide();
     m_coverViewSpacer->show();
-    foreach( const Meta::AlbumPtr &album, m_albumList )
+    for( const Meta::AlbumPtr &album : m_albumList )
     {
         qApp->processEvents( QEventLoop::ExcludeSocketNotifiers );
         if( isHidden() )
@@ -497,7 +497,7 @@ CoverManager::slotSetFilter() //SLOT
         item = tmp;
     }
 
-    foreach( QListWidgetItem *item, m_coverItems )
+    for( QListWidgetItem *item : m_coverItems )
     {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( coverItem->album().contains( m_filter, Qt::CaseInsensitive ) || coverItem->artist().contains( m_filter, Qt::CaseInsensitive ) )
@@ -530,7 +530,7 @@ CoverManager::changeView( CoverManager::View id, bool force ) //SLOT
     while( itemsCount-- > 0 )
        m_coverView->takeItem( 0 );
 
-    foreach( QListWidgetItem *item, m_coverItems )
+    for( QListWidgetItem *item : m_coverItems )
     {
         bool show = false;
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
@@ -588,7 +588,7 @@ CoverManager::stopFetching()
 void
 CoverManager::loadCover( const QString &artist, const QString &album )
 {
-    foreach( QListWidgetItem *item, m_coverItems )
+    for( QListWidgetItem *item : m_coverItems )
     {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if ( album == coverItem->album() && ( artist == coverItem->artist() || ( artist.isEmpty() && coverItem->artist().isEmpty() ) ) )
@@ -633,7 +633,7 @@ CoverManager::updateStatusBar()
 
         if( m_fetchCovers.size() == 1 )
         {
-            foreach( Meta::AlbumPtr album, m_fetchCovers )
+            for( Meta::AlbumPtr album : m_fetchCovers )
             {
                 if( album->hasAlbumArtist() && !album->albumArtist()->prettyName().isEmpty() )
                 {
@@ -692,7 +692,7 @@ CoverManager::updateStatusBar()
             if( selected.first() != m_artistView->invisibleRootItem()->child( 0 ) )
             {
                 QStringList artists;
-                foreach( const QTreeWidgetItem *item, selected )
+                for( const QTreeWidgetItem *item : selected )
                 {
                     QString artist = item->text( 0 );
                     Amarok::manipulateThe( artist, false );
@@ -776,7 +776,7 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
             if( ac )
             {
                 actions = ac->actions();
-                foreach( QAction *action, actions )
+                for( QAction *action : actions )
                     menu.addAction( action );
             }
         }
@@ -790,7 +790,7 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
         Meta::AlbumList unsetAlbums;
         Meta::AlbumList fetchAlbums;
 
-        foreach( QListWidgetItem *item, items )
+        for( QListWidgetItem *item : items )
         {
             CoverViewItem *cvItem = dynamic_cast<CoverViewItem*>(item);
             Meta::AlbumPtr album = cvItem->albumPtr();
@@ -800,7 +800,7 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
                 if( ac )
                 {
                     QList<QAction *> actions = ac->actions();
-                    foreach( QAction *action, actions )
+                    for( QAction *action : actions )
                     {
                         if( qobject_cast<FetchCoverAction*>(action) )
                             fetchAlbums << album;

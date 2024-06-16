@@ -118,7 +118,7 @@ AmarokCollectionViewScript::createScriptedActions( QMenu &menu, const QModelInde
         return;
     s_selection = new Selection( indices );
 
-    foreach( const QString &scriptName, s_instances.keys() )
+    for( const QString &scriptName : s_instances.keys() )
     {
         if( s_instances[scriptName] )
         {
@@ -204,7 +204,7 @@ QList<int>
 AmarokCollectionViewScript::levels() const
 {
     QList<int> levels;
-    foreach( CategoryId::CatMenuId level, m_collectionWidget->currentView()->levels() )
+    for( CategoryId::CatMenuId level : m_collectionWidget->currentView()->levels() )
         levels << level;
     return levels;
 }
@@ -223,7 +223,7 @@ void
 AmarokCollectionViewScript::setLevels( const QList<int> &levels )
 {
     QList<CategoryId::CatMenuId> catLevels;
-    foreach( int level, levels )
+    for( int level : levels )
     {
         if( !m_categoryEnum.valueToKey( level ) )
         {
@@ -413,7 +413,7 @@ QList<CollectionTreeItem*>
 Selection::selectedItems()
 {
     QList<CollectionTreeItem*> collectionItems;
-    foreach( const QModelIndex &index, m_indices )
+    for( const QModelIndex &index : m_indices )
         collectionItems << static_cast<CollectionTreeItem*>( index.internalPointer() );
     return collectionItems;
 }

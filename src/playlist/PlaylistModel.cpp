@@ -632,8 +632,8 @@ Playlist::Model::mimeData( const QModelIndexList &indexes ) const
     AmarokMimeData* mime = new AmarokMimeData();
     Meta::TrackList selectedTracks;
 
-    foreach( const QModelIndex &it, indexes )
-    selectedTracks << m_items.at( it.row() )->track();
+    for( const QModelIndex &it : indexes )
+        selectedTracks << m_items.at( it.row() )->track();
 
     mime->setTracks( selectedTracks );
     return mime;
@@ -756,7 +756,7 @@ Playlist::Model::stateOfRow( int row ) const
 bool
 Playlist::Model::containsTrack( const Meta::TrackPtr& track ) const
 {
-    foreach( Item* i, m_items )
+    for( Item* i : m_items )
     {
         if ( *i->track() == *track )
             return true;
@@ -768,7 +768,7 @@ int
 Playlist::Model::firstRowForTrack( const Meta::TrackPtr& track ) const
 {
     int row = 0;
-    foreach( Item* i, m_items )
+    for( Item* i : m_items )
     {
         if ( *i->track() == *track )
             return row;
@@ -783,7 +783,7 @@ Playlist::Model::allRowsForTrack( const Meta::TrackPtr& track ) const
     QSet<int> trackRows;
 
     int row = 0;
-    foreach( Item* i, m_items )
+    for( Item* i : m_items )
     {
         if ( *i->track() == *track )
             trackRows.insert( row );
@@ -858,7 +858,7 @@ void
 Playlist::Model::metadataChanged(const Meta::TrackPtr &track )
 {
     int row = 0;
-    foreach( Item* i, m_items )
+    for( Item* i : m_items )
     {
         if ( i->track() == track )
         {
@@ -913,7 +913,7 @@ Meta::TrackList
 Playlist::Model::tracks()
 {
     Meta::TrackList tl;
-    foreach( Item* item, m_items )
+    for( Item* item : m_items )
         tl << item->track();
     return tl;
 }

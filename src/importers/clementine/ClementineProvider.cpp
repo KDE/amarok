@@ -51,8 +51,7 @@ ClementineProvider::artists()
     m_connection->query( "SELECT DISTINCT(artist) FROM songs" );
 
     QSet<QString> result;
-    foreach( const QVariantList &row,
-             m_connection->query( "SELECT DISTINCT(artist) FROM songs" ) )
+    for( const QVariantList &row : m_connection->query( "SELECT DISTINCT(artist) FROM songs" ) )
         result.insert( row[0].toString() );
 
     return result;
@@ -73,7 +72,7 @@ ClementineProvider::artistTracks( const QString &artistName )
            << Meta::valPlaycount;
 
     TrackList result;
-    foreach( const QVariantList &row, m_connection->query( query, bindValues ) )
+    for( const QVariantList &row : m_connection->query( query, bindValues ) )
     {
         const QVariant &filename = row[0];
 

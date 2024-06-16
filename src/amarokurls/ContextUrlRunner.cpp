@@ -54,7 +54,7 @@ bool ContextUrlRunner::run( const AmarokUrl &url )
     if( model )
     {
         model->clear();
-        foreach( const QString &appletPluginName, appletList )
+        for( const QString &appletPluginName : appletList )
         {
             model->setAppletEnabled( appletPluginName, true );
         }

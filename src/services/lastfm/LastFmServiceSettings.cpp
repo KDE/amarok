@@ -229,7 +229,7 @@ LastFmServiceSettings::settingsChanged()
 void
 LastFmServiceSettings::addNewLabels( const Meta::LabelList &labels )
 {
-    foreach( const Meta::LabelPtr &label , labels )
+    for( const Meta::LabelPtr &label : labels )
         m_configDialog->kcfg_FilteredLabel->addItem( label->name() );
 }
 

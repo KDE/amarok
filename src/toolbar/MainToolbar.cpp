@@ -559,7 +559,7 @@ MainToolbar::updateBookmarks( const QString *BookmarkName )
             Capabilities::TimecodeLoadCapability *tcl = track->create<Capabilities::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();
             // debug() << "found " << list.count() << " timecodes on this track";
-            foreach( AmarokUrlPtr url, list )
+            for( AmarokUrlPtr url : list )
             {
                 if( url->command() == "play" && url->args().keys().contains( "pos" ) )
                 {

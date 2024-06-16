@@ -93,7 +93,7 @@ LabelsEngine::sourceRequestEvent( const QString &name )
 void
 LabelsEngine::resultReady( const Meta::LabelList &labels )
 {
-    foreach( const Meta::LabelPtr &label, labels )
+    for( const Meta::LabelPtr &label : labels )
     {
         if( !label->name().isEmpty() )
             m_allLabels << label->name();
@@ -137,7 +137,7 @@ LabelsEngine::update( bool reload )
 
     QStringList userLabels;
 
-    foreach( const Meta::LabelPtr &label, track->labels() )
+    for( const Meta::LabelPtr &label : track->labels() )
         userLabels += label->name();
 
     userLabels.sort();
@@ -209,7 +209,7 @@ LabelsEngine::fetchLastFm()
         currentTitle = m_title;
         separators.clear();
         separators << " (" << " [" << " - " << " featuring " << " feat. " << " feat " << " ft. " << " ft " << "/";
-        foreach( const QString &separator, separators )
+        for( const QString &separator : separators )
         {
             if( m_title.contains(separator,Qt::CaseInsensitive) )
             {
@@ -231,7 +231,7 @@ LabelsEngine::fetchLastFm()
         currentTitle = m_title;
         separators.clear();
         separators << " vs. " << " vs " << " featuring " << " feat. " << " feat " << " ft. " << " ft " << ", " << " and " << " & " << "/";
-        foreach( const QString &separator, separators )
+        for( const QString &separator : separators )
         {
             if( m_artist.contains(separator,Qt::CaseInsensitive) )
             {
@@ -241,7 +241,7 @@ LabelsEngine::fetchLastFm()
         }
         separators.clear();
         separators << " (" << " [" << " - " << " featuring " << " feat. " << " feat " << " ft. " << " ft " << "/";
-        foreach( const QString &separator, separators )
+        for( const QString &separator : separators )
         {
             if( m_title.contains(separator,Qt::CaseInsensitive) )
             {

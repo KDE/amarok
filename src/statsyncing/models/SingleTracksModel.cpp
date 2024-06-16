@@ -80,7 +80,7 @@ QMimeData *
 SingleTracksModel::mimeData( const QModelIndexList &indexes ) const
 {
     Meta::TrackList tracks;
-    foreach( const QModelIndex &idx, indexes )
+    for( const QModelIndex &idx : indexes )
     {
         if( idx.isValid() && idx.row() >= 0 && idx.row() < m_tracks.count() &&
             idx.column() == 0 )

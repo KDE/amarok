@@ -87,7 +87,7 @@ DaapCollectionFactory::connectToManualServers()
 {
     DEBUG_BLOCK
     QStringList sl = AmarokConfig::manuallyAddedServers();
-    foreach( const QString &server, sl )
+    for( const QString &server : sl )
     {
         debug() << "Adding server " << server;
         QStringList current = server.split( QLatin1Char(':'), Qt::KeepEmptyParts );

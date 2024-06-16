@@ -80,7 +80,7 @@ MediaDevicePodcastProvider::playlists()
 {
     Playlists::PlaylistList playlists;
 
-    foreach( PodcastChannelPtr channel, channels() )
+    for( PodcastChannelPtr channel : channels() )
         playlists << Playlists::PlaylistPtr::dynamicCast( channel );
 
     return playlists;

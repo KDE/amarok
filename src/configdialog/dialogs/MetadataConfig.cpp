@@ -111,7 +111,7 @@ MetadataConfig::MetadataConfig( Amarok2ConfigDialog *parent )
     i18nSyncLabels.insert( Meta::valLabel, i18nc( "Statistics sync checkbox label",
                                                   "Synchronize Labels" ) );
 
-    foreach( qint64 field, StatSyncing::Controller::availableFields() )
+    for( qint64 field : StatSyncing::Controller::availableFields() )
     {
         QString name = i18nSyncLabels.value( field );
         if( name.isEmpty() )
@@ -201,7 +201,7 @@ MetadataConfig::slotForgetCollections()
 {
     if( !m_statSyncingConfig )
         return;
-    foreach( const QModelIndex &idx, m_statSyncingProvidersView->selectionModel()->selectedIndexes() )
+    for( const QModelIndex &idx : m_statSyncingProvidersView->selectionModel()->selectedIndexes() )
     {
         QString id = idx.data( StatSyncing::Config::ProviderIdRole ).toString();
         m_statSyncingConfig->forgetProvider( id );
@@ -308,7 +308,8 @@ qint64
 MetadataConfig::checkedFields() const
 {
     qint64 ret = 0;
-    foreach( QCheckBox *checkBox, m_statSyncingFieldsLayout->parentWidget()->findChildren<QCheckBox *>() )
+    auto list = m_statSyncingFieldsLayout->parentWidget()->findChildren<QCheckBox *>();
+    for( QCheckBox *checkBox : list )
     {
         if( checkBox->isChecked() && checkBox->property( "field" ).canConvert<qint64>() )
             ret |= checkBox->property( "field" ).value<qint64>();

@@ -144,7 +144,7 @@ CollectionTrack::labels() const
 {
     Meta::LabelList labels = m_track->labels();
     QSet<QString> labelNames;
-    foreach( Meta::LabelPtr label, labels )
+    for( Meta::LabelPtr label : labels )
         labelNames.insert( label->name() );
     return labelNames;
 }
@@ -154,21 +154,21 @@ CollectionTrack::setLabels( const QSet<QString> &labels )
 {
     QSet<QString> existingLabels;
     QMap<QString, Meta::LabelPtr> existingLabelsMap;
-    foreach( const Meta::LabelPtr &label, m_track->labels() )
+    for( const Meta::LabelPtr &label : m_track->labels() )
     {
         existingLabels.insert( label->name() );
         existingLabelsMap.insert( label->name(), label );
     }
 
     QSet<QString> toRemove = existingLabels - labels;
-    foreach( const QString &labelName, toRemove )
+    for( const QString &labelName : toRemove )
     {
         Q_ASSERT( existingLabelsMap.contains( labelName ) );
         m_track->removeLabel( existingLabelsMap.value( labelName ) );
     }
 
     QSet<QString> toAdd = labels - existingLabels;
-    foreach( const QString &labelName, toAdd )
+    for( const QString &labelName : toAdd )
     {
         m_track->addLabel( labelName );
     }

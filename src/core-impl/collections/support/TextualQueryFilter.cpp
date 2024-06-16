@@ -47,11 +47,11 @@ Collections::addTextualFilter( Collections::QueryMaker *qm, const QString &filte
     const int validFilters = qm->validFilterMask();
 
     ParsedExpression parsed = ExpressionParser::parse( filter );
-    foreach( const or_list &orList, parsed )
+    for( const or_list &orList : parsed )
     {
         qm->beginOr();
 
-        foreach( const expression_element &elem, orList )
+        for( const expression_element &elem : orList )
         {
             if( elem.negate )
                 qm->beginAnd();

@@ -67,7 +67,7 @@ QSet<QString>
 AmarokProvider::artists()
 {
     QSet<QString> result;
-    foreach( const QVariantList &row, m_connection->query( "SELECT name FROM artists" ) )
+    for( const QVariantList &row : m_connection->query( "SELECT name FROM artists" ) )
         result.insert( row[0].toString() );
 
     return result;
@@ -96,7 +96,7 @@ AmarokProvider::artistTracks( const QString &artistName )
            << Meta::valLastPlayed << Meta::valPlaycount;
 
     TrackList result;
-    foreach( const QVariantList &row, m_connection->query( query, bindValues ) )
+    for( const QVariantList &row : m_connection->query( query, bindValues ) )
     {
         const qint64 urlId = row[0].toInt();
 
@@ -112,7 +112,7 @@ AmarokProvider::artistTracks( const QString &artistName )
         lblBindValues.insert( ":url", urlId );
 
         QSet<QString> labels;
-        foreach( const QVariantList &lbl, m_connection->query( lblQuery, lblBindValues ) )
+        for( const QVariantList &lbl : m_connection->query( lblQuery, lblBindValues ) )
             labels.insert( lbl[0].toString() );
 
         result << TrackPtr( new AmarokTrack( urlId, m_connection, metadata, labels ) );

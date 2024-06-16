@@ -331,7 +331,7 @@ BookmarkModel::mimeData( const QModelIndexList &indexes ) const
     BookmarkGroupList groups;
     BookmarkList bookmarks;
 
-    foreach( const QModelIndex &index, indexes ) {
+    for( const QModelIndex &index : indexes ) {
 
         BookmarkViewItemPtr item = m_viewItems.value( index.internalId() );
 
@@ -380,7 +380,7 @@ BookmarkModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int
 
             BookmarkGroupList groups = bookmarkGroupDrag->bookmarkGroups();
 
-            foreach( BookmarkGroupPtr group, groups ) {
+            for( BookmarkGroupPtr group : groups ) {
                 group->reparent( parentGroup );
             }
 
@@ -398,7 +398,7 @@ BookmarkModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int
         {
             BookmarkList bookmarks = dragList->bookmarks();
 
-            foreach( AmarokUrlPtr bookmarkPtr, bookmarks ) {
+            for( AmarokUrlPtr bookmarkPtr : bookmarks ) {
                 bookmarkPtr->reparent( parentGroup );
             }
 
@@ -495,7 +495,7 @@ BookmarkModel::editBookmark( int id )
 
   //for now, assume that the newly added playlist is in the top level:
     int row = m_root->childGroups().count() - 1;
-    foreach ( AmarokUrlPtr bookmark, m_root->childBookmarks() ) {
+    for ( AmarokUrlPtr bookmark : m_root->childBookmarks() ) {
         row++;
         if ( bookmark->id() == id ) {
             Q_EMIT editIndex( createIndex( row , 0, BookmarkViewItemPtr::staticCast( bookmark ) ) );
@@ -516,7 +516,7 @@ BookmarkModel::createNewGroup()
     reloadFromDb();
 
     int row = 0;
-    foreach ( BookmarkGroupPtr childGroup, m_root->childGroups() ) {
+    for ( BookmarkGroupPtr childGroup : m_root->childGroups() ) {
         if ( childGroup->id() == id )
         {
             debug() << "emitting edit for " << childGroup->name() << " id " << childGroup->id() << " in row " << row;
@@ -542,7 +542,7 @@ BookmarkModel::createNewBookmark()
     reloadFromDb();
     debug() << "id of new bookmark: " << id;
     int row = m_root->childGroups().count();
-    foreach ( AmarokUrlPtr childBookmark, m_root->childBookmarks() ) {
+    for ( AmarokUrlPtr childBookmark : m_root->childBookmarks() ) {
         debug() << id << " == " << childBookmark->id() << " ? ";
         if ( childBookmark->id() == id )
         {
@@ -607,7 +607,7 @@ BookmarkModel::renameBookmark( const QString& oldName, const QString& newName )
 bool
 BookmarkModel::setBookmarkArgRecursively(  BookmarkGroupPtr group, const QString& name, const QString& key, const QString &value )
 {
-    foreach( AmarokUrlPtr item, group->childBookmarks() )
+    for( AmarokUrlPtr item : group->childBookmarks() )
     {
         if( item->name() == name )
         {
@@ -618,7 +618,7 @@ BookmarkModel::setBookmarkArgRecursively(  BookmarkGroupPtr group, const QString
     }
 
     //if not found, recurse through child groups
-    foreach( BookmarkGroupPtr childGroup, group->childGroups() )
+    for( BookmarkGroupPtr childGroup : group->childGroups() )
     {
         if( setBookmarkArgRecursively( childGroup, name, key, value ) )
             return true;
@@ -631,7 +631,7 @@ BookmarkModel::setBookmarkArgRecursively(  BookmarkGroupPtr group, const QString
 bool
 BookmarkModel::deleteBookmarkRecursively( BookmarkGroupPtr group, const QString& name )
 {
-    foreach( AmarokUrlPtr item, group->childBookmarks() )
+    for( AmarokUrlPtr item : group->childBookmarks() )
     {
         debug() << "item->name(): " << item->name();
         if( item->name() == name )
@@ -643,7 +643,7 @@ BookmarkModel::deleteBookmarkRecursively( BookmarkGroupPtr group, const QString&
     }
 
     //if not found, recurse through child groups
-    foreach( BookmarkGroupPtr childGroup, group->childGroups() )
+    for( BookmarkGroupPtr childGroup : group->childGroups() )
     {
         if( deleteBookmarkRecursively( childGroup, name ) )
             return true;
@@ -656,7 +656,7 @@ BookmarkModel::deleteBookmarkRecursively( BookmarkGroupPtr group, const QString&
 bool
 BookmarkModel::renameBookmarkRecursively( BookmarkGroupPtr group, const QString& oldName, const QString& newName )
 {
-    foreach( AmarokUrlPtr item, group->childBookmarks() )
+    for( AmarokUrlPtr item : group->childBookmarks() )
     {
         debug() << "item->name(): " << item->name();
         if( item->name() == oldName)
@@ -668,7 +668,7 @@ BookmarkModel::renameBookmarkRecursively( BookmarkGroupPtr group, const QString&
     }
 
     //if not found, recurse through child groups
-    foreach( BookmarkGroupPtr childGroup, group->childGroups() )
+    for( BookmarkGroupPtr childGroup : group->childGroups() )
     {
         if( renameBookmarkRecursively( childGroup, oldName, newName ) )
             return true;

@@ -218,7 +218,7 @@ int CompoundProgressBar::calcCompoundPercentage()
     int count = m_progressMap.count();
     int total = 0;
 
-    foreach( ProgressBar *currentBar, m_progressMap )
+    for( ProgressBar *currentBar : m_progressMap )
         total += currentBar->percentage();
 
     return count == 0 ? 0 : total / count;
@@ -228,7 +228,7 @@ void CompoundProgressBar::cancelAll()
 {
     QMutexLocker locker( &m_mutex );
 
-    foreach( ProgressBar *currentBar, m_progressMap )
+    for( ProgressBar *currentBar : m_progressMap )
         currentBar->cancel();
 }
 

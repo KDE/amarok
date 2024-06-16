@@ -24,7 +24,7 @@ MetaQueryMaker::MetaQueryMaker( const QList<Collections::Collection*> &collectio
     , m_queryDoneCount( 0 )
     , m_queryDoneCountMutex()
 {
-    foreach( Collections::Collection *c, collections )
+    for( Collections::Collection *c : collections )
     {
         QueryMaker *b = c->queryMaker();
         builders.append( b );
@@ -51,7 +51,7 @@ MetaQueryMaker::MetaQueryMaker( const QList<QueryMaker*> &queryMakers )
     , m_queryDoneCount( 0 )
     , m_queryDoneCountMutex()
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
     {
         connect( b, &QueryMaker::queryDone, this, &MetaQueryMaker::slotQueryDone );
         //relay signals directly
@@ -68,28 +68,27 @@ MetaQueryMaker::MetaQueryMaker( const QList<QueryMaker*> &queryMakers )
 
 MetaQueryMaker::~MetaQueryMaker()
 {
-    foreach( QueryMaker *b, builders )
-        delete b;
+    qDeleteAll( builders );
 }
 
 void
 MetaQueryMaker::run()
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->run();
 }
 
 void
 MetaQueryMaker::abortQuery()
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->abortQuery();
 }
 
 QueryMaker*
 MetaQueryMaker::setQueryType( QueryType type )
 {
-    foreach( QueryMaker *qm, builders )
+    for( QueryMaker *qm : builders )
         qm->setQueryType( type );
     return this;
 }
@@ -97,7 +96,7 @@ MetaQueryMaker::setQueryType( QueryType type )
 QueryMaker*
 MetaQueryMaker::addReturnValue( qint64 value )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->addReturnValue( value );
     return this;
 }
@@ -105,7 +104,7 @@ MetaQueryMaker::addReturnValue( qint64 value )
 QueryMaker*
 MetaQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 {
-    foreach( QueryMaker *qm, builders )
+    for( QueryMaker *qm : builders )
         qm->addReturnFunction( function, value );
     return this;
 }
@@ -115,7 +114,7 @@ MetaQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 QueryMaker*
 MetaQueryMaker::orderBy( qint64 value, bool descending )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->orderBy( value, descending );
     return this;
 }
@@ -123,7 +122,7 @@ MetaQueryMaker::orderBy( qint64 value, bool descending )
 QueryMaker*
 MetaQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->addFilter( value, filter, matchBegin, matchEnd );
     return this;
 }
@@ -131,7 +130,7 @@ MetaQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin,
 QueryMaker*
 MetaQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->excludeFilter( value, filter, matchBegin, matchEnd );
     return this;
 }
@@ -139,7 +138,7 @@ MetaQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBe
 QueryMaker*
 MetaQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->addNumberFilter( value, filter, compare);
     return this;
 }
@@ -147,7 +146,7 @@ MetaQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::Number
 QueryMaker*
 MetaQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->excludeNumberFilter( value, filter, compare );
     return this;
 }
@@ -155,7 +154,7 @@ MetaQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::Nu
 QueryMaker*
 MetaQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->addMatch( track );
     return this;
 }
@@ -164,7 +163,7 @@ MetaQueryMaker::addMatch( const Meta::TrackPtr &track )
 QueryMaker*
 MetaQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::ArtistMatchBehaviour behaviour )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->addMatch( artist, behaviour );
     return this;
 }
@@ -172,7 +171,7 @@ MetaQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::ArtistMatch
 QueryMaker*
 MetaQueryMaker::addMatch( const Meta::AlbumPtr &album )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->addMatch( album );
     return this;
 }
@@ -180,7 +179,7 @@ MetaQueryMaker::addMatch( const Meta::AlbumPtr &album )
 QueryMaker*
 MetaQueryMaker::addMatch( const Meta::GenrePtr &genre )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->addMatch( genre );
     return this;
 }
@@ -188,7 +187,7 @@ MetaQueryMaker::addMatch( const Meta::GenrePtr &genre )
 QueryMaker*
 MetaQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->addMatch( composer );
     return this;
 }
@@ -196,7 +195,7 @@ MetaQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 QueryMaker*
 MetaQueryMaker::addMatch( const Meta::YearPtr &year )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->addMatch( year );
     return this;
 }
@@ -204,7 +203,7 @@ MetaQueryMaker::addMatch( const Meta::YearPtr &year )
 QueryMaker*
 MetaQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->addMatch( label );
     return this;
 }
@@ -212,7 +211,7 @@ MetaQueryMaker::addMatch( const Meta::LabelPtr &label )
 QueryMaker*
 MetaQueryMaker::limitMaxResultSize( int size )
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->limitMaxResultSize( size );
     return this;
 }
@@ -220,7 +219,7 @@ MetaQueryMaker::limitMaxResultSize( int size )
 QueryMaker*
 MetaQueryMaker::beginAnd()
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->beginAnd();
     return this;
 }
@@ -228,7 +227,7 @@ MetaQueryMaker::beginAnd()
 QueryMaker*
 MetaQueryMaker::beginOr()
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->beginOr();
     return this;
 }
@@ -236,7 +235,7 @@ MetaQueryMaker::beginOr()
 QueryMaker*
 MetaQueryMaker::endAndOr()
 {
-    foreach( QueryMaker *b, builders )
+    for( QueryMaker *b : builders )
         b->endAndOr();
     return this;
 }
@@ -244,7 +243,7 @@ MetaQueryMaker::endAndOr()
 QueryMaker*
 MetaQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
-    foreach( QueryMaker *qm, builders )
+    for( QueryMaker *qm : builders )
         qm->setAlbumQueryMode( mode );
     return this;
 }
@@ -252,7 +251,7 @@ MetaQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 QueryMaker*
 MetaQueryMaker::setLabelQueryMode( LabelQueryMode mode )
 {
-    foreach( QueryMaker *qm, builders )
+    for( QueryMaker *qm : builders )
         qm->setLabelQueryMode( mode );
     return this;
 }

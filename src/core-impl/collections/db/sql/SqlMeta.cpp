@@ -1702,7 +1702,7 @@ SqlAlbum::setImage( const QImage &image )
 
         // - set the image for each track
         Meta::TrackList myTracks = tracks();
-        foreach( Meta::TrackPtr metaTrack, myTracks )
+        for( Meta::TrackPtr metaTrack : myTracks )
         {
             // the song needs to be at least one mb big or we won't set an image
             // that means that the new image will increase the file size by less than 2%
@@ -1762,7 +1762,7 @@ SqlAlbum::removeImage()
             cacheFilter << QString( "*@" ) + key;
             QStringList cachedImages = cacheDir.entryList( cacheFilter );
 
-            foreach( const QString &image, cachedImages )
+            for( const QString &image : cachedImages )
             {
                 bool r = QFile::remove( cacheDir.filePath( image ) );
                 debug() << "deleting cached image: " << image << " : " + ( r ? QStringLiteral("ok") : QStringLiteral("fail") );
@@ -2001,7 +2001,7 @@ SqlAlbum::setCompilation( bool compilation )
             changes.insert( Meta::valCompilation, 1);
 
             Meta::TrackList myTracks = tracks();
-            foreach( Meta::TrackPtr metaTrack, myTracks )
+            for( Meta::TrackPtr metaTrack : myTracks )
             {
                 SqlTrack* sqlTrack = static_cast<SqlTrack*>(metaTrack.data());
 
@@ -2023,7 +2023,7 @@ SqlAlbum::setCompilation( bool compilation )
             changes.insert( Meta::valCompilation, 0);
 
             Meta::TrackList myTracks = tracks();
-            foreach( Meta::TrackPtr metaTrack, myTracks )
+            for( Meta::TrackPtr metaTrack : myTracks )
             {
                 SqlTrack* sqlTrack = static_cast<SqlTrack*>(metaTrack.data());
                 Meta::ArtistPtr trackArtist = sqlTrack->artist();

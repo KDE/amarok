@@ -54,7 +54,7 @@ MediaDeviceUserPlaylistProvider::MediaDeviceUserPlaylistProvider( Collections::M
 MediaDeviceUserPlaylistProvider::~MediaDeviceUserPlaylistProvider()
 {
     DEBUG_BLOCK
-//     foreach( Playlists::MediaDevicePlaylistPtr playlist, m_playlists )
+//     for( Playlists::MediaDevicePlaylistPtr playlist : m_playlists )
 //     {
 //         playlist->saveToDb( true );
 //     }
@@ -70,7 +70,7 @@ MediaDeviceUserPlaylistProvider::playlists()
     DEBUG_BLOCK
     Playlists::PlaylistList playlists;
 
-    foreach( Playlists::MediaDevicePlaylistPtr mediadevicePlaylist, m_playlists )
+    for( Playlists::MediaDevicePlaylistPtr mediadevicePlaylist : m_playlists )
     {
         playlists << Playlists::PlaylistPtr::staticCast( mediadevicePlaylist );
     }
@@ -84,7 +84,7 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks )
     DEBUG_BLOCK
     // This provider can only save it's own tracks for now, filter out all the others.
     Meta::TrackList filteredTracks;
-    foreach( const Meta::TrackPtr track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
         if( track->collection() == m_collection )
             filteredTracks << track;
 
@@ -126,7 +126,7 @@ bool
 MediaDeviceUserPlaylistProvider::deletePlaylists( const Playlists::PlaylistList &playlistlist )
 {
     Playlists::MediaDevicePlaylistList pllist;
-    foreach( Playlists::PlaylistPtr playlist, playlistlist )
+    for( Playlists::PlaylistPtr playlist : playlistlist )
     {
         Playlists::MediaDevicePlaylistPtr pl =
                 Playlists::MediaDevicePlaylistPtr::staticCast( playlist );

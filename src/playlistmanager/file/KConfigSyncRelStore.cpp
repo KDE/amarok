@@ -31,13 +31,13 @@ KConfigSyncRelStore::KConfigSyncRelStore()
 {
     DEBUG_BLOCK
 
-    foreach( const QString &key, syncedPlaylistsConfig().keyList() )
+    for( const QString &key : syncedPlaylistsConfig().keyList() )
     {
         QUrl masterUrl( key );
 
         m_syncMasterMap.insert( masterUrl, SyncedPlaylistPtr() );
 
-        foreach( const QString &value, syncedPlaylistsConfig().readEntry( key ).split( QLatin1Char(',') ) )
+        for( const QString &value : syncedPlaylistsConfig().readEntry( key ).split( QLatin1Char(',') ) )
         {
             m_syncSlaveMap.insert( QUrl( value ), masterUrl );
         }
@@ -107,7 +107,7 @@ KConfigSyncRelStore::addSync( const PlaylistPtr master, const PlaylistPtr slave 
 
     QList<QString> slaveUrlStringList;
 
-    foreach( const QUrl &slaveUrl, m_syncSlaveMap.keys() )
+    for( const QUrl &slaveUrl : m_syncSlaveMap.keys() )
     {
         if( m_syncSlaveMap.value( slaveUrl ) == masterUrl )
             slaveUrlStringList.append( slaveUrl.url() );

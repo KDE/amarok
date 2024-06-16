@@ -389,7 +389,7 @@ ExtendedAboutDialog::switchToOcsWidgets()
 void
 ExtendedAboutDialog::onProvidersFetched()
 {
-    foreach( const Attica::Provider &provider, m_providerManager.providers() )
+    for( const Attica::Provider &provider : m_providerManager.providers() )
     {
         if( !provider.isValid() || !provider.isEnabled() )
             continue;

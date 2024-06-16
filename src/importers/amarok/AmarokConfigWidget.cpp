@@ -67,9 +67,9 @@ AmarokConfigWidget::connectionTypeChanged( const int index )
     const QList<QWidget*> &hide = embedded ? m_externalDbSettings : m_embeddedDbSettings;
     const QList<QWidget*> &show = embedded ? m_embeddedDbSettings : m_externalDbSettings;
 
-    foreach( QWidget *widget, hide )
+    for( QWidget *widget : hide )
         widget->hide();
-    foreach( QWidget *widget, show )
+    for( QWidget *widget : show )
         widget->show();
 }
 

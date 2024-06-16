@@ -48,8 +48,7 @@ QSet<QString>
 BansheeProvider::artists()
 {
     QSet<QString> result;
-    foreach( const QVariantList &row,
-             m_connection->query( "SELECT Name FROM coreartists" ) )
+    for( const QVariantList &row : m_connection->query( "SELECT Name FROM coreartists" ) )
         result.insert( row[0].toString() );
 
     return result;
@@ -77,7 +76,7 @@ BansheeProvider::artistTracks( const QString &artistName )
            << Meta::valPlaycount;
 
     TrackList result;
-    foreach( const QVariantList &row, m_connection->query( query, bindValues ) )
+    for( const QVariantList &row : m_connection->query( query, bindValues ) )
     {
         const qint64 trackId = row[0].toLongLong();
 

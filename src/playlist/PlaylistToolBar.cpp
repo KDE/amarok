@@ -47,7 +47,7 @@ ToolBar::ToolBar( QWidget *parent ) :
 
 void ToolBar::addCollapsibleActions( const QActionGroup *actions )
 {
-    foreach( QAction *a, actions->actions() )
+    for( QAction *a : actions->actions() )
     {
         m_collapsibleActions->addAction( a );
     }
@@ -59,7 +59,7 @@ void ToolBar::setCollapsed( bool collapsed ) //SLOT
     m_collapsed = collapsed;
     if( collapsed )
     {
-        foreach( QAction *a, m_collapsibleActions->actions() )
+        for( QAction *a : m_collapsibleActions->actions() )
         {
             removeAction( a );
             m_playlistOperationsMenu->addAction( a );
@@ -68,7 +68,7 @@ void ToolBar::setCollapsed( bool collapsed ) //SLOT
     else
     {
         insertActions( m_playlistOperationsMenu, m_collapsibleActions->actions() );
-        foreach( QAction *a, m_collapsibleActions->actions() )
+        for( QAction *a : m_collapsibleActions->actions() )
         {
             m_playlistOperationsMenu->removeAction( a );
         }

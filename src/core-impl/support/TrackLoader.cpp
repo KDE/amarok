@@ -100,7 +100,7 @@ TrackLoader::directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list 
     //dfaure says that job->redirectionUrl().isValid() ? job->redirectionUrl() : job->url(); might be needed
     //but to wait until an issue is actually found, since it might take more work
     const QUrl dir = static_cast<KIO::SimpleJob *>( job )->url();
-    foreach( const KIO::UDSEntry &entry, list )
+    for( const KIO::UDSEntry &entry : list )
     {
         KFileItem item( entry, dir, true, true );
         QUrl url = item.url();
@@ -181,7 +181,7 @@ TrackLoader::tracksLoaded( Playlists::PlaylistPtr playlist )
     Meta::TrackList tracks = playlist->tracks();
     if( m_flags.testFlag( FullMetadataRequired ) )
     {
-        foreach( const Meta::TrackPtr &track, tracks )
+        for( const Meta::TrackPtr &track : tracks )
         {
             MetaProxy::TrackPtr proxyTrack = MetaProxy::TrackPtr::dynamicCast( track );
             if( !proxyTrack )

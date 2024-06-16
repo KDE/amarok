@@ -31,7 +31,7 @@ Base::tracks()
     // construct AmarokSharedPointers on demand, see m_track comment
     QReadLocker locker( &m_tracksLock );
     Meta::TrackList list;
-    foreach( Track *track, m_tracks )
+    for( Track *track : m_tracks )
     {
         list << Meta::TrackPtr( track );
     }
@@ -92,7 +92,7 @@ Album::setCompilation( bool isCompilation )
 {
     // we re-create the albums for each track - that's how MemoryMeta works - by
     // aggregating multiple entities of same name into one.
-    foreach( Meta::TrackPtr track, tracks() )
+    for( Meta::TrackPtr track : tracks() )
     {
         Track *memoryTrack = static_cast<Track *>( track.data() );
         Meta::AlbumPtr album = memoryTrack->originalTrack()->album();
@@ -113,7 +113,7 @@ Album::image( int size ) const
 void
 Album::setImage( const QImage &image )
 {
-    foreach( Meta::TrackPtr track, tracks() )
+    for( Meta::TrackPtr track : tracks() )
     {
         Track *memoryTrack = static_cast<Track *>( track.data() );
         Meta::AlbumPtr album = memoryTrack->originalTrack()->album();
@@ -126,7 +126,7 @@ Album::setImage( const QImage &image )
 void
 Album::removeImage()
 {
-    foreach( Meta::TrackPtr track, tracks() )
+    for( Meta::TrackPtr track : tracks() )
     {
         Track *memoryTrack = static_cast<Track *>( track.data() );
         Meta::AlbumPtr album = memoryTrack->originalTrack()->album();
@@ -143,7 +143,7 @@ Album::updateCachedValues()
     m_canUpdateCompilation = false;
     m_image = QImage();
     m_canUpdateImage = false;
-    foreach( Meta::TrackPtr track, tracks() )
+    for( Meta::TrackPtr track : tracks() )
     {
         Track *memoryTrack = static_cast<Track *>( track.data() );
         Meta::AlbumPtr album = memoryTrack->originalTrack()->album();
@@ -480,7 +480,7 @@ MapChanger::trackChanged( Meta::TrackPtr track )
 bool
 MapChanger::hasTrackInMap( const Meta::TrackList &needles, const TrackMap &haystack )
 {
-    foreach( Meta::TrackPtr track, needles )
+    for( Meta::TrackPtr track : needles )
     {
         if( track && haystack.contains( track->uidUrl() ) )
             return true;
@@ -491,7 +491,7 @@ MapChanger::hasTrackInMap( const Meta::TrackList &needles, const TrackMap &hayst
 bool
 MapChanger::referencedAsAlbumArtist( const Meta::ArtistPtr &artist, const AlbumMap &haystack )
 {
-    foreach( Meta::AlbumPtr album, haystack )
+    for( Meta::AlbumPtr album : haystack )
     {
         if( album && album->hasAlbumArtist() && album->albumArtist() == artist )
             return true;

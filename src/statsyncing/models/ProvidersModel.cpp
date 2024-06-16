@@ -112,7 +112,7 @@ qint64
 ProvidersModel::writableTrackStatsDataUnion() const
 {
     qint64 fields = 0;
-    foreach( const ProviderPtr &provider, selectedProviders() )
+    for( const ProviderPtr &provider : selectedProviders() )
     {
         fields |= provider->writableTrackStatsData();
     }

@@ -89,7 +89,7 @@ CollectionTreeItem::CollectionTreeItem( Type type, const Meta::DataList &data, C
     if( m_parent )
         m_parent->m_childItems.insert( 0, this );
 
-    foreach( Meta::DataPtr datap, data )
+    for( Meta::DataPtr datap : data )
         new CollectionTreeItem( datap, this, m_model );
 }
 
@@ -118,7 +118,7 @@ CollectionTreeItem::prepareForRemoval()
 {
     m_parent = nullptr;
     m_model->itemAboutToBeDeleted( this );
-    foreach( CollectionTreeItem *item, m_childItems )
+    for( CollectionTreeItem *item : m_childItems )
     {
         item->prepareForRemoval();
     }
@@ -342,7 +342,7 @@ CollectionTreeItem::descendentTracks()
         descendentTracks << track;
     else
     {
-        foreach( CollectionTreeItem *child, m_childItems )
+        for( CollectionTreeItem *child : m_childItems )
             descendentTracks << child->descendentTracks();
     }
     return descendentTracks;
@@ -357,7 +357,7 @@ CollectionTreeItem::allDescendentTracksLoaded() const
     if( requiresUpdate() )
         return false;
 
-    foreach( CollectionTreeItem *item, m_childItems )
+    for( const CollectionTreeItem *item : m_childItems )
     {
         if( !item->allDescendentTracksLoaded() )
             return false;

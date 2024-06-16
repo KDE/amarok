@@ -33,7 +33,7 @@ Base::Base()
 Base::~Base()
 {
     // we need to notify all observers that we're deleted to avoid stale pointers
-    foreach( Observer *observer, m_observers )
+    for( Observer *observer : m_observers )
     {
         observer->destroyedNotify( this );
     }

@@ -34,7 +34,7 @@ IphoneMountPoint::IphoneMountPoint( const QString &uuid )
     checkedDirs << "/iTunes_Control";
     checkedDirs << "/iPod_Control";
     checkedDirs << "/iTunes/iTunes_Control";
-    foreach( const QString &dir, checkedDirs )
+    for( const QString &dir : checkedDirs )
     {
         if( QFile::exists( mountPointCandidate + dir ) )
         {
@@ -130,7 +130,7 @@ bool IphoneMountPoint::call( const QString &command, const QStringList &argument
     }
 
     QByteArray output( process.readAllStandardOutput() );
-    foreach( const QString &line, QString::fromLocal8Bit( output ).split( QChar( '\n' ) ) )
+    for( const QString &line : QString::fromLocal8Bit( output ).split( QChar( '\n' ) ) )
     {
         logMessage( QStringLiteral("%1: %2").arg( command, line ) );
     }

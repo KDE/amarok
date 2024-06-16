@@ -177,7 +177,7 @@ namespace Amarok
         QString artistPart;
         QString albumPart;
 
-        foreach( const Meta::TrackPtr track, tracks )
+        for( const Meta::TrackPtr &track : tracks )
         {
             if( artist != track->artist() )
                 singleArtist = false;

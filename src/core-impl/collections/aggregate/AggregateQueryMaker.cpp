@@ -43,7 +43,7 @@ AggregateQueryMaker::AggregateQueryMaker( AggregateCollection *collection, const
     , m_orderByNumberField( false )
     , m_queryDoneCountMutex()
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
     {
         connect( b, &Collections::QueryMaker::queryDone, this, &AggregateQueryMaker::slotQueryDone );
         connect( b, &Collections::QueryMaker::newTracksReady, this, &AggregateQueryMaker::slotNewTracksReady, Qt::QueuedConnection );
@@ -66,14 +66,14 @@ AggregateQueryMaker::~AggregateQueryMaker()
 void
 AggregateQueryMaker::run()
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->run();
 }
 
 void
 AggregateQueryMaker::abortQuery()
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->abortQuery();
 }
 
@@ -83,7 +83,7 @@ AggregateQueryMaker::setQueryType( QueryType type )
     m_queryType = type;
     if( type != QueryMaker::Custom )
     {
-        foreach( QueryMaker *b, m_builders )
+        for( QueryMaker *b : m_builders )
             b->setQueryType( type );
         return this;
     }
@@ -97,7 +97,7 @@ AggregateQueryMaker::setQueryType( QueryType type )
         // On second thought, there is no way around loading all objects, as we want to operate on distinct
         // elements (for some value of distinct) in AggregateCollection. We can only figure out what the union
         // of all elements is after loading them in memory
-        foreach( QueryMaker *b, m_builders )
+        for( QueryMaker *b : m_builders )
             b->setQueryType( QueryMaker::Track );
         return this;
     }
@@ -150,7 +150,7 @@ AggregateQueryMaker::orderBy( qint64 value, bool descending )
         default:
             m_orderByNumberField = false;
     }
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->orderBy( value, descending );
     return this;
 }
@@ -158,7 +158,7 @@ AggregateQueryMaker::orderBy( qint64 value, bool descending )
 QueryMaker*
 AggregateQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->addFilter( value, filter, matchBegin, matchEnd );
     return this;
 }
@@ -166,7 +166,7 @@ AggregateQueryMaker::addFilter( qint64 value, const QString &filter, bool matchB
 QueryMaker*
 AggregateQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->excludeFilter( value, filter, matchBegin, matchEnd );
     return this;
 }
@@ -174,7 +174,7 @@ AggregateQueryMaker::excludeFilter( qint64 value, const QString &filter, bool ma
 QueryMaker*
 AggregateQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->addNumberFilter( value, filter, compare);
     return this;
 }
@@ -182,7 +182,7 @@ AggregateQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::N
 QueryMaker*
 AggregateQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->excludeNumberFilter( value, filter, compare );
     return this;
 }
@@ -190,7 +190,7 @@ AggregateQueryMaker::excludeNumberFilter( qint64 value, qint64 filter, QueryMake
 QueryMaker*
 AggregateQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->addMatch( track );
     return this;
 }
@@ -198,7 +198,7 @@ AggregateQueryMaker::addMatch( const Meta::TrackPtr &track )
 QueryMaker*
 AggregateQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::ArtistMatchBehaviour behaviour )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->addMatch( artist, behaviour );
     return this;
 }
@@ -206,7 +206,7 @@ AggregateQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::Artist
 QueryMaker*
 AggregateQueryMaker::addMatch( const Meta::AlbumPtr &album )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->addMatch( album );
     return this;
 }
@@ -214,7 +214,7 @@ AggregateQueryMaker::addMatch( const Meta::AlbumPtr &album )
 QueryMaker*
 AggregateQueryMaker::addMatch( const Meta::GenrePtr &genre )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->addMatch( genre );
     return this;
 }
@@ -222,7 +222,7 @@ AggregateQueryMaker::addMatch( const Meta::GenrePtr &genre )
 QueryMaker*
 AggregateQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->addMatch( composer );
     return this;
 }
@@ -230,7 +230,7 @@ AggregateQueryMaker::addMatch( const Meta::ComposerPtr &composer )
 QueryMaker*
 AggregateQueryMaker::addMatch( const Meta::YearPtr &year )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->addMatch( year );
     return this;
 }
@@ -238,7 +238,7 @@ AggregateQueryMaker::addMatch( const Meta::YearPtr &year )
 QueryMaker*
 AggregateQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->addMatch( label );
     return this;
 }
@@ -250,7 +250,7 @@ AggregateQueryMaker::limitMaxResultSize( int size )
     //that we definitely know is unnecessary (like returning more than size results)
     //we have to limit the combined result of all m_builders nevertheless
     m_maxResultSize = size;
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->limitMaxResultSize( size );
     return this;
 }
@@ -258,7 +258,7 @@ AggregateQueryMaker::limitMaxResultSize( int size )
 QueryMaker*
 AggregateQueryMaker::beginAnd()
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->beginAnd();
     return this;
 }
@@ -266,7 +266,7 @@ AggregateQueryMaker::beginAnd()
 QueryMaker*
 AggregateQueryMaker::beginOr()
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->beginOr();
     return this;
 }
@@ -274,7 +274,7 @@ AggregateQueryMaker::beginOr()
 QueryMaker*
 AggregateQueryMaker::endAndOr()
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->endAndOr();
     return this;
 }
@@ -282,7 +282,7 @@ AggregateQueryMaker::endAndOr()
 QueryMaker*
 AggregateQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->setAlbumQueryMode( mode );
     return this;
 }
@@ -290,7 +290,7 @@ AggregateQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 QueryMaker*
 AggregateQueryMaker::setLabelQueryMode( LabelQueryMode mode )
 {
-    foreach( QueryMaker *b, m_builders )
+    for( QueryMaker *b : m_builders )
         b->setLabelQueryMode( mode );
     return this;
 }
@@ -323,14 +323,14 @@ AggregateQueryMaker::handleResult()
         {
             QStringList result;
             Meta::TrackList tracks;
-            foreach( AmarokSharedPointer<Meta::AggregateTrack> track, m_tracks )
+            for( AmarokSharedPointer<Meta::AggregateTrack> track : m_tracks )
             {
                 tracks.append( Meta::TrackPtr::staticCast( track ) );
             }
             if( !m_returnFunctions.empty() )
             {
                 //no sorting necessary
-                foreach( CustomReturnFunction *function, m_returnFunctions )
+                for( CustomReturnFunction *function : m_returnFunctions )
                 {
                     result.append( function->value( tracks ) );
                 }
@@ -346,12 +346,12 @@ AggregateQueryMaker::handleResult()
                 }
 
                 int count = 0;
-                foreach( const Meta::TrackPtr &track, tracks )
+                for( const Meta::TrackPtr &track : tracks )
                 {
                     if ( m_maxResultSize >= 0 && count == m_maxResultSize )
                         break;
 
-                    foreach( CustomReturnValue *value, m_returnValues )
+                    for( CustomReturnValue *value : m_returnValues )
                     {
                         result.append( value->value( track ) );
                     }
@@ -364,7 +364,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Track :
         {
             Meta::TrackList tracks;
-            foreach( AmarokSharedPointer<Meta::AggregateTrack> track, m_tracks )
+            for( AmarokSharedPointer<Meta::AggregateTrack> track : m_tracks )
             {
                 tracks.append( Meta::TrackPtr::staticCast( track ) );
             }
@@ -386,7 +386,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Album :
         {
             Meta::AlbumList albums;
-            foreach( AmarokSharedPointer<Meta::AggregateAlbum> album, m_albums )
+            for( AmarokSharedPointer<Meta::AggregateAlbum> album : m_albums )
             {
                 albums.append( Meta::AlbumPtr::staticCast( album ) );
             }
@@ -403,7 +403,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::AlbumArtist :
         {
             Meta::ArtistList artists;
-            foreach( AmarokSharedPointer<Meta::AggregateArtist> artist, m_artists )
+            for( AmarokSharedPointer<Meta::AggregateArtist> artist : m_artists )
             {
                 artists.append( Meta::ArtistPtr::staticCast( artist ) );
             }
@@ -419,7 +419,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Composer :
         {
             Meta::ComposerList composers;
-            foreach( AmarokSharedPointer<Meta::AggregateComposer> composer, m_composers )
+            for( AmarokSharedPointer<Meta::AggregateComposer> composer : m_composers )
             {
                 composers.append( Meta::ComposerPtr::staticCast( composer ) );
             }
@@ -435,7 +435,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Genre :
         {
             Meta::GenreList genres;
-            foreach( AmarokSharedPointer<Meta::AggregateGenre> genre, m_genres )
+            for( AmarokSharedPointer<Meta::AggregateGenre> genre : m_genres )
             {
                 genres.append( Meta::GenrePtr::staticCast( genre ) );
             }
@@ -451,7 +451,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Year :
         {
             Meta::YearList years;
-            foreach( AmarokSharedPointer<Meta::AggreagateYear> year, m_years )
+            for( AmarokSharedPointer<Meta::AggreagateYear> year : m_years )
             {
                 years.append( Meta::YearPtr::staticCast( year ) );
             }
@@ -471,7 +471,7 @@ AggregateQueryMaker::handleResult()
         case QueryMaker::Label :
         {
             Meta::LabelList labels;
-            foreach( AmarokSharedPointer<Meta::AggregateLabel> label, m_labels )
+            for( AmarokSharedPointer<Meta::AggregateLabel> label : m_labels )
             {
                 labels.append( Meta::LabelPtr::staticCast( label ) );
             }
@@ -499,7 +499,7 @@ AggregateQueryMaker::handleResult()
 void
 AggregateQueryMaker::slotNewTracksReady( const Meta::TrackList &tracks )
 {
-    foreach( const Meta::TrackPtr &track, tracks )
+    for( const Meta::TrackPtr &track : tracks )
     {
         m_tracks.insert( AmarokSharedPointer<Meta::AggregateTrack>( m_collection->getTrack( track ) ) );
     }
@@ -508,7 +508,7 @@ AggregateQueryMaker::slotNewTracksReady( const Meta::TrackList &tracks )
 void
 AggregateQueryMaker::slotNewArtistsReady( const Meta::ArtistList &artists )
 {
-    foreach( const Meta::ArtistPtr &artist, artists )
+    for( const Meta::ArtistPtr &artist : artists )
     {
         m_artists.insert( AmarokSharedPointer<Meta::AggregateArtist>( m_collection->getArtist( artist ) ) );
     }
@@ -517,7 +517,7 @@ AggregateQueryMaker::slotNewArtistsReady( const Meta::ArtistList &artists )
 void
 AggregateQueryMaker::slotNewAlbumsReady( const Meta::AlbumList &albums )
 {
-    foreach( const Meta::AlbumPtr &album, albums )
+    for( const Meta::AlbumPtr &album : albums )
     {
         m_albums.insert( AmarokSharedPointer<Meta::AggregateAlbum>( m_collection->getAlbum( album ) ) );
     }
@@ -526,7 +526,7 @@ AggregateQueryMaker::slotNewAlbumsReady( const Meta::AlbumList &albums )
 void
 AggregateQueryMaker::slotNewGenresReady( const Meta::GenreList &genres )
 {
-    foreach( const Meta::GenrePtr &genre, genres )
+    for( const Meta::GenrePtr &genre : genres )
     {
         m_genres.insert( AmarokSharedPointer<Meta::AggregateGenre>( m_collection->getGenre( genre ) ) );
     }
@@ -535,7 +535,7 @@ AggregateQueryMaker::slotNewGenresReady( const Meta::GenreList &genres )
 void
 AggregateQueryMaker::slotNewComposersReady( const Meta::ComposerList &composers )
 {
-    foreach( const Meta::ComposerPtr &composer, composers )
+    for( const Meta::ComposerPtr &composer : composers )
     {
         m_composers.insert( AmarokSharedPointer<Meta::AggregateComposer>( m_collection->getComposer( composer ) ) );
     }
@@ -544,7 +544,7 @@ AggregateQueryMaker::slotNewComposersReady( const Meta::ComposerList &composers 
 void
 AggregateQueryMaker::slotNewYearsReady( const Meta::YearList &years )
 {
-    foreach( const Meta::YearPtr &year, years )
+    for( const Meta::YearPtr &year : years )
     {
         m_years.insert( AmarokSharedPointer<Meta::AggreagateYear>( m_collection->getYear( year ) ) );
     }
@@ -553,7 +553,7 @@ AggregateQueryMaker::slotNewYearsReady( const Meta::YearList &years )
 void
 AggregateQueryMaker::slotNewLabelsReady( const Meta::LabelList &labels )
 {
-    foreach( const Meta::LabelPtr &label, labels )
+    for( const Meta::LabelPtr &label : labels )
     {
         m_labels.insert( AmarokSharedPointer<Meta::AggregateLabel>( m_collection->getLabel( label ) ) );
     }

@@ -305,7 +305,8 @@ double
 ConstraintTypes::TagMatch::satisfaction( const Meta::TrackList& tl ) const
 {
     double satisfaction = 0.0;
-    foreach( Meta::TrackPtr t, tl ) {
+    for( Meta::TrackPtr t : tl )
+    {
         if ( matches( t ) ) {
             satisfaction += 1.0;
         }
@@ -496,9 +497,8 @@ void
 ConstraintTypes::TagMatch::setInvert( bool v )
 {
     if ( m_invert != v ) {
-        foreach( const Meta::TrackPtr t, m_matchCache.keys() ) {
+        for( const Meta::TrackPtr &t : m_matchCache.keys() )
             m_matchCache.insert( t, !m_matchCache.value( t ) );
-        }
     }
     m_invert = v;
     Q_EMIT dataChanged();

@@ -196,7 +196,7 @@ PLSPlaylist::savePlaylist( QFile &file )
 
     //body
     int i = 1; //PLS starts at File1=
-    foreach( Meta::TrackPtr track, m_tracks )
+    for( Meta::TrackPtr track : m_tracks )
     {
         if( !track ) // see BUG: 303056
             continue;

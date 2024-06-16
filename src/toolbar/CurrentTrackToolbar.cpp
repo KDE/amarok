@@ -46,7 +46,7 @@ void CurrentTrackToolbar::handleAddActions()
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
-    foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
+    for( QAction* action : The::globalCurrentTrackActions()->actions() )
         addAction( action );
 
     if( track )

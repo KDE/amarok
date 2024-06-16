@@ -46,7 +46,7 @@ PodcastEpisodeList
 UmsPodcastEpisode::toPodcastEpisodeList( UmsPodcastEpisodeList episodes )
 {
     PodcastEpisodeList list;
-    foreach( UmsPodcastEpisodePtr e, episodes )
+    for( UmsPodcastEpisodePtr e : episodes )
         list << toPodcastEpisodePtr( e );
     return list;
 }
@@ -179,7 +179,7 @@ PodcastChannelList
 UmsPodcastChannel::toPodcastChannelList( UmsPodcastChannelList umsChannels )
 {
     PodcastChannelList channels;
-    foreach( UmsPodcastChannelPtr umsChannel, umsChannels )
+    for( UmsPodcastChannelPtr umsChannel : umsChannels )
         channels << UmsPodcastChannel::toPodcastChannelPtr(  umsChannel );
     return channels;
 }
@@ -200,7 +200,7 @@ UmsPodcastChannel::UmsPodcastChannel( PodcastChannelPtr channel,
     //TODO: we might also need to subscribe to get trackAdded() when channel does async loading.
     channel->triggerTrackLoad();
 
-    foreach( PodcastEpisodePtr episode, channel->episodes() )
+    for( PodcastEpisodePtr episode : channel->episodes() )
         addEpisode( episode );
 }
 
@@ -229,7 +229,7 @@ void
 UmsPodcastChannel::addUmsEpisode( UmsPodcastEpisodePtr umsEpisode )
 {
     int i = 0;
-    foreach( UmsPodcastEpisodePtr e, m_umsEpisodes )
+    for( UmsPodcastEpisodePtr e : m_umsEpisodes )
     {
         if( umsEpisode->createDate() > e->createDate() )
         {

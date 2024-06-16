@@ -196,7 +196,7 @@ Dynamic::ReplacementBias::factoryChanged()
     DEBUG_BLOCK;
 
     // -- search if there is a new factory with my name
-    foreach( AbstractBiasFactory* factory, BiasFactory::instance()->factories() )
+    for( AbstractBiasFactory* factory : BiasFactory::instance()->factories() )
     {
         if( factory->name() == m_name )
         {
@@ -230,7 +230,7 @@ Dynamic::BiasFactory::fromXml( QXmlStreamReader *reader )
     QStringRef name = reader->name();
 
     instance(); // ensure that we have an instance with the default factories
-    foreach( Dynamic::AbstractBiasFactory* fac, s_biasFactories )
+    for( Dynamic::AbstractBiasFactory* fac : s_biasFactories )
     {
         if( name == fac->name() )
             return fac->createFromXml( reader );
@@ -242,7 +242,7 @@ Dynamic::BiasPtr
 Dynamic::BiasFactory::fromName( const QString &name )
 {
     instance(); // ensure that we have an instance with the default factories
-    foreach( Dynamic::AbstractBiasFactory* fac, s_biasFactories )
+    for( Dynamic::AbstractBiasFactory* fac : s_biasFactories )
     {
         if( name == fac->name() )
             return fac->createBias();
@@ -257,21 +257,6 @@ Dynamic::BiasFactory::registerNewBiasFactory( Dynamic::AbstractBiasFactory* fact
     debug() << "new factory of type:" << factory->name();
     if( !s_biasFactories.contains( factory ) )
         s_biasFactories.append( factory );
-
-    /*
-    foreach( const QString &name, s_failedMap.keys() )
-    {
-        if( name == entry->pluginName() ) // lazy loading!
-        {
-            debug() << "found entry loaded without proper custombiasentry. fixing now, with  old weight of" << s_failedMap[ name ]->weight() ;
-            //  need to manually set the weight, as we set it on the old widget which is now being thrown away
-            Dynamic::CustomBiasEntry* cbe = factory->newCustomBiasEntry( s_failedMapXml[ name ] );
-            s_failedMap[ name ]->setCurrentEntry( cbe );
-            s_failedMap.remove( name );
-            s_failedMapXml.remove( name );
-        }
-    }
-    */
 
     instance()->emitChanged();
 }

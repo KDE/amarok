@@ -131,7 +131,7 @@ Job::processOutput()
     QString output = QString::fromLocal8Bit( m_transcoder->readAllStandardOutput().data() );
     if( output.simplified().isEmpty() )
         return;
-    foreach( const QString &line, output.split( QChar( '\n' ) ) )
+    for( const QString &line : output.split( QChar( '\n' ) ) )
         debug() << "ffmpeg:" << line.toLocal8Bit().constData();
 
     if( m_duration == -1 )

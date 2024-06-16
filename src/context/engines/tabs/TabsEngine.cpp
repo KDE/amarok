@@ -54,8 +54,7 @@ TabsEngine::TabsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
 TabsEngine::~TabsEngine()
 {
     DEBUG_BLOCK
-    foreach( TabsInfo *info, m_tabs )
-        delete info;
+    qDeleteAll( m_tabs );
     m_tabs.clear();
     m_urls.clear();
 }
@@ -209,8 +208,7 @@ TabsEngine::requestTab( const QString &artist, const QString &title )
     debug() << "request tabs for artist: " << artist << " and title " << title;
 
     // clean all previously allocated stuff
-    foreach( TabsInfo *tab, m_tabs )
-        delete tab;
+    qDeleteAll ( m_tabs );
     m_tabs.clear();
     m_urls.clear();
     m_numAbortedUrls = 0;
@@ -227,9 +225,9 @@ TabsEngine::requestTab( const QString &artist, const QString &title )
     // define search criteria for the current artist/track
     QStringList artistSearchList = defineArtistSearchCriteria( artist );
     QStringList titleSearchList = defineTitleSearchCriteria( title );
-    foreach( const QString &searchArtist, artistSearchList )
+    for( const QString &searchArtist : artistSearchList )
     {
-        foreach( const QString &searchTitle, titleSearchList )
+        for( const QString &searchTitle : titleSearchList )
         {
             queryUltimateGuitar( searchArtist, searchTitle );
         }
@@ -281,7 +279,7 @@ TabsEngine::resultUltimateGuitarSearch( const QUrl &url, QByteArray data, Networ
     if( !resultsTable.isEmpty() )
     {
         const QStringList results = resultsTable.split( "</tr>" );
-        foreach ( const QString &result, results )
+        for ( const QString &result : results )
         {
             // lastIndex on purpose (due to the fact that tabledata for the first result contains two hrefs)
             // get the link to the actual tab
@@ -383,12 +381,12 @@ TabsEngine::resultFinalize()
     {
         // sort against tabtype
         QList < QPair < TabsInfo::TabType, QUrl > > sorting;
-        foreach( TabsInfo *item, m_tabs )
+        for( TabsInfo *item : m_tabs )
             sorting << QPair < TabsInfo::TabType, QUrl> ( item->tabType, item->url) ;
         qSort(sorting.begin(), sorting.end(), qLess<QPair < TabsInfo::TabType, QUrl> >() );
 
         // debug info
-        foreach( TabsInfo *item, m_tabs )
+        for( const TabsInfo *item : m_tabs )
             debug() << " Title: " << item->title << " (" << item->url << ")";
 
         // if the song hasn't change while fetching, we sent the data
@@ -400,7 +398,7 @@ TabsEngine::resultFinalize()
         int pos = 0;
         for(i = sorting.begin(); i != sorting.end(); ++i)
         {
-            foreach( TabsInfo *item, m_tabs)
+            for( TabsInfo *item : m_tabs)
             {
                 if( (*i).second == item->url )
                 {

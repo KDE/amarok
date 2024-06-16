@@ -110,7 +110,8 @@ ConstraintTypes::PreventDuplicates::satisfaction( const Meta::TrackList& tl ) co
     QSet<Meta::ArtistPtr> artists;
     switch ( m_field ) {
         case DupeTrack:
-            foreach( Meta::TrackPtr t, tl ) {
+            for( Meta::TrackPtr t : tl )
+            {
                 if ( tracks.contains(t) ) {
                     d++;
                 } else {
@@ -119,7 +120,8 @@ ConstraintTypes::PreventDuplicates::satisfaction( const Meta::TrackList& tl ) co
             }
             break;
         case DupeAlbum:
-            foreach( Meta::TrackPtr t, tl ) {
+            for( Meta::TrackPtr t : tl )
+            {
                 if ( albums.contains(t->album()) ) {
                     d++;
                 } else {
@@ -128,7 +130,8 @@ ConstraintTypes::PreventDuplicates::satisfaction( const Meta::TrackList& tl ) co
             }
             break;
         case DupeArtist:
-            foreach( Meta::TrackPtr t, tl ) {
+            for( Meta::TrackPtr t : tl )
+            {
                 if ( artists.contains(t->artist()) ) {
                     d++;
                 } else {

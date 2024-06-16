@@ -77,7 +77,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     QList<CategoryId::CatMenuId> levels = The::mainWindow()->browserDock()->list()->activeCategoryRecursive()->levels();
     QString sortMode;
 
-    foreach( CategoryId::CatMenuId level, levels ) {
+    for( CategoryId::CatMenuId level : levels ) {
         switch( level ) {
             case CategoryId::Genre:
                 sortMode += QLatin1String("genre-");

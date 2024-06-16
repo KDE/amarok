@@ -83,14 +83,14 @@ void MediaDeviceMonitor::checkDevice(const QString& udi)
 
     // First let the higher priority devices check
 
-    foreach( ConnectionAssistant* assistant, m_assistants )
+    for( ConnectionAssistant* assistant : m_assistants )
     {
         checkOneDevice( assistant, udi );
     }
 
     // Then let the assistants that can wait check
 
-    foreach( ConnectionAssistant* assistant, m_waitingassistants )
+    for( ConnectionAssistant* assistant : m_waitingassistants )
     {
         checkOneDevice( assistant, udi );
     }
@@ -123,7 +123,7 @@ void MediaDeviceMonitor::checkDevicesFor( ConnectionAssistant* assistant )
 
     QStringList udiList = getDevices();
 
-    foreach( const QString &udi, udiList )
+    for( const QString &udi : udiList )
     {
         checkOneDevice( assistant, udi );
     }

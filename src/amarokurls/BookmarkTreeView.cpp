@@ -140,7 +140,7 @@ BookmarkTreeView::createCommonActions( const QModelIndexList &indices )
 void BookmarkTreeView::slotLoad()
 {
     DEBUG_BLOCK
-    foreach( BookmarkViewItemPtr item, selectedItems() )
+    for( BookmarkViewItemPtr item : selectedItems() )
     {
         if( auto bookmark = AmarokUrlPtr::dynamicCast( item ) )
             bookmark->run();
@@ -153,7 +153,7 @@ void BookmarkTreeView::slotDelete()
 
     //TODO FIXME Confirmation of delete
 
-    foreach( BookmarkViewItemPtr item, selectedItems() )
+    for( BookmarkViewItemPtr item : selectedItems() )
     {
         debug() << "deleting " << item->name();
         item->removeFromDb();
@@ -249,7 +249,7 @@ BookmarkTreeView::selectedItems() const
 {
     DEBUG_BLOCK
     QSet<BookmarkViewItemPtr> selected;
-    foreach( const QModelIndex &index, selectionModel()->selectedIndexes() )
+    for( const QModelIndex &index : selectionModel()->selectedIndexes() )
     {
         QModelIndex sourceIndex = m_proxyModel->mapToSource( index );
         if( sourceIndex.isValid() && sourceIndex.internalPointer() && sourceIndex.column() == 0 )
@@ -272,7 +272,7 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
     Q_UNUSED( deselected )
     QModelIndexList indexes = selected.indexes();
     debug() << indexes.size() << " items selected";
-    foreach( const QModelIndex &index, indexes )
+    for( const QModelIndex &index : indexes )
     {
         const QModelIndex sourceIndex = m_proxyModel->mapToSource( index );
         if( sourceIndex.column() == 0 )
@@ -305,7 +305,7 @@ QMenu* BookmarkTreeView::contextMenu( const QPoint& point )
 
         QList<QAction *> actions = createCommonActions( indices );
 
-        foreach( QAction * action, actions )
+        for( QAction * action : actions )
             menu->addAction( action );
 
         if( indices.isEmpty() )

@@ -72,7 +72,7 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
 {
     DEBUG_BLOCK
 
-    foreach( Meta::TrackPtr track, tracks )
+    for( Meta::TrackPtr track : tracks )
         addTrack( track );
 
     ui->setupUi( this );
@@ -171,7 +171,7 @@ TagDialog::addTrack( Meta::TrackPtr &track )
 void
 TagDialog::tracksReady( const Meta::TrackList &tracks )
 {
-    foreach( Meta::TrackPtr track, tracks )
+    for( Meta::TrackPtr track : tracks )
         addTrack( track );
 }
 
@@ -195,7 +195,7 @@ TagDialog::queryDone()
 void
 TagDialog::albumsReady( const Meta::AlbumList &albums )
 {
-    foreach( const Meta::AlbumPtr &album, albums )
+    for( const Meta::AlbumPtr &album : albums )
     {
         if( !album->name().isEmpty() )
             m_albums << album->name();
@@ -208,7 +208,7 @@ TagDialog::albumsReady( const Meta::AlbumList &albums )
 void
 TagDialog::artistsReady( const Meta::ArtistList &artists )
 {
-    foreach( const Meta::ArtistPtr &artist, artists )
+    for( const Meta::ArtistPtr &artist : artists )
     {
         if( !artist->name().isEmpty() )
             m_artists << artist->name();
@@ -218,7 +218,7 @@ TagDialog::artistsReady( const Meta::ArtistList &artists )
 void
 TagDialog::composersReady( const Meta::ComposerList &composers )
 {
-    foreach( const Meta::ComposerPtr &composer, composers )
+    for( const Meta::ComposerPtr &composer : composers )
     {
         if( !composer->name().isEmpty() )
             m_composers << composer->name();
@@ -228,7 +228,7 @@ TagDialog::composersReady( const Meta::ComposerList &composers )
 void
 TagDialog::genresReady( const Meta::GenreList &genres )
 {
-    foreach( const Meta::GenrePtr &genre, genres )
+    for( const Meta::GenrePtr &genre : genres )
     {
         if( !genre->name().isEmpty() )  // Where the heck do the empty genres come from?
             m_genres << genre->name();
@@ -239,7 +239,7 @@ TagDialog::genresReady( const Meta::GenreList &genres )
 void
 TagDialog::labelsReady( const Meta::LabelList &labels )
 {
-    foreach( const Meta::LabelPtr &label, labels )
+    for( const Meta::LabelPtr &label : labels )
     {
         if( !label->name().isEmpty() )
             m_allLabels << label->name();
@@ -975,7 +975,7 @@ TagDialog::getTagsFromTrack( const Meta::TrackPtr &track ) const
                                              track->notPlayableReason() ) );
 
     QStringList labelNames;
-    foreach( const Meta::LabelPtr &label, track->labels() )
+    for( const Meta::LabelPtr &label : track->labels() )
     {
         labelNames << label->name();
     }
@@ -1103,7 +1103,7 @@ TagDialog::getTagsFromMultipleTracks() const
 
     }
 
-    foreach( const QString &key, mismatchingTags )
+    for( const QString &key : mismatchingTags )
         map.remove( key );
 
     map.insert( Meta::Field::URL, directory );
@@ -1127,7 +1127,7 @@ TagDialog::getTagsFromMultipleTracks() const
 void
 TagDialog::setTagsToTrack( const Meta::TrackPtr &track, const QVariantMap &tags )
 {
-    foreach( const QString &key, tags.keys() )
+    for( const QString &key : tags.keys() )
     {
         m_storedTags[ track ].insert( key, tags.value( key ) );
     }
@@ -1138,7 +1138,7 @@ TagDialog::setTagsToMultipleTracks( QVariantMap tags )
 {
     tags.remove( Meta::Field::LABELS );
 
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    for( const Meta::TrackPtr &track : m_tracks )
     {
         setTagsToTrack( track, tags );
     }
@@ -1176,7 +1176,7 @@ TagDialog::setTagsToTrack()
                 QSet<QString> labelsToAdd = newLabelsSet - oldLabelsSet;
 
                 // apply the differences for each track
-                foreach( const Meta::TrackPtr &track, m_tracks )
+                for( const Meta::TrackPtr &track : m_tracks )
                 {
                     QStringList labelsList = m_storedTags[track].value( Meta::Field::LABELS ).toStringList();
                     QSet<QString> labelsSet(labelsList.begin(), labelsList.end());
@@ -1236,7 +1236,7 @@ TagDialog::updateCover()
     Meta::AlbumPtr album = m_currentAlbum;
     if( !m_perTrack )
     {
-        foreach( Meta::TrackPtr track, m_tracks )
+        for( Meta::TrackPtr track : m_tracks )
         {
             if( track->album() != album )
                 album = nullptr;
@@ -1408,7 +1408,7 @@ TagDialog::musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap> &res
     if( result.isEmpty() )
         return;
 
-    foreach( Meta::TrackPtr track, result.keys() )
+    for( Meta::TrackPtr track : result.keys() )
     {
         setTagsToTrack( track, result.value( track ) );
     }

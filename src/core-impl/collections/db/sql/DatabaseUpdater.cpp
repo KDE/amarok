@@ -230,7 +230,7 @@ DatabaseUpdater::upgradeVersion4to5()
     dropTables << "magnatune_albums" << "magnatune_artists" << "magnatune_genre" << "magnatune_moods" << "magnatune_tracks";
     dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
 
-    foreach( const QString &table, dropTables )
+    for( const QString &table : dropTables )
         storage->query( "DROP TABLE " + table );
 
     //now, the rest of them
@@ -242,7 +242,7 @@ DatabaseUpdater::upgradeVersion4to5()
     tables << "statistics" << "statistics_permanent" << "statistics_tag";
     tables << "tracks" << "urls" << "urls_labels" << "years";
 
-    foreach( const QString &table, tables )
+    for( const QString &table : tables )
         storage->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci" );
 
     //now the columns (ugh)
@@ -349,7 +349,7 @@ DatabaseUpdater::upgradeVersion5to6()
     dropTables << "magnatune_albums" << "magnatune_artists" << "magnatune_genre" << "magnatune_moods" << "magnatune_tracks";
     dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
 
-    foreach( const QString &table, dropTables )
+    for( const QString &table : dropTables )
         storage->query( "DROP TABLE " + table );
 
     //now, the rest of them
@@ -361,7 +361,7 @@ DatabaseUpdater::upgradeVersion5to6()
     tables << "statistics" << "statistics_permanent" << "statistics_tag";
     tables << "tracks" << "urls" << "urls_labels" << "years";
 
-    foreach( const QString &table, tables )
+    for( const QString &table : tables )
         storage->query( "ALTER TABLE " + table + " ENGINE = MyISAM" );
 
     typedef QPair<QString, int> vcpair;
@@ -469,7 +469,7 @@ DatabaseUpdater::upgradeVersion9to10()
     dropTables << "magnatune_albums" << "magnatune_artists" << "magnatune_genre" << "magnatune_moods" << "magnatune_tracks";
     dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
 
-    foreach( const QString &table, dropTables )
+    for( const QString &table : dropTables )
         storage->query( "DROP TABLE " + table );
 
     //now, the rest of them
@@ -481,7 +481,7 @@ DatabaseUpdater::upgradeVersion9to10()
     tables << "statistics" << "statistics_permanent" << "statistics_tag";
     tables << "tracks" << "urls" << "urls_labels" << "years";
 
-    foreach( const QString &table, tables )
+    for( const QString &table : tables )
         storage->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin COLLATE utf8_bin ENGINE = MyISAM" );
 
     //now the columns (ugh)
@@ -744,7 +744,7 @@ DatabaseUpdater::checkTables( bool full )
     QStringList res = storage->query( "SHOW TABLES" );
     if( res.count() > 0 )
     {
-        foreach( const QString &table, res )
+        for( const QString &table : res )
             storage->query( "CHECK TABLE " + table + ( full ? " EXTENDED;" : " MEDIUM;" ) );
     }
 }
@@ -879,7 +879,7 @@ DatabaseUpdater::createTables() const
         QStringList indices;
         indices << "id" << "artist" << "album" << "genre" << "composer" << "year" << "title";
         indices << "discnumber" << "createdate" << "length" << "bitrate" << "filesize";
-        foreach( const QString &index, indices )
+        for( const QString &index : indices )
         {
             QString query = QString( "CREATE INDEX tracks_%1 ON tracks(%2);" ).arg( index, index );
             storage->query( query );
@@ -900,7 +900,7 @@ DatabaseUpdater::createTables() const
         storage->query( "CREATE UNIQUE INDEX statistics_url ON statistics(url);" );
         QStringList indices;
         indices << "createdate" << "accessdate" << "score" << "rating" << "playcount";
-        foreach( const QString &index, indices )
+        for( const QString &index : indices )
         {
             QString q = QString( "CREATE INDEX statistics_%1 ON statistics(%2);" ).arg( index, index );
             storage->query( q );
@@ -1071,7 +1071,7 @@ DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bo
     }
 
     QString select;
-    foreach( const QString &column, columns )
+    for( const QString &column : columns )
     {
         if( !select.isEmpty() )
             select.append( ',' );
@@ -1088,14 +1088,14 @@ DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bo
         QTextStream stream( &file );
         int i = 0;
         //write header
-        foreach( const QString &column, columns )
+        for( const QString &column : columns )
         {
             stream << column;
             stream << ';';
         }
         stream << '\n';
 
-        foreach( const QString &data, result )
+        for( const QString &data : result )
         {
             stream << data;
             stream << ';';

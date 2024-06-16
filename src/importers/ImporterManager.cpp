@@ -43,12 +43,12 @@ ImporterManager::~ImporterManager()
 void
 ImporterManager::init()
 {
-    foreach( const QString &providerId, managerConfig().groupList() )
+    for( const QString &providerId : managerConfig().groupList() )
     {
         KConfigGroup group = providerConfig( providerId );
 
         QVariantMap config;
-        foreach( const QString &key, group.keyList() )
+        for( const QString &key : group.keyList() )
             config.insert( key, group.readEntry( key, QVariant( QString() ) ) );
 
         ProviderPtr provider = createProvider( config );
@@ -118,7 +118,7 @@ ImporterManager::createProvider( const QVariantMap &config )
     // Save the settings
     KConfigGroup group = providerConfig( provider );
     group.deleteGroup();
-    foreach( const QString &key, provider->m_config.keys() )
+    for( const QString &key : provider->m_config.keys() )
         group.writeEntry( key, provider->m_config.value( key ) );
     group.sync();
 

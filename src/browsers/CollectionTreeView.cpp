@@ -318,7 +318,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     if( m_filterModel )
     {
         QModelIndexList tmp;
-        foreach( const QModelIndex &idx, indices )
+        for( const QModelIndex &idx : indices )
         {
             tmp.append( m_filterModel->mapToSource( idx ) );
         }
@@ -330,7 +330,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
         return;
 
     m_currentItems.clear();
-    foreach( const QModelIndex &index, indices )
+    for( const QModelIndex &index : indices )
     {
         if( index.isValid() && index.internalPointer() )
             m_currentItems.insert(
@@ -359,7 +359,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
         }
         actions.append( m_collapseAction );
     }
-    foreach( QAction *action, actions ) {
+    for( QAction *action : actions ) {
         menu.addAction( action );
     }
     menu.addSeparator();
@@ -367,7 +367,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     QActionList albumActions = createCustomActions( indices );
     QMenu menuAlbum( i18n( "Album" )  );
-    foreach( QAction *action, albumActions )
+    for( QAction *action : albumActions )
     {
         if( !action->parent() )
             action->setParent( &menuAlbum );
@@ -387,7 +387,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
 
     QActionList collectionActions = createCollectionActions( indices );
     QMenu menuCollection( i18n( "Collection" ) );
-    foreach( QAction *action, collectionActions )
+    for( QAction *action : collectionActions )
     {
         if( !action->parent() )
             action->setParent( &menuCollection );
@@ -458,7 +458,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent *event )
     // add extended actions
     menu.addSeparator();
     actions += createExtendedActions( indices );
-    foreach( QAction *action, actions ) {
+    for( QAction *action : actions ) {
         menu.addAction( action );
     }
     AmarokScript::AmarokCollectionViewScript::createScriptedActions( menu, indices );
@@ -558,13 +558,13 @@ CollectionTreeView::keyPressEvent( QKeyEvent *event )
     if( m_filterModel )
     {
         QModelIndexList tmp;
-        foreach( const QModelIndex &idx, indices )
+        for( const QModelIndex &idx : indices )
             tmp.append( m_filterModel->mapToSource( idx ) );
         indices = tmp;
     }
 
     m_currentItems.clear();
-    foreach( const QModelIndex &index, indices )
+    for( const QModelIndex &index : indices )
     {
         if( index.isValid() && index.internalPointer() )
         {
@@ -611,7 +611,7 @@ CollectionTreeView::dragEnterEvent( QDragEnterEvent *event )
     if( mimeData ) // drag from within Amarok
     {
         QSet<Collection *> srcCollections;
-        foreach( Meta::TrackPtr track, mimeData->tracks() )
+        for( Meta::TrackPtr track : mimeData->tracks() )
         {
             srcCollections.insert( track->collection() );
         }
@@ -666,7 +666,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         if( m_filterModel )
         {
             QModelIndexList tmp;
-            foreach( const QModelIndex &idx, indices )
+            for( const QModelIndex &idx : indices )
             {
                 tmp.append( m_filterModel->mapToSource( idx ) );
             }
@@ -679,14 +679,14 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         font.setPointSize( 16 );
         font.setBold( true );
 
-        foreach( QAction * action, actions )
+        for( QAction * action : actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
 
         m_currentCopyDestination = getCopyActions( indices );
         m_currentMoveDestination = getMoveActions( indices );
 
         m_currentItems.clear();
-        foreach( const QModelIndex &index, indices )
+        for( const QModelIndex &index : indices )
         {
             if( index.isValid() && index.internalPointer() )
             {
@@ -704,7 +704,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         {
             morePud = The::popupDropperFactory()->createPopupDropper( nullptr, true );
 
-            foreach( QAction *action, actions )
+            for( QAction *action : actions )
                 morePud->addItem( The::popupDropperFactory()->createItem( action ) );
         }
         else
@@ -741,7 +741,7 @@ CollectionTreeView::selectionChanged( const QItemSelection &selected,
 
     QModelIndexList changedIndexes = indexes;
     changedIndexes << deselected.indexes();
-    foreach( const QModelIndex &index, changedIndexes )
+    for( const QModelIndex &index : changedIndexes )
         update( index );
 
     if( indexes.count() < 1 )
@@ -892,13 +892,13 @@ CollectionTreeView::copySelectedToLocalCollection()
     if( m_filterModel )
     {
         QModelIndexList tmp;
-        foreach( const QModelIndex &idx, indexes )
+        for( const QModelIndex &idx : indexes )
             tmp.append( m_filterModel->mapToSource( idx ) );
         indexes = tmp;
     }
 
     m_currentItems.clear();
-    foreach( const QModelIndex &index, indexes )
+    for( const QModelIndex &index : indexes )
     {
         if( index.isValid() && index.internalPointer() )
             m_currentItems.insert( static_cast<CollectionTreeItem *>( index.internalPointer() ) );
@@ -1128,7 +1128,7 @@ CollectionTreeView::createExtendedActions( const QModelIndexList &indices )
             if( location->isOrganizable() )
             {
                 bool onlyOneCollection = true;
-                foreach( const QModelIndex &index, indices )
+                for( const QModelIndex &index : indices )
                 {
                     Q_UNUSED( index )
                     CollectionTreeItem *item = static_cast<CollectionTreeItem *>(
@@ -1166,7 +1166,7 @@ CollectionTreeView::createExtendedActions( const QModelIndexList &indices )
                         indices.first().internalPointer() );
 
             QActionList gActions = The::globalCollectionActions()->actionsFor( item->data() );
-            foreach( QAction *action, gActions )
+            for( QAction *action : gActions )
             {
                 if( action ) // Can become 0-pointer, see https://bugs.kde.org/show_bug.cgi?id=183250
                 {
@@ -1209,7 +1209,7 @@ CollectionTreeView::createCustomActions( const QModelIndexList &indices )
                 {
                     QActionList cActions = ac->actions();
 
-                    foreach( QAction *action, cActions )
+                    for( QAction *action : cActions )
                     {
                         Q_ASSERT( action );
                         actions.append( action );
@@ -1277,7 +1277,7 @@ CollectionTreeView::getCopyActions( const QModelIndexList &indices )
         }
         if( !writableCollections.isEmpty() )
         {
-            foreach( Collection *coll, writableCollections )
+            for( Collection *coll : writableCollections )
             {
                 QAction *action = new QAction( coll->icon(), coll->prettyName(), nullptr );
                 action->setProperty( "popupdropper_svg_id", "collection" );
@@ -1314,7 +1314,7 @@ CollectionTreeView::getMoveActions( const QModelIndexList &indices )
         {
             if( collection->isWritable() )
             {
-                foreach( Collection *coll, writableCollections )
+                for( Collection *coll : writableCollections )
                 {
                     QAction *action = new QAction( coll->icon(), coll->prettyName(), nullptr );
                     action->setProperty( "popupdropper_svg_id", "collection" );
@@ -1332,7 +1332,7 @@ bool CollectionTreeView::onlyOneCollection( const QModelIndexList &indices )
     if( !indices.isEmpty() )
     {
         Collection *collection = getCollection( indices.first() );
-        foreach( const QModelIndex &index, indices )
+        for( const QModelIndex &index : indices )
         {
             Collection *currentCollection = getCollection( index );
             if( collection != currentCollection )
@@ -1430,7 +1430,7 @@ QSet<CollectionTreeItem *>
 CollectionTreeView::cleanItemSet( const QSet<CollectionTreeItem *> &items )
 {
     QSet<CollectionTreeItem *> parents;
-    foreach( CollectionTreeItem *item, items )
+    for( CollectionTreeItem *item : items )
     {
         CollectionTreeItem *tmpItem = item;
         while( tmpItem )
@@ -1457,7 +1457,7 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem *> &
     QSet<CollectionTreeItem*> parents = cleanItems ? cleanItemSet( items ) : items;
 
     QList<Collections::QueryMaker *> queryMakers;
-    foreach( CollectionTreeItem *item, parents )
+    for( CollectionTreeItem *item : parents )
     {
         Collections::QueryMaker *qm = item->queryMaker();
         for( CollectionTreeItem *tmp = item; tmp; tmp = tmp->parent() )

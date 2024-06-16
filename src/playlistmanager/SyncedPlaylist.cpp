@@ -120,7 +120,7 @@ SyncedPlaylist::trackAdded( const Playlists::PlaylistPtr &playlist, const TrackP
         return; //we only apply changes to the master playlist to the others
 
     //update the others
-    foreach( Playlists::PlaylistPtr playlistToUpdate, m_playlists )
+    for( Playlists::PlaylistPtr playlistToUpdate : m_playlists )
     {
         if( playlistToUpdate == playlist )
             continue; //no use applying to the one that has already changed
@@ -141,7 +141,7 @@ SyncedPlaylist::trackRemoved( const Playlists::PlaylistPtr &playlist, int positi
         return; //we only apply changes to the master playlist to the others
 
     //update the others
-    foreach( Playlists::PlaylistPtr playlistToUpdate, m_playlists )
+    for( Playlists::PlaylistPtr playlistToUpdate : m_playlists )
     {
         if( playlistToUpdate == playlist )
             continue; //no use applying to the one that has already changed
@@ -255,7 +255,7 @@ SyncedPlaylist::doSync() const
         //debug: print list
         position = 0;
         debug() << "Slave Playlist: " << slave->name() << " - " << slave->uidUrl().url();
-        foreach( const TrackPtr track, slaveTracks )
+        for( const TrackPtr &track : slaveTracks )
             debug() << QStringLiteral( "%1 : %2" ).arg( position++ ).arg( track->name() );
 
         //Add first. Tracks in slave that are not in master will eventually shift to the end.
@@ -280,7 +280,7 @@ SyncedPlaylist::doSync() const
         //debug: print list
         position = 0;
         debug() << "slave playlist after insertions:";
-        foreach( const TrackPtr track, slaveTracks )
+        for( const TrackPtr &track : slaveTracks )
             debug() << QStringLiteral( "%1 : %2" ).arg( position++ ).arg( track->name() );
 
         //Then remove everything after the position of the last track in master.
@@ -293,7 +293,7 @@ SyncedPlaylist::doSync() const
         //debug: print list
         position = 0;
         debug() << "slave playlist after removal:";
-        foreach( const TrackPtr track, slave->tracks() )
+        for( const TrackPtr &track : slave->tracks() )
             debug() << QStringLiteral( "%1 : %2" ).arg( position++ ).arg( track->name() );
 
     }
@@ -302,7 +302,7 @@ SyncedPlaylist::doSync() const
 void
 SyncedPlaylist::removePlaylistsFrom( Playlists::PlaylistProvider *provider )
 {
-    foreach( Playlists::PlaylistPtr playlist, m_playlists )
+    for( Playlists::PlaylistPtr playlist : m_playlists )
     {
         if( playlist->provider() == provider )
         {

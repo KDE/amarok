@@ -128,7 +128,7 @@ CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 {
     KConfigGroup config = Amarok::config( QStringLiteral("Collection Browser") );
     QList<int> levelNumbers;
-    foreach( CategoryId::CatMenuId category, levels() )
+    for( CategoryId::CatMenuId category : levels() )
         levelNumbers.append( category );
     config.writeEntry( "TreeCategory", levelNumbers );
 
@@ -172,7 +172,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         Meta::TrackList tracks = album->tracks();
         if( !tracks.isEmpty() )
         {
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
@@ -187,7 +187,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         Meta::TrackList tracks = artist->tracks();
         if( !tracks.isEmpty() )
         {
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
@@ -202,7 +202,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         Meta::TrackList tracks = genre->tracks();
         if( !tracks.isEmpty() )
         {
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
@@ -217,7 +217,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         Meta::TrackList tracks = year->tracks();
         if( !tracks.isEmpty() )
         {
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
@@ -232,7 +232,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         Meta::TrackList tracks = composer->tracks();
         if( !tracks.isEmpty() )
         {
-            foreach( Meta::TrackPtr track, tracks )
+            for( Meta::TrackPtr track : tracks )
             {
                 Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
@@ -502,7 +502,7 @@ CollectionTreeItemModelBase::mimeData( const QModelIndexList &indices ) const
     }
 
     QList<CollectionTreeItem*> items;
-    foreach( const QModelIndex &index, indexSet )
+    for( const QModelIndex &index : indexSet )
     {
         if( index.isValid() )
             items << static_cast<CollectionTreeItem*>( index.internalPointer() );
@@ -520,7 +520,7 @@ CollectionTreeItemModelBase::mimeData( const QList<CollectionTreeItem*> &items )
     Meta::TrackList tracks;
     QList<Collections::QueryMaker*> queries;
 
-    foreach( CollectionTreeItem *item, items )
+    for( CollectionTreeItem *item : items )
     {
         if( item->allDescendentTracksLoaded() ) {
             tracks << item->descendentTracks();
@@ -985,7 +985,7 @@ CollectionTreeItemModelBase::populateChildren( const DataList &dataList, Collect
     // have to check how that influences performance...
     const QSet<Meta::DataPtr> dataSet(dataList.begin(), dataList.end());
     QSet<Meta::DataPtr> childrenSet;
-    foreach( CollectionTreeItem *child, parent->children() )
+    for( const CollectionTreeItem *child : parent->children() )
     {
         // we don't add null children, these are special-cased below
         if( !child->data() )
@@ -1041,7 +1041,7 @@ CollectionTreeItemModelBase::populateChildren( const DataList &dataList, Collect
         int lastRow = parent->childCount() - 1;
         //the above check ensures that Qt does not crash on beginInsertRows ( because lastRow+1 > lastRow+0)
         beginInsertRows( parentIndex, lastRow + 1, lastRow + dataToBeAdded.count() );
-        foreach( Meta::DataPtr data, dataToBeAdded )
+        for( Meta::DataPtr data : dataToBeAdded )
         {
             new CollectionTreeItem( data, parent, this );
         }
@@ -1178,7 +1178,7 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
     //trigger an update of all items being populated at the moment;
 
     QList< CollectionTreeItem * > items = m_runningQueries.uniqueKeys();
-    foreach ( CollectionTreeItem* item, items  )
+    for ( CollectionTreeItem* item : items  )
     {
         if( item == m_rootItem )
             continue;
@@ -1206,7 +1206,7 @@ CollectionTreeItemModelBase::slotFilter( bool autoExpand )
     filterChildren();
 
     // following is not auto-expansion, it is restoring the state before filtering
-    foreach( Collections::Collection *expanded, m_expandedCollections )
+    for( Collections::Collection *expanded : m_expandedCollections )
     {
         CollectionTreeItem *expandedItem = m_collections.value( expanded->collectionId() ).second;
         if( expandedItem )
@@ -1282,13 +1282,13 @@ void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
 void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item )
 {
     // also all the children will be deleted
-    foreach( CollectionTreeItem *child, item->children() )
+    for( CollectionTreeItem *child : item->children() )
         itemAboutToBeDeleted( child );
 
     if( !m_runningQueries.contains( item ) )
         return;
     // TODO: replace this hack with QWeakPointer now than we depend on Qt >= 4.8
-    foreach(Collections::QueryMaker *qm, m_runningQueries.values( item ))
+    for(Collections::QueryMaker *qm : m_runningQueries.values( item ))
     {
         m_childQueries.remove( qm );
         m_compilationQueries.remove( qm );

@@ -96,7 +96,7 @@ PlaylistBrowserNS::PodcastModel::icon( const PodcastChannelPtr &channel ) const
 {
     QStringList emblems;
     //TODO: only check visible episodes. For now those are all returned by episodes().
-    foreach( const Podcasts::PodcastEpisodePtr ep, channel->episodes() )
+    for( const Podcasts::PodcastEpisodePtr &ep : channel->episodes() )
     {
         if( ep->isNew() )
         {
@@ -365,7 +365,7 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
 void
 PlaylistBrowserNS::PodcastModel::refreshPodcasts()
 {
-    foreach( Playlists::PlaylistProvider *provider,
+    for( Playlists::PlaylistProvider *provider :
              The::playlistManager()->providersForCategory( PlaylistManager::PodcastChannel ) )
     {
         PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( provider );
@@ -390,7 +390,7 @@ Meta::TrackList
 PlaylistBrowserNS::PodcastModel::podcastEpisodesToTracks( Podcasts::PodcastEpisodeList episodes )
 {
     Meta::TrackList tracks;
-    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
+    for( Podcasts::PodcastEpisodePtr episode : episodes )
         tracks << Meta::TrackPtr::staticCast( episode );
     return tracks;
 }

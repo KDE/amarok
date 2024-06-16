@@ -164,7 +164,7 @@ Process::slotTracksMatched( ThreadWeaver::JobPointer job )
     m_options.setSyncedFields( usedFields );
     m_options.setExcludedLabels( controller->config()->excludedLabels() );
     QList<qint64> columns = QList<qint64>() << Meta::valTitle;
-    foreach( qint64 field, Controller::availableFields() )
+    for( qint64 field : Controller::availableFields() )
     {
         if( field & usedFields )
             columns << field;

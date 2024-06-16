@@ -182,7 +182,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         //actions << separator;
 
         QList<QAction *> globalCurrentTrackActions = The::globalCurrentTrackActions()->actions();
-        foreach( QAction *action, globalCurrentTrackActions )
+        for( QAction *action : globalCurrentTrackActions )
             actions << action;
 
         if( track->has<Capabilities::ActionsCapability>() )
@@ -276,7 +276,7 @@ Playlist::ViewCommon::editActionsFor( QWidget *parent, const QModelIndex *index 
 QList<QAction *>
 Playlist::ViewCommon::parentCheckActions( QObject *parent, QList<QAction *> actions )
 {
-    foreach( QAction *action, actions )
+    for( QAction *action : actions )
     {
         if( !action->parent() )
             action->setParent( parent );

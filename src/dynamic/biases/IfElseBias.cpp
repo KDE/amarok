@@ -95,7 +95,7 @@ Dynamic::IfElseBias::matchingTracks( const Meta::TrackList& playlist,
     m_tracks = Dynamic::TrackSet( universe, false );
     m_outstandingMatches = 0;
 
-    foreach( Dynamic::BiasPtr bias, m_biases )
+    for( Dynamic::BiasPtr bias : m_biases )
     {
         m_tracks = bias->matchingTracks( playlist, contextCount, finalCount, universe );
         if( m_tracks.isOutstanding() )
@@ -131,7 +131,7 @@ Dynamic::IfElseBias::resultReceived( const Dynamic::TrackSet &tracks )
 
     // ok. check the next biases
     bool alreadyChecked = true;
-    foreach( Dynamic::BiasPtr bias, m_biases )
+    for( Dynamic::BiasPtr bias : m_biases )
     {
         // jump over already checked biases
         if( bias.data() == sender() )

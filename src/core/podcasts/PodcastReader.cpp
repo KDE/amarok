@@ -1025,7 +1025,7 @@ PodcastReader::beginRdf()
     if( ok )
     {
         bool found = false;
-        foreach( const QXmlStreamNamespaceDeclaration &nsdecl, m_xmlReader.namespaceDeclarations() )
+        for( const QXmlStreamNamespaceDeclaration &nsdecl : m_xmlReader.namespaceDeclarations() )
         {
             if( nsdecl.namespaceUri() == RSS10_NS )
             {
@@ -1133,7 +1133,7 @@ PodcastReader::endItem()
             description += i18n( "Alternative Enclosures:" );
             description += QLatin1String("</b><br/>\n<ul>");
 
-            foreach( const Enclosure& enclosure, m_enclosures )
+            for( const Enclosure& enclosure : m_enclosures )
             {
                 description += QStringLiteral( "<li><a href=\"%1\">%2</a> (%3, %4)</li>" )
                                .arg( enclosure.url().url().toHtmlEscaped(),
@@ -1277,7 +1277,7 @@ PodcastReader::endKeywords()
 {
     QList<QString> keywords( m_current->keywords() );
 
-    foreach( const QString &keyword, m_buffer.split( QLatin1Char(',') ) )
+    for( const QString &keyword : m_buffer.split( QLatin1Char(',') ) )
     {
         QString kwd( keyword.simplified() );
         if( !kwd.isEmpty() && !keywords.contains( kwd ) )
@@ -1326,7 +1326,7 @@ PodcastReader::beginXml()
     m_buffer += '<';
     m_buffer += m_xmlReader.name().toString();
 
-    foreach( const QXmlStreamAttribute &attr, m_xmlReader.attributes() )
+    for( const QXmlStreamAttribute &attr : m_xmlReader.attributes() )
     {
         m_buffer += QStringLiteral( " %1=\"%2\"" )
                     .arg( attr.name().toString(),
@@ -1666,7 +1666,7 @@ PodcastReader::podcastEpisodeCheck( Podcasts::PodcastEpisodePtr episode )
 //     debug() << "episode url: " << episode->prettyUrl();
 //     debug() << "episode guid: " << episode->guid();
 
-    foreach( PodcastEpisodePtr match, episodes )
+    for( PodcastEpisodePtr match : episodes )
     {
 //         debug() << "match title: " << match->title();
 //         debug() << "match url: " << match->prettyUrl();

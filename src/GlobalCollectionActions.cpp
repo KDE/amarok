@@ -134,7 +134,7 @@ QList< QAction * >
 GlobalCollectionActions::actionsFor( const Meta::GenrePtr &genre )
 {
     QList< QAction * > returnList;
-    foreach( GlobalCollectionGenreAction * genreAction, m_genreActions )
+    for( GlobalCollectionGenreAction * genreAction : m_genreActions )
     {
         genreAction->setGenre( genre );
         returnList.append( genreAction );
@@ -147,7 +147,7 @@ QList< QAction * >
 GlobalCollectionActions::actionsFor( const Meta::ArtistPtr &artist )
 {
     QList< QAction * > returnList;
-    foreach( GlobalCollectionArtistAction * artistAction, m_artistActions )
+    for( GlobalCollectionArtistAction * artistAction : m_artistActions )
     {
         artistAction->setArtist( artist );
         returnList.append( artistAction );
@@ -160,7 +160,7 @@ QList< QAction * >
 GlobalCollectionActions::actionsFor( const Meta::AlbumPtr &album )
 {
     QList< QAction * > returnList;
-    foreach( GlobalCollectionAlbumAction * albumAction, m_albumActions )
+    for( GlobalCollectionAlbumAction * albumAction : m_albumActions )
     {
         albumAction->setAlbum( album );
         returnList.append( albumAction );
@@ -173,7 +173,7 @@ QList< QAction * >
 GlobalCollectionActions::actionsFor( const Meta::TrackPtr &track )
 {
     QList< QAction * > returnList;
-    foreach( GlobalCollectionTrackAction * trackAction, m_trackActions )
+    for( GlobalCollectionTrackAction * trackAction : m_trackActions )
     {
         trackAction->setTrack( track );
         returnList.append( trackAction );
@@ -186,7 +186,7 @@ QList< QAction * >
 GlobalCollectionActions::actionsFor( const Meta::YearPtr &year )
 {
     QList< QAction * > returnList;
-    foreach( GlobalCollectionYearAction * yearAction, m_yearActions )
+    for( GlobalCollectionYearAction * yearAction : m_yearActions )
     {
         yearAction->setYear( year );
         returnList.append( yearAction );
@@ -199,7 +199,7 @@ QList< QAction * >
 GlobalCollectionActions::actionsFor( const Meta::ComposerPtr &composer )
 {
     QList< QAction * > returnList;
-    foreach( GlobalCollectionComposerAction * composerAction, m_composerActions )
+    for( GlobalCollectionComposerAction * composerAction : m_composerActions )
     {
         composerAction->setComposer( composer );
         returnList.append( composerAction );

@@ -168,7 +168,7 @@ MusicBrainzXmlParser::parseRecording( const QDomElement &e )
                 {
                     QString artist;
                     QVariantMap artistInfo;
-                    foreach( const QString &id, idList )
+                    for( const QString &id : idList )
                     {
                         if( artists.contains( id ) )
                         {
@@ -262,7 +262,7 @@ MusicBrainzXmlParser::parseRelease( const QDomElement &e )
                 QMultiMap<QString, QVariant> info = parseMediumList( dElement );
                 QVariantList trackCountList = info.values( MusicBrainz::TRACKCOUNT );
                 int trackCount = 0;
-                foreach( const QVariant &count, trackCountList )
+                for( const QVariant &count : trackCountList )
                 {
                     trackCount += count.toInt();
                     if( count.toInt() > 0 )
@@ -450,7 +450,7 @@ MusicBrainzXmlParser::parseReleaseGroup( const QDomElement &e )
                 {
                     QString artist;
                     QVariantMap artistInfo;
-                    foreach( const QString &id, idList )
+                    for( const QString &id : idList )
                     {
                         if( artists.contains( id ) )
                         {

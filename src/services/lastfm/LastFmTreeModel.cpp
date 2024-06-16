@@ -77,7 +77,7 @@ LastFmTreeModel::slotAddFriends()
         QModelIndex parent = index( m_myFriends->row(), 0 );
         beginInsertRows( parent, start, start + children.size() );
 
-        foreach( const lastfm::XmlQuery &e, children )
+        for( const lastfm::XmlQuery &e : children )
         {
             const QString name = e[ "name" ].text();
 
@@ -152,7 +152,7 @@ LastFmTreeModel::slotAddTopArtists()
     lastfm::XmlQuery lfm;
     if( lfm.parse( reply->readAll() ) )
     {
-        foreach( const lastfm::XmlQuery &e, lfm[ "topartists" ].children( "artist" ) )
+        for( const lastfm::XmlQuery &e : lfm[ "topartists" ].children( "artist" ) )
         {
             QString name = e[ "name" ].text();
             int playcount = e[ "playcount" ].text().toInt();
@@ -244,7 +244,7 @@ LastFmTreeModel::onAvatarDownloaded( const QString &username, QPixmap avatar )
     categories << m_myFriends;
 
     // now go through all children of the categories and notify view as appropriate
-    foreach( LastFmTreeItem *category, categories )
+    for( LastFmTreeItem *category : categories )
     {
         QModelIndex parentIdx = index( category->row(), 0 );
         for( int i = 0; i < category->childCount(); i++ )
@@ -610,7 +610,7 @@ LastFmTreeModel::mimeData( const QModelIndexList &indices ) const
 {
     debug() << "LASTFM drag items : " << indices.size();
     Meta::TrackList list;
-    foreach( const QModelIndex &item, indices )
+    for( const QModelIndex &item : indices )
     {
         Meta::TrackPtr track = data( item, LastFm::TrackRole ).value< Meta::TrackPtr >();
         if( track )

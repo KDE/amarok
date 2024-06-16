@@ -62,7 +62,7 @@ AbstractTrackTableCommitter::commit( const QList<Meta::SqlTrackPtr> &tracks )
     QString insertQuery;
     insertQuery.reserve( 1024 ); // a sensible initial size
 
-    foreach( Meta::SqlTrackPtr track, tracks )
+    for( Meta::SqlTrackPtr track : tracks )
     {
         QStringList values = getValues( track.data() );
 

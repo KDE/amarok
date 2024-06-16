@@ -47,7 +47,7 @@ AddServerDialog::AddServerDialog()
     QList<QLineEdit*> inputs;
     inputs << m_widgets->nameLineEdit << m_widgets->serverAddressLineEdit
            << m_widgets->userNameLineEdit << m_widgets-> passwordLineEdit;
-    foreach(QLineEdit* line, inputs)
+    for(QLineEdit* line : inputs)
         connect( line, &QLineEdit::textEdited, this, &AddServerDialog::anyTextEdited);
 }
 

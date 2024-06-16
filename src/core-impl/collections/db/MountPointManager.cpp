@@ -93,8 +93,7 @@ MountPointManager::~MountPointManager()
     DEBUG_BLOCK
 
     m_handlerMapMutex.lock();
-    foreach( DeviceHandler *dh, m_handlerMap )
-        delete dh;
+    qDeleteAll( m_handlerMap );
     m_handlerMapMutex.unlock();
 
     // DeviceHandlerFactories are memory managed using QObject parentship
@@ -109,7 +108,7 @@ MountPointManager::createDeviceFactories()
     factories << new MassStorageDeviceHandlerFactory( this );
     factories << new NfsDeviceHandlerFactory( this );
     factories << new SmbDeviceHandlerFactory( this );
-    foreach( DeviceHandlerFactory *factory, factories )
+    for( DeviceHandlerFactory *factory : factories )
     {
         debug() << "Initializing DeviceHandlerFactory of type:" << factory->type();
         if( factory->canCreateFromMedium() )
@@ -122,7 +121,7 @@ MountPointManager::createDeviceFactories()
 
     Solid::Predicate predicate = Solid::Predicate( Solid::DeviceInterface::StorageAccess );
     QList<Solid::Device> devices = Solid::Device::listFromQuery( predicate );
-    foreach( const Solid::Device &device, devices )
+    for( const Solid::Device &device : devices )
         createHandlerFromDevice( device, device.udi() );
 
     m_ready = true;
@@ -135,7 +134,7 @@ MountPointManager::getIdForUrl( const QUrl &url )
     int mountPointLength = 0;
     int id = -1;
     m_handlerMapMutex.lock();
-    foreach( DeviceHandler *dh, m_handlerMap )
+    for( DeviceHandler *dh : m_handlerMap )
     {
         if ( url.path().startsWith( dh->getDevicePath() ) && mountPointLength < dh->getDevicePath().length() )
         {
@@ -284,10 +283,10 @@ MountPointManager::collectionFolders() const
     KConfigGroup folders = Amarok::config( "Collection Folders" );
     const IdList ids = getMountedDeviceIds();
 
-    foreach( int id, ids )
+    for( int id : ids )
     {
         const QStringList rpaths = folders.readEntry( QString::number( id ), QStringList() );
-        foreach( const QString &strIt, rpaths )
+        for( const QString &strIt : rpaths )
         {
             const QUrl url = QUrl::fromLocalFile( ( strIt == "./" ) ? getMountPointForId( id ) : getAbsolutePath( id, strIt ) );
             const QString absPath = url.adjusted(QUrl::StripTrailingSlash).toLocalFile();
@@ -344,7 +343,7 @@ MountPointManager::slotDeviceAdded( const QString &udi )
     //takes any time, so just be safe
     bool found = false;
     debug() << "looking for udi " << udi;
-    foreach( const Solid::Device &device, devices )
+    for( const Solid::Device &device : devices )
     {
         if( device.udi() == udi )
         {
@@ -384,7 +383,7 @@ void MountPointManager::createHandlerFromDevice( const Solid::Device& device, co
     if ( device.isValid() )
     {
         debug() << "Device added and mounted, checking handlers";
-        foreach( DeviceHandlerFactory *factory, m_mediumFactories )
+        for( DeviceHandlerFactory *factory : m_mediumFactories )
         {
             if( factory->canHandle( device ) )
             {

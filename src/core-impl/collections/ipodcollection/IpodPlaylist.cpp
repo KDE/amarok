@@ -61,7 +61,7 @@ IpodPlaylist::IpodPlaylist( const Meta::TrackList &tracks, const QString &name,
 
     int position = 0;
     int finalPosition = 0;
-    foreach( Meta::TrackPtr track, tracks )
+    for( Meta::TrackPtr track : tracks )
     {
         if( track->collection() == collection ) // track from associated collection
         {

@@ -48,7 +48,7 @@ void Mp3tunesConfig::load()
 
     if( m_identifier.isEmpty() )
     {
-        foreach( const QNetworkInterface &iface, QNetworkInterface::allInterfaces() )
+        for( const QNetworkInterface &iface : QNetworkInterface::allInterfaces() )
         {
             QString addr = iface.hardwareAddress();
             if( addr != "00:00:00:00:00:00" ) {
