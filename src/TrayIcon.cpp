@@ -74,7 +74,8 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     contextMenu()->addAction( ac->action( "stop"       ) );
     contextMenu()->addAction( ac->action( "next"       ) );
 
-    contextMenu()->addSeparator();
+    m_separator = contextMenu()->addSeparator();
+    contextMenu()->addActions( actionCollection() ); // quit and restore
 
     contextMenu()->setObjectName( "TrayIconContextMenu" );
 
@@ -275,12 +276,6 @@ Amarok::TrayIcon::updateMenu()
         }
     }
 
-    QMap<QString, QAction*> actionByName;
-    foreach (QAction* action, actionCollection())
-    {
-        actionByName.insert(action->text(), action);
-    }
-
     m_extraActions.clear();
 
     contextMenu()->removeAction( m_separator.data() );
@@ -315,21 +310,18 @@ Amarok::TrayIcon::updateMenu()
         }
     }
 
-    // second statement checks if the menu has already been populated (first startup), if not: do it
-    if( m_extraActions.count() > 0 ||
-        contextMenu()->actions().last() != actionByName.value( "file_quit" ) )
+    if( m_extraActions.count() > 0 )
     {
         // remove the 2 bottom items, so we can push them to the bottom again
-        contextMenu()->removeAction( action( "file_quit", actionByName ) );
-        contextMenu()->removeAction( action( "minimizeRestore", actionByName ) );
+        for( const auto action : actionCollection() )
+            contextMenu()->removeAction( action );
 
-        foreach( QAction* action, m_extraActions )
+        for( const auto action : m_extraActions )
             contextMenu()->addAction( action );
 
         m_separator = contextMenu()->addSeparator();
         // readd
-        contextMenu()->addAction( action( "minimizeRestore", actionByName  ) );
-        contextMenu()->addAction( action( "file_quit", actionByName  ) );
+        contextMenu()->addActions( actionCollection() );
     }
 }
 

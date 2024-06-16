@@ -9,6 +9,7 @@ VERSION 3.0.2
 
   BUGFIXES:
    * Fix saving and restoring playlist queue on quit / restart (BR 338741)
+   * Fix system tray icon reordering
 
 
 VERSION 3.0.1
