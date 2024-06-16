@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-28 01:43+0000\n"
+"POT-Creation-Date: 2024-06-16 01:44+0000\n"
 "PO-Revision-Date: 2012-11-20 23:54+0200\n"
 "Last-Translator: Diego Iastrubni <elcuco@kde.org>\n"
 "Language-Team: Hebrew <kde-i18n-doc@kde.org>\n"
@@ -905,7 +905,7 @@ msgstr "אם סומן, תוסף האקולייזר יסנן את שידור הש
 #: amarokconfig.kcfg:230
 #, fuzzy, kde-format
 #| msgid "Equalizer pre-amplification value, range -100..100, 0 is normal."
-msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
 "ערך קדם־הגבר של האקולייזר, הערך הוא בין 100 - ובין 100 +, 0 הוא הערך הנורמלי."
 

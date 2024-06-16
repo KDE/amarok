@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-28 01:43+0000\n"
+"POT-Creation-Date: 2024-06-16 01:44+0000\n"
 "PO-Revision-Date: 2013-08-12 13:09+0300\n"
 "Last-Translator: Maris Nartiss <maris.kde@gmail.com>\n"
 "Language-Team: Latvian\n"
@@ -906,8 +906,9 @@ msgstr "Ja ieslēgts, izlīdzinātāja spraudnis filtrēs audio signālu."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, kde-format
-msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, fuzzy, kde-format
+#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
 "11 izlīdzinātāja vērtības, ieskaitot priekšpastiprināšanu, diapazons no -100 "
 "līdz 100, 0 ir neitrāls."

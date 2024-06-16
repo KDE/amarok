@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-28 01:43+0000\n"
+"POT-Creation-Date: 2024-06-16 01:44+0000\n"
 "PO-Revision-Date: 2014-03-28 22:28+0100\n"
 "Last-Translator: Jean Cayron <jean.cayron@gmail.com>\n"
 "Language-Team: Walloon <linux-wa@walon.org>\n"
@@ -915,8 +915,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, kde-format
-msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, fuzzy, kde-format
+#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
 "11 I gn a e wangnaedje di l' ewalijheu li pré-amplifiaedje, li fortchete "
 "-100..100, 0 est normåle."

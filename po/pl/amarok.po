@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-28 01:43+0000\n"
+"POT-Creation-Date: 2024-06-16 01:44+0000\n"
 "PO-Revision-Date: 2024-05-28 19:09+0200\n"
 "Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
 "Language-Team: Polish <kde-i18n-doc@kde.org>\n"
@@ -911,8 +911,9 @@ msgstr "Jeśli włączone, wtyczka korektora filtruje strumień dźwięku."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, kde-format
-msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, fuzzy, kde-format
+#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
 "Wartość wzmocnienia korektora, przedział od -100 do 100, 0 jest neutralne."
 

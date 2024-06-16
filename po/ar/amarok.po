@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-28 01:43+0000\n"
+"POT-Creation-Date: 2024-06-16 01:44+0000\n"
 "PO-Revision-Date: 2015-02-04 19:01+0000\n"
 "Last-Translator: Safa Alfulaij <safa1996alfulaij@gmail.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
@@ -854,9 +854,9 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, kde-format
-msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
-msgstr ""
+#, fuzzy, kde-format
+msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
+msgstr "الفرقة لـ معادِل المدى هو عادي."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:234
@@ -19966,10 +19966,6 @@ msgstr "فارغ"
 #, fuzzy
 #~ msgid "Enables the equalizer plugin"
 #~ msgstr "يمكّن معادِل ملحق"
-
-#, fuzzy
-#~ msgid "Band gains for equalizer, 10 values, range -100..100, 0 is normal."
-#~ msgstr "الفرقة لـ معادِل المدى هو عادي."
 
 #~ msgid "Enter Podcast URL:"
 #~ msgstr "أدخل وصلة النشرة:"

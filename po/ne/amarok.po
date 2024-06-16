@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-28 01:43+0000\n"
+"POT-Creation-Date: 2024-06-16 01:44+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -908,7 +908,7 @@ msgstr "सक्षम पार्दा, एउटा तुल्यका�
 #: amarokconfig.kcfg:230
 #, fuzzy, kde-format
 #| msgid "Equalizer pre-amplification value, range -100..100, 0 is normal."
-msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr "तुल्यकारक पूर्व-प्रवर्धन मान, दायरा -१००..१००, ० सामान्य छ ।"
 
 #. i18n: ectx: label, entry, group (Playback)
