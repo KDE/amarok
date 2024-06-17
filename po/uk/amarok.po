@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-16 01:44+0000\n"
-"PO-Revision-Date: 2024-05-05 09:00+0300\n"
+"POT-Creation-Date: 2024-06-17 01:48+0000\n"
+"PO-Revision-Date: 2024-06-16 09:20+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -912,8 +912,7 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, fuzzy, kde-format
-#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
 "Серед 11 підсилень еквалайзера попереднє підсилення у діапазоні -100..100, 0 "
@@ -10827,7 +10826,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "Назва цілі"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:145
+#: KNotificationBackend.cpp:122 TrayIcon.cpp:146
 #, kde-format
 msgid "Now playing"
 msgstr "Зараз відтворюється"
@@ -17027,37 +17026,37 @@ msgstr " (рекомендоване)"
 msgid "Ask before each transfer"
 msgstr "Запитувати перед кожним перенесенням"
 
-#: TrayIcon.cpp:153 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Muted"
 msgstr "Вимкнено"
 
-#: TrayIcon.cpp:157
+#: TrayIcon.cpp:158
 #, kde-format
 msgid "%1%"
 msgstr "%1%"
 
-#: TrayIcon.cpp:159
+#: TrayIcon.cpp:160
 #, kde-format
 msgid "<i>Volume: %1</i>"
 msgstr "<i>Гучність: %1</i>"
 
-#: TrayIcon.cpp:165
+#: TrayIcon.cpp:166
 #, kde-format
 msgid "Score: %1"
 msgstr "Рахунок: %1"
 
-#: TrayIcon.cpp:183
+#: TrayIcon.cpp:184
 #, kde-format
 msgid "Rating: %1"
 msgstr "Оцінка: %1"
 
-#: TrayIcon.cpp:189
+#: TrayIcon.cpp:190
 #, kde-format
 msgid "Play count: %1"
 msgstr "К-ть відтворень: %1"
 
-#: TrayIcon.cpp:193
+#: TrayIcon.cpp:194
 #, kde-format
 msgid "Last played: %1"
 msgstr "Останнє відтворення: %1"

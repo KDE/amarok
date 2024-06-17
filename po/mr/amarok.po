@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-16 01:44+0000\n"
+"POT-Creation-Date: 2024-06-17 01:48+0000\n"
 "PO-Revision-Date: 2013-03-23 14:30+0530\n"
 "Last-Translator: Chetan Khona <chetan@kompkin.com>\n"
 "Language-Team: Marathi <kde-i18n-doc@kde.org>\n"
@@ -9996,7 +9996,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "कलाकार नाव (&A):"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:145
+#: KNotificationBackend.cpp:122 TrayIcon.cpp:146
 #, kde-format
 msgid "Now playing"
 msgstr "आता चालवीत आहे"
@@ -15697,37 +15697,37 @@ msgstr ""
 msgid "Ask before each transfer"
 msgstr ""
 
-#: TrayIcon.cpp:153 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Muted"
 msgstr "मौन केलेले"
 
-#: TrayIcon.cpp:157
+#: TrayIcon.cpp:158
 #, kde-format
 msgid "%1%"
 msgstr ""
 
-#: TrayIcon.cpp:159
+#: TrayIcon.cpp:160
 #, fuzzy, kde-format
 msgid "<i>Volume: %1</i>"
 msgstr "आवाज"
 
-#: TrayIcon.cpp:165
+#: TrayIcon.cpp:166
 #, kde-format
 msgid "Score: %1"
 msgstr "अंक : %1"
 
-#: TrayIcon.cpp:183
+#: TrayIcon.cpp:184
 #, kde-format
 msgid "Rating: %1"
 msgstr "गुणवत्ताश्रेणी:  %1"
 
-#: TrayIcon.cpp:189
+#: TrayIcon.cpp:190
 #, kde-format
 msgid "Play count: %1"
 msgstr ""
 
-#: TrayIcon.cpp:193
+#: TrayIcon.cpp:194
 #, kde-format
 msgid "Last played: %1"
 msgstr ""

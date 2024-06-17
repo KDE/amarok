@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-16 01:44+0000\n"
-"PO-Revision-Date: 2024-05-05 04:51+0200\n"
+"POT-Creation-Date: 2024-06-17 01:48+0000\n"
+"PO-Revision-Date: 2024-06-16 13:31+0200\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.02.2\n"
+"X-Generator: Lokalize 24.05.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -115,14 +115,14 @@ msgid ""
 "Please use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> to "
 "report bugs.\n"
 msgstr ""
-"Por favor, utilice <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> "
-"para informar de fallos.\n"
+"Use <a href=\"https://bugs.kde.org\">https://bugs.kde.org</a> para informar "
+"de fallos.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:234
 #: aboutdialog/ExtendedAboutDialog.cpp:240
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr "Por favor, informe de fallos a <a href=\"mailto:%1\">%2</a>.\n"
+msgstr "Informe de fallos a <a href=\"mailto:%1\">%2</a>.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:261
 #, kde-format
@@ -424,7 +424,7 @@ msgstr ""
 #: amarokconfig.kcfg:23
 #, kde-format
 msgid "Which tracks or albums to favor in Random Mode"
-msgstr "Qué pistas o álbumes favorecer en el modo aleatorio"
+msgstr "Las pistas o álbumes que se favorecen en el modo aleatorio"
 
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: amarokconfig.kcfg:24
@@ -921,8 +921,7 @@ msgstr ""
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, fuzzy, kde-format
-#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
 "11 Ganancia del ecualizador incluyendo preamplificación, intervalo "
@@ -1592,7 +1591,7 @@ msgstr "Nombre de servidor externo al que se conectarse."
 #: amarokconfig.kcfg:564
 #, kde-format
 msgid "Which server port to connect to the database engine."
-msgstr "Que puerto del servidor para conectarse al motor de base de datos."
+msgstr "El puerto del servidor para conectarse al motor de base de datos."
 
 #. i18n: ectx: label, entry, group (MySQL)
 #: amarokconfig.kcfg:568
@@ -3365,8 +3364,8 @@ msgid ""
 "tool."
 msgstr ""
 "La barra de estado de ánimo posibilita navegar visualmente en su música.\n"
-"Por favor, tenga en cuenta que esta característica exige la herramienta "
-"externa «Generador de barra de estado de ánimo»."
+"Tenga en cuenta que esta característica exige la herramienta externa "
+"«Generador de barra de estado de ánimo»."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
 #: configdialog/dialogs/GeneralConfig.ui:120
@@ -3775,7 +3774,7 @@ msgid ""
 "previous session -- just like a tape-player."
 msgstr ""
 "Si está marcada, Amarok <br>reanudará la reproducción desde donde la dejó en "
-"la sesión anterior -- igual que un reproductor de cintas."
+"la sesión anterior (igual que un reproductor de cintas)."
 
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ResumePlayback)
 #: configdialog/dialogs/PlaybackConfig.ui:29
@@ -5361,8 +5360,8 @@ msgid ""
 "Updating Amarok database schema. Please don't terminate Amarok now as it may "
 "result in database corruption."
 msgstr ""
-"Actualizando el esquema de base de datos de Amarok. Por favor, no cierre "
-"Amarok ahora ya que puede llevar al deterioro de la base de datos."
+"Actualizando el esquema de base de datos de Amarok. No cierre Amarok ahora, "
+"ya que puede llevar al deterioro de la base de datos."
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:245
 #, kde-format
@@ -6076,10 +6075,10 @@ msgid_plural ""
 "Do you really want to delete these %1 tracks? They will be removed from %2 "
 "and from underlying storage medium."
 msgstr[0] ""
-"¿Seguro qué quiere borrar esta pista? Se eliminará de su %2 y del medio de "
+"¿Seguro que quiere borrar esta pista? Se eliminará de su %2 y del medio de "
 "almacenamiento subyacente."
 msgstr[1] ""
-"¿Seguro qué quiere borrar estas %1 pistas? Se eliminarán de %2 y del medio "
+"¿Seguro que quiere borrar estas %1 pistas? Se eliminarán de %2 y del medio "
 "de almacenamiento subyacente."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:49
@@ -6092,9 +6091,9 @@ msgid_plural ""
 "Do you really want to move these %1 tracks to the trash? They will be "
 "removed from %2."
 msgstr[0] ""
-"¿Seguro qué quiere mover esta pista a la papelera? Se eliminará de %2."
+"¿Seguro que quiere mover esta pista a la papelera? Se eliminará de %2."
 msgstr[1] ""
-"¿Seguro qué quiere mover estas %1 pistas a la papelera? Se eliminarán de %2."
+"¿Seguro que quiere mover estas %1 pistas a la papelera? Se eliminarán de %2."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:63
 #, kde-format
@@ -6106,10 +6105,10 @@ msgid_plural ""
 "Do you really want to move these %1 tracks? They will be renamed and the "
 "originals deleted."
 msgstr[0] ""
-"¿Seguro qué quiere mover esta pista? Se cambiará su nombre y se borrará la "
+"¿Seguro que quiere mover esta pista? Se cambiará su nombre y se borrará la "
 "original."
 msgstr[1] ""
-"¿Seguro qué quiere borrar estas %1 pistas? Se cambiarán sus nombres y se "
+"¿Seguro que quiere borrar estas %1 pistas? Se cambiarán sus nombres y se "
 "borrarán las originales."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:67
@@ -8051,9 +8050,8 @@ msgstr[1] "Eliminar material gráfico para %1 álbumes"
 msgid "Are you sure you want to remove this cover from the Collection?"
 msgid_plural ""
 "Are you sure you want to delete these %1 covers from the Collection?"
-msgstr[0] "¿Está seguro de que quiere eliminar esta carátula de la colección?"
-msgstr[1] ""
-"¿Está seguro de que quiere borrar estas %1 carátulas de la colección?"
+msgstr[0] "¿Seguro que quiere eliminar esta carátula de la colección?"
+msgstr[1] "¿Seguro que quiere borrar estas %1 carátulas de la colección?"
 
 #: covermanager/CoverFetchingActions.cpp:134
 #, kde-format
@@ -8627,7 +8625,7 @@ msgstr ""
 #: dialogs/deletedialogbase.ui:79
 #, kde-format
 msgid "List of files that are about to be deleted."
-msgstr "Lista de archivos que van a ser borrados."
+msgstr "Lista de archivos que se van a borrar."
 
 #. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
 #: dialogs/deletedialogbase.ui:82
@@ -9313,8 +9311,8 @@ msgstr ""
 "archivos MS-DOS/FAT con signos de subrayado. Los caracteres incompatibles "
 "incluyen |?*<\":>+[] y caracteres de control unicode. \n"
 "\n"
-"La mayor parte de la gente puede dejar activada esta opción ya que asegura "
-"que la copia a dispositivos de medios funcionará correctamente."
+"La mayoría de usuarios puede dejar activada esta opción, ya que asegura que "
+"la copia a dispositivos de medios funcionará correctamente."
 
 #. i18n: ectx: property (text), widget (QCheckBox, vfatCheck)
 #: dialogs/OrganizeCollectionOptions.ui:83
@@ -10173,7 +10171,7 @@ msgstr ""
 #, kde-format
 msgid "This controls what portion of the playlist should match the criteria"
 msgstr ""
-"Esto controla qué parte de la lista de reproducción debe coincidir con el "
+"Esto controla la parte de la lista de reproducción que debe coincidir con el "
 "criterio"
 
 #: dynamic/biases/PartBias.cpp:396
@@ -10656,7 +10654,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "Nombre destino"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:145
+#: KNotificationBackend.cpp:122 TrayIcon.cpp:146
 #, kde-format
 msgid "Now playing"
 msgstr "Reproduciendo ahora"
@@ -12194,8 +12192,8 @@ msgstr "Elija un nombre para el nuevo diseño de lista de reproducción"
 #, kde-format
 msgid "Please enter a name for the playlist layout you are about to define:"
 msgstr ""
-"Por favor introduzca un nombre para el diseño de la lista de reproducción "
-"que va a definir:"
+"Introduzca un nombre para el diseño de la lista de reproducción que va a "
+"definir:"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:164
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:215
@@ -12231,8 +12229,8 @@ msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
 "of the layout '%1':"
 msgstr ""
-"Por favor introduzca un nombre para el diseño de lista de reproducción que "
-"va a definir como copia de «%1»:"
+"Introduzca un nombre para el diseño de lista de reproducción que va a "
+"definir como copia de «%1»:"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:266
 #, kde-format
@@ -12244,8 +12242,8 @@ msgstr "Elija un nuevo nombre para el diseño de lista de reproducción"
 msgid ""
 "Please enter a new name for the playlist layout you are about to rename:"
 msgstr ""
-"Por favor, introduzca un nuevo nombre para el diseño de la lista de "
-"reproducción cuyo nombre se va a cambiar:"
+"Introduzca un nuevo nombre para el diseño de la lista de reproducción cuyo "
+"nombre se va a cambiar:"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:275
 #, kde-format
@@ -14197,7 +14195,7 @@ msgid ""
 "Please check your KDE installation.  Exiting the console!"
 msgstr ""
 "Un componente del editor de textos de KDE no se puede encontrar.\n"
-"Por favor, compruebe su instalación de KDE. ¡Saliendo de la consola!"
+"Compruebe su instalación de KDE. Se sale de la consola."
 
 #: scripting/scriptconsole/ScriptConsole.cpp:78
 #, kde-format
@@ -14299,9 +14297,9 @@ msgid ""
 "The script %1 uses deprecated scripting API calls. Please contact the script "
 "author, %2 at %3, and ask him to upgrade it before the next Amarok release."
 msgstr ""
-"El guion %1 usa llamadas de API obsoletas. Por favor, contacte con el autor "
-"del guion, %2 en %3, y pídale actualizarlo entes de la siguiente versión de "
-"Amarok."
+"El guion %1 usa llamadas de API obsoletas. Póngase en contacto con el autor "
+"del guion, %2 en %3, y pídale que lo actualice antes de la próxima versión "
+"de Amarok."
 
 #: scripting/scriptmanager/ScriptManager.cpp:290
 #, kde-format
@@ -14518,8 +14516,8 @@ msgstr "Probando..."
 msgid ""
 "Either the username or the password is empty, please correct and try again."
 msgstr ""
-"Bien el usuario o la contraseña están vacíos, por favor corríjalos e "
-"inténtelo de nuevo."
+"El nombre de usuario o la contraseña están vacíos. Corríjalos e inténtelo de "
+"nuevo."
 
 #: services/gpodder/GpodderServiceSettings.cpp:113
 #: services/gpodder/GpodderServiceSettings.cpp:181
@@ -14545,8 +14543,8 @@ msgid ""
 "Either the username or the password is incorrect, please correct and try "
 "again"
 msgstr ""
-"Bien el usuario o la contraseña son incorrectos, por favor corríjalos y "
-"pruebe de nuevo"
+"El nombre de usuario o la contraseña son incorrectos. Corríjalos y pruebe de "
+"nuevo."
 
 #: services/gpodder/GpodderServiceSettings.cpp:189
 #, kde-format
@@ -14893,8 +14891,8 @@ msgid ""
 "There was a problem communicating with the Last.fm services. Please try "
 "again later."
 msgstr ""
-"Ha habido un problema al comunicarse con los servicios de Last.fm. Por "
-"favor, inténtelo más tarde."
+"Ha habido un problema al comunicarse con los servicios de Last.fm. Inténtelo "
+"más tarde."
 
 #: services/lastfm/LastFmService.cpp:383
 #, kde-format
@@ -16728,10 +16726,10 @@ msgid ""
 "transfers."
 msgstr ""
 "<b>Nota:</b> Ningún codificador está disponible. Si quiere trasformar "
-"pistas, por favor, instale el paquete <i>ffmpeg</i> o <i>libav</i> (con el "
-"contenedor <i>ffmpeg</i>) con los codificadores adecuados. Por otra parte, "
-"puede marcar la opción <i>Recordar esta elección para la próxima vez</i> "
-"para saltarse este diálogo en futuras trasferencias."
+"pistas, instale el paquete <i>ffmpeg</i> o <i>libav</i> (con el contenedor "
+"<i>ffmpeg</i>) con los codificadores adecuados. Por otra parte, puede marcar "
+"la opción <i>Recordar esta elección para la próxima vez</i> para saltarse "
+"este diálogo en futuras trasferencias."
 
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: transcoding/TranscodingAssistantDialog.ui:275
@@ -16745,8 +16743,8 @@ msgid ""
 "In order to configure the parameters of the transcoding operation, please "
 "pick an encoder from the list."
 msgstr ""
-"Para configurar los parámetros de la operación de transformación, por favor, "
-"escoja un codificador de la lista."
+"Para configurar los parámetros de la operación de transformación, escoja un "
+"codificador de la lista."
 
 #: transcoding/TranscodingPropertySliderWidget.cpp:99
 #, kde-format
@@ -16758,37 +16756,37 @@ msgstr " (recomendado)"
 msgid "Ask before each transfer"
 msgstr "Preguntar antes de cada trasferencia"
 
-#: TrayIcon.cpp:153 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Muted"
 msgstr "Silenciado"
 
-#: TrayIcon.cpp:157
+#: TrayIcon.cpp:158
 #, kde-format
 msgid "%1%"
 msgstr "%1%"
 
-#: TrayIcon.cpp:159
+#: TrayIcon.cpp:160
 #, kde-format
 msgid "<i>Volume: %1</i>"
 msgstr "<i>Volumen: %1</i>"
 
-#: TrayIcon.cpp:165
+#: TrayIcon.cpp:166
 #, kde-format
 msgid "Score: %1"
 msgstr "Puntuación: %1"
 
-#: TrayIcon.cpp:183
+#: TrayIcon.cpp:184
 #, kde-format
 msgid "Rating: %1"
 msgstr "Valoración: %1"
 
-#: TrayIcon.cpp:189
+#: TrayIcon.cpp:190
 #, kde-format
 msgid "Play count: %1"
 msgstr "Contador de reproducciones: %1"
 
-#: TrayIcon.cpp:193
+#: TrayIcon.cpp:194
 #, kde-format
 msgid "Last played: %1"
 msgstr "Última reproducción: %1"

@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-16 01:44+0000\n"
+"POT-Creation-Date: 2024-06-17 01:48+0000\n"
 "PO-Revision-Date: 2024-05-07 08:37+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Proxecto Trasno (proxecto@trasno.gal)\n"
@@ -10661,7 +10661,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "Nome de destino"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:145
+#: KNotificationBackend.cpp:122 TrayIcon.cpp:146
 #, kde-format
 msgid "Now playing"
 msgstr "Reproducindo"
@@ -16764,37 +16764,37 @@ msgstr " (recomendado)"
 msgid "Ask before each transfer"
 msgstr "Preguntar antes de cada transferencia"
 
-#: TrayIcon.cpp:153 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Muted"
 msgstr "Silenciado"
 
-#: TrayIcon.cpp:157
+#: TrayIcon.cpp:158
 #, kde-format
 msgid "%1%"
 msgstr "%1%"
 
-#: TrayIcon.cpp:159
+#: TrayIcon.cpp:160
 #, kde-format
 msgid "<i>Volume: %1</i>"
 msgstr "<i>Volume: %1</i>"
 
-#: TrayIcon.cpp:165
+#: TrayIcon.cpp:166
 #, kde-format
 msgid "Score: %1"
 msgstr "Puntuación: %1"
 
-#: TrayIcon.cpp:183
+#: TrayIcon.cpp:184
 #, kde-format
 msgid "Rating: %1"
 msgstr "Cualificación: %1"
 
-#: TrayIcon.cpp:189
+#: TrayIcon.cpp:190
 #, kde-format
 msgid "Play count: %1"
 msgstr "Nº de reproducións: %1"
 
-#: TrayIcon.cpp:193
+#: TrayIcon.cpp:194
 #, kde-format
 msgid "Last played: %1"
 msgstr "Última reprodución: %1"

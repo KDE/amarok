@@ -9,15 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-16 01:44+0000\n"
-"PO-Revision-Date: 2024-05-05 06:37+0200\n"
-"Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
+"POT-Creation-Date: 2024-06-17 01:48+0000\n"
+"PO-Revision-Date: 2024-06-16 08:12+0200\n"
+"Last-Translator: Stefan Asserhäll <stefan.asserhall@bredband.net>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 23.08.3\n"
+"X-Generator: Lokalize 23.08.5\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #, kde-format
@@ -890,11 +890,11 @@ msgstr "Om aktiverad filtreras ljudströmmen av ett equalizer-insticksprogram."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, fuzzy, kde-format
-#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
-"11 Equalizerns förförstärkningsvärde, intervall -100..100, där 0 är normalt."
+"11 Equalizerns förstärkningsvärde inklusive förförstärkare, intervall "
+"-100..100, där 0 är normalt."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:234
@@ -10540,7 +10540,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "Målnamn"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:145
+#: KNotificationBackend.cpp:122 TrayIcon.cpp:146
 #, kde-format
 msgid "Now playing"
 msgstr "Spelar nu"
@@ -16605,37 +16605,37 @@ msgstr " (rekommenderad)"
 msgid "Ask before each transfer"
 msgstr "Fråga innan varje överföring"
 
-#: TrayIcon.cpp:153 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Muted"
 msgstr "Tyst"
 
-#: TrayIcon.cpp:157
+#: TrayIcon.cpp:158
 #, kde-format
 msgid "%1%"
 msgstr "%1 %"
 
-#: TrayIcon.cpp:159
+#: TrayIcon.cpp:160
 #, kde-format
 msgid "<i>Volume: %1</i>"
 msgstr "<i>Volym: %1</i>"
 
-#: TrayIcon.cpp:165
+#: TrayIcon.cpp:166
 #, kde-format
 msgid "Score: %1"
 msgstr "Poäng: %1"
 
-#: TrayIcon.cpp:183
+#: TrayIcon.cpp:184
 #, kde-format
 msgid "Rating: %1"
 msgstr "Betyg: %1"
 
-#: TrayIcon.cpp:189
+#: TrayIcon.cpp:190
 #, kde-format
 msgid "Play count: %1"
 msgstr "Uppspelningsräknare: %1"
 
-#: TrayIcon.cpp:193
+#: TrayIcon.cpp:194
 #, kde-format
 msgid "Last played: %1"
 msgstr "Senast spelad: %1"

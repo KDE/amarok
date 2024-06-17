@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-16 01:44+0000\n"
-"PO-Revision-Date: 2024-05-05 11:00+0200\n"
+"POT-Creation-Date: 2024-06-17 01:48+0000\n"
+"PO-Revision-Date: 2024-06-16 10:26+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -926,12 +926,11 @@ msgstr "Si està marcada, un equalitzador filtrarà el flux d'àudio."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, fuzzy, kde-format
-#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
 msgstr ""
-"Els 11 guanys de l'equalitzador inclouen la preamplificació, amb abast de "
-"-100..100, 0 és el normal."
+"Els 11 guanys de l'equalitzador inclouen la preamplificació, amb un interval "
+"de -100..100, 0 és el normal."
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:234
@@ -10662,7 +10661,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr "Nom de la destinació"
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:145
+#: KNotificationBackend.cpp:122 TrayIcon.cpp:146
 #, kde-format
 msgid "Now playing"
 msgstr "Ara s'està reproduint"
@@ -16781,37 +16780,37 @@ msgstr " (recomanat)"
 msgid "Ask before each transfer"
 msgstr "Pregunta abans de cada transferència"
 
-#: TrayIcon.cpp:153 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Muted"
 msgstr "Silenciat"
 
-#: TrayIcon.cpp:157
+#: TrayIcon.cpp:158
 #, kde-format
 msgid "%1%"
 msgstr "%1%"
 
-#: TrayIcon.cpp:159
+#: TrayIcon.cpp:160
 #, kde-format
 msgid "<i>Volume: %1</i>"
 msgstr "<i>Volum: %1</i>"
 
-#: TrayIcon.cpp:165
+#: TrayIcon.cpp:166
 #, kde-format
 msgid "Score: %1"
 msgstr "Puntuació: %1"
 
-#: TrayIcon.cpp:183
+#: TrayIcon.cpp:184
 #, kde-format
 msgid "Rating: %1"
 msgstr "Valoració: %1"
 
-#: TrayIcon.cpp:189
+#: TrayIcon.cpp:190
 #, kde-format
 msgid "Play count: %1"
 msgstr "Nombre de reproduccions: %1"
 
-#: TrayIcon.cpp:193
+#: TrayIcon.cpp:194
 #, kde-format
 msgid "Last played: %1"
 msgstr "Escoltada per última vegada: %1"
@@ -17208,14 +17207,3 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "buit"
-
-#~ msgid ""
-#~ "<p>Each year in October the Amarok team organizes a funding drive called "
-#~ "<b>Roktober</b>.</p><p>If you want your name mentioned on this list <a "
-#~ "href=\"http://amarok.kde.org/donations\"> donate during Roktober</a> and "
-#~ "opt-in.</p>"
-#~ msgstr ""
-#~ "<p>L'octubre de cada any, l'equip d'Amarok organitza una campanya "
-#~ "d'arreplegada de fons anomenada <b>Roktober</b>.</p><p>Si voleu que el "
-#~ "vostre nom es mencione en esta llista <a href=\"http://amarok.kde.org/"
-#~ "donations\">donatius durant la Roktober</a> i apunteu-vos-hi.</p>"

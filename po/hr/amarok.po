@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-16 01:44+0000\n"
+"POT-Creation-Date: 2024-06-17 01:48+0000\n"
 "PO-Revision-Date: 2010-05-12 11:09+0200\n"
 "Last-Translator: Marko Dimjasevic <marko@dimjasevic.net>\n"
 "Language-Team: Croatian <kde-croatia-list@lists.sourceforge.net>\n"
@@ -10387,7 +10387,7 @@ msgctxt "Name of the synchronization target"
 msgid "Target name"
 msgstr ""
 
-#: KNotificationBackend.cpp:122 TrayIcon.cpp:145
+#: KNotificationBackend.cpp:122 TrayIcon.cpp:146
 #, kde-format
 msgid "Now playing"
 msgstr ""
@@ -16254,43 +16254,43 @@ msgstr ""
 msgid "Ask before each transfer"
 msgstr ""
 
-#: TrayIcon.cpp:153 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
+#: TrayIcon.cpp:154 widgets/VolumeDial.cpp:303 widgets/VolumeDial.cpp:342
 #, kde-format
 msgid "Muted"
 msgstr ""
 
-#: TrayIcon.cpp:157
+#: TrayIcon.cpp:158
 #, fuzzy, kde-format
 #| msgctxt "monthname year"
 #| msgid "%1 %2"
 msgid "%1%"
 msgstr "%1 %2"
 
-#: TrayIcon.cpp:159
+#: TrayIcon.cpp:160
 #, fuzzy, kde-format
 #| msgid "Volume: %1%"
 msgid "<i>Volume: %1</i>"
 msgstr "Glasnoća: %1%"
 
-#: TrayIcon.cpp:165
+#: TrayIcon.cpp:166
 #, fuzzy, kde-format
 #| msgid "Score:"
 msgid "Score: %1"
 msgstr "Rezultat:"
 
-#: TrayIcon.cpp:183
+#: TrayIcon.cpp:184
 #, fuzzy, kde-format
 #| msgid "Rating:"
 msgid "Rating: %1"
 msgstr "Ocjena:"
 
-#: TrayIcon.cpp:189
+#: TrayIcon.cpp:190
 #, fuzzy, kde-format
 #| msgid "Play Count:"
 msgid "Play count: %1"
 msgstr "Broj sviranja:"
 
-#: TrayIcon.cpp:193
+#: TrayIcon.cpp:194
 #, fuzzy, kde-format
 #| msgctxt "a single item (singular)"
 #| msgid "Last Played:"
