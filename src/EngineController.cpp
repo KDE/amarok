@@ -530,7 +530,13 @@ EngineController::stop( bool forceInstant, bool playingWillContinue ) //SLOT
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
-        const qint64 pos = trackPositionMs();
+        qint64 pos = trackPositionMs();
+        // Phonon-vlc media progress reporting gets stuck when preparing a gapless track change,
+        // with some formats, it seems, causing this function to get called after m_media starts
+        // reporting a current time of 0. This function is stop, so if engine claims that position
+        // is 0, be very suspicious and try to use own value if that seems more sensible. BUG 337849
+        if( pos == 0 )
+            pos = m_lastTickPosition;
         // updateStreamLength() intentionally not here, we're probably in the middle of a track
         const qint64 length = trackLength();
         Q_EMIT trackFinishedPlaying( m_currentTrack, pos / qMax<double>( length, pos ) );
