@@ -316,22 +316,6 @@ CollectionTreeItem::addMatch( Collections::QueryMaker *qm, CategoryId::CatMenuId
         qm->addMatch( label );
 }
 
-
-QList<QUrl>
-CollectionTreeItem::urls() const
-{
-    /*QueryBuilder qb = queryBuilder();
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    QStringList values = qb.run();
-    QList<QUrl> list;
-    foreach( QString s, values ) {
-        list += QUrl( s );
-    }
-    return list;*/
-    QList<QUrl> list;
-    return list;
-}
-
 bool
 CollectionTreeItem::operator<( const CollectionTreeItem& other ) const
 {

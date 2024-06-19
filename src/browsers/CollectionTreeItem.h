@@ -93,7 +93,6 @@ class AMAROK_EXPORT CollectionTreeItem : public QObject
         const Meta::DataPtr data() const;
         Collections::Collection* parentCollection() const { return m_parentCollection ? m_parentCollection : (m_parent ? m_parent->parentCollection() : nullptr); }
 
-        QList<QUrl> urls() const;
         Meta::TrackList descendentTracks();
 
         bool allDescendentTracksLoaded() const;
