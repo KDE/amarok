@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-17 01:48+0000\n"
+"POT-Creation-Date: 2024-06-19 01:44+0000\n"
 "PO-Revision-Date: 2024-06-17 14:36+0200\n"
 "Last-Translator: Vit Pelcak <vpelcak@suse.cz>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -180,7 +180,7 @@ msgstr "Chyba sítě"
 msgid "Email contributor"
 msgstr "E-mailový přispěvatel"
 
-#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:277
+#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:276
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "Navštívit domovskou stránku přispěvatele"
@@ -191,97 +191,97 @@ msgctxt "A person's location: City, Country"
 msgid "%1, %2"
 msgstr "%1, %2"
 
-#: aboutdialog/OcsPersonItem.cpp:202
+#: aboutdialog/OcsPersonItem.cpp:201
 #, kde-format
 msgid "IRC channels: "
 msgstr "Kanály IRC: "
 
-#: aboutdialog/OcsPersonItem.cpp:215
+#: aboutdialog/OcsPersonItem.cpp:214
 #, kde-format
 msgid "Favorite music: "
 msgstr "Oblíbená hudba: "
 
-#: aboutdialog/OcsPersonItem.cpp:220
+#: aboutdialog/OcsPersonItem.cpp:219
 #, kde-format
 msgid "Visit %1's openDesktop.org profile"
 msgstr "Navštívit profil %1 na openDesktop.org"
 
-#: aboutdialog/OcsPersonItem.cpp:222
+#: aboutdialog/OcsPersonItem.cpp:221
 #, kde-format
 msgid "Visit %1's profile on openDesktop.org"
 msgstr "Navštívit profil %1 na openDesktop.org"
 
-#: aboutdialog/OcsPersonItem.cpp:256
+#: aboutdialog/OcsPersonItem.cpp:255
 #, kde-format
 msgid "Visit contributor's blog"
 msgstr "Navštívit přispěvatelův blog"
 
-#: aboutdialog/OcsPersonItem.cpp:261
+#: aboutdialog/OcsPersonItem.cpp:260
 #, kde-format
 msgid "Visit contributor's del.icio.us profile"
 msgstr "Navštívit přispěvatelův del.icio.us profil"
 
-#: aboutdialog/OcsPersonItem.cpp:266
+#: aboutdialog/OcsPersonItem.cpp:265
 #, kde-format
 msgid "Visit contributor's Digg profile"
 msgstr "Navštívit přispěvatelův profil Digg"
 
-#: aboutdialog/OcsPersonItem.cpp:271
+#: aboutdialog/OcsPersonItem.cpp:270
 #, kde-format
 msgid "Visit contributor's Facebook profile"
 msgstr "Navštívit přispěvatelův profil na Facebooku"
 
-#: aboutdialog/OcsPersonItem.cpp:287
+#: aboutdialog/OcsPersonItem.cpp:286
 #, kde-format
 msgid "Visit contributor's Last.fm profile"
 msgstr "Navštívit Last.fm profil přispěvatele "
 
-#: aboutdialog/OcsPersonItem.cpp:295
+#: aboutdialog/OcsPersonItem.cpp:294
 #, kde-format
 msgid "Visit contributor's LinkedIn profile"
 msgstr "Navštívit přispěvatelův profil na LinkedIn"
 
-#: aboutdialog/OcsPersonItem.cpp:300
+#: aboutdialog/OcsPersonItem.cpp:299
 #, kde-format
 msgid "Visit contributor's MySpace homepage"
 msgstr "Navštívit přispěvatelovu domovskou stránku na MySpace"
 
-#: aboutdialog/OcsPersonItem.cpp:305
+#: aboutdialog/OcsPersonItem.cpp:304
 #, kde-format
 msgid "Visit contributor's Reddit profile"
 msgstr "Navštívit přispěvatelův Reddit profil"
 
-#: aboutdialog/OcsPersonItem.cpp:310
+#: aboutdialog/OcsPersonItem.cpp:309
 #, kde-format
 msgid "Visit contributor's YouTube profile"
 msgstr "Navštívit přispěvatelův profil na YouTube"
 
-#: aboutdialog/OcsPersonItem.cpp:315
+#: aboutdialog/OcsPersonItem.cpp:314
 #, kde-format
 msgid "Visit contributor's Twitter feed"
 msgstr "Navštívit přispěvatelův kanál na Twitteru"
 
-#: aboutdialog/OcsPersonItem.cpp:320
+#: aboutdialog/OcsPersonItem.cpp:319
 #, kde-format
 msgid "Visit contributor's Wikipedia profile"
 msgstr "Navštívit přispěvatelův profil na Wikipedii"
 
-#: aboutdialog/OcsPersonItem.cpp:325
+#: aboutdialog/OcsPersonItem.cpp:324
 #, kde-format
 msgid "Visit contributor's Xing profile"
 msgstr "Navštívit přispěvatelův Xing profil"
 
-#: aboutdialog/OcsPersonItem.cpp:330
+#: aboutdialog/OcsPersonItem.cpp:329
 #, kde-format
 msgid "Visit contributor's identi.ca feed"
 msgstr "Navštívit přispěvatelův kanál na identi.ca  "
 
-#: aboutdialog/OcsPersonItem.cpp:335
+#: aboutdialog/OcsPersonItem.cpp:334
 #, kde-format
 msgid "Visit contributor's libre.fm profile"
 msgstr "Navštívit přispěvatelův profil na libre.fm"
 
-#: aboutdialog/OcsPersonItem.cpp:340
+#: aboutdialog/OcsPersonItem.cpp:339
 #, kde-format
 msgid "Visit contributor's StackOverflow profile"
 msgstr "Navštívit přispěvatelův profil na StackOverflow"
@@ -375,7 +375,7 @@ msgstr "Zastavit po současné skladbě: Zapnuto"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1334 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1335 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Nepřehrává se žádná skladba"
@@ -1753,12 +1753,6 @@ msgstr "Nová skupina"
 
 #: amarokurls/BookmarkModel.cpp:537
 #: context/applets/similarartists/ArtistWidget.cpp:443
-#: context/applets/upcomingevents/UpcomingEventsMapWidget.cpp:162
-#: context/applets/upcomingevents/UpcomingEventsMapWidget.cpp:163
-#: context/applets/upcomingevents/UpcomingEventsMapWidget.cpp:165
-#: context/applets/upcomingevents/UpcomingEventsMapWidget.cpp:166
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:208
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:232
 #, kde-format
 msgid "none"
 msgstr "žádné"
@@ -2091,7 +2085,7 @@ msgid "Show Cover Art"
 msgstr "Zobrazit obal"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:271
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:87
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:88
 #, kde-format
 msgid "Merged View"
 msgstr "Sloučený pohled"
@@ -2137,14 +2131,14 @@ msgstr "Neznámý"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
 #: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
-#: dialogs/TrackOrganizer.cpp:56 widgets/AlbumBreadcrumbWidget.cpp:65
+#: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
 msgstr "Různí umělci"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1102
 #: browsers/CollectionTreeView.cpp:369
-#: context/applets/albums/plugin/AlbumsEngine.cpp:299
+#: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
 #: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
@@ -2239,7 +2233,7 @@ msgstr "Více..."
 
 #: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
-#: context/applets/albums/plugin/AlbumsEngine.cpp:284
+#: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
@@ -2247,7 +2241,7 @@ msgstr "Přid&at do seznamu skladeb"
 
 #: browsers/CollectionTreeView.cpp:1100 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
-#: context/applets/albums/plugin/AlbumsEngine.cpp:285
+#: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #: services/lastfm/LastFmTreeView.cpp:106
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
@@ -2572,23 +2566,23 @@ msgstr ""
 "seznamů skladeb. Můžete v něm také upřesnit výkonné dynamické seznamy "
 "skladeb a řídit vaše odběry podcastů a dílů."
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:77
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:78
 #: services/opmldirectory/OpmlDirectoryModel.cpp:42
 #, kde-format
 msgid "Add Folder"
 msgstr "Přidat složku"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:82
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:83
 #, kde-format
 msgid "Visible Sources"
 msgstr "Viditelné zdroje"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:187
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:189
 #, kde-format
 msgid "Folders are only shown in <b>merged view</b>."
 msgstr "Složky jsou zobrazeny pouze ve <b>sloučeném pohledu</b>."
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:283
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:285
 #, kde-format
 msgctxt "default name for new folder"
 msgid "New Folder"
@@ -2709,7 +2703,7 @@ msgid "Use relative path for &saving"
 msgstr "Pro &uložení použít relativní cestu"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:464
+#: covermanager/CoverFoundDialog.cpp:384 MainWindow.cpp:464
 #, kde-format
 msgid "Save As"
 msgstr "Uložit jako"
@@ -2921,7 +2915,7 @@ msgstr "Nastavit obecné volby"
 
 #: configdialog/ConfigDialog.cpp:60
 #: core-impl/collections/db/DatabaseCollection.cpp:54
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:71
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:72
 #, kde-format
 msgid "Local Collection"
 msgstr "Místní sbírka"
@@ -3965,17 +3959,17 @@ msgstr[0] "%1 skladba"
 msgstr[1] "%1 skladby"
 msgstr[2] "%1 skladeb"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:211
+#: context/applets/albums/plugin/AlbumsEngine.cpp:212
 #, kde-format
 msgid "Disc %1"
 msgstr "Disk %1"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:286
+#: context/applets/albums/plugin/AlbumsEngine.cpp:287
 #, kde-format
 msgid "&Queue"
 msgstr "Zařadit do &fronty"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:287
+#: context/applets/albums/plugin/AlbumsEngine.cpp:288
 #: playlist/view/PlaylistViewCommon.cpp:265
 #, kde-format
 msgid "Edit Track Details"
@@ -4061,7 +4055,6 @@ msgstr "Odstranit popisek"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
 #: context/applets/similarartists/ArtistWidget.cpp:131
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:146
 #: playlist/view/PlaylistViewCommon.cpp:202
 #, kde-format
 msgid "Show in Media Sources"
@@ -4089,7 +4082,6 @@ msgstr "Obnovit"
 #: context/applets/labels/LabelsApplet.cpp:114
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:85
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #, kde-format
@@ -4622,323 +4614,6 @@ msgctxt "Guitar tablature"
 msgid "tab provided from: "
 msgstr "tabulatura poskytnuta z: "
 
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:68
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:129
-#, kde-format
-msgid "Upcoming Events"
-msgstr "Nadcházející události"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:79
-#, kde-format
-msgid "View Events Calendar"
-msgstr "Zobrazit kalendář událostí"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:92
-#, kde-format
-msgctxt "@title:group"
-msgid "No track is currently playing"
-msgstr "Nepřehrává se žádná skladba"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:159
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:304
-#, kde-format
-msgid "Favorite Venues"
-msgstr "Oblíbená místa konání"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:225
-#, kde-format
-msgid "No upcoming events"
-msgstr "Žádné nadcházející události"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:225
-#, kde-format
-msgid "%1: No upcoming events"
-msgstr "%1: Žádné nadcházející události"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "1 event"
-msgid_plural "%1 events"
-msgstr[0] "1 událost"
-msgstr[1] "%1 události"
-msgstr[2] "%1 událostí"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:231
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:641
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "%1: 1 event"
-msgid_plural "%1: %2 events"
-msgstr[0] "%1: 1 událost"
-msgstr[1] "%1: %2 události"
-msgstr[2] "%1: %2 událostí"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
-#, kde-format
-msgid "Upcoming Events Settings"
-msgstr "Nastavení nadcházejících událostí"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:354
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:363
-#, kde-format
-msgctxt "@label:textbox Url label"
-msgid "link"
-msgstr "odkaz"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:495
-#, kde-format
-msgid "Map View"
-msgstr "Prohlížení mapy"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:533
-#, kde-format
-msgid "Events Calendar"
-msgstr "Kalendář událostí"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#. i18n: ectx: property (text), item, widget (QComboBox, filterComboBox)
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:552
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:33
-#: context/applets/upcomingevents/upcomingEventsSettings.ui:26
-#, kde-format
-msgid "This week"
-msgstr "Tento týden"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#. i18n: ectx: property (text), item, widget (QComboBox, filterComboBox)
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:554
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:38
-#: context/applets/upcomingevents/upcomingEventsSettings.ui:31
-#, kde-format
-msgid "This month"
-msgstr "Tento měsíc"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#. i18n: ectx: property (text), item, widget (QComboBox, filterComboBox)
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:556
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:43
-#: context/applets/upcomingevents/upcomingEventsSettings.ui:36
-#, kde-format
-msgid "This year"
-msgstr "Tento rok"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:639
-#, kde-format
-msgctxt "@title:group"
-msgid "Favorite Venues"
-msgstr "Oblíbená místa konání"
-
-#: context/applets/upcomingevents/UpcomingEventsCalendarWidget.cpp:160
-#, kde-format
-msgctxt "@info:tooltip Calendar action"
-msgid "Jump to Today"
-msgstr "Přejít na dnešek"
-
-#. i18n: ectx: property (text), widget (QLabel, filterLabel)
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:20
-#, kde-format
-msgid "Filter events by date:"
-msgstr "Filtrovat události podle data:"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#. i18n: ectx: property (text), item, widget (QComboBox, filterComboBox)
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:28
-#: context/applets/upcomingevents/upcomingEventsSettings.ui:21
-#, kde-format
-msgid "All events"
-msgstr "Všechny události"
-
-#. i18n: ectx: property (text), widget (QCheckBox, groupVenueCheckBox)
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:51
-#, kde-format
-msgid "&Group venue events"
-msgstr "&Seskupit dle místa konání"
-
-#: context/applets/upcomingevents/UpcomingEventsMapWidget.cpp:122
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:125
-#, kde-format
-msgctxt "@label:textbox Title for a canceled upcoming event"
-msgid "<s>%1</s> (Canceled)"
-msgstr "<s>%1</s> (Zrušeno)"
-
-#. i18n: ectx: property (text), widget (QCheckBox, checkBox)
-#: context/applets/upcomingevents/upcomingEventsSettings.ui:44
-#, kde-format
-msgid "Show places as links"
-msgstr "Zobrazit místa jako odkazy"
-
-#: context/applets/upcomingevents/UpcomingEventsStackItem.cpp:288
-#, kde-format
-msgid "Maximize"
-msgstr "Maximalizovat"
-
-#: context/applets/upcomingevents/UpcomingEventsStackItem.cpp:454
-#, kde-format
-msgid "Expand this widget"
-msgstr "Rozbalit tento widget"
-
-#: context/applets/upcomingevents/UpcomingEventsStackItem.cpp:454
-#, kde-format
-msgid "Collapse this widget"
-msgstr "Svinout tento widget"
-
-#. i18n: ectx: property (clickMessage), widget (KLineEdit, searchLineEdit)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:45
-#, kde-format
-msgid "Search Venue"
-msgstr "Hledat místo konání"
-
-#. i18n: ectx: property (toolTip), widget (KComboBox, countryCombo)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:55
-#, kde-format
-msgid "Restrict venues to a specific country"
-msgstr "Omezit místo konání na danou zemi"
-
-#. i18n: ectx: property (text), item, widget (KComboBox, countryCombo)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:65
-#, kde-format
-msgid "Any Country"
-msgstr "Jakákoliv země"
-
-#. i18n: ectx: property (text), widget (QLabel, searchResultsLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:75
-#, kde-format
-msgid "Search Results:"
-msgstr "Výsledky hledání:"
-
-#. i18n: ectx: property (text), widget (QLabel, selectedVenuesLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:104
-#, kde-format
-msgid "Selected Venues:"
-msgstr "Vybraná místa konání:"
-
-#. i18n: ectx: property (text), widget (QLabel, photoLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:155
-#, kde-format
-msgid "Photo"
-msgstr "Fotka"
-
-#. i18n: ectx: property (text), widget (QLabel, nameLabel)
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:183
-#: core-impl/collections/umscollection/UmsConfiguration.ui:22
-#, kde-format
-msgid "Name:"
-msgstr "Jméno:"
-
-#. i18n: ectx: property (text), widget (QLabel, cityLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:193
-#, kde-format
-msgid "City:"
-msgstr "Město:"
-
-#. i18n: ectx: property (text), widget (QLabel, UrlLabel)
-#. i18n: ectx: property (text), widget (QLabel, urlLabel)
-#. i18n: ectx: property (text), widget (QLabel, m_urlLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:223
-#: core-impl/podcasts/sql/PodcastSettingsBase.ui:52
-#: services/opmldirectory/AddOpmlWidget.ui:65
-#, kde-format
-msgid "URL:"
-msgstr "URL:"
-
-#. i18n: ectx: property (text), widget (QLabel, websiteLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:230
-#, kde-format
-msgid "Website:"
-msgstr "Webová stránka:"
-
-#. i18n: ectx: property (text), widget (QLabel, countryLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:257
-#, kde-format
-msgid "Country:"
-msgstr "Země:"
-
-#. i18n: ectx: property (text), widget (QLabel, streetLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:267
-#, kde-format
-msgid "Street:"
-msgstr "Ulice:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:53
-#, kde-format
-msgid "Loading picture..."
-msgstr "Načítá se obrázek..."
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:78
-#, kde-format
-msgid "View map"
-msgstr "Zobrazit mapu"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:88
-#, kde-format
-msgid "Open Last.fm webpage for this event"
-msgstr "Otevřít pro tuto událost webové stránky Last.fm"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:95
-#, kde-format
-msgctxt "@label:textbox Supporting acts for an event"
-msgid "Supporting:"
-msgstr "Předkapely:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:96
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Venue:"
-msgstr "Místo konání:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:97
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Location:"
-msgstr "Umístění:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:98
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Date:"
-msgstr "Datum:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:99
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Attending:"
-msgstr "Účastníci:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:100
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Tags:"
-msgstr "Značky:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:217
-#, kde-format
-msgctxt "@info:tooltip"
-msgid "<strong>Tags:</strong><nl/>%1"
-msgstr "<strong>Značky:</strong><nl/>%1"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:241
-#, kde-format
-msgctxt "@info:tooltip Supporting artists for an event"
-msgid "<strong>Supporting artists:</strong><nl/>%1"
-msgstr "<strong>Předkapely:</strong><nl/>%1"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:257
-#, kde-format
-msgctxt "@info:tooltip Number of days till an event"
-msgid "Tomorrow"
-msgid_plural "In <strong>%1</strong> days"
-msgstr[0] "Zítra"
-msgstr[1] "Za <strong>%1</strong> dny"
-msgstr[2] "Za <strong>%1</strong> dnů"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:269
-#, kde-format
-msgctxt "@info:tooltip"
-msgid "<strong>Location:</strong><nl/>%1"
-msgstr "<strong>Umístění:</strong><nl/>%1"
-
 #: context/applets/wikipedia/package/contents/ui/main.qml:41
 #: context/applets/wikipedia/package/contents/ui/main.qml:153
 #, kde-format
@@ -4992,15 +4667,19 @@ msgid "No information found..."
 msgstr "Nebyly nalezeny žádné informace..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "Search pattern for an artist or band"
+#| msgid ".*\\(.*(artist|band).*\\))"
 msgctxt "Search pattern for an artist or band"
-msgid ".*\\(.*(artist|band).*\\))"
+msgid ".*\\(.*(artist|band).*\\)"
 msgstr ".*\\(.*(umělec|kapela).*\\))"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "Search pattern for a composer"
+#| msgid ".*\\(.*(composer|musician).*\\))"
 msgctxt "Search pattern for a composer"
-msgid ".*\\(.*(composer|musician).*\\))"
+msgid ".*\\(.*(composer|musician).*\\)"
 msgstr ".*\\(.*(skladatel|hudebník).*\\))"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
@@ -5328,27 +5007,27 @@ msgstr ""
 msgid "Updating Amarok database schema"
 msgstr "Aktualizuje se databázové schéma Amaroku"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:528
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:529
 #, kde-format
 msgid "Source track does not exist: %1"
 msgstr "Zdrojová skladba neexistuje: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:539
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:540
 #, kde-format
 msgid "Could not create directory: %1"
 msgstr "Nelze vytvořit adresář: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:616
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:617
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Přenos: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:619
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "Převádím: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:662
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:663
 #: core-impl/collections/support/FileCollectionLocation.cpp:87
 #, kde-format
 msgid "Removing: %1"
@@ -5438,16 +5117,16 @@ msgstr "Neznámá sbírka"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:421
-#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:594
-#: covermanager/CoverFetchUnit.cpp:604 playlist/PlaylistQueueEditor.cpp:69
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
+#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
+#: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
 msgstr "Neznámý umělec"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1312
+#: EngineController.cpp:1313
 #, kde-format
 msgid "Unknown track"
 msgstr "Neznámá skladba"
@@ -5691,7 +5370,7 @@ msgstr "&Inicializovat iPod"
 
 #. i18n: ectx: property (title), widget (QGroupBox, infoGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:103
-#: covermanager/CoverFoundDialog.cpp:743
+#: covermanager/CoverFoundDialog.cpp:744
 #, kde-format
 msgid "Information"
 msgstr "Informace"
@@ -5979,41 +5658,41 @@ msgctxt "Podcasts on a media device"
 msgid "Podcasts on %1"
 msgstr "Podcasty na %1"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:152
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:153
 #, kde-format
 msgid "Could not connect to MTP Device"
 msgstr " Nelze se připojit k MTP zařízení"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:378
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:379
 #, kde-format
 msgid "Could not copy track from device."
 msgstr "Skladbu není možné ze zařízení zkopírovat."
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
 #: core/meta/Meta.cpp:300
 #, kde-format
 msgid "Unknown Album"
 msgstr "Neznámé album"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:437
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
 #: core/meta/Meta.cpp:333
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Neznámý žánr"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:593
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:725
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:910
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:594
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:726
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:911
 #, kde-format
 msgid "Could not delete item"
 msgstr "Položku není možné smazat"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:603
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:604
 #, kde-format
 msgid "Delete failed"
 msgstr "Mazání selhalo"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:883
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:884
 #, kde-format
 msgid "Could not save playlist."
 msgstr "Nelze uložit seznam skladeb."
@@ -6259,6 +5938,12 @@ msgstr[2] "Odstraňuje se %1 skladeb z %2"
 msgid "USB Mass Storage device configuration"
 msgstr "Nastavení velkokapacitního zařízení USB"
 
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: core-impl/collections/umscollection/UmsConfiguration.ui:22
+#, kde-format
+msgid "Name:"
+msgstr "Jméno:"
+
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoConnect)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:34
 #, kde-format
@@ -6405,6 +6090,14 @@ msgstr ""
 #, kde-format
 msgid "Podcast Configuration"
 msgstr "Nastavení podcastu"
+
+#. i18n: ectx: property (text), widget (QLabel, UrlLabel)
+#. i18n: ectx: property (text), widget (QLabel, m_urlLabel)
+#: core-impl/podcasts/sql/PodcastSettingsBase.ui:52
+#: services/opmldirectory/AddOpmlWidget.ui:65
+#, kde-format
+msgid "URL:"
+msgstr "URL:"
 
 #. i18n: ectx: property (text), widget (QLabel, m_saveLocationlabel)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:68
@@ -7367,7 +7060,7 @@ msgstr "Aktualizace podcastu z %1 selhala s chybou:\n"
 msgid "Updating \"%1\" failed with error:\n"
 msgstr "Aktualizace \"%1\" selhala s chybou:\n"
 
-#: core/podcasts/PodcastReader.cpp:995
+#: core/podcasts/PodcastReader.cpp:996
 #, kde-format
 msgid ""
 "While parsing %1, a feed was expected but an HTML page was received.\n"
@@ -7377,32 +7070,32 @@ msgstr ""
 "stránka.\n"
 "Zadal(a) jste správné URL?"
 
-#: core/podcasts/PodcastReader.cpp:1002
+#: core/podcasts/PodcastReader.cpp:1003
 #, kde-format
 msgid "Feed has an unknown type: %1"
 msgstr "Kanál neznámého typu: %1"
 
-#: core/podcasts/PodcastReader.cpp:1011
+#: core/podcasts/PodcastReader.cpp:1012
 #, kde-format
 msgid "%1 is not an RSS version 2.0 feed."
 msgstr "%1 není kanálem typu RSS verze 2.0."
 
-#: core/podcasts/PodcastReader.cpp:1041
+#: core/podcasts/PodcastReader.cpp:1042
 #, kde-format
 msgid "%1 is not a valid RSS version 1.0 feed."
 msgstr "%1 není platným kanálem typu RSS verze 1.0."
 
-#: core/podcasts/PodcastReader.cpp:1049
+#: core/podcasts/PodcastReader.cpp:1050
 #, kde-format
 msgid "%1 is not a valid Atom feed."
 msgstr "%1 není platný kanál Atom."
 
-#: core/podcasts/PodcastReader.cpp:1132
+#: core/podcasts/PodcastReader.cpp:1133
 #, kde-format
 msgid "Alternative Enclosures:"
 msgstr "Dodatečné přílohy:"
 
-#: core/podcasts/PodcastReader.cpp:1142
+#: core/podcasts/PodcastReader.cpp:1143
 #, kde-format
 msgid "unknown type"
 msgstr "neznámý typ"
@@ -7997,7 +7690,7 @@ msgstr[1] "Získat obal těchto %1 alb"
 msgstr[2] "Získat obal těchto %1 alb"
 
 #: covermanager/CoverFetchingActions.cpp:76
-#: covermanager/CoverFoundDialog.cpp:380
+#: covermanager/CoverFoundDialog.cpp:381
 #, kde-format
 msgid "Display Cover"
 msgstr "Zobrazit obal"
@@ -8078,57 +7771,57 @@ msgstr "Google"
 msgid "Discogs"
 msgstr "Discogs"
 
-#: covermanager/CoverFoundDialog.cpp:151
+#: covermanager/CoverFoundDialog.cpp:152
 #, kde-format
 msgid "Sort by size"
 msgstr "Seřadit podle velikosti"
 
-#: covermanager/CoverFoundDialog.cpp:405
+#: covermanager/CoverFoundDialog.cpp:406
 #, kde-format
 msgid "Cover Image Save Location"
 msgstr "Umístění ukládaných obalů"
 
-#: covermanager/CoverFoundDialog.cpp:434 covermanager/CoverFoundDialog.cpp:453
+#: covermanager/CoverFoundDialog.cpp:435 covermanager/CoverFoundDialog.cpp:454
 #, kde-format
 msgid "Sorry, the cover could not be saved."
 msgstr "Bohužel, obal nemohl být uložen."
 
-#: covermanager/CoverFoundDialog.cpp:518
+#: covermanager/CoverFoundDialog.cpp:519
 #, kde-format
 msgid "Sorry, the cover image could not be retrieved."
 msgstr "Bohužel, obal alba nelze stáhnout."
 
-#: covermanager/CoverFoundDialog.cpp:538
+#: covermanager/CoverFoundDialog.cpp:539
 #, kde-format
 msgid "Fetching Large Cover"
 msgstr "Získává se velký obal"
 
-#: covermanager/CoverFoundDialog.cpp:539
+#: covermanager/CoverFoundDialog.cpp:540
 #, kde-format
 msgid "Download Progress"
 msgstr "Průběh stahování"
 
-#: covermanager/CoverFoundDialog.cpp:541
+#: covermanager/CoverFoundDialog.cpp:542
 #, kde-format
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: covermanager/CoverFoundDialog.cpp:702
+#: covermanager/CoverFoundDialog.cpp:703
 #, kde-format
 msgid "Search"
 msgstr "Hledat"
 
-#: covermanager/CoverFoundDialog.cpp:702
+#: covermanager/CoverFoundDialog.cpp:703
 #, kde-format
 msgid "Search For More Results"
 msgstr "Hledat další výsledky"
 
-#: covermanager/CoverFoundDialog.cpp:718
+#: covermanager/CoverFoundDialog.cpp:719
 #, kde-format
 msgid "No Images Found"
 msgstr "Nebyly nalezeny žádné obrázky"
 
-#: covermanager/CoverFoundDialog.cpp:719
+#: covermanager/CoverFoundDialog.cpp:720
 #, kde-format
 msgid "1 Image Found"
 msgid_plural "%1 Images Found"
@@ -8136,84 +7829,84 @@ msgstr[0] "Nalezen 1 obrázek"
 msgstr[1] "Nalezeny %1 obrázky"
 msgstr[2] "Nalezeno %1 obrázků"
 
-#: covermanager/CoverFoundDialog.cpp:744
+#: covermanager/CoverFoundDialog.cpp:745
 #, kde-format
 msgid "Notes"
 msgstr "Poznámky"
 
-#: covermanager/CoverFoundDialog.cpp:816
+#: covermanager/CoverFoundDialog.cpp:817
 #, kde-format
 msgctxt "@item::intable"
 msgid "Artist"
 msgstr "Umělec"
 
-#: covermanager/CoverFoundDialog.cpp:817
+#: covermanager/CoverFoundDialog.cpp:818
 #, kde-format
 msgctxt "@item::intable"
 msgid "Country"
 msgstr "Země"
 
-#: covermanager/CoverFoundDialog.cpp:818
+#: covermanager/CoverFoundDialog.cpp:819
 #, kde-format
 msgctxt "@item::intable"
 msgid "Date"
 msgstr "Datum"
 
-#: covermanager/CoverFoundDialog.cpp:819
+#: covermanager/CoverFoundDialog.cpp:820
 #, kde-format
 msgctxt "@item::intable File Format"
 msgid "Format"
 msgstr "Formát"
 
-#: covermanager/CoverFoundDialog.cpp:820
+#: covermanager/CoverFoundDialog.cpp:821
 #, kde-format
 msgctxt "@item::intable Image Height"
 msgid "Height"
 msgstr "Výška"
 
-#: covermanager/CoverFoundDialog.cpp:821 covermanager/CoverFoundDialog.cpp:826
+#: covermanager/CoverFoundDialog.cpp:822 covermanager/CoverFoundDialog.cpp:827
 #, kde-format
 msgctxt "@item::intable Album Title"
 msgid "Title"
 msgstr "Název"
 
-#: covermanager/CoverFoundDialog.cpp:822
+#: covermanager/CoverFoundDialog.cpp:823
 #, kde-format
 msgctxt "@item::intable Release Type"
 msgid "Type"
 msgstr "Typ"
 
-#: covermanager/CoverFoundDialog.cpp:823
+#: covermanager/CoverFoundDialog.cpp:824
 #, kde-format
 msgctxt "@item::intable Release Date"
 msgid "Released"
 msgstr "Vydáno"
 
-#: covermanager/CoverFoundDialog.cpp:824
+#: covermanager/CoverFoundDialog.cpp:825
 #, kde-format
 msgctxt "@item::intable File Size"
 msgid "Size"
 msgstr "Velikost"
 
-#: covermanager/CoverFoundDialog.cpp:825
+#: covermanager/CoverFoundDialog.cpp:826
 #, kde-format
 msgctxt "@item::intable Cover Provider"
 msgid "Source"
 msgstr "Zdroj"
 
-#: covermanager/CoverFoundDialog.cpp:827
+#: covermanager/CoverFoundDialog.cpp:828
 #, kde-format
 msgctxt "@item::intable Image Width"
 msgid "Width"
 msgstr "Šířka"
 
-#: covermanager/CoverFoundDialog.cpp:861
+#: covermanager/CoverFoundDialog.cpp:862
 #, kde-format
 msgctxt "@item::intable URL"
 msgid "link"
 msgstr "odkaz"
 
-#: covermanager/CoverFoundDialog.cpp:867
+#: covermanager/CoverFoundDialog.cpp:868
 #, kde-format
 msgctxt "@item::intable"
 msgid "URL"
@@ -9865,42 +9558,42 @@ msgstr "Album:"
 msgid "Genre:"
 msgstr "Žánr:"
 
-#: dialogs/TrackOrganizer.cpp:102
+#: dialogs/TrackOrganizer.cpp:103
 #, kde-format
 msgid "Unknown album"
 msgstr "Neznámé album"
 
-#: dialogs/TrackOrganizer.cpp:103
+#: dialogs/TrackOrganizer.cpp:104
 #, kde-format
 msgid "Unknown artist"
 msgstr "Neznámý umělec"
 
-#: dialogs/TrackOrganizer.cpp:107
+#: dialogs/TrackOrganizer.cpp:108
 #, kde-format
 msgid "No comments"
 msgstr "Bez komentáře"
 
-#: dialogs/TrackOrganizer.cpp:108
+#: dialogs/TrackOrganizer.cpp:109
 #, kde-format
 msgid "Unknown composer"
 msgstr "Neznámý skladatel"
 
-#: dialogs/TrackOrganizer.cpp:109
+#: dialogs/TrackOrganizer.cpp:110
 #, kde-format
 msgid "Unknown disc number"
 msgstr "Neznámé číslo disku"
 
-#: dialogs/TrackOrganizer.cpp:110
+#: dialogs/TrackOrganizer.cpp:111
 #, kde-format
 msgid "Unknown genre"
 msgstr "Neznámý žánr"
 
-#: dialogs/TrackOrganizer.cpp:111
+#: dialogs/TrackOrganizer.cpp:112
 #, kde-format
 msgid "Unknown title"
 msgstr "Neznámý název"
 
-#: dialogs/TrackOrganizer.cpp:112
+#: dialogs/TrackOrganizer.cpp:113
 #, kde-format
 msgid "Unknown year"
 msgstr "Neznámý rok"
@@ -10361,30 +10054,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Hodnocení"
 
-#: EngineController.cpp:1102
+#: EngineController.cpp:1103
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "V seznamu skladeb je příliš mnoho chyb. Přehrávání bylo zastaveno."
 
-#: EngineController.cpp:1302
+#: EngineController.cpp:1303
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> od <b>%2</b> na <b>%3</b>"
 
-#: EngineController.cpp:1304
+#: EngineController.cpp:1305
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> od <b>%2</b>"
 
-#: EngineController.cpp:1307
+#: EngineController.cpp:1308
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> na <b>%2</b>"
 
-#: EngineController.cpp:1319
+#: EngineController.cpp:1320
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -11964,7 +11657,7 @@ msgstr "Hodnota"
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "Čtení podcastu OPML z %1 selhalo s chybou:\n"
 
-#: playback/EqualizerController.cpp:133
+#: playback/EqualizerController.cpp:135
 #, kde-format
 msgid ""
 "%0\n"
@@ -11973,7 +11666,7 @@ msgstr ""
 "%0\n"
 "Hz"
 
-#: playback/EqualizerController.cpp:135
+#: playback/EqualizerController.cpp:137
 #, kde-format
 msgid ""
 "%0\n"
@@ -13823,93 +13516,93 @@ msgid ""
 msgstr ""
 "Jak striktní má APG být při dodržování shody skladeb se zadaným hodnocením."
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:85
+#: playlistgenerator/constraints/TagMatchSupport.cpp:87
 #, kde-format
 msgid "url"
 msgstr "url"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:86
+#: playlistgenerator/constraints/TagMatchSupport.cpp:88
 #, kde-format
 msgid "title"
 msgstr "název"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:87
+#: playlistgenerator/constraints/TagMatchSupport.cpp:89
 #, kde-format
 msgid "artist name"
 msgstr "jméno umělce"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:88
+#: playlistgenerator/constraints/TagMatchSupport.cpp:90
 #, kde-format
 msgid "album name"
 msgstr "název alba"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:89
+#: playlistgenerator/constraints/TagMatchSupport.cpp:91
 #, kde-format
 msgid "genre"
 msgstr "Žánr"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:90
+#: playlistgenerator/constraints/TagMatchSupport.cpp:92
 #, kde-format
 msgid "composer"
 msgstr "Skladatel"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:91
+#: playlistgenerator/constraints/TagMatchSupport.cpp:93
 #, kde-format
 msgctxt "Field name"
 msgid "year"
 msgstr "rok"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:92
+#: playlistgenerator/constraints/TagMatchSupport.cpp:94
 #, kde-format
 msgid "comment"
 msgstr "Komentář"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:93
+#: playlistgenerator/constraints/TagMatchSupport.cpp:95
 #, kde-format
 msgid "track number"
 msgstr "číslo skladby"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:94
+#: playlistgenerator/constraints/TagMatchSupport.cpp:96
 #, kde-format
 msgid "disc number"
 msgstr "číslo disku"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:95
+#: playlistgenerator/constraints/TagMatchSupport.cpp:97
 #, kde-format
 msgid "length"
 msgstr "Délka"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:96
+#: playlistgenerator/constraints/TagMatchSupport.cpp:98
 #, kde-format
 msgid "added to collection"
 msgstr "přidáno do sbírky"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:97
+#: playlistgenerator/constraints/TagMatchSupport.cpp:99
 #, kde-format
 msgid "score"
 msgstr "Skóre"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:98
+#: playlistgenerator/constraints/TagMatchSupport.cpp:100
 #, kde-format
 msgid "rating"
 msgstr "Hodnocení"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:99
+#: playlistgenerator/constraints/TagMatchSupport.cpp:101
 #, kde-format
 msgid "first played"
 msgstr "poprvé přehráno"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:100
+#: playlistgenerator/constraints/TagMatchSupport.cpp:102
 #, kde-format
 msgid "last played"
 msgstr "naposledy hrané"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:101
+#: playlistgenerator/constraints/TagMatchSupport.cpp:103
 #, kde-format
 msgid "play count"
 msgstr "počet přehrání"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:102
+#: playlistgenerator/constraints/TagMatchSupport.cpp:104
 #, kde-format
 msgid "label"
 msgstr "popisek"
@@ -14390,13 +14083,13 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:183
-#: services/gpodder/GpodderServiceSettings.cpp:192
-#: services/gpodder/GpodderServiceSettings.cpp:202
-#: services/gpodder/GpodderServiceSettings.cpp:220
-#: services/gpodder/GpodderServiceSettings.cpp:249
+#: services/gpodder/GpodderServiceSettings.cpp:182
+#: services/gpodder/GpodderServiceSettings.cpp:191
+#: services/gpodder/GpodderServiceSettings.cpp:201
+#: services/gpodder/GpodderServiceSettings.cpp:219
+#: services/gpodder/GpodderServiceSettings.cpp:248
 #: services/lastfm/LastFmConfigWidget.ui:109
-#: services/lastfm/LastFmServiceSettings.cpp:224
+#: services/lastfm/LastFmServiceSettings.cpp:223
 #, kde-format
 msgid "&Test Login"
 msgstr "&Provést zkoušku přihlášení"
@@ -14456,13 +14149,13 @@ msgstr ""
 "Nenalezen spuštěný KWallet. Přejete si, aby Amarok uložil vaše poslední "
 "přihlašovací údaje gpodder.net jako obyčejný text?"
 
-#: services/gpodder/GpodderServiceSettings.cpp:95
-#: services/lastfm/LastFmServiceSettings.cpp:102
+#: services/gpodder/GpodderServiceSettings.cpp:94
+#: services/lastfm/LastFmServiceSettings.cpp:101
 #, kde-format
 msgid "Testing..."
 msgstr "Probíhá testování..."
 
-#: services/gpodder/GpodderServiceSettings.cpp:112
+#: services/gpodder/GpodderServiceSettings.cpp:111
 #, kde-format
 msgid ""
 "Either the username or the password is empty, please correct and try again."
@@ -14470,25 +14163,25 @@ msgstr ""
 "Uživatelské jméno nebo heslo není zadáno. Prosím, proveďte opravu a zkuste "
 "se přihlásit znovu."
 
-#: services/gpodder/GpodderServiceSettings.cpp:113
-#: services/gpodder/GpodderServiceSettings.cpp:181
-#: services/gpodder/GpodderServiceSettings.cpp:190
-#: services/gpodder/GpodderServiceSettings.cpp:205
-#: services/lastfm/LastFmServiceSettings.cpp:150
-#: services/lastfm/LastFmServiceSettings.cpp:173
+#: services/gpodder/GpodderServiceSettings.cpp:112
+#: services/gpodder/GpodderServiceSettings.cpp:180
+#: services/gpodder/GpodderServiceSettings.cpp:189
+#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/lastfm/LastFmServiceSettings.cpp:149
+#: services/lastfm/LastFmServiceSettings.cpp:172
 #, kde-format
 msgid "Failed"
 msgstr "Selhalo"
 
-#: services/gpodder/GpodderServiceSettings.cpp:124
-#: services/lastfm/LastFmServiceSettings.cpp:142
+#: services/gpodder/GpodderServiceSettings.cpp:123
+#: services/lastfm/LastFmServiceSettings.cpp:141
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Úspěch"
 
-#: services/gpodder/GpodderServiceSettings.cpp:180
-#: services/lastfm/LastFmServiceSettings.cpp:150
+#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/lastfm/LastFmServiceSettings.cpp:149
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -14497,12 +14190,12 @@ msgstr ""
 "Buď není v pořádku uživatelské jméno nebo heslo. Prosím, proveďte opravu a "
 "zkuste se přihlásit znovu"
 
-#: services/gpodder/GpodderServiceSettings.cpp:189
+#: services/gpodder/GpodderServiceSettings.cpp:188
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr "Nelze se spojit se službou gpodder.net, nebo došlo k jiné chybě."
 
-#: services/gpodder/GpodderServiceSettings.cpp:205
+#: services/gpodder/GpodderServiceSettings.cpp:204
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
@@ -14925,19 +14618,19 @@ msgstr ""
 "Přejete si, aby Amarok uložil vaše poslední přihlašovací údaje Last.fm jako "
 "obyčejný text?"
 
-#: services/lastfm/LastFmServiceSettings.cpp:137
+#: services/lastfm/LastFmServiceSettings.cpp:136
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Selhalo"
 
-#: services/lastfm/LastFmServiceSettings.cpp:151
-#: services/lastfm/LastFmServiceSettings.cpp:174
+#: services/lastfm/LastFmServiceSettings.cpp:150
+#: services/lastfm/LastFmServiceSettings.cpp:173
 #, kde-format
 msgid "Test Login"
 msgstr "Vyzkoušet přihlášení"
 
-#: services/lastfm/LastFmServiceSettings.cpp:173
+#: services/lastfm/LastFmServiceSettings.cpp:172
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Nelze se spojit se službou Last.fm."
@@ -16541,12 +16234,12 @@ msgstr "Na pozadí běží více úloh (klikněte pro zobrazení)"
 msgid "Abort all background tasks"
 msgstr "Přerušit všechny úlohy běžící na pozadí"
 
-#: toolbar/MainToolbar.cpp:76
+#: toolbar/MainToolbar.cpp:77
 #, kde-format
 msgid "Main Toolbar"
 msgstr "Hlavní panel nástrojů"
 
-#: toolbar/MainToolbar.cpp:83
+#: toolbar/MainToolbar.cpp:84
 #, kde-format
 msgid "Rediscover Your Music"
 msgstr "Znovu objevte svou hudbu"
@@ -17158,3 +16851,173 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
+
+#~ msgid "Upcoming Events"
+#~ msgstr "Nadcházející události"
+
+#~ msgid "View Events Calendar"
+#~ msgstr "Zobrazit kalendář událostí"
+
+#~ msgctxt "@title:group"
+#~ msgid "No track is currently playing"
+#~ msgstr "Nepřehrává se žádná skladba"
+
+#~ msgid "Favorite Venues"
+#~ msgstr "Oblíbená místa konání"
+
+#~ msgid "No upcoming events"
+#~ msgstr "Žádné nadcházející události"
+
+#~ msgid "%1: No upcoming events"
+#~ msgstr "%1: Žádné nadcházející události"
+
+#~ msgctxt "@title:group Number of upcoming events"
+#~ msgid "1 event"
+#~ msgid_plural "%1 events"
+#~ msgstr[0] "1 událost"
+#~ msgstr[1] "%1 události"
+#~ msgstr[2] "%1 událostí"
+
+#~ msgctxt "@title:group Number of upcoming events"
+#~ msgid "%1: 1 event"
+#~ msgid_plural "%1: %2 events"
+#~ msgstr[0] "%1: 1 událost"
+#~ msgstr[1] "%1: %2 události"
+#~ msgstr[2] "%1: %2 událostí"
+
+#~ msgid "Upcoming Events Settings"
+#~ msgstr "Nastavení nadcházejících událostí"
+
+#~ msgctxt "@label:textbox Url label"
+#~ msgid "link"
+#~ msgstr "odkaz"
+
+#~ msgid "Map View"
+#~ msgstr "Prohlížení mapy"
+
+#~ msgid "Events Calendar"
+#~ msgstr "Kalendář událostí"
+
+#~ msgid "This week"
+#~ msgstr "Tento týden"
+
+#~ msgid "This month"
+#~ msgstr "Tento měsíc"
+
+#~ msgid "This year"
+#~ msgstr "Tento rok"
+
+#~ msgctxt "@title:group"
+#~ msgid "Favorite Venues"
+#~ msgstr "Oblíbená místa konání"
+
+#~ msgctxt "@info:tooltip Calendar action"
+#~ msgid "Jump to Today"
+#~ msgstr "Přejít na dnešek"
+
+#~ msgid "Filter events by date:"
+#~ msgstr "Filtrovat události podle data:"
+
+#~ msgid "All events"
+#~ msgstr "Všechny události"
+
+#~ msgid "&Group venue events"
+#~ msgstr "&Seskupit dle místa konání"
+
+#~ msgctxt "@label:textbox Title for a canceled upcoming event"
+#~ msgid "<s>%1</s> (Canceled)"
+#~ msgstr "<s>%1</s> (Zrušeno)"
+
+#~ msgid "Show places as links"
+#~ msgstr "Zobrazit místa jako odkazy"
+
+#~ msgid "Maximize"
+#~ msgstr "Maximalizovat"
+
+#~ msgid "Expand this widget"
+#~ msgstr "Rozbalit tento widget"
+
+#~ msgid "Collapse this widget"
+#~ msgstr "Svinout tento widget"
+
+#~ msgid "Search Venue"
+#~ msgstr "Hledat místo konání"
+
+#~ msgid "Restrict venues to a specific country"
+#~ msgstr "Omezit místo konání na danou zemi"
+
+#~ msgid "Any Country"
+#~ msgstr "Jakákoliv země"
+
+#~ msgid "Search Results:"
+#~ msgstr "Výsledky hledání:"
+
+#~ msgid "Selected Venues:"
+#~ msgstr "Vybraná místa konání:"
+
+#~ msgid "Photo"
+#~ msgstr "Fotka"
+
+#~ msgid "City:"
+#~ msgstr "Město:"
+
+#~ msgid "Website:"
+#~ msgstr "Webová stránka:"
+
+#~ msgid "Country:"
+#~ msgstr "Země:"
+
+#~ msgid "Street:"
+#~ msgstr "Ulice:"
+
+#~ msgid "Loading picture..."
+#~ msgstr "Načítá se obrázek..."
+
+#~ msgid "View map"
+#~ msgstr "Zobrazit mapu"
+
+#~ msgid "Open Last.fm webpage for this event"
+#~ msgstr "Otevřít pro tuto událost webové stránky Last.fm"
+
+#~ msgctxt "@label:textbox Supporting acts for an event"
+#~ msgid "Supporting:"
+#~ msgstr "Předkapely:"
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Venue:"
+#~ msgstr "Místo konání:"
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Location:"
+#~ msgstr "Umístění:"
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Date:"
+#~ msgstr "Datum:"
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Attending:"
+#~ msgstr "Účastníci:"
+
+#~ msgctxt "@label:textbox"
+#~ msgid "Tags:"
+#~ msgstr "Značky:"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "<strong>Tags:</strong><nl/>%1"
+#~ msgstr "<strong>Značky:</strong><nl/>%1"
+
+#~ msgctxt "@info:tooltip Supporting artists for an event"
+#~ msgid "<strong>Supporting artists:</strong><nl/>%1"
+#~ msgstr "<strong>Předkapely:</strong><nl/>%1"
+
+#~ msgctxt "@info:tooltip Number of days till an event"
+#~ msgid "Tomorrow"
+#~ msgid_plural "In <strong>%1</strong> days"
+#~ msgstr[0] "Zítra"
+#~ msgstr[1] "Za <strong>%1</strong> dny"
+#~ msgstr[2] "Za <strong>%1</strong> dnů"
+
+#~ msgctxt "@info:tooltip"
+#~ msgid "<strong>Location:</strong><nl/>%1"
+#~ msgstr "<strong>Umístění:</strong><nl/>%1"
