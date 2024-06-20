@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-19 01:44+0000\n"
-"PO-Revision-Date: 2024-06-16 13:31+0200\n"
+"POT-Creation-Date: 2024-06-20 01:49+0000\n"
+"PO-Revision-Date: 2024-06-19 16:42+0200\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.05.0\n"
+"X-Generator: Lokalize 24.05.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -373,7 +373,7 @@ msgstr "Detener después de la pista actual: Activado"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1335 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Ninguna pista en reproducción"
@@ -4708,20 +4708,16 @@ msgid "No information found..."
 msgstr "No se ha encontrado información..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(artista|banda).*\\))"
+msgstr ".*\\(.*(artista|banda).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(compositor|músico).*\\))"
+msgstr ".*\\(.*(compositor|músico).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
 #, kde-format
@@ -5171,7 +5167,7 @@ msgstr "Artista desconocido"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1313
+#: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
 msgstr "Pista desconocida"
@@ -10082,32 +10078,32 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Valoración"
 
-#: EngineController.cpp:1103
+#: EngineController.cpp:1109
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "Se encontraron demasiados errores en la lista de reproducción. Reproducción "
 "parada."
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1309
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> de <b>%2</b> en <b>%3</b>"
 
-#: EngineController.cpp:1305
+#: EngineController.cpp:1311
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> de <b>%2</b>"
 
-#: EngineController.cpp:1308
+#: EngineController.cpp:1314
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> en <b>%2</b>"
 
-#: EngineController.cpp:1320
+#: EngineController.cpp:1326
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"

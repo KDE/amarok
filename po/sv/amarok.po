@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-19 01:44+0000\n"
-"PO-Revision-Date: 2024-06-16 08:12+0200\n"
-"Last-Translator: Stefan Asserhäll <stefan.asserhall@bredband.net>\n"
+"POT-Creation-Date: 2024-06-20 01:49+0000\n"
+"PO-Revision-Date: 2024-06-19 16:57+0200\n"
+"Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
@@ -370,7 +370,7 @@ msgstr "Stoppa efter nuvarande spår: På"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1335 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Inget spår spelas"
@@ -4640,20 +4640,16 @@ msgid "No information found..."
 msgstr "Någon information hittades inte..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(artist|band).*\\))"
+msgstr ".*\\(.*(artist|band).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(tonsättare|musiker).*\\))"
+msgstr ".*\\(.*(tonsättare|musiker).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
 #, kde-format
@@ -5099,7 +5095,7 @@ msgstr "Okänd artist"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1313
+#: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
 msgstr "Okänt spår"
@@ -9970,30 +9966,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Betyg"
 
-#: EngineController.cpp:1103
+#: EngineController.cpp:1109
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "För många fel påträffades i spellistan. Uppspelning stoppad."
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1309
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> av <b>%2</b> på <b>%3</b>"
 
-#: EngineController.cpp:1305
+#: EngineController.cpp:1311
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> av <b>%2</b>"
 
-#: EngineController.cpp:1308
+#: EngineController.cpp:1314
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> på <b>%2</b>"
 
-#: EngineController.cpp:1320
+#: EngineController.cpp:1326
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"

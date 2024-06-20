@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-19 01:44+0000\n"
-"PO-Revision-Date: 2024-06-16 10:46+0300\n"
+"POT-Creation-Date: 2024-06-20 01:49+0000\n"
+"PO-Revision-Date: 2024-06-19 11:41+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -388,7 +388,7 @@ msgstr "Geçerli parçadan sonra durdur: Açık"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1335 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Çalan parça yok"
@@ -4691,20 +4691,16 @@ msgid "No information found..."
 msgstr "Bulunan bilgi yok…"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(sanatçı|grup).*\\))"
+msgstr ".*\\(.*(sanatçı|grup).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(besteci|müzisyen).*\\))"
+msgstr ".*\\(.*(besteci|müzisyen).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
 #, kde-format
@@ -5152,7 +5148,7 @@ msgstr "Bilinmeyen Sanatçı"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1313
+#: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
 msgstr "Bilinmeyen Parça"
@@ -10022,30 +10018,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Derecelendirme"
 
-#: EngineController.cpp:1103
+#: EngineController.cpp:1109
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Çalma listesinde çok fazla hatayla karşılaşıldı. Çalma durduruldu."
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1309
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b>, <b>%2</b>, <b>%3</b>"
 
-#: EngineController.cpp:1305
+#: EngineController.cpp:1311
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b>, <b>%2</b>"
 
-#: EngineController.cpp:1308
+#: EngineController.cpp:1314
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b>, <b>%2</b>"
 
-#: EngineController.cpp:1320
+#: EngineController.cpp:1326
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"

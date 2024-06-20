@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-19 01:44+0000\n"
+"POT-Creation-Date: 2024-06-20 01:49+0000\n"
 "PO-Revision-Date: 2013-08-12 13:09+0300\n"
 "Last-Translator: Maris Nartiss <maris.kde@gmail.com>\n"
 "Language-Team: Latvian\n"
@@ -384,7 +384,7 @@ msgstr "Apstāties pēc aktīvā celiņa: Iesl"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1335 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Nekas netiek atskaņots"
@@ -5204,7 +5204,7 @@ msgstr "Nezināms izpildītājs"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1313
+#: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
 msgstr "Nezināma dziesma"
@@ -10188,30 +10188,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Vērtējums"
 
-#: EngineController.cpp:1103
+#: EngineController.cpp:1109
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Repertuārā sastapts pārāk daudz kļūdu. Atskaņošana apturēta."
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1309
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> izpilda <b>%2</b> no <b>%3</b>"
 
-#: EngineController.cpp:1305
+#: EngineController.cpp:1311
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> izpilda <b>%2</b>"
 
-#: EngineController.cpp:1308
+#: EngineController.cpp:1314
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> no <b>%2</b>"
 
-#: EngineController.cpp:1320
+#: EngineController.cpp:1326
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"

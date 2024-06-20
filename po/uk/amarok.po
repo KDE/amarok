@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-19 01:44+0000\n"
-"PO-Revision-Date: 2024-06-16 09:20+0300\n"
+"POT-Creation-Date: 2024-06-20 01:49+0000\n"
+"PO-Revision-Date: 2024-06-19 08:16+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -371,7 +371,7 @@ msgstr "Зупинка після поточної композиції: Уві�
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1335 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Жодна композиція не відтворюється"
@@ -4719,20 +4719,16 @@ msgid "No information found..."
 msgstr "Не знайдено відомостей…"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(виконавець|група).*\\))"
+msgstr ".*\\(.*(виконавець|група).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(композитор|музикант).*\\))"
+msgstr ".*\\(.*(композитор|музикант).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
 #, kde-format
@@ -5183,7 +5179,7 @@ msgstr "Невідомий виконавець"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1313
+#: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
 msgstr "Невідома композиція"
@@ -10250,30 +10246,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "За оцінкою"
 
-#: EngineController.cpp:1103
+#: EngineController.cpp:1109
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "У списку відтворення забагато помилок. Відтворення зупинено."
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1309
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> — <b>%2</b> на <b>%3</b>"
 
-#: EngineController.cpp:1305
+#: EngineController.cpp:1311
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> — <b>%2</b>"
 
-#: EngineController.cpp:1308
+#: EngineController.cpp:1314
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> на <b>%2</b>"
 
-#: EngineController.cpp:1320
+#: EngineController.cpp:1326
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"

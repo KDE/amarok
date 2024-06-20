@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-19 01:44+0000\n"
-"PO-Revision-Date: 2024-06-17 14:36+0200\n"
+"POT-Creation-Date: 2024-06-20 01:49+0000\n"
+"PO-Revision-Date: 2024-06-19 15:48+0200\n"
 "Last-Translator: Vit Pelcak <vpelcak@suse.cz>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 24.05.0\n"
+"X-Generator: Lokalize 24.05.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -375,7 +375,7 @@ msgstr "Zastavit po současné skladbě: Zapnuto"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1335 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Nepřehrává se žádná skladba"
@@ -4667,17 +4667,13 @@ msgid "No information found..."
 msgstr "Nebyly nalezeny žádné informace..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
 msgstr ".*\\(.*(umělec|kapela).*\\))"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
 msgstr ".*\\(.*(skladatel|hudebník).*\\))"
@@ -5126,7 +5122,7 @@ msgstr "Neznámý umělec"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1313
+#: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
 msgstr "Neznámá skladba"
@@ -10054,30 +10050,30 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Hodnocení"
 
-#: EngineController.cpp:1103
+#: EngineController.cpp:1109
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "V seznamu skladeb je příliš mnoho chyb. Přehrávání bylo zastaveno."
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1309
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> od <b>%2</b> na <b>%3</b>"
 
-#: EngineController.cpp:1305
+#: EngineController.cpp:1311
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> od <b>%2</b>"
 
-#: EngineController.cpp:1308
+#: EngineController.cpp:1314
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> na <b>%2</b>"
 
-#: EngineController.cpp:1320
+#: EngineController.cpp:1326
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -16851,173 +16847,3 @@ msgstr "Umělec: %1"
 #, kde-format
 msgid "empty"
 msgstr "prázdné"
-
-#~ msgid "Upcoming Events"
-#~ msgstr "Nadcházející události"
-
-#~ msgid "View Events Calendar"
-#~ msgstr "Zobrazit kalendář událostí"
-
-#~ msgctxt "@title:group"
-#~ msgid "No track is currently playing"
-#~ msgstr "Nepřehrává se žádná skladba"
-
-#~ msgid "Favorite Venues"
-#~ msgstr "Oblíbená místa konání"
-
-#~ msgid "No upcoming events"
-#~ msgstr "Žádné nadcházející události"
-
-#~ msgid "%1: No upcoming events"
-#~ msgstr "%1: Žádné nadcházející události"
-
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "1 event"
-#~ msgid_plural "%1 events"
-#~ msgstr[0] "1 událost"
-#~ msgstr[1] "%1 události"
-#~ msgstr[2] "%1 událostí"
-
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "%1: 1 event"
-#~ msgid_plural "%1: %2 events"
-#~ msgstr[0] "%1: 1 událost"
-#~ msgstr[1] "%1: %2 události"
-#~ msgstr[2] "%1: %2 událostí"
-
-#~ msgid "Upcoming Events Settings"
-#~ msgstr "Nastavení nadcházejících událostí"
-
-#~ msgctxt "@label:textbox Url label"
-#~ msgid "link"
-#~ msgstr "odkaz"
-
-#~ msgid "Map View"
-#~ msgstr "Prohlížení mapy"
-
-#~ msgid "Events Calendar"
-#~ msgstr "Kalendář událostí"
-
-#~ msgid "This week"
-#~ msgstr "Tento týden"
-
-#~ msgid "This month"
-#~ msgstr "Tento měsíc"
-
-#~ msgid "This year"
-#~ msgstr "Tento rok"
-
-#~ msgctxt "@title:group"
-#~ msgid "Favorite Venues"
-#~ msgstr "Oblíbená místa konání"
-
-#~ msgctxt "@info:tooltip Calendar action"
-#~ msgid "Jump to Today"
-#~ msgstr "Přejít na dnešek"
-
-#~ msgid "Filter events by date:"
-#~ msgstr "Filtrovat události podle data:"
-
-#~ msgid "All events"
-#~ msgstr "Všechny události"
-
-#~ msgid "&Group venue events"
-#~ msgstr "&Seskupit dle místa konání"
-
-#~ msgctxt "@label:textbox Title for a canceled upcoming event"
-#~ msgid "<s>%1</s> (Canceled)"
-#~ msgstr "<s>%1</s> (Zrušeno)"
-
-#~ msgid "Show places as links"
-#~ msgstr "Zobrazit místa jako odkazy"
-
-#~ msgid "Maximize"
-#~ msgstr "Maximalizovat"
-
-#~ msgid "Expand this widget"
-#~ msgstr "Rozbalit tento widget"
-
-#~ msgid "Collapse this widget"
-#~ msgstr "Svinout tento widget"
-
-#~ msgid "Search Venue"
-#~ msgstr "Hledat místo konání"
-
-#~ msgid "Restrict venues to a specific country"
-#~ msgstr "Omezit místo konání na danou zemi"
-
-#~ msgid "Any Country"
-#~ msgstr "Jakákoliv země"
-
-#~ msgid "Search Results:"
-#~ msgstr "Výsledky hledání:"
-
-#~ msgid "Selected Venues:"
-#~ msgstr "Vybraná místa konání:"
-
-#~ msgid "Photo"
-#~ msgstr "Fotka"
-
-#~ msgid "City:"
-#~ msgstr "Město:"
-
-#~ msgid "Website:"
-#~ msgstr "Webová stránka:"
-
-#~ msgid "Country:"
-#~ msgstr "Země:"
-
-#~ msgid "Street:"
-#~ msgstr "Ulice:"
-
-#~ msgid "Loading picture..."
-#~ msgstr "Načítá se obrázek..."
-
-#~ msgid "View map"
-#~ msgstr "Zobrazit mapu"
-
-#~ msgid "Open Last.fm webpage for this event"
-#~ msgstr "Otevřít pro tuto událost webové stránky Last.fm"
-
-#~ msgctxt "@label:textbox Supporting acts for an event"
-#~ msgid "Supporting:"
-#~ msgstr "Předkapely:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Venue:"
-#~ msgstr "Místo konání:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Location:"
-#~ msgstr "Umístění:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Date:"
-#~ msgstr "Datum:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Attending:"
-#~ msgstr "Účastníci:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Tags:"
-#~ msgstr "Značky:"
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Tags:</strong><nl/>%1"
-#~ msgstr "<strong>Značky:</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Supporting artists for an event"
-#~ msgid "<strong>Supporting artists:</strong><nl/>%1"
-#~ msgstr "<strong>Předkapely:</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Number of days till an event"
-#~ msgid "Tomorrow"
-#~ msgid_plural "In <strong>%1</strong> days"
-#~ msgstr[0] "Zítra"
-#~ msgstr[1] "Za <strong>%1</strong> dny"
-#~ msgstr[2] "Za <strong>%1</strong> dnů"
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Location:</strong><nl/>%1"
-#~ msgstr "<strong>Umístění:</strong><nl/>%1"

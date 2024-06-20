@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-19 01:44+0000\n"
-"PO-Revision-Date: 2024-06-16 10:26+0200\n"
+"POT-Creation-Date: 2024-06-20 01:49+0000\n"
+"PO-Revision-Date: 2024-06-19 10:56+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -375,7 +375,7 @@ msgstr "Para després de la peça actual: actiu"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1335 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "No s'està reproduint cap peça"
@@ -662,7 +662,7 @@ msgstr ""
 #, kde-format
 msgid "Whether organize files will move The in artist names to the end."
 msgstr ""
-"Si en organitzar els fitxers, es mourà al final «The» dels noms dels "
+"Si en organitzar els fitxers, es mourà al final el «The» dels noms dels "
 "artistes."
 
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
@@ -672,7 +672,7 @@ msgid ""
 "If set, Organize files will move The in artist names to the end as in "
 "\"Beatles, The\"."
 msgstr ""
-"Si està marcada, en organitzar els fitxers es mourà «The» del nom dels "
+"Si està marcada, en organitzar els fitxers es mourà el «The» del nom dels "
 "artistes al final com en «Beatles, The»."
 
 #. i18n: ectx: label, entry, group (OrganizeCollectionDialog)
@@ -4707,20 +4707,16 @@ msgid "No information found..."
 msgstr "No s'ha trobat informació…"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(artista|banda).*\\))"
+msgstr ".*\\(.*(artista|banda).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(compositor|músic).*\\))"
+msgstr ".*\\(.*(compositor|músic).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
 #, kde-format
@@ -5171,7 +5167,7 @@ msgstr "Artista desconegut"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1313
+#: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
 msgstr "Peça desconeguda"
@@ -10089,32 +10085,32 @@ msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Valoració"
 
-#: EngineController.cpp:1103
+#: EngineController.cpp:1109
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "S'han trobat massa errors en la llista de reproducció. Es para la "
 "reproducció."
 
-#: EngineController.cpp:1303
+#: EngineController.cpp:1309
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> per <b>%2</b> a <b>%3</b>"
 
-#: EngineController.cpp:1305
+#: EngineController.cpp:1311
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> per <b>%2</b>"
 
-#: EngineController.cpp:1308
+#: EngineController.cpp:1314
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> a <b>%2</b>"
 
-#: EngineController.cpp:1320
+#: EngineController.cpp:1326
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -16903,170 +16899,3 @@ msgstr "Artista: %1"
 #, kde-format
 msgid "empty"
 msgstr "buit"
-
-#~ msgid "Upcoming Events"
-#~ msgstr "Propers esdeveniments"
-
-#~ msgid "View Events Calendar"
-#~ msgstr "Visualitza el calendari d'esdeveniments"
-
-#~ msgctxt "@title:group"
-#~ msgid "No track is currently playing"
-#~ msgstr "No s'està reproduint cap peça"
-
-#~ msgid "Favorite Venues"
-#~ msgstr "Llocs preferits"
-
-#~ msgid "No upcoming events"
-#~ msgstr "Sense esdeveniments propers"
-
-#~ msgid "%1: No upcoming events"
-#~ msgstr "%1: No hi ha propers esdeveniments"
-
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "1 event"
-#~ msgid_plural "%1 events"
-#~ msgstr[0] "1 esdeveniment"
-#~ msgstr[1] "%1 esdeveniments"
-
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "%1: 1 event"
-#~ msgid_plural "%1: %2 events"
-#~ msgstr[0] "%1: 1 esdeveniment"
-#~ msgstr[1] "%1: %2 esdeveniments"
-
-#~ msgid "Upcoming Events Settings"
-#~ msgstr "Configureu els propers esdeveniments"
-
-#~ msgctxt "@label:textbox Url label"
-#~ msgid "link"
-#~ msgstr "enllaç"
-
-#~ msgid "Map View"
-#~ msgstr "Vista de mapa"
-
-#~ msgid "Events Calendar"
-#~ msgstr "Calendari d'esdeveniments"
-
-#~ msgid "This week"
-#~ msgstr "Esta setmana"
-
-#~ msgid "This month"
-#~ msgstr "Este mes"
-
-#~ msgid "This year"
-#~ msgstr "Este any"
-
-#~ msgctxt "@title:group"
-#~ msgid "Favorite Venues"
-#~ msgstr "Llocs preferits"
-
-#~ msgctxt "@info:tooltip Calendar action"
-#~ msgid "Jump to Today"
-#~ msgstr "Ves fins a hui"
-
-#~ msgid "Filter events by date:"
-#~ msgstr "Filtra els esdeveniments per data:"
-
-#~ msgid "All events"
-#~ msgstr "Tots els esdeveniments"
-
-#~ msgid "&Group venue events"
-#~ msgstr "A&grupa els llocs dels esdeveniments"
-
-#~ msgctxt "@label:textbox Title for a canceled upcoming event"
-#~ msgid "<s>%1</s> (Canceled)"
-#~ msgstr "<s>%1</s> (Cancel·lat)"
-
-#~ msgid "Show places as links"
-#~ msgstr "Mostra els llocs com a enllaços"
-
-#~ msgid "Maximize"
-#~ msgstr "Maximitza"
-
-#~ msgid "Expand this widget"
-#~ msgstr "Expandix este giny"
-
-#~ msgid "Collapse this widget"
-#~ msgstr "Reduïx este giny"
-
-#~ msgid "Search Venue"
-#~ msgstr "Busca lloc"
-
-#~ msgid "Restrict venues to a specific country"
-#~ msgstr "Restringix el lloc a un país específic"
-
-#~ msgid "Any Country"
-#~ msgstr "Qualsevol país"
-
-#~ msgid "Search Results:"
-#~ msgstr "Resultats de la busca:"
-
-#~ msgid "Selected Venues:"
-#~ msgstr "Llocs seleccionats:"
-
-#~ msgid "Photo"
-#~ msgstr "Foto"
-
-#~ msgid "City:"
-#~ msgstr "Ciutat:"
-
-#~ msgid "Website:"
-#~ msgstr "Lloc web:"
-
-#~ msgid "Country:"
-#~ msgstr "País:"
-
-#~ msgid "Street:"
-#~ msgstr "Carrer:"
-
-#~ msgid "Loading picture..."
-#~ msgstr "S'està carregant la imatge…"
-
-#~ msgid "View map"
-#~ msgstr "Visualitza el mapa"
-
-#~ msgid "Open Last.fm webpage for this event"
-#~ msgstr "Obri la pàgina web de Last.fm d'este esdeveniment"
-
-#~ msgctxt "@label:textbox Supporting acts for an event"
-#~ msgid "Supporting:"
-#~ msgstr "Sosteniment:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Venue:"
-#~ msgstr "Lloc:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Location:"
-#~ msgstr "Ubicació:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Date:"
-#~ msgstr "Data:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Attending:"
-#~ msgstr "Participació:"
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Tags:"
-#~ msgstr "Etiquetes:"
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Tags:</strong><nl/>%1"
-#~ msgstr "<strong>Etiquetes:</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Supporting artists for an event"
-#~ msgid "<strong>Supporting artists:</strong><nl/>%1"
-#~ msgstr "<strong>Artistes suportats:</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Number of days till an event"
-#~ msgid "Tomorrow"
-#~ msgid_plural "In <strong>%1</strong> days"
-#~ msgstr[0] "Demà"
-#~ msgstr[1] "En <strong>%1</strong> dies"
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Location:</strong><nl/>%1"
-#~ msgstr "<strong>Ubicació:</strong><nl/>%1"
