@@ -134,6 +134,7 @@ cmake_pop_check_state()
 
 set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
 find_package(Taglib-Extras)
+set_package_properties(Taglib-Extras PROPERTIES DESCRIPTION "Support for metadata reading of RealMedia and Audible file types" URL "https://websvn.kde.org/trunk/kdesupport/taglib-extras/" TYPE OPTIONAL )
 set(TAGLIB_EXTRAS_FOUND ${TAGLIB-EXTRAS_FOUND}) # we need a c-compatible name for the include file
 
 include(CheckTagLibFileName)
