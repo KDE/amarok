@@ -301,11 +301,13 @@ Playlist::Dock::slotSaveCurrentPlaylist()
     if( action == nullptr )
         return;
 
-    QWeakPointer<Playlists::UserPlaylistProvider> weakPointer =
-            action->data().value< QWeakPointer<Playlists::UserPlaylistProvider> >();
-    QSharedPointer<Playlists::UserPlaylistProvider> strongPointer = weakPointer.toStrongRef();
-    if ( strongPointer ) {
-        Playlists::UserPlaylistProvider* provider = strongPointer.data();
+    QPointer<Playlists::UserPlaylistProvider> pointer =
+        action->data().value< QPointer<Playlists::UserPlaylistProvider> >();
+    if ( !pointer ) // Probably default save was called, so pick the first saveAction (database)
+        pointer = m_saveActions->actions().first()->data()
+            .value< QPointer<Playlists::UserPlaylistProvider> >();
+    if ( pointer ) {
+        Playlists::UserPlaylistProvider* provider = pointer.data();
 
         const Meta::TrackList tracks = The::playlist()->tracks();
         The::playlistManager()->save( tracks, Amarok::generatePlaylistName( tracks ), provider );

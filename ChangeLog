@@ -14,6 +14,7 @@ VERSION 3.0.2
    * Fix system tray icon reordering
    * Fix erroneous apparent zero track progresses on track changes, which caused
      playcount updates and scrobbles to get skipped (BR 337849, 406701)
+   * Fix 'save playlist' button in playlist controls
 
 
 VERSION 3.0.1
