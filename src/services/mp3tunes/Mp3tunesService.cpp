@@ -74,11 +74,12 @@ bool
 Mp3tunesServiceFactory::possiblyContainsTrack(const QUrl &url) const
 {
     QRegularExpression rx( "http://content.mp3tunes.com/storage/locker(?:get|play)/(.*)\\?(?:sid|partner_token)=.*" ) ;
-    int matches = rx.indexIn( url.url() );
+    int matches = url.url().indexOf( rx );
     if( matches == -1 ) {
         return false; // not a mp3tunes url
     }
-    QStringList list = rx.capturedTexts();
+    QRegularExpressionMatch rmatch = rx.match( url.url() );
+    QStringList list = rmatch.capturedTexts();
     QString filekey = list.value( 1 ); // Because list[0] is the url itself.
     if ( filekey.isEmpty() ) {
         return false;

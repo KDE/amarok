@@ -284,8 +284,13 @@ static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_ob
         curl_free(encoded_name);
         curl_free(encoded_value);
 
-	url = realloc(url, url_size += url_part_size);
-        strcat(url, url_part);
+        void * tmp = realloc(url, url_size += url_part_size);
+        if( tmp != NULL )
+        {
+            url = tmp;
+            strcat(url, url_part);
+        }
+        //NOTE: any realloc error silently ignored and url not appended
 
         name = va_arg(argp, char*);
     }
@@ -308,8 +313,14 @@ static request_t* mp3tunes_locker_api_generate_request_valist(mp3tunes_locker_ob
     } else {
         end_url_part_size = asprintf(&end_url_part, "output=xml&partner_token=%s", obj->partner_token);
     }
-    url = realloc(url, url_size += end_url_part_size);
-    strcat(url, end_url_part);
+
+    void * tmp = realloc(url, url_size += end_url_part_size);
+    if( tmp != NULL )
+    {
+        url = tmp;
+        strcat(url, end_url_part);
+    }
+    //NOTE: any realloc error silently ignored and url not appended
 
     request->url = url;
     return request;
@@ -1394,6 +1405,7 @@ int mp3tunes_locker_sync_down(mp3tunes_locker_object_t *obj, char* type, char* b
 
     printf("Sync:\n%s\n", (const char *) buf->content);
 
+    xml_xpath_deinit(xml_xpath->xpath_ctx);
     free(xml_xpath);
     xmlBufferFree(buf);
     return 0;
@@ -1460,6 +1472,7 @@ int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, const char *path
     request_t *request;
     FILE * hd_src ;
     int hd ;
+    CURLcode res;
     struct stat file_info;
     char* file_key = mp3tunes_locker_generate_filekey(path);
 
@@ -1477,6 +1490,10 @@ int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, const char *path
     close(hd);
     /* get a FILE * of the same file*/
     hd_src = fopen(path, "rb");
+    if (hd_src == NULL) {
+        free(file_key);
+        return -1;
+    }
 
     /* create the request url */
     char *url = malloc(256*sizeof(char));
@@ -1498,7 +1515,12 @@ int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, const char *path
     curl_easy_setopt( request->curl, CURLOPT_USERAGENT, "liboboe/1.0" );
     /*printf("uploading...\n");*/
     /* this returns a CURLcode which should probably be checked for success etc... */
-    curl_easy_perform(request->curl);
+    res = curl_easy_perform(request->curl);
+    if (res != CURLE_OK) {
+        fclose(hd_src);
+        free(url);
+        return -1;
+    }
 /*    curl_easy_cleanup(request->curl); */
     mp3tunes_request_deinit(&request);
     free(url);
