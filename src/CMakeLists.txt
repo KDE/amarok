@@ -30,7 +30,6 @@ add_subdirectory( context )
 add_subdirectory( services )
 add_subdirectory( scripting/scripts )
 add_subdirectory( transcoding )
-add_subdirectory( kconf_update )
 add_subdirectory( importers )
 
 #####################################################################

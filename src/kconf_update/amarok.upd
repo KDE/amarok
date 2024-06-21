@@ -1,4 +1,0 @@
-Id=1
-File=amarokrc
-Options=overwrite
-Script=amarok-2.4.1-tokens_syntax_update.pl,perl
