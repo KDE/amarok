@@ -49,7 +49,7 @@ TestLogger::TestLogger()
     char **argv = (char **) malloc(sizeof(char *));
     argv[0] = strdup( QCoreApplication::applicationName().toLocal8Bit().data() );
     ::testing::InitGoogleMock( &argc, argv );
-    delete[] argv;
+    free( argv );
 }
 
 void
