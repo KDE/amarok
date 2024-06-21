@@ -109,8 +109,6 @@ ASFTagHelper::setTags( const Meta::FieldHash &changes )
 
         if( !field.isEmpty() )
         {
-            if( key == Meta::valHasCover )
-                continue;
             // http://gitorious.org/~jefferai/xdg-specs/jefferais-xdg-specs/blobs/mediaspecs/specifications/FMPSpecs/specification.txt sais that mp4 tags should be saved as strings
             if( key == Meta::valHasCover )
                 continue;
