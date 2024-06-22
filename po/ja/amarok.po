@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-20 01:49+0000\n"
+"POT-Creation-Date: 2024-06-22 01:52+0000\n"
 "PO-Revision-Date: 2012-03-24 17:30-0700\n"
 "Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <kde-jp@kde.org>\n"
@@ -15768,48 +15768,48 @@ msgstr ""
 "自分の音楽を安全に保管してアクセスできるオンラインの音楽ロッカー: http://"
 "mp3tunes.com"
 
-#: services/mp3tunes/Mp3tunesService.cpp:104
+#: services/mp3tunes/Mp3tunesService.cpp:105
 #, kde-format
 msgid "The MP3tunes Locker: Your Music Everywhere!"
 msgstr "MP3tunes ロッカー: どこでもあなたの音楽を!"
 
-#: services/mp3tunes/Mp3tunesService.cpp:217
+#: services/mp3tunes/Mp3tunesService.cpp:218
 #, kde-format
 msgid "MP3tunes AutoSync Enabled"
 msgstr "MP3tunes の自動同期を有効にしました"
 
-#: services/mp3tunes/Mp3tunesService.cpp:233
+#: services/mp3tunes/Mp3tunesService.cpp:234
 #, kde-format
 msgid "MP3tunes AutoSync Disabled"
 msgstr "MP3tunes の自動同期を無効にしました"
 
-#: services/mp3tunes/Mp3tunesService.cpp:253
+#: services/mp3tunes/Mp3tunesService.cpp:254
 #, kde-format
 msgid "Authenticating"
 msgstr "認証"
 
-#: services/mp3tunes/Mp3tunesService.cpp:265
+#: services/mp3tunes/Mp3tunesService.cpp:266
 #, kde-format
 msgid "MP3tunes failed to Authenticate."
 msgstr "MP3tunes の認証に失敗しました。"
 
-#: services/mp3tunes/Mp3tunesService.cpp:295
+#: services/mp3tunes/Mp3tunesService.cpp:296
 #, kde-format
 msgid "MP3tunes Harmony: Disconnected"
 msgstr "MP3tunes Harmony: 切断しました"
 
-#: services/mp3tunes/Mp3tunesService.cpp:302
-#: services/mp3tunes/Mp3tunesService.cpp:315
+#: services/mp3tunes/Mp3tunesService.cpp:303
+#: services/mp3tunes/Mp3tunesService.cpp:316
 #, kde-format
 msgid "MP3tunes Harmony: Waiting for PIN Input"
 msgstr "MP3tunes Harmony: PIN の入力を待っています"
 
-#: services/mp3tunes/Mp3tunesService.cpp:327
+#: services/mp3tunes/Mp3tunesService.cpp:328
 #, kde-format
 msgid "MP3tunes Harmony: Successfully Connected"
 msgstr "MP3tunes Harmony: 接続しました"
 
-#: services/mp3tunes/Mp3tunesService.cpp:342
+#: services/mp3tunes/Mp3tunesService.cpp:343
 #, kde-format
 msgid ""
 "MP3tunes Harmony Error\n"

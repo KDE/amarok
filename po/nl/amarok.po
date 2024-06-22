@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-20 01:49+0000\n"
+"POT-Creation-Date: 2024-06-22 01:52+0000\n"
 "PO-Revision-Date: 2024-06-19 11:21+0200\n"
 "Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
 "Language-Team: \n"
@@ -15631,48 +15631,48 @@ msgstr ""
 "Online muziekkastje waar u uw muziek veilig kunt opslaan en bereiken: http://"
 "mp3tunes.com"
 
-#: services/mp3tunes/Mp3tunesService.cpp:104
+#: services/mp3tunes/Mp3tunesService.cpp:105
 #, kde-format
 msgid "The MP3tunes Locker: Your Music Everywhere!"
 msgstr "Het MP3tunes-kastje: Uw muziek overal!"
 
-#: services/mp3tunes/Mp3tunesService.cpp:217
+#: services/mp3tunes/Mp3tunesService.cpp:218
 #, kde-format
 msgid "MP3tunes AutoSync Enabled"
 msgstr "MP3tunes AutoSync ingeschakeld"
 
-#: services/mp3tunes/Mp3tunesService.cpp:233
+#: services/mp3tunes/Mp3tunesService.cpp:234
 #, kde-format
 msgid "MP3tunes AutoSync Disabled"
 msgstr "MP3tunes AutoSync uitgeschakeld"
 
-#: services/mp3tunes/Mp3tunesService.cpp:253
+#: services/mp3tunes/Mp3tunesService.cpp:254
 #, kde-format
 msgid "Authenticating"
 msgstr "Bezig met authenticatie"
 
-#: services/mp3tunes/Mp3tunesService.cpp:265
+#: services/mp3tunes/Mp3tunesService.cpp:266
 #, kde-format
 msgid "MP3tunes failed to Authenticate."
 msgstr "Authenticatie op MP3tunes is mislukt."
 
-#: services/mp3tunes/Mp3tunesService.cpp:295
+#: services/mp3tunes/Mp3tunesService.cpp:296
 #, kde-format
 msgid "MP3tunes Harmony: Disconnected"
 msgstr "MP3tunes Harmony: Niet verbonden"
 
-#: services/mp3tunes/Mp3tunesService.cpp:302
-#: services/mp3tunes/Mp3tunesService.cpp:315
+#: services/mp3tunes/Mp3tunesService.cpp:303
+#: services/mp3tunes/Mp3tunesService.cpp:316
 #, kde-format
 msgid "MP3tunes Harmony: Waiting for PIN Input"
 msgstr "MP3tunes Harmony: Wachtend op PIN-invoer"
 
-#: services/mp3tunes/Mp3tunesService.cpp:327
+#: services/mp3tunes/Mp3tunesService.cpp:328
 #, kde-format
 msgid "MP3tunes Harmony: Successfully Connected"
 msgstr "MP3tunes Harmony: Succesvol verbonden"
 
-#: services/mp3tunes/Mp3tunesService.cpp:342
+#: services/mp3tunes/Mp3tunesService.cpp:343
 #, kde-format
 msgid ""
 "MP3tunes Harmony Error\n"

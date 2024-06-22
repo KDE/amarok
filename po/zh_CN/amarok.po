@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-20 01:49+0000\n"
+"POT-Creation-Date: 2024-06-22 01:52+0000\n"
 "PO-Revision-Date: 2024-04-22 17:06\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -4497,20 +4497,16 @@ msgid "No information found..."
 msgstr "未找到信息..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(艺人|乐队).*\\))"
+msgstr ""
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(作曲家|音乐家).*\\))"
+msgstr ""
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
 #, kde-format
@@ -15029,48 +15025,48 @@ msgid ""
 "mp3tunes.com"
 msgstr "您可通过在线音乐锁安全地存储并访问音乐：http://mp3tunes.com"
 
-#: services/mp3tunes/Mp3tunesService.cpp:104
+#: services/mp3tunes/Mp3tunesService.cpp:105
 #, kde-format
 msgid "The MP3tunes Locker: Your Music Everywhere!"
 msgstr "MP3tunes 媒体锁：音乐随行！"
 
-#: services/mp3tunes/Mp3tunesService.cpp:217
+#: services/mp3tunes/Mp3tunesService.cpp:218
 #, kde-format
 msgid "MP3tunes AutoSync Enabled"
 msgstr "已启用 MP3tunes 自动同步"
 
-#: services/mp3tunes/Mp3tunesService.cpp:233
+#: services/mp3tunes/Mp3tunesService.cpp:234
 #, kde-format
 msgid "MP3tunes AutoSync Disabled"
 msgstr "已禁用 MP3tunes 自动同步"
 
-#: services/mp3tunes/Mp3tunesService.cpp:253
+#: services/mp3tunes/Mp3tunesService.cpp:254
 #, kde-format
 msgid "Authenticating"
 msgstr "身份验证中"
 
-#: services/mp3tunes/Mp3tunesService.cpp:265
+#: services/mp3tunes/Mp3tunesService.cpp:266
 #, kde-format
 msgid "MP3tunes failed to Authenticate."
 msgstr "MP3tunes 认证失败。"
 
-#: services/mp3tunes/Mp3tunesService.cpp:295
+#: services/mp3tunes/Mp3tunesService.cpp:296
 #, kde-format
 msgid "MP3tunes Harmony: Disconnected"
 msgstr "MP3tunes 协调进程：已断开"
 
-#: services/mp3tunes/Mp3tunesService.cpp:302
-#: services/mp3tunes/Mp3tunesService.cpp:315
+#: services/mp3tunes/Mp3tunesService.cpp:303
+#: services/mp3tunes/Mp3tunesService.cpp:316
 #, kde-format
 msgid "MP3tunes Harmony: Waiting for PIN Input"
 msgstr "MP3tunes 协调进程：等待 PIN 输入"
 
-#: services/mp3tunes/Mp3tunesService.cpp:327
+#: services/mp3tunes/Mp3tunesService.cpp:328
 #, kde-format
 msgid "MP3tunes Harmony: Successfully Connected"
 msgstr "MP3tunes 协调进程：已成功连接"
 
-#: services/mp3tunes/Mp3tunesService.cpp:342
+#: services/mp3tunes/Mp3tunesService.cpp:343
 #, kde-format
 msgid ""
 "MP3tunes Harmony Error\n"
@@ -16176,167 +16172,3 @@ msgstr "艺人：%1"
 #, kde-format
 msgid "empty"
 msgstr "空"
-
-#~ msgid "Upcoming Events"
-#~ msgstr "临近的演出"
-
-#~ msgid "View Events Calendar"
-#~ msgstr "查看演出日程"
-
-#~ msgctxt "@title:group"
-#~ msgid "No track is currently playing"
-#~ msgstr "没有播放中的曲目"
-
-#~ msgid "Favorite Venues"
-#~ msgstr "最爱场地"
-
-#~ msgid "No upcoming events"
-#~ msgstr "无临近演出"
-
-#~ msgid "%1: No upcoming events"
-#~ msgstr "%1：无临近演出"
-
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "1 event"
-#~ msgid_plural "%1 events"
-#~ msgstr[0] "%1 个演出"
-
-#~ msgctxt "@title:group Number of upcoming events"
-#~ msgid "%1: 1 event"
-#~ msgid_plural "%1: %2 events"
-#~ msgstr[0] "%1：%2 个演出"
-
-#~ msgid "Upcoming Events Settings"
-#~ msgstr "临近演出设置"
-
-#~ msgctxt "@label:textbox Url label"
-#~ msgid "link"
-#~ msgstr "链接"
-
-#~ msgid "Map View"
-#~ msgstr "地图视图"
-
-#~ msgid "Events Calendar"
-#~ msgstr "演出日历"
-
-#~ msgid "This week"
-#~ msgstr "本周"
-
-#~ msgid "This month"
-#~ msgstr "本月"
-
-#~ msgid "This year"
-#~ msgstr "本年"
-
-#~ msgctxt "@title:group"
-#~ msgid "Favorite Venues"
-#~ msgstr "最爱场地"
-
-#~ msgctxt "@info:tooltip Calendar action"
-#~ msgid "Jump to Today"
-#~ msgstr "跳转到今天"
-
-#~ msgid "Filter events by date:"
-#~ msgstr "按日期过滤演出："
-
-#~ msgid "All events"
-#~ msgstr "全部演出"
-
-#~ msgid "&Group venue events"
-#~ msgstr "按场地分组演出(&G)"
-
-#~ msgctxt "@label:textbox Title for a canceled upcoming event"
-#~ msgid "<s>%1</s> (Canceled)"
-#~ msgstr "<s>%1</s> (已取消)"
-
-#~ msgid "Show places as links"
-#~ msgstr "用链接来展示地点"
-
-#~ msgid "Maximize"
-#~ msgstr "最大化"
-
-#~ msgid "Expand this widget"
-#~ msgstr "展开此部件"
-
-#~ msgid "Collapse this widget"
-#~ msgstr "折叠此部件"
-
-#~ msgid "Search Venue"
-#~ msgstr "搜索场地"
-
-#~ msgid "Restrict venues to a specific country"
-#~ msgstr "将场地限制在特定国家内"
-
-#~ msgid "Any Country"
-#~ msgstr "任意国家"
-
-#~ msgid "Search Results:"
-#~ msgstr "搜索结果："
-
-#~ msgid "Selected Venues:"
-#~ msgstr "选中的场地："
-
-#~ msgid "Photo"
-#~ msgstr "照片"
-
-#~ msgid "City:"
-#~ msgstr "城市："
-
-#~ msgid "Website:"
-#~ msgstr "网站："
-
-#~ msgid "Country:"
-#~ msgstr "国家/地区："
-
-#~ msgid "Street:"
-#~ msgstr "街道："
-
-#~ msgid "Loading picture..."
-#~ msgstr "正在加载图片..."
-
-#~ msgid "View map"
-#~ msgstr "查看地图"
-
-#~ msgid "Open Last.fm webpage for this event"
-#~ msgstr "打开此演出的 Last.fm 页面"
-
-#~ msgctxt "@label:textbox Supporting acts for an event"
-#~ msgid "Supporting:"
-#~ msgstr "开场："
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Venue:"
-#~ msgstr "场地："
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Location:"
-#~ msgstr "地点："
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Date:"
-#~ msgstr "日期："
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Attending:"
-#~ msgstr "参与人员："
-
-#~ msgctxt "@label:textbox"
-#~ msgid "Tags:"
-#~ msgstr "标签："
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Tags:</strong><nl/>%1"
-#~ msgstr "<strong>标签：</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Supporting artists for an event"
-#~ msgid "<strong>Supporting artists:</strong><nl/>%1"
-#~ msgstr "<strong>参演开场的艺人：</strong><nl/>%1"
-
-#~ msgctxt "@info:tooltip Number of days till an event"
-#~ msgid "Tomorrow"
-#~ msgid_plural "In <strong>%1</strong> days"
-#~ msgstr[0] "<strong>%1</strong> 天后"
-
-#~ msgctxt "@info:tooltip"
-#~ msgid "<strong>Location:</strong><nl/>%1"
-#~ msgstr "<strong>位置：</strong><nl/>%1"

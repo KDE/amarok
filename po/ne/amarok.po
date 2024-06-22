@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-20 01:49+0000\n"
+"POT-Creation-Date: 2024-06-22 01:52+0000\n"
 "PO-Revision-Date: 2007-09-09 15:34+0545\n"
 "Last-Translator: Ishwor Sharma <sharmabeeshwar@gmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -16044,54 +16044,54 @@ msgid ""
 "mp3tunes.com"
 msgstr ""
 
-#: services/mp3tunes/Mp3tunesService.cpp:104
+#: services/mp3tunes/Mp3tunesService.cpp:105
 #, kde-format
 msgid "The MP3tunes Locker: Your Music Everywhere!"
 msgstr ""
 
-#: services/mp3tunes/Mp3tunesService.cpp:217
+#: services/mp3tunes/Mp3tunesService.cpp:218
 #, fuzzy, kde-format
 #| msgid "Proxy Origin Disconnected"
 msgid "MP3tunes AutoSync Enabled"
 msgstr "प्रोक्सी उत्पत्ति जडान विच्छेद गरियो"
 
-#: services/mp3tunes/Mp3tunesService.cpp:233
+#: services/mp3tunes/Mp3tunesService.cpp:234
 #, fuzzy, kde-format
 #| msgid "Proxy Origin Disconnected"
 msgid "MP3tunes AutoSync Disabled"
 msgstr "प्रोक्सी उत्पत्ति जडान विच्छेद गरियो"
 
-#: services/mp3tunes/Mp3tunesService.cpp:253
+#: services/mp3tunes/Mp3tunesService.cpp:254
 #, kde-format
 msgid "Authenticating"
 msgstr "प्रमाणीकरण असफलता"
 
-#: services/mp3tunes/Mp3tunesService.cpp:265
+#: services/mp3tunes/Mp3tunesService.cpp:266
 #, fuzzy, kde-format
 #| msgid "Max Failed Authentications"
 msgid "MP3tunes failed to Authenticate."
 msgstr "अधिकतम असफल प्रमाणीकरणहरू"
 
-#: services/mp3tunes/Mp3tunesService.cpp:295
+#: services/mp3tunes/Mp3tunesService.cpp:296
 #, fuzzy, kde-format
 #| msgid "Proxy Origin Disconnected"
 msgid "MP3tunes Harmony: Disconnected"
 msgstr "प्रोक्सी उत्पत्ति जडान विच्छेद गरियो"
 
-#: services/mp3tunes/Mp3tunesService.cpp:302
-#: services/mp3tunes/Mp3tunesService.cpp:315
+#: services/mp3tunes/Mp3tunesService.cpp:303
+#: services/mp3tunes/Mp3tunesService.cpp:316
 #, fuzzy, kde-format
 #| msgid "Proxy Origin Disconnected"
 msgid "MP3tunes Harmony: Waiting for PIN Input"
 msgstr "प्रोक्सी उत्पत्ति जडान विच्छेद गरियो"
 
-#: services/mp3tunes/Mp3tunesService.cpp:327
+#: services/mp3tunes/Mp3tunesService.cpp:328
 #, fuzzy, kde-format
 #| msgid "Device successfully connected"
 msgid "MP3tunes Harmony: Successfully Connected"
 msgstr "यन्त्र सफलतापूर्वक जडान गरियो"
 
-#: services/mp3tunes/Mp3tunesService.cpp:342
+#: services/mp3tunes/Mp3tunesService.cpp:343
 #, fuzzy, kde-format
 #| msgid "Proxy Origin Disconnected"
 msgid ""
