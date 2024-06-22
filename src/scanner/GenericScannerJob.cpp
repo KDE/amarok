@@ -361,13 +361,13 @@ GenericScannerJob::parseScannerOutput()
         }
         else if( m_reader.isStartElement() )
         {
-            QStringRef name = m_reader.name();
-            if( name == "scanner" )
+            QStringView name = m_reader.name();
+            if( name == QStringLiteral("scanner") )
             {
                 int totalCount = m_reader.attributes().value( QStringLiteral("count") ).toString().toInt();
                 Q_EMIT directoryCount( totalCount );
             }
-            else if( name == "directory" )
+            else if( name == QStringLiteral("directory") )
             {
                 QSharedPointer<CollectionScanner::Directory> dir( new CollectionScanner::Directory( &m_reader ) );
 
@@ -382,7 +382,7 @@ GenericScannerJob::parseScannerOutput()
         }
         else if( m_reader.isEndElement() )
         {
-            if( m_reader.name() == "scanner" ) // ok. finished
+            if( m_reader.name() == QStringLiteral("scanner") ) // ok. finished
                 return true;
         }
         else if( m_reader.isEndDocument() )

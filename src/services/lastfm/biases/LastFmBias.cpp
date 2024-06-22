@@ -81,8 +81,8 @@ Dynamic::LastFmBias::fromXml( QXmlStreamReader *reader )
 
         if( reader->isStartElement() )
         {
-            QStringRef name = reader->name();
-            if( name == "match" )
+            QStringView name = reader->name();
+            if( name == QStringLiteral("match") )
                 m_match = matchForName( reader->readElementText(QXmlStreamReader::SkipChildElements) );
             else
             {
@@ -530,7 +530,7 @@ Dynamic::LastFmBias::readSimilarArtists( QXmlStreamReader *reader )
 
     while (!reader->atEnd()) {
         reader->readNext();
-        QStringRef name = reader->name();
+        QStringView name = reader->name();
 
         if( reader->isStartElement() )
         {
@@ -557,7 +557,7 @@ Dynamic::LastFmBias::readTrack( QXmlStreamReader *reader )
 
     while (!reader->atEnd()) {
         reader->readNext();
-        QStringRef name = reader->name();
+        QStringView name = reader->name();
 
         if( reader->isStartElement() )
         {
@@ -585,7 +585,7 @@ Dynamic::LastFmBias::readSimilarTracks( QXmlStreamReader *reader )
 
     while (!reader->atEnd()) {
         reader->readNext();
-        QStringRef name = reader->name();
+        QStringView name = reader->name();
 
         if( reader->isStartElement() )
         {
@@ -622,7 +622,7 @@ Dynamic::LastFmBias::loadDataFromFile()
     while (!reader.atEnd()) {
         reader.readNext();
 
-        QStringRef name = reader.name();
+        QStringView name = reader.name();
         if( reader.isStartElement() )
         {
             if( name == QLatin1String("lastfmSimilar") )

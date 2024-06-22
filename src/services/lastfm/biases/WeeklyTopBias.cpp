@@ -79,10 +79,10 @@ Dynamic::WeeklyTopBias::fromXml( QXmlStreamReader *reader )
 
         if( reader->isStartElement() )
         {
-            QStringRef name = reader->name();
-            if( name == "from" )
+            QStringView name = reader->name();
+            if( name == QStringLiteral("from") )
                 m_range.from = QDateTime::fromSecsSinceEpoch( reader->readElementText(QXmlStreamReader::SkipChildElements).toLong() );
-            else if( name == "to" )
+            else if( name == QStringLiteral("to") )
                 m_range.to = QDateTime::fromSecsSinceEpoch( reader->readElementText(QXmlStreamReader::SkipChildElements).toLong() );
             else
             {

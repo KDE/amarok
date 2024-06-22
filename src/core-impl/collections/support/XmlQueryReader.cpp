@@ -100,18 +100,18 @@ XmlQueryReader::readQuery()
             else if( name() == "order" )
             {
                 QXmlStreamAttributes attr = attributes();
-                QStringRef fieldStr =  attr.value( QStringLiteral("field") );
-                QStringRef valueStr =  attr.value( QStringLiteral("value") );
+                QStringView fieldStr =  attr.value( QStringLiteral("field") );
+                QStringView valueStr =  attr.value( QStringLiteral("value") );
 
                 qint64 field = Meta::fieldForName( fieldStr.toString() );
-                bool descending = valueStr == "descending";
+                bool descending = valueStr == QStringLiteral("descending");
 
                 if( field != 0 )
                     d->qm->orderBy( field, descending  );
             }
             else if( name() == "limit" )
             {
-                QStringRef value = attributes().value( QStringLiteral("value") );
+                QStringView value = attributes().value( QStringLiteral("value") );
                 if( !value.isEmpty() )
                     d->qm->limitMaxResultSize( value.toString().toInt() );
             }
@@ -228,7 +228,7 @@ XmlQueryReader::readFilter(QXmlStreamReader *reader)
     filter.field = Meta::fieldForName( attr.value( QStringLiteral("field") ).toString() );
     filter.value = attr.value( QStringLiteral("value") ).toString();
 
-    QStringRef compareStr = attr.value( QStringLiteral("compare") );
+    QStringView compareStr = attr.value( QStringLiteral("compare") );
     if( compareStr.isEmpty() )
         filter.compare = -1;
     else
@@ -245,7 +245,7 @@ XmlQueryReader::readFilters()
         readNext();
         if( isEndElement() )
         {
-            if( name() == "and" || name() == "or" )
+            if( name() == QStringLiteral("and") || name() == QStringLiteral("or") )
             {
                 d->qm->endAndOr();
                 break;
@@ -258,7 +258,7 @@ XmlQueryReader::readFilters()
                 continue;
         }
 
-        if( name() == "include" || name() == "exclude" )
+        if( name() == QStringLiteral("include") || name() == QStringLiteral("exclude") )
         {
             Filter filter = readFilter(this);
 
@@ -297,12 +297,12 @@ XmlQueryReader::readFilters()
 
             d->filters.append( filter );
         }
-        else if( name() == "and" )
+        else if( name() == QStringLiteral("and") )
         {
             d->qm->beginAnd();
             readFilters();
         }
-        else if( name() == "or" )
+        else if( name() == QStringLiteral("or") )
         {
             d->qm->beginOr();
             readFilters();
@@ -311,13 +311,13 @@ XmlQueryReader::readFilters()
 }
 
 int
-XmlQueryReader::compareVal( QStringRef compare )
+XmlQueryReader::compareVal( QStringView compare )
 {
-    if( compare == "less" )
+    if( compare == QStringLiteral("less") )
         return Collections::QueryMaker::LessThan;
-    else if( compare == "greater" )
+    else if( compare == QStringLiteral("greater") )
         return Collections::QueryMaker::GreaterThan;
-    else if( compare == "equals" )
+    else if( compare == QStringLiteral("equals") )
         return Collections::QueryMaker::Equals;
     else
         return -1;

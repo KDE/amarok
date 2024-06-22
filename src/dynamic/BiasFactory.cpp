@@ -227,7 +227,7 @@ Dynamic::BiasFactory::~BiasFactory()
 Dynamic::BiasPtr
 Dynamic::BiasFactory::fromXml( QXmlStreamReader *reader )
 {
-    QStringRef name = reader->name();
+    QStringView name = reader->name();
 
     instance(); // ensure that we have an instance with the default factories
     for( Dynamic::AbstractBiasFactory* fac : s_biasFactories )

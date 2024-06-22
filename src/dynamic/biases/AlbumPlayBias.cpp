@@ -63,8 +63,8 @@ Dynamic::AlbumPlayBias::fromXml( QXmlStreamReader *reader )
 
         if( reader->isStartElement() )
         {
-            QStringRef name = reader->name();
-            if( name == "follow" )
+            QStringView name = reader->name();
+            if( name == QStringLiteral("follow") )
                 m_follow = followForName( reader->readElementText(QXmlStreamReader::SkipChildElements) );
             else
             {

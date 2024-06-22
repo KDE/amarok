@@ -236,7 +236,7 @@ class AMAROKCORE_EXPORT PodcastReader : public QObject
         QString atomTextAsText();
         QString atomTextAsHtml();
 
-        QStringRef attribute(const char *namespaceUri, const char *name) const;
+        QStringView attribute(const char *namespaceUri, const char *name) const;
         bool hasAttribute(const char *namespaceUri, const char *name) const;
 
         void setDescription(const QString &description);

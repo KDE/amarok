@@ -130,7 +130,7 @@ CollectionScanner::Directory::Directory( QXmlStreamReader *reader )
 
         if( reader->isStartElement() )
         {
-            QStringRef name = reader->name();
+            QStringView name = reader->name();
             if( name == QLatin1String("path") )
                 m_path = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == QLatin1String("rpath") )

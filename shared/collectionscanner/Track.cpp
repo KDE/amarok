@@ -173,7 +173,7 @@ CollectionScanner::Track::Track( QXmlStreamReader *reader, CollectionScanner::Di
 
         if( reader->isStartElement() )
         {
-            QStringRef name = reader->name();
+            QStringView name = reader->name();
             if( name == QLatin1String("uniqueid") )
                 m_uniqueid = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else if( name == QLatin1String("path") )

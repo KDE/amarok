@@ -166,9 +166,9 @@ QChar Locale::positiveSign() const
     return QLocale::positiveSign();
 }
 
-QString Locale::quoteString(const QStringRef &str, QLocale::QuotationStyle style) const
+QString Locale::quoteString(const QStringView &str, QLocale::QuotationStyle style) const
 {
-    return QLocale::quoteString(str, style);
+    return QLocale::quoteString(str.toString(), style);
 }
 
 QString Locale::quoteString(const QString &str, QLocale::QuotationStyle style) const
@@ -281,7 +281,7 @@ QDateTime Locale::toDateTime(const QString &string, QLocale::FormatType format) 
     return QLocale::toDateTime(string, format);
 }
 
-double Locale::toDouble(const QStringRef &s, bool *ok) const
+double Locale::toDouble(const QStringView &s, bool *ok) const
 {
     return QLocale::toDouble(s, ok);
 }
@@ -291,7 +291,7 @@ double Locale::toDouble(const QString &s, bool *ok) const
     return QLocale::toDouble(s, ok);
 }
 
-float Locale::toFloat(const QStringRef &s, bool *ok) const
+float Locale::toFloat(const QStringView &s, bool *ok) const
 {
     return QLocale::toFloat(s, ok);
 }
@@ -301,7 +301,7 @@ float Locale::toFloat(const QString &s, bool *ok) const
     return QLocale::toFloat(s, ok);
 }
 
-int Locale::toInt(const QStringRef &s, bool *ok) const
+int Locale::toInt(const QStringView &s, bool *ok) const
 {
     return QLocale::toInt(s, ok);
 }
@@ -311,7 +311,7 @@ int Locale::toInt(const QString &s, bool *ok) const
     return QLocale::toInt(s, ok);
 }
 
-qlonglong Locale::toLongLong(const QStringRef &s, bool *ok) const
+qlonglong Locale::toLongLong(const QStringView &s, bool *ok) const
 {
     return QLocale::toLongLong(s, ok);
 }
@@ -326,7 +326,7 @@ QString Locale::toLower(const QString &str) const
     return QLocale::toLower(str);
 }
 
-short Locale::toShort(const QStringRef &s, bool *ok) const
+short Locale::toShort(const QStringView &s, bool *ok) const
 {
     return QLocale::toShort(s, ok);
 }
@@ -416,7 +416,7 @@ QTime Locale::toTime(const QString &string, QLocale::FormatType format) const
     return QLocale::toTime(string, format);
 }
 
-uint Locale::toUInt(const QStringRef &s, bool *ok) const
+uint Locale::toUInt(const QStringView &s, bool *ok) const
 {
     return QLocale::toUInt(s, ok);
 }
@@ -426,7 +426,7 @@ uint Locale::toUInt(const QString &s, bool *ok) const
     return QLocale::toUInt(s, ok);
 }
 
-qulonglong Locale::toULongLong(const QStringRef &s, bool *ok) const
+qulonglong Locale::toULongLong(const QStringView &s, bool *ok) const
 {
     return QLocale::toULongLong(s, ok);
 }
@@ -441,7 +441,7 @@ QString Locale::toUpper(const QString &str) const
     return QLocale::toUpper(str);
 }
 
-ushort Locale::toUShort(const QStringRef &s, bool *ok) const
+ushort Locale::toUShort(const QStringView &s, bool *ok) const
 {
     return QLocale::toUShort(s, ok);
 }

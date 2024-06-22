@@ -211,12 +211,12 @@ PhotosEngine::photosListFromXml( QXmlStreamReader &xml )
         if( xml.name() == QLatin1String("photo") )
         {
             const QXmlStreamAttributes &attr = xml.attributes();
-            QStringRef id     = attr.value( QLatin1String("id") );
-            QStringRef farm   = attr.value( QLatin1String("farm") );
-            QStringRef owner  = attr.value( QLatin1String("owner") );
-            QStringRef secret = attr.value( QLatin1String("secret") );
-            QStringRef server = attr.value( QLatin1String("server") );
-            QStringRef title  = attr.value( QLatin1String("title") );
+            QStringView id     = attr.value( QLatin1String("id") );
+            QStringView farm   = attr.value( QLatin1String("farm") );
+            QStringView owner  = attr.value( QLatin1String("owner") );
+            QStringView secret = attr.value( QLatin1String("secret") );
+            QStringView server = attr.value( QLatin1String("server") );
+            QStringView title  = attr.value( QLatin1String("title") );
 
             QUrl photoUrl;
             photoUrl.setScheme( "https" );

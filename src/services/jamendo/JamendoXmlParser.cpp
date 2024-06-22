@@ -215,7 +215,7 @@ JamendoXmlParser::readConfigFile( const QString &filename )
         m_reader.readNext();
         if( m_reader.isStartElement() )
         {
-            QStringRef localname = m_reader.name();
+            QStringView localname = m_reader.name();
             if( localname == "artist" )
             {
                 readArtist();
@@ -258,7 +258,7 @@ JamendoXmlParser::readArtist()
             break;
         if( m_reader.isStartElement() )
         {
-            QStringRef localname = m_reader.name();
+            QStringView localname = m_reader.name();
             if( localname == "id" )
                 m_currentArtistId = m_reader.readElementText().toInt();
             else if ( localname == "name" )
@@ -317,7 +317,7 @@ JamendoXmlParser::readAlbum()
             break;
         if( m_reader.isStartElement() )
         {
-            QStringRef localname = m_reader.name();
+            QStringView localname = m_reader.name();
 
             if( localname == "id" )
                 m_currentAlbumId = m_reader.readElementText().toInt();
@@ -387,7 +387,7 @@ JamendoXmlParser::readTrack()
             break;
         if( m_reader.isStartElement() )
         {
-            QStringRef localname = m_reader.name();
+            QStringView localname = m_reader.name();
             if( localname == "name" )
                 name = m_reader.readElementText();
             else if( localname == "id" )

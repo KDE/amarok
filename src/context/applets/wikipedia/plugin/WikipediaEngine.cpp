@@ -625,10 +625,9 @@ WikipediaEngine::wikiParse( QString &wiki )
     int langSectionIndex = 0;
     if( (langSectionIndex = wiki.indexOf( QLatin1String("<div id=\"p-lang\" class=\"portlet\">") )) != -1 )
     {
-        QStringRef sref = wiki.midRef( langSectionIndex );
-        sref = wiki.midRef( sref.position(), wiki.indexOf( QLatin1String("<ul>"), sref.position() ) - sref.position() );
-        sref = wiki.midRef( sref.position(), wiki.indexOf( QLatin1String("</dev>"), sref.position() ) - sref.position() );
-        wikiLanguagesSection = sref.toString();
+        int ulpos = wiki.indexOf( QLatin1String("<ul>"), langSectionIndex );
+        int devpos = wiki.indexOf( QLatin1String("</dev>"), ulpos );
+        wikiLanguagesSection = wiki.mid( langSectionIndex, devpos - langSectionIndex );
         QXmlStreamReader xml( wikiLanguagesSection );
         while( !xml.atEnd() && !xml.hasError() )
         {
@@ -653,9 +652,8 @@ WikipediaEngine::wikiParse( QString &wiki )
     int copyrightIndex = wiki.indexOf( copyrightMark );
     if( copyrightIndex != -1 )
     {
-        QStringRef sref = wiki.midRef( copyrightIndex + copyrightMark.length() );
-        sref = wiki.midRef( sref.position(), wiki.indexOf( QLatin1String("</li>"), sref.position() ) - sref.position() );
-        copyright = sref.toString();
+        const uint pos = copyrightIndex + copyrightMark.length();
+        copyright = wiki.mid( pos, wiki.indexOf( QLatin1String("</li>"), pos ) - pos );
         copyright.remove( QLatin1String("<br />") );
         //only one br at the beginning
         copyright.prepend( QLatin1String("<br />") );
@@ -666,10 +664,11 @@ WikipediaEngine::wikiParse( QString &wiki )
     const QString title = wiki.mid( titleIndex, bsTitleIndex );
 
     // Ok lets remove the top and bottom parts of the page
-    QStringRef wikiRef;
-    wikiRef = wiki.midRef( wiki.indexOf( QLatin1String("<!-- start content -->") ) );
-    wikiRef = wiki.midRef( wikiRef.position(), wiki.indexOf( QLatin1String("<div class=\"printfooter\">"), wikiRef.position() ) - wikiRef.position() );
-    wiki = wikiRef.toString();
+    QStringView wikiRef;
+    const int contentStart = wiki.indexOf( QLatin1String("<!-- start content -->") );
+    const int contentEnd = wiki.indexOf( QLatin1String("<div class=\"printfooter\">"), contentStart );
+
+    wiki = wiki.mid( contentStart, contentEnd - contentStart );
 
     auto removeTag = [&wiki] ( const QString& tagStart, const QString& tagEnd )
     {
@@ -679,7 +678,7 @@ WikipediaEngine::wikiParse( QString &wiki )
         while( ( matchIndex = tagMatcher.indexIn( wiki, matchIndex ) ) != -1 )
         {
             const int nToTagEnd = wiki.indexOf( tagEnd, matchIndex ) - matchIndex;
-            const QStringRef tagRef = wiki.midRef( matchIndex, nToTagEnd + tagEndSize );
+            const QStringView tagRef = wiki.midRef( matchIndex, nToTagEnd + tagEndSize );
             wiki.remove( tagRef.toString() );
         }
     };

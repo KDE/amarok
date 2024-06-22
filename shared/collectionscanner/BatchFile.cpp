@@ -50,7 +50,7 @@ CollectionScanner::BatchFile::BatchFile( const QString &batchPath )
 
         if( reader.isStartElement() )
         {
-            QStringRef name = reader.name();
+            QStringView name = reader.name();
 
             if( name == QLatin1String("scanner") )
             {
@@ -76,7 +76,7 @@ CollectionScanner::BatchFile::BatchFile( const QString &batchPath )
         }
         else if( reader.isEndElement() )
         {
-            QStringRef name = reader.name();
+            QStringView name = reader.name();
             if( name == QLatin1String("directory") )
             {
                 if( !path.isEmpty() )

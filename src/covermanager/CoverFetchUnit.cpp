@@ -266,22 +266,22 @@ CoverFetchInfoPayload::prepareDiscogsUrls( const QByteArray &data )
     while( !xml.atEnd() && !xml.hasError() )
     {
         xml.readNext();
-        if( xml.isStartElement() && xml.name() == "searchresults" )
+        if( xml.isStartElement() && xml.name() == QStringLiteral("searchresults") )
         {
             while( !xml.atEnd() && !xml.hasError() )
             {
                 xml.readNext();
-                const QStringRef &n = xml.name();
-                if( xml.isEndElement() && n == "searchresults" )
+                const QStringView &n = xml.name();
+                if( xml.isEndElement() && n == QStringLiteral("searchresults") )
                     break;
                 if( !xml.isStartElement() )
                     continue;
-                if( n == "result" )
+                if( n == QStringLiteral("result") )
                 {
                     while( !xml.atEnd() && !xml.hasError() )
                     {
                         xml.readNext();
-                        if( xml.isEndElement() && n == "result" )
+                        if( xml.isEndElement() && n == QStringLiteral("result") )
                             break;
                         if( !xml.isStartElement() )
                             continue;
@@ -484,23 +484,23 @@ CoverFetchArtPayload::prepareDiscogsUrls( QXmlStreamReader &xml )
         while( !xml.atEnd() && !xml.hasError() )
         {
             xml.readNext();
-            const QStringRef &n = xml.name();
-            if( xml.isEndElement() && n == "release" )
+            const QStringView &n = xml.name();
+            if( xml.isEndElement() && n == QStringLiteral("release") )
                 break;
             if( !xml.isStartElement() )
                 continue;
 
             CoverFetch::Metadata metadata;
             metadata[ "source" ] = "Discogs";
-            if( n == "title" )
+            if( n == QStringLiteral("title") )
                 metadata[ "title" ] = xml.readElementText();
-            else if( n == "country" )
+            else if( n == QStringLiteral("country") )
                 metadata[ "country" ] = xml.readElementText();
-            else if( n == "released" )
+            else if( n == QStringLiteral("released") )
                 metadata[ "released" ] = xml.readElementText();
-            else if( n == "notes" )
+            else if( n == QStringLiteral("notes") )
                 metadata[ "notes" ] = xml.readElementText();
-            else if( n == "images" )
+            else if( n == QStringLiteral("images") )
             {
                 while( !xml.atEnd() && !xml.hasError() )
                 {
@@ -614,7 +614,7 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
     while( !xml.atEnd() && !xml.hasError() )
     {
         xml.readNext();
-        if( !xml.isStartElement() || xml.name() != "album" )
+        if( !xml.isStartElement() || xml.name() != QStringLiteral("album") )
             continue;
 
         QHash<QString, QString> coverUrlHash;
@@ -623,28 +623,28 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
         while( !xml.atEnd() && !xml.hasError() )
         {
             xml.readNext();
-            const QStringRef &n = xml.name();
-            if( xml.isEndElement() && n == "album" )
+            const QStringView &n = xml.name();
+            if( xml.isEndElement() && n == QStringLiteral("album") )
                 break;
             if( !xml.isStartElement() )
                 continue;
 
-            if( n == "name" )
+            if( n == QStringLiteral("name") )
             {
                 metadata[ "name" ] = xml.readElementText();
             }
-            else if( n == "artist" )
+            else if( n == QStringLiteral("artist") )
             {
                 const QString &artist = xml.readElementText();
                 if( !artistSet.contains( artist ) )
                     continue;
                 metadata[ "artist" ] = artist;
             }
-            else if( n == "url" )
+            else if( n == QStringLiteral("url") )
             {
                 metadata[ "releaseurl" ] = xml.readElementText();
             }
-            else if( n == "image" )
+            else if( n == QStringLiteral("image") )
             {
                 QString sizeStr = xml.attributes().value("size").toString();
                 coverUrlHash[ sizeStr ] = xml.readElementText();

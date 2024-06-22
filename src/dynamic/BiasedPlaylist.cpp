@@ -59,8 +59,8 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QXmlStreamReader *reader, QObject *pare
 
         if( reader->isStartElement() )
         {
-            QStringRef name = reader->name();
-            if( name == "title" )
+            QStringView name = reader->name();
+            if( name == QStringLiteral("title") )
                 m_title = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else
             {

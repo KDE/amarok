@@ -106,7 +106,7 @@ SimilarArtist::listFromXml( QXmlStreamReader &xml )
             float match( 0.0 );
             while( xml.readNextStartElement() )
             {
-                const QStringRef &n = xml.name();
+                const QStringView &n = xml.name();
                 const QXmlStreamAttributes &a = xml.attributes();
                 if( n == QLatin1String("name") )
                     name = xml.readElementText();

@@ -73,8 +73,8 @@ Dynamic::SearchQueryBias::fromXml( QXmlStreamReader *reader )
 
         if( reader->isStartElement() )
         {
-            QStringRef name = reader->name();
-            if( name == "filter" )
+            QStringView name = reader->name();
+            if( name == QStringLiteral("filter") )
                 m_filter = reader->readElementText(QXmlStreamReader::SkipChildElements);
             else
             {

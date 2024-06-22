@@ -222,16 +222,16 @@ Dynamic::TagMatchBias::fromXml( QXmlStreamReader *reader )
 
         if( reader->isStartElement() )
         {
-            QStringRef name = reader->name();
-            if( name == "field" )
+            QStringView name = reader->name();
+            if( name == QStringLiteral("field") )
                 m_filter.setField( Meta::fieldForPlaylistName( reader->readElementText(QXmlStreamReader::SkipChildElements) ) );
-            else if( name == "numValue" )
+            else if( name == QStringLiteral("numValue") )
                 m_filter.numValue = reader->readElementText(QXmlStreamReader::SkipChildElements).toUInt();
-            else if( name == "numValue2" )
+            else if( name == QStringLiteral("numValue2") )
                 m_filter.numValue2 = reader->readElementText(QXmlStreamReader::SkipChildElements).toUInt();
-            else if( name == "value" )
+            else if( name == QStringLiteral("value") )
                 m_filter.value = reader->readElementText(QXmlStreamReader::SkipChildElements);
-            else if( name == "condition" )
+            else if( name == QStringLiteral("condition") )
                 m_filter.condition = conditionForName( reader->readElementText(QXmlStreamReader::SkipChildElements) );
             else
             {

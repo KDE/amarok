@@ -589,9 +589,9 @@ PodcastReader::elementType() const
                 //    http://tools.ietf.org/html/rfc4287#section-4.1.3
                 if( hasAttribute( ATOM_NS, "type" ) )
                 {
-                    QStringRef type( attribute( ATOM_NS, "type" ) );
+                    QStringView type( attribute( ATOM_NS, "type" ) );
 
-                    if( type == "text" || type == "html" || type == "xhtml" )
+                    if( type == QStringLiteral("text") || type == QStringLiteral("html") || type == QStringLiteral("xhtml") )
                     {
                         elementType = SupportedContent;
                     }
@@ -1204,7 +1204,7 @@ PodcastReader::beginEnclosure()
     // See:
     //    http://www.rssboard.org/rss-specification
     //    http://www.xs4all.nl/~foz/mod_enclosure.html
-    QStringRef str;
+    QStringView str;
 
     str = m_xmlReader.attributes().value( QStringLiteral("url") );
 
@@ -1349,17 +1349,17 @@ PodcastReader::beginAtomText()
 {
     if( hasAttribute( ATOM_NS, "type" ) )
     {
-        QStringRef type( attribute( ATOM_NS, "type" ) );
+        QStringView type( attribute( ATOM_NS, "type" ) );
 
-        if( type == "text" )
+        if( type == QStringLiteral("text") )
         {
             m_contentType = TextContent;
         }
-        else if( type == "html" )
+        else if( type == QStringLiteral("html") )
         {
             m_contentType = HtmlContent;
         }
-        else if( type == "xhtml" )
+        else if( type == QStringLiteral("xhtml") )
         {
             m_contentType = XHtmlContent;
         }
@@ -1441,11 +1441,11 @@ void
 PodcastReader::beginAtomFeedLink()
 {
     if( !hasAttribute( ATOM_NS, "rel" ) ||
-            attribute( ATOM_NS, "rel" ) == "alternate" )
+            attribute( ATOM_NS, "rel" ) == QStringLiteral("alternate") )
     {
         m_channel->setWebLink( QUrl( attribute( ATOM_NS, "href" ).toString() ) );
     }
-    else if( attribute( ATOM_NS, "rel" ) == "self" )
+    else if( attribute( ATOM_NS, "rel" ) == QStringLiteral("self") )
     {
         m_url = QUrl( attribute( ATOM_NS, "href" ).toString() );
 
@@ -1460,7 +1460,7 @@ PodcastReader::beginAtomFeedLink()
 void
 PodcastReader::beginAtomEntryLink()
 {
-    if( attribute( ATOM_NS, "rel" ) == "enclosure" )
+    if( attribute( ATOM_NS, "rel" ) == QStringLiteral("enclosure") )
     {
         QUrl url( attribute( ATOM_NS, "href" ).toString() );
         int filesize = 0;
@@ -1579,7 +1579,7 @@ PodcastReader::readEscapedCharacters()
     m_buffer += m_xmlReader.text().toString().toHtmlEscaped() ;
 }
 
-QStringRef
+QStringView
 PodcastReader::attribute( const char *namespaceUri, const char *name ) const
 {
     // workaround, because Qt seems to have a bug:

@@ -58,7 +58,7 @@ public:
      */
     static Filter readFilter(QXmlStreamReader *reader);
 
-    static int compareVal( QStringRef compare );
+    static int compareVal( QStringView compare );
 
 private:
     void readQuery();

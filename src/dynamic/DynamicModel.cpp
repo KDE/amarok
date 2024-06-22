@@ -852,7 +852,7 @@ Dynamic::DynamicModel::loadPlaylists( const QString &filename )
 
         if( xmlReader.isStartElement() )
         {
-            QStringRef name = xmlReader.name();
+            QStringView name = xmlReader.name();
             if( name == QLatin1String("playlist") )
             {
                 Dynamic::BiasedPlaylist *playlist =  new Dynamic::BiasedPlaylist( &xmlReader, this );

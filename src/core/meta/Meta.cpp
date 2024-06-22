@@ -275,14 +275,14 @@ Meta::Artist::sortableName() const
     const QString &n = name();
     if( n.startsWith( QLatin1String("the "), Qt::CaseInsensitive ) )
     {
-        QStringRef article = n.leftRef( 3 );
-        QStringRef subject = n.midRef( 4 );
+        QStringView article = n.leftRef( 3 );
+        QStringView subject = n.midRef( 4 );
         m_sortableName = QStringLiteral( "%1, %2" ).arg( subject.toString(), article.toString() );
     }
     else if( n.startsWith( QLatin1String("dj "), Qt::CaseInsensitive ) )
     {
-        QStringRef article = n.leftRef( 2 );
-        QStringRef subject = n.midRef( 3 );
+        QStringView article = n.leftRef( 2 );
+        QStringView subject = n.midRef( 3 );
         m_sortableName = QStringLiteral( "%1, %2" ).arg( subject.toString(), article.toString() );
     }
     else
