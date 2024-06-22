@@ -38,7 +38,7 @@
 
 
 static const char description[] = "Install, list, remove Amarok applets";
-static const char version[] = "0.2";
+static const QString version = QStringLiteral("0.2");
 
 
 void output(const QString &msg)

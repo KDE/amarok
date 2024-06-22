@@ -73,7 +73,7 @@ public:
         Q_UNUSED(thread);
         KJob *job = new DummyJob();
         QObject *obj = new QObject();
-        Amarok::Logger::newProgressOperation( job, QString( "foo" ), obj );
+        Amarok::Logger::newProgressOperation( job, QStringLiteral( "foo" ), obj );
 
         if( deleteJob ) delete job;
         if( deleteObject ) delete obj;
@@ -148,7 +148,7 @@ TestLogger::testForwardLongMessage()
     Amarok::MockLogger *mock = new Amarok::MockLogger();
     EXPECT_CALL( *mock, longMessageImpl( _, _ ) ).Times( 1 ).WillOnce( Return() );
 
-    Amarok::Logger::longMessage( "foo", Amarok::Logger::Information );
+    Amarok::Logger::longMessage( QStringLiteral( "foo" ), Amarok::Logger::Information );
 
     QTest::qWait( 20 );
 
@@ -162,7 +162,7 @@ TestLogger::testForwardProgressOperation()
     Amarok::MockLogger *mock = new Amarok::MockLogger();
     EXPECT_CALL( *mock, newProgressOperationImpl( An<KJob*>(), _, _, _, _ ) ).Times( 1 ).WillOnce( Return() );
 
-    Amarok::Logger::newProgressOperation( new DummyJob(), QString( "foo" ) );
+    Amarok::Logger::newProgressOperation( new DummyJob(), QStringLiteral( "foo" ) );
 
     QTest::qWait( 20 );
 
@@ -176,7 +176,7 @@ TestLogger::testForwardShortMessage()
     Amarok::MockLogger *mock = new Amarok::MockLogger();
     EXPECT_CALL( *mock, shortMessageImpl( _ ) ).Times( 1 ).WillOnce( Return() );
 
-    Amarok::Logger::shortMessage( "foo" );
+    Amarok::Logger::shortMessage( QStringLiteral( "foo" ) );
 
     QTest::qWait( 20 );
 

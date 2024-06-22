@@ -73,7 +73,7 @@ SafeFileSaver::prepareToSave()
         r+=48;
         if( r > 57 ) r+=7;
         if( r > 90 ) r+=6;
-        str[i++] = char( r );
+        str[i++] = QLatin1Char( r );
     }
 
     QString randomString = str;

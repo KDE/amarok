@@ -179,12 +179,12 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
     debug()<< "About to show license stuff";
     debug()<< "License count is"<<licenseCount;
     for (int i = 0; i < licenseCount; ++i) {
-        const KAboutLicense &license = aboutData->licenses().at(i);
+        const QString licenseName = aboutData->licenses().at(i).name(KAboutLicense::FullName);
 
         QLabel *showLicenseLabel = new QLabel;
         showLicenseLabel->setText(QStringLiteral("<a href=\"%1\">%2</a>").arg(QString::number(i),
                                                                        i18n("License: %1",
-                                                                            license.name(KAboutLicense::FullName))));
+                                                                            licenseName)));
         showLicenseLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
         connect(showLicenseLabel, &QLabel::linkActivated, this, &ExtendedAboutDialog::showLicense);
 

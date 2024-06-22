@@ -29,6 +29,8 @@
 #include "mocks/MockAlbum.h"
 #include "mocks/MockArtist.h"
 
+#include <KLocalizedString>
+
 #include <QMap>
 #include <QTest>
 
@@ -52,7 +54,7 @@ public:
 
 TestTrackOrganizer::TestTrackOrganizer()
 {
-
+  KLocalizedString::setApplicationDomain("amarok-test");
 }
 
 void TestTrackOrganizer::init()
