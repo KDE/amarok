@@ -119,7 +119,7 @@ void
 Playlist::notifyObserversMetadataChanged()
 {
     QMutexLocker locker( &m_observersMutex );
-    for( PlaylistObserver *observer : m_observers )
+    for( PlaylistObserver *observer : QSet<PlaylistObserver *>(m_observers) )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
             observer->metadataChanged( PlaylistPtr( this ) );
@@ -130,7 +130,7 @@ void
 Playlist::notifyObserversTracksLoaded()
 {
     QMutexLocker locker( &m_observersMutex );
-    for( PlaylistObserver *observer : m_observers )
+    for( PlaylistObserver *observer : QSet<PlaylistObserver *>(m_observers) )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
             observer->tracksLoaded( PlaylistPtr( this ) );
@@ -142,7 +142,7 @@ Playlist::notifyObserversTrackAdded( const Meta::TrackPtr &track, int position )
 {
     Q_ASSERT( position >= 0 ); // notice bug 293295 early
     QMutexLocker locker( &m_observersMutex );
-    for( PlaylistObserver *observer : m_observers )
+    for( PlaylistObserver *observer : QSet<PlaylistObserver *>(m_observers) )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
             observer->trackAdded( PlaylistPtr( this ), track, position );
@@ -153,7 +153,7 @@ void
 Playlist::notifyObserversTrackRemoved( int position )
 {
     QMutexLocker locker( &m_observersMutex );
-    for( PlaylistObserver *observer : m_observers )
+    for( PlaylistObserver *observer : QSet<PlaylistObserver *>(m_observers) )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
             observer->trackRemoved( PlaylistPtr( this ), position );
