@@ -328,7 +328,7 @@ namespace Amarok
             QChar c = result[ i ];
             if( c > QChar(0x7f) || c == QChar(0) )
             {
-                c = '_';
+                c = QLatin1Char( '_' );
             }
             result[ i ] = c;
         }
@@ -342,12 +342,12 @@ namespace Amarok
 
         QString s = path;
 
-        QChar separator = ( behaviour == AutoBehaviour ) ? QDir::separator() : ( behaviour == UnixBehaviour ) ? '/' : '\\';
+        QChar separator = ( behaviour == AutoBehaviour ) ? QDir::separator() : ( behaviour == UnixBehaviour ) ? QLatin1Char( '/' ) : QLatin1Char( '\\' );
 
         if( behaviour == UnixBehaviour ) // we are on *nix, \ is a valid character in file or directory names, NOT the dir separator
-            s.replace( '\\', '_' );
+            s.replace( QLatin1Char( '\\' ), QLatin1Char( '_' ));
         else
-            s.replace( QLatin1Char('/'), '_' ); // on windows we have to replace / instead
+            s.replace( QLatin1Char('/'), QLatin1Char( '_' )); // on windows we have to replace / instead
 
         int start = 0;
 #ifdef Q_OS_WIN
@@ -360,70 +360,70 @@ namespace Amarok
         {
             QChar c = s[ i ];
             if( c < QChar(0x20) || c == QChar(0x7F) // 0x7F = 127 = DEL control character
-                || c=='*' || c=='?' || c=='<' || c=='>'
-                || c=='|' || c=='"' || c==':' )
-                c = '_';
-            else if( c == '[' )
-                c = '(';
-            else if ( c == ']' )
-                c = ')';
+                || c==QLatin1Char('*') || c==QLatin1Char('?') || c==QLatin1Char('<') || c==QLatin1Char('>')
+                || c==QLatin1Char('|') || c==QLatin1Char('"') || c==QLatin1Char(':') )
+                c = QLatin1Char('_');
+            else if( c == QLatin1Char('[') )
+                c = QLatin1Char('(');
+            else if ( c == QLatin1Char(']') )
+                c = QLatin1Char(')');
             s[ i ] = c;
         }
 
         /* beware of reserved device names */
         uint len = s.length();
-        if( len == 3 || (len > 3 && s[3] == '.') )
+        if( len == 3 || (len > 3 && s[3] == QLatin1Char('.')) )
         {
             QString l = s.left(3).toLower();
             if( l==QLatin1String("aux") || l==QLatin1String("con") || l==QLatin1String("nul") || l==QLatin1String("prn") )
-                s = '_' + s;
+                s = QLatin1Char('_') + s;
         }
-        else if( len == 4 || (len > 4 && s[4] == '.') )
+        else if( len == 4 || (len > 4 && s[4] == QLatin1Char('.')) )
         {
             QString l = s.left(3).toLower();
             QString d = s.mid(3,1);
             if( (l==QLatin1String("com") || l==QLatin1String("lpt")) &&
                     (d==QLatin1String("0") || d==QLatin1String("1") || d==QLatin1String("2") || d==QLatin1String("3") || d==QLatin1String("4") ||
                      d==QLatin1String("5") || d==QLatin1String("6") || d==QLatin1String("7") || d==QLatin1String("8") || d==QLatin1String("9")) )
-                s = '_' + s;
+                s = QLatin1Char('_') + s;
         }
 
         // "clock$" is only allowed WITH extension, according to:
         // http://en.wikipedia.org/w/index.php?title=Filename&oldid=303934888#Comparison_of_file_name_limitations
         if( QString::compare( s, QStringLiteral("clock$"), Qt::CaseInsensitive ) == 0 )
-            s = '_' + s;
+            s = QLatin1Char('_') + s;
 
         /* max path length of Windows API */
         s = s.left(255);
 
         /* whitespace or dot at the end of folder/file names or extensions are bad */
         len = s.length();
-        if( s.at(len - 1) == ' ' || s.at(len - 1) == '.' )
-            s[len - 1] = '_';
+        if( s.at(len - 1) == QLatin1Char(' ') || s.at(len - 1) == QLatin1Char('.') )
+            s[len - 1] = QLatin1Char('_');
 
         for( int i = 1; i < s.length(); i++ ) // correct trailing whitespace in folder names
         {
-            if( s.at(i) == separator && s.at(i - 1) == ' ' )
-                s[i - 1] = '_';
+            if( s.at(i) == separator && s.at(i - 1) == QLatin1Char(' ') )
+                s[i - 1] = QLatin1Char('_');
         }
 
         for( int i = 1; i < s.length(); i++ ) // correct trailing dot in folder names, excluding . and ..
         {
             if( s.at(i) == separator
-                    && s.at(i - 1) == '.'
+                    && s.at(i - 1) == QLatin1Char('.')
                     && !( i == 1 // ./any
-                        || ( i == 2 && s.at(i - 2) == '.' ) // ../any
+                        || ( i == 2 && s.at(i - 2) == QLatin1Char('.') ) // ../any
                         || ( i >= 2 && s.at(i - 2) == separator ) // any/./any
-                        || ( i >= 3 && s.at(i - 3) == separator && s.at(i - 2) == '.' ) // any/../any
+                        || ( i >= 3 && s.at(i - 3) == separator && s.at(i - 2) == QLatin1Char('.') ) // any/../any
                     ) )
-                s[i - 1] = '_';
+                s[i - 1] = QLatin1Char('_');
         }
 
         /* correct trailing spaces in file name itself, not needed for dots */
         int extensionIndex = s.lastIndexOf( QLatin1Char('.') );
         if( ( s.length() > 1 ) &&  ( extensionIndex > 0 ) )
-            if( s.at(extensionIndex - 1) == ' ' )
-                s[extensionIndex - 1] = '_';
+            if( s.at(extensionIndex - 1) == QLatin1Char(' ') )
+                s[extensionIndex - 1] = QLatin1Char('_');
 
         return s;
     }

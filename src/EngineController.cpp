@@ -1323,16 +1323,16 @@ QString EngineController::prettyNowPlaying( bool progress ) const
         {
             QString source = sic->sourceName();
             if( !source.isEmpty() )
-                title += ' ' + i18nc( "track from source", "from <b>%1</b>", source );
+                title += QLatin1Char(' ') + i18nc( "track from source", "from <b>%1</b>", source );
         }
 
         if( track->length() > 0 )
         {
             QString length = Meta::msToPrettyTime( track->length() ).toHtmlEscaped();
-            title += " (";
+            title += QLatin1String(" (");
             if( progress )
-                    title += Meta::msToPrettyTime( m_lastTickPosition ).toHtmlEscaped() + '/';
-            title += length + ')';
+                    title += Meta::msToPrettyTime( m_lastTickPosition ).toHtmlEscaped() + QLatin1Char('/');
+            title += length + QLatin1Char(')');
         }
 
         return title;

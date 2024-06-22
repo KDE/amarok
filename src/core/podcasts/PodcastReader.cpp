@@ -786,7 +786,7 @@ PodcastReader::unescape( const QString &text )
     {
         QChar c( text[ i ] );
 
-        if( c == '&' )
+        if( c == QLatin1Char( '&' ) )
         {
             int endIndex = text.indexOf( QLatin1Char(';'), i );
 
@@ -795,11 +795,11 @@ PodcastReader::unescape( const QString &text )
                 // fix invalid input
                 buf += c;
             }
-            else if( text[ i + 1 ] == '#' )
+            else if( text[ i + 1 ] == QLatin1Char( '#' ) )
             {
                 int num = 0;
                 bool ok = false;
-                if( text[ i + 2 ] == 'x' )
+                if( text[ i + 2 ] == QLatin1Char( 'x' ) )
                 {
                     QString entity( text.mid( i + 3, endIndex - i - 3 ) );
                     num = entity.toInt( &ok, 16 );
@@ -1323,7 +1323,7 @@ PodcastReader::endCreator()
 void
 PodcastReader::beginXml()
 {
-    m_buffer += '<';
+    m_buffer += QLatin1Char( '<' );
     m_buffer += m_xmlReader.name().toString();
 
     for( const QXmlStreamAttribute &attr : m_xmlReader.attributes() )
@@ -1333,7 +1333,7 @@ PodcastReader::beginXml()
                           attr.value().toString().toHtmlEscaped() );
     }
 
-    m_buffer += '>';
+    m_buffer += QLatin1Char( '>' );
 }
 
 void
@@ -1564,7 +1564,7 @@ PodcastReader::endXml()
 {
     m_buffer += QLatin1String("</");
     m_buffer += m_xmlReader.name().toString();
-    m_buffer += '>';
+    m_buffer += QLatin1Char('>');
 }
 
 void

@@ -136,7 +136,7 @@ ServiceTrack::ServiceTrack( const QString & name )
     , m_trackNumber( 0 )
     , m_length( 0 )
     , m_albumId( 0 )
-    , m_albumName( '0' )
+    , m_albumName( QLatin1Char('0') )
     , m_artistId( 0 )
     , m_name( name )
 {

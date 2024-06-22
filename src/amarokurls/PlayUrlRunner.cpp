@@ -98,7 +98,7 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl( const QUrl &url )
     // and every url in the database will have the '=', just chop it off.
 
     // some tracks even seem to have multiple '='s at the end... chop them all off!
-    while( track_encoded.endsWith( '=' ) )
+    while( track_encoded.endsWith( QLatin1Char('=') ) )
         track_encoded.chop ( 1 );
 
     // Queries the database for bookmarks where the url field contains

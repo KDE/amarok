@@ -1074,7 +1074,7 @@ DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bo
     for( const QString &column : columns )
     {
         if( !select.isEmpty() )
-            select.append( ',' );
+            select.append( QLatin1Char(',') );
         select.append( column );
     }
 

@@ -202,7 +202,7 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
             QString link;
             for( const QString &channel : channels )
             {
-                const QString channelName = QString( channel ).remove( '#' );
+                const QString channelName = QString( channel ).remove( QLatin1Char( '#' ) );
                 link = QStringLiteral( "irc://irc.freenode.org/%1" ).arg( channelName );
                 m_aboutText.append( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( link, channel ) + "  " );
             }

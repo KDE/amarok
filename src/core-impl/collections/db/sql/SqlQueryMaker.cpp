@@ -1127,17 +1127,17 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
         //and http://dev.mysql.com/doc/refman/5.0/en/mysql-real-escape-string.html
         //replace those characters after calling escape(), which calls the mysql
         //function in turn, so that mysql does not escape the escape backslashes
-        escaped.replace( '%', "\\%" ).replace( '_', "\\_" );
+        escaped.replace( QLatin1Char('%'), "\\%" ).replace( QLatin1Char('_'), "\\_" );
 
         QString ret = " LIKE ";
 
-        ret += '\'';
+        ret += QLatin1Char('\'');
         if ( anyBegin )
-            ret += '%';
+            ret += QLatin1Char('%');
         ret += escaped;
         if ( anyEnd )
-            ret += '%';
-        ret += '\'';
+            ret += QLatin1Char('%');
+        ret += QLatin1Char('\'');
 
         //Case insensitive collation for queries
         ret += " COLLATE utf8_unicode_ci ";

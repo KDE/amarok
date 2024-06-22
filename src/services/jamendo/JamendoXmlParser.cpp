@@ -334,7 +334,7 @@ JamendoXmlParser::readAlbum()
             //we use tags instead of genres for creating genres in the database, as the
             //Jamendo.com genres are messy at best
 //             else if ( currentChildElement.tagName() == "tags" )
-//                 tags = currentChildElement.text().split(' ', Qt::SkipEmptyParts);
+//                 tags = currentChildElement.text().split(QLatin1Char(' '), Qt::SkipEmptyParts);
 //             n = n.nextSibling();
         }
     }

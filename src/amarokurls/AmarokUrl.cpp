@@ -69,12 +69,12 @@ void AmarokUrl::initFromString( const QString & urlString )
 
     if ( !argumentsString.isEmpty() )
     {
-        parts = argumentsString.split( '&' );
+        parts = argumentsString.split( QLatin1Char( '&' ) );
         
         for( const QString &argument : parts )
         {
             
-            QStringList argParts = argument.split( '=' );
+            QStringList argParts = argument.split( QLatin1Char( '=' ) );
             debug() << "argument: " << argument << " unescaped: " << unescape( argParts.at( 1 ) );
             setArg( argParts.at( 0 ), unescape( argParts.at( 1 ) ) );
         }
@@ -127,7 +127,7 @@ QString AmarokUrl::url() const
     QUrl url;
     url.setScheme( QStringLiteral("amarok") );
     url.setHost( m_command );
-    url.setPath( '/' + m_path ); // the path must begin by /
+    url.setPath( QLatin1Char( '/' ) + m_path ); // the path must begin by /
     QUrlQuery query;
 
     for( const QString &argName : m_arguments.keys() )

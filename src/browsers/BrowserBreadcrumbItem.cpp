@@ -107,7 +107,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
         for( const BreadcrumbSibling &sibling : childItems )
         {
             QString visibleName = sibling.name;
-            visibleName.replace( '&', QLatin1String("&&") ); // prevent bug 244817
+            visibleName.replace( QLatin1Char('&'), QLatin1String("&&") ); // prevent bug 244817
             QAction *action = menu->addAction( sibling.icon, visibleName );
             action->setProperty( "callback", sibling.callback );
 

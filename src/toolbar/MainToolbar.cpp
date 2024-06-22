@@ -425,7 +425,7 @@ static QStringList metadata( Meta::TrackPtr track )
         if( noTags || track->name().isEmpty() )
         {
             noTags = true;
-            int dot = title.lastIndexOf('.');
+            int dot = title.lastIndexOf(QLatin1Char('.'));
             if( dot > 0 && title.length() - dot < 6 )
                 title = title.left( dot );
         }
@@ -882,7 +882,7 @@ MainToolbar::setLabelTime( int ms )
 
         if( remainingSecs > 0 )
         {
-            m_remainingTimeLabel->setText( '-' + Meta::secToPrettyTime( remainingSecs ) );
+            m_remainingTimeLabel->setText( QLatin1Char('-') + Meta::secToPrettyTime( remainingSecs ) );
             tf = timeFrame( remainingSecs );
             if( m_lastRemainingTime < 0 || tf != timeFrame( m_lastRemainingTime ) )
             {

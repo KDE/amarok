@@ -44,9 +44,9 @@ ParsedExpression ExpressionParser::parse( const QString &expression ) //static
 
 bool ExpressionParser::isAdvancedExpression( const QString &expression ) //static
 {
-    return ( expression.contains( '"'   ) ||
-             expression.contains( ':'   ) ||
-             expression.contains( '-'   ) ||
+    return ( expression.contains( QLatin1Char( '"' )  ) ||
+             expression.contains( QLatin1Char( ':' )  ) ||
+             expression.contains( QLatin1Char( '-' )  ) ||
              expression.contains( QLatin1String("AND") ) ||
              expression.contains( QLatin1String("OR")  ) );
 }
@@ -55,17 +55,17 @@ bool ExpressionParser::isAdvancedExpression( const QString &expression ) //stati
 
 void ExpressionParser::parseChar( const QChar &c )
 {
-    if( m_inQuote && c != '"' )
+    if( m_inQuote && c != QLatin1Char( '"' ) )
         m_string += c;
     else if( c.isSpace() )
         handleSpace( c );
-    else if( c == '-' )
+    else if( c == QLatin1Char( '-' ) )
         handleMinus( c );
-    else if( c == ':' )
+    else if( c == QLatin1Char( ':' ) )
         handleColon( c );
-    else if( c == '=' || c == '>' || c == '<' )
+    else if( c == QLatin1Char( '=' ) || c == QLatin1Char( '>' ) || c == QLatin1Char( '<' ) )
         handleMod( c );
-    else if( c == '"' )
+    else if( c == QLatin1Char( '"' ) )
         handleQuote( c );
     else
         handleChar( c );
@@ -104,11 +104,11 @@ void ExpressionParser::handleMod( const QChar &c )
 {
     if( m_state == ExpectMod )
     {
-        if( c == '=' )
+        if( c == QLatin1Char( '=' ) )
             m_element.match = expression_element::Equals;
-        else if( c == '>' )
+        else if( c == QLatin1Char( '>' ) )
             m_element.match = expression_element::More;
-        else if( c == '<' )
+        else if( c == QLatin1Char( '<' ) )
             m_element.match = expression_element::Less;
         m_state = ExpectText;
     }

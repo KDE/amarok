@@ -429,8 +429,8 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter( qint64 value, const QString
     if ( value == Meta::valTitle )
     {
         //I am sure there is a really good reason to add this space, as nothing works if it is removed, but WHY?!?
-        d->filter += filter + ' ';
-        d->filter = d->filter.replace( ' ', QLatin1String("%20") );
+        d->filter += filter + QLatin1Char(' ');
+        d->filter = d->filter.replace( QLatin1Char(' '), QLatin1String("%20") );
     }
 
     int level = 0;

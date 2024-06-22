@@ -42,7 +42,7 @@ escapeXml10( QString str )
         if( (c < 0x20 && c != 0x09 && c != 0x0A && c != 0x0D) ||
             (c > 0xD7FF && c < 0xE000) ||
             (c > 0xFFFD) )
-            str[i] = '?';
+            str[i] = QLatin1Char( '?' );
     }
     return str;
 }

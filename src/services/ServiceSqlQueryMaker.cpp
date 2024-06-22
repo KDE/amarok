@@ -809,7 +809,7 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
         QString escaped = text;
         escaped = escape( escaped );
         //see comments in SqlQueryMaker::likeCondition
-        escaped.replace( '%', QLatin1String("/%") ).replace( '_', QLatin1String("/_") );
+        escaped.replace( QLatin1Char('%'), QLatin1String("/%") ).replace( QLatin1Char('_'), QLatin1String("/_") );
 
         QString ret = QStringLiteral(" LIKE ");
 

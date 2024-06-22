@@ -85,7 +85,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
 
                 if ( line.startsWith ( QLatin1String("title"), Qt::CaseInsensitive ) )
                 {
-                    title = line.mid ( 6 ).remove ( '"' );
+                    title = line.mid ( 6 ).remove ( QLatin1Char('"') );
                     if ( mode == BEGIN && !filesSection )
                     {
                         defaultAlbum = title;
@@ -103,7 +103,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
 
                 else if ( line.startsWith ( QLatin1String("performer"), Qt::CaseInsensitive ) )
                 {
-                    artist = line.mid ( 10 ).remove ( '"' );
+                    artist = line.mid ( 10 ).remove ( QLatin1Char('"') );
                     if ( mode == BEGIN && !filesSection  )
                     {
                         defaultArtist = artist;
@@ -141,7 +141,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
                         artist.clear();
                         trackNr  = 0;
                     }
-                    trackNr = line.section ( ' ',1,1 ).toInt();
+                    trackNr = line.section ( QLatin1Char(' '),1,1 ).toInt();
                     debug() << "Track: " << trackNr;
                     mode = TRACK_FOUND;
                 }
@@ -149,11 +149,11 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
                 {
                     if ( mode == TRACK_FOUND )
                     {
-                        int indexNo = line.section ( ' ',1,1 ).toInt();
+                        int indexNo = line.section ( QLatin1Char(' '),1,1 ).toInt();
 
                         if ( indexNo == 1 )
                         {
-                            QStringList time = line.section ( ' ', -1, -1 ).split ( QLatin1Char(':') );
+                            QStringList time = line.section ( QLatin1Char(' '), -1, -1 ).split ( QLatin1Char(':') );
 
                             index = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
 
@@ -171,7 +171,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
 
                         else if ( indexNo == 0 ) // gap, use to calc prev track length
                         {
-                            QStringList time = line.section ( ' ', -1, -1 ).split ( QLatin1Char(':') );
+                            QStringList time = line.section ( QLatin1Char(' '), -1, -1 ).split ( QLatin1Char(':') );
 
                             length = time[0].toLong() * 60 * 1000 + time[1].toLong() * 1000 + time[2].toLong() *1000/75; //75 frames per second
 
@@ -201,7 +201,7 @@ CueFileItemMap CueFileSupport::loadCueFile( const QUrl &cuefile, const QUrl &tra
                 }
                 else if( line.startsWith ( QLatin1String("file"), Qt::CaseInsensitive ) )
                 {
-                    QString file = line.mid ( 5 ).remove ( '"' );
+                    QString file = line.mid ( 5 ).remove ( QLatin1Char('"') );
                     if( fileFound )
                         break;
 
@@ -272,7 +272,7 @@ QUrl CueFileSupport::locateCueSheet ( const QUrl &trackurl )
 
                     if ( line.startsWith ( QLatin1String("file"), Qt::CaseInsensitive ) )
                     {
-                        line = line.mid ( 5 ).remove ( '"' );
+                        line = line.mid ( 5 ).remove ( QLatin1Char('"') );
 
                         if ( line.contains ( trackurl.fileName(), Qt::CaseInsensitive ) )
                         {
@@ -325,7 +325,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
 
             if ( line.startsWith ( QLatin1String("title"), Qt::CaseInsensitive ) )
             {
-                title = line.mid ( 6 ).remove ( '"' );
+                title = line.mid ( 6 ).remove ( QLatin1Char('"') );
                 if ( mode == BEGIN )
                 {
                     defaultAlbum = title;
@@ -338,7 +338,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
 
             else if ( line.startsWith ( QLatin1String("performer"), Qt::CaseInsensitive ) )
             {
-                artist = line.mid ( 10 ).remove ( '"' );
+                artist = line.mid ( 10 ).remove ( QLatin1Char('"') );
                 if ( mode == BEGIN )
                 {
                     defaultArtist = artist;
@@ -368,7 +368,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
                     artist.clear();
                     track  = 0;
                 }
-                track = line.section ( ' ',1,1 ).toInt();
+                track = line.section ( QLatin1Char(' '),1,1 ).toInt();
                 debug() << "Track: " << track;
                 mode = TRACK_FOUND;
             }
@@ -376,11 +376,11 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
             {
                 if ( mode == TRACK_FOUND )
                 {
-                    int indexNo = line.section ( ' ',1,1 ).toInt();
+                    int indexNo = line.section ( QLatin1Char(' '),1,1 ).toInt();
 
                     if ( indexNo == 1 )
                     {
-                        QStringList time = line.section ( ' ', -1, -1 ).split ( QLatin1Char(':') );
+                        QStringList time = line.section ( QLatin1Char(' '), -1, -1 ).split ( QLatin1Char(':') );
 
                         index = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
 
@@ -396,7 +396,7 @@ bool CueFileSupport::validateCueSheet ( const QString& cuefile )
 
                     else if ( indexNo == 0 ) // gap, use to calc prev track length
                     {
-                        QStringList time = line.section ( ' ', -1, -1 ).split ( QLatin1Char(':') );
+                        QStringList time = line.section ( QLatin1Char(' '), -1, -1 ).split ( QLatin1Char(':') );
 
                         length = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
 

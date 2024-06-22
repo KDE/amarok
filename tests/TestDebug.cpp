@@ -142,7 +142,7 @@ TestDebug::expectBeginEnd( TestDebug::BeginOrEnd type, const QString &message,
     {
         beginEnd = "END__:";
         double duration = DEBUG_OVERRIDE_ELAPSED_TIME;
-        took = ' ' + colorize( QString( "[Took: %1s]" ).arg( duration, 0, 'g', 2 ),
+        took = QLatin1Char( ' ' ) + colorize( QString( "[Took: %1s]" ).arg( duration, 0, 'g', 2 ),
             colorStack.top(), colorEnabled );
         m_indent.truncate( m_indent.length() - 2 );
     }

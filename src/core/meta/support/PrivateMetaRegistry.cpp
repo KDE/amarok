@@ -44,38 +44,38 @@ PrivateMetaRegistry::~PrivateMetaRegistry()
 
 void PrivateMetaRegistry::insertAlbum( const QString &owner, const QString &key, const AlbumPtr &album )
 {
-    const QString compositeKey = owner + '-' + key;
+    const QString compositeKey = owner + QLatin1Char( '-' ) + key;
     m_albums.insert( compositeKey, album );
 }
 
 void PrivateMetaRegistry::insertArtist( const QString &owner, const QString &key, const ArtistPtr &artist )
 {
-    const QString compositeKey = owner + '-' + key;
+    const QString compositeKey = owner + QLatin1Char( '-' ) + key;
     m_artists.insert( compositeKey, artist );
 }
 
 void PrivateMetaRegistry::insertGenre( const QString &owner, const QString &key, const GenrePtr &genre )
 {
-    const QString compositeKey = owner + '-' + key;
+    const QString compositeKey = owner + QLatin1Char( '-' ) + key;
     m_genre.insert( compositeKey, genre );
 }
 
 void PrivateMetaRegistry::insertComposer( const QString &owner, const QString &key, const ComposerPtr &composer )
 {
-    const QString compositeKey = owner + '-' + key;
+    const QString compositeKey = owner + QLatin1Char( '-' ) + key;
     m_composers.insert( compositeKey, composer );
 }
 
 void PrivateMetaRegistry::insertYear( const QString &owner, const QString &key, const YearPtr &year )
 {
-    const QString compositeKey = owner + '-' + key;
+    const QString compositeKey = owner + QLatin1Char( '-' ) + key;
     m_years.insert( compositeKey, year );
 }
 
 AlbumPtr PrivateMetaRegistry::album( const QString &owner, const QString &key )
 {
     DEBUG_BLOCK
-    const QString compositeKey = owner + '-' + key;
+    const QString compositeKey = owner + QLatin1Char( '-' ) + key;
     if ( m_albums.contains( compositeKey ) ) {
         debug() << "reusing album with key: " << key;
          return m_albums.value( compositeKey );
@@ -86,7 +86,7 @@ AlbumPtr PrivateMetaRegistry::album( const QString &owner, const QString &key )
 
 ArtistPtr PrivateMetaRegistry::artist( const QString &owner, const QString &key )
 {
-    const QString compositeKey = owner + '-' + key;
+    const QString compositeKey = owner + QLatin1Char( '-' ) + key;
     if ( m_artists.contains( compositeKey ) )
         return m_artists.value( compositeKey );
     return ArtistPtr();
@@ -94,7 +94,7 @@ ArtistPtr PrivateMetaRegistry::artist( const QString &owner, const QString &key 
 
 GenrePtr PrivateMetaRegistry::genre( const QString &owner, const QString &key )
 {
-    const QString compositeKey = owner + '-' + key;
+    const QString compositeKey = owner + QLatin1Char( '-' ) + key;
     if ( m_genre.contains( compositeKey ) )
         return m_genre.value( compositeKey );
     return GenrePtr();
@@ -102,7 +102,7 @@ GenrePtr PrivateMetaRegistry::genre( const QString &owner, const QString &key )
 
 ComposerPtr PrivateMetaRegistry::composer( const QString &owner, const QString &key )
 {
-    const QString compositeKey = owner + '-' + key;
+    const QString compositeKey = owner + QLatin1Char( '-' ) + key;
     if ( m_composers.contains( compositeKey ) )
         return m_composers.value( compositeKey );
     return ComposerPtr();
@@ -110,7 +110,7 @@ ComposerPtr PrivateMetaRegistry::composer( const QString &owner, const QString &
 
 YearPtr PrivateMetaRegistry::year( const QString &owner, const QString &key )
 {
-     const QString compositeKey = owner + '-' + key;
+     const QString compositeKey = owner + QLatin1Char( '-' ) + key;
      if ( m_years.contains( compositeKey ) )
          return m_years.value( compositeKey );
      return YearPtr();

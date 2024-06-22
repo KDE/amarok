@@ -114,9 +114,9 @@ void FormatSelectionDialog::showAdvancedSettings()
     KCM.setWindowTitle( i18n( "Audio CD settings - Amarok" ) );
     QString searchPath = QStringLiteral( "plasma/kcms/systemsettings_qwidgets/kcm_audiocd.so" );
     KPluginMetaData plugin = KPluginMetaData( searchPath );
-    while( !plugin.isValid() && searchPath.indexOf( '/' ) >= 0 )
+    while( !plugin.isValid() && searchPath.indexOf( QLatin1Char('/') ) >= 0 )
     {
-        searchPath = searchPath.mid( searchPath.indexOf( '/' ) + 1 );
+        searchPath = searchPath.mid( searchPath.indexOf( QLatin1Char('/') ) + 1 );
         qDebug() << "didn't find kcm_audiocd with first attempt, trying"<< searchPath;
         plugin = KPluginMetaData( searchPath );
     }

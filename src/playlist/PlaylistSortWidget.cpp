@@ -176,7 +176,7 @@ SortWidget::readSortPath( const QString &sortPath )
     QStringList levels = sortPath.split( QLatin1Char('-') );
     for( const QString &level : levels )
     {
-        QStringList levelParts = level.split( '_' );
+        QStringList levelParts = level.split( QLatin1Char('_') );
     /*
      * Check whether the configuration is valid. If indexOf
      * returns -1, the entry is corrupted. We can't use columnForName

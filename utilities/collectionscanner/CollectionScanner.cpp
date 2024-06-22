@@ -170,7 +170,7 @@ CollectionScanner::Scanner::doJob() //SLOT
                 dir = QDir::cleanPath( QDir::currentPath() + QLatin1Char('/') + dir );
 
             if( !dir.endsWith( QLatin1Char('/') ) )
-                dir += '/';
+                dir += QLatin1Char('/');
 
             addDir( dir, &entriesSet ); // checks m_recursively
         }
@@ -263,7 +263,7 @@ CollectionScanner::Scanner::addDir( const QString& dir, QSet<QString>* entries )
 
         if( f.isDir() )
         {
-            addDir( QString( f.absoluteFilePath() + '/' ), entries );
+            addDir( QString( f.absoluteFilePath() + QLatin1Char( '/' ) ), entries );
         }
     }
 }
@@ -339,21 +339,21 @@ CollectionScanner::Scanner::readArgs()
                 displayHelp();
 
         }
-        else if( arg.startsWith( '-' ) )
+        else if( arg.startsWith( QLatin1Char( '-' ) ) )
         {
             QString myarg = QString( arg ).remove( 0, 1 );
             int pos = 0;
             while( pos < myarg.length() )
             {
-                if( myarg[pos] == 'r' )
+                if( myarg[pos] == QLatin1Char( 'r' ) )
                     m_recursively = true;
-                else if( myarg[pos] == 'v' )
+                else if( myarg[pos] == QLatin1Char( 'v' ) )
                     displayVersion();
-                else if( myarg[pos] == 's' )
+                else if( myarg[pos] == QLatin1Char( 's' ) )
                     m_restart = true;
-                else if( myarg[pos] == 'c' )
+                else if( myarg[pos] == QLatin1Char( 'c' ) )
                     m_charset = true;
-                else if( myarg[pos] == 'i' )
+                else if( myarg[pos] == QLatin1Char( 'i' ) )
                     m_incremental = true;
                 else
                     displayHelp();

@@ -145,7 +145,7 @@ AmarokEmbeddedSqlConnection::startServer( const int port, const QString &socketP
          << "--pid-file=" + pidPath;
 
     m_srv.start( m_mysqld.absoluteFilePath(), args );
-    debug() << __PRETTY_FUNCTION__ << m_mysqld.absoluteFilePath() + ' ' + args.join(' ');
+    debug() << __PRETTY_FUNCTION__ << m_mysqld.absoluteFilePath() + ' ' + args.join(QLatin1Char(' '));
 
     // Wait for any of the startup conditions to be true
     loop.exec();

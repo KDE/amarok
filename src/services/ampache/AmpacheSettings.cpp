@@ -82,7 +82,7 @@ AmpacheSettings::loadList()
         serverList->setItem(i, 1, new QTableWidgetItem(entry.url.url()));
         serverList->setItem(i, 2, new QTableWidgetItem(entry.username));
         QString starPassword = entry.password;
-        starPassword.fill('*');
+        starPassword.fill(QLatin1Char('*'));
         QTableWidgetItem* password = new QTableWidgetItem(starPassword);
         password->setData(0xf00, entry.password);
         serverList->setItem(i, 3, password);

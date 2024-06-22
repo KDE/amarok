@@ -80,7 +80,7 @@ AlbumsModel::data( const QModelIndex &index, int role ) const
             QString number = track->data( TrackNumberRole ).toString() + ". ";
             QString middle = isCompilation ? QString( "%1 - %2" ).arg( artist, name ) : name;
 
-            QString ret = QStringList( { number, middle, length } ).join( ' ' ).toHtmlEscaped();
+            QString ret = QStringList( { number, middle, length } ).join( QLatin1Char(' ') ).toHtmlEscaped();
             // Styling to indicate current track and artist in listings
             if( track->bold() )
                 ret = "<b>" + ret + "</b>";

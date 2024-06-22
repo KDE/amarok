@@ -77,9 +77,9 @@ breakLongLinesHTML( const QString &origText )
 {
     // filter-out HTML tags..
     QString text( origText );
-    text.replace( '&', QLatin1String("&amp;") ); // needs to be first, obviously
-    text.replace( '<', QLatin1String("&lt;") );
-    text.replace( '>', QLatin1String("&gt;") );
+    text.replace( QLatin1Char('&'), QLatin1String("&amp;") ); // needs to be first, obviously
+    text.replace( QLatin1Char('<'), QLatin1String("&lt;") );
+    text.replace( QLatin1Char('>'), QLatin1String("&gt;") );
 
     // Now let's break up long lines so that the tooltip doesn't become hideously large
     if( fitsInOneLineHTML( text ) )
@@ -90,7 +90,7 @@ breakLongLinesHTML( const QString &origText )
         const int lnSize = TOOLTIP_STATIC_LINEBREAK;
         QString textInLines;
 
-        QStringList words = text.trimmed().split(' ');
+        QStringList words = text.trimmed().split(QLatin1Char(' '));
         int lineLength = 0;
         while(words.size() > 0)
         {

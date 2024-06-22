@@ -209,8 +209,8 @@ void LyricsManager::sanitizeTitle( QString& title )
 
     title = title.remove( QStringLiteral( "(Live)" ) );
     title = title.remove( QStringLiteral( "(live)" ) );
-    title = title.replace( '`', QStringLiteral( "'" ) );
-    title = title.replace( '&', QStringLiteral( "%26" ) );
+    title = title.replace( QLatin1Char('`'), QStringLiteral( "'" ) );
+    title = title.replace( QLatin1Char('&'), QStringLiteral( "%26" ) );
 }
 
 void LyricsManager::sanitizeArtist( QString& artist )
@@ -233,8 +233,8 @@ void LyricsManager::sanitizeArtist( QString& artist )
     if ( strip != -1 )
         artist = artist.mid( 0, strip );
 
-    artist = artist.replace( '`', QStringLiteral( "'" ) );
-    artist = artist.replace( '&', QStringLiteral( "%26" ) );
+    artist = artist.replace( QLatin1Char('`'), QStringLiteral( "'" ) );
+    artist = artist.replace( QLatin1Char('&'), QStringLiteral( "%26" ) );
 }
 
 bool LyricsManager::isEmpty( const QString &lyrics ) const

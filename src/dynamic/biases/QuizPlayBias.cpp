@@ -311,11 +311,11 @@ Dynamic::QuizPlayBias::lastChar( const QString &str )
     int endIndex = str.length();
     int index;
 
-    index = str.indexOf( '[' );
+    index = str.indexOf( QLatin1Char('[') );
     if( index > 0 && index < endIndex )
         endIndex = index;
 
-    index = str.indexOf( '(' );
+    index = str.indexOf( QLatin1Char('(') );
     if( index > 0 && index < endIndex )
         endIndex = index;
 

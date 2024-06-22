@@ -48,7 +48,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 length = -1;
             extinfTitle = extinf.section( QLatin1Char(','), 1 );
         }
-        else if( !line.startsWith( '#' ) && !line.isEmpty() )
+        else if( !line.startsWith( QLatin1Char('#') ) && !line.isEmpty() )
         {
             line = line.replace( QLatin1String("\\"), QLatin1String("/") );
 

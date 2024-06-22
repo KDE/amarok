@@ -1129,7 +1129,7 @@ void GpodderProvider::loadCachedEpisodeActions()
     foreach( QString episodeUrl, gpodderActionsConfig().keyList() )
     {
         actionsDetails.clear();
-        actionsDetails = gpodderActionsConfig().readEntry( episodeUrl ).split( ',' );
+        actionsDetails = gpodderActionsConfig().readEntry( episodeUrl ).split( QLatin1Char(',') );
 
         if( actionsDetails.count() != 6 )
             debug() << "There are less/more fields than expected.";
@@ -1238,8 +1238,8 @@ void GpodderProvider::loadCachedPodcastsChanges()
     QStringList podcastsUrlsToAdd;
     QStringList podcastsUrlsToRemove;
 
-    podcastsUrlsToAdd = gpodderPodcastsConfig().readEntry( "addList" ).split( ',' );
-    podcastsUrlsToRemove = gpodderPodcastsConfig().readEntry( "removeList" ).split( ',' );
+    podcastsUrlsToAdd = gpodderPodcastsConfig().readEntry( "addList" ).split( QLatin1Char(',') );
+    podcastsUrlsToRemove = gpodderPodcastsConfig().readEntry( "removeList" ).split( QLatin1Char(',') );
 
     for( QString podcastUrl : podcastsUrlsToAdd )
     {

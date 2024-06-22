@@ -764,21 +764,21 @@ AFTTagger::readArgs()
             else
                 displayHelp();
         }
-        else if( arg.startsWith( '-' ) )
+        else if( arg.startsWith( QLatin1Char( '-' ) ) )
         {
             QString myarg = QString( arg ).remove( 0, 1 );
             int pos = 0;
             while( pos < myarg.length() )
             {
-                if( myarg[pos] == 'd' )
+                if( myarg[pos] == QLatin1Char( 'd' ) )
                     m_delete = true;
-                else if( myarg[pos] == 'n' )
+                else if( myarg[pos] == QLatin1Char( 'n' ) )
                     m_newid = true;
-                else if( myarg[pos] == 'q' )
+                else if( myarg[pos] == QLatin1Char( 'q' ) )
                     m_quiet = true;
-                else if( myarg[pos] == 'r' )
+                else if( myarg[pos] == QLatin1Char( 'r' ) )
                     m_recurse = true;
-                else if( myarg[pos] == 'v' )
+                else if( myarg[pos] == QLatin1Char( 'v' ) )
                     m_verbose = true;
                 else
                     displayHelp();

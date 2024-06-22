@@ -152,7 +152,7 @@ LabelsApplet::init()
     const QStringList replacementList = config.readEntry( "ReplacementList", QStringList() );
     for( const QString &replacement : replacementList )
     {
-        const QStringList parts = replacement.split( '|' );
+        const QStringList parts = replacement.split( QLatin1Char('|') );
         QString label = parts.at(0);
         label = label.replace( "%s", "|" );
         label = label.replace( "%p", "%" );
@@ -829,12 +829,12 @@ LabelsApplet::saveSettings()
     {
         it.next();
         QString label = it.key();
-        label = label.replace( '%', "%p" );
-        label = label.replace( '|', "%s" );
+        label = label.replace( QLatin1Char('%'), "%p" );
+        label = label.replace( QLatin1Char('|'), "%s" );
         QString replacement = it.value();
-        replacement = replacement.replace( '%', "%p" );
-        replacement = replacement.replace( '|', "%s" );
-        replacementList.append( label + '|' + replacement );
+        replacement = replacement.replace( QLatin1Char('%'), "%p" );
+        replacement = replacement.replace( QLatin1Char('|'), "%s" );
+        replacementList.append( label + QLatin1Char('|') + replacement );
     }
     config.writeEntry( "ReplacementList", replacementList );
 

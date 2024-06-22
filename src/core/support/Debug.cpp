@@ -151,7 +151,7 @@ QDebug Debug::dbgstream( DebugLevel level )
 
     QString text = QStringLiteral("%1%2").arg( APP_PREFIX ).arg( currentIndent );
     if ( level > KDEBUG_INFO )
-        text.append( ' ' + reverseColorize( toString(level), toColor( level ) ) );
+        text.append( QLatin1Char( ' ' ) + reverseColorize( toString(level), toColor( level ) ) );
 
     return QDebug( QtDebugMsg ) << qPrintable( text );
 }

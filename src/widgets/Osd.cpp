@@ -211,7 +211,7 @@ OSDWidget::setVisible( bool visible )
         if ( !isEnabled() || m_text.isEmpty() )
             return;
 
-        const uint margin = fontMetrics().horizontalAdvance( 'x' );
+        const uint margin = fontMetrics().horizontalAdvance( QLatin1Char('x') );
 
         const QRect newGeometry = determineMetrics( margin );
 
