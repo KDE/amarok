@@ -966,7 +966,7 @@ install(PROGRAMS org.kde.amarok.desktop DESTINATION ${KDE_INSTALL_APPDIR} )
 install(PROGRAMS org.kde.amarok_containers.desktop DESTINATION ${KDE_INSTALL_APPDIR} )
 install(FILES org.kde.amarok.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
 
-if(!BUILD_WITH_QT6)
+if(NOT BUILD_WITH_QT6)
   install(FILES amarok-plugin.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
   install(FILES amarok-contextapplet.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
   install(FILES amarok_codecinstall.desktop DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
@@ -978,7 +978,7 @@ install(FILES amarok.knsrc DESTINATION ${KDE_INSTALL_KNSRCDIR})
 
 # protocol handlers
 
-if(!BUILD_WITH_QT6)
+if(NOT BUILD_WITH_QT6)
   install(FILES amarokurls/amarok.protocol  DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
   install(FILES amarokitpc.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 endif()

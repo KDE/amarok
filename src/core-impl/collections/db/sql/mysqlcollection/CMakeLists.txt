@@ -32,6 +32,6 @@ if(APPLE)
 endif()
 
 install(TARGETS amarok_collection-mysqlcollection DESTINATION ${KDE_INSTALL_PLUGINDIR} )
-if(!BUILD_WITH_QT6)
+if(NOT BUILD_WITH_QT6)
   install(FILES amarok_collection-mysqlcollection.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 endif()

@@ -84,7 +84,7 @@ install( TARGETS kcm_amarok_service_lastfm DESTINATION ${KDE_INSTALL_PLUGINDIR} 
 
 ########### install files ###############
 
-if(!BUILD_WITH_QT6)
+if(NOT BUILD_WITH_QT6)
   install( FILES amarok_service_lastfm.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )
   install( FILES amarok_service_lastfm_config.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )
   install( FILES amaroklastfm.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR} )

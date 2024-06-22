@@ -35,6 +35,6 @@ if(APPLE)
 endif()
 
 install(TARGETS amarok_storage-mysqlserverstorage DESTINATION ${KDE_INSTALL_PLUGINDIR} )
-if(!BUILD_WITH_QT6)
+if(NOT BUILD_WITH_QT6)
   install(FILES amarok_storage-mysqlserverstorage.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 endif()
