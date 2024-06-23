@@ -130,7 +130,7 @@ GpodderServiceSettings::finished()
     QString hostname = QHostInfo::localHostName();
     QString deviceID = QLatin1String( "amarok-" ) % hostname;
 
-    for( devPtr : ptrList )
+    foreach( devPtr, ptrList )
     {
         if( devPtr->id().compare( deviceID ) == 0 )
         {
