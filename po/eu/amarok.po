@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-22 01:52+0000\n"
+"POT-Creation-Date: 2024-06-23 01:47+0000\n"
 "PO-Revision-Date: 2023-04-22 19:08+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -10084,27 +10084,27 @@ msgctxt "Default name for new playlists"
 msgid "New playlist"
 msgstr "Zerrenda berria"
 
-#: dynamic/DynamicModel.cpp:917
+#: dynamic/DynamicModel.cpp:915
 #, kde-format
 msgid "Rock and Pop"
 msgstr "Rock eta Pop"
 
-#: dynamic/DynamicModel.cpp:918 equalizer/EqualizerPresets.cpp:93
+#: dynamic/DynamicModel.cpp:916 equalizer/EqualizerPresets.cpp:93
 #, kde-format
 msgid "Rock"
 msgstr "Rocka"
 
-#: dynamic/DynamicModel.cpp:922 equalizer/EqualizerPresets.cpp:91
+#: dynamic/DynamicModel.cpp:920 equalizer/EqualizerPresets.cpp:91
 #, kde-format
 msgid "Pop"
 msgstr "Pop-a"
 
-#: dynamic/DynamicModel.cpp:928
+#: dynamic/DynamicModel.cpp:926
 #, kde-format
 msgid "Album play"
 msgstr "Albumaren erreprodukzioa"
 
-#: dynamic/DynamicModel.cpp:938
+#: dynamic/DynamicModel.cpp:936
 #, kde-format
 msgctxt "Name of a dynamic playlist"
 msgid "Rating"
@@ -12953,7 +12953,7 @@ msgstr ""
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonRating)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:39
-#: playlistgenerator/constraints/TagMatch.cpp:344
+#: playlistgenerator/constraints/TagMatch.cpp:345
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:113
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:467
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:604
@@ -13224,7 +13224,7 @@ msgctxt "an arbitrary string surrounded by quotes"
 msgid "\"%1\""
 msgstr "\"%1\""
 
-#: playlistgenerator/constraints/TagMatch.cpp:340
+#: playlistgenerator/constraints/TagMatch.cpp:341
 #: widgets/MetaQueryWidget.cpp:1020
 #, kde-format
 msgctxt "a numerical tag (like year or track number) equals a value"
@@ -13234,7 +13234,7 @@ msgstr "berdin"
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonInt)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonTime)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonRating)
-#: playlistgenerator/constraints/TagMatch.cpp:342
+#: playlistgenerator/constraints/TagMatch.cpp:343
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:123
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:477
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:614
@@ -13244,84 +13244,84 @@ msgid "greater than"
 msgstr "baino gehiago"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:348
+#: playlistgenerator/constraints/TagMatch.cpp:349
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:233
 #, kde-format
 msgid "before"
 msgstr "aurrekoa"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:350
+#: playlistgenerator/constraints/TagMatch.cpp:351
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:238
 #, kde-format
 msgid "on"
 msgstr "non"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:352
+#: playlistgenerator/constraints/TagMatch.cpp:353
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:243
 #, kde-format
 msgid "after"
 msgstr "ondoren"
 
-#: playlistgenerator/constraints/TagMatch.cpp:354
+#: playlistgenerator/constraints/TagMatch.cpp:355
 #, kde-format
 msgid "within"
 msgstr "barruan"
 
-#: playlistgenerator/constraints/TagMatch.cpp:358
+#: playlistgenerator/constraints/TagMatch.cpp:359
 #: widgets/MetaQueryWidget.cpp:1034
 #, kde-format
 msgctxt "an alphabetical tag (like title or artist name) equals some string"
 msgid "equals"
 msgstr "berdin"
 
-#: playlistgenerator/constraints/TagMatch.cpp:360
+#: playlistgenerator/constraints/TagMatch.cpp:361
 #, kde-format
 msgctxt ""
 "an alphabetical tag (like title or artist name) starts with some string"
 msgid "starts with"
 msgstr "honela hasten da"
 
-#: playlistgenerator/constraints/TagMatch.cpp:362
+#: playlistgenerator/constraints/TagMatch.cpp:363
 #, kde-format
 msgctxt "an alphabetical tag (like title or artist name) ends with some string"
 msgid "ends with"
 msgstr "honela amaitzen da"
 
-#: playlistgenerator/constraints/TagMatch.cpp:364
+#: playlistgenerator/constraints/TagMatch.cpp:365
 #: widgets/MetaQueryWidget.cpp:1036
 #, kde-format
 msgctxt "an alphabetical tag (like title or artist name) contains some string"
 msgid "contains"
 msgstr "hau daukana"
 
-#: playlistgenerator/constraints/TagMatch.cpp:366
+#: playlistgenerator/constraints/TagMatch.cpp:367
 #, kde-format
 msgid "regexp"
 msgstr "adi.erreg"
 
-#: playlistgenerator/constraints/TagMatch.cpp:369
+#: playlistgenerator/constraints/TagMatch.cpp:370
 #: widgets/MetaQueryWidget.cpp:1041
 #, kde-format
 msgid "unknown comparison"
 msgstr "konparazio ezezaguna"
 
-#: playlistgenerator/constraints/TagMatch.cpp:382
+#: playlistgenerator/constraints/TagMatch.cpp:383
 #, kde-format
 msgid "%1 day"
 msgid_plural "%1 days"
 msgstr[0] "egun %1"
 msgstr[1] "%1 egun"
 
-#: playlistgenerator/constraints/TagMatch.cpp:385
+#: playlistgenerator/constraints/TagMatch.cpp:386
 #, kde-format
 msgid "%1 month"
 msgid_plural "%1 months"
 msgstr[0] "hilabete %1"
 msgstr[1] "%1 hilabete"
 
-#: playlistgenerator/constraints/TagMatch.cpp:388
+#: playlistgenerator/constraints/TagMatch.cpp:389
 #, kde-format
 msgid "%1 year"
 msgid_plural "%1 years"

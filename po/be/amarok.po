@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-22 01:52+0000\n"
+"POT-Creation-Date: 2024-06-23 01:47+0000\n"
 "PO-Revision-Date: 2008-09-26 17:12+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -10048,28 +10048,28 @@ msgctxt "Default name for new playlists"
 msgid "New playlist"
 msgstr "&Спіс прайгравання"
 
-#: dynamic/DynamicModel.cpp:917
+#: dynamic/DynamicModel.cpp:915
 #, kde-format
 msgid "Rock and Pop"
 msgstr ""
 
-#: dynamic/DynamicModel.cpp:918 equalizer/EqualizerPresets.cpp:93
+#: dynamic/DynamicModel.cpp:916 equalizer/EqualizerPresets.cpp:93
 #, fuzzy, kde-format
 msgid "Rock"
 msgstr "&Добра"
 
-#: dynamic/DynamicModel.cpp:922 equalizer/EqualizerPresets.cpp:91
+#: dynamic/DynamicModel.cpp:920 equalizer/EqualizerPresets.cpp:91
 #, kde-format
 msgid "Pop"
 msgstr ""
 
-#: dynamic/DynamicModel.cpp:928
+#: dynamic/DynamicModel.cpp:926
 #, fuzzy, kde-format
 #| msgid "Album"
 msgid "Album play"
 msgstr "Альбом"
 
-#: dynamic/DynamicModel.cpp:938
+#: dynamic/DynamicModel.cpp:936
 #, fuzzy, kde-format
 #| msgid "Rating"
 msgctxt "Name of a dynamic playlist"
@@ -13011,7 +13011,7 @@ msgstr ""
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonRating)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:39
-#: playlistgenerator/constraints/TagMatch.cpp:344
+#: playlistgenerator/constraints/TagMatch.cpp:345
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:113
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:467
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:604
@@ -13287,7 +13287,7 @@ msgctxt "an arbitrary string surrounded by quotes"
 msgid "\"%1\""
 msgstr ""
 
-#: playlistgenerator/constraints/TagMatch.cpp:340
+#: playlistgenerator/constraints/TagMatch.cpp:341
 #: widgets/MetaQueryWidget.cpp:1020
 #, fuzzy, kde-format
 #| msgid "equal to"
@@ -13298,7 +13298,7 @@ msgstr "роўна"
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonInt)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonTime)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonRating)
-#: playlistgenerator/constraints/TagMatch.cpp:342
+#: playlistgenerator/constraints/TagMatch.cpp:343
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:123
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:477
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:614
@@ -13309,7 +13309,7 @@ msgid "greater than"
 msgstr "Больш"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:348
+#: playlistgenerator/constraints/TagMatch.cpp:349
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:233
 #, fuzzy, kde-format
 #| msgid "Aborted"
@@ -13317,7 +13317,7 @@ msgid "before"
 msgstr "Перарванае"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:350
+#: playlistgenerator/constraints/TagMatch.cpp:351
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:238
 #, fuzzy, kde-format
 #| msgid "(none)"
@@ -13325,19 +13325,19 @@ msgid "on"
 msgstr "(няма)"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:352
+#: playlistgenerator/constraints/TagMatch.cpp:353
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:243
 #, fuzzy, kde-format
 #| msgid "Date"
 msgid "after"
 msgstr "Дата"
 
-#: playlistgenerator/constraints/TagMatch.cpp:354
+#: playlistgenerator/constraints/TagMatch.cpp:355
 #, fuzzy, kde-format
 msgid "within"
 msgstr "На:"
 
-#: playlistgenerator/constraints/TagMatch.cpp:358
+#: playlistgenerator/constraints/TagMatch.cpp:359
 #: widgets/MetaQueryWidget.cpp:1034
 #, fuzzy, kde-format
 #| msgid "equal to"
@@ -13345,21 +13345,21 @@ msgctxt "an alphabetical tag (like title or artist name) equals some string"
 msgid "equals"
 msgstr "роўна"
 
-#: playlistgenerator/constraints/TagMatch.cpp:360
+#: playlistgenerator/constraints/TagMatch.cpp:361
 #, fuzzy, kde-format
 msgctxt ""
 "an alphabetical tag (like title or artist name) starts with some string"
 msgid "starts with"
 msgstr "Пачынаецца з"
 
-#: playlistgenerator/constraints/TagMatch.cpp:362
+#: playlistgenerator/constraints/TagMatch.cpp:363
 #, fuzzy, kde-format
 #| msgid "&Open With"
 msgctxt "an alphabetical tag (like title or artist name) ends with some string"
 msgid "ends with"
 msgstr "&Адкрыць у"
 
-#: playlistgenerator/constraints/TagMatch.cpp:364
+#: playlistgenerator/constraints/TagMatch.cpp:365
 #: widgets/MetaQueryWidget.cpp:1036
 #, fuzzy, kde-format
 #| msgid "contains"
@@ -13367,19 +13367,19 @@ msgctxt "an alphabetical tag (like title or artist name) contains some string"
 msgid "contains"
 msgstr "змяшчае"
 
-#: playlistgenerator/constraints/TagMatch.cpp:366
+#: playlistgenerator/constraints/TagMatch.cpp:367
 #, kde-format
 msgid "regexp"
 msgstr ""
 
-#: playlistgenerator/constraints/TagMatch.cpp:369
+#: playlistgenerator/constraints/TagMatch.cpp:370
 #: widgets/MetaQueryWidget.cpp:1041
 #, fuzzy, kde-format
 #| msgid "Unknown Genre"
 msgid "unknown comparison"
 msgstr "Невядомы жанр"
 
-#: playlistgenerator/constraints/TagMatch.cpp:382
+#: playlistgenerator/constraints/TagMatch.cpp:383
 #, fuzzy, kde-format
 msgid "%1 day"
 msgid_plural "%1 days"
@@ -13387,7 +13387,7 @@ msgstr[0] "&Дзень"
 msgstr[1] "Дзён"
 msgstr[2] "Дзён"
 
-#: playlistgenerator/constraints/TagMatch.cpp:385
+#: playlistgenerator/constraints/TagMatch.cpp:386
 #, fuzzy, kde-format
 #| msgid "&Font"
 msgid "%1 month"
@@ -13396,7 +13396,7 @@ msgstr[0] "Шрыфты"
 msgstr[1] "Шрыфты"
 msgstr[2] "Шрыфты"
 
-#: playlistgenerator/constraints/TagMatch.cpp:388
+#: playlistgenerator/constraints/TagMatch.cpp:389
 #, fuzzy, kde-format
 #| msgid "Year"
 msgid "%1 year"
