@@ -15,6 +15,7 @@ VERSION 3.0.2
    * Fix erroneous apparent zero track progresses on track changes, which caused
      playcount updates and scrobbles to get skipped (BR 337849, 406701)
    * Fix 'save playlist' button in playlist controls
+   * Sort playlist sorting breadcrumb menu by localized names (BR 277146)
 
 
 VERSION 3.0.1

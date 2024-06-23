@@ -28,8 +28,13 @@ namespace Playlist
 BreadcrumbItemMenu::BreadcrumbItemMenu( Column currentColumn, QWidget *parent )
     : QMenu( parent )
 {
+    QMap<QString, int> sortedColumns;
     for( Column col = Column( 0 ); col != NUM_COLUMNS; col = Column( col + 1 ) )
+        sortedColumns[ columnName( col ) ] = col;
+    QList<int> sortedColumnValues = sortedColumns.values();
+    for( int i = 0; i < NUM_COLUMNS - 1; i++ )
     {
+        Column col = Column( sortedColumnValues[i] );
         if( !isSortableColumn( col ) || currentColumn == col )
             continue;
 
