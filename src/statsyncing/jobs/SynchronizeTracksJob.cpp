@@ -114,8 +114,10 @@ SynchronizeTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
         // wait 3 seconds so that we have chance to catch slotTrackScrobbled()..
         QObject::thread()->msleep( 3000 );
     if( controller )
+    {
         disconnect( controller, &StatSyncing::Controller::trackScrobbled, this, nullptr );
-    disconnect( controller, &StatSyncing::Controller::scrobbleFailed, this, nullptr );
+        disconnect( controller, &StatSyncing::Controller::scrobbleFailed, this, nullptr );
+    }
 
     Q_EMIT endProgressOperation( this );
 }

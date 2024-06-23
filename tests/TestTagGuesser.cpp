@@ -29,6 +29,7 @@
 QTEST_GUILESS_MAIN( TestTagGuesser )
 
 TestTagGuesser::TestTagGuesser()
+: mTagGuesser( nullptr )
 {
 }
 

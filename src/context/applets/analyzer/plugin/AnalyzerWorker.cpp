@@ -196,6 +196,8 @@ void Analyzer::Worker::makeScope()
             dys << dy;
             ms << dy / dx;
         }
+        if( ms.size() == 0 ) // make code quality check happy
+            ms << 0;
         // Get degree-1 coefficients
         QVector<double> c1s = QVector<double>() << ms[0];
         for( int i = 0; i < dxs.size() - 1; i++)
@@ -225,6 +227,8 @@ void Analyzer::Worker::makeScope()
             auto &scope = m_currentScope[band.scopeIndex];
 
             // Search for the interval x is in, returning the corresponding y if x is one of the original xs
+            if( c3s.size() == 0 ) // make code quality check happy
+                c3s << 0;
             int low = 0, mid, high = c3s.size() - 1;
             while ( low <= high )
             {

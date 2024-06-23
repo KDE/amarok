@@ -24,6 +24,7 @@ using namespace StatSyncing;
 SimpleWritableTrack::SimpleWritableTrack( const Meta::FieldHash &metadata,
                                           const QSet<QString> &labels )
     : SimpleTrack( metadata, labels )
+    , m_changes( 0 )
 {
     // Move statistics to separate container, so we don't have to lock for other metadata
     for( const qint64 metaValue : metadata.keys() )

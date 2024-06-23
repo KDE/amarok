@@ -54,6 +54,7 @@ MediaDeviceTrack::MediaDeviceTrack( Collections::MediaDeviceCollection *collecti
     , m_playCount( 0 )
     , m_rating( 0 )
     , m_bpm( 0 )
+    , m_replayGain( 0 )
     , m_playableUrl()
 {
 }

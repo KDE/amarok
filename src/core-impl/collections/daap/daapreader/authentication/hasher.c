@@ -201,7 +201,7 @@ void GenerateHash(short version_major,
     if (request_id && version_major == 3)
     {
         char scribble[20];
-        sprintf(scribble, "%u", request_id);
+        sprintf(scribble, "%i", request_id);
         OpenDaap_MD5Update(&ctx, (unsigned char*) scribble, strlen(scribble));
     }
 

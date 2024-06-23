@@ -44,7 +44,7 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator()
 
 Playlist::DynamicTrackNavigator::~DynamicTrackNavigator()
 {
-    if( !m_playlist )
+    if( m_playlist )
         m_playlist->requestAbort();
 }
 

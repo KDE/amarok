@@ -201,9 +201,7 @@ void BrowserBreadcrumbWidget::showAsNeeded()
     allItems.first()->show();
     allItems.last()->show();
 
-    int numberOfItems = allItems.count();
-
-    for( int i = numberOfItems - 2; i > 0; i-- )
+    for( int i = allItems.count() - 2; i > 0; i-- )
     {
         if( allItems.at( i )->nominalWidth() <= spaceLeft )
         {

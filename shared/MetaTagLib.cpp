@@ -150,11 +150,10 @@ Meta::Tag::generateUniqueId( const QString &path )
     TagLib::ByteVector bv = generatedUniqueIdHelper( fileref );
     md5.addData( bv.data(), bv.size() );
 
-    char databuf[16384];
-    int readlen = 0;
-
     if( qfile.open( QIODevice::ReadOnly ) )
     {
+        char databuf[16384];
+        int readlen;
         if( ( readlen = qfile.read( databuf, 16384 ) ) > 0 )
         {
             md5.addData( databuf, readlen );

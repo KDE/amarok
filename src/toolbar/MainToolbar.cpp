@@ -445,7 +445,7 @@ static QStringList metadata( Meta::TrackPtr track )
             while ( i != list.end() )
             {
                 // check whether this entry is only a number, i.e. probably year or track #
-                i->toInt( &ok );
+                Q_UNUSED( i->toInt( &ok ) );
                 if( ok )
                     i = list.erase( i );
                 else

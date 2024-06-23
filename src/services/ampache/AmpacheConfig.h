@@ -54,7 +54,6 @@ public:
 
 private:
 
-    bool m_hasChanged;
     AmpacheServerList m_servers;
 
     // Disable copy constructor and assignment

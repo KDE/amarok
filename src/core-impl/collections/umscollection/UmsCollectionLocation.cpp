@@ -166,6 +166,7 @@ UmsTransferJob::UmsTransferJob( UmsCollectionLocation* location,
     , m_location( location )
     , m_transcodingConfiguration( configuration )
     , m_abort( false )
+    , m_totalTracks( 0 )
 {
     setCapabilities( KJob::Killable );
 }

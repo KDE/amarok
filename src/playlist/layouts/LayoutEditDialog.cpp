@@ -236,63 +236,62 @@ void LayoutEditDialog::setAutomaticWidth( bool automatic )
 
 void LayoutEditDialog::setToken( TokenWithLayout *t )
 {
+    m_token = t;
+    if ( !m_token )
+        return;
     setWindowTitle( i18n( "Configuration for '%1'", t->name() ) );
     
     apply();
-    m_token = t;
-    if ( m_token )
+    m_element->setText( m_token->name() );
+    m_prefix->setText( m_token->prefix() );
+    m_suffix->setText( m_token->suffix() );
+
+
+    // Compute the remaining space from the tokens on the same line.
+    // this should still not be done here as it makes upward assumptions
+    // solution(?) token->element->row->elements
+    TokenDropTarget *editWidget = qobject_cast<TokenDropTarget*>( m_token->parentWidget() );
+    if( editWidget )
     {
-        m_element->setText( m_token->name() );
-        m_prefix->setText( m_token->prefix() );
-        m_suffix->setText( m_token->suffix() );
-
-
-        // Compute the remaining space from the tokens on the same line.
-        // this should still not be done here as it makes upward assumptions
-        // solution(?) token->element->row->elements
-        TokenDropTarget *editWidget = qobject_cast<TokenDropTarget*>( m_token->parentWidget() );
-        if( editWidget )
+        qreal spareWidth = 100.0;
+        int row = editWidget->row( m_token.data() );
+        if( row > -1 )
         {
-            qreal spareWidth = 100.0;
-            int row = editWidget->row( m_token.data() );
-            if( row > -1 )
+            QList<Token*> tokens = editWidget->tokensAtRow( row );
+            foreach ( Token *token, tokens )
             {
-                QList<Token*> tokens = editWidget->tokensAtRow( row );
-                foreach ( Token *token, tokens )
-                {
-                    if ( token == m_token.data() )
-                        continue;
+                if ( token == m_token.data() )
+                    continue;
 
-                    if ( TokenWithLayout *twl = qobject_cast<TokenWithLayout*>( token ) )
-                        spareWidth -= twl->width() * 100.0;
-                }
+                if ( TokenWithLayout *twl = qobject_cast<TokenWithLayout*>( token ) )
+                    spareWidth -= twl->width() * 100.0;
             }
-
-            int max = qMax( spareWidth, qreal( 0.0 ) );
-
-            if( max >= m_token->width() * 100.0 )
-                m_width->setMaximum( qMax( spareWidth, qreal( 0.0 ) ) );
-            else
-                m_width->setMaximum( m_token->width() * 100.0 );
         }
-        m_width->setValue( m_token->width() * 100.0 );
-        m_previousWidth = m_width->value();
-        
-        if ( m_token->width() > 0.0 )
-            m_fixedWidth->setChecked( true );
+
+        int max = qMax( spareWidth, qreal( 0.0 ) );
+
+        if( max >= m_token->width() * 100.0 )
+            m_width->setMaximum( qMax( spareWidth, qreal( 0.0 ) ) );
         else
-            m_automaticWidth->setChecked( true );
-
-        if ( m_token->alignment() & Qt::AlignLeft )
-            m_alignLeft->setChecked(true);
-        else if ( m_token->alignment() & Qt::AlignHCenter )
-            m_alignCenter->setChecked(true);
-        else if ( m_token->alignment() & Qt::AlignRight )
-            m_alignRight->setChecked(true);
-
-        m_bold->setChecked( m_token->bold() );
-        m_italic->setChecked( m_token->italic() );
-        m_underline->setChecked( m_token->underline() );
+            m_width->setMaximum( m_token->width() * 100.0 );
     }
+    m_width->setValue( m_token->width() * 100.0 );
+    m_previousWidth = m_width->value();
+
+    if ( m_token->width() > 0.0 )
+        m_fixedWidth->setChecked( true );
+    else
+        m_automaticWidth->setChecked( true );
+
+    if ( m_token->alignment() & Qt::AlignLeft )
+        m_alignLeft->setChecked(true);
+    else if ( m_token->alignment() & Qt::AlignHCenter )
+        m_alignCenter->setChecked(true);
+    else if ( m_token->alignment() & Qt::AlignRight )
+        m_alignRight->setChecked(true);
+
+    m_bold->setChecked( m_token->bold() );
+    m_italic->setChecked( m_token->italic() );
+    m_underline->setChecked( m_token->underline() );
 }
 

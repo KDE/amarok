@@ -35,6 +35,7 @@ OpmlParser::OpmlParser( const QUrl &url )
         , ThreadWeaver::Job()
         , QXmlStreamReader()
         , m_url( url )
+        , m_transferJob ( nullptr )
 {
 }
 

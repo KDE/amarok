@@ -99,7 +99,7 @@ int
 AmarokCollectionScript::totalTracks() const
 {
     QStringList tracks = query( QStringLiteral("SELECT COUNT( url ) FROM tracks;") );
-    if( tracks.size() < 0 )
+    if( tracks.size() <= 0 )
         return 0;
     QString total = tracks[0];
     int final = total.toInt();

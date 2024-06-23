@@ -35,8 +35,8 @@ namespace ScriptConsoleNS
         Q_OBJECT
 
         public:
-            ScriptConsoleItem( QObject *parent, const QString &name, const QString &path
-                            , const QString &category, ScriptEditorDocument *document );
+            ScriptConsoleItem( QObject *parent, const QString &name, const QString &category
+                            , const QString &path, ScriptEditorDocument *document );
             ~ScriptConsoleItem() override;
             ScriptEditorDocument* document() { return m_viewFactory; }
             bool start( bool silent = false ) override;

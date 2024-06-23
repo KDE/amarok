@@ -36,7 +36,6 @@ namespace KIO {
     class Job;
 }
 
-class MediaDeviceManager;
 class MainWindow;
 class QCommandLineParser;
 class QUrl;
@@ -86,7 +85,6 @@ class AMAROK_EXPORT App : public QApplication
         // ATTRIBUTES
         QPointer<MainWindow>        m_mainWindow;
         Amarok::TrayIcon            *m_tray;
-        MediaDeviceManager          *m_mediaDeviceManager;
         QPointer<ScriptConsoleNS::ScriptConsole> m_scriptConsole;
         QCommandLineParser          *m_args;
         QString                     m_cwd;

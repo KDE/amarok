@@ -62,7 +62,6 @@ struct multilevelLessThan
         int compareBySortableName( const AmarokSharedPointer<T> &left, const AmarokSharedPointer<T> &right ) const;
 
         SortScheme m_scheme;    //!< The current sorting scheme.
-        long m_randomSalt;      //!< Change the random row order from run to run.
 };
 
 }   //namespace Playlist
