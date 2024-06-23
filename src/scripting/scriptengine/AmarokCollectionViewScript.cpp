@@ -124,7 +124,7 @@ AmarokCollectionViewScript::createScriptedActions( QMenu &menu, const QModelInde
         {
             debug() << "Adding actions for script " << scriptName;
             menu.addSeparator();
-            foreach( QAction *action, s_instances[scriptName]->actions() )
+            for( QAction *action : s_instances[scriptName]->actions() )
             {
                 if( !action )
                 {

@@ -41,7 +41,7 @@ ScriptableServiceCollectionTreeModel::mimeData( const QList<CollectionTreeItem *
     using namespace Collections;
     Meta::TrackList tracks;
     QList<QueryMaker *> queries;
-    foreach( CollectionTreeItem *item, items )
+    for( CollectionTreeItem *item : items )
     {
         if( item->isTrackItem() )
         {

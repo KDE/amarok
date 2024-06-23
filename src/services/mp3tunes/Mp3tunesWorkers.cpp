@@ -366,7 +366,7 @@ void Mp3tunesSimpleUploader::run(ThreadWeaver::JobPointer self, ThreadWeaver::Th
 
     debug() << "Starting upload of " << m_tracklist.count() << " tracks.";
     int progress = 1;
-    foreach(const QString &track, m_tracklist) {
+    for(const QString &track : m_tracklist) {
         QString msg = i18n( "Uploading Track %1/%2", progress, m_tracklist.count() );
         debug() << msg;
         //TODO: port to Amarok::Logger signals

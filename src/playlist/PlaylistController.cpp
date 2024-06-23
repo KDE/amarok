@@ -334,7 +334,7 @@ Controller::removeRows( QList<int>& topModelRows )
 {
     DEBUG_BLOCK
     RemoveCmdList bottomModelCmds;
-    foreach( int topModelRow, topModelRows )
+    for( int topModelRow : topModelRows )
     {
         if( m_topModel->rowExists( topModelRow ) )
         {
@@ -359,7 +359,7 @@ Controller::removeDeadAndDuplicates()
 
     QList<int> topModelRowsToRemove;
 
-    foreach( Meta::TrackPtr unique, m_topModel->tracks() )
+    for( Meta::TrackPtr unique : m_topModel->tracks() )
     {
         QList<int> trackRows = m_topModel->allRowsForTrack( unique ).values();
 
@@ -641,7 +641,7 @@ Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
 
     InsertCmdList bottomModelCmds;
 
-    foreach( Meta::TrackPtr t, modifiedList )
+    for( Meta::TrackPtr t : modifiedList )
         bottomModelCmds.append( InsertCmd( t, bottomModelRow++ ) );
 
     if( bottomModelCmds.size() > 0 )

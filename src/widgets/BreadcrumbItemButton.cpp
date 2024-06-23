@@ -283,7 +283,7 @@ BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
 
     menu->addSeparator();
 
-    foreach( AmarokUrlPtr url, list )
+    for( AmarokUrlPtr url : list )
     {
         menu->addAction( new AmarokUrlAction( url, menu ) );
     }

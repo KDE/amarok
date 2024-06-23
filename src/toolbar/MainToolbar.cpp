@@ -370,7 +370,7 @@ MainToolbar::updateCurrentTrackActions()
     // collect actions ================
     QList<QAction*> actions;
 
-    foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
+    for( QAction* action : The::globalCurrentTrackActions()->actions() )
         actions << action;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();

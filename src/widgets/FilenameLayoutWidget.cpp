@@ -295,7 +295,7 @@ FilenameLayoutWidget::dropTargetScheme() const
 
     QList< Token *> list = m_dropTarget->tokensAtRow();
 
-    foreach( Token *token, list )
+    for( Token *token : list )
     {
         parsableScheme += typeElements[token->value()];
     }
@@ -371,7 +371,7 @@ FilenameLayoutWidget::populateFormatList( const QString& custom )
 
     debug() << "--- got presets" << presets_raw;
 
-    foreach( const QString &str, presets_raw )
+    for( const QString &str : presets_raw )
     {
         QStringList items;
         items = str.split( "#DELIM#", Qt::SkipEmptyParts );

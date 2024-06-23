@@ -175,7 +175,7 @@ SqlPlaylist::saveTracks()
     int trackNum = 1;
     auto sql = StorageManager::instance()->sqlStorage();
 
-    foreach( Meta::TrackPtr trackPtr, m_tracks )
+    for( Meta::TrackPtr trackPtr : m_tracks )
     {
         if( trackPtr )
         {

@@ -40,14 +40,14 @@ Playlist::AlbumNavigator::notifyItemsInserted( const QSet<quint64> &insertedItem
     QSet<AlbumId> oldAlbums(oldAlbumList.begin(), oldAlbumList.end());
     QSet<AlbumId> modifiedAlbums;
 
-    foreach( quint64 insertedItem, insertedItems )
+    for( quint64 insertedItem : insertedItems )
     {
         AlbumId album = albumForItem( insertedItem );
         m_itemsPerAlbum[album].append( insertedItem ); // conveniently creates an empty list if none exists
         modifiedAlbums.insert( album );
     }
 
-    foreach( AlbumId album, modifiedAlbums )
+    for( AlbumId album : modifiedAlbums )
         std::stable_sort( m_itemsPerAlbum[album].begin(), m_itemsPerAlbum[album].end(), itemLessThan );
 
     notifyAlbumsInserted( ( modifiedAlbums - oldAlbums ).values() );
@@ -58,7 +58,7 @@ Playlist::AlbumNavigator::notifyItemsRemoved( const QSet<quint64> &removedItems 
 {
     DEBUG_BLOCK
 
-    foreach( quint64 removedItem, removedItems )
+    for( quint64 removedItem : removedItems )
     {
         AlbumId album = albumForItem( removedItem );
 

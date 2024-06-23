@@ -120,10 +120,10 @@ void MatchTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *th
     // map of lowercase artist names to a list of providers that contain it plus their
     // preferred representation of the artist name
     QMap<QString, QMultiMap<ProviderPtr, QString> > providerArtists;
-    foreach( ProviderPtr provider, m_providers )
+    for( ProviderPtr provider : m_providers )
     {
         QSet<QString> artists = provider->artists();
-        foreach( const QString &artist, artists )
+        for( const QString &artist : artists )
             providerArtists[ artist.toLower() ].insert( provider, artist );
         s_comparisonFields &= provider->reliableTrackMetaData();
     }
@@ -134,7 +134,7 @@ void MatchTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *th
     debug() << "Matching using:" << comparisonFieldNames( s_comparisonFields ).toLocal8Bit().constData();
 #endif
 
-    foreach( const ArtistProviders &artistProviders, providerArtists )
+    for( const ArtistProviders &artistProviders : providerArtists )
     {
         if( m_abort )
             break;
@@ -147,7 +147,7 @@ void MatchTracksJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *th
     debug();
     int tupleCount = m_matchedTuples.count();
     debug() << "Found" << tupleCount << "tuples of matched tracks from multiple collections";
-    foreach( ProviderPtr provider, m_providers )
+    for( ProviderPtr provider : m_providers )
     {
         const TrackList uniqueList = m_uniqueTracks.value( provider );
         const TrackList excludedList = m_excludedTracks.value( provider );
@@ -181,10 +181,10 @@ MatchTracksJob::matchTracksFromArtist( const QMultiMap<ProviderPtr, QString> &pr
     debug() << "providerArtists:" << providerArtists;
 #endif
     PerProviderTrackList providerTracks;
-    foreach( ProviderPtr provider, providerArtists.uniqueKeys() )
+    for( ProviderPtr provider : providerArtists.uniqueKeys() )
     {
         TrackList trackList;
-        foreach( const QString &artist, providerArtists.values( provider ) )
+        for( const QString &artist : providerArtists.values( provider ) )
             trackList << provider->artistTracks( artist );
         if( trackList.isEmpty() )
             continue;  // don't add empty lists to providerTracks
@@ -228,7 +228,7 @@ MatchTracksJob::matchTracksFromArtist( const QMultiMap<ProviderPtr, QString> &pr
 #endif
 
         TrackTuple matchedTuple;
-        foreach( ProviderPtr provider, equalTracks.keys() )
+        for( ProviderPtr provider : equalTracks.keys() )
         {
             int listSize = equalTracks[ provider ].size();
             Q_ASSERT( listSize >= 1 );

@@ -537,7 +537,7 @@ void MagnatuneStore::moodMapReady(const QMap< QString, int > &map)
     QList<QVariant> weights;
     QVariantMap dbusActions;
 
-    foreach( const QString &key, map.keys() ) {
+    for( const QString &key : map.keys() ) {
 
         strings << key;
         weights << map.value( key );

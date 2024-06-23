@@ -81,7 +81,7 @@ AbstractDirectoryWatcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
             {
                 // Check if directories changed while we didn't have a watcher
                 QList<QUrl> urls;
-                foreach( const QString &path, collectionFolders() )
+                for( const QString &path : collectionFolders() )
                 {
                     urls.append( QUrl::fromLocalFile( path ) );
                 }
@@ -96,7 +96,7 @@ AbstractDirectoryWatcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
 
             // - add new
             QSet<QString> newDirs = dirs - oldWatchDirs;
-            foreach( const QString& dir, newDirs )
+            for( const QString& dir : newDirs )
             {
                 m_watcher->addDir( dir,
                                    AmarokConfig::scanRecursively() ?
@@ -105,7 +105,7 @@ AbstractDirectoryWatcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
 
             // - remove old
             QSet<QString> removeDirs = oldWatchDirs - dirs;
-            foreach( const QString& dir, removeDirs )
+            for( const QString& dir : removeDirs )
             {
                 m_watcher->removeDir( dir );
             }

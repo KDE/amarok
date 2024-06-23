@@ -34,7 +34,7 @@ OptionsStackedWidget::OptionsStackedWidget( QWidget *parent )
     : QStackedWidget( parent )
 {
     initWelcomePage();
-    foreach( const Encoder &encoder, Amarok::Components::transcodingController()->availableEncoders() )
+    for( const Encoder &encoder : Amarok::Components::transcodingController()->availableEncoders() )
     {
         Format *format = Amarok::Components::transcodingController()->format( encoder );
         m_pagesMap.insert( encoder, initCodecPage( format ) );
@@ -74,7 +74,7 @@ OptionsStackedWidget::initCodecPage( Format *format )
     QVBoxLayout *mainLayout = new QVBoxLayout( codecWidget );
     mainLayout->addStretch( 1 );
 
-    foreach( Property property, format->propertyList() )
+    for( Property property : format->propertyList() )
     {
         PropertyWidget *propertyWidget = PropertyWidget::create( property, codecWidget );
         mainLayout->addWidget( propertyWidget->widget() );
@@ -92,7 +92,7 @@ OptionsStackedWidget::configuration( const Configuration::TrackSelection trackSe
     Encoder encoder = m_pagesMap.key( currentIndex() );
     Configuration configuration = Configuration( encoder, trackSelection );
 
-    foreach( PropertyWidget *propertyWidget, m_propertyWidgetsMap.value( encoder ) )
+    for( PropertyWidget *propertyWidget : m_propertyWidgetsMap.value( encoder ) )
     {
         configuration.addProperty( propertyWidget->name(), propertyWidget->value() );
     }

@@ -56,7 +56,7 @@ void MagnatuneRedownloadDialog::setRedownloadItems( const QList<MagnatuneDownloa
 {
     m_infoMap.clear();
     
-    foreach( const MagnatuneDownloadInfo &prevPurchase, previousPurchases )
+    for( const MagnatuneDownloadInfo &prevPurchase : previousPurchases )
     {
         const QString albumText = prevPurchase.artistName() + " - " +  prevPurchase.albumName();
         QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( albumText ) );

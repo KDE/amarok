@@ -59,7 +59,7 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
     QStringList urls;
     QString error;
     debug() << "sources has " << sources.count();
-    foreach( const Meta::TrackPtr &track, sources.keys() )
+    for( const Meta::TrackPtr &track : sources.keys() )
     {
         debug() << "copying " << sources[ track ] << " to mp3tunes locker";
         debug() << "file is at " << sources[ track ].toDisplayString();

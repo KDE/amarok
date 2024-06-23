@@ -151,7 +151,7 @@ void MagnatuneDatabaseWorker::doFetchTrackswithMood()
             m_registry->factory()->getArtistSqlRowCount() +
             m_registry->factory()->getGenreSqlRowCount() );
 
-    foreach( const QString &idString, result ) {
+    for( const QString &idString : result ) {
 
         QString queryString = "SELECT DISTINCT ";
         
@@ -168,16 +168,16 @@ void MagnatuneDatabaseWorker::doFetchTrackswithMood()
 
         //debug() << "Querying for moody tracks: " << queryString;
 
-        QStringList result = sqlDb->query( queryString );
-        //debug() << "result: " << result;
+        QStringList subQResult = sqlDb->query( queryString );
+        //debug() << "result: " << subQResult;
 
 
 
-        int resultRows = result.count() / rowCount;
+        int resultRows = subQResult.count() / rowCount;
 
         for( int i = 0; i < resultRows; i++ )
         {
-            QStringList row = result.mid( i*rowCount, rowCount );
+            QStringList row = subQResult.mid( i*rowCount, rowCount );
 
             Meta::TrackPtr trackptr =  m_registry->getTrack( row );
 

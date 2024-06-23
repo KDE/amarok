@@ -69,7 +69,7 @@ Playlists::PlaylistList
 SqlUserPlaylistProvider::playlists()
 {
     Playlists::PlaylistList playlists;
-    foreach( Playlists::SqlPlaylistPtr sqlPlaylist, m_root->allChildPlaylists() )
+    for( Playlists::SqlPlaylistPtr sqlPlaylist : m_root->allChildPlaylists() )
     {
         playlists << Playlists::PlaylistPtr::staticCast( sqlPlaylist );
     }
@@ -92,7 +92,7 @@ bool
 SqlUserPlaylistProvider::deletePlaylists( const Playlists::PlaylistList &playlistList )
 {
     Playlists::SqlPlaylistList sqlPlaylists;
-    foreach( Playlists::PlaylistPtr playlist, playlistList )
+    for( Playlists::PlaylistPtr playlist : playlistList )
     {
         Playlists::SqlPlaylistPtr sqlPlaylist =
             Playlists::SqlPlaylistPtr::dynamicCast( playlist );
@@ -106,7 +106,7 @@ bool
 SqlUserPlaylistProvider::deleteSqlPlaylists( Playlists::SqlPlaylistList playlistList )
 {
     //this delete is not confirmed, has to be done by the slot connected to the delete action.
-    foreach( Playlists::SqlPlaylistPtr sqlPlaylist, playlistList )
+    for( Playlists::SqlPlaylistPtr sqlPlaylist : playlistList )
     {
         if( sqlPlaylist )
         {
@@ -157,7 +157,7 @@ Playlists::SqlPlaylistGroupPtr
 SqlUserPlaylistProvider::group( const QString &name )
 {
     DEBUG_BLOCK
-    Playlists::SqlPlaylistGroupPtr group;
+    Playlists::SqlPlaylistGroupPtr newGroup;
 
     if( name.isEmpty() )
         return m_root;
@@ -165,7 +165,7 @@ SqlUserPlaylistProvider::group( const QString &name )
     //clear the root first to force a reload.
     m_root->clear();
 
-    foreach( const Playlists::SqlPlaylistGroupPtr &group, m_root->allChildGroups() )
+    for( const Playlists::SqlPlaylistGroupPtr &group : m_root->allChildGroups() )
     {
         debug() << group->name();
         if( group->name() == name )
@@ -176,10 +176,10 @@ SqlUserPlaylistProvider::group( const QString &name )
     }
 
     debug() << "Creating a new group " << name;
-    group = new Playlists::SqlPlaylistGroup( name, m_root, this );
-    group->save();
+    newGroup = new Playlists::SqlPlaylistGroup( name, m_root, this );
+    newGroup->save();
 
-    return group;
+    return newGroup;
 }
 
 void
@@ -306,7 +306,7 @@ Playlists::SqlPlaylistList
 SqlUserPlaylistProvider::toSqlPlaylists( Playlists::PlaylistList playlists )
 {
     Playlists::SqlPlaylistList sqlPlaylists;
-    foreach( Playlists::PlaylistPtr playlist, playlists )
+    for( Playlists::PlaylistPtr playlist : playlists )
     {
         Playlists::SqlPlaylistPtr sqlPlaylist =
             Playlists::SqlPlaylistPtr::dynamicCast( playlist );

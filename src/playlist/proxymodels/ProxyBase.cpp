@@ -81,7 +81,7 @@ ProxyBase::allRowsForTrack( const Meta::TrackPtr& track ) const
 {
     QSet<int> proxyModelRows;
 
-    foreach( int sourceModelRow, m_belowModel->allRowsForTrack( track ) )
+    for( int sourceModelRow : m_belowModel->allRowsForTrack( track ) )
     {
         int proxyModelRow = rowFromSource( sourceModelRow );
         if ( proxyModelRow != -1 )
@@ -169,7 +169,7 @@ ProxyBase::firstRowForTrack( const Meta::TrackPtr& track ) const
         // It might be that there are multiple hits in the source model, and we just got
         // unlucky with a source row that's filtered out in this model. So, we need to
         // check all hits.
-        foreach( int sourceModelRow, m_belowModel->allRowsForTrack( track ) )
+        for( int sourceModelRow : m_belowModel->allRowsForTrack( track ) )
         {
             proxyModelRow = rowFromSource( sourceModelRow );
             if ( proxyModelRow != -1 )
@@ -311,7 +311,7 @@ ProxyBase::rowMatch( int sourceModelRow, const QString &searchTerms, int searchF
 
     QStringList searchList = searchTerms.split(QLatin1Char(' '), Qt::SkipEmptyParts);
 
-    foreach( const QString& searchTerm, searchList )
+    for( const QString& searchTerm : searchList )
     {
         bool match = false;
 

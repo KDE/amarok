@@ -48,7 +48,7 @@ void
 ChooseProvidersPage::setFields( const QList<qint64> &fields, qint64 checkedFields )
 {
     QLayout *fieldsLayout = fieldsBox->layout();
-    foreach( qint64 field, fields )
+    for( qint64 field : fields )
     {
         QString name = Meta::i18nForField( field );
         QCheckBox *checkBox = new QCheckBox( name );
@@ -110,7 +110,7 @@ ChooseProvidersPage::disableControls()
     providersView->setEnabled( false );
 
     // disable all but Cancel button
-    foreach( QAbstractButton *button, buttonBox->buttons() )
+    for( QAbstractButton *button : buttonBox->buttons() )
     {
         if( buttonBox->buttonRole( button ) != QDialogButtonBox::RejectRole )
             button->setEnabled( false );
@@ -169,7 +169,7 @@ ChooseProvidersPage::updateEnabledFields()
     }
 
     QAbstractButton *nextButton = nullptr;
-    foreach( QAbstractButton *button, buttonBox->buttons() )
+    for( QAbstractButton *button : buttonBox->buttons() )
     {
         if( buttonBox->buttonRole( button ) == QDialogButtonBox::AcceptRole )
             nextButton = button;

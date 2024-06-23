@@ -457,7 +457,7 @@ void LayoutManager::orderLayouts()
 
     QStringList orderingList = orderString.split( QLatin1Char(';'), Qt::SkipEmptyParts );
 
-    foreach( const QString &layout, orderingList )
+    for( const QString &layout : orderingList )
     {
         if ( knownLayouts.contains( layout ) )
         {
@@ -468,7 +468,7 @@ void LayoutManager::orderLayouts()
     }
 
     //now add any layouts that were not in the order config to end of list:
-    foreach( const QString &layout, knownLayouts )
+    for( const QString &layout : knownLayouts )
         m_layoutNames.append( layout );
 }
 
@@ -479,7 +479,7 @@ void Playlist::LayoutManager::storeLayoutOrdering()
 
     QString ordering;
 
-    foreach( const QString &name, m_layoutNames )
+    for( const QString &name : m_layoutNames )
     {
         ordering += name;
         ordering += ';';

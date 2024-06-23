@@ -311,7 +311,7 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
     if( s_tooltipColumns[Playlist::Labels] && !track->labels().empty() )
     {
         QStringList labels;
-        foreach( Meta::LabelPtr label, track->labels() )
+        for( Meta::LabelPtr label : track->labels() )
         {
             if( label )
                 labels << label->name();
@@ -485,7 +485,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                 if( track )
                 {
                     QStringList labelNames;
-                    foreach( const Meta::LabelPtr &label, track->labels() )
+                    for( const Meta::LabelPtr &label : track->labels() )
                     {
                         labelNames << label->prettyName();
                     }
@@ -682,7 +682,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         if( dragList )
         {
             Meta::TrackList tracks;
-            foreach( Podcasts::PodcastEpisodePtr episode, dragList->podcastEpisodes() )
+            for( Podcasts::PodcastEpisodePtr episode : dragList->podcastEpisodes() )
                 tracks << Meta::TrackPtr::staticCast( episode );
             The::playlistController()->insertTracks( beginRow, tracks );
         }
@@ -695,8 +695,8 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         if( dragList )
         {
             Meta::TrackList tracks;
-            foreach( Podcasts::PodcastChannelPtr channel, dragList->podcastChannels() )
-                foreach( Podcasts::PodcastEpisodePtr episode, channel->episodes() )
+            for( Podcasts::PodcastChannelPtr channel : dragList->podcastChannels() )
+                for( Podcasts::PodcastEpisodePtr episode : channel->episodes() )
                     tracks << Meta::TrackPtr::staticCast( episode );
             The::playlistController()->insertTracks( beginRow, tracks );
         }
@@ -903,7 +903,7 @@ Playlist::Model::exportPlaylist( const QString &path, bool relative )
     // check queue state
     QQueue<quint64> queueIds = The::playlistActions()->queue();
     QList<int> queued;
-    foreach( quint64 id, queueIds ) {
+    for( quint64 id : queueIds ) {
       queued << rowForId( id );
     }
     return Playlists::exportPlaylistFile( tracks(), QUrl::fromLocalFile(path), relative, queued);
@@ -968,7 +968,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     int min = m_items.size() + cmds.size();
     int max = 0;
     int begin = cmds.at( 0 ).second;
-    foreach( const InsertCmd &ic, cmds )
+    for( const InsertCmd &ic : cmds )
     {
         min = qMin( min, ic.second );
         max = qMax( max, ic.second );
@@ -977,7 +977,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
 
     // actually do the insertion
     beginInsertRows( QModelIndex(), min, max );
-    foreach( const InsertCmd &ic, cmds )
+    for( const InsertCmd &ic : cmds )
     {
         Meta::TrackPtr track = ic.first;
         m_totalLength += track->length();
@@ -1038,7 +1038,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList &passedCmds )
     if( m_activeRow >= 0 )
     {
         int activeShift = 0;
-        foreach( const RemoveCmd &rc, cmds )
+        for( const RemoveCmd &rc : cmds )
         {
             if( rc.second < m_activeRow )
                 activeShift++;
@@ -1092,7 +1092,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList &passedCmds )
     }
 
     // unsubscribe from tracks no longer present in playlist
-    foreach( Meta::TrackPtr track, trackUnsubscribeCandidates )
+    for( Meta::TrackPtr track : trackUnsubscribeCandidates )
     {
         if( !containsTrack( track ) )
             unsubscribeFrom( track );
@@ -1100,13 +1100,13 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList &passedCmds )
 
     // unsubscribe from albums no longer present im playlist
     QSet<Meta::AlbumPtr> remainingAlbums;
-    foreach( const Item *item, m_items )
+    for( const Item *item : m_items )
     {
         Meta::AlbumPtr album = item->track()->album();
         if( album )
             remainingAlbums.insert( album );
     }
-    foreach( Meta::AlbumPtr album, albumUnsubscribeCandidates )
+    for( Meta::AlbumPtr album : albumUnsubscribeCandidates )
     {
         if( !remainingAlbums.contains( album ) )
             unsubscribeFrom( album );
@@ -1155,7 +1155,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
 
     int min = INT_MAX;
     int max = INT_MIN;
-    foreach( const MoveCmd &rc, cmds )
+    for( const MoveCmd &rc : cmds )
     {
         min = qMin( min, rc.first );
         max = qMax( max, rc.first );
@@ -1171,7 +1171,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
     QList<Item*> oldItems( m_items );
     if ( reverse )
     {
-        foreach( const MoveCmd &mc, cmds )
+        for( const MoveCmd &mc : cmds )
         {
             m_items[mc.first] = oldItems.at( mc.second );
             if ( m_activeRow == mc.second )
@@ -1180,7 +1180,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
     }
     else
     {
-        foreach( const MoveCmd &mc, cmds )
+        for( const MoveCmd &mc : cmds )
         {
             m_items[mc.second] = oldItems.at( mc.first );
             if ( m_activeRow == mc.first )

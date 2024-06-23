@@ -117,7 +117,7 @@ ConstraintGroup::toXml( QDomDocument& doc, QDomElement& elem ) const
         }
     }
 
-    foreach( ConstraintNode* child, m_children ) {
+    for( ConstraintNode* child : m_children ) {
         child->toXml( doc, group );
     }
 
@@ -136,7 +136,7 @@ ConstraintGroup::initQueryMaker( Collections::QueryMaker* qm ) const
             return qm;
         }
 
-        foreach( ConstraintNode* child, m_children ) {
+        for( ConstraintNode* child : m_children ) {
             child->initQueryMaker( qm );
         }
 
@@ -202,7 +202,7 @@ ConstraintGroup::suggestPlaylistSize() const
 {
     quint32 s = 0;
     quint32 c = 0;
-    foreach( ConstraintNode* child, m_children ) {
+    for( ConstraintNode* child : m_children ) {
         quint32 x = child->suggestPlaylistSize();
         if ( x > 0 ) {
             s += x;
@@ -232,7 +232,7 @@ ConstraintGroup::combineInterdependentConstraints( const Meta::TrackList& l, con
         }
 
         // combine the arrays from the appropriate constraints
-        foreach( int v, vals ) {
+        for( int v : vals ) {
             ConstraintTypes::MatchingConstraint* cge = dynamic_cast<ConstraintTypes::MatchingConstraint*>( m_children[v] );
             if ( m_matchtype == MatchAny ) {
                 m |= cge->whatTracksMatch( l );

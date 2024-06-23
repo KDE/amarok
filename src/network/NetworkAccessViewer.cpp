@@ -153,8 +153,7 @@ void NetworkAccessViewer::showItemDetails( QTreeWidgetItem *item )
     reqTree->clear();
 
     QNetworkRequest req = itemRequestMap[item];
-    QByteArray header;
-    foreach( header, req.rawHeaderList() ) {
+    for( QByteArray header : req.rawHeaderList() ) {
         QTreeWidgetItem *item = new QTreeWidgetItem();
         item->setText( 0, QString::fromLatin1( header ) );
         item->setText( 1, QString::fromLatin1( req.rawHeader( header ) ) );

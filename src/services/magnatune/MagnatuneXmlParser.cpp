@@ -305,7 +305,7 @@ MagnatuneXmlParser::parseAlbum( const QDomElement &e )
 
     // handle genres
 
-    foreach( const QString &genreName, magnatuneGenres ) {
+    for( const QString &genreName : magnatuneGenres ) {
 
         //debug() << "inserting genre with album_id = " << albumId << " and name = " << genreName;
         ServiceGenre currentGenre( genreName );

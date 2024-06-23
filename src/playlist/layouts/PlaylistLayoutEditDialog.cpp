@@ -84,7 +84,7 @@ Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     elementTabs->addTab( m_partsEdit[PlaylistLayout::Single], i18n( "Single" ) );
 
     QStringList layoutNames = LayoutManager::instance()->layouts();
-    foreach( const QString &layoutName, layoutNames )
+    for( const QString &layoutName : layoutNames )
     {
         PlaylistLayout layout = LayoutManager::instance()->layout( layoutName );
         layout.setDirty( false );
@@ -500,7 +500,7 @@ Playlist::PlaylistLayoutEditDialog::setEnabledTabs()
 void
 Playlist::PlaylistLayoutEditDialog::setupGroupByCombo()
 {
-    foreach( const Playlist::Column &col, Playlist::groupableCategories() )
+    for( const Playlist::Column &col : Playlist::groupableCategories() )
     {
         groupByComboBox->addItem( QIcon::fromTheme( iconName( col ) ),
                                   columnName( col ),

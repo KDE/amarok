@@ -173,7 +173,7 @@ const QStringList ConstraintFactory::i18nNames() const
 QList< QPair<int, QString> > ConstraintFactory::registeredConstraints() const
 {
     QList< QPair<int, QString> > d;
-    foreach( int i, m_registryIds.keys() ) {
+    for( int i : m_registryIds.keys() ) {
         d.append( QPair<int, QString>( i, m_registryIds[i]->m_name ) );
     }
     return d;

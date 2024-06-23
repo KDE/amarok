@@ -230,7 +230,7 @@ void
 TrackTuple::setLabelProviders( const ProviderPtrSet &providers )
 {
     m_labelProviders.clear();
-    foreach( const ProviderPtr &provider, providers )
+    for( const ProviderPtr &provider : providers )
     {
         if( m_map.contains( provider ) )
             m_labelProviders.insert( provider );
@@ -345,7 +345,7 @@ TrackTuple::syncedLabels( const Options &options, const ProviderPtrSet &labelPro
         return labelsCandidate;
     if( !labelProviders.isEmpty() ) // providers have been chosen
     {
-        foreach( const ProviderPtr &provider, labelProviders )
+        for( const ProviderPtr &provider : labelProviders )
             labelsCandidate |= track( provider )->labels();
         return labelsCandidate - options.excludedLabels();
     }
@@ -387,7 +387,7 @@ ProviderPtrSet
 TrackTuple::synchronize( const Options &options ) const
 {
     ProviderPtrSet updatedProviders;
-    foreach( qint64 field, s_fields )
+    for( qint64 field : s_fields )
     {
         // catches if field should not be at all updated (either no change or not in options )
         if( !fieldUpdated( field, options ) )

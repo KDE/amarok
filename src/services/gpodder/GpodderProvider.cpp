@@ -1126,7 +1126,7 @@ void GpodderProvider::loadCachedEpisodeActions()
     QStringList actionsDetails;
     EpisodeAction::ActionType actionType;
 
-    foreach( QString episodeUrl, gpodderActionsConfig().keyList() )
+    for( const QString &episodeUrl : gpodderActionsConfig().keyList() )
     {
         actionsDetails.clear();
         actionsDetails = gpodderActionsConfig().readEntry( episodeUrl ).split( QLatin1Char(',') );
@@ -1198,7 +1198,7 @@ void GpodderProvider::saveCachedEpisodeActions()
     int actionType;
     QList<QString> actionsDetails;
 
-    foreach( EpisodeActionPtr action, m_uploadEpisodeStatusMap.values() )
+    for( EpisodeActionPtr action : m_uploadEpisodeStatusMap.values() )
     {
         actionsDetails.clear();
         actionsDetails.append( action->podcastUrl().toString() );

@@ -106,7 +106,7 @@ AbstractScanResultProcessor::scanSucceeded()
     }
 
     // -- commit the directories
-    foreach( QSharedPointer<CollectionScanner::Directory> dir, m_directories )
+    for( QSharedPointer<CollectionScanner::Directory> dir : m_directories )
     {
         commitDirectory( dir );
 
@@ -116,7 +116,7 @@ AbstractScanResultProcessor::scanSucceeded()
         QList<CollectionScanner::Track*> tracks = dir->tracks();
 
         // check what album names we have
-        foreach( CollectionScanner::Track* track, dir->tracks() )
+        for( CollectionScanner::Track* track : dir->tracks() )
         {
             if( !track->album().isEmpty() )
                 dirAlbumNames.insert( track->album() );
@@ -127,7 +127,7 @@ AbstractScanResultProcessor::scanSucceeded()
                                       QDir( dir->path() ).dirName() :
                                       QString() );
 
-        foreach( CollectionScanner::Track* track, dir->tracks() )
+        for( CollectionScanner::Track* track : dir->tracks() )
         {
             CollectionScanner::Album *album = sortTrack( track, fallbackAlbumName );
 
@@ -145,7 +145,7 @@ AbstractScanResultProcessor::scanSucceeded()
     // --- add all albums
     QList<QString> keys = m_albumNames.uniqueKeys();
     Q_EMIT totalSteps( m_directories.count() + keys.count() ); // update progress bar
-    foreach( const QString &key, keys )
+    for( const QString &key : keys )
     {
         // --- commit the albums as compilation or normal album
 
@@ -173,7 +173,7 @@ AbstractScanResultProcessor::scanSucceeded()
             bool isCompilation = false;
             bool firstTrack = true;
             QString albumArtist;
-            foreach( CollectionScanner::Track *track, album->tracks() )
+            for( CollectionScanner::Track *track : album->tracks() )
             {
                 QString trackAlbumArtist =
                     ArtistHelper::bestGuessAlbumArtist( track->albumArtist(),
@@ -205,7 +205,7 @@ AbstractScanResultProcessor::scanSucceeded()
     }
 
     // -- now check if some of the tracks are not longer used and also not moved to another directory
-    foreach( QSharedPointer<CollectionScanner::Directory> dir, m_directories )
+    for( QSharedPointer<CollectionScanner::Directory> dir : m_directories )
         if( !dir->isSkipped() )
             deleteDeletedTracksAndSubdirs( dir );
 
@@ -241,7 +241,7 @@ AbstractScanResultProcessor::commitDirectory( QSharedPointer<CollectionScanner::
     }
 
     // --- add all playlists
-    foreach( const CollectionScanner::Playlist &playlist, dir->playlists() )
+    for( const CollectionScanner::Playlist &playlist : dir->playlists() )
         commitPlaylist( playlist );
 }
 

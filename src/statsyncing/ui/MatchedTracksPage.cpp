@@ -177,7 +177,7 @@ MatchedTracksPage::setProviders( const ProviderPtrList &providers )
 {
     // populate menu of the "Take Ratings From" button
     QMenu *takeRatingsMenu = new QMenu( matchedRatingsButton );
-    foreach( const ProviderPtr &provider, providers )
+    for( const ProviderPtr &provider : providers )
     {
         QAction *action = takeRatingsMenu->addAction( provider->icon(), provider->prettyName(),
                                                       this, &MatchedTracksPage::takeRatingsFrom );
@@ -189,7 +189,7 @@ MatchedTracksPage::setProviders( const ProviderPtrList &providers )
 
     // populate menu of the "Labels" button
     QMenu *labelsMenu = new QMenu( matchedLabelsButton );
-    foreach( const ProviderPtr &provider, providers )
+    for( const ProviderPtr &provider : providers )
     {
         QString text = i18nc( "%1 is collection name", "Include Labels from %1", provider->prettyName() );
         QAction *action = labelsMenu->addAction( provider->icon(), text, this, &MatchedTracksPage::includeLabelsFrom );
@@ -301,12 +301,12 @@ MatchedTracksPage::setTracksToScrobble( const TrackList &tracksToScrobble,
 {
     int tracks = tracksToScrobble.count();
     int plays = 0;
-    foreach( const TrackPtr &track, tracksToScrobble )
+    for( const TrackPtr &track : tracksToScrobble )
     {
         plays += track->recentPlayCount();
     }
     QStringList serviceNames;
-    foreach( const ScrobblingServicePtr &service, services )
+    for( const ScrobblingServicePtr &service : services )
     {
         serviceNames << "<b>" + service->prettyName() + "</b>";
     }

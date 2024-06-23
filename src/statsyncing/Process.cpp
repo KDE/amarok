@@ -250,7 +250,7 @@ Process::slotLogSynchronization( ThreadWeaver::JobPointer job )
             syncJob->scrobbles();
 
     QStringList providerNames;
-    foreach( ProviderPtr provider, m_providersModel->selectedProviders() )
+    for( ProviderPtr provider : m_providersModel->selectedProviders() )
         providerNames << "<b>" + provider->prettyName() + "</b>";
     QString providers = providerNames.join( i18nc( "comma between list words", ", " ) );
 
@@ -260,7 +260,7 @@ Process::slotLogSynchronization( ThreadWeaver::JobPointer job )
             updatedTracksCount, providers );
 
     QMap<ScrobblingService::ScrobbleError, int> scrobbleErrorCounts;
-    foreach( const ScrobblingServicePtr &provider, scrobbles.keys() )
+    for( const ScrobblingServicePtr &provider : scrobbles.keys() )
     {
         QString name = "<b>" + provider->prettyName() + "</b>";
         QMap<ScrobblingService::ScrobbleError, int> &providerScrobbles = scrobbles[ provider ];

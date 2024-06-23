@@ -806,7 +806,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
 
     QList<int> columns = changeMap.keys();
 
-    foreach( int column, columns )
+    for( int column : columns )
     {
         QString value = changeMap.value( column );
 

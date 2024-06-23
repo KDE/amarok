@@ -55,7 +55,7 @@ void CurrentTrackToolbar::handleAddActions()
         if( ac )
         {
             QList<QAction *> currentTrackActions = ac->actions();
-            foreach( QAction *action, currentTrackActions )
+            for( QAction *action : currentTrackActions )
             {
                 if( !action->parent() )
                     action->setParent( this );

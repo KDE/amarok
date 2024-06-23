@@ -101,7 +101,7 @@ namespace Meta {
         // why the lock needs to be recursive AND the lock needs to be for writing, because
         // a lock for reading cannot be recursively relocked for writing.
         QWriteLocker locker( &m_observersLock );
-        foreach( Obs *observer, m_observers )
+        for( Obs *observer : QSet<Observer *>(m_observers) )
         {
             // observers can potentially remove or even destroy other observers during
             // metadataChanged() call. Guard against it. The guarding doesn't need to be

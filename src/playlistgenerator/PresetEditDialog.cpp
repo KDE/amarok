@@ -63,7 +63,7 @@ APG::PresetEditDialog::PresetEditDialog( const PresetPtr &p )
     a = m->addAction( i18n("Constraint Group") );
     connect( a, &QAction::triggered, adderMapper, QOverload<>::of(&QSignalMapper::map) );
     adderMapper->setMapping( a, i18n("Constraint Group") );
-    foreach( const QString& name, ConstraintFactory::instance()->i18nNames() ) {
+    for( const QString& name : ConstraintFactory::instance()->i18nNames() ) {
         a = m->addAction( name );
         connect( a, &QAction::triggered, adderMapper, QOverload<>::of(&QSignalMapper::map) );
         adderMapper->setMapping( a, name );

@@ -34,7 +34,7 @@ Formatting
 * Function and class definitions have their brackets on separate lines
 * A function implementation's return type is on its own line.
 * CamelCase.{cpp,h} style file names.
-* Qt includes a foreach keyword which makes it very easy to iterate over all
+* C++11 includes range-based for loops which make it very easy to iterate over all
   elements of a container.
 
 Example:
@@ -48,7 +48,7 @@ Example:
  |     /* Define the temporary variable like this to restrict its scope
  |      * when you do not need it outside the loop. Let the compiler
  |      * optimise it. */
- |     foreach( const QString &string, list )
+ |     for( const QString &string : list )
  |         debug() << "Current string is " << string << Qt::endl;
  |
  |     switch( m_enumValue )

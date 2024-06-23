@@ -50,7 +50,7 @@ PlaylistFileProvider::PlaylistFileProvider()
 {
     //playlists are lazy loaded but we can count how many we'll load already
     QStringList keys = loadedPlaylistsConfig().keyList();
-    foreach( const QString &key, keys )
+    for( const QString &key : keys )
     {
         QUrl url( key );
         //Don't load these from the config file, they are read from the directory anyway
@@ -62,7 +62,7 @@ PlaylistFileProvider::PlaylistFileProvider()
     QDir playlistDir = QDir( Amarok::saveLocation( QStringLiteral("playlists") ), QLatin1String(""),
                              QDir::Name,
                              QDir::Files | QDir::Readable );
-    foreach( const QString &file, playlistDir.entryList() )
+    for( const QString &file : playlistDir.entryList() )
     {
         QUrl url( playlistDir.path() );
         url = url.adjusted(QUrl::StripTrailingSlash);
@@ -78,7 +78,7 @@ PlaylistFileProvider::~PlaylistFileProvider()
     //remove all, well add them again soon
     loadedPlaylistsConfig().deleteGroup();
     //Write loaded playlists to config file
-    foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
+    for( Playlists::PlaylistFilePtr playlistFile : m_playlists )
     {
         QUrl url = playlistFile->uidUrl();
         //only save files NOT in "playlists", those are automatically loaded.
@@ -121,7 +121,7 @@ PlaylistFileProvider::playlists()
         return playlists;
     }
 
-    foreach( const Playlists::PlaylistFilePtr &playlistFile, m_playlists )
+    for( const Playlists::PlaylistFilePtr &playlistFile : m_playlists )
     {
         Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( playlistFile );
         if( !playlist.isNull() )
@@ -201,7 +201,7 @@ PlaylistFileProvider::import( const QUrl &path )
         return false;
     }
 
-    foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
+    for( Playlists::PlaylistFilePtr playlistFile : m_playlists )
     {
         if( !playlistFile )
         {
@@ -246,7 +246,7 @@ bool
 PlaylistFileProvider::deletePlaylists( const Playlists::PlaylistList &playlists )
 {
     Playlists::PlaylistFileList playlistFiles;
-    foreach( Playlists::PlaylistPtr playlist, playlists )
+    for( Playlists::PlaylistPtr playlist : playlists )
     {
         Playlists::PlaylistFilePtr playlistFile =
                 Playlists::PlaylistFilePtr::dynamicCast( playlist );
@@ -259,7 +259,7 @@ PlaylistFileProvider::deletePlaylists( const Playlists::PlaylistList &playlists 
 bool
 PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistFiles )
 {
-    foreach( Playlists::PlaylistFilePtr playlistFile, playlistFiles )
+    for( Playlists::PlaylistFilePtr playlistFile : playlistFiles )
     {
         m_playlists.removeAll( playlistFile );
         loadedPlaylistsConfig().deleteEntry( playlistFile->uidUrl().url() );

@@ -265,7 +265,7 @@ Controller::synchronize()
 void
 Controller::scrobble( const Meta::TrackPtr &track, double playedFraction, const QDateTime &time )
 {
-    foreach( ScrobblingServicePtr service, m_scrobblingServices )
+    for( ScrobblingServicePtr service : m_scrobblingServices )
     {
         ScrobblingService::ScrobbleError error = service->scrobble( track, playedFraction, time );
         if( error == ScrobblingService::NoError )
@@ -280,7 +280,7 @@ Controller::slotProviderUpdated()
 {
     QObject *updatedProvider = sender();
     Q_ASSERT( updatedProvider );
-    foreach( const ProviderPtr &provider, m_providers )
+    for( const ProviderPtr &provider : m_providers )
     {
         if( provider.data() == updatedProvider )
         {
@@ -353,7 +353,7 @@ void Controller::synchronizeWithMode( int intMode )
     if( mode == Process::NonInteractive && fields == 0 )
         return; // nothing to do
     ProviderPtrSet checkedProviders;
-    foreach( ProviderPtr provider, m_providers )
+    for( ProviderPtr provider : m_providers )
     {
         if( m_config->providerEnabled( provider->id(), false ) )
             checkedProviders.insert( provider );

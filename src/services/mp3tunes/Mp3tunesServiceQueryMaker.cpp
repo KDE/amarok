@@ -296,7 +296,7 @@ void Mp3tunesServiceQueryMaker::artistDownloadComplete( QList<Mp3tunesLockerArti
     Meta::ArtistList artists;
 
     debug() << "Received artists";
-    foreach(const Mp3tunesLockerArtist &artist, artistList) {
+    for(const Mp3tunesLockerArtist &artist : artistList) {
         Meta::ServiceArtist * serviceArtist = new Meta::ServiceArtist( artist.artistName() );
 
         //debug() << "Adding artist: " <<  artist.artistName();
@@ -325,7 +325,7 @@ void Mp3tunesServiceQueryMaker::albumDownloadComplete( QList<Mp3tunesLockerAlbum
     debug() << "Received albums";
 
     Meta::AlbumList albums;
-    foreach(const Mp3tunesLockerAlbum &album, albumsList) {
+    for(const Mp3tunesLockerAlbum &album : albumsList) {
 
         QString title = album.albumTitle();
         if ( title.contains("* PlayMix") ) continue;
@@ -384,7 +384,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
 
      //so lets figure out what we got here:
 
-    foreach(const Mp3tunesLockerTrack &track, tracksList)
+    for(const Mp3tunesLockerTrack &track : tracksList)
     {
 
         QString title = track.trackTitle();

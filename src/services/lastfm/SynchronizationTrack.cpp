@@ -157,7 +157,7 @@ SynchronizationTrack::parseAndSaveLastFmTags( const QSet<QString> &tags )
 
     // we still match and explicitly ignore rating tags even in m_useFancyRatingTags is false
     QRegularExpression rx( QRegularExpression::anchoredPattern( "([0-9]{1,3}) of ([0-9]{1,3}) stars" ), QRegularExpression::CaseInsensitiveOption );
-    foreach( const QString &tag, tags )
+    for( const QString &tag : tags )
     {
         QRegularExpressionMatch rmatch = rx.match( tag );
         if( rmatch.hasMatch() )

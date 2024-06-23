@@ -61,7 +61,7 @@ ConstraintTypes::TrackSpreader::satisfaction( const Meta::TrackList& tl ) const
     for ( int i = 0; i < tl.size(); i++ ) {
         Meta::TrackPtr t = tl.value( i );
         if ( locations.contains( t ) ) {
-            foreach( int j, locations.values( t ) ) {
+            for( int j : locations.values( t ) ) {
                 dist += distance( i, j );
             }
         }
