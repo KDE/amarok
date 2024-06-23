@@ -31,9 +31,7 @@ public:
     QStringx();
     explicit QStringx( QChar ch );
     explicit QStringx( const QString &s );
-    explicit QStringx( const QByteArray &ba );
     QStringx( const QChar *unicode, uint length );
-    explicit QStringx( const char *str );
     virtual ~QStringx();
 
     // the numbers following % obviously are not taken into account

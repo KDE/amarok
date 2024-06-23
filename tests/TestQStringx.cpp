@@ -38,32 +38,32 @@ void TestQStringx::testArgs()
 {
     QStringList testArgs;
 
-    m_testString = Amarok::QStringx("");
+    m_testString = Amarok::QStringx(QStringLiteral(""));
     QCOMPARE( m_testString.args( testArgs ) , QStringLiteral( "" ) );
 
-    m_testString = Amarok::QStringx("test");
+    m_testString = Amarok::QStringx(QStringLiteral("test"));
     QCOMPARE( m_testString.args( testArgs ), QStringLiteral( "test" ) );
 
-    m_testString = Amarok::QStringx("");
+    m_testString = Amarok::QStringx(QStringLiteral(""));
     testArgs.append( QStringLiteral("test") );
     QCOMPARE( m_testString.args( testArgs ), QStringLiteral( "" ) );
 
-    m_testString = Amarok::QStringx("test%12abc");
+    m_testString = Amarok::QStringx(QStringLiteral("test%12abc"));
     QCOMPARE( m_testString.args( testArgs ) , QStringLiteral( "testtestabc" ) );
 
-    m_testString = Amarok::QStringx("%12test abc");
+    m_testString = Amarok::QStringx(QStringLiteral("%12test abc"));
     QCOMPARE( m_testString.args( testArgs ) , QStringLiteral( "testtest abc" ) );
 
-    m_testString = Amarok::QStringx("te%st%12abc");
+    m_testString = Amarok::QStringx(QStringLiteral("te%st%12abc"));
     QCOMPARE( m_testString.args( testArgs ) , QStringLiteral( "te%sttestabc" ) );
 
     testArgs.clear();
     testArgs.append( QStringLiteral("test") );
     testArgs.append( QStringLiteral("abc") );
-    m_testString = Amarok::QStringx("test%12abc%2xyz");
+    m_testString = Amarok::QStringx(QStringLiteral("test%12abc%2xyz"));
     QCOMPARE( m_testString.args( testArgs ) , QStringLiteral( "testtestabcabcxyz" ) );
 
-    m_testString = Amarok::QStringx("%12test%23abc");
+    m_testString = Amarok::QStringx(QStringLiteral("%12test%23abc"));
     QCOMPARE( m_testString.args( testArgs ) , QStringLiteral( "testtestabcabc" ) );
 }
 
@@ -71,26 +71,26 @@ void TestQStringx::testNamedArgs()
 {
     QMap<QString, QString> testArgs;
 
-    m_testString = Amarok::QStringx("");
+    m_testString = Amarok::QStringx(QStringLiteral(""));
     QCOMPARE( m_testString.namedArgs( testArgs ) , QStringLiteral( "" ) );
 
-    m_testString = Amarok::QStringx("test");
+    m_testString = Amarok::QStringx(QStringLiteral("test"));
     QCOMPARE( m_testString.namedArgs( testArgs ) , QStringLiteral( "test" ) );
 
     testArgs[ QStringLiteral("artist") ] = QStringLiteral("Pornophonique");
-    m_testString = Amarok::QStringx("test");
+    m_testString = Amarok::QStringx(QStringLiteral("test"));
     QCOMPARE( m_testString.namedArgs( testArgs ) , QStringLiteral( "test" ) );
 
-    m_testString = Amarok::QStringx("artist: %artist%");
+    m_testString = Amarok::QStringx(QStringLiteral("artist: %artist%"));
     QCOMPARE( m_testString.namedArgs( testArgs ) , QStringLiteral( "artist: Pornophonique" ) );
 
-    m_testString = Amarok::QStringx("artist: %artist% - %album%");
+    m_testString = Amarok::QStringx(QStringLiteral("artist: %artist% - %album%"));
     QCOMPARE( m_testString.namedArgs( testArgs ) , QStringLiteral( "artist: Pornophonique - " ) );
 
     testArgs[ QStringLiteral("album") ] = QStringLiteral("8-Bit Lagerfeuer");
     QCOMPARE( m_testString.namedArgs( testArgs ) , QStringLiteral( "artist: Pornophonique - 8-Bit Lagerfeuer" ) );
 
-    m_testString = Amarok::QStringx("%artist%: %artist% - %album%");
+    m_testString = Amarok::QStringx(QStringLiteral("%artist%: %artist% - %album%"));
     QCOMPARE( m_testString.namedArgs( testArgs ) , QStringLiteral( "Pornophonique: Pornophonique - 8-Bit Lagerfeuer" ) );
 
     testArgs[ QStringLiteral("year") ] = QStringLiteral("2007");
@@ -101,72 +101,72 @@ void TestQStringx::testNamedOptArgs()
 {
     QMap<QString, QString> testArgs;
 
-    m_testString = Amarok::QStringx("");
+    m_testString = Amarok::QStringx(QStringLiteral(""));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "" ) );
 
-    m_testString = Amarok::QStringx("test");
+    m_testString = Amarok::QStringx(QStringLiteral("test"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "test" ) );
 
-    m_testString = Amarok::QStringx("%test%");
+    m_testString = Amarok::QStringx(QStringLiteral("%test%"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "" ) );
 
-    m_testString = Amarok::QStringx("{ %test% }");
+    m_testString = Amarok::QStringx(QStringLiteral("{ %test% }"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "" ) );
 
-    m_testString = Amarok::QStringx("test{%test%}");
+    m_testString = Amarok::QStringx(QStringLiteral("test{%test%}"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "test" ) );
 
-    m_testString = Amarok::QStringx("{test{%test%}}");
+    m_testString = Amarok::QStringx(QStringLiteral("{test{%test%}}"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "test" ) );
 
-    m_testString = Amarok::QStringx("%test%{%test%}");
+    m_testString = Amarok::QStringx(QStringLiteral("%test%{%test%}"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "" ) );
 
-    m_testString = Amarok::QStringx("test%test% ");
+    m_testString = Amarok::QStringx(QStringLiteral("test%test% "));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "test " ) );
 
     testArgs[ QStringLiteral("artist") ] = QStringLiteral("All:My:Faults");
-    m_testString = Amarok::QStringx("%artist%");
+    m_testString = Amarok::QStringx(QStringLiteral("%artist%"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "All:My:Faults" ) );
 
-    m_testString = Amarok::QStringx("{%test% }{%artist%}");
+    m_testString = Amarok::QStringx(QStringLiteral("{%test% }{%artist%}"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "All:My:Faults" ) );
 
-    m_testString = Amarok::QStringx("{%test% {%artist%}}");
+    m_testString = Amarok::QStringx(QStringLiteral("{%test% {%artist%}}"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "" ) );
 
-    m_testString = Amarok::QStringx("{%artist% {%test%}}");
+    m_testString = Amarok::QStringx(QStringLiteral("{%artist% {%test%}}"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "All:My:Faults " ) );
 
     testArgs[ QStringLiteral("track") ] = QStringLiteral("Some track");
-    m_testString = Amarok::QStringx("{%test% {%artist%}}%track%");
+    m_testString = Amarok::QStringx(QStringLiteral("{%test% {%artist%}}%track%"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "Some track" ) );
 
-    m_testString = Amarok::QStringx("{%artist% {%track%}} %test%");
+    m_testString = Amarok::QStringx(QStringLiteral("{%artist% {%track%}} %test%"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "All:My:Faults Some track " ) );
 
     testArgs[ QStringLiteral("test") ] = QStringLiteral("");
-    m_testString = Amarok::QStringx("{%test%}");
+    m_testString = Amarok::QStringx(QStringLiteral("{%test%}"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "" ) );
 
-    m_testString = Amarok::QStringx("before{%test%}");
+    m_testString = Amarok::QStringx(QStringLiteral("before{%test%}"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "before" ) );
 
-    m_testString = Amarok::QStringx("{%test%}after");
+    m_testString = Amarok::QStringx(QStringLiteral("{%test%}after"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "after" ) );
 
-    m_testString = Amarok::QStringx("before{%test%}after");
+    m_testString = Amarok::QStringx(QStringLiteral("before{%test%}after"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "beforeafter" ) );
 
-    m_testString = Amarok::QStringx("{%test% }{%artist%}");
+    m_testString = Amarok::QStringx(QStringLiteral("{%test% }{%artist%}"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "All:My:Faults" ) );
 
-    m_testString = Amarok::QStringx("{%test% {%artist%}}");
+    m_testString = Amarok::QStringx(QStringLiteral("{%test% {%artist%}}"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "" ) );
 
-    m_testString = Amarok::QStringx("{%artist% {%test%}}");
+    m_testString = Amarok::QStringx(QStringLiteral("{%artist% {%test%}}"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QStringLiteral( "All:My:Faults " ) );
 
-    m_testString = Amarok::QStringx("[%test2%:test {%artist%}%test%{ [%test%]}]");
+    m_testString = Amarok::QStringx(QStringLiteral("[%test2%:test {%artist%}%test%{ [%test%]}]"));
     QCOMPARE( m_testString.namedOptArgs( testArgs ), QStringLiteral( "test All:My:Faults Unknown test" ) );
 }

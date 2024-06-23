@@ -34,18 +34,8 @@ Amarok::QStringx::QStringx( const QString &s )
 {
 }
 
-Amarok::QStringx::QStringx( const QByteArray &ba )
-                : QString( ba )
-{
-}
-
 Amarok::QStringx::QStringx( const QChar *unicode, uint length )
                 : QString( unicode, length )
-{
-}
-
-Amarok::QStringx::QStringx( const char *str )
-                : QString( str )
 {
 }
 
@@ -81,7 +71,7 @@ Amarok::QStringx::namedArgs( const QMap<QString, QString> &args, bool opt ) cons
 {
     // Screen all kinds of brackets and format string with namedOptArgs.
     QString formatString = *this;
-    formatString.replace( QRegularExpression( "([\\[\\]{}])" ),"\\\\1" );
+    formatString.replace( QRegularExpression( QStringLiteral("([\\[\\]{}])") ), QStringLiteral("\\\\1") );
 
     // Legacy code returned empty string if any token was empty, so do the same
     if( opt )
