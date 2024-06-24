@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-23 01:47+0000\n"
+"POT-Creation-Date: 2024-06-24 01:40+0000\n"
 "PO-Revision-Date: 2021-11-08 08:52+0100\n"
 "Last-Translator: Kristof Kiszel <kiszel.kristof@gmail.com>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
@@ -12052,12 +12052,12 @@ msgstr "Magasabb besorolások"
 msgid "Not Recently Played"
 msgstr "Mostanában nem lejátszott"
 
-#: playlist/PlaylistBreadcrumbItem.cpp:43
+#: playlist/PlaylistBreadcrumbItem.cpp:48
 #, kde-format
 msgid "Shuffle"
 msgstr "Keverés"
 
-#: playlist/PlaylistBreadcrumbItem.cpp:130
+#: playlist/PlaylistBreadcrumbItem.cpp:135
 #, kde-format
 msgid "Add a sorting level to the playlist."
 msgstr "Rendezési szint hozzáadása a lejátszólistához."

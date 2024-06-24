@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-23 01:47+0000\n"
+"POT-Creation-Date: 2024-06-24 01:40+0000\n"
 "PO-Revision-Date: 2021-06-20 14:10-0300\n"
 "Last-Translator: Thiago Masato Costa Sueto <herzenschein@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
@@ -12071,12 +12071,12 @@ msgstr "Avaliações mais altas"
 msgid "Not Recently Played"
 msgstr "Não reproduzidas recentemente"
 
-#: playlist/PlaylistBreadcrumbItem.cpp:43
+#: playlist/PlaylistBreadcrumbItem.cpp:48
 #, kde-format
 msgid "Shuffle"
 msgstr "Embaralhar"
 
-#: playlist/PlaylistBreadcrumbItem.cpp:130
+#: playlist/PlaylistBreadcrumbItem.cpp:135
 #, kde-format
 msgid "Add a sorting level to the playlist."
 msgstr "Adiciona um nível de organização à lista de músicas."
