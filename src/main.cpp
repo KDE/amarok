@@ -108,6 +108,7 @@ int main( int argc, char *argv[] )
                          i18n("Amarok authorship is not a hobby, it's a lifestyle. "
                                "But when people move on we want to keep respecting "
                                "them by mentioning them here:"), "" );
+    ocsData.addAuthor( "%%category%%", aboutData.authors().last() );
     // NOTE 2024: Moved Inactive author header up here to reflect the fact that this list hasn't been updated lately
 
     aboutData.addAuthor( i18n("Bart 'Where are my toothpicks' Cerneels"),
@@ -155,8 +156,6 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( i18n("Valorie Zimmerman"),
                          i18n("Rokymoter, Handbook (valorie)"), "valorie@kde.org" );
     ocsData.addAuthor( "valorie", aboutData.authors().last() );
-
-    ocsData.addAuthor( "%%category%%", aboutData.authors().last() );
 
     aboutData.addAuthor( i18n("Ian 'The Beard' Monroe"), i18n("Developer (eean)"), "ian@monroe.nu" );
     ocsData.addAuthor( "eean", aboutData.authors().last() );
