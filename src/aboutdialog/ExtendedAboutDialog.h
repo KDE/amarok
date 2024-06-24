@@ -30,7 +30,6 @@
 
 #include <QDialog>
 #include <QPointer>
-#include <Attica/ProviderManager>
 
 class AMAROK_EXPORT ExtendedAboutDialog : public QDialog
 {
@@ -40,8 +39,6 @@ public:
     ~ExtendedAboutDialog() override;
 
 private Q_SLOTS:
-    void switchToOcsWidgets();
-    void onProvidersFetched();
     void showLicense( const QString &number );
 
 private:
@@ -51,21 +48,17 @@ private:
     Q_DISABLE_COPY( ExtendedAboutDialog )
 
     OcsData m_ocsData;
-    Attica::ProviderManager m_providerManager;
 
 //Authors:
     QString m_authorPageTitle;
-    QPointer<AnimatedBarWidget> m_showOcsAuthorButton;
     QPointer<QWidget> m_authorWidget;
     QPointer<OcsPersonListWidget> m_authorListWidget;
 
 //Contributors:
-    QPointer<AnimatedBarWidget> m_showOcsCreditButton;
     QPointer<QWidget> m_creditWidget;
     QPointer<OcsPersonListWidget> m_creditListWidget;
 
 //Donors:
-    QPointer<AnimatedBarWidget> m_showOcsDonorButton;
     QPointer<QWidget> m_donorWidget;
     QPointer<OcsPersonListWidget> m_donorListWidget;
 

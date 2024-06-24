@@ -30,7 +30,6 @@
 #include <QFontDatabase>
 #include <QLabel>
 #include <QLayout>
-#include <QNetworkConfigurationManager>
 #include <QPushButton>
 #include <QScrollBar>
 #include <QStandardPaths>
@@ -44,7 +43,6 @@
 #include <KIconLoader>
 #include <KMessageBox>
 #include <KTitleWidget>
-#include <Attica/Provider>
 
 void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 {
@@ -213,12 +211,6 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
         m_authorWidget = new QWidget( this );
         QVBoxLayout *authorLayout = new QVBoxLayout( m_authorWidget.data() );
 
-        m_showOcsAuthorButton = new AnimatedBarWidget( openDesktopIcon,
-                                     i18n( "Get data from openDesktop.org to learn more about the team" ),
-                                     "process-working", m_authorWidget.data() );
-        connect( m_showOcsAuthorButton.data(), &AnimatedBarWidget::clicked, this, &ExtendedAboutDialog::switchToOcsWidgets );
-        authorLayout->addWidget( m_showOcsAuthorButton.data() );
-
         if (!aboutData->customAuthorTextEnabled() || !aboutData->customAuthorRichText().isEmpty())
         {
             QLabel *bugsLabel = new QLabel( m_authorWidget.data() );
@@ -248,10 +240,6 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
         }
 
         m_authorListWidget = new OcsPersonListWidget( d->aboutData->authors(), m_ocsData.authors(), OcsPersonItem::Author, m_authorWidget.data() );
-        connect( m_authorListWidget.data(), &OcsPersonListWidget::switchedToOcs,
-                 m_showOcsAuthorButton.data(), &AnimatedBarWidget::stop );
-        connect( m_authorListWidget.data(), &OcsPersonListWidget::switchedToOcs,
-                 m_showOcsAuthorButton.data(), &AnimatedBarWidget::fold );
 
         authorLayout->addWidget( m_authorListWidget.data() );
         authorLayout->setMargin( 0 );
@@ -270,17 +258,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
         m_creditWidget = new QWidget( this );
         QVBoxLayout *creditLayout = new QVBoxLayout( m_creditWidget.data() );
 
-        m_showOcsCreditButton = new AnimatedBarWidget( openDesktopIcon,
-                                     i18n( "Get data from openDesktop.org to learn more about contributors" ),
-                                     "process-working", m_creditWidget.data() );
-        connect( m_showOcsCreditButton.data(), &AnimatedBarWidget::clicked, this, &ExtendedAboutDialog::switchToOcsWidgets );
-        creditLayout->addWidget( m_showOcsCreditButton.data() );
-
         m_creditListWidget = new OcsPersonListWidget( d->aboutData->credits(), m_ocsData.credits(), OcsPersonItem::Contributor, m_creditWidget.data() );
-        connect( m_creditListWidget.data(), &OcsPersonListWidget::switchedToOcs,
-                 m_showOcsCreditButton.data(), &AnimatedBarWidget::stop );
-        connect( m_creditListWidget.data(), &OcsPersonListWidget::switchedToOcs,
-                 m_showOcsCreditButton.data(), &AnimatedBarWidget::fold );
 
         creditLayout->addWidget( m_creditListWidget.data() );
         creditLayout->setMargin( 0 );
@@ -298,12 +276,6 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
         m_donorWidget = new QWidget( this );
         QVBoxLayout *donorLayout = new QVBoxLayout( m_donorWidget.data() );
 
-        m_showOcsDonorButton = new AnimatedBarWidget( openDesktopIcon,
-                                     i18n( "Get data from openDesktop.org to learn more about our generous donors" ),
-                                     "process-working", m_donorWidget.data() );
-        connect( m_showOcsDonorButton.data(), &AnimatedBarWidget::clicked, this, &ExtendedAboutDialog::switchToOcsWidgets );
-        donorLayout->addWidget( m_showOcsDonorButton.data() );
-
         QList< KAboutPerson > donors;
         for( QList< QPair< QString, KAboutPerson > >::const_iterator it = m_ocsData.donors()->constBegin();
              it != m_ocsData.donors()->constEnd(); ++it )
@@ -311,8 +283,6 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
             donors << ( *it ).second;
         }
         m_donorListWidget = new OcsPersonListWidget( donors , m_ocsData.donors(), OcsPersonItem::Contributor, m_donorWidget.data() );
-        connect( m_donorListWidget.data(), &OcsPersonListWidget::switchedToOcs, m_showOcsDonorButton.data(), &AnimatedBarWidget::stop );
-        connect( m_donorListWidget.data(), &OcsPersonListWidget::switchedToOcs, m_showOcsDonorButton.data(), &AnimatedBarWidget::fold );
 
         donorLayout->addWidget( m_donorListWidget.data() );
         donorLayout->setMargin( 0 );
@@ -358,56 +328,12 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
 
     mainLayout->addWidget(buttonBox);
 
-    connect( &m_providerManager, &Attica::ProviderManager::defaultProvidersLoaded, this, &ExtendedAboutDialog::onProvidersFetched );
-
     resize( QSize( 480, 460 ) );
 }
 
 ExtendedAboutDialog::~ExtendedAboutDialog()
 {
     delete d;
-}
-
-void
-ExtendedAboutDialog::switchToOcsWidgets()
-{    
-    if( !QNetworkConfigurationManager().isOnline() )
-    {
-        KMessageBox::error( this, i18n( "Internet connection not available" ), i18n( "Network error" ) );
-        return;
-    }
-
-    if( m_showOcsAuthorButton )
-        m_showOcsAuthorButton->animate();
-    if( m_showOcsCreditButton )
-        m_showOcsCreditButton->animate();
-    if( m_showOcsDonorButton )
-        m_showOcsDonorButton->animate();
-    m_providerManager.loadDefaultProviders();
-}
-
-void
-ExtendedAboutDialog::onProvidersFetched()
-{
-    for( const Attica::Provider &provider : m_providerManager.providers() )
-    {
-        if( !provider.isValid() || !provider.isEnabled() )
-            continue;
-
-        if( provider.baseUrl().host() != m_ocsData.providerId() )
-            continue;
-
-        Attica::Provider copy = provider;
-        debug()<<"Successfully fetched OCS provider"<< copy.name();
-        debug()<<"About to request OCS data";
-        if( m_authorListWidget )
-            m_authorListWidget->switchToOcs( copy );
-        if( m_creditListWidget )
-            m_creditListWidget->switchToOcs( copy );
-        if( m_donorListWidget )
-            m_donorListWidget->switchToOcs( copy );
-        break;
-    }
 }
 
 void

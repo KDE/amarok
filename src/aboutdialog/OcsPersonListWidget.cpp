@@ -27,7 +27,6 @@ OcsPersonListWidget::OcsPersonListWidget( const QList< KAboutPerson > &persons,
                                           QWidget *parent )
     : QWidget( parent )
     , m_status( status )
-    , m_fetchCount( 0 )
 {
     //Set up the layouts...
     QHBoxLayout *scrollLayout = new QHBoxLayout( this );
@@ -52,37 +51,6 @@ OcsPersonListWidget::OcsPersonListWidget( const QList< KAboutPerson > &persons,
     {
         OcsPersonItem *item = new OcsPersonItem( persons.at( i ), ocsPersons->at( i ).first, status, m_personsArea );
         m_areaLayout->addWidget( item );
-        connect( item, &OcsPersonItem::ocsFetchStarted, this, &OcsPersonListWidget::onOcsFetchStarted );
-        connect( item, &OcsPersonItem::ocsFetchResult, this, &OcsPersonListWidget::onOcsDataFetched );
     }
 }
 
-void
-OcsPersonListWidget::switchToOcs( Attica::Provider &provider )
-{
-    for( int i = 0; i < m_areaLayout->count(); ++i )
-    {
-        OcsPersonItem *item = qobject_cast< OcsPersonItem * >( m_areaLayout->itemAt( i )->widget() );
-        item->switchToOcs( provider );
-    }
-}
-
-void
-OcsPersonListWidget::onOcsFetchStarted()        //SLOT
-{
-    m_fetchCount++;
-}
-
-void
-OcsPersonListWidget::onOcsDataFetched( int err )    //SLOT
-{
-    m_fetchCount--;
-    debug()<<m_status<<"Fetch count is"<< m_fetchCount;
-    if( err != 0 )
-        warning() << "OCS data download failed with error"<<err;
-    if( m_fetchCount == 0 )
-    {
-        debug()<<m_status<<"FETCH COMPLETE";
-        Q_EMIT switchedToOcs();
-    }
-}

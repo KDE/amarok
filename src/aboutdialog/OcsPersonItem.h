@@ -23,16 +23,8 @@
 
 #include <kaboutdata.h>
 #include <KToolBar>
-#include <Attica/Person>
-#include <Attica/Provider>
 
 #include <QLabel>
-
-class KJob;
-
-namespace Attica {
-    class BaseJob;
-}
 
 class OcsPersonItem : public QWidget, private Ui::OcsPersonItem
 {
@@ -44,11 +36,6 @@ public:
         Author = 0,
         Contributor = 1
     };
-    enum State
-    {
-        Offline = 0,
-        Online = 1
-    };
 
     OcsPersonItem( const KAboutPerson &person, const QString &ocsUsername, PersonStatus status, QWidget *parent = nullptr );
 
@@ -56,45 +43,21 @@ public:
 
     QString name() const;
 
-    void switchToOcs( Attica::Provider &provider );
-
 Q_SIGNALS:
     void ocsFetchStarted();
     void ocsFetchResult( int err );
 
 private Q_SLOTS:
     void launchUrl( QAction *action );
-    void onJobFinished( Attica::BaseJob *job );
-    void onAvatarLoadingJobFinished( KJob *job );
 
 private:
     void init();
-    void fillOcsData( const Attica::Person &ocsPerson );
     const KAboutPerson *m_person;
     QString m_ocsUsername;
     QString m_aboutText;
     KToolBar *m_iconsBar;   //!< holds the icons for email, homepage and oD.o profile
     KToolBar *m_snBar;      //!< holds any other icons for social network profiles
     PersonStatus m_status;
-    State m_state;
-/*
-   <firstname>Frank</firstname>
-   <lastname>Test</lastname>
-   <communityrole>developer</communityrole>
-   <homepage>opendesktop.org</homepage>
-   <company>opendesktop.org</company>
-   <avatarpic>http://www.KDE-Look.org/CONTENT/user-pics/0/Frank.jpg</avatarpic>
-   <avatarpicfound>1</avatarpicfound>
-   <bigavatarpic>http://www.KDE-Look.org/CONTENT/user-bigpics/0/Frank.jpg</bigavatarpic>
-   <bigavatarpicfound>1</bigavatarpicfound>
-   <city>Stuttgart</city>
-   <country>Germany</country>
-   <ircnick>karli</ircnick>
-   <ircchannels>kde-dev, plasma</ircchannels>
-   <irclink>irc://irc.freenode.org/kde-dev</irclink>
-   <irclink>irc://irc.freenode.org/plasma</irclink>
-   <profilepage>http://www.KDE-Look.org/usermanager/search.php?username=Frank</profilepage>
-      */
 };
 
 #endif //AMAROK_OCSPERSONITEM_H

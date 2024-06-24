@@ -56,7 +56,6 @@ set_package_properties(Qt${QT_MAJOR_VERSION}UiTools PROPERTIES TYPE OPTIONAL PUR
 
 find_package(KF${KF_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Archive
-    Attica
     Codecs
     Config
     ConfigWidgets

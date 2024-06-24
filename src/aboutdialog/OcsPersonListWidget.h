@@ -19,7 +19,6 @@
 
 #include "OcsPersonItem.h"
 #include "OcsData.h"
-#include <Attica/Provider>
 #include <KAboutData>
 
 class OcsPersonListWidget : public QWidget
@@ -33,18 +32,13 @@ public:
                          QWidget *parent = nullptr );
 
 public Q_SLOTS:
-    void switchToOcs( Attica::Provider &provider );
-    void onOcsFetchStarted();
-    void onOcsDataFetched( int err );
 
 Q_SIGNALS:
-    void switchedToOcs();
 
 private:
     QWidget *m_personsArea;
     QVBoxLayout *m_areaLayout;
     OcsPersonItem::PersonStatus m_status;
-    int m_fetchCount;
 };
 
 #endif  //AMAROK_OCSPERSONLISTWIDGET_H
