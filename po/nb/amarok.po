@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-17 01:48+0000\n"
+"POT-Creation-Date: 2024-06-25 01:42+0000\n"
 "PO-Revision-Date: 2013-10-23 10:56+0200\n"
 "Last-Translator: Bjørn Steensrud <bjornst@skogkatt.homelinux.org>\n"
 "Language-Team: Norwegian Bokmål <l10n-no@lister.huftis.org>\n"
@@ -176,7 +176,7 @@ msgstr "Nettverksfeil"
 msgid "Email contributor"
 msgstr "Send e-post til bidragsyter"
 
-#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:277
+#: aboutdialog/OcsPersonItem.cpp:104 aboutdialog/OcsPersonItem.cpp:276
 #, kde-format
 msgid "Visit contributor's homepage"
 msgstr "Besøk bidragsyters nettside"
@@ -187,97 +187,97 @@ msgctxt "A person's location: City, Country"
 msgid "%1, %2"
 msgstr "%1, %2"
 
-#: aboutdialog/OcsPersonItem.cpp:202
+#: aboutdialog/OcsPersonItem.cpp:201
 #, kde-format
 msgid "IRC channels: "
 msgstr "IRC-kanaler: "
 
-#: aboutdialog/OcsPersonItem.cpp:215
+#: aboutdialog/OcsPersonItem.cpp:214
 #, kde-format
 msgid "Favorite music: "
 msgstr "Yndlingsmusikk: "
 
-#: aboutdialog/OcsPersonItem.cpp:220
+#: aboutdialog/OcsPersonItem.cpp:219
 #, kde-format
 msgid "Visit %1's openDesktop.org profile"
 msgstr "Besøk %1s  openDesktop.org-profil"
 
-#: aboutdialog/OcsPersonItem.cpp:222
+#: aboutdialog/OcsPersonItem.cpp:221
 #, kde-format
 msgid "Visit %1's profile on openDesktop.org"
 msgstr "Besøk %1s profil på openDesktop.org"
 
-#: aboutdialog/OcsPersonItem.cpp:256
+#: aboutdialog/OcsPersonItem.cpp:255
 #, kde-format
 msgid "Visit contributor's blog"
 msgstr "Besøk bidragsyters blogg"
 
-#: aboutdialog/OcsPersonItem.cpp:261
+#: aboutdialog/OcsPersonItem.cpp:260
 #, kde-format
 msgid "Visit contributor's del.icio.us profile"
 msgstr "Besøk bidragsyters profil på del.icio.us"
 
-#: aboutdialog/OcsPersonItem.cpp:266
+#: aboutdialog/OcsPersonItem.cpp:265
 #, kde-format
 msgid "Visit contributor's Digg profile"
 msgstr "Besøk bidragsyters Digg-profil"
 
-#: aboutdialog/OcsPersonItem.cpp:271
+#: aboutdialog/OcsPersonItem.cpp:270
 #, kde-format
 msgid "Visit contributor's Facebook profile"
 msgstr "Besøk bidragsyters Facebook-profil"
 
-#: aboutdialog/OcsPersonItem.cpp:287
+#: aboutdialog/OcsPersonItem.cpp:286
 #, kde-format
 msgid "Visit contributor's Last.fm profile"
 msgstr "Besøk bidragsyters Last.fm-profil"
 
-#: aboutdialog/OcsPersonItem.cpp:295
+#: aboutdialog/OcsPersonItem.cpp:294
 #, kde-format
 msgid "Visit contributor's LinkedIn profile"
 msgstr "Besøk bidragsyters LinkedIn-profil"
 
-#: aboutdialog/OcsPersonItem.cpp:300
+#: aboutdialog/OcsPersonItem.cpp:299
 #, kde-format
 msgid "Visit contributor's MySpace homepage"
 msgstr "Besøk bidragsyters MySpace nettside"
 
-#: aboutdialog/OcsPersonItem.cpp:305
+#: aboutdialog/OcsPersonItem.cpp:304
 #, kde-format
 msgid "Visit contributor's Reddit profile"
 msgstr "Besøk bidragsyters Reddit-profil"
 
-#: aboutdialog/OcsPersonItem.cpp:310
+#: aboutdialog/OcsPersonItem.cpp:309
 #, kde-format
 msgid "Visit contributor's YouTube profile"
 msgstr "Besøk bidragsyters YouTube-profil"
 
-#: aboutdialog/OcsPersonItem.cpp:315
+#: aboutdialog/OcsPersonItem.cpp:314
 #, kde-format
 msgid "Visit contributor's Twitter feed"
 msgstr "Besøk bidragsyters Twitter-kilde"
 
-#: aboutdialog/OcsPersonItem.cpp:320
+#: aboutdialog/OcsPersonItem.cpp:319
 #, kde-format
 msgid "Visit contributor's Wikipedia profile"
 msgstr "Besøk bidragsyters Wikipedia-profil"
 
-#: aboutdialog/OcsPersonItem.cpp:325
+#: aboutdialog/OcsPersonItem.cpp:324
 #, kde-format
 msgid "Visit contributor's Xing profile"
 msgstr "Besøk bidragsyters Xing-profil"
 
-#: aboutdialog/OcsPersonItem.cpp:330
+#: aboutdialog/OcsPersonItem.cpp:329
 #, kde-format
 msgid "Visit contributor's identi.ca feed"
 msgstr "Besøk bidragsyters identi.ca-kilde"
 
-#: aboutdialog/OcsPersonItem.cpp:335
+#: aboutdialog/OcsPersonItem.cpp:334
 #, kde-format
 msgid "Visit contributor's libre.fm profile"
 msgstr "Besøk bidragsyters libre.fm-profil"
 
-#: aboutdialog/OcsPersonItem.cpp:340
+#: aboutdialog/OcsPersonItem.cpp:339
 #, kde-format
 msgid "Visit contributor's StackOverflow profile"
 msgstr "Besøk bidragsyters StackOverflow-profil"
@@ -371,7 +371,7 @@ msgstr "Stopp etter dette sporet: På"
 
 #: ActionClasses.cpp:498
 #: context/applets/currenttrack/package/contents/ui/main.qml:102
-#: EngineController.cpp:1334 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
+#: EngineController.cpp:1341 mac/GrowlInterface.cpp:43 widgets/Osd.cpp:663
 #, kde-format
 msgid "No track playing"
 msgstr "Ingen spor spiller"
@@ -1737,12 +1737,6 @@ msgstr "Ny gruppe"
 
 #: amarokurls/BookmarkModel.cpp:537
 #: context/applets/similarartists/ArtistWidget.cpp:443
-#: context/applets/upcomingevents/UpcomingEventsMapWidget.cpp:162
-#: context/applets/upcomingevents/UpcomingEventsMapWidget.cpp:163
-#: context/applets/upcomingevents/UpcomingEventsMapWidget.cpp:165
-#: context/applets/upcomingevents/UpcomingEventsMapWidget.cpp:166
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:208
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:232
 #, kde-format
 msgid "none"
 msgstr "ingen"
@@ -2071,7 +2065,7 @@ msgid "Show Cover Art"
 msgstr "Vis omslagsgrafikk"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:271
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:87
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:88
 #, kde-format
 msgid "Merged View"
 msgstr "Flettet visning"
@@ -2116,14 +2110,14 @@ msgstr "Ukjent"
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:702
 #: core-impl/collections/support/ArtistHelper.cpp:40
 #: core/support/Amarok.cpp:211 covermanager/CoverManager.cpp:839
-#: dialogs/TrackOrganizer.cpp:56 widgets/AlbumBreadcrumbWidget.cpp:65
+#: dialogs/TrackOrganizer.cpp:57 widgets/AlbumBreadcrumbWidget.cpp:65
 #, kde-format
 msgid "Various Artists"
 msgstr "Diverse artister"
 
 #: browsers/CollectionTreeItemModelBase.cpp:1102
 #: browsers/CollectionTreeView.cpp:369
-#: context/applets/albums/plugin/AlbumsEngine.cpp:299
+#: context/applets/albums/plugin/AlbumsEngine.cpp:300
 #: context/applets/wikipedia/package/contents/ui/main.qml:115
 #: dialogs/transferdialog.cpp:104 musicbrainz/MusicBrainzTagsModel.cpp:38
 #: playlist/PlaylistModel.cpp:932 playlist/view/PlaylistViewCommon.cpp:65
@@ -2218,7 +2212,7 @@ msgstr "Mer …"
 
 #: browsers/CollectionTreeView.cpp:1089 browsers/filebrowser/FileView.cpp:383
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:71
-#: context/applets/albums/plugin/AlbumsEngine.cpp:284
+#: context/applets/albums/plugin/AlbumsEngine.cpp:285
 #: services/lastfm/LastFmTreeView.cpp:97
 #, kde-format
 msgid "&Add to Playlist"
@@ -2226,7 +2220,7 @@ msgstr "&Legg til spilleliste"
 
 #: browsers/CollectionTreeView.cpp:1100 browsers/filebrowser/FileView.cpp:394
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:76
-#: context/applets/albums/plugin/AlbumsEngine.cpp:285
+#: context/applets/albums/plugin/AlbumsEngine.cpp:286
 #: services/lastfm/LastFmTreeView.cpp:106
 #, kde-format
 msgctxt "Replace the currently loaded tracks with these"
@@ -2548,23 +2542,23 @@ msgstr ""
 "spillelister. Der kan du også sette sammen krafrtige dynamiske spillelister "
 "og styre dine podkastabonnementer og episoder."
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:77
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:78
 #: services/opmldirectory/OpmlDirectoryModel.cpp:42
 #, kde-format
 msgid "Add Folder"
 msgstr "Legg til mappe"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:82
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:83
 #, kde-format
 msgid "Visible Sources"
 msgstr "Synlige kilder"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:187
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:189
 #, kde-format
 msgid "Folders are only shown in <b>merged view</b>."
 msgstr "Mapper vises bare i <b>flettet visning</b>."
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:283
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:285
 #, kde-format
 msgctxt "default name for new folder"
 msgid "New Folder"
@@ -2680,7 +2674,7 @@ msgid "Use relative path for &saving"
 msgstr "Bruk relativ &sti til lagring"
 
 #: browsers/playlistbrowser/PlaylistBrowserView.cpp:534
-#: covermanager/CoverFoundDialog.cpp:383 MainWindow.cpp:464
+#: covermanager/CoverFoundDialog.cpp:384 MainWindow.cpp:464
 #, kde-format
 msgid "Save As"
 msgstr "Lagre som"
@@ -2891,7 +2885,7 @@ msgstr "Sett opp generelle valg"
 
 #: configdialog/ConfigDialog.cpp:60
 #: core-impl/collections/db/DatabaseCollection.cpp:54
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:71
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:72
 #, kde-format
 msgid "Local Collection"
 msgstr "Lokal samling"
@@ -3923,17 +3917,17 @@ msgid_plural "%1 tracks"
 msgstr[0] "%1 spor"
 msgstr[1] "%1 spor"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:211
+#: context/applets/albums/plugin/AlbumsEngine.cpp:212
 #, kde-format
 msgid "Disc %1"
 msgstr "Disk %1"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:286
+#: context/applets/albums/plugin/AlbumsEngine.cpp:287
 #, kde-format
 msgid "&Queue"
 msgstr "&Kø"
 
-#: context/applets/albums/plugin/AlbumsEngine.cpp:287
+#: context/applets/albums/plugin/AlbumsEngine.cpp:288
 #: playlist/view/PlaylistViewCommon.cpp:265
 #, kde-format
 msgid "Edit Track Details"
@@ -4018,7 +4012,6 @@ msgstr "Fjern etikettlapp"
 
 #: context/applets/labels/LabelGraphicsItem.cpp:74
 #: context/applets/similarartists/ArtistWidget.cpp:131
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:146
 #: playlist/view/PlaylistViewCommon.cpp:202
 #, kde-format
 msgid "Show in Media Sources"
@@ -4046,7 +4039,6 @@ msgstr "Last på nytt"
 #: context/applets/labels/LabelsApplet.cpp:114
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:98
 #: context/applets/tabs/TabsApplet.cpp:108
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:85
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:48
 #, kde-format
@@ -4578,320 +4570,6 @@ msgctxt "Guitar tablature"
 msgid "tab provided from: "
 msgstr "tablatur levert fra: "
 
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:68
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:129
-#, kde-format
-msgid "Upcoming Events"
-msgstr "Kommende arrangementer"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:79
-#, kde-format
-msgid "View Events Calendar"
-msgstr "Vis arrangementskalender"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:92
-#, kde-format
-msgctxt "@title:group"
-msgid "No track is currently playing"
-msgstr "Ingen spor spiller nå"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:159
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:304
-#, kde-format
-msgid "Favorite Venues"
-msgstr "Yndlingsarenaer"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:225
-#, kde-format
-msgid "No upcoming events"
-msgstr "Ingen kommende arrangementer"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:225
-#, kde-format
-msgid "%1: No upcoming events"
-msgstr "%1: Ingen kommende arrangementer"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "1 event"
-msgid_plural "%1 events"
-msgstr[0] "1 arrangement"
-msgstr[1] "%1 arrangementer"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:231
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:641
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "%1: 1 event"
-msgid_plural "%1: %2 events"
-msgstr[0] "%1: 1 arrangement"
-msgstr[1] "%1: %2 arrangementer"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
-#, kde-format
-msgid "Upcoming Events Settings"
-msgstr "Innstillinger for kommende arrangementer"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:354
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:363
-#, kde-format
-msgctxt "@label:textbox Url label"
-msgid "link"
-msgstr "lenke"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:495
-#, kde-format
-msgid "Map View"
-msgstr "Kartvisning"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:533
-#, kde-format
-msgid "Events Calendar"
-msgstr "Arrangementskalender"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#. i18n: ectx: property (text), item, widget (QComboBox, filterComboBox)
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:552
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:33
-#: context/applets/upcomingevents/upcomingEventsSettings.ui:26
-#, kde-format
-msgid "This week"
-msgstr "Denne uka"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#. i18n: ectx: property (text), item, widget (QComboBox, filterComboBox)
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:554
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:38
-#: context/applets/upcomingevents/upcomingEventsSettings.ui:31
-#, kde-format
-msgid "This month"
-msgstr "Denne måneden"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#. i18n: ectx: property (text), item, widget (QComboBox, filterComboBox)
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:556
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:43
-#: context/applets/upcomingevents/upcomingEventsSettings.ui:36
-#, kde-format
-msgid "This year"
-msgstr "I år"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:639
-#, kde-format
-msgctxt "@title:group"
-msgid "Favorite Venues"
-msgstr "Yndlingsarenaer"
-
-#: context/applets/upcomingevents/UpcomingEventsCalendarWidget.cpp:160
-#, kde-format
-msgctxt "@info:tooltip Calendar action"
-msgid "Jump to Today"
-msgstr "Hopp til i dag"
-
-#. i18n: ectx: property (text), widget (QLabel, filterLabel)
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:20
-#, kde-format
-msgid "Filter events by date:"
-msgstr "Filtrer arrangementer etter dato:"
-
-#. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#. i18n: ectx: property (text), item, widget (QComboBox, filterComboBox)
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:28
-#: context/applets/upcomingevents/upcomingEventsSettings.ui:21
-#, kde-format
-msgid "All events"
-msgstr "Alle arrangementer"
-
-#. i18n: ectx: property (text), widget (QCheckBox, groupVenueCheckBox)
-#: context/applets/upcomingevents/upcomingEventsGeneralSettings.ui:51
-#, kde-format
-msgid "&Group venue events"
-msgstr "&Grupper arena-arrangementer"
-
-#: context/applets/upcomingevents/UpcomingEventsMapWidget.cpp:122
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:125
-#, kde-format
-msgctxt "@label:textbox Title for a canceled upcoming event"
-msgid "<s>%1</s> (Canceled)"
-msgstr "<s>%1</s> (kansellert)"
-
-#. i18n: ectx: property (text), widget (QCheckBox, checkBox)
-#: context/applets/upcomingevents/upcomingEventsSettings.ui:44
-#, kde-format
-msgid "Show places as links"
-msgstr "VIs steder som lenker"
-
-#: context/applets/upcomingevents/UpcomingEventsStackItem.cpp:288
-#, kde-format
-msgid "Maximize"
-msgstr "Maksimer"
-
-#: context/applets/upcomingevents/UpcomingEventsStackItem.cpp:454
-#, kde-format
-msgid "Expand this widget"
-msgstr "Fold ut dette skjermelementet"
-
-#: context/applets/upcomingevents/UpcomingEventsStackItem.cpp:454
-#, kde-format
-msgid "Collapse this widget"
-msgstr "Fold sammen  dette skjermelementet"
-
-#. i18n: ectx: property (clickMessage), widget (KLineEdit, searchLineEdit)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:45
-#, kde-format
-msgid "Search Venue"
-msgstr "Søk etter arena"
-
-#. i18n: ectx: property (toolTip), widget (KComboBox, countryCombo)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:55
-#, kde-format
-msgid "Restrict venues to a specific country"
-msgstr "Begrens arenaer til ett bestemt land"
-
-#. i18n: ectx: property (text), item, widget (KComboBox, countryCombo)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:65
-#, kde-format
-msgid "Any Country"
-msgstr "Alle land"
-
-#. i18n: ectx: property (text), widget (QLabel, searchResultsLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:75
-#, kde-format
-msgid "Search Results:"
-msgstr "Søkeresultater:"
-
-#. i18n: ectx: property (text), widget (QLabel, selectedVenuesLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:104
-#, kde-format
-msgid "Selected Venues:"
-msgstr "Utvalgte arenaer:"
-
-#. i18n: ectx: property (text), widget (QLabel, photoLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:155
-#, kde-format
-msgid "Photo"
-msgstr "Foto"
-
-#. i18n: ectx: property (text), widget (QLabel, nameLabel)
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:183
-#: core-impl/collections/umscollection/UmsConfiguration.ui:22
-#, kde-format
-msgid "Name:"
-msgstr "Navn:"
-
-#. i18n: ectx: property (text), widget (QLabel, cityLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:193
-#, kde-format
-msgid "City:"
-msgstr "By:"
-
-#. i18n: ectx: property (text), widget (QLabel, UrlLabel)
-#. i18n: ectx: property (text), widget (QLabel, urlLabel)
-#. i18n: ectx: property (text), widget (QLabel, m_urlLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:223
-#: core-impl/podcasts/sql/PodcastSettingsBase.ui:52
-#: services/opmldirectory/AddOpmlWidget.ui:65
-#, kde-format
-msgid "URL:"
-msgstr "URL:"
-
-#. i18n: ectx: property (text), widget (QLabel, websiteLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:230
-#, kde-format
-msgid "Website:"
-msgstr "Nettsted:"
-
-#. i18n: ectx: property (text), widget (QLabel, countryLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:257
-#, kde-format
-msgid "Country:"
-msgstr "Land:"
-
-#. i18n: ectx: property (text), widget (QLabel, streetLabel)
-#: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:267
-#, kde-format
-msgid "Street:"
-msgstr "Gate:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:53
-#, kde-format
-msgid "Loading picture..."
-msgstr "Laster bildet …"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:78
-#, kde-format
-msgid "View map"
-msgstr "Vis kart"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:88
-#, kde-format
-msgid "Open Last.fm webpage for this event"
-msgstr "Åpne Last.fm nettside for dette arrangementet"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:95
-#, kde-format
-msgctxt "@label:textbox Supporting acts for an event"
-msgid "Supporting:"
-msgstr ""
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:96
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Venue:"
-msgstr "Arena:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:97
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Location:"
-msgstr "Sted:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:98
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Date:"
-msgstr "Dato:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:99
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Attending:"
-msgstr "Deltakere:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:100
-#, kde-format
-msgctxt "@label:textbox"
-msgid "Tags:"
-msgstr "Tagger:"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:217
-#, kde-format
-msgctxt "@info:tooltip"
-msgid "<strong>Tags:</strong><nl/>%1"
-msgstr "<strong>Tagger:</strong><nl/>%1"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:241
-#, kde-format
-msgctxt "@info:tooltip Supporting artists for an event"
-msgid "<strong>Supporting artists:</strong><nl/>%1"
-msgstr "<strong>Supportartister:</strong><nl/>%1"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:257
-#, kde-format
-msgctxt "@info:tooltip Number of days till an event"
-msgid "Tomorrow"
-msgid_plural "In <strong>%1</strong> days"
-msgstr[0] "I morgen"
-msgstr[1] "om <strong>%1 </strong> dager"
-
-#: context/applets/upcomingevents/UpcomingEventsWidget.cpp:269
-#, kde-format
-msgctxt "@info:tooltip"
-msgid "<strong>Location:</strong><nl/>%1"
-msgstr "<strong>Sted:</strong><nl/>%1"
-
 #: context/applets/wikipedia/package/contents/ui/main.qml:41
 #: context/applets/wikipedia/package/contents/ui/main.qml:153
 #, kde-format
@@ -4947,14 +4625,14 @@ msgstr "Ingen informasjon funnet …"
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
 #, kde-format
 msgctxt "Search pattern for an artist or band"
-msgid ".*\\(.*(artist|band).*\\))"
-msgstr ".*\\(.*(artist|band).*\\))"
+msgid ".*\\(.*(artist|band).*\\)"
+msgstr ""
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
 #, kde-format
 msgctxt "Search pattern for a composer"
-msgid ".*\\(.*(composer|musician).*\\))"
-msgstr ".*\\(.*(composer|musician).*\\))"
+msgid ".*\\(.*(composer|musician).*\\)"
+msgstr ""
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
 #, kde-format
@@ -5047,14 +4725,14 @@ msgstr "Aaron Seigo"
 msgid "Original author"
 msgstr "Opprinnelig forfatter"
 
-#: context/tools/amarokpkg.cpp:93 main.cpp:167
+#: context/tools/amarokpkg.cpp:93 main.cpp:166
 #, kde-format
 msgid "Leo Franchi"
 msgstr "Leo Franchi"
 
-#: context/tools/amarokpkg.cpp:94 main.cpp:251 main.cpp:253 main.cpp:267
-#: main.cpp:277 main.cpp:283 main.cpp:285 main.cpp:297 main.cpp:303
-#: main.cpp:305 main.cpp:309 main.cpp:317
+#: context/tools/amarokpkg.cpp:94 main.cpp:250 main.cpp:252 main.cpp:266
+#: main.cpp:276 main.cpp:282 main.cpp:284 main.cpp:296 main.cpp:302
+#: main.cpp:304 main.cpp:308 main.cpp:316
 #, kde-format
 msgid "Developer"
 msgstr "Utvikler"
@@ -5268,27 +4946,27 @@ msgstr ""
 msgid "Updating Amarok database schema"
 msgstr "Oppdatere Amarok-databaseskjema"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:528
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:529
 #, kde-format
 msgid "Source track does not exist: %1"
 msgstr "Kildesporet finnes ikke: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:539
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:540
 #, kde-format
 msgid "Could not create directory: %1"
 msgstr "Klarte ikke å opprette mappa: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:616
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:617
 #, kde-format
 msgid "Transferring: %1"
 msgstr "Overfører: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:618
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:619
 #, kde-format
 msgid "Transcoding: %1"
 msgstr "Transkoder: %1"
 
-#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:662
+#: core-impl/collections/db/sql/SqlCollectionLocation.cpp:663
 #: core-impl/collections/support/FileCollectionLocation.cpp:87
 #, kde-format
 msgid "Removing: %1"
@@ -5378,16 +5056,16 @@ msgstr "Ukjent samling"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:421
-#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:594
-#: covermanager/CoverFetchUnit.cpp:604 playlist/PlaylistQueueEditor.cpp:69
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
+#: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
+#: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
 #, kde-format
 msgid "Unknown Artist"
 msgstr "Ukjent artist"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
-#: EngineController.cpp:1312
+#: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
 msgstr "Ukjent spor"
@@ -5611,7 +5289,7 @@ msgstr "Klargjør iPod"
 
 #. i18n: ectx: property (title), widget (QGroupBox, infoGroupBox)
 #: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:103
-#: covermanager/CoverFoundDialog.cpp:743
+#: covermanager/CoverFoundDialog.cpp:744
 #, kde-format
 msgid "Information"
 msgstr "Informasjon"
@@ -5892,41 +5570,41 @@ msgctxt "Podcasts on a media device"
 msgid "Podcasts on %1"
 msgstr "Podkaster på %1"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:152
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:153
 #, kde-format
 msgid "Could not connect to MTP Device"
 msgstr "Klarte ikke koble til MTP-enhet"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:378
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:379
 #, kde-format
 msgid "Could not copy track from device."
 msgstr "Klarte ikke kopiere spor fra enhet."
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:431
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:432
 #: core/meta/Meta.cpp:300
 #, kde-format
 msgid "Unknown Album"
 msgstr "Ukjent album"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:437
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:438
 #: core/meta/Meta.cpp:333
 #, kde-format
 msgid "Unknown Genre"
 msgstr "Ukjent sjanger"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:593
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:725
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:910
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:594
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:726
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:911
 #, kde-format
 msgid "Could not delete item"
 msgstr "Klarte ikke slette element"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:603
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:604
 #, kde-format
 msgid "Delete failed"
 msgstr "Sletting mislyktes"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:883
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:884
 #, kde-format
 msgid "Could not save playlist."
 msgstr "Kunne ikke lagre spilleliste"
@@ -6161,6 +5839,12 @@ msgstr[1] "Tar bort %1 spor fra %2"
 msgid "USB Mass Storage device configuration"
 msgstr "Oppsett av USB-masselagringsenhet"
 
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: core-impl/collections/umscollection/UmsConfiguration.ui:22
+#, kde-format
+msgid "Name:"
+msgstr "Navn:"
+
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoConnect)
 #: core-impl/collections/umscollection/UmsConfiguration.ui:34
 #, kde-format
@@ -6307,6 +5991,14 @@ msgstr ""
 #, kde-format
 msgid "Podcast Configuration"
 msgstr "Podcast oppsett"
+
+#. i18n: ectx: property (text), widget (QLabel, UrlLabel)
+#. i18n: ectx: property (text), widget (QLabel, m_urlLabel)
+#: core-impl/podcasts/sql/PodcastSettingsBase.ui:52
+#: services/opmldirectory/AddOpmlWidget.ui:65
+#, kde-format
+msgid "URL:"
+msgstr "URL:"
 
 #. i18n: ectx: property (text), widget (QLabel, m_saveLocationlabel)
 #: core-impl/podcasts/sql/PodcastSettingsBase.ui:68
@@ -7254,7 +6946,7 @@ msgstr "Oppdatering av podkast fra %1 mislyktes med feil:\n"
 msgid "Updating \"%1\" failed with error:\n"
 msgstr "Oppdatering av «%1» mislyktes med feil:\n"
 
-#: core/podcasts/PodcastReader.cpp:995
+#: core/podcasts/PodcastReader.cpp:996
 #, kde-format
 msgid ""
 "While parsing %1, a feed was expected but an HTML page was received.\n"
@@ -7263,32 +6955,32 @@ msgstr ""
 "Forventet en kilde mens %1 ble tolket, men mottok en HTML-side.\n"
 "Oppga du riktig URL?"
 
-#: core/podcasts/PodcastReader.cpp:1002
+#: core/podcasts/PodcastReader.cpp:1003
 #, kde-format
 msgid "Feed has an unknown type: %1"
 msgstr "Kilden har en ukjent type: %1"
 
-#: core/podcasts/PodcastReader.cpp:1011
+#: core/podcasts/PodcastReader.cpp:1012
 #, kde-format
 msgid "%1 is not an RSS version 2.0 feed."
 msgstr " %1 er ikke en RSS-kilde versjon 2.0."
 
-#: core/podcasts/PodcastReader.cpp:1041
+#: core/podcasts/PodcastReader.cpp:1042
 #, kde-format
 msgid "%1 is not a valid RSS version 1.0 feed."
 msgstr " %1 er ikke en gyldig RSS-kilde versjon 1.0."
 
-#: core/podcasts/PodcastReader.cpp:1049
+#: core/podcasts/PodcastReader.cpp:1050
 #, kde-format
 msgid "%1 is not a valid Atom feed."
 msgstr "%1 er ikke en gyldig Atom-kilde."
 
-#: core/podcasts/PodcastReader.cpp:1132
+#: core/podcasts/PodcastReader.cpp:1133
 #, kde-format
 msgid "Alternative Enclosures:"
 msgstr "Alternative omslag:"
 
-#: core/podcasts/PodcastReader.cpp:1142
+#: core/podcasts/PodcastReader.cpp:1143
 #, kde-format
 msgid "unknown type"
 msgstr "ukjent type"
@@ -7874,7 +7566,7 @@ msgstr[0] "Hent grafikken for dette albumet"
 msgstr[1] "Hent grafikk for %1 album"
 
 #: covermanager/CoverFetchingActions.cpp:76
-#: covermanager/CoverFoundDialog.cpp:380
+#: covermanager/CoverFoundDialog.cpp:381
 #, kde-format
 msgid "Display Cover"
 msgstr "Vis omslag"
@@ -7952,141 +7644,141 @@ msgstr "Google"
 msgid "Discogs"
 msgstr "Discogs"
 
-#: covermanager/CoverFoundDialog.cpp:151
+#: covermanager/CoverFoundDialog.cpp:152
 #, kde-format
 msgid "Sort by size"
 msgstr "Sorter etter størrelse"
 
-#: covermanager/CoverFoundDialog.cpp:405
+#: covermanager/CoverFoundDialog.cpp:406
 #, kde-format
 msgid "Cover Image Save Location"
 msgstr "Sted der omslagsbilde lagres"
 
-#: covermanager/CoverFoundDialog.cpp:434 covermanager/CoverFoundDialog.cpp:453
+#: covermanager/CoverFoundDialog.cpp:435 covermanager/CoverFoundDialog.cpp:454
 #, kde-format
 msgid "Sorry, the cover could not be saved."
 msgstr "Kunne ikke lagre omslagsbilde."
 
-#: covermanager/CoverFoundDialog.cpp:518
+#: covermanager/CoverFoundDialog.cpp:519
 #, kde-format
 msgid "Sorry, the cover image could not be retrieved."
 msgstr "Kunne ikke hente omslagsbilde."
 
-#: covermanager/CoverFoundDialog.cpp:538
+#: covermanager/CoverFoundDialog.cpp:539
 #, kde-format
 msgid "Fetching Large Cover"
 msgstr "Henter stort  omslag"
 
-#: covermanager/CoverFoundDialog.cpp:539
+#: covermanager/CoverFoundDialog.cpp:540
 #, kde-format
 msgid "Download Progress"
 msgstr "Framgang for nedlasting"
 
-#: covermanager/CoverFoundDialog.cpp:541
+#: covermanager/CoverFoundDialog.cpp:542
 #, kde-format
 msgid "Cancel"
 msgstr ""
 
-#: covermanager/CoverFoundDialog.cpp:702
+#: covermanager/CoverFoundDialog.cpp:703
 #, kde-format
 msgid "Search"
 msgstr "Søk"
 
-#: covermanager/CoverFoundDialog.cpp:702
+#: covermanager/CoverFoundDialog.cpp:703
 #, kde-format
 msgid "Search For More Results"
 msgstr "Søk etter flere resultater"
 
-#: covermanager/CoverFoundDialog.cpp:718
+#: covermanager/CoverFoundDialog.cpp:719
 #, kde-format
 msgid "No Images Found"
 msgstr "Fant ingen bilder"
 
-#: covermanager/CoverFoundDialog.cpp:719
+#: covermanager/CoverFoundDialog.cpp:720
 #, kde-format
 msgid "1 Image Found"
 msgid_plural "%1 Images Found"
 msgstr[0] "1 bilde funnet"
 msgstr[1] "%1 bilder funnet"
 
-#: covermanager/CoverFoundDialog.cpp:744
+#: covermanager/CoverFoundDialog.cpp:745
 #, kde-format
 msgid "Notes"
 msgstr "Notater"
 
-#: covermanager/CoverFoundDialog.cpp:816
+#: covermanager/CoverFoundDialog.cpp:817
 #, kde-format
 msgctxt "@item::intable"
 msgid "Artist"
 msgstr "Artist"
 
-#: covermanager/CoverFoundDialog.cpp:817
+#: covermanager/CoverFoundDialog.cpp:818
 #, kde-format
 msgctxt "@item::intable"
 msgid "Country"
 msgstr "Land"
 
-#: covermanager/CoverFoundDialog.cpp:818
+#: covermanager/CoverFoundDialog.cpp:819
 #, kde-format
 msgctxt "@item::intable"
 msgid "Date"
 msgstr "Dato"
 
-#: covermanager/CoverFoundDialog.cpp:819
+#: covermanager/CoverFoundDialog.cpp:820
 #, kde-format
 msgctxt "@item::intable File Format"
 msgid "Format"
 msgstr "Format"
 
-#: covermanager/CoverFoundDialog.cpp:820
+#: covermanager/CoverFoundDialog.cpp:821
 #, kde-format
 msgctxt "@item::intable Image Height"
 msgid "Height"
 msgstr "Høyde"
 
-#: covermanager/CoverFoundDialog.cpp:821 covermanager/CoverFoundDialog.cpp:826
+#: covermanager/CoverFoundDialog.cpp:822 covermanager/CoverFoundDialog.cpp:827
 #, kde-format
 msgctxt "@item::intable Album Title"
 msgid "Title"
 msgstr "Tittel"
 
-#: covermanager/CoverFoundDialog.cpp:822
+#: covermanager/CoverFoundDialog.cpp:823
 #, kde-format
 msgctxt "@item::intable Release Type"
 msgid "Type"
 msgstr "Type"
 
-#: covermanager/CoverFoundDialog.cpp:823
+#: covermanager/CoverFoundDialog.cpp:824
 #, kde-format
 msgctxt "@item::intable Release Date"
 msgid "Released"
 msgstr "Utgivelse"
 
-#: covermanager/CoverFoundDialog.cpp:824
+#: covermanager/CoverFoundDialog.cpp:825
 #, kde-format
 msgctxt "@item::intable File Size"
 msgid "Size"
 msgstr "Størrelse"
 
-#: covermanager/CoverFoundDialog.cpp:825
+#: covermanager/CoverFoundDialog.cpp:826
 #, kde-format
 msgctxt "@item::intable Cover Provider"
 msgid "Source"
 msgstr "Kilde"
 
-#: covermanager/CoverFoundDialog.cpp:827
+#: covermanager/CoverFoundDialog.cpp:828
 #, kde-format
 msgctxt "@item::intable Image Width"
 msgid "Width"
 msgstr "Bredde"
 
-#: covermanager/CoverFoundDialog.cpp:861
+#: covermanager/CoverFoundDialog.cpp:862
 #, kde-format
 msgctxt "@item::intable URL"
 msgid "link"
 msgstr "lenke"
 
-#: covermanager/CoverFoundDialog.cpp:867
+#: covermanager/CoverFoundDialog.cpp:868
 #, kde-format
 msgctxt "@item::intable"
 msgid "URL"
@@ -9713,42 +9405,42 @@ msgstr "Album:"
 msgid "Genre:"
 msgstr "Sjanger:"
 
-#: dialogs/TrackOrganizer.cpp:102
+#: dialogs/TrackOrganizer.cpp:103
 #, kde-format
 msgid "Unknown album"
 msgstr "Ukjent album"
 
-#: dialogs/TrackOrganizer.cpp:103
+#: dialogs/TrackOrganizer.cpp:104
 #, kde-format
 msgid "Unknown artist"
 msgstr "Ukjent artist"
 
-#: dialogs/TrackOrganizer.cpp:107
+#: dialogs/TrackOrganizer.cpp:108
 #, kde-format
 msgid "No comments"
 msgstr "Ingen kommentar"
 
-#: dialogs/TrackOrganizer.cpp:108
+#: dialogs/TrackOrganizer.cpp:109
 #, kde-format
 msgid "Unknown composer"
 msgstr "Ukjent komponist"
 
-#: dialogs/TrackOrganizer.cpp:109
+#: dialogs/TrackOrganizer.cpp:110
 #, kde-format
 msgid "Unknown disc number"
 msgstr "Ukjent platenummer"
 
-#: dialogs/TrackOrganizer.cpp:110
+#: dialogs/TrackOrganizer.cpp:111
 #, kde-format
 msgid "Unknown genre"
 msgstr "Ukjent sjanger"
 
-#: dialogs/TrackOrganizer.cpp:111
+#: dialogs/TrackOrganizer.cpp:112
 #, kde-format
 msgid "Unknown title"
 msgstr "Ukjent tittel"
 
-#: dialogs/TrackOrganizer.cpp:112
+#: dialogs/TrackOrganizer.cpp:113
 #, kde-format
 msgid "Unknown year"
 msgstr "Ukjent år"
@@ -10187,56 +9879,56 @@ msgctxt "Default name for new playlists"
 msgid "New playlist"
 msgstr "Ny spilleliste"
 
-#: dynamic/DynamicModel.cpp:917
+#: dynamic/DynamicModel.cpp:915
 #, kde-format
 msgid "Rock and Pop"
 msgstr "Rock og pop"
 
-#: dynamic/DynamicModel.cpp:918 equalizer/EqualizerPresets.cpp:93
+#: dynamic/DynamicModel.cpp:916 equalizer/EqualizerPresets.cpp:93
 #, kde-format
 msgid "Rock"
 msgstr "Rock"
 
-#: dynamic/DynamicModel.cpp:922 equalizer/EqualizerPresets.cpp:91
+#: dynamic/DynamicModel.cpp:920 equalizer/EqualizerPresets.cpp:91
 #, kde-format
 msgid "Pop"
 msgstr "Pop"
 
-#: dynamic/DynamicModel.cpp:928
+#: dynamic/DynamicModel.cpp:926
 #, kde-format
 msgid "Album play"
 msgstr "Albumspill"
 
-#: dynamic/DynamicModel.cpp:938
+#: dynamic/DynamicModel.cpp:936
 #, kde-format
 msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr ">>>>Karakter"
 
-#: EngineController.cpp:1102
+#: EngineController.cpp:1109
 #, kde-format
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Det intraff for mange feil i spillelista. Avspilling stoppet."
 
-#: EngineController.cpp:1302
+#: EngineController.cpp:1309
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> av <b>%2</b> på <b>%3</b>"
 
-#: EngineController.cpp:1304
+#: EngineController.cpp:1311
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> av <b>%2</b>"
 
-#: EngineController.cpp:1307
+#: EngineController.cpp:1314
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> på <b>%2</b>"
 
-#: EngineController.cpp:1319
+#: EngineController.cpp:1326
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -10537,812 +10229,812 @@ msgstr ""
 "Amarok-utvikling er ikke en hobby, det er en livsstil. Men når noen går "
 "videre vil vi fortsette å respektere dem ved å nevne dem her:"
 
-#: main.cpp:113
+#: main.cpp:114
 #, kde-format
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr "Bart 'Where are my toothpicks' Cerneels"
 
-#: main.cpp:114
+#: main.cpp:115
 #, kde-format
 msgid "Developer (Stecchino)"
 msgstr "Utvikler (Stecchino)"
 
-#: main.cpp:117
+#: main.cpp:118
 #, kde-format
 msgid "Edward \"Hades\" Toroshchin"
 msgstr "Edward \"Hades\" Toroshchin"
 
-#: main.cpp:118
+#: main.cpp:119
 #, kde-format
 msgid "Developer (dr_lepper)"
 msgstr "Utvikler (dr_lepper)"
 
-#: main.cpp:121
+#: main.cpp:122
 #, kde-format
 msgid "Mark Kretschmann"
 msgstr "Mark Kretschmann"
 
-#: main.cpp:122
+#: main.cpp:123
 #, kde-format
 msgid "Project founder (markey)"
 msgstr "Prosjektgrunnlegger (markey)"
 
-#: main.cpp:125
+#: main.cpp:126
 #, kde-format
 msgid "Matěj Laitl"
 msgstr "Matěj Laitl"
 
-#: main.cpp:126
+#: main.cpp:127
 #, kde-format
 msgid "iPod collection rewrite & more (strohel)"
 msgstr "iPod-samlingomskrivning og mer (strohel)"
 
-#: main.cpp:129
+#: main.cpp:130
 #, kde-format
 msgid "Myriam Schweingruber"
 msgstr "Myriam Schweingruber"
 
-#: main.cpp:129
+#: main.cpp:130
 #, kde-format
 msgid "Rokymoter, Bug triaging (Mamarok)"
 msgstr "Rokymoter, bugsortering (Mamarok)"
 
-#: main.cpp:132
+#: main.cpp:133
 #, kde-format
 msgid "Ralf 'SalsaMaster' Engels"
 msgstr "Ralf 'SalsaMaster' Engels"
 
-#: main.cpp:133
+#: main.cpp:134
 #, kde-format
 msgid "Developer (rengels)"
 msgstr "Utvikler (rengels)"
 
-#: main.cpp:136
+#: main.cpp:137
 #, kde-format
 msgid "Patrick von Reth"
 msgstr "Patrick von Reth"
 
-#: main.cpp:136
+#: main.cpp:137
 #, kde-format
 msgid "Windows build (TheOneRing)"
 msgstr "Windows-bygging (TheOneRing)"
 
-#: main.cpp:140
+#: main.cpp:141
 #, kde-format
 msgid "Rick W. Chen"
 msgstr "Rick W. Chen"
 
-#: main.cpp:141
+#: main.cpp:142
 #, kde-format
 msgid "Developer (stuffcorpse)"
 msgstr "Utvikler (stuffcorpse)"
 
-#: main.cpp:144
+#: main.cpp:145
 #, kde-format
 msgid "Sam Lade"
 msgstr "Sam Lade"
 
-#: main.cpp:144
+#: main.cpp:145
 #, kde-format
 msgid "Developer (Sentynel)"
 msgstr "Utvikler (Sentynel)"
 
-#: main.cpp:148
+#: main.cpp:149
 #, kde-format
 msgid "Sven Krohlas"
 msgstr "Sven Krohlas"
 
-#: main.cpp:148
+#: main.cpp:149
 #, kde-format
 msgid "Rokymoter, Developer (sven423)"
 msgstr "Rokymoter, utvikler (sven423)"
 
-#: main.cpp:151
+#: main.cpp:152
 #, kde-format
 msgid "Téo Mrnjavac"
 msgstr "Téo Mrnjavac"
 
-#: main.cpp:152
+#: main.cpp:153
 #, kde-format
 msgid "Developer (Teo`)"
 msgstr "Utvikler (Teo`)"
 
-#: main.cpp:155
+#: main.cpp:156
 #, kde-format
 msgid "Valorie Zimmerman"
 msgstr "Valorie Zimmerman"
 
-#: main.cpp:156
+#: main.cpp:157
 #, kde-format
 msgid "Rokymoter, Handbook (valorie)"
 msgstr "Rokymoter, håndbok (valorie)"
 
-#: main.cpp:161
+#: main.cpp:160
 #, kde-format
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ian 'The Beard' Monroe"
 
-#: main.cpp:161
+#: main.cpp:160
 #, kde-format
 msgid "Developer (eean)"
 msgstr "Utvikler (eean)"
 
-#: main.cpp:164
+#: main.cpp:163
 #, kde-format
 msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr "Jeff 'IROCKSOHARD' Mitchell"
 
-#: main.cpp:164
+#: main.cpp:163
 #, kde-format
 msgid "Developer (jefferai)"
 msgstr "Utvikler (jefferal)"
 
-#: main.cpp:167
+#: main.cpp:166
 #, kde-format
 msgid "Developer (lfranchi)"
 msgstr "Utvikler (lfranchi)"
 
-#: main.cpp:170
+#: main.cpp:169
 #, kde-format
 msgid "Lydia 'is wrong(TM)' Pintscher"
 msgstr "Lydia 'is wrong(TM)' Pintscher"
 
-#: main.cpp:170
+#: main.cpp:169
 #, kde-format
 msgid "Release Vixen (Nightrose)"
 msgstr "Utgavereven (Nightrose)"
 
-#: main.cpp:173
+#: main.cpp:172
 #, kde-format
 msgid "Max Howell"
 msgstr "Max Howell"
 
-#: main.cpp:173
+#: main.cpp:172
 #, kde-format
 msgid "Developer, Vision"
 msgstr "Utvikler, Vision"
 
-#: main.cpp:176
+#: main.cpp:175
 #, kde-format
 msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
-#: main.cpp:176
+#: main.cpp:175
 #, kde-format
 msgid "Developer (maxx_k)"
 msgstr "Utvikler (maxx k)"
 
-#: main.cpp:179
+#: main.cpp:178
 #, kde-format
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald 'Also very hot' Nielsen"
 
-#: main.cpp:179
+#: main.cpp:178
 #, kde-format
 msgid "Developer (nhn)"
 msgstr "Utvikler (nhn)"
 
-#: main.cpp:182
+#: main.cpp:181
 #, kde-format
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb 'Surfin' Down Under' Ruiz"
 
-#: main.cpp:182
+#: main.cpp:181
 #, kde-format
 msgid "Developer (sebr)"
 msgstr "Utvikler (sebr)"
 
-#: main.cpp:187
+#: main.cpp:186
 #, kde-format
 msgid "Alejandro Wainzinger"
 msgstr "Alejandro Wainzinger"
 
-#: main.cpp:187
+#: main.cpp:186
 #, kde-format
 msgid "Developer (xevix)"
 msgstr "Utvikler (xevix)"
 
-#: main.cpp:189
+#: main.cpp:188
 #, kde-format
 msgid "Alex Merry"
 msgstr "Alex Merry"
 
-#: main.cpp:189
+#: main.cpp:188
 #, kde-format
 msgid "Developer, Replay Gain support"
 msgstr "Utvikler, støtte for forsterking i omspill"
 
-#: main.cpp:191
+#: main.cpp:190
 #, kde-format
 msgid "Casey Link"
 msgstr "Casey Link"
 
-#: main.cpp:191
+#: main.cpp:190
 #, kde-format
 msgid "MP3tunes integration"
 msgstr "MP3tunes-integrering"
 
-#: main.cpp:193
+#: main.cpp:192
 #, kde-format
 msgid "Casper van Donderen"
 msgstr "Casper van Donderen"
 
-#: main.cpp:193
+#: main.cpp:192
 #, kde-format
 msgid "Windows porting"
 msgstr "Windows-porting"
 
-#: main.cpp:195
+#: main.cpp:194
 #, kde-format
 msgid "Christie Harris"
 msgstr "Christie Harris"
 
-#: main.cpp:195
+#: main.cpp:194
 #, kde-format
 msgid "Rokymoter (dangle)"
 msgstr "Rokymoter (dangle)"
 
-#: main.cpp:197
+#: main.cpp:196
 #, kde-format
 msgid "Dan Leinir Turthra Jensen"
 msgstr "Dan Leinir Turthra Jensen"
 
-#: main.cpp:197
+#: main.cpp:196
 #, kde-format
 msgid "Usability"
 msgstr "Brukervennlighet"
 
-#: main.cpp:199
+#: main.cpp:198
 #, kde-format
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Dan 'Hey, it compiled…' Meltzer"
 
-#: main.cpp:199
+#: main.cpp:198
 #, kde-format
 msgid "Developer (hydrogen)"
 msgstr "Utvikler (Hydrogen)"
 
-#: main.cpp:201
+#: main.cpp:200
 #, kde-format
 msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
-#: main.cpp:201
+#: main.cpp:200
 #, kde-format
 msgid "Biased playlists"
 msgstr "Vektede spillelister"
 
-#: main.cpp:203
+#: main.cpp:202
 #, kde-format
 msgid "Daniel Dewald"
 msgstr "Daniel Dewald"
 
-#: main.cpp:203
+#: main.cpp:202
 #, kde-format
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
 msgstr "Tagg-gjetter, etiketter, spektrumanalysator"
 
-#: main.cpp:205
+#: main.cpp:204
 #, kde-format
 msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
-#: main.cpp:205
+#: main.cpp:204
 #, kde-format
 msgid "Nepomuk integration"
 msgstr "Nepomuk-integrering"
 
-#: main.cpp:207
+#: main.cpp:206
 #, kde-format
 msgid "Frank Meerkötter"
 msgstr "Frank Meerkötter"
 
-#: main.cpp:207 main.cpp:227
+#: main.cpp:206 main.cpp:226
 #, kde-format
 msgid "Podcast improvements"
 msgstr "Podkast-forbedringer"
 
-#: main.cpp:209
+#: main.cpp:208
 #, kde-format
 msgid "Greg Meyer"
 msgstr "Greg Meyer"
 
-#: main.cpp:209
+#: main.cpp:208
 #, kde-format
 msgid "Live CD, Bug squashing (oggb4mp3)"
 msgstr "Live CD, bugknusing (oggb4mp3)"
 
-#: main.cpp:211
+#: main.cpp:210
 #, kde-format
 msgid "Harald Sitter"
 msgstr "Harald Sitter"
 
-#: main.cpp:211
+#: main.cpp:210
 #, kde-format
 msgid "Phonon, Lord-President of KDE Multimedia (apachelogger)"
 msgstr "Phonon, Lord-President av KDE Multimedia (apachelogger)"
 
-#: main.cpp:213
+#: main.cpp:212
 #, kde-format
 msgid "John Atkinson"
 msgstr "John Atkinson"
 
-#: main.cpp:213
+#: main.cpp:212
 #, kde-format
 msgid "Assorted patches"
 msgstr ""
 
-#: main.cpp:215
+#: main.cpp:214
 #, kde-format
 msgid "Kenneth Wesley Wimer II"
 msgstr "Kenneth Wesley Wimer II"
 
-#: main.cpp:215
+#: main.cpp:214
 #, kde-format
 msgid "Icons"
 msgstr "Ikoner"
 
-#: main.cpp:217
+#: main.cpp:216
 #, kde-format
 msgid "Kevin Funk"
 msgstr "Kevin Funk"
 
-#: main.cpp:217
+#: main.cpp:216
 #, kde-format
 msgid "Developer, Website theme (KRF)"
 msgstr "Utvikler, nettstedstema (KRF)"
 
-#: main.cpp:219
+#: main.cpp:218
 #, kde-format
 msgid "Kuba Serafinowski"
 msgstr "Kuba Serafinowski"
 
-#: main.cpp:219
+#: main.cpp:218
 #, kde-format
 msgid "Rokymoter"
 msgstr "Rokymoter"
 
-#: main.cpp:221
+#: main.cpp:220
 #, kde-format
 msgid "Lee Olson"
 msgstr "Lee Olson"
 
-#: main.cpp:221 main.cpp:233
+#: main.cpp:220 main.cpp:232
 #, kde-format
 msgid "Artwork"
 msgstr "Grafikk"
 
-#: main.cpp:223
+#: main.cpp:222
 #, kde-format
 msgid "Ljubomir Simin"
 msgstr "Ljubomir Simin"
 
-#: main.cpp:223
+#: main.cpp:222
 #, kde-format
 msgid "Rokymoter (ljubomir)"
 msgstr "Rokymoter (ljubomir)"
 
-#: main.cpp:225
+#: main.cpp:224
 #, kde-format
 msgid "Lucas Gomes"
 msgstr "Lucas Gomes"
 
-#: main.cpp:225
+#: main.cpp:224
 #, kde-format
 msgid "Developer (MaskMaster)"
 msgstr "Utvikler (MaskMaster)"
 
-#: main.cpp:227
+#: main.cpp:226
 #, kde-format
 msgid "Mathias Panzenböck"
 msgstr "Mathias Panzenböck"
 
-#: main.cpp:229
+#: main.cpp:228
 #, kde-format
 msgid "Mikko Caldara"
 msgstr "Mikko Caldara"
 
-#: main.cpp:229
+#: main.cpp:228
 #, kde-format
 msgid "Bug triaging and sanitizing"
 msgstr "Feilsortering og rengjøring"
 
-#: main.cpp:231
+#: main.cpp:230
 #, kde-format
 msgid "Nikhil Marathe"
 msgstr "Nikhil Marathe"
 
-#: main.cpp:231
+#: main.cpp:230
 #, kde-format
 msgid "UPnP support and patches (nsm)"
 msgstr "Støtte for UPnP, og lapper (nsm)"
 
-#: main.cpp:233
+#: main.cpp:232
 #, kde-format
 msgid "Nuno Pinheiro"
 msgstr "Nuno Pinheiro"
 
-#: main.cpp:235
+#: main.cpp:234
 #, kde-format
 msgid "Olivier Bédard"
 msgstr "Olivier Bédard"
 
-#: main.cpp:235
+#: main.cpp:234
 #, kde-format
 msgid "Website hosting"
 msgstr "Nettstedstøtte"
 
-#: main.cpp:237
+#: main.cpp:236
 #, kde-format
 msgid "Pasi Lalinaho"
 msgstr "Pasi Lalinaho"
 
-#: main.cpp:237
+#: main.cpp:236
 #, kde-format
 msgid "Rokymoter (emunkki)"
 msgstr "Rokymoter (emunkki)"
 
-#: main.cpp:239
+#: main.cpp:238
 #, kde-format
 msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
-#: main.cpp:239
+#: main.cpp:238
 #, kde-format
 msgid "Scripting interface"
 msgstr "Grensesnitt for skripting"
 
-#: main.cpp:241
+#: main.cpp:240
 #, kde-format
 msgid "Phalgun Guduthur"
 msgstr "Phalgun Guduthur"
 
-#: main.cpp:241
+#: main.cpp:240
 #, kde-format
 msgid "Nepomuk Collection (phalgun)"
 msgstr "Nepomuk-samling (phalgun)"
 
-#: main.cpp:243
+#: main.cpp:242
 #, kde-format
 msgid "Scott Wheeler"
 msgstr "Scott Wheeler"
 
-#: main.cpp:243
+#: main.cpp:242
 #, kde-format
 msgid "TagLib & ktrm code"
 msgstr "TagLib & ktrm-kode"
 
-#: main.cpp:245
+#: main.cpp:244
 #, kde-format
 msgid "Shane King"
 msgstr "Shane King"
 
-#: main.cpp:245
+#: main.cpp:244
 #, kde-format
 msgid "Patches & Windows porting (shakes)"
 msgstr "Lapper og windows-porting (shakes)"
 
-#: main.cpp:247
+#: main.cpp:246
 #, kde-format
 msgid "Simon Esneault"
 msgstr "Simon Esneault"
 
-#: main.cpp:247
+#: main.cpp:246
 #, kde-format
 msgid "Photos & Videos applets, Context View"
 msgstr "Miniprogrammer for foro og video, kontekstvisning"
 
-#: main.cpp:249
+#: main.cpp:248
 #, kde-format
 msgid "Soren Harward"
 msgstr "Soren Harward"
 
-#: main.cpp:249
+#: main.cpp:248
 #, kde-format
 msgid "Developer, Automated Playlist Generator"
 msgstr "Utvikler, Automatisk Spilleliste-Generator"
 
-#: main.cpp:251
+#: main.cpp:250
 #, kde-format
 msgid "Thomas Lübking"
 msgstr "Thomas Lübking"
 
-#: main.cpp:253
+#: main.cpp:252
 #, kde-format
 msgid "Valentin Rouet"
 msgstr "Valentin Rouet"
 
-#: main.cpp:255
+#: main.cpp:254
 #, kde-format
 msgid "Wade Olson"
 msgstr "Wade Olson"
 
-#: main.cpp:255
+#: main.cpp:254
 #, kde-format
 msgid "Splash screen artist"
 msgstr "Velkomstbilde"
 
-#: main.cpp:257
+#: main.cpp:256
 #, kde-format
 msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
-#: main.cpp:257
+#: main.cpp:256
 #, kde-format
 msgid "Context view"
 msgstr "Kontekstvisning"
 
-#: main.cpp:261
+#: main.cpp:260
 #, kde-format
 msgid "Former contributors"
 msgstr "Tidligere bidragsytere"
 
-#: main.cpp:261
+#: main.cpp:260
 #, kde-format
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr "Personer listet opp nedenfor har tidligere bidratt til Amarok. Takk!"
 
-#: main.cpp:263
+#: main.cpp:262
 #, kde-format
 msgid "Adam Pigg"
 msgstr "Adam Pigg"
 
-#: main.cpp:263
+#: main.cpp:262
 #, kde-format
 msgid "Analyzers, patches, shoutcast"
 msgstr "Analysatorer, lapper, shoutkaster"
 
-#: main.cpp:265
+#: main.cpp:264
 #, kde-format
 msgid "Adeodato Simó"
 msgstr "Adeodato Simó"
 
-#: main.cpp:265 main.cpp:273
+#: main.cpp:264 main.cpp:272
 #, kde-format
 msgid "Patches"
 msgstr "Rettelser"
 
-#: main.cpp:267
+#: main.cpp:266
 #, kde-format
 msgid "Alexandre Oliveira"
 msgstr "Alexandre Oliveira"
 
-#: main.cpp:269
+#: main.cpp:268
 #, kde-format
 msgid "Andreas Mair"
 msgstr "Andreas Mair"
 
-#: main.cpp:269
+#: main.cpp:268
 #, kde-format
 msgid "MySQL support"
 msgstr "Støtte for MySQL"
 
-#: main.cpp:271
+#: main.cpp:270
 #, kde-format
 msgid "Andrew de Quincey"
 msgstr "Andrew de Quincey"
 
-#: main.cpp:271
+#: main.cpp:270
 #, kde-format
 msgid "Postgresql support"
 msgstr "Støtte for PostgreSQL"
 
-#: main.cpp:273
+#: main.cpp:272
 #, kde-format
 msgid "Andrew Turner"
 msgstr "Andrew Turner"
 
-#: main.cpp:275
+#: main.cpp:274
 #, kde-format
 msgid "Andy Kelk"
 msgstr "Andy Kelk"
 
-#: main.cpp:275
+#: main.cpp:274
 #, kde-format
 msgid "MTP and Rio Karma media devices, patches"
 msgstr "MTP og Rio Karma medieenheter, rettelser"
 
-#: main.cpp:277
+#: main.cpp:276
 #, kde-format
 msgid "Christian Muehlhaeuser"
 msgstr "Christian  Muehlhaeuser"
 
-#: main.cpp:279
+#: main.cpp:278
 #, kde-format
 msgid "Derek Nelson"
 msgstr "Derek Nelson"
 
-#: main.cpp:279
+#: main.cpp:278
 #, kde-format
 msgid "Graphics, splash-screen"
 msgstr "Grafikk, velkomstbilde"
 
-#: main.cpp:281
+#: main.cpp:280
 #, kde-format
 msgid "Enrico Ros"
 msgstr "Enrico Ros"
 
-#: main.cpp:281
+#: main.cpp:280
 #, kde-format
 msgid "Analyzers, Context Browser and systray eye-candy"
 msgstr "Analysatorer, kontekstleser og øyesnop for systemkurven"
 
-#: main.cpp:283
+#: main.cpp:282
 #, kde-format
 msgid "Frederik Holljen"
 msgstr "Frederik Holljen"
 
-#: main.cpp:285
+#: main.cpp:284
 #, kde-format
 msgid "Gábor Lehel"
 msgstr "Gábor Lehel"
 
-#: main.cpp:287
+#: main.cpp:286
 #, kde-format
 msgid "Gérard Dürrmeyer"
 msgstr "Gérard Dürrmeyer"
 
-#: main.cpp:287
+#: main.cpp:286
 #, kde-format
 msgid "Icons and image work"
 msgstr "Ikoner og bildearbeid"
 
-#: main.cpp:289
+#: main.cpp:288
 #, kde-format
 msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
-#: main.cpp:289
+#: main.cpp:288
 #, kde-format
 msgid "Dialog to filter the collection titles"
 msgstr "Dialog for å filtrere samlingstitlene"
 
-#: main.cpp:291
+#: main.cpp:290
 #, kde-format
 msgid "Jarkko Lehti"
 msgstr "Jarkko Lehti"
 
-#: main.cpp:291
+#: main.cpp:290
 #, kde-format
 msgid "Tester, IRC channel operator, whipping"
 msgstr "Tester, IRC kanal-op, innpisker"
 
-#: main.cpp:293
+#: main.cpp:292
 #, kde-format
 msgid "Jocke Andersson"
 msgstr "Jocke Andersson"
 
-#: main.cpp:293
+#: main.cpp:292
 #, kde-format
 msgid "Rokymoter, bug fixer (Firetech)"
 msgstr "Rokymoter, feilfikser (Firetech)"
 
-#: main.cpp:295
+#: main.cpp:294
 #, kde-format
 msgid "Marco Gulino"
 msgstr "Marco Gulino"
 
-#: main.cpp:295
+#: main.cpp:294
 #, kde-format
 msgid "Konqueror Sidebar, some DCOP methods"
 msgstr "Konqueror sidestolpe, noen DCOP-metoder"
 
-#: main.cpp:297
+#: main.cpp:296
 #, kde-format
 msgid "Martin Aumueller"
 msgstr "Martin Aumueller"
 
-#: main.cpp:299
+#: main.cpp:298
 #, kde-format
 msgid "Melchior Franz"
 msgstr "Melchior Franz"
 
-#: main.cpp:299
+#: main.cpp:298
 #, kde-format
 msgid "FHT routine, bugfixes"
 msgstr "FHT-rutine, feilfikser"
 
-#: main.cpp:301
+#: main.cpp:300
 #, kde-format
 msgid "Michael Pyne"
 msgstr "Michael Pyne"
 
-#: main.cpp:301
+#: main.cpp:300
 #, kde-format
 msgid "K3b export code"
 msgstr "K3b eksportkode"
 
-#: main.cpp:303
+#: main.cpp:302
 #, kde-format
 msgid "Mike Diehl"
 msgstr "Mike Diehl"
 
-#: main.cpp:305
+#: main.cpp:304
 #, kde-format
 msgid "Paul Cifarelli"
 msgstr "Paul Cifarelli"
 
-#: main.cpp:307
+#: main.cpp:306
 #, kde-format
 msgid "Peter C. Ndikuwera"
 msgstr "Peter C. Ndikuwera"
 
-#: main.cpp:307
+#: main.cpp:306
 #, kde-format
 msgid "Bugfixes, PostgreSQL support"
 msgstr "Feilfikser, støtte for PostgreSQL"
 
-#: main.cpp:309
+#: main.cpp:308
 #, kde-format
 msgid "Pierpaolo Panfilo"
 msgstr "Pierpaolo Panfilo"
 
-#: main.cpp:311
+#: main.cpp:310
 #, kde-format
 msgid "Reigo Reinmets"
 msgstr "Reigo Reinmets"
 
-#: main.cpp:311
+#: main.cpp:310
 #, kde-format
 msgid "Wikipedia support, patches"
 msgstr "Wikipedia-støtte, rettelser"
 
-#: main.cpp:313
+#: main.cpp:312
 #, kde-format
 msgid "Roman Becker"
 msgstr "Roman Becker"
 
-#: main.cpp:313
+#: main.cpp:312
 #, kde-format
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr "Tidligere Amarok logo, velkomstbilde og ikoner"
 
-#: main.cpp:315
+#: main.cpp:314
 #, kde-format
 msgid "Sami Nieminen"
 msgstr "Sami Nieminen"
 
-#: main.cpp:315
+#: main.cpp:314
 #, kde-format
 msgid "Audioscrobbler support"
 msgstr "Støtte for Audioscrobbler"
 
-#: main.cpp:317
+#: main.cpp:316
 #, kde-format
 msgid "Stanislav Karchebny"
 msgstr "Stanislav Karchebny"
 
-#: main.cpp:319
+#: main.cpp:318
 #, kde-format
 msgid "Stefan Bogner"
 msgstr "Stefan Bogner"
 
-#: main.cpp:319
+#: main.cpp:318
 #, kde-format
 msgid "Loads of stuff"
 msgstr "Massevis av saker"
 
-#: main.cpp:321
+#: main.cpp:320
 #, kde-format
 msgid "Tomasz Dudzik"
 msgstr "Tomasz Dudzik"
 
-#: main.cpp:321
+#: main.cpp:320
 #, kde-format
 msgid "Splash screen"
 msgstr "Velkomstbilde"
 
-#: main.cpp:326
+#: main.cpp:325
 #, kde-format
 msgid "Andrew Browning"
 msgstr "Andrew Browning"
 
-#: main.cpp:327
+#: main.cpp:326
 #, kde-format
 msgid "Chris Wales"
 msgstr "Chris Wales"
 
-#: main.cpp:328
+#: main.cpp:327
 #, kde-format
 msgid "ZImin Stanislav"
 msgstr "ZImin Stanislav"
@@ -11806,7 +11498,7 @@ msgstr "Verdi"
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "Klarte ikke lese OPML-podkast fra %1, feil:\n"
 
-#: playback/EqualizerController.cpp:133
+#: playback/EqualizerController.cpp:135
 #, kde-format
 msgid ""
 "%0\n"
@@ -11815,7 +11507,7 @@ msgstr ""
 "%0\n"
 "Hz"
 
-#: playback/EqualizerController.cpp:135
+#: playback/EqualizerController.cpp:137
 #, kde-format
 msgid ""
 "%0\n"
@@ -12187,12 +11879,12 @@ msgstr "Bedre karakter"
 msgid "Not Recently Played"
 msgstr "Ikke nylig spilt"
 
-#: playlist/PlaylistBreadcrumbItem.cpp:43
+#: playlist/PlaylistBreadcrumbItem.cpp:48
 #, kde-format
 msgid "Shuffle"
 msgstr "Stokk om"
 
-#: playlist/PlaylistBreadcrumbItem.cpp:130
+#: playlist/PlaylistBreadcrumbItem.cpp:135
 #, kde-format
 msgid "Add a sorting level to the playlist."
 msgstr "Legg til et sorteringsnivå til spillelista."
@@ -13023,7 +12715,7 @@ msgstr ""
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonRating)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui:39
-#: playlistgenerator/constraints/TagMatch.cpp:344
+#: playlistgenerator/constraints/TagMatch.cpp:345
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:113
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:467
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:604
@@ -13289,7 +12981,7 @@ msgctxt "an arbitrary string surrounded by quotes"
 msgid "\"%1\""
 msgstr "«%1»"
 
-#: playlistgenerator/constraints/TagMatch.cpp:340
+#: playlistgenerator/constraints/TagMatch.cpp:341
 #: widgets/MetaQueryWidget.cpp:1020
 #, kde-format
 msgctxt "a numerical tag (like year or track number) equals a value"
@@ -13299,7 +12991,7 @@ msgstr "er lik"
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonInt)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonTime)
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonRating)
-#: playlistgenerator/constraints/TagMatch.cpp:342
+#: playlistgenerator/constraints/TagMatch.cpp:343
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:123
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:477
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:614
@@ -13309,84 +13001,84 @@ msgid "greater than"
 msgstr "større enn"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:348
+#: playlistgenerator/constraints/TagMatch.cpp:349
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:233
 #, kde-format
 msgid "before"
 msgstr "før"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:350
+#: playlistgenerator/constraints/TagMatch.cpp:351
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:238
 #, kde-format
 msgid "on"
 msgstr "på"
 
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
-#: playlistgenerator/constraints/TagMatch.cpp:352
+#: playlistgenerator/constraints/TagMatch.cpp:353
 #: playlistgenerator/constraints/TagMatchEditWidget.ui:243
 #, kde-format
 msgid "after"
 msgstr "etter"
 
-#: playlistgenerator/constraints/TagMatch.cpp:354
+#: playlistgenerator/constraints/TagMatch.cpp:355
 #, kde-format
 msgid "within"
 msgstr "innen"
 
-#: playlistgenerator/constraints/TagMatch.cpp:358
+#: playlistgenerator/constraints/TagMatch.cpp:359
 #: widgets/MetaQueryWidget.cpp:1034
 #, kde-format
 msgctxt "an alphabetical tag (like title or artist name) equals some string"
 msgid "equals"
 msgstr "er lik"
 
-#: playlistgenerator/constraints/TagMatch.cpp:360
+#: playlistgenerator/constraints/TagMatch.cpp:361
 #, kde-format
 msgctxt ""
 "an alphabetical tag (like title or artist name) starts with some string"
 msgid "starts with"
 msgstr "begynner med"
 
-#: playlistgenerator/constraints/TagMatch.cpp:362
+#: playlistgenerator/constraints/TagMatch.cpp:363
 #, kde-format
 msgctxt "an alphabetical tag (like title or artist name) ends with some string"
 msgid "ends with"
 msgstr "slutter med"
 
-#: playlistgenerator/constraints/TagMatch.cpp:364
+#: playlistgenerator/constraints/TagMatch.cpp:365
 #: widgets/MetaQueryWidget.cpp:1036
 #, kde-format
 msgctxt "an alphabetical tag (like title or artist name) contains some string"
 msgid "contains"
 msgstr "inneholder"
 
-#: playlistgenerator/constraints/TagMatch.cpp:366
+#: playlistgenerator/constraints/TagMatch.cpp:367
 #, kde-format
 msgid "regexp"
 msgstr "regexp"
 
-#: playlistgenerator/constraints/TagMatch.cpp:369
+#: playlistgenerator/constraints/TagMatch.cpp:370
 #: widgets/MetaQueryWidget.cpp:1041
 #, kde-format
 msgid "unknown comparison"
 msgstr "ukjent sammenlikning"
 
-#: playlistgenerator/constraints/TagMatch.cpp:382
+#: playlistgenerator/constraints/TagMatch.cpp:383
 #, kde-format
 msgid "%1 day"
 msgid_plural "%1 days"
 msgstr[0] "%1 dag"
 msgstr[1] "%1 dager"
 
-#: playlistgenerator/constraints/TagMatch.cpp:385
+#: playlistgenerator/constraints/TagMatch.cpp:386
 #, kde-format
 msgid "%1 month"
 msgid_plural "%1 months"
 msgstr[0] "%1 måned"
 msgstr[1] "%1 måneder"
 
-#: playlistgenerator/constraints/TagMatch.cpp:388
+#: playlistgenerator/constraints/TagMatch.cpp:389
 #, kde-format
 msgid "%1 year"
 msgid_plural "%1 years"
@@ -13650,93 +13342,93 @@ msgstr ""
 "Hvor streng skal ASG være med å tilpasse lengden på spillelista til  oppgitt "
 "vurdering."
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:85
+#: playlistgenerator/constraints/TagMatchSupport.cpp:87
 #, kde-format
 msgid "url"
 msgstr "url"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:86
+#: playlistgenerator/constraints/TagMatchSupport.cpp:88
 #, kde-format
 msgid "title"
 msgstr "tittel"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:87
+#: playlistgenerator/constraints/TagMatchSupport.cpp:89
 #, kde-format
 msgid "artist name"
 msgstr "artistnavn"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:88
+#: playlistgenerator/constraints/TagMatchSupport.cpp:90
 #, kde-format
 msgid "album name"
 msgstr "albumnavn"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:89
+#: playlistgenerator/constraints/TagMatchSupport.cpp:91
 #, kde-format
 msgid "genre"
 msgstr "sjanger"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:90
+#: playlistgenerator/constraints/TagMatchSupport.cpp:92
 #, kde-format
 msgid "composer"
 msgstr "komponist"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:91
+#: playlistgenerator/constraints/TagMatchSupport.cpp:93
 #, kde-format
 msgctxt "Field name"
 msgid "year"
 msgstr ""
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:92
+#: playlistgenerator/constraints/TagMatchSupport.cpp:94
 #, kde-format
 msgid "comment"
 msgstr "kommentar"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:93
+#: playlistgenerator/constraints/TagMatchSupport.cpp:95
 #, kde-format
 msgid "track number"
 msgstr "spornummer"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:94
+#: playlistgenerator/constraints/TagMatchSupport.cpp:96
 #, kde-format
 msgid "disc number"
 msgstr "plate nummer"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:95
+#: playlistgenerator/constraints/TagMatchSupport.cpp:97
 #, kde-format
 msgid "length"
 msgstr "lengde"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:96
+#: playlistgenerator/constraints/TagMatchSupport.cpp:98
 #, kde-format
 msgid "added to collection"
 msgstr "lagt til i samling"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:97
+#: playlistgenerator/constraints/TagMatchSupport.cpp:99
 #, kde-format
 msgid "score"
 msgstr "poeng"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:98
+#: playlistgenerator/constraints/TagMatchSupport.cpp:100
 #, kde-format
 msgid "rating"
 msgstr "karakter"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:99
+#: playlistgenerator/constraints/TagMatchSupport.cpp:101
 #, kde-format
 msgid "first played"
 msgstr "spilt først"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:100
+#: playlistgenerator/constraints/TagMatchSupport.cpp:102
 #, kde-format
 msgid "last played"
 msgstr "spilt sist"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:101
+#: playlistgenerator/constraints/TagMatchSupport.cpp:103
 #, kde-format
 msgid "play count"
 msgstr "ganger spilt"
 
-#: playlistgenerator/constraints/TagMatchSupport.cpp:102
+#: playlistgenerator/constraints/TagMatchSupport.cpp:104
 #, kde-format
 msgid "label"
 msgstr "etikett"
@@ -14215,13 +13907,13 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
 #: services/gpodder/GpodderConfigWidget.ui:91
-#: services/gpodder/GpodderServiceSettings.cpp:183
-#: services/gpodder/GpodderServiceSettings.cpp:192
-#: services/gpodder/GpodderServiceSettings.cpp:202
-#: services/gpodder/GpodderServiceSettings.cpp:220
-#: services/gpodder/GpodderServiceSettings.cpp:249
+#: services/gpodder/GpodderServiceSettings.cpp:182
+#: services/gpodder/GpodderServiceSettings.cpp:191
+#: services/gpodder/GpodderServiceSettings.cpp:201
+#: services/gpodder/GpodderServiceSettings.cpp:219
+#: services/gpodder/GpodderServiceSettings.cpp:248
 #: services/lastfm/LastFmConfigWidget.ui:109
-#: services/lastfm/LastFmServiceSettings.cpp:224
+#: services/lastfm/LastFmServiceSettings.cpp:223
 #, kde-format
 msgid "&Test Login"
 msgstr "&Test påmelding"
@@ -14283,38 +13975,38 @@ msgstr ""
 "Fant ingen KWallet som kjørte. Vil du at Amarok skal lagre dine akkreditiver "
 "for gpodder.net som klartekst?"
 
-#: services/gpodder/GpodderServiceSettings.cpp:95
-#: services/lastfm/LastFmServiceSettings.cpp:102
+#: services/gpodder/GpodderServiceSettings.cpp:94
+#: services/lastfm/LastFmServiceSettings.cpp:101
 #, kde-format
 msgid "Testing..."
 msgstr "Testing, …"
 
-#: services/gpodder/GpodderServiceSettings.cpp:112
+#: services/gpodder/GpodderServiceSettings.cpp:111
 #, kde-format
 msgid ""
 "Either the username or the password is empty, please correct and try again."
 msgstr ""
 "Enten brukernavnet eller passordet er blankt, rett opp og prøv på nytt. "
 
-#: services/gpodder/GpodderServiceSettings.cpp:113
-#: services/gpodder/GpodderServiceSettings.cpp:181
-#: services/gpodder/GpodderServiceSettings.cpp:190
-#: services/gpodder/GpodderServiceSettings.cpp:205
-#: services/lastfm/LastFmServiceSettings.cpp:150
-#: services/lastfm/LastFmServiceSettings.cpp:173
+#: services/gpodder/GpodderServiceSettings.cpp:112
+#: services/gpodder/GpodderServiceSettings.cpp:180
+#: services/gpodder/GpodderServiceSettings.cpp:189
+#: services/gpodder/GpodderServiceSettings.cpp:204
+#: services/lastfm/LastFmServiceSettings.cpp:149
+#: services/lastfm/LastFmServiceSettings.cpp:172
 #, kde-format
 msgid "Failed"
 msgstr "Mislyktes"
 
-#: services/gpodder/GpodderServiceSettings.cpp:124
-#: services/lastfm/LastFmServiceSettings.cpp:142
+#: services/gpodder/GpodderServiceSettings.cpp:123
+#: services/lastfm/LastFmServiceSettings.cpp:141
 #, kde-format
 msgctxt "The operation completed as expected"
 msgid "Success"
 msgstr "Vellykket"
 
-#: services/gpodder/GpodderServiceSettings.cpp:180
-#: services/lastfm/LastFmServiceSettings.cpp:150
+#: services/gpodder/GpodderServiceSettings.cpp:179
+#: services/lastfm/LastFmServiceSettings.cpp:149
 #, kde-format
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
@@ -14322,13 +14014,13 @@ msgid ""
 msgstr ""
 "Enten brukernavnet eller passordet er ikke gyldig, rett opp og prøv på nytt. "
 
-#: services/gpodder/GpodderServiceSettings.cpp:189
+#: services/gpodder/GpodderServiceSettings.cpp:188
 #, kde-format
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr ""
 "Klarer ikke koble til gpodder.net-tjenesten, eller en annen feil oppsto."
 
-#: services/gpodder/GpodderServiceSettings.cpp:205
+#: services/gpodder/GpodderServiceSettings.cpp:204
 #, kde-format
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
@@ -14735,19 +14427,19 @@ msgstr ""
 msgid "Would you like Amarok to save your Last.fm credentials in plaintext?"
 msgstr ""
 
-#: services/lastfm/LastFmServiceSettings.cpp:137
+#: services/lastfm/LastFmServiceSettings.cpp:136
 #, kde-format
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Mislyktes"
 
-#: services/lastfm/LastFmServiceSettings.cpp:151
-#: services/lastfm/LastFmServiceSettings.cpp:174
+#: services/lastfm/LastFmServiceSettings.cpp:150
+#: services/lastfm/LastFmServiceSettings.cpp:173
 #, kde-format
 msgid "Test Login"
 msgstr "Prøv pålogging"
 
-#: services/lastfm/LastFmServiceSettings.cpp:173
+#: services/lastfm/LastFmServiceSettings.cpp:172
 #, kde-format
 msgid "Unable to connect to Last.fm service."
 msgstr "Klarer ikke koble til Last.fm-tjenesten."
@@ -15732,48 +15424,48 @@ msgstr ""
 "Tilkoblet musikkskap der du kan lagre trygt og hente din musikk: http://"
 "mp3tunes.com"
 
-#: services/mp3tunes/Mp3tunesService.cpp:104
+#: services/mp3tunes/Mp3tunesService.cpp:105
 #, kde-format
 msgid "The MP3tunes Locker: Your Music Everywhere!"
 msgstr "Mp3tunes-skapet: Din musikk overalt!"
 
-#: services/mp3tunes/Mp3tunesService.cpp:217
+#: services/mp3tunes/Mp3tunesService.cpp:218
 #, kde-format
 msgid "MP3tunes AutoSync Enabled"
 msgstr "MP3tunes AutoSync slått på"
 
-#: services/mp3tunes/Mp3tunesService.cpp:233
+#: services/mp3tunes/Mp3tunesService.cpp:234
 #, kde-format
 msgid "MP3tunes AutoSync Disabled"
 msgstr "MP3tunes AutoSync slått av"
 
-#: services/mp3tunes/Mp3tunesService.cpp:253
+#: services/mp3tunes/Mp3tunesService.cpp:254
 #, kde-format
 msgid "Authenticating"
 msgstr "Autentiserer"
 
-#: services/mp3tunes/Mp3tunesService.cpp:265
+#: services/mp3tunes/Mp3tunesService.cpp:266
 #, kde-format
 msgid "MP3tunes failed to Authenticate."
 msgstr "MP3tunes klarte ikke autentiseringen."
 
-#: services/mp3tunes/Mp3tunesService.cpp:295
+#: services/mp3tunes/Mp3tunesService.cpp:296
 #, kde-format
 msgid "MP3tunes Harmony: Disconnected"
 msgstr "MP3tunes Harmony: Koblet fra"
 
-#: services/mp3tunes/Mp3tunesService.cpp:302
-#: services/mp3tunes/Mp3tunesService.cpp:315
+#: services/mp3tunes/Mp3tunesService.cpp:303
+#: services/mp3tunes/Mp3tunesService.cpp:316
 #, kde-format
 msgid "MP3tunes Harmony: Waiting for PIN Input"
 msgstr "MP3tunes Harmony: Venter på PIN"
 
-#: services/mp3tunes/Mp3tunesService.cpp:327
+#: services/mp3tunes/Mp3tunesService.cpp:328
 #, kde-format
 msgid "MP3tunes Harmony: Successfully Connected"
 msgstr "MP3tunes Harmony er nå koblet til"
 
-#: services/mp3tunes/Mp3tunesService.cpp:342
+#: services/mp3tunes/Mp3tunesService.cpp:343
 #, kde-format
 msgid ""
 "MP3tunes Harmony Error\n"
@@ -16305,12 +15997,12 @@ msgstr "Flere bakgrunnsprosesser kjører (trykk for å vise)"
 msgid "Abort all background tasks"
 msgstr "Avbryt all bakgrunnsbehandling"
 
-#: toolbar/MainToolbar.cpp:76
+#: toolbar/MainToolbar.cpp:77
 #, kde-format
 msgid "Main Toolbar"
 msgstr "Hovedverktøylinje"
 
-#: toolbar/MainToolbar.cpp:83
+#: toolbar/MainToolbar.cpp:84
 #, kde-format
 msgid "Rediscover Your Music"
 msgstr "Oppdag musikken din på nytt"

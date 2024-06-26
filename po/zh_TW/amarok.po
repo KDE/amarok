@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-25 01:42+0000\n"
-"PO-Revision-Date: 2024-05-09 16:35+0900\n"
+"PO-Revision-Date: 2024-06-26 06:49+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -856,10 +856,9 @@ msgstr "啟用後，等化器會處理輸出的音訊流，"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:230
-#, fuzzy, kde-format
-#| msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
+#, kde-format
 msgid "11 Equalizer gains including pre-amp, range -100..100, 0 is normal."
-msgstr "11 等化器的前置放大值，範圍是 -100...100，0 則為正常。"
+msgstr "11 等化器的增益，包含 pre-amp，範圍是 -100...100，0 是正常。"
 
 #. i18n: ectx: label, entry, group (Playback)
 #: amarokconfig.kcfg:234
@@ -4521,20 +4520,16 @@ msgid "No information found..."
 msgstr "找不到資訊..."
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:317
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for an artist or band"
-#| msgid ".*\\(.*(artist|band).*\\))"
+#, kde-format
 msgctxt "Search pattern for an artist or band"
 msgid ".*\\(.*(artist|band).*\\)"
-msgstr ".*\\(.*(artist|band).*\\))"
+msgstr ".*\\(.*(artist|band).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:320
-#, fuzzy, kde-format
-#| msgctxt "Search pattern for a composer"
-#| msgid ".*\\(.*(composer|musician).*\\))"
+#, kde-format
 msgctxt "Search pattern for a composer"
 msgid ".*\\(.*(composer|musician).*\\)"
-msgstr ".*\\(.*(composer|musician).*\\))"
+msgstr ".*\\(.*(composer|musician).*\\)"
 
 #: context/applets/wikipedia/plugin/WikipediaEngine.cpp:323
 #, kde-format
