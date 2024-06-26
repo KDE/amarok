@@ -96,6 +96,7 @@ option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 # option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON) #build is disabled for now, no need to show option
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
+option(WITH_GPODDER "Enable gpodder.net support" ON)
 
 ############### Taglib
 set(TAGLIB_MIN_VERSION "1.12")
@@ -252,14 +253,16 @@ if( WITH_PLAYER )
         PURPOSE "Enable MusicDNS service"
     )
 
-    ## gpodder Service
-    find_package(Mygpo-qt5 1.1.0 CONFIG)
-    set_package_properties(Mygpo-qt5 PROPERTIES
-        DESCRIPTION "A Qt/C++ library wrapping the gpodder.net Webservice."
-        URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
-        TYPE OPTIONAL
-        PURPOSE "Synchronize podcast subscriptions with gpodder.net"
-    )
+    if( WITH_GPODDER )
+        ## gpodder Service
+        find_package(Mygpo-qt5 1.1.0 CONFIG)
+        set_package_properties(Mygpo-qt5 PROPERTIES
+            DESCRIPTION "A Qt/C++ library wrapping the gpodder.net Webservice."
+            URL "http://wiki.gpodder.org/wiki/Libmygpo-qt"
+            TYPE OPTIONAL
+            PURPOSE "Synchronize podcast subscriptions with gpodder.net"
+        )
+    endif()
 
     if( WITH_IPOD )
         find_package(Ipod)
