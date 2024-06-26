@@ -336,3 +336,27 @@ void TestXSPFPlaylist::testSave()
 {
     QVERIFY( m_testPlaylist1->save( false ) );
 }
+
+void TestXSPFPlaylist::testSaveAndReload()
+{
+    QVERIFY( m_testPlaylist1->save( false ) );
+
+    const QUrl url = m_testPlaylist1->uidUrl();
+    QFile playlistFile1( url.toLocalFile() );
+    QTextStream playlistStream;
+
+    QVERIFY( playlistFile1.open( QFile::ReadOnly ) );
+    playlistStream.setDevice( &playlistFile1 );
+    QVERIFY( playlistStream.device() );
+
+    delete m_testPlaylist1;
+    m_testPlaylist1 = new Playlists::XSPFPlaylist( url );
+    QVERIFY( m_testPlaylist1 );
+    QVERIFY( m_testPlaylist1->load( playlistStream ) );
+    playlistFile1.close();
+
+    Meta::TrackList tracklist = m_testPlaylist1->tracks();
+
+    QCOMPARE( tracklist.size(), 23 );
+    QCOMPARE( tracklist.at( 0 )->name(), QString( "Sunset" ) );
+}

@@ -46,6 +46,7 @@ private Q_SLOTS:
     void testUidUrl();
     void testIsWritable();
     void testSave();
+    void testSaveAndReload();
 
 private:
     Playlists::PLSPlaylist *m_testPlaylist1;

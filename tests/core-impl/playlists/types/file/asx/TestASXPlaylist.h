@@ -44,6 +44,7 @@ private Q_SLOTS:
     void testSetAndGetGroups();
     void testIsWritable();
     void testSave();
+    void testSaveAndReload();
 
 private:
     Playlists::ASXPlaylist *m_testPlaylist;

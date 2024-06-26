@@ -143,3 +143,27 @@ void TestM3UPlaylist::testSave()
 {
     QVERIFY( m_testPlaylist->save( false ) );
 }
+
+void TestM3UPlaylist::testSaveAndReload()
+{
+    QVERIFY( m_testPlaylist->save( false ) );
+
+    const QUrl url = m_testPlaylist->uidUrl();
+    QFile playlistFile1( url.toLocalFile() );
+    QTextStream playlistStream;
+
+    QVERIFY( playlistFile1.open( QFile::ReadOnly ) );
+    playlistStream.setDevice( &playlistFile1 );
+    QVERIFY( playlistStream.device() );
+
+    delete m_testPlaylist;
+    m_testPlaylist = new Playlists::M3UPlaylist( url );
+    QVERIFY( m_testPlaylist );
+    QVERIFY( m_testPlaylist->load( playlistStream ) );
+    playlistFile1.close();
+
+    Meta::TrackList tracklist = m_testPlaylist->tracks();
+
+    QCOMPARE( tracklist.size(), 10 );
+    QCOMPARE( tracklist.at( 9 )->name(), QString( "Platz 10" ) );
+}

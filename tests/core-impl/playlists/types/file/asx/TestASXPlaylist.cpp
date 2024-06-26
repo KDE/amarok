@@ -158,3 +158,29 @@ TestASXPlaylist::testSave()
 {
     QVERIFY( m_testPlaylist->save( false ) );
 }
+
+void
+TestASXPlaylist::testSaveAndReload()
+{
+    QVERIFY( m_testPlaylist->save( false ) );
+
+    const QUrl url = m_testPlaylist->uidUrl();
+    QFile playlistFile1( url.toLocalFile() );
+    QTextStream playlistStream;
+
+    QVERIFY( playlistFile1.open( QFile::ReadOnly ) );
+    playlistStream.setDevice( &playlistFile1 );
+    QVERIFY( playlistStream.device() );
+
+    delete m_testPlaylist;
+    m_testPlaylist = new Playlists::ASXPlaylist( url );
+    QVERIFY( m_testPlaylist );
+    QVERIFY( m_testPlaylist->load( playlistStream ) );
+    QCOMPARE( m_testPlaylist->tracks().size(), 1 );
+    playlistFile1.close();
+
+    Meta::TrackList tracklist = m_testPlaylist->tracks();
+
+    QCOMPARE( tracklist.size(), 1 );
+    QCOMPARE( tracklist.at( 0 )->name(), QString( ":: Willkommen bei darkerradio - Tune in, turn on, burn out" ) );
+}

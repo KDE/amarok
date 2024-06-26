@@ -115,6 +115,7 @@ void TestPLSPlaylist::testTracks()
 {
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
 
+    QCOMPARE( tracklist.size(), 4 );
     QCOMPARE( tracklist.at( 0 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
     QCOMPARE( tracklist.at( 1 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
     QCOMPARE( tracklist.at( 2 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
@@ -135,4 +136,28 @@ void TestPLSPlaylist::testIsWritable()
 void TestPLSPlaylist::testSave()
 {
     QVERIFY( m_testPlaylist1->save( false ) );
+}
+
+void TestPLSPlaylist::testSaveAndReload()
+{
+    QVERIFY( m_testPlaylist1->save( false ) );
+
+    const QUrl url = m_testPlaylist1->uidUrl();
+    QFile playlistFile1( url.toLocalFile() );
+    QTextStream playlistStream;
+
+    QVERIFY( playlistFile1.open( QFile::ReadOnly ) );
+    playlistStream.setDevice( &playlistFile1 );
+    QVERIFY( playlistStream.device() );
+
+    delete m_testPlaylist1;
+    m_testPlaylist1 = new Playlists::PLSPlaylist( url );
+    QVERIFY( m_testPlaylist1 );
+    QVERIFY( m_testPlaylist1->load( playlistStream ) );
+    playlistFile1.close();
+
+    Meta::TrackList tracklist = m_testPlaylist1->tracks();
+
+    QCOMPARE( tracklist.size(), 4 );
+    QCOMPARE( tracklist.at( 2 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
 }
