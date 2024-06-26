@@ -67,7 +67,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             {
                 proxyTrack->setTitle( extinfTitle );
             }
-            proxyTrack->setLength( length );
+            proxyTrack->setLength( length * 1000 ); // read from m3u in s, proxyTrack wants ms
             Meta::TrackPtr track( proxyTrack.data() );
             addProxyTrack( track );
         }
@@ -92,7 +92,7 @@ M3UPlaylist::savePlaylist( QFile &file )
         if( !track ) // see BUG: 303056
             continue;
 
-        const QUrl &url = track->playableUrl();
+        const QString &url = trackLocation( track );
         int length = track->length() / 1000;
         const QString &title = track->name();
         const QString &artist = track->artist()->name();
@@ -105,11 +105,8 @@ M3UPlaylist::savePlaylist( QFile &file )
             stream << artist << " - " << title;
             stream << '\n';
         }
+        stream << url;
 
-        if( url.scheme() == QLatin1String("file") )
-            stream << trackLocation( track );
-        else
-            stream << url.url();
         stream << "\n";
     }
 }
