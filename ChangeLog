@@ -18,6 +18,7 @@ VERSION 3.0.2
      playcount updates and scrobbles to get skipped (BR 337849, 406701)
    * Fix 'save playlist' button in playlist controls
    * Sort playlist sorting breadcrumb menu by localized names (BR 277146)
+   * Miscellaneous fixes to saving and loading various playlist file formats
 
 
 VERSION 3.0.1

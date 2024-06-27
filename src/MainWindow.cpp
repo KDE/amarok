@@ -453,7 +453,7 @@ MainWindow::exportPlaylist() //SLOT
 
     QStringList supportedMimeTypes;
 
-    supportedMimeTypes << "video/x-ms-asf"; //ASX
+    supportedMimeTypes << "audio/x-ms-asx"; //ASX
     supportedMimeTypes << "audio/x-mpegurl"; //M3U
     supportedMimeTypes << "audio/x-scpls"; //PLS
     supportedMimeTypes << "application/xspf+xml"; //XSPF

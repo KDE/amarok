@@ -34,7 +34,7 @@ class AMAROK_EXPORT ASXPlaylist : public PlaylistFile, public QDomDocument
         bool load( QTextStream &stream ) override { return loadAsx( stream ); }
 
         QString extension() const override { return QStringLiteral("asx"); }
-        QString mimetype() const override { return QStringLiteral("video/x-ms-asf"); }
+        QString mimetype() const override { return QStringLiteral("audio/x-ms-asx"); }
 
     protected:
         bool loadAsx( QTextStream &stream );

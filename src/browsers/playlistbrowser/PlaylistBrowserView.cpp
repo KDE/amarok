@@ -523,7 +523,7 @@ PlaylistBrowserView::slotExport()
 
     QStringList supportedMimeTypes;
 
-    supportedMimeTypes << QStringLiteral("video/x-ms-asf"); //ASX
+    supportedMimeTypes << QStringLiteral("audio/x-ms-asx"); //ASX
     supportedMimeTypes << QStringLiteral("audio/x-mpegurl"); //M3U
     supportedMimeTypes << QStringLiteral("audio/x-scpls"); //PLS
     supportedMimeTypes << QStringLiteral("application/xspf+xml"); //XSPF
