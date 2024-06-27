@@ -9,3 +9,5 @@ File3=http://85.214.44.27:8100
 Title3=::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!
 File4=http://85.214.44.27:8200
 Title4=::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!
+File5=../audio/Plätz 10.mp3
+Title5=Test

@@ -64,7 +64,7 @@ TestASXPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const QUrl url = QUrl::fromLocalFile(dataPath( "data/playlists/test.asx" ));
+    const QUrl url = QUrl::fromLocalFile(dataPath( "data/playlists/test2.asx" ));
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
@@ -80,7 +80,7 @@ TestASXPlaylist::initTestCase()
     m_testPlaylist = new Playlists::ASXPlaylist( QUrl::fromLocalFile(tempPath) );
     QVERIFY( m_testPlaylist );
     QVERIFY( m_testPlaylist->load( playlistStream ) );
-    QCOMPARE( m_testPlaylist->tracks().size(), 1 );
+    QCOMPARE( m_testPlaylist->tracks().size(), 2 );
     playlistFile1.close();
 }
 
@@ -118,7 +118,7 @@ TestASXPlaylist::testTracks()
 {
     Meta::TrackList tracklist = m_testPlaylist->tracks();
 
-    QCOMPARE( tracklist.size(), 1 );
+    QCOMPARE( tracklist.size(), 2 );
     QCOMPARE( tracklist.at( 0 )->name(), QString( ":: Willkommen bei darkerradio - Tune in, turn on, burn out" ) );
 }
 
@@ -163,6 +163,9 @@ void
 TestASXPlaylist::testSaveAndReload()
 {
     QVERIFY( m_testPlaylist->save( false ) );
+    Meta::TrackList tracklist = m_testPlaylist->tracks();
+    const QString testTrack1Url = tracklist.at( 0 )->uidUrl();
+    const QString testTrack2Url = tracklist.at( 1 )->uidUrl();
 
     const QUrl url = m_testPlaylist->uidUrl();
     QFile playlistFile1( url.toLocalFile() );
@@ -176,11 +179,12 @@ TestASXPlaylist::testSaveAndReload()
     m_testPlaylist = new Playlists::ASXPlaylist( url );
     QVERIFY( m_testPlaylist );
     QVERIFY( m_testPlaylist->load( playlistStream ) );
-    QCOMPARE( m_testPlaylist->tracks().size(), 1 );
     playlistFile1.close();
 
-    Meta::TrackList tracklist = m_testPlaylist->tracks();
-
-    QCOMPARE( tracklist.size(), 1 );
+    tracklist = m_testPlaylist->tracks();
+    QCOMPARE( tracklist.size(), 2 );
     QCOMPARE( tracklist.at( 0 )->name(), QString( ":: Willkommen bei darkerradio - Tune in, turn on, burn out" ) );
+
+    QCOMPARE( tracklist.at( 0 )->uidUrl(), testTrack1Url );
+    QCOMPARE( tracklist.at( 1 )->uidUrl(), testTrack2Url );
 }

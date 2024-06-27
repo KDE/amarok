@@ -60,7 +60,7 @@ void TestXSPFPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const QString testXspf = "data/playlists/test.xspf";
+    const QString testXspf = "data/playlists/test2.xspf";
     const QUrl url = QUrl::fromLocalFile(dataPath( testXspf ));
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream1;
@@ -118,12 +118,13 @@ void TestXSPFPlaylist::testSetAndGetTracks()
 {
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
 
-    QCOMPARE( tracklist.size(), 23 );
+    QCOMPARE( tracklist.size(), 24 );
     QCOMPARE( tracklist.at( 0 )->name(), QString( "Sunset" ) );
     QCOMPARE( tracklist.at( 1 )->name(), QString( "Heaven" ) );
     QCOMPARE( tracklist.at( 2 )->name(), QString( "Liquid Sun" ) );
     QCOMPARE( tracklist.at( 3 )->name(), QString( "Restrained Mind" ) );
     QCOMPARE( tracklist.at( 22 )->name(), QString( "Trash Bag" ) );
+    QCOMPARE( tracklist.at( 23 )->name(), QString( "Test träck" ) );
 }
 
 void TestXSPFPlaylist::testSetAndGetTitle()
@@ -341,6 +342,10 @@ void TestXSPFPlaylist::testSaveAndReload()
 {
     QVERIFY( m_testPlaylist1->save( false ) );
 
+    Meta::TrackList tracklist = m_testPlaylist1->tracks();
+    const QString testTrack1Url = tracklist.at( 1 )->uidUrl();
+    const QString testTrack2Url = tracklist.at( 23 )->uidUrl();
+
     const QUrl url = m_testPlaylist1->uidUrl();
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
@@ -355,8 +360,11 @@ void TestXSPFPlaylist::testSaveAndReload()
     QVERIFY( m_testPlaylist1->load( playlistStream ) );
     playlistFile1.close();
 
-    Meta::TrackList tracklist = m_testPlaylist1->tracks();
+    tracklist = m_testPlaylist1->tracks();
 
-    QCOMPARE( tracklist.size(), 23 );
+    QCOMPARE( tracklist.size(), 24 );
     QCOMPARE( tracklist.at( 0 )->name(), QString( "Sunset" ) );
+    QCOMPARE( tracklist.at( 23 )->name(), QString( "Test träck" ) );
+    QCOMPARE( tracklist.at( 1 )->uidUrl(), testTrack1Url );
+    QCOMPARE( tracklist.at( 23 )->uidUrl(), testTrack2Url );
 }

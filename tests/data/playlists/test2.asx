@@ -5,4 +5,9 @@
 <Ref href = "http://85.214.44.27:8000"/>
 <moreinfo href="http://www.darkerradio.de/" target="_blank"></moreinfo>
 </Entry>
+<entry>
+<Title>Test</Title>
+<Author>Test</Author>
+<Ref href = "../audio/Plätz 10.mp3"/>
+</Entry>
 </asx>

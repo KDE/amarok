@@ -55,7 +55,7 @@ void TestM3UPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const QUrl url = QUrl::fromLocalFile(dataPath( "data/playlists/test.m3u" ));
+    const QUrl url = QUrl::fromLocalFile(dataPath( "data/playlists/test2.m3u" ));
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
 
@@ -70,7 +70,7 @@ void TestM3UPlaylist::initTestCase()
     m_testPlaylist = new Playlists::M3UPlaylist( QUrl::fromLocalFile(tempPath) );
     QVERIFY( m_testPlaylist );
     QVERIFY( m_testPlaylist->load( playlistStream ) );
-    QCOMPARE( m_testPlaylist->tracks().size(), 10 );
+    QCOMPARE( m_testPlaylist->tracks().size(), 11 );
     playlistFile1.close();
 }
 
@@ -104,11 +104,12 @@ void TestM3UPlaylist::testTracks()
 {
     Meta::TrackList tracklist = m_testPlaylist->tracks();
 
-    QCOMPARE( tracklist.size(), 10 );
+    QCOMPARE( tracklist.size(), 11 );
     QCOMPARE( tracklist.at( 0 )->name(), QString( "Platz 01" ) );
     QCOMPARE( tracklist.at( 1 )->name(), QString( "Platz 02" ) );
     QCOMPARE( tracklist.at( 2 )->name(), QString( "Platz 03" ) );
     QCOMPARE( tracklist.at( 9 )->name(), QString( "Platz 10" ) );
+    QCOMPARE( tracklist.at( 10 )->name(), QString( "Plätz 11" ) );
 }
 
 void TestM3UPlaylist::testUidUrl()
@@ -147,6 +148,9 @@ void TestM3UPlaylist::testSave()
 void TestM3UPlaylist::testSaveAndReload()
 {
     QVERIFY( m_testPlaylist->save( false ) );
+    Meta::TrackList tracklist = m_testPlaylist->tracks();
+    const QString testTrack1Url = tracklist.at( 1 )->uidUrl();
+    const QString testTrack2Url = tracklist.at( 10 )->uidUrl();
 
     const QUrl url = m_testPlaylist->uidUrl();
     QFile playlistFile1( url.toLocalFile() );
@@ -162,8 +166,11 @@ void TestM3UPlaylist::testSaveAndReload()
     QVERIFY( m_testPlaylist->load( playlistStream ) );
     playlistFile1.close();
 
-    Meta::TrackList tracklist = m_testPlaylist->tracks();
+    tracklist = m_testPlaylist->tracks();
 
-    QCOMPARE( tracklist.size(), 10 );
+    QCOMPARE( tracklist.size(), 11 );
     QCOMPARE( tracklist.at( 9 )->name(), QString( "Platz 10" ) );
+    QCOMPARE( tracklist.at( 10 )->name(), QString( "Plätz 11" ) );
+    QCOMPARE( tracklist.at( 1 )->uidUrl(), testTrack1Url );
+    QCOMPARE( tracklist.at( 10 )->uidUrl(), testTrack2Url );
 }

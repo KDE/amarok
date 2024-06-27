@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<playlist version="1" xmlns="http://xspf.org/ns/0/">
+  <title>my playlist</title>
+  <trackList>
+    <track>
+      <location>http://he3.magnatune.com/all/01-Sunset-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/01-Sunset-Ammonite.ogg</identifier>
+      <title>Sunset</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>1</trackNum>
+      <duration>191000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/02-Heaven-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/02-Heaven-Ammonite.ogg</identifier>
+      <title>Heaven</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>2</trackNum>
+      <duration>337000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/03-Liquid%20Sun-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/03-Liquid%20Sun-Ammonite.ogg</identifier>
+      <title>Liquid Sun</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>3</trackNum>
+      <duration>383000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/04-Restrained%20Mind-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/04-Restrained%20Mind-Ammonite.ogg</identifier>
+      <title>Restrained Mind</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>4</trackNum>
+      <duration>308000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/05-Rapture-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/05-Rapture-Ammonite.ogg</identifier>
+      <title>Rapture</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>5</trackNum>
+      <duration>255000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/06-Calm-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/06-Calm-Ammonite.ogg</identifier>
+      <title>Calm</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>6</trackNum>
+      <duration>301000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/07-Angel%20(hold%20on...)-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/07-Angel%20(hold%20on...)-Ammonite.ogg</identifier>
+      <title>Angel (hold on...)</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>7</trackNum>
+      <duration>432000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/08-Broken-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/08-Broken-Ammonite.ogg</identifier>
+      <title>Broken</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>8</trackNum>
+      <duration>257000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/09-Open%20Road-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/09-Open%20Road-Ammonite.ogg</identifier>
+      <title>Open Road</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>9</trackNum>
+      <duration>343000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/10-Distant%20Love-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/10-Distant%20Love-Ammonite.ogg</identifier>
+      <title>Distant Love</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>10</trackNum>
+      <duration>384000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/11-Touch-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/11-Touch-Ammonite.ogg</identifier>
+      <title>Touch</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>11</trackNum>
+      <duration>571000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/12-Reconnection%20(outro)-Ammonite.ogg</location>
+      <identifier>http://he3.magnatune.com/all/12-Reconnection%20(outro)-Ammonite.ogg</identifier>
+      <title>Reconnection (outro)</title>
+      <creator>Ammonite</creator>
+      <album>Reconnection</album>
+      <trackNum>12</trackNum>
+      <duration>163000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/01--Should%20Be--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/01--Should%20Be--Arthur%20Yoria.ogg</identifier>
+      <title>Should Be</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>1</trackNum>
+      <duration>174000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/02--Clean%20For%20Free--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/02--Clean%20For%20Free--Arthur%20Yoria.ogg</identifier>
+      <title>Clean For Free</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>2</trackNum>
+      <duration>198000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/03--Handshake%20Smiles--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/03--Handshake%20Smiles--Arthur%20Yoria.ogg</identifier>
+      <title>Handshake Smiles</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>3</trackNum>
+      <duration>157000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/04--Jimmy's%20Rig--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/04--Jimmy's%20Rig--Arthur%20Yoria.ogg</identifier>
+      <title>Jimmy's Rig</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>4</trackNum>
+      <duration>177000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/05--Love%20Song%20in%20G--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/05--Love%20Song%20in%20G--Arthur%20Yoria.ogg</identifier>
+      <title>Love Song in G</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>5</trackNum>
+      <duration>221000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/06--Cuttin%20a%20Rug--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/06--Cuttin%20a%20Rug--Arthur%20Yoria.ogg</identifier>
+      <title>Cuttin a Rug</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>6</trackNum>
+      <duration>230000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/07--Sandy--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/07--Sandy--Arthur%20Yoria.ogg</identifier>
+      <title>Sandy</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>7</trackNum>
+      <duration>261000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/08--I%20Told%20You%20Not%20to%20Write%20Again--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/08--I%20Told%20You%20Not%20to%20Write%20Again--Arthur%20Yoria.ogg</identifier>
+      <title>I Told You Not to Write Again</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>8</trackNum>
+      <duration>227000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/09--Fool%20Me%20Again--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/09--Fool%20Me%20Again--Arthur%20Yoria.ogg</identifier>
+      <title>Fool Me Again</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>9</trackNum>
+      <duration>169000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/10--Rim%20Job--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/10--Rim%20Job--Arthur%20Yoria.ogg</identifier>
+      <title>Rim Job</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>10</trackNum>
+      <duration>246000</duration>
+    </track>
+    <track>
+      <location>http://he3.magnatune.com/all/11--Trash%20Bag--Arthur%20Yoria.ogg</location>
+      <identifier>http://he3.magnatune.com/all/11--Trash%20Bag--Arthur%20Yoria.ogg</identifier>
+      <title>Trash Bag</title>
+      <creator>Arthur Yoria</creator>
+      <album>Handshake Smiles</album>
+      <trackNum>11</trackNum>
+      <duration>297000</duration>
+    </track>
+    <track>
+      <location>../audio/Plätz 10.mp3</location>
+      <identifier>../audio/Plätz 10.mp3</identifier>
+      <title>Test träck</title>
+      <creator>Örtist</creator>
+      <duration>297000</duration>
+    </track>
+  </trackList>
+</playlist>

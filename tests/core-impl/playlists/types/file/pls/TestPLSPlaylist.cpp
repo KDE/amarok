@@ -61,7 +61,7 @@ void TestPLSPlaylist::initTestCase()
      * Pre-create it explicitly */
     CollectionManager::instance();
 
-    const QString testPls = "data/playlists/test.pls";
+    const QString testPls = "data/playlists/test2.pls";
     const QUrl url = QUrl::fromLocalFile( dataPath(testPls) );
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
@@ -77,7 +77,7 @@ void TestPLSPlaylist::initTestCase()
     m_testPlaylist1 = new Playlists::PLSPlaylist( QUrl::fromLocalFile(tempPath) );
     QVERIFY( m_testPlaylist1 );
     QVERIFY( m_testPlaylist1->load( playlistStream ) );
-    QCOMPARE( m_testPlaylist1->tracks().size(), 4 );
+    QCOMPARE( m_testPlaylist1->tracks().size(), 5 );
     playlistFile1.close();
 }
 
@@ -115,7 +115,7 @@ void TestPLSPlaylist::testTracks()
 {
     Meta::TrackList tracklist = m_testPlaylist1->tracks();
 
-    QCOMPARE( tracklist.size(), 4 );
+    QCOMPARE( tracklist.size(), 5 );
     QCOMPARE( tracklist.at( 0 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
     QCOMPARE( tracklist.at( 1 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
     QCOMPARE( tracklist.at( 2 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
@@ -142,6 +142,10 @@ void TestPLSPlaylist::testSaveAndReload()
 {
     QVERIFY( m_testPlaylist1->save( false ) );
 
+    Meta::TrackList tracklist = m_testPlaylist1->tracks();
+    const QString testTrack1Url = tracklist.at( 0 )->uidUrl();
+    const QString testTrack2Url = tracklist.at( 4 )->uidUrl();
+
     const QUrl url = m_testPlaylist1->uidUrl();
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream;
@@ -156,8 +160,10 @@ void TestPLSPlaylist::testSaveAndReload()
     QVERIFY( m_testPlaylist1->load( playlistStream ) );
     playlistFile1.close();
 
-    Meta::TrackList tracklist = m_testPlaylist1->tracks();
+    tracklist = m_testPlaylist1->tracks();
 
-    QCOMPARE( tracklist.size(), 4 );
+    QCOMPARE( tracklist.size(), 5 );
     QCOMPARE( tracklist.at( 2 )->name(), QString( "::darkerradio:: - DIE Alternative im Netz ::www.darkerradio.de:: Tune In, Turn On, Burn Out!" ) );
+    QCOMPARE( tracklist.at( 0 )->uidUrl(), testTrack1Url );
+    QCOMPARE( tracklist.at( 4 )->uidUrl(), testTrack2Url );
 }
