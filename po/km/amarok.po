@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-25 01:42+0000\n"
+"POT-Creation-Date: 2024-06-27 01:48+0000\n"
 "PO-Revision-Date: 2012-07-06 15:27+0700\n"
 "Last-Translator: Sophea <sophea@khmeros.info>\n"
 "Language-Team: Khmer <>\n"
@@ -4673,12 +4673,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr ""
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:758
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:757
 #, kde-format
 msgid "Choose Language"
 msgstr "ជ្រើស​ភាសា"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:891
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:890
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -5090,13 +5090,13 @@ msgid "Disconnected iPod/iPad/iPhone"
 msgstr "បាន​ផ្ដាច់ iPod/iPad/iPhone"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:182
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
 #, kde-format
 msgid "Unknown Collection"
 msgstr "មិន​ស្គាល់​សម្រាំង"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
 #: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
@@ -5105,7 +5105,7 @@ msgid "Unknown Artist"
 msgstr "មិន​ស្គាល់​សិល្បករ"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:94
 #: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
@@ -11557,7 +11557,7 @@ msgstr ""
 msgid "Value"
 msgstr "កម្រិត​សំឡេង"
 
-#: OpmlParser.cpp:127
+#: OpmlParser.cpp:128
 #, fuzzy, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "បា​នបរាជ័យ​ជាមួយកំហុស​ការ​ធ្វើ​ឲ្យ​ទាន់សម័យ​ផតខាស់​ពី​ %1 ៖\n"
@@ -11655,7 +11655,7 @@ msgstr "តម្រឹម"
 msgid "Font: "
 msgstr "ទ្រង់ទ្រាយ ៖"
 
-#: playlist/layouts/LayoutEditDialog.cpp:239
+#: playlist/layouts/LayoutEditDialog.cpp:242
 #, fuzzy, kde-format
 msgid "Configuration for '%1'"
 msgstr "ការ​កំណត់​រចនាសម្ព័ន្ធ"
@@ -14577,68 +14577,68 @@ msgstr "បញ្ជា(Ctrl)+S"
 msgid "Skip this track"
 msgstr "រំលង​បទ​នេះ"
 
-#: services/lastfm/meta/LastFmMeta.cpp:268
+#: services/lastfm/meta/LastFmMeta.cpp:267
 #, kde-format
 msgid "Global Tag Radio: \"%1\""
 msgstr "​វិទ្យុ​ស្លាក​សកល ៖ \"%1\""
 
-#: services/lastfm/meta/LastFmMeta.cpp:274
+#: services/lastfm/meta/LastFmMeta.cpp:272
 #, kde-format
 msgid "User Tag Radio: \"%1\""
 msgstr "វិទ្យុ​​ស្លាក​​អ្នកប្រើ ៖ \"%1\""
 
-#: services/lastfm/meta/LastFmMeta.cpp:282
+#: services/lastfm/meta/LastFmMeta.cpp:280
 #, kde-format
 msgid "Similar Artists to \"%1\""
 msgstr "សិល្បករ​​ស្រដៀង​នឹង \"%1\""
 
-#: services/lastfm/meta/LastFmMeta.cpp:286
+#: services/lastfm/meta/LastFmMeta.cpp:284
 #, kde-format
 msgid "Artist Fan Radio: \"%1\""
 msgstr "វិទ្យ​​គាំទ្រ​​សិល្បករ ៖ \"%1\""
 
-#: services/lastfm/meta/LastFmMeta.cpp:295
+#: services/lastfm/meta/LastFmMeta.cpp:293
 #, kde-format
 msgid "%1's Neighbor Radio"
 msgstr "វិទ្យុ​ជិតខាង​របស់ %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:299
+#: services/lastfm/meta/LastFmMeta.cpp:297
 #, kde-format
 msgid "%1's Personal Radio"
 msgstr "វិទ្យុ​ផ្ទាល់ខ្លួន​របស់ %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:303
+#: services/lastfm/meta/LastFmMeta.cpp:301
 #, fuzzy, kde-format
 #| msgid "%1's Loved Radio"
 msgid "%1's Mix Radio"
 msgstr "វិទ្យុ​ជាទី​ពេញចិត្ត​របស់ %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:307
+#: services/lastfm/meta/LastFmMeta.cpp:305
 #, kde-format
 msgid "%1's Recommended Radio"
 msgstr "វិទ្យុ​ដែល​បានផ្ដល់​អនុសាសន៍​របស់ %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:311
+#: services/lastfm/meta/LastFmMeta.cpp:309
 #, kde-format
 msgid "%1's Recommended Radio (Popularity %2)"
 msgstr "វិទ្យុ​ដែលបាន​ផ្ដល់​អានុសាសន៍​របស់ %1 (ប្រជាប្រិយភាព %2)"
 
-#: services/lastfm/meta/LastFmMeta.cpp:318
+#: services/lastfm/meta/LastFmMeta.cpp:315
 #, kde-format
 msgid "Group Radio: %1"
 msgstr "វិទ្យុ​ក្រុម ៖ %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:326
+#: services/lastfm/meta/LastFmMeta.cpp:323
 #, kde-format
 msgid "Track Radio"
 msgstr "វិទ្យុ​បទ"
 
-#: services/lastfm/meta/LastFmMeta.cpp:330
+#: services/lastfm/meta/LastFmMeta.cpp:327
 #, kde-format
 msgid "Artist Radio"
 msgstr "វិទ្យុ​សិល្បករ"
 
-#: services/lastfm/meta/LastFmMeta.cpp:430
+#: services/lastfm/meta/LastFmMeta.cpp:427
 #, kde-format
 msgid "Last.fm is cool..."
 msgstr "Last.fm គឺ​ល្អ..."

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-25 01:42+0000\n"
+"POT-Creation-Date: 2024-06-27 01:48+0000\n"
 "PO-Revision-Date: 2015-02-25 23:38+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: bosanski <bs@li.org>\n"
@@ -4765,12 +4765,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr "%1 je potreban za pretraživanje Wikipedia."
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:758
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:757
 #, kde-format
 msgid "Choose Language"
 msgstr "Odaberi jezik"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:891
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:890
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -5175,13 +5175,13 @@ msgid "Disconnected iPod/iPad/iPhone"
 msgstr "Diskonektovan iPod/iPad/iPhone"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:182
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
 #, kde-format
 msgid "Unknown Collection"
 msgstr "Nepoznata kolekcija"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
 #: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
@@ -5190,7 +5190,7 @@ msgid "Unknown Artist"
 msgstr "Nepoznat izvođač"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:94
 #: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
@@ -11744,7 +11744,7 @@ msgstr "Podaci o odgovoru"
 msgid "Value"
 msgstr "Vrijednost"
 
-#: OpmlParser.cpp:127
+#: OpmlParser.cpp:128
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "Ažuriranje OPML podemisije sa %1 propalo uz grešku:\n"
@@ -11848,7 +11848,7 @@ msgstr "Poravnavanje: "
 msgid "Font: "
 msgstr "Font: "
 
-#: playlist/layouts/LayoutEditDialog.cpp:239
+#: playlist/layouts/LayoutEditDialog.cpp:242
 #, kde-format
 msgid "Configuration for '%1'"
 msgstr "Postavke za „%1“"
@@ -14835,71 +14835,71 @@ msgid "Skip this track"
 msgstr "Preskoči ovu numeru"
 
 # >> @item
-#: services/lastfm/meta/LastFmMeta.cpp:268
+#: services/lastfm/meta/LastFmMeta.cpp:267
 #, kde-format
 msgid "Global Tag Radio: \"%1\""
 msgstr "Globalno označeni radio: „%1“"
 
 # >> @item
-#: services/lastfm/meta/LastFmMeta.cpp:274
+#: services/lastfm/meta/LastFmMeta.cpp:272
 #, kde-format
 msgid "User Tag Radio: \"%1\""
 msgstr "Korisnički označeni radio: „%1“"
 
 # >> @item
-#: services/lastfm/meta/LastFmMeta.cpp:282
+#: services/lastfm/meta/LastFmMeta.cpp:280
 #, kde-format
 msgid "Similar Artists to \"%1\""
 msgstr "Izvođači slični sa „%1“"
 
 # >> @item
-#: services/lastfm/meta/LastFmMeta.cpp:286
+#: services/lastfm/meta/LastFmMeta.cpp:284
 #, kde-format
 msgid "Artist Fan Radio: \"%1\""
 msgstr "Radio ljubitelja izvođača: „%1“"
 
-#: services/lastfm/meta/LastFmMeta.cpp:295
+#: services/lastfm/meta/LastFmMeta.cpp:293
 #, kde-format
 msgid "%1's Neighbor Radio"
 msgstr "Susjedski radio od %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:299
+#: services/lastfm/meta/LastFmMeta.cpp:297
 #, kde-format
 msgid "%1's Personal Radio"
 msgstr "Lični radio od %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:303
+#: services/lastfm/meta/LastFmMeta.cpp:301
 #, kde-format
 msgid "%1's Mix Radio"
 msgstr "%1-ov Mix Radio"
 
-#: services/lastfm/meta/LastFmMeta.cpp:307
+#: services/lastfm/meta/LastFmMeta.cpp:305
 #, kde-format
 msgid "%1's Recommended Radio"
 msgstr "Preporučeni radio od %1"
 
 # >> @item
-#: services/lastfm/meta/LastFmMeta.cpp:311
+#: services/lastfm/meta/LastFmMeta.cpp:309
 #, kde-format
 msgid "%1's Recommended Radio (Popularity %2)"
 msgstr "preporučeni radio — %1 (popularnost %2)"
 
-#: services/lastfm/meta/LastFmMeta.cpp:318
+#: services/lastfm/meta/LastFmMeta.cpp:315
 #, kde-format
 msgid "Group Radio: %1"
 msgstr "Grupni radio: %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:326
+#: services/lastfm/meta/LastFmMeta.cpp:323
 #, kde-format
 msgid "Track Radio"
 msgstr "Radio numera"
 
-#: services/lastfm/meta/LastFmMeta.cpp:330
+#: services/lastfm/meta/LastFmMeta.cpp:327
 #, kde-format
 msgid "Artist Radio"
 msgstr "Izvođački radio"
 
-#: services/lastfm/meta/LastFmMeta.cpp:430
+#: services/lastfm/meta/LastFmMeta.cpp:427
 #, kde-format
 msgid "Last.fm is cool..."
 msgstr "LastFM je 'ladan..."

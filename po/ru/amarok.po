@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-25 01:42+0000\n"
+"POT-Creation-Date: 2024-06-27 01:48+0000\n"
 "PO-Revision-Date: 2020-04-24 16:21+0300\n"
 "Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
@@ -4792,12 +4792,12 @@ msgctxt "%1 is field name such as 'Artist Name'"
 msgid "%1 is needed for searching Wikipedia."
 msgstr "Для поиска в Википедии требуется название этой дорожки."
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:758
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:757
 #, kde-format
 msgid "Choose Language"
 msgstr "Выбор языка"
 
-#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:891
+#: context/applets/wikipedia/plugin/WikipediaEngine.cpp:890
 #, kde-format
 msgctxt ""
 "A message (link) shown for clicked non-Wikipedia links in Wikipedia applet. "
@@ -5210,13 +5210,13 @@ msgid "Disconnected iPod/iPad/iPhone"
 msgstr "Отсоединённый iPod/iPad/iPhone"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:182
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:90
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
 #, kde-format
 msgid "Unknown Collection"
 msgstr "Неизвестная коллекция"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:183
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:91
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:422
 #: core/meta/Meta.cpp:253 covermanager/CoverFetchUnit.cpp:596
 #: covermanager/CoverFetchUnit.cpp:606 playlist/PlaylistQueueEditor.cpp:69
@@ -5225,7 +5225,7 @@ msgid "Unknown Artist"
 msgstr "Неизвестный исполнитель"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:184
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:94
 #: EngineController.cpp:1319
 #, kde-format
 msgid "Unknown track"
@@ -11959,7 +11959,7 @@ msgstr "Подробности ответа"
 msgid "Value"
 msgstr "Значение"
 
-#: OpmlParser.cpp:127
+#: OpmlParser.cpp:128
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
 msgstr "Ошибка чтения подкаста OPML из %1:\n"
@@ -12063,7 +12063,7 @@ msgstr "Выравнивание: "
 msgid "Font: "
 msgstr "Шрифт:"
 
-#: playlist/layouts/LayoutEditDialog.cpp:239
+#: playlist/layouts/LayoutEditDialog.cpp:242
 #, kde-format
 msgid "Configuration for '%1'"
 msgstr "Настройка «%1»"
@@ -15101,67 +15101,67 @@ msgstr "Ctrl+S"
 msgid "Skip this track"
 msgstr "Пропустить эту дорожку"
 
-#: services/lastfm/meta/LastFmMeta.cpp:268
+#: services/lastfm/meta/LastFmMeta.cpp:267
 #, kde-format
 msgid "Global Tag Radio: \"%1\""
 msgstr "По общим меткам: «%1»"
 
-#: services/lastfm/meta/LastFmMeta.cpp:274
+#: services/lastfm/meta/LastFmMeta.cpp:272
 #, kde-format
 msgid "User Tag Radio: \"%1\""
 msgstr "По меткам пользователя: «%1»"
 
-#: services/lastfm/meta/LastFmMeta.cpp:282
+#: services/lastfm/meta/LastFmMeta.cpp:280
 #, kde-format
 msgid "Similar Artists to \"%1\""
 msgstr "Исполнители, схожие с «%1»"
 
-#: services/lastfm/meta/LastFmMeta.cpp:286
+#: services/lastfm/meta/LastFmMeta.cpp:284
 #, kde-format
 msgid "Artist Fan Radio: \"%1\""
 msgstr "Радио поклонников исполнителя: «%1»"
 
-#: services/lastfm/meta/LastFmMeta.cpp:295
+#: services/lastfm/meta/LastFmMeta.cpp:293
 #, kde-format
 msgid "%1's Neighbor Radio"
 msgstr "Радио соседей %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:299
+#: services/lastfm/meta/LastFmMeta.cpp:297
 #, kde-format
 msgid "%1's Personal Radio"
 msgstr "Личное радио %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:303
+#: services/lastfm/meta/LastFmMeta.cpp:301
 #, kde-format
 msgid "%1's Mix Radio"
 msgstr "Смешанное радио %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:307
+#: services/lastfm/meta/LastFmMeta.cpp:305
 #, kde-format
 msgid "%1's Recommended Radio"
 msgstr "По рекомендациям %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:311
+#: services/lastfm/meta/LastFmMeta.cpp:309
 #, kde-format
 msgid "%1's Recommended Radio (Popularity %2)"
 msgstr "По рекомендациям %1 (Популярность %2)"
 
-#: services/lastfm/meta/LastFmMeta.cpp:318
+#: services/lastfm/meta/LastFmMeta.cpp:315
 #, kde-format
 msgid "Group Radio: %1"
 msgstr "Радио группы: %1"
 
-#: services/lastfm/meta/LastFmMeta.cpp:326
+#: services/lastfm/meta/LastFmMeta.cpp:323
 #, kde-format
 msgid "Track Radio"
 msgstr "Радио дорожки"
 
-#: services/lastfm/meta/LastFmMeta.cpp:330
+#: services/lastfm/meta/LastFmMeta.cpp:327
 #, kde-format
 msgid "Artist Radio"
 msgstr "Радио исполнителя"
 
-#: services/lastfm/meta/LastFmMeta.cpp:430
+#: services/lastfm/meta/LastFmMeta.cpp:427
 #, kde-format
 msgid "Last.fm is cool..."
 msgstr "Last.fm — это круто..."
