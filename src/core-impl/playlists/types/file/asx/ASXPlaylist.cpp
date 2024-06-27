@@ -39,8 +39,9 @@ ASXPlaylist::savePlaylist( QFile &file )
 {
     QTextStream stream( &file );
     stream.setCodec( "UTF-8" );
+    clear();
     writeTrackList();
-    QDomDocument::save( stream, 2 /*indent*/, QDomNode::EncodingFromTextStream );
+    documentElement().save( stream, 2 /*indent*/, QDomNode::EncodingFromTextStream );
 }
 
 bool
@@ -137,7 +138,7 @@ ASXPlaylist::writeTrackList( )
 {
     Meta::TrackList trackList = tracks();
 
-    if ( documentElement().namedItem( QStringLiteral("asx") ).isNull() )
+    if ( documentElement().namedItem( QStringLiteral("asx") ).isNull() && documentElement().tagName() != QStringLiteral("asx") )
     {
         QDomElement root = createElement( QStringLiteral("asx") );
         root.setAttribute( QStringLiteral("version"), 3.0 );
