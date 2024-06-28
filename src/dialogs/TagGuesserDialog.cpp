@@ -340,7 +340,7 @@ TagGuesserDialog::updatePreview()                 //SLOT
     for( int i = 0; fields[i]; i++ )
     {
         if( tags.contains( fields[i] ) )
-            labels[i]->setText( "<font color='" + TagGuesserDialog::fieldColor( fields[i] ) + "'>" + tags[ fields[i] ] + "</font>" );
+            labels[i]->setText( QStringLiteral("<font color='") + TagGuesserDialog::fieldColor( fields[i] ) + QStringLiteral("'>") + tags[ fields[i] ] + QStringLiteral("</font>") );
         else
             labels[i]->setText( emptyTagText );
     }
@@ -388,8 +388,8 @@ TagGuesserDialog::coloredFileName( const QMap<qint64,QString> &tags )
     {
         QString value = tags[key];
         // TODO: replace is not the right way to do this.
-        coloredFileName.replace( value, "<font color=\"" + fieldColor( key ) +
-                                 "\">" + value + "</font>", Qt::CaseInsensitive );
+        coloredFileName.replace( value, QStringLiteral("<font color=\"") + fieldColor( key ) +
+                                 QStringLiteral("\">") + value + QStringLiteral("</font>"), Qt::CaseInsensitive );
     }
     return coloredFileName;
 }

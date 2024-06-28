@@ -40,7 +40,7 @@ namespace QtBindings
             Q_INVOKABLE explicit SqlQuery(const QSqlQuery& other);
             Q_INVOKABLE SqlQuery(const SqlQuery& other);
             SqlQuery &operator=(const SqlQuery& other);
-        public slots:
+        public Q_SLOTS:
             void addBindValue(const QVariant& val, QSql::ParamType type = QSql::In);
             int at() const;
             void bindValue(const QString& placeholder, const QVariant& val, QSql::ParamType type = QSql::In);

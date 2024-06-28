@@ -313,7 +313,7 @@ APG::PresetModel::ExportDialog::recvAccept() const
     Q_EMIT pleaseExport( selectedFiles().first(), m_presetsToExportList );
 }
 
-const QString APG::PresetModel::presetExamples =
+const QString APG::PresetModel::presetExamples = QStringLiteral(
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 "<playlistgenerator>"
 "  <generatorpreset title=\"%1\">"
@@ -365,4 +365,4 @@ const QString APG::PresetModel::presetExamples =
 "      </group>"
 "    </constrainttree>"
 "  </generatorpreset>"
-"</playlistgenerator>";
+"</playlistgenerator>");

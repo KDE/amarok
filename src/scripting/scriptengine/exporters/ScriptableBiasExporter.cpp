@@ -55,8 +55,8 @@ ScriptableBiasFactory::init( QJSEngine *engine )
 {
     TrackSetExporter::init( engine );
     QJSValue scriptObj = engine->newQObject( new ScriptableBiasFactoryWrapper( engine ) );
-    engine->globalObject().setProperty( QStringLiteral("BiasFactory"),  scriptObj.property("biasCtor") );
-    engine->globalObject().setProperty( QStringLiteral("GroupBiasFactory"), scriptObj.property("groupBiasCtor") );
+    engine->globalObject().setProperty( QStringLiteral("BiasFactory"),  scriptObj.property(QStringLiteral("biasCtor")) );
+    engine->globalObject().setProperty( QStringLiteral("GroupBiasFactory"), scriptObj.property(QStringLiteral("groupBiasCtor")) );
 }
 
 ScriptableBiasFactory::ScriptableBiasFactory( QJSEngine *engine, bool groupBias )

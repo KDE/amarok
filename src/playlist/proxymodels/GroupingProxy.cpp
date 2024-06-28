@@ -145,7 +145,7 @@ Playlist::GroupingProxy::groupPlayLength( const QModelIndex & index )
     int totalLength = 0;
 
     QModelIndex currIndex = firstIndexInSameGroup( index );
-    forever {
+    for(;;) {
         Meta::TrackPtr track = currIndex.data( TrackRole ).value<Meta::TrackPtr>();
         if ( track )
             totalLength += track->length();

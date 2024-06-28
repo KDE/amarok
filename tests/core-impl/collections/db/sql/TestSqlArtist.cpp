@@ -87,10 +87,10 @@ void
 TestSqlArtist::testSortableName()
 {
     Meta::ArtistPtr artistWithThe = m_collection->registry()->getArtist( 1 );
-    QCOMPARE( artistWithThe->sortableName(), QString( "Foo, The" ) );
+    QCOMPARE( artistWithThe->sortableName(), QStringLiteral( "Foo, The" ) );
 
     Meta::ArtistPtr artistWithoutThe = m_collection->registry()->getArtist( 2 );
-    QCOMPARE( artistWithoutThe->sortableName(), QString( "No The Foo" ) );
+    QCOMPARE( artistWithoutThe->sortableName(), QStringLiteral( "No The Foo" ) );
 }
 
 

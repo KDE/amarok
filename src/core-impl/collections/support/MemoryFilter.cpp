@@ -252,10 +252,10 @@ LabelFilter::LabelFilter( const QString &filter, bool matchBegin, bool matchEnd 
 {
     QString pattern;
     if( matchBegin )
-        pattern += '^';
+        pattern += QLatin1Char('^');
     pattern += filter;
     if( matchEnd )
-        pattern += '$';
+        pattern += QLatin1Char('$');
 
     m_expression = QRegularExpression( pattern, QRegularExpression::CaseInsensitiveOption );
 }

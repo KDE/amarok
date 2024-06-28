@@ -46,26 +46,26 @@ void TestTagGuesser::cleanup()
 
 void TestTagGuesser::testStandard()
 {
-  mTagGuesser->setFilename( "01 - Artist - Title.mp3" );
-  mTagGuesser->setSchema( "%track% - %artist% - %title%.%ignore%" );
+  mTagGuesser->setFilename( QStringLiteral( "01 - Artist - Title.mp3" ) );
+  mTagGuesser->setSchema( QStringLiteral( "%track% - %artist% - %title%.%ignore%" ) );
   QVERIFY( mTagGuesser->guess() );
 
   QMap<qint64,QString> tags = mTagGuesser->tags();
-  QCOMPARE( tags[Meta::valArtist], QString( "Artist" ) );
-  QCOMPARE( tags[Meta::valTitle], QString( "Title" ) );
-  QCOMPARE( tags[Meta::valTrackNr], QString( "01" ) );
+  QCOMPARE( tags[Meta::valArtist], QStringLiteral( "Artist" ) );
+  QCOMPARE( tags[Meta::valTitle], QStringLiteral( "Title" ) );
+  QCOMPARE( tags[Meta::valTrackNr], QStringLiteral( "01" ) );
 }
 
 void TestTagGuesser::testDotInFilename()
 {
   // based off bug 225743
   // https://bugs.kde.org/show_bug.cgi?id=225743
-  mTagGuesser->setFilename( "03.Moloko - Sing It back.mp3" );
-  mTagGuesser->setSchema( "%track%.%artist% - %title%.%ignore%" );
+  mTagGuesser->setFilename( QStringLiteral( "03.Moloko - Sing It back.mp3" ) );
+  mTagGuesser->setSchema( QStringLiteral( "%track%.%artist% - %title%.%ignore%" ) );
   QVERIFY( mTagGuesser->guess() );
 
   QMap<qint64,QString> tags = mTagGuesser->tags();
-  QCOMPARE( tags[Meta::valArtist], QString( "Moloko" ) );
-  QCOMPARE( tags[Meta::valTitle], QString( "Sing It back" ) );
-  QCOMPARE( tags[Meta::valTrackNr], QString( "03" ) );
+  QCOMPARE( tags[Meta::valArtist], QStringLiteral( "Moloko" ) );
+  QCOMPARE( tags[Meta::valTitle], QStringLiteral( "Sing It back" ) );
+  QCOMPARE( tags[Meta::valTrackNr], QStringLiteral( "03" ) );
 }

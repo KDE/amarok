@@ -40,8 +40,6 @@ IpodCollectionFactory.
 class ConnectionAssistant;
 class MediaDeviceInfo;
 
-class QStringList;
-
 class AMAROK_EXPORT MediaDeviceMonitor : public QObject
 {
     Q_OBJECT

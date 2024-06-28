@@ -52,7 +52,7 @@ namespace QtBindings
             Q_INVOKABLE static ByteArray number(qulonglong n, int base = 10);
             Q_INVOKABLE static ByteArray number(double n, char f = 'g', int prec = 6);
             ByteArray &operator=(const ByteArray &other);
-        public slots:
+        public Q_SLOTS:
             ByteArray &append(const QByteArray &ba);
             ByteArray &append(int count, char ch);
             ByteArray &append(const char *str);

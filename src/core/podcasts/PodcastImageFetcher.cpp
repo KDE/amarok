@@ -19,7 +19,9 @@
 #include "core/support/Debug.h"
 
 #include <QCryptographicHash>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QNetworkConfigurationManager>
+#endif
 
 #include <KIO/Job>
 
@@ -87,7 +89,7 @@ PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannel *channel )
     md5.addData( channel->url().url().toLocal8Bit() );
     QString extension = Amarok::extension( channel->imageUrl().fileName() );
     imagePath = imagePath.adjusted( QUrl::StripTrailingSlash );
-    imagePath.setPath( imagePath.path() + QLatin1Char('/') + ( md5.result().toHex() + QLatin1Char('.') + extension ) );
+    imagePath.setPath( imagePath.path() + QLatin1Char('/') + QLatin1String( md5.result().toHex() ) + QLatin1Char('.') + extension );
     return imagePath;
 }
 
@@ -109,7 +111,7 @@ PodcastImageFetcher::run()
         Q_EMIT( done( this ) );
         return;
     }
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QNetworkConfigurationManager mgr;
     if( !mgr.isOnline() )
     {
@@ -118,6 +120,7 @@ PodcastImageFetcher::run()
         //TODO: schedule another run after Solid reports we are online again
         return;
     }
+#endif
 
     foreach( Podcasts::PodcastChannelPtr channel, m_channels )
     {

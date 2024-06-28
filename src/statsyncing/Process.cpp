@@ -181,7 +181,7 @@ Process::slotTracksMatched( ThreadWeaver::JobPointer job )
         m_tracksPage = new MatchedTracksPage();
         m_tracksPage->setProviders( matchJob->providers() );
         m_tracksPage->setMatchedTracksModel( m_matchedTracksModel );
-        foreach( ProviderPtr provider, matchJob->providers() )
+        for( ProviderPtr provider : matchJob->providers() )
         {
             if( !matchJob->uniqueTracks().value( provider ).isEmpty() )
                 m_tracksPage->addUniqueTracksModel( provider, new SingleTracksModel(
@@ -251,7 +251,7 @@ Process::slotLogSynchronization( ThreadWeaver::JobPointer job )
 
     QStringList providerNames;
     for( ProviderPtr provider : m_providersModel->selectedProviders() )
-        providerNames << "<b>" + provider->prettyName() + "</b>";
+        providerNames << QStringLiteral("<b>") + provider->prettyName() + QStringLiteral("</b>");
     QString providers = providerNames.join( i18nc( "comma between list words", ", " ) );
 
     QStringList text = QStringList() << i18ncp( "%2 is a list of collection names",
@@ -262,7 +262,7 @@ Process::slotLogSynchronization( ThreadWeaver::JobPointer job )
     QMap<ScrobblingService::ScrobbleError, int> scrobbleErrorCounts;
     for( const ScrobblingServicePtr &provider : scrobbles.keys() )
     {
-        QString name = "<b>" + provider->prettyName() + "</b>";
+        QString name = QStringLiteral("<b>") + provider->prettyName() + QStringLiteral("</b>");
         QMap<ScrobblingService::ScrobbleError, int> &providerScrobbles = scrobbles[ provider ];
 
         QMapIterator<ScrobblingService::ScrobbleError, int> it( providerScrobbles );

@@ -106,8 +106,8 @@ PlaylistInfoWidget::event( QEvent *event )
             QString tooltipLabel;
             if( queuedCount > 0 && queuedTotalLength > 0 )
             {
-                tooltipLabel = i18n( "Total playlist size: %1", prettyTotalSize )       + '\n'
-                    + i18n( "Queue size: %1",          prettyQueuedTotalSize ) + '\n'
+                tooltipLabel = i18n( "Total playlist size: %1", prettyTotalSize ) + QLatin1Char('\n')
+                    + i18n( "Queue size: %1",          prettyQueuedTotalSize ) + QLatin1Char('\n')
                     + i18n( "Queue length: %1",        prettyQueuedTotalLength );
             }
             else

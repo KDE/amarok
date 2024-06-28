@@ -36,7 +36,7 @@ namespace QtBindings {
             Q_INVOKABLE Label(const QString &text, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
             Q_INVOKABLE ~Label();
             Label &operator=(const Label &other);
-        public slots:
+        public Q_SLOTS:
             Qt::Alignment alignment() const;
             QWidget *buddy() const;
             void clear();

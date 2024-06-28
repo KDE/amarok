@@ -881,10 +881,10 @@ SqlPodcastChannel::loadEpisodes()
     //the user want to be shown even if there is no more slot
     if( hasPurge() )
     {
-        command = QString( "(SELECT id, url, channel, localurl, guid, "
+        command = QStringLiteral( "(SELECT id, url, channel, localurl, guid, "
                            "title, subtitle, sequencenumber, description, mimetype, pubdate, "
                            "duration, filesize, isnew, iskeep FROM podcastepisodes WHERE channel = %1 "
-                           "AND iskeep IS FALSE ORDER BY pubdate DESC LIMIT " + QString::number( purgeCount() ) + ") "
+                           "AND iskeep IS FALSE ORDER BY pubdate DESC LIMIT ") + QString::number( purgeCount() ) + QStringLiteral(") "
                            "UNION "
                            "(SELECT id, url, channel, localurl, guid, "
                            "title, subtitle, sequencenumber, description, mimetype, pubdate, "
@@ -895,7 +895,7 @@ SqlPodcastChannel::loadEpisodes()
     }
     else
     {
-        command = QString( "SELECT id, url, channel, localurl, guid, "
+        command = QStringLiteral( "SELECT id, url, channel, localurl, guid, "
                            "title, subtitle, sequencenumber, description, mimetype, pubdate, "
                            "duration, filesize, isnew, iskeep FROM podcastepisodes WHERE channel = %1 "
                            "ORDER BY pubdate DESC;"

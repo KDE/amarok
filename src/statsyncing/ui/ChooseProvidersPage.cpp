@@ -33,7 +33,7 @@ ChooseProvidersPage::ChooseProvidersPage( QWidget *parent, Qt::WindowFlags f )
     QPushButton *configure = buttonBox->addButton( i18n( "Configure Synchronization..." ), QDialogButtonBox::ActionRole );
     connect( configure, &QPushButton::clicked, this, &ChooseProvidersPage::openConfiguration );
     QPushButton *next = buttonBox->addButton( i18n( "Next" ), QDialogButtonBox::ActionRole );
-    next->setIcon( QIcon( "go-next" ) );
+    next->setIcon( QIcon( QStringLiteral( "go-next" ) ) );
     connect( next, &QPushButton::clicked, buttonBox, &QDialogButtonBox::accepted );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &ChooseProvidersPage::accepted );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &ChooseProvidersPage::rejected );

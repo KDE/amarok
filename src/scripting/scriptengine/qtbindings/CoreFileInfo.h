@@ -41,7 +41,7 @@ namespace QtBindings
             Q_INVOKABLE FileInfo(QFileInfoPrivate *d);
             Q_INVOKABLE static bool exists(const QString &file);
             FileInfo &operator=(const FileInfo &other);
-        public slots:
+        public Q_SLOTS:
             QDir absoluteDir() const;
             QString absoluteFilePath() const;
             QString absolutePath() const;

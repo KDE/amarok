@@ -269,8 +269,8 @@ Collections::semanticDateTimeParser( const QString &text, bool *absolute )
     QDateTime result = QLocale().toDate( text, QLocale::ShortFormat ).startOfDay();
 
     // parse date using a backup standard independent from local settings
-    QRegularExpression shortDateReg("(\\d{1,2})[-.](\\d{1,2})");
-    QRegularExpression longDateReg("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})");
+    QRegularExpression shortDateReg(QStringLiteral("(\\d{1,2})[-.](\\d{1,2})"));
+    QRegularExpression longDateReg(QStringLiteral("(\\d{1,2})[-.](\\d{1,2})[-.](\\d{4})"));
 
     if( text.at(0).isLetter() )
     {
@@ -316,37 +316,37 @@ Collections::semanticDateTimeParser( const QString &text, bool *absolute )
             {
                 tmp += c;
             }
-            else if( c == 'y' )
+            else if( c == QLatin1Char('y') )
             {
                 years += -tmp.toInt();
                 tmp.clear();
             }
-            else if( c == 'm' )
+            else if( c == QLatin1Char('m') )
             {
                 months += -tmp.toInt();
                 tmp.clear();
             }
-            else if( c == 'w' )
+            else if( c == QLatin1Char('w') )
             {
                 days += -tmp.toInt() * 7;
                 tmp.clear();
             }
-            else if( c == 'd' )
+            else if( c == QLatin1Char('d') )
             {
                 days += -tmp.toInt();
                 tmp.clear();
             }
-            else if( c == 'h' )
+            else if( c == QLatin1Char('h') )
             {
                 secs += -tmp.toInt() * 60 * 60;
                 tmp.clear();
             }
-            else if( c == 'M' )
+            else if( c == QLatin1Char('M') )
             {
                 secs += -tmp.toInt() * 60;
                 tmp.clear();
             }
-            else if( c == 's' )
+            else if( c == QLatin1Char('s') )
             {
                 secs += -tmp.toInt();
                 tmp.clear();

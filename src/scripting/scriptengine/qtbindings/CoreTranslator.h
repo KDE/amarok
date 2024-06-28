@@ -35,7 +35,7 @@ namespace QtBindings
             Q_INVOKABLE Translator(QObject *parent = Q_NULLPTR);
             Q_INVOKABLE Translator(const Translator &other);
             Translator &operator=(const Translator& other);
-        public slots:
+        public Q_SLOTS:
             virtual QString translate(const char *context, const char *sourceText, const char *disambiguation = Q_NULLPTR, int n = -1) const override ;
             virtual bool isEmpty() const override;
             bool load(const QString & filename, const QString & directory = QString(), const QString & search_delimiters = QString(), const QString & suffix = QString());

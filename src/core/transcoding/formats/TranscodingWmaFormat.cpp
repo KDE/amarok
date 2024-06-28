@@ -36,7 +36,7 @@ WmaFormat::WmaFormat()
         "Anything below <b>112kb/s</b> might be unsatisfactory for music and anything above "
         "<b>182kb/s</b> is probably overkill.");
     QStringList valueLabels;
-    const QByteArray cbr = "CBR %1kb/s";
+    const char cbr[] = "CBR %1kb/s";
     valueLabels
         << i18n( cbr, 64 )
         << i18n( cbr, 80 )
@@ -81,7 +81,7 @@ WmaFormat::description() const
 QIcon
 WmaFormat::icon() const
 {
-    return QIcon::fromTheme( "audio-x-generic" );  //TODO: get a *real* icon!
+    return QIcon::fromTheme( QStringLiteral( "audio-x-generic" ) );  //TODO: get a *real* icon!
 }
 
 QStringList

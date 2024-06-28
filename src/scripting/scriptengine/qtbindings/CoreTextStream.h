@@ -40,7 +40,7 @@ namespace QtBindings
             Q_INVOKABLE TextStream(QByteArray *array, QIODevice::OpenMode openMode = QIODevice::ReadWrite);
             Q_INVOKABLE TextStream(const QByteArray &array, QIODevice::OpenMode openMode = QIODevice::ReadOnly);
             TextStream &operator=(const TextStream &other);
-        public slots:
+        public Q_SLOTS:
             bool atEnd() const;
             bool autoDetectUnicode() const;
             QTextCodec *codec() const;

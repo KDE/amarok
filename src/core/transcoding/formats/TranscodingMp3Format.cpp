@@ -39,7 +39,7 @@ Mp3Format::Mp3Format()
         "Anything below <b>120kb/s</b> might be unsatisfactory for music and anything above "
         "<b>205kb/s</b> is probably overkill.");
     QStringList valueLabels;
-    QByteArray vbr = "VBR ~%1kb/s";
+    char vbr[] = "VBR ~%1kb/s";
     valueLabels
         << i18n( vbr, 80 )
         << i18n( vbr, 100 )

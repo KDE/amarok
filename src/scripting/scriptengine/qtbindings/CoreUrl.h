@@ -50,7 +50,7 @@ namespace QtBindings
             Q_INVOKABLE static QByteArray toPercentEncoding(const QString &input, const QByteArray &exclude = QByteArray(), const QByteArray &include = QByteArray());
             Q_INVOKABLE static QStringList toStringList(const QList<QUrl> &uris, FormattingOptions options = FormattingOptions(PrettyDecoded));
             Url &operator=(const Url &other);
-        public slots:
+        public Q_SLOTS:
             QUrl adjusted(FormattingOptions options) const;
             QString authority(ComponentFormattingOptions options = PrettyDecoded) const;
             void clear();

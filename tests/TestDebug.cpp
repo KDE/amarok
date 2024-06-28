@@ -32,7 +32,7 @@ Q_OBJECT
 public:
     TestDebug() {}
 
-private slots:
+private Q_SLOTS:
     void benchDebugBlock();
     void benchDebugBlock_data();
 
@@ -85,14 +85,14 @@ void TestDebug::work( bool debugEnabled, bool colorEnabled )
 {
     expectBeginEnd( Begin, __PRETTY_FUNCTION__, debugEnabled, colorEnabled );
     DEBUG_BLOCK
-    expectMessage( "level 1", debugEnabled );
+    expectMessage( QStringLiteral("level 1"), debugEnabled );
     debug() << "level 1";
 
     for( int i = 0; i < 100; ++i )
     {
         expectBeginEnd( Begin, __PRETTY_FUNCTION__, debugEnabled, colorEnabled );
         DEBUG_BLOCK
-        expectMessage( "level 2", debugEnabled );
+        expectMessage( QStringLiteral("level 2"), debugEnabled );
         debug() << "level 2";
         work2( debugEnabled, colorEnabled );
         expectBeginEnd( End, __PRETTY_FUNCTION__, debugEnabled, colorEnabled );
@@ -106,7 +106,7 @@ void TestDebug::work2( bool debugEnabled, bool colorEnabled )
     DEBUG_BLOCK
     for( int j = 0; j < 10; ++j )
     {
-        expectMessage( "limbo", debugEnabled );
+        expectMessage( QStringLiteral("limbo"), debugEnabled );
         debug() << "limbo";
     }
     expectBeginEnd( End, __PRETTY_FUNCTION__, debugEnabled, colorEnabled );
@@ -117,8 +117,8 @@ TestDebug::expectMessage( const QString &message, bool debugEnabled )
 {
     if( !debugEnabled )
         return;
-    QString exp = QString( "%1:%2 [%3] %4 " ).arg( "amarok", m_indent, DEBUG_PREFIX, message );
-    QTest::ignoreMessage( QtDebugMsg, exp.toLocal8Bit() );
+    QString exp = QString( QStringLiteral("%1:%2 [%3] %4 ") ).arg( QStringLiteral("amarok"), m_indent, QStringLiteral(DEBUG_PREFIX), message );
+    QTest::ignoreMessage( QtDebugMsg, exp.toLocal8Bit().data() );
 }
 
 void
@@ -134,23 +134,23 @@ TestDebug::expectBeginEnd( TestDebug::BeginOrEnd type, const QString &message,
     QString took;
     if( type == Begin )
     {
-        beginEnd = "BEGIN:";
+        beginEnd = QStringLiteral("BEGIN:");
         colorStack.push( colorIndex );
         colorIndex = (colorIndex + 1) % 5;
     }
     else
     {
-        beginEnd = "END__:";
+        beginEnd = QStringLiteral("END__:");
         double duration = DEBUG_OVERRIDE_ELAPSED_TIME;
-        took = QLatin1Char( ' ' ) + colorize( QString( "[Took: %1s]" ).arg( duration, 0, 'g', 2 ),
+        took = QLatin1Char( ' ' ) + colorize( QString( QStringLiteral("[Took: %1s]") ).arg( duration, 0, 'g', 2 ),
             colorStack.top(), colorEnabled );
         m_indent.truncate( m_indent.length() - 2 );
     }
-    QString exp = QString( "%1:%2 %3 %4%5 " ).arg( "amarok", m_indent, colorize( beginEnd,
+    QString exp = QString( QStringLiteral( "%1:%2 %3 %4%5 " ) ).arg( QStringLiteral("amarok"), m_indent, colorize( beginEnd,
         colorStack.top(), colorEnabled ), message, took );
-    QTest::ignoreMessage( QtDebugMsg, exp.toLocal8Bit() );
+    QTest::ignoreMessage( QtDebugMsg, exp.toLocal8Bit().data() );
     if( type == Begin )
-        m_indent.append( "  " );
+        m_indent.append( QStringLiteral("  ") );
     else
         colorStack.pop();
 }
@@ -161,7 +161,7 @@ TestDebug::colorize( const QString &string, int colorIndex, bool colorEnabled )
     static int colors[] = { 1, 2, 4, 5, 6 }; // from Debug.cpp
     if( !colorEnabled )
         return string;
-    return QString( "\x1b[00;3%1m%2\x1b[00;39m" ).arg( QString::number(colors[colorIndex]), string );
+    return QString( QStringLiteral("\x1b[00;3%1m%2\x1b[00;39m") ).arg( QString::number(colors[colorIndex]), string );
 }
 
 

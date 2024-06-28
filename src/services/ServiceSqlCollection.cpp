@@ -88,10 +88,10 @@ ServiceSqlCollection::trackForUrl(const QUrl &url)
 
     auto sqlDb = StorageManager::instance()->sqlStorage();
 
-    QString from =  prefix + "_tracks";
-    from += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
-    from += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
-    from += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
+    QString from =  prefix + QStringLiteral("_tracks");
+    from += QStringLiteral(" LEFT JOIN ") + prefix + QStringLiteral("_albums ON ") + prefix + QStringLiteral("_tracks.album_id = ") + prefix + QStringLiteral("_albums.id");
+    from += QStringLiteral(" LEFT JOIN ") + prefix + QStringLiteral("_artists ON ") + prefix + QStringLiteral("_albums.artist_id = ") + prefix + QStringLiteral("_artists.id");
+    from += QStringLiteral(" LEFT JOIN ") + prefix + QStringLiteral("_genre ON ") + prefix + QStringLiteral("_genre.album_id = ") + prefix + QStringLiteral("_albums.id");
 
     QString queryString = QStringLiteral( "select DISTINCT %1 FROM %2 WHERE %3_tracks.preview_url = '%4' GROUP BY %5_tracks.id;" )
             .arg( trackRows,

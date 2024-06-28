@@ -47,7 +47,7 @@ namespace QtBindings
             Q_INVOKABLE static void setDefault(const QLocale &locale);
             Q_INVOKABLE static Locale system();
             Locale &operator=(const Locale& other);
-        public slots:
+        public Q_SLOTS:
             QString amText() const;
             QString bcp47Name() const;
             Country country() const;

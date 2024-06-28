@@ -42,7 +42,7 @@ VorbisFormat::VorbisFormat()
         "Anything below <b>-q3</b> might be unsatisfactory for music and anything above "
         "<b>-q8</b> is probably overkill.");
     QStringList valueLabels;
-    const QByteArray vbr = "-q%1 ~%2kb/s";
+    const char vbr[] = "-q%1 ~%2kb/s";
     valueLabels
         << i18n( vbr, -1, 45 )
         << i18n( vbr, 0, 64 )

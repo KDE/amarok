@@ -39,7 +39,7 @@ OpusFormat::OpusFormat()
         "Anything below <b>100kb/s</b> might be unsatisfactory for music and anything above "
         "<b>256kb/s</b> is probably overkill.");
     QStringList valueLabels;
-    QByteArray vbr = "VBR ~%1kb/s";
+    char vbr[] = "VBR ~%1kb/s";
     valueLabels
         << i18n( vbr, 32 )
         << i18n( vbr, 64 )

@@ -46,7 +46,7 @@ PlaylistFileLoaderJob::PlaylistFileLoaderJob( const PlaylistFilePtr &playlist )
     QUrl url( playlist->uidUrl() );
     // KIO::file_copy in KF5 needs scheme
     if (url.isRelative() && url.host().isEmpty()) {
-        url.setScheme("file");
+        url.setScheme(QStringLiteral("file"));
     }
     if( url.isLocalFile() )
     {

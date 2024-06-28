@@ -43,8 +43,8 @@ void IODevice::installJSType( QJSEngine *engine )
 {
 
     Base<IODevice>::installJSType( engine );
-    engine->globalObject().property("QIODevice").setProperty(
-            "OpenMode", engine->newQMetaObject<OpenMode>() );
+    engine->globalObject().property( QStringLiteral("QIODevice") ).setProperty(
+            QStringLiteral("OpenMode"), engine->newQMetaObject<OpenMode>() );
     qRegisterMetaType<OpenMode>("QIODevice::OpenMode");
     qRegisterMetaType<QtBindings::Core::IODevice::OpenModeFlag>();
 }

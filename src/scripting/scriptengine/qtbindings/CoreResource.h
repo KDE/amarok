@@ -39,7 +39,7 @@ namespace QtBindings
             Q_INVOKABLE static bool unregisterResource(const QString &rccFilename, const QString &resourceRoot=QString());
             Q_INVOKABLE static bool unregisterResource(const uchar *rccData, const QString &resourceRoot=QString());
             Resource &operator=(const Resource &other);
-        public slots:
+        public Q_SLOTS:
             QString absoluteFilePath() const;
             const uchar *data() const;
             QString fileName() const;

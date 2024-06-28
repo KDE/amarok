@@ -32,14 +32,14 @@
 
 using namespace Podcasts;
 
-#define ITUNES_NS  "http://www.itunes.com/dtds/podcast-1.0.dtd"
+#define ITUNES_NS  QStringLiteral("http://www.itunes.com/dtds/podcast-1.0.dtd")
 #define RDF_NS     "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-#define RSS10_NS   "http://purl.org/rss/1.0/"
-#define RSS20_NS   ""
+#define RSS10_NS   QStringLiteral("http://purl.org/rss/1.0/")
+#define RSS20_NS   QStringLiteral("")
 #define ATOM_NS    "http://www.w3.org/2005/Atom"
 #define ENC_NS     "http://purl.oclc.org/net/rss_2.0/enc#"
-#define CONTENT_NS "http://purl.org/rss/1.0/modules/content"
-#define DC_NS      "http://purl.org/dc/elements/1.1/"
+#define CONTENT_NS QStringLiteral("http://purl.org/rss/1.0/modules/content")
+#define DC_NS      QStringLiteral("http://purl.org/dc/elements/1.1/")
 
 // regular expressions for linkification:
 #define RE_USER   "[-+_%\\.\\w]+"
@@ -87,9 +87,9 @@ PodcastReader::Action::characters( PodcastReader *podcastReader ) const
 // initialization of the feed parser automata:
 PodcastReader::StaticData::StaticData()
         : removeScripts( QStringLiteral("<script[^<]*</script>|<script[^>]*>"), QRegularExpression::CaseInsensitiveOption )
-        , mightBeHtml( "<\\?xml[^>]*\\?>|<br[^>]*>|<p[^>]*>|&lt;|&gt;|&amp;|&quot;|"
-                       "<([-:\\w\\d]+)[^>]*(/>|>.*</\\1>)|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;", QRegularExpression::CaseInsensitiveOption )
-        , linkify( "\\b(" RE_URL ")|\\b(" RE_MAIL ")|(\n)" )
+        , mightBeHtml( QStringLiteral("<\\?xml[^>]*\\?>|<br[^>]*>|<p[^>]*>|&lt;|&gt;|&amp;|&quot;|"
+                       "<([-:\\w\\d]+)[^>]*(/>|>.*</\\1>)|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;"), QRegularExpression::CaseInsensitiveOption )
+        , linkify( QStringLiteral("\\b(" RE_URL ")|\\b(" RE_MAIL ")|(\n)") )
 
         , startAction( rootMap )
 
@@ -577,7 +577,7 @@ PodcastReader::elementType() const
             break;
 
         case Content:
-            if( m_xmlReader.namespaceUri() == ATOM_NS &&
+            if( m_xmlReader.namespaceUri() == QStringLiteral( ATOM_NS ) &&
                     // ignore atom:content elements that do not
                     // have content but only refer to some url:
                     !hasAttribute( ATOM_NS, "src" ) )
@@ -1006,7 +1006,7 @@ PodcastReader::beginUnknownFeedType()
 void
 PodcastReader::beginRss()
 {
-    if( m_xmlReader.attributes().value( QStringLiteral("version") ) != "2.0" )
+    if( m_xmlReader.attributes().value( QStringLiteral("version") ) != QStringLiteral( "2.0" ) )
     {
         // TODO: change this string once we support more
         stopWithError( i18n( "%1 is not an RSS version 2.0 feed.", m_url.url() ) );
@@ -1017,7 +1017,7 @@ void
 PodcastReader::beginRdf()
 {
     bool ok = true;
-    if( m_xmlReader.namespaceUri() != RDF_NS )
+    if( m_xmlReader.namespaceUri() != QStringLiteral( RDF_NS ) )
     {
         ok = false;
     }
@@ -1045,7 +1045,7 @@ PodcastReader::beginRdf()
 void
 PodcastReader::beginFeed()
 {
-    if( m_xmlReader.namespaceUri() != ATOM_NS )
+    if( m_xmlReader.namespaceUri() != QStringLiteral( ATOM_NS ) )
     {
         stopWithError( i18n( "%1 is not a valid Atom feed.", m_url.url() ) );
     }

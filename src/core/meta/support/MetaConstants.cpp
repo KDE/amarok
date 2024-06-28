@@ -426,10 +426,10 @@ QVariant Meta::valueForField( qint64 field, Meta::TrackPtr track )
     case Meta::valUniqueId:    return track->uidUrl();
 
     // todo
-    case Meta::valTrackGain:   return "track gain";
-    case Meta::valTrackGainPeak:   return "track gain peak";
-    case Meta::valAlbumGain:   return "album gain";
-    case Meta::valAlbumGainPeak:   return "album gain peak";
+    case Meta::valTrackGain:   return QStringLiteral("track gain");
+    case Meta::valTrackGainPeak:   return QStringLiteral("track gain peak");
+    case Meta::valAlbumGain:   return QStringLiteral("album gain");
+    case Meta::valAlbumGainPeak:   return QStringLiteral("album gain peak");
 
     case Meta::valAlbumArtist: return (track->album() && track->album()->albumArtist()) ?
                                QVariant(track->album()->albumArtist()->name()) : QVariant();

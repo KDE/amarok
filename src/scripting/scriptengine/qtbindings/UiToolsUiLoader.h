@@ -37,7 +37,7 @@ namespace QtBindings
             Q_INVOKABLE UiLoader(const QJSValue &other);
             Q_INVOKABLE virtual ~UiLoader();
             UiLoader &operator=(const UiLoader &other);
-        public slots:
+        public Q_SLOTS:
             void addPluginPath(const QString &path);
             QStringList availableLayouts() const;
             QStringList availableWidgets() const;

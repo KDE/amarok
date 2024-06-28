@@ -39,7 +39,12 @@ Wrench::Wrench( QWidget *parent ) : QLabel( parent )
     setMargin( 4 );
 }
 
-void Wrench::enterEvent( QEvent * )
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+void Wrench::enterEvent( QEvent* )
+#else
+void Wrench::enterEvent( QEnterEvent* )
+#endif
 {
     setMargin( 1 );
     update();
@@ -114,7 +119,11 @@ TokenWithLayout::~TokenWithLayout()
     delete m_wrench;
 }
 
-void TokenWithLayout::enterEvent( QEvent *e )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+void TokenWithLayout::enterEvent( QEvent* e )
+#else
+void TokenWithLayout::enterEvent( QEnterEvent* e )
+#endif
 {
     QWidget *win = window();
     const int sz = 2*height();

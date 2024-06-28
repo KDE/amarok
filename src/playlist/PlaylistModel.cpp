@@ -136,7 +136,7 @@ HTMLLine( const Playlist::Column& column, const QString& value, bool force = fal
     {
         QString line;
         line += QLatin1String("<tr><td align=\"right\">");
-        line += "<img src=\""+KIconLoader::global()->iconPath( Playlist::iconName( column ), -16)+"\" />";
+        line += QStringLiteral("<img src=\"")+KIconLoader::global()->iconPath( Playlist::iconName( column ), -16)+QStringLiteral("\" />");
         line += QLatin1String("</td><td align=\"left\">");
         line += breakLongLinesHTML( value );
         line += QLatin1String("</td></tr>");
@@ -337,7 +337,7 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
     if( text.isEmpty() )
         text = i18n( "No extra information available" );
     else
-        text = QString("<table>"+ text +"</table>");
+        text = QStringLiteral("<table>") + text + QStringLiteral("</table>");
 
     return text;
 }

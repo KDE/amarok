@@ -302,9 +302,9 @@ QString BrowserCategoryList::path()
     BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( activeCategory() );
 
     if( childList )
-        pathString += '/' + childList->path();
+        pathString += QLatin1Char('/') + childList->path();
     else if( activeCategory() )
-        pathString += '/' + activeCategory()->name();
+        pathString += QLatin1Char('/') + activeCategory()->name();
 
     debug() << "path: " << pathString;
     return pathString;

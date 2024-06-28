@@ -381,7 +381,7 @@ SqlCollection::location()
 void
 SqlCollection::slotDeviceAdded( int id )
 {
-    QString query = "select count(*) from tracks inner join urls on tracks.url = urls.id where urls.deviceid = %1";
+    QString query = QStringLiteral("select count(*) from tracks inner join urls on tracks.url = urls.id where urls.deviceid = %1");
     QStringList rs = m_sqlStorage->query( query.arg( id ) );
     if( !rs.isEmpty() )
     {
@@ -400,7 +400,7 @@ SqlCollection::slotDeviceAdded( int id )
 void
 SqlCollection::slotDeviceRemoved( int id )
 {
-    QString query = "select count(*) from tracks inner join urls on tracks.url = urls.id where urls.deviceid = %1";
+    QString query = QStringLiteral("select count(*) from tracks inner join urls on tracks.url = urls.id where urls.deviceid = %1");
     QStringList rs = m_sqlStorage->query( query.arg( id ) );
     if( !rs.isEmpty() )
     {
@@ -445,7 +445,7 @@ SqlCollection::dumpDatabaseContent()
 {
     DatabaseUpdater updater( this );
 
-    QStringList tables = m_sqlStorage->query( "select table_name from INFORMATION_SCHEMA.tables WHERE table_schema='amarok'" );
+    QStringList tables = m_sqlStorage->query( QStringLiteral( "select table_name from INFORMATION_SCHEMA.tables WHERE table_schema='amarok'" ) );
     for( const QString &table : tables )
     {
         QString filePath =

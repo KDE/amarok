@@ -35,8 +35,8 @@ UrlStatisticsStore::UrlStatisticsStore( Meta::Track *track, const QString &perma
     }
 
 
-    const QString query = "SELECT firstplayed, lastplayed, score, rating, playcount FROM "
-                          "statistics_permanent WHERE url = '%1'";
+    const QString query = QStringLiteral("SELECT firstplayed, lastplayed, score, rating, playcount FROM "
+                          "statistics_permanent WHERE url = '%1'");
     QStringList result = sql->query( query.arg( sql->escape( m_permanentUrl ) ) );
     if( !result.isEmpty() )
     {
@@ -65,13 +65,13 @@ UrlStatisticsStore::save()
         QString sqlString;
         if( rsCheck.first().toInt() )
         {
-            sqlString = "UPDATE statistics_permanent SET firstplayed = '%1',lastplayed = '%2',"
-                        "score = %3,rating = %4,playcount=%5 WHERE url = '%6'";
+            sqlString = QStringLiteral("UPDATE statistics_permanent SET firstplayed = '%1',lastplayed = '%2',"
+                        "score = %3,rating = %4,playcount=%5 WHERE url = '%6'");
         }
         else
         {
-            sqlString = "INSERT INTO statistics_permanent(firstplayed,lastplayed,score,"
-                        "rating,playcount,url) VALUE ('%1','%2',%3,%4,%5,'%6')";
+            sqlString = QStringLiteral("INSERT INTO statistics_permanent(firstplayed,lastplayed,score,"
+                        "rating,playcount,url) VALUE ('%1','%2',%3,%4,%5,'%6')");
         }
         sqlString = sqlString.arg( m_firstPlayed.toString( s_sqlDateFormat ),
                                    m_lastPlayed.toString( s_sqlDateFormat ),

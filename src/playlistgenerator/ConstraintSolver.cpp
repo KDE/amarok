@@ -382,7 +382,7 @@ APG::ConstraintSolver::dump_population( const Population& population ) const
     for ( Population::ConstIterator it = population.constBegin(); it != population.constEnd(); ++it ) {
         Meta::TrackList* tl = it.key();
         debug() << "at" << (void*)(tl) << "satisfaction:" << it.value();
-        foreach ( Meta::TrackPtr t, (*tl) ) {
+        for ( Meta::TrackPtr t : (*tl) ) {
             debug() << "\ttrack:" << t->prettyName();
         }
     }

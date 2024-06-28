@@ -107,8 +107,8 @@ TestMetaAlbumKey::testOperatorLessThan()
     QVERIFY( albumKey1 < albumKey3 );
 
     // For Constructor : AlbumKey( const QString &name, const QString &artistName )
-    Meta::AlbumKey albumKey4( "Artist 1", "Album 1" ), albumKey5( "Artist 1", "Album 2" ),
-                   albumKey6( "Artist 2", "Album 2" );
+    Meta::AlbumKey albumKey4( QStringLiteral("Artist 1"), QStringLiteral("Album 1") ), albumKey5( QStringLiteral("Artist 1"), QStringLiteral("Album 2") ),
+                   albumKey6( QStringLiteral("Artist 2"), QStringLiteral("Album 2") );
 
     // Same artist name, different album name
     QVERIFY( albumKey4 < albumKey5 );

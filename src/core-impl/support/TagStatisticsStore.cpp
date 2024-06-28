@@ -28,8 +28,8 @@ TagStatisticsStore::TagStatisticsStore( Meta::Track *track )
 {
     auto sql = StorageManager::instance()->sqlStorage();
 
-    const QString query = "SELECT firstPlayed, lastPlayed, score, rating, playcount FROM "
-                          "statistics_tag WHERE name = '%1' AND artist = '%2' AND album = '%3'";
+    const QString query = QStringLiteral("SELECT firstPlayed, lastPlayed, score, rating, playcount FROM "
+                          "statistics_tag WHERE name = '%1' AND artist = '%2' AND album = '%3'");
     QStringList result = sql->query( query.arg( sql->escape( m_name ),
                                                 sql->escape( m_artist ),
                                                 sql->escape( m_album ) ) );
@@ -48,8 +48,8 @@ TagStatisticsStore::save()
 {
     auto sql = StorageManager::instance()->sqlStorage();
 
-    const QString check = "SELECT COUNT(*) FROM statistics_tag WHERE name = '%1' "
-                          "AND artist = '%2' AND album = '%3'";
+    const QString check = QStringLiteral("SELECT COUNT(*) FROM statistics_tag WHERE name = '%1' "
+                          "AND artist = '%2' AND album = '%3'");
     QStringList rsCheck = sql->query( check.arg( sql->escape( m_name ),
                                                  sql->escape( m_artist ),
                                                  sql->escape( m_album ) ) );
@@ -58,15 +58,15 @@ TagStatisticsStore::save()
         QString sqlString;
         if( rsCheck.first().toInt() )
         {
-            sqlString = "UPDATE statistics_tag SET firstPlayed = '%1',lastPlayed = '%2',"
+            sqlString = QStringLiteral("UPDATE statistics_tag SET firstPlayed = '%1',lastPlayed = '%2',"
                         "score = %3,rating = %4,playcount=%5 WHERE name = '%6' "
-                        "AND artist = '%7' AND album = '%8'";
+                        "AND artist = '%7' AND album = '%8'");
         }
         else
         {
-            sqlString = "INSERT INTO statistics_tag(firstPlayed,lastPlayed,score,"
+            sqlString = QStringLiteral("INSERT INTO statistics_tag(firstPlayed,lastPlayed,score,"
                         "rating,playcount,name,artist,album) "
-                        "VALUE ('%1','%2',%3,%4,%5,'%6','%7','%8')";
+                        "VALUE ('%1','%2',%3,%4,%5,'%6','%7','%8')");
         }
         sqlString = sqlString.arg( m_firstPlayed.toString( s_sqlDateFormat ),
                                    m_lastPlayed.toString( s_sqlDateFormat ),

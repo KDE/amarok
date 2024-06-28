@@ -69,7 +69,7 @@ LastFmServiceConfig::LastFmServiceConfig()
     else
     {
         // migrate from the old config that used "ignoreWallet" key set to yes/no
-        if( config.readEntry( "ignoreWallet", "" ) == "yes" )
+        if( config.readEntry( "ignoreWallet", "" ) == QStringLiteral("yes") )
             m_kWalletUsage = PasswordInAscii;
         else if( config.hasKey( "scrobble" ) )
             // assume password was saved in KWallet if the config was once written
@@ -204,9 +204,9 @@ LastFmServiceConfig::openWalletAsync()
 void
 LastFmServiceConfig::prepareOpenedWallet()
 {
-    if( !m_wallet->hasFolder( "Amarok" ) )
-        m_wallet->createFolder( "Amarok" );
-    m_wallet->setFolder( "Amarok" );
+    if( !m_wallet->hasFolder( QStringLiteral("Amarok") ) )
+        m_wallet->createFolder( QStringLiteral("Amarok") );
+    m_wallet->setFolder( QStringLiteral("Amarok") );
 }
 
 void
@@ -226,10 +226,10 @@ LastFmServiceConfig::slotWalletOpenedToRead( bool success )
     Q_ASSERT( m_wallet );
     prepareOpenedWallet();
 
-    if( m_wallet->readPassword( "lastfm_password", m_password ) > 0 )
+    if( m_wallet->readPassword( QStringLiteral("lastfm_password"), m_password ) > 0 )
         warning() << "Failed to read lastfm password from kwallet";
     QByteArray rawUsername;
-    if( m_wallet->readEntry( "lastfm_username", rawUsername ) > 0 )
+    if( m_wallet->readEntry( QStringLiteral("lastfm_username"), rawUsername ) > 0 )
         warning() << "Failed to read last.fm username from kwallet";
     else
         m_username = QString::fromUtf8( rawUsername );
@@ -251,9 +251,9 @@ LastFmServiceConfig::slotWalletOpenedToWrite( bool success )
     Q_ASSERT( m_wallet );
     prepareOpenedWallet();
 
-    if( m_wallet->writePassword( "lastfm_password", m_password ) > 0 )
+    if( m_wallet->writePassword( QStringLiteral("lastfm_password"), m_password ) > 0 )
         warning() << "Failed to save last.fm password to kwallet";
-    if( m_wallet->writeEntry( "lastfm_username", m_username.toUtf8() ) > 0 )
+    if( m_wallet->writeEntry( QStringLiteral("lastfm_username"), m_username.toUtf8() ) > 0 )
         warning() << "Failed to save last.fm username to kwallet";
 
     m_kWalletUsage = PasswodInKWallet;

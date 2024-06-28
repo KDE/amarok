@@ -78,8 +78,8 @@ SafeFileSaver::prepareToSave()
 
     QString randomString = str;
 
-    m_tempSavePath = m_origPath + QLatin1Char('.') + m_prefix + "temp.pid-" + pid + ".random-" + randomString + QLatin1Char('.') + QFileInfo( m_origPath ).suffix();
-    m_origRenamedSavePath = m_origPath + QLatin1Char('.') + m_prefix + "original.pid-" + pid + ".random-" + randomString + QLatin1Char('.') + QFileInfo( m_origPath ).suffix();
+    m_tempSavePath = m_origPath + QLatin1Char('.') + m_prefix + QStringLiteral("temp.pid-") + pid + QStringLiteral(".random-") + randomString + QLatin1Char('.') + QFileInfo( m_origPath ).suffix();
+    m_origRenamedSavePath = m_origPath + QLatin1Char('.') + m_prefix + QStringLiteral("original.pid-") + pid + QStringLiteral(".random-") + randomString + QLatin1Char('.') + QFileInfo( m_origPath ).suffix();
 
 
     if( m_verbose )
@@ -102,7 +102,7 @@ SafeFileSaver::prepareToSave()
     }
 
     md5sum.addData( tempFile.readLine() );
-    m_tempSaveDigest = md5sum.result().toHex();
+    m_tempSaveDigest = QLatin1String( md5sum.result().toHex() );
 
     tempFile.close();
 
@@ -166,7 +166,7 @@ SafeFileSaver::doSave()
     }
 
     md5sum.addData( origRenamedFile.readLine() );
-    origRenamedDigest = md5sum.result().toHex();
+    origRenamedDigest = QLatin1String( md5sum.result().toHex() );
     origRenamedFile.close();
 
     if( m_verbose )

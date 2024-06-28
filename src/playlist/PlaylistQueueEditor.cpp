@@ -139,9 +139,9 @@ PlaylistQueueEditor::clear()
 {
     m_blockViewUpdates = true;
     QList<int> rowsToDequeue;
-    foreach ( quint64 id, The::playlistActions()->queue() ) {
+    for ( quint64 id : The::playlistActions()->queue() ) {
         Meta::TrackPtr track = The::playlist()->trackForId( id );
-        foreach ( int row, The::playlist()->allRowsForTrack( track ) )
+        for ( int row : The::playlist()->allRowsForTrack( track ) )
             rowsToDequeue += row;
     }
     The::playlistActions()->dequeue( rowsToDequeue );

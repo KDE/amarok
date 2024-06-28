@@ -39,7 +39,7 @@ SortWidget::SortWidget( QWidget *parent )
     m_layout->setContentsMargins( 0, 0, 0, 0 );
 
     BreadcrumbItemButton *rootItem = new BreadcrumbItemButton(
-            QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, "amarok/images/playlist-sorting-16.png" ) ) ),
+            QIcon( QPixmap( QStandardPaths::locate( QStandardPaths::GenericDataLocation, QStringLiteral( "amarok/images/playlist-sorting-16.png" ) ) ) ),
             QString(), this );
     rootItem->setToolTip( i18n( "Clear the playlist sorting configuration." ) );
     m_layout->addWidget( rootItem );
@@ -162,8 +162,8 @@ SortWidget::sortPath() const
     {
         QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
-        QString level = name + '_' + ( sortOrder ? "des" : "asc" );
-        path.append( ( i == m_ribbon->count() - 1 ) ? level : ( level + '-' ) );
+        QString level = name + QLatin1Char('_') + ( sortOrder ? QStringLiteral("des") : QStringLiteral("asc") );
+        path.append( ( i == m_ribbon->count() - 1 ) ? level : ( level + QLatin1Char('-') ) );
     }
     return path;
 }
@@ -205,8 +205,8 @@ SortWidget::prettySortPath() const
     {
         QString prettyName( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->prettyName() );
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
-        QString prettyLevel = prettyName + ( sortOrder ? "↓" : "↑" );
-        prettyPath.append( ( i == m_ribbon->count() - 1 ) ? prettyLevel : ( prettyLevel + " > " ) );
+        QString prettyLevel = prettyName + ( sortOrder ? QStringLiteral("↓") : QStringLiteral("↑") );
+        prettyPath.append( ( i == m_ribbon->count() - 1 ) ? prettyLevel : ( prettyLevel + QStringLiteral(" > ") ) );
         //TODO: see how this behaves on RTL systems
     }
     return prettyPath;

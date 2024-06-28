@@ -20,6 +20,7 @@
 #include "core/support/Debug.h"
 #include "playlist/PlaylistActions.h"
 
+#include <QActionGroup>
 #include <QMenu>
 #include <KLocalizedString>
 #include <QStandardPaths>

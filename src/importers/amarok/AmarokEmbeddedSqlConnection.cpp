@@ -130,19 +130,19 @@ AmarokEmbeddedSqlConnection::startServer( const int port, const QString &socketP
     timer.start( SERVER_START_TIMEOUT );
 
     const QStringList args = QStringList()
-         << "--no-defaults"
-         << "--port=" + QString::number( port )
-         << "--datadir=" + m_datadir.absolutePath()
-         << "--default-storage-engine=MyISAM"
-         << "--skip-grant-tables"
-         << "--myisam-recover-options=FORCE"
-         << "--key-buffer-size=16777216"
-         << "--character-set-server=utf8"
-         << "--collation-server=utf8_bin"
-         << "--skip-innodb"
-         << "--bind-address=localhost"
-         << "--socket=" + socketPath
-         << "--pid-file=" + pidPath;
+         << QStringLiteral("--no-defaults")
+         << QStringLiteral("--port=") + QString::number( port )
+         << QStringLiteral("--datadir=") + m_datadir.absolutePath()
+         << QStringLiteral("--default-storage-engine=MyISAM")
+         << QStringLiteral("--skip-grant-tables")
+         << QStringLiteral("--myisam-recover-options=FORCE")
+         << QStringLiteral("--key-buffer-size=16777216")
+         << QStringLiteral("--character-set-server=utf8")
+         << QStringLiteral("--collation-server=utf8_bin")
+         << QStringLiteral("--skip-innodb")
+         << QStringLiteral("--bind-address=localhost")
+         << QStringLiteral("--socket=") + socketPath
+         << QStringLiteral("--pid-file=") + pidPath;
 
     m_srv.start( m_mysqld.absoluteFilePath(), args );
     debug() << __PRETTY_FUNCTION__ << m_mysqld.absoluteFilePath() + ' ' + args.join(QLatin1Char(' '));

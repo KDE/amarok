@@ -52,7 +52,7 @@ namespace QtBindings
             File &operator=(const File &other);
             // Supress warnings about overloading virtual QFile::open
             using QFile::open;
-        public slots:
+        public Q_SLOTS:
             Q_INVOKABLE virtual void close() override;
             Q_INVOKABLE bool copy(const QString &newName);
             Q_INVOKABLE bool exists() const;

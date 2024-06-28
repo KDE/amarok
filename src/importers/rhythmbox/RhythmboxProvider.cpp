@@ -282,8 +282,8 @@ RhythmboxProvider::commitTracks()
             return;
         }
 
-        if( reader.isStartElement() && reader.name() == "entry" &&
-            reader.attributes().value( "type" ) == "song" )
+        if( reader.isStartElement() && reader.name() == QStringLiteral("entry") &&
+            reader.attributes().value( "type" ) == QStringLiteral("song") )
             writeSong( reader, writer, dirtyData );
         else if( reader.isStartDocument() ) // writeCurrentToken doesn't add 'standalone'
             writer.writeStartDocument( reader.documentVersion().toString(),

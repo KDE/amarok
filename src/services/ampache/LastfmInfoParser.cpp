@@ -31,32 +31,32 @@ void LastfmInfoParser::getInfo(const Meta::TrackPtr &track)
 {
     DEBUG_BLOCK
     QMap<QString, QString> query;
-    query[ "method" ] = "track.getInfo";
-    query[ "track"  ] = track->name();
-    query[ "album"  ] = track->album() ? track->album()->name() : QString();
-    query[ "artist" ] = track->artist() ? track->artist()->name() : QString();
-    query[ "apikey" ] = Amarok::lastfmApiKey();
+    query[ QStringLiteral("method") ] = QStringLiteral("track.getInfo");
+    query[ QStringLiteral("track")  ] = track->name();
+    query[ QStringLiteral("album")  ] = track->album() ? track->album()->name() : QString();
+    query[ QStringLiteral("artist") ] = track->artist() ? track->artist()->name() : QString();
+    query[ QStringLiteral("apikey") ] = Amarok::lastfmApiKey();
 
-    m_jobs[ "getTrackInfo" ] = lastfm::ws::post( query );
+    m_jobs[ QStringLiteral("getTrackInfo") ] = lastfm::ws::post( query );
 
-    connect( m_jobs[ "getTrackInfo" ], &QNetworkReply::finished, this, &LastfmInfoParser::onGetTrackInfo );
+    connect( m_jobs[ QStringLiteral("getTrackInfo") ], &QNetworkReply::finished, this, &LastfmInfoParser::onGetTrackInfo );
 }
 
 void LastfmInfoParser::onGetTrackInfo()
 {
     DEBUG_BLOCK
-    if( !m_jobs[ "getTrackInfo" ] )
+    if( !m_jobs[ QStringLiteral("getTrackInfo") ] )
     {
         debug() << "WARNING: GOT RESULT but no object";
         return;
     }
 
-    switch ( m_jobs[ "getTrackInfo" ]->error() )
+    switch ( m_jobs[ QStringLiteral("getTrackInfo") ]->error() )
     {
         case QNetworkReply::NoError:
         {
             lastfm::XmlQuery lfm;
-            lfm.parse( m_jobs[ "getTrackInfo" ]->readAll() );
+            lfm.parse( m_jobs[ QStringLiteral("getTrackInfo") ]->readAll() );
             lastfm::XmlQuery wiki = lfm["track"]["wiki"];
             const QString contentText = wiki["content"].text();
             const QString publishedDate = wiki["published"].text();
@@ -80,42 +80,42 @@ void LastfmInfoParser::getInfo(const Meta::AlbumPtr &album)
 {
     DEBUG_BLOCK
     QMap<QString, QString> query;
-    query[ "method" ] = "album.getInfo";
-    query[ "album"  ] = album->name();
-    query[ "artist" ] = album->albumArtist() ? album->albumArtist()->name() : QString();
-    query[ "apikey" ] = Amarok::lastfmApiKey();
+    query[ QStringLiteral("method") ] = QStringLiteral("album.getInfo");
+    query[ QStringLiteral("album")  ] = album->name();
+    query[ QStringLiteral("artist") ] = album->albumArtist() ? album->albumArtist()->name() : QString();
+    query[ QStringLiteral("apikey") ] = Amarok::lastfmApiKey();
 
-    m_jobs[ "getAlbumInfo" ] = lastfm::ws::post( query );
+    m_jobs[ QStringLiteral("getAlbumInfo") ] = lastfm::ws::post( query );
 
-    connect( m_jobs[ "getAlbumInfo" ], &QNetworkReply::finished, this, &LastfmInfoParser::onGetAlbumInfo );
+    connect( m_jobs[ QStringLiteral("getAlbumInfo") ], &QNetworkReply::finished, this, &LastfmInfoParser::onGetAlbumInfo );
 }
 
 
 void LastfmInfoParser::onGetAlbumInfo()
 {
     DEBUG_BLOCK
-    if( !m_jobs[ "getAlbumInfo" ] )
+    if( !m_jobs[ QStringLiteral("getAlbumInfo") ] )
     {
         debug() << "WARNING: GOT RESULT but no object";
         return;
     }
 
-    switch ( m_jobs[ "getAlbumInfo" ]->error() )
+    switch ( m_jobs[ QStringLiteral("getAlbumInfo") ]->error() )
     {
         case QNetworkReply::NoError:
         {
             lastfm::XmlQuery lfm;
-            lfm.parse( m_jobs[ "getAlbumInfo" ]->readAll() );
-            lastfm::XmlQuery wiki = lfm["album"]["wiki"];
-            const QString summaryText = wiki["summary"].text();
-            const QString contentText = wiki["content"].text();
-            const QString publishedDate = wiki["published"].text();
+            lfm.parse( m_jobs[ QStringLiteral("getAlbumInfo") ]->readAll() );
+            lastfm::XmlQuery wiki = lfm[QStringLiteral("album")][QStringLiteral("wiki")];
+            const QString summaryText = wiki[QStringLiteral("summary")].text();
+            const QString contentText = wiki[QStringLiteral("content")].text();
+            const QString publishedDate = wiki[QStringLiteral("published")].text();
 
-            const QString albumUrl = lfm["image size=large"].text();
+            const QString albumUrl = lfm[QStringLiteral("image size=large")].text();
 
             QString html;
             if( !contentText.isEmpty() )
-                html = QString("<div align='center'><img src=%1></div><div align='center'><p><font size=3><i>%2<i></font></p> <p align='right'><font size=1>Updated: %3</font></p></div>").arg( albumUrl, contentText, publishedDate );
+                html = QString(QStringLiteral("<div align='center'><img src=%1></div><div align='center'><p><font size=3><i>%2<i></font></p> <p align='right'><font size=1>Updated: %3</font></p></div>")).arg( albumUrl, contentText, publishedDate );
             else
                 html = i18n( "<p>No information found for this album.</p>" );
             Q_EMIT info( html );
@@ -132,14 +132,14 @@ void LastfmInfoParser::onGetAlbumInfo()
 void LastfmInfoParser::getInfo(const Meta::ArtistPtr &artist)
 {
     QMap<QString, QString> query;
-    query[ "method" ] = "artist.getInfo";
-    query[ "artist" ] = artist->name();
+    query[ QStringLiteral("method") ] = QStringLiteral("artist.getInfo");
+    query[ QStringLiteral("artist") ] = artist->name();
     debug() << "api key is: " << Amarok::lastfmApiKey();
-    query[ "apikey" ] = Amarok::lastfmApiKey();
+    query[ QStringLiteral("apikey") ] = Amarok::lastfmApiKey();
 
-    m_jobs[ "getArtistInfo" ] = lastfm::ws::post( query );
+    m_jobs[ QStringLiteral("getArtistInfo") ] = lastfm::ws::post( query );
 
-    connect( m_jobs[ "getArtistInfo" ], &QNetworkReply::finished, this, &LastfmInfoParser::onGetArtistInfo );
+    connect( m_jobs[ QStringLiteral("getArtistInfo") ], &QNetworkReply::finished, this, &LastfmInfoParser::onGetArtistInfo );
 
 }
 
@@ -147,29 +147,29 @@ void LastfmInfoParser::getInfo(const Meta::ArtistPtr &artist)
 void LastfmInfoParser::onGetArtistInfo()
 {
     DEBUG_BLOCK
-    if( !m_jobs[ "getArtistInfo" ] )
+    if( !m_jobs[ QStringLiteral("getArtistInfo") ] )
     {
         debug() << "WARNING: GOT RESULT but no object";
         return;
     }
 
-    switch ( m_jobs[ "getArtistInfo" ]->error() )
+    switch ( m_jobs[ QStringLiteral("getArtistInfo") ]->error() )
     {
         case QNetworkReply::NoError:
         {
             lastfm::XmlQuery lfm;
-            lfm.parse( m_jobs[ "getArtistInfo" ]->readAll() );
+            lfm.parse( m_jobs[ QStringLiteral("getArtistInfo") ]->readAll() );
             debug() << lfm.text();
-            lastfm::XmlQuery bio = lfm["artist"]["bio"];
-            const QString summaryText = bio["summary"].text();
-            const QString contentText = bio["content"].text();
-            const QString publishedDate = bio["published"].text();
+            lastfm::XmlQuery bio = lfm[QStringLiteral("artist")][QStringLiteral("bio")];
+            const QString summaryText = bio[QStringLiteral("summary")].text();
+            const QString contentText = bio[QStringLiteral("content")].text();
+            const QString publishedDate = bio[QStringLiteral("published")].text();
 
-            const QString imageUrl = lfm["image size=large"].text();
+            const QString imageUrl = lfm[QStringLiteral("image size=large")].text();
 
             QString html;
             if( !contentText.isEmpty() )
-                html = QString("<div align='left'><img src=%1></div><div align='center'><p><font size=3><i>%2<i></font></p> <p align='right'><font size=1>Updated: %3</font></p></div>").arg( imageUrl, contentText, publishedDate );
+                html = QString(QStringLiteral("<div align='left'><img src=%1></div><div align='center'><p><font size=3><i>%2<i></font></p> <p align='right'><font size=1>Updated: %3</font></p></div>")).arg( imageUrl, contentText, publishedDate );
             else
                 html = i18n( "<p>No information found for this artist.</p>" );
             Q_EMIT info( html );
@@ -179,7 +179,7 @@ void LastfmInfoParser::onGetArtistInfo()
         default:
             break;
     }
-    m_jobs["getArtistInfo"]->deleteLater();
-    m_jobs["getArtistInfo"] = nullptr;
+    m_jobs[QStringLiteral("getArtistInfo")]->deleteLater();
+    m_jobs[QStringLiteral("getArtistInfo")] = nullptr;
 }
 

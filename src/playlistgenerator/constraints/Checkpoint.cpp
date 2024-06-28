@@ -213,7 +213,7 @@ ConstraintTypes::Checkpoint::satisfaction( const Meta::TrackList& tl ) const
     // What are the ending time boundaries of each track in this playlist?
     qint64 start = 0;
     QList< qint64 > boundaries;
-    foreach ( const Meta::TrackPtr t, tl ) {
+    for ( const Meta::TrackPtr &t : tl ) {
         boundaries << ( start += t->length() );
     }
 

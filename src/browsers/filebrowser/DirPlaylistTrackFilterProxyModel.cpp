@@ -39,7 +39,7 @@ DirPlaylistTrackFilterProxyModel::filterAcceptsRow( int source_row,
 
     KFileItem item = qvar.value<KFileItem>();
 
-    if( item.name() == "." )
+    if( item.name() == QStringLiteral(".") )
         return false;
 
     if( item.isDir() ||

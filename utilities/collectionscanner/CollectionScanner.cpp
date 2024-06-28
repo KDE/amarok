@@ -203,7 +203,7 @@ CollectionScanner::Scanner::doJob() //SLOT
         if( m_incremental )
             xmlWriter.writeAttribute(QStringLiteral("incremental"), QString());
         // write some information into the file and close previous tag
-        xmlWriter.writeComment("Created by amarokcollectionscanner " AMAROK_VERSION " on "+QDateTime::currentDateTime().toString());
+        xmlWriter.writeComment( QLatin1String("Created by amarokcollectionscanner " AMAROK_VERSION " on ")+QDateTime::currentDateTime().toString());
         xmlFile.flush();
     }
 

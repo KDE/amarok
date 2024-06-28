@@ -38,7 +38,7 @@ class BookmarkViewItem : public virtual QSharedData
     public:
         BookmarkViewItem() : QSharedData() {}
         
-        virtual  ~BookmarkViewItem() { DEBUG_BLOCK };
+        virtual ~BookmarkViewItem() { DEBUG_BLOCK };
     
         virtual BookmarkGroupPtr parent() const = 0;
         virtual int childCount() const { return 0; }

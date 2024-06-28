@@ -239,7 +239,7 @@ QUrl CueFileSupport::locateCueSheet ( const QUrl &trackurl )
         return QUrl();
     // look for the cue file that matches the media file
     QString path    = trackurl.path();
-    QString cueFile = path.left ( path.lastIndexOf ( QLatin1Char('.') ) ) + ".cue";
+    QString cueFile = path.left ( path.lastIndexOf ( QLatin1Char('.') ) ) + QStringLiteral(".cue");
 
     if ( validateCueSheet ( cueFile ) )
     {

@@ -36,7 +36,7 @@ namespace QtBindings
             Q_INVOKABLE CheckBox(const QString &text, QWidget *parent = Q_NULLPTR);
             Q_INVOKABLE ~CheckBox();
             CheckBox &operator=(const CheckBox &other);
-        public slots:
+        public Q_SLOTS:
             Qt::CheckState checkState() const;
             bool isTristate() const;
             void setCheckState(Qt::CheckState state);

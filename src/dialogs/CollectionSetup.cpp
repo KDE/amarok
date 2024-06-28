@@ -218,7 +218,7 @@ CollectionSetup::isDirInCollection( const QString& path ) const
         QUrl parentUrl = QUrl::fromLocalFile( dir );
         if ( !AmarokConfig::scanRecursively() )
         {
-            if ( ( dir == path ) || ( QString( dir + '/' ) == path ) )
+            if ( ( dir == path ) || ( QString( dir + QLatin1Char('/') ) == path ) )
                 return true;
         }
         else //scan recursively

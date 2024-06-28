@@ -327,7 +327,8 @@ QStringList
 TrackStatisticsTableCommitter::getFields()
 {
     QStringList result;
-    result << "url" << "createdate" << "accessdate" << "score" << "rating" << "playcount" << "deleted";
+    result << QStringLiteral("url") << QStringLiteral("createdate") << QStringLiteral("accessdate") << QStringLiteral("score")
+        << QStringLiteral("rating") << QStringLiteral("playcount") << QStringLiteral("deleted");
     return result;
 }
 

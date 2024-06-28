@@ -44,11 +44,11 @@ PLSPlaylist::loadPls( QTextStream &textStream )
     QStringList lines;
 
     // Case insensitive, as it seems many playlists use numberofentries
-    QRegularExpression regExp_NumberOfEntries( QLatin1String("^NumberOfEntries\\s*=\\s*\\d+$"), QRegularExpression::CaseInsensitiveOption );
-    const QRegularExpression regExp_File("^File\\d+\\s*=");
-    const QRegularExpression regExp_Title("^Title\\d+\\s*=");
-    const QRegularExpression regExp_Length("^Length\\d+\\s*=\\s*-?\\d+$"); // Length Can be -1
-    const QRegularExpression regExp_Version("^Version\\s*=\\s*\\d+$");
+    QRegularExpression regExp_NumberOfEntries( QStringLiteral("^NumberOfEntries\\s*=\\s*\\d+$"), QRegularExpression::CaseInsensitiveOption );
+    const QRegularExpression regExp_File( QStringLiteral("^File\\d+\\s*=") );
+    const QRegularExpression regExp_Title( QStringLiteral("^Title\\d+\\s*=") );
+    const QRegularExpression regExp_Length( QStringLiteral("^Length\\d+\\s*=\\s*-?\\d+$") ); // Length Can be -1
+    const QRegularExpression regExp_Version( QStringLiteral("^Version\\s*=\\s*\\d+$") );
     const QString section_playlist(QStringLiteral("[playlist]"));
 
 

@@ -72,9 +72,9 @@ XmlQueryReader::read( const QString &xmlData )
         {
             //we expect exactly one query definition in the xml data.
             //so fail if we find more than one
-            if( name() == "query" )
+            if( name() == QStringLiteral("query") )
             {
-                if( attributes().value( QStringLiteral("version") ) == "1.0" )
+                if( attributes().value( QStringLiteral("version") ) == QStringLiteral("1.0") )
                 {
                     queryCount++;
                     readQuery();
@@ -95,9 +95,9 @@ XmlQueryReader::readQuery()
 
         if( isStartElement() )
         {
-            if( name() == "filters" )
+            if( name() == QStringLiteral("filters") )
                 readFilters();
-            else if( name() == "order" )
+            else if( name() == QStringLiteral("order") )
             {
                 QXmlStreamAttributes attr = attributes();
                 QStringView fieldStr =  attr.value( QStringLiteral("field") );
@@ -109,21 +109,21 @@ XmlQueryReader::readQuery()
                 if( field != 0 )
                     d->qm->orderBy( field, descending  );
             }
-            else if( name() == "limit" )
+            else if( name() == QStringLiteral("limit") )
             {
                 QStringView value = attributes().value( QStringLiteral("value") );
                 if( !value.isEmpty() )
                     d->qm->limitMaxResultSize( value.toString().toInt() );
             }
-            else if( name() == "onlyCompilations" )
+            else if( name() == QStringLiteral("onlyCompilations") )
             {
                 d->qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
             }
-            else if( name() == "onlyNormalAlbums" )
+            else if( name() == QStringLiteral("onlyNormalAlbums") )
             {
                 d->qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
             }
-            else if( name() == "returnValues" )
+            else if( name() == QStringLiteral("returnValues") )
                 readReturnValues();
             //add more container elements here
             else
@@ -161,31 +161,31 @@ XmlQueryReader::readReturnValues()
         while( !atEnd() )
         {
             readNext();
-            if( name() == "tracks" )
+            if( name() == QStringLiteral("tracks") )
             {
                 d->qm->setQueryType( Collections::QueryMaker::Track );
             }
-            else if( name() == "artists" )
+            else if( name() == QStringLiteral("artists") )
             {
                 d->qm->setQueryType( Collections::QueryMaker::Artist );
             }
-            else if( name() == "albums" )
+            else if( name() == QStringLiteral("albums") )
             {
                 d->qm->setQueryType( Collections::QueryMaker::Album );
             }
-            else if( name() == "albumartist" )
+            else if( name() == QStringLiteral("albumartist") )
             {
                 d->qm->setQueryType( Collections::QueryMaker::AlbumArtist );
             }
-            else if( name() == "genres" )
+            else if( name() == QStringLiteral("genres") )
             {
                 d->qm->setQueryType( Collections::QueryMaker::Genre );
             }
-            else if( name() == "composers" )
+            else if( name() == QStringLiteral("composers") )
             {
                 d->qm->setQueryType( Collections::QueryMaker::Composer );
             }
-            else if( name() == "year" )
+            else if( name() == QStringLiteral("year") )
             {
                 d->qm->setQueryType( Collections::QueryMaker::Year );
             }
@@ -196,11 +196,11 @@ XmlQueryReader::readReturnValues()
                     d->qm->setQueryType( Collections::QueryMaker::Custom );
                 }
                 //TODO write a mapping function somewhere
-                if( name() == "title" )
+                if( name() == QStringLiteral("title") )
                 {
                     d->qm->addReturnValue( Meta::valTitle );
                 }
-                else if( name() == "artist" )
+                else if( name() == QStringLiteral("artist") )
                 {
                     d->qm->addReturnValue( Meta::valArtist );
                 }
@@ -224,7 +224,7 @@ XmlQueryReader::readFilter(QXmlStreamReader *reader)
 
     QXmlStreamAttributes attr = reader->attributes();
 
-    filter.exclude = (reader->name() != "include");
+    filter.exclude = (reader->name() != QStringLiteral("include") );
     filter.field = Meta::fieldForName( attr.value( QStringLiteral("field") ).toString() );
     filter.value = attr.value( QStringLiteral("value") ).toString();
 
@@ -250,7 +250,7 @@ XmlQueryReader::readFilters()
                 d->qm->endAndOr();
                 break;
             }
-            else if( name() == "filters" )
+            else if( name() == QStringLiteral("filters") )
             {
                 break;
             }

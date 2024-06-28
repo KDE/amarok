@@ -40,7 +40,7 @@ class AMAROK_SERVICE_LASTFM_CONFIG_EXPORT LastFmServiceConfig : public QObject
 {
     Q_OBJECT
 public:
-    static const char *configSectionName() { return "Service_LastFm"; }
+    static const QString configSectionName() { return QStringLiteral("Service_LastFm"); }
 
     /**
      * Singleton pattern accessor. Not thread safe - must be called from the main

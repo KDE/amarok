@@ -44,7 +44,7 @@ QStringList
 Meta::MultiTrack::sources() const
 {
     QStringList trackNames;
-    foreach ( TrackPtr track, m_playlist->tracks() )
+    for ( TrackPtr track : m_playlist->tracks() )
     {
         trackNames << track->prettyUrl();
     }

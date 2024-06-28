@@ -300,7 +300,7 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 
     QDomDocument doc( QStringLiteral("layouts") );
     QDomElement layouts_element = doc.createElement( QStringLiteral("playlist_layouts") );
-    QDomElement newLayout = doc.createElement( ("layout" ) );
+    QDomElement newLayout = doc.createElement( QStringLiteral("layout" ) );
     newLayout.setAttribute( QStringLiteral("name"), name );
 
     doc.appendChild( layouts_element );
@@ -330,7 +330,7 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     if ( !layoutsDir.exists() )
         layoutsDir.mkpath( Amarok::saveLocation( QStringLiteral("playlist_layouts/") ) );
 
-    QFile file( layoutsDir.filePath( name + ".xml" ) );
+    QFile file( layoutsDir.filePath( name + QStringLiteral(".xml") ) );
     if ( !file.open(QIODevice::WriteOnly | QIODevice::Text) )
         return;
 
@@ -342,7 +342,7 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
 {
     QDomElement element = doc.createElement( name );
 
-    QString showCover = item.showCover() ? "true" : "false";
+    QString showCover = item.showCover() ? QStringLiteral("true") : QStringLiteral("false");
     element.setAttribute ( QStringLiteral("show_cover"), showCover );
     element.setAttribute ( QStringLiteral("active_indicator_row"), QString::number( item.activeIndicatorRow() ) );
 
@@ -361,9 +361,9 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
             elementElement.setAttribute ( QStringLiteral("suffix"), element.suffix() );
             elementElement.setAttribute ( QStringLiteral("value"), internalColumnName( static_cast<Playlist::Column>( element.value() ) ) );
             elementElement.setAttribute ( QStringLiteral("size"), QString::number( element.size() ) );
-            elementElement.setAttribute ( QStringLiteral("bold"), element.bold() ? "true" : "false" );
-            elementElement.setAttribute ( QStringLiteral("italic"), element.italic() ? "true" : "false" );
-            elementElement.setAttribute ( QStringLiteral("underline"), element.underline() ? "true" : "false" );
+            elementElement.setAttribute ( QStringLiteral("bold"), element.bold() ? QStringLiteral("true") : QStringLiteral("false") );
+            elementElement.setAttribute ( QStringLiteral("italic"), element.italic() ? QStringLiteral("true") : QStringLiteral("false") );
+            elementElement.setAttribute ( QStringLiteral("underline"), element.underline() ? QStringLiteral("true") : QStringLiteral("false") );
 
             QString alignmentString;
             if ( element.alignment() & Qt::AlignLeft )
@@ -401,7 +401,7 @@ void LayoutManager::deleteLayout( const QString &layout )
     if ( m_layouts.value( layout ).isEditable() )
     {
         QDir layoutsDir = QDir( Amarok::saveLocation( QStringLiteral("playlist_layouts/") ) );
-        QString xmlFile = layoutsDir.path() + QLatin1Char('/') + layout + ".xml";
+        QString xmlFile = layoutsDir.path() + QLatin1Char('/') + layout + QStringLiteral(".xml");
 
         if ( !QFile::remove( xmlFile ) )
             debug() << "error deleting file" << xmlFile;
@@ -482,7 +482,7 @@ void Playlist::LayoutManager::storeLayoutOrdering()
     for( const QString &name : m_layoutNames )
     {
         ordering += name;
-        ordering += ';';
+        ordering += QLatin1Char(';');
     }
 
     if ( !ordering.isEmpty() )

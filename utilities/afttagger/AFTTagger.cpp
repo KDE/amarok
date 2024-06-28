@@ -320,7 +320,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
         }
         if( newUid || ( nothingfound && !m_delete ) )
         {
-            QString ourId = QString( "Amarok 2 AFTv" + QString::number( s_currentVersion ) + " - amarok.kde.org" );
+            QString ourId = QStringLiteral( "Amarok 2 AFTv" ) + QString::number( s_currentVersion ) + QStringLiteral( " - amarok.kde.org" );
             if( uid.isEmpty() )
                 uid = createCurrentUID( file );
             if( m_verbose )
@@ -471,7 +471,7 @@ AFTTagger::handleXiphComment( TagLib::Ogg::XiphComment *comment, TagLib::File *f
     }
     if( newUid || ( nothingfound && !m_delete ) )
     {
-        QString ourId = QString( "Amarok 2 AFTv" + QString::number( s_currentVersion ) + " - amarok.kde.org" );
+        QString ourId = QStringLiteral( "Amarok 2 AFTv" ) + QString::number( s_currentVersion ) + QStringLiteral( " - amarok.kde.org" );
         if( uid.isEmpty() )
             uid = createCurrentUID( file );
         if( m_verbose )
@@ -577,7 +577,7 @@ AFTTagger::handleMPC( TagLib::MPC::File *file )
 
     if( newUid || ( nothingfound && !m_delete ) )
     {
-        QString ourId = QString( "Amarok 2 AFTv" + QString::number( s_currentVersion ) + " - amarok.kde.org" );
+        QString ourId = QStringLiteral( "Amarok 2 AFTv" ) + QString::number( s_currentVersion ) + QStringLiteral( " - amarok.kde.org" );
         if( uid.isEmpty() )
             uid = createCurrentUID( file );
         if( m_verbose )
@@ -623,7 +623,7 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
                 nothingfound = false;
 
                 if( m_verbose )
-                    m_textStream << tr( "INFO: Removing old-style ATF identifier %1" ).arg( key.toCString() ) << Qt::endl;
+                    m_textStream << tr( "INFO: Removing old-style ATF identifier %1" ).arg( QLatin1String( key.toCString() ) ) << Qt::endl;
 
                 toRemove.append( key );
                 if( !m_delete )
@@ -634,7 +634,7 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
                 nothingfound = false;
 
                 if( m_verbose )
-                    m_textStream << tr( "INFO: Found an existing AFT identifier: %1" ).arg( key.toCString() ) << Qt::endl;
+                    m_textStream << tr( "INFO: Found an existing AFT identifier: %1" ).arg( QLatin1String( key.toCString() ) ) << Qt::endl;
 
                 if( m_delete )
                 {
@@ -681,12 +681,12 @@ AFTTagger::handleMP4( TagLib::MP4::File *file )
 
     if( newUid || ( nothingfound && !m_delete ) )
     {
-        QString ourId = QString( "Amarok 2 AFTv" + QString::number( s_currentVersion ) + " - amarok.kde.org" );
+        QString ourId = QStringLiteral( "Amarok 2 AFTv" ) + QString::number( s_currentVersion ) + QStringLiteral( " - amarok.kde.org" );
         if( uid.isEmpty() )
             uid = createCurrentUID( file );
         if( m_verbose )
             m_textStream << tr( "INFO: Adding new field and saving file with UID: %1" ).arg( uid ) << Qt::endl;
-        itemsMap.insert( Qt5QStringToTString( QString( "----:com.apple.iTunes:" + ourId ) ),
+        itemsMap.insert( Qt5QStringToTString( QString( QStringLiteral( "----:com.apple.iTunes:" ) + ourId ) ),
                          TagLib::StringList( Qt5QStringToTString( uid ) ) );
         file->save();
         return true;
@@ -721,14 +721,14 @@ AFTTagger::createV1UID( TagLib::File *file )
     md5.addData( QString::number( QRandomGenerator::global()->generate() ).toUtf8() );
     md5.addData( QString::number( QRandomGenerator::global()->generate() ).toUtf8() );
     md5.addData( QString::number( m_time.elapsed() ).toUtf8() );
-    return QString( md5.result().toHex() );
+    return QLatin1String( md5.result().toHex() );
 }
 
 QString
 AFTTagger::upgradeUID( int version, const QString &currValue )
 {
     Q_UNUSED(version)
-    return currValue + "abcd";
+    return currValue + QStringLiteral( "abcd" );
 }
 
 void

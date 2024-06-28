@@ -52,7 +52,9 @@
 #include <QFile>
 #include <QMap>
 #include <QMessageBox>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QNetworkConfigurationManager>
+#endif
 #include <QProgressDialog>
 #include <QStandardPaths>
 #include <QTimer>
@@ -110,9 +112,9 @@ SqlPodcastProvider::SqlPodcastProvider()
     {
         debug() << "creating Podcast Tables";
         createTables();
-        sqlStorage->query( "INSERT INTO admin(component,version) "
-                           "VALUES('" + key + "',"
-                           + QString::number( PODCAST_DB_VERSION ) + ");" );
+        sqlStorage->query( QStringLiteral("INSERT INTO admin(component,version) "
+                           "VALUES('") + key + QStringLiteral("',")
+                           + QString::number( PODCAST_DB_VERSION ) + QStringLiteral(");") );
     }
     else
     {
@@ -1003,12 +1005,14 @@ SqlPodcastProvider::completePodcastDownloads()
 void
 SqlPodcastProvider::autoUpdate()
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QNetworkConfigurationManager mgr;
     if( !mgr.isOnline() )
     {
         debug() << "Solid reports we are not online, canceling podcast auto-update";
         return;
     }
+#endif
 
     for( Podcasts::SqlPodcastChannelPtr channel : m_channels )
     {
@@ -1435,34 +1439,34 @@ SqlPodcastProvider::createTables() const
     if( !sqlStorage )
         return;
 
-    sqlStorage->query( QString( "CREATE TABLE podcastchannels ("
-                                "id " + sqlStorage->idType() +
-                                ",url " + sqlStorage->longTextColumnType() +
-                                ",title " + sqlStorage->longTextColumnType() +
-                                ",weblink " + sqlStorage->longTextColumnType() +
-                                ",image " + sqlStorage->longTextColumnType() +
-                                ",description " + sqlStorage->longTextColumnType() +
-                                ",copyright "  + sqlStorage->textColumnType() +
-                                ",directory "  + sqlStorage->textColumnType() +
-                                ",labels " + sqlStorage->textColumnType() +
-                                ",subscribedate " + sqlStorage->textColumnType() +
-                                ",autoscan BOOL, fetchtype INTEGER"
+    sqlStorage->query( QStringLiteral( "CREATE TABLE podcastchannels ("
+                                "id ") + sqlStorage->idType() +
+                                QStringLiteral(",url ") + sqlStorage->longTextColumnType() +
+                                QStringLiteral(",title ") + sqlStorage->longTextColumnType() +
+                                QStringLiteral(",weblink ") + sqlStorage->longTextColumnType() +
+                                QStringLiteral(",image ") + sqlStorage->longTextColumnType() +
+                                QStringLiteral(",description ") + sqlStorage->longTextColumnType() +
+                                QStringLiteral(",copyright ")  + sqlStorage->textColumnType() +
+                                QStringLiteral(",directory ")  + sqlStorage->textColumnType() +
+                                QStringLiteral(",labels ") + sqlStorage->textColumnType() +
+                                QStringLiteral(",subscribedate ") + sqlStorage->textColumnType() +
+                                QStringLiteral(",autoscan BOOL, fetchtype INTEGER"
                                 ",haspurge BOOL, purgecount INTEGER"
                                 ",writetags BOOL, filenamelayout VARCHAR(1024) ) ENGINE = MyISAM;" ) );
 
-    sqlStorage->query( QString( "CREATE TABLE podcastepisodes ("
-                                "id " + sqlStorage->idType() +
-                                ",url " + sqlStorage->longTextColumnType() +
-                                ",channel INTEGER"
-                                ",localurl " + sqlStorage->longTextColumnType() +
-                                ",guid " + sqlStorage->exactTextColumnType() +
-                                ",title " + sqlStorage->longTextColumnType() +
-                                ",subtitle " + sqlStorage->longTextColumnType() +
-                                ",sequencenumber INTEGER" +
-                                ",description " + sqlStorage->longTextColumnType() +
-                                ",mimetype "  + sqlStorage->textColumnType() +
-                                ",pubdate "  + sqlStorage->textColumnType() +
-                                ",duration INTEGER"
+    sqlStorage->query( QStringLiteral( "CREATE TABLE podcastepisodes ("
+                                "id ") + sqlStorage->idType() +
+                                QStringLiteral(",url ") + sqlStorage->longTextColumnType() +
+                                QStringLiteral(",channel INTEGER"
+                                ",localurl ") + sqlStorage->longTextColumnType() +
+                                QStringLiteral(",guid ") + sqlStorage->exactTextColumnType() +
+                                QStringLiteral(",title ") + sqlStorage->longTextColumnType() +
+                                QStringLiteral(",subtitle ") + sqlStorage->longTextColumnType() +
+                                QStringLiteral(",sequencenumber INTEGER"
+                                ",description ") + sqlStorage->longTextColumnType() +
+                                QStringLiteral(",mimetype ")  + sqlStorage->textColumnType() +
+                                QStringLiteral(",pubdate ")  + sqlStorage->textColumnType() +
+                                QStringLiteral(",duration INTEGER"
                                 ",filesize INTEGER"
                                 ",isnew BOOL"
                                 ",iskeep BOOL) ENGINE = MyISAM;" ) );
@@ -1498,33 +1502,33 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
     }
     else if( fromVersion < 3 && toVersion == 3 )
     {
-        sqlStorage->query( QString( "CREATE TABLE podcastchannels_temp ("
-                                    "id " + sqlStorage->idType() +
-                                    ",url " + sqlStorage->exactTextColumnType() + " UNIQUE"
-                                    ",title " + sqlStorage->textColumnType() +
-                                    ",weblink " + sqlStorage->exactTextColumnType() +
-                                    ",image " + sqlStorage->exactTextColumnType() +
-                                    ",description " + sqlStorage->longTextColumnType() +
-                                    ",copyright "  + sqlStorage->textColumnType() +
-                                    ",directory "  + sqlStorage->textColumnType() +
-                                    ",labels " + sqlStorage->textColumnType() +
-                                    ",subscribedate " + sqlStorage->textColumnType() +
-                                    ",autoscan BOOL, fetchtype INTEGER"
+        sqlStorage->query( QStringLiteral( "CREATE TABLE podcastchannels_temp ("
+                                    "id ") + sqlStorage->idType() +
+                                    QStringLiteral(",url ") + sqlStorage->exactTextColumnType() + QStringLiteral(" UNIQUE"
+                                    ",title ") + sqlStorage->textColumnType() +
+                                    QStringLiteral(",weblink ") + sqlStorage->exactTextColumnType() +
+                                    QStringLiteral(",image ") + sqlStorage->exactTextColumnType() +
+                                    QStringLiteral(",description ") + sqlStorage->longTextColumnType() +
+                                    QStringLiteral(",copyright ")  + sqlStorage->textColumnType() +
+                                    QStringLiteral(",directory ")  + sqlStorage->textColumnType() +
+                                    QStringLiteral(",labels ") + sqlStorage->textColumnType() +
+                                    QStringLiteral(",subscribedate ") + sqlStorage->textColumnType() +
+                                    QStringLiteral(",autoscan BOOL, fetchtype INTEGER"
                                     ",haspurge BOOL, purgecount INTEGER ) ENGINE = MyISAM;" ) );
 
-        sqlStorage->query( QString( "CREATE TABLE podcastepisodes_temp ("
-                                    "id " + sqlStorage->idType() +
-                                    ",url " + sqlStorage->exactTextColumnType() + " UNIQUE"
+        sqlStorage->query( QStringLiteral( "CREATE TABLE podcastepisodes_temp ("
+                                    "id ") + sqlStorage->idType() +
+                                    QStringLiteral(",url ") + sqlStorage->exactTextColumnType() + QStringLiteral(" UNIQUE"
                                     ",channel INTEGER"
-                                    ",localurl " + sqlStorage->exactTextColumnType() +
-                                    ",guid " + sqlStorage->exactTextColumnType() +
-                                    ",title " + sqlStorage->textColumnType() +
-                                    ",subtitle " + sqlStorage->textColumnType() +
-                                    ",sequencenumber INTEGER" +
-                                    ",description " + sqlStorage->longTextColumnType() +
-                                    ",mimetype "  + sqlStorage->textColumnType() +
-                                    ",pubdate "  + sqlStorage->textColumnType() +
-                                    ",duration INTEGER"
+                                    ",localurl ") + sqlStorage->exactTextColumnType() +
+                                    QStringLiteral(",guid ") + sqlStorage->exactTextColumnType() +
+                                    QStringLiteral(",title ") + sqlStorage->textColumnType() +
+                                    QStringLiteral(",subtitle ") + sqlStorage->textColumnType() +
+                                    QStringLiteral(",sequencenumber INTEGER"
+                                    ",description ") + sqlStorage->longTextColumnType() +
+                                    QStringLiteral(",mimetype ")  + sqlStorage->textColumnType() +
+                                    QStringLiteral(",pubdate ")  + sqlStorage->textColumnType() +
+                                    QStringLiteral(",duration INTEGER"
                                     ",filesize INTEGER"
                                     ",isnew BOOL"
                                     ",iskeep BOOL) ENGINE = MyISAM;" ) );
@@ -1546,18 +1550,18 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
 
     if( fromVersion < 4 && toVersion == 4 )
     {
-        QString updateChannelQuery = QString( "ALTER TABLE podcastchannels"
+        QString updateChannelQuery = QStringLiteral( "ALTER TABLE podcastchannels"
                                               " ADD writetags BOOL;" );
         sqlStorage->query( updateChannelQuery );
-        QString setWriteTagsQuery = QString( "UPDATE podcastchannels SET writetags=" +
+        QString setWriteTagsQuery = QStringLiteral( "UPDATE podcastchannels SET writetags=") +
                                              sqlStorage->boolTrue() +
-                                             " WHERE 1;" );
+                                             QStringLiteral(" WHERE 1;" );
         sqlStorage->query( setWriteTagsQuery );
     }
 
     if( fromVersion < 5 && toVersion == 5 )
     {
-        QString updateChannelQuery = QString ( "ALTER TABLE podcastchannels"
+        QString updateChannelQuery = QStringLiteral ( "ALTER TABLE podcastchannels"
                                                " ADD filenamelayout VARCHAR(1024);" );
         sqlStorage->query( updateChannelQuery );
         QString setWriteTagsQuery = QStringLiteral( "UPDATE podcastchannels SET filenamelayout='%default%'" );
@@ -1566,7 +1570,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
 
     if( fromVersion < 6 && toVersion == 6 )
     {
-        QString updateEpisodeQuery = QString ( "ALTER TABLE podcastepisodes"
+        QString updateEpisodeQuery = QStringLiteral ( "ALTER TABLE podcastepisodes"
                                                " ADD iskeep BOOL;" );
         sqlStorage->query( updateEpisodeQuery );
         QString setIsKeepQuery = QStringLiteral( "UPDATE podcastepisodes SET iskeep=FALSE;" );

@@ -263,7 +263,7 @@ PlaylistBrowserCategory::slotToggleProviderButton()
         if( action->isChecked() )
         {
             QString escapedName = QRegularExpression::escape( p->prettyName() ).replace( QLatin1Char(' '), QLatin1String("\\ ") );
-            filter += QString( filter.isEmpty() ? "%1" : "|%1" ).arg( escapedName );
+            filter += QString( filter.isEmpty() ? QStringLiteral("%1") : QStringLiteral("|%1") ).arg( escapedName );
             checkedActions << action;
             action->setEnabled( true );
         }
@@ -291,7 +291,7 @@ PlaylistBrowserCategory::createNewFolder()
         int folderCount( 0 );
         for( const QModelIndex &folder : folderIndices )
         {
-            QRegularExpression regex( name + " \\((\\d+)\\)" );
+            QRegularExpression regex( name + QStringLiteral(" \\((\\d+)\\)") );
             QRegularExpressionMatch rmatch = regex.match( folder.data( Qt::DisplayRole ).toString() );
             if ( rmatch.hasMatch() )
             {

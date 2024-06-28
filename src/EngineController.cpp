@@ -250,20 +250,20 @@ EngineController::slotFillInSupportedMimeTypes()
         return;
     }
 
-    QRegularExpression avFilter( "^(audio|video)/", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpression avFilter( QStringLiteral("^(audio|video)/"), QRegularExpression::CaseInsensitiveOption);
     m_supportedMimeTypes = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
 
     // Add whitelist hacks
     // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
-    if( !m_supportedMimeTypes.contains( "audio/x-m4b" ) )
+    if( !m_supportedMimeTypes.contains( QStringLiteral("audio/x-m4b") ) )
         m_supportedMimeTypes << "audio/x-m4b";
 
     // technically, "audio/flac" is not a valid mimetype (not on IANA list), but some things expect it
-    if( m_supportedMimeTypes.contains( "audio/x-flac" ) && !m_supportedMimeTypes.contains( "audio/flac" ) )
+    if( m_supportedMimeTypes.contains( QStringLiteral("audio/x-flac") ) && !m_supportedMimeTypes.contains( QStringLiteral("audio/flac") ) )
         m_supportedMimeTypes << "audio/flac";
 
     // technically, "audio/mp4" is the official mime type, but sometimes Phonon returns audio/x-m4a
-    if( m_supportedMimeTypes.contains( "audio/x-m4a" ) && !m_supportedMimeTypes.contains( "audio/mp4" ) )
+    if( m_supportedMimeTypes.contains( QStringLiteral("audio/x-m4a") ) && !m_supportedMimeTypes.contains( QStringLiteral("audio/mp4") ) )
         m_supportedMimeTypes << "audio/mp4";
 
     // unblock waiting for the semaphore in supportedMimeTypes(). We can over-shoot
@@ -1065,7 +1065,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         /** We only use detect-tracks-in-stream for tracks that have stream type
          * (exactly, we purposely exclude stream/lastfm) *and* that don't have length
          * already filled in. Bug 311852 */
-        if( m_currentTrack->type() == "stream" && m_currentTrack->length() == 0 )
+        if( m_currentTrack->type() == QStringLiteral("stream") && m_currentTrack->length() == 0 )
             useTrackWithinStreamDetection = true;
     }
 

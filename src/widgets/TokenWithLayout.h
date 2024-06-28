@@ -29,7 +29,11 @@ class Wrench : public QLabel
 public:
     explicit Wrench( QWidget *parent );
 protected:
-    void enterEvent(QEvent *) override;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    void enterEvent(QEvent* event) override;
+#else
+    void enterEvent(QEnterEvent* event) override;
+#endif
     void leaveEvent(QEvent *) override;
     void mousePressEvent( QMouseEvent *e ) override;
     void mouseReleaseEvent( QMouseEvent *e ) override;
@@ -88,7 +92,11 @@ public Q_SLOTS:
     void setWidth( int width );
 
 protected:
-    void enterEvent(QEvent *) override;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    void enterEvent(QEvent* event) override;
+#else
+    void enterEvent(QEnterEvent* event) override;
+#endif
     bool eventFilter( QObject*, QEvent* ) override;
     void leaveEvent(QEvent *) override;
     void timerEvent( QTimerEvent* ) override;

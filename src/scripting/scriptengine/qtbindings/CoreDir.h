@@ -59,7 +59,7 @@ namespace QtBindings
             Q_INVOKABLE static void addSearchPath(const QString &prefix, const QString &path);
             Q_INVOKABLE static void setSearchPaths(const QString &prefix, const QStringList &searchPaths);
             Dir &operator=(const Dir &other);
-        public slots:
+        public Q_SLOTS:
             bool cd(const QString &dirName);
             bool cdUp();
             bool exists() const;

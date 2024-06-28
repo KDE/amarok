@@ -927,7 +927,7 @@ Dynamic::DynamicModel::initPlaylists()
     Dynamic::IfElseBias *ifElse = new Dynamic::IfElseBias();
     playlist->bias()->replace( Dynamic::BiasPtr( ifElse ) );
     ifElse->appendBias( Dynamic::BiasPtr( new Dynamic::AlbumPlayBias() ) );
-    query = Meta::shortI18nForField( Meta::valTrackNr ) + ":1";
+    query = Meta::shortI18nForField( Meta::valTrackNr ) + QStringLiteral(":1");
     ifElse->appendBias( Dynamic::BiasPtr( new Dynamic::SearchQueryBias( query ) ) );
     insertPlaylist( 2, playlist );
 
@@ -1101,7 +1101,7 @@ static QString
 biasToString( Dynamic::BiasPtr bias, int level )
 {
     QString result;
-    result += QStringLiteral(" ").repeated(level) + bias->toString() + ' ' + QString::number(quintptr(bias.data()), 16) + '\n';
+    result += QStringLiteral(" ").repeated(level) + bias->toString() + QLatin1Char(' ') + QString::number(quintptr(bias.data()), 16) + QLatin1Char('\n');
     if( Dynamic::AndBias* aBias = qobject_cast<Dynamic::AndBias*>(bias.data()) )
     {
         for( Dynamic::BiasPtr bias2 : aBias->biases() )
@@ -1117,7 +1117,7 @@ Dynamic::DynamicModel::toString()
 
     for( Dynamic::DynamicPlaylist *playlist : m_playlists )
     {
-        result += playlist->title() + ' ' + QString::number(quintptr(playlist), 16) + '\n';
+        result += playlist->title() + QLatin1Char(' ') + QString::number(quintptr(playlist), 16) + QLatin1Char('\n');
         if( Dynamic::BiasedPlaylist* bPlaylist = qobject_cast<Dynamic::BiasedPlaylist*>(playlist ) )
             result += biasToString( bPlaylist->bias(), 1 );
     }

@@ -419,20 +419,20 @@ void BookmarkModel::createTables()
     if( !sqlStorage )
         return;
 
-    sqlStorage->query( QString( "CREATE TABLE bookmark_groups ("
-            " id " + sqlStorage->idType() +
-            ", parent_id INTEGER"
-            ", name " + sqlStorage->textColumnType() +
-            ", description " + sqlStorage->textColumnType() +
-            ", custom " + sqlStorage->textColumnType() + " ) ENGINE = MyISAM;" ) );
+    sqlStorage->query( QStringLiteral( "CREATE TABLE bookmark_groups ("
+            " id ") + sqlStorage->idType() +
+            QStringLiteral(", parent_id INTEGER"
+            ", name ") + sqlStorage->textColumnType() +
+            QStringLiteral(", description ") + sqlStorage->textColumnType() +
+            QStringLiteral(", custom ") + sqlStorage->textColumnType() + QStringLiteral(" ) ENGINE = MyISAM;") );
 
-    sqlStorage->query( QString( "CREATE TABLE bookmarks ("
-            " id " + sqlStorage->idType() +
-            ", parent_id INTEGER"
-            ", name " + sqlStorage->textColumnType() +
-            ", url " + sqlStorage->exactTextColumnType() +
-            ", description " + sqlStorage->exactTextColumnType() +
-            ", custom " + sqlStorage->textColumnType() + " ) ENGINE = MyISAM;" ) );
+    sqlStorage->query( QStringLiteral( "CREATE TABLE bookmarks ("
+            " id ") + sqlStorage->idType() +
+            QStringLiteral(", parent_id INTEGER"
+            ", name ") + sqlStorage->textColumnType() +
+            QStringLiteral(", url ") + sqlStorage->exactTextColumnType() +
+            QStringLiteral(", description ") + sqlStorage->exactTextColumnType() +
+            QStringLiteral(", custom ") + sqlStorage->textColumnType() + QStringLiteral(" ) ENGINE = MyISAM;") );
 
 }
 
@@ -468,13 +468,13 @@ void BookmarkModel::checkTables()
     {
         debug() << "creating Playlist Tables";
         createTables();
-        sqlStorage->query( "INSERT INTO admin(component,version) "
-                "VALUES('" + key + "'," + QString::number( BOOKMARK_DB_VERSION ) + ");" );
+        sqlStorage->query( QStringLiteral("INSERT INTO admin(component,version) "
+                "VALUES('") + key + QStringLiteral("',") + QString::number( BOOKMARK_DB_VERSION ) + QStringLiteral(");") );
     }
     else if ( values.at( 0 ).toInt() < 4 )
     {
         upgradeTables( values.at( 0 ).toInt() );
-        sqlStorage->query( "UPDATE admin SET version=" + QString::number( BOOKMARK_DB_VERSION ) + " WHERE component=" + key + ';' );
+        sqlStorage->query( QStringLiteral("UPDATE admin SET version=") + QString::number( BOOKMARK_DB_VERSION ) + QStringLiteral(" WHERE component=") + key + QLatin1Char(';') );
     }
 }
 
@@ -685,10 +685,10 @@ void BookmarkModel::upgradeTables( int from )
         return;
     
     if ( from == 2 ) {
-        sqlStorage->query( "ALTER TABLE bookmarks ADD custom " + sqlStorage->textColumnType() + ';' );
+        sqlStorage->query( QStringLiteral("ALTER TABLE bookmarks ADD custom ") + sqlStorage->textColumnType() + QLatin1Char(';') );
     }
 
-    sqlStorage->query( "ALTER TABLE bookmark_groups ADD custom " + sqlStorage->textColumnType() + ';' );
+    sqlStorage->query( QStringLiteral("ALTER TABLE bookmark_groups ADD custom ") + sqlStorage->textColumnType() + QLatin1Char(';') );
 } 
 
 

@@ -143,8 +143,8 @@ SqlPlaylist::saveToDb( bool tracks )
     else
     {
         //insert new
-        QString query = "INSERT INTO playlists ( parent_id, name, urlid ) "
-                        "VALUES ( %1, '%2', '%3' );";
+        QString query = QStringLiteral("INSERT INTO playlists ( parent_id, name, urlid ) "
+                        "VALUES ( %1, '%2', '%3' );");
         query = query.arg( QString::number( parentId ),
                       sql->escape( m_name ),
                       sql->escape( m_urlId ) );
@@ -181,9 +181,9 @@ SqlPlaylist::saveTracks()
         {
             // keep this in sync with SqlTrack::updatePlaylistsToDb()!
             debug() << "saving track with url " << trackPtr->uidUrl();
-            QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, "
+            QString query = QStringLiteral("INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, "
                             "album, artist, length, uniqueid ) VALUES ( %1, %2, '%3', '%4', '%5', "
-                            "'%6', %7, '%8' );";
+                            "'%6', %7, '%8' );");
             query = query.arg( QString::number( m_dbId ), QString::number( trackNum ),
                         sql->escape( trackPtr->uidUrl() ),
                         sql->escape( trackPtr->prettyName() ),

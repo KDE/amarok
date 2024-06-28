@@ -19,7 +19,6 @@
 #include "core/support/Debug.h"
 
 #include <QAction>
-#include <KRun>
 #include <QStandardPaths>
 #include <Attica/Provider>
 #include <Attica/ItemJob>

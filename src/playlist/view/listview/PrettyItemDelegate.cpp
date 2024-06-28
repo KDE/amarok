@@ -932,11 +932,11 @@ Playlist::PrettyItemDelegate::buildTrackArgsMap( const Meta::TrackPtr &track ) c
 
     args[QStringLiteral("rating")] = track->statistics()->rating();
     args[QStringLiteral("filesize")] = track->filesize();
-    args[QStringLiteral("length")] = track->length() / 1000;
+    args[QStringLiteral("length")] = QString::number( track->length() / 1000 );
 
     if ( track->trackNumber() )
     {
-        QString trackNum = QStringLiteral( "%1" ).arg( track->trackNumber(), 2, 10, QChar('0') );
+        QString trackNum = QStringLiteral( "%1" ).arg( track->trackNumber(), 2, 10, QLatin1Char('0') );
         args[QStringLiteral("track")] = trackNum;
     }
 

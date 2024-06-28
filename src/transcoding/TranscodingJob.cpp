@@ -114,7 +114,7 @@ Job::transcoderDone( int exitCode, QProcess::ExitStatus exitStatus ) //SLOT
     {
         debug() << "NAY, transcoding fail!";
         setError( KJob::UserDefinedError );
-        setErrorText( QStringLiteral( "Calling `" ) + m_transcoder->program().join(QStringLiteral(" ")) + "` failed" );
+        setErrorText( QStringLiteral( "Calling `" ) + m_transcoder->program().join(QStringLiteral(" ")) + QStringLiteral("` failed") );
     }
     emitResult();
 }
@@ -150,7 +150,7 @@ inline qint64
 Job::computeDuration( const QString &output )
 {
     //We match something like "Duration: 00:04:33.60"
-    QRegularExpression matchDuration( "Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})" );
+    QRegularExpression matchDuration( QStringLiteral( "Duration: (\\d{2,}):(\\d{2}):(\\d{2})\\.(\\d{2})" ) );
     QRegularExpressionMatch rmatch = matchDuration.match( output );
 
     if( rmatch.hasMatch() )
@@ -171,7 +171,7 @@ Job::computeProgress( const QString &output )
 {
     //Output is like size=     323kB time=18.10 bitrate= 146.0kbits/s
     //We're going to use the "time" column, which counts the elapsed time in seconds.
-    QRegularExpression matchTime( "time=(\\d+)\\.(\\d{2})" );
+    QRegularExpression matchTime( QStringLiteral("time=(\\d+)\\.(\\d{2})") );
     QRegularExpressionMatch rmatch = matchTime.match( output );
 
     if( rmatch.hasMatch() )

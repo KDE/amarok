@@ -351,7 +351,7 @@ Meta::Field::xesamPrettyToFullFieldName( const QString &name )
     else if( name==Meta::Field::UNIQUEID )
         return XESAM_ID;
     else
-        return "xesamPrettyToFullName: unknown name " + name;
+        return QStringLiteral("xesamPrettyToFullName: unknown name ") + name;
 }
 
 QString
@@ -464,7 +464,8 @@ Meta::prettyBitrate( int bitrate )
 {
     //the point here is to force sharing of these strings returned from prettyBitrate()
     static const QString bitrateStore[9] = {
-        "?", "32", "64", "96", "128", "160", "192", "224", "256" };
+        QStringLiteral("?"), QStringLiteral("32"), QStringLiteral("64"), QStringLiteral("96"),
+        QStringLiteral("128"), QStringLiteral("160"), QStringLiteral("192"), QStringLiteral("224"), QStringLiteral("256") };
 
     return (bitrate >=0 && bitrate <= 256 && bitrate % 32 == 0)
                 ? bitrateStore[ bitrate / 32 ]

@@ -45,13 +45,13 @@ QString
 ServiceMetaFactory::getTrackSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
-    return m_dbTablePrefix + "_tracks.id, " +
-           m_dbTablePrefix + "_tracks.name, " +
-           m_dbTablePrefix + "_tracks.track_number, " +
-           m_dbTablePrefix + "_tracks.length, " +
-           m_dbTablePrefix + "_tracks.preview_url, " +
-           m_dbTablePrefix + "_tracks.album_id, " +
-           m_dbTablePrefix + "_tracks.artist_id ";
+    return m_dbTablePrefix + QStringLiteral("_tracks.id, ") +
+           m_dbTablePrefix + QStringLiteral("_tracks.name, ") +
+           m_dbTablePrefix + QStringLiteral("_tracks.track_number, ") +
+           m_dbTablePrefix + QStringLiteral("_tracks.length, ") +
+           m_dbTablePrefix + QStringLiteral("_tracks.preview_url, ") +
+           m_dbTablePrefix + QStringLiteral("_tracks.album_id, ") +
+           m_dbTablePrefix + QStringLiteral("_tracks.artist_id ");
 }
 
 TrackPtr
@@ -70,10 +70,10 @@ QString
 ServiceMetaFactory::getAlbumSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
-    return m_dbTablePrefix + "_albums.id, " +
-           m_dbTablePrefix + "_albums.name, " +
-           m_dbTablePrefix + "_albums.description, " +
-           m_dbTablePrefix + "_albums.artist_id ";
+    return m_dbTablePrefix + QStringLiteral("_albums.id, ") +
+           m_dbTablePrefix + QStringLiteral("_albums.name, ") +
+           m_dbTablePrefix + QStringLiteral("_albums.description, ") +
+           m_dbTablePrefix + QStringLiteral("_albums.artist_id ");
 }
 
 AlbumPtr
@@ -92,9 +92,9 @@ QString
 ServiceMetaFactory::getArtistSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
-    return m_dbTablePrefix + "_artists.id, " +
-           m_dbTablePrefix + "_artists.name, " +
-           m_dbTablePrefix + "_artists.description ";
+    return m_dbTablePrefix + QStringLiteral("_artists.id, ") +
+           m_dbTablePrefix + QStringLiteral("_artists.name, ") +
+           m_dbTablePrefix + QStringLiteral("_artists.description ");
 }
 
 ArtistPtr
@@ -113,8 +113,8 @@ QString
 ServiceMetaFactory::getGenreSqlRows()
 {
     //subclasses must not change the order of these items, but only append new ones
-    return m_dbTablePrefix + "_genre.id, " +
-           m_dbTablePrefix + "_genre.name " ;
+    return m_dbTablePrefix + QStringLiteral("_genre.id, ") +
+           m_dbTablePrefix + QStringLiteral("_genre.name ") ;
 }
 
 GenrePtr

@@ -95,7 +95,11 @@ BreadcrumbItemButton::isDisplayHintEnabled( DisplayHint hint ) const
 }
 
 void
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 BreadcrumbItemButton::enterEvent( QEvent* event )
+#else
+BreadcrumbItemButton::enterEvent( QEnterEvent* event )
+#endif
 {
     QPushButton::enterEvent( event );
     setDisplayHintEnabled( HoverHint, true );

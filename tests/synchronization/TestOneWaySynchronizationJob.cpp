@@ -306,10 +306,10 @@ TestOneWaySynchronizationJob::testNoActionNecessary()
     Collections::CollectionTestImpl *source = new Collections::MyCollectionTestImpl( "source" );
     Collections::CollectionTestImpl *target = new Collections::MyCollectionTestImpl( "target" );
 
-    addMockTrack( source, "track1", "artist1", "album1" );
-    addMockTrack( source, "track2", "artist1", "album1" );
-    addMockTrack( target, "track1", "artist1", "album1" );
-    addMockTrack( target, "track2", "artist1", "album1" );
+    addMockTrack( source, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( source, QStringLiteral("track2"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( target, QStringLiteral("track1"), QStringLiteral("artist1"), QStringLiteral("album1") );
+    addMockTrack( target, QStringLiteral("track2"), QStringLiteral("artist1"), QStringLiteral("album1") );
 
     QCOMPARE( trackCopyCount, 0 );
     QCOMPARE( source->mc->trackMap().count(), 2 );

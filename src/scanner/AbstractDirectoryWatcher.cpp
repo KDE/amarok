@@ -64,7 +64,7 @@ AbstractDirectoryWatcher::run(ThreadWeaver::JobPointer self, ThreadWeaver::Threa
     // TODO: re-create the watcher if scanRecursively has changed
     QSet<QString> oldWatchDirs;
 
-    forever {
+    for(;;) {
         m_mutex.lock();
         m_waitCondition.wait( &m_mutex, WATCH_INTERVAL );
 

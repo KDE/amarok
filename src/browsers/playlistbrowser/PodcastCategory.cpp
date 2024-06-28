@@ -177,7 +177,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
 
     if( !imageUrl.isEmpty() )
     {
-        description += QString( "<p style=\"float:right;\"><img src=\"%1\" onclick=\""
+        description += QStringLiteral( "<p style=\"float:right;\"><img src=\"%1\" onclick=\""
             "if (this.style.width=='150px') {"
                 "this.style.width='auto';"
                 "this.style.marginLeft='0em';"
@@ -248,7 +248,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
 
     description += index.data( PrettyTreeRoles::ByLineRole ).toString();
 
-    description = QString(
+    description = QString(QStringLiteral(
         "<html>"
         "    <head>"
         "        <title>%1</title>"
@@ -263,7 +263,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
         "        <h1>%1</h1>"
         "        %2"
         "    </body>"
-        "</html>")
+        "</html>"))
         .arg( title.toHtmlEscaped(),
               description,
               pApp->palette().brush( QPalette::Text ).color().name(),

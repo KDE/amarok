@@ -26,6 +26,7 @@
 
 #include <QStandardPaths>
 
+#include <QActionGroup>
 #include <QLabel>
 #include <QComboBox>
 #include <QPixmap>
@@ -65,7 +66,7 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     connect( LayoutManager::instance(), &LayoutManager::layoutListChanged, this, &LayoutConfigAction::layoutListChanged );
     connect( LayoutManager::instance(), &LayoutManager::activeLayoutChanged, this, &LayoutConfigAction::onActiveLayoutChanged );
 
-    const QIcon configIcon( "configure" );
+    const QIcon configIcon( QStringLiteral("configure") );
     m_configAction->setIcon( configIcon );
     m_configAction->setText( i18n( "Configure Playlist Layouts..." ) );
 

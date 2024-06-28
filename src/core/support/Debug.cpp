@@ -21,8 +21,6 @@
 #include "core/support/Debug.h"
 #include "core/support/Debug_p.h"
 
-#include <KConfigCore/KConfigGroup>
-
 #include <QApplication>
 #include <QRecursiveMutex>
 #include <QObject>
@@ -205,15 +203,15 @@ Block::~Block()
         dbgstream()
             << qPrintable( colorize( QLatin1String( "END__:" ), m_color ) )
             << m_label
-            << qPrintable( colorize( QString( "[Took: %3s]")
+            << qPrintable( colorize( QStringLiteral( "[Took: %3s]")
                                      .arg( QString::number(duration, 'g', 2) ), m_color ) );
     }
     else
     {
         dbgstream()
-            << qPrintable( colorize( QString( "END__:" ), m_color ) )
+            << qPrintable( colorize( QStringLiteral( "END__:" ), m_color ) )
             << m_label
-            << qPrintable( reverseColorize( QString( "[DELAY Took (quite long) %3s]")
+            << qPrintable( reverseColorize( QStringLiteral( "[DELAY Took (quite long) %3s]")
                                             .arg( QString::number(duration, 'g', 2) ), toColor( KDEBUG_WARN ) ) );
     }
 }

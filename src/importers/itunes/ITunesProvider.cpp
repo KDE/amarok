@@ -343,7 +343,7 @@ ITunesProvider::commitTracks()
             return;
         }
 
-        if( reader.isStartElement() && reader.name() == "key" )
+        if( reader.isStartElement() && reader.name() == QStringLiteral( "key" ) )
         {
             const QString text = reader.readElementText();
             writer.writeTextElement( "key", text );

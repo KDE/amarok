@@ -60,7 +60,7 @@ Playlist::FavoredRandomTrackNavigator::planOne()
             if( !weights.isEmpty() )
             {
                 qreal totalWeight = 0.0;
-                foreach ( qreal weight, weights )
+                for ( qreal weight : weights )
                     totalWeight += weight;
 
                 qreal randomCumulWeight = ( QRandomGenerator::global()->generate() /

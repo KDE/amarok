@@ -35,7 +35,7 @@ AacFormat::AacFormat()
               "of the bitrate of the encoded track.<br>"
               "The encoder is transparent at 128kbps for most samples tested with artifacts only appearing in extreme cases.");
     QStringList valueLabels;
-    QByteArray cbr = "CBR %1kb/s";
+    char cbr[] = "CBR %1kb/s";
     valueLabels
         << i18n( cbr, 32 )
         << i18n( cbr, 64 )
@@ -97,5 +97,5 @@ AacFormat::ffmpegParameters( const Configuration &configuration ) const
 bool
 AacFormat::verifyAvailability( const QString &ffmpegOutput ) const
 {
-    return ffmpegOutput.contains( QRegularExpression( "^ .EA... aac +" ) );
+    return ffmpegOutput.contains( QRegularExpression( QStringLiteral( "^ .EA... aac +" ) ) );
 }

@@ -51,7 +51,7 @@ namespace QtBindings
             Q_INVOKABLE static TextCodec codecForUtfText(const ByteArray &ba);
             Q_INVOKABLE static void setCodecForLocale(QTextCodec *c);
             TextCodec &operator=(const TextCodec &other);
-        public slots:
+        public Q_SLOTS:
             virtual QList<QByteArray> aliases() const;
             bool canEncode(QChar ch) const;
             bool canEncode(const QString &s) const;

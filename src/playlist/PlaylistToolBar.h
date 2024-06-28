@@ -21,6 +21,7 @@
 
 #include <KActionMenu>
 
+#include <QActionGroup>
 #include <QToolBar>
 
 namespace Playlist {

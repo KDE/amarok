@@ -183,7 +183,7 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
             //d->queryFrom = ' ' + prefix + "_tracks";
 
             d->withoutDuplicates = true;
-            d->queryFrom = ' ' + prefix + "_tracks";
+            d->queryFrom = QLatin1Char(' ') + prefix + QStringLiteral("_tracks");
             d->queryType = QueryMaker::Track;
             d->queryReturnValues =  m_metaFactory->getTrackSqlRows() + QLatin1Char(',') +
             m_metaFactory->getAlbumSqlRows() + QLatin1Char(',') +
@@ -194,11 +194,11 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
             d->linkedTables |= Private::ARTISTS_TABLE;
             d->linkedTables |= Private::ALBUMS_TABLE;
 
-            d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
+            d->queryOrderBy += QStringLiteral(" GROUP BY ") + prefix + QStringLiteral("_tracks.id"); //fixes the same track being shown several times due to being in several genres
 
             if ( d->linkedTables & Private::ARTISTS_TABLE )
             {
-                d->queryOrderBy += " ORDER BY " + prefix + "_tracks.album_id"; //make sure items are added as album groups
+                d->queryOrderBy += QStringLiteral(" ORDER BY ") + prefix + QStringLiteral("_tracks.album_id"); //make sure items are added as album groups
             }
         }
         return this;
@@ -207,14 +207,14 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
         if( d->queryType == QueryMaker::None )
         {
             QString prefix = m_metaFactory->tablePrefix();
-            d->queryFrom = ' ' + prefix + "_tracks";
+            d->queryFrom = QLatin1Char(' ') + prefix + QStringLiteral("_tracks");
             d->linkedTables |= Private::ARTISTS_TABLE;
             d->linkedTables |= Private::ALBUMS_TABLE;
             d->queryType = QueryMaker::Artist;
             d->withoutDuplicates = true;
             d->queryReturnValues = m_metaFactory->getArtistSqlRows();
 
-            d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
+            d->queryOrderBy += QStringLiteral(" GROUP BY ") + prefix + QStringLiteral("_tracks.id"); //fixes the same track being shown several times due to being in several genres
         }
         return this;
 
@@ -222,14 +222,14 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
         if( d->queryType == QueryMaker::None )
         {
             QString prefix = m_metaFactory->tablePrefix();
-            d->queryFrom = ' ' + prefix + "_tracks";
+            d->queryFrom = QLatin1Char(' ') + prefix + QStringLiteral("_tracks");
             d->linkedTables |= Private::ALBUMARTISTS_TABLE;
             d->queryType = QueryMaker::AlbumArtist;
             d->withoutDuplicates = true;
             d->queryReturnValues = QStringLiteral( "albumartists.id, " ) +
-                                            "albumartists.name, " +
-                                            "albumartists.description ";
-            d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
+                                            QStringLiteral( "albumartists.name, " )+
+                                            QStringLiteral( "albumartists.description ");
+            d->queryOrderBy += QStringLiteral(" GROUP BY ") + prefix + QStringLiteral("_tracks.id"); //fixes the same track being shown several times due to being in several genres
         }
         return this;
 
@@ -237,7 +237,7 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
         if( d->queryType == QueryMaker::None )
         {
             QString prefix = m_metaFactory->tablePrefix();
-            d->queryFrom = ' ' + prefix + "_tracks";
+            d->queryFrom = QLatin1Char(' ') + prefix + QStringLiteral("_tracks");
             d->queryType = QueryMaker::Album;
             d->linkedTables |= Private::ALBUMS_TABLE;
             d->linkedTables |= Private::ARTISTS_TABLE;
@@ -245,7 +245,7 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
             d->queryReturnValues = m_metaFactory->getAlbumSqlRows() + QLatin1Char(',') +
             m_metaFactory->getArtistSqlRows();
 
-            d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
+            d->queryOrderBy += QStringLiteral(" GROUP BY ") + prefix + QStringLiteral("_tracks.id"); //fixes the same track being shown several times due to being in several genres
         }
         return this;
 
@@ -263,13 +263,13 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
         if( d->queryType == QueryMaker::None )
         {
             QString prefix = m_metaFactory->tablePrefix();
-            d->queryFrom = ' ' + prefix + "_genre";
+            d->queryFrom = QLatin1Char(' ') + prefix + QStringLiteral("_genre");
             d->queryType = QueryMaker::Genre;
             //d->linkedTables |= QueryMaker::Albums_TABLE;
             //d->linkedTables |= QueryMaker::Genre_TABLE;
             d->withoutDuplicates = true;
             d->queryReturnValues = m_metaFactory->getGenreSqlRows();
-            d->queryOrderBy = " GROUP BY " + prefix +"_genre.name"; // HAVING COUNT ( " + prefix +"_genre.name ) > 10 ";
+            d->queryOrderBy = QStringLiteral(" GROUP BY ") + prefix + QStringLiteral("_genre.name"); // HAVING COUNT ( " + prefix +"_genre.name ) > 10 ";
         }
         return this;
 
@@ -324,13 +324,13 @@ ServiceSqlQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::Artis
         switch( behaviour )
         {
             case TrackArtists:
-                 d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
+                 d->queryMatch += QString( QStringLiteral(" AND ") + prefix + QStringLiteral("_artists.id= '%1'") ).arg( serviceArtist->id() );
                  break;
             case AlbumArtists:
                  d->queryMatch += QStringLiteral( " AND albumartists.id= '%1'" ).arg( serviceArtist->id() );
                  break;
             case AlbumOrTrackArtists:
-                 d->queryMatch += QString( " AND ( " + prefix + "_artists.id= '%1' OR albumartists.id= '%1' )" ).arg( serviceArtist->id() );
+                 d->queryMatch += QString( QStringLiteral(" AND ( ") + prefix + QStringLiteral("_artists.id= '%1' OR albumartists.id= '%1' )") ).arg( serviceArtist->id() );
                  break;
         }
     }
@@ -339,13 +339,13 @@ ServiceSqlQueryMaker::addMatch( const Meta::ArtistPtr &artist, QueryMaker::Artis
         switch( behaviour )
         {
             case TrackArtists:
-                 d->queryMatch += QString( " AND " + prefix + "_artists.name= '%1'" ).arg( escape( artist->name() ) );
+                 d->queryMatch += QString( QStringLiteral(" AND ") + prefix + QStringLiteral("_artists.name= '%1'") ).arg( escape( artist->name() ) );
                  break;
             case AlbumArtists:
                  d->queryMatch += QStringLiteral( " AND albumartists.name= '%1'" ).arg( escape( artist->name() ) );
                  break;
             case AlbumOrTrackArtists:
-                 d->queryMatch += QString( " AND ( " + prefix + "_artists.name= '%1' OR albumartists.name= '%1' )" ).arg( escape( artist->name() ) );
+                 d->queryMatch += QString( QStringLiteral(" AND ( ") + prefix + QStringLiteral("_artists.name= '%1' OR albumartists.name= '%1' )") ).arg( escape( artist->name() ) );
                  break;
         }
     }
@@ -399,7 +399,7 @@ ServiceSqlQueryMaker::addMatch( const Meta::GenrePtr &genre )
         //if ( d->queryType == Private::ARTIST )
     //d->linkedTables |= Private::ARTISTS_TABLE;
     d->linkedTables |= Private::GENRE_TABLE;
-    d->queryMatch += QString( " AND " + prefix + "_genre.name = '%1'" ).arg( serviceGenre->name() );
+    d->queryMatch += QString( QStringLiteral(" AND ") + prefix + QStringLiteral("_genre.name = '%1'") ).arg( serviceGenre->name() );
 
     return this;
 }
@@ -439,7 +439,7 @@ ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool match
     if ( d->queryType == QueryMaker::Genre )
     {
         QString prefix = m_metaFactory->tablePrefix();
-        d->queryFrom = ' ' + prefix + "_tracks";
+        d->queryFrom = QLatin1Char(' ') + prefix + QStringLiteral("_tracks");
         d->linkedTables |= Private::ALBUMS_TABLE;
         d->linkedTables |= Private::ARTISTS_TABLE;
         d->linkedTables |= Private::GENRE_TABLE;
@@ -530,13 +530,13 @@ ServiceSqlQueryMaker::linkTables()
     //d->queryFrom = ' ' + prefix + "_tracks";
 
     if( d->linkedTables & Private::ALBUMS_TABLE )
-       d->queryFrom += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
+       d->queryFrom += QStringLiteral(" LEFT JOIN ") + prefix + QStringLiteral("_albums ON ") + prefix + QStringLiteral("_tracks.album_id = ") + prefix + QStringLiteral("_albums.id");
     if( d->linkedTables & Private::ARTISTS_TABLE )
-       d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
+       d->queryFrom += QStringLiteral(" LEFT JOIN ") + prefix + QStringLiteral("_artists ON ") + prefix + QStringLiteral("_albums.artist_id = ") + prefix + QStringLiteral("_artists.id");
     if( d->linkedTables & Private::ALBUMARTISTS_TABLE )
-        d->queryFrom += " LEFT JOIN " + prefix + "_artists AS albumartists ON " + prefix + "_albums.artist_id = albumartists.id";
+        d->queryFrom += QStringLiteral(" LEFT JOIN ") + prefix + QStringLiteral("_artists AS albumartists ON ") + prefix + QStringLiteral("_albums.artist_id = albumartists.id");
     if( d->linkedTables & Private::GENRE_TABLE )
-       d->queryFrom += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
+       d->queryFrom += QStringLiteral(" LEFT JOIN ") + prefix + QStringLiteral("_genre ON ") + prefix + QStringLiteral("_genre.album_id = ") + prefix + QStringLiteral("_albums.id");
 }
 
 void
@@ -565,7 +565,7 @@ ServiceSqlQueryMaker::buildQuery()
     query += d->queryOrderBy;
     if ( d->maxResultSize > -1 )
         query += QStringLiteral( " LIMIT %1 OFFSET 0 " ).arg( d->maxResultSize );
-    query += ';';
+    query += QLatin1Char(';');
     d->query = query;
 }
 
@@ -677,18 +677,18 @@ ServiceSqlQueryMaker::nameForValue( qint64 value )
     {
         case Meta::valTitle:
             d->linkedTables |= Private::TRACKS_TABLE;
-            return prefix + "_tracks.name";
+            return prefix + QStringLiteral("_tracks.name");
         case Meta::valArtist:
             d->linkedTables |= Private::ARTISTS_TABLE;
-            return prefix + "_artists.name";
+            return prefix + QStringLiteral("_artists.name");
         case Meta::valAlbum:
             d->linkedTables |= Private::ALBUMS_TABLE;
-            return prefix + "_albums.name";
+            return prefix + QStringLiteral("_albums.name");
         case Meta::valGenre:
-            d->queryFrom = prefix + "_tracks";
+            d->queryFrom = prefix + QStringLiteral("_tracks");
             d->linkedTables |= Private::ALBUMS_TABLE;
             d->linkedTables |= Private::GENRE_TABLE;
-            return prefix + "_genre.name";
+            return prefix + QStringLiteral("_genre.name");
         default:
             debug() << "ERROR: unknown value in ServiceSqlQueryMaker::nameForValue( qint64 ): value=" + QString::number( value );
             return QString();
@@ -813,13 +813,13 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
 
         QString ret = QStringLiteral(" LIKE ");
 
-        ret += '\'';
+        ret += QLatin1Char('\'');
         if ( anyBegin )
-            ret += '%';
+            ret += QLatin1Char('%');
         ret += escaped;
         if ( anyEnd )
-            ret += '%';
-        ret += '\'';
+            ret += QLatin1Char('%');
+        ret += QLatin1Char('\'');
 
         //Case insensitive collation for queries
         ret += QLatin1String(" COLLATE utf8_unicode_ci ");
@@ -856,7 +856,7 @@ ServiceSqlQueryMaker::beginOr()
 QueryMaker*
 ServiceSqlQueryMaker::endAndOr()
 {
-    d->queryFilter += ')';
+    d->queryFilter += QLatin1Char(')');
     d->andStack.pop();
     return this;
 }
@@ -864,7 +864,7 @@ ServiceSqlQueryMaker::endAndOr()
 QString
 ServiceSqlQueryMaker::andOr() const
 {
-    return d->andStack.top() ? " AND " : " OR ";
+    return d->andStack.top() ? QStringLiteral(" AND ") : QStringLiteral(" OR ");
 }
 
 QueryMaker *

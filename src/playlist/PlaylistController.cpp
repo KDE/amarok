@@ -454,7 +454,7 @@ Controller::moveRows( QList<int>& from, int to )
 
     int originalTo = to;
 
-    foreach ( int f, from )
+    for ( int f : from )
     {
         if( f < originalTo )
             to--; // since we are moving an item down in the list, this item will no longer count towards the target row

@@ -56,7 +56,7 @@ public:
     QDateTime createDate() const override { return QDateTime(); }    //field missing
     int trackNumber() const override { return m_data.value( Meta::Field::TRACKNUMBER ).toInt(); }
     int discNumber() const override { return m_data.value( Meta::Field::DISCNUMBER ).toInt(); }
-    QString type() const override { return "Mock"; }
+    QString type() const override { return QStringLiteral("Mock"); }
 
     Meta::LabelList labels() const override { return m_labels; }
 

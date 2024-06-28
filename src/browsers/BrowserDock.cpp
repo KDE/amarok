@@ -104,9 +104,9 @@ void
 BrowserDock::paletteChanged( const QPalette &palette )
 {
     m_messageArea->setStyleSheet(
-                QString( "QFrame#BrowserMessageArea { border: 1px ridge %1; " \
+                QString( QStringLiteral("QFrame#BrowserMessageArea { border: 1px ridge %1; " \
                          "background-color: %2; color: %3; border-radius: 3px; }" \
-                         "QLabel { color: %3; }" )
+                         "QLabel { color: %3; }") )
                         .arg( palette.color( QPalette::Active, QPalette::Window ).name(),
                               palette.color( QPalette::Active, QPalette::Mid ).name(),
                               palette.color( QPalette::Active, QPalette::HighlightedText ).name() )

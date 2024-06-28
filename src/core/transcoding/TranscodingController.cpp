@@ -60,7 +60,7 @@ Controller::onAvailabilityVerified( int exitCode, QProcess::ExitStatus exitStatu
     Q_UNUSED( exitCode )
     Q_UNUSED( exitStatus )
     sender()->deleteLater();
-    QString output = qobject_cast< KProcess * >( sender() )->readAllStandardOutput().data();
+    QString output = QLatin1String( qobject_cast< KProcess * >( sender() )->readAllStandardOutput().data() );
     if( output.simplified().isEmpty() )
         return;
     const QStringList lines = output.split( QRegularExpression( QStringLiteral("\r|\n") ), Qt::SkipEmptyParts );

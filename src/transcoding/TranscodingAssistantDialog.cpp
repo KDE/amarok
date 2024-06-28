@@ -135,7 +135,7 @@ AssistantDialog::populateFormatList()
     ui.groupBox->setEnabled( !available.isEmpty() );
     ui.encoderNotFoundLabel->setVisible( available.isEmpty() );
 
-    foreach( Encoder encoder, Amarok::Components::transcodingController()->allEncoders() )
+    for( Encoder encoder : Amarok::Components::transcodingController()->allEncoders() )
     {
         if( encoder == INVALID || encoder == JUST_COPY )
             continue; // skip "fake" encoders

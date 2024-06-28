@@ -46,7 +46,7 @@ struct ProgressData
     std::function<void ()> function;
     Qt::ConnectionType type;
 
-    bool operator==( const ProgressData &other )
+    bool operator==( const ProgressData &other ) const
     {
         return sender == other.sender &&
                job == other.job &&

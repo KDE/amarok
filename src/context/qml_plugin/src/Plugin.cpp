@@ -35,7 +35,7 @@ class Plugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char* uri) override
     {
-        Q_ASSERT(uri == QLatin1String("org.kde.amarok.qml"));
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("org.kde.amarok.qml"));
 
         qmlRegisterType<RatingItem>(uri, 1, 0, "RatingItem");
         qmlRegisterType<PixmapItem>(uri, 1, 0, "PixmapItem");

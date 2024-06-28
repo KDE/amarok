@@ -74,9 +74,9 @@ PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds,
     url.setArg( QStringLiteral("pos"), secondsString );
 
     if( name.isEmpty() )
-        url.setName( track->prettyName() + " - " + Meta::secToPrettyTime( seconds ) );
+        url.setName( track->prettyName() + QStringLiteral(" - ") + Meta::secToPrettyTime( seconds ) );
     else
-        url.setName( name + " - " + Meta::secToPrettyTime( seconds ) );
+        url.setName( name + QStringLiteral(" - ") + Meta::secToPrettyTime( seconds ) );
 
     debug() << "concocted url: " << url.url();
     debug() << "pos: " << accurateSeconds;
@@ -91,7 +91,7 @@ PlayUrlGenerator::moveTrackBookmark( Meta::TrackPtr track, qint64 newMiliseconds
     trackPosition.setNum( seconds );
 
     QString trackName = track->prettyName();
-    QString newName = ( trackName + " - " + Meta::msToPrettyTime( newMiliseconds ) );
+    QString newName = ( trackName + QStringLiteral(" - ") + Meta::msToPrettyTime( newMiliseconds ) );
 
     BookmarkModel::instance()->setBookmarkArg( name, QStringLiteral("pos"), trackPosition );
     BookmarkModel::instance()->renameBookmark( name, newName );

@@ -400,7 +400,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 
     if( !m_moveToTrashAction )
     {
-        m_moveToTrashAction = new QAction( QIcon::fromTheme( "user-trash" ), i18n( "&Move to Trash" ), this );
+        m_moveToTrashAction = new QAction( QIcon::fromTheme( QStringLiteral("user-trash") ), i18n( "&Move to Trash" ), this );
         m_moveToTrashAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_moveToTrashAction->setShortcut( Qt::Key_Delete );
@@ -411,7 +411,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 
     if( !m_deleteAction )
     {
-        m_deleteAction = new QAction( QIcon::fromTheme( "remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new QAction( QIcon::fromTheme( QStringLiteral("remove-amarok") ), i18n( "&Delete" ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
         // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
         m_deleteAction->setShortcut( Qt::SHIFT + Qt::Key_Delete );
@@ -422,7 +422,7 @@ FileView::actionsForIndices( const QModelIndexList &indices, ActionType type )
 
     if( !m_editAction )
     {
-        m_editAction = new QAction( QIcon::fromTheme( "media-track-edit-amarok" ),
+        m_editAction = new QAction( QIcon::fromTheme( QStringLiteral("media-track-edit-amarok") ),
                                     i18n( "&Edit Track Details" ), this );
         m_editAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_editAction, &QAction::triggered, this, &FileView::slotEditTracks );
