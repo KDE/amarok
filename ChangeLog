@@ -19,6 +19,7 @@ VERSION 3.0.2
    * Fix 'save playlist' button in playlist controls
    * Sort playlist sorting breadcrumb menu by localized names (BR 277146)
    * Miscellaneous fixes to saving and loading various playlist file formats
+     (including BR 435779)
 
 
 VERSION 3.0.1
