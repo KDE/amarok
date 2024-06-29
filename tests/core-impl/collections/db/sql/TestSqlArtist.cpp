@@ -59,6 +59,8 @@ TestSqlArtist::init()
     m_storage->query( "INSERT INTO artists(id, name) VALUES (1, 'The Foo');" );
     m_storage->query( "INSERT INTO artists(id, name) VALUES (2, 'No The Foo');" );
     m_storage->query( "INSERT INTO artists(id, name) VALUES (3, 'artist3');" );
+    m_storage->query( "INSERT INTO artists(id, name) VALUES (4, 'DJ Bar');" );
+    m_storage->query( "INSERT INTO artists(id, name) VALUES (5, 'Bar Like No DJ');" );
 
     m_storage->query( "INSERT INTO composers(id, name) VALUES (1, 'composer1');" );
     m_storage->query( "INSERT INTO genres(id, name) VALUES (1, 'genre1');" );
@@ -91,6 +93,12 @@ TestSqlArtist::testSortableName()
 
     Meta::ArtistPtr artistWithoutThe = m_collection->registry()->getArtist( 2 );
     QCOMPARE( artistWithoutThe->sortableName(), QStringLiteral( "No The Foo" ) );
+
+    Meta::ArtistPtr artistWithDJ = m_collection->registry()->getArtist( 4 );
+    QCOMPARE( artistWithDJ->sortableName(), QStringLiteral( "Bar, DJ" ) );
+
+    Meta::ArtistPtr artistWithoutDJ = m_collection->registry()->getArtist( 5 );
+    QCOMPARE( artistWithoutDJ->sortableName(), QStringLiteral( "Bar Like No DJ" ) );
 }
 
 
