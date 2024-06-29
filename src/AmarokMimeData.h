@@ -97,7 +97,11 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         void getTrackListSignal() const;
 
     protected:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         QVariant retrieveData( const QString &mimeType, QVariant::Type type ) const override;
+#else
+        QVariant retrieveData( const QString &mimeType, QMetaType type) const override;
+#endif
 
     private Q_SLOTS:
         void newResultReady( const Meta::TrackList &tracks );

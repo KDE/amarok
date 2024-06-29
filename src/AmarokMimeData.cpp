@@ -296,15 +296,22 @@ void AmarokMimeData::addBookmarkGroups( const BookmarkGroupList &groups )
 }
 
 QVariant
-AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) const
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type vtype ) const
+#else
+AmarokMimeData::retrieveData( const QString &mimeType, QMetaType type ) const
+#endif
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QMetaType type(vtype);
+#endif
     Meta::TrackList tracks = this->tracks();
     Playlists::PlaylistList playlists = this->playlists();
     Podcasts::PodcastChannelList channels = this->podcastChannels();
     Podcasts::PodcastEpisodeList episodes = this->podcastEpisodes();
     if( !tracks.isEmpty() )
     {
-        if( mimeType == QLatin1String("text/uri-list") && (type == QVariant::List || type == QVariant::ByteArray) )
+        if( mimeType == QLatin1String("text/uri-list") && (type.id() == QMetaType::QVariantList || type.id() == QMetaType::QByteArray) )
         {
             QList<QVariant> list;
             for( Meta::TrackPtr track : tracks )
@@ -325,7 +332,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
             }
             return QVariant( list );
         }
-        if( mimeType == QLatin1String("text/plain") && (type == QVariant::String || type == QVariant::ByteArray) )
+        if( mimeType == QLatin1String("text/plain") && (type.id() == QMetaType::QString || type.id() == QMetaType::QByteArray) )
         {
             QString result;
             for( Meta::TrackPtr track : tracks )
@@ -359,7 +366,11 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
             return QVariant( result );
         }
     }
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    return QMimeData::retrieveData( mimeType, vtype );
+#else
     return QMimeData::retrieveData( mimeType, type );
+#endif
 }
 
 void
