@@ -64,7 +64,7 @@ OcsPersonItem::init()
     if( m_status == Author )
     {
         QHBoxLayout *iconsLayout = new QHBoxLayout( this );
-        iconsLayout->setMargin( 0 );
+        iconsLayout->setContentsMargins( 0, 0, 0, 0 );
         iconsLayout->setSpacing( 0 );
         m_verticalLayout->insertLayout( m_verticalLayout->count() - 1, iconsLayout );
         iconsLayout->addWidget( m_iconsBar );

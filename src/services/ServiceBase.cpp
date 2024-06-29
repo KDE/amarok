@@ -150,7 +150,7 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     m_bottomPanel->setFrameStyle( QFrame::NoFrame );
     m_bottomPanel->setLineWidth(2);
     m_bottomPanel->layout()->setSpacing( 2 );
-    m_bottomPanel->layout()->setMargin( 2 );
+    m_bottomPanel->layout()->setContentsMargins( 2, 2, 2, 2 );
 
     m_filterModel = new QSortFilterProxyModel( this );
     m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );

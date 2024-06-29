@@ -30,14 +30,14 @@ OcsPersonListWidget::OcsPersonListWidget( const QList< KAboutPerson > &persons,
 {
     //Set up the layouts...
     QHBoxLayout *scrollLayout = new QHBoxLayout( this );
-    scrollLayout->setMargin( 1 );
+    scrollLayout->setContentsMargins( 1, 1, 1, 1 );
     setLayout( scrollLayout );
     QScrollArea *personsScrollArea = new QScrollArea( this );
     scrollLayout->addWidget( personsScrollArea );
     personsScrollArea->setFrameStyle( QFrame::NoFrame );
     m_personsArea = new QWidget( personsScrollArea );
     m_areaLayout = new QVBoxLayout( m_personsArea );
-    m_areaLayout->setMargin( 0 );
+    m_areaLayout->setContentsMargins( 0, 0, 0, 0 );
     m_personsArea->setLayout( m_areaLayout );
     m_personsArea->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 

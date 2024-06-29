@@ -31,11 +31,11 @@ ProgressBar::ProgressBar( QWidget *parent )
     setContentsMargins( 0, 0, 0, 4 );
 
     QVBoxLayout *box = new QVBoxLayout;
-    box->setMargin( 0 );
+    box->setContentsMargins( 0, 0, 0, 0 );
     box->setSpacing( 3 );
 
     QHBoxLayout *descriptionLayout = new QHBoxLayout;
-    descriptionLayout->setMargin( 0 );
+    descriptionLayout->setContentsMargins( 0, 0, 0, 0 );
     descriptionLayout->setSpacing( 2 );
 
     m_descriptionLabel = new QLabel;

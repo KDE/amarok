@@ -37,7 +37,7 @@ PluginsConfig::PluginsConfig( Amarok2ConfigDialog *parent )
     m_selector->setSizePolicy( QSizePolicy:: Expanding, QSizePolicy::Expanding );
 
     QVBoxLayout *layout = new QVBoxLayout( this );
-    layout->setMargin( 0 );
+    layout->setContentsMargins( 0, 0, 0, 0 );
     layout->addWidget( m_selector );
 
     m_selector->addPlugins( The::pluginManager()->plugins( Plugins::PluginManager::Collection ),

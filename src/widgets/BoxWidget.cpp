@@ -31,7 +31,7 @@ BoxWidget::BoxWidget( bool vertical, QWidget *parent ) : QFrame( parent )
         setLayout( new QHBoxLayout );
 
     layout()->setSpacing( 0 );
-    layout()->setMargin( 0 );
+    layout()->setContentsMargins( 0, 0, 0, 0 );
 }
 
 QBoxLayout* BoxWidget::layout() const

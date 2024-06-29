@@ -242,7 +242,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
         m_authorListWidget = new OcsPersonListWidget( d->aboutData->authors(), m_ocsData.authors(), OcsPersonItem::Author, m_authorWidget.data() );
 
         authorLayout->addWidget( m_authorListWidget.data() );
-        authorLayout->setMargin( 0 );
+        authorLayout->setContentsMargins( 0, 0, 0, 0 );
         authorLayout->setSpacing( 2 );
         m_authorWidget->setLayout( authorLayout );
 
@@ -261,7 +261,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
         m_creditListWidget = new OcsPersonListWidget( d->aboutData->credits(), m_ocsData.credits(), OcsPersonItem::Contributor, m_creditWidget.data() );
 
         creditLayout->addWidget( m_creditListWidget.data() );
-        creditLayout->setMargin( 0 );
+        creditLayout->setContentsMargins( 0, 0, 0, 0 );
         creditLayout->setSpacing( 2 );
         m_creditWidget->setLayout( creditLayout );
 
@@ -285,7 +285,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
         m_donorListWidget = new OcsPersonListWidget( donors , m_ocsData.donors(), OcsPersonItem::Contributor, m_donorWidget.data() );
 
         donorLayout->addWidget( m_donorListWidget.data() );
-        donorLayout->setMargin( 0 );
+        donorLayout->setContentsMargins( 0, 0, 0, 0 );
         donorLayout->setSpacing( 2 );
         m_donorWidget->setLayout( donorLayout );
 
@@ -324,7 +324,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData &about, const OcsData 
     //Jam everything together in a layout:
     mainLayout->addWidget(titleWidget);
     mainLayout->addWidget(tabWidget);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins( 0, 0, 0, 0 );
 
     mainLayout->addWidget(buttonBox);
 
